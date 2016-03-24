@@ -493,14 +493,15 @@ Parameters:
 
 ### Archive a project
 
-Archives a project if the user has the right access level to this project. This action is
+Archives the project if the user is either admin or the project owner of this project. This action is
 idempotent, thus archiving an already archived project will not change the project.
 
-Status code 200 with the project as body is given when successful, in case the user doesn't
-have the proper access rights, code 404 is returned.
+Status code 201 with the project as body is given when successful, in case the user doesn't
+have the proper access rights, code 403 is returned. Status 404 is returned if the project
+doesn't exist, or is hidden to the user.
 
 ```
-PUT /projects/:id/archive
+POST /projects/:id/archive
 ```
 
 | Attribute | Type | Required | Description |
@@ -508,7 +509,7 @@ PUT /projects/:id/archive
 | `id`      | integer | yes | The ID of the project |
 
 ```bash
-curl -X PUT -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/archive"
+curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/archive"
 ```
 
 Example response:
@@ -575,14 +576,15 @@ Example response:
 
 ### Unarchive a project
 
-Unarchives a project if the user has the right access level to this project. This action is
+Unarchives the project if the user is either admin or the project owner of this project. This action is
 idempotent, thus unarchiving an non-archived project will not change the project.
 
-Status code 200 with the project as body is given when successful, in case the user doesn't
-have the proper access rights, code 404 is returned.
+Status code 201 with the project as body is given when successful, in case the user doesn't
+have the proper access rights, code 403 is returned. Status 404 is returned if the project
+doesn't exist, or is hidden to the user.
 
 ```
-PUT /projects/:id/archive
+POST /projects/:id/archive
 ```
 
 | Attribute | Type | Required | Description |
@@ -590,7 +592,7 @@ PUT /projects/:id/archive
 | `id`      | integer | yes | The ID of the project |
 
 ```bash
-curl -X PUT -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/unarchive"
+curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/unarchive"
 ```
 
 Example response:

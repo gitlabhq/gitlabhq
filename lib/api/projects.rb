@@ -250,12 +250,12 @@ module API
       #   id (required) - The ID of a project
       # Example Request:
       #   PUT /projects/:id/archive
-      put ':id/archive' do
+      post ':id/archive' do
         authorize!(:archive_project, user_project)
 
         user_project.archive!
 
-        present @project, with: Entities::Project
+        present user_project, with: Entities::Project
       end
 
       # Unarchive project
@@ -264,12 +264,12 @@ module API
       #   id (required) - The ID of a project
       # Example Request:
       #   PUT /projects/:id/unarchive
-      put ':id/unarchive' do
+      post ':id/unarchive' do
         authorize!(:archive_project, user_project)
 
         user_project.unarchive!
 
-        present @project, with: Entities::Project
+        present user_project, with: Entities::Project
       end
 
       # Remove project

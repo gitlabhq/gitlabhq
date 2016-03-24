@@ -4,6 +4,7 @@ v 8.7.0 (unreleased)
   - Preserve time notes/comments have been updated at when moving issue
   - Make HTTP(s) label consistent on clone bar (Stan Hu)
   - Fix avatar stretching by providing a cropping feature
+  - Add endpoints to archive or unarchive a project !3372
 
 v 8.6.1
   - Add option to reload the schema before restoring a database backup. !2807
