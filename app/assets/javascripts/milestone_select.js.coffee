@@ -104,6 +104,8 @@ class @MilestoneSelect
               selectedMilestone = selected.name
             else if selected.title?
               selectedMilestone = selected.title
+            else
+              selectedMilestone = ''
             $dropdown.parents('form').submit()
           else
             selected = $selectbox
