@@ -109,12 +109,23 @@
     .dropdown-menu {
       top: 30px;
       left: -5px;
+      padding: 0;
+
+      ul {
+        padding: 10px 0;
+      }
+    }
+
+    .dropdown-content {
+      max-height: 300px;
     }
   }
 
   &.search-active {
     form {
       @extend .form-control:focus;
+      border-color: $dropdown-input-focus-border;
+      box-shadow: 0 0 4px $search-input-focus-shadow-color;
     }
 
     .location-badge {

@@ -16,9 +16,10 @@
           = search_field_tag "search", nil, placeholder: 'Search', class: "search-input dropdown-menu-toggle", spellcheck: false, tabindex: "1", autocomplete: 'off',  data: { toggle: 'dropdown' }
           .dropdown-menu.dropdown-select
             = dropdown_content do
-              %li
-                %a.is-focused
-                  Loading...
+              %ul
+                %li
+                  %a.is-focused.dropdown-menu-empty-link
+                    Loading...
             = dropdown_loading
         %i.search-icon
         %i.clear-icon.js-clear-input

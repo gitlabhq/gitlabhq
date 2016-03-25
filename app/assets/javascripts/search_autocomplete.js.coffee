@@ -260,6 +260,6 @@ class @SearchAutocomplete
 
   restoreMenu: ->
     html = "<ul>
-              <li><a class='is-focused'>Loading...</a></li>
+              <li><a class='dropdown-menu-empty-link is-focused'>Loading...</a></li>
             </ul>"
     @dropdownContent.html(html)

@@ -300,7 +300,7 @@ class GitLabDropdown
 
   noResults: ->
     html = "<li>"
-    html += "<a href='#' class='dropdown-menu-empty-link is-focused'>"
+    html += "<a class='dropdown-menu-empty-link is-focused'>"
     html += "No matching results."
     html += "</a>"
     html += "</li>"
