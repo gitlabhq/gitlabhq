@@ -328,8 +328,8 @@ GEM
     fog-xml (0.1.2)
       fog-core
       nokogiri (~> 1.5, >= 1.5.11)
-    font-awesome-rails (4.5.0.0)
-      railties (>= 3.2, < 5.0)
+    font-awesome-rails (4.5.0.1)
+      railties (>= 3.2, < 5.1)
     foreman (0.78.0)
       thor (~> 0.19.1)
     formatador (0.2.5)
@@ -1064,3 +1064,6 @@ DEPENDENCIES
   web-console (~> 2.0)
   webmock (~> 1.21.0)
   wikicloth (= 0.8.1)
+
+BUNDLED WITH
+   1.11.2
