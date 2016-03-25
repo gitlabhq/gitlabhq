@@ -37,18 +37,18 @@
 }
 
 .ci-status-icon-success {
-  @extend .cgreen;
+  color: $gl-text-green !important;
 }
 .ci-status-icon-failed {
-  @extend .cred;
+  color: $gl-text-red !important;
 }
 .ci-status-icon-running,
 .ci-status-icon-pending {
-  // These are standard text color
+  color: $gl-text-orange !important;
 }
 .ci-status-icon-canceled,
 .ci-status-icon-disabled,
 .ci-status-icon-not-found,
 .ci-status-icon-skipped {
-  @extend .cgray;
+  color: $gl-gray !important;
 }
