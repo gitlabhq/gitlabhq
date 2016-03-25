@@ -27,6 +27,8 @@ class Ability
       case true
       when subject.is_a?(PersonalSnippet)
         anonymous_personal_snippet_abilities(subject)
+      when subject.is_a?(ProjectSnippet)
+        anonymous_project_snippet_abilities(subject)
       when subject.is_a?(CommitStatus)
         anonymous_commit_status_abilities(subject)
       when subject.is_a?(Project) || subject.respond_to?(:project)
@@ -95,6 +97,14 @@ class Ability
     def anonymous_personal_snippet_abilities(snippet)
       if snippet.public?
         [:read_personal_snippet]
+      else
+        []
+      end
+    end
+
+    def anonymous_project_snippet_abilities(snippet)
+      if snippet.public?
+        [:read_project_snippet]
       else
         []
       end
