@@ -3,7 +3,7 @@ class Projects::SnippetsController < Projects::ApplicationController
   before_action :snippet, only: [:show, :edit, :destroy, :update, :raw]
 
   # Allow read any snippet
-  before_action :authorize_read_project_snippet!, except: [:index]
+  before_action :authorize_read_project_snippet!, except: [:new, :create, :index]
 
   # Allow write(create) snippet
   before_action :authorize_create_project_snippet!, only: [:new, :create]
