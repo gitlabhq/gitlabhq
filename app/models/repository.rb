@@ -473,6 +473,10 @@ class Repository
     @gitlab_ci_yml ||= tree(:head).blobs.find do |file|
       file.name == '.gitlab-ci.yml'
     end
+  rescue Rugged::ReferenceError
+    # For unknow reason spinach scenario "Scenario: I change project path"
+    # lead to "Reference 'HEAD' not found" exception from Repository#empty?
+    nil
   end
 
   def head_commit
