@@ -34,20 +34,7 @@ describe 'Issues', feature: true do
         fill_in 'issue_title', with: 'bug 345'
         fill_in 'issue_description', with: 'bug description'
       end
-
-      # it 'does not change issue count' do
-      #   expect { click_button 'Save changes' }.to_not change { Issue.count }
-      # end
-
-      # it 'should update issue fields' do
-      #   click_button 'Save changes'
-
-      #   expect(page).to have_content @user.name
-      #   expect(page).to have_content 'bug 345'
-      #   expect(page).to have_content project.name
-      # end
     end
-
   end
 
   describe 'Editing issue assignee' do

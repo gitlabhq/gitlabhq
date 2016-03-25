@@ -32,10 +32,8 @@ class @LabelsSelect
       if issueUpdateURL
         labelHTMLTemplate = _.template(
             '<% _.each(labels, function(label){ %>
-            <a href="
-            #{["",issueURLSplit[1], issueURLSplit[2],""].join("/")}
-            issues?label_name=<%= label.title %>">
-            <span class="label color-label" style="background-color: <%= label.color %>; color: #FFFFFF">
+            <a href="<%= ["",issueURLSplit[1], issueURLSplit[2],""].join("/") %>issues?label_name=<%= label.title %>">
+            <span class="label color-label" style="background-color: <%= label.color %>;">
             <%= label.title %>
             </span>
             </a>
@@ -152,6 +150,7 @@ class @LabelsSelect
         ).done (data) ->
           $loading.fadeOut()
           $selectbox.hide()
+          data.issueURLSplit = issueURLSplit
           if not data.labels.length
             template = labelNoneHTMLTemplate()
           else
