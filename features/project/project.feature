@@ -52,6 +52,7 @@ Feature: Project
     And I save project
     Then I should see project with new settings
 
+  @javascript
   Scenario: I change project path
     When I visit edit project "Shop" page
     And change project path settings
