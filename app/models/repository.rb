@@ -468,7 +468,7 @@ class Repository
   end
 
   def gitlab_ci_yml
-    return nil if empty?
+    return nil if !exists? || empty?
 
     @gitlab_ci_yml ||= tree(:head).blobs.find do |file|
       file.name == '.gitlab-ci.yml'
