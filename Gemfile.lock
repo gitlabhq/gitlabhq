@@ -806,8 +806,8 @@ GEM
     systemu (2.6.5)
     task_list (1.0.2)
       html-pipeline
-    teaspoon (1.0.2)
-      railties (>= 3.2.5, < 5)
+    teaspoon (1.1.5)
+      railties (>= 3.2.5, < 6)
     teaspoon-jasmine (2.2.0)
       teaspoon (>= 1.0.0)
     temple (0.7.6)
@@ -1048,7 +1048,7 @@ DEPENDENCIES
   sprockets (~> 3.3.5)
   state_machines-activerecord (~> 0.3.0)
   task_list (~> 1.0.2)
-  teaspoon (~> 1.0.0)
+  teaspoon (~> 1.1.0)
   teaspoon-jasmine (~> 2.2.0)
   test_after_commit (~> 0.4.2)
   thin (~> 1.6.1)
@@ -1064,3 +1064,6 @@ DEPENDENCIES
   web-console (~> 2.0)
   webmock (~> 1.21.0)
   wikicloth (= 0.8.1)
+
+BUNDLED WITH
+   1.11.2
