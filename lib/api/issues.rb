@@ -111,17 +111,21 @@ module API
       # Create a new project issue
       #
       # Parameters:
-      #   id (required) - The ID of a project
-      #   title (required) - The title of an issue
-      #   description (optional) - The description of an issue
-      #   assignee_id (optional) - The ID of a user to assign issue
+      #   id (required)           - The ID of a project
+      #   title (required)        - The title of an issue
+      #   description (optional)  - The description of an issue
+      #   assignee_id (optional)  - The ID of a user to assign issue
       #   milestone_id (optional) - The ID of a milestone to assign issue
-      #   labels (optional) - The labels of an issue
+      #   labels (optional)       - The labels of an issue
+      #   created_at (optional)   - The date
       # Example Request:
       #   POST /projects/:id/issues
       post ":id/issues" do
         required_attributes! [:title]
-        attrs = attributes_for_keys [:title, :description, :assignee_id, :milestone_id]
+
+        keys = [:title, :description, :assignee_id, :milestone_id]
+        keys << :created_at if current_user.admin? || user_project.owner == current_user
+        attrs = attributes_for_keys(keys)
 
         # Validate label names in advance
         if (errors = validate_label_params(params)).any?
