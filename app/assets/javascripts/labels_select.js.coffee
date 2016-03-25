@@ -191,19 +191,16 @@ class @LabelsSelect
             callback data
 
         renderRow: (label) ->
-          if $.isArray(selectedLabel)
-            selected = ''
-            $.each selectedLabel, (i, selectedLbl) ->
-              selectedLbl = selectedLbl.trim()
-              if selected is '' and label.title is selectedLbl
-                selected = 'is-active'
-          else
-            selected = if label.title is selectedLabel then 'is-active' else ''
+          selectedClass = ''
+          if $selectbox.find("input[type='hidden']\
+            [name='#{$dropdown.data('field-name')}']\
+            [value='#{label.id}']").length
+            selectedClass = 'is-active'
 
           color = if label.color? then "<span class='dropdown-label-box' style='background-color: #{label.color}'></span>" else ""
 
           "<li>
-            <a href='#' class='#{selected}'>
+            <a href='#' class='#{selectedClass}'>
               #{color}
               #{label.title}
             </a>
