@@ -154,7 +154,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
                        @merge_request.target_project, @merge_request])
         end
         format.json do
-          render json: @merge_request.to_json(include: [:milestone, :labels, :assignee])
+          render json: @merge_request.to_json(include: [:milestone, :labels, assignee: { methods: :avatar_url }])
         end
       end
     else
