@@ -18,6 +18,7 @@ class @MilestoneSelect
       abilityName = $dropdown.data('ability-name')
       $selectbox = $dropdown.closest('.selectbox')
       $block = $selectbox.closest('.block')
+      $sidebarCollapsedValue = $block.find('.sidebar-collapsed-icon span')
       $value = $block.find('.value')
       $loading = $block.find('.block-loading').fadeOut()
 
@@ -80,18 +81,14 @@ class @MilestoneSelect
           milestone.name is selectedMilestone
         hidden: ->
           $selectbox.hide()
-          $value.show()
-        clicked: (selected) ->
+
+          # display:block overrides the hide-collapse rule
+          $value.removeAttr('style')
+        clicked: (e) ->
           if $dropdown.hasClass 'js-filter-bulk-update'
             return
 
-          if $dropdown.hasClass('js-filter-submit')
-            if selected.name?
-              selectedMilestone = selected.name
-            else if selected.title?
-              selectedMilestone = selected.title
-            else
-              selectedMilestone = ''
+          if $dropdown.hasClass 'js-filter-submit'
             $dropdown.parents('form').submit()
           else
             selected = $selectbox
@@ -109,13 +106,12 @@ class @MilestoneSelect
             ).done (data) ->
               $loading.fadeOut()
               $selectbox.hide()
-              $milestoneLink = $value
-                      .show()
-                      .find('a')
+              $value.removeAttr('style')
               if data.milestone?
                 data.milestone.namespace = _this.currentProject.namespace
                 data.milestone.path = _this.currentProject.path
                 $value.html(milestoneLinkTemplate(data.milestone))
+                $sidebarCollapsedValue.text(data.milestone.title)
               else
                 $value.html(milestoneLinkNoneTemplate)
       )

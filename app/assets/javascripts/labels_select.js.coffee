@@ -16,6 +16,7 @@ class @LabelsSelect
       abilityName = $dropdown.data('ability-name')
       $selectbox = $dropdown.closest('.selectbox')
       $block = $selectbox.closest('.block')
+      $sidebarCollapsedValue = $block.find('.sidebar-collapsed-icon span')
       $value = $block.find('.value')
       $loading = $block.find('.block-loading').fadeOut()
 
@@ -151,13 +152,17 @@ class @LabelsSelect
           $loading.fadeOut()
           $selectbox.hide()
           data.issueURLSplit = issueURLSplit
-          if not data.labels.length
-            template = labelNoneHTMLTemplate()
-          else
+          labelCount = 0
+          if data.labels.length
             template = labelHTMLTemplate(data)
-          href = $value
-                  .show()
-                  .html(template)
+            labelCount = data.labels.length
+          else
+            template = labelNoneHTMLTemplate()
+          $value
+            .removeAttr('style')
+            .html(template)
+          $sidebarCollapsedValue.text(labelCount)
+
           $value
             .find('a')
             .each((i) ->
@@ -226,7 +231,8 @@ class @LabelsSelect
 
         hidden: ->
           $selectbox.hide()
-          $value.show()
+          # display:block overrides the hide-collapse rule
+          $value.removeAttr('style')
           if $dropdown.hasClass 'js-multiselect'
             saveLabelData()
 
