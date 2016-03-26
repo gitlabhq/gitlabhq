@@ -4,6 +4,12 @@ v 8.7.0 (unreleased)
   - Preserve time notes/comments have been updated at when moving issue
   - Make HTTP(s) label consistent on clone bar (Stan Hu)
   - Fix avatar stretching by providing a cropping feature
+  - Add links to CI setup documentation from project settings and builds pages
+  - Implement 'Groups View' as an option for dashboard preferences !3379 (Elias W.)
+  - Implement 'TODOs View' as an option for dashboard preferences !3379 (Elias W.)
+
+v 8.6.2 (unreleased)
+  - Comments on confidential issues don't show up in activity feed to non-members
 
 v 8.6.1
   - Add option to reload the schema before restoring a database backup. !2807

@@ -27,6 +27,9 @@
         = link_to 'Cancel running', cancel_all_namespace_project_builds_path(@project.namespace, @project),
           data: { confirm: 'Are you sure?' }, class: 'btn btn-danger', method: :post
 
+      - unless @repository.gitlab_ci_yml
+        = link_to 'Get started with Builds', help_page_path('ci/quick_start', 'README'), class: 'btn btn-info'
+
       = link_to ci_lint_path, class: 'btn btn-default' do
         = icon('wrench')
         %span CI Lint
