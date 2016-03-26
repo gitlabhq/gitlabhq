@@ -63,6 +63,7 @@
   .search-input-container {
     display: -webkit-flex;
     display: flex;
+    position: relative;
   }
 
   .search-location-badge, .search-input-wrap {
@@ -72,7 +73,6 @@
 
   .search-input-wrap {
     width: 100%;
-    position: relative;
 
     .search-icon, .clear-icon {
       position: absolute;
@@ -98,6 +98,11 @@
     .clear-icon {
       @extend .fa-times;
       display: none;
+    }
+
+    // Rewrite position. Dropdown menu should be relative to .search-input-container
+    .dropdown {
+      position: static;
     }
 
     .dropdown-header {

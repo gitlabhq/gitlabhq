@@ -205,5 +205,5 @@ $search-input-width: $dropdown-width;
 $location-badge-color: #aaa;
 $location-badge-bg: $gray-normal;
 $location-icon-color: #e7e9ed;
-$location-active-color: #7f8fa4;
-$location-active-bg: $location-active-color;
+$location-active-color: $gl-text-color;
+$location-active-bg: $search-input-border-color;

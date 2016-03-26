@@ -72,9 +72,6 @@ class @SearchAutocomplete
     # Prevent multiple ajax calls
     return if @loadingSuggestions
 
-    # Do not request suggestions if dropdown is disabled
-    return if @badgePresent()
-
     @loadingSuggestions = true
 
     jqXHR = $.get(@autocompletePath, {
@@ -132,15 +129,11 @@ class @SearchAutocomplete
     # No need to enable anything if user is not logged in
     return if !gon.current_user_id
 
-    dropdownMenu = @dropdown.find('.dropdown-menu')
     _this = @
     @loadingSuggestions = false
 
     @dropdown.addClass('open')
     @searchInput.removeClass('disabled')
-
-  onDropdownOpen: (e) =>
-    @dropdown.dropdown('toggle')
 
   onSearchInputKeyDown: =>
     # Saves last length of the entered text
@@ -154,23 +147,20 @@ class @SearchAutocomplete
             @removeLocationBadge()
 
         # When removing the last character and no badge is present
-        if @lastTextLength is 1 and !@badgePresent()
+        if @lastTextLength is 1
           @disableAutocomplete()
+
+        # When removing any character from existin value
+        if @lastTextLength > 1
+          @enableAutocomplete()
+
       when KEYCODE.ESCAPE
-        if @badgePresent()
-        else
-          @restoreOriginalState()
+        @restoreOriginalState()
 
-          # If after restoring there's a badge
-          @disableAutocomplete() if @badgePresent()
       else
-        if @badgePresent()
-          @disableAutocomplete()
-        else
-
-          # We should display the menu only when input is not empty
-          if @searchInput.val() isnt ''
-            @enableAutocomplete()
+        # We should display the menu only when input is not empty
+        if @searchInput.val() isnt ''
+          @enableAutocomplete()
 
     # Avoid falsy value to be returned
     return
@@ -229,8 +219,8 @@ class @SearchAutocomplete
     @dropdown.removeClass 'open'
 
     # Only add class if there's a badge
-    if @badgePresent()
-      @searchInput.addClass 'disabled'
+    # if @badgePresent()
+      # @searchInput.addClass 'disabled'
 
   badgePresent: ->
     @locationBadgeEl.children().length
