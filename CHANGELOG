@@ -4,6 +4,7 @@ v 8.7.0 (unreleased)
   - Preserve time notes/comments have been updated at when moving issue
   - Make HTTP(s) label consistent on clone bar (Stan Hu)
   - Fix avatar stretching by providing a cropping feature
+  - Add links to CI setup documentation from project settings and builds pages
 
 v 8.6.2 (unreleased)
   - Comments on confidential issues don't show up in activity feed to non-members

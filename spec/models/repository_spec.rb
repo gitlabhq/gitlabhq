@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe Repository, models: true do
   include RepoHelpers
+  TestBlob = Struct.new(:name)
 
   let(:repository) { create(:project).repository }
   let(:user) { create(:user) }
@@ -131,7 +132,6 @@ describe Repository, models: true do
   describe "#license" do
     before do
       repository.send(:cache).expire(:license)
-      TestBlob = Struct.new(:name)
     end
 
     it 'test selection preference' do
@@ -145,6 +145,25 @@ describe Repository, models: true do
       expect(repository.tree).to receive(:blobs).and_return([TestBlob.new('licence')])
 
       expect(repository.license.name).to eq('licence')
+    end
+  end
+
+  describe "#gitlab_ci_yml" do
+    it 'returns valid file' do
+      files = [TestBlob.new('file'), TestBlob.new('.gitlab-ci.yml'), TestBlob.new('copying')]
+      expect(repository.tree).to receive(:blobs).and_return(files)
+
+      expect(repository.gitlab_ci_yml.name).to eq('.gitlab-ci.yml')
+    end
+
+    it 'returns nil if not exists' do
+      expect(repository.tree).to receive(:blobs).and_return([])
+      expect(repository.gitlab_ci_yml).to be_nil
+    end
+
+    it 'returns nil for empty repository' do
+      expect(repository).to receive(:empty?).and_return(true)
+      expect(repository.gitlab_ci_yml).to be_nil
     end
   end
 
