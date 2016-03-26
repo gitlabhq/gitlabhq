@@ -45,4 +45,3 @@
   contributing to documentation.
 - [Development](development/README.md) Explains the architecture and the guidelines for shell commands.
 - [Legal](legal/README.md) Contributor license agreements.
-- [Release](release/README.md) How to make the monthly and security releases.
