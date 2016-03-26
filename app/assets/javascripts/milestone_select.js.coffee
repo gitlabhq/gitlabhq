@@ -74,7 +74,10 @@ class @MilestoneSelect
           $selectbox.hide()
           $value.show()
         clicked: (e) ->
-          if $dropdown.hasClass "js-filter-submit"
+          if $dropdown.hasClass 'js-filter-bulk-update'
+            return
+            
+          if $dropdown.hasClass 'js-filter-submit'
             $dropdown.parents('form').submit()
           else
             selected = $selectbox

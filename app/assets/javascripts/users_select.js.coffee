@@ -137,6 +137,8 @@ class @UsersSelect
           page = $('body').data 'page'
           isIssueIndex = page is 'projects:issues:index'
           isMRIndex = page is page is 'projects:merge_requests:index'
+          if $dropdown.hasClass('js-filter-bulk-update')
+            return
 
           if $dropdown.hasClass('js-filter-submit') and (isIssueIndex or isMRIndex)
             Issues.filterResults $dropdown.closest('form')
