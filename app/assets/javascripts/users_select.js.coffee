@@ -17,6 +17,9 @@ class @UsersSelect
       issueURL = $dropdown.data('issueUpdate')
       $selectbox = $dropdown.closest('.selectbox')
       $block = $selectbox.closest('.block')
+      $gutterToggle = $block
+        .closest('aside')
+        .find('.gutter-toggle')
       abilityName = $dropdown.data('ability-name')
       $value = $block.find('.value')
       $collapsedSidebar = $block.find('.sidebar-collapsed-user')
@@ -25,6 +28,16 @@ class @UsersSelect
       $block.on('click', '.js-assign-yourself', (e) =>
         e.preventDefault()
         assignTo(@currentUser.id)
+      )
+
+      $block.on('click', '.author_link', (e) =>
+        e.preventDefault()
+        $gutterToggle
+          .trigger('click')
+        $block
+          .find('.edit-link')
+          .trigger('click')
+        $block.addClass('collapse-after-update')
       )
 
       assignTo = (selected) ->
@@ -54,6 +67,10 @@ class @UsersSelect
               avatar: ''
           $value.html(assigneeTemplate(user))
           $collapsedSidebar.html(collapsedAssigneeTemplate(user))
+          if $block.hasClass('collapse-after-update')
+            $block.removeClass('collapse-after-update')
+            $gutterToggle.trigger('click')
+
 
       collapsedAssigneeTemplate = _.template(
         '<% if( avatar ) { %>
