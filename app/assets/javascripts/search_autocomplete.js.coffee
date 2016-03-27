@@ -79,6 +79,11 @@ class @SearchAutocomplete
         project_ref: @projectRef
         term: term
       }, (response) ->
+        # Hide dropdown menu if no suggestions returns
+        if !response.length
+          _this.disableAutocomplete()
+          return
+
         data = []
 
         # List results
@@ -227,10 +232,6 @@ class @SearchAutocomplete
       )
 
     @dropdown.removeClass 'open'
-
-    # Only add class if there's a badge
-    # if @badgePresent()
-      # @searchInput.addClass 'disabled'
 
   badgePresent: ->
     @locationBadgeEl.children().length
