@@ -173,8 +173,12 @@ class @SearchAutocomplete
         @restoreOriginalState()
 
       else
-        # We should display the menu only when input is not empty
-        if @searchInput.val() isnt ''
+        # Handle the case when deleting the input value other than backspace
+        # e.g. Pressing ctrl + backspace or ctrl + x
+        if @searchInput.val() is ''
+          @disableAutocomplete()
+        else
+          # We should display the menu only when input is not empty
           @enableAutocomplete()
 
     # Avoid falsy value to be returned
