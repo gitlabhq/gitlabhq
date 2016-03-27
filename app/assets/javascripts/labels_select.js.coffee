@@ -143,6 +143,7 @@ class @LabelsSelect
         if not selected.length
           data[abilityName].label_ids = ['']
         $loading.fadeIn()
+        $dropdown.trigger('loading.gl.dropdown')
         $.ajax(
           type: 'PUT'
           url: issueUpdateURL
@@ -150,6 +151,7 @@ class @LabelsSelect
           data: data
         ).done (data) ->
           $loading.fadeOut()
+          $dropdown.trigger('loaded.gl.dropdown')
           $selectbox.hide()
           data.issueURLSplit = issueURLSplit
           labelCount = 0

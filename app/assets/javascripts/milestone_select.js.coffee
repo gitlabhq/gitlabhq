@@ -18,7 +18,7 @@ class @MilestoneSelect
       abilityName = $dropdown.data('ability-name')
       $selectbox = $dropdown.closest('.selectbox')
       $block = $selectbox.closest('.block')
-      $sidebarCollapsedValue = $block.find('.sidebar-collapsed-icon span')
+      $sidebarCollapsedValue = $block.find('.sidebar-collapsed-icon')
       $value = $block.find('.value')
       $loading = $block.find('.block-loading').fadeOut()
 
@@ -99,11 +99,13 @@ class @MilestoneSelect
             data[abilityName].milestone_id = selected
             $loading
               .fadeIn()
+            $dropdown.trigger('loading.gl.dropdown')
             $.ajax(
               type: 'PUT'
               url: issueUpdateURL
               data: data
             ).done (data) ->
+              $dropdown.trigger('loaded.gl.dropdown')
               $loading.fadeOut()
               $selectbox.hide()
               $value.removeAttr('style')
@@ -111,7 +113,8 @@ class @MilestoneSelect
                 data.milestone.namespace = _this.currentProject.namespace
                 data.milestone.path = _this.currentProject.path
                 $value.html(milestoneLinkTemplate(data.milestone))
-                $sidebarCollapsedValue.text(data.milestone.title)
+                $sidebarCollapsedValue.find('span').text(data.milestone.title)
               else
                 $value.html(milestoneLinkNoneTemplate)
+                $sidebarCollapsedValue.find('span').text('No')
       )

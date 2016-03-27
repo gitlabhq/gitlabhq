@@ -17,9 +17,6 @@ class @UsersSelect
       issueURL = $dropdown.data('issueUpdate')
       $selectbox = $dropdown.closest('.selectbox')
       $block = $selectbox.closest('.block')
-      $gutterToggle = $block
-        .closest('aside')
-        .find('.gutter-toggle')
       abilityName = $dropdown.data('ability-name')
       $value = $block.find('.value')
       $collapsedSidebar = $block.find('.sidebar-collapsed-user')
@@ -30,28 +27,20 @@ class @UsersSelect
         assignTo(@currentUser.id)
       )
 
-      $block.on('click', '.author_link', (e) =>
-        e.preventDefault()
-        $gutterToggle
-          .trigger('click')
-        $block
-          .find('.edit-link')
-          .trigger('click')
-        $block.addClass('collapse-after-update')
-      )
-
       assignTo = (selected) ->
         data = {}
         data[abilityName] = {}
         data[abilityName].assignee_id = selected
         $loading
           .fadeIn()
+        $dropdown.trigger('loading.gl.dropdown')
         $.ajax(
           type: 'PUT'
           dataType: 'json'
           url: issueURL
           data: data
         ).done (data) ->
+          $dropdown.trigger('loaded.gl.dropdown')
           $loading.fadeOut()
           $selectbox.hide()
 
@@ -67,9 +56,6 @@ class @UsersSelect
               avatar: ''
           $value.html(assigneeTemplate(user))
           $collapsedSidebar.html(collapsedAssigneeTemplate(user))
-          if $block.hasClass('collapse-after-update')
-            $block.removeClass('collapse-after-update')
-            $gutterToggle.trigger('click')
 
 
       collapsedAssigneeTemplate = _.template(
