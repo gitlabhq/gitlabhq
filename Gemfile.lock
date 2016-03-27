@@ -865,7 +865,7 @@ GEM
       equalizer (~> 0.0, >= 0.0.9)
     warden (1.2.4)
       rack (>= 1.0)
-    web-console (2.2.1)
+    web-console (2.3.0)
       activemodel (>= 4.0)
       binding_of_caller (>= 0.7.2)
       railties (>= 4.0)
