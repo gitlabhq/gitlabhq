@@ -98,7 +98,7 @@ GEM
       terminal-table (~> 1.4)
     browser (1.0.1)
     builder (3.2.2)
-    bullet (4.14.10)
+    bullet (5.0.0)
       activesupport (>= 3.0.0)
       uniform_notifier (~> 1.9.0)
     bundler-audit (0.4.0)
@@ -1064,3 +1064,6 @@ DEPENDENCIES
   web-console (~> 2.0)
   webmock (~> 1.21.0)
   wikicloth (= 0.8.1)
+
+BUNDLED WITH
+   1.11.2
