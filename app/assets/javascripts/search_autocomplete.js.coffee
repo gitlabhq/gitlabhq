@@ -100,6 +100,16 @@ class @SearchAutocomplete
             text: suggestion.label
             url: suggestion.url
 
+        # Add option to proceed with the search
+        if data.length
+          data.push('separator')
+          data.push
+            text: "Result name contains \"#{term}\""
+            url: "/search?\
+                  search=#{term}\
+                  &project_id=#{_this.projectInputEl.val()}\
+                  &group_id=#{_this.groupInputEl.val()}"
+
         callback(data)
     ).always ->
       _this.loadingSuggestions = false
