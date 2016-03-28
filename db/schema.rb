@@ -639,12 +639,12 @@ ActiveRecord::Schema.define(version: 20160328121138) do
   add_index "notes", ["updated_at"], name: "index_notes_on_updated_at", using: :btree
 
   create_table "notification_settings", force: :cascade do |t|
-    t.integer  "user_id"
-    t.integer  "level"
-    t.integer  "source_id"
-    t.string   "source_type"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
+    t.integer  "user_id",                 null: false
+    t.integer  "source_id",               null: false
+    t.string   "source_type",             null: false
+    t.integer  "level",       default: 0, null: false
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
   end
 
   add_index "notification_settings", ["source_id", "source_type"], name: "index_notification_settings_on_source_id_and_source_type", using: :btree
@@ -798,9 +798,9 @@ ActiveRecord::Schema.define(version: 20160328121138) do
     t.string   "type"
     t.string   "title"
     t.integer  "project_id"
-    t.datetime "created_at",                               null: false
-    t.datetime "updated_at",                               null: false
-    t.boolean  "active",                                   null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean  "active",                default: false,    null: false
     t.text     "properties"
     t.boolean  "template",              default: false
     t.boolean  "push_events",           default: true

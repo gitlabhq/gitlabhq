@@ -1,10 +1,9 @@
 class CreateNotificationSettings < ActiveRecord::Migration
   def change
     create_table :notification_settings do |t|
-      t.integer :user_id
-      t.integer :level
-      t.integer :source_id
-      t.string :source_type
+      t.references :user, null: false
+      t.references :source, polymorphic: true, null: false
+      t.integer :level, default: 0, null: false
 
       t.timestamps null: false
     end
