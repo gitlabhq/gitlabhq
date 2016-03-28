@@ -57,7 +57,7 @@ class Notification
   def level
     target.notification_level
   end
-  
+
   def to_s
     case level
     when N_DISABLED
@@ -71,7 +71,7 @@ class Notification
     when N_GLOBAL
       'Global'
     else
-      # do nothing      
+      # do nothing
     end
   end
 end

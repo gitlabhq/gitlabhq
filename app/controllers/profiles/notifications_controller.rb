@@ -2,8 +2,8 @@ class Profiles::NotificationsController < Profiles::ApplicationController
   def show
     @user = current_user
     @notification = current_user.notification
-    @project_members = current_user.project_members
-    @group_members = current_user.group_members
+    @group_notifications = current_user.notification_settings.for_groups
+    @project_notifications = current_user.notification_settings.for_projects
   end
 
   def update
@@ -11,14 +11,10 @@ class Profiles::NotificationsController < Profiles::ApplicationController
 
     @saved = if type == 'global'
                current_user.update_attributes(user_params)
-             elsif type == 'group'
-               group_member = current_user.group_members.find(params[:notification_id])
-               group_member.notification_level = params[:notification_level]
-               group_member.save
              else
-               project_member = current_user.project_members.find(params[:notification_id])
-               project_member.notification_level = params[:notification_level]
-               project_member.save
+               notification_setting = current_user.notification_settings.find(params[:notification_id])
+               notification_setting.level = params[:notification_level]
+               notification_setting.save
              end
 
     respond_to do |format|

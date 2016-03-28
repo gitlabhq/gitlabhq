@@ -143,6 +143,7 @@ class User < ActiveRecord::Base
   has_many :spam_logs,                dependent: :destroy
   has_many :builds,                   dependent: :nullify, class_name: 'Ci::Build'
   has_many :todos,                    dependent: :destroy
+  has_many :notification_settings,    dependent: :destroy
 
   #
   # Validations
@@ -157,7 +158,7 @@ class User < ActiveRecord::Base
     presence: true,
     uniqueness: { case_sensitive: false }
 
-  validates :notification_level, inclusion: { in: Notification.notification_levels }, presence: true
+  validates :notification_level, presence: true
   validate :namespace_uniq, if: ->(user) { user.username_changed? }
   validate :avatar_type, if: ->(user) { user.avatar.present? && user.avatar_changed? }
   validate :unique_email, if: ->(user) { user.email_changed? }
@@ -189,6 +190,10 @@ class User < ActiveRecord::Base
   # User's Project preference
   # Note: When adding an option, it MUST go on the end of the array.
   enum project_view: [:readme, :activity, :files]
+
+  # Notification level
+  # Note: When adding an option, it MUST go on the end of the array.
+  enum notification_level: [:disabled, :participating, :watch, :global, :mention]
 
   alias_attribute :private_token, :authentication_token
 
