@@ -3,12 +3,10 @@
  *
  */
 .file-holder {
-  border: none;
   border: 1px solid $border-color;
 
   &.readme-holder {
-    margin-top: 10px;
-    border-bottom: 0;
+    margin: $gl-padding-top 0;
   }
 
   table {
