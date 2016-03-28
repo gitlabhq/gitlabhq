@@ -357,7 +357,7 @@ If the case of `404.html`, there are different scenarios. For example:
 - If you use user/group Pages (served under `/`) and try to access
   `/non/existing_file` GitLab Pages will try to serve `/404.html`.
 - If you use a custom domain and try to access `/non/existing_file`, GitLab
-  Pages will try to server only `/404.html`.
+  Pages will try to serve only `/404.html`.
 
 ### Remove the contents of your pages
 
