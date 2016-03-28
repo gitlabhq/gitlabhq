@@ -19,7 +19,6 @@
 
 class Member < ActiveRecord::Base
   include Sortable
-  include Notifiable
   include Gitlab::Access
 
   attr_accessor :raw_invite_token
@@ -168,6 +167,10 @@ class Member < ActiveRecord::Base
       notification_setting.set_defaults
       notification_setting.save
     end
+  end
+
+  def notification
+    @notification ||= user.notification_settings.find_by(source: source)
   end
 
   private

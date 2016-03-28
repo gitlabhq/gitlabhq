@@ -30,28 +30,10 @@ class Notification
     end
   end
 
+  delegate :disabled?, :participating?, :watch?, :global?, :mention?, to: :target
+
   def initialize(target)
     @target = target
-  end
-
-  def disabled?
-    target.notification_level == N_DISABLED
-  end
-
-  def participating?
-    target.notification_level == N_PARTICIPATING
-  end
-
-  def watch?
-    target.notification_level == N_WATCH
-  end
-
-  def global?
-    target.notification_level == N_GLOBAL
-  end
-
-  def mention?
-    target.notification_level == N_MENTION
   end
 
   def level

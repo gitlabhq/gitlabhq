@@ -193,6 +193,9 @@ class User < ActiveRecord::Base
 
   # Notification level
   # Note: When adding an option, it MUST go on the end of the array.
+  #
+  # TODO: Add '_prefix: :notification' to enum when update to Rails 5. https://github.com/rails/rails/pull/19813
+  # Because user.notification_disabled? is much better than user.disabled?
   enum notification_level: [:disabled, :participating, :watch, :global, :mention]
 
   alias_attribute :private_token, :authentication_token
