@@ -448,6 +448,12 @@ describe Project, models: true do
 
       it { should eq "http://localhost#{avatar_path}" }
     end
+
+    context 'when git repo is empty' do
+      let(:project) { create(:empty_project) }
+
+      it { should eq nil }
+    end
   end
 
   describe :allowed_to_share_with_group? do

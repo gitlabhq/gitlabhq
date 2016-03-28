@@ -16,6 +16,18 @@ Rails.application.routes.draw do
     end
   end
 
+  # Make the built-in Rails routes available in development, otherwise they'd
+  # get swallowed by the `namespace/project` route matcher below.
+  #
+  # See https://git.io/va79N
+  if Rails.env.development?
+    get '/rails/mailers'         => 'rails/mailers#index'
+    get '/rails/mailers/:path'   => 'rails/mailers#preview'
+    get '/rails/info/properties' => 'rails/info#properties'
+    get '/rails/info/routes'     => 'rails/info#routes'
+    get '/rails/info'            => 'rails/info#index'
+  end
+
   namespace :ci do
     # CI API
     Ci::API::API.logger Rails.logger
@@ -368,11 +380,10 @@ Rails.application.routes.draw do
     get :issues
     get :merge_requests
     get :activity
-    get :labels
-    get :milestones
 
     scope module: :dashboard do
       resources :milestones, only: [:index, :show]
+      resources :labels, only: [:index]
 
       resources :groups, only: [:index]
       resources :snippets, only: [:index]

@@ -11,15 +11,16 @@ class ProfilesController < Profiles::ApplicationController
   def update
     user_params.except!(:email) if @user.ldap_user?
 
-    if @user.update_attributes(user_params)
-      flash[:notice] = "Profile was successfully updated"
-    else
-      messages = @user.errors.full_messages.uniq.join('. ')
-      flash[:alert] = "Failed to update profile. #{messages}"
-    end
-
     respond_to do |format|
-      format.html { redirect_back_or_default(default: { action: 'show' }) }
+      if @user.update_attributes(user_params)
+        message = "Profile was successfully updated"
+        format.html { redirect_back_or_default(default: { action: 'show' }, options: { notice: message }) }
+        format.json { render json: { message: message } }
+      else
+        message = @user.errors.full_messages.uniq.join('. ')
+        format.html { redirect_back_or_default(default: { action: 'show' }, options: { alert: "Failed to update profile. #{message}" }) }
+        format.json { render json: { message: message }, status: :unprocessable_entity }
+      end
     end
   end
 
