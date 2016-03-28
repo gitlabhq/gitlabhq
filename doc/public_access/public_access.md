@@ -35,6 +35,21 @@ the repository.
 1. Go to your project's **Settings**
 1. Change "Visibility Level" to either Public, Internal or Private
 
+## Visibility of groups
+
+>**Note:**
+[Starting with][3323] GitLab 8.6, the group visibility has changed and can be
+configured the same way as projects. In previous versions, a group's page was
+always visible to all users.
+
+Like with projects, the visibility of a group can be set to dictate whether
+anonymous users, all signed in users, or only explicit group members can view
+it. The restriction for visibility levels on the application setting level also
+applies to groups, so if that's set to internal, the explore page will be empty
+for anonymous users. The group page now has a visibility level icon.
+
+[3323]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/3323
+
 ## Visibility of users
 
 The public page of a user, located at `/u/username`, is always visible whether
@@ -42,14 +57,6 @@ you are logged in or not.
 
 When visiting the public page of a user, you can only see the projects which
 you are privileged to.
-
-## Visibility of groups
-
-The public page of a group, located at `/groups/groupname`, is always visible
-to everyone.
-
-Logged out users will be able to see the description and the avatar of the
-group as well as all public projects belonging to that group.
 
 ## Restricting the use of public or internal projects
 

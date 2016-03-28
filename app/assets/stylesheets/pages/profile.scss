@@ -197,3 +197,24 @@
     width: 105px;
   }
 }
+
+.modal-profile-crop {
+  .modal-dialog {
+    width: 380px;
+
+    @media (max-width: $screen-sm-min) {
+      width: auto;
+    }
+
+  }
+
+  .profile-crop-image-container {
+    height: 300px;
+    margin: 0 auto;
+  }
+
+  .crop-controls {
+    padding: 10px 0 0;
+    text-align: center;
+  }
+}

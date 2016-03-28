@@ -77,7 +77,7 @@
                       %em Authorization was granted by entering your username and password in the application.
                   %td= token.created_at
                   %td= token.scopes
-                  %td= render 'delete_form', token: token
+                  %td= render 'doorkeeper/authorized_applications/delete_form', token: token
       - else
         .profile-settings-message.text-center
           You don't have any authorized applications

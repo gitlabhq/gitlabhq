@@ -6,7 +6,7 @@
         = icon('bars')
 
       .navbar-collapse.collapse
-        %ul.nav.navbar-nav.pull-right
+        %ul.nav.navbar-nav
           %li.hidden-sm.hidden-xs
             = render 'layouts/search'
           %li.visible-sm.visible-xs
@@ -38,8 +38,9 @@
               = link_to destroy_user_session_path, class: 'logout', method: :delete, title: 'Sign out', data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
                 = icon('sign-out')
           - else
-            .pull-right
-              = link_to "Sign in", new_session_path(:user, redirect_to_referer: 'yes'), class: 'btn btn-sign-in btn-success'
+            %li
+              %div
+                = link_to "Sign in", new_session_path(:user, redirect_to_referer: 'yes'), class: 'btn btn-sign-in btn-success'
 
 
       %h1.title= title

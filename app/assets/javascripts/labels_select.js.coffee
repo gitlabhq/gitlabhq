@@ -6,7 +6,7 @@ class @LabelsSelect
       labelUrl = $dropdown.data('labels')
       selectedLabel = $dropdown.data('selected')
       if selectedLabel
-        selectedLabel = selectedLabel.split(',')
+        selectedLabel = selectedLabel.toString().split(',')
       newLabelField = $('#new_label_name')
       newColorField = $('#new_label_color')
       showNo = $dropdown.data('show-no')
@@ -14,28 +14,81 @@ class @LabelsSelect
       defaultLabel = $dropdown.data('default-label')
 
       if newLabelField.length
+        $newLabelCreateButton = $('.js-new-label-btn')
+        $colorPreview = $('.js-dropdown-label-color-preview')
+        $newLabelError = $dropdown.parent().find('.js-label-error')
+        $newLabelError.hide()
+
+        # Suggested colors in the dropdown to chose from pre-chosen colors
         $('.suggest-colors-dropdown a').on 'click', (e) ->
           e.preventDefault()
           e.stopPropagation()
-          newColorField.val $(this).data('color')
-          $('.js-dropdown-label-color-preview')
+          newColorField
+            .val($(this).data('color'))
+            .trigger('change')
+          $colorPreview
             .css 'background-color', $(this).data('color')
+            .parent()
             .addClass 'is-active'
 
-        $('.js-new-label-btn').on 'click', (e) ->
+        # Cancel button takes back to first page
+        resetForm = ->
+          newLabelField
+            .val ''
+            .trigger 'change'
+          newColorField
+            .val ''
+            .trigger 'change'
+          $colorPreview
+            .css 'background-color', ''
+            .parent()
+            .removeClass 'is-active'
+
+        $('.dropdown-menu-back').on 'click', ->
+          resetForm()
+
+        $('.js-cancel-label-btn').on 'click', (e) ->
           e.preventDefault()
           e.stopPropagation()
+          resetForm()
+          $('.dropdown-menu-back', $dropdown.parent()).trigger 'click'
 
+        # Listen for change and keyup events on label and color field
+        # This allows us to enable the button when ready
+        enableLabelCreateButton = ->
           if newLabelField.val() isnt '' and newColorField.val() isnt ''
-            $('.js-new-label-btn').disable()
+            $newLabelCreateButton.enable()
+          else
+            $newLabelCreateButton.disable()
 
-            # Create new label with API
-            Api.newLabel projectId, {
-              name: newLabelField.val()
-              color: newColorField.val()
-            }, (label) ->
-              $('.js-new-label-btn').enable()
-              $('.dropdown-menu-back', $dropdown.parent()).trigger 'click'
+        newLabelField.on 'keyup change', enableLabelCreateButton
+
+        newColorField.on 'keyup change', enableLabelCreateButton
+
+        # Send the API call to create the label
+        $newLabelCreateButton
+          .disable()
+          .on 'click', (e) ->
+            e.preventDefault()
+            e.stopPropagation()
+
+            if newLabelField.val() isnt '' and newColorField.val() isnt ''
+              $newLabelError.hide()
+              $('.js-new-label-btn').disable()
+
+              # Create new label with API
+              Api.newLabel projectId, {
+                name: newLabelField.val()
+                color: newColorField.val()
+              }, (label) ->
+                $('.js-new-label-btn').enable()
+
+                if label.message?
+                  $newLabelError
+                    .text label.message
+                    .show()
+                else
+                  $('.dropdown-menu-back', $dropdown.parent()).trigger 'click'
 
       $dropdown.glDropdown(
         data: (term, callback) ->
@@ -68,8 +121,11 @@ class @LabelsSelect
           else
             selected = if label.title is selectedLabel then 'is-active' else ''
 
+          color = if label.color? then "<span class='dropdown-label-box' style='background-color: #{label.color}'></span>" else ""
+
           "<li>
             <a href='#' class='#{selected}'>
+              #{color}
               #{label.title}
             </a>
           </li>"
