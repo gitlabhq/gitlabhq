@@ -32,6 +32,15 @@ Fill out the information required:
 
 ![Branch info](basicsimages/branch_info.png)
 
+## From an issue
+When an issue should be resolved one could also create a branch on the issue page. A button is displayed after the description unless there is already a branch or a referenced merge request.
+
+![New Branch Button](basicsimages/new_branch_button.png)
+
+The branch created diverges from the default branch of the project, usually `master`. The branch name will be based on the title of the issue and as suffix its ID. Thus the example screenshot above will yield a branch named `et-cum-et-sed-expedita-repellat-consequatur-ut-assumenda-numquam-rerum-2`.
+After the branch is created the user can edit files in the repository to fix the issue. When a merge request is created the
+description field will display `Closes #2` to use the issue closing pattern. This will close the issue once the merge request is merged.
+
 ### Note:
 
 You will be able to find and select the name of your branch in the white box next to a project's name:
