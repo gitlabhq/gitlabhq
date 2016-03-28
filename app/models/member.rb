@@ -62,6 +62,8 @@ class Member < ActiveRecord::Base
 
   delegate :name, :username, :email, to: :user, prefix: true
 
+  default_value_for :notification_level, NotificationSetting.levels[:global]
+
   class << self
     def find_by_invite_token(invite_token)
       invite_token = Devise.token_generator.digest(self, :invite_token, invite_token)

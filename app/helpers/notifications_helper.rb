@@ -22,16 +22,12 @@ module NotificationsHelper
 
   def notification_title(level)
     case level.to_sym
-    when :disabled
-      'Disabled'
     when :participating
       'Participate'
-    when :watch
-      'Watch'
     when :mention
       'On mention'
-    when :global
-      'Global'
+    else
+      level.to_s.titlecase
     end
   end
 
@@ -48,10 +44,6 @@ module NotificationsHelper
         icon("#{notification_icon_class(level)} fw", text: title)
       end
     end
-  end
-
-  def notification_label(setting)
-    notification_title(setting.level)
   end
 
   def active_level_for(setting, level)

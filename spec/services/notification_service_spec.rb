@@ -88,12 +88,9 @@ describe NotificationService, services: true do
           note.project.namespace_id = group.id
           note.project.group.add_user(@u_watcher, GroupMember::MASTER)
           note.project.save
-          user_project = note.project.project_members.find_by_user_id(@u_watcher.id)
-          user_project.notification.level = :participating
-          user_project.save
-          group_member = note.project.group.group_members.find_by_user_id(@u_watcher.id)
-          group_member.notification.level = :global
-          group_member.notification.save
+
+          @u_watcher.notification_settings.find_by(source: note.project).participating!
+          @u_watcher.notification_settings.find_by(source: note.project.group).global!
           ActionMailer::Base.deliveries.clear
         end
 
