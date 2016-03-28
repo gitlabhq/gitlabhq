@@ -79,21 +79,21 @@ class @Todos
     # Do nothing if no pagination
     return if !currPages
 
-    # If new total of pages if different than we have now
+    # If new total of pages is different than we have now
     if newPages isnt currPages
-      # Redirect to previous page if there´s one available
+      # Redirect to previous page if there's one available
       if currPages > 1 and currPage is currPages
         url = @updateQueryStringParameter(url, 'page', currPages - 1)
 
       location.replace url
 
   updateQueryStringParameter: (uri, key, value) ->
-    separator = if uri.indexOf('?') isnt -1 then "&" else "?"
+    separator = if uri.indexOf('?') isnt -1 then '&' else '?'
 
     # Matches key and value
-    regex = new RegExp("([?&])" + key + "=.*?(&|#|$)", "i")
+    regex = new RegExp('([?&])' + key + '=.*?(&|#|$)', 'i')
 
     if uri.match(regex)
-      return uri.replace(regex, '$1' + key + "=" + value + '$2')
+      return uri.replace(regex, '$1' + key + '=' + value + '$2')
 
-    uri + separator + key + "=" + value
+    uri + separator + key + '=' + value
