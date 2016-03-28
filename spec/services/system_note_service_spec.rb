@@ -280,6 +280,18 @@ describe SystemNoteService, services: true do
     end
   end
 
+  describe '.new_issue_branch' do
+    subject { described_class.new_issue_branch(noteable, project, author, "1-mepmep") }
+
+    it_behaves_like 'a system note'
+
+    context 'when a branch is created from the new branch button' do
+      it 'sets the note text' do
+        expect(subject.note).to match /\AStarted branch [`1-mepmep`]/
+      end
+    end
+  end
+
   describe '.cross_reference' do
     subject { described_class.cross_reference(noteable, mentioner, author) }
 
@@ -427,7 +439,14 @@ describe SystemNoteService, services: true do
 
     context 'commit with cross-reference from fork' do
       let(:author2) { create(:user) }
-      let(:forked_project) { Projects::ForkService.new(project, author2).execute }
+      let(:forked_project) do
+        fp = Projects::ForkService.new(project, author2).execute
+        # The call to project.repository.after_import in RepositoryForkWorker does
+        # not reset the @exists variable of @fork_project.repository so we have to
+        # explicitely call this method to clear the @exists variable.
+        fp.repository.after_import
+        fp
+      end
       let(:commit2) { forked_project.commit }
 
       before do
@@ -437,6 +456,59 @@ describe SystemNoteService, services: true do
       it 'is true when a fork mentions an external issue' do
         expect(described_class.cross_reference_exists?(noteable, commit2)).
             to be true
+      end
+    end
+  end
+
+  describe '.noteable_moved' do
+    let(:new_project) { create(:project) }
+    let(:new_noteable) { create(:issue, project: new_project) }
+
+    subject do
+      described_class.noteable_moved(noteable, project, new_noteable, author, direction: direction)
+    end
+
+    shared_examples 'cross project mentionable' do
+      include GitlabMarkdownHelper
+
+      it 'should contain cross reference to new noteable' do
+        expect(subject.note).to include cross_project_reference(new_project, new_noteable)
+      end
+
+      it 'should mention referenced noteable' do
+        expect(subject.note).to include new_noteable.to_reference
+      end
+
+      it 'should mention referenced project' do
+        expect(subject.note).to include new_project.to_reference
+      end
+    end
+
+    context 'moved to' do
+      let(:direction) { :to }
+
+      it_behaves_like 'cross project mentionable'
+
+      it 'should notify about noteable being moved to' do
+        expect(subject.note).to match /Moved to/
+      end
+    end
+
+    context 'moved from' do
+      let(:direction) { :from }
+
+      it_behaves_like 'cross project mentionable'
+
+      it 'should notify about noteable being moved from' do
+        expect(subject.note).to match /Moved from/
+      end
+    end
+
+    context 'invalid direction' do
+      let(:direction) { :invalid }
+
+      it 'should raise error' do
+        expect { subject }.to raise_error StandardError, /Invalid direction/
       end
     end
   end

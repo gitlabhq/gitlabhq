@@ -29,7 +29,8 @@ describe GitPushService, services: true do
       it { is_expected.to be_truthy }
 
       it 'flushes general cached data' do
-        expect(project.repository).to receive(:expire_cache).with('master')
+        expect(project.repository).to receive(:expire_cache).
+          with('master', newrev)
 
         subject
       end
@@ -46,7 +47,8 @@ describe GitPushService, services: true do
       it { is_expected.to be_truthy }
 
       it 'flushes general cached data' do
-        expect(project.repository).to receive(:expire_cache).with('master')
+        expect(project.repository).to receive(:expire_cache).
+          with('master', newrev)
 
         subject
       end
@@ -65,7 +67,8 @@ describe GitPushService, services: true do
       end
 
       it 'flushes general cached data' do
-        expect(project.repository).to receive(:expire_cache).with('master')
+        expect(project.repository).to receive(:expire_cache).
+          with('master', newrev)
 
         subject
       end

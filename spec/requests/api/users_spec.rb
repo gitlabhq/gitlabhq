@@ -132,6 +132,26 @@ describe API::API, api: true  do
       expect(response.status).to eq(201)
     end
 
+    it 'creates non-external users by default' do
+      post api("/users", admin), attributes_for(:user)
+      expect(response.status).to eq(201)
+
+      user_id = json_response['id']
+      new_user = User.find(user_id)
+      expect(new_user).not_to eq nil
+      expect(new_user.external).to be_falsy
+    end
+
+    it 'should allow an external user to be created' do
+      post api("/users", admin), attributes_for(:user, external: true)
+      expect(response.status).to eq(201)
+
+      user_id = json_response['id']
+      new_user = User.find(user_id)
+      expect(new_user).not_to eq nil
+      expect(new_user.external).to be_truthy
+    end
+
     it "should not create user with invalid email" do
       post api('/users', admin),
         email: 'invalid email',
@@ -272,6 +292,13 @@ describe API::API, api: true  do
       expect(response.status).to eq(200)
       expect(json_response['is_admin']).to eq(true)
       expect(user.reload.admin).to eq(true)
+    end
+
+    it "should update external status" do
+      put api("/users/#{user.id}", admin), { external: true }
+      expect(response.status).to eq 200
+      expect(json_response['external']).to eq(true)
+      expect(user.reload.external?).to be_truthy
     end
 
     it "should not update admin status" do

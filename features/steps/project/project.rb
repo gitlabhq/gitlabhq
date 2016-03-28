@@ -122,14 +122,6 @@ class Spinach::Features::Project < Spinach::FeatureSteps
     end
   end
 
-  step 'I visit project "Shop" settings page' do
-    click_link 'Settings'
-  end
-
-  step 'I go to "Members"' do
-    click_link 'Members'
-  end
-
   step 'I add project tags' do
     fill_in 'Tags', with: 'tag1, tag2'
   end

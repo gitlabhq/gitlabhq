@@ -62,6 +62,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :session_expire_delay,
       :default_project_visibility,
       :default_snippet_visibility,
+      :default_group_visibility,
       :restricted_signup_domains_raw,
       :version_check_enabled,
       :admin_notification_email,

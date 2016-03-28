@@ -8,8 +8,9 @@ Apart from this introduction, you are advised to read through the following
 documents in order to understand and properly configure GitLab Performance Monitoring:
 
 - [GitLab Configuration](gitlab_configuration.md)
-- [InfluxDB Configuration](influxdb_configuration.md)
+- [InfluxDB Install/Configuration](influxdb_configuration.md)
 - [InfluxDB Schema](influxdb_schema.md)
+- [Grafana Install/Configuration](grafana_configuration.md)
 
 ## Introduction to GitLab Performance Monitoring
 

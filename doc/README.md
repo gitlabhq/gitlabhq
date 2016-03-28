@@ -3,12 +3,13 @@
 ## User documentation
 
 - [API](api/README.md) Automate GitLab via a simple and powerful API.
+- [CI](ci/README.md)
 - [GitLab as OAuth2 authentication service provider](integration/oauth_provider.md). It allows you to login to other applications from GitLab.
 - [GitLab Basics](gitlab-basics/README.md) Find step by step how to start working on your commandline and on GitLab.
 - [Importing to GitLab](workflow/importing/README.md).
 - [Markdown](markdown/markdown.md) GitLab's advanced formatting system.
 - [Migrating from SVN](workflow/importing/migrating_from_svn.md) Convert a SVN repository to Git and GitLab
-- [Permissions](permissions/permissions.md) Learn what each role in a project (guest/reporter/developer/master/owner) can do.
+- [Permissions](permissions/permissions.md) Learn what each role in a project (external/guest/reporter/developer/master/owner) can do.
 - [Profile Settings](profile/README.md)
 - [Project Services](project_services/project_services.md) Integrate a project with external services, such as CI and chat.
 - [Public access](public_access/public_access.md) Learn how you can allow public and internal access to projects.
@@ -18,42 +19,6 @@
 - [Workflow](workflow/README.md) Using GitLab functionality and importing projects from GitHub and SVN.
 - [GitLab Pages](pages/README.md) Using GitLab Pages.
 - [Custom templates for issues and merge requests](customization/issue_and_merge_request_template.md) Pre-fill the description of issues and merge requests to your liking.
-
-## CI User documentation
-
-- [Get started with GitLab CI](ci/quick_start/README.md)
-- [Learn how to enable or disable GitLab CI](ci/enable_or_disable_ci.md)
-- [Learn how `.gitlab-ci.yml` works](ci/yaml/README.md)
-- [Configure a Runner, the application that runs your builds](ci/runners/README.md)
-- [Use Docker images with GitLab Runner](ci/docker/using_docker_images.md)
-- [Use CI to build Docker images](ci/docker/using_docker_build.md)
-- [Use variables in your `.gitlab-ci.yml`](ci/variables/README.md)
-- [Use SSH keys in your build environment](ci/ssh_keys/README.md)
-- [Trigger builds through the API](ci/triggers/README.md)
-- [Build artifacts](ci/build_artifacts/README.md)
-- [User permissions](ci/permissions/README.md)
-- [API](ci/api/README.md)
-
-### CI Examples
-
-- [The .gitlab-ci.yml file for GitLab itself](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/.gitlab-ci.yml)
-- [Test your PHP applications](ci/examples/php.md)
-- [Test and deploy Ruby applications to Heroku](ci/examples/test-and-deploy-ruby-application-to-heroku.md)
-- [Test and deploy Python applications to Heroku](ci/examples/test-and-deploy-python-application-to-heroku.md)
-- [Test Clojure applications](ci/examples/test-clojure-application.md)
-- [Using `dpl` as deployment tool](ci/deployment/README.md)
-- Help your favorite programming language and GitLab by sending a merge request
-  with a guide for that language.
-
-### CI Services
-
-GitLab CI uses the `services` keyword to define what docker containers should
-be linked with your base image. Below is a list of examples you may use:
-
-- [Using MySQL](ci/services/mysql.md)
-- [Using PostgreSQL](ci/services/postgres.md)
-- [Using Redis](ci/services/redis.md)
-- [Using Other Services](ci/docker/using_docker_images.md#how-to-use-other-images-as-services)
 
 ## Administrator documentation
 
@@ -86,7 +51,7 @@ be linked with your base image. Below is a list of examples you may use:
 - [GitLab Pages configuration](pages/administration.md)
 - [Elasticsearch](integration/elasticsearch.md) Enable Elasticsearch
 - [GitLab Performance Monitoring](monitoring/performance/introduction.md) Configure GitLab and InfluxDB for measuring performance metrics
-- [GitLab GEO](administration/gitlab-geo/README.md) Configure GitLab GEO, a
+- [GitLab GEO](gitlab-geo/README.md) Configure GitLab GEO, a
   secondary read-only GitLab instance
 
 ## Contributor documentation

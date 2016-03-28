@@ -193,6 +193,20 @@ describe User, models: true do
     it { is_expected.to respond_to(:is_admin?) }
     it { is_expected.to respond_to(:name) }
     it { is_expected.to respond_to(:private_token) }
+    it { is_expected.to respond_to(:external?) }
+  end
+
+  describe 'before save hook' do
+    context 'when saving an external user' do
+      let(:user)          { create(:user) }
+      let(:external_user) { create(:user, external: true) }
+
+      it "sets other properties aswell" do
+        expect(external_user.can_create_team).to be_falsey
+        expect(external_user.can_create_group).to be_falsey
+        expect(external_user.projects_limit).to be 0
+      end
+    end
   end
 
   describe '#confirm' do
@@ -417,6 +431,7 @@ describe User, models: true do
         expect(user.projects_limit).to eq(Gitlab.config.gitlab.default_projects_limit)
         expect(user.can_create_group).to eq(Gitlab.config.gitlab.default_can_create_group)
         expect(user.theme_id).to eq(Gitlab.config.gitlab.default_theme)
+        expect(user.external).to be_falsey
       end
     end
 

@@ -8,11 +8,9 @@
       = icon('angle-down')
     %ul.dropdown-menu.dropdown-menu-right.clone-options-dropdown
       %li
-        %a#ssh-selector{href: @project.ssh_url_to_repo}
-          SSH
+        = ssh_clone_button(project)
       %li
-        %a#http-selector{href: @project.http_url_to_repo}
-          HTTPS
+        = http_clone_button(project)
       - if alternative_kerberos_url?
         %li
           %a#kerberos-btn{href: @project.kerberos_url_to_repo}

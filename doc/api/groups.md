@@ -128,6 +128,7 @@ Parameters:
 - `description` (optional) - The group's description
 - `membership_lock` (optional, boolean) - Prevent adding new members to project membership within this group
 - `share_with_group_lock` (optional, boolean) - Prevent sharing a project with another group within this group
+- `visibility_level` (optional) - The group's visibility. 0 for private, 10 for internal, 20 for public.
 
 ## Transfer project to group
 

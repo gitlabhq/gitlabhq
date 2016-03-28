@@ -19,6 +19,10 @@
       = link_to admin_users_path(filter: 'two_factor_disabled') do
         2FA Disabled
         %small.badge= number_with_delimiter(User.without_two_factor.count)
+    %li.filter-external{class: "#{'active' if params[:filter] == 'external'}"}
+      = link_to admin_users_path(filter: 'external') do
+        External
+        %small.badge= number_with_delimiter(User.external.count)
     %li{class: "#{'active' if params[:filter] == "blocked"}"}
       = link_to admin_users_path(filter: "blocked") do
         Blocked
@@ -71,15 +75,17 @@
       %li
         .list-item-name
           - if user.blocked?
-            %i.fa.fa-lock.cred
+            = icon("lock", class: "cred")
           - else
-            %i.fa.fa-user.cgreen
+            = icon("user", class: "cgreen")
           = link_to user.name, [:admin, user]
           - if user.note.present?
             = link_to "#", { "data-toggle" => "tooltip", title: user.note, class: "user-note"} do
               = icon("sticky-note-o cgrey")
           - if user.admin?
             %strong.cred (Admin)
+          - if user.external?
+            %strong.cred (External)
           - if user == current_user
             %span.cred It's you!
         .pull-right

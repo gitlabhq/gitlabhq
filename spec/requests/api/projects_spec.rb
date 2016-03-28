@@ -275,6 +275,7 @@ describe API::API, api: true  do
 
       it 'should not allow a non-admin to use a restricted visibility level' do
         post api('/projects', user), @project
+
         expect(response.status).to eq(400)
         expect(json_response['message']['visibility_level'].first).to(
           match('restricted by your GitLab administrator')

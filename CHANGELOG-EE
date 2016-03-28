@@ -1,10 +1,25 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
-v 8.6.0 (unreleased)
+v 8.7.0 (unreleased)
+
+v 8.6.2 (unreleased)
+  - Mark pending todos as done when approving a merge request
+
+v 8.6.1
+  - Only rename the `light_logo` column in the `appearances` table if its not there yet. !290
+  - Fix diffs in text part of email-on-push messages (Stan Hu). !293
+  - Fix an issue with methods not accessible in some controllers. !295
+  - Ensure Projects::ApproversController inherits from Projects::ApplicationController. !296
+
+v 8.6.0
   - Handle duplicate appearances table creation issue with upgrade from CE to EE
   - Add confidential issues
   - Improve weight filter for issues
-  - Clear "stuck" mirror updates before periodically updating all mirrors.
+  - Update settings and documentation for per-install LDAP sync time
+  - Fire merge request webhooks when a merge request is approved
+  - Add full diff highlighting to Email on push
+  - Clear "stuck" mirror updates before periodically updating all mirrors
+  - LDAP: Don't render Linked LDAP groups forms when LDAP is disabled
   - [Elastic] Add elastic checker to gitlab:check
   - [Elastic] Added UPDATE_INDEX option to rake task
   - [Elastic] Removing repository and wiki index after removing project
@@ -13,12 +28,20 @@ v 8.6.0 (unreleased)
   - [Elastic] More accurate as_indexed_json (More stable database indexer)
   - [Elastic] Fix: Don't index newly created system messages and awards
   - [Elastic] Fixed exception on branch removing
+  - [Elastic] Fix bin/elastic_repo_indexer to follow config
+  - GitLab Geo: OAuth authentication
+  - GitLab Geo: Wiki synchronization
+  - GitLab Geo: ReadOnly Middleware improvements
+  - GitLab Geo: SSH Keys synchronization
+
+v 8.5.8
+  - GitLab Geo: Documentation
 
 v 8.5.7
   - No EE-specific changes
 
 v 8.5.6
-  - No changes
+  - No EE-specific changes
 
 v 8.5.5
   - GitLab Geo: Repository synchronization between primary and secondary nodes

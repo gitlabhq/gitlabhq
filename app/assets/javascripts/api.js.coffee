@@ -76,6 +76,8 @@
       dataType: "json"
     ).done (label) ->
       callback(label)
+    .error (message) ->
+      callback(message.responseJSON)
 
   # Return group projects list. Filtered by query
   groupProjects: (group_id, query, callback) ->

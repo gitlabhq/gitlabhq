@@ -11,6 +11,8 @@ class Notify < BaseMailer
   include Emails::Builds
 
   add_template_helper MergeRequestsHelper
+  add_template_helper DiffHelper
+  add_template_helper BlobHelper
   add_template_helper EmailsHelper
 
   def test_email(recipient_email, subject, body)

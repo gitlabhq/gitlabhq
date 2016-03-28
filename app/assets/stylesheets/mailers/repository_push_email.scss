@@ -1,0 +1,43 @@
+@import "framework/variables";
+
+table.code {
+  width: 100%;
+  font-family: $monospace_font;
+  border: none;
+  border-collapse: separate;
+  margin: 0px;
+  padding: 0px;
+  -premailer-cellpadding: 0;
+  -premailer-cellspacing: 0;
+  -premailer-width: 100%;
+
+  td {
+    line-height: $code_line_height;
+    font-family: $monospace_font;
+    font-size: $code_font_size;
+  }
+
+  td.diff-line-num {
+    margin: 0px;
+    padding: 0px;
+    border: none;
+    background: $background-color;
+    color: rgba(0, 0, 0, 0.3);
+    padding: 0px 5px;
+    border-right: 1px solid $border-color;
+    text-align: right;
+    min-width: 35px;
+    max-width: 50px;
+    width: 35px;
+  }
+
+  td.line_content {
+    display: block;
+    margin: 0px;
+    padding: 0px 0.5em;
+    border: none;
+    white-space: pre;
+  }
+}
+
+@import "highlight/white";

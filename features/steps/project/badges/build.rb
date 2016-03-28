@@ -21,7 +21,7 @@ class Spinach::Features::ProjectBadgesBuild < Spinach::FeatureSteps
   end
 
   step 'I should see a badge that has not been cached' do
-    expect(page.response_headers).to include('Cache-Control' => 'no-cache')
+    expect(page.response_headers['Cache-Control']).to include 'no-cache'
   end
 
   def expect_badge(status)

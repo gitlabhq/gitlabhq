@@ -2,15 +2,16 @@
 #
 # Table name: namespaces
 #
-#  id          :integer          not null, primary key
-#  name        :string(255)      not null
-#  path        :string(255)      not null
-#  owner_id    :integer
-#  created_at  :datetime
-#  updated_at  :datetime
-#  type        :string(255)
-#  description :string(255)      default(""), not null
-#  avatar      :string(255)
+#  id                     :integer          not null, primary key
+#  name                   :string(255)      not null
+#  path                   :string(255)      not null
+#  owner_id               :integer
+#  visibility_level       :integer          default(20), not null
+#  created_at             :datetime
+#  updated_at             :datetime
+#  type                   :string(255)
+#  description            :string(255)      default(""), not null
+#  avatar                 :string(255)
 #
 
 require 'carrierwave/orm/activerecord'
@@ -18,6 +19,7 @@ require 'file_size_validator'
 
 class Group < Namespace
   include Gitlab::ConfigHelper
+  include Gitlab::VisibilityLevel
   include Referable
 
   has_many :group_members, dependent: :destroy, as: :source, class_name: 'GroupMember'
@@ -27,14 +29,23 @@ class Group < Namespace
   has_many :shared_projects, through: :project_group_links, source: :project
   has_many :ldap_group_links, foreign_key: 'group_id', dependent: :destroy
   has_many :hooks, dependent: :destroy, class_name: 'GroupHook'
+  # We cannot simply set `has_many :audit_events, as: :entity, dependent: :destroy`
+  # here since Group inherits from Namespace, the entity_type would be set to `Namespace`.
+  has_many :audit_events, -> { where(entity_type: Group) }, dependent: :destroy, foreign_key: 'entity_id'
 
   validate :avatar_type, if: ->(user) { user.avatar.present? && user.avatar_changed? }
+  validate :visibility_level_allowed_by_projects
+
   validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
 
   mount_uploader :avatar, AvatarUploader
 
   after_create :post_create_hook
   after_destroy :post_destroy_hook
+
+  scope :where_group_links_with_provider, ->(provider) do
+    joins(:ldap_group_links).where(ldap_group_links: { provider: provider })
+  end
 
   class << self
     # Searches for groups matching the given query.
@@ -74,6 +85,21 @@ class Group < Namespace
 
   def human_name
     name
+  end
+
+  def visibility_level_field
+    visibility_level
+  end
+
+  def visibility_level_allowed_by_projects
+    allowed_by_projects = self.projects.where('visibility_level > ?', self.visibility_level).none?
+
+    unless allowed_by_projects
+      level_name = Gitlab::VisibilityLevel.level_name(visibility_level).downcase
+      self.errors.add(:visibility_level, "#{level_name} is not allowed since there are projects with higher visibility.")
+    end
+
+    allowed_by_projects
   end
 
   def avatar_url(size = nil)

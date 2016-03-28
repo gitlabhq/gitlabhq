@@ -1,0 +1,5 @@
+- page_title "Audit Events"
+%h3.page-title Group Audit Events
+%p.light Events in #{@group.name}
+
+= render 'shared/audit_events/event_table', events: @events

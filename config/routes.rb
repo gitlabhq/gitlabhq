@@ -368,6 +368,8 @@ Rails.application.routes.draw do
     get :issues
     get :merge_requests
     get :activity
+    get :labels
+    get :milestones
 
     scope module: :dashboard do
       resources :milestones, only: [:index, :show]
@@ -422,9 +424,8 @@ Rails.application.routes.draw do
 
       resource :avatar, only: [:destroy]
       resources :milestones, constraints: { id: /[^\/]+/ }, only: [:index, :show, :update, :new, :create]
+      resources :audit_events, only: [:index]
     end
-
-    get "/audit_events" => "audit_events#group_log"
 
     resources :hooks, only: [:index, :create, :destroy], constraints: { id: /\d+/ }, module: :groups do
       member do
@@ -654,7 +655,7 @@ Rails.application.routes.draw do
           end
         end
 
-        resources :merge_requests, constraints: { id: /\d+/ }, except: [:destroy] do
+        resources :merge_requests, constraints: { id: /\d+/ } do
           member do
             get :commits
             get :diffs
@@ -666,6 +667,7 @@ Rails.application.routes.draw do
             post :toggle_subscription
             post :approve
             post :rebase
+            post :remove_wip
           end
 
           collection do
@@ -733,7 +735,7 @@ Rails.application.routes.draw do
           end
         end
 
-        resources :issues, constraints: { id: /\d+/ }, except: [:destroy] do
+        resources :issues, constraints: { id: /\d+/ } do
           member do
             post :toggle_subscription
           end
@@ -794,10 +796,8 @@ Rails.application.routes.draw do
             get :build, constraints: { format: /svg/ }
           end
         end
+        resources :audit_events, only: [:index]
       end
-
-      get "/audit_events" => "audit_events#project_log"
-
     end
   end
 

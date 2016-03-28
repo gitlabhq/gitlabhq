@@ -100,7 +100,7 @@ class UsersController < ApplicationController
   def load_projects
     @projects =
       PersonalProjectsFinder.new(@user).execute(current_user)
-      .page(params[:page]).per(PER_PAGE)
+      .page(params[:page])
   end
 
   def load_contributed_projects
@@ -108,7 +108,7 @@ class UsersController < ApplicationController
   end
 
   def load_groups
-    @groups = @user.groups.order_id_desc
+    @groups = JoinedGroupsFinder.new(@user).execute(current_user)
   end
 
   def projects_for_current_user

@@ -185,7 +185,7 @@ module ApplicationHelper
   # Returns an HTML-safe String
   def time_ago_with_tooltip(time, placement: 'top', html_class: 'time_ago', skip_js: false)
     element = content_tag :time, time.to_s,
-      class: "#{html_class} js-timeago js-timeago-pending",
+      class: "#{html_class} js-timeago #{"js-timeago-pending" unless skip_js}",
       datetime: time.to_time.getutc.iso8601,
       title: time.in_time_zone.to_s(:medium),
       data: { toggle: 'tooltip', placement: placement, container: 'body' }
@@ -197,6 +197,22 @@ module ApplicationHelper
     end
 
     element
+  end
+
+  def edited_time_ago_with_tooltip(object, placement: 'top', html_class: 'time_ago', include_author: false)
+    return if object.updated_at == object.created_at
+
+    content_tag :small, class: "edited-text" do
+      output = content_tag(:span, "Edited ")
+      output << time_ago_with_tooltip(object.updated_at, placement: placement, html_class: html_class)
+
+      if include_author && object.updated_by && object.updated_by != object.author
+        output << content_tag(:span, " by ")
+        output << link_to_member(object.project, object.updated_by, avatar: false, author_class: nil)
+      end
+
+      output
+    end
   end
 
   def render_markup(file_name, file_content)

@@ -263,6 +263,9 @@ reconfigure` after changing `gitlab-secrets.json`.
 ### Installation from source
 
 ```
+# Stop processes that are connected to the database
+sudo service gitlab stop
+
 bundle exec rake gitlab:backup:restore RAILS_ENV=production
 ```
 

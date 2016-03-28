@@ -4,7 +4,7 @@
     = event_action_name(event)
 
   - if event.target
-    %strong= link_to event.target.to_reference, [event.project.namespace.becomes(Namespace), event.project, event.target]
+    %strong= link_to event.target.reference_link_text, [event.project.namespace.becomes(Namespace), event.project, event.target]
 
   = event_preposition(event)
 

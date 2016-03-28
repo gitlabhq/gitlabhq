@@ -31,6 +31,10 @@ class GroupMember < Member
   scope :with_group, ->(group) { where(source_id: group.id) }
   scope :with_user, ->(user) { where(user_id: user.id) }
   scope :with_ldap_dn, -> { joins(user: :identities).where("identities.provider LIKE ?", 'ldap%') }
+  scope :select_access_level_and_user, -> { select(:access_level, :user_id) }
+  scope :with_identity_provider, ->(provider) do
+    joins(user: :identities).where(identities: { provider: provider })
+  end
 
   def self.access_level_roles
     Gitlab::Access.options_with_owner
