@@ -84,7 +84,7 @@ class Milestone < ActiveRecord::Base
   end
 
   def self.upcoming
-    self.where('due_date > ?', Time.now).order(due_date: :asc).first
+    self.where('due_date > ?', Time.now).reorder(due_date: :asc).first
   end
 
   def to_reference(from_project = nil)

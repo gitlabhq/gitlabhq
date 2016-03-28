@@ -151,7 +151,12 @@ describe Issues::UpdateService, services: true do
 
     context 'when the issue is relabeled' do
       let!(:non_subscriber) { create(:user) }
-      let!(:subscriber) { create(:user).tap { |u| label.toggle_subscription(u) } }
+      let!(:subscriber) do
+        create(:user).tap do |u|
+          label.toggle_subscription(u)
+          project.team << [u, :developer]
+        end
+      end
 
       it 'sends notifications for subscribers of newly added labels' do
         opts = { label_ids: [label.id] }

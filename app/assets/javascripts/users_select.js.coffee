@@ -30,6 +30,7 @@ class @UsersSelect
               if showNullUser
                 showDivider += 1
                 users.unshift(
+                  beforeDivider: true
                   name: 'Unassigned',
                   id: 0
                 )
@@ -39,6 +40,7 @@ class @UsersSelect
                 name = showAnyUser
                 name = 'Any User' if name == true
                 anyUser = {
+                  beforeDivider: true
                   name: name,
                   id: null
                 }
@@ -75,20 +77,27 @@ class @UsersSelect
           selected = if user.id is selectedId then "is-active" else ""
           img = ""
 
-          if avatar
-            img = "<img src='#{avatar}' class='avatar avatar-inline' width='30' />"
-
-          "<li>
-            <a href='#' class='dropdown-menu-user-link #{selected}'>
-              #{img}
-              <strong class='dropdown-menu-user-full-name'>
+          if user.beforeDivider?
+            "<li>
+              <a href='#' class='#{selected}'>
                 #{user.name}
-              </strong>
-              <span class='dropdown-menu-user-username'>
-                #{username}
-              </span>
-            </a>
-          </li>"
+              </a>
+            </li>"
+          else
+            if avatar
+              img = "<img src='#{avatar}' class='avatar avatar-inline' width='30' />"
+
+            "<li>
+              <a href='#' class='dropdown-menu-user-link #{selected}'>
+                #{img}
+                <strong class='dropdown-menu-user-full-name'>
+                  #{user.name}
+                </strong>
+                <span class='dropdown-menu-user-username'>
+                  #{username}
+                </span>
+              </a>
+            </li>"
       )
 
     $('.ajax-users-select').each (i, select) =>

@@ -79,15 +79,15 @@ class Event < ActiveRecord::Base
     end
   end
 
-  def proper?(user = nil)
+  def visible_to_user?(user = nil)
     if push?
       true
     elsif membership_changed?
       true
     elsif created_project?
       true
-    elsif issue?
-      Ability.abilities.allowed?(user, :read_issue, issue)
+    elsif issue? || issue_note?
+      Ability.abilities.allowed?(user, :read_issue, note? ? note_target : target)
     else
       ((merge_request? || note?) && target) || milestone?
     end
@@ -302,6 +302,10 @@ class Event < ActiveRecord::Base
 
   def note_commit?
     target.noteable_type == "Commit"
+  end
+
+  def issue_note?
+    note? && target && target.noteable_type == "Issue"
   end
 
   def note_project_snippet?

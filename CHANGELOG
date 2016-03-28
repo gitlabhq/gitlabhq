@@ -1,10 +1,31 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.7.0 (unreleased)
+  - Don't attempt to look up an avatar in repo if repo directory does not exist (Stan hu)
+  - Preserve time notes/comments have been updated at when moving issue
   - Make HTTP(s) label consistent on clone bar (Stan Hu)
+  - Fix avatar stretching by providing a cropping feature
+  - Add links to CI setup documentation from project settings and builds pages
+  - Implement 'Groups View' as an option for dashboard preferences !3379 (Elias W.)
+  - Implement 'TODOs View' as an option for dashboard preferences !3379 (Elias W.)
 
-v 8.6.1 (unreleased)
+v 8.6.2 (unreleased)
+  - Comments on confidential issues don't show up in activity feed to non-members
 
+v 8.6.1
+  - Add option to reload the schema before restoring a database backup. !2807
+  - Display navigation controls on mobile. !3214
+  - Fixed bug where participants would not work correctly on merge requests. !3329
+  - Fix sorting issues by votes on the groups issues page results in SQL errors. !3333
+  - Restrict notifications for confidential issues. !3334
+  - Do not allow to move issue if it has not been persisted. !3340
+  - Add a confirmation step before deleting an issuable. !3341
+  - Fixes issue with signin button overflowing on mobile. !3342
+  - Auto collapses the navigation sidebar when resizing. !3343
+  - Fix build dependencies, when the dependency is a string. !3344
+  - Shows error messages when trying to create label in dropdown menu. !3345
+  - Fixes issue with assign milestone not loading milestone list. !3346
+  - Fix an issue causing the Dashboard/Milestones page to be blank. !3348
 
 v 8.6.0
   - Add ability to move issue to another project
@@ -31,7 +52,6 @@ v 8.6.0
   - Add information about `image` and `services` field at `job` level in the `.gitlab-ci.yml` documentation (Pat Turner)
   - HTTP error pages work independently from location and config (Artem Sidorenko)
   - Update `omniauth-saml` to 1.5.0 to allow for custom response attributes to be set
-  - Add option to reload the schema before restoring a database backup. !2807
   - Memoize @group in Admin::GroupsController (Yatish Mehta)
   - Indicate how much an MR diverged from the target branch (Pierre de La Morinerie)
   - Added omniauth-auth0 Gem (Daniel Carraro)

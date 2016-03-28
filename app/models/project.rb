@@ -339,7 +339,7 @@ class Project < ActiveRecord::Base
     end
 
     def find_with_namespace(id)
-      namespace_path, project_path = id.split('/')
+      namespace_path, project_path = id.split('/', 2)
 
       return nil if !namespace_path || !project_path
 

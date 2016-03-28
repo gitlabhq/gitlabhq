@@ -17,4 +17,4 @@
         %a.js-participants-more{href: "#", data: {original_text: "+ #{participants_size - 7} more", less_text: "- show less"}}
           + #{participants_extra} more
 :javascript
-  Issue.prototype.PARTICIPANTS_ROW_COUNT = #{participants_row};
+  IssuableContext.prototype.PARTICIPANTS_ROW_COUNT = #{participants_row};
