@@ -5,8 +5,8 @@ table.code {
   font-family: $monospace_font;
   border: none;
   border-collapse: separate;
-  margin: 0px;
-  padding: 0px;
+  margin: 0;
+  padding: 0;
   -premailer-cellpadding: 0;
   -premailer-cellspacing: 0;
   -premailer-width: 100%;
@@ -18,12 +18,12 @@ table.code {
   }
 
   td.diff-line-num {
-    margin: 0px;
-    padding: 0px;
+    margin: 0;
+    padding: 0;
     border: none;
     background: $background-color;
     color: rgba(0, 0, 0, 0.3);
-    padding: 0px 5px;
+    padding: 0 5px;
     border-right: 1px solid $border-color;
     text-align: right;
     min-width: 35px;
@@ -33,8 +33,8 @@ table.code {
 
   td.line_content {
     display: block;
-    margin: 0px;
-    padding: 0px 0.5em;
+    margin: 0;
+    padding: 0 0.5em;
     border: none;
     white-space: pre;
   }
