@@ -19,7 +19,6 @@ class Projects::MilestonesController < Projects::ApplicationController
       end
 
     @milestones = @milestones.includes(:project)
-
     respond_to do |format|
       format.html do
         @milestones = @milestones.page(params[:page])

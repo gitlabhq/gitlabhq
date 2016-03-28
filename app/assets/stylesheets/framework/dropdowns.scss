@@ -117,7 +117,7 @@
     padding-left: 10px;
     padding-right: 10px;
     color: $dropdown-link-color;
-    line-height: 34px;
+    line-height: 16px;
     text-overflow: ellipsis;
     border-radius: 2px;
     white-space: nowrap;
@@ -167,13 +167,13 @@
 }
 
 .dropdown-menu-user-link {
-  padding-top: 7px;
+  padding-top: 10px;
   padding-bottom: 7px;
 }
 
 .dropdown-menu-user-full-name {
   display: block;
-  font-weight: 600;
+  font-weight: 500;
   line-height: 16px;
   text-overflow: ellipsis;
   overflow: hidden;

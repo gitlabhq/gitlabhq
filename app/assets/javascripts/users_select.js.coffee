@@ -1,7 +1,9 @@
 class @UsersSelect
-  constructor: ->
+  constructor: (currentUser) ->
     @usersPath = "/autocomplete/users.json"
     @userPath = "/autocomplete/users/:id.json"
+    if currentUser?
+      @currentUser = JSON.parse(currentUser)
 
     $('.js-user-search').each (i, dropdown) =>
       $dropdown = $(dropdown)
@@ -12,6 +14,67 @@ class @UsersSelect
       firstUser = $dropdown.data('first-user')
       selectedId = $dropdown.data('selected')
       defaultLabel = $dropdown.data('default-label')
+      issueURL = $dropdown.data('issueUpdate')
+      $selectbox = $dropdown.closest('.selectbox')
+      $block = $selectbox.closest('.block')
+      abilityName = $dropdown.data('ability-name')
+      $value = $block.find('.value')
+      $loading = $block.find('.block-loading').fadeOut()
+
+      $block.on('click', '.js-assign-yourself', (e) =>
+        e.preventDefault()
+        assignTo(@currentUser.id)
+      )
+
+      assignTo = (selected) ->
+        data = {}
+        data[abilityName] = {}
+        data[abilityName].assignee_id = selected
+        $loading
+          .fadeIn()
+        $.ajax(
+          type: 'PUT'
+          dataType: 'json'
+          url: issueURL
+          data: data
+        ).done (data) ->
+          $loading.fadeOut()
+          $selectbox.hide()
+
+          if data.assignee
+            user =
+              name: data.assignee.name
+              username: data.assignee.username
+              avatar: data.assignee.avatar_url
+          else
+            user =
+              name: 'Unassigned'
+              username: ''
+              avatar: ''
+
+          $value.html(noAssigneeTemplate(user))
+          $value.find('a').attr('href')
+
+      noAssigneeTemplate = _.template(
+        '<% if (username) { %>
+        <a class="author_link " href="/u/<%= username %>">
+          <% if( avatar ) { %>
+          <img width="32" class="avatar avatar-inline s32" alt="" src="<%= avatar %>">
+          <% } %>
+          <span class="author"><%= name %></span>
+          <span class="username">
+            @<%= username %>
+          </span>
+        </a>
+          <% } else { %>
+        <span class="assign-yourself">
+          No assignee -
+          <a href="#" class="js-assign-yourself">
+            assign yourself
+          </a>
+        </span>
+          <% } %>'
+      )
 
       $dropdown.glDropdown(
         data: (term, callback) =>
@@ -57,20 +120,36 @@ class @UsersSelect
           fields: ['name', 'username']
         selectable: true
         fieldName: $dropdown.data('field-name')
+
         toggleLabel: (selected) ->
           if selected && 'id' of selected
             selected.name
           else
             defaultLabel
+
+        inputId: 'issue_assignee_id'
+
+        hidden: (e) ->
+          $selectbox.hide()
+          $value.show()
+
         clicked: ->
           page = $('body').data 'page'
           isIssueIndex = page is 'projects:issues:index'
           isMRIndex = page is page is 'projects:merge_requests:index'
+          if $dropdown.hasClass('js-filter-bulk-update')
+            return
 
           if $dropdown.hasClass('js-filter-submit') and (isIssueIndex or isMRIndex)
             Issues.filterResults $dropdown.closest('form')
           else if $dropdown.hasClass 'js-filter-submit'
             $dropdown.closest('form').submit()
+          else
+            selected = $dropdown
+              .closest('.selectbox')
+              .find("input[name='#{$dropdown.data('field-name')}']").val()
+            assignTo(selected)
+
         renderRow: (user) ->
           username = if user.username then "@#{user.username}" else ""
           avatar = if user.avatar_url then user.avatar_url else false
@@ -87,17 +166,25 @@ class @UsersSelect
             if avatar
               img = "<img src='#{avatar}' class='avatar avatar-inline' width='30' />"
 
-            "<li>
-              <a href='#' class='dropdown-menu-user-link #{selected}'>
-                #{img}
-                <strong class='dropdown-menu-user-full-name'>
-                  #{user.name}
-                </strong>
-                <span class='dropdown-menu-user-username'>
-                  #{username}
-                </span>
-              </a>
-            </li>"
+          # split into three parts so we can remove the username section if nessesary
+          listWithName = "<li>
+            <a href='#' class='dropdown-menu-user-link #{selected}'>
+              #{img}
+              <strong class='dropdown-menu-user-full-name'>
+                #{user.name}
+              </strong>"
+
+          listWithUserName = "<span class='dropdown-menu-user-username'>
+                #{username}
+              </span>"
+          listClosingTags = "</a>
+          </li>"
+
+
+          if username is ''
+            listWithUserName = ''
+
+          listWithName + listWithUserName + listClosingTags
       )
 
     $('.ajax-users-select').each (i, select) =>

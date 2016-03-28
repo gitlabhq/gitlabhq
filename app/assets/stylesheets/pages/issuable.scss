@@ -30,6 +30,10 @@
 }
 
 .issuable-sidebar {
+  a {
+    color: inherit;
+  }
+
   .block {
     @include clearfix;
     padding: $gl-padding 0;
@@ -89,7 +93,7 @@
   }
 
   .cross-project-reference {
-    color: $gl-link-color;
+    color: inherit;
 
     span {
       white-space: nowrap;
@@ -133,6 +137,12 @@
 
     .value {
       line-height: 1;
+
+      .assign-yourself {
+        margin-top: 10px;
+        font-weight: normal;
+        display: block;
+      }
     }
 
     .bold {
@@ -251,6 +261,15 @@
       color: $md-link-color;
       text-decoration: none;
     }
+  }
+
+  .dropdown-menu-toggle {
+    width: 100%;
+    padding-top: 6px;
+  }
+
+  .open .dropdown-menu {
+    width: 100%;
   }
 }
 
