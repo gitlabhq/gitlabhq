@@ -25,7 +25,7 @@ module Gitlab
         ).execute
 
         project.create_import_data(
-          credentials: {
+          data: {
             "repo"      => repo.raw_data,
             "user_map"  => user_map
           }

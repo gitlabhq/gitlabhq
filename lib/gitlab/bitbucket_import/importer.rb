@@ -1,6 +1,13 @@
 module Gitlab
   module BitbucketImport
-    class Importer < ImporterInit
+    class Importer
+      attr_reader :project, :client
+
+      def initialize(project)
+        @project = project
+        @client = Client.from_project(@project)
+        @formatter = Gitlab::ImportFormatter.new
+      end
 
       def execute
         import_issues if has_issues?

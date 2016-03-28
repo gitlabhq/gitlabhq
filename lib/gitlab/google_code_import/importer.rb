@@ -6,13 +6,12 @@ module Gitlab
       def initialize(project)
         @project = project
 
-        if import_data_credentials && import_data_credentials['repo']
-          @repo = GoogleCodeImport::Repository.new(import_data_credentials['repo'])
-          @closed_statuses = []
-          @known_labels = Set.new
-        else
-          raise Projects::ImportService::Error, "Unable to find project import data credentials for project ID: #{@project.id}"
-        end
+        import_data = project.import_data.try(:data)
+        repo_data = import_data["repo"] if import_data
+        @repo = GoogleCodeImport::Repository.new(repo_data)
+
+        @closed_statuses = []
+        @known_labels = Set.new
       end
 
       def execute
@@ -29,10 +28,6 @@ module Gitlab
 
       private
 
-      def import_data_credentials
-        @import_data_credentials ||= project.import_data.credentials if project.import_data
-      end
-
       def user_map
         @user_map ||= begin
           user_map = Hash.new do |hash, user|
@@ -40,7 +35,8 @@ module Gitlab
             Client.mask_email(user).sub("...", "\\.\\.\\.")
           end
 
-          stored_user_map = import_data_credentials["user_map"]
+          import_data = project.import_data.try(:data)
+          stored_user_map = import_data["user_map"] if import_data
           user_map.update(stored_user_map) if stored_user_map
 
           user_map

@@ -1,7 +1,13 @@
 module Gitlab
   module BitbucketImport
-    class KeyDeleter  < ImporterInit
-      attr_reader :current_user
+    class KeyDeleter
+      attr_reader :project, :current_user, :client
+
+      def initialize(project)
+        @project = project
+        @current_user = project.creator
+        @client = Client.from_project(@project)
+      end
 
       def execute
         return false unless BitbucketImport.public_key.present?
