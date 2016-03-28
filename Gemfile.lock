@@ -99,7 +99,7 @@ GEM
     bullet (5.0.0)
       activesupport (>= 3.0.0)
       uniform_notifier (~> 1.9.0)
-    bundler-audit (0.4.0)
+    bundler-audit (0.5.0)
       bundler (~> 1.2)
       thor (~> 0.18)
     byebug (8.2.1)

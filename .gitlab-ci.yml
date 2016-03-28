@@ -158,8 +158,7 @@ bundler:audit:
   only:
     - master
   script:
-    - "bundle exec bundle-audit update"
-    - "bundle exec bundle-audit check --ignore OSVDB-115941"
+    - "bundle exec bundle-audit check --update --ignore OSVDB-115941"
   tags:
     - ruby
     - mysql
