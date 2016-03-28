@@ -56,6 +56,7 @@ class Member < ActiveRecord::Base
 
   before_validation :generate_invite_token, on: :create, if: -> (member) { member.invite_email.present? }
   after_create :send_invite, if: :invite?
+  after_create :create_notification_setting, unless: :invite?
   after_create :post_create_hook, unless: :invite?
   after_update :post_update_hook, unless: :invite?
   after_destroy :post_destroy_hook, unless: :invite?
@@ -158,6 +159,15 @@ class Member < ActiveRecord::Base
     generate_invite_token! unless @raw_invite_token
 
     send_invite
+  end
+
+  def create_notification_setting
+    notification_setting = user.notification_settings.find_or_initialize_by(source: source)
+
+    unless notification_setting.persisted?
+      notification_setting.set_defaults
+      notification_setting.save
+    end
   end
 
   private
