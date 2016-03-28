@@ -59,6 +59,8 @@ class Blob < SimpleDelegator
       'download'
     elsif image? || svg?
       'image'
+    elsif csv?
+      'csv'
     elsif text?
       'text'
     else

@@ -1,3 +1,5 @@
+require 'csv'
+
 module BlobHelper
   def highlight(blob_name, blob_content, repository: nil, plain: false)
     highlighted = Gitlab::Highlight.highlight(blob_name, blob_content, plain: plain, repository: repository)
@@ -6,6 +8,14 @@ module BlobHelper
 
   def no_highlight_files
     %w(credits changelog news copying copyright license authors)
+  end
+
+  def blob_to_csv(blob, options = {})
+    begin
+      CSV.parse(blob.data, options)
+    rescue CSV::MalformedCSVError
+      nil
+    end
   end
 
   def edit_blob_link(project = @project, ref = @ref, path = @path, options = {})

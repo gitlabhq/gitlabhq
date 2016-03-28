@@ -19,6 +19,10 @@ Feature: Project Source Browse Files
     Given I visit blob file from repo
     And I click link "Raw"
     Then I should see raw file content
+    
+  Scenario: I browse a csv file
+    Given I browse a csv file
+    Then I should see a table
 
   Scenario: I can create file
     Given I click on "New file" link in repo

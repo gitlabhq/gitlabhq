@@ -1,0 +1,22 @@
+.file-content.code
+  .file-content.code.js-syntax-highlight{ class: user_color_scheme }
+    - if blob.csv?
+      - unless blob.empty?
+        .line-numbers
+          - blob.data.lines.each_index do |index|
+            - offset = defined?(first_line_number) ? first_line_number : 1
+            - i = index + offset
+            -# We're not using `link_to` because it is too slow once we get to thousands of lines.
+            %a{ href: "#L#{ i }", id: "L#{ i }", data: { line_number: "#{ i }" } }
+              %i.fa.fa-link
+              = i
+        .blob-content{ data: { blob_id: blob.id } }
+          %pre.code.highlight
+            %table
+              - blob_to_csv(blob).each_with_index do |row, i|
+                %tr
+                  - row.each do |col|
+                    %td
+                      = col
+    - else
+      .nothing-here-block Empty file
