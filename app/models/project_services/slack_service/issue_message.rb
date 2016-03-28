@@ -22,7 +22,7 @@ class SlackService
       @issue_url = obj_attr[:url]
       @action = obj_attr[:action]
       @state = obj_attr[:state]
-      @description = obj_attr[:description]
+      @description = obj_attr[:description] || ''
     end
 
     def attachments
