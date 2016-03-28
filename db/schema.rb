@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160320204112) do
+ActiveRecord::Schema.define(version: 20160328112808) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -417,9 +417,9 @@ ActiveRecord::Schema.define(version: 20160320204112) do
     t.string   "state"
     t.integer  "iid"
     t.integer  "updated_by_id"
-    t.integer  "moved_to_id"
-    t.boolean  "confidential",              default: false
+    t.boolean  "confidential",  default: false
     t.datetime "deleted_at"
+    t.integer  "moved_to_id"
   end
 
   add_index "issues", ["assignee_id"], name: "index_issues_on_assignee_id", using: :btree
@@ -637,6 +637,15 @@ ActiveRecord::Schema.define(version: 20160320204112) do
   add_index "notes", ["project_id", "noteable_type"], name: "index_notes_on_project_id_and_noteable_type", using: :btree
   add_index "notes", ["project_id"], name: "index_notes_on_project_id", using: :btree
   add_index "notes", ["updated_at"], name: "index_notes_on_updated_at", using: :btree
+
+  create_table "notification_settings", force: :cascade do |t|
+    t.integer  "user_id"
+    t.integer  "level"
+    t.integer  "source_id"
+    t.string   "source_type"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+  end
 
   create_table "oauth_access_grants", force: :cascade do |t|
     t.integer  "resource_owner_id", null: false
