@@ -835,10 +835,6 @@ class User < ActiveRecord::Base
     notification_settings.find_or_initialize_by(source: source)
   end
 
-  def public?
-    current_application_settings.restricted_visibility_levels.include?(Gitlab::VisibilityLevel::PUBLIC)
-  end
-
   private
 
   def projects_union

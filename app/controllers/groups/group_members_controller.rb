@@ -1,6 +1,7 @@
 class Groups::GroupMembersController < Groups::ApplicationController
   # Authorize
   before_action :authorize_admin_group_member!, except: [:index, :leave]
+  before_action :authorize_read_group_members, only: [:index]
 
   def index
     @project = @group.projects.find(params[:project_id]) if params[:project_id]
@@ -78,5 +79,11 @@ class Groups::GroupMembersController < Groups::ApplicationController
 
   def member_params
     params.require(:group_member).permit(:access_level, :user_id)
+  end
+
+  private
+
+  def authorize_read_group_members
+    render_404 unless can?(current_user, :read_group_members, @group)
   end
 end

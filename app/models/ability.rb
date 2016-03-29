@@ -18,6 +18,7 @@ class Ability
       when Namespace then namespace_abilities(user, subject)
       when GroupMember then group_member_abilities(user, subject)
       when ProjectMember then project_member_abilities(user, subject)
+      when User then user_abilities()
       else []
       end.concat(global_abilities(user))
     end
@@ -35,6 +36,8 @@ class Ability
         anonymous_project_abilities(subject)
       when subject.is_a?(Group) || subject.respond_to?(:group)
         anonymous_group_abilities(subject)
+      when subject.is_a?(User)
+        anonymous_user_abilities()
       else
         []
       end
@@ -67,6 +70,10 @@ class Ability
         # Allow to read issues by anonymous user if issue is not confidential
         rules << :read_issue unless subject.is_a?(Issue) && subject.confidential?
 
+        # Allow anonymous users to read project members if public is not a restricted level
+        restricted_public_level = current_application_settings.restricted_visibility_levels.include?(Gitlab::VisibilityLevel::PUBLIC)
+        rules << :read_project_member unless restricted_public_level
+
         rules - project_disabled_features_rules(project)
       else
         []
@@ -81,17 +88,23 @@ class Ability
     end
 
     def anonymous_group_abilities(subject)
+      rules = []
+
       group = if subject.is_a?(Group)
                 subject
               else
                 subject.group
               end
 
-      if group && group.public?
-        [:read_group]
-      else
-        []
+      if group
+        rules << [:read_group] if group.public?
+
+        # Allow anonymous users to read project members if public is not a restricted level
+        restricted_public_level = current_application_settings.restricted_visibility_levels.include?(Gitlab::VisibilityLevel::PUBLIC)
+        rules << [:read_group_members] unless restricted_public_level
       end
+
+      rules
     end
 
     def anonymous_personal_snippet_abilities(snippet)
@@ -108,6 +121,11 @@ class Ability
       else
         []
       end
+    end
+
+    def anonymous_user_abilities()
+      restricted_by_public = current_application_settings.restricted_visibility_levels.include?(Gitlab::VisibilityLevel::PUBLIC)
+      [:read_user] unless restricted_by_public
     end
 
     def global_abilities(user)
@@ -164,6 +182,7 @@ class Ability
         :download_code,
         :fork_project,
         :read_commit_status,
+        :read_project_members
       ]
     end
 
@@ -285,7 +304,7 @@ class Ability
     def group_abilities(user, group)
       rules = []
 
-      rules << :read_group if can_read_group?(user, group)
+      rules << [:read_group, :read_group_members] if can_read_group?(user, group)
 
       # Only group masters and group owners can create new projects
       if group.has_master?(user) || group.has_owner?(user) || user.admin?
@@ -454,6 +473,10 @@ class Ability
         rules.delete(:"#{rule}_commit_status") unless rules.include?(:"#{rule}_build")
       end
       rules
+    end
+
+    def user_abilities()
+      [:read_user]
     end
 
     def abilities

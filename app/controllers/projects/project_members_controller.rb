@@ -1,6 +1,7 @@
 class Projects::ProjectMembersController < Projects::ApplicationController
   # Authorize
   before_action :authorize_admin_project_member!, except: :leave
+  before_action :authorize_read_project_members, only: :index
 
   def index
     @project_members = @project.project_members
@@ -111,5 +112,11 @@ class Projects::ProjectMembersController < Projects::ApplicationController
 
   def member_params
     params.require(:project_member).permit(:user_id, :access_level)
+  end
+
+  private
+
+  def authorize_read_project_members
+    can?(current_user, :read_project_members, @project)
   end
 end
