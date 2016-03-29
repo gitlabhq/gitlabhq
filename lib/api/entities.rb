@@ -255,14 +255,19 @@ module API
       expose :id, :path, :kind
     end
 
-    class ProjectAccess < Grape::Entity
+    class Member < Grape::Entity
       expose :access_level
-      expose :notification_level
+      expose :notification_level do |member, options|
+        if member.notification_setting
+          NotificationSetting.levels[member.notification_setting.level]
+        end
+      end
     end
 
-    class GroupAccess < Grape::Entity
-      expose :access_level
-      expose :notification_level
+    class ProjectAccess < Member
+    end
+
+    class GroupAccess < Member
     end
 
     class ProjectService < Grape::Entity
