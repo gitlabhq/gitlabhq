@@ -58,13 +58,13 @@ X-Gitlab-Event: Push Hook
     "path_with_namespace":"mike/diaspora",
     "default_branch":"master",
     "homepage":"http://example.com/mike/diaspora",
-    "url":"git@example.com:mike/diasporadiaspora.git",
+    "url":"git@example.com:mike/diaspora.git",
     "ssh_url":"git@example.com:mike/diaspora.git",
     "http_url":"http://example.com/mike/diaspora.git"
   },
   "repository":{
     "name": "Diaspora",
-    "url": "git@example.com:mike/diasporadiaspora.git",
+    "url": "git@example.com:mike/diaspora.git",
     "description": "",
     "homepage": "http://example.com/mike/diaspora",
     "git_http_url":"http://example.com/mike/diaspora.git",
@@ -113,7 +113,6 @@ Triggered when you create (or delete) tags to the repository.
 X-Gitlab-Event: Tag Push Hook
 ```
 
-
 **Request body:**
 
 ```json
@@ -143,7 +142,7 @@ X-Gitlab-Event: Tag Push Hook
     "http_url":"http://example.com/jsmith/example.git"
   },
   "repository":{
-    "name": "jsmith",
+    "name": "Example",
     "url": "ssh://git@example.com/jsmith/example.git",
     "description": "",
     "homepage": "http://example.com/jsmith/example",
@@ -478,7 +477,7 @@ X-Gitlab-Event: Note Hook
   },
   "repository":{
     "name":"diaspora",
-    "url":"git@example.com:mike/diasporadiaspora.git",
+    "url":"git@example.com:mike/diaspora.git",
     "description":"",
     "homepage":"http://example.com/mike/diaspora"
   },

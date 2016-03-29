@@ -162,7 +162,7 @@
   margin-right: 12px;
 
   a {
-    margin: -1px !important;
+    margin: -1px;
   }
 }
 
@@ -222,12 +222,16 @@
   padding: 0;
   background: transparent;
   border: none;
-  line-height: 42px;
+  line-height: 36px;
   margin: 0;
 
   > li + li:before {
     padding: 0 3px;
     color: #999;
+  }
+
+  a {
+    color: $gl-dark-link-color;
   }
 }
 

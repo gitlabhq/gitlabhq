@@ -1,13 +1,19 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.7.0 (unreleased)
+  - Don't attempt to look up an avatar in repo if repo directory does not exist (Stan hu)
   - Preserve time notes/comments have been updated at when moving issue
   - Make HTTP(s) label consistent on clone bar (Stan Hu)
+  - Allow back dating on issues when created through the API 
   - Fix avatar stretching by providing a cropping feature
   - Add endpoints to archive or unarchive a project !3372
+  - Add links to CI setup documentation from project settings and builds pages
+  - Implement 'Groups View' as an option for dashboard preferences !3379 (Elias W.)
+  - Implement 'TODOs View' as an option for dashboard preferences !3379 (Elias W.)
 
 v 8.6.2 (unreleased)
   - Comments on confidential issues don't show up in activity feed to non-members
+  - Fix NoMethodError when visiting CI root path at `/ci`
 
 v 8.6.1
   - Add option to reload the schema before restoring a database backup. !2807

@@ -3,12 +3,10 @@
  *
  */
 .file-holder {
-  border: none;
   border: 1px solid $border-color;
 
   &.readme-holder {
-    margin-top: 10px;
-    border-bottom: 0;
+    margin: $gl-padding-top 0;
   }
 
   table {
@@ -48,6 +46,10 @@
           background-color: #a6f3a6;
         }
       }
+    }
+
+    a {
+      color: $gl-dark-link-color;
     }
 
     .left-options {
