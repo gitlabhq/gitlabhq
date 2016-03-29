@@ -24,13 +24,10 @@ module Gitlab
           import_url: Project::UNKNOWN_IMPORT_URL
         ).execute
 
-        project.create_import_data(
-          credentials: {
-            'repo' => repo.raw_data,
-            'user_map' => user_map,
-            'fb_session' => fb_session
-          }
-        )
+        import_data = project.import_data
+        import_data.credentials.merge!('fb_session' => fb_session)
+        import_data.data = { 'repo' => repo.raw_data, 'user_map' => user_map }
+        import_data.save
 
         project
       end

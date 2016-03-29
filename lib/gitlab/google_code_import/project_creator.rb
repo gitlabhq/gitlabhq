@@ -24,12 +24,9 @@ module Gitlab
           import_url: repo.import_url
         ).execute
 
-        project.create_import_data(
-          data: {
-            "repo"      => repo.raw_data,
-            "user_map"  => user_map
-          }
-        )
+        import_data = project.import_data
+        import_data.data = { 'repo' => repo.raw_data, 'user_map' => user_map }
+        import_data.save
 
         project
       end

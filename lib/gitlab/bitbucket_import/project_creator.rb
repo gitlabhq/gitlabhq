@@ -22,8 +22,11 @@ module Gitlab
           import_source: "#{repo["owner"]}/#{repo["slug"]}",
           import_url: "ssh://git@bitbucket.org/#{repo["owner"]}/#{repo["slug"]}.git",
         ).execute
+
         import_data = project.import_data
         import_data.credentials.merge!("bb_session" => session_data)
+        import_data.save
+
         project
       end
     end
