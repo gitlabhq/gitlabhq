@@ -304,4 +304,8 @@
   @media (min-width: $screen-md-min) {
     padding-right: $gutter_width;
   }
+
+  &.with-overlay {
+    padding-right: $sidebar_collapsed_width;
+  }
 }

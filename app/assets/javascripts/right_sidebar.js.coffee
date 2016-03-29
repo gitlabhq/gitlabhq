@@ -21,7 +21,6 @@ class @Sidebar
       i.hide()
 
   sidebarDropdownLoaded: (e) ->
-    console.log 'loaded'
     $sidebarCollapsedIcon = $(@).closest('.block').find('.sidebar-collapsed-icon')
     img = $sidebarCollapsedIcon.find('img')
     $sidebarCollapsedIcon.find('i.fa-spin').remove()
@@ -35,6 +34,7 @@ class @Sidebar
   sidebarCollapseClicked: (e) ->
     e.preventDefault()
     $block = $(@).closest('.block')
+
     $('aside')
       .find('.gutter-toggle')
       .trigger('click')
@@ -43,11 +43,13 @@ class @Sidebar
     if $editLink.length
       $editLink.trigger('click')
       $block.addClass('collapse-after-update')
+      $('.page-with-sidebar').addClass('with-overlay')
 
   sidebarDropdownHidden: (e) ->
     $block = $(@).closest('.block')
     if $block.hasClass('collapse-after-update')
       $block.removeClass('collapse-after-update')
+      $('.page-with-sidebar').removeClass('with-overlay')
       $('aside')
         .find('.gutter-toggle')
         .trigger('click')
