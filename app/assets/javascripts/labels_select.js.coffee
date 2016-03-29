@@ -234,11 +234,20 @@ class @LabelsSelect
             label.id
 
         hidden: ->
+          page = $('body').data 'page'
+          isIssueIndex = page is 'projects:issues:index'
+          isMRIndex = page is page is 'projects:merge_requests:index'
+          
           $selectbox.hide()
           # display:block overrides the hide-collapse rule
           $value.removeAttr('style')
           if $dropdown.hasClass 'js-multiselect'
-            saveLabelData()
+            if $dropdown.hasClass('js-filter-submit') and (isIssueIndex or isMRIndex)
+              Issues.filterResults $dropdown.closest('form')
+            else if $dropdown.hasClass('js-filter-submit')
+              $dropdown.closest('form').submit()
+            else
+              saveLabelData()
 
         multiSelect: $dropdown.hasClass 'js-multiselect'
         clicked: (label) ->

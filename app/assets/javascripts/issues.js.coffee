@@ -52,7 +52,9 @@
   filterResults: (form) =>
     $('.issues-holder, .merge-requests-holder').css("opacity", '0.5')
     formAction = form.attr('action')
+    console.log form.find("input[type='hidden'][name='label_names[]']")
     formData = form.serialize()
+    console.log 'formData', formData
     issuesUrl = formAction
     issuesUrl += ("#{if formAction.indexOf("?") < 0 then '?' else '&'}")
     issuesUrl += formData
