@@ -6,6 +6,7 @@ v 8.6.2
   - Fix dropdown alignment. !3298
   - Fix issuable sidebar overlaps on tablet. !3299
   - Make dropdowns pixel perfect. !3337
+  - Fix order of steps to prevent PostgreSQL errors when running migration. !3355
   - Fix bold text in issuable sidebar. !3358
   - Fix error with anonymous token in applications settings. !3362
   - Fix the milestone 'upcoming' filter. !3364
@@ -19,10 +20,6 @@ v 8.6.2
   - Fix background when editing a highlighted note. !3423
   - Remove tabstop from the WIP toggle links. !3426
   - Ensure private project snippets are not viewable by unauthorized people.
-
-v 8.6.2 (unreleased)
-  - Comments on confidential issues don't show up in activity feed to non-members
-  - Fix NoMethodError when visiting CI root path at `/ci`
 
 v 8.6.1
   - Add option to reload the schema before restoring a database backup. !2807
