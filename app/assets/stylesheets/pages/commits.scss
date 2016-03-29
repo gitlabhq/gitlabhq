@@ -47,6 +47,7 @@ li.commit {
 
     .commit_short_id {
       min-width: 65px;
+      color: $gl-dark-link-color;
       font-family: $monospace_font;
     }
 
