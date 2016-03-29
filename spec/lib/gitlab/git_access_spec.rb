@@ -459,4 +459,3 @@ describe Gitlab::GitAccess, lib: true do
     end
   end
 end
-
