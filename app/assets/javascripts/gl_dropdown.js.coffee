@@ -57,14 +57,30 @@ class GitLabDropdownFilter
 
   filter: (search_text) ->
     data = @options.data()
-    results = data
 
-    if search_text isnt ""
-      results = fuzzaldrinPlus.filter(data, search_text,
-        key: @options.keys
-      )
+    if data?
+      results = data
 
-    @options.callback results
+      if search_text isnt ""
+        results = fuzzaldrinPlus.filter(data, search_text,
+          key: @options.keys
+        )
+
+      @options.callback results
+    else
+      elements = @options.elements()
+
+      if search_text
+        elements.each ->
+          $el = $(@)
+          matches = fuzzaldrinPlus.match($el.text().trim(), search_text)
+
+          if matches.length
+            $el.show()
+          else
+            $el.hide()
+      else
+        elements.show()
 
 class GitLabDropdownRemote
   constructor: (@dataEndpoint, @options) ->
@@ -147,7 +163,14 @@ class GitLabDropdown
         filterInputBlur: @filterInputBlur
         remote: @options.filterRemote
         query: @options.data
-        keys: @options.search.fields
+        keys: search_fields
+        elements: =>
+          selector = ".dropdown-content li:not(.divider)"
+
+          if @dropdown.find(".dropdown-toggle-page").length
+            selector = ".dropdown-page-one #{selector}"
+
+          return $(selector)
         data: =>
           return @fullData
         callback: (data) =>

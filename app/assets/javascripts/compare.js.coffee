@@ -9,6 +9,7 @@ class @Compare
       $dropdown.glDropdown(
         selectable: true
         fieldName: $dropdown.data 'field-name'
+        filterable: true
         id: (obj, $el) ->
           $el.data 'id'
         toggleLabel: (obj, $el) ->
