@@ -4,6 +4,7 @@ v 8.7.0 (unreleased)
 
 v 8.6.2 (unreleased)
   - Mark pending todos as done when approving a merge request
+  - Fix old commits triggering git hooks on new branches branched off another branch
 
 v 8.6.1
   - Only rename the `light_logo` column in the `appearances` table if its not there yet. !290
