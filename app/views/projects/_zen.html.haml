@@ -5,8 +5,7 @@
       = f.text_area attr, class: classes
     - else
       = text_area_tag attr, nil, class: classes
-    %a.js-zen-enter(tabindex="-1" href="#")
-      = icon('expand')
-      Edit in fullscreen
-    %a.js-zen-leave(tabindex="-1" href="#")
+    %a.js-zen-enter{ tabindex: "-1", href: "#" }
+      Go full screen
+    %a.js-zen-leave{ tabindex: "-1", href: "#" }
       = icon('compress')

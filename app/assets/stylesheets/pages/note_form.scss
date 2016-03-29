@@ -17,16 +17,17 @@
 }
 .diff-file,
 .discussion {
-  .new_note {
+  .new-note {
     margin: 0;
     border: none;
   }
 }
-.new_note {
+
+.new-note {
   display: none;
 }
 
-.new_note, .note-edit-form {
+.new-note, .note-edit-form {
   .note-form-actions {
     margin-top: $gl-padding;
   }

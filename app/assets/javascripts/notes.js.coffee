@@ -251,13 +251,8 @@ class @Notes
   Sets some hidden fields in the form.
   ###
   setupMainTargetNoteForm: ->
-
     # find the form
     form = $(".js-new-note-form")
-
-    # insert the form after the button
-    form.clone().replaceAll $(".js-main-target-form")
-    form = form.prev("form")
 
     # show the form
     @setupNoteForm(form)
@@ -265,10 +260,6 @@ class @Notes
     # fix classes
     form.removeClass "js-new-note-form"
     form.addClass "js-main-target-form"
-
-    # remove unnecessary fields and buttons
-    form.find("#note_line_code").remove()
-    form.find(".js-close-discussion-note-form").remove()
 
   ###
   General note form setup.
