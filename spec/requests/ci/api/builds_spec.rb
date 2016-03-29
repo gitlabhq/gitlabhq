@@ -156,6 +156,28 @@ describe Ci::API::API do
       end
     end
 
+    describe 'PATCH /builds/:id/trace.txt' do
+      let(:build) { create(:ci_build, :trace, runner_id: runner.id) }
+
+      before do
+        build.run!
+        patch ci_api("/builds/#{build.id}/trace.txt"), trace_part: ' appended', token: runner.token
+      end
+
+      it 'should append trace part to the trace' do
+        expect(response.status).to eq 200
+        expect(build.reload.trace).to eq 'BUILD TRACE appended'
+      end
+
+      context 'when build has been erased' do
+        let(:build) { create(:ci_build, runner_id: runner.id, erased_at: Time.now) }
+
+        it 'should respond with forbidden' do
+          expect(response.status).to eq 403
+        end
+      end
+    end
+
     context "Artifacts" do
       let(:file_upload) { fixture_file_upload(Rails.root + 'spec/fixtures/banana_sample.gif', 'image/gif') }
       let(:file_upload2) { fixture_file_upload(Rails.root + 'spec/fixtures/dk.png', 'image/gif') }

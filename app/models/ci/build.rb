@@ -231,11 +231,23 @@ module Ci
     end
 
     def trace=(trace)
+      recreate_trace_dir
+      File.write(path_to_trace, trace)
+    end
+
+    def recreate_trace_dir
       unless Dir.exists?(dir_to_trace)
         FileUtils.mkdir_p(dir_to_trace)
       end
+    end
+    private :recreate_trace_dir
 
-      File.write(path_to_trace, trace)
+    def append_trace(trace_part)
+      recreate_trace_dir
+
+      File.open(path_to_trace, 'a') do |f|
+        f.write(trace_part)
+      end
     end
 
     def dir_to_trace

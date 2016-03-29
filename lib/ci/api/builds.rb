@@ -50,6 +50,15 @@ module Ci
           end
         end
 
+        patch ":id/trace.txt" do
+          authenticate_runner!
+          update_runner_last_contact
+          build = Ci::Build.where(runner_id: current_runner.id).running.find(params[:id])
+          forbidden!('Build has been erased!') if build.erased?
+
+          build.append_trace(params[:trace_part])
+        end
+
         # Authorize artifacts uploading for build - Runners only
         #
         # Parameters:
