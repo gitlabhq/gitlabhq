@@ -212,32 +212,54 @@ describe License do
   end
 
   describe 'reading add-ons' do
-    context "with add-ons" do
-      before do
-        gl_license.restrictions = { add_ons: { support: 1, custom_domain: 2 } }
+    describe '#add_ons' do
+      context "without add-ons" do
+        it 'returns an empty Hash' do
+          license = build_license_with_add_ons({})
+
+          expect(license.add_ons).to eq({})
+        end
       end
 
-      it 'returns all available add-ons' do
-        expect(license.add_ons.keys).to include('support', 'custom_domain')
-      end
+      context "with add-ons" do
+        it 'returns all available add-ons' do
+          license = build_license_with_add_ons({ 'support' => 1, 'custom-domain' => 2 })
 
-      it 'returns a single addon if it exists' do
-        expect(license.add_on('support')).to eq({ 'support' => 1 })
-      end
+          expect(license.add_ons.keys).to include('support', 'custom-domain')
+        end
 
-      it 'returns Nil if add-on does not exists' do
-        expect(license.add_on('unknown')).to be_nil
+        it 'can return details about a single add-on' do
+          license = build_license_with_add_ons({ 'custom-domain' => 2 })
+
+          expect(license.add_ons['custom-domain']).to eq(2)
+        end
       end
     end
 
-    context "without add-ons" do
-      it 'returns an empty Hash' do
-        expect(license.add_ons).to eq({})
+    describe '#add_on?' do
+      it 'returns true if add-on exists and have a quantity greater than 0' do
+        license = build_license_with_add_ons({ 'support' => 1 })
+
+        expect(license.add_on?('support')).to eq(true)
       end
 
-      it 'returns nil when asking for a single add-on' do
-        expect(license.add_on('support')).to be_nil
+      it 'returns false if add-on exists but have a quantity of 0' do
+        license = build_license_with_add_ons({ 'support' => 0 })
+
+        expect(license.add_on?('support')).to eq(false)
       end
+
+      it 'returns false if add-on does not exists' do
+        license = build_license_with_add_ons({})
+
+        expect(license.add_on?('support')).to eq(false)
+      end
+    end
+
+    def build_license_with_add_ons(add_ons)
+      gl_license = build(:gitlab_license, restrictions: { add_ons: add_ons })
+      build(:license, data: gl_license.export)
     end
   end
+
 end
