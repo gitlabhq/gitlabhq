@@ -26,7 +26,7 @@
     }
 
     &.active a {
-      color: #000000;
+      color: #000;
       border-bottom: 2px solid #4688f1;
     }
 
@@ -41,7 +41,7 @@
 .top-area {
   @include clearfix;
 
-  border-bottom: 1px solid #EEE;
+  border-bottom: 1px solid #eee;
 
   .nav-text {
     padding-top: 16px;
@@ -59,11 +59,11 @@
   .nav-links {
     display: inline-block;
     width: 50%;
-    margin-bottom: 0px;
+    margin-bottom: 0;
     border-bottom: none;
 
     /* Small devices (phones, tablets, 768px and lower) */
-    @media (max-width: $screen-sm-min) {
+    @media (max-width: $screen-sm-max) {
       width: 100%;
     }
   }
@@ -74,19 +74,36 @@
     float: right;
     text-align: right;
     padding: 11px 0;
-    margin-bottom: 0px;
+    margin-bottom: 0;
 
     > .dropdown {
-      margin-right: 10px;
+      margin-right: $gl-padding-top;
       display: inline-block;
+
+      &:last-child {
+        margin-right: 0;
+      }
     }
 
     > .btn {
+      margin-right: $gl-padding-top;
       display: inline-block;
+
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+
+    > .btn-grouped {
+      float: none;
     }
 
     > form {
       display: inline-block;
+    }
+
+    .icon-label {
+      display: none;
     }
 
     input {
@@ -94,7 +111,7 @@
       display: inline-block;
       position: relative;
       top: 1px;
-      margin-right: 10px;
+      margin-right: $gl-padding-top;
 
       /* Medium devices (desktops, 992px and up) */
       @media (min-width: $screen-md-min) { width: 200px; }
@@ -111,9 +128,38 @@
       }
     }
 
-    /* Hide on extra small devices (phones) */
     @media (max-width: $screen-xs-max) {
-      display: none;
+      padding-bottom: 0;
+
+      .btn, form, .dropdown, .dropdown-menu-toggle, .form-control {
+        margin: 0 0 10px;
+        display: block;
+        width: 100%;
+      }
+
+      form {
+        display: block;
+        height: auto;
+
+        input {
+          width: 100%;
+          margin: 0 0 10px;
+        }
+      }
+
+      .input-short {
+        width: 100%;
+      }
+
+      .icon-label {
+        display: inline-block;
+      }
+
+      // Applies on /dashboard/issues
+      .project-item-select-holder {
+        display: block;
+        margin: 0;
+      }
     }
 
     /* Small devices (tablets, 768px and lower) */

@@ -6,7 +6,6 @@ module GlobalMilestones
     @milestones = MilestonesFinder.new.execute(@projects, params)
     @milestones = GlobalMilestone.build_collection(@milestones)
     @milestones = @milestones.sort_by { |x| x.due_date.nil? ? epoch : x.due_date }
-    @milestones = Kaminari.paginate_array(@milestones).page(params[:page]).per(ApplicationController::PER_PAGE)
   end
 
   def milestone

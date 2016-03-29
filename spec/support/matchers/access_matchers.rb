@@ -15,6 +15,8 @@ module AccessMatchers
       logout
     when :admin
       login_as(create(:admin))
+    when :external
+      login_as(create(:user, external: true))
     when User
       login_as(user)
     else
@@ -26,7 +28,7 @@ module AccessMatchers
     if user.kind_of?(User)
       # User#inspect displays too much information for RSpec's description
       # messages
-      "be #{type} for supplied User"
+      "be #{type} for the specified user"
     else
       "be #{type} for #{user}"
     end

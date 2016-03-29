@@ -24,6 +24,10 @@ class @ShortcutsIssuable extends ShortcutsNavigation
       @nextIssue()
       return false
     )
+    Mousetrap.bind('e', =>
+      @editIssue()
+      return false
+    )
 
 
     if isMergeRequest
@@ -63,3 +67,7 @@ class @ShortcutsIssuable extends ShortcutsNavigation
 
       # Focus the input field
       replyField.focus()
+
+  editIssue: ->
+    $editBtn = $('.issuable-edit')
+    Turbolinks.visit($editBtn.attr('href'))

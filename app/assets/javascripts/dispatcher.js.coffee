@@ -14,10 +14,7 @@ class Dispatcher
 
     path = page.split(':')
     shortcut_handler = null
-
     switch page
-      when 'explore:projects:index', 'explore:projects:starred', 'explore:projects:trending'
-        Dashboard.init()
       when 'projects:issues:index'
         Issues.init()
         shortcut_handler = new ShortcutsNavigation()
@@ -25,8 +22,10 @@ class Dispatcher
         new Issue()
         shortcut_handler = new ShortcutsIssuable()
         new ZenMode()
-      when 'projects:milestones:show'
+      when 'projects:milestones:show', 'groups:milestones:show', 'dashboard:milestones:show'
         new Milestone()
+      when 'dashboard:todos:index'
+        new Todos()
       when 'projects:milestones:new', 'projects:milestones:edit'
         new ZenMode()
         new DropzoneInput($('.milestone-form'))
@@ -59,8 +58,6 @@ class Dispatcher
       when 'projects:merge_requests:index'
         shortcut_handler = new ShortcutsNavigation()
         MergeRequests.init()
-      when 'dashboard:show', 'root:show'
-        Dashboard.init()
       when 'dashboard:activity'
         new Activities()
       when 'dashboard:projects:starred'
@@ -76,8 +73,11 @@ class Dispatcher
         shortcut_handler = new ShortcutsNavigation()
       when 'projects:show'
         shortcut_handler = new ShortcutsNavigation()
-      when 'groups:show'
+
+        new TreeView() if $('#tree-slider').length
+      when 'groups:activity'
         new Activities()
+      when 'groups:show'
         shortcut_handler = new ShortcutsNavigation()
       when 'groups:group_members:index'
         new GroupMembers()
@@ -88,10 +88,11 @@ class Dispatcher
       when 'groups:new', 'groups:edit', 'admin:groups:edit', 'admin:groups:new'
         new GroupAvatar()
       when 'projects:tree:show'
+        shortcut_handler = new ShortcutsNavigation()
         new TreeView()
       when 'projects:find_file:show'
         shortcut_handler = true
-      when 'projects:blob:show'
+      when 'projects:blob:show', 'projects:blame:show'
         new LineHighlighter()
         shortcut_handler = new ShortcutsNavigation()
       when 'projects:labels:new', 'projects:labels:edit'
@@ -104,9 +105,8 @@ class Dispatcher
         new ProjectFork()
       when 'projects:artifacts:browse'
         new BuildArtifacts()
-      when 'users:show'
-        new User()
-        new Activities()
+      when 'projects:group_links:index'
+        new GroupsSelect()
 
     switch path.first()
       when 'admin'

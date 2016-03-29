@@ -1,7 +1,39 @@
 # Quick Start
 
-Starting from version 8.0, GitLab Continuous Integration (CI) is fully
-integrated into GitLab itself and is enabled by default on all projects.
+>**Note:** Starting from version 8.0, GitLab [Continuous Integration][ci] (CI)
+is fully integrated into GitLab itself and is [enabled] by default on all
+projects.
+
+The TL;DR version of how GitLab CI works is the following.
+
+---
+
+GitLab offers a [continuous integration][ci] service. If you
+[add a `.gitlab-ci.yml` file][yaml] to the root directory of your repository,
+and configure your GitLab project to use a [Runner], then each merge request or
+push triggers a build.
+
+The `.gitlab-ci.yml` file tells the GitLab runner what do to. By default it
+runs three [stages]: `build`, `test`, and `deploy`.
+
+If everything runs OK (no non-zero return values), you'll get a nice green
+checkmark associated with the pushed commit or merge request. This makes it
+easy to see whether a merge request will cause any of the tests to fail before
+you even look at the code.
+
+Most projects only use GitLab's CI service to run the test suite so that
+developers get immediate feedback if they broke something.
+
+So in brief, the steps needed to have a working CI can be summed up to:
+
+1. Add `.gitlab-ci.yml` to the root directory of your repository
+1. Configure a Runner
+
+From there on, on every push to your Git repository, the build will be
+automagically started by the Runner and will appear under the project's
+`/builds` page.
+
+---
 
 This guide assumes that you:
 
@@ -9,17 +41,7 @@ This guide assumes that you:
   [GitLab.com](https://gitlab.com/users/sign_in)
 - have a project in GitLab that you would like to use CI for
 
-In brief, the steps needed to have a working CI can be summed up to:
-
-1. Create a new project
-1. Add `.gitlab-ci.yml` to the git repository and push to GitLab
-1. Configure a Runner
-
-From there on, on every push to your git repository the build will be
-automagically started by the Runner and will appear under the project's
-`/builds` page.
-
-Now, let's break it down to pieces and work on solving the GitLab CI puzzle.
+Let's break it down to pieces and work on solving the GitLab CI puzzle.
 
 ## Creating a `.gitlab-ci.yml` file
 
@@ -124,7 +146,7 @@ In GitLab, Runners run the builds that you define in `.gitlab-ci.yml`.
 A Runner can be a virtual machine, a VPS, a bare-metal machine, a docker
 container or even a cluster of containers. GitLab and the Runners communicate
 through an API, so the only needed requirement is that the machine on which the
-Runner is configured to has Internet access.
+Runner is configured to have Internet access.
 
 A Runner can be specific to a certain project or serve multiple projects in
 GitLab. If it serves all projects it's called a _Shared Runner_.
@@ -201,14 +223,18 @@ You can access a builds badge image using following link:
 http://example.gitlab.com/namespace/project/badges/branch/build.svg
 ```
 
-## Next steps
-
 Awesome! You started using CI in GitLab!
 
-Next you can look into doing more with the CI. Many people are using GitLab
-to package, containerize, test and deploy software.
+## Examples
 
-Visit our various languages examples at <https://gitlab.com/groups/gitlab-examples>.
+Visit the [examples README][examples] to see a list of examples using GitLab
+CI with various languages.
 
 [runner-install]: https://gitlab.com/gitlab-org/gitlab-ci-multi-runner/tree/master#installation
 [blog-ci]: https://about.gitlab.com/2015/05/06/why-were-replacing-gitlab-ci-jobs-with-gitlab-ci-dot-yml/
+[examples]: ../examples/README.md
+[ci]: https://about.gitlab.com/gitlab-ci/
+[yaml]: ../yaml/README.md
+[runner]: ../runners/README.md
+[enabled]: ../enable_or_disable_ci.md
+[stages]: ../yaml/README.md#stages

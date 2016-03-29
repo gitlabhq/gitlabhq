@@ -49,6 +49,11 @@ describe MergeRequest, models: true do
     it { is_expected.to include_module(Taskable) }
   end
 
+  describe "act_as_paranoid" do
+    it { is_expected.to have_db_column(:deleted_at) }
+    it { is_expected.to have_db_index(:deleted_at) }
+  end
+
   describe 'validation' do
     it { is_expected.to validate_presence_of(:target_branch) }
     it { is_expected.to validate_presence_of(:source_branch) }
@@ -78,6 +83,47 @@ describe MergeRequest, models: true do
     it { is_expected.to respond_to(:cannot_be_merged?) }
     it { is_expected.to respond_to(:merge_params) }
     it { is_expected.to respond_to(:merge_when_build_succeeds) }
+  end
+
+  describe '.in_projects' do
+    it 'returns the merge requests for a set of projects' do
+      expect(described_class.in_projects(Project.all)).to eq([subject])
+    end
+  end
+
+  describe '#target_sha' do
+    context 'when the target branch does not exist anymore' do
+      subject { create(:merge_request).tap { |mr| mr.update_attribute(:target_branch, 'deleted') } }
+
+      it 'returns nil' do
+        expect(subject.target_sha).to be_nil
+      end
+    end
+  end
+
+  describe '#source_sha' do
+    let(:last_branch_commit) { subject.source_project.repository.commit(subject.source_branch) }
+
+    context 'with diffs' do
+      subject { create(:merge_request, :with_diffs) }
+      it 'returns the sha of the source branch last commit' do
+        expect(subject.source_sha).to eq(last_branch_commit.sha)
+      end
+    end
+
+    context 'without diffs' do
+      subject { create(:merge_request, :without_diffs) }
+      it 'returns the sha of the source branch last commit' do
+        expect(subject.source_sha).to eq(last_branch_commit.sha)
+      end
+    end
+
+    context 'when the merge request is being created' do
+      subject { build(:merge_request, source_branch: nil, compare_commits: []) }
+      it 'returns nil' do
+        expect(subject.source_sha).to be_nil
+      end
+    end
   end
 
   describe '#to_reference' do
@@ -144,6 +190,7 @@ describe MergeRequest, models: true do
     let(:commit2) { double('commit2', safe_message: "Fixes #{issue1.to_reference}") }
 
     before do
+      subject.project.team << [subject.author, :developer]
       allow(subject).to receive(:commits).and_return([commit0, commit1, commit2])
     end
 
@@ -174,28 +221,20 @@ describe MergeRequest, models: true do
   end
 
   describe "#work_in_progress?" do
-    it "detects the 'WIP ' prefix" do
-      subject.title = "WIP #{subject.title}"
-      expect(subject).to be_work_in_progress
-    end
-
-    it "detects the 'WIP: ' prefix" do
-      subject.title = "WIP: #{subject.title}"
-      expect(subject).to be_work_in_progress
-    end
-
-    it "detects the '[WIP] ' prefix" do
-      subject.title = "[WIP] #{subject.title}"
-      expect(subject).to be_work_in_progress
-    end
-
-    it "detects the '[WIP]' prefix" do
-      subject.title = "[WIP]#{subject.title}"
-      expect(subject).to be_work_in_progress
+    ['WIP ', 'WIP:', 'WIP: ', '[WIP]', '[WIP] ', ' [WIP] WIP [WIP] WIP: WIP '].each do |wip_prefix|
+      it "detects the '#{wip_prefix}' prefix" do
+        subject.title = "#{wip_prefix}#{subject.title}"
+        expect(subject).to be_work_in_progress
+      end
     end
 
     it "doesn't detect WIP for words starting with WIP" do
       subject.title = "Wipwap #{subject.title}"
+      expect(subject).not_to be_work_in_progress
+    end
+
+    it "doesn't detect WIP for words containing with WIP" do
+      subject.title = "WupWipwap #{subject.title}"
       expect(subject).not_to be_work_in_progress
     end
 
@@ -271,6 +310,82 @@ describe MergeRequest, models: true do
       expect(attrs_hash).to include(:target)
       expect(attrs_hash).to include(:last_commit)
       expect(attrs_hash).to include(:work_in_progress)
+    end
+  end
+
+  describe '#diverged_commits_count' do
+    let(:project)      { create(:project) }
+    let(:fork_project) { create(:project, forked_from_project: project) }
+
+    context 'when the target branch does not exist anymore' do
+      subject { create(:merge_request).tap { |mr| mr.update_attribute(:target_branch, 'deleted') } }
+
+      it 'does not crash' do
+        expect{ subject.diverged_commits_count }.not_to raise_error
+      end
+
+      it 'returns 0' do
+        expect(subject.diverged_commits_count).to eq(0)
+      end
+    end
+
+    context 'diverged on same repository' do
+      subject(:merge_request_with_divergence) { create(:merge_request, :diverged, source_project: project, target_project: project) }
+
+      it 'counts commits that are on target branch but not on source branch' do
+        expect(subject.diverged_commits_count).to eq(5)
+      end
+    end
+
+    context 'diverged on fork' do
+      subject(:merge_request_fork_with_divergence) { create(:merge_request, :diverged, source_project: fork_project, target_project: project) }
+
+      it 'counts commits that are on target branch but not on source branch' do
+        expect(subject.diverged_commits_count).to eq(5)
+      end
+    end
+
+    context 'rebased on fork' do
+      subject(:merge_request_rebased) { create(:merge_request, :rebased, source_project: fork_project, target_project: project) }
+
+      it 'counts commits that are on target branch but not on source branch' do
+        expect(subject.diverged_commits_count).to eq(0)
+      end
+    end
+
+    describe 'caching' do
+      before(:example) do
+        allow(Rails).to receive(:cache).and_return(ActiveSupport::Cache::MemoryStore.new)
+      end
+
+      it 'caches the output' do
+        expect(subject).to receive(:compute_diverged_commits_count).
+          once.
+          and_return(2)
+
+        subject.diverged_commits_count
+        subject.diverged_commits_count
+      end
+
+      it 'invalidates the cache when the source sha changes' do
+        expect(subject).to receive(:compute_diverged_commits_count).
+          twice.
+          and_return(2)
+
+        subject.diverged_commits_count
+        allow(subject).to receive(:source_sha).and_return('123abc')
+        subject.diverged_commits_count
+      end
+
+      it 'invalidates the cache when the target sha changes' do
+        expect(subject).to receive(:compute_diverged_commits_count).
+          twice.
+          and_return(2)
+
+        subject.diverged_commits_count
+        allow(subject).to receive(:target_sha).and_return('123abc')
+        subject.diverged_commits_count
+      end
     end
   end
 

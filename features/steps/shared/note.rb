@@ -17,7 +17,7 @@ module SharedNote
   step 'I leave a comment like "XML attached"' do
     page.within(".js-main-target-form") do
       fill_in "note[note]", with: "XML attached"
-      click_button "Add Comment"
+      click_button "Comment"
     end
   end
 
@@ -30,7 +30,7 @@ module SharedNote
 
   step 'I submit the comment' do
     page.within(".js-main-target-form") do
-      click_button "Add Comment"
+      click_button "Comment"
     end
   end
 
@@ -115,7 +115,7 @@ module SharedNote
   step 'I leave a comment with a header containing "Comment with a header"' do
     page.within(".js-main-target-form") do
       fill_in "note[note]", with: "# Comment with a header"
-      click_button "Add Comment"
+      click_button "Comment"
       sleep 0.05
     end
   end
@@ -142,13 +142,6 @@ module SharedNote
   step 'I should see +1 in the description' do
     page.within(".note") do
       expect(page).to have_content("+1 Awesome!")
-    end
-  end
-
-  step 'I sort the list by "Last updated"' do
-    find('button.dropdown-toggle.btn').click
-    page.within('ul.dropdown-menu.dropdown-menu-align-right li') do
-      click_link "Last updated"
     end
   end
 end

@@ -10,31 +10,30 @@ class Spinach::Features::AwardEmoji < Spinach::FeatureSteps
 
   step 'I click the thumbsup award Emoji' do
     page.within '.awards' do
-      thumbsup = page.find('.award .emoji-1F44D')
+      thumbsup = page.first('.award-control')
       thumbsup.click
       thumbsup.hover
-      sleep 0.3
     end
   end
 
   step 'I click to emoji-picker' do
-    page.within '.awards-controls' do
-      page.find('.add-award').click
+    page.within '.awards' do
+      page.find('.js-add-award').click
     end
   end
 
   step 'I click to emoji in the picker' do
     page.within '.emoji-menu-content' do
-      page.first('.emoji-icon').click
+      page.first('.js-emoji-btn').click
     end
   end
 
   step 'I can remove it by clicking to icon' do
     page.within '.awards' do
       expect do
-        page.find('.award.active').click
+        page.find('.js-emoji-btn.active').click
         sleep 0.3
-      end.to change{ page.all(".award").size }.from(3).to(2)
+      end.to change{ page.all(".award-control.js-emoji-btn").size }.from(3).to(2)
     end
   end
 
@@ -46,26 +45,24 @@ class Spinach::Features::AwardEmoji < Spinach::FeatureSteps
   end
 
   step 'I have award added' do
-    sleep 0.2
-
     page.within '.awards' do
-      expect(page).to have_selector '.award'
-      expect(page.find('.award.active .counter')).to have_content '1'
-      expect(page.find('.award.active')['data-original-title']).to eq('me')
+      expect(page).to have_selector '.js-emoji-btn'
+      expect(page.find('.js-emoji-btn.active .js-counter')).to have_content '1'
+      expect(page).to have_css(".js-emoji-btn.active[data-original-title='me']")
     end
   end
 
   step 'I have no awards added' do
     page.within '.awards' do
-      expect(page).to have_selector '.award'
-      expect(page.all('.award').size).to eq(2)
+      expect(page).to have_selector '.award-control.js-emoji-btn'
+      expect(page.all('.award-control.js-emoji-btn').size).to eq(2)
 
       # Check tooltip data
-      page.all('.award').each do |element|
+      page.all('.award-control.js-emoji-btn').each do |element|
         expect(element['title']).to eq("")
       end
 
-      page.all('.award .counter').each do |element|
+      page.all('.award-control .js-counter').each do |element|
         expect(element).to have_content '0'
       end
     end
@@ -79,7 +76,7 @@ class Spinach::Features::AwardEmoji < Spinach::FeatureSteps
   step 'I leave comment with a single emoji' do
     page.within('.js-main-target-form') do
       fill_in 'note[note]', with: ':smile:'
-      click_button 'Add Comment'
+      click_button 'Comment'
     end
   end
 
@@ -95,7 +92,12 @@ class Spinach::Features::AwardEmoji < Spinach::FeatureSteps
     end
   end
 
+  step 'The emoji menu is visible' do
+    page.find(".emoji-menu.is-visible")
+  end
+
   step 'The search field is focused' do
-    page.evaluate_script("document.activeElement.id").should eq "emoji_search"
+    expect(page).to have_selector('#emoji_search')
+    expect(page.evaluate_script('document.activeElement.id')).to eq('emoji_search')
   end
 end

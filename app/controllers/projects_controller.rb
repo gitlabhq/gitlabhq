@@ -1,8 +1,7 @@
-class ProjectsController < ApplicationController
+class ProjectsController < Projects::ApplicationController
   include ExtractsPath
 
-  prepend_before_action :render_go_import, only: [:show]
-  skip_before_action :authenticate_user!, only: [:show, :activity]
+  before_action :authenticate_user!, except: [:show, :activity]
   before_action :project, except: [:new, :create]
   before_action :repository, except: [:new, :create]
   before_action :assign_ref_vars, :tree, only: [:show], if: :repo_exists?
@@ -135,7 +134,7 @@ class ProjectsController < ApplicationController
   def autocomplete_sources
     note_type = params['type']
     note_id = params['type_id']
-    autocomplete = ::Projects::AutocompleteService.new(@project)
+    autocomplete = ::Projects::AutocompleteService.new(@project, current_user)
     participants = ::Projects::ParticipantsService.new(@project, current_user).execute(note_type, note_id)
 
     @suggestions = {
@@ -173,10 +172,15 @@ class ProjectsController < ApplicationController
   def housekeeping
     ::Projects::HousekeepingService.new(@project).execute
 
-    respond_to do |format|
-      flash[:notice] = "Housekeeping successfully started."
-      format.html { redirect_to project_path(@project) }
-    end
+    redirect_to(
+      project_path(@project),
+      notice: "Housekeeping successfully started"
+    )
+  rescue ::Projects::HousekeepingService::LeaseTaken => ex
+    redirect_to(
+      edit_project_path(@project),
+      alert: ex.to_s
+    )
   end
 
   def toggle_star
@@ -240,16 +244,6 @@ class ProjectsController < ApplicationController
         }
       end
     end
-  end
-
-  def render_go_import
-    return unless params["go-get"] == "1"
-
-    @namespace = params[:namespace_id]
-    @id = params[:project_id] || params[:id]
-    @id = @id.gsub(/\.git\Z/, "")
-
-    render "go_import", layout: false
   end
 
   def repo_exists?

@@ -25,14 +25,14 @@ class Spinach::Features::ProjectHooks < Spinach::FeatureSteps
   step 'I submit new hook' do
     @url = FFaker::Internet.uri("http")
     fill_in "hook_url", with: @url
-    expect { click_button "Add Web Hook" }.to change(ProjectHook, :count).by(1)
+    expect { click_button "Add Webhook" }.to change(ProjectHook, :count).by(1)
   end
 
   step 'I submit new hook with SSL verification enabled' do
     @url = FFaker::Internet.uri("http")
     fill_in "hook_url", with: @url
     check "hook_enable_ssl_verification"
-    expect { click_button "Add Web Hook" }.to change(ProjectHook, :count).by(1)
+    expect { click_button "Add Webhook" }.to change(ProjectHook, :count).by(1)
   end
 
   step 'I should see newly created hook' do

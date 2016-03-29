@@ -1,4 +1,6 @@
 class Projects::BadgesController < Projects::ApplicationController
+  before_action :no_cache_headers
+
   def build
     respond_to do |format|
       format.html { render_404 }

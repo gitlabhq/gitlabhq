@@ -237,6 +237,7 @@ POST /projects/:id/issues
 | `assignee_id`   | integer | no  | The ID of a user to assign issue |
 | `milestone_id`  | integer | no  | The ID of a milestone to assign issue |
 | `labels`        | string  | no  | Comma-separated label names for an issue  |
+| `created_at`    | string  | no  | Date time string, ISO 8601 formatted, e.g. `2016-03-11T03:45:40Z` |
 
 ```bash
 curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/4/issues?title=Issues%20with%20auth&labels=bug
@@ -326,15 +327,23 @@ Example response:
 }
 ```
 
-## Delete existing issue (**Deprecated**)
+## Delete an issue
 
-This call is deprecated and returns a `405 Method Not Allowed` error if called.
-An issue gets now closed and is done by calling
-`PUT /projects/:id/issues/:issue_id` with the parameter `state_event` set to
-`close`. See [edit issue](#edit-issue) for more details.
+Only for admins and project owners. Soft deletes the issue in question.
+If the operation is successful, a status code `200` is returned. In case you cannot
+destroy this issue, or it is not present, code `404` is given.
 
 ```
 DELETE /projects/:id/issues/:issue_id
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id`            | integer | yes | The ID of a project |
+| `issue_id`      | integer | yes | The ID of a project's issue |
+
+```bash
+curl -X DELETE -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/4/issues/85
 ```
 
 ## Comments on issues

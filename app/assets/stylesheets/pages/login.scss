@@ -8,6 +8,10 @@
     max-width: none;
   }
 
+  .flash-container {
+    margin-bottom: $gl-padding;
+  }
+
   .brand-holder {
     font-size: 18px;
     line-height: 1.5;
@@ -24,7 +28,7 @@
 
     img {
       max-width: 100%;
-      margin-bottom:  30px;
+      margin-bottom: 30px;
     }
 
     a {
@@ -35,13 +39,13 @@
   .login-box{
     background: #fafafa;
     border-radius: 10px;
-    box-shadow: 0 0px 2px #CCC;
+    box-shadow: 0 0 2px #ccc;
     padding: 15px;
 
     .login-heading h3 {
       font-weight: 300;
       line-height: 1.5;
-      margin: 0 0 10px 0;
+      margin: 0 0 10px;
     }
 
     .login-footer {
@@ -70,7 +74,7 @@
 
     &.top {
       @include border-radius(5px 5px 0 0);
-      margin-bottom: 0px;
+      margin-bottom: 0;
     }
 
     &.bottom {
@@ -81,12 +85,12 @@
 
     &.middle {
       border-top: 0;
-      margin-bottom:0px;
+      margin-bottom: 0;
       @include border-radius(0);
     }
 
     &:active, &:focus {
-      background-color: #FFF;
+      background-color: #fff;
     }
   }
 

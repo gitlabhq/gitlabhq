@@ -1,20 +1,35 @@
 .detail-page-header
   .status-box{ class: status_box_class(@merge_request) }
-    = @merge_request.state_human_name
-  %span.identifier
-    Merge Request ##{@merge_request.iid}
-  %span.creator
-    &middot;
-    by #{link_to_member(@project, @merge_request.author, size: 24)}
-    &middot;
-    = time_ago_with_tooltip(@merge_request.created_at)
+    %span.hidden-xs
+      = @merge_request.state_human_name
+    %span.hidden-sm.hidden-md.hidden-lg
+      = icon(@merge_request.state_icon_name)
+  %a.btn.btn-default.pull-right.visible-xs-block.gutter-toggle.js-sidebar-toggle{ href: "#" }
+    = icon('angle-double-left')
+  .issue-meta
+    %strong.identifier
+      %span.hidden-sm.hidden-md.hidden-lg
+        MR
+      %span.hidden-xs
+        Merge Request
+      !#{@merge_request.iid}
+    %span.creator
+      opened
+      .editor-details
+        = time_ago_with_tooltip(@merge_request.created_at)
+        by
+        %strong
+          = link_to_member(@project, @merge_request.author, size: 24, mobile_classes: "hidden-xs")
+        %strong
+          = link_to_member(@project, @merge_request.author, size: 24, mobile_classes: "hidden-sm hidden-md hidden-lg",
+            by_username: true, avatar: false)
 
   .issue-btn-group.pull-right
     - if can?(current_user, :update_merge_request, @merge_request)
       - if @merge_request.open?
         = link_to 'Close', merge_request_path(@merge_request, merge_request: { state_event: :close }), method: :put, class: 'btn btn-nr btn-grouped btn-close', title: 'Close merge request'
         = link_to edit_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), class: 'btn btn-nr btn-grouped issuable-edit', id: 'edit_merge_request' do
-          %i.fa.fa-pencil-square-o
+          = icon('pencil-square-o')
           Edit
       - if @merge_request.closed?
         = link_to 'Reopen', merge_request_path(@merge_request, merge_request: {state_event: :reopen }), method: :put, class: 'btn btn-nr btn-grouped btn-reopen reopen-mr-link', title: 'Reopen merge request'

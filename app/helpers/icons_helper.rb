@@ -10,6 +10,15 @@ module IconsHelper
     options.include?(:base) ? fa_stacked_icon(names, options) : fa_icon(names, options)
   end
 
+  def audit_icon(names, options = {})
+    case names
+    when "standard"
+      names = "key"
+    end
+
+    options.include?(:base) ? fa_stacked_icon(names, options) : fa_icon(names, options)
+  end
+
   def spinner(text = nil, visible = false)
     css_class = 'loading'
     css_class << ' hide' unless visible
@@ -37,7 +46,7 @@ module IconsHelper
       else # Gitlab::VisibilityLevel::PUBLIC
         'globe'
       end
-      
+
     name << " fw" if fw
 
     icon(name)

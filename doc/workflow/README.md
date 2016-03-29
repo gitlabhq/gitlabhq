@@ -13,6 +13,8 @@
 - [Project forking workflow](forking_workflow.md)
 - [Project users](add-user/add-user.md)
 - [Protected branches](protected_branches.md)
+- [Sharing a project with a group](share_with_group.md)
+- [Share projects with other groups](share_projects_with_other_groups.md)
 - [Web Editor](web_editor.md)
 - [Releases](releases.md)
 - [Milestones](milestones.md)
@@ -22,3 +24,4 @@
 - [Merge When Build Succeeds](merge_when_build_succeeds.md)
 - [Manage large binaries with Git LFS](lfs/manage_large_binaries_with_git_lfs.md)
 - [Importing from SVN, GitHub, BitBucket, etc](importing/README.md)
+- [Todos](todos.md)

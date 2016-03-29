@@ -66,7 +66,7 @@ class SystemNoteService
   def self.change_label(noteable, project, author, added_labels, removed_labels)
     labels_count = added_labels.count + removed_labels.count
 
-    references     = ->(label) { label.to_reference(:id) }
+    references     = ->(label) { label.to_reference(format: :id) }
     added_labels   = added_labels.map(&references).join(' ')
     removed_labels = removed_labels.map(&references).join(' ')
 
@@ -144,6 +144,18 @@ class SystemNoteService
     create_note(noteable: noteable, project: project, author: author, note: body)
   end
 
+  def self.remove_merge_request_wip(noteable, project, author)
+    body = 'Unmarked this merge request as a Work In Progress'
+
+    create_note(noteable: noteable, project: project, author: author, note: body)
+  end
+
+  def self.add_merge_request_wip(noteable, project, author)
+    body = 'Marked this merge request as a **Work In Progress**'
+
+    create_note(noteable: noteable, project: project, author: author, note: body)
+  end
+
   # Called when the title of a Noteable is changed
   #
   # noteable  - Noteable object that responds to `title`
@@ -205,6 +217,18 @@ class SystemNoteService
       end
     body = "#{verb} #{branch_type.to_s} branch `#{branch}`".capitalize
     create_note(noteable: noteable, project: project, author: author, note: body)
+  end
+
+  # Called when a branch is created from the 'new branch' button on a issue
+  # Example note text:
+  #
+  #   "Started branch `issue-branch-button-201`"
+  def self.new_issue_branch(issue, project, author, branch)
+    h = Gitlab::Application.routes.url_helpers
+    link = h.namespace_project_compare_url(project.namespace, project, from: project.default_branch, to: branch)
+
+    body = "Started branch [`#{branch}`](#{link})"
+    create_note(noteable: issue, project: project, author: author, note: body)
   end
 
   # Called when a Mentionable references a Noteable
@@ -385,6 +409,28 @@ class SystemNoteService
   def self.change_task_status(noteable, project, author, new_task)
     status_label = new_task.complete? ? Taskable::COMPLETED : Taskable::INCOMPLETE
     body = "Marked the task **#{new_task.source}** as #{status_label}"
+    create_note(noteable: noteable, project: project, author: author, note: body)
+  end
+
+  # Called when noteable has been moved to another project
+  #
+  # direction    - symbol, :to or :from
+  # noteable     - Noteable object
+  # noteable_ref - Referenced noteable
+  # author       - User performing the move
+  #
+  # Example Note text:
+  #
+  #   "Moved to some_namespace/project_new#11"
+  #
+  # Returns the created Note object
+  def self.noteable_moved(noteable, project, noteable_ref, author, direction:)
+    unless [:to, :from].include?(direction)
+      raise ArgumentError, "Invalid direction `#{direction}`"
+    end
+
+    cross_reference = noteable_ref.to_reference(project)
+    body = "Moved #{direction} #{cross_reference}"
     create_note(noteable: noteable, project: project, author: author, note: body)
   end
 end

@@ -619,6 +619,20 @@ Revoking team membership for a user who is not currently a team member is consid
 Please note that the returned JSON currently differs slightly. Thus you should not
 rely on the returned JSON structure.
 
+### Share project with group
+
+Allow to share project with group.
+
+```
+POST /projects/:id/share
+```
+
+Parameters:
+
+- `id` (required) - The ID of a project
+- `group_id` (required) - The ID of a group
+- `group_access` (required) - Level of permissions for sharing
+
 ## Hooks
 
 Also called Project Hooks and Webhooks.

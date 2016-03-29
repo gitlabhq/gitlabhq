@@ -17,16 +17,12 @@ module Gitlab
         }
       end
 
-      def cross_project?
-        source_repo.id != target_repo.id
-      end
-
       def number
         raw_data.number
       end
 
       def valid?
-        source_branch.present? && target_branch.present?
+        !cross_project? && source_branch.present? && target_branch.present?
       end
 
       private
@@ -51,6 +47,10 @@ module Gitlab
 
       def body
         raw_data.body || ""
+      end
+
+      def cross_project?
+        source_repo.present? && target_repo.present? && source_repo.id != target_repo.id
       end
 
       def description

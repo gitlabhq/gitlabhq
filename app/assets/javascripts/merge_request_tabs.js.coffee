@@ -3,6 +3,8 @@
 # Handles persisting and restoring the current tab selection and lazily-loading
 # content on the MergeRequests#show page.
 #
+#= require jquery.cookie
+#
 # ### Example Markup
 #
 #   <ul class="nav-links merge-request-tabs">
@@ -68,10 +70,15 @@ class @MergeRequestTabs
 
     if action == 'commits'
       @loadCommits($target.attr('href'))
+      @expandView()
     else if action == 'diffs'
       @loadDiff($target.attr('href'))
+      @shrinkView()
     else if action == 'builds'
       @loadBuilds($target.attr('href'))
+      @expandView()
+    else
+      @expandView()
 
     @setCurrentAction(action)
 
@@ -145,7 +152,9 @@ class @MergeRequestTabs
       url: "#{source}.json" + @_location.search
       success: (data) =>
         document.querySelector("div#diffs").innerHTML = data.html
+        $('.js-timeago').timeago()
         $('div#diffs .js-syntax-highlight').syntaxHighlight()
+        @expandViewContainer() if @diffViewType() is 'parallel'
         @diffsLoaded = true
         @scrollToElement("#diffs")
 
@@ -177,3 +186,33 @@ class @MergeRequestTabs
     options = $.extend({}, defaults, options)
 
     $.ajax(options)
+
+  # Returns diff view type
+  diffViewType: ->
+    $('.inline-parallel-buttons a.active').data('view-type')
+
+  expandViewContainer: ->
+    $('.container-fluid').removeClass('container-limited')
+
+  shrinkView: ->
+    $gutterIcon = $('.js-sidebar-toggle i:visible')
+
+    # Wait until listeners are set
+    setTimeout( ->
+      # Only when sidebar is expanded
+      if $gutterIcon.is('.fa-angle-double-right')
+        $gutterIcon.closest('a').trigger('click', [true])
+    , 0)
+
+  # Expand the issuable sidebar unless the user explicitly collapsed it
+  expandView: ->
+    return if $.cookie('collapsed_gutter') == 'true'
+
+    $gutterIcon = $('.js-sidebar-toggle i:visible')
+
+    # Wait until listeners are set
+    setTimeout( ->
+      # Only when sidebar is collapsed
+      if $gutterIcon.is('.fa-angle-double-left')
+        $gutterIcon.closest('a').trigger('click', [true])
+    , 0)

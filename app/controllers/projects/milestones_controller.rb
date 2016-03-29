@@ -19,7 +19,14 @@ class Projects::MilestonesController < Projects::ApplicationController
       end
 
     @milestones = @milestones.includes(:project)
-    @milestones = @milestones.page(params[:page]).per(PER_PAGE)
+    respond_to do |format|
+      format.html do
+        @milestones = @milestones.page(params[:page])
+      end
+      format.json do
+        render json: @milestones
+      end
+    end
   end
 
   def new
@@ -32,10 +39,6 @@ class Projects::MilestonesController < Projects::ApplicationController
   end
 
   def show
-    @issues = @milestone.issues
-    @users = @milestone.participants.uniq
-    @merge_requests = @milestone.merge_requests
-    @labels = @milestone.labels
   end
 
   def create

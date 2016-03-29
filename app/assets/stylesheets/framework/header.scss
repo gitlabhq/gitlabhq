@@ -7,8 +7,8 @@ header {
 
   &.navbar-empty {
     height: 58px;
-    background: #FFF;
-    border-bottom: 1px solid #EEE;
+    background: #fff;
+    border-bottom: 1px solid #eee;
 
     .center-logo {
       margin: 11px 0;
@@ -28,7 +28,7 @@ header {
     min-height: $header-height;
     background-color: #fff;
     border: none;
-    border-bottom: 1px solid #EEE;
+    border-bottom: 1px solid #eee;
 
     .container-fluid {
       width: 100% !important;
@@ -47,7 +47,7 @@ header {
         text-align: center;
 
         &:hover, &:focus, &:active {
-          background-color: #FFF;
+          background-color: #fff;
         }
       }
 
@@ -59,7 +59,7 @@ header {
         right: 2px;
 
         &:hover {
-          background-color: #EEE;
+          background-color: #eee;
         }
         &.active {
           color: #7f8fa4;
@@ -70,6 +70,11 @@ header {
 
   .header-content {
     height: $header-height;
+    padding-right: 20px;
+
+    @media (min-width: $screen-sm-min) {
+      padding-right: 0;
+    }
 
     .title {
       margin: 0;
@@ -77,6 +82,7 @@ header {
       line-height: $header-height;
       font-weight: normal;
       color: #4c4e54;
+      overflow: hidden;
       text-overflow: ellipsis;
       vertical-align: top;
       white-space: nowrap;
@@ -140,18 +146,18 @@ header {
   margin-left: $sidebar_collapsed_width;
 }
 
-@media (max-width: $screen-md-max) {
-  .header-collapsed, .header-expanded {
+.header-collapsed {
+  margin-left: $sidebar_collapsed_width;
+
+  @media (min-width: $screen-md-min) {
     @include collapsed-header;
   }
 }
 
-@media(min-width: $screen-md-max) {
-  .header-collapsed {
-    @include collapsed-header;
-  }
+.header-expanded {
+  margin-left: $sidebar_collapsed_width;
 
-  .header-expanded {
+  @media (min-width: $screen-md-min) {
     margin-left: $sidebar_width;
   }
 }
@@ -161,7 +167,7 @@ header {
     font-size: 18px;
 
     .navbar-nav {
-      margin: 0px;
+      margin: 0;
       float: none !important;
 
       .visible-xs, .visable-sm {

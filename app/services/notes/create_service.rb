@@ -13,6 +13,5 @@ module Notes
 
       note
     end
-
   end
 end

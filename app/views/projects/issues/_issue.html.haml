@@ -3,10 +3,11 @@
     .issue-check
       = check_box_tag dom_id(issue,"selected"), nil, false, 'data-id' => issue.id, class: "selected_issue"
 
-  .issue-title
+  .issue-title.title
     %span.issue-title-text
-      = link_to_gfm issue.title, issue_path(issue), class: "row_title"
-    %ul.controls.light
+      = confidential_icon(issue)
+      = link_to_gfm issue.title, issue_path(issue)
+    %ul.controls
       - if issue.closed?
         %li
           CLOSED
@@ -16,21 +17,13 @@
           = link_to_member(@project, issue.assignee, name: false, title: "Assigned to :name")
 
       - upvotes, downvotes = issue.upvotes, issue.downvotes
-      - if upvotes > 0 || downvotes > 0
+      - if upvotes > 0
         %li
-          = icon('thumbs-up')
-          = upvotes
-      - else
-        %li{ class: 'issue-no-votes' }
           = icon('thumbs-up')
           = upvotes
 
-      - if upvotes > 0 || downvotes > 0
+      - if downvotes > 0
         %li
-          = icon('thumbs-down')
-          = downvotes
-      - else
-        %li{ class: 'issue-no-votes' }
           = icon('thumbs-down')
           = downvotes
 

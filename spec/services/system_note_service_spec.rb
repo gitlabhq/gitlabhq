@@ -280,6 +280,18 @@ describe SystemNoteService, services: true do
     end
   end
 
+  describe '.new_issue_branch' do
+    subject { described_class.new_issue_branch(noteable, project, author, "1-mepmep") }
+
+    it_behaves_like 'a system note'
+
+    context 'when a branch is created from the new branch button' do
+      it 'sets the note text' do
+        expect(subject.note).to match /\AStarted branch [`1-mepmep`]/
+      end
+    end
+  end
+
   describe '.cross_reference' do
     subject { described_class.cross_reference(noteable, mentioner, author) }
 
@@ -441,6 +453,59 @@ describe SystemNoteService, services: true do
     end
   end
 
+  describe '.noteable_moved' do
+    let(:new_project) { create(:project) }
+    let(:new_noteable) { create(:issue, project: new_project) }
+
+    subject do
+      described_class.noteable_moved(noteable, project, new_noteable, author, direction: direction)
+    end
+
+    shared_examples 'cross project mentionable' do
+      include GitlabMarkdownHelper
+
+      it 'should contain cross reference to new noteable' do
+        expect(subject.note).to include cross_project_reference(new_project, new_noteable)
+      end
+
+      it 'should mention referenced noteable' do
+        expect(subject.note).to include new_noteable.to_reference
+      end
+
+      it 'should mention referenced project' do
+        expect(subject.note).to include new_project.to_reference
+      end
+    end
+
+    context 'moved to' do
+      let(:direction) { :to }
+
+      it_behaves_like 'cross project mentionable'
+
+      it 'should notify about noteable being moved to' do
+        expect(subject.note).to match /Moved to/
+      end
+    end
+
+    context 'moved from' do
+      let(:direction) { :from }
+
+      it_behaves_like 'cross project mentionable'
+
+      it 'should notify about noteable being moved from' do
+        expect(subject.note).to match /Moved from/
+      end
+    end
+
+    context 'invalid direction' do
+      let(:direction) { :invalid }
+
+      it 'should raise error' do
+        expect { subject }.to raise_error StandardError, /Invalid direction/
+      end
+    end
+  end
+
   include JiraServiceHelper
 
   describe 'JIRA integration' do
@@ -474,8 +539,8 @@ describe SystemNoteService, services: true do
 
       describe "existing reference" do
         before do
-          message = "[#{author.name}|http://localhost/u/#{author.username}] mentioned this issue in [a commit of #{project.path_with_namespace}|http://localhost/#{project.path_with_namespace}/commit/#{commit.id}]."
-          WebMock.stub_request(:get, jira_api_comment_url).to_return(body: "{\"comments\":[{\"body\":\"#{message}\"}]}")
+          message = %Q{[#{author.name}|http://localhost/u/#{author.username}] mentioned this issue in [a commit of #{project.path_with_namespace}|http://localhost/#{project.path_with_namespace}/commit/#{commit.id}]:\\n'#{commit.title}'}
+          WebMock.stub_request(:get, jira_api_comment_url).to_return(body: %Q({"comments":[{"body":"#{message}"}]}))
         end
 
         subject { described_class.cross_reference(jira_issue, commit, author) }

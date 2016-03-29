@@ -180,6 +180,20 @@ describe User, models: true do
     it { is_expected.to respond_to(:is_admin?) }
     it { is_expected.to respond_to(:name) }
     it { is_expected.to respond_to(:private_token) }
+    it { is_expected.to respond_to(:external?) }
+  end
+
+  describe 'before save hook' do
+    context 'when saving an external user' do
+      let(:user)          { create(:user) }
+      let(:external_user) { create(:user, external: true) }
+
+      it "sets other properties aswell" do
+        expect(external_user.can_create_team).to be_falsey
+        expect(external_user.can_create_group).to be_falsey
+        expect(external_user.projects_limit).to be 0
+      end
+    end
   end
 
   describe '#confirm' do
@@ -256,6 +270,7 @@ describe User, models: true do
       expect(user).to be_two_factor_enabled
       expect(user.encrypted_otp_secret).not_to be_nil
       expect(user.otp_backup_codes).not_to be_nil
+      expect(user.otp_grace_period_started_at).not_to be_nil
 
       user.disable_two_factor!
 
@@ -264,6 +279,7 @@ describe User, models: true do
       expect(user.encrypted_otp_secret_iv).to be_nil
       expect(user.encrypted_otp_secret_salt).to be_nil
       expect(user.otp_backup_codes).to be_nil
+      expect(user.otp_grace_period_started_at).to be_nil
     end
   end
 
@@ -402,6 +418,7 @@ describe User, models: true do
         expect(user.projects_limit).to eq(Gitlab.config.gitlab.default_projects_limit)
         expect(user.can_create_group).to eq(Gitlab.config.gitlab.default_can_create_group)
         expect(user.theme_id).to eq(Gitlab.config.gitlab.default_theme)
+        expect(user.external).to be_falsey
       end
     end
 
@@ -435,17 +452,43 @@ describe User, models: true do
     end
   end
 
-  describe 'search' do
-    let(:user1) { create(:user, username: 'James', email: 'james@testing.com') }
-    let(:user2) { create(:user, username: 'jameson', email: 'jameson@example.com') }
+  describe '.search' do
+    let(:user) { create(:user) }
 
-    it "should be case insensitive" do
-      expect(User.search(user1.username.upcase).to_a).to eq([user1])
-      expect(User.search(user1.username.downcase).to_a).to eq([user1])
-      expect(User.search(user2.username.upcase).to_a).to eq([user2])
-      expect(User.search(user2.username.downcase).to_a).to eq([user2])
-      expect(User.search(user1.username.downcase).to_a.size).to eq(2)
-      expect(User.search(user2.username.downcase).to_a.size).to eq(1)
+    it 'returns users with a matching name' do
+      expect(described_class.search(user.name)).to eq([user])
+    end
+
+    it 'returns users with a partially matching name' do
+      expect(described_class.search(user.name[0..2])).to eq([user])
+    end
+
+    it 'returns users with a matching name regardless of the casing' do
+      expect(described_class.search(user.name.upcase)).to eq([user])
+    end
+
+    it 'returns users with a matching Email' do
+      expect(described_class.search(user.email)).to eq([user])
+    end
+
+    it 'returns users with a partially matching Email' do
+      expect(described_class.search(user.email[0..2])).to eq([user])
+    end
+
+    it 'returns users with a matching Email regardless of the casing' do
+      expect(described_class.search(user.email.upcase)).to eq([user])
+    end
+
+    it 'returns users with a matching username' do
+      expect(described_class.search(user.username)).to eq([user])
+    end
+
+    it 'returns users with a partially matching username' do
+      expect(described_class.search(user.username[0..2])).to eq([user])
+    end
+
+    it 'returns users with a matching username regardless of the casing' do
+      expect(described_class.search(user.username.upcase)).to eq([user])
     end
   end
 

@@ -79,7 +79,7 @@ describe MergeRequests::RefreshService, services: true do
 
       it { expect(@merge_request.notes.last.note).to include('changed to merged') }
       it { expect(@merge_request).to be_merged }
-      it { expect(@merge_request.diffs.length).to be > 0 }
+      it { expect(@merge_request.diffs.size).to be > 0 }
       it { expect(@fork_merge_request).to be_merged }
       it { expect(@fork_merge_request.notes.last.note).to include('changed to merged') }
     end

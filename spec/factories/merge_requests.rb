@@ -51,9 +51,18 @@ FactoryGirl.define do
     trait :with_diffs do
     end
 
+    trait :without_diffs do
+      source_branch "improve/awesome"
+      target_branch "master"
+    end
+
     trait :conflict do
       source_branch "feature_conflict"
       target_branch "feature"
+    end
+
+    trait :merged do
+      state :merged
     end
 
     trait :closed do
@@ -69,11 +78,22 @@ FactoryGirl.define do
       target_branch "master"
     end
 
+    trait :rebased do
+      source_branch "markdown"
+      target_branch "improve/awesome"
+    end
+
+    trait :diverged do
+      source_branch "feature"
+      target_branch "master"
+    end
+
     trait :merge_when_build_succeeds do
       merge_when_build_succeeds true
       merge_user author
     end
 
+    factory :merged_merge_request, traits: [:merged]
     factory :closed_merge_request, traits: [:closed]
     factory :reopened_merge_request, traits: [:reopened]
     factory :merge_request_with_diffs, traits: [:with_diffs]

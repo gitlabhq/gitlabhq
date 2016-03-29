@@ -42,7 +42,7 @@ Gitlab-shell communicates with Sidekiq via the “communication board” (Redis)
 
 ## System Layout
 
-When referring to ~git in the pictures it means the home directory of the git user which is typically /home/git.
+When referring to `~git` in the pictures it means the home directory of the git user which is typically /home/git.
 
 GitLab is primarily installed within the `/home/git` user home directory as `git` user. Within the home directory is where the gitlabhq server software resides as well as the repositories (though the repository location is configurable).
 

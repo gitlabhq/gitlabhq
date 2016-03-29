@@ -1,125 +1,133 @@
 .awards {
-  @include clearfix;
   line-height: 34px;
 
   .emoji-icon {
     width: 20px;
     height: 20px;
-    margin: 7px 0 0 5px;
+  }
+}
+
+.emoji-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 3px;
+  z-index: 1000;
+  min-width: 160px;
+  font-size: 14px;
+  background-color: $award-emoji-menu-bg;
+  border: 1px solid $award-emoji-menu-border;
+  border-radius: $border-radius-base;
+  box-shadow: 0 6px 12px rgba(0,0,0,.175);
+  pointer-events: none;
+  opacity: 0;
+  transform: scale(.2);
+  transform-origin: 0 -45px;
+  transition: all .3s cubic-bezier(.87,-.41,.19,1.44);
+
+  &.is-visible {
+    pointer-events: all;
+    opacity: 1;
+    transform: scale(1);
   }
 
-  .award {
-    @include border-radius(5px);
+  .emoji-menu-content {
+    padding: $gl-padding;
+    width: 300px;
+    height: 300px;
+    overflow-y: scroll;
 
-    border: 1px solid;
-    padding: 0px 10px;
+    input.emoji-search{
+      background-image: url("data:image/png;base64,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");
+      background-repeat: no-repeat;
+      background-position: right 5px center;
+      background-size: 16px;
+    }
+  }
+}
+
+.emoji-menu-list {
+  list-style: none;
+  padding-left: 0;
+  margin-bottom: 0;
+}
+
+.emoji-menu-list-item {
+  padding: 3px;
+  margin-left: 1px;
+  margin-right: 1px;
+}
+
+.emoji-menu-btn {
+  display: block;
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  background: none;
+  border: 0;
+  border-radius: $border-radius-base;
+  transition: transform .15s cubic-bezier(.3, 0, .2, 2);
+
+  &:hover {
+    background-color: transparent;
+    outline: 0;
+    transform: scale(1.3);
+  }
+
+  &:focus,
+  &:active {
+    outline: 0;
+  }
+
+  .emoji-icon {
+    display: inline-block;
+    position: relative;
+    top: 3px;
+  }
+}
+
+.award-menu-holder {
+  display: inline-block;
+  position: relative;
+}
+
+.award-control {
+  margin-right: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  line-height: 20px;
+  outline: 0;
+
+  &.active,
+  &:active {
+    background-color: $white-dark;
+    box-shadow: none;
+    outline: 0;
+  }
+
+  &.is-loading {
+    .award-control-icon {
+      display: none;
+    }
+
+    .award-control-icon-loading {
+      display: block;
+    }
+  }
+
+  .icon,
+  .award-control-icon {
     float: left;
     margin-right: 5px;
-    border-color: $border-color;
-    cursor: pointer;
-
-    &:hover {
-      background-color: #dce0e5;
-    }
-
-    &.active {
-      border-color: $border-gray-light;
-      background-color: $gray-light;
-
-      &:hover {
-        background-color: #dce0e5;
-      }
-
-      .counter {
-        font-weight: bold;
-      }
-    }
-
-    .icon {
-      float: left;
-      margin-right: 10px;
-    }
-
-    .counter {
-      float: left;
-    }
+    font-size: 20px;
   }
 
-  .awards-controls {
-    position: relative;
-    margin-left: 10px;
-    float: left;
+  .award-control-icon-loading {
+    display: none;
+  }
 
-    .add-award {
-      font-size: 24px;
-      color: $gl-gray;
-      position: relative;
-      top: 2px;
-
-      &:hover,
-      &:link {
-        text-decoration: none;
-      }
-    }
-
-    .emoji-menu{
-      position: absolute;
-      top: 100%;
-      left: 0;
-      z-index: 1000;
-      display: none;
-      float: left;
-      min-width: 160px;
-      padding: 5px 0;
-      margin: 2px 0 0;
-      font-size: 14px;
-      text-align: left;
-      list-style: none;
-      background-color: #fff;
-      -webkit-background-clip: padding-box;
-      background-clip: padding-box;
-      border: 1px solid #ccc;
-      border: 1px solid rgba(0,0,0,.15);
-      border-radius: 4px;
-      -webkit-box-shadow: 0 6px 12px rgba(0,0,0,.175);
-      box-shadow: 0 6px 12px rgba(0,0,0,.175);
-
-      .emoji-menu-content {
-        padding: $gl-padding;
-        width: 300px;
-        height: 300px;
-        overflow-y: scroll;
-
-        h5 {
-          clear: left;
-        }
-
-        ul {
-          list-style-type: none;
-          margin-left: -20px;
-          margin-bottom: 20px;
-          overflow: auto;
-        }
-
-        input.emoji-search{
-          background: image-url("icon-search.png") 240px no-repeat;
-        }
-
-        li {
-          cursor: pointer;
-          width: 30px;
-          height: 30px;
-          text-align: center;
-          float: left;
-          margin: 3px;
-          list-decorate: none;
-          @include border-radius(5px);
-
-          &:hover {
-            background-color: #ccc;
-          }
-        }
-      }
-    }
+  .award-control-icon {
+    color: $award-emoji-new-btn-icon-color;
   }
 }

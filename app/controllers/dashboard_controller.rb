@@ -34,8 +34,4 @@ class DashboardController < Dashboard::ApplicationController
     @events = @event_filter.apply_filter(@events).with_associations
     @events = @events.limit(20).offset(params[:offset] || 0)
   end
-
-  def projects
-    @projects ||= current_user.authorized_projects.sorted_by_activity.non_archived
-  end
 end

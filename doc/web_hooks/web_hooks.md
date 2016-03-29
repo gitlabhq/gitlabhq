@@ -1,4 +1,4 @@
-# Web hooks
+# Webhooks
 
 _**Note:**
 Starting from GitLab 8.5:_
@@ -7,11 +7,11 @@ Starting from GitLab 8.5:_
 - _the `project.ssh_url` key is deprecated in favor of the `project.git_ssh_url` key_
 - _the `project.http_url` key is deprecated in favor of the `project.git_http_url` key_
 
-Project web hooks allow you to trigger an URL if new code is pushed or a new issue is created.
+Project webhooks allow you to trigger an URL if new code is pushed or a new issue is created.
 
-You can configure web hooks to listen for specific events like pushes, issues or merge requests. GitLab will send a POST request with data to the web hook URL.
+You can configure webhooks to listen for specific events like pushes, issues or merge requests. GitLab will send a POST request with data to the webhook URL.
 
-Web hooks can be used to update an external issue tracker, trigger CI builds, update a backup mirror, or even deploy to your production server.
+Webhooks can be used to update an external issue tracker, trigger CI builds, update a backup mirror, or even deploy to your production server.
 
 ## SSL Verification
 
@@ -19,7 +19,7 @@ By default, the SSL certificate of the webhook endpoint is verified based on
 an internal list of Certificate Authorities,
 which means the certificate cannot be self-signed.
 
-You can turn this off in the web hook settings in your GitLab projects.
+You can turn this off in the webhook settings in your GitLab projects.
 
 ![SSL Verification](ssl.png)
 
@@ -58,13 +58,13 @@ X-Gitlab-Event: Push Hook
     "path_with_namespace":"mike/diaspora",
     "default_branch":"master",
     "homepage":"http://example.com/mike/diaspora",
-    "url":"git@example.com:mike/diasporadiaspora.git",
+    "url":"git@example.com:mike/diaspora.git",
     "ssh_url":"git@example.com:mike/diaspora.git",
     "http_url":"http://example.com/mike/diaspora.git"
   },
   "repository":{
     "name": "Diaspora",
-    "url": "git@example.com:mike/diasporadiaspora.git",
+    "url": "git@example.com:mike/diaspora.git",
     "description": "",
     "homepage": "http://example.com/mike/diaspora",
     "git_http_url":"http://example.com/mike/diaspora.git",
@@ -113,7 +113,6 @@ Triggered when you create (or delete) tags to the repository.
 X-Gitlab-Event: Tag Push Hook
 ```
 
-
 **Request body:**
 
 ```json
@@ -143,7 +142,7 @@ X-Gitlab-Event: Tag Push Hook
     "http_url":"http://example.com/jsmith/example.git"
   },
   "repository":{
-    "name": "jsmith",
+    "name": "Example",
     "url": "ssh://git@example.com/jsmith/example.git",
     "description": "",
     "homepage": "http://example.com/jsmith/example",
@@ -478,7 +477,7 @@ X-Gitlab-Event: Note Hook
   },
   "repository":{
     "name":"diaspora",
-    "url":"git@example.com:mike/diasporadiaspora.git",
+    "url":"git@example.com:mike/diaspora.git",
     "description":"",
     "homepage":"http://example.com/mike/diaspora"
   },

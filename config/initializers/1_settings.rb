@@ -131,6 +131,7 @@ Settings.omniauth['auto_sign_in_with_provider'] = false if Settings.omniauth['au
 Settings.omniauth['allow_single_sign_on'] = false if Settings.omniauth['allow_single_sign_on'].nil?
 Settings.omniauth['block_auto_created_users'] = true if Settings.omniauth['block_auto_created_users'].nil?
 Settings.omniauth['auto_link_ldap_user'] = false if Settings.omniauth['auto_link_ldap_user'].nil?
+Settings.omniauth['auto_link_saml_user'] = false if Settings.omniauth['auto_link_saml_user'].nil?
 
 Settings.omniauth['providers']  ||= []
 Settings.omniauth['cas3'] ||= Settingslogic.new({})
@@ -206,11 +207,7 @@ Settings.gitlab_ci['builds_path']           = File.expand_path(Settings.gitlab_c
 # Reply by email
 #
 Settings['incoming_email'] ||= Settingslogic.new({})
-Settings.incoming_email['enabled']    = false if Settings.incoming_email['enabled'].nil?
-Settings.incoming_email['port']       = 143 if Settings.incoming_email['port'].nil?
-Settings.incoming_email['ssl']        = false if Settings.incoming_email['ssl'].nil?
-Settings.incoming_email['start_tls']  = false if Settings.incoming_email['start_tls'].nil?
-Settings.incoming_email['mailbox']    = "inbox" if Settings.incoming_email['mailbox'].nil?
+Settings.incoming_email['enabled'] = false if Settings.incoming_email['enabled'].nil?
 
 #
 # Build Artifacts

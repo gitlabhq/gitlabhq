@@ -23,6 +23,7 @@ module NavHelper
     if current_path?('merge_requests#show') ||
       current_path?('merge_requests#diffs') ||
       current_path?('merge_requests#commits') ||
+      current_path?('merge_requests#builds') ||
       current_path?('issues#show')
       if cookies[:collapsed_gutter] == 'true'
         "page-gutter right-sidebar-collapsed"

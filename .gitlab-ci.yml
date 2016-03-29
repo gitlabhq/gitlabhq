@@ -12,19 +12,26 @@ cache:
 
 variables:
   MYSQL_ALLOW_EMPTY_PASSWORD: "1"
+  # retry tests only in CI environment
+  RSPEC_RETRY_RETRY_COUNT: "3"
 
 before_script:
   - source ./scripts/prepare_build.sh
   - ruby -v
   - which ruby
-  - gem install bundler --no-ri --no-rdoc
+  - retry gem install bundler --no-ri --no-rdoc
   - cp config/gitlab.yml.example config/gitlab.yml
   - touch log/application.log
   - touch log/test.log
-  - bundle install --without postgres production --jobs $(nproc)  "${FLAGS[@]}"
+  - retry bundle install --without postgres production --jobs $(nproc) "${FLAGS[@]}"
   - RAILS_ENV=test bundle exec rake db:drop db:create db:schema:load db:migrate
 
+stages:
+- test
+- notifications
+
 spec:feature:
+  stage: test
   script:
     - RAILS_ENV=test bundle exec rake assets:precompile 2>/dev/null
     - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:feature
@@ -33,6 +40,7 @@ spec:feature:
     - mysql
 
 spec:api:
+  stage: test
   script:
     - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:api
   tags:
@@ -40,6 +48,7 @@ spec:api:
     - mysql
 
 spec:models:
+  stage: test
   script:
     - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:models
   tags:
@@ -47,6 +56,7 @@ spec:models:
     - mysql
 
 spec:lib:
+  stage: test
   script:
     - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:lib
   tags:
@@ -54,21 +64,15 @@ spec:lib:
     - mysql
 
 spec:services:
+  stage: test
   script:
     - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:services
   tags:
     - ruby
     - mysql
 
-spec:benchmark:
-  script:
-    - RAILS_ENV=test bundle exec rake spec:benchmark
-  tags:
-    - ruby
-    - mysql
-  allow_failure: true
-
 spec:other:
+  stage: test
   script:
     - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:other
   tags:
@@ -76,27 +80,34 @@ spec:other:
     - mysql
 
 spinach:project:half:
+  stage: test
   script:
+    - RAILS_ENV=test bundle exec rake assets:precompile 2>/dev/null
     - RAILS_ENV=test SIMPLECOV=true bundle exec rake spinach:project:half
   tags:
     - ruby
     - mysql
 
 spinach:project:rest:
+  stage: test
   script:
+    - RAILS_ENV=test bundle exec rake assets:precompile 2>/dev/null
     - RAILS_ENV=test SIMPLECOV=true bundle exec rake spinach:project:rest
   tags:
     - ruby
     - mysql
 
 spinach:other:
+  stage: test
   script:
+    - RAILS_ENV=test bundle exec rake assets:precompile 2>/dev/null
     - RAILS_ENV=test SIMPLECOV=true bundle exec rake spinach:other
   tags:
     - ruby
     - mysql
 
 teaspoon:
+  stage: test
   script:
     - RAILS_ENV=test bundle exec teaspoon
   tags:
@@ -104,13 +115,22 @@ teaspoon:
     - mysql
 
 rubocop:
+  stage: test
   script:
     - bundle exec rubocop
   tags:
     - ruby
     - mysql
 
+scss-lint:
+  stage: test
+  script:
+    - bundle exec rake scss_lint
+  tags:
+    - ruby
+
 brakeman:
+  stage: test
   script:
     - bundle exec rake brakeman
   tags:
@@ -118,6 +138,7 @@ brakeman:
     - mysql
 
 flog:
+  stage: test
   script:
     - bundle exec rake flog
   tags:
@@ -125,6 +146,7 @@ flog:
     - mysql
 
 flay:
+  stage: test
   script:
     - bundle exec rake flay
   tags:
@@ -132,20 +154,23 @@ flay:
     - mysql
 
 bundler:audit:
+  stage: test
+  only:
+    - master
   script:
     - "bundle exec bundle-audit update"
-    - "bundle exec bundle-audit check"
+    - "bundle exec bundle-audit check --ignore OSVDB-115941"
   tags:
     - ruby
     - mysql
-  allow_failure: true
 
 # Ruby 2.2 jobs
 
 spec:feature:ruby22:
+  stage: test
   image: ruby:2.2
   only:
-  - master
+    - master
   script:
     - RAILS_ENV=test bundle exec rake assets:precompile 2>/dev/null
     - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:feature
@@ -158,6 +183,7 @@ spec:feature:ruby22:
     - mysql
 
 spec:api:ruby22:
+  stage: test
   image: ruby:2.2
   only:
   - master
@@ -172,6 +198,7 @@ spec:api:ruby22:
     - mysql
 
 spec:models:ruby22:
+  stage: test
   image: ruby:2.2
   only:
   - master
@@ -186,6 +213,7 @@ spec:models:ruby22:
     - mysql
 
 spec:lib:ruby22:
+  stage: test
   image: ruby:2.2
   only:
   - master
@@ -200,6 +228,7 @@ spec:lib:ruby22:
     - mysql
 
 spec:services:ruby22:
+  stage: test
   image: ruby:2.2
   only:
   - master
@@ -213,22 +242,8 @@ spec:services:ruby22:
     - ruby
     - mysql
 
-spec:benchmark:ruby22:
-  image: ruby:2.2
-  only:
-  - master
-  script:
-    - RAILS_ENV=test bundle exec rake spec:benchmark
-  cache:
-    key: "ruby22"
-    paths:
-    - vendor
-  tags:
-    - ruby
-    - mysql
-  allow_failure: true
-
 spec:other:ruby22:
+  stage: test
   image: ruby:2.2
   only:
   - master
@@ -243,10 +258,12 @@ spec:other:ruby22:
     - mysql
 
 spinach:project:half:ruby22:
+  stage: test
   image: ruby:2.2
   only:
   - master
   script:
+    - RAILS_ENV=test bundle exec rake assets:precompile 2>/dev/null
     - RAILS_ENV=test SIMPLECOV=true bundle exec rake spinach:project:half
   cache:
     key: "ruby22"
@@ -257,10 +274,12 @@ spinach:project:half:ruby22:
     - mysql
 
 spinach:project:rest:ruby22:
+  stage: test
   image: ruby:2.2
   only:
   - master
   script:
+    - RAILS_ENV=test bundle exec rake assets:precompile 2>/dev/null
     - RAILS_ENV=test SIMPLECOV=true bundle exec rake spinach:project:rest
   cache:
     key: "ruby22"
@@ -271,10 +290,12 @@ spinach:project:rest:ruby22:
     - mysql
 
 spinach:other:ruby22:
+  stage: test
   image: ruby:2.2
   only:
   - master
   script:
+    - RAILS_ENV=test bundle exec rake assets:precompile 2>/dev/null
     - RAILS_ENV=test SIMPLECOV=true bundle exec rake spinach:other
   cache:
     key: "ruby22"
@@ -284,3 +305,14 @@ spinach:other:ruby22:
     - ruby
     - mysql
 
+
+notify:slack:
+  stage: notifications
+  script:
+    - ./scripts/notify_slack.sh "#builds" "Build on \`$CI_BUILD_REF_NAME\` failed! Commit \`$(git log -1 --oneline)\` See <https://gitlab.com/gitlab-org/$(basename "$PWD")/commit/"$CI_BUILD_REF"/builds>"
+  when: on_failure
+  only:
+    - master@gitlab-org/gitlab-ce
+    - tags@gitlab-org/gitlab-ce
+    - master@gitlab-org/gitlab-ee
+    - tags@gitlab-org/gitlab-ee

@@ -3,24 +3,28 @@
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
 - [Contribute to GitLab](#contribute-to-gitlab)
-  - [Contributor license agreement](#contributor-license-agreement)
-  - [Security vulnerability disclosure](#security-vulnerability-disclosure)
-  - [Closing policy for issues and merge requests](#closing-policy-for-issues-and-merge-requests)
-  - [Helping others](#helping-others)
-  - [I want to contribute!](#i-want-to-contribute)
-  - [Issue tracker](#issue-tracker)
-      - [Feature proposals](#feature-proposals)
-      - [Issue tracker guidelines](#issue-tracker-guidelines)
-      - [Issue weight](#issue-weight)
-      - [Regression issues](#regression-issues)
-  - [Merge requests](#merge-requests)
-      - [Merge request guidelines](#merge-request-guidelines)
-      - [Merge request description format](#merge-request-description-format)
-      - [Contribution acceptance criteria](#contribution-acceptance-criteria)
-  - [Changes for Stable Releases](#changes-for-stable-releases)
-  - [Definition of done](#definition-of-done)
-  - [Style guides](#style-guides)
-  - [Code of conduct](#code-of-conduct)
+    - [Contributor license agreement](#contributor-license-agreement)
+    - [Security vulnerability disclosure](#security-vulnerability-disclosure)
+    - [Closing policy for issues and merge requests](#closing-policy-for-issues-and-merge-requests)
+    - [Helping others](#helping-others)
+    - [I want to contribute!](#i-want-to-contribute)
+    - [Implement design & UI elements](#implement-design-ui-elements)
+        - [Design reference](#design-reference)
+        - [UI development kit](#ui-development-kit)
+    - [Issue tracker](#issue-tracker)
+        - [Feature proposals](#feature-proposals)
+        - [Issue tracker guidelines](#issue-tracker-guidelines)
+        - [Issue weight](#issue-weight)
+        - [Regression issues](#regression-issues)
+        - [Technical debt](#technical-debt)
+    - [Merge requests](#merge-requests)
+        - [Merge request guidelines](#merge-request-guidelines)
+        - [Merge request description format](#merge-request-description-format)
+        - [Contribution acceptance criteria](#contribution-acceptance-criteria)
+    - [Changes for Stable Releases](#changes-for-stable-releases)
+    - [Definition of done](#definition-of-done)
+    - [Style guides](#style-guides)
+    - [Code of conduct](#code-of-conduct)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -34,7 +38,7 @@ source edition, and GitLab Enterprise Edition (EE) which is our commercial
 edition. Throughout this guide you will see references to CE and EE for
 abbreviation.
 
-If you have read this guide and want to know how the GitLab [core-team][]
+If you have read this guide and want to know how the GitLab [core team][core-team]
 operates please see [the GitLab contributing process](PROCESS.md).
 
 ## Contributor license agreement
@@ -68,10 +72,10 @@ for audiences of all ages.
 ## Helping others
 
 Please help other GitLab users when you can. The channels people will reach out
-on can be found on the [getting help page][].
+on can be found on the [getting help page][getting-help].
 
 Sign up for the mailing list, answer GitLab questions on StackOverflow or
-respond in the IRC channel. You can also sign up on [CodeTriage][] to help with
+respond in the IRC channel. You can also sign up on [CodeTriage][codetriage] to help with
 the remaining issues on the GitHub issue tracker.
 
 ## I want to contribute!
@@ -82,6 +86,22 @@ will be of reasonable size and challenge, for anyone to start contributing to
 GitLab.
 
 This was inspired by [an article by Kent C. Dodds][medium-up-for-grabs].
+
+## Implement design & UI elements
+
+### Design reference
+
+The GitLab design reference can be found in the [gitlab-design] project.
+The designs are made using Antetype (`.atype` files). You can use the
+[free Antetype viewer (Mac OSX only)] or grab an exported PNG from the design
+(the PNG is 1:1).
+
+The current designs can be found in the [`gitlab1.atype` file].
+
+### UI development kit
+
+Implemented UI elements can also be found at https://gitlab.com/help/ui. Please
+note that this page isn't comprehensive at this time.
 
 ## Issue tracker
 
@@ -115,7 +135,7 @@ For feature proposals for EE, open an issue on the
 
 In order to help track the feature proposals, we have created a
 [`feature proposal`][fpl] label. For the time being, users that are not members
-of the project cannot add labels. You can instead ask one of the [core team][]
+of the project cannot add labels. You can instead ask one of the [core team][core-team]
 members to add the label `feature proposal` to the issue.
 
 Please keep feature proposals as small and simple as possible, complex ones
@@ -223,6 +243,28 @@ addressed.
 [8.3 Regressions]: https://gitlab.com/gitlab-org/gitlab-ce/issues/4127
 [update the notes]: https://gitlab.com/gitlab-org/release-tools/blob/master/doc/pro-tips.md#update-the-regression-issue
 
+### Technical debt
+
+In order to track things that can be improved in GitLab's codebase, we created
+the ~"technical debt" label in [GitLab's issue tracker][ce-tracker].
+
+This label should be added to issues that describe things that can be improved,
+shortcuts that have been taken, code that needs refactoring, features that need
+additional attention, and all other things that have been left behind due to
+high velocity of development.
+
+Everyone can create an issue, though you may need to ask for adding a specific
+label, if you do not have permissions to do it by yourself. Additional labels
+can be combined with the `technical debt` label, to make it easier to schedule
+the improvements for a release.
+
+Issues tagged with the `technical debt` label have the same priority like issues
+that describe a new feature to be introduced in GitLab, and should be scheduled
+for a release by the appropriate person.
+
+Make sure to mention the merge request that the `technical debt` issue is
+associated with in the description of the issue.
+
 ## Merge requests
 
 We welcome merge requests with fixes and improvements to GitLab code, tests,
@@ -299,13 +341,14 @@ to us than having a minimal commit log. The smaller an MR is the more likely it
 is it will be merged (quickly). After that you can send more MRs to enhance it.
 
 For examples of feedback on merge requests please look at already
-[closed merge requests][]. If you would like quick feedback on your merge
-request feel free to mention one of the Merge Marshalls of the [core team][].
+[closed merge requests][closed-merge-requests]. If you would like quick feedback
+on your merge request feel free to mention one of the Merge Marshalls in the
+[core team][core-team] or one of the
+[Merge request coaches](https://about.gitlab.com/team/).
 Please ensure that your merge request meets the contribution acceptance criteria.
 
 When having your code reviewed and when reviewing merge requests please take the
-[thoughtbot code review guidelines](https://github.com/thoughtbot/guides/tree/master/code-review)
-into account.
+[Thoughtbot code review guide] into account.
 
 ### Merge request description format
 
@@ -343,7 +386,8 @@ description area. Copy-paste it to retain the markdown format.
    to a new table or remove an old table) to aid retrying on failure
 1. Keeps the GitLab code base clean and well structured
 1. Contains functionality we think other users will benefit from too
-1. Doesn't add configuration options since they complicate future changes
+1. Doesn't add configuration options or settings options since they complicate
+   making and testing future changes
 1. Changes after submitting the merge request should be in separate commits
    (no squashing). If necessary, you will be asked to squash when the review is
    over, before merging.
@@ -369,7 +413,7 @@ Like all merge requests the target should be master so all bugfixes are in maste
 ## Definition of done
 
 If you contribute to GitLab please know that changes involve more than just
-code. We have the following [definition of done][]. Please ensure you support
+code. We have the following [definition of done][definition-of-done]. Please ensure you support
 the feature you contribute through all of these steps.
 
 1. Description explaining the relevancy (see following item)
@@ -406,6 +450,7 @@ merge request:
 1.  [Rails](https://github.com/bbatsov/rails-style-guide)
 1.  [Testing](https://github.com/thoughtbot/guides/tree/master/style/testing)
 1.  [CoffeeScript](https://github.com/thoughtbot/guides/tree/master/style/coffeescript)
+1.  [SCSS styleguide][scss-styleguide]
 1.  [Shell commands](doc/development/shell_commands.md) created by GitLab
     contributors to enhance security
 1.  [Database Migrations](doc/development/migration_style_guide.md)
@@ -448,12 +493,12 @@ when an individual is representing the project or its community.
 Instances of abusive, harassing, or otherwise unacceptable behavior can be
 reported by emailing `contact@gitlab.com`.
 
-This Code of Conduct is adapted from the [Contributor Covenant][], version 1.1.0,
+This Code of Conduct is adapted from the [Contributor Covenant][contributor-covenant], version 1.1.0,
 available at [http://contributor-covenant.org/version/1/1/0/](http://contributor-covenant.org/version/1/1/0/).
 
 [core-team]: https://about.gitlab.com/core-team/
-[getting help page]: https://about.gitlab.com/getting-help/
-[Codetriage]: http://www.codetriage.com/gitlabhq/gitlabhq
+[getting-help]: https://about.gitlab.com/getting-help/
+[codetriage]: http://www.codetriage.com/gitlabhq/gitlabhq
 [up-for-grabs]: https://gitlab.com/gitlab-org/gitlab-ce/issues?label_name=up-for-grabs
 [medium-up-for-grabs]: https://medium.com/@kentcdodds/first-timers-only-78281ea47455
 [ce-tracker]: https://gitlab.com/gitlab-org/gitlab-ce/issues
@@ -467,9 +512,14 @@ available at [http://contributor-covenant.org/version/1/1/0/](http://contributor
 [github-mr-tracker]: https://github.com/gitlabhq/gitlabhq/pulls
 [gdk]: https://gitlab.com/gitlab-org/gitlab-development-kit
 [git-squash]: https://git-scm.com/book/en/Git-Tools-Rewriting-History#Squashing-Commits
-[closed merge requests]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests?assignee_id=&label_name=&milestone_id=&scope=&sort=&state=closed
-[definition of done]: http://guide.agilealliance.org/guide/definition-of-done.html
-[Contributor Covenant]: http://contributor-covenant.org
+[closed-merge-requests]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests?assignee_id=&label_name=&milestone_id=&scope=&sort=&state=closed
+[definition-of-done]: http://guide.agilealliance.org/guide/definition-of-done.html
+[contributor-covenant]: http://contributor-covenant.org
 [rss-source]: https://github.com/bbatsov/ruby-style-guide/blob/master/README.md#source-code-layout
 [rss-naming]: https://github.com/bbatsov/ruby-style-guide/blob/master/README.md#naming
 [doc-styleguide]: doc/development/doc_styleguide.md "Documentation styleguide"
+[scss-styleguide]: doc/development/scss_styleguide.md "SCSS styleguide"
+[gitlab-design]: https://gitlab.com/gitlab-org/gitlab-design
+[free Antetype viewer (Mac OSX only)]: https://itunes.apple.com/us/app/antetype-viewer/id824152298?mt=12
+[`gitlab1.atype` file]: https://gitlab.com/gitlab-org/gitlab-design/tree/master/gitlab1.atype/
+[Thoughtbot code review guide]: https://github.com/thoughtbot/guides/tree/master/code-review

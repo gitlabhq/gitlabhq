@@ -56,6 +56,23 @@ describe Group, models: true do
     end
   end
 
+  describe 'scopes' do
+    let!(:private_group)  { create(:group, :private)  }
+    let!(:internal_group) { create(:group, :internal) }
+
+    describe 'public_only' do
+      subject { described_class.public_only.to_a }
+
+      it{ is_expected.to eq([group]) }
+    end
+
+    describe 'public_and_internal_only' do
+      subject { described_class.public_and_internal_only.to_a }
+
+      it{ is_expected.to match_array([group, internal_group]) }
+    end
+  end
+
   describe '#to_reference' do
     it 'returns a String reference to the object' do
       expect(group.to_reference).to eq "@#{group.name}"
@@ -101,6 +118,32 @@ describe Group, models: true do
     it "should be false if avatar is html page" do
       group.update_attribute(:avatar, 'uploads/avatar.html')
       expect(group.avatar_type).to eq(["only images allowed"])
+    end
+  end
+
+  describe '.search' do
+    it 'returns groups with a matching name' do
+      expect(described_class.search(group.name)).to eq([group])
+    end
+
+    it 'returns groups with a partially matching name' do
+      expect(described_class.search(group.name[0..2])).to eq([group])
+    end
+
+    it 'returns groups with a matching name regardless of the casing' do
+      expect(described_class.search(group.name.upcase)).to eq([group])
+    end
+
+    it 'returns groups with a matching path' do
+      expect(described_class.search(group.path)).to eq([group])
+    end
+
+    it 'returns groups with a partially matching path' do
+      expect(described_class.search(group.path[0..2])).to eq([group])
+    end
+
+    it 'returns groups with a matching path regardless of the casing' do
+      expect(described_class.search(group.path.upcase)).to eq([group])
     end
   end
 end

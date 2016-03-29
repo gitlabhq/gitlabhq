@@ -157,6 +157,29 @@ describe Projects::MergeRequestsController do
     end
   end
 
+  describe "DELETE #destroy" do
+    it "denies access to users unless they're admin or project owner" do
+      delete :destroy, namespace_id: project.namespace.path, project_id: project.path, id: merge_request.iid
+
+      expect(response.status).to eq(404)
+    end
+
+    context "when the user is owner" do
+      let(:owner)     { create(:user) }
+      let(:namespace) { create(:namespace, owner: owner) }
+      let(:project)   { create(:project, namespace: namespace) }
+
+      before { sign_in owner }
+
+      it "deletes the merge request" do
+        delete :destroy, namespace_id: project.namespace.path, project_id: project.path, id: merge_request.iid
+
+        expect(response.status).to eq(302)
+        expect(controller).to set_flash[:notice].to(/The merge request was successfully deleted\./).now
+      end
+    end
+  end
+
   describe 'GET diffs' do
     def go(format: 'html')
       get :diffs,

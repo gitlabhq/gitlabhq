@@ -39,3 +39,34 @@ please see the [project_services directory][projects-code].
 [jenkins]: http://doc.gitlab.com/ee/integration/jenkins.html
 [Project Service]: ../project_services/project_services.md
 [projects-code]: https://gitlab.com/gitlab-org/gitlab-ce/tree/master/app/models/project_services
+
+## SSL certificate errors
+
+When trying to integrate GitLab with services that are using self-signed certificates,
+it is very likely that SSL certificate errors will occur on different parts of the
+application, most likely Sidekiq. There are 2 approaches you can take to solve this:
+
+1. Add the root certificate to the trusted chain of the OS.
+1. If using Omnibus, you can add the certificate to GitLab's trusted certificates.
+
+**OS main trusted chain**
+
+This [resource](http://kb.kerio.com/product/kerio-connect/server-configuration/ssl-certificates/adding-trusted-root-certificates-to-the-server-1605.html)
+has all the information you need to add a certificate to the main trusted chain.
+
+This [answer](http://superuser.com/questions/437330/how-do-you-add-a-certificate-authority-ca-to-ubuntu)
+at SuperUser also has relevant information.
+
+**Omnibus Trusted Chain**
+
+It is enough to concatenate the certificate to the main trusted certificate:
+
+```bash
+cat jira.pem >> /opt/gitlab/embedded/ssl/certs/cacert.pem
+```
+
+After that restart GitLab with:
+
+```bash
+sudo gitlab-ctl restart
+```

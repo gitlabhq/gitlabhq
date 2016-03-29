@@ -4,7 +4,7 @@ module Banzai
   module Pipeline
     class BasePipeline
       def self.filters
-        []
+        FilterArray[]
       end
 
       def self.transform_context(context)

@@ -2,15 +2,16 @@
 #
 # Table name: namespaces
 #
-#  id          :integer          not null, primary key
-#  name        :string(255)      not null
-#  path        :string(255)      not null
-#  owner_id    :integer
-#  created_at  :datetime
-#  updated_at  :datetime
-#  type        :string(255)
-#  description :string(255)      default(""), not null
-#  avatar      :string(255)
+#  id                     :integer          not null, primary key
+#  name                   :string(255)      not null
+#  path                   :string(255)      not null
+#  owner_id               :integer
+#  visibility_level       :integer          default(20), not null
+#  created_at             :datetime
+#  updated_at             :datetime
+#  type                   :string(255)
+#  description            :string(255)      default(""), not null
+#  avatar                 :string(255)
 #
 
 require 'carrierwave/orm/activerecord'
@@ -18,13 +19,18 @@ require 'file_size_validator'
 
 class Group < Namespace
   include Gitlab::ConfigHelper
+  include Gitlab::VisibilityLevel
   include Referable
 
   has_many :group_members, dependent: :destroy, as: :source, class_name: 'GroupMember'
   alias_method :members, :group_members
   has_many :users, through: :group_members
+  has_many :project_group_links, dependent: :destroy
+  has_many :shared_projects, through: :project_group_links, source: :project
 
   validate :avatar_type, if: ->(user) { user.avatar.present? && user.avatar_changed? }
+  validate :visibility_level_allowed_by_projects
+
   validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
 
   mount_uploader :avatar, AvatarUploader
@@ -33,8 +39,18 @@ class Group < Namespace
   after_destroy :post_destroy_hook
 
   class << self
+    # Searches for groups matching the given query.
+    #
+    # This method uses ILIKE on PostgreSQL and LIKE on MySQL.
+    #
+    # query - The search query as a String
+    #
+    # Returns an ActiveRecord::Relation.
     def search(query)
-      where("LOWER(namespaces.name) LIKE :query or LOWER(namespaces.path) LIKE :query", query: "%#{query.downcase}%")
+      table   = Namespace.arel_table
+      pattern = "%#{query}%"
+
+      where(table[:name].matches(pattern).or(table[:path].matches(pattern)))
     end
 
     def sort(method)
@@ -60,6 +76,21 @@ class Group < Namespace
 
   def human_name
     name
+  end
+
+  def visibility_level_field
+    visibility_level
+  end
+
+  def visibility_level_allowed_by_projects
+    allowed_by_projects = self.projects.where('visibility_level > ?', self.visibility_level).none?
+
+    unless allowed_by_projects
+      level_name = Gitlab::VisibilityLevel.level_name(visibility_level).downcase
+      self.errors.add(:visibility_level, "#{level_name} is not allowed since there are projects with higher visibility.")
+    end
+
+    allowed_by_projects
   end
 
   def avatar_url(size = nil)

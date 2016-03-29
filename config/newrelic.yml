@@ -1,0 +1,16 @@
+# New Relic configuration file
+#
+# This file is here to make sure the New Relic gem stays
+# quiet by default.
+#
+# To enable and configure New Relic, please use
+# environment variables, e.g. NEW_RELIC_ENABLED=true
+
+production:
+  enabled: false
+
+development:
+  enabled: false
+
+test:
+  enabled: false

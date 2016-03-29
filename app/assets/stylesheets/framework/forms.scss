@@ -28,21 +28,21 @@ input[type='search'].search-input {
   }
 
   &.search-input:-moz-placeholder { /* Firefox 18- */
-    text-align: center;  
+    text-align: center;
   }
 
   &.search-input::-moz-placeholder {  /* Firefox 19+ */
-    text-align: center;  
+    text-align: center;
   }
 
-  &.search-input:-ms-input-placeholder {  
-    text-align: center; 
+  &.search-input:-ms-input-placeholder {
+    text-align: center;
   }
 }
 
 input[type='text'].danger {
-  background: #F2DEDE!important;
-  border-color: #D66;
+  background: #f2dede!important;
+  border-color: #d66;
   text-shadow: 0 1px 1px #fff
 }
 
@@ -68,6 +68,10 @@ label {
 
   &.inline-label {
     margin: 0;
+  }
+
+  &.label-light {
+    font-weight: 600;
   }
 }
 

@@ -11,11 +11,9 @@
 #  template   :boolean          default(FALSE)
 #
 
-# Read about factories at https://github.com/thoughtbot/factory_girl
-
 FactoryGirl.define do
   factory :label do
-    title "Bug"
+    sequence(:title) { |n| "label#{n}" }
     color "#990000"
     project
   end

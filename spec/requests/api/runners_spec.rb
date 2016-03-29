@@ -28,9 +28,9 @@ describe API::Runners, api: true  do
 
   before do
     # Set project access for users
-    create(:project_member, user: user, project: project, access_level: ProjectMember::MASTER)
-    create(:project_member, user: user, project: project2, access_level: ProjectMember::MASTER)
-    create(:project_member, user: user2, project: project, access_level: ProjectMember::REPORTER)
+    create(:project_member, :master, user: user, project: project)
+    create(:project_member, :master, user: user, project: project2)
+    create(:project_member, :reporter, user: user2, project: project)
   end
 
   describe 'GET /runners' do

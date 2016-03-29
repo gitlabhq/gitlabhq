@@ -16,7 +16,7 @@
   }
 
   &.group-avatar, &.project-avatar, &.avatar-tile {
-    @include border-radius(0px);
+    @include border-radius(0);
   }
 
   &.s16 { width: 16px; height: 16px; margin-right: 6px; }

@@ -3,6 +3,7 @@ Feature: Project Builds Summary
     Given I sign in as a user
     And I own a project
     And project has CI enabled
+    And project has coverage enabled
     And project has a recent build
 
   Scenario: I browse build details page
@@ -12,6 +13,7 @@ Feature: Project Builds Summary
 
   Scenario: I browse project builds page
     When I visit project builds page
+    Then I see coverage
     Then I see button to CI Lint
 
   Scenario: I erase a build

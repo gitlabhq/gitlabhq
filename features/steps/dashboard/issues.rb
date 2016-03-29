@@ -36,13 +36,17 @@ class Spinach::Features::DashboardIssues < Spinach::FeatureSteps
   end
 
   step 'I click "Authored by me" link' do
-    select2(current_user.id, from: "#author_id")
-    select2(nil, from: "#assignee_id")
+    find("#assignee_id").set("")
+    find(".js-author-search", match: :first).click
+    find(".dropdown-menu-author li a", match: :first, text: current_user.to_reference).click
   end
 
   step 'I click "All" link' do
-    select2(nil, from: "#author_id")
-    select2(nil, from: "#assignee_id")
+    find('.js-author-search').click
+    find('.dropdown-content a', match: :first).click
+
+    find('.js-assignee-search').click
+    find('.dropdown-content a', match: :first).click
   end
 
   def should_see(issue)

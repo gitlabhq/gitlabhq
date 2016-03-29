@@ -1,6 +1,6 @@
 # Import your project from Bitbucket to GitLab
 
-It takes just a few steps to import your existing Bitbucket projects to GitLab. But keep in mind that it is possible only if Bitbucket support is enabled on your GitLab instance. You can read more about Bitbucket support [here](doc/integration/bitbucket.md).
+It takes just a few steps to import your existing Bitbucket projects to GitLab. But keep in mind that it is possible only if Bitbucket support is enabled on your GitLab instance. You can read more about Bitbucket support [here](../../integration/bitbucket.md).
 
 * Sign in to GitLab.com and go to your dashboard
 

@@ -2,19 +2,11 @@
 
 ## On Slack
 
-To enable Slack integration you must create an Incoming WebHooks integration on Slack;
+To enable Slack integration you must create an Incoming WebHooks integration on Slack:
 
 1.  [Sign in to Slack](https://slack.com/signin)
 
-1.  Select **Apps & Custom Integrations** from the dropdown next to your team name.
-
-1.  Click the **Configure** link (right-upper corner).
-
-1.  Select the **Custom integrations** tab.
-
-1.  Click the **Incoming WebHooks** row.
-
-1.  Click the **Add configuration** button.
+1.  Visit [Incoming WebHooks](https://my.slack.com/services/new/incoming-webhook/)
 
 1.  Choose the channel name you want to send notifications to.
 
