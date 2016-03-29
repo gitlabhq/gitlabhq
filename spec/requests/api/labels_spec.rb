@@ -23,13 +23,25 @@ describe API::API, api: true  do
   end
 
   describe 'POST /projects/:id/labels' do
-    it 'should return created label' do
+    it 'should return created label when all params' do
+      post api("/projects/#{project.id}/labels", user),
+           name: 'Foo',
+           color: '#FFAABB',
+           description: 'test'
+      expect(response.status).to eq(201)
+      expect(json_response['name']).to eq('Foo')
+      expect(json_response['color']).to eq('#FFAABB')
+      expect(json_response['description']).to eq('test')
+    end
+
+    it 'should return created label when only required params' do
       post api("/projects/#{project.id}/labels", user),
            name: 'Foo',
            color: '#FFAABB'
       expect(response.status).to eq(201)
       expect(json_response['name']).to eq('Foo')
       expect(json_response['color']).to eq('#FFAABB')
+      expect(json_response['description']).to be_nil
     end
 
     it 'should return a 400 bad request if name not given' do
@@ -94,14 +106,16 @@ describe API::API, api: true  do
   end
 
   describe 'PUT /projects/:id/labels' do
-    it 'should return 200 if name and colors are changed' do
+    it 'should return 200 if name and colors and description are changed' do
       put api("/projects/#{project.id}/labels", user),
           name: 'label1',
           new_name: 'New Label',
-          color: '#FFFFFF'
+          color: '#FFFFFF',
+          description: 'test'
       expect(response.status).to eq(200)
       expect(json_response['name']).to eq('New Label')
       expect(json_response['color']).to eq('#FFFFFF')
+      expect(json_response['description']).to eq('test')
     end
 
     it 'should return 200 if name is changed' do
@@ -120,6 +134,15 @@ describe API::API, api: true  do
       expect(response.status).to eq(200)
       expect(json_response['name']).to eq(label1.name)
       expect(json_response['color']).to eq('#FFFFFF')
+    end
+
+    it 'should return 200 if description is changed' do
+      put api("/projects/#{project.id}/labels", user),
+          name: 'label1',
+          description: 'test'
+      expect(response.status).to eq(200)
+      expect(json_response['name']).to eq(label1.name)
+      expect(json_response['description']).to eq('test')
     end
 
     it 'should return 404 if label does not exist' do

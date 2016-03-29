@@ -4,6 +4,7 @@ v 8.7.0 (unreleased)
   - Don't attempt to look up an avatar in repo if repo directory does not exist (Stan hu)
   - Preserve time notes/comments have been updated at when moving issue
   - Make HTTP(s) label consistent on clone bar (Stan Hu)
+  - Expose label description in API (Mariusz Jachimowicz)
   - Allow back dating on issues when created through the API 
   - Fix avatar stretching by providing a cropping feature
   - Add links to CI setup documentation from project settings and builds pages
