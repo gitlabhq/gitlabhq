@@ -16,6 +16,8 @@ v 8.6.2
   - Fix an issue with width of project select dropdown. !3386
   - Fix error 500 with cancel button on issuable edit form. !3392
   - Fix background when editing a highlighted note. !3423
+  - Remove tabstop from the WIP toggle links. !3426
+  - Ensure private project snippets are not viewable by unauthorized people.
 
 v 8.6.2 (unreleased)
   - Comments on confidential issues don't show up in activity feed to non-members
