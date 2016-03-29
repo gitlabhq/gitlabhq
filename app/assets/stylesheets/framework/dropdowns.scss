@@ -117,7 +117,7 @@
     padding-left: 10px;
     padding-right: 10px;
     color: $dropdown-link-color;
-    line-height: 16px;
+    line-height: 34px;
     text-overflow: ellipsis;
     border-radius: 2px;
     white-space: nowrap;
@@ -135,6 +135,10 @@
       &.is-focused {
         background-color: $dropdown-empty-row-bg;
       }
+    }
+
+    &.dropdown-menu-user-link {
+      line-height: 16px;
     }
   }
 }
