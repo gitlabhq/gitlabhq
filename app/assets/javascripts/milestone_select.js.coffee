@@ -33,20 +33,6 @@ class @MilestoneSelect
           $.ajax(
             url: milestonesUrl
           ).done (data) ->
-<<<<<<< c9dea7761dc69ff38d101d06e0e636e1f3b2a0c4
-            if $dropdown.hasClass "js-extra-options"
-              if showNo
-                data.unshift(
-                  id: '0'
-                  title: 'No Milestone'
-                )
-
-              if showAny
-                data.unshift(
-                  isAny: true
-                  title: 'Any Milestone'
-                )
-=======
             extraOptions = []
             if showAny
               extraOptions.push(
@@ -68,11 +54,11 @@ class @MilestoneSelect
                 name: '#upcoming'
                 title: 'Upcoming'
               )
->>>>>>> Updated to only include upcoming on filters
 
-              if data.length > 2
-                data.splice 2, 0, 'divider'
-            callback(data)
+            if extraOptions.length > 2
+              extraOptions.push 'divider'
+
+            callback(extraOptions.concat(data))
         filterable: true
         search:
           fields: ['title']
@@ -99,7 +85,7 @@ class @MilestoneSelect
           if $dropdown.hasClass 'js-filter-bulk-update'
             return
 
-          if $dropdown.hasClass('js-filter-submit') and (isIssueIndex or isMRIndex)
+          if $dropdown.hasClass('js-filter-submit')
             if selected.name?
               selectedMilestone = selected.name
             else if selected.title?
