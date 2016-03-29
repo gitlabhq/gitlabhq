@@ -11,7 +11,7 @@ feature 'Issue filtering by Milestone', feature: true do
     visit_issues(project)
     filter_by_milestone(Milestone::None.title)
 
-    expect(page).to have_css('.issue .title', count: 1)
+    expect(page).to have_css('.issue', count: 1)
   end
 
   context 'filters by upcoming milestone', js: true do
@@ -22,7 +22,7 @@ feature 'Issue filtering by Milestone', feature: true do
       visit_issues(project)
       filter_by_milestone(Milestone::Upcoming.title)
 
-      expect(page).to have_css('.issue .title', count: 0)
+      expect(page).to have_css('.issue', count: 0)
     end
 
     it 'should show issues in future' do
