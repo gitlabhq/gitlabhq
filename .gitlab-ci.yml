@@ -131,7 +131,6 @@ scss-lint:
     - bundle exec rake scss_lint
   tags:
     - ruby
-  allow_failure: true
 
 brakeman:
   stage: test

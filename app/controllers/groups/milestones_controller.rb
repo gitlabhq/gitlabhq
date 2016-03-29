@@ -2,11 +2,15 @@ class Groups::MilestonesController < Groups::ApplicationController
   include GlobalMilestones
 
   before_action :group_projects
-  before_action :milestones, only: [:index]
   before_action :milestone, only: [:show, :update]
   before_action :authorize_admin_milestones!, only: [:new, :create, :update]
 
   def index
+    respond_to do |format|
+      format.html do
+        @milestones = Kaminari.paginate_array(milestones).page(params[:page])
+      end
+    end
   end
 
   def new

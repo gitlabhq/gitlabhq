@@ -152,6 +152,11 @@ describe Issue, models: true do
 
       it { is_expected.to eq true }
 
+      context 'issue not persisted' do
+        let(:issue) { build(:issue, project: project) }
+        it { is_expected.to eq false }
+      end
+
       context 'checking destination project also' do
         subject { issue.can_move?(user, to_project) }
         let(:to_project) { create(:project) }

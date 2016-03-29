@@ -100,7 +100,7 @@ linters:
   # Selectors should always use hyphenated-lowercase, rather than camelCase or
   # snake_case.
   SelectorFormat:
-    enabled: true
+    enabled: false
     convention: hyphenated_lowercase
   
   # Prefer the shortest shorthand form possible for properties that support it.

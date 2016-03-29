@@ -45,12 +45,12 @@ module Gitlab
         note = create_note(reply)
 
         unless note.persisted?
-          message = "The comment could not be created for the following reasons:"
+          msg = "The comment could not be created for the following reasons:"
           note.errors.full_messages.each do |error|
-            message << "\n\n- #{error}"
+            msg << "\n\n- #{error}"
           end
 
-          raise InvalidNoteError, message
+          raise InvalidNoteError, msg
         end
       end
 
@@ -63,13 +63,13 @@ module Gitlab
       end
 
       def reply_key
-        reply_key = nil
+        key = nil
         message.to.each do |address|
-          reply_key = Gitlab::IncomingEmail.key_from_address(address)
-          break if reply_key
+          key = Gitlab::IncomingEmail.key_from_address(address)
+          break if key
         end
 
-        reply_key
+        key
       end
 
       def sent_notification

@@ -230,7 +230,7 @@ class Commit
   end
 
   def revert_message
-    %Q{Revert "#{title}"\n\n#{revert_description}}
+    %Q{Revert "#{title.strip}"\n\n#{revert_description}}
   end
 
   def reverts_commit?(commit)

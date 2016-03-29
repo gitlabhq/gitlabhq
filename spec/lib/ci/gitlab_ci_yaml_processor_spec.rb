@@ -492,19 +492,25 @@ module Ci
       end
 
       context 'dependencies to builds' do
+        let(:dependencies) { ['build1', 'build2'] }
+
+        it { expect { subject }.to_not raise_error }
+      end
+
+      context 'dependencies to builds defined as symbols' do
         let(:dependencies) { [:build1, :build2] }
 
         it { expect { subject }.to_not raise_error }
       end
 
       context 'undefined dependency' do
-        let(:dependencies) { [:undefined] }
+        let(:dependencies) { ['undefined'] }
 
         it { expect { subject }.to raise_error(GitlabCiYamlProcessor::ValidationError, 'test1 job: undefined dependency: undefined') }
       end
 
       context 'dependencies to deploy' do
-        let(:dependencies) { [:deploy] }
+        let(:dependencies) { ['deploy'] }
 
         it { expect { subject }.to raise_error(GitlabCiYamlProcessor::ValidationError, 'test1 job: dependency deploy is not defined in prior stages') }
       end

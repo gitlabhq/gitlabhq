@@ -1,3 +1,10 @@
+#logo {
+  z-index: 2;
+  position: absolute;
+  width: 58px;
+  cursor: pointer;
+}
+
 .page-with-sidebar {
   padding-top: $header-height;
   transition-duration: .3s;
@@ -17,24 +24,6 @@
     z-index: 1;
     position: absolute;
     left: 0;
-  }
-
-  #logo {
-    z-index: 2;
-    position: absolute;
-    width: 58px;
-    cursor: pointer;
-  }
-
-  &.right-sidebar-expanded {
-    /* Extra small devices (phones, less than 768px) */
-    /* No media query since this is the default in Bootstrap */
-    padding-right: 0;
-    /* Small devices (tablets, 768px and up) */
-    @media (min-width: $screen-sm-min) {
-      padding-right: $gutter_width;
-    }
-
   }
 }
 
@@ -202,52 +191,26 @@
   }
 }
 
-@mixin expanded-sidebar {
-  padding-left: $sidebar_collapsed_width;
+.collapse-nav a {
+  width: $sidebar_width;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  font-size: 13px;
+  background: transparent;
+  height: 40px;
+  text-align: center;
+  line-height: 40px;
+  transition-duration: .3s;
+  outline: none;
 
-  @media (min-width: $screen-md-min) {
-    padding-left: $sidebar_width;
-  }
-
-  &.right-sidebar-collapsed {
-    /* Extra small devices (phones, less than 768px) */
-    padding-right: 0;
-    /* Small devices (tablets, 768px and up) */
-    @media (min-width: $screen-sm-min) {
-      padding-right: $sidebar_collapsed_width;
-    }
-  }
-
-  .sidebar-wrapper {
-    width: $sidebar_width;
-
-    .nav-sidebar {
-      width: $sidebar_width;
-    }
-
-    .nav-sidebar li a{
-      width: 230px;
-
-      &.back-link {
-        i {
-          opacity: 0;
-        }
-      }
-    }
+  &:hover {
+    text-decoration: none;
   }
 }
 
-@mixin collapsed-sidebar {
+.page-sidebar-collapsed {
   padding-left: $sidebar_collapsed_width;
-
-  &.right-sidebar-collapsed {
-    /* Extra small devices (phones, less than 768px) */
-    padding-right: 0;
-    /* Small devices (tablets, 768px and up) */
-    @media (min-width: $screen-sm-min) {
-      padding-right: $sidebar_collapsed_width;
-    }
-  }
 
   .sidebar-wrapper {
     width: $sidebar_collapsed_width;
@@ -293,35 +256,48 @@
   }
 }
 
-.collapse-nav a {
-  width: $sidebar_width;
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  font-size: 13px;
-  background: transparent;
-  height: 40px;
-  text-align: center;
-  line-height: 40px;
-  transition-duration: .3s;
-  outline: none;
-}
+.page-sidebar-expanded {
+  padding-left: $sidebar_collapsed_width;
 
-.collapse-nav a:hover {
-  text-decoration: none;
-  background: #f2f6f7;
-}
+  @media (min-width: $screen-md-min) {
+    padding-left: $sidebar_width;
+  }
 
-.page-sidebar-collapsed {
-  /* Extra small devices (phones, less than 768px) */
-  @include collapsed-sidebar;
-  padding-right: 0;
-  /* Small devices (tablets, 768px and up) */
-  @media (min-width: $screen-sm-min) {
-    @include collapsed-sidebar;
+  .sidebar-wrapper {
+    width: $sidebar_width;
+
+    .nav-sidebar {
+      width: $sidebar_width;
+    }
+
+    .nav-sidebar li a {
+      width: 230px;
+
+      &.back-link {
+        i {
+          opacity: 0;
+        }
+      }
+    }
   }
 }
 
-.page-sidebar-expanded {
-  @include expanded-sidebar;
+.right-sidebar-collapsed {
+  padding-right: 0;
+
+  @media (min-width: $screen-sm-min) {
+    padding-right: $sidebar_collapsed_width;
+  }
+}
+
+.right-sidebar-expanded {
+  padding-right: 0;
+
+  @media (min-width: $screen-sm-min) and (max-width: $screen-sm-max) {
+    padding-right: $sidebar_collapsed_width;
+  }
+
+  @media (min-width: $screen-md-min) {
+    padding-right: $gutter_width;
+  }
 }
