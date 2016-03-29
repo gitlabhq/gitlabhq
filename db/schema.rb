@@ -520,6 +520,7 @@ ActiveRecord::Schema.define(version: 20160320204112) do
   end
 
   add_index "keys", ["created_at", "id"], name: "index_keys_on_created_at_and_id", using: :btree
+  add_index "keys", ["fingerprint"], name: "index_keys_on_fingerprint", using: :btree
   add_index "keys", ["user_id"], name: "index_keys_on_user_id", using: :btree
 
   create_table "label_links", force: :cascade do |t|

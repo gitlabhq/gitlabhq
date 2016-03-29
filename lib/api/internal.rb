@@ -25,7 +25,7 @@ module API
       post "/allowed" do
         status 200
 
-        actor = 
+        actor =
           if params[:key_id]
             Key.find_by(id: params[:key_id])
           elsif params[:user_id]
@@ -33,7 +33,7 @@ module API
           end
 
         project_path = params[:project]
-        
+
         # Check for *.wiki repositories.
         # Strip out the .wiki from the pathname before finding the
         # project. This applies the correct project permissions to
@@ -50,6 +50,18 @@ module API
           end
 
         access.check(params[:action], params[:changes])
+      end
+
+      #
+      # Get a ssh key using the fingerprint
+      #
+      get "/authorized_keys" do
+        fingerprint = params.fetch(:fingerprint) do
+          Gitlab::InsecureKeyFingerprint.new(params.fetch(:key)).fingerprint
+        end
+        key = Key.find_by(fingerprint: fingerprint)
+        not_found!("Key") if key.nil?
+        present key, with: Entities::SSHKey
       end
 
       #
