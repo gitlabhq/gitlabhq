@@ -16,8 +16,8 @@ module NotificationsHelper
     end
   end
 
-  def notification_icon(level)
-    icon("#{notification_icon_class(level)} fw")
+  def notification_icon(level, text = nil)
+    icon("#{notification_icon_class(level)} fw", text: text)
   end
 
   def notification_title(level)
@@ -39,14 +39,10 @@ module NotificationsHelper
       notification_title: title
     }
 
-    content_tag(:li, class: active_level_for(setting, level)) do
+    content_tag(:li, class: ('active' if setting.level == level)) do
       link_to '#', class: 'update-notification', data: data do
-        icon("#{notification_icon_class(level)} fw", text: title)
+        notification_icon(level, title)
       end
     end
-  end
-
-  def active_level_for(setting, level)
-    'active' if setting.level == level
   end
 end
