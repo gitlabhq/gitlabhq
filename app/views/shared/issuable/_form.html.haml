@@ -14,7 +14,7 @@
     - if issuable.is_a?(MergeRequest)
       %p.help-block
         .js-wip-explanation
-          %a.js-toggle-wip{href: ""}
+          %a.js-toggle-wip{href: "", tabindex: -1}
             Remove the
             %code WIP:
             prefix from the title
@@ -22,7 +22,7 @@
           %strong Work In Progress
           merge request to be merged when it's ready.
         .js-no-wip-explanation
-          %a.js-toggle-wip{href: ""}
+          %a.js-toggle-wip{href: "", tabindex: -1}
             Start the title with
             %code WIP:
           to prevent a
@@ -127,7 +127,7 @@
       for this project.
 
   - if issuable.new_record?
-    = link_to 'Cancel', polymorphic_path([@project.namespace, @project, issuable.class]), class: 'btn btn-cancel'
+    = link_to 'Cancel', polymorphic_path([@project.namespace.becomes(Namespace), @project, issuable.class]), class: 'btn btn-cancel'
   - else
     .pull-right
       - if current_user.can?(:"destroy_#{issuable.to_ability_name}", @project)

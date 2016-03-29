@@ -889,6 +889,8 @@ class Repository
   end
 
   def avatar
+    return nil unless exists?
+
     @avatar ||= cache.fetch(:avatar) do
       AVATAR_FILES.find do |file|
         blob_at_branch('master', file)

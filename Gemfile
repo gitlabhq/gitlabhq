@@ -234,7 +234,7 @@ end
 
 group :development do
   gem "foreman"
-  gem 'brakeman', '~> 3.1.0', require: false
+  gem 'brakeman', '~> 3.2.0', require: false
 
   gem "annotate", "~> 2.6.0"
   gem "letter_opener", '~> 1.1.2'
@@ -279,7 +279,7 @@ group :development, :test do
   gem 'capybara-screenshot', '~> 1.0.0'
   gem 'poltergeist',         '~> 1.9.0'
 
-  gem 'teaspoon', '~> 1.0.0'
+  gem 'teaspoon', '~> 1.1.0'
   gem 'teaspoon-jasmine', '~> 2.2.0'
 
   gem 'spring', '~> 1.6.4'

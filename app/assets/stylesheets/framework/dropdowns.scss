@@ -144,6 +144,10 @@
         background-color: $dropdown-empty-row-bg;
       }
     }
+
+    &.dropdown-menu-user-link {
+      line-height: 16px;
+    }
   }
 
   .dropdown-header {
@@ -190,13 +194,13 @@
 }
 
 .dropdown-menu-user-link {
-  padding-top: 7px;
+  padding-top: 10px;
   padding-bottom: 7px;
 }
 
 .dropdown-menu-user-full-name {
   display: block;
-  font-weight: 600;
+  font-weight: 500;
   line-height: 16px;
   text-overflow: ellipsis;
   overflow: hidden;

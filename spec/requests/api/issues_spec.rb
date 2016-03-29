@@ -318,6 +318,17 @@ describe API::API, api: true  do
         'is too long (maximum is 255 characters)'
       ])
     end
+
+    context 'when an admin or owner makes the request' do
+      it "accepts the creation date to be set" do
+        post api("/projects/#{project.id}/issues", user),
+          title: 'new issue', labels: 'label, label2', created_at: 2.weeks.ago
+
+        expect(response.status).to eq(201)
+        # this take about a second, so probably not equal
+        expect(Time.parse(json_response['created_at'])).to be <= 2.weeks.ago
+      end
+    end
   end
 
   describe 'POST /projects/:id/issues with spam filtering' do
