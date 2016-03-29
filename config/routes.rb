@@ -606,6 +606,7 @@ Rails.application.routes.draw do
 
         resources :forks, only: [:index, :new, :create]
         resource :import, only: [:new, :create, :show]
+        resources :notification_settings, only: [:create, :update]
 
         resources :refs, only: [] do
           collection do

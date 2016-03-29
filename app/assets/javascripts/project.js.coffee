@@ -38,11 +38,18 @@ class @Project
       e.preventDefault()
       notification_level = $(@).data 'notification-level'
       label = $(@).data 'notification-title'
-      $('#notification_level').val(notification_level)
+      $('#notification_setting_level').val(notification_level)
       $('#notification-form').submit()
       $('#notifications-button').empty().append("<i class='fa fa-bell'></i>" + label + "<i class='fa fa-angle-down'></i>")
       $(@).parents('ul').find('li.active').removeClass 'active'
       $(@).parent().addClass 'active'
+
+    $('#notification-form').on 'ajax:success', (e, data) ->
+      if data.saved
+        new Flash("Notification settings saved", "notice")
+      else
+        new Flash("Failed to save new settings", "alert")
+
 
     @projectSelectDropdown()
 

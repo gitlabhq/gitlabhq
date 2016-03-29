@@ -1,7 +1,6 @@
 - if @notification_setting
-  = form_tag profile_notifications_path, method: :put, remote: true, class: 'inline', id: 'notification-form' do
-    = hidden_field_tag :notification_id, @notification_setting.id
-    = hidden_field_tag :notification_level, @notification_setting.level
+  = form_for [@project.namespace.becomes(Namespace), @project, @notification_setting], remote: true, html: { class: 'inline', id: 'notification-form' } do |f|
+    = f.hidden_field :level
     %span.dropdown
       %a.dropdown-new.btn.notifications-btn#notifications-button{href: '#', "data-toggle" => "dropdown"}
         = icon('bell')
