@@ -326,8 +326,8 @@ class GitLabDropdown
     ).join('')
 
   noResults: ->
-    html = "<li class='dropdown-menu-empty-link is-focused'>"
-    html += "<a href='#'>"
+    html = "<li class='dropdown-menu-empty-link'>"
+    html += "<a href='#' class='is-focused'>"
     html += "No matching results."
     html += "</a>"
     html += "</li>"
@@ -433,7 +433,7 @@ class GitLabDropdown
 
     # Update the class for the row at the specific index
     $listItem = $listItems.eq(index)
-    $listItem.addClass "is-focused"
+    $listItem.find('a:first-child').addClass "is-focused"
 
     # Dropdown content scroll area
     $dropdownContent = $listItem.closest('.dropdown-content')

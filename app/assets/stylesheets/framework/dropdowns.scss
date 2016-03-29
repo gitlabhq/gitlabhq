@@ -104,14 +104,6 @@
     padding: 0 10px;
   }
 
-  .is-focused {
-    a {
-      background-color: $dropdown-link-hover-bg;
-      text-decoration: none;
-      outline: 0;
-    }
-  }
-
   .divider {
     height: 1px;
     margin: 8px 10px;
@@ -140,7 +132,8 @@
     overflow: hidden;
 
     &:hover,
-    &:focus {
+    &:focus,
+    &.is-focused {
       background-color: $dropdown-link-hover-bg;
       text-decoration: none;
       outline: 0;
