@@ -24,7 +24,8 @@ module Gitlab
         ).execute
 
         import_data = project.import_data
-        import_data.credentials.merge!("bb_session" => session_data)
+        # merge! with a bang doesn't work here
+        import_data.credentials = import_data.credentials.merge("bb_session" => session_data)
         import_data.save
 
         project
