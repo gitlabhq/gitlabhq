@@ -213,8 +213,8 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I see Browse file link' do
-    expect(page).to have_link 'Browse File »'
-    expect(page).not_to have_link 'Browse Files »'
+    expect(page).to have_link 'Browse File'
+    expect(page).not_to have_link 'Browse Files'
   end
 
   step 'I see Browse code link' do
