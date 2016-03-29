@@ -7,9 +7,9 @@ class FileUploader < CarrierWave::Uploader::Base
 
   attr_accessor :project, :secret
 
-  def initialize(project, secret = self.class.generate_secret)
+  def initialize(project, secret = nil)
     @project = project
-    @secret = secret
+    @secret = secret || self.class.generate_secret
   end
 
   def base_dir

@@ -7,10 +7,7 @@ describe Gitlab::Gfm::UploadsRewriter do
   let(:rewriter) { described_class.new(text, old_project, user) }
 
   context 'text contains links to uploads' do
-    let(:path) { Rails.root + 'spec/fixtures/rails_sample.jpg' }
-    let(:file) { fixture_file_upload(path, 'image/jpg') }
-    let(:uploader) { FileUploader.new(old_project) }
-    let!(:store) { uploader.store!(file) } # TODO, see #xxx (carrierwave issue)
+    let(:uploader) { build(:file_uploader, project: old_project) }
     let(:markdown) { uploader.to_h[:markdown] }
     let(:text) { "Text and #{markdown}"}
 
