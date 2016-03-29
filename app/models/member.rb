@@ -163,7 +163,7 @@ class Member < ActiveRecord::Base
   end
 
   def create_notification_setting
-    user.notification_setting.find_or_create_for(source)
+    user.notification_settings.find_or_create_for(source)
   end
 
   def notification_setting

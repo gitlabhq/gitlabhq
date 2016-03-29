@@ -1,7 +1,6 @@
 class Profiles::NotificationsController < Profiles::ApplicationController
   def show
     @user = current_user
-    @notification = current_user.notification
     @group_notifications = current_user.notification_settings.for_groups
     @project_notifications = current_user.notification_settings.for_projects
   end
