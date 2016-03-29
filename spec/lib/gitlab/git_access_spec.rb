@@ -10,19 +10,6 @@ describe Gitlab::GitAccess, lib: true do
      "6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/synced/named-branch"]
   end
   let(:git_annex_master_changes) { "6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/master" }
-  let(:bad_commit) do
-    OpenStruct.new(
-      id: "570e7b2abdd848b95f2f578043fc23bd6f6fd24d",
-      parent_id: '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9',
-      author_full_name: "Dmitriy Zaporozhets",
-      author_email: "dmitriy.zaporozhets@gitlab.com",
-      files_changed_count: 2,
-      line_code: '2f6fcd96b88b36ce98c38da085c795a27d92a3dd_15_14',
-      line_code_path: 'files/ruby/popen.rb',
-      del_line_code: '2f6fcd96b88b36ce98c38da085c795a27d92a3dd_13_13',
-      safe_message: 'Change some stuff'
-    )
-  end
 
   describe 'can_push_to_branch?' do
     describe 'push to none protected branch' do
@@ -394,10 +381,13 @@ describe Gitlab::GitAccess, lib: true do
       end
 
       it 'allows githook for new branch with an old bad commit' do
+        bad_commit = double("Commit", safe_message: 'Some change').as_null_object
         allow(bad_commit).to receive(:refs).and_return(['heads/master'])
         allow_any_instance_of(Repository).to receive(:commits_between).and_return([bad_commit])
+
         project.create_git_hook
         project.git_hook.update(commit_message_regex: "Change some files")
+
         # push to new branch, so use a blank old rev and new ref
         expect(access.git_hook_check(user, project, 'refs/heads/new-branch', Gitlab::Git::BLANK_SHA, '570e7b2abdd848b95f2f578043fc23bd6f6fd24d')).to be_allowed
       end
