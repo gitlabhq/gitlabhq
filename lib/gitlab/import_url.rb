@@ -20,7 +20,7 @@ module Gitlab
     private
 
     def generate_full_url
-      return @url unless credentials
+      return @url unless valid_credentials?
       @full_url = @url.dup
       @full_url.user = credentials[:user]
       @full_url.password = credentials[:password]
@@ -32,6 +32,10 @@ module Gitlab
       safe_url.password = nil
       safe_url.user = nil
       safe_url
+    end
+
+    def valid_credentials?
+      credentials && credentials.is_a?(Hash) && credentials.any?
     end
   end
 end
