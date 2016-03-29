@@ -9,10 +9,29 @@
         .panel-heading
           Source branch
         .panel-body.clearfix
-          .merge-request-select
-            = f.select(:source_project_id, [[@merge_request.source_project_path,@merge_request.source_project.id]] , {}, { class: 'source_project select2', disabled: @merge_request.persisted?, required: true })
-          .merge-request-select
-            = f.select(:source_branch, @merge_request.source_branches, { include_blank: true }, { class: 'source_branch select2', required: true, data: { placeholder: "Select source branch" } })
+          .merge-request-select.dropdown
+            = f.hidden_field :source_project_id
+            = dropdown_toggle @merge_request.source_project_path, { toggle: "dropdown", field_name: "#{f.object_name}[source_project_id]", disabled: @merge_request.persisted? }, { toggle_class: "js-compare-dropdown js-source-project" }
+            .dropdown-menu
+              = dropdown_title("Select source project")
+              = dropdown_filter("Search projects")
+              = dropdown_content do
+                %ul
+                  %li
+                    %a{ href: "#", data: { id: @merge_request.source_project.id } }
+                      = @merge_request.source_project_path
+          .merge-request-select.dropdown
+            = f.hidden_field :source_branch
+            = dropdown_toggle "Select source branch", { toggle: "dropdown", field_name: "#{f.object_name}[source_branch]" }, { toggle_class: "js-compare-dropdown js-source-branch" }
+            .dropdown-menu
+              = dropdown_title("Select source branch")
+              = dropdown_filter("Search branches")
+              = dropdown_content do
+                %ul
+                  - @merge_request.source_branches.each do |branch|
+                    %li
+                      %a{ href: "#", data: { id: branch } }
+                        = branch
         .panel-footer
           = icon('spinner spin', class: "js-source-loading")
           %ul.list-unstyled.mr_source_commit
@@ -23,10 +42,30 @@
           Target branch
         .panel-body.clearfix
           - projects =  @project.forked_from_project.nil? ? [@project] : [@project, @project.forked_from_project]
-          .merge-request-select
-            = f.select(:target_project_id, options_from_collection_for_select(projects, 'id', 'path_with_namespace', f.object.target_project_id), {}, { class: 'target_project select2', disabled: @merge_request.persisted?, required: true })
-          .merge-request-select
-            = f.select(:target_branch, @merge_request.target_branches, { include_blank: true }, { class: 'target_branch select2', required: true, data: { placeholder: "Select target branch" } })
+          .merge-request-select.dropdown
+            = f.hidden_field :target_project_id
+            = dropdown_toggle projects.first.path_with_namespace, { toggle: "dropdown", field_name: "#{f.object_name}[target_project_id]", disabled: @merge_request.persisted? }, { toggle_class: "js-compare-dropdown js-target-project" }
+            .dropdown-menu
+              = dropdown_title("Select target project")
+              = dropdown_filter("Search projects")
+              = dropdown_content do
+                %ul
+                  - projects.each do |project|
+                    %li
+                      %a{ href: "#" }
+                        = project.path_with_namespace
+          .merge-request-select.dropdown
+            = f.hidden_field :target_branch
+            = dropdown_toggle "Select target branch", { toggle: "dropdown", field_name: "#{f.object_name}[target_branch]" }, { toggle_class: "js-compare-dropdown js-target-branch" }
+            .dropdown-menu.dropdown-menu-selectable
+              = dropdown_title("Select target branch")
+              = dropdown_filter("Search branches")
+              = dropdown_content do
+                %ul
+                  - @merge_request.target_branches.each do |branch|
+                    %li
+                      %a{ href: "#", class: "#{("is-active" if :target_branch == branch)}", data: { id: branch } }
+                        = branch
         .panel-footer
           = icon('spinner spin', class: "js-target-loading")
           %ul.list-unstyled.mr_target_commit

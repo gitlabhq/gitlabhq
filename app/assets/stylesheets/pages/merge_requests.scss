@@ -242,4 +242,14 @@
   width: 50%;
   padding-left: 5px;
   padding-right: 5px;
+
+  .dropdown-menu-toggle {
+    width: 100%;
+  }
+
+  .dropdown-menu {
+    left: 5px;
+    right: 5px;
+    width: auto;
+  }
 }
