@@ -207,14 +207,7 @@ module Gitlab
         # if oldrev is blank, the branch was just created
         oldrev = project.default_branch if blank_oldrev
 
-        commits =
-          if oldrev
-            project.repository.commits_between(oldrev, newrev)
-          else
-            project.repository.commits(newrev)
-          end
-
-        commits.each do |commit|
+        commits(newrev, oldrev, project).each do |commit|
           next if commit_from_annex_sync?(commit.safe_message) || (blank_oldrev && old_commit?(commit))
 
           if status_object = check_commit(commit, git_hook)
@@ -227,6 +220,14 @@ module Gitlab
     end
 
     private
+
+    def commits(newrev, oldrev, project)
+      if oldrev
+        project.repository.commits_between(oldrev, newrev)
+      else
+        project.repository.commits(newrev)
+      end
+    end
 
     # If commit does not pass git hook validation the whole push should be rejected.
     # This method should return nil if no error found or status object if there are some errors.
