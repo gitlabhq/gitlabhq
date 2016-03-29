@@ -44,7 +44,7 @@
           - projects =  @project.forked_from_project.nil? ? [@project] : [@project, @project.forked_from_project]
           .merge-request-select.dropdown
             = f.hidden_field :target_project_id
-            = dropdown_toggle projects.first.path_with_namespace, { toggle: "dropdown", field_name: "#{f.object_name}[target_project_id]", disabled: @merge_request.persisted? }, { toggle_class: "js-compare-dropdown js-target-project" }
+            = dropdown_toggle f.object.target_project.path_with_namespace, { toggle: "dropdown", field_name: "#{f.object_name}[target_project_id]", disabled: @merge_request.persisted? }, { toggle_class: "js-compare-dropdown js-target-project" }
             .dropdown-menu.dropdown-menu-selectable
               = dropdown_title("Select target project")
               = dropdown_filter("Search projects")
@@ -56,8 +56,8 @@
                         = project.path_with_namespace
           .merge-request-select.dropdown
             = f.hidden_field :target_branch
-            = dropdown_toggle "Select target branch", { toggle: "dropdown", field_name: "#{f.object_name}[target_branch]" }, { toggle_class: "js-compare-dropdown js-target-branch" }
-            .dropdown-menu.dropdown-menu-selectable
+            = dropdown_toggle f.object.target_branch, { toggle: "dropdown", field_name: "#{f.object_name}[target_branch]" }, { toggle_class: "js-compare-dropdown js-target-branch" }
+            .dropdown-menu.dropdown-menu-selectable.js-target-branch-dropdown
               = dropdown_title("Select target branch")
               = dropdown_filter("Search branches")
               = dropdown_content do

@@ -30,34 +30,40 @@ class @Compare
     @getTargetHtml()
 
   getTargetProject: ->
+    $.ajax(
+      url: @opts.targetProjectUrl
+      data:
+        target_project_id:  $("input[name='merge_request[target_project_id]']").val()
+      beforeSend: ->
+        $('.mr_target_commit').empty()
+      success: (html) ->
+        $('.js-target-branch-dropdown .dropdown-content').html html
+    )
     $.get @opts.targetProjectUrl,
-      target_project_id:  $("input[name='merge_request[source_project]']").val()
+      target_project_id:  $("input[name='merge_request[target_project_id]']").val()
 
   getSourceHtml: ->
-    $.ajax(
-      url: @opts.sourceBranchUrl
-      data:
-        ref: $("input[name='merge_request[source_branch]']").val()
-      beforeSend: =>
-        @source_loading.show()
-        $(".mr_source_commit").html ""
-      success: (html) =>
-        @source_loading.hide()
-        $(".mr_source_commit").html html
-        $(".mr_source_commit .js-timeago").timeago()
+    @sendAjax(@opts.sourceBranchUrl, @source_loading, '.mr_source_commit',
+      ref: $("input[name='merge_request[source_branch]']").val()
     )
 
   getTargetHtml: ->
+    @sendAjax(@opts.targetBranchUrl, @target_loading, '.mr_target_commit',
+      target_project_id: $("input[name='merge_request[target_project_id]']").val()
+      ref: $("input[name='merge_request[target_branch]']").val()
+    )
+
+  sendAjax: (url, loading, target, data) ->
+    $target = $(target)
+
     $.ajax(
-      url: @opts.targetBranchUrl
-      data:
-        target_project_id: $("input[name='merge_request[target_project_id]']").val()
-        ref: $("input[name='merge_request[target_branch]']").val()
-      beforeSend: =>
-        @target_loading.show()
-        $(".mr_target_commit").html ""
-      success: (html) =>
-        @target_loading.hide()
-        $(".mr_target_commit").html html
-        $(".mr_target_commit .js-timeago").timeago()
+      url: url
+      data: data
+      beforeSend: ->
+        loading.show()
+        $target.empty()
+      success: (html) ->
+        loading.hide()
+        $target.html html
+        $('.js-timeago', $target).timeago()
     )

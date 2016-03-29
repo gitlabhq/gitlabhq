@@ -89,6 +89,10 @@ li.commit {
       padding: 0;
       margin: 0;
     }
+
+    a {
+      color: $gl-dark-link-color;
+    }
   }
 
   .commit-row-info {
