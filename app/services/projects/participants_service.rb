@@ -4,7 +4,7 @@ module Projects
       @target = get_target(note_type, note_id)
       participating =
         if note_type && note_id
-          participants_in(note_type, note_id)
+          participants_in_target
         else
           []
         end
@@ -31,7 +31,7 @@ module Projects
       }]
     end
 
-    def participants_in(type, id)
+    def participants_in_target
       return [] unless @target
 
       users = @target.participants(current_user)
