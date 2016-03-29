@@ -9,6 +9,7 @@ v 8.7.0 (unreleased)
   - Add links to CI setup documentation from project settings and builds pages
   - Implement 'Groups View' as an option for dashboard preferences !3379 (Elias W.)
   - Implement 'TODOs View' as an option for dashboard preferences !3379 (Elias W.)
+  - Allow issues and merge requests to be assigned to the author
 
 v 8.6.2 (unreleased)
   - Comments on confidential issues don't show up in activity feed to non-members
@@ -233,7 +234,6 @@ v 8.5.0
   - Add label description (Nuttanart Pornprasitsakul)
   - Show label row when filtering issues or merge requests by label (Nuttanart Pornprasitsakul)
   - Add Todos
-  - Allow issues and merge requests to be assigned to the author(Zeger-Jan van de Weg)
 
 v 8.4.5
   - No CE-specific changes
