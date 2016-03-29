@@ -33,7 +33,7 @@ feature 'Merge Request filtering by Milestone', feature: true do
       visit_merge_requests(project)
       filter_by_milestone(Milestone::Upcoming.title)
 
-      expect(page).to have_css('.merge-request-title', count: 1)
+      expect(page).to have_css('.merge-request', count: 1)
     end
 
     it 'should not show issues in past' do
@@ -44,7 +44,7 @@ feature 'Merge Request filtering by Milestone', feature: true do
       visit_merge_requests(project)
       filter_by_milestone(Milestone::Upcoming.title)
 
-      expect(page).to have_css('.merge-request-title', count: 0)
+      expect(page).to have_css('.merge-request', count: 0)
     end
   end
 
@@ -55,7 +55,7 @@ feature 'Merge Request filtering by Milestone', feature: true do
     visit_merge_requests(project)
     filter_by_milestone(milestone.title)
 
-    expect(page).to have_css('.merge-request-title', count: 1)
+    expect(page).to have_css('.merge-request', count: 1)
   end
 
   def visit_merge_requests(project)

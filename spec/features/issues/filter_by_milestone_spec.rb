@@ -33,7 +33,7 @@ feature 'Issue filtering by Milestone', feature: true do
       visit_issues(project)
       filter_by_milestone(Milestone::Upcoming.title)
 
-      expect(page).to have_css('.issue .title', count: 1)
+      expect(page).to have_css('.issue', count: 1)
     end
 
     it 'should not show issues in past' do
@@ -44,7 +44,7 @@ feature 'Issue filtering by Milestone', feature: true do
       visit_issues(project)
       filter_by_milestone(Milestone::Upcoming.title)
 
-      expect(page).to have_css('.issue .title', count: 0)
+      expect(page).to have_css('.issue', count: 0)
     end
   end
 
@@ -55,7 +55,7 @@ feature 'Issue filtering by Milestone', feature: true do
     visit_issues(project)
     filter_by_milestone(milestone.title)
 
-    expect(page).to have_css('.issue .title', count: 1)
+    expect(page).to have_css('.issue', count: 1)
   end
 
   def visit_issues(project)
@@ -64,8 +64,6 @@ feature 'Issue filtering by Milestone', feature: true do
 
   def filter_by_milestone(title)
     find(".js-milestone-select").click
-    sleep 0.5
     find(".milestone-filter .dropdown-content a", text: title).click
-    sleep 1
   end
 end
