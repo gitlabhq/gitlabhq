@@ -8,7 +8,7 @@ class AuditEventService
     old_access_level = @details[:old_access_level]
     author_name = @author.name
     user_id = member.id
-    user_name = member.user.name
+    user_name = member.user ? member.user.name : 'Deleted User'
 
     @details =
       case action
