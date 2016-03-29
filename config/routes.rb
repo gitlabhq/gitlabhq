@@ -406,6 +406,7 @@ Rails.application.routes.draw do
 
       resource :avatar, only: [:destroy]
       resources :milestones, constraints: { id: /[^\/]+/ }, only: [:index, :show, :update, :new, :create]
+      resources :notification_settings, only: [:update]
     end
   end
 

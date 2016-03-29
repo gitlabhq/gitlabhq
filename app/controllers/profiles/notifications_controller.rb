@@ -6,29 +6,13 @@ class Profiles::NotificationsController < Profiles::ApplicationController
   end
 
   def update
-    type = params[:notification_type]
-
-    @saved = if type == 'global'
-               current_user.update_attributes(user_params)
-             else
-               notification_setting = current_user.notification_settings.find(params[:notification_id])
-               notification_setting.level = params[:notification_level]
-               notification_setting.save
-             end
-
-    respond_to do |format|
-      format.html do
-        if @saved
-          flash[:notice] = "Notification settings saved"
-        else
-          flash[:alert] = "Failed to save new settings"
-        end
-
-        redirect_back_or_default(default: profile_notifications_path)
-      end
-
-      format.js
+    if current_user.update_attributes(user_params)
+      flash[:notice] = "Notification settings saved"
+    else
+      flash[:alert] = "Failed to save new settings"
     end
+
+    redirect_back_or_default(default: profile_notifications_path)
   end
 
   def user_params
