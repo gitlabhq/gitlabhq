@@ -2,19 +2,20 @@ collapsed = 'page-sidebar-collapsed'
 expanded = 'page-sidebar-expanded'
 
 toggleSidebar = ->
+  $('.sidebar-wrapper').addClass('hide-sidebar')
+  $('.nicescroll').getNiceScroll().remove()
   $('.page-with-sidebar').toggleClass("#{collapsed} #{expanded}")
   $('header').toggleClass("header-collapsed header-expanded")
   $('.toggle-nav-collapse i').toggleClass("fa-angle-right fa-angle-left")
   $.cookie("collapsed_nav", $('.page-with-sidebar').hasClass(collapsed), { path: '/' })
 
   setTimeout ( ->
-    niceScrollBars = $('.nicescroll').niceScroll();
-    niceScrollBars.updateScrollBar();
+    $('.sidebar-wrapper').removeClass('hide-sidebar')
+    $(".nicescroll").niceScroll(cursoropacitymax: '0.4', cursorcolor: '#FFF', cursorborder: "1px solid #FFF")
   ), 300
 
 $(document).on("click", '.toggle-nav-collapse', (e) ->
   e.preventDefault()
-
   toggleSidebar()
 )
 
