@@ -4,6 +4,7 @@ v 8.6.3 (unreleased)
   - Destroy related todos when an Issue/MR is deleted. !3376
   - Fix error 500 when target is nil on todo list. !3376
   - Fix copying uploads when moving issue to another project. !3382
+  - Ensuring Merge Request API returns boolean values for work_in_progress (Abhi Rao). !3432
   - Fix raw/rendered diff producing different results on merge requests. !3450
   - Fix commit comment alignment (Stan Hu). !3466
   - Update gitlab-shell version and doc to 2.6.12. gitlab-org/gitlab-ee!280

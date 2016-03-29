@@ -279,7 +279,7 @@ class MergeRequest < ActiveRecord::Base
   WIP_REGEX = /\A\s*(\[WIP\]\s*|WIP:\s*|WIP\s+)+\s*/i.freeze
 
   def work_in_progress?
-    title =~ WIP_REGEX
+    !!(title =~ WIP_REGEX)
   end
 
   def wipless_title
