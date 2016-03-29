@@ -33,8 +33,8 @@ describe Gitlab::Gfm::UploadsRewriter do
       end
     end
 
-    describe '#has_uploads?' do
-      subject { rewriter.has_uploads? }
+    describe '#needs_rewrite?' do
+      subject { rewriter.needs_rewrite? }
       it { is_expected.to eq true }
     end
 

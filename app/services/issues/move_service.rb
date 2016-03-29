@@ -62,26 +62,15 @@ module Issues
     end
 
     def rewrite_content(content)
-      rewrite_uploads(
-        unfold_references(content)
-      )
-    end
-
-    def unfold_references(content)
       return unless content
 
-      rewriter = Gitlab::Gfm::ReferenceRewriter.new(content, @old_project,
-                                                    @current_user)
-      rewriter.rewrite(@new_project)
-    end
+      rewriters = [Gitlab::Gfm::ReferenceRewriter,
+                   Gitlab::Gfm::UploadsRewriter]
 
-    def rewrite_uploads(content)
-      return unless content
-
-      rewriter = Gitlab::Gfm::UploadsRewriter.new(content, @old_project,
-                                                  @current_user)
-      return content unless rewriter.has_uploads?
-      rewriter.rewrite(@new_project)
+      rewriters.inject(content) do |text, klass|
+        rewriter = klass.new(text, @old_project, @current_user)
+        rewriter.needs_rewrite? ? rewriter.rewrite(@new_project) : text
+      end
     end
 
     def close_issue

@@ -3,8 +3,9 @@ module Gitlab
     ##
     # Class that rewrites markdown links for uploads
     #
-    # Using a pattern defined in `FileUploader` copies files to a new project
-    # and rewrites all links to uploads in ain a given text.
+    # Using a pattern defined in `FileUploader` it copies files to a new
+    # project and rewrites all links to uploads in in a given text.
+    #
     #
     class UploadsRewriter
       def initialize(text, source_project, _current_user)
@@ -17,17 +18,17 @@ module Gitlab
         return unless @text
 
         new_uploader = file_uploader(target_project)
-        @text.gsub(@pattern) do |markdown_link|
-          old_file = find_file(@source_project, $~[:secret], $~[:file])
-          return markdown_link unless old_file.exists?
+        @text.gsub(@pattern) do |markdown|
+          file = find_file(@source_project, $~[:secret], $~[:file])
+          return markdown unless file.try(:exists?)
 
-          new_uploader.store!(old_file)
+          new_uploader.store!(file)
           new_uploader.to_h[:markdown]
         end
       end
 
-      def has_uploads?
-        !(@text =~ @pattern).nil?
+      def needs_rewrite?
+        files.any?
       end
 
       def files
@@ -46,8 +47,8 @@ module Gitlab
         uploader.file
       end
 
-      def file_uploader(*args)
-        uploader = FileUploader.new(*args)
+      def file_uploader(project, secret = nil)
+        uploader = FileUploader.new(project, secret)
         uploader.define_singleton_method(:move_to_store) { false }
         uploader
       end

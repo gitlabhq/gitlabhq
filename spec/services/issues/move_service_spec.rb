@@ -162,12 +162,9 @@ describe Issues::MoveService, services: true do
         end
 
         context 'issue description with uploads' do
-          let(:path) { Rails.root + 'spec/fixtures/rails_sample.jpg' }
-          let(:file) { fixture_file_upload(path, 'image/jpg') }
-          let(:uploader) { FileUploader.new(old_project) }
-          let!(:store) { uploader.store!(file) }
+          let(:uploader) { build(:file_uploader, project: old_project) }
           let(:markdown) { uploader.to_h[:markdown] }
-          let(:description) { "Text and #{markdown}"}
+          let(:description) { "Text and #{markdown}" }
 
           include_context 'issue move executed'
 
@@ -176,8 +173,6 @@ describe Issues::MoveService, services: true do
             expect(new_issue.description)
               .to match(/Text and #{FileUploader::MARKDOWN_PATTERN}/)
           end
-
-          after { uploader.remove! }
         end
       end
 
