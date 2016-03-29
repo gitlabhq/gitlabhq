@@ -12,6 +12,7 @@ v 8.7.0 (unreleased)
 
 v 8.6.2 (unreleased)
   - Comments on confidential issues don't show up in activity feed to non-members
+  - Fix NoMethodError when visiting CI root path at `/ci`
 
 v 8.6.1
   - Add option to reload the schema before restoring a database backup. !2807
