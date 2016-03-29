@@ -1,5 +1,13 @@
 class AddFingerprintIndex < ActiveRecord::Migration
+  disable_ddl_transaction!
+
   def change
-    add_index :keys, :fingerprint
+		args = [:keys, :fingerprint]
+
+    if Gitlab::Database.postgresql?
+      args << { algorithm: :concurrently }
+    end
+
+    add_index(*args)
   end
 end
