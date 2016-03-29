@@ -5,6 +5,11 @@
         = image_tag avatar_icon(note.author), alt: '', class: 'avatar s40'
     .timeline-content
       .note-header
+        = link_to_member(note.project, note.author, avatar: false)
+        .inline.note-headline-light
+          = "#{note.author.to_reference} commented"
+          %a{ href: "##{dom_id(note)}" }
+            = time_ago_with_tooltip(note.created_at, placement: 'bottom', html_class: 'note-created-ago')
         - if note_editable?(note)
           .note-actions
             - access = note.project.team.human_max_access(note.author.id)
@@ -15,15 +20,6 @@
               = icon('pencil-square-o')
             = link_to namespace_project_note_path(note.project.namespace, note.project, note), title: 'Remove comment', method: :delete, data: { confirm: 'Are you sure you want to remove this comment?' }, remote: true, class: 'note-action-button js-note-delete danger' do
               = icon('trash-o')
-
-        = link_to_member(note.project, note.author, avatar: false)
-
-        %span.author-username
-          = '@' + note.author.username
-
-        %span.note-last-update
-          %a{name: dom_id(note), href: "##{dom_id(note)}", title: 'Link here'}
-            = time_ago_with_tooltip(note.created_at, placement: 'bottom', html_class: 'note_created_ago')
       .note-body{class: note_editable?(note) ? 'js-task-list-container' : ''}
         .note-text
           = preserve do

@@ -22,7 +22,7 @@ ul.notes {
     margin-left: 55px;
   }
 
-  .note_created_ago, .note-updated-at {
+  .note-created-ago, .note-updated-at {
     white-space: nowrap;
   }
 
@@ -35,41 +35,6 @@ ul.notes {
     .timeline-icon {
       .avatar {
         visibility: hidden;
-      }
-    }
-  }
-
-  .discussion-header,
-  .note-header {
-    a:hover {
-      text-decoration: none;
-    }
-
-    .avatar {
-      float: left;
-      margin-right: 10px;
-    }
-
-    .discussion-last-update,
-    .note-last-update {
-      &:before {
-        content: "\00b7";
-      }
-
-      a {
-        color: $gl-gray;
-
-        &:hover {
-          text-decoration: underline;
-        }
-      }
-    }
-    .author {
-      color: #4c4e54;
-      margin-right: 3px;
-
-      &:hover {
-        color: $gl-link-color;
       }
     }
   }
@@ -193,35 +158,58 @@ ul.notes {
   }
 }
 
+.discussion-header,
+.note-header {
+  a {
+    color: inherit;
+
+    &:hover {
+      color: $gl-link-color;
+      text-decoration: none;
+    }
+  }
+
+  .author_link {
+    font-weight: 600;
+  }
+}
+
+.note-headline-light,
+.discussion-headline-light {
+  color: #8e8e8e;
+}
+
 /**
  * Actions for Discussions/Notes
  */
 
-.discussion,
-.note {
-  .discussion-actions,
-  .note-actions {
-    float: right;
-    margin-left: 10px;
-  }
+.discussion-actions,
+.note-actions {
+  float: right;
+  margin-left: 10px;
+  color: #8F8F8F;
 }
 
-.note-action-button {
+.note-action-button,
+.discussion-action-button {
   display: inline-block;
-  margin-left: 5px;
-  color: #8F8F8F;
+  margin-left: 10px;
   line-height: 24px;
 
   .fa {
     font-size: 16px;
   }
+}
 
-  &:hover {
-    color: $gl-gray;
+.discussion-toggle-button {
+  line-height: 20px;
+  font-size: 13px;
 
-    &.danger {
-      color: $gl-text-red;
-    }
+  .fa {
+    margin-right: 3px;
+    font-size: 10px;
+    line-height: 18px;
+    vertical-align: top;
   }
 }
 
@@ -234,7 +222,7 @@ ul.notes {
   color: #8F8F8F;
   font-size: 12px;
   line-height: 20px;
-  border: 1px solid #bbb;
+  border: 1px solid #E4E4E4;
   border-radius: $border-radius-base;
 }
 
