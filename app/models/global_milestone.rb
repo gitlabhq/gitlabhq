@@ -8,7 +8,7 @@ class GlobalMilestone
     milestones = milestones.group_by(&:title)
 
     milestones.map do |title, milestones|
-      new(title,  milestones)
+      new(title, milestones)
     end
   end
 
