@@ -498,47 +498,4 @@ describe Gitlab::LDAP::GroupSync, lib: true do
         .not_to change { User.admins.where(id: user3.id).any? }
     end
   end
-
-  describe '#members_to_access_hash' do
-    let(:group_access) { Gitlab::Access::DEVELOPER }
-    let(:member_dns) do
-      %w(
-        uid=johndoe,ou=users,dc=example,dc=com
-        uid=janedoe,ou=users,dc=example,dc=com
-      )
-    end
-
-    subject { group_sync.members_to_access_hash(access_hash, member_dns, group_access) }
-
-    context 'when access_hash is empty' do
-      let(:access_hash) { Hash.new }
-
-      it do
-        is_expected
-          .to eq({
-            'uid=janedoe,ou=users,dc=example,dc=com' => 30,
-            'uid=johndoe,ou=users,dc=example,dc=com' => 30
-          })
-      end
-    end
-
-    context 'when access_hash has existing entries' do
-      let(:access_hash) do
-        {
-          'uid=janedoe,ou=users,dc=example,dc=com'  => 40,
-          'uid=johndoe,ou=users,dc=example,dc=com'  => 20,
-          'uid=jamesdoe,ou=users,dc=example,dc=com' => 40,
-        }
-      end
-
-      it 'keeps the higher of all access values' do
-        is_expected
-          .to eq({
-             'uid=janedoe,ou=users,dc=example,dc=com'  => 40,
-             'uid=johndoe,ou=users,dc=example,dc=com'  => 30,
-             'uid=jamesdoe,ou=users,dc=example,dc=com' => 40
-          })
-      end
-    end
-  end
 end

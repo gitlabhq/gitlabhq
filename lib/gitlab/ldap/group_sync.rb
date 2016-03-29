@@ -64,21 +64,19 @@ module Gitlab
           next unless lease.try_obtain
 
           logger.debug { "Syncing '#{group.name}' group" }
-          access_hash = {}
 
           # Only iterate over group links for the current provider
           group.ldap_group_links.with_provider(provider).each do |group_link|
             if member_dns = dns_for_group_cn(group_link.cn)
-              members_to_access_hash(
-                access_hash, member_dns, group_link.group_access
-              )
-
-              logger.debug { "Resolved '#{group.name}' group member access: #{access_hash}" }
+              access_levels.set(member_dns, to: group_link.group_access)
+              logger.debug do
+                "Resolved '#{group.name}' group member access: #{access_levels.to_hash}"
+              end
             end
           end
 
-          update_existing_group_membership(group, access_hash)
-          add_new_members(group, access_hash)
+          update_existing_group_membership(group)
+          add_new_members(group)
 
           group.update(last_ldap_sync_at: Time.now)
 
@@ -120,18 +118,6 @@ module Gitlab
         end
       end
 
-      def members_to_access_hash(access_hash, member_dns, group_access)
-        member_dns.each do |member_dn|
-          current_access = access_hash[member_dn]
-
-          # Keep the higher of the access values.
-          if current_access.nil? || group_access > current_access
-            access_hash[member_dn] = group_access
-          end
-        end
-        access_hash
-      end
-
       private
 
       # Cache LDAP group member DNs so we don't query LDAP groups more than once.
@@ -152,6 +138,10 @@ module Gitlab
 
       def config
         @config ||= Gitlab::LDAP::Config.new(provider)
+      end
+
+      def access_levels
+        @access_levels ||= Gitlab::LDAP::AccessLevels.new
       end
 
       def group_base
@@ -213,7 +203,7 @@ module Gitlab
         identity.save
       end
 
-      def update_existing_group_membership(group, access_hash)
+      def update_existing_group_membership(group)
         logger.debug { "Updating existing membership for '#{group.name}' group" }
 
         select_and_preload_group_members(group).each do |member|
@@ -229,15 +219,15 @@ module Gitlab
           # of two LDAP groups from different providers linked to the same
           # GitLab group. This is not ideal, but preserves existing behavior.
           if user.ldap_identity.id != identity.id
-            access_hash.delete(member_dn)
+            access_levels.delete(member_dn)
             next
           end
 
-          desired_access = access_hash[member_dn]
+          desired_access = access_levels[member_dn]
 
           # Don't do anything if the user already has the desired access level
           if member.access_level == desired_access
-            access_hash.delete(member_dn)
+            access_levels.delete(member_dn)
             next
           end
 
@@ -247,7 +237,7 @@ module Gitlab
             add_or_update_user_membership(user, group, desired_access)
 
             # Delete this entry from the hash now that we've acted on it
-            access_hash.delete(member_dn)
+            access_levels.delete(member_dn)
           elsif group.last_owner?(user)
             warn_cannot_remove_last_owner(user, group)
           else
@@ -256,10 +246,10 @@ module Gitlab
         end
       end
 
-      def add_new_members(group, access_hash)
+      def add_new_members(group)
         logger.debug { "Adding new members to '#{group.name}' group" }
 
-        access_hash.each do |member_dn, access_level|
+        access_levels.each do |member_dn, access_level|
           user = Gitlab::LDAP::User.find_by_uid_and_provider(member_dn, provider)
 
           if user.present?
