@@ -39,8 +39,6 @@ class @Compare
       success: (html) ->
         $('.js-target-branch-dropdown .dropdown-content').html html
     )
-    $.get @opts.targetProjectUrl,
-      target_project_id:  $("input[name='merge_request[target_project_id]']").val()
 
   getSourceHtml: ->
     @sendAjax(@opts.sourceBranchUrl, @source_loading, '.mr_source_commit',
