@@ -171,8 +171,8 @@ class Member < ActiveRecord::Base
     end
   end
 
-  def notification
-    @notification ||= user.notification_settings.find_by(source: source)
+  def notification_setting
+    @notification_setting ||= user.notification_settings.find_by(source: source)
   end
 
   private

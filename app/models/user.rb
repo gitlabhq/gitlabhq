@@ -357,10 +357,6 @@ class User < ActiveRecord::Base
     "#{self.class.reference_prefix}#{username}"
   end
 
-  def notification
-    @notification ||= Notification.new(self)
-  end
-
   def generate_password
     if self.force_random_password
       self.password = self.password_confirmation = Devise.friendly_token.first(8)

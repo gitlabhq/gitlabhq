@@ -329,25 +329,31 @@ class NotificationService
   # Remove users with disabled notifications from array
   # Also remove duplications and nil recipients
   def reject_muted_users(users, project = nil)
-    reject_users(users, :disabled?, project)
+    reject_users(users, :disabled, project)
   end
 
   # Remove users with notification level 'Mentioned'
   def reject_mention_users(users, project = nil)
-    reject_users(users, :mention?, project)
+    reject_users(users, :mention, project)
   end
 
-  # Reject users which method_name from notification object returns true.
+  # Reject users which has certain notification level
   #
   # Example:
-  #   reject_users(users, :watch?, project)
+  #   reject_users(users, :watch, project)
   #
-  def reject_users(users, method_name, project = nil)
+  def reject_users(users, level, project = nil)
+    level = level.to_s
+
+    unless NotificationSetting.levels.keys.include?(level)
+      raise 'Invalid notification level'
+    end
+
     users = users.to_a.compact.uniq
     users = users.reject(&:blocked?)
 
     users.reject do |user|
-      next user.notification.send(method_name) unless project
+      next user.notification_level == level unless project
 
       setting = user.notification_settings.find_by(source: project)
 
@@ -356,13 +362,13 @@ class NotificationService
       end
 
       # reject users who globally set mention notification and has no setting per project/group
-      next user.notification.send(method_name) unless setting
+      next user.notification_level == level unless setting
 
       # reject users who set mention notification in project
-      next true if setting.send(method_name)
+      next true if setting.level == level
 
       # reject users who have mention level in project and disabled in global settings
-      setting.global? && user.notification.send(method_name)
+      setting.global? && user.notification_level == level
     end
   end
 
