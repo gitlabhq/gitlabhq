@@ -163,12 +163,7 @@ class Member < ActiveRecord::Base
   end
 
   def create_notification_setting
-    notification_setting = user.notification_settings.find_or_initialize_by(source: source)
-
-    unless notification_setting.persisted?
-      notification_setting.set_defaults
-      notification_setting.save
-    end
+    user.notification_setting.find_or_create_for(source)
   end
 
   def notification_setting
