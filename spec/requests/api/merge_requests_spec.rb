@@ -118,6 +118,7 @@ describe API::API, api: true  do
       expect(response.status).to eq(200)
       expect(json_response['title']).to eq(merge_request.title)
       expect(json_response['iid']).to eq(merge_request.iid)
+      expect(json_response['work_in_progress']).to eq(false)
       expect(json_response['merge_status']).to eq('can_be_merged')
     end
 
@@ -132,6 +133,16 @@ describe API::API, api: true  do
     it "should return a 404 error if merge_request_id not found" do
       get api("/projects/#{project.id}/merge_requests/999", user)
       expect(response.status).to eq(404)
+    end
+
+    context 'Work in Progress' do
+      let!(:merge_request_wip) { create(:merge_request, author: user, assignee: user, source_project: project, target_project: project, title: "WIP: Test", created_at: base_time + 1.second) }
+
+      it "should return merge_request" do
+        get api("/projects/#{project.id}/merge_requests/#{merge_request_wip.id}", user)
+        expect(response.status).to eq(200)
+        expect(json_response['work_in_progress']).to eq(true)
+      end
     end
   end
 
