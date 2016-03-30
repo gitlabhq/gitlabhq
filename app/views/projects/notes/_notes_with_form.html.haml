@@ -1,11 +1,11 @@
 %ul#notes-list.notes.main-notes-list.timeline
   = render "projects/notes/notes"
   %li.timeline-entry
-    .timeline-icon
+    .timeline-icon.hidden-xs.hidden-sm
       - if can? current_user, :create_note, @project
         %a.author_link{ href: user_path(current_user) }
           = image_tag avatar_icon(current_user), alt: current_user.to_reference, class: 'avatar s40'
-    .timeline-content
+    .timeline-content.timeline-content-form
       .js-main-target-form
         - if can? current_user, :create_note, @project
           = render "projects/notes/form", view: diff_view

@@ -20,6 +20,12 @@ ul.notes {
 
   .timeline-content {
     margin-left: 55px;
+
+    &.timeline-content-form {
+      @media (max-width: $screen-sm-max) {
+        margin-left: 0;
+      }
+    }
   }
 
   .note-created-ago, .note-updated-at {
