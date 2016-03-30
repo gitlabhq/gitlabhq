@@ -231,13 +231,14 @@ class @LabelsSelect
             saveLabelData()
 
         multiSelect: $dropdown.hasClass 'js-multiselect'
-
-        clicked: ->
+        clicked: (label) ->
           page = $('body').data 'page'
           isIssueIndex = page is 'projects:issues:index'
           isMRIndex = page is page is 'projects:merge_requests:index'
 
           if $dropdown.hasClass('js-filter-submit') and (isIssueIndex or isMRIndex)
+            selectedLabel = label.title
+
             Issues.filterResults $dropdown.closest('form')
           else if $dropdown.hasClass 'js-filter-submit'
             $dropdown.closest('form').submit()
