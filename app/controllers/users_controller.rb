@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
   skip_before_action :authenticate_user!
-  #TO-DO Remove this "set_user" before action. It is not good to use before filters for loading database records.
+  #TODO felipe_artur: Remove this "set_user" before action. It is not good to use before filters for loading database records.
   before_action :set_user, except: [:show]
   before_action :authorize_read_user, only: [:show]
 

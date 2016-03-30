@@ -38,6 +38,28 @@ describe UsersController do
         end
       end
     end
+
+    context 'When public visibility level is restricted' do
+      before do
+        stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::PUBLIC])
+      end
+
+      context 'when logged out' do
+        it 'renders 404' do
+          get :show, username: user.username
+          expect(response.status).to eq(404)
+        end
+      end
+
+      context 'when logged in' do
+        before { sign_in(user) }
+
+        it 'renders 404' do
+          get :show, username: user.username
+          expect(response.status).to eq(200)
+        end
+      end
+    end
   end
 
   describe 'GET #calendar' do
