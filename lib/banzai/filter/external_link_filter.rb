@@ -1,5 +1,3 @@
-require 'html/pipeline/filter'
-
 module Banzai
   module Filter
     # HTML Filter to add a `rel="nofollow"` attribute to external links
