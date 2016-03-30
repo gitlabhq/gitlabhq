@@ -88,6 +88,14 @@ class Spinach::Features::DashboardTodos < Spinach::FeatureSteps
     should_not_see_todo "John Doe assigned you issue ##{issue.iid}"
   end
 
+  step 'I click on the todo' do
+    execute_script("$('.todo:nth-child(1)').click()")
+  end
+
+  step 'I should be directed to the corresponding page' do
+    page.should have_css('.identifier', text: 'Merge Request !1')
+  end
+
   def should_see_todo(position, title, body, pending = true)
     page.within(".todo:nth-child(#{position})") do
       expect(page).to have_content title

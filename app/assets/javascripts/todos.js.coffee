@@ -10,6 +10,7 @@ class @Todos
   initBtnListeners: ->
     $('.done-todo').on('click', @doneClicked)
     $('.js-todos-mark-all').on('click', @allDoneClicked)
+    $('.todo').on('click', @goToTodoUrl)
 
   doneClicked: (e) =>
     e.preventDefault()
@@ -54,3 +55,7 @@ class @Todos
   updateBadges: (data) ->
     $('.todos-pending .badge, .todos-pending-count').text data.count
     $('.todos-done .badge').text data.done_count
+
+  goToTodoUrl: (e) ->
+    $this = $(e.currentTarget)
+    window.location.href = $this.data('url')
