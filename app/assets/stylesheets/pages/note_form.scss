@@ -47,9 +47,7 @@
   padding-left: 0;
   padding-right: 0;
   font-family: $regular_font;
-  border-left: 0;
-  border-right: 0;
-  resize: none!important; // TODO: Find a way to remove this !important
+  border: 0;
 
   &:focus {
     outline: 0;
@@ -63,10 +61,11 @@
 }
 
 .common-note-form {
-  margin: 0;
-  padding: $gl-padding;
-  border: 1px solid #E5E5E5;
-  border-radius: $border-radius-base;
+  .md-area {
+    padding: $gl-padding-top $gl-padding;
+    border: 1px solid #E5E5E5;
+    border-radius: $border-radius-base;
+  }
 }
 
 .note-form-actions {
@@ -151,11 +150,43 @@
   }
 }
 
-.comment-hints {
-  color: #999;
-  background: #fff;
-  padding: 7px;
-  margin-top: -7px;
-  border: 1px solid $border-color;
-  font-size: 13px;
+.comment-toolbar {
+  padding-top: $gl-padding-top;
+  border-top: 1px solid $border-color;
+}
+
+.toolbar-button {
+  float: left;
+  margin-right: $gl-padding;
+  padding: 0;
+  background: none;
+  border: 0;
+  color: #959494;
+  font-size: 14px;
+  line-height: 16px;
+
+  &:hover,
+  &:focus {
+    color: $gl-link-color;
+    outline: 0;
+  }
+
+  &:last-child {
+    margin-right: 0;
+  }
+}
+
+.toolbar-button-icon {
+  position: relative;
+  top: 1px;
+  margin-right: 3px;
+  color: inherit;
+  font-size: 16px;
+}
+
+.toolbar-text {
+  float: left;
+  color: #959494;
+  font-size: 14px;
+  line-height: 16px;
 }

@@ -1,42 +1,51 @@
-.zennable {
-  .zen-backdrop {
-    &.fullscreen {
-      background-color: white;
-      position: fixed;
+.zen-backdrop {
+  &.fullscreen {
+    background-color: white;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1031;
+
+    textarea {
+      border: none;
+      box-shadow: none;
+      border-radius: 0;
+      color: #000;
+      font-size: 20px;
+      line-height: 26px;
+      padding: 30px;
+      display: block;
+      outline: none;
+      resize: none;
+      height: 100vh;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .zen-control-leave {
+      display: block;
+      position: absolute;
       top: 0;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      z-index: 1031;
-
-      textarea {
-        border: none;
-        box-shadow: none;
-        border-radius: 0;
-        color: #000;
-        font-size: 20px;
-        line-height: 26px;
-        padding: 30px;
-        display: block;
-        outline: none;
-        resize: none;
-        height: 100vh;
-        max-width: 900px;
-        margin: 0 auto;
-      }
-
-      .zen-control-leave {
-        display: block;
-        position: absolute;
-        top: 0;
-      }
     }
   }
 }
 
 .zen-cotrol {
+  padding: 0;
   color: #555;
-  line-height: 31px;
+  background: none;
+  border: 0;
+}
+
+.zen-control-full {
+  color: #959494;
+
+  &:hover {
+    color: $gl-link-color;
+    text-decoration: none;
+  }
 }
 
 .zen-control-leave {
