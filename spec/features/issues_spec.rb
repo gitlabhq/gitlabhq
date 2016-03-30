@@ -22,7 +22,7 @@ describe 'Issues', feature: true do
 
     before do
       visit edit_namespace_project_issue_path(project.namespace, project, issue)
-      click_link "Edit"
+      click_button "Go full screen"
     end
 
     it 'should open new issue popup' do
