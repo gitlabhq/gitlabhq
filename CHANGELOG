@@ -44,7 +44,8 @@ v 8.7.0 (unreleased)
   - API: User can leave a project through the API when not master or owner. !3613
 
 v 8.6.6
-  - Fix error on language detection when repository has no HEAD (e.g., master branch). !3654 (Jeroen Bobbeldijk)
+  - Expire the exists cache before deletion to ensure project dir actually exists (Stan Hu). !3413
+  - Fix error on language detection when repository has no HEAD (e.g., master branch) (Jeroen Bobbeldijk). !3654
 
 v 8.6.5
   - Fix importing from GitHub Enterprise. !3529
