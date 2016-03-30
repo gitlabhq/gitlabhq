@@ -22,6 +22,7 @@ v 8.6.2
   - Remove tabstop from the WIP toggle links. !3426
   - Ensure private project snippets are not viewable by unauthorized people.
   - Gracefully handle notes on deleted commits in merge requests (Stan Hu). !3402
+  - Fixed issue with notification settings not saving. !3452
 
 v 8.6.1
   - Add option to reload the schema before restoring a database backup. !2807
