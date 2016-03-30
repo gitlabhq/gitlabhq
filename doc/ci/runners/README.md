@@ -62,7 +62,7 @@ Now simply register the runner as any runner:
 sudo gitlab-runner register
 ```
 
-Shared runners are enabled by default as of GitLab 8.2, but can be disabled with the 
+Shared runners are enabled by default as of GitLab 8.2, but can be disabled with the
 `DISABLE SHARED RUNNERS` button. Previous versions of GitLab defaulted shared runners to
 disabled.
 
@@ -142,5 +142,12 @@ project.
 
 # Attack vectors in runners
 
-Mentioned briefly earlier, but the following things of runners can be exploited.
-We're always looking for contributions that can mitigate these [Security Considerations](https://gitlab.com/gitlab-org/gitlab-ci-multi-runner/blob/master/docs/security/index.md).
+Depending on the executor that GitLab Runners use, they may not offer secure
+isolation between projects that they do builds for. In that case, you are
+**trusting** all GitLab users who can push code to project A, B or C to run
+shell scripts on the machine hosting runner X.
+
+We're always looking for contributions that can mitigate these Security
+considerations. Read more on [Runners security][security].
+
+[security]: https://gitlab.com/gitlab-org/gitlab-ci-multi-runner/blob/master/docs/security/index.md
