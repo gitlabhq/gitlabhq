@@ -13,6 +13,12 @@
   }
 }
 
+.todo {
+  &:hover {
+    cursor: pointer;
+  }
+}
+
 .todo-item {
   .todo-title {
     @include str-truncated(calc(100% - 174px));
