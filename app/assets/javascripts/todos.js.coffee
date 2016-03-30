@@ -6,6 +6,7 @@ class @Todos
   clearListeners: ->
     $('.done-todo').off('click')
     $('.js-todos-mark-all').off('click')
+    $('.todo').off('click')
 
   initBtnListeners: ->
     $('.done-todo').on('click', @doneClicked)

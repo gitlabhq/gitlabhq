@@ -89,7 +89,7 @@ class Spinach::Features::DashboardTodos < Spinach::FeatureSteps
   end
 
   step 'I click on the todo' do
-    execute_script("$('.todo:nth-child(1)').click()")
+    find('.todo:nth-child(1)').click
   end
 
   step 'I should be directed to the corresponding page' do
