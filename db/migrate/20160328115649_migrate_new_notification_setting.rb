@@ -1,6 +1,10 @@
 # This migration will create one row of NotificationSetting for each Member row
-# It can take long time on big instances. Its unclear yet if this migration can be done online.
-# This comment should be updated by @dzaporozhets before 8.7 release. If not - please ask him to do so.
+# It can take long time on big instances.
+#
+# This migration can be done online but with following effects:
+# - during migration some users will receive notifications based on their global settings (project/group settings will be ignored)
+# - its possible to get duplicate records for notification settings since we don't create uniq index yet
+#
 class MigrateNewNotificationSetting < ActiveRecord::Migration
   def up
     timestamp = Time.now
