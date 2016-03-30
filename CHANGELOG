@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.7.0 (unreleased)
+  - All images in discussions and wikis now link to their source files !3464 (Connor Shea).
   - Improved Markdown rendering performance !3389 (Yorick Peterse)
   - Don't attempt to look up an avatar in repo if repo directory does not exist (Stan hu)
   - Preserve time notes/comments have been updated at when moving issue
