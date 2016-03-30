@@ -15,7 +15,7 @@ module Gitlab
       end
 
       def rewrite(target_project)
-        return unless @text
+        return @text unless needs_rewrite?
 
         new_uploader = file_uploader(target_project)
         @text.gsub(@pattern) do |markdown|

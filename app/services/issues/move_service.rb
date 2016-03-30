@@ -69,7 +69,7 @@ module Issues
 
       rewriters.inject(content) do |text, klass|
         rewriter = klass.new(text, @old_project, @current_user)
-        rewriter.needs_rewrite? ? rewriter.rewrite(@new_project) : text
+        rewriter.rewrite(@new_project)
       end
     end
 

@@ -38,6 +38,8 @@ module Gitlab
       end
 
       def rewrite(target_project)
+        return @text unless needs_rewrite?
+
         @text.gsub(@pattern) do |reference|
           unfold_reference(reference, Regexp.last_match, target_project)
         end
