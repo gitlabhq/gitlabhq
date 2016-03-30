@@ -288,6 +288,12 @@ class @Notes
       else
         previewButton.removeClass("turn-on").addClass "turn-off"
 
+    textarea.on 'focus', ->
+      $(this).closest('.md-area').addClass 'is-focused'
+
+    textarea.on 'blur', ->
+      $(this).closest('.md-area').removeClass 'is-focused'
+
     autosize(textarea)
 
     new Autosave textarea, [

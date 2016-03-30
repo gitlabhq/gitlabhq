@@ -44,8 +44,7 @@
 }
 
 .note-textarea {
-  padding-left: 0;
-  padding-right: 0;
+  padding: 10px 0;
   font-family: $regular_font;
   border: 0;
 
@@ -63,8 +62,18 @@
 .common-note-form {
   .md-area {
     padding: $gl-padding-top $gl-padding;
-    border: 1px solid #E5E5E5;
+    border: 1px solid #e5e5e5;
     border-radius: $border-radius-base;
+
+    &.is-focused {
+      border-color: #3b99fc;
+      box-shadow: 0 0 4px rgba(#3b99fc, .7);
+
+      .comment-toolbar,
+      .nav-links {
+        border-color: #3b99fc;
+      }
+    }
   }
 }
 
@@ -156,8 +165,6 @@
 }
 
 .toolbar-button {
-  float: left;
-  margin-right: $gl-padding;
   padding: 0;
   background: none;
   border: 0;
@@ -171,8 +178,14 @@
     outline: 0;
   }
 
-  &:last-child {
-    margin-right: 0;
+  @media (min-width: $screen-md-min) {
+    float: left;
+    margin-right: $gl-padding;
+
+    &:last-child {
+      float: right;
+      margin-right: 0;
+    }
   }
 }
 
@@ -185,8 +198,11 @@
 }
 
 .toolbar-text {
-  float: left;
   color: #959494;
   font-size: 14px;
   line-height: 16px;
+
+  @media (min-width: $screen-md-min) {
+    float: left;
+  }
 }
