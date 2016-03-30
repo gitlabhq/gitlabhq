@@ -63,7 +63,8 @@
 
     &.is-focused {
       border-color: #3b99fc;
-      box-shadow: 0 0 4px rgba(#3b99fc, .7);
+      box-shadow: 0 0 2px rgba(#000, .2),
+                  0 0 4px rgba(#3b99fc, .5);
 
       .comment-toolbar,
       .nav-links {
