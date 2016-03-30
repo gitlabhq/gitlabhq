@@ -195,6 +195,8 @@ class GitLabDropdown
     if @options.filterable
       @dropdown.find(".dropdown-input-field").focus()
 
+    @dropdown.trigger('shown.gl.dropdown')
+
   hidden: (e) =>
     if @options.filterable
       @dropdown
@@ -208,6 +210,8 @@ class GitLabDropdown
 
     if @options.hidden
       @options.hidden.call(@,e)
+
+    @dropdown.trigger('hidden.gl.dropdown')
 
 
   # Render the full menu

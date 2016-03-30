@@ -288,6 +288,10 @@
   @media (min-width: $screen-sm-min) {
     padding-right: $sidebar_collapsed_width;
   }
+
+  .sidebar-collapsed-icon {
+    cursor: pointer;
+  }
 }
 
 .right-sidebar-expanded {
@@ -299,5 +303,9 @@
 
   @media (min-width: $screen-md-min) {
     padding-right: $gutter_width;
+  }
+
+  &.with-overlay {
+    padding-right: $sidebar_collapsed_width;
   }
 }
