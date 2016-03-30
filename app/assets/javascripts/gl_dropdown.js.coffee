@@ -143,10 +143,10 @@ class GitLabDropdown
         selector = ".dropdown-page-one .dropdown-content a"
 
       @dropdown.on "click", selector, (e) ->
-        self.rowClicked $(@)
+        selected = self.rowClicked $(@)
 
         if self.options.clicked
-          self.options.clicked()
+          self.options.clicked(selected)
 
   toggleLoading: ->
     $('.dropdown-menu', @dropdown).toggleClass LOADING_CLASS
@@ -258,17 +258,19 @@ class GitLabDropdown
 
   rowClicked: (el) ->
     fieldName = @options.fieldName
-    field = @dropdown.parent().find("input[name='#{fieldName}']")
+    selectedIndex = el.parent().index()
+    if @renderedData
+      selectedObject = @renderedData[selectedIndex]
+    value = if @options.id then @options.id(selectedObject, el) else selectedObject.id
+    field = @dropdown.parent().find("input[name='#{fieldName}'][value='#{value}']")
 
     if el.hasClass(ACTIVE_CLASS)
       field.remove()
-    else
-      fieldName = @options.fieldName
-      selectedIndex = el.parent().index()
-      if @renderedData
-        selectedObject = @renderedData[selectedIndex]
-      value = if @options.id then @options.id(selectedObject, el) else selectedObject.id
 
+      # Toggle the dropdown label
+      if @options.toggleLabel
+        $(@el).find(".dropdown-toggle-text").text @options.toggleLabel
+    else
       if !value?
         field.remove()
 
@@ -280,7 +282,7 @@ class GitLabDropdown
         @dropdown.find(".#{ACTIVE_CLASS}").removeClass ACTIVE_CLASS
 
       # Toggle active class for the tick mark
-      el.toggleClass "is-active"
+      el.addClass ACTIVE_CLASS
 
       # Toggle the dropdown label
       if @options.toggleLabel
@@ -289,10 +291,13 @@ class GitLabDropdown
       if value?
         if !field.length
           # Create hidden input for form
-          input = "<input type='hidden' name='#{fieldName}' />"
+          input = "<input type='hidden' name='#{fieldName}' value='#{value}' />"
+          if @options.inputId?
+            input = $(input)
+                      .attr('id', @options.inputId)
           @dropdown.before input
 
-        @dropdown.parent().find("input[name='#{fieldName}']").val value
+      return selectedObject
 
   selectFirstRow: ->
     selector = '.dropdown-content li:first-child a'

@@ -62,12 +62,20 @@ class @UsersSelect
             selected.name
           else
             defaultLabel
-        clicked: ->
+
+        inputId: 'issue_assignee_id'
+
+        hidden: (e) ->
+          $selectbox.hide()
+          $value.show()
+
+        clicked: (user) ->
           page = $('body').data 'page'
           isIssueIndex = page is 'projects:issues:index'
           isMRIndex = page is page is 'projects:merge_requests:index'
 
           if $dropdown.hasClass('js-filter-submit') and (isIssueIndex or isMRIndex)
+            selectedId = user.id
             Issues.filterResults $dropdown.closest('form')
           else if $dropdown.hasClass 'js-filter-submit'
             $dropdown.closest('form').submit()
