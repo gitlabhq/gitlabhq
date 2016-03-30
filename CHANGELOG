@@ -2,6 +2,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.7.0 (unreleased)
   - Don't attempt to fetch any tags from a forked repo (Stan Hu)
+  - Improved Markdown rendering performance !3389 (Yorick Peterse)
   - Don't attempt to look up an avatar in repo if repo directory does not exist (Stan hu)
   - Preserve time notes/comments have been updated at when moving issue
   - Make HTTP(s) label consistent on clone bar (Stan Hu)
