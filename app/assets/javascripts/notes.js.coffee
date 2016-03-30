@@ -305,7 +305,6 @@ class @Notes
     ]
 
     # remove notify commit author checkbox for non-commit notes
-    form.find(".js-notify-commit-author").remove()  if form.find("#note_noteable_type").val() isnt "Commit"
     GitLab.GfmAutoComplete.setup()
     new DropzoneInput(form)
     form.show()

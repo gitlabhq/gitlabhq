@@ -37,10 +37,6 @@
   img {
     max-width: 100%;
   }
-
-  .comment-hints {
-    margin-top: -12px;
-  }
 }
 
 .note-textarea {
@@ -73,30 +69,6 @@
       .nav-links {
         border-color: #3b99fc;
       }
-    }
-  }
-}
-
-.note-form-actions {
-  .note-form-option {
-    margin-top: 8px;
-    margin-left: 30px;
-    @extend .pull-left;
-  }
-
-  .js-notify-commit-author {
-    float: left;
-  }
-
-  .write-preview-btn {
-    // makes the "absolute" position for links relative to this
-    position: relative;
-
-    // preview/edit buttons
-    > a {
-      position: absolute;
-      right: 5px;
-      top: 8px;
     }
   }
 }
