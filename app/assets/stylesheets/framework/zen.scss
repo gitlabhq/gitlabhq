@@ -1,26 +1,4 @@
 .zennable {
-  a.js-zen-enter {
-    color: $gl-gray;
-    position: absolute;
-    top: 0;
-    right: 4px;
-    line-height: 56px;
-  }
-
-  a.js-zen-leave {
-    display: none;
-    color: $gl-text-color;
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    padding: 5px;
-    font-size: 36px;
-
-    &:hover {
-      color: #111;
-    }
-  }
-
   .zen-backdrop {
     &.fullscreen {
       background-color: white;
@@ -47,15 +25,29 @@
         margin: 0 auto;
       }
 
-      a.js-zen-enter {
-        display: none;
-      }
-
-      a.js-zen-leave {
+      .zen-control-leave {
         display: block;
         position: absolute;
         top: 0;
       }
     }
+  }
+}
+
+.zen-cotrol {
+  color: #555;
+  line-height: 31px;
+}
+
+.zen-control-leave {
+  display: none;
+  color: $gl-text-color;
+  position: absolute;
+  right: 10px;
+  padding: 5px;
+  font-size: 36px;
+
+  &:hover {
+    color: #111;
   }
 }

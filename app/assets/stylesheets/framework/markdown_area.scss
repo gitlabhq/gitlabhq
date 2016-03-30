@@ -65,6 +65,21 @@
   position: relative;
 }
 
+.md-header {
+  .nav-links {
+    .active {
+      a {
+        border-bottom-color: #000;
+      }
+    }
+
+    a {
+      padding-top: 0;
+      line-height: 1;
+    }
+  }
+}
+
 .referenced-users {
   color: #4c4e54;
   padding-top: 10px;

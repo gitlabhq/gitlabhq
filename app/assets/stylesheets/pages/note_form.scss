@@ -1,10 +1,6 @@
 /**
  * Note Form
  */
-
-.comment-btn {
-  @extend .btn-create;
-}
 .reply-btn {
   @extend .btn-primary;
   margin: 10px $gl-padding;
@@ -42,18 +38,22 @@
     max-width: 100%;
   }
 
-  .note_text {
-    width: 100%;
-  }
-
   .comment-hints {
     margin-top: -12px;
   }
 }
 
-/* loading indicator */
-.notes-busy {
-  margin: 18px;
+.note-textarea {
+  padding-left: 0;
+  padding-right: 0;
+  font-family: $regular_font;
+  border-left: 0;
+  border-right: 0;
+  resize: none!important; // TODO: Find a way to remove this !important
+
+  &:focus {
+    outline: 0;
+  }
 }
 
 .note-image-attach {
@@ -64,11 +64,9 @@
 
 .common-note-form {
   margin: 0;
-  background: #fff;
   padding: $gl-padding;
-  margin-left: -$gl-padding;
-  margin-right: -$gl-padding;
-  margin-bottom: -$gl-padding;
+  border: 1px solid #E5E5E5;
+  border-radius: $border-radius-base;
 }
 
 .note-form-actions {
