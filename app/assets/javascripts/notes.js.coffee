@@ -254,6 +254,9 @@ class @Notes
     # find the form
     form = $(".js-new-note-form")
 
+    # Set a global clone of the form for later cloning
+    @formClone = form.clone()
+
     # show the form
     @setupNoteForm(form)
 
@@ -452,15 +455,15 @@ class @Notes
   Shows the note form below the notes.
   ###
   replyToDiscussionNote: (e) =>
-    form = $(".js-new-note-form")
+    form = @formClone.clone()
     replyLink = $(e.target).closest(".js-discussion-reply-button")
     replyLink.hide()
 
     # insert the form after the button
-    form.clone().insertAfter replyLink
+    replyLink.after form
 
     # show the form
-    @setupDiscussionNoteForm(replyLink, replyLink.next("form"))
+    @setupDiscussionNoteForm(replyLink, form)
 
   ###
   Shows the diff or discussion form and does some setup on it.
@@ -485,7 +488,9 @@ class @Notes
         .text(form.find('.js-close-discussion-note-form').data('cancel-text'))
     @setupNoteForm form
     form.find(".js-note-text").focus()
-    form.addClass "js-discussion-note-form"
+    form
+      .removeClass('js-main-target-form')
+      .addClass("discussion-form js-discussion-note-form")
 
   ###
   Called when clicking on the "add a comment" button on the side of a diff line.
