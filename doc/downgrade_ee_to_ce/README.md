@@ -24,14 +24,14 @@ repositories to use Git LFS before downgrading to the Community Edition.
 
 ### Remove Jenkins CI Service entries from the database
 
-The `JenkinsService` class is only available on the Enterprise Edition codebase,
-so if you downgrade to the Community Edition, you'll come across the following
-error:
+The `JenkinsService` and `JenkinsDeprecatedService` classes are only available on the
+Enterprise Edition codebase, so if you downgrade to the Community Edition, you'll come
+across an error similar to the following:
 
 ```
 Completed 500 Internal Server Error in 497ms (ActiveRecord: 32.2ms)
 
-ActionView::Template::Error (The single-table inheritance mechanism failed to locate the subclass: 'JenkinsService'. This
+ActionView::Template::Error (The single-table inheritance mechanism failed to locate the subclass: 'JenkinsDeprecatedService'. This
 error is raised because the column 'type' is reserved for storing the class in case of inheritance. Please rename this
 column if you didn't intend it to be used for storing the inheritance class or overwrite Service.inheritance_column to
 use another column for that information.)
@@ -39,18 +39,20 @@ use another column for that information.)
 
 All services are created automatically for every project you have, so in order
 to avoid getting this error, you need to remove all instances of the
-`JenkinsService` from your database:
+`JenkinsService` and `JenkinsDeprecatedService` from your database:
 
 **Omnibus Installation**
 
 ```
 $ sudo gitlab-rails runner "Service.where(type: 'JenkinsService').delete_all"
+$ sudo gitlab-rails runner "Service.where(type: 'JenkinsDeprecatedService').delete_all"
 ```
 
 **Source Installation**
 
 ```
-$ bundle exec rails runner "Service.where(type: 'JenkinsService').delete_all" production
+$ RAILS_ENV=production bundle exec rails runner "Service.where(type: 'JenkinsService').delete_all"
+$ RAILS_ENV=production bundle exec rails runner "Service.where(type: 'JenkinsDeprecatedService').delete_all"
 ```
 
 ## Downgrade to CE
