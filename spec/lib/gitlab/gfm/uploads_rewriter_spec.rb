@@ -8,13 +8,13 @@ describe Gitlab::Gfm::UploadsRewriter do
 
   context 'text contains links to uploads' do
     let(:uploader) { build(:file_uploader, project: old_project) }
-    let(:markdown) { uploader.to_h[:markdown] }
-    let(:text) { "Text and #{markdown}"}
+    let(:text) { "Text and #{uploader.to_markdown}"}
 
     describe '#rewrite' do
       let!(:new_text) { rewriter.rewrite(new_project) }
+
       let(:new_rewriter) { described_class.new(new_text, new_project, user) }
-      let(:old_file) { rewriter.files.first }
+      let(:old_file) { uploader.file }
       let(:new_file) { new_rewriter.files.first }
 
       it 'rewrites content' do
@@ -29,7 +29,7 @@ describe Gitlab::Gfm::UploadsRewriter do
       end
 
       it 'does not remove old files' do
-        expect(old_file.exists?).to be true
+        expect(old_file).to exist
       end
     end
 

@@ -24,10 +24,6 @@ class FileUploader < CarrierWave::Uploader::Base
     File.join(base_dir, 'tmp', @project.path_with_namespace, @secret)
   end
 
-  def self.generate_secret
-    SecureRandom.hex
-  end
-
   def secure_url
     File.join("/uploads", @secret, file.filename)
   end
@@ -49,5 +45,9 @@ class FileUploader < CarrierWave::Uploader::Base
       is_image: image?,
       markdown: markdown
     }
+  end
+
+  def self.generate_secret
+    SecureRandom.hex
   end
 end

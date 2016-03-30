@@ -17,11 +17,11 @@ module Gitlab
       def rewrite(target_project)
         return @text unless needs_rewrite?
 
-        new_uploader = file_uploader(target_project)
         @text.gsub(@pattern) do |markdown|
           file = find_file(@source_project, $~[:secret], $~[:file])
           return markdown unless file.try(:exists?)
 
+          new_uploader = FileUploader.new(target_project)
           new_uploader.store!(file)
           new_uploader.to_markdown
         end
@@ -42,15 +42,9 @@ module Gitlab
       private
 
       def find_file(project, secret, file)
-        uploader = file_uploader(project, secret)
+        uploader = FileUploader.new(project, secret)
         uploader.retrieve_from_store!(file)
         uploader.file
-      end
-
-      def file_uploader(project, secret = nil)
-        uploader = FileUploader.new(project, secret)
-        uploader.define_singleton_method(:move_to_store) { false }
-        uploader
       end
     end
   end
