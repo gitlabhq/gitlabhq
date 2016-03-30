@@ -558,7 +558,7 @@ describe Repository, models: true do
       end
 
       it 'flushes the exists cache' do
-        expect(repository).to receive(:expire_exists_cache)
+        expect(repository).to receive(:expire_exists_cache).twice
 
         repository.before_delete
       end
