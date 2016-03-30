@@ -14,6 +14,9 @@ v 8.7.0 (unreleased)
   - Implement 'TODOs View' as an option for dashboard preferences !3379 (Elias W.)
   - Gracefully handle notes on deleted commits in merge requests (Stan Hu)
 
+v 8.6.3 (unreleased)
+  - Mentions on confidential issues doesn't create todos for non-members
+
 v 8.6.2
   - Fix dropdown alignment. !3298
   - Fix issuable sidebar overlaps on tablet. !3299
