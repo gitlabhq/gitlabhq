@@ -1,7 +1,6 @@
 class @Todos
-  PER_PAGE = 20
-
   constructor: (@name) ->
+    @todos_per_page = gon.todos_per_page || 20
     @clearListeners()
     @initBtnListeners()
 
@@ -70,7 +69,7 @@ class @Todos
     currPages = @getRenderedPages()
     currPage = @getCurrentPage()
 
-    newPages = Math.ceil(total / PER_PAGE)
+    newPages = Math.ceil(total / @todos_per_page)
     url = location.href # Includes query strings
 
     # Refresh if no remaining Todos

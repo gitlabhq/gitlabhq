@@ -2,6 +2,7 @@ class Dashboard::TodosController < Dashboard::ApplicationController
   before_action :find_todos, only: [:index, :destroy, :destroy_all]
 
   def index
+    gon.todos_per_page = Todo.default_per_page
     @todos = @todos.page(params[:page])
   end
 
