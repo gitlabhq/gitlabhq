@@ -69,5 +69,31 @@ describe Banzai::Filter::UploadLinkFilter, lib: true do
       doc = filter(image(escaped))
       expect(doc.at_css('img')['src']).to match "#{Gitlab.config.gitlab.url}/#{project.path_with_namespace}/uploads/%ED%95%9C%EA%B8%80.png"
     end
+
+    context 'in a geo secondary node' do
+      let(:geo_url) { 'http://geo.example.com' }
+
+      before(:each) do
+        allow(Gitlab::Geo).to receive(:secondary?) { true }
+        allow(Gitlab::Geo).to receive_message_chain(:primary_node, :url) { geo_url }
+      end
+
+      it 'rebuilds relative URL for a link' do
+        doc = filter(link('/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg'))
+        expect(doc.at_css('a')['href']).
+          to eq "#{geo_url}/#{project.path_with_namespace}/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg"
+      end
+
+      it 'rebuilds relative URL for an image' do
+        doc = filter(link('/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg'))
+        expect(doc.at_css('a')['href']).
+          to eq "#{geo_url}/#{project.path_with_namespace}/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg"
+      end
+
+      it 'does not modify absolute URL' do
+        doc = filter(link('http://example.com'))
+        expect(doc.at_css('a')['href']).to eq 'http://example.com'
+      end
+    end
   end
 end
