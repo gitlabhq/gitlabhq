@@ -292,7 +292,7 @@ module API
     end
 
     class Label < Grape::Entity
-      expose :name, :color
+      expose :name, :color, :description
     end
 
     class Compare < Grape::Entity

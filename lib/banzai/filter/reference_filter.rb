@@ -1,6 +1,3 @@
-require 'active_support/core_ext/string/output_safety'
-require 'html/pipeline/filter'
-
 module Banzai
   module Filter
     # Base class for GitLab Flavored Markdown reference filters.

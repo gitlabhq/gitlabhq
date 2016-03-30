@@ -110,6 +110,10 @@ class Notify < BaseMailer
 
       headers['Reply-To'] = address
 
+      fallback_reply_message_id = "<reply-#{reply_key}@#{Gitlab.config.gitlab.host}>".freeze
+      headers['References'] ||= ''
+      headers['References'] << ' ' << fallback_reply_message_id
+
       @reply_by_email = true
     end
 

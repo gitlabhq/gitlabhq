@@ -1,5 +1,3 @@
-require 'banzai'
-
 module Banzai
   module Pipeline
     class WikiPipeline < FullPipeline

@@ -17,7 +17,7 @@ if File.exists?(config_file)
   config['start_tls']  = false    if config['start_tls'].nil?
   config['mailbox']    = "inbox"  if config['mailbox'].nil?
 
-  if config['enabled'] && config['address'] && config['address'].include?('%{key}')
+  if config['enabled'] && config['address']
     redis_url = Gitlab::RedisConfig.new(rails_env).url
     %>
     -
