@@ -2,9 +2,11 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.7.0 (unreleased)
 
-v 8.6.2 (unreleased)
-  - Mark pending todos as done when approving a merge request
-  - Fix old commits triggering git hooks on new branches branched off another branch
+v 8.6.2
+  - Fix old commits triggering git hooks on new branches branched off another branch. !281
+  - Fix issue with deleted user in audit event (Stan Hu). !284
+  - Mark pending todos as done when approving a merge request. !292
+  - GitLab Geo: Display Attachments from Primary node. !302
 
 v 8.6.1
   - Only rename the `light_logo` column in the `appearances` table if its not there yet. !290
