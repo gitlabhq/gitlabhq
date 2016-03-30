@@ -46,7 +46,7 @@ module Gitlab
       end
 
       def needs_rewrite?
-        !(@text =~ @pattern).nil?
+        @text =~ @pattern
       end
 
       private

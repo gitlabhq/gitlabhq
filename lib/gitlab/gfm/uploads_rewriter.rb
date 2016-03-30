@@ -23,7 +23,7 @@ module Gitlab
           return markdown unless file.try(:exists?)
 
           new_uploader.store!(file)
-          new_uploader.to_h[:markdown]
+          new_uploader.to_markdown
         end
       end
 

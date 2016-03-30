@@ -32,6 +32,10 @@ class FileUploader < CarrierWave::Uploader::Base
     File.join("/uploads", @secret, file.filename)
   end
 
+  def to_markdown
+    to_h[:markdown]
+  end
+
   def to_h
     filename = image? ? self.file.basename : self.file.filename
     escaped_filename = filename.gsub("]", "\\]")
