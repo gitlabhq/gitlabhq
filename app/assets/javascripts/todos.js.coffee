@@ -56,6 +56,5 @@ class @Todos
     $('.todos-pending .badge, .todos-pending-count').text data.count
     $('.todos-done .badge').text data.done_count
 
-  goToTodoUrl: (e) ->
-    $this = $(e.currentTarget)
-    window.location.href = $this.data('url')
+  goToTodoUrl: ->
+    Turbolinks.visit($(this).data('url'))
