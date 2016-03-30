@@ -2,7 +2,7 @@ module Banzai
   module Pipeline
     class BroadcastMessagePipeline < DescriptionPipeline
       def self.filters
-        @filters ||= [
+        @filters ||= FilterArray[
           Filter::MarkdownFilter,
           Filter::SanitizationFilter,
 

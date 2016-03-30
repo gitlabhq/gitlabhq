@@ -1,0 +1,11 @@
+.emoji-menu
+  .emoji-menu-content
+    = text_field_tag :emoji_search, "", class: "emoji-search search-input form-control"
+    - AwardEmoji.emoji_by_category.each do |category, emojis|
+      %h5.emoji-menu-title
+        = AwardEmoji::CATEGORIES[category]
+      %ul.clearfix.emoji-menu-list
+        - emojis.each do |emoji|
+          %li.pull-left.text-center.emoji-menu-list-item
+            %button.emoji-menu-btn.text-center.js-emoji-btn{type: "button"}
+              = emoji_icon(emoji["name"], emoji["unicode"], emoji["aliases"])

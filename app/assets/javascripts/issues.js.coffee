@@ -1,7 +1,6 @@
 @Issues =
   init: ->
     Issues.initSearch()
-    Issues.initSelects()
     Issues.initChecks()
 
     $("body").on "ajax:success", ".close_issue, .reopen_issue", ->
@@ -17,17 +16,8 @@
           $(this).html totalIssues - 1
 
   reload: ->
-    Issues.initSelects()
     Issues.initChecks()
     $('#filter_issue_search').val($('#issue_search').val())
-
-  initSelects: ->
-    $("select#update_state_event").select2(width: 'resolve', dropdownAutoWidth: true)
-    $("select#update_assignee_id").select2(width: 'resolve', dropdownAutoWidth: true)
-    $("select#update_milestone_id").select2(width: 'resolve', dropdownAutoWidth: true)
-    $("select#label_name").select2(width: 'resolve', dropdownAutoWidth: true)
-    $("#milestone_id, #assignee_id, #label_name").on "change", ->
-      $(this).closest("form").submit()
 
   initChecks: ->
     $(".check_all_issues").click ->
@@ -41,24 +31,28 @@
     @timer = null
     $("#issue_search").keyup ->
       clearTimeout(@timer)
-      @timer = setTimeout(Issues.filterResults, 500)
+      @timer = setTimeout( ->
+        Issues.filterResults $("#issue_search_form")
+      , 500)
 
-  filterResults: =>
-    form = $("#issue_search_form")
-    search = $("#issue_search").val()
-    $('.issues-holder').css("opacity", '0.5')
-    issues_url = form.attr('action') + '?' + form.serialize()
+  filterResults: (form) =>
+    $('.issues-holder, .merge-requests-holder').css("opacity", '0.5')
+    formAction = form.attr('action')
+    formData = form.serialize()
+    issuesUrl = formAction
+    issuesUrl += ("#{if formAction.indexOf("?") < 0 then '?' else '&'}")
+    issuesUrl += formData
 
     $.ajax
       type: "GET"
-      url: form.attr('action')
-      data: form.serialize()
+      url: formAction
+      data: formData
       complete: ->
-        $('.issues-holder').css("opacity", '1.0')
+        $('.issues-holder, .merge-requests-holder').css("opacity", '1.0')
       success: (data) ->
-        $('.issues-holder').html(data.html)
+        $('.issues-holder, .merge-requests-holder').html(data.html)
         # Change url so if user reload a page - search results are saved
-        history.replaceState {page: issues_url}, document.title, issues_url
+        history.replaceState {page: issuesUrl}, document.title, issuesUrl
         Issues.reload()
       dataType: "json"
 

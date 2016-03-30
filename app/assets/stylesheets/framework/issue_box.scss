@@ -5,32 +5,38 @@
  */
 
 .status-box {
-  @include border-radius(3px);
+  
+  /* Extra small devices (phones, less than 768px) */
+  /* No media query since this is the default in Bootstrap */
+  padding: 5px 11px;
+  margin-top: 4px;
+  /* Small devices (tablets, 768px and up) */
+  @media (min-width: $screen-sm-min) {
+    padding: 0 $gl-btn-padding;
+    margin-top: 5px;
+  }
 
+  @include border-radius(3px);
   display: block;
   float: left;
-  padding: 0 $gl-btn-padding;
-  font-weight: normal;
   margin-right: 10px;
+  color: #fff;
   font-size: $gl-font-size;
+  line-height: 25px;
 
   &.status-box-closed {
     background-color: $gl-danger;
-    color: #FFF;
   }
 
   &.status-box-merged {
     background-color: $gl-primary;
-    color: #FFF;
   }
 
   &.status-box-open {
     background-color: $green-light;
-    color: #FFF;
   }
 
   &.status-box-expired {
     background: #cea61b;
-    color: #FFF;
   }
 }

@@ -1,4 +1,6 @@
 - note = discussion_notes.first
+- commit = note.noteable
+- commit_description = commit ? 'commit' : 'a deleted commit'
 .discussion.js-toggle-container{ class: note.discussion_id }
   .discussion-header
     .discussion-actions
@@ -7,8 +9,9 @@
         Show/hide discussion
     %div
       = link_to_member(@project, note.author, avatar: false)
-      started a discussion on commit
-      = link_to(note.noteable.short_id, namespace_project_commit_path(note.project.namespace, note.project, note.noteable), class: 'monospace')
+      %p started a discussion on #{commit_description}
+      - if commit
+        = link_to(commit.short_id, namespace_project_commit_path(note.project.namespace, note.project, note.noteable), class: 'monospace')
     .last-update.hide.js-toggle-content
       - last_note = discussion_notes.last
       last updated by

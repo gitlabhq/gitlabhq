@@ -15,6 +15,10 @@ Feature: Groups
   Scenario: I should see group "Owned" dashboard list
     When I visit group "Owned" page
     Then I should see group "Owned" projects list
+
+  @javascript
+  Scenario: I should see group "Owned" activity feed
+    When I visit group "Owned" activity page
     And I should see projects activity feed
 
   Scenario: I should see group "Owned" issues list
@@ -22,10 +26,22 @@ Feature: Groups
     When I visit group "Owned" issues page
     Then I should see issues from group "Owned" assigned to me
 
+  Scenario: I should not see issues from archived project in "Owned" group issues list
+    Given Group "Owned" has archived project
+    And the archived project have some issues
+    When I visit group "Owned" issues page
+    Then I should not see issues from the archived project
+
   Scenario: I should see group "Owned" merge requests list
     Given project from group "Owned" has merge requests assigned to me
     When I visit group "Owned" merge requests page
     Then I should see merge requests from group "Owned" assigned to me
+
+  Scenario: I should not see merge requests from archived project in "Owned" group merge requests list
+    Given Group "Owned" has archived project
+    And the archived project have some merge_requests
+    When I visit group "Owned" merge requests page
+    Then I should not see merge requests from the archived project
 
   Scenario: I should see edit group "Owned" page
     When I visit group "Owned" settings page

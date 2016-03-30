@@ -31,7 +31,7 @@ describe ServiceHook, models: true do
       WebMock.stub_request(:post, @service_hook.url)
     end
 
-    it "POSTs to the web hook URL" do
+    it "POSTs to the webhook URL" do
       @service_hook.execute(@data)
       expect(WebMock).to have_requested(:post, @service_hook.url).with(
         headers: { 'Content-Type'=>'application/json', 'X-Gitlab-Event'=>'Service Hook' }

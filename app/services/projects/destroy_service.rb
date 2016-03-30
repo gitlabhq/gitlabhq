@@ -76,11 +76,9 @@ module Projects
     end
 
     def flush_caches(project, wiki_path)
-      project.repository.expire_all_caches! if project.repository.exists?
+      project.repository.before_delete
 
-      wiki_repo = Repository.new(wiki_path, project)
-
-      wiki_repo.expire_all_caches! if wiki_repo.exists?
+      Repository.new(wiki_path, project).before_delete
     end
   end
 end

@@ -9,6 +9,7 @@ class Ability
       when CommitStatus then commit_status_abilities(user, subject)
       when Project then project_abilities(user, subject)
       when Issue then issue_abilities(user, subject)
+      when ExternalIssue then external_issue_abilities(user, subject)
       when Note then note_abilities(user, subject)
       when ProjectSnippet then project_snippet_abilities(user, subject)
       when PersonalSnippet then personal_snippet_abilities(user, subject)
@@ -26,6 +27,8 @@ class Ability
       case true
       when subject.is_a?(PersonalSnippet)
         anonymous_personal_snippet_abilities(subject)
+      when subject.is_a?(ProjectSnippet)
+        anonymous_project_snippet_abilities(subject)
       when subject.is_a?(CommitStatus)
         anonymous_commit_status_abilities(subject)
       when subject.is_a?(Project) || subject.respond_to?(:project)
@@ -48,7 +51,6 @@ class Ability
         rules = [
           :read_project,
           :read_wiki,
-          :read_issue,
           :read_label,
           :read_milestone,
           :read_project_snippet,
@@ -61,6 +63,9 @@ class Ability
 
         # Allow to read builds by anonymous user if guests are allowed
         rules << :read_build if project.public_builds?
+
+        # Allow to read issues by anonymous user if issue is not confidential
+        rules << :read_issue unless subject.is_a?(Issue) && subject.confidential?
 
         rules - project_disabled_features_rules(project)
       else
@@ -82,7 +87,7 @@ class Ability
                 subject.group
               end
 
-      if group && group.projects.public_only.any?
+      if group && group.public?
         [:read_group]
       else
         []
@@ -92,6 +97,14 @@ class Ability
     def anonymous_personal_snippet_abilities(snippet)
       if snippet.public?
         [:read_personal_snippet]
+      else
+        []
+      end
+    end
+
+    def anonymous_project_snippet_abilities(snippet)
+      if snippet.public?
+        [:read_project_snippet]
       else
         []
       end
@@ -108,35 +121,21 @@ class Ability
       key = "/user/#{user.id}/project/#{project.id}"
 
       RequestStore.store[key] ||= begin
-        team = project.team
+        # Push abilities on the users team role
+        rules.push(*project_team_rules(project.team, user))
 
-        # Rules based on role in project
-        if team.master?(user)
-          rules.push(*project_master_rules)
+        if project.owner == user ||
+          (project.group && project.group.has_owner?(user)) ||
+          user.admin?
 
-        elsif team.developer?(user)
-          rules.push(*project_dev_rules)
-
-        elsif team.reporter?(user)
-          rules.push(*project_report_rules)
-
-        elsif team.guest?(user)
-          rules.push(*project_guest_rules)
+          rules.push(*project_owner_rules)
         end
 
-        if project.public? || project.internal?
+        if project.public? || (project.internal? && !user.external?)
           rules.push(*public_project_rules)
 
           # Allow to read builds for internal projects
           rules << :read_build if project.public_builds?
-        end
-
-        if project.owner == user || user.admin?
-          rules.push(*project_admin_rules)
-        end
-
-        if project.group && project.group.has_owner?(user)
-          rules.push(*project_admin_rules)
         end
 
         if project.archived?
@@ -144,6 +143,19 @@ class Ability
         end
 
         rules - project_disabled_features_rules(project)
+      end
+    end
+
+    def project_team_rules(team, user)
+      # Rules based on role in project
+      if team.master?(user)
+        project_master_rules
+      elsif team.developer?(user)
+        project_dev_rules
+      elsif team.reporter?(user)
+        project_report_rules
+      elsif team.guest?(user)
+        project_guest_rules
       end
     end
 
@@ -168,7 +180,8 @@ class Ability
         :read_note,
         :create_project,
         :create_issue,
-        :create_note
+        :create_note,
+        :upload_file
       ]
     end
 
@@ -188,6 +201,7 @@ class Ability
     def project_dev_rules
       @project_dev_rules ||= project_report_rules + [
         :admin_merge_request,
+        :update_merge_request,
         :create_commit_status,
         :update_commit_status,
         :create_build,
@@ -212,7 +226,6 @@ class Ability
       @project_master_rules ||= project_dev_rules + [
         :push_code_to_protected_branches,
         :update_project_snippet,
-        :update_merge_request,
         :admin_milestone,
         :admin_project_snippet,
         :admin_project_member,
@@ -225,14 +238,16 @@ class Ability
       ]
     end
 
-    def project_admin_rules
-      @project_admin_rules ||= project_master_rules + [
+    def project_owner_rules
+      @project_owner_rules ||= project_master_rules + [
         :change_namespace,
         :change_visibility_level,
         :rename_project,
         :remove_project,
         :archive_project,
-        :remove_fork_project
+        :remove_fork_project,
+        :destroy_merge_request,
+        :destroy_issue
       ]
     end
 
@@ -270,11 +285,9 @@ class Ability
     def group_abilities(user, group)
       rules = []
 
-      if user.admin? || group.users.include?(user) || ProjectsFinder.new.execute(user, group: group).any?
-        rules << :read_group
-      end
+      rules << :read_group if can_read_group?(user, group)
 
-      # Only group masters and group owners can create new projects in group
+      # Only group masters and group owners can create new projects
       if group.has_master?(user) || group.has_owner?(user) || user.admin?
         rules += [
           :create_projects,
@@ -287,11 +300,21 @@ class Ability
         rules += [
           :admin_group,
           :admin_namespace,
-          :admin_group_member
+          :admin_group_member,
+          :change_visibility_level
         ]
       end
 
       rules.flatten
+    end
+
+    def can_read_group?(user, group)
+      return true if user.admin?
+      return true if group.public?
+      return true if group.internal? && !user.external?
+      return true if group.users.include?(user)
+
+      GroupProjectsFinder.new(group).execute(user).any?
     end
 
     def namespace_abilities(user, namespace)
@@ -320,28 +343,27 @@ class Ability
         end
 
         rules += project_abilities(user, subject.project)
+        rules = filter_confidential_issues_abilities(user, subject, rules) if subject.is_a?(Issue)
         rules
       end
     end
 
-    [:note, :project_snippet].each do |name|
-      define_method "#{name}_abilities" do |user, subject|
-        rules = []
+    def note_abilities(user, note)
+      rules = []
 
-        if subject.author == user
-          rules += [
-            :"read_#{name}",
-            :"update_#{name}",
-            :"admin_#{name}"
-          ]
-        end
-
-        if subject.respond_to?(:project) && subject.project
-          rules += project_abilities(user, subject.project)
-        end
-
-        rules
+      if note.author == user
+        rules += [
+          :read_note,
+          :update_note,
+          :admin_note
+        ]
       end
+
+      if note.respond_to?(:project) && note.project
+        rules += project_abilities(user, note.project)
+      end
+
+      rules
     end
 
     def personal_snippet_abilities(user, snippet)
@@ -355,8 +377,26 @@ class Ability
         ]
       end
 
-      if snippet.public? || snippet.internal?
+      if snippet.public? || (snippet.internal? && !user.external?)
         rules << :read_personal_snippet
+      end
+
+      rules
+    end
+
+    def project_snippet_abilities(user, snippet)
+      rules = []
+
+      if snippet.author == user || user.admin?
+        rules += [
+          :read_project_snippet,
+          :update_project_snippet,
+          :admin_project_snippet
+        ]
+      end
+
+      if snippet.public? || (snippet.internal? && !user.external?) || (snippet.private? && snippet.project.team.member?(user))
+        rules << :read_project_snippet
       end
 
       rules
@@ -424,6 +464,10 @@ class Ability
       end
     end
 
+    def external_issue_abilities(user, subject)
+      project_abilities(user, subject.project)
+    end
+
     private
 
     def named_abilities(name)
@@ -433,6 +477,18 @@ class Ability
         :"update_#{name}",
         :"admin_#{name}"
       ]
+    end
+
+    def filter_confidential_issues_abilities(user, issue, rules)
+      return rules if user.admin? || !issue.confidential?
+
+      unless issue.author == user || issue.assignee == user || issue.project.team.member?(user.id)
+        rules.delete(:admin_issue)
+        rules.delete(:read_issue)
+        rules.delete(:update_issue)
+      end
+
+      rules
     end
   end
 end

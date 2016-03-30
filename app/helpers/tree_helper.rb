@@ -56,8 +56,7 @@ module TreeHelper
 
     return false unless on_top_of_branch?(project, ref)
 
-    can?(current_user, :push_code, project) ||
-      (current_user && current_user.already_forked?(project))
+    can_collaborate_with_project?(project)
   end
 
   def tree_edit_branch(project = @project, ref = @ref)

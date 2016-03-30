@@ -11,4 +11,4 @@
         = button_tag 'Search', class: "btn btn-primary"
     - unless params[:snippets].eql? 'true'
       %br
-      = render 'filter'
+      = render 'filter' if current_user

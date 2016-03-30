@@ -3,7 +3,7 @@ class Projects::SnippetsController < Projects::ApplicationController
   before_action :snippet, only: [:show, :edit, :destroy, :update, :raw]
 
   # Allow read any snippet
-  before_action :authorize_read_project_snippet!
+  before_action :authorize_read_project_snippet!, except: [:new, :create, :index]
 
   # Allow write(create) snippet
   before_action :authorize_create_project_snippet!, only: [:new, :create]
@@ -21,7 +21,7 @@ class Projects::SnippetsController < Projects::ApplicationController
       filter: :by_project,
       project: @project
     })
-    @snippets = @snippets.page(params[:page]).per(PER_PAGE)
+    @snippets = @snippets.page(params[:page])
   end
 
   def new
@@ -79,6 +79,10 @@ class Projects::SnippetsController < Projects::ApplicationController
 
   def snippet
     @snippet ||= @project.snippets.find(params[:id])
+  end
+
+  def authorize_read_project_snippet!
+    return render_404 unless can?(current_user, :read_project_snippet, @snippet)
   end
 
   def authorize_update_project_snippet!

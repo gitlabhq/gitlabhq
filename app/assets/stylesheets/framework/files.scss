@@ -3,12 +3,10 @@
  *
  */
 .file-holder {
-  border: none;
   border: 1px solid $border-color;
 
   &.readme-holder {
-    margin-top: 10px;
-    border-bottom: 0;
+    margin: $gl-padding-top 0;
   }
 
   table {
@@ -30,7 +28,7 @@
       right: 15px;
 
       .btn {
-        padding: 0px 10px;
+        padding: 0 10px;
         font-size: 13px;
         line-height: 28px;
       }
@@ -48,6 +46,10 @@
           background-color: #a6f3a6;
         }
       }
+    }
+
+    a {
+      color: $gl-dark-link-color;
     }
 
     .left-options {
@@ -84,7 +86,7 @@
 
     &.blob-no-preview {
       background: #eee;
-      text-shadow: 0 1px 2px #FFF;
+      text-shadow: 0 1px 2px #fff;
       padding: 100px 0;
     }
 
@@ -124,7 +126,7 @@
       }
       td.line-numbers {
         float: none;
-        border-left: 1px solid #DDD;
+        border-left: 1px solid #ddd;
       }
       td.lines {
         padding: 0;
@@ -158,7 +160,7 @@
           }
 
           &:hover {
-            background: $hover;
+            background: $row-hover;
           }
         }
       }
@@ -169,6 +171,7 @@
      */
     &.code {
       padding: 0;
+      -webkit-overflow-scrolling: auto; // See https://gitlab.com/gitlab-org/gitlab-ce/issues/13987
     }
   }
 }

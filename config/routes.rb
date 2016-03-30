@@ -16,6 +16,18 @@ Rails.application.routes.draw do
     end
   end
 
+  # Make the built-in Rails routes available in development, otherwise they'd
+  # get swallowed by the `namespace/project` route matcher below.
+  #
+  # See https://git.io/va79N
+  if Rails.env.development?
+    get '/rails/mailers'         => 'rails/mailers#index'
+    get '/rails/mailers/:path'   => 'rails/mailers#preview'
+    get '/rails/info/properties' => 'rails/info#properties'
+    get '/rails/info/routes'     => 'rails/info#routes'
+    get '/rails/info'            => 'rails/info#index'
+  end
+
   namespace :ci do
     # CI API
     Ci::API::API.logger Rails.logger
@@ -43,6 +55,8 @@ Rails.application.routes.draw do
   get '/autocomplete/users' => 'autocomplete#users'
   get '/autocomplete/users/:id' => 'autocomplete#user'
 
+  # Emojis
+  resources :emojis, only: :index
 
   # Search
   get 'search' => 'search#show'
@@ -154,6 +168,11 @@ Rails.application.routes.draw do
         to:           "uploads#show",
         constraints:  { model: /note|user|group|project/, mounted_as: /avatar|attachment/, filename: /[^\/]+/ }
 
+    # Appearance
+    get ":model/:mounted_as/:id/:filename",
+        to:           "uploads#show",
+        constraints:  { model: /appearance/, mounted_as: /logo|header_logo/, filename: /.+/ }
+
     # Project markdown uploads
     get ":namespace_id/:project_id/:secret/:filename",
       to:           "projects/uploads#show",
@@ -251,6 +270,14 @@ Rails.application.routes.draw do
       end
     end
 
+    resource :appearances, path: 'appearance' do
+      member do
+        get :preview
+        delete :logo
+        delete :header_logos
+      end
+    end
+
     resource :application_settings, only: [:show, :update] do
       resources :services
       put :reset_runners_token
@@ -280,7 +307,7 @@ Rails.application.routes.draw do
   resource :profile, only: [:show, :update] do
     member do
       get :audit_log
-      get :applications
+      get :applications, to: 'oauth/applications#index'
 
       put :reset_private_token
       put :update_username
@@ -299,7 +326,7 @@ Rails.application.routes.draw do
         end
       end
       resource :preferences, only: [:show, :update]
-      resources :keys
+      resources :keys, except: [:new]
       resources :emails, only: [:index, :create, :destroy]
       resource :avatar, only: [:destroy]
       resource :two_factor_auth, only: [:new, :create, :destroy] do
@@ -317,6 +344,15 @@ Rails.application.routes.draw do
   get 'u/:username/calendar_activities' => 'users#calendar_activities', as: :user_calendar_activities,
       constraints: { username: /.*/ }
 
+  get 'u/:username/groups' => 'users#groups', as: :user_groups,
+      constraints: { username: /.*/ }
+
+  get 'u/:username/projects' => 'users#projects', as: :user_projects,
+      constraints: { username: /.*/ }
+
+  get 'u/:username/contributed' => 'users#contributed', as: :user_contributed_projects,
+      constraints: { username: /.*/ }
+
   get '/u/:username' => 'users#show', as: :user,
       constraints: { username: /[a-zA-Z.0-9_\-]+(?<!\.atom)/ }
 
@@ -330,9 +366,16 @@ Rails.application.routes.draw do
 
     scope module: :dashboard do
       resources :milestones, only: [:index, :show]
+      resources :labels, only: [:index]
 
       resources :groups, only: [:index]
       resources :snippets, only: [:index]
+
+      resources :todos, only: [:index, :destroy] do
+        collection do
+          delete :destroy_all
+        end
+      end
 
       resources :projects, only: [:index] do
         collection do
@@ -352,7 +395,7 @@ Rails.application.routes.draw do
       get :issues
       get :merge_requests
       get :projects
-      get :events
+      get :activity
     end
 
     scope module: :groups do
@@ -502,6 +545,7 @@ Rails.application.routes.draw do
             get :builds
             post :cancel_builds
             post :retry_builds
+            post :revert
           end
         end
 
@@ -580,7 +624,7 @@ Rails.application.routes.draw do
           end
         end
 
-        resources :merge_requests, constraints: { id: /\d+/ }, except: [:destroy] do
+        resources :merge_requests, constraints: { id: /\d+/ } do
           member do
             get :commits
             get :diffs
@@ -591,6 +635,7 @@ Rails.application.routes.draw do
             get :ci_status
             post :toggle_subscription
             post :toggle_emoji_award
+            post :remove_wip
           end
 
           collection do
@@ -618,6 +663,7 @@ Rails.application.routes.draw do
             get :status
             post :cancel
             post :retry
+            post :erase
           end
 
           resource :artifacts, only: [] do
@@ -644,9 +690,13 @@ Rails.application.routes.draw do
           collection do
             post :generate
           end
+
+          member do
+            post :toggle_subscription
+          end
         end
 
-        resources :issues, constraints: { id: /\d+/ }, except: [:destroy] do
+        resources :issues, constraints: { id: /\d+/ } do
           member do
             post :toggle_subscription
             post :toggle_emoji_award
@@ -670,6 +720,8 @@ Rails.application.routes.draw do
             post :resend_invite
           end
         end
+
+        resources :group_links, only: [:index, :create, :destroy], constraints: { id: /\d+/ }
 
         resources :notes, only: [:index, :create, :destroy, :update], constraints: { id: /\d+/ } do
           member do

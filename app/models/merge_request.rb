@@ -24,6 +24,7 @@
 #  merge_params              :text
 #  merge_when_build_succeeds :boolean          default(FALSE), not null
 #  merge_user_id             :integer
+#  merge_commit_sha          :string
 #
 
 require Rails.root.join("app/models/commit")
@@ -47,7 +48,7 @@ class MergeRequest < ActiveRecord::Base
   after_create :create_merge_request_diff
   after_update :update_merge_request_diff
 
-  delegate :commits, :diffs, :diffs_no_whitespace, to: :merge_request_diff, prefix: nil
+  delegate :commits, :diffs, :real_size, to: :merge_request_diff, prefix: nil
 
   # When this attribute is true some MR validation is ignored
   # It allows us to close or modify broken merge requests
@@ -55,8 +56,7 @@ class MergeRequest < ActiveRecord::Base
 
   # Temporary fields to store compare vars
   # when creating new merge request
-  attr_accessor :can_be_created, :compare_failed,
-    :compare_commits, :compare_diffs
+  attr_accessor :can_be_created, :compare_commits, :compare
 
   state_machine :state, initial: :opened do
     event :close do
@@ -131,15 +131,11 @@ class MergeRequest < ActiveRecord::Base
   validate :validate_branches
   validate :validate_fork
 
-  scope :of_group, ->(group) { where("source_project_id in (:group_project_ids) OR target_project_id in (:group_project_ids)", group_project_ids: group.projects.select(:id).reorder(nil)) }
   scope :by_branch, ->(branch_name) { where("(source_branch LIKE :branch) OR (target_branch LIKE :branch)", branch: branch_name) }
   scope :cared, ->(user) { where('assignee_id = :user OR author_id = :user', user: user.id) }
   scope :by_milestone, ->(milestone) { where(milestone_id: milestone) }
-  scope :in_projects, ->(project_ids) { where("source_project_id in (:project_ids) OR target_project_id in (:project_ids)", project_ids: project_ids) }
   scope :of_projects, ->(ids) { where(target_project_id: ids) }
-  scope :opened, -> { with_states(:opened, :reopened) }
   scope :merged, -> { with_state(:merged) }
-  scope :closed, -> { with_state(:closed) }
   scope :closed_and_merged, -> { with_states(:closed, :merged) }
 
   scope :join_project, -> { joins(:target_project) }
@@ -163,6 +159,24 @@ class MergeRequest < ActiveRecord::Base
     super("merge_requests", /(?<merge_request>\d+)/)
   end
 
+  # Returns all the merge requests from an ActiveRecord:Relation.
+  #
+  # This method uses a UNION as it usually operates on the result of
+  # ProjectsFinder#execute. PostgreSQL in particular doesn't always like queries
+  # using multiple sub-queries especially when combined with an OR statement.
+  # UNIONs on the other hand perform much better in these cases.
+  #
+  # relation - An ActiveRecord::Relation that returns a list of Projects.
+  #
+  # Returns an ActiveRecord::Relation.
+  def self.in_projects(relation)
+    source = where(source_project_id: relation).select(:id)
+    target = where(target_project_id: relation).select(:id)
+    union  = Gitlab::SQL::Union.new([source, target])
+
+    where("merge_requests.id IN (#{union.to_sql})")
+  end
+
   def to_reference(from_project = nil)
     reference = "#{self.class.reference_prefix}#{iid}"
 
@@ -179,6 +193,10 @@ class MergeRequest < ActiveRecord::Base
 
   def first_commit
     merge_request_diff ? merge_request_diff.first_commit : compare_commits.first
+  end
+
+  def diff_size
+    merge_request_diff.size
   end
 
   def diff_base_commit
@@ -258,8 +276,14 @@ class MergeRequest < ActiveRecord::Base
     self.target_project.events.where(target_id: self.id, target_type: "MergeRequest", action: Event::CLOSED).last
   end
 
+  WIP_REGEX = /\A\s*(\[WIP\]\s*|WIP:\s*|WIP\s+)+\s*/i.freeze
+
   def work_in_progress?
-    !!(title =~ /\A\[?WIP(\]|:| )/i)
+    !!(title =~ WIP_REGEX)
+  end
+
+  def wipless_title
+    self.title.sub(WIP_REGEX, "")
   end
 
   def mergeable?
@@ -307,15 +331,15 @@ class MergeRequest < ActiveRecord::Base
   # Returns the raw diff for this merge request
   #
   # see "git diff"
-  def to_diff(current_user)
-    target_project.repository.diff_text(target_branch, source_sha)
+  def to_diff
+    target_project.repository.diff_text(diff_base_commit.sha, source_sha)
   end
 
   # Returns the commit as a series of email patches.
   #
   # see "git format-patch"
-  def to_patch(current_user)
-    target_project.repository.format_patch(target_branch, source_sha)
+  def to_patch
+    target_project.repository.format_patch(diff_base_commit.sha, source_sha)
   end
 
   def hook_attrs
@@ -486,12 +510,26 @@ class MergeRequest < ActiveRecord::Base
     end
   end
 
+  def state_icon_name
+    if merged?
+      "check"
+    elsif closed?
+      "times"
+    else
+      "circle-o"
+    end
+  end
+
   def target_sha
-    @target_sha ||= target_project.repository.commit(target_branch).sha
+    @target_sha ||= target_project.repository.commit(target_branch).try(:sha)
   end
 
   def source_sha
-    last_commit.try(:sha)
+    last_commit.try(:sha) || source_tip.try(:sha)
+  end
+
+  def source_tip
+    source_branch && source_project.repository.commit(source_branch)
   end
 
   def fetch_ref
@@ -523,6 +561,32 @@ class MergeRequest < ActiveRecord::Base
     end
   end
 
+  def diverged_commits_count
+    cache = Rails.cache.read(:"merge_request_#{id}_diverged_commits")
+
+    if cache.blank? || cache[:source_sha] != source_sha || cache[:target_sha] != target_sha
+      cache = {
+        source_sha: source_sha,
+        target_sha: target_sha,
+        diverged_commits_count: compute_diverged_commits_count
+      }
+      Rails.cache.write(:"merge_request_#{id}_diverged_commits", cache)
+    end
+
+    cache[:diverged_commits_count]
+  end
+
+  def compute_diverged_commits_count
+    return 0 unless source_sha && target_sha
+
+    Gitlab::Git::Commit.between(target_project.repository.raw_repository, source_sha, target_sha).size
+  end
+  private :compute_diverged_commits_count
+
+  def diverged_from_target_branch?
+    diverged_commits_count > 0
+  end
+
   def ci_commit
     @ci_commit ||= source_project.ci_commit(last_commit.id) if last_commit && source_project
   end
@@ -531,5 +595,13 @@ class MergeRequest < ActiveRecord::Base
     return nil unless diff_base_commit
 
     [diff_base_commit, last_commit]
+  end
+
+  def merge_commit
+    @merge_commit ||= project.commit(merge_commit_sha) if merge_commit_sha
+  end
+
+  def can_be_reverted?(current_user = nil)
+    merge_commit && !merge_commit.has_been_reverted?(current_user, self)
   end
 end

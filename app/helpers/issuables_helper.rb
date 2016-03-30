@@ -16,8 +16,43 @@ module IssuablesHelper
     base_issuable_scope(issuable).where('iid > ?', issuable.iid).last
   end
 
+  def issuable_json_path(issuable)
+    project = issuable.project
+
+    if issuable.kind_of?(MergeRequest)
+      namespace_project_merge_request_path(project.namespace, project, issuable.iid, :json)
+    else
+      namespace_project_issue_path(project.namespace, project, issuable.iid, :json)
+    end
+  end
+
   def prev_issuable_for(issuable)
     base_issuable_scope(issuable).where('iid < ?', issuable.iid).first
+  end
+
+  def user_dropdown_label(user_id, default_label)
+    return "Unassigned" if user_id == "0"
+
+    if @project
+      member = @project.team.find_member(user_id)
+      user = member.user if member
+    else
+      user = User.find_by(id: user_id)
+    end
+
+    if user
+      user.name
+    else
+      default_label
+    end
+  end
+
+  def milestone_dropdown_label(milestone_title, default_label = "Milestone")
+    if milestone_title == Milestone::Upcoming.name
+      milestone_title = Milestone::Upcoming.title
+    end
+
+    h(milestone_title.presence || default_label)
   end
 
   private
@@ -31,7 +66,11 @@ module IssuablesHelper
   end
 
   def issuable_state_scope(issuable)
-    issuable.open? ? :opened : :closed
+    if issuable.respond_to?(:merged?) && issuable.merged?
+      :merged
+    else
+      issuable.open? ? :opened : :closed
+    end
   end
 
 end

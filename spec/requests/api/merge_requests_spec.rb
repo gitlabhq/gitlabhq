@@ -2,15 +2,17 @@ require "spec_helper"
 
 describe API::API, api: true  do
   include ApiHelpers
-  let(:base_time) { Time.now }
-  let(:user) { create(:user) }
-  let!(:project) {create(:project, creator_id: user.id, namespace: user.namespace) }
+  let(:base_time)   { Time.now }
+  let(:user)        { create(:user) }
+  let(:admin)       { create(:user, :admin) }
+  let(:non_member)  { create(:user) }
+  let!(:project)    { create(:project, creator_id: user.id, namespace: user.namespace) }
   let!(:merge_request) { create(:merge_request, :simple, author: user, assignee: user, source_project: project, target_project: project, title: "Test", created_at: base_time) }
   let!(:merge_request_closed) { create(:merge_request, state: "closed", author: user, assignee: user, source_project: project, target_project: project, title: "Closed test", created_at: base_time + 1.second) }
   let!(:merge_request_merged) { create(:merge_request, state: "merged", author: user, assignee: user, source_project: project, target_project: project, title: "Merged test", created_at: base_time + 2.seconds) }
-  let!(:note) { create(:note_on_merge_request, author: user, project: project, noteable: merge_request, note: "a comment on a MR") }
-  let!(:note2) { create(:note_on_merge_request, author: user, project: project, noteable: merge_request, note: "another comment on a MR") }
-  let(:milestone) { create(:milestone, title: '1.0.0', project: project) }
+  let!(:note)       { create(:note_on_merge_request, author: user, project: project, noteable: merge_request, note: "a comment on a MR") }
+  let!(:note2)      { create(:note_on_merge_request, author: user, project: project, noteable: merge_request, note: "another comment on a MR") }
+  let(:milestone)   { create(:milestone, title: '1.0.0', project: project) }
 
   before do
     project.team << [user, :reporters]
@@ -116,6 +118,7 @@ describe API::API, api: true  do
       expect(response.status).to eq(200)
       expect(json_response['title']).to eq(merge_request.title)
       expect(json_response['iid']).to eq(merge_request.iid)
+      expect(json_response['work_in_progress']).to eq(false)
       expect(json_response['merge_status']).to eq('can_be_merged')
     end
 
@@ -130,6 +133,16 @@ describe API::API, api: true  do
     it "should return a 404 error if merge_request_id not found" do
       get api("/projects/#{project.id}/merge_requests/999", user)
       expect(response.status).to eq(404)
+    end
+
+    context 'Work in Progress' do
+      let!(:merge_request_wip) { create(:merge_request, author: user, assignee: user, source_project: project, target_project: project, title: "WIP: Test", created_at: base_time + 1.second) }
+
+      it "should return merge_request" do
+        get api("/projects/#{project.id}/merge_requests/#{merge_request_wip.id}", user)
+        expect(response.status).to eq(200)
+        expect(json_response['work_in_progress']).to eq(true)
+      end
     end
   end
 
@@ -311,6 +324,29 @@ describe API::API, api: true  do
         post api("/projects/#{fork_project.id}/merge_requests", user2),
         title: 'Test merge_request', target_branch: 'master', source_branch: 'markdown', author: user2, target_project_id: fork_project.id
         expect(response.status).to eq(201)
+      end
+    end
+  end
+
+  describe "DELETE /projects/:id/merge_requests/:merge_request_id" do
+    context "when the user is developer" do
+      let(:developer) { create(:user) }
+
+      before do
+        project.team << [developer, :developer]
+      end
+
+      it "denies the deletion of the merge request" do
+        delete api("/projects/#{project.id}/merge_requests/#{merge_request.id}", developer)
+        expect(response.status).to be(403)
+      end
+    end
+
+    context "when the user is project owner" do
+      it "destroys the merge request owners can destroy" do
+        delete api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user)
+
+        expect(response.status).to eq(200)
       end
     end
   end

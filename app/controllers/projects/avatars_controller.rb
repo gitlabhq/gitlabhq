@@ -1,13 +1,18 @@
 class Projects::AvatarsController < Projects::ApplicationController
-  before_action :project
+  include BlobHelper
+
+  before_action :authorize_admin_project!, only: [:destroy]
 
   def show
     @blob = @repository.blob_at_branch('master', @project.avatar_in_git)
     if @blob
       headers['X-Content-Type-Options'] = 'nosniff'
+
+      return if cached_blob?
+
       headers.store(*Gitlab::Workhorse.send_git_blob(@repository, @blob))
       headers['Content-Disposition'] = 'inline'
-      headers['Content-Type'] = @blob.content_type
+      headers['Content-Type'] = safe_content_type(@blob)
       head :ok # 'render nothing: true' messes up the Content-Type
     else
       render_404

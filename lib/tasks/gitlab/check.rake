@@ -266,7 +266,7 @@ namespace :gitlab do
       unless File.directory?(Rails.root.join('public/uploads'))
         puts "no".red
         try_fixing_it(
-          "sudo -u #{gitlab_user} mkdir -m 750 #{Rails.root}/public/uploads"
+          "sudo -u #{gitlab_user} mkdir #{Rails.root}/public/uploads"
         )
         for_more_information(
           see_installation_guide_section "GitLab"
@@ -278,21 +278,22 @@ namespace :gitlab do
       upload_path = File.realpath(Rails.root.join('public/uploads'))
       upload_path_tmp = File.join(upload_path, 'tmp')
 
-      if File.stat(upload_path).mode == 040750
+      if File.stat(upload_path).mode == 040700
         unless Dir.exists?(upload_path_tmp)
           puts 'skipped (no tmp uploads folder yet)'.magenta
           return
         end
 
-        # if tmp upload dir has incorrect permissions, assume others do as well
-        if File.stat(upload_path_tmp).mode == 040755 && File.owned?(upload_path_tmp) # verify drwxr-xr-x permissions
+        # If tmp upload dir has incorrect permissions, assume others do as well
+        # Verify drwx------ permissions
+        if File.stat(upload_path_tmp).mode == 040700 && File.owned?(upload_path_tmp)
           puts "yes".green
         else
           puts "no".red
           try_fixing_it(
             "sudo chown -R #{gitlab_user} #{upload_path}",
             "sudo find #{upload_path} -type f -exec chmod 0644 {} \\;",
-            "sudo find #{upload_path} -type d -not -path #{upload_path} -exec chmod 0755 {} \\;"
+            "sudo find #{upload_path} -type d -not -path #{upload_path} -exec chmod 0700 {} \\;"
           )
           for_more_information(
             see_installation_guide_section "GitLab"
@@ -302,7 +303,7 @@ namespace :gitlab do
       else
         puts "no".red
         try_fixing_it(
-          "sudo chmod 0750 #{upload_path}",
+          "sudo find #{upload_path} -type d -not -path #{upload_path} -exec chmod 0700 {} \\;"
         )
         for_more_information(
           see_installation_guide_section "GitLab"
@@ -622,7 +623,6 @@ namespace :gitlab do
       start_checking "Reply by email"
 
       if Gitlab.config.incoming_email.enabled
-        check_address_formatted_correctly
         check_imap_authentication
 
         if Rails.env.production?
@@ -641,20 +641,6 @@ namespace :gitlab do
 
     # Checks
     ########################
-
-    def check_address_formatted_correctly
-      print "Address formatted correctly? ... "
-
-      if Gitlab::IncomingEmail.address_formatted_correctly?
-        puts "yes".green
-      else
-        puts "no".red
-        try_fixing_it(
-          "Make sure that the address in config/gitlab.yml includes the '%{key}' placeholder."
-        )
-        fix_and_rerun
-      end
-    end
 
     def check_initd_configured_correctly
       print "Init.d configured correctly? ... "
@@ -727,13 +713,15 @@ namespace :gitlab do
     def check_imap_authentication
       print "IMAP server credentials are correct? ... "
 
-      config = Gitlab.config.incoming_email
+      config_path = Rails.root.join('config', 'mail_room.yml')
+      config_file = YAML.load(ERB.new(File.read(config_path)).result)
+      config = config_file[:mailboxes].first
 
       if config
         begin
-          imap = Net::IMAP.new(config.host, port: config.port, ssl: config.ssl)
-          imap.starttls if config.start_tls
-          imap.login(config.user, config.password)
+          imap = Net::IMAP.new(config[:host], port: config[:port], ssl: config[:ssl])
+          imap.starttls if config[:start_tls]
+          imap.login(config[:email], config[:password])
           connected = true
         rescue
           connected = false
@@ -910,7 +898,7 @@ namespace :gitlab do
   end
 
   def check_git_version
-    required_version = Gitlab::VersionInfo.new(1, 7, 10)
+    required_version = Gitlab::VersionInfo.new(2, 7, 3)
     current_version = Gitlab::VersionInfo.parse(run(%W(#{Gitlab.config.git.bin_path} --version)))
 
     puts "Your git bin path is \"#{Gitlab.config.git.bin_path}\""

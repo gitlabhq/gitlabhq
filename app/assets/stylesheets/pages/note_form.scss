@@ -26,7 +26,7 @@
   display: none;
 }
 
-.new_note, .edit_note {
+.new_note, .note-edit-form {
   .note-form-actions {
     margin-top: $gl-padding;
   }
@@ -71,8 +71,6 @@
 }
 
 .note-form-actions {
-  background: #fff;
-
   .note-form-option {
     margin-top: 8px;
     margin-left: 30px;
@@ -156,7 +154,7 @@
 
 .comment-hints {
   color: #999;
-  background: #FFF;
+  background: #fff;
   padding: 7px;
   margin-top: -7px;
   border: 1px solid $border-color;

@@ -5,12 +5,14 @@ module Ci
     DEFAULT_STAGES = %w(build test deploy)
     DEFAULT_STAGE = 'test'
     ALLOWED_YAML_KEYS = [:before_script, :image, :services, :types, :stages, :variables, :cache]
-    ALLOWED_JOB_KEYS = [:tags, :script, :only, :except, :type, :image, :services, :allow_failure, :type, :stage, :when, :artifacts, :cache]
+    ALLOWED_JOB_KEYS = [:tags, :script, :only, :except, :type, :image, :services,
+                        :allow_failure, :type, :stage, :when, :artifacts, :cache,
+                        :dependencies]
 
     attr_reader :before_script, :image, :services, :variables, :path, :cache
 
     def initialize(config, path = nil)
-      @config = YAML.safe_load(config, [Symbol])
+      @config = YAML.safe_load(config, [Symbol], [], true)
       @path = path
 
       unless @config.is_a? Hash
@@ -24,8 +26,8 @@ module Ci
       validate!
     end
 
-    def builds_for_stage_and_ref(stage, ref, tag = false)
-      builds.select{|build| build[:stage] == stage && process?(build[:only], build[:except], ref, tag)}
+    def builds_for_stage_and_ref(stage, ref, tag = false, trigger_request = nil)
+      builds.select{|build| build[:stage] == stage && process?(build[:only], build[:except], ref, tag, trigger_request)}
     end
 
     def builds
@@ -60,6 +62,7 @@ module Ci
 
       @jobs = {}
       @config.each do |key, job|
+        next if key.to_s.start_with?('.')
         stage = job[:stage] || job[:type] || DEFAULT_STAGE
         @jobs[key] = { stage: stage }.merge(job)
       end
@@ -81,6 +84,7 @@ module Ci
           services: job[:services] || @services,
           artifacts: job[:artifacts],
           cache: job[:cache] || @cache,
+          dependencies: job[:dependencies],
         }.compact
       }
     end
@@ -143,6 +147,7 @@ module Ci
       validate_job_stage!(name, job) if job[:stage]
       validate_job_cache!(name, job) if job[:cache]
       validate_job_artifacts!(name, job) if job[:artifacts]
+      validate_job_dependencies!(name, job) if job[:dependencies]
     end
 
     private
@@ -216,12 +221,32 @@ module Ci
     end
 
     def validate_job_artifacts!(name, job)
+      if job[:artifacts][:name] && !validate_string(job[:artifacts][:name])
+        raise ValidationError, "#{name} job: artifacts:name parameter should be a string"
+      end
+
       if job[:artifacts][:untracked] && !validate_boolean(job[:artifacts][:untracked])
         raise ValidationError, "#{name} job: artifacts:untracked parameter should be an boolean"
       end
 
       if job[:artifacts][:paths] && !validate_array_of_strings(job[:artifacts][:paths])
         raise ValidationError, "#{name} job: artifacts:paths parameter should be an array of strings"
+      end
+    end
+
+    def validate_job_dependencies!(name, job)
+      if !validate_array_of_strings(job[:dependencies])
+        raise ValidationError, "#{name} job: dependencies parameter should be an array of strings"
+      end
+
+      stage_index = stages.index(job[:stage])
+
+      job[:dependencies].each do |dependency|
+        raise ValidationError, "#{name} job: undefined dependency: #{dependency}" unless @jobs[dependency.to_sym]
+
+        unless stages.index(@jobs[dependency.to_sym][:stage]) < stage_index
+          raise ValidationError, "#{name} job: dependency #{dependency} is not defined in prior stages"
+        end
       end
     end
 
@@ -241,29 +266,30 @@ module Ci
       value.in?([true, false])
     end
 
-    def process?(only_params, except_params, ref, tag)
+    def process?(only_params, except_params, ref, tag, trigger_request)
       if only_params.present?
-        return false unless matching?(only_params, ref, tag)
+        return false unless matching?(only_params, ref, tag, trigger_request)
       end
 
       if except_params.present?
-        return false if matching?(except_params, ref, tag)
+        return false if matching?(except_params, ref, tag, trigger_request)
       end
 
       true
     end
 
-    def matching?(patterns, ref, tag)
+    def matching?(patterns, ref, tag, trigger_request)
       patterns.any? do |pattern|
-        match_ref?(pattern, ref, tag)
+        match_ref?(pattern, ref, tag, trigger_request)
       end
     end
 
-    def match_ref?(pattern, ref, tag)
+    def match_ref?(pattern, ref, tag, trigger_request)
       pattern, path = pattern.split('@', 2)
       return false if path && path != self.path
       return true if tag && pattern == 'tags'
       return true if !tag && pattern == 'branches'
+      return true if trigger_request.present? && pattern == 'triggers'
 
       if pattern.first == "/" && pattern.last == "/"
         Regexp.new(pattern[1...-1]) =~ ref

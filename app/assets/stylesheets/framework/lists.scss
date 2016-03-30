@@ -3,6 +3,7 @@
  *
  */
 .well-list {
+  position: relative;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -38,7 +39,7 @@
     &.smoke { background-color: $background-color; }
 
     &:hover {
-      background: $hover;
+      background: $row-hover;
     }
 
     &:last-child {
@@ -110,7 +111,23 @@ ul.content-list {
 
   > li {
     border-color: $table-border-color;
-    color: $gl-gray;
+    font-size: $list-font-size;
+    color: $list-text-color;
+
+    .title {
+      font-weight: 600;
+    }
+
+    a {
+      color: $gl-dark-link-color;
+    }
+
+    .description {
+      p {
+        @include str-truncated;
+        margin-bottom: 0;
+      }
+    }
 
     .avatar {
       margin-right: 15px;
@@ -127,11 +144,8 @@ ul.content-list {
   }
 }
 
-.panel > .content-list {
-  li {
-    margin: 0;
-    padding: $gl-padding;
-  }
+.panel > .content-list > li {
+  padding: $gl-padding-top $gl-padding;
 }
 
 ul.controls {

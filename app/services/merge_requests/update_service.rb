@@ -14,7 +14,16 @@ module MergeRequests
       update(merge_request)
     end
 
-    def handle_changes(merge_request)
+    def handle_changes(merge_request, old_labels: [])
+      if has_changes?(merge_request, old_labels: old_labels)
+        todo_service.mark_pending_todos_as_done(merge_request, current_user)
+      end
+
+      if merge_request.previous_changes.include?('title') ||
+         merge_request.previous_changes.include?('description')
+        todo_service.update_merge_request(merge_request, current_user)
+      end
+
       if merge_request.previous_changes.include?('target_branch')
         create_branch_change_note(merge_request, 'target',
                                   merge_request.previous_changes['target_branch'].first,
@@ -28,11 +37,21 @@ module MergeRequests
       if merge_request.previous_changes.include?('assignee_id')
         create_assignee_note(merge_request)
         notification_service.reassigned_merge_request(merge_request, current_user)
+        todo_service.reassigned_merge_request(merge_request, current_user)
       end
 
       if merge_request.previous_changes.include?('target_branch') ||
           merge_request.previous_changes.include?('source_branch')
         merge_request.mark_as_unchecked
+      end
+
+      added_labels = merge_request.labels - old_labels
+      if added_labels.present?
+        notification_service.relabeled_merge_request(
+          merge_request,
+          added_labels,
+          current_user
+        )
       end
     end
 

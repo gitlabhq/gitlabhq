@@ -60,6 +60,30 @@ module API
                        user_can_download_artifacts: can?(current_user, :read_build, user_project)
       end
 
+      # Download the artifacts file from build
+      #
+      # Parameters:
+      #   id (required) - The ID of a build
+      #   token (required) - The build authorization token
+      # Example Request:
+      #   GET /projects/:id/builds/:build_id/artifacts
+      get ':id/builds/:build_id/artifacts' do
+        authorize_read_builds!
+
+        build = get_build(params[:build_id])
+        return not_found!(build) unless build
+
+        artifacts_file = build.artifacts_file
+
+        unless artifacts_file.file_storage?
+          return redirect_to build.artifacts_file.url
+        end
+
+        return not_found! unless artifacts_file.exists?
+
+        present_file!(artifacts_file.path, artifacts_file.filename)
+      end
+
       # Get a trace of a specific build of a project
       #
       # Parameters:
@@ -115,12 +139,32 @@ module API
         authorize_update_builds!
 
         build = get_build(params[:build_id])
-        return forbidden!('Build is not retryable') unless build && build.retryable?
+        return not_found!(build) unless build
+        return forbidden!('Build is not retryable') unless build.retryable?
 
         build = Ci::Build.retry(build)
 
         present build, with: Entities::Build,
                        user_can_download_artifacts: can?(current_user, :read_build, user_project)
+      end
+
+      # Erase build (remove artifacts and build trace)
+      #
+      # Parameters:
+      #   id (required) - the id of a project
+      #   build_id (required) - the id of a build
+      # example Request:
+      #  post  /projects/:id/build/:build_id/erase
+      post ':id/builds/:build_id/erase' do
+        authorize_update_builds!
+
+        build = get_build(params[:build_id])
+        return not_found!(build) unless build
+        return forbidden!('Build is not erasable!') unless build.erasable?
+
+        build.erase(erased_by: current_user)
+        present build, with: Entities::Build,
+                       user_can_download_artifacts: can?(current_user, :download_build_artifacts, user_project)
       end
     end
 

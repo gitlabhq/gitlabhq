@@ -8,6 +8,7 @@ module Issuable
   extend ActiveSupport::Concern
   include Participable
   include Mentionable
+  include Subscribable
   include StripAttribute
   include Awardable
 
@@ -19,7 +20,6 @@ module Issuable
     has_many :notes, as: :noteable, dependent: :destroy
     has_many :label_links, as: :target, dependent: :destroy
     has_many :labels, through: :label_links
-    has_many :subscriptions, dependent: :destroy, as: :subscribable
 
     validates :author, presence: true
     validates :title, presence: true, length: { within: 0..255 }
@@ -30,15 +30,19 @@ module Issuable
     scope :assigned, -> { where("assignee_id IS NOT NULL") }
     scope :unassigned, -> { where("assignee_id IS NULL") }
     scope :of_projects, ->(ids) { where(project_id: ids) }
+    scope :of_milestones, ->(ids) { where(milestone_id: ids) }
     scope :opened, -> { with_state(:opened, :reopened) }
     scope :only_opened, -> { with_state(:opened) }
     scope :only_reopened, -> { with_state(:reopened) }
     scope :closed, -> { with_state(:closed) }
     scope :order_milestone_due_desc, -> { joins(:milestone).reorder('milestones.due_date DESC, milestones.id DESC') }
     scope :order_milestone_due_asc, -> { joins(:milestone).reorder('milestones.due_date ASC, milestones.id ASC') }
+    scope :with_label, ->(title) { joins(:labels).where(labels: { title: title }) }
+    scope :without_label, -> { joins("LEFT OUTER JOIN label_links ON label_links.target_type = '#{name}' AND label_links.target_id = #{table_name}.id").where(label_links: { id: nil }) }
 
     scope :join_project, -> { joins(:project) }
     scope :references_project, -> { references(:project) }
+    scope :non_archived, -> { join_project.merge(Project.non_archived.only(:where)) }
 
     delegate :name,
              :email,
@@ -55,15 +59,34 @@ module Issuable
     attr_mentionable :description, cache: true
     participant :author, :assignee, :notes_with_associations
     strip_attributes :title
+
+    acts_as_paranoid
   end
 
   module ClassMethods
+    # Searches for records with a matching title.
+    #
+    # This method uses ILIKE on PostgreSQL and LIKE on MySQL.
+    #
+    # query - The search query as a String
+    #
+    # Returns an ActiveRecord::Relation.
     def search(query)
-      where("LOWER(title) like :query", query: "%#{query.downcase}%")
+      where(arel_table[:title].matches("%#{query}%"))
     end
 
+    # Searches for records with a matching title or description.
+    #
+    # This method uses ILIKE on PostgreSQL and LIKE on MySQL.
+    #
+    # query - The search query as a String
+    #
+    # Returns an ActiveRecord::Relation.
     def full_search(query)
-      where("LOWER(title) like :query OR LOWER(description) like :query", query: "%#{query.downcase}%")
+      t = arel_table
+      pattern = "%#{query}%"
+
+      where(t[:title].matches(pattern).or(t[:description].matches(pattern)))
     end
 
     def sort(method)
@@ -108,16 +131,8 @@ module Issuable
     participants(user).include?(user)
   end
 
-  def toggle_subscription(user)
-    subscriptions.
-      find_or_initialize_by(user_id: user.id).
-      update(subscribed: !subscribed?(user))
-  end
-
-  def unsubscribe(user)
-    subscriptions.
-      find_or_initialize_by(user_id: user.id).
-      update(subscribed: false)
+  def subscribed_without_subscriptions?(user)
+    participants(user).include?(user)
   end
 
   def to_hook_data(user)
@@ -175,5 +190,14 @@ module Issuable
   def updated_tasks
     Taskable.get_updated_tasks(old_content: previous_changes['description'].first,
                                new_content: description)
+  end
+
+  ##
+  # Method that checks if issuable can be moved to another project.
+  #
+  # Should be overridden if issuable can be moved.
+  #
+  def can_move?(*)
+    false
   end
 end

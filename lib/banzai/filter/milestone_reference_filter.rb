@@ -1,5 +1,3 @@
-require 'banzai'
-
 module Banzai
   module Filter
     # HTML filter that replaces milestone references with links.

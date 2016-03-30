@@ -29,8 +29,11 @@ class UrlValidator < ActiveModel::EachValidator
   end
 
   def valid_url?(value)
+    return false if value.nil?
+
     options = default_options.merge(self.options)
 
+    value.strip!
     value =~ /\A#{URI.regexp(options[:protocols])}\z/
   end
 end

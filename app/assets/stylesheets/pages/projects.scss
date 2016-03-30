@@ -32,6 +32,14 @@
   .cover-controls {
     .project-settings-dropdown {
       margin-left: 10px;
+      display: inline-block;
+
+      .dropdown-menu {
+        left: auto;
+        width: auto;
+        right: 0;
+        max-width: 240px;
+      }
     }
   }
 
@@ -48,10 +56,6 @@
     }
   }
 
-  .project-home-dropdown {
-    margin: 13px 0px 0;
-  }
-
   .notifications-btn {
     margin-top: -28px;
 
@@ -64,36 +68,9 @@
     }
   }
 
-  .project-home-desc {
-    h1 {
-      color: #313236;
-      margin: 0;
-      margin-bottom: 6px;
-      font-size: 23px;
-      font-weight: normal;
-    }
-
-    p {
-      padding: 0 $gl-padding;
-      color: #5c5d5e;
-    }
-  }
-
-  .visibility-level-label {
-    @extend .btn;
-    @extend .btn-gray;
-
-    color: $gray;
-    cursor: default;
-
-    i {
-      color: inherit;
-    }
-  }
-
   .project-repo-buttons {
     margin-top: 20px;
-    margin-bottom: 0px;
+    margin-bottom: 0;
 
     .count-buttons {
       display: block;
@@ -148,7 +125,7 @@
           left: 1px;
           margin-top: -9px;
           border-width: 10px 7px 10px 0;
-          border-right-color: #FFF;
+          border-right-color: #fff;
         }
       }
       .count {
@@ -170,10 +147,10 @@
         cursor: pointer;
         background-image: none;
         white-space: nowrap;
-        margin: 0 11px 0px 4px;
+        margin: 0 11px 0 4px;
 
         &:hover {
-          background: #FFF;
+          background: #fff;
         }
       }
     }
@@ -185,30 +162,7 @@
   margin-right: 12px;
 
   a {
-    margin: -1px !important;
-  }
-}
-
-.dropdown-menu {
-  @include box-shadow(rgba(76, 86, 103, 0.247059) 0px 0px 1px 0px, rgba(31, 37, 50, 0.317647) 0px 2px 18px 0px);
-  @include border-radius (0px);
-
-  border: none;
-  padding: 16px 0;
-  font-size: 14px;
-  font-weight: 100;
-
-  li a {
-    color: #5f697a;
-    line-height: 30px;
-
-    &:hover {
-      background-color: #3084bb !important;
-    }
-  }
-
-  i {
-    margin-right: 8px;
+    margin: -1px;
   }
 }
 
@@ -241,7 +195,7 @@
 }
 
 .project_member_row form {
-  margin: 0px;
+  margin: 0;
 }
 
 .transfer-project .select2-container {
@@ -268,12 +222,16 @@
   padding: 0;
   background: transparent;
   border: none;
-  line-height: 42px;
+  line-height: 36px;
   margin: 0;
 
   > li + li:before {
     padding: 0 3px;
     color: #999;
+  }
+
+  a {
+    color: $gl-dark-link-color;
   }
 }
 
@@ -317,11 +275,11 @@ table.table.protected-branches-list tr.no-border {
   padding-bottom: 4px;
 
   ul.nav {
-    display:inline-block;
+    display: inline-block;
   }
 
   .nav li {
-    display:inline;
+    display: inline;
   }
 
   .nav > li > a {
@@ -334,11 +292,11 @@ table.table.protected-branches-list tr.no-border {
   }
 
   li {
-    display:inline;
+    display: inline;
   }
 
   a {
-    float:left;
+    float: left;
     font-size: 17px;
   }
 
@@ -357,7 +315,7 @@ pre.light-well {
 }
 
 .git-empty {
-  margin: 0 7px 0 7px;
+  margin: 0 7px;
 
   h5 {
     color: #5c5d5e;
@@ -401,15 +359,10 @@ pre.light-well {
 
     .project-full-name {
       @include str-truncated;
-      font-weight: 600;
-      color: #4c4e54;
     }
 
-    .project-controls {
-      float: right;
-      color: $gl-gray;
+    .controls {
       line-height: 40px;
-      color: #7f8fa4;
 
       a:hover {
         text-decoration: none;
@@ -417,16 +370,6 @@ pre.light-well {
 
       > span {
         margin-left: 10px;
-      }
-    }
-
-    .project-description {
-      color: #7f8fa4;
-
-      p {
-        @include str-truncated;
-        margin-bottom: 0;
-        color: #7f8fa4;
       }
     }
   }
@@ -508,7 +451,7 @@ pre.light-well {
 
   .form-control {
     @extend .monospace;
-    background: #FFF;
+    background: #fff;
     font-size: 14px;
     margin-left: -1px;
     cursor: auto;
@@ -518,16 +461,16 @@ pre.light-well {
 
 .cannot-be-merged,
 .cannot-be-merged:hover {
-  color: #E62958;
+  color: #e62958;
   margin-top: 2px;
 }
 
 .private-forks-notice .private-fork-icon {
   i:nth-child(1) {
-    color: #2AA056;
+    color: #2aa056;
   }
 
   i:nth-child(2) {
-    color: #FFFFFF;
+    color: #fff;
   }
 }

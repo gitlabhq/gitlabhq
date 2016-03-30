@@ -4,53 +4,59 @@ namespace :spinach do
   namespace :project do
     desc "GitLab | Spinach | Run project commits, issues and merge requests spinach features"
     task :half do
-      cmds = [
-        %W(rake gitlab:setup),
-        %W(spinach --tags @project_commits,@project_issues,@project_merge_requests),
-      ]
-      run_commands(cmds)
+      run_spinach_tests('@project_commits,@project_issues,@project_merge_requests')
     end
 
     desc "GitLab | Spinach | Run remaining project spinach features"
     task :rest do
-      cmds = [
-        %W(rake gitlab:setup),
-        %W(spinach --tags ~@admin,~@dashboard,~@profile,~@public,~@snippets,~@project_commits,~@project_issues,~@project_merge_requests),
-      ]
-      run_commands(cmds)
+      run_spinach_tests('~@admin,~@dashboard,~@profile,~@public,~@snippets,~@project_commits,~@project_issues,~@project_merge_requests')
     end
   end
 
   desc "GitLab | Spinach | Run project spinach features"
   task :project do
-    cmds = [
-      %W(rake gitlab:setup),
-      %W(spinach --tags ~@admin,~@dashboard,~@profile,~@public,~@snippets),
-    ]
-    run_commands(cmds)
+    run_spinach_tests('~@admin,~@dashboard,~@profile,~@public,~@snippets')
   end
 
   desc "GitLab | Spinach | Run other spinach features"
   task :other do
-    cmds = [
-      %W(rake gitlab:setup),
-      %W(spinach --tags @admin,@dashboard,@profile,@public,@snippets),
-    ]
-    run_commands(cmds)
+    run_spinach_tests('@admin,@dashboard,@profile,@public,@snippets')
+  end
+
+  desc "GitLab | Spinach | Run other spinach features"
+  task :builds do
+    run_spinach_tests('@builds')
   end
 end
 
 desc "GitLab | Run spinach"
 task :spinach do
-  cmds = [
-    %W(rake gitlab:setup),
-    %W(spinach),
-  ]
-  run_commands(cmds)
+  run_spinach_tests(nil)
 end
 
-def run_commands(cmds)
-  cmds.each do |cmd|
-    system({'RAILS_ENV' => 'test', 'force' => 'yes'}, *cmd) or raise("#{cmd} failed!")
+def run_command(cmd)
+  system({'RAILS_ENV' => 'test', 'force' => 'yes'}, *cmd)
+end
+
+def run_spinach_command(args)
+  run_command(%w(spinach -r rerun) + args)
+end
+
+def run_spinach_tests(tags)
+  #run_command(%w(rake gitlab:setup)) or raise('gitlab:setup failed!')
+
+  success = run_spinach_command(%W(--tags #{tags}))
+  3.times do |_|
+    break if success
+    break unless File.exists?('tmp/spinach-rerun.txt')
+
+    tests = File.foreach('tmp/spinach-rerun.txt').map(&:chomp)
+    puts ''
+    puts "Spinach tests for #{tags}: Retrying tests... #{tests}".red
+    puts ''
+    sleep(3)
+    success = run_spinach_command(tests)
   end
+
+  raise("spinach tests for #{tags} failed!") unless success
 end

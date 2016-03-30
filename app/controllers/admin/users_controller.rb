@@ -119,10 +119,10 @@ class Admin::UsersController < Admin::ApplicationController
   end
 
   def destroy
-    DeleteUserService.new(current_user).execute(user)
+    DeleteUserWorker.perform_async(current_user.id, user.id)
 
     respond_to do |format|
-      format.html { redirect_to admin_users_path }
+      format.html { redirect_to admin_users_path, notice: "The user is being deleted." }
       format.json { head :ok }
     end
   end
@@ -150,7 +150,7 @@ class Admin::UsersController < Admin::ApplicationController
       :email, :remember_me, :bio, :name, :username,
       :skype, :linkedin, :twitter, :website_url, :color_scheme_id, :theme_id, :force_random_password,
       :extern_uid, :provider, :password_expires_at, :avatar, :hide_no_ssh_key, :hide_no_password,
-      :projects_limit, :can_create_group, :admin, :key_id
+      :projects_limit, :can_create_group, :admin, :key_id, :external
     )
   end
 

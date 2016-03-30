@@ -20,6 +20,7 @@ describe Notes::PostProcessService, services: true do
     it do
       expect(project).to receive(:execute_hooks)
       expect(project).to receive(:execute_services)
+
       Notes::PostProcessService.new(@note).execute
     end
   end

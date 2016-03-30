@@ -1,6 +1,3 @@
-require 'active_support/core_ext/string/output_safety'
-require 'html/pipeline/filter'
-
 module Banzai
   module Filter
     # Base class for GitLab Flavored Markdown reference filters.
@@ -47,6 +44,7 @@ module Banzai
       # Returns a String
       def data_attribute(attributes = {})
         attributes[:reference_filter] = self.class.name.demodulize
+        attributes.delete(:original) if context[:no_original_data]
         attributes.map { |key, value| %Q(data-#{key.to_s.dasherize}="#{escape_once(value)}") }.join(" ")
       end
 

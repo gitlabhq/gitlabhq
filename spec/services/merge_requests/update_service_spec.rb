@@ -7,6 +7,7 @@ describe MergeRequests::UpdateService, services: true do
   let(:merge_request) { create(:merge_request, :simple, title: 'Old title', assignee_id: user3.id) }
   let(:project) { merge_request.project }
   let(:label) { create(:label) }
+  let(:label2) { create(:label) }
 
   before do
     project.team << [user, :master]
@@ -53,7 +54,7 @@ describe MergeRequests::UpdateService, services: true do
       it { expect(@merge_request.assignee).to eq(user2) }
       it { expect(@merge_request).to be_closed }
       it { expect(@merge_request.labels.count).to eq(1) }
-      it { expect(@merge_request.labels.first.title).to eq('Bug') }
+      it { expect(@merge_request.labels.first.title).to eq(label.name) }
       it { expect(@merge_request.target_branch).to eq('target') }
 
       it 'should execute hooks with update action' do
@@ -98,6 +99,126 @@ describe MergeRequests::UpdateService, services: true do
       end
     end
 
+    context 'todos' do
+      let!(:pending_todo) { create(:todo, :assigned, user: user, project: project, target: merge_request, author: user2) }
+
+      context 'when the title change' do
+        before do
+          update_merge_request({ title: 'New title' })
+        end
+
+        it 'marks pending todos as done' do
+          expect(pending_todo.reload).to be_done
+        end
+      end
+
+      context 'when the description change' do
+        before do
+          update_merge_request({ description: 'Also please fix' })
+        end
+
+        it 'marks pending todos as done' do
+          expect(pending_todo.reload).to be_done
+        end
+      end
+
+      context 'when is reassigned' do
+        before do
+          update_merge_request({ assignee: user2 })
+        end
+
+        it 'marks previous assignee pending todos as done' do
+          expect(pending_todo.reload).to be_done
+        end
+
+        it 'creates a pending todo for new assignee' do
+          attributes = {
+            project: project,
+            author: user,
+            user: user2,
+            target_id: merge_request.id,
+            target_type: merge_request.class.name,
+            action: Todo::ASSIGNED,
+            state: :pending
+          }
+
+          expect(Todo.where(attributes).count).to eq 1
+        end
+      end
+
+      context 'when the milestone change' do
+        before do
+          update_merge_request({ milestone: create(:milestone) })
+        end
+
+        it 'marks pending todos as done' do
+          expect(pending_todo.reload).to be_done
+        end
+      end
+
+      context 'when the labels change' do
+        before do
+          update_merge_request({ label_ids: [label.id] })
+        end
+
+        it 'marks pending todos as done' do
+          expect(pending_todo.reload).to be_done
+        end
+      end
+
+      context 'when the target branch change' do
+        before do
+          update_merge_request({ target_branch: 'target' })
+        end
+
+        it 'marks pending todos as done' do
+          expect(pending_todo.reload).to be_done
+        end
+      end
+    end
+
+    context 'when the issue is relabeled' do
+      let!(:non_subscriber) { create(:user) }
+      let!(:subscriber) { create(:user).tap { |u| label.toggle_subscription(u) } }
+
+      it 'sends notifications for subscribers of newly added labels' do
+        opts = { label_ids: [label.id] }
+
+        perform_enqueued_jobs do
+          @merge_request = MergeRequests::UpdateService.new(project, user, opts).execute(merge_request)
+        end
+
+        should_email(subscriber)
+        should_not_email(non_subscriber)
+      end
+
+      context 'when issue has the `label` label' do
+        before { merge_request.labels << label }
+
+        it 'does not send notifications for existing labels' do
+          opts = { label_ids: [label.id, label2.id] }
+
+          perform_enqueued_jobs do
+            @merge_request = MergeRequests::UpdateService.new(project, user, opts).execute(merge_request)
+          end
+
+          should_not_email(subscriber)
+          should_not_email(non_subscriber)
+        end
+
+        it 'does not send notifications for removed labels' do
+          opts = { label_ids: [label2.id] }
+
+          perform_enqueued_jobs do
+            @merge_request = MergeRequests::UpdateService.new(project, user, opts).execute(merge_request)
+          end
+
+          should_not_email(subscriber)
+          should_not_email(non_subscriber)
+        end
+      end
+    end
+
     context 'when MergeRequest has tasks' do
       before { update_merge_request({ description: "- [ ] Task 1\n- [ ] Task 2" }) }
 
@@ -130,6 +251,5 @@ describe MergeRequests::UpdateService, services: true do
         end
       end
     end
-
   end
 end

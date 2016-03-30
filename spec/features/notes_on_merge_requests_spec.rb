@@ -22,7 +22,7 @@ describe 'Comments', feature: true do
       it 'should be valid' do
         is_expected.to have_css('.js-main-target-form', visible: true, count: 1)
         expect(find('.js-main-target-form input[type=submit]').value).
-          to eq('Add Comment')
+          to eq('Comment')
         page.within('.js-main-target-form') do
           expect(page).not_to have_link('Cancel')
         end
@@ -49,7 +49,7 @@ describe 'Comments', feature: true do
         page.within('.js-main-target-form') do
           fill_in 'note[note]', with: 'This is awsome!'
           find('.js-md-preview-button').click
-          click_button 'Add Comment'
+          click_button 'Comment'
         end
       end
 
@@ -202,7 +202,7 @@ describe 'Comments', feature: true do
         before do
           page.within("tr[id='#{line_code_2}'] + .js-temp-notes-holder") do
             fill_in 'note[note]', with: 'Another comment on line 10'
-            click_button('Add Comment')
+            click_button('Comment')
           end
         end
 

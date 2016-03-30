@@ -48,4 +48,23 @@ class AwardEmoji
       JSON.parse(File.read(json_path))
     end
   end
+
+  # Returns an Array of Emoji names and their asset URLs.
+  def self.urls
+    @urls ||= begin
+      path = File.join(Rails.root, 'fixtures', 'emojis', 'digests.json')
+      prefix = Gitlab::Application.config.assets.prefix
+      digest = Gitlab::Application.config.assets.digest
+
+      JSON.parse(File.read(path)).map do |hash|
+        if digest
+          fname = "#{hash['unicode']}-#{hash['digest']}"
+        else
+          fname = hash['unicode']
+        end
+
+        { name: hash['name'], path: "#{prefix}/#{fname}.png" }
+      end
+    end
+  end
 end

@@ -68,6 +68,7 @@ describe Project, models: true do
     it { is_expected.to have_many(:runners) }
     it { is_expected.to have_many(:variables) }
     it { is_expected.to have_many(:triggers) }
+    it { is_expected.to have_many(:todos).dependent(:destroy) }
   end
 
   describe 'modules' do
@@ -102,7 +103,7 @@ describe Project, models: true do
       expect(project2.errors[:limit_reached].first).to match(/Your project limit is 0/)
     end
   end
-  
+
   describe 'project token' do
     it 'should set an random token if none provided' do
       project = FactoryGirl.create :empty_project, runners_token: ''
@@ -421,6 +422,12 @@ describe Project, models: true do
 
       it { should eq "http://localhost#{avatar_path}" }
     end
+
+    context 'when git repo is empty' do
+      let(:project) { create(:empty_project) }
+
+      it { should eq nil }
+    end
   end
 
   describe :ci_commit do
@@ -441,7 +448,7 @@ describe Project, models: true do
   end
 
   describe '.trending' do
-    let(:group)    { create(:group) }
+    let(:group)    { create(:group, :public) }
     let(:project1) { create(:empty_project, :public, group: group) }
     let(:project2) { create(:empty_project, :public, group: group) }
 
@@ -519,35 +526,35 @@ describe Project, models: true do
 
   describe :any_runners do
     let(:project) { create(:empty_project, shared_runners_enabled: shared_runners_enabled) }
-    let(:specific_runner) { create(:ci_specific_runner) }
-    let(:shared_runner) { create(:ci_shared_runner) }
+    let(:specific_runner) { create(:ci_runner) }
+    let(:shared_runner) { create(:ci_runner, :shared) }
 
     context 'for shared runners disabled' do
       let(:shared_runners_enabled) { false }
-      
+
       it 'there are no runners available' do
         expect(project.any_runners?).to be_falsey
       end
-  
+
       it 'there is a specific runner' do
         project.runners << specific_runner
         expect(project.any_runners?).to be_truthy
       end
-  
+
       it 'there is a shared runner, but they are prohibited to use' do
         shared_runner
         expect(project.any_runners?).to be_falsey
       end
-  
+
       it 'checks the presence of specific runner' do
         project.runners << specific_runner
         expect(project.any_runners? { |runner| runner == specific_runner }).to be_truthy
       end
     end
-    
+
     context 'for shared runners enabled' do
       let(:shared_runners_enabled) { true }
-      
+
       it 'there is a shared runner' do
         shared_runner
         expect(project.any_runners?).to be_truthy
@@ -561,7 +568,7 @@ describe Project, models: true do
   end
 
   describe '#visibility_level_allowed?' do
-    let(:project) { create :project, visibility_level: Gitlab::VisibilityLevel::INTERNAL }
+    let(:project) { create(:project, :internal) }
 
     context 'when checking on non-forked project' do
       it { expect(project.visibility_level_allowed?(Gitlab::VisibilityLevel::PRIVATE)).to be_truthy }
@@ -570,17 +577,206 @@ describe Project, models: true do
     end
 
     context 'when checking on forked project' do
-      let(:forked_project) { create :forked_project_with_submodules }
-
-      before do
-        forked_project.build_forked_project_link(forked_to_project_id: forked_project.id, forked_from_project_id: project.id)
-        forked_project.save
-      end
+      let(:project)        { create(:project, :internal) }
+      let(:forked_project) { create(:project, forked_from_project: project) }
 
       it { expect(forked_project.visibility_level_allowed?(Gitlab::VisibilityLevel::PRIVATE)).to be_truthy }
       it { expect(forked_project.visibility_level_allowed?(Gitlab::VisibilityLevel::INTERNAL)).to be_truthy }
       it { expect(forked_project.visibility_level_allowed?(Gitlab::VisibilityLevel::PUBLIC)).to be_falsey }
     end
+  end
 
+  describe '.search' do
+    let(:project) { create(:project, description: 'kitten mittens') }
+
+    it 'returns projects with a matching name' do
+      expect(described_class.search(project.name)).to eq([project])
+    end
+
+    it 'returns projects with a partially matching name' do
+      expect(described_class.search(project.name[0..2])).to eq([project])
+    end
+
+    it 'returns projects with a matching name regardless of the casing' do
+      expect(described_class.search(project.name.upcase)).to eq([project])
+    end
+
+    it 'returns projects with a matching description' do
+      expect(described_class.search(project.description)).to eq([project])
+    end
+
+    it 'returns projects with a partially matching description' do
+      expect(described_class.search('kitten')).to eq([project])
+    end
+
+    it 'returns projects with a matching description regardless of the casing' do
+      expect(described_class.search('KITTEN')).to eq([project])
+    end
+
+    it 'returns projects with a matching path' do
+      expect(described_class.search(project.path)).to eq([project])
+    end
+
+    it 'returns projects with a partially matching path' do
+      expect(described_class.search(project.path[0..2])).to eq([project])
+    end
+
+    it 'returns projects with a matching path regardless of the casing' do
+      expect(described_class.search(project.path.upcase)).to eq([project])
+    end
+
+    it 'returns projects with a matching namespace name' do
+      expect(described_class.search(project.namespace.name)).to eq([project])
+    end
+
+    it 'returns projects with a partially matching namespace name' do
+      expect(described_class.search(project.namespace.name[0..2])).to eq([project])
+    end
+
+    it 'returns projects with a matching namespace name regardless of the casing' do
+      expect(described_class.search(project.namespace.name.upcase)).to eq([project])
+    end
+
+    it 'returns projects when eager loading namespaces' do
+      relation = described_class.all.includes(:namespace)
+
+      expect(relation.search(project.namespace.name)).to eq([project])
+    end
+  end
+
+  describe '#rename_repo' do
+    let(:project) { create(:project) }
+    let(:gitlab_shell) { Gitlab::Shell.new }
+
+    before do
+      # Project#gitlab_shell returns a new instance of Gitlab::Shell on every
+      # call. This makes testing a bit easier.
+      allow(project).to receive(:gitlab_shell).and_return(gitlab_shell)
+    end
+
+    it 'renames a repository' do
+      allow(project).to receive(:previous_changes).and_return('path' => ['foo'])
+
+      ns = project.namespace_dir
+
+      expect(gitlab_shell).to receive(:mv_repository).
+        ordered.
+        with("#{ns}/foo", "#{ns}/#{project.path}").
+        and_return(true)
+
+      expect(gitlab_shell).to receive(:mv_repository).
+        ordered.
+        with("#{ns}/foo.wiki", "#{ns}/#{project.path}.wiki").
+        and_return(true)
+
+      expect_any_instance_of(SystemHooksService).
+        to receive(:execute_hooks_for).
+        with(project, :rename)
+
+      expect_any_instance_of(Gitlab::UploadsTransfer).
+        to receive(:rename_project).
+        with('foo', project.path, ns)
+
+      expect(project).to receive(:expire_caches_before_rename)
+
+      project.rename_repo
+    end
+  end
+
+  describe '#expire_caches_before_rename' do
+    let(:project) { create(:project) }
+    let(:repo)    { double(:repo, exists?: true) }
+    let(:wiki)    { double(:wiki, exists?: true) }
+
+    it 'expires the caches of the repository and wiki' do
+      allow(Repository).to receive(:new).
+        with('foo', project).
+        and_return(repo)
+
+      allow(Repository).to receive(:new).
+        with('foo.wiki', project).
+        and_return(wiki)
+
+      expect(repo).to receive(:expire_cache)
+      expect(repo).to receive(:expire_emptiness_caches)
+
+      expect(wiki).to receive(:expire_cache)
+      expect(wiki).to receive(:expire_emptiness_caches)
+
+      project.expire_caches_before_rename('foo')
+    end
+  end
+
+  describe '.search_by_title' do
+    let(:project) { create(:project, name: 'kittens') }
+
+    it 'returns projects with a matching name' do
+      expect(described_class.search_by_title(project.name)).to eq([project])
+    end
+
+    it 'returns projects with a partially matching name' do
+      expect(described_class.search_by_title('kitten')).to eq([project])
+    end
+
+    it 'returns projects with a matching name regardless of the casing' do
+      expect(described_class.search_by_title('KITTENS')).to eq([project])
+    end
+  end
+
+  context 'when checking projects from groups' do
+    let(:private_group)    { create(:group, visibility_level: 0)  }
+    let(:internal_group)   { create(:group, visibility_level: 10) }
+
+    let(:private_project)  { create :project, :private, group: private_group }
+    let(:internal_project) { create :project, :internal, group: internal_group }
+
+    context 'when group is private project can not be internal' do
+      it { expect(private_project.visibility_level_allowed?(Gitlab::VisibilityLevel::INTERNAL)).to be_falsey }
+    end
+
+    context 'when group is internal project can not be public' do
+      it { expect(internal_project.visibility_level_allowed?(Gitlab::VisibilityLevel::PUBLIC)).to be_falsey }
+    end
+  end
+
+  describe '#create_repository' do
+    let(:project) { create(:project) }
+    let(:shell) { Gitlab::Shell.new }
+
+    before do
+      allow(project).to receive(:gitlab_shell).and_return(shell)
+    end
+
+    context 'using a regular repository' do
+      it 'creates the repository' do
+        expect(shell).to receive(:add_repository).
+          with(project.path_with_namespace).
+          and_return(true)
+
+        expect(project.repository).to receive(:after_create)
+
+        expect(project.create_repository).to eq(true)
+      end
+
+      it 'adds an error if the repository could not be created' do
+        expect(shell).to receive(:add_repository).
+          with(project.path_with_namespace).
+          and_return(false)
+
+        expect(project.repository).not_to receive(:after_create)
+
+        expect(project.create_repository).to eq(false)
+        expect(project.errors).not_to be_empty
+      end
+    end
+
+    context 'using a forked repository' do
+      it 'does nothing' do
+        expect(project).to receive(:forked?).and_return(true)
+        expect(shell).not_to receive(:add_repository)
+
+        project.create_repository
+      end
+    end
   end
 end

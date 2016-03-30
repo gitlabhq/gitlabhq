@@ -113,7 +113,7 @@
   }
 
   .mr-widget-footer {
-    border-top: 1px solid #EEE;
+    border-top: 1px solid #eee;
   }
 
   .ci-coverage {
@@ -148,22 +148,15 @@
     position: relative;
 
     .merge-request-title {
-      margin-bottom: 5px;
-      font-size: $list-font-size;
-      font-weight: 600;
+      margin-bottom: 2px;
     }
-
-    .merge-request-info {
-      color: $gl-gray;
-    }
-
   }
 
   .merge-request-labels {
     display: inline-block;
   }
 
-  .merge-request-no-comments, .merge-request-no-votes {
+  .merge-request-no-comments {
     opacity: 0.5;
   }
 }
@@ -229,11 +222,17 @@
     margin-bottom: 20px;
 
     span {
-      color: #B2B2B2;
+      color: #b2b2b2;
 
       a {
         color: $md-link-color;
       }
     }
+  }
+}
+
+.builds {
+  .table-holder {
+    overflow-x: scroll;
   }
 }

@@ -37,6 +37,11 @@ describe Issue, models: true do
 
   subject { create(:issue) }
 
+  describe "act_as_paranoid" do
+    it { is_expected.to have_db_column(:deleted_at) }
+    it { is_expected.to have_db_index(:deleted_at) }
+  end
+
   describe '#to_reference' do
     it 'returns a String reference to the object' do
       expect(subject.to_reference).to eq "##{subject.iid}"
@@ -105,6 +110,95 @@ describe Issue, models: true do
     end
   end
 
+  describe '#referenced_merge_requests' do
+    it 'returns the referenced merge requests' do
+      project = create(:project, :public)
+
+      mr1 = create(:merge_request,
+                   source_project: project,
+                   source_branch:  'master',
+                   target_branch:  'feature')
+
+      mr2 = create(:merge_request,
+                   source_project: project,
+                   source_branch:  'feature',
+                   target_branch:  'master')
+
+      issue = create(:issue, description: mr1.to_reference, project: project)
+
+      create(:note_on_issue,
+             noteable:   issue,
+             note:       mr2.to_reference,
+             project_id: project.id)
+
+      expect(issue.referenced_merge_requests).to eq([mr1, mr2])
+    end
+  end
+
+  describe '#can_move?' do
+    let(:user) { create(:user) }
+    let(:issue) { create(:issue) }
+    subject { issue.can_move?(user) }
+
+    context 'user is not a member of project issue belongs to' do
+      it { is_expected.to eq false}
+    end
+
+    context 'user is reporter in project issue belongs to' do
+      let(:project) { create(:project) }
+      let(:issue) { create(:issue, project: project) }
+
+      before { project.team << [user, :reporter] }
+
+      it { is_expected.to eq true }
+
+      context 'issue not persisted' do
+        let(:issue) { build(:issue, project: project) }
+        it { is_expected.to eq false }
+      end
+
+      context 'checking destination project also' do
+        subject { issue.can_move?(user, to_project) }
+        let(:to_project) { create(:project) }
+
+        context 'destination project allowed' do
+          before { to_project.team << [user, :reporter] }
+          it { is_expected.to eq true }
+        end
+
+        context 'destination project not allowed' do
+          before { to_project.team << [user, :guest] }
+          it { is_expected.to eq false }
+        end
+      end
+    end
+  end
+
+  describe '#moved?' do
+    let(:issue) { create(:issue) }
+    subject { issue.moved? }
+
+    context 'issue not moved' do
+      it { is_expected.to eq false }
+    end
+
+    context 'issue already moved' do
+      let(:moved_to_issue) { create(:issue) }
+      let(:issue) { create(:issue, moved_to: moved_to_issue) }
+
+      it { is_expected.to eq true }
+    end
+  end
+
+  describe '#related_branches' do
+    it "selects the right branches" do
+      allow(subject.project.repository).to receive(:branch_names).
+        and_return(["mpempe", "#{subject.iid}mepmep", subject.to_branch_name])
+
+      expect(subject.related_branches).to eq([subject.to_branch_name])
+    end
+  end
+
   it_behaves_like 'an editable mentionable' do
     subject { create(:issue) }
 
@@ -114,5 +208,13 @@ describe Issue, models: true do
 
   it_behaves_like 'a Taskable' do
     let(:subject) { create :issue }
+  end
+
+  describe "#to_branch_name" do
+    let(:issue) { create(:issue, title: 'a' * 30) }
+
+    it "starts with the issue iid" do
+      expect(issue.to_branch_name).to match /-#{issue.iid}\z/
+    end
   end
 end

@@ -100,6 +100,18 @@ module API
         end
       end
 
+      # Delete a MR
+      #
+      # Parameters:
+      # id (required)               - The ID of the project
+      # merge_request_id (required) - The MR id
+      delete ":id/merge_requests/:merge_request_id" do
+        merge_request = user_project.merge_requests.find_by(id: params[:merge_request_id])
+
+        authorize!(:destroy_merge_request, merge_request)
+        merge_request.destroy
+      end
+
       # Routing "merge_request/:merge_request_id/..." is DEPRECATED and WILL BE REMOVED in version 9.0
       # Use "merge_requests/:merge_request_id/..." instead.
       #

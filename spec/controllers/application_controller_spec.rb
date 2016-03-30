@@ -30,44 +30,4 @@ describe ApplicationController do
       controller.send(:check_password_expiration)
     end
   end
-
-  describe 'check labels authorization' do
-    let(:project) { create(:project) }
-    let(:user) { create(:user) }
-    let(:controller) { ApplicationController.new }
-
-    before do
-      project.team << [user, :guest]
-      allow(controller).to receive(:current_user).and_return(user)
-      allow(controller).to receive(:project).and_return(project)
-    end
-
-    it 'should succeed if issues and MRs are enabled' do
-      project.issues_enabled = true
-      project.merge_requests_enabled = true
-      controller.send(:authorize_read_label!)
-      expect(response.status).to eq(200)
-    end
-
-    it 'should succeed if issues are enabled, MRs are disabled' do
-      project.issues_enabled = true
-      project.merge_requests_enabled = false
-      controller.send(:authorize_read_label!)
-      expect(response.status).to eq(200)
-    end
-
-    it 'should succeed if issues are disabled, MRs are enabled' do
-      project.issues_enabled = false
-      project.merge_requests_enabled = true
-      controller.send(:authorize_read_label!)
-      expect(response.status).to eq(200)
-    end
-
-    it 'should fail if issues and MRs are disabled' do
-      project.issues_enabled = false
-      project.merge_requests_enabled = false
-      expect(controller).to receive(:access_denied!)
-      controller.send(:authorize_read_label!)
-    end
-  end
 end

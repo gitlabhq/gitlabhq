@@ -22,7 +22,7 @@
 
 // Components
 @import "bootstrap/component-animations";
-@import "bootstrap/dropdowns";
+// @import "bootstrap/dropdowns";
 @import "bootstrap/button-groups";
 @import "bootstrap/input-groups";
 @import "bootstrap/navs";
@@ -95,7 +95,7 @@
   }
 
   &.label-inverse {
-    background-color: #333333;
+    background-color: #333;
   }
 }
 
@@ -138,7 +138,7 @@
     }
 
     .btn-clipboard {
-      min-width: 0px;
+      min-width: 0;
     }
   }
 
@@ -165,12 +165,6 @@
     color: #fff;
     text-decoration: underline;
   }
-}
-
-.alert-help {
-  background-color: $background-color;
-  border: 1px solid $border-color;
-  color: $gl-gray;
 }
 
 // Typography =================================================================

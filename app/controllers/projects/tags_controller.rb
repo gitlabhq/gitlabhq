@@ -7,7 +7,7 @@ class Projects::TagsController < Projects::ApplicationController
 
   def index
     sorted = VersionSorter.rsort(@repository.tag_names)
-    @tags = Kaminari.paginate_array(sorted).page(params[:page]).per(PER_PAGE)
+    @tags = Kaminari.paginate_array(sorted).page(params[:page])
     @releases = project.releases.where(tag: @tags)
   end
 
@@ -34,6 +34,11 @@ class Projects::TagsController < Projects::ApplicationController
   def destroy
     DeleteTagService.new(project, current_user).execute(params[:id])
 
-    redirect_to namespace_project_tags_path(@project.namespace, @project)
+    respond_to do |format|
+      format.html do
+        redirect_to namespace_project_tags_path(@project.namespace, @project)
+      end
+      format.js
+    end
   end
 end

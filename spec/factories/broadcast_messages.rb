@@ -12,12 +12,10 @@
 #  font       :string(255)
 #
 
-# Read about factories at https://github.com/thoughtbot/factory_girl
-
 FactoryGirl.define do
   factory :broadcast_message do
     message "MyText"
-    starts_at Date.today
+    starts_at Date.yesterday
     ends_at Date.tomorrow
 
     trait :expired do

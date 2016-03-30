@@ -3,7 +3,7 @@
 
 %h3.page-title Blame view
 
-#tree-holder.tree-holder
+#blob-content-holder.tree-holder
   .file-holder
     .file-title
       = blob_icon @blob.mode, @blob.name
@@ -33,7 +33,9 @@
             %td.line-numbers
               - line_count = blame_group[:lines].count
               - (current_line...(current_line + line_count)).each do |i|
-                %a.diff-line-num= i
+                %a.diff-line-num{href: "#L#{i}", id: "L#{i}", 'data-line-number' => i}
+                  = icon("link")
+                  = i
                 \
               - current_line += line_count
             %td.lines

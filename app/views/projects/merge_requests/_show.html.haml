@@ -1,4 +1,4 @@
-- page_title           "#{@merge_request.title} (##{@merge_request.iid})", "Merge Requests"
+- page_title           "#{@merge_request.title} (#{@merge_request.to_reference})", "Merge Requests"
 - page_description     @merge_request.description
 - page_card_attributes @merge_request.card_attributes
 
@@ -10,7 +10,7 @@
 .merge-request{'data-url' => merge_request_path(@merge_request)}
   = render "projects/merge_requests/show/mr_title"
 
-  .merge-request-details.issuable-details
+  .merge-request-details.issuable-details{data: {id: @merge_request.project.id}}
     = render "projects/merge_requests/show/mr_box"
     .append-bottom-default.mr-source-target.prepend-top-default
       - if @merge_request.open?
@@ -34,6 +34,8 @@
         %span into
         = link_to namespace_project_commits_path(@project.namespace, @project, @merge_request.target_branch), class: "label-branch" do
           = @merge_request.target_branch
+        - if @merge_request.open? && @merge_request.diverged_from_target_branch?
+          %span (#{pluralize(@merge_request.diverged_commits_count, 'commit')} behind)
 
     = render "projects/merge_requests/show/how_to_merge"
     = render "projects/merge_requests/widget/show.html.haml"
@@ -62,11 +64,11 @@
         %li.diffs-tab
           = link_to diffs_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: {target: 'div#diffs', action: 'diffs', toggle: 'tab'} do
             Changes
-            %span.badge= @merge_request.diffs.size
+            %span.badge= @merge_request.diff_size
 
       .tab-content
         #notes.notes.tab-pane.voting_notes
-          .content-block.oneline-block
+          .content-block.content-block-small.oneline-block
             = render 'emoji_awards/awards_block', awardable: @merge_request
 
           .row
@@ -85,6 +87,8 @@
         = spinner
 
 = render 'shared/issuable/sidebar', issuable: @merge_request
+- if @merge_request.can_be_reverted?
+  = render "projects/commit/revert", commit: @merge_request.merge_commit, title: @merge_request.title
 
 :javascript
   var merge_request;

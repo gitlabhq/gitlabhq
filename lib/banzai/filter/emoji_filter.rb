@@ -1,7 +1,3 @@
-require 'action_controller'
-require 'gitlab_emoji'
-require 'html/pipeline/filter'
-
 module Banzai
   module Filter
     # HTML filter that replaces :emoji: with images.
@@ -45,7 +41,8 @@ module Banzai
       private
 
       def emoji_url(name)
-        emoji_path = "emoji/#{emoji_filename(name)}"
+        emoji_path = emoji_filename(name)
+
         if context[:asset_host]
           # Asset host is specified.
           url_to_image(emoji_path)

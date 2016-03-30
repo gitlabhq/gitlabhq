@@ -111,6 +111,33 @@ describe NotificationService, services: true do
       end
     end
 
+    context 'confidential issue note' do
+      let(:project) { create(:empty_project, :public) }
+      let(:author) { create(:user) }
+      let(:assignee) { create(:user) }
+      let(:non_member) { create(:user) }
+      let(:member) { create(:user) }
+      let(:admin) { create(:admin) }
+      let(:confidential_issue) { create(:issue, :confidential, project: project, author: author, assignee: assignee) }
+      let(:note) { create(:note_on_issue, noteable: confidential_issue, project: project, note: "#{author.to_reference} #{assignee.to_reference} #{non_member.to_reference} #{member.to_reference} #{admin.to_reference}") }
+
+      it 'filters out users that can not read the issue' do
+        project.team << [member, :developer]
+
+        expect(SentNotification).to receive(:record).with(confidential_issue, any_args).exactly(4).times
+
+        ActionMailer::Base.deliveries.clear
+
+        notification.new_note(note)
+
+        should_not_email(non_member)
+        should_email(author)
+        should_email(assignee)
+        should_email(member)
+        should_email(admin)
+      end
+    end
+
     context 'issue note mention' do
       let(:project) { create(:empty_project, :public) }
       let(:issue) { create(:issue, project: project, assignee: create(:user)) }
@@ -224,6 +251,45 @@ describe NotificationService, services: true do
 
         should_not_email(issue.assignee)
       end
+
+      it "emails subscribers of the issue's labels" do
+        subscriber = create(:user)
+        label = create(:label, issues: [issue])
+        label.toggle_subscription(subscriber)
+        notification.new_issue(issue, @u_disabled)
+
+        should_email(subscriber)
+      end
+
+      context 'confidential issues' do
+        let(:author) { create(:user) }
+        let(:assignee) { create(:user) }
+        let(:non_member) { create(:user) }
+        let(:member) { create(:user) }
+        let(:admin) { create(:admin) }
+        let(:confidential_issue) { create(:issue, :confidential, project: project, title: 'Confidential issue', author: author, assignee: assignee) }
+
+        it "emails subscribers of the issue's labels that can read the issue" do
+          project.team << [member, :developer]
+
+          label = create(:label, issues: [confidential_issue])
+          label.toggle_subscription(non_member)
+          label.toggle_subscription(author)
+          label.toggle_subscription(assignee)
+          label.toggle_subscription(member)
+          label.toggle_subscription(admin)
+
+          ActionMailer::Base.deliveries.clear
+
+          notification.new_issue(confidential_issue, @u_disabled)
+
+          should_not_email(non_member)
+          should_not_email(author)
+          should_email(assignee)
+          should_email(member)
+          should_email(admin)
+        end
+      end
     end
 
     describe :reassigned_issue do
@@ -296,6 +362,66 @@ describe NotificationService, services: true do
       end
     end
 
+    describe '#relabeled_issue' do
+      let(:label) { create(:label, issues: [issue]) }
+      let(:label2) { create(:label) }
+      let!(:subscriber_to_label) { create(:user).tap { |u| label.toggle_subscription(u) } }
+      let!(:subscriber_to_label2) { create(:user).tap { |u| label2.toggle_subscription(u) } }
+
+      it "emails subscribers of the issue's added labels only" do
+        notification.relabeled_issue(issue, [label2], @u_disabled)
+
+        should_not_email(subscriber_to_label)
+        should_email(subscriber_to_label2)
+      end
+
+      it "doesn't send email to anyone but subscribers of the given labels" do
+        notification.relabeled_issue(issue, [label2], @u_disabled)
+
+        should_not_email(issue.assignee)
+        should_not_email(issue.author)
+        should_not_email(@u_watcher)
+        should_not_email(@u_participant_mentioned)
+        should_not_email(@subscriber)
+        should_not_email(@watcher_and_subscriber)
+        should_not_email(@unsubscriber)
+        should_not_email(@u_participating)
+        should_not_email(subscriber_to_label)
+        should_email(subscriber_to_label2)
+      end
+
+      context 'confidential issues' do
+        let(:author) { create(:user) }
+        let(:assignee) { create(:user) }
+        let(:non_member) { create(:user) }
+        let(:member) { create(:user) }
+        let(:admin) { create(:admin) }
+        let(:confidential_issue) { create(:issue, :confidential, project: project, title: 'Confidential issue', author: author, assignee: assignee) }
+        let!(:label_1) { create(:label, issues: [confidential_issue]) }
+        let!(:label_2) { create(:label) }
+
+        it "emails subscribers of the issue's labels that can read the issue" do
+          project.team << [member, :developer]
+
+          label_2.toggle_subscription(non_member)
+          label_2.toggle_subscription(author)
+          label_2.toggle_subscription(assignee)
+          label_2.toggle_subscription(member)
+          label_2.toggle_subscription(admin)
+
+          ActionMailer::Base.deliveries.clear
+
+          notification.relabeled_issue(confidential_issue, [label_2], @u_disabled)
+
+          should_not_email(non_member)
+          should_email(author)
+          should_email(assignee)
+          should_email(member)
+          should_email(admin)
+        end
+      end
+    end
+
     describe :close_issue do
       it 'should sent email to issue assignee and issue author' do
         notification.close_issue(issue, @u_disabled)
@@ -349,6 +475,15 @@ describe NotificationService, services: true do
         should_not_email(@u_participating)
         should_not_email(@u_disabled)
       end
+
+      it "emails subscribers of the merge request's labels" do
+        subscriber = create(:user)
+        label = create(:label, merge_requests: [merge_request])
+        label.toggle_subscription(subscriber)
+        notification.new_merge_request(merge_request, @u_disabled)
+
+        should_email(subscriber)
+      end
     end
 
     describe :reassigned_merge_request do
@@ -363,6 +498,35 @@ describe NotificationService, services: true do
         should_not_email(@unsubscriber)
         should_not_email(@u_participating)
         should_not_email(@u_disabled)
+      end
+    end
+
+    describe :relabel_merge_request do
+      let(:label) { create(:label, merge_requests: [merge_request]) }
+      let(:label2) { create(:label) }
+      let!(:subscriber_to_label) { create(:user).tap { |u| label.toggle_subscription(u) } }
+      let!(:subscriber_to_label2) { create(:user).tap { |u| label2.toggle_subscription(u) } }
+
+      it "emails subscribers of the merge request's added labels only" do
+        notification.relabeled_merge_request(merge_request, [label2], @u_disabled)
+
+        should_not_email(subscriber_to_label)
+        should_email(subscriber_to_label2)
+      end
+
+      it "doesn't send email to anyone but subscribers of the given labels" do
+        notification.relabeled_merge_request(merge_request, [label2], @u_disabled)
+
+        should_not_email(merge_request.assignee)
+        should_not_email(merge_request.author)
+        should_not_email(@u_watcher)
+        should_not_email(@u_participant_mentioned)
+        should_not_email(@subscriber)
+        should_not_email(@watcher_and_subscriber)
+        should_not_email(@unsubscriber)
+        should_not_email(@u_participating)
+        should_not_email(subscriber_to_label)
+        should_email(subscriber_to_label2)
       end
     end
 
@@ -466,17 +630,5 @@ describe NotificationService, services: true do
     issuable.subscriptions.create(user: @unsubscriber, subscribed: false)
     # Make the watcher a subscriber to detect dupes
     issuable.subscriptions.create(user: @watcher_and_subscriber, subscribed: true)
-  end
-
-  def sent_to_user?(user)
-    ActionMailer::Base.deliveries.map(&:to).flatten.count(user.email) == 1
-  end
-
-  def should_email(user)
-    expect(sent_to_user?(user)).to be_truthy
-  end
-
-  def should_not_email(user)
-    expect(sent_to_user?(user)).to be_falsey
   end
 end

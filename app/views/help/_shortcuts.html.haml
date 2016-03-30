@@ -22,6 +22,14 @@
                 %td.shortcut
                   .key ?
                 %td Show this dialog
+              %tr
+                %td.shortcut
+                  - if browser.mac?
+                    .key &#8984; shift p
+                  - else
+                    .key ctrl shift p
+
+                %td Toggle Markdown preview
             %tbody
               %tr
                 %th
@@ -229,6 +237,10 @@
                 %td.shortcut
                   .key r
                 %td Reply (quoting selected text)
+              %tr
+                %td.shortcut
+                  .key e
+                %td Edit issue
             %tbody{ class: 'hidden-shortcut merge_requests', style: 'display:none' }
               %tr
                 %th
@@ -245,3 +257,7 @@
                 %td.shortcut
                   .key r
                 %td Reply (quoting selected text)
+              %tr
+                %td.shortcut
+                  .key e
+                %td Edit merge request

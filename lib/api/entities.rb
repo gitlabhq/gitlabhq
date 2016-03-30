@@ -23,12 +23,15 @@ module API
     end
 
     class UserFull < User
+      expose :last_sign_in_at
+      expose :confirmed_at
       expose :email
       expose :theme_id, :color_scheme_id, :projects_limit, :current_sign_in_at
       expose :identities, using: Entities::Identity
       expose :can_create_group?, as: :can_create_group
       expose :can_create_project?, as: :can_create_project
       expose :two_factor_enabled
+      expose :external
     end
 
     class UserLogin < UserFull
@@ -49,7 +52,7 @@ module API
       expose :enable_ssl_verification
     end
 
-    class ForkedFromProject < Grape::Entity
+    class BasicProjectDetails < Grape::Entity
       expose :id
       expose :name, :name_with_namespace
       expose :path, :path_with_namespace
@@ -67,7 +70,7 @@ module API
       expose :shared_runners_enabled
       expose :creator_id
       expose :namespace
-      expose :forked_from_project, using: Entities::ForkedFromProject, if: lambda{ |project, options| project.forked? }
+      expose :forked_from_project, using: Entities::BasicProjectDetails, if: lambda{ |project, options| project.forked? }
       expose :avatar_url
       expose :star_count, :forks_count
       expose :open_issues_count, if: lambda { |project, options| project.issues_enabled? && project.default_issues_tracker? }
@@ -82,7 +85,7 @@ module API
     end
 
     class Group < Grape::Entity
-      expose :id, :name, :path, :description
+      expose :id, :name, :path, :description, :visibility_level
       expose :avatar_url
 
       expose :web_url do |group, options|
@@ -141,7 +144,10 @@ module API
     class ProjectSnippet < Grape::Entity
       expose :id, :title, :file_name
       expose :author, using: Entities::UserBasic
-      expose :expires_at, :updated_at, :created_at
+      expose :updated_at, :created_at
+
+      # TODO (rspeicher): Deprecated; remove in 9.0
+      expose(:expires_at) { |snippet| nil }
     end
 
     class ProjectEntity < Grape::Entity
@@ -182,7 +188,7 @@ module API
 
     class MergeRequestChanges < MergeRequest
       expose :diffs, as: :changes, using: Entities::RepoDiff do |compare, _|
-        compare.diffs
+        compare.diffs(all_diffs: true).to_a
       end
     end
 
@@ -242,6 +248,10 @@ module API
       end
     end
 
+    class ProjectGroupLink < Grape::Entity
+      expose :id, :project_id, :group_id, :group_access
+    end
+
     class Namespace < Grape::Entity
       expose :id, :path, :kind
     end
@@ -283,7 +293,7 @@ module API
     end
 
     class Label < Grape::Entity
-      expose :name, :color
+      expose :name, :color, :description
     end
 
     class Compare < Grape::Entity
@@ -296,11 +306,11 @@ module API
       end
 
       expose :diffs, using: Entities::RepoDiff do |compare, options|
-        compare.diffs
+        compare.diffs(all_diffs: true).to_a
       end
 
       expose :compare_timeout do |compare, options|
-        compare.timeout
+        compare.diffs.overflow?
       end
 
       expose :same, as: :compare_same_ref
@@ -331,6 +341,7 @@ module API
       expose :session_expire_delay
       expose :default_project_visibility
       expose :default_snippet_visibility
+      expose :default_group_visibility
       expose :restricted_signup_domains
       expose :user_oauth_applications
       expose :after_sign_out_path
@@ -378,17 +389,29 @@ module API
       expose :name
     end
 
+    class RunnerDetails < Runner
+      expose :tag_list
+      expose :version, :revision, :platform, :architecture
+      expose :contacted_at
+      expose :token, if: lambda { |runner, options| options[:current_user].is_admin? || !runner.is_shared? }
+      expose :projects, with: Entities::BasicProjectDetails do |runner, options|
+        if options[:current_user].is_admin?
+          runner.projects
+        else
+          options[:current_user].authorized_projects.where(id: runner.projects)
+        end
+      end
+    end
+
+    class BuildArtifactFile < Grape::Entity
+      expose :filename, :size
+    end
+
     class Build < Grape::Entity
       expose :id, :status, :stage, :name, :ref, :tag, :coverage
       expose :created_at, :started_at, :finished_at
       expose :user, with: User
-      # TODO: download_url in Ci:Build model is an GitLab Web Interface URL, not API URL. We should think on some API
-      #       for downloading of artifacts (see: https://gitlab.com/gitlab-org/gitlab-ce/issues/4255)
-      expose :download_url do |repo_obj, options|
-        if options[:user_can_download_artifacts]
-          repo_obj.artifacts_download_url
-        end
-      end
+      expose :artifacts_file, using: BuildArtifactFile, if: -> (build, opts) { build.artifacts? }
       expose :commit, with: RepoCommit do |repo_obj, _options|
         if repo_obj.respond_to?(:commit)
           repo_obj.commit.commit_data
