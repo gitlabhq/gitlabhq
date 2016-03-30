@@ -2,7 +2,7 @@ module SharedNote
   include Spinach::DSL
 
   step 'I delete a comment' do
-    page.within('.notes') do
+    page.within('.main-notes-list') do
       find('.note').hover
       find(".js-note-delete").click
     end
