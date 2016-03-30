@@ -25,6 +25,8 @@ module Projects
     end
 
     def target_owner
+      return [] unless @target && @target.author.present?
+
       [{
         name: @target.author.name,
         username: @target.author.username
