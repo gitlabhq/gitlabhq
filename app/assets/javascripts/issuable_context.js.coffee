@@ -12,7 +12,6 @@ class @IssuableContext
     $(document).off("click", ".edit-link").on "click",".edit-link", (e) ->
       $block = $(@).parents('.block')
       $selectbox = $block.find('.selectbox')
-      console.log 'selectbox visible???', $selectbox.is(':visible')
       if $selectbox.is(':visible')
         $selectbox.hide()
         $block.find('.value').show()
