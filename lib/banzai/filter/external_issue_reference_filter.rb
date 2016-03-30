@@ -35,7 +35,7 @@ module Banzai
 
       def call
         # Early return if the project isn't using an external tracker
-        return doc if project.nil? || project.default_issues_tracker?
+        return doc if project.nil? || default_issues_tracker?
 
         ref_pattern = ExternalIssue.reference_pattern
         ref_start_pattern = /\A#{ref_pattern}\z/
@@ -89,6 +89,21 @@ module Banzai
 
       def url_for_issue(*args)
         IssuesHelper.url_for_issue(*args)
+      end
+
+      def default_issues_tracker?
+        if RequestStore.active?
+          default_issues_tracker_cache[project.id] ||=
+            project.default_issues_tracker?
+        else
+          project.default_issues_tracker?
+        end
+      end
+
+      private
+
+      def default_issues_tracker_cache
+        RequestStore[:banzai_default_issues_tracker_cache] ||= {}
       end
     end
   end
