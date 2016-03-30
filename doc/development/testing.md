@@ -63,6 +63,8 @@ the command line via `bundle exec teaspoon`, or via a web browser at
 - Don't `describe` symbols (see [Gotchas](gotchas.md#dont-describe-symbols)).
 - Prefer `not_to` to `to_not`.
 - Try to match the ordering of tests to the ordering within the class.
+- Try to follow the [Four-Phase Test](https://robots.thoughtbot.com/four-phase-test)
+  pattern, using newlines to separate phases.
 
 ### Test speed
 
