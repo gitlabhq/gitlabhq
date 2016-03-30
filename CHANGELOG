@@ -5,6 +5,7 @@ v 8.6.3 (unreleased)
 v 8.6.3 (unreleased)
   - Destroy related todos when an Issue/MR is deleted. !3376
   - Fix error 500 when target is nil on todo list. !3376
+  - Fix raw/rendered diff producing different results on merge requests. !3450
 
 v 8.6.2
   - Fix dropdown alignment. !3298

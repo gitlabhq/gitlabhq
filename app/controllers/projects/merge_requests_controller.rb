@@ -57,8 +57,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     respond_to do |format|
       format.html
       format.json { render json: @merge_request }
-      format.diff { render text: @merge_request.to_diff(current_user) }
-      format.patch { render text: @merge_request.to_patch(current_user) }
+      format.diff { render text: @merge_request.to_diff }
+      format.patch { render text: @merge_request.to_patch }
     end
   end
 
