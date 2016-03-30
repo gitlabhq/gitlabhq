@@ -45,10 +45,6 @@ RSpec.configure do |config|
   config.before(:suite) do
     TestEnv.init
   end
-
-  config.after(:suite) do
-    FileUtils.rm_rf('tmp/tests/files')
-  end
 end
 
 FactoryGirl::SyntaxRunner.class_eval do
@@ -62,4 +58,3 @@ RSpec::Rails::ViewRendering::EmptyTemplatePathSetDecorator.class_eval do
 end
 
 ActiveRecord::Migration.maintain_test_schema!
-CarrierWave.root = 'tmp/tests/files'
