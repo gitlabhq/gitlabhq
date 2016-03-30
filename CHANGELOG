@@ -5,8 +5,9 @@ v 8.7.0 (unreleased)
   - Preserve time notes/comments have been updated at when moving issue
   - Make HTTP(s) label consistent on clone bar (Stan Hu)
   - Expose label description in API (Mariusz Jachimowicz)
-  - Allow back dating on issues when created through the API 
+  - Allow back dating on issues when created through the API
   - Fix avatar stretching by providing a cropping feature
+  - Fix raw/rendered diff producing different results on merge requests !3450
   - Add links to CI setup documentation from project settings and builds pages
   - Handle nil descriptions in Slack issue messages (Stan Hu)
   - Implement 'Groups View' as an option for dashboard preferences !3379 (Elias W.)
