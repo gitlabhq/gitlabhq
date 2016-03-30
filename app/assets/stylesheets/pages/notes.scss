@@ -176,7 +176,7 @@ ul.notes {
 
 .note-headline-light,
 .discussion-headline-light {
-  color: #8e8e8e;
+  color: $notes-light-color;
 }
 
 /**
@@ -187,7 +187,7 @@ ul.notes {
 .note-actions {
   float: right;
   margin-left: 10px;
-  color: #8F8F8F;
+  color: $notes-action-color;
 }
 
 .note-action-button,
@@ -219,10 +219,10 @@ ul.notes {
   display: inline-block;
   padding-left: 4px;
   padding-right: 4px;
-  color: #8F8F8F;
+  color: $notes-action-color;
   font-size: 12px;
   line-height: 20px;
-  border: 1px solid #E4E4E4;
+  border: 1px solid $notes-role-border-color;
   border-radius: $border-radius-base;
 }
 
