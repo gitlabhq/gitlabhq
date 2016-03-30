@@ -65,6 +65,8 @@ class @Notes
 
     # add diff note
     $(document).on "click", ".js-add-diff-note-button", @addDiffNote
+    $(document).on "mouseover", ".js-add-diff-note-button", ->
+      console.log $(this).data('line-code')
 
     # hide diff note form
     $(document).on "click", ".js-close-discussion-note-form", @cancelDiscussionForm
@@ -263,6 +265,8 @@ class @Notes
     # fix classes
     form.removeClass "js-new-note-form"
     form.addClass "js-main-target-form"
+
+    form.find("#note_line_code").remove()
 
   ###
   General note form setup.
@@ -500,8 +504,9 @@ class @Notes
   ###
   addDiffNote: (e) =>
     e.preventDefault()
-    link = e.currentTarget
-    row = $(link).closest("tr")
+    $link = $(e.currentTarget)
+    console.log $link.data('line-code')
+    row = $link.closest("tr")
     nextRow = row.next()
     hasNotes = nextRow.is(".notes_holder")
     addForm = false
@@ -510,7 +515,7 @@ class @Notes
 
     # In parallel view, look inside the correct left/right pane
     if @isParallelView()
-      lineType = $(link).data("lineType")
+      lineType = $link.data("lineType")
       targetContent += "." + lineType
       rowCssToAdd = "<tr class=\"notes_holder js-temp-notes-holder\"><td class=\"notes_line\"></td><td class=\"notes_content parallel old\"></td><td class=\"notes_line\"></td><td class=\"notes_content parallel new\"></td></tr>"
 
@@ -536,7 +541,7 @@ class @Notes
       newForm.appendTo row.next().find(targetContent)
 
       # show the form
-      @setupDiscussionNoteForm $(link), newForm
+      @setupDiscussionNoteForm $link, newForm
 
   ###
   Called in response to "cancel" on a diff note form.
@@ -561,7 +566,6 @@ class @Notes
 
   cancelDiscussionForm: (e) =>
     e.preventDefault()
-    form = $(".js-new-note-form")
     form = $(e.target).closest(".js-discussion-note-form")
     @removeDiscussionNoteForm(form)
 

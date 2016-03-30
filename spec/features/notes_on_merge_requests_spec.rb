@@ -225,6 +225,6 @@ describe 'Comments', feature: true do
   end
 
   def click_diff_line(data = line_code)
-    page.find(%Q{button[data-line-code="#{data}"]}, visible: false).click
+    execute_script("$('button[data-line-code=\"#{data}\"]').click()")
   end
 end
