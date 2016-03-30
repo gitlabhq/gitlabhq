@@ -501,7 +501,6 @@ class @Notes
   addDiffNote: (e) =>
     e.preventDefault()
     link = e.currentTarget
-    form = $(".js-new-note-form")
     row = $(link).closest("tr")
     nextRow = row.next()
     hasNotes = nextRow.is(".notes_holder")
@@ -533,7 +532,7 @@ class @Notes
       addForm = true
 
     if addForm
-      newForm = form.clone()
+      newForm = @formClone.clone()
       newForm.appendTo row.next().find(targetContent)
 
       # show the form
