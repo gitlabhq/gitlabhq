@@ -77,7 +77,7 @@ class Repository
     return @has_visible_content unless @has_visible_content.nil?
 
     @has_visible_content = cache.fetch(:has_visible_content?) do
-      branch_count > 0
+      local_branches.size > 0
     end
   end
 
@@ -133,7 +133,7 @@ class Repository
   end
 
   def find_branch(name)
-    raw_repository.branches.find { |branch| branch.name == name }
+    branches.find { |branch| branch.name == name }
   end
 
   def find_tag(name)
@@ -248,7 +248,7 @@ class Repository
   end
 
   def branch_count
-    @branch_count ||= cache.fetch(:branch_count) { branches.size }
+    @branch_count ||= cache.fetch(:branch_count) { local_branches.size }
   end
 
   def tag_count

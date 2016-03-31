@@ -50,8 +50,11 @@ module Gitlab
       # We want to convert it to: [{ 'v1.10.0' => 'dc872e9fa6963f8f03da6c8f6f264d0845d6b092' }, ...]
       tags_with_targets = output.lines.flat_map do |line|
         target, path = line.strip!.split("\t")
-        name = path.split('/', 3).last
 
+        # When the remote repo is empty we don't have tags.
+        break if target.nil?
+
+        name = path.split('/', 3).last
         [name, target]
       end
 
