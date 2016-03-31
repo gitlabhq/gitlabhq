@@ -12,7 +12,7 @@ window.GlPage = {
           instance: instance
           name: generated
         }
-        generated
+        @instances[generated]
         
       get: (name) ->
         @instances[name].instance
