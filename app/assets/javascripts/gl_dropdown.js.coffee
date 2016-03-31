@@ -1,5 +1,6 @@
 class GitLabDropdownFilter
   BLUR_KEYCODES = [27, 40]
+  ARROW_KEY_CODES = [38, 40]
   HAS_VALUE_CLASS = "has-value"
 
   constructor: (@input, @options) ->
@@ -22,19 +23,23 @@ class GitLabDropdownFilter
     # Key events
     timeout = ""
     @input.on "keyup", (e) =>
+      keyCode = e.which
+
+      return if ARROW_KEY_CODES.indexOf(keyCode) >= 0
+
       if @input.val() isnt "" and !$inputContainer.hasClass HAS_VALUE_CLASS
         $inputContainer.addClass HAS_VALUE_CLASS
       else if @input.val() is "" and $inputContainer.hasClass HAS_VALUE_CLASS
         $inputContainer.removeClass HAS_VALUE_CLASS
 
-      if e.keyCode is 13 and @input.val() isnt ""
+      if keyCode is 13 and @input.val() isnt ""
         if @options.enterCallback
           @options.enterCallback()
         return
 
       clearTimeout timeout
       timeout = setTimeout =>
-        blur_field = @shouldBlur e.keyCode
+        blur_field = @shouldBlur keyCode
         search_text = @input.val()
 
         if blur_field and @filterInputBlur
@@ -96,7 +101,7 @@ class GitLabDropdown
   LOADING_CLASS = "is-loading"
   PAGE_TWO_CLASS = "is-page-two"
   ACTIVE_CLASS = "is-active"
-  CURRENT_INDEX = -1
+  currentIndex = -1
 
   FILTER_INPUT = '.dropdown-input .dropdown-input-field'
 
@@ -146,7 +151,7 @@ class GitLabDropdown
         data: =>
           return @fullData
         callback: (data) =>
-          CURRENT_INDEX = -1
+          currentIndex = -1
           @parseData data
         enterCallback: =>
           if @enterCallback
@@ -311,11 +316,11 @@ class GitLabDropdown
       if @highlight
         text = @highlightTextMatches(text, @filterInput.val())
 
-      html = "<li>"
-      html += "<a href='#{url}' class='#{cssClass}'>"
-      html += text
-      html += "</a>"
-      html += "</li>"
+      html = "<li>
+        <a href='#{url}' class='#{cssClass}'>
+          #{text}
+        </a>
+      </li>"
 
     return html
 
@@ -398,31 +403,31 @@ class GitLabDropdown
       selector = ".dropdown-page-one #{selector}"
 
     $('body').on 'keydown', (e) =>
-      currentKeyCode = e.keyCode
+      currentKeyCode = e.which
 
       if ARROW_KEY_CODES.indexOf(currentKeyCode) >= 0
         e.preventDefault()
-        e.stopPropagation()
+        e.stopImmediatePropagation()
 
-        PREV_INDEX = CURRENT_INDEX
+        PREV_INDEX = currentIndex
         $listItems = $(selector, @dropdown)
 
-        if @options.filterable
-          $input.blur()
+        # if @options.filterable
+        #   $input.blur()
 
         if currentKeyCode is 40
           # Move down
-          CURRENT_INDEX += 1 if CURRENT_INDEX < ($listItems.length - 1)
+          currentIndex += 1 if currentIndex < ($listItems.length - 1)
         else if currentKeyCode is 38
           # Move up
-          CURRENT_INDEX -= 1 if CURRENT_INDEX > 0
+          currentIndex -= 1 if currentIndex > 0
 
-        @highlightRowAtIndex($listItems, CURRENT_INDEX) if CURRENT_INDEX isnt PREV_INDEX
+        @highlightRowAtIndex($listItems, currentIndex) if currentIndex isnt PREV_INDEX
 
         return false
 
       if currentKeyCode is 13
-        @selectRowAtIndex CURRENT_INDEX
+        @selectRowAtIndex currentIndex
 
   removeArrayKeyEvent: ->
     $('body').off 'keydown'
@@ -437,13 +442,13 @@ class GitLabDropdown
 
     # Dropdown content scroll area
     $dropdownContent = $listItem.closest('.dropdown-content')
-    dropdownScrollTop = $dropdownContent.prop('scrollTop')
-    dropdownContentHeight = $dropdownContent.prop('offsetHeight')
+    dropdownScrollTop = $dropdownContent.scrollTop()
+    dropdownContentHeight = $dropdownContent.outerHeight()
     dropdownContentTop = $dropdownContent.prop('offsetTop')
     dropdownContentBottom = dropdownContentTop + dropdownContentHeight
 
     # Get the offset bottom of the list item
-    listItemHeight = $listItem.prop('offsetHeight')
+    listItemHeight = $listItem.outerHeight()
     listItemTop = $listItem.prop('offsetTop')
     listItemBottom = listItemTop + listItemHeight
 
