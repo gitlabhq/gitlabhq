@@ -80,8 +80,8 @@ class @AwardsHandler
       if @isActive($emojiBtn)
         @decrementCounter($emojiBtn, emoji)
       else
-        counter = $emojiBtn.siblings(".js-counter")
-        counter.text(parseInt(counter.text()) + 1)
+        $counter = $emojiBtn.find('.js-counter')
+        $counter.text(parseInt($counter.text()) + 1)
         $emojiBtn.addClass("active")
         @addMeToUserList(emoji)
     else
@@ -91,13 +91,10 @@ class @AwardsHandler
     $emojiBtn.hasClass("active")
 
   decrementCounter: ($emojiBtn, emoji) ->
+    $awardsBlock = $emojiBtn.closest('.js-awards-block')
     isntNoteBody = $emojiBtn.closest('.note-body').length is 0
     counter = $('.js-counter', $emojiBtn)
     counterNumber = parseInt(counter.text())
-
-    if !isntNoteBody
-      # If this is a note body, we just hide the award emoji row like the initial state
-      $emojiBtn.closest('.js-awards-block').addClass 'hidden'
 
     if counterNumber > 1
       counter.text(counterNumber - 1)
@@ -111,6 +108,10 @@ class @AwardsHandler
       $emojiBtn.remove()
 
     $emojiBtn.removeClass("active")
+
+    if !isntNoteBody and $awardsBlock.children('.js-emoji-btn').length is 0
+      # If this is a note body, we just hide the award emoji row like the initial state
+      $awardsBlock.addClass 'hidden'
 
   removeMeFromUserList: ($emojiBtn, emoji) ->
     award_block = $emojiBtn
