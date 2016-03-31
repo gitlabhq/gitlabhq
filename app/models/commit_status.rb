@@ -33,6 +33,8 @@
 #
 
 class CommitStatus < ActiveRecord::Base
+  include CiStatus
+
   self.table_name = 'ci_builds'
 
   belongs_to :project, class_name: '::Project', foreign_key: :gl_project_id
@@ -40,7 +42,6 @@ class CommitStatus < ActiveRecord::Base
   belongs_to :user
 
   validates :commit, presence: true
-  validates :status, inclusion: { in: %w(pending running failed success canceled) }
 
   validates_presence_of :name
 
@@ -86,32 +87,9 @@ class CommitStatus < ActiveRecord::Base
     after_transition [:pending, :running] => :success do |commit_status|
       MergeRequests::MergeWhenBuildSucceedsService.new(commit_status.commit.project, nil).trigger(commit_status)
     end
-
-    state :pending, value: 'pending'
-    state :running, value: 'running'
-    state :failed, value: 'failed'
-    state :success, value: 'success'
-    state :canceled, value: 'canceled'
   end
 
-  delegate :sha, :short_sha, to: :commit, prefix: false
-
-  # TODO: this should be removed with all references
-  def before_sha
-    Gitlab::Git::BLANK_SHA
-  end
-
-  def started?
-    !pending? && !canceled? && started_at
-  end
-
-  def active?
-    running? || pending?
-  end
-
-  def complete?
-    canceled? || success? || failed?
-  end
+  delegate :before_sha, :sha, :short_sha, to: :commit, prefix: false
 
   def ignored?
     allow_failure? && (failed? || canceled?)

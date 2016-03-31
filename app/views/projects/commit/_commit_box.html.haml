@@ -42,12 +42,12 @@
   - @commit.parents.each do |parent|
     = link_to parent.short_id, namespace_project_commit_path(@project.namespace, @project, parent), class: "monospace"
 
-- if @ci_commit
+- if @commit.status
   .pull-right
-    = link_to ci_status_path(@ci_commit), class: "ci-status ci-#{@ci_commit.status}" do
-      = ci_status_icon(@ci_commit)
+    = link_to ci_status_path(@commit), class: "ci-status ci-#{@commit.status}" do
+      = ci_status_icon(@commit)
       build:
-      = ci_status_label(@ci_commit)
+      = ci_status_label(@commit)
 
 .commit-info-row.branches
   %i.fa.fa-spinner.fa-spin
