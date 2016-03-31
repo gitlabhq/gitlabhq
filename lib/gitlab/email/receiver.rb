@@ -76,16 +76,11 @@ module Gitlab
       end
 
       def validate_permission(author, project, permission)
-        if author
-          if author.blocked?
-            raise UserBlockedError
-          elsif project.nil? || !author.can?(permission, project)
-            # TODO: Give project not found error if author cannot read project
-            raise UserNotAuthorizedError
-          end
-        else
-          raise UserNotFoundError
-        end
+        raise UserNotFoundError unless author
+        raise UserBlockedError if author.blocked?
+        # TODO: Give project not found error if author cannot read project
+        raise UserNotAuthorizedError if project.nil? ||
+                                        !author.can?(permission, project)
       end
 
       # Find the first matched user in database from email From: section
