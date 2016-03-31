@@ -1,6 +1,6 @@
 class ElasticIndexerWorker
   include Sidekiq::Worker
-  
+
   sidekiq_options queue: :elasticsearch
 
   Client = Elasticsearch::Client.new(host: Gitlab.config.elasticsearch.host,
@@ -19,6 +19,8 @@ class ElasticIndexerWorker
 
       clear_project_indexes(record_id) if klass == Project
     end
+  rescue Elasticsearch::Transport::Transport::Errors::NotFound
+    true # Less work to do!
   end
 
   def clear_project_indexes(record_id)
