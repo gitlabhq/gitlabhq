@@ -38,7 +38,8 @@
             = markdown(note.note, pipeline: :note, cache_key: [note, "note"])
         - if note_editable
           = render 'projects/notes/edit_form', note: note
-        = render 'emoji_awards/awards_block', awardable: note, inline: false
+        .note-awards
+          = render 'emoji_awards/awards_block', awardable: note, inline: false
       = edited_time_ago_with_tooltip(note, placement: 'bottom', html_class: 'note_edited_ago', include_author: true)
 
       - if note.attachment.url
