@@ -288,7 +288,7 @@ class GitLabDropdown
       selectedObject = @renderedData[selectedIndex]
     value = if @options.id then @options.id(selectedObject, el) else selectedObject.id
     field = @dropdown.parent().find("input[name='#{fieldName}'][value='#{value}']")
-  
+
     if el.hasClass(ACTIVE_CLASS)
       el.removeClass(ACTIVE_CLASS)
       field.remove()
@@ -318,6 +318,8 @@ class GitLabDropdown
             input = $(input)
                       .attr('id', @options.inputId)
           @dropdown.before input
+        else
+          field.val value
 
       return selectedObject
 

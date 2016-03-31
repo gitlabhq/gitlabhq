@@ -84,12 +84,16 @@ class @MilestoneSelect
 
           # display:block overrides the hide-collapse rule
           $value.removeAttr('style')
-        clicked: (e) ->
+        clicked: (selected) ->
           if $dropdown.hasClass 'js-filter-bulk-update'
             return
 
-          if $dropdown.hasClass 'js-filter-submit'
-            $dropdown.parents('form').submit()
+          if $dropdown.hasClass('js-filter-submit')
+            if selected.name?
+              selectedMilestone = selected.name
+            else
+              selectedMilestone = ''
+            Issues.filterResults $dropdown.closest('form')
           else
             selected = $selectbox
               .find('input[type="hidden"]')
