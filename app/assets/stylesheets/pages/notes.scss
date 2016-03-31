@@ -103,7 +103,8 @@ ul.notes {
     &.is-editting {
       .note-header,
       .note-text,
-      .edited-text {
+      .edited-text,
+      .note-awards {
         display: none;
       }
 
