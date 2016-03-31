@@ -145,7 +145,7 @@ class @AwardsHandler
   createEmoji: (emoji) ->
     emojiCssClass = @resolveNameToCssClass(emoji)
 
-    buttonHtml = "<button class='btn award-control js-emoji-btn has-tooltip active' title='me'>
+    buttonHtml = "<button class='btn award-control js-emoji-btn has-tooltip active' title='me' data-placement='bottom'>
       <div class='icon emoji-icon #{emojiCssClass}' data-emoji='#{emoji}'></div>
       <span class='award-control-text js-counter'>1</span>
     </button>"
