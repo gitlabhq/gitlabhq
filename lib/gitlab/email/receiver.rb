@@ -40,11 +40,11 @@ module Gitlab
         author = sent_notification.recipient
         project = sent_notification.project
 
-        check_input(author, project, :create_note)
+        validate_permission(author, project, :create_note)
 
         raise NoteableNotFoundError unless sent_notification.noteable
 
-        note = create_note(extract_reply(project))
+        note = create_note(handle_reply(project))
 
         unless note.persisted?
           msg = "The comment could not be created for the following reasons:"
@@ -57,11 +57,11 @@ module Gitlab
       end
 
       def process_create_issue
-        check_input(message_sender, message_project, :create_issue)
+        validate_permission(message_sender, message_project, :create_issue)
 
         issue = Issues::CreateService.new(message_project, message_sender,
           title: message.subject,
-          description: extract_reply(message_project)).execute
+          description: handle_reply(message_project)).execute
 
         unless issue.persisted?
           msg = "The issue could not be created for the following reasons:"
@@ -73,7 +73,7 @@ module Gitlab
         end
       end
 
-      def check_input(author, project, permission)
+      def validate_permission(author, project, permission)
         if author
           if author.blocked?
             raise UserBlockedError
@@ -101,7 +101,7 @@ module Gitlab
           Project.find_with_namespace(reply_key) if reply_key
       end
 
-      def extract_reply(project)
+      def handle_reply(project)
         reply = ReplyParser.new(message).execute.strip
 
         raise EmptyEmailError if reply.blank?
