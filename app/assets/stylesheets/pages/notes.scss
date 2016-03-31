@@ -197,6 +197,13 @@ ul.notes {
   line-height: 24px;
 
   .fa {
+    position: relative;
+    top: 1px;
+    font-size: 17px;
+  }
+
+  .fa-trash-o {
+    top: 0;
     font-size: 16px;
   }
 }
@@ -219,7 +226,7 @@ ul.notes {
   display: inline-block;
   padding-left: 4px;
   padding-right: 4px;
-  color: $notes-action-color;
+  color: $notes-role-color;
   font-size: 12px;
   line-height: 20px;
   border: 1px solid $notes-role-border-color;
