@@ -1,11 +1,11 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.6.3 (unreleased)
-
-v 8.6.3 (unreleased)
   - Destroy related todos when an Issue/MR is deleted. !3376
   - Fix error 500 when target is nil on todo list. !3376
   - Fix raw/rendered diff producing different results on merge requests. !3450
+  - Fix commit comment alignment (Stan Hu). !3466
+  - Update gitlab-shell version and doc to 2.6.12. gitlab-org/gitlab-ee!280
 
 v 8.6.2
   - Fix dropdown alignment. !3298
