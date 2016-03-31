@@ -1,5 +1,4 @@
 class Ability
-  @public_restricted = nil
 
   class << self
     def allowed(user, subject)
@@ -72,7 +71,6 @@ class Ability
         # Allow to read issues by anonymous user if issue is not confidential
         rules << :read_issue unless subject.is_a?(Issue) && subject.confidential?
 
-        # Allow anonymous users to read project members if public is not a restricted level
         rules << :read_project_member unless restricted_public_level?
 
         rules - project_disabled_features_rules(project)
@@ -100,7 +98,6 @@ class Ability
       if group
         rules << [:read_group] if group.public?
 
-        # Allow anonymous users to read project members if public is not a restricted level
         rules << [:read_group_members] unless restricted_public_level?
       end
 
@@ -493,7 +490,6 @@ class Ability
 
     def restricted_public_level?
       @public_restricted ||= current_application_settings.restricted_visibility_levels.include?(Gitlab::VisibilityLevel::PUBLIC)
-      @public_restricted
     end
 
     def named_abilities(name)

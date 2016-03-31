@@ -54,9 +54,10 @@ describe UsersController do
       context 'when logged in' do
         before { sign_in(user) }
 
-        it 'renders 404' do
+        it 'renders show' do
           get :show, username: user.username
           expect(response.status).to eq(200)
+          expect(response).to render_template('show')
         end
       end
     end

@@ -4,8 +4,7 @@ describe Groups::GroupMembersController do
   let(:user)  { create(:user) }
   let(:group) { create(:group) }
 
-
-  context "When public visibility level is restricted" do
+  context "when public visibility level is restricted" do
     before do
       group.add_owner(user)
       stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::PUBLIC])

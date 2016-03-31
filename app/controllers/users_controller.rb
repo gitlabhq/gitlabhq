@@ -1,8 +1,7 @@
 class UsersController < ApplicationController
   skip_before_action :authenticate_user!
-  #TODO felipe_artur: Remove this "set_user" before action. It is not good to use before filters for loading database records.
   before_action :set_user, except: [:show]
-  before_action :authorize_read_user, only: [:show]
+  before_action :authorize_read_user!, only: [:show]
 
   def show
     respond_to do |format|
@@ -76,7 +75,8 @@ class UsersController < ApplicationController
   end
 
   private
-  def authorize_read_user
+
+  def authorize_read_user!
     set_user
     render_404 unless can?(current_user, :read_user, @user)
   end
