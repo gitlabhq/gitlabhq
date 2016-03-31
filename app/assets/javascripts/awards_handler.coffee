@@ -95,6 +95,11 @@ class @AwardsHandler
     counter = $('.js-counter', $emojiBtn)
     counterNumber = parseInt(counter.text())
 
+    if !isntNoteBody
+      console.log $emojiBtn.get(0)
+      # If this is a note body, we just hide the award emoji row like the initial state
+      $emojiBtn.closest('.js-awards-block').addClass 'hidden'
+
     if counterNumber > 1
       counter.text(counterNumber - 1)
       @removeMeFromUserList($emojiBtn, emoji)
