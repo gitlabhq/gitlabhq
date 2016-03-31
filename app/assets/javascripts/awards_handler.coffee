@@ -2,11 +2,13 @@ class @AwardsHandler
   constructor: ->
     @aliases = emojiAliases()
 
-    $(document).on "click", ".js-add-award", (event) =>
-      event.stopPropagation()
-      event.preventDefault()
+    $(document)
+      .off "click", ".js-add-award"
+      .on "click", ".js-add-award", (event) =>
+        event.stopPropagation()
+        event.preventDefault()
 
-      @showEmojiMenu $(event.currentTarget)
+        @showEmojiMenu $(event.currentTarget)
 
     $("html").on 'click', (event) ->
       if !$(event.target).closest(".emoji-menu").length
@@ -72,40 +74,42 @@ class @AwardsHandler
     @addEmojiToFrequentlyUsedList(emoji)
 
     emoji = @normilizeEmojiName(emoji)
-    $emojiBtn = @findEmojiIcon(emoji)
+    $emojiBtn = @findEmojiIcon(emoji).parent()
 
     if $emojiBtn.length > 0
       if @isActive($emojiBtn)
-        @decrementCounter(emoji)
+        @decrementCounter($emojiBtn, emoji)
       else
-        counter = @findEmojiIcon(emoji).siblings(".js-counter")
+        counter = $emojiBtn.siblings(".js-counter")
         counter.text(parseInt(counter.text()) + 1)
-        counter.parent().addClass("active")
+        $emojiBtn.addClass("active")
         @addMeToUserList(emoji)
     else
       @createEmoji(emoji)
 
   isActive: ($emojiBtn) ->
-    $emojiBtn.parent().hasClass("active")
+    $emojiBtn.hasClass("active")
 
-  decrementCounter: (emoji) ->
-    counter = @findEmojiIcon(emoji).siblings(".js-counter")
-    emojiIcon = counter.parent()
-    if parseInt(counter.text()) > 1
-      counter.text(parseInt(counter.text()) - 1)
-      emojiIcon.removeClass("active")
-      @removeMeFromUserList(emoji)
-    else if emoji == "thumbsup" || emoji == "thumbsdown"
-      emojiIcon.tooltip("destroy")
-      counter.text(0)
-      emojiIcon.removeClass("active")
-      @removeMeFromUserList(emoji)
+  decrementCounter: ($emojiBtn, emoji) ->
+    isntNoteBody = $emojiBtn.closest('.note-body').length is 0
+    counter = $('.js-counter', $emojiBtn)
+    counterNumber = parseInt(counter.text())
+
+    if counterNumber > 1
+      counter.text(counterNumber - 1)
+      @removeMeFromUserList($emojiBtn, emoji)
+    else if (emoji == "thumbsup" || emoji == "thumbsdown") && isntNoteBody
+      $emojiBtn.tooltip("destroy")
+      counter.text('0')
+      @removeMeFromUserList($emojiBtn, emoji)
     else
-      emojiIcon.tooltip("destroy")
-      emojiIcon.remove()
+      $emojiBtn.tooltip("destroy")
+      $emojiBtn.remove()
 
-  removeMeFromUserList: (emoji) ->
-    award_block = @findEmojiIcon(emoji).parent()
+    $emojiBtn.removeClass("active")
+
+  removeMeFromUserList: ($emojiBtn, emoji) ->
+    award_block = $emojiBtn
     authors = award_block
       .attr("data-original-title")
       .split(", ")
