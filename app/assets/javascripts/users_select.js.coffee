@@ -19,6 +19,7 @@ class @UsersSelect
       $block = $selectbox.closest('.block')
       abilityName = $dropdown.data('ability-name')
       $value = $block.find('.value')
+      $collapsedSidebar = $block.find('.sidebar-collapsed-user')
       $loading = $block.find('.block-loading').fadeOut()
 
       $block.on('click', '.js-assign-yourself', (e) =>
@@ -32,12 +33,14 @@ class @UsersSelect
         data[abilityName].assignee_id = selected
         $loading
           .fadeIn()
+        $dropdown.trigger('loading.gl.dropdown')
         $.ajax(
           type: 'PUT'
           dataType: 'json'
           url: issueURL
           data: data
         ).done (data) ->
+          $dropdown.trigger('loaded.gl.dropdown')
           $loading.fadeOut()
           $selectbox.hide()
 
@@ -51,11 +54,22 @@ class @UsersSelect
               name: 'Unassigned'
               username: ''
               avatar: ''
+          $value.html(assigneeTemplate(user))
+          $collapsedSidebar.html(collapsedAssigneeTemplate(user))
 
-          $value.html(noAssigneeTemplate(user))
-          $value.find('a').attr('href')
 
-      noAssigneeTemplate = _.template(
+      collapsedAssigneeTemplate = _.template(
+        '<% if( avatar ) { %>
+        <a class="author_link" href="/u/<%= username %>">
+          <img width="24" class="avatar avatar-inline s24" alt="" src="<%= avatar %>">
+          <span class="author">Toni Boehm</span>
+        </a>
+        <% } else { %>
+        <i class="fa fa-user"></i>
+        <% } %>'
+      )
+
+      assigneeTemplate = _.template(
         '<% if (username) { %>
         <a class="author_link " href="/u/<%= username %>">
           <% if( avatar ) { %>
@@ -131,7 +145,8 @@ class @UsersSelect
 
         hidden: (e) ->
           $selectbox.hide()
-          $value.show()
+          # display:block overrides the hide-collapse rule
+          $value.removeAttr('style')
 
         clicked: (user) ->
           page = $('body').data 'page'

@@ -9,7 +9,7 @@
         Show/hide discussion
     %div
       = link_to_member(@project, note.author, avatar: false)
-      %p started a discussion on #{commit_description}
+      started a discussion on #{commit_description}
       - if commit
         = link_to(commit.short_id, namespace_project_commit_path(note.project.namespace, note.project, note.noteable), class: 'monospace')
     .last-update.hide.js-toggle-content
