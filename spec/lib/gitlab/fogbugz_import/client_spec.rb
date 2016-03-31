@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Gitlab::FogbugzImport::Client, lib: true do
 
-  let(:client) { Gitlab::FogbugzImport::Client.new(uri: '', token: '') }
+  let(:client) { described_class.new(uri: '', token: '') }
   let(:one_user) { { 'people' => { 'person' => { "ixPerson" => "2", "sFullName" => "James" } } } }
   let(:two_users) { { 'people' => { 'person' => [one_user, { "ixPerson" => "3" }] } } }
 
