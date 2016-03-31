@@ -47,19 +47,4 @@ window.GlPage = {
 
   get: (name) ->
     @pages[name]
-
-  use: (name, instance, name) ->
-    @pages[name].use(instance, name)
-
-  on: (name, el, args...) ->
-    @pages[name].on(el, args)
-
-  off: (name, el, args...) ->
-    @pages[name].off(el, args)
-
-  allOff: (name) ->
-    @pages[name].allOff()
-    
-  removeAll: (name) ->
-    @pages[name].removeAll()
 }
