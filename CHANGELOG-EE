@@ -36,6 +36,8 @@ v 8.6.0
   - GitLab Geo: Wiki synchronization
   - GitLab Geo: ReadOnly Middleware improvements
   - GitLab Geo: SSH Keys synchronization
+  - Allow SSL verification to be configurable when importing GitHub projects
+  - Disable git-hooks for git annex commits
 
 v 8.5.8
   - GitLab Geo: Documentation
