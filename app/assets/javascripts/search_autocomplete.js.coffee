@@ -62,6 +62,8 @@ class @SearchAutocomplete
         search:
           fields: ['text']
         data: @getData.bind(@)
+        selectable: true
+        clicked: @onClick.bind(@)
 
   getData: (term, callback) ->
     _this = @
@@ -268,3 +270,9 @@ class @SearchAutocomplete
               <li><a class='dropdown-menu-empty-link is-focused'>Loading...</a></li>
             </ul>"
     @dropdownContent.html(html)
+
+  onClick: (item, e) ->
+    if location.pathname.indexOf(item.url) isnt -1
+      e.preventDefault()
+      @disableAutocomplete()
+      @searchInput.val('')

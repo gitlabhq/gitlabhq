@@ -174,7 +174,7 @@ class GitLabDropdown
         selected = self.rowClicked $(@)
 
         if self.options.clicked
-          self.options.clicked(selected)
+          self.options.clicked(selected, e)
 
   # Finds an element inside wrapper element
   getElement: (selector) ->
