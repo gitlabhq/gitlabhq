@@ -199,11 +199,11 @@ $award-emoji-new-btn-icon-color: #dcdcdc;
 /*
  * Search Box
  */
-$search-input-border-color: $dropdown-input-focus-border;
+$search-input-border-color: rgba(#4688f1, .8);
 $search-input-focus-shadow-color: $dropdown-input-focus-shadow;
-$search-input-width: $dropdown-width;
+$search-input-width: 244px;
 $location-badge-color: #aaa;
 $location-badge-bg: $gray-normal;
+$location-badge-active-bg: #4f91f8;
 $location-icon-color: #e7e9ed;
-$location-active-color: $gl-text-color;
-$location-active-bg: $search-input-border-color;
+$location-icon-active-color: #807e7e;
