@@ -167,7 +167,6 @@ describe Gitlab::Email::Receiver, lib: true do
 
   context "when it's trying to create a new issue" do
     before do
-      setup_attachment
       stub_incoming_email_setting(enabled: true, address: "incoming+%{key}@appmail.adventuretime.ooo")
     end
 
@@ -179,6 +178,8 @@ describe Gitlab::Email::Receiver, lib: true do
 
     context "when everything is fine" do
       it "creates a new issue" do
+        setup_attachment
+
         expect { receiver.execute }.to change { project.issues.count }.by(1)
         issue = project.issues.last
 
@@ -186,6 +187,19 @@ describe Gitlab::Email::Receiver, lib: true do
         expect(issue.title).to eq('New Issue by email')
         expect(issue.description).to include('reply by email')
         expect(issue.description).to include(markdown)
+      end
+
+      context "when the reply is blank" do
+        let!(:email_raw) { fixture_file("emails/valid_new_issue_empty.eml") }
+
+        it "creates a new issue" do
+          expect { receiver.execute }.to change { project.issues.count }.by(1)
+          issue = project.issues.last
+
+          expect(issue.author).to eq(user)
+          expect(issue.title).to eq('New Issue by email')
+          expect(issue.description).to eq('')
+        end
       end
     end
 

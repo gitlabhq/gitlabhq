@@ -44,7 +44,9 @@ module Gitlab
 
         raise NoteableNotFoundError unless sent_notification.noteable
 
-        note = create_note(handle_reply(project))
+        reply = handle_reply(project)
+        raise EmptyEmailError if reply.blank?
+        note = create_note(reply)
 
         unless note.persisted?
           msg = "The comment could not be created for the following reasons:"
@@ -103,8 +105,6 @@ module Gitlab
 
       def handle_reply(project)
         reply = ReplyParser.new(message).execute.strip
-
-        raise EmptyEmailError if reply.blank?
 
         add_attachments(reply, project)
 
