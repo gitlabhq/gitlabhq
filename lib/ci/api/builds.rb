@@ -51,12 +51,24 @@ module Ci
         end
 
         patch ":id/trace.txt" do
-          authenticate_runner!
-          update_runner_last_contact
-          build = Ci::Build.where(runner_id: current_runner.id).running.find(params[:id])
+          build = Ci::Build.find_by_id(params[:id])
+          not_found! unless build
+          authenticate_build_token!(build)
           forbidden!('Build has been erased!') if build.erased?
 
-          build.append_trace(params[:trace_part])
+          error!('400 Missing header Content-Range', 400) unless request.headers.has_key?('Content-Range')
+          content_range = request.headers['Content-Range']
+          content_range = content_range.split('-')
+
+          unless build.trace_length == content_range[0].to_i
+            return error!('416 Range Not Satisfiable', 416, { 'Range' => "0-#{build.trace_length}" })
+          end
+
+          build.append_trace(request.body.read)
+
+          status 202
+          header 'Build-Status', build.status
+          header 'Range', "0-#{build.trace_length}"
         end
 
         # Authorize artifacts uploading for build - Runners only

@@ -230,6 +230,14 @@ module Ci
       end
     end
 
+    def trace_length
+      unless trace.present?
+        0
+      else
+        trace.length
+      end
+    end
+
     def trace=(trace)
       recreate_trace_dir
       File.write(path_to_trace, trace)
