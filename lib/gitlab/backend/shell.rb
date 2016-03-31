@@ -41,6 +41,23 @@ module Gitlab
       true
     end
 
+    def list_remote_tags(name, remote)
+      output, status = Popen::popen([gitlab_shell_projects_path, 'list-remote-tags', "#{name}.git", remote])
+
+      raise Error, output unless status.zero?
+
+      # Each line has this format: "dc872e9fa6963f8f03da6c8f6f264d0845d6b092\trefs/tags/v1.10.0\n"
+      # We want to convert it to: [{ 'v1.10.0' => 'dc872e9fa6963f8f03da6c8f6f264d0845d6b092' }, ...]
+      tags_with_targets = output.lines.flat_map do |line|
+        target, path = line.strip!.split("\t")
+        name = path.split('/', 3).last
+
+        [name, target]
+      end
+
+      Hash[*tags_with_targets]
+    end
+
     # Fetch remote for repository
     #
     # name - project path with namespace

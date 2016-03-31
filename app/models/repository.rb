@@ -217,6 +217,10 @@ class Repository
     gitlab_shell.fetch_remote(path_with_namespace, remote, forced: forced, no_tags: no_tags)
   end
 
+  def remote_tags(remote)
+    gitlab_shell.list_remote_tags(path_with_namespace, remote)
+  end
+
   def fetch_remote_forced!(remote)
     gitlab_shell.fetch_remote(path_with_namespace, remote, forced: true)
   end
