@@ -7,7 +7,7 @@ module Projects
       @errors = []
 
       begin
-        repository.fetch_remote(mirror.ref_name)
+        repository.fetch_remote(mirror.ref_name, no_tags: true)
 
         if divergent_branches.present?
           errors << "The following branches have diverged from their local counterparts: #{divergent_branches.to_sentence}"

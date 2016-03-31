@@ -213,8 +213,8 @@ class Repository
     remote_config["remote.#{name}.prune"] = true
   end
 
-  def fetch_remote(remote)
-    gitlab_shell.fetch_remote(path_with_namespace, remote)
+  def fetch_remote(remote, forced: false, no_tags: false)
+    gitlab_shell.fetch_remote(path_with_namespace, remote, forced: forced, no_tags: no_tags)
   end
 
   def fetch_remote_forced!(remote)
