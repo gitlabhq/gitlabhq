@@ -97,7 +97,7 @@ installing the pages daemon.
 cd /home/git
 sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-pages.git
 cd gitlab-pages
-sudo -u git -H git checkout v0.2.0
+sudo -u git -H git checkout v0.2.1
 sudo -u git -H make
 ```
 
@@ -505,7 +505,7 @@ latest previous version.
 - Documentation was moved to one place
 
 [8-5-docs]: https://gitlab.com/gitlab-org/gitlab-ee/blob/8-5-stable-ee/doc/pages/administration.md
-[gitlab-pages]: https://gitlab.com/gitlab-org/gitlab-pages/tree/v0.2.0
+[gitlab-pages]: https://gitlab.com/gitlab-org/gitlab-pages/tree/v0.2.1
 [NGINX configs]: https://gitlab.com/gitlab-org/gitlab-ee/tree/8-5-stable-ee/lib/support/nginx
 
 ---
