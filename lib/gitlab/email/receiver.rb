@@ -61,9 +61,12 @@ module Gitlab
       def process_create_issue
         validate_permission(message_sender, message_project, :create_issue)
 
-        issue = Issues::CreateService.new(message_project, message_sender,
-          title: message.subject,
-          description: handle_reply(message_project)).execute
+        issue = Issues::CreateService.new(
+          message_project,
+          message_sender,
+          title:       message.subject,
+          description: handle_reply(message_project)
+        ).execute
 
         unless issue.persisted?
           msg = "The issue could not be created for the following reasons:"
