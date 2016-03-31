@@ -163,8 +163,7 @@ describe Issues::MoveService, services: true do
 
         context 'issue description with uploads' do
           let(:uploader) { build(:file_uploader, project: old_project) }
-          let(:markdown) { uploader.to_h[:markdown] }
-          let(:description) { "Text and #{markdown}" }
+          let(:description) { "Text and #{uploader.to_markdown}" }
 
           include_context 'issue move executed'
 
@@ -172,6 +171,7 @@ describe Issues::MoveService, services: true do
             expect(new_issue.description).to_not eq description
             expect(new_issue.description)
               .to match(/Text and #{FileUploader::MARKDOWN_PATTERN}/)
+            expect(new_issue.description).to_not include uploader.secret
           end
         end
       end
