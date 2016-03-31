@@ -588,7 +588,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def ci_commit
-    @ci_commit ||= source_project.ci_commit(last_commit.id) if last_commit && source_project
+    @ci_commit ||= source_project.ci_commit(last_commit.id, source_branch) if last_commit && source_project
   end
 
   def diff_refs

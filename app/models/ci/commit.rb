@@ -19,17 +19,52 @@
 module Ci
   class Commit < ActiveRecord::Base
     extend Ci::Model
+    include CiStatus
 
     belongs_to :project, class_name: '::Project', foreign_key: :gl_project_id
     has_many :statuses, class_name: 'CommitStatus'
     has_many :builds, class_name: 'Ci::Build'
     has_many :trigger_requests, dependent: :destroy, class_name: 'Ci::TriggerRequest'
 
+    scope :running, -> { where(status: 'running') }
+    scope :pending, -> { where(status: 'pending') }
+    scope :success, -> { where(status: 'success') }
+    scope :failed, -> { where(status: 'failed')  }
+    scope :running_or_pending, -> { where(status: [:running, :pending]) }
+    scope :finished, -> { where(status: [:success, :failed, :canceled]) }
+
     validates_presence_of :sha
+    validates_presence_of :before_sha
+    validates_presence_of :ref
     validate :valid_commit_sha
+
+    # Make sure that status is saved
+    before_save :status
+
+    def ignored?
+      false
+    end
 
     def self.truncate_sha(sha)
       sha[0...8]
+    end
+
+    def self.retried
+      all.map { |commit| commit.retried }.flatten
+    end
+
+    def self.statuses
+      CommitStatus.where(commit: all)
+    end
+
+    def self.builds
+      Ci::Build.where(commit: all)
+    end
+
+    def self.stages
+      CommitStatus.where(commit: all)
+        .group(:stage, :stage_idx).order(:stage_idx)
+        .pluck(:stage, :stage_idx).map(&:first)
     end
 
     def to_param
@@ -68,9 +103,16 @@ module Ci
       nil
     end
 
-    def stage
-      running_or_pending = statuses.latest.running_or_pending.ordered
-      running_or_pending.first.try(:stage)
+    def origin_ref
+      ref
+    end
+
+    def tag?
+      Gitlab::Git::tag_ref?(origin_ref)
+    end
+
+    def branch?
+      Gitlab::Git::branch_ref?(origin_ref)
     end
 
     def create_builds(ref, tag, user, trigger_request = nil)
@@ -101,16 +143,8 @@ module Ci
       end
     end
 
-    def refs
-      statuses.order(:ref).pluck(:ref).uniq
-    end
-
-    def latest_statuses
-      @latest_statuses ||= statuses.latest.to_a
-    end
-
-    def latest_statuses_for_ref(ref)
-      latest_statuses.select { |status| status.ref == ref }
+    def latest
+      statuses.latest
     end
 
     def matrix_builds(build = nil)
@@ -124,52 +158,39 @@ module Ci
     end
 
     def status
-      if yaml_errors.present?
-        return 'failed'
-      end
-
-      @status ||= Ci::Status.get_status(latest_statuses)
-    end
-
-    def pending?
-      status == 'pending'
-    end
-
-    def running?
-      status == 'running'
-    end
-
-    def success?
-      status == 'success'
-    end
-
-    def failed?
-      status == 'failed'
-    end
-
-    def canceled?
-      status == 'canceled'
-    end
-
-    def active?
-      running? || pending?
-    end
-
-    def complete?
-      canceled? || success? || failed?
+      read_attribute(:status) || update_status
     end
 
     def duration
-      duration_array = statuses.map(&:duration).compact
+      duration_array = latest.map(&:duration).compact
       duration_array.reduce(:+).to_i
     end
 
     def started_at
-      @started_at ||= statuses.order('started_at ASC').first.try(:started_at)
+      read_attribute(:started_at) || update_started_at
     end
 
     def finished_at
-      @finished_at ||= statuses.order('finished_at DESC').first.try(:finished_at)
+      read_attribute(:finished_at) || update_finished_at
+    end
+
+    def update_status
+      status =
+        if yaml_errors.present?
+          'failed'
+        else
+          latest.status
+        end
+    end
+
+    def update_started_at
+      started_at =
+        statuses.order(:id).first.try(:started_at)
+    end
+
+    def update_finished_at
+      finished_at =
+        statuses.order(id: :desc).first.try(:finished_at)
     end
 
     def coverage

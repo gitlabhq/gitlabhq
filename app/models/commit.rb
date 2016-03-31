@@ -10,6 +10,9 @@ class Commit
   attr_mentionable :safe_message, pipeline: :single_line
   participant :author, :committer, :notes
 
+  alias_attribute :sha, :id
+  alias_attribute :short_sha, :short_id
+
   attr_accessor :project
 
   DIFF_SAFE_LINES = Gitlab::Git::DiffCollection::DEFAULT_LIMITS[:max_lines]
@@ -209,12 +212,13 @@ class Commit
     @raw.short_id(7)
   end
 
-  def ci_commit
-    project.ci_commit(sha)
+  def ci_commits
+    @ci_commits ||= project.ci_commits.where(sha: sha)
   end
 
   def status
-    ci_commit.try(:status) || :not_found
+    return @status if defined?(@status)
+    @status ||= ci_commits.status
   end
 
   def revert_branch_name

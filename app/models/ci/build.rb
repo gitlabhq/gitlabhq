@@ -126,12 +126,12 @@ module Ci
     end
 
     def retried?
-      !self.commit.latest_statuses_for_ref(self.ref).include?(self)
+      !self.commit.latest.include?(self)
     end
 
     def depends_on_builds
       # Get builds of the same type
-      latest_builds = self.commit.builds.similar(self).latest
+      latest_builds = self.commit.builds.latest
 
       # Return builds from previous stages
       latest_builds.where('stage_idx < ?', stage_idx)
