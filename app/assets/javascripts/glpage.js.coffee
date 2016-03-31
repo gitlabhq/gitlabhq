@@ -18,7 +18,6 @@ window.GlPage = {
         @instances[name].instance
       
       on: (el, args...) ->
-        # turn args into array
         $el = $(el)
         @events.push({
           el: el,
