@@ -46,7 +46,7 @@ module Gitlab
         merge_request = MergeRequest.find(note.noteable_id)
         merge_request_url(merge_request,
                           anchor: "note_#{note.id}")
-      elsif note.for_project_snippet?
+      elsif note.for_snippet?
         snippet = Snippet.find(note.noteable_id)
         project_snippet_url(snippet,
                             anchor: "note_#{note.id}")
