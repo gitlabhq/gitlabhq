@@ -7,15 +7,29 @@ describe Gitlab::Gfm::UploadsRewriter do
   let(:rewriter) { described_class.new(text, old_project, user) }
 
   context 'text contains links to uploads' do
-    let(:uploader) { build(:file_uploader, project: old_project) }
-    let(:text) { "Text and #{uploader.to_markdown}"}
+    let(:image_uploader) do
+      build(:file_uploader, project: old_project)
+    end
+
+    let(:zip_uploader) do
+      build(:file_uploader, project: old_project,
+            fixture: 'ci_build_artifacts.zip')
+    end
+
+    let(:text) do
+      "Text and #{image_uploader.to_markdown} and #{zip_uploader.to_markdown}"
+    end
 
     describe '#rewrite' do
       let!(:new_text) { rewriter.rewrite(new_project) }
 
-      let(:new_rewriter) { described_class.new(new_text, new_project, user) }
-      let(:old_file) { uploader.file }
-      let(:new_file) { new_rewriter.files.first }
+      let(:old_files) { [image_uploader, zip_uploader].map(&:file) }
+      let(:new_files) do
+        described_class.new(new_text, new_project, user).files
+      end
+
+      let(:old_paths) { old_files.map(&:path) }
+      let(:new_paths) { new_files.map(&:path) }
 
       it 'rewrites content' do
         expect(new_text).to_not eq text
@@ -23,13 +37,19 @@ describe Gitlab::Gfm::UploadsRewriter do
       end
 
       it 'copies files' do
-        expect(new_file.exists?).to eq true
-        expect(old_file.path).to_not eq new_file.path
-        expect(new_file.path).to include new_project.path_with_namespace
+        expect(new_files).to all(exist)
+        expect(old_paths).to_not match_array new_paths
+        expect(old_paths).to all(include(old_project.path_with_namespace))
+        expect(new_paths).to all(include(new_project.path_with_namespace))
       end
 
       it 'does not remove old files' do
-        expect(old_file).to exist
+        expect(old_files).to all(exist)
+      end
+
+      it 'generates a new secret for each file' do
+        expect(new_paths).to_not include image_uploader.secret
+        expect(new_paths).to_not include zip_uploader.secret
       end
     end
 

@@ -1,10 +1,11 @@
 FactoryGirl.define do
-  factory :file_uploader, class: FileUploader do
+  factory :file_uploader do
     project
     secret nil
 
     transient do
-      path { File.join(Rails.root, 'spec/fixtures/rails_sample.jpg') }
+      fixture { 'rails_sample.jpg' }
+      path { File.join(Rails.root, 'spec/fixtures', fixture) }
       file { Rack::Test::UploadedFile.new(path) }
     end
 
