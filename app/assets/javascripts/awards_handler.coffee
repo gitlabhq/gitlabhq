@@ -1,5 +1,5 @@
 class @AwardsHandler
-  constructor: (@post_emoji_url, @noteable_type, @noteable_id, @aliases) ->
+  constructor: (@aliases) ->
     $(".js-add-award").on "click", (event) =>
       event.stopPropagation()
       event.preventDefault()
@@ -17,12 +17,14 @@ class @AwardsHandler
 
     @renderFrequentlyUsedBlock()
 
-  handleClick: (e) ->
+  handleClick: (e) =>
     e.preventDefault()
-    emoji = $(this)
+    $emojiBtn = $(e.currentTarget)
+    awardUrl = $emojiBtn.closest('.js-votes-block').data 'award-url'
+    emoji = $emojiBtn
       .find(".icon")
       .data "emoji"
-    awards_handler.addAward emoji
+    @addAward awardUrl, emoji
 
   showEmojiMenu: ->
     if $(".emoji-menu").length
@@ -43,9 +45,9 @@ class @AwardsHandler
           @setupSearch()
         , 200
 
-  addAward: (emoji) ->
+  addAward: (awardUrl, emoji) ->
     emoji = @normilizeEmojiName(emoji)
-    @postEmoji emoji, =>
+    @postEmoji awardUrl, emoji, =>
       @addAwardToEmojiBar(emoji)
 
     $(".emoji-menu").removeClass "is-visible"
@@ -120,15 +122,12 @@ class @AwardsHandler
   createEmoji: (emoji) ->
     emojiCssClass = @resolveNameToCssClass(emoji)
 
-    nodes = []
-    nodes.push(
-      "<button class='btn award-control js-emoji-btn has-tooltip active' title='me'>",
-      "<div class='icon emoji-icon #{emojiCssClass}' data-emoji='#{emoji}'></div>",
-      "<span class='award-control-text js-counter'>1</span>",
-      "</button>"
-    )
+    buttonHtml = "<button class='btn award-control js-emoji-btn has-tooltip active' title='me'>
+      <div class='icon emoji-icon #{emojiCssClass}' data-emoji='#{emoji}'></div>
+      <span class='award-control-text js-counter'>1</span>
+    </button>"
 
-    emoji_node = $(nodes.join("\n"))
+    emoji_node = $(buttonHtml)
       .insertBefore(".js-award-holder")
       .find(".emoji-icon")
       .data("emoji", emoji)
@@ -145,8 +144,8 @@ class @AwardsHandler
 
     "emoji-#{unicodeName}"
 
-  postEmoji: (emoji, callback) ->
-    $.post @post_emoji_url, { name: emoji }, (data) ->
+  postEmoji: (awardUrl, emoji, callback) ->
+    $.post awardUrl, { name: emoji }, (data) ->
       if data.ok
         callback.call()
 
