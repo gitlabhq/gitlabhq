@@ -18,14 +18,14 @@ class Groups::MilestonesController < Groups::ApplicationController
   end
 
   def create
-    project_ids = params[:milestone][:project_ids]
+    project_ids = params[:milestone][:project_ids].reject(&:blank?)
     title = milestone_params[:title]
 
-    @projects.where(id: project_ids).each do |project|
-      Milestones::CreateService.new(project, current_user, milestone_params).execute
+    if project_ids.present?
+      create_milestones(project_ids, title)
+    else
+      render_new_with_error("Select a project(s).")
     end
-
-    redirect_to milestone_path(title)
   end
 
   def show
@@ -40,6 +40,24 @@ class Groups::MilestonesController < Groups::ApplicationController
   end
 
   private
+
+  def create_milestones(project_ids, title)
+    begin
+      @projects.where(id: project_ids).each do |project|
+        ActiveRecord::Base.transaction { Milestones::CreateService.new(project, current_user, milestone_params).execute }
+      end
+
+      redirect_to milestone_path(title)
+    rescue => e
+      render_new_with_error("Error creating milestones: #{e.message}")
+    end
+  end
+
+  def render_new_with_error(error)
+    @milestone = Milestone.new(milestone_params)
+    flash[:alert] = error
+    render :new
+  end
 
   def authorize_admin_milestones!
     return render_404 unless can?(current_user, :admin_milestones, group)
