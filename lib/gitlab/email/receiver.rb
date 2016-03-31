@@ -101,7 +101,7 @@ module Gitlab
           Project.find_with_namespace(reply_key) if reply_key
       end
 
-      def extract_reply project
+      def extract_reply(project)
         reply = ReplyParser.new(message).execute.strip
 
         raise EmptyEmailError if reply.blank?
