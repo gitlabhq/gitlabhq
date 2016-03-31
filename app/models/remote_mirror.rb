@@ -95,9 +95,24 @@ class RemoteMirror < ActiveRecord::Base
 
   def url=(value)
     mirror_url = Gitlab::ImportUrl.new(value)
-    self.credentials = mirror_url.credentials if mirror_url.credentials.values.any?
+    self.credentials = mirror_url.credentials
 
     super(mirror_url.sanitized_url)
+  end
+
+  def url
+    if super
+      Gitlab::ImportUrl.new(super, credentials: credentials).full_url
+    end
+  end
+
+  def safe_url
+    return if url.nil?
+
+    result = URI.parse(url)
+    result.password = '*****' if result.password
+    result.user = '*****' if result.user && result.user != "git" #tokens or other data may be saved as user
+    result.to_s
   end
 
   def full_url

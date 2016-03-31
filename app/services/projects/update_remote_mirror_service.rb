@@ -96,10 +96,6 @@ module Projects
 
     def remote_tags
       @remote_tags ||= repository.remote_tags(mirror.ref_name).each_with_object({}) do |(name, target), tags|
-        # We're only interested in tag references
-        # See: http://stackoverflow.com/questions/15472107/when-listing-git-ls-remote-why-theres-after-the-tag-name
-        next if name =~ /\^\{\}\Z/
-
         tags[name] = target
       end
     end

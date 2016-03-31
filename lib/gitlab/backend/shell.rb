@@ -55,6 +55,10 @@ module Gitlab
         break if target.nil?
 
         name = path.split('/', 3).last
+        # We're only interested in tag references
+        # See: http://stackoverflow.com/questions/15472107/when-listing-git-ls-remote-why-theres-after-the-tag-name
+        next if name =~ /\^\{\}\Z/
+
         [name, target]
       end
 
