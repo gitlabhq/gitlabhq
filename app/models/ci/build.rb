@@ -50,7 +50,6 @@ module Ci
 
     scope :unstarted, ->() { where(runner_id: nil) }
     scope :ignore_failures, ->() { where(allow_failure: false) }
-    scope :similar, ->(build) { where(ref: build.ref, tag: build.tag, trigger_request_id: build.trigger_request_id) }
 
     mount_uploader :artifacts_file, ArtifactUploader
     mount_uploader :artifacts_metadata, ArtifactUploader
@@ -61,6 +60,8 @@ module Ci
     default_scope -> { select(Ci::Build.columns_without_lazy) }
 
     before_destroy { project }
+
+    after_create :execute_hooks
 
     class << self
       def columns_without_lazy
@@ -126,12 +127,16 @@ module Ci
     end
 
     def retried?
-      !self.commit.latest_statuses_for_ref(self.ref).include?(self)
+      !self.commit.latest.include?(self)
+    end
+
+    def retry
+      Ci::Build.retry(self)
     end
 
     def depends_on_builds
       # Get builds of the same type
-      latest_builds = self.commit.builds.similar(self).latest
+      latest_builds = self.commit.builds.latest
 
       # Return builds from previous stages
       latest_builds.where('stage_idx < ?', stage_idx)

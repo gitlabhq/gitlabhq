@@ -94,8 +94,8 @@ class Projects::CommitController < Projects::ApplicationController
     @commit ||= @project.commit(params[:id])
   end
 
-  def ci_commit
-    @ci_commit ||= project.ci_commit(commit.sha)
+  def ci_commits
+    @ci_commits ||= project.ci_commits.where(sha: commit.sha)
   end
 
   def define_show_vars
@@ -108,7 +108,8 @@ class Projects::CommitController < Projects::ApplicationController
     @diff_refs = [commit.parent || commit, commit]
     @notes_count = commit.notes.count
 
-    @statuses = ci_commit.statuses if ci_commit
+    @statuses = CommitStatus.where(commit: ci_commits)
+    @builds = Ci::Build.where(commit: ci_commits)
   end
 
   def assign_revert_commit_vars

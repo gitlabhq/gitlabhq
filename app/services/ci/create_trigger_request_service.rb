@@ -7,7 +7,7 @@ module Ci
       # check if ref is tag
       tag = project.repository.find_tag(ref).present?
 
-      ci_commit = project.ensure_ci_commit(commit.sha)
+      ci_commit = project.ci_commits.create(commit.sha, ref)
 
       trigger_request = trigger.trigger_requests.create!(
         variables: variables,

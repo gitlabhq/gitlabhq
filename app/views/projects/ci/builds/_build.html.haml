@@ -19,11 +19,12 @@
     %td
       = link_to build.short_sha, namespace_project_commit_path(build.project.namespace, build.project, build.sha), class: "monospace"
 
-  %td
-    - if build.ref
-      = link_to build.ref, namespace_project_commits_path(build.project.namespace, build.project, build.ref)
-    - else
-      .light none
+  - if !defined?(ref) || ref
+    %td
+      - if build.ref
+        = link_to build.ref, namespace_project_commits_path(build.project.namespace, build.project, build.ref)
+      - else
+        .light none
 
   - if defined?(runner) && runner
     %td
@@ -48,6 +49,8 @@
         %span.label.label-info triggered
       - if build.try(:allow_failure)
         %span.label.label-danger allowed to fail
+      - if defined?(retried) && retried
+        %span.label.label-warning retried
 
   %td.duration
     - if build.duration

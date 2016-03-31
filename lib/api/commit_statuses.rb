@@ -21,7 +21,7 @@ module API
         authorize!(:read_commit_status, user_project)
 
         not_found!('Commit') unless user_project.commit(params[:sha])
-        ci_commit = user_project.ci_commit(params[:sha])
+        ci_commit = user_project.ci_commit(params[:sha], params[:ref])
         return [] unless ci_commit
 
         statuses = ci_commit.statuses

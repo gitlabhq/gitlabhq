@@ -4,7 +4,7 @@
 .build-page
   .gray-content-block.top-block
     Build ##{@build.id} for commit
-    %strong.monospace= link_to @build.commit.short_sha, ci_status_path(@build.commit)
+    %strong.monospace= link_to @build.commit.short_sha, builds_namespace_project_commit_path(@project.namespace, @project, @build.sha)
     from
     = link_to @build.ref, namespace_project_commits_path(@project.namespace, @project, @build.ref)
     - merge_request = @build.merge_request
@@ -13,7 +13,7 @@
       = link_to "merge request ##{merge_request.iid}", merge_request_path(merge_request)
 
   #up-build-trace
-  - builds = @build.commit.matrix_builds(@build)
+  - builds = @build.commit.builds.latest.to_a
   - if builds.size > 1
     %ul.nav-links.no-top.no-bottom
       - builds.each do |build|
@@ -173,7 +173,7 @@
           Commit
           .pull-right
             %small
-              = link_to @build.commit.short_sha, ci_status_path(@build.commit), class: "monospace"
+              = link_to @build.commit.short_sha, builds_namespace_project_commit_path(@project.namespace, @project, @build.sha), class: "monospace"
         %p
           %span.attr-name Branch:
           = link_to @build.ref, namespace_project_commits_path(@project.namespace, @project, @build.ref)
@@ -196,7 +196,7 @@
         .build-widget
           %h4.title #{pluralize(@builds.count(:id), "other build")} for
           = succeed ":" do
-            = link_to @build.commit.short_sha, ci_status_path(@build.commit), class: "monospace"
+            = link_to @build.commit.short_sha, builds_namespace_project_commit_path(@project.namespace, @project, build.sha), class: "monospace"
           %table.table.builds
             - @builds.each_with_index do |build, i|
               %tr.build

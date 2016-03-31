@@ -209,12 +209,13 @@ class Commit
     @raw.short_id(7)
   end
 
-  def ci_commit
-    project.ci_commit(sha)
+  def ci_commits
+    @ci_commits ||= project.ci_commits.where(sha: sha)
   end
 
   def status
-    ci_commit.try(:status) || :not_found
+    return @status if defined?(@status)
+    @status ||= ci_commits.status
   end
 
   def revert_branch_name

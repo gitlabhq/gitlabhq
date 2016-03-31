@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160331223143) do
+ActiveRecord::Schema.define(version: 20160411122626) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -141,6 +141,7 @@ ActiveRecord::Schema.define(version: 20160331223143) do
     t.text     "artifacts_metadata"
     t.integer  "erased_by_id"
     t.datetime "erased_at"
+    t.string   "plugin"
   end
 
   add_index "ci_builds", ["commit_id", "stage_idx", "created_at"], name: "index_ci_builds_on_commit_id_and_stage_idx_and_created_at", using: :btree
@@ -168,6 +169,11 @@ ActiveRecord::Schema.define(version: 20160331223143) do
     t.text     "yaml_errors"
     t.datetime "committed_at"
     t.integer  "gl_project_id"
+    t.string   "status"
+    t.datetime "started_at"
+    t.datetime "finished_at"
+    t.string   "action"
+    t.integer  "duration"
   end
 
   add_index "ci_commits", ["gl_project_id"], name: "index_ci_commits_on_gl_project_id", using: :btree
@@ -306,11 +312,20 @@ ActiveRecord::Schema.define(version: 20160331223143) do
   add_index "ci_tags", ["name"], name: "index_ci_tags_on_name", unique: true, using: :btree
 
   create_table "ci_trigger_requests", force: :cascade do |t|
-    t.integer  "trigger_id", null: false
+    t.integer  "trigger_id"
     t.text     "variables"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "commit_id"
+    t.string   "sha"
+    t.string   "before_sha"
+    t.string   "ref"
+    t.string   "action"
+    t.string   "status"
+    t.datetime "started_at"
+    t.datetime "finished_at"
+    t.integer  "project_id"
+    t.string   "origin_ref"
   end
 
   create_table "ci_triggers", force: :cascade do |t|
@@ -731,6 +746,7 @@ ActiveRecord::Schema.define(version: 20160331223143) do
     t.boolean  "public_builds",          default: true,     null: false
     t.string   "main_language"
     t.integer  "pushes_since_gc",        default: 0
+    t.boolean  "images_enabled"
   end
 
   add_index "projects", ["builds_enabled", "shared_runners_enabled"], name: "index_projects_on_builds_enabled_and_shared_runners_enabled", using: :btree

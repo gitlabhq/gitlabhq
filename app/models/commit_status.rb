@@ -33,6 +33,8 @@
 #
 
 class CommitStatus < ActiveRecord::Base
+  include CiStatus
+
   self.table_name = 'ci_builds'
 
   belongs_to :project, class_name: '::Project', foreign_key: :gl_project_id
@@ -40,21 +42,13 @@ class CommitStatus < ActiveRecord::Base
   belongs_to :user
 
   validates :commit, presence: true
-  validates :status, inclusion: { in: %w(pending running failed success canceled) }
 
   validates_presence_of :name
 
   alias_attribute :author, :user
 
-  scope :running, -> { where(status: 'running') }
-  scope :pending, -> { where(status: 'pending') }
-  scope :success, -> { where(status: 'success') }
-  scope :failed, -> { where(status: 'failed')  }
-  scope :running_or_pending, -> { where(status: [:running, :pending]) }
-  scope :finished, -> { where(status: [:success, :failed, :canceled]) }
-  scope :latest, -> { where(id: unscope(:select).select('max(id)').group(:name, :ref)) }
+  scope :latest, -> { where(id: unscope(:select).select('max(id)').group(:name)) }
   scope :ordered, -> { order(:ref, :stage_idx, :name) }
-  scope :for_ref, ->(ref) { where(ref: ref) }
 
   AVAILABLE_STATUSES = ['pending', 'running', 'success', 'failed', 'canceled']
 
@@ -87,31 +81,13 @@ class CommitStatus < ActiveRecord::Base
       MergeRequests::MergeWhenBuildSucceedsService.new(commit_status.commit.project, nil).trigger(commit_status)
     end
 
-    state :pending, value: 'pending'
-    state :running, value: 'running'
-    state :failed, value: 'failed'
-    state :success, value: 'success'
-    state :canceled, value: 'canceled'
+    after_transition any => any do |commit_status|
+      commit_status.commit.invalidate
+      commit_status.save
+    end
   end
 
-  delegate :sha, :short_sha, to: :commit, prefix: false
-
-  # TODO: this should be removed with all references
-  def before_sha
-    Gitlab::Git::BLANK_SHA
-  end
-
-  def started?
-    !pending? && !canceled? && started_at
-  end
-
-  def active?
-    running? || pending?
-  end
-
-  def complete?
-    canceled? || success? || failed?
-  end
+  delegate :before_sha, :sha, :short_sha, to: :commit, prefix: false
 
   def ignored?
     allow_failure? && (failed? || canceled?)
