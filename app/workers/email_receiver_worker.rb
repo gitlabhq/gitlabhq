@@ -39,7 +39,8 @@ class EmailReceiverWorker
       reason = "You are not allowed to respond to the thread you are replying to. If you believe this is in error, contact a staff member."
     when Gitlab::Email::Receiver::NoteableNotFoundError
       reason = "The thread you are replying to no longer exists, perhaps it was deleted? If you believe this is in error, contact a staff member."
-    when Gitlab::Email::Receiver::InvalidNoteError
+    when Gitlab::Email::Receiver::InvalidNoteError,
+         Gitlab::Email::Receiver::InvalidIssueError
       can_retry = true
       reason = e.message
     else
