@@ -1,23 +1,23 @@
 class @AwardsHandler
-  constructor: (@aliases) ->
-    $(".js-add-award").on "click", (event) =>
+  constructor: ->
+    @aliases = emojiAliases()
+
+    $(document).on "click", ".js-add-award", (event) =>
       event.stopPropagation()
       event.preventDefault()
 
-      @showEmojiMenu()
+      @showEmojiMenu $(event.currentTarget)
 
     $("html").on 'click', (event) ->
       if !$(event.target).closest(".emoji-menu").length
         if $(".emoji-menu").is(":visible")
           $(".emoji-menu").removeClass "is-visible"
 
-    $(".awards")
-      .off "click"
+    $(document)
+      .off "click", ".js-emoji-btn"
       .on "click", ".js-emoji-btn", @handleClick
 
-    @renderFrequentlyUsedBlock()
-
-  handleClick: (e) ->
+  handleClick: (e) =>
     e.preventDefault()
     $emojiBtn = $(e.currentTarget)
     awardUrl = $emojiBtn.closest('.js-votes-block').data 'award-url'
@@ -26,8 +26,13 @@ class @AwardsHandler
       .data "emoji"
     @addAward awardUrl, emoji
 
-  showEmojiMenu: ->
+  showEmojiMenu: ($addBtn) ->
     if $(".emoji-menu").length
+      $holder = $addBtn.closest('.js-award-holder')
+
+      if $holder.find('.emoji-menu').length is 0
+        $(".emoji-menu").detach().appendTo $holder
+
       if $(".emoji-menu").is ".is-visible"
         $(".emoji-menu").removeClass "is-visible"
         $("#emoji_search").blur()
@@ -35,10 +40,11 @@ class @AwardsHandler
         $(".emoji-menu").addClass "is-visible"
         $("#emoji_search").focus()
     else
-      $('.js-add-award').addClass "is-loading"
-      $.get "/emojis", (response) =>
-        $('.js-add-award').removeClass "is-loading"
-        $(".js-award-holder").append response
+      $addBtn.addClass "is-loading"
+      $.get $addBtn.data('award-menu-url'), (response) =>
+        $addBtn.removeClass "is-loading"
+        $addBtn.closest('.js-award-holder').append response
+        @renderFrequentlyUsedBlock()
         setTimeout =>
           $(".emoji-menu").addClass "is-visible"
           $("#emoji_search").focus()
@@ -128,7 +134,7 @@ class @AwardsHandler
     </button>"
 
     emoji_node = $(buttonHtml)
-      .insertBefore(".js-award-holder")
+      .insertBefore(".js-award-holder:not(.js-award-action-btn)")
       .find(".emoji-icon")
       .data("emoji", emoji)
     $('.award-control').tooltip()
@@ -173,16 +179,15 @@ class @AwardsHandler
     if $.cookie('frequently_used_emojis')
       frequently_used_emojis = @getFrequentlyUsedEmojis()
 
-      ul = $("<ul>")
+      ul = $("<ul class='clearfix emoji-menu-list'>")
 
       for emoji in frequently_used_emojis
-        do (emoji) ->
-          $(".emoji-menu-content [data-emoji='#{emoji}']").closest("li").clone().appendTo(ul)
+        $(".emoji-menu-content [data-emoji='#{emoji}']").closest("li").clone().appendTo(ul)
 
       $("input.emoji-search").after(ul).after($("<h5>").text("Frequently used"))
 
   setupSearch: ->
-    $("input.emoji-search").keyup (ev) =>
+    $("input.emoji-search").on 'keyup', (ev) =>
       term = $(ev.target).val()
 
       # Clean previous search results

@@ -9,14 +9,20 @@
         = image_tag avatar_icon(note.author), alt: '', class: 'avatar s40'
     .timeline-content
       .note-header
-        = link_to_member(note.project, note.author, avatar: false)
-        .inline.note-headline-light
-          = note.author.to_reference
-          - unless note.system
-            commented
-          %a{ href: "##{dom_id(note)}" }
-            = time_ago_with_tooltip(note.created_at, placement: 'bottom', html_class: 'note-created-ago')
-        .note-actions
+        - if note_editable?(note)
+          .note-actions
+            = link_to '#', title: 'Edit comment', class: 'js-note-edit' do
+              = icon('pencil-square-o')
+
+            .award-menu-holder.note-action-award-holder.js-award-holder.js-award-action-btn
+              = link_to '#', title: 'Award emoji', class: 'note-award-control js-add-award', data: { award_menu_url: emojis_path } do
+                = icon('smile-o', {class: "award-control-icon award-control-icon-normal"})
+                = icon('spinner spin', {class: "award-control-icon award-control-icon-loading"})
+
+            = link_to namespace_project_note_path(note.project.namespace, note.project, note), title: 'Remove comment', method: :delete, data: { confirm: 'Are you sure you want to remove this comment?' }, remote: true, class: 'js-note-delete danger' do
+              = icon('trash-o')
+
+        - unless note.system
           - access = note.project.team.human_max_access(note.author.id)
           - if access
             %span.note-role
@@ -32,6 +38,7 @@
             = markdown(note.note, pipeline: :note, cache_key: [note, "note"])
         - if note_editable
           = render 'projects/notes/edit_form', note: note
+        = render 'emoji_awards/awards_block', awardable: note
       = edited_time_ago_with_tooltip(note, placement: 'bottom', html_class: 'note_edited_ago', include_author: true)
 
       - if note.attachment.url
