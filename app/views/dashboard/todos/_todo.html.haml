@@ -10,7 +10,10 @@
           (removed)
       %span.todo-label
         = todo_action_name(todo)
-        = todo_target_link(todo)
+        - if todo.target
+          = todo_target_link(todo)
+        - else
+          (removed)
 
       &middot; #{time_ago_with_tooltip(todo.created_at)}
 

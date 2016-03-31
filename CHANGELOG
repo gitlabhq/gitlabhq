@@ -2,6 +2,10 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.6.3 (unreleased)
 
+v 8.6.3 (unreleased)
+  - Destroy related todos when an Issue/MR is deleted. !3376
+  - Fix error 500 when target is nil on todo list. !3376
+
 v 8.6.2
   - Fix dropdown alignment. !3298
   - Fix issuable sidebar overlaps on tablet. !3299
