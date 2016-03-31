@@ -79,8 +79,7 @@ module Gitlab
         raise UserNotFoundError unless author
         raise UserBlockedError if author.blocked?
         # TODO: Give project not found error if author cannot read project
-        raise UserNotAuthorizedError if project.nil? ||
-                                        !author.can?(permission, project)
+        raise UserNotAuthorizedError unless author.can?(permission, project)
       end
 
       # Find the first matched user in database from email From: section
