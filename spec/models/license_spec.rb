@@ -210,4 +210,56 @@ describe License do
       end
     end
   end
+
+  describe 'reading add-ons' do
+    describe '#add_ons' do
+      context "without add-ons" do
+        it 'returns an empty Hash' do
+          license = build_license_with_add_ons({})
+
+          expect(license.add_ons).to eq({})
+        end
+      end
+
+      context "with add-ons" do
+        it 'returns all available add-ons' do
+          license = build_license_with_add_ons({ 'support' => 1, 'custom-domain' => 2 })
+
+          expect(license.add_ons.keys).to include('support', 'custom-domain')
+        end
+
+        it 'can return details about a single add-on' do
+          license = build_license_with_add_ons({ 'custom-domain' => 2 })
+
+          expect(license.add_ons['custom-domain']).to eq(2)
+        end
+      end
+    end
+
+    describe '#add_on?' do
+      it 'returns true if add-on exists and have a quantity greater than 0' do
+        license = build_license_with_add_ons({ 'support' => 1 })
+
+        expect(license.add_on?('support')).to eq(true)
+      end
+
+      it 'returns false if add-on exists but have a quantity of 0' do
+        license = build_license_with_add_ons({ 'support' => 0 })
+
+        expect(license.add_on?('support')).to eq(false)
+      end
+
+      it 'returns false if add-on does not exists' do
+        license = build_license_with_add_ons({})
+
+        expect(license.add_on?('support')).to eq(false)
+      end
+    end
+
+    def build_license_with_add_ons(add_ons)
+      gl_license = build(:gitlab_license, restrictions: { add_ons: add_ons })
+      build(:license, data: gl_license.export)
+    end
+  end
+
 end
