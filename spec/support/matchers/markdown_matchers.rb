@@ -154,7 +154,7 @@ module MarkdownMatchers
     set_default_markdown_messages
 
     match do |actual|
-      expect(actual).to have_selector('a.gfm.gfm-milestone', count: 3)
+      expect(actual).to have_selector('a.gfm.gfm-milestone', count: 5)
     end
   end
 

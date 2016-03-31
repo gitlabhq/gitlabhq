@@ -74,8 +74,22 @@ class Milestone < ActiveRecord::Base
     end
   end
 
+  def self.reference_prefix
+    '%'
+  end
+
   def self.reference_pattern
-    nil
+    %r{
+      (#{Project.reference_pattern})?
+      #{Regexp.escape(reference_prefix)}
+      (?:
+        (?<milestone_id>\d+) | # Integer-based milestone ID, or
+        (?<milestone_name>
+          [A-Za-z0-9_-]+ | # String-based single-word milestone title, or
+          "[^"]+"       # String-based multi-word milestone surrounded in quotes
+        )
+      )
+    }x
   end
 
   def self.link_reference_pattern
@@ -86,13 +100,15 @@ class Milestone < ActiveRecord::Base
     self.where('due_date > ?', Time.now).reorder(due_date: :asc).first
   end
 
-  def to_reference(from_project = nil)
-    escaped_title = self.title.gsub("]", "\\]")
+  def to_reference(from_project = nil, format: :id)
+    format_reference = milestone_format_reference(format)
+    reference = "#{self.class.reference_prefix}#{format_reference}"
 
-    h = Gitlab::Routing.url_helpers
-    url = h.namespace_project_milestone_url(self.project.namespace, self.project, self)
-
-    "[#{escaped_title}](#{url})"
+    if cross_project_reference?(from_project)
+      project.to_reference + reference
+    else
+      reference
+    end
   end
 
   def reference_link_text(from_project = nil)
@@ -159,5 +175,17 @@ class Milestone < ActiveRecord::Base
 
     issues.where(id: ids).
       update_all(["position = CASE #{conditions} ELSE position END", *pairs])
+  end
+
+  private
+
+  def milestone_format_reference(format = :id)
+    raise StandardError, 'Unknown format' unless [:id, :name].include?(format)
+
+    if format == :name && !name.include?('"')
+      %("#{name}")
+    else
+      id
+    end
   end
 end
