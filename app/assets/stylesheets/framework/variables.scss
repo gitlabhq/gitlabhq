@@ -108,6 +108,8 @@ $red-light: #e52c5a;
 $red-normal: #d22852;
 $red-dark: darken($red-normal, 5%);
 
+$black-transparent: rgba(0, 0, 0, 0.3);
+
 $border-white-light: #f1f2f4;
 $border-white-normal: #d6dae2;
 $border-white-dark: #c6cacf;
@@ -158,7 +160,15 @@ $gl-btn-active-gradient: inset 0 0 4px $gl-btn-active-background;
  */
 $added: #63c363;
 $deleted: #f77;
-
+$line-added: #ebfdf0;
+$line-added-dark: #a6f3a6;
+$line-removed: #ffecec;
+$line-removed-dark: #f8cbcb;
+$line-number-old: #fdd;
+$line-number-old-border: #f1c0c0;
+$line-number-new: #dbffdb;
+$line-number-new-border: #c1e9c1;
+$match-line: #fafafa;
 /*
  * Fonts
  */
