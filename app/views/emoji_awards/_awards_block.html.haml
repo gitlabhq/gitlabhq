@@ -1,0 +1,22 @@
+.awards.votes-block.js-votes-block{ data: { award_url: url_for([:toggle_emoji_award, @project.namespace.becomes(Namespace), @project, awardable]) } }
+  - awards_sort(awardable.grouped_awards).each do |emoji, awards|
+    %button.btn.award-control.js-emoji-btn.has-tooltip{ type: "button", class: (award_active_class(awards, current_user)), title: award_user_list(awards, current_user) }
+      = emoji_icon(emoji)
+      %span.award-control-text.js-counter
+        = awards.count
+
+  - if current_user
+    %div.award-menu-holder.js-award-holder
+      %button.btn.award-control.js-add-award{ type: "button" }
+        = icon('smile-o', {class: "award-control-icon"})
+        = icon('spinner spin', {class: "award-control-icon award-control-icon-loading"})
+        %span.award-control-text
+          Add
+
+- if current_user
+  :javascript
+    var aliases = #{AwardEmoji.aliases.to_json};
+
+    window.awards_handler = new AwardsHandler(
+      aliases
+    );
