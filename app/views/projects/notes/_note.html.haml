@@ -7,13 +7,13 @@
       .note-header
         - if note_editable?(note)
           .note-actions
-            = link_to '#', title: 'Edit comment', class: 'js-note-edit' do
-              = icon('pencil-square-o')
-
-            .award-menu-holder.note-action-award-holder.js-award-holder.js-award-action-btn
+            .award-menu-holder.note-action-award-holder.js-award-holder.js-award-action-btn{ data: { target: "##{dom_id(note)} .js-awards-block" } }
               = link_to '#', title: 'Award emoji', class: 'note-award-control js-add-award', data: { award_menu_url: emojis_path } do
                 = icon('smile-o', {class: "award-control-icon award-control-icon-normal"})
                 = icon('spinner spin', {class: "award-control-icon award-control-icon-loading"})
+
+            = link_to '#', title: 'Edit comment', class: 'js-note-edit' do
+              = icon('pencil-square-o')
 
             = link_to namespace_project_note_path(note.project.namespace, note.project, note), title: 'Remove comment', method: :delete, data: { confirm: 'Are you sure you want to remove this comment?' }, remote: true, class: 'js-note-delete danger' do
               = icon('trash-o')
@@ -38,7 +38,7 @@
             = markdown(note.note, pipeline: :note, cache_key: [note, "note"])
         - if note_editable?(note)
           = render 'projects/notes/edit_form', note: note
-        = render 'emoji_awards/awards_block', awardable: note
+        = render 'emoji_awards/awards_block', awardable: note, inline: false
       = edited_time_ago_with_tooltip(note, placement: 'bottom', html_class: 'note_edited_ago', include_author: true)
 
       - if note.attachment.url

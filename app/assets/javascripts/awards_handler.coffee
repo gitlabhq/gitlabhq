@@ -20,7 +20,13 @@ class @AwardsHandler
   handleClick: (e) =>
     e.preventDefault()
     $emojiBtn = $(e.currentTarget)
-    awardUrl = $emojiBtn.closest('.js-votes-block').data 'award-url'
+    $votesBlock = $($emojiBtn.closest('.js-award-holder').data('target'))
+
+    if $votesBlock.length is 0
+      $votesBlock = $emojiBtn.closest('.js-awards-block')
+
+    $votesBlock.addClass 'js-awards-block-current'
+    awardUrl = $votesBlock.data 'award-url'
     emoji = $emojiBtn
       .find(".icon")
       .data "emoji"
@@ -44,7 +50,9 @@ class @AwardsHandler
       $.get $addBtn.data('award-menu-url'), (response) =>
         $addBtn.removeClass "is-loading"
         $addBtn.closest('.js-award-holder').append response
+
         @renderFrequentlyUsedBlock()
+
         setTimeout =>
           $(".emoji-menu").addClass "is-visible"
           $("#emoji_search").focus()
@@ -56,14 +64,18 @@ class @AwardsHandler
     @postEmoji awardUrl, emoji, =>
       @addAwardToEmojiBar(emoji)
 
+      $('.js-awards-block-current').removeClass 'js-awards-block-current'
+
     $(".emoji-menu").removeClass "is-visible"
 
   addAwardToEmojiBar: (emoji) ->
     @addEmojiToFrequentlyUsedList(emoji)
 
     emoji = @normilizeEmojiName(emoji)
-    if @exist(emoji)
-      if @isActive(emoji)
+    $emojiBtn = @findEmojiIcon(emoji)
+
+    if $emojiBtn.length > 0
+      if @isActive($emojiBtn)
         @decrementCounter(emoji)
       else
         counter = @findEmojiIcon(emoji).siblings(".js-counter")
@@ -73,11 +85,8 @@ class @AwardsHandler
     else
       @createEmoji(emoji)
 
-  exist: (emoji) ->
-    @findEmojiIcon(emoji).length > 0
-
-  isActive: (emoji) ->
-    @findEmojiIcon(emoji).parent().hasClass("active")
+  isActive: ($emojiBtn) ->
+    $emojiBtn.parent().hasClass("active")
 
   decrementCounter: (emoji) ->
     counter = @findEmojiIcon(emoji).siblings(".js-counter")
@@ -134,10 +143,14 @@ class @AwardsHandler
     </button>"
 
     emoji_node = $(buttonHtml)
-      .insertBefore(".js-award-holder:not(.js-award-action-btn)")
+      .insertBefore(".js-awards-block-current .js-award-holder:not(.js-award-action-btn)")
       .find(".emoji-icon")
       .data("emoji", emoji)
     $('.award-control').tooltip()
+
+    $currentBlock = $('.js-awards-block-current')
+    if $currentBlock.is('.hidden')
+      $currentBlock.removeClass 'hidden'
 
   resolveNameToCssClass: (emoji) ->
     emoji_icon = $(".emoji-menu-content [data-emoji='#{emoji}']")
@@ -156,7 +169,7 @@ class @AwardsHandler
         callback.call()
 
   findEmojiIcon: (emoji) ->
-    $(".awards > .js-emoji-btn [data-emoji='#{emoji}']")
+    $(".js-awards-block-current.awards > .js-emoji-btn [data-emoji='#{emoji}']")
 
   scrollToAwards: ->
     $('body, html').animate({

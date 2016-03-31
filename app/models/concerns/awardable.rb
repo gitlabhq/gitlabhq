@@ -30,11 +30,13 @@ module Awardable
     end
   end
 
-  def grouped_awards
+  def grouped_awards(with_thumbs = true)
     awards = emoji_awards.group_by(&:name)
 
-    awards[EmojiAward::UPVOTE_NAME] ||= EmojiAward.none
-    awards[EmojiAward::DOWNVOTE_NAME] ||= EmojiAward.none
+    if with_thumbs
+      awards[EmojiAward::UPVOTE_NAME] ||= EmojiAward.none
+      awards[EmojiAward::DOWNVOTE_NAME] ||= EmojiAward.none
+    end
 
     awards
   end
