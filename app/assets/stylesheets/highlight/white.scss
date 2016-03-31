@@ -24,12 +24,12 @@
     .diff-line-num {
       &.old {
         background-color: $line-number-old;
-        border-color: $line-number-old-border;
+        border-color: $line-removed-dark;
       }
 
       &.new {
         background-color: $line-number-new;
-        border-color: $line-number-new-border;
+        border-color: $line-added-dark;
       }
     }
 

@@ -212,6 +212,21 @@ ul.notes {
     top: 0;
     font-size: 16px;
   }
+
+  .js-note-delete {
+    &:hover {
+      @extend .cgray;
+      &.danger { @extend .cred; }
+    }
+  }
+
+  .js-note-edit {
+    i {
+      &:hover {
+        color: $gl-link-color;
+      }
+    }
+  }
 }
 
 .discussion-toggle-button {

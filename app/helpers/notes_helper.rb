@@ -69,7 +69,8 @@ module NotesHelper
       line_type:     line_type
     }
 
-    text_field_tag 'reply-field', nil, placeholder: 'Reply...',
+    text_field_tag 'reply-field', nil,
+                    placeholder: 'Reply...',
                     class: 'form-control note-reply-field js-discussion-reply-button',
                     data: data
   end

@@ -29,7 +29,7 @@
       .file-actions.hidden-xs
         - if blob_text_viewable?(blob)
           = link_to '#', class: 'js-toggle-diff-comments btn active has-tooltip', title: "Toggle comments for this file" do
-            = icon('comments')
+            = icon('comment')
           \
 
         - if editable_diff?(diff_file)
