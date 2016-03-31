@@ -66,7 +66,7 @@ $header-height: 58px;
 $fixed-layout-width: 1280px;
 $gl-avatar-size: 40px;
 $error-exclamation-point: #e62958;
-$border-radius-default: 3px;
+$border-radius-default: 2px;
 $btn-transparent-color: #8f8f8f;
 $ssh-key-icon-color: #8f8f8f;
 $ssh-key-icon-size: 18px;
@@ -166,6 +166,8 @@ $regular_font: 'Source Sans Pro', "Helvetica Neue", Helvetica, Arial, sans-serif
 /*
 * Dropdowns
 */
+$dropdown-border-radius: 2px;
+$dropdown-width: 300px;
 $dropdown-bg: #fff;
 $dropdown-link-color: #555;
 $dropdown-link-hover-bg: $row-hover;
@@ -177,7 +179,7 @@ $dropdown-header-color: #959494;
 $dropdown-title-btn-color: #bfbfbf;
 $dropdown-input-color: #555;
 $dropdown-input-focus-border: rgb(58, 171, 240);
-$dropdown-input-focus-shadow: rgba(#000, .2);
+$dropdown-input-focus-shadow: rgba($dropdown-input-focus-border, .4);
 $dropdown-loading-bg: rgba(#fff, .6);
 
 $dropdown-toggle-bg: #fff;
@@ -193,3 +195,15 @@ $dropdown-toggle-hover-icon-color: $dropdown-toggle-hover-border-color;
 $award-emoji-menu-bg: #fff;
 $award-emoji-menu-border: #f1f2f4;
 $award-emoji-new-btn-icon-color: #dcdcdc;
+
+/*
+ * Search Box
+ */
+$search-input-border-color: $dropdown-input-focus-border;
+$search-input-focus-shadow-color: $dropdown-input-focus-shadow;
+$search-input-width: $dropdown-width;
+$location-badge-color: #aaa;
+$location-badge-bg: $gray-normal;
+$location-icon-color: #e7e9ed;
+$location-active-color: $gl-text-color;
+$location-active-bg: $search-input-border-color;

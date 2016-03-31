@@ -3,6 +3,10 @@ class GitLabDropdownFilter
   HAS_VALUE_CLASS = "has-value"
 
   constructor: (@input, @options) ->
+    {
+      @filterInputBlur = true
+    } = @options
+
     $inputContainer = @input.parent()
     $clearButton = $inputContainer.find('.js-dropdown-input-clear')
 
@@ -33,7 +37,7 @@ class GitLabDropdownFilter
         blur_field = @shouldBlur e.keyCode
         search_text = @input.val()
 
-        if blur_field
+        if blur_field and @filterInputBlur
           @input.blur()
 
         if @options.remote
@@ -93,27 +97,48 @@ class GitLabDropdown
   PAGE_TWO_CLASS = "is-page-two"
   ACTIVE_CLASS = "is-active"
 
+  FILTER_INPUT = '.dropdown-input .dropdown-input-field'
+
   constructor: (@el, @options) ->
-    self = @
     @dropdown = $(@el).parent()
+
+    # Set Defaults
+    {
+      # If no input is passed create a default one
+      @filterInput = @getElement(FILTER_INPUT)
+      @highlight = false
+      @filterInputBlur = true
+      @enterCallback = true
+    } = @options
+
+    self = @
+
+    # If selector was passed
+    if _.isString(@filterInput)
+      @filterInput = @getElement(@filterInput)
+
     search_fields = if @options.search then @options.search.fields else [];
 
     if @options.data
-      # Remote data
-      @remote = new GitLabDropdownRemote @options.data, {
-        dataType: @options.dataType,
-        beforeSend: @toggleLoading.bind(@)
-        success: (data) =>
-          @fullData = data
+      # If data is an array
+      if _.isArray @options.data
+        @fullData = @options.data
+        @parseData @options.data
+      else
+        # Remote data
+        @remote = new GitLabDropdownRemote @options.data, {
+          dataType: @options.dataType,
+          beforeSend: @toggleLoading.bind(@)
+          success: (data) =>
+            @fullData = data
 
-          @parseData @fullData
-      }
+            @parseData @fullData
+        }
 
-    # Init filiterable
+    # Init filterable
     if @options.filterable
-      @input = @dropdown.find('.dropdown-input .dropdown-input-field')
-
-      @filter = new GitLabDropdownFilter @input,
+      @filter = new GitLabDropdownFilter @filterInput,
+        filterInputBlur: @filterInputBlur
         remote: @options.filterRemote
         query: @options.data
         keys: @options.search.fields
@@ -123,7 +148,8 @@ class GitLabDropdown
           @parseData data
           @highlightRow 1
         enterCallback: =>
-          @selectFirstRow()
+          if @enterCallback
+            @selectFirstRow()
 
     # Event listeners
 
@@ -149,6 +175,10 @@ class GitLabDropdown
 
         if self.options.clicked
           self.options.clicked(selected)
+
+  # Finds an element inside wrapper element
+  getElement: (selector) ->
+    @dropdown.find selector
 
   toggleLoading: ->
     $('.dropdown-menu', @dropdown).toggleClass LOADING_CLASS
@@ -193,7 +223,7 @@ class GitLabDropdown
       @remote.execute()
 
     if @options.filterable
-      @dropdown.find(".dropdown-input-field").focus()
+      @filterInput.focus()
 
     @dropdown.trigger('shown.gl.dropdown')
 
@@ -237,13 +267,19 @@ class GitLabDropdown
   renderItem: (data) ->
     html = ""
 
+    # Divider
     return "<li class='divider'></li>" if data is "divider"
+
+    # Separator is a full-width divider
+    return "<li class='separator'></li>" if data is "separator"
+
+    # Header
+    return "<li class='dropdown-header'>#{data.header}</li>" if data.header?
 
     if @options.renderRow
       # Call the render function
       html = @options.renderRow(data)
     else
-      selected = if @options.isSelected then @options.isSelected(data) else false
       if not selected
         value = if @options.id then @options.id(data) else data.id
         fieldName = @options.fieldName
@@ -251,12 +287,25 @@ class GitLabDropdown
         if field.length
           selected = true
 
-      url = if @options.url then @options.url(data) else "#"
-      text = if @options.text then @options.text(data) else ""
+      # Set URL
+      if @options.url?
+        url = @options.url(data)
+      else
+        url = if data.url? then data.url else '#'
+
+      # Set Text
+      if @options.text?
+        text = @options.text(data)
+      else
+        text = if data.text? then data.text else ''
+
       cssClass = "";
 
       if selected
         cssClass = "is-active"
+
+      if @highlight
+        text = @highlightTextMatches(text, @filterInput.val())
 
       html = "<li>"
       html += "<a href='#{url}' class='#{cssClass}'>"
@@ -266,20 +315,26 @@ class GitLabDropdown
 
     return html
 
+  highlightTextMatches: (text, term) ->
+    occurrences = fuzzaldrinPlus.match(text, term)
+    text.split('').map((character, i) ->
+      if i in occurrences then "<b>#{character}</b>" else character
+    ).join('')
+
   noResults: ->
     html = "<li>"
-    html += "<a href='#' class='dropdown-menu-empty-link is-focused'>"
+    html += "<a class='dropdown-menu-empty-link is-focused'>"
     html += "No matching results."
     html += "</a>"
     html += "</li>"
 
   highlightRow: (index) ->
-    if @input.val() isnt ""
+    if @filterInput.val() isnt ""
       selector = '.dropdown-content li:first-child a'
       if @dropdown.find(".dropdown-toggle-page").length
         selector = ".dropdown-page-one .dropdown-content li:first-child a"
 
-      $(selector).addClass 'is-focused'
+      @getElement(selector).addClass 'is-focused'
 
   rowClicked: (el) ->
     fieldName = @options.fieldName
@@ -331,4 +386,6 @@ class GitLabDropdown
 
 $.fn.glDropdown = (opts) ->
   return @.each ->
-    new GitLabDropdown @, opts
+    if (!$.data @, 'glDropdown')
+      $.data(@, 'glDropdown', new GitLabDropdown @, opts)
+
