@@ -15,6 +15,10 @@ v 8.7.0 (unreleased)
   - Gracefully handle notes on deleted commits in merge requests (Stan Hu)
   - Fall back to `In-Reply-To` and `References` headers when sub-addressing is not available (David Padilla)
 
+v 8.6.3 (unreleased)
+  - Destroy related todos when an Issue/MR is deleted. !3376
+  - Fix error 500 when target is nil on todo list. !3376
+
 v 8.6.2
   - Fix dropdown alignment. !3298
   - Fix issuable sidebar overlaps on tablet. !3299
