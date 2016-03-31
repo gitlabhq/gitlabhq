@@ -6,17 +6,9 @@
         = awards.count
 
   - if current_user
-    %div.award-menu-holder.js-award-holder
-      %button.btn.award-control.js-add-award{ type: "button" }
-        = icon('smile-o', {class: "award-control-icon"})
+    .award-menu-holder.js-award-holder
+      %button.btn.award-control.js-add-award{ type: "button", data: { award_menu_url: emojis_path } }
+        = icon('smile-o', {class: "award-control-icon award-control-icon-normal"})
         = icon('spinner spin', {class: "award-control-icon award-control-icon-loading"})
         %span.award-control-text
           Add
-
-- if current_user
-  :javascript
-    var aliases = #{AwardEmoji.aliases.to_json};
-
-    window.awards_handler = new AwardsHandler(
-      aliases
-    );

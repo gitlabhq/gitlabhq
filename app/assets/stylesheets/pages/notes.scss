@@ -113,8 +113,6 @@ ul.notes {
     }
 
     .note-body {
-      overflow: auto;
-
       .note-text {
         overflow: auto;
         word-wrap: break-word;
@@ -277,6 +275,37 @@ ul.notes {
   &:hover > td {
     .add-diff-note {
       @include show-add-diff-note;
+    }
+  }
+}
+
+.note-action-award-holder {
+  .emoji-menu {
+    left: auto;
+    right: -15px;
+    transform-origin: 100% -45px;
+  }
+}
+
+.note-award-control {
+  display: block;
+
+  &:hover,
+  &:focus {
+    text-decoration: none;
+  }
+
+  .award-control-icon-loading {
+    display: none;
+  }
+
+  &.is-loading {
+    .award-control-icon-normal {
+      display: none;
+    }
+
+    .award-control-icon-loading {
+      display: block;
     }
   }
 }

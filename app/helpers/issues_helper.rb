@@ -131,7 +131,7 @@ module IssuesHelper
   def award_user_list(awards, current_user)
     list =
       awards.map do |award|
-        award.user == current_user ? "me" : note.user.name
+        award.user == current_user ? "me" : award.user.name
       end
 
     list.join(", ")
