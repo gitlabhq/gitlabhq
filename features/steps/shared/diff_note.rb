@@ -153,9 +153,9 @@ module SharedDiffNote
     end
   end
 
-  step 'I should see a discussion reply button' do
+  step 'I should see a discussion reply text field' do
     page.within(diff_file_selector) do
-      expect(page).to have_button('Reply')
+      expect(page).to have_css('.note-reply-field')
     end
   end
 
