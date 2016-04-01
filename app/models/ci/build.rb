@@ -129,6 +129,10 @@ module Ci
       !self.commit.latest.include?(self)
     end
 
+    def retry
+      Ci::Build.retry(self)
+    end
+
     def depends_on_builds
       # Get builds of the same type
       latest_builds = self.commit.builds.latest

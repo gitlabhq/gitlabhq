@@ -67,6 +67,12 @@ module Ci
         .pluck(:stage, :stage_idx).map(&:first)
     end
 
+    def stages
+      statuses
+        .group(:stage, :stage_idx).order(:stage_idx)
+        .pluck(:stage, :stage_idx).map(&:first)
+    end
+
     def to_param
       sha
     end
@@ -113,6 +119,12 @@ module Ci
 
     def branch?
       Gitlab::Git::branch_ref?(origin_ref)
+    end
+
+    def retryable?
+      builds.latest.any? do |build|
+        build.failed? || build.retryable?
+      end
     end
 
     def create_builds(ref, tag, user, trigger_request = nil)

@@ -653,10 +653,16 @@ Rails.application.routes.draw do
         resource :variables, only: [:show, :update]
         resources :triggers, only: [:index, :create, :destroy]
 
-        resources :ci_commits, only: [:index, :show]
+        resources :ci_commits, only: [:index, :new, :create] do
+          member do
+            post :cancel
+            post :retry
+          end
+        end
 
         resources :builds, only: [:index, :show], constraints: { id: /\d+/ } do
           collection do
+            get :commits
             post :cancel_all
           end
 
