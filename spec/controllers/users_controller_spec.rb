@@ -30,10 +30,12 @@ describe UsersController do
       end
 
       describe 'when logged out' do
+        before { stub_application_setting(restricted_visibility_levels: []) }
+
         it 'renders the show template' do
           get :show, username: user.username
 
-          expect(response).to be_success
+          expect(response.status).to eq(200)
           expect(response).to render_template('show')
         end
       end

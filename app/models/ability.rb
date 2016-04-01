@@ -156,6 +156,7 @@ class Ability
           rules -= project_archived_rules
         end
 
+        rules << :read_project_members
         rules - project_disabled_features_rules(project)
       end
     end
@@ -177,8 +178,7 @@ class Ability
       @public_project_rules ||= project_guest_rules + [
         :download_code,
         :fork_project,
-        :read_commit_status,
-        :read_project_members
+        :read_commit_status
       ]
     end
 
