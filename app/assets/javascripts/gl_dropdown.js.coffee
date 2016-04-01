@@ -352,6 +352,8 @@ class GitLabDropdown
       # Toggle the dropdown label
       if @options.toggleLabel
         $(@el).find(".dropdown-toggle-text").text @options.toggleLabel
+      else
+        selectedObject
     else
       if !value?
         field.remove()
