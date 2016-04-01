@@ -153,6 +153,36 @@ $ ->
     container: 'body'
   )
 
+  # Konami Code
+  codeSoFar = ''
+  cleared = false
+  $headerLogo = $('.header-logo')
+  $headerLogo.empty()
+  $headerLogo.css('margin-left','5px').css('margin-top','5px')
+  dirs = ['up','down','left','right']
+  konTempl = '<a href="#" class="btn btn-xs kon-code" style="width:20px;height:20px;font-size:10px;padding:1px;margin:2px;"><i data-dir="{{dir}}" class="fa fa-arrow-{{dir}}" style="color:black"></i></a>'
+  $headerLogo = $('.header-logo')
+  dirs.forEach((dir) -> $headerLogo.append(konTempl.replace(/{{dir}}/g,dir)))
+
+  $('.kon-code').on('click', (e) ->
+    e.preventDefault()
+    cleared = true
+    dir = $(this).find('i').attr('data-dir')
+    codeSoFar += dir
+    match = 'upupdowndownleftrightleftright'
+    if codeSoFar is match
+      codeSoFar = ''
+      $('body').css('-webkit-transform:','rotate(180deg)').css('transform','rotate(180deg)')
+  )
+
+  setInterval(->
+    if not cleared
+      codeSoFar = ''
+    cleared = false
+  , 2000)
+
+  # End Konami Code
+
   $('.page-with-sidebar').tooltip(
     selector: '.sidebar-collapsed .nav-sidebar a, .sidebar-collapsed a.sidebar-user'
     placement: 'right'
