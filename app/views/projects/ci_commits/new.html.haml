@@ -1,0 +1,25 @@
+- page_title "New Pipeline"
+= render "header_title"
+
+- if @error
+  .alert.alert-danger
+    %button{ type: "button", class: "close", "data-dismiss" => "alert"} &times;
+    = @error
+%h3.page-title
+  New Pipeline
+%hr
+
+= form_tag namespace_project_ci_commits_path, method: :post, id: "new-pipeline-form", class: "form-horizontal js-create-branch-form js-requires-input" do
+  .form-group
+    = label_tag :ref, 'Create for', class: 'control-label'
+    .col-sm-10
+      = text_field_tag :ref, params[:ref] || @project.default_branch, required: true, tabindex: 2, class: 'form-control'
+      .help-block Existing branch name, tag
+  .form-actions
+    = button_tag 'Create pipeline', class: 'btn btn-create', tabindex: 3
+    = link_to 'Cancel', namespace_project_ci_commits_path(@project.namespace, @project), class: 'btn btn-cancel'
+
+:javascript
+  var availableRefs = #{@project.repository.ref_names.to_json};
+
+  new NewBranchForm($('.js-create-branch-form'), availableRefs)

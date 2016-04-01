@@ -96,6 +96,11 @@ class Projects::CommitController < Projects::ApplicationController
 
   def ci_commits
     @ci_commits ||= project.ci_commits.where(sha: commit.sha)
+    if params[:commit_id]
+      @ci_commits.where(id: params[:commit_id].to_i)
+    else
+      @ci_commits
+    end
   end
 
   def define_show_vars

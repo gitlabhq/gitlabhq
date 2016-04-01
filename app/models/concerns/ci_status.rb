@@ -3,15 +3,16 @@ module CiStatus
 
   module ClassMethods
     def status
-      if all.none?
+      objs = all.to_a
+      if objs.none?
          nil
-      elsif all.all? { |status| status.success? || status.ignored? }
+      elsif objs.all? { |status| status.success? || status.ignored? }
         'success'
-      elsif all.all?(&:pending?)
+      elsif objs.all?(&:pending?)
         'pending'
-      elsif all.any?(&:running?) || all.any?(&:pending?)
+      elsif objs.any?(&:running?) || all.any?(&:pending?)
         'running'
-      elsif all.all?(&:canceled?)
+      elsif objs.all?(&:canceled?)
         'canceled'
       else
         'failed'

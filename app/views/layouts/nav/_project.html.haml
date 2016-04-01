@@ -25,19 +25,18 @@
 
   - if project_nav_tab? :builds
     = nav_link(controller: %w(ci_commits)) do
-      = link_to project_ci_commits_path(@project), title: 'CI', class: 'shortcuts-ci' do
-        = icon('cubes fw')
+      = link_to project_ci_commits_path(@project), title: 'Pipelines', class: 'shortcuts-builds' do
+        = icon('ship fw')
         %span
-          CI
+          Pipelines
           %span.count.ci_counter= number_with_delimiter(@project.ci_commits.running_or_pending.count(:all))
 
-  - if project_nav_tab? :builds
     = nav_link(controller: %w(builds)) do
       = link_to project_builds_path(@project), title: 'Builds', class: 'shortcuts-builds' do
         = icon('cubes fw')
         %span
           Builds
-          %span.count.builds_counter= number_with_delimiter(@project.builds.running_or_pending.count(:all))
+          %span.count.ci_counter= number_with_delimiter(@project.builds.running_or_pending.count(:all))
 
   - if project_nav_tab? :graphs
     = nav_link(controller: %w(graphs)) do
