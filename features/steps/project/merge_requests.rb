@@ -326,7 +326,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
   step 'I should see a discussion has started on diff' do
     page.within(".notes .discussion") do
-      page.should have_content "#{current_user.name} started a discussion"
+      page.should have_content "#{current_user.name} #{current_user.to_reference} started a discussion"
       page.should have_content sample_commit.line_code_path
       page.should have_content "Line is wrong"
     end
@@ -334,7 +334,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
   step 'I should see a discussion by user "John Doe" has started on diff' do
     page.within(".notes .discussion") do
-      page.should have_content "#{user_exists("John Doe").name} started a discussion"
+      page.should have_content "#{user_exists("John Doe").name} #{user_exists("John Doe").to_reference} started a discussion"
       page.should have_content sample_commit.line_code_path
       page.should have_content "Line is wrong"
     end
@@ -350,7 +350,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
   step 'I should see a discussion has started on commit diff' do
     page.within(".notes .discussion") do
-      page.should have_content "#{current_user.name} started a discussion on commit"
+      page.should have_content "#{current_user.name} #{current_user.to_reference} started a discussion on commit"
       page.should have_content sample_commit.line_code_path
       page.should have_content "Line is wrong"
     end
@@ -358,7 +358,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
   step 'I should see a discussion has started on commit' do
     page.within(".notes .discussion") do
-      page.should have_content "#{current_user.name} started a discussion on commit"
+      page.should have_content "#{current_user.name} #{current_user.to_reference} started a discussion on commit"
       page.should have_content "One comment to rule them all"
     end
   end
