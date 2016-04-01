@@ -83,10 +83,10 @@ class Milestone < ActiveRecord::Base
       (#{Project.reference_pattern})?
       #{Regexp.escape(reference_prefix)}
       (?:
-        (?<milestone_id>\d+) | # Integer-based milestone ID, or
+        (?<milestone_iid>\d+) | # Integer-based milestone iid, or
         (?<milestone_name>
-          [A-Za-z0-9_-]+ | # String-based single-word milestone title, or
-          "[^"]+"       # String-based multi-word milestone surrounded in quotes
+          [A-Za-z0-9_-]+ |      # String-based single-word milestone title, or
+          "[^"]+"               # String-based multi-word milestone surrounded in quotes
         )
       )
     }x
@@ -100,7 +100,18 @@ class Milestone < ActiveRecord::Base
     self.where('due_date > ?', Time.now).reorder(due_date: :asc).first
   end
 
-  def to_reference(from_project = nil, format: :id)
+  ##
+  # Returns the String necessary to reference this Milestone in Markdown
+  #
+  # format - Symbol format to use (default: :iid, optional: :name)
+  #
+  # Examples:
+  #
+  #   Milestone.first.to_reference                # => "%1"
+  #   Milestone.first.to_reference(format: :name) # => "%\"goal\""
+  #   Milestone.first.to_reference(project)       # => "gitlab-org/gitlab-ce%1"
+  #
+  def to_reference(from_project = nil, format: :iid)
     format_reference = milestone_format_reference(format)
     reference = "#{self.class.reference_prefix}#{format_reference}"
 
@@ -179,13 +190,13 @@ class Milestone < ActiveRecord::Base
 
   private
 
-  def milestone_format_reference(format = :id)
-    raise StandardError, 'Unknown format' unless [:id, :name].include?(format)
+  def milestone_format_reference(format = :iid)
+    raise StandardError, 'Unknown format' unless [:iid, :name].include?(format)
 
     if format == :name && !name.include?('"')
       %("#{name}")
     else
-      id
+      iid
     end
   end
 end

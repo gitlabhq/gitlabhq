@@ -7,17 +7,17 @@ module Banzai
       end
 
       def find_object(project, id)
-        project.milestones.find(id)
+        project.milestones.find_by(iid: id)
       end
 
       def references_in(text, pattern = Milestone.reference_pattern)
         text.gsub(pattern) do |match|
           project = project_from_ref($~[:project])
-          params = milestone_params($~[:milestone_id].to_i, $~[:milestone_name])
+          params = milestone_params($~[:milestone_iid].to_i, $~[:milestone_name])
           milestone = project.milestones.find_by(params)
 
           if milestone
-            yield match, milestone.id, $~[:project], $~
+            yield match, milestone.iid, $~[:project], $~
           else
             match
           end
@@ -30,11 +30,20 @@ module Banzai
                                         only_path: context[:only_path])
       end
 
-      def milestone_params(id, name)
+      def object_link_text(object, matches)
+        if context[:project] == object.project
+          super
+        else
+          "#{super} <i>in #{escape_once(object.project.name_with_namespace)}</i>".
+            html_safe
+        end
+      end
+
+      def milestone_params(iid, name)
         if name
           { name: name.tr('"', '') }
         else
-          { id: id }
+          { iid: iid }
         end
       end
     end
