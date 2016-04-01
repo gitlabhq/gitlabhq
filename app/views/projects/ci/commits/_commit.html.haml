@@ -27,13 +27,15 @@
         %p
           Cant find HEAD commit for this branch
 
-  - stages.each do |stage|
-    %td
-      - status = commit.statuses.latest.where(stage: stage).status
-      - if status
-        = ci_status_with_icon(status)
-      - else
-        = ci_status_with_icon('missing')
+    - stages.each do |stage|
+      %td
+        - status = commit.statuses.latest.where(stage: stage).status
+        %span.has-tooltip(title="#{status || "missing"}"){class: "ci-status-icon-#{status || "skipped"}"}
+          = ci_icon_for_status(status || "missing")
+        -#- if status
+        -#  = ci_status_with_icon(status)
+        -#- else
+        -#  = ci_status_with_icon('missing')
 
   %td
     - if commit.started_at && commit.finished_at
@@ -63,7 +65,9 @@
         - if commit.retryable?
           = link_to retry_namespace_project_ci_commit_path(@project.namespace, @project, commit.id), class: 'btn has-tooltip', title: "Retry", method: :post do
             = icon("repeat")
+
         &nbsp;
+
         - if commit.active?
           = link_to cancel_namespace_project_ci_commit_path(@project.namespace, @project, commit.id), class: 'btn btn-remove has-tooltip', title: "Cancel", method: :post do
             = icon("remove cred")

@@ -20,30 +20,6 @@ class Projects::BuildsController < Projects::ApplicationController
     @builds = @builds.page(params[:page]).per(30)
   end
 
-  def commits
-    @scope = params[:scope]
-    @all_commits = project.ci_commits
-    @commits = @all_commits.order(id: :desc)
-    @commits =
-      case @scope
-      when 'latest'
-        @commits
-      when 'branches'
-        refs = project.repository.branches.map(&:name)
-        ids = @all_commits.where(ref: refs).group(:ref).select('max(id)')
-        @commits.where(id: ids)
-      when 'tags'
-        refs = project.repository.tags.map(&:name)
-        ids = @all_commits.where(ref: refs).group(:ref).select('max(id)')
-        @commits.where(id: ids)
-      else
-        @commits
-      end
-    @commits = @commits.page(params[:page]).per(30)
-  end
-
-  private
-
   def cancel_all
     @project.builds.running_or_pending.each(&:cancel)
     redirect_to namespace_project_builds_path(project.namespace, project)
@@ -90,10 +66,6 @@ class Projects::BuildsController < Projects::ApplicationController
 
   def build
     @build ||= project.builds.unscoped.find_by!(id: params[:id])
-  end
-
-  def ci_commit
-    @ci_commit ||= project.ci_commits.find_by!(id: params[:id])
   end
 
   def build_path(build)

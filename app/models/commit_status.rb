@@ -45,6 +45,11 @@ class CommitStatus < ActiveRecord::Base
 
   validates_presence_of :name
 
+  def self.stages
+    group(:stage, :stage_idx).order(:stage_idx)
+      .pluck(:stage, :stage_idx).map(&:first)
+  end
+
   alias_attribute :author, :user
 
   scope :running, -> { where(status: 'running') }

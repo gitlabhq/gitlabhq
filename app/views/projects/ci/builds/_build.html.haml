@@ -1,4 +1,4 @@
-%tr.build{style:"text-decoration: #{if defined?(retried) && retried then "line-through" else "inherit" end}"}
+%tr.build
   %td.status
     - if can?(current_user, :read_build, build)
       = ci_status_with_icon(build.status, namespace_project_build_url(build.project.namespace, build.project, build))
