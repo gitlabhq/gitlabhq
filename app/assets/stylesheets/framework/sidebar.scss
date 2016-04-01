@@ -191,6 +191,27 @@
   }
 }
 
+.expand-nav a {
+  color: $gl-icon-color;
+  width: 60px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  font-size: 20px;
+  background: transparent;
+  height: 59px;
+  text-align: center;
+  line-height: 59px;
+  border-bottom: 1px solid #eee;
+  transition-duration: .3s;
+  outline: none;
+  z-index: 100;
+
+  &:hover {
+    text-decoration: none;
+  }
+}
+
 .collapse-nav a {
   width: $sidebar_width;
   position: fixed;
@@ -210,55 +231,12 @@
 }
 
 .page-sidebar-collapsed {
-  padding-left: $sidebar_collapsed_width;
-
   .sidebar-wrapper {
-    width: $sidebar_collapsed_width;
-
-    .header-logo {
-      width: $sidebar_collapsed_width;
-
-      a {
-        padding-left: ($sidebar_collapsed_width - 36) / 2;
-
-        .gitlab-text-container {
-          display: none;
-        }
-      }
-    }
-
-    .nav-sidebar {
-      width: $sidebar_collapsed_width;
-
-      li {
-        width: auto;
-
-        a {
-          span {
-            display: none;
-          }
-        }
-      }
-    }
-
-    .collapse-nav a {
-      width: $sidebar_collapsed_width;
-    }
-
-    .sidebar-user {
-      padding-left: ($sidebar_collapsed_width - 36) / 2;
-      width: $sidebar_collapsed_width;
-
-      .username {
-        display: none;
-      }
-    }
+    display: none;
   }
 }
 
 .page-sidebar-expanded {
-  padding-left: $sidebar_collapsed_width;
-
   @media (min-width: $screen-md-min) {
     padding-left: $sidebar_width;
   }
