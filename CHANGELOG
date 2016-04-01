@@ -7,6 +7,7 @@ v 8.6.3 (unreleased)
   - Fix raw/rendered diff producing different results on merge requests. !3450
   - Fix commit comment alignment (Stan Hu). !3466
   - Update gitlab-shell version and doc to 2.6.12. gitlab-org/gitlab-ee!280
+  - Mentions on confidential issues doesn't create todos for non-members. !3374
 
 v 8.6.2
   - Fix dropdown alignment. !3298
