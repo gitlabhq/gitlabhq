@@ -939,12 +939,12 @@ describe Repository, models: true do
     end
   end
 
-  describe '#push_branches' do
+  describe '#push_remote_branches' do
     it 'push branches to the remote repo' do
-      expect_any_instance_of(Gitlab::Shell).to receive(:push_branches).
+      expect_any_instance_of(Gitlab::Shell).to receive(:push_remote_branches).
         with('project_name', 'remote_name', ['branch'])
 
-      repository.push_branches('project_name', 'remote_name', ['branch'])
+      repository.push_remote_branches('project_name', 'remote_name', ['branch'])
     end
   end
 
@@ -967,10 +967,17 @@ describe Repository, models: true do
 
   describe '#remote_tags' do
     it 'gets the remote tags' do
-      expect_any_instance_of(Gitlab::Shell).to receive(:list_remote_tags).
-        with(repository.path_with_namespace, 'upstream')
+      masterrev = repository.find_branch('master').target
 
-      repository.remote_tags('upstream')
+      expect_any_instance_of(Gitlab::Shell).to receive(:list_remote_tags).
+        with(repository.path_with_namespace, 'upstream').
+        and_return({ 'v0.0.1' => masterrev })
+
+      tags = repository.remote_tags('upstream')
+
+      expect(tags.first).to be_an_instance_of(Gitlab::Git::Tag)
+      expect(tags.first.name).to eq('v0.0.1')
+      expect(tags.first.target).to eq(masterrev)
     end
   end
 
@@ -1009,7 +1016,7 @@ describe Repository, models: true do
 
   def create_remote_branch(remote_name, branch_name, target)
     rugged = repository.rugged
-    ref = rugged.references.create("refs/remotes/#{remote_name}/#{branch_name}", target)
+    rugged.references.create("refs/remotes/#{remote_name}/#{branch_name}", target)
   end
 
 end

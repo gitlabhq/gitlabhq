@@ -8,6 +8,9 @@ class CreateRemoteMirrors < ActiveRecord::Migration
       t.datetime :last_update_at
       t.datetime :last_successful_update_at
       t.string :last_error
+      t.text :encrypted_credentials
+      t.string :encrypted_credentials_iv
+      t.string :encrypted_credentials_salt
 
       t.timestamps null: false
     end

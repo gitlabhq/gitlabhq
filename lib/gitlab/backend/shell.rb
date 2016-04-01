@@ -43,12 +43,13 @@ module Gitlab
 
     def list_remote_tags(name, remote)
       output, status = Popen::popen([gitlab_shell_projects_path, 'list-remote-tags', "#{name}.git", remote])
+      tags_with_targets = []
 
       raise Error, output unless status.zero?
 
       # Each line has this format: "dc872e9fa6963f8f03da6c8f6f264d0845d6b092\trefs/tags/v1.10.0\n"
       # We want to convert it to: [{ 'v1.10.0' => 'dc872e9fa6963f8f03da6c8f6f264d0845d6b092' }, ...]
-      tags_with_targets = output.lines.flat_map do |line|
+      output.lines.each do |line|
         target, path = line.strip!.split("\t")
 
         # When the remote repo is empty we don't have tags.
@@ -59,8 +60,8 @@ module Gitlab
         # See: http://stackoverflow.com/questions/15472107/when-listing-git-ls-remote-why-theres-after-the-tag-name
         next if name =~ /\^\{\}\Z/
 
-        [name, target]
-      end.compact
+        tags_with_targets.concat([name, target])
+      end
 
       Hash[*tags_with_targets]
     end
@@ -304,9 +305,9 @@ module Gitlab
     # branch_name - remote branch name
     #
     # Ex.
-    #   push_branches('upstream', 'feature')
+    #   push_remote_branches('upstream', 'feature')
     #
-    def push_branches(project_name, remote_name, branch_names)
+    def push_remote_branches(project_name, remote_name, branch_names)
       args = [gitlab_shell_projects_path, 'push-branches', "#{project_name}.git", remote_name, *branch_names]
       output, status = Popen::popen(args)
       raise Error, output unless status.zero?

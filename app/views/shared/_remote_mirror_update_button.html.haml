@@ -1,4 +1,4 @@
-- if @project.remote_mirror?
+- if @project.has_remote_mirror?
   - if remote_mirror.update_in_progress?
     %span.btn.disabled
       = icon('refresh')
@@ -7,4 +7,3 @@
     = link_to update_remote_now_namespace_project_mirror_path(@project.namespace, @project), method: :post, class: "btn" do
       = icon('refresh')
       Update Now
-

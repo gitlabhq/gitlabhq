@@ -1,12 +1,14 @@
 - page_title "Mirror Repository"
-%h3.page_title
+%h3.page-title
   Mirror Repository
 
 %p.light
   A repository can be setup as a mirror of another repository, and can also have a remote mirror associated.
 
 %p.light
-  When the repository is configured as a mirror, all of its content will automatically be updated from the repository configured in the <strong>Pull from a remote repository</strong> section.
+  When the repository is configured as a mirror, all of its branches, tags, and commits will automatically be updated from the repository configured in the
+  %strong Pull from a remote repository
+  section.
 
 %p.light
   When the repository has a remote mirror associated, it means that the remote repository configured in the <strong>Push to a remote repository</strong> section will automatically receive updates from the current repository.
@@ -24,7 +26,7 @@
     Set up your project to automatically have its branches, tags, and commits updated from an upstream repository every hour.
   = render "shared/mirror_update_button"
   - if @project.mirror_last_update_success?
-    %span &nbsp;Successfully updated #{time_ago_with_tooltip(@project.mirror_last_successful_update_at)}.
+    %span.prepend-left-default Successfully updated #{time_ago_with_tooltip(@project.mirror_last_successful_update_at)}.
   %hr.clearfix
 
   - if @project.mirror_last_update_failed?
@@ -83,7 +85,7 @@
     Set up the remote repository that you want to update with the content of the current repository every hour.
   = render "shared/remote_mirror_update_button", remote_mirror: @remote_mirror
   - if @remote_mirror.last_successful_update_at
-    %span &nbsp;Successfully updated #{time_ago_with_tooltip(@remote_mirror.last_successful_update_at)}.
+    %span.prepend-left-default Successfully updated #{time_ago_with_tooltip(@remote_mirror.last_successful_update_at)}.
 
   %hr.clearfix
 

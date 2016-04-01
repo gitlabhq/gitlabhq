@@ -182,7 +182,7 @@ class Project < ActiveRecord::Base
 
   accepts_nested_attributes_for :variables, allow_destroy: true
   accepts_nested_attributes_for :remote_mirrors,
-    allow_destroy: true, reject_if: proc { |attrs| attrs[:id].blank? && attrs[:url].blank? }
+    allow_destroy: true, reject_if: ->(attrs) { attrs[:id].blank? && attrs[:url].blank? }
 
   delegate :name, to: :owner, allow_nil: true, prefix: true
   delegate :members, to: :team, prefix: true
@@ -538,7 +538,7 @@ class Project < ActiveRecord::Base
     update_column(:import_error, error_message)
   end
 
-  def remote_mirror?
+  def has_remote_mirror?
     remote_mirrors.enabled.exists?
   end
 
@@ -1213,10 +1213,6 @@ class Project < ActiveRecord::Base
 
   private
 
-  def remove_mirror_repository_reference
-    repository.remove_remote(Repository::MIRROR_REMOTE)
-  end
-
   def update_forks_visibility_level
     return unless visibility_level < visibility_level_was
 
@@ -1228,9 +1224,13 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def remove_mirror_repository_reference
+    repository.remove_remote(Repository::MIRROR_REMOTE)
+  end
+
   def import_url_availability
     if remote_mirrors.find_by(url: import_url)
-      errors.add(:import_url, 'is already in use by the remote mirror')
+      errors.add(:import_url, 'is already in use by a remote mirror')
     end
   end
 

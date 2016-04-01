@@ -49,7 +49,7 @@ module Projects
       # Push the default branch first so it works fine when remote mirror is empty.
       branches.unshift(*default_branch)
 
-      repository.push_branches(project.path_with_namespace, mirror.ref_name, branches)
+      repository.push_remote_branches(project.path_with_namespace, mirror.ref_name, branches)
     end
 
     def delete_branches
@@ -81,7 +81,7 @@ module Projects
     end
 
     def divergent_branches
-      remote_branches.each_with_object([]) do |(name, branch), branches|
+      remote_branches.each_with_object([]) do |(name, _), branches|
         if local_branches[name] && repository.upstream_has_diverged?(name, mirror.ref_name)
           branches << name
         end
@@ -95,13 +95,13 @@ module Projects
     end
 
     def remote_tags
-      @remote_tags ||= repository.remote_tags(mirror.ref_name).each_with_object({}) do |(name, target), tags|
-        tags[name] = target
+      @remote_tags ||= repository.remote_tags(mirror.ref_name).each_with_object({}) do |tag, tags|
+        tags[tag.name] = tag
       end
     end
 
     def push_tags
-      repository.push_branches(project.path_with_namespace, mirror.ref_name, changed_tags)
+      repository.push_remote_branches(project.path_with_namespace, mirror.ref_name, changed_tags)
     end
 
     def delete_tags
@@ -110,16 +110,16 @@ module Projects
 
     def changed_tags
       @changed_tags ||= local_tags.each_with_object([]) do |(name, tag), tags|
-        remote_tag_target = remote_tags[name]
+        remote_tag = remote_tags[name]
 
-        if remote_tag_target.nil? || (tag.target != remote_tag_target)
+        if remote_tag.nil? || (tag.target != remote_tag.target)
           tags << name
         end
       end
     end
 
     def deleted_tags
-      @deleted_tags ||= remote_tags.each_with_object([]) do |(name, target), tags|
+      @deleted_tags ||= remote_tags.each_with_object([]) do |(name, _), tags|
         tags << name if local_tags[name].nil?
       end
     end

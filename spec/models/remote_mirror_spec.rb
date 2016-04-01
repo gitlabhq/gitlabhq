@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe RemoteMirror, focus: true do
+describe RemoteMirror do
   describe 'encrypting credentials' do
     context 'when setting URL for a first time' do
       it 'should store the URL without credentials' do
@@ -13,6 +13,15 @@ describe RemoteMirror, focus: true do
         mirror = create_mirror_with_url('http://foo:bar@test.com')
 
         expect(mirror.credentials).to eq({ user: 'foo', password: 'bar' })
+      end
+
+      it 'should handle credentials with large content' do
+        mirror = create_mirror_with_url('http://bxnhm8dote33ct932r3xavslj81wxmr7o8yux8do10oozckkif:9ne7fuvjn40qjt35dgt8v86q9m9g9essryxj76sumg2ccl2fg26c0krtz2gzfpyq4hf22h328uhq6npuiq6h53tpagtsj7vsrz75@test.com')
+
+        expect(mirror.credentials).to eq({
+          user: 'bxnhm8dote33ct932r3xavslj81wxmr7o8yux8do10oozckkif',
+          password: '9ne7fuvjn40qjt35dgt8v86q9m9g9essryxj76sumg2ccl2fg26c0krtz2gzfpyq4hf22h328uhq6npuiq6h53tpagtsj7vsrz75'
+        })
       end
     end
 

@@ -17,11 +17,15 @@
 class RemoteMirror < ActiveRecord::Base
   include AfterCommitQueue
 
-  attr_encrypted :credentials, key: Gitlab::Application.secrets.db_key_base, marshal: true, encode: true, mode: :per_attribute_iv_and_salt
+  attr_encrypted :credentials,
+                 key: Gitlab::Application.secrets.db_key_base,
+                 marshal: true,
+                 encode: true,
+                 mode: :per_attribute_iv_and_salt
 
   belongs_to :project
 
-  validates :url, presence: true, url: { protocols: %w(ssh git http https), allow_blank: true }, on: :create
+  validates :url, presence: true, url: { protocols: %w(ssh git http https), allow_blank: true }
   validate  :url_availability, if: :url_changed?
 
   after_save :refresh_remote, if: :url_changed?
@@ -30,6 +34,7 @@ class RemoteMirror < ActiveRecord::Base
 
   scope :enabled, -> { where(enabled: true) }
   scope :started, -> { with_update_status(:started) }
+  scope :stuck,   -> { started.where('last_update_at < ?', 1.day.ago) }
 
   state_machine :update_status, initial: :none do
     event :update_start do
@@ -55,14 +60,14 @@ class RemoteMirror < ActiveRecord::Base
     after_transition any => :started, do: :schedule_update_job
 
     after_transition started: :finished do |remote_mirror, transaction|
-      timestamp = DateTime.now
+      timestamp = Time.now
       remote_mirror.update_attributes!(
         last_update_at: timestamp, last_successful_update_at: timestamp, last_error: nil
       )
     end
 
     after_transition started: :failed do |remote_mirror, transaction|
-      remote_mirror.update(last_update_at: DateTime.now)
+      remote_mirror.update(last_update_at: Time.now)
     end
   end
 
@@ -81,7 +86,7 @@ class RemoteMirror < ActiveRecord::Base
   def sync
     return if !enabled || update_in_progress?
 
-    update_failed? ?  update_retry : update_start
+    update_failed? ? update_retry : update_start
   end
 
   def mark_for_delete_if_blank_url
