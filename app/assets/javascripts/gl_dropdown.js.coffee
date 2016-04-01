@@ -171,10 +171,11 @@ class GitLabDropdown
         selector = ".dropdown-page-one .dropdown-content a"
 
       @dropdown.on "click", selector, (e) ->
-        selected = self.rowClicked $(@)
+        $el = $(@)
+        selected = self.rowClicked $el
 
         if self.options.clicked
-          self.options.clicked(selected, e)
+          self.options.clicked(selected, $el, e)
 
   # Finds an element inside wrapper element
   getElement: (selector) ->
