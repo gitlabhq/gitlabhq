@@ -3,6 +3,10 @@ module Awardable
 
   included do
     has_many :emoji_awards, as: :awardable, dependent: :destroy
+
+    if self < Participable
+      participant :emoji_awards
+    end
   end
 
   module ClassMethods
@@ -59,6 +63,7 @@ module Awardable
 
   def award_emoji(emoji_name, current_user)
     return unless emoji_awardable?
+
     emoji_awards.create(name: emoji_name, user: current_user)
   end
 
