@@ -20,7 +20,7 @@
 #
 
 class GitlabIssueTrackerService < IssueTrackerService
-  include Gitlab::Application.routes.url_helpers
+  include Gitlab::Routing.url_helpers
 
   prop_accessor :title, :description, :project_url, :issues_url, :new_issue_url
 
