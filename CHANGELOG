@@ -1,25 +1,17 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.6.3
+  - Mentions on confidential issues doesn't create todos for non-members. !3374
   - Destroy related todos when an Issue/MR is deleted. !3376
   - Fix error 500 when target is nil on todo list. !3376
   - Fix copying uploads when moving issue to another project. !3382
   - Ensuring Merge Request API returns boolean values for work_in_progress (Abhi Rao). !3432
   - Fix raw/rendered diff producing different results on merge requests. !3450
   - Fix commit comment alignment (Stan Hu). !3466
-  - Update gitlab-shell version and doc to 2.6.12. gitlab-org/gitlab-ee!280
-  - Mentions on confidential issues doesn't create todos for non-members. !3374
-  - Allow temporary email as notification email. !3477
-
-v 8.6.3
-  - Fix copying uploads when moving issue to another project
-
-v 8.6.3 (unreleased)
-  - Mentions on confidential issues doesn't create todos for non-members
-
-v 8.6.3 (unreleased)
   - Fix Error 500 when searching for a comment in a project snippet. !3468
+  - Allow temporary email as notification email. !3477
   - Fix issue with dropdowns not selecting values. !3478
+  - Update gitlab-shell version and doc to 2.6.12. gitlab-org/gitlab-ee!280
 
 v 8.6.2
   - Fix dropdown alignment. !3298
