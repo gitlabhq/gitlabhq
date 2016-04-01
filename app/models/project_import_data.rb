@@ -17,4 +17,8 @@ class ProjectImportData < ActiveRecord::Base
   serialize :data, JSON
 
   validates :project, presence: true
+
+  def stringified_credentials
+    JSON[credentials.to_json]
+  end
 end

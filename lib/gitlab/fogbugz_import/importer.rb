@@ -8,7 +8,7 @@ module Gitlab
 
         import_data = project.import_data.try(:data)
         repo_data = import_data['repo'] if import_data
-        if import_data_credentials && import_data_credentials['repo']
+        if defined?(repo_data)
           @repo = FogbugzImport::Repository.new(repo_data)
           @known_labels = Set.new
         else
@@ -18,10 +18,8 @@ module Gitlab
 
       def execute
         return true unless repo.valid?
-
-        data = project.import_data.try(:data)
-
-        client = Gitlab::FogbugzImport::Client.new(token: data['fb_session']['token'], uri: data['fb_session']['uri'])
+        Rails.logger.error import_data_credentials.inspect
+        client = Gitlab::FogbugzImport::Client.new(token: import_data_credentials['fb_session']['token'], uri: import_data_credentials['fb_session']['uri'])
 
         @cases = client.cases(@repo.id.to_i)
         @categories = client.categories
@@ -34,7 +32,7 @@ module Gitlab
       private
 
       def import_data_credentials
-        @import_data_credentials ||= project.import_data.credentials if project.import_data
+        @import_data_credentials ||= project.import_data.stringified_credentials if project.import_data
       end
 
       def user_map
@@ -244,8 +242,8 @@ module Gitlab
 
       def build_attachment_url(rel_url)
         data = project.import_data.try(:data)
-        uri = data['fb_session']['uri']
-        token = data['fb_session']['token']
+        uri = import_data_credentials['fb_session']['uri']
+        token = import_data_credentials['fb_session']['token']
         "#{uri}/#{rel_url}&token=#{token}"
       end
 
