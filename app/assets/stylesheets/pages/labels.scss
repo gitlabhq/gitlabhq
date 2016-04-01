@@ -49,6 +49,11 @@
 }
 
 .label-row {
+  .label-name {
+    display: inline-block;
+    width: 200px;
+  }
+
   .label {
     padding: 9px;
     font-size: 14px;
@@ -68,4 +73,29 @@
   margin-bottom: 10px;
   background-color: $gl-danger;
   color: $white-light;
+}
+
+.manage-labels-list {
+
+  .prepend-left-10 {
+    display: inline-block;
+    width: 440px;
+  }
+
+  .pull-right {
+    .action-buttons {
+      border-color: transparent;
+      margin: 7px;
+    }
+
+    i {
+      color: $gl-text-color;
+    }
+
+    .append-right-20 {
+      a {
+        color: $gl-text-color;
+      }
+    }
+  }
 }
