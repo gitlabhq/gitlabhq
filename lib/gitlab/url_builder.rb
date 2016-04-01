@@ -2,6 +2,7 @@ module Gitlab
   class UrlBuilder
     include Gitlab::Application.routes.url_helpers
     include GitlabRoutingHelper
+    include ActionView::RecordIdentifier
 
     def initialize(type)
       @type = type
@@ -37,19 +38,16 @@ module Gitlab
         namespace_project_commit_url(namespace_id: note.project.namespace,
                                      id: note.commit_id,
                                      project_id: note.project,
-                                     anchor: "note_#{note.id}")
+                                     anchor: dom_id(note))
       elsif note.for_issue?
         issue = Issue.find(note.noteable_id)
-        issue_url(issue,
-                  anchor: "note_#{note.id}")
+        issue_url(issue, anchor: dom_id(note))
       elsif note.for_merge_request?
         merge_request = MergeRequest.find(note.noteable_id)
-        merge_request_url(merge_request,
-                          anchor: "note_#{note.id}")
-      elsif note.for_project_snippet?
+        merge_request_url(merge_request, anchor: dom_id(note))
+      elsif note.for_snippet?
         snippet = Snippet.find(note.noteable_id)
-        project_snippet_url(snippet,
-                            anchor: "note_#{note.id}")
+        project_snippet_url(snippet, anchor: dom_id(note))
       end
     end
   end
