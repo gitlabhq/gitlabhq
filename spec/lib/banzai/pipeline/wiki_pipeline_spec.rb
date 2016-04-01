@@ -1,6 +1,9 @@
 require 'rails_helper'
 
 describe Banzai::Pipeline::WikiPipeline do
+  let(:project_wiki) { double }
+  before(:each) { allow(project_wiki).to receive(:wiki_base_path) { '/some/repo/wikis' } }
+
   describe 'TableOfContents' do
     it 'replaces the tag with the TableOfContentsFilter result' do
       markdown = <<-MD.strip_heredoc
@@ -11,7 +14,7 @@ describe Banzai::Pipeline::WikiPipeline do
           Foo
       MD
 
-      result = described_class.call(markdown, project: spy, project_wiki: double)
+      result = described_class.call(markdown, project: spy, project_wiki: project_wiki)
 
       aggregate_failures do
         expect(result[:output].text).not_to include '[['
@@ -29,7 +32,7 @@ describe Banzai::Pipeline::WikiPipeline do
           Foo
       MD
 
-      output = described_class.to_html(markdown, project: spy, project_wiki: double)
+      output = described_class.to_html(markdown, project: spy, project_wiki: project_wiki)
 
       expect(output).to include('[[<em>toc</em>]]')
     end
@@ -42,7 +45,7 @@ describe Banzai::Pipeline::WikiPipeline do
           Foo
       MD
 
-      output = described_class.to_html(markdown, project: spy, project_wiki: double)
+      output = described_class.to_html(markdown, project: spy, project_wiki: project_wiki)
 
       aggregate_failures do
         expect(output).not_to include('<ul>')
