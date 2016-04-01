@@ -296,6 +296,8 @@ class GitLabDropdown
             input = $(input)
                       .attr('id', @options.inputId)
           @dropdown.before input
+        else
+          field.val value
 
       return selectedObject
 

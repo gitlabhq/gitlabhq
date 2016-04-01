@@ -9,6 +9,7 @@ v 8.6.3 (unreleased)
   - Update gitlab-shell version and doc to 2.6.12. gitlab-org/gitlab-ee!280
   - Mentions on confidential issues doesn't create todos for non-members. !3374
   - Fix Error 500 when searching for a comment in a project snippet. !3468
+  - Fix issue with dropdowns not selecting values. !3478
 
 v 8.6.2
   - Fix dropdown alignment. !3298

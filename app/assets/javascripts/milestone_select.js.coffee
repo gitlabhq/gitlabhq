@@ -63,7 +63,8 @@ class @MilestoneSelect
           milestone.name is selectedMilestone
         hidden: ->
           $selectbox.hide()
-          $value.show()
+          # display:block overrides the hide-collapse rule
+          $value.removeAttr('style')
         clicked: (selected) ->
           if $dropdown.hasClass 'js-filter-bulk-update'
             return
@@ -71,11 +72,9 @@ class @MilestoneSelect
           if $dropdown.hasClass('js-filter-submit')
             if selected.name?
               selectedMilestone = selected.name
-            else if selected.title?
-              selectedMilestone = selected.title
             else
               selectedMilestone = ''
-            $dropdown.parents('form').submit()
+            Issues.filterResults $dropdown.closest('form')
           else
             selected = $selectbox
               .find('input[type="hidden"]')
