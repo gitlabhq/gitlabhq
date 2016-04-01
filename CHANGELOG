@@ -7,7 +7,6 @@ v 8.7.0 (unreleased)
   - Expose label description in API (Mariusz Jachimowicz)
   - Allow back dating on issues when created through the API
   - Fix avatar stretching by providing a cropping feature
-  - Fix raw/rendered diff producing different results on merge requests !3450
   - Add links to CI setup documentation from project settings and builds pages
   - Handle nil descriptions in Slack issue messages (Stan Hu)
   - Add default scope to projects to exclude projects pending deletion
@@ -17,19 +16,18 @@ v 8.7.0 (unreleased)
   - Fall back to `In-Reply-To` and `References` headers when sub-addressing is not available (David Padilla)
   - Remove "Congratulations!" tweet button on newly-created project. (Connor Shea)
 
-v 8.6.3 (unreleased)
+v 8.6.3
+  - Mentions on confidential issues doesn't create todos for non-members. !3374
   - Destroy related todos when an Issue/MR is deleted. !3376
   - Fix error 500 when target is nil on todo list. !3376
-  - Allow temporary email as notification email. !TBD
-
-v 8.6.3
-  - Fix copying uploads when moving issue to another project
-
-v 8.6.3 (unreleased)
-  - Mentions on confidential issues doesn't create todos for non-members
-
-v 8.6.3 (unreleased)
+  - Fix copying uploads when moving issue to another project. !3382
+  - Ensuring Merge Request API returns boolean values for work_in_progress (Abhi Rao). !3432
+  - Fix raw/rendered diff producing different results on merge requests. !3450
+  - Fix commit comment alignment (Stan Hu). !3466
   - Fix Error 500 when searching for a comment in a project snippet. !3468
+  - Allow temporary email as notification email. !3477
+  - Fix issue with dropdowns not selecting values. !3478
+  - Update gitlab-shell version and doc to 2.6.12. gitlab-org/gitlab-ee!280
 
 v 8.6.2
   - Fix dropdown alignment. !3298
