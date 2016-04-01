@@ -46,8 +46,9 @@ feature 'Merge request awards', js: true, feature: true do
 
       page.within('.note') do
         find('.js-add-award').click
-        expect(page).to have_selector('.emoji-menu', count: 1)
       end
+
+      expect(page).to have_selector('.emoji-menu', count: 1)
     end
 
     it 'should add award to note' do
@@ -117,16 +118,14 @@ feature 'Merge request awards', js: true, feature: true do
   def show_note_award_menu
     page.within('.note') do
       find('.js-add-award').click
-      expect(page).to have_selector('.emoji-menu')
     end
+    expect(page).to have_selector('.emoji-menu')
   end
 
   def award_on_note(index = 1)
-    page.within('.note') do
-      page.within('.emoji-menu') do
-        buttons = all('.js-emoji-btn')
-        buttons[index].click
-      end
+    page.within('.emoji-menu') do
+      buttons = all('.js-emoji-btn')
+      buttons[index].click
     end
   end
 

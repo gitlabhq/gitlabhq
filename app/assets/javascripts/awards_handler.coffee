@@ -13,6 +13,7 @@ class @AwardsHandler
     $("html").on 'click', (event) ->
       if !$(event.target).closest(".emoji-menu").length
         if $(".emoji-menu").is(":visible")
+          $('.js-add-award.is-active').removeClass 'is-active'
           $(".emoji-menu").removeClass "is-visible"
 
     $(document)
@@ -22,10 +23,13 @@ class @AwardsHandler
   handleClick: (e) =>
     e.preventDefault()
     $emojiBtn = $(e.currentTarget)
-    $votesBlock = $($emojiBtn.closest('.js-award-holder').data('target'))
+    $addAwardBtn = $('.js-add-award.is-active')
+    $votesBlock = $($addAwardBtn.closest('.js-award-holder').data('target'))
 
-    if $votesBlock.length is 0
+    if $addAwardBtn.length is 0
       $votesBlock = $emojiBtn.closest('.js-awards-block')
+    else if $votesBlock.length is 0
+      $votesBlock = $addAwardBtn.closest('.js-awards-block')
 
     $votesBlock.addClass 'js-awards-block-current'
     awardUrl = $votesBlock.data 'award-url'
@@ -35,31 +39,55 @@ class @AwardsHandler
     @addAward awardUrl, emoji
 
   showEmojiMenu: ($addBtn) ->
-    if $(".emoji-menu").length
+    $menu = $('.emoji-menu')
+
+    if $menu.length
       $holder = $addBtn.closest('.js-award-holder')
 
-      if $holder.find('.emoji-menu').length is 0
-        $(".emoji-menu").detach().appendTo $holder
-
-      if $(".emoji-menu").is ".is-visible"
-        $(".emoji-menu").removeClass "is-visible"
+      if $menu.is ".is-visible"
+        $addBtn.removeClass "is-active"
+        $menu.removeClass "is-visible"
         $("#emoji_search").blur()
       else
-        $(".emoji-menu").addClass "is-visible"
+        $addBtn.addClass "is-active"
+        @positionMenu($menu, $addBtn)
+
+        $menu.addClass "is-visible"
         $("#emoji_search").focus()
     else
-      $addBtn.addClass "is-loading"
+      $addBtn.addClass "is-loading is-active"
       $.get $addBtn.data('award-menu-url'), (response) =>
         $addBtn.removeClass "is-loading"
-        $addBtn.closest('.js-award-holder').append response
+        $('body').append response
+
+        $menu = $(".emoji-menu")
+
+        @positionMenu($menu, $addBtn)
 
         @renderFrequentlyUsedBlock()
 
         setTimeout =>
-          $(".emoji-menu").addClass "is-visible"
+          $menu.addClass "is-visible"
           $("#emoji_search").focus()
           @setupSearch()
         , 200
+
+  positionMenu: ($menu, $addBtn) ->
+    position = $addBtn.data('position')
+
+    # The menu could potentially be off-screen or in a hidden overflow element
+    # So we position the element absolute in the body
+    css =
+      top: "#{$addBtn.offset().top + $addBtn.outerHeight()}px"
+
+    if position? and position is 'right'
+      css.left = "#{($addBtn.offset().left - $menu.outerWidth()) + 20}px"
+      $menu.addClass "is-aligned-right"
+    else
+      css.left = "#{$addBtn.offset().left}px"
+      $menu.removeClass "is-aligned-right"
+
+    $menu.css(css)
 
   addAward: (awardUrl, emoji) ->
     emoji = @normilizeEmojiName(emoji)
