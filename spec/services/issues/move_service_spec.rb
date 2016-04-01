@@ -143,6 +143,20 @@ describe Issues::MoveService, services: true do
               .to eq "Note with reference to merge request #{old_project.to_reference}!1"
           end
         end
+
+        context 'issue description with uploads' do
+          let(:uploader) { build(:file_uploader, project: old_project) }
+          let(:description) { "Text and #{uploader.to_markdown}" }
+
+          include_context 'issue move executed'
+
+          it 'rewrites uploads in description' do
+            expect(new_issue.description).to_not eq description
+            expect(new_issue.description)
+              .to match(/Text and #{FileUploader::MARKDOWN_PATTERN}/)
+            expect(new_issue.description).to_not include uploader.secret
+          end
+        end
       end
 
       describe 'rewritting references' do
