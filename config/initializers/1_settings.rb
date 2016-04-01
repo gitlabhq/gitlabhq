@@ -190,6 +190,7 @@ Settings.gitlab.default_projects_features['visibility_level']    = Settings.send
 Settings.gitlab['repository_downloads_path'] = File.join(Settings.shared['path'], 'cache/archive') if Settings.gitlab['repository_downloads_path'].nil?
 Settings.gitlab['restricted_signup_domains'] ||= []
 Settings.gitlab['import_sources'] ||= ['github','bitbucket','gitlab','gitorious','google_code','fogbugz','git']
+Settings.gitlab['trusted_proxies'] ||= []
 
 
 #
