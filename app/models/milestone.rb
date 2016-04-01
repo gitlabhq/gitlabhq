@@ -79,7 +79,7 @@ class Milestone < ActiveRecord::Base
   end
 
   def self.link_reference_pattern
-    super("milestones", /(?<milestone>\d+)/)
+    @link_reference_pattern ||= super("milestones", /(?<milestone>\d+)/)
   end
 
   def self.upcoming
