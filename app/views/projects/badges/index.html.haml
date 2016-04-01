@@ -6,10 +6,15 @@
       %b Builds badge &middot;
       = @badge.to_html
     .panel-body
-      %table.table
-        %tr
-          %td Markdown
-          %td= markdown("```markdown\n#{@badge.to_markdown}\n```")
-        %tr
-          %td HTML
-          %td= markdown("```html\n#{@badge.to_html}\n```")
+      .row
+        .col-md-2.text-center
+          Markdown
+        .col-md-10
+          = markdown("```markdown\n#{@badge.to_markdown}\n```")
+      .row
+        %hr
+      .row
+        .col-md-2.text-center
+          HTML
+        .col-md-10
+          = markdown("```html\n#{@badge.to_html}\n```")
