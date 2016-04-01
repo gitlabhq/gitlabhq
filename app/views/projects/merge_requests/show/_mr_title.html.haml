@@ -7,16 +7,9 @@
 
     %a.btn.btn-default.pull-right.visible-xs-block.gutter-toggle.issuable-gutter-toggle.js-sidebar-toggle{ href: "#" }
       = icon('angle-double-left')
-      
+
     .issuable-meta
-      %strong.identifier
-        Merge Request #{@merge_request.to_reference}
-      opened
-      = time_ago_with_tooltip(@merge_request.created_at)
-      by
-      %strong
-        = link_to_member(@project, @merge_request.author, size: 24, mobile_classes: "hidden-xs")
-        = link_to_member(@project, @merge_request.author, size: 24, mobile_classes: "hidden-sm hidden-md hidden-lg", by_username: true, avatar: false)
+      = issuable_meta(@merge_request, @project, "Merge Request")
 
   - if can?(current_user, :update_merge_request, @merge_request)
     .issuable-actions

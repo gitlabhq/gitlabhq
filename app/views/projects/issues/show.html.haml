@@ -18,14 +18,7 @@
 
     .issuable-meta
       = confidential_icon(@issue)
-      %strong.identifier
-        Issue #{@issue.to_reference}
-      opened
-      = time_ago_with_tooltip(@issue.created_at)
-      by
-      %strong
-        = link_to_member(@project, @issue.author, size: 24, mobile_classes: "hidden-xs")
-        = link_to_member(@project, @issue.author, size: 24, by_username: true, avatar: false, mobile_classes: "hidden-sm hidden-md hidden-lg")
+      = issuable_meta(@issue, @project, "Issue")
 
   .issuable-actions
     .clearfix.issue-btn-group.dropdown
