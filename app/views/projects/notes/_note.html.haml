@@ -12,7 +12,7 @@
         .note-actions
           - if current_user
             .award-menu-holder.note-action-award-holder.js-award-holder.js-award-action-btn{ data: { target: "##{dom_id(note)} .js-awards-block" } }
-              = link_to '#', title: 'Award emoji', class: 'note-award-control js-add-award', data: { award_menu_url: emojis_path } do
+              = link_to '#', title: 'Award emoji', class: 'note-award-control js-add-award', data: { award_menu_url: emojis_path, position: "right" } do
                 = icon('smile-o', {class: "award-control-icon award-control-icon-normal"})
                 = icon('spinner spin', {class: "award-control-icon award-control-icon-loading"})
           - if note_editable?(note)
