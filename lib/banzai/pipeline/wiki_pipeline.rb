@@ -4,7 +4,7 @@ module Banzai
       def self.filters
         @filters ||= begin
           super.insert_after(Filter::TableOfContentsFilter, Filter::GollumTagsFilter)
-               .insert_after(Filter::TableOfContentsFilter, Filter::WikiLinkFilter)
+               .insert_before(Filter::TaskListFilter, Filter::WikiLinkFilter)
         end
       end
     end

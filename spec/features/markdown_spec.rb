@@ -39,7 +39,7 @@ describe 'GitLab Markdown', feature: true do
   end
 
   def doc(html = @html)
-    Nokogiri::HTML::DocumentFragment.parse(html)
+    @doc ||= Nokogiri::HTML::DocumentFragment.parse(html)
   end
 
   # Shared behavior that all pipelines should exhibit
