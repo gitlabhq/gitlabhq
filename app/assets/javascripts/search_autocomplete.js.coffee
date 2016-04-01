@@ -104,6 +104,8 @@ class @SearchAutocomplete
             lastCategory = suggestion.category
 
           data.push
+            id: "#{suggestion.category.toLowerCase()}-#{suggestion.id}"
+            category: suggestion.category
             text: suggestion.label
             url: suggestion.url
 
@@ -271,8 +273,27 @@ class @SearchAutocomplete
             </ul>"
     @dropdownContent.html(html)
 
-  onClick: (item, e) ->
+  onClick: (item, $el, e) ->
     if location.pathname.indexOf(item.url) isnt -1
       e.preventDefault()
+      if not @badgePresent
+        if item.category is 'Projects'
+          @projectInputEl.val(item.id)
+          @addLocationBadge(
+            value: 'This project'
+          )
+
+        if item.category is 'Groups'
+          @groupInputEl.val(item.id)
+          @addLocationBadge(
+            value: 'This group'
+          )
+
+      $el.removeClass('is-active')
       @disableAutocomplete()
-      @searchInput.val('')
+      @searchInput.val('').focus()
+
+      # We need to wait because of @skipBlurEvent
+      setTimeout( =>
+        @onSearchInputFocus()
+      , 200)
