@@ -2,6 +2,7 @@
 .diff-file {
   border: 1px solid $border-color;
   margin-bottom: $gl-padding;
+  border-radius: 3px;
 
   .diff-header {
     position: relative;
@@ -31,6 +32,7 @@
     overflow-y: hidden;
     background: #fff;
     color: #333;
+    border-radius: 0 0 3px 3px;
 
     .unfold {
       cursor: pointer;
@@ -323,6 +325,12 @@
 
 .inline-parallel-buttons {
   float: right;
+}
+
+.diffs {
+  .content-block {
+    border-bottom: none;
+  }
 }
 
 // Mobile

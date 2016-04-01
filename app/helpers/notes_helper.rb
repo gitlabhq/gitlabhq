@@ -69,9 +69,9 @@ module NotesHelper
       line_type:     line_type
     }
 
-    text_field_tag 'reply-field', nil,
-                    placeholder: 'Reply...',
-                    class: 'form-control note-reply-field js-discussion-reply-button',
-                    data: data
+    button_tag class: 'btn btn-text-field js-discussion-reply-button',
+               data: data, title: 'Add a reply' do
+      link_text = 'Reply...'
+    end
   end
 end

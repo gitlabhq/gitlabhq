@@ -1,11 +1,6 @@
 /**
  * Note Form
  */
-.reply-btn {
-  @extend .btn-primary;
-  margin: 10px $gl-padding;
-}
-
 .comment-btn {
   @extend .btn-create;
 }
@@ -118,7 +113,6 @@
 .discussion-body,
 .diff-file {
   .notes .note {
-    border-color: #ddd;
     padding: 10px 15px;
   }
 

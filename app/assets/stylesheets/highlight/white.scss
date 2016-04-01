@@ -6,12 +6,12 @@
   }
 
   .diff-line-num, .diff-line-num a {
-    color: $black-transparent;
+    color: #8f8f8f;
   }
 
   // Code itself
   pre.code, .diff-line-num {
-    border-color: $border-color;
+    border-color: $table-border-gray;
   }
 
   &, pre.code, .line_holder .line_content {

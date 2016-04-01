@@ -57,10 +57,9 @@ Feature: Project Commits Diff Comments
     Then I should see two separate previews
 
   @javascript
-  Scenario: I have can reply in discussions
+  Scenario: I have a reply button in discussions
     Given I leave a diff comment like "Typo, please fix"
-    Then I should see a discussion reply text field
-
+    Then I should see a discussion reply button
   @javascript
   Scenario: I can preview with text
     Given I open a diff comment form
@@ -83,7 +82,7 @@ Feature: Project Commits Diff Comments
     Given I preview a diff comment text like "Should fix it :smile:"
     And I submit the diff comment
     Then I should not see the diff comment form
-    And I should see a discussion reply text field
+    And I should see a discussion reply button
 
   @javascript
   Scenario: I can add a comment on a side-by-side commit diff (left side)

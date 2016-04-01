@@ -197,7 +197,7 @@ module CommitsHelper
     link_to(
       namespace_project_blob_path(project.namespace, project,
                                   tree_join(commit_sha, diff.new_path)),
-      class: 'btn view-file js-view-file'
+      class: 'btn view-file js-view-file btn-file-option'
     ) do
       raw('View file @') + content_tag(:span, commit_sha[0..6],
                                        class: 'commit-short-id')
