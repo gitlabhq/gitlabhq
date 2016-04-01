@@ -1,6 +1,11 @@
 class @Todos
-  constructor: (@name) ->
-    @todos_per_page = gon.todos_per_page || 20
+  constructor: (opts = {}) ->
+    {
+      @el = $('.js-todos-options')
+    } = opts
+
+    @perPage = @el.data('perPage')
+
     @clearListeners()
     @initBtnListeners()
 
@@ -59,26 +64,30 @@ class @Todos
     $('.todos-pending .badge, .todos-pending-count').text data.count
     $('.todos-done .badge').text data.done_count
 
-  getRenderedPages: ->
-    $('.gl-pagination .page').length
+  getTotalPages: ->
+    @el.data('totalPages')
 
   getCurrentPage: ->
-    parseInt($.trim($('.gl-pagination .page.active').text()))
+    @el.data('currentPage')
+
+  getTodosPerPage: ->
+    @el.data('perPage')
+
 
   redirectIfNeeded: (total) ->
-    currPages = @getRenderedPages()
+    currPages = @getTotalPages()
     currPage = @getCurrentPage()
 
-    newPages = Math.ceil(total / @todos_per_page)
+    newPages = Math.ceil(total / @getTodosPerPage())
     url = location.href # Includes query strings
 
     # Refresh if no remaining Todos
-    if !total
+    if not total
       location.reload()
       return
 
     # Do nothing if no pagination
-    return if !currPages
+    return if not currPages
 
     # If new total of pages is different than we have now
     if newPages isnt currPages
