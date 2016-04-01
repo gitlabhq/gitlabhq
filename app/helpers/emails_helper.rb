@@ -50,10 +50,4 @@ module EmailsHelper
     msg = "This link is valid for #{password_reset_token_valid_time}.  "
     msg << "After it expires, you can #{link_tag}."
   end
-
-  # Overrides
-
-  def diff_hard_limit_enabled?
-    false
-  end
 end
