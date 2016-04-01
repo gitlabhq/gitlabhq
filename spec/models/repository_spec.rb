@@ -939,6 +939,41 @@ describe Repository, models: true do
     end
   end
 
+  describe '#push_branches' do
+    it 'push branches to the remote repo' do
+      expect_any_instance_of(Gitlab::Shell).to receive(:push_branches).
+        with('project_name', 'remote_name', ['branch'])
+
+      repository.push_branches('project_name', 'remote_name', ['branch'])
+    end
+  end
+
+  describe '#delete_remote_branches' do
+    it 'delete branches to the remote repo' do
+      expect_any_instance_of(Gitlab::Shell).to receive(:delete_remote_branches).
+        with('project_name', 'remote_name', ['branch'])
+
+      repository.delete_remote_branches('project_name', 'remote_name', ['branch'])
+    end
+  end
+
+  describe '#remove_remote' do
+    it 'remove a remote reference' do
+      repository.add_remote('upstream', 'http://repo.test')
+
+      expect(repository.remove_remote('upstream')).to eq(true)
+    end
+  end
+
+  describe '#remote_tags' do
+    it 'gets the remote tags' do
+      expect_any_instance_of(Gitlab::Shell).to receive(:list_remote_tags).
+        with(repository.path_with_namespace, 'upstream')
+
+      repository.remote_tags('upstream')
+    end
+  end
+
   describe '#local_branches' do
     it 'returns the local branches' do
       masterrev = repository.find_branch('master').target
@@ -950,9 +985,31 @@ describe Repository, models: true do
     end
   end
 
+  describe '#remote_branches' do
+    it 'returns the remote branches' do
+      masterrev = repository.find_branch('master').target
+      create_remote_branch('joe', 'remote_branch', masterrev)
+      repository.add_branch(user, 'local_branch', masterrev)
+
+      expect(repository.remote_branches('joe').any? { |branch| branch.name == 'local_branch' }).to eq(false)
+      expect(repository.remote_branches('joe').any? { |branch| branch.name == 'remote_branch' }).to eq(true)
+    end
+  end
+
+  describe '#upstream_branches' do
+    it 'returns branches from the upstream remote' do
+      masterrev = repository.find_branch('master').target
+      create_remote_branch('upstream', 'upstream_branch', masterrev)
+
+      expect(repository.upstream_branches.size).to eq(1)
+      expect(repository.upstream_branches.first).to be_an_instance_of(Gitlab::Git::Branch)
+      expect(repository.upstream_branches.first.name).to eq('upstream_branch')
+    end
+  end
+
   def create_remote_branch(remote_name, branch_name, target)
     rugged = repository.rugged
-    rugged.references.create("refs/remotes/#{remote_name}/#{branch_name}", target)
+    ref = rugged.references.create("refs/remotes/#{remote_name}/#{branch_name}", target)
   end
 
 end

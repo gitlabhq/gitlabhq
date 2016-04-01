@@ -13,10 +13,13 @@ describe Projects::UpdateRemoteMirrorService do
   describe "#execute" do
     before do
       create_branch(repository, 'existing-branch')
+      allow(repository).to receive(:remote_tags) { generate_tags(repository, 'v1.0.0', 'v1.1.0') }
     end
 
     it "fetches the remote repository" do
-      expect(repository).to receive(:fetch_remote).with(remote_mirror.ref_name)
+      expect(repository).to receive(:fetch_remote).with(remote_mirror.ref_name, no_tags: true) do
+        sync_remote(repository, remote_mirror.ref_name, all_branches)
+      end
 
       subject.execute(remote_mirror)
     end
@@ -29,7 +32,7 @@ describe Projects::UpdateRemoteMirrorService do
       expect(result[:status]).to eq(:success)
     end
 
-    describe 'Updating branches' do
+    describe 'Syncing branches' do
       it "push all the branches the first time" do
         allow(repository).to receive(:fetch_remote)
 
@@ -78,6 +81,48 @@ describe Projects::UpdateRemoteMirrorService do
       end
     end
 
+    describe 'Syncing tags' do
+      before do
+        allow(repository).to receive(:fetch_remote) { sync_remote(repository, remote_mirror.ref_name, all_branches) }
+      end
+
+      context 'when there are not tags to push' do
+        it 'should not try to push tags' do
+          allow(repository).to receive(:remote_tags) { {} }
+          allow(repository).to receive(:tags) { [] }
+
+          expect(repository).not_to receive(:push_tags)
+
+          subject.execute(remote_mirror)
+        end
+      end
+
+      context 'when there are some tags to push' do
+        it 'should push tags to remote' do
+          allow(repository).to receive(:remote_tags) { {} }
+
+          expect(repository).to receive(:push_branches).with(
+            project.path_with_namespace, remote_mirror.ref_name, ['v1.0.0', 'v1.1.0']
+          )
+
+          subject.execute(remote_mirror)
+        end
+      end
+
+      context 'when there are some tags to delete' do
+        it 'should delete tags from remote' do
+          allow(repository).to receive(:remote_tags) { generate_tags(repository, 'v1.0.0', 'v1.1.0') }
+          repository.rm_tag('v1.0.0')
+
+          expect(repository).to receive(:delete_remote_branches).with(
+            project.path_with_namespace, remote_mirror.ref_name,['v1.0.0']
+          )
+
+          subject.execute(remote_mirror)
+        end
+      end
+    end
+
   end
 
   def create_branch(repository, branch_name)
@@ -113,5 +158,11 @@ describe Projects::UpdateRemoteMirrorService do
 
     rugged.references.delete("refs/heads/#{branch}")
     repository.expire_branches_cache
+  end
+
+  def generate_tags(repository, *tag_names)
+    tag_names.each_with_object({}) do |name, tags|
+      tags[name] = repository.find_tag(name).try(:target)
+    end
   end
 end

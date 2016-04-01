@@ -115,11 +115,6 @@ class RemoteMirror < ActiveRecord::Base
     result.to_s
   end
 
-  def full_url
-    mirror_url = Gitlab::ImportUrl.new(url, credentials: credentials)
-    mirror_url.full_url
-  end
-
   private
 
   def url_availability
