@@ -8,12 +8,16 @@
         .gitlab-text-container
           %h3 GitLab
 
-    - if defined?(sidebar) && sidebar
-      = render "layouts/nav/#{sidebar}"
-    - elsif current_user
-      = render 'layouts/nav/dashboard'
+    - primary_sidebar = current_user ? 'dashboard' : 'explore'
+
+    - if defined?(sidebar) && sidebar && sidebar != primary_sidebar
+      .complex-sidebar
+        .nav-primary
+          = render "layouts/nav/#{primary_sidebar}"
+        .nav-secondary
+          = render "layouts/nav/#{sidebar}"
     - else
-      = render 'layouts/nav/explore'
+      = render "layouts/nav/#{primary_sidebar}"
 
     .collapse-nav
       = render partial: 'layouts/collapse_button'

@@ -312,7 +312,6 @@
 
 .page-sidebar-expanded {
   .complex-sidebar {
-    margin-bottom: 100px;
     display: inline-block;
 
     .nav-sidebar {
@@ -337,6 +336,7 @@
     }
 
     .nav-secondary {
+      padding-bottom: 100px;
       border-left: 1px solid rgba(255, 255, 255, 0.1);
       float: left;
       width: 168px;
