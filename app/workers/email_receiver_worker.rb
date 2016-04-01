@@ -36,7 +36,7 @@ class EmailReceiverWorker
     when Gitlab::Email::Receiver::UserBlockedError
       reason = "Your account has been blocked. If you believe this is in error, contact a staff member."
     when Gitlab::Email::Receiver::UserNotAuthorizedError
-      reason = "You are not allowed to respond to the thread you are replying to. If you believe this is in error, contact a staff member."
+      reason = "You are not allowed to perform this action. If you believe this is in error, contact a staff member."
     when Gitlab::Email::Receiver::NoteableNotFoundError
       reason = "The thread you are replying to no longer exists, perhaps it was deleted? If you believe this is in error, contact a staff member."
     when Gitlab::Email::Receiver::InvalidNoteError,
