@@ -27,6 +27,9 @@ v 8.6.3
 v 8.6.3 (unreleased)
   - Mentions on confidential issues doesn't create todos for non-members
 
+v 8.6.3 (unreleased)
+  - Fix Error 500 when searching for a comment in a project snippet. !3468
+
 v 8.6.2
   - Fix dropdown alignment. !3298
   - Fix issuable sidebar overlaps on tablet. !3299
