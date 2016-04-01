@@ -241,7 +241,6 @@ module Gitlab
       end
 
       def build_attachment_url(rel_url)
-        data = project.import_data.try(:data)
         uri = import_data_credentials['fb_session']['uri']
         token = import_data_credentials['fb_session']['token']
         "#{uri}/#{rel_url}&token=#{token}"
