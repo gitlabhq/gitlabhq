@@ -33,6 +33,7 @@ v 8.7.0 (unreleased)
   - API: Expose user location (Robert Schilling)
   - ClosingIssueExtractor regex now also works with colons. e.g. "Fixes: #1234" !3591
   - Update number of Todos in the sidebar when it's marked as "Done". !3600
+  - Add ability to sync to remote mirrors. !249
 
 v 8.6.5
   - Fix importing from GitHub Enterprise. !3529
@@ -80,6 +81,9 @@ v 8.6.2
   - Ensure private project snippets are not viewable by unauthorized people.
   - Gracefully handle notes on deleted commits in merge requests (Stan Hu). !3402
   - Fixed issue with notification settings not saving. !3452
+
+v 8.6.2 (unreleased)
+  - Comments on confidential issues don't show up in activity feed to non-members
 
 v 8.6.1
   - Add option to reload the schema before restoring a database backup. !2807
@@ -172,7 +176,6 @@ v 8.5.8
 
 v 8.5.7
   - Bump Git version requirement to 2.7.3
-  - Add ability to sync to remote mirrors.
 
 v 8.5.6
   - Obtain a lease before querying LDAP

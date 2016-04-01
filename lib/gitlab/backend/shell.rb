@@ -60,7 +60,7 @@ module Gitlab
         next if name =~ /\^\{\}\Z/
 
         [name, target]
-      end
+      end.compact
 
       Hash[*tags_with_targets]
     end

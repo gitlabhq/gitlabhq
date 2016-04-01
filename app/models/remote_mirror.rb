@@ -144,7 +144,7 @@ class RemoteMirror < ActiveRecord::Base
 
   def refresh_remote
     project.repository.remove_remote(ref_name)
-    project.repository.add_remote(ref_name, full_url)
+    project.repository.add_remote(ref_name, url)
   end
 
   def remove_remote
