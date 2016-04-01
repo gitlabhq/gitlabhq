@@ -4,9 +4,10 @@ v 8.7.0 (unreleased)
   - Update GitLab Pages to 0.2.1: support user-defined 404 pages
   - Refactor group sync to pull access level logic to its own class. !306
 
-v 8.6.3 (unreleased)
-  - Fix "Reload with full diff" button not working (Stan Hu)
+v 8.6.3
+  - Fix other cases where git hooks would fail due to old commits. !310
   - Exit ElasticIndexerWorker's job happily if record cannot be found. !311
+  - Fix "Reload with full diff" button not working (Stan Hu). !313
 
 v 8.6.2
   - Fix old commits triggering git hooks on new branches branched off another branch. !281
