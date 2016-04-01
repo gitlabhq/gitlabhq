@@ -309,3 +309,56 @@
     padding-right: $sidebar_collapsed_width;
   }
 }
+
+.page-sidebar-expanded {
+  .complex-sidebar {
+    margin-bottom: 100px;
+    display: inline-block;
+
+    .nav-sidebar {
+      margin-bottom: 0;
+    }
+
+    .nav-primary {
+      width: 60px;
+      float: left;
+
+      .nav-sidebar {
+        width: 60px;
+
+        li a {
+          width: 60px;
+
+          span {
+            display: none;
+          }
+        }
+      }
+    }
+
+    .nav-secondary {
+      border-left: 1px solid rgba(255, 255, 255, 0.1);
+      float: left;
+      width: 168px;
+
+      .nav-sidebar {
+        width: 168px;
+
+        li a {
+          width: 168px;
+
+          i {
+            display: none;
+          }
+        }
+      }
+    }
+  }
+}
+
+.page-sidebar-collapsed {
+  .nav-secondary {
+    display: none;
+    transition-duration: .3s;
+  }
+}
