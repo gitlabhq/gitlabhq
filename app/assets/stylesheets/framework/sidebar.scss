@@ -296,7 +296,6 @@
   .nav-primary {
     width: 61px;
     float: left;
-    border-right: 1px solid rgba(255, 255, 255, 0.1);
     height: 100vh;
 
     .nav-sidebar {
@@ -313,17 +312,23 @@
   }
 
   .nav-secondary {
+    $nav-secondary-width: 168px;
+
     float: left;
-    width: 168px;
+    width: $nav-secondary-width;
 
     .nav-sidebar {
-      width: 168px;
+      width: $nav-secondary-width;
 
-      li a {
-        width: 168px;
+      li {
+        width: $nav-secondary-width;
 
-        i {
-          display: none;
+        a {
+          width: $nav-secondary-width;
+
+          i {
+            display: none;
+          }
         }
       }
     }
