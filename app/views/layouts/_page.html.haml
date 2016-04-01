@@ -1,7 +1,7 @@
 .page-with-sidebar{ class: "#{page_sidebar_class} #{page_gutter_class}" }
   = render "layouts/broadcast"
   .expand-nav
-    = link_to icon('bars'), '#', class: 'toggle-nav-collapse', title: "Open/Close"
+    = link_to icon('bars'), '#', class: 'toggle-nav-collapse', title: "Open sidebar"
   .sidebar-wrapper.nicescroll{ class: nav_sidebar_class }
     .header-logo
       %a#logo
@@ -22,7 +22,7 @@
       = render "layouts/nav/#{primary_sidebar}"
 
     .collapse-nav
-      = link_to icon('angle-left'), '#', class: 'toggle-nav-collapse', title: "Open/Close"
+      = link_to icon('angle-left'), '#', class: 'toggle-nav-collapse', title: "Hide sidebar"
     - if current_user
       = link_to current_user, class: 'sidebar-user', title: "Profile" do
         = image_tag avatar_icon(current_user, 60), alt: 'Profile', class: 'avatar avatar s36'
