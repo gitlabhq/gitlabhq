@@ -25,10 +25,10 @@ module Banzai
       end
 
       def process_link_attr(html_attr)
-        return if html_attr.blank?
+        return if html_attr.blank? || file_reference?(html_attr)
 
         uri = URI(html_attr.value)
-        if uri.relative? && uri.path.present? && uri.path
+        if uri.relative? && uri.path.present?
           html_attr.value = rebuild_wiki_uri(uri).to_s
         end
       rescue URI::Error
@@ -38,6 +38,10 @@ module Banzai
       def rebuild_wiki_uri(uri)
         uri.path = ::File.join(project_wiki_base_path, uri.path)
         uri
+      end
+
+      def file_reference?(html_attr)
+        !File.extname(html_attr.value).blank?
       end
 
       def project_wiki
