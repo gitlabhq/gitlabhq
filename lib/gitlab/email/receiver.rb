@@ -40,7 +40,7 @@ module Gitlab
         author = sent_notification.recipient
         project = sent_notification.project
 
-        validate_permission(author, project, :create_note)
+        validate_permission!(author, project, :create_note)
 
         raise NoteableNotFoundError unless sent_notification.noteable
 
@@ -59,7 +59,7 @@ module Gitlab
       end
 
       def process_create_issue
-        validate_permission(message_sender, message_project, :create_issue)
+        validate_permission!(message_sender, message_project, :create_issue)
 
         issue = Issues::CreateService.new(
           message_project,
@@ -78,7 +78,7 @@ module Gitlab
         end
       end
 
-      def validate_permission(author, project, permission)
+      def validate_permission!(author, project, permission)
         raise UserNotFoundError unless author
         raise UserBlockedError if author.blocked?
         # TODO: Give project not found error if author cannot read project
