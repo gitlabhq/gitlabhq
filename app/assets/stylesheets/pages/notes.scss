@@ -194,6 +194,21 @@ ul.notes {
   float: right;
   margin-left: 10px;
   color: $notes-action-color;
+
+  .js-note-delete {
+    &:hover {
+      @extend .cgray;
+      &.danger { @extend .cred; }
+    }
+  }
+
+  .js-note-edit {
+    i {
+      &:hover {
+        color: $gl-link-color;
+      }
+    }
+  }
 }
 
 .note-action-button,
@@ -211,21 +226,6 @@ ul.notes {
   .fa-trash-o {
     top: 0;
     font-size: 16px;
-  }
-
-  .js-note-delete {
-    &:hover {
-      @extend .cgray;
-      &.danger { @extend .cred; }
-    }
-  }
-
-  .js-note-edit {
-    i {
-      &:hover {
-        color: $gl-link-color;
-      }
-    }
   }
 }
 
