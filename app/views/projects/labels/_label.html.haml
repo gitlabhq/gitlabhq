@@ -1,7 +1,7 @@
 %li{id: dom_id(label)}
   = render "shared/label_row", label: label
 
-  .pull-right
+  .pull-info-right
     %span.append-right-20
       = link_to_label(label, type: :merge_request) do
         = pluralize label.open_merge_requests_count, 'merge request'
@@ -14,13 +14,13 @@
       .label-subscription{data: {url: toggle_subscription_namespace_project_label_path(@project.namespace, @project, label)}}
         .subscription-status{data: {status: label_subscription_status(label)}}
 
-        %a.subscribe-button.action-buttons{data: {toggle: "tooltip", original_title: label_subscription_toggle_button_text(label)}}
+        %a.subscribe-icon.btn.action-buttons{data: {toggle: "tooltip", original_title: label_subscription_status(label)}}
           %i.fa.fa-rss
 
     - if can? current_user, :admin_label, @project
-      = link_to edit_namespace_project_label_path(@project.namespace, @project, label), class: 'action-buttons', data: {toggle: "tooltip", original_title: "Edit"} do
+      = link_to edit_namespace_project_label_path(@project.namespace, @project, label), class: 'btn action-buttons', data: {toggle: "tooltip", original_title: "Edit"} do
         %i.fa.fa-pencil-square-o
-      = link_to namespace_project_label_path(@project.namespace, @project, label), class: 'action-buttons remove-row', method: :delete, remote: true, data: {confirm: "Remove this label? Are you sure?", toggle: "tooltip", original_title: "Delete"} do
+      = link_to namespace_project_label_path(@project.namespace, @project, label), class: 'btn action-buttons remove-row', method: :delete, remote: true, data: {confirm: "Remove this label? Are you sure?", toggle: "tooltip", original_title: "Delete"} do
         %i.fa.fa-trash-o
 
 - if current_user

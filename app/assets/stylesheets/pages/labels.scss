@@ -49,9 +49,11 @@
 }
 
 .label-row {
+
   .label-name {
     display: inline-block;
-    width: 21%;
+    width: 200px;
+    vertical-align: top;
 
     @media (max-width: $screen-xs-min) {
       display: block;
@@ -93,15 +95,16 @@
     }
   }
 
-  .pull-right {
+  .pull-info-right {
+    float: right;
 
     @media (max-width: $screen-xs-min) {
-     float: none !important;
+      float: none;
     }
 
     .action-buttons {
       border-color: transparent;
-      margin: 7px;
+      padding: 6px
     }
 
     i {
