@@ -128,3 +128,7 @@ opting for [RSpec feature](#features-integration) specs.
 Adding new Spinach scenarios is acceptable _only if_ the new scenario requires
 no more than one new `step` definition. If more than that is required, the
 test should be re-implemented using RSpec instead.
+
+---
+
+[Return to Development documentation](README.md)
