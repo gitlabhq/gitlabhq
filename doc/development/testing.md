@@ -11,8 +11,7 @@ importance.
 
 ## Factories
 
-GitLab uses [factory_girl] as a test
-fixture replacement.
+GitLab uses [factory_girl] as a test fixture replacement.
 
 - Factory definitions live in `spec/factories/`, named using the pluralization
   of their corresponding model (`User` factories are defined in `users.rb`).
@@ -65,8 +64,30 @@ the command line via `bundle exec teaspoon`, or via a web browser at
 - Don't `describe` symbols (see [Gotchas](gotchas.md#dont-describe-symbols)).
 - Prefer `not_to` to `to_not`.
 - Try to match the ordering of tests to the ordering within the class.
-- Try to follow the [Four-Phase Test](https://robots.thoughtbot.com/four-phase-test)
-  pattern, using newlines to separate phases.
+- Try to follow the [Four-Phase Test][four-phase-test] pattern, using newlines
+  to separate phases.
+
+[four-phase-test]: https://robots.thoughtbot.com/four-phase-test
+
+### `let` variables
+
+GitLab's RSpec suite has made extensive use of `let` variables to reduce
+duplication. However, this sometimes [comes at the cost of clarity][lets-not],
+so we need to set some guidelines for their use going forward:
+
+- `let` variables are preferable to instance variables. Local variables are
+  preferable to `let` variables.
+- Use `let` to reduce duplication throughout an entire spec file.
+- Don't use `let` to define variables used by a single test; define them as
+  local variables inside the test's `it` block.
+- Don't define a `let` variable inside the top-level `describe` block that's
+  only used in a more deeply-nested `context` or `describe` block. Keep the
+  definition as close as possible to where it's used.
+- Try to avoid overriding the definition of one `let` variable with another.
+- Don't define a `let` variable that's only used by the definition of another.
+  Use a helper method instead.
+
+[lets-not]: https://robots.thoughtbot.com/lets-not
 
 ### Test speed
 
