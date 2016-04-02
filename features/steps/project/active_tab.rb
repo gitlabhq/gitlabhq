@@ -82,7 +82,7 @@ class Spinach::Features::ProjectActiveTab < Spinach::FeatureSteps
   # Sub Tabs: Issues
 
   step 'I click the "Milestones" tab' do
-    within '.nav-secondary' do
+    page.within '.nav-secondary' do
       click_link('Milestones')
     end
   end

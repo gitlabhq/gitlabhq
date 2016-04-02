@@ -20,7 +20,7 @@
       = icon('group fw')
       %span
         Groups
-  = nav_link(controller: :milestones) do
+  = nav_link(path: 'dashboard#milestones') do
     = link_to dashboard_milestones_path, title: 'Milestones' do
       = icon('clock-o fw')
       %span

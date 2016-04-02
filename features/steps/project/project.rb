@@ -114,7 +114,9 @@ class Spinach::Features::Project < Spinach::FeatureSteps
   end
 
   step 'I should not see "Snippets" button' do
-    expect(page).not_to have_link 'Snippets'
+    page.within '.nav-secondary' do
+      expect(page).not_to have_link 'Snippets'
+    end
   end
 
   step 'project "Shop" belongs to group' do
