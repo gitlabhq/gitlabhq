@@ -33,12 +33,12 @@
     paramKeys = ['author_id', 'label_name', 'milestone_title', 'assignee_id', 'issue_search']
 
     for paramKey in paramKeys
-      newParams[paramKey] = getUrlParameter(paramKey) or ''
+      newParams[paramKey] = gl.utils.getUrlParameter(paramKey) or ''
 
     if stateFilters.length
       stateFilters.find('a').each ->
         initialUrl = $(this).attr 'href'
-        $(this).attr 'href', mergeUrlParams(newParams, initialUrl)
+        $(this).attr 'href', gl.utils.mergeUrlParams(newParams, initialUrl)
 
   # Make sure we trigger ajax request only after user stop typing
   initSearch: ->
