@@ -52,6 +52,10 @@
   .label-name {
     display: inline-block;
     width: 21%;
+
+    @media (max-width: $screen-xs-min) {
+      display: block;
+    }
   }
 
   .label {
@@ -80,9 +84,20 @@
   .prepend-left-10 {
     display: inline-block;
     width: 45%;
+
+    @media (max-width: $screen-xs-min) {
+      display: block;
+      width: 100%;
+      margin-left: 0px;
+      padding: 10px 0;
+    }
   }
 
   .pull-right {
+
+    @media (max-width: $screen-xs-min) {
+     float: none !important;
+    }
 
     .action-buttons {
       border-color: transparent;
@@ -96,6 +111,11 @@
     .append-right-20 {
       a {
         color: $gl-text-color;
+      }
+
+      @media (max-width: $screen-xs-min) {
+        display: block;
+        margin-bottom: 10px;
       }
     }
   }
