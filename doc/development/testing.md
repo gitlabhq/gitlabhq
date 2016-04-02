@@ -22,6 +22,8 @@ fixture replacement.
   resulting record to pass validation.
 - When instantiating from a factory, don't supply extraneous attributes that
   aren't required by the test.
+- Factories don't have to be limited to `ActiveRecord` objects.
+  [See example](https://gitlab.com/gitlab-org/gitlab-ce/commit/0b8cefd3b2385a21cfed779bd659978c0402766d).
 
 [factory_girl]: https://github.com/thoughtbot/factory_girl
 [Traits]: http://www.rubydoc.info/gems/factory_girl/file/GETTING_STARTED.md#Traits
