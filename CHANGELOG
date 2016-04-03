@@ -1,5 +1,24 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+v 8.7.0 (unreleased)
+  - Don't attempt to look up an avatar in repo if repo directory does not exist (Stan hu)
+  - Preserve time notes/comments have been updated at when moving issue
+  - Make HTTP(s) label consistent on clone bar (Stan Hu)
+  - Expose label description in API (Mariusz Jachimowicz)
+  - Allow back dating on issues when created through the API
+  - Fix avatar stretching by providing a cropping feature
+  - Add links to CI setup documentation from project settings and builds pages
+  - Handle nil descriptions in Slack issue messages (Stan Hu)
+  - Add default scope to projects to exclude projects pending deletion
+  - Implement 'Groups View' as an option for dashboard preferences !3379 (Elias W.)
+  - Implement 'TODOs View' as an option for dashboard preferences !3379 (Elias W.)
+  - Gracefully handle notes on deleted commits in merge requests (Stan Hu)
+  - Fall back to `In-Reply-To` and `References` headers when sub-addressing is not available (David Padilla)
+  - Remove "Congratulations!" tweet button on newly-created project. (Connor Shea)
+
+v 8.6.4
+  - Don't attempt to fetch any tags from a forked repo (Stan Hu)
+
 v 8.6.3
   - Mentions on confidential issues doesn't create todos for non-members. !3374
   - Destroy related todos when an Issue/MR is deleted. !3376
