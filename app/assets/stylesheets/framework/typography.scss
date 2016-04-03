@@ -16,8 +16,12 @@
 
   code {
     font-family: $monospace_font;
-    white-space: pre;
+    white-space: pre-line;
     word-wrap: normal;
+
+    @media (max-width: $screen-xs-min) {
+      word-wrap: break-word;
+    }
   }
 
   kbd {
