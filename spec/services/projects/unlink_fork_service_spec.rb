@@ -25,8 +25,8 @@ describe Projects::UnlinkForkService, services: true do
   end
 
   it 'remove fork relation' do
-      expect(fork_project.forked_project_link).to receive(:destroy)
+    expect(fork_project.forked_project_link).to receive(:destroy)
 
-      subject.execute
+    subject.execute
   end
 end
