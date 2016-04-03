@@ -1,16 +1,32 @@
 # Extra methods for uploader
 module UploaderHelper
+  IMAGE_EXT = %w(png jpg jpeg gif bmp tiff)
+  VIDEO_EXT = %w(mov mp4 ogg webm flv)
+
   def image?
-    img_ext = %w(png jpg jpeg gif bmp tiff)
+    extension_match?(IMAGE_EXT)
+  rescue
+    false
+  end
+
+  def video?
+    extension_match?(VIDEO_EXT)
+  rescue
+    false
+  end
+
+  def image_or_video?
+    image? || video?
+  end
+
+  def extension_match?(extensions)
     if file.respond_to?(:extension)
-      img_ext.include?(file.extension.downcase)
+      extensions.include?(file.extension.downcase)
     else
       # Not all CarrierWave storages respond to :extension
       ext = file.path.split('.').last.downcase
-      img_ext.include?(ext)
+      extensions.include?(ext)
     end
-  rescue
-    false
   end
 
   def file_storage?

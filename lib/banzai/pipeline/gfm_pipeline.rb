@@ -8,6 +8,7 @@ module Banzai
 
           Filter::UploadLinkFilter,
           Filter::ImageLinkFilter,
+          Filter::VideoLinkFilter,
           Filter::EmojiFilter,
           Filter::TableOfContentsFilter,
           Filter::AutolinkFilter,

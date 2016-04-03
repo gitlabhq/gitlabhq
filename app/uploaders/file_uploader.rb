@@ -33,16 +33,16 @@ class FileUploader < CarrierWave::Uploader::Base
   end
 
   def to_h
-    filename = image? ? self.file.basename : self.file.filename
+    filename = image_or_video? ? self.file.basename : self.file.filename
     escaped_filename = filename.gsub("]", "\\]")
 
     markdown = "[#{escaped_filename}](#{self.secure_url})"
-    markdown.prepend("!") if image?
+    markdown.prepend("!") if image_or_video?
 
     {
       alt:      filename,
       url:      self.secure_url,
-      is_image: image?,
+      is_image: image_or_video?,
       markdown: markdown
     }
   end
