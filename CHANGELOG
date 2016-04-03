@@ -8,6 +8,7 @@ v 8.7.0 (unreleased)
   - Expose label description in API (Mariusz Jachimowicz)
   - Allow back dating on issues when created through the API
   - Fix avatar stretching by providing a cropping feature
+  - Add endpoints to archive or unarchive a project !3372
   - Add links to CI setup documentation from project settings and builds pages
   - Handle nil descriptions in Slack issue messages (Stan Hu)
   - Add default scope to projects to exclude projects pending deletion
