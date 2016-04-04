@@ -56,6 +56,17 @@
     }
   }
 
+  .nav-search {
+    display: inline-block;
+    width: 50%;
+    padding: 11px 0;
+
+    /* Small devices (phones, tablets, 768px and lower) */
+    @media (max-width: $screen-sm-min) {
+      width: 100%;
+    }
+  }
+
   .nav-links {
     display: inline-block;
     width: 50%;
