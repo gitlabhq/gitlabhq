@@ -128,6 +128,7 @@ v 8.6.0
   - Add main language of a project in the list of projects (Tiago Botelho)
   - Add #upcoming filter to Milestone filter (Tiago Botelho)
   - Add ability to show archived projects on dashboard, explore and group pages
+  - Remove fork link closes all merge requests opened on source project (Florent Baldino)
   - Move group activity to separate page
   - Create external users which are excluded of internal and private projects unless access was explicitly granted
   - Continue parameters are checked to ensure redirection goes to the same instance

@@ -135,6 +135,7 @@ class MergeRequest < ActiveRecord::Base
   scope :cared, ->(user) { where('assignee_id = :user OR author_id = :user', user: user.id) }
   scope :by_milestone, ->(milestone) { where(milestone_id: milestone) }
   scope :of_projects, ->(ids) { where(target_project_id: ids) }
+  scope :from_project, ->(project) { where(source_project_id: project.id) }
   scope :merged, -> { with_state(:merged) }
   scope :closed_and_merged, -> { with_states(:closed, :merged) }
 
