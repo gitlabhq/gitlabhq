@@ -17,10 +17,10 @@ class RemoveWrongImportUrlFromProjects < ActiveRecord::Migration
     in_transaction { process_projects_with_wrong_url }
 
     say("Migrating bitbucket credentials...")
-    in_transaction { process_project(import_type: 'bitbucket') }
+    in_transaction { process_project(import_type: 'bitbucket', credentials_keys: ['bb_session']) }
 
     say("Migrating fogbugz credentials...")
-    in_transaction { process_project(import_type: 'fogbugz', unencrypted_data: ['repo', 'user_map']) }
+    in_transaction { process_project(import_type: 'fogbugz', credentials_keys: ['fb_session']) }
 
   end
 
@@ -33,27 +33,26 @@ class RemoveWrongImportUrlFromProjects < ActiveRecord::Migration
     end
   end
 
-  def process_project(import_type: , unencrypted_data: [])
+  def process_project(import_type: , credentials_keys: [])
     unencrypted_import_data(import_type: import_type).each do |data|
-      replace_data_credentials(data, unencrypted_data)
+      replace_data_credentials(data, credentials_keys)
     end
   end
 
-  def replace_data_credentials(data, unencrypted_data)
+  def replace_data_credentials(data, credentials_keys)
     data_hash = JSON.load(data['data']) if data['data']
-    if defined?(data_hash) && !data_hash.blank?
-      unencrypted_data_hash = encrypted_data_hash(data_hash, unencrypted_data)
-      update_with_encrypted_data(data_hash, data['id'], unencrypted_data_hash)
+    unless data_hash.blank?
+      encrypted_data_hash = encrypt_data(data_hash, credentials_keys)
+      unencrypted_data = data_hash.empty? ? ' NULL ' :  quote(data_hash.to_json)
+      update_with_encrypted_data(encrypted_data_hash, data['id'], unencrypted_data)
     end
   end
 
-  def encrypted_data_hash(data_hash, unencrypted_data)
-    return 'NULL' if unencrypted_data.empty?
+  def encrypt_data(data_hash, credentials_keys)
     new_data_hash = {}
-    unencrypted_data.each do |key|
+    credentials_keys.each do |key|
       new_data_hash[key] = data_hash.delete(key) if data_hash[key]
     end
-    quote(new_data_hash.to_json)
   end
 
   def in_transaction
@@ -75,10 +74,10 @@ class RemoveWrongImportUrlFromProjects < ActiveRecord::Migration
     end
   end
 
-  def update_with_encrypted_data(data_hash, import_data_id, data_array = nil)
+  def update_with_encrypted_data(data_hash, import_data_id, unencrypted_data = ' NULL ')
     fake_import_data = FakeProjectImportData.new
     fake_import_data.credentials = data_hash
-    execute(update_import_data_sql(import_data_id, fake_import_data, data_array))
+    execute(update_import_data_sql(import_data_id, fake_import_data, unencrypted_data))
   end
 
   def update_import_url(import_url, project)
