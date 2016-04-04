@@ -87,4 +87,23 @@ class Spinach::Features::Dashboard < Spinach::FeatureSteps
   step 'I should see 1 project at group list' do
     expect(find('span.last_activity/span')).to have_content('1')
   end
+
+  step 'I filter the list by label "feature"' do
+    page.within ".labels-filter" do
+      find('.dropdown').click
+      click_link "feature"
+    end
+  end
+
+  step 'I should see "Bugfix1" in issues list' do
+    page.within "ul.content-list" do
+      expect(page).to have_content "Bugfix1"
+    end
+  end
+
+  step 'project "Shop" has issue "Bugfix1" with label "feature"' do
+    project = Project.find_by(name: "Shop")
+    issue = create(:issue, title: "Bugfix1", project: project, assignee: current_user)
+    issue.labels << project.labels.find_by(title: 'feature')
+  end
 end
