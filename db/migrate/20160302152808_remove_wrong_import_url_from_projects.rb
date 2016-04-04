@@ -53,6 +53,7 @@ class RemoveWrongImportUrlFromProjects < ActiveRecord::Migration
     credentials_keys.each do |key|
       new_data_hash[key] = data_hash.delete(key) if data_hash[key]
     end
+    new_data_hash
   end
 
   def in_transaction
