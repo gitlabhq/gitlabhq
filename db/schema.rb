@@ -732,6 +732,8 @@ ActiveRecord::Schema.define(version: 20160331133914) do
     t.boolean  "public_builds",          default: true,     null: false
     t.string   "main_language"
     t.integer  "pushes_since_gc",        default: 0
+    t.boolean  "last_repo_check_failed", default: false
+    t.datetime "last_repo_check_at"
   end
 
   add_index "projects", ["builds_enabled", "shared_runners_enabled"], name: "index_projects_on_builds_enabled_and_shared_runners_enabled", using: :btree

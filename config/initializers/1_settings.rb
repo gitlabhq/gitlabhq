@@ -239,7 +239,12 @@ Settings['cron_jobs'] ||= Settingslogic.new({})
 Settings.cron_jobs['stuck_ci_builds_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['stuck_ci_builds_worker']['cron'] ||= '0 0 * * *'
 Settings.cron_jobs['stuck_ci_builds_worker']['job_class'] = 'StuckCiBuildsWorker'
-
+Settings.cron_jobs['repo_check_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['repo_check_worker']['cron'] ||= '20 * * * *'
+Settings.cron_jobs['repo_check_worker']['job_class'] = 'RepoCheckWorker'
+Settings.cron_jobs['admin_email_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['admin_email_worker']['cron'] ||= '0 0 * * *'
+Settings.cron_jobs['admin_email_worker']['job_class'] = 'AdminEmailWorker'
 
 #
 # GitLab Shell

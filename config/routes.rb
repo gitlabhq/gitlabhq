@@ -264,6 +264,11 @@ Rails.application.routes.draw do
 
         member do
           put :transfer
+          post :repo_check
+        end
+
+        collection do
+          put :clear_repo_check_states
         end
 
         resources :runner_projects

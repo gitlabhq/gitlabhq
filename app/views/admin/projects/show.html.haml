@@ -5,6 +5,14 @@
     %i.fa.fa-pencil-square-o
     Edit
 %hr
+- if @project.last_repo_check_failed?
+  .row
+    .col-md-12
+      .panel
+        .panel-heading.alert.alert-danger
+          Last repo check failed. See
+          = link_to 'repocheck.log', admin_logs_path
+          for error messages.
 .row
   .col-md-6
     .panel.panel-default
@@ -94,6 +102,30 @@
           .form-group
             .col-sm-offset-2.col-sm-10
               = f.submit 'Transfer', class: 'btn btn-primary'
+
+    .panel.panel-default.repo-check
+      .panel-heading
+        Repo check
+      .panel-body
+        = form_for @project, url: repo_check_admin_namespace_project_path(@project.namespace, @project), method: :post do |f|
+          .form-group
+            - if @project.last_repo_check_at.nil?
+              This repository has never been checked.
+            - else
+              This repository was last checked
+              = @project.last_repo_check_at.to_s(:medium) + '.'
+              The check
+              - if @project.last_repo_check_failed?
+                = succeed '.' do
+                  %strong.cred failed
+                See
+                = link_to 'repocheck.log', admin_logs_path
+                for error messages.
+              - else
+                passed.
+
+          .form-group
+            = f.submit 'Trigger repo check', class: 'btn btn-primary'
 
   .col-md-6
     - if @group
