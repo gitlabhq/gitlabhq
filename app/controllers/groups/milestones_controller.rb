@@ -24,7 +24,7 @@ class Groups::MilestonesController < Groups::ApplicationController
     if create_milestones(project_ids, title)
       redirect_to milestone_path(title)
     else
-      render_new_with_error(@error)
+      render_new_with_error(project_ids.empty?)
     end
   end
 
@@ -42,28 +42,25 @@ class Groups::MilestonesController < Groups::ApplicationController
   private
 
   def create_milestones(project_ids, title)
-    unless project_ids.present?
-      @error = "Please select at least one project."
-      return false
-    end
+    return false unless project_ids.present?
 
-    begin
-      ActiveRecord::Base.transaction do
-        @projects.where(id: project_ids).each do |project|
-          Milestones::CreateService.new(project, current_user, milestone_params).execute
-        end
+    ActiveRecord::Base.transaction do
+      @projects.where(id: project_ids).each do |project|
+        Milestones::CreateService.new(project, current_user, milestone_params).execute
       end
-
-      true
-    rescue => e
-      @error = "Error creating milestone: #{e.message}."
-      false
     end
+
+    true
+
+    rescue => e
+
+    flash.now[:alert] = "An error occurred while creating the milestone: #{e.message}"
+    false
   end
 
-  def render_new_with_error(error)
+  def render_new_with_error(empty_project_ids)
     @milestone = Milestone.new(milestone_params)
-    flash[:alert] = error
+    @milestone.errors.add(:project_id, "Please select at least one project.") if empty_project_ids
     render :new
   end
 
