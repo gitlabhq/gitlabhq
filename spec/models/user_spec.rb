@@ -173,6 +173,13 @@ describe User, models: true do
           expect(user).to be_invalid
         end
       end
+
+      context 'owns_notification_email' do
+        it 'accepts temp_oauth_email emails' do
+          user = build(:user, email: "temp-email-for-oauth@example.com")
+          expect(user).to be_valid
+        end
+      end
     end
   end
 

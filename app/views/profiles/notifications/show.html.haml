@@ -56,19 +56,20 @@
       .prepend-top-default
         = f.submit 'Update settings', class: "btn btn-create"
       %hr
-      %h5
-        Groups (#{@group_members.count})
-      %div
-        %ul.bordered-list
-          - @group_members.each do |group_member|
-            - notification = Notification.new(group_member)
-            = render 'settings', type: 'group', membership: group_member, notification: notification
-      %h5
-        Projects (#{@project_members.count})
-      %p.account-well
-        To specify the notification level per project of a group you belong to, you need to be a member of the project itself, not only its group.
-      .append-bottom-default
-        %ul.bordered-list
-          - @project_members.each do |project_member|
-            - notification = Notification.new(project_member)
-            = render 'settings', type: 'project', membership: project_member, notification: notification
+.col-lg-9.col-lg-push-3
+  %h5
+    Groups (#{@group_members.count})
+  %div
+    %ul.bordered-list
+      - @group_members.each do |group_member|
+        - notification = Notification.new(group_member)
+        = render 'settings', type: 'group', membership: group_member, notification: notification
+  %h5
+    Projects (#{@project_members.count})
+  %p.account-well
+    To specify the notification level per project of a group you belong to, you need to be a member of the project itself, not only its group.
+  .append-bottom-default
+    %ul.bordered-list
+      - @project_members.each do |project_member|
+        - notification = Notification.new(project_member)
+        = render 'settings', type: 'project', membership: project_member, notification: notification

@@ -23,15 +23,17 @@
 ## Administrator documentation
 
 - [Audit Events](administration/audit_events.md) Check how user access changed in projects and groups.
+- [Authentication/Authorization](administration/auth/README.md) Configure
+  external authentication with LDAP, SAML, CAS and additional Omniauth providers.
 - [Changing the appearance of the login page](customization/branded_login_page.md) Make the login page branded for your GitLab instance.
 - [Custom git hooks](hooks/custom_hooks.md) Custom git hooks (on the filesystem) for when webhooks aren't enough.
 - [Email](tools/email.md) Email GitLab users from GitLab
 - [Git Hooks](git_hooks/git_hooks.md) Advanced push rules for your project.
 - [Help message](customization/help_message.md) Set information about administrators of your GitLab instance.
 - [Install](install/README.md) Requirements, directory structures and installation from source.
-- [Restart GitLab](administration/restart_gitlab.md) Learn how to restart GitLab and its components
 - [Installing your license](license/README.md)
 - [Integration](integration/README.md) How to integrate with systems such as JIRA, Redmine, LDAP and Twitter.
+- [Restart GitLab](administration/restart_gitlab.md) Learn how to restart GitLab and its components
 - [Issue closing](customization/issue_closing.md) Customize how to close an issue from commit messages.
 - [Libravatar](customization/libravatar.md) Use Libravatar for user avatars.
 - [Log system](logs/logs.md) Log system.

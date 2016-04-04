@@ -4,14 +4,6 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
   include SharedGroup
   include SharedUser
 
-  step 'I should see back to dashboard button' do
-    expect(page).to have_content 'Go to dashboard'
-  end
-
-  step 'I click link "Add members"' do
-    find(:css, 'button.btn-new').click
-  end
-
   step 'I should see group "Owned"' do
     expect(page).to have_content '@owned'
   end

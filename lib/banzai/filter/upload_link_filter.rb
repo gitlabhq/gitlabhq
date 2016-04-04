@@ -1,4 +1,3 @@
-require 'html/pipeline/filter'
 require 'uri'
 
 module Banzai

@@ -123,7 +123,7 @@ class TodoService
 
   def handle_note(note, author)
     # Skip system notes, and notes on project snippet
-    return if note.system? || note.for_project_snippet?
+    return if note.system? || note.for_snippet?
 
     project = note.project
     target  = note.noteable
@@ -170,12 +170,28 @@ class TodoService
   end
 
   def filter_mentioned_users(project, target, author)
-    mentioned_users = target.mentioned_users.select do |user|
-      user.can?(:read_project, project)
-    end
-
+    mentioned_users = target.mentioned_users
+    mentioned_users = reject_users_without_access(mentioned_users, project, target)
     mentioned_users.delete(author)
     mentioned_users.uniq
+  end
+
+  def reject_users_without_access(users, project, target)
+    if target.is_a?(Note) && target.for_issue?
+      target = target.noteable
+    end
+
+    if target.is_a?(Issue)
+      select_users(users, :read_issue, target)
+    else
+      select_users(users, :read_project, project)
+    end
+  end
+
+  def select_users(users, ability, subject)
+    users.select do |user|
+      user.can?(ability.to_sym, subject)
+    end
   end
 
   def pending_todos(user, criteria = {})

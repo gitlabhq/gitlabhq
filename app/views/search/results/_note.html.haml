@@ -1,24 +1,20 @@
 - project = note.project
+- note_url = Gitlab::UrlBuilder.new(:note).build(note.id)
+- noteable_identifier = note.noteable.try(:iid) || note.noteable.id
 .search-result-row
   %h5.note-search-caption.str-truncated
     %i.fa.fa-comment
     = link_to_member(project, note.author, avatar: false)
     commented on
+    = link_to project.name_with_namespace, project
+    &middot;
 
     - if note.for_commit?
-      = link_to project do
-        = project.name_with_namespace
-      &middot;
-      = link_to namespace_project_commit_path(project.namespace, project, note.commit_id, anchor: dom_id(note)) do
-        Commit #{truncate_sha(note.commit_id)}
+      = link_to "Commit #{truncate_sha(note.commit_id)}", note_url
     - else
-      = link_to project do
-        = project.name_with_namespace
+      %span #{note.noteable_type.titleize} ##{noteable_identifier}
       &middot;
-      %span #{note.noteable_type.titleize} ##{note.noteable.iid}
-      &middot;
-      = link_to [project.namespace.becomes(Namespace), project, note.noteable, anchor: dom_id(note)]  do
-        = note.noteable.title
+      = link_to note.noteable.title, note_url
 
   .note-search-result
     .term

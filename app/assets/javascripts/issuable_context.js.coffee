@@ -1,8 +1,7 @@
 class @IssuableContext
-  constructor: ->
+  constructor: (currentUser) ->
     @initParticipants()
-
-    new UsersSelect()
+    new UsersSelect(currentUser)
     $('select.select2').select2({width: 'resolve', dropdownAutoWidth: true})
 
     $(".issuable-sidebar .inline-update").on "change", "select", ->
@@ -10,11 +9,21 @@ class @IssuableContext
     $(".issuable-sidebar .inline-update").on "change", ".js-assignee", ->
       $(this).submit()
 
-    $(document).on "click",".edit-link", (e) ->
-      block = $(@).parents('.block')
-      block.find('.selectbox').show()
-      block.find('.value').hide()
-      block.find('.js-select2').select2("open")
+    $(document).off("click", ".edit-link").on "click",".edit-link", (e) ->
+      $block = $(@).parents('.block')
+      $selectbox = $block.find('.selectbox')
+      if $selectbox.is(':visible')
+        $selectbox.hide()
+        $block.find('.value').show()
+      else
+        $selectbox.show()
+        $block.find('.value').hide()
+
+      if $selectbox.is(':visible')
+        setTimeout (->
+          $block.find('.dropdown-menu-toggle').trigger 'click'
+        ), 0
+      
 
     $(".right-sidebar").niceScroll()
 

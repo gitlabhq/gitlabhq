@@ -7,8 +7,12 @@ describe 'gitlab:app namespace rake task' do
     Rake.application.rake_require 'tasks/gitlab/backup'
     Rake.application.rake_require 'tasks/gitlab/shell'
     Rake.application.rake_require 'tasks/gitlab/db'
+
     # empty task as env is already loaded
     Rake::Task.define_task :environment
+
+    # We need this directory to run `gitlab:backup:create` task
+    FileUtils.mkdir_p('public/uploads')
   end
 
   def run_rake_task(task_name)

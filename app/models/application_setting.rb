@@ -12,7 +12,6 @@
 #  updated_at                        :datetime
 #  home_page_url                     :string(255)
 #  default_branch_protection         :integer          default(2)
-#  twitter_sharing_enabled           :boolean          default(TRUE)
 #  help_text                         :text
 #  restricted_visibility_levels      :text
 #  version_check_enabled             :boolean          default(TRUE)
@@ -141,7 +140,6 @@ class ApplicationSetting < ActiveRecord::Base
       default_branch_protection: Settings.gitlab['default_branch_protection'],
       signup_enabled: Settings.gitlab['signup_enabled'],
       signin_enabled: Settings.gitlab['signin_enabled'],
-      twitter_sharing_enabled: Settings.gitlab['twitter_sharing_enabled'],
       gravatar_enabled: Settings.gravatar['enabled'],
       sign_in_text: Settings.extra['sign_in_text'],
       restricted_visibility_levels: Settings.gitlab['restricted_visibility_levels'],
