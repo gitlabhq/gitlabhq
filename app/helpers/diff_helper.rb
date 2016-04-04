@@ -23,7 +23,7 @@ module DiffHelper
   end
 
   def diff_options
-    options = { ignore_whitespace_change: params[:w] == '1' }
+    options = { ignore_whitespace_change: hide_whitespaces? }
     if diff_hard_limit_enabled?
       options.merge!(Commit.max_diff_options)
     end
