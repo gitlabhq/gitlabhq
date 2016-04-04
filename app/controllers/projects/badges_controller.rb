@@ -1,4 +1,6 @@
 class Projects::BadgesController < Projects::ApplicationController
+  layout 'project_settings'
+  before_action :authorize_admin_project!, only: [:index]
   before_action :no_cache_headers, except: [:index]
 
   def index
