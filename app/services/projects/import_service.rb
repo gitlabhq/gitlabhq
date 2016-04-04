@@ -46,6 +46,8 @@ module Projects
     def import_data
       return unless has_importer?
 
+      project.repository.before_import
+
       unless importer.execute
         raise Error, 'The remote data could not be imported.'
       end
