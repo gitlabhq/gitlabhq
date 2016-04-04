@@ -74,11 +74,7 @@ module Banzai
         if RequestStore.active?
           cache = find_objects_cache[object_class][project.id]
 
-          if cache.key?(id)
-            cache[id]
-          else
-            cache[id] = find_object(project, id)
-          end
+          get_or_set_cache(cache, id) { find_object(project, id) }
         else
           find_object(project, id)
         end
@@ -88,11 +84,7 @@ module Banzai
         if RequestStore.active?
           cache = project_refs_cache
 
-          if cache.key?(ref)
-            cache[ref]
-          else
-            cache[ref] = project_from_ref(ref)
-          end
+          get_or_set_cache(cache, ref) { project_from_ref(ref) }
         else
           project_from_ref(ref)
         end
@@ -107,11 +99,7 @@ module Banzai
         if RequestStore.active?
           cache = url_for_object_cache[object_class][project.id]
 
-          if cache.key?(object)
-            cache[object]
-          else
-            cache[object] = url_for_object(object, project)
-          end
+          get_or_set_cache(cache, object) { url_for_object(object, project) }
         else
           url_for_object(object, project)
         end
@@ -241,6 +229,14 @@ module Banzai
       def url_for_object_cache
         RequestStore[:banzai_url_for_object] ||= Hash.new do |hash, key|
           hash[key] = Hash.new { |h, k| h[k] = {} }
+        end
+      end
+
+      def get_or_set_cache(cache, key)
+        if cache.key?(key)
+          cache[key]
+        else
+          cache[key] = yield
         end
       end
     end
