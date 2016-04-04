@@ -15,7 +15,7 @@
 
   %td
     - if project
-      = link_to project.name_with_namespace, admin_namespace_project_path(project.namespace, project), class: "monospace"
+      = link_to project.name_with_namespace, admin_namespace_project_path(project.namespace, project)
 
   %td
     = link_to build.short_sha, namespace_project_commit_path(build.project.namespace, build.project, build.sha), class: "monospace"
