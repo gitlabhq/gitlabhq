@@ -9,12 +9,12 @@
       .row
         .col-md-2.text-center
           Markdown
-        .col-md-10
-          = markdown("```markdown\n#{@badge.to_markdown}\n```")
+        .col-md-10.code.js-syntax-highlight
+          = highlight('.md', @badge.to_markdown)
       .row
         %hr
       .row
         .col-md-2.text-center
           HTML
-        .col-md-10
-          = markdown("```html\n#{@badge.to_html}\n```")
+        .col-md-10.code.js-syntax-highlight
+          = highlight('.html', @badge.to_html)
