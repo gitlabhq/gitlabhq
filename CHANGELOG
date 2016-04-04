@@ -15,6 +15,7 @@ v 8.7.0 (unreleased)
   - Implement 'Groups View' as an option for dashboard preferences !3379 (Elias W.)
   - Implement 'TODOs View' as an option for dashboard preferences !3379 (Elias W.)
   - Gracefully handle notes on deleted commits in merge requests (Stan Hu)
+  - Fix creation of merge requests for orphaned branches (Stan Hu)
   - Fall back to `In-Reply-To` and `References` headers when sub-addressing is not available (David Padilla)
   - Remove "Congratulations!" tweet button on newly-created project. (Connor Shea)
 
