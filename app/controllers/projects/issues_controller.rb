@@ -74,7 +74,13 @@ class Projects::IssuesController < Projects::ApplicationController
     @merge_requests = @issue.referenced_merge_requests(current_user)
     @related_branches = @issue.related_branches - @merge_requests.map(&:source_branch)
 
-    respond_with(@issue)
+    respond_to do |format|
+      format.html
+      format.json do
+        render json: @issue.to_json(include: [:milestone, :labels])
+      end
+    end
+
   end
 
   def create
@@ -113,10 +119,7 @@ class Projects::IssuesController < Projects::ApplicationController
         end
       end
       format.json do
-        render json: {
-          saved: @issue.valid?,
-          assignee_avatar_url: @issue.assignee.try(:avatar_url)
-        }
+        render json: @issue.to_json(include: [:milestone, :labels, assignee: { methods: :avatar_url }])
       end
     end
   end

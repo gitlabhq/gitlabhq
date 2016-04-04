@@ -35,7 +35,7 @@ class Spinach::Features::GroupsManagement < Spinach::FeatureSteps
   step 'I reload "Open" project members page' do
     visit root_path
     click_link 'Sourcing / Open'
-    page.within('.nav-sidebar') do
+    page.within('.nav-secondary') do
       click_link 'Members'
     end
   end
@@ -53,7 +53,9 @@ class Spinach::Features::GroupsManagement < Spinach::FeatureSteps
 
   step 'I go to project settings' do
     @project = Project.find_by(name: "Open")
-    click_link 'Projects'
+    page.within('.nav-secondary') do
+      click_link 'Projects'
+    end
 
     link = "/#{@project.path_with_namespace}/project_members"
     find(:xpath, "//a[@href=\"#{link}\"]").click

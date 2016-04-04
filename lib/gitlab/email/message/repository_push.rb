@@ -5,7 +5,7 @@ module Gitlab
         attr_accessor :recipient
         attr_reader :author_id, :ref, :action
 
-        include Gitlab::Application.routes.url_helpers
+        include Gitlab::Routing.url_helpers
 
         delegate :namespace, :name_with_namespace, to: :project, prefix: :project
         delegate :name, to: :author, prefix: :author

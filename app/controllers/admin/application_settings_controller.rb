@@ -52,7 +52,6 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :require_two_factor_authentication,
       :two_factor_grace_period,
       :gravatar_enabled,
-      :twitter_sharing_enabled,
       :sign_in_text,
       :help_page_text,
       :home_page_url,

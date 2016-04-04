@@ -36,3 +36,8 @@ Feature: Dashboard Todos
     Scenario: I filter by action
       Given I filter by "Mentioned"
       Then I should not see todos related to "Assignments" in the list
+
+  @javascript
+    Scenario: I click on a todo row
+      Given I click on the todo
+      Then I should be directed to the corresponding page

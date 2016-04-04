@@ -6,10 +6,16 @@
 .navbar-nav {
   li {
     .badge.todos-pending-count {
-      background-color: #7f8fa4;
+      background-color: $gl-icon-color;
       margin-top: -5px;
       font-weight: normal;
     }
+  }
+}
+
+.todo {
+  &:hover {
+    cursor: pointer;
   }
 }
 

@@ -139,7 +139,7 @@ class ProjectsController < Projects::ApplicationController
     participants = ::Projects::ParticipantsService.new(@project, current_user).execute(note_type, note_id)
 
     @suggestions = {
-      emojis: autocomplete_emojis,
+      emojis: AwardEmoji.urls,
       issues: autocomplete.issues,
       mergerequests: autocomplete.merge_requests,
       members: participants
@@ -245,17 +245,6 @@ class ProjectsController < Projects::ApplicationController
       :mirror_trigger_builds,
       :reset_approvals_on_push
     )
-  end
-
-  def autocomplete_emojis
-    Rails.cache.fetch("autocomplete-emoji-#{Gemojione::VERSION}") do
-      Emoji.emojis.map do |name, emoji|
-        {
-          name: name,
-          path: view_context.image_url("#{emoji["unicode"]}.png")
-        }
-      end
-    end
   end
 
   def repo_exists?

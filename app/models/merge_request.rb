@@ -153,14 +153,14 @@ class MergeRequest < ActiveRecord::Base
   #
   # This pattern supports cross-project references.
   def self.reference_pattern
-    %r{
+    @reference_pattern ||= %r{
       (#{Project.reference_pattern})?
       #{Regexp.escape(reference_prefix)}(?<merge_request>\d+)
     }x
   end
 
   def self.link_reference_pattern
-    super("merge_requests", /(?<merge_request>\d+)/)
+    @link_reference_pattern ||= super("merge_requests", /(?<merge_request>\d+)/)
   end
 
   # Returns all the merge requests from an ActiveRecord:Relation.
@@ -283,7 +283,7 @@ class MergeRequest < ActiveRecord::Base
   WIP_REGEX = /\A\s*(\[WIP\]\s*|WIP:\s*|WIP\s+)+\s*/i.freeze
 
   def work_in_progress?
-    title =~ WIP_REGEX
+    !!(title =~ WIP_REGEX)
   end
 
   def wipless_title
@@ -335,15 +335,15 @@ class MergeRequest < ActiveRecord::Base
   # Returns the raw diff for this merge request
   #
   # see "git diff"
-  def to_diff(current_user)
-    target_project.repository.diff_text(target_branch, source_sha)
+  def to_diff
+    target_project.repository.diff_text(diff_base_commit.sha, source_sha)
   end
 
   # Returns the commit as a series of email patches.
   #
   # see "git format-patch"
-  def to_patch(current_user)
-    target_project.repository.format_patch(target_branch, source_sha)
+  def to_patch
+    target_project.repository.format_patch(diff_base_commit.sha, source_sha)
   end
 
   def hook_attrs

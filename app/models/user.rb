@@ -440,6 +440,8 @@ class User < ActiveRecord::Base
   end
 
   def owns_notification_email
+    return if self.temp_oauth_email?
+
     self.errors.add(:notification_email, "is not an email you own") unless self.all_emails.include?(self.notification_email)
   end
 

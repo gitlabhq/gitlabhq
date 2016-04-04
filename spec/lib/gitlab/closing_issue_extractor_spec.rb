@@ -236,6 +236,6 @@ describe Gitlab::ClosingIssueExtractor, lib: true do
   end
 
   def urls
-    Gitlab::Application.routes.url_helpers
+    Gitlab::Routing.url_helpers
   end
 end

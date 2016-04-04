@@ -41,6 +41,8 @@ class Ability
       case true
       when subject.is_a?(PersonalSnippet)
         anonymous_personal_snippet_abilities(subject)
+      when subject.is_a?(ProjectSnippet)
+        anonymous_project_snippet_abilities(subject)
       when subject.is_a?(CommitStatus)
         anonymous_commit_status_abilities(subject)
       when subject.is_a?(Project) || subject.respond_to?(:project)
@@ -109,6 +111,14 @@ class Ability
     def anonymous_personal_snippet_abilities(snippet)
       if snippet.public?
         [:read_personal_snippet]
+      else
+        []
+      end
+    end
+
+    def anonymous_project_snippet_abilities(snippet)
+      if snippet.public?
+        [:read_project_snippet]
       else
         []
       end
@@ -360,24 +370,22 @@ class Ability
       end
     end
 
-    [:note, :project_snippet].each do |name|
-      define_method "#{name}_abilities" do |user, subject|
-        rules = []
+    def note_abilities(user, note)
+      rules = []
 
-        if subject.author == user
-          rules += [
-            :"read_#{name}",
-            :"update_#{name}",
-            :"admin_#{name}"
-          ]
-        end
-
-        if subject.respond_to?(:project) && subject.project
-          rules += project_abilities(user, subject.project)
-        end
-
-        rules
+      if note.author == user
+        rules += [
+          :read_note,
+          :update_note,
+          :admin_note
+        ]
       end
+
+      if note.respond_to?(:project) && note.project
+        rules += project_abilities(user, note.project)
+      end
+
+      rules
     end
 
     def personal_snippet_abilities(user, snippet)
@@ -393,6 +401,24 @@ class Ability
 
       if snippet.public? || (snippet.internal? && !user.external?)
         rules << :read_personal_snippet
+      end
+
+      rules
+    end
+
+    def project_snippet_abilities(user, snippet)
+      rules = []
+
+      if snippet.author == user || user.admin?
+        rules += [
+          :read_project_snippet,
+          :update_project_snippet,
+          :admin_project_snippet
+        ]
+      end
+
+      if snippet.public? || (snippet.internal? && !user.external?) || (snippet.private? && snippet.project.team.member?(user))
+        rules << :read_project_snippet
       end
 
       rules

@@ -3,10 +3,6 @@ module ApplicationSettingsHelper
     current_application_settings.gravatar_enabled?
   end
 
-  def twitter_sharing_enabled?
-    current_application_settings.twitter_sharing_enabled?
-  end
-
   def signup_enabled?
     current_application_settings.signup_enabled?
   end

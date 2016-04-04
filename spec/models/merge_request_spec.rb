@@ -224,22 +224,22 @@ describe MergeRequest, models: true do
     ['WIP ', 'WIP:', 'WIP: ', '[WIP]', '[WIP] ', ' [WIP] WIP [WIP] WIP: WIP '].each do |wip_prefix|
       it "detects the '#{wip_prefix}' prefix" do
         subject.title = "#{wip_prefix}#{subject.title}"
-        expect(subject).to be_work_in_progress
+        expect(subject.work_in_progress?).to eq true
       end
     end
 
     it "doesn't detect WIP for words starting with WIP" do
       subject.title = "Wipwap #{subject.title}"
-      expect(subject).not_to be_work_in_progress
+      expect(subject.work_in_progress?).to eq false
     end
 
     it "doesn't detect WIP for words containing with WIP" do
       subject.title = "WupWipwap #{subject.title}"
-      expect(subject).not_to be_work_in_progress
+      expect(subject.work_in_progress?).to eq false
     end
 
     it "doesn't detect WIP by default" do
-      expect(subject).not_to be_work_in_progress
+      expect(subject.work_in_progress?).to eq false
     end
   end
 

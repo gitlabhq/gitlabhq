@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160320204112) do
+ActiveRecord::Schema.define(version: 20160331223143) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -45,7 +45,6 @@ ActiveRecord::Schema.define(version: 20160320204112) do
     t.datetime "updated_at"
     t.string   "home_page_url"
     t.integer  "default_branch_protection",         default: 2
-    t.boolean  "twitter_sharing_enabled",           default: true
     t.text     "help_text"
     t.text     "restricted_visibility_levels"
     t.boolean  "version_check_enabled",             default: true
@@ -489,9 +488,9 @@ ActiveRecord::Schema.define(version: 20160320204112) do
     t.integer  "iid"
     t.integer  "updated_by_id"
     t.integer  "weight"
-    t.integer  "moved_to_id"
-    t.boolean  "confidential",              default: false
+    t.boolean  "confidential",  default: false
     t.datetime "deleted_at"
+    t.integer  "moved_to_id"
   end
 
   add_index "issues", ["assignee_id"], name: "index_issues_on_assignee_id", using: :btree
@@ -685,8 +684,8 @@ ActiveRecord::Schema.define(version: 20160320204112) do
     t.string   "avatar"
     t.boolean  "membership_lock",       default: false
     t.boolean  "share_with_group_lock", default: false
-    t.datetime "last_ldap_sync_at"
     t.integer  "visibility_level",      default: 20,    null: false
+    t.datetime "last_ldap_sync_at"
   end
 
   add_index "namespaces", ["created_at", "id"], name: "index_namespaces_on_created_at_and_id", using: :btree
@@ -858,6 +857,7 @@ ActiveRecord::Schema.define(version: 20160320204112) do
   add_index "projects", ["namespace_id"], name: "index_projects_on_namespace_id", using: :btree
   add_index "projects", ["path"], name: "index_projects_on_path", using: :btree
   add_index "projects", ["path"], name: "index_projects_on_path_trigram", using: :gin, opclasses: {"path"=>"gin_trgm_ops"}
+  add_index "projects", ["pending_delete"], name: "index_projects_on_pending_delete", using: :btree
   add_index "projects", ["runners_token"], name: "index_projects_on_runners_token", using: :btree
   add_index "projects", ["star_count"], name: "index_projects_on_star_count", using: :btree
   add_index "projects", ["visibility_level"], name: "index_projects_on_visibility_level", using: :btree
@@ -899,9 +899,9 @@ ActiveRecord::Schema.define(version: 20160320204112) do
     t.string   "type"
     t.string   "title"
     t.integer  "project_id"
-    t.datetime "created_at",                               null: false
-    t.datetime "updated_at",                               null: false
-    t.boolean  "active",                                   null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean  "active",                default: false,    null: false
     t.text     "properties"
     t.boolean  "template",              default: false
     t.boolean  "push_events",           default: true

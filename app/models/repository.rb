@@ -373,6 +373,8 @@ class Repository
 
   # Runs code just before a repository is deleted.
   def before_delete
+    expire_exists_cache
+
     expire_cache if exists?
 
     expire_root_ref_cache
@@ -962,7 +964,7 @@ class Repository
   end
 
   def fetch_ref(source_path, source_ref, target_ref)
-    args = %W(#{Gitlab.config.git.bin_path} fetch -f #{source_path} #{source_ref}:#{target_ref})
+    args = %W(#{Gitlab.config.git.bin_path} fetch --no-tags -f #{source_path} #{source_ref}:#{target_ref})
     Gitlab::Popen.popen(args, path_to_repo)
   end
 
