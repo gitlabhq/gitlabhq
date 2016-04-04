@@ -13,7 +13,7 @@ describe Gitlab::Metrics do
     end
   end
 
-  describe '#submit_metrics' do
+  describe '.submit_metrics' do
     it 'prepares and writes the metrics to InfluxDB' do
       connection = double(:connection)
       pool       = double(:pool)
@@ -26,7 +26,7 @@ describe Gitlab::Metrics do
     end
   end
 
-  describe '#prepare_metrics' do
+  describe '.prepare_metrics' do
     it 'returns a Hash with the keys as Symbols' do
       metrics = described_class.
         prepare_metrics([{ 'values' => {}, 'tags' => {} }])
@@ -51,7 +51,7 @@ describe Gitlab::Metrics do
     end
   end
 
-  describe '#escape_value' do
+  describe '.escape_value' do
     it 'escapes an equals sign' do
       expect(described_class.escape_value('foo=')).to eq('foo\\=')
     end
