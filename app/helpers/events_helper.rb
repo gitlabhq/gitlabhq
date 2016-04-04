@@ -216,7 +216,7 @@ module EventsHelper
   end
 
   def event_row_class(event)
-    if event.body? || event.created_project?
+    if event.body?
       "event-block"
     else
       "event-inline"
