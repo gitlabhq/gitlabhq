@@ -7,6 +7,8 @@
     .panel-heading
       %b Builds badge &middot;
       = @badge.to_html
+      .pull-right
+        = render 'shared/ref_switcher', destination: 'badges'
     .panel-body
       .row
         .col-md-2.text-center
