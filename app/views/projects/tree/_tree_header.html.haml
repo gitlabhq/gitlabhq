@@ -15,11 +15,11 @@
   - if current_user
     %li
       - if !on_top_of_branch?
-        %span.btn.btn-sm.add-to-tree.disabled.has-tooltip{title: "You can only add files when you are on a branch", data: { container: 'body' }}
+        %span.btn.add-to-tree.disabled.has-tooltip{title: "You can only add files when you are on a branch", data: { container: 'body' }}
           = icon('plus')
       - else
         %span.dropdown
-          %a.dropdown-toggle.btn.btn-sm.add-to-tree{href: '#', "data-toggle" => "dropdown"}
+          %a.dropdown-toggle.btn.add-to-tree{href: '#', "data-toggle" => "dropdown"}
             = icon('plus')
           %ul.dropdown-menu
             - if can_edit_tree?

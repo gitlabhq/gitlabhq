@@ -623,7 +623,6 @@ namespace :gitlab do
       start_checking "Reply by email"
 
       if Gitlab.config.incoming_email.enabled
-        check_address_formatted_correctly
         check_imap_authentication
 
         if Rails.env.production?
@@ -642,20 +641,6 @@ namespace :gitlab do
 
     # Checks
     ########################
-
-    def check_address_formatted_correctly
-      print "Address formatted correctly? ... "
-
-      if Gitlab::IncomingEmail.address_formatted_correctly?
-        puts "yes".green
-      else
-        puts "no".red
-        try_fixing_it(
-          "Make sure that the address in config/gitlab.yml includes the '%{key}' placeholder."
-        )
-        fix_and_rerun
-      end
-    end
 
     def check_initd_configured_correctly
       print "Init.d configured correctly? ... "

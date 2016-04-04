@@ -13,10 +13,10 @@
 
 // Toggle between two states.
 .js-toggler-container {
-  .turn-on  { display: block; }
+  .turn-on { display: block; }
   .turn-off { display: none; }
   &.on {
-    .turn-on  { display: none; }
+    .turn-on { display: none; }
     .turn-off { display: block; }
   }
 }

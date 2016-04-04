@@ -31,7 +31,7 @@ module Banzai
       end
 
       def url_for_object(label, project)
-        h = Gitlab::Application.routes.url_helpers
+        h = Gitlab::Routing.url_helpers
         h.namespace_project_issues_url(project.namespace, project, label_name: label.name,
                                                                    only_path:  context[:only_path])
       end

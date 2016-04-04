@@ -5,8 +5,10 @@ module NotesHelper
   end
 
   def note_target_fields(note)
-    hidden_field_tag(:target_type, note.noteable.class.name.underscore) +
-    hidden_field_tag(:target_id, note.noteable.id)
+    if note.noteable
+      hidden_field_tag(:target_type, note.noteable.class.name.underscore) +
+        hidden_field_tag(:target_id, note.noteable.id)
+    end
   end
 
   def note_editable?(note)
