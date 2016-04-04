@@ -53,7 +53,7 @@
   .label-name {
     display: inline-block;
     width: 200px;
-    vertical-align: top;
+    vertical-align: baseline;
 
     @media (max-width: $screen-xs-min) {
       display: block;
@@ -85,12 +85,13 @@
 
   .prepend-left-10 {
     display: inline-block;
-    width: 45%;
+    width: 40%;
+    vertical-align: text-top;
 
     @media (max-width: $screen-xs-min) {
       display: block;
       width: 100%;
-      margin-left: 0px;
+      margin-left: 0;
       padding: 10px 0;
     }
   }
@@ -104,7 +105,13 @@
 
     .action-buttons {
       border-color: transparent;
-      padding: 6px
+      padding: 6px;
+      color: $gl-text-color;
+      vertical-align: initial;
+
+      &.subscribe-button {
+        padding-left: 0;
+      }
     }
 
     i {

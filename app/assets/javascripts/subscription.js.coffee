@@ -3,22 +3,19 @@ class @Subscription
     $container = $(container)
     @url = $container.attr('data-url')
     @subscribe_button = $container.find('.subscribe-button')
-    @subscribe_icon = $container.find('.subscribe-icon')
     @subscription_status = $container.find('.subscription-status')
     @subscribe_button.unbind('click').click(@toggleSubscription)
-    @subscribe_icon.unbind('click').click(@toggleSubscription)
 
   toggleSubscription: (event) =>
     btn = $(event.currentTarget)
     action = btn.find('span').text()
     current_status = @subscription_status.attr('data-status')
-    btn.prop('disabled', true)
+    btn.addClass('disabled')
 
     $.post @url, =>
-      btn.prop('disabled', false)
+      btn.removeClass('disabled')
       status = if current_status == 'subscribed' then 'unsubscribed' else 'subscribed'
       @subscription_status.attr('data-status', status)
-      @subscribe_icon.attr('data-original-title', status)
       action = if status == 'subscribed' then 'Unsubscribe' else 'Subscribe'
       btn.find('span').text(action)
       @subscription_status.find('>div').toggleClass('hidden')

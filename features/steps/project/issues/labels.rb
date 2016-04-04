@@ -15,7 +15,7 @@ class Spinach::Features::ProjectIssuesLabels < Spinach::FeatureSteps
 
   step 'I delete all labels' do
     page.within '.labels' do
-      page.all('.btn-remove').each do |remove|
+      page.all('.remove-row').each do |remove|
         remove.click
         sleep 0.05
       end
