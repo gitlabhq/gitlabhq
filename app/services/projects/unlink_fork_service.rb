@@ -4,7 +4,7 @@ module Projects
       return unless @project.forked?
 
       @project.forked_from_project.lfs_objects.find_each do |lfs_object|
-        lfs_object.projects << self
+        lfs_object.projects << @project
       end
 
       merge_requests = @project.forked_from_project.merge_requests.opened.from_project(@project)
