@@ -23,7 +23,7 @@ module DiffHelper
   end
 
   def diff_options
-    options = { ignore_whitespace_change: hide_whitespaces? }
+    options = { ignore_whitespace_change: hide_whitespace? }
     if diff_hard_limit_enabled?
       options.merge!(Commit.max_diff_options)
     end
@@ -129,16 +129,16 @@ module DiffHelper
     end
   end
 
-  def hide_whitespaces?
+  def hide_whitespace?
     params[:w] == '1'
   end
 
   def params_with_whitespace
-    hide_whitespaces? ? request.query_parameters.except(:w) : request.query_parameters.merge(w: 1)
+    hide_whitespace? ? request.query_parameters.except(:w) : request.query_parameters.merge(w: 1)
   end
 
   def toggle_whitespace_link(url)
-    link_to "#{hide_whitespaces? ? 'Show' : 'Hide'} whitespace changes", url, class: "btn btn-default"
+    link_to "#{hide_whitespace? ? 'Show' : 'Hide'} whitespace changes", url, class: "btn btn-default"
   end
 
   def commit_diff_whitespace_link(project, commit)
