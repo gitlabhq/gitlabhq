@@ -287,3 +287,21 @@ ul.notes {
     }
   }
 }
+
+.disabled-comment {
+  margin-left: -$gl-padding-top;
+  margin-right: -$gl-padding-top;
+  background-color: $gray-light;
+  border-radius: $border-radius-base;
+  border: 1px solid $border-gray-normal;
+  color: $note-disabled-comment-color;
+  line-height: 200px;
+
+  .disabled-comment-text {
+    line-height: normal;
+  }
+
+  a {
+    color: $gl-link-color;
+  }
+}

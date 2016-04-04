@@ -40,7 +40,7 @@
 }
 
 .zen-control-full {
-  color: #959494;
+  color: $note-toolbar-color;
 
   &:hover {
     color: $gl-link-color;
@@ -57,6 +57,6 @@
   font-size: 36px;
 
   &:hover {
-    color: #111;
+    color: $zen-control-hover-color;
   }
 }

@@ -195,24 +195,6 @@
   line-height: 31px;
 }
 
-.disabled-comment {
-  margin-left: -$gl-padding-top;
-  margin-right: -$gl-padding-top;
-  background-color: $gray-light;
-  border-radius: $border-radius-base;
-  border: 1px solid $border-gray-normal;
-  color: #b2b2b2;
-  line-height: 200px;
-
-  .disabled-comment-text {
-    line-height: normal;
-  }
-
-  a {
-    color: $gl-link-color;
-  }
-}
-
 .builds {
   .table-holder {
     overflow-x: scroll;

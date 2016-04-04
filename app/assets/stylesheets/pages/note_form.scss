@@ -58,17 +58,17 @@
 .common-note-form {
   .md-area {
     padding: $gl-padding-top $gl-padding;
-    border: 1px solid #e5e5e5;
+    border: 1px solid $note-form-border-color;
     border-radius: $border-radius-base;
 
     &.is-focused {
-      border-color: #3b99fc;
+      border-color: $focus-border-color;
       box-shadow: 0 0 2px rgba(#000, .2),
-                  0 0 4px rgba(#3b99fc, .5);
+                  0 0 4px rgba($focus-border-color, .4);
 
       .comment-toolbar,
       .nav-links {
-        border-color: #3b99fc;
+        border-color: $focus-border-color;
       }
     }
   }
@@ -139,6 +139,7 @@
 
 .comment-toolbar {
   padding-top: $gl-padding-top;
+  color: $note-toolbar-color;
   border-top: 1px solid $border-color;
 }
 
@@ -146,7 +147,6 @@
   padding: 0;
   background: none;
   border: 0;
-  color: #959494;
   font-size: 14px;
   line-height: 16px;
 
@@ -176,7 +176,6 @@
 }
 
 .toolbar-text {
-  color: #959494;
   font-size: 14px;
   line-height: 16px;
 
