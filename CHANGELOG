@@ -1,7 +1,6 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.7.0 (unreleased)
-  - Don't attempt to fetch any tags from a forked repo (Stan Hu)
   - Improved Markdown rendering performance !3389 (Yorick Peterse)
   - Don't attempt to look up an avatar in repo if repo directory does not exist (Stan hu)
   - Preserve time notes/comments have been updated at when moving issue
@@ -19,6 +18,9 @@ v 8.7.0 (unreleased)
   - Fix creation of merge requests for orphaned branches (Stan Hu)
   - Fall back to `In-Reply-To` and `References` headers when sub-addressing is not available (David Padilla)
   - Remove "Congratulations!" tweet button on newly-created project. (Connor Shea)
+
+v 8.6.4
+  - Don't attempt to fetch any tags from a forked repo (Stan Hu)
 
 v 8.6.3
   - Mentions on confidential issues doesn't create todos for non-members. !3374
@@ -126,6 +128,7 @@ v 8.6.0
   - Add main language of a project in the list of projects (Tiago Botelho)
   - Add #upcoming filter to Milestone filter (Tiago Botelho)
   - Add ability to show archived projects on dashboard, explore and group pages
+  - Remove fork link closes all merge requests opened on source project (Florent Baldino)
   - Move group activity to separate page
   - Create external users which are excluded of internal and private projects unless access was explicitly granted
   - Continue parameters are checked to ensure redirection goes to the same instance
