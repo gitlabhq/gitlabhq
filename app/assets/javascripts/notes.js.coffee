@@ -65,8 +65,6 @@ class @Notes
 
     # add diff note
     $(document).on "click", ".js-add-diff-note-button", @addDiffNote
-    $(document).on "mouseover", ".js-add-diff-note-button", ->
-      console.log $(this).data('line-code')
 
     # hide diff note form
     $(document).on "click", ".js-close-discussion-note-form", @cancelDiscussionForm
@@ -505,7 +503,6 @@ class @Notes
   addDiffNote: (e) =>
     e.preventDefault()
     $link = $(e.currentTarget)
-    console.log $link.data('line-code')
     row = $link.closest("tr")
     nextRow = row.next()
     hasNotes = nextRow.is(".notes_holder")
