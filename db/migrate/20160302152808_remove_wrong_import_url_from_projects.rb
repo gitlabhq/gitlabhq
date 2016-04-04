@@ -12,14 +12,14 @@ class RemoveWrongImportUrlFromProjects < ActiveRecord::Migration
   def up
     say("Encrypting and migrating project import credentials...")
 
-    # This should cover Github, Gitlab, Bitbucket user:password, token@domain, and other similar URLs.
-    say("Projects and Github projects with a wrong URL. It also migrates Gitlab project credentials.")
+    # This should cover GitHub, GitLab, Bitbucket user:password, token@domain, and other similar URLs.
+    say("Projects and GitHub projects with a wrong URL. It also migrates GitLab project credentials.")
     in_transaction { process_projects_with_wrong_url }
 
-    say("Migrating bitbucket credentials...")
+    say("Migrating Bitbucket credentials...")
     in_transaction { process_project(import_type: 'bitbucket', credentials_keys: ['bb_session']) }
 
-    say("Migrating fogbugz credentials...")
+    say("Migrating FogBugz credentials...")
     in_transaction { process_project(import_type: 'fogbugz', credentials_keys: ['fb_session']) }
 
   end
@@ -109,7 +109,7 @@ class RemoveWrongImportUrlFromProjects < ActiveRecord::Migration
     ).squish
   end
 
-  #Github projects with token, and any user:password@ based URL
+  #GitHub projects with token, and any user:password@ based URL
   #TODO: may need to add import_type != list
   def projects_with_wrong_import_url
     select_all("SELECT p.id, p.import_url, i.id as import_data_id FROM projects p LEFT JOIN project_import_data i on p.id = i.id WHERE p.import_url IS NOT NULL AND p.import_url LIKE '%//%@%'")
