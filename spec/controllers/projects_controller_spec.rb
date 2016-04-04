@@ -83,6 +83,28 @@ describe ProjectsController do
     end
   end
 
+  describe "#update" do
+    render_views
+
+    let(:admin) { create(:admin) }
+
+    it "sets the repository to the right path after a rename" do
+      new_path = 'renamed_path'
+      project_params = { path: new_path }
+      controller.instance_variable_set(:@project, project)
+      sign_in(admin)
+
+      put :update,
+          namespace_id: project.namespace.to_param,
+          id: project.id,
+          project: project_params
+
+      expect(project.repository.path).to include(new_path)
+      expect(assigns(:repository).path).to eq(project.repository.path)
+      expect(response.status).to eq(200)
+    end
+  end
+
   describe "#destroy" do
     let(:admin) { create(:admin) }
 
