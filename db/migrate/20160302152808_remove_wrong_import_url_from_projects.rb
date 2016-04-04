@@ -16,8 +16,8 @@ class RemoveWrongImportUrlFromProjects < ActiveRecord::Migration
     say("Projects and Github projects with a wrong URL. It also migrates Gitlab project credentials.")
     in_transaction { process_projects_with_wrong_url }
 
-    say("Migrating bitbucket credentials...")# TODO remove last param
-    in_transaction { process_project(import_type: 'bitbucket', unencrypted_data: ['repo', 'user_map']) }
+    say("Migrating bitbucket credentials...")
+    in_transaction { process_project(import_type: 'bitbucket') }
 
     say("Migrating fogbugz credentials...")
     in_transaction { process_project(import_type: 'fogbugz', unencrypted_data: ['repo', 'user_map']) }

@@ -8,7 +8,7 @@ module Gitlab
 
         import_data = project.import_data.try(:data)
         repo_data = import_data['repo'] if import_data
-        if defined?(repo_data)
+        if repo_data
           @repo = FogbugzImport::Repository.new(repo_data)
           @known_labels = Set.new
         else
@@ -18,7 +18,6 @@ module Gitlab
 
       def execute
         return true unless repo.valid?
-        Rails.logger.error import_data_credentials.inspect
         client = Gitlab::FogbugzImport::Client.new(token: import_data_credentials['fb_session']['token'], uri: import_data_credentials['fb_session']['uri'])
 
         @cases = client.cases(@repo.id.to_i)
