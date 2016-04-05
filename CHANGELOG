@@ -13,6 +13,7 @@ v 8.7.0 (unreleased)
   - Expose label description in API (Mariusz Jachimowicz)
   - Allow back dating on issues when created through the API
   - Fix Error 500 after renaming a project path (Stan Hu)
+  - Fix a bug whith trailing slash in teamcity_url & bamboo_url (Charles May)
   - Fix avatar stretching by providing a cropping feature
   - API: Expose `subscribed` for issues and merge requests (Robert Schilling)
   - Allow SAML to handle external users based on user's information !3530
@@ -124,7 +125,6 @@ v 8.6.0
   - HTTP error pages work independently from location and config (Artem Sidorenko)
   - Update `omniauth-saml` to 1.5.0 to allow for custom response attributes to be set
   - Fix avatar stretching by providing a cropping feature (Johann Pardanaud)
-  - Fix a bug whith trailing slash in teamcity_url (Charles May)
   - Don't load all of GitLab in mail_room
   - Memoize @group in Admin::GroupsController (Yatish Mehta)
   - Indicate how much an MR diverged from the target branch (Pierre de La Morinerie)
