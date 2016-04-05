@@ -57,9 +57,6 @@
         %li.missing
           = link_to add_contribution_guide_path(@project) do
             Add Contribution guide
-    - if @project.builds_enabled?
-      %li
-        = link_to 'Badges', ''
 
 - if @repository.commit
   .content-block.second-block.white
