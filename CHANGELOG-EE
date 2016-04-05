@@ -136,6 +136,18 @@ v 8.4.0
   - Add option to trigger builds when branches or tags are updated from a mirrored upstream repository
   - Ability to use Elasticsearch as a search engine
 
+v 8.3.6
+  - No EE-specific changes
+
+v 8.3.5
+  - No EE-specific changes
+
+v 8.3.4
+  - No EE-specific changes
+
+v 8.3.3
+  - Fix undefined method call in Jenkins integration service
+
 v 8.3.2
   - No EE-specific changes
 
