@@ -10,7 +10,8 @@ module WikiPages
         # DEPRECATED
         repository: @project.hook_attrs.slice(:name, :url, :description, :homepage)
       }
-      page_url = "#{Gitlab.config.gitlab.url}#{@project.wiki.wiki_base_path}/#{page.slug}"
+
+      page_url = Gitlab::UrlBuilder.new(:wiki_page).build(page)
       hook_data[:object_attributes].merge!(url: page_url, action: action)
       hook_data
     end
