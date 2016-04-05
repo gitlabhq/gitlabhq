@@ -11,12 +11,14 @@ class @MilestoneSelect
       selectedMilestone = $dropdown.data('selected')
       showNo = $dropdown.data('show-no')
       showAny = $dropdown.data('show-any')
+      showUpcoming = $dropdown.data('show-upcoming')
       useId = $dropdown.data('use-id')
       defaultLabel = $dropdown.data('default-label')
       issuableId = $dropdown.data('issuable-id')
       abilityName = $dropdown.data('ability-name')
       $selectbox = $dropdown.closest('.selectbox')
       $block = $selectbox.closest('.block')
+      $sidebarCollapsedValue = $block.find('.sidebar-collapsed-icon')
       $value = $block.find('.value')
       $loading = $block.find('.block-loading').fadeOut()
 
@@ -32,22 +34,32 @@ class @MilestoneSelect
           $.ajax(
             url: milestonesUrl
           ).done (data) ->
-            if $dropdown.hasClass "js-extra-options"
-              if showNo
-                data.unshift(
-                  id: '0'
-                  title: 'No Milestone'
-                )
+            extraOptions = []
+            if showAny
+              extraOptions.push(
+                id: 0
+                name: ''
+                title: 'Any Milestone'
+              )
 
-              if showAny
-                data.unshift(
-                  isAny: true
-                  title: 'Any Milestone'
-                )
+            if showNo
+              extraOptions.push(
+                id: -1
+                name: 'No Milestone'
+                title: 'No Milestone'
+              )
 
-              if data.length > 2
-                data.splice 2, 0, 'divider'
-            callback(data)
+            if showUpcoming
+              extraOptions.push(
+                id: -2
+                name: '#upcoming'
+                title: 'Upcoming'
+              )
+
+            if extraOptions.length > 2
+              extraOptions.push 'divider'
+
+            callback(extraOptions.concat(data))
         filterable: true
         search:
           fields: ['title']
@@ -62,23 +74,26 @@ class @MilestoneSelect
           milestone.title
         id: (milestone) ->
           if !useId
-            if !milestone.isAny?
-              milestone.title
-            else
-              ''
+            milestone.name
           else
             milestone.id
         isSelected: (milestone) ->
-          milestone.title is selectedMilestone
+          milestone.name is selectedMilestone
         hidden: ->
           $selectbox.hide()
-          $value.show()
-        clicked: (e) ->
+
+          # display:block overrides the hide-collapse rule
+          $value.removeAttr('style')
+        clicked: (selected) ->
           if $dropdown.hasClass 'js-filter-bulk-update'
             return
-            
-          if $dropdown.hasClass 'js-filter-submit'
-            $dropdown.parents('form').submit()
+
+          if $dropdown.hasClass('js-filter-submit')
+            if selected.name?
+              selectedMilestone = selected.name
+            else
+              selectedMilestone = ''
+            Issues.filterResults $dropdown.closest('form')
           else
             selected = $selectbox
               .find('input[type="hidden"]')
@@ -88,20 +103,22 @@ class @MilestoneSelect
             data[abilityName].milestone_id = selected
             $loading
               .fadeIn()
+            $dropdown.trigger('loading.gl.dropdown')
             $.ajax(
               type: 'PUT'
               url: issueUpdateURL
               data: data
             ).done (data) ->
+              $dropdown.trigger('loaded.gl.dropdown')
               $loading.fadeOut()
               $selectbox.hide()
-              $milestoneLink = $value
-                      .show()
-                      .find('a')
+              $value.removeAttr('style')
               if data.milestone?
                 data.milestone.namespace = _this.currentProject.namespace
                 data.milestone.path = _this.currentProject.path
                 $value.html(milestoneLinkTemplate(data.milestone))
+                $sidebarCollapsedValue.find('span').text(data.milestone.title)
               else
                 $value.html(milestoneLinkNoneTemplate)
+                $sidebarCollapsedValue.find('span').text('No')
       )
