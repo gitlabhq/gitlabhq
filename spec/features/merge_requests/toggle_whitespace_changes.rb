@@ -13,7 +13,7 @@ feature 'Toggle Whitespace Changes', js: true, feature: true do
     expect(page).to have_content "Hide whitespace changes"
   end
 
-  describe 'clicking hide whitespace changes button' do
+  describe 'clicking "Hide whitespace changes" button' do
     it 'should hide whitespace changes' do
       find('a', text: "Hide whitespace changes").click
       expect(page).to have_content "Show whitespace changes"
