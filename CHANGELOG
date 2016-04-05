@@ -140,6 +140,9 @@ v 8.6.0
   - Trigger a todo for mentions on commits page
   - Let project owners and admins soft delete issues and merge requests
 
+v 8.5.9
+  - Don't attempt to fetch any tags from a forked repo (Stan Hu).
+
 v 8.5.8
   - Bump Git version requirement to 2.7.4
 
