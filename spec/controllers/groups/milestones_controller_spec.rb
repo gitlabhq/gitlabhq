@@ -27,7 +27,7 @@ describe Groups::MilestonesController do
     it "redirects to new when there are no project ids" do
       post :create, group_id: group.id, milestone: { title: title, project_ids: [""] }
       expect(response).to render_template :new
-      expect(assigns(:milestone).errors).to_not be_nil
+      expect(assigns(:milestone).errors).not_to be_nil
     end
   end
 end
