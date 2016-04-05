@@ -11,11 +11,9 @@ describe SlackService::WikiPageMessage, models: true do
       },
       project_name: 'project_name',
       project_url: 'somewhere.com',
-
       object_attributes: {
         title: 'Wiki page title',
         url: 'url',
-        action: 'create',
         content: 'Wiki page description'
       }
     }
@@ -23,34 +21,53 @@ describe SlackService::WikiPageMessage, models: true do
 
   let(:color) { '#345' }
 
-  context 'create' do
-    it 'returns a message regarding creation of pages' do
-      expect(subject.pretext).to eq(
-        'Test User created <url|wiki page> in <somewhere.com|project_name>: '\
-        '*Wiki page title*')
-      expect(subject.attachments).to eq([
-        {
-          text: "Wiki page description",
-          color: color,
-        }
-      ])
+  describe '#pretext' do
+    context 'when :action == "create"' do
+      before { args[:object_attributes][:action] = 'create' }
+
+      it do
+        expect(pretext).to eq(
+          'Test User created <url|wiki page> in <somewhere.com|project_name>: '\
+          '*Wiki page title*')
+      end
+    end
+
+    context 'when :action == "update"' do
+      before { args[:object_attributes][:action] = 'update' }
+
+      it do
+        expect(pretext).to eq(
+          'Test User edited <url|wiki page> in <somewhere.com|project_name>: '\
+          '*Wiki page title*')
+      end
     end
   end
 
-  context 'update' do
-    before do
-      args[:object_attributes][:action] = 'update'
+  describe '#attachments' do
+    context 'when :action == "create"' do
+      before { args[:object_attributes][:action] = 'create' }
+
+      it do
+        expect(attachments).to eq([
+          {
+            text: "Wiki page description",
+            color: color,
+          }
+        ])
+      end
     end
-    it 'returns a message regarding updating of pages' do
-      expect(subject.pretext). to eq(
-        'Test User edited <url|wiki page> in <somewhere.com|project_name>: '\
-        '*Wiki page title*')
-      expect(subject.attachments).to eq([
-        {
-          text: "Wiki page description",
-          color: color,
-        }
-      ])
+
+    context 'when :action == "update"' do
+      before { args[:object_attributes][:action] = 'update' }
+
+      it do
+        expect(attachments).to eq([
+          {
+            text: "Wiki page description",
+            color: color,
+          }
+        ])
+      end
     end
   end
 end

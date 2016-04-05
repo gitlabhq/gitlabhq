@@ -19,7 +19,7 @@ class SlackService
       @wiki_page_url = obj_attr[:url]
       @description = obj_attr[:content]
 
-      @action = \
+      @action =
         case obj_attr[:action]
         when "create"
           "created"
