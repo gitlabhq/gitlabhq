@@ -26,7 +26,7 @@ describe SlackService::WikiPageMessage, models: true do
       before { args[:object_attributes][:action] = 'create' }
 
       it do
-        expect(pretext).to eq(
+        expect(subject.pretext).to eq(
           'Test User created <url|wiki page> in <somewhere.com|project_name>: '\
           '*Wiki page title*')
       end
@@ -36,7 +36,7 @@ describe SlackService::WikiPageMessage, models: true do
       before { args[:object_attributes][:action] = 'update' }
 
       it do
-        expect(pretext).to eq(
+        expect(subject.pretext).to eq(
           'Test User edited <url|wiki page> in <somewhere.com|project_name>: '\
           '*Wiki page title*')
       end
@@ -48,7 +48,7 @@ describe SlackService::WikiPageMessage, models: true do
       before { args[:object_attributes][:action] = 'create' }
 
       it do
-        expect(attachments).to eq([
+        expect(subject.attachments).to eq([
           {
             text: "Wiki page description",
             color: color,
@@ -61,7 +61,7 @@ describe SlackService::WikiPageMessage, models: true do
       before { args[:object_attributes][:action] = 'update' }
 
       it do
-        expect(attachments).to eq([
+        expect(subject.attachments).to eq([
           {
             text: "Wiki page description",
             color: color,
