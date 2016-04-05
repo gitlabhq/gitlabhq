@@ -176,5 +176,11 @@ describe Banzai::Filter::MilestoneReferenceFilter, lib: true do
     it 'contains cross project content' do
       expect(result.css('a').first.text).to eq "#{milestone.name} in #{project_name}"
     end
+
+    it 'escapes the name attribute' do
+      allow_any_instance_of(Milestone).to receive(:title).and_return(%{"></a>whatever<a title="})
+      doc = reference_filter("See #{reference}")
+      expect(doc.css('a').first.text).to eq "#{milestone.name} in #{project_name}"
+    end
   end
 end
