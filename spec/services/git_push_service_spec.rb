@@ -159,7 +159,6 @@ describe GitPushService, services: true do
   end
 
   describe "Updates main language" do
-
     context "before push" do
       it { expect(project.main_language).to eq(nil) }
     end
