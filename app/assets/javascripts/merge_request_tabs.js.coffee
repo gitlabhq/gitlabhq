@@ -73,7 +73,7 @@ class @MergeRequestTabs
       @expandView()
     else if action == 'diffs'
       @loadDiff($target.attr('href'))
-      if bp.getBreakpointSize() isnt 'lg'
+      if window.bp isnt undefined and window.bp.getBreakpointSize() isnt 'lg'
         @shrinkView()
     else if action == 'builds'
       @loadBuilds($target.attr('href'))
