@@ -31,7 +31,7 @@
 
 _GitLab uses the [Redcarpet Ruby library][redcarpet] for Markdown processing._
 
-For GitLab uses "GitLab Flavored Markdown" (GFM). It extends the standard Markdown in a few significant ways to add some useful functionality. It was inspired by [GitHub Flavored Markdown](https://help.github.com/articles/basic-writing-and-formatting-syntax/).
+GitLab uses "GitLab Flavored Markdown" (GFM). It extends the standard Markdown in a few significant ways to add some useful functionality. It was inspired by [GitHub Flavored Markdown](https://help.github.com/articles/basic-writing-and-formatting-syntax/).
 
 You can use GFM in
 
@@ -55,7 +55,7 @@ Line-breaks, or softreturns, are rendered if you end a line with two or more spa
 
     Sugar is sweet
 
-Roses are red
+Roses are red  
 Violets are blue
 
 Sugar is sweet
@@ -534,7 +534,7 @@ This line is separated from the one above by two newlines, so it will be a *sepa
 This line is also a separate paragraph, but...
 This line is only separated by a single newline, so it's a separate line in the *same paragraph*.
 
-This line is also a separate paragraph, and...
+This line is also a separate paragraph, and...  
 This line is on its own line, because the previous line ends with two
 spaces.
 ```
@@ -546,7 +546,7 @@ This line is separated from the one above by two newlines, so it will be a *sepa
 This line is also begins a separate paragraph, but...
 This line is only separated by a single newline, so it's a separate line in the *same paragraph*.
 
-This line is also a separate paragraph, and...
+This line is also a separate paragraph, and...  
 This line is on its own line, because the previous line ends with two
 spaces.
 
