@@ -94,13 +94,13 @@ class Projects::ProjectMembersController < Projects::ApplicationController
   end
 
   def apply_import
-    giver = Project.find(params[:source_project_id])
+    source_project = Project.find(params[:source_project_id])
 
-    if current_user.can?(:read_project_member, giver)
-      status = @project.team.import(giver, current_user)
+    if can?(current_user, :read_project_member, source_project)
+      status = @project.team.import(source_project, current_user)
       notice = status ? "Successfully imported" : "Import failed"
     else
-      notice = 'You are not authorized to import members from this project'
+      notice = 'Import failed - source project not found!'
     end
 
     redirect_to(namespace_project_project_members_path(project.namespace, project),

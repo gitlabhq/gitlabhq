@@ -41,8 +41,8 @@ describe Projects::ProjectMembersController do
         expect(project.team_members).to_not include member
       end
 
-      it 'notifies about invalid permissions' do
-        expect(response).to set_flash.to /not authorized/
+      it 'pretends that source projects does not exist' do
+        expect(response).to set_flash.to /source project not found/
       end
     end
   end
