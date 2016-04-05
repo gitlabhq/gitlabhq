@@ -152,7 +152,7 @@ describe 'Comments', feature: true do
 
         it 'has .new_note css class' do
           page.within('.js-temp-notes-holder') do
-            expect(subject).to have_css('.new_note')
+            expect(subject).to have_css('.new-note')
           end
         end
       end
@@ -225,6 +225,6 @@ describe 'Comments', feature: true do
   end
 
   def click_diff_line(data = line_code)
-    page.find(%Q{button[data-line-code="#{data}"]}, visible: false).click
+    execute_script("$('button[data-line-code=\"#{data}\"]').click()")
   end
 end
