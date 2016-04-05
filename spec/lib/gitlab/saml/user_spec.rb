@@ -23,6 +23,12 @@ describe Gitlab::Saml::User, lib: true do
       allow(Gitlab::LDAP::Config).to receive_messages(messages)
     end
 
+    def stub_saml_config(messages)
+      allow(Gitlab::Saml::Config).to receive_messages(messages)
+    end
+
+    before { stub_saml_config({ options: { name: 'saml', args: {} } }) }
+
     describe 'account exists on server' do
       before { stub_omniauth_config({ allow_single_sign_on: ['saml'], auto_link_saml_user: true }) }
       context 'and should bind with SAML' do
@@ -138,7 +144,7 @@ describe Gitlab::Saml::User, lib: true do
     end
 
     describe 'blocking' do
-      before { stub_omniauth_config({ allow_saml_sign_up: true, auto_link_saml_user: true }) }
+      before { stub_omniauth_config({ allow_single_sign_on: ['saml'], auto_link_saml_user: true }) }
 
       context 'signup with SAML only' do
         context 'dont block on create' do
@@ -161,64 +167,6 @@ describe Gitlab::Saml::User, lib: true do
           end
         end
       end
-
-      context 'signup with linked omniauth and LDAP account' do
-        before do
-          stub_omniauth_config(auto_link_ldap_user: true)
-          allow(ldap_user).to receive(:uid) { uid }
-          allow(ldap_user).to receive(:username) { uid }
-          allow(ldap_user).to receive(:email) { ['johndoe@example.com','john2@example.com'] }
-          allow(ldap_user).to receive(:dn) { 'uid=user1,ou=People,dc=example' }
-          allow(saml_user).to receive(:ldap_person).and_return(ldap_user)
-        end
-
-        context "and no account for the LDAP user" do
-          context 'dont block on create (LDAP)' do
-            before { allow_any_instance_of(Gitlab::LDAP::Config).to receive_messages(block_auto_created_users: false) }
-
-            it do
-              saml_user.save
-              expect(gl_user).to be_valid
-              expect(gl_user).not_to be_blocked
-            end
-          end
-
-          context 'block on create (LDAP)' do
-            before { allow_any_instance_of(Gitlab::LDAP::Config).to receive_messages(block_auto_created_users: true) }
-
-            it do
-              saml_user.save
-              expect(gl_user).to be_valid
-              expect(gl_user).to be_blocked
-            end
-          end
-        end
-
-        context 'and LDAP user has an account already' do
-          let!(:existing_user) { create(:omniauth_user, email: 'john@example.com', extern_uid: 'uid=user1,ou=People,dc=example', provider: 'ldapmain', username: 'john') }
-
-          context 'dont block on create (LDAP)' do
-            before { allow_any_instance_of(Gitlab::LDAP::Config).to receive_messages(block_auto_created_users: false) }
-
-            it do
-              saml_user.save
-              expect(gl_user).to be_valid
-              expect(gl_user).not_to be_blocked
-            end
-          end
-
-          context 'block on create (LDAP)' do
-            before { allow_any_instance_of(Gitlab::LDAP::Config).to receive_messages(block_auto_created_users: true) }
-
-            it do
-              saml_user.save
-              expect(gl_user).to be_valid
-              expect(gl_user).not_to be_blocked
-            end
-          end
-        end
-      end
-
 
       context 'sign-in' do
         before do
