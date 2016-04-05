@@ -1,5 +1,4 @@
 class Ability
-
   class << self
     def allowed(user, subject)
       return anonymous_abilities(user, subject) if user.nil?
@@ -58,7 +57,6 @@ class Ability
           :read_label,
           :read_milestone,
           :read_project_snippet,
-          :read_project_member,
           :read_merge_request,
           :read_note,
           :read_commit_status,
@@ -70,8 +68,6 @@ class Ability
 
         # Allow to read issues by anonymous user if issue is not confidential
         rules << :read_issue unless subject.is_a?(Issue) && subject.confidential?
-
-        rules << :read_project_member unless restricted_public_level?
 
         rules - project_disabled_features_rules(project)
       else
@@ -96,9 +92,8 @@ class Ability
               end
 
       if group
-        rules << [:read_group] if group.public?
-
-        rules << [:read_group_members] unless restricted_public_level?
+        rules << :read_group if group.public?
+        rules << :read_group_members unless restricted_public_level?
       end
 
       rules
@@ -156,7 +151,6 @@ class Ability
           rules -= project_archived_rules
         end
 
-        rules << :read_project_members
         rules - project_disabled_features_rules(project)
       end
     end

@@ -41,7 +41,7 @@ describe UsersController do
       end
     end
 
-    context 'When public visibility level is restricted' do
+    context 'when public visibility level is restricted' do
       before do
         stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::PUBLIC])
       end
