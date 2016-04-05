@@ -122,15 +122,4 @@ class Projects::WikisController < Projects::ApplicationController
     params[:wiki].slice(:title, :content, :format, :message)
   end
 
-  def content
-    params[:wiki][:content]
-  end
-
-  def format
-    params[:wiki][:format]
-  end
-
-  def message
-    params[:wiki][:message]
-  end
 end
