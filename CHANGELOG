@@ -18,6 +18,7 @@ v 8.7.0 (unreleased)
 
 v 8.6.5
   - Fix importing from GitHub Enterprise. !3529
+  - Check permissions when user attempts to import members from another project. !3535
 
 v 8.6.4
   - Don't attempt to fetch any tags from a forked repo (Stan Hu)
