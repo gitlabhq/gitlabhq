@@ -49,11 +49,9 @@
 }
 
 .label-row {
-
   .label-name {
     display: inline-block;
     width: 200px;
-    vertical-align: baseline;
 
     @media (max-width: $screen-xs-min) {
       display: block;
@@ -86,7 +84,7 @@
   .prepend-left-10 {
     display: inline-block;
     width: 40%;
-    vertical-align: text-top;
+    vertical-align: middle;
 
     @media (max-width: $screen-xs-min) {
       display: block;
@@ -107,7 +105,6 @@
       border-color: transparent;
       padding: 6px;
       color: $gl-text-color;
-      vertical-align: initial;
 
       &.subscribe-button {
         padding-left: 0;
