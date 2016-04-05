@@ -49,6 +49,9 @@ v 8.6.0
   - Allow SSL verification to be configurable when importing GitHub projects
   - Disable git-hooks for git annex commits
 
+v 8.5.9
+  - No EE-specific changes
+
 v 8.5.8
   - GitLab Geo: Documentation
 
