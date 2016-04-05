@@ -12,6 +12,7 @@ class @UsersSelect
       showNullUser = $dropdown.data('null-user')
       showAnyUser = $dropdown.data('any-user')
       firstUser = $dropdown.data('first-user')
+      @authorId = $dropdown.data('author-id')
       selectedId = $dropdown.data('selected')
       defaultLabel = $dropdown.data('default-label')
       issueURL = $dropdown.data('issueUpdate')
@@ -212,7 +213,7 @@ class @UsersSelect
       showAnyUser = $(select).data('any-user')
       showEmailUser = $(select).data('email-user')
       firstUser = $(select).data('first-user')
-      
+
       $(select).select2
         placeholder: "Search for a user"
         multiple: $(select).hasClass('multiselect')
