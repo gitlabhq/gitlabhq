@@ -132,8 +132,9 @@ linters:
   SpaceAroundOperator:
     enabled: false
   
+  # Opening braces should be preceded by a single space.
   SpaceBeforeBrace:
-    enabled: false
+    enabled: true
   
   StringQuotes:
     enabled: false

@@ -1,19 +1,39 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.7.0 (unreleased)
+  - Improved Markdown rendering performance !3389 (Yorick Peterse)
   - Don't attempt to look up an avatar in repo if repo directory does not exist (Stan hu)
   - Preserve time notes/comments have been updated at when moving issue
   - Make HTTP(s) label consistent on clone bar (Stan Hu)
   - Expose label description in API (Mariusz Jachimowicz)
   - Allow back dating on issues when created through the API
   - Fix avatar stretching by providing a cropping feature
-  - Fix raw/rendered diff producing different results on merge requests !3450
+  - Add endpoints to archive or unarchive a project !3372
   - Add links to CI setup documentation from project settings and builds pages
   - Handle nil descriptions in Slack issue messages (Stan Hu)
+  - Add default scope to projects to exclude projects pending deletion
   - Implement 'Groups View' as an option for dashboard preferences !3379 (Elias W.)
   - Implement 'TODOs View' as an option for dashboard preferences !3379 (Elias W.)
   - Gracefully handle notes on deleted commits in merge requests (Stan Hu)
+  - Fix creation of merge requests for orphaned branches (Stan Hu)
   - Fall back to `In-Reply-To` and `References` headers when sub-addressing is not available (David Padilla)
+  - Remove "Congratulations!" tweet button on newly-created project. (Connor Shea)
+
+v 8.6.4
+  - Don't attempt to fetch any tags from a forked repo (Stan Hu)
+
+v 8.6.3
+  - Mentions on confidential issues doesn't create todos for non-members. !3374
+  - Destroy related todos when an Issue/MR is deleted. !3376
+  - Fix error 500 when target is nil on todo list. !3376
+  - Fix copying uploads when moving issue to another project. !3382
+  - Ensuring Merge Request API returns boolean values for work_in_progress (Abhi Rao). !3432
+  - Fix raw/rendered diff producing different results on merge requests. !3450
+  - Fix commit comment alignment (Stan Hu). !3466
+  - Fix Error 500 when searching for a comment in a project snippet. !3468
+  - Allow temporary email as notification email. !3477
+  - Fix issue with dropdowns not selecting values. !3478
+  - Update gitlab-shell version and doc to 2.6.12. gitlab-org/gitlab-ee!280
 
 v 8.6.2
   - Fix dropdown alignment. !3298
@@ -108,6 +128,7 @@ v 8.6.0
   - Add main language of a project in the list of projects (Tiago Botelho)
   - Add #upcoming filter to Milestone filter (Tiago Botelho)
   - Add ability to show archived projects on dashboard, explore and group pages
+  - Remove fork link closes all merge requests opened on source project (Florent Baldino)
   - Move group activity to separate page
   - Create external users which are excluded of internal and private projects unless access was explicitly granted
   - Continue parameters are checked to ensure redirection goes to the same instance

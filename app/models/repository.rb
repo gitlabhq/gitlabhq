@@ -72,7 +72,7 @@ class Repository
     return @has_visible_content unless @has_visible_content.nil?
 
     @has_visible_content = cache.fetch(:has_visible_content?) do
-      raw_repository.branch_count > 0
+      branch_count > 0
     end
   end
 
@@ -173,7 +173,7 @@ class Repository
   end
 
   def branch_names
-    cache.fetch(:branch_names) { raw_repository.branch_names }
+    cache.fetch(:branch_names) { branches.map(&:name) }
   end
 
   def tag_names
@@ -191,7 +191,7 @@ class Repository
   end
 
   def branch_count
-    @branch_count ||= cache.fetch(:branch_count) { raw_repository.branch_count }
+    @branch_count ||= cache.fetch(:branch_count) { branches.size }
   end
 
   def tag_count
@@ -239,7 +239,7 @@ class Repository
 
   def expire_branches_cache
     cache.expire(:branch_names)
-    @branches = nil
+    @local_branches = nil
   end
 
   def expire_cache(branch_name = nil, revision = nil)
@@ -614,9 +614,13 @@ class Repository
     refs_contains_sha('tag', sha)
   end
 
-  def branches
-    @branches ||= raw_repository.branches
+  def local_branches
+    @local_branches ||= rugged.branches.each(:local).map do |branch|
+      Gitlab::Git::Branch.new(branch.name, branch.target)
+    end
   end
+
+  alias_method :branches, :local_branches
 
   def tags
     @tags ||= raw_repository.tags
@@ -820,7 +824,7 @@ class Repository
   end
 
   def fetch_ref(source_path, source_ref, target_ref)
-    args = %W(#{Gitlab.config.git.bin_path} fetch -f #{source_path} #{source_ref}:#{target_ref})
+    args = %W(#{Gitlab.config.git.bin_path} fetch --no-tags -f #{source_path} #{source_ref}:#{target_ref})
     Gitlab::Popen.popen(args, path_to_repo)
   end
 

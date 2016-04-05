@@ -1,7 +1,10 @@
 - diff = diff_file.diff
 - file_raw_path = namespace_project_raw_path(@project.namespace, @project, tree_join(@commit.id, diff.new_path))
-- old_commit_id = diff_refs.first.id
-- old_file_raw_path = namespace_project_raw_path(@project.namespace, @project, tree_join(old_commit_id, diff.old_path))
+// diff_refs will be nil for orphaned commits (e.g. first commit in repo)
+- if diff_refs
+  - old_commit_id = diff_refs.first.id
+  - old_file_raw_path = namespace_project_raw_path(@project.namespace, @project, tree_join(old_commit_id, diff.old_path))
+
 - if diff.renamed_file || diff.new_file || diff.deleted_file
   .image
     %span.wrap
