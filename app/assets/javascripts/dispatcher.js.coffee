@@ -40,7 +40,7 @@ class Dispatcher
       when 'projects:merge_requests:new', 'projects:merge_requests:edit'
         new Diff()
         shortcut_handler = new ShortcutsNavigation()
-        new DropzoneInput($('.merge-request-form'))
+        new GLForm($('.merge-request-form'))
         new IssuableForm($('.merge-request-form'))
       when 'projects:tags:new'
         new ZenMode()
