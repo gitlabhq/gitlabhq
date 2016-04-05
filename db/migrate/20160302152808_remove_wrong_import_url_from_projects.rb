@@ -51,9 +51,9 @@ class RemoveWrongImportUrlFromProjects < ActiveRecord::Migration
   def encrypt_data(data_hash, credentials_keys)
     new_data_hash = {}
     credentials_keys.each do |key|
-      new_data_hash[key] = data_hash.delete(key) if data_hash[key]
+      new_data_hash[key.to_sym] = data_hash.delete(key) if data_hash[key]
     end
-    new_data_hash
+    new_data_hash.deep_symbolize_keys
   end
 
   def in_transaction

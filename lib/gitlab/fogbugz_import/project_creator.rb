@@ -28,7 +28,7 @@ module Gitlab
         import_data.data = { 'repo' => repo.raw_data, 'user_map' => user_map }
 
         # merge! with a bang doesn't work here
-        import_data.credentials = import_data.credentials.merge('fb_session' => fb_session)
+        import_data.credentials = import_data.credentials.merge(fb_session: fb_session)
         import_data.save
 
         project

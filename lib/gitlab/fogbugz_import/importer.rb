@@ -18,7 +18,7 @@ module Gitlab
 
       def execute
         return true unless repo.valid?
-        client = Gitlab::FogbugzImport::Client.new(token: import_data_credentials['fb_session']['token'], uri: import_data_credentials['fb_session']['uri'])
+        client = Gitlab::FogbugzImport::Client.new(token: import_data_credentials[:fb_session][:token], uri: import_data_credentials[:fb_session][:uri])
 
         @cases = client.cases(@repo.id.to_i)
         @categories = client.categories
@@ -31,7 +31,7 @@ module Gitlab
       private
 
       def import_data_credentials
-        @import_data_credentials ||= project.import_data.stringified_credentials if project.import_data
+        @import_data_credentials ||= project.import_data if project.import_data
       end
 
       def user_map
@@ -240,8 +240,8 @@ module Gitlab
       end
 
       def build_attachment_url(rel_url)
-        uri = import_data_credentials['fb_session']['uri']
-        token = import_data_credentials['fb_session']['token']
+        uri = import_data_credentials[:fb_session][:uri]
+        token = import_data_credentials[:fb_session][:token]
         "#{uri}/#{rel_url}&token=#{token}"
       end
 

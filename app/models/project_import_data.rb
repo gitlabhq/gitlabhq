@@ -18,7 +18,11 @@ class ProjectImportData < ActiveRecord::Base
 
   validates :project, presence: true
 
-  def stringified_credentials
-    JSON[credentials.to_json]
+  # TODO: This doesnt play well with attr_encrypted. Perhaps consider extending Marshall and specify a different Marshaller
+  before_validation :symbolize_credentials
+
+  def symbolize_credentials
+    return if credentials.blank?
+    credentials.deep_symbolize_keys!
   end
 end
