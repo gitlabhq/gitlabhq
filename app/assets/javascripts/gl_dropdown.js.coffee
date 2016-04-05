@@ -331,11 +331,11 @@ class GitLabDropdown
     ).join('')
 
   noResults: ->
-    html = "<li class='dropdown-menu-empty-link'>"
-    html += "<a href='#' class='is-focused'>"
-    html += "No matching results."
-    html += "</a>"
-    html += "</li>"
+    html = "<li class='dropdown-menu-empty-link'>
+      <a href='#' class='is-focused'>
+        No matching results.
+      </a>
+    </li>"
 
   highlightRow: (index) ->
     if @filterInput.val() isnt ""
