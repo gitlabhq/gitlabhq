@@ -44,10 +44,10 @@ class Dispatcher
         new IssuableForm($('.merge-request-form'))
       when 'projects:tags:new'
         new ZenMode()
-        new DropzoneInput($('.tag-form'))
+        new GLForm($('.tag-form'))
       when 'projects:releases:edit'
         new ZenMode()
-        new DropzoneInput($('.release-form'))
+        new GLForm($('.release-form'))
       when 'projects:merge_requests:show'
         new Diff()
         shortcut_handler = new ShortcutsIssuable(true)
@@ -137,7 +137,7 @@ class Dispatcher
             new Wikis()
             shortcut_handler = new ShortcutsNavigation()
             new ZenMode()
-            new DropzoneInput($('.wiki-form'))
+            new GLForm($('.wiki-form'))
           when 'snippets'
             shortcut_handler = new ShortcutsNavigation()
             new ZenMode() if path[2] == 'show'
