@@ -91,6 +91,8 @@ v 8.7.0
   - Fix `signed_in_ip` being set to 127.0.0.1 when using a reverse proxy !3524
   - Improved Markdown rendering performance !3389
   - Make shared runners text in box configurable
+  - Add eager load paths to help prevent dependency load issues with Sidekiq workers (Stan Hu)
+  - Improved Markdown rendering performance !3389 (Yorick Peterse)
   - Don't attempt to look up an avatar in repo if repo directory does not exist (Stan Hu)
   - API: Ability to subscribe and unsubscribe from issues and merge requests (Robert Schilling)
   - Expose project badges in project settings
