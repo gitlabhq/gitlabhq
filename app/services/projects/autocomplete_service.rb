@@ -4,6 +4,10 @@ module Projects
       @project.issues.visible_to_user(current_user).opened.select([:iid, :title])
     end
 
+    def milestones
+      @project.milestones.active.select([:iid, :title])
+    end
+
     def merge_requests
       @project.merge_requests.opened.select([:iid, :title])
     end
