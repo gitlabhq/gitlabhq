@@ -73,10 +73,10 @@ class GitPushService < BaseService
     @project.execute_hooks(build_push_data.dup, :push_hooks)
     @project.execute_services(build_push_data.dup, :push_hooks)
 
-    index_commits_blobs if Gitlab.config.elasticsearch.enabled
-
     CreateCommitBuildsService.new.execute(@project, current_user, build_push_data, mirror_update: mirror_update)
     ProjectCacheWorker.perform_async(@project.id)
+
+    index_commits_blobs if Gitlab.config.elasticsearch.enabled
   end
 
   def index_commits_blobs
