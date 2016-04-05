@@ -12,10 +12,19 @@ class @MergeRequestWidget
     @readyForCICheck = true
     clearInterval @fetchBuildStatusInterval
 
+    @clearEventListeners()
+    @addEventListeners()
     @pollCIStatus()
     notifyPermissions()
 
-  setOpts: (@opts) ->
+  clearEventListeners: ->
+    $(document).off 'page:change.merge_request'
+
+  addEventListeners: ->
+    $(document).on 'page:change.merge_request', =>
+      if $('body').data('page') isnt 'projects:merge_requests:show'
+        clearInterval @fetchBuildStatusInterval
+        @clearEventListeners()
 
   mergeInProgress: (deleteSourceBranch = false)->
     $.ajax
@@ -63,11 +72,15 @@ class @MergeRequestWidget
         @firstCICheck = false
         @opts.ci_status = data.status
 
+<<<<<<< a918e8bf277418048776a5d9c34a64b39f4e56f3
       if @opts.ci_status is ''
         @opts.ci_status = data.status
         return
 
       if data.status isnt @opts.ci_status
+=======
+      if data.status isnt @opts.ci_status and data.status?
+>>>>>>> Build notification null check
         @showCIStatus data.status
         if data.coverage
           @showCICoverage data.coverage

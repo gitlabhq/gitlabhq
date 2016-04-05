@@ -8,7 +8,6 @@
   = render 'projects/merge_requests/widget/locked'
 
 :javascript
-  var merge_request_widget;
   var opts = {
     merge_check_url: "#{merge_check_namespace_project_merge_request_path(@project.namespace, @project, @merge_request)}",
     check_enable: #{@merge_request.unchecked? ? "true" : "false"},
@@ -20,8 +19,4 @@
     builds_path: "#{builds_namespace_project_merge_request_path(@project.namespace, @project, @merge_request)}"
   };
 
-  if(typeof merge_request_widget === 'undefined') {
-    merge_request_widget = new MergeRequestWidget(opts);
-  } else {
-    merge_request_widget.setOpts(opts);
-  }
+  new MergeRequestWidget(opts);
