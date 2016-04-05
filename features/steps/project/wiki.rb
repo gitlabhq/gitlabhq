@@ -85,7 +85,7 @@ class Spinach::Features::ProjectWiki < Spinach::FeatureSteps
   end
 
   step 'I have an existing Wiki page with images linked on page' do
-    wiki.create_page("pictures", "Look at this [image](image.jpg)\n\n ![image](image.jpg)", :markdown, "first commit")
+    wiki.create_page("pictures", "Look at this [image](image.jpg)\n\n ![alt text](image.jpg)", :markdown, "first commit")
     @wiki_page = wiki.find_page("pictures")
   end
 
