@@ -11,6 +11,11 @@ module Banzai
       end
 
       def references_in(text, pattern = Milestone.reference_pattern)
+        # We'll handle here the references that follow the `reference_pattern`.
+        # Other patterns (for example, the link pattern) are handled by the
+        # default implementation.
+        return super(text, pattern) if pattern != Milestone.reference_pattern
+
         text.gsub(pattern) do |match|
           project = project_from_ref($~[:project])
           params = milestone_params($~[:milestone_iid].to_i, $~[:milestone_name])
