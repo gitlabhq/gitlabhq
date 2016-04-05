@@ -55,6 +55,9 @@ class GitPushService < BaseService
   end
 
   def update_main_language
+    return unless is_default_branch?
+    return unless push_to_new_branch? || push_to_existing_branch?
+
     current_language = @project.repository.main_language
 
     unless current_language == @project.main_language
