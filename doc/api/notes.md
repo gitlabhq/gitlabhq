@@ -89,6 +89,7 @@ Parameters:
 - `id` (required) - The ID of a project
 - `issue_id` (required) - The ID of an issue
 - `body` (required) - The content of a note
+- `created_at` (optional) - Date time string, ISO 8601 formatted, e.g. 2016-03-11T03:45:40Z
 
 ### Modify existing issue note
 
