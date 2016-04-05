@@ -57,7 +57,7 @@ class Projects::WikisController < Projects::ApplicationController
   def create
     @page = WikiPages::CreateService.new(@project, current_user, wiki_params).execute
 
-    if @page
+    if @page.persisted?
       redirect_to(
         namespace_project_wiki_path(@project.namespace, @project, @page),
         notice: 'Wiki was successfully updated.'
