@@ -1,7 +1,11 @@
 class @GLForm
   constructor: (@form) ->
-    @textarea = @form.find('.js-note-text')
+    @textarea = @form.find('textarea.js-gfm-input')
 
+    # Before we start, we should clean up any previous data for this form
+    @destroy()
+
+    # Setup the form
     @setupForm()
 
     @form.data 'gl-form', @
@@ -9,8 +13,10 @@ class @GLForm
   destroy: ->
     # Destroy actions
     actions = @form.data 'form-actions'
-    actions.clearEventListeners()
-    @form.data 'form-actions', null
+
+    if actions?
+      actions.clearEventListeners()
+      @form.data 'form-actions', null
 
     # Clean form listeners
     @clearEventListeners()

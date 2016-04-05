@@ -29,7 +29,7 @@
 
     = render layout: 'projects/md_preview', locals: { preview_class: "md-preview", referenced_users: true } do
       = render 'projects/zen', f: f, attr: :description,
-                               classes: 'description form-control'
+                               classes: 'note-textarea'
       = render 'projects/notes/hints'
       .clearfix
       .error-alert

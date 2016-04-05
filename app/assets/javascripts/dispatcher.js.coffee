@@ -35,7 +35,7 @@ class Dispatcher
         new Diff()
       when 'projects:issues:new','projects:issues:edit'
         shortcut_handler = new ShortcutsNavigation()
-        new DropzoneInput($('.issue-form'))
+        new GLForm($('.issue-form'))
         new IssuableForm($('.issue-form'))
       when 'projects:merge_requests:new', 'projects:merge_requests:edit'
         new Diff()
