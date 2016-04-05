@@ -284,6 +284,12 @@ v 8.5.0
   - Show label row when filtering issues or merge requests by label (Nuttanart Pornprasitsakul)
   - Add Todos
 
+v 8.4.7
+  - Don't attempt to fetch any tags from a forked repo (Stan Hu).
+
+v 8.4.6
+  - Bump Git version requirement to 2.7.4
+
 v 8.4.5
   - No CE-specific changes
 
