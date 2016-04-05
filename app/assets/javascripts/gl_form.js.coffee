@@ -1,18 +1,30 @@
 class @GLForm
   constructor: (@form) ->
-    @textarea = @form.find(".js-note-text")
+    @textarea = @form.find('.js-note-text')
 
     @setupForm()
+
+    @form.data 'gl-form', @
+
+  destroy: ->
+    # Destroy actions
+    actions = @form.data 'form-actions'
+    actions.clearEventListeners()
+    @form.data 'form-actions', null
+
+    # Clean form listeners
+    @clearEventListeners()
+    @form.data 'gl-form', null
 
   setupForm: ->
     isNewForm = @form.is(':not(.gfm-form)')
 
-    @form.removeClass "js-new-note-form"
+    @form.removeClass 'js-new-note-form'
 
     if isNewForm
       @form.find('.div-dropzone').remove()
       @form.addClass('gfm-form')
-      disableButtonIfEmptyField @form.find(".js-note-text"), @form.find(".js-comment-button")
+      disableButtonIfEmptyField @form.find('.js-note-text'), @form.find('.js-comment-button')
 
       # remove notify commit author checkbox for non-commit notes
       GitLab.GfmAutoComplete.setup()
@@ -31,6 +43,10 @@ class @GLForm
     @form.find('.js-note-discard').hide()
 
     @form.show()
+
+  clearEventListeners: ->
+    @textarea.off 'focus'
+    @textarea.off 'blur'
 
   addEventListeners: ->
     @textarea.on 'focus', ->

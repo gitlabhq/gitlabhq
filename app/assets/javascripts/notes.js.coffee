@@ -513,6 +513,9 @@ class @Notes
   removeDiscussionNoteForm: (form)->
     row = form.closest("tr")
 
+    glForm = form.data 'gl-form'
+    glForm.destroy()
+
     form.find(".js-note-text").data("autosave").reset()
 
     # show the reply button (will only work for replies)
@@ -523,11 +526,6 @@ class @Notes
     else
       # only remove the form
       form.remove()
-
-    # Remove the note actions
-    actions = form.data('form-actions')
-    actions.clearEventListeners()
-    form.data('form-actions', null)
 
   cancelDiscussionForm: (e) =>
     e.preventDefault()
