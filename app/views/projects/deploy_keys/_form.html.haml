@@ -1,10 +1,6 @@
 %div
   = form_for [@project.namespace.becomes(Namespace), @project, @key], url: namespace_project_deploy_keys_path, html: { class: 'deploy-key-form form-horizontal js-requires-input' } do |f|
-    -if @key.errors.any?
-      .alert.alert-danger
-        %ul
-          - @key.errors.full_messages.each do |msg|
-            %li= msg
+    = form_errors(@key)
 
     .form-group
       = f.label :title, class: "control-label"

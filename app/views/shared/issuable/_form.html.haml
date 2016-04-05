@@ -1,10 +1,5 @@
-- if issuable.errors.any?
-  .row
-    .col-sm-offset-2.col-sm-10
-      .alert.alert-danger
-        - issuable.errors.full_messages.each do |msg|
-          %span= msg
-          %br
+= form_errors(issuable)
+
 .form-group
   = f.label :title, class: 'control-label'
   .col-sm-10

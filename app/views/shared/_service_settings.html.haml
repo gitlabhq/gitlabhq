@@ -1,9 +1,4 @@
-- if @service.errors.any?
-  #error_explanation
-    .alert.alert-danger
-      %ul
-        - @service.errors.full_messages.each do |msg|
-          %li= msg
+= form_errors(@service)
 
 - if @service.help.present?
   .well
