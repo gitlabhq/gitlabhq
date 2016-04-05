@@ -21,7 +21,7 @@ class Groups::MilestonesController < Groups::ApplicationController
     project_ids = params[:milestone][:project_ids].reject(&:blank?)
     title = milestone_params[:title]
 
-    if create_milestones(project_ids, title)
+    if create_milestones(project_ids)
       redirect_to milestone_path(title)
     else
       render_new_with_error(project_ids.empty?)
@@ -41,7 +41,7 @@ class Groups::MilestonesController < Groups::ApplicationController
 
   private
 
-  def create_milestones(project_ids, title)
+  def create_milestones(project_ids)
     return false unless project_ids.present?
 
     ActiveRecord::Base.transaction do
@@ -51,9 +51,7 @@ class Groups::MilestonesController < Groups::ApplicationController
     end
 
     true
-
-    rescue => e
-
+  rescue ActiveRecord::ActiveRecordError => e
     flash.now[:alert] = "An error occurred while creating the milestone: #{e.message}"
     false
   end
