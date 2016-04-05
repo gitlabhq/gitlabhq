@@ -22,6 +22,9 @@ v 8.7.0 (unreleased)
   - Improved UX of the navigation sidebar
   - Build status notifications
 
+v 8.6.5 (unreleased)
+  - Check permissions when user attempts to import members from another project
+
 v 8.6.4
   - Don't attempt to fetch any tags from a forked repo (Stan Hu)
 
