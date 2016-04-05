@@ -321,13 +321,13 @@ describe API::API, api: true  do
     end
 
     context 'when an admin or owner makes the request' do
-      it "accepts the creation date to be set" do
+      it 'accepts the creation date to be set' do
+        creation_time = 2.weeks.ago
         post api("/projects/#{project.id}/issues", user),
-          title: 'new issue', labels: 'label, label2', created_at: 2.weeks.ago
+          title: 'new issue', labels: 'label, label2', created_at: creation_time
 
         expect(response.status).to eq(201)
-        # this take about a second, so probably not equal
-        expect(Time.parse(json_response['created_at'])).to be <= 2.weeks.ago
+        expect(Time.parse(json_response['created_at'])).to be_within(1.second).of(creation_time)
       end
     end
   end
@@ -477,6 +477,18 @@ describe API::API, api: true  do
 
       expect(json_response['labels']).to include 'label2'
       expect(json_response['state']).to eq "closed"
+    end
+
+    context 'when an admin or owner makes the request' do
+      it 'accepts the update date to be set' do
+        update_time = 2.weeks.ago
+        put api("/projects/#{project.id}/issues/#{issue.id}", user),
+          labels: 'label3', state_event: 'close', updated_at: update_time
+        expect(response.status).to eq(200)
+
+        expect(json_response['labels']).to include 'label3'
+        expect(Time.parse(json_response['updated_at'])).to be_within(1.second).of(update_time)
+      end
     end
   end
 
