@@ -261,13 +261,13 @@ tree and traverse it.
 - Run the following check command to make sure that the LDAP settings are
   correct and GitLab can see your users:
 
-  ```bash
-  # For Omnibus installations
-  sudo gitlab-rake gitlab:ldap:check
+    ```bash
+    # For Omnibus installations
+    sudo gitlab-rake gitlab:ldap:check
 
-  # For installations from source
-  sudo -u git -H bundle exec rake gitlab:ldap:check RAILS_ENV=production
-  ```
+    # For installations from source
+    sudo -u git -H bundle exec rake gitlab:ldap:check RAILS_ENV=production
+    ```
 
 ### Connection Refused
 
