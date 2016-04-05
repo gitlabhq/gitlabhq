@@ -41,8 +41,8 @@ describe Projects::ProjectMembersController do
         expect(project.team_members).to_not include member
       end
 
-      it 'pretends that source projects does not exist' do
-        expect(response).to set_flash.to /source project not found/
+      it 'responds with not found' do
+        expect(response.status).to eq 404
       end
     end
   end

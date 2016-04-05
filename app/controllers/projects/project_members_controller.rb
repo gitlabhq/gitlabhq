@@ -100,7 +100,7 @@ class Projects::ProjectMembersController < Projects::ApplicationController
       status = @project.team.import(source_project, current_user)
       notice = status ? "Successfully imported" : "Import failed"
     else
-      notice = 'Import failed - source project not found!'
+      return render_404
     end
 
     redirect_to(namespace_project_project_members_path(project.namespace, project),
