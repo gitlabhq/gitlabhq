@@ -362,6 +362,11 @@ class Repository
     expire_tag_count_cache
   end
 
+  def before_import
+    expire_emptiness_caches
+    expire_exists_cache
+  end
+
   # Runs code after a repository has been forked/imported.
   def after_import
     expire_emptiness_caches

@@ -612,6 +612,20 @@ describe Repository, models: true do
     end
   end
 
+  describe '#before_import' do
+    it 'flushes the emptiness cachess' do
+      expect(repository).to receive(:expire_emptiness_caches)
+
+      repository.before_import
+    end
+
+    it 'flushes the exists cache' do
+      expect(repository).to receive(:expire_exists_cache)
+
+      repository.before_import
+    end
+  end
+
   describe '#after_import' do
     it 'flushes the emptiness cachess' do
       expect(repository).to receive(:expire_emptiness_caches)

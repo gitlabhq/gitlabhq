@@ -16,6 +16,9 @@ v 8.7.0 (unreleased)
   - Fall back to `In-Reply-To` and `References` headers when sub-addressing is not available (David Padilla)
   - Remove "Congratulations!" tweet button on newly-created project. (Connor Shea)
 
+v 8.6.5
+  - Fix importing from GitHub Enterprise. !3529
+
 v 8.6.4
   - Don't attempt to fetch any tags from a forked repo (Stan Hu)
 
