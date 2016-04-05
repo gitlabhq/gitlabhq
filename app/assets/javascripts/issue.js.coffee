@@ -34,7 +34,7 @@ class @Issue
           issueStatus = if isClose then 'close' else 'open'
           new Flash(issueFailMessage, 'alert')
         success: (data, textStatus, jqXHR) ->
-          if data.saved
+          if 'id' of data
             $(document).trigger('issuable:change');
             if isClose
               $('a.btn-close').addClass('hidden')
