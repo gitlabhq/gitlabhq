@@ -91,7 +91,7 @@ class TeamcityService < CiService
     ).to_s
     auth = {
       username: username,
-      password: password,
+      password: password
     }
     @response = HTTParty.get(url, verify: false, basic_auth: auth)
   end
@@ -108,7 +108,7 @@ class TeamcityService < CiService
       built_id = @response['build']['id']
       URI.join(
         teamcity_url,
-        "#{teamcity_url}/viewLog.html?buildId=#{built_id}&buildTypeId=#{build_type}"
+        "/viewLog.html?buildId=#{built_id}&buildTypeId=#{build_type}"
       ).to_s
     end
   end
@@ -145,7 +145,7 @@ class TeamcityService < CiService
     branch = Gitlab::Git.ref_name(data[:ref])
 
     self.class.post(
-      URI.join(teamcity_url, "/httpAuth/app/rest/buildQueue").to_s,
+      URI.join(teamcity_url, '/httpAuth/app/rest/buildQueue').to_s,
       body: "<build branchName=\"#{branch}\">"\
             "<buildType id=\"#{build_type}\"/>"\
             '</build>',
