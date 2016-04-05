@@ -105,6 +105,21 @@ Parameters:
 - `note_id` (required) - The ID of a note
 - `body` (required) - The content of a note
 
+### Delete existing issue note
+
+Deletes an existing note of an issue. On success, this API method returns 200.
+If the note does not exist, the API returns 404.
+
+```
+DELETE /projects/:id/issues/:issue_id/notes/:note_id
+```
+
+Parameters:
+
+- `id` (required) - The ID of a project
+- `issue_id` (required) - The ID of an issue
+- `note_id` (required) - The ID of a note
+
 ## Snippets
 
 ### List all snippet notes
@@ -181,6 +196,21 @@ Parameters:
 - `snippet_id` (required) - The ID of a snippet
 - `note_id` (required) - The ID of a note
 - `body` (required) - The content of a note
+
+### Delete existing snippet note
+
+Deletes an existing note of a snippet. On success, this API method returns 200.
+If the note does not exist, the API returns 404.
+
+```
+DELETE /projects/:id/snippets/:snippet_id/notes/:note_id
+```
+
+Parameters:
+
+- `id` (required) - The ID of a project
+- `snippet_id` (required) - The ID of a snippet
+- `note_id` (required) - The ID of a note
 
 ## Merge Requests
 
@@ -262,3 +292,18 @@ Parameters:
 - `merge_request_id` (required) - The ID of a merge request
 - `note_id` (required) - The ID of a note
 - `body` (required) - The content of a note
+
+### Delete existing snippet note
+
+Deletes an existing note of a merge request. On success, this API method returns
+200. If the note does not exist, the API returns 404.
+
+```
+DELETE /projects/:id/merge_requests/:merge_request_id/notes/:note_id
+```
+
+Parameters:
+
+- `id` (required) - The ID of a project
+- `merge_request_id` (required) - The ID of a merge request
+- `note_id` (required) - The ID of a note

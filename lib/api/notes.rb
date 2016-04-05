@@ -112,6 +112,23 @@ module API
           end
         end
 
+        # Delete a +notable+ note
+        #
+        # Parameters:
+        # Parameters:
+        #   id (required) - The ID of a project
+        #   noteable_id (required) - The ID of an issue, MR, or snippet
+        #   node_id (required) - The ID of a note
+        # Example Request:
+        #   DELETE /projects/:id/issues/:noteable_id/notes/:note_id
+        #   DELETE /projects/:id/snippets/:noteable_id/notes/:node_id
+        delete ":id/#{noteables_str}/:#{noteable_id_str}/notes/:note_id" do
+          note = user_project.notes.find(params[:note_id])
+          not_found!('Note') unless note
+          authorize! :admin_note, note
+          ::Notes::DeleteService.new(user_project, current_user).execute(note)
+          true
+        end
       end
     end
   end

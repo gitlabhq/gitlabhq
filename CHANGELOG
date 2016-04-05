@@ -46,6 +46,11 @@ v 8.6.5
   - Return status code 303 after a branch DELETE operation to avoid project deletion (Stan Hu). !3583
   - Unblock user when active_directory is disabled and it can be found !3550
   - Fix a 2FA authentication spoofing vulnerability.
+  - API: Delete notes of issues, snippets, and merge requests (Robert Schilling)
+
+v 8.6.5 (unreleased)
+  - Only update repository language if it is not set to improve performance
+  - Check permissions when user attempts to import members from another project
 
 v 8.6.4
   - Don't attempt to fetch any tags from a forked repo (Stan Hu)
