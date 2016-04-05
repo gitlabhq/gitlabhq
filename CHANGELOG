@@ -124,6 +124,7 @@ v 8.6.5
   - Return status code 303 after a branch DELETE operation to avoid project deletion (Stan Hu). !3583
   - Unblock user when active_directory is disabled and it can be found !3550
   - Fix a 2FA authentication spoofing vulnerability.
+  - Add Slack notifications when Wiki is edited (Sebastian Klier)
 
 v 8.6.4
   - Don't attempt to fetch any tags from a forked repo (Stan Hu)
@@ -274,7 +275,6 @@ v 8.5.3
   - Show commit message in JIRA mention comment
   - Makes issue page and merge request page usable on mobile browsers.
   - Improved UI for profile settings
-  - Add Slack notifications when Wiki is edited (Sebastian Klier)
 
 v 8.5.2
   - Fix sidebar overlapping content when screen width was below 1200px
