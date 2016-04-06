@@ -27,7 +27,7 @@ class Note < ActiveRecord::Base
   include Mentionable
   include Awardable
 
-  attr_accessor :emoji_award
+  attr_accessor :award_emoji
 
   default_value_for :system, false
 
@@ -347,7 +347,7 @@ class Note < ActiveRecord::Base
     emoji_awards_supported? && contains_only_emoji?
   end
 
-  def create_emoji_award
+  def create_award_emoji
     self.emoji_award = self.noteable.award_emoji(emoji_award_name, self.author)
   end
 
@@ -373,7 +373,7 @@ class Note < ActiveRecord::Base
 
   def emoji_award_name
     original_name = note.match(Banzai::Filter::EmojiFilter.emoji_pattern)[1]
-    AwardEmoji.normalize_emoji_name(original_name)
+    Gitlab::AwardEmoji.normalize_emoji_name(original_name)
   end
 
   def contains_only_emoji?

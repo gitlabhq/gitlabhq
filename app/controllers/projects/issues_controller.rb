@@ -1,5 +1,5 @@
 class Projects::IssuesController < Projects::ApplicationController
-  include ToggleEmojiAward
+  include ToggleAwardEmoji
   include ToggleSubscriptionAction
   include IssuableActions
 

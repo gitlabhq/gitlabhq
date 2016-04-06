@@ -2,25 +2,25 @@ module Awardable
   extend ActiveSupport::Concern
 
   included do
-    has_many :emoji_awards, as: :awardable, dependent: :destroy
+    has_many :award_emoji, as: :awardable, dependent: :destroy
 
     if self < Participable
-      participant :emoji_awards
+      participant :award_emoji
     end
   end
 
   module ClassMethods
     def order_upvotes_desc
-      order_votes_desc(EmojiAward::UPVOTE_NAME)
+      order_votes_desc(AwardEmoji::UPVOTE_NAME)
     end
 
     def order_downvotes_desc
-      order_votes_desc(EmojiAward::DOWNVOTE_NAME)
+      order_votes_desc(AwardEmoji::DOWNVOTE_NAME)
     end
 
     def order_votes_desc(emoji_name)
       awardable_table = self.arel_table
-      awards_table = EmojiAward.arel_table
+      awards_table = AwardEmoji.arel_table
 
       join_clause = awardable_table.join(awards_table, Arel::Nodes::OuterJoin).on(
         awards_table[:awardable_id].eq(awardable_table[:id]).and(
@@ -30,27 +30,27 @@ module Awardable
         )
       ).join_sources
 
-      joins(join_clause).group(awardable_table[:id]).reorder("COUNT(emoji_awards.id) DESC")
+      joins(join_clause).group(awardable_table[:id]).reorder("COUNT(award_emoji.id) DESC")
     end
   end
 
   def grouped_awards(with_thumbs = true)
-    awards = emoji_awards.group_by(&:name)
+    awards = award_emoji.group_by(&:name)
 
     if with_thumbs
-      awards[EmojiAward::UPVOTE_NAME] ||= EmojiAward.none
-      awards[EmojiAward::DOWNVOTE_NAME] ||= EmojiAward.none
+      awards[AwardEmoji::UPVOTE_NAME]   ||= AwardEmoji.none
+      awards[AwardEmoji::DOWNVOTE_NAME] ||= AwardEmoji.none
     end
 
     awards
   end
 
   def downvotes
-    emoji_awards.where(name: EmojiAward::DOWNVOTE_NAME).count
+    award_emoji.where(name: AwardEmoji::DOWNVOTE_NAME).count
   end
 
   def upvotes
-    emoji_awards.where(name: EmojiAward::UPVOTE_NAME).count
+    award_emoji.where(name: AwardEmoji::UPVOTE_NAME).count
   end
 
   def emoji_awardable?
@@ -58,24 +58,24 @@ module Awardable
   end
 
   def awarded_emoji?(emoji_name, current_user)
-    emoji_awards.where(name: emoji_name, user: current_user).exists?
+    award_emoji.where(name: emoji_name, user: current_user).exists?
   end
 
-  def award_emoji(emoji_name, current_user)
+  def add_award_emoji(emoji_name, current_user)
     return unless emoji_awardable?
 
-    emoji_awards.create(name: emoji_name, user: current_user)
+    award_emoji.create(name: emoji_name, user: current_user)
   end
 
-  def remove_emoji_award(emoji_name, current_user)
-    emoji_awards.where(name: emoji_name, user: current_user).destroy_all
+  def remove_award_emoji(emoji_name, current_user)
+    award_emoji.where(name: emoji_name, user: current_user).destroy_all
   end
 
-  def toggle_emoji_award(emoji_name, current_user)
+  def toggle_award_emoji(emoji_name, current_user)
     if awarded_emoji?(emoji_name, current_user)
       remove_emoji_award(emoji_name, current_user)
     else
-      award_emoji(emoji_name, current_user)
+      add_award_emoji(emoji_name, current_user)
     end
   end
 end
