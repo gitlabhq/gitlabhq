@@ -70,7 +70,7 @@ describe Banzai::Filter::GollumTagsFilter, lib: true do
   end
 
   context 'linking internal resources' do
-    it "the created link's text will include the resource's text and project_wiki_base_path" do
+    it "the created link's text includes the resource's text and wiki base path" do
       tag = '[[wiki-slug]]'
       doc = filter("See #{tag}", project_wiki: project_wiki)
       expected_path = ::File.join(project_wiki.wiki_base_path, 'wiki-slug')

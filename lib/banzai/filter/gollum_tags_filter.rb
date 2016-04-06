@@ -118,7 +118,7 @@ module Banzai
         end
 
         if path
-          content_tag(:img, nil, src: path, class: tag_class('image'))
+          content_tag(:img, nil, src: path, class: 'gfm')
         end
       end
 
@@ -155,7 +155,7 @@ module Banzai
           href = ::File.join(project_wiki_base_path, reference)
         end
 
-        content_tag(:a, name || reference, href: href, class: tag_class('page'))
+        content_tag(:a, name || reference, href: href, class: 'gfm')
       end
 
       def project_wiki
@@ -171,10 +171,6 @@ module Banzai
       # Note that while the key might exist, its value could be nil!
       def validate
         needs :project_wiki
-      end
-
-      def tag_class(type)
-        "gfm gollum gollum-#{type}"
       end
     end
   end
