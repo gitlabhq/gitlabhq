@@ -21,6 +21,7 @@ v 8.7.0 (unreleased)
   - Remove "Congratulations!" tweet button on newly-created project. (Connor Shea)
   - Improved UX of the navigation sidebar
   - Build status notifications
+  - Update GitLab Pages to 0.2.2: fixes content-type of predefined 404 page
 
 v 8.6.4
   - Don't attempt to fetch any tags from a forked repo (Stan Hu)
