@@ -6,10 +6,10 @@ module Gitlab
       attr_reader :consumer, :api
 
       def self.from_project(project)
-        credentials = project.import_data if project.import_data
-        if credentials && credentials[:bb_session]
-          token = credentials[:bb_session][:bitbucket_access_token]
-          token_secret = credentials[:bb_session][:bitbucket_access_token_secret]
+        import_data_credentials = project.import_data.credentials if project.import_data
+        if import_data_credentials && import_data_credentials[:bb_session]
+          token = import_data_credentials[:bb_session][:bitbucket_access_token]
+          token_secret = import_data_credentials[:bb_session][:bitbucket_access_token_secret]
           new(token, token_secret)
         else
           raise Projects::ImportService::Error, "Unable to find project import data credentials for project ID: #{@project.id}"
@@ -65,7 +65,7 @@ module Gitlab
       def issues(project_identifier)
         all_issues = []
         offset = 0
-        per_page = 50  # Maximum number allowed by Bitbucket
+        per_page = 50 # Maximum number allowed by Bitbucket
         index = 0
 
         begin
@@ -131,7 +131,7 @@ module Gitlab
       end
 
       def config
-        Gitlab.config.omniauth.providers.find { |provider| provider.name == "bitbucket"}
+        Gitlab.config.omniauth.providers.find { |provider| provider.name == "bitbucket" }
       end
 
       def bitbucket_options

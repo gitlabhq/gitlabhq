@@ -31,7 +31,7 @@ module Gitlab
       private
 
       def import_data_credentials
-        @import_data_credentials ||= project.import_data if project.import_data
+        @import_data_credentials ||= project.import_data.credentials if project.import_data
       end
 
       def user_map

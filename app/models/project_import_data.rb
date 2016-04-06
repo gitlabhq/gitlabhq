@@ -22,7 +22,7 @@ class ProjectImportData < ActiveRecord::Base
   before_validation :symbolize_credentials
 
   def symbolize_credentials
-    return if credentials.blank?
-    credentials.deep_symbolize_keys!
+    # bang doesn't work here
+    self.credentials = self.credentials.deep_symbolize_keys unless self.credentials.blank?
   end
 end
