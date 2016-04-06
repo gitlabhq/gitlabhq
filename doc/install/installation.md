@@ -530,6 +530,15 @@ See the [omniauth integration document](../integration/omniauth.md)
 GitLab can build your projects. To enable that feature you need GitLab Runners to do that for you.
 Checkout the [GitLab Runner section](https://about.gitlab.com/gitlab-ci/#gitlab-runner) to install it
 
+### Adding your Trusted Proxies
+
+If you are using a reverse proxy on an separate machine, you may want to add the
+proxy to the trusted proxies list. Otherwise users will appear signed in from the
+proxy's IP address.
+
+You can add trusted proxies in `config/gitlab.yml` by customizing the `trusted_proxies`
+option in section 1. Please restart GitLab after editing this file.
+
 ### Custom Redis Connection
 
 If you'd like Resque to connect to a Redis server on a non-standard port or on a different host, you can configure its connection string via the `config/resque.yml` file.
