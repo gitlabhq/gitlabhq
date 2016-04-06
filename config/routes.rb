@@ -91,6 +91,7 @@ Rails.application.routes.draw do
   # Help
   get 'help'                  => 'help#index'
   get 'help/:category/:file'  => 'help#show', as: :help_page, constraints: { category: /.*/, file: /[^\/\.]+/ }
+  get 'help/:category/:subcategory/:file'  => 'help#show', as: :deep_help_page, constraints: { category: /.*/, subcategory: /.*/, file: /[^\/\.]+/ }
   get 'help/shortcuts'
   get 'help/ui' => 'help#ui'
 
