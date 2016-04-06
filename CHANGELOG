@@ -26,6 +26,7 @@ v 8.7.0 (unreleased)
   - Add links to CI setup documentation from project settings and builds pages
   - Handle nil descriptions in Slack issue messages (Stan Hu)
   - API: Expose open_issues_count, closed_issues_count, open_merge_requests_count for labels (Robert Schilling)
+  - API: Ability to star and unstar a project (Robert Schilling)
   - Add default scope to projects to exclude projects pending deletion
   - Allow to close merge requests which source projects(forks) are deleted.
   - Ensure empty recipients are rejected in BuildsEmailService

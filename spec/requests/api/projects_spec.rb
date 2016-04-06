@@ -1020,6 +1020,56 @@ describe API::API, api: true  do
     end
   end
 
+  describe 'POST /projects/:id/star' do
+    context 'on an unstarred project' do
+      it 'stars the project' do
+        post api("/projects/#{project.id}/star", user)
+
+        expect(response.status).to eq(201)
+        expect(json_response['star_count']).to eq(1)
+      end
+    end
+
+    context 'on a starred project' do
+      before do
+        user.toggle_star(project)
+        project.reload
+      end
+
+      it 'does not modify the star count' do
+        post api("/projects/#{project.id}/star", user)
+
+        expect(response.status).to eq(304)
+        expect(project.star_count).to eq(1)
+      end
+    end
+  end
+
+  describe 'POST /projects/:id/unstar' do
+    context 'on a starred project' do
+      before do
+        user.toggle_star(project)
+        project.reload
+      end
+
+      it 'unstars the project' do
+        post api("/projects/#{project.id}/unstar", user)
+
+        expect(response.status).to eq(201)
+        expect(json_response['star_count']).to eq(0)
+      end
+    end
+
+    context 'on an unstarred project' do
+      it 'does not modify the star count' do
+        post api("/projects/#{project.id}/unstar", user)
+
+        expect(response.status).to eq(304)
+        expect(project.star_count).to eq(0)
+      end
+    end
+  end
+
   describe 'DELETE /projects/:id' do
     context 'when authenticated as user' do
       it 'should remove project' do
