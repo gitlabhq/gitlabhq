@@ -7,11 +7,6 @@ module Gitlab
   module Saml
     class User < Gitlab::OAuth::User
 
-      def initialize(auth_hash)
-        super
-        update_user_attributes
-      end
-
       def save
         super('SAML')
       end
@@ -31,6 +26,18 @@ module Gitlab
           @user ||= build_new_user
         end
 
+        if external_users_enabled?
+          # Check if there is overlap between the user's groups and the external groups
+          # setting and set user as external or internal.
+          if (auth_hash.groups & Gitlab::Saml::Config.external_groups).empty?
+            # Avoid an unnecessary change of values and the subsequent save
+            @user.external = false if @user.external
+          else
+            # Avoid an unnecessary change of values and the subsequent save
+            @user.external = true unless @user.external
+          end
+        end
+
         @user
       end
 
@@ -48,16 +55,6 @@ module Gitlab
 
       protected
 
-      def build_new_user
-        user = super
-        if external_users_enabled?
-          unless (auth_hash.groups & Gitlab::Saml::Config.external_groups).empty?
-            user.external = true
-          end
-        end
-        user
-      end
-
       def auto_link_saml_user?
         Gitlab.config.omniauth.auto_link_saml_user
       end
@@ -68,18 +65,6 @@ module Gitlab
 
       def auth_hash=(auth_hash)
         @auth_hash = Gitlab::Saml::AuthHash.new(auth_hash)
-      end
-
-      def update_user_attributes
-        if persisted?
-          if external_users_enabled?
-            if (auth_hash.groups & Gitlab::Saml::Config.external_groups).empty?
-              gl_user.external = false
-            else
-              gl_user.external = true
-            end
-          end
-        end
       end
     end
   end

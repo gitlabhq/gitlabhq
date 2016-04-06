@@ -9,11 +9,11 @@ module Gitlab
         end
 
         def groups
-          options['groups_attribute']
+          options[:groups_attribute]
         end
 
         def external_groups
-          options['external_groups']
+          options[:external_groups]
         end
       end
 
