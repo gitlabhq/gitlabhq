@@ -115,12 +115,12 @@ class Projects::GitHttpController < Projects::ApplicationController
     end
   end
 
-  def repo_path
-    @repo_path ||= begin
+  def repository
+    @repository ||= begin
       if params[:project_id].end_with?('.wiki.git')
-        project.wiki.wiki.path
+        project.wiki.repository
       else
-        repository.path_to_repo
+        project.repository
       end
     end
   end
@@ -142,10 +142,7 @@ class Projects::GitHttpController < Projects::ApplicationController
   end
     
   def render_ok
-    render json: {
-      'GL_ID' => Gitlab::ShellEnv.gl_id(@user),
-      'RepoPath' => repo_path,
-    }
+    render json: Gitlab::Workhorse.git_http_ok(repository, user)
   end
   
   def render_not_found
