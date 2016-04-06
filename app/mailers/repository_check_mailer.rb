@@ -1,4 +1,4 @@
-class RepoCheckMailer < BaseMailer
+class RepositoryCheckMailer < BaseMailer
   include ActionView::Helpers::TextHelper
 
   def notify(failed_count)

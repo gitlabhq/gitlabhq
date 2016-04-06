@@ -157,7 +157,7 @@ production: &base
       cron: "0 0 * * *"
     # Periodically run 'git fsck' on all repositories. If started more than
     # once per hour you will have concurrent 'git fsck' jobs.
-    repo_check_worker:
+    repository_check_worker:
       cron: "20 * * * *"
     # Send admin emails once a day
     admin_email_worker:

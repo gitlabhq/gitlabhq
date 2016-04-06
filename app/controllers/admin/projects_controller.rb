@@ -1,5 +1,5 @@
 class Admin::ProjectsController < Admin::ApplicationController
-  before_action :project, only: [:show, :transfer, :repo_check]
+  before_action :project, only: [:show, :transfer, :repository_check]
   before_action :group, only: [:show, :transfer]
 
   def index
@@ -8,7 +8,7 @@ class Admin::ProjectsController < Admin::ApplicationController
     @projects = @projects.where("visibility_level IN (?)", params[:visibility_levels]) if params[:visibility_levels].present?
     @projects = @projects.with_push if params[:with_push].present?
     @projects = @projects.abandoned if params[:abandoned].present?
-    @projects = @projects.where(last_repo_check_failed: true) if params[:last_repo_check_failed].present?
+    @projects = @projects.where(last_repository_check_failed: true) if params[:last_repository_check_failed].present?
     @projects = @projects.non_archived unless params[:with_archived].present?
     @projects = @projects.search(params[:name]) if params[:name].present?
     @projects = @projects.sort(@sort = params[:sort])
@@ -31,24 +31,24 @@ class Admin::ProjectsController < Admin::ApplicationController
     redirect_to admin_namespace_project_path(@project.namespace, @project)
   end
 
-  def repo_check
-    SingleRepoCheckWorker.perform_async(@project.id)
+  def repository_check
+    SingleRepositoryCheckWorker.perform_async(@project.id)
 
     redirect_to(
       admin_namespace_project_path(@project.namespace, @project),
-      notice: 'Repo check was triggered'
+      notice: 'Repository check was triggered'
     )
   end
 
-  def clear_repo_check_states
+  def clear_repository_check_states
     Project.update_all(
-      last_repo_check_failed: false,
-      last_repo_check_at: nil
+      last_repository_check_failed: false,
+      last_repository_check_at: nil
     )
 
     redirect_to(
       admin_namespaces_projects_path,
-      notice: 'All project repo check states were cleared'
+      notice: 'All project states were cleared'
     )
   end
 

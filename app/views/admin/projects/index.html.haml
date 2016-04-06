@@ -41,19 +41,19 @@
         %fieldset
           %strong Problems
           .checkbox
-            = label_tag :last_repo_check_failed do
-              = check_box_tag :last_repo_check_failed, 1, params[:last_repo_check_failed]
-              %span Last repo check failed
+            = label_tag :last_repository_check_failed do
+              = check_box_tag :last_repository_check_failed, 1, params[:last_repository_check_failed]
+              %span Last repository check failed
 
         = hidden_field_tag :sort, params[:sort]
         = button_tag "Search", class: "btn submit btn-primary"
         = link_to "Reset", admin_namespaces_projects_path, class: "btn btn-cancel"
 
-    .panel.panel-default.repo-check-states
+    .panel.panel-default.repository-check-states
       .panel-heading
-        Repo check states
+        Repository check states
       .panel-body
-        = link_to 'Clear all', clear_repo_check_states_admin_namespace_projects_path(0), data: { confirm: 'This will clear repo check states for ALL projects in the database. This cannot be undone. Are you sure?' }, method: :put, class: "btn btn-sm btn-remove"
+        = link_to 'Clear all', clear_repository_check_states_admin_namespace_projects_path(0), data: { confirm: 'This will clear repository check states for ALL projects in the database. This cannot be undone. Are you sure?' }, method: :put, class: "btn btn-sm btn-remove"
   %section.col-md-9
     .panel.panel-default
       .panel-heading

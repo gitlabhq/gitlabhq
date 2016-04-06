@@ -33,33 +33,33 @@ describe "Admin Projects", feature: true  do
     end
   end
 
-  feature 'repo checks' do
-    scenario 'trigger repo check' do
+  feature 'repository checks' do
+    scenario 'trigger repository check' do
       visit_admin_project_page
 
-      page.within('.repo-check') do
-        click_button 'Trigger repo check'
+      page.within('.repository-check') do
+        click_button 'Trigger repository check'
       end
 
-      expect(page).to have_content('Repo check was triggered')
+      expect(page).to have_content('Repository check was triggered')
     end
 
-    scenario 'see failed repo check' do
-      @project.update_column(:last_repo_check_failed, true)
+    scenario 'see failed repository check' do
+      @project.update_column(:last_repository_check_failed, true)
       visit_admin_project_page
 
-      expect(page).to have_content('Last repo check failed')
+      expect(page).to have_content('Last repository check failed')
     end
 
-    scenario 'clear repo checks', js: true do
-      @project.update_column(:last_repo_check_failed, true)
+    scenario 'clear repository checks', js: true do
+      @project.update_column(:last_repository_check_failed, true)
       visit admin_namespaces_projects_path
 
-      page.within('.repo-check-states') do
+      page.within('.repository-check-states') do
         click_link 'Clear all' # pop-up should be auto confirmed
       end
 
-      expect(@project.reload.last_repo_check_failed).to eq(false)
+      expect(@project.reload.last_repository_check_failed).to eq(false)
     end
   end
 

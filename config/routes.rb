@@ -264,11 +264,11 @@ Rails.application.routes.draw do
 
         member do
           put :transfer
-          post :repo_check
+          post :repository_check
         end
 
         collection do
-          put :clear_repo_check_states
+          put :clear_repository_check_states
         end
 
         resources :runner_projects

@@ -1,4 +1,4 @@
-class SingleRepoCheckWorker
+class SingleRepositoryCheckWorker
   include Sidekiq::Worker
 
   sidekiq_options retry: false
@@ -21,14 +21,14 @@ class SingleRepoCheckWorker
     output, status = Gitlab::Popen.popen(cmd)
     return true if status.zero?
 
-    Gitlab::RepoCheckLogger.error("command failed: #{cmd.join(' ')}\n#{output}")
+    Gitlab::RepositoryCheckLogger.error("command failed: #{cmd.join(' ')}\n#{output}")
     false
   end
 
   def update(project, success:)
     project.update_columns(
-      last_repo_check_failed: !success,
-      last_repo_check_at: Time.now,
+      last_repository_check_failed: !success,
+      last_repository_check_at: Time.now,
     )
   end
 end

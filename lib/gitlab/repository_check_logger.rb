@@ -1,5 +1,5 @@
 module Gitlab
-  class RepoCheckLogger < Gitlab::Logger
+  class RepositoryCheckLogger < Gitlab::Logger
     def self.file_name_noext
       'repocheck'
     end

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe RepoCheckMailer do
+describe RepositoryCheckMailer do
   include EmailSpec::Matchers
 
   describe '.notify' do
