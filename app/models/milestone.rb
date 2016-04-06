@@ -79,14 +79,19 @@ class Milestone < ActiveRecord::Base
   end
 
   def self.reference_pattern
+    # NOTE: The iid pattern only matches when all characters on the expression
+    # are digits, so it will match %2 but not %2.1 because that's probably a
+    # milestone name and we want it to be matched as such.
     %r{
       (#{Project.reference_pattern})?
       #{Regexp.escape(reference_prefix)}
       (?:
-        (?<milestone_iid>\d+) | # Integer-based milestone iid, or
+        (?<milestone_iid>
+          \d+(?!\S\w)\b # Integer-based milestone iid, or
+        ) |
         (?<milestone_name>
-          [A-Za-z0-9_-]+ |      # String-based single-word milestone title, or
-          "[^"]+"               # String-based multi-word milestone surrounded in quotes
+          [^"\s]+\b |  # String-based single-word milestone title, or
+          "[^"]+"      # String-based multi-word milestone surrounded in quotes
         )
       )
     }x
