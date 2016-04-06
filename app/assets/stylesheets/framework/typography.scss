@@ -16,8 +16,9 @@
 
   code {
     font-family: $monospace_font;
-    white-space: pre;
+    white-space: pre-wrap;
     word-wrap: normal;
+    word-break: break-word;
   }
 
   kbd {
