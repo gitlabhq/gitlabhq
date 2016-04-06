@@ -17,9 +17,9 @@ health:
     enabled: true
     interval: 10s
     threshold: 3
-auth:
-  token:
-    realm: http://192.168.64.1:3000/api/v3/auth/token
-    service: docker
-    issuer: ominbus-certificate
-    rootcertbundle: config/registry.pem
+#auth:
+#  token:
+#    realm: http://192.168.64.1:3000/api/v3/auth/token
+#    service: docker
+#    issuer: ominbus-certificate
+#    rootcertbundle: config/registry.pem
