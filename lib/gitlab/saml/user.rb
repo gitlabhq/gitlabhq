@@ -33,7 +33,6 @@ module Gitlab
             # Avoid an unnecessary change of values and the subsequent save
             @user.external = false if @user.external
           else
-            # Avoid an unnecessary change of values and the subsequent save
             @user.external = true unless @user.external
           end
         end
