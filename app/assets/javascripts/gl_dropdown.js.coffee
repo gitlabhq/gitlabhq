@@ -369,7 +369,7 @@ class GitLabDropdown
       if @options.toggleLabel
         $(@el).find(".dropdown-toggle-text").text @options.toggleLabel(selectedObject)
       if value?
-        if !field.length
+        if !field.length and fieldName
           # Create hidden input for form
           input = "<input type='hidden' name='#{fieldName}' value='#{value}' />"
           if @options.inputId?
