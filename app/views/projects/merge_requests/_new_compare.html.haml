@@ -12,7 +12,7 @@
           .merge-request-select.dropdown
             = f.hidden_field :source_project_id
             = dropdown_toggle @merge_request.source_project_path, { toggle: "dropdown", field_name: "#{f.object_name}[source_project_id]", disabled: @merge_request.persisted? }, { toggle_class: "js-compare-dropdown js-source-project" }
-            .dropdown-menu.dropdown-menu-selectable
+            .dropdown-menu.dropdown-menu-selectable.dropdown-source-project
               = dropdown_title("Select source project")
               = dropdown_filter("Search projects")
               = dropdown_content do
@@ -23,7 +23,7 @@
           .merge-request-select.dropdown
             = f.hidden_field :source_branch
             = dropdown_toggle "Select source branch", { toggle: "dropdown", field_name: "#{f.object_name}[source_branch]" }, { toggle_class: "js-compare-dropdown js-source-branch" }
-            .dropdown-menu.dropdown-menu-selectable
+            .dropdown-menu.dropdown-menu-selectable.dropdown-source-branch
               = dropdown_title("Select source branch")
               = dropdown_filter("Search branches")
               = dropdown_content do
@@ -45,7 +45,7 @@
           .merge-request-select.dropdown
             = f.hidden_field :target_project_id
             = dropdown_toggle f.object.target_project.path_with_namespace, { toggle: "dropdown", field_name: "#{f.object_name}[target_project_id]", disabled: @merge_request.persisted? }, { toggle_class: "js-compare-dropdown js-target-project" }
-            .dropdown-menu.dropdown-menu-selectable
+            .dropdown-menu.dropdown-menu-selectable.dropdown-target-project
               = dropdown_title("Select target project")
               = dropdown_filter("Search projects")
               = dropdown_content do
@@ -57,7 +57,7 @@
           .merge-request-select.dropdown
             = f.hidden_field :target_branch
             = dropdown_toggle f.object.target_branch, { toggle: "dropdown", field_name: "#{f.object_name}[target_branch]" }, { toggle_class: "js-compare-dropdown js-target-branch" }
-            .dropdown-menu.dropdown-menu-selectable.js-target-branch-dropdown
+            .dropdown-menu.dropdown-menu-selectable.dropdown-target-branch.js-target-branch-dropdown
               = dropdown_title("Select target branch")
               = dropdown_filter("Search branches")
               = dropdown_content do
