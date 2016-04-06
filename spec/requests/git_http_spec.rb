@@ -12,7 +12,7 @@ describe 'Git HTTP requests', lib: true do
 
   context "when the project doesn't exist" do
     context "when no authentication is provided" do
-      it "responds with status 401" do
+      it "responds with status 401 (no project existence information leak)" do
         download('doesnt/exist.git') do |response|
           expect(response.status).to eq(401)
         end
@@ -72,7 +72,7 @@ describe 'Git HTTP requests', lib: true do
           expect(response.status).to eq(401)
         end
       end
-      
+
       context "with correct credentials" do
         let(:env) { { user: user.username, password: user.password } }
 
@@ -81,11 +81,11 @@ describe 'Git HTTP requests', lib: true do
             expect(response.status).to eq(200)
           end
         end
-        
+
         context 'but git-receive-pack is disabled' do
           it "responds with status 404" do
             allow(Gitlab.config.gitlab_shell).to receive(:receive_pack).and_return(false)
-  
+
             upload(path, env) do |response|
               expect(response.status).to eq(404)
             end
@@ -110,8 +110,14 @@ describe 'Git HTTP requests', lib: true do
       end
 
       context "when no authentication is provided" do
-        it "responds with status 401" do
+        it "responds with status 401 to downloads" do
           download(path, env) do |response|
+            expect(response.status).to eq(401)
+          end
+        end
+
+        it "responds with status 401 to uploads" do
+          upload(path, env) do |response|
             expect(response.status).to eq(401)
           end
         end
@@ -159,18 +165,18 @@ describe 'Git HTTP requests', lib: true do
             end
 
             context "when the user isn't blocked" do
-              it "downloads status 200" do
+              it "downloads get status 200" do
                 expect(Rack::Attack::Allow2Ban).to receive(:reset)
 
                 clone_get(path, env)
 
                 expect(response.status).to eq(200)
               end
-              
+
               it "uploads get status 200" do
                 upload(path, env) do |response|
                   expect(response.status).to eq(200)
-                end      
+                end
               end
             end
 
@@ -211,7 +217,7 @@ describe 'Git HTTP requests', lib: true do
                 expect(response.status).to eq(404)
               end
             end
-            
+
             it "uploads get status 200 (because Git hooks do the real check)" do
               upload(path, user: user.username, password: user.password) do |response|
                 expect(response.status).to eq(200)
@@ -222,14 +228,23 @@ describe 'Git HTTP requests', lib: true do
       end
 
       context "when a gitlab ci token is provided" do
-        it "responds with status 200" do
-          token = "123"
-          project = FactoryGirl.create :empty_project
-          project.update_attributes(runners_token: token, builds_enabled: true)
+        let(:token) { 123 }
+        let(:project) { FactoryGirl.create :empty_project }
 
+        before do
+          project.update_attributes(runners_token: token, builds_enabled: true)
+        end
+
+        it "downloads get status 200" do
           clone_get "#{project.path_with_namespace}.git", user: 'gitlab-ci-token', password: token
 
           expect(response.status).to eq(200)
+        end
+
+        it "uploads get status 401 (no project existence information leak)" do
+          push_get "#{project.path_with_namespace}.git", user: 'gitlab-ci-token', password: token
+
+          expect(response.status).to eq(401)
         end
       end
     end
