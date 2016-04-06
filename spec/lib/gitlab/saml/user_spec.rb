@@ -5,7 +5,7 @@ describe Gitlab::Saml::User, lib: true do
   let(:gl_user) { saml_user.gl_user }
   let(:uid) { 'my-uid' }
   let(:provider) { 'saml' }
-  let(:auth_hash) { OmniAuth::AuthHash.new(uid: uid, provider: provider, info: info_hash) }
+  let(:auth_hash) { OmniAuth::AuthHash.new(uid: uid, provider: provider, info: info_hash, extra: { raw_info: { groups: %w(Developers Freelancers Designers) } }) }
   let(:info_hash) do
     {
       name: 'John',
@@ -31,8 +31,8 @@ describe Gitlab::Saml::User, lib: true do
 
     describe 'account exists on server' do
       before { stub_omniauth_config({ allow_single_sign_on: ['saml'], auto_link_saml_user: true }) }
+      let!(:existing_user) { create(:user, email: 'john@mail.com', username: 'john') }
       context 'and should bind with SAML' do
-        let!(:existing_user) { create(:user, email: 'john@mail.com', username: 'john') }
         it 'adds the SAML identity to the existing user' do
           saml_user.save
           expect(gl_user).to be_valid
@@ -40,6 +40,32 @@ describe Gitlab::Saml::User, lib: true do
           identity = gl_user.identities.first
           expect(identity.extern_uid).to eql uid
           expect(identity.provider).to eql 'saml'
+        end
+      end
+
+      context 'external groups' do
+        context 'are defined' do
+          before { stub_saml_config({ options: { name: 'saml', groups_attribute: 'groups', external_groups: %w(Freelancers), args: {} } }) }
+          it 'marks the user as external' do
+            saml_user.save
+            expect(gl_user.external).to be_truthy
+          end
+        end
+
+        before { stub_saml_config({ options: { name: 'saml', groups_attribute: 'groups', external_groups: %w(Interns), args: {} } }) }
+        context 'are defined but the user does not belong there' do
+          it 'does not mark the user as external' do
+            saml_user.save
+            expect(gl_user.external).to be_falsey
+          end
+        end
+
+        context 'user was external, now should not be' do
+          it 'should make user internal' do
+            existing_user.update_attribute('external', true)
+            saml_user.save
+            expect(gl_user.external).to be_falsey
+          end
         end
       end
     end
@@ -70,6 +96,24 @@ describe Gitlab::Saml::User, lib: true do
           before { stub_omniauth_config(allow_single_sign_on: false) }
           it 'should throw an error' do
             expect{ saml_user.save }.to raise_error StandardError
+          end
+        end
+      end
+
+      context 'external groups' do
+        context 'are defined' do
+          before { stub_saml_config({ options: { name: 'saml', groups_attribute: 'groups', external_groups: %w(Freelancers), args: {} } }) }
+          it 'marks the user as external' do
+            saml_user.save
+            expect(gl_user.external).to be_truthy
+          end
+        end
+
+        before { stub_saml_config({ options: { name: 'saml', groups_attribute: 'groups', external_groups: %w(Interns), args: {} } }) }
+        context 'are defined but the user does not belong there' do
+          it 'does not mark the user as external' do
+            saml_user.save
+            expect(gl_user.external).to be_falsey
           end
         end
       end
@@ -186,26 +230,6 @@ describe Gitlab::Saml::User, lib: true do
 
         context 'block on create' do
           before { stub_omniauth_config(block_auto_created_users: true) }
-
-          it do
-            saml_user.save
-            expect(gl_user).to be_valid
-            expect(gl_user).not_to be_blocked
-          end
-        end
-
-        context 'dont block on create (LDAP)' do
-          before { allow_any_instance_of(Gitlab::LDAP::Config).to receive_messages(block_auto_created_users: false) }
-
-          it do
-            saml_user.save
-            expect(gl_user).to be_valid
-            expect(gl_user).not_to be_blocked
-          end
-        end
-
-        context 'block on create (LDAP)' do
-          before { allow_any_instance_of(Gitlab::LDAP::Config).to receive_messages(block_auto_created_users: true) }
 
           it do
             saml_user.save
