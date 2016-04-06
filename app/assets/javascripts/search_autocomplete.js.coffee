@@ -145,7 +145,10 @@ class @SearchAutocomplete
     @clearInput.on 'click', @onClearInputClick
 
   onDocumentClick: (e) =>
-    if not $.contains(@dropdown[0], e.target) and @isFocused
+    # If clicking outside the search box
+    # And search input is not focused
+    # And we are not clicking inside a suggestion
+    if not $.contains(@dropdown[0], e.target) and @isFocused and not $(e.target).parents('ul').length
       @onSearchInputBlur()
 
   enableAutocomplete: ->
@@ -290,5 +293,4 @@ class @SearchAutocomplete
 
       $el.removeClass('is-active')
       @disableAutocomplete()
-      @onSearchInputFocus()
       @searchInput.val('').focus()
