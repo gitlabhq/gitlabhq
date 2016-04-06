@@ -137,12 +137,16 @@ class @SearchAutocomplete
     }
 
   bindEvents: ->
+    $(document).on 'click', @onDocumentClick
     @searchInput.on 'keydown', @onSearchInputKeyDown
     @searchInput.on 'keyup', @onSearchInputKeyUp
     @searchInput.on 'click', @onSearchInputClick
     @searchInput.on 'focus', @onSearchInputFocus
-    @searchInput.on 'blur', @onSearchInputBlur
     @clearInput.on 'click', @onRemoveLocationClick
+
+  onDocumentClick: (e) =>
+    if not $.contains(@dropdown[0], e.target) and @isFocused
+      @onSearchInputBlur()
 
   enableAutocomplete: ->
     # No need to enable anything if user is not logged in
@@ -193,27 +197,21 @@ class @SearchAutocomplete
     e.stopImmediatePropagation()
 
   onSearchInputFocus: =>
+    @isFocused = true
     @wrap.addClass('search-active')
 
   onRemoveLocationClick: (e) =>
     e.preventDefault()
     @removeLocationBadge()
     @searchInput.val('').focus()
-    @skipBlurEvent = true
 
   onSearchInputBlur: (e) =>
-    @skipBlurEvent = false
+    @isFocused = false
+    @wrap.removeClass('search-active')
 
-    # We should wait to make sure we are not clearing the input instead
-    setTimeout( =>
-      return if @skipBlurEvent
-
-      @wrap.removeClass('search-active')
-
-      # If input is blank then restore state
-      if @searchInput.val() is ''
-        @restoreOriginalState()
-    , 150)
+    # If input is blank then restore state
+    if @searchInput.val() is ''
+      @restoreOriginalState()
 
   addLocationBadge: (item) ->
     category = if item.category? then "#{item.category}: " else ''
@@ -291,9 +289,5 @@ class @SearchAutocomplete
 
       $el.removeClass('is-active')
       @disableAutocomplete()
+      @onSearchInputFocus()
       @searchInput.val('').focus()
-
-      # We need to wait because of @skipBlurEvent
-      setTimeout( =>
-        @onSearchInputFocus()
-      , 200)
