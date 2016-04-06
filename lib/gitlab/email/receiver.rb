@@ -60,6 +60,7 @@ module Gitlab
 
       def process_create_issue
         validate_permission!(message_sender, message_project, :create_issue)
+        validate_authentication_token!(message_sender)
 
         issue = Issues::CreateService.new(
           message_project,
@@ -85,6 +86,11 @@ module Gitlab
         raise UserNotAuthorizedError unless author.can?(permission, project)
       end
 
+      def validate_authentication_token!(author)
+        raise UserNotAuthorizedError unless author.authentication_token ==
+                                              authentication_token
+      end
+
       # Find the first matched user in database from email From: section
       # TODO: Since this address could be forged, we should have some kind of
       #       auth token attached somewhere to verify the identity better.
@@ -97,7 +103,7 @@ module Gitlab
 
       def message_project
         @message_project ||=
-          Project.find_with_namespace(reply_key) if reply_key
+          Project.find_with_namespace(project_namespace) if reply_key
       end
 
       def process_reply(project)
@@ -116,6 +122,14 @@ module Gitlab
 
       def reply_key
         key_from_to_header || key_from_additional_headers
+      end
+
+      def authentication_token
+        reply_key[/[^\+]+$/]
+      end
+
+      def project_namespace
+        reply_key[/^[^\+]+/]
       end
 
       def key_from_to_header

@@ -171,7 +171,13 @@ describe Gitlab::Email::Receiver, lib: true do
     end
 
     let(:sent_notification) {}
-    let!(:user)     { create(:user, email: 'jake@adventuretime.ooo') }
+    let!(:user) do
+      create(
+        :user,
+        email: 'jake@adventuretime.ooo',
+        authentication_token: 'auth_token'
+      )
+    end
     let(:namespace) { create(:namespace, path: 'gitlabhq') }
     let(:project)   { create(:project, :public, namespace: namespace) }
     let(:email_raw) { fixture_file('emails/valid_new_issue.eml') }
@@ -213,6 +219,18 @@ describe Gitlab::Email::Receiver, lib: true do
 
         it "raises an InvalidIssueError" do
           expect { receiver.execute }.to raise_error(Gitlab::Email::Receiver::InvalidIssueError)
+        end
+      end
+
+      context "when the authentication_token token didn't match" do
+        let!(:email_raw) { fixture_file("emails/wrong_authentication_token.eml") }
+
+        before do
+          project
+        end
+
+        it "raises an UserNotAuthorizedError" do
+          expect { receiver.execute }.to raise_error(Gitlab::Email::Receiver::UserNotAuthorizedError)
         end
       end
     end
