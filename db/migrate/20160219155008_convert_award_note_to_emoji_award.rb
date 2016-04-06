@@ -4,6 +4,6 @@ class ConvertAwardNoteToEmojiAward < ActiveRecord::Migration
   end
 
   def down
-    # TODO
+    # Missing as the recommended way to restore data is to restore a backup
   end
 end

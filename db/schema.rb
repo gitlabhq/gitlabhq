@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160320204112) do
+ActiveRecord::Schema.define(version: 20160406185700) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -44,7 +44,6 @@ ActiveRecord::Schema.define(version: 20160320204112) do
     t.datetime "updated_at"
     t.string   "home_page_url"
     t.integer  "default_branch_protection",         default: 2
-    t.boolean  "twitter_sharing_enabled",           default: true
     t.text     "restricted_visibility_levels"
     t.boolean  "version_check_enabled",             default: true
     t.integer  "max_attachment_size",               default: 10,          null: false
@@ -71,11 +70,11 @@ ActiveRecord::Schema.define(version: 20160320204112) do
     t.string   "recaptcha_site_key"
     t.string   "recaptcha_private_key"
     t.integer  "metrics_port",                      default: 8089
+    t.boolean  "akismet_enabled",                   default: false
+    t.string   "akismet_api_key"
     t.integer  "metrics_sample_interval",           default: 15
     t.boolean  "sentry_enabled",                    default: false
     t.string   "sentry_dsn"
-    t.boolean  "akismet_enabled",                   default: false
-    t.string   "akismet_api_key"
     t.boolean  "email_author_in_body",              default: false
     t.integer  "default_group_visibility"
   end
@@ -93,6 +92,19 @@ ActiveRecord::Schema.define(version: 20160320204112) do
   add_index "audit_events", ["author_id"], name: "index_audit_events_on_author_id", using: :btree
   add_index "audit_events", ["entity_id", "entity_type"], name: "index_audit_events_on_entity_id_and_entity_type", using: :btree
   add_index "audit_events", ["type"], name: "index_audit_events_on_type", using: :btree
+
+  create_table "award_emoji", force: :cascade do |t|
+    t.string   "name"
+    t.integer  "user_id"
+    t.integer  "awardable_id"
+    t.string   "awardable_type"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "award_emoji", ["awardable_id"], name: "index_award_emoji_on_awardable_id", using: :btree
+  add_index "award_emoji", ["awardable_type"], name: "index_award_emoji_on_awardable_type", using: :btree
+  add_index "award_emoji", ["user_id"], name: "index_award_emoji_on_user_id", using: :btree
 
   create_table "broadcast_messages", force: :cascade do |t|
     t.text     "message",    null: false
@@ -364,19 +376,6 @@ ActiveRecord::Schema.define(version: 20160320204112) do
   add_index "emails", ["email"], name: "index_emails_on_email", unique: true, using: :btree
   add_index "emails", ["user_id"], name: "index_emails_on_user_id", using: :btree
 
-  create_table "emoji_awards", force: :cascade do |t|
-    t.string   "name"
-    t.integer  "user_id"
-    t.integer  "awardable_id"
-    t.string   "awardable_type"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "emoji_awards", ["awardable_id"], name: "index_emoji_awards_on_awardable_id", using: :btree
-  add_index "emoji_awards", ["awardable_type"], name: "index_emoji_awards_on_awardable_type", using: :btree
-  add_index "emoji_awards", ["user_id"], name: "index_emoji_awards_on_user_id", using: :btree
-
   create_table "events", force: :cascade do |t|
     t.string   "target_type"
     t.integer  "target_id"
@@ -430,9 +429,9 @@ ActiveRecord::Schema.define(version: 20160320204112) do
     t.string   "state"
     t.integer  "iid"
     t.integer  "updated_by_id"
-    t.integer  "moved_to_id"
-    t.boolean  "confidential",              default: false
+    t.boolean  "confidential",  default: false
     t.datetime "deleted_at"
+    t.integer  "moved_to_id"
   end
 
   add_index "issues", ["assignee_id"], name: "index_issues_on_assignee_id", using: :btree
@@ -756,6 +755,7 @@ ActiveRecord::Schema.define(version: 20160320204112) do
   add_index "projects", ["namespace_id"], name: "index_projects_on_namespace_id", using: :btree
   add_index "projects", ["path"], name: "index_projects_on_path", using: :btree
   add_index "projects", ["path"], name: "index_projects_on_path_trigram", using: :gin, opclasses: {"path"=>"gin_trgm_ops"}
+  add_index "projects", ["pending_delete"], name: "index_projects_on_pending_delete", using: :btree
   add_index "projects", ["runners_token"], name: "index_projects_on_runners_token", using: :btree
   add_index "projects", ["star_count"], name: "index_projects_on_star_count", using: :btree
   add_index "projects", ["visibility_level"], name: "index_projects_on_visibility_level", using: :btree
@@ -797,9 +797,9 @@ ActiveRecord::Schema.define(version: 20160320204112) do
     t.string   "type"
     t.string   "title"
     t.integer  "project_id"
-    t.datetime "created_at",                               null: false
-    t.datetime "updated_at",                               null: false
-    t.boolean  "active",                                   null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean  "active",                default: false,    null: false
     t.text     "properties"
     t.boolean  "template",              default: false
     t.boolean  "push_events",           default: true

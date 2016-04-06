@@ -6,7 +6,7 @@ namespace :gemojione do
 
     dir = Gemojione.index.images_path
 
-    digests = AwardEmoji.emojis.map do |name, emoji_hash|
+    digests = Gitlab::AwardEmoji.emojis.map do |name, emoji_hash|
       fpath = File.join(dir, "#{emoji_hash['unicode']}.png")
       digest = Digest::SHA256.file(fpath).hexdigest
 

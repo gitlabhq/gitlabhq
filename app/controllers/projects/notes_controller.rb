@@ -1,5 +1,5 @@
 class Projects::NotesController < Projects::ApplicationController
-  include ToggleEmojiAward
+  include ToggleAwardEmoji
 
   # Authorize
   before_action :authorize_read_note!
@@ -22,7 +22,7 @@ class Projects::NotesController < Projects::ApplicationController
   end
 
   def create
-    @note = Notes::CreateService.new(project, current_user, note_params.merge(create_emoji_awards: true)).execute
+    @note = Notes::CreateService.new(project, current_user, note_params.merge(create_award_emoji: true)).execute
 
     respond_to do |format|
       format.json { render json: note_json(@note) }
@@ -122,13 +122,13 @@ class Projects::NotesController < Projects::ApplicationController
         discussion_html: note_to_discussion_html(note),
         discussion_with_diff_html: note_to_discussion_with_diff_html(note)
       }
-    elsif note.emoji_award?
-      emoji_award = note.emoji_award
+    elsif note.award_emoji?
+      award_emoji = note.award_emoji
       {
-        valid: emoji_award.valid?,
+        valid: award_emoji.valid?,
         award: true,
-        id: emoji_award.id,
-        name: emoji_award.name
+        id: award_emoji.id,
+        name: award_emoji.name
       }
     else
       {

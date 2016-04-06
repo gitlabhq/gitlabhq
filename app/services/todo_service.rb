@@ -98,6 +98,14 @@ class TodoService
     handle_note(note, current_user)
   end
 
+  # When an award emoji is awarded we should:
+  #
+  #  * mark all pending todos related to the awardable for the current user as done
+  #
+  def award_emoji(issuable, current_user)
+    mark_pending_todos_as_done(issuable, current_user)
+  end
+
   # When marking pending todos as done we should:
   #
   #  * mark all pending todos related to the target for the current user as done

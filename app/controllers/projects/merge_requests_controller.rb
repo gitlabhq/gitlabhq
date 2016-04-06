@@ -1,5 +1,5 @@
 class Projects::MergeRequestsController < Projects::ApplicationController
-  include ToggleEmojiAward
+  include ToggleAwardEmoji
   include ToggleSubscriptionAction
   include DiffHelper
   include IssuableActions

@@ -1,15 +1,15 @@
 module Notes
   class CreateService < BaseService
     def execute
-      create_emoji_awards = params.delete(:create_emoji_awards)
+      create_award_emoji = params.delete(:create_award_emoji)
 
       note = project.notes.new(params)
 
       note.author = current_user
       note.system = false
 
-      if create_emoji_awards && note.emoji_award?
-        note.create_emoji_award
+      if create_award_emoji && note.emoji_award?
+        note.create_award_emoji
         return note
       end
 

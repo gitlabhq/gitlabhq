@@ -1,4 +1,4 @@
-class EmojiAward < ActiveRecord::Base
+class AwardEmoji < ActiveRecord::Base
   DOWNVOTE_NAME = "thumbsdown".freeze
   UPVOTE_NAME   = "thumbsup".freeze
 
