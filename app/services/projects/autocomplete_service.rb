@@ -5,7 +5,7 @@ module Projects
     end
 
     def milestones
-      @project.milestones.active.select([:iid, :title])
+      @project.milestones.active.reorder(due_date: :asc, title: :asc).select([:iid, :title])
     end
 
     def merge_requests
