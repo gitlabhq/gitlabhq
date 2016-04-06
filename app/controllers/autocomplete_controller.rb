@@ -15,8 +15,9 @@ class AutocompleteController < ApplicationController
         @users = [*@users, current_user]
       end
 
-      if params[:author_id] && params[:author_id] != "false"
-        @users = [User.find(params[:author_id]), *@users]
+      if params[:author_id].present?
+        author = User.find_by_id(params[:author_id])
+        @users = [author, *@users] if author
       end
 
       @users.uniq!

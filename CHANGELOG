@@ -3,11 +3,12 @@ Please view this file on the master branch, on stable branches it's out of date.
 v 8.7.0 (unreleased)
   - All images in discussions and wikis now link to their source files !3464 (Connor Shea).
   - Improved Markdown rendering performance !3389 (Yorick Peterse)
-  - Don't attempt to look up an avatar in repo if repo directory does not exist (Stan hu)
+  - Don't attempt to look up an avatar in repo if repo directory does not exist (Stan Hu)
   - Preserve time notes/comments have been updated at when moving issue
   - Make HTTP(s) label consistent on clone bar (Stan Hu)
   - Expose label description in API (Mariusz Jachimowicz)
   - Allow back dating on issues when created through the API
+  - Fix Error 500 after renaming a project path (Stan Hu)
   - Fix avatar stretching by providing a cropping feature
   - Add endpoints to archive or unarchive a project !3372
   - Add links to CI setup documentation from project settings and builds pages
@@ -15,16 +16,16 @@ v 8.7.0 (unreleased)
   - Add default scope to projects to exclude projects pending deletion
   - Implement 'Groups View' as an option for dashboard preferences !3379 (Elias W.)
   - Implement 'TODOs View' as an option for dashboard preferences !3379 (Elias W.)
-  - Allow issues and merge requests to be assigned to the author
-
-v 8.6.2 (unreleased)
-  - Comments on confidential issues don't show up in activity feed to non-members
-  - Fix NoMethodError when visiting CI root path at `/ci`
+  - Allow issues and merge requests to be assigned to the author !2765
   - Gracefully handle notes on deleted commits in merge requests (Stan Hu)
   - Fix creation of merge requests for orphaned branches (Stan Hu)
   - Fall back to `In-Reply-To` and `References` headers when sub-addressing is not available (David Padilla)
   - Remove "Congratulations!" tweet button on newly-created project. (Connor Shea)
   - Improved UX of the navigation sidebar
+  - Build status notifications
+
+v 8.6.5 (unreleased)
+  - Check permissions when user attempts to import members from another project
 
 v 8.6.4
   - Don't attempt to fetch any tags from a forked repo (Stan Hu)
@@ -143,6 +144,9 @@ v 8.6.0
   - Canceled builds are now ignored in compound build status if marked as `allowed to fail`
   - Trigger a todo for mentions on commits page
   - Let project owners and admins soft delete issues and merge requests
+
+v 8.5.9
+  - Don't attempt to fetch any tags from a forked repo (Stan Hu).
 
 v 8.5.8
   - Bump Git version requirement to 2.7.4
@@ -285,6 +289,12 @@ v 8.5.0
   - Show label row when filtering issues or merge requests by label (Nuttanart Pornprasitsakul)
   - Add Todos
 
+v 8.4.7
+  - Don't attempt to fetch any tags from a forked repo (Stan Hu).
+
+v 8.4.6
+  - Bump Git version requirement to 2.7.4
+
 v 8.4.5
   - No CE-specific changes
 
@@ -397,6 +407,12 @@ v 8.4.0
   - Added X-GitLab-... headers to emails from CI and Email On Push services (Anton Baklanov)
   - Add IP check against DNSBLs at account sign-up
   - Added cache:key to .gitlab-ci.yml allowing to fine tune the caching
+
+v 8.3.6
+  - Don't attempt to fetch any tags from a forked repo (Stan Hu).
+
+v 8.3.5
+  - Bump Git version requirement to 2.7.4
 
 v 8.3.4
   - Use gitlab-workhorse 0.5.4 (fixes API routing bug)

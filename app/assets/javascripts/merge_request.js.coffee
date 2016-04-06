@@ -15,8 +15,6 @@ class @MergeRequest
     this.$('.show-all-commits').on 'click', =>
       this.showAllCommits()
 
-    @fixAffixScroll();
-
     @initTabs()
 
     # Prevent duplicate event bindings
@@ -29,20 +27,6 @@ class @MergeRequest
   # Local jQuery finder
   $: (selector) ->
     this.$el.find(selector)
-
-  fixAffixScroll: ->
-    fixAffix = ->
-      $discussion = $('.issuable-discussion')
-      $sidebar = $('.issuable-sidebar')
-      if $sidebar.hasClass('no-affix')
-        $sidebar.removeClass(['affix-top','affix'])
-      discussionHeight = $discussion.height()
-      sidebarHeight = $sidebar.height()
-      if sidebarHeight > discussionHeight
-        $discussion.height(sidebarHeight + 50)
-        $sidebar.addClass('no-affix')
-    $(window).on('resize', fixAffix)
-    fixAffix()
 
   initTabs: ->
     if @opts.action != 'new'
