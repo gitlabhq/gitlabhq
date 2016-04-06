@@ -252,7 +252,7 @@ describe 'Git HTTP requests', lib: true do
   end
 
   def download(project, user: nil, password: nil)
-    args = [project, {user: user, password: password}]
+    args = [project, { user: user, password: password }]
 
     clone_get *args
     yield response
@@ -262,7 +262,7 @@ describe 'Git HTTP requests', lib: true do
   end
 
   def upload(project, user: nil, password: nil)
-    args = [project, {user: user, password: password}]
+    args = [project, { user: user, password: password }]
 
     push_get *args
     yield response
