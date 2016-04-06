@@ -100,6 +100,10 @@ v 8.7.1
   - Prevent users from deleting Webhooks via API they do not own
   - Fix Error 500 due to stale cache when projects are renamed or transferred
   - Update width of search box to fix Safari bug. !3900 (Jedidiah)
+  - Added inline diff styling for `change_title` system notes. !3576 (Adam Butler)
+  - Added `InlineDiffFilter` to the markdown parser. !3576 (Adam Butler)
+
+v 8.7.1 (unreleased)
   - Use the `can?` helper instead of `current_user.can?`
 
 v 8.7.0

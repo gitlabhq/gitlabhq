@@ -239,3 +239,16 @@ References should be parseable even inside _<%= merge_request.to_reference %>_ e
 - [[link-text|http://example.com/pdfs/gollum.pdf]]
 - [[images/example.jpg]]
 - [[http://example.com/images/example.jpg]]
+
+### Inline Diffs
+
+With inline diffs tags you can display {+ additions +} or [- deletions -].
+
+The wrapping tags can be either curly braces or square brackets [+ additions +] or {- deletions -}.
+
+However the wrapping tags can not be mixed as such -
+
+- {+ additions +]
+- [+ additions +}
+- {- delletions -]
+- [- delletions -}
