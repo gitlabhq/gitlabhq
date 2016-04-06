@@ -394,7 +394,7 @@ class GitLabDropdown
       selector = ".dropdown-page-one #{selector}"
 
     # simulate a click on the first link
-    $(selector).trigger "click"
+    $(selector, @dropdown).trigger "click"
 
   addArrowKeyEvent: ->
     ARROW_KEY_CODES = [38, 40]
