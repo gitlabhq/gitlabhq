@@ -5,7 +5,7 @@ describe Gitlab::Saml::User, lib: true do
   let(:gl_user) { saml_user.gl_user }
   let(:uid) { 'my-uid' }
   let(:provider) { 'saml' }
-  let(:auth_hash) { OmniAuth::AuthHash.new(uid: uid, provider: provider, info: info_hash, extra: { raw_info: { groups: %w(Developers Freelancers Designers) } }) }
+  let(:auth_hash) { OmniAuth::AuthHash.new(uid: uid, provider: provider, info: info_hash, extra: { raw_info: OneLogin::RubySaml::Attributes.new({ 'groups' => %w(Developers Freelancers Designers) }) }) }
   let(:info_hash) do
     {
       name: 'John',
@@ -48,6 +48,7 @@ describe Gitlab::Saml::User, lib: true do
           before { stub_saml_config({ options: { name: 'saml', groups_attribute: 'groups', external_groups: %w(Freelancers), args: {} } }) }
           it 'marks the user as external' do
             saml_user.save
+            expect(gl_user).to be_valid
             expect(gl_user.external).to be_truthy
           end
         end
@@ -56,6 +57,7 @@ describe Gitlab::Saml::User, lib: true do
         context 'are defined but the user does not belong there' do
           it 'does not mark the user as external' do
             saml_user.save
+            expect(gl_user).to be_valid
             expect(gl_user.external).to be_falsey
           end
         end
@@ -64,6 +66,7 @@ describe Gitlab::Saml::User, lib: true do
           it 'should make user internal' do
             existing_user.update_attribute('external', true)
             saml_user.save
+            expect(gl_user).to be_valid
             expect(gl_user.external).to be_falsey
           end
         end
@@ -105,6 +108,7 @@ describe Gitlab::Saml::User, lib: true do
           before { stub_saml_config({ options: { name: 'saml', groups_attribute: 'groups', external_groups: %w(Freelancers), args: {} } }) }
           it 'marks the user as external' do
             saml_user.save
+            expect(gl_user).to be_valid
             expect(gl_user.external).to be_truthy
           end
         end
@@ -113,6 +117,7 @@ describe Gitlab::Saml::User, lib: true do
         context 'are defined but the user does not belong there' do
           it 'does not mark the user as external' do
             saml_user.save
+            expect(gl_user).to be_valid
             expect(gl_user.external).to be_falsey
           end
         end
