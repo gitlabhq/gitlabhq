@@ -57,5 +57,6 @@ module API
     mount Builds
     mount Variables
     mount Runners
+    mount Auth
   end
 end

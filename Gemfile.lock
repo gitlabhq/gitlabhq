@@ -954,6 +954,7 @@ DEPENDENCIES
   jquery-scrollto-rails (~> 1.4.3)
   jquery-turbolinks (~> 2.1.0)
   jquery-ui-rails (~> 5.0.0)
+  jwt
   kaminari (~> 0.16.3)
   letter_opener (~> 1.1.2)
   loofah (~> 2.0.3)

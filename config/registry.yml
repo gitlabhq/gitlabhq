@@ -1,0 +1,25 @@
+version: 0.1
+log:
+  fields:
+    service: registry
+storage:
+    cache:
+        blobdescriptor: inmemory
+    filesystem:
+        rootdirectory: shared/registry
+http:
+    addr: :5000
+    secret: "shared-registry-secret"
+    headers:
+        X-Content-Type-Options: [nosniff]
+health:
+  storagedriver:
+    enabled: true
+    interval: 10s
+    threshold: 3
+auth:
+  token:
+    realm: http://192.168.64.1:3000/api/v3/auth/token
+    service: docker
+    issuer: ominbus-certificate
+    rootcertbundle: config/registry.pem
