@@ -7,6 +7,8 @@ Returns a list of project milestones.
 ```
 GET /projects/:id/milestones
 GET /projects/:id/milestones?iid=42
+GET /projects/:id/milestones?state=active
+GET /projects/:id/milestones?state=closed
 ```
 
 ```json
@@ -29,6 +31,7 @@ Parameters:
 
 - `id` (required) - The ID of a project
 - `iid` (optional) - Return the milestone having the given `iid`
+- `state` (optional) - Return "active" or "closed" milestones
 
 ## Get single milestone
 

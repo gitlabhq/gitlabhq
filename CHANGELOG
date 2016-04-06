@@ -25,6 +25,7 @@ v 8.7.0 (unreleased)
   - Build status notifications
   - API: Ability to retrieve a specific tag (Robert Schilling)
   - API: Expose user location (Robert Schilling)
+  - API: Ability to milter milestones by state `active` and `closed` (Robert Schilling)
 
 v 8.6.5 (unreleased)
   - Check permissions when user attempts to import members from another project
