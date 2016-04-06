@@ -90,7 +90,7 @@ GitLab.GfmAutoComplete =
       alias: 'milestones'
       searchKey: 'search'
       displayTpl: @Milestones.template
-      insertTpl: '${atwho-at}${title}'
+      insertTpl: '${atwho-at}"${title}"'
       callbacks:
         beforeSave: (milestones) ->
           $.map milestones, (m) ->
