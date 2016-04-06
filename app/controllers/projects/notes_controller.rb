@@ -72,7 +72,7 @@ class Projects::NotesController < Projects::ApplicationController
     note = noteable.notes.find_by(data)
 
     if note
-      Notes::DeleteService.new(project, current_user).execute(note)
+      note.destroy
     else
       Notes::CreateService.new(project, current_user, note_params).execute
     end

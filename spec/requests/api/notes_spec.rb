@@ -241,16 +241,22 @@ describe API::API, api: true  do
     end
   end
 
-  describe ':id/#{noteables_str}/:#{noteable_id_str}/notes/:note_id' do
+  describe 'DELETE /projects/:id/noteable/:noteable_id/notes/:note_id' do
     context 'when noteable is an Issue' do
       it 'should delete a note' do
         delete api("/projects/#{project.id}/issues/#{issue.id}/"\
                    "notes/#{issue_note.id}", user)
+
         expect(response.status).to eq(200)
+        # Check if note is really deleted
+        delete api("/projects/#{project.id}/issues/#{issue.id}/"\
+                   "notes/#{issue_note.id}", user)
+        expect(response.status).to eq(404)
       end
 
       it 'should return a 404 error when note id not found' do
         delete api("/projects/#{project.id}/issues/#{issue.id}/notes/123", user)
+
         expect(response.status).to eq(404)
       end
     end
@@ -259,12 +265,18 @@ describe API::API, api: true  do
       it 'should delete a note' do
         delete api("/projects/#{project.id}/snippets/#{snippet.id}/"\
                    "notes/#{snippet_note.id}", user)
+
         expect(response.status).to eq(200)
+        # Check if note is really deleted
+        delete api("/projects/#{project.id}/snippets/#{snippet.id}/"\
+                   "notes/#{snippet_note.id}", user)
+        expect(response.status).to eq(404)
       end
 
       it 'should return a 404 error when note id not found' do
         delete api("/projects/#{project.id}/snippets/#{snippet.id}/"\
                    "notes/123", user)
+
         expect(response.status).to eq(404)
       end
     end
@@ -273,12 +285,18 @@ describe API::API, api: true  do
       it 'should delete a note' do
         delete api("/projects/#{project.id}/merge_requests/"\
                    "#{merge_request.id}/notes/#{merge_request_note.id}", user)
+
         expect(response.status).to eq(200)
+        # Check if note is really deleted
+        delete api("/projects/#{project.id}/merge_requests/"\
+                   "#{merge_request.id}/notes/#{merge_request_note.id}", user)
+        expect(response.status).to eq(404)
       end
 
       it 'should return a 404 error when note id not found' do
         delete api("/projects/#{project.id}/merge_requests/"\
                    "#{merge_request.id}/notes/123", user)
+
         expect(response.status).to eq(404)
       end
     end
