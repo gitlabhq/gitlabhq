@@ -148,4 +148,19 @@ describe IssuesHelper do
       expect(awards_sort(data).keys).to eq(["thumbsup", "thumbsdown", "lifter"])
     end
   end
+
+  describe "#milestone options" do
+    let!(:closed_milestone) { create :closed_milestone, title: "closed milestone", project: project }
+    let!(:milestone1)       { create :milestone, title: "open milestone 1", project: project }
+    let!(:milestone2)       { create :milestone, title: "open milestone 2", project: project }
+
+    before { issue.update_attributes(milestone_id: closed_milestone.id) }
+
+    it "gets closed milestone from current issue" do
+      options = milestone_options(issue)
+      expect(options).to have_selector('option[selected]', text: closed_milestone.title)
+      expect(options).to have_selector('option', text: milestone1.title)
+      expect(options).to have_selector('option', text: milestone2.title)
+    end
+  end
 end
