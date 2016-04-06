@@ -52,8 +52,8 @@ documentation](../workflow/add-user/add-user.md).
 | Switch visibility level               |         |            |             |          | ✓      |
 | Transfer project to another namespace |         |            |             |          | ✓      |
 | Remove project                        |         |            |             |          | ✓      |
-| Force push to protected branches      |         |            |             |          |        |
-| Remove protected branches             |         |            |             |          |        |
+| Force push to protected branches      |         |            |             |          | ✓      |
+| Remove protected branches             |         |            |             |          | ✓      |
 
 [^1]: If **Allow guest to access builds** is enabled in CI settings
 
