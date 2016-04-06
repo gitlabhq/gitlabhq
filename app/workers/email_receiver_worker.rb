@@ -26,6 +26,8 @@ class EmailReceiverWorker
     case e
     when Gitlab::Email::Receiver::SentNotificationNotFoundError
       reason = "We couldn't figure out what the email is in reply to. Please create your comment through the web interface."
+    when Gitlab::Email::Receiver::ProjectNotFound
+      reason = "We couldn't find the project. Please check if there's any typo."
     when Gitlab::Email::Receiver::EmptyEmailError
       can_retry = true
       reason = "It appears that the email is blank. Make sure your reply is at the top of the email, we can't process inline replies."

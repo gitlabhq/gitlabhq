@@ -210,10 +210,12 @@ describe Gitlab::Email::Receiver, lib: true do
     end
 
     context "something is wrong" do
+      before do
+        project
+      end
+
       context "when the issue could not be saved" do
         before do
-          project
-
           allow_any_instance_of(Issue).to receive(:persisted?).and_return(false)
         end
 
@@ -225,11 +227,24 @@ describe Gitlab::Email::Receiver, lib: true do
       context "when the authentication_token token didn't match" do
         let!(:email_raw) { fixture_file("emails/wrong_authentication_token.eml") }
 
-        before do
-          project
+        it "raises an UserNotAuthorizedError" do
+          expect { receiver.execute }.to raise_error(Gitlab::Email::Receiver::UserNotAuthorizedError)
+        end
+      end
+
+      context "when project is private" do
+        let(:project) { create(:project, :private, namespace: namespace) }
+
+        it "raises a ProjectNotFound if the user is not a member" do
+          expect { receiver.execute }.to raise_error(Gitlab::Email::Receiver::ProjectNotFound)
         end
 
-        it "raises an UserNotAuthorizedError" do
+        it "raises a UserNotAuthorizedError if the user has no sufficient permission" do
+          skip("Find a role which can :read_project but can't :create_issue")
+
+          project.update(group: create(:group))
+          project.group.add_guest(user)
+
           expect { receiver.execute }.to raise_error(Gitlab::Email::Receiver::UserNotAuthorizedError)
         end
       end
