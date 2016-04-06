@@ -27,7 +27,7 @@ module API
         authorize! :read_milestone, user_project
 
         milestones = user_project.milestones
-        milestones = filter_milestones_state(milestones, params[:state]) unless params[:state].nil?
+        milestones = filter_milestones_state(milestones, params[:state])
 
         present paginate(milestones), with: Entities::Milestone
       end

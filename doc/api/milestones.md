@@ -11,6 +11,20 @@ GET /projects/:id/milestones?state=active
 GET /projects/:id/milestones?state=closed
 ```
 
+Parameters:
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer | yes | The ID of a project |
+| `iid` | integer | optional | Return only the milestone having the given `iid` |
+| `state` | string | optional | Return  only `active` or `closed` milestones` |
+
+```bash
+curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/milestones
+```
+
+Example Response:
+
 ```json
 [
   {
@@ -27,11 +41,6 @@ GET /projects/:id/milestones?state=closed
 ]
 ```
 
-Parameters:
-
-- `id` (required) - The ID of a project
-- `iid` (optional) - Return the milestone having the given `iid`
-- `state` (optional) - Return "active" or "closed" milestones
 
 ## Get single milestone
 

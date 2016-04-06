@@ -4,7 +4,7 @@ describe API::API, api: true  do
   include ApiHelpers
   let(:user) { create(:user) }
   let!(:project) { create(:project, namespace: user.namespace ) }
-  let!(:closed_milestone) { create(:closed_milestone, project: project, state: :closed) }
+  let!(:closed_milestone) { create(:closed_milestone, project: project) }
   let!(:milestone) { create(:milestone, project: project) }
 
   before { project.team << [user, :developer] }
@@ -22,16 +22,18 @@ describe API::API, api: true  do
       expect(response.status).to eq(401)
     end
 
-    it 'should return an array of active milestones' do
+    it 'returns an array of active milestones' do
       get api("/projects/#{project.id}/milestones?state=active", user)
+
       expect(response.status).to eq(200)
       expect(json_response).to be_an Array
       expect(json_response.length).to eq(1)
       expect(json_response.first['id']).to eq(milestone.id)
     end
 
-    it 'should return an array of closed milestones' do
+    it 'returns an array of closed milestones' do
       get api("/projects/#{project.id}/milestones?state=closed", user)
+
       expect(response.status).to eq(200)
       expect(json_response).to be_an Array
       expect(json_response.length).to eq(1)
