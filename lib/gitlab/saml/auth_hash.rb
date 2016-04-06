@@ -9,7 +9,7 @@ module Gitlab
       private
 
       def get_raw(key)
-        # Needs to call `all` because of https://github.com/onelogin/ruby-saml/blob/master/lib/onelogin/ruby-saml/attributes.rb#L78
+        # Needs to call `all` because of https://git.io/vVo4u
         # otherwise just the first value is returned
         auth_hash.extra[:raw_info].all[key]
       end

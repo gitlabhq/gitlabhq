@@ -1,4 +1,3 @@
-# Load a specific server configuration
 module Gitlab
   module Saml
     class Config

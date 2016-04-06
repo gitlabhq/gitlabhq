@@ -28,12 +28,11 @@ module Gitlab
 
         if external_users_enabled?
           # Check if there is overlap between the user's groups and the external groups
-          # setting and set user as external or internal.
+          # setting then set user as external or internal.
           if (auth_hash.groups & Gitlab::Saml::Config.external_groups).empty?
-            # Avoid an unnecessary change of values and the subsequent save
-            @user.external = false if @user.external
+            @user.external = false
           else
-            @user.external = true unless @user.external
+            @user.external = true
           end
         end
 

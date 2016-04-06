@@ -159,8 +159,7 @@ with the regular SAML response. Here is an example:
 The name of the attribute can be anything you like, but it must contain the groups
 to which a user belongs. In order to tell GitLab where to find these groups, you need
 to add a `groups_attribute:` element to your SAML settings. You will also need to
-tell GitLab which groups are external, for that you need the `external_groups:`
-element:
+tell GitLab which groups are external via the `external_groups:` element:
 
 ```yaml
 { name: 'saml',
