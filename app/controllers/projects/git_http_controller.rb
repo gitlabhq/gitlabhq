@@ -108,11 +108,14 @@ class Projects::GitHttpController < Projects::ApplicationController
     id = params[:project_id]
     return if id.nil?
     
-    if id.end_with?('.wiki.git')
-      id.slice(0, id.length - 9)
-    elsif id.end_with?('.git')
-      id.slice(0, id.length - 4)
+    %w{.wiki.git .git}.each do |suffix|
+      # Be careful to only remove the suffix from the end of 'id'.
+      # Accidentally removing it from the middle is how security
+      # vulnerabilities happen!
+      return id.slice(0, id.length - suffix.length) if id.end_with?(suffix)
     end
+
+    nil
   end
 
   def repository
