@@ -147,6 +147,10 @@ module SharedIssuable
     expect_sidebar_content('2 of 2')
   end
 
+  step 'I should see "3 of 3" in the sidebar' do
+    expect_sidebar_content('3 of 3')
+  end
+
   step 'I click link "Next" in the sidebar' do
     page.within '.issuable-sidebar' do
       click_link 'Next'

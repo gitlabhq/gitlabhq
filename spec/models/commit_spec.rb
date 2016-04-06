@@ -86,10 +86,21 @@ eos
     let(:issue) { create :issue, project: project }
     let(:other_project) { create :project, :public }
     let(:other_issue) { create :issue, project: other_project }
+    let(:commiter) { create :user }
+
+    before do
+      project.team << [commiter, :developer]
+      other_project.team << [commiter, :developer]
+    end
 
     it 'detects issues that this commit is marked as closing' do
       ext_ref = "#{other_project.path_with_namespace}##{other_issue.iid}"
-      allow(commit).to receive(:safe_message).and_return("Fixes ##{issue.iid} and #{ext_ref}")
+
+      allow(commit).to receive_messages(
+        safe_message: "Fixes ##{issue.iid} and #{ext_ref}",
+        committer_email: commiter.email
+      )
+
       expect(commit.closes_issues).to include(issue)
       expect(commit.closes_issues).to include(other_issue)
     end

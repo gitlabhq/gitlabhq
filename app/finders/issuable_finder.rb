@@ -80,9 +80,10 @@ class IssuableFinder
       @projects = project
     elsif current_user && params[:authorized_only].presence && !current_user_related?
       @projects = current_user.authorized_projects.reorder(nil)
+    elsif group
+      @projects = GroupProjectsFinder.new(group).execute(current_user).reorder(nil)
     else
-      @projects = ProjectsFinder.new.execute(current_user, group: group).
-        reorder(nil)
+      @projects = ProjectsFinder.new.execute(current_user).reorder(nil)
     end
   end
 
@@ -171,14 +172,12 @@ class IssuableFinder
 
   def by_scope(items)
     case params[:scope]
-    when 'created-by-me', 'authored' then
+    when 'created-by-me', 'authored'
       items.where(author_id: current_user.id)
-    when 'all' then
-      items
-    when 'assigned-to-me' then
+    when 'assigned-to-me'
       items.where(assignee_id: current_user.id)
     else
-      raise 'You must specify default scope'
+      items
     end
   end
 
@@ -198,8 +197,7 @@ class IssuableFinder
   end
 
   def by_group(items)
-    items = items.of_group(group) if group
-
+    # Selection by group is already covered by `by_project` and `projects`
     items
   end
 
@@ -245,7 +243,7 @@ class IssuableFinder
   end
 
   def filter_by_upcoming_milestone?
-    params[:milestone_title] == '#upcoming'
+    params[:milestone_title] == Milestone::Upcoming.name
   end
 
   def by_milestone(items)
@@ -254,7 +252,7 @@ class IssuableFinder
         items = items.where(milestone_id: [-1, nil])
       elsif filter_by_upcoming_milestone?
         upcoming = Milestone.where(project_id: projects).upcoming
-        items = items.joins(:milestone).where(milestones: { title: upcoming.title })
+        items = items.joins(:milestone).where(milestones: { title: upcoming.try(:title) })
       else
         items = items.joins(:milestone).where(milestones: { title: params[:milestone_title] })
 

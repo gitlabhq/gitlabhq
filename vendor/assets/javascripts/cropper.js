@@ -1,11 +1,11 @@
 /*!
- * Cropper v2.2.5
+ * Cropper v2.3.0
  * https://github.com/fengyuanchen/cropper
  *
  * Copyright (c) 2014-2016 Fengyuan Chen and contributors
  * Released under the MIT license
  *
- * Date: 2016-01-18T05:42:50.800Z
+ * Date: 2016-02-22T02:13:13.332Z
  */
 
 (function (factory) {
@@ -27,6 +27,7 @@
   var $window = $(window);
   var $document = $(document);
   var location = window.location;
+  var navigator = window.navigator;
   var ArrayBuffer = window.ArrayBuffer;
   var Uint8Array = window.Uint8Array;
   var DataView = window.DataView;
@@ -89,6 +90,7 @@
 
   // Supports
   var SUPPORT_CANVAS = $.isFunction($('<canvas>')[0].getContext);
+  var IS_SAFARI = navigator && /safari/i.test(navigator.userAgent) && /apple computer/i.test(navigator.vendor);
 
   // Maths
   var num = Number;
@@ -155,8 +157,8 @@
   function getImageSize(image, callback) {
     var newImage;
 
-    // Modern browsers
-    if (image.naturalWidth) {
+    // Modern browsers (ignore Safari, #120 & #509)
+    if (image.naturalWidth && !IS_SAFARI) {
       return callback(image.naturalWidth, image.naturalHeight);
     }
 
@@ -215,46 +217,46 @@
   function getSourceCanvas(image, data) {
     var canvas = $('<canvas>')[0];
     var context = canvas.getContext('2d');
-    var x = 0;
-    var y = 0;
-    var width = data.naturalWidth;
-    var height = data.naturalHeight;
+    var dstX = 0;
+    var dstY = 0;
+    var dstWidth = data.naturalWidth;
+    var dstHeight = data.naturalHeight;
     var rotate = data.rotate;
     var scaleX = data.scaleX;
     var scaleY = data.scaleY;
     var scalable = isNumber(scaleX) && isNumber(scaleY) && (scaleX !== 1 || scaleY !== 1);
     var rotatable = isNumber(rotate) && rotate !== 0;
     var advanced = rotatable || scalable;
-    var canvasWidth = width;
-    var canvasHeight = height;
+    var canvasWidth = dstWidth * abs(scaleX || 1);
+    var canvasHeight = dstHeight * abs(scaleY || 1);
     var translateX;
     var translateY;
     var rotated;
 
     if (scalable) {
-      translateX = width / 2;
-      translateY = height / 2;
+      translateX = canvasWidth / 2;
+      translateY = canvasHeight / 2;
     }
 
     if (rotatable) {
       rotated = getRotatedSizes({
-        width: width,
-        height: height,
+        width: canvasWidth,
+        height: canvasHeight,
         degree: rotate
       });
 
       canvasWidth = rotated.width;
       canvasHeight = rotated.height;
-      translateX = rotated.width / 2;
-      translateY = rotated.height / 2;
+      translateX = canvasWidth / 2;
+      translateY = canvasHeight / 2;
     }
 
     canvas.width = canvasWidth;
     canvas.height = canvasHeight;
 
     if (advanced) {
-      x = -width / 2;
-      y = -height / 2;
+      dstX = -dstWidth / 2;
+      dstY = -dstHeight / 2;
 
       context.save();
       context.translate(translateX, translateY);
@@ -269,7 +271,7 @@
       context.scale(scaleX, scaleY);
     }
 
-    context.drawImage(image, floor(x), floor(y), floor(width), floor(height));
+    context.drawImage(image, floor(dstX), floor(dstY), floor(dstWidth), floor(dstHeight));
 
     if (advanced) {
       context.restore();
@@ -372,8 +374,11 @@
           // Get the original orientation value
           orientation = dataView.getUint16(offset, littleEndian);
 
-          // Override the orientation with the default value: 1
-          dataView.setUint16(offset, 1, littleEndian);
+          // Override the orientation with its default value for Safari (#120)
+          if (IS_SAFARI) {
+            dataView.setUint16(offset, 1, littleEndian);
+          }
+
           break;
         }
       }
@@ -1233,9 +1238,11 @@
     initPreview: function () {
       var crossOrigin = getCrossOrigin(this.crossOrigin);
       var url = crossOrigin ? this.crossOriginUrl : this.url;
+      var $clone2;
 
       this.$preview = $(this.options.preview);
-      this.$viewBox.html('<img' + crossOrigin + ' src="' + url + '">');
+      this.$clone2 = $clone2 = $('<img' + crossOrigin + ' src="' + url + '">');
+      this.$viewBox.html($clone2);
       this.$preview.each(function () {
         var $this = $(this);
 
@@ -1288,7 +1295,7 @@
         return;
       }
 
-      this.$viewBox.find('img').css({
+      this.$clone2.css({
         width: width,
         height: height,
         marginLeft: -left,
@@ -1652,8 +1659,8 @@
       if (this.limited) {
         minLeft = cropBox.minLeft;
         minTop = cropBox.minTop;
-        maxWidth = minLeft + min(container.width, canvas.width);
-        maxHeight = minTop + min(container.height, canvas.height);
+        maxWidth = minLeft + min(container.width, canvas.left + canvas.width);
+        maxHeight = minTop + min(container.height, canvas.top + canvas.height);
       }
 
       range = {
@@ -2092,17 +2099,30 @@
      * Replace the image's src and rebuild the cropper
      *
      * @param {String} url
+     * @param {Boolean} onlyColorChanged (optional)
      */
-    replace: function (url) {
+    replace: function (url, onlyColorChanged) {
       if (!this.isDisabled && url) {
         if (this.isImg) {
-          this.isReplaced = true;
           this.$element.attr('src', url);
         }
 
-        // Clear previous data
-        this.options.data = null;
-        this.load(url);
+        if (onlyColorChanged) {
+          this.url = url;
+          this.$clone.attr('src', url);
+
+          if (this.isBuilt) {
+            this.$preview.find('img').add(this.$clone2).attr('src', url);
+          }
+        } else {
+          if (this.isImg) {
+            this.isReplaced = true;
+          }
+
+          // Clear previous data
+          this.options.data = null;
+          this.load(url);
+        }
       }
     },
 
@@ -2686,11 +2706,12 @@
         var source = getSourceCanvas(this.$clone[0], this.image);
         var sourceWidth = source.width;
         var sourceHeight = source.height;
-        var args = [source];
+        var canvas = this.canvas;
+        var params = [source];
 
         // Source canvas
-        var srcX = data.x;
-        var srcY = data.y;
+        var srcX = data.x + canvas.naturalWidth * (abs(data.scaleX || 1) - 1) / 2;
+        var srcY = data.y + canvas.naturalHeight * (abs(data.scaleY || 1) - 1) / 2;
         var srcWidth;
         var srcHeight;
 
@@ -2723,7 +2744,7 @@
         }
 
         // All the numerical parameters should be integer for `drawImage` (#476)
-        args.push(floor(srcX), floor(srcY), floor(srcWidth), floor(srcHeight));
+        params.push(floor(srcX), floor(srcY), floor(srcWidth), floor(srcHeight));
 
         // Scale destination sizes
         if (scaledRatio) {
@@ -2735,10 +2756,10 @@
 
         // Avoid "IndexSizeError" in IE and Firefox
         if (dstWidth > 0 && dstHeight > 0) {
-          args.push(floor(dstX), floor(dstY), floor(dstWidth), floor(dstHeight));
+          params.push(floor(dstX), floor(dstY), floor(dstWidth), floor(dstHeight));
         }
 
-        return args;
+        return params;
       }).call(this));
 
       return canvas;

@@ -106,7 +106,7 @@ production: &base
     enabled: false
 
     # The email address including the `%{key}` placeholder that will be replaced to reference the item being replied to.
-    # The `%{key}` placeholder is added after the user part, after a `+` character, before the `@`.
+    # The placeholder can be omitted but if present, it must appear in the "user" part of the address (before the `@`).
     address: "gitlab-incoming+%{key}@gmail.com"
 
     # Email account username
@@ -357,6 +357,12 @@ production: &base
       #       crowd_server_url: 'CROWD SERVER URL',
       #       application_name: 'YOUR_APP_NAME',
       #       application_password: 'YOUR_APP_PASSWORD' } }
+      #
+      # - { name: 'auth0',
+      #     args: {
+      #       client_id: 'YOUR_AUTH0_CLIENT_ID',
+      #       client_secret: 'YOUR_AUTH0_CLIENT_SECRET',
+      #       namespace: 'YOUR_AUTH0_DOMAIN' } }
 
     # SSO maximum session duration in seconds. Defaults to CAS default of 8 hours.
     # cas3:

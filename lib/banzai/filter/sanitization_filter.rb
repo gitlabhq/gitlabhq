@@ -1,13 +1,10 @@
-require 'html/pipeline/filter'
-require 'html/pipeline/sanitization_filter'
-
 module Banzai
   module Filter
     # Sanitize HTML
     #
     # Extends HTML::Pipeline::SanitizationFilter with a custom whitelist.
     class SanitizationFilter < HTML::Pipeline::SanitizationFilter
-      UNSAFE_PROTOCOLS = %w(javascript :javascript data vbscript).freeze
+      UNSAFE_PROTOCOLS = %w(data javascript vbscript).freeze
 
       def whitelist
         whitelist = super
@@ -64,7 +61,12 @@ module Banzai
           return unless node.name == 'a'
           return unless node.has_attribute?('href')
 
-          if node['href'].start_with?(*UNSAFE_PROTOCOLS)
+          begin
+            uri = Addressable::URI.parse(node['href'])
+            uri.scheme.strip! if uri.scheme
+
+            node.remove_attribute('href') if UNSAFE_PROTOCOLS.include?(uri.scheme)
+          rescue Addressable::URI::InvalidURIError
             node.remove_attribute('href')
           end
         end

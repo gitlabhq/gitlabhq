@@ -1,21 +1,32 @@
 class Groups::ApplicationController < ApplicationController
   layout 'group'
+
+  skip_before_action :authenticate_user!
   before_action :group
 
   private
 
   def group
-    @group ||= Group.find_by(path: params[:group_id])
-  end
+    unless @group
+      id = params[:group_id] || params[:id]
+      @group = Group.find_by(path: id)
 
-  def authorize_read_group!
-    unless @group and can?(current_user, :read_group, @group)
-      if current_user.nil?
-        return authenticate_user!
-      else
-        return render_404
+      unless @group && can?(current_user, :read_group, @group)
+        @group = nil
+
+        if current_user.nil?
+          authenticate_user!
+        else
+          render_404
+        end
       end
     end
+
+    @group
+  end
+
+  def group_projects
+    @projects ||= GroupProjectsFinder.new(group).execute(current_user)
   end
 
   def authorize_admin_group!

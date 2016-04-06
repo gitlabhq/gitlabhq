@@ -16,6 +16,7 @@
         - [Issue tracker guidelines](#issue-tracker-guidelines)
         - [Issue weight](#issue-weight)
         - [Regression issues](#regression-issues)
+        - [Technical debt](#technical-debt)
     - [Merge requests](#merge-requests)
         - [Merge request guidelines](#merge-request-guidelines)
         - [Merge request description format](#merge-request-description-format)
@@ -242,6 +243,28 @@ addressed.
 [8.3 Regressions]: https://gitlab.com/gitlab-org/gitlab-ce/issues/4127
 [update the notes]: https://gitlab.com/gitlab-org/release-tools/blob/master/doc/pro-tips.md#update-the-regression-issue
 
+### Technical debt
+
+In order to track things that can be improved in GitLab's codebase, we created
+the ~"technical debt" label in [GitLab's issue tracker][ce-tracker].
+
+This label should be added to issues that describe things that can be improved,
+shortcuts that have been taken, code that needs refactoring, features that need
+additional attention, and all other things that have been left behind due to
+high velocity of development.
+
+Everyone can create an issue, though you may need to ask for adding a specific
+label, if you do not have permissions to do it by yourself. Additional labels
+can be combined with the `technical debt` label, to make it easier to schedule
+the improvements for a release.
+
+Issues tagged with the `technical debt` label have the same priority like issues
+that describe a new feature to be introduced in GitLab, and should be scheduled
+for a release by the appropriate person.
+
+Make sure to mention the merge request that the `technical debt` issue is
+associated with in the description of the issue.
+
 ## Merge requests
 
 We welcome merge requests with fixes and improvements to GitLab code, tests,
@@ -427,6 +450,7 @@ merge request:
 1.  [Rails](https://github.com/bbatsov/rails-style-guide)
 1.  [Testing](https://github.com/thoughtbot/guides/tree/master/style/testing)
 1.  [CoffeeScript](https://github.com/thoughtbot/guides/tree/master/style/coffeescript)
+1.  [SCSS styleguide][scss-styleguide]
 1.  [Shell commands](doc/development/shell_commands.md) created by GitLab
     contributors to enhance security
 1.  [Database Migrations](doc/development/migration_style_guide.md)
@@ -494,6 +518,7 @@ available at [http://contributor-covenant.org/version/1/1/0/](http://contributor
 [rss-source]: https://github.com/bbatsov/ruby-style-guide/blob/master/README.md#source-code-layout
 [rss-naming]: https://github.com/bbatsov/ruby-style-guide/blob/master/README.md#naming
 [doc-styleguide]: doc/development/doc_styleguide.md "Documentation styleguide"
+[scss-styleguide]: doc/development/scss_styleguide.md "SCSS styleguide"
 [gitlab-design]: https://gitlab.com/gitlab-org/gitlab-design
 [free Antetype viewer (Mac OSX only)]: https://itunes.apple.com/us/app/antetype-viewer/id824152298?mt=12
 [`gitlab1.atype` file]: https://gitlab.com/gitlab-org/gitlab-design/tree/master/gitlab1.atype/

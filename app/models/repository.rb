@@ -3,6 +3,10 @@ require 'securerandom'
 class Repository
   class CommitError < StandardError; end
 
+  # Files to use as a project avatar in case no avatar was uploaded via the web
+  # UI.
+  AVATAR_FILES = %w{logo.png logo.jpg logo.gif}
+
   include Gitlab::ShellAdapter
 
   attr_accessor :path_with_namespace, :project
@@ -38,12 +42,15 @@ class Repository
   end
 
   def exists?
-    return false unless raw_repository
+    return @exists unless @exists.nil?
 
-    raw_repository.rugged
-    true
-  rescue Gitlab::Git::Repository::NoRepository
-    false
+    @exists = cache.fetch(:exists?) do
+      begin
+        raw_repository && raw_repository.rugged ? true : false
+      rescue Gitlab::Git::Repository::NoRepository
+        false
+      end
+    end
   end
 
   def empty?
@@ -65,7 +72,7 @@ class Repository
     return @has_visible_content unless @has_visible_content.nil?
 
     @has_visible_content = cache.fetch(:has_visible_content?) do
-      raw_repository.branch_count > 0
+      branch_count > 0
     end
   end
 
@@ -166,7 +173,7 @@ class Repository
   end
 
   def branch_names
-    cache.fetch(:branch_names) { raw_repository.branch_names }
+    cache.fetch(:branch_names) { branches.map(&:name) }
   end
 
   def tag_names
@@ -184,7 +191,7 @@ class Repository
   end
 
   def branch_count
-    @branch_count ||= cache.fetch(:branch_count) { raw_repository.branch_count }
+    @branch_count ||= cache.fetch(:branch_count) { branches.size }
   end
 
   def tag_count
@@ -223,12 +230,6 @@ class Repository
         send(key)
       end
     end
-
-    branches.each do |branch|
-      unless cache.exist?(:"diverging_commit_counts_#{branch.name}")
-        send(:diverging_commit_counts, branch)
-      end
-    end
   end
 
   def expire_tags_cache
@@ -238,15 +239,16 @@ class Repository
 
   def expire_branches_cache
     cache.expire(:branch_names)
-    @branches = nil
+    @local_branches = nil
   end
 
-  def expire_cache(branch_name = nil)
+  def expire_cache(branch_name = nil, revision = nil)
     cache_keys.each do |key|
       cache.expire(key)
     end
 
     expire_branch_cache(branch_name)
+    expire_avatar_cache(branch_name, revision)
 
     # This ensures this particular cache is flushed after the first commit to a
     # new repository.
@@ -296,18 +298,6 @@ class Repository
     @tag_count = nil
   end
 
-  def rebuild_cache
-    cache_keys.each do |key|
-      cache.expire(key)
-      send(key)
-    end
-
-    branches.each do |branch|
-      cache.expire(:"diverging_commit_counts_#{branch.name}")
-      diverging_commit_counts(branch)
-    end
-  end
-
   def lookup_cache
     @lookup_cache ||= {}
   end
@@ -316,12 +306,42 @@ class Repository
     cache.expire(:branch_names)
   end
 
+  def expire_avatar_cache(branch_name = nil, revision = nil)
+    # Avatars are pulled from the default branch, thus if somebody pushes to a
+    # different branch there's no need to expire anything.
+    return if branch_name && branch_name != root_ref
+
+    # We don't want to flush the cache if the commit didn't actually make any
+    # changes to any of the possible avatar files.
+    if revision && commit = self.commit(revision)
+      return unless commit.diffs.
+        any? { |diff| AVATAR_FILES.include?(diff.new_path) }
+    end
+
+    cache.expire(:avatar)
+
+    @avatar = nil
+  end
+
+  def expire_exists_cache
+    cache.expire(:exists?)
+    @exists = nil
+  end
+
+  # Runs code after a repository has been created.
+  def after_create
+    expire_exists_cache
+  end
+
   # Runs code just before a repository is deleted.
   def before_delete
+    expire_exists_cache
+
     expire_cache if exists?
 
     expire_root_ref_cache
     expire_emptiness_caches
+    expire_exists_cache
   end
 
   # Runs code just before the HEAD of a repository is changed.
@@ -344,14 +364,20 @@ class Repository
     expire_tag_count_cache
   end
 
+  def before_import
+    expire_emptiness_caches
+    expire_exists_cache
+  end
+
   # Runs code after a repository has been forked/imported.
   def after_import
     expire_emptiness_caches
+    expire_exists_cache
   end
 
   # Runs code after a new commit has been pushed.
-  def after_push_commit(branch_name)
-    expire_cache(branch_name)
+  def after_push_commit(branch_name, revision)
+    expire_cache(branch_name, revision)
   end
 
   # Runs code after a new branch has been created.
@@ -446,6 +472,18 @@ class Repository
 
       license
     end
+  end
+
+  def gitlab_ci_yml
+    return nil if !exists? || empty?
+
+    @gitlab_ci_yml ||= tree(:head).blobs.find do |file|
+      file.name == '.gitlab-ci.yml'
+    end
+  rescue Rugged::ReferenceError
+    # For unknow reason spinach scenario "Scenario: I change project path"
+    # lead to "Reference 'HEAD' not found" exception from Repository#empty?
+    nil
   end
 
   def head_commit
@@ -581,9 +619,13 @@ class Repository
     refs_contains_sha('tag', sha)
   end
 
-  def branches
-    @branches ||= raw_repository.branches
+  def local_branches
+    @local_branches ||= rugged.branches.each(:local).map do |branch|
+      Gitlab::Git::Branch.new(branch.name, branch.target)
+    end
   end
+
+  alias_method :branches, :local_branches
 
   def tags
     @tags ||= raw_repository.tags
@@ -758,12 +800,15 @@ class Repository
   def parse_search_result(result)
     ref = nil
     filename = nil
+    basename = nil
     startline = 0
 
     result.each_line.each_with_index do |line, index|
       if line =~ /^.*:.*:\d+:/
         ref, filename, startline = line.split(':')
         startline = startline.to_i - index
+        extname = File.extname(filename)
+        basename = filename.sub(/#{extname}$/, '')
         break
       end
     end
@@ -776,6 +821,7 @@ class Repository
 
     OpenStruct.new(
       filename: filename,
+      basename: basename,
       ref: ref,
       startline: startline,
       data: data
@@ -783,7 +829,7 @@ class Repository
   end
 
   def fetch_ref(source_path, source_ref, target_ref)
-    args = %W(#{Gitlab.config.git.bin_path} fetch -f #{source_path} #{source_ref}:#{target_ref})
+    args = %W(#{Gitlab.config.git.bin_path} fetch --no-tags -f #{source_path} #{source_ref}:#{target_ref})
     Gitlab::Popen.popen(args, path_to_repo)
   end
 
@@ -850,6 +896,16 @@ class Repository
   def main_language
     unless empty?
       Linguist::Repository.new(rugged, rugged.head.target_id).language
+    end
+  end
+
+  def avatar
+    return nil unless exists?
+
+    @avatar ||= cache.fetch(:avatar) do
+      AVATAR_FILES.find do |file|
+        blob_at_branch('master', file)
+      end
     end
   end
 

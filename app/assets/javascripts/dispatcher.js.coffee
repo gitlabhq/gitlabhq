@@ -14,7 +14,6 @@ class Dispatcher
 
     path = page.split(':')
     shortcut_handler = null
-
     switch page
       when 'projects:issues:index'
         Issues.init()
@@ -25,6 +24,8 @@ class Dispatcher
         new ZenMode()
       when 'projects:milestones:show', 'groups:milestones:show', 'dashboard:milestones:show'
         new Milestone()
+      when 'dashboard:todos:index'
+        new Todos()
       when 'projects:milestones:new', 'projects:milestones:edit'
         new ZenMode()
         new DropzoneInput($('.milestone-form'))
@@ -104,6 +105,8 @@ class Dispatcher
         new ProjectFork()
       when 'projects:artifacts:browse'
         new BuildArtifacts()
+      when 'projects:group_links:index'
+        new GroupsSelect()
 
     switch path.first()
       when 'admin'
@@ -143,15 +146,11 @@ class Dispatcher
           when 'project_members', 'deploy_keys', 'hooks', 'services', 'protected_branches'
             shortcut_handler = new ShortcutsNavigation()
 
-
     # If we haven't installed a custom shortcut handler, install the default one
     if not shortcut_handler
       new Shortcuts()
 
   initSearch: ->
-    opts = $('.search-autocomplete-opts')
-    path = opts.data('autocomplete-path')
-    project_id = opts.data('autocomplete-project-id')
-    project_ref = opts.data('autocomplete-project-ref')
 
-    new SearchAutocomplete(path, project_id, project_ref)
+    # Only when search form is present
+    new SearchAutocomplete() if $('.search').length

@@ -244,6 +244,34 @@ module API
         end
       end
 
+      # Archive project
+      #
+      # Parameters:
+      #   id (required) - The ID of a project
+      # Example Request:
+      #   PUT /projects/:id/archive
+      post ':id/archive' do
+        authorize!(:archive_project, user_project)
+
+        user_project.archive!
+
+        present user_project, with: Entities::Project
+      end
+
+      # Unarchive project
+      #
+      # Parameters:
+      #   id (required) - The ID of a project
+      # Example Request:
+      #   PUT /projects/:id/unarchive
+      post ':id/unarchive' do
+        authorize!(:archive_project, user_project)
+
+        user_project.unarchive!
+
+        present user_project, with: Entities::Project
+      end
+
       # Remove project
       #
       # Parameters:
@@ -287,6 +315,33 @@ module API
         authorize! :remove_fork_project, user_project
         if user_project.forked?
           user_project.forked_project_link.destroy
+        end
+      end
+
+      # Share project with group
+      #
+      # Parameters:
+      #   id (required) - The ID of a project
+      #   group_id (required) - The ID of a group
+      #   group_access (required) - Level of permissions for sharing
+      #
+      # Example Request:
+      #   POST /projects/:id/share
+      post ":id/share" do
+        authorize! :admin_project, user_project
+        required_attributes! [:group_id, :group_access]
+
+        unless user_project.allowed_to_share_with_group?
+          return render_api_error!("The project sharing with group is disabled", 400)
+        end
+
+        link = user_project.project_group_links.new
+        link.group_id = params[:group_id]
+        link.group_access = params[:group_access]
+        if link.save
+          present link, with: Entities::ProjectGroupLink
+        else
+          render_api_error!(link.errors.full_messages.first, 409)
         end
       end
 

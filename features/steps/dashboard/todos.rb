@@ -41,7 +41,6 @@ class Spinach::Features::DashboardTodos < Spinach::FeatureSteps
       click_link 'Done'
     end
 
-    expect(page).to have_content 'Todo was successfully marked as done.'
     expect(page).to have_content 'To do 3'
     expect(page).to have_content 'Done 1'
     should_not_see_todo "John Doe assigned you merge request !#{merge_request.iid}"
@@ -87,6 +86,14 @@ class Spinach::Features::DashboardTodos < Spinach::FeatureSteps
   step 'I should not see todos related to "Assignments" in the list' do
     should_not_see_todo "John Doe assigned you merge request !#{merge_request.iid}"
     should_not_see_todo "John Doe assigned you issue ##{issue.iid}"
+  end
+
+  step 'I click on the todo' do
+    find('.todo:nth-child(1)').click
+  end
+
+  step 'I should be directed to the corresponding page' do
+    page.should have_css('.identifier', text: 'Merge Request !1')
   end
 
   def should_see_todo(position, title, body, pending = true)

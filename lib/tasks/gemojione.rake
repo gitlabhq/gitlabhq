@@ -1,19 +1,39 @@
-# This task will generate a standard and Retina sprite of all of the current
-# Gemojione Emojis, with the accompanying SCSS map.
-#
-# It will not appear in `rake -T` output, and the dependent gems are not
-# included in the Gemfile by default, because this task will only be needed
-# occasionally, such as when new Emojis are added to Gemojione.
-
-begin
-  require 'sprite_factory'
-  require 'rmagick'
-rescue LoadError
-  # noop
-end
-
 namespace :gemojione do
+  desc 'Generates Emoji SHA256 digests'
+  task digests: :environment do
+    require 'digest/sha2'
+    require 'json'
+
+    dir = Gemojione.index.images_path
+
+    digests = AwardEmoji.emojis.map do |name, emoji_hash|
+      fpath = File.join(dir, "#{emoji_hash['unicode']}.png")
+      digest = Digest::SHA256.file(fpath).hexdigest
+
+      { name: name, unicode: emoji_hash['unicode'], digest: digest }
+    end
+
+    out = File.join(Rails.root, 'fixtures', 'emojis', 'digests.json')
+
+    File.open(out, 'w') do |handle|
+      handle.write(JSON.pretty_generate(digests))
+    end
+  end
+
+  # This task will generate a standard and Retina sprite of all of the current
+  # Gemojione Emojis, with the accompanying SCSS map.
+  #
+  # It will not appear in `rake -T` output, and the dependent gems are not
+  # included in the Gemfile by default, because this task will only be needed
+  # occasionally, such as when new Emojis are added to Gemojione.
   task sprite: :environment do
+    begin
+      require 'sprite_factory'
+      require 'rmagick'
+    rescue LoadError
+      # noop
+    end
+
     check_requirements!
 
     SIZE   = 20
@@ -47,6 +67,7 @@ namespace :gemojione do
       # let's simplify it
       system(%Q(sed -i '' "s/width: #{SIZE}px; height: #{SIZE}px; background: image-url('emoji.png')/background-position:/" #{style_path}))
       system(%Q(sed -i '' "s/ no-repeat//" #{style_path}))
+      system(%Q(sed -i '' "s/ 0px/ 0/" #{style_path}))
 
       # Append a generic rule that applies to all Emojis
       File.open(style_path, 'a') do |f|

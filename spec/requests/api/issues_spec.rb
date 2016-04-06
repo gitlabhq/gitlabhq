@@ -2,8 +2,12 @@ require 'spec_helper'
 
 describe API::API, api: true  do
   include ApiHelpers
-  let(:user) { create(:user) }
-  let!(:project) { create(:project, namespace: user.namespace ) }
+  let(:user)        { create(:user) }
+  let(:non_member)  { create(:user) }
+  let(:author)      { create(:author) }
+  let(:assignee)    { create(:assignee) }
+  let(:admin)       { create(:user, :admin) }
+  let!(:project)    { create(:project, :public, namespace: user.namespace ) }
   let!(:closed_issue) do
     create :closed_issue,
            author: user,
@@ -11,6 +15,13 @@ describe API::API, api: true  do
            project: project,
            state: :closed,
            milestone: milestone
+  end
+  let!(:confidential_issue) do
+    create :issue,
+           :confidential,
+           project: project,
+           author: author,
+           assignee: assignee
   end
   let!(:issue) do
     create :issue,
@@ -123,10 +134,43 @@ describe API::API, api: true  do
     let(:base_url) { "/projects/#{project.id}" }
     let(:title) { milestone.title }
 
-    it "should return project issues" do
+    it 'should return project issues without confidential issues for non project members' do
+      get api("#{base_url}/issues", non_member)
+      expect(response.status).to eq(200)
+      expect(json_response).to be_an Array
+      expect(json_response.length).to eq(2)
+      expect(json_response.first['title']).to eq(issue.title)
+    end
+
+    it 'should return project confidential issues for author' do
+      get api("#{base_url}/issues", author)
+      expect(response.status).to eq(200)
+      expect(json_response).to be_an Array
+      expect(json_response.length).to eq(3)
+      expect(json_response.first['title']).to eq(issue.title)
+    end
+
+    it 'should return project confidential issues for assignee' do
+      get api("#{base_url}/issues", assignee)
+      expect(response.status).to eq(200)
+      expect(json_response).to be_an Array
+      expect(json_response.length).to eq(3)
+      expect(json_response.first['title']).to eq(issue.title)
+    end
+
+    it 'should return project issues with confidential issues for project members' do
       get api("#{base_url}/issues", user)
       expect(response.status).to eq(200)
       expect(json_response).to be_an Array
+      expect(json_response.length).to eq(3)
+      expect(json_response.first['title']).to eq(issue.title)
+    end
+
+    it 'should return project confidential issues for admin' do
+      get api("#{base_url}/issues", admin)
+      expect(response.status).to eq(200)
+      expect(json_response).to be_an Array
+      expect(json_response.length).to eq(3)
       expect(json_response.first['title']).to eq(issue.title)
     end
 
@@ -206,6 +250,41 @@ describe API::API, api: true  do
       get api("/projects/#{project.id}/issues/54321", user)
       expect(response.status).to eq(404)
     end
+
+    context 'confidential issues' do
+      it "should return 404 for non project members" do
+        get api("/projects/#{project.id}/issues/#{confidential_issue.id}", non_member)
+        expect(response.status).to eq(404)
+      end
+
+      it "should return confidential issue for project members" do
+        get api("/projects/#{project.id}/issues/#{confidential_issue.id}", user)
+        expect(response.status).to eq(200)
+        expect(json_response['title']).to eq(confidential_issue.title)
+        expect(json_response['iid']).to eq(confidential_issue.iid)
+      end
+
+      it "should return confidential issue for author" do
+        get api("/projects/#{project.id}/issues/#{confidential_issue.id}", author)
+        expect(response.status).to eq(200)
+        expect(json_response['title']).to eq(confidential_issue.title)
+        expect(json_response['iid']).to eq(confidential_issue.iid)
+      end
+
+      it "should return confidential issue for assignee" do
+        get api("/projects/#{project.id}/issues/#{confidential_issue.id}", assignee)
+        expect(response.status).to eq(200)
+        expect(json_response['title']).to eq(confidential_issue.title)
+        expect(json_response['iid']).to eq(confidential_issue.iid)
+      end
+
+      it "should return confidential issue for admin" do
+        get api("/projects/#{project.id}/issues/#{confidential_issue.id}", admin)
+        expect(response.status).to eq(200)
+        expect(json_response['title']).to eq(confidential_issue.title)
+        expect(json_response['iid']).to eq(confidential_issue.iid)
+      end
+    end
   end
 
   describe "POST /projects/:id/issues" do
@@ -238,6 +317,17 @@ describe API::API, api: true  do
       expect(json_response['message']['title']).to eq([
         'is too long (maximum is 255 characters)'
       ])
+    end
+
+    context 'when an admin or owner makes the request' do
+      it "accepts the creation date to be set" do
+        post api("/projects/#{project.id}/issues", user),
+          title: 'new issue', labels: 'label, label2', created_at: 2.weeks.ago
+
+        expect(response.status).to eq(201)
+        # this take about a second, so probably not equal
+        expect(Time.parse(json_response['created_at'])).to be <= 2.weeks.ago
+      end
     end
   end
 
@@ -293,6 +383,35 @@ describe API::API, api: true  do
           labels: 'label, ?'
       expect(response.status).to eq(400)
       expect(json_response['message']['labels']['?']['title']).to eq(['is invalid'])
+    end
+
+    context 'confidential issues' do
+      it "should return 403 for non project members" do
+        put api("/projects/#{project.id}/issues/#{confidential_issue.id}", non_member),
+          title: 'updated title'
+        expect(response.status).to eq(403)
+      end
+
+      it "should update a confidential issue for project members" do
+        put api("/projects/#{project.id}/issues/#{confidential_issue.id}", user),
+          title: 'updated title'
+        expect(response.status).to eq(200)
+        expect(json_response['title']).to eq('updated title')
+      end
+
+      it "should update a confidential issue for author" do
+        put api("/projects/#{project.id}/issues/#{confidential_issue.id}", author),
+          title: 'updated title'
+        expect(response.status).to eq(200)
+        expect(json_response['title']).to eq('updated title')
+      end
+
+      it "should update a confidential issue for admin" do
+        put api("/projects/#{project.id}/issues/#{confidential_issue.id}", admin),
+          title: 'updated title'
+        expect(response.status).to eq(200)
+        expect(json_response['title']).to eq('updated title')
+      end
     end
   end
 
@@ -361,9 +480,25 @@ describe API::API, api: true  do
   end
 
   describe "DELETE /projects/:id/issues/:issue_id" do
-    it "should delete a project issue" do
-      delete api("/projects/#{project.id}/issues/#{issue.id}", user)
-      expect(response.status).to eq(405)
+    it "rejects a non member from deleting an issue" do
+      delete api("/projects/#{project.id}/issues/#{issue.id}", non_member)
+      expect(response.status).to be(403)
+    end
+
+    it "rejects a developer from deleting an issue" do
+      delete api("/projects/#{project.id}/issues/#{issue.id}", author)
+      expect(response.status).to be(403)
+    end
+
+    context "when the user is project owner" do
+      let(:owner)     { create(:user) }
+      let(:project)   { create(:project, namespace: owner.namespace) }
+
+      it "deletes the issue if an admin requests it" do
+        delete api("/projects/#{project.id}/issues/#{issue.id}", owner)
+        expect(response.status).to eq(200)
+        expect(json_response['state']).to eq 'opened'
+      end
     end
   end
 end

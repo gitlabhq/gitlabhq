@@ -1,5 +1,9 @@
 class @Profile
-  constructor: ->
+  constructor: (opts = {}) ->
+    {
+      @form = $('.edit-user')
+    } = opts
+
     # Automatically submit the Preferences form when any of its radio buttons change
     $('.js-preferences-form').on 'change.preference', 'input[type=radio]', ->
       $(this).parents('form').submit()
@@ -17,52 +21,46 @@ class @Profile
     $('.update-notifications').on 'ajax:complete', ->
       $(this).find('.btn-save').enable()
 
-    # Avatar management
+    @bindEvents()
 
-    $avatarInput = $('.js-user-avatar-input')
-    $filename = $('.js-avatar-filename')
-    $modalCrop = $('.modal-profile-crop')
-    $modalCropImg = $('.modal-profile-crop-image')
+    cropOpts =
+      filename: '.js-avatar-filename'
+      previewImage: '.avatar-image .avatar'
+      modalCrop: '.modal-profile-crop'
+      pickImageEl: '.js-choose-user-avatar-button'
+      uploadImageBtn: '.js-upload-user-avatar'
+      modalCropImg: '.modal-profile-crop-image'
 
-    $('.js-choose-user-avatar-button').on "click", ->
-      $form = $(this).closest("form")
-      $form.find(".js-user-avatar-input").click()
+    @avatarGlCrop = $('.js-user-avatar-input').glCrop(cropOpts).data 'glcrop'
 
-    $modalCrop.on 'shown.bs.modal', ->
-      setTimeout ( -> # The cropper must be asynchronously initialized
-        $modalCropImg.cropper
-          aspectRatio: 1
-          modal: false
-          scalable: false
-          rotatable: false
-          zoomable: false
+  bindEvents: ->
+    @form.on 'submit', @onSubmitForm
 
-          crop: (event) ->
-            ['x', 'y'].forEach (key) ->
-              $("#user_avatar_crop_#{key}").val(Math.floor(event[key]))
-            $("#user_avatar_crop_size").val(Math.floor(event.width))
-      ), 0
+  onSubmitForm: (e) =>
+    e.preventDefault()
+    @saveForm()
 
-    $modalCrop.on 'hidden.bs.modal', ->
-      $modalCropImg.attr('src', '').cropper('destroy')
-      $avatarInput.val('')
-      $filename.text($filename.data('label'))
+  saveForm: ->
+    self = @
 
-    $('.js-upload-user-avatar').on 'click', ->
-      $('.edit-user').submit()
+    formData = new FormData(@form[0])
+    formData.append('user[avatar]', @avatarGlCrop.getBlob(), 'avatar.png')
 
-    $avatarInput.on "change", ->
-      form = $(this).closest("form")
-      filename = $(this).val().replace(/^.*[\\\/]/, '')
-      $filename.data('label', $filename.text()).text(filename)
-
-      reader = new FileReader
-
-      reader.onload = (event) ->
-        $modalCrop.modal('show')
-        $modalCropImg.attr('src', event.target.result)
-
-      fileData = reader.readAsDataURL(this.files[0])
+    $.ajax
+      url: @form.attr('action')
+      type: @form.attr('method')
+      data: formData
+      dataType: "json"
+      processData: false
+      contentType: false
+      success: (response) ->
+        new Flash(response.message, 'notice')
+      error: (jqXHR) ->
+        new Flash(jqXHR.responseJSON.message, 'alert')
+      complete: ->
+        window.scrollTo 0, 0
+        # Enable submit button after requests ends
+        self.form.find(':input[disabled]').enable()
 
 $ ->
   # Extract the SSH Key title from its comment

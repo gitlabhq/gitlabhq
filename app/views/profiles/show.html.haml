@@ -1,7 +1,4 @@
 = form_for @user, url: profile_path, method: :put, html: { multipart: true, class: "edit-user prepend-top-default" }, authenticity_token: true do |f|
-  = f.hidden_field :avatar_crop_x
-  = f.hidden_field :avatar_crop_y
-  = f.hidden_field :avatar_crop_size
   -if @user.errors.any?
     %div.alert.alert-danger
       %ul
@@ -29,7 +26,7 @@
         %a.btn.js-choose-user-avatar-button
           Browse file...
         %span.avatar-file-name.prepend-left-default.js-avatar-filename No file chosen
-        = f.file_field :avatar, class: "js-user-avatar-input hidden"
+        = f.file_field :avatar, class: "js-user-avatar-input hidden", accept: "image/*"
       .help-block
         The maximum file size allowed is 200KB.
       - if @user.avatar?
@@ -102,14 +99,20 @@
   .modal-dialog
     .modal-content
       .modal-header
-        %button.close{type: 'button', data: {dismiss: 'modal'}}
+        %button.close{:type => "button", :'data-dismiss' => "modal"}
           %span
             &times;
         %h4.modal-title
-          Crop your new profile picture
+          Position and size your new avatar
       .modal-body
-        %p
+        .profile-crop-image-container
           %img.modal-profile-crop-image
+        .crop-controls
+          .btn-group
+            %button.btn.btn-primary{ data: { method: "zoom", option: "0.1" } }
+              %span.fa.fa-search-plus
+            %button.btn.btn-primary{ data: { method: "zoom", option: "-0.1" } }
+              %span.fa.fa-search-minus
       .modal-footer
         %button.btn.btn-primary.js-upload-user-avatar{:type => "button"}
           Set new profile picture

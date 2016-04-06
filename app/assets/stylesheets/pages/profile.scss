@@ -30,7 +30,7 @@
   .btn {
     line-height: 40px;
     height: 42px;
-    padding: 0px 12px;
+    padding: 0 12px;
 
     img {
       width: 32px;
@@ -54,7 +54,7 @@
 }
 
 .account-well {
-  padding: 10px 10px;
+  padding: 10px;
   background-color: $help-well-bg;
   border: 1px solid $help-well-border;
   border-radius: $border-radius-base;
@@ -106,42 +106,6 @@
   .file-name {
     display: inline-block;
     padding-left: 10px;
-  }
-}
-
-.modal-profile-crop {
-  .modal-dialog {
-    width: 500px;
-  }
-
-  .modal-body {
-    p {
-      display: table;
-      margin: auto;
-      overflow: hidden;
-    }
-
-    img {
-      display: block;
-      max-width: 400px;
-      max-height: 400px;
-    }
-
-    .cropper-bg {
-      background: none;
-    }
-
-    .cropper-crop-box {
-      box-sizing: content-box;
-      border: 999px solid transparentize(#ccc, 0.5);
-      @include transform(translate(-999px, -999px));
-    }
-  }
-}
-
-@media (max-width: 520px) {
-  .modal-profile-crop .modal-dialog {
-    width: auto;
   }
 }
 
@@ -213,5 +177,44 @@
 
   &.not-active {
     color: $provider-btn-not-active-color;
+  }
+}
+
+.profile-settings-message {
+  line-height: 32px;
+  color: $warning-message-color;
+  background-color: $warning-message-bg;
+  border: 1px solid $warning-message-border;
+  border-radius: $border-radius-base;
+}
+
+.oauth-applications {
+  form {
+    display: inline-block;
+  }
+
+  .last-heading {
+    width: 105px;
+  }
+}
+
+.modal-profile-crop {
+  .modal-dialog {
+    width: 380px;
+
+    @media (max-width: $screen-sm-min) {
+      width: auto;
+    }
+
+  }
+
+  .profile-crop-image-container {
+    height: 300px;
+    margin: 0 auto;
+  }
+
+  .crop-controls {
+    padding: 10px 0 0;
+    text-align: center;
   }
 }

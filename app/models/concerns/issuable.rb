@@ -8,6 +8,7 @@ module Issuable
   extend ActiveSupport::Concern
   include Participable
   include Mentionable
+  include Subscribable
   include StripAttribute
 
   included do
@@ -18,7 +19,7 @@ module Issuable
     has_many :notes, as: :noteable, dependent: :destroy
     has_many :label_links, as: :target, dependent: :destroy
     has_many :labels, through: :label_links
-    has_many :subscriptions, dependent: :destroy, as: :subscribable
+    has_many :todos, as: :target, dependent: :destroy
 
     validates :author, presence: true
     validates :title, presence: true, length: { within: 0..255 }
@@ -41,7 +42,7 @@ module Issuable
 
     scope :join_project, -> { joins(:project) }
     scope :references_project, -> { references(:project) }
-    scope :non_archived, -> { join_project.merge(Project.non_archived) }
+    scope :non_archived, -> { join_project.where(projects: { archived: false }) }
 
     delegate :name,
              :email,
@@ -58,6 +59,8 @@ module Issuable
     attr_mentionable :description, cache: true
     participant :author, :assignee, :notes_with_associations
     strip_attributes :title
+
+    acts_as_paranoid
   end
 
   module ClassMethods
@@ -149,26 +152,8 @@ module Issuable
     notes.awards.where(note: "thumbsup").count
   end
 
-  def subscribed?(user)
-    subscription = subscriptions.find_by_user_id(user.id)
-
-    if subscription
-      return subscription.subscribed
-    end
-
+  def subscribed_without_subscriptions?(user)
     participants(user).include?(user)
-  end
-
-  def toggle_subscription(user)
-    subscriptions.
-      find_or_initialize_by(user_id: user.id).
-      update(subscribed: !subscribed?(user))
-  end
-
-  def unsubscribe(user)
-    subscriptions.
-      find_or_initialize_by(user_id: user.id).
-      update(subscribed: false)
   end
 
   def to_hook_data(user)
@@ -226,5 +211,14 @@ module Issuable
   def updated_tasks
     Taskable.get_updated_tasks(old_content: previous_changes['description'].first,
                                new_content: description)
+  end
+
+  ##
+  # Method that checks if issuable can be moved to another project.
+  #
+  # Should be overridden if issuable can be moved.
+  #
+  def can_move?(*)
+    false
   end
 end

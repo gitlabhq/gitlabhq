@@ -3,25 +3,32 @@
     %a.btn.dropdown-toggle{href: '#', "data-toggle" => "dropdown"}
       = icon('plus')
     %ul.dropdown-menu.dropdown-menu-right.project-home-dropdown
-      - if can?(current_user, :create_issue, @project)
+      - can_create_issue = can?(current_user, :create_issue, @project)
+      - merge_project = can?(current_user, :create_merge_request, @project) ? @project : (current_user && current_user.fork_of(@project))
+      - can_create_snippet = can?(current_user, :create_snippet, @project)
+
+      - if can_create_issue
         %li
           = link_to url_for_new_issue(@project, only_path: true) do
             = icon('exclamation-circle fw')
             New issue
-      - merge_project = can?(current_user, :create_merge_request, @project) ? @project : (current_user && current_user.fork_of(@project))
+
       - if merge_project
         %li
           = link_to new_namespace_project_merge_request_path(merge_project.namespace, merge_project) do
             = icon('tasks fw')
             New merge request
-      - if can?(current_user, :create_snippet, @project)
+
+      - if can_create_snippet
         %li
           = link_to new_namespace_project_snippet_path(@project.namespace, @project) do
             = icon('file-text-o fw')
             New snippet
 
-      - if can?(current_user, :push_code, @project)
+      - if can_create_issue || merge_project || can_create_snippet
         %li.divider
+
+      - if can?(current_user, :push_code, @project)
         %li
           = link_to namespace_project_new_blob_path(@project.namespace, @project, @project.default_branch || 'master') do
             = icon('file fw')
@@ -35,13 +42,11 @@
             = icon('tags fw')
             New tag
       - elsif current_user && current_user.already_forked?(@project)
-        %li.divider
         %li
           = link_to namespace_project_new_blob_path(@project.namespace, @project, @project.default_branch || 'master') do
             = icon('file fw')
             New file
       - elsif can?(current_user, :fork_project, @project)
-        %li.divider
         %li
           - continue_params = { to:         namespace_project_new_blob_path(@project.namespace, @project, @project.default_branch || 'master'),
                                 notice:     edit_in_new_fork_notice,

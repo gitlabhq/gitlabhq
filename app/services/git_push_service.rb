@@ -17,7 +17,7 @@ class GitPushService < BaseService
   #  6. Checks if the project's main language has changed
   #
   def execute
-    @project.repository.after_push_commit(branch_name)
+    @project.repository.after_push_commit(branch_name, params[:newrev])
 
     if push_remove_branch?
       @project.repository.after_remove_branch
@@ -43,15 +43,21 @@ class GitPushService < BaseService
       @push_commits = @project.repository.commits_between(params[:oldrev], params[:newrev])
       process_commit_messages
     end
-    # Checks if the main language has changed in the project and if so
-    # it updates it accordingly
-    update_main_language
     # Update merge requests that may be affected by this push. A new branch
     # could cause the last commit of a merge request to change.
     update_merge_requests
+
+    # Checks if the main language has changed in the project and if so
+    # it updates it accordingly
+    update_main_language
+
+    perform_housekeeping
   end
 
   def update_main_language
+    return unless is_default_branch?
+    return unless push_to_new_branch? || push_to_existing_branch?
+
     current_language = @project.repository.main_language
 
     unless current_language == @project.main_language
@@ -73,6 +79,13 @@ class GitPushService < BaseService
     ProjectCacheWorker.perform_async(@project.id)
   end
 
+  def perform_housekeeping
+    housekeeping = Projects::HousekeepingService.new(@project)
+    housekeeping.increment!
+    housekeeping.execute if housekeeping.needed?
+  rescue Projects::HousekeepingService::LeaseTaken
+  end
+
   def process_default_branch
     @push_commits = project.repository.commits(params[:newrev])
 
@@ -80,7 +93,7 @@ class GitPushService < BaseService
     project.change_head(branch_name)
 
     # Set protection on the default branch if configured
-    if (current_application_settings.default_branch_protection != PROTECTION_NONE)
+    if current_application_settings.default_branch_protection != PROTECTION_NONE
       developers_can_push = current_application_settings.default_branch_protection == PROTECTION_DEV_CAN_PUSH ? true : false
       @project.protected_branches.create({ name: @project.default_branch, developers_can_push: developers_can_push })
     end
@@ -111,7 +124,7 @@ class GitPushService < BaseService
         closed_issues = commit.closes_issues(current_user)
         closed_issues.each do |issue|
           if can?(current_user, :update_issue, issue)
-            Issues::CloseService.new(project, authors[commit], {}).execute(issue, commit)
+            Issues::CloseService.new(project, authors[commit], {}).execute(issue, commit: commit)
           end
         end
       end

@@ -1,3 +1,10 @@
+#logo {
+  z-index: 2;
+  position: absolute;
+  width: 58px;
+  cursor: pointer;
+}
+
 .page-with-sidebar {
   padding-top: $header-height;
   transition-duration: .3s;
@@ -16,30 +23,12 @@
   .gitlab-text-container-link {
     z-index: 1;
     position: absolute;
-    left: 0px;
-  }
-
-  #logo {
-    z-index: 2;
-    position: absolute;
-    width: 58px;
-    cursor: pointer;
-  }
-
-  &.right-sidebar-expanded {
-    /* Extra small devices (phones, less than 768px) */
-    /* No media query since this is the default in Bootstrap */
-    padding-right: 0;
-    /* Small devices (tablets, 768px and up) */
-    @media (min-width: $screen-sm-min) {
-      padding-right: $gutter_width;
-    }
-    
+    left: 0;
   }
 }
 
 .sidebar-wrapper {
-  z-index: 99;
+  z-index: 1000;
   background: $background-color;
 }
 
@@ -47,7 +36,7 @@
   width: 100%;
 
   .container-fluid {
-    background: #FFF;
+    background: #fff;
     padding: 0 $gl-padding;
 
     &.container-blank {
@@ -103,7 +92,7 @@
     }
 
     &:hover {
-      background-color: #EEE;
+      background-color: #eee;
     }
   }
 
@@ -143,7 +132,7 @@
   overflow: hidden;
 
   &.navbar-collapse {
-    padding: 0px !important;
+    padding: 0 !important;
   }
 
   li {
@@ -155,7 +144,7 @@
     }
 
     a {
-      padding: 7px 15px;
+      padding: 7px 12px;
       font-size: $gl-font-size;
       line-height: 24px;
       color: $gray;
@@ -180,10 +169,12 @@
       }
 
       .count {
-        float: right;
-        background: #eee;
-        padding: 0px 8px;
-        @include border-radius(6px);
+        &:before {
+          content: '(';
+        }
+        &:after {
+          content: ')';
+        }
       }
 
       &.back-link i {
@@ -194,98 +185,32 @@
 }
 
 .sidebar-subnav {
-  margin-left: 0px;
-  padding-left: 0px;
+  margin-left: 0;
+  padding-left: 0;
 
   li {
     list-style: none;
   }
 }
 
-@mixin expanded-sidebar {
-  padding-left: $sidebar_width;
+.expand-nav a {
+  color: $gl-icon-color;
+  width: 60px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  font-size: 20px;
+  background: #fff;
+  height: 59px;
+  text-align: center;
+  line-height: 59px;
+  border-bottom: 1px solid #eee;
+  transition-duration: .3s;
+  outline: none;
+  z-index: 100;
 
-  &.right-sidebar-collapsed {
-    /* Extra small devices (phones, less than 768px) */
-    padding-right: 0;
-    /* Small devices (tablets, 768px and up) */
-    @media (min-width: $screen-sm-min) {
-      padding-right: $sidebar_collapsed_width;
-    }
-  }
-
-  .sidebar-wrapper {
-    width: $sidebar_width;
-
-    .nav-sidebar {
-      width: $sidebar_width;
-    }
-
-    .nav-sidebar li a{
-      width: 230px;
-
-      &.back-link {
-        i {
-          opacity: 0;
-        }
-      }
-    }
-  }
-}
-
-@mixin collapsed-sidebar {
-  padding-left: $sidebar_collapsed_width;
-
-  &.right-sidebar-collapsed {
-    /* Extra small devices (phones, less than 768px) */
-    padding-right: 0;
-    /* Small devices (tablets, 768px and up) */
-    @media (min-width: $screen-sm-min) {
-      padding-right: $sidebar_collapsed_width;
-    }
-  }
-
-  .sidebar-wrapper {
-    width: $sidebar_collapsed_width;
-
-    .header-logo {
-      width: $sidebar_collapsed_width;
-
-      a {
-        padding-left: ($sidebar_collapsed_width - 36) / 2;
-
-        .gitlab-text-container {
-          display: none;
-        }
-      }
-    }
-
-    .nav-sidebar {
-      width: $sidebar_collapsed_width;
-
-      li {
-        width: auto;
-
-        a {
-          span {
-            display: none;
-          }
-        }
-      }
-    }
-
-    .collapse-nav a {
-      width: $sidebar_collapsed_width;
-    }
-
-    .sidebar-user {
-      padding-left: ($sidebar_collapsed_width - 36) / 2;
-      width: $sidebar_collapsed_width;
-
-      .username {
-        display: none;
-      }
-    }
+  &:hover {
+    text-decoration: none;
   }
 }
 
@@ -301,23 +226,111 @@
   line-height: 40px;
   transition-duration: .3s;
   outline: none;
-}
 
-.collapse-nav a:hover {
-  text-decoration: none;
-  background: #f2f6f7;
+  &:hover {
+    text-decoration: none;
+  }
 }
 
 .page-sidebar-collapsed {
-  /* Extra small devices (phones, less than 768px) */
-  @include collapsed-sidebar;
-  padding-right: 0;
-  /* Small devices (tablets, 768px and up) */
-  @media (min-width: $screen-sm-min) {
-    @include collapsed-sidebar;
+  .sidebar-wrapper {
+    display: none;
   }
 }
 
 .page-sidebar-expanded {
-  @include expanded-sidebar;
+  @media (min-width: $screen-md-min) {
+    padding-left: $sidebar_width;
+  }
+
+  .sidebar-wrapper {
+    width: $sidebar_width;
+
+    .nav-sidebar {
+      width: $sidebar_width;
+    }
+
+    .nav-sidebar li a {
+      width: 230px;
+
+      &.back-link {
+        i {
+          opacity: 0;
+        }
+      }
+    }
+  }
+}
+
+.right-sidebar-collapsed {
+  padding-right: 0;
+
+  @media (min-width: $screen-sm-min) {
+    padding-right: $sidebar_collapsed_width;
+  }
+
+  .sidebar-collapsed-icon {
+    cursor: pointer;
+  }
+}
+
+.right-sidebar-expanded {
+  padding-right: 0;
+
+  @media (min-width: $screen-sm-min) and (max-width: $screen-sm-max) {
+    padding-right: $sidebar_collapsed_width;
+  }
+
+  @media (min-width: $screen-md-min) {
+    padding-right: $gutter_width;
+  }
+
+  &.with-overlay {
+    padding-right: $sidebar_collapsed_width;
+  }
+}
+
+.complex-sidebar {
+  display: inline-block;
+
+  .nav-primary {
+    width: 61px;
+    float: left;
+    height: 100vh;
+
+    .nav-sidebar {
+      width: 60px;
+
+      li a {
+        width: 60px;
+
+        span {
+          display: none;
+        }
+      }
+    }
+  }
+
+  .nav-secondary {
+    $nav-secondary-width: 168px;
+
+    float: left;
+    width: $nav-secondary-width;
+
+    .nav-sidebar {
+      width: $nav-secondary-width;
+
+      li {
+        width: $nav-secondary-width;
+
+        a {
+          width: $nav-secondary-width;
+
+          i {
+            display: none;
+          }
+        }
+      }
+    }
+  }
 }

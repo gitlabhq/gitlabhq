@@ -1,4 +1,4 @@
-.commits-compare-switch{
+.commits-compare-switch {
   @include btn-default;
   @include btn-white;
   background: image-url("switch_icon.png") no-repeat center center;
@@ -9,7 +9,7 @@
 
 .lists-separator {
   margin: 10px 0;
-  border-color: #DDD;
+  border-color: #ddd;
 }
 
 .commits-row {
@@ -55,7 +55,7 @@ li.commit {
     }
 
     .commit-row-message {
-      color: $gl-link-color;
+      color: $gl-dark-link-color;
 
       &:hover {
         text-decoration: underline;
@@ -76,7 +76,7 @@ li.commit {
 
   .commit-row-description {
     font-size: 14px;
-    border-left: 1px solid #EEE;
+    border-left: 1px solid #eee;
     padding: 10px 15px;
     margin: 5px 0 10px 5px;
     background: #f9f9f9;
@@ -93,10 +93,13 @@ li.commit {
   .commit-row-info {
     color: $gl-gray;
     line-height: 24px;
-    font-size: 13px;
 
     a {
       color: $gl-gray;
+    }
+
+    .avatar {
+      margin-right: 8px;
     }
 
     .committed_ago {
@@ -152,7 +155,7 @@ li.commit {
 
     .count {
       padding-top: 6px;
-      padding-bottom: 0px;
+      padding-bottom: 0;
       font-size: 12px;
       color: #333;
       display: block;

@@ -1,6 +1,3 @@
-require 'banzai'
-require 'html/pipeline/filter'
-
 module Banzai
   module Filter
     # HTML Filter for parsing Gollum's tags in HTML. It's only parses the

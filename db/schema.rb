@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160309140734) do
+ActiveRecord::Schema.define(version: 20160331133914) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -77,6 +77,7 @@ ActiveRecord::Schema.define(version: 20160309140734) do
     t.boolean  "akismet_enabled",                   default: false
     t.string   "akismet_api_key"
     t.boolean  "email_author_in_body",              default: false
+    t.integer  "default_group_visibility"
   end
 
   create_table "audit_events", force: :cascade do |t|
@@ -260,6 +261,7 @@ ActiveRecord::Schema.define(version: 20160309140734) do
   end
 
   add_index "ci_runners", ["description"], name: "index_ci_runners_on_description_trigram", using: :gin, opclasses: {"description"=>"gin_trgm_ops"}
+  add_index "ci_runners", ["token"], name: "index_ci_runners_on_token", using: :btree
   add_index "ci_runners", ["token"], name: "index_ci_runners_on_token_trigram", using: :gin, opclasses: {"token"=>"gin_trgm_ops"}
 
   create_table "ci_services", force: :cascade do |t|
@@ -415,12 +417,17 @@ ActiveRecord::Schema.define(version: 20160309140734) do
     t.string   "state"
     t.integer  "iid"
     t.integer  "updated_by_id"
+    t.integer  "moved_to_id"
+    t.boolean  "confidential",  default: false
+    t.datetime "deleted_at"
   end
 
   add_index "issues", ["assignee_id"], name: "index_issues_on_assignee_id", using: :btree
   add_index "issues", ["author_id"], name: "index_issues_on_author_id", using: :btree
+  add_index "issues", ["confidential"], name: "index_issues_on_confidential", using: :btree
   add_index "issues", ["created_at", "id"], name: "index_issues_on_created_at_and_id", using: :btree
   add_index "issues", ["created_at"], name: "index_issues_on_created_at", using: :btree
+  add_index "issues", ["deleted_at"], name: "index_issues_on_deleted_at", using: :btree
   add_index "issues", ["description"], name: "index_issues_on_description_trigram", using: :gin, opclasses: {"description"=>"gin_trgm_ops"}
   add_index "issues", ["milestone_id"], name: "index_issues_on_milestone_id", using: :btree
   add_index "issues", ["project_id", "iid"], name: "index_issues_on_project_id_and_iid", unique: true, using: :btree
@@ -543,12 +550,14 @@ ActiveRecord::Schema.define(version: 20160309140734) do
     t.boolean  "merge_when_build_succeeds", default: false, null: false
     t.integer  "merge_user_id"
     t.string   "merge_commit_sha"
+    t.datetime "deleted_at"
   end
 
   add_index "merge_requests", ["assignee_id"], name: "index_merge_requests_on_assignee_id", using: :btree
   add_index "merge_requests", ["author_id"], name: "index_merge_requests_on_author_id", using: :btree
   add_index "merge_requests", ["created_at", "id"], name: "index_merge_requests_on_created_at_and_id", using: :btree
   add_index "merge_requests", ["created_at"], name: "index_merge_requests_on_created_at", using: :btree
+  add_index "merge_requests", ["deleted_at"], name: "index_merge_requests_on_deleted_at", using: :btree
   add_index "merge_requests", ["description"], name: "index_merge_requests_on_description_trigram", using: :gin, opclasses: {"description"=>"gin_trgm_ops"}
   add_index "merge_requests", ["milestone_id"], name: "index_merge_requests_on_milestone_id", using: :btree
   add_index "merge_requests", ["source_branch"], name: "index_merge_requests_on_source_branch", using: :btree
@@ -578,14 +587,16 @@ ActiveRecord::Schema.define(version: 20160309140734) do
   add_index "milestones", ["title"], name: "index_milestones_on_title_trigram", using: :gin, opclasses: {"title"=>"gin_trgm_ops"}
 
   create_table "namespaces", force: :cascade do |t|
-    t.string   "name",                     null: false
-    t.string   "path",                     null: false
+    t.string   "name",                                  null: false
+    t.string   "path",                                  null: false
     t.integer  "owner_id"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "type"
-    t.string   "description", default: "", null: false
+    t.string   "description",           default: "",    null: false
     t.string   "avatar"
+    t.boolean  "share_with_group_lock", default: false
+    t.integer  "visibility_level",      default: 20,    null: false
   end
 
   add_index "namespaces", ["created_at", "id"], name: "index_namespaces_on_created_at_and_id", using: :btree
@@ -595,6 +606,7 @@ ActiveRecord::Schema.define(version: 20160309140734) do
   add_index "namespaces", ["path"], name: "index_namespaces_on_path", unique: true, using: :btree
   add_index "namespaces", ["path"], name: "index_namespaces_on_path_trigram", using: :gin, opclasses: {"path"=>"gin_trgm_ops"}
   add_index "namespaces", ["type"], name: "index_namespaces_on_type", using: :btree
+  add_index "namespaces", ["visibility_level"], name: "index_namespaces_on_visibility_level", using: :btree
 
   create_table "notes", force: :cascade do |t|
     t.text     "note"
@@ -669,6 +681,14 @@ ActiveRecord::Schema.define(version: 20160309140734) do
   add_index "oauth_applications", ["owner_id", "owner_type"], name: "index_oauth_applications_on_owner_id_and_owner_type", using: :btree
   add_index "oauth_applications", ["uid"], name: "index_oauth_applications_on_uid", unique: true, using: :btree
 
+  create_table "project_group_links", force: :cascade do |t|
+    t.integer  "project_id",                null: false
+    t.integer  "group_id",                  null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "group_access", default: 30, null: false
+  end
+
   create_table "project_import_data", force: :cascade do |t|
     t.integer "project_id"
     t.text    "data"
@@ -711,6 +731,7 @@ ActiveRecord::Schema.define(version: 20160309140734) do
     t.boolean  "pending_delete",         default: false
     t.boolean  "public_builds",          default: true,     null: false
     t.string   "main_language"
+    t.integer  "pushes_since_gc",        default: 0
   end
 
   add_index "projects", ["builds_enabled", "shared_runners_enabled"], name: "index_projects_on_builds_enabled_and_shared_runners_enabled", using: :btree
@@ -724,6 +745,7 @@ ActiveRecord::Schema.define(version: 20160309140734) do
   add_index "projects", ["namespace_id"], name: "index_projects_on_namespace_id", using: :btree
   add_index "projects", ["path"], name: "index_projects_on_path", using: :btree
   add_index "projects", ["path"], name: "index_projects_on_path_trigram", using: :gin, opclasses: {"path"=>"gin_trgm_ops"}
+  add_index "projects", ["pending_delete"], name: "index_projects_on_pending_delete", using: :btree
   add_index "projects", ["runners_token"], name: "index_projects_on_runners_token", using: :btree
   add_index "projects", ["star_count"], name: "index_projects_on_star_count", using: :btree
   add_index "projects", ["visibility_level"], name: "index_projects_on_visibility_level", using: :btree
@@ -854,7 +876,7 @@ ActiveRecord::Schema.define(version: 20160309140734) do
   create_table "todos", force: :cascade do |t|
     t.integer  "user_id",     null: false
     t.integer  "project_id",  null: false
-    t.integer  "target_id",   null: false
+    t.integer  "target_id"
     t.string   "target_type", null: false
     t.integer  "author_id"
     t.integer  "action",      null: false
@@ -862,9 +884,11 @@ ActiveRecord::Schema.define(version: 20160309140734) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "note_id"
+    t.string   "commit_id"
   end
 
   add_index "todos", ["author_id"], name: "index_todos_on_author_id", using: :btree
+  add_index "todos", ["commit_id"], name: "index_todos_on_commit_id", using: :btree
   add_index "todos", ["note_id"], name: "index_todos_on_note_id", using: :btree
   add_index "todos", ["project_id"], name: "index_todos_on_project_id", using: :btree
   add_index "todos", ["state"], name: "index_todos_on_state", using: :btree
@@ -929,6 +953,7 @@ ActiveRecord::Schema.define(version: 20160309140734) do
     t.string   "unlock_token"
     t.datetime "otp_grace_period_started_at"
     t.boolean  "ldap_email",                  default: false, null: false
+    t.boolean  "external",                    default: false
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree

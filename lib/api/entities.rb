@@ -8,14 +8,14 @@ module API
       expose :id, :state, :avatar_url
 
       expose :web_url do |user, options|
-        Gitlab::Application.routes.url_helpers.user_url(user)
+        Gitlab::Routing.url_helpers.user_url(user)
       end
     end
 
     class User < UserBasic
       expose :created_at
       expose :is_admin?, as: :is_admin
-      expose :bio, :skype, :linkedin, :twitter, :website_url
+      expose :bio, :location, :skype, :linkedin, :twitter, :website_url
     end
 
     class Identity < Grape::Entity
@@ -31,6 +31,7 @@ module API
       expose :can_create_group?, as: :can_create_group
       expose :can_create_project?, as: :can_create_project
       expose :two_factor_enabled
+      expose :external
     end
 
     class UserLogin < UserFull
@@ -84,11 +85,11 @@ module API
     end
 
     class Group < Grape::Entity
-      expose :id, :name, :path, :description
+      expose :id, :name, :path, :description, :visibility_level
       expose :avatar_url
 
       expose :web_url do |group, options|
-        Gitlab::Application.routes.url_helpers.group_url(group)
+        Gitlab::Routing.url_helpers.group_url(group)
       end
     end
 
@@ -144,6 +145,9 @@ module API
       expose :id, :title, :file_name
       expose :author, using: Entities::UserBasic
       expose :updated_at, :created_at
+
+      # TODO (rspeicher): Deprecated; remove in 9.0
+      expose(:expires_at) { |snippet| nil }
     end
 
     class ProjectEntity < Grape::Entity
@@ -243,6 +247,10 @@ module API
       end
     end
 
+    class ProjectGroupLink < Grape::Entity
+      expose :id, :project_id, :group_id, :group_access
+    end
+
     class Namespace < Grape::Entity
       expose :id, :path, :kind
     end
@@ -284,7 +292,7 @@ module API
     end
 
     class Label < Grape::Entity
-      expose :name, :color
+      expose :name, :color, :description
     end
 
     class Compare < Grape::Entity
@@ -326,12 +334,12 @@ module API
       expose :updated_at
       expose :home_page_url
       expose :default_branch_protection
-      expose :twitter_sharing_enabled
       expose :restricted_visibility_levels
       expose :max_attachment_size
       expose :session_expire_delay
       expose :default_project_visibility
       expose :default_snippet_visibility
+      expose :default_group_visibility
       expose :restricted_signup_domains
       expose :user_oauth_applications
       expose :after_sign_out_path
@@ -401,13 +409,6 @@ module API
       expose :id, :status, :stage, :name, :ref, :tag, :coverage
       expose :created_at, :started_at, :finished_at
       expose :user, with: User
-      # TODO: download_url in Ci:Build model is an GitLab Web Interface URL, not API URL. We should think on some API
-      #       for downloading of artifacts (see: https://gitlab.com/gitlab-org/gitlab-ce/issues/4255)
-      expose :download_url do |repo_obj, options|
-        if options[:user_can_download_artifacts]
-          repo_obj.artifacts_download_url
-        end
-      end
       expose :artifacts_file, using: BuildArtifactFile, if: -> (build, opts) { build.artifacts? }
       expose :commit, with: RepoCommit do |repo_obj, _options|
         if repo_obj.respond_to?(:commit)

@@ -3,7 +3,7 @@ module EventsHelper
     author = event.author
 
     if author
-      link_to author.name, user_path(author.username)
+      link_to author.name, user_path(author.username), title: h(author.name)
     else
       event.author_name
     end
@@ -159,7 +159,7 @@ module EventsHelper
         link_to(
           namespace_project_commit_path(event.project.namespace, event.project,
                                         event.note_commit_id,
-                                        anchor: dom_id(event.target)),
+                                        anchor: dom_id(event.target), title: h(event.target_title)),
           class: "commit_short_id"
         ) do
           "#{event.note_target_type} #{event.note_short_commit_id}"
@@ -167,7 +167,7 @@ module EventsHelper
       elsif event.note_project_snippet?
         link_to(namespace_project_snippet_path(event.project.namespace,
                                                event.project,
-                                               event.note_target)) do
+                                               event.note_target), title: h(event.project.name)) do
           "#{event.note_target_type} #{truncate event.note_target.to_reference}"
         end
       else
@@ -194,7 +194,7 @@ module EventsHelper
   end
 
   def event_to_atom(xml, event)
-    if event.proper?
+    if event.visible_to_user?(current_user)
       xml.entry do
         event_link = event_feed_url(event)
         event_title = event_feed_title(event)
@@ -212,6 +212,14 @@ module EventsHelper
 
         xml.summary(type: "xhtml") { |x| x << event_summary unless event_summary.nil? }
       end
+    end
+  end
+
+  def event_row_class(event)
+    if event.body?
+      "event-block"
+    else
+      "event-inline"
     end
   end
 end

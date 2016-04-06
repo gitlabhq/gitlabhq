@@ -1,5 +1,3 @@
-require 'html/pipeline/filter'
-
 module Banzai
   module Filter
     # HTML filter that removes references to records that the current user does

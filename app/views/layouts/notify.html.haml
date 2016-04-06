@@ -1,33 +1,9 @@
 %html{lang: "en"}
   %head
     %meta{content: "text/html; charset=utf-8", "http-equiv" => "Content-Type"}
-      %title
-        GitLab
-  :css
-    img {
-      max-width: 100%;
-      height: auto;
-    }
-    p.details {
-      font-style:italic;
-      color:#777
-    }
-    .footer p {
-      font-size:small;
-      color:#777
-    }
-    pre.commit-message {
-      white-space: pre-wrap;
-    }
-    .file-stats a {
-      text-decoration: none;
-    }
-    .file-stats .new-file {
-      color: #090;
-    }
-    .file-stats .deleted-file {
-      color: #B00;
-    }
+    %title
+      GitLab
+    = stylesheet_link_tag 'notify'
   %body
     %div.content
       = yield
@@ -42,12 +18,15 @@
           - else
             #{link_to "View it on GitLab", @target_url}.
           %br
-          -# Don't link the host is the line below, one link in the email is easier to quickly click than two.
+          -# Don't link the host in the line below, one link in the email is easier to quickly click than two.
           You're receiving this email because of your account on #{Gitlab.config.gitlab.host}.
           If you'd like to receive fewer emails, you can
-          - if @sent_notification && @sent_notification.unsubscribable?
-            = link_to "unsubscribe", unsubscribe_sent_notification_url(@sent_notification)
-            from this thread or
-          adjust your notification settings.
+          - if @labels_url
+            adjust your #{link_to 'label subscriptions', @labels_url}.
+          - else
+            - if @sent_notification && @sent_notification.unsubscribable?
+              = link_to "unsubscribe", unsubscribe_sent_notification_url(@sent_notification)
+              from this thread or
+            adjust your notification settings.
 
           = email_action @target_url

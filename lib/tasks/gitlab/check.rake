@@ -623,7 +623,6 @@ namespace :gitlab do
       start_checking "Reply by email"
 
       if Gitlab.config.incoming_email.enabled
-        check_address_formatted_correctly
         check_imap_authentication
 
         if Rails.env.production?
@@ -642,20 +641,6 @@ namespace :gitlab do
 
     # Checks
     ########################
-
-    def check_address_formatted_correctly
-      print "Address formatted correctly? ... "
-
-      if Gitlab::IncomingEmail.address_formatted_correctly?
-        puts "yes".green
-      else
-        puts "no".red
-        try_fixing_it(
-          "Make sure that the address in config/gitlab.yml includes the '%{key}' placeholder."
-        )
-        fix_and_rerun
-      end
-    end
 
     def check_initd_configured_correctly
       print "Init.d configured correctly? ... "
@@ -913,7 +898,7 @@ namespace :gitlab do
   end
 
   def check_git_version
-    required_version = Gitlab::VersionInfo.new(1, 7, 10)
+    required_version = Gitlab::VersionInfo.new(2, 7, 3)
     current_version = Gitlab::VersionInfo.parse(run(%W(#{Gitlab.config.git.bin_path} --version)))
 
     puts "Your git bin path is \"#{Gitlab.config.git.bin_path}\""

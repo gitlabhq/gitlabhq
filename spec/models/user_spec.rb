@@ -173,31 +173,12 @@ describe User, models: true do
           expect(user).to be_invalid
         end
       end
-    end
 
-    describe 'avatar' do
-      it 'only validates when avatar is present and changed' do
-        user = build(:user, :with_avatar)
-
-        user.avatar_crop_x    = nil
-        user.avatar_crop_y    = nil
-        user.avatar_crop_size = nil
-
-        expect(user).not_to be_valid
-        expect(user.errors.keys).
-          to match_array %i(avatar_crop_x avatar_crop_y avatar_crop_size)
-      end
-
-      it 'does not validate when avatar has not changed' do
-        user = create(:user, :with_avatar)
-
-        expect { user.avatar_crop_x = nil }.not_to change(user, :valid?)
-      end
-
-      it 'does not validate when avatar is not present' do
-        user = create(:user)
-
-        expect { user.avatar_crop_y = nil }.not_to change(user, :valid?)
+      context 'owns_notification_email' do
+        it 'accepts temp_oauth_email emails' do
+          user = build(:user, email: "temp-email-for-oauth@example.com")
+          expect(user).to be_valid
+        end
       end
     end
   end
@@ -206,6 +187,20 @@ describe User, models: true do
     it { is_expected.to respond_to(:is_admin?) }
     it { is_expected.to respond_to(:name) }
     it { is_expected.to respond_to(:private_token) }
+    it { is_expected.to respond_to(:external?) }
+  end
+
+  describe 'before save hook' do
+    context 'when saving an external user' do
+      let(:user)          { create(:user) }
+      let(:external_user) { create(:user, external: true) }
+
+      it "sets other properties aswell" do
+        expect(external_user.can_create_team).to be_falsey
+        expect(external_user.can_create_group).to be_falsey
+        expect(external_user.projects_limit).to be 0
+      end
+    end
   end
 
   describe '#confirm' do
@@ -430,6 +425,7 @@ describe User, models: true do
         expect(user.projects_limit).to eq(Gitlab.config.gitlab.default_projects_limit)
         expect(user.can_create_group).to eq(Gitlab.config.gitlab.default_can_create_group)
         expect(user.theme_id).to eq(Gitlab.config.gitlab.default_theme)
+        expect(user.external).to be_falsey
       end
     end
 

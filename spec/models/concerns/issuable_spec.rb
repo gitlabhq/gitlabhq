@@ -9,6 +9,7 @@ describe Issue, "Issuable" do
     it { is_expected.to belong_to(:author) }
     it { is_expected.to belong_to(:assignee) }
     it { is_expected.to have_many(:notes).dependent(:destroy) }
+    it { is_expected.to have_many(:todos).dependent(:destroy) }
   end
 
   describe "Validation" do
@@ -110,6 +111,48 @@ describe Issue, "Issuable" do
       allow(issue).to receive(:today?).and_return(true)
       issue.touch
       expect(issue.new?).to be_falsey
+    end
+  end
+
+  describe '#subscribed?' do
+    context 'user is not a participant in the issue' do
+      before { allow(issue).to receive(:participants).with(user).and_return([]) }
+
+      it 'returns false when no subcription exists' do
+        expect(issue.subscribed?(user)).to be_falsey
+      end
+
+      it 'returns true when a subcription exists and subscribed is true' do
+        issue.subscriptions.create(user: user, subscribed: true)
+
+        expect(issue.subscribed?(user)).to be_truthy
+      end
+
+      it 'returns false when a subcription exists and subscribed is false' do
+        issue.subscriptions.create(user: user, subscribed: false)
+
+        expect(issue.subscribed?(user)).to be_falsey
+      end
+    end
+
+    context 'user is a participant in the issue' do
+      before { allow(issue).to receive(:participants).with(user).and_return([user]) }
+
+      it 'returns false when no subcription exists' do
+        expect(issue.subscribed?(user)).to be_truthy
+      end
+
+      it 'returns true when a subcription exists and subscribed is true' do
+        issue.subscriptions.create(user: user, subscribed: true)
+
+        expect(issue.subscribed?(user)).to be_truthy
+      end
+
+      it 'returns false when a subcription exists and subscribed is false' do
+        issue.subscriptions.create(user: user, subscribed: false)
+
+        expect(issue.subscribed?(user)).to be_falsey
+      end
     end
   end
 

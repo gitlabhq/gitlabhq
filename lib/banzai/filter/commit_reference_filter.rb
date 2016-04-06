@@ -37,7 +37,7 @@ module Banzai
       end
 
       def url_for_object(commit, project)
-        h = Gitlab::Application.routes.url_helpers
+        h = Gitlab::Routing.url_helpers
         h.namespace_project_commit_url(project.namespace, project, commit,
                                         only_path: context[:only_path])
       end

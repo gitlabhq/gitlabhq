@@ -14,6 +14,8 @@
 
 class Label < ActiveRecord::Base
   include Referable
+  include Subscribable
+
   # Represents a "No Label" state used for filtering Issues and Merge
   # Requests that have no label assigned.
   LabelStruct = Struct.new(:title, :name)
@@ -54,7 +56,7 @@ class Label < ActiveRecord::Base
   # This pattern supports cross-project references.
   #
   def self.reference_pattern
-    %r{
+    @reference_pattern ||= %r{
       (#{Project.reference_pattern})?
       #{Regexp.escape(reference_prefix)}
       (?:
@@ -95,12 +97,12 @@ class Label < ActiveRecord::Base
     end
   end
 
-  def open_issues_count
-    issues.opened.count
+  def open_issues_count(user = nil)
+    issues.visible_to_user(user).opened.count
   end
 
-  def closed_issues_count
-    issues.closed.count
+  def closed_issues_count(user = nil)
+    issues.visible_to_user(user).closed.count
   end
 
   def open_merge_requests_count

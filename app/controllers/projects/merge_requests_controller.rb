@@ -1,10 +1,12 @@
 class Projects::MergeRequestsController < Projects::ApplicationController
+  include ToggleSubscriptionAction
   include DiffHelper
+  include IssuableActions
 
   before_action :module_enabled
   before_action :merge_request, only: [
     :edit, :update, :show, :diffs, :commits, :builds, :merge, :merge_check,
-    :ci_status, :toggle_subscription, :cancel_merge_when_build_succeeds
+    :ci_status, :toggle_subscription, :cancel_merge_when_build_succeeds, :remove_wip
   ]
   before_action :closes_issues, only: [:edit, :update, :show, :diffs, :commits, :builds]
   before_action :validates_merge_request, only: [:show, :diffs, :commits, :builds]
@@ -19,7 +21,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   before_action :authorize_create_merge_request!, only: [:new, :create]
 
   # Allow modify merge_request
-  before_action :authorize_update_merge_request!, only: [:close, :edit, :update, :sort]
+  before_action :authorize_update_merge_request!, only: [:close, :edit, :update, :remove_wip, :sort]
 
   def index
     terms = params['issue_search']
@@ -33,7 +35,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       end
     end
 
-    @merge_requests = @merge_requests.page(params[:page]).per(PER_PAGE)
+    @merge_requests = @merge_requests.page(params[:page])
     @merge_requests = @merge_requests.preload(:target_project)
 
     @label = @project.labels.find_by(title: params[:label_name])
@@ -55,8 +57,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     respond_to do |format|
       format.html
       format.json { render json: @merge_request }
-      format.diff { render text: @merge_request.to_diff(current_user) }
-      format.patch { render text: @merge_request.to_patch(current_user) }
+      format.diff { render text: @merge_request.to_diff }
+      format.patch { render text: @merge_request.to_patch }
     end
   end
 
@@ -152,15 +154,19 @@ class Projects::MergeRequestsController < Projects::ApplicationController
                        @merge_request.target_project, @merge_request])
         end
         format.json do
-          render json: {
-            saved: @merge_request.valid?,
-            assignee_avatar_url: @merge_request.assignee.try(:avatar_url)
-          }
+          render json: @merge_request.to_json(include: [:milestone, :labels, assignee: { methods: :avatar_url }])
         end
       end
     else
       render "edit"
     end
+  end
+
+  def remove_wip
+    MergeRequests::UpdateService.new(project, current_user, title: @merge_request.wipless_title).execute(@merge_request)
+
+    redirect_to namespace_project_merge_request_path(@project.namespace, @project, @merge_request),
+      notice: "The merge request can now be merged."
   end
 
   def merge_check
@@ -218,25 +224,27 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def ci_status
-    ci_service = @merge_request.source_project.ci_service
-    status = ci_service.commit_status(merge_request.last_commit.sha, merge_request.source_branch)
+    ci_commit = @merge_request.ci_commit
+    if ci_commit
+      status = ci_commit.status
+      coverage = ci_commit.try(:coverage)
+    else
+      ci_service = @merge_request.source_project.ci_service
+      status = ci_service.commit_status(merge_request.last_commit.sha, merge_request.source_branch) if ci_service
 
-    if ci_service.respond_to?(:commit_coverage)
-      coverage = ci_service.commit_coverage(merge_request.last_commit.sha, merge_request.source_branch)
+      if ci_service.respond_to?(:commit_coverage)
+        coverage = ci_service.commit_coverage(merge_request.last_commit.sha, merge_request.source_branch)
+      end
     end
 
     response = {
+      title: merge_request.title,
+      sha: merge_request.last_commit_short_sha,
       status: status,
       coverage: coverage
     }
 
     render json: response
-  end
-
-  def toggle_subscription
-    @merge_request.toggle_subscription(current_user)
-
-    render nothing: true
   end
 
   protected
@@ -252,6 +260,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   def merge_request
     @merge_request ||= @project.merge_requests.find_by!(iid: params[:id])
   end
+  alias_method :subscribable_resource, :merge_request
+  alias_method :issuable, :merge_request
 
   def closes_issues
     @closes_issues ||= @merge_request.closes_issues
