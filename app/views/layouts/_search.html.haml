@@ -1,6 +1,6 @@
-- if controller.controller_path =~ /^groups/ && !@group.new_record?
+- if controller.controller_path =~ /^groups/ && @group.persisted?
   - label = 'This group'
-- if controller.controller_path =~ /^projects/ && !@project.new_record?
+- if controller.controller_path =~ /^projects/ && @project.persisted?
   - label = 'This project'
 
 .search.search-form{class: "#{'has-location-badge' if label.present?}"}
