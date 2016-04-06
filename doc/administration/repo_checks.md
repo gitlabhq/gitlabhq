@@ -20,6 +20,22 @@ fail their repo checks all GitLab administrators will receive an email
 notification of the situation. This notification is sent out no more
 than once a day.
 
+## Disabling periodic checks
+
+You can disable the periodic checks by giving them an empty cron
+schedule in gitlab.yml.
+
+```
+# For omnibus installations, in /etc/gitlab/gitlab.rb:
+gitlab_rails['cron_jobs_repo_check_worker_cron'] = ''
+```
+
+```
+# For installations from source, in config/gitlab.yml:
+  cron_jobs:
+    repo_check_worker:
+      cron: ""
+```
 
 ## What to do if a check failed
 
