@@ -142,7 +142,7 @@ class @SearchAutocomplete
     @searchInput.on 'keyup', @onSearchInputKeyUp
     @searchInput.on 'click', @onSearchInputClick
     @searchInput.on 'focus', @onSearchInputFocus
-    @clearInput.on 'click', @onRemoveLocationClick
+    @clearInput.on 'click', @onClearInputClick
 
   onDocumentClick: (e) =>
     if not $.contains(@dropdown[0], e.target) and @isFocused
@@ -189,6 +189,8 @@ class @SearchAutocomplete
           # We should display the menu only when input is not empty
           @enableAutocomplete()
 
+    @wrap.toggleClass 'has-value', !!e.target.value
+
     # Avoid falsy value to be returned
     return
 
@@ -200,9 +202,8 @@ class @SearchAutocomplete
     @isFocused = true
     @wrap.addClass('search-active')
 
-  onRemoveLocationClick: (e) =>
+  onClearInputClick: (e) =>
     e.preventDefault()
-    @removeLocationBadge()
     @searchInput.val('').focus()
 
   onSearchInputBlur: (e) =>

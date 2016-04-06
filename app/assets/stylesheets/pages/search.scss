@@ -144,16 +144,16 @@
         color: $location-icon-active-color;
       }
     }
+  }
 
-    &.has-location-badge {
-      .search-icon {
-        display: none;
-      }
+  &.has-value {
+    .search-icon {
+      display: none;
+    }
 
-      .clear-icon {
-        cursor: pointer;
-        display: block;
-      }
+    .clear-icon {
+      cursor: pointer;
+      display: block;
     }
   }
 
