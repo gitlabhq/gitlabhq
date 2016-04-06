@@ -158,9 +158,7 @@ module Gitlab
       end
 
       def sent_notification
-        return nil unless reply_key
-
-        SentNotification.for(reply_key)
+        @sent_notification ||= SentNotification.for(reply_key) if reply_key
       end
 
       def add_attachments(reply, project)
