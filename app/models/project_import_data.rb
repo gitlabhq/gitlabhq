@@ -18,7 +18,6 @@ class ProjectImportData < ActiveRecord::Base
 
   validates :project, presence: true
 
-  # TODO: This doesnt play well with attr_encrypted. Perhaps consider extending Marshall and specify a different Marshaller
   before_validation :symbolize_credentials
 
   def symbolize_credentials
