@@ -79,6 +79,10 @@ module APIGuard
       @current_user
     end
 
+    def public_access_restricted?
+      current_application_settings.restricted_visibility_levels.include?(Gitlab::VisibilityLevel::PUBLIC)
+    end
+
     private
     def find_access_token
       @access_token ||= Doorkeeper.authenticate(doorkeeper_request, Doorkeeper.configuration.access_token_methods)

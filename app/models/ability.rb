@@ -91,8 +91,8 @@ class Ability
                 subject.group
               end
 
-      if group
-        rules << :read_group if group.public?
+      if group.public?
+        rules << :read_group
         rules << :read_group_members unless restricted_public_level?
       end
 
@@ -483,7 +483,7 @@ class Ability
     private
 
     def restricted_public_level?
-      @public_restricted ||= current_application_settings.restricted_visibility_levels.include?(Gitlab::VisibilityLevel::PUBLIC)
+      current_application_settings.restricted_visibility_levels.include?(Gitlab::VisibilityLevel::PUBLIC)
     end
 
     def named_abilities(name)
