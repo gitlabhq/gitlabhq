@@ -47,7 +47,7 @@ class @MergeRequestWidget
       $('.mr-state-widget').replaceWith(data)
 
   ciLabelForStatus: (status) ->
-    if status == 'success'
+    if status is 'success'
       'passed'
     else
       status
@@ -86,12 +86,22 @@ class @MergeRequestWidget
           @showCICoverage data.coverage
 
         if showNotification
-          message = @opts.ci_message.replace('{{status}}', @ciLabelForStatus(data.status))
+          status = @ciLabelForStatus(data.status)
+
+          if status is "preparing"
+            title = @opts.ci_title.preparing
+            status = status.charAt(0).toUpperCase() + status.slice(1);
+            message = @opts.ci_message.preparing.replace('{{status}}', status)
+          else
+            title = @opts.ci_title.normal
+            message = @opts.ci_message.normal.replace('{{status}}', status)
+
+          title = title.replace('{{status}}', status)
           message = message.replace('{{sha}}', data.sha)
           message = message.replace('{{title}}', data.title)
 
           notify(
-            "Build #{@ciLabelForStatus(data.status)}",
+            title,
             message,
             @opts.gitlab_icon,
             ->
