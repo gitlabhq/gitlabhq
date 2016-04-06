@@ -111,6 +111,8 @@ class @MergeRequestWidget
           @setMergeButtonClass('btn-danger')
         when "running", "pending"
           @setMergeButtonClass('btn-warning')
+        when "success"
+          @setMergeButtonClass('btn-create')
     else
       $('.ci_widget.ci-error').show()
       @setMergeButtonClass('btn-danger')
@@ -120,4 +122,6 @@ class @MergeRequestWidget
     $('.ci_widget:visible .ci-coverage').text(text)
 
   setMergeButtonClass: (css_class) ->
-    $('.accept_merge_request').removeClass("btn-create").addClass(css_class)
+    $('.accept_merge_request')
+      .removeClass('btn-danger btn-warning btn-create')
+      .addClass(css_class)
