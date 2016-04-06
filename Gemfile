@@ -149,6 +149,10 @@ gem 'version_sorter', '~> 2.0.0'
 # Cache
 gem "redis-rails", '~> 4.0.0'
 
+# Redis
+gem 'redis', '~> 3.2'
+gem 'connection_pool', '~> 2.0'
+
 # Campfire integration
 gem 'tinder', '~> 1.10.0'
 
@@ -229,7 +233,6 @@ group :metrics do
   gem 'allocations', '~> 1.0', require: false, platform: :mri
   gem 'method_source', '~> 0.8', require: false
   gem 'influxdb', '~> 0.2', require: false
-  gem 'connection_pool', '~> 2.0', require: false
 end
 
 group :development do
