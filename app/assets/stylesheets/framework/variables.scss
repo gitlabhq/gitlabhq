@@ -104,9 +104,9 @@ $orange-light: rgba(252, 109, 38, 0.80);
 $orange-normal: #e75e40;
 $orange-dark: #ce5237;
 
-$red-light: #f06559;
-$red-normal: #e52c5a;
-$red-dark: #d22852;
+$red-light: #e52c5a;
+$red-normal: #d22852;
+$red-dark: darken($red-normal, 5%);
 
 $border-white-light: #f1f2f4;
 $border-white-normal: #d6dae2;
@@ -128,9 +128,9 @@ $border-orange-light: #fc6d26;
 $border-orange-normal: #ce5237;
 $border-orange-dark: #c14e35;
 
-$border-red-light: #f24f41;
-$border-red-normal: #d22852;
-$border-red-dark: #ca264f;
+$border-red-light: #d22852;
+$border-red-normal: #ca264f;
+$border-red-dark: darken($border-red-normal, 5%);
 
 $help-well-bg: #fafafa;
 $help-well-border: #e5e5e5;
