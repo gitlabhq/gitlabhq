@@ -1,30 +1,12 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
-v 8.7.0 (unreleased)
-  - Don't attempt to look up an avatar in repo if repo directory does not exist (Stan hu)
-  - All images in discussions and wikis now link to their source files !3464 (Connor Shea).
-  - Improved Markdown rendering performance !3389 (Yorick Peterse)
-  - Don't attempt to look up an avatar in repo if repo directory does not exist (Stan Hu)
-  - Preserve time notes/comments have been updated at when moving issue
-  - Make HTTP(s) label consistent on clone bar (Stan Hu)
-  - Expose label description in API (Mariusz Jachimowicz)
-  - Allow back dating on issues when created through the API
-  - Fix avatar stretching by providing a cropping feature
-  - Add links to CI setup documentation from project settings and builds pages
-  - Handle nil descriptions in Slack issue messages (Stan Hu)
-  - Add default scope to projects to exclude projects pending deletion
-  - Implement 'Groups View' as an option for dashboard preferences !3379 (Elias W.)
-  - Implement 'TODOs View' as an option for dashboard preferences !3379 (Elias W.)
-  - Gracefully handle notes on deleted commits in merge requests (Stan Hu)
-  - Fall back to `In-Reply-To` and `References` headers when sub-addressing is not available (David Padilla)
-  - Remove "Congratulations!" tweet button on newly-created project. (Connor Shea)
-
 v 8.6.5
   - Fix importing from GitHub Enterprise. !3529
   - Perform the language detection after updating merge requests in `GitPushService`, leading to faster visual feedback for the end-user. !3533
   - Check permissions when user attempts to import members from another project. !3535
   - Only update repository language if it is not set to improve performance. !3556
   - Return status code 303 after a branch DELETE operation to avoid project deletion (Stan Hu). !3583
+  - Unblock user when active_directory is disabled and it can be found !3550
   - Fix a 2FA authentication spoofing vulnerability.
 
 v 8.6.4
