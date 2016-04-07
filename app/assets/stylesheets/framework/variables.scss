@@ -104,9 +104,9 @@ $orange-light: rgba(252, 109, 38, 0.80);
 $orange-normal: #e75e40;
 $orange-dark: #ce5237;
 
-$red-light: #f06559;
-$red-normal: #e52c5a;
-$red-dark: #d22852;
+$red-light: #e52c5a;
+$red-normal: #d22852;
+$red-dark: darken($red-normal, 5%);
 
 $border-white-light: #f1f2f4;
 $border-white-normal: #d6dae2;
@@ -128,9 +128,9 @@ $border-orange-light: #fc6d26;
 $border-orange-normal: #ce5237;
 $border-orange-dark: #c14e35;
 
-$border-red-light: #f24f41;
-$border-red-normal: #d22852;
-$border-red-dark: #ca264f;
+$border-red-light: #d22852;
+$border-red-normal: #ca264f;
+$border-red-dark: darken($border-red-normal, 5%);
 
 $help-well-bg: #fafafa;
 $help-well-border: #e5e5e5;
@@ -201,14 +201,14 @@ $award-emoji-new-btn-icon-color: #dcdcdc;
 /*
  * Search Box
  */
-$search-input-border-color: $dropdown-input-focus-border;
+$search-input-border-color: rgba(#4688f1, .8);
 $search-input-focus-shadow-color: $dropdown-input-focus-shadow;
-$search-input-width: $dropdown-width;
+$search-input-width: 244px;
 $location-badge-color: #aaa;
 $location-badge-bg: $gray-normal;
+$location-badge-active-bg: #4f91f8;
 $location-icon-color: #e7e9ed;
-$location-active-color: $gl-text-color;
-$location-active-bg: $search-input-border-color;
+$location-icon-active-color: #807e7e;
 
 /*
  *  Notes
@@ -217,3 +217,9 @@ $notes-light-color: #8e8e8e;
 $notes-action-color: #c3c3c3;
 $notes-role-color: #8e8e8e;
 $notes-role-border-color: #e4e4e4;
+
+$note-disabled-comment-color: #b2b2b2;
+$note-form-border-color: #e5e5e5;
+$note-toolbar-color: #959494;
+
+$zen-control-hover-color: #111;

@@ -20,6 +20,12 @@ ul.notes {
 
   .timeline-content {
     margin-left: 55px;
+
+    &.timeline-content-form {
+      @media (max-width: $screen-sm-max) {
+        margin-left: 0;
+      }
+    }
   }
 
   .note-created-ago, .note-updated-at {
@@ -76,7 +82,7 @@ ul.notes {
         // On diffs code should wrap nicely and not overflow
         pre {
           code {
-            white-space: pre-wrap;
+            white-space: pre;
           }
         }
 
@@ -149,7 +155,7 @@ ul.notes {
     &.notes_content {
       background-color: #fff;
       border-width: 1px 0;
-      padding-top: 0;
+      padding: 0;
       vertical-align: top;
       &.parallel {
         border-width: 1px;
@@ -279,5 +285,23 @@ ul.notes {
     .add-diff-note {
       @include show-add-diff-note;
     }
+  }
+}
+
+.disabled-comment {
+  margin-left: -$gl-padding-top;
+  margin-right: -$gl-padding-top;
+  background-color: $gray-light;
+  border-radius: $border-radius-base;
+  border: 1px solid $border-gray-normal;
+  color: $note-disabled-comment-color;
+  line-height: 200px;
+
+  .disabled-comment-text {
+    line-height: normal;
+  }
+
+  a {
+    color: $gl-link-color;
   }
 }

@@ -68,7 +68,9 @@ class Projects::ApplicationController < ApplicationController
   end
 
   def require_non_empty_project
-    redirect_to namespace_project_path(@project.namespace, @project) if @project.empty_repo?
+    # Be sure to return status code 303 to avoid a double DELETE:
+    # http://api.rubyonrails.org/classes/ActionController/Redirecting.html
+    redirect_to namespace_project_path(@project.namespace, @project), status: 303 if @project.empty_repo?
   end
 
   def require_branch_head

@@ -1,61 +1,62 @@
-.zennable {
-  a.js-zen-enter {
-    color: $gl-gray;
-    position: absolute;
+.zen-backdrop {
+  &.fullscreen {
+    background-color: white;
+    position: fixed;
     top: 0;
-    right: 4px;
-    line-height: 56px;
-  }
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1031;
 
-  a.js-zen-leave {
-    display: none;
-    color: $gl-text-color;
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    padding: 5px;
-    font-size: 36px;
-
-    &:hover {
-      color: #111;
+    textarea {
+      border: none;
+      box-shadow: none;
+      border-radius: 0;
+      color: #000;
+      font-size: 20px;
+      line-height: 26px;
+      padding: 30px;
+      display: block;
+      outline: none;
+      resize: none;
+      height: 100vh;
+      max-width: 900px;
+      margin: 0 auto;
     }
-  }
 
-  .zen-backdrop {
-    &.fullscreen {
-      background-color: white;
-      position: fixed;
+    .zen-control-leave {
+      display: block;
+      position: absolute;
       top: 0;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      z-index: 1031;
-
-      textarea {
-        border: none;
-        box-shadow: none;
-        border-radius: 0;
-        color: #000;
-        font-size: 20px;
-        line-height: 26px;
-        padding: 30px;
-        display: block;
-        outline: none;
-        resize: none;
-        height: 100vh;
-        max-width: 900px;
-        margin: 0 auto;
-      }
-
-      a.js-zen-enter {
-        display: none;
-      }
-
-      a.js-zen-leave {
-        display: block;
-        position: absolute;
-        top: 0;
-      }
     }
+  }
+}
+
+.zen-cotrol {
+  padding: 0;
+  color: #555;
+  background: none;
+  border: 0;
+}
+
+.zen-control-full {
+  color: $note-toolbar-color;
+
+  &:hover {
+    color: $gl-link-color;
+    text-decoration: none;
+  }
+}
+
+.zen-control-leave {
+  display: none;
+  color: $gl-text-color;
+  position: absolute;
+  right: 10px;
+  padding: 5px;
+  font-size: 36px;
+
+  &:hover {
+    color: $zen-control-hover-color;
   }
 }
