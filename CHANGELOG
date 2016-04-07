@@ -2,18 +2,23 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.7.0 (unreleased)
   - All images in discussions and wikis now link to their source files !3464 (Connor Shea).
+  - Return status code 303 after a branch DELETE operation to avoid project deletion (Stan Hu)
   - Improved Markdown rendering performance !3389 (Yorick Peterse)
   - Don't attempt to look up an avatar in repo if repo directory does not exist (Stan Hu)
+  - Expose project badges in project settings
   - Preserve time notes/comments have been updated at when moving issue
   - Make HTTP(s) label consistent on clone bar (Stan Hu)
   - Expose label description in API (Mariusz Jachimowicz)
   - Allow back dating on issues when created through the API
   - Fix Error 500 after renaming a project path (Stan Hu)
   - Fix avatar stretching by providing a cropping feature
+  - Allow SAML to handle external users based on user's information !3530
   - Add endpoints to archive or unarchive a project !3372
   - Add links to CI setup documentation from project settings and builds pages
   - Handle nil descriptions in Slack issue messages (Stan Hu)
   - Add default scope to projects to exclude projects pending deletion
+  - Ensure empty recipients are rejected in BuildsEmailService
+  - API: Ability to filter milestones by state `active` and `closed` (Robert Schilling)
   - Implement 'Groups View' as an option for dashboard preferences !3379 (Elias W.)
   - Implement 'TODOs View' as an option for dashboard preferences !3379 (Elias W.)
   - Gracefully handle notes on deleted commits in merge requests (Stan Hu)
@@ -21,9 +26,12 @@ v 8.7.0 (unreleased)
   - Fall back to `In-Reply-To` and `References` headers when sub-addressing is not available (David Padilla)
   - Remove "Congratulations!" tweet button on newly-created project. (Connor Shea)
   - Improved UX of the navigation sidebar
+  - Fix admin/projects when using visibility levels on search (PotHix)
   - Build status notifications
+  - API: Expose user location (Robert Schilling)
 
 v 8.6.5 (unreleased)
+  - Only update repository language if it is not set to improve performance
   - Check permissions when user attempts to import members from another project
 
 v 8.6.4
