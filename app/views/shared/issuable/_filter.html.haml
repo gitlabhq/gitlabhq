@@ -24,12 +24,6 @@
         .filter-item.inline.labels-filter
           = render "shared/issuable/label_dropdown"
 
-        - if @issues
-          .filter-item.inline.due_date-filter
-            = select_tag('due_date', due_date_options,
-              class: 'select2 trigger-submit', include_blank: true,
-              data: {placeholder: 'Due Date'})
-
         .pull-right
           = render 'shared/sort_dropdown'
 
