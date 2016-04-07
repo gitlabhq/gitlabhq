@@ -69,7 +69,7 @@ describe SessionsController do
               end
             end
 
-            context ' when OTP is invalid' do
+            context 'when OTP is invalid' do
               before { authenticate_2fa(otp_attempt: 'invalid') }
 
               it 'does not authenticate' do
@@ -77,8 +77,8 @@ describe SessionsController do
               end
 
               it 'warns about invalid OTP code' do
-                expect(response).to set_flash
-                  .now[:alert].to /Invalid two-factor code/
+                expect(response).to set_flash.now[:alert]
+                  .to /Invalid two-factor code/
               end
             end
           end
@@ -90,7 +90,8 @@ describe SessionsController do
               authenticate_2fa(login: another_user.username,
                                otp_attempt: 'invalid')
 
-              expect(response).to_not set_flash.now[:alert].to /Invalid login or password/
+              expect(response).to set_flash.now[:alert]
+                .to /Invalid two-factor code/
             end
           end
         end
