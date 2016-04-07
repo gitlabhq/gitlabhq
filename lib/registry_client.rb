@@ -17,8 +17,14 @@ class RegistryClient
     JSON.parse(response)
   end
 
+  def tag_digest(name, reference)
+    response = HTTParty.head("#{uri}/v2/#{name}/manifests/#{reference}")
+    response.headers['docker-content-digest'].split(':')
+  end
+
   def delete_tag(name, reference)
-    HTTParty.delete("#{uri}/v2/#{name}/manifests/#{reference}")
+    response = HTTParty.delete("#{uri}/v2/#{name}/manifests/#{reference}")
+    response.parsed_response
   end
 
   def blob_size(name, digest)

@@ -8,14 +8,9 @@ class Projects::ImagesController < Projects::ApplicationController
     @tags = registry.tags
   end
 
-  def show
-    respond_to do |format|
-      format.html
-    end
-  end
-
   def destroy
-    registry.destroy_tag(params[:id].to_s)
+    # registry.destroy_tag(tag['fsLayers'].first['blobSum'])
+    registry.destroy_tag(registry.tag_digest(params[:id]))
     redirect_to namespace_project_images_path(project.namespace, project)
   end
 
