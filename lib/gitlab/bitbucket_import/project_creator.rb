@@ -23,7 +23,7 @@ module Gitlab
           import_url: "ssh://git@bitbucket.org/#{repo["owner"]}/#{repo["slug"]}.git",
         ).execute
 
-        project.update_import_data(credentials: { bb_session: session_data })
+        project.create_or_update_import_data(credentials: { bb_session: session_data })
 
         project
       end

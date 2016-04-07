@@ -24,7 +24,7 @@ module Gitlab
           import_url: Project::UNKNOWN_IMPORT_URL
         ).execute
 
-        project.update_import_data(data: { 'repo' => repo.raw_data, 'user_map' => user_map }, credentials: { fb_session: fb_session })
+        project.create_or_update_import_data(data: { 'repo' => repo.raw_data, 'user_map' => user_map }, credentials: { fb_session: fb_session })
 
         project
       end
