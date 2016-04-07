@@ -109,6 +109,10 @@
         display: table-cell;
       }
     }
+
+    .text-file.diff-wrap-lines table .line_holder td span {
+      white-space: pre-wrap;
+    }
   }
   .image {
     background: #ddd;
