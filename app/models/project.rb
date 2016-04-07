@@ -419,7 +419,10 @@ class Project < ActiveRecord::Base
 
   def create_or_update_import_data(data: nil, credentials: nil)
     project_import_data = import_data || build_import_data
-    project_import_data.data = data if data
+    if data
+      project_import_data.data ||= {}
+      project_import_data.data = project_import_data.data.merge(data)
+    end
     if credentials
       project_import_data.credentials ||= {}
       project_import_data.credentials = project_import_data.credentials.merge(credentials)
