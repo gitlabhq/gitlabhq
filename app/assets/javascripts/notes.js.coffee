@@ -251,13 +251,11 @@ class @Notes
   Sets some hidden fields in the form.
   ###
   setupMainTargetNoteForm: ->
-
     # find the form
     form = $(".js-new-note-form")
 
-    # insert the form after the button
-    form.clone().replaceAll $(".js-main-target-form")
-    form = form.prev("form")
+    # Set a global clone of the form for later cloning
+    @formClone = form.clone()
 
     # show the form
     @setupNoteForm(form)
@@ -266,9 +264,7 @@ class @Notes
     form.removeClass "js-new-note-form"
     form.addClass "js-main-target-form"
 
-    # remove unnecessary fields and buttons
     form.find("#note_line_code").remove()
-    form.find(".js-close-discussion-note-form").remove()
 
   ###
   General note form setup.
@@ -297,7 +293,14 @@ class @Notes
       else
         previewButton.removeClass("turn-on").addClass "turn-off"
 
+    textarea.on 'focus', ->
+      $(this).closest('.md-area').addClass 'is-focused'
+
+    textarea.on 'blur', ->
+      $(this).closest('.md-area').removeClass 'is-focused'
+
     autosize(textarea)
+
     new Autosave textarea, [
       "Note"
       form.find("#note_commit_id").val()
@@ -307,7 +310,6 @@ class @Notes
     ]
 
     # remove notify commit author checkbox for non-commit notes
-    form.find(".js-notify-commit-author").remove()  if form.find("#note_noteable_type").val() isnt "Commit"
     GitLab.GfmAutoComplete.setup()
     new DropzoneInput(form)
     form.show()
@@ -455,15 +457,15 @@ class @Notes
   Shows the note form below the notes.
   ###
   replyToDiscussionNote: (e) =>
-    form = $(".js-new-note-form")
+    form = @formClone.clone()
     replyLink = $(e.target).closest(".js-discussion-reply-button")
     replyLink.hide()
 
     # insert the form after the button
-    form.clone().insertAfter replyLink
+    replyLink.after form
 
     # show the form
-    @setupDiscussionNoteForm(replyLink, replyLink.next("form"))
+    @setupDiscussionNoteForm(replyLink, form)
 
   ###
   Shows the diff or discussion form and does some setup on it.
@@ -488,7 +490,9 @@ class @Notes
         .text(form.find('.js-close-discussion-note-form').data('cancel-text'))
     @setupNoteForm form
     form.find(".js-note-text").focus()
-    form.addClass "js-discussion-note-form"
+    form
+      .removeClass('js-main-target-form')
+      .addClass("discussion-form js-discussion-note-form")
 
   ###
   Called when clicking on the "add a comment" button on the side of a diff line.
@@ -498,9 +502,8 @@ class @Notes
   ###
   addDiffNote: (e) =>
     e.preventDefault()
-    link = e.currentTarget
-    form = $(".js-new-note-form")
-    row = $(link).closest("tr")
+    $link = $(e.currentTarget)
+    row = $link.closest("tr")
     nextRow = row.next()
     hasNotes = nextRow.is(".notes_holder")
     addForm = false
@@ -509,7 +512,7 @@ class @Notes
 
     # In parallel view, look inside the correct left/right pane
     if @isParallelView()
-      lineType = $(link).data("lineType")
+      lineType = $link.data("lineType")
       targetContent += "." + lineType
       rowCssToAdd = "<tr class=\"notes_holder js-temp-notes-holder\"><td class=\"notes_line\"></td><td class=\"notes_content parallel old\"></td><td class=\"notes_line\"></td><td class=\"notes_content parallel new\"></td></tr>"
 
@@ -531,11 +534,11 @@ class @Notes
       addForm = true
 
     if addForm
-      newForm = form.clone()
+      newForm = @formClone.clone()
       newForm.appendTo row.next().find(targetContent)
 
       # show the form
-      @setupDiscussionNoteForm $(link), newForm
+      @setupDiscussionNoteForm $link, newForm
 
   ###
   Called in response to "cancel" on a diff note form.
@@ -560,7 +563,6 @@ class @Notes
 
   cancelDiscussionForm: (e) =>
     e.preventDefault()
-    form = $(".js-new-note-form")
     form = $(e.target).closest(".js-discussion-note-form")
     @removeDiscussionNoteForm(form)
 

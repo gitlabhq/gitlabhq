@@ -429,9 +429,9 @@ ActiveRecord::Schema.define(version: 20160406185700) do
     t.string   "state"
     t.integer  "iid"
     t.integer  "updated_by_id"
+    t.integer  "moved_to_id"
     t.boolean  "confidential",  default: false
     t.datetime "deleted_at"
-    t.integer  "moved_to_id"
   end
 
   add_index "issues", ["assignee_id"], name: "index_issues_on_assignee_id", using: :btree
@@ -905,6 +905,32 @@ ActiveRecord::Schema.define(version: 20160406185700) do
   add_index "todos", ["target_type", "target_id"], name: "index_todos_on_target_type_and_target_id", using: :btree
   add_index "todos", ["user_id"], name: "index_todos_on_user_id", using: :btree
 
+  create_table "user_team_project_relationships", force: :cascade do |t|
+    t.integer  "project_id"
+    t.integer  "user_team_id"
+    t.integer  "greatest_access"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "user_team_user_relationships", force: :cascade do |t|
+    t.integer  "user_id"
+    t.integer  "user_team_id"
+    t.boolean  "group_admin"
+    t.integer  "permission"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "user_teams", force: :cascade do |t|
+    t.string   "name"
+    t.string   "path"
+    t.integer  "owner_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "description", default: "", null: false
+  end
+
   create_table "users", force: :cascade do |t|
     t.string   "email",                       default: "",    null: false
     t.string   "encrypted_password",          default: "",    null: false
@@ -979,6 +1005,18 @@ ActiveRecord::Schema.define(version: 20160406185700) do
   add_index "users", ["username"], name: "index_users_on_username", using: :btree
   add_index "users", ["username"], name: "index_users_on_username_trigram", using: :gin, opclasses: {"username"=>"gin_trgm_ops"}
 
+  create_table "users_projects", force: :cascade do |t|
+    t.integer  "user_id",                    null: false
+    t.integer  "project_id",                 null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "project_access", default: 0, null: false
+  end
+
+  add_index "users_projects", ["project_access"], name: "index_users_projects_on_project_access", using: :btree
+  add_index "users_projects", ["project_id"], name: "index_users_projects_on_project_id", using: :btree
+  add_index "users_projects", ["user_id"], name: "index_users_projects_on_user_id", using: :btree
+
   create_table "users_star_projects", force: :cascade do |t|
     t.integer  "project_id", null: false
     t.integer  "user_id",    null: false
@@ -1008,5 +1046,18 @@ ActiveRecord::Schema.define(version: 20160406185700) do
 
   add_index "web_hooks", ["created_at", "id"], name: "index_web_hooks_on_created_at_and_id", using: :btree
   add_index "web_hooks", ["project_id"], name: "index_web_hooks_on_project_id", using: :btree
+
+  create_table "wikis", force: :cascade do |t|
+    t.string   "title"
+    t.text     "content"
+    t.integer  "project_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "slug"
+    t.integer  "user_id"
+  end
+
+  add_index "wikis", ["project_id"], name: "index_wikis_on_project_id", using: :btree
+  add_index "wikis", ["slug"], name: "index_wikis_on_slug", using: :btree
 
 end

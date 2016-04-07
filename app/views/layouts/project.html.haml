@@ -5,10 +5,14 @@
 
 - content_for :scripts_body_top do
   - project = @target_project || @project
+  - if @project_wiki
+    - markdown_preview_path = namespace_project_wikis_markdown_preview_path(project.namespace, project)
+  - else
+    - markdown_preview_path = markdown_preview_namespace_project_path(project.namespace, project)
   - if current_user
     :javascript
       window.project_uploads_path = "#{namespace_project_uploads_path project.namespace,project}";
-      window.markdown_preview_path = "#{markdown_preview_namespace_project_path(project.namespace, project)}";
+      window.markdown_preview_path = "#{markdown_preview_path}";
 
 - content_for :scripts_body do
   = render "layouts/init_auto_complete" if current_user

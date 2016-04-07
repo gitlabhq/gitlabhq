@@ -303,7 +303,7 @@ describe Repository, models: true do
 
     describe 'when there are no branches' do
       before do
-        allow(repository.raw_repository).to receive(:branch_count).and_return(0)
+        allow(repository).to receive(:branch_count).and_return(0)
       end
 
       it { is_expected.to eq(false) }
@@ -311,13 +311,13 @@ describe Repository, models: true do
 
     describe 'when there are branches' do
       it 'returns true' do
-        expect(repository.raw_repository).to receive(:branch_count).and_return(3)
+        expect(repository).to receive(:branch_count).and_return(3)
 
         expect(subject).to eq(true)
       end
 
       it 'caches the output' do
-        expect(repository.raw_repository).to receive(:branch_count).
+        expect(repository).to receive(:branch_count).
           once.
           and_return(3)
 
@@ -436,7 +436,7 @@ describe Repository, models: true do
     it 'expires the visible content cache' do
       repository.has_visible_content?
 
-      expect(repository.raw_repository).to receive(:branch_count).
+      expect(repository).to receive(:branch_count).
         once.
         and_return(0)
 
@@ -558,7 +558,7 @@ describe Repository, models: true do
       end
 
       it 'flushes the exists cache' do
-        expect(repository).to receive(:expire_exists_cache)
+        expect(repository).to receive(:expire_exists_cache).twice
 
         repository.before_delete
       end
@@ -609,6 +609,20 @@ describe Repository, models: true do
       expect(repository).to receive(:expire_tag_count_cache)
 
       repository.before_push_tag
+    end
+  end
+
+  describe '#before_import' do
+    it 'flushes the emptiness cachess' do
+      expect(repository).to receive(:expire_emptiness_caches)
+
+      repository.before_import
+    end
+
+    it 'flushes the exists cache' do
+      expect(repository).to receive(:expire_exists_cache)
+
+      repository.before_import
     end
   end
 
@@ -865,4 +879,21 @@ describe Repository, models: true do
       repository.build_cache
     end
   end
+
+  describe '#local_branches' do
+    it 'returns the local branches' do
+      masterrev = repository.find_branch('master').target
+      create_remote_branch('joe', 'remote_branch', masterrev)
+      repository.add_branch(user, 'local_branch', masterrev)
+
+      expect(repository.local_branches.any? { |branch| branch.name == 'remote_branch' }).to eq(false)
+      expect(repository.local_branches.any? { |branch| branch.name == 'local_branch' }).to eq(true)
+    end
+  end
+
+  def create_remote_branch(remote_name, branch_name, target)
+    rugged = repository.rugged
+    rugged.references.create("refs/remotes/#{remote_name}/#{branch_name}", target)
+  end
+
 end

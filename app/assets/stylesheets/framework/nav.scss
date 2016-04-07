@@ -56,6 +56,17 @@
     }
   }
 
+  .nav-search {
+    display: inline-block;
+    width: 50%;
+    padding: 11px 0;
+
+    /* Small devices (phones, tablets, 768px and lower) */
+    @media (max-width: $screen-sm-min) {
+      width: 100%;
+    }
+  }
+
   .nav-links {
     display: inline-block;
     width: 50%;
@@ -100,6 +111,7 @@
 
     > form {
       display: inline-block;
+      margin-top: -1px;
     }
 
     .icon-label {
@@ -110,7 +122,7 @@
       height: 34px;
       display: inline-block;
       position: relative;
-      top: 1px;
+      top: 2px;
       margin-right: $gl-padding-top;
 
       /* Medium devices (desktops, 992px and up) */

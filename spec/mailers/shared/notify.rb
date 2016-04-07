@@ -141,10 +141,12 @@ shared_examples 'a new user email' do
 end
 
 shared_examples 'it should have Gmail Actions links' do
+  it { is_expected.to have_body_text '<script type="application/ld+json">' }
   it { is_expected.to have_body_text /ViewAction/ }
 end
 
 shared_examples 'it should not have Gmail Actions links' do
+  it { is_expected.to_not have_body_text '<script type="application/ld+json">' }
   it { is_expected.to_not have_body_text /ViewAction/ }
 end
 

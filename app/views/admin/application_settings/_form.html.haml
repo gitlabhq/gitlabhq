@@ -77,13 +77,6 @@
             = f.check_box :gravatar_enabled
             Gravatar enabled
     .form-group
-      .col-sm-offset-2.col-sm-10
-        .checkbox
-          = f.label :twitter_sharing_enabled do
-            = f.check_box :twitter_sharing_enabled, :'aria-describedby' => 'twitter_help_block'
-            Twitter enabled
-          %span.help-block#twitter_help_block Show users a button to share their newly created public or internal projects on twitter
-    .form-group
       = f.label :default_projects_limit, class: 'control-label col-sm-2'
       .col-sm-10
         = f.number_field :default_projects_limit, class: 'form-control'

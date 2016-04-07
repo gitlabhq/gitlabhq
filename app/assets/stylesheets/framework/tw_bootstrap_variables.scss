@@ -56,8 +56,8 @@ $component-active-bg:       $brand-info;
 //##
 
 $input-color:                    $text-color;
-$input-border:                   #e7e9ed;
-$input-border-focus:             #7f8fa4;
+$input-border:                   $border-color;
+$input-border-focus:             $focus-border-color;
 $legend-color:                   $text-color;
 
 

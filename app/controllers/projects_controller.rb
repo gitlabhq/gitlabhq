@@ -40,6 +40,9 @@ class ProjectsController < Projects::ApplicationController
   def update
     status = ::Projects::UpdateService.new(@project, current_user, project_params).execute
 
+    # Refresh the repo in case anything changed
+    @repository = project.repository
+
     respond_to do |format|
       if status
         flash[:notice] = "Project '#{@project.name}' was successfully updated."
@@ -71,7 +74,7 @@ class ProjectsController < Projects::ApplicationController
   def remove_fork
     return access_denied! unless can?(current_user, :remove_fork_project, @project)
 
-    if @project.unlink_fork
+    if ::Projects::UnlinkForkService.new(@project, current_user).execute
       flash[:notice] = 'The fork relationship has been removed.'
     end
   end
