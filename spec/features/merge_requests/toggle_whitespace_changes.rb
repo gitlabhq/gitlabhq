@@ -1,11 +1,10 @@
 require 'spec_helper'
 
 feature 'Toggle Whitespace Changes', js: true, feature: true do
-  let(:merge_request) { create(:merge_request) }
-  let(:project) { merge_request.source_project }
-
   before do
     login_as :admin
+    merge_request = create(:merge_request)
+    project = merge_request.source_project
     visit diffs_namespace_project_merge_request_path(project.namespace, project, merge_request)
   end
 
