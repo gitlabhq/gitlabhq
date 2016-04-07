@@ -750,10 +750,11 @@ Rails.application.routes.draw do
         end
 
         resources :runner_projects, only: [:create, :destroy]
-        resources :badges, only: [], path: 'badges/*ref',
-                           constraints: { ref: Gitlab::Regex.git_reference_regex } do
+        resources :badges, only: [:index] do
           collection do
-            get :build, constraints: { format: /svg/ }
+            scope '*ref', constraints: { ref: Gitlab::Regex.git_reference_regex } do
+              get :build, constraints: { format: /svg/ }
+            end
           end
         end
       end
