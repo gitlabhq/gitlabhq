@@ -195,6 +195,29 @@ module API
         end
       end
 
+      # Move an existing issue
+      #
+      # Parameters:
+      # id (required) - The ID of a project
+      # issue_id (required) - The ID of a project issue
+      # new_project_id (required) - The ID of the new project
+      # Example Request:
+      #   POST /projects/:id/issues/:issue_id/move
+      post ":id/issues/:issue_id/move" do
+        required_attributes! [:new_project_id]
+
+        issue = user_project.issues.find(params[:issue_id])
+        new_project = Project.find(params[:new_project_id])
+
+        begin
+          issue = ::Issues::MoveService.new(user_project, current_user).execute(issue, new_project)
+          present issue, with: Entities::Issue
+        rescue ::Issues::MoveService::MoveError => error
+          render_api_error!(error.message, 400)
+        end
+      end
+
+      #
       # Delete a project issue
       #
       # Parameters:
