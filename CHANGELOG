@@ -24,6 +24,7 @@ v 8.6.5
   - Check permissions when user attempts to import members from another project. !3535
   - Only update repository language if it is not set to improve performance. !3556
   - Return status code 303 after a branch DELETE operation to avoid project deletion (Stan Hu). !3583
+  - Fix a 2FA authentication spoofing vulnerability.
 
 v 8.6.4
   - Don't attempt to fetch any tags from a forked repo (Stan Hu)
