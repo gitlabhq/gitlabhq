@@ -8,6 +8,7 @@ v 8.7.0 (unreleased)
   - Loading of an issue's referenced merge requests and related branches is now done asynchronously (Yorick Peterse)
   - Enable gzip for assets, makes the page size significantly smaller. !3544 / !3632 (Connor Shea)
   - Load award emoji images separately unless opening the full picker. Saves several hundred KBs of data for most pages. (Connor Shea)
+  - Do not include award_emojis in issue and merge_request comment_count !3610 (Lucas Charles)
   - All images in discussions and wikis now link to their source files !3464 (Connor Shea).
   - Return status code 303 after a branch DELETE operation to avoid project deletion (Stan Hu)
   - Add setting for customizing the list of trusted proxies !3524
