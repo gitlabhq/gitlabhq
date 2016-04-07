@@ -1,5 +1,6 @@
 %aside.right-sidebar{ class: sidebar_gutter_collapsed_class }
   .issuable-sidebar
+    - can_edit_issuable = can?(current_user, :"admin_#{issuable.to_ability_name}", @project)
     .block.issuable-sidebar-header
       %span.issuable-count.hide-collapsed.pull-left
         = issuable.iid
@@ -20,7 +21,6 @@
             Next
 
     = form_for [@project.namespace.becomes(Namespace), @project, issuable], remote: true, html: {class: 'issuable-context-form inline-update js-issuable-update'} do |f|
-      - can_edit_assignee = can?(current_user, :"admin_#{issuable.to_ability_name}", @project)
       .block.assignee
         .sidebar-collapsed-icon.sidebar-collapsed-user{data: {toggle: "tooltip", placement: "left", container: "body"}, title: (issuable.assignee.to_reference if issuable.assignee)}
           - if issuable.assignee
@@ -30,9 +30,9 @@
         .title.hide-collapsed
           Assignee
           = icon('spinner spin', class: 'block-loading')
-          - if can_edit_assignee
+          - if can_edit_issuable
             = link_to 'Edit', '#', class: 'edit-link pull-right'
-        .value.bold.hide-collapsed{data: {can_edit_assign: can_edit_assignee}}
+        .value.bold.hide-collapsed
           - if issuable.assignee
             = link_to_member(@project, issuable.assignee, size: 32) do
               - if issuable.instance_of?(MergeRequest) && !issuable.can_be_merged_by?(issuable.assignee)
@@ -43,7 +43,7 @@
           - else
             %span.assign-yourself
               No assignee
-              - if can_edit_assignee
+              - if can_edit_issuable
                 %a.js-assign-yourself{ href: '#' }
                   \- assign yourself
 
@@ -62,7 +62,7 @@
         .title.hide-collapsed
           Milestone
           = icon('spinner spin', class: 'block-loading')
-          - if can?(current_user, :"admin_#{issuable.to_ability_name}", @project)
+          - if can_edit_issuable
             = link_to 'Edit', '#', class: 'edit-link pull-right'
         .value.bold.hide-collapsed
           - if issuable.milestone
@@ -84,7 +84,7 @@
           .title.hide-collapsed
             Labels
             = icon('spinner spin', class: 'block-loading')
-            - if can?(current_user, :"admin_#{issuable.to_ability_name}", @project)
+            - if can_edit_issuable
               = link_to 'Edit', '#', class: 'edit-link pull-right'
           .value.bold.issuable-show-labels.hide-collapsed{ class: ("has-labels" if issuable.labels.any?) }
             - if issuable.labels.any?
