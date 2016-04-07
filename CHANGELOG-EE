@@ -4,6 +4,9 @@ v 8.7.0 (unreleased)
   - Update GitLab Pages to 0.2.1: support user-defined 404 pages
   - Refactor group sync to pull access level logic to its own class. !306
 
+v 8.6.5
+  - No EE-specific changes
+
 v 8.6.4
   - No EE-specific changes
 
@@ -48,6 +51,9 @@ v 8.6.0
   - GitLab Geo: SSH Keys synchronization
   - Allow SSL verification to be configurable when importing GitHub projects
   - Disable git-hooks for git annex commits
+
+v 8.5.10
+  - No EE-specific changes
 
 v 8.5.9
   - No EE-specific changes
@@ -95,6 +101,9 @@ v 8.5.0
   - Fix of Elastic indexer. Stabilze indexer when serialized data is corrupted
   - [Elastic] Don't index unnecessary data into elastic
 
+v 8.4.8
+  - No EE-specific changes
+
 v 8.4.7
   - No EE-specific changes
 
@@ -135,6 +144,9 @@ v 8.4.0
   - Add option to enforce a semi-linear history by only allowing merge requests to be merged that have been rebased
   - Add option to trigger builds when branches or tags are updated from a mirrored upstream repository
   - Ability to use Elasticsearch as a search engine
+
+v 8.3.7
+  - No EE-specific changes
 
 v 8.3.6
   - No EE-specific changes
