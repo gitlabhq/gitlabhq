@@ -71,8 +71,13 @@
           = icon('code fw')
           %span
             Variables
-      = nav_link path: 'triggers#index' do
+      = nav_link(controller: :triggers) do
         = link_to namespace_project_triggers_path(@project.namespace, @project), title: 'Triggers' do
           = icon('retweet fw')
           %span
             Triggers
+      = nav_link(controller: :badges) do
+        = link_to namespace_project_badges_path(@project.namespace, @project), title: 'Badges' do
+          = icon('star-half-empty fw')
+          %span
+            Badges
