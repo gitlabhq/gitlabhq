@@ -29,3 +29,7 @@
     - :id
     - :email
     - :username
+
+:attributes_except:
+  :snippets:
+    - :expired_at

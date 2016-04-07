@@ -26,7 +26,14 @@ module Projects
       end
 
       def build_hash(array)
-        array.map { |el| el.is_a?(Hash) ? process_include(el) : el }
+        array.map do |el|
+          if el.is_a?(Hash)
+            process_include(el)
+          else
+            only_except_hash = check_only_and_except(el)
+            only_except_hash.empty? ? el : { el => only_except_hash }
+          end
+        end
       end
 
       def process_include(hash, included_classes_hash = {})
@@ -44,8 +51,8 @@ module Projects
       def process_current_class(hash, included_classes_hash, value)
         value = value.is_a?(Hash) ? process_include(hash, included_classes_hash) : value
         current_key = hash.keys.first
-        current_key_only = check_only_and_except(current_key)
-        included_classes_hash[current_key] ||= current_key_only unless current_key_only.empty?
+        only_except_hash = check_only_and_except(current_key)
+        included_classes_hash[current_key] ||= only_except_hash unless only_except_hash.empty?
         return current_key, value
       end
 
@@ -56,8 +63,8 @@ module Projects
       end
 
       def add_class(current_key, included_classes_hash, value)
-        check_only_hash = check_only_and_except(value)
-        value = { value => check_only_hash } unless check_only_hash.empty?
+        only_except_hash = check_only_and_except(value)
+        value = { value => only_except_hash } unless only_except_hash.empty?
         old_values = included_classes_hash[current_key][:include]
         included_classes_hash[current_key][:include] = ([old_values] + [value]).compact.flatten
       end
