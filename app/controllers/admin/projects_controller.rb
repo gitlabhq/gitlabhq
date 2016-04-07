@@ -5,7 +5,7 @@ class Admin::ProjectsController < Admin::ApplicationController
   def index
     @projects = Project.all
     @projects = @projects.in_namespace(params[:namespace_id]) if params[:namespace_id].present?
-    @projects = @projects.where("visibility_level IN (?)", params[:visibility_levels]) if params[:visibility_levels].present?
+    @projects = @projects.where("projects.visibility_level IN (?)", params[:visibility_levels]) if params[:visibility_levels].present?
     @projects = @projects.with_push if params[:with_push].present?
     @projects = @projects.abandoned if params[:abandoned].present?
     @projects = @projects.non_archived unless params[:with_archived].present?

@@ -24,6 +24,7 @@ v 8.7.0 (unreleased)
   - Fall back to `In-Reply-To` and `References` headers when sub-addressing is not available (David Padilla)
   - Remove "Congratulations!" tweet button on newly-created project. (Connor Shea)
   - Improved UX of the navigation sidebar
+  - Fix admin/projects when using visibility levels on search (PotHix)
   - Build status notifications
   - API: Expose user location (Robert Schilling)
 
