@@ -43,23 +43,27 @@ class GitPushService < BaseService
       @push_commits = @project.repository.commits_between(params[:oldrev], params[:newrev])
       process_commit_messages
     end
-    # Checks if the main language has changed in the project and if so
-    # it updates it accordingly
-    update_main_language
     # Update merge requests that may be affected by this push. A new branch
     # could cause the last commit of a merge request to change.
     update_merge_requests
+
+    # Checks if the main language has changed in the project and if so
+    # it updates it accordingly
+    update_main_language
 
     perform_housekeeping
   end
 
   def update_main_language
+    # Performance can be bad so for now only check main_language once
+    # See https://gitlab.com/gitlab-org/gitlab-ce/issues/14937
+    return if @project.main_language.present?
+
+    return unless is_default_branch?
+    return unless push_to_new_branch? || push_to_existing_branch?
+
     current_language = @project.repository.main_language
-
-    unless current_language == @project.main_language
-      return @project.update_attributes(main_language: current_language)
-    end
-
+    @project.update_attributes(main_language: current_language)
     true
   end
 

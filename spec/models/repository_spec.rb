@@ -612,6 +612,20 @@ describe Repository, models: true do
     end
   end
 
+  describe '#before_import' do
+    it 'flushes the emptiness cachess' do
+      expect(repository).to receive(:expire_emptiness_caches)
+
+      repository.before_import
+    end
+
+    it 'flushes the exists cache' do
+      expect(repository).to receive(:expire_exists_cache)
+
+      repository.before_import
+    end
+  end
+
   describe '#after_import' do
     it 'flushes the emptiness cachess' do
       expect(repository).to receive(:expire_emptiness_caches)
@@ -656,6 +670,19 @@ describe Repository, models: true do
 
       repository.after_create
     end
+
+    it 'flushes the root ref cache' do
+      expect(repository).to receive(:expire_root_ref_cache)
+
+      repository.after_create
+    end
+
+    it 'flushes the emptiness caches' do
+      expect(repository).to receive(:expire_emptiness_caches)
+
+      repository.after_create
+    end
+
   end
 
   describe "#main_language" do

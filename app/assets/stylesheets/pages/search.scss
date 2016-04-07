@@ -135,25 +135,25 @@
 
     .location-badge {
       @include transition(all .15s);
-      background-color: $location-active-bg;
+      background-color: $location-badge-active-bg;
       color: $white-light;
     }
 
     .search-input-wrap {
       i {
-        color: $location-active-color;
+        color: $location-icon-active-color;
       }
     }
+  }
 
-    &.has-location-badge {
-      .search-icon {
-        display: none;
-      }
+  &.has-value {
+    .search-icon {
+      display: none;
+    }
 
-      .clear-icon {
-        cursor: pointer;
-        display: block;
-      }
+    .clear-icon {
+      cursor: pointer;
+      display: block;
     }
   }
 

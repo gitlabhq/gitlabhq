@@ -1,18 +1,19 @@
 .md-area
-  .md-header.clearfix
+  .md-header
     %ul.nav-links
       %li.active
-        %a.js-md-write-button(href="#md-write-holder" tabindex="-1")
+        %a.js-md-write-button{ href: "#md-write-holder" }
           Write
       %li
-        %a.js-md-preview-button(href="#md-preview-holder" tabindex="-1")
+        %a.js-md-preview-button{ href: "#md-preview-holder" }
           Preview
+      %li.pull-right
+        %button.zen-cotrol.zen-control-full.js-zen-enter{ type: 'button' }
+          Go full screen
 
-  %div
-    .md-write-holder
-      = yield
-    .md.md-preview-holder.hide
-      .js-md-preview{class: (preview_class if defined?(preview_class))}
+  .md-write-holder
+    = yield
+  .md.md-preview-holder.js-md-preview.hide{class: (preview_class if defined?(preview_class))}
 
   - if defined?(referenced_users) && referenced_users
     %div.referenced-users.hide

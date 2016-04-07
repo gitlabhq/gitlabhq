@@ -70,6 +70,32 @@ module Gitlab
       value.to_s.gsub('=', '\\=')
     end
 
+    # Measures the execution time of a block.
+    #
+    # Example:
+    #
+    #     Gitlab::Metrics.measure(:find_by_username_timings) do
+    #       User.find_by_username(some_username)
+    #     end
+    #
+    # series - The name of the series to store the data in.
+    # values - A Hash containing extra values to add to the metric.
+    # tags - A Hash containing extra tags to add to the metric.
+    #
+    # Returns the value yielded by the supplied block.
+    def self.measure(series, values = {}, tags = {})
+      return yield unless Transaction.current
+
+      start = Time.now.to_f
+      retval = yield
+      duration = (Time.now.to_f - start) * 1000.0
+      values = values.merge(duration: duration)
+
+      Transaction.current.add_metric(series, values, tags)
+
+      retval
+    end
+
     # When enabled this should be set before being used as the usual pattern
     # "@foo ||= bar" is _not_ thread-safe.
     if enabled?
