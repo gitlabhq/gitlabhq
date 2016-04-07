@@ -57,6 +57,7 @@ class Ability
           :read_label,
           :read_milestone,
           :read_project_snippet,
+          :read_project_member,
           :read_merge_request,
           :read_note,
           :read_commit_status,
@@ -91,10 +92,7 @@ class Ability
                 subject.group
               end
 
-      if group.public?
-        rules << :read_group
-        rules << :read_group_members unless restricted_public_level?
-      end
+      rules << :read_group if group.public?
 
       rules
     end
@@ -293,7 +291,7 @@ class Ability
 
     def group_abilities(user, group)
       rules = []
-      rules << [:read_group, :read_group_members] if can_read_group?(user, group)
+      rules << :read_group if can_read_group?(user, group)
 
       # Only group masters and group owners can create new projects
       if group.has_master?(user) || group.has_owner?(user) || user.admin?
