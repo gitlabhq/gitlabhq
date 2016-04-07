@@ -687,6 +687,8 @@ Rails.application.routes.draw do
           end
         end
 
+        resources :images, only: [:index, :show, :destroy]
+
         resources :milestones, constraints: { id: /\d+/ } do
           member do
             put :sort_issues
