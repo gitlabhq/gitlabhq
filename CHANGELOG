@@ -1,5 +1,8 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+v 8.4.8
+  - Fix a 2FA authentication spoofing vulnerability.
+
 v 8.4.7
   - Don't attempt to fetch any tags from a forked repo (Stan Hu).
 
