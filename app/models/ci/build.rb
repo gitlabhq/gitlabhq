@@ -285,6 +285,8 @@ module Ci
     # This method returns old path to artifacts only if it already exists.
     #
     def artifacts_path
+      return unless project
+
       old = File.join(created_at.utc.strftime('%Y_%m'),
                       project.ci_id.to_s,
                       id.to_s)
