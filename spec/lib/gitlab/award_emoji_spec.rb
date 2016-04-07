@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-describe AwardEmoji do
+describe Gitlab::AwardEmoji do
   describe '.urls' do
-    subject { AwardEmoji.urls }
+    subject { Gitlab::AwardEmoji.urls }
 
     it { is_expected.to be_an_instance_of(Array) }
     it { is_expected.to_not be_empty }

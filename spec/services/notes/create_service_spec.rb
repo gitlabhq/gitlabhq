@@ -7,19 +7,15 @@ describe Notes::CreateService, services: true do
 
   describe :execute do
     context "valid params" do
+      let(:opts) { { note: 'Awesome comment', noteable_type: 'Issue', noteable_id: issue.id } }
+      let(:note) { Notes::CreateService.new(project, user, opts).execute }
+
       before do
         project.team << [user, :master]
-        opts = {
-          note: 'Awesome comment',
-          noteable_type: 'Issue',
-          noteable_id: issue.id
-        }
-        
-        @note = Notes::CreateService.new(project, user, opts).execute
       end
 
-      it { expect(@note).to be_valid }
-      it { expect(@note.note).to eq('Awesome comment') }
+      it { expect(note).to be_valid }
+      it { expect(note.note).to eq('Awesome comment') }
     end
   end
 
@@ -28,18 +24,14 @@ describe Notes::CreateService, services: true do
       project.team << [user, :master]
     end
 
-    it "creates emoji note" do
+    it "skips awards emoji" do
       opts = {
         note: ':smile: ',
         noteable_type: 'Issue',
-        noteable_id: issue.id
+        noteable_id: issue.id,
       }
 
-      @note = Notes::CreateService.new(project, user, opts).execute
-
-      expect(@note).to be_valid
-      expect(@note.note).to eq('smile')
-      expect(@note.is_award).to be_truthy
+      expect { Notes::CreateService.new(project, user, opts).execute }.not_to change { Note.count }
     end
 
     it "creates regular note if emoji name is invalid" do
@@ -49,11 +41,10 @@ describe Notes::CreateService, services: true do
         noteable_id: issue.id
       }
 
-      @note = Notes::CreateService.new(project, user, opts).execute
+      note = Notes::CreateService.new(project, user, opts).execute
 
-      expect(@note).to be_valid
-      expect(@note.note).to eq(opts[:note])
-      expect(@note.is_award).to be_falsy
+      expect(note).to be_valid
+      expect(note.note).to eq(opts[:note])
     end
   end
 end

@@ -343,12 +343,12 @@ class Note < ActiveRecord::Base
     cross_reference? && referenced_mentionables(user).empty?
   end
 
-  def emoji_award?
+  def award_emoji?
     emoji_awards_supported? && contains_only_emoji?
   end
 
   def create_award_emoji
-    self.emoji_award = self.noteable.award_emoji(emoji_award_name, self.author)
+    self.award_emoji = self.noteable.award_emoji(emoji_award_name, self.author)
   end
 
   def emoji_awardable?

@@ -9,6 +9,7 @@ class CreateAwardEmojiService < BaseService
     todo_service.award_emoji(issuable, current_user) if issuable
 
     awardable.toggle_award_emoji(emoji, current_user)
+    awardable
   end
 
   private

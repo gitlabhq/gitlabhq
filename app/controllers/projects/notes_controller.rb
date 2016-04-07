@@ -22,7 +22,7 @@ class Projects::NotesController < Projects::ApplicationController
   end
 
   def create
-    @note = Notes::CreateService.new(project, current_user, note_params.merge(create_award_emoji: true)).execute
+    @note = Notes::CreateService.new(project, current_user, note_params).execute
 
     respond_to do |format|
       format.json { render json: note_json(@note) }

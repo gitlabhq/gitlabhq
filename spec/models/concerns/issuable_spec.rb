@@ -2,7 +2,15 @@ require 'spec_helper'
 
 describe Issue, "Issuable" do
   let(:issue) { create(:issue) }
-  let(:user) { create(:user) }
+  let(:user)  { create(:user) }
+
+  describe "modules" do
+    it { is_expected.to include_module(Participable) }
+    it { is_expected.to include_module(Mentionable) }
+    it { is_expected.to include_module(Subscribable) }
+    it { is_expected.to include_module(StripAttribute) }
+    it { is_expected.to include_module(Awardable) }
+  end
 
   describe "Associations" do
     it { is_expected.to belong_to(:project) }
@@ -201,15 +209,13 @@ describe Issue, "Issuable" do
 
   describe "votes" do
     before do
-      author = create :user
-      project = create :empty_project
-      issue.notes.awards.create!(note: "thumbsup", author: author, project: project)
-      issue.notes.awards.create!(note: "thumbsdown", author: author, project: project)
+      create(:award_emoji, :thumbs_up, awardable: issue)
+      create(:award_emoji, :thumbs_down, awardable: issue)
     end
 
     it "returns correct values" do
-      expect(issue.upvotes).to eq(1)
-      expect(issue.downvotes).to eq(1)
+      expect(issue.upvotes).to    eq(1)
+      expect(issue.downvotes).to  eq(1)
     end
   end
 end

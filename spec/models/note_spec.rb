@@ -152,23 +152,6 @@ describe Note, models: true do
     end
   end
 
-  describe '.grouped_awards' do
-    before do
-      create :note, note: "smile", is_award: true
-      create :note, note: "smile", is_award: true
-    end
-
-    it "returns grouped hash of notes" do
-      expect(Note.grouped_awards.keys.size).to eq(3)
-      expect(Note.grouped_awards["smile"]).to match_array(Note.all)
-    end
-
-    it "returns thumbsup and thumbsdown always" do
-      expect(Note.grouped_awards["thumbsup"]).to match_array(Note.none)
-      expect(Note.grouped_awards["thumbsdown"]).to match_array(Note.none)
-    end
-  end
-
   describe '#active?' do
     it 'is always true when the note has no associated diff' do
       note = build(:note)
@@ -239,11 +222,6 @@ describe Note, models: true do
       note = build(:note, system: true)
       expect(note.editable?).to be_falsy
     end
-
-    it "returns false" do
-      note = build(:note, is_award: true, note: "smiley")
-      expect(note.editable?).to be_falsy
-    end
   end
 
   describe "cross_reference_not_visible_for?" do
@@ -267,23 +245,6 @@ describe Note, models: true do
 
     it "returns false" do
       expect(note.cross_reference_not_visible_for?(private_user)).to be_falsy
-    end
-  end
-
-  describe "set_award!" do
-    let(:merge_request) { create :merge_request }
-
-    it "converts aliases to actual name" do
-      note = create(:note, note: ":+1:", noteable: merge_request)
-      expect(note.reload.note).to eq("thumbsup")
-    end
-
-    it "is not an award emoji when comment is on a diff" do
-      note = create(:note, note: ":blowfish:", noteable: merge_request, line_code: "11d5d2e667e9da4f7f610f81d86c974b146b13bd_0_2")
-      note = note.reload
-
-      expect(note.note).to eq(":blowfish:")
-      expect(note.is_award?).to be_falsy
     end
   end
 
