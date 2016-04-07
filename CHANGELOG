@@ -12,6 +12,7 @@ v 8.7.0 (unreleased)
   - Make HTTP(s) label consistent on clone bar (Stan Hu)
   - Expose label description in API (Mariusz Jachimowicz)
   - Allow back dating on issues when created through the API
+  - API: Ability to update a group (Robert Schilling)
   - Fix Error 500 after renaming a project path (Stan Hu)
   - Fix avatar stretching by providing a cropping feature
   - API: Expose `subscribed` for issues and merge requests (Robert Schilling)

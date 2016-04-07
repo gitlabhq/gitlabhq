@@ -97,6 +97,42 @@ describe API::API, api: true  do
     end
   end
 
+  describe 'PUT /groups/:id' do
+    let(:new_group_name) { 'New Group'}
+
+    context "when authenticated the group owner" do
+      it 'updates the group' do
+        put api("/groups/#{group1.id}", user1), name: new_group_name
+
+        expect(response.status).to eq(200)
+        expect(json_response['name']).to eq(new_group_name)
+      end
+
+      it 'returns 404 for a non existing group' do
+        put api('/groups/1328', user1)
+
+        expect(response.status).to eq(404)
+      end
+    end
+
+    context "when authenticated the admin" do
+      it 'updates the group' do
+        put api("/groups/#{group1.id}", admin), name: new_group_name
+
+        expect(response.status).to eq(200)
+        expect(json_response['name']).to eq(new_group_name)
+      end
+    end
+
+    context "when authenticated an user" do
+      it 'updates the group' do
+        put api("/groups/#{group1.id}", user2), name: new_group_name
+
+        expect(response.status).to eq(403)
+      end
+    end
+  end
+
   describe "GET /groups/:id/projects" do
     context "when authenticated as user" do
       it "should return the group's projects" do
