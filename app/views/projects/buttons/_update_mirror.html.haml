@@ -12,7 +12,7 @@
       %span.btn.disabled.update-mirror-button.has-tooltip{title: "Updating remote repository..."}
         = icon('refresh')
     - else
-      = link_to update_remote_now_namespace_project_mirror_path(@project.namespace, @project), method: :post, class: "btn update-mirror-button has-tooltip", title: "Update remote repository" do
+      = link_to update_now_namespace_project_mirror_path(@project.namespace, @project, sync_remote: true), method: :post, class: "btn update-mirror-button has-tooltip", title: "Update remote repository" do
         = icon('refresh')
   - elsif @project.has_remote_mirror? && @project.mirror?
     .btn-group
@@ -28,4 +28,4 @@
           - if @project.updating_remote_mirror?
             %span.prepend-left-10.disabled-item Updating remote repository...
           - else
-            = link_to "Update remote repository", update_remote_now_namespace_project_mirror_path(@project.namespace, @project), method: :post
+            = link_to "Update remote repository", update_now_namespace_project_mirror_path(@project.namespace, @project, sync_remote: true), method: :post

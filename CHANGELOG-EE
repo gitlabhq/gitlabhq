@@ -4,6 +4,7 @@ v 8.7.0 (unreleased)
   - Update GitLab Pages to 0.2.1: support user-defined 404 pages
   - Refactor group sync to pull access level logic to its own class. !306
   - [Elastic] Stabilize database indexer if database is inconsistent
+  - Add ability to sync to remote mirrors. !249
 
 v 8.6.5
   - No EE-specific changes

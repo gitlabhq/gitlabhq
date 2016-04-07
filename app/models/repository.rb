@@ -3,7 +3,6 @@ require 'forwardable'
 
 class Repository
   include Elastic::RepositoriesSearch
-  extend Forwardable
 
   class CommitError < StandardError; end
 
@@ -18,7 +17,7 @@ class Repository
 
   attr_accessor :path_with_namespace, :project
 
-  def_delegators :gitlab_shell, :push_remote_branches, :delete_remote_branches
+  delegate :push_remote_branches, :delete_remote_branches, to: :gitlab_shell
 
   def self.clean_old_archives
     repository_downloads_path = Gitlab.config.gitlab.repository_downloads_path

@@ -82,9 +82,6 @@ v 8.6.2
   - Gracefully handle notes on deleted commits in merge requests (Stan Hu). !3402
   - Fixed issue with notification settings not saving. !3452
 
-v 8.6.2 (unreleased)
-  - Comments on confidential issues don't show up in activity feed to non-members
-
 v 8.6.1
   - Add option to reload the schema before restoring a database backup. !2807
   - Display navigation controls on mobile. !3214

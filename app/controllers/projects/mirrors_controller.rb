@@ -29,16 +29,14 @@ class Projects::MirrorsController < Projects::ApplicationController
   end
 
   def update_now
-    @project.update_mirror
+    if params[:sync_remote]
+      @project.update_remote_mirrors
+      flash[:notice] = "The remote repository is being updated..."
+    else
+      @project.update_mirror
+      flash[:notice] = "The repository is being updated..."
+    end
 
-    flash[:notice] = "The repository is being updated..."
-    redirect_back_or_default(default: namespace_project_path(@project.namespace, @project))
-  end
-
-  def update_remote_now
-    @project.update_remote_mirrors
-
-    flash[:notice] = "The remote repository is being updated..."
     redirect_back_or_default(default: namespace_project_path(@project.namespace, @project))
   end
 
