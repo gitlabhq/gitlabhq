@@ -1,4 +1,4 @@
-# Class relationships to be included in the import/export
+# Class relationships to be included in the project import/export
 :project_tree:
   - :issues
   - :labels
