@@ -177,10 +177,11 @@ class GitLabDropdown
         selector = ".dropdown-page-one .dropdown-content a"
 
       @dropdown.on "click", selector, (e) ->
-        selected = self.rowClicked $(@)
+        $el = $(@)
+        selected = self.rowClicked $el
 
         if self.options.clicked
-          self.options.clicked(selected)
+          self.options.clicked(selected, $el, e)
 
   # Finds an element inside wrapper element
   getElement: (selector) ->
@@ -360,6 +361,8 @@ class GitLabDropdown
       # Toggle the dropdown label
       if @options.toggleLabel
         $(@el).find(".dropdown-toggle-text").text @options.toggleLabel
+      else
+        selectedObject
     else
       if !value?
         field.remove()
@@ -375,7 +378,7 @@ class GitLabDropdown
       if @options.toggleLabel
         $(@el).find(".dropdown-toggle-text").text @options.toggleLabel(selectedObject)
       if value?
-        if !field.length
+        if !field.length and fieldName
           # Create hidden input for form
           input = "<input type='hidden' name='#{fieldName}' value='#{value}' />"
           if @options.inputId?
@@ -394,7 +397,7 @@ class GitLabDropdown
       selector = ".dropdown-page-one #{selector}"
 
     # simulate a click on the first link
-    $(selector).trigger "click"
+    $(selector, @dropdown).trigger "click"
 
   addArrowKeyEvent: ->
     ARROW_KEY_CODES = [38, 40]

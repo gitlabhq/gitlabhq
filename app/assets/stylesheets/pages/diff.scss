@@ -59,9 +59,14 @@
       border-collapse: separate;
       margin: 0;
       padding: 0;
+
       .line_holder td {
         line-height: $code_line_height;
         font-size: $code_font_size;
+      }
+
+      td {
+        white-space: nowrap;
       }
     }
 

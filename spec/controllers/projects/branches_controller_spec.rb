@@ -93,6 +93,20 @@ describe Projects::BranchesController do
     end
   end
 
+  describe "POST destroy with HTML format" do
+    render_views
+
+    it 'returns 303' do
+      post :destroy,
+           format: :html,
+           id: 'foo/bar/baz',
+           namespace_id: project.namespace.to_param,
+           project_id: project.to_param
+
+      expect(response.status).to eq(303)
+    end
+  end
+
   describe "POST destroy" do
     render_views
 

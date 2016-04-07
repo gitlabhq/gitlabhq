@@ -55,15 +55,15 @@ class GitPushService < BaseService
   end
 
   def update_main_language
+    # Performance can be bad so for now only check main_language once
+    # See https://gitlab.com/gitlab-org/gitlab-ce/issues/14937
+    return if @project.main_language.present?
+
     return unless is_default_branch?
     return unless push_to_new_branch? || push_to_existing_branch?
 
     current_language = @project.repository.main_language
-
-    unless current_language == @project.main_language
-      return @project.update_attributes(main_language: current_language)
-    end
-
+    @project.update_attributes(main_language: current_language)
     true
   end
 

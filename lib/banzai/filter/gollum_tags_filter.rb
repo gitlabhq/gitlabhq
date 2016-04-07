@@ -118,7 +118,7 @@ module Banzai
         end
 
         if path
-          content_tag(:img, nil, src: path)
+          content_tag(:img, nil, src: path, class: 'gfm')
         end
       end
 
@@ -144,12 +144,18 @@ module Banzai
       # if it is not.
       def process_page_link_tag(parts)
         if parts.size == 1
-          url = parts[0].strip
+          reference = parts[0].strip
         else
-          name, url = *parts.compact.map(&:strip)
+          name, reference = *parts.compact.map(&:strip)
         end
 
-        content_tag(:a, name || url, href: url)
+        if url?(reference)
+          href = reference
+        else
+          href = ::File.join(project_wiki_base_path, reference)
+        end
+
+        content_tag(:a, name || reference, href: href, class: 'gfm')
       end
 
       def project_wiki
