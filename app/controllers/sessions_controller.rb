@@ -4,7 +4,8 @@ class SessionsController < Devise::SessionsController
 
   skip_before_action :check_2fa_requirement, only: [:destroy]
 
-  prepend_before_action :authenticate_with_two_factor, only: [:create]
+  prepend_before_action :authenticate_with_two_factor,
+    if: :two_factor_enabled?, only: [:create]
   prepend_before_action :store_redirect_path, only: [:new]
   before_action :auto_sign_in_with_provider, only: [:new]
   before_action :load_recaptcha
@@ -38,10 +39,10 @@ class SessionsController < Devise::SessionsController
   end
 
   def find_user
-    if user_params[:login]
-      User.by_login(user_params[:login])
-    elsif user_params[:otp_attempt] && session[:otp_user_id]
+    if session[:otp_user_id]
       User.find(session[:otp_user_id])
+    elsif user_params[:login]
+      User.by_login(user_params[:login])
     end
   end
 
@@ -65,10 +66,12 @@ class SessionsController < Devise::SessionsController
     end
   end
 
+  def two_factor_enabled?
+    find_user.try(:two_factor_enabled?)
+  end
+
   def authenticate_with_two_factor
     user = self.resource = find_user
-
-    return unless user && user.two_factor_enabled?
 
     if user_params[:otp_attempt].present? && session[:otp_user_id]
       if valid_otp_attempt?(user)
