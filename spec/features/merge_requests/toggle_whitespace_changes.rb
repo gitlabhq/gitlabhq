@@ -9,12 +9,12 @@ feature 'Toggle Whitespace Changes', js: true, feature: true do
     visit diffs_namespace_project_merge_request_path(project.namespace, project, merge_request)
   end
 
-  it 'should have a button to toggle whitespace changes' do
+  it 'has a button to toggle whitespace changes' do
     expect(page).to have_content "Hide whitespace changes"
   end
 
   describe 'clicking "Hide whitespace changes" button' do
-    it 'should hide whitespace changes' do
+    it 'toggles the "Hide whitespace changes" button' do
       click_link "Hide whitespace changes"
       expect(page).to have_content "Show whitespace changes"
     end

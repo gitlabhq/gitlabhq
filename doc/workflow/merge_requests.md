@@ -43,7 +43,7 @@ $ git checkout origin/merge-requests/1
 
 ![MR diff](merge_requests/merge_request_diff.png)
 
-If you click to "Hide whitespace changes" button, you can see diff without whitespace changes.
+If you click the "Hide whitespace changes" button, you can see the diff without whitespace changes.
 
 ![MR diff without whitespace](merge_requests/merge_request_diff_without_whitespace.png)
 
