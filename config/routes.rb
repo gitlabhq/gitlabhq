@@ -617,6 +617,7 @@ Rails.application.routes.draw do
           # Order matters to give priority to these matches
           get '/wikis/git_access', to: 'wikis#git_access'
           get '/wikis/pages', to: 'wikis#pages', as: 'wiki_pages'
+          post '/wikis/markdown_preview', to:'wikis#markdown_preview'
           post '/wikis', to: 'wikis#create'
 
           get '/wikis/*id/history', to: 'wikis#history', as: 'wiki_history', constraints: WIKI_SLUG_ID

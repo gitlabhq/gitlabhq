@@ -60,6 +60,7 @@ module API
       #   extern_uid                        - External authentication provider UID
       #   provider                          - External provider
       #   bio                               - Bio
+      #   location                          - Location of the user
       #   admin                             - User is admin - true or false (default)
       #   can_create_group                  - User can create groups - true or false
       #   confirm                           - Require user confirmation - true (default) or false
@@ -69,7 +70,7 @@ module API
       post do
         authenticated_as_admin!
         required_attributes! [:email, :password, :name, :username]
-        attrs = attributes_for_keys [:email, :name, :password, :skype, :linkedin, :twitter, :projects_limit, :username, :bio, :can_create_group, :admin, :confirm, :external]
+        attrs = attributes_for_keys [:email, :name, :password, :skype, :linkedin, :twitter, :projects_limit, :username, :bio, :location, :can_create_group, :admin, :confirm, :external]
         admin = attrs.delete(:admin)
         confirm = !(attrs.delete(:confirm) =~ (/(false|f|no|0)$/i))
         user = User.build_user(attrs)
@@ -108,6 +109,7 @@ module API
       #   website_url                       - Website url
       #   projects_limit                    - Limit projects each user can create
       #   bio                               - Bio
+      #   location                          - Location of the user
       #   admin                             - User is admin - true or false (default)
       #   can_create_group                  - User can create groups - true or false
       #   external                          - Flags the user as external - true or false(default)
@@ -116,7 +118,7 @@ module API
       put ":id" do
         authenticated_as_admin!
 
-        attrs = attributes_for_keys [:email, :name, :password, :skype, :linkedin, :twitter, :website_url, :projects_limit, :username, :bio, :can_create_group, :admin, :external]
+        attrs = attributes_for_keys [:email, :name, :password, :skype, :linkedin, :twitter, :website_url, :projects_limit, :username, :bio, :location, :can_create_group, :admin, :external]
         user = User.find(params[:id])
         not_found!('User') unless user
 

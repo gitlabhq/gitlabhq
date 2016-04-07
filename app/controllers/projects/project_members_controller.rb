@@ -107,9 +107,14 @@ class Projects::ProjectMembersController < Projects::ApplicationController
   end
 
   def apply_import
-    giver = Project.find(params[:source_project_id])
-    status = @project.team.import(giver, current_user)
-    notice = status ? "Successfully imported" : "Import failed"
+    source_project = Project.find(params[:source_project_id])
+
+    if can?(current_user, :read_project_member, source_project)
+      status = @project.team.import(source_project, current_user)
+      notice = status ? "Successfully imported" : "Import failed"
+    else
+      return render_404
+    end
 
     redirect_to(namespace_project_project_members_path(project.namespace, project),
                 notice: notice)

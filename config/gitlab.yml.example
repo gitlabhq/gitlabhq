@@ -445,6 +445,8 @@ production: &base
       #
       # - { name: 'saml',
       #     label: 'Our SAML Provider',
+      #     groups_attribute: 'Groups',
+      #     external_groups: ['Contractors', 'Freelancers'],
       #     args: {
       #             assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback',
       #             idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
@@ -452,6 +454,7 @@ production: &base
       #             issuer: 'https://gitlab.example.com',
       #             name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:transient'
       #           } }
+      #
       # - { name: 'crowd',
       #     args: {
       #       crowd_server_url: 'CROWD SERVER URL',

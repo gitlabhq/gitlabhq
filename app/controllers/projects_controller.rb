@@ -40,6 +40,9 @@ class ProjectsController < Projects::ApplicationController
   def update
     status = ::Projects::UpdateService.new(@project, current_user, project_params).execute
 
+    # Refresh the repo in case anything changed
+    @repository = project.repository
+
     respond_to do |format|
       if status
         flash[:notice] = "Project '#{@project.name}' was successfully updated."

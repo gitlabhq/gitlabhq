@@ -2,7 +2,6 @@ image: "ruby:2.1"
 
 services:
   - mysql:latest
-  - postgres:latest
   - redis:latest
   - elasticsearch:latest
 
@@ -38,134 +37,86 @@ spec:feature:
   script:
     - RAILS_ENV=test bundle exec rake assets:precompile 2>/dev/null
     - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:feature
-  tags:
-    - ruby
-    - mysql
 
 spec:api:
   stage: test
   script:
     - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:api
-  tags:
-    - ruby
-    - mysql
 
 spec:models:
   stage: test
   script:
     - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:models
-  tags:
-    - ruby
-    - mysql
 
 spec:lib:
   stage: test
   script:
     - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:lib
-  tags:
-    - ruby
-    - mysql
 
 spec:services:
   stage: test
   script:
     - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:services
-  tags:
-    - ruby
-    - mysql
 
 spec:other:
   stage: test
   script:
     - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:other
-  tags:
-    - ruby
-    - mysql
 
 spinach:project:half:
   stage: test
   script:
     - RAILS_ENV=test bundle exec rake assets:precompile 2>/dev/null
     - RAILS_ENV=test SIMPLECOV=true bundle exec rake spinach:project:half
-  tags:
-    - ruby
-    - mysql
 
 spinach:project:rest:
   stage: test
   script:
     - RAILS_ENV=test bundle exec rake assets:precompile 2>/dev/null
     - RAILS_ENV=test SIMPLECOV=true bundle exec rake spinach:project:rest
-  tags:
-    - ruby
-    - mysql
 
 spinach:other:
   stage: test
   script:
     - RAILS_ENV=test bundle exec rake assets:precompile 2>/dev/null
     - RAILS_ENV=test SIMPLECOV=true bundle exec rake spinach:other
-  tags:
-    - ruby
-    - mysql
 
 teaspoon:
   stage: test
   script:
     - RAILS_ENV=test bundle exec teaspoon
-  tags:
-    - ruby
-    - mysql
 
 rubocop:
   stage: test
   script:
     - bundle exec rubocop
-  tags:
-    - ruby
-    - mysql
 
 scss-lint:
   stage: test
   script:
     - bundle exec rake scss_lint
-  tags:
-    - ruby
 
 brakeman:
   stage: test
   script:
     - bundle exec rake brakeman
-  tags:
-    - ruby
-    - mysql
 
 flog:
   stage: test
   script:
     - bundle exec rake flog
-  tags:
-    - ruby
-    - mysql
 
 flay:
   stage: test
   script:
     - bundle exec rake flay
-  tags:
-    - ruby
-    - mysql
 
 bundler:audit:
   stage: test
   only:
     - master
   script:
-    - "bundle exec bundle-audit update"
-    - "bundle exec bundle-audit check --ignore OSVDB-115941"
-  tags:
-    - ruby
-    - mysql
+    - "bundle exec bundle-audit check --update --ignore OSVDB-115941"
 
 # Ruby 2.2 jobs
 
@@ -181,9 +132,6 @@ spec:feature:ruby22:
     key: "ruby22"
     paths:
     - vendor
-  tags:
-    - ruby
-    - mysql
 
 spec:api:ruby22:
   stage: test
@@ -196,9 +144,6 @@ spec:api:ruby22:
     key: "ruby22"
     paths:
     - vendor
-  tags:
-    - ruby
-    - mysql
 
 spec:models:ruby22:
   stage: test
@@ -211,9 +156,6 @@ spec:models:ruby22:
     key: "ruby22"
     paths:
     - vendor
-  tags:
-    - ruby
-    - mysql
 
 spec:lib:ruby22:
   stage: test
@@ -226,9 +168,6 @@ spec:lib:ruby22:
     key: "ruby22"
     paths:
     - vendor
-  tags:
-    - ruby
-    - mysql
 
 spec:services:ruby22:
   stage: test
@@ -241,9 +180,6 @@ spec:services:ruby22:
     key: "ruby22"
     paths:
     - vendor
-  tags:
-    - ruby
-    - mysql
 
 spec:other:ruby22:
   stage: test
@@ -256,9 +192,6 @@ spec:other:ruby22:
     key: "ruby22"
     paths:
     - vendor
-  tags:
-    - ruby
-    - mysql
 
 spinach:project:half:ruby22:
   stage: test
@@ -272,9 +205,6 @@ spinach:project:half:ruby22:
     key: "ruby22"
     paths:
     - vendor
-  tags:
-    - ruby
-    - mysql
 
 spinach:project:rest:ruby22:
   stage: test
@@ -288,9 +218,6 @@ spinach:project:rest:ruby22:
     key: "ruby22"
     paths:
     - vendor
-  tags:
-    - ruby
-    - mysql
 
 spinach:other:ruby22:
   stage: test
@@ -304,10 +231,6 @@ spinach:other:ruby22:
     key: "ruby22"
     paths:
     - vendor
-  tags:
-    - ruby
-    - mysql
-
 
 notify:slack:
   stage: notifications

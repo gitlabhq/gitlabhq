@@ -125,13 +125,6 @@ p.time {
   height: 150px;
 }
 
-// Fixes alignment on notes.
-.new_note {
-  label {
-    text-align: left;
-  }
-}
-
 // Fix issue with notes & lists creating a bunch of bottom borders.
 li.note {
   img { max-width: 100% }

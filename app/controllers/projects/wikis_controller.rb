@@ -99,6 +99,20 @@ class Projects::WikisController < Projects::ApplicationController
     )
   end
 
+  def markdown_preview
+    text = params[:text]
+
+    ext = Gitlab::ReferenceExtractor.new(@project, current_user, current_user)
+    ext.analyze(text)
+
+    render json: {
+      body: view_context.markdown(text, pipeline: :wiki, project_wiki: @project_wiki),
+      references: {
+        users: ext.users.map(&:username)
+      }
+    }
+  end
+
   def git_access
   end
 
