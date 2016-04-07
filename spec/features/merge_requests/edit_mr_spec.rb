@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Create New Merge Request', feature: true do
+feature 'Edit Merge Request', feature: true do
   let(:user) { create(:user) }
   let(:project) { create(:project, :public) }
   let(:merge_request) { create(:merge_request, :with_diffs, source_project: project) }
@@ -13,15 +13,9 @@ feature 'Create New Merge Request', feature: true do
     visit edit_namespace_project_merge_request_path(project.namespace, project, merge_request)
   end
 
-  context 'editing a MR', js: true do
-    it 'should be able submit with quick_submit' do
-      fill_in "merge_request_title", with: "Orphaned MR test"
-
-      keypress = "var e = $.Event('keydown', { keyCode: 13, ctrlKey: true }); $('.merge-request-form').trigger(e);"
-      page.driver.execute_script(keypress)
-      sleep 2
-
-      expect(find('h2.title')).to have_text('Orphaned MR test')
+  context 'editing a MR' do
+    it 'form should have class js-quick-submit' do
+      expect(page).to have_selector('.js-quick-submit')
     end
   end
 end
