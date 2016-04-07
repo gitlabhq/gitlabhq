@@ -31,6 +31,7 @@ v 8.7.0 (unreleased)
   - API: Expose user location (Robert Schilling)
 
 v 8.6.5 (unreleased)
+  - Only update repository language if it is not set to improve performance
   - Check permissions when user attempts to import members from another project
 
 v 8.6.4
