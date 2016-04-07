@@ -55,7 +55,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       end
     else
       saml_user = Gitlab::Saml::User.new(oauth)
-      saml_user.save
+      saml_user.save if saml_user.changed?
       @user = saml_user.gl_user
 
       continue_login_process
