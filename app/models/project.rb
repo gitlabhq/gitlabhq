@@ -424,6 +424,19 @@ class Project < ActiveRecord::Base
     project_import_data.save
   end
 
+  def create_or_update_import_data(credentials)
+    project_import_data = import_data || build_import_data
+    project_import_data.credentials ||= {}
+    project_import_data.credentials = project_import_data.credentials.merge(credentials)
+    project_import_data.save
+  end
+
+  def update_import_data(data: nil, credentials: nil)
+    import_data.data = data if data
+    import_data.credentials = import_data.credentials.merge(credentials) if credentials
+    import_data.save
+  end
+
   def import?
     external_import? || forked?
   end

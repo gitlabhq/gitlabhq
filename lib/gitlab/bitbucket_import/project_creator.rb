@@ -23,10 +23,7 @@ module Gitlab
           import_url: "ssh://git@bitbucket.org/#{repo["owner"]}/#{repo["slug"]}.git",
         ).execute
 
-        import_data = project.import_data
-        # merge! with a bang doesn't work here
-        import_data.credentials = import_data.credentials.merge(bb_session: session_data)
-        import_data.save
+        project.update_import_data(credentials: { bb_session: session_data })
 
         project
       end
