@@ -29,6 +29,7 @@ module Ci
         expose :before_sha
         expose :allow_git_fetch
         expose :token
+        expose :plugin
 
         expose :options do |model|
           model.options

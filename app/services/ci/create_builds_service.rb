@@ -24,7 +24,8 @@ module Ci
                              :options,
                              :allow_failure,
                              :stage,
-                             :stage_idx)
+                             :stage_idx,
+                             :plugin)
 
           build_attrs.merge!(ref: ref,
                              tag: tag,

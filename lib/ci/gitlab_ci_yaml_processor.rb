@@ -53,7 +53,7 @@ module Ci
 
       # anything that doesn't have script is considered as unknown
       @config.each do |name, param|
-        raise ValidationError, "Unknown parameter: #{name}" unless param.is_a?(Hash) && param.has_key?(:script)
+        raise ValidationError, "Unknown parameter: #{name}" unless param.is_a?(Hash) && (param.has_key?(:script) || param.has_key?(:plugin))
       end
 
       unless @config.values.any?{|job| job.is_a?(Hash)}
@@ -79,14 +79,19 @@ module Ci
         except: job[:except],
         allow_failure: job[:allow_failure] || false,
         when: job[:when] || 'on_success',
-        options: {
-          image: job[:image] || @image,
-          services: job[:services] || @services,
-          artifacts: job[:artifacts],
-          cache: job[:cache] || @cache,
-          dependencies: job[:dependencies],
-        }.compact
+        plugin: job[:plugin],
+        options: job_options(job)
       }
+    end
+
+    def job_options(job)
+      job = job.except(:tags, :only, :except, :allow_failure, :when, :plugin)
+      job = job.merge(
+        image: job[:image] || @image,
+        services: job[:services] || @services,
+        cache: job[:cache] || @cache,
+      )
+      job.compact
     end
 
     def normalize_script(script)
@@ -141,13 +146,15 @@ module Ci
 
     def validate_job!(name, job)
       validate_job_name!(name)
-      validate_job_keys!(name, job)
-      validate_job_types!(name, job)
-
-      validate_job_stage!(name, job) if job[:stage]
+      validate_job_configuration!(name, job)
       validate_job_cache!(name, job) if job[:cache]
       validate_job_artifacts!(name, job) if job[:artifacts]
       validate_job_dependencies!(name, job) if job[:dependencies]
+
+      unless job[:plugin]
+        validate_job_default_keys!(name, job)
+        validate_job_default_plugin!(name, job)
+      end
     end
 
     private
@@ -158,7 +165,7 @@ module Ci
       end
     end
 
-    def validate_job_keys!(name, job)
+    def validate_job_default_keys!(name, job)
       job.keys.each do |key|
         unless ALLOWED_JOB_KEYS.include? key
           raise ValidationError, "#{name} job: unknown parameter #{key}"
@@ -166,19 +173,7 @@ module Ci
       end
     end
 
-    def validate_job_types!(name, job)
-      if !validate_string(job[:script]) && !validate_array_of_strings(job[:script])
-        raise ValidationError, "#{name} job: script should be a string or an array of a strings"
-      end
-
-      if job[:image] && !validate_string(job[:image])
-        raise ValidationError, "#{name} job: image should be a string"
-      end
-
-      if job[:services] && !validate_array_of_strings(job[:services])
-        raise ValidationError, "#{name} job: services should be an array of strings"
-      end
-
+    def validate_job_configuration!(name, job)
       if job[:tags] && !validate_array_of_strings(job[:tags])
         raise ValidationError, "#{name} job: tags parameter should be an array of strings"
       end
@@ -198,11 +193,23 @@ module Ci
       if job[:when] && !job[:when].in?(%w(on_success on_failure always))
         raise ValidationError, "#{name} job: when parameter should be on_success, on_failure or always"
       end
+
+      if job[:stage] && (!job[:stage].is_a?(String) || !job[:stage].in?(stages))
+        raise ValidationError, "#{name} job: stage parameter should be #{stages.join(", ")}"
+      end
     end
 
-    def validate_job_stage!(name, job)
-      unless job[:stage].is_a?(String) && job[:stage].in?(stages)
-        raise ValidationError, "#{name} job: stage parameter should be #{stages.join(", ")}"
+    def validate_job_default_plugin!(name, job)
+      if !validate_string(job[:script]) && !validate_array_of_strings(job[:script])
+        raise ValidationError, "#{name} job: script should be a string or an array of a strings"
+      end
+
+      if job[:image] && !validate_string(job[:image])
+        raise ValidationError, "#{name} job: image should be a string"
+      end
+
+      if job[:services] && !validate_array_of_strings(job[:services])
+        raise ValidationError, "#{name} job: services should be an array of strings"
       end
     end
 
