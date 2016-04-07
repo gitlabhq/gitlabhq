@@ -60,6 +60,7 @@ Feature: Project Commits Diff Comments
   Scenario: I have a reply button in discussions
     Given I leave a diff comment like "Typo, please fix"
     Then I should see a discussion reply button
+
   @javascript
   Scenario: I can preview with text
     Given I open a diff comment form

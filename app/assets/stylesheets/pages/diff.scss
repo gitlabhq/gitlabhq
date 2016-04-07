@@ -11,6 +11,7 @@
     padding: 10px 16px;
     color: #555;
     z-index: 10;
+    border-radius: 3px 3px 0 0;
 
     .diff-title {
       font-family: $monospace_font;
@@ -331,6 +332,10 @@
   .content-block {
     border-bottom: none;
   }
+}
+
+.files-changed {
+  border-bottom: none;
 }
 
 // Mobile
