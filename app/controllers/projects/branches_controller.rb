@@ -48,7 +48,7 @@ class Projects::BranchesController < Projects::ApplicationController
     respond_to do |format|
       format.html do
         redirect_to namespace_project_branches_path(@project.namespace,
-                                                    @project)
+                                                    @project), status: 303
       end
       format.js { render status: status[:return_code] }
     end
