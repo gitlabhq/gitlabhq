@@ -1,12 +1,8 @@
-.zennable
-  .zen-backdrop
-    - classes << ' js-gfm-input js-autosize markdown-area'
-    - if defined?(f) && f
-      = f.text_area attr, class: classes
-    - else
-      = text_area_tag attr, nil, class: classes
-    %a.js-zen-enter(tabindex="-1" href="#")
-      = icon('expand')
-      Edit in fullscreen
-    %a.js-zen-leave(tabindex="-1" href="#")
-      = icon('compress')
+.zen-backdrop
+  - classes << ' js-gfm-input js-autosize markdown-area'
+  - if defined?(f) && f
+    = f.text_area attr, class: classes, placeholder: "Write a comment or drag your files here..."
+  - else
+    = text_area_tag attr, nil, class: classes, placeholder: "Write a comment or drag your files here..."
+  %a.zen-cotrol.zen-control-leave.js-zen-leave{ href: "#" }
+    = icon('compress')

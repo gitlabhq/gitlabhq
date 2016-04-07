@@ -214,4 +214,12 @@ module EventsHelper
       end
     end
   end
+
+  def event_row_class(event)
+    if event.body?
+      "event-block"
+    else
+      "event-inline"
+    end
+  end
 end

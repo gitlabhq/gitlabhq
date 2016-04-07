@@ -72,6 +72,23 @@ describe Projects::ImportService, services: true do
         expect(result[:status]).to eq :success
       end
 
+      it 'flushes various caches' do
+        expect_any_instance_of(Gitlab::Shell).to receive(:import_repository).
+          with(project.path_with_namespace, project.import_url).
+          and_return(true)
+
+        expect_any_instance_of(Gitlab::GithubImport::Importer).to receive(:execute).
+          and_return(true)
+
+        expect_any_instance_of(Repository).to receive(:expire_emptiness_caches).
+          and_call_original
+
+        expect_any_instance_of(Repository).to receive(:expire_exists_cache).
+          and_call_original
+
+        subject.execute
+      end
+
       it 'fails if importer fails' do
         expect_any_instance_of(Gitlab::Shell).to receive(:import_repository).with(project.path_with_namespace, project.import_url).and_return(true)
         expect_any_instance_of(Gitlab::GithubImport::Importer).to receive(:execute).and_return(false)

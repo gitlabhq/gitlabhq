@@ -214,7 +214,7 @@ gem 'jquery-rails',       '~> 4.0.0'
 gem 'jquery-scrollto-rails', '~> 1.4.3'
 gem 'jquery-ui-rails',    '~> 5.0.0'
 gem 'raphael-rails',      '~> 2.1.2'
-gem 'request_store',      '~> 1.2.0'
+gem 'request_store',      '~> 1.3.0'
 gem 'select2-rails',      '~> 3.5.9'
 gem 'virtus',             '~> 1.0.1'
 gem 'net-ssh',            '~> 3.0.1'
@@ -290,7 +290,7 @@ group :development, :test do
   gem 'rubocop', '~> 0.38.0', require: false
   gem 'scss_lint', '~> 0.47.0', require: false
   gem 'coveralls',  '~> 0.8.2', require: false
-  gem 'simplecov', '~> 0.10.0', require: false
+  gem 'simplecov', '~> 0.11.0', require: false
   gem 'flog', require: false
   gem 'flay', require: false
   gem 'bundler-audit', require: false

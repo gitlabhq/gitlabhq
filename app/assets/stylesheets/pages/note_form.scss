@@ -1,10 +1,6 @@
 /**
  * Note Form
  */
-
-.comment-btn {
-  @extend .btn-create;
-}
 .reply-btn {
   @extend .btn-primary;
   margin: 10px $gl-padding;
@@ -17,16 +13,17 @@
 }
 .diff-file,
 .discussion {
-  .new_note {
+  .new-note {
     margin: 0;
     border: none;
   }
 }
-.new_note {
+
+.new-note {
   display: none;
 }
 
-.new_note, .note-edit-form {
+.new-note, .note-edit-form {
   .note-form-actions {
     margin-top: $gl-padding;
   }
@@ -40,19 +37,16 @@
   img {
     max-width: 100%;
   }
-
-  .note_text {
-    width: 100%;
-  }
-
-  .comment-hints {
-    margin-top: -12px;
-  }
 }
 
-/* loading indicator */
-.notes-busy {
-  margin: 18px;
+.note-textarea {
+  padding: 10px 0;
+  font-family: $regular_font;
+  border: 0;
+
+  &:focus {
+    outline: 0;
+  }
 }
 
 .note-image-attach {
@@ -62,36 +56,27 @@
 }
 
 .common-note-form {
-  margin: 0;
-  background: #fff;
-  padding: $gl-padding;
-  margin-left: -$gl-padding;
-  margin-right: -$gl-padding;
-  margin-bottom: -$gl-padding;
-}
+  .md-area {
+    padding: $gl-padding-top $gl-padding;
+    border: 1px solid $note-form-border-color;
+    border-radius: $border-radius-base;
 
-.note-form-actions {
-  .note-form-option {
-    margin-top: 8px;
-    margin-left: 30px;
-    @extend .pull-left;
-  }
+    &.is-focused {
+      border-color: $focus-border-color;
+      box-shadow: 0 0 2px rgba(#000, .2),
+                  0 0 4px rgba($focus-border-color, .4);
 
-  .js-notify-commit-author {
-    float: left;
-  }
-
-  .write-preview-btn {
-    // makes the "absolute" position for links relative to this
-    position: relative;
-
-    // preview/edit buttons
-    > a {
-      position: absolute;
-      right: 5px;
-      top: 8px;
+      .comment-toolbar,
+      .nav-links {
+        border-color: $focus-border-color;
+      }
     }
   }
+}
+
+.discussion-form {
+  padding: $gl-padding-top $gl-padding;
+  background-color: #fff;
 }
 
 .note-edit-form {
@@ -152,11 +137,49 @@
   }
 }
 
-.comment-hints {
-  color: #999;
-  background: #fff;
-  padding: 7px;
-  margin-top: -7px;
-  border: 1px solid $border-color;
-  font-size: 13px;
+.comment-toolbar {
+  padding-top: $gl-padding-top;
+  color: $note-toolbar-color;
+  border-top: 1px solid $border-color;
+}
+
+.toolbar-button {
+  padding: 0;
+  background: none;
+  border: 0;
+  font-size: 14px;
+  line-height: 16px;
+
+  &:hover,
+  &:focus {
+    color: $gl-link-color;
+    outline: 0;
+  }
+
+  @media (min-width: $screen-md-min) {
+    float: left;
+    margin-right: $gl-padding;
+
+    &:last-child {
+      float: right;
+      margin-right: 0;
+    }
+  }
+}
+
+.toolbar-button-icon {
+  position: relative;
+  top: 1px;
+  margin-right: 3px;
+  color: inherit;
+  font-size: 16px;
+}
+
+.toolbar-text {
+  font-size: 14px;
+  line-height: 16px;
+
+  @media (min-width: $screen-md-min) {
+    float: left;
+  }
 }

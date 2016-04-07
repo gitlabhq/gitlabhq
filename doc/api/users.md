@@ -69,6 +69,7 @@ GET /users
     "state": "blocked",
     "created_at": "2012-05-23T08:01:01Z",
     "bio": null,
+    "location": null,
     "skype": "",
     "linkedin": "",
     "twitter": "",
@@ -126,6 +127,7 @@ Parameters:
   "created_at": "2012-05-23T08:00:58Z",
   "is_admin": false,
   "bio": null,
+  "location": null,
   "skype": "",
   "linkedin": "",
   "twitter": "",
@@ -154,6 +156,7 @@ Parameters:
   "confirmed_at": "2012-05-23T08:00:58Z",
   "last_sign_in_at": "2015-03-23T08:00:58Z",
   "bio": null,
+  "location": null,
   "skype": "",
   "linkedin": "",
   "twitter": "",
@@ -191,6 +194,7 @@ Parameters:
 - `extern_uid` (optional)       - External UID
 - `provider` (optional)         - External provider name
 - `bio` (optional)              - User's biography
+- `location` (optional)         - User's location
 - `admin` (optional)            - User is admin - true or false (default)
 - `can_create_group` (optional) - User can create groups - true or false
 - `confirm` (optional)          - Require confirmation - true (default) or false
@@ -218,6 +222,7 @@ Parameters:
 - `extern_uid`                  - External UID
 - `provider`                    - External provider name
 - `bio`                         - User's biography
+- `location` (optional)         - User's location
 - `admin` (optional)            - User is admin - true or false (default)
 - `can_create_group` (optional) - User can create groups - true or false
 - `external` (optional)         - Flags the user as external - true or false(default)
@@ -260,6 +265,7 @@ GET /user
   "state": "active",
   "created_at": "2012-05-23T08:00:58Z",
   "bio": null,
+  "location": null,
   "skype": "",
   "linkedin": "",
   "twitter": "",

@@ -19,6 +19,7 @@ module Issuable
     has_many :notes, as: :noteable, dependent: :destroy
     has_many :label_links, as: :target, dependent: :destroy
     has_many :labels, through: :label_links
+    has_many :todos, as: :target, dependent: :destroy
 
     validates :author, presence: true
     validates :title, presence: true, length: { within: 0..255 }
@@ -41,7 +42,7 @@ module Issuable
 
     scope :join_project, -> { joins(:project) }
     scope :references_project, -> { references(:project) }
-    scope :non_archived, -> { join_project.merge(Project.non_archived.only(:where)) }
+    scope :non_archived, -> { join_project.where(projects: { archived: false }) }
 
     delegate :name,
              :email,

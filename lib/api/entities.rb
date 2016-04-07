@@ -8,14 +8,14 @@ module API
       expose :id, :state, :avatar_url
 
       expose :web_url do |user, options|
-        Gitlab::Application.routes.url_helpers.user_url(user)
+        Gitlab::Routing.url_helpers.user_url(user)
       end
     end
 
     class User < UserBasic
       expose :created_at
       expose :is_admin?, as: :is_admin
-      expose :bio, :skype, :linkedin, :twitter, :website_url
+      expose :bio, :location, :skype, :linkedin, :twitter, :website_url
     end
 
     class Identity < Grape::Entity
@@ -89,7 +89,7 @@ module API
       expose :avatar_url
 
       expose :web_url do |group, options|
-        Gitlab::Application.routes.url_helpers.group_url(group)
+        Gitlab::Routing.url_helpers.group_url(group)
       end
     end
 
@@ -334,7 +334,6 @@ module API
       expose :updated_at
       expose :home_page_url
       expose :default_branch_protection
-      expose :twitter_sharing_enabled
       expose :restricted_visibility_levels
       expose :max_attachment_size
       expose :session_expire_delay

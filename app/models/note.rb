@@ -311,7 +311,7 @@ class Note < ActiveRecord::Base
     for_merge_request? && for_diff_line?
   end
 
-  def for_project_snippet?
+  def for_snippet?
     noteable_type == "Snippet"
   end
 
