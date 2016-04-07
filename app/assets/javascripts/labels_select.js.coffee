@@ -243,7 +243,10 @@ class @LabelsSelect
           $value.removeAttr('style')
           if $dropdown.hasClass 'js-multiselect'
             if $dropdown.hasClass('js-filter-submit') and (isIssueIndex or isMRIndex)
-              Issues.filterResults $dropdown.closest('form')
+              selectedLabels = $dropdown
+                .closest('form')
+                .find("input[type='hidden'][name='#{$dropdown.data('field-name')}']")
+              Issues.filterResults $dropdown.closest('form'), selectedLabels
             else if $dropdown.hasClass('js-filter-submit')
               $dropdown.closest('form').submit()
             else
@@ -254,15 +257,18 @@ class @LabelsSelect
           page = $('body').data 'page'
           isIssueIndex = page is 'projects:issues:index'
           isMRIndex = page is page is 'projects:merge_requests:index'
-
+          console.log 'clicked'
           if $dropdown.hasClass('js-filter-submit') and (isIssueIndex or isMRIndex)
-            selectedLabel = label.title
-
-            Issues.filterResults $dropdown.closest('form')
+            if not $dropdown.hasClass 'js-multiselect'
+              selectedLabel = label.title
+              Issues.filterResults $dropdown.closest('form')
           else if $dropdown.hasClass 'js-filter-submit'
+            console.log 'clicked else if'
             $dropdown.closest('form').submit()
           else
+            console.log 'clicked else'
             if $dropdown.hasClass 'js-multiselect'
+              console.log 'clicked else --> if'
               return
             else
               saveLabelData()

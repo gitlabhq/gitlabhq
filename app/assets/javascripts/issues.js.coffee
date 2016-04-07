@@ -49,16 +49,14 @@
         Issues.filterResults $("#issue_search_form")
       , 500)
 
-  filterResults: (form) =>
+  filterResults: (form, inputs) =>
+    console.log('form', form)
     $('.issues-holder, .merge-requests-holder').css("opacity", '0.5')
     formAction = form.attr('action')
-    console.log form.find("input[type='hidden'][name='label_names[]']")
     formData = form.serialize()
-    console.log 'formData', formData
     issuesUrl = formAction
     issuesUrl += ("#{if formAction.indexOf("?") < 0 then '?' else '&'}")
     issuesUrl += formData
-
     $.ajax
       type: "GET"
       url: formAction
