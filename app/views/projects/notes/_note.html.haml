@@ -11,8 +11,7 @@
               = link_to '#', title: 'Award emoji', class: 'note-award-control js-add-award', data: { award_menu_url: emojis_path, position: "right" } do
                 = icon('smile-o', {class: "award-control-icon award-control-icon-normal"})
                 = icon('spinner spin', {class: "award-control-icon award-control-icon-loading"})
-          - if note_editable?(note)
-            = link_to '#', title: 'Edit comment', class: 'js-note-edit' do
+
         = link_to_member(note.project, note.author, avatar: false)
         .inline.note-headline-light
           = "#{note.author.to_reference} commented"

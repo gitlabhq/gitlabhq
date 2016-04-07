@@ -24,6 +24,7 @@ module Issues
         @new_issue = create_new_issue
 
         rewrite_notes
+        rewrite_award_emoji(issue, @new_issue)
         add_note_moved_from
 
         # Old issue tasks
@@ -58,6 +59,15 @@ module Issues
                        updated_at: note.updated_at }
 
         new_note.update(new_params)
+        rewrite_award_emoji(note, new_note)
+      end
+    end
+
+    def rewrite_award_emoji(awardable, new_awardable)
+      awardable.award_emoji.each do |award|
+        new_award = award.dup
+        new_award.awardable = new_awardable
+        new_award.save
       end
     end
 

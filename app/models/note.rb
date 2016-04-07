@@ -27,8 +27,6 @@ class Note < ActiveRecord::Base
   include Mentionable
   include Awardable
 
-  attr_accessor :award_emoji
-
   default_value_for :system, false
 
   attr_mentionable :note, cache: true, pipeline: :note
