@@ -160,7 +160,7 @@ describe Banzai::Filter::MilestoneReferenceFilter, lib: true do
 
   describe 'cross project milestone references' do
     let(:another_project)  { create(:empty_project, :public) }
-    let(:project_name) { another_project.name_with_namespace }
+    let(:project_path) { another_project.path_with_namespace }
     let(:milestone) { create(:milestone, project: another_project) }
     let(:reference) { milestone.to_reference(project) }
 
@@ -174,13 +174,13 @@ describe Banzai::Filter::MilestoneReferenceFilter, lib: true do
     end
 
     it 'contains cross project content' do
-      expect(result.css('a').first.text).to eq "#{milestone.name} in #{project_name}"
+      expect(result.css('a').first.text).to eq "#{milestone.name} in #{project_path}"
     end
 
     it 'escapes the name attribute' do
       allow_any_instance_of(Milestone).to receive(:title).and_return(%{"></a>whatever<a title="})
       doc = reference_filter("See #{reference}")
-      expect(doc.css('a').first.text).to eq "#{milestone.name} in #{project_name}"
+      expect(doc.css('a').first.text).to eq "#{milestone.name} in #{project_path}"
     end
   end
 end

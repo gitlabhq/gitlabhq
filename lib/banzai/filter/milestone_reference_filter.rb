@@ -39,7 +39,7 @@ module Banzai
         if context[:project] == object.project
           super
         else
-          "#{escape_once(super)} <i>in #{escape_once(object.project.name_with_namespace)}</i>".
+          "#{escape_once(super)} <i>in #{escape_once(object.project.path_with_namespace)}</i>".
             html_safe
         end
       end
