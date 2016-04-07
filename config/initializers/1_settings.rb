@@ -27,6 +27,30 @@ class Settings < Settingslogic
       ].join('')
     end
 
+    def build_registry_api_url
+      if on_standard_port?(registry)
+        custom_port = nil
+      else
+        custom_port = ":#{registry.port}"
+      end
+      [ registry.protocol,
+        "://",
+        registry.host,
+        custom_port
+      ].join('')
+    end
+
+    def build_registry_host_with_port
+      if on_standard_port?(registry)
+        custom_port = nil
+      else
+        custom_port = ":#{registry.port}"
+      end
+      [ registry.host,
+        custom_port
+      ].join('')
+    end
+
     def build_gitlab_shell_ssh_path_prefix
       user_host = "#{gitlab_shell.ssh_user}@#{gitlab_shell.ssh_host}"
 
@@ -215,6 +239,19 @@ Settings['artifacts'] ||= Settingslogic.new({})
 Settings.artifacts['enabled']      = true if Settings.artifacts['enabled'].nil?
 Settings.artifacts['path']         = File.expand_path(Settings.artifacts['path'] || File.join(Settings.shared['path'], "artifacts"), Rails.root)
 Settings.artifacts['max_size']    ||= 100 # in megabytes
+
+#
+# Registry
+#
+Settings['registry'] ||= Settingslogic.new({})
+Settings.registry['registry']     = false if Settings.registry['enabled'].nil?
+Settings.registry['path']         = File.expand_path(Settings.registry['path'] || File.join(Settings.shared['path'], "registry"), Rails.root)
+Settings.registry['host']         ||= "example.com"
+Settings.registry['https']        = false if Settings.registry['https'].nil?
+Settings.registry['port']         ||= Settings.registry.https ? 443 : 80
+Settings.registry['protocol']     ||= Settings.registry.https ? "https" : "http"
+Settings.registry['api_url']      ||= Settings.send(:build_registry_api_url)
+Settings.registry['host_port']    ||= Settings.send(:build_registry_host_with_port)
 
 #
 # Git LFS
