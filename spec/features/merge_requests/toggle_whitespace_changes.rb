@@ -15,7 +15,7 @@ feature 'Toggle Whitespace Changes', js: true, feature: true do
 
   describe 'clicking "Hide whitespace changes" button' do
     it 'should hide whitespace changes' do
-      find('a', text: "Hide whitespace changes").click
+      click_link "Hide whitespace changes"
       expect(page).to have_content "Show whitespace changes"
     end
   end
