@@ -1,4 +1,12 @@
 %ul.nav.nav-sidebar
+  = nav_link do
+    = link_to root_path, title: 'Go to dashboard', class: 'back-link' do
+      = icon('caret-square-o-left fw')
+      %span
+        Go to dashboard
+
+  %li.separate-item
+
   = nav_link(path: 'profiles#show', html_options: {class: 'home'}) do
     = link_to profile_path, title: 'Profile Settings' do
       = icon('user fw')

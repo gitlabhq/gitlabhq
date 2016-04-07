@@ -33,15 +33,10 @@
       background: $color;
     }
 
-    .complex-sidebar .nav-primary {
-      border-right: 1px solid lighten($color, 3%);
-    }
-
     .sidebar-wrapper {
       background: $color-darker;
 
       .sidebar-user {
-        border-top: 1px solid lighten($color, 3%);
         background: $color-darker;
         color: $color-light;
 
@@ -67,6 +62,7 @@
 
         .count {
           color: $color-light;
+          background: $color-dark;
         }
       }
 
