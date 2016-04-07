@@ -26,6 +26,7 @@ describe Gitlab::GithubImport::Client, lib: true do
     end
 
     it 'uses supplied value' do
+      expect(client.client.options[:connection_opts][:ssl]).to eq({ verify: false })
       expect(client.api.connection_options[:ssl]).to eq({ verify: false })
     end
   end

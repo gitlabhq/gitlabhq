@@ -7,7 +7,7 @@ module Gitlab
         @client = ::OAuth2::Client.new(
           config.app_id,
           config.app_secret,
-          github_options
+          github_options.merge(ssl: { verify: config['verify_ssl'] })
         )
 
         if access_token
