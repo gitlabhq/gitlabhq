@@ -15,6 +15,8 @@ class @MergeRequestWidget
     @pollCIStatus()
     notifyPermissions()
 
+  setOpts: (@opts) ->
+
   mergeInProgress: (deleteSourceBranch = false)->
     $.ajax
       type: 'GET'
@@ -48,7 +50,7 @@ class @MergeRequestWidget
       @getCIStatus(true)
 
       @readyForCICheck = false
-    ), 5000
+    ), 10000
 
   getCIStatus: (showNotification) ->
     _this = @
@@ -60,6 +62,10 @@ class @MergeRequestWidget
       if @firstCICheck
         @firstCICheck = false
         @opts.ci_status = data.status
+
+      if @opts.ci_status is ''
+        @opts.ci_status = data.status
+        return
 
       if data.status isnt @opts.ci_status
         @showCIStatus data.status
