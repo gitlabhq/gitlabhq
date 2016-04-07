@@ -29,6 +29,7 @@ v 8.7.0 (unreleased)
   - Fix admin/projects when using visibility levels on search (PotHix)
   - Build status notifications
   - API: Expose user location (Robert Schilling)
+  - ClosingIssueExtractor regex now also works with colons. e.g. "Fixes: #1234" !3591
 
 v 8.6.5 (unreleased)
   - Only update repository language if it is not set to improve performance
