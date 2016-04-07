@@ -30,6 +30,7 @@ v 8.7.0 (unreleased)
   - Build status notifications
   - API: Expose user location (Robert Schilling)
   - ClosingIssueExtractor regex now also works with colons. e.g. "Fixes: #1234" !3591
+  - Update number of Todos in the sidebar when it's marked as "Done". !3600
 
 v 8.6.5 (unreleased)
   - Only update repository language if it is not set to improve performance
