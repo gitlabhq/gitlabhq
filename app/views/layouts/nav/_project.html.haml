@@ -38,6 +38,13 @@
           Builds
           %span.count.ci_counter= number_with_delimiter(@project.builds.running_or_pending.count(:all))
 
+  - if project_nav_tab? :images
+    = nav_link(controller: %w(images)) do
+      = link_to project_images_path(@project), title: 'Images', class: 'shortcuts-images' do
+        = icon('image fw')
+        %span
+          Images
+
   - if project_nav_tab? :graphs
     = nav_link(controller: %w(graphs)) do
       = link_to namespace_project_graph_path(@project.namespace, @project, current_ref), title: 'Graphs',  class: 'shortcuts-graphs' do

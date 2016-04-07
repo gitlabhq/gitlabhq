@@ -1,0 +1,37 @@
+- page_title "Images"
+= render "header_title"
+
+.top-area
+  .nav-controls
+
+.gray-content-block
+  A list of Docker Images for this project
+
+%ul.content-list
+  - if @tags.blank?
+    %li
+      .nothing-here-block No images to show
+  - else
+    .table-holder
+      %table.table.builds
+        %thead
+          %tr
+            %th Name
+            %th Layers
+            %th Size
+            %th
+
+        - @tags.each do |tag|
+          - details = @registry.tag(tag)
+          %tr
+            %td
+              = link_to namespace_project_image_path(@project.namespace, @project, tag) do
+                = tag
+            %td
+              = details['fsLayers'].length
+            %td
+              = number_to_human_size(details['fsLayers'].inject(0) { |sum, d| sum + @registry.blob_size(d['blobSum']) }.bytes)
+            %td.content
+              .controls.hidden-xs.pull-right
+                = link_to namespace_project_image_path(@project.namespace, @project, tag), class: 'btn btn-remove has-tooltip', title: "Remove", method: :delete do
+                  = icon("trash cred")

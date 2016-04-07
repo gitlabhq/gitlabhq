@@ -8,3 +8,10 @@ Mime::Type.register_alias "text/plain", :diff
 Mime::Type.register_alias "text/plain", :patch
 Mime::Type.register_alias 'text/html',  :markdown
 Mime::Type.register_alias 'text/html',  :md
+#Mime::Type.unregister :json
+Mime::Type.register_alias 'application/vnd.docker.distribution.manifest.v1+prettyjws', :json
+#Mime::Type.register 'application/json', :json, %w( text/plain text/x-json application/jsonrequest )
+
+ActionDispatch::ParamsParser::DEFAULT_PARSERS[Mime::Type.lookup('application/vnd.docker.distribution.manifest.v1+prettyjws')]=lambda do |body|
+  JSON.parse(body)
+end

@@ -196,6 +196,7 @@ class Ability
         :read_commit_status,
         :read_build,
         :read_pipeline,
+        :read_image,
       ]
     end
 
@@ -211,7 +212,9 @@ class Ability
         :update_pipeline,
         :create_merge_request,
         :create_wiki,
-        :push_code
+        :push_code,
+        :create_image,
+        :update_image,
       ]
     end
 
@@ -238,7 +241,8 @@ class Ability
         :admin_project,
         :admin_commit_status,
         :admin_build,
-        :admin_pipeline
+        :admin_pipeline,
+        :admin_image,
       ]
     end
 

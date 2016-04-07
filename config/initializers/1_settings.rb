@@ -28,20 +28,20 @@ class Settings < Settingslogic
     end
 
     def build_registry_api_url
-      if on_standard_port?(registry)
+      if registry.port.to_i == (registry.https ? 443 : 80)
         custom_port = nil
       else
         custom_port = ":#{registry.port}"
       end
       [ registry.protocol,
         "://",
-        registry.host,
+        registry.internal_host,
         custom_port
       ].join('')
     end
 
     def build_registry_host_with_port
-      if on_standard_port?(registry)
+      if registry.port.to_i == (registry.https ? 443 : 80)
         custom_port = nil
       else
         custom_port = ":#{registry.port}"
@@ -210,6 +210,7 @@ Settings.gitlab.default_projects_features['merge_requests'] = true if Settings.g
 Settings.gitlab.default_projects_features['wiki']           = true if Settings.gitlab.default_projects_features['wiki'].nil?
 Settings.gitlab.default_projects_features['snippets']       = false if Settings.gitlab.default_projects_features['snippets'].nil?
 Settings.gitlab.default_projects_features['builds']         = true if Settings.gitlab.default_projects_features['builds'].nil?
+Settings.gitlab.default_projects_features['images']         = true if Settings.gitlab.default_projects_features['images'].nil?
 Settings.gitlab.default_projects_features['visibility_level']    = Settings.send(:verify_constant, Gitlab::VisibilityLevel, Settings.gitlab.default_projects_features['visibility_level'], Gitlab::VisibilityLevel::PRIVATE)
 Settings.gitlab['repository_downloads_path'] = File.join(Settings.shared['path'], 'cache/archive') if Settings.gitlab['repository_downloads_path'].nil?
 Settings.gitlab['restricted_signup_domains'] ||= []
@@ -247,6 +248,7 @@ Settings['registry'] ||= Settingslogic.new({})
 Settings.registry['registry']     = false if Settings.registry['enabled'].nil?
 Settings.registry['path']         = File.expand_path(Settings.registry['path'] || File.join(Settings.shared['path'], "registry"), Rails.root)
 Settings.registry['host']         ||= "example.com"
+Settings.registry['internal_host']||= "localhost"
 Settings.registry['https']        = false if Settings.registry['https'].nil?
 Settings.registry['port']         ||= Settings.registry.https ? 443 : 80
 Settings.registry['protocol']     ||= Settings.registry.https ? "https" : "http"

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160331133914) do
+ActiveRecord::Schema.define(version: 20160407120251) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -44,7 +44,6 @@ ActiveRecord::Schema.define(version: 20160331133914) do
     t.datetime "updated_at"
     t.string   "home_page_url"
     t.integer  "default_branch_protection",         default: 2
-    t.boolean  "twitter_sharing_enabled",           default: true
     t.text     "restricted_visibility_levels"
     t.boolean  "version_check_enabled",             default: true
     t.integer  "max_attachment_size",               default: 10,          null: false
@@ -169,6 +168,10 @@ ActiveRecord::Schema.define(version: 20160331133914) do
     t.text     "yaml_errors"
     t.datetime "committed_at"
     t.integer  "gl_project_id"
+    t.string   "status"
+    t.datetime "started_at"
+    t.datetime "finished_at"
+    t.string   "action"
   end
 
   add_index "ci_commits", ["gl_project_id"], name: "index_ci_commits_on_gl_project_id", using: :btree
@@ -307,11 +310,20 @@ ActiveRecord::Schema.define(version: 20160331133914) do
   add_index "ci_tags", ["name"], name: "index_ci_tags_on_name", unique: true, using: :btree
 
   create_table "ci_trigger_requests", force: :cascade do |t|
-    t.integer  "trigger_id", null: false
+    t.integer  "trigger_id"
     t.text     "variables"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "commit_id"
+    t.string   "sha"
+    t.string   "before_sha"
+    t.string   "ref"
+    t.string   "action"
+    t.string   "status"
+    t.datetime "started_at"
+    t.datetime "finished_at"
+    t.integer  "project_id"
+    t.string   "origin_ref"
   end
 
   create_table "ci_triggers", force: :cascade do |t|
@@ -732,6 +744,7 @@ ActiveRecord::Schema.define(version: 20160331133914) do
     t.boolean  "public_builds",          default: true,     null: false
     t.string   "main_language"
     t.integer  "pushes_since_gc",        default: 0
+    t.boolean  "images_enabled"
   end
 
   add_index "projects", ["builds_enabled", "shared_runners_enabled"], name: "index_projects_on_builds_enabled_and_shared_runners_enabled", using: :btree
