@@ -831,6 +831,10 @@ class User < ActiveRecord::Base
     end
   end
 
+  def notification_settings_for(source)
+    notification_settings.find_or_initialize_by(source: source)
+  end
+
   private
 
   def projects_union

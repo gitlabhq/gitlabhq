@@ -105,7 +105,7 @@ class ProjectsController < Projects::ApplicationController
           @membership = @project.team.find_member(current_user.id)
 
           if @membership
-            @notification_setting = current_user.notification_settings.find_or_initialize_by(source: @project)
+            @notification_setting = current_user.notification_settings_for(@project)
           end
         end
 
