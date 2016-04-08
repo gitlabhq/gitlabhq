@@ -12,6 +12,6 @@ class MigrateNewNotificationSetting < ActiveRecord::Migration
   end
 
   def down
-    NotificationSetting.delete_all
+    execute "DELETE FROM notification_settings"
   end
 end
