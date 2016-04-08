@@ -2,12 +2,12 @@ require 'spec_helper'
 
 describe API::API, api: true  do
   include ApiHelpers
-  let(:user) { create(:user) }
-  let(:non_member) { create(:user) }
-  let(:author) { create(:author) }
-  let(:assignee) { create(:assignee) }
-  let(:admin) { create(:admin) }
-  let!(:project) { create(:project, :public, namespace: user.namespace ) }
+  let(:user)        { create(:user) }
+  let(:non_member)  { create(:user) }
+  let(:author)      { create(:author) }
+  let(:assignee)    { create(:assignee) }
+  let(:admin)       { create(:user, :admin) }
+  let!(:project)    { create(:project, :public, namespace: user.namespace ) }
   let!(:closed_issue) do
     create :closed_issue,
            author: user,
@@ -318,6 +318,17 @@ describe API::API, api: true  do
         'is too long (maximum is 255 characters)'
       ])
     end
+
+    context 'when an admin or owner makes the request' do
+      it "accepts the creation date to be set" do
+        post api("/projects/#{project.id}/issues", user),
+          title: 'new issue', labels: 'label, label2', created_at: 2.weeks.ago
+
+        expect(response.status).to eq(201)
+        # this take about a second, so probably not equal
+        expect(Time.parse(json_response['created_at'])).to be <= 2.weeks.ago
+      end
+    end
   end
 
   describe 'POST /projects/:id/issues with spam filtering' do
@@ -469,9 +480,25 @@ describe API::API, api: true  do
   end
 
   describe "DELETE /projects/:id/issues/:issue_id" do
-    it "should delete a project issue" do
-      delete api("/projects/#{project.id}/issues/#{issue.id}", user)
-      expect(response.status).to eq(405)
+    it "rejects a non member from deleting an issue" do
+      delete api("/projects/#{project.id}/issues/#{issue.id}", non_member)
+      expect(response.status).to be(403)
+    end
+
+    it "rejects a developer from deleting an issue" do
+      delete api("/projects/#{project.id}/issues/#{issue.id}", author)
+      expect(response.status).to be(403)
+    end
+
+    context "when the user is project owner" do
+      let(:owner)     { create(:user) }
+      let(:project)   { create(:project, namespace: owner.namespace) }
+
+      it "deletes the issue if an admin requests it" do
+        delete api("/projects/#{project.id}/issues/#{issue.id}", owner)
+        expect(response.status).to eq(200)
+        expect(json_response['state']).to eq 'opened'
+      end
     end
   end
 end

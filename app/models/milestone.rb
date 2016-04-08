@@ -79,17 +79,17 @@ class Milestone < ActiveRecord::Base
   end
 
   def self.link_reference_pattern
-    super("milestones", /(?<milestone>\d+)/)
+    @link_reference_pattern ||= super("milestones", /(?<milestone>\d+)/)
   end
 
   def self.upcoming
-    self.where('due_date > ?', Time.now).order(due_date: :asc).first
+    self.where('due_date > ?', Time.now).reorder(due_date: :asc).first
   end
 
   def to_reference(from_project = nil)
     escaped_title = self.title.gsub("]", "\\]")
 
-    h = Gitlab::Application.routes.url_helpers
+    h = Gitlab::Routing.url_helpers
     url = h.namespace_project_milestone_url(self.project.namespace, self.project, self)
 
     "[#{escaped_title}](#{url})"

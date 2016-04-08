@@ -74,14 +74,14 @@ class Commit
   #
   # This pattern supports cross-project references.
   def self.reference_pattern
-    %r{
+    @reference_pattern ||= %r{
       (?:#{Project.reference_pattern}#{reference_prefix})?
       (?<commit>\h{7,40})
     }x
   end
 
   def self.link_reference_pattern
-    super("commit", /(?<commit>\h{7,40})/)
+    @link_reference_pattern ||= super("commit", /(?<commit>\h{7,40})/)
   end
 
   def to_reference(from_project = nil)
@@ -230,7 +230,7 @@ class Commit
   end
 
   def revert_message
-    %Q{Revert "#{title}"\n\n#{revert_description}}
+    %Q{Revert "#{title.strip}"\n\n#{revert_description}}
   end
 
   def reverts_commit?(commit)

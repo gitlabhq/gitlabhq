@@ -1,10 +1,94 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
-v 8.6.0 (unreleased)
-  - Fix bug where wrong commit ID was being used in a merge request diff to show old image (Stan Hu)
+v 8.7.0 (unreleased)
+  - All images in discussions and wikis now link to their source files !3464 (Connor Shea).
+  - Improved Markdown rendering performance !3389 (Yorick Peterse)
+  - Don't attempt to look up an avatar in repo if repo directory does not exist (Stan Hu)
+  - Preserve time notes/comments have been updated at when moving issue
   - Make HTTP(s) label consistent on clone bar (Stan Hu)
+  - Expose label description in API (Mariusz Jachimowicz)
+  - Allow back dating on issues when created through the API
+  - Fix Error 500 after renaming a project path (Stan Hu)
+  - Fix avatar stretching by providing a cropping feature
+  - Add endpoints to archive or unarchive a project !3372
+  - Add links to CI setup documentation from project settings and builds pages
+  - Handle nil descriptions in Slack issue messages (Stan Hu)
+  - Add default scope to projects to exclude projects pending deletion
+  - Ensure empty recipients are rejected in BuildsEmailService
+  - Implement 'Groups View' as an option for dashboard preferences !3379 (Elias W.)
+  - Implement 'TODOs View' as an option for dashboard preferences !3379 (Elias W.)
+  - Gracefully handle notes on deleted commits in merge requests (Stan Hu)
+  - Fix creation of merge requests for orphaned branches (Stan Hu)
+  - Fall back to `In-Reply-To` and `References` headers when sub-addressing is not available (David Padilla)
+  - Remove "Congratulations!" tweet button on newly-created project. (Connor Shea)
+  - Improved UX of the navigation sidebar
+  - Build status notifications
+  - API: Ability to retrieve a specific tag (Robert Schilling)
+  - API: Expose user location (Robert Schilling)
+
+v 8.6.5 (unreleased)
+  - Check permissions when user attempts to import members from another project
+
+v 8.6.4
+  - Don't attempt to fetch any tags from a forked repo (Stan Hu)
+
+v 8.6.3
+  - Mentions on confidential issues doesn't create todos for non-members. !3374
+  - Destroy related todos when an Issue/MR is deleted. !3376
+  - Fix error 500 when target is nil on todo list. !3376
+  - Fix copying uploads when moving issue to another project. !3382
+  - Ensuring Merge Request API returns boolean values for work_in_progress (Abhi Rao). !3432
+  - Fix raw/rendered diff producing different results on merge requests. !3450
+  - Fix commit comment alignment (Stan Hu). !3466
+  - Fix Error 500 when searching for a comment in a project snippet. !3468
+  - Allow temporary email as notification email. !3477
+  - Fix issue with dropdowns not selecting values. !3478
+  - Update gitlab-shell version and doc to 2.6.12. gitlab-org/gitlab-ee!280
+
+v 8.6.2
+  - Fix dropdown alignment. !3298
+  - Fix issuable sidebar overlaps on tablet. !3299
+  - Make dropdowns pixel perfect. !3337
+  - Fix order of steps to prevent PostgreSQL errors when running migration. !3355
+  - Fix bold text in issuable sidebar. !3358
+  - Fix error with anonymous token in applications settings. !3362
+  - Fix the milestone 'upcoming' filter. !3364 + !3368
+  - Fix comments on confidential issues showing up in activity feed to non-members. !3375
+  - Fix `NoMethodError` when visiting CI root path at `/ci`. !3377
+  - Add a tooltip to new branch button in issue page. !3380
+  - Fix an issue hiding the password form when signed-in with a linked account. !3381
+  - Add links to CI setup documentation from project settings and builds pages. !3384
+  - Fix an issue with width of project select dropdown. !3386
+  - Remove redundant `require`s from Banzai files. !3391
+  - Fix error 500 with cancel button on issuable edit form. !3392 + !3417
+  - Fix background when editing a highlighted note. !3423
+  - Remove tabstop from the WIP toggle links. !3426
+  - Ensure private project snippets are not viewable by unauthorized people.
+  - Gracefully handle notes on deleted commits in merge requests (Stan Hu). !3402
+  - Fixed issue with notification settings not saving. !3452
+
+v 8.6.1
+  - Add option to reload the schema before restoring a database backup. !2807
+  - Display navigation controls on mobile. !3214
+  - Fixed bug where participants would not work correctly on merge requests. !3329
+  - Fix sorting issues by votes on the groups issues page results in SQL errors. !3333
+  - Restrict notifications for confidential issues. !3334
+  - Do not allow to move issue if it has not been persisted. !3340
+  - Add a confirmation step before deleting an issuable. !3341
+  - Fixes issue with signin button overflowing on mobile. !3342
+  - Auto collapses the navigation sidebar when resizing. !3343
+  - Fix build dependencies, when the dependency is a string. !3344
+  - Shows error messages when trying to create label in dropdown menu. !3345
+  - Fixes issue with assign milestone not loading milestone list. !3346
+  - Fix an issue causing the Dashboard/Milestones page to be blank. !3348
+
+v 8.6.0
+  - Add ability to move issue to another project
+  - Prevent tokens in the import URL to be showed by the UI
+  - Fix bug where wrong commit ID was being used in a merge request diff to show old image (Stan Hu)
   - Add confidential issues
   - Bump gitlab_git to 9.0.3 (Stan Hu)
+  - Fix diff image view modes (2-up, swipe, onion skin) not working (Stan Hu)
   - Support Golang subpackage fetching (Stan Hu)
   - Bump Capybara gem to 2.6.2 (Stan Hu)
   - New branch button appears on issues where applicable
@@ -16,9 +100,11 @@ v 8.6.0 (unreleased)
     setup. A password can be provided during setup (see installation docs), or
     GitLab will ask the user to create a new one upon first visit.
   - Fix issue when pushing to projects ending in .wiki
+  - Properly display YAML front matter in Markdown
   - Add support for wiki with UTF-8 page names (Hiroyuki Sato)
   - Fix wiki search results point to raw source (Hiroyuki Sato)
   - Don't load all of GitLab in mail_room
+  - Add information about `image` and `services` field at `job` level in the `.gitlab-ci.yml` documentation (Pat Turner)
   - HTTP error pages work independently from location and config (Artem Sidorenko)
   - Update `omniauth-saml` to 1.5.0 to allow for custom response attributes to be set
   - Memoize @group in Admin::GroupsController (Yatish Mehta)
@@ -52,12 +138,17 @@ v 8.6.0 (unreleased)
   - Add main language of a project in the list of projects (Tiago Botelho)
   - Add #upcoming filter to Milestone filter (Tiago Botelho)
   - Add ability to show archived projects on dashboard, explore and group pages
+  - Remove fork link closes all merge requests opened on source project (Florent Baldino)
   - Move group activity to separate page
   - Create external users which are excluded of internal and private projects unless access was explicitly granted
   - Continue parameters are checked to ensure redirection goes to the same instance
   - User deletion is now done in the background so the request can not time out
   - Canceled builds are now ignored in compound build status if marked as `allowed to fail`
   - Trigger a todo for mentions on commits page
+  - Let project owners and admins soft delete issues and merge requests
+
+v 8.5.9
+  - Don't attempt to fetch any tags from a forked repo (Stan Hu).
 
 v 8.5.8
   - Bump Git version requirement to 2.7.4
@@ -200,6 +291,12 @@ v 8.5.0
   - Show label row when filtering issues or merge requests by label (Nuttanart Pornprasitsakul)
   - Add Todos
 
+v 8.4.7
+  - Don't attempt to fetch any tags from a forked repo (Stan Hu).
+
+v 8.4.6
+  - Bump Git version requirement to 2.7.4
+
 v 8.4.5
   - No CE-specific changes
 
@@ -312,6 +409,12 @@ v 8.4.0
   - Added X-GitLab-... headers to emails from CI and Email On Push services (Anton Baklanov)
   - Add IP check against DNSBLs at account sign-up
   - Added cache:key to .gitlab-ci.yml allowing to fine tune the caching
+
+v 8.3.6
+  - Don't attempt to fetch any tags from a forked repo (Stan Hu).
+
+v 8.3.5
+  - Bump Git version requirement to 2.7.4
 
 v 8.3.4
   - Use gitlab-workhorse 0.5.4 (fixes API routing bug)

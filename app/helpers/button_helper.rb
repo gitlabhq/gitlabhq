@@ -24,7 +24,7 @@ module ButtonHelper
 
   def http_clone_button(project)
     klass = 'http-selector'
-    klass << ' has_tooltip' if current_user.try(:require_password?)
+    klass << ' has-tooltip' if current_user.try(:require_password?)
 
     protocol = gitlab_config.protocol.upcase
 
@@ -41,7 +41,7 @@ module ButtonHelper
 
   def ssh_clone_button(project)
     klass = 'ssh-selector'
-    klass << ' has_tooltip' if current_user.try(:require_ssh_key?)
+    klass << ' has-tooltip' if current_user.try(:require_ssh_key?)
 
     content_tag :a, 'SSH',
       class: klass,

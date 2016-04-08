@@ -39,7 +39,7 @@
   %td
     = build.name
 
-    .pull-right
+    .label-container
       - if build.tags.any?
         - build.tags.each do |tag|
           %span.label.label-primary

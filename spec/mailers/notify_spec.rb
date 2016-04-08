@@ -35,7 +35,9 @@ describe Notify do
           subject { Notify.new_issue_email(issue.assignee_id, issue.id) }
 
           it_behaves_like 'an assignee email'
-          it_behaves_like 'an email starting a new thread', 'issue'
+          it_behaves_like 'an email starting a new thread with reply-by-email enabled' do
+            let(:model) { issue }
+          end
           it_behaves_like 'it should show Gmail Actions View Issue link'
           it_behaves_like 'an unsubscribeable thread'
 
@@ -73,9 +75,11 @@ describe Notify do
           subject { Notify.reassigned_issue_email(recipient.id, issue.id, previous_assignee.id, current_user.id) }
 
           it_behaves_like 'a multiple recipients email'
-          it_behaves_like 'an answer to an existing thread', 'issue'
+          it_behaves_like 'an answer to an existing thread with reply-by-email enabled' do
+            let(:model) { issue }
+          end
           it_behaves_like 'it should show Gmail Actions View Issue link'
-          it_behaves_like "an unsubscribeable thread"
+          it_behaves_like 'an unsubscribeable thread'
 
           it 'is sent as the author' do
             sender = subject.header[:from].addrs[0]
@@ -104,7 +108,9 @@ describe Notify do
           subject { Notify.relabeled_issue_email(recipient.id, issue.id, %w[foo bar baz], current_user.id) }
 
           it_behaves_like 'a multiple recipients email'
-          it_behaves_like 'an answer to an existing thread', 'issue'
+          it_behaves_like 'an answer to an existing thread with reply-by-email enabled' do
+            let(:model) { issue }
+          end
           it_behaves_like 'it should show Gmail Actions View Issue link'
           it_behaves_like 'a user cannot unsubscribe through footer link'
           it_behaves_like 'an email with a labels subscriptions link in its footer'
@@ -132,7 +138,9 @@ describe Notify do
           let(:status) { 'closed' }
           subject { Notify.issue_status_changed_email(recipient.id, issue.id, status, current_user.id) }
 
-          it_behaves_like 'an answer to an existing thread', 'issue'
+          it_behaves_like 'an answer to an existing thread with reply-by-email enabled' do
+            let(:model) { issue }
+          end
           it_behaves_like 'it should show Gmail Actions View Issue link'
           it_behaves_like 'an unsubscribeable thread'
 
@@ -158,6 +166,35 @@ describe Notify do
             is_expected.to have_body_text /#{namespace_project_issue_path project.namespace, project, issue}/
           end
         end
+
+        describe 'moved to another project' do
+          let(:new_issue) { create(:issue) }
+          subject { Notify.issue_moved_email(recipient, issue, new_issue, current_user) }
+
+          it_behaves_like 'an answer to an existing thread with reply-by-email enabled' do
+            let(:model) { issue }
+          end
+          it_behaves_like 'it should show Gmail Actions View Issue link'
+          it_behaves_like 'an unsubscribeable thread'
+
+          it 'contains description about action taken' do
+            is_expected.to have_body_text 'Issue was moved to another project'
+          end
+
+          it 'has the correct subject' do
+            is_expected.to have_subject /#{issue.title} \(##{issue.iid}\)/i
+          end
+
+          it 'contains link to new issue' do
+            new_issue_url = namespace_project_issue_path(new_issue.project.namespace,
+                                                         new_issue.project, new_issue)
+            is_expected.to have_body_text new_issue_url
+          end
+
+          it 'contains a link to the original issue' do
+            is_expected.to have_body_text /#{namespace_project_issue_path project.namespace, project, issue}/
+          end
+        end
       end
 
       context 'for merge requests' do
@@ -169,9 +206,11 @@ describe Notify do
           subject { Notify.new_merge_request_email(merge_request.assignee_id, merge_request.id) }
 
           it_behaves_like 'an assignee email'
-          it_behaves_like 'an email starting a new thread', 'merge_request'
+          it_behaves_like 'an email starting a new thread with reply-by-email enabled' do
+            let(:model) { merge_request }
+          end
           it_behaves_like 'it should show Gmail Actions View Merge request link'
-          it_behaves_like "an unsubscribeable thread"
+          it_behaves_like 'an unsubscribeable thread'
 
           it 'has the correct subject' do
             is_expected.to have_subject /#{merge_request.title} \(##{merge_request.iid}\)/
@@ -187,10 +226,6 @@ describe Notify do
 
           it 'contains the target branch for the merge request' do
             is_expected.to have_body_text /#{merge_request.target_branch}/
-          end
-
-          it 'has the correct message-id set' do
-            is_expected.to have_header 'Message-ID', "<merge_request_#{merge_request.id}@#{Gitlab.config.gitlab.host}>"
           end
 
           context 'when enabled email_author_in_body' do
@@ -220,7 +255,9 @@ describe Notify do
           subject { Notify.reassigned_merge_request_email(recipient.id, merge_request.id, previous_assignee.id, current_user.id) }
 
           it_behaves_like 'a multiple recipients email'
-          it_behaves_like 'an answer to an existing thread', 'merge_request'
+          it_behaves_like 'an answer to an existing thread with reply-by-email enabled' do
+            let(:model) { merge_request }
+          end
           it_behaves_like 'it should show Gmail Actions View Merge request link'
           it_behaves_like "an unsubscribeable thread"
 
@@ -251,7 +288,9 @@ describe Notify do
           subject { Notify.relabeled_merge_request_email(recipient.id, merge_request.id, %w[foo bar baz], current_user.id) }
 
           it_behaves_like 'a multiple recipients email'
-          it_behaves_like 'an answer to an existing thread', 'merge_request'
+          it_behaves_like 'an answer to an existing thread with reply-by-email enabled' do
+            let(:model) { merge_request }
+          end
           it_behaves_like 'it should show Gmail Actions View Merge request link'
           it_behaves_like 'a user cannot unsubscribe through footer link'
           it_behaves_like 'an email with a labels subscriptions link in its footer'
@@ -279,9 +318,11 @@ describe Notify do
           let(:status) { 'reopened' }
           subject { Notify.merge_request_status_email(recipient.id, merge_request.id, status, current_user.id) }
 
-          it_behaves_like 'an answer to an existing thread', 'merge_request'
+          it_behaves_like 'an answer to an existing thread with reply-by-email enabled' do
+            let(:model) { merge_request }
+          end
           it_behaves_like 'it should show Gmail Actions View Merge request link'
-          it_behaves_like "an unsubscribeable thread"
+          it_behaves_like 'an unsubscribeable thread'
 
           it 'is sent as the author' do
             sender = subject.header[:from].addrs[0]
@@ -310,9 +351,11 @@ describe Notify do
           subject { Notify.merged_merge_request_email(recipient.id, merge_request.id, merge_author.id) }
 
           it_behaves_like 'a multiple recipients email'
-          it_behaves_like 'an answer to an existing thread', 'merge_request'
+          it_behaves_like 'an answer to an existing thread with reply-by-email enabled' do
+            let(:model) { merge_request }
+          end
           it_behaves_like 'it should show Gmail Actions View Merge request link'
-          it_behaves_like "an unsubscribeable thread"
+          it_behaves_like 'an unsubscribeable thread'
 
           it 'is sent as the merge author' do
             sender = subject.header[:from].addrs[0]
@@ -429,9 +472,11 @@ describe Notify do
         subject { Notify.note_commit_email(recipient.id, note.id) }
 
         it_behaves_like 'a note email'
-        it_behaves_like 'an answer to an existing thread', 'commit'
+        it_behaves_like 'an answer to an existing thread with reply-by-email enabled' do
+          let(:model) { commit }
+        end
         it_behaves_like 'it should show Gmail Actions View Commit link'
-        it_behaves_like "a user cannot unsubscribe through footer link"
+        it_behaves_like 'a user cannot unsubscribe through footer link'
 
         it 'has the correct subject' do
           is_expected.to have_subject /#{commit.title} \(#{commit.short_id}\)/
@@ -450,7 +495,9 @@ describe Notify do
         subject { Notify.note_merge_request_email(recipient.id, note.id) }
 
         it_behaves_like 'a note email'
-        it_behaves_like 'an answer to an existing thread', 'merge_request'
+        it_behaves_like 'an answer to an existing thread with reply-by-email enabled' do
+          let(:model) { merge_request }
+        end
         it_behaves_like 'it should show Gmail Actions View Merge request link'
         it_behaves_like 'an unsubscribeable thread'
 
@@ -471,7 +518,9 @@ describe Notify do
         subject { Notify.note_issue_email(recipient.id, note.id) }
 
         it_behaves_like 'a note email'
-        it_behaves_like 'an answer to an existing thread', 'issue'
+        it_behaves_like 'an answer to an existing thread with reply-by-email enabled' do
+          let(:model) { issue }
+        end
         it_behaves_like 'it should show Gmail Actions View Issue link'
         it_behaves_like 'an unsubscribeable thread'
 

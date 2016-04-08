@@ -1,4 +1,4 @@
-.commits-compare-switch{
+.commits-compare-switch {
   @include btn-default;
   @include btn-white;
   background: image-url("switch_icon.png") no-repeat center center;
@@ -93,10 +93,13 @@ li.commit {
   .commit-row-info {
     color: $gl-gray;
     line-height: 24px;
-    font-size: 13px;
 
     a {
       color: $gl-gray;
+    }
+
+    .avatar {
+      margin-right: 8px;
     }
 
     .committed_ago {

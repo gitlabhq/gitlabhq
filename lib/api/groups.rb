@@ -31,7 +31,7 @@ module API
         authorize! :create_group, current_user
         required_attributes! [:name, :path]
 
-        attrs = attributes_for_keys [:name, :path, :description]
+        attrs = attributes_for_keys [:name, :path, :description, :visibility_level]
         @group = Group.new(attrs)
 
         if @group.save

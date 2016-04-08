@@ -59,13 +59,28 @@ module Banzai
       end
 
       def call
-        replace_text_nodes_matching(User.reference_pattern) do |content|
-          user_link_filter(content)
+        return doc if project.nil?
+
+        ref_pattern = User.reference_pattern
+        ref_pattern_start = /\A#{ref_pattern}\z/
+
+        each_node do |node|
+          if text_node?(node)
+            replace_text_when_pattern_matches(node, ref_pattern) do |content|
+              user_link_filter(content)
+            end
+          elsif element_node?(node)
+            yield_valid_link(node) do |link, text|
+              if link =~ ref_pattern_start
+                replace_link_node_with_href(node, link) do
+                  user_link_filter(link, link_text: text)
+                end
+              end
+            end
+          end
         end
 
-        replace_link_nodes_with_href(User.reference_pattern) do |link, text|
-          user_link_filter(link, link_text: text)
-        end
+        doc
       end
 
       # Replace `@user` user references in text with links to the referenced
@@ -90,7 +105,7 @@ module Banzai
       private
 
       def urls
-        Gitlab::Application.routes.url_helpers
+        Gitlab::Routing.url_helpers
       end
 
       def link_class

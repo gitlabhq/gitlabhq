@@ -1,54 +1,58 @@
-.ci-status {
-  padding: 2px 7px;
-  margin-right: 5px;
-  border: 1px solid #eee;
-  white-space: nowrap;
-  @include border-radius(4px);
+.container-fluid {
+  .ci-status {
+    padding: 2px 7px;
+    margin-right: 5px;
+    border: 1px solid #eee;
+    white-space: nowrap;
+    @include border-radius(4px);
 
-  &:hover {
-    text-decoration: none;
+    &:hover {
+      text-decoration: none;
+    }
+
+    &.ci-failed {
+      color: $gl-danger;
+      border-color: $gl-danger;
+    }
+
+    &.ci-success {
+      color: $gl-success;
+      border-color: $gl-success;
+    }
+
+    &.ci-info {
+      color: $gl-info;
+      border-color: $gl-info;
+    }
+
+    &.ci-canceled,
+    &.ci-skipped,
+    &.ci-disabled {
+      color: $gl-gray;
+      border-color: $gl-gray;
+    }
+
+    &.ci-pending,
+    &.ci-running {
+      color: $gl-warning;
+      border-color: $gl-warning;
+    }
   }
 
-  &.ci-failed {
-    color: $gl-danger;
-    border-color: $gl-danger;
-  }
-
-  &.ci-success {
+  .ci-status-icon-success {
     color: $gl-success;
-    border-color: $gl-success;
   }
-
-  &.ci-info {
-    color: $gl-info;
-    border-color: $gl-info;
+  .ci-status-icon-failed {
+    color: $gl-danger;
   }
-
-  &.ci-disabled {
-    color: $gl-gray;
-    border-color: $gl-gray;
-  }
-
-  &.ci-pending,
-  &.ci-running {
+  .ci-status-icon-running,
+  .ci-status-icon-pending {
     color: $gl-warning;
-    border-color: $gl-warning;
   }
-}
-
-.ci-status-icon-success {
-  @extend .cgreen;
-}
-.ci-status-icon-failed {
-  @extend .cred;
-}
-.ci-status-icon-running,
-.ci-status-icon-pending {
-  // These are standard text color
-}
-.ci-status-icon-canceled,
-.ci-status-icon-disabled,
-.ci-status-icon-not-found,
-.ci-status-icon-skipped {
-  @extend .cgray;
+  .ci-status-icon-canceled,
+  .ci-status-icon-disabled,
+  .ci-status-icon-not-found,
+  .ci-status-icon-skipped {
+    color: $gl-gray;
+  }
 }

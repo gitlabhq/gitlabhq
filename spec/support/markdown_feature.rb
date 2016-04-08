@@ -106,7 +106,7 @@ class MarkdownFeature
   end
 
   def urls
-    Gitlab::Application.routes.url_helpers
+    Gitlab::Routing.url_helpers
   end
 
   def raw_markdown

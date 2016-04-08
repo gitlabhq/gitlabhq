@@ -1,5 +1,6 @@
 class Projects::IssuesController < Projects::ApplicationController
   include ToggleSubscriptionAction
+  include IssuableActions
 
   before_action :module_enabled
   before_action :issue, only: [:edit, :update, :show]
@@ -33,7 +34,7 @@ class Projects::IssuesController < Projects::ApplicationController
       end
     end
 
-    @issues = @issues.page(params[:page]).per(PER_PAGE)
+    @issues = @issues.page(params[:page])
     @label = @project.labels.find_by(title: params[:label_name])
 
     respond_to do |format|
@@ -67,7 +68,13 @@ class Projects::IssuesController < Projects::ApplicationController
     @merge_requests = @issue.referenced_merge_requests(current_user)
     @related_branches = @issue.related_branches - @merge_requests.map(&:source_branch)
 
-    respond_with(@issue)
+    respond_to do |format|
+      format.html
+      format.json do
+        render json: @issue.to_json(include: [:milestone, :labels])
+      end
+    end
+
   end
 
   def create
@@ -90,6 +97,12 @@ class Projects::IssuesController < Projects::ApplicationController
   def update
     @issue = Issues::UpdateService.new(project, current_user, issue_params).execute(issue)
 
+    if params[:move_to_project_id].to_i > 0
+      new_project = Project.find(params[:move_to_project_id])
+      move_service = Issues::MoveService.new(project, current_user)
+      @issue = move_service.execute(@issue, new_project)
+    end
+
     respond_to do |format|
       format.js
       format.html do
@@ -100,10 +113,7 @@ class Projects::IssuesController < Projects::ApplicationController
         end
       end
       format.json do
-        render json: {
-          saved: @issue.valid?,
-          assignee_avatar_url: @issue.assignee.try(:avatar_url)
-        }
+        render json: @issue.to_json(include: [:milestone, :labels, assignee: { methods: :avatar_url }])
       end
     end
   end
@@ -127,6 +137,7 @@ class Projects::IssuesController < Projects::ApplicationController
                end
   end
   alias_method :subscribable_resource, :issue
+  alias_method :issuable, :issue
 
   def authorize_read_issue!
     return render_404 unless can?(current_user, :read_issue, @issue)

@@ -32,7 +32,7 @@ module Projects
       def project_json_tree
         # TODO confirm children, also add subchildren (i.e comments)
         # TODO confirm atts for children
-        @project.to_json(only: ImportExport.project_atts, include: ImportExport.project_tree)
+        @project.to_json(Projects::ImportExport.project_tree)
       end
     end
   end

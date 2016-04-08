@@ -15,22 +15,10 @@ module Projects
     end
 
     def project_tree
-      %i(issues labels milestones snippets releases events) + [members, merge_requests, commit_statuses]
+      Projects::ImportExport::ImportExportReader.project_tree
     end
 
     private
-
-    def merge_requests
-      { merge_requests: { include: :merge_request_diff } }
-    end
-
-    def commit_statuses
-      { commit_statuses: { include: :commit } }
-    end
-
-    def members
-      { project_members: { include: [user: { only: [:id, :email, :username] }] } }
-    end
 
     def storage_path
       File.join(Settings.shared['path'], 'tmp/project_exports')

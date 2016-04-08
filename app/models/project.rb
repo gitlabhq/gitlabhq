@@ -73,7 +73,7 @@ class Project < ActiveRecord::Base
     update_column(:last_activity_at, self.created_at)
   end
 
-  # update visibility_levet of forks
+  # update visibility_level of forks
   after_update :update_forks_visibility_level
   def update_forks_visibility_level
     return unless visibility_level < visibility_level_was
@@ -197,6 +197,8 @@ class Project < ActiveRecord::Base
   validate :avatar_type,
     if: ->(project) { project.avatar.present? && project.avatar_changed? }
   validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
+  validate :visibility_level_allowed_by_group
+  validate :visibility_level_allowed_as_fork
 
   add_authentication_token_field :runners_token
   before_save :ensure_runners_token
@@ -204,6 +206,8 @@ class Project < ActiveRecord::Base
   mount_uploader :avatar, AvatarUploader
 
   # Scopes
+  default_scope { where(pending_delete: false) }
+
   scope :sorted_by_activity, -> { reorder(last_activity_at: :desc) }
   scope :sorted_by_stars, -> { reorder('projects.star_count DESC') }
   scope :sorted_by_names, -> { joins(:namespace).reorder('namespaces.name ASC, projects.name ASC') }
@@ -215,8 +219,6 @@ class Project < ActiveRecord::Base
   scope :in_group_namespace, -> { joins(:group) }
   scope :personal, ->(user) { where(namespace_id: user.namespace_id) }
   scope :joined, ->(user) { where('namespace_id != ?', user.namespace_id) }
-  scope :public_only, -> { where(visibility_level: Project::PUBLIC) }
-  scope :public_and_internal_only, -> { where(visibility_level: Project.public_and_internal_levels) }
   scope :non_archived, -> { where(archived: false) }
   scope :for_milestones, ->(ids) { joins(:milestones).where('milestones.id' => ids).distinct }
 
@@ -246,10 +248,6 @@ class Project < ActiveRecord::Base
   end
 
   class << self
-    def public_and_internal_levels
-      [Project::PUBLIC, Project::INTERNAL]
-    end
-
     def abandoned
       where('projects.last_activity_at < ?', 6.months.ago)
     end
@@ -308,7 +306,7 @@ class Project < ActiveRecord::Base
     end
 
     def find_with_namespace(id)
-      namespace_path, project_path = id.split('/')
+      namespace_path, project_path = id.split('/', 2)
 
       return nil if !namespace_path || !project_path
 
@@ -435,6 +433,7 @@ class Project < ActiveRecord::Base
   def safe_import_url
     result = URI.parse(self.import_url)
     result.password = '*****' unless result.password.nil?
+    result.user = '*****' unless result.user.nil? || result.user == "git" #tokens or other data may be saved as user
     result.to_s
   rescue
     self.import_url
@@ -442,10 +441,25 @@ class Project < ActiveRecord::Base
 
   def check_limit
     unless creator.can_create_project? or namespace.kind == 'group'
-      errors[:limit_reached] << ("Your project limit is #{creator.projects_limit} projects! Please contact your administrator to increase it")
+      self.errors.add(:limit_reached, "Your project limit is #{creator.projects_limit} projects! Please contact your administrator to increase it")
     end
   rescue
-    errors[:base] << ("Can't check your ability to create project")
+    self.errors.add(:base, "Can't check your ability to create project")
+  end
+
+  def visibility_level_allowed_by_group
+    return if visibility_level_allowed_by_group?
+
+    level_name = Gitlab::VisibilityLevel.level_name(self.visibility_level).downcase
+    group_level_name = Gitlab::VisibilityLevel.level_name(self.group.visibility_level).downcase
+    self.errors.add(:visibility_level, "#{level_name} is not allowed in a #{group_level_name} group.")
+  end
+
+  def visibility_level_allowed_as_fork
+    return if visibility_level_allowed_as_fork?
+
+    level_name = Gitlab::VisibilityLevel.level_name(self.visibility_level).downcase
+    self.errors.add(:visibility_level, "#{level_name} is not allowed since the fork source project has lower visibility.")
   end
 
   def to_param
@@ -457,7 +471,7 @@ class Project < ActiveRecord::Base
   end
 
   def web_url
-    Gitlab::Application.routes.url_helpers.namespace_project_url(self.namespace, self)
+    Gitlab::Routing.url_helpers.namespace_project_url(self.namespace, self)
   end
 
   def web_url_without_protocol
@@ -578,7 +592,7 @@ class Project < ActiveRecord::Base
     if avatar.present?
       [gitlab_config.url, avatar.url].join
     elsif avatar_in_git
-      Gitlab::Application.routes.url_helpers.namespace_project_avatar_url(namespace, self)
+      Gitlab::Routing.url_helpers.namespace_project_avatar_url(namespace, self)
     end
   end
 
@@ -876,6 +890,7 @@ class Project < ActiveRecord::Base
     # Forked import is handled asynchronously
     unless forked?
       if gitlab_shell.add_repository(path_with_namespace)
+        repository.after_create
         true
       else
         errors.add(:base, 'Failed to create repository via gitlab-shell')
@@ -916,16 +931,6 @@ class Project < ActiveRecord::Base
     self.builds_enabled = true
   end
 
-  def unlink_fork
-    if forked?
-      forked_from_project.lfs_objects.find_each do |lfs_object|
-        lfs_object.projects << self
-      end
-
-      forked_project_link.destroy
-    end
-  end
-
   def any_runners?(&block)
     if runners.active.any?(&block)
       return true
@@ -960,9 +965,25 @@ class Project < ActiveRecord::Base
     issues.opened.count
   end
 
-  def visibility_level_allowed?(level)
+  def visibility_level_allowed_as_fork?(level = self.visibility_level)
     return true unless forked?
-    Gitlab::VisibilityLevel.allowed_fork_levels(forked_from_project.visibility_level).include?(level.to_i)
+
+    # self.forked_from_project will be nil before the project is saved, so
+    # we need to go through the relation
+    original_project = forked_project_link.forked_from_project
+    return true unless original_project
+
+    level <= original_project.visibility_level
+  end
+
+  def visibility_level_allowed_by_group?(level = self.visibility_level)
+    return true unless group
+
+    level <= group.visibility_level
+  end
+
+  def visibility_level_allowed?(level = self.visibility_level)
+    visibility_level_allowed_as_fork?(level) && visibility_level_allowed_by_group?(level)
   end
 
   def runners_token

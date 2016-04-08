@@ -12,7 +12,6 @@
 #  updated_at                        :datetime
 #  home_page_url                     :string(255)
 #  default_branch_protection         :integer          default(2)
-#  twitter_sharing_enabled           :boolean          default(TRUE)
 #  restricted_visibility_levels      :text
 #  version_check_enabled             :boolean          default(TRUE)
 #  max_attachment_size               :integer          default(10), not null

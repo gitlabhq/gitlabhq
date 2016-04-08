@@ -10,6 +10,13 @@ shared_context 'gitlab email notification' do
     ActionMailer::Base.deliveries.clear
     email = recipient.emails.create(email: "notifications@example.com")
     recipient.update_attribute(:notification_email, email.email)
+    stub_incoming_email_setting(enabled: true, address: "reply+%{key}@#{Gitlab.config.gitlab.host}")
+  end
+end
+
+shared_context 'reply-by-email is enabled with incoming address without %{key}' do
+  before do
+    stub_incoming_email_setting(enabled: true, address: "reply@#{Gitlab.config.gitlab.host}")
   end
 end
 
@@ -46,25 +53,76 @@ shared_examples 'an email with X-GitLab headers containing project details' do
   end
 end
 
-shared_examples 'an email starting a new thread' do |message_id_prefix|
-  include_examples 'an email with X-GitLab headers containing project details'
+shared_examples 'a new thread email with reply-by-email enabled' do
+  let(:regex) { /\A<reply\-(.*)@#{Gitlab.config.gitlab.host}>\Z/ }
 
-  it 'has a discussion identifier' do
-    is_expected.to have_header 'Message-ID',  /<#{message_id_prefix}(.*)@#{Gitlab.config.gitlab.host}>/
+  it 'has a Message-ID header' do
+    is_expected.to have_header 'Message-ID', "<#{model.class.model_name.singular_route_key}_#{model.id}@#{Gitlab.config.gitlab.host}>"
+  end
+
+  it 'has a References header' do
+    is_expected.to have_header 'References', regex
   end
 end
 
-shared_examples 'an answer to an existing thread' do |thread_id_prefix|
+shared_examples 'a thread answer email with reply-by-email enabled' do
   include_examples 'an email with X-GitLab headers containing project details'
+  let(:regex) { /\A<#{model.class.model_name.singular_route_key}_#{model.id}@#{Gitlab.config.gitlab.host}> <reply\-(.*)@#{Gitlab.config.gitlab.host}>\Z/ }
+
+  it 'has a Message-ID header' do
+    is_expected.to have_header 'Message-ID', /\A<(.*)@#{Gitlab.config.gitlab.host}>\Z/
+  end
+
+  it 'has a In-Reply-To header' do
+    is_expected.to have_header 'In-Reply-To', "<#{model.class.model_name.singular_route_key}_#{model.id}@#{Gitlab.config.gitlab.host}>"
+  end
+
+  it 'has a References header' do
+    is_expected.to have_header 'References', regex
+  end
 
   it 'has a subject that begins with Re: ' do
     is_expected.to have_subject /^Re: /
   end
+end
 
-  it 'has headers that reference an existing thread' do
-    is_expected.to have_header 'Message-ID',  /<(.*)@#{Gitlab.config.gitlab.host}>/
-    is_expected.to have_header 'References',  /<#{thread_id_prefix}(.*)@#{Gitlab.config.gitlab.host}>/
-    is_expected.to have_header 'In-Reply-To', /<#{thread_id_prefix}(.*)@#{Gitlab.config.gitlab.host}>/
+shared_examples 'an email starting a new thread with reply-by-email enabled' do
+  include_examples 'an email with X-GitLab headers containing project details'
+  include_examples 'a new thread email with reply-by-email enabled'
+
+  context 'when reply-by-email is enabled with incoming address with %{key}' do
+    it 'has a Reply-To header' do
+      is_expected.to have_header 'Reply-To', /<reply+(.*)@#{Gitlab.config.gitlab.host}>\Z/
+    end
+  end
+
+  context 'when reply-by-email is enabled with incoming address without %{key}' do
+    include_context 'reply-by-email is enabled with incoming address without %{key}'
+    include_examples 'a new thread email with reply-by-email enabled'
+
+    it 'has a Reply-To header' do
+      is_expected.to have_header 'Reply-To', /<reply@#{Gitlab.config.gitlab.host}>\Z/
+    end
+  end
+end
+
+shared_examples 'an answer to an existing thread with reply-by-email enabled' do
+  include_examples 'an email with X-GitLab headers containing project details'
+  include_examples 'a thread answer email with reply-by-email enabled'
+
+  context 'when reply-by-email is enabled with incoming address with %{key}' do
+    it 'has a Reply-To header' do
+      is_expected.to have_header 'Reply-To', /<reply+(.*)@#{Gitlab.config.gitlab.host}>\Z/
+    end
+  end
+
+  context 'when reply-by-email is enabled with incoming address without %{key}' do
+    include_context 'reply-by-email is enabled with incoming address without %{key}'
+    include_examples 'a thread answer email with reply-by-email enabled'
+
+    it 'has a Reply-To header' do
+      is_expected.to have_header 'Reply-To', /<reply@#{Gitlab.config.gitlab.host}>\Z/
+    end
   end
 end
 
@@ -83,10 +141,12 @@ shared_examples 'a new user email' do
 end
 
 shared_examples 'it should have Gmail Actions links' do
+  it { is_expected.to have_body_text '<script type="application/ld+json">' }
   it { is_expected.to have_body_text /ViewAction/ }
 end
 
 shared_examples 'it should not have Gmail Actions links' do
+  it { is_expected.to_not have_body_text '<script type="application/ld+json">' }
   it { is_expected.to_not have_body_text /ViewAction/ }
 end
 

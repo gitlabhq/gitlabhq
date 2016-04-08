@@ -1,0 +1,35 @@
+# Class relationships to be included in the project import/export
+:project_tree:
+  - :issues
+  - :labels
+  - :milestones
+  - :snippets
+  - :releases
+  - :events
+  - :project_members:
+    - :user
+  - :merge_requests:
+    - :merge_request_diff
+  - :commit_statuses:
+    - :commit
+
+:attributes_only:
+  :project:
+    - :name
+    - :path
+    - :description
+    - :issues_enabled
+    - :wall_enabled
+    - :merge_requests_enabled
+    - :wiki_enabled
+    - :snippets_enabled
+    - :visibility_level
+    - :archived
+  :user:
+    - :id
+    - :email
+    - :username
+
+:attributes_except:
+  :snippets:
+    - :expired_at

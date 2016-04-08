@@ -1,7 +1,7 @@
 %ul.nav.nav-sidebar
   = nav_link(path: ['root#index', 'projects#trending', 'projects#starred', 'dashboard/projects#index'], html_options: {class: 'home'}) do
     = link_to dashboard_projects_path, title: 'Projects' do
-      = icon('home fw')
+      = icon('bookmark fw')
       %span
         Projects
   = nav_link(controller: :todos) do
@@ -15,12 +15,12 @@
       = icon('dashboard fw')
       %span
         Activity
-  = nav_link(controller: :groups) do
+  = nav_link(path: ['dashboard/groups#index', 'explore/groups#index']) do
     = link_to dashboard_groups_path, title: 'Groups' do
       = icon('group fw')
       %span
         Groups
-  = nav_link(controller: :milestones) do
+  = nav_link(path: 'dashboard#milestones') do
     = link_to dashboard_milestones_path, title: 'Milestones' do
       = icon('clock-o fw')
       %span
@@ -48,7 +48,6 @@
       %span
         Help
 
-  %li.separate-item
   = nav_link(controller: :profile) do
     = link_to profile_path, title: 'Profile Settings', data: {placement: 'bottom'} do
       = icon('user fw')

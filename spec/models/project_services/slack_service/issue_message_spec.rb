@@ -27,6 +27,16 @@ describe SlackService::IssueMessage, models: true do
 
   let(:color) { '#345' }
 
+  context '#initialize' do
+    before do
+      args[:object_attributes][:description] = nil
+    end
+
+    it 'returns a non-null description' do
+      expect(subject.description).to eq('')
+    end
+  end
+
   context 'open' do
     it 'returns a message regarding opening of issues' do
       expect(subject.pretext).to eq(

@@ -16,6 +16,7 @@
 #  state         :string(255)
 #  iid           :integer
 #  updated_by_id :integer
+#  moved_to_id   :integer
 #
 
 require 'carrierwave/orm/activerecord'
@@ -31,10 +32,9 @@ class Issue < ActiveRecord::Base
   ActsAsTaggableOn.strict_case_match = true
 
   belongs_to :project
-  validates :project, presence: true
+  belongs_to :moved_to, class_name: 'Issue'
 
-  scope :of_group,
-    ->(group) { where(project_id: group.projects.select(:id).reorder(nil)) }
+  validates :project, presence: true
 
   scope :cared, ->(user) { where(assignee_id: user) }
   scope :open_for, ->(user) { opened.assigned_to(user) }
@@ -73,14 +73,14 @@ class Issue < ActiveRecord::Base
   #
   # This pattern supports cross-project references.
   def self.reference_pattern
-    %r{
+    @reference_pattern ||= %r{
       (#{Project.reference_pattern})?
       #{Regexp.escape(reference_prefix)}(?<issue>\d+)
     }x
   end
 
   def self.link_reference_pattern
-    super("issues", /(?<issue>\d+)/)
+    @link_reference_pattern ||= super("issues", /(?<issue>\d+)/)
   end
 
   def to_reference(from_project = nil)
@@ -105,9 +105,9 @@ class Issue < ActiveRecord::Base
   end
 
   def related_branches
-    return [] if self.project.empty_repo?
-    
-    self.project.repository.branch_names.select { |branch| branch.end_with?("-#{iid}") }
+    project.repository.branch_names.select do |branch|
+      branch.end_with?("-#{iid}")
+    end
   end
 
   # Reset issue events cache
@@ -135,6 +135,19 @@ class Issue < ActiveRecord::Base
     notes.system.flat_map do |note|
       note.all_references(current_user).merge_requests
     end.uniq.select { |mr| mr.open? && mr.closes_issue?(self) }
+  end
+
+  def moved?
+    !moved_to.nil?
+  end
+
+  def can_move?(user, to_project = nil)
+    if to_project
+      return false unless user.can?(:admin_issue, to_project)
+    end
+
+    !moved? && persisted? &&
+      user.can?(:admin_issue, self.project)
   end
 
   def to_branch_name

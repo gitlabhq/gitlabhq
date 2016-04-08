@@ -7,6 +7,7 @@
 #= require jquery
 #= require jquery-ui/autocomplete
 #= require jquery-ui/datepicker
+#= require jquery-ui/draggable
 #= require jquery-ui/effect-highlight
 #= require jquery-ui/sortable
 #= require jquery_ujs
@@ -42,6 +43,7 @@
 #= require jquery.nicescroll
 #= require_tree .
 #= require fuzzaldrin-plus
+#= require cropper
 
 window.slugify = (text) ->
   text.replace(/[^-a-zA-Z0-9]+/g, '_').toLowerCase()
@@ -138,7 +140,7 @@ $ ->
 
   # Initialize tooltips
   $('body').tooltip(
-    selector: '.has_tooltip, [data-toggle="tooltip"]'
+    selector: '.has-tooltip, [data-toggle="tooltip"]'
     placement: (_, el) ->
       $el = $(el)
       $el.data('placement') || 'bottom'
@@ -217,13 +219,20 @@ $ ->
       $this = $(this)
       $this.attr 'value', $this.val()
 
+  $sidebarGutterToggle = $('.js-sidebar-toggle')
+  $navIconToggle = $('.toggle-nav-collapse')
+
   $(document)
     .off 'breakpoint:change'
     .on 'breakpoint:change', (e, breakpoint) ->
       if breakpoint is 'sm' or breakpoint is 'xs'
-        $gutterIcon = $('.js-sidebar-toggle').find('i')
+        $gutterIcon = $sidebarGutterToggle.find('i')
         if $gutterIcon.hasClass('fa-angle-double-right')
-          $gutterIcon.closest('a').trigger('click')
+          $sidebarGutterToggle.trigger('click')
+
+        $navIcon = $navIconToggle.find('.fa')
+        if $navIcon.hasClass('fa-angle-left')
+          $navIconToggle.trigger('click')
 
   $(document)
     .off 'click', '.js-sidebar-toggle'

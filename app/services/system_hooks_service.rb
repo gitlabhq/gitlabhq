@@ -95,17 +95,19 @@ class SystemHooksService
   end
 
   def project_member_data(model)
+    project = model.project || Project.unscoped.find(model.source_id)
+
     {
-      project_name: model.project.name,
-      project_path: model.project.path,
-      project_path_with_namespace: model.project.path_with_namespace,
-      project_id: model.project.id,
-      user_username: model.user.username,
-      user_name: model.user.name,
-      user_email: model.user.email,
-      user_id: model.user.id,
-      access_level: model.human_access,
-      project_visibility: Project.visibility_levels.key(model.project.visibility_level_field).downcase
+      project_name:                 project.name,
+      project_path:                 project.path,
+      project_path_with_namespace:  project.path_with_namespace,
+      project_id:                   project.id,
+      user_username:                model.user.username,
+      user_name:                    model.user.name,
+      user_email:                   model.user.email,
+      user_id:                      model.user.id,
+      access_level:                 model.human_access,
+      project_visibility:           Project.visibility_levels.key(project.visibility_level_field).downcase
     }
   end
 

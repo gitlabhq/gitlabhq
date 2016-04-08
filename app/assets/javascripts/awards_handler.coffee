@@ -1,5 +1,5 @@
 class @AwardsHandler
-  constructor: (@post_emoji_url, @noteable_type, @noteable_id, @aliases) ->
+  constructor: (@get_emojis_url, @post_emoji_url, @noteable_type, @noteable_id, @aliases) ->
     $(".js-add-award").on "click", (event) =>
       event.stopPropagation()
       event.preventDefault()
@@ -34,7 +34,7 @@ class @AwardsHandler
         $("#emoji_search").focus()
     else
       $('.js-add-award').addClass "is-loading"
-      $.get "/emojis", (response) =>
+      $.get @get_emojis_url, (response) =>
         $('.js-add-award').removeClass "is-loading"
         $(".js-award-holder").append response
         setTimeout =>
@@ -122,7 +122,7 @@ class @AwardsHandler
 
     nodes = []
     nodes.push(
-      "<button class='btn award-control js-emoji-btn has_tooltip active' title='me'>",
+      "<button class='btn award-control js-emoji-btn has-tooltip active' title='me'>",
       "<div class='icon emoji-icon #{emojiCssClass}' data-emoji='#{emoji}'></div>",
       "<span class='award-control-text js-counter'>1</span>",
       "</button>"

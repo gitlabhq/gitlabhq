@@ -162,6 +162,7 @@ class NotificationService
 
     recipients = add_subscribed_users(recipients, note.noteable)
     recipients = reject_unsubscribed_users(recipients, note.noteable)
+    recipients = reject_users_without_access(recipients, note.noteable)
 
     recipients.delete(note.author)
     recipients = recipients.uniq
@@ -233,6 +234,16 @@ class NotificationService
         recipient.id,
         old_path_with_namespace
       ).deliver_later
+    end
+  end
+
+  def issue_moved(issue, new_issue, current_user)
+    recipients = build_recipients(issue, issue.project, current_user)
+
+    recipients.map do |recipient|
+      email = mailer.issue_moved_email(recipient, issue, new_issue, current_user)
+      email.deliver_later
+      email
     end
   end
 
@@ -366,6 +377,14 @@ class NotificationService
     end
   end
 
+  def reject_users_without_access(recipients, target)
+    return recipients unless target.is_a?(Issue)
+
+    recipients.select do |user|
+      user.can?(:read_issue, target)
+    end
+  end
+
   def add_subscribed_users(recipients, target)
     return recipients unless target.respond_to? :subscribers
 
@@ -454,15 +473,16 @@ class NotificationService
     end
 
     recipients = reject_unsubscribed_users(recipients, target)
+    recipients = reject_users_without_access(recipients, target)
 
     recipients.delete(current_user)
-
     recipients.uniq
   end
 
   def build_relabeled_recipients(target, current_user, labels:)
     recipients = add_labels_subscribers([], target, labels: labels)
     recipients = reject_unsubscribed_users(recipients, target)
+    recipients = reject_users_without_access(recipients, target)
     recipients.delete(current_user)
     recipients.uniq
   end

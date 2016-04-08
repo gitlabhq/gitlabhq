@@ -111,6 +111,33 @@ describe NotificationService, services: true do
       end
     end
 
+    context 'confidential issue note' do
+      let(:project) { create(:empty_project, :public) }
+      let(:author) { create(:user) }
+      let(:assignee) { create(:user) }
+      let(:non_member) { create(:user) }
+      let(:member) { create(:user) }
+      let(:admin) { create(:admin) }
+      let(:confidential_issue) { create(:issue, :confidential, project: project, author: author, assignee: assignee) }
+      let(:note) { create(:note_on_issue, noteable: confidential_issue, project: project, note: "#{author.to_reference} #{assignee.to_reference} #{non_member.to_reference} #{member.to_reference} #{admin.to_reference}") }
+
+      it 'filters out users that can not read the issue' do
+        project.team << [member, :developer]
+
+        expect(SentNotification).to receive(:record).with(confidential_issue, any_args).exactly(4).times
+
+        ActionMailer::Base.deliveries.clear
+
+        notification.new_note(note)
+
+        should_not_email(non_member)
+        should_email(author)
+        should_email(assignee)
+        should_email(member)
+        should_email(admin)
+      end
+    end
+
     context 'issue note mention' do
       let(:project) { create(:empty_project, :public) }
       let(:issue) { create(:issue, project: project, assignee: create(:user)) }
@@ -233,6 +260,36 @@ describe NotificationService, services: true do
 
         should_email(subscriber)
       end
+
+      context 'confidential issues' do
+        let(:author) { create(:user) }
+        let(:assignee) { create(:user) }
+        let(:non_member) { create(:user) }
+        let(:member) { create(:user) }
+        let(:admin) { create(:admin) }
+        let(:confidential_issue) { create(:issue, :confidential, project: project, title: 'Confidential issue', author: author, assignee: assignee) }
+
+        it "emails subscribers of the issue's labels that can read the issue" do
+          project.team << [member, :developer]
+
+          label = create(:label, issues: [confidential_issue])
+          label.toggle_subscription(non_member)
+          label.toggle_subscription(author)
+          label.toggle_subscription(assignee)
+          label.toggle_subscription(member)
+          label.toggle_subscription(admin)
+
+          ActionMailer::Base.deliveries.clear
+
+          notification.new_issue(confidential_issue, @u_disabled)
+
+          should_not_email(non_member)
+          should_not_email(author)
+          should_email(assignee)
+          should_email(member)
+          should_email(admin)
+        end
+      end
     end
 
     describe :reassigned_issue do
@@ -331,6 +388,37 @@ describe NotificationService, services: true do
         should_not_email(@u_participating)
         should_not_email(subscriber_to_label)
         should_email(subscriber_to_label2)
+      end
+
+      context 'confidential issues' do
+        let(:author) { create(:user) }
+        let(:assignee) { create(:user) }
+        let(:non_member) { create(:user) }
+        let(:member) { create(:user) }
+        let(:admin) { create(:admin) }
+        let(:confidential_issue) { create(:issue, :confidential, project: project, title: 'Confidential issue', author: author, assignee: assignee) }
+        let!(:label_1) { create(:label, issues: [confidential_issue]) }
+        let!(:label_2) { create(:label) }
+
+        it "emails subscribers of the issue's labels that can read the issue" do
+          project.team << [member, :developer]
+
+          label_2.toggle_subscription(non_member)
+          label_2.toggle_subscription(author)
+          label_2.toggle_subscription(assignee)
+          label_2.toggle_subscription(member)
+          label_2.toggle_subscription(admin)
+
+          ActionMailer::Base.deliveries.clear
+
+          notification.relabeled_issue(confidential_issue, [label_2], @u_disabled)
+
+          should_not_email(non_member)
+          should_email(author)
+          should_email(assignee)
+          should_email(member)
+          should_email(admin)
+        end
       end
     end
 
