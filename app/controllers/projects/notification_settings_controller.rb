@@ -8,7 +8,7 @@ class Projects::NotificationSettingsController < Projects::ApplicationController
   end
 
   def update
-    notification_setting = project.notification_settings.where(user_id: current_user).find(params[:id])
+    notification_setting = project.notification_settings.find_by(user_id: current_user)
     saved = notification_setting.update_attributes(notification_setting_params)
 
     render json: { saved: saved }
