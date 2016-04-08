@@ -81,6 +81,42 @@ module API
         end
       end
 
+      # Get file from repository
+      # File content is Base64 encoded
+      #
+      # Parameters:
+      #   file_path (required) - The path to the file. Ex. lib/class.rb
+      #   ref (required) - The name of branch, tag or commit
+      #
+      # Example Request:
+      #   GET /projects/:id/repository/files/raw
+      #
+      get ":id/repository/files/raw" do
+        authorize! :download_code, user_project
+
+        required_attributes! [:file_path, :ref]
+        attrs = attributes_for_keys [:file_path, :ref]
+        ref       = attrs.delete(:ref)
+        file_path = attrs.delete(:file_path)
+
+        commit = user_project.commit(ref)
+        not_found! 'Commit' unless commit
+
+        repo = user_project.repository
+        blob = repo.blob_at(commit.sha, file_path)
+
+        if blob
+          content_type "application/octet-stream"
+          header['Content-Disposition'] = "attachment; filename=#{blob.name}"
+          env['api.format'] = :binary
+
+          blob.load_all_data!(repo)
+          blob.data
+        else
+          not_found! 'File'
+        end
+      end
+
       # Create new file in repository
       #
       # Parameters:

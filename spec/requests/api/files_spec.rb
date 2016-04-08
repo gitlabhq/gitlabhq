@@ -39,6 +39,19 @@ describe API::API, api: true  do
     end
   end
 
+  describe "GET /projects/:id/repository/files/raw" do
+    it "only returns the blob" do
+      params = {
+        file_path: "CONTRIBUTING.md", # big enough to hit #load_all_data!
+        ref: 'master',
+      }
+
+      get api("/projects/#{project.id}/repository/files/raw", user), params
+      expect(response.status).to eq(200)
+      expect(response.body).to match /shell_commands\.md\)\n\z/
+    end
+  end
+
   describe "POST /projects/:id/repository/files" do
     let(:valid_params) do
       {
