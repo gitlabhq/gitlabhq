@@ -5,14 +5,14 @@ describe Projects::ImportExport::ImportExportReader do
   let(:test_config) { 'spec/support/import_export/import_export.yml' }
   let(:project_tree_hash) do
     {
-      :only => [:name, :path],
-      :include => [:issues, :labels,
-                   { :merge_requests => {
-                     :only => [:id],
-                     :except => [:iid],
-                     :include => [:merge_request_diff, :merge_request_test]
-                   } },
-                   { :commit_statuses => { :include => :commit } }]
+      only: [:name, :path],
+      include: [:issues, :labels,
+                { merge_requests: {
+                  only: [:id],
+                  except: [:iid],
+                  include: [:merge_request_diff, :merge_request_test]
+                } },
+                { commit_statuses: { include: :commit } }]
     }
   end
 

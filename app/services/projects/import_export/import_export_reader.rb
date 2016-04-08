@@ -38,7 +38,8 @@ module Projects
 
       def process_include(hash, included_classes_hash = {})
         hash.values.flatten.each do |value|
-          current_key, value = process_current_class(hash, included_classes_hash, value)
+          current_key = hash.keys.first
+          value = process_current_class(hash, included_classes_hash, value)
           if included_classes_hash[current_key]
             add_class(current_key, included_classes_hash, value)
           else
@@ -50,14 +51,13 @@ module Projects
 
       def process_current_class(hash, included_classes_hash, value)
         value = value.is_a?(Hash) ? process_include(hash, included_classes_hash) : value
-        current_key = hash.keys.first
-        only_except_hash = check_only_and_except(current_key)
-        included_classes_hash[current_key] ||= only_except_hash unless only_except_hash.empty?
-        return current_key, value
+        only_except_hash = check_only_and_except(hash.keys.first)
+        included_classes_hash[hash.keys.first] ||= only_except_hash unless only_except_hash.empty?
+        value
       end
 
       def add_new_class(current_key, included_classes_hash, value)
-        new_hash = { :include => value }
+        new_hash = { include: value }
         new_hash.merge!(check_only_and_except(value))
         included_classes_hash[current_key] = new_hash
       end
