@@ -56,7 +56,7 @@ module API
           end
 
         merge_requests = merge_requests.reorder(issuable_order_by => issuable_sort)
-        present paginate(merge_requests), with: Entities::MergeRequest
+        present paginate(merge_requests), with: Entities::MergeRequest, current_user: current_user
       end
 
       # Create MR
@@ -94,7 +94,7 @@ module API
             merge_request.add_labels_by_names(params[:labels].split(","))
           end
 
-          present merge_request, with: Entities::MergeRequest
+          present merge_request, with: Entities::MergeRequest, current_user: current_user
         else
           handle_merge_request_errors! merge_request.errors
         end
@@ -130,7 +130,7 @@ module API
 
           authorize! :read_merge_request, merge_request
 
-          present merge_request, with: Entities::MergeRequest
+          present merge_request, with: Entities::MergeRequest, current_user: current_user
         end
 
         # Show MR commits
@@ -162,7 +162,7 @@ module API
           merge_request = user_project.merge_requests.
             find(params[:merge_request_id])
           authorize! :read_merge_request, merge_request
-          present merge_request, with: Entities::MergeRequestChanges
+          present merge_request, with: Entities::MergeRequestChanges, current_user: current_user
         end
 
         # Update MR
@@ -204,7 +204,7 @@ module API
               merge_request.add_labels_by_names(params[:labels].split(","))
             end
 
-            present merge_request, with: Entities::MergeRequest
+            present merge_request, with: Entities::MergeRequest, current_user: current_user
           else
             handle_merge_request_errors! merge_request.errors
           end
@@ -246,7 +246,7 @@ module API
               execute(merge_request)
           end
 
-          present merge_request, with: Entities::MergeRequest
+          present merge_request, with: Entities::MergeRequest, current_user: current_user
         end
 
         # Cancel Merge if Merge When build succeeds is enabled
@@ -325,7 +325,7 @@ module API
         get "#{path}/closes_issues" do
           merge_request = user_project.merge_requests.find(params[:merge_request_id])
           issues = ::Kaminari.paginate_array(merge_request.closes_issues(current_user))
-          present paginate(issues), with: Entities::Issue
+          present paginate(issues), with: Entities::Issue, current_user: current_user
         end
       end
     end
