@@ -516,6 +516,36 @@ describe API::API, api: true  do
     end
   end
 
+  describe 'POST :id/merge_requests/:merge_request_id/subscribe' do
+    it 'subscribes to a merge request' do
+      post api("/projects/#{project.id}/merge_requests/#{merge_request.id}/subscribe", admin)
+
+      expect(response.status).to eq(201)
+      expect(json_response['subscribed']).to eq(true)
+    end
+
+    it 'returns 304 if already subscribed' do
+      post api("/projects/#{project.id}/merge_requests/#{merge_request.id}/subscribe", user)
+
+      expect(response.status).to eq(304)
+    end
+  end
+
+  describe 'POST :id/merge_requests/:merge_request_id/unsubscribe' do
+    it 'unsubscribes from a merge request' do
+      post api("/projects/#{project.id}/merge_requests/#{merge_request.id}/unsubscribe", user)
+
+      expect(response.status).to eq(201)
+      expect(json_response['subscribed']).to eq(false)
+    end
+
+    it 'returns 304 if not subscribed' do
+      post api("/projects/#{project.id}/merge_requests/#{merge_request.id}/unsubscribe", admin)
+
+      expect(response.status).to eq(304)
+    end
+  end
+
   def mr_with_later_created_and_updated_at_time
     merge_request
     merge_request.created_at += 1.hour

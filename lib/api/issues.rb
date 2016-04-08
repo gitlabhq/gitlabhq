@@ -235,7 +235,7 @@ module API
       # Subscribes to a project issue
       #
       # Parameters:
-      #  id (required) - The ID of a project
+      #  id (required)       - The ID of a project
       #  issue_id (required) - The ID of a project issue
       # Example Request:
       #   POST /projects/:id/issues/:issue_id
@@ -270,7 +270,7 @@ module API
       # Unsubscribes from a project issue
       #
       # Parameters:
-      #  id (required) - The ID of a project
+      #  id (required)       - The ID of a project
       #  issue_id (required) - The ID of a project issue
       # Example Request:
       #   POST /projects/:id/issues/:issue_id/unsubscribe
