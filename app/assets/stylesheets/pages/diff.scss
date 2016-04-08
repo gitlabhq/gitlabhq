@@ -67,6 +67,14 @@
         line-height: $code_line_height;
         font-size: $code_font_size;
 
+        &.noteable_line.old:before {
+          content: '-';
+        }
+
+        &.noteable_line.new:before {
+          content: '+';
+        }
+
         span {
           white-space: pre;
         }
@@ -389,5 +397,17 @@
 
   .diff-file:last-child {
     margin-bottom: 0;
+  }
+}
+
+.diff-line-num:not(.js-unfold-bottom) {
+  a {
+    &:before {
+      content: attr(data-linenumber);
+    }
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
   }
 }

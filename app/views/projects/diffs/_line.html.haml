@@ -9,12 +9,12 @@
     %td.new_line.diff-line-num
     %td.line_content.match= line.text
   - else
-    %td.old_line.diff-line-num{class: type}
+    %td.old_line.diff-line-num{class: type, data: {linenumber: line.new_pos}}
       - link_text = raw(type == "new" ? "&nbsp;" : line.old_pos)
       - if defined?(plain) && plain
         = link_text
       - else
-        = link_to link_text, "##{line_code}", id: line_code
+        = link_to "", "##{line_code}", id: line_code, data: { linenumber: link_text }
       - if @comments_allowed && can?(current_user, :create_note, @project)
         = link_to_new_diff_note(line_code)
     %td.new_line.diff-line-num{class: type, data: {linenumber: line.new_pos}}
@@ -22,5 +22,5 @@
       - if defined?(plain) && plain
         = link_text
       - else
-        = link_to link_text, "##{line_code}", id: line_code
+        = link_to "", "##{line_code}", id: line_code, data: { linenumber: link_text }
     %td.line_content{class: "noteable_line #{type} #{line_code}", data: { line_code: line_code }}= diff_line_content(line.text)
