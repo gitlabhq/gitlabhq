@@ -10,6 +10,14 @@
 
 = form_for @milestone, url: group_milestones_path(@group), html: { class: 'form-horizontal milestone-form gfm-form js-quick-submit js-requires-input' }  do |f|
   .row
+    - if @milestone.errors.any?
+      #error_explanation
+        .alert.alert-danger
+          %ul
+            - @milestone.errors.full_messages.each do |msg|
+              %li
+                = msg
+
     .col-md-6
       .form-group
         = f.label :title, "Title", class: "control-label"

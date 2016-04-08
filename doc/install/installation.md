@@ -290,8 +290,12 @@ sudo usermod -aG redis git
     # Copy the example Rack attack config
     sudo -u git -H cp config/initializers/rack_attack.rb.example config/initializers/rack_attack.rb
 
-    # Configure Git global settings for git user, used when editing via web editor
+    # Configure Git global settings for git user
+    # 'autocrlf' is needed for the web editor
     sudo -u git -H git config --global core.autocrlf input
+
+    # Disable 'git gc --auto' because GitLab already runs 'git gc' when needed
+    sudo -u git -H git config --global gc.auto 0
 
     # Configure Redis connection settings
     sudo -u git -H cp config/resque.yml.example config/resque.yml

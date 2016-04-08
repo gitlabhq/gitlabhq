@@ -30,6 +30,15 @@ Feature: Project
     When I enable project issues
     Then I should see the issues settings
 
+  Scenario: I should have back to group button
+    And project "Shop" belongs to group
+    And I visit project "Shop" page
+    Then I should see back to group button
+
+  Scenario: I should have back to group button
+    And I visit project "Shop" page
+    Then I should see back to dashboard button
+
   Scenario: I should have readme on page
     And I visit project "Shop" page
     Then I should see project "Shop" README

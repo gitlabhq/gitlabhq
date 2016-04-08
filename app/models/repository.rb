@@ -369,6 +369,8 @@ class Repository
   # Runs code after a repository has been created.
   def after_create
     expire_exists_cache
+    expire_root_ref_cache
+    expire_emptiness_caches
   end
 
   # Runs code just before a repository is deleted.

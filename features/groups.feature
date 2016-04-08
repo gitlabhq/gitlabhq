@@ -7,6 +7,10 @@ Feature: Groups
     When I visit group "NonExistentGroup" page
     Then page status code should be 404
 
+  Scenario: I should have back to group button
+    When I visit group "Owned" page
+    Then I should see back to dashboard button
+
   @javascript
   Scenario: I should see group "Owned" dashboard list
     When I visit group "Owned" page

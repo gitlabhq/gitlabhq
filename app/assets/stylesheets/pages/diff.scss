@@ -63,10 +63,10 @@
       .line_holder td {
         line-height: $code_line_height;
         font-size: $code_font_size;
-      }
 
-      td {
-        white-space: nowrap;
+        span {
+          white-space: pre;
+        }
       }
     }
 
@@ -108,6 +108,10 @@
       &.parallel {
         display: table-cell;
       }
+    }
+
+    .text-file.diff-wrap-lines table .line_holder td span {
+      white-space: pre-wrap;
     }
   }
   .image {

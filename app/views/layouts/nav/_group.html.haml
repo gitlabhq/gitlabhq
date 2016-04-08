@@ -1,4 +1,12 @@
 %ul.nav.nav-sidebar
+  = nav_link do
+    = link_to root_path, title: 'Go to dashboard', class: 'back-link' do
+      = icon('caret-square-o-left fw')
+      %span
+        Go to dashboard
+
+  %li.separate-item
+
   = nav_link(path: 'groups#show', html_options: {class: 'home'}) do
     = link_to group_path(@group), title: 'Home' do
       = icon('group fw')
@@ -39,7 +47,7 @@
       %span
         Contribution Analytics
   - if can?(current_user, :admin_group, @group)
-    = nav_link do
+    = nav_link(html_options: { class: "separate-item" }) do
       = link_to edit_group_path(@group), title: 'Settings' do
         = icon ('cogs fw')
         %span

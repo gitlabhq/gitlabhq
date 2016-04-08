@@ -716,6 +716,19 @@ describe Repository, models: true do
 
       repository.after_create
     end
+
+    it 'flushes the root ref cache' do
+      expect(repository).to receive(:expire_root_ref_cache)
+
+      repository.after_create
+    end
+
+    it 'flushes the emptiness caches' do
+      expect(repository).to receive(:expire_emptiness_caches)
+
+      repository.after_create
+    end
+
   end
 
   describe "#main_language" do

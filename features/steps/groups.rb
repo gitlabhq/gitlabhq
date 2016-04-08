@@ -4,6 +4,10 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
   include SharedGroup
   include SharedUser
 
+  step 'I should see back to dashboard button' do
+    expect(page).to have_content 'Go to dashboard'
+  end
+
   step 'I should see group "Owned"' do
     expect(page).to have_content '@owned'
   end

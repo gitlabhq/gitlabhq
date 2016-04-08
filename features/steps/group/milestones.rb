@@ -5,9 +5,7 @@ class Spinach::Features::GroupMilestones < Spinach::FeatureSteps
   include SharedUser
 
   step 'I click on group milestones' do
-    page.within '.nav-secondary' do
-      click_link("Milestones")
-    end
+    click_link 'Milestones'
   end
 
   step 'I should see group milestones index page has no milestones' do
