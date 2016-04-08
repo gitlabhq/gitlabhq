@@ -1,42 +1,40 @@
 module Projects
   class ParticipantsService < BaseService
     def execute(noteable_type, noteable_id)
-      @target = get_target(noteable_type, noteable_id)
-      participating =
-        if noteable_type && noteable_id
-          participants_in_target
-        else
-          []
-        end
+      @noteable_type = noteable_type
+      @noteable_id = noteable_id
       project_members = sorted(project.team.members)
-      participants = target_owner + participating + all_members + groups + project_members
+      participants = target_owner + participants_in_target + all_members + groups + project_members
       participants.uniq
     end
 
-    def get_target(type, id)
-      case type
-      when "Issue"
-        project.issues.find_by_iid(id)
-      when "MergeRequest"
-        project.merge_requests.find_by_iid(id)
-      when "Commit"
-        project.commit(id)
-      end
+    def target
+      @target ||=
+        case @noteable_type
+        when "Issue"
+          project.issues.find_by_iid(@noteable_id)
+        when "MergeRequest"
+          project.merge_requests.find_by_iid(@noteable_id)
+        when "Commit"
+          project.commit(@noteable_id)
+        else
+          nil
+        end
     end
 
     def target_owner
-      return [] unless @target && @target.author.present?
+      return [] unless target && target.author.present?
 
       [{
-        name: @target.author.name,
-        username: @target.author.username
+        name: target.author.name,
+        username: target.author.username
       }]
     end
 
     def participants_in_target
-      return [] unless @target
+      return [] unless target
 
-      users = @target.participants(current_user)
+      users = target.participants(current_user)
       sorted(users)
     end
 
