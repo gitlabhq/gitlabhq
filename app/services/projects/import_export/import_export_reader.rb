@@ -7,6 +7,10 @@ module Projects
         { only: atts_only[:project], include: build_hash(tree) }
       end
 
+      def tree
+        config[:project_tree]
+      end
+
       private
 
       def config
@@ -19,10 +23,6 @@ module Projects
 
       def atts_except
         config[:attributes_except]
-      end
-
-      def tree
-        config[:project_tree]
       end
 
       def build_hash(array)
