@@ -3,6 +3,7 @@ require 'spec_helper'
 describe API::API, api: true  do
   include ApiHelpers
   let(:user)        { create(:user) }
+  let(:user2)       { create(:user) }
   let(:non_member)  { create(:user) }
   let(:author)      { create(:author) }
   let(:assignee)    { create(:assignee) }
@@ -567,6 +568,36 @@ describe API::API, api: true  do
 
         expect(response.status).to eq(404)
       end
+    end
+  end
+
+  describe 'POST :id/issues/:issue_id/subscribe' do
+    it 'subscribes to an issue' do
+      post api("/projects/#{project.id}/issues/#{issue.id}/subscribe", user2)
+
+      expect(response.status).to eq(201)
+      expect(json_response['subscribed']).to eq(true)
+    end
+
+    it 'returns 304 if already subscribed' do
+      post api("/projects/#{project.id}/issues/#{issue.id}/subscribe", user)
+
+      expect(response.status).to eq(304)
+    end
+  end
+
+  describe 'POST :id/issues/:issue_id/unsubscribe' do
+    it 'unsubscribes from an issue' do
+      post api("/projects/#{project.id}/issues/#{issue.id}/unsubscribe", user)
+
+      expect(response.status).to eq(201)
+      expect(json_response['subscribed']).to eq(false)
+    end
+
+    it 'returns 304 if not subscribed' do
+      post api("/projects/#{project.id}/issues/#{issue.id}/unsubscribe", user2)
+
+      expect(response.status).to eq(304)
     end
   end
 end
