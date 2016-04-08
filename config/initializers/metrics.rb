@@ -7,6 +7,7 @@ if Gitlab::Metrics.enabled?
   # ActiveSupport.
   require 'gitlab/metrics/subscribers/action_view'
   require 'gitlab/metrics/subscribers/active_record'
+  require 'gitlab/metrics/subscribers/rails_cache'
 
   Gitlab::Application.configure do |config|
     config.middleware.use(Gitlab::Metrics::RackMiddleware)
