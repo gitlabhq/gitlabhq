@@ -7,7 +7,7 @@ module Ci
     ALLOWED_YAML_KEYS = [:before_script, :image, :services, :types, :stages, :variables, :cache]
     ALLOWED_JOB_KEYS = [:tags, :script, :only, :except, :type, :image, :services,
                         :allow_failure, :type, :stage, :when, :artifacts, :cache,
-                        :dependencies]
+                        :dependencies, :variables]
 
     attr_reader :before_script, :image, :services, :variables, :path, :cache
 
@@ -85,6 +85,7 @@ module Ci
           artifacts: job[:artifacts],
           cache: job[:cache] || @cache,
           dependencies: job[:dependencies],
+          variables: job[:variables],
         }.compact
       }
     end

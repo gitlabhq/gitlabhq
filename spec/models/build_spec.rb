@@ -238,6 +238,22 @@ describe Ci::Build, models: true do
 
           it { is_expected.to eq(predefined_variables + predefined_trigger_variable + yaml_variables + secure_variables + trigger_variables) }
         end
+
+        context 'when job variables are defined' do
+          before { build.update_attribute(:options, variables: job_variables) }
+
+          context 'when job variables are unique' do
+            let(:job_variables) { { KEY1: 'value1', KEY2: 'value2' } }
+            let(:resulting_variables) do
+              [{ key: :KEY1, value: 'value1', public: true },
+               { key: :KEY2, value: 'value2', public: true }]
+            end
+
+            it 'includes job variables' do
+              expect(subject).to include(*resulting_variables)
+            end
+          end
+        end
       end
     end
   end

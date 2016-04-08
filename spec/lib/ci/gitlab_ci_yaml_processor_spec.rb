@@ -346,19 +346,39 @@ module Ci
     end
 
     describe "Variables" do
-      it "returns variables when defined" do
-        variables = {
-          var1: "value1",
-          var2: "value2",
-        }
-        config = YAML.dump({
-                             variables: variables,
-                             before_script: ["pwd"],
-                             rspec: { script: "rspec" }
-                           })
+      context 'when global variables are defined' do
+        it 'returns variables' do
+          variables = {
+            var1: "value1",
+            var2: "value2",
+          }
+          config = YAML.dump({
+                               variables: variables,
+                               before_script: ["pwd"],
+                               rspec: { script: "rspec" }
+                             })
 
-        config_processor = GitlabCiYamlProcessor.new(config, path)
-        expect(config_processor.variables).to eq(variables)
+          config_processor = GitlabCiYamlProcessor.new(config, path)
+          expect(config_processor.variables).to eq(variables)
+        end
+      end
+
+      context 'when job variables are defined' do
+        let(:job_variables) { { KEY1: 'value1', SOME_KEY_2: 'value2'} }
+        let(:yaml_config) do
+          YAML.dump(
+            { before_script: ['pwd'],
+              rspec: {
+                variables: job_variables,
+                script: 'rspec' }
+            })
+        end
+
+        it 'appends job variable to job attributes' do
+          config = GitlabCiYamlProcessor.new(yaml_config, path)
+
+          expect(config.builds.first[:options][:variables]).to eq job_variables
+        end
       end
     end
 
