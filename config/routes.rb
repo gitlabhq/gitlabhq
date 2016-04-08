@@ -406,7 +406,7 @@ Rails.application.routes.draw do
 
       resource :avatar, only: [:destroy]
       resources :milestones, constraints: { id: /[^\/]+/ }, only: [:index, :show, :update, :new, :create]
-      resources :notification_settings, only: [:update]
+      resource :notification_setting, only: [:update]
     end
   end
 
@@ -608,7 +608,7 @@ Rails.application.routes.draw do
 
         resources :forks, only: [:index, :new, :create]
         resource :import, only: [:new, :create, :show]
-        resources :notification_settings, only: [:create, :update]
+        resource :notification_setting, only: [:create, :update]
 
         resources :refs, only: [] do
           collection do
