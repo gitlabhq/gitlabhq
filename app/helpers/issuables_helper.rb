@@ -17,15 +17,23 @@ module IssuablesHelper
   end
 
   def multi_label_name(current_labels, default_label)
-    if current_labels.presence
-      if current_labels.include? ','
-        labels = current_labels.split(',')
-        "#{labels[0]} +#{labels.count - 1} more"
+    # current_labels may be a string from before
+    if current_labels.respond_to?('any?')
+      if current_labels.any?
+        if current_labels.count > 1
+          "#{current_labels[0]} +#{current_labels.count - 1} more"
+        else
+          current_labels[0]
+        end
+      else
+        default_label
+      end
+    else
+      if current_labels.nil?
+        default_label
       else
         current_labels
       end
-    else
-      default_label
     end
   end
 

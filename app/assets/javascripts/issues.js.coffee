@@ -50,45 +50,8 @@
       , 500)
 
   filterResults: (form) =>
-    # Assume for now there is only 1 multi select field
-    # Find the hidden inputs with square brackets
-    $multiInputs = form.find('input[name$="[]"]')
-    if $multiInputs.length
-      # get the name of one of them
-      multiInputName = $multiInputs
-                          .first()
-                          .attr('name')
-
-      # get the singular name by
-      # removing the square brackets from the name
-      singularName = multiInputName.replace('[]','')
-      # clone the form so we can mess around with it.
-      $clonedForm = form.clone()
-
-      # get those inputs from the cloned form
-      $inputs = $clonedForm
-        .find("input[name='#{multiInputName}']")
-
-      # make a comma seperated list of labels
-      commaSeperated = $inputs
-                          .map( -> $(this).val())
-                          .get()
-                          .join(',')
-      # append on a hidden input with the comma 
-      # seperated values in it
-      $clonedForm.append(
-        $('<input />')
-          .attr('type','hidden')
-          .attr('name', singularName)
-          .val(commaSeperated)
-      )
-      # remove the multi inputs from the 
-      # cloned form so they don't get serialized
-      $inputs.remove()
-      # serialize the cloned form
-      formData = $clonedForm.serialize()
-    else
-      formData = form.serialize()
+    
+    formData = form.serialize()
 
     $('.issues-holder, .merge-requests-holder').css("opacity", '0.5')
     formAction = form.attr('action')
