@@ -1,9 +1,9 @@
 module Projects
   class ParticipantsService < BaseService
-    def execute(note_type, note_id)
-      @target = get_target(note_type, note_id)
+    def execute(noteable_type, noteable_id)
+      @target = get_target(noteable_type, noteable_id)
       participating =
-        if note_type && note_id
+        if noteable_type && noteable_id
           participants_in_target
         else
           []
