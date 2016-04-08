@@ -1,18 +1,25 @@
 class @DueDateSelect
   constructor: ->
+    $loading = $('.js-issuable-update .due_date').find('.block-loading').hide()
+
     $('.js-due-date-select').each (i, dropdown) ->
       $dropdown = $(dropdown)
       $dropdownParent = $dropdown.closest('.dropdown')
       $addBtn = $('.js-due-date-add', $dropdownParent)
       $datePicker = $dropdownParent.find('.js-due-date-calendar')
       $block = $dropdown.closest('.block')
-      $loading = $block.find('.block-loading').hide()
       $selectbox = $dropdown.closest('.selectbox')
       $value = $block.find('.value')
 
       fieldName = $dropdown.data('field-name')
       abilityName = $dropdown.data('ability-name')
       issueUpdateURL = $dropdown.data('issue-update')
+
+      $dropdown.glDropdown(
+        hidden: ->
+          $selectbox.hide()
+          $value.removeAttr('style')
+      )
 
       $addBtn.on 'click', (e) ->
         e.preventDefault()
