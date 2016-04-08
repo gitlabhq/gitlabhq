@@ -358,6 +358,13 @@
   border-top: 1px solid $dropdown-divider-color;
 }
 
+.dropdown-due-date-footer {
+  padding-top: 0;
+  margin-left: 10px;
+  margin-right: 10px;
+  border-top: 0;
+}
+
 .dropdown-footer-list {
   font-size: 14px;
 
@@ -394,4 +401,84 @@
   width: 15px;
   height: 15px;
   border-radius: $border-radius-base;
+}
+
+.dropdown-menu-due-date {
+  .ui-widget {
+    table {
+      margin: 0;
+    }
+
+    &.ui-datepicker-inline {
+      padding: 0 10px;
+      border: 0;
+      width: 100%;
+    }
+
+    .ui-datepicker-header {
+      padding: 8px;
+      border: 0;
+    }
+
+    .ui-state-active,
+    .ui-state-hover {
+      color: $md-link-color;
+      background-color: #ecf3fe;
+    }
+
+    .ui-datepicker-prev,
+    .ui-datepicker-next {
+      &:hover {
+        background-color: transparent;
+        border: 0;
+      }
+    }
+
+    .ui-datepicker-prev {
+      left: 1px;
+      top: 1px;
+    }
+
+    .ui-datepicker-next {
+      right: 1px;
+      top: 1px;
+    }
+
+    td {
+      padding: 0;
+      border: 1px solid rgba(0, 0, 0, .1);
+
+      &:first-child {
+        border-left: 0;
+      }
+
+      &:last-child {
+        border-right: 0;
+      }
+
+      a {
+        line-height: 17px;
+        border: 0;
+        border-radius: 0;
+      }
+    }
+
+    .ui-datepicker-title {
+      color: #555;
+      font-size: 15px;
+      line-height: 1;
+      font-weight: normal;
+    }
+  }
+
+  th {
+    padding: 5px 0;
+    color: #b8b8b8;
+    font-weight: normal;
+    text-transform: lowercase;
+  }
+
+  .ui-datepicker-unselectable {
+    background-color: #faf9f9;
+  }
 }

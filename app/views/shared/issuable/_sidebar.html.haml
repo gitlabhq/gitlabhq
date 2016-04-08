@@ -10,14 +10,14 @@
         = sidebar_gutter_toggle_icon
       .issuable-nav.hide-collapsed.pull-right.btn-group{role: 'group', "aria-label" => '...'}
         - if prev_issuable = prev_issuable_for(issuable)
-          = link_to 'Prev', [@project.namespace.becomes(Namespace), @project, prev_issuable], class: 'btn btn-default prev-btn'
+          = link_to 'Prev', [@project.namespace.becomes(Namespace), @project, prev_issuable], class: 'btn btn-default prev-btn issuable-pager'
         - else
-          %a.btn.btn-default.disabled{href: '#'}
+          %a.btn.btn-default.issuable-pager.disabled{href: '#'}
             Prev
         - if next_issuable = next_issuable_for(issuable)
-          = link_to 'Next', [@project.namespace.becomes(Namespace), @project, next_issuable], class: 'btn btn-default next-btn'
+          = link_to 'Next', [@project.namespace.becomes(Namespace), @project, next_issuable], class: 'btn btn-default next-btn issuable-pager'
         - else
-          %a.btn.btn-default.disabled{href: '#'}
+          %a.btn.btn-default.issuable-pager.disabled{href: '#'}
             Next
 
     = form_for [@project.namespace.becomes(Namespace), @project, issuable], remote: true, html: {class: 'issuable-context-form inline-update js-issuable-update'} do |f|
@@ -84,20 +84,32 @@
               - else
                 .light None
           .title.hide-collapsed
-            %label
-              Due Date
+            Due Date
+            = icon('spinner spin', class: 'block-loading')
             - if can?(current_user, :"admin_#{issuable.to_ability_name}", @project)
-              .pull-right
-                = link_to 'Edit', '#', class: 'edit-link'
-          .value.hide-collapsed
+              = link_to 'Edit', '#', class: 'edit-link pull-right'
+          .value.bold.hide-collapsed
             - if issuable.due_date
-              = icon('calendar')
               = issuable.due_date.to_s(:medium)
             - else
               .light None
-          .selectbox.hide-collapsed
-            = f.text_field :due_date
-            = hidden_field_tag :issuable_context
+          - if can?(current_user, :"admin_#{issuable.to_ability_name}", @project)
+            .selectbox.hide-collapsed
+              = hidden_field_tag "#{issuable.to_ability_name}[due_date]", issuable.due_date
+              .dropdown
+                %button.dropdown-menu-toggle.js-due-date-select{ type: "button", data: { toggle: "dropdown", field_name: "#{issuable.to_ability_name}[due_date]", ability_name: issuable.to_ability_name, issue_update: issuable_json_path(issuable) } }
+                  %span.dropdown-toggle-text
+                    Due date
+                  = icon('chevron-down')
+                .dropdown-menu.dropdown-menu-due-date
+                  = dropdown_title("Due date")
+                  = dropdown_content do
+                    .js-due-date-calendar
+                  .dropdown-footer.dropdown-due-date-footer.clearfix
+                    %button.btn.btn-primary.pull-left.js-due-date-add{ type: "button" }
+                      Add
+                    %button.btn.btn-default.pull-right{ type: "button" }
+                      Cancel
 
       - if issuable.project.labels.any?
         .block.labels
@@ -178,3 +190,4 @@
       new IssuableContext('#{escape_javascript(current_user.to_json(only: [:username, :id, :name]))}');
       new Subscription('.subscription')
       new Sidebar();
+      new DueDateSelect();
