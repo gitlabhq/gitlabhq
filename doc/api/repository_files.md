@@ -33,6 +33,30 @@ Parameters:
 - `file_path` (required) - Full path to new file. Ex. lib/class.rb
 - `ref` (required) - The name of branch, tag or commit
 
+## Get raw file from repository
+
+Allows you to receive a file from the repository without any metadata.
+
+```
+GET /projects/:id/repository/files/raw
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer | yes | The ID of a project |
+| `file_path` | string | yes | Full path to file. Ex. lib/class.rb |
+| `ref` | string | yes | The name of branch, tag or commit |
+
+```bash
+curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --data "ref=master" --data "file_path=Gemfile" https://gitlab.example.com/api/v3/projects/5/repository/files/raw
+```
+
+Example response:
+
+```
+"source \"https://rubygems.org\"\n\ngem 'rails', '4.2.5.2'\ngem 'rails-deprecated_sanitizer', '~\u003e 1.0.3'\n\n# Responders respond_to and respond_with\ngem 'responders', '~\u003e 2.0'\n\n
+```
+
 ## Create new file in repository
 
 ```

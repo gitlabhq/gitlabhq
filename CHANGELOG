@@ -31,6 +31,7 @@ v 8.7.0 (unreleased)
   - API: Expose user location (Robert Schilling)
   - ClosingIssueExtractor regex now also works with colons. e.g. "Fixes: #1234" !3591
   - Update number of Todos in the sidebar when it's marked as "Done". !3600
+  - API: Add raw file endpoint to API
 
 v 8.6.5
   - Fix importing from GitHub Enterprise. !3529

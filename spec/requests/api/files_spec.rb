@@ -47,6 +47,7 @@ describe API::API, api: true  do
       }
 
       get api("/projects/#{project.id}/repository/files/raw", user), params
+      
       expect(response.status).to eq(200)
       expect(response.body).to match /shell_commands\.md\)\n\z/
     end
