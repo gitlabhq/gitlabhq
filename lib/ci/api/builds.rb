@@ -50,6 +50,16 @@ module Ci
           end
         end
 
+        # Send incremental log update - Runners only
+        #
+        # Parameters:
+        #   id (required) - The ID of a build
+        # Body:
+        #   content of logs to append
+        # Headers:
+        #   Content-Range: range of conntent that was sent
+        # Example Request:
+        #   PATCH /builds/:id/trace.txt
         patch ":id/trace.txt" do
           build = Ci::Build.find_by_id(params[:id])
           not_found! unless build
@@ -64,7 +74,7 @@ module Ci
             return error!('416 Range Not Satisfiable', 416, { 'Range' => "0-#{build.trace_length}" })
           end
 
-          build.append_trace(request.body.read)
+          build.append_trace(request.body.read, content_range[0].to_i)
 
           status 202
           header 'Build-Status', build.status

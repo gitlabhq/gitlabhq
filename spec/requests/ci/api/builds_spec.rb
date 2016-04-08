@@ -195,7 +195,7 @@ describe Ci::API::API do
         it { expect(response.status).to eq 400 }
       end
 
-      context 'when build has been erased' do
+      context 'when build has been errased' do
         let(:build) { create(:ci_build, runner_id: runner.id, erased_at: Time.now) }
 
         it { expect(response.status).to eq 403 }

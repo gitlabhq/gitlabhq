@@ -231,10 +231,10 @@ module Ci
     end
 
     def trace_length
-      unless trace.present?
-        0
+      if raw_trace
+        raw_trace.length
       else
-        trace.length
+        0
       end
     end
 
@@ -250,9 +250,10 @@ module Ci
     end
     private :recreate_trace_dir
 
-    def append_trace(trace_part)
+    def append_trace(trace_part, offset)
       recreate_trace_dir
 
+      File.truncate(path_to_trace, offset)
       File.open(path_to_trace, 'a') do |f|
         f.write(trace_part)
       end
