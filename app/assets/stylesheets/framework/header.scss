@@ -36,7 +36,7 @@ header {
       padding: 0;
 
       .nav > li > a {
-        color: #7f8fa4;
+        color: $gl-icon-color;
         font-size: 18px;
         padding: 0;
         margin: ($header-height - 28) / 2 0;
@@ -62,7 +62,7 @@ header {
           background-color: #eee;
         }
         &.active {
-          color: #7f8fa4;
+          color: $gl-icon-color;
         }
       }
     }
@@ -81,14 +81,14 @@ header {
       font-size: 19px;
       line-height: $header-height;
       font-weight: normal;
-      color: #4c4e54;
+      color: $gl-text-color;
       overflow: hidden;
       text-overflow: ellipsis;
       vertical-align: top;
       white-space: nowrap;
 
       a {
-        color: #4c4e54;
+        color: $gl-text-color;
         &:hover {
           text-decoration: underline;
         }
@@ -114,26 +114,6 @@ header {
     .navbar-collapse {
       float: right;
       border-top: none;
-    }
-  }
-
-  .search {
-    margin-right: 10px;
-    margin-left: 10px;
-    margin-top: ($header-height - 36) / 2;
-
-    form {
-      margin: 0;
-      padding: 0;
-    }
-
-    .search-input {
-      width: 220px;
-
-      &:focus {
-        @include box-shadow(none);
-        outline: none;
-      }
     }
   }
 

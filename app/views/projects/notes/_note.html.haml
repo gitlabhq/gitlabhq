@@ -5,28 +5,21 @@
         = image_tag avatar_icon(note.author), alt: '', class: 'avatar s40'
     .timeline-content
       .note-header
+        = link_to_member(note.project, note.author, avatar: false)
+        .inline.note-headline-light
+          = "#{note.author.to_reference} commented"
+          %a{ href: "##{dom_id(note)}" }
+            = time_ago_with_tooltip(note.created_at, placement: 'bottom', html_class: 'note-created-ago')
         - if note_editable?(note)
           .note-actions
-            = link_to '#', title: 'Edit comment', class: 'js-note-edit' do
+            - access = note.project.team.human_max_access(note.author.id)
+            - if access
+              %span.note-role
+                = access
+            = link_to '#', title: 'Edit comment', class: 'note-action-button js-note-edit' do
               = icon('pencil-square-o')
-
-            = link_to namespace_project_note_path(note.project.namespace, note.project, note), title: 'Remove comment', method: :delete, data: { confirm: 'Are you sure you want to remove this comment?' }, remote: true, class: 'js-note-delete danger' do
+            = link_to namespace_project_note_path(note.project.namespace, note.project, note), title: 'Remove comment', method: :delete, data: { confirm: 'Are you sure you want to remove this comment?' }, remote: true, class: 'note-action-button js-note-delete' do
               = icon('trash-o')
-
-        - unless note.system
-          - access = note.project.team.human_max_access(note.author.id)
-          - if access
-            %span.note-role.label
-              = access
-
-        = link_to_member(note.project, note.author, avatar: false)
-
-        %span.author-username
-          = '@' + note.author.username
-
-        %span.note-last-update
-          %a{name: dom_id(note), href: "##{dom_id(note)}", title: 'Link here'}
-            = time_ago_with_tooltip(note.created_at, placement: 'bottom', html_class: 'note_created_ago')
       .note-body{class: note_editable?(note) ? 'js-task-list-container' : ''}
         .note-text
           = preserve do

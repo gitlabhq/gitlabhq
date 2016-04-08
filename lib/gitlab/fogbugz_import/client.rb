@@ -26,7 +26,7 @@ module Gitlab
       def user_map
         users = {}
         res = @api.command(:listPeople)
-        res['people']['person'].each do |user|
+        [res['people']['person']].flatten.each do |user|
           users[user['ixPerson']] = { name: user['sFullName'], email: user['sEmail'] }
         end
         users

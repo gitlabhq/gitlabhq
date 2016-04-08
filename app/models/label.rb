@@ -56,7 +56,7 @@ class Label < ActiveRecord::Base
   # This pattern supports cross-project references.
   #
   def self.reference_pattern
-    %r{
+    @reference_pattern ||= %r{
       (#{Project.reference_pattern})?
       #{Regexp.escape(reference_prefix)}
       (?:

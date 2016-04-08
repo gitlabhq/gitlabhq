@@ -11,7 +11,7 @@ describe Banzai::Pipeline::WikiPipeline do
           Foo
       MD
 
-      result = described_class.call(markdown, project: spy, project_wiki: double)
+      result = described_class.call(markdown, project: spy, project_wiki: spy)
 
       aggregate_failures do
         expect(result[:output].text).not_to include '[['
@@ -29,7 +29,7 @@ describe Banzai::Pipeline::WikiPipeline do
           Foo
       MD
 
-      output = described_class.to_html(markdown, project: spy, project_wiki: double)
+      output = described_class.to_html(markdown, project: spy, project_wiki: spy)
 
       expect(output).to include('[[<em>toc</em>]]')
     end
@@ -42,7 +42,7 @@ describe Banzai::Pipeline::WikiPipeline do
           Foo
       MD
 
-      output = described_class.to_html(markdown, project: spy, project_wiki: double)
+      output = described_class.to_html(markdown, project: spy, project_wiki: spy)
 
       aggregate_failures do
         expect(output).not_to include('<ul>')

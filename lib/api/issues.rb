@@ -55,7 +55,7 @@ module API
         issues = filter_issues_state(issues, params[:state]) unless params[:state].nil?
         issues = filter_issues_labels(issues, params[:labels]) unless params[:labels].nil?
         issues.reorder(issuable_order_by => issuable_sort)
-        present paginate(issues), with: Entities::Issue
+        present paginate(issues), with: Entities::Issue, current_user: current_user
       end
     end
 
@@ -92,7 +92,7 @@ module API
         end
 
         issues.reorder(issuable_order_by => issuable_sort)
-        present paginate(issues), with: Entities::Issue
+        present paginate(issues), with: Entities::Issue, current_user: current_user
       end
 
       # Get a single project issue
@@ -105,7 +105,7 @@ module API
       get ":id/issues/:issue_id" do
         @issue = user_project.issues.find(params[:issue_id])
         not_found! unless can?(current_user, :read_issue, @issue)
-        present @issue, with: Entities::Issue
+        present @issue, with: Entities::Issue, current_user: current_user
       end
 
       # Create a new project issue
@@ -149,7 +149,7 @@ module API
             issue.add_labels_by_names(params[:labels].split(','))
           end
 
-          present issue, with: Entities::Issue
+          present issue, with: Entities::Issue, current_user: current_user
         else
           render_validation_error!(issue)
         end
@@ -189,7 +189,7 @@ module API
             issue.add_labels_by_names(params[:labels].split(','))
           end
 
-          present issue, with: Entities::Issue
+          present issue, with: Entities::Issue, current_user: current_user
         else
           render_validation_error!(issue)
         end

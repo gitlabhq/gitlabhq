@@ -26,6 +26,20 @@
 
     $(".selected_issue").bind "change", Issues.checkChanged
 
+  # Update state filters if present in page
+  updateStateFilters: ->
+    stateFilters =  $('.issues-state-filters')
+    newParams = {}
+    paramKeys = ['author_id', 'label_name', 'milestone_title', 'assignee_id', 'issue_search']
+
+    for paramKey in paramKeys
+      newParams[paramKey] = gl.utils.getUrlParameter(paramKey) or ''
+
+    if stateFilters.length
+      stateFilters.find('a').each ->
+        initialUrl = $(this).attr 'href'
+        $(this).attr 'href', gl.utils.mergeUrlParams(newParams, initialUrl)
+
   # Make sure we trigger ajax request only after user stop typing
   initSearch: ->
     @timer = null
@@ -54,6 +68,7 @@
         # Change url so if user reload a page - search results are saved
         history.replaceState {page: issuesUrl}, document.title, issuesUrl
         Issues.reload()
+        Issues.updateStateFilters()
       dataType: "json"
 
   checkChanged: ->

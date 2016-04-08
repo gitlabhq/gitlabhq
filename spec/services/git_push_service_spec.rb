@@ -159,18 +159,44 @@ describe GitPushService, services: true do
   end
 
   describe "Updates main language" do
-
     context "before push" do
       it { expect(project.main_language).to eq(nil) }
     end
 
     context "after push" do
-      before do
-        @service = execute_service(project, user, @oldrev, @newrev, @ref)
+      def execute
+        execute_service(project, user, @oldrev, @newrev, ref)
       end
 
-      it { expect(@service.update_main_language).to eq(true) }
-      it { expect(project.main_language).to eq("Ruby") }
+      context "to master" do
+        let(:ref) { @ref }
+
+        context 'when main_language is nil' do
+          it 'obtains the language from the repository' do
+            expect(project.repository).to receive(:main_language)
+            execute
+          end
+
+          it 'sets the project main language' do
+            execute
+            expect(project.main_language).to eq("Ruby")
+          end
+        end
+
+        context 'when main_language is already set' do
+          it 'does not check the repository' do
+            execute # do an initial run to simulate lang being preset
+            expect(project.repository).not_to receive(:main_language)
+            execute
+          end
+        end
+      end
+
+      context "to other branch" do
+        let(:ref) { 'refs/heads/feature/branch' }
+
+        it { expect(project.main_language).to eq(nil) }
+      end
     end
   end
 

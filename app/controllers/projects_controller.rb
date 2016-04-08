@@ -40,6 +40,9 @@ class ProjectsController < Projects::ApplicationController
   def update
     status = ::Projects::UpdateService.new(@project, current_user, project_params).execute
 
+    # Refresh the repo in case anything changed
+    @repository = project.repository
+
     respond_to do |format|
       if status
         flash[:notice] = "Project '#{@project.name}' was successfully updated."
@@ -71,7 +74,7 @@ class ProjectsController < Projects::ApplicationController
   def remove_fork
     return access_denied! unless can?(current_user, :remove_fork_project, @project)
 
-    if @project.unlink_fork
+    if ::Projects::UnlinkForkService.new(@project, current_user).execute
       flash[:notice] = 'The fork relationship has been removed.'
     end
   end
@@ -143,7 +146,7 @@ class ProjectsController < Projects::ApplicationController
     participants = ::Projects::ParticipantsService.new(@project, current_user).execute(note_type, note_id)
 
     @suggestions = {
-      emojis: autocomplete_emojis,
+      emojis: AwardEmoji.urls,
       issues: autocomplete.issues,
       mergerequests: autocomplete.merge_requests,
       members: participants
@@ -238,17 +241,6 @@ class ProjectsController < Projects::ApplicationController
       :builds_enabled, :build_allow_git_fetch, :build_timeout_in_minutes, :build_coverage_regex,
       :public_builds,
     )
-  end
-
-  def autocomplete_emojis
-    Rails.cache.fetch("autocomplete-emoji-#{Gemojione::VERSION}") do
-      Emoji.emojis.map do |name, emoji|
-        {
-          name: name,
-          path: view_context.image_url("#{emoji["unicode"]}.png")
-        }
-      end
-    end
   end
 
   def repo_exists?

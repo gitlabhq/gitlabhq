@@ -38,7 +38,7 @@ services:
   - postgres
 
 before_script:
-  - bundle_install
+  - bundle install
 
 stages:
   - build

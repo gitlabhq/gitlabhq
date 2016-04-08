@@ -121,15 +121,8 @@ p.time {
   text-shadow: none;
 }
 
-.thin_area{
+.thin_area {
   height: 150px;
-}
-
-// Fixes alignment on notes.
-.new_note {
-  label {
-    text-align: left;
-  }
 }
 
 // Fix issue with notes & lists creating a bunch of bottom borders.
@@ -148,7 +141,7 @@ li.note {
   }
 }
 
-.wiki_content code, .readme code{
+.wiki_content code, .readme code {
   background-color: inherit;
 }
 

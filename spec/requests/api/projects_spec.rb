@@ -948,6 +948,78 @@ describe API::API, api: true  do
     end
   end
 
+  describe 'POST /projects/:id/archive' do
+    context 'on an unarchived project' do
+      it 'archives the project' do
+        post api("/projects/#{project.id}/archive", user)
+
+        expect(response.status).to eq(201)
+        expect(json_response['archived']).to be_truthy
+      end
+    end
+
+    context 'on an archived project' do
+      before do
+        project.archive!
+      end
+
+      it 'remains archived' do
+        post api("/projects/#{project.id}/archive", user)
+
+        expect(response.status).to eq(201)
+        expect(json_response['archived']).to be_truthy
+      end
+    end
+
+    context 'user without archiving rights to the project' do
+      before do
+        project.team << [user3, :developer]
+      end
+
+      it 'rejects the action' do
+        post api("/projects/#{project.id}/archive", user3)
+
+        expect(response.status).to eq(403)
+      end
+    end
+  end
+
+  describe 'POST /projects/:id/unarchive' do
+    context 'on an unarchived project' do
+      it 'remains unarchived' do
+        post api("/projects/#{project.id}/unarchive", user)
+
+        expect(response.status).to eq(201)
+        expect(json_response['archived']).to be_falsey
+      end
+    end
+
+    context 'on an archived project' do
+      before do
+        project.archive!
+      end
+
+      it 'unarchives the project' do
+        post api("/projects/#{project.id}/unarchive", user)
+
+        expect(response.status).to eq(201)
+        expect(json_response['archived']).to be_falsey
+      end
+    end
+
+    context 'user without archiving rights to the project' do
+      before do
+        project.team << [user3, :developer]
+      end
+
+      it 'rejects the action' do
+        post api("/projects/#{project.id}/unarchive", user3)
+
+        expect(response.status).to eq(403)
+      end
+    end
+  end
+
   describe 'DELETE /projects/:id' do
     context 'when authenticated as user' do
       it 'should remove project' do
