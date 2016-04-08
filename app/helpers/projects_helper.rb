@@ -71,7 +71,7 @@ module ProjectsHelper
       project_link << icon("chevron-down", class: "dropdown-toggle-caret js-projects-dropdown-toggle", data: { target: ".js-dropdown-menu-projects", toggle: "dropdown" })
     end
 
-    full_title = namespace_link + ' / ' << project_link
+    full_title = "#{namespace_link} / #{project_link}".html_safe
     full_title << ' &middot; '.html_safe << link_to(simple_sanitize(name), url) if name
 
     full_title
