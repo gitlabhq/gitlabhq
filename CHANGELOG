@@ -12,6 +12,7 @@ v 8.7.0 (unreleased)
   - Allow back dating on issues when created through the API
   - Fix Error 500 after renaming a project path (Stan Hu)
   - Fix avatar stretching by providing a cropping feature
+  - API: Expose `subscribed` for issues and merge requests (Robert Schilling)
   - Allow SAML to handle external users based on user's information !3530
   - Add endpoints to archive or unarchive a project !3372
   - Add links to CI setup documentation from project settings and builds pages

@@ -66,7 +66,8 @@ Parameters:
       "due_date": null
     },
     "merge_when_build_succeeds": true,
-    "merge_status": "can_be_merged"
+    "merge_status": "can_be_merged",
+    "subscribed" : false
   }
 ]
 ```
@@ -128,7 +129,8 @@ Parameters:
     "due_date": null
   },
   "merge_when_build_succeeds": true,
-  "merge_status": "can_be_merged"
+  "merge_status": "can_be_merged",
+  "subscribed" : true
 }
 ```
 
@@ -227,6 +229,7 @@ Parameters:
   },
   "merge_when_build_succeeds": true,
   "merge_status": "can_be_merged",
+  "subscribed" : true,
   "changes": [
     {
     "old_path": "VERSION",
@@ -304,7 +307,8 @@ Parameters:
     "due_date": null
   },
   "merge_when_build_succeeds": true,
-  "merge_status": "can_be_merged"
+  "merge_status": "can_be_merged",
+  "subscribed" : true
 }
 ```
 
@@ -373,7 +377,8 @@ Parameters:
     "due_date": null
   },
   "merge_when_build_succeeds": true,
-  "merge_status": "can_be_merged"
+  "merge_status": "can_be_merged",
+  "subscribed" : true
 }
 ```
 
@@ -466,7 +471,8 @@ Parameters:
     "due_date": null
   },
   "merge_when_build_succeeds": true,
-  "merge_status": "can_be_merged"
+  "merge_status": "can_be_merged",
+  "subscribed" : true
 }
 ```
 
@@ -530,7 +536,8 @@ Parameters:
     "due_date": null
   },
   "merge_when_build_succeeds": true,
-  "merge_status": "can_be_merged"
+  "merge_status": "can_be_merged",
+  "subscribed" : true
 }
 ```
 
