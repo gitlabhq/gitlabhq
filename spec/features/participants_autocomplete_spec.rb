@@ -5,49 +5,72 @@ feature 'Member autocomplete', feature: true do
   let(:user) { create(:user) }
   let(:participant) { create(:user) }
   let(:author) { create(:user) }
-  let(:issue) { create(:issue, author: author, project: project) }
 
   before do
     login_as user
   end
 
-  describe 'On a Issue', js: true do
+  shared_examples "open suggestions" do
+    it 'suggestions are displayed' do
+      expect(page).to have_selector('.atwho-view', visible: true)
+    end
+
+    it 'author is suggested' do
+      page.within('.atwho-view', visible: true) do
+        expect(page).to have_content(author.username)
+      end
+    end
+
+    it 'participant is suggested' do
+      page.within('.atwho-view', visible: true) do
+        expect(page).to have_content(participant.username)
+      end
+    end
+  end
+
+  context 'On a Issue adding a new note', js: true do
     before do
-      create(:note, note: 'ultralight beam', noteable: issue, author: participant)
+      issue = create(:issue, author: author, project: project)
+      create(:note, note: 'Ultralight Beam', noteable: issue, author: participant)
       visit_issue(project, issue)
     end
 
-    describe 'adding a new note' do
-      describe 'when typing @' do
-
-        before do
-          sleep 1
-          page.within('.new-note') do
-            sleep 1
-            find('#note_note').native.send_keys('@')
-          end
-        end
-
-        it 'suggestions are displayed' do
-          expect(page).to have_selector('.atwho-view', visible: true)
-        end
-
-        it 'author is a suggestion' do
-          page.within('.atwho-view', visible: true) do
-            expect(page).to have_content(author.username)
-          end
-        end
-
-        it 'participant is a suggestion' do
-          page.within('.atwho-view', visible: true) do
-            expect(page).to have_content(participant.username)
-          end
-        end
+    context 'when typing @' do
+      include_examples "open suggestions"
+      before do
+        open_member_suggestions
       end
+    end
+  end
+
+  context 'On a Merge Request adding a new note', js: true do
+    before do
+      merge = create(:merge_request, source_project: project, target_project: project, author: author)
+      create(:note, note: 'Ultralight Beam', noteable: merge, author: participant)
+      visit_merge_request(project, merge)
+    end
+
+    context 'when typing @' do
+      include_examples "open suggestions"
+      before do
+        open_member_suggestions
+      end
+    end
+  end
+
+  def open_member_suggestions
+    sleep 1
+    page.within('.new-note') do
+      sleep 1
+      find('#note_note').native.send_keys('@')
     end
   end
 
   def visit_issue(project, issue)
     visit namespace_project_issue_path(project.namespace, project, issue)
+  end
+
+  def visit_merge_request(project, merge)
+    visit namespace_project_merge_request_path(project.namespace, project, merge)
   end
 end
