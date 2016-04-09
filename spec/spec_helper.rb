@@ -23,7 +23,9 @@ Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
 RSpec.configure do |config|
   config.use_transactional_fixtures = false
   config.use_instantiated_fixtures  = false
-  config.mock_with :rspec
+  config.mock_with :rspec do |mocks|
+    mocks.verify_partial_doubles = true
+  end
 
   config.verbose_retry = true
   config.display_try_failure_messages = true
