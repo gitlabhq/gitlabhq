@@ -16,6 +16,7 @@ class @LabelsSelect
       abilityName = $dropdown.data('ability-name')
       $selectbox = $dropdown.closest('.selectbox')
       $block = $selectbox.closest('.block')
+      $form = $dropdown.closest('form')
       $sidebarCollapsedValue = $block.find('.sidebar-collapsed-icon span')
       $value = $block.find('.value')
       $loading = $block.find('.block-loading').fadeOut()
@@ -171,7 +172,7 @@ class @LabelsSelect
             .find('a')
             .each((i) ->
               setTimeout(=>
-                glAnimate($(@), 'pulse')
+                gl.animate.animate($(@), 'pulse')
               ,200 * i
               )
             )
@@ -201,9 +202,9 @@ class @LabelsSelect
 
         renderRow: (label) ->
           selectedClass = ''
-          if $selectbox.find("input[type='hidden']\
+          if $form.find("input[type='hidden']\
             [name='#{$dropdown.data('field-name')}']\
-            [value='#{label.id}']").length
+            [value='#{this.id(label)}']").length
             selectedClass = 'is-active'
 
           color = if label.color? then "<span class='dropdown-label-box' style='background-color: #{label.color}'></span>" else ""
@@ -248,8 +249,6 @@ class @LabelsSelect
                 .find("input[type='hidden'][name='#{$dropdown.data('field-name')}']")
               Issues.filterResults(
                 $dropdown.closest('form'),
-                selectedLabels,
-                $dropdown.data('singularFieldName'),
                 $dropdown.data('fieldName')
               )
             else if $dropdown.hasClass('js-filter-submit')

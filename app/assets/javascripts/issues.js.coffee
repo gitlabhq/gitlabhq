@@ -1,5 +1,6 @@
 @Issues =
   init: ->
+    Issues.initTemplates()
     Issues.initSearch()
     Issues.initChecks()
 
@@ -14,6 +15,15 @@
           $(this).html totalIssues + 1
         else
           $(this).html totalIssues - 1
+
+  initTemplates: ->
+    Issue.labelRow = _.template(
+      '<% _.each(labels, function(label){ %>
+        <span class="label-row">
+          <a href="#"><span class="label color-label" style="background-color: <%= label.color %>; color: #FFFFFF" title="<%= label.description %>" data-container="body"><%= label.title %></span></a>
+        </span>
+      <% }); %>'
+    )
 
   reload: ->
     Issues.initChecks()
@@ -50,7 +60,6 @@
       , 500)
 
   filterResults: (form) =>
-    
     formData = form.serialize()
 
     $('.issues-holder, .merge-requests-holder').css("opacity", '0.5')
@@ -70,6 +79,31 @@
         history.replaceState {page: issuesUrl}, document.title, issuesUrl
         Issues.reload()
         Issues.updateStateFilters()
+        $filteredLabels = $('.filtered-labels')
+        $filteredLabelsSpans = $filteredLabels.find('span')
+        gl.animate.animateEach(
+          $filteredLabelsSpans,
+          'fadeOutDown', 20, {
+            cssStart: {
+              opacity: 1
+            },
+            cssEnd: {
+              opacity: 0
+            }
+        }).then( ->
+          $filteredLabels.html(Issue.labelRow(data))
+          $spans = $filteredLabels.find('span')
+          $spans.css('opacity',0)
+          return gl.animate.animateEach($spans, 'fadeInUp', 20, {
+            cssStart: {
+              opacity: 0
+            },
+            cssEnd: {
+              opacity: 1
+            }
+          })
+        )
+
       dataType: "json"
 
   checkChanged: ->
