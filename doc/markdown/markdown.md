@@ -185,20 +185,23 @@ GFM will turn that reference into a link so you can navigate between them easily
 
 GFM will recognize the following:
 
-| input                  | references                 |
-|:-----------------------|:---------------------------|
-| `@user_name`           | specific user              |
-| `@group_name`          | specific group             |
-| `@all`                 | entire team                |
-| `#123`                 | issue                      |
-| `!123`                 | merge request              |
-| `$123`                 | snippet                    |
-| `~123`                 | label by ID                |
-| `~bug`                 | one-word label by name     |
-| `~"feature request"`   | multi-word label by name   |
-| `9ba12248`             | specific commit            |
-| `9ba12248...b19a04f5`  | commit range comparison    |
-| `[README](doc/README)` | repository file references |
+| input                  | references                   |
+|:-----------------------|:---------------------------  |
+| `@user_name`           | specific user                |
+| `@group_name`          | specific group               |
+| `@all`                 | entire team                  |
+| `#123`                 | issue                        |
+| `!123`                 | merge request                |
+| `$123`                 | snippet                      |
+| `~123`                 | label by ID                  |
+| `~bug`                 | one-word label by name       |
+| `~"feature request"`   | multi-word label by name     |
+| `%123`                 | milestone by ID              |
+| `%v1.23`               | one-word milestone by name   |
+| `%"release candidate"` | multi-word milestone by name |
+| `9ba12248`             | specific commit              |
+| `9ba12248...b19a04f5`  | commit range comparison      |
+| `[README](doc/README)` | repository file references   |
 
 GFM also recognizes certain cross-project references:
 
@@ -206,6 +209,7 @@ GFM also recognizes certain cross-project references:
 |:----------------------------------------|:------------------------|
 | `namespace/project#123`                 | issue                   |
 | `namespace/project!123`                 | merge request           |
+| `namespace/project%123`                 | milestone               |
 | `namespace/project$123`                 | snippet                 |
 | `namespace/project@9ba12248`            | specific commit         |
 | `namespace/project@9ba12248...b19a04f5` | commit range comparison |
