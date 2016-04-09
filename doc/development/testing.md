@@ -16,16 +16,18 @@ GitLab uses [factory_girl] as a test fixture replacement.
 - Factory definitions live in `spec/factories/`, named using the pluralization
   of their corresponding model (`User` factories are defined in `users.rb`).
 - There should be only one top-level factory definition per file.
-- Make use of [Traits] to clean up definitions and usages.
+- FactoryGirl methods are mixed in to all RSpec groups. This means you can (and
+  should) call `create(...)` instead of `FactoryGirl.create(...)`.
+- Make use of [traits] to clean up definitions and usages.
 - When defining a factory, don't define attributes that are not required for the
   resulting record to pass validation.
-- When instantiating from a factory, don't supply extraneous attributes that
-  aren't required by the test.
+- When instantiating from a factory, don't supply attributes that aren't
+  required by the test.
 - Factories don't have to be limited to `ActiveRecord` objects.
   [See example](https://gitlab.com/gitlab-org/gitlab-ce/commit/0b8cefd3b2385a21cfed779bd659978c0402766d).
 
 [factory_girl]: https://github.com/thoughtbot/factory_girl
-[Traits]: http://www.rubydoc.info/gems/factory_girl/file/GETTING_STARTED.md#Traits
+[traits]: http://www.rubydoc.info/gems/factory_girl/file/GETTING_STARTED.md#Traits
 
 ## JavaScript
 
@@ -40,9 +42,9 @@ the command line via `bundle exec teaspoon`, or via a web browser at
   `spec/javascripts/fixtures`. They should contain the bare minimum amount of
   markup necessary for the test.
 
-  > **Warning:** Keep in mind that a Rails view may change and
-  invalidate your test, but everything will still pass because your fixture
-  doesn't reflect the latest view.
+    > **Warning:** Keep in mind that a Rails view may change and
+    invalidate your test, but everything will still pass because your fixture
+    doesn't reflect the latest view.
 
 - Keep in mind that in a CI environment, these tests are run in a headless
   browser and you will not have access to certain APIs, such as
@@ -102,7 +104,7 @@ Here are some things to keep in mind regarding test performance:
 - Don't `create` an object when `build`, `build_stubbed`, `attributes_for`,
   `spy`, or `double` will do. Database persistence is slow!
 - Use `create(:empty_project)` instead of `create(:project)` when you don't need
-  the underlying repository. Filesystem operations are slow!
+  the underlying Git repository. Filesystem operations are slow!
 - Don't mark a feature as requiring JavaScript (through `@javascript` in
   Spinach or `js: true` in RSpec) unless it's _actually_ required for the test
   to be valid. Headless browser testing is slow!
