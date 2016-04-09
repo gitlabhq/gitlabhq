@@ -282,5 +282,29 @@ $ ->
     .on "resize", (e) ->
       fitSidebarForSize()
 
+  $('.note-text').textPopup({
+    buttons: [{
+      icon: 'fa fa-arrow-down',
+      title: 'copy markdown',
+      click: (e) ->
+        console.log('icon click')
+      },{
+      icon: 'fa fa-font',
+      title: 'copy plain text'
+      click: (e) ->
+        console.log('icon font')
+      },{
+      icon: 'fa fa-comment',
+      title: 'comment',
+      click: (e) ->
+        console.log('icon comment')
+      },{
+      icon: 'fa fa-link',
+      title: 'copy link',
+      click: (e) ->
+        console.log('link clicked')
+    }]
+  })
+
   checkInitialSidebarSize()
   new Aside()

@@ -54,3 +54,43 @@
     float: right;
   }
 }
+
+.text-selection-popup {
+  position: relative;
+  background: $gray-light;
+  border: 2px solid $border-gray-dark;
+  padding: 10px;
+  border-radius: $dropdown-border-radius;
+
+  .text-selection-icon {
+    margin-left: 10px;
+    &:first-child {
+      margin-left: 0px;
+    }
+  }
+
+  &:after, &:before {
+    top: 100%;
+    left: 50%;
+    border: solid transparent;
+    content: " ";
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+  }
+
+  &:after {
+    border-color: rgba(255, 255, 255, 0);
+    border-top-color: #ffffff;
+    border-width: 6px;
+    margin-left: -6px;
+  }
+
+  &:before {
+    border-color: rgba(204, 204, 204, 0);
+    border-top-color: $border-gray-dark;
+    border-width: 9px;
+    margin-left: -9px;
+  }
+}
