@@ -31,7 +31,7 @@ To disable it site-wide, follow the steps below.
 1. Edit `/etc/gitlab/gitlab.rb` and add the following line:
 
     ```ruby
-    gitlab_rails['artifacts_enabled'] = false
+    gitlab_rails['artifacts_enabled'] = true
     ```
 
 1. Save the file and [reconfigure GitLab][] for the changes to take effect.
@@ -44,7 +44,7 @@ To disable it site-wide, follow the steps below.
 
     ```yaml
     artifacts:
-      enabled: false
+      enabled: true
     ```
 
 1. Save the file and [restart GitLab][] for the changes to take effect.
