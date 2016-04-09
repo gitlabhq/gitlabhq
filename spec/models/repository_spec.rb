@@ -94,6 +94,12 @@ describe Repository, models: true do
 
     it { is_expected.to be_an Array }
 
+    it 'regex-escapes the query string' do
+      results = repository.search_files("test\\", 'master')
+
+      expect(results.first).not_to start_with('fatal:')
+    end
+
     describe 'result' do
       subject { results.first }
 
