@@ -199,7 +199,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
     merge_request_service = MergeRequests::MergeService.new(@project, current_user, merge_params)
     unless merge_request_service.hooks_validation_pass?(@merge_request)
-      @status = :failed
+      @status = :hook_validation_error
       return
     end
 

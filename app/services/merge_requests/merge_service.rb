@@ -30,6 +30,7 @@ module MergeRequests
 
     def hooks_validation_pass?(merge_request)
       git_hook = merge_request.project.git_hook
+      return true unless git_hook
 
       unless git_hook.commit_message_allowed?(params[:commit_message])
         merge_request.update(merge_error: "Commit message does not follow the pattern '#{git_hook.commit_message_regex}'")
