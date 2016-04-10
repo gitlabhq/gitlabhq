@@ -46,6 +46,7 @@ v 8.6.5
 
 v 8.6.4
   - Don't attempt to fetch any tags from a forked repo (Stan Hu)
+  - Redesign the Labels page
 
 v 8.6.3
   - Mentions on confidential issues doesn't create todos for non-members. !3374
