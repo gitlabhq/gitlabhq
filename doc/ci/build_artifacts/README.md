@@ -1,7 +1,9 @@
 # Introduction to build artifacts
 
 Artifacts is a list of files and directories which are attached to a build
-after it completes successfully.  Artificats is enabled by default.  _If you are searching for ways to use artifacts, jump to
+after it completes successfully.  This feature is enabled by default in all GitLab installations.
+
+_If you are searching for ways to use artifacts, jump to
 [Defining artifacts in `.gitlab-ci.yml`](#defining-artifacts-in-gitlab-ciyml)._
 
 Since GitLab 8.2 and [GitLab Runner] 0.7.0, build artifacts that are created by
