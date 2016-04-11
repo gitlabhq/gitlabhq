@@ -1,4 +1,4 @@
-# Class relationships to be included in the project import/export
+# Model relationships to be included in the project import/export
 :project_tree:
   - :issues
   - :labels
@@ -13,6 +13,7 @@
   - :commit_statuses:
     - :commit
 
+# Only include the following attributes for the models specified.
 :attributes_only:
   :project:
     - :name
@@ -30,6 +31,7 @@
     - :email
     - :username
 
+# Do not include the following attributes for the models specified.
 :attributes_except:
   :snippets:
     - :expired_at
