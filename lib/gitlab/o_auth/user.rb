@@ -54,6 +54,14 @@ module Gitlab
           @user ||= build_new_user
         end
 
+        unless @user.nil?
+          if external_provider?
+            @user.external = true
+          else
+            @user.external = false
+          end
+        end
+
         @user
       end
 
@@ -111,6 +119,10 @@ module Gitlab
         else
           providers
         end
+      end
+
+      def external_provider?
+        Gitlab.config.omniauth.external_providers.include?(auth_hash.provider)
       end
 
       def block_after_signup?
