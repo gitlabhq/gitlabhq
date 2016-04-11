@@ -82,7 +82,7 @@
               - if issuable.due_date
                 = issuable.due_date.to_s(:medium)
               - else
-                .light None
+                None
           .title.hide-collapsed
             Due Date
             = icon('spinner spin', class: 'block-loading')
