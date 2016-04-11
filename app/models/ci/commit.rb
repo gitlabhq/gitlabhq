@@ -127,10 +127,10 @@ module Ci
       end
     end
 
-    def create_builds(ref, tag, user, trigger_request = nil)
+    def create_builds(user)
       return unless config_processor
       config_processor.stages.any? do |stage|
-        CreateBuildsService.new.execute(self, stage, ref, tag, user, trigger_request, 'success').present?
+        CreateBuildsService.new.execute(self, stage, user, 'success').present?
       end
     end
 
@@ -151,7 +151,7 @@ module Ci
 
       # create builds for next stages based
       next_stages.any? do |stage|
-        CreateBuildsService.new.execute(self, stage, build.ref, build.tag, build.user, build.trigger_request, status).present?
+        CreateBuildsService.new.execute(self, stage, build.user, status).present?
       end
     end
 
