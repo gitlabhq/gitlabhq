@@ -13,13 +13,13 @@ class Registry
   end
 
   def tag(reference)
-    return @tag[reference] if defined?(@tag[reference])
+    return @tag[reference] if defined?(@tag) && @tag.has_key?(reference)
     @tag ||= {}
     @tag[reference] ||= client.tag(path_with_namespace, reference)
   end
 
   def tag_digest(reference)
-    return @tag_digest[reference] if defined?(@tag_digest[reference])
+    return @tag_digest[reference] if defined?(@tag_digest) && @tag_digest.has_key?(reference)
     @tag_digest ||= {}
     @tag_digest[reference] ||= client.tag_digest(path_with_namespace, reference)
   end
@@ -29,7 +29,7 @@ class Registry
   end
 
   def blob_size(blob)
-    return @blob_size[blob] if defined?(@blob_size[blob])
+    return @blob_size[blob] if defined?(@blob_size) && @blob_size.has_key?(blob)
     @blob_size ||= {}
     @blob_size[blob] ||= client.blob_size(path_with_namespace, blob)
   end

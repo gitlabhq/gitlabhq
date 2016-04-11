@@ -375,7 +375,7 @@ class Project < ActiveRecord::Base
   end
 
   def registry_repository_url
-    "#{Gitlab.config.registry.host_with_port}/#{path_with_namespace}" if images_enabled? && Gitlab.config.registry.enabled
+    "#{Gitlab.config.registry.host_port}/#{path_with_namespace}" if images_enabled? && Gitlab.config.registry.enabled
   end
 
   def commit(id = 'HEAD')
