@@ -10,6 +10,7 @@ class @DueDateSelect
       $block = $dropdown.closest('.block')
       $selectbox = $dropdown.closest('.selectbox')
       $value = $block.find('.value')
+      $sidebarValue = $('.js-due-date-sidebar-value', $block)
 
       fieldName = $dropdown.data('field-name')
       abilityName = $dropdown.data('ability-name')
@@ -44,8 +45,10 @@ class @DueDateSelect
             $value.removeAttr('style')
 
             $value.html(mediumDate)
+            $sidebarValue.html(mediumDate)
         ).done (data) ->
           $dropdown.trigger('loaded.gl.dropdown')
+          $dropdown.trigger('hidden.gl.dropdown')
           $loading.fadeOut()
 
       $datePicker.datepicker(

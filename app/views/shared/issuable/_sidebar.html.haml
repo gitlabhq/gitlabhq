@@ -78,7 +78,7 @@
         .block.due_date
           .sidebar-collapsed-icon
             = icon('calendar')
-            %span
+            %span.js-due-date-sidebar-value
               - if issuable.due_date
                 = issuable.due_date.to_s(:medium)
               - else
