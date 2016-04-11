@@ -1,9 +1,6 @@
 = form_for [:admin, @application], url: @url, html: {class: 'form-horizontal', role: 'form'} do |f|
-  - if application.errors.any?
-    .alert.alert-danger
-      %button{ type: "button", class: "close", "data-dismiss" => "alert"} &times;
-      - application.errors.full_messages.each do |msg|
-        %p= msg
+  = form_errors(application)
+
   = content_tag :div, class: 'form-group' do
     = f.label :name, class: 'col-sm-2 control-label'
     .col-sm-10

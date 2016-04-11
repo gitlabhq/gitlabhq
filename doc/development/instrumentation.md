@@ -2,36 +2,35 @@
 
 GitLab Performance Monitoring allows instrumenting of custom blocks of Ruby
 code. This can be used to measure the time spent in a specific part of a larger
-chunk of code. The resulting data is written to a separate series.
+chunk of code. The resulting data is stored as a field in the transaction that
+executed the block.
 
-To start measuring a block of Ruby code you should use
-`Gitlab::Metrics.measure` and give it a name for the series to store the data
-in:
+To start measuring a block of Ruby code you should use `Gitlab::Metrics.measure`
+and give it a name:
 
 ```ruby
-Gitlab::Metrics.measure(:user_logins) do
+Gitlab::Metrics.measure(:foo) do
   ...
 end
 ```
 
-The first argument of this method is the series name and should be plural. This
-name will be prefixed with `rails_` or `sidekiq_` depending on whether the code
-was run in the Rails application or one of the Sidekiq workers. In the
-above example the final series names would be as follows:
+3 values are measured for a block:
 
-- rails_user_logins
-- sidekiq_user_logins
+1. The real time elapsed, stored in NAME_real_time.
+2. The CPU time elapsed, stored in NAME_cpu_time.
+3. The call count, stored in NAME_call_count.
 
-Series names should be plural as this keeps the naming style in line with the
-other series names.
+Both the real and CPU timings are measured in milliseconds.
 
-By default metrics measured using a block contain a single value, "duration",
-which contains the number of milliseconds it took to execute the block. Custom
-values can be added by passing a Hash as the 2nd argument. Custom tags can be
-added by passing a Hash as the 3rd argument. A simple example is as follows:
+Multiple calls to the same block will result in the final values being the sum
+of all individual values. Take this code for example:
 
 ```ruby
-Gitlab::Metrics.measure(:example_series, { number: 10 }, { class: self.class.to_s }) do
-  ...
+3.times do
+  Gitlab::Metrics.measure(:sleep) do
+    sleep 1
+  end
 end
 ```
+
+Here the final value of `sleep_real_time` will be `3`, _not_ `1`.
