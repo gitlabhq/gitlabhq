@@ -120,11 +120,11 @@ class BambooService < CiService
              end
 
     if status.include?('Success')
-      :success
+      'success'
     elsif status.include?('Failed')
-      :failed
+      'failed'
     elsif status.include?('Pending')
-      :pending
+      'pending'
     else
       :error
     end

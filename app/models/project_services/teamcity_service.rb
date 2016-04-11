@@ -124,11 +124,11 @@ class TeamcityService < CiService
              end
 
     if status.include?('SUCCESS')
-      :success
+      'success'
     elsif status.include?('FAILURE')
-      :failed
+      'failed'
     elsif status.include?('Pending')
-      :pending
+      'pending'
     else
       :error
     end
