@@ -54,12 +54,10 @@ module Gitlab
           @user ||= build_new_user
         end
 
-        unless @user.nil?
-          if external_provider?
-            @user.external = true
-          else
-            @user.external = false
-          end
+        if external_provider? && @user
+          @user.external = true
+        elsif @user
+          @user.external = false
         end
 
         @user
