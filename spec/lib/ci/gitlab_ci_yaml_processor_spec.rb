@@ -364,7 +364,7 @@ module Ci
       end
 
       context 'when job variables are defined' do
-        let(:job_variables) { { KEY1: 'value1', SOME_KEY_2: 'value2'} }
+        let(:job_variables) { { KEY1: 'value1', SOME_KEY_2: 'value2' } }
         let(:yaml_config) do
           YAML.dump(
             { before_script: ['pwd'],
