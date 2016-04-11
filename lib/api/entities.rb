@@ -439,5 +439,16 @@ module API
     class Variable < Grape::Entity
       expose :key, :value
     end
+
+    class License < Grape::Entity
+      expose :key, :name, :nickname, :featured
+      expose :url, as: :html_url
+      expose(:source_url) { |license| license.meta['source'] }
+      expose(:description) { |license| license.meta['description'] }
+      expose(:conditions) { |license| license.meta['required'] }
+      expose(:permissions) { |license| license.meta['permitted'] }
+      expose(:limitations) { |license| license.meta['forbidden'] }
+      expose :content
+    end
   end
 end

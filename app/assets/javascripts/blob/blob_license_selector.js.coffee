@@ -1,24 +1,30 @@
 class @BlobLicenseSelector
   licenseRegex: /^(.+\/)?(licen[sc]e|copying)($|\.)/i
 
-  constructor: (editor)->
-    self = this
-    @licenseSelector = $('.js-license-selector')
-    @toggleLicenseSelector($('#file_name').val())
+  constructor: (editor) ->
+    @$licenseSelector = $('.js-license-selector')
+    $fileNameInput = $('#file_name')
 
-    $('#file_name').on 'input', ->
-      self.toggleLicenseSelector($(this).val())
+    initialFileNameValue = if $fileNameInput.length
+      $fileNameInput.val()
+    else if $('.editor-file-name').length
+      $('.editor-file-name').text().trim()
 
-    $('select.license-select').select2(
-      width: 'resolve'
-      dropdownAutoWidth: true
-      placeholder: 'Choose a license template'
-    ).on 'change', (e) ->
-      Api.licenseText $(this).val(), $(this).data('fullname'), (data) ->
-        editor.setValue(data, -1)
+    @toggleLicenseSelector(initialFileNameValue)
+
+    if $fileNameInput
+      $fileNameInput.on 'keyup blur', (e) =>
+        @toggleLicenseSelector($(e.target).val())
+
+    $('select.license-select').on 'change', (e) ->
+      data =
+        project: $(this).data('project')
+        fullname: $(this).data('fullname')
+      Api.licenseText $(this).val(), data, (license) ->
+        editor.setValue(license.content, -1)
 
   toggleLicenseSelector: (fileName) =>
     if @licenseRegex.test(fileName)
-      @licenseSelector.show()
+      @$licenseSelector.show()
     else
-      @licenseSelector.hide()
+      @$licenseSelector.hide()

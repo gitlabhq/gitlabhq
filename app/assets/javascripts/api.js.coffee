@@ -93,17 +93,15 @@
     ).done (projects) ->
       callback(projects)
 
-  # Return text for specific license
-  licenseText: (key, fullname, callback) ->
-    url = Api.buildUrl(Api.license_path)
-    url = url.replace(':key', key)
+  # Return text for a specific license
+  licenseText: (key, data, callback) ->
+    url = Api.buildUrl(Api.license_path).replace(':key', key)
 
     $.ajax(
       url: url
-      data:
-        fullname: fullname
-    ).done (projects) ->
-      callback(projects)
+      data: data
+    ).done (license) ->
+      callback(license)
 
   buildUrl: (url) ->
     url = gon.relative_url_root + url if gon.relative_url_root?
