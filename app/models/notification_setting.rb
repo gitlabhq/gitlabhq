@@ -1,7 +1,5 @@
 class NotificationSetting < ActiveRecord::Base
-  # Notification level
-  # Note: When adding an option, it MUST go on the end of the array.
-  enum level: [:disabled, :participating, :watch, :global, :mention]
+  enum level: { disabled: 0,  participating: 1,  watch: 2,  global: 3, mention: 4 }
 
   default_value_for :level, NotificationSetting.levels[:global]
 
