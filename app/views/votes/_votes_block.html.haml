@@ -1,7 +1,7 @@
 .awards.votes-block
   - awards_sort(votable.notes.awards.grouped_awards).each do |emoji, notes|
-    %button.btn.award-control.js-emoji-btn.has-tooltip{class: (note_active_class(notes, current_user)), title: emoji_author_list(notes, current_user), data: {placement: "top"}}
-      = emoji_icon(emoji)
+    %button.btn.award-control.js-emoji-btn.has-tooltip{class: (note_active_class(notes, current_user)), data: {placement: "top", original_title: emoji_author_list(notes, current_user)}}
+      = emoji_icon(emoji, sprite: false)
       %span.award-control-text.js-counter
         = notes.count
 

@@ -108,5 +108,10 @@ class @Todos
 
     uri + separator + key + '=' + value
 
-  goToTodoUrl: ->
-    Turbolinks.visit($(this).data('url'))
+  goToTodoUrl: (e)->
+    todoLink = $(this).data('url')
+    if e.metaKey
+      e.preventDefault()
+      window.open(todoLink,'_blank')
+    else
+      Turbolinks.visit(todoLink)

@@ -10,10 +10,10 @@ class @Subscription
     btn = $(event.currentTarget)
     action = btn.find('span').text()
     current_status = @subscription_status.attr('data-status')
-    btn.prop('disabled', true)
+    btn.addClass('disabled')
 
     $.post @url, =>
-      btn.prop('disabled', false)
+      btn.removeClass('disabled')
       status = if current_status == 'subscribed' then 'unsubscribed' else 'subscribed'
       @subscription_status.attr('data-status', status)
       action = if status == 'subscribed' then 'Unsubscribe' else 'Subscribe'

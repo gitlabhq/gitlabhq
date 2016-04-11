@@ -74,24 +74,21 @@ describe Gitlab::Metrics do
       let(:transaction) { Gitlab::Metrics::Transaction.new }
 
       before do
-        allow(Gitlab::Metrics::Transaction).to receive(:current).
+        allow(Gitlab::Metrics).to receive(:current_transaction).
           and_return(transaction)
       end
 
       it 'adds a metric to the current transaction' do
-        expect(transaction).to receive(:add_metric).
-          with(:foo, { duration: a_kind_of(Numeric) }, { tag: 'value' })
+        expect(transaction).to receive(:increment).
+          with('foo_real_time', a_kind_of(Numeric))
 
-        Gitlab::Metrics.measure(:foo, {}, tag: 'value') { 10 }
-      end
+        expect(transaction).to receive(:increment).
+          with('foo_cpu_time', a_kind_of(Numeric))
 
-      it 'supports adding of custom values' do
-        values = { duration: a_kind_of(Numeric), number: 10 }
+        expect(transaction).to receive(:increment).
+          with('foo_call_count', 1)
 
-        expect(transaction).to receive(:add_metric).
-          with(:foo, values, { tag: 'value' })
-
-        Gitlab::Metrics.measure(:foo, { number: 10 }, tag: 'value') { 10 }
+        Gitlab::Metrics.measure(:foo) { 10 }
       end
 
       it 'returns the return value of the block' do

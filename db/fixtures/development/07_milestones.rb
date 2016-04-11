@@ -4,7 +4,7 @@ Gitlab::Seeder.quiet do
       milestone_params = {
         title: "v#{i}.0",
         description: FFaker::Lorem.sentence,
-        state: ['opened', 'closed'].sample,
+        state: [:active, :closed].sample,
       }
 
       milestone = Milestones::CreateService.new(

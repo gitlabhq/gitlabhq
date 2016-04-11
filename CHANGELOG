@@ -1,6 +1,8 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.7.0 (unreleased)
+  - Enable gzip for assets, makes the page size significantly smaller. !3544 / !3632 (Connor Shea)
+  - Load award emoji images separately unless opening the full picker. Saves several hundred KBs of data for most pages. (Connor Shea)
   - All images in discussions and wikis now link to their source files !3464 (Connor Shea).
   - Return status code 303 after a branch DELETE operation to avoid project deletion (Stan Hu)
   - Improved Markdown rendering performance !3389 (Yorick Peterse)
@@ -12,6 +14,7 @@ v 8.7.0 (unreleased)
   - Allow back dating on issues when created through the API
   - Fix Error 500 after renaming a project path (Stan Hu)
   - Fix avatar stretching by providing a cropping feature
+  - API: Expose `subscribed` for issues and merge requests (Robert Schilling)
   - Allow SAML to handle external users based on user's information !3530
   - Add endpoints to archive or unarchive a project !3372
   - Add links to CI setup documentation from project settings and builds pages
@@ -26,19 +29,24 @@ v 8.7.0 (unreleased)
   - Fix creation of merge requests for orphaned branches (Stan Hu)
   - Fall back to `In-Reply-To` and `References` headers when sub-addressing is not available (David Padilla)
   - Remove "Congratulations!" tweet button on newly-created project. (Connor Shea)
-  - Improved UX of the navigation sidebar
   - Fix admin/projects when using visibility levels on search (PotHix)
   - Build status notifications
   - API: Expose user location (Robert Schilling)
   - ClosingIssueExtractor regex now also works with colons. e.g. "Fixes: #1234" !3591
   - Update number of Todos in the sidebar when it's marked as "Done". !3600
 
-v 8.6.5 (unreleased)
-  - Only update repository language if it is not set to improve performance
-  - Check permissions when user attempts to import members from another project
+v 8.6.5
+  - Fix importing from GitHub Enterprise. !3529
+  - Perform the language detection after updating merge requests in `GitPushService`, leading to faster visual feedback for the end-user. !3533
+  - Check permissions when user attempts to import members from another project. !3535
+  - Only update repository language if it is not set to improve performance. !3556
+  - Return status code 303 after a branch DELETE operation to avoid project deletion (Stan Hu). !3583
+  - Unblock user when active_directory is disabled and it can be found !3550
+  - Fix a 2FA authentication spoofing vulnerability.
 
 v 8.6.4
   - Don't attempt to fetch any tags from a forked repo (Stan Hu)
+  - Redesign the Labels page
 
 v 8.6.3
   - Mentions on confidential issues doesn't create todos for non-members. !3374
@@ -154,6 +162,9 @@ v 8.6.0
   - Canceled builds are now ignored in compound build status if marked as `allowed to fail`
   - Trigger a todo for mentions on commits page
   - Let project owners and admins soft delete issues and merge requests
+
+v 8.5.10
+  - Fix a 2FA authentication spoofing vulnerability.
 
 v 8.5.9
   - Don't attempt to fetch any tags from a forked repo (Stan Hu).
@@ -299,6 +310,9 @@ v 8.5.0
   - Show label row when filtering issues or merge requests by label (Nuttanart Pornprasitsakul)
   - Add Todos
 
+v 8.4.8
+  - Fix a 2FA authentication spoofing vulnerability.
+
 v 8.4.7
   - Don't attempt to fetch any tags from a forked repo (Stan Hu).
 
@@ -417,6 +431,9 @@ v 8.4.0
   - Added X-GitLab-... headers to emails from CI and Email On Push services (Anton Baklanov)
   - Add IP check against DNSBLs at account sign-up
   - Added cache:key to .gitlab-ci.yml allowing to fine tune the caching
+
+v 8.3.7
+  - Fix a 2FA authentication spoofing vulnerability.
 
 v 8.3.6
   - Don't attempt to fetch any tags from a forked repo (Stan Hu).

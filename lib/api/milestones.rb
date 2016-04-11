@@ -103,7 +103,7 @@ module API
         authorize! :read_milestone, user_project
 
         @milestone = user_project.milestones.find(params[:milestone_id])
-        present paginate(@milestone.issues), with: Entities::Issue
+        present paginate(@milestone.issues), with: Entities::Issue, current_user: current_user
       end
 
     end
