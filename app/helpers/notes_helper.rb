@@ -69,10 +69,7 @@ module NotesHelper
       line_type:     line_type
     }
 
-    button_tag class: 'btn btn-nr reply-btn js-discussion-reply-button',
-               data: data, title: 'Add a reply' do
-      link_text = icon('comment')
-      link_text << ' Reply'
-    end
+    button_tag 'Reply...', class: 'btn btn-text-field js-discussion-reply-button',
+                           data: data, title: 'Add a reply'
   end
 end

@@ -2,13 +2,13 @@
   .md-header
     %ul.nav-links
       %li.active
-        %a.js-md-write-button{ href: "#md-write-holder" }
+        %a.js-md-write-button{ href: "#md-write-holder", tabindex: -1 }
           Write
       %li
-        %a.js-md-preview-button{ href: "#md-preview-holder" }
+        %a.js-md-preview-button{ href: "#md-preview-holder", tabindex: -1 }
           Preview
       %li.pull-right
-        %button.zen-cotrol.zen-control-full.js-zen-enter{ type: 'button' }
+        %button.zen-cotrol.zen-control-full.js-zen-enter{ type: 'button', tabindex: -1 }
           Go full screen
 
   .md-write-holder

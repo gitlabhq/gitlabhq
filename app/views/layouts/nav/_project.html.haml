@@ -1,4 +1,19 @@
 %ul.nav.nav-sidebar
+  - if @project.group
+    = nav_link do
+      = link_to group_path(@project.group), title: 'Go to group', class: 'back-link' do
+        = icon('caret-square-o-left fw')
+        %span
+          Go to group
+  - else
+    = nav_link do
+      = link_to root_path, title: 'Go to dashboard', class: 'back-link' do
+        = icon('caret-square-o-left fw')
+        %span
+          Go to dashboard
+
+  %li.separate-item
+
   = nav_link(path: 'projects#show', html_options: {class: 'home'}) do
     = link_to project_path(@project), title: 'Project', class: 'shortcuts-project' do
       = icon('bookmark fw')
@@ -98,7 +113,7 @@
           Snippets
 
   - if project_nav_tab? :settings
-    = nav_link(html_options: {class: "#{project_tab_class}"}) do
+    = nav_link(html_options: {class: "#{project_tab_class} separate-item"}) do
       = link_to edit_project_path(@project), title: 'Settings' do
         = icon('cogs fw')
         %span

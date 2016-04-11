@@ -150,13 +150,6 @@ describe GitlabMarkdownHelper do
     end
   end
 
-  describe 'random_markdown_tip' do
-    it 'returns a random Markdown tip' do
-      stub_const("#{described_class}::MARKDOWN_TIPS", ['Random tip'])
-      expect(random_markdown_tip).to eq 'Random tip'
-    end
-  end
-
   describe '#first_line_in_markdown' do
     let(:text) { "@#{user.username}, can you look at this?\nHello world\n"}
 

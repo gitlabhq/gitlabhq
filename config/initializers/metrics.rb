@@ -7,6 +7,7 @@ if Gitlab::Metrics.enabled?
   # ActiveSupport.
   require 'gitlab/metrics/subscribers/action_view'
   require 'gitlab/metrics/subscribers/active_record'
+  require 'gitlab/metrics/subscribers/rails_cache'
 
   Gitlab::Application.configure do |config|
     config.middleware.use(Gitlab::Metrics::RackMiddleware)
@@ -74,6 +75,29 @@ if Gitlab::Metrics.enabled?
       config.instrument_methods(const)
       config.instrument_instance_methods(const)
     end
+
+    # Instruments all Banzai filters
+    Dir[Rails.root.join('lib', 'banzai', 'filter', '*.rb')].each do |file|
+      klass = File.basename(file, File.extname(file)).camelize
+      const = Banzai::Filter.const_get(klass)
+
+      config.instrument_methods(const)
+      config.instrument_instance_methods(const)
+    end
+
+    config.instrument_methods(Banzai::ReferenceExtractor)
+    config.instrument_instance_methods(Banzai::ReferenceExtractor)
+
+    config.instrument_methods(Banzai::Renderer)
+    config.instrument_methods(Banzai::Querying)
+
+    [Issuable, Mentionable, Participable].each do |klass|
+      config.instrument_instance_methods(klass)
+      config.instrument_instance_methods(klass::ClassMethods)
+    end
+
+    config.instrument_methods(Gitlab::ReferenceExtractor)
+    config.instrument_instance_methods(Gitlab::ReferenceExtractor)
   end
 
   GC::Profiler.enable

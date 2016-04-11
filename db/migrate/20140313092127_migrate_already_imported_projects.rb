@@ -1,12 +1,14 @@
 class MigrateAlreadyImportedProjects < ActiveRecord::Migration
+  include Gitlab::Database
+
   def up
-    Project.where(imported: true).update_all(import_status: "finished")
-    Project.where(imported: false).update_all(import_status: "none")
+    execute("UPDATE projects SET import_status = 'finished' WHERE imported = #{true_value}")
+    execute("UPDATE projects SET import_status = 'none' WHERE imported = #{false_value}")
     remove_column :projects, :imported
   end
 
   def down
     add_column :projects, :imported, :boolean, default: false
-    Project.where(import_status: 'finished').update_all(imported: true)
+    execute("UPDATE projects SET imported = #{true_value} WHERE import_status = 'finished'")
   end
 end

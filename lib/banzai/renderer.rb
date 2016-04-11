@@ -19,8 +19,10 @@ module Banzai
       cache_key = full_cache_key(cache_key, context[:pipeline])
 
       if cache_key
-        Rails.cache.fetch(cache_key) do
-          cacheless_render(text, context)
+        Gitlab::Metrics.measure(:banzai_cached_render) do
+          Rails.cache.fetch(cache_key) do
+            cacheless_render(text, context)
+          end
         end
       else
         cacheless_render(text, context)
@@ -64,13 +66,15 @@ module Banzai
     private
 
     def self.cacheless_render(text, context = {})
-      result = render_result(text, context)
+      Gitlab::Metrics.measure(:banzai_cacheless_render) do
+        result = render_result(text, context)
 
-      output = result[:output]
-      if output.respond_to?(:to_html)
-        output.to_html
-      else
-        output.to_s
+        output = result[:output]
+        if output.respond_to?(:to_html)
+          output.to_html
+        else
+          output.to_s
+        end
       end
     end
 

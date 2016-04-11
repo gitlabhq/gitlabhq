@@ -22,4 +22,6 @@
 
   if(typeof merge_request_widget === 'undefined') {
     merge_request_widget = new MergeRequestWidget(opts);
+  } else {
+    merge_request_widget.setOpts(opts);
   }

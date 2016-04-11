@@ -36,7 +36,7 @@ class Spinach::Features::ProjectFork < Spinach::FeatureSteps
   end
 
   step 'I goto the Merge Requests page' do
-    page.within '.nav-secondary' do
+    page.within '.page-sidebar-expanded' do
       click_link "Merge Requests"
     end
   end
