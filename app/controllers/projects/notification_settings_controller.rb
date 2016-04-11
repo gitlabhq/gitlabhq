@@ -1,13 +1,6 @@
 class Projects::NotificationSettingsController < Projects::ApplicationController
   before_action :authenticate_user!
 
-  def create
-    notification_setting = current_user.notification_settings_for(project)
-    saved = notification_setting.update_attributes(notification_setting_params)
-
-    render json: { saved: saved }
-  end
-
   def update
     notification_setting = current_user.notification_settings_for(project)
     saved = notification_setting.update_attributes(notification_setting_params)
