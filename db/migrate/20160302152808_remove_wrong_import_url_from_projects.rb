@@ -3,7 +3,7 @@
 # #down method not supported
 class RemoveWrongImportUrlFromProjects < ActiveRecord::Migration
 
-  class FakeProjectImportData
+  class ProjectImportDataFake
     extend AttrEncrypted
     attr_accessor :credentials
     attr_encrypted :credentials, key: Gitlab::Application.secrets.db_key_base, marshal: true, encode: true, :mode => :per_attribute_iv_and_salt
@@ -13,14 +13,11 @@ class RemoveWrongImportUrlFromProjects < ActiveRecord::Migration
     say("Encrypting and migrating project import credentials...")
 
     # This should cover GitHub, GitLab, Bitbucket user:password, token@domain, and other similar URLs.
-    say("Projects and GitHub projects with a wrong URL. It also migrates GitLab project credentials.")
-    in_transaction { process_projects_with_wrong_url }
+    in_transaction(message: "Projects including GitHub and GitLab projects with an unsecured URL.") { process_projects_with_wrong_url }
 
-    say("Migrating Bitbucket credentials...")
-    in_transaction { process_project(import_type: 'bitbucket', credentials_keys: ['bb_session']) }
+    in_transaction(message: "Migrating Bitbucket credentials...") { process_project(import_type: 'bitbucket', credentials_keys: ['bb_session']) }
 
-    say("Migrating FogBugz credentials...")
-    in_transaction { process_project(import_type: 'fogbugz', credentials_keys: ['fb_session']) }
+    in_transaction(message: "Migrating FogBugz credentials...") { process_project(import_type: 'fogbugz', credentials_keys: ['fb_session']) }
 
   end
 
@@ -33,7 +30,7 @@ class RemoveWrongImportUrlFromProjects < ActiveRecord::Migration
     end
   end
 
-  def process_project(import_type: , credentials_keys: [])
+  def process_project(import_type:, credentials_keys: [])
     unencrypted_import_data(import_type: import_type).each do |data|
       replace_data_credentials(data, credentials_keys)
     end
@@ -56,8 +53,8 @@ class RemoveWrongImportUrlFromProjects < ActiveRecord::Migration
     new_data_hash.deep_symbolize_keys
   end
 
-  def in_transaction
-    say_with_time("Processing new transaction...") do
+  def in_transaction(message:)
+    say_with_time(message) do
       ActiveRecord::Base.transaction do
         yield
       end
@@ -65,7 +62,7 @@ class RemoveWrongImportUrlFromProjects < ActiveRecord::Migration
   end
 
   def update_import_data(import_url, project)
-    fake_import_data = FakeProjectImportData.new
+    fake_import_data = ProjectImportDataFake.new
     fake_import_data.credentials = import_url.credentials
     import_data_id = project['import_data_id']
     if import_data_id
@@ -76,7 +73,7 @@ class RemoveWrongImportUrlFromProjects < ActiveRecord::Migration
   end
 
   def update_with_encrypted_data(data_hash, import_data_id, unencrypted_data = ' NULL ')
-    fake_import_data = FakeProjectImportData.new
+    fake_import_data = ProjectImportDataFake.new
     fake_import_data.credentials = data_hash
     execute(update_import_data_sql(import_data_id, fake_import_data, unencrypted_data))
   end
