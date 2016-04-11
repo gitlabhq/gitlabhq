@@ -248,7 +248,7 @@
 
 .dropdown-title {
   position: relative;
-  padding: 0 25px 15px;
+  padding: 0 25px 10px;
   margin: 0 10px 10px;
   font-weight: 600;
   line-height: 1;
@@ -278,7 +278,7 @@
   right: 5px;
   width: 20px;
   height: 20px;
-  top: -1px;
+  top: -3px;
 }
 
 .dropdown-menu-back {
@@ -420,8 +420,26 @@
     }
 
     .ui-datepicker-header {
-      padding: 8px;
+      padding: 0 8px 10px;
       border: 0;
+
+      .ui-icon {
+        background: none;
+        font-size: 20px;
+        text-indent: 0;
+
+        &:before {
+          display: block;
+          position: relative;
+          top: -2px;
+          color: #707070;
+          font: normal normal normal 14px/1 FontAwesome;
+          font-size: inherit;
+          text-rendering: auto;
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
+        }
+      }
     }
 
     .ui-state-active,
@@ -432,25 +450,41 @@
 
     .ui-datepicker-prev,
     .ui-datepicker-next {
+      top: 0;
+      height: 15px;
+      cursor: pointer;
+
       &:hover {
         background-color: transparent;
         border: 0;
+
+        .ui-icon:before {
+          color: $md-link-color;
+        }
       }
     }
 
     .ui-datepicker-prev {
-      left: 1px;
-      top: 1px;
+      left: 0;
+
+      .ui-icon:before {
+        content: '\f104';
+        text-align: left;
+      }
     }
 
     .ui-datepicker-next {
-      right: 1px;
-      top: 1px;
+      right: 0;
+
+      .ui-icon:before {
+        content: '\f105';
+        text-align: right;
+      }
     }
 
     td {
       padding: 0;
-      border: 1px solid rgba(0, 0, 0, .1);
+      border: 1px solid rgba(#000, .1);
 
       &:first-child {
         border-left: 0;
@@ -476,10 +510,11 @@
   }
 
   th {
-    padding: 5px 0;
+    padding: 2px 0;
     color: #b8b8b8;
     font-weight: normal;
     text-transform: lowercase;
+    border-top: 1px solid rgba(#000, .1);
   }
 
   .ui-datepicker-unselectable {
