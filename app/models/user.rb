@@ -845,11 +845,6 @@ class User < ActiveRecord::Base
                             other.select(:id)])
   end
 
-  # Added according to https://github.com/plataformatec/devise/blob/7df57d5081f9884849ca15e4fde179ef164a575f/README.md#activejob-integration
-  def send_devise_notification(notification, *args)
-    devise_mailer.send(notification, self, *args).deliver_later
-  end
-
   def ensure_external_user_rights
     return unless self.external?
 
