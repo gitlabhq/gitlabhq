@@ -93,20 +93,11 @@ class @Todos
     if newPages isnt currPages
       # Redirect to previous page if there's one available
       if currPages > 1 and currPage is currPages
-        url = @updateQueryStringParameter(url, 'page', currPages - 1)
+        pageParams =
+          page: currPages - 1
+        url = gl.utils.mergeUrlParams(pageParams, url)
 
       location.replace url
-
-  updateQueryStringParameter: (uri, key, value) ->
-    separator = if uri.indexOf('?') isnt -1 then '&' else '?'
-
-    # Matches key and value
-    regex = new RegExp('([?&])' + key + '=.*?(&|#|$)', 'i')
-
-    if uri.match(regex)
-      return uri.replace(regex, '$1' + key + '=' + value + '$2')
-
-    uri + separator + key + '=' + value
 
   goToTodoUrl: (e)->
     todoLink = $(this).data('url')
