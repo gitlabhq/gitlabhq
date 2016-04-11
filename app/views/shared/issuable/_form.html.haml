@@ -53,10 +53,11 @@
     .issue-assignee
       = f.label :assignee_id, "Assignee", class: 'control-label'
       .col-sm-10
-        = users_select_tag("#{issuable.class.model_name.param_key}[assignee_id]",
-            placeholder: 'Select assignee', class: 'custom-form-control', null_user: true,
-            selected: issuable.assignee_id, project: @target_project || @project,
-            first_user: true, current_user: true, include_blank: true)
+        .issuable-form-select-holder
+          = users_select_tag("#{issuable.class.model_name.param_key}[assignee_id]",
+              placeholder: 'Select assignee', class: 'custom-form-control', null_user: true,
+              selected: issuable.assignee_id, project: @target_project || @project,
+              first_user: true, current_user: true, include_blank: true)
         &nbsp;
         = link_to 'Assign to me', '#', class: 'btn assign-to-me-link'
   .form-group
@@ -64,8 +65,9 @@
       = f.label :milestone_id, "Milestone", class: 'control-label'
       .col-sm-10
         - if milestone_options(issuable).present?
-          = f.select(:milestone_id, milestone_options(issuable),
-            { include_blank: true }, { class: 'select2', data: { placeholder: 'Select milestone' } })
+          .issuable-form-select-holder
+            = f.select(:milestone_id, milestone_options(issuable),
+              { include_blank: true }, { class: 'select2', data: { placeholder: 'Select milestone' } })
         - else
           .prepend-top-10
           %span.light No open milestones available.
