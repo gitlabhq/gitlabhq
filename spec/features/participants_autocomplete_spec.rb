@@ -28,7 +28,7 @@ feature 'Member autocomplete', feature: true do
     end
   end
 
-  context 'On a Issue adding a new note', js: true do
+  context 'adding a new note on a Issue', js: true do
     before do
       issue = create(:issue, author: author, project: project)
       create(:note, note: 'Ultralight Beam', noteable: issue, author: participant)
@@ -43,7 +43,7 @@ feature 'Member autocomplete', feature: true do
     end
   end
 
-  context 'On a Merge Request adding a new note', js: true do
+  context 'adding a new note on a Merge Request ', js: true do
     before do
       merge = create(:merge_request, source_project: project, target_project: project, author: author)
       create(:note, note: 'Ultralight Beam', noteable: merge, author: participant)
