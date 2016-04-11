@@ -81,13 +81,23 @@ Notice: The 25 workers of Sidekiq will show up as separate processes in your pro
 
 ## Gitlab Runner
 
-We strongly advise against installing GitLab Runner on the same machine you plan to install GitLab on. Depending on how you decide to configure GitLab Runner and what tools you use to exercise your application in the CI environment, GitLab Runner can consume significant amount of available memory.
+We strongly advise against installing GitLab Runner on the same machine you plan
+to install GitLab on. Depending on how you decide to configure GitLab Runner and
+what tools you use to exercise your application in the CI environment, GitLab
+Runner can consume significant amount of available memory.
 
-Memory consumption calculations, that are available above, will not be valid if you decide to run GitLab Runner and GitLab web application on the same machine.
+Memory consumption calculations, that are available above, will not be valid if
+you decide to run GitLab Runner and the GitLab Rails application on the same
+machine.
 
-It is also not safe to install everything on a single machine, because of the security reasons - especially when you plan to use shell executor with GitLab Runner.
+It is also not safe to install everything on a single machine, because of the
+[security reasons] - especially when you plan to use shell executor with GitLab
+Runner.
 
-We recommend using a separate machine for each GitLab Runner, if you plan to use CI features.
+We recommend using a separate machine for each GitLab Runner, if you plan to
+use the CI features.
+
+[security reasons]: https://gitlab.com/gitlab-org/gitlab-ci-multi-runner/blob/master/docs/security/index.md
 
 ## Unicorn Workers
 
