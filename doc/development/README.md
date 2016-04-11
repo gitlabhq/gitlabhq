@@ -2,6 +2,8 @@
 
 - [Architecture](architecture.md) of GitLab
 - [CI setup](ci_setup.md) for testing GitLab
+- [Code review guidelines](code_review.md) for reviewing code and having code
+  reviewed.
 - [Gotchas](gotchas.md) to avoid
 - [How to dump production data to staging](db_dump.md)
 - [Instrumentation](instrumentation.md)

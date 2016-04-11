@@ -1,9 +1,6 @@
 = form_for [@project.namespace.becomes(Namespace), @project, @milestone], html: {class: 'form-horizontal milestone-form gfm-form js-quick-submit js-requires-input'}  do |f|
-  -if @milestone.errors.any?
-    .alert.alert-danger
-      %ul
-        - @milestone.errors.full_messages.each do |msg|
-          %li= msg
+  = form_errors(@milestone)
+
   .row
     .col-md-6
       .form-group
