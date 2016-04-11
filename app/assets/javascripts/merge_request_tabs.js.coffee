@@ -85,8 +85,11 @@ class @MergeRequestTabs
 
   scrollToElement: (container) ->
     if window.location.hash
-      $el = $("div#{container} #{window.location.hash}")
-      $('body').scrollTo($el.offset().top) if $el.length
+      navBarHeight = $('.navbar-gitlab').outerHeight()
+
+      $el = $("#{container} #{window.location.hash}")
+      $('body').scrollTo 0
+      $.scrollTo("#{container} #{window.location.hash}", offset: -navBarHeight) if $el.length
 
   # Activate a tab based on the current action
   activateTab: (action) ->
@@ -152,12 +155,29 @@ class @MergeRequestTabs
     @_get
       url: "#{source}.json" + @_location.search
       success: (data) =>
-        document.querySelector("div#diffs").innerHTML = data.html
+        $('#diffs').html data.html
         gl.utils.localTimeAgo($('.js-timeago', 'div#diffs'))
-        $('div#diffs .js-syntax-highlight').syntaxHighlight()
+        $('#diffs .js-syntax-highlight').syntaxHighlight()
         @expandViewContainer() if @diffViewType() is 'parallel'
         @diffsLoaded = true
         @scrollToElement("#diffs")
+        @highlighSelectedLine()
+
+  highlighSelectedLine: ->
+    locationHash = location.hash
+
+    if locationHash isnt ''
+      hashClassString = ".#{locationHash.replace('#', '')}"
+      $diffLine = $(locationHash)
+
+      if $diffLine.is ':not(tr)'
+        $diffLine = $("td#{locationHash}, td#{hashClassString}")
+      else
+        $diffLine = $('td', $diffLine)
+
+      $diffLine.addClass 'hll'
+      diffLineTop = $diffLine.offset().top
+      navBarHeight = $('.navbar-gitlab').outerHeight()
 
   loadBuilds: (source) ->
     return if @buildsLoaded
