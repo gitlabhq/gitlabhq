@@ -110,7 +110,7 @@ class RemoveWrongImportUrlFromProjects < ActiveRecord::Migration
   #GitHub projects with token, and any user:password@ based URL
   #TODO: may need to add import_type != list
   def projects_with_wrong_import_url
-    select_all("SELECT p.id, p.import_url, i.id as import_data_id FROM projects p LEFT JOIN project_import_data i on p.id = i.id WHERE p.import_url IS NOT NULL AND p.import_url LIKE '%//%@%'")
+    select_all("SELECT p.id, p.import_url, i.id as import_data_id FROM projects p LEFT JOIN project_import_data i on p.id = i.project_id WHERE p.import_url IS NOT NULL AND p.import_url LIKE '%//%@%'")
   end
 
   # All imports with data for import_type
