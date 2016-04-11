@@ -58,7 +58,7 @@ module Elastic
 
         data['source_project'] = { 'id' => source_project_id }
         data['target_project'] = { 'id' => target_project_id }
-        data['author'] = { 'id' => author.id }
+        data['author'] = { 'id' => author_id }
         data['updated_at_sort'] = updated_at
         data
       end
