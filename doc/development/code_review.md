@@ -25,6 +25,9 @@ request is up to one of our merge request "endbosses", denoted on the
 - Be explicit. Remember people don't always understand your intentions online.
 - Be humble. ("I'm not sure - let's look it up.")
 - Don't use hyperbole. ("always", "never", "endlessly", "nothing")
+- Be careful about the use of sarcasm. Everything we do is public; what seems
+  like good-natured ribbing to you and a long-time colleague might come off as
+  mean and unwelcoming to a person new to the project.
 - Consider one-on-one chats or video calls if there are too many "I didn't
   understand" or "Alternative solution:" comments. Post a follow-up comment
   summarizing one-on-one discussion.
