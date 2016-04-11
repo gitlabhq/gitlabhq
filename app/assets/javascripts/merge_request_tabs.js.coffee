@@ -141,9 +141,7 @@ class @MergeRequestTabs
       url: "#{source}.json"
       success: (data) =>
         document.querySelector("div#commits").innerHTML = data.html
-        $timeago = $('.js-timeago', 'div#commits')
-        gl.utils.updateFormatDate($timeago)
-        $timeago.timeago()
+        gl.utils.localTimeAgo($('.js-timeago', 'div#commits'))
         @commitsLoaded = true
         @scrollToElement("#commits")
 
@@ -154,9 +152,7 @@ class @MergeRequestTabs
       url: "#{source}.json" + @_location.search
       success: (data) =>
         document.querySelector("div#diffs").innerHTML = data.html
-        $timeago = $('.js-timeago', 'div#diffs')
-        gl.utils.updateFormatDate($timeago)
-        $timeago.timeago()
+        gl.utils.localTimeAgo($('.js-timeago', 'div#diffs'))
         $('div#diffs .js-syntax-highlight').syntaxHighlight()
         @expandViewContainer() if @diffViewType() is 'parallel'
         @diffsLoaded = true
@@ -169,9 +165,7 @@ class @MergeRequestTabs
       url: "#{source}.json"
       success: (data) =>
         document.querySelector("div#builds").innerHTML = data.html
-        $timeago = $('.js-timeago', 'div#builds')
-        gl.utils.updateFormatDate($timeago)
-        $timeago.timeago()
+        gl.utils.localTimeAgo($('.js-timeago', 'div#builds'))
         @buildsLoaded = true
         @scrollToElement("#builds")
 

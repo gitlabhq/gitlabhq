@@ -170,8 +170,7 @@ class @Notes
         .syntaxHighlight()
 
       # Update datetime format on the recent note
-      $timeago = $notesList.find("#note_#{note.id} .js-timeago")
-      gl.utils.updateFormatDate($timeago)
+      gl.utils.localTimeAgo($notesList.find("#note_#{note.id} .js-timeago"), false)
 
       @initTaskList()
       @updateNotesCount(1)
@@ -224,7 +223,7 @@ class @Notes
       # append new note to all matching discussions
       discussionContainer.append note_html
 
-    gl.utils.updateFormatDate($('.js-timeago', note_html))
+    gl.utils.localTimeAgo($('.js-timeago', note_html), false)
 
     @updateNotesCount(1)
 
@@ -355,9 +354,7 @@ class @Notes
     # Convert returned HTML to a jQuery object so we can modify it further
     $html = $(note.html)
 
-    $timeago = $('.js-timeago', $html)
-    gl.utils.updateFormatDate($timeago)
-    $timeago.timeago()
+    gl.utils.localTimeAgo($('.js-timeago', $html))
 
     $html.syntaxHighlight()
     $html.find('.js-task-list-container').taskList('enable')
