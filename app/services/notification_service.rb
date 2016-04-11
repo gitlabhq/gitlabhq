@@ -355,10 +355,10 @@ class NotificationService
     users.reject do |user|
       next user.notification_level == level unless project
 
-      setting = user.notification_settings.find_by(source: project)
+      setting = user.notification_settings_for(project)
 
       if !setting && project.group
-        setting = user.notification_settings.find_by(source: project.group)
+        setting = user.notification_settings_for(project.group)
       end
 
       # reject users who globally set mention notification and has no setting per project/group

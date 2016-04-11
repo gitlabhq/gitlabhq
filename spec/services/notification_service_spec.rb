@@ -89,8 +89,8 @@ describe NotificationService, services: true do
           note.project.group.add_user(@u_watcher, GroupMember::MASTER)
           note.project.save
 
-          @u_watcher.notification_settings.find_by(source: note.project).participating!
-          @u_watcher.notification_settings.find_by(source: note.project.group).global!
+          @u_watcher.notification_settings_for(note.project).participating!
+          @u_watcher.notification_settings_for(note.project.group).global!
           ActionMailer::Base.deliveries.clear
         end
 

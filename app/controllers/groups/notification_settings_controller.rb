@@ -1,6 +1,6 @@
 class Groups::NotificationSettingsController < Groups::ApplicationController
   def update
-    notification_setting = group.notification_settings.find_by(user_id: current_user)
+    notification_setting = current_user.notification_settings_for(group)
     saved = notification_setting.update_attributes(notification_setting_params)
 
     render json: { saved: saved }
