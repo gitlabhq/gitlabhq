@@ -99,6 +99,7 @@ module Ci
         new_build.stage = build.stage
         new_build.stage_idx = build.stage_idx
         new_build.trigger_request = build.trigger_request
+        new_build.plugin = build.plugin
         new_build.save
         new_build
       end
@@ -122,7 +123,7 @@ module Ci
     end
 
     def retryable?
-      project.builds_enabled? && commands.present?
+      project.builds_enabled? && (commands.present? || plugin.present?)
     end
 
     def retried?
