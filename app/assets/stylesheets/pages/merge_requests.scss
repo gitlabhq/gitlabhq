@@ -242,10 +242,19 @@
 }
 
 .merge-request-select {
-  float: left;
-  width: 50%;
   padding-left: 5px;
   padding-right: 5px;
+  margin-bottom: 10px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  @media (min-width: $screen-sm-min) {
+    float: left;
+    width: 50%;
+    margin-bottom: 0;
+  }
 
   .dropdown-menu-toggle {
     width: 100%;
