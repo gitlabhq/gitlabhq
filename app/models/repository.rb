@@ -896,7 +896,7 @@ class Repository
   end
 
   def main_language
-    unless empty?
+    unless empty? or rugged.head_unborn?
       Linguist::Repository.new(rugged, rugged.head.target_id).language
     end
   end
