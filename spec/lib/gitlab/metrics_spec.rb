@@ -85,6 +85,9 @@ describe Gitlab::Metrics do
         expect(transaction).to receive(:increment).
           with('foo_cpu_time', a_kind_of(Numeric))
 
+        expect(transaction).to receive(:increment).
+          with('foo_call_count', 1)
+
         Gitlab::Metrics.measure(:foo) { 10 }
       end
 

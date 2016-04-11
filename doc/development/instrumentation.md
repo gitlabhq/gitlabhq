@@ -14,10 +14,11 @@ Gitlab::Metrics.measure(:foo) do
 end
 ```
 
-Two values are measured for a block:
+3 values are measured for a block:
 
-1. The real time elapsed, stored in NAME_real_time
-2. The CPU time elapsed, stored in NAME_cpu_time
+1. The real time elapsed, stored in NAME_real_time.
+2. The CPU time elapsed, stored in NAME_cpu_time.
+3. The call count, stored in NAME_call_count.
 
 Both the real and CPU timings are measured in milliseconds.
 

@@ -97,6 +97,7 @@ module Gitlab
 
       Transaction.current.increment("#{name}_real_time", real_time)
       Transaction.current.increment("#{name}_cpu_time", cpu_time)
+      Transaction.current.increment("#{name}_call_count", 1)
 
       retval
     end
