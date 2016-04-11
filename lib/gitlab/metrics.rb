@@ -82,7 +82,9 @@ module Gitlab
     #
     # Returns the value yielded by the supplied block.
     def self.measure(name)
-      return yield unless Transaction.current
+      trans = current_transaction
+
+      return yield unless trans
 
       real_start = Time.now.to_f
       cpu_start = System.cpu_time
@@ -95,9 +97,9 @@ module Gitlab
       real_time = (real_stop - real_start) * 1000.0
       cpu_time = cpu_stop - cpu_start
 
-      Transaction.current.increment("#{name}_real_time", real_time)
-      Transaction.current.increment("#{name}_cpu_time", cpu_time)
-      Transaction.current.increment("#{name}_call_count", 1)
+      trans.increment("#{name}_real_time", real_time)
+      trans.increment("#{name}_cpu_time", cpu_time)
+      trans.increment("#{name}_call_count", 1)
 
       retval
     end
@@ -112,6 +114,12 @@ module Gitlab
         InfluxDB::Client.
           new(udp: { host: host, port: port })
       end
+    end
+
+    private
+
+    def self.current_transaction
+      Transaction.current
     end
   end
 end

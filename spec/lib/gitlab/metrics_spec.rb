@@ -74,7 +74,7 @@ describe Gitlab::Metrics do
       let(:transaction) { Gitlab::Metrics::Transaction.new }
 
       before do
-        allow(Gitlab::Metrics::Transaction).to receive(:current).
+        allow(Gitlab::Metrics).to receive(:current_transaction).
           and_return(transaction)
       end
 
