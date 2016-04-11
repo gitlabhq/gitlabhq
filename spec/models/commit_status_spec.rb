@@ -163,21 +163,7 @@ describe CommitStatus, models: true do
     end
 
     it 'return unique statuses' do
-      is_expected.to eq([@commit2, @commit3, @commit4, @commit5])
-    end
-  end
-
-  describe :for_ref do
-    subject { CommitStatus.for_ref('bb').order(:id) }
-
-    before do
-      @commit1 = FactoryGirl.create :commit_status, commit: commit, name: 'aa', ref: 'bb', status: 'running'
-      @commit2 = FactoryGirl.create :commit_status, commit: commit, name: 'cc', ref: 'cc', status: 'pending'
-      @commit3 = FactoryGirl.create :commit_status, commit: commit, name: 'aa', ref: nil, status: 'success'
-    end
-
-    it 'return statuses with equal and nil ref set' do
-      is_expected.to eq([@commit1])
+      is_expected.to eq([@commit4, @commit5])
     end
   end
 

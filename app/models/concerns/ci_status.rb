@@ -26,7 +26,7 @@ module CiStatus
   end
 
   included do
-    validates :status, inclusion: { in: %w(pending running failed success canceled) }
+    validates :status, inclusion: { in: %w(pending running failed success canceled skipped) }
 
     state_machine :status, initial: :pending do
       state :pending, value: 'pending'
@@ -34,6 +34,7 @@ module CiStatus
       state :failed, value: 'failed'
       state :success, value: 'success'
       state :canceled, value: 'canceled'
+      state :skipped, value: 'skipped'
     end
 
     scope :running, -> { where(status: 'running') }

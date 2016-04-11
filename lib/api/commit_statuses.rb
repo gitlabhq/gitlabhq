@@ -21,10 +21,9 @@ module API
         authorize!(:read_commit_status, user_project)
 
         not_found!('Commit') unless user_project.commit(params[:sha])
-        ci_commit = user_project.ci_commit(params[:sha], params[:ref])
-        return [] unless ci_commit
 
-        statuses = ci_commit.statuses
+        ci_commits = user_project.ci_commits.where(sha: params[:sha])
+        statuses = ::CommitStatus.where(commit: ci_commits)
         statuses = statuses.latest unless parse_boolean(params[:all])
         statuses = statuses.where(ref: params[:ref]) if params[:ref].present?
         statuses = statuses.where(stage: params[:stage]) if params[:stage].present?
@@ -51,7 +50,14 @@ module API
         commit = @project.commit(params[:sha])
         not_found! 'Commit' unless commit
 
-        ci_commit = @project.ensure_ci_commit(commit.sha)
+        ref = params[:ref] ||
+          begin
+            branches = @project.repository.branch_names_contains(commit.sha)
+            not_found! 'Reference for commit' if branches.none?
+            branches.first
+          end
+
+        ci_commit = @project.ensure_ci_commit(commit.sha, ref)
 
         name = params[:name] || params[:context]
         status = GenericCommitStatus.running_or_pending.find_by(commit: ci_commit, name: name, ref: params[:ref])

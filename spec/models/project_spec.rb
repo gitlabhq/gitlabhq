@@ -441,9 +441,9 @@ describe Project, models: true do
 
   describe :ci_commit do
     let(:project) { create :project }
-    let(:commit) { create :ci_commit, project: project }
+    let(:commit) { create :ci_commit, project: project, ref: 'master' }
 
-    it { expect(project.ci_commit(commit.sha)).to eq(commit) }
+    it { expect(project.ci_commit(commit.sha, 'master')).to eq(commit) }
   end
 
   describe :builds_enabled do

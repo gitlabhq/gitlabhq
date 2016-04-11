@@ -38,7 +38,7 @@ class CommitStatus < ActiveRecord::Base
   self.table_name = 'ci_builds'
 
   belongs_to :project, class_name: '::Project', foreign_key: :gl_project_id
-  belongs_to :commit, class_name: 'Ci::Commit'
+  belongs_to :commit, class_name: 'Ci::Commit', touch: true
   belongs_to :user
 
   validates :commit, presence: true
@@ -47,7 +47,7 @@ class CommitStatus < ActiveRecord::Base
 
   alias_attribute :author, :user
 
-  scope :latest, -> { where(id: unscope(:select).select('max(id)').group(:name)) }
+  scope :latest, -> { where(id: unscope(:select).select('max(id)').group(:name, :commit_id)) }
   scope :ordered, -> { order(:ref, :stage_idx, :name) }
 
   AVAILABLE_STATUSES = ['pending', 'running', 'success', 'failed', 'canceled']
@@ -79,11 +79,6 @@ class CommitStatus < ActiveRecord::Base
 
     after_transition [:pending, :running] => :success do |commit_status|
       MergeRequests::MergeWhenBuildSucceedsService.new(commit_status.commit.project, nil).trigger(commit_status)
-    end
-
-    after_transition any => any do |commit_status|
-      commit_status.commit.invalidate
-      commit_status.save
     end
   end
 

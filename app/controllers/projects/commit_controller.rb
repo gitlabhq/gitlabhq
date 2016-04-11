@@ -38,13 +38,13 @@ class Projects::CommitController < Projects::ApplicationController
   end
 
   def cancel_builds
-    ci_commit.builds.running_or_pending.each(&:cancel)
+    ci_builds.running_or_pending.each(&:cancel)
 
     redirect_back_or_default default: builds_namespace_project_commit_path(project.namespace, project, commit.sha)
   end
 
   def retry_builds
-    ci_commit.builds.latest.failed.each do |build|
+    ci_builds.latest.failed.each do |build|
       if build.retryable?
         Ci::Build.retry(build)
       end
@@ -96,6 +96,10 @@ class Projects::CommitController < Projects::ApplicationController
 
   def ci_commits
     @ci_commits ||= project.ci_commits.where(sha: commit.sha)
+  end
+
+  def ci_builds
+    @ci_builds ||= Ci::Build.where(commit: ci_commits)
   end
 
   def define_show_vars

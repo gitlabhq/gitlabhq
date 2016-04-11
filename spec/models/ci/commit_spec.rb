@@ -52,55 +52,7 @@ describe Ci::Commit, models: true do
     it { expect(commit.sha).to start_with(subject) }
   end
 
-  describe :stage do
-    subject { commit.stage }
-
-    before do
-      @second = FactoryGirl.create :commit_status, commit: commit, name: 'deploy', stage: 'deploy', stage_idx: 1, status: 'pending'
-      @first = FactoryGirl.create :commit_status, commit: commit, name: 'test', stage: 'test', stage_idx: 0, status: 'pending'
-    end
-
-    it 'returns first running stage' do
-      is_expected.to eq('test')
-    end
-
-    context 'first build succeeded' do
-      before do
-        @first.success
-      end
-
-      it 'returns last running stage' do
-        is_expected.to eq('deploy')
-      end
-    end
-
-    context 'all builds succeeded' do
-      before do
-        @first.success
-        @second.success
-      end
-
-      it 'returns nil' do
-        is_expected.to be_nil
-      end
-    end
-  end
-
   describe :create_next_builds do
-  end
-
-  describe :refs do
-    subject { commit.refs }
-
-    before do
-      FactoryGirl.create :commit_status, commit: commit, name: 'deploy'
-      FactoryGirl.create :commit_status, commit: commit, name: 'deploy', ref: 'develop'
-      FactoryGirl.create :commit_status, commit: commit, name: 'deploy', ref: 'master'
-    end
-
-    it 'returns all refs' do
-      is_expected.to contain_exactly('master', 'develop', nil)
-    end
   end
 
   describe :retried do
@@ -117,10 +69,10 @@ describe Ci::Commit, models: true do
   end
 
   describe :create_builds do
-    let!(:commit) { FactoryGirl.create :ci_commit, project: project }
+    let!(:commit) { FactoryGirl.create :ci_commit, project: project, ref: 'master', tag: false }
 
     def create_builds(trigger_request = nil)
-      commit.create_builds('master', false, nil, trigger_request)
+      commit.create_builds(nil, trigger_request)
     end
 
     def create_next_builds
@@ -142,67 +94,6 @@ describe Ci::Commit, models: true do
 
       expect(create_next_builds).to be_falsey
     end
-
-    context 'for different ref' do
-      def create_develop_builds
-        commit.create_builds('develop', false, nil, nil)
-      end
-
-      it 'creates builds' do
-        expect(create_builds).to be_truthy
-        commit.builds.update_all(status: "success")
-        expect(commit.builds.count(:all)).to eq(2)
-
-        expect(create_develop_builds).to be_truthy
-        commit.builds.update_all(status: "success")
-        expect(commit.builds.count(:all)).to eq(4)
-        expect(commit.refs.size).to eq(2)
-        expect(commit.builds.pluck(:name).uniq.size).to eq(2)
-      end
-    end
-
-    context 'for build triggers' do
-      let(:trigger) { FactoryGirl.create :ci_trigger, project: project }
-      let(:trigger_request) { FactoryGirl.create :ci_trigger_request, commit: commit, trigger: trigger }
-
-      it 'creates builds' do
-        expect(create_builds(trigger_request)).to be_truthy
-        expect(commit.builds.count(:all)).to eq(2)
-      end
-
-      it 'rebuilds commit' do
-        expect(create_builds).to be_truthy
-        expect(commit.builds.count(:all)).to eq(2)
-
-        expect(create_builds(trigger_request)).to be_truthy
-        expect(commit.builds.count(:all)).to eq(4)
-      end
-
-      it 'creates next builds' do
-        expect(create_builds(trigger_request)).to be_truthy
-        expect(commit.builds.count(:all)).to eq(2)
-        commit.builds.update_all(status: "success")
-
-        expect(create_next_builds).to be_truthy
-        expect(commit.builds.count(:all)).to eq(4)
-      end
-
-      context 'for [ci skip]' do
-        before do
-          allow(commit).to receive(:git_commit_message) { 'message [ci skip]' }
-        end
-
-        it 'rebuilds commit' do
-          expect(commit.status).to eq('skipped')
-          expect(create_builds).to be_truthy
-
-          # since everything in Ci::Commit is cached we need to fetch a new object
-          new_commit = Ci::Commit.find_by_id(commit.id)
-          expect(new_commit.status).to eq('pending')
-        end
-      end
-    end
-
 
     context 'custom stage with first job allowed to fail' do
       let(:yaml) do
@@ -284,6 +175,7 @@ describe Ci::Commit, models: true do
         commit.builds.running_or_pending.each(&:success)
 
         expect(commit.builds.pluck(:status)).to contain_exactly('success', 'success', 'success', 'success')
+        commit.reload
         expect(commit.status).to eq('success')
       end
 
@@ -306,6 +198,7 @@ describe Ci::Commit, models: true do
         commit.builds.running_or_pending.each(&:success)
 
         expect(commit.builds.pluck(:status)).to contain_exactly('success', 'failed', 'success', 'success')
+        commit.reload
         expect(commit.status).to eq('failed')
       end
 
@@ -329,6 +222,7 @@ describe Ci::Commit, models: true do
 
         expect(commit.builds.pluck(:name)).to contain_exactly('build', 'test', 'test_failure', 'cleanup')
         expect(commit.builds.pluck(:status)).to contain_exactly('success', 'failed', 'failed', 'success')
+        commit.reload
         expect(commit.status).to eq('failed')
       end
 
@@ -351,6 +245,7 @@ describe Ci::Commit, models: true do
         commit.builds.running_or_pending.each(&:success)
 
         expect(commit.builds.pluck(:status)).to contain_exactly('success', 'success', 'failed', 'success')
+        commit.reload
         expect(commit.status).to eq('failed')
       end
     end

@@ -162,4 +162,9 @@ describe 'Commits' do
       end
     end
   end
+
+  def ci_status_path(ci_commit)
+    project = ci_commit.project
+    builds_namespace_project_commit_path(project.namespace, project, ci_commit.sha)
+  end
 end

@@ -35,6 +35,11 @@ module Ci
     before_save :finished_at
     before_save :duration
 
+    # Invalidate object and save if when touched
+    after_touch :reload
+    after_touch :invalidate
+    after_touch :save
+
     def self.truncate_sha(sha)
       sha[0...8]
     end
@@ -86,9 +91,10 @@ module Ci
     end
 
     def invalidate
-      status = nil
-      started_at = nil
-      finished_at = nil
+      write_attribute(:status, nil)
+      write_attribute(:started_at, nil)
+      write_attribute(:finished_at, nil)
+      write_attribute(:duration, nil)
     end
 
     def create_builds(user, trigger_request = nil)
@@ -183,18 +189,18 @@ module Ci
         if yaml_errors.present?
           'failed'
         else
-          latest.status
+          latest.status || 'skipped'
         end
     end
 
     def update_started_at
       started_at =
-        statuses.order(:id).first.try(:started_at)
+        statuses.minimum(:started_at)
     end
 
     def update_finished_at
       finished_at =
-        statuses.order(id: :desc).first.try(:finished_at)
+        statuses.maximum(:finished_at)
     end
 
     def update_duration
@@ -204,9 +210,18 @@ module Ci
       end
     end
 
+    def update_statuses
+      update_status
+      update_started_at
+      update_finished_at
+      update_duration
+      save
+    end
+
     def save_yaml_error(error)
       return if self.yaml_errors?
       self.yaml_errors = error
+      update_status
       save
     end
   end

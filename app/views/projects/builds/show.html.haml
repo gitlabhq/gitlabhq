@@ -196,7 +196,7 @@
         .build-widget
           %h4.title #{pluralize(@builds.count(:id), "other build")} for
           = succeed ":" do
-            = link_to @build.commit.short_sha, builds_namespace_project_commit_path(@project.namespace, @project, build.sha), class: "monospace"
+            = link_to @build.commit.short_sha, builds_namespace_project_commit_path(@project.namespace, @project, @build.sha), class: "monospace"
           %table.table.builds
             - @builds.each_with_index do |build, i|
               %tr.build

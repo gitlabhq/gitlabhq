@@ -21,7 +21,7 @@ module Ci
 
       builds_attrs.map do |build_attrs|
         # don't create the same build twice
-        unless commit.builds.find_by(ref: @commit.ref, tag: @commit.tag,
+        unless @commit.builds.find_by(ref: @commit.ref, tag: @commit.tag,
                                      trigger_request: trigger_request, name: build_attrs[:name])
           build_attrs.slice!(:name,
                              :commands,

@@ -51,11 +51,11 @@ describe API::API, api: true  do
       it "should return not_found for CI status" do
         get api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}", user)
         expect(response.status).to eq(200)
-        expect(json_response['status']).to eq('not_found')
+        expect(json_response['status']).to be_nil
       end
 
       it "should return status for CI" do
-        ci_commit = project.ensure_ci_commit(project.repository.commit.sha)
+        ci_commit = project.ensure_ci_commit(project.repository.commit.sha, 'master')
         get api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}", user)
         expect(response.status).to eq(200)
         expect(json_response['status']).to eq(ci_commit.status)

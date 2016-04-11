@@ -37,6 +37,7 @@ class CreateCommitBuildsService
       commit.create_builds(user)
     end
 
+    commit.touch
     commit
   end
 end
