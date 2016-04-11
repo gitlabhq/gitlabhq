@@ -53,3 +53,8 @@ class @DueDateSelect
         defaultDate: $("input[name='#{fieldName}']").val()
         altField: "input[name='#{fieldName}']"
       )
+
+    $(document)
+      .off 'click', '.ui-datepicker-header a'
+      .on 'click', '.ui-datepicker-header a', (e) ->
+        e.stopImmediatePropagation()

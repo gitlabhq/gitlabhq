@@ -404,6 +404,10 @@
 }
 
 .dropdown-menu-due-date {
+  .dropdown-content {
+    max-height: 230px;
+  }
+
   .ui-widget {
     table {
       margin: 0;
