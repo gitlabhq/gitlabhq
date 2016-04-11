@@ -16,9 +16,10 @@
               = dropdown_title("Select source project")
               = dropdown_filter("Search projects")
               = dropdown_content do
+                - is_active = f.object.source_project_id == @merge_request.source_project.id
                 %ul
                   %li
-                    %a{ href: "#", class: "#{("is-active" if f.object.source_project_id == @merge_request.source_project.id)}", data: { id: @merge_request.source_project.id } }
+                    %a{ href: "#", class: "#{("is-active" if is_active)}", data: { id: @merge_request.source_project.id } }
                       = @merge_request.source_project_path
           .merge-request-select.dropdown
             = f.hidden_field :source_branch
@@ -33,7 +34,7 @@
                       %a{ href: "#", class: "#{("is-active" if f.object.source_branch == branch)}", data: { id: branch } }
                         = branch
         .panel-footer
-          = icon('spinner spin', class: "js-source-loading")
+          = icon('spinner spin', class: 'js-source-loading')
           %ul.list-unstyled.mr_source_commit
 
     .col-md-6

@@ -61,7 +61,7 @@ class GitLabDropdownFilter
     if data?
       results = data
 
-      if search_text isnt ""
+      if search_text isnt ''
         results = fuzzaldrinPlus.filter(data, search_text,
           key: @options.keys
         )
@@ -139,7 +139,7 @@ class GitLabDropdown
     if _.isString(@filterInput)
       @filterInput = @getElement(@filterInput)
 
-    search_fields = if @options.search then @options.search.fields else [];
+    searchFields = if @options.search then @options.search.fields else [];
 
     if @options.data
       # If data is an array
@@ -163,11 +163,11 @@ class GitLabDropdown
         filterInputBlur: @filterInputBlur
         remote: @options.filterRemote
         query: @options.data
-        keys: search_fields
+        keys: searchFields
         elements: =>
-          selector = ".dropdown-content li:not(.divider)"
+          selector = '.dropdown-content li:not(.divider)'
 
-          if @dropdown.find(".dropdown-toggle-page").length
+          if @dropdown.find('.dropdown-toggle-page').length
             selector = ".dropdown-page-one #{selector}"
 
           return $(selector)
