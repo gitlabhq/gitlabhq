@@ -74,24 +74,29 @@ module Gitlab
     #
     # Example:
     #
-    #     Gitlab::Metrics.measure(:find_by_username_timings) do
+    #     Gitlab::Metrics.measure(:find_by_username_duration) do
     #       User.find_by_username(some_username)
     #     end
     #
-    # series - The name of the series to store the data in.
-    # values - A Hash containing extra values to add to the metric.
-    # tags - A Hash containing extra tags to add to the metric.
+    # name - The name of the field to store the execution time in.
     #
     # Returns the value yielded by the supplied block.
-    def self.measure(series, values = {}, tags = {})
+    def self.measure(name)
       return yield unless Transaction.current
 
-      start = Time.now.to_f
-      retval = yield
-      duration = (Time.now.to_f - start) * 1000.0
-      values = values.merge(duration: duration)
+      real_start = Time.now.to_f
+      cpu_start = System.cpu_time
 
-      Transaction.current.add_metric(series, values, tags)
+      retval = yield
+
+      cpu_stop = System.cpu_time
+      real_stop = Time.now.to_f
+
+      real_time = (real_stop - real_start) * 1000.0
+      cpu_time = cpu_stop - cpu_start
+
+      Transaction.current.increment("#{name}_real_time", real_time)
+      Transaction.current.increment("#{name}_cpu_time", cpu_time)
 
       retval
     end
