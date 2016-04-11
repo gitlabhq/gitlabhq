@@ -213,6 +213,8 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def validate_branches
+    return if allow_broken
+
     if target_project == source_project && target_branch == source_branch
       errors.add :branch_conflict, "You can not use same project/branch for source and target"
     end
@@ -344,9 +346,12 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def hook_attrs
+    source_hook_attrs = source_project.hook_attrs if source_project.present?
+    target_hook_attrs = target_project.hook_attrs if target_project.present?
+
     attrs = {
-      source: source_project.hook_attrs,
-      target: target_project.hook_attrs,
+      source: source_hook_attrs,
+      target: target_hook_attrs,
       last_commit: nil,
       work_in_progress: work_in_progress?
     }
