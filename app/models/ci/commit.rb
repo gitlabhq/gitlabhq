@@ -116,12 +116,12 @@ module Ci
       next_stages.delete(build.stage)
 
       # get status for all prior builds
-      prior_builds = latest_builds.reject { |other_build| next_stages.include?(other_build.stage) }
-      status = prior_builds.status
+      prior_builds = latest_builds.where.not(stage: next_stages)
+      prior_status = prior_builds.status
 
       # create builds for next stages based
       next_stages.any? do |stage|
-        CreateBuildsService.new(self).execute(stage, build.user, status, build.trigger_request).present?
+        CreateBuildsService.new(self).execute(stage, build.user, prior_status, build.trigger_request).present?
       end
     end
 
