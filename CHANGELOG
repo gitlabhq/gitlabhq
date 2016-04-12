@@ -24,6 +24,7 @@ v 8.7.0 (unreleased)
   - Ensure empty recipients are rejected in BuildsEmailService
   - API: Ability to filter milestones by state `active` and `closed` (Robert Schilling)
   - API: Fix milestone filtering by `iid` (Robert Schilling)
+  - API: Delete notes of issues, snippets, and merge requests (Robert Schilling)
   - Implement 'Groups View' as an option for dashboard preferences !3379 (Elias W.)
   - Better errors handling when creating milestones inside groups
   - Implement 'TODOs View' as an option for dashboard preferences !3379 (Elias W.)

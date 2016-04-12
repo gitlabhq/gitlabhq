@@ -39,8 +39,7 @@ class Projects::NotesController < Projects::ApplicationController
 
   def destroy
     if note.editable?
-      note.destroy
-      note.reset_events_cache
+      Notes::DeleteService.new(project, current_user).execute(note)
     end
 
     respond_to do |format|
