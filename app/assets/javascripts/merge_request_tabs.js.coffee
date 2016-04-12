@@ -88,7 +88,6 @@ class @MergeRequestTabs
       navBarHeight = $('.navbar-gitlab').outerHeight()
 
       $el = $("#{container} #{window.location.hash}")
-      $('body').scrollTo 0
       $.scrollTo("#{container} #{window.location.hash}", offset: -navBarHeight) if $el.length
 
   # Activate a tab based on the current action
@@ -163,8 +162,17 @@ class @MergeRequestTabs
         @scrollToElement("#diffs")
         @highlighSelectedLine()
 
+        $(document)
+          .off 'click', '.diff-content a'
+          .on 'click', '.diff-content a', (e) =>
+            e.preventDefault()
+            window.location.hash = $(e.currentTarget).attr 'href'
+            @highlighSelectedLine()
+            @scrollToElement("#diffs")
+
   highlighSelectedLine: ->
-    locationHash = location.hash
+    $('.hll').removeClass 'hll'
+    locationHash = window.location.hash
 
     if locationHash isnt ''
       hashClassString = ".#{locationHash.replace('#', '')}"
