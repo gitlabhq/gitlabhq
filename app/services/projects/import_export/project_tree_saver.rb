@@ -30,8 +30,6 @@ module Projects
       end
 
       def project_json_tree
-        # TODO confirm children, also add subchildren (i.e comments)
-        # TODO confirm atts for children
         @project.to_json(Projects::ImportExport.project_tree)
       end
     end

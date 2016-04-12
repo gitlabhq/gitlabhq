@@ -1,6 +1,7 @@
 # Class relationships to be included in the project import/export
 :project_tree:
-  - :issues
+  - :issues:
+    - :notes
   - :labels
   - :milestones
   - :snippets
@@ -10,6 +11,7 @@
     - :user
   - :merge_requests:
     - :merge_request_diff
+    - :notes
   - :commit_statuses:
     - :commit
 
