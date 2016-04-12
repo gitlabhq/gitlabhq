@@ -163,8 +163,8 @@ class @MergeRequestTabs
         @highlighSelectedLine()
 
         $(document)
-          .off 'click', '.diff-content a'
-          .on 'click', '.diff-content a', (e) =>
+          .off 'click', '.diff-line-num a'
+          .on 'click', '.diff-line-num a', (e) =>
             e.preventDefault()
             window.location.hash = $(e.currentTarget).attr 'href'
             @highlighSelectedLine()
