@@ -36,7 +36,7 @@ v 8.7.0 (unreleased)
   - Update number of Todos in the sidebar when it's marked as "Done". !3600
 
 v 8.6.6
-  - Fix error on language detection when repository has no HEAD (e.g., master branch). !3654
+  - Fix error on language detection when repository has no HEAD (e.g., master branch). !3654 (Jeroen Bobbeldijk)
 
 v 8.6.5
   - Fix importing from GitHub Enterprise. !3529
