@@ -129,6 +129,18 @@ module DiffHelper
     end
   end
 
+  def commit_diff_whitespace_link(project, commit)
+    url = namespace_project_commit_path(project.namespace, project, commit.id, params_with_whitespace)
+    toggle_whitespace_link(url)
+  end
+
+  def diff_merge_request_whitespace_link(project, merge_request)
+    url = diffs_namespace_project_merge_request_path(project.namespace, project, merge_request, params_with_whitespace)
+    toggle_whitespace_link(url)
+  end
+
+  private
+
   def hide_whitespace?
     params[:w] == '1'
   end
@@ -138,16 +150,6 @@ module DiffHelper
   end
 
   def toggle_whitespace_link(url)
-    link_to "#{hide_whitespace? ? 'Show' : 'Hide'} whitespace changes", url, class: "btn btn-default"
-  end
-
-  def commit_diff_whitespace_link(project, commit)
-    url = namespace_project_commit_path(project.namespace, project, commit.id, params_with_whitespace)
-    toggle_whitespace_link(url)
-  end
-
-  def diff_merge_request_whitespace_link(project, merge_request)
-    url = diffs_namespace_project_merge_request_path(project.namespace, project, merge_request, params_with_whitespace)
-    toggle_whitespace_link(url)
+    link_to "#{hide_whitespace? ? 'Show' : 'Hide'} whitespace changes", url, class: 'btn btn-default'
   end
 end
