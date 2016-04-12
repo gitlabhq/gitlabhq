@@ -37,7 +37,7 @@ module CiStatusHelper
     return unless ci_commit.is_a?(Commit) || ci_commit.is_a?(Ci::Commit)
 
     link_to ci_icon_for_status(ci_commit.status),
-      project_ci_commit_path(ci_commit.project, ci_commit),
+      project_pipeline_path(ci_commit.project, ci_commit),
       class: "ci-status-link ci-status-icon-#{ci_commit.status.dasherize}",
       title: "Build #{ci_label_for_status(ci_commit.status)}",
       data: { toggle: 'tooltip', placement: tooltip_placement }

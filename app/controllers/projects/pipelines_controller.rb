@@ -1,4 +1,4 @@
-class Projects::PipelineController < Projects::ApplicationController
+class Projects::PipelinesController < Projects::ApplicationController
   before_action :ci_commit, except: [:index, :new, :create]
   before_action :authorize_read_pipeline!
   before_action :authorize_create_pipeline!, only: [:new, :create]

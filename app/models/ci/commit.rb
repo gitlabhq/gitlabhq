@@ -94,6 +94,10 @@ module Ci
       end
     end
 
+    def triggered?
+      trigger_requests.any?
+    end
+
     def invalidate
       write_attribute(:status, nil)
       write_attribute(:started_at, nil)

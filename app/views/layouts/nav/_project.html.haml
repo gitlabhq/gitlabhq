@@ -40,7 +40,7 @@
 
   - if project_nav_tab? :builds
     = nav_link(controller: %w(ci_commits)) do
-      = link_to project_ci_commits_path(@project), title: 'Pipelines', class: 'shortcuts-builds' do
+      = link_to project_pipelines_path(@project), title: 'Pipelines', class: 'shortcuts-builds' do
         = icon('ship fw')
         %span
           Pipelines

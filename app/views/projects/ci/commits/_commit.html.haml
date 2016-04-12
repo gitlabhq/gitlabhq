@@ -1,7 +1,7 @@
 - status = commit.status
 %tr.commit
   %td.commit-link
-    = link_to namespace_project_commit_url(@project.namespace, @project, commit), class: "ci-status ci-#{status}" do
+    = link_to namespace_project_commit_path(@project.namespace, @project, commit.sha), class: "ci-status ci-#{status}" do
       = ci_icon_for_status(status)
       %strong ##{commit.id}
 
@@ -14,7 +14,7 @@
         %span.label.label-primary tag
       - if commit.branch?
         %span.label.label-primary branch
-      - if commit.trigger_requests.any?
+      - if commit.triggered?
         %span.label.label-primary triggered
       - if commit.yaml_errors.present?
         %span.label.label-danger.has-tooltip(title="#{commit.yaml_errors}") yaml invalid
@@ -27,22 +27,21 @@
         %p
           Cant find HEAD commit for this branch
 
+    - stages_status = commit.statuses.stages_status
     - stages.each do |stage|
       %td
-        - status = commit.statuses.latest.where(stage: stage).status
-        %span.has-tooltip(title="#{status || "missing"}"){class: "ci-status-icon-#{status || "skipped"}"}
-          = ci_icon_for_status(status || "missing")
-        -#- if status
-        -#  = ci_status_with_icon(status)
-        -#- else
-        -#  = ci_status_with_icon('missing')
+        - if status = stages_status[stage]
+          %span.has-tooltip(title="#{status}"){class: "ci-status-icon-#{status}"}
+            = ci_icon_for_status(status)
 
   %td
     - if commit.started_at && commit.finished_at
       %p
+        %i.fa.fa-late-o
         #{duration_in_words(commit.finished_at, commit.started_at)}
     - if commit.finished_at
       %p
+        %i.fa.fa-date-o
         #{time_ago_with_tooltip(commit.finished_at)}
 
   %td.content
@@ -63,11 +62,11 @@
 
       - if can?(current_user, :update_pipeline, @project)
         - if commit.retryable?
-          = link_to retry_namespace_project_ci_commit_path(@project.namespace, @project, commit.id), class: 'btn has-tooltip', title: "Retry", method: :post do
+          = link_to retry_namespace_project_pipeline_path(@project.namespace, @project, commit.id), class: 'btn has-tooltip', title: "Retry", method: :post do
             = icon("repeat")
 
         &nbsp;
 
         - if commit.active?
-          = link_to cancel_namespace_project_ci_commit_path(@project.namespace, @project, commit.id), class: 'btn btn-remove has-tooltip', title: "Cancel", method: :post do
+          = link_to cancel_namespace_project_pipeline_path(@project.namespace, @project, commit.id), class: 'btn btn-remove has-tooltip', title: "Cancel", method: :post do
             = icon("remove cred")
