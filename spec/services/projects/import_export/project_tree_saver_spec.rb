@@ -20,9 +20,10 @@ describe Projects::ImportExport::ProjectTreeSaver, services: true do
              merge_requests: [merge_request],
              labels: [label],
              snippets: [snippet],
-             releases: [release],
-             commit_statuses: [commit_status])
+             releases: [release]
+             )
     end
+    let!(:ci_commit) { create(:ci_commit, project: project, sha: merge_request.last_commit.id, ref: merge_request.source_branch, statuses: [commit_status]) }
     let!(:milestone) { create(:milestone, title: "Milestone v1.2", project: project) }
     let(:export_path) { "#{Dir::tmpdir}/project_tree_saver_spec" }
     let(:shared) { Projects::ImportExport::Shared.new(relative_path: project.path_with_namespace) }
@@ -86,10 +87,6 @@ describe Projects::ImportExport::ProjectTreeSaver, services: true do
         expect(saved_project_json['issues'].first['notes']).not_to be_empty
       end
 
-      it 'has commit statuses' do
-        expect(saved_project_json['commit_statuses']).not_to be_empty
-      end
-
       it 'has project members' do
         expect(saved_project_json['project_members']).not_to be_empty
       end
@@ -102,8 +99,12 @@ describe Projects::ImportExport::ProjectTreeSaver, services: true do
         expect(saved_project_json['merge_requests'].first['notes']).not_to be_empty
       end
 
+      it 'has commit statuses' do
+        expect(saved_project_json['ci_commits'].first['statuses']).not_to be_empty
+      end
+
       it 'has ci commits' do
-        expect(saved_project_json['commit_statuses'].first['commit']).not_to be_empty
+        expect(saved_project_json['ci_commits']).not_to be_empty
       end
     end
   end

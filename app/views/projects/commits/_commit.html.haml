@@ -19,15 +19,8 @@
       .pull-right
         - if ci_commit
           = render_ci_status(ci_commit)
-          &nbsp;
         = clipboard_button(clipboard_text: commit.id)
         = link_to commit.short_id, namespace_project_commit_path(project.namespace, project, commit), class: "commit_short_id"
-
-      .notes_count
-        - if note_count > 0
-          %span.light
-            %i.fa.fa-comments
-            = note_count
 
     - if commit.description?
       .commit-row-description.js-toggle-content
@@ -35,8 +28,8 @@
           = preserve(markdown(escape_once(commit.description), pipeline: :single_line))
 
     .commit-row-info
+      by
       = commit_author_link(commit, avatar: true, size: 24)
-      authored
       .committed_ago
         #{time_ago_with_tooltip(commit.committed_date, skip_js: true)} &nbsp;
       = link_to_browse_code(project, commit)

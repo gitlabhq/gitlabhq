@@ -9,18 +9,18 @@
       = icon('bell fw')
       %span
         Todos
-        %span.count= number_with_delimiter(todos_pending_count)
+        %span.count.todos-pending-count= number_with_delimiter(todos_pending_count)
   = nav_link(path: 'dashboard#activity') do
     = link_to activity_dashboard_path, class: 'shortcuts-activity', title: 'Activity' do
       = icon('dashboard fw')
       %span
         Activity
-  = nav_link(path: ['dashboard/groups#index', 'explore/groups#index']) do
+  = nav_link(controller: :groups) do
     = link_to dashboard_groups_path, title: 'Groups' do
       = icon('group fw')
       %span
         Groups
-  = nav_link(path: 'dashboard#milestones') do
+  = nav_link(controller: :milestones) do
     = link_to dashboard_milestones_path, title: 'Milestones' do
       = icon('clock-o fw')
       %span
@@ -48,6 +48,7 @@
       %span
         Help
 
+  %li.separate-item
   = nav_link(controller: :profile) do
     = link_to profile_path, title: 'Profile Settings', data: {placement: 'bottom'} do
       = icon('user fw')

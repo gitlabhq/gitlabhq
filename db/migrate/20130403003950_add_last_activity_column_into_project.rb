@@ -3,14 +3,16 @@ class AddLastActivityColumnIntoProject < ActiveRecord::Migration
     add_column :projects, :last_activity_at, :datetime
     add_index :projects, :last_activity_at
 
-    Project.find_each do |project|
-      last_activity_date = if project.last_activity
-                             project.last_activity.created_at
-                           else
-                             project.updated_at
-                           end
+    select_all('SELECT id, updated_at FROM projects').each do |project|
+      project_id = project['id']
+      update_date = project['updated_at']
+      event = select_one("SELECT created_at FROM events WHERE project_id = #{project_id} ORDER BY created_at DESC LIMIT 1")
 
-      project.update_attribute(:last_activity_at, last_activity_date)
+      if event && event['created_at']
+        update_date = event['created_at']
+      end
+
+      execute("UPDATE projects SET last_activity_at = '#{update_date}' WHERE id = #{project_id}")
     end
   end
 

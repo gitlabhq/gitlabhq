@@ -780,8 +780,10 @@ Parameters:
 - `id` (required) - The ID or NAMESPACE/PROJECT_NAME of a project
 - `user_id` (required) - The ID of a team member
 
-This method is idempotent and can be called multiple times with the same parameters.
-Revoking team membership for a user who is not currently a team member is considered success.
+This method removes the project member if the user has the proper access rights to do so.
+It returns a status code 403 if the member does not have the proper rights to perform this action.
+In all other cases this method is idempotent and revoking team membership for a user who is not
+currently a team member is considered success.
 Please note that the returned JSON currently differs slightly. Thus you should not
 rely on the returned JSON structure.
 

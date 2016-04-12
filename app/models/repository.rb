@@ -331,6 +331,8 @@ class Repository
   # Runs code after a repository has been created.
   def after_create
     expire_exists_cache
+    expire_root_ref_cache
+    expire_emptiness_caches
   end
 
   # Runs code just before a repository is deleted.
@@ -894,9 +896,9 @@ class Repository
   end
 
   def main_language
-    unless empty?
-      Linguist::Repository.new(rugged, rugged.head.target_id).language
-    end
+    return if empty? || rugged.head_unborn?
+
+    Linguist::Repository.new(rugged, rugged.head.target_id).language
   end
 
   def avatar

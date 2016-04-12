@@ -40,17 +40,17 @@ describe API::API, api: true  do
     end
   end
 
-  describe "GET /projects/:id/repository/tags/:tag_name" do
+  describe 'GET /projects/:id/repository/tags/:tag_name' do
     let(:tag_name) { project.repository.tag_names.sort.reverse.first }
 
-    it 'should return a specific tag' do
+    it 'returns a specific tag' do
       get api("/projects/#{project.id}/repository/tags/#{tag_name}", user)
 
       expect(response.status).to eq(200)
       expect(json_response['name']).to eq(tag_name)
     end
 
-    it 'should return 404 for an invalid tag name' do
+    it 'returns 404 for an invalid tag name' do
       get api("/projects/#{project.id}/repository/tags/foobar", user)
 
       expect(response.status).to eq(404)

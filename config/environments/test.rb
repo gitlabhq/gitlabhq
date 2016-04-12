@@ -8,6 +8,7 @@ Rails.application.configure do
   config.cache_classes = false
 
   # Configure static asset server for tests with Cache-Control for performance
+  config.assets.digest = false
   config.serve_static_files = true
   config.static_cache_control = "public, max-age=3600"
 

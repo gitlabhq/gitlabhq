@@ -62,6 +62,8 @@ class @SearchAutocomplete
         search:
           fields: ['text']
         data: @getData.bind(@)
+        selectable: true
+        clicked: @onClick.bind(@)
 
   getData: (term, callback) ->
     _this = @
@@ -102,6 +104,8 @@ class @SearchAutocomplete
             lastCategory = suggestion.category
 
           data.push
+            id: "#{suggestion.category.toLowerCase()}-#{suggestion.id}"
+            category: suggestion.category
             text: suggestion.label
             url: suggestion.url
 
@@ -133,12 +137,19 @@ class @SearchAutocomplete
     }
 
   bindEvents: ->
+    $(document).on 'click', @onDocumentClick
     @searchInput.on 'keydown', @onSearchInputKeyDown
     @searchInput.on 'keyup', @onSearchInputKeyUp
     @searchInput.on 'click', @onSearchInputClick
     @searchInput.on 'focus', @onSearchInputFocus
-    @searchInput.on 'blur', @onSearchInputBlur
-    @clearInput.on 'click', @onRemoveLocationClick
+    @clearInput.on 'click', @onClearInputClick
+
+  onDocumentClick: (e) =>
+    # If clicking outside the search box
+    # And search input is not focused
+    # And we are not clicking inside a suggestion
+    if not $.contains(@dropdown[0], e.target) and @isFocused and not $(e.target).parents('ul').length
+      @onSearchInputBlur()
 
   enableAutocomplete: ->
     # No need to enable anything if user is not logged in
@@ -181,6 +192,8 @@ class @SearchAutocomplete
           # We should display the menu only when input is not empty
           @enableAutocomplete()
 
+    @wrap.toggleClass 'has-value', !!e.target.value
+
     # Avoid falsy value to be returned
     return
 
@@ -189,27 +202,20 @@ class @SearchAutocomplete
     e.stopImmediatePropagation()
 
   onSearchInputFocus: =>
+    @isFocused = true
     @wrap.addClass('search-active')
 
-  onRemoveLocationClick: (e) =>
+  onClearInputClick: (e) =>
     e.preventDefault()
-    @removeLocationBadge()
     @searchInput.val('').focus()
-    @skipBlurEvent = true
 
   onSearchInputBlur: (e) =>
-    @skipBlurEvent = false
+    @isFocused = false
+    @wrap.removeClass('search-active')
 
-    # We should wait to make sure we are not clearing the input instead
-    setTimeout( =>
-      return if @skipBlurEvent
-
-      @wrap.removeClass('search-active')
-
-      # If input is blank then restore state
-      if @searchInput.val() is ''
-        @restoreOriginalState()
-    , 150)
+    # If input is blank then restore state
+    if @searchInput.val() is ''
+      @restoreOriginalState()
 
   addLocationBadge: (item) ->
     category = if item.category? then "#{item.category}: " else ''
@@ -268,3 +274,23 @@ class @SearchAutocomplete
               <li><a class='dropdown-menu-empty-link is-focused'>Loading...</a></li>
             </ul>"
     @dropdownContent.html(html)
+
+  onClick: (item, $el, e) ->
+    if location.pathname.indexOf(item.url) isnt -1
+      e.preventDefault()
+      if not @badgePresent
+        if item.category is 'Projects'
+          @projectInputEl.val(item.id)
+          @addLocationBadge(
+            value: 'This project'
+          )
+
+        if item.category is 'Groups'
+          @groupInputEl.val(item.id)
+          @addLocationBadge(
+            value: 'This group'
+          )
+
+      $el.removeClass('is-active')
+      @disableAutocomplete()
+      @searchInput.val('').focus()

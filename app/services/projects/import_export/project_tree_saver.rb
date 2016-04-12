@@ -20,7 +20,7 @@ module Projects
         File.write(full_path, project_json_tree)
         true
       rescue
-        #TODO: handle error
+        # TODO: handle error
         false
       end
 

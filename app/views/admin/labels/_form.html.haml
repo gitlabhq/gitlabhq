@@ -1,11 +1,5 @@
 = form_for [:admin, @label], html: { class: 'form-horizontal label-form js-requires-input' } do |f|
-  -if @label.errors.any?
-    .row
-      .col-sm-offset-2.col-sm-10
-        .alert.alert-danger
-          - @label.errors.full_messages.each do |msg|
-            %span= msg
-            %br
+  = form_errors(@label)
 
   .form-group
     = f.label :title, class: 'control-label'

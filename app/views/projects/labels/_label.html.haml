@@ -1,24 +1,27 @@
 %li{id: dom_id(label)}
   = render "shared/label_row", label: label
 
-  .pull-right
-    %strong.append-right-20
+  .pull-info-right
+    %span.append-right-20
       = link_to_label(label, type: :merge_request) do
-        = pluralize label.open_merge_requests_count, 'open merge request'
+        = pluralize label.open_merge_requests_count, 'merge request'
 
-    %strong.append-right-20
+    %span.append-right-20
       = link_to_label(label) do
         = pluralize label.open_issues_count(current_user), 'open issue'
 
     - if current_user
       .label-subscription{data: {url: toggle_subscription_namespace_project_label_path(@project.namespace, @project, label)}}
         .subscription-status{data: {status: label_subscription_status(label)}}
-        %button.btn.btn-sm.btn-info.subscribe-button
+
+        %a.subscribe-button.btn.action-buttons{data: {toggle: "tooltip"}}
           %span= label_subscription_toggle_button_text(label)
 
     - if can? current_user, :admin_label, @project
-      = link_to 'Edit', edit_namespace_project_label_path(@project.namespace, @project, label), class: 'btn btn-sm'
-      = link_to 'Delete', namespace_project_label_path(@project.namespace, @project, label), class: 'btn btn-sm btn-remove remove-row', method: :delete, remote: true, data: {confirm: "Remove this label? Are you sure?"}
+      = link_to edit_namespace_project_label_path(@project.namespace, @project, label), title: "Edit", class: 'btn action-buttons', data: {toggle: "tooltip"} do
+        %i.fa.fa-pencil-square-o
+      = link_to namespace_project_label_path(@project.namespace, @project, label), title: "Delete", class: 'btn action-buttons remove-row', method: :delete, remote: true, data: {confirm: "Remove this label? Are you sure?", toggle: "tooltip"} do
+        %i.fa.fa-trash-o
 
 - if current_user
   :javascript
