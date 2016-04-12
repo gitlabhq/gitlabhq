@@ -192,10 +192,11 @@ describe Issue, models: true do
 
   describe '#related_branches' do
     it "selects the right branches" do
+      user = build(:user)
       allow(subject.project.repository).to receive(:branch_names).
         and_return(["mpempe", "#{subject.iid}mepmep", subject.to_branch_name])
 
-      expect(subject.related_branches).to eq([subject.to_branch_name])
+      expect(subject.related_branches(user)).to eq([subject.to_branch_name])
     end
   end
 
