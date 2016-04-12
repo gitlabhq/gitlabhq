@@ -40,18 +40,6 @@ class Admin::ProjectsController < Admin::ApplicationController
     )
   end
 
-  def clear_repository_check_states
-    Project.update_all(
-      last_repository_check_failed: false,
-      last_repository_check_at: nil
-    )
-
-    redirect_to(
-      admin_namespaces_projects_path,
-      notice: 'All project states were cleared'
-    )
-  end
-
   protected
 
   def project

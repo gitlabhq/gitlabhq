@@ -4,12 +4,13 @@ _**Note:** This feature was [introduced][ce-3232] in GitLab 8.7_
 
 ---
 
-Git has a built-in mechanism [git fsck][git-fsck] to verify the
-integrity of all data commited to a repository. GitLab administrators can
-trigger such a check for a project via the admin panel. The checks run
-asynchronously so it may take a few minutes before the check result is
-visible on the project admin page. If the checks failed you can see their
-output on the admin log page under 'repocheck.log'.
+Git has a built-in mechanism \[git fsck\]\[git-fsck\] to verify the
+integrity of all data commited to a repository. GitLab administrators
+can trigger such a check for a project via the project page under the
+admin panel. The checks run asynchronously so it may take a few minutes
+before the check result is visible on the project admin page. If the
+checks failed you can see their output on the admin log page under
+'repocheck.log'.
 
 ## Periodical checks
 
@@ -22,20 +23,8 @@ than once a day.
 
 ## Disabling periodic checks
 
-You can disable the periodic checks by giving them an empty cron
-schedule in gitlab.yml.
-
-```
-# For omnibus installations, in /etc/gitlab/gitlab.rb:
-gitlab_rails['cron_jobs_repository_check_worker_cron'] = ''
-```
-
-```
-# For installations from source, in config/gitlab.yml:
-  cron_jobs:
-    repository_check_worker:
-      cron: ""
-```
+You can disable the periodic checks on the 'Settings' page of the admin
+panel.
 
 ## What to do if a check failed
 
@@ -47,8 +36,8 @@ resolved the issue use the admin panel to trigger a new repository check on
 the project. This will clear the 'check failed' state.
 
 If for some reason the periodical repository check caused a lot of false
-alarms you can choose to clear ALL repository check states from the admin
-project index page.
+alarms you can choose to clear ALL repository check states from the
+'Settings' page of the admin panel.
 
 ---
 [ce-3232]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/3232 "Auto git fsck"

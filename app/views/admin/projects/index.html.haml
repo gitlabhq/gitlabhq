@@ -49,11 +49,6 @@
         = button_tag "Search", class: "btn submit btn-primary"
         = link_to "Reset", admin_namespaces_projects_path, class: "btn btn-cancel"
 
-    .panel.panel-default.repository-check-states
-      .panel-heading
-        Repository check states
-      .panel-body
-        = link_to 'Clear all', clear_repository_check_states_admin_namespace_projects_path(0), data: { confirm: 'This will clear repository check states for ALL projects in the database. This cannot be undone. Are you sure?' }, method: :put, class: "btn btn-sm btn-remove"
   %section.col-md-9
     .panel.panel-default
       .panel-heading
