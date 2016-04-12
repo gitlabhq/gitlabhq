@@ -26,6 +26,7 @@ v 8.7.0 (unreleased)
   - API: Fix milestone filtering by `iid` (Robert Schilling)
   - Implement 'Groups View' as an option for dashboard preferences !3379 (Elias W.)
   - Better errors handling when creating milestones inside groups
+  - Hide `Create a group` help block when creating a new project in a group
   - Implement 'TODOs View' as an option for dashboard preferences !3379 (Elias W.)
   - Gracefully handle notes on deleted commits in merge requests (Stan Hu)
   - Fix creation of merge requests for orphaned branches (Stan Hu)
