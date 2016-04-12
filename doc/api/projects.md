@@ -493,8 +493,8 @@ Parameters:
 
 ### Star a project
 
-Stars a given project. Returns status code 201 and the project on success and
-304 if the project is already starred.
+Stars a given project. Returns status code `201` and the project on success and
+`304` if the project is already starred.
 
 ```
 POST /projects/:id/star
@@ -556,11 +556,11 @@ Example response:
 
 ### Unstar a project
 
-Unstars a given project. Returns status code 201 and the project on success
-and 304 if the project is already unstarred.
+Unstars a given project. Returns status code `200` and the project on success
+and `304` if the project is not starred.
 
 ```
-POST /projects/:id/unstar
+DELETE /projects/:id/star
 ```
 
 | Attribute | Type | Required | Description |
@@ -568,7 +568,7 @@ POST /projects/:id/unstar
 | `id`      | integer | yes | The ID of the project |
 
 ```bash
-curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/unstar"
+curl -X DELETE -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/star"
 ```
 
 Example response:

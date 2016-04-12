@@ -1045,7 +1045,7 @@ describe API::API, api: true  do
     end
   end
 
-  describe 'POST /projects/:id/unstar' do
+  describe 'DELETE /projects/:id/star' do
     context 'on a starred project' do
       before do
         user.toggle_star(project)
@@ -1053,16 +1053,16 @@ describe API::API, api: true  do
       end
 
       it 'unstars the project' do
-        post api("/projects/#{project.id}/unstar", user)
+        delete api("/projects/#{project.id}/star", user)
 
-        expect(response.status).to eq(201)
+        expect(response.status).to eq(200)
         expect(json_response['star_count']).to eq(0)
       end
     end
 
     context 'on an unstarred project' do
       it 'does not modify the star count' do
-        post api("/projects/#{project.id}/unstar", user)
+        delete api("/projects/#{project.id}/star", user)
 
         expect(response.status).to eq(304)
         expect(project.star_count).to eq(0)

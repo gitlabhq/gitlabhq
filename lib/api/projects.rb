@@ -279,13 +279,12 @@ module API
       # Example Request:
       #   POST /projects/:id/star
       post ':id/star' do
-        if !current_user.starred?(user_project)
+        if current_user.starred?(user_project)
+          not_modified!
+        else
           current_user.toggle_star(user_project)
           user_project.reload
           present user_project, with: Entities::Project
-
-        else
-          not_modified!
         end
       end
 
@@ -294,8 +293,8 @@ module API
       # Parameters:
       #   id (required) - The ID of a project
       # Example Request:
-      #   POST /projects/:id/unstar
-      post ':id/unstar' do
+      #   DELETE /projects/:id/unstar
+      delete ':id/star' do
         if current_user.starred?(user_project)
           current_user.toggle_star(user_project)
           user_project.reload
