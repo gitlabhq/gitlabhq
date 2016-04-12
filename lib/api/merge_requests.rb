@@ -334,15 +334,15 @@ module API
         #  id (required)               - The ID of a project
         #  merge_request_id (required) - The ID of a merge request
         # Example Request:
-        #   POST /projects/:id/issues/:merge_request_id/subscribe
-        post "#{path}/subscribe" do
+        #   POST /projects/:id/issues/:merge_request_id/subscription
+        post "#{path}/subscription" do
           merge_request = user_project.merge_requests.find(params[:merge_request_id])
 
-          if !merge_request.subscribed?(current_user)
+          if merge_request.subscribed?(current_user)
+            not_modified!
+          else
             merge_request.toggle_subscription(current_user)
             present merge_request, with: Entities::MergeRequest, current_user: current_user
-          else
-            not_modified!
           end
         end
 
@@ -352,8 +352,8 @@ module API
         #  id (required)               - The ID of a project
         #  merge_request_id (required) - The ID of a merge request
         # Example Request:
-        #   POST /projects/:id/merge_requests/:merge_request_id/unsubscribe
-        post "#{path}/unsubscribe" do
+        #   DELETE /projects/:id/merge_requests/:merge_request_id/subscription
+        delete "#{path}/subscription" do
           merge_request = user_project.merge_requests.find(params[:merge_request_id])
 
           if merge_request.subscribed?(current_user)

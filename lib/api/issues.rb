@@ -238,32 +238,15 @@ module API
       #  id (required)       - The ID of a project
       #  issue_id (required) - The ID of a project issue
       # Example Request:
-      #   POST /projects/:id/issues/:issue_id
-      post ":id/issues/:issue_idsubscribe" do
+      #   POST /projects/:id/issues/:issue_id/subscription
+      post ":id/issues/:issue_id/subscription" do
         issue = user_project.issues.find_by(id: params[:issue_id])
 
-        if !issue.subscribed?(current_user)
-          present issue, with: Entities::Issue, current_user: current_user
-        else
+        if issue.subscribed?(current_user)
           not_modified!
-        end
-      end
-
-      # Subscribes to a project issue
-      #
-      # Parameters:
-      #  id (required) - The ID of a project
-      #  issue_id (required) - The ID of a project issue
-      # Example Request:
-      #   POST /projects/:id/issues/:issue_id/subscribe
-      post ":id/issues/:issue_id/subscribe" do
-        issue = user_project.issues.find_by(id: params[:issue_id])
-
-        if !issue.subscribed?(current_user)
+        else
           issue.toggle_subscription(current_user)
           present issue, with: Entities::Issue, current_user: current_user
-        else
-          not_modified!
         end
       end
 
@@ -273,8 +256,8 @@ module API
       #  id (required)       - The ID of a project
       #  issue_id (required) - The ID of a project issue
       # Example Request:
-      #   POST /projects/:id/issues/:issue_id/unsubscribe
-      post ":id/issues/:issue_id/unsubscribe" do
+      #   DELETE /projects/:id/issues/:issue_id/subscription
+      delete ":id/issues/:issue_id/subscription" do
         issue = user_project.issues.find_by(id: params[:issue_id])
 
         if issue.subscribed?(current_user)

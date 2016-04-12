@@ -408,13 +408,14 @@ Example response:
 
 ## Subscribe to an issue
 
-Subscribes to an issue to receive notifications. If the operation is successful,
-status code `201` together with the updated issue is returned. If the user is
-already subscribed to the issue, the status code `304` is returned. If the
-project or issue is not found, status code `404` is returned.
+Subscribes the authenticated user to an issue to receive notifications. If the
+operation is successful, status code `201` together with the updated issue is
+returned. If the user is already subscribed to the issue, the status code `304`
+is returned. If the project or issue is not found, status code `404` is
+returned.
 
 ```
-POST /projects/:id/issues/:issue_id/subscribe
+POST /projects/:id/issues/:issue_id/subscription
 ```
 
 | Attribute | Type | Required | Description |
@@ -423,7 +424,7 @@ POST /projects/:id/issues/:issue_id/subscribe
 | `issue_id` | integer | yes | The ID of a project's issue |
 
 ```bash
-curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/issues/93/subscribe
+curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/issues/93/subscription
 ```
 
 Example response:
@@ -461,14 +462,14 @@ Example response:
 
 ## Unsubscribe from an issue
 
-Unsubscribes from an issue to not receive notifications from that issue. If the
-operation is successful, status code `201` together with the updated issue is
-returned. If the user is not subscribed to the issue, the status code `304`
-is returned. If the project or issue is not found, status code `404` is
-returned.
+Unsubscribes the authenticated user from the issue to not receive notifications
+from it. If the operation is successful, status code `200` together with the
+updated issue is returned. If the user is not subscribed to the issue, the
+status code `304` is returned. If the project or issue is not found, status code
+`404` is returned.
 
 ```
-POST /projects/:id/issues/:issue_id/unsubscribe
+DELETE /projects/:id/issues/:issue_id/subscription
 ```
 
 | Attribute | Type | Required | Description |
@@ -477,7 +478,7 @@ POST /projects/:id/issues/:issue_id/unsubscribe
 | `issue_id` | integer | yes | The ID of a project's issue |
 
 ```bash
-curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/issues/93/unsubscribe
+curl -X DELETE -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/issues/93/subscription
 ```
 
 Example response:
