@@ -56,3 +56,8 @@ Feature: Project Shortcuts
   Scenario: Navigate to project feed
     Given I press "g" and "e"
     Then the active main tab should be Activity
+
+  @javascript @focus
+  Scenario: Navigate to new Issue page
+    Given I press "i"
+    Then I should see the new issue page
