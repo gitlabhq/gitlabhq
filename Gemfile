@@ -1,6 +1,6 @@
 source "https://rubygems.org"
 
-gem 'rails', '4.2.5.2'
+gem 'rails', '4.2.6'
 gem 'rails-deprecated_sanitizer', '~> 1.0.3'
 
 # Responders respond_to and respond_with
@@ -8,7 +8,7 @@ gem 'responders', '~> 2.0'
 
 # Specify a sprockets version due to increased performance
 # See https://gitlab.com/gitlab-org/gitlab-ce/issues/6069
-gem 'sprockets', '~> 3.3.5'
+gem 'sprockets', '~> 3.6.0'
 
 # Default values for AR models
 gem "default_value_for", "~> 3.0.0"
@@ -159,6 +159,10 @@ gem 'version_sorter', '~> 2.0.0'
 # Cache
 gem "redis-rails", '~> 4.0.0'
 
+# Redis
+gem 'redis', '~> 3.2'
+gem 'connection_pool', '~> 2.0'
+
 # Campfire integration
 gem 'tinder', '~> 1.10.0'
 
@@ -239,14 +243,13 @@ group :metrics do
   gem 'allocations', '~> 1.0', require: false, platform: :mri
   gem 'method_source', '~> 0.8', require: false
   gem 'influxdb', '~> 0.2', require: false
-  gem 'connection_pool', '~> 2.0', require: false
 end
 
 group :development do
   gem "foreman"
   gem 'brakeman', '~> 3.2.0', require: false
 
-  gem "annotate", "~> 2.6.0"
+  gem "annotate", "~> 2.7.0"
   gem "letter_opener", '~> 1.1.2'
   gem 'quiet_assets', '~> 1.0.2'
   gem 'rerun', '~> 0.11.0'

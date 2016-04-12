@@ -70,6 +70,7 @@ Feature: Project Merge Requests
     When I click link "Reopen"
     Then I should see reopened merge request "Bug NS-04"
 
+  @javascript
   Scenario: I submit new unassigned merge request
     Given I click link "New Merge Request"
     And I submit new merge request "Wiki Feature"

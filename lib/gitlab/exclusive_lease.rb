@@ -43,7 +43,9 @@ module Gitlab
     # false if the lease is already taken.
     def try_obtain
       # Performing a single SET is atomic
-      !!redis.set(redis_key, '1', nx: true, ex: @timeout)
+      Gitlab::Redis.with do |redis|
+        !!redis.set(redis_key, '1', nx: true, ex: @timeout)
+      end
     end
 
     # No #cancel method. See comments above!

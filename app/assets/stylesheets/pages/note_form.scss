@@ -1,10 +1,10 @@
 /**
  * Note Form
  */
-.reply-btn {
-  @extend .btn-primary;
-  margin: 10px $gl-padding;
+.comment-btn {
+  @extend .btn-create;
 }
+
 .diff-file .diff-content {
   tr.line_holder:hover > td .line_note_link {
     opacity: 1.0;
@@ -113,13 +113,12 @@
 .discussion-body,
 .diff-file {
   .notes .note {
-    border-color: #ddd;
     padding: 10px 15px;
   }
 
   .discussion-reply-holder {
-    background: $background-color;
-    border-top: 1px solid $border-color;
+    background-color: $white-light;
+    padding: 10px 16px;
   }
 }
 

@@ -80,7 +80,7 @@ describe IssuesHelper do
     end
   end
 
-  describe '#url_for_new_issue' do
+  describe 'url_for_new_issue' do
     let(:issues_url) { ext_project.external_issue_tracker.new_issue_url }
     let(:ext_expected) do
       issues_url.gsub(':project_id', ext_project.id.to_s)
@@ -117,7 +117,7 @@ describe IssuesHelper do
     end
   end
 
-  describe "#merge_requests_sentence" do
+  describe "merge_requests_sentence" do
     subject { merge_requests_sentence(merge_requests)}
     let(:merge_requests) do
       [ build(:merge_request, iid: 1), build(:merge_request, iid: 2),
@@ -127,7 +127,7 @@ describe IssuesHelper do
     it { is_expected.to eq("!1, !2, or !3") }
   end
 
-  describe "#note_active_class" do
+  describe "note_active_class" do
     before do
       @note = create :note
       @note1 = create :note
@@ -142,10 +142,25 @@ describe IssuesHelper do
     end
   end
 
-  describe "#awards_sort" do
+  describe "awards_sort" do
     it "sorts a hash so thumbsup and thumbsdown are always on top" do
       data = { "thumbsdown" => "some value", "lifter" => "some value", "thumbsup" => "some value" }
       expect(awards_sort(data).keys).to eq(["thumbsup", "thumbsdown", "lifter"])
+    end
+  end
+
+  describe "milestone_options" do
+    it "gets closed milestone from current issue" do
+      closed_milestone = create(:closed_milestone, project: project)
+      milestone1       = create(:milestone, project: project)
+      milestone2       = create(:milestone, project: project)
+      issue.update_attributes(milestone_id: closed_milestone.id)
+
+      options = milestone_options(issue)
+
+      expect(options).to have_selector('option[selected]', text: closed_milestone.title)
+      expect(options).to have_selector('option', text: milestone1.title)
+      expect(options).to have_selector('option', text: milestone2.title)
     end
   end
 end

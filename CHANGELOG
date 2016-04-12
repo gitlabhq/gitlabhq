@@ -1,6 +1,8 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.7.0 (unreleased)
+  - Enable gzip for assets, makes the page size significantly smaller. !3544 / !3632 (Connor Shea)
+  - Load award emoji images separately unless opening the full picker. Saves several hundred KBs of data for most pages. (Connor Shea)
   - All images in discussions and wikis now link to their source files !3464 (Connor Shea).
   - Return status code 303 after a branch DELETE operation to avoid project deletion (Stan Hu)
   - Improved Markdown rendering performance !3389 (Yorick Peterse)
@@ -17,6 +19,7 @@ v 8.7.0 (unreleased)
   - Add endpoints to archive or unarchive a project !3372
   - Add links to CI setup documentation from project settings and builds pages
   - Handle nil descriptions in Slack issue messages (Stan Hu)
+  - API: Expose open_issues_count, closed_issues_count, open_merge_requests_count for labels (Robert Schilling)
   - Add default scope to projects to exclude projects pending deletion
   - Ensure empty recipients are rejected in BuildsEmailService
   - API: Ability to filter milestones by state `active` and `closed` (Robert Schilling)
@@ -45,6 +48,7 @@ v 8.6.5
 
 v 8.6.4
   - Don't attempt to fetch any tags from a forked repo (Stan Hu)
+  - Redesign the Labels page
 
 v 8.6.3
   - Mentions on confidential issues doesn't create todos for non-members. !3374

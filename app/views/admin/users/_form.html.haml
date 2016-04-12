@@ -1,10 +1,6 @@
 .user_new
   = form_for [:admin, @user], html: { class: 'form-horizontal fieldset-form' } do |f|
-    -if @user.errors.any?
-      #error_explanation
-        .alert.alert-danger
-          - @user.errors.full_messages.each do |msg|
-            %p= msg
+    = form_errors(@user)
 
     %fieldset
       %legend Account

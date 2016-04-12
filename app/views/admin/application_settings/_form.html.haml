@@ -1,9 +1,5 @@
 = form_for @application_setting, url: admin_application_settings_path, html: { class: 'form-horizontal fieldset-form' } do |f|
-  - if @application_setting.errors.any?
-    #error_explanation
-      .alert.alert-danger
-        - @application_setting.errors.full_messages.each do |msg|
-          %p= msg
+  = form_errors(@application_setting)
 
   %fieldset
     %legend Visibility and Access Controls

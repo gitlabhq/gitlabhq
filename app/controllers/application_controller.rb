@@ -47,6 +47,16 @@ class ApplicationController < ActionController::Base
         email: current_user.email,
         username: current_user.username,
       )
+
+      Raven.tags_context(program: sentry_program_context)
+    end
+  end
+
+  def sentry_program_context
+    if Sidekiq.server?
+      'sidekiq'
+    else
+      'rails'
     end
   end
 
