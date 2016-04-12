@@ -140,7 +140,7 @@ PUT /groups/:id
 | `name` | string | no | The name of the group |
 | `path` | string | no | The path of the group |
 | `description` | string | no | The description of the group |
-| `visibility_level` | integer | no | The visibility_level of the group. 0 for private, 10 for internal, 20 for public. |
+| `visibility_level` | integer | no | The visibility level of the group. 0 for private, 10 for internal, 20 for public. |
 
 ```bash
 curl -X PUT -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/groups/5?name=Experimental"

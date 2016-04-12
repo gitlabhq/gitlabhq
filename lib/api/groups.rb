@@ -47,7 +47,7 @@ module API
       # Update group. Available only for users who can administrate groups.
       #
       # Parameters:
-      #   id (required)                - The ID of a group
+      #   id (required)               - The ID of a group
       #   path (optional)             - The path of the group
       #   description (optional)      - The description of the group
       #   visibility_level (optional) - The visibility level of the group
@@ -59,12 +59,10 @@ module API
 
         attrs = attributes_for_keys [:name, :path, :description, :visibility_level]
 
-        ::Groups::UpdateService.new(group, current_user, attrs).execute
-
-        if group.errors.any?
-          render_validation_error!(group)
-        else
+        if ::Groups::UpdateService.new(group, current_user, attrs).execute
           present group, with: Entities::GroupDetail
+        else
+          render_validation_error!(group)
         end
       end
 

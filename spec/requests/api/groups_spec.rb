@@ -100,7 +100,7 @@ describe API::API, api: true  do
   describe 'PUT /groups/:id' do
     let(:new_group_name) { 'New Group'}
 
-    context "when authenticated the group owner" do
+    context 'when authenticated as the group owner' do
       it 'updates the group' do
         put api("/groups/#{group1.id}", user1), name: new_group_name
 
@@ -115,7 +115,7 @@ describe API::API, api: true  do
       end
     end
 
-    context "when authenticated the admin" do
+    context 'when authenticated as the admin' do
       it 'updates the group' do
         put api("/groups/#{group1.id}", admin), name: new_group_name
 
@@ -124,9 +124,17 @@ describe API::API, api: true  do
       end
     end
 
-    context "when authenticated an user" do
-      it 'updates the group' do
+    context 'when authenticated as an user that can see the group' do
+      it 'does not updates the group' do
         put api("/groups/#{group1.id}", user2), name: new_group_name
+
+        expect(response.status).to eq(403)
+      end
+    end
+
+    context 'when authenticated as an user that cannot see the group' do
+      it 'returns 403 when trying to update the group' do
+        put api("/groups/#{group2.id}", user1), name: new_group_name
 
         expect(response.status).to eq(403)
       end
