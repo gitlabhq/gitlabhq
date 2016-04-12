@@ -301,6 +301,7 @@ module API
 
     class Label < Grape::Entity
       expose :name, :color, :description
+      expose :open_issues_count, :closed_issues_count, :open_merge_requests_count
     end
 
     class Compare < Grape::Entity
