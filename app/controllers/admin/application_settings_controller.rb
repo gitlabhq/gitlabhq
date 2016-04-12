@@ -27,7 +27,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
 
     redirect_to(
       admin_application_settings_path,
-      notice: 'All repository check states were cleared'
+      notice: 'All repository check states were cleared.'
     )
   end
 
