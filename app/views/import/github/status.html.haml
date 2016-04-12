@@ -9,8 +9,8 @@
 %hr
 %p
   = button_tag class: "btn btn-import btn-success js-import-all" do
-    = icon('spinner spin', class: 'loading-icon')
     Import all projects
+    = icon('spinner spin', class: 'loading-icon')
 
 .table-responsive
   %table.table.import-jobs
@@ -48,8 +48,8 @@
             = repo.full_name
           %td.import-actions.job-status
             = button_tag class: "btn btn-import js-add-to-import" do
-              = icon('spinner spin', class: 'loading-icon')
               Import
+              = icon('spinner spin', class: 'loading-icon')
 
 :javascript
   new ImporterStatus("#{jobs_import_github_path}", "#{import_github_path}");

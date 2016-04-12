@@ -15,12 +15,12 @@
   %p
   - if @incompatible_repos.any?
     = button_tag class: "btn btn-import btn-success js-import-all" do
-      = icon('spinner spin', class: 'loading-icon')
       Import all compatible projects
+      = icon('spinner spin', class: 'loading-icon')
   - else
     = button_tag class: "btn btn-import btn-success js-import-all" do
-      = icon('spinner spin', class: 'loading-icon')
       Import all projects
+      = icon('spinner spin', class: 'loading-icon')
 
 .table-responsive
   %table.table.import-jobs
@@ -58,8 +58,8 @@
             = "#{current_user.username}/#{repo.name}"
           %td.import-actions.job-status
             = button_tag class: "btn btn-import js-add-to-import" do
-              = icon('spinner spin', class: 'loading-icon')
               Import
+              = icon('spinner spin', class: 'loading-icon')
       - @incompatible_repos.each do |repo|
         %tr{id: "repo_#{repo.id}"}
           %td
