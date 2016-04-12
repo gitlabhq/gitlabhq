@@ -85,9 +85,6 @@ if Gitlab::Metrics.enabled?
       config.instrument_instance_methods(const)
     end
 
-    config.instrument_methods(Banzai::ReferenceExtractor)
-    config.instrument_instance_methods(Banzai::ReferenceExtractor)
-
     config.instrument_methods(Banzai::Renderer)
     config.instrument_methods(Banzai::Querying)
 
