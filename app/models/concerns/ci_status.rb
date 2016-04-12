@@ -5,7 +5,7 @@ module CiStatus
     def status
       objs = all.to_a
       if objs.none?
-         nil
+        nil
       elsif objs.all? { |status| status.success? || status.try(:ignored?) }
         'success'
       elsif objs.all?(&:pending?)
@@ -14,6 +14,8 @@ module CiStatus
         'running'
       elsif objs.all?(&:canceled?)
         'canceled'
+      elsif objs.all?(&:skipped?)
+        'skipped'
       else
         'failed'
       end

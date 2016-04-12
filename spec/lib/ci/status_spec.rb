@@ -1,8 +1,17 @@
 require 'spec_helper'
 
-describe Ci::Status do
-  describe '.get_status' do
-    subject { described_class.get_status(statuses) }
+describe CiStatus do
+  before do
+    @object = Object.new
+    @object.extend(CiStatus::ClassMethods)
+  end
+
+  describe '.status' do
+    before do
+      allow(@object).to receive(:all).and_return(statuses)
+    end
+
+    subject { @object.status }
     
     shared_examples 'build status summary' do
       context 'all successful' do

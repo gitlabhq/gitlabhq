@@ -117,7 +117,7 @@ module Ci
 
       # get status for all prior builds
       prior_builds = latest_builds.reject { |other_build| next_stages.include?(other_build.stage) }
-      status = Ci::Status.get_status(prior_builds)
+      status = prior_builds.status
 
       # create builds for next stages based
       next_stages.any? do |stage|
@@ -185,7 +185,7 @@ module Ci
     private
 
     def update_status
-      status =
+      self.status =
         if yaml_errors.present?
           'failed'
         else
@@ -194,17 +194,17 @@ module Ci
     end
 
     def update_started_at
-      started_at =
+      self.started_at =
         statuses.minimum(:started_at)
     end
 
     def update_finished_at
-      finished_at =
+      self.finished_at =
         statuses.maximum(:finished_at)
     end
 
     def update_duration
-      duration = begin
+      self.duration = begin
         duration_array = latest.map(&:duration).compact
         duration_array.reduce(:+).to_i
       end
