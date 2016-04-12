@@ -58,10 +58,19 @@ module Projects
           relation.values.flatten.each do |sub_relation|
             relation_hash = relation_item[sub_relation.to_s]
             next if relation_hash.blank?
-            sub_relation_object = relation_from_factory(sub_relation, relation_hash)
-            relation_item[sub_relation.to_s] = sub_relation_object
+            process_sub_relation(relation_hash, relation_item, sub_relation)
           end
         end
+      end
+
+      def process_sub_relation(relation_hash, relation_item, sub_relation)
+        sub_relation_object = nil
+        if relation_hash.is_a?(Array)
+          sub_relation_object = create_relation(sub_relation, relation_hash)
+        else
+          sub_relation_object = relation_from_factory(sub_relation, relation_hash)
+        end
+        relation_item[sub_relation.to_s] = sub_relation_object
       end
 
       def create_relation(relation, relation_hash_list)

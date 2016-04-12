@@ -48,8 +48,8 @@ module Projects
 
       def parse_relation(relation_hash, relation_sym)
         klass = relation_class(relation_sym)
-        relation_hash.delete('id') #screw IDs for now
-        relation_hash.delete('project_id') unless klass.column_names.include?(:project_id)
+        relation_hash.delete('id')
+        relation_hash.delete('project_id') unless klass.column_names.include?('project_id')
         klass
       end
     end
