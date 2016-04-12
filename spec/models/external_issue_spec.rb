@@ -38,8 +38,17 @@ describe ExternalIssue, models: true do
   end
 
   describe '#reference_link_text' do
-    it 'returns a String reference to the object' do
-      expect(issue.reference_link_text).to eq '#EXT-1234'
+    context 'if issue id has a prefix' do
+      it 'returns the issue ID' do
+        expect(issue.reference_link_text).to eq 'EXT-1234'
+      end
+    end
+
+    context 'if issue id is a number' do
+      let(:issue)   { described_class.new('1234', project) }
+      it 'returns the issue ID prefixed by #' do
+        expect(issue.reference_link_text).to eq '#1234'
+      end
     end
   end
 end
