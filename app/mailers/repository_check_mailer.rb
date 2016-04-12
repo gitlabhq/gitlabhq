@@ -1,6 +1,4 @@
 class RepositoryCheckMailer < BaseMailer
-  include ActionView::Helpers::TextHelper
-
   def notify(failed_count)
     if failed_count == 1
       @message = "One project failed its last repository check"

@@ -17,7 +17,7 @@ class RepositoryCheckWorker
       break if Time.now - start >= RUN_TIME
       break unless current_settings.repository_checks_enabled
 
-      next if !try_obtain_lease(project_id)
+      next unless try_obtain_lease(project_id)
 
       SingleRepositoryCheckWorker.new.perform(project_id)
     end
