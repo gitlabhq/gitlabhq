@@ -23,16 +23,18 @@ module Projects
       end
 
       def create_relations(relation_list = default_relation_list, tree_hash = @tree_hash)
+        saved = []
         relation_list.each do |relation|
           if relation.is_a?(Hash)
             create_sub_relations(relation, tree_hash)
           end
           relation_key = relation.is_a?(Hash) ? relation.keys.first : relation
           relation_hash = create_relation(relation_key, tree_hash[relation_key.to_s])
-          project.update_attribute(relation_key, relation_hash)
+          saved << project.update_attribute(relation_key, relation_hash)
           # FIXME
           # next if tree_hash[relation.to_s].blank?
         end
+        saved.all?
       end
 
       def default_relation_list
@@ -56,7 +58,7 @@ module Projects
           relation.values.flatten.each do |sub_relation|
             relation_hash = relation_item[sub_relation.to_s]
             next if relation_hash.blank?
-            sub_relation_object = relation_from_factory(relation, relation_hash)
+            sub_relation_object = relation_from_factory(sub_relation, relation_hash)
             relation_item[sub_relation.to_s] = sub_relation_object
           end
         end
