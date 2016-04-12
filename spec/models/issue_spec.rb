@@ -191,11 +191,27 @@ describe Issue, models: true do
   end
 
   describe '#related_branches' do
-    it "selects the right branches" do
-      user = build(:user)
-      allow(subject.project.repository).to receive(:branch_names).
-        and_return(["mpempe", "#{subject.iid}mepmep", subject.to_branch_name])
+    let(:user) { build(:user, :admin) }
+    let(:merge_request) { create(:merge_request, description: "Closes ##{subject.iid}",
+                                 source_project: subject.project, source_branch: "branch-#{subject.iid}") }
 
+    before(:each) do
+      allow(subject.project.repository).to receive(:branch_names).
+                                            and_return(["mpempe", "#{subject.iid}mepmep", subject.to_branch_name, "branch-#{subject.iid}"])
+
+      # Without this stub, the `create(:merge_request)` above fails because it can't find
+      # the source branch. This seems like a reasonable compromise, in comparison with
+      # setting up a full repo here.
+      allow_any_instance_of(MergeRequest).to receive(:create_merge_request_diff)
+    end
+
+    it "selects the right branches when there are no referenced merge requests" do
+      expect(subject.related_branches(user)).to eq([subject.to_branch_name, "branch-#{subject.iid}"])
+    end
+
+    it "selects the right branches when there is a referenced merge request" do
+      merge_request.create_cross_references!(user)
+      expect(subject.referenced_merge_requests).to_not be_empty
       expect(subject.related_branches(user)).to eq([subject.to_branch_name])
     end
   end
