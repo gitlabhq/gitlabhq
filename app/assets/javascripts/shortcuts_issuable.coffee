@@ -28,7 +28,10 @@ class @ShortcutsIssuable extends ShortcutsNavigation
       @editIssue()
       return false
     )
-
+    Mousetrap.bind('l', =>
+      $('.block.labels .edit-link').trigger('click')
+      return false
+    )
 
     if isMergeRequest
       @enabledHelp.push('.hidden-shortcut.merge_requests')
