@@ -84,16 +84,25 @@ describe 'Filter issues', feature: true do
 
     it 'should filter by any label' do
       find('.dropdown-menu-labels a', text: 'Any Label').click
+      page.within '.labels-filter' do
+        expect(page).to have_content 'Any Label'
+      end
       expect(find('.js-label-select .dropdown-toggle-text')).to have_content('Label')
     end
 
     it 'should filter by no label' do
       find('.dropdown-menu-labels a', text: 'No Label').click
+      page.within '.labels-filter' do
+        expect(page).to have_content 'No Label'
+      end
       expect(find('.js-label-select .dropdown-toggle-text')).to have_content('No Label')
     end
 
     it 'should filter by no label' do
       find('.dropdown-menu-labels a', text: label.title).click
+      page.within '.labels-filter' do
+        expect(page).to have_content label.title
+      end
       expect(find('.js-label-select .dropdown-toggle-text')).to have_content(label.title)
     end
   end
