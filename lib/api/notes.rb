@@ -124,7 +124,9 @@ module API
         delete ":id/#{noteables_str}/:#{noteable_id_str}/notes/:note_id" do
           note = user_project.notes.find(params[:note_id])
           authorize! :admin_note, note
+
           ::Notes::DeleteService.new(user_project, current_user).execute(note)
+
           present note, with: Entities::Note
         end
       end

@@ -243,7 +243,7 @@ describe API::API, api: true  do
 
   describe 'DELETE /projects/:id/noteable/:noteable_id/notes/:note_id' do
     context 'when noteable is an Issue' do
-      it 'should delete a note' do
+      it 'deletes a note' do
         delete api("/projects/#{project.id}/issues/#{issue.id}/"\
                    "notes/#{issue_note.id}", user)
 
@@ -254,7 +254,7 @@ describe API::API, api: true  do
         expect(response.status).to eq(404)
       end
 
-      it 'should return a 404 error when note id not found' do
+      it 'returns a 404 error when note id not found' do
         delete api("/projects/#{project.id}/issues/#{issue.id}/notes/123", user)
 
         expect(response.status).to eq(404)
@@ -262,7 +262,7 @@ describe API::API, api: true  do
     end
 
     context 'when noteable is a Snippet' do
-      it 'should delete a note' do
+      it 'deletes a note' do
         delete api("/projects/#{project.id}/snippets/#{snippet.id}/"\
                    "notes/#{snippet_note.id}", user)
 
@@ -273,7 +273,7 @@ describe API::API, api: true  do
         expect(response.status).to eq(404)
       end
 
-      it 'should return a 404 error when note id not found' do
+      it 'returns a 404 error when note id not found' do
         delete api("/projects/#{project.id}/snippets/#{snippet.id}/"\
                    "notes/123", user)
 
@@ -282,7 +282,7 @@ describe API::API, api: true  do
     end
 
     context 'when noteable is a Merge Request' do
-      it 'should delete a note' do
+      it 'deletes a note' do
         delete api("/projects/#{project.id}/merge_requests/"\
                    "#{merge_request.id}/notes/#{merge_request_note.id}", user)
 
@@ -293,7 +293,7 @@ describe API::API, api: true  do
         expect(response.status).to eq(404)
       end
 
-      it 'should return a 404 error when note id not found' do
+      it 'returns a 404 error when note id not found' do
         delete api("/projects/#{project.id}/merge_requests/"\
                    "#{merge_request.id}/notes/123", user)
 
