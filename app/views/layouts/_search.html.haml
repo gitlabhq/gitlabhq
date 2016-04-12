@@ -1,6 +1,6 @@
-- if controller.controller_path =~ /^groups/
+- if controller.controller_path =~ /^groups/ && @group.persisted?
   - label = 'This group'
-- if controller.controller_path =~ /^projects/
+- if controller.controller_path =~ /^projects/ && @project.persisted?
   - label = 'This project'
 
 .search.search-form{class: "#{'has-location-badge' if label.present?}"}
@@ -21,8 +21,8 @@
                   %a.is-focused.dropdown-menu-empty-link
                     Loading...
             = dropdown_loading
-        %i.search-icon
-        %i.clear-icon.js-clear-input
+          %i.search-icon
+          %i.clear-icon.js-clear-input
 
     = hidden_field_tag :group_id, @group.try(:id)
     = hidden_field_tag :project_id, @project && @project.persisted? ? @project.id : '', id: 'search_project_id'

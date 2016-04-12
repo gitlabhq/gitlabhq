@@ -119,7 +119,7 @@ module Banzai
 
           elsif element_node?(node)
             yield_valid_link(node) do |link, text|
-              if ref_pattern && link =~ /\A#{ref_pattern}/
+              if ref_pattern && link =~ /\A#{ref_pattern}\z/
                 replace_link_node_with_href(node, link) do
                   object_link_filter(link, ref_pattern, link_text: text)
                 end

@@ -6,10 +6,7 @@
 %hr
 
 = form_for @group, html: { class: 'group-form form-horizontal' } do |f|
-  - if @group.errors.any?
-    .alert.alert-danger
-      %span= @group.errors.full_messages.first
-
+  = form_errors(@group)
   = render 'shared/group_form', f: f, autofocus: true
 
   .form-group.group-description-holder

@@ -144,7 +144,7 @@
     }
 
     a {
-      padding: 7px 12px;
+      padding: 7px 15px;
       font-size: $gl-font-size;
       line-height: 24px;
       color: $gray;
@@ -169,12 +169,10 @@
       }
 
       .count {
-        &:before {
-          content: '(';
-        }
-        &:after {
-          content: ')';
-        }
+        float: right;
+        background: #eee;
+        padding: 0 8px;
+        @include border-radius(6px);
       }
 
       &.back-link i {
@@ -190,27 +188,6 @@
 
   li {
     list-style: none;
-  }
-}
-
-.expand-nav a {
-  color: $gl-icon-color;
-  width: 60px;
-  position: fixed;
-  top: 0;
-  left: 0;
-  font-size: 20px;
-  background: #fff;
-  height: 59px;
-  text-align: center;
-  line-height: 59px;
-  border-bottom: 1px solid #eee;
-  transition-duration: .3s;
-  outline: none;
-  z-index: 100;
-
-  &:hover {
-    text-decoration: none;
   }
 }
 
@@ -233,12 +210,55 @@
 }
 
 .page-sidebar-collapsed {
+  padding-left: $sidebar_collapsed_width;
+
   .sidebar-wrapper {
-    display: none;
+    width: $sidebar_collapsed_width;
+
+    .header-logo {
+      width: $sidebar_collapsed_width;
+
+      a {
+        padding-left: ($sidebar_collapsed_width - 36) / 2;
+
+        .gitlab-text-container {
+          display: none;
+        }
+      }
+    }
+
+    .nav-sidebar {
+      width: $sidebar_collapsed_width;
+
+      li {
+        width: auto;
+
+        a {
+          span {
+            display: none;
+          }
+        }
+      }
+    }
+
+    .collapse-nav a {
+      width: $sidebar_collapsed_width;
+    }
+
+    .sidebar-user {
+      padding-left: ($sidebar_collapsed_width - 36) / 2;
+      width: $sidebar_collapsed_width;
+
+      .username {
+        display: none;
+      }
+    }
   }
 }
 
 .page-sidebar-expanded {
+  padding-left: $sidebar_collapsed_width;
+
   @media (min-width: $screen-md-min) {
     padding-left: $sidebar_width;
   }
@@ -287,50 +307,5 @@
 
   &.with-overlay {
     padding-right: $sidebar_collapsed_width;
-  }
-}
-
-.complex-sidebar {
-  display: inline-block;
-
-  .nav-primary {
-    width: 61px;
-    float: left;
-    height: 100vh;
-
-    .nav-sidebar {
-      width: 60px;
-
-      li a {
-        width: 60px;
-
-        span {
-          display: none;
-        }
-      }
-    }
-  }
-
-  .nav-secondary {
-    $nav-secondary-width: 168px;
-
-    float: left;
-    width: $nav-secondary-width;
-
-    .nav-sidebar {
-      width: $nav-secondary-width;
-
-      li {
-        width: $nav-secondary-width;
-
-        a {
-          width: $nav-secondary-width;
-
-          i {
-            display: none;
-          }
-        }
-      }
-    }
   }
 }

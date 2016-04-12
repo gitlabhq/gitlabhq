@@ -691,7 +691,7 @@ Style/ZeroLengthPredicate:
 # branches, and conditions.
 Metrics/AbcSize:
   Enabled: true
-  Max: 70
+  Max: 60
 
 # Avoid excessive block nesting.
 Metrics/BlockNesting:

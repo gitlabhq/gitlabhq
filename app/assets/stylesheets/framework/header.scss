@@ -123,11 +123,11 @@ header {
 }
 
 @mixin collapsed-header {
-  margin-left: 40px;
+  margin-left: $sidebar_collapsed_width;
 }
 
 .header-collapsed {
-  margin-left: 40px;
+  margin-left: $sidebar_collapsed_width;
 
   @media (min-width: $screen-md-min) {
     @include collapsed-header;

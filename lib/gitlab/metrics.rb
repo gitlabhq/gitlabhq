@@ -70,6 +70,40 @@ module Gitlab
       value.to_s.gsub('=', '\\=')
     end
 
+    # Measures the execution time of a block.
+    #
+    # Example:
+    #
+    #     Gitlab::Metrics.measure(:find_by_username_duration) do
+    #       User.find_by_username(some_username)
+    #     end
+    #
+    # name - The name of the field to store the execution time in.
+    #
+    # Returns the value yielded by the supplied block.
+    def self.measure(name)
+      trans = current_transaction
+
+      return yield unless trans
+
+      real_start = Time.now.to_f
+      cpu_start = System.cpu_time
+
+      retval = yield
+
+      cpu_stop = System.cpu_time
+      real_stop = Time.now.to_f
+
+      real_time = (real_stop - real_start) * 1000.0
+      cpu_time = cpu_stop - cpu_start
+
+      trans.increment("#{name}_real_time", real_time)
+      trans.increment("#{name}_cpu_time", cpu_time)
+      trans.increment("#{name}_call_count", 1)
+
+      retval
+    end
+
     # When enabled this should be set before being used as the usual pattern
     # "@foo ||= bar" is _not_ thread-safe.
     if enabled?
@@ -80,6 +114,12 @@ module Gitlab
         InfluxDB::Client.
           new(udp: { host: host, port: port })
       end
+    end
+
+    private
+
+    def self.current_transaction
+      Transaction.current
     end
   end
 end

@@ -7,6 +7,7 @@
   &:focus,
   &:active {
     outline: none;
+    background-color: $btn-active-gray;
     @include box-shadow($gl-btn-active-background);
   }
 }
@@ -27,7 +28,8 @@
     color: $color;
   }
 
-  &:active {
+  &:active,
+  &.active {
     @include box-shadow ($gl-btn-active-background);
 
     background-color: $dark;
@@ -61,7 +63,7 @@
 }
 
 @mixin btn-white {
-  @include btn-color($white-light, $border-white-light, $white-normal, $border-white-normal, $white-dark, $border-white-dark, #313236);
+  @include btn-color($white-light, $border-color, $white-normal, $border-white-normal, $white-dark, $border-white-dark, $btn-white-active);
 }
 
 .btn {
@@ -217,4 +219,27 @@
   .fa {
     margin-right: 5px;
   }
+}
+
+.btn-text-field {
+  width: 100%;
+  text-align: left;
+  padding: 6px 16px;
+  border-color: $border-color;
+  color: $btn-placeholder-gray;
+  background-color: $background-color;
+
+  &:hover,
+  &:active,
+  &:focus {
+    cursor: text;
+    box-shadow: none;
+    border-color: $border-color;
+    color: $btn-placeholder-gray;
+    background-color: $background-color;
+  }
+}
+
+.btn-file-option {
+  background: linear-gradient(180deg, $white-light 25%, $gray-light 100%);
 }

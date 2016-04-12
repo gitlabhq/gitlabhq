@@ -1,9 +1,11 @@
 class AddVisibilityLevelToSnippet < ActiveRecord::Migration
+  include Gitlab::Database
+
   def up
     add_column :snippets, :visibility_level, :integer, :default => 0, :null => false
 
-    Snippet.where(private: true).update_all(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
-    Snippet.where(private: false).update_all(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
+    execute("UPDATE snippets SET visibility_level = #{Gitlab::VisibilityLevel::PRIVATE} WHERE private = #{true_value}")
+    execute("UPDATE snippets SET visibility_level = #{Gitlab::VisibilityLevel::INTERNAL} WHERE private = #{false_value}")
 
     add_index :snippets, :visibility_level
 
@@ -12,10 +14,10 @@ class AddVisibilityLevelToSnippet < ActiveRecord::Migration
 
   def down
     add_column :snippets, :private, :boolean, :default => false, :null => false
-    
-    Snippet.where(visibility_level: Gitlab::VisibilityLevel::INTERNAL).update_all(private: false)
-    Snippet.where(visibility_level: Gitlab::VisibilityLevel::PRIVATE).update_all(private: true)
-    
+
+    execute("UPDATE snippets SET private = #{false_value} WHERE visibility_level = #{Gitlab::VisibilityLevel::INTERNAL}")
+    execute("UPDATE snippets SET private = #{true_value} WHERE visibility_level = #{Gitlab::VisibilityLevel::PRIVATE}")
+
     remove_column :snippets, :visibility_level
   end
 end
