@@ -124,3 +124,8 @@
     %li.hidden
       = link_to namespace_project_network_path(@project.namespace, @project, current_ref), title: 'Network', class: 'shortcuts-network' do
         Network
+
+  -# Shortcut to create a new issue
+  %li.hidden
+    = link_to polymorphic_path([@project.namespace.becomes(Namespace), @project, :issue], action: :new), class: 'shortcuts-new-issue' do
+      New Issue
