@@ -701,6 +701,8 @@ Rails.application.routes.draw do
         resources :issues, constraints: { id: /\d+/ } do
           member do
             post :toggle_subscription
+            get :referenced_merge_requests
+            get :related_branches
           end
           collection do
             post  :bulk_update
