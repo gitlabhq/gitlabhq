@@ -15,6 +15,7 @@ module Projects
         update_user_references(relation_hash, members_map)
         imported_object = klass.new(relation_hash)
         imported_object.importing = true if imported_object.respond_to?(:importing)
+        imported_object
       end
 
       private
