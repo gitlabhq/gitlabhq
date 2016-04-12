@@ -12,8 +12,8 @@
   - :merge_requests:
     - :merge_request_diff
     - :notes
-  - :commit_statuses:
-    - :commit
+  - :ci_commits:
+    - :statuses
 
 :attributes_only:
   :project:
