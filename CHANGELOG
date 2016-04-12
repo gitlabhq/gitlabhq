@@ -43,6 +43,9 @@ v 8.7.0 (unreleased)
   - API: Expose 'updated_at' for issue, snippet, and merge request notes (Robert Schilling)
   - API: User can leave a project through the API when not master or owner. !3613
 
+v 8.6.6
+  - Fix error on language detection when repository has no HEAD (e.g., master branch). !3654 (Jeroen Bobbeldijk)
+
 v 8.6.5
   - Fix importing from GitHub Enterprise. !3529
   - Perform the language detection after updating merge requests in `GitPushService`, leading to faster visual feedback for the end-user. !3533
