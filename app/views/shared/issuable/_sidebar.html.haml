@@ -110,8 +110,7 @@
                       %ul.dropdown-footer-list
                         - if can? current_user, :admin_label, @project
                           %li
-                            %a.dropdown-toggle-page{href: "#"}
-                              Create new
+                            = link_to 'Create new', new_namespace_project_label_path(@project.namespace, @project)
                         %li
                           = link_to namespace_project_labels_path(@project.namespace, @project) do
                             - if can? current_user, :admin_label, @project
