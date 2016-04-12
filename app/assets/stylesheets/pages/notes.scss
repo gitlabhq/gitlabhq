@@ -81,9 +81,15 @@ ul.notes {
         @include md-typography;
 
         // On diffs code should wrap nicely and not overflow
-        pre {
+        p {
           code {
-            white-space: pre;
+            white-space: normal;
+          }
+
+          pre {
+            code {
+              white-space: pre;
+            }
           }
         }
 
@@ -112,6 +118,10 @@ ul.notes {
           margin: 10px 0;
         }
       }
+
+      a {
+        word-break: break-all;
+      }
     }
 
     .note-header {
@@ -127,7 +137,7 @@ ul.notes {
     margin-right: 10px;
   }
   .line_content {
-    white-space: pre-wrap;
+    white-space: pre;
   }
 }
 
@@ -145,18 +155,26 @@ ul.notes {
       background: $background-color;
       color: $text-color;
     }
+
     &.notes_line2 {
       text-align: center;
       padding: 10px 0;
       border-left: 1px solid #ddd !important;
     }
+
     &.notes_content {
-      background-color: #fff;
+      background-color: $background-color;
       border-width: 1px 0;
       padding: 0;
       vertical-align: top;
+      white-space: normal;
+
       &.parallel {
         border-width: 1px;
+      }
+
+      .notes {
+        background-color: $white-light;
       }
     }
   }

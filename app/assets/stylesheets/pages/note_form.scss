@@ -71,12 +71,24 @@
         border-color: $focus-border-color;
       }
     }
+
+    p {
+      code {
+        white-space: normal;
+      }
+
+      pre {
+        code {
+          white-space: pre;
+        }
+      }
+    }
   }
 }
 
 .discussion-form {
   padding: $gl-padding-top $gl-padding;
-  background-color: #fff;
+  background-color: $white-light;
 }
 
 .note-edit-form {
