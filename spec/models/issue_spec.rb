@@ -228,10 +228,19 @@ describe Issue, models: true do
   end
 
   describe "#to_branch_name" do
-    let(:issue) { create(:issue, title: 'a' * 30) }
+    let(:issue) { create(:issue, title: 'testing-issue') }
 
-    it "starts with the issue iid" do
+    it "ends with the issue iid" do
       expect(issue.to_branch_name).to match /-#{issue.iid}\z/
+    end
+
+    it "contains the issue title if not confidential" do
+      expect(issue.to_branch_name).to match /\Atesting-issue/
+    end
+
+    it "does not contain the issue title if confidential" do
+      issue = create(:issue, title: 'testing-issue', confidential: true)
+      expect(issue.to_branch_name).to match /\Aissue/
     end
   end
 end
