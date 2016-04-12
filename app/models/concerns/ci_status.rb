@@ -43,6 +43,7 @@ module CiStatus
     scope :pending, -> { where(status: 'pending') }
     scope :success, -> { where(status: 'success') }
     scope :failed, -> { where(status: 'failed')  }
+    scope :canceled, -> { where(status: 'canceled')  }
     scope :running_or_pending, -> { where(status: [:running, :pending]) }
     scope :finished, -> { where(status: [:success, :failed, :canceled]) }
   end

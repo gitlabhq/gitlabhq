@@ -44,8 +44,12 @@ module Ci
       sha[0...8]
     end
 
+    def self.stages
+      CommitStatus.where(commit: all).stages
+    end
+
     def stages
-      statuses.group(:stage).order(:stage_idx).pluck(:stage)
+      statuses.stages
     end
 
     def project_id

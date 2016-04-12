@@ -49,6 +49,7 @@ class CommitStatus < ActiveRecord::Base
 
   scope :latest, -> { where(id: unscope(:select).select('max(id)').group(:name, :commit_id)) }
   scope :ordered, -> { order(:ref, :stage_idx, :name) }
+  scope :ignored, -> { where(allow_failure: true, status: [:failed, :canceled]) }
 
   AVAILABLE_STATUSES = ['pending', 'running', 'success', 'failed', 'canceled']
 
@@ -83,6 +84,40 @@ class CommitStatus < ActiveRecord::Base
   end
 
   delegate :before_sha, :sha, :short_sha, to: :commit, prefix: false
+
+  def self.stages
+    order_by = 'max(stage_idx)'
+    group('stage').order(order_by).pluck(:stage, order_by).map(&:first).compact
+  end
+
+  def self.status_sql
+    builds = all.select('count(id)').to_sql
+    success = all.success.select('count(id)').to_sql
+    ignored = all.failed.where(allow_failure: true).select('count(id)').to_sql if all.try(:ignored)
+    ignored ||= '0'
+    pending = all.pending.select('count(id)').to_sql
+    running = all.running.select('count(id)').to_sql
+    canceled = all.canceled.select('count(id)').to_sql
+
+    deduce_status = "(CASE
+      WHEN (#{builds})=0 THEN 'skipped'
+      WHEN (#{builds})=(#{success})+(#{ignored}) THEN 'success'
+      WHEN (#{builds})=(#{pending}) THEN 'pending'
+      WHEN (#{builds})=(#{canceled}) THEN 'canceled'
+      WHEN (#{running})+(#{pending})>0 THEN 'running'
+      ELSE 'failed'
+    END)"
+
+    deduce_status
+  end
+
+  def self.status
+    pluck(self.status_sql).first
+  end
+
+  def self.stages_status
+    Hash[group(:stage).pluck(:stage, self.status_sql)]
+  end
 
   def ignored?
     allow_failure? && (failed? || canceled?)
