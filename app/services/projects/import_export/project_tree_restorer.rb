@@ -71,9 +71,10 @@ module Projects
         # TODO refactor this
         relation_key = relation.keys.first
         tree_hash[relation_key.to_s].each do |relation_item|
-          relation.values.each do |sub_relation|
+          relation.values.flatten.each do |sub_relation|
             relation_hash = relation_item[sub_relation.to_s]
             next if relation_hash.blank?
+            relation_hash.merge!('project_id' => project.id) if sub_relation == :merge_requests
             sub_relation_object = Projects::ImportExport::RelationFactory.create(
               relation_sym: sub_relation, relation_hash: relation_hash, members_map: members_map)
             relation_item[sub_relation.to_s] = sub_relation_object

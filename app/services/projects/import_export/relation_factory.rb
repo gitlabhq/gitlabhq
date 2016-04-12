@@ -7,12 +7,14 @@ module Projects
       USER_REFERENCES = %w(author_id assignee_id updated_by_id).freeze
 
       def create(relation_sym:, relation_hash:, members_map:)
+        #TODO refactor this
         relation_sym = parse_relation_sym(relation_sym)
         klass = relation_class(relation_sym)
         relation_hash.delete('id') #screw IDs for now
         handle_merge_requests(relation_hash) if relation_sym == :merge_requests
         update_user_references(relation_hash, members_map)
-        klass.new(relation_hash)
+        imported_object = klass.new(relation_hash)
+        imported_object.importing = true if imported_object.respond_to?(:importing)
       end
 
       private
@@ -20,7 +22,6 @@ module Projects
       def handle_merge_requests(relation_hash)
         relation_hash['target_project_id'] = relation_hash.delete('project_id')
         relation_hash['source_project_id'] = -1
-        relation_hash['importing'] = true
       end
 
       #TODO nice to have, optimize this to only get called for specific models
