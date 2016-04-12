@@ -15,6 +15,7 @@ class RepositoryCheckWorker
     # check, only one (or two) will be checked at a time.
     project_ids.each do |project_id|
       break if Time.now - start >= RUN_TIME
+      break unless current_settings.repository_checks_enabled
 
       next if !try_obtain_lease(project_id)
 
@@ -44,5 +45,12 @@ class RepositoryCheckWorker
       timeout: 24.hours
     )
     lease.try_obtain
+  end
+
+  def current_settings
+    # No caching of the settings! If we cache them and an admin disables
+    # this feature, an active RepositoryCheckWorker would keep going for up
+    # to 1 hour after the feature was disabled.
+    ApplicationSetting.current || Gitlab::CurrentSettings.fake_application_settings
   end
 end

@@ -28,4 +28,12 @@ describe RepositoryCheckWorker do
 
     expect(subject.perform).to eq([projects[1].id])
   end
+
+  it 'does nothing when repository checks are disabled' do
+    create(:empty_project)
+    current_settings = double('settings', repository_checks_enabled: false)
+    expect(subject).to receive(:current_settings) { current_settings }
+
+    expect(subject.perform).to eq(nil)
+  end
 end
