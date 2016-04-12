@@ -38,8 +38,8 @@ module Elastic
           data[attr.to_s] = self.send(attr)
         end
 
-        data['project'] = { 'id' => project.id }
-        data['author'] = { 'id' => author.id }
+        data['project'] = { 'id' => project_id }
+        data['author'] = { 'id' => author_id }
         data['updated_at_sort'] = updated_at
         data
       end
