@@ -7,16 +7,13 @@ module Projects
       USER_REFERENCES = %w(author_id assignee_id updated_by_id).freeze
 
       def create(relation_sym:, relation_hash:, members_map:)
-        #TODO refactor this
         relation_sym = parse_relation_sym(relation_sym)
-        klass = relation_class(relation_sym)
-        relation_hash.delete('id') #screw IDs for now
-        relation_hash.delete('project_id') unless klass.column_names.include?(:project_id)
+        klass = parse_relation(relation_hash, relation_sym)
+
         handle_merge_requests(relation_hash) if relation_sym == :merge_requests
         update_user_references(relation_hash, members_map)
-        imported_object = klass.new(relation_hash)
-        imported_object.importing = true if imported_object.respond_to?(:importing)
-        imported_object
+
+        imported_object(klass, relation_hash)
       end
 
       private
@@ -41,6 +38,19 @@ module Projects
 
       def parse_relation_sym(relation_sym)
         OVERRIDES[relation_sym] || relation_sym
+      end
+
+      def imported_object(klass, relation_hash)
+        imported_object = klass.new(relation_hash)
+        imported_object.importing = true if imported_object.respond_to?(:importing)
+        imported_object
+      end
+
+      def parse_relation(relation_hash, relation_sym)
+        klass = relation_class(relation_sym)
+        relation_hash.delete('id') #screw IDs for now
+        relation_hash.delete('project_id') unless klass.column_names.include?(:project_id)
+        klass
       end
     end
   end
