@@ -1,4 +1,5 @@
 if Gitlab::Metrics.enabled?
+  require 'pathname'
   require 'influxdb'
   require 'connection_pool'
   require 'method_source'
@@ -98,6 +99,17 @@ if Gitlab::Metrics.enabled?
 
     config.instrument_methods(Gitlab::ReferenceExtractor)
     config.instrument_instance_methods(Gitlab::ReferenceExtractor)
+
+    # Instrument all service classes
+    services = Rails.root.join('app', 'services')
+
+    Dir[services.join('**', '*.rb')].each do |file_path|
+      path = Pathname.new(file_path).relative_path_from(services)
+      const = path.to_s.sub('.rb', '').camelize.constantize
+
+      config.instrument_methods(const)
+      config.instrument_instance_methods(const)
+    end
   end
 
   GC::Profiler.enable
