@@ -91,18 +91,18 @@ JSON file.
 
 Open the dashboard dropdown menu and click 'Import'
 
-![Grafana dashboard dropdown](/img/grafana_dashboard_dropdown.png)
+![Grafana dashboard dropdown](img/grafana_dashboard_dropdown.png)
 
 Click 'Choose file' and browse to the location where you downloaded or cloned
 the dashboard repository. Pick one of the JSON files to import.
 
-![Grafana dashboard import](/img/grafana_dashboard_import.png)
+![Grafana dashboard import](img/grafana_dashboard_import.png)
 
 Once the dashboard is imported, be sure to click save icon in the top bar. If
 you do not save the dashboard after importing it will be removed when you
 navigate away.
 
-![Grafana save icon](/img/grafana_save_icon.png)
+![Grafana save icon](img/grafana_save_icon.png)
 
 Repeat this process for each dashboard you wish to import.
 
