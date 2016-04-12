@@ -151,7 +151,11 @@ class Issue < ActiveRecord::Base
   end
 
   def to_branch_name
-    "#{title.parameterize}-#{iid}"
+    if self.confidential?
+      "issue-#{iid}"
+    else
+      "#{title.parameterize}-#{iid}"
+    end
   end
 
   def can_be_worked_on?(current_user)
