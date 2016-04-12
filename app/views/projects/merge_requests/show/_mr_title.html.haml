@@ -1,6 +1,6 @@
 .clearfix.detail-page-header
   .issuable-header
-    .issuable-status-box.status-box{ class: "#{status_box_class(@merge_request)}" }
+    .issuable-status-box.status-box{ class: status_box_class(@merge_request) }
       = icon(@merge_request.state_icon_name, class: "hidden-sm hidden-md hidden-lg")
       %span.hidden-xs
         = @merge_request.state_human_name

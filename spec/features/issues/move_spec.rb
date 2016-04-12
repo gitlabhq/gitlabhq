@@ -72,7 +72,7 @@ feature 'issue move to another project' do
 
   def edit_issue(issue)
     visit issue_path(issue)
-    page.within('.issuable-actions') { find('.issuable-edit').click }
+    page.within('.issuable-actions') { first(:link, 'Edit').click }
   end
 
   def issue_path(issue)
