@@ -537,7 +537,8 @@ proxy to the trusted proxies list. Otherwise users will appear signed in from th
 proxy's IP address.
 
 You can add trusted proxies in `config/gitlab.yml` by customizing the `trusted_proxies`
-option in section 1. Please restart GitLab after editing this file.
+option in section 1. Save the file and [reconfigure GitLab](../administration/restart_gitlab.md)
+for the changes to take effect.
 
 ### Custom Redis Connection
 
