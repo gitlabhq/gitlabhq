@@ -444,9 +444,7 @@ merge request:
 
 1.  [Ruby](https://github.com/bbatsov/ruby-style-guide).
     Important sections include [Source Code Layout][rss-source] and
-    [Naming][rss-naming]. Use:
-    - multi-line method chaining style **Option B**: dot `.` on previous line
-    - string literal quoting style **Option A**: single quoted by default
+    [Naming][rss-naming]. Please use multi-line method chaining style **Option B**: dot `.` on previous line
 1.  [Rails](https://github.com/bbatsov/rails-style-guide)
 1.  [Testing](doc/development/testing.md)
 1.  [CoffeeScript](https://github.com/thoughtbot/guides/tree/master/style/coffeescript)
