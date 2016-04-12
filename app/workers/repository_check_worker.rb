@@ -37,9 +37,11 @@ class RepositoryCheckWorker
   end
 
   def try_obtain_lease(id)
+    # Use a 24-hour timeout because on servers/projects where 'git fsck' is
+    # super slow we definitely do not want to run it twice in parallel.
     lease = Gitlab::ExclusiveLease.new(
       "project_repository_check:#{id}",
-      timeout: RUN_TIME
+      timeout: 24.hours
     )
     lease.try_obtain
   end
