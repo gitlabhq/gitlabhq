@@ -1,0 +1,73 @@
+- status = commit.status
+%tr.commit
+  %td.commit-link
+    = link_to namespace_project_commit_url(@project.namespace, @project, commit), class: "ci-status ci-#{status}" do
+      = ci_icon_for_status(status)
+      %strong ##{commit.id}
+
+  %td
+    %div
+      - if commit.ref
+        = link_to commit.ref, namespace_project_commits_path(@project.namespace, @project, commit.ref)
+      &nbsp;
+      - if commit.tag?
+        %span.label.label-primary tag
+      - if commit.branch?
+        %span.label.label-primary branch
+      - if commit.trigger_requests.any?
+        %span.label.label-primary triggered
+      - if commit.yaml_errors.present?
+        %span.label.label-danger.has-tooltip(title="#{commit.yaml_errors}") yaml invalid
+      - if commit.builds.any?(&:stuck?)
+        %span.label.label-warning stuck
+
+      - if commit_data = commit.commit_data
+        = render 'projects/branches/commit', commit: commit_data, project: @project
+      - else
+        %p
+          Cant find HEAD commit for this branch
+
+    - stages.each do |stage|
+      %td
+        - status = commit.statuses.latest.where(stage: stage).status
+        %span.has-tooltip(title="#{status || "missing"}"){class: "ci-status-icon-#{status || "skipped"}"}
+          = ci_icon_for_status(status || "missing")
+        -#- if status
+        -#  = ci_status_with_icon(status)
+        -#- else
+        -#  = ci_status_with_icon('missing')
+
+  %td
+    - if commit.started_at && commit.finished_at
+      %p
+        #{duration_in_words(commit.finished_at, commit.started_at)}
+    - if commit.finished_at
+      %p
+        #{time_ago_with_tooltip(commit.finished_at)}
+
+  %td.content
+    .controls.hidden-xs.pull-right
+      - artifacts = commit.builds.latest.select { |status| status.artifacts? }
+      - if artifacts.present?
+        .dropdown.inline
+          %button.dropdown-toggle.btn{type: 'button', 'data-toggle' => 'dropdown'}
+            = icon('download')
+            %b.caret
+          %ul.dropdown-menu.dropdown-menu-align-right
+            - artifacts.each do |build|
+              %li
+                = link_to download_namespace_project_build_artifacts_path(@project.namespace, @project, build), rel: 'nofollow' do
+                  %i.fa.fa-download
+                  %span #{build.name}
+        &nbsp;
+
+      - if can?(current_user, :update_pipeline, @project)
+        - if commit.retryable?
+          = link_to retry_namespace_project_ci_commit_path(@project.namespace, @project, commit.id), class: 'btn has-tooltip', title: "Retry", method: :post do
+            = icon("repeat")
+
+        &nbsp;
+
+        - if commit.active?
+          = link_to cancel_namespace_project_ci_commit_path(@project.namespace, @project, commit.id), class: 'btn btn-remove has-tooltip', title: "Cancel", method: :post do
+            = icon("remove cred")
