@@ -85,6 +85,7 @@ v 8.7.0 (unreleased)
   - Show number sign on external issue reference text (Florent Baldino)
   - Updated print style for issues
   - Use GitHub Issue/PR number as iid to keep references
+  - Add 'l' shortcut to open Label dropdown on issuables and 'i' to create new issue on a project
 
 v 8.6.6
   - Expire the exists cache before deletion to ensure project dir actually exists (Stan Hu). !3413
