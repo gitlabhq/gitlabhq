@@ -11,7 +11,7 @@ module API
       #  GET /users?search=Admin
       #  GET /users?username=root
       get do
-        if !current_user && public_access_restricted?
+        unless can?(current_user, :read_users_list, nil)
           render_api_error!("Not authorized.", 403)
         end
 

@@ -93,10 +93,3 @@ An administrator can flag a user as external [through the API](../api/users.md)
 or by checking the checkbox on the admin panel. As an administrator, navigate
 to **Admin > Users** to create a new user or edit an existing one. There, you
 will find the option to flag the user as external.
-
-## Restricted visibility levels
-
-Visibility levels can be restricted in admin settings page by administrator, when
-restricting a visibility level groups, projects and snippets are not allowed to be
-created with that visibility setting. If the public visibility level is restricted
-user profiles are accessible to not logged users.

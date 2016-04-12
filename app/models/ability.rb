@@ -120,6 +120,7 @@ class Ability
     def global_abilities(user)
       rules = []
       rules << :create_group if user.can_create_group
+      rules << :read_users_list
       rules
     end
 
