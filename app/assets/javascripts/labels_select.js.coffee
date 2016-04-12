@@ -20,15 +20,6 @@ class @LabelsSelect
       $value = $block.find('.value')
       $loading = $block.find('.block-loading').fadeOut()
 
-      if newLabelField.length
-        $newLabelCreateButton = $('.js-new-label-btn')
-        $colorPreview = $('.js-dropdown-label-color-preview')
-        $newLabelError = $dropdown.parent().find('.js-label-error')
-        $newLabelError.hide()
-
-        # Suggested colors in the dropdown to chose from pre-chosen colors
-        $('.suggest-colors-dropdown a').on 'click', (e) ->
-
       issueURLSplit = issueUpdateURL.split('/') if issueUpdateURL?
       if issueUpdateURL
         labelHTMLTemplate = _.template(
@@ -43,6 +34,12 @@ class @LabelsSelect
         labelNoneHTMLTemplate = _.template('<div class="light">None</div>')
 
       if newLabelField.length and $dropdown.hasClass 'js-extra-options'
+        $newLabelCreateButton = $('.js-new-label-btn')
+        $colorPreview = $('.js-dropdown-label-color-preview')
+        $newLabelError = $dropdown.parent().find('.js-label-error')
+        $newLabelError.hide()
+
+        # Suggested colors in the dropdown to chose from pre-chosen colors
         $('.suggest-colors-dropdown a').on "click", (e) ->
           e.preventDefault()
           e.stopPropagation()
