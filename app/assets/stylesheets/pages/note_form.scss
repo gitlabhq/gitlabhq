@@ -16,7 +16,6 @@
   .new-note {
     margin: 0;
     border: none;
-    border-right: 1px solid $table-border-gray;
   }
 }
 
@@ -90,7 +89,6 @@
 .discussion-form {
   padding: $gl-padding-top $gl-padding;
   background-color: $white-light;
-  border-right: 1px solid $table-border-gray;
 }
 
 .note-edit-form {
@@ -132,13 +130,7 @@
 
   .discussion-reply-holder {
     background-color: $white-light;
-    border-right: 1px solid $table-border-gray;
     padding: 10px 16px;
-    max-width: 800px;
-
-    .new-note {
-      border-right: none;
-    }
   }
 }
 
