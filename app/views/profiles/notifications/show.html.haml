@@ -2,11 +2,7 @@
 - header_title page_title, profile_notifications_path
 
 = form_for @user, url: profile_notifications_path, method: :put, html: { class: 'update-notifications prepend-top-default' } do |f|
-  -if @user.errors.any?
-    %div.alert.alert-danger
-      %ul
-        - @user.errors.full_messages.each do |msg|
-          %li= msg
+  = form_errors(@user)
 
   = hidden_field_tag :notification_type, 'global'
   .row

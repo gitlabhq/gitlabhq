@@ -1,5 +1,6 @@
 class GitLabDropdownFilter
   BLUR_KEYCODES = [27, 40]
+  ARROW_KEY_CODES = [38, 40]
   HAS_VALUE_CLASS = "has-value"
 
   constructor: (@input, @options) ->
@@ -22,19 +23,23 @@ class GitLabDropdownFilter
     # Key events
     timeout = ""
     @input.on "keyup", (e) =>
+      keyCode = e.which
+
+      return if ARROW_KEY_CODES.indexOf(keyCode) >= 0
+
       if @input.val() isnt "" and !$inputContainer.hasClass HAS_VALUE_CLASS
         $inputContainer.addClass HAS_VALUE_CLASS
       else if @input.val() is "" and $inputContainer.hasClass HAS_VALUE_CLASS
         $inputContainer.removeClass HAS_VALUE_CLASS
 
-      if e.keyCode is 13 and @input.val() isnt ""
+      if keyCode is 13 and @input.val() isnt ""
         if @options.enterCallback
           @options.enterCallback()
         return
 
       clearTimeout timeout
       timeout = setTimeout =>
-        blur_field = @shouldBlur e.keyCode
+        blur_field = @shouldBlur keyCode
         search_text = @input.val()
 
         if blur_field and @filterInputBlur
@@ -52,14 +57,30 @@ class GitLabDropdownFilter
 
   filter: (search_text) ->
     data = @options.data()
-    results = data
 
-    if search_text isnt ""
-      results = fuzzaldrinPlus.filter(data, search_text,
-        key: @options.keys
-      )
+    if data?
+      results = data
 
-    @options.callback results
+      if search_text isnt ''
+        results = fuzzaldrinPlus.filter(data, search_text,
+          key: @options.keys
+        )
+
+      @options.callback results
+    else
+      elements = @options.elements()
+
+      if search_text
+        elements.each ->
+          $el = $(@)
+          matches = fuzzaldrinPlus.match($el.text().trim(), search_text)
+
+          if matches.length
+            $el.show()
+          else
+            $el.hide()
+      else
+        elements.show()
 
 class GitLabDropdownRemote
   constructor: (@dataEndpoint, @options) ->
@@ -96,6 +117,7 @@ class GitLabDropdown
   LOADING_CLASS = "is-loading"
   PAGE_TWO_CLASS = "is-page-two"
   ACTIVE_CLASS = "is-active"
+  currentIndex = -1
 
   FILTER_INPUT = '.dropdown-input .dropdown-input-field'
 
@@ -117,7 +139,7 @@ class GitLabDropdown
     if _.isString(@filterInput)
       @filterInput = @getElement(@filterInput)
 
-    search_fields = if @options.search then @options.search.fields else [];
+    searchFields = if @options.search then @options.search.fields else [];
 
     if @options.data
       # If data is an array
@@ -141,15 +163,22 @@ class GitLabDropdown
         filterInputBlur: @filterInputBlur
         remote: @options.filterRemote
         query: @options.data
-        keys: @options.search.fields
+        keys: searchFields
+        elements: =>
+          selector = '.dropdown-content li:not(.divider)'
+
+          if @dropdown.find('.dropdown-toggle-page').length
+            selector = ".dropdown-page-one #{selector}"
+
+          return $(selector)
         data: =>
           return @fullData
         callback: (data) =>
+          currentIndex = -1
           @parseData data
-          @highlightRow 1
         enterCallback: =>
           if @enterCallback
-            @selectFirstRow()
+            @selectRowAtIndex 0
 
     # Event listeners
 
@@ -171,10 +200,11 @@ class GitLabDropdown
         selector = ".dropdown-page-one .dropdown-content a"
 
       @dropdown.on "click", selector, (e) ->
-        selected = self.rowClicked $(@)
+        $el = $(@)
+        selected = self.rowClicked $el
 
         if self.options.clicked
-          self.options.clicked(selected)
+          self.options.clicked(selected, $el, e)
 
   # Finds an element inside wrapper element
   getElement: (selector) ->
@@ -218,6 +248,8 @@ class GitLabDropdown
         return true
 
   opened: =>
+    @addArrowKeyEvent()
+
     contentHtml = $('.dropdown-content', @dropdown).html()
     if @remote && contentHtml is ""
       @remote.execute()
@@ -228,6 +260,7 @@ class GitLabDropdown
     @dropdown.trigger('shown.gl.dropdown')
 
   hidden: (e) =>
+    @removeArrayKeyEvent()
     if @options.filterable
       @dropdown
         .find(".dropdown-input-field")
@@ -307,11 +340,11 @@ class GitLabDropdown
       if @highlight
         text = @highlightTextMatches(text, @filterInput.val())
 
-      html = "<li>"
-      html += "<a href='#{url}' class='#{cssClass}'>"
-      html += text
-      html += "</a>"
-      html += "</li>"
+      html = "<li>
+        <a href='#{url}' class='#{cssClass}'>
+          #{text}
+        </a>
+      </li>"
 
     return html
 
@@ -322,11 +355,11 @@ class GitLabDropdown
     ).join('')
 
   noResults: ->
-    html = "<li>"
-    html += "<a class='dropdown-menu-empty-link is-focused'>"
-    html += "No matching results."
-    html += "</a>"
-    html += "</li>"
+    html = "<li class='dropdown-menu-empty-link'>
+      <a href='#' class='is-focused'>
+        No matching results.
+      </a>
+    </li>"
 
   highlightRow: (index) ->
     if @filterInput.val() isnt ""
@@ -351,6 +384,8 @@ class GitLabDropdown
       # Toggle the dropdown label
       if @options.toggleLabel
         $(@el).find(".dropdown-toggle-text").text @options.toggleLabel
+      else
+        selectedObject
     else
       if !value?
         field.remove()
@@ -364,9 +399,9 @@ class GitLabDropdown
 
       # Toggle the dropdown label
       if @options.toggleLabel
-        $(@el).find(".dropdown-toggle-text").text @options.toggleLabel(selectedObject)
+        $(@el).find(".dropdown-toggle-text").text @options.toggleLabel(selectedObject, el)
       if value?
-        if !field.length
+        if !field.length and fieldName
           # Create hidden input for form
           input = "<input type='hidden' name='#{fieldName}' value='#{value}' />"
           if @options.inputId?
@@ -378,16 +413,81 @@ class GitLabDropdown
 
       return selectedObject
 
-  selectFirstRow: ->
-    selector = '.dropdown-content li:first-child a'
+  selectRowAtIndex: (index) ->
+    selector = ".dropdown-content li:not(.divider):eq(#{index}) a"
+
     if @dropdown.find(".dropdown-toggle-page").length
-      selector = ".dropdown-page-one .dropdown-content li:first-child a"
+      selector = ".dropdown-page-one #{selector}"
 
     # simulate a click on the first link
-    $(selector).trigger "click"
+    $(selector, @dropdown).trigger "click"
+
+  addArrowKeyEvent: ->
+    ARROW_KEY_CODES = [38, 40]
+    $input = @dropdown.find(".dropdown-input-field")
+
+    selector = '.dropdown-content li:not(.divider)'
+    if @dropdown.find(".dropdown-toggle-page").length
+      selector = ".dropdown-page-one #{selector}"
+
+    $('body').on 'keydown', (e) =>
+      currentKeyCode = e.which
+
+      if ARROW_KEY_CODES.indexOf(currentKeyCode) >= 0
+        e.preventDefault()
+        e.stopImmediatePropagation()
+
+        PREV_INDEX = currentIndex
+        $listItems = $(selector, @dropdown)
+
+        # if @options.filterable
+        #   $input.blur()
+
+        if currentKeyCode is 40
+          # Move down
+          currentIndex += 1 if currentIndex < ($listItems.length - 1)
+        else if currentKeyCode is 38
+          # Move up
+          currentIndex -= 1 if currentIndex > 0
+
+        @highlightRowAtIndex($listItems, currentIndex) if currentIndex isnt PREV_INDEX
+
+        return false
+
+      if currentKeyCode is 13
+        @selectRowAtIndex currentIndex
+
+  removeArrayKeyEvent: ->
+    $('body').off 'keydown'
+
+  highlightRowAtIndex: ($listItems, index) ->
+    # Remove the class for the previously focused row
+    $('.is-focused', @dropdown).removeClass 'is-focused'
+
+    # Update the class for the row at the specific index
+    $listItem = $listItems.eq(index)
+    $listItem.find('a:first-child').addClass "is-focused"
+
+    # Dropdown content scroll area
+    $dropdownContent = $listItem.closest('.dropdown-content')
+    dropdownScrollTop = $dropdownContent.scrollTop()
+    dropdownContentHeight = $dropdownContent.outerHeight()
+    dropdownContentTop = $dropdownContent.prop('offsetTop')
+    dropdownContentBottom = dropdownContentTop + dropdownContentHeight
+
+    # Get the offset bottom of the list item
+    listItemHeight = $listItem.outerHeight()
+    listItemTop = $listItem.prop('offsetTop')
+    listItemBottom = listItemTop + listItemHeight
+
+    if listItemBottom > dropdownContentBottom + dropdownScrollTop
+      # Scroll the dropdown content down
+      $dropdownContent.scrollTop(listItemBottom - dropdownContentBottom)
+    else if listItemTop < dropdownContentTop + dropdownScrollTop
+      # Scroll the dropdown content up
+      $dropdownContent.scrollTop(listItemTop - dropdownContentTop)
 
 $.fn.glDropdown = (opts) ->
   return @.each ->
     if (!$.data @, 'glDropdown')
       $.data(@, 'glDropdown', new GitLabDropdown @, opts)
-

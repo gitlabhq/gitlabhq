@@ -1,9 +1,5 @@
 = form_for [@project.namespace.becomes(Namespace), @project, @page], method: @page.persisted? ? :put : :post, html: { class: 'form-horizontal wiki-form gfm-form prepend-top-default js-quick-submit' } do |f|
-  -if @page.errors.any?
-    #error_explanation
-      .alert.alert-danger
-        - @page.errors.full_messages.each do |msg|
-          %p= msg
+  = form_errors(@page)
 
   = f.hidden_field :title, value: @page.title
   .form-group

@@ -125,7 +125,7 @@ module SharedDiffNote
 
   step 'I should only see one diff form' do
     page.within(diff_file_selector) do
-      expect(page).to have_css("form.new_note", count: 1)
+      expect(page).to have_css("form.new-note", count: 1)
     end
   end
 
@@ -155,13 +155,13 @@ module SharedDiffNote
 
   step 'I should see a discussion reply button' do
     page.within(diff_file_selector) do
-      expect(page).to have_button('Reply')
+      expect(page).to have_button('Reply...')
     end
   end
 
   step 'I should see a temporary diff comment form' do
     page.within(diff_file_selector) do
-      expect(page).to have_css(".js-temp-notes-holder form.new_note")
+      expect(page).to have_css(".js-temp-notes-holder form.new-note")
     end
   end
 

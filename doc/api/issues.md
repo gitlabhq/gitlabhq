@@ -76,8 +76,9 @@ Example response:
       "title" : "Consequatur vero maxime deserunt laboriosam est voluptas dolorem.",
       "created_at" : "2016-01-04T15:31:51.081Z",
       "iid" : 6,
-      "labels" : []
-   },
+      "labels" : [],
+      "subscribed" : false
+   }
 ]
 ```
 
@@ -152,7 +153,8 @@ Example response:
       "id" : 41,
       "title" : "Ut commodi ullam eos dolores perferendis nihil sunt.",
       "updated_at" : "2016-01-04T15:31:46.176Z",
-      "created_at" : "2016-01-04T15:31:46.176Z"
+      "created_at" : "2016-01-04T15:31:46.176Z",
+      "subscribed" : false
    }
 ]
 ```
@@ -213,7 +215,8 @@ Example response:
    "id" : 41,
    "title" : "Ut commodi ullam eos dolores perferendis nihil sunt.",
    "updated_at" : "2016-01-04T15:31:46.176Z",
-   "created_at" : "2016-01-04T15:31:46.176Z"
+   "created_at" : "2016-01-04T15:31:46.176Z",
+   "subscribed": false
 }
 ```
 
@@ -267,7 +270,8 @@ Example response:
    },
    "description" : null,
    "updated_at" : "2016-01-07T12:44:33.959Z",
-   "milestone" : null
+   "milestone" : null,
+   "subscribed" : true
 }
 ```
 
@@ -323,7 +327,8 @@ Example response:
    ],
    "id" : 85,
    "assignee" : null,
-   "milestone" : null
+   "milestone" : null,
+   "subscribed" : true
 }
 ```
 

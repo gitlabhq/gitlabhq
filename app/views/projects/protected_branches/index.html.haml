@@ -13,11 +13,7 @@
 
 - if can? current_user, :admin_project, @project
   = form_for [@project.namespace.becomes(Namespace), @project, @protected_branch], html: { class: 'form-horizontal' } do |f|
-    -if @protected_branch.errors.any?
-      .alert.alert-danger
-        %ul
-          - @protected_branch.errors.full_messages.each do |msg|
-            %li= msg
+    = form_errors(@protected_branch)
 
     .form-group
       = f.label :name, "Branch", class: 'control-label'

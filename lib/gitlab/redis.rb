@@ -1,5 +1,7 @@
 module Gitlab
   class Redis
+    CACHE_NAMESPACE = 'cache:gitlab'
+
     attr_reader :url
 
     # To be thread-safe we must be careful when writing the class instance

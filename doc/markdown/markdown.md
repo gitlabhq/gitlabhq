@@ -31,7 +31,7 @@
 
 _GitLab uses the [Redcarpet Ruby library][redcarpet] for Markdown processing._
 
-For GitLab we developed something we call "GitLab Flavored Markdown" (GFM). It extends the standard Markdown in a few significant ways to add some useful functionality.
+GitLab uses "GitLab Flavored Markdown" (GFM). It extends the standard Markdown in a few significant ways to add some useful functionality. It was inspired by [GitHub Flavored Markdown](https://help.github.com/articles/basic-writing-and-formatting-syntax/).
 
 You can use GFM in
 
@@ -47,10 +47,10 @@ You can also use other rich text files in GitLab. You might have to install a de
 
 GFM honors the markdown specification in how [paragraphs and line breaks are handled](https://daringfireball.net/projects/markdown/syntax#p).
 
-A paragraph is simply one or more consecutive lines of text, separated by one or more blank lines.  
+A paragraph is simply one or more consecutive lines of text, separated by one or more blank lines.
 Line-breaks, or softreturns, are rendered if you end a line with two or more spaces
 
-    Roses are red [followed by two or more spaces]  
+    Roses are red [followed by two or more spaces]
     Violets are blue
 
     Sugar is sweet
@@ -67,7 +67,7 @@ It is not reasonable to italicize just _part_ of a word, especially when you're 
     perform_complicated_task
     do_this_and_do_that_and_another_thing
 
-perform_complicated_task  
+perform_complicated_task
 do_this_and_do_that_and_another_thing
 
 ## URL auto-linking

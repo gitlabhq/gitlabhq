@@ -18,12 +18,22 @@ module Gitlab
           @user ||= find_or_create_ldap_user
         end
 
-        if auto_link_saml_enabled?
+        if auto_link_saml_user?
           @user ||= find_by_email
         end
 
         if signup_enabled?
           @user ||= build_new_user
+        end
+
+        if external_users_enabled?
+          # Check if there is overlap between the user's groups and the external groups
+          # setting then set user as external or internal.
+          if (auth_hash.groups & Gitlab::Saml::Config.external_groups).empty?
+            @user.external = false
+          else
+            @user.external = true
+          end
         end
 
         @user
@@ -37,10 +47,22 @@ module Gitlab
         end
       end
 
+      def changed?
+        gl_user.changed? || gl_user.identities.any?(&:changed?)
+      end
+
       protected
 
-      def auto_link_saml_enabled?
+      def auto_link_saml_user?
         Gitlab.config.omniauth.auto_link_saml_user
+      end
+
+      def external_users_enabled?
+        !Gitlab::Saml::Config.external_groups.nil?
+      end
+
+      def auth_hash=(auth_hash)
+        @auth_hash = Gitlab::Saml::AuthHash.new(auth_hash)
       end
     end
   end

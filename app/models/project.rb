@@ -931,16 +931,6 @@ class Project < ActiveRecord::Base
     self.builds_enabled = true
   end
 
-  def unlink_fork
-    if forked?
-      forked_from_project.lfs_objects.find_each do |lfs_object|
-        lfs_object.projects << self
-      end
-
-      forked_project_link.destroy
-    end
-  end
-
   def any_runners?(&block)
     if runners.active.any?(&block)
       return true

@@ -1,9 +1,6 @@
 = form_for @user, url: profile_path, method: :put, html: { multipart: true, class: "edit-user prepend-top-default" }, authenticity_token: true do |f|
-  -if @user.errors.any?
-    %div.alert.alert-danger
-      %ul
-        - @user.errors.full_messages.each do |msg|
-          %li= msg
+  = form_errors(@user)
+
   .row
     .col-lg-3.profile-settings-sidebar
       %h4.prepend-top-0

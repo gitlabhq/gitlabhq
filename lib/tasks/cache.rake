@@ -9,7 +9,7 @@ namespace :cache do
       loop do
         cursor, keys = redis.scan(
           cursor,
-          match: "#{Gitlab::REDIS_CACHE_NAMESPACE}*", 
+          match: "#{Gitlab::Redis::CACHE_NAMESPACE}*", 
           count: CLEAR_BATCH_SIZE
         )
   
