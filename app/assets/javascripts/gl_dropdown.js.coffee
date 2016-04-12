@@ -122,7 +122,9 @@ class GitLabDropdown
   FILTER_INPUT = '.dropdown-input .dropdown-input-field'
 
   constructor: (@el, @options) ->
-    @dropdown = $(@el).parent()
+    self = @
+    selector = $(@el).data "target"
+    @dropdown = if selector? then $(selector) else $(@el).parent()
 
     # Set Defaults
     {
