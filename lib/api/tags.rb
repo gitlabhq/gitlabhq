@@ -19,15 +19,15 @@ module API
       # Get a single repository tag
       #
       # Parameters:
-      #   id (required) - The ID of a project
+      #   id (required)       - The ID of a project
       #   tag_name (required) - The name of the tag
       # Example Request:
       #   GET /projects/:id/repository/tags/:tag_name
-      get ":id/repository/tags/:tag_name", requirements: { tag_name: /.*/ } do
+      get ":id/repository/tags/:tag_name", requirements: { tag_name: /.+/ } do
         tag = user_project.repository.find_tag(params[:tag_name])
         not_found!('Tag') unless tag
 
-        present tag,  with: Entities::RepoTag, project: user_project
+        present tag, with: Entities::RepoTag, project: user_project
       end
 
       # Create tag

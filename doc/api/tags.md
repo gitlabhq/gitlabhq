@@ -40,8 +40,8 @@ Parameters:
 
 ## Get a single repository tag
 
-Get a specific repository tag determined by its name. It returns 200 together
-with the tag information if the tag exists. It returns 404 if the tag does not
+Get a specific repository tag determined by its name. It returns `200` together
+with the tag information if the tag exists. It returns `404` if the tag does not
 exist.
 
 ```
