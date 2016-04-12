@@ -2,23 +2,29 @@ module CiStatus
   extend ActiveSupport::Concern
 
   module ClassMethods
+    def status_sql
+      builds = all.select('count(id)').to_sql
+      success = all.success.select('count(id)').to_sql
+      ignored = all.failed.where(allow_failure: true).select('count(id)').to_sql if all.try(:ignored)
+      ignored ||= '0'
+      pending = all.pending.select('count(id)').to_sql
+      running = all.running.select('count(id)').to_sql
+      canceled = all.canceled.select('count(id)').to_sql
+
+      deduce_status = "(CASE
+        WHEN (#{builds})=0 THEN 'skipped'
+        WHEN (#{builds})=(#{success})+(#{ignored}) THEN 'success'
+        WHEN (#{builds})=(#{pending}) THEN 'pending'
+        WHEN (#{builds})=(#{canceled}) THEN 'canceled'
+        WHEN (#{running})+(#{pending})>0 THEN 'running'
+        ELSE 'failed'
+      END)"
+
+      deduce_status
+    end
+
     def status
-      objs = all.to_a
-      if objs.none?
-        nil
-      elsif objs.all? { |status| status.success? || status.try(:ignored?) }
-        'success'
-      elsif objs.all?(&:pending?)
-        'pending'
-      elsif objs.any?(&:running?) || all.any?(&:pending?)
-        'running'
-      elsif objs.all?(&:canceled?)
-        'canceled'
-      elsif objs.all?(&:skipped?)
-        'skipped'
-      else
-        'failed'
-      end
+      pluck(self.status_sql).first
     end
 
     def duration

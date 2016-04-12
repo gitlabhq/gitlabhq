@@ -90,31 +90,6 @@ class CommitStatus < ActiveRecord::Base
     group('stage').order(order_by).pluck(:stage, order_by).map(&:first).compact
   end
 
-  def self.status_sql
-    builds = all.select('count(id)').to_sql
-    success = all.success.select('count(id)').to_sql
-    ignored = all.failed.where(allow_failure: true).select('count(id)').to_sql if all.try(:ignored)
-    ignored ||= '0'
-    pending = all.pending.select('count(id)').to_sql
-    running = all.running.select('count(id)').to_sql
-    canceled = all.canceled.select('count(id)').to_sql
-
-    deduce_status = "(CASE
-      WHEN (#{builds})=0 THEN 'skipped'
-      WHEN (#{builds})=(#{success})+(#{ignored}) THEN 'success'
-      WHEN (#{builds})=(#{pending}) THEN 'pending'
-      WHEN (#{builds})=(#{canceled}) THEN 'canceled'
-      WHEN (#{running})+(#{pending})>0 THEN 'running'
-      ELSE 'failed'
-    END)"
-
-    deduce_status
-  end
-
-  def self.status
-    pluck(self.status_sql).first
-  end
-
   def self.stages_status
     Hash[group(:stage).pluck(:stage, self.status_sql)]
   end
