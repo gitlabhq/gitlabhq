@@ -159,19 +159,18 @@ describe Projects::MergeRequestsController do
 
   describe 'PUT #update' do
     context 'there is no source project' do
-      let(:project) { create(:project) }
-      let(:fork_project) { create(:forked_project_with_submodules) }
-      let(:merge_request) { create(:merge_request_with_diffs, source_project: fork_project, source_branch: 'add-submodule-version-bump', target_branch: 'master', target_project: project) }
+      let(:project)       { create(:project) }
+      let(:fork_project)  { create(:forked_project_with_submodules) }
+      let(:merge_request) { create(:merge_request, source_project: fork_project, source_branch: 'add-submodule-version-bump', target_branch: 'master', target_project: project) }
 
       before do
         fork_project.build_forked_project_link(forked_to_project_id: fork_project.id, forked_from_project_id: project.id)
         fork_project.save
         merge_request.reload
+        fork_project.destroy
       end
 
       it 'closes MR without errors' do
-        fork_project.destroy
-
         post :update,
             namespace_id: project.namespace.path,
             project_id: project.path,

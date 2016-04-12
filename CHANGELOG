@@ -17,6 +17,7 @@ v 8.7.0 (unreleased)
   - Add links to CI setup documentation from project settings and builds pages
   - Handle nil descriptions in Slack issue messages (Stan Hu)
   - Add default scope to projects to exclude projects pending deletion
+  - Allow to close merge requests which source projects(forks) are deleted.
   - Ensure empty recipients are rejected in BuildsEmailService
   - API: Ability to filter milestones by state `active` and `closed` (Robert Schilling)
   - Implement 'Groups View' as an option for dashboard preferences !3379 (Elias W.)

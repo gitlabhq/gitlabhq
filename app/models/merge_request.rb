@@ -128,7 +128,7 @@ class MergeRequest < ActiveRecord::Base
   validates :target_project, presence: true
   validates :target_branch, presence: true
   validates :merge_user, presence: true, if: :merge_when_build_succeeds?
-  validate :validate_branches
+  validate :validate_branches, unless: :allow_broken
   validate :validate_fork
 
   scope :by_branch, ->(branch_name) { where("(source_branch LIKE :branch) OR (target_branch LIKE :branch)", branch: branch_name) }
@@ -213,14 +213,12 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def validate_branches
-    return if allow_broken
-
     if target_project == source_project && target_branch == source_branch
       errors.add :branch_conflict, "You can not use same project/branch for source and target"
     end
 
     if opened? || reopened?
-      similar_mrs = self.target_project.merge_requests.where(source_branch: source_branch, target_branch: target_branch, source_project_id: source_project.id).opened
+      similar_mrs = self.target_project.merge_requests.where(source_branch: source_branch, target_branch: target_branch, source_project_id: source_project.try(:id)).opened
       similar_mrs = similar_mrs.where('id not in (?)', self.id) if self.id
       if similar_mrs.any?
         errors.add :validate_branches,
@@ -346,12 +344,9 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def hook_attrs
-    source_hook_attrs = source_project.hook_attrs if source_project.present?
-    target_hook_attrs = target_project.hook_attrs if target_project.present?
-
     attrs = {
-      source: source_hook_attrs,
-      target: target_hook_attrs,
+      source: source_project.try(:hook_attrs),
+      target: target_project.hook_attrs,
       last_commit: nil,
       work_in_progress: work_in_progress?
     }
