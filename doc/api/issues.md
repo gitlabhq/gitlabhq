@@ -353,7 +353,11 @@ curl -X DELETE -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.c
 
 ## Move an issue
 
-Moves an issue to a different project. If the operation is successful, a status code `200` together with moved issue is returned. If the project, issue, or target project is not found, error `404` is returned. If the target project equals the source project or the user has insufficient permissions to move an issue, error `400` together with an explaining error message is returned.
+Moves an issue to a different project. If the operation is successful, a status
+code `201` together with moved issue is returned. If the project, issue, or
+target project is not found, error `404` is returned. If the target project
+equals the source project or the user has insufficient permissions to move an
+issue, error `400` together with an explaining error message is returned.
 
 ```
 POST /projects/:id/issues/:issue_id/move
@@ -363,7 +367,7 @@ POST /projects/:id/issues/:issue_id/move
 | --------- | ---- | -------- | ----------- |
 | `id` | integer | yes | The ID of a project |
 | `issue_id` | integer | yes | The ID of a project's issue |
-| `new_project_id` | integer | yes | The ID the new project |
+| `to_project_id` | integer | yes | The ID the new project |
 
 ```bash
 curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/4/issues/85/move

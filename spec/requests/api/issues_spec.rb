@@ -508,48 +508,65 @@ describe API::API, api: true  do
 
     it 'moves an issue' do
       post api("/projects/#{project.id}/issues/#{issue.id}/move", user),
-               new_project_id: target_project.id
+               to_project_id: target_project.id
 
       expect(response.status).to eq(201)
       expect(json_response['project_id']).to eq(target_project.id)
     end
 
-    it 'returns an error if target and source project are the same' do
-      post api("/projects/#{project.id}/issues/#{issue.id}/move", user),
-               new_project_id: project.id
+    context 'when source and target projects are the same' do
+      it 'returns 400 when trying to move an issue' do
+        post api("/projects/#{project.id}/issues/#{issue.id}/move", user),
+                 to_project_id: project.id
 
-      expect(response.status).to eq(400)
-      expect(json_response['message']).to eq('Cannot move issue to project it originates from!')
+        expect(response.status).to eq(400)
+        expect(json_response['message']).to eq('Cannot move issue to project it originates from!')
+      end
     end
 
-    it "returns an error if I don't have the permission" do
-      post api("/projects/#{project.id}/issues/#{issue.id}/move", user),
-               new_project_id: target_project2.id
+    context 'when the user does not have the permission to move issues' do
+      it 'returns 400 when trying to move an issue' do
+        post api("/projects/#{project.id}/issues/#{issue.id}/move", user),
+                 to_project_id: target_project2.id
 
-      expect(response.status).to eq(400)
-      expect(json_response['message']).to eq('Cannot move issue due to insufficient permissions!')
+        expect(response.status).to eq(400)
+        expect(json_response['message']).to eq('Cannot move issue due to insufficient permissions!')
+      end
     end
 
     it 'moves the issue to another namespace if I am admin' do
       post api("/projects/#{project.id}/issues/#{issue.id}/move", admin),
-               new_project_id: target_project2.id
+               to_project_id: target_project2.id
 
       expect(response.status).to eq(201)
       expect(json_response['project_id']).to eq(target_project2.id)
     end
 
-    it 'returns 404 if the source issue is not found' do
-      post api("/projects/#{project.id}/issues/123/move", user),
-               new_project_id: target_project.id
+    context 'when issue does not exist' do
+      it 'returns 404 when trying to move an issue' do
+        post api("/projects/#{project.id}/issues/123/move", user),
+                 to_project_id: target_project.id
 
-      expect(response.status).to eq(404)
+        expect(response.status).to eq(404)
+      end
     end
 
-    it 'returns 404 if the target project is not found' do
-      post api("/projects/1234/issues/#{issue.id}/move", user),
-               new_project_id: target_project.id
+    context 'when source project does not exist' do
+      it 'returns 404 when trying to move an issue' do
+        post api("/projects/123/issues/#{issue.id}/move", user),
+                 to_project_id: target_project.id
 
-      expect(response.status).to eq(404)
+        expect(response.status).to eq(404)
+      end
+    end
+
+    context 'when target project does not exist' do
+      it 'returns 404 when trying to move an issue' do
+        post api("/projects/#{project.id}/issues/#{issue.id}/move", user),
+                 to_project_id: 123
+
+        expect(response.status).to eq(404)
+      end
     end
   end
 end
