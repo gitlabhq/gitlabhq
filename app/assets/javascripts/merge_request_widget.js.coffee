@@ -2,13 +2,29 @@ class @MergeRequestWidget
   # Initialize MergeRequestWidget behavior
   #
   #   check_enable           - Boolean, whether to check automerge status
-  #   url_to_automerge_check - String, URL to use to check automerge status
-  #   current_status         - String, current automerge status
-  #   ci_enable              - Boolean, whether a CI service is enabled
-  #   url_to_ci_check        - String, URL to use to check CI status
+  #   merge_check_url - String, URL to use to check automerge status
+  #   ci_status_url        - String, URL to use to check CI status
   #
+
   constructor: (@opts) ->
-    modal = $('#modal_merge_info').modal(show: false)
+    $('#modal_merge_info').modal(show: false)
+    @firstCICheck = true
+    @readyForCICheck = true
+    clearInterval @fetchBuildStatusInterval
+
+    @clearEventListeners()
+    @addEventListeners()
+    @pollCIStatus()
+    notifyPermissions()
+
+  clearEventListeners: ->
+    $(document).off 'page:change.merge_request'
+
+  addEventListeners: ->
+    $(document).on 'page:change.merge_request', =>
+      if $('body').data('page') isnt 'projects:merge_requests:show'
+        clearInterval @fetchBuildStatusInterval
+        @clearEventListeners()
 
   mergeInProgress: (deleteSourceBranch = false)->
     $.ajax
@@ -27,18 +43,71 @@ class @MergeRequestWidget
       dataType: 'json'
 
   getMergeStatus: ->
-    $.get @opts.url_to_automerge_check, (data) ->
+    $.get @opts.merge_check_url, (data) ->
       $('.mr-state-widget').replaceWith(data)
 
-  getCiStatus: ->
-    if @opts.ci_enable
-      $.get @opts.url_to_ci_check, (data) =>
-        this.showCiState data.status
-        if data.coverage
-          this.showCiCoverage data.coverage
-      , 'json'
+  ciLabelForStatus: (status) ->
+    if status is 'success'
+      'passed'
+    else
+      status
 
-  showCiState: (state) ->
+  pollCIStatus: ->
+    @fetchBuildStatusInterval = setInterval ( =>
+      return if not @readyForCICheck
+
+      @getCIStatus(true)
+
+      @readyForCICheck = false
+    ), 10000
+
+  getCIStatus: (showNotification) ->
+    _this = @
+    $('.ci-widget-fetching').show()
+
+    $.getJSON @opts.ci_status_url, (data) =>
+      @readyForCICheck = true
+
+      if @firstCICheck
+        @firstCICheck = false
+        @opts.ci_status = data.status
+
+      if @opts.ci_status is ''
+        @opts.ci_status = data.status
+        return
+
+      if data.status isnt @opts.ci_status and data.status?
+        @showCIStatus data.status
+        if data.coverage
+          @showCICoverage data.coverage
+
+        if showNotification
+          status = @ciLabelForStatus(data.status)
+
+          if status is "preparing"
+            title = @opts.ci_title.preparing
+            status = status.charAt(0).toUpperCase() + status.slice(1);
+            message = @opts.ci_message.preparing.replace('{{status}}', status)
+          else
+            title = @opts.ci_title.normal
+            message = @opts.ci_message.normal.replace('{{status}}', status)
+
+          title = title.replace('{{status}}', status)
+          message = message.replace('{{sha}}', data.sha)
+          message = message.replace('{{title}}', data.title)
+
+          notify(
+            title,
+            message,
+            @opts.gitlab_icon,
+            ->
+              @close()
+              Turbolinks.visit _this.opts.builds_path
+          )
+
+        @opts.ci_status = data.status
+
+  showCIStatus: (state) ->
     $('.ci_widget').hide()
     allowed_states = ["failed", "canceled", "running", "pending", "success", "skipped", "not_found"]
     if state in allowed_states
@@ -48,13 +117,17 @@ class @MergeRequestWidget
           @setMergeButtonClass('btn-danger')
         when "running", "pending"
           @setMergeButtonClass('btn-warning')
+        when "success"
+          @setMergeButtonClass('btn-create')
     else
       $('.ci_widget.ci-error').show()
       @setMergeButtonClass('btn-danger')
 
-  showCiCoverage: (coverage) ->
+  showCICoverage: (coverage) ->
     text = 'Coverage ' + coverage + '%'
     $('.ci_widget:visible .ci-coverage').text(text)
 
   setMergeButtonClass: (css_class) ->
-    $('.accept_merge_request').removeClass("btn-create").addClass(css_class)
+    $('.accept_merge_request')
+      .removeClass('btn-danger btn-warning btn-create')
+      .addClass(css_class)

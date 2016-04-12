@@ -184,7 +184,7 @@ class User < ActiveRecord::Base
 
   # User's Dashboard preference
   # Note: When adding an option, it MUST go on the end of the array.
-  enum dashboard: [:projects, :stars, :project_activity, :starred_project_activity]
+  enum dashboard: [:projects, :stars, :project_activity, :starred_project_activity, :groups, :todos]
 
   # User's Project preference
   # Note: When adding an option, it MUST go on the end of the array.
@@ -408,6 +408,8 @@ class User < ActiveRecord::Base
   end
 
   def owns_notification_email
+    return if self.temp_oauth_email?
+
     self.errors.add(:notification_email, "is not an email you own") unless self.all_emails.include?(self.notification_email)
   end
 

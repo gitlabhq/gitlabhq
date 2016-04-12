@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160320204112) do
+ActiveRecord::Schema.define(version: 20160331223143) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -44,7 +44,6 @@ ActiveRecord::Schema.define(version: 20160320204112) do
     t.datetime "updated_at"
     t.string   "home_page_url"
     t.integer  "default_branch_protection",         default: 2
-    t.boolean  "twitter_sharing_enabled",           default: true
     t.text     "restricted_visibility_levels"
     t.boolean  "version_check_enabled",             default: true
     t.integer  "max_attachment_size",               default: 10,          null: false
@@ -418,7 +417,7 @@ ActiveRecord::Schema.define(version: 20160320204112) do
     t.integer  "iid"
     t.integer  "updated_by_id"
     t.integer  "moved_to_id"
-    t.boolean  "confidential",              default: false
+    t.boolean  "confidential",  default: false
     t.datetime "deleted_at"
   end
 
@@ -745,6 +744,7 @@ ActiveRecord::Schema.define(version: 20160320204112) do
   add_index "projects", ["namespace_id"], name: "index_projects_on_namespace_id", using: :btree
   add_index "projects", ["path"], name: "index_projects_on_path", using: :btree
   add_index "projects", ["path"], name: "index_projects_on_path_trigram", using: :gin, opclasses: {"path"=>"gin_trgm_ops"}
+  add_index "projects", ["pending_delete"], name: "index_projects_on_pending_delete", using: :btree
   add_index "projects", ["runners_token"], name: "index_projects_on_runners_token", using: :btree
   add_index "projects", ["star_count"], name: "index_projects_on_star_count", using: :btree
   add_index "projects", ["visibility_level"], name: "index_projects_on_visibility_level", using: :btree

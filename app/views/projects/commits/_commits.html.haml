@@ -12,7 +12,7 @@
       .light
         = pluralize(commits.count, 'commit')
     .col-md-10.col-sm-12
-      %ul.bordered-list
+      %ul.content-list
         = render commits, project: project
   %hr.lists-separator
 

@@ -1,15 +1,14 @@
 require 'spec_helper'
 
 describe Admin::UsersController do
-  let(:admin)    { create(:admin) }
+  let(:user) { create(:user) }
 
   before do
-    sign_in(admin)
+    sign_in(create(:admin))
   end
 
   describe 'DELETE #user with projects' do
-    let(:user) { create(:user) }
-    let(:project) { create(:project, namespace: user.namespace) }
+    let(:project) { create(:empty_project, namespace: user.namespace) }
 
     before do
       project.team << [user, :developer]
@@ -23,8 +22,6 @@ describe Admin::UsersController do
   end
 
   describe 'PUT block/:id' do
-    let(:user) { create(:user) }
-
     it 'blocks user' do
       put :block, id: user.username
       user.reload
@@ -50,8 +47,6 @@ describe Admin::UsersController do
     end
 
     context 'manually blocked users' do
-      let(:user) { create(:user) }
-
       before do
         user.block
       end
@@ -66,8 +61,6 @@ describe Admin::UsersController do
   end
 
   describe 'PUT unlock/:id' do
-    let(:user) { create(:user) }
-
     before do
       request.env["HTTP_REFERER"] = "/"
       user.lock_access!
@@ -95,8 +88,6 @@ describe Admin::UsersController do
   end
 
   describe 'PATCH disable_two_factor' do
-    let(:user) { create(:user) }
-
     it 'disables 2FA for the user' do
       expect(user).to receive(:disable_two_factor!)
       allow(subject).to receive(:user).and_return(user)

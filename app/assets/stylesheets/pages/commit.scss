@@ -1,15 +1,15 @@
-.commit-title{
+.commit-title {
   display: block;
 }
 
-.commit-author, .commit-committer{
+.commit-author, .commit-committer {
   display: block;
   color: #999;
   font-weight: normal;
   font-style: italic;
 }
 
-.commit-author strong, .commit-committer strong{
+.commit-author strong, .commit-committer strong {
   font-weight: bold;
   font-style: normal;
 }
@@ -20,6 +20,8 @@
   margin: 0;
   padding: 0;
   margin-top: 10px;
+  word-break: normal;
+  white-space: pre-wrap;
 }
 
 .commit-info-row {
@@ -74,7 +76,7 @@
       color: $gl-text-red;
     }
   }
-  .edit-file{
+  .edit-file {
     a {
       color: $gl-text-color;
     }

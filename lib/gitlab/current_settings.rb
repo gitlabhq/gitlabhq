@@ -21,7 +21,6 @@ module Gitlab
         default_branch_protection: Settings.gitlab['default_branch_protection'],
         signup_enabled: Settings.gitlab['signup_enabled'],
         signin_enabled: Settings.gitlab['signin_enabled'],
-        twitter_sharing_enabled: Settings.gitlab['twitter_sharing_enabled'],
         gravatar_enabled: Settings.gravatar['enabled'],
         sign_in_text: Settings.extra['sign_in_text'],
         restricted_visibility_levels: Settings.gitlab['restricted_visibility_levels'],

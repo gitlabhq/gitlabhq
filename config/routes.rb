@@ -16,6 +16,18 @@ Rails.application.routes.draw do
     end
   end
 
+  # Make the built-in Rails routes available in development, otherwise they'd
+  # get swallowed by the `namespace/project` route matcher below.
+  #
+  # See https://git.io/va79N
+  if Rails.env.development?
+    get '/rails/mailers'         => 'rails/mailers#index'
+    get '/rails/mailers/:path'   => 'rails/mailers#preview'
+    get '/rails/info/properties' => 'rails/info#properties'
+    get '/rails/info/routes'     => 'rails/info#routes'
+    get '/rails/info'            => 'rails/info#index'
+  end
+
   namespace :ci do
     # CI API
     Ci::API::API.logger Rails.logger
@@ -570,6 +582,7 @@ Rails.application.routes.draw do
           # Order matters to give priority to these matches
           get '/wikis/git_access', to: 'wikis#git_access'
           get '/wikis/pages', to: 'wikis#pages', as: 'wiki_pages'
+          post '/wikis/markdown_preview', to:'wikis#markdown_preview'
           post '/wikis', to: 'wikis#create'
 
           get '/wikis/*id/history', to: 'wikis#history', as: 'wiki_history', constraints: WIKI_SLUG_ID
@@ -744,10 +757,11 @@ Rails.application.routes.draw do
         end
 
         resources :runner_projects, only: [:create, :destroy]
-        resources :badges, only: [], path: 'badges/*ref',
-                           constraints: { ref: Gitlab::Regex.git_reference_regex } do
+        resources :badges, only: [:index] do
           collection do
-            get :build, constraints: { format: /svg/ }
+            scope '*ref', constraints: { ref: Gitlab::Regex.git_reference_regex } do
+              get :build, constraints: { format: /svg/ }
+            end
           end
         end
       end

@@ -9,6 +9,7 @@ describe Issue, "Issuable" do
     it { is_expected.to belong_to(:author) }
     it { is_expected.to belong_to(:assignee) }
     it { is_expected.to have_many(:notes).dependent(:destroy) }
+    it { is_expected.to have_many(:todos).dependent(:destroy) }
   end
 
   describe "Validation" do

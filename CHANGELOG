@@ -1,12 +1,113 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.7.0 (unreleased)
+  - All service classes (those residing in app/services) are now instrumented (Yorick Peterse)
+  - Enable gzip for assets, makes the page size significantly smaller. !3544 / !3632 (Connor Shea)
+  - Load award emoji images separately unless opening the full picker. Saves several hundred KBs of data for most pages. (Connor Shea)
+  - All images in discussions and wikis now link to their source files !3464 (Connor Shea).
+  - Return status code 303 after a branch DELETE operation to avoid project deletion (Stan Hu)
+  - Improved Markdown rendering performance !3389 (Yorick Peterse)
+  - Don't attempt to look up an avatar in repo if repo directory does not exist (Stan Hu)
+  - Expose project badges in project settings
+  - Preserve time notes/comments have been updated at when moving issue
   - Make HTTP(s) label consistent on clone bar (Stan Hu)
+  - Expose label description in API (Mariusz Jachimowicz)
+  - Allow back dating on issues when created through the API
+  - Fix Error 500 after renaming a project path (Stan Hu)
+  - Fix avatar stretching by providing a cropping feature
+  - API: Expose `subscribed` for issues and merge requests (Robert Schilling)
+  - Allow SAML to handle external users based on user's information !3530
+  - Add endpoints to archive or unarchive a project !3372
+  - Add links to CI setup documentation from project settings and builds pages
+  - Handle nil descriptions in Slack issue messages (Stan Hu)
+  - API: Expose open_issues_count, closed_issues_count, open_merge_requests_count for labels (Robert Schilling)
+  - Add default scope to projects to exclude projects pending deletion
+  - Ensure empty recipients are rejected in BuildsEmailService
+  - API: Ability to filter milestones by state `active` and `closed` (Robert Schilling)
+  - API: Fix milestone filtering by `iid` (Robert Schilling)
+  - API: Delete notes of issues, snippets, and merge requests (Robert Schilling)
+  - Implement 'Groups View' as an option for dashboard preferences !3379 (Elias W.)
+  - Better errors handling when creating milestones inside groups
+  - Hide `Create a group` help block when creating a new project in a group
+  - Implement 'TODOs View' as an option for dashboard preferences !3379 (Elias W.)
+  - Gracefully handle notes on deleted commits in merge requests (Stan Hu)
+  - Fix creation of merge requests for orphaned branches (Stan Hu)
+  - API: Ability to retrieve a single tag (Robert Schilling)
+  - Fall back to `In-Reply-To` and `References` headers when sub-addressing is not available (David Padilla)
+  - Remove "Congratulations!" tweet button on newly-created project. (Connor Shea)
+  - Fix admin/projects when using visibility levels on search (PotHix)
+  - Build status notifications
+  - API: Expose user location (Robert Schilling)
+  - ClosingIssueExtractor regex now also works with colons. e.g. "Fixes: #1234" !3591
+  - Update number of Todos in the sidebar when it's marked as "Done". !3600
+  - API: Expose 'updated_at' for issue, snippet, and merge request notes (Robert Schilling)
+  - API: User can leave a project through the API when not master or owner. !3613
 
-v 8.6.1 (unreleased)
-  - Do not allow to move issue if it has not been persisted
-  - Fix an issue causing the Dashboard/Milestones page to be blank
-  - Fix build dependencies, when the dependency is a string
+v 8.6.6
+  - Fix error on language detection when repository has no HEAD (e.g., master branch). !3654 (Jeroen Bobbeldijk)
+
+v 8.6.5
+  - Fix importing from GitHub Enterprise. !3529
+  - Perform the language detection after updating merge requests in `GitPushService`, leading to faster visual feedback for the end-user. !3533
+  - Check permissions when user attempts to import members from another project. !3535
+  - Only update repository language if it is not set to improve performance. !3556
+  - Return status code 303 after a branch DELETE operation to avoid project deletion (Stan Hu). !3583
+  - Unblock user when active_directory is disabled and it can be found !3550
+  - Fix a 2FA authentication spoofing vulnerability.
+
+v 8.6.4
+  - Don't attempt to fetch any tags from a forked repo (Stan Hu)
+  - Redesign the Labels page
+
+v 8.6.3
+  - Mentions on confidential issues doesn't create todos for non-members. !3374
+  - Destroy related todos when an Issue/MR is deleted. !3376
+  - Fix error 500 when target is nil on todo list. !3376
+  - Fix copying uploads when moving issue to another project. !3382
+  - Ensuring Merge Request API returns boolean values for work_in_progress (Abhi Rao). !3432
+  - Fix raw/rendered diff producing different results on merge requests. !3450
+  - Fix commit comment alignment (Stan Hu). !3466
+  - Fix Error 500 when searching for a comment in a project snippet. !3468
+  - Allow temporary email as notification email. !3477
+  - Fix issue with dropdowns not selecting values. !3478
+  - Update gitlab-shell version and doc to 2.6.12. gitlab-org/gitlab-ee!280
+
+v 8.6.2
+  - Fix dropdown alignment. !3298
+  - Fix issuable sidebar overlaps on tablet. !3299
+  - Make dropdowns pixel perfect. !3337
+  - Fix order of steps to prevent PostgreSQL errors when running migration. !3355
+  - Fix bold text in issuable sidebar. !3358
+  - Fix error with anonymous token in applications settings. !3362
+  - Fix the milestone 'upcoming' filter. !3364 + !3368
+  - Fix comments on confidential issues showing up in activity feed to non-members. !3375
+  - Fix `NoMethodError` when visiting CI root path at `/ci`. !3377
+  - Add a tooltip to new branch button in issue page. !3380
+  - Fix an issue hiding the password form when signed-in with a linked account. !3381
+  - Add links to CI setup documentation from project settings and builds pages. !3384
+  - Fix an issue with width of project select dropdown. !3386
+  - Remove redundant `require`s from Banzai files. !3391
+  - Fix error 500 with cancel button on issuable edit form. !3392 + !3417
+  - Fix background when editing a highlighted note. !3423
+  - Remove tabstop from the WIP toggle links. !3426
+  - Ensure private project snippets are not viewable by unauthorized people.
+  - Gracefully handle notes on deleted commits in merge requests (Stan Hu). !3402
+  - Fixed issue with notification settings not saving. !3452
+
+v 8.6.1
+  - Add option to reload the schema before restoring a database backup. !2807
+  - Display navigation controls on mobile. !3214
+  - Fixed bug where participants would not work correctly on merge requests. !3329
+  - Fix sorting issues by votes on the groups issues page results in SQL errors. !3333
+  - Restrict notifications for confidential issues. !3334
+  - Do not allow to move issue if it has not been persisted. !3340
+  - Add a confirmation step before deleting an issuable. !3341
+  - Fixes issue with signin button overflowing on mobile. !3342
+  - Auto collapses the navigation sidebar when resizing. !3343
+  - Fix build dependencies, when the dependency is a string. !3344
+  - Shows error messages when trying to create label in dropdown menu. !3345
+  - Fixes issue with assign milestone not loading milestone list. !3346
+  - Fix an issue causing the Dashboard/Milestones page to be blank. !3348
 
 v 8.6.0
   - Add ability to move issue to another project
@@ -33,7 +134,6 @@ v 8.6.0
   - Add information about `image` and `services` field at `job` level in the `.gitlab-ci.yml` documentation (Pat Turner)
   - HTTP error pages work independently from location and config (Artem Sidorenko)
   - Update `omniauth-saml` to 1.5.0 to allow for custom response attributes to be set
-  - Add option to reload the schema before restoring a database backup. !2807
   - Memoize @group in Admin::GroupsController (Yatish Mehta)
   - Indicate how much an MR diverged from the target branch (Pierre de La Morinerie)
   - Added omniauth-auth0 Gem (Daniel Carraro)
@@ -65,6 +165,7 @@ v 8.6.0
   - Add main language of a project in the list of projects (Tiago Botelho)
   - Add #upcoming filter to Milestone filter (Tiago Botelho)
   - Add ability to show archived projects on dashboard, explore and group pages
+  - Remove fork link closes all merge requests opened on source project (Florent Baldino)
   - Move group activity to separate page
   - Create external users which are excluded of internal and private projects unless access was explicitly granted
   - Continue parameters are checked to ensure redirection goes to the same instance
@@ -72,7 +173,12 @@ v 8.6.0
   - Canceled builds are now ignored in compound build status if marked as `allowed to fail`
   - Trigger a todo for mentions on commits page
   - Let project owners and admins soft delete issues and merge requests
-  - Fix sorting issues by votes on the groups issues page results in SQL errors
+
+v 8.5.10
+  - Fix a 2FA authentication spoofing vulnerability.
+
+v 8.5.9
+  - Don't attempt to fetch any tags from a forked repo (Stan Hu).
 
 v 8.5.8
   - Bump Git version requirement to 2.7.4
@@ -215,6 +321,15 @@ v 8.5.0
   - Show label row when filtering issues or merge requests by label (Nuttanart Pornprasitsakul)
   - Add Todos
 
+v 8.4.8
+  - Fix a 2FA authentication spoofing vulnerability.
+
+v 8.4.7
+  - Don't attempt to fetch any tags from a forked repo (Stan Hu).
+
+v 8.4.6
+  - Bump Git version requirement to 2.7.4
+
 v 8.4.5
   - No CE-specific changes
 
@@ -327,6 +442,15 @@ v 8.4.0
   - Added X-GitLab-... headers to emails from CI and Email On Push services (Anton Baklanov)
   - Add IP check against DNSBLs at account sign-up
   - Added cache:key to .gitlab-ci.yml allowing to fine tune the caching
+
+v 8.3.7
+  - Fix a 2FA authentication spoofing vulnerability.
+
+v 8.3.6
+  - Don't attempt to fetch any tags from a forked repo (Stan Hu).
+
+v 8.3.5
+  - Bump Git version requirement to 2.7.4
 
 v 8.3.4
   - Use gitlab-workhorse 0.5.4 (fixes API routing bug)

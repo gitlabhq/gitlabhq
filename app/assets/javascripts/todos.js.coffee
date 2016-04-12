@@ -6,10 +6,12 @@ class @Todos
   clearListeners: ->
     $('.done-todo').off('click')
     $('.js-todos-mark-all').off('click')
+    $('.todo').off('click')
 
   initBtnListeners: ->
     $('.done-todo').on('click', @doneClicked)
     $('.js-todos-mark-all').on('click', @allDoneClicked)
+    $('.todo').on('click', @goToTodoUrl)
 
   doneClicked: (e) =>
     e.preventDefault()
@@ -54,3 +56,11 @@ class @Todos
   updateBadges: (data) ->
     $('.todos-pending .badge, .todos-pending-count').text data.count
     $('.todos-done .badge').text data.done_count
+
+  goToTodoUrl: (e)->
+    todoLink = $(this).data('url')
+    if e.metaKey
+      e.preventDefault()
+      window.open(todoLink,'_blank')
+    else
+      Turbolinks.visit(todoLink)

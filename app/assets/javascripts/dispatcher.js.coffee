@@ -146,15 +146,11 @@ class Dispatcher
           when 'project_members', 'deploy_keys', 'hooks', 'services', 'protected_branches'
             shortcut_handler = new ShortcutsNavigation()
 
-
     # If we haven't installed a custom shortcut handler, install the default one
     if not shortcut_handler
       new Shortcuts()
 
   initSearch: ->
-    opts = $('.search-autocomplete-opts')
-    path = opts.data('autocomplete-path')
-    project_id = opts.data('autocomplete-project-id')
-    project_ref = opts.data('autocomplete-project-ref')
 
-    new SearchAutocomplete(path, project_id, project_ref)
+    # Only when search form is present
+    new SearchAutocomplete() if $('.search').length

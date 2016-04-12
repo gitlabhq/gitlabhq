@@ -1,9 +1,7 @@
 .div-dropzone-wrapper {
   .div-dropzone {
     position: relative;
-    padding: 0;
-    border: 0;
-    margin-bottom: 5px;
+    margin-bottom: -5px;
 
     .div-dropzone-focus {
       border-color: #66afe9 !important;
@@ -25,12 +23,10 @@
 
     .div-dropzone-spinner {
       position: absolute;
-      top: 100%;
-      left: 100%;
-      margin-top: -1.1em;
-      margin-left: -1.1em;
+      bottom: 10px;
+      right: 5px;
       opacity: 0;
-      font-size: 30px;
+      font-size: 20px;
       transition: opacity 200ms ease-in-out;
     }
 
@@ -65,17 +61,30 @@
   position: relative;
 }
 
+.md-header {
+  .nav-links {
+    .active {
+      a {
+        border-bottom-color: #000;
+      }
+    }
+
+    a {
+      padding-top: 0;
+      line-height: 1;
+    }
+  }
+}
+
 .referenced-users {
   color: #4c4e54;
   padding-top: 10px;
 }
 
 .md-preview-holder {
-  background: #fff;
-  border: 1px solid #ddd;
-  min-height: 169px;
-  padding: 5px;
-  box-shadow: none;
+  min-height: 167px;
+  padding: 10px 0;
+  overflow-x: auto;
 }
 
 .markdown-area {

@@ -85,6 +85,10 @@ describe Issues::MoveService, services: true do
           expect(old_issue.moved?).to eq true
           expect(old_issue.moved_to).to eq new_issue
         end
+
+        it 'preserves create time' do
+          expect(old_issue.created_at).to eq new_issue.created_at
+        end
       end
 
       context 'issue with notes' do
@@ -121,10 +125,23 @@ describe Issues::MoveService, services: true do
           it 'preserves orignal author of comment' do
             expect(user_notes.pluck(:author_id)).to all(eq(author.id))
           end
+        end
+
+        context 'note that has been updated' do
+          let!(:note) do
+            create(:note, noteable: old_issue, project: old_project,
+                          author: author, updated_at: Date.yesterday,
+                          created_at: Date.yesterday)
+          end
+
+          include_context 'issue move executed'
 
           it 'preserves time when note has been created at' do
-            expect(old_issue.notes.first.created_at)
-              .to eq new_issue.notes.first.created_at
+            expect(new_issue.notes.first.created_at).to eq note.created_at
+          end
+
+          it 'preserves time when note has been updated at' do
+            expect(new_issue.notes.first.updated_at).to eq note.updated_at
           end
         end
 
@@ -141,6 +158,20 @@ describe Issues::MoveService, services: true do
           it 'rewrites references using a cross reference to old project' do
             expect(new_note.note)
               .to eq "Note with reference to merge request #{old_project.to_reference}!1"
+          end
+        end
+
+        context 'issue description with uploads' do
+          let(:uploader) { build(:file_uploader, project: old_project) }
+          let(:description) { "Text and #{uploader.to_markdown}" }
+
+          include_context 'issue move executed'
+
+          it 'rewrites uploads in description' do
+            expect(new_issue.description).to_not eq description
+            expect(new_issue.description)
+              .to match(/Text and #{FileUploader::MARKDOWN_PATTERN}/)
+            expect(new_issue.description).to_not include uploader.secret
           end
         end
       end

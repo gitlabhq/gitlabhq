@@ -1,7 +1,24 @@
 # Project Services
 
 Project services allow you to integrate GitLab with other applications. Below
-is list of the currently supported ones. Click on the service links to see
+is list of the currently supported ones.
+
+You can find these within GitLab in the Services page under Project Settings if
+you are at least a master on the project.
+Project Services are a bit like plugins in that they allow a lot of freedom in
+adding functionality to GitLab. For example there is also a service that can
+send an email every time someone pushes new commits.
+
+Because GitLab is open source we can ship with the code and tests for all
+plugins. This allows the community to keep the plugins up to date so that they
+always work in newer GitLab versions.
+
+For an overview of what projects services are available without logging in,
+please see the [project_services directory][projects-code].
+
+[projects-code]: https://gitlab.com/gitlab-org/gitlab-ce/tree/master/app/models/project_services
+
+Click on the service links to see
 further configuration instructions and details. Contributions are welcome.
 
 ## Services

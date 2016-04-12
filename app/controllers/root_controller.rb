@@ -26,6 +26,10 @@ class RootController < Dashboard::ProjectsController
       redirect_to activity_dashboard_path
     when 'starred_project_activity'
       redirect_to activity_dashboard_path(filter: 'starred')
+    when 'groups'
+      redirect_to dashboard_groups_path
+    when 'todos'
+      redirect_to dashboard_todos_path
     else
       return
     end

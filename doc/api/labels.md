@@ -8,9 +8,9 @@ Get all labels for a given project.
 GET /projects/:id/labels
 ```
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id` | integer | yes | The ID of the project |
+| Attribute | Type    | Required | Description           |
+| --------- | ------- | -------- | --------------------- |
+| `id`      | integer | yes      | The ID of the project |
 
 ```bash
 curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/1/labels
@@ -22,35 +22,43 @@ Example response:
 [
    {
       "name" : "bug",
-      "color" : "#d9534f"
+      "color" : "#d9534f",
+      "description": "Bug reported by user",
+      "open_issues_count": 1,
+      "closed_issues_count": 0,
+      "open_merge_requests_count": 1
    },
    {
       "color" : "#d9534f",
-      "name" : "confirmed"
+      "name" : "confirmed",
+      "description": "Confirmed issue",
+      "open_issues_count": 2,
+      "closed_issues_count": 5,
+      "open_merge_requests_count": 0
    },
    {
       "name" : "critical",
-      "color" : "#d9534f"
-   },
-   {
-      "color" : "#428bca",
-      "name" : "discussion"
+      "color" : "#d9534f",
+      "description": "Criticalissue. Need fix ASAP",
+      "open_issues_count": 1,
+      "closed_issues_count": 3,
+      "open_merge_requests_count": 1
    },
    {
       "name" : "documentation",
-      "color" : "#f0ad4e"
+      "color" : "#f0ad4e",
+      "description": "Issue about documentation",
+      "open_issues_count": 1,
+      "closed_issues_count": 0,
+      "open_merge_requests_count": 2
    },
    {
       "color" : "#5cb85c",
-      "name" : "enhancement"
-   },
-   {
-      "color" : "#428bca",
-      "name" : "suggestion"
-   },
-   {
-      "color" : "#f0ad4e",
-      "name" : "support"
+      "name" : "enhancement",
+      "description": "Enhancement proposal",
+      "open_issues_count": 1,
+      "closed_issues_count": 0,
+      "open_merge_requests_count": 1
    }
 ]
 ```
@@ -66,11 +74,12 @@ and 409 if the label already exists.
 POST /projects/:id/labels
 ```
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id`      | integer | yes | The ID of the project |
-| `name`    | string  | yes | The name of the label |
-| `color`   | string  | yes | The color of the label in 6-digit hex notation with leading `#` sign |
+| Attribute     | Type    | Required | Description                  |
+| ------------- | ------- | -------- | ---------------------------- |
+| `id`          | integer | yes      | The ID of the project        |
+| `name`        | string  | yes      | The name of the label        |
+| `color`       | string  | yes      | The color of the label in 6-digit hex notation with leading `#` sign |
+| `description` | string  | no       | The description of the label |
 
 ```bash
 curl --data "name=feature&color=#5843AD" -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/labels"
@@ -81,7 +90,8 @@ Example response:
 ```json
 {
    "name" : "feature",
-   "color" : "#5843AD"
+   "color" : "#5843AD",
+   "description":null
 }
 ```
 
@@ -97,10 +107,10 @@ In case of an error, an additional error message is returned.
 DELETE /projects/:id/labels
 ```
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id`      | integer | yes | The ID of the project |
-| `name`    | string  | yes | The name of the label |
+| Attribute | Type    | Required | Description           |
+| --------- | ------- | -------- | --------------------- |
+| `id`      | integer | yes      | The ID of the project |
+| `name`    | string  | yes      | The name of the label |
 
 ```bash
 curl -X DELETE -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/labels?name=bug"
@@ -112,6 +122,7 @@ Example response:
 {
    "title" : "feature",
    "color" : "#5843AD",
+   "description": "New feature proposal",
    "updated_at" : "2015-11-03T21:22:30.737Z",
    "template" : false,
    "project_id" : 1,
@@ -133,15 +144,16 @@ In case of an error, an additional error message is returned.
 PUT /projects/:id/labels
 ```
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id`      | integer | yes | The ID of the project |
-| `name`    | string  | yes | The name of the existing label |
-| `new_name` | string  | yes if `color` if not provided | The new name of the label |
-| `color`   | string  | yes if `new_name` is not provided | The new color of the label in 6-digit hex notation with leading `#` sign |
+| Attribute       | Type    | Required                          | Description                      |
+| --------------- | ------- | --------------------------------- | -------------------------------  |
+| `id`            | integer | yes                               | The ID of the project            |
+| `name`          | string  | yes                               | The name of the existing label   |
+| `new_name`      | string  | yes if `color` if not provided    | The new name of the label        |
+| `color`         | string  | yes if `new_name` is not provided | The new color of the label in 6-digit hex notation with leading `#` sign |
+| `description`   | string  | no                                | The new description of the label |
 
 ```bash
-curl -X PUT --data "name=documentation&new_name=docs&color=#8E44AD" -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/labels"
+curl -X PUT --data "name=documentation&new_name=docs&color=#8E44AD&description=Documentation" -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/labels"
 ```
 
 Example response:
@@ -149,6 +161,7 @@ Example response:
 ```json
 {
    "color" : "#8E44AD",
-   "name" : "docs"
+   "name" : "docs",
+   "description": "Documentation"
 }
 ```

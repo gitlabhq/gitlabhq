@@ -1,10 +1,5 @@
-- if issuable.errors.any?
-  .row
-    .col-sm-offset-2.col-sm-10
-      .alert.alert-danger
-        - issuable.errors.full_messages.each do |msg|
-          %span= msg
-          %br
+= form_errors(issuable)
+
 .form-group
   = f.label :title, class: 'control-label'
   .col-sm-10
@@ -14,7 +9,7 @@
     - if issuable.is_a?(MergeRequest)
       %p.help-block
         .js-wip-explanation
-          %a.js-toggle-wip{href: ""}
+          %a.js-toggle-wip{href: "", tabindex: -1}
             Remove the
             %code WIP:
             prefix from the title
@@ -22,7 +17,7 @@
           %strong Work In Progress
           merge request to be merged when it's ready.
         .js-no-wip-explanation
-          %a.js-toggle-wip{href: ""}
+          %a.js-toggle-wip{href: "", tabindex: -1}
             Start the title with
             %code WIP:
           to prevent a
@@ -53,10 +48,11 @@
     .issue-assignee
       = f.label :assignee_id, "Assignee", class: 'control-label'
       .col-sm-10
-        = users_select_tag("#{issuable.class.model_name.param_key}[assignee_id]",
-            placeholder: 'Select assignee', class: 'custom-form-control', null_user: true,
-            selected: issuable.assignee_id, project: @target_project || @project,
-            first_user: true, current_user: true, include_blank: true)
+        .issuable-form-select-holder
+          = users_select_tag("#{issuable.class.model_name.param_key}[assignee_id]",
+              placeholder: 'Select assignee', class: 'custom-form-control', null_user: true,
+              selected: issuable.assignee_id, project: @target_project || @project,
+              first_user: true, current_user: true, include_blank: true)
         &nbsp;
         = link_to 'Assign to me', '#', class: 'btn assign-to-me-link'
   .form-group
@@ -64,8 +60,9 @@
       = f.label :milestone_id, "Milestone", class: 'control-label'
       .col-sm-10
         - if milestone_options(issuable).present?
-          = f.select(:milestone_id, milestone_options(issuable),
-            { include_blank: true }, { class: 'select2', data: { placeholder: 'Select milestone' } })
+          .issuable-form-select-holder
+            = f.select(:milestone_id, milestone_options(issuable),
+              { include_blank: true }, { class: 'select2', data: { placeholder: 'Select milestone' } })
         - else
           .prepend-top-10
           %span.light No open milestones available.
@@ -127,7 +124,7 @@
       for this project.
 
   - if issuable.new_record?
-    = link_to 'Cancel', namespace_project_issues_path(@project.namespace, @project), class: 'btn btn-cancel'
+    = link_to 'Cancel', polymorphic_path([@project.namespace.becomes(Namespace), @project, issuable.class]), class: 'btn btn-cancel'
   - else
     .pull-right
       - if current_user.can?(:"destroy_#{issuable.to_ability_name}", @project)
@@ -135,4 +132,4 @@
                                                                                                   method: :delete, class: 'btn btn-grouped' do
           = icon('trash-o')
           Delete
-      = link_to 'Cancel', namespace_project_issue_path(@project.namespace, @project, issuable), class: 'btn btn-grouped btn-cancel'
+      = link_to 'Cancel', polymorphic_path([@project.namespace.becomes(Namespace), @project, issuable]), class: 'btn btn-grouped btn-cancel'

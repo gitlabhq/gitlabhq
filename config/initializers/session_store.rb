@@ -13,7 +13,7 @@ end
 if Rails.env.test?
   Gitlab::Application.config.session_store :cookie_store, key: "_gitlab_session"
 else
-  redis_config = Gitlab::RedisConfig.redis_store_options
+  redis_config = Gitlab::Redis.redis_store_options
   redis_config[:namespace] = 'session:gitlab'
   
   Gitlab::Application.config.session_store(

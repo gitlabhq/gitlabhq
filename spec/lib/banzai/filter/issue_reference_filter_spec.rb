@@ -95,6 +95,14 @@ describe Banzai::Filter::IssueReferenceFilter, lib: true do
       result = reference_pipeline_result("Fixed #{reference}")
       expect(result[:references][:issue]).to eq [issue]
     end
+
+    it 'does not process links containing issue numbers followed by text' do
+      href = "#{reference}st"
+      doc = reference_filter("<a href='#{href}'></a>")
+      link = doc.css('a').first.attr('href')
+
+      expect(link).to eq(href)
+    end
   end
 
   context 'cross-project reference' do

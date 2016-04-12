@@ -2,7 +2,7 @@
 <%
 require "yaml"
 require "json"
-require_relative "lib/gitlab/redis_config"
+require_relative "lib/gitlab/redis"
 
 rails_env = ENV["RAILS_ENV"] || ENV["RACK_ENV"] || "development"
 
@@ -17,8 +17,8 @@ if File.exists?(config_file)
   config['start_tls']  = false    if config['start_tls'].nil?
   config['mailbox']    = "inbox"  if config['mailbox'].nil?
 
-  if config['enabled'] && config['address'] && config['address'].include?('%{key}')
-    redis_url = Gitlab::RedisConfig.new(rails_env).url
+  if config['enabled'] && config['address']
+    redis_url = Gitlab::Redis.new(rails_env).url
     %>
     -
       :host: <%= config['host'].to_json %>

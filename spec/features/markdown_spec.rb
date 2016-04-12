@@ -39,7 +39,7 @@ describe 'GitLab Markdown', feature: true do
   end
 
   def doc(html = @html)
-    Nokogiri::HTML::DocumentFragment.parse(html)
+    @doc ||= Nokogiri::HTML::DocumentFragment.parse(html)
   end
 
   # Shared behavior that all pipelines should exhibit
@@ -230,6 +230,7 @@ describe 'GitLab Markdown', feature: true do
       file = Gollum::File.new(@project_wiki.wiki)
       expect(file).to receive(:path).and_return('images/example.jpg')
       expect(@project_wiki).to receive(:find_file).with('images/example.jpg').and_return(file)
+      allow(@project_wiki).to receive(:wiki_base_path) { '/namespace1/gitlabhq/wikis' }
 
       @html = markdown(@feat.raw_markdown, { pipeline: :wiki, project_wiki: @project_wiki })
     end

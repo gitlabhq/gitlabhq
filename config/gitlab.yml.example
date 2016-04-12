@@ -80,7 +80,7 @@ production: &base
     # This happens when the commit is pushed or merged into the default branch of a project.
     # When not specified the default issue_closing_pattern as specified below will be used.
     # Tip: you can test your closing pattern at http://rubular.com.
-    # issue_closing_pattern: '((?:[Cc]los(?:e[sd]?|ing)|[Ff]ix(?:e[sd]|ing)?) +(?:(?:issues? +)?%{issue_ref}(?:(?:, *| +and +)?))+)'
+    # issue_closing_pattern: '((?:[Cc]los(?:e[sd]?|ing)|[Ff]ix(?:e[sd]|ing)?|[Rr]esolv(?:e[sd]?|ing))(:?) +(?:(?:issues? +)?%{issue_ref}(?:(?:, *| +and +)?)|([A-Z][A-Z0-9_]+-\d+))+)'
 
     ## Default project features settings
     default_projects_features:
@@ -106,7 +106,7 @@ production: &base
     enabled: false
 
     # The email address including the `%{key}` placeholder that will be replaced to reference the item being replied to.
-    # The `%{key}` placeholder is added after the user part, after a `+` character, before the `@`.
+    # The placeholder can be omitted but if present, it must appear in the "user" part of the address (before the `@`).
     address: "gitlab-incoming+%{key}@gmail.com"
 
     # Email account username
@@ -345,6 +345,8 @@ production: &base
       #
       # - { name: 'saml',
       #     label: 'Our SAML Provider',
+      #     groups_attribute: 'Groups',
+      #     external_groups: ['Contractors', 'Freelancers'],
       #     args: {
       #             assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback',
       #             idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
@@ -352,6 +354,7 @@ production: &base
       #             issuer: 'https://gitlab.example.com',
       #             name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:transient'
       #           } }
+      #
       # - { name: 'crowd',
       #     args: {
       #       crowd_server_url: 'CROWD SERVER URL',

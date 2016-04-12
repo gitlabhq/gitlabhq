@@ -206,6 +206,8 @@ class Project < ActiveRecord::Base
   mount_uploader :avatar, AvatarUploader
 
   # Scopes
+  default_scope { where(pending_delete: false) }
+
   scope :sorted_by_activity, -> { reorder(last_activity_at: :desc) }
   scope :sorted_by_stars, -> { reorder('projects.star_count DESC') }
   scope :sorted_by_names, -> { joins(:namespace).reorder('namespaces.name ASC, projects.name ASC') }
@@ -304,7 +306,7 @@ class Project < ActiveRecord::Base
     end
 
     def find_with_namespace(id)
-      namespace_path, project_path = id.split('/')
+      namespace_path, project_path = id.split('/', 2)
 
       return nil if !namespace_path || !project_path
 
@@ -469,7 +471,7 @@ class Project < ActiveRecord::Base
   end
 
   def web_url
-    Gitlab::Application.routes.url_helpers.namespace_project_url(self.namespace, self)
+    Gitlab::Routing.url_helpers.namespace_project_url(self.namespace, self)
   end
 
   def web_url_without_protocol
@@ -590,7 +592,7 @@ class Project < ActiveRecord::Base
     if avatar.present?
       [gitlab_config.url, avatar.url].join
     elsif avatar_in_git
-      Gitlab::Application.routes.url_helpers.namespace_project_avatar_url(namespace, self)
+      Gitlab::Routing.url_helpers.namespace_project_avatar_url(namespace, self)
     end
   end
 
@@ -927,16 +929,6 @@ class Project < ActiveRecord::Base
 
   def enable_ci
     self.builds_enabled = true
-  end
-
-  def unlink_fork
-    if forked?
-      forked_from_project.lfs_objects.find_each do |lfs_object|
-        lfs_object.projects << self
-      end
-
-      forked_project_link.destroy
-    end
   end
 
   def any_runners?(&block)

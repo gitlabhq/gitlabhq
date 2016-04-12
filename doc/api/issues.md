@@ -76,8 +76,9 @@ Example response:
       "title" : "Consequatur vero maxime deserunt laboriosam est voluptas dolorem.",
       "created_at" : "2016-01-04T15:31:51.081Z",
       "iid" : 6,
-      "labels" : []
-   },
+      "labels" : [],
+      "subscribed" : false
+   }
 ]
 ```
 
@@ -152,7 +153,8 @@ Example response:
       "id" : 41,
       "title" : "Ut commodi ullam eos dolores perferendis nihil sunt.",
       "updated_at" : "2016-01-04T15:31:46.176Z",
-      "created_at" : "2016-01-04T15:31:46.176Z"
+      "created_at" : "2016-01-04T15:31:46.176Z",
+      "subscribed" : false
    }
 ]
 ```
@@ -213,7 +215,8 @@ Example response:
    "id" : 41,
    "title" : "Ut commodi ullam eos dolores perferendis nihil sunt.",
    "updated_at" : "2016-01-04T15:31:46.176Z",
-   "created_at" : "2016-01-04T15:31:46.176Z"
+   "created_at" : "2016-01-04T15:31:46.176Z",
+   "subscribed": false
 }
 ```
 
@@ -237,6 +240,7 @@ POST /projects/:id/issues
 | `assignee_id`   | integer | no  | The ID of a user to assign issue |
 | `milestone_id`  | integer | no  | The ID of a milestone to assign issue |
 | `labels`        | string  | no  | Comma-separated label names for an issue  |
+| `created_at`    | string  | no  | Date time string, ISO 8601 formatted, e.g. `2016-03-11T03:45:40Z` |
 
 ```bash
 curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/4/issues?title=Issues%20with%20auth&labels=bug
@@ -266,7 +270,8 @@ Example response:
    },
    "description" : null,
    "updated_at" : "2016-01-07T12:44:33.959Z",
-   "milestone" : null
+   "milestone" : null,
+   "subscribed" : true
 }
 ```
 
@@ -322,7 +327,8 @@ Example response:
    ],
    "id" : 85,
    "assignee" : null,
-   "milestone" : null
+   "milestone" : null,
+   "subscribed" : true
 }
 ```
 
