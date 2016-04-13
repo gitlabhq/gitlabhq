@@ -19,6 +19,8 @@
 
   gl.animate.animateEach = ($els, animation, time, options, done) ->
     dfd = $.Deferred()
+    if not $els.length
+      dfd.resolve()
     $els.each((i) ->
       setTimeout(=>
         $this = $(@)
