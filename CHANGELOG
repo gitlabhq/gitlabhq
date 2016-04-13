@@ -23,6 +23,7 @@ v 8.7.0 (unreleased)
   - Handle nil descriptions in Slack issue messages (Stan Hu)
   - API: Expose open_issues_count, closed_issues_count, open_merge_requests_count for labels (Robert Schilling)
   - Add default scope to projects to exclude projects pending deletion
+  - Allow to close merge requests which source projects(forks) are deleted.
   - Ensure empty recipients are rejected in BuildsEmailService
   - API: Ability to filter milestones by state `active` and `closed` (Robert Schilling)
   - API: Fix milestone filtering by `iid` (Robert Schilling)
