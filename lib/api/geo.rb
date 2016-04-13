@@ -28,8 +28,8 @@ module API
       # Example request:
       #   POST /geo/refresh_key
       post 'refresh_key' do
-        required_attributes! [:key_change]
-        ::Geo::ScheduleKeyChangeService.new(params[:key_change]).execute
+        required_attributes! %w(event_name key id)
+        ::Geo::ScheduleKeyChangeService.new(params).execute
       end
     end
   end

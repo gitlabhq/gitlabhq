@@ -42,10 +42,6 @@ module Gitlab
       ::Geo::EnqueueWikiUpdateService.new(project).execute
     end
 
-    def self.notify_key_change(key_id, key, action)
-      GeoKeyChangeNotifyWorker.perform_async(key_id, key, action)
-    end
-
     def self.bulk_notify_job
       Sidekiq::Cron::Job.find('geo_bulk_notify_worker')
     end

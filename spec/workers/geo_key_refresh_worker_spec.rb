@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 describe GeoKeyRefreshWorker do
-  subject(:key_create) { described_class.new.perform(key.id, key.key, 'create') }
-  subject(:key_delete) { described_class.new.perform(key.id, key.key, 'delete') }
+  subject(:key_create) { described_class.new.perform(key.id, key.key, 'key_create') }
+  subject(:key_delete) { described_class.new.perform(key.id, key.key, 'key_destroy') }
   let(:key) { FactoryGirl.create(:key) }
 
   context 'key creation' do

@@ -21,14 +21,35 @@ describe API::API, api: true do
 
   describe 'POST /geo/refresh_key' do
     before(:each) { allow_any_instance_of(::Geo::ScheduleKeyChangeService).to receive(:execute) }
+    let(:key_create_payload) do
+      {
+        'event_name' => 'key_create',
+        'created_at' => '2014-08-18 18:45:16 UTC',
+        'updated_at' => '2012-07-21T07:38:22Z',
+        'username' => 'root',
+        'key' => 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC58FwqHUbebw2SdT7SP4FxZ0w+lAO/erhy2ylhlcW/tZ3GY3mBu9VeeiSGoGz8hCx80Zrz+aQv28xfFfKlC8XQFpCWwsnWnQqO2Lv9bS8V1fIHgMxOHIt5Vs+9CAWGCCvUOAurjsUDoE2ALIXLDMKnJxcxD13XjWdK54j6ZXDB4syLF0C2PnAQSVY9X7MfCYwtuFmhQhKaBussAXpaVMRHltie3UYSBUUuZaB3J4cg/7TxlmxcNd+ppPRIpSZAB0NI6aOnqoBCpimscO/VpQRJMVLr3XiSYeT6HBiDXWHnIVPfQc03OGcaFqOit6p8lYKMaP/iUQLm+pgpZqrXZ9vB john@localhost',
+        'id' => 1
+      }
+    end
+
+    let(:key_destroy_payload) do
+      {
+        'event_name' => 'key_destroy',
+        'created_at' => '2014-08-18 18:45:16 UTC',
+        'updated_at' => '2012-07-21T07:38:22Z',
+        'username' => 'root',
+        'key' => 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC58FwqHUbebw2SdT7SP4FxZ0w+lAO/erhy2ylhlcW/tZ3GY3mBu9VeeiSGoGz8hCx80Zrz+aQv28xfFfKlC8XQFpCWwsnWnQqO2Lv9bS8V1fIHgMxOHIt5Vs+9CAWGCCvUOAurjsUDoE2ALIXLDMKnJxcxD13XjWdK54j6ZXDB4syLF0C2PnAQSVY9X7MfCYwtuFmhQhKaBussAXpaVMRHltie3UYSBUUuZaB3J4cg/7TxlmxcNd+ppPRIpSZAB0NI6aOnqoBCpimscO/VpQRJMVLr3XiSYeT6HBiDXWHnIVPfQc03OGcaFqOit6p8lYKMaP/iUQLm+pgpZqrXZ9vB john@localhost',
+        'id' => 1
+      }
+    end
 
     it 'enqueues on disk key creation if admin and correct params' do
-      post api('/geo/refresh_key', admin), key_change: { id: 1, action: 'create' }
+      post api('/geo/refresh_key', admin), key_create_payload
       expect(response.status).to eq 201
     end
 
     it 'enqueues on disk key removal if admin and correct params' do
-      post api('/geo/refresh_key', admin), key_change: { id: 1, action: 'delete' }
+      post api('/geo/refresh_key', admin), key_destroy_payload
       expect(response.status).to eq 201
     end
 
