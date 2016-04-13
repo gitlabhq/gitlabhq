@@ -272,6 +272,40 @@ module API
         present user_project, with: Entities::Project
       end
 
+      # Star project
+      #
+      # Parameters:
+      #   id (required) - The ID of a project
+      # Example Request:
+      #   POST /projects/:id/star
+      post ':id/star' do
+        if current_user.starred?(user_project)
+          not_modified!
+        else
+          current_user.toggle_star(user_project)
+          user_project.reload
+
+          present user_project, with: Entities::Project
+        end
+      end
+
+      # Unstar project
+      #
+      # Parameters:
+      #   id (required) - The ID of a project
+      # Example Request:
+      #   DELETE /projects/:id/star
+      delete ':id/star' do
+        if current_user.starred?(user_project)
+          current_user.toggle_star(user_project)
+          user_project.reload
+
+          present user_project, with: Entities::Project
+        else
+          not_modified!
+        end
+      end
+
       # Remove project
       #
       # Parameters:

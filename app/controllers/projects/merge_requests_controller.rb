@@ -237,6 +237,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       end
     end
 
+    status = "preparing" if status.nil?
+
     response = {
       title: merge_request.title,
       sha: merge_request.last_commit_short_sha,

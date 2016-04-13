@@ -7,7 +7,7 @@ describe API::API, api: true  do
   let(:author)      { create(:author) }
   let(:assignee)    { create(:assignee) }
   let(:admin)       { create(:user, :admin) }
-  let!(:project)    { create(:project, :public, namespace: user.namespace ) }
+  let!(:project)    { create(:project, :public, creator_id: user.id, namespace: user.namespace ) }
   let!(:closed_issue) do
     create :closed_issue,
            author: user,
@@ -498,6 +498,74 @@ describe API::API, api: true  do
         delete api("/projects/#{project.id}/issues/#{issue.id}", owner)
         expect(response.status).to eq(200)
         expect(json_response['state']).to eq 'opened'
+      end
+    end
+  end
+
+  describe '/projects/:id/issues/:issue_id/move' do
+    let!(:target_project) { create(:project, path: 'project2', creator_id: user.id, namespace: user.namespace ) }
+    let!(:target_project2) { create(:project, creator_id: non_member.id, namespace: non_member.namespace ) }
+
+    it 'moves an issue' do
+      post api("/projects/#{project.id}/issues/#{issue.id}/move", user),
+               to_project_id: target_project.id
+
+      expect(response.status).to eq(201)
+      expect(json_response['project_id']).to eq(target_project.id)
+    end
+
+    context 'when source and target projects are the same' do
+      it 'returns 400 when trying to move an issue' do
+        post api("/projects/#{project.id}/issues/#{issue.id}/move", user),
+                 to_project_id: project.id
+
+        expect(response.status).to eq(400)
+        expect(json_response['message']).to eq('Cannot move issue to project it originates from!')
+      end
+    end
+
+    context 'when the user does not have the permission to move issues' do
+      it 'returns 400 when trying to move an issue' do
+        post api("/projects/#{project.id}/issues/#{issue.id}/move", user),
+                 to_project_id: target_project2.id
+
+        expect(response.status).to eq(400)
+        expect(json_response['message']).to eq('Cannot move issue due to insufficient permissions!')
+      end
+    end
+
+    it 'moves the issue to another namespace if I am admin' do
+      post api("/projects/#{project.id}/issues/#{issue.id}/move", admin),
+               to_project_id: target_project2.id
+
+      expect(response.status).to eq(201)
+      expect(json_response['project_id']).to eq(target_project2.id)
+    end
+
+    context 'when issue does not exist' do
+      it 'returns 404 when trying to move an issue' do
+        post api("/projects/#{project.id}/issues/123/move", user),
+                 to_project_id: target_project.id
+
+        expect(response.status).to eq(404)
+      end
+    end
+
+    context 'when source project does not exist' do
+      it 'returns 404 when trying to move an issue' do
+        post api("/projects/123/issues/#{issue.id}/move", user),
+                 to_project_id: target_project.id
+
+        expect(response.status).to eq(404)
+      end
+    end
+
+    context 'when target project does not exist' do
+      it 'returns 404 when trying to move an issue' do
+        post api("/projects/#{project.id}/issues/#{issue.id}/move", user),
+                 to_project_id: 123
+
+        expect(response.status).to eq(404)
       end
     end
   end
