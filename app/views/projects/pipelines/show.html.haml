@@ -1,3 +1,9 @@
 - page_title "Pipeline"
+
 = render "header_title"
+.prepend-top-default
+  - if @commit
+    = render "projects/commit/commit_box", pipeline: @pipeline
+  %div.block-connector
+
 = render "projects/commit/ci_commit", ci_commit: @pipeline

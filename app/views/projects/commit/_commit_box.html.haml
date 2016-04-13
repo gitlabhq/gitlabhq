@@ -1,6 +1,6 @@
 .pull-right
   %div
-    - if @notes_count > 0
+    - if defined?(@notes_count) && @notes_count > 0
       %span.btn.disabled.btn-grouped
         %i.fa.fa-comment
         = @notes_count
@@ -42,7 +42,14 @@
   - @commit.parents.each do |parent|
     = link_to parent.short_id, namespace_project_commit_path(@project.namespace, @project, parent), class: "monospace"
 
-- if @commit.status
+- if defined?(pipeline) && pipeline
+  .pull-right
+    = link_to namespace_project_pipeline_path(@project.namespace, @project, pipeline), class: "ci-status ci-#{pipeline.status}" do
+      = ci_icon_for_status(pipeline.status)
+      pipeline:
+      = ci_label_for_status(pipeline.status)
+
+- elsif @commit.status
   .pull-right
     = link_to builds_namespace_project_commit_path(@project.namespace, @project, @commit.id), class: "ci-status ci-#{@commit.status}" do
       = ci_icon_for_status(@commit.status)
