@@ -12,12 +12,14 @@ module CiStatus
       pending = all.pending.select('count(*)').to_sql
       running = all.running.select('count(*)').to_sql
       canceled = all.canceled.select('count(*)').to_sql
+      skipped = all.skipped.select('count(*)').to_sql
 
       deduce_status = "(CASE
         WHEN (#{builds})=0 THEN 'skipped'
         WHEN (#{builds})=(#{success})+(#{ignored}) THEN 'success'
         WHEN (#{builds})=(#{pending}) THEN 'pending'
         WHEN (#{builds})=(#{canceled}) THEN 'canceled'
+        WHEN (#{builds})=(#{skipped}) THEN 'skipped'
         WHEN (#{running})+(#{pending})>0 THEN 'running'
         ELSE 'failed'
       END)"
@@ -52,6 +54,7 @@ module CiStatus
     scope :success, -> { where(status: 'success') }
     scope :failed, -> { where(status: 'failed')  }
     scope :canceled, -> { where(status: 'canceled')  }
+    scope :skipped, -> { where(status: 'skipped')  }
     scope :running_or_pending, -> { where(status: [:running, :pending]) }
     scope :finished, -> { where(status: [:success, :failed, :canceled]) }
   end
