@@ -19,7 +19,7 @@ describe API::API, api: true do
     end
   end
 
-  describe 'POST /geo/refresh_key' do
+  describe 'POST /geo/receive_events' do
     before(:each) { allow_any_instance_of(::Geo::ScheduleKeyChangeService).to receive(:execute) }
     let(:key_create_payload) do
       {
@@ -44,17 +44,17 @@ describe API::API, api: true do
     end
 
     it 'enqueues on disk key creation if admin and correct params' do
-      post api('/geo/refresh_key', admin), key_create_payload
+      post api('/geo/receive_events', admin), key_create_payload
       expect(response.status).to eq 201
     end
 
     it 'enqueues on disk key removal if admin and correct params' do
-      post api('/geo/refresh_key', admin), key_destroy_payload
+      post api('/geo/receive_events', admin), key_destroy_payload
       expect(response.status).to eq 201
     end
 
     it 'denies access if not admin' do
-      post api('/geo/refresh_key', user)
+      post api('/geo/receive_events', user)
       expect(response.status).to eq 403
     end
   end

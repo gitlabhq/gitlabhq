@@ -23,15 +23,6 @@ module API
         ::Geo::ScheduleWikiRepoUpdateService.new(params[:projects]).execute
       end
 
-      # Enqueue a change operation for specific key ID
-      #
-      # Example request:
-      #   POST /geo/refresh_key
-      post 'refresh_key' do
-        required_attributes! %w(event_name key id)
-        ::Geo::ScheduleKeyChangeService.new(params).execute
-      end
-
       # Receive event streams from primary and enqueue changes
       #
       # Example request:

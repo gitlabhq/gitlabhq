@@ -79,15 +79,4 @@ describe Gitlab::Geo, lib: true do
       described_class.notify_project_update(project)
     end
   end
-
-  describe 'notify_ssh_key_change' do
-    let(:key) { FactoryGirl.build(:key) }
-
-    it 'schedule async notification' do
-      expect(GeoKeyChangeNotifyWorker).to receive(:perform_async).and_call_original
-      expect_any_instance_of(GeoKeyChangeNotifyWorker).to receive(:perform)
-
-      described_class.notify_key_change(key.id, key, 'create')
-    end
-  end
 end
