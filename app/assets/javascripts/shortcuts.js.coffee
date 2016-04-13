@@ -21,8 +21,7 @@ class @Shortcuts
       $modal.modal('toggle')
       return
 
-    url = '/help/shortcuts'
-    url = gon.relative_url_root + url if gon.relative_url_root?
+    url = gon.relative_url_root + gon.shortcuts_path if gon.relative_url_root?
     $.ajax(
       url: url,
       dataType: 'script',
