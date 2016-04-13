@@ -471,7 +471,7 @@ Rails.application.routes.draw do
         post :unarchive
         post :housekeeping
         post :toggle_star
-        post :markdown_preview
+        post :preview_markdown
         post :export
         post :remove_export
         post :generate_new_export
@@ -660,7 +660,7 @@ Rails.application.routes.draw do
           get '/wikis/*id', to: 'wikis#show', as: 'wiki', constraints: WIKI_SLUG_ID
           delete '/wikis/*id', to: 'wikis#destroy', constraints: WIKI_SLUG_ID
           put '/wikis/*id', to: 'wikis#update', constraints: WIKI_SLUG_ID
-          post '/wikis/*id/markdown_preview', to: 'wikis#markdown_preview', constraints: WIKI_SLUG_ID, as: 'wiki_markdown_preview'
+          post '/wikis/*id/preview_markdown', to: 'wikis#preview_markdown', constraints: WIKI_SLUG_ID, as: 'wiki_preview_markdown'
         end
 
         resource :repository, only: [:create] do
