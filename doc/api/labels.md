@@ -23,42 +23,42 @@ Example response:
    {
       "name" : "bug",
       "color" : "#d9534f",
-      "description": "Bug reported by user"
+      "description": "Bug reported by user",
+      "open_issues_count": 1,
+      "closed_issues_count": 0,
+      "open_merge_requests_count": 1
    },
    {
       "color" : "#d9534f",
       "name" : "confirmed",
-      "description": "Confirmed issue"
+      "description": "Confirmed issue",
+      "open_issues_count": 2,
+      "closed_issues_count": 5,
+      "open_merge_requests_count": 0
    },
    {
       "name" : "critical",
       "color" : "#d9534f",
-      "description": "Criticalissue. Need fix ASAP"
-   },
-   {
-      "color" : "#428bca",
-      "name" : "discussion",
-      "description": "Issue that needs further discussion"
+      "description": "Criticalissue. Need fix ASAP",
+      "open_issues_count": 1,
+      "closed_issues_count": 3,
+      "open_merge_requests_count": 1
    },
    {
       "name" : "documentation",
       "color" : "#f0ad4e",
-      "description": "Issue about documentation"
+      "description": "Issue about documentation",
+      "open_issues_count": 1,
+      "closed_issues_count": 0,
+      "open_merge_requests_count": 2
    },
    {
       "color" : "#5cb85c",
       "name" : "enhancement",
-      "description": "Enhancement proposal"
-   },
-   {
-      "color" : "#428bca",
-      "name" : "suggestion",
-      "description": "Suggestion"
-   },
-   {
-      "color" : "#f0ad4e",
-      "name" : "support",
-      "description": "Support issue"
+      "description": "Enhancement proposal",
+      "open_issues_count": 1,
+      "closed_issues_count": 0,
+      "open_merge_requests_count": 1
    }
 ]
 ```

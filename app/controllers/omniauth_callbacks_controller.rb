@@ -60,6 +60,8 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
       continue_login_process
     end
+  rescue Gitlab::OAuth::SignupDisabledError
+    handle_signup_error
   end
 
   def omniauth_error
@@ -92,16 +94,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       continue_login_process
     end
   rescue Gitlab::OAuth::SignupDisabledError
-    label = Gitlab::OAuth::Provider.label_for(oauth['provider'])
-    message = "Signing in using your #{label} account without a pre-existing GitLab account is not allowed."
-
-    if current_application_settings.signup_enabled?
-      message << " Create a GitLab account first, and then connect it to your #{label} account."
-    end
-
-    flash[:notice] = message
-
-    redirect_to new_user_session_path
+    handle_signup_error
   end
 
   def handle_service_ticket provider, ticket
@@ -120,6 +113,19 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
       redirect_to omniauth_error_path(oauth['provider'], error: error_message) and return
     end
+  end
+
+  def handle_signup_error
+    label = Gitlab::OAuth::Provider.label_for(oauth['provider'])
+    message = "Signing in using your #{label} account without a pre-existing GitLab account is not allowed."
+
+    if current_application_settings.signup_enabled?
+      message << " Create a GitLab account first, and then connect it to your #{label} account."
+    end
+
+    flash[:notice] = message
+
+    redirect_to new_user_session_path
   end
 
   def oauth

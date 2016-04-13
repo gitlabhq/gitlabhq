@@ -8,7 +8,7 @@ describe CiStatus do
 
   describe '.status' do
     before do
-      allow(@object).to receive(:all).and_return(statuses)
+      allow(@object).to receive(:all).and_return(CommitStatus.where(id: statuses))
     end
 
     subject { @object.status }

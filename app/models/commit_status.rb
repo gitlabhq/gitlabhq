@@ -51,8 +51,6 @@ class CommitStatus < ActiveRecord::Base
   scope :ordered, -> { order(:ref, :stage_idx, :name) }
   scope :ignored, -> { where(allow_failure: true, status: [:failed, :canceled]) }
 
-  AVAILABLE_STATUSES = ['pending', 'running', 'success', 'failed', 'canceled']
-
   state_machine :status, initial: :pending do
     event :run do
       transition pending: :running

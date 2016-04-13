@@ -33,14 +33,6 @@ module GitlabRoutingHelper
     namespace_project_builds_path(project.namespace, project, *args)
   end
 
-  def project_commit_path(project, commit)
-    builds_namespace_project_commit_path(project.namespace, project, commit.id)
-  end
-
-  def project_pipeline_path(project, ci_commit)
-    builds_namespace_project_commit_path(project.namespace, project, ci_commit.sha)
-  end
-
   def activity_project_path(project, *args)
     activity_namespace_project_path(project.namespace, project, *args)
   end

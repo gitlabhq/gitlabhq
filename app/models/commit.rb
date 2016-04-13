@@ -150,13 +150,11 @@ class Commit
   end
 
   def hook_attrs(with_changed_files: false)
-    path_with_namespace = project.path_with_namespace
-
     data = {
       id: id,
       message: safe_message,
       timestamp: committed_date.xmlschema,
-      url: "#{Gitlab.config.gitlab.url}/#{path_with_namespace}/commit/#{id}",
+      url: commit_url,
       author: {
         name: author_name,
         email: author_email
@@ -168,6 +166,10 @@ class Commit
     end
 
     data
+  end
+
+  def commit_url
+    project.present? ? "#{Gitlab.config.gitlab.url}/#{project.path_with_namespace}/commit/#{id}" : ""
   end
 
   # Discover issues should be closed when this commit is pushed to a project's

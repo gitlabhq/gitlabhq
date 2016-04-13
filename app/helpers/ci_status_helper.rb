@@ -1,4 +1,9 @@
 module CiStatusHelper
+  def ci_status_path(ci_commit)
+    project = ci_commit.project
+    builds_namespace_project_commit_path(project.namespace, project, ci_commit.sha)
+  end
+
   def ci_status_with_icon(status, target = nil)
     content = ci_icon_for_status(status) + '&nbsp;'.html_safe + ci_label_for_status(status)
     klass = "ci-status ci-#{status}"
@@ -34,10 +39,11 @@ module CiStatusHelper
   end
 
   def render_ci_status(ci_commit, tooltip_placement: 'auto left')
-    return unless ci_commit.is_a?(Commit) || ci_commit.is_a?(Ci::Commit)
-
+    # TODO: split this method into
+    # - render_commit_status
+    # - render_pipeline_status
     link_to ci_icon_for_status(ci_commit.status),
-      project_pipeline_path(ci_commit.project, ci_commit),
+      ci_status_path(ci_commit),
       class: "ci-status-link ci-status-icon-#{ci_commit.status.dasherize}",
       title: "Build #{ci_label_for_status(ci_commit.status)}",
       data: { toggle: 'tooltip', placement: tooltip_placement }

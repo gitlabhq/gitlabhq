@@ -69,11 +69,16 @@ header {
   }
 
   .header-content {
+    position: relative;
     height: $header-height;
     padding-right: 20px;
 
     @media (min-width: $screen-sm-min) {
       padding-right: 0;
+    }
+
+    .dropdown-menu {
+      margin-top: -5px;
     }
 
     .title {

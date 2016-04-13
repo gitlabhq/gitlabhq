@@ -3,8 +3,16 @@ module NamespacesHelper
     groups = current_user.owned_groups + current_user.masters_groups
     users = [current_user.namespace]
 
-    group_opts = ["Groups", groups.sort_by(&:human_name).map {|g| [display_path ? g.path : g.human_name, g.id]} ]
-    users_opts = [ "Users", users.sort_by(&:human_name).map {|u| [display_path ? u.path : u.human_name, u.id]} ]
+    data_attr_group = { 'data-options-parent' => 'groups' }
+    data_attr_users = { 'data-options-parent' => 'users' }
+
+    group_opts = [
+      "Groups", groups.sort_by(&:human_name).map { |g| [display_path ? g.path : g.human_name, g.id, data_attr_group] }
+    ]
+
+    users_opts = [
+      "Users", users.sort_by(&:human_name).map { |u| [display_path ? u.path : u.human_name, u.id, data_attr_users] }
+    ]
 
     options = []
     options << group_opts

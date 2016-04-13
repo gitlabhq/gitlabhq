@@ -1,15 +1,17 @@
 module CiStatus
   extend ActiveSupport::Concern
 
-  module ClassMethods
+  AVAILABLE_STATUSES = %w(pending running success failed canceled skipped)
+
+  class_methods do
     def status_sql
-      builds = all.select('count(id)').to_sql
-      success = all.success.select('count(id)').to_sql
-      ignored = all.failed.where(allow_failure: true).select('count(id)').to_sql if all.try(:ignored)
+      builds = all.select('count(*)').to_sql
+      success = all.success.select('count(*)').to_sql
+      ignored = all.ignored.select('count(*)').to_sql if all.try(:ignored)
       ignored ||= '0'
-      pending = all.pending.select('count(id)').to_sql
-      running = all.running.select('count(id)').to_sql
-      canceled = all.canceled.select('count(id)').to_sql
+      pending = all.pending.select('count(*)').to_sql
+      running = all.running.select('count(*)').to_sql
+      canceled = all.canceled.select('count(*)').to_sql
 
       deduce_status = "(CASE
         WHEN (#{builds})=0 THEN 'skipped'
@@ -24,7 +26,7 @@ module CiStatus
     end
 
     def status
-      pluck(self.status_sql).first
+      all.pluck(self.status_sql).first
     end
 
     def duration
@@ -34,7 +36,7 @@ module CiStatus
   end
 
   included do
-    validates :status, inclusion: { in: %w(pending running failed success canceled skipped) }
+    validates :status, inclusion: { in: AVAILABLE_STATUSES }
 
     state_machine :status, initial: :pending do
       state :pending, value: 'pending'

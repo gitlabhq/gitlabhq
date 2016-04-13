@@ -263,6 +263,12 @@
     }
   }
 
+  .dropdown-content {
+    a:hover {
+      color: inherit;
+    }
+  }
+
   .dropdown-menu-toggle {
     width: 100%;
     padding-top: 6px;

@@ -30,7 +30,7 @@ This is the universal solution which works with any type of executor
 ## SSH keys when using the Docker executor
 
 You will first need to create an SSH key pair. For more information, follow the
-instructions to [generate an SSH key](../ssh/README.md).
+instructions to [generate an SSH key](../../ssh/README.md).
 
 Then, create a new **Secret Variable** in your project settings on GitLab
 following **Settings > Variables**. As **Key** add the name `SSH_PRIVATE_KEY`
@@ -63,7 +63,7 @@ before_script:
 As a final step, add the _public_ key from the one you created earlier to the
 services that you want to have an access to from within the build environment.
 If you are accessing a private GitLab repository you need to add it as a
-[deploy key](../ssh/README.md#deploy-keys).
+[deploy key](../../ssh/README.md#deploy-keys).
 
 That's it! You can now have access to private servers or repositories in your
 build environment.
@@ -79,12 +79,12 @@ on, and use that key for all projects that are run on this machine.
 First, you need to login to the server that runs your builds.
 
 Then from the terminal login as the `gitlab-runner` user and generate the SSH
-key pair as described in the [SSH keys documentation](../ssh/README.md).
+key pair as described in the [SSH keys documentation](../../ssh/README.md).
 
 As a final step, add the _public_ key from the one you created earlier to the
 services that you want to have an access to from within the build environment.
 If you are accessing a private GitLab repository you need to add it as a
-[deploy key](../ssh/README.md#deploy-keys).
+[deploy key](../../ssh/README.md#deploy-keys).
 
 Once done, try to login to the remote server in order to accept the fingerprint:
 
