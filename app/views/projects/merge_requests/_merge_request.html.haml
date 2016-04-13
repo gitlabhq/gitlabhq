@@ -13,7 +13,7 @@
 
       - if merge_request.ci_commit
         %li
-          = render_ci_status(merge_request.ci_commit)
+          = render_pipeline_status(merge_request.ci_commit)
 
       - if merge_request.open? && merge_request.broken?
         %li
