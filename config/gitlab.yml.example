@@ -316,6 +316,13 @@ production: &base
     # (default: false)
     auto_link_saml_user: false
 
+    # Set different Omniauth providers as external so that all users creating accounts
+    # via these providers will not be able to have access to internal projects. You
+    # will need to use the full name of the provider, like `google_oauth2` for Google.
+    # Refer to the examples below for the full names of the supported providers.
+    # (default: [])
+    external_providers: []
+
     ## Auth providers
     # Uncomment the following lines and fill in the data of the auth provider you want to use
     # If your favorite auth provider is not listed you can use others:
