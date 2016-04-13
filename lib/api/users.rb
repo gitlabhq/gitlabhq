@@ -40,7 +40,7 @@ module API
       get ":id" do
         @user = User.find(params[:id])
 
-        if current_user.present? && current_user.is_admin?
+        if current_user && current_user.is_admin?
           present @user, with: Entities::UserFull
         elsif can?(current_user, :read_user, @user)
           present @user, with: Entities::User
