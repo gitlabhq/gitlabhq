@@ -14,13 +14,14 @@ window.GlPage = {
 
       delegate: (targetsObj) ->
         (e, data) ->
+          $currentTarget = $(e.currentTarget)
           $target = $(e.target)
 
           for selector, callback of targetsObj
-            child = $target.find(selector)
-            if !e.isPropagationStopped() && child.length
+            children = $currentTarget.find(selector)
+            if !e.isPropagationStopped() && children.length
               data ?= {}
-              e.currentTarget = data.el = child[0]
+              e.currentTarget = data.el = children[0]
               callback.apply(e.currentTarget, [e, data])
 
       triggerEventAlias: (targetEvent) ->
@@ -67,7 +68,7 @@ window.GlPage = {
           throw new Error 'Unable to register event #{type}, handler should be a function, object or string'
 
         @events.push({
-          el: el,
+          el: $el,
           type: eventType,
           handler: callback
         })
@@ -88,7 +89,7 @@ window.GlPage = {
           callback = args[lastArgIndex]
           lastArgIndex -= 1
 
-        if lastIndex == 1
+        if lastArgIndex == 1
           $el = $(args[0])
           type = args[1]
 
