@@ -29,16 +29,8 @@ module Ci
     validates_presence_of :sha
     validate :valid_commit_sha
 
-    # Make sure that status is saved
-    before_save :status
-    before_save :started_at
-    before_save :finished_at
-    before_save :duration
-
     # Invalidate object and save if when touched
-    after_touch :reload
-    after_touch :invalidate
-    after_touch :save
+    after_touch :update_state
 
     def self.truncate_sha(sha)
       sha[0...8]
@@ -105,13 +97,6 @@ module Ci
       trigger_requests.any?
     end
 
-    def invalidate
-      write_attribute(:status, nil)
-      write_attribute(:started_at, nil)
-      write_attribute(:finished_at, nil)
-      write_attribute(:duration, nil)
-    end
-
     def create_builds(user, trigger_request = nil)
       return unless config_processor
       config_processor.stages.any? do |stage|
@@ -146,22 +131,6 @@ module Ci
 
     def retried
       @retried ||= (statuses.order(id: :desc) - statuses.latest)
-    end
-
-    def status
-      read_attribute(:status) || update_status
-    end
-
-    def duration
-      read_attribute(:duration) || update_duration
-    end
-
-    def started_at
-      read_attribute(:started_at) || update_started_at
-    end
-
-    def finished_at
-      read_attribute(:finished_at) || update_finished_at
     end
 
     def coverage
@@ -199,45 +168,26 @@ module Ci
 
     private
 
-    def update_status
-      self.status =
-        if yaml_errors.present?
-          'failed'
-        else
-          latest.status || 'skipped'
-        end
-    end
-
-    def update_started_at
-      self.started_at =
-        statuses.minimum(:started_at)
-    end
-
-    def update_finished_at
-      self.finished_at =
-        statuses.maximum(:finished_at)
-    end
-
-    def update_duration
+    def update_state
+      reload
+      self.status = if yaml_errors.present?
+                      'failed'
+                    else
+                      latest.status
+                    end
+      self.started_at = statuses.minimum(:started_at)
+      self.finished_at = statuses.maximum(:finished_at)
       self.duration = begin
         duration_array = latest.map(&:duration).compact
         duration_array.reduce(:+).to_i
       end
-    end
-
-    def update_statuses
-      update_status
-      update_started_at
-      update_finished_at
-      update_duration
       save
     end
 
     def save_yaml_error(error)
       return if self.yaml_errors?
       self.yaml_errors = error
-      update_status
-      save
+      update_state
     end
   end
 end
