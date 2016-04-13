@@ -127,24 +127,29 @@ module Ci
 
     def config_processor
       return nil unless ci_yaml_file
-      @config_processor ||= Ci::GitlabCiYamlProcessor.new(ci_yaml_file, project.path_with_namespace)
-    rescue Ci::GitlabCiYamlProcessor::ValidationError, Psych::SyntaxError => e
-      save_yaml_error(e.message)
-      nil
-    rescue
-      save_yaml_error("Undefined error")
-      nil
+      return @config_processor if defined?(@config_processor)
+
+      @config_processor ||= begin
+        Ci::GitlabCiYamlProcessor.new(ci_yaml_file, project.path_with_namespace)
+      rescue Ci::GitlabCiYamlProcessor::ValidationError, Psych::SyntaxError => e
+        save_yaml_error(e.message)
+        nil
+      rescue
+        save_yaml_error("Undefined error")
+        nil
+      end
     end
 
     def ci_yaml_file
-      return nil if defined?(@ci_yaml_file)
+      return @ci_yaml_file if defined?(@ci_yaml_file)
+
       @ci_yaml_file ||= begin
         blob = project.repository.blob_at(sha, '.gitlab-ci.yml')
         blob.load_all_data!(project.repository)
         blob.data
+      rescue
+        nil
       end
-    rescue
-      nil
     end
 
     def skip_ci?
