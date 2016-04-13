@@ -38,8 +38,3 @@ Feature: Award Emoji
     And The search field is focused
     And I search "hand"
     Then I see search result for "hand"
-
-  @javascript
-  Scenario: I add award emoji using regular comment
-    Given I leave comment with a single emoji
-    Then I have award added

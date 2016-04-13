@@ -16,7 +16,7 @@ describe AwardEmoji, models: true do
     it { is_expected.to validate_presence_of(:name) }
     it { is_expected.to validate_presence_of(:awardable) }
 
-    # To circumvent in the shoulda matchers
+    # To circumvent a bug in the shoulda matchers
     describe "scoped uniqueness validation" do
       it "rejects duplicate award emoji" do
         user  = create(:user)

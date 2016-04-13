@@ -342,11 +342,7 @@ class Note < ActiveRecord::Base
   end
 
   def award_emoji?
-    emoji_awards_supported? && contains_only_emoji?
-  end
-
-  def create_award_emoji
-    self.award_emoji = self.noteable.award_emoji(emoji_award_name, self.author)
+    award_emoji_supported? && contains_only_emoji?
   end
 
   def emoji_awardable?
@@ -365,13 +361,8 @@ class Note < ActiveRecord::Base
     diffs.find { |d| d.new_path == self.diff.new_path }
   end
 
-  def emoji_awards_supported?
+  def award_emoji_supported?
     noteable.kind_of?(Awardable)
-  end
-
-  def emoji_award_name
-    original_name = note.match(Banzai::Filter::EmojiFilter.emoji_pattern)[1]
-    Gitlab::AwardEmoji.normalize_emoji_name(original_name)
   end
 
   def contains_only_emoji?

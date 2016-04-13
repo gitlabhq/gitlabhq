@@ -73,7 +73,7 @@ module Awardable
 
   def toggle_award_emoji(emoji_name, current_user)
     if awarded_emoji?(emoji_name, current_user)
-      remove_emoji_award(emoji_name, current_user)
+      remove_award_emoji(emoji_name, current_user)
     else
       add_award_emoji(emoji_name, current_user)
     end

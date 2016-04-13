@@ -128,17 +128,14 @@ describe IssuesHelper do
   end
 
   describe "#award_active_class" do
-    before do
-      @note = create :note
-      @note1 = create :note
-    end
+    let!(:award) { create(:award_emoji) }
 
     it "returns empty string for unauthenticated user" do
-      expect(award_active_class(Note.all, nil)).to eq("")
+      expect(award_active_class(AwardEmoji.all, nil)).to eq("")
     end
 
     it "returns active string for author" do
-      expect(award_active_class(Note.all, @note.author)).to eq("active")
+      expect(award_active_class(AwardEmoji.all, award.user)).to eq("active")
     end
   end
 

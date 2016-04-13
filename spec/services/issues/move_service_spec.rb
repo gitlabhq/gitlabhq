@@ -106,6 +106,8 @@ describe Issues::MoveService, services: true do
             notes_params.each do |note|
               create(:note, note_params.merge(note))
             end
+
+            create(:award_emoji, awardable: old_issue)
           end
 
           include_context 'issue move executed'
@@ -124,6 +126,10 @@ describe Issues::MoveService, services: true do
 
           it 'preserves orignal author of comment' do
             expect(user_notes.pluck(:author_id)).to all(eq(author.id))
+          end
+
+          it 'moves the award emoji too' do
+            expect(new_issue.award_emoji).to eq(old_issue.award_emoji)
           end
         end
 

@@ -111,29 +111,42 @@ class Projects::NotesController < Projects::ApplicationController
     )
   end
 
+  # When an ordinairy note is posted, this is straight forward
+  # But when the note is ":+1:" this toggles the emoji posted
+  # note is than either an AwardEmoji or an Array (its remove using a where clause)
   def note_json(note)
-    if note.persisted?
+    case note
+    when Note
+      if note.persisted?
+        {
+          valid: true,
+          id: note.id,
+          discussion_id: note.discussion_id,
+          html: note_to_html(note),
+          note: note.note,
+          discussion_html: note_to_discussion_html(note),
+          discussion_with_diff_html: note_to_discussion_with_diff_html(note)
+        }
+      else
+        {
+          valid: false,
+          errors: note.errors
+        }
+      end
+    when AwardEmoji
       {
-        valid: true,
-        id: note.id,
-        discussion_id: note.discussion_id,
-        html: note_to_html(note),
-        note: note.note,
-        discussion_html: note_to_discussion_html(note),
-        discussion_with_diff_html: note_to_discussion_with_diff_html(note)
-      }
-    elsif note.award_emoji?
-      award_emoji = note.award_emoji
-      {
-        valid: award_emoji.valid?,
+        valid: note.valid?,
         award: true,
-        id: award_emoji.id,
-        name: award_emoji.name
+        id: note.id,
+        name: note.name
       }
     else
+      note = note.first
       {
         valid: false,
-        errors: note.errors
+        award: true,
+        id: note.id,
+        name: note.name
       }
     end
   end

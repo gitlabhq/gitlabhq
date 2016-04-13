@@ -146,7 +146,7 @@ module IssuesHelper
   end
 
   def awards_sort(awards)
-    awards.sort_by do |award, notes|
+    awards.sort_by do |award, _|
       if award == "thumbsup"
         0
       elsif award == "thumbsdown"

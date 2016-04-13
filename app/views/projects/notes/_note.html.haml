@@ -34,7 +34,7 @@
         - if note_editable?(note)
           = render 'projects/notes/edit_form', note: note
         .note-awards
-          = render 'emoji_awards/awards_block', awardable: note, inline: false
+          = render 'award_emoji/awards_block', awardable: note, inline: false
       = edited_time_ago_with_tooltip(note, placement: 'bottom', html_class: 'note_edited_ago', include_author: true)
 
       - if note.attachment.url

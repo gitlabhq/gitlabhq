@@ -129,6 +129,16 @@ describe TodoService, services: true do
       end
     end
 
+    describe "#new_award_emoji" do
+      let!(:todo) { create(:todo, :assigned, user: john_doe, project: project, target: issue, author: author) }
+
+      it "marks all pending tasks as done" do
+        service.new_award_emoji(issue, john_doe)
+
+        expect(todo.reload).to be_done
+      end
+    end
+
     describe '#new_note' do
       let!(:first_todo) { create(:todo, :assigned, user: john_doe, project: project, target: issue, author: author) }
       let!(:second_todo) { create(:todo, :assigned, user: john_doe, project: project, target: issue, author: author) }
@@ -139,7 +149,7 @@ describe TodoService, services: true do
       let(:note_on_project_snippet) { create(:note_on_project_snippet, project: project, author: john_doe, note: mentions) }
       let(:system_note) { create(:system_note, project: project, noteable: issue) }
 
-      it 'mark related pending todos to the noteable for the note author as done' do
+      it 'marks related pending todos to the noteable for the note author as done' do
         first_todo = create(:todo, :assigned, user: john_doe, project: project, target: issue, author: author)
         second_todo = create(:todo, :assigned, user: john_doe, project: project, target: issue, author: author)
 

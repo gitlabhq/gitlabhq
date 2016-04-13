@@ -102,7 +102,7 @@ class TodoService
   #
   #  * mark all pending todos related to the awardable for the current user as done
   #
-  def award_emoji(issuable, current_user)
+  def new_award_emoji(issuable, current_user)
     mark_pending_todos_as_done(issuable, current_user)
   end
 

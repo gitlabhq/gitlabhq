@@ -6,7 +6,7 @@ module Notes
       note.system = false
 
       if note.award_emoji?
-        return CreateAwardEmojiService.new(project, current_user, params).
+        return ToggleAwardEmojiService.new(project, current_user, params).
                                                   execute(note.noteable, note.note)
       end
 
