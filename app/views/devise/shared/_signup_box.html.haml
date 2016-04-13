@@ -17,7 +17,7 @@
       %div
         = f.email_field :email, class: "form-control middle", value: user[:email], placeholder: "Email", required: true
       .form-group.append-bottom-20#password-strength
-        = f.password_field :password, class: "form-control bottom", value: user[:password], id: "user_password_sign_up", placeholder: "Password", required: true
+        = f.password_field :password, class: "form-control bottom", id: "user_password_sign_up", placeholder: "Password", required: true
       %div
       - if current_application_settings.recaptcha_enabled
         = recaptcha_tags
