@@ -367,7 +367,7 @@ POST /projects/:id/issues/:issue_id/move
 | --------- | ---- | -------- | ----------- |
 | `id` | integer | yes | The ID of a project |
 | `issue_id` | integer | yes | The ID of a project's issue |
-| `to_project_id` | integer | yes | The ID the new project |
+| `to_project_id` | integer | yes | The ID of the new project |
 
 ```bash
 curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/4/issues/85/move
