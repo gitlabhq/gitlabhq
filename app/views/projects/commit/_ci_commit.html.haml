@@ -20,7 +20,7 @@
       for commit
       = link_to ci_commit.short_sha, namespace_project_commit_path(@project.namespace, @project, ci_commit.sha), class: "monospace"
     - if ci_commit.duration > 0
-      took
+      in
       = time_interval_in_words ci_commit.duration
 
 - if ci_commit.yaml_errors.present?
