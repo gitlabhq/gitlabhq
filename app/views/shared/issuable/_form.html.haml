@@ -70,13 +70,13 @@
         - if can? current_user, :admin_milestone, issuable.project
           = link_to 'Create new milestone', new_namespace_project_milestone_path(issuable.project.namespace, issuable.project), target: :blank
   .form-group
+    - has_labels = issuable.project.labels.any?
     = f.label :label_ids, "Labels", class: 'control-label'
-    .col-sm-10
-      - if issuable.project.labels.any?
+    .col-sm-10{ class: ('issuable-form-padding-top' if !has_labels) }
+      - if has_labels
         = f.collection_select :label_ids, issuable.project.labels.all, :id, :name,
           { selected: issuable.label_ids }, multiple: true, class: 'select2', data: { placeholder: "Select labels" }
       - else
-        .prepend-top-10
         %span.light No labels yet.
       &nbsp;
       - if can? current_user, :admin_label, issuable.project

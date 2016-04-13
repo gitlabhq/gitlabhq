@@ -322,3 +322,9 @@
     color: #8c8c8c;
   }
 }
+
+.issuable-form-padding-top {
+  @media (min-width: $screen-sm-min) {
+    padding-top: 7px;
+  }
+}
