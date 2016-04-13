@@ -191,7 +191,7 @@ gem 'babosa', '~> 1.0.2'
 gem "loofah", "~> 2.0.3"
 
 # Working with license
-gem 'licensee', "~> 7.0.0"
+gem 'licensee', '~> 8.0.0'
 
 # Protect against bruteforcing
 gem "rack-attack", '~> 4.3.1'

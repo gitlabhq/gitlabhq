@@ -9,9 +9,9 @@ describe API::Licenses, api: true  do
     it { expect(json_response['key']).to eq('mit') }
     it { expect(json_response['name']).to eq('MIT License') }
     it { expect(json_response['nickname']).to be_nil }
-    it { expect(json_response['featured']).to be true }
+    it { expect(json_response['popular']).to be true }
     it { expect(json_response['html_url']).to eq('http://choosealicense.com/licenses/mit/') }
-    it { expect(json_response['source_url']).to eq('http://opensource.org/licenses/MIT') }
+    it { expect(json_response['source_url']).to eq('https://opensource.org/licenses/MIT') }
     it { expect(json_response['description']).to include('A permissive license that is short and to the point.') }
     it { expect(json_response['conditions']).to eq(%w[include-copyright]) }
     it { expect(json_response['permissions']).to eq(%w[commercial-use modifications distribution private-use]) }
@@ -26,7 +26,7 @@ describe API::Licenses, api: true  do
       expect(response.status).to eq(200)
       expect(json_response).to be_an Array
       expect(json_response.size).to eq(15)
-      expect(json_response.first['key']).to eq('agpl-3.0')
+      expect(json_response.map { |l| l['key'] }).to include('agpl-3.0')
     end
 
     describe 'the popular parameter' do
@@ -37,7 +37,7 @@ describe API::Licenses, api: true  do
           expect(response.status).to eq(200)
           expect(json_response).to be_an Array
           expect(json_response.size).to eq(3)
-          expect(json_response.first['key']).to eq('apache-2.0')
+          expect(json_response.map { |l| l['key'] }).to include('apache-2.0')
         end
       end
     end
