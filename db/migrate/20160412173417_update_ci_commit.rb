@@ -1,7 +1,11 @@
 class UpdateCiCommit < ActiveRecord::Migration
+  # This migration can be run online, but needs to be executed for the second time after restarting Unicorn workers
+  # Otherwise Offline migration should be used.
   def change
     execute("UPDATE ci_commits SET status=#{status}, ref=#{ref}, tag=#{tag} WHERE status IS NULL")
   end
+
+  private
 
   def status
     builds = '(SELECT COUNT(*) FROM ci_builds WHERE ci_builds.commit_id=ci_commits.id)'

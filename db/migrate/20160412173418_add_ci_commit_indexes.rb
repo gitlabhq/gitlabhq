@@ -7,6 +7,8 @@ class AddCiCommitIndexes < ActiveRecord::Migration
     add_index :ci_commits, [:status], index_options
   end
 
+  private
+
   def index_options
     { algorithm: :concurrently } if Gitlab::Database.postgresql?
   end
