@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'creates a license file', feature: true, js: true do
+feature 'project owner creates a license file', feature: true, js: true do
   include Select2Helper
 
   let(:project_master) { create(:user) }
