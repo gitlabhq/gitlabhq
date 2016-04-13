@@ -5,8 +5,8 @@ module RepositoryCheck
     sidekiq_options retry: false
   
     def perform
-      # Do batched updates because these updates will be slow and locking
-      Project.select(:id).find_in_batches(batch_size: 1000) do |batch|
+      # Do small batched updates because these updates will be slow and locking
+      Project.select(:id).find_in_batches(batch_size: 100) do |batch|
         Project.where(id: batch.map(&:id)).update_all(
           last_repository_check_failed: nil,
           last_repository_check_at: nil,

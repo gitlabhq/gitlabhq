@@ -35,7 +35,7 @@ module RepositoryCheck
       limit = 10_000
       never_checked_projects = Project.where('last_repository_check_at IS NULL').limit(limit).
         pluck(:id)
-      old_check_projects = Project.where('last_repository_check_at < ?', 1.week.ago).
+      old_check_projects = Project.where('last_repository_check_at < ?', 1.month.ago).
         reorder('last_repository_check_at ASC').limit(limit).pluck(:id)
       never_checked_projects + old_check_projects
     end
