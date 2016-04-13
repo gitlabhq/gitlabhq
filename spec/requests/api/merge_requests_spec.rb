@@ -529,6 +529,12 @@ describe API::API, api: true  do
 
       expect(response.status).to eq(304)
     end
+
+    it 'returns 404 if the merge request is not found' do
+      post api("/projects/#{project.id}/merge_requests/123/subscription", user)
+
+      expect(response.status).to eq(404)
+    end
   end
 
   describe 'DELETE :id/merge_requests/:merge_request_id/subscription' do
@@ -543,6 +549,12 @@ describe API::API, api: true  do
       delete api("/projects/#{project.id}/merge_requests/#{merge_request.id}/subscription", admin)
 
       expect(response.status).to eq(304)
+    end
+
+    it 'returns 404 if the merge request is not found' do
+      post api("/projects/#{project.id}/merge_requests/123/subscription", user)
+
+      expect(response.status).to eq(404)
     end
   end
 

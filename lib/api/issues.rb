@@ -239,8 +239,8 @@ module API
       #  issue_id (required) - The ID of a project issue
       # Example Request:
       #   POST /projects/:id/issues/:issue_id/subscription
-      post ":id/issues/:issue_id/subscription" do
-        issue = user_project.issues.find_by(id: params[:issue_id])
+      post ':id/issues/:issue_id/subscription' do
+        issue = user_project.issues.find(params[:issue_id])
 
         if issue.subscribed?(current_user)
           not_modified!
@@ -257,8 +257,8 @@ module API
       #  issue_id (required) - The ID of a project issue
       # Example Request:
       #   DELETE /projects/:id/issues/:issue_id/subscription
-      delete ":id/issues/:issue_id/subscription" do
-        issue = user_project.issues.find_by(id: params[:issue_id])
+      delete ':id/issues/:issue_id/subscription' do
+        issue = user_project.issues.find(params[:issue_id])
 
         if issue.subscribed?(current_user)
           issue.unsubscribe(current_user)

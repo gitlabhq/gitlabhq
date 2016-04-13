@@ -594,20 +594,20 @@ describe API::API, api: true  do
 
   describe 'DELETE :id/issues/:issue_id/subscription' do
     it 'unsubscribes from an issue' do
-      post api("/projects/#{project.id}/issues/#{issue.id}/subscription", user)
+      delete api("/projects/#{project.id}/issues/#{issue.id}/subscription", user)
 
       expect(response.status).to eq(200)
       expect(json_response['subscribed']).to eq(false)
     end
 
     it 'returns 304 if not subscribed' do
-      post api("/projects/#{project.id}/issues/#{issue.id}/subscription", user2)
+      delete api("/projects/#{project.id}/issues/#{issue.id}/subscription", user2)
 
       expect(response.status).to eq(304)
     end
 
     it 'returns 404 if the issue is not found' do
-      post api("/projects/#{project.id}/issues/123/subscription", user)
+      delete api("/projects/#{project.id}/issues/123/subscription", user)
 
       expect(response.status).to eq(404)
     end

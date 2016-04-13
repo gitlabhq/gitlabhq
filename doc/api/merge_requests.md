@@ -680,6 +680,7 @@ Example response:
   "subscribed": true
 }
 ```
+
 ## Unsubscribe from a merge request
 
 Unsubscribes the authenticated user from a merge request to not receive
