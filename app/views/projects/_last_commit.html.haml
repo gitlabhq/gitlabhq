@@ -1,6 +1,6 @@
 .project-last-commit
   - if commit.status
-    = link_to project_commit_path(commit.project, commit), class: "ci-status ci-#{commit.status}" do
+    = link_to builds_namespace_project_commit_path(commit.project.namespace, commit.project, commit), class: "ci-status ci-#{commit.status}" do
       = ci_icon_for_status(commit.status)
       = ci_label_for_status(commit.status)
 

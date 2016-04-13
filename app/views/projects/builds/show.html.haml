@@ -4,7 +4,7 @@
 .build-page
   .gray-content-block.top-block
     Build ##{@build.id} for commit
-    %strong.monospace= link_to @build.commit.short_sha, builds_namespace_project_commit_path(@project.namespace, @project, @build.sha)
+    %strong.monospace= link_to @build.commit.short_sha, ci_status_path(@build.commit)
     from
     = link_to @build.ref, namespace_project_commits_path(@project.namespace, @project, @build.ref)
     - merge_request = @build.merge_request
@@ -173,7 +173,7 @@
           Commit
           .pull-right
             %small
-              = link_to @build.commit.short_sha, builds_namespace_project_commit_path(@project.namespace, @project, @build.sha), class: "monospace"
+              = link_to @build.commit.short_sha, ci_status_path(@build.commit), class: "monospace"
         %p
           %span.attr-name Branch:
           = link_to @build.ref, namespace_project_commits_path(@project.namespace, @project, @build.ref)
@@ -196,7 +196,7 @@
         .build-widget
           %h4.title #{pluralize(@builds.count(:id), "other build")} for
           = succeed ":" do
-            = link_to @build.commit.short_sha, builds_namespace_project_commit_path(@project.namespace, @project, @build.sha), class: "monospace"
+            = link_to @build.commit.short_sha, ci_status_path(@build.commit), class: "monospace"
           %table.table.builds
             - @builds.each_with_index do |build, i|
               %tr.build
