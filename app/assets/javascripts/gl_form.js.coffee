@@ -11,13 +11,6 @@ class @GLForm
     @form.data 'gl-form', @
 
   destroy: ->
-    # Destroy actions
-    actions = @form.data 'form-actions'
-
-    if actions?
-      actions.clearEventListeners()
-      @form.data 'form-actions', null
-
     # Clean form listeners
     @clearEventListeners()
     @form.data 'gl-form', null
@@ -37,10 +30,6 @@ class @GLForm
       new DropzoneInput(@form)
 
       autosize(@textarea)
-
-      # Setup action buttons
-      actions = new GLFormActions @form, @textarea
-      @form.data 'form-actions', actions
 
       # form and textarea event listeners
       @addEventListeners()
