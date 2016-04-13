@@ -1,18 +1,16 @@
 window.GlPage = {
-  instances: {}
-  events: []
   pages: {}
   new: (name) ->
     @pages[name] = {
       instances: {}
       events: []
-      use: (instance, name) ->
-        generated = name || Math.random().toString(36).substring(7)
-        @instances[generated] = {
-          instance: instance
-          name: generated
-        }
-        @instances[generated]
+
+      use: (args...) ->
+        if args.length > 1
+          for className in args
+            @instances[className] = new className()
+        else if args.length is 1
+          @instances[args[0]] = new args[0]()
 
       delegate: (targetsObj) ->
         (e, data) ->
@@ -31,7 +29,7 @@ window.GlPage = {
           return
 
       get: (name) ->
-        @instances[name].instance
+        @instances[name]
 
       on: (selector, eventType, handler) ->
         $el = $(selector)
@@ -84,7 +82,7 @@ window.GlPage = {
 
       removeAll: ->
         @instances = {}
-        @allOff()
+        @off()
         @events = []
         return
     }
