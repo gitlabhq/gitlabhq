@@ -276,8 +276,7 @@ ul.notes {
 
 .diff-file tr.line_holder {
   @mixin show-add-diff-note {
-    filter: alpha(opacity=100);
-    opacity: 1.0;
+    display: inline-block;
   }
 
   .add-diff-note {
@@ -291,13 +290,8 @@ ul.notes {
     position: absolute;
     z-index: 10;
     width: 32px;
-
-    transition: all 0.2s ease;
-
     // "hide" it by default
-    opacity: 0.0;
-    filter: alpha(opacity=0);
-
+    display: none;
     &:hover {
       background: $gl-info;
       color: #fff;

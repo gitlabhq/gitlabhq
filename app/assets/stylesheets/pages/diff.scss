@@ -69,10 +69,12 @@
 
         &.noteable_line.old:before {
           content: '-';
+          position: absolute;
         }
 
         &.noteable_line.new:before {
           content: '+';
+          position: absolute;
         }
 
         span {
@@ -400,14 +402,22 @@
   }
 }
 
-.diff-line-num:not(.js-unfold-bottom) {
-  a {
-    &:before {
-      content: attr(data-linenumber);
+.file-holder {
+  .diff-line-num:not(.js-unfold-bottom) {
+    a {
+      &:before {
+          content: attr(data-linenumber);
+      }
     }
-    -moz-user-select: none;
-    -webkit-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
+  }
+}
+
+.discussion {
+  .diff-content {
+    .diff-line-num {
+      &:before {
+        content: attr(data-linenumber);
+      }
+    }
   }
 }
