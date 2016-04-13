@@ -8,6 +8,7 @@ v 8.7.0 (unreleased)
   - All images in discussions and wikis now link to their source files !3464 (Connor Shea).
   - Return status code 303 after a branch DELETE operation to avoid project deletion (Stan Hu)
   - Add setting for customizing the list of trusted proxies !3524
+  - Allow projects to be transfered to a lower visibility level group
   - Fix `signed_in_ip` being set to 127.0.0.1 when using a reverse proxy !3524
   - Improved Markdown rendering performance !3389 (Yorick Peterse)
   - Don't attempt to look up an avatar in repo if repo directory does not exist (Stan Hu)
