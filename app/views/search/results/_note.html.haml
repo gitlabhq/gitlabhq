@@ -1,5 +1,5 @@
 - project = note.project
-- note_url = Gitlab::UrlBuilder.new(:note).build(note.id)
+- note_url = Gitlab::UrlBuilder.build(note)
 - noteable_identifier = note.noteable.try(:iid) || note.noteable.id
 .search-result-row
   %h5.note-search-caption.str-truncated
