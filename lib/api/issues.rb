@@ -231,6 +231,42 @@ module API
         authorize!(:destroy_issue, issue)
         issue.destroy
       end
+
+      # Subscribes to a project issue
+      #
+      # Parameters:
+      #  id (required)       - The ID of a project
+      #  issue_id (required) - The ID of a project issue
+      # Example Request:
+      #   POST /projects/:id/issues/:issue_id/subscription
+      post ':id/issues/:issue_id/subscription' do
+        issue = user_project.issues.find(params[:issue_id])
+
+        if issue.subscribed?(current_user)
+          not_modified!
+        else
+          issue.toggle_subscription(current_user)
+          present issue, with: Entities::Issue, current_user: current_user
+        end
+      end
+
+      # Unsubscribes from a project issue
+      #
+      # Parameters:
+      #  id (required)       - The ID of a project
+      #  issue_id (required) - The ID of a project issue
+      # Example Request:
+      #   DELETE /projects/:id/issues/:issue_id/subscription
+      delete ':id/issues/:issue_id/subscription' do
+        issue = user_project.issues.find(params[:issue_id])
+
+        if issue.subscribed?(current_user)
+          issue.unsubscribe(current_user)
+          present issue, with: Entities::Issue, current_user: current_user
+        else
+          not_modified!
+        end
+      end
     end
   end
 end

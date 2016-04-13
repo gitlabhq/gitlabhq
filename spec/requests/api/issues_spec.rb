@@ -3,6 +3,7 @@ require 'spec_helper'
 describe API::API, api: true  do
   include ApiHelpers
   let(:user)        { create(:user) }
+  let(:user2)       { create(:user) }
   let(:non_member)  { create(:user) }
   let(:author)      { create(:author) }
   let(:assignee)    { create(:assignee) }
@@ -567,6 +568,48 @@ describe API::API, api: true  do
 
         expect(response.status).to eq(404)
       end
+    end
+  end
+
+  describe 'POST :id/issues/:issue_id/subscription' do
+    it 'subscribes to an issue' do
+      post api("/projects/#{project.id}/issues/#{issue.id}/subscription", user2)
+
+      expect(response.status).to eq(201)
+      expect(json_response['subscribed']).to eq(true)
+    end
+
+    it 'returns 304 if already subscribed' do
+      post api("/projects/#{project.id}/issues/#{issue.id}/subscription", user)
+
+      expect(response.status).to eq(304)
+    end
+
+    it 'returns 404 if the issue is not found' do
+      post api("/projects/#{project.id}/issues/123/subscription", user)
+
+      expect(response.status).to eq(404)
+    end
+  end
+
+  describe 'DELETE :id/issues/:issue_id/subscription' do
+    it 'unsubscribes from an issue' do
+      delete api("/projects/#{project.id}/issues/#{issue.id}/subscription", user)
+
+      expect(response.status).to eq(200)
+      expect(json_response['subscribed']).to eq(false)
+    end
+
+    it 'returns 304 if not subscribed' do
+      delete api("/projects/#{project.id}/issues/#{issue.id}/subscription", user2)
+
+      expect(response.status).to eq(304)
+    end
+
+    it 'returns 404 if the issue is not found' do
+      delete api("/projects/#{project.id}/issues/123/subscription", user)
+
+      expect(response.status).to eq(404)
     end
   end
 end
