@@ -732,7 +732,7 @@ ActiveRecord::Schema.define(version: 20160412140240) do
     t.boolean  "public_builds",          default: true,     null: false
     t.string   "main_language"
     t.integer  "pushes_since_gc",        default: 0
-    t.boolean  "last_repository_check_failed", default: false
+    t.boolean  "last_repository_check_failed"
     t.datetime "last_repository_check_at"
   end
 
@@ -743,6 +743,7 @@ ActiveRecord::Schema.define(version: 20160412140240) do
   add_index "projects", ["creator_id"], name: "index_projects_on_creator_id", using: :btree
   add_index "projects", ["description"], name: "index_projects_on_description_trigram", using: :gin, opclasses: {"description"=>"gin_trgm_ops"}
   add_index "projects", ["last_activity_at"], name: "index_projects_on_last_activity_at", using: :btree
+  add_index "projects", ["last_repository_check_failed"], name: "index_projects_on_last_repository_check_failed", using: :btree
   add_index "projects", ["name"], name: "index_projects_on_name_trigram", using: :gin, opclasses: {"name"=>"gin_trgm_ops"}
   add_index "projects", ["namespace_id"], name: "index_projects_on_namespace_id", using: :btree
   add_index "projects", ["path"], name: "index_projects_on_path", using: :btree
