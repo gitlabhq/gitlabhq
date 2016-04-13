@@ -165,12 +165,30 @@ module Gitlab
           return [] unless ldap_group.memberuid?
 
           members = ldap_group.member_uids
-          member_dns = members.map { |uid| dn_for_uid(uid) }.compact
+          member_dns = members.map { |uid| dn_for_uid(uid) }
         end
+        ensure_full_dns!(member_dns)
 
         logger.debug { "Members in '#{ldap_group.name}' LDAP group: #{member_dns}" }
 
-        member_dns
+        # Various lookups in this method could return `nil` values.
+        # Compact the array to remove those entries
+        member_dns.compact
+      end
+
+      # At least one customer reported that their LDAP `member` values contain
+      # only `uid=username` and not the full DN. This method allows us to
+      # account for that. See gitlab-ee#442
+      def ensure_full_dns!(dns)
+        dns.map! do |dn|
+          # If there is more than one equal sign we must have a full DN
+          # Or at least the probability is higher.
+          return dn if dn.count('=') > 1
+
+          # If there is only one equal sign, we may only have a `uid`.
+          # In this case, strip the first part and look up full DN by UID
+          dn_for_uid(dn.split('=')[1])
+        end
       end
 
       def member_uid_to_dn(uid)

@@ -5,6 +5,9 @@ v 8.7.0 (unreleased)
   - Refactor group sync to pull access level logic to its own class. !306
   - [Elastic] Stabilize database indexer if database is inconsistent
 
+v 8.6.6
+  - Fix LDAP group sync regression for groups with member value `uid=<username>` !335
+
 v 8.6.5
   - No EE-specific changes
 
