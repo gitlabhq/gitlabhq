@@ -14,9 +14,10 @@ class SingleRepositoryCheckWorker
   private
 
   def check(project)
-    [project.repository, project.wiki.repository].all? do |repository|
+    # Use 'map do', not 'all? do', to prevent short-circuiting
+    [project.repository, project.wiki.repository].map do |repository|
       git_fsck(repository.path_to_repo)
-    end
+    end.all?
   end
 
   def git_fsck(path)
