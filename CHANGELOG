@@ -28,6 +28,7 @@ v 8.7.0 (unreleased)
   - Allow SAML to handle external users based on user's information !3530
   - Allow Omniauth providers to be marked as `external` !3657
   - Add endpoints to archive or unarchive a project !3372
+  - Fix a bug whith trailing slash in bamboo_url
   - Add links to CI setup documentation from project settings and builds pages
   - Handle nil descriptions in Slack issue messages (Stan Hu)
   - API: Expose open_issues_count, closed_issues_count, open_merge_requests_count for labels (Robert Schilling)
