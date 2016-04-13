@@ -28,7 +28,7 @@ panel.
 
 ## What to do if a check failed
 
-If the repository check fails for some repository you shouldlook up the error
+If the repository check fails for some repository you should look up the error
 in repocheck.log (in the admin panel or on disk; see
 `/var/log/gitlab/gitlab-rails` for Omnibus installations or
 `/home/git/gitlab/log` for installations from source). Once you have
