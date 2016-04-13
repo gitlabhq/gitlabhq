@@ -218,7 +218,7 @@ class @LabelsSelect
         selectable: true
 
         toggleLabel: (selected) ->
-          if selected and selected.title isnt 'Any Label'
+          if selected and selected.title?
             selected.title
           else
             defaultLabel

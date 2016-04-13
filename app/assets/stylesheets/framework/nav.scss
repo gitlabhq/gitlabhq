@@ -58,12 +58,12 @@
 
   .nav-search {
     display: inline-block;
-    width: 50%;
+    width: 100%;
     padding: 11px 0;
 
     /* Small devices (phones, tablets, 768px and lower) */
-    @media (max-width: $screen-sm-min) {
-      width: 100%;
+    @media (min-width: $screen-sm-min) {
+      width: 50%;
     }
   }
 
