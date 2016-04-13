@@ -242,7 +242,7 @@ module API
     end
 
     def not_modified!
-      render_api_error!('304 Not modified', 304)
+      render_api_error!('304 Not Modified', 304)
     end
 
     def render_validation_error!(model)

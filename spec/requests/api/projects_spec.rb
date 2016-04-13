@@ -1023,7 +1023,7 @@ describe API::API, api: true  do
   describe 'POST /projects/:id/star' do
     context 'on an unstarred project' do
       it 'stars the project' do
-        post api("/projects/#{project.id}/star", user)
+        expect { post api("/projects/#{project.id}/star", user) }.to change { project.reload.star_count }.by(1)
 
         expect(response.status).to eq(201)
         expect(json_response['star_count']).to eq(1)
@@ -1037,10 +1037,9 @@ describe API::API, api: true  do
       end
 
       it 'does not modify the star count' do
-        post api("/projects/#{project.id}/star", user)
+        expect { post api("/projects/#{project.id}/star", user) }.not_to change { project.reload.star_count }
 
         expect(response.status).to eq(304)
-        expect(project.star_count).to eq(1)
       end
     end
   end
@@ -1053,7 +1052,7 @@ describe API::API, api: true  do
       end
 
       it 'unstars the project' do
-        delete api("/projects/#{project.id}/star", user)
+        expect { delete api("/projects/#{project.id}/star", user) }.to change { project.reload.star_count }.by(-1)
 
         expect(response.status).to eq(200)
         expect(json_response['star_count']).to eq(0)
@@ -1062,10 +1061,9 @@ describe API::API, api: true  do
 
     context 'on an unstarred project' do
       it 'does not modify the star count' do
-        delete api("/projects/#{project.id}/star", user)
+        expect { delete api("/projects/#{project.id}/star", user) }.not_to change { project.reload.star_count }
 
         expect(response.status).to eq(304)
-        expect(project.star_count).to eq(0)
       end
     end
   end

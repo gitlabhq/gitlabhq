@@ -617,7 +617,6 @@ Example response:
 }
 ```
 
-
 ### Archive a project
 
 Archives the project if the user is either admin or the project owner of this project. This action is

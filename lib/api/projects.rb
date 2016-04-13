@@ -284,6 +284,7 @@ module API
         else
           current_user.toggle_star(user_project)
           user_project.reload
+
           present user_project, with: Entities::Project
         end
       end
@@ -293,11 +294,12 @@ module API
       # Parameters:
       #   id (required) - The ID of a project
       # Example Request:
-      #   DELETE /projects/:id/unstar
+      #   DELETE /projects/:id/star
       delete ':id/star' do
         if current_user.starred?(user_project)
           current_user.toggle_star(user_project)
           user_project.reload
+
           present user_project, with: Entities::Project
         else
           not_modified!
