@@ -40,11 +40,13 @@ module DiffHelper
     (unfold) ? 'unfold js-unfold' : ''
   end
 
-  def diff_line_content(line)
+  def diff_line_content(line, line_type = nil)
     if line.blank?
       " &nbsp;".html_safe
     else
-      line[0] = ''
+      if line_type == 'new' || line_type == 'old'
+        line[0] = " "
+      end
       line
     end
   end

@@ -23,4 +23,4 @@
         = link_text
       - else
         = link_to "", "##{line_code}", id: line_code, data: { linenumber: link_text }
-    %td.line_content{class: "noteable_line #{type} #{line_code}", data: { line_code: line_code }}= diff_line_content(line.text)
+    %td.line_content{class: "noteable_line #{type} #{line_code}", data: { line_code: line_code }}= diff_line_content(line.text, type)

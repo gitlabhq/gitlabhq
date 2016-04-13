@@ -67,14 +67,18 @@
         line-height: $code_line_height;
         font-size: $code_font_size;
 
-        &.noteable_line.old:before {
-          content: '-';
-          position: absolute;
+        &.noteable_line.old {
+          &:before {
+            content: '-';
+            position: absolute;
+          }
         }
 
-        &.noteable_line.new:before {
-          content: '+';
-          position: absolute;
+        &.noteable_line.new {
+          &:before {
+            content: '+';
+            position: absolute;
+          }
         }
 
         span {
@@ -406,7 +410,7 @@
   .diff-line-num:not(.js-unfold-bottom) {
     a {
       &:before {
-          content: attr(data-linenumber);
+        content: attr(data-linenumber);
       }
     }
   }
