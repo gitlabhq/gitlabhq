@@ -249,6 +249,7 @@ Feature: Project Merge Requests
     Then I should see a comment like "Line is wrong" in the third file
     And I should still see a comment like "Line is correct" in the second file
 
+  @javascript
   Scenario: I submit new unassigned merge request with template description
     Given I click link "New Merge Request"
     And I select "fix" as source

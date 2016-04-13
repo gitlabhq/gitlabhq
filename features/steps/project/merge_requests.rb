@@ -470,9 +470,6 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     find('.js-source-branch').click
     find('.dropdown-source-branch .dropdown-content a', text: 'fix').click
 
-    find('.js-target-branch').click
-    first('.dropdown-target-branch .dropdown-content a', text: 'feature').click
-
     click_button "Compare branches"
   end
 
