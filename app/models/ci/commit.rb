@@ -114,16 +114,12 @@ module Ci
       end
     end
 
-    def latest
-      statuses.latest
-    end
-
     def retried
       @retried ||= (statuses.order(id: :desc) - statuses.latest)
     end
 
     def coverage
-      coverage_array = latest.map(&:coverage).compact
+      coverage_array = statuses.latest.map(&:coverage).compact
       if coverage_array.size >= 1
         '%.2f' % (coverage_array.reduce(:+) / coverage_array.size)
       end
@@ -158,18 +154,15 @@ module Ci
     private
 
     def update_state
-      reload
-      self.status = if yaml_errors.present?
-                      'failed'
+      statuses.reload
+      self.status = if yaml_errors.blank?
+                      statuses.latest.status || 'skipped'
                     else
-                      latest.status
+                      'failed'
                     end
-      self.started_at = statuses.minimum(:started_at)
-      self.finished_at = statuses.maximum(:finished_at)
-      self.duration = begin
-        duration_array = latest.map(&:duration).compact
-        duration_array.reduce(:+).to_i
-      end
+      self.started_at = statuses.started_at
+      self.finished_at = statuses.finished_at
+      self.duration = statuses.latest.duration
       save
     end
 

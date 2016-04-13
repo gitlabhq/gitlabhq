@@ -116,7 +116,7 @@ module Ci
     end
 
     def retried?
-      !self.commit.latest.include?(self)
+      !self.commit.statuses.latest.include?(self)
     end
 
     def retry
