@@ -1,4 +1,5 @@
 require 'securerandom'
+require 'forwardable'
 
 class Repository
   include Elastic::RepositoriesSearch
@@ -15,6 +16,8 @@ class Repository
   include Gitlab::ShellAdapter
 
   attr_accessor :path_with_namespace, :project
+
+  delegate :push_remote_branches, :delete_remote_branches, to: :gitlab_shell
 
   def self.clean_old_archives
     repository_downloads_path = Gitlab.config.gitlab.repository_downloads_path
@@ -189,6 +192,13 @@ class Repository
     raw_repository.remote_update(name, url: url)
   end
 
+  def remove_remote(name)
+    raw_repository.remote_delete(name)
+    true
+  rescue Rugged::ConfigError
+    false
+  end
+
   def set_remote_as_mirror(name)
     remote_config = raw_repository.rugged.config
 
@@ -198,8 +208,14 @@ class Repository
     remote_config["remote.#{name}.prune"] = true
   end
 
-  def fetch_remote(remote)
-    gitlab_shell.fetch_remote(path_with_namespace, remote)
+  def fetch_remote(remote, forced: false, no_tags: false)
+    gitlab_shell.fetch_remote(path_with_namespace, remote, forced: forced, no_tags: no_tags)
+  end
+
+  def remote_tags(remote)
+    gitlab_shell.list_remote_tags(path_with_namespace, remote).map do |name, target|
+      Gitlab::Git::Tag.new(name, target)
+    end
   end
 
   def fetch_remote_forced!(remote)
@@ -667,6 +683,22 @@ class Repository
 
   alias_method :branches, :local_branches
 
+  def remote_branches(remote_name)
+    branches = []
+
+    rugged.references.each("refs/remotes/#{remote_name}/*").map do |ref|
+      name = ref.name.sub(/\Arefs\/remotes\/#{remote_name}\//, '')
+
+      begin
+        branches << Gitlab::Git::Branch.new(name, ref.target)
+      rescue Rugged::ReferenceError
+        # Omit invalid branch
+      end
+    end
+
+    branches
+  end
+
   def tags
     @tags ||= raw_repository.tags
   end
@@ -842,15 +874,7 @@ class Repository
   end
 
   def upstream_branches
-    rugged.references.each("refs/remotes/#{Repository::MIRROR_REMOTE}/*").map do |ref|
-      name = ref.name.sub(/\Arefs\/remotes\/#{Repository::MIRROR_REMOTE}\//, "")
-
-      begin
-        Gitlab::Git::Branch.new(name, ref.target)
-      rescue Rugged::ReferenceError
-        # Omit invalid branch
-      end
-    end.compact
+    @upstream_branches ||= remote_branches(Repository::MIRROR_REMOTE)
   end
 
   def diverged_from_upstream?(branch_name)
@@ -859,6 +883,17 @@ class Repository
 
     if upstream_commit
       !is_ancestor?(branch_commit.id, upstream_commit.id)
+    else
+      false
+    end
+  end
+
+  def upstream_has_diverged?(branch_name, remote_ref)
+    branch_commit = commit(branch_name)
+    upstream_commit = commit("refs/remotes/#{remote_ref}/#{branch_name}")
+
+    if upstream_commit
+      !is_ancestor?(upstream_commit.id, branch_commit.id)
     else
       false
     end
