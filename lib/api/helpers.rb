@@ -240,6 +240,10 @@ module API
       render_api_error!('413 Request Entity Too Large', 413)
     end
 
+    def not_modified!
+      render_api_error!('304 Not Modified', 304)
+    end
+
     def render_validation_error!(model)
       if model.errors.any?
         render_api_error!(model.errors.messages || '400 Bad Request', 400)
