@@ -15,7 +15,7 @@ module CiStatus
       skipped = all.skipped.select('count(*)').to_sql
 
       deduce_status = "(CASE
-        WHEN (#{builds})=0 THEN 'skipped'
+        WHEN (#{builds})=0 THEN NULL
         WHEN (#{builds})=(#{success})+(#{ignored}) THEN 'success'
         WHEN (#{builds})=(#{pending}) THEN 'pending'
         WHEN (#{builds})=(#{canceled}) THEN 'canceled'
@@ -34,6 +34,14 @@ module CiStatus
     def duration
       duration_array = all.map(&:duration).compact
       duration_array.reduce(:+).to_i
+    end
+
+    def started_at
+      all.minimum(:started_at)
+    end
+
+    def finished_at
+      all.minimum(:finished_at)
     end
   end
 
