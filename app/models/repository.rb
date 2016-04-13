@@ -896,9 +896,9 @@ class Repository
   end
 
   def main_language
-    unless empty?
-      Linguist::Repository.new(rugged, rugged.head.target_id).language
-    end
+    return if empty? || rugged.head_unborn?
+
+    Linguist::Repository.new(rugged, rugged.head.target_id).language
   end
 
   def avatar

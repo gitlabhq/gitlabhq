@@ -6,7 +6,7 @@
     .commit-message-container
       .max-width-marker
       = text_area_tag 'commit_message',
-          (params[:commit_message] || local_assigns[:text]),
+          (params[:commit_message] || local_assigns[:text] || local_assigns[:placeholder]),
           class: 'form-control js-commit-message', placeholder: local_assigns[:placeholder],
           required: true, rows: (local_assigns[:rows] || 3),
           id: "commit_message-#{nonce}"

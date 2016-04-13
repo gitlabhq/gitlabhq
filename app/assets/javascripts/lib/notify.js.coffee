@@ -2,6 +2,11 @@
   notificationGranted = (message, opts, onclick) ->
     notification = new Notification(message, opts)
 
+    # Hide the notification after X amount of seconds
+    setTimeout ->
+      notification.close()
+    , 8000
+
     if onclick
       notification.onclick = onclick
 
