@@ -25,9 +25,11 @@ class RepositoryCheckWorker
 
   private
 
-  # In an ideal world we would use Project.where(...).find_each.
-  # Unfortunately, calling 'find_each' drops the 'where', so we must build
-  # an array of IDs instead.
+  # Project.find_each does not support WHERE clauses and
+  # Project.find_in_batches does not support ordering. So we just build an
+  # array of ID's. This is OK because we do it only once an hour, because
+  # getting ID's from Postgres is not terribly slow, and because no user
+  # has to sit and wait for this query to finish.
   def project_ids
     limit = 10_000
     never_checked_projects = Project.where('last_repository_check_at IS NULL').limit(limit).
@@ -40,17 +42,20 @@ class RepositoryCheckWorker
   def try_obtain_lease(id)
     # Use a 24-hour timeout because on servers/projects where 'git fsck' is
     # super slow we definitely do not want to run it twice in parallel.
-    lease = Gitlab::ExclusiveLease.new(
+    Gitlab::ExclusiveLease.new(
       "project_repository_check:#{id}",
       timeout: 24.hours
-    )
-    lease.try_obtain
+    ).try_obtain
   end
 
   def current_settings
     # No caching of the settings! If we cache them and an admin disables
     # this feature, an active RepositoryCheckWorker would keep going for up
     # to 1 hour after the feature was disabled.
-    ApplicationSetting.current || Gitlab::CurrentSettings.fake_application_settings
+    if Rails.env.test?
+      Gitlab::CurrentSettings.fake_application_settings
+    else
+      ApplicationSetting.current
+    end
   end
 end
