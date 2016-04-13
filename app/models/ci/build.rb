@@ -37,8 +37,6 @@
 
 module Ci
   class Build < CommitStatus
-    LAZY_ATTRIBUTES = ['trace']
-
     belongs_to :runner, class_name: 'Ci::Runner'
     belongs_to :trigger_request, class_name: 'Ci::TriggerRequest'
     belongs_to :erased_by, class_name: 'User'
@@ -56,20 +54,11 @@ module Ci
 
     acts_as_taggable
 
-    # To prevent db load megabytes of data from trace
-    default_scope -> { select(Ci::Build.columns_without_lazy) }
-
     before_destroy { project }
 
     after_create :execute_hooks
 
     class << self
-      def columns_without_lazy
-        (column_names - LAZY_ATTRIBUTES).map do |column_name|
-          "#{table_name}.#{column_name}"
-        end
-      end
-
       def last_month
         where('created_at > ?', Date.today - 1.month)
       end
