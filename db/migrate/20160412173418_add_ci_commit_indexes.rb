@@ -10,6 +10,10 @@ class AddCiCommitIndexes < ActiveRecord::Migration
   private
 
   def index_options
-    { algorithm: :concurrently } if Gitlab::Database.postgresql?
+    if Gitlab::Database.postgresql?
+      { algorithm: :concurrently }
+    else
+      { }
+    end
   end
 end
