@@ -165,6 +165,9 @@ production: &base
     stuck_ci_builds_worker:
       cron: "0 0 * * *"
 
+    # Remove outdated repository archives
+    repository_archive_cache_worker:
+      cron: "0 * * * *"
 
   #
   # 2. GitLab CI settings
