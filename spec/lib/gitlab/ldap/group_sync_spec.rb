@@ -434,6 +434,61 @@ describe Gitlab::LDAP::GroupSync, lib: true do
             .not_to change { group1.members.count }
         end
       end
+
+      # See gitlab-ee#442 and comment in GroupSync#ensure_full_dns!
+      context 'with uid=username member format' do
+        let(:ldap_group) do
+          Gitlab::LDAP::Group.new(
+            Net::LDAP::Entry.from_single_ldif_string(
+              <<-EOS.strip_heredoc
+                dn: cn=ldap_group1,ou=groups,dc=example,dc=com
+                cn: ldap_group1
+                member: uid=#{user1.username}
+                description: LDAP Group 1
+                objectclass: top
+                objectclass: groupOfUniqueNames
+              EOS
+            )
+          )
+        end
+        let(:ldap_user) do
+          Gitlab::LDAP::Person.new(
+            Net::LDAP::Entry.from_single_ldif_string(
+              "dn: uid=#{user1.username},ou=users,dc=example,dc=com"
+            ),
+            'ldapmain'
+          )
+        end
+
+        before do
+          allow(Gitlab::LDAP::Person)
+            .to receive(:find_by_uid)
+              .with(user1.username, any_args)
+              .and_return(ldap_user)
+        end
+
+        it 'adds the user to the group' do
+          expect { group_sync.sync_groups }
+            .to change { group1.members.where(user_id: user1.id).any? }
+              .from(false).to(true)
+        end
+
+        it 'expects Gitlab::LDAP::Person to be called' do
+          expect(Gitlab::LDAP::Person).to receive(:find_by_uid)
+
+          group_sync.sync_groups
+        end
+
+        it do
+          expect { group_sync.sync_groups }
+            .to change {
+              user1.identities.find_by(
+                provider: group_sync.provider,
+                extern_uid: ldap_user.dn
+              ).secondary_extern_uid
+            }.from(nil).to(user1.username)
+        end
+      end
     end
   end
 
