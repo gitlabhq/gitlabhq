@@ -2,10 +2,10 @@
   .pull-right
     - if can?(current_user, :update_build, @project)
       - if ci_commit.builds.latest.failed.any?(&:retryable?)
-        = link_to "Retry failed", retry_builds_namespace_project_commit_path(@project.namespace, @project, @commit.id), class: 'btn btn-grouped btn-primary', method: :post
+        = link_to "Retry failed", retry_builds_namespace_project_commit_path(@project.namespace, @project, ci_commit.sha), class: 'btn btn-grouped btn-primary', method: :post
 
       - if ci_commit.builds.running_or_pending.any?
-        = link_to "Cancel running", cancel_builds_namespace_project_commit_path(@project.namespace, @project, @commit.id), data: { confirm: 'Are you sure?' }, class: 'btn btn-grouped btn-danger', method: :post
+        = link_to "Cancel running", cancel_builds_namespace_project_commit_path(@project.namespace, @project, ci_commit.sha), data: { confirm: 'Are you sure?' }, class: 'btn btn-grouped btn-danger', method: :post
 
   .oneline
     = pluralize ci_commit.statuses.count(:id), "build"
@@ -15,7 +15,7 @@
         = ci_commit.ref
     - if defined?(link_to_commit) && link_to_commit
       for commit
-      = link_to @commit.short_id, namespace_project_commit_path(@project.namespace, @project, @commit.id), class: "monospace"
+      = link_to ci_commit.short_sha, namespace_project_commit_path(@project.namespace, @project, ci_commit.sha), class: "monospace"
     - if ci_commit.duration > 0
       in
       = time_interval_in_words ci_commit.duration

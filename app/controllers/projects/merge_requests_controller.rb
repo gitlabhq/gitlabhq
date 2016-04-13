@@ -118,7 +118,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @diffs = @merge_request.compare.diffs(diff_options) if @merge_request.compare
 
     @ci_commit = @merge_request.ci_commit
-    @ci_commits = [@ci_commit].compact
     @statuses = @ci_commit.statuses if @ci_commit
 
     @note_counts = Note.where(commit_id: @commits.map(&:id)).
@@ -311,7 +310,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @merge_request_diff = @merge_request.merge_request_diff
 
     @ci_commit = @merge_request.ci_commit
-    @ci_commits = [@ci_commit].compact
     @statuses = @ci_commit.statuses if @ci_commit
 
     if @merge_request.locked_long_ago?
