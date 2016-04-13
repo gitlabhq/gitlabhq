@@ -32,7 +32,7 @@ class Admin::ProjectsController < Admin::ApplicationController
   end
 
   def repository_check
-    SingleRepositoryCheckWorker.perform_async(@project.id)
+    RepositoryCheck::SingleRepositoryWorker.perform_async(@project.id)
 
     redirect_to(
       admin_namespace_project_path(@project.namespace, @project),

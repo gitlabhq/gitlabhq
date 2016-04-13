@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe RepositoryCheckWorker do
-  subject { RepositoryCheckWorker.new }
+describe RepositoryCheck::BatchWorker do
+  subject { described_class.new }
 
   it 'prefers projects that have never been checked' do
     projects = create_list(:project, 3)

@@ -20,17 +20,13 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
   end
 
   def clear_repository_check_states
-    Project.update_all(
-      last_repository_check_failed: false,
-      last_repository_check_at: nil
-    )
+    RepositoryCheck::ClearWorker.perform_async
 
     redirect_to(
       admin_application_settings_path,
-      notice: 'All repository check states were cleared.'
+      notice: 'Started asynchronous removal of all repository check states.'
     )
   end
-
 
   private
 

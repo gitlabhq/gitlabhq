@@ -1,9 +1,7 @@
 require 'rails_helper'
 
 feature 'Admin uses repository checks', feature: true do
-  before do
-    login_as :admin
-  end
+  before { login_as :admin }
 
   scenario 'to trigger a single check' do
     project = create(:empty_project)
@@ -17,7 +15,12 @@ feature 'Admin uses repository checks', feature: true do
   end
 
   scenario 'to see a single failed repository check' do
-    visit_admin_project_page(broken_project)
+    project = create(:empty_project)
+    project.update_columns(
+      last_repository_check_failed: true,
+      last_repository_check_at: Time.now,
+    )
+    visit_admin_project_page(project)
 
     page.within('.alert') do
       expect(page.text).to match(/Last repository check \(.* ago\) failed/)
@@ -25,24 +28,16 @@ feature 'Admin uses repository checks', feature: true do
   end
 
   scenario 'to clear all repository checks', js: true do
-    project = broken_project
     visit admin_application_settings_path
+    
+    expect(RepositoryCheck::ClearWorker).to receive(:perform_async)
 
-    click_link 'Clear all repository checks' # pop-up should be auto confirmed
+    click_link 'Clear all repository checks'
 
-    expect(project.reload.last_repository_check_failed).to eq(false)
+    expect(page).to have_content('Started asynchronous removal of all repository check states.')
   end
 
   def visit_admin_project_page(project)
     visit admin_namespace_project_path(project.namespace, project)
-  end
-
-  def broken_project
-    project = create(:empty_project)
-    project.update_columns(
-      last_repository_check_failed: true,
-      last_repository_check_at: Time.now,
-    )
-    project
   end
 end
