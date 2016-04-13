@@ -31,6 +31,26 @@ window.GlPage = {
       get: (name) ->
         @instances[name]
 
+      trigger: (selector, eventType, data) ->
+        $element = type = data = event = defaultFunc = undefined
+
+        $element = selector
+        event = eventType
+
+        if not data
+          data = {}
+
+        if event.defaultCallback
+          defaultFunc = event.defaultCallback
+          event = $.Event(event.type)
+
+        type = event.type or event
+
+        $element.trigger((event or type), data)
+
+        if defaultFunc and not event.isDefaultPrevented()
+          defaultFunc.call($element, event, data)
+
       on: (selector, eventType, handler) ->
         $el = $(selector)
         callback = undefined
@@ -56,7 +76,7 @@ window.GlPage = {
 
       off: (args...) ->
         $el = type = callback = undefined
-        lastIndex = args.length - 1
+        lastArgIndex = args.length - 1
 
         if args.length is 0
           @events.forEach((event) =>
@@ -64,9 +84,9 @@ window.GlPage = {
             $el.off(event.type, event.callback)
           )
 
-        if typeof args[lastIndex] is 'function'
-          callback = args[lastIndex]
-          lastIndex -= 1
+        if typeof args[lastArgIndex] is 'function'
+          callback = args[lastArgIndex]
+          lastArgIndex -= 1
 
         if lastIndex == 1
           $el = $(args[0])
