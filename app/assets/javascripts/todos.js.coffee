@@ -73,13 +73,9 @@ class @Todos
   getTodosPerPage: ->
     @el.data('perPage')
 
-
   redirectIfNeeded: (total) ->
     currPages = @getTotalPages()
     currPage = @getCurrentPage()
-
-    newPages = Math.ceil(total / @getTodosPerPage())
-    url = location.href # Includes query strings
 
     # Refresh if no remaining Todos
     if not total
@@ -88,6 +84,9 @@ class @Todos
 
     # Do nothing if no pagination
     return if not currPages
+
+    newPages = Math.ceil(total / @getTodosPerPage())
+    url = location.href # Includes query strings
 
     # If new total of pages is different than we have now
     if newPages isnt currPages
