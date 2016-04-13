@@ -31,6 +31,20 @@ module API
         required_attributes! %w(event_name key id)
         ::Geo::ScheduleKeyChangeService.new(params).execute
       end
+
+      # Receive event streams from primary and enqueue changes
+      #
+      # Example request:
+      #   POST /geo/receive_events
+      post 'receive_events' do
+        required_attributes! %w(event_name)
+
+        case params['event_name']
+        when 'key_create', 'key_destroy'
+          required_attributes! %w(key id)
+          ::Geo::ScheduleKeyChangeService.new(params).execute
+        end
+      end
     end
   end
 end
