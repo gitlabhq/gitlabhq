@@ -4,6 +4,7 @@ class Oauth::ApplicationsController < Doorkeeper::ApplicationsController
 
   before_action :verify_user_oauth_applications_enabled
   before_action :authenticate_user!
+  before_action :add_gon_variables
 
   layout 'profile'
 
