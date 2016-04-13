@@ -4,7 +4,7 @@ _**Note:** This feature was [introduced][ce-3232] in GitLab 8.7_
 
 ---
 
-Git has a built-in mechanism \[git fsck\]\[git-fsck\] to verify the
+Git has a built-in mechanism, \[git fsck\]\[git-fsck\], to verify the
 integrity of all data commited to a repository. GitLab administrators
 can trigger such a check for a project via the project page under the
 admin panel. The checks run asynchronously so it may take a few minutes
@@ -12,7 +12,7 @@ before the check result is visible on the project admin page. If the
 checks failed you can see their output on the admin log page under
 'repocheck.log'.
 
-## Periodical checks
+## Periodic checks
 
 GitLab periodically runs a repository check on all project repositories and
 wiki repositories in order to detect data corruption problems. A
@@ -35,7 +35,7 @@ in repocheck.log (in the admin panel or on disk; see
 resolved the issue use the admin panel to trigger a new repository check on
 the project. This will clear the 'check failed' state.
 
-If for some reason the periodical repository check caused a lot of false
+If for some reason the periodic repository check caused a lot of false
 alarms you can choose to clear ALL repository check states from the
 'Settings' page of the admin panel.
 
