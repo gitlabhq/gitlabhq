@@ -263,6 +263,7 @@ module ApplicationHelper
       assignee_id: params[:assignee_id],
       author_id: params[:author_id],
       sort: params[:sort],
+      issue_search: params[:issue_search]
     }
 
     options = exist_opts.merge(options)
@@ -273,15 +274,21 @@ module ApplicationHelper
       end
     end
 
+    params = options.compact.to_param
+
     path = request.path
-    path << "?#{options.to_param}"
-    if add_label
-      if params[:label_name].present? and params[:label_name].respond_to?('any?')
-        params[:label_name].each do |label|
-          path << "&label_name[]=#{label}"
+
+    if params != nil
+      path << "?#{options.to_param}"
+      if add_label
+        if params[:label_name].present? and params[:label_name].respond_to?('any?')
+          params[:label_name].each do |label|
+            path << "&label_name[]=#{label}"
+          end
         end
       end
     end
+    
     path
   end
 

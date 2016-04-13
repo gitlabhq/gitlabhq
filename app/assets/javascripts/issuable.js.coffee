@@ -1,7 +1,10 @@
+issuable_created = false
 @Issuable =
   init: ->
-    Issuable.initTemplates()
-    Issuable.initSearch()
+    if not issuable_created
+      issuable_created = true
+      Issuable.initTemplates()
+      Issuable.initSearch()
 
   initTemplates: ->
     Issuable.labelRow = _.template(
@@ -64,6 +67,7 @@
 
     $('#filter_issue_search').val($('#issue_search').val())
 
+
   updateStateFilters: ->
     stateFilters =  $('.issues-state-filters')
     newParams = {}
@@ -82,3 +86,18 @@
         else
           newUrl = gl.utils.mergeUrlParams(newParams, initialUrl)
         $(this).attr 'href', newUrl
+
+  checkChanged: ->
+    checked_issues = $('.selected_issue:checked')
+    if checked_issues.length > 0
+      ids = []
+      $.each checked_issues, (index, value) ->
+        ids.push $(value).data('id')
+
+      $('#update_issues_ids').val ids
+      $('.issues-other-filters').hide()
+      $('.issues_bulk_update').show()
+    else
+      $('#update_issues_ids').val []
+      $('.issues_bulk_update').hide()
+      $('.issues-other-filters').show()

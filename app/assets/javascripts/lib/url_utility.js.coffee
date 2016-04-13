@@ -26,10 +26,19 @@
     newUrl = decodeURIComponent(url)
     for paramName, paramValue of params
       pattern = new RegExp "\\b(#{paramName}=).*?(&|$)"
-      if url.search(pattern) >= 0
+      if !paramValue?
+        newUrl = newUrl.replace pattern, ''
+      else if url.search(pattern) >= 0
         newUrl = newUrl.replace pattern, "$1#{paramValue}$2"
       else
         newUrl = "#{newUrl}#{(if newUrl.indexOf('?') > 0 then '&' else '?')}#{paramName}=#{paramValue}"
+
+    # Remove a trailing ampersand
+    lastChar = newUrl[newUrl.length - 1]
+
+    if lastChar is '&'
+        newUrl = newUrl.slice 0, -1
+
     newUrl
 
   # removes parameter query string from url. returns the modified url
