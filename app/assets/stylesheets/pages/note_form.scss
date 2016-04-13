@@ -64,7 +64,7 @@
 
     &.is-focused {
       border-color: $focus-border-color;
-      box-shadow: 0 0 2px rgba(#000, .2),
+      box-shadow: 0 0 2px $black-transparent,
                   0 0 4px rgba($focus-border-color, .4);
 
       .comment-toolbar,
@@ -75,7 +75,7 @@
 
     &.is-dropzone-hover {
       border-color: $gl-success;
-      box-shadow: 0 0 2px rgba(#000, .2),
+      box-shadow: 0 0 2px $black-transparent,
                   0 0 4px rgba($gl-success, .4);
 
       .comment-toolbar,
