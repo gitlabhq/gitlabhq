@@ -10,7 +10,9 @@
     .col-md-12
       .panel
         .panel-heading.alert.alert-danger
-          Last repository check failed. See
+          Last repository check 
+          = "(#{time_ago_in_words(@project.last_repository_check_at)} ago)"
+          failed. See
           = link_to 'repocheck.log', admin_logs_path
           for error messages.
 .row
