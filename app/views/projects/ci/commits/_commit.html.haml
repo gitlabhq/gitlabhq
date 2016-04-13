@@ -1,19 +1,21 @@
 - status = commit.status
 %tr.commit
   %td.commit-link
-    = link_to namespace_project_commit_path(@project.namespace, @project, commit.sha), class: "ci-status ci-#{status}" do
+    = link_to namespace_project_pipeline_path(@project.namespace, @project, commit.id), class: "ci-status ci-#{status}" do
       = ci_icon_for_status(status)
       %strong ##{commit.id}
 
   %td
-    %div
+    %div.branch-commit
       - if commit.ref
-        = link_to commit.ref, namespace_project_commits_path(@project.namespace, @project, commit.ref)
+        = link_to commit.ref, namespace_project_commits_path(@project.namespace, @project, commit.ref), class: "monospace"
+        &middot;
+      = link_to commit.short_sha, namespace_project_commit_path(@project.namespace, @project, commit.sha), class: "commit-id monospace"
       &nbsp;
+      - if commit.latest?
+        %span.label.label-success latest
       - if commit.tag?
         %span.label.label-primary tag
-      - if commit.branch?
-        %span.label.label-primary branch
       - if commit.triggered?
         %span.label.label-primary triggered
       - if commit.yaml_errors.present?
@@ -21,32 +23,36 @@
       - if commit.builds.any?(&:stuck?)
         %span.label.label-warning stuck
 
-      - if commit_data = commit.commit_data
-        = render 'projects/branches/commit', commit: commit_data, project: @project
-      - else
-        %p
-          Cant find HEAD commit for this branch
+      %p
+        %span
+          - if commit_data = commit.commit_data
+            = link_to_gfm commit_data.title, namespace_project_commit_path(@project.namespace, @project, commit_data.id), class: "commit-row-message"
+          - else
+            Cant find HEAD commit for this branch
+
 
     - stages_status = commit.statuses.stages_status
     - stages.each do |stage|
       %td
         - if status = stages_status[stage]
-          %span.has-tooltip(title="#{status}"){class: "ci-status-icon-#{status}"}
+          %span.has-tooltip(title="#{stage.titleize}: #{status}"){class: "ci-status-icon-#{status}"}
             = ci_icon_for_status(status)
 
   %td
     - if commit.started_at && commit.finished_at
       %p
-        %i.fa.fa-late-o
+        %i.fa.fa-clock-o
+        &nbsp;
         #{duration_in_words(commit.finished_at, commit.started_at)}
     - if commit.finished_at
       %p
-        %i.fa.fa-date-o
+        %i.fa.fa-calendar
+        &nbsp;
         #{time_ago_with_tooltip(commit.finished_at)}
 
-  %td.content
+  %td
     .controls.hidden-xs.pull-right
-      - artifacts = commit.builds.latest.select { |status| status.artifacts? }
+      - artifacts = commit.builds.latest
       - if artifacts.present?
         .dropdown.inline
           %button.dropdown-toggle.btn{type: 'button', 'data-toggle' => 'dropdown'}
@@ -58,15 +64,12 @@
                 = link_to download_namespace_project_build_artifacts_path(@project.namespace, @project, build), rel: 'nofollow' do
                   %i.fa.fa-download
                   %span #{build.name}
-        &nbsp;
 
       - if can?(current_user, :update_pipeline, @project)
-        - if commit.retryable?
+        - if commit.retryable? && commit.builds.failed.any?
           = link_to retry_namespace_project_pipeline_path(@project.namespace, @project, commit.id), class: 'btn has-tooltip', title: "Retry", method: :post do
             = icon("repeat")
-
         &nbsp;
-
         - if commit.active?
           = link_to cancel_namespace_project_pipeline_path(@project.namespace, @project, commit.id), class: 'btn btn-remove has-tooltip', title: "Cancel", method: :post do
             = icon("remove cred")

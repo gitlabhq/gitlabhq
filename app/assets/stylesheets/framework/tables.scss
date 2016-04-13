@@ -38,9 +38,6 @@ table {
         .rotate {
           height: 140px;
           white-space: nowrap;
-        }
-
-        .rotate > div {
           transform:
                   /* Magic Numbers */
                   translate(25px, 51px)

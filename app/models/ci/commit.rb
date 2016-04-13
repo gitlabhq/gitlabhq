@@ -94,6 +94,13 @@ module Ci
       end
     end
 
+    def latest?
+      return false unless ref
+      commit = project.commit(ref)
+      return false unless commit
+      commit.sha == sha
+    end
+
     def triggered?
       trigger_requests.any?
     end

@@ -7,25 +7,21 @@
       = link_to project_pipelines_path(@project) do
         All
         %span.badge.js-totalbuilds-count
-          = number_with_delimiter(@all_commits.count(:id))
+          = number_with_delimiter(@all_pipelines.count)
+
+    %li{class: ('active' if @scope == 'running')}
+      = link_to project_pipelines_path(@project, scope: :running) do
+        Running
+        %span.badge.js-running-count
+          = number_with_delimiter(@all_pipelines.running_or_pending.count)
 
     %li{class: ('active' if @scope == 'branches')}
       = link_to project_pipelines_path(@project, scope: :branches) do
         Branches
-        %span.badge.js-running-count
-          = number_with_delimiter(@all_commits.running_or_pending.count(:id))
 
     %li{class: ('active' if @scope == 'tags')}
       = link_to project_pipelines_path(@project, scope: :tags) do
         Tags
-        %span.badge.js-running-count
-          = number_with_delimiter(@all_commits.running_or_pending.count(:id))
-
-    %li{class: ('active' if @scope == 'running')}
-      = link_to project_pipelines_path(@project, scope: :running) do
-        Failed
-        %span.badge.js-running-count
-          = number_with_delimiter(@all_commits.running_or_pending.count(:id))
 
   .nav-controls
     - if can? current_user, :create_pipeline, @project
@@ -45,8 +41,8 @@
   Pipelines for #{(@scope || 'changes')} on this project
 
 %ul.content-list
-  - stages = @commits.stages
-  - if @commits.blank?
+  - stages = @pipelines.stages
+  - if @pipelines.blank?
     %li
       .nothing-here-block No pipelines to show
   - else
@@ -55,11 +51,12 @@
         %tbody
           %th Pipeline ID
           %th Commit
-          - @commits.stages.each do |stage|
-            %th.rotate
-              = stage.titleize
+          - @pipelines.stages.each do |stage|
+            %th
+              %span.has-tooltip(title="#{stage.titleize}")
+                = truncate(stage.titleize.pluralize, length: 8)
           %th
           %th
-        = render @commits, commit_sha: true, stage: true, allow_retry: true, stages: stages
+        = render @pipelines, commit_sha: true, stage: true, allow_retry: true, stages: stages
 
-    = paginate @commits, theme: 'gitlab'
+    = paginate @pipelines, theme: 'gitlab'

@@ -2,12 +2,15 @@
   .pull-right
     - if can?(current_user, :update_build, @project)
       - if ci_commit.builds.latest.failed.any?(&:retryable?)
-        = link_to "Retry failed", retry_builds_namespace_project_commit_path(@project.namespace, @project, @commit.id), class: 'btn btn-grouped btn-primary', method: :post
+        = link_to "Retry failed", retry_namespace_project_pipeline_path(@project.namespace, @project, ci_commit.id), class: 'btn btn-grouped btn-primary', method: :post
 
       - if ci_commit.builds.running_or_pending.any?
-        = link_to "Cancel running", cancel_builds_namespace_project_commit_path(@project.namespace, @project, @commit.id), data: { confirm: 'Are you sure?' }, class: 'btn btn-grouped btn-danger', method: :post
+        = link_to "Cancel running", cancel_namespace_project_pipeline_path(@project.namespace, @project, ci_commit.id), data: { confirm: 'Are you sure?' }, class: 'btn btn-grouped btn-danger', method: :post
 
   .oneline
+    Pipeline
+    = link_to "##{ci_commit.id}", namespace_project_pipeline_path(@project.namespace, @project, ci_commit.id), class: "monospace"
+    with
     = pluralize ci_commit.statuses.count(:id), "build"
     - if ci_commit.ref
       for
@@ -17,7 +20,7 @@
       for commit
       = link_to @commit.short_id, namespace_project_commit_path(@project.namespace, @project, @commit.id), class: "monospace"
     - if ci_commit.duration > 0
-      in
+      took
       = time_interval_in_words ci_commit.duration
 
 - if ci_commit.yaml_errors.present?
@@ -47,23 +50,4 @@
         %th
     - builds = ci_commit.statuses.latest.ordered
     = render builds, coverage: @project.build_coverage_enabled?, stage: true, ref: false, allow_retry: true
-
-- if ci_commit.retried.any?
-  .gray-content-block.second-block
-    Retried builds
-
-  .table-holder
-    %table.table.builds
-      %thead
-        %tr
-          %th Status
-          %th Build ID
-          %th Ref
-          %th Stage
-          %th Name
-          %th Duration
-          %th Finished at
-          - if @project.build_coverage_enabled?
-            %th Coverage
-          %th
-      = render ci_commit.retried, coverage: @project.build_coverage_enabled?, stage: true, ref: false
+    = render ci_commit.retried, coverage: @project.build_coverage_enabled?, stage: true, ref: false, retried: true

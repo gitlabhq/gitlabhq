@@ -13,7 +13,9 @@
       %strong ##{build.id}
 
     - if build.stuck?
-      %i.fa.fa-warning.text-warning
+      %i.fa.fa-warning.text-warning.has-tooltip(title="Build is stuck. Check runners.")
+    - if defined?(retried) && retried
+      %i.fa.fa-warning.has-tooltip(title="Build was retried")
 
   - if defined?(commit_sha) && commit_sha
     %td
