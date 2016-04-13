@@ -52,6 +52,7 @@ module IssuesHelper
 
   def milestone_options(object)
     milestones = object.project.milestones.active.reorder(due_date: :asc, title: :asc).to_a
+    milestones.unshift(object.milestone) if object.milestone.present? && object.milestone.closed?
     milestones.unshift(Milestone::None)
 
     options_from_collection_for_select(milestones, 'id', 'title', object.milestone_id)

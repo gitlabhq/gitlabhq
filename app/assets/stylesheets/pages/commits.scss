@@ -47,6 +47,7 @@ li.commit {
 
     .commit_short_id {
       min-width: 65px;
+      color: $gl-dark-link-color;
       font-family: $monospace_font;
     }
 
@@ -87,6 +88,10 @@ li.commit {
       background: inherit;
       padding: 0;
       margin: 0;
+    }
+
+    a {
+      color: $gl-dark-link-color;
     }
   }
 

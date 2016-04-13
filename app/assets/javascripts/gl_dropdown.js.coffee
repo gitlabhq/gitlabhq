@@ -57,14 +57,30 @@ class GitLabDropdownFilter
 
   filter: (search_text) ->
     data = @options.data()
-    results = data
 
-    if search_text isnt ""
-      results = fuzzaldrinPlus.filter(data, search_text,
-        key: @options.keys
-      )
+    if data?
+      results = data
 
-    @options.callback results
+      if search_text isnt ''
+        results = fuzzaldrinPlus.filter(data, search_text,
+          key: @options.keys
+        )
+
+      @options.callback results
+    else
+      elements = @options.elements()
+
+      if search_text
+        elements.each ->
+          $el = $(@)
+          matches = fuzzaldrinPlus.match($el.text().trim(), search_text)
+
+          if matches.length
+            $el.show()
+          else
+            $el.hide()
+      else
+        elements.show()
 
 class GitLabDropdownRemote
   constructor: (@dataEndpoint, @options) ->
@@ -106,7 +122,9 @@ class GitLabDropdown
   FILTER_INPUT = '.dropdown-input .dropdown-input-field'
 
   constructor: (@el, @options) ->
-    @dropdown = $(@el).parent()
+    self = @
+    selector = $(@el).data "target"
+    @dropdown = if selector? then $(selector) else $(@el).parent()
 
     # Set Defaults
     {
@@ -123,7 +141,7 @@ class GitLabDropdown
     if _.isString(@filterInput)
       @filterInput = @getElement(@filterInput)
 
-    search_fields = if @options.search then @options.search.fields else [];
+    searchFields = if @options.search then @options.search.fields else [];
 
     if @options.data
       # If data is an array
@@ -147,7 +165,14 @@ class GitLabDropdown
         filterInputBlur: @filterInputBlur
         remote: @options.filterRemote
         query: @options.data
-        keys: @options.search.fields
+        keys: searchFields
+        elements: =>
+          selector = '.dropdown-content li:not(.divider)'
+
+          if @dropdown.find('.dropdown-toggle-page').length
+            selector = ".dropdown-page-one #{selector}"
+
+          return $(selector)
         data: =>
           return @fullData
         callback: (data) =>
@@ -376,7 +401,7 @@ class GitLabDropdown
 
       # Toggle the dropdown label
       if @options.toggleLabel
-        $(@el).find(".dropdown-toggle-text").text @options.toggleLabel(selectedObject)
+        $(@el).find(".dropdown-toggle-text").text @options.toggleLabel(selectedObject, el)
       if value?
         if !field.length and fieldName
           # Create hidden input for form

@@ -15,20 +15,20 @@ describe Gitlab::OAuth::User, lib: true do
   end
   let(:ldap_user) { Gitlab::LDAP::Person.new(Net::LDAP::Entry.new, 'ldapmain') }
 
-  describe :persisted? do
+  describe '#persisted?' do
     let!(:existing_user) { create(:omniauth_user, extern_uid: 'my-uid', provider: 'my-provider') }
 
     it "finds an existing user based on uid and provider (facebook)" do
       expect( oauth_user.persisted? ).to be_truthy
     end
 
-    it "returns false if use is not found in database" do
+    it 'returns false if user is not found in database' do
       allow(auth_hash).to receive(:uid).and_return('non-existing')
       expect( oauth_user.persisted? ).to be_falsey
     end
   end
 
-  describe :save do
+  describe '#save' do
     def stub_omniauth_config(messages)
       allow(Gitlab.config.omniauth).to receive_messages(messages)
     end
@@ -40,8 +40,27 @@ describe Gitlab::OAuth::User, lib: true do
     let(:provider) { 'twitter' }
 
     describe 'signup' do
-      shared_examples "to verify compliance with allow_single_sign_on" do
-        context "with new allow_single_sign_on enabled syntax" do
+      shared_examples 'to verify compliance with allow_single_sign_on' do
+        context 'provider is marked as external' do
+          it 'should mark user as external' do
+            stub_omniauth_config(allow_single_sign_on: ['twitter'], external_providers: ['twitter'])
+            oauth_user.save
+            expect(gl_user).to be_valid
+            expect(gl_user.external).to be_truthy
+          end
+        end
+
+        context 'provider was external, now has been removed' do
+          it 'should mark existing user internal' do
+            create(:omniauth_user, extern_uid: 'my-uid', provider: 'twitter', external: true)
+            stub_omniauth_config(allow_single_sign_on: ['twitter'], external_providers: ['facebook'])
+            oauth_user.save
+            expect(gl_user).to be_valid
+            expect(gl_user.external).to be_falsey
+          end
+        end
+
+        context 'with new allow_single_sign_on enabled syntax' do
           before { stub_omniauth_config(allow_single_sign_on: ['twitter']) }
 
           it "creates a user from Omniauth" do
@@ -67,16 +86,16 @@ describe Gitlab::OAuth::User, lib: true do
           end
         end
 
-        context "with new allow_single_sign_on disabled syntax" do
+        context 'with new allow_single_sign_on disabled syntax' do
           before { stub_omniauth_config(allow_single_sign_on: []) }
-          it "throws an error" do
+          it 'throws an error' do
             expect{ oauth_user.save }.to raise_error StandardError
           end
         end
 
-        context "with old allow_single_sign_on disabled (Default)" do
+        context 'with old allow_single_sign_on disabled (Default)' do
           before { stub_omniauth_config(allow_single_sign_on: false) }
-          it "throws an error" do
+          it 'throws an error' do
             expect{ oauth_user.save }.to raise_error StandardError
           end
         end

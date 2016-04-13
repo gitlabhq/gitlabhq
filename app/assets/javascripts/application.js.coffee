@@ -41,6 +41,7 @@
 #= require shortcuts_issuable
 #= require shortcuts_network
 #= require jquery.nicescroll
+#= require date.format
 #= require_tree .
 #= require fuzzaldrin-plus
 #= require cropper
@@ -163,7 +164,7 @@ $ ->
   $('.trigger-submit').on 'change', ->
     $(@).parents('form').submit()
 
-  $('abbr.timeago, .js-timeago').timeago()
+  gl.utils.localTimeAgo($('abbr.timeago, .js-timeago'), false)
 
   # Flash
   if (flash = $(".flash-container")).length > 0

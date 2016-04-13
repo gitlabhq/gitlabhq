@@ -13,11 +13,8 @@
       - unless @user.password_automatically_set?
         or recover your current one
     = form_for @user, url: profile_password_path, method: :put, html: {class: "update-password"} do |f|
-      -if @user.errors.any?
-        .alert.alert-danger
-          %ul
-            - @user.errors.full_messages.each do |msg|
-              %li= msg
+      = form_errors(@user)
+
       - unless @user.password_automatically_set?
         .form-group
           = f.label :current_password, class: 'label-light'

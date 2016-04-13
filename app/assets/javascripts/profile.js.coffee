@@ -18,8 +18,11 @@ class @Profile
       $(this).find('.btn-save').enable()
       $(this).find('.loading-gif').hide()
 
-    $('.update-notifications').on 'ajax:complete', ->
-      $(this).find('.btn-save').enable()
+    $('.update-notifications').on 'ajax:success', (e, data) ->
+      if data.saved
+        new Flash("Notification settings saved", "notice")
+      else
+        new Flash("Failed to save new settings", "alert")
 
     @bindEvents()
 

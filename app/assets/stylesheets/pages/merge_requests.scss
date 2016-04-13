@@ -123,6 +123,8 @@
 
 .mr_source_commit,
 .mr_target_commit {
+  margin-bottom: 0;
+
   .commit {
     margin: 0;
     padding: 2px 0;
@@ -140,6 +142,7 @@
   overflow: hidden;
   font-size: 90%;
   margin: 0 3px;
+  word-break: break-all;
 }
 
 .mr-list {
@@ -174,10 +177,6 @@
   display: none;
 }
 
-.merge-request-form .select2-container {
-  width: 250px !important;
-}
-
 #modal_merge_info .modal-dialog {
   width: 600px;
 
@@ -199,4 +198,77 @@
   .table-holder {
     overflow-x: scroll;
   }
+}
+
+.panel-new-merge-request {
+  .panel-heading {
+    padding: 5px 10px;
+    font-weight: 600;
+    line-height: 25px;
+  }
+
+  .panel-body {
+    padding: 10px 5px;
+  }
+
+  .panel-footer {
+    padding: 5px 10px;
+  }
+
+  .commit {
+    .commit-row-title {
+      margin-bottom: 4px;
+    }
+
+    .avatar {
+      width: 20px;
+      height: 20px;
+      margin-right: 5px;
+    }
+
+    .commit-row-info {
+      line-height: 20px;
+    }
+  }
+
+  .btn-clipboard {
+    margin-right: 5px;
+    padding: 0;
+    background: transparent;
+  }
+
+  .ci-status-link {
+    margin-right: 5px;
+  }
+}
+
+.merge-request-select {
+  padding-left: 5px;
+  padding-right: 5px;
+  margin-bottom: 10px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  @media (min-width: $screen-sm-min) {
+    float: left;
+    width: 50%;
+    margin-bottom: 0;
+  }
+
+  .dropdown-menu-toggle {
+    width: 100%;
+  }
+
+  .dropdown-menu {
+    left: 5px;
+    right: 5px;
+    width: auto;
+  }
+}
+
+.issuable-form-select-holder {
+  display: inline-block;
+  width: 250px;
 }
