@@ -62,6 +62,8 @@ v 8.7.0 (unreleased)
   - Fix repository cache invalidation issue when project is recreated with an empty repo (Stan Hu)
   - Fix: Allow empty recipients list for builds emails service when pushed is added (Frank Groeneveld)
   - Improved markdown forms
+  - Diffs load at the correct point when linking from from number
+  - Selected diff rows highlight
 
 v 8.6.6
   - Fix error on language detection when repository has no HEAD (e.g., master branch). !3654 (Jeroen Bobbeldijk)
