@@ -76,7 +76,7 @@
     &.is-dropzone-hover {
       border-color: $gl-success;
       box-shadow: 0 0 2px $black-transparent,
-                  0 0 4px rgba($gl-success, .4);
+                  0 0 4px $gl-success-focus;
 
       .comment-toolbar,
       .nav-links {
