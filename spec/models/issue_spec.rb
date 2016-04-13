@@ -192,8 +192,6 @@ describe Issue, models: true do
 
   describe '#related_branches' do
     let(:user) { build(:user, :admin) }
-    let(:merge_request) { create(:merge_request, description: "Closes ##{subject.iid}",
-                                 source_project: subject.project, source_branch: "branch-#{subject.iid}") }
 
     before(:each) do
       allow(subject.project.repository).to receive(:branch_names).
@@ -210,6 +208,9 @@ describe Issue, models: true do
     end
 
     it "selects the right branches when there is a referenced merge request" do
+      merge_request = create(:merge_request, { description: "Closes ##{subject.iid}",
+                                               source_project: subject.project,
+                                               source_branch: "branch-#{subject.iid}" })
       merge_request.create_cross_references!(user)
       expect(subject.referenced_merge_requests).to_not be_empty
       expect(subject.related_branches(user)).to eq([subject.to_branch_name])
