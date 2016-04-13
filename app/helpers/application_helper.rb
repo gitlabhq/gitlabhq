@@ -279,7 +279,7 @@ module ApplicationHelper
     path = request.path
 
     if params != nil
-      path << "?#{options.to_param}"
+      path << "?#{params}"
       if add_label
         if params[:label_name].present? and params[:label_name].respond_to?('any?')
           params[:label_name].each do |label|
@@ -288,7 +288,6 @@ module ApplicationHelper
         end
       end
     end
-    
     path
   end
 
