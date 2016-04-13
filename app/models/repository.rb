@@ -253,6 +253,8 @@ class Repository
     # This ensures this particular cache is flushed after the first commit to a
     # new repository.
     expire_emptiness_caches if empty?
+    expire_branch_count_cache
+    expire_tag_count_cache
   end
 
   def expire_branch_cache(branch_name = nil)

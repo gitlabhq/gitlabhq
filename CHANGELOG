@@ -43,6 +43,7 @@ v 8.7.0 (unreleased)
   - Update number of Todos in the sidebar when it's marked as "Done". !3600
   - API: Expose 'updated_at' for issue, snippet, and merge request notes (Robert Schilling)
   - API: User can leave a project through the API when not master or owner. !3613
+  - Fix repository cache invalidation issue when project is recreated with an empty repo (Stan Hu)
 
 v 8.6.6
   - Fix error on language detection when repository has no HEAD (e.g., master branch). !3654 (Jeroen Bobbeldijk)
