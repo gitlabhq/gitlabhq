@@ -351,6 +351,61 @@ DELETE /projects/:id/issues/:issue_id
 curl -X DELETE -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/4/issues/85
 ```
 
+## Move an issue
+
+Moves an issue to a different project. If the operation is successful, a status
+code `201` together with moved issue is returned. If the project, issue, or
+target project is not found, error `404` is returned. If the target project
+equals the source project or the user has insufficient permissions to move an
+issue, error `400` together with an explaining error message is returned.
+
+```
+POST /projects/:id/issues/:issue_id/move
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer | yes | The ID of a project |
+| `issue_id` | integer | yes | The ID of a project's issue |
+| `to_project_id` | integer | yes | The ID of the new project |
+
+```bash
+curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/4/issues/85/move
+```
+
+Example response:
+
+```json
+{
+  "id": 92,
+  "iid": 11,
+  "project_id": 5,
+  "title": "Sit voluptas tempora quisquam aut doloribus et.",
+  "description": "Repellat voluptas quibusdam voluptatem exercitationem.",
+  "state": "opened",
+  "created_at": "2016-04-05T21:41:45.652Z",
+  "updated_at": "2016-04-07T12:20:17.596Z",
+  "labels": [],
+  "milestone": null,
+  "assignee": {
+    "name": "Miss Monserrate Beier",
+    "username": "axel.block",
+    "id": 12,
+    "state": "active",
+    "avatar_url": "http://www.gravatar.com/avatar/46f6f7dc858ada7be1853f7fb96e81da?s=80&d=identicon",
+    "web_url": "https://gitlab.example.com/u/axel.block"
+  },
+  "author": {
+    "name": "Kris Steuber",
+    "username": "solon.cremin",
+    "id": 10,
+    "state": "active",
+    "avatar_url": "http://www.gravatar.com/avatar/7a190fecbaa68212a4b68aeb6e3acd10?s=80&d=identicon",
+    "web_url": "https://gitlab.example.com/u/solon.cremin"
+  }
+}
+```
+
 ## Comments on issues
 
 Comments are done via the [notes](notes.md) resource.

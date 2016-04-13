@@ -46,6 +46,15 @@ production: &base
     #
     # relative_url_root: /gitlab
 
+    # Trusted Proxies
+    # Customize if you have GitLab behind a reverse proxy which is running on a different machine.
+    # Add the IP address for your reverse proxy to the list, otherwise users will appear signed in from that address.
+    trusted_proxies:
+      # Examples:
+      #- 192.168.1.0/24
+      #- 192.168.2.1
+      #- 2001:0db8::/32
+
     # Uncomment and customize if you can't use the default user to run GitLab (default: 'git')
     # user: git
 

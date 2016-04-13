@@ -45,6 +45,8 @@
 
       %h1.title= title
 
+      = yield :header_content
+
 = render 'shared/outdated_browser'
 
 - if @project && !@project.empty_repo?
