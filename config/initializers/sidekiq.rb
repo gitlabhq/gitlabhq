@@ -1,9 +1,7 @@
-SIDEKIQ_REDIS_NAMESPACE = 'resque:gitlab'
-
 Sidekiq.configure_server do |config|
   config.redis = {
     url: Gitlab::Redis.url,
-    namespace: SIDEKIQ_REDIS_NAMESPACE
+    namespace: Gitlab::Redis::SIDEKIQ_NAMESPACE
   }
 
   config.server_middleware do |chain|
@@ -30,6 +28,6 @@ end
 Sidekiq.configure_client do |config|
   config.redis = {
     url: Gitlab::Redis.url,
-    namespace: SIDEKIQ_REDIS_NAMESPACE
+    namespace: Gitlab::Redis::SIDEKIQ_NAMESPACE
   }
 end

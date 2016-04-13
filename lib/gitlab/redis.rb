@@ -1,6 +1,8 @@
 module Gitlab
   class Redis
     CACHE_NAMESPACE = 'cache:gitlab'
+    SESSION_NAMESPACE = 'session:gitlab'
+    SIDEKIQ_NAMESPACE = 'resque:gitlab'
 
     attr_reader :url
 
