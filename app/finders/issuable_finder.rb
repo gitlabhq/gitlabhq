@@ -278,7 +278,9 @@ class IssuableFinder
       end
     end
 
-    items
+    # When filtering by multiple labels we may end up duplicating issues (if one
+    # has multiple labels). This ensures we only return unique issues.
+    items.distinct
   end
 
   def label_names
