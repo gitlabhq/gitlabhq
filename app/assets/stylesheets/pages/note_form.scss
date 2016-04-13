@@ -40,6 +40,7 @@
 }
 
 .note-textarea {
+  display: block;
   padding: 10px 0;
   font-family: $regular_font;
   border: 0;
@@ -69,6 +70,17 @@
       .comment-toolbar,
       .nav-links {
         border-color: $focus-border-color;
+      }
+    }
+
+    &.is-dropzone-hover {
+      border-color: $gl-success;
+      box-shadow: 0 0 2px rgba(#000, .2),
+                  0 0 4px rgba($gl-success, .4);
+
+      .comment-toolbar,
+      .nav-links {
+        border-color: $gl-success;
       }
     }
 
