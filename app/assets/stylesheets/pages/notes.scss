@@ -171,6 +171,11 @@ ul.notes {
 
       &.parallel {
         border-width: 1px;
+
+        .code,
+        code {
+          white-space: pre-wrap;
+        }
       }
 
       .notes {
