@@ -87,8 +87,8 @@ class @MergeRequestTabs
     if window.location.hash
       navBarHeight = $('.navbar-gitlab').outerHeight()
 
-      $el = $("#{container} #{window.location.hash}")
-      $.scrollTo("#{container} #{window.location.hash}", offset: -navBarHeight) if $el.length
+      $el = $("#{container} #{window.location.hash}:not(.match)")
+      $.scrollTo("#{container} #{window.location.hash}:not(.match)", offset: -navBarHeight) if $el.length
 
   # Activate a tab based on the current action
   activateTab: (action) ->
