@@ -129,7 +129,11 @@ describe Issues::MoveService, services: true do
           end
 
           it 'moves the award emoji too' do
-            expect(new_issue.award_emoji).to eq(old_issue.award_emoji)
+            new_issue.reload
+            first_emoji = new_issue.award_emoji.first
+
+            expect(new_issue.award_emoji.count).to eq(old_issue.award_emoji.count)
+            expect(first_emoji.name).to eq(old_issue.award_emoji.first.name)
           end
         end
 
