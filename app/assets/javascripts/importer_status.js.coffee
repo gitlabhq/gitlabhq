@@ -4,16 +4,16 @@ class @ImporterStatus
     this.setAutoUpdate()
 
   initStatusPage: ->
-    $(".js-add-to-import")
+    $('.js-add-to-import')
       .off 'click'
       .on 'click', (event) =>
         new_namespace = null
         $btn = $(event.currentTarget)
-        $tr = $btn.closest("tr")
-        id = $tr.attr("id").replace("repo_", "")
-        if $tr.find(".import-target input").length > 0
-          new_namespace = $tr.find(".import-target input").prop("value")
-          $tr.find(".import-target").empty().append(new_namespace + "/" + $tr.find(".import-target").data("project_name"))
+        $tr = $btn.closest('tr')
+        id = $tr.attr('id').replace('repo_', '')
+        if $tr.find('.import-target input').length > 0
+          new_namespace = $tr.find('.import-target input').prop('value')
+          $tr.find('.import-target').empty().append("#{new_namespace} / #{$tr.find('.import-target').data('project_name')}")
 
         $btn
           .disable()
@@ -21,15 +21,15 @@ class @ImporterStatus
 
         $.post @import_url, {repo_id: id, new_namespace: new_namespace}, dataType: 'script'
 
-    $(".js-import-all")
+    $('.js-import-all')
       .off 'click'
-      .on 'click', (event) =>
-        $btn = $(event.currentTarget)
+      .on 'click', (e) =>
+        $btn = $(e.currentTarget)
         $btn
           .disable()
           .addClass 'is-loading'
 
-        $(".js-add-to-import").each ->
+        $('.js-add-to-import').each ->
           $(this).click()
 
   setAutoUpdate: ->

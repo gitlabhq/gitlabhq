@@ -15,7 +15,7 @@
   %p
   = button_tag class: 'btn btn-import btn-success js-import-all' do
     Import all projects
-    = icon('spinner spin', class: 'loading-icon')
+    = icon("spinner spin", class: "loading-icon")
 
 .table-responsive
   %table.table.import-jobs
@@ -54,7 +54,7 @@
           %td.import-actions.job-status
             = button_tag class: "btn btn-import js-add-to-import" do
               Import
-              = icon('spinner spin', class: 'loading-icon')
+              = icon("spinner spin", class: "loading-icon")
 
 :javascript
   new ImporterStatus("#{jobs_import_fogbugz_path}", "#{import_fogbugz_path}");
