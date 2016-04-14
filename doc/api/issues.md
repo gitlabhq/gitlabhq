@@ -298,6 +298,7 @@ PUT /projects/:id/issues/:issue_id
 | `milestone_id`  | integer | no  | The ID of a milestone to assign the issue to |
 | `labels`        | string  | no  | Comma-separated label names for an issue  |
 | `state_event`   | string  | no  | The state event of an issue. Set `close` to close the issue and `reopen` to reopen it |
+| `updated_at`    | string  | no  | Date time string, ISO 8601 formatted, e.g. `2016-03-11T03:45:40Z` |
 
 ```bash
 curl -X PUT -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/4/issues/85?state_event=close

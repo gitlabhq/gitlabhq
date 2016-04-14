@@ -117,7 +117,7 @@ module API
       #   assignee_id (optional)  - The ID of a user to assign issue
       #   milestone_id (optional) - The ID of a milestone to assign issue
       #   labels (optional)       - The labels of an issue
-      #   created_at (optional)   - The date
+      #   created_at (optional)   - Date time string, ISO 8601 formatted
       # Example Request:
       #   POST /projects/:id/issues
       post ":id/issues" do
@@ -166,12 +166,15 @@ module API
       #   milestone_id (optional) - The ID of a milestone to assign issue
       #   labels (optional) - The labels of an issue
       #   state_event (optional) - The state event of an issue (close|reopen)
+      #   updated_at (optional) - Date time string, ISO 8601 formatted
       # Example Request:
       #   PUT /projects/:id/issues/:issue_id
       put ":id/issues/:issue_id" do
         issue = user_project.issues.find(params[:issue_id])
         authorize! :update_issue, issue
-        attrs = attributes_for_keys [:title, :description, :assignee_id, :milestone_id, :state_event]
+        keys = [:title, :description, :assignee_id, :milestone_id, :state_event]
+        keys << :updated_at if current_user.admin? || user_project.owner == current_user
+        attrs = attributes_for_keys(keys)
 
         # Validate label names in advance
         if (errors = validate_label_params(params)).any?
