@@ -1,3 +1,5 @@
+require 'net/ldap/dn'
+
 module Gitlab
   module LDAP
     class GroupSync
@@ -181,13 +183,17 @@ module Gitlab
       # account for that. See gitlab-ee#442
       def ensure_full_dns!(dns)
         dns.map! do |dn|
-          # If there is more than one equal sign we must have a full DN
-          # Or at least the probability is higher.
-          return dn if dn.count('=') > 1
-
-          # If there is only one equal sign, we may only have a `uid`.
-          # In this case, strip the first part and look up full DN by UID
-          dn_for_uid(dn.split('=')[1])
+          parsed_dn = Net::LDAP::DN.new(dn).to_a
+          # If there is more than one key/value set we must have a full DN,
+          # or at least the probability is higher.
+          if parsed_dn.count > 2
+            dn
+          elsif parsed_dn[0] == 'uid'
+            dn_for_uid(parsed_dn[1])
+          else
+            logger.warn { "Found potentially malformed/incomplete DN: '#{dn}'" }
+            dn
+          end
         end
       end
 
