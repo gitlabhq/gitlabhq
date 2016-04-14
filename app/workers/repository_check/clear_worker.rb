@@ -1,9 +1,9 @@
 module RepositoryCheck
   class ClearWorker
     include Sidekiq::Worker
-  
+
     sidekiq_options retry: false
-  
+
     def perform
       # Do small batched updates because these updates will be slow and locking
       Project.select(:id).find_in_batches(batch_size: 100) do |batch|
