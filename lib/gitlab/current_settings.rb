@@ -1,7 +1,5 @@
 module Gitlab
   module CurrentSettings
-    include ::Gitlab::GonHelper
-
     def current_application_settings
       key = :current_application_settings
 

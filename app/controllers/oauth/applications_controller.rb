@@ -1,5 +1,6 @@
 class Oauth::ApplicationsController < Doorkeeper::ApplicationsController
   include Gitlab::CurrentSettings
+  include Gitlab::GonHelper
   include PageLayoutHelper
 
   before_action :verify_user_oauth_applications_enabled

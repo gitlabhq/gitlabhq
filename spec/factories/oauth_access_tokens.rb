@@ -18,6 +18,5 @@ FactoryGirl.define do
     resource_owner
     application
     token '123456'
-    created_at :datetime
   end
 end

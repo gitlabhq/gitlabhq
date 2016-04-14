@@ -3,6 +3,7 @@ require 'fogbugz'
 
 class ApplicationController < ActionController::Base
   include Gitlab::CurrentSettings
+  include Gitlab::GonHelper
   include GitlabRoutingHelper
   include PageLayoutHelper
 
