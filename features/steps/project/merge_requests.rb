@@ -468,7 +468,16 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
   step 'I select "fix" as source' do
     find('.js-source-branch').click
+
     find('.dropdown-source-branch .dropdown-content a', text: 'fix').click
+
+    click_button "Compare branches"
+  end
+
+  step 'I select "feature_conflict" as source' do
+    find('.js-source-branch').click
+
+    find('.dropdown-source-branch .dropdown-content a', text: 'feature_conflict').click
 
     click_button "Compare branches"
   end

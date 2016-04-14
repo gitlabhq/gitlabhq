@@ -886,7 +886,7 @@ ActiveRecord::Schema.define(version: 20160331223143) do
   create_table "remote_mirrors", force: :cascade do |t|
     t.integer  "project_id"
     t.string   "url"
-    t.boolean  "enabled",                   default: true
+    t.boolean  "enabled",                    default: true
     t.string   "update_status"
     t.datetime "last_update_at"
     t.datetime "last_successful_update_at"
@@ -1131,4 +1131,5 @@ ActiveRecord::Schema.define(version: 20160331223143) do
   add_index "web_hooks", ["created_at", "id"], name: "index_web_hooks_on_created_at_and_id", using: :btree
   add_index "web_hooks", ["project_id"], name: "index_web_hooks_on_project_id", using: :btree
 
+  add_foreign_key "remote_mirrors", "projects"
 end

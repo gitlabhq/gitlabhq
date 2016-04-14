@@ -372,10 +372,11 @@ Feature: Project Merge Requests
     When I should not see Approve button
     And I should see message that MR require an approval
 
+  @javascript
   Scenario: I see suggested approvers on new merge request form
     Given project settings contain list of approvers
     When I click link "New Merge Request"
-    And I select "fix" as source
+    And I select "feature_conflict" as source
     Then I see suggested approver
 
   @javascript
@@ -383,6 +384,6 @@ Feature: Project Merge Requests
     Given project settings contain list of approvers
     And there is one auto-suggested approver
     When I click link "New Merge Request"
-    And I select "fix" as source
+    And I select "feature_conflict" as source
     Then I see auto-suggested approver
     And I can add it to approver list
