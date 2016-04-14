@@ -11,6 +11,8 @@ window.GlPage = {
             @instances[className] = new className()
         else if args.length is 1
           @instances[args[0]] = new args[0]()
+        else
+          throw new Error 'You must provide at least one argument'
 
       delegate: (targetsObj) ->
         (e, data) ->
@@ -79,7 +81,7 @@ window.GlPage = {
         lastArgIndex = args.length - 1
 
         if args.length is 0
-          @events.forEach((event) =>
+          $.each(@events, (event) =>
             $el = $(event.el)
             $el.off(event.type, event.callback)
           )
