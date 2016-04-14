@@ -23,7 +23,7 @@ class BuildsEmailService < Service
   prop_accessor :recipients
   boolean_accessor :add_pusher
   boolean_accessor :notify_only_broken_builds
-  validates :recipients, presence: true, if: :activated?
+  validates :recipients, presence: true, if: ->(s) { s.activated? && !s.add_pusher? }
 
   def initialize_properties
     if properties.nil?
@@ -87,10 +87,14 @@ class BuildsEmailService < Service
   end
 
   def all_recipients(data)
-    all_recipients = recipients.split(',').compact.reject(&:blank?)
+    all_recipients = []
+
+    unless recipients.blank?
+      all_recipients += recipients.split(',').compact.reject(&:blank?)
+    end
 
     if add_pusher? && data[:user][:email]
-      all_recipients << "#{data[:user][:email]}"
+      all_recipients << data[:user][:email]
     end
 
     all_recipients
