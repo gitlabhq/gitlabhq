@@ -25,24 +25,26 @@
     - else
       \- #{diff.new_path}
   - unless @message.disable_diffs?
-    \
-    \
-    Changes:
-    - @message.diffs.each do |diff_file|
+    - if @message.compare_timeout
       \
-      \=====================================
-      - if diff_file.deleted_file
-        #{diff_file.old_path} deleted
-      - elsif diff_file.renamed_file
-        #{diff_file.old_path} → #{diff_file.new_path}
-      - else
-        = diff_file.new_path
-      \=====================================
-      != diff_file.diff.diff
-  - if @message.compare_timeout
-    \
-    \
-    Huge diff. To prevent performance issues it was hidden
+      \
+      The diff was not included because it is too large.
+    - else
+      \
+      \
+      Changes:
+      - @message.diffs.each do |diff_file|
+        \
+        \=====================================
+        - if diff_file.deleted_file
+          #{diff_file.old_path} deleted
+        - elsif diff_file.renamed_file
+          #{diff_file.old_path} → #{diff_file.new_path}
+        - else
+          = diff_file.new_path
+        \=====================================
+        != diff_file.diff.diff
+
   - if @message.target_url
     \
     \

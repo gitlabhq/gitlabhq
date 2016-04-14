@@ -48,33 +48,34 @@
   - unless @message.disable_diffs?
     - diff_files = @message.diffs
 
-    %h4 Changes:
-    - diff_files.each_with_index do |diff_file, i|
-      %li{id: "diff-#{i}"}
-        %a{href: @message.target_url + "#diff-#{i}"}
-          - if diff_file.deleted_file
-            %strong
-              = diff_file.old_path
-            deleted
-          - elsif diff_file.renamed_file
-            %strong
-              = diff_file.old_path
-            &rarr;
-            %strong
-              = diff_file.new_path
+    - if @message.compare_timeout
+      %h5 The diff was not included because it is too large.
+    - else
+      %h4 Changes:
+      - diff_files.each_with_index do |diff_file, i|
+        %li{id: "diff-#{i}"}
+          %a{href: @message.target_url + "#diff-#{i}"}
+            - if diff_file.deleted_file
+              %strong
+                = diff_file.old_path
+              deleted
+            - elsif diff_file.renamed_file
+              %strong
+                = diff_file.old_path
+              &rarr;
+              %strong
+                = diff_file.new_path
+            - else
+              %strong
+                = diff_file.new_path
+          %hr
+          - diff_commit = diff_file.deleted_file ? @message.diff_refs.first : @message.diff_refs.last
+          - blob = @message.project.repository.blob_for_diff(diff_commit, diff_file)
+          - if blob && blob.respond_to?(:text?) && blob_text_viewable?(blob)
+            %table.code.white
+              - diff_file.highlighted_diff_lines.each do |line|
+                = render "projects/diffs/line", {line: line, diff_file: diff_file, line_code: nil, plain: true}
           - else
-            %strong
-              = diff_file.new_path
-        %hr
-        - diff_commit = diff_file.deleted_file ? @message.diff_refs.first : @message.diff_refs.last
-        - blob = @message.project.repository.blob_for_diff(diff_commit, diff_file)
-        - if blob && blob.respond_to?(:text?) && blob_text_viewable?(blob)
-          %table.code.white
-            - diff_file.highlighted_diff_lines.each do |line|
-              = render "projects/diffs/line", {line: line, diff_file: diff_file, line_code: nil, plain: true}
-        - else
-          No preview for this file type
-        %br
+            No preview for this file type
+          %br
 
-  - if @message.compare_timeout
-    %h5 Huge diff. To prevent performance issues changes are hidden
