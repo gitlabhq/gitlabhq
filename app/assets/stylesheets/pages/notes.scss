@@ -198,6 +198,12 @@ ul.notes {
   color: $notes-light-color;
 }
 
+.discussion-headline-light {
+  a {
+    color: $gl-link-color;
+  }
+}
+
 /**
  * Actions for Discussions/Notes
  */

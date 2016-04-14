@@ -6,7 +6,8 @@
 
       = render discussion_notes
     - else
-      = render 'projects/notes/discussion', discussion_notes: discussion_notes
+      %li.note.note-discussion.timeline-entry
+        = render 'projects/notes/discussion', discussion_notes: discussion_notes
 - else
   - @notes.each do |note|
     - next unless note.author
