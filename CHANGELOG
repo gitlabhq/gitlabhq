@@ -15,6 +15,7 @@ v 8.7.0 (unreleased)
   - Don't attempt to look up an avatar in repo if repo directory does not exist (Stan Hu)
   - API: Ability to subscribe and unsubscribe from issues and merge requests (Robert Schilling)
   - Expose project badges in project settings
+  - Make /profile/keys/new redirect to /profile/keys for back-compat. !3717
   - Preserve time notes/comments have been updated at when moving issue
   - Make HTTP(s) label consistent on clone bar (Stan Hu)
   - Expose label description in API (Mariusz Jachimowicz)
