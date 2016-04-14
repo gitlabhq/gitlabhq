@@ -14,19 +14,29 @@ class AwardEmoji
     food_drink: "Food"
   }.with_indifferent_access
 
+  CATEGORY_ALIASES = {
+    symbols: "objects_symbols",
+    foods: "food_drink",
+    travel: "travel_places"
+  }.with_indifferent_access
+
   def self.normilize_emoji_name(name)
     aliases[name] || name
   end
 
   def self.emoji_by_category
     unless @emoji_by_category
-      @emoji_by_category = {}
+      @emoji_by_category = Hash.new { |h, key| h[key] = [] }
 
       emojis.each do |emoji_name, data|
         data["name"] = emoji_name
 
-        @emoji_by_category[data["category"]] ||= []
-        @emoji_by_category[data["category"]] << data
+        # Skip Fitzpatrick(tone) modifiers
+        next if data["category"] == "modifier"
+
+        category = CATEGORY_ALIASES[data["category"]] || data["category"]
+
+        @emoji_by_category[category] << data
       end
 
       @emoji_by_category = @emoji_by_category.sort.to_h
