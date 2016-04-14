@@ -9,7 +9,13 @@ module DiffHelper
   end
 
   def diff_view
-    params[:view] == 'parallel' ? 'parallel' : 'inline'
+    diff_views = %w(inline parallel)
+
+    if diff_views.include?(cookies[:diff_view])
+      cookies[:diff_view]
+    else
+      diff_views.first
+    end
   end
 
   def diff_hard_limit_enabled?
