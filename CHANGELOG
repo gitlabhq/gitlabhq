@@ -11,6 +11,7 @@ v 8.8.0 (unreleased)
   - Allow "NEWS" and "CHANGES" as alternative names for CHANGELOG. !3768 (Connor Shea)
   - Added button to toggle whitespaces changes on diff view
   - Backport GitLab Enterprise support from EE
+  - Files over 5MB can only be viewed in their raw form, files over 1MB without highlighting !3718
 
 v 8.7.1 (unreleased)
   - Throttle the update of `project.last_activity_at` to 1 minute. !3848
