@@ -249,7 +249,7 @@ describe API::API, api: true  do
     context "when authenticated as user without group permissions" do
       it "should not create group" do
         put api("/groups/#{group2.id}", user1), attributes_for(:group)
-        expect(response.status).to eq(403)
+        expect(response.status).to eq(404)
       end
     end
 
