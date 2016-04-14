@@ -1,3 +1,5 @@
-- labels.each do |l|
-  %span.label-row
-    = link_to_label(l, tooltip: false)
+%span.label-row
+  %span.label-name
+    = link_to_label(label, tooltip: false)
+  %span.prepend-left-10
+    = markdown(label.description, pipeline: :single_line)
