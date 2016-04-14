@@ -13,6 +13,7 @@
 class GeoNode < ActiveRecord::Base
   belongs_to :geo_node_key, dependent: :destroy
   belongs_to :oauth_application, class_name: 'Doorkeeper::Application', dependent: :destroy
+  belongs_to :system_hook, dependent: :destroy
 
   default_values schema: 'http',
                  host: lambda { Gitlab.config.gitlab.host },
@@ -20,7 +21,7 @@ class GeoNode < ActiveRecord::Base
                  relative_url_root: '',
                  primary: false
 
-  accepts_nested_attributes_for :geo_node_key
+  accepts_nested_attributes_for :geo_node_key, :system_hook
 
   validates :host, host: true, presence: true, uniqueness: { case_sensitive: false, scope: :port }
   validates :primary, uniqueness: { message: 'node already exists' }, if: :primary
@@ -60,8 +61,8 @@ class GeoNode < ActiveRecord::Base
     URI.join(uri, "#{uri.path}/", "api/#{API::API.version}/geo/refresh_wikis").to_s
   end
 
-  def notify_key_url
-    URI.join(uri, "#{uri.path}/", "api/#{API::API.version}/geo/refresh_key").to_s
+  def geo_events_url
+    URI.join(uri, "#{uri.path}/", "api/#{API::API.version}/geo/receive_events").to_s
   end
 
   def oauth_callback_url
@@ -84,6 +85,7 @@ class GeoNode < ActiveRecord::Base
 
   def build_dependents
     self.build_geo_node_key if geo_node_key.nil?
+    update_system_hook!
   end
 
   def update_dependents_attributes
@@ -92,9 +94,8 @@ class GeoNode < ActiveRecord::Base
     if self.primary?
       self.oauth_application = nil
     else
-      self.build_oauth_application if oauth_application.nil?
-      self.oauth_application.name = "Geo node: #{self.url}"
-      self.oauth_application.redirect_uri = oauth_callback_url
+      update_oauth_application!
+      update_system_hook!
     end
   end
 
@@ -105,5 +106,17 @@ class GeoNode < ActiveRecord::Base
       record.relative_url_root == Gitlab.config.gitlab.relative_url_root && !record.primary
       record.errors[:base] << 'Current node must be the primary node or you will be locking yourself out'
     end
+  end
+
+  def update_oauth_application!
+    self.build_oauth_application if oauth_application.nil?
+    self.oauth_application.name = "Geo node: #{self.url}"
+    self.oauth_application.redirect_uri = oauth_callback_url
+  end
+
+  def update_system_hook!
+    self.build_system_hook if system_hook.nil?
+    self.system_hook.token = SecureRandom.hex(20) unless self.system_hook.token.present?
+    self.system_hook.url = geo_events_url if uri.present?
   end
 end
