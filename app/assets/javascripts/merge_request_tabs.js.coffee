@@ -176,12 +176,12 @@ class @MergeRequestTabs
 
     if locationHash isnt ''
       hashClassString = ".#{locationHash.replace('#', '')}"
-      $diffLine = $(locationHash)
+      $diffLine = $("#{locationHash}:not(.match)", $('#diffs'))
 
-      if $diffLine.is ':not(tr)'
-        $diffLine = $("td#{locationHash}, td#{hashClassString}")
+      if not $diffLine.is 'tr'
+        $diffLine = $('#diffs').find("td#{locationHash}, td#{hashClassString}")
       else
-        $diffLine = $('td', $diffLine)
+        $diffLine = $diffLine.find('td')
 
       if $diffLine.length
         $diffLine.addClass 'hll'
