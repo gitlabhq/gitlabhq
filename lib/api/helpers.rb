@@ -382,7 +382,7 @@ module API
     end
 
     def geo_token
-      Gitlab::Geo.current_node.token
+      Gitlab::Geo.current_node.system_hook.token
     end
 
     def handle_member_errors(errors)

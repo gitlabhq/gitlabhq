@@ -3,7 +3,7 @@ require 'spec_helper'
 describe GeoNode, type: :model do
   subject(:new_node) { described_class.new(schema: 'https', host: 'localhost', port: 3000, relative_url_root: 'gitlab') }
   subject(:new_primary_node) { described_class.new(schema: 'https', host: 'localhost', port: 3000, relative_url_root: 'gitlab', primary: true) }
-  subject(:empty_node) { described_class.new(schema: nil, host: nil, port: nil, relative_url_root: nil) }
+  subject(:empty_node) { described_class.new }
   subject(:primary_node) { FactoryGirl.create(:geo_node, :primary) }
   subject(:node) { FactoryGirl.create(:geo_node) }
 
@@ -87,7 +87,6 @@ describe GeoNode, type: :model do
         expect(node.system_hook.url).to be_present
         expect(node.system_hook.url).to eq(node.geo_events_url)
         expect(node.system_hook.token).to be_present
-        expect(node.system_hook.token).to eq(node.token)
       end
     end
   end

@@ -420,7 +420,6 @@ ActiveRecord::Schema.define(version: 20160414064845) do
     t.boolean "primary"
     t.integer "geo_node_key_id"
     t.integer "oauth_application_id"
-    t.string  "token"
     t.integer "system_hook_id"
   end
 

@@ -27,7 +27,7 @@ describe API::API, api: true do
     end
 
     let(:geo_token_header) do
-      { 'X-Gitlab-Token' => geo_node.token }
+      { 'X-Gitlab-Token' => geo_node.system_hook.token }
     end
 
     let(:key_create_payload) do

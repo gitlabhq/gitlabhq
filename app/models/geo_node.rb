@@ -19,8 +19,7 @@ class GeoNode < ActiveRecord::Base
                  host: lambda { Gitlab.config.gitlab.host },
                  port: 80,
                  relative_url_root: '',
-                 primary: false,
-                 token: lambda { SecureRandom.hex(20) }
+                 primary: false
 
   accepts_nested_attributes_for :geo_node_key, :system_hook
 
@@ -86,23 +85,17 @@ class GeoNode < ActiveRecord::Base
 
   def build_dependents
     self.build_geo_node_key if geo_node_key.nil?
+    update_system_hook!
   end
 
   def update_dependents_attributes
     self.geo_node_key.title = "Geo node: #{self.url}" if self.geo_node_key
-    self.token = SecureRandom.hex(20) if !self.token.present?
 
     if self.primary?
       self.oauth_application = nil
     else
-      # OAuth Application
-      self.build_oauth_application if oauth_application.nil?
-      self.oauth_application.name = "Geo node: #{self.url}"
-      self.oauth_application.redirect_uri = oauth_callback_url
-      # SystemHook
-      self.build_system_hook if system_hook.nil?
-      self.system_hook.url = geo_events_url
-      self.system_hook.token = token
+      update_oauth_application!
+      update_system_hook!
     end
   end
 
@@ -113,5 +106,17 @@ class GeoNode < ActiveRecord::Base
       record.relative_url_root == Gitlab.config.gitlab.relative_url_root && !record.primary
       record.errors[:base] << 'Current node must be the primary node or you will be locking yourself out'
     end
+  end
+
+  def update_oauth_application!
+    self.build_oauth_application if oauth_application.nil?
+    self.oauth_application.name = "Geo node: #{self.url}"
+    self.oauth_application.redirect_uri = oauth_callback_url
+  end
+
+  def update_system_hook!
+    self.build_system_hook if system_hook.nil?
+    self.system_hook.token = SecureRandom.hex(20) unless self.system_hook.token.present?
+    self.system_hook.url = geo_events_url if uri.present?
   end
 end
