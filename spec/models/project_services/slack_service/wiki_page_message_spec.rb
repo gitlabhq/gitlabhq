@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe SlackService::WikiPageMessage, models: true do
-  subject { SlackService::WikiPageMessage.new(args) }
+  subject { described_class.new(args) }
 
   let(:args) do
     {
@@ -19,13 +19,11 @@ describe SlackService::WikiPageMessage, models: true do
     }
   end
 
-  let(:color) { '#345' }
-
   describe '#pretext' do
     context 'when :action == "create"' do
       before { args[:object_attributes][:action] = 'create' }
 
-      it do
+      it 'returns a message that a new wiki page was created' do
         expect(subject.pretext).to eq(
           'Test User created <url|wiki page> in <somewhere.com|project_name>: '\
           '*Wiki page title*')
@@ -35,7 +33,7 @@ describe SlackService::WikiPageMessage, models: true do
     context 'when :action == "update"' do
       before { args[:object_attributes][:action] = 'update' }
 
-      it do
+      it 'returns a message that a wiki page was updated' do
         expect(subject.pretext).to eq(
           'Test User edited <url|wiki page> in <somewhere.com|project_name>: '\
           '*Wiki page title*')
@@ -44,10 +42,13 @@ describe SlackService::WikiPageMessage, models: true do
   end
 
   describe '#attachments' do
+    let(:color) { '#345' }
+
     context 'when :action == "create"' do
       before { args[:object_attributes][:action] = 'create' }
 
-      it do
+
+      it 'it returns the attachment for a new wiki page' do
         expect(subject.attachments).to eq([
           {
             text: "Wiki page description",
@@ -60,7 +61,7 @@ describe SlackService::WikiPageMessage, models: true do
     context 'when :action == "update"' do
       before { args[:object_attributes][:action] = 'update' }
 
-      it do
+      it 'it returns the attachment for an updated wiki page' do
         expect(subject.attachments).to eq([
           {
             text: "Wiki page description",
