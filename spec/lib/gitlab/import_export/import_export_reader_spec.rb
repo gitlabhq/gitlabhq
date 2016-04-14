@@ -1,6 +1,6 @@
 require 'rspec'
 
-describe Projects::ImportExport::ImportExportReader do
+describe Gitlab::ImportExport::ImportExportReader do
 
   let(:test_config) { 'spec/support/import_export/import_export.yml' }
   let(:project_tree_hash) do

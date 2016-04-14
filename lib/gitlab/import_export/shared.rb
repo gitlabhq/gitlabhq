@@ -1,4 +1,4 @@
-module Projects
+module Gitlab
   module ImportExport
     class Shared
       def initialize(opts)
@@ -6,7 +6,7 @@ module Projects
       end
 
       def export_path
-        @export_path ||= Projects::ImportExport.export_path(relative_path: @opts[:relative_path])
+        @export_path ||= Gitlab::ImportExport.export_path(relative_path: @opts[:relative_path])
       end
     end
   end
