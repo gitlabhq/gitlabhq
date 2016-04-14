@@ -13,6 +13,7 @@
 class GeoNode < ActiveRecord::Base
   belongs_to :geo_node_key, dependent: :destroy
   belongs_to :oauth_application, class_name: 'Doorkeeper::Application', dependent: :destroy
+  belongs_to :system_hook, dependent: :destroy
 
   default_values schema: 'http',
                  host: lambda { Gitlab.config.gitlab.host },
@@ -61,8 +62,8 @@ class GeoNode < ActiveRecord::Base
     URI.join(uri, "#{uri.path}/", "api/#{API::API.version}/geo/refresh_wikis").to_s
   end
 
-  def notify_key_url
-    URI.join(uri, "#{uri.path}/", "api/#{API::API.version}/geo/refresh_key").to_s
+  def geo_events_url
+    URI.join(uri, "#{uri.path}/", "api/#{API::API.version}/geo/receive_events").to_s
   end
 
   def oauth_callback_url
@@ -89,13 +90,19 @@ class GeoNode < ActiveRecord::Base
 
   def update_dependents_attributes
     self.geo_node_key.title = "Geo node: #{self.url}" if self.geo_node_key
+    self.token = SecureRandom.hex(20) if self.token.empty?
 
     if self.primary?
       self.oauth_application = nil
     else
+      # OAuth Application
       self.build_oauth_application if oauth_application.nil?
       self.oauth_application.name = "Geo node: #{self.url}"
       self.oauth_application.redirect_uri = oauth_callback_url
+      # SystemHook
+      self.build_system_hook if system_hook.nil?
+      self.system_hook.url = geo_events_url
+      self.system_hook.token = token
     end
   end
 
