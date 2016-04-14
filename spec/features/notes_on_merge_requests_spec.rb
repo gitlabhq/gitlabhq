@@ -210,7 +210,7 @@ describe 'Comments', feature: true do
           is_expected.to have_content('Another comment on line 10')
           is_expected.to have_css('.notes_holder')
           is_expected.to have_css('.notes_holder .note', count: 1)
-          is_expected.to have_button('Reply')
+          is_expected.to have_button('Reply...')
         end
       end
     end

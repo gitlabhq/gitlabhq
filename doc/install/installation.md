@@ -359,7 +359,7 @@ GitLab Shell is an SSH access and repository management software developed speci
     cd /home/git
     sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-workhorse.git
     cd gitlab-workhorse
-    sudo -u git -H git checkout v0.7.2
+    sudo -u git -H git checkout v0.7.1
     sudo -u git -H make
 
 ### Initialize Database and Activate Advanced Features
@@ -540,6 +540,16 @@ See the [omniauth integration document](../integration/omniauth.md)
 
 GitLab can build your projects. To enable that feature you need GitLab Runners to do that for you.
 Checkout the [GitLab Runner section](https://about.gitlab.com/gitlab-ci/#gitlab-runner) to install it
+
+### Adding your Trusted Proxies
+
+If you are using a reverse proxy on an separate machine, you may want to add the
+proxy to the trusted proxies list. Otherwise users will appear signed in from the
+proxy's IP address.
+
+You can add trusted proxies in `config/gitlab.yml` by customizing the `trusted_proxies`
+option in section 1. Save the file and [reconfigure GitLab](../administration/restart_gitlab.md)
+for the changes to take effect.
 
 ### Custom Redis Connection
 

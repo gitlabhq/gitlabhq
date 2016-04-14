@@ -12,10 +12,19 @@ class @MergeRequestWidget
     @readyForCICheck = true
     clearInterval @fetchBuildStatusInterval
 
+    @clearEventListeners()
+    @addEventListeners()
     @pollCIStatus()
     notifyPermissions()
 
-  setOpts: (@opts) ->
+  clearEventListeners: ->
+    $(document).off 'page:change.merge_request'
+
+  addEventListeners: ->
+    $(document).on 'page:change.merge_request', =>
+      if $('body').data('page') isnt 'projects:merge_requests:show'
+        clearInterval @fetchBuildStatusInterval
+        @clearEventListeners()
 
   mergeInProgress: (deleteSourceBranch = false)->
     $.ajax
@@ -49,7 +58,7 @@ class @MergeRequestWidget
       $('.mr-state-widget').replaceWith(data)
 
   ciLabelForStatus: (status) ->
-    if status == 'success'
+    if status is 'success'
       'passed'
     else
       status
@@ -78,18 +87,28 @@ class @MergeRequestWidget
         @opts.ci_status = data.status
         return
 
-      if data.status isnt @opts.ci_status
+      if data.status isnt @opts.ci_status and data.status?
         @showCIStatus data.status
         if data.coverage
           @showCICoverage data.coverage
 
         if showNotification
-          message = @opts.ci_message.replace('{{status}}', @ciLabelForStatus(data.status))
+          status = @ciLabelForStatus(data.status)
+
+          if status is "preparing"
+            title = @opts.ci_title.preparing
+            status = status.charAt(0).toUpperCase() + status.slice(1);
+            message = @opts.ci_message.preparing.replace('{{status}}', status)
+          else
+            title = @opts.ci_title.normal
+            message = @opts.ci_message.normal.replace('{{status}}', status)
+
+          title = title.replace('{{status}}', status)
           message = message.replace('{{sha}}', data.sha)
           message = message.replace('{{title}}', data.title)
 
           notify(
-            "Build #{@ciLabelForStatus(data.status)}",
+            title,
             message,
             @opts.gitlab_icon,
             ->
@@ -109,6 +128,8 @@ class @MergeRequestWidget
           @setMergeButtonClass('btn-danger')
         when "running", "pending"
           @setMergeButtonClass('btn-warning')
+        when "success"
+          @setMergeButtonClass('btn-create')
     else
       $('.ci_widget.ci-error').show()
       @setMergeButtonClass('btn-danger')
@@ -118,4 +139,6 @@ class @MergeRequestWidget
     $('.ci_widget:visible .ci-coverage').text(text)
 
   setMergeButtonClass: (css_class) ->
-    $('.accept_merge_request').removeClass("btn-create").addClass(css_class)
+    $('.accept_merge_request')
+      .removeClass('btn-danger btn-warning btn-create')
+      .addClass(css_class)

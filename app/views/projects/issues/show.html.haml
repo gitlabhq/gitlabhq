@@ -63,9 +63,11 @@
               = @issue.description
       = edited_time_ago_with_tooltip(@issue, placement: 'bottom', html_class: 'issue_edited_ago')
 
-      .merge-requests
-        = render 'merge_requests'
-        = render 'related_branches'
+      #merge-requests{'data-url' => referenced_merge_requests_namespace_project_issue_url(@project.namespace, @project, @issue)}
+        // This element is filled in using JavaScript.
+
+      #related-branches{'data-url' => related_branches_namespace_project_issue_url(@project.namespace, @project, @issue)}
+        // This element is filled in using JavaScript.
 
     .content-block.content-block-small
       = render 'new_branch'

@@ -226,7 +226,7 @@ module API
       expose :note, as: :body
       expose :attachment_identifier, as: :attachment
       expose :author, using: Entities::UserBasic
-      expose :created_at
+      expose :created_at, :updated_at
       expose :system?, as: :system
       expose :noteable_id, :noteable_type
       # upvote? and downvote? are deprecated, always return false
@@ -281,14 +281,19 @@ module API
       expose :id, :path, :kind
     end
 
-    class ProjectAccess < Grape::Entity
+    class Member < Grape::Entity
       expose :access_level
-      expose :notification_level
+      expose :notification_level do |member, options|
+        if member.notification_setting
+          NotificationSetting.levels[member.notification_setting.level]
+        end
+      end
     end
 
-    class GroupAccess < Grape::Entity
-      expose :access_level
-      expose :notification_level
+    class ProjectAccess < Member
+    end
+
+    class GroupAccess < Member
     end
 
     class ProjectService < Grape::Entity
@@ -319,6 +324,7 @@ module API
 
     class Label < Grape::Entity
       expose :name, :color, :description
+      expose :open_issues_count, :closed_issues_count, :open_merge_requests_count
     end
 
     class Compare < Grape::Entity

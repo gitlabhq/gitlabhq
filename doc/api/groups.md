@@ -143,6 +143,87 @@ Parameters:
 - `id` (required) - The ID or path of a group
 - `project_id` (required) - The ID of a project
 
+## Update group
+
+Updates the project group. Only available to group owners and administrators.
+
+```
+PUT /groups/:id
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer | yes | The ID of the group |
+| `name` | string | no | The name of the group |
+| `path` | string | no | The path of the group |
+| `description` | string | no | The description of the group |
+| `visibility_level` | integer | no | The visibility level of the group. 0 for private, 10 for internal, 20 for public. |
+
+```bash
+curl -X PUT -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/groups/5?name=Experimental"
+
+```
+
+Example response:
+
+```json
+{
+  "id": 5,
+  "name": "Experimental",
+  "path": "h5bp",
+  "description": "foo",
+  "visibility_level": 10,
+  "avatar_url": null,
+  "web_url": "http://gitlab.example.com/groups/h5bp",
+  "projects": [
+    {
+      "id": 9,
+      "description": "foo",
+      "default_branch": "master",
+      "tag_list": [],
+      "public": false,
+      "archived": false,
+      "visibility_level": 10,
+      "ssh_url_to_repo": "git@gitlab.example.com/html5-boilerplate.git",
+      "http_url_to_repo": "http://gitlab.example.com/h5bp/html5-boilerplate.git",
+      "web_url": "http://gitlab.example.com/h5bp/html5-boilerplate",
+      "name": "Html5 Boilerplate",
+      "name_with_namespace": "Experimental / Html5 Boilerplate",
+      "path": "html5-boilerplate",
+      "path_with_namespace": "h5bp/html5-boilerplate",
+      "issues_enabled": true,
+      "merge_requests_enabled": true,
+      "wiki_enabled": true,
+      "builds_enabled": true,
+      "snippets_enabled": true,
+      "created_at": "2016-04-05T21:40:50.169Z",
+      "last_activity_at": "2016-04-06T16:52:08.432Z",
+      "shared_runners_enabled": true,
+      "creator_id": 1,
+      "namespace": {
+        "id": 5,
+        "name": "Experimental",
+        "path": "h5bp",
+        "owner_id": null,
+        "created_at": "2016-04-05T21:40:49.152Z",
+        "updated_at": "2016-04-07T08:07:48.466Z",
+        "description": "foo",
+        "avatar": {
+          "url": null
+        },
+        "share_with_group_lock": false,
+        "visibility_level": 10
+      },
+      "avatar_url": null,
+      "star_count": 1,
+      "forks_count": 0,
+      "open_issues_count": 3,
+      "public_builds": true
+    }
+  ]
+}
+```
+
 ## Remove group
 
 Removes group with all projects inside.

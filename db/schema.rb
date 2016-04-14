@@ -728,6 +728,18 @@ ActiveRecord::Schema.define(version: 20160413115152) do
   add_index "notes", ["project_id"], name: "index_notes_on_project_id", using: :btree
   add_index "notes", ["updated_at"], name: "index_notes_on_updated_at", using: :btree
 
+  create_table "notification_settings", force: :cascade do |t|
+    t.integer  "user_id",                 null: false
+    t.integer  "source_id",               null: false
+    t.string   "source_type",             null: false
+    t.integer  "level",       default: 0, null: false
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
+  end
+
+  add_index "notification_settings", ["source_id", "source_type"], name: "index_notification_settings_on_source_id_and_source_type", using: :btree
+  add_index "notification_settings", ["user_id"], name: "index_notification_settings_on_user_id", using: :btree
+
   create_table "oauth_access_grants", force: :cascade do |t|
     t.integer  "resource_owner_id", null: false
     t.integer  "application_id",    null: false
@@ -886,7 +898,7 @@ ActiveRecord::Schema.define(version: 20160413115152) do
   create_table "remote_mirrors", force: :cascade do |t|
     t.integer  "project_id"
     t.string   "url"
-    t.boolean  "enabled",                   default: true
+    t.boolean  "enabled",                    default: true
     t.string   "update_status"
     t.datetime "last_update_at"
     t.datetime "last_successful_update_at"
@@ -1132,4 +1144,5 @@ ActiveRecord::Schema.define(version: 20160413115152) do
   add_index "web_hooks", ["created_at", "id"], name: "index_web_hooks_on_created_at_and_id", using: :btree
   add_index "web_hooks", ["project_id"], name: "index_web_hooks_on_project_id", using: :btree
 
+  add_foreign_key "remote_mirrors", "projects"
 end

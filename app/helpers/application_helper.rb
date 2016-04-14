@@ -187,7 +187,7 @@ module ApplicationHelper
     element = content_tag :time, time.to_s,
       class: "#{html_class} js-timeago #{"js-timeago-pending" unless skip_js}",
       datetime: time.to_time.getutc.iso8601,
-      title: time.in_time_zone.to_s(:medium),
+      title: time.to_time.in_time_zone.to_s(:medium),
       data: { toggle: 'tooltip', placement: placement, container: 'body' }
 
     unless skip_js

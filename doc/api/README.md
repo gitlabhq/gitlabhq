@@ -109,6 +109,7 @@ The following table shows the possible return codes for API requests.
 | ------------- | ----------- |
 | `200 OK` | The `GET`, `PUT` or `DELETE` request was successful, the resource(s) itself is returned as JSON. |
 | `201 Created` | The `POST` request was successful and the resource is returned as JSON. |
+| `304 Not Modified` | Indicates that the resource has not been modified since the last request. |
 | `400 Bad Request` | A required attribute of the API request is missing, e.g., the title of an issue is not given. |
 | `401 Unauthorized` | The user is not authenticated, a valid [user token](#authentication) is necessary. |
 | `403 Forbidden` | The request is not allowed, e.g., the user is not allowed to delete a project. |

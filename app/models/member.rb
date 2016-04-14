@@ -19,7 +19,6 @@
 
 class Member < ActiveRecord::Base
   include Sortable
-  include Notifiable
   include Gitlab::Access
 
   attr_accessor :raw_invite_token
@@ -57,11 +56,14 @@ class Member < ActiveRecord::Base
 
   before_validation :generate_invite_token, on: :create, if: -> (member) { member.invite_email.present? }
   after_create :send_invite, if: :invite?
+  after_create :create_notification_setting, unless: :invite?
   after_create :post_create_hook, unless: :invite?
   after_update :post_update_hook, unless: :invite?
   after_destroy :post_destroy_hook, unless: :invite?
 
   delegate :name, :username, :email, to: :user, prefix: true
+
+  default_value_for :notification_level, NotificationSetting.levels[:global]
 
   class << self
     def find_by_invite_token(invite_token)
@@ -161,6 +163,14 @@ class Member < ActiveRecord::Base
     generate_invite_token! unless @raw_invite_token
 
     send_invite
+  end
+
+  def create_notification_setting
+    user.notification_settings.find_or_create_for(source)
+  end
+
+  def notification_setting
+    @notification_setting ||= user.notification_settings_for(source)
   end
 
   private

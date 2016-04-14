@@ -102,14 +102,18 @@ class ProjectsController < Projects::ApplicationController
 
     respond_to do |format|
       format.html do
+        if current_user
+          @membership = @project.team.find_member(current_user.id)
+
+          if @membership
+            @notification_setting = current_user.notification_settings_for(@project)
+          end
+        end
+
         if @project.repository_exists?
           if @project.empty_repo?
             render 'projects/empty'
           else
-            if current_user
-              @membership = @project.team.find_member(current_user.id)
-            end
-
             render :show
           end
         else

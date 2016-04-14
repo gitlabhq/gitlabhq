@@ -23,9 +23,10 @@ module API
       # Create group. Available only for users who can create groups.
       #
       # Parameters:
-      #   name                  (required) - The name of the group
-      #   path                  (required) - The path of the group
-      #   description           (optional) - The details of the group
+      #   name (required)                           - The name of the group
+      #   path (required)                           - The path of the group
+      #   description (optional)                    - The description of the group
+      #   visibility_level (optional)               - The visibility level of the group
       #   membership_lock       (optional, boolean) - Prevent adding new members to project membership within this group
       #   share_with_group_lock (optional, boolean) - Prevent sharing a project with another group within this group
       # Example Request:
@@ -57,23 +58,25 @@ module API
       # Update group. Available only for users who can manage this group.
       #
       # Parameters:
-      #   id                    (required) - The ID of a group
-      #   name                  (required) - The name of the group
-      #   path                  (required) - The path of the group
-      #   description           (optional) - The details of the group
-      #   membership_lock       (optional, boolean) - Prevent adding new members to project membership within this group
+      #   id (required)                             - The ID of a group
+      #   name (required)                           - The name of the group
+      #   path (required)                           - The path of the group
+      #   description (optional)                    - The details of the group
+      #   visibility_level (optional)               - The visibility level of the group
+      #   membership_lock (optional, boolean)       - Prevent adding new members to project membership within this group
       #   share_with_group_lock (optional, boolean) - Prevent sharing a project with another group within this group
       # Example Request:
       #   PUT /groups/:id
-      put ":id" do
-        attrs = attributes_for_keys [:name, :path, :description, :membership_lock, :share_with_group_lock]
-        @group = find_group(params[:id])
-        authorize! :admin_group, @group
+      put ':id' do
+        group = find_group(params[:id])
+        authorize! :admin_group, group
 
-        if @group.update_attributes(attrs)
-          present @group, with: Entities::Group
+        attrs = attributes_for_keys [:name, :path, :description, :visibility_level, :membership_lock, :share_with_group_lock]
+
+        if ::Groups::UpdateService.new(group, current_user, attrs).execute
+          present group, with: Entities::GroupDetail
         else
-          render_api_error!("Failed to update group #{@group.errors.messages}", 400)
+          render_validation_error!(group)
         end
       end
 

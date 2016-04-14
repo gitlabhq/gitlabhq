@@ -3,7 +3,8 @@ class Projects::IssuesController < Projects::ApplicationController
   include IssuableActions
 
   before_action :module_enabled
-  before_action :issue, only: [:edit, :update, :show]
+  before_action :issue,
+    only: [:edit, :update, :show, :referenced_merge_requests, :related_branches]
 
   # Allow read any issue
   before_action :authorize_read_issue!, only: [:show]
@@ -16,9 +17,6 @@ class Projects::IssuesController < Projects::ApplicationController
 
   # Allow issues bulk update
   before_action :authorize_admin_issues!, only: [:bulk_update]
-
-  # Cross-reference merge requests
-  before_action :closed_by_merge_requests, only: [:show]
 
   respond_to :html
 
@@ -71,8 +69,6 @@ class Projects::IssuesController < Projects::ApplicationController
     @note = @project.notes.new(noteable: @issue)
     @notes = @issue.notes.nonawards.with_associations.fresh
     @noteable = @issue
-    @merge_requests = @issue.referenced_merge_requests(current_user)
-    @related_branches = @issue.related_branches - @merge_requests.map(&:source_branch)
 
     respond_to do |format|
       format.html
@@ -124,13 +120,37 @@ class Projects::IssuesController < Projects::ApplicationController
     end
   end
 
+  def referenced_merge_requests
+    @merge_requests = @issue.referenced_merge_requests(current_user)
+    @closed_by_merge_requests = @issue.closed_by_merge_requests(current_user)
+
+    respond_to do |format|
+      format.json do
+        render json: {
+          html: view_to_html_string('projects/issues/_merge_requests')
+        }
+      end
+    end
+  end
+
+  def related_branches
+    merge_requests = @issue.referenced_merge_requests(current_user)
+
+    @related_branches = @issue.related_branches -
+      merge_requests.map(&:source_branch)
+
+    respond_to do |format|
+      format.json do
+        render json: {
+          html: view_to_html_string('projects/issues/_related_branches')
+        }
+      end
+    end
+  end
+
   def bulk_update
     result = Issues::BulkUpdateService.new(project, current_user, bulk_update_params).execute
     redirect_back_or_default(default: { action: 'index' }, options: { notice: "#{result[:count]} issues updated" })
-  end
-
-  def closed_by_merge_requests
-    @closed_by_merge_requests ||= @issue.closed_by_merge_requests(current_user)
   end
 
   protected

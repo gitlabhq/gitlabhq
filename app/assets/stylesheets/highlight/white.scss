@@ -6,12 +6,12 @@
   }
 
   .diff-line-num, .diff-line-num a {
-    color: rgba(0, 0, 0, 0.3);
+    color: $black-transparent;
   }
 
   // Code itself
   pre.code, .diff-line-num {
-    border-color: $border-color;
+    border-color: $table-border-gray;
   }
 
   &, pre.code, .line_holder .line_content {
@@ -21,38 +21,44 @@
 
   // Diff line
   .line_holder {
+    td.diff-line-num.hll:not(.empty-cell),
+    td.line_content.hll:not(.empty-cell) {
+      background-color: #f8eec7;
+      border-color: darken(#f8eec7, 15%);
+    }
+
     .diff-line-num {
       &.old {
-        background: #fdd;
-        border-color: #f1c0c0;
+        background-color: $line-number-old;
+        border-color: $line-removed-dark;
       }
 
       &.new {
-        background: #dbffdb;
-        border-color: #c1e9c1;
+        background-color: $line-number-new;
+        border-color: $line-added-dark;
       }
     }
 
     .line_content {
       &.old {
-        background: #ffecec;
+        background: $line-removed;
 
         span.idiff {
-          background-color: #f8cbcb;
+          background-color: $line-removed-dark;
         }
       }
 
       &.new {
-        background: #eaffea;
+        background-color: $line-added;
 
         span.idiff {
-          background-color: #a6f3a6;
+          background-color: $line-added-dark;
         }
       }
 
       &.match {
-        color: rgba(0, 0, 0, 0.3);
-        background: #fafafa;
+        color: $black-transparent;
+        background: $match-line;
       }
     }
   }

@@ -112,7 +112,7 @@ class Issue < ActiveRecord::Base
 
   def related_branches
     project.repository.branch_names.select do |branch|
-      branch.end_with?("-#{iid}")
+      branch =~ /\A#{iid}-(?!\d+-stable)/i
     end
   end
 
@@ -161,7 +161,7 @@ class Issue < ActiveRecord::Base
   end
 
   def to_branch_name
-    "#{title.parameterize}-#{iid}"
+    "#{iid}-#{title.parameterize}"
   end
 
   def can_be_worked_on?(current_user)

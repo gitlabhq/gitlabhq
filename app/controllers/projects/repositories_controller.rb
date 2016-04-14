@@ -11,7 +11,6 @@ class Projects::RepositoriesController < Projects::ApplicationController
   end
 
   def archive
-    RepositoryArchiveCacheWorker.perform_async
     headers.store(*Gitlab::Workhorse.send_git_archive(@project, params[:ref], params[:format]))
     head :ok
   rescue => ex

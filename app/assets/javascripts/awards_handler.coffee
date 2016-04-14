@@ -22,7 +22,18 @@ class @AwardsHandler
     emoji = $(this)
       .find(".icon")
       .data "emoji"
+
+    if emoji is "thumbsup" and awards_handler.didUserClickEmoji $(this), "thumbsdown"
+      awards_handler.addAward "thumbsdown"
+
+    else if emoji is "thumbsdown" and awards_handler.didUserClickEmoji $(this), "thumbsup"
+      awards_handler.addAward "thumbsup"
+
     awards_handler.addAward emoji
+
+  didUserClickEmoji: (that, emoji) ->
+    if $(that).siblings("button:has([data-emoji=#{emoji}])").attr("data-original-title")
+      $(that).siblings("button:has([data-emoji=#{emoji}])").attr("data-original-title").indexOf('me') > -1
 
   showEmojiMenu: ->
     if $(".emoji-menu").length
@@ -105,7 +116,7 @@ class @AwardsHandler
     if origTitle
       authors = origTitle.split(', ')
     authors.push("me")
-    award_block.attr("title", authors.join(", "))
+    award_block.attr("data-original-title", authors.join(", "))
     @resetTooltip(award_block)
 
   resetTooltip: (award) ->
@@ -122,7 +133,7 @@ class @AwardsHandler
 
     nodes = []
     nodes.push(
-      "<button class='btn award-control js-emoji-btn has-tooltip active' title='me'>",
+      "<button class='btn award-control js-emoji-btn has-tooltip active' data-original-title='me'>",
       "<div class='icon emoji-icon #{emojiCssClass}' data-emoji='#{emoji}'></div>",
       "<span class='award-control-text js-counter'>1</span>",
       "</button>"

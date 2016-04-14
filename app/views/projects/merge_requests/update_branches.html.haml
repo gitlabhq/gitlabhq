@@ -1,0 +1,5 @@
+%ul
+  - @target_branches.each do |branch|
+    %li
+      %a{ href: "#", class: "#{("is-active" if "a" == branch)}", data: { id: branch } }
+        = branch

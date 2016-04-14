@@ -3,7 +3,7 @@
     - if diff_file.diff.submodule?
       %span
         = icon('archive fw')
-        %strong
+        %span
           = submodule_link(blob, @commit.id, project.repository)
     - else
       = blob_icon blob.mode, blob.name
@@ -11,13 +11,13 @@
       = link_to "#diff-#{i}" do
         - if diff_file.renamed_file
           - old_path, new_path = mark_inline_diffs(diff_file.old_path, diff_file.new_path)
-          %strong.filename.old
+          .filename.old
             = old_path
           &rarr;
-          %strong.filename.new
+          .filename.new
             = new_path
         - else
-          %strong
+          %span
             = diff_file.new_path
           - if diff_file.deleted_file
             deleted
@@ -28,8 +28,8 @@
 
       .file-actions.hidden-xs
         - if blob_text_viewable?(blob)
-          = link_to '#', class: 'js-toggle-diff-comments btn active has-tooltip', title: "Toggle comments for this file" do
-            = icon('comments')
+          = link_to '#', class: 'js-toggle-diff-comments btn active has-tooltip btn-file-option', title: "Toggle comments for this file" do
+            = icon('comment')
           \
 
         - if editable_diff?(diff_file)

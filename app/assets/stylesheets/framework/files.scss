@@ -15,12 +15,13 @@
 
   .file-title {
     position: relative;
-    background: $background-color;
+    background-color: $background-color;
     border-bottom: 1px solid $border-color;
     margin: 0;
     text-align: left;
     padding: 10px $gl-padding;
     word-wrap: break-word;
+    border-radius: 3px 3px 0 0;
 
     .file-actions {
       float: right;
@@ -49,7 +50,7 @@
       }
     }
 
-    a {
+    a:not(.btn) {
       color: $gl-dark-link-color;
     }
 

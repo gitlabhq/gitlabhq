@@ -71,7 +71,8 @@ describe API::API, api: true  do
 
       it "should not return a group not attached to user1" do
         get api("/groups/#{group2.id}", user1)
-        expect(response.status).to eq(403)
+
+        expect(response.status).to eq(404)
       end
     end
 
@@ -102,7 +103,52 @@ describe API::API, api: true  do
 
       it 'should not return a group not attached to user1' do
         get api("/groups/#{group2.path}", user1)
+
+        expect(response.status).to eq(404)
+      end
+    end
+  end
+
+  describe 'PUT /groups/:id' do
+    let(:new_group_name) { 'New Group'}
+
+    context 'when authenticated as the group owner' do
+      it 'updates the group' do
+        put api("/groups/#{group1.id}", user1), name: new_group_name
+
+        expect(response.status).to eq(200)
+        expect(json_response['name']).to eq(new_group_name)
+      end
+
+      it 'returns 404 for a non existing group' do
+        put api('/groups/1328', user1)
+
+        expect(response.status).to eq(404)
+      end
+    end
+
+    context 'when authenticated as the admin' do
+      it 'updates the group' do
+        put api("/groups/#{group1.id}", admin), name: new_group_name
+
+        expect(response.status).to eq(200)
+        expect(json_response['name']).to eq(new_group_name)
+      end
+    end
+
+    context 'when authenticated as an user that can see the group' do
+      it 'does not updates the group' do
+        put api("/groups/#{group1.id}", user2), name: new_group_name
+
         expect(response.status).to eq(403)
+      end
+    end
+
+    context 'when authenticated as an user that cannot see the group' do
+      it 'returns 404 when trying to update the group' do
+        put api("/groups/#{group2.id}", user1), name: new_group_name
+
+        expect(response.status).to eq(404)
       end
     end
   end
@@ -123,7 +169,8 @@ describe API::API, api: true  do
 
       it "should not return a group not attached to user1" do
         get api("/groups/#{group2.id}/projects", user1)
-        expect(response.status).to eq(403)
+
+        expect(response.status).to eq(404)
       end
     end
 
@@ -155,7 +202,8 @@ describe API::API, api: true  do
 
       it 'should not return a group not attached to user1' do
         get api("/groups/#{group2.path}/projects", user1)
-        expect(response.status).to eq(403)
+
+        expect(response.status).to eq(404)
       end
     end
   end
@@ -201,7 +249,7 @@ describe API::API, api: true  do
     context "when authenticated as user without group permissions" do
       it "should not create group" do
         put api("/groups/#{group2.id}", user1), attributes_for(:group)
-        expect(response.status).to eq(403)
+        expect(response.status).to eq(404)
       end
     end
 
@@ -236,7 +284,8 @@ describe API::API, api: true  do
 
       it "should not remove a group not attached to user1" do
         delete api("/groups/#{group2.id}", user1)
-        expect(response.status).to eq(403)
+
+        expect(response.status).to eq(404)
       end
     end
 

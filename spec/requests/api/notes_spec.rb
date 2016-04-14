@@ -158,6 +158,19 @@ describe API::API, api: true  do
         post api("/projects/#{project.id}/issues/#{issue.id}/notes"), body: 'hi!'
         expect(response.status).to eq(401)
       end
+
+      context 'when an admin or owner makes the request' do
+        it 'accepts the creation date to be set' do
+          creation_time = 2.weeks.ago
+          post api("/projects/#{project.id}/issues/#{issue.id}/notes", user),
+            body: 'hi!', created_at: creation_time
+          expect(response.status).to eq(201)
+          expect(json_response['body']).to eq('hi!')
+          expect(json_response['author']['username']).to eq(user.username)
+          expect(Time.parse(json_response['created_at'])).to be_within(1.second).of(creation_time)
+        end
+      end
+
     end
 
     context "when noteable is a Snippet" do
@@ -236,6 +249,67 @@ describe API::API, api: true  do
       it 'should return a 404 error when note id not found' do
         put api("/projects/#{project.id}/merge_requests/#{merge_request.id}/"\
                   "notes/123", user), body: "Hello!"
+        expect(response.status).to eq(404)
+      end
+    end
+  end
+
+  describe 'DELETE /projects/:id/noteable/:noteable_id/notes/:note_id' do
+    context 'when noteable is an Issue' do
+      it 'deletes a note' do
+        delete api("/projects/#{project.id}/issues/#{issue.id}/"\
+                   "notes/#{issue_note.id}", user)
+
+        expect(response.status).to eq(200)
+        # Check if note is really deleted
+        delete api("/projects/#{project.id}/issues/#{issue.id}/"\
+                   "notes/#{issue_note.id}", user)
+        expect(response.status).to eq(404)
+      end
+
+      it 'returns a 404 error when note id not found' do
+        delete api("/projects/#{project.id}/issues/#{issue.id}/notes/123", user)
+
+        expect(response.status).to eq(404)
+      end
+    end
+
+    context 'when noteable is a Snippet' do
+      it 'deletes a note' do
+        delete api("/projects/#{project.id}/snippets/#{snippet.id}/"\
+                   "notes/#{snippet_note.id}", user)
+
+        expect(response.status).to eq(200)
+        # Check if note is really deleted
+        delete api("/projects/#{project.id}/snippets/#{snippet.id}/"\
+                   "notes/#{snippet_note.id}", user)
+        expect(response.status).to eq(404)
+      end
+
+      it 'returns a 404 error when note id not found' do
+        delete api("/projects/#{project.id}/snippets/#{snippet.id}/"\
+                   "notes/123", user)
+
+        expect(response.status).to eq(404)
+      end
+    end
+
+    context 'when noteable is a Merge Request' do
+      it 'deletes a note' do
+        delete api("/projects/#{project.id}/merge_requests/"\
+                   "#{merge_request.id}/notes/#{merge_request_note.id}", user)
+
+        expect(response.status).to eq(200)
+        # Check if note is really deleted
+        delete api("/projects/#{project.id}/merge_requests/"\
+                   "#{merge_request.id}/notes/#{merge_request_note.id}", user)
+        expect(response.status).to eq(404)
+      end
+
+      it 'returns a 404 error when note id not found' do
+        delete api("/projects/#{project.id}/merge_requests/"\
+                   "#{merge_request.id}/notes/123", user)
+
         expect(response.status).to eq(404)
       end
     end

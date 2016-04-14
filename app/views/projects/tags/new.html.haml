@@ -10,7 +10,7 @@
   New Tag
 %hr
 
-= form_tag namespace_project_tags_path, method: :post, id: "new-tag-form", class: "form-horizontal gfm-form tag-form js-quick-submit js-requires-input" do
+= form_tag namespace_project_tags_path, method: :post, id: "new-tag-form", class: "form-horizontal common-note-form tag-form js-quick-submit js-requires-input" do
   .form-group
     = label_tag :tag_name, nil, class: 'control-label'
     .col-sm-10
@@ -30,9 +30,9 @@
     = label_tag :release_description, 'Release notes', class: 'control-label'
     .col-sm-10
       = render layout: 'projects/md_preview', locals: { preview_class: "md-preview", referenced_users: true } do
-        = render 'projects/zen', attr: :release_description, classes: 'description form-control'
+        = render 'projects/zen', attr: :release_description, classes: 'note-textarea', placeholder: "Write your release notes or drag files here..."
         = render 'projects/notes/hints'
-        .help-block Optionally, add release notes to the tag. They will be stored in the GitLab database and displayed on the tags page.
+      .help-block Optionally, add release notes to the tag. They will be stored in the GitLab database and displayed on the tags page.
   .form-actions
     = button_tag 'Create tag', class: 'btn btn-create', tabindex: 3
     = link_to 'Cancel', namespace_project_tags_path(@project.namespace, @project), class: 'btn btn-cancel'

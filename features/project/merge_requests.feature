@@ -70,6 +70,7 @@ Feature: Project Merge Requests
     When I click link "Reopen"
     Then I should see reopened merge request "Bug NS-04"
 
+  @javascript
   Scenario: I submit new unassigned merge request
     Given I click link "New Merge Request"
     And I submit new merge request "Wiki Feature"
@@ -248,6 +249,7 @@ Feature: Project Merge Requests
     Then I should see a comment like "Line is wrong" in the third file
     And I should still see a comment like "Line is correct" in the second file
 
+  @javascript
   Scenario: I submit new unassigned merge request with template description
     Given I click link "New Merge Request"
     And I select "fix" as source
@@ -370,10 +372,11 @@ Feature: Project Merge Requests
     When I should not see Approve button
     And I should see message that MR require an approval
 
+  @javascript
   Scenario: I see suggested approvers on new merge request form
     Given project settings contain list of approvers
     When I click link "New Merge Request"
-    And I select "fix" as source
+    And I select "feature_conflict" as source
     Then I see suggested approver
 
   @javascript
@@ -381,6 +384,6 @@ Feature: Project Merge Requests
     Given project settings contain list of approvers
     And there is one auto-suggested approver
     When I click link "New Merge Request"
-    And I select "fix" as source
+    And I select "feature_conflict" as source
     Then I see auto-suggested approver
     And I can add it to approver list

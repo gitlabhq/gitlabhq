@@ -491,6 +491,132 @@ Parameters:
 
 - `id` (required) - The ID of the project to be forked
 
+### Star a project
+
+Stars a given project. Returns status code `201` and the project on success and
+`304` if the project is already starred.
+
+```
+POST /projects/:id/star
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id`      | integer | yes | The ID of the project |
+
+```bash
+curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/star"
+```
+
+Example response:
+
+```json
+{
+  "id": 3,
+  "description": null,
+  "default_branch": "master",
+  "public": false,
+  "visibility_level": 10,
+  "ssh_url_to_repo": "git@example.com:diaspora/diaspora-project-site.git",
+  "http_url_to_repo": "http://example.com/diaspora/diaspora-project-site.git",
+  "web_url": "http://example.com/diaspora/diaspora-project-site",
+  "tag_list": [
+    "example",
+    "disapora project"
+  ],
+  "name": "Diaspora Project Site",
+  "name_with_namespace": "Diaspora / Diaspora Project Site",
+  "path": "diaspora-project-site",
+  "path_with_namespace": "diaspora/diaspora-project-site",
+  "issues_enabled": true,
+  "open_issues_count": 1,
+  "merge_requests_enabled": true,
+  "builds_enabled": true,
+  "wiki_enabled": true,
+  "snippets_enabled": false,
+  "created_at": "2013-09-30T13: 46: 02Z",
+  "last_activity_at": "2013-09-30T13: 46: 02Z",
+  "creator_id": 3,
+  "namespace": {
+    "created_at": "2013-09-30T13: 46: 02Z",
+    "description": "",
+    "id": 3,
+    "name": "Diaspora",
+    "owner_id": 1,
+    "path": "diaspora",
+    "updated_at": "2013-09-30T13: 46: 02Z"
+  },
+  "archived": true,
+  "avatar_url": "http://example.com/uploads/project/avatar/3/uploads/avatar.png",
+  "shared_runners_enabled": true,
+  "forks_count": 0,
+  "star_count": 1
+}
+```
+
+### Unstar a project
+
+Unstars a given project. Returns status code `200` and the project on success
+and `304` if the project is not starred.
+
+```
+DELETE /projects/:id/star
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id`      | integer | yes | The ID of the project |
+
+```bash
+curl -X DELETE -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/star"
+```
+
+Example response:
+
+```json
+{
+  "id": 3,
+  "description": null,
+  "default_branch": "master",
+  "public": false,
+  "visibility_level": 10,
+  "ssh_url_to_repo": "git@example.com:diaspora/diaspora-project-site.git",
+  "http_url_to_repo": "http://example.com/diaspora/diaspora-project-site.git",
+  "web_url": "http://example.com/diaspora/diaspora-project-site",
+  "tag_list": [
+    "example",
+    "disapora project"
+  ],
+  "name": "Diaspora Project Site",
+  "name_with_namespace": "Diaspora / Diaspora Project Site",
+  "path": "diaspora-project-site",
+  "path_with_namespace": "diaspora/diaspora-project-site",
+  "issues_enabled": true,
+  "open_issues_count": 1,
+  "merge_requests_enabled": true,
+  "builds_enabled": true,
+  "wiki_enabled": true,
+  "snippets_enabled": false,
+  "created_at": "2013-09-30T13: 46: 02Z",
+  "last_activity_at": "2013-09-30T13: 46: 02Z",
+  "creator_id": 3,
+  "namespace": {
+    "created_at": "2013-09-30T13: 46: 02Z",
+    "description": "",
+    "id": 3,
+    "name": "Diaspora",
+    "owner_id": 1,
+    "path": "diaspora",
+    "updated_at": "2013-09-30T13: 46: 02Z"
+  },
+  "archived": true,
+  "avatar_url": "http://example.com/uploads/project/avatar/3/uploads/avatar.png",
+  "shared_runners_enabled": true,
+  "forks_count": 0,
+  "star_count": 0
+}
+```
+
 ### Archive a project
 
 Archives the project if the user is either admin or the project owner of this project. This action is
@@ -780,8 +906,10 @@ Parameters:
 - `id` (required) - The ID or NAMESPACE/PROJECT_NAME of a project
 - `user_id` (required) - The ID of a team member
 
-This method is idempotent and can be called multiple times with the same parameters.
-Revoking team membership for a user who is not currently a team member is considered success.
+This method removes the project member if the user has the proper access rights to do so.
+It returns a status code 403 if the member does not have the proper rights to perform this action.
+In all other cases this method is idempotent and revoking team membership for a user who is not
+currently a team member is considered success.
 Please note that the returned JSON currently differs slightly. Thus you should not
 rely on the returned JSON structure.
 

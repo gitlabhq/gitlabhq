@@ -94,7 +94,7 @@ module Gitlab
                              'redis://localhost:6379'
                            end
 
-        Redis::Namespace.new(NAMESPACE, redis: Redis.new(url: redis_url_string))
+        ::Redis::Namespace.new(NAMESPACE, redis: ::Redis.new(url: redis_url_string))
       end
 
       def self.redis

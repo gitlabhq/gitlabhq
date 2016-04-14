@@ -74,26 +74,44 @@ module Gitlab
     #
     # Example:
     #
-    #     Gitlab::Metrics.measure(:find_by_username_timings) do
+    #     Gitlab::Metrics.measure(:find_by_username_duration) do
     #       User.find_by_username(some_username)
     #     end
     #
-    # series - The name of the series to store the data in.
-    # values - A Hash containing extra values to add to the metric.
-    # tags - A Hash containing extra tags to add to the metric.
+    # name - The name of the field to store the execution time in.
     #
     # Returns the value yielded by the supplied block.
-    def self.measure(series, values = {}, tags = {})
-      return yield unless Transaction.current
+    def self.measure(name)
+      trans = current_transaction
 
-      start = Time.now.to_f
+      return yield unless trans
+
+      real_start = Time.now.to_f
+      cpu_start = System.cpu_time
+
       retval = yield
-      duration = (Time.now.to_f - start) * 1000.0
-      values = values.merge(duration: duration)
 
-      Transaction.current.add_metric(series, values, tags)
+      cpu_stop = System.cpu_time
+      real_stop = Time.now.to_f
+
+      real_time = (real_stop - real_start) * 1000.0
+      cpu_time = cpu_stop - cpu_start
+
+      trans.increment("#{name}_real_time", real_time)
+      trans.increment("#{name}_cpu_time", cpu_time)
+      trans.increment("#{name}_call_count", 1)
 
       retval
+    end
+
+    # Adds a tag to the current transaction (if any)
+    #
+    # name - The name of the tag to add.
+    # value - The value of the tag.
+    def self.tag_transaction(name, value)
+      trans = current_transaction
+
+      trans.add_tag(name, value) if trans
     end
 
     # When enabled this should be set before being used as the usual pattern
@@ -106,6 +124,12 @@ module Gitlab
         InfluxDB::Client.
           new(udp: { host: host, port: port })
       end
+    end
+
+    private
+
+    def self.current_transaction
+      Transaction.current
     end
   end
 end

@@ -5,12 +5,23 @@ namespace :gemojione do
     require 'json'
 
     dir = Gemojione.index.images_path
+    digests = []
+    aliases = Hash.new { |hash, key| hash[key] = [] }
+    aliases_path = File.join(Rails.root, 'fixtures', 'emojis', 'aliases.json')
 
-    digests = AwardEmoji.emojis.map do |name, emoji_hash|
+    JSON.parse(File.read(aliases_path)).each do |alias_name, real_name|
+      aliases[real_name] << alias_name
+    end
+
+    AwardEmoji.emojis.map do |name, emoji_hash|
       fpath = File.join(dir, "#{emoji_hash['unicode']}.png")
       digest = Digest::SHA256.file(fpath).hexdigest
 
-      { name: name, unicode: emoji_hash['unicode'], digest: digest }
+      digests << { name: name, unicode: emoji_hash['unicode'], digest: digest }
+
+      aliases[name].each do |alias_name|
+        digests << { name: alias_name, unicode: emoji_hash['unicode'], digest: digest }
+      end
     end
 
     out = File.join(Rails.root, 'fixtures', 'emojis', 'digests.json')

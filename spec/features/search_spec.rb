@@ -10,6 +10,10 @@ describe "Search", feature: true  do
     visit search_path
   end
 
+  it 'top right search form is not present' do
+    expect(page).not_to have_selector('.search')
+  end
+
   describe 'searching for Projects' do
     it 'finds a project' do
       page.within '.search-holder' do

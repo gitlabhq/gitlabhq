@@ -97,12 +97,17 @@ module API
       # Example Request:
       #   DELETE /projects/:id/members/:user_id
       delete ":id/members/:user_id" do
-        authorize! :admin_project, user_project
         project_member = user_project.project_members.find_by(user_id: params[:user_id])
-        unless project_member.nil?
-          project_member.destroy
-        else
+
+        unless current_user.can?(:admin_project, user_project) ||
+                current_user.can?(:destroy_project_member, project_member)
+          forbidden!
+        end
+
+        if project_member.nil?
           { message: "Access revoked", id: params[:user_id].to_i }
+        else
+          project_member.destroy
         end
       end
     end
