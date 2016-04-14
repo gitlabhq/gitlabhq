@@ -4,6 +4,7 @@
 # content on the MergeRequests#show page.
 #
 #= require jquery.cookie
+#= require sidebar
 #
 # ### Example Markup
 #
@@ -70,16 +71,16 @@ class @MergeRequestTabs
 
     if action == 'commits'
       @loadCommits($target.attr('href'))
-      @expandView()
+      RightSidebar.expandSidebar()
     else if action == 'diffs'
       @loadDiff($target.attr('href'))
       if bp? and bp.getBreakpointSize() isnt 'lg'
-        @shrinkView()
+        RightSidebar.collapseSidebar()
     else if action == 'builds'
       @loadBuilds($target.attr('href'))
-      @expandView()
+      RightSidebar.expandSidebar()
     else
-      @expandView()
+      RightSidebar.expandSidebar()
 
     @setCurrentAction(action)
 
@@ -222,26 +223,3 @@ class @MergeRequestTabs
 
   expandViewContainer: ->
     $('.container-fluid').removeClass('container-limited')
-
-  shrinkView: ->
-    $gutterIcon = $('.js-sidebar-toggle i:visible')
-
-    # Wait until listeners are set
-    setTimeout( ->
-      # Only when sidebar is expanded
-      if $gutterIcon.is('.fa-angle-double-right')
-        $gutterIcon.closest('a').trigger('click', [true])
-    , 0)
-
-  # Expand the issuable sidebar unless the user explicitly collapsed it
-  expandView: ->
-    return if $.cookie('collapsed_gutter') == 'true'
-
-    $gutterIcon = $('.js-sidebar-toggle i:visible')
-
-    # Wait until listeners are set
-    setTimeout( ->
-      # Only when sidebar is collapsed
-      if $gutterIcon.is('.fa-angle-double-left')
-        $gutterIcon.closest('a').trigger('click', [true])
-    , 0)

@@ -1,7 +1,7 @@
 collapsed = 'page-sidebar-collapsed'
 expanded = 'page-sidebar-expanded'
 
-toggleRightSidebar =
+@RightSidebar =
   collapseSidebar: ->
     $gutterIcon = $('.js-sidebar-toggle i:visible')
 
