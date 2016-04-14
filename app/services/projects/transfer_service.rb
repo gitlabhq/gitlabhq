@@ -35,11 +35,9 @@ module Projects
         end
 
         # Apply new namespace id and visibility level
-        project.tap do |p|
-          p.namespace = new_namespace
-          setup_visibility_level(p, new_namespace)
-          p.save!
-        end
+        project.namespace = new_namespace
+        project.visibility_level = new_namespace.visibility_level unless project.visibility_level_allowed_by_group?
+        project.save!
 
         # Notifications
         project.send_move_instructions(old_path)
@@ -70,16 +68,6 @@ module Projects
         can?(current_user, :change_namespace, project) &&
         namespace.id != project.namespace_id &&
         current_user.can?(:create_projects, namespace)
-    end
-
-    private
-
-    def setup_visibility_level(project, new_namespace)
-      return unless new_namespace.is_a?(Group)
-
-      if project.visibility_level > new_namespace.visibility_level
-        project.visibility_level = new_namespace.visibility_level
-      end
     end
   end
 end
