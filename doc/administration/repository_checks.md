@@ -1,10 +1,9 @@
 # Repository checks
 
-_**Note:** This feature was [introduced][ce-3232] in GitLab 8.7_
+>**Note:**
+This feature was [introduced][ce-3232] in GitLab 8.7.
 
----
-
-Git has a built-in mechanism, \[git fsck\]\[git-fsck\], to verify the
+Git has a built-in mechanism, [git fsck][git-fsck], to verify the
 integrity of all data commited to a repository. GitLab administrators
 can trigger such a check for a project via the project page under the
 admin panel. The checks run asynchronously so it may take a few minutes
