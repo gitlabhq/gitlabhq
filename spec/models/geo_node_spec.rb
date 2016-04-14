@@ -56,15 +56,12 @@ describe GeoNode, type: :model do
     let(:geo_node_key_attributes) { FactoryGirl.build(:geo_node_key).attributes }
 
     context 'on initialize' do
-      before(:each) do
-        new_node.geo_node_key_attributes = geo_node_key_attributes
-      end
-
       it 'initializes a corresponding key' do
         expect(new_node.geo_node_key).to be_present
       end
 
-      it 'is valid' do
+      it 'is valid when required attributes are present' do
+        new_node.geo_node_key_attributes = geo_node_key_attributes
         expect(new_node).to be_valid
       end
     end
@@ -80,6 +77,17 @@ describe GeoNode, type: :model do
 
       it 'has no oauth_application if it is a primary node' do
         expect(primary_node.oauth_application).not_to be_present
+      end
+
+      it 'has a system_hook if it is a secondary node' do
+        expect(node.system_hook).to be_present
+      end
+
+      it 'generated system_hook has required attributes' do
+        expect(node.system_hook.url).to be_present
+        expect(node.system_hook.url).to eq(node.geo_events_url)
+        expect(node.system_hook.token).to be_present
+        expect(node.system_hook.token).to eq(node.token)
       end
     end
   end
@@ -163,11 +171,11 @@ describe GeoNode, type: :model do
     end
   end
 
-  describe '#notify_key_url' do
-    let(:refresh_url) { 'https://localhost:3000/gitlab/api/v3/geo/refresh_key' }
+  describe '#geo_events_url' do
+    let(:events_url) { 'https://localhost:3000/gitlab/api/v3/geo/receive_events' }
 
     it 'returns api url based on node uri' do
-      expect(new_node.notify_key_url).to eq(refresh_url)
+      expect(new_node.geo_events_url).to eq(events_url)
     end
   end
 

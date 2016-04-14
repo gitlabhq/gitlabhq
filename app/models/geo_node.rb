@@ -22,7 +22,7 @@ class GeoNode < ActiveRecord::Base
                  primary: false,
                  token: lambda { SecureRandom.hex(20) }
 
-  accepts_nested_attributes_for :geo_node_key
+  accepts_nested_attributes_for :geo_node_key, :system_hook
 
   validates :host, host: true, presence: true, uniqueness: { case_sensitive: false, scope: :port }
   validates :primary, uniqueness: { message: 'node already exists' }, if: :primary
@@ -90,7 +90,7 @@ class GeoNode < ActiveRecord::Base
 
   def update_dependents_attributes
     self.geo_node_key.title = "Geo node: #{self.url}" if self.geo_node_key
-    self.token = SecureRandom.hex(20) if self.token.empty?
+    self.token = SecureRandom.hex(20) if !self.token.present?
 
     if self.primary?
       self.oauth_application = nil
