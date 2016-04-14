@@ -44,9 +44,7 @@ module DiffHelper
     if line.blank?
       " &nbsp;".html_safe
     else
-      if line_type == 'new' || line_type == 'old'
-        line[0] = " "
-      end
+      line[0] = ' ' if %w[new old].include?(line_type)
       line
     end
   end
