@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Projects::ImportExport::MembersMapper, services: true do
+describe Gitlab::ImportExport::MembersMapper, services: true do
   describe :map do
 
     let(:user) { create(:user) }
@@ -31,7 +31,7 @@ describe Projects::ImportExport::MembersMapper, services: true do
     end
 
     let(:members_mapper) do
-      Projects::ImportExport::MembersMapper.new(
+      Gitlab::ImportExport::MembersMapper.new(
         exported_members: exported_members, user: user, project_id: project.id)
     end
 

@@ -8,7 +8,7 @@ module Projects
       private
 
       def restore_project_tree
-        Projects::ImportExport::ProjectTreeRestorer.new(path: @import_path).restore
+        Gitlab::ImportExport::ProjectTreeRestorer.new(path: @import_path).restore
       end
 
       def restore_repo

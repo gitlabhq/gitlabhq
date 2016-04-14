@@ -1,4 +1,4 @@
-module Projects
+module Gitlab
   module ImportExport
     class ProjectTreeRestorer
       attr_reader :project
@@ -18,7 +18,7 @@ module Projects
       private
 
       def members_map
-        @members ||= Projects::ImportExport::MembersMapper.map(
+        @members ||= Gitlab::ImportExport::MembersMapper.map(
           exported_members: @project_members, user: @user, project_id: project.id)
       end
 
@@ -37,7 +37,7 @@ module Projects
       end
 
       def default_relation_list
-        Projects::ImportExport::ImportExportReader.tree.reject { |model| model.is_a?(Hash) && model[:project_members] }
+        Gitlab::ImportExport::ImportExportReader.tree.reject { |model| model.is_a?(Hash) && model[:project_members] }
       end
 
       def project
@@ -46,7 +46,7 @@ module Projects
 
       def create_project
         project_params = @tree_hash.reject { |_key, value| value.is_a?(Array) }
-        project = Projects::ImportExport::ProjectFactory.create(
+        project = Gitlab::ImportExport::ProjectFactory.create(
           project_params: project_params, user: @user)
         project.save
         project
@@ -79,7 +79,7 @@ module Projects
       end
 
       def relation_from_factory(relation, relation_hash)
-        Projects::ImportExport::RelationFactory.create(
+        Gitlab::ImportExport::RelationFactory.create(
           relation_sym: relation, relation_hash: relation_hash.merge('project_id' => project.id), members_map: members_map)
       end
     end

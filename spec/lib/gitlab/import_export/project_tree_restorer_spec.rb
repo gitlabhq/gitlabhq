@@ -1,10 +1,10 @@
 require 'spec_helper'
 
-describe Projects::ImportExport::ProjectTreeRestorer, services: true do
+describe Gitlab::ImportExport::ProjectTreeRestorer, services: true do
   describe :restore do
 
     let(:user) { create(:user) }
-    let(:project_tree_restorer) { Projects::ImportExport::ProjectTreeRestorer.new(path: "fixtures/import_export/project.json", user: user) }
+    let(:project_tree_restorer) { Gitlab::ImportExport::ProjectTreeRestorer.new(path: "fixtures/import_export/project.json", user: user) }
 
     context 'JSON' do
       let(:restored_project_json) do
