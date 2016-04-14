@@ -215,6 +215,17 @@ ul.notes {
   color: $notes-action-color;
 }
 
+.discussion-actions {
+  @media (max-width: $screen-sm-max) {
+    float: none;
+    margin-left: 0;
+
+    .note-action-button {
+      margin-left: 0;
+    }
+  }
+}
+
 .note-action-button,
 .discussion-action-button {
   display: inline-block;
