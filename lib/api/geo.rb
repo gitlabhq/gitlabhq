@@ -1,7 +1,5 @@
 module API
   class Geo < Grape::API
-    before { authenticated_as_admin! }
-
     resource :geo do
       # Enqueue a batch of IDs of modified projects to have their
       # repositories updated
@@ -9,6 +7,7 @@ module API
       # Example request:
       #   POST /geo/refresh_projects
       post 'refresh_projects' do
+        authenticated_as_admin!
         required_attributes! [:projects]
         ::Geo::ScheduleRepoUpdateService.new(params[:projects]).execute
       end
@@ -19,6 +18,7 @@ module API
       # Example request:
       #   POST /geo/refresh_wikis
       post 'refresh_wikis' do
+        authenticated_as_admin!
         required_attributes! [:projects]
         ::Geo::ScheduleWikiRepoUpdateService.new(params[:projects]).execute
       end
@@ -28,6 +28,7 @@ module API
       # Example request:
       #   POST /geo/receive_events
       post 'receive_events' do
+        authenticate_by_gitlab_geo_token!
         required_attributes! %w(event_name)
 
         case params['event_name']

@@ -4,6 +4,7 @@ describe API::API, api: true do
   include ApiHelpers
   let(:admin) { create(:admin) }
   let(:user) { create(:user) }
+  let(:geo_node) { build(:geo_node) }
 
   describe 'POST /geo/refresh_projects' do
     before(:each) { allow_any_instance_of(::Geo::ScheduleRepoUpdateService).to receive(:execute) }
@@ -20,7 +21,15 @@ describe API::API, api: true do
   end
 
   describe 'POST /geo/receive_events' do
-    before(:each) { allow_any_instance_of(::Geo::ScheduleKeyChangeService).to receive(:execute) }
+    before(:each) do
+      allow_any_instance_of(::Geo::ScheduleKeyChangeService).to receive(:execute)
+      allow(Gitlab::Geo).to receive(:current_node) { geo_node }
+    end
+
+    let(:geo_token_header) do
+      { 'X-Gitlab-Token' => geo_node.token }
+    end
+
     let(:key_create_payload) do
       {
         'event_name' => 'key_create',
@@ -44,18 +53,23 @@ describe API::API, api: true do
     end
 
     it 'enqueues on disk key creation if admin and correct params' do
-      post api('/geo/receive_events', admin), key_create_payload
+      post api('/geo/receive_events'), key_create_payload, geo_token_header
       expect(response.status).to eq 201
     end
 
     it 'enqueues on disk key removal if admin and correct params' do
-      post api('/geo/receive_events', admin), key_destroy_payload
+      post api('/geo/receive_events'), key_destroy_payload, geo_token_header
       expect(response.status).to eq 201
     end
 
-    it 'denies access if not admin' do
-      post api('/geo/receive_events', user)
-      expect(response.status).to eq 403
+    it 'denies access if token is not present' do
+      post api('/geo/receive_events')
+      expect(response.status).to eq 401
+    end
+
+    it 'denies access if token is invalid' do
+      post api('/geo/receive_events'), nil, { 'X-Gitlab-Token' => 'nothing' }
+      expect(response.status).to eq 401
     end
   end
 end

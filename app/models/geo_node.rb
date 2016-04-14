@@ -18,7 +18,8 @@ class GeoNode < ActiveRecord::Base
                  host: lambda { Gitlab.config.gitlab.host },
                  port: 80,
                  relative_url_root: '',
-                 primary: false
+                 primary: false,
+                 token: lambda { SecureRandom.hex(20) }
 
   accepts_nested_attributes_for :geo_node_key
 
