@@ -1,6 +1,8 @@
-module Projects
+module Gitlab
   module ImportExport
-    class ProjectTreeSaver
+    class RepoBundler
+      include Gitlab::ImportExport::CommandLineUtil
+
       attr_reader :full_path
 
       def initialize(project: , shared: )
@@ -8,29 +10,28 @@ module Projects
         @export_path = shared.export_path
       end
 
-      def save
+      def bundle
+        return false if @project.empty_repo?
         @full_path = File.join(@export_path, project_filename)
-        save_to_disk
+        bundle_to_disk
       end
 
       private
 
-      def save_to_disk
+      def bundle_to_disk
         FileUtils.mkdir_p(@export_path)
-        File.write(full_path, project_json_tree)
-        true
+        tar_cf(archive: full_path, dir: path_to_repo)
       rescue
-        # TODO: handle error
+        #TODO: handle error
         false
       end
 
       def project_filename
-        # TODO sanitize name
-        "#{@project.name}.json"
+        "#{@project.name}.bundle"
       end
 
-      def project_json_tree
-        @project.to_json(Projects::ImportExport.project_tree)
+      def path_to_repo
+        @project.repository.path_to_repo
       end
     end
   end

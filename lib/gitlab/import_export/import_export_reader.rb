@@ -1,4 +1,4 @@
-module Projects
+module Gitlab
   module ImportExport
     module ImportExportReader
       extend self
@@ -14,7 +14,7 @@ module Projects
       private
 
       def config
-        @config ||= YAML.load_file('app/services/projects/import_export/import_export.yml')
+        @config ||= YAML.load_file('lib/gitlab/import_export/import_export.yml')
       end
 
       def atts_only

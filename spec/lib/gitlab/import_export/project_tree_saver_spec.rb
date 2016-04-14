@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Projects::ImportExport::ProjectTreeSaver, services: true do
+describe Gitlab::ImportExport::ProjectTreeSaver, services: true do
   describe :save do
 
     # TODO refactor this into a setup method
@@ -26,14 +26,14 @@ describe Projects::ImportExport::ProjectTreeSaver, services: true do
     let!(:ci_commit) { create(:ci_commit, project: project, sha: merge_request.last_commit.id, ref: merge_request.source_branch, statuses: [commit_status]) }
     let!(:milestone) { create(:milestone, title: "Milestone v1.2", project: project) }
     let(:export_path) { "#{Dir::tmpdir}/project_tree_saver_spec" }
-    let(:shared) { Projects::ImportExport::Shared.new(relative_path: project.path_with_namespace) }
-    let(:project_tree_saver) { Projects::ImportExport::ProjectTreeSaver.new(project: project, shared: shared) }
+    let(:shared) { Gitlab::ImportExport::Shared.new(relative_path: project.path_with_namespace) }
+    let(:project_tree_saver) { Gitlab::ImportExport::ProjectTreeSaver.new(project: project, shared: shared) }
     let!(:issue_note) { create(:note, note: ":+1: issue", noteable: issue) }
     let!(:merge_request_note) { create(:note, note: ":+1: merge_request", noteable: merge_request) }
 
     before(:each) do
       project.team << [user, :master]
-      allow_any_instance_of(Projects::ImportExport).to receive(:storage_path).and_return(export_path)
+      allow_any_instance_of(Gitlab::ImportExport).to receive(:storage_path).and_return(export_path)
     end
 
     after(:each) do

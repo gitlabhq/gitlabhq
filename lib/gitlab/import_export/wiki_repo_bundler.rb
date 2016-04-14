@@ -1,4 +1,4 @@
-module Projects
+module Gitlab
   module ImportExport
     class WikiRepoBundler < RepoBundler
       def bundle
