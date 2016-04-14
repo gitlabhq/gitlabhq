@@ -2,9 +2,8 @@
 .discussion.js-toggle-container{ class: note.discussion_id }
   .discussion-header
     = link_to_member(@project, note.author, avatar: false)
-    .inline.discussion-headline-light
-      = "#{note.author.to_reference} started a discussion"
-      on the outdated diff
+    = "#{note.author.to_reference} started a discussion"
+    on the outdated diff
     .discussion-actions
       = link_to "#", class: "note-action-button discussion-toggle-button js-toggle-button" do
         %i.fa.fa-chevron-down

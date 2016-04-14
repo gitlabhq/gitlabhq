@@ -2,10 +2,9 @@
 .discussion.js-toggle-container{ class: note.discussion_id }
   .discussion-header
     = link_to_member(@project, note.author, avatar: false)
-    .inline.discussion-headline-light
-      = "#{note.author.to_reference} started a discussion"
-      = link_to diffs_namespace_project_merge_request_path(note.project.namespace, note.project, note.noteable, anchor: note.line_code) do
-        on the diff
+    = "#{note.author.to_reference} started a discussion"
+    = link_to diffs_namespace_project_merge_request_path(note.project.namespace, note.project, note.noteable, anchor: note.line_code) do
+      on the diff
     .discussion-actions
       = link_to "#", class: "discussion-action-button discussion-toggle-button js-toggle-button" do
         %i.fa.fa-chevron-up

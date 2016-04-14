@@ -5,21 +5,22 @@
         = image_tag avatar_icon(note.author), alt: '', class: 'avatar s40'
     .timeline-content
       - if note.system
+        - system_icon = system_note_icon(note.note)
         .note-system
-          .note-system-text
-            = icon(system_note_icon(note.note))
+          .note-header
+            - if !system_icon.nil?
+              = icon(system_icon, class: 'note-system-icon')
             = link_to_member(note.project, note.author, { avatar: false, link_class: 'note-author' })
-            .inline.note-headline-light
-              = note.author.to_reference
-              = markdown(system_note_text(note.note), pipeline: :note)
-              = time_ago_with_tooltip(note.created_at, placement: 'bottom', html_class: 'note-created-ago')
+            = note.author.to_reference
+            -# = markdown(system_note_text(note.note), pipeline: :note, cache_key: [note, "note"])
+            = markdown(system_note_text(note.note), pipeline: :note)
+            = time_ago_with_tooltip(note.created_at, placement: 'bottom', html_class: 'note-created-ago')
       - else
         .note-header
           = link_to_member(note.project, note.author, { avatar: false, link_class: 'note-author' })
-          .inline.note-headline-light
-            = "#{note.author.to_reference} commented"
-            %a{ href: "##{dom_id(note)}" }
-              = time_ago_with_tooltip(note.created_at, placement: 'bottom', html_class: 'note-created-ago')
+          = "#{note.author.to_reference} commented"
+          %a{ href: "##{dom_id(note)}" }
+            = time_ago_with_tooltip(note.created_at, placement: 'bottom', html_class: 'note-created-ago')
           .note-actions
             - access = note.project.team.human_max_access(note.author.id)
             - if access

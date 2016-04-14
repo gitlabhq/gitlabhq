@@ -74,9 +74,14 @@ module NotesHelper
   end
 
   CHANGED_REGEX = /^(title|status|milestone) changed/i.freeze
+  DOWNCASE_FIRST_REGEX = /^(removed|reassigned|added|mentioned)/i.freeze
   def system_note_text(note_text)
     if note_text =~ CHANGED_REGEX
       note_text.gsub!(CHANGED_REGEX) { "changed #{Regexp.last_match[1].downcase}" }
+    elsif note_text =~ DOWNCASE_FIRST_REGEX
+      note_text.sub!(/^[A-Z]/, &:downcase)
+    elsif note_text == "Assignee removed"
+      note_text = "removed assignee"
     end
 
     note_text
@@ -85,8 +90,10 @@ module NotesHelper
   LABEL_REGEX = /^(added|removed) (.*) label/i.freeze
   TITLE_REGEX = /^title changed/i.freeze
   MILESTONE_REGEX = /^milestone changed/i.freeze
-  STATUS_CLOSED = /^status changed to closed/i.freeze
-  STATUS_OPEN = /^status changed to (open|reopened)/i.freeze
+  STATUS_CLOSED_REGEX = /^status changed to closed/i.freeze
+  STATUS_OPEN_REGEX = /^status changed to (open|reopened)/i.freeze
+  ASSIGNEE_REGEX = /^(reassigned|assignee)/i.freeze
+  MENTIONED_REGEX = /^(mentioned)/i.freeze
   def system_note_icon(note_text)
     if note_text =~ LABEL_REGEX
       'tags'
@@ -94,10 +101,14 @@ module NotesHelper
       'pencil'
     elsif note_text =~ MILESTONE_REGEX
       'clock-o'
-    elsif note_text =~ STATUS_CLOSED
+    elsif note_text =~ STATUS_CLOSED_REGEX
       'check'
-    elsif note_text =~ STATUS_OPEN
+    elsif note_text =~ STATUS_OPEN_REGEX
       'circle-o'
+    elsif note_text =~ ASSIGNEE_REGEX
+      'user'
+    elsif note_text =~ MENTIONED_REGEX
+      'bookmark'
     end
   end
 end

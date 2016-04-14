@@ -182,6 +182,8 @@ ul.notes {
 
 .discussion-header,
 .note-header {
+  color: $notes-light-color;
+
   a {
     color: inherit;
 
@@ -191,11 +193,16 @@ ul.notes {
     }
   }
 
-}
+  .note-author {
+    color: $gl-gray;
+    font-weight: 600;
 
-.note-headline-light,
-.discussion-headline-light {
-  color: $notes-light-color;
+    &:hover,
+    &:focus {
+      color: $gl-link-color;
+      text-decoration: none;
+    }
+  }
 }
 
 /**
@@ -331,35 +338,25 @@ ul.notes {
   }
 }
 
-.note-author {
-  color: inherit;
-  font-weight: 600;
-
-  &:hover,
-  &:focus {
-    color: $gl-link-color;
-    text-decoration: none;
-  }
-}
-
 .note-system {
   line-height: 40px;
 
-  .author_link,
-  p,
-  .note-created-ago {
+  p {
     display: inline-block;
     margin: 0;
   }
 
-  p {
-    > strong {
-      color: $gl-gray;
-    }
+  strong {
+    color: $gl-gray;
+  }
+
+  .note-header {
+    display: inline-block;
+    line-height: 20px;
   }
 }
 
-.note-system-text {
-  display: inline-block;
-  line-height: 20px;
+.note-system-icon {
+  margin-right: 5px;
+  color: $notes-light-color;
 }
