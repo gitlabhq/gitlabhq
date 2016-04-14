@@ -26,7 +26,9 @@ class @DueDateSelect
       addDueDate = ->
         # Create the post date
         value = $("input[name='#{fieldName}']").val()
-        mediumDate = $.datepicker.formatDate('M d, yy', new Date(value))
+        valueSplit = value.split '-'
+        date = new Date(valueSplit[0], parseInt(valueSplit[1]) - 1, valueSplit[2])
+        mediumDate = $.datepicker.formatDate 'M d, yy', date
 
         data = {}
         data[abilityName] = {}
