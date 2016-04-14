@@ -330,3 +330,36 @@ ul.notes {
     color: $gl-link-color;
   }
 }
+
+.note-author {
+  color: inherit;
+  font-weight: 600;
+
+  &:hover,
+  &:focus {
+    color: $gl-link-color;
+    text-decoration: none;
+  }
+}
+
+.note-system {
+  line-height: 40px;
+
+  .author_link,
+  p,
+  .note-created-ago {
+    display: inline-block;
+    margin: 0;
+  }
+
+  p {
+    > strong {
+      color: $gl-gray;
+    }
+  }
+}
+
+.note-system-text {
+  display: inline-block;
+  line-height: 20px;
+}

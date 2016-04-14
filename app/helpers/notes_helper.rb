@@ -72,4 +72,32 @@ module NotesHelper
     button_tag 'Reply...', class: 'btn btn-text-field js-discussion-reply-button',
                            data: data, title: 'Add a reply'
   end
+
+  CHANGED_REGEX = /^(title|status|milestone) changed/i.freeze
+  def system_note_text(note_text)
+    if note_text =~ CHANGED_REGEX
+      note_text.gsub!(CHANGED_REGEX) { "changed #{Regexp.last_match[1].downcase}" }
+    end
+
+    note_text
+  end
+
+  LABEL_REGEX = /^(added|removed) (.*) label/i.freeze
+  TITLE_REGEX = /^title changed/i.freeze
+  MILESTONE_REGEX = /^milestone changed/i.freeze
+  STATUS_CLOSED = /^status changed to closed/i.freeze
+  STATUS_OPEN = /^status changed to (open|reopened)/i.freeze
+  def system_note_icon(note_text)
+    if note_text =~ LABEL_REGEX
+      'tags'
+    elsif note_text =~ TITLE_REGEX
+      'pencil'
+    elsif note_text =~ MILESTONE_REGEX
+      'clock-o'
+    elsif note_text =~ STATUS_CLOSED
+      'check'
+    elsif note_text =~ STATUS_OPEN
+      'circle-o'
+    end
+  end
 end

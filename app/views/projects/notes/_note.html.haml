@@ -1,42 +1,52 @@
-%li.timeline-entry{ id: dom_id(note), class: [dom_class(note), "note-row-#{note.id}", ('system-note' if note.system)] }
+%li.timeline-entry{ id: dom_id(note), class: [dom_class(note), "note-row-#{note.id}"] }
   .timeline-entry-inner
     .timeline-icon
       %a{href: user_path(note.author)}
         = image_tag avatar_icon(note.author), alt: '', class: 'avatar s40'
     .timeline-content
-      .note-header
-        = link_to_member(note.project, note.author, avatar: false)
-        .inline.note-headline-light
-          = "#{note.author.to_reference} commented"
-          %a{ href: "##{dom_id(note)}" }
-            = time_ago_with_tooltip(note.created_at, placement: 'bottom', html_class: 'note-created-ago')
-        .note-actions
-          - access = note.project.team.human_max_access(note.author.id)
-          - if access
-            %span.note-role
-              = access
+      - if note.system
+        .note-system
+          .note-system-text
+            = icon(system_note_icon(note.note))
+            = link_to_member(note.project, note.author, { avatar: false, link_class: 'note-author' })
+            .inline.note-headline-light
+              = note.author.to_reference
+              = markdown(system_note_text(note.note), pipeline: :note)
+              = time_ago_with_tooltip(note.created_at, placement: 'bottom', html_class: 'note-created-ago')
+      - else
+        .note-header
+          = link_to_member(note.project, note.author, { avatar: false, link_class: 'note-author' })
+          .inline.note-headline-light
+            = "#{note.author.to_reference} commented"
+            %a{ href: "##{dom_id(note)}" }
+              = time_ago_with_tooltip(note.created_at, placement: 'bottom', html_class: 'note-created-ago')
+          .note-actions
+            - access = note.project.team.human_max_access(note.author.id)
+            - if access
+              %span.note-role
+                = access
+            - if note_editable?(note)
+              = link_to '#', title: 'Edit comment', class: 'note-action-button js-note-edit' do
+                = icon('pencil')
+              = link_to namespace_project_note_path(note.project.namespace, note.project, note), title: 'Remove comment', method: :delete, data: { confirm: 'Are you sure you want to remove this comment?' }, remote: true, class: 'note-action-button js-note-delete danger' do
+                = icon('trash-o')
+        .note-body{class: note_editable?(note) ? 'js-task-list-container' : ''}
+          .note-text
+            = preserve do
+              = markdown(note.note, pipeline: :note, cache_key: [note, "note"])
           - if note_editable?(note)
-            = link_to '#', title: 'Edit comment', class: 'note-action-button js-note-edit' do
-              = icon('pencil')
-            = link_to namespace_project_note_path(note.project.namespace, note.project, note), title: 'Remove comment', method: :delete, data: { confirm: 'Are you sure you want to remove this comment?' }, remote: true, class: 'note-action-button js-note-delete danger' do
-              = icon('trash-o')
-      .note-body{class: note_editable?(note) ? 'js-task-list-container' : ''}
-        .note-text
-          = preserve do
-            = markdown(note.note, pipeline: :note, cache_key: [note, "note"])
-        - if note_editable?(note)
-          = render 'projects/notes/edit_form', note: note
-      = edited_time_ago_with_tooltip(note, placement: 'bottom', html_class: 'note_edited_ago', include_author: true)
+            = render 'projects/notes/edit_form', note: note
+        = edited_time_ago_with_tooltip(note, placement: 'bottom', html_class: 'note_edited_ago', include_author: true)
 
-      - if note.attachment.url
-        .note-attachment
-          - if note.attachment.image?
-            = link_to note.attachment.url, target: '_blank' do
-              = image_tag note.attachment.url, class: 'note-image-attach'
-          .attachment
-            = link_to note.attachment.url, target: '_blank' do
-              = icon('paperclip')
-              = note.attachment_identifier
-              = link_to delete_attachment_namespace_project_note_path(note.project.namespace, note.project, note),
-                title: 'Delete this attachment', method: :delete, remote: true, data: { confirm: 'Are you sure you want to remove the attachment?' }, class: 'danger js-note-attachment-delete' do
-                = icon('trash-o', class: 'cred')
+        - if note.attachment.url
+          .note-attachment
+            - if note.attachment.image?
+              = link_to note.attachment.url, target: '_blank' do
+                = image_tag note.attachment.url, class: 'note-image-attach'
+            .attachment
+              = link_to note.attachment.url, target: '_blank' do
+                = icon('paperclip')
+                = note.attachment_identifier
+                = link_to delete_attachment_namespace_project_note_path(note.project.namespace, note.project, note),
+                  title: 'Delete this attachment', method: :delete, remote: true, data: { confirm: 'Are you sure you want to remove the attachment?' }, class: 'danger js-note-attachment-delete' do
+                  = icon('trash-o', class: 'cred')
