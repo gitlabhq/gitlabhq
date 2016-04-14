@@ -6,9 +6,9 @@ class @ImporterStatus
   initStatusPage: ->
     $('.js-add-to-import')
       .off 'click'
-      .on 'click', (event) =>
+      .on 'click', (e) =>
         new_namespace = null
-        $btn = $(event.currentTarget)
+        $btn = $(e.currentTarget)
         $tr = $btn.closest('tr')
         id = $tr.attr('id').replace('repo_', '')
         if $tr.find('.import-target input').length > 0
