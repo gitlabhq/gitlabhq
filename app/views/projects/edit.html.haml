@@ -132,6 +132,19 @@
             = link_to 'Housekeeping', housekeeping_namespace_project_path(@project.namespace, @project),
                 method: :post, class: "btn btn-default"
 
+      .panel.panel-default
+        .panel-heading Export
+        .errors-holder
+        .panel-body
+          %p
+            Downloads a compressed version of the project that can be imported.
+            %br
+
+          .form-actions
+            = link_to 'Export', export_namespace_project_path(@project.namespace, @project),
+                method: :post, class: "btn btn-default"
+
+
       - if can? current_user, :archive_project, @project
         - if @project.archived?
           .panel.panel-success

@@ -186,6 +186,15 @@ class ProjectsController < Projects::ApplicationController
     )
   end
 
+  def export
+    ::Projects::ImportExport::ExportService.new(@project, current_user).execute
+
+    redirect_to(
+      project_path(@project),
+      notice: "Project export successfully started"
+    )
+  end
+
   def toggle_star
     current_user.toggle_star(@project)
     @project.reload

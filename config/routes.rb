@@ -433,6 +433,7 @@ Rails.application.routes.draw do
         post :housekeeping
         post :toggle_star
         post :markdown_preview
+        post :export
         get :autocomplete_sources
         get :activity
       end

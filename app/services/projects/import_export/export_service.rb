@@ -1,6 +1,7 @@
 module Projects
   module ImportExport
     class ExportService < BaseService
+
       def execute(options = {})
         @shared = Gitlab::ImportExport::Shared.new(relative_path: project.path_with_namespace)
         save_project_tree
