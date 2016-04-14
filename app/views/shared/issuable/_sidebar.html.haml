@@ -119,7 +119,7 @@
                             - else
                               View labels
                 - if can? current_user, :admin_label, @project and @project
-                  = render "shared/issuable/milestone_dropdown"
+                  = render partial: "shared/issuable/label_page_create"
 
       = render "shared/issuable/participants", participants: issuable.participants(current_user)
       - if current_user
