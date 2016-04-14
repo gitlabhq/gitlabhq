@@ -23,10 +23,14 @@ class RemoveWrongImportUrlFromProjects < ActiveRecord::Migration
 
   def process_projects_with_wrong_url
     projects_with_wrong_import_url.each do |project|
-      import_url = Gitlab::ImportUrl.new(project["import_url"])
+      begin
+        import_url = Gitlab::ImportUrl.new(project["import_url"])
 
-      update_import_url(import_url, project)
-      update_import_data(import_url, project)
+        update_import_url(import_url, project)
+        update_import_data(import_url, project)
+      rescue URI::InvalidURIError
+        nullify_import_url(project)
+      end
     end
   end
 
@@ -82,6 +86,10 @@ class RemoveWrongImportUrlFromProjects < ActiveRecord::Migration
     execute("UPDATE projects SET import_url = #{quote(import_url.sanitized_url)} WHERE id = #{project['id']}")
   end
 
+  def nullify_import_url(project)
+    execute("UPDATE projects SET import_url = NULL WHERE id = #{project['id']}")
+  end
+
   def insert_import_data_sql(project_id, fake_import_data)
     %(
       INSERT INTO project_import_data
@@ -108,14 +116,13 @@ class RemoveWrongImportUrlFromProjects < ActiveRecord::Migration
   end
 
   #GitHub projects with token, and any user:password@ based URL
-  #TODO: may need to add import_type != list
   def projects_with_wrong_import_url
-    select_all("SELECT p.id, p.import_url, i.id as import_data_id FROM projects p LEFT JOIN project_import_data i on p.id = i.project_id WHERE p.import_url IS NOT NULL AND p.import_url LIKE '%//%@%'")
+    select_all("SELECT p.id, p.import_url, i.id as import_data_id FROM projects p LEFT JOIN project_import_data i on p.id = i.project_id WHERE p.import_url <> '' AND p.import_url LIKE '%//%@%'")
   end
 
   # All imports with data for import_type
   def unencrypted_import_data(import_type: )
-    select_all("SELECT i.id, p.import_url, i.data FROM projects p INNER JOIN project_import_data i ON p.id = i.project_id WHERE p.import_url IS NOT NULL AND p.import_type = '#{import_type}' ")
+    select_all("SELECT i.id, p.import_url, i.data FROM projects p INNER JOIN project_import_data i ON p.id = i.project_id WHERE p.import_url <> '' AND p.import_type = '#{import_type}' ")
   end
 
   def quote(value)

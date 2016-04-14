@@ -1,7 +1,7 @@
 module Gitlab
   class ImportUrl
     def initialize(url, credentials: nil)
-      @url = URI.parse(url)
+      @url = URI.parse(URI.encode(url))
       @credentials = credentials
     end
 
