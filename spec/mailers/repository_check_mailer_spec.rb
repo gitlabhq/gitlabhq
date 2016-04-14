@@ -5,7 +5,7 @@ describe RepositoryCheckMailer do
 
   describe '.notify' do
     it 'emails all admins' do
-      admins = 3.times.map { create(:admin) }
+      admins = create_list(:admin, 3)
 
       mail = described_class.notify(1)
 
