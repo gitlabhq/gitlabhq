@@ -12,8 +12,7 @@ class RepositoryUpdateMirrorWorker
 
     result = Projects::UpdateMirrorService.new(@project, @current_user).execute
     if result[:status] == :error
-      project.update(import_error: result[:message])
-      project.import_fail
+      project.mark_import_as_failed(result[:message])
       return
     end
 

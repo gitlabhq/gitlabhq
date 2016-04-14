@@ -38,6 +38,7 @@ v 8.7.0 (unreleased)
   - ClosingIssueExtractor regex now also works with colons. e.g. "Fixes: #1234" !3591
   - Update number of Todos in the sidebar when it's marked as "Done". !3600
   - API: Expose 'updated_at' for issue, snippet, and merge request notes (Robert Schilling)
+  - Add ability to sync to remote mirrors. !249
 
 v 8.6.5
   - Fix importing from GitHub Enterprise. !3529
