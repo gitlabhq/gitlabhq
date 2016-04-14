@@ -393,6 +393,8 @@ describe Repository, models: true do
   describe '#expire_cache' do
     it 'expires all caches' do
       expect(repository).to receive(:expire_branch_cache)
+      expect(repository).to receive(:expire_branch_count_cache)
+      expect(repository).to receive(:expire_tag_count_cache)
 
       repository.expire_cache
     end

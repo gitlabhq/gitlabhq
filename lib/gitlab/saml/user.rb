@@ -26,7 +26,7 @@ module Gitlab
           @user ||= build_new_user
         end
 
-        if external_users_enabled?
+        if external_users_enabled? && @user
           # Check if there is overlap between the user's groups and the external groups
           # setting then set user as external or internal.
           if (auth_hash.groups & Gitlab::Saml::Config.external_groups).empty?
@@ -48,6 +48,7 @@ module Gitlab
       end
 
       def changed?
+        return true unless gl_user
         gl_user.changed? || gl_user.identities.any?(&:changed?)
       end
 

@@ -37,3 +37,4 @@ Read more on:
 - [Introduction to GitLab Performance Monitoring](introduction.md)
 - [InfluxDB Configuration](influxdb_configuration.md)
 - [InfluxDB Schema](influxdb_schema.md)
+- [Grafana Install/Configuration](grafana_configuration.md

@@ -59,8 +59,7 @@ module Gitlab
           repository: project.hook_attrs.slice(:name, :url, :description, :homepage)
         }
 
-        base_data[:object_attributes][:url] =
-             Gitlab::UrlBuilder.new(:note).build(note.id)
+        base_data[:object_attributes][:url] = Gitlab::UrlBuilder.build(note)
         base_data
       end
 

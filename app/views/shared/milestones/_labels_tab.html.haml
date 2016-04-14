@@ -4,15 +4,16 @@
 
     %li
       %span.label-row
-        = link_to milestones_label_path(options) do
-          - render_colored_label(label, tooltip: false)
-        %span.prepend-left-10
+        %span.label-name
+          = link_to milestones_label_path(options) do
+            - render_colored_label(label, tooltip: false)
+        %span.prepend-description-left
           = markdown(label.description, pipeline: :single_line)
 
-      .pull-right
-        %strong.issues-count
+      .pull-info-right
+        %span.append-right-20
           = link_to milestones_label_path(options.merge(state: 'opened')) do
             - pluralize milestone_issues_by_label_count(@milestone, label, state: :opened), 'open issue'
-        %strong.issues-count
+        %span.append-right-20
           = link_to milestones_label_path(options.merge(state: 'closed')) do
             - pluralize milestone_issues_by_label_count(@milestone, label, state: :closed), 'closed issue'

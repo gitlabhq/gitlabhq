@@ -28,26 +28,26 @@ class Dispatcher
         new Todos()
       when 'projects:milestones:new', 'projects:milestones:edit'
         new ZenMode()
-        new DropzoneInput($('.milestone-form'))
+        new GLForm($('.milestone-form'))
       when 'groups:milestones:new'
         new ZenMode()
       when 'projects:compare:show'
         new Diff()
       when 'projects:issues:new','projects:issues:edit'
         shortcut_handler = new ShortcutsNavigation()
-        new DropzoneInput($('.issue-form'))
+        new GLForm($('.issue-form'))
         new IssuableForm($('.issue-form'))
       when 'projects:merge_requests:new', 'projects:merge_requests:edit'
         new Diff()
         shortcut_handler = new ShortcutsNavigation()
-        new DropzoneInput($('.merge-request-form'))
+        new GLForm($('.merge-request-form'))
         new IssuableForm($('.merge-request-form'))
       when 'projects:tags:new'
         new ZenMode()
-        new DropzoneInput($('.tag-form'))
+        new GLForm($('.tag-form'))
       when 'projects:releases:edit'
         new ZenMode()
-        new DropzoneInput($('.release-form'))
+        new GLForm($('.release-form'))
       when 'projects:merge_requests:show'
         new Diff()
         shortcut_handler = new ShortcutsIssuable(true)
@@ -141,7 +141,7 @@ class Dispatcher
             new Wikis()
             shortcut_handler = new ShortcutsNavigation()
             new ZenMode()
-            new DropzoneInput($('.wiki-form'))
+            new GLForm($('.wiki-form'))
           when 'snippets'
             shortcut_handler = new ShortcutsNavigation()
             new ZenMode() if path[2] == 'show'

@@ -20,8 +20,7 @@ module MergeRequests
 
     def hook_data(merge_request, action)
       hook_data = merge_request.to_hook_data(current_user)
-      merge_request_url = Gitlab::UrlBuilder.new(:merge_request).build(merge_request.id)
-      hook_data[:object_attributes][:url] = merge_request_url
+      hook_data[:object_attributes][:url] = Gitlab::UrlBuilder.build(merge_request)
       hook_data[:object_attributes][:action] = action
       hook_data
     end

@@ -34,6 +34,11 @@
         color: #7f8fa4;
         font-size: $gl-font-size;
 
+        .label {
+          color: $gl-text-color;
+          font-size: inherit;
+        }
+
         p {
           color: #5c5d5e;
         }
