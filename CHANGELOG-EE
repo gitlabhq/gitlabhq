@@ -9,6 +9,7 @@ v 8.7.0 (unreleased)
 
 v 8.6.6
   - Fix LDAP group sync regression for groups with member value `uid=<username>` !335
+  - Concat AD group recursive member results with regular member results
 
 v 8.6.5
   - No EE-specific changes

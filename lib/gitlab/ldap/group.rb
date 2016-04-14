@@ -39,23 +39,27 @@ module Gitlab
       end
 
       def member_dns
+        dns = []
+
+        # There's an edge-case with AD where sometimes a recursive search
+        # doesn't return all users at the top-level. Concat recursive results
+        # with regular results to be safe. See gitlab-ee#484
         if active_directory?
           dns = adapter.dns_for_filter(active_directory_recursive_memberof_filter)
-          return dns unless dns.empty?
         end
 
         if (entry.respond_to? :member) && (entry.respond_to? :submember)
-          entry.member + entry.submember
+          dns.concat(entry.member + entry.submember)
         elsif entry.respond_to? :member
-          entry.member
+          dns.concat(entry.member)
         elsif entry.respond_to? :uniquemember
-          entry.uniquemember
+          dns.concat(entry.uniquemember)
         elsif entry.respond_to? :memberof
-          entry.memberof
+          dns.concat(entry.memberof)
         else
           Rails.logger.warn("Could not find member DNs for LDAP group #{entry.inspect}")
-          []
         end
+        dns.uniq
       end
 
       private
