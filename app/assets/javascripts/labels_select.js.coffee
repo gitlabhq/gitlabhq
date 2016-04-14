@@ -220,9 +220,19 @@ class @LabelsSelect
           fields: ['title']
         selectable: true
 
-        toggleLabel: (selected) ->
+        toggleLabel: (selected, el) ->
+          selected_labels = $('.js-label-select').siblings('.dropdown-menu-labels').find('.is-active')
+
           if selected and selected.title?
-            selected.title
+            if selected_labels and selected_labels.length > 1
+              "#{selected.title} +#{selected_labels.length - 1} more"
+            else
+              selected.title
+          else if not selected and selected_labels.length isnt 0
+            if selected_labels.length > 1
+              "#{$(selected_labels[0]).text()} +#{selected_labels.length - 1} more"
+            else if selected_labels.length is 1
+              $(selected_labels).text()
           else
             defaultLabel
         fieldName: $dropdown.data('field-name')
@@ -238,7 +248,7 @@ class @LabelsSelect
           page = $('body').data 'page'
           isIssueIndex = page is 'projects:issues:index'
           isMRIndex = page is page is 'projects:merge_requests:index'
-          
+
           $selectbox.hide()
           # display:block overrides the hide-collapse rule
           $value.removeAttr('style')
