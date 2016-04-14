@@ -20,7 +20,7 @@ window.GlPage = {
           for selector, callback of targetsObj
             children = $currentTarget.find(selector)
             if !e.isPropagationStopped() && children.length
-              data ?= {}
+              data = {} if not data
               e.currentTarget = data.el = children[0]
               callback.apply(e.currentTarget, [e, data])
 
@@ -38,8 +38,7 @@ window.GlPage = {
         $element = selector
         event = eventType
 
-        if not data
-          data = {}
+        data = {} if not data
 
         if event.defaultCallback
           defaultFunc = event.defaultCallback
