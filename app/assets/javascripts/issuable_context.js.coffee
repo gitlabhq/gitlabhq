@@ -33,7 +33,6 @@ class @IssuableContext
             $block.find('.dropdown-menu-toggle').trigger 'click'
           , 0
 
-
     $(".right-sidebar").niceScroll()
 
   initParticipants: ->

@@ -100,16 +100,11 @@
                 %button.dropdown-menu-toggle.js-due-date-select{ type: "button", data: { toggle: "dropdown", field_name: "#{issuable.to_ability_name}[due_date]", ability_name: issuable.to_ability_name, issue_update: issuable_json_path(issuable) } }
                   %span.dropdown-toggle-text
                     Due date
-                  = icon('chevron-down')
+                  = icon("chevron-down")
                 .dropdown-menu.dropdown-menu-due-date
                   = dropdown_title("Due date")
                   = dropdown_content do
                     .js-due-date-calendar
-                  .dropdown-footer.dropdown-due-date-footer.clearfix
-                    %button.btn.btn-primary.pull-left.js-due-date-add{ type: "button" }
-                      Add
-                    %button.btn.btn-default.pull-right{ type: "button" }
-                      Cancel
 
       - if issuable.project.labels.any?
         .block.labels

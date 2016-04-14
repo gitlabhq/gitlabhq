@@ -1,11 +1,12 @@
 class @DueDateSelect
   constructor: ->
-    $loading = $('.js-issuable-update .due_date').find('.block-loading').hide()
+    $loading = $('.js-issuable-update .due_date')
+      .find('.block-loading')
+      .hide()
 
     $('.js-due-date-select').each (i, dropdown) ->
       $dropdown = $(dropdown)
       $dropdownParent = $dropdown.closest('.dropdown')
-      $addBtn = $('.js-due-date-add', $dropdownParent)
       $datePicker = $dropdownParent.find('.js-due-date-calendar')
       $block = $dropdown.closest('.block')
       $selectbox = $dropdown.closest('.selectbox')
@@ -22,13 +23,10 @@ class @DueDateSelect
           $value.removeAttr('style')
       )
 
-      $addBtn.on 'click', (e) ->
-        e.preventDefault()
-        e.stopPropagation()
-
+      addDueDate = ->
         # Create the post date
         value = $("input[name='#{fieldName}']").val()
-        mediumDate = $.datepicker.formatDate("M d, yy", new Date(value))
+        mediumDate = $.datepicker.formatDate('M d, yy', new Date(value))
 
         data = {}
         data[abilityName] = {}
@@ -48,13 +46,15 @@ class @DueDateSelect
             $sidebarValue.html(mediumDate)
         ).done (data) ->
           $dropdown.trigger('loaded.gl.dropdown')
-          $dropdown.trigger('hidden.gl.dropdown')
+          $dropdown.dropdown('toggle')
           $loading.fadeOut()
 
       $datePicker.datepicker(
-        dateFormat: "yy-mm-dd",
+        dateFormat: 'yy-mm-dd',
         defaultDate: $("input[name='#{fieldName}']").val()
         altField: "input[name='#{fieldName}']"
+        onSelect: ->
+          addDueDate()
       )
 
     $(document)
