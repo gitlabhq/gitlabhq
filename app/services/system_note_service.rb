@@ -222,7 +222,7 @@ class SystemNoteService
   # Called when a branch is created from the 'new branch' button on a issue
   # Example note text:
   #
-  #   "Started branch `issue-branch-button-201`"
+  #   "Started branch `201-issue-branch-button`"
   def self.new_issue_branch(issue, project, author, branch)
     h = Gitlab::Routing.url_helpers
     link = h.namespace_project_compare_url(project.namespace, project, from: project.default_branch, to: branch)
