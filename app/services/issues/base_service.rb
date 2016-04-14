@@ -3,7 +3,7 @@ module Issues
 
     def hook_data(issue, action)
       issue_data = issue.to_hook_data(current_user)
-      issue_url = Gitlab::UrlBuilder.new(:issue).build(issue.id)
+      issue_url = Gitlab::UrlBuilder.build(issue)
       issue_data[:object_attributes].merge!(url: issue_url, action: action)
       issue_data
     end

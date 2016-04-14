@@ -88,12 +88,9 @@ describe NotificationService, services: true do
           note.project.namespace_id = group.id
           note.project.group.add_user(@u_watcher, GroupMember::MASTER)
           note.project.save
-          user_project = note.project.project_members.find_by_user_id(@u_watcher.id)
-          user_project.notification_level = Notification::N_PARTICIPATING
-          user_project.save
-          group_member = note.project.group.group_members.find_by_user_id(@u_watcher.id)
-          group_member.notification_level = Notification::N_GLOBAL
-          group_member.save
+
+          @u_watcher.notification_settings_for(note.project).participating!
+          @u_watcher.notification_settings_for(note.project.group).global!
           ActionMailer::Base.deliveries.clear
         end
 
@@ -215,7 +212,7 @@ describe NotificationService, services: true do
         end
 
         it do
-          @u_committer.update_attributes(notification_level: Notification::N_MENTION)
+          @u_committer.update_attributes(notification_level: :mention)
           notification.new_note(note)
           should_not_email(@u_committer)
         end
@@ -246,7 +243,7 @@ describe NotificationService, services: true do
       end
 
       it do
-        issue.assignee.update_attributes(notification_level: Notification::N_MENTION)
+        issue.assignee.update_attributes(notification_level: :mention)
         notification.new_issue(issue, @u_disabled)
 
         should_not_email(issue.assignee)
@@ -596,13 +593,13 @@ describe NotificationService, services: true do
   end
 
   def build_team(project)
-    @u_watcher = create(:user, notification_level: Notification::N_WATCH)
-    @u_participating = create(:user, notification_level: Notification::N_PARTICIPATING)
-    @u_participant_mentioned = create(:user, username: 'participant', notification_level: Notification::N_PARTICIPATING)
-    @u_disabled = create(:user, notification_level: Notification::N_DISABLED)
-    @u_mentioned = create(:user, username: 'mention', notification_level: Notification::N_MENTION)
+    @u_watcher = create(:user, notification_level: :watch)
+    @u_participating = create(:user, notification_level: :participating)
+    @u_participant_mentioned = create(:user, username: 'participant', notification_level: :participating)
+    @u_disabled = create(:user, notification_level: :disabled)
+    @u_mentioned = create(:user, username: 'mention', notification_level: :mention)
     @u_committer = create(:user, username: 'committer')
-    @u_not_mentioned = create(:user, username: 'regular', notification_level: Notification::N_PARTICIPATING)
+    @u_not_mentioned = create(:user, username: 'regular', notification_level: :participating)
     @u_outsider_mentioned = create(:user, username: 'outsider')
 
     project.team << [@u_watcher, :master]
@@ -617,8 +614,8 @@ describe NotificationService, services: true do
   def add_users_with_subscription(project, issuable)
     @subscriber = create :user
     @unsubscriber = create :user
-    @subscribed_participant = create(:user, username: 'subscribed_participant', notification_level: Notification::N_PARTICIPATING)
-    @watcher_and_subscriber = create(:user, notification_level: Notification::N_WATCH)
+    @subscribed_participant = create(:user, username: 'subscribed_participant', notification_level: :participating)
+    @watcher_and_subscriber = create(:user, notification_level: :watch)
 
     project.team << [@subscribed_participant, :master]
     project.team << [@subscriber, :master]

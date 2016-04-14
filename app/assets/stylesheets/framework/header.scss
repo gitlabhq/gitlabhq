@@ -69,11 +69,16 @@ header {
   }
 
   .header-content {
+    position: relative;
     height: $header-height;
     padding-right: 20px;
 
     @media (min-width: $screen-sm-min) {
       padding-right: 0;
+    }
+
+    .dropdown-menu {
+      margin-top: -5px;
     }
 
     .title {
@@ -123,11 +128,11 @@ header {
 }
 
 @mixin collapsed-header {
-  margin-left: 40px;
+  margin-left: $sidebar_collapsed_width;
 }
 
 .header-collapsed {
-  margin-left: 40px;
+  margin-left: $sidebar_collapsed_width;
 
   @media (min-width: $screen-md-min) {
     @include collapsed-header;

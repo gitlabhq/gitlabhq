@@ -1,5 +1,6 @@
 %aside.right-sidebar{ class: sidebar_gutter_collapsed_class }
   .issuable-sidebar
+    - can_edit_issuable = can?(current_user, :"admin_#{issuable.to_ability_name}", @project)
     .block.issuable-sidebar-header
       %span.issuable-count.hide-collapsed.pull-left
         = issuable.iid
@@ -29,7 +30,7 @@
         .title.hide-collapsed
           Assignee
           = icon('spinner spin', class: 'block-loading')
-          - if can?(current_user, :"admin_#{issuable.to_ability_name}", @project)
+          - if can_edit_issuable
             = link_to 'Edit', '#', class: 'edit-link pull-right'
         .value.bold.hide-collapsed
           - if issuable.assignee
@@ -41,9 +42,10 @@
                 = issuable.assignee.to_reference
           - else
             %span.assign-yourself
-              No assignee -
-              %a.js-assign-yourself{ href: '#' }
-                assign yourself
+              No assignee
+              - if can_edit_issuable
+                %a.js-assign-yourself{ href: '#' }
+                  \- assign yourself
 
         .selectbox.hide-collapsed
           = f.hidden_field 'assignee_id', value: issuable.assignee_id, id: 'issue_assignee_id'
@@ -60,7 +62,7 @@
         .title.hide-collapsed
           Milestone
           = icon('spinner spin', class: 'block-loading')
-          - if can?(current_user, :"admin_#{issuable.to_ability_name}", @project)
+          - if can_edit_issuable
             = link_to 'Edit', '#', class: 'edit-link pull-right'
         .value.bold.hide-collapsed
           - if issuable.milestone
@@ -82,7 +84,7 @@
           .title.hide-collapsed
             Labels
             = icon('spinner spin', class: 'block-loading')
-            - if can?(current_user, :"admin_#{issuable.to_ability_name}", @project)
+            - if can_edit_issuable
               = link_to 'Edit', '#', class: 'edit-link pull-right'
           .value.bold.issuable-show-labels.hide-collapsed{ class: ("has-labels" if issuable.labels.any?) }
             - if issuable.labels.any?

@@ -1,7 +1,5 @@
 .page-with-sidebar{ class: "#{page_sidebar_class} #{page_gutter_class}" }
   = render "layouts/broadcast"
-  .expand-nav
-    = link_to icon('bars'), '#', class: 'toggle-nav-collapse', title: "Open sidebar"
   .sidebar-wrapper.nicescroll{ class: nav_sidebar_class }
     .header-logo
       %a#logo
@@ -10,19 +8,15 @@
         .gitlab-text-container
           %h3 GitLab
 
-    - primary_sidebar = current_user ? 'dashboard' : 'explore'
-
-    - if defined?(sidebar) && sidebar && sidebar != primary_sidebar
-      .complex-sidebar
-        .nav-primary
-          = render "layouts/nav/#{primary_sidebar}"
-        .nav-secondary
-          = render "layouts/nav/#{sidebar}"
+    - if defined?(sidebar) && sidebar
+      = render "layouts/nav/#{sidebar}"
+    - elsif current_user
+      = render 'layouts/nav/dashboard'
     - else
-      = render "layouts/nav/#{primary_sidebar}"
+      = render 'layouts/nav/explore'
 
     .collapse-nav
-      = link_to icon('angle-left'), '#', class: 'toggle-nav-collapse', title: "Hide sidebar"
+      = render partial: 'layouts/collapse_button'
     - if current_user
       = link_to current_user, class: 'sidebar-user', title: "Profile" do
         = image_tag avatar_icon(current_user, 60), alt: 'Profile', class: 'avatar avatar s36'

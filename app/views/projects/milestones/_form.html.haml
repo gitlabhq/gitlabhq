@@ -1,9 +1,5 @@
-= form_for [@project.namespace.becomes(Namespace), @project, @milestone], html: {class: 'form-horizontal milestone-form gfm-form js-quick-submit js-requires-input'}  do |f|
-  -if @milestone.errors.any?
-    .alert.alert-danger
-      %ul
-        - @milestone.errors.full_messages.each do |msg|
-          %li= msg
+= form_for [@project.namespace.becomes(Namespace), @project, @milestone], html: {class: 'form-horizontal milestone-form common-note-form js-quick-submit js-requires-input'}  do |f|
+  = form_errors(@milestone)
   .row
     .col-md-6
       .form-group
@@ -14,7 +10,7 @@
         = f.label :description, "Description", class: "control-label"
         .col-sm-10
           = render layout: 'projects/md_preview', locals: { preview_class: "md-preview" } do
-            = render 'projects/zen', f: f, attr: :description, classes: 'description form-control'
+            = render 'projects/zen', f: f, attr: :description, classes: 'note-textarea', placeholder: 'Write milestone description...'
             = render 'projects/notes/hints'
           .clearfix
           .error-alert

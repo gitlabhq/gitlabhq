@@ -21,6 +21,7 @@ module API
       #   state (optional) - Return "active" or "closed" milestones
       # Example Request:
       #   GET /projects/:id/milestones
+      #   GET /projects/:id/milestones?iid=42
       #   GET /projects/:id/milestones?state=active
       #   GET /projects/:id/milestones?state=closed
       get ":id/milestones" do
@@ -28,6 +29,7 @@ module API
 
         milestones = user_project.milestones
         milestones = filter_milestones_state(milestones, params[:state])
+        milestones = filter_by_iid(milestones, params[:iid]) if params[:iid].present?
 
         present paginate(milestones), with: Entities::Milestone
       end
@@ -103,7 +105,7 @@ module API
         authorize! :read_milestone, user_project
 
         @milestone = user_project.milestones.find(params[:milestone_id])
-        present paginate(@milestone.issues), with: Entities::Issue
+        present paginate(@milestone.issues), with: Entities::Issue, current_user: current_user
       end
 
     end

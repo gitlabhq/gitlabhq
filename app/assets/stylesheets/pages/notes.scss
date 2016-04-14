@@ -58,6 +58,7 @@ ul.notes {
   .note {
     display: block;
     position: relative;
+    border-bottom: 1px solid $table-border-gray;
 
     &.is-editting {
       .note-header,
@@ -80,9 +81,15 @@ ul.notes {
         @include md-typography;
 
         // On diffs code should wrap nicely and not overflow
-        pre {
+        p {
           code {
-            white-space: pre;
+            white-space: normal;
+          }
+
+          pre {
+            code {
+              white-space: pre;
+            }
           }
         }
 
@@ -111,15 +118,16 @@ ul.notes {
           margin: 10px 0;
         }
       }
+
+      a {
+        word-break: break-all;
+      }
     }
 
     .note-header {
       padding-bottom: 3px;
     }
 
-    &:last-child {
-      border-bottom: 1px solid $border-color;
-    }
   }
 }
 
@@ -129,7 +137,7 @@ ul.notes {
     margin-right: 10px;
   }
   .line_content {
-    white-space: pre-wrap;
+    white-space: pre;
   }
 }
 
@@ -137,28 +145,36 @@ ul.notes {
   font-family: $regular_font;
 
   td {
-    border: 1px solid #ddd;
+    border: 1px solid $table-border-gray;
     border-left: none;
 
     &.notes_line {
       vertical-align: middle;
       text-align: center;
       padding: 10px 0;
-      background: #fff;
+      background: $background-color;
       color: $text-color;
     }
+
     &.notes_line2 {
       text-align: center;
       padding: 10px 0;
       border-left: 1px solid #ddd !important;
     }
+
     &.notes_content {
-      background-color: #fff;
+      background-color: $background-color;
       border-width: 1px 0;
       padding: 0;
       vertical-align: top;
+      white-space: normal;
+
       &.parallel {
         border-width: 1px;
+      }
+
+      .notes {
+        background-color: $white-light;
       }
     }
   }
@@ -175,9 +191,6 @@ ul.notes {
     }
   }
 
-  .author_link {
-    font-weight: 600;
-  }
 }
 
 .note-headline-light,
@@ -203,14 +216,26 @@ ul.notes {
   line-height: 24px;
 
   .fa {
+    color: $notes-action-color;
     position: relative;
     top: 1px;
     font-size: 17px;
   }
 
-  .fa-trash-o {
-    top: 0;
-    font-size: 16px;
+  &.js-note-delete {
+    i {
+      &:hover {
+        color: $gl-text-red;
+      }
+    }
+  }
+
+  &.js-note-edit {
+    i {
+      &:hover {
+        color: $gl-link-color;
+      }
+    }
   }
 }
 

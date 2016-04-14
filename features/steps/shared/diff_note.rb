@@ -155,7 +155,7 @@ module SharedDiffNote
 
   step 'I should see a discussion reply button' do
     page.within(diff_file_selector) do
-      expect(page).to have_button('Reply')
+      expect(page).to have_button('Reply...')
     end
   end
 

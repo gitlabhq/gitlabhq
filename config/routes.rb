@@ -406,6 +406,7 @@ Rails.application.routes.draw do
 
       resource :avatar, only: [:destroy]
       resources :milestones, constraints: { id: /[^\/]+/ }, only: [:index, :show, :update, :new, :create]
+      resource :notification_setting, only: [:update]
     end
   end
 
@@ -607,6 +608,7 @@ Rails.application.routes.draw do
 
         resources :forks, only: [:index, :new, :create]
         resource :import, only: [:new, :create, :show]
+        resource :notification_setting, only: [:update]
 
         resources :refs, only: [] do
           collection do
@@ -699,6 +701,8 @@ Rails.application.routes.draw do
         resources :issues, constraints: { id: /\d+/ } do
           member do
             post :toggle_subscription
+            get :referenced_merge_requests
+            get :related_branches
           end
           collection do
             post  :bulk_update

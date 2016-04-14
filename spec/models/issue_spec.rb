@@ -191,11 +191,18 @@ describe Issue, models: true do
   end
 
   describe '#related_branches' do
-    it "selects the right branches" do
+    it 'selects the right branches' do
       allow(subject.project.repository).to receive(:branch_names).
-        and_return(["mpempe", "#{subject.iid}mepmep", subject.to_branch_name])
+        and_return(['mpempe', "#{subject.iid}mepmep", subject.to_branch_name])
 
       expect(subject.related_branches).to eq([subject.to_branch_name])
+    end
+
+    it 'excludes stable branches from the related branches' do
+      allow(subject.project.repository).to receive(:branch_names).
+        and_return(["#{subject.iid}-0-stable"])
+
+      expect(subject.related_branches).to eq []
     end
   end
 
@@ -210,11 +217,11 @@ describe Issue, models: true do
     let(:subject) { create :issue }
   end
 
-  describe "#to_branch_name" do
+  describe '#to_branch_name' do
     let(:issue) { create(:issue, title: 'a' * 30) }
 
-    it "starts with the issue iid" do
-      expect(issue.to_branch_name).to match /-#{issue.iid}\z/
+    it 'starts with the issue iid' do
+      expect(issue.to_branch_name).to match /\A#{issue.iid}-a+\z/
     end
   end
 end

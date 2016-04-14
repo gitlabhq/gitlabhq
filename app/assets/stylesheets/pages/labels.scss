@@ -49,6 +49,15 @@
 }
 
 .label-row {
+  .label-name {
+    display: inline-block;
+    width: 200px;
+
+    @media (max-width: $screen-xs-min) {
+      display: block;
+    }
+  }
+
   .label {
     padding: 9px;
     font-size: 14px;
@@ -68,4 +77,64 @@
   margin-bottom: 10px;
   background-color: $gl-danger;
   color: $white-light;
+}
+
+@mixin labels-mobile {
+  @media (max-width: $screen-xs-min) {
+    display: block;
+    width: 100%;
+    margin-left: 0;
+    padding: 10px 0;
+  }
+}
+
+
+.manage-labels-list {
+
+  .prepend-left-10, .prepend-description-left {
+    display: inline-block;
+    width: 40%;
+    vertical-align: middle;
+
+    @include labels-mobile;
+  }
+
+  .prepend-description-left {
+    width: 57%;
+
+    @include labels-mobile;
+  }
+
+  .pull-info-right {
+    float: right;
+
+    @media (max-width: $screen-xs-min) {
+      float: none;
+    }
+
+    .action-buttons {
+      border-color: transparent;
+      padding: 6px;
+      color: $gl-text-color;
+
+      &.subscribe-button {
+        padding-left: 0;
+      }
+    }
+
+    i {
+      color: $gl-text-color;
+    }
+
+    .append-right-20 {
+      a {
+        color: $gl-text-color;
+      }
+
+      @media (max-width: $screen-xs-min) {
+        display: block;
+        margin-bottom: 10px;
+      }
+    }
+  }
 }

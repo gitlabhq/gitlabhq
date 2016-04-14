@@ -1,10 +1,10 @@
 /**
  * Note Form
  */
-.reply-btn {
-  @extend .btn-primary;
-  margin: 10px $gl-padding;
+.comment-btn {
+  @extend .btn-create;
 }
+
 .diff-file .diff-content {
   tr.line_holder:hover > td .line_note_link {
     opacity: 1.0;
@@ -40,6 +40,7 @@
 }
 
 .note-textarea {
+  display: block;
   padding: 10px 0;
   font-family: $regular_font;
   border: 0;
@@ -63,7 +64,7 @@
 
     &.is-focused {
       border-color: $focus-border-color;
-      box-shadow: 0 0 2px rgba(#000, .2),
+      box-shadow: 0 0 2px $black-transparent,
                   0 0 4px rgba($focus-border-color, .4);
 
       .comment-toolbar,
@@ -71,12 +72,35 @@
         border-color: $focus-border-color;
       }
     }
+
+    &.is-dropzone-hover {
+      border-color: $gl-success;
+      box-shadow: 0 0 2px $black-transparent,
+                  0 0 4px $gl-success-focus;
+
+      .comment-toolbar,
+      .nav-links {
+        border-color: $gl-success;
+      }
+    }
+
+    p {
+      code {
+        white-space: normal;
+      }
+
+      pre {
+        code {
+          white-space: pre;
+        }
+      }
+    }
   }
 }
 
 .discussion-form {
   padding: $gl-padding-top $gl-padding;
-  background-color: #fff;
+  background-color: $white-light;
 }
 
 .note-edit-form {
@@ -113,13 +137,12 @@
 .discussion-body,
 .diff-file {
   .notes .note {
-    border-color: #ddd;
     padding: 10px 15px;
   }
 
   .discussion-reply-holder {
-    background: $background-color;
-    border-top: 1px solid $border-color;
+    background-color: $white-light;
+    padding: 10px 16px;
   }
 }
 
