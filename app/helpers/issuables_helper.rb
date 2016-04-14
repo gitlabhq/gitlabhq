@@ -29,7 +29,7 @@ module IssuablesHelper
         default_label
       end
     else
-      if current_labels.nil?
+      if current_labels.nil? || current_labels.empty?
         default_label
       else
         current_labels
