@@ -2,7 +2,18 @@ class Projects::GitHttpController < Projects::ApplicationController
   skip_before_action :repository
   before_action :authenticate_user
   before_action :project_found?
-    
+
+  # We support two actions (git push and git pull) which use four
+  # different HTTP requests:
+  #
+  # - GET /foo/bar.git/info/refs?service=git-upload-pack (pull)
+  # - GET /foo/bar.git/info/refs?service=git-receive-pack (push)
+  # - POST /foo/bar.git/git-upload-pack (pull)
+  # - POST /foo/bar.git/git-receive-pack" (push)
+  #
+  # The Rails routes divide these four requests over three methods:
+  # info_refs, git_upload_pack, and git_receive_pack.
+
   def git_rpc
     if upload_pack? && upload_pack_allowed?
       render_ok
@@ -12,7 +23,7 @@ class Projects::GitHttpController < Projects::ApplicationController
       render_not_found
     end
   end
-  
+
   %i{info_refs git_receive_pack git_upload_pack}.each do |method|
     alias_method method, :git_rpc
   end
@@ -60,7 +71,7 @@ class Projects::GitHttpController < Projects::ApplicationController
       token && token.accessible? && User.find_by(id: token.resource_owner_id)
     end
   end
-  
+
   def rate_limit_ip!(login, user)
     # If the user authenticated successfully, we reset the auth failure count
     # from Rack::Attack for that IP. A client may attempt to authenticate
@@ -95,7 +106,7 @@ class Projects::GitHttpController < Projects::ApplicationController
           "as #{login} but has been temporarily banned from Git auth"
       end
     end
-    
+
     user
   end
 
@@ -107,7 +118,7 @@ class Projects::GitHttpController < Projects::ApplicationController
   def id
     id = params[:project_id]
     return if id.nil?
-    
+
     %w{.wiki.git .git}.each do |suffix|
       # Be careful to only remove the suffix from the end of 'id'.
       # Accidentally removing it from the middle is how security
@@ -143,11 +154,11 @@ class Projects::GitHttpController < Projects::ApplicationController
       action_name.gsub('_', '-')
     end
   end
-    
+
   def render_ok
     render json: Gitlab::Workhorse.git_http_ok(repository, user)
   end
-  
+
   def render_not_found
     render text: 'Not Found', status: :not_found
   end
@@ -155,11 +166,11 @@ class Projects::GitHttpController < Projects::ApplicationController
   def ci?
     !!@ci
   end
-  
+
   def user
     @user
   end
-  
+
   def upload_pack_allowed?
     if !Gitlab.config.gitlab_shell.upload_pack
       false
