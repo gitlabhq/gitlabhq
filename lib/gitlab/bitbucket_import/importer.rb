@@ -5,10 +5,7 @@ module Gitlab
 
       def initialize(project)
         @project = project
-        import_data = project.import_data.try(:data)
-        bb_session = import_data["bb_session"] if import_data
-        @client = Client.new(bb_session["bitbucket_access_token"],
-                             bb_session["bitbucket_access_token_secret"])
+        @client = Client.from_project(@project)
         @formatter = Gitlab::ImportFormatter.new
       end
 

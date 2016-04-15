@@ -73,6 +73,7 @@ v 8.7.0 (unreleased)
   - Diffs load at the correct point when linking from from number
   - Selected diff rows highlight
   - Fix emoji catgories in the emoji picker
+  - Add encrypted credentials for imported projects and migrate old ones
 
 v 8.6.6
   - Expire the exists cache before deletion to ensure project dir actually exists (Stan Hu). !3413
