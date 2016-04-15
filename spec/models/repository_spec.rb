@@ -770,11 +770,9 @@ describe Repository, models: true do
   describe '#rm_tag' do
     it 'removes a tag' do
       expect(repository).to receive(:before_remove_tag)
+      expect(repository.rugged.tags).to receive(:delete).with('v1.1.0')
 
-      expect_any_instance_of(Gitlab::Shell).to receive(:rm_tag).
-        with(repository.path_with_namespace, '8.5')
-
-      repository.rm_tag('8.5')
+      repository.rm_tag('v1.1.0')
     end
   end
 

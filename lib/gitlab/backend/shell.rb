@@ -137,19 +137,6 @@ module Gitlab
       Gitlab::Utils.system_silent(cmd)
     end
 
-    # Remove repository tag
-    #
-    # path - project path with namespace
-    # tag_name - tag name to remove
-    #
-    # Ex.
-    #   rm_tag("gitlab/gitlab-ci", "v4.0")
-    #
-    def rm_tag(path, tag_name)
-      Gitlab::Utils.system_silent([gitlab_shell_projects_path, 'rm-tag',
-                                   "#{path}.git", tag_name])
-    end
-
     # Gc repository
     #
     # path - project path with namespace
