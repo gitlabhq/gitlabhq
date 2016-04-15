@@ -859,12 +859,15 @@ describe Repository, models: true do
 
   describe '#add_tag' do
     it 'adds a tag' do
+      user = build_stubbed(:user)
       expect(repository).to receive(:before_push_tag)
+      expect(repository.rugged.tags).to receive(:create).
+        with('8.5', 'master',
+             hash_including(message: 'foo',
+                            tagger: hash_including(name: user.name, email: user.email))).
+        and_call_original
 
-      expect_any_instance_of(Gitlab::Shell).to receive(:add_tag).
-        with(repository.path_with_namespace, '8.5', 'master', 'foo')
-
-      repository.add_tag('8.5', 'master', 'foo')
+      repository.add_tag(user, '8.5', 'master', 'foo')
     end
   end
 

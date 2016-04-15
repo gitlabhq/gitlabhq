@@ -146,10 +146,17 @@ class Repository
     find_branch(branch_name)
   end
 
-  def add_tag(tag_name, ref, message = nil)
+  def add_tag(user, tag_name, ref, message = nil)
     before_push_tag
 
-    gitlab_shell.add_tag(path_with_namespace, tag_name, ref, message)
+    options = { message: message, tagger: user_to_committer(user) } if message
+
+    tag = rugged.tags.create(tag_name, ref, options)
+    if tag.annotated?
+      Gitlab::Git::Tag.new(tag_name, ref, tag.annotation.message)
+    else
+      Gitlab::Git::Tag.new(tag_name, ref)
+    end
   end
 
   def rm_branch(user, branch_name)

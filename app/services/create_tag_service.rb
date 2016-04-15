@@ -8,32 +8,28 @@ class CreateTagService < BaseService
     end
 
     repository = project.repository
-    existing_tag = repository.find_tag(tag_name)
-    if existing_tag
-      return error('Tag already exists')
-    end
-
     message.strip! if message
-
-    repository.add_tag(tag_name, ref, message)
-    new_tag = repository.find_tag(tag_name)
-
-    if new_tag
-      push_data = create_push_data(project, current_user, new_tag)
-      EventCreateService.new.push(project, current_user, push_data)
-      project.execute_hooks(push_data.dup, :tag_push_hooks)
-      project.execute_services(push_data.dup, :tag_push_hooks)
-      CreateCommitBuildsService.new.execute(project, current_user, push_data)
-
-      if release_description
-        CreateReleaseService.new(@project, @current_user).
-          execute(tag_name, release_description)
-      end
-
-      success(new_tag)
-    else
-      error('Invalid reference name')
+    begin
+      new_tag = repository.add_tag(current_user, tag_name, ref, message)
+    rescue Rugged::TagError
+      return error("Tag #{tag_name} already exists")
+    rescue Rugged::ReferenceError
+      return error("Target #{ref} is invalid")
     end
+
+    push_data = create_push_data(project, current_user, new_tag)
+
+    EventCreateService.new.push(project, current_user, push_data)
+    project.execute_hooks(push_data.dup, :tag_push_hooks)
+    project.execute_services(push_data.dup, :tag_push_hooks)
+    CreateCommitBuildsService.new.execute(project, current_user, push_data)
+
+    if release_description
+      CreateReleaseService.new(@project, @current_user).
+        execute(tag_name, release_description)
+    end
+
+    success(new_tag)
   end
 
   def success(branch)
