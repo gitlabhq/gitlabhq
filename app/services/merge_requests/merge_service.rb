@@ -28,6 +28,23 @@ module MergeRequests
       end
     end
 
+    def hooks_validation_pass?(merge_request)
+      git_hook = merge_request.project.git_hook
+      return true unless git_hook
+
+      unless git_hook.commit_message_allowed?(params[:commit_message])
+        merge_request.update(merge_error: "Commit message does not follow the pattern '#{git_hook.commit_message_regex}'")
+        return false
+      end
+
+      unless git_hook.author_email_allowed?(current_user.email)
+        merge_request.update(merge_error: "Commit author's email '#{current_user.email}' does not follow the pattern '#{git_hook.author_email_regex}'")
+        return false
+      end
+
+      true
+    end
+
     private
 
     def commit
