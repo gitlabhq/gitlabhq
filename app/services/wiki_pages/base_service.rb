@@ -11,7 +11,7 @@ module WikiPages
         repository: @project.hook_attrs.slice(:name, :url, :description, :homepage)
       }
 
-      page_url = Gitlab::UrlBuilder.new(:wiki_page).build(page)
+      page_url = Gitlab::UrlBuilder.build(page)
       hook_data[:object_attributes].merge!(url: page_url, action: action)
       hook_data
     end

@@ -106,5 +106,14 @@ describe Gitlab::UrlBuilder, lib: true do
         end
       end
     end
+
+    context 'when passing a WikiPage' do
+      it 'returns a proper URL' do
+        wiki_page = build(:wiki_page)
+        url = described_class.build(wiki_page)
+
+        expect(url).to eq "#{Gitlab.config.gitlab.url}#{wiki_page.wiki.wiki_base_path}/#{wiki_page.slug}"
+      end
+    end
   end
 end
