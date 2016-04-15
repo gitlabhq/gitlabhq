@@ -2,6 +2,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.7.0 (unreleased)
   - Method instrumentation now uses Module#prepend instead of aliasing methods
+  - Repository.clean_old_archives is now instrumented
   - The Projects::HousekeepingService class has extra instrumentation
   - All service classes (those residing in app/services) are now instrumented
   - Developers can now add custom tags to transactions
