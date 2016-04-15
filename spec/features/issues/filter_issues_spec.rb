@@ -154,4 +154,110 @@ describe 'Filter issues', feature: true do
       end
     end
   end
+
+  describe 'filter issues by text' do
+    before do
+      create(:issue, title: "Bug", project: project)
+
+      create(:label, project: project, title: 'bug')
+      milestone = create(:milestone, title: "8", project: project)
+
+      issue = create(:issue,
+        title: "Bug 2",
+        project: project,
+        milestone: milestone,
+        author: user,
+        assignee: user
+      )
+      issue.labels << project.labels.find_by(title: 'bug')
+
+      visit namespace_project_issues_path(project.namespace, project)
+    end
+
+    context 'only text', js: true do
+      it 'should filter issues by searched text' do
+        fill_in 'issue_search', with: 'Bug'
+
+        page.within '.issues-list' do
+          expect(page).to have_selector('.issue', count: 2)
+        end
+      end
+
+      it 'should not show any issues' do
+        fill_in 'issue_search', with: 'testing'
+
+        page.within '.issues-list' do
+          expect(page).to_not have_selector('.issue')
+        end
+      end
+
+      it 'should filter by text and label' do
+        fill_in 'issue_search', with: 'Bug'
+
+        page.within '.issues-list' do
+          expect(page).to have_selector('.issue', count: 2)
+        end
+
+        click_button 'Label'
+        page.within '.labels-filter' do
+          click_link 'bug'
+        end
+
+        page.within '.issues-list' do
+          expect(page).to have_selector('.issue', count: 1)
+        end
+      end
+
+      it 'should filter by text and milestone' do
+        fill_in 'issue_search', with: 'Bug'
+
+        page.within '.issues-list' do
+          expect(page).to have_selector('.issue', count: 2)
+        end
+
+        click_button 'Milestone'
+        page.within '.milestone-filter' do
+          click_link '8'
+        end
+
+        page.within '.issues-list' do
+          expect(page).to have_selector('.issue', count: 1)
+        end
+      end
+
+      it 'should filter by text and assignee' do
+        fill_in 'issue_search', with: 'Bug'
+
+        page.within '.issues-list' do
+          expect(page).to have_selector('.issue', count: 2)
+        end
+
+        click_button 'Assignee'
+        page.within '.dropdown-menu-assignee' do
+          click_link user.name
+        end
+
+        page.within '.issues-list' do
+          expect(page).to have_selector('.issue', count: 1)
+        end
+      end
+
+      it 'should filter by text and author' do
+        fill_in 'issue_search', with: 'Bug'
+
+        page.within '.issues-list' do
+          expect(page).to have_selector('.issue', count: 2)
+        end
+
+        click_button 'Author'
+        page.within '.dropdown-menu-author' do
+          click_link user.name
+        end
+
+        page.within '.issues-list' do
+          expect(page).to have_selector('.issue', count: 1)
+        end
+      end
+    end
+  end
 end
