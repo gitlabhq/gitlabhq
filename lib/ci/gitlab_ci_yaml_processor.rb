@@ -9,7 +9,7 @@ module Ci
                         :allow_failure, :type, :stage, :when, :artifacts, :cache,
                         :dependencies, :variables]
 
-    attr_reader :before_script, :image, :services, :variables, :path, :cache
+    attr_reader :before_script, :image, :services, :path, :cache
 
     def initialize(config, path = nil)
       @config = YAML.safe_load(config, [Symbol], [], true)
@@ -38,6 +38,15 @@ module Ci
 
     def stages
       @stages || DEFAULT_STAGES
+    end
+
+    def variables
+      @variables
+    end
+
+    def job_variables(name)
+      job = @jobs[name.to_sym]
+      job ? job[:variables] : []
     end
 
     private
@@ -85,7 +94,6 @@ module Ci
           artifacts: job[:artifacts],
           cache: job[:cache] || @cache,
           dependencies: job[:dependencies],
-          variables: job[:variables],
         }.compact
       }
     end

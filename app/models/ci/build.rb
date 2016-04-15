@@ -381,8 +381,12 @@ module Ci
     end
 
     def job_yaml_variables
-      options[:variables].to_h.map do |key, value|
-        { key: key, value: value, public: true }
+      if commit.config_processor
+        commit.config_processor.job_variables(name).map do |key, value|
+          { key: key, value: value, public: true }
+        end
+      else
+        []
       end
     end
 

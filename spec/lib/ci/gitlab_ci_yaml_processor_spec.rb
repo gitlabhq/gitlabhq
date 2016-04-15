@@ -374,10 +374,10 @@ module Ci
             })
         end
 
-        it 'appends job variable to job attributes' do
+        it 'returns job variables' do
           config = GitlabCiYamlProcessor.new(yaml_config, path)
 
-          expect(config.builds.first[:options][:variables]).to eq job_variables
+          expect(config.job_variables(:rspec)).to eq job_variables
         end
       end
     end

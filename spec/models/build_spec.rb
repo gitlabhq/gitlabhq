@@ -240,31 +240,27 @@ describe Ci::Build, models: true do
         end
 
         context 'when job variables are defined' do
-          def result_variables
-            job_variables.map do |key, value|
-              { key: key, value: value, public: true }
-            end
-          end
-
-          before { build.update_attribute(:options, variables: job_variables) }
-
           context 'when job variables are unique' do
-            let(:job_variables) { { KEY1: 'value1', KEY2: 'value2' } }
+            before { allow(build).to receive(:name) { 'staging' } }
 
             it 'includes job variables' do
-              expect(subject).to include(*result_variables)
+              expect(subject).to include(
+                { key: :KEY1, value: 'value1', public: true },
+                { key: :KEY2, value: 'value2', public: true }
+              )
             end
           end
 
           context 'when job variable has same key other variable has' do
-            let(:job_variables) { { CI_BUILD_NAME: 'overridden' } }
+            before { allow(build).to receive(:name) { 'production' } }
 
             it 'contains job yaml variable' do
-              expect(subject).to include(*result_variables)
+              expect(subject).to include(key: :DB_NAME, value: 'mysql',
+                                         public: true)
             end
 
             it 'contains only one variable with this key' do
-              expect(subject.count { |var| var[:key] == :CI_BUILD_NAME } ).to eq 1
+              expect(subject.count { |var| var[:key] == :DB_NAME } ).to eq 1
             end
           end
         end
