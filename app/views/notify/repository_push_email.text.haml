@@ -43,7 +43,10 @@
         - else
           = diff_file.new_path
         \=====================================
-        != diff_file.diff.diff
+        - if diff_file.too_large?
+          The diff for this file was not included because it is too large.
+        - else
+          != diff_file.diff.diff
 
   - if @message.target_url
     \
