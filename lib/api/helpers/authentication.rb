@@ -15,7 +15,7 @@ module API
 
       def find_user_by_personal_access_token
         personal_access_token_string = (params[PERSONAL_ACCESS_TOKEN_PARAM] || env[PERSONAL_ACCESS_TOKEN_HEADER]).to_s
-        personal_access_token = PersonalAccessToken.find_by_token(personal_access_token_string)
+        personal_access_token = PersonalAccessToken.active.find_by_token(personal_access_token_string)
         personal_access_token.user if personal_access_token
       end
 

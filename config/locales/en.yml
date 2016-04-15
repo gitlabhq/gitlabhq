@@ -12,3 +12,7 @@ en:
     pagination:
       previous: "Prev"
       next: "Next"
+  profile:
+    personal_access_tokens:
+      revoke:
+        confirmation: "Are you sure? This cannot be undone."
