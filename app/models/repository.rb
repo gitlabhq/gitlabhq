@@ -169,7 +169,12 @@ class Repository
   def rm_tag(tag_name)
     before_remove_tag
 
-    gitlab_shell.rm_tag(path_with_namespace, tag_name)
+    begin
+      rugged.tags.delete(tag_name)
+      true
+    rescue Rugged::ReferenceError
+      false
+    end
   end
 
   def branch_names
