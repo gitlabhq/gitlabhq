@@ -59,6 +59,8 @@ class @Todos
 
   goToTodoUrl: (e)->
     todoLink = $(this).data('url')
+    return unless todoLink
+
     if e.metaKey
       e.preventDefault()
       window.open(todoLink,'_blank')

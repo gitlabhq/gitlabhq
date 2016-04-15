@@ -85,13 +85,15 @@ class TeamcityService < CiService
   end
 
   def build_info(sha)
-    url = URI.parse("#{teamcity_url}/httpAuth/app/rest/builds/"\
-                    "branch:unspecified:any,number:#{sha}")
+    url = URI.join(
+      teamcity_url,
+      "/httpAuth/app/rest/builds/branch:unspecified:any,number:#{sha}"
+    ).to_s
     auth = {
       username: username,
-      password: password,
+      password: password
     }
-    @response = HTTParty.get("#{url}", verify: false, basic_auth: auth)
+    @response = HTTParty.get(url, verify: false, basic_auth: auth)
   end
 
   def build_page(sha, ref)
@@ -100,12 +102,14 @@ class TeamcityService < CiService
     if @response.code != 200
       # If actual build link can't be determined,
       # send user to build summary page.
-      "#{teamcity_url}/viewLog.html?buildTypeId=#{build_type}"
+      URI.join(teamcity_url, "/viewLog.html?buildTypeId=#{build_type}").to_s
     else
       # If actual build link is available, go to build result page.
       built_id = @response['build']['id']
-      "#{teamcity_url}/viewLog.html?buildId=#{built_id}"\
-      "&buildTypeId=#{build_type}"
+      URI.join(
+        teamcity_url,
+        "/viewLog.html?buildId=#{built_id}&buildTypeId=#{build_type}"
+      ).to_s
     end
   end
 
@@ -140,12 +144,13 @@ class TeamcityService < CiService
 
     branch = Gitlab::Git.ref_name(data[:ref])
 
-    self.class.post("#{teamcity_url}/httpAuth/app/rest/buildQueue",
-                    body: "<build branchName=\"#{branch}\">"\
-                          "<buildType id=\"#{build_type}\"/>"\
-                          '</build>',
-                    headers: { 'Content-type' => 'application/xml' },
-                    basic_auth: auth
-                   )
+    self.class.post(
+      URI.join(teamcity_url, '/httpAuth/app/rest/buildQueue').to_s,
+      body: "<build branchName=\"#{branch}\">"\
+            "<buildType id=\"#{build_type}\"/>"\
+            '</build>',
+      headers: { 'Content-type' => 'application/xml' },
+      basic_auth: auth
+    )
   end
 end

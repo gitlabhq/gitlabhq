@@ -1,9 +1,9 @@
 # GitLab JIRA integration
 
-_**Note:**
+>**Note:**
 Full JIRA integration was previously exclusive to GitLab Enterprise Edition.
 With [GitLab 8.3 forward][8_3_post], this feature in now [backported][jira-ce]
-to GitLab Community Edition as well._
+to GitLab Community Edition as well.
 
 ---
 
@@ -88,8 +88,9 @@ password as they will be needed when configuring GitLab in the next section.
 
 ### Configuring GitLab
 
-_**Note:** The currently supported JIRA versions are v6.x and v7.x. and GitLab
-7.8 or higher is required._
+>**Note:**
+The currently supported JIRA versions are v6.x and v7.x. and GitLab
+7.8 or higher is required.
 
 ---
 
@@ -113,12 +114,23 @@ Fill in the required details on the page, as described in the table below.
 | `Api url`     | The base URL of the JIRA API. It may be omitted, in which case GitLab will automatically use API version `2` based on the `project url`. It is of the form: `https://<jira_host_url>/rest/api/2`. |
 | `Username` | The username of the user created in [configuring JIRA step](#configuring-jira). |
 | `Password` |The password of the user created in [configuring JIRA step](#configuring-jira). |
-| `JIRA issue transition` | This setting is very important to set up correctly. It is the ID of a transition that moves issues to a closed state. You can find this number under the JIRA workflow administration (**Administration > Issues > Workflows**) by selecting **View** under **Operations** of the desired workflow of your project. The ID of each state can be found inside the parenthesis of each transition name under the **Transitions (id)** column ([see screenshot](img/jira_issues_workflow.png)). By default, this ID is set to `2` |
+| `JIRA issue transition` | This setting is very important to set up correctly. It is the ID of a transition that moves issues to a closed state. You can find this number under the JIRA workflow administration (**Administration > Issues > Workflows**) by selecting **View** under **Operations** of the desired workflow of your project. The ID of each state can be found inside the parenthesis of each transition name under the **Transitions (id)** column ([see screenshot][trans]). By default, this ID is set to `2`. |
 
 After saving the configuration, your GitLab project will be able to interact
 with the linked JIRA project.
 
+For example, given the settings below:
+
+- the JIRA URL is `https://jira.example.com`
+- the project is named `GITLAB`
+- the user is named `gitlab`
+- the JIRA issue transition is 151 (based on the [JIRA issue transition][trans])
+
+the following screenshot shows how the JIRA service settings should look like.
+
 ![JIRA service page](img/jira_service_page.png)
+
+[trans]: img/jira_issues_workflow.png
 
 ---
 

@@ -94,6 +94,12 @@ describe Repository, models: true do
 
     it { is_expected.to be_an Array }
 
+    it 'regex-escapes the query string' do
+      results = repository.search_files("test\\", 'master')
+
+      expect(results.first).not_to start_with('fatal:')
+    end
+
     describe 'result' do
       subject { results.first }
 
@@ -393,6 +399,8 @@ describe Repository, models: true do
   describe '#expire_cache' do
     it 'expires all caches' do
       expect(repository).to receive(:expire_branch_cache)
+      expect(repository).to receive(:expire_branch_count_cache)
+      expect(repository).to receive(:expire_tag_count_cache)
 
       repository.expire_cache
     end

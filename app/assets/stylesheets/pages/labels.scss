@@ -79,19 +79,30 @@
   color: $white-light;
 }
 
+@mixin labels-mobile {
+  @media (max-width: $screen-xs-min) {
+    display: block;
+    width: 100%;
+    margin-left: 0;
+    padding: 10px 0;
+  }
+}
+
+
 .manage-labels-list {
 
-  .prepend-left-10 {
+  .prepend-left-10, .prepend-description-left {
     display: inline-block;
     width: 40%;
     vertical-align: middle;
 
-    @media (max-width: $screen-xs-min) {
-      display: block;
-      width: 100%;
-      margin-left: 0;
-      padding: 10px 0;
-    }
+    @include labels-mobile;
+  }
+
+  .prepend-description-left {
+    width: 57%;
+
+    @include labels-mobile;
   }
 
   .pull-info-right {
@@ -106,7 +117,7 @@
       padding: 6px;
       color: $gl-text-color;
 
-      &.subscribe-button {
+      &.label-subscribe-button {
         padding-left: 0;
       }
     }

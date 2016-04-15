@@ -100,8 +100,7 @@ feature 'Project', feature: true do
 
     it 'click toggle and show dropdown', js: true do
       find('.js-projects-dropdown-toggle').click
-      wait_for_ajax
-      expect(page).to have_css('.select2-results li', count: 1)
+      expect(page).to have_css('.dropdown-menu-projects .dropdown-content li', count: 1)
     end
   end
 

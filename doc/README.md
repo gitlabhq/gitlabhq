@@ -3,7 +3,7 @@
 ## User documentation
 
 - [API](api/README.md) Automate GitLab via a simple and powerful API.
-- [CI](ci/README.md) GitLab Continuous Integration (CI) getting started, .gitlab-ci.yml options, and examples.
+- [CI](ci/README.md) GitLab Continuous Integration (CI) getting started, `.gitlab-ci.yml` options, and examples.
 - [GitLab as OAuth2 authentication service provider](integration/oauth_provider.md). It allows you to login to other applications from GitLab.
 - [GitLab Basics](gitlab-basics/README.md) Find step by step how to start working on your commandline and on GitLab.
 - [Importing to GitLab](workflow/importing/README.md).
@@ -31,6 +31,7 @@
 - [Environment Variables](administration/environment_variables.md) to configure GitLab.
 - [Operations](operations/README.md) Keeping GitLab up and running
 - [Raketasks](raketasks/README.md) Backups, maintenance, automatic webhook setup and the importing of projects.
+- [Repository checks](administration/repository_checks.md) Periodic Git repository checks
 - [Security](security/README.md) Learn what you can do to further secure your GitLab instance.
 - [System hooks](system_hooks/system_hooks.md) Notifications when users, projects and keys are changed.
 - [Update](update/README.md) Update guides to upgrade your installation.

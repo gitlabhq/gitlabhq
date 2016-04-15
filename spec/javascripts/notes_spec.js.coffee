@@ -1,4 +1,5 @@
 #= require notes
+#= require gl_form
 
 window.gon = {}
 window.disableButtonIfEmptyField = -> null

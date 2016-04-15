@@ -46,6 +46,15 @@ production: &base
     #
     # relative_url_root: /gitlab
 
+    # Trusted Proxies
+    # Customize if you have GitLab behind a reverse proxy which is running on a different machine.
+    # Add the IP address for your reverse proxy to the list, otherwise users will appear signed in from that address.
+    trusted_proxies:
+      # Examples:
+      #- 192.168.1.0/24
+      #- 192.168.2.1
+      #- 2001:0db8::/32
+
     # Uncomment and customize if you can't use the default user to run GitLab (default: 'git')
     # user: git
 
@@ -155,7 +164,17 @@ production: &base
     # Flag stuck CI builds as failed
     stuck_ci_builds_worker:
       cron: "0 0 * * *"
+    # Periodically run 'git fsck' on all repositories. If started more than
+    # once per hour you will have concurrent 'git fsck' jobs.
+    repository_check_worker:
+      cron: "20 * * * *"
+    # Send admin emails once a day
+    admin_email_worker:
+      cron: "0 0 * * *"
 
+    # Remove outdated repository archives
+    repository_archive_cache_worker:
+      cron: "0 * * * *"
 
   #
   # 2. GitLab CI settings
@@ -303,6 +322,13 @@ production: &base
     # login, without having to do a manual login first and manually add SAML
     # (default: false)
     auto_link_saml_user: false
+
+    # Set different Omniauth providers as external so that all users creating accounts
+    # via these providers will not be able to have access to internal projects. You
+    # will need to use the full name of the provider, like `google_oauth2` for Google.
+    # Refer to the examples below for the full names of the supported providers.
+    # (default: [])
+    external_providers: []
 
     ## Auth providers
     # Uncomment the following lines and fill in the data of the auth provider you want to use

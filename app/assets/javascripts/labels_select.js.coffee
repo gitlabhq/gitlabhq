@@ -34,7 +34,7 @@ class @LabelsSelect
         labelHTMLTemplate = _.template(
             '<% _.each(labels, function(label){ %>
             <a href="<%= ["",issueURLSplit[1], issueURLSplit[2],""].join("/") %>issues?label_name=<%= label.title %>">
-            <span class="label color-label" style="background-color: <%= label.color %>;">
+            <span class="label has-tooltip color-label" title="<%= label.description %>" style="background-color: <%= label.color %>;">
             <%= label.title %>
             </span>
             </a>
@@ -165,6 +165,8 @@ class @LabelsSelect
             .html(template)
           $sidebarCollapsedValue.text(labelCount)
 
+          $('.has-tooltip', $value).tooltip(container: 'body')
+
           $value
             .find('a')
             .each((i) ->
@@ -218,7 +220,7 @@ class @LabelsSelect
         selectable: true
 
         toggleLabel: (selected) ->
-          if selected and selected.title isnt 'Any Label'
+          if selected and selected.title?
             selected.title
           else
             defaultLabel

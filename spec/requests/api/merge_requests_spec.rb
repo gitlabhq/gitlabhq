@@ -516,6 +516,48 @@ describe API::API, api: true  do
     end
   end
 
+  describe 'POST :id/merge_requests/:merge_request_id/subscription' do
+    it 'subscribes to a merge request' do
+      post api("/projects/#{project.id}/merge_requests/#{merge_request.id}/subscription", admin)
+
+      expect(response.status).to eq(201)
+      expect(json_response['subscribed']).to eq(true)
+    end
+
+    it 'returns 304 if already subscribed' do
+      post api("/projects/#{project.id}/merge_requests/#{merge_request.id}/subscription", user)
+
+      expect(response.status).to eq(304)
+    end
+
+    it 'returns 404 if the merge request is not found' do
+      post api("/projects/#{project.id}/merge_requests/123/subscription", user)
+
+      expect(response.status).to eq(404)
+    end
+  end
+
+  describe 'DELETE :id/merge_requests/:merge_request_id/subscription' do
+    it 'unsubscribes from a merge request' do
+      delete api("/projects/#{project.id}/merge_requests/#{merge_request.id}/subscription", user)
+
+      expect(response.status).to eq(200)
+      expect(json_response['subscribed']).to eq(false)
+    end
+
+    it 'returns 304 if not subscribed' do
+      delete api("/projects/#{project.id}/merge_requests/#{merge_request.id}/subscription", admin)
+
+      expect(response.status).to eq(304)
+    end
+
+    it 'returns 404 if the merge request is not found' do
+      post api("/projects/#{project.id}/merge_requests/123/subscription", user)
+
+      expect(response.status).to eq(404)
+    end
+  end
+
   def mr_with_later_created_and_updated_at_time
     merge_request
     merge_request.created_at += 1.hour
