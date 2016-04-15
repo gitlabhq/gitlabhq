@@ -109,6 +109,7 @@ class User < ActiveRecord::Base
   # Profile
   has_many :keys, dependent: :destroy
   has_many :emails, dependent: :destroy
+  has_many :personal_access_tokens, dependent: :destroy
   has_many :identities, dependent: :destroy, autosave: true
 
   # Groups

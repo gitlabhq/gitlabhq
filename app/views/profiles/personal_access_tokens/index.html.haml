@@ -1,0 +1,44 @@
+- page_title "Personal Access Tokens"
+- header_title page_title, profile_personal_access_tokens_path
+
+.row.prepend-top-default
+  .col-lg-3.profile-settings-sidebar
+    %h4.prepend-top-0
+      = page_title
+    %p
+      You can generate a personal access token for each application you use that needs access to GitLab.
+  .col-lg-9
+    %h5.prepend-top-0
+      Add a Personal Access Token
+    %p.profile-settings-content
+      Pick a name for the application, and we'll give you a unique token.
+    = form_for [:profile, @personal_access_token], method: :post, html: { class: 'js-requires-input' } do |f|
+
+      .form-group
+        = f.label :name, class: 'label-light'
+        = f.text_field :name, class: "form-control", required: true
+
+      .prepend-top-default
+        = f.submit 'Add Personal Access Token', class: "btn btn-create"
+
+    %hr
+
+    %h5
+      Active Personal Access Tokens
+
+    - if @user.personal_access_tokens.exists?
+      .table-responsive
+        %table.table.table-striped
+          %thead
+            %tr
+              %th Name
+              %th Token
+              %th Created At
+          %tbody
+            - @user.personal_access_tokens.each do |token|
+              %tr
+                %td= token.name
+                %td= token.token
+                %td= token.created_at
+    - else
+      %span You don't have any tokens yet.
