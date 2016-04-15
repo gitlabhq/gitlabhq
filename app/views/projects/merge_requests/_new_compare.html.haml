@@ -17,8 +17,8 @@
               = dropdown_filter("Search projects")
               = dropdown_content do
                 = render 'projects/merge_requests/dropdowns/project',
-                projects: [@merge_request.source_project],
-                selected: f.object.source_project_id
+                  projects: [@merge_request.source_project],
+                  selected: f.object.source_project_id
           .merge-request-select.dropdown
             = f.hidden_field :source_branch
             = dropdown_toggle "Select source branch", { toggle: "dropdown", field_name: "#{f.object_name}[source_branch]" }, { toggle_class: "js-compare-dropdown js-source-branch" }
@@ -27,8 +27,8 @@
               = dropdown_filter("Search branches")
               = dropdown_content do
                 = render 'projects/merge_requests/dropdowns/branch',
-                branches: @merge_request.source_branches,
-                selected: f.object.source_branch
+                  branches: @merge_request.source_branches,
+                  selected: f.object.source_branch
         .panel-footer
           = icon('spinner spin', class: 'js-source-loading')
           %ul.list-unstyled.mr_source_commit
@@ -47,8 +47,8 @@
               = dropdown_filter("Search projects")
               = dropdown_content do
                 = render 'projects/merge_requests/dropdowns/project',
-                projects: projects,
-                selected: f.object.target_project_id
+                  projects: projects,
+                  selected: f.object.target_project_id
           .merge-request-select.dropdown
             = f.hidden_field :target_branch
             = dropdown_toggle f.object.target_branch, { toggle: "dropdown", field_name: "#{f.object_name}[target_branch]" }, { toggle_class: "js-compare-dropdown js-target-branch" }
@@ -57,8 +57,8 @@
               = dropdown_filter("Search branches")
               = dropdown_content do
                 = render 'projects/merge_requests/dropdowns/branch',
-                branches: @merge_request.target_branches,
-                selected: f.object.target_branch
+                  branches: @merge_request.target_branches,
+                  selected: f.object.target_branch
         .panel-footer
           = icon('spinner spin', class: "js-target-loading")
           %ul.list-unstyled.mr_target_commit
