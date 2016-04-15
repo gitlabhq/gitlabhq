@@ -4,11 +4,9 @@
   = hidden_field_tag :snippets, params[:snippets]
   = hidden_field_tag :scope, params[:scope]
 
-  .search-holder.clearfix
-    .input-group
+  .search-holder
+    .search-field-holder.append-right-5
       = search_field_tag :search, params[:search], placeholder: "Search for projects, issues etc", class: "form-control search-text-input", id: "dashboard_search", autofocus: true, spellcheck: false
-      %span.input-group-btn
-        = button_tag 'Search', class: "btn btn-primary"
     - unless params[:snippets].eql? 'true'
-      %br
       = render 'filter' if current_user
+    = button_tag 'Search', class: "btn btn-success btn-search prepend-left-5"

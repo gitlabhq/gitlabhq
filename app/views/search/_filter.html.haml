@@ -1,16 +1,17 @@
-.dropdown.inline
-  %button.dropdown-toggle.btn.btn-sm{type: 'button', 'data-toggle' => 'dropdown'}
-    %span.light Group:
+.dropdown.append-right-5.prepend-left-5
+  %button.dropdown-toggle.btn.js-search-group-dropdown{ type: "button", data: { toggle: "dropdown" } }
+    Group:
     - if @group.present?
       %strong= @group.name
     - else
       Any
     %b.caret
-  .dropdown-menu.dropdown-select.dropdown-menu-selectable
+  .dropdown-menu.dropdown-select.dropdown-menu-selectable.dropdown-menu-align-right
     .dropdown-title
       %span Filter results by group
-      %button.dropdown-title-button.dropdown-menu-close{aria: {label: "Close"}}
+      %button.dropdown-title-button.dropdown-menu-close{ aria: { label: "Close" } }
         = icon('times')
+    = dropdown_filter("Search groups")
     .dropdown-content
       %ul
         %li
@@ -22,19 +23,20 @@
             = link_to search_filter_path(group_id: group.id, project_id: nil), class: ("is-active" if params[:group_id] == group.id.to_s) do
               = group.name
 
-.dropdown.inline.prepend-left-10.project-filter
-  %button.dropdown-toggle.btn.btn-sm{type: 'button', 'data-toggle' => 'dropdown'}
-    %span.light Project:
+.dropdown.project-filter.append-right-5.prepend-left-5
+  %button.dropdown-toggle.btn{ type: "button", data: { toggle: "dropdown" } }
+    Project:
     - if @project.present?
       %strong= @project.name_with_namespace
     - else
       Any
     %b.caret
-  .dropdown-menu.dropdown-select.dropdown-menu-selectable
+  .dropdown-menu.dropdown-select.dropdown-menu-selectable.dropdown-menu-align-right
     .dropdown-title
       %span Filter results by project
       %button.dropdown-title-button.dropdown-menu-close{aria: {label: "Close"}}
         = icon('times')
+    = dropdown_filter("Search projects")
     .dropdown-content
       %ul
         %li

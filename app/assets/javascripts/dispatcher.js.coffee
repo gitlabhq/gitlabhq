@@ -108,6 +108,8 @@ class Dispatcher
         new BuildArtifacts()
       when 'projects:group_links:index'
         new GroupsSelect()
+      when 'search:show'
+        new SearchDropdowns()
 
     switch path.first()
       when 'admin'

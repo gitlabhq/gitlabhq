@@ -2,9 +2,7 @@
   = render partial: "search/results/empty"
 - else
   .gray-content-block
-    Search results for
-    %code
-      = @search_term
+    = search_entries_info @objects
     - unless @show_snippets
       - if @project
         in project #{link_to @project.name_with_namespace, [@project.namespace.becomes(Namespace), @project]}
@@ -21,6 +19,3 @@
 
     - if @scope != 'projects'
       = paginate @objects, theme: 'gitlab'
-
-:javascript
-  $(".search-results .term").highlight("#{escape_javascript(params[:search])}");

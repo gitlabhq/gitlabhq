@@ -19,6 +19,16 @@ module SearchHelper
     end
   end
 
+  def search_entries_info(collection)
+    if collection.count > 0
+      from = collection.offset_value + 1
+      to = collection.offset_value + collection.length
+      count = collection.count
+
+      "Showing #{from} - #{to} of #{count} results for All projects: \"#{@search_term}\""
+    end
+  end
+
   private
 
   # Autocomplete results for various settings pages

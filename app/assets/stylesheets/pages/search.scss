@@ -10,17 +10,6 @@
   }
 }
 
-.search-holder {
-  max-width: 600px;
-  margin: 0 auto;
-  margin-bottom: 20px;
-
-  input {
-    border-color: #bbb;
-    font-weight: bold;
-  }
-}
-
 .search {
   margin-right: 10px;
   margin-left: 10px;
@@ -161,5 +150,20 @@
     .search-input-wrap {
       width: 78%;
     }
+  }
+}
+
+.search-holder {
+  display: -webkit-flex;
+  display:         flex;
+
+  .search-field-holder {
+    position: relative;
+    width: 100%;
+  }
+
+  .dropdown-toggle {
+    width: 160px;
+    text-align: left;
   }
 }
