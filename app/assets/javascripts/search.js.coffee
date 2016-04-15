@@ -72,3 +72,4 @@ class @Search
     $('.js-search-input')
       .val ''
       .trigger 'keyup'
+      .focus()
