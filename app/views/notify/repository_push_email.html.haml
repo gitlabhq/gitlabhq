@@ -54,19 +54,19 @@
       %h4 Changes:
       - diff_files.each_with_index do |diff_file, i|
         %li{id: "diff-#{i}"}
-          %a{href: @message.target_url + "#diff-#{i}"}
+          %a{href: @message.target_url + "#diff-#{i}"}<
             - if diff_file.deleted_file
-              %strong
+              %strong<
                 = diff_file.old_path
               deleted
             - elsif diff_file.renamed_file
-              %strong
+              %strong<
                 = diff_file.old_path
               &rarr;
-              %strong
+              %strong<
                 = diff_file.new_path
             - else
-              %strong
+              %strong<
                 = diff_file.new_path
           - if diff_file.too_large?
             The diff for this file was not included because it is too large.
