@@ -167,8 +167,7 @@ describe 'Filter issues', feature: true do
         project: project,
         milestone: milestone,
         author: user,
-        assignee: user
-      )
+        assignee: user)
       issue.labels << project.labels.find_by(title: 'bug')
 
       visit namespace_project_issues_path(project.namespace, project)
@@ -265,7 +264,7 @@ describe 'Filter issues', feature: true do
 
   describe 'filter issues and sort', js: true do
     before do
-      label = create(:label, project: project, title: 'bug')
+      create(:label, project: project, title: 'bug')
       bug_one = create(:issue, title: "Frontend", project: project)
       bug_two = create(:issue, title: "Bug 2", project: project)
 

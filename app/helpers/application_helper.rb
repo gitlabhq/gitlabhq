@@ -274,12 +274,12 @@ module ApplicationHelper
       end
     end
 
-    params = options.compact.to_param
+    params = options.compact
 
     path = request.path
 
     if params != nil
-      path << "?#{params}"
+      path << "?#{params.to_param}"
       if add_label
         if params[:label_name].present? and params[:label_name].respond_to?('any?')
           params[:label_name].each do |label|
