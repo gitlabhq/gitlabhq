@@ -6,26 +6,35 @@
     - else
       = sort_title_recently_created
     %b.caret
-  %ul.dropdown-menu.dropdown-menu-align-right
+  %ul.dropdown-menu.dropdown-menu-align-right.dropdown-menu-sort
     %li
       = link_to page_filter_path(sort: sort_value_recently_created) do
         = sort_title_recently_created
+    %li
       = link_to page_filter_path(sort: sort_value_oldest_created) do
         = sort_title_oldest_created
+    %li
       = link_to page_filter_path(sort: sort_value_recently_updated) do
         = sort_title_recently_updated
+    %li
       = link_to page_filter_path(sort: sort_value_oldest_updated) do
         = sort_title_oldest_updated
+    %li
       = link_to page_filter_path(sort: sort_value_milestone_soon) do
         = sort_title_milestone_soon
+    %li
       = link_to page_filter_path(sort: sort_value_milestone_later) do
         = sort_title_milestone_later
-      - if controller.controller_name == 'issues' || controller.action_name == 'issues'
+    - if controller.controller_name == 'issues' || controller.action_name == 'issues'
+      %li
         = link_to page_filter_path(sort: sort_value_due_date_soon) do
           = sort_title_due_date_soon
+      %li
         = link_to page_filter_path(sort: sort_value_due_date_later) do
           = sort_title_due_date_later
+    %li
       = link_to page_filter_path(sort: sort_value_upvotes) do
         = sort_title_upvotes
+    %li
       = link_to page_filter_path(sort: sort_value_downvotes) do
         = sort_title_downvotes

@@ -190,7 +190,9 @@ describe 'Filter issues', feature: true do
           expect(page).to_not have_selector('.issue')
         end
       end
+    end
 
+    context 'text and dropdown options', js: true do
       it 'should filter by text and label' do
         fill_in 'issue_search', with: 'Bug'
 
@@ -257,6 +259,39 @@ describe 'Filter issues', feature: true do
         page.within '.issues-list' do
           expect(page).to have_selector('.issue', count: 1)
         end
+      end
+    end
+  end
+
+  describe 'filter issues and sort', js: true do
+    before do
+      label = create(:label, project: project, title: 'bug')
+      bug_one = create(:issue, title: "Frontend", project: project)
+      bug_two = create(:issue, title: "Bug 2", project: project)
+
+      bug_one.labels << project.labels.find_by(title: 'bug')
+      bug_two.labels << project.labels.find_by(title: 'bug')
+
+      visit namespace_project_issues_path(project.namespace, project)
+    end
+
+    it 'should be able to filter and sort issues' do
+      click_button 'Label'
+      page.within '.labels-filter' do
+        click_link 'bug'
+      end
+
+      page.within '.issues-list' do
+        expect(page).to have_selector('.issue', count: 2)
+      end
+
+      click_button 'Last created'
+      page.within '.dropdown-menu-sort' do
+        click_link 'Oldest created'
+      end
+
+      page.within '.issues-list' do
+        expect(first('.issue')).to have_content('Frontend')
       end
     end
   end

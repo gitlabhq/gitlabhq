@@ -69,7 +69,7 @@ issuable_created = false
 
 
   updateStateFilters: ->
-    stateFilters =  $('.issues-state-filters')
+    stateFilters =  $('.issues-state-filters, .dropdown-menu-sort')
     newParams = {}
     paramKeys = ['author_id', 'milestone_title', 'assignee_id', 'issue_search']
 
