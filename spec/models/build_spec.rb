@@ -240,8 +240,11 @@ describe Ci::Build, models: true do
         end
 
         context 'when job variables are defined' do
+          ##
+          # Job-level variables are defined in gitlab_ci.yml fixture
+          #
           context 'when job variables are unique' do
-            before { allow(build).to receive(:name) { 'staging' } }
+            let(:build) { create(:ci_build, name: 'staging') }
 
             it 'includes job variables' do
               expect(subject).to include(
@@ -252,7 +255,7 @@ describe Ci::Build, models: true do
           end
 
           context 'when job variable has same key other variable has' do
-            before { allow(build).to receive(:name) { 'production' } }
+            let(:build) { create(:ci_build, name: 'production') }
 
             it 'contains job yaml variable' do
               expect(subject).to include(key: :DB_NAME, value: 'mysql',
