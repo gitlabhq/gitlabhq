@@ -5,10 +5,22 @@ module API
       PRIVATE_TOKEN_PARAM = :private_token
       SUDO_HEADER ="HTTP_SUDO"
       SUDO_PARAM = :sudo
+      PERSONAL_ACCESS_TOKEN_PARAM = :personal_access_token
+
+      def find_user_by_private_token
+        private_token = (params[PRIVATE_TOKEN_PARAM] || env[PRIVATE_TOKEN_HEADER]).to_s
+        User.find_by_authentication_token(private_token)
+      end
+
+      def find_user_by_personal_access_token
+        personal_access_token = PersonalAccessToken.find_by_token(params[PERSONAL_ACCESS_TOKEN_PARAM])
+        if personal_access_token
+          personal_access_token.user
+        end
+      end
 
       def current_user
-        private_token = (params[PRIVATE_TOKEN_PARAM] || env[PRIVATE_TOKEN_HEADER]).to_s
-        @current_user ||= (User.find_by(authentication_token: private_token) || doorkeeper_guard)
+        @current_user ||= (find_user_by_private_token || find_user_by_personal_access_token || doorkeeper_guard)
 
         unless @current_user && Gitlab::UserAccess.allowed?(@current_user)
           return nil
