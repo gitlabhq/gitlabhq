@@ -1,3 +1,7 @@
+- if params[:group_id].present?
+  = hidden_field_tag :group_id, params[:group_id]
+- if params[:project_id].present?
+  = hidden_field_tag :project_id, params[:project_id]
 .dropdown.append-right-5.prepend-left-5
   %button.dropdown-toggle.btn.js-search-group-dropdown{ type: "button", data: { toggle: "dropdown" } }
     Group:
@@ -12,19 +16,11 @@
       %button.dropdown-title-button.dropdown-menu-close{ aria: { label: "Close" } }
         = icon('times')
     = dropdown_filter("Search groups")
-    .dropdown-content
-      %ul
-        %li
-          = link_to search_filter_path(group_id: nil), class: ("is-active" if !params[:group_id].present?) do
-            Any
-        %li.divider
-        - current_user.authorized_groups.sort_by(&:name).each do |group|
-          %li
-            = link_to search_filter_path(group_id: group.id, project_id: nil), class: ("is-active" if params[:group_id] == group.id.to_s) do
-              = group.name
+    = dropdown_content
+    = dropdown_loading
 
 .dropdown.project-filter.append-right-5.prepend-left-5
-  %button.dropdown-toggle.btn{ type: "button", data: { toggle: "dropdown" } }
+  %button.dropdown-toggle.btn.js-search-project-dropdown{ type: "button", data: { toggle: "dropdown" } }
     Project:
     - if @project.present?
       %strong= @project.name_with_namespace
@@ -37,13 +33,15 @@
       %button.dropdown-title-button.dropdown-menu-close{aria: {label: "Close"}}
         = icon('times')
     = dropdown_filter("Search projects")
-    .dropdown-content
-      %ul
-        %li
-          = link_to search_filter_path(project_id: nil), class: ("is-active" if !params[:project_id].present?) do
-            Any
-        %li.divider
-        - current_user.authorized_projects.sort_by(&:name_with_namespace).each do |project|
-          %li
-            = link_to search_filter_path(project_id: project.id, group_id: nil), class: ("is-active" if params[:project_id] == project.id.to_s) do
-              = project.name_with_namespace
+    = dropdown_content
+    = dropdown_loading
+    -# .dropdown-content
+    -#   %ul
+    -#     %li
+    -#       = link_to search_filter_path(project_id: nil), class: ("is-active" if !params[:project_id].present?) do
+    -#         Any
+    -#     %li.divider
+    -#     - current_user.authorized_projects.sort_by(&:name_with_namespace).each do |project|
+    -#       %li
+    -#         = link_to search_filter_path(project_id: project.id, group_id: nil), class: ("is-active" if params[:project_id] == project.id.to_s) do
+    -#           = project.name_with_namespace
