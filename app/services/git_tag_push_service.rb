@@ -8,6 +8,7 @@ class GitTagPushService
     @push_data = build_push_data(oldrev, newrev, ref)
 
     EventCreateService.new.push(project, user, @push_data)
+    SystemHooksService.new.execute_hooks(build_system_push_data.dup, :tag_push_hooks)
     project.execute_hooks(@push_data.dup, :tag_push_hooks)
     project.execute_services(@push_data.dup, :tag_push_hooks)
     CreateCommitBuildsService.new.execute(project, @user, @push_data)
@@ -34,5 +35,10 @@ class GitTagPushService
 
     Gitlab::PushDataBuilder.
       build(project, user, oldrev, newrev, ref, commits, message)
+  end
+
+  def build_system_push_data(oldrev, newrev, ref)
+    Gitlab::PushDataBuilder.
+      build_system(project, user, oldrev, newrev, ref)
   end
 end

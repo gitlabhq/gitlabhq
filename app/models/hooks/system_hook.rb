@@ -19,4 +19,10 @@
 #
 
 class SystemHook < WebHook
+  scope :push_hooks, -> { where(push_events: true) }
+  scope :tag_push_hooks, -> { where(tag_push_events: true) }
+
+  def async_execute(data, hook_name)
+    Sidekiq::Client.enqueue(SystemHookWorker, id, data, hook_name)
+  end
 end

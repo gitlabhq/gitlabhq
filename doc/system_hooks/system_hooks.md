@@ -240,3 +240,80 @@ X-Gitlab-Event: System Hook
        "user_id": 41
 }
 ```
+
+## Push events
+
+Triggered when you push to the repository except when pushing tags.
+
+**Request header**:
+
+```
+X-Gitlab-Event: System Hook
+```
+
+**Request body:**
+
+```json
+{
+  "event_name": "push",
+  "before": "95790bf891e76fee5e1747ab589903a6a1f80f22",
+  "after": "da1560886d4f094c3e6c9ef40349f7d38b5d27d7",
+  "ref": "refs/heads/master",
+  "checkout_sha": "da1560886d4f094c3e6c9ef40349f7d38b5d27d7",
+  "user_id": 4,
+  "user_name": "John Smith",
+  "user_email": "john@example.com",
+  "user_avatar": "https://s.gravatar.com/avatar/d4c74594d841139328695756648b6bd6?s=8://s.gravatar.com/avatar/d4c74594d841139328695756648b6bd6?s=80",
+  "project_id": 15,
+  "project":{
+    "name":"Diaspora",
+    "description":"",
+    "web_url":"http://example.com/mike/diaspora",
+    "avatar_url":null,
+    "git_ssh_url":"git@example.com:mike/diaspora.git",
+    "git_http_url":"http://example.com/mike/diaspora.git",
+    "namespace":"Mike",
+    "visibility_level":0,
+    "path_with_namespace":"mike/diaspora",
+    "default_branch":"master",
+  }
+}
+```
+
+## Tag events
+
+Triggered when you create (or delete) tags to the repository.
+
+**Request header**:
+
+```
+X-Gitlab-Event: System Hook
+```
+
+**Request body:**
+
+```json
+{
+  "event_name": "tag_push",
+  "before": "0000000000000000000000000000000000000000",
+  "after": "82b3d5ae55f7080f1e6022629cdb57bfae7cccc7",
+  "ref": "refs/tags/v1.0.0",
+  "checkout_sha": "5937ac0a7beb003549fc5fd26fc247adbce4a52e",
+  "user_id": 1,
+  "user_name": "John Smith",
+  "user_avatar": "https://s.gravatar.com/avatar/d4c74594d841139328695756648b6bd6?s=8://s.gravatar.com/avatar/d4c74594d841139328695756648b6bd6?s=80",
+  "project_id": 1,
+  "project":{
+    "name":"Example",
+    "description":"",
+    "web_url":"http://example.com/jsmith/example",
+    "avatar_url":null,
+    "git_ssh_url":"git@example.com:jsmith/example.git",
+    "git_http_url":"http://example.com/jsmith/example.git",
+    "namespace":"Jsmith",
+    "visibility_level":0,
+    "path_with_namespace":"jsmith/example",
+    "default_branch":"master",
+  }
+}
+```
