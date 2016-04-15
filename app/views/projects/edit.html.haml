@@ -133,7 +133,7 @@
                 method: :post, class: "btn btn-default"
 
       .panel.panel-default
-        .panel-heading Export
+        .panel-heading Export project
         .errors-holder
         .panel-body
           %p
@@ -141,8 +141,11 @@
             %br
 
           .form-actions
-            = link_to 'Export', export_namespace_project_path(@project.namespace, @project),
+            = link_to 'Generate new export', export_namespace_project_path(@project.namespace, @project),
                 method: :post, class: "btn btn-default"
+
+            = link_to 'Download export', download_export_namespace_project_path(@project.namespace, @project),
+              method: :post, class: "btn btn-default"
 
 
       - if can? current_user, :archive_project, @project

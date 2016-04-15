@@ -190,9 +190,13 @@ class ProjectsController < Projects::ApplicationController
     ::Projects::ImportExport::ExportService.new(@project, current_user).execute
 
     redirect_to(
-      project_path(@project),
+      edit_project_path(@project),
       notice: "Project export successfully started"
     )
+  end
+
+  def download_export
+    send_file export_project_path, disposition: 'attachment'
   end
 
   def toggle_star
@@ -255,5 +259,10 @@ class ProjectsController < Projects::ApplicationController
   # for the blob/tree, which in this case is just the root of the default branch.
   def get_id
     project.repository.root_ref
+  end
+
+  def export_project_path
+    # TODO: move this, probably to ImportExport and refactor
+    File.join(Settings.shared['path'], 'tmp/project_exports', @project.path_with_namespace, 'project.tar.gz')
   end
 end
