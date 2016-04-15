@@ -18,6 +18,8 @@ v 8.7.0 (unreleased)
   - Allow projects to be transfered to a lower visibility level group
   - Fix `signed_in_ip` being set to 127.0.0.1 when using a reverse proxy !3524
   - Improved Markdown rendering performance !3389
+  - Improved Markdown rendering performance !3389 (Yorick Peterse)
+  - Make shared runners text in box configurable (Kamil Trzciński)
   - Don't attempt to look up an avatar in repo if repo directory does not exist (Stan Hu)
   - API: Ability to subscribe and unsubscribe from issues and merge requests (Robert Schilling)
   - Expose project badges in project settings

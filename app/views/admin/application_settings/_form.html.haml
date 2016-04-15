@@ -153,7 +153,11 @@
           = f.label :shared_runners_enabled do
             = f.check_box :shared_runners_enabled
             Enable shared runners for new projects
-
+    .form-group
+      = f.label :shared_runners_text, class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.text_area :shared_runners_text, class: 'form-control', rows: 4
+        .help-block Markdown enabled
     .form-group
       = f.label :max_artifacts_size, 'Maximum artifacts size (MB)', class: 'control-label col-sm-2'
       .col-sm-10
