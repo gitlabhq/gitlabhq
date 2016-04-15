@@ -374,7 +374,11 @@ class @Notes
       $('html, body').animate({
         scrollTop: myLastNote.offset().top - 150  
       }, 500, ->
-        form.find(".js-note-text").focus()
+        $noteText = form.find(".js-note-text")
+        $noteText.focus()
+        # Neat little trick to put the cursor at the end
+        noteTextVal = $noteText.val()
+        $noteText.val('').val(noteTextVal);
       );
     else
       form.find(".js-note-text").focus()
