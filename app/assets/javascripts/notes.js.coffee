@@ -75,6 +75,9 @@ class @Notes
     # when issue status changes, we need to refresh data
     $(document).on "issuable:change", @refresh
 
+    # when a key is clicked on the notes
+    $(document).on "keydown", ".js-note-text", @keydownNoteText
+
   cleanBinding: ->
     $(document).off "ajax:success", ".js-main-target-form"
     $(document).off "ajax:success", ".js-discussion-note-form"
@@ -92,9 +95,18 @@ class @Notes
     $(document).off "click", ".js-note-target-reopen"
     $(document).off "click", ".js-note-target-close"
     $(document).off "click", ".js-note-discard"
+    $(document).off "keydown", ".js-note-text"
 
     $('.note .js-task-list-container').taskList('disable')
     $(document).off 'tasklist:changed', '.note .js-task-list-container'
+
+  keydownNoteText: (e) ->
+    $this = $(this)
+    if $this.val() is '' and e.which is 38 #aka the up key
+      myLastNote = $("li.note[data-author-id='#{gon.current_user_id}'][data-editable]:last")
+      if myLastNote.length
+        myLastNoteEditBtn = myLastNote.find('.js-note-edit')
+        myLastNoteEditBtn.trigger('click', [true, myLastNote])
 
   initRefresh: ->
     clearInterval(Notes.interval)
@@ -343,7 +355,7 @@ class @Notes
   Adds a hidden div with the original content of the note to fill the edit note form with
   if the user cancels
   ###
-  showEditForm: (e) ->
+  showEditForm: (e, scrollTo, myLastNote) ->
     e.preventDefault()
     note = $(this).closest(".note")
     note.addClass "is-editting"
@@ -355,8 +367,17 @@ class @Notes
     note.find(".js-note-attachment-delete").show()
 
     new GLForm form
-
-    form.find(".js-note-text").focus()
+    if scrollTo? and myLastNote?
+      # scroll to the bottom 
+      # so the open of the last element doesn't make a jump
+      $('html, body').scrollTop($(document).height());
+      $('html, body').animate({
+        scrollTop: myLastNote.offset().top - 150  
+      }, 500, ->
+        form.find(".js-note-text").focus()
+      );
+    else
+      form.find(".js-note-text").focus()
 
   ###
   Called in response to clicking the edit note link
