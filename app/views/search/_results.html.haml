@@ -2,7 +2,7 @@
   = render partial: "search/results/empty"
 - else
   .gray-content-block
-    = search_entries_info @objects
+    = search_entries_info @objects, @scope, @search_term
     - unless @show_snippets
       - if @project
         in project #{link_to @project.name_with_namespace, [@project.namespace.becomes(Namespace), @project]}

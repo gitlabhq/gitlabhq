@@ -19,13 +19,13 @@ module SearchHelper
     end
   end
 
-  def search_entries_info(collection)
+  def search_entries_info(collection, scope, term)
     if collection.count > 0
       from = collection.offset_value + 1
       to = collection.offset_value + collection.length
       count = collection.count
 
-      "Showing #{from} - #{to} of #{count} results for \"#{@search_term}\""
+      "Showing #{from} - #{to} of #{count} #{scope.humanize(capitalize: false)} for \"#{term}\""
     end
   end
 
