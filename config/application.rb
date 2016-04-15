@@ -1,13 +1,13 @@
 require File.expand_path('../boot', __FILE__)
 
 require 'rails/all'
-require 'devise'
-I18n.config.enforce_available_locales = false
+
 Bundler.require(:default, Rails.env)
-require_relative '../lib/gitlab/redis'
 
 module Gitlab
   class Application < Rails::Application
+    require_dependency Rails.root.join('lib/gitlab/redis')
+
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
@@ -21,10 +21,10 @@ module Gitlab
     # This is a nice reference article on autoloading/eager loading:
     # http://blog.arkency.com/2014/11/dont-forget-about-eager-load-when-extending-autoload
     config.eager_load_paths.push(*%W(#{config.root}/lib
+                                     #{config.root}/app/models/ci
                                      #{config.root}/app/models/hooks
-                                     #{config.root}/app/models/concerns
-                                     #{config.root}/app/models/project_services
-                                     #{config.root}/app/models/members))
+                                     #{config.root}/app/models/members
+                                     #{config.root}/app/models/project_services))
 
     # Only load the plugins named here, in the order given (default is alphabetical).
     # :all can be used as a placeholder for all plugins not explicitly named.
