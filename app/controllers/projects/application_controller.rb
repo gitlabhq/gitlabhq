@@ -23,8 +23,8 @@ class Projects::ApplicationController < ApplicationController
       @project = find_project
 
       if @project && can?(current_user, :read_project, @project)
-        if @project.path_with_namespace != project_path
-          redirect_to request.original_url.gsub(project_path, @project.path_with_namespace)
+        if @project.path_with_namespace != path_with_namespace
+          redirect_to request.original_url.gsub(path_with_namespace, @project.path_with_namespace)
         end
       else
         @project = nil
@@ -48,12 +48,12 @@ class Projects::ApplicationController < ApplicationController
     params[:namespace_id]
   end
   
-  def project_path
+  def path_with_namespace
     "#{namespace}/#{id}"
   end
   
   def find_project
-    Project.find_with_namespace(project_path)
+    Project.find_with_namespace(path_with_namespace)
   end
 
   def repository
