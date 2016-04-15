@@ -42,6 +42,7 @@ v 8.7.0 (unreleased)
   - Add default scope to projects to exclude projects pending deletion
   - Allow to close merge requests which source projects(forks) are deleted.
   - Ensure empty recipients are rejected in BuildsEmailService
+  - Use rugged to change HEAD in Project#change_head (P.S.V.R)
   - API: Ability to filter milestones by state `active` and `closed` (Robert Schilling)
   - API: Fix milestone filtering by `iid` (Robert Schilling)
   - API: Delete notes of issues, snippets, and merge requests (Robert Schilling)
