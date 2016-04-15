@@ -154,16 +154,46 @@
 }
 
 .search-holder {
-  display: -webkit-flex;
-  display:         flex;
+  @media (min-width: $screen-sm-min) {
+    display: -webkit-flex;
+    display:         flex;
+  }
 
   .search-field-holder {
     position: relative;
     width: 100%;
+    margin-right: 0;
+
+    @media (min-width: $screen-sm-min) {
+      margin-right: 5px;
+    }
   }
 
-  .dropdown-toggle {
-    width: 160px;
-    text-align: left;
+  .btn-search {
+    width: 100%;
+    margin-top: 5px;
+
+    @media (min-width: $screen-sm-min) {
+      width: auto;
+      margin-top: 0;
+      margin-left: 5px;
+    }
+  }
+
+  .dropdown {
+    @media (min-width: $screen-sm-min) {
+      margin-left: 5px;
+      margin-right: 5px;
+    }
+  }
+
+  .dropdown-menu-toggle {
+    width: 100%;
+    margin-top: 5px;
+
+    @media (min-width: $screen-sm-min) {
+      width: 160px;
+      margin-top: 0;
+    }
   }
 }

@@ -25,7 +25,7 @@ module SearchHelper
       to = collection.offset_value + collection.length
       count = collection.count
 
-      "Showing #{from} - #{to} of #{count} results for All projects: \"#{@search_term}\""
+      "Showing #{from} - #{to} of #{count} results for \"#{@search_term}\""
     end
   end
 

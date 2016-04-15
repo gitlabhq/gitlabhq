@@ -3,8 +3,8 @@
   = hidden_field_tag :scope, params[:scope]
 
   .search-holder
-    .search-field-holder.append-right-5
+    .search-field-holder
       = search_field_tag :search, params[:search], placeholder: "Search for projects, issues etc", class: "form-control search-text-input", id: "dashboard_search", autofocus: true, spellcheck: false
     - unless params[:snippets].eql? 'true'
       = render 'filter' if current_user
-    = button_tag 'Search', class: "btn btn-success btn-search prepend-left-5"
+    = button_tag 'Search', class: "btn btn-success btn-search"
