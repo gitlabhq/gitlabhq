@@ -461,6 +461,35 @@ class Project < ActiveRecord::Base
     self.import_data.destroy if self.import_data
   end
 
+  def import_url=(value)
+    import_url = Gitlab::ImportUrl.new(value)
+    create_or_update_import_data(credentials: import_url.credentials)
+    super(import_url.sanitized_url)
+  end
+
+  def import_url
+    if import_data && super
+      import_url = Gitlab::ImportUrl.new(super, credentials: import_data.credentials)
+      import_url.full_url
+    else
+      super
+    end
+  end
+
+  def create_or_update_import_data(data: nil, credentials: nil)
+    project_import_data = import_data || build_import_data
+    if data
+      project_import_data.data ||= {}
+      project_import_data.data = project_import_data.data.merge(data)
+    end
+    if credentials
+      project_import_data.credentials ||= {}
+      project_import_data.credentials = project_import_data.credentials.merge(credentials)
+    end
+
+    project_import_data.save
+  end
+
   def import?
     external_import? || forked?
   end

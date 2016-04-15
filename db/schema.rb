@@ -807,6 +807,9 @@ ActiveRecord::Schema.define(version: 20160414064845) do
   create_table "project_import_data", force: :cascade do |t|
     t.integer "project_id"
     t.text    "data"
+    t.text    "encrypted_credentials"
+    t.text    "encrypted_credentials_iv"
+    t.text    "encrypted_credentials_salt"
   end
 
   create_table "projects", force: :cascade do |t|
