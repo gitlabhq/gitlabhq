@@ -30,6 +30,7 @@ describe Gitlab::GithubImport::IssueFormatter, lib: true do
 
       it 'returns formatted attributes' do
         expected = {
+          iid: 1347,
           project: project,
           title: 'Found a bug',
           description: "*Created by: octocat*\n\nI'm having a problem with this.",
@@ -50,6 +51,7 @@ describe Gitlab::GithubImport::IssueFormatter, lib: true do
 
       it 'returns formatted attributes' do
         expected = {
+          iid: 1347,
           project: project,
           title: 'Found a bug',
           description: "*Created by: octocat*\n\nI'm having a problem with this.",

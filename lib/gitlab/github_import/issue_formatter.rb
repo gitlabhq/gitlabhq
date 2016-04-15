@@ -3,6 +3,7 @@ module Gitlab
     class IssueFormatter < BaseFormatter
       def attributes
         {
+          iid: number,
           project: project,
           title: raw_data.title,
           description: description,
