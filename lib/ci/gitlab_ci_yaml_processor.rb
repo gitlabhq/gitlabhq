@@ -40,7 +40,7 @@ module Ci
       @stages || DEFAULT_STAGES
     end
 
-    def variables
+    def global_variables
       @variables
     end
 

@@ -359,7 +359,7 @@ module Ci
                              })
 
           config_processor = GitlabCiYamlProcessor.new(config, path)
-          expect(config_processor.variables).to eq(variables)
+          expect(config_processor.global_variables).to eq(variables)
         end
       end
 

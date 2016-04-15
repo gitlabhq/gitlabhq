@@ -372,7 +372,7 @@ module Ci
 
     def global_yaml_variables
       if commit.config_processor
-        commit.config_processor.variables.map do |key, value|
+        commit.config_processor.global_variables.map do |key, value|
           { key: key, value: value, public: true }
         end
       else
