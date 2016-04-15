@@ -92,33 +92,6 @@ module Gitlab
                                    'rm-project', "#{name}.git"])
     end
 
-    # Add repository branch from passed ref
-    #
-    # path - project path with namespace
-    # branch_name - new branch name
-    # ref - HEAD for new branch
-    #
-    # Ex.
-    #   add_branch("gitlab/gitlab-ci", "4-0-stable", "master")
-    #
-    def add_branch(path, branch_name, ref)
-      Gitlab::Utils.system_silent([gitlab_shell_projects_path, 'create-branch',
-                                   "#{path}.git", branch_name, ref])
-    end
-
-    # Remove repository branch
-    #
-    # path - project path with namespace
-    # branch_name - branch name to remove
-    #
-    # Ex.
-    #   rm_branch("gitlab/gitlab-ci", "4-0-stable")
-    #
-    def rm_branch(path, branch_name)
-      Gitlab::Utils.system_silent([gitlab_shell_projects_path, 'rm-branch',
-                                   "#{path}.git", branch_name])
-    end
-
     # Add repository tag from passed ref
     #
     # path - project path with namespace
