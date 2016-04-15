@@ -2,19 +2,23 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.7.0 (unreleased)
   - The Projects::HousekeepingService class has extra instrumentation (Yorick Peterse)
+  - Fix revoking of authorized OAuth applications (Connor Shea)
   - All service classes (those residing in app/services) are now instrumented (Yorick Peterse)
   - Developers can now add custom tags to transactions (Yorick Peterse)
   - Loading of an issue's referenced merge requests and related branches is now done asynchronously (Yorick Peterse)
   - Enable gzip for assets, makes the page size significantly smaller. !3544 / !3632 (Connor Shea)
   - Load award emoji images separately unless opening the full picker. Saves several hundred KBs of data for most pages. (Connor Shea)
+  - Do not include award_emojis in issue and merge_request comment_count !3610 (Lucas Charles)
   - All images in discussions and wikis now link to their source files !3464 (Connor Shea).
   - Return status code 303 after a branch DELETE operation to avoid project deletion (Stan Hu)
   - Add setting for customizing the list of trusted proxies !3524
+  - Allow projects to be transfered to a lower visibility level group
   - Fix `signed_in_ip` being set to 127.0.0.1 when using a reverse proxy !3524
   - Improved Markdown rendering performance !3389 (Yorick Peterse)
   - Don't attempt to look up an avatar in repo if repo directory does not exist (Stan Hu)
   - API: Ability to subscribe and unsubscribe from issues and merge requests (Robert Schilling)
   - Expose project badges in project settings
+  - Make /profile/keys/new redirect to /profile/keys for back-compat. !3717
   - Preserve time notes/comments have been updated at when moving issue
   - Make HTTP(s) label consistent on clone bar (Stan Hu)
   - Expose label description in API (Mariusz Jachimowicz)
@@ -32,6 +36,7 @@ v 8.7.0 (unreleased)
   - Fix a bug whith trailing slash in bamboo_url
   - Add links to CI setup documentation from project settings and builds pages
   - Handle nil descriptions in Slack issue messages (Stan Hu)
+  - Add automated repository integrity checks
   - API: Expose open_issues_count, closed_issues_count, open_merge_requests_count for labels (Robert Schilling)
   - API: Ability to star and unstar a project (Robert Schilling)
   - Add default scope to projects to exclude projects pending deletion
@@ -66,6 +71,7 @@ v 8.7.0 (unreleased)
   - Improved markdown forms
   - Diffs load at the correct point when linking from from number
   - Selected diff rows highlight
+  - Fix emoji catgories in the emoji picker
 
 v 8.6.6
   - Fix error on language detection when repository has no HEAD (e.g., master branch). !3654 (Jeroen Bobbeldijk)

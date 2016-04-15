@@ -40,4 +40,27 @@ describe Projects::TransferService, services: true do
   def transfer_project(project, user, new_namespace)
     Projects::TransferService.new(project, user).execute(new_namespace)
   end
+
+  context 'visibility level' do
+    let(:internal_group) { create(:group, :internal) }
+
+    before { internal_group.add_owner(user) }
+
+    context 'when namespace visibility level < project visibility level' do
+      let(:public_project) { create(:project, :public, namespace: user.namespace) }
+
+      before { transfer_project(public_project, user, internal_group) }
+
+      it { expect(public_project.visibility_level).to eq(internal_group.visibility_level) }
+    end
+
+    context 'when namespace visibility level > project visibility level' do
+      let(:private_project) { create(:project, :private, namespace: user.namespace) }
+
+      before { transfer_project(private_project, user, internal_group) }
+
+      it { expect(private_project.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE) }
+    end
+  end
+
 end

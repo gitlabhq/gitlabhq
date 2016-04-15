@@ -209,6 +209,7 @@
                     %li Be careful. Changing the project's namespace can have unintended side effects.
                     %li You can only transfer the project to namespaces you manage.
                     %li You will need to update your local repositories to point to the new location.
+                    %li Project visibility level will be changed to match namespace rules when transfering to a group.
               .form-actions
                 = f.submit 'Transfer project', class: "btn btn-remove js-confirm-danger", data: { "confirm-danger-message" => transfer_project_message(@project) }
       - else
