@@ -1,8 +1,10 @@
 class @Search
   constructor: ->
+    $groupDropdown = $('.js-search-group-dropdown')
+    $projectDropdown = $('.js-search-project-dropdown')
     @eventListeners()
 
-    $('.js-search-group-dropdown').glDropdown(
+    $groupDropdown.glDropdown(
       selectable: true
       filterable: true
       fieldName: 'group_id'
@@ -18,11 +20,13 @@ class @Search
         obj.id
       text: (obj) ->
         obj.name
+      toggleLabel: (obj) ->
+        "#{$groupDropdown.data('default-label')} #{obj.name}"
       clicked: =>
         @submitSearch()
     )
 
-    $('.js-search-project-dropdown').glDropdown(
+    $projectDropdown.glDropdown(
       selectable: true
       filterable: true
       fieldName: 'project_id'
@@ -38,6 +42,8 @@ class @Search
         obj.id
       text: (obj) ->
         obj.name_with_namespace
+      toggleLabel: (obj) ->
+        "#{$projectDropdown.data('default-label')} #{obj.name_with_namespace}"
       clicked: =>
         @submitSearch()
     )

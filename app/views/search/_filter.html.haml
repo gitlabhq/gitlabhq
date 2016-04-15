@@ -3,12 +3,13 @@
 - if params[:project_id].present?
   = hidden_field_tag :project_id, params[:project_id]
 .dropdown
-  %button.dropdown-menu-toggle.btn.js-search-group-dropdown{ type: "button", data: { toggle: "dropdown" } }
-    Group:
-    - if @group.present?
-      = @group.name
-    - else
-      Any
+  %button.dropdown-menu-toggle.btn.js-search-group-dropdown{ type: "button", data: { toggle: "dropdown", default_label: "Group:" } }
+    %span.dropdown-toggle-text
+      Group:
+      - if @group.present?
+        = @group.name
+      - else
+        Any
     = icon("chevron-down")
   .dropdown-menu.dropdown-select.dropdown-menu-selectable.dropdown-menu-align-right
     .dropdown-title
@@ -20,12 +21,13 @@
     = dropdown_loading
 
 .dropdown.project-filter
-  %button.dropdown-menu-toggle.btn.js-search-project-dropdown{ type: "button", data: { toggle: "dropdown" } }
-    Project:
-    - if @project.present?
-      = @project.name_with_namespace
-    - else
-      Any
+  %button.dropdown-menu-toggle.btn.js-search-project-dropdown{ type: "button", data: { toggle: "dropdown", default_label: "Project:" } }
+    %span.dropdown-toggle-text
+      Project:
+      - if @project.present?
+        = @project.name_with_namespace
+      - else
+        Any
     = icon("chevron-down")
   .dropdown-menu.dropdown-select.dropdown-menu-selectable.dropdown-menu-align-right
     .dropdown-title
