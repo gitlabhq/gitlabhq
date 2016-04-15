@@ -3,7 +3,6 @@
 # Handles persisting and restoring the current tab selection and lazily-loading
 # content on the MergeRequests#show page.
 #
-#= require jquery.cookie
 #= require sidebar
 #
 # ### Example Markup
@@ -74,8 +73,7 @@ class @MergeRequestTabs
       RightSidebar.expandSidebar()
     else if action == 'diffs'
       @loadDiff($target.attr('href'))
-      if bp? and bp.getBreakpointSize() isnt 'lg'
-        RightSidebar.collapseSidebar()
+      RightSidebar.collapseSidebar()
     else if action == 'builds'
       @loadBuilds($target.attr('href'))
       RightSidebar.expandSidebar()
