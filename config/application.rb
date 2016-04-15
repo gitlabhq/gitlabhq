@@ -79,6 +79,8 @@ module Gitlab
     # This is needed for gitlab-shell
     ENV['GITLAB_PATH_OUTSIDE_HOOK'] = ENV['PATH']
 
+    config.eager_load_paths += ["#{Rails.root}/lib"]
+
     config.generators do |g|
       g.factory_girl false
     end
