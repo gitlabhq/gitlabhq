@@ -191,9 +191,9 @@ describe Issue, models: true do
   end
 
   describe '#related_branches' do
-    let(:user) { build(:user, :admin) }
+    let(:user) { build(:admin) }
 
-    before(:each) do
+    before do
       allow(subject.project.repository).to receive(:branch_names).
                                             and_return(["mpempe", "#{subject.iid}mepmep", subject.to_branch_name, "branch-#{subject.iid}"])
 
