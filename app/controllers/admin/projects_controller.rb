@@ -1,5 +1,5 @@
 class Admin::ProjectsController < Admin::ApplicationController
-  before_action :project, only: [:show, :transfer]
+  before_action :project, only: [:show, :transfer, :repository_check]
   before_action :group, only: [:show, :transfer]
 
   def index
@@ -8,6 +8,7 @@ class Admin::ProjectsController < Admin::ApplicationController
     @projects = @projects.where("projects.visibility_level IN (?)", params[:visibility_levels]) if params[:visibility_levels].present?
     @projects = @projects.with_push if params[:with_push].present?
     @projects = @projects.abandoned if params[:abandoned].present?
+    @projects = @projects.where(last_repository_check_failed: true) if params[:last_repository_check_failed].present?
     @projects = @projects.non_archived unless params[:with_archived].present?
     @projects = @projects.search(params[:name]) if params[:name].present?
     @projects = @projects.sort(@sort = params[:sort])
@@ -28,6 +29,15 @@ class Admin::ProjectsController < Admin::ApplicationController
 
     @project.reload
     redirect_to admin_namespace_project_path(@project.namespace, @project)
+  end
+
+  def repository_check
+    RepositoryCheck::SingleRepositoryWorker.perform_async(@project.id)
+
+    redirect_to(
+      admin_namespace_project_path(@project.namespace, @project),
+      notice: 'Repository check was triggered.'
+    )
   end
 
   protected

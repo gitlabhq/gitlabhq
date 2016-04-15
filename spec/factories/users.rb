@@ -1,7 +1,7 @@
 FactoryGirl.define do
   sequence(:name) { FFaker::Name.name }
 
-  factory :user, aliases: [:author, :assignee, :recipient, :owner, :creator] do
+  factory :user, aliases: [:author, :assignee, :recipient, :owner, :creator, :resource_owner] do
     email { FFaker::Internet.email }
     name
     sequence(:username) { |n| "#{FFaker::Internet.user_name}#{n}" }

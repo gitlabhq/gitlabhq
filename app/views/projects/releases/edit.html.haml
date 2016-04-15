@@ -9,11 +9,11 @@
       %strong #{@tag.name}
 
 .prepend-top-default
-  = form_for(@release, method: :put, url: namespace_project_tag_release_path(@project.namespace, @project, @tag.name), html: { class: 'form-horizontal gfm-form release-form js-quick-submit' }) do |f|
+  = form_for(@release, method: :put, url: namespace_project_tag_release_path(@project.namespace, @project, @tag.name), html: { class: 'form-horizontal common-note-form release-form js-quick-submit' }) do |f|
     = render layout: 'projects/md_preview', locals: { preview_class: "md-preview", referenced_users: true } do
-      = render 'projects/zen', f: f, attr: :description, classes: 'description form-control'
+      = render 'projects/zen', f: f, attr: :description, classes: 'note-textarea', placeholder: "Write your release notes or drag files here..."
       = render 'projects/notes/hints'
-      .error-alert
-      .form-actions.prepend-top-default
-        = f.submit 'Save changes', class: 'btn btn-save'
-        = link_to "Cancel", namespace_project_tag_path(@project.namespace, @project, @tag.name), class: "btn btn-default btn-cancel"
+    .error-alert
+    .form-actions.prepend-top-default
+      = f.submit 'Save changes', class: 'btn btn-save'
+      = link_to "Cancel", namespace_project_tag_path(@project.namespace, @project, @tag.name), class: "btn btn-default btn-cancel"

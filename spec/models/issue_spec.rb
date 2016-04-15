@@ -195,7 +195,7 @@ describe Issue, models: true do
 
     before do
       allow(subject.project.repository).to receive(:branch_names).
-                                            and_return(["mpempe", "#{subject.iid}mepmep", subject.to_branch_name, "branch-#{subject.iid}"])
+                                            and_return(["mpempe", "#{subject.iid}mepmep", subject.to_branch_name, "#{subject.iid}-branch"])
 
       # Without this stub, the `create(:merge_request)` above fails because it can't find
       # the source branch. This seems like a reasonable compromise, in comparison with
@@ -204,16 +204,23 @@ describe Issue, models: true do
     end
 
     it "selects the right branches when there are no referenced merge requests" do
-      expect(subject.related_branches(user)).to eq([subject.to_branch_name, "branch-#{subject.iid}"])
+      expect(subject.related_branches(user)).to eq([subject.to_branch_name, "#{subject.iid}-branch"])
     end
 
     it "selects the right branches when there is a referenced merge request" do
       merge_request = create(:merge_request, { description: "Closes ##{subject.iid}",
                                                source_project: subject.project,
-                                               source_branch: "branch-#{subject.iid}" })
+                                               source_branch: "#{subject.iid}-branch" })
       merge_request.create_cross_references!(user)
       expect(subject.referenced_merge_requests).to_not be_empty
       expect(subject.related_branches(user)).to eq([subject.to_branch_name])
+    end
+
+    it 'excludes stable branches from the related branches' do
+      allow(subject.project.repository).to receive(:branch_names).
+        and_return(["#{subject.iid}-0-stable"])
+
+      expect(subject.related_branches(user)).to eq []
     end
   end
 
@@ -231,12 +238,12 @@ describe Issue, models: true do
   describe "#to_branch_name" do
     let(:issue) { create(:issue, title: 'testing-issue') }
 
-    it "ends with the issue iid" do
-      expect(issue.to_branch_name).to match /-#{issue.iid}\z/
+    it 'starts with the issue iid' do
+      expect(issue.to_branch_name).to match /\A#{issue.iid}-[A-Za-z\-]+\z/
     end
 
     it "contains the issue title if not confidential" do
-      expect(issue.to_branch_name).to match /\Atesting-issue/
+      expect(issue.to_branch_name).to match /testing-issue\z/
     end
 
     it "does not contain the issue title if confidential" do

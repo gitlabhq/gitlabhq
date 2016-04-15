@@ -150,13 +150,11 @@ class Commit
   end
 
   def hook_attrs(with_changed_files: false)
-    path_with_namespace = project.path_with_namespace
-
     data = {
       id: id,
       message: safe_message,
       timestamp: committed_date.xmlschema,
-      url: "#{Gitlab.config.gitlab.url}/#{path_with_namespace}/commit/#{id}",
+      url: Gitlab::UrlBuilder.build(self),
       author: {
         name: author_name,
         email: author_email

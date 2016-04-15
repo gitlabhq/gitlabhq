@@ -71,13 +71,16 @@ module SharedIssuable
 
   step 'I should not see any related merge requests' do
     page.within '.issue-details' do
-      expect(page).not_to have_content('.merge-requests')
+      expect(page).not_to have_content('#merge-requests .merge-requests-title')
     end
   end
 
   step 'I should see the "Enterprise fix" related merge request' do
-    page.within '.merge-requests' do
+    page.within '#merge-requests .merge-requests-title' do
       expect(page).to have_content('1 Related Merge Request')
+    end
+
+    page.within '#merge-requests ul' do
       expect(page).to have_content('Enterprise fix')
     end
   end

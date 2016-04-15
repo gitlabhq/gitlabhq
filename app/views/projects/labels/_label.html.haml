@@ -14,7 +14,7 @@
       .label-subscription{data: {url: toggle_subscription_namespace_project_label_path(@project.namespace, @project, label)}}
         .subscription-status{data: {status: label_subscription_status(label)}}
 
-        %a.subscribe-button.btn.action-buttons{data: {toggle: "tooltip"}}
+        %button.js-subscribe-button.label-subscribe-button.btn.action-buttons{ type: "button", data: { toggle: "tooltip" } }
           %span= label_subscription_toggle_button_text(label)
 
     - if can? current_user, :admin_label, @project

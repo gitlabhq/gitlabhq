@@ -3,9 +3,10 @@ require 'spec_helper'
 describe BuildsEmailService do
   let(:build) { create(:ci_build) }
   let(:data) { Gitlab::BuildDataBuilder.build(build) }
-  let(:service) { BuildsEmailService.new }
+  let!(:project) { create(:project, :public, ci_id: 1) }
+  let(:service) { described_class.new(project: project, active: true) }
 
-  describe :execute do
+  describe '#execute' do
     it 'sends email' do
       service.recipients = 'test@gitlab.com'
       data[:build_status] = 'failed'
@@ -38,6 +39,38 @@ describe BuildsEmailService do
       data[:build_status] = 'failed'
       expect(BuildEmailWorker).not_to receive(:perform_async)
       service.execute(data)
+    end
+  end
+
+  describe 'validations' do
+
+    context 'when pusher is not added' do
+      before { service.add_pusher = false }
+
+      it 'does not allow empty recipient input' do
+        service.recipients = ''
+        expect(service.valid?).to be false
+      end
+
+      it 'does allow non-empty recipient input' do
+        service.recipients = 'test@example.com'
+        expect(service.valid?).to be true
+      end
+
+    end
+
+    context 'when pusher is added' do
+      before { service.add_pusher = true }
+
+      it 'does allow empty recipient input' do
+        service.recipients = ''
+        expect(service.valid?).to be true
+      end
+
+      it 'does allow non-empty recipient input' do
+        service.recipients = 'test@example.com'
+        expect(service.valid?).to be true
+      end
     end
   end
 end

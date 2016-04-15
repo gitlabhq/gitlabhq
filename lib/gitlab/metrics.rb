@@ -104,6 +104,16 @@ module Gitlab
       retval
     end
 
+    # Adds a tag to the current transaction (if any)
+    #
+    # name - The name of the tag to add.
+    # value - The value of the tag.
+    def self.tag_transaction(name, value)
+      trans = current_transaction
+
+      trans.add_tag(name, value) if trans
+    end
+
     # When enabled this should be set before being used as the usual pattern
     # "@foo ||= bar" is _not_ thread-safe.
     if enabled?

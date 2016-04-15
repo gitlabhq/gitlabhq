@@ -10,6 +10,9 @@ class @Issue
       @initTaskList()
       @initIssueBtnEventListeners()
 
+    @initMergeRequests()
+    @initRelatedBranches()
+
   initTaskList: ->
     $('.detail-page-description .js-task-list-container').taskList('enable')
     $(document).on 'tasklist:changed', '.detail-page-description .js-task-list-container', @updateTaskList
@@ -69,3 +72,23 @@ class @Issue
       type: 'PATCH'
       url: $('form.js-issuable-update').attr('action')
       data: patchData
+
+  initMergeRequests: ->
+    $container = $('#merge-requests')
+
+    $.getJSON($container.data('url'))
+      .error ->
+        new Flash('Failed to load referenced merge requests', 'alert')
+      .success (data) ->
+        if 'html' of data
+          $container.html(data.html)
+
+  initRelatedBranches: ->
+    $container = $('#related-branches')
+
+    $.getJSON($container.data('url'))
+      .error ->
+        new Flash('Failed to load related branches', 'alert')
+      .success (data) ->
+        if 'html' of data
+          $container.html(data.html)

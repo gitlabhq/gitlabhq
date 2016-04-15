@@ -105,11 +105,10 @@ class Issue < ActiveRecord::Base
   end
 
   # All branches containing the current issue's ID, except for
-  # those with a merge request open (that the current user can see)
-  # referencing the current issue.
+  # those with a merge request open referencing the current issue.
   def related_branches(current_user)
     branches_with_iid = project.repository.branch_names.select do |branch|
-      branch.end_with?("-#{iid}")
+      branch =~ /\A#{iid}-(?!\d+-stable)/i
     end
 
     branches_with_merge_request = self.referenced_merge_requests(current_user).map(&:source_branch)
@@ -161,7 +160,7 @@ class Issue < ActiveRecord::Base
     if self.confidential?
       "issue-#{iid}"
     else
-      "#{title.parameterize}-#{iid}"
+      "#{iid}-#{title.parameterize}"
     end
   end
 
