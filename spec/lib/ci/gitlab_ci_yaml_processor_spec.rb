@@ -380,6 +380,18 @@ module Ci
           expect(config.job_variables(:rspec)).to eq job_variables
         end
       end
+
+      context 'when job variables are not defined' do
+        it 'returns empty array' do
+          config = YAML.dump({
+                               before_script: ["pwd"],
+                               rspec: { script: "rspec" }
+                             })
+
+          config_processor = GitlabCiYamlProcessor.new(config, path)
+          expect(config_processor.job_variables(:rspec)).to eq []
+        end
+      end
     end
 
     describe "When" do

@@ -45,8 +45,11 @@ module Ci
     end
 
     def job_variables(name)
-      job = @jobs[name.to_sym]
-      job ? job[:variables] : []
+      if job = @jobs[name.to_sym]
+        job[:variables] || []
+      else
+        []
+      end
     end
 
     private
