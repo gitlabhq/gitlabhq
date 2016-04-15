@@ -154,7 +154,8 @@ class ApplicationSetting < ActiveRecord::Base
       require_two_factor_authentication: false,
       two_factor_grace_period: 48,
       recaptcha_enabled: false,
-      akismet_enabled: false
+      akismet_enabled: false,
+      repository_checks_enabled: true,
     )
   end
 

@@ -19,6 +19,15 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
     redirect_to admin_runners_path
   end
 
+  def clear_repository_check_states
+    RepositoryCheck::ClearWorker.perform_async
+
+    redirect_to(
+      admin_application_settings_path,
+      notice: 'Started asynchronous removal of all repository check states.'
+    )
+  end
+
   private
 
   def set_application_setting
@@ -84,6 +93,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :akismet_enabled,
       :akismet_api_key,
       :email_author_in_body,
+      :repository_checks_enabled,
       restricted_visibility_levels: [],
       import_sources: []
     )

@@ -284,5 +284,24 @@
       .col-sm-10
         = f.text_field :sentry_dsn, class: 'form-control'
 
+  %fieldset
+    %legend Repository Checks
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :repository_checks_enabled do
+            = f.check_box :repository_checks_enabled
+            Enable Repository Checks
+          .help-block
+            GitLab will periodically run 
+            %a{ href: 'https://www.kernel.org/pub/software/scm/git/docs/git-fsck.html', target: 'blank' } 'git fsck'
+            in all project and wiki repositories to look for silent disk corruption issues.
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        = link_to 'Clear all repository checks', clear_repository_check_states_admin_application_settings_path, data: { confirm: 'This will clear repository check states for ALL projects in the database. This cannot be undone. Are you sure?' }, method: :put, class: "btn btn-sm btn-remove"
+        .help-block
+          If you got a lot of false alarms from repository checks you can choose to clear all repository check information from the database.
+ 
+
   .form-actions
     = f.submit 'Save', class: 'btn btn-save'

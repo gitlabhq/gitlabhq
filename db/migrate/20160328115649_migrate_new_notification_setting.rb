@@ -7,7 +7,7 @@
 #
 class MigrateNewNotificationSetting < ActiveRecord::Migration
   def up
-    timestamp = Time.now
+    timestamp = Time.now.strftime('%F %T')
     execute "INSERT INTO notification_settings ( user_id, source_id, source_type, level, created_at, updated_at ) SELECT user_id, source_id, source_type, notification_level, '#{timestamp}', '#{timestamp}' FROM members WHERE user_id IS NOT NULL"
   end
 

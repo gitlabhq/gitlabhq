@@ -3,6 +3,7 @@ require 'fogbugz'
 
 class ApplicationController < ActionController::Base
   include Gitlab::CurrentSettings
+  include Gitlab::GonHelper
   include GitlabRoutingHelper
   include PageLayoutHelper
 
@@ -13,7 +14,7 @@ class ApplicationController < ActionController::Base
   before_action :check_password_expiration
   before_action :check_2fa_requirement
   before_action :ldap_security_check
-  before_action :sentry_user_context
+  before_action :sentry_context
   before_action :default_headers
   before_action :add_gon_variables
   before_action :configure_permitted_parameters, if: :devise_controller?
@@ -40,13 +41,15 @@ class ApplicationController < ActionController::Base
 
   protected
 
-  def sentry_user_context
-    if Rails.env.production? && current_application_settings.sentry_enabled && current_user
-      Raven.user_context(
-        id: current_user.id,
-        email: current_user.email,
-        username: current_user.username,
-      )
+  def sentry_context
+    if Rails.env.production? && current_application_settings.sentry_enabled
+      if current_user
+        Raven.user_context(
+          id: current_user.id,
+          email: current_user.email,
+          username: current_user.username,
+        )
+      end
 
       Raven.tags_context(program: sentry_program_context)
     end
@@ -159,20 +162,6 @@ class ApplicationController < ActionController::Base
     # Enabling HSTS for non-standard ports would send clients to the wrong port
     if Gitlab.config.gitlab.https and Gitlab.config.gitlab.port == 443
       headers['Strict-Transport-Security'] = 'max-age=31536000'
-    end
-  end
-
-  def add_gon_variables
-    gon.api_version            = API::API.version
-    gon.default_avatar_url     = URI::join(Gitlab.config.gitlab.url, ActionController::Base.helpers.image_path('no_avatar.png')).to_s
-    gon.default_issues_tracker = Project.new.default_issue_tracker.to_param
-    gon.max_file_size          = current_application_settings.max_attachment_size
-    gon.relative_url_root      = Gitlab.config.gitlab.relative_url_root
-    gon.user_color_scheme      = Gitlab::ColorSchemes.for_user(current_user).css_class
-
-    if current_user
-      gon.current_user_id = current_user.id
-      gon.api_token = current_user.private_token
     end
   end
 
