@@ -2,14 +2,15 @@ class @LabelsSelect
   constructor: ->
     $('.js-label-select').each (i, dropdown) ->
       $dropdown = $(dropdown)
+      $parent = $dropdown.parent()
       projectId = $dropdown.data('project-id')
       labelUrl = $dropdown.data('labels')
       issueUpdateURL = $dropdown.data('issueUpdate')
       selectedLabel = $dropdown.data('selected')
       if selectedLabel?
         selectedLabel = selectedLabel.split(',')
-      newLabelField = $('#new_label_name')
-      newColorField = $('#new_label_color')
+      newLabelField = $('#new_label_name', $parent)
+      newColorField = $('#new_label_color', $parent)
       showNo = $dropdown.data('show-no')
       showAny = $dropdown.data('show-any')
       defaultLabel = $dropdown.data('default-label')
@@ -18,6 +19,11 @@ class @LabelsSelect
       $block = $selectbox.closest('.block')
       $sidebarCollapsedValue = $block.find('.sidebar-collapsed-icon span')
       $value = $block.find('.value')
+      $newLabelError = $('.js-label-error', $parent)
+      $colorPreview = $('.js-dropdown-label-color-preview', $parent)
+      $newLabelCreateButton = $('.js-new-label-btn', $parent)
+
+      $newLabelError.hide()
       $loading = $block.find('.block-loading').fadeOut()
 
       issueURLSplit = issueUpdateURL.split('/') if issueUpdateURL?
@@ -33,11 +39,7 @@ class @LabelsSelect
         );
         labelNoneHTMLTemplate = _.template('<div class="light">None</div>')
 
-      if newLabelField.length and $dropdown.hasClass 'js-extra-options'
-        $newLabelCreateButton = $('.js-new-label-btn')
-        $colorPreview = $('.js-dropdown-label-color-preview')
-        $newLabelError = $dropdown.parent().find('.js-label-error')
-        $newLabelError.hide()
+      if newLabelField.length
 
         # Suggested colors in the dropdown to chose from pre-chosen colors
         $('.suggest-colors-dropdown a').on "click", (e) ->
@@ -78,25 +80,24 @@ class @LabelsSelect
         enableLabelCreateButton = ->
           if newLabelField.val() isnt '' and newColorField.val() isnt ''
             $newLabelError.hide()
-            $('.js-new-label-btn').disable()
-
-            # Create new label with API
-            Api.newLabel projectId, {
-              name: newLabelField.val()
-              color: newColorField.val()
-            }, (label) ->
-              $('.js-new-label-btn').enable()
-
-              if label.message?
-                $newLabelError
-                  .text label.message
-                  .show()
-              else
-                $('.dropdown-menu-back', $dropdown.parent()).trigger 'click'
-
             $newLabelCreateButton.enable()
           else
             $newLabelCreateButton.disable()
+
+        saveLabel = ->
+          # Create new label with API
+          Api.newLabel projectId, {
+            name: newLabelField.val()
+            color: newColorField.val()
+          }, (label) ->
+            $newLabelCreateButton.enable()
+
+            if label.message?
+              $newLabelError
+                .text label.message
+                .show()
+            else
+              $('.dropdown-menu-back', $dropdown.parent()).trigger 'click'
 
         newLabelField.on 'keyup change', enableLabelCreateButton
 
@@ -108,24 +109,7 @@ class @LabelsSelect
           .on 'click', (e) ->
             e.preventDefault()
             e.stopPropagation()
-
-            if newLabelField.val() isnt '' and newColorField.val() isnt ''
-              $newLabelError.hide()
-              $('.js-new-label-btn').disable()
-
-              # Create new label with API
-              Api.newLabel projectId, {
-                name: newLabelField.val()
-                color: newColorField.val()
-              }, (label) ->
-                $('.js-new-label-btn').enable()
-
-                if label.message?
-                  $newLabelError
-                    .text label.message
-                    .show()
-                else
-                  $('.dropdown-menu-back', $dropdown.parent()).trigger 'click'
+            saveLabel()
 
       saveLabelData = ->
         selected = $dropdown
