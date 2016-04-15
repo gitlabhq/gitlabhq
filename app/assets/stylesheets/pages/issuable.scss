@@ -248,6 +248,10 @@
       background: $gray-dark;
       border: 1px solid $border-gray-dark;
     }
+
+    &.btn-primary {
+      @extend .btn-primary
+    }
   }
 
   a:not(.btn) {
