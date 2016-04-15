@@ -8,20 +8,22 @@
   = render 'projects/merge_requests/widget/locked'
 
 :javascript
-  var merge_request_widget;
   var opts = {
     merge_check_url: "#{merge_check_namespace_project_merge_request_path(@project.namespace, @project, @merge_request)}",
     check_enable: #{@merge_request.unchecked? ? "true" : "false"},
     ci_status_url: "#{ci_status_namespace_project_merge_request_path(@project.namespace, @project, @merge_request)}",
     gitlab_icon: "#{asset_path 'gitlab_logo.png'}",
     ci_status: "",
-    ci_message: "Build {{status}} for \"{{title}}\"",
+    ci_message: {
+      normal: "Build {{status}} for \"{{title}}\"",
+      preparing: "{{status}} build for \"{{title}}\""
+    },
     ci_enable: #{@project.ci_service ? "true" : "false"},
+    ci_title: {
+      preparing: "{{status}} build",
+      normal: "Build {{status}}"
+    },
     builds_path: "#{builds_namespace_project_merge_request_path(@project.namespace, @project, @merge_request)}"
   };
 
-  if(typeof merge_request_widget === 'undefined') {
-    merge_request_widget = new MergeRequestWidget(opts);
-  } else {
-    merge_request_widget.setOpts(opts);
-  }
+  merge_request_widget = new MergeRequestWidget(opts);

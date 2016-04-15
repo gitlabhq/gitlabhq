@@ -10,10 +10,8 @@
 
 
 = form_for @hook, as: :hook, url: admin_hooks_path, html: { class: 'form-horizontal' } do |f|
-  -if @hook.errors.any?
-    .alert.alert-danger
-      - @hook.errors.full_messages.each do |msg|
-        %p= msg
+  = form_errors(@hook)
+
   .form-group
     = f.label :url, "URL:", class: 'control-label'
     .col-sm-10

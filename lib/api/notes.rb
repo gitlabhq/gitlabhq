@@ -61,6 +61,7 @@ module API
         #   id (required) - The ID of a project
         #   noteable_id (required) - The ID of an issue or snippet
         #   body (required) - The content of a note
+        #   created_at (optional) - The date
         # Example Request:
         #   POST /projects/:id/issues/:noteable_id/notes
         #   POST /projects/:id/snippets/:noteable_id/notes
@@ -72,6 +73,10 @@ module API
            noteable_type: noteables_str.classify,
            noteable_id: params[noteable_id_str]
           }
+
+          if params[:created_at] && (current_user.is_admin? || user_project.owner == current_user)
+            opts[:created_at] = params[:created_at]
+          end
 
           @note = ::Notes::CreateService.new(user_project, current_user, opts).execute
 
@@ -112,6 +117,23 @@ module API
           end
         end
 
+        # Delete a +noteable+ note
+        #
+        # Parameters:
+        #   id (required) - The ID of a project
+        #   noteable_id (required) - The ID of an issue, MR, or snippet
+        #   node_id (required) - The ID of a note
+        # Example Request:
+        #   DELETE /projects/:id/issues/:noteable_id/notes/:note_id
+        #   DELETE /projects/:id/snippets/:noteable_id/notes/:node_id
+        delete ":id/#{noteables_str}/:#{noteable_id_str}/notes/:note_id" do
+          note = user_project.notes.find(params[:note_id])
+          authorize! :admin_note, note
+
+          ::Notes::DeleteService.new(user_project, current_user).execute(note)
+
+          present note, with: Entities::Note
+        end
       end
     end
   end

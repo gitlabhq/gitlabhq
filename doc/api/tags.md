@@ -38,6 +38,50 @@ Parameters:
 ]
 ```
 
+## Get a single repository tag
+
+Get a specific repository tag determined by its name. It returns `200` together
+with the tag information if the tag exists. It returns `404` if the tag does not
+exist.
+
+```
+GET /projects/:id/repository/tags/:tag_name
+```
+
+Parameters:
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer | yes | The ID of a project |
+| `tag_name` | string | yes | The name of the tag |
+
+```bash
+curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/repository/tags/v1.0.0
+```
+
+Example Response:
+
+```json
+{
+  "name": "v5.0.0",
+  "message": null,
+  "commit": {
+    "id": "60a8ff033665e1207714d6670fcd7b65304ec02f",
+    "message": "v5.0.0\n",
+    "parent_ids": [
+      "f61c062ff8bcbdb00e0a1b3317a91aed6ceee06b"
+    ],
+    "authored_date": "2015-02-01T21:56:31.000+01:00",
+    "author_name": "Arthur Verschaeve",
+    "author_email": "contact@arthurverschaeve.be",
+    "committed_date": "2015-02-01T21:56:31.000+01:00",
+    "committer_name": "Arthur Verschaeve",
+    "committer_email": "contact@arthurverschaeve.be"
+  },
+  "release": null
+}
+```
+
 ## Create a new tag
 
 Creates a new tag in the repository that points to the supplied ref.

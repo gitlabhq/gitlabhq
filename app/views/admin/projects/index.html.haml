@@ -3,7 +3,7 @@
 
 .row.prepend-top-default
   %aside.col-md-3
-    .admin-filter
+    .panel.admin-filter
       = form_tag admin_namespaces_projects_path, method: :get, class: '' do
         .form-group
           = label_tag :name, 'Name:'
@@ -38,7 +38,13 @@
                   %span.descr
                     = visibility_level_icon(level)
                     = label
-        %hr
+        %fieldset
+          %strong Problems
+          .checkbox
+            = label_tag :last_repository_check_failed do
+              = check_box_tag :last_repository_check_failed, 1, params[:last_repository_check_failed]
+              %span Last repository check failed
+
         = hidden_field_tag :sort, params[:sort]
         = button_tag "Search", class: "btn submit btn-primary"
         = link_to "Reset", admin_namespaces_projects_path, class: "btn btn-cancel"

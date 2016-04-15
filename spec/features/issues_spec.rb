@@ -45,7 +45,7 @@ describe 'Issues', feature: true do
              project: project)
     end
 
-    it 'allows user to select unasigned', js: true do
+    it 'allows user to select unassigned', js: true do
       visit edit_namespace_project_issue_path(project.namespace, project, issue)
 
       expect(page).to have_content "Assignee #{@user.name}"
@@ -61,6 +61,18 @@ describe 'Issues', feature: true do
       end
 
       expect(issue.reload.assignee).to be_nil
+    end
+  end
+
+  describe 'Issue info' do
+    it 'excludes award_emoji from comment count' do
+      issue = create(:issue, author: @user, assignee: @user, project: project, title: 'foobar')
+      create(:upvote_note, noteable: issue)
+
+      visit namespace_project_issues_path(project.namespace, project, assignee_id: @user.id)
+
+      expect(page).to have_content 'foobar'
+      expect(page.all('.issue-no-comments').first.text).to eq "0"
     end
   end
 
@@ -187,7 +199,7 @@ describe 'Issues', feature: true do
   describe 'update assignee from issue#show' do
     let(:issue) { create(:issue, project: project, author: @user, assignee: @user) }
 
-    context 'by autorized user' do
+    context 'by authorized user' do
 
       it 'allows user to select unassigned', js: true do
         visit namespace_project_issue_path(project.namespace, project, issue)

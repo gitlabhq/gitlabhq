@@ -253,6 +253,8 @@ class Repository
     # This ensures this particular cache is flushed after the first commit to a
     # new repository.
     expire_emptiness_caches if empty?
+    expire_branch_count_cache
+    expire_tag_count_cache
   end
 
   def expire_branch_cache(branch_name = nil)
@@ -795,7 +797,7 @@ class Repository
 
   def search_files(query, ref)
     offset = 2
-    args = %W(#{Gitlab.config.git.bin_path} grep -i -I -n --before-context #{offset} --after-context #{offset} -e #{query} #{ref || root_ref})
+    args = %W(#{Gitlab.config.git.bin_path} grep -i -I -n --before-context #{offset} --after-context #{offset} -e #{Regexp.escape(query)} #{ref || root_ref})
     Gitlab::Popen.popen(args, path_to_repo).first.scrub.split(/^--$/)
   end
 
@@ -896,9 +898,9 @@ class Repository
   end
 
   def main_language
-    unless empty?
-      Linguist::Repository.new(rugged, rugged.head.target_id).language
-    end
+    return if empty? || rugged.head_unborn?
+
+    Linguist::Repository.new(rugged, rugged.head.target_id).language
   end
 
   def avatar

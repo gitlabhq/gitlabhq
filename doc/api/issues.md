@@ -298,6 +298,7 @@ PUT /projects/:id/issues/:issue_id
 | `milestone_id`  | integer | no  | The ID of a milestone to assign the issue to |
 | `labels`        | string  | no  | Comma-separated label names for an issue  |
 | `state_event`   | string  | no  | The state event of an issue. Set `close` to close the issue and `reopen` to reopen it |
+| `updated_at`    | string  | no  | Date time string, ISO 8601 formatted, e.g. `2016-03-11T03:45:40Z` |
 
 ```bash
 curl -X PUT -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/4/issues/85?state_event=close
@@ -349,6 +350,170 @@ DELETE /projects/:id/issues/:issue_id
 
 ```bash
 curl -X DELETE -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/4/issues/85
+```
+
+## Move an issue
+
+Moves an issue to a different project. If the operation is successful, a status
+code `201` together with moved issue is returned. If the project, issue, or
+target project is not found, error `404` is returned. If the target project
+equals the source project or the user has insufficient permissions to move an
+issue, error `400` together with an explaining error message is returned.
+
+```
+POST /projects/:id/issues/:issue_id/move
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer | yes | The ID of a project |
+| `issue_id` | integer | yes | The ID of a project's issue |
+| `to_project_id` | integer | yes | The ID of the new project |
+
+```bash
+curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/4/issues/85/move
+```
+
+Example response:
+
+```json
+{
+  "id": 92,
+  "iid": 11,
+  "project_id": 5,
+  "title": "Sit voluptas tempora quisquam aut doloribus et.",
+  "description": "Repellat voluptas quibusdam voluptatem exercitationem.",
+  "state": "opened",
+  "created_at": "2016-04-05T21:41:45.652Z",
+  "updated_at": "2016-04-07T12:20:17.596Z",
+  "labels": [],
+  "milestone": null,
+  "assignee": {
+    "name": "Miss Monserrate Beier",
+    "username": "axel.block",
+    "id": 12,
+    "state": "active",
+    "avatar_url": "http://www.gravatar.com/avatar/46f6f7dc858ada7be1853f7fb96e81da?s=80&d=identicon",
+    "web_url": "https://gitlab.example.com/u/axel.block"
+  },
+  "author": {
+    "name": "Kris Steuber",
+    "username": "solon.cremin",
+    "id": 10,
+    "state": "active",
+    "avatar_url": "http://www.gravatar.com/avatar/7a190fecbaa68212a4b68aeb6e3acd10?s=80&d=identicon",
+    "web_url": "https://gitlab.example.com/u/solon.cremin"
+  }
+}
+```
+
+## Subscribe to an issue
+
+Subscribes the authenticated user to an issue to receive notifications. If the
+operation is successful, status code `201` together with the updated issue is
+returned. If the user is already subscribed to the issue, the status code `304`
+is returned. If the project or issue is not found, status code `404` is
+returned.
+
+```
+POST /projects/:id/issues/:issue_id/subscription
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer | yes | The ID of a project |
+| `issue_id` | integer | yes | The ID of a project's issue |
+
+```bash
+curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/issues/93/subscription
+```
+
+Example response:
+
+```json
+{
+  "id": 92,
+  "iid": 11,
+  "project_id": 5,
+  "title": "Sit voluptas tempora quisquam aut doloribus et.",
+  "description": "Repellat voluptas quibusdam voluptatem exercitationem.",
+  "state": "opened",
+  "created_at": "2016-04-05T21:41:45.652Z",
+  "updated_at": "2016-04-07T12:20:17.596Z",
+  "labels": [],
+  "milestone": null,
+  "assignee": {
+    "name": "Miss Monserrate Beier",
+    "username": "axel.block",
+    "id": 12,
+    "state": "active",
+    "avatar_url": "http://www.gravatar.com/avatar/46f6f7dc858ada7be1853f7fb96e81da?s=80&d=identicon",
+    "web_url": "https://gitlab.example.com/u/axel.block"
+  },
+  "author": {
+    "name": "Kris Steuber",
+    "username": "solon.cremin",
+    "id": 10,
+    "state": "active",
+    "avatar_url": "http://www.gravatar.com/avatar/7a190fecbaa68212a4b68aeb6e3acd10?s=80&d=identicon",
+    "web_url": "https://gitlab.example.com/u/solon.cremin"
+  }
+}
+```
+
+## Unsubscribe from an issue
+
+Unsubscribes the authenticated user from the issue to not receive notifications
+from it. If the operation is successful, status code `200` together with the
+updated issue is returned. If the user is not subscribed to the issue, the
+status code `304` is returned. If the project or issue is not found, status code
+`404` is returned.
+
+```
+DELETE /projects/:id/issues/:issue_id/subscription
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer | yes | The ID of a project |
+| `issue_id` | integer | yes | The ID of a project's issue |
+
+```bash
+curl -X DELETE -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/issues/93/subscription
+```
+
+Example response:
+
+```json
+{
+  "id": 93,
+  "iid": 12,
+  "project_id": 5,
+  "title": "Incidunt et rerum ea expedita iure quibusdam.",
+  "description": "Et cumque architecto sed aut ipsam.",
+  "state": "opened",
+  "created_at": "2016-04-05T21:41:45.217Z",
+  "updated_at": "2016-04-07T13:02:37.905Z",
+  "labels": [],
+  "milestone": null,
+  "assignee": {
+    "name": "Edwardo Grady",
+    "username": "keyon",
+    "id": 21,
+    "state": "active",
+    "avatar_url": "http://www.gravatar.com/avatar/3e6f06a86cf27fa8b56f3f74f7615987?s=80&d=identicon",
+    "web_url": "https://gitlab.example.com/u/keyon"
+  },
+  "author": {
+    "name": "Vivian Hermann",
+    "username": "orville",
+    "id": 11,
+    "state": "active",
+    "avatar_url": "http://www.gravatar.com/avatar/5224fd70153710e92fb8bcf79ac29d67?s=80&d=identicon",
+    "web_url": "http://lgitlab.example.com/u/orville"
+  },
+  "subscribed": false
+}
 ```
 
 ## Comments on issues

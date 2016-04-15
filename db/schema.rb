@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160331133914) do
+ActiveRecord::Schema.define(version: 20160412140240) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -44,7 +44,6 @@ ActiveRecord::Schema.define(version: 20160331133914) do
     t.datetime "updated_at"
     t.string   "home_page_url"
     t.integer  "default_branch_protection",         default: 2
-    t.boolean  "twitter_sharing_enabled",           default: true
     t.text     "restricted_visibility_levels"
     t.boolean  "version_check_enabled",             default: true
     t.integer  "max_attachment_size",               default: 10,          null: false
@@ -78,6 +77,7 @@ ActiveRecord::Schema.define(version: 20160331133914) do
     t.string   "akismet_api_key"
     t.boolean  "email_author_in_body",              default: false
     t.integer  "default_group_visibility"
+    t.boolean  "repository_checks_enabled",         default: true
   end
 
   create_table "audit_events", force: :cascade do |t|
@@ -638,6 +638,18 @@ ActiveRecord::Schema.define(version: 20160331133914) do
   add_index "notes", ["project_id"], name: "index_notes_on_project_id", using: :btree
   add_index "notes", ["updated_at"], name: "index_notes_on_updated_at", using: :btree
 
+  create_table "notification_settings", force: :cascade do |t|
+    t.integer  "user_id",                 null: false
+    t.integer  "source_id",               null: false
+    t.string   "source_type",             null: false
+    t.integer  "level",       default: 0, null: false
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
+  end
+
+  add_index "notification_settings", ["source_id", "source_type"], name: "index_notification_settings_on_source_id_and_source_type", using: :btree
+  add_index "notification_settings", ["user_id"], name: "index_notification_settings_on_user_id", using: :btree
+
   create_table "oauth_access_grants", force: :cascade do |t|
     t.integer  "resource_owner_id", null: false
     t.integer  "application_id",    null: false
@@ -732,6 +744,8 @@ ActiveRecord::Schema.define(version: 20160331133914) do
     t.boolean  "public_builds",          default: true,     null: false
     t.string   "main_language"
     t.integer  "pushes_since_gc",        default: 0
+    t.boolean  "last_repository_check_failed"
+    t.datetime "last_repository_check_at"
   end
 
   add_index "projects", ["builds_enabled", "shared_runners_enabled"], name: "index_projects_on_builds_enabled_and_shared_runners_enabled", using: :btree
@@ -741,6 +755,7 @@ ActiveRecord::Schema.define(version: 20160331133914) do
   add_index "projects", ["creator_id"], name: "index_projects_on_creator_id", using: :btree
   add_index "projects", ["description"], name: "index_projects_on_description_trigram", using: :gin, opclasses: {"description"=>"gin_trgm_ops"}
   add_index "projects", ["last_activity_at"], name: "index_projects_on_last_activity_at", using: :btree
+  add_index "projects", ["last_repository_check_failed"], name: "index_projects_on_last_repository_check_failed", using: :btree
   add_index "projects", ["name"], name: "index_projects_on_name_trigram", using: :gin, opclasses: {"name"=>"gin_trgm_ops"}
   add_index "projects", ["namespace_id"], name: "index_projects_on_namespace_id", using: :btree
   add_index "projects", ["path"], name: "index_projects_on_path", using: :btree

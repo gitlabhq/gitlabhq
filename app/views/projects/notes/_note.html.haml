@@ -10,15 +10,15 @@
           = "#{note.author.to_reference} commented"
           %a{ href: "##{dom_id(note)}" }
             = time_ago_with_tooltip(note.created_at, placement: 'bottom', html_class: 'note-created-ago')
-        - if note_editable?(note)
-          .note-actions
-            - access = note.project.team.human_max_access(note.author.id)
-            - if access
-              %span.note-role
-                = access
+        .note-actions
+          - access = note.project.team.human_max_access(note.author.id)
+          - if access
+            %span.note-role
+              = access
+          - if note_editable?(note)
             = link_to '#', title: 'Edit comment', class: 'note-action-button js-note-edit' do
-              = icon('pencil-square-o')
-            = link_to namespace_project_note_path(note.project.namespace, note.project, note), title: 'Remove comment', method: :delete, data: { confirm: 'Are you sure you want to remove this comment?' }, remote: true, class: 'note-action-button js-note-delete' do
+              = icon('pencil')
+            = link_to namespace_project_note_path(note.project.namespace, note.project, note), title: 'Remove comment', method: :delete, data: { confirm: 'Are you sure you want to remove this comment?' }, remote: true, class: 'note-action-button js-note-delete danger' do
               = icon('trash-o')
       .note-body{class: note_editable?(note) ? 'js-task-list-container' : ''}
         .note-text

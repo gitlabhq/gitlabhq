@@ -41,8 +41,17 @@
       word-wrap: break-word;
 
       .md {
-        color: #7f8fa4;
+        color: $gl-grayish-blue;
         font-size: $gl-font-size;
+
+        .label {
+          color: $gl-text-color;
+          font-size: inherit;
+        }
+
+        iframe.twitter-share-button {
+          vertical-align: bottom;
+        }
       }
 
       pre {

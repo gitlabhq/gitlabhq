@@ -181,6 +181,7 @@ Read more on:
 - [Introduction to GitLab Performance Monitoring](introduction.md)
 - [GitLab Configuration](gitlab_configuration.md)
 - [InfluxDB Schema](influxdb_schema.md)
+- [Grafana Install/Configuration](grafana_configuration.md
 
 [influxdb-retention]: https://docs.influxdata.com/influxdb/v0.9/query_language/database_management/#retention-policy-management
 [influxdb documentation]: https://docs.influxdata.com/influxdb/v0.9/
