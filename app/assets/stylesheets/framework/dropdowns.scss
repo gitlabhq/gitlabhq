@@ -432,7 +432,7 @@
           display: block;
           position: relative;
           top: -2px;
-          color: #707070;
+          color: $dropdown-title-btn-color;
           font: normal normal normal 14px/1 FontAwesome;
           font-size: inherit;
           text-rendering: auto;
@@ -445,7 +445,7 @@
     .ui-state-active,
     .ui-state-hover {
       color: $md-link-color;
-      background-color: #ecf3fe;
+      background-color: $calendar-hover-bg;
     }
 
     .ui-datepicker-prev,
@@ -484,7 +484,7 @@
 
     td {
       padding: 0;
-      border: 1px solid rgba(#000, .1);
+      border: 1px solid $calendar-border-color;
 
       &:first-child {
         border-left: 0;
@@ -502,7 +502,7 @@
     }
 
     .ui-datepicker-title {
-      color: #555;
+      color: $gl-gray;
       font-size: 15px;
       line-height: 1;
       font-weight: normal;
@@ -511,13 +511,13 @@
 
   th {
     padding: 2px 0;
-    color: #b8b8b8;
+    color: $calendar-header-color;
     font-weight: normal;
     text-transform: lowercase;
-    border-top: 1px solid rgba(#000, .1);
+    border-top: 1px solid $calendar-border-color;
   }
 
   .ui-datepicker-unselectable {
-    background-color: #faf9f9;
+    background-color: $calendar-unselectable-bg;
   }
 }
