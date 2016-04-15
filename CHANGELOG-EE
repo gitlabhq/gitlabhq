@@ -1,15 +1,15 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.7.0 (unreleased)
-  - Don't attempt to include too large diffs in e-mail-on-push messages (Stan Hu)
   - Update GitLab Pages to 0.2.1: support user-defined 404 pages
   - Refactor group sync to pull access level logic to its own class. !306
   - [Elastic] Stabilize database indexer if database is inconsistent
   - Add ability to sync to remote mirrors. !249
 
 v 8.6.6
-  - Fix LDAP group sync regression for groups with member value `uid=<username>` !335
-  - Concat AD group recursive member results with regular member results
+  - Concat AD group recursive member results with regular member results. !333
+  - Fix LDAP group sync regression for groups with member value `uid=<username>`. !335
+  - Don't attempt to include too large diffs in e-mail-on-push messages (Stan Hu). !338
 
 v 8.6.5
   - No EE-specific changes
