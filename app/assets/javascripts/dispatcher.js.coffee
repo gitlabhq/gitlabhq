@@ -109,7 +109,7 @@ class Dispatcher
       when 'projects:group_links:index'
         new GroupsSelect()
       when 'search:show'
-        new SearchDropdowns()
+        new Search()
 
     switch path.first()
       when 'admin'

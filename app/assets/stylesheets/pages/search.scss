@@ -169,6 +169,19 @@
     }
   }
 
+  .search-icon {
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    color: $gray-darkest;
+    pointer-events: none;
+  }
+
+  .search-text-input {
+    padding-left: $gl-padding + 15px;
+    padding-right: $gl-padding + 15px;
+  }
+
   .btn-search {
     width: 100%;
     margin-top: 5px;
@@ -195,5 +208,22 @@
       width: 160px;
       margin-top: 0;
     }
+  }
+}
+
+.search-clear {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  padding: 0;
+  color: $gray-darkest;
+  line-height: 0;
+  background: none;
+  border: 0;
+
+  &:hover,
+  &:focus {
+    color: $gl-link-color;
+    outline: none;
   }
 }

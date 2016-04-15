@@ -1,5 +1,7 @@
-class @SearchDropdowns
+class @Search
   constructor: ->
+    @eventListeners()
+
     $('.js-search-group-dropdown').glDropdown(
       selectable: true
       filterable: true
@@ -40,5 +42,27 @@ class @SearchDropdowns
         @submitSearch()
     )
 
+  eventListeners: ->
+    $(document)
+      .off 'keyup', '.js-search-input'
+      .on 'keyup', '.js-search-input', @searchKeyUp
+
+    $(document)
+      .off 'click', '.js-search-clear'
+      .on 'click', '.js-search-clear', @clearSearchField
+
   submitSearch: ->
     $('.js-search-form').submit()
+
+  searchKeyUp: ->
+    $input = $(@)
+
+    if $input.val() is ''
+      $('.js-search-clear').addClass 'hidden'
+    else
+      $('.js-search-clear').removeClass 'hidden'
+
+  clearSearchField: ->
+    $('.js-search-input')
+      .val ''
+      .trigger 'keyup'

@@ -9,7 +9,7 @@
       = @group.name
     - else
       Any
-    %b.caret
+    = icon("chevron-down")
   .dropdown-menu.dropdown-select.dropdown-menu-selectable.dropdown-menu-align-right
     .dropdown-title
       %span Filter results by group
@@ -26,7 +26,7 @@
       = @project.name_with_namespace
     - else
       Any
-    %b.caret
+    = icon("chevron-down")
   .dropdown-menu.dropdown-select.dropdown-menu-selectable.dropdown-menu-align-right
     .dropdown-title
       %span Filter results by project
