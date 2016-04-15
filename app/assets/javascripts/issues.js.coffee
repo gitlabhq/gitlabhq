@@ -36,19 +36,37 @@
 
     $(".selected_issue").bind "change", Issues.checkChanged
 
+  getLabelsQueryString: ->
+    pageURL = decodeURIComponent(window.location.search.substring(1))
+    urlVariables = pageURL.split('&')
+    labelParams = (
+      variables for variables in urlVariables when variables.indexOf('label_name[]') > -1
+    ).join('&')
+
+  removeLabelsQueryString: (url) ->
+    pageURL = decodeURIComponent(url)
+    urlVariables = pageURL.split('&')
+    Params = (
+      variables for variables in urlVariables when variables.indexOf('label_name[]') is -1
+    ).join('&')
+
   # Update state filters if present in page
   updateStateFilters: ->
     stateFilters =  $('.issues-state-filters')
     newParams = {}
-    paramKeys = ['author_id', 'label_name', 'milestone_title', 'assignee_id', 'issue_search']
+    paramKeys = ['author_id', 'milestone_title', 'assignee_id', 'issue_search']
 
     for paramKey in paramKeys
       newParams[paramKey] = gl.utils.getUrlParameter(paramKey) or ''
 
     if stateFilters.length
       stateFilters.find('a').each ->
-        initialUrl = $(this).attr 'href'
-        $(this).attr 'href', gl.utils.mergeUrlParams(newParams, initialUrl)
+        initialUrl = Issues.removeLabelsQueryString($(this).attr 'href')
+        if Issues.getLabelsQueryString()
+          newUrl = "#{gl.utils.mergeUrlParams(newParams, initialUrl)}&#{Issues.getLabelsQueryString()}"
+        else
+          newUrl = gl.utils.mergeUrlParams(newParams, initialUrl)
+        $(this).attr 'href', newUrl
 
   # Make sure we trigger ajax request only after user stop typing
   initSearch: ->
@@ -91,7 +109,8 @@
               opacity: 0
             }
         }).then( ->
-          $filteredLabels.html(Issue.labelRow(data))
+          if typeof Issue.labelRow is 'function'
+            $filteredLabels.html(Issue.labelRow(data))
           $spans = $filteredLabels.find('span')
           $spans.css('opacity',0)
           return gl.animate.animateEach($spans, 'fadeInUp', 20, {
