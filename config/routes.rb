@@ -264,6 +264,7 @@ Rails.application.routes.draw do
 
         member do
           put :transfer
+          post :repository_check
         end
 
         resources :runner_projects
@@ -281,6 +282,7 @@ Rails.application.routes.draw do
     resource :application_settings, only: [:show, :update] do
       resources :services
       put :reset_runners_token
+      put :clear_repository_check_states
     end
 
     resources :labels
