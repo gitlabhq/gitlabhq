@@ -53,7 +53,7 @@ describe MergeRequests::MergeService, services: true do
     end
   end
 
-  describe :hooks_validation_pass? do
+  describe '#hooks_validation_pass?' do
     let(:service) { MergeRequests::MergeService.new(project, user, commit_message: 'Awesome message') }
 
     it 'returns true when valid' do
@@ -65,7 +65,7 @@ describe MergeRequests::MergeService, services: true do
         allow(project).to receive(:git_hook) { build(:git_hook, commit_message_regex: 'unmatched pattern .*') }
       end
 
-      it 'returns false and save error when invalid' do
+      it 'returns false and saves error when invalid' do
         expect(service.hooks_validation_pass?(merge_request)).to be_falsey
         expect(merge_request.merge_error).not_to be_empty
       end
@@ -76,7 +76,7 @@ describe MergeRequests::MergeService, services: true do
         allow(project).to receive(:git_hook) { build(:git_hook, author_email_regex: '.*@unmatchedemaildomain.com') }
       end
 
-      it 'returns false and save error when invalid' do
+      it 'returns false and saves error when invalid' do
         expect(service.hooks_validation_pass?(merge_request)).to be_falsey
         expect(merge_request.merge_error).not_to be_empty
       end
