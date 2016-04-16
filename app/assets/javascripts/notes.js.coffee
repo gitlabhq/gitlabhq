@@ -366,6 +366,11 @@ class @Notes
     # Show the attachment delete link
     note.find(".js-note-attachment-delete").show()
 
+    done = ($noteText) ->
+      # Neat little trick to put the cursor at the end
+      noteTextVal = $noteText.val()
+      $noteText.val('').val(noteTextVal);
+
     new GLForm form
     if scrollTo? and myLastNote?
       # scroll to the bottom 
@@ -376,12 +381,12 @@ class @Notes
       }, 500, ->
         $noteText = form.find(".js-note-text")
         $noteText.focus()
-        # Neat little trick to put the cursor at the end
-        noteTextVal = $noteText.val()
-        $noteText.val('').val(noteTextVal);
+        done($noteText)
       );
     else
-      form.find(".js-note-text").focus()
+      $noteText = form.find('.js-note-text')
+      $noteText.focus()
+      done($noteText)
 
   ###
   Called in response to clicking the edit note link
