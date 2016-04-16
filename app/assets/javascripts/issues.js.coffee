@@ -36,20 +36,6 @@
 
     $(".selected_issue").bind "change", Issues.checkChanged
 
-  getLabelsQueryString: ->
-    pageURL = decodeURIComponent(window.location.search.substring(1))
-    urlVariables = pageURL.split('&')
-    labelParams = (
-      variables for variables in urlVariables when variables.indexOf('label_name[]') > -1
-    ).join('&')
-
-  removeLabelsQueryString: (url) ->
-    pageURL = decodeURIComponent(url)
-    urlVariables = pageURL.split('&')
-    Params = (
-      variables for variables in urlVariables when variables.indexOf('label_name[]') is -1
-    ).join('&')
-
   # Update state filters if present in page
   updateStateFilters: ->
     stateFilters =  $('.issues-state-filters')
@@ -61,9 +47,9 @@
 
     if stateFilters.length
       stateFilters.find('a').each ->
-        initialUrl = Issues.removeLabelsQueryString($(this).attr 'href')
-        if Issues.getLabelsQueryString()
-          newUrl = "#{gl.utils.mergeUrlParams(newParams, initialUrl)}&#{Issues.getLabelsQueryString()}"
+        initialUrl = gl.utils.removeParamQueryString($(this).attr('href'), 'label_name[]')
+        if gl.utils.getParamQueryString('label_name[]')
+          newUrl = "#{gl.utils.mergeUrlParams(newParams, initialUrl)}&#{gl.utils.getParamQueryString('label_name[]')}"
         else
           newUrl = gl.utils.mergeUrlParams(newParams, initialUrl)
         $(this).attr 'href', newUrl

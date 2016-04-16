@@ -28,4 +28,20 @@
         newUrl = "#{newUrl}#{(if newUrl.indexOf('?') > 0 then '&' else '?')}#{paramName}=#{paramValue}"
     newUrl
 
+  # get parameter query string from url.
+  w.gl.utils.getParamQueryString = (param) ->
+    pageURL = decodeURIComponent(window.location.search.substring(1))
+    urlVariables = pageURL.split('&')
+    (
+      variables for variables in urlVariables when variables.indexOf(param) > -1
+    ).join('&')
+
+  # removes parameter query string from url. returns the modified url
+  w.gl.utils.removeParamQueryString = (url, param) ->
+    url = decodeURIComponent(url)
+    urlVariables = url.split('&')
+    (
+      variables for variables in urlVariables when variables.indexOf(param) is -1
+    ).join('&')
+
 ) window
