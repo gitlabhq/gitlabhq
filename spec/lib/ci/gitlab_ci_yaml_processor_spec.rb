@@ -286,6 +286,28 @@ module Ci
       end
 
     end
+    
+    describe "Scripts handling" do
+      let(:config_data) { YAML.dump(config) }
+      let(:config_processor) { GitlabCiYamlProcessor.new(config_data, path) }
+      
+      subject { config_processor.builds_for_stage_and_ref("test", "master").first }
+      
+      describe "finally_script" do
+        context "in global context" do
+          let(:config) {
+            {
+              finally_script: ["finally_script"],
+              test: { script: ["script"] }
+            }
+          }
+
+          it "return finally_script in options" do
+            expect(subject[:options][:finally_script]).to eq(["finally_script"])
+          end
+        end
+      end
+    end
 
     describe "Image and service handling" do
       it "returns image and service when defined" do
@@ -605,6 +627,13 @@ EOT
         expect do
           GitlabCiYamlProcessor.new(config, path)
         end.to raise_error(GitlabCiYamlProcessor::ValidationError, "before_script should be an array of strings")
+      end
+
+      it "returns errors if finally_script parameter is invalid" do
+        config = YAML.dump({ finally_script: "bundle update", rspec: { script: "test" } })
+        expect do
+          GitlabCiYamlProcessor.new(config, path)
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "finally_script should be an array of strings")
       end
 
       it "returns errors if image parameter is invalid" do
