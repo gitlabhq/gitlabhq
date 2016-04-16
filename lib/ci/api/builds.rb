@@ -57,7 +57,8 @@ module Ci
         # Body:
         #   content of logs to append
         # Headers:
-        #   Content-Range: range of conntent that was sent
+        #   Content-Range (required) - range of conntent that was sent
+        #   BUILD-TOKEN (required) - The build authorization token
         # Example Request:
         #   PATCH /builds/:id/trace.txt
         patch ":id/trace.txt" do
