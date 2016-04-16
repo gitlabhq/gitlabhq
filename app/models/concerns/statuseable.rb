@@ -33,7 +33,7 @@ module Statuseable
 
     def duration
       duration_array = all.map(&:duration).compact
-      duration_array.reduce(:+).to_i
+      duration_array.reduce(:+)
     end
 
     def started_at

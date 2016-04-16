@@ -50,12 +50,19 @@ module API
         commit = @project.commit(params[:sha])
         not_found! 'Commit' unless commit
 
-        ref = params[:ref] ||
-          begin
-            branches = @project.repository.branch_names_contains(commit.sha)
-            not_found! 'Reference for commit' if branches.none?
-            branches.first
-          end
+        # Since the CommitStatus is attached to Ci::Commit (in the future Pipeline)
+        # We need to always have the pipeline object
+        # To have a valid pipeline object that can be attached to specific MR
+        # Other CI service needs to send `ref`
+        # If we don't receive it, we will attach the CommitStatus to
+        # the first found branch on that commit
+
+        ref = params[:ref]
+        unless ref
+          branches = @project.repository.branch_names_contains(commit.sha)
+          not_found! 'References for commit' if branches.none?
+          ref = branches.first
+        end
 
         ci_commit = @project.ensure_ci_commit(commit.sha, ref)
 

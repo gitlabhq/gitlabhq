@@ -26,7 +26,10 @@ module Ci
     has_many :builds, class_name: 'Ci::Build'
     has_many :trigger_requests, dependent: :destroy, class_name: 'Ci::TriggerRequest'
 
+    delegate :stages, to: :statuses
+
     validates_presence_of :sha
+    validates_presence_of :status
     validate :valid_commit_sha
 
     # Invalidate object and save if when touched
@@ -38,10 +41,6 @@ module Ci
 
     def self.stages
       CommitStatus.where(commit: all).stages
-    end
-
-    def stages
-      statuses.stages
     end
 
     def project_id
@@ -82,7 +81,7 @@ module Ci
 
     def retryable?
       builds.latest.any? do |build|
-        build.failed? || build.retryable?
+        build.failed? && build.retryable?
       end
     end
 

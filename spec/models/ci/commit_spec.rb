@@ -27,6 +27,8 @@ describe Ci::Commit, models: true do
   it { is_expected.to have_many(:trigger_requests) }
   it { is_expected.to have_many(:builds) }
   it { is_expected.to validate_presence_of :sha }
+  it { is_expected.to validate_presence_of :status }
+  it { is_expected.to delegate_method(:stages).to(:statuses) }
 
   it { is_expected.to respond_to :git_author_name }
   it { is_expected.to respond_to :git_author_email }
@@ -295,6 +297,75 @@ describe Ci::Commit, models: true do
     it "calculates average when there is one build without coverage" do
       FactoryGirl.create :ci_build, commit: commit
       expect(commit.coverage).to be_nil
+    end
+  end
+
+  describe '#retryable?' do
+    subject { commit.retryable? }
+
+    context 'no failed builds' do
+      before do
+        FactoryGirl.create :ci_build, name: "rspec", commit: commit, status: 'success'
+      end
+
+      it 'be not retryable' do
+        is_expected.to be_falsey
+      end
+    end
+
+    context 'with failed builds' do
+      before do
+        FactoryGirl.create :ci_build, name: "rspec", commit: commit, status: 'running'
+        FactoryGirl.create :ci_build, name: "rubocop", commit: commit, status: 'failed'
+      end
+
+      it 'be retryable' do
+        is_expected.to be_truthy
+      end
+    end
+  end
+
+  describe '#stages' do
+    let(:commit2) { FactoryGirl.create :ci_commit, project: project }
+    subject { CommitStatus.where(commit: [commit, commit2]).stages }
+
+    before do
+      FactoryGirl.create :ci_build, commit: commit2, stage: 'test', stage_idx: 1
+      FactoryGirl.create :ci_build, commit: commit, stage: 'build', stage_idx: 0
+    end
+
+    it 'return all stages' do
+      is_expected.to eq(%w(build test))
+    end
+  end
+
+  describe '#update_state' do
+    it 'execute update_state after touching object' do
+      expect(commit).to receive(:update_state).and_return(true)
+      commit.touch
+    end
+
+    context 'dependent objects' do
+      let(:commit_status) { build :commit_status, commit: commit }
+
+      it 'execute update_state after saving dependent object' do
+        expect(commit).to receive(:update_state).and_return(true)
+        commit_status.save
+      end
+    end
+
+    context 'update state' do
+      let(:build) { FactoryGirl.create :ci_build, :success, commit: commit, started_at: Time.now - 120, finished_at: Time.now - 60 }
+
+      before do
+        build
+      end
+
+      [:status, :started_at, :finished_at, :duration].each do |param|
+        it "update #{param}" do
+          expect(commit.send(param)).to eq(build.send(param))
+        end
+      end
     end
   end
 end

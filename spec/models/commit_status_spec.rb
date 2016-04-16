@@ -182,4 +182,78 @@ describe CommitStatus, models: true do
       is_expected.to eq([@commit1, @commit2])
     end
   end
+
+  describe '#before_sha' do
+    subject { commit_status.before_sha }
+
+    context 'when no before_sha is set for ci::commit' do
+      before { commit.before_sha = nil }
+
+      it 'return blank sha' do
+        is_expected.to eq(Gitlab::Git::BLANK_SHA)
+      end
+    end
+
+    context 'for before_sha set for ci::commit' do
+      let(:value) { '1234' }
+      before { commit.before_sha = value }
+
+      it 'return the set value' do
+        is_expected.to eq(value)
+      end
+    end
+  end
+
+  describe '#stages' do
+    before do
+      FactoryGirl.create :commit_status, commit: commit, stage: 'build', stage_idx: 0, status: 'success'
+      FactoryGirl.create :commit_status, commit: commit, stage: 'build', stage_idx: 0, status: 'failed'
+      FactoryGirl.create :commit_status, commit: commit, stage: 'deploy', stage_idx: 2, status: 'running'
+      FactoryGirl.create :commit_status, commit: commit, stage: 'test', stage_idx: 1, status: 'success'
+    end
+
+    context 'stages list' do
+      subject { CommitStatus.where(commit: commit).stages }
+
+      it 'return ordered list of stages' do
+        is_expected.to eq(%w(build test deploy))
+      end
+    end
+
+    context 'stages with statuses' do
+      subject { CommitStatus.where(commit: commit).stages_status }
+
+      it 'return list of stages with statuses' do
+        is_expected.to eq({
+          'build' => 'failed',
+          'test' => 'success',
+          'deploy' => 'running'
+        })
+      end
+    end
+  end
+
+  describe '#branch?' do
+    subject { commit_status.branch? }
+
+    context 'is not a tag' do
+      before do
+        commit_status.tag = false
+      end
+
+      it 'return true when tag is set to false' do
+        is_expected.to be_truthy
+      end
+    end
+
+    context 'is not a tag' do
+      before do
+        commit_status.tag = true
+      end
+
+      it 'return false when tag is set to true' do
+        is_expected.to be_falsey
+      end
+    end
+  end
 end
