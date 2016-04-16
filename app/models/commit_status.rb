@@ -33,7 +33,7 @@
 #
 
 class CommitStatus < ActiveRecord::Base
-  include CiStatus
+  include Statuseable
 
   self.table_name = 'ci_builds'
 
@@ -81,7 +81,11 @@ class CommitStatus < ActiveRecord::Base
     end
   end
 
-  delegate :before_sha, :sha, :short_sha, to: :commit, prefix: false
+  delegate :sha, :short_sha, to: :commit
+
+  def before_sha
+    commit.before_sha || Gitlab::Git::BLANK_SHA
+  end
 
   def self.stages
     order_by = 'max(stage_idx)'

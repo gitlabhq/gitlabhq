@@ -19,7 +19,7 @@
 module Ci
   class Commit < ActiveRecord::Base
     extend Ci::Model
-    include CiStatus
+    include Statuseable
 
     belongs_to :project, class_name: '::Project', foreign_key: :gl_project_id
     has_many :statuses, class_name: 'CommitStatus'

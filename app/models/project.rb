@@ -958,7 +958,7 @@ class Project < ActiveRecord::Base
   end
 
   def ci_commit(sha, ref)
-    ci_commits.find_by(sha: sha, ref: ref)
+    ci_commits.order(id: :desc).find_by(sha: sha, ref: ref)
   end
 
   def ensure_ci_commit(sha, ref)

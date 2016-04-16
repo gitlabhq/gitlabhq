@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe CiStatus do
+describe Statuseable do
   before do
     @object = Object.new
-    @object.extend(CiStatus::ClassMethods)
+    @object.extend(Statuseable::ClassMethods)
   end
 
   describe '.status' do

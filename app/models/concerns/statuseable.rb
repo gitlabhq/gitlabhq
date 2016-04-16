@@ -1,4 +1,4 @@
-module CiStatus
+module Statuseable
   extend ActiveSupport::Concern
 
   AVAILABLE_STATUSES = %w(pending running success failed canceled skipped)
@@ -41,7 +41,7 @@ module CiStatus
     end
 
     def finished_at
-      all.minimum(:finished_at)
+      all.maximum(:finished_at)
     end
   end
 
