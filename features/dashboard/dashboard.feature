@@ -79,3 +79,8 @@ Feature: Dashboard
     And I sort the list by "Oldest updated"
     And I visit project "Shop" merge requests page
     Then The list should be sorted by "Oldest updated"
+
+  @javascript @focus
+  Scenario: Sort owned Projects
+    Then I filter the list by "Owned by me"
+    Then The list should be filtered by "Owned by me"

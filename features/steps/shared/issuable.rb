@@ -138,6 +138,20 @@ module SharedIssuable
     end
   end
 
+  step 'I filter the list by "Owned by me"' do
+    find('button.dropdown-toggle.btn').click
+
+    page.within('ul.dropdown-menu.dropdown-menu-align-right') do
+      click_link "Owned by me"
+    end
+  end
+
+  step 'The list should be filtered by "Owned by me"' do
+    page.within('ul.dropdown-menu.dropdown-menu-align-right') do
+      expect(page).to have_selector('a', text: 'Owned by me')
+    end
+  end
+
   step 'I should see "1 of 1" in the sidebar' do
     expect_sidebar_content('1 of 1')
   end
