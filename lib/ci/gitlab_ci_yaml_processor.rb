@@ -43,7 +43,7 @@ module Ci
     private
 
     def initial_parsing
-      @before_script = @config[:before_script] || []
+      @before_script = @config[:before_script]
       @finally_script = @config[:finally_script]
       @image = @config[:image]
       @services = @config[:services]
@@ -73,7 +73,6 @@ module Ci
       {
         stage_idx: stages.index(job[:stage]),
         stage: job[:stage],
-        commands: [job[:before_script] || @before_script, job[:script]].flatten.join("\n"),
         tag_list: job[:tags] || [],
         name: name,
         only: job[:only],
@@ -86,13 +85,15 @@ module Ci
           artifacts: job[:artifacts],
           cache: job[:cache] || @cache,
           dependencies: job[:dependencies],
+          before_script: job[:before_script] || @before_script,
+          script: [job[:script]].flatten,
           finally_script: job[:finally_script] || @finally_script,
         }.compact
       }
     end
 
     def validate!
-      unless validate_array_of_strings(@before_script)
+      unless @before_script.nil? || validate_array_of_strings(@before_script)
         raise ValidationError, "before_script should be an array of strings"
       end
 

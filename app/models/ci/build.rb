@@ -125,6 +125,18 @@ module Ci
       project.builds_enabled? && commands.present?
     end
 
+    # We provide this method for API compatibility
+    # Old runners may not understand the before_script and script passed directly in options
+    # After sometime we could remove the commands column
+    def commands
+      read_attribute(:commands) ||
+        begin
+          commands = [options[:before_script], options[:script]]
+          commands = commands.compact.flatten
+          commands.join("\n")
+        end
+    end
+
     def retried?
       !self.commit.latest_statuses_for_ref(self.ref).include?(self)
     end

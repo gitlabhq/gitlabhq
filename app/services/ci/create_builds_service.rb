@@ -19,7 +19,6 @@ module Ci
         # don't create the same build twice
         unless commit.builds.find_by(ref: ref, tag: tag, trigger_request: trigger_request, name: build_attrs[:name])
           build_attrs.slice!(:name,
-                             :commands,
                              :tag_list,
                              :options,
                              :allow_failure,

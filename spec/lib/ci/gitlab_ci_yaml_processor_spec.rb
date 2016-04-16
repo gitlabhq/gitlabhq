@@ -22,9 +22,11 @@ module Ci
           except: nil,
           name: :rspec,
           only: nil,
-          commands: "pwd\nrspec",
           tag_list: [],
-          options: {},
+          options: {
+            before_script: ["pwd"],
+            script: ["rspec"],
+          },
           allow_failure: false,
           when: "on_success"
         })
@@ -302,8 +304,8 @@ module Ci
             }
           }
           
-          it "return commands with scripts concencaced" do
-            expect(subject[:commands]).to eq("global script\nscript")
+          it "return before_script in options" do
+            expect(subject[:options][:before_script]).to eq(["global script"])
           end
         end
  
@@ -315,8 +317,8 @@ module Ci
             }
           }
 
-          it "return commands with scripts concencaced" do
-            expect(subject[:commands]).to eq("local script\nscript")
+          it "return before_script in options" do
+            expect(subject[:options][:before_script]).to eq(["local script"])
           end
         end
       end
@@ -328,8 +330,8 @@ module Ci
           }
         }
 
-        it "return commands with scripts concencaced" do
-          expect(subject[:commands]).to eq("script")
+        it "return script in options" do
+          expect(subject[:options][:script]).to eq(["script"])
         end
       end
 
@@ -380,11 +382,12 @@ module Ci
           stage_idx: 1,
           name: :rspec,
           only: nil,
-          commands: "pwd\nrspec",
           tag_list: [],
           options: {
             image: "ruby:2.1",
-            services: ["mysql"]
+            services: ["mysql"],
+            before_script: ["pwd"],
+            script: ["rspec"],
           },
           allow_failure: false,
           when: "on_success"
@@ -408,11 +411,12 @@ module Ci
           stage_idx: 1,
           name: :rspec,
           only: nil,
-          commands: "pwd\nrspec",
           tag_list: [],
           options: {
             image: "ruby:2.5",
-            services: ["postgresql"]
+            services: ["postgresql"],
+            before_script: ["pwd"],
+            script: ["rspec"],
           },
           allow_failure: false,
           when: "on_success"
@@ -530,7 +534,6 @@ module Ci
           stage_idx: 1,
           name: :rspec,
           only: nil,
-          commands: "pwd\nrspec",
           tag_list: [],
           options: {
             image: "ruby:2.1",
@@ -539,7 +542,9 @@ module Ci
               name: "custom_name",
               paths: ["logs/", "binaries/"],
               untracked: true
-            }
+            },
+            before_script: ["pwd"],
+            script: ["rspec"],
           },
           when: "on_success",
           allow_failure: false
@@ -611,9 +616,10 @@ module Ci
           stage_idx: 1,
           name: :normal_job,
           only: nil,
-          commands: "test",
           tag_list: [],
-          options: {},
+          options: {
+            script: ["test"]
+          },
           when: "on_success",
           allow_failure: false
         })
@@ -638,11 +644,12 @@ EOT
           stage_idx: 1,
           name: :job1,
           only: nil,
-          commands: "execute-script-for-job",
           tag_list: [],
-          options: {},
+          options: {
+            script: ["execute-script-for-job"]
+          },
           when: "on_success",
-          allow_failure: false
+          allow_failure: false,
         })
         expect(config_processor.builds_for_stage_and_ref("test", "master").second).to eq({
           except: nil,
@@ -650,9 +657,10 @@ EOT
           stage_idx: 1,
           name: :job2,
           only: nil,
-          commands: "execute-script-for-job",
           tag_list: [],
-          options: {},
+          options: {
+            script: ["execute-script-for-job"]
+          },
           when: "on_success",
           allow_failure: false
         })
