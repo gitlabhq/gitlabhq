@@ -253,19 +253,6 @@ describe Ci::Build, models: true do
               )
             end
           end
-
-          context 'when job variable has same key other variable has' do
-            let(:build) { create(:ci_build, name: 'production') }
-
-            it 'contains job yaml variable' do
-              expect(subject).to include(key: :DB_NAME, value: 'mysql',
-                                         public: true)
-            end
-
-            it 'contains only one variable with this key' do
-              expect(subject.count { |var| var[:key] == :DB_NAME } ).to eq 1
-            end
-          end
         end
       end
     end

@@ -147,8 +147,7 @@ module Ci
     end
 
     def variables
-      (predefined_variables + yaml_variables + project_variables + trigger_variables)
-        .reverse.uniq { |var| var[:key] }.reverse
+      predefined_variables + yaml_variables + project_variables + trigger_variables
     end
 
     def merge_request
