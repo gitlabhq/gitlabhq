@@ -85,7 +85,7 @@ Once you click it, a new branch will be created that diverges from the default
 branch of your project, by default `master`. The branch name will be based on
 the title of the issue and as suffix it will have its ID. Thus, the example
 screenshot above will yield a branch named
-`et-cum-et-sed-expedita-repellat-consequatur-ut-assumenda-numquam-rerum-2`.
+`2-et-cum-et-sed-expedita-repellat-consequatur-ut-assumenda-numquam-rerum`.
 
 After the branch is created, you can edit files in the repository to fix
 the issue. When a merge request is created based on the newly created branch,

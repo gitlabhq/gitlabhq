@@ -27,7 +27,7 @@
           = icon('thumbs-down')
           = downvotes
 
-      - note_count = issue.notes.user.count
+      - note_count = issue.notes.user.nonawards.count
       - if note_count > 0
         %li
           = link_to issue_path(issue) + "#notes" do

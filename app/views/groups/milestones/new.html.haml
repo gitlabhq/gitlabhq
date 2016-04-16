@@ -8,7 +8,7 @@
   This will create milestone in every selected project
 %hr
 
-= form_for @milestone, url: group_milestones_path(@group), html: { class: 'form-horizontal milestone-form gfm-form js-quick-submit js-requires-input' }  do |f|
+= form_for @milestone, url: group_milestones_path(@group), html: { class: 'form-horizontal milestone-form common-note-form js-quick-submit js-requires-input' }  do |f|
   .row
     - if @milestone.errors.any?
       #error_explanation
@@ -27,7 +27,7 @@
         = f.label :description, "Description", class: "control-label"
         .col-sm-10
           = render layout: 'projects/md_preview', locals: { preview_class: "md-preview" } do
-            = render 'projects/zen', f: f, attr: :description, classes: 'description form-control'
+            = render 'projects/zen', f: f, attr: :description, classes: 'note-textarea', placeholder: 'Write milestone description...'
             .clearfix
             .error-alert
       .form-group

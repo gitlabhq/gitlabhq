@@ -14,7 +14,7 @@ namespace :gitlab do
       puts ""
     end
 
-    Rake::Task["db:setup"].invoke
+    Rake::Task["db:reset"].invoke
     Rake::Task["add_limits_mysql"].invoke
     Rake::Task["setup_postgresql"].invoke
     Rake::Task["db:seed_fu"].invoke

@@ -12,6 +12,7 @@ class @UsersSelect
       showNullUser = $dropdown.data('null-user')
       showAnyUser = $dropdown.data('any-user')
       firstUser = $dropdown.data('first-user')
+      @authorId = $dropdown.data('author-id')
       selectedId = $dropdown.data('selected')
       defaultLabel = $dropdown.data('default-label')
       issueURL = $dropdown.data('issueUpdate')
@@ -207,6 +208,7 @@ class @UsersSelect
       @projectId = $(select).data('project-id')
       @groupId = $(select).data('group-id')
       @showCurrentUser = $(select).data('current-user')
+      @authorId = $(select).data('author-id')
       showNullUser = $(select).data('null-user')
       showAnyUser = $(select).data('any-user')
       showEmailUser = $(select).data('email-user')
@@ -312,6 +314,7 @@ class @UsersSelect
         project_id: @projectId
         group_id: @groupId
         current_user: @showCurrentUser
+        author_id: @authorId
       dataType: "json"
     ).done (users) ->
       callback(users)

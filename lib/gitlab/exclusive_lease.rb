@@ -52,11 +52,6 @@ module Gitlab
 
     private
 
-    def redis
-      # Maybe someday we want to use a connection pool...
-      @redis ||= Redis.new(url: Gitlab::RedisConfig.url)
-    end
-
     def redis_key
       "gitlab:exclusive_lease:#{@key}"
     end

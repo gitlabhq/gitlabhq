@@ -154,7 +154,7 @@ class Commit
       id: id,
       message: safe_message,
       timestamp: committed_date.xmlschema,
-      url: commit_url,
+      url: Gitlab::UrlBuilder.build(self),
       author: {
         name: author_name,
         email: author_email
@@ -166,10 +166,6 @@ class Commit
     end
 
     data
-  end
-
-  def commit_url
-    project.present? ? "#{Gitlab.config.gitlab.url}/#{project.path_with_namespace}/commit/#{id}" : ""
   end
 
   # Discover issues should be closed when this commit is pushed to a project's

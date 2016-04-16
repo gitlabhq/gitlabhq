@@ -173,12 +173,6 @@
     }
   }
 
-  .subscribe-button {
-    span {
-      margin-top: 0;
-    }
-  }
-
   &.right-sidebar-collapsed {
     /* Extra small devices (phones, less than 768px) */
     display: none;
@@ -320,5 +314,11 @@
 
   a {
     color: #8c8c8c;
+  }
+}
+
+.issuable-form-padding-top {
+  @media (min-width: $screen-sm-min) {
+    padding-top: 7px;
   }
 }

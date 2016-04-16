@@ -34,7 +34,8 @@ module Gitlab
         max_artifacts_size: Settings.artifacts['max_size'],
         require_two_factor_authentication: false,
         two_factor_grace_period: 48,
-        akismet_enabled: false
+        akismet_enabled: false,
+        repository_checks_enabled: true,
       )
     end
 
