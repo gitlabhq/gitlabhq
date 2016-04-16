@@ -72,7 +72,7 @@
 
     .content-block.content-block-small
       = render 'new_branch'
-      = render 'votes/votes_block', votable: @issue
+      = render 'award_emoji/awards_block', awardable: @issue, inline: true
 
     .row
       %section.col-md-12

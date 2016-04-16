@@ -145,7 +145,7 @@ class ProjectsController < Projects::ApplicationController
     participants = ::Projects::ParticipantsService.new(@project, current_user).execute(note_type, note_id)
 
     @suggestions = {
-      emojis: AwardEmoji.urls,
+      emojis: Gitlab::AwardEmoji.urls,
       issues: autocomplete.issues,
       mergerequests: autocomplete.merge_requests,
       members: participants

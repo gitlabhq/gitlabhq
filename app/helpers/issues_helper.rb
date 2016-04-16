@@ -144,16 +144,17 @@ module IssuesHelper
     end
   end
 
-  def emoji_author_list(notes, current_user)
-    list = notes.map do |note|
-             note.author == current_user ? "me" : note.author.name
-           end
+  def award_user_list(awards, current_user)
+    list = 
+      awards.map do |award|
+        award.user == current_user ? "me" : award.user.name
+      end
 
     list.join(", ")
   end
 
-  def note_active_class(notes, current_user)
-    if current_user && notes.pluck(:author_id).include?(current_user.id)
+  def award_active_class(awards, current_user)
+    if current_user && awards.find { |a| a.user_id == current_user.id }
       "active"
     else
       ""

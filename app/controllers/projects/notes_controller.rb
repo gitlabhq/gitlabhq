@@ -3,7 +3,7 @@ class Projects::NotesController < Projects::ApplicationController
   before_action :authorize_read_note!
   before_action :authorize_create_note!, only: [:create]
   before_action :authorize_admin_note!, only: [:update, :destroy]
-  before_action :find_current_user_notes, except: [:destroy, :delete_attachment, :award_toggle]
+  before_action :find_current_user_notes, only: [:index]
 
   def index
     current_fetched_at = Time.now.to_i
@@ -22,8 +22,10 @@ class Projects::NotesController < Projects::ApplicationController
   def create
     @note = Notes::CreateService.new(project, current_user, note_params).execute
 
+    @note = note.is_a?(AwardEmoji) ? @note.to_note_json : note_json(@note)
+
     respond_to do |format|
-      format.json { render json: note_json(@note) }
+      format.json { render json: @note }
       format.html { redirect_back_or_default }
     end
   end
@@ -56,35 +58,12 @@ class Projects::NotesController < Projects::ApplicationController
     end
   end
 
-  def award_toggle
-    noteable = if note_params[:noteable_type] == "issue"
-                 project.issues.find(note_params[:noteable_id])
-               else
-                 project.merge_requests.find(note_params[:noteable_id])
-               end
-
-    data = {
-      author: current_user,
-      is_award: true,
-      note: note_params[:note].delete(":")
-    }
-
-    note = noteable.notes.find_by(data)
-
-    if note
-      note.destroy
-    else
-      Notes::CreateService.new(project, current_user, note_params).execute
-    end
-
-    render json: { ok: true }
-  end
-
   private
 
   def note
     @note ||= @project.notes.find(params[:id])
   end
+  alias_method :awardable, :note
 
   def note_to_html(note)
     render_to_string(
@@ -137,7 +116,7 @@ class Projects::NotesController < Projects::ApplicationController
         id: note.id,
         discussion_id: note.discussion_id,
         html: note_to_html(note),
-        award: note.is_award,
+        award: false,
         note: note.note,
         discussion_html: note_to_discussion_html(note),
         discussion_with_diff_html: note_to_discussion_with_diff_html(note)
@@ -145,7 +124,7 @@ class Projects::NotesController < Projects::ApplicationController
     else
       {
         valid: false,
-        award: note.is_award,
+        award: false,
         errors: note.errors
       }
     end

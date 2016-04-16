@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-describe AwardEmoji do
+describe Gitlab::AwardEmoji do
   describe '.urls' do
-    subject { AwardEmoji.urls }
+    subject { Gitlab::AwardEmoji.urls }
 
     it { is_expected.to be_an_instance_of(Array) }
     it { is_expected.to_not be_empty }
@@ -19,7 +19,7 @@ describe AwardEmoji do
 
   describe '.emoji_by_category' do
     it "only contains known categories" do
-      undefined_categories = AwardEmoji.emoji_by_category.keys - AwardEmoji::CATEGORIES.keys
+      undefined_categories = Gitlab::AwardEmoji.emoji_by_category.keys - Gitlab::AwardEmoji::CATEGORIES.keys
       expect(undefined_categories).to be_empty
     end
   end

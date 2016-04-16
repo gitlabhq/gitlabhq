@@ -2,6 +2,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   include ToggleSubscriptionAction
   include DiffHelper
   include IssuableActions
+  include ToggleAwardEmoji
 
   before_action :module_enabled
   before_action :merge_request, only: [
@@ -195,7 +196,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
     if params[:merge_when_build_succeeds].present? && @merge_request.ci_commit && @merge_request.ci_commit.active?
       MergeRequests::MergeWhenBuildSucceedsService.new(@project, current_user, merge_params)
-                                                      .execute(@merge_request)
+        .execute(@merge_request)
       @status = :merge_when_build_succeeds
     else
       MergeWorker.perform_async(@merge_request.id, current_user.id, params)
@@ -264,6 +265,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
   alias_method :subscribable_resource, :merge_request
   alias_method :issuable, :merge_request
+  alias_method :awardable, :merge_request
 
   def closes_issues
     @closes_issues ||= @merge_request.closes_issues
@@ -299,7 +301,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   def define_show_vars
     # Build a note object for comment form
     @note = @project.notes.new(noteable: @merge_request)
-    @notes = @merge_request.mr_and_commit_notes.nonawards.inc_author.fresh
+    @notes = @merge_request.mr_and_commit_notes.inc_author.fresh
     @discussions = Note.discussions_from_notes(@notes)
     @noteable = @merge_request
 

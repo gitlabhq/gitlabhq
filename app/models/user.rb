@@ -144,6 +144,7 @@ class User < ActiveRecord::Base
   has_many :builds,                   dependent: :nullify, class_name: 'Ci::Build'
   has_many :todos,                    dependent: :destroy
   has_many :notification_settings,    dependent: :destroy
+  has_many :award_emoji, 							as: :awardable, dependent: :destroy
 
   #
   # Validations

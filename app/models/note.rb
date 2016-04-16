@@ -16,7 +16,6 @@
 #  system        :boolean          default(FALSE), not null
 #  st_diff       :text
 #  updated_by_id :integer
-#  is_award      :boolean          default(FALSE), not null
 #
 
 require 'carrierwave/orm/activerecord'
@@ -43,12 +42,9 @@ class Note < ActiveRecord::Base
   delegate :name, to: :project, prefix: true
   delegate :name, :email, to: :author, prefix: true
 
-  before_validation :set_award!
   before_validation :clear_blank_line_code!
 
   validates :note, :project, presence: true
-  validates :note, uniqueness: { scope: [:author, :noteable_type, :noteable_id] }, if: ->(n) { n.is_award }
-  validates :note, inclusion: { in: Emoji.emojis_names }, if: ->(n) { n.is_award }
   validates :line_code, line_code: true, allow_blank: true
   # Attachments are deprecated and are handled by Markdown uploader
   validates :attachment, file_size: { maximum: :max_attachment_size }
@@ -60,8 +56,6 @@ class Note < ActiveRecord::Base
   mount_uploader :attachment, AttachmentUploader
 
   # Scopes
-  scope :awards, ->{ where(is_award: true) }
-  scope :nonawards, ->{ where(is_award: false) }
   scope :for_commit_id, ->(commit_id) { where(noteable_type: "Commit", commit_id: commit_id) }
   scope :inline, ->{ where("line_code IS NOT NULL") }
   scope :not_inline, ->{ where(line_code: nil) }
@@ -118,19 +112,6 @@ class Note < ActiveRecord::Base
       pattern = "%#{query}%"
 
       where(table[:note].matches(pattern))
-    end
-
-    def grouped_awards
-      notes = {}
-
-      awards.select(:note).distinct.map do |note|
-        notes[note.note] = where(note: note.note)
-      end
-
-      notes["thumbsup"] ||= Note.none
-      notes["thumbsdown"] ||= Note.none
-
-      notes
     end
   end
 
@@ -347,37 +328,25 @@ class Note < ActiveRecord::Base
     Event.reset_event_cache_for(self)
   end
 
-  def downvote?
-    is_award && note == "thumbsdown"
-  end
-
-  def upvote?
-    is_award && note == "thumbsup"
+  def system?
+    read_attribute(:system)
   end
 
   def editable?
-    !system? && !is_award
+    !system?
   end
 
   def cross_reference_not_visible_for?(user)
     cross_reference? && referenced_mentionables(user).empty?
   end
 
-  # Checks if note is an award added as a comment
-  #
-  # If note is an award, this method sets is_award to true
-  #   and changes content of the note to award name.
-  #
-  # Method is executed as a before_validation callback.
-  #
-  def set_award!
-    return unless awards_supported? && contains_emoji_only?
-
-    self.is_award = true
-    self.note = award_emoji_name
+  def award_emoji?
+    award_emoji_supported? && contains_emoji_only?
   end
 
-  private
+  def create_award_emoji
+    self.noteable.award_emoji(award_emoji_name, author)	
+  end
 
   def clear_blank_line_code!
     self.line_code = nil if self.line_code.blank?
@@ -389,8 +358,8 @@ class Note < ActiveRecord::Base
     diffs.find { |d| d.new_path == self.diff.new_path }
   end
 
-  def awards_supported?
-    (for_issue? || for_merge_request?) && !for_diff_line?
+  def award_emoji_supported?
+    noteable.is_a?(Awardable) && !for_diff_line?
   end
 
   def contains_emoji_only?
@@ -399,6 +368,6 @@ class Note < ActiveRecord::Base
 
   def award_emoji_name
     original_name = note.match(Banzai::Filter::EmojiFilter.emoji_pattern)[1]
-    AwardEmoji.normilize_emoji_name(original_name)
+    Gitlab::AwardEmoji.normilize_emoji_name(original_name)
   end
 end

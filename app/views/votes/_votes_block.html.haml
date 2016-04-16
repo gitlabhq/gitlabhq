@@ -1,9 +1,9 @@
-.awards.votes-block
-  - awards_sort(votable.notes.awards.grouped_awards).each do |emoji, notes|
-    %button.btn.award-control.js-emoji-btn.has-tooltip{class: (note_active_class(notes, current_user)), data: {placement: "top", original_title: emoji_author_list(notes, current_user)}}
+.awards.votes-block{data: { toggle_url: url_for([:toggle_award_emoji, @project.namespace.becomes(Namespace), @project, awardable]) }}
+  - awards_sort(awardable.grouped_awards).each do |emoji, awards|
+    %button.btn.award-control.js-emoji-btn.has-tooltip{class: (note_active_class(awards, current_user)), data: {placement: "top", original_title: emoji_author_list(awards, current_user)}}
       = emoji_icon(emoji, sprite: false)
       %span.award-control-text.js-counter
-        = notes.count
+        = awards.count
 
   - if current_user
     %div.award-menu-holder.js-award-holder

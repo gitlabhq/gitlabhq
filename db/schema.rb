@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160412140240) do
+ActiveRecord::Schema.define(version: 20160416190505) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -93,6 +93,19 @@ ActiveRecord::Schema.define(version: 20160412140240) do
   add_index "audit_events", ["author_id"], name: "index_audit_events_on_author_id", using: :btree
   add_index "audit_events", ["entity_id", "entity_type"], name: "index_audit_events_on_entity_id_and_entity_type", using: :btree
   add_index "audit_events", ["type"], name: "index_audit_events_on_type", using: :btree
+
+  create_table "award_emoji", force: :cascade do |t|
+    t.string   "name"
+    t.integer  "user_id"
+    t.integer  "awardable_id"
+    t.string   "awardable_type"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "award_emoji", ["awardable_id"], name: "index_award_emoji_on_awardable_id", using: :btree
+  add_index "award_emoji", ["awardable_type"], name: "index_award_emoji_on_awardable_type", using: :btree
+  add_index "award_emoji", ["user_id"], name: "index_award_emoji_on_user_id", using: :btree
 
   create_table "broadcast_messages", force: :cascade do |t|
     t.text     "message",    null: false
@@ -622,14 +635,12 @@ ActiveRecord::Schema.define(version: 20160412140240) do
     t.boolean  "system",        default: false, null: false
     t.text     "st_diff"
     t.integer  "updated_by_id"
-    t.boolean  "is_award",      default: false, null: false
   end
 
   add_index "notes", ["author_id"], name: "index_notes_on_author_id", using: :btree
   add_index "notes", ["commit_id"], name: "index_notes_on_commit_id", using: :btree
   add_index "notes", ["created_at", "id"], name: "index_notes_on_created_at_and_id", using: :btree
   add_index "notes", ["created_at"], name: "index_notes_on_created_at", using: :btree
-  add_index "notes", ["is_award"], name: "index_notes_on_is_award", using: :btree
   add_index "notes", ["line_code"], name: "index_notes_on_line_code", using: :btree
   add_index "notes", ["note"], name: "index_notes_on_note_trigram", using: :gin, opclasses: {"note"=>"gin_trgm_ops"}
   add_index "notes", ["noteable_id", "noteable_type"], name: "index_notes_on_noteable_id_and_noteable_type", using: :btree
@@ -716,37 +727,37 @@ ActiveRecord::Schema.define(version: 20160412140240) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "creator_id"
-    t.boolean  "issues_enabled",         default: true,     null: false
-    t.boolean  "wall_enabled",           default: true,     null: false
-    t.boolean  "merge_requests_enabled", default: true,     null: false
-    t.boolean  "wiki_enabled",           default: true,     null: false
+    t.boolean  "issues_enabled",               default: true,     null: false
+    t.boolean  "wall_enabled",                 default: true,     null: false
+    t.boolean  "merge_requests_enabled",       default: true,     null: false
+    t.boolean  "wiki_enabled",                 default: true,     null: false
     t.integer  "namespace_id"
-    t.string   "issues_tracker",         default: "gitlab", null: false
+    t.string   "issues_tracker",               default: "gitlab", null: false
     t.string   "issues_tracker_id"
-    t.boolean  "snippets_enabled",       default: true,     null: false
+    t.boolean  "snippets_enabled",             default: true,     null: false
     t.datetime "last_activity_at"
     t.string   "import_url"
-    t.integer  "visibility_level",       default: 0,        null: false
-    t.boolean  "archived",               default: false,    null: false
+    t.integer  "visibility_level",             default: 0,        null: false
+    t.boolean  "archived",                     default: false,    null: false
     t.string   "avatar"
     t.string   "import_status"
-    t.float    "repository_size",        default: 0.0
-    t.integer  "star_count",             default: 0,        null: false
+    t.float    "repository_size",              default: 0.0
+    t.integer  "star_count",                   default: 0,        null: false
     t.string   "import_type"
     t.string   "import_source"
-    t.integer  "commit_count",           default: 0
+    t.integer  "commit_count",                 default: 0
     t.text     "import_error"
     t.integer  "ci_id"
-    t.boolean  "builds_enabled",         default: true,     null: false
-    t.boolean  "shared_runners_enabled", default: true,     null: false
+    t.boolean  "builds_enabled",               default: true,     null: false
+    t.boolean  "shared_runners_enabled",       default: true,     null: false
     t.string   "runners_token"
     t.string   "build_coverage_regex"
-    t.boolean  "build_allow_git_fetch",  default: true,     null: false
-    t.integer  "build_timeout",          default: 3600,     null: false
-    t.boolean  "pending_delete",         default: false
-    t.boolean  "public_builds",          default: true,     null: false
+    t.boolean  "build_allow_git_fetch",        default: true,     null: false
+    t.integer  "build_timeout",                default: 3600,     null: false
+    t.boolean  "pending_delete",               default: false
+    t.boolean  "public_builds",                default: true,     null: false
     t.string   "main_language"
-    t.integer  "pushes_since_gc",        default: 0
+    t.integer  "pushes_since_gc",              default: 0
     t.boolean  "last_repository_check_failed"
     t.datetime "last_repository_check_at"
   end

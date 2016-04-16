@@ -5,6 +5,11 @@ module Notes
       note.author = current_user
       note.system = false
 
+      if note.award_emoji?
+        return ToggleAwardEmojiService.new(project, current_user, params).
+                                        execute(note.noteable, note.note)
+      end
+
       if note.save
         # Finish the harder work in the background
         NewNoteWorker.perform_in(2.seconds, note.id, params)

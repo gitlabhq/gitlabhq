@@ -36,8 +36,6 @@ FactoryGirl.define do
     factory :note_on_merge_request_diff, traits: [:on_merge_request, :on_diff]
     factory :note_on_project_snippet,    traits: [:on_project_snippet]
     factory :system_note,                traits: [:system]
-    factory :downvote_note,              traits: [:award, :downvote]
-    factory :upvote_note,                traits: [:award, :upvote]
 
     trait :on_commit do
       project
@@ -67,10 +65,6 @@ FactoryGirl.define do
 
     trait :system do
       system true
-    end
-
-    trait :award do
-      is_award true
     end
 
     trait :downvote do
