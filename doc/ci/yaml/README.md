@@ -23,6 +23,7 @@ If you want a quick introduction to GitLab CI, follow our
 - [Jobs](#jobs)
     - [script](#script)
     - [stage](#stage)
+    - [job variables](#job-variables)
     - [only and except](#only-and-except)
     - [tags](#tags)
     - [when](#when)
@@ -174,6 +175,8 @@ These variables can be later used in all executed commands and scripts.
 The YAML-defined variables are also set to all created service containers,
 thus allowing to fine tune them.
 
+Variables can be also defined on [job level](#job-variables).
+
 ### cache
 
 >**Note:**
@@ -324,6 +327,7 @@ job_name:
 | services      | no | Use docker services, covered in [Using Docker Images](../docker/using_docker_images.md#define-image-and-services-from-gitlab-ciyml) |
 | stage         | no | Defines a build stage (default: `test`) |
 | type          | no | Alias for `stage` |
+| variables     | no | Define build variables on a job level |
 | only          | no | Defines a list of git refs for which build is created |
 | except        | no | Defines a list of git refs for which build is not created |
 | tags          | no | Defines a list of tags which are used to select Runner |
@@ -413,6 +417,23 @@ job:
 
 The above example will run `job` for all branches on `gitlab-org/gitlab-ce`,
 except master.
+
+### job variables
+
+It is possible to define build variables using a `variables` keyword on a job
+level. It works basically the same way like it's global-level equivalent but
+allows you to define a job specific build variables.
+
+When `variables` keyword is used on a job level, it can override global YAML
+build variables and predefined variables.
+
+Build variables priority is defined as follows:
+
+* predefined variables
+* global YAML variables
+* job YAML variables
+* secure variables
+* trigger variables
 
 ### tags
 
