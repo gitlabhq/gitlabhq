@@ -51,6 +51,12 @@ class HelpController < ApplicationController
   end
 
   def ui
+    # this will work on gitlab.com
+    @some_user = User.find_by(username: 'dzaporozhets')
+    if @some_user.nil?
+      # this will work in dev
+      @some_user = User.find(1)
+    end
   end
 
   private
