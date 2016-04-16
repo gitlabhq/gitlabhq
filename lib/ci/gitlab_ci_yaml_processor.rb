@@ -45,11 +45,7 @@ module Ci
     end
 
     def job_variables(name)
-      if job = @jobs[name.to_sym]
-        job[:variables] || []
-      else
-        []
-      end
+      @jobs[name.to_sym].try(:fetch, :variables, []) || []
     end
 
     private

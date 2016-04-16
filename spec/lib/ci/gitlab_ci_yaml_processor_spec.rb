@@ -345,50 +345,55 @@ module Ci
       end
     end
 
-    describe "Variables" do
+    describe 'Variables' do
       context 'when global variables are defined' do
-        it 'returns variables' do
+        it 'returns global variables' do
           variables = {
-            var1: "value1",
-            var2: "value2",
+            VAR1: 'value1',
+            VAR2: 'value2',
           }
+
           config = YAML.dump({
-                               variables: variables,
-                               before_script: ["pwd"],
-                               rspec: { script: "rspec" }
-                             })
+            variables: variables,
+            before_script: ['pwd'],
+            rspec: { script: 'rspec' }
+          })
 
           config_processor = GitlabCiYamlProcessor.new(config, path)
+
           expect(config_processor.global_variables).to eq(variables)
         end
       end
 
       context 'when job variables are defined' do
-        let(:job_variables) { { KEY1: 'value1', SOME_KEY_2: 'value2' } }
-        let(:yaml_config) do
-          YAML.dump(
+        it 'returns job variables' do
+          variables =  {
+            KEY1: 'value1',
+            SOME_KEY_2: 'value2'
+          }
+
+          config =  YAML.dump(
             { before_script: ['pwd'],
               rspec: {
-                variables: job_variables,
+                variables: variables,
                 script: 'rspec' }
             })
-        end
 
-        it 'returns job variables' do
-          config = GitlabCiYamlProcessor.new(yaml_config, path)
+          config_processor = GitlabCiYamlProcessor.new(config, path)
 
-          expect(config.job_variables(:rspec)).to eq job_variables
+          expect(config_processor.job_variables(:rspec)).to eq variables
         end
       end
 
       context 'when job variables are not defined' do
         it 'returns empty array' do
           config = YAML.dump({
-                               before_script: ["pwd"],
-                               rspec: { script: "rspec" }
-                             })
+            before_script: ['pwd'],
+            rspec: { script: 'rspec' }
+          })
 
           config_processor = GitlabCiYamlProcessor.new(config, path)
+
           expect(config_processor.job_variables(:rspec)).to eq []
         end
       end
