@@ -203,7 +203,7 @@ class @LabelsSelect
         renderRow: (label) ->
           selectedClass = ''
           if $form.find("input[type='hidden']\
-            [name='#{$dropdown.data('field-name')}']\
+            [name='#{$dropdown.data('fieldName')}']\
             [value='#{this.id(label)}']").length
             selectedClass = 'is-active'
 
@@ -256,7 +256,7 @@ class @LabelsSelect
             if $dropdown.hasClass('js-filter-submit') and (isIssueIndex or isMRIndex)
               selectedLabels = $dropdown
                 .closest('form')
-                .find("input[type='hidden'][name='#{$dropdown.data('field-name')}']")
+                .find("input[type='hidden'][name='#{$dropdown.data('fieldName')}']")
               Issues.filterResults(
                 $dropdown.closest('form'),
                 $dropdown.data('fieldName')
