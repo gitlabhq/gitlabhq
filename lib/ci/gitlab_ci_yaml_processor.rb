@@ -7,7 +7,7 @@ module Ci
     ALLOWED_YAML_KEYS = [:before_script, :finally_script, :image, :services, :types, :stages, :variables, :cache]
     ALLOWED_JOB_KEYS = [:tags, :script, :only, :except, :type, :image, :services,
                         :allow_failure, :type, :stage, :when, :artifacts, :cache,
-                        :dependencies]
+                        :dependencies, :before_script, :finally_script]
 
     attr_reader :before_script, :finally_script, :image, :services, :variables, :path, :cache
 
@@ -73,7 +73,7 @@ module Ci
       {
         stage_idx: stages.index(job[:stage]),
         stage: job[:stage],
-        commands: "#{@before_script.join("\n")}\n#{normalize_script(job[:script])}",
+        commands: [job[:before_script] || @before_script, job[:script]].flatten.join("\n"),
         tag_list: job[:tags] || [],
         name: name,
         only: job[:only],
@@ -86,17 +86,9 @@ module Ci
           artifacts: job[:artifacts],
           cache: job[:cache] || @cache,
           dependencies: job[:dependencies],
-          finally_script: @finally_script,
+          finally_script: job[:finally_script] || @finally_script,
         }.compact
       }
-    end
-
-    def normalize_script(script)
-      if script.is_a? Array
-        script.join("\n")
-      else
-        script
-      end
     end
 
     def validate!
@@ -175,6 +167,14 @@ module Ci
     def validate_job_types!(name, job)
       if !validate_string(job[:script]) && !validate_array_of_strings(job[:script])
         raise ValidationError, "#{name} job: script should be a string or an array of a strings"
+      end
+
+      if job[:before_script] && !validate_array_of_strings(job[:before_script])
+        raise ValidationError, "#{name} job: before_script should be an array of strings"
+      end
+
+      if job[:finally_script] && !validate_array_of_strings(job[:finally_script])
+        raise ValidationError, "#{name} job: finally_script should be an array of strings"
       end
 
       if job[:image] && !validate_string(job[:image])

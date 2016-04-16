@@ -293,6 +293,46 @@ module Ci
       
       subject { config_processor.builds_for_stage_and_ref("test", "master").first }
       
+      describe "before_script" do
+        context "in global context" do
+          let(:config) {
+            {
+              before_script: ["global script"],
+              test: { script: ["script"] }
+            }
+          }
+          
+          it "return commands with scripts concencaced" do
+            expect(subject[:commands]).to eq("global script\nscript")
+          end
+        end
+ 
+        context "overwritten in local context" do
+          let(:config) {
+            {
+              before_script: ["global script"],
+              test: { before_script: ["local script"], script: ["script"] }
+            }
+          }
+
+          it "return commands with scripts concencaced" do
+            expect(subject[:commands]).to eq("local script\nscript")
+          end
+        end
+      end
+
+      describe "script" do
+        let(:config) {
+          {
+            test: { script: ["script"] }
+          }
+        }
+
+        it "return commands with scripts concencaced" do
+          expect(subject[:commands]).to eq("script")
+        end
+      end
+
       describe "finally_script" do
         context "in global context" do
           let(:config) {
@@ -304,6 +344,19 @@ module Ci
 
           it "return finally_script in options" do
             expect(subject[:options][:finally_script]).to eq(["finally_script"])
+          end
+        end
+
+        context "overwritten in local context" do
+          let(:config) {
+            {
+              finally_script: ["local finally_script"],
+              test: { finally_script: ["local finally_script"], script: ["script"] }
+            }
+          }
+
+          it "return finally_script in options" do
+            expect(subject[:options][:finally_script]).to eq(["local finally_script"])
           end
         end
       end
@@ -558,7 +611,7 @@ module Ci
           stage_idx: 1,
           name: :normal_job,
           only: nil,
-          commands: "\ntest",
+          commands: "test",
           tag_list: [],
           options: {},
           when: "on_success",
@@ -585,7 +638,7 @@ EOT
           stage_idx: 1,
           name: :job1,
           only: nil,
-          commands: "\nexecute-script-for-job",
+          commands: "execute-script-for-job",
           tag_list: [],
           options: {},
           when: "on_success",
@@ -597,7 +650,7 @@ EOT
           stage_idx: 1,
           name: :job2,
           only: nil,
-          commands: "\nexecute-script-for-job",
+          commands: "execute-script-for-job",
           tag_list: [],
           options: {},
           when: "on_success",
@@ -629,11 +682,25 @@ EOT
         end.to raise_error(GitlabCiYamlProcessor::ValidationError, "before_script should be an array of strings")
       end
 
+      it "returns errors if job before_script parameter is not an array of strings" do
+        config = YAML.dump({ rspec: { script: "test", before_script: [10, "test"] } })
+        expect do
+          GitlabCiYamlProcessor.new(config, path)
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "rspec job: before_script should be an array of strings")
+      end
+
       it "returns errors if finally_script parameter is invalid" do
         config = YAML.dump({ finally_script: "bundle update", rspec: { script: "test" } })
         expect do
           GitlabCiYamlProcessor.new(config, path)
         end.to raise_error(GitlabCiYamlProcessor::ValidationError, "finally_script should be an array of strings")
+      end
+
+      it "returns errors if job finally_script parameter is not an array of strings" do
+        config = YAML.dump({ rspec: { script: "test", finally_script: [10, "test"] } })
+        expect do
+          GitlabCiYamlProcessor.new(config, path)
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "rspec job: finally_script should be an array of strings")
       end
 
       it "returns errors if image parameter is invalid" do
