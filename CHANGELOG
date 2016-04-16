@@ -80,6 +80,10 @@ v 8.6.6
   - Expire the exists cache before deletion to ensure project dir actually exists (Stan Hu). !3413
   - Fix error on language detection when repository has no HEAD (e.g., master branch) (Jeroen Bobbeldijk). !3654
   - Fix revoking of authorized OAuth applications (Connor Shea). !3690
+  - Fix error on language detection when repository has no HEAD (e.g., master branch). !3654 (Jeroen Bobbeldijk)
+  - Project switcher uses new dropdown styling
+  - Issuable header is consistent between issues and merge requests
+  - Improved spacing in issuable header on mobile
 
 v 8.6.5
   - Fix importing from GitHub Enterprise. !3529
