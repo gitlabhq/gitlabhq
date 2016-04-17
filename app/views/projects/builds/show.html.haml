@@ -110,7 +110,7 @@
                   = icon('folder-open')
                   Browse
 
-      .build-widget
+      .build-widget.build-controls
         %h4.title
           Build ##{@build.id}
           - if can?(current_user, :update_build, @project)
