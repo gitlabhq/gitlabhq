@@ -306,6 +306,8 @@ group :development, :test do
   gem 'bundler-audit', require: false
 
   gem 'benchmark-ips', require: false
+
+  gem "license_finder", require: false
 end
 
 group :test do
