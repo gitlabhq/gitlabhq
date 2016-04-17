@@ -195,7 +195,7 @@ module Gitlab
     # Create (if necessary) and link the secret token file
     def generate_and_link_secret_token
       secret_file = Gitlab.config.gitlab_shell.secret_file
-      unless File.exist? secret_file
+      unless File.size?(secret_file)
         # Generate a new token of 16 random hexadecimal characters and store it in secret_file.
         token = SecureRandom.hex(16)
         File.write(secret_file, token)
