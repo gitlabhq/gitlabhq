@@ -21,6 +21,7 @@ v 8.7.0 (unreleased)
   - Make /profile/keys/new redirect to /profile/keys for back-compat. !3717
   - Preserve time notes/comments have been updated at when moving issue
   - Make HTTP(s) label consistent on clone bar (Stan Hu)
+  - Add support for `after_script`, requires Runner 1.2 (Kamil Trzciński)
   - Expose label description in API (Mariusz Jachimowicz)
   - API: Ability to update a group (Robert Schilling)
   - API: Ability to move issues (Robert Schilling)
@@ -45,6 +46,7 @@ v 8.7.0 (unreleased)
   - Use rugged to change HEAD in Project#change_head (P.S.V.R)
   - API: Ability to filter milestones by state `active` and `closed` (Robert Schilling)
   - API: Fix milestone filtering by `iid` (Robert Schilling)
+  - Make before_script and after_script overridable on per-job (Kamil Trzciński)
   - API: Delete notes of issues, snippets, and merge requests (Robert Schilling)
   - Implement 'Groups View' as an option for dashboard preferences !3379 (Elias W.)
   - Better errors handling when creating milestones inside groups

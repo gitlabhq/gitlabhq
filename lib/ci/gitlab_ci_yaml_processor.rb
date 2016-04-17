@@ -4,12 +4,12 @@ module Ci
 
     DEFAULT_STAGES = %w(build test deploy)
     DEFAULT_STAGE = 'test'
-    ALLOWED_YAML_KEYS = [:before_script, :finally_script, :image, :services, :types, :stages, :variables, :cache]
+    ALLOWED_YAML_KEYS = [:before_script, :after_script, :image, :services, :types, :stages, :variables, :cache]
     ALLOWED_JOB_KEYS = [:tags, :script, :only, :except, :type, :image, :services,
                         :allow_failure, :type, :stage, :when, :artifacts, :cache,
-                        :dependencies, :before_script, :finally_script]
+                        :dependencies, :before_script, :after_script]
 
-    attr_reader :before_script, :finally_script, :image, :services, :variables, :path, :cache
+    attr_reader :before_script, :after_script, :image, :services, :variables, :path, :cache
 
     def initialize(config, path = nil)
       @config = YAML.safe_load(config, [Symbol], [], true)
@@ -44,7 +44,7 @@ module Ci
 
     def initial_parsing
       @before_script = @config[:before_script]
-      @finally_script = @config[:finally_script]
+      @after_script = @config[:after_script]
       @image = @config[:image]
       @services = @config[:services]
       @stages = @config[:stages] || @config[:types]
@@ -87,7 +87,7 @@ module Ci
           dependencies: job[:dependencies],
           before_script: job[:before_script] || @before_script,
           script: [job[:script]].flatten,
-          finally_script: job[:finally_script] || @finally_script,
+          after_script: job[:after_script] || @after_script,
         }.compact
       }
     end
@@ -97,8 +97,8 @@ module Ci
         raise ValidationError, "before_script should be an array of strings"
       end
 
-      unless @finally_script.nil? || validate_array_of_strings(@finally_script)
-        raise ValidationError, "finally_script should be an array of strings"
+      unless @after_script.nil? || validate_array_of_strings(@after_script)
+        raise ValidationError, "after_script should be an array of strings"
       end
 
       unless @image.nil? || @image.is_a?(String)
@@ -174,8 +174,8 @@ module Ci
         raise ValidationError, "#{name} job: before_script should be an array of strings"
       end
 
-      if job[:finally_script] && !validate_array_of_strings(job[:finally_script])
-        raise ValidationError, "#{name} job: finally_script should be an array of strings"
+      if job[:after_script] && !validate_array_of_strings(job[:after_script])
+        raise ValidationError, "#{name} job: after_script should be an array of strings"
       end
 
       if job[:image] && !validate_string(job[:image])

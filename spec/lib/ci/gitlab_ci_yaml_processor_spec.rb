@@ -335,30 +335,30 @@ module Ci
         end
       end
 
-      describe "finally_script" do
+      describe "after_script" do
         context "in global context" do
           let(:config) {
             {
-              finally_script: ["finally_script"],
+              after_script: ["after_script"],
               test: { script: ["script"] }
             }
           }
 
-          it "return finally_script in options" do
-            expect(subject[:options][:finally_script]).to eq(["finally_script"])
+          it "return after_script in options" do
+            expect(subject[:options][:after_script]).to eq(["after_script"])
           end
         end
 
         context "overwritten in local context" do
           let(:config) {
             {
-              finally_script: ["local finally_script"],
-              test: { finally_script: ["local finally_script"], script: ["script"] }
+              after_script: ["local after_script"],
+              test: { after_script: ["local after_script"], script: ["script"] }
             }
           }
 
-          it "return finally_script in options" do
-            expect(subject[:options][:finally_script]).to eq(["local finally_script"])
+          it "return after_script in options" do
+            expect(subject[:options][:after_script]).to eq(["local after_script"])
           end
         end
       end
@@ -697,18 +697,18 @@ EOT
         end.to raise_error(GitlabCiYamlProcessor::ValidationError, "rspec job: before_script should be an array of strings")
       end
 
-      it "returns errors if finally_script parameter is invalid" do
-        config = YAML.dump({ finally_script: "bundle update", rspec: { script: "test" } })
+      it "returns errors if after_script parameter is invalid" do
+        config = YAML.dump({ after_script: "bundle update", rspec: { script: "test" } })
         expect do
           GitlabCiYamlProcessor.new(config, path)
-        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "finally_script should be an array of strings")
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "after_script should be an array of strings")
       end
 
-      it "returns errors if job finally_script parameter is not an array of strings" do
-        config = YAML.dump({ rspec: { script: "test", finally_script: [10, "test"] } })
+      it "returns errors if job after_script parameter is not an array of strings" do
+        config = YAML.dump({ rspec: { script: "test", after_script: [10, "test"] } })
         expect do
           GitlabCiYamlProcessor.new(config, path)
-        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "rspec job: finally_script should be an array of strings")
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "rspec job: after_script should be an array of strings")
       end
 
       it "returns errors if image parameter is invalid" do
