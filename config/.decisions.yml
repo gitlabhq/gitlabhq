@@ -1,0 +1,89 @@
+---
+- - :whitelist
+  - MIT
+  - :who: 
+    :why: 
+    :versions: []
+    :when: 2016-04-17 21:12:24.558441000 Z
+- - :ignore_group
+  - development
+  - :who: 
+    :why: 
+    :versions: []
+    :when: 2016-04-17 21:27:01.054140000 Z
+- - :ignore_group
+  - test
+  - :who: 
+    :why: 
+    :versions: []
+    :when: 2016-04-17 21:27:06.250326000 Z
+- - :license
+  - raphael-rails
+  - MIT
+  - :who: 
+    :why: https://github.com/mockdeep/raphael-rails/blob/master/license.txt
+    :versions: []
+    :when: 2016-04-17 21:30:07.575392000 Z
+- - :license
+  - rouge
+  - MIT
+  - :who: 
+    :why: https://github.com/jneen/rouge/blob/master/LICENSE
+    :versions: []
+    :when: 2016-04-17 21:31:29.490394000 Z
+- - :license
+  - pyu-ruby-sasl
+  - MIT
+  - :who: 
+    :why: https://github.com/pyu10055/ruby-sasl/blob/master/MIT-LICENSE
+    :versions: []
+    :when: 2016-04-17 21:41:55.266420000 Z
+- - :license
+  - six
+  - MIT
+  - :who: 
+    :why: https://github.com/randx/six/blob/master/LICENSE
+    :versions: []
+    :when: 2016-04-17 21:42:31.420186000 Z
+- - :license
+  - rdoc
+  - GPLv2
+  - :who: 
+    :why: https://github.com/rdoc/rdoc/blob/master/LICENSE.rdoc
+    :versions: []
+    :when: 2016-04-17 21:43:30.480413000 Z
+- - :license
+  - rubypants
+  - unknown
+  - :who: 
+    :why: https://github.com/jmcnevin/rubypants/blob/master/LICENSE.rdoc
+    :versions: []
+    :when: 2016-04-17 21:44:49.443453000 Z
+- - :license
+  - expression_parser
+  - MIT
+  - :who: 
+    :why: https://github.com/nricciar/expression_parser/blob/master/MIT-LICENSE
+    :versions: []
+    :when: 2016-04-17 21:45:41.829912000 Z
+- - :license
+  - ace-rails-ap
+  - MIT
+  - :who: 
+    :why: https://github.com/codykrieger/ace-rails-ap/blob/master/LICENSE
+    :versions: []
+    :when: 2016-04-17 21:46:19.767922000 Z
+- - :license
+  - jquery-scrollto-rails
+  - MIT, GPLv2
+  - :who: 
+    :why: https://github.com/JohnColvin/jquery-scrollto-rails/blob/master/MIT%20License
+    :versions: []
+    :when: 2016-04-17 21:47:56.967946000 Z
+- - :license
+  - creole
+  - ruby
+  - :who: 
+    :why: https://github.com/minad/creole#license
+    :versions: []
+    :when: 2016-04-17 21:49:10.329759000 Z
