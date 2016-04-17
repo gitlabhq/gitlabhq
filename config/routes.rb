@@ -669,7 +669,7 @@ Rails.application.routes.draw do
             post :cancel
             post :retry
             post :erase
-            get :raw, format: false
+            get :raw
           end
 
           resource :artifacts, only: [] do

@@ -1,7 +1,7 @@
 class Projects::BuildsController < Projects::ApplicationController
   before_action :build, except: [:index, :cancel_all]
   before_action :authorize_read_build!, except: [:cancel, :cancel_all, :retry]
-  before_action :authorize_update_build!, except: [:index, :show, :status, :raw_trace]
+  before_action :authorize_update_build!, except: [:index, :show, :status, :raw]
   layout 'project'
 
   def index
@@ -63,11 +63,14 @@ class Projects::BuildsController < Projects::ApplicationController
   end
 
   def raw
+    response.headers['Content-Typei'] = 'text/plain'
     if @build.has_trace?
-      render json: { trace_file: @build.path_to_trace }
+      response.headers['X-Sendfile'] = @build.path_to_trace
     else
-      render json: {}, status: 404
+      response.status = 404
     end
+
+    render nothing: true
   end
 
   private
