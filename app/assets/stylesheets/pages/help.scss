@@ -59,6 +59,9 @@
   position: relative;
   overflow-y: auto;
   padding: 15px;
+  .form-actions {
+    margin: -$gl-padding+1;
+  }
 }
 
 body.modal-open {

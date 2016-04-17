@@ -6,10 +6,16 @@
 .navbar-nav {
   li {
     .badge.todos-pending-count {
-      background-color: #7f8fa4;
+      background-color: $gl-icon-color;
       margin-top: -5px;
       font-weight: normal;
     }
+  }
+}
+
+.todo {
+  &:hover {
+    cursor: pointer;
   }
 }
 
@@ -27,6 +33,11 @@
       .md {
         color: #7f8fa4;
         font-size: $gl-font-size;
+
+        .label {
+          color: $gl-text-color;
+          font-size: inherit;
+        }
 
         p {
           color: #5c5d5e;

@@ -73,14 +73,14 @@ class Issue < ActiveRecord::Base
   #
   # This pattern supports cross-project references.
   def self.reference_pattern
-    %r{
+    @reference_pattern ||= %r{
       (#{Project.reference_pattern})?
       #{Regexp.escape(reference_prefix)}(?<issue>\d+)
     }x
   end
 
   def self.link_reference_pattern
-    super("issues", /(?<issue>\d+)/)
+    @link_reference_pattern ||= super("issues", /(?<issue>\d+)/)
   end
 
   def to_reference(from_project = nil)
@@ -106,7 +106,7 @@ class Issue < ActiveRecord::Base
 
   def related_branches
     project.repository.branch_names.select do |branch|
-      branch.end_with?("-#{iid}")
+      branch =~ /\A#{iid}-(?!\d+-stable)/i
     end
   end
 
@@ -146,11 +146,12 @@ class Issue < ActiveRecord::Base
       return false unless user.can?(:admin_issue, to_project)
     end
 
-    !moved? && user.can?(:admin_issue, self.project)
+    !moved? && persisted? &&
+      user.can?(:admin_issue, self.project)
   end
 
   def to_branch_name
-    "#{title.parameterize}-#{iid}"
+    "#{iid}-#{title.parameterize}"
   end
 
   def can_be_worked_on?(current_user)

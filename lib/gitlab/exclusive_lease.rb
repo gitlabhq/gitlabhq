@@ -15,6 +15,25 @@ module Gitlab
   # seconds then two overlapping operations may hold a lease for the same
   # key at the same time.
   #
+  # This class has no 'cancel' method. I originally decided against adding
+  # it because it would add complexity and a false sense of security. The
+  # complexity: instead of setting '1' we would have to set a UUID, and to
+  # delete it we would have to execute Lua on the Redis server to only
+  # delete the key if the value was our own UUID. Otherwise there is a
+  # chance that when you intend to cancel your lease you actually delete
+  # someone else's. The false sense of security: you cannot design your
+  # system to rely too much on the lease being cancelled after use because
+  # the calling (Ruby) process may crash or be killed. You _cannot_ count
+  # on begin/ensure blocks to cancel a lease, because the 'ensure' does
+  # not always run. Think of 'kill -9' from the Unicorn master for
+  # instance.
+  # 
+  # If you find that leases are getting in your way, ask yourself: would
+  # it be enough to lower the lease timeout? Another thing that might be
+  # appropriate is to only use a lease for bulk/automated operations, and
+  # to ignore the lease when you get a single 'manual' user request (a
+  # button click).
+  #
   class ExclusiveLease
     def initialize(key, timeout:)
       @key, @timeout = key, timeout
@@ -24,15 +43,14 @@ module Gitlab
     # false if the lease is already taken.
     def try_obtain
       # Performing a single SET is atomic
-      !!redis.set(redis_key, '1', nx: true, ex: @timeout)
+      Gitlab::Redis.with do |redis|
+        !!redis.set(redis_key, '1', nx: true, ex: @timeout)
+      end
     end
+
+    # No #cancel method. See comments above!
 
     private
-
-    def redis
-      # Maybe someday we want to use a connection pool...
-      @redis ||= Redis.new(url: Gitlab::RedisConfig.url)
-    end
 
     def redis_key
       "gitlab:exclusive_lease:#{@key}"

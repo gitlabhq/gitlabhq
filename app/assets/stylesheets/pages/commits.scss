@@ -1,4 +1,4 @@
-.commits-compare-switch{
+.commits-compare-switch {
   @include btn-default;
   @include btn-white;
   background: image-url("switch_icon.png") no-repeat center center;
@@ -47,6 +47,7 @@ li.commit {
 
     .commit_short_id {
       min-width: 65px;
+      color: $gl-dark-link-color;
       font-family: $monospace_font;
     }
 
@@ -74,6 +75,11 @@ li.commit {
     }
   }
 
+  .item-title {
+    display: inline-block;
+    max-width: 70%;
+  }
+
   .commit-row-description {
     font-size: 14px;
     border-left: 1px solid #eee;
@@ -88,15 +94,22 @@ li.commit {
       padding: 0;
       margin: 0;
     }
+
+    a {
+      color: $gl-dark-link-color;
+    }
   }
 
   .commit-row-info {
     color: $gl-gray;
     line-height: 24px;
-    font-size: 13px;
 
     a {
       color: $gl-gray;
+    }
+
+    .avatar {
+      margin-right: 8px;
     }
 
     .committed_ago {

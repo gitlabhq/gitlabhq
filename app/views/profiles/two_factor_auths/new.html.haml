@@ -8,8 +8,6 @@
       Increase your account's security by enabling two-factor authentication (2FA).
   .col-lg-9
     %p
-      Status: #{current_user.two_factor_enabled? ? 'enabled' : 'disabled'}
-    %p
       Download the Google Authenticator application from App Store for iOS or Google Play for Android and scan this code.
       More information is available in the #{link_to('documentation', help_page_path('profile', 'two_factor_authentication'))}.
     .row.append-bottom-10

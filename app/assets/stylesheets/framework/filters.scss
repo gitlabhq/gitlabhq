@@ -3,7 +3,7 @@
   vertical-align: top;
 }
 
-@media (min-width: $screen-sm-min)  {
+@media (min-width: $screen-sm-min) {
   .issues-filters,
   .issues_bulk_update {
     .dropdown-menu-toggle {
@@ -11,3 +11,11 @@
     }
   }
 }
+
+@media (max-width: $screen-xs-max) {
+  .filter-item {
+    display: block;
+    margin: 0 0 10px;
+  }
+}
+

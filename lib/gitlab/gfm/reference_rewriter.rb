@@ -34,14 +34,19 @@ module Gitlab
         @source_project = source_project
         @current_user = current_user
         @original_html = markdown(text)
+        @pattern = Gitlab::ReferenceExtractor.references_pattern
       end
 
       def rewrite(target_project)
-        pattern = Gitlab::ReferenceExtractor.references_pattern
+        return @text unless needs_rewrite?
 
-        @text.gsub(pattern) do |reference|
+        @text.gsub(@pattern) do |reference|
           unfold_reference(reference, Regexp.last_match, target_project)
         end
+      end
+
+      def needs_rewrite?
+        @text =~ @pattern
       end
 
       private

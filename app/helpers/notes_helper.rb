@@ -5,8 +5,10 @@ module NotesHelper
   end
 
   def note_target_fields(note)
-    hidden_field_tag(:target_type, note.noteable.class.name.underscore) +
-    hidden_field_tag(:target_id, note.noteable.id)
+    if note.noteable
+      hidden_field_tag(:target_type, note.noteable.class.name.underscore) +
+        hidden_field_tag(:target_id, note.noteable.id)
+    end
   end
 
   def note_editable?(note)
@@ -67,10 +69,7 @@ module NotesHelper
       line_type:     line_type
     }
 
-    button_tag class: 'btn btn-nr reply-btn js-discussion-reply-button',
-               data: data, title: 'Add a reply' do
-      link_text = icon('comment')
-      link_text << ' Reply'
-    end
+    button_tag 'Reply...', class: 'btn btn-text-field js-discussion-reply-button',
+                           data: data, title: 'Add a reply'
   end
 end

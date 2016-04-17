@@ -56,6 +56,17 @@
     }
   }
 
+  .nav-search {
+    display: inline-block;
+    width: 100%;
+    padding: 11px 0;
+
+    /* Small devices (phones, tablets, 768px and lower) */
+    @media (min-width: $screen-sm-min) {
+      width: 50%;
+    }
+  }
+
   .nav-links {
     display: inline-block;
     width: 50%;
@@ -100,13 +111,18 @@
 
     > form {
       display: inline-block;
+      margin-top: -1px;
+    }
+
+    .icon-label {
+      display: none;
     }
 
     input {
       height: 34px;
       display: inline-block;
       position: relative;
-      top: 1px;
+      top: 2px;
       margin-right: $gl-padding-top;
 
       /* Medium devices (desktops, 992px and up) */
@@ -124,9 +140,38 @@
       }
     }
 
-    /* Hide on extra small devices (phones) */
     @media (max-width: $screen-xs-max) {
-      display: none;
+      padding-bottom: 0;
+
+      .btn, form, .dropdown, .dropdown-menu-toggle, .form-control {
+        margin: 0 0 10px;
+        display: block;
+        width: 100%;
+      }
+
+      form {
+        display: block;
+        height: auto;
+
+        input {
+          width: 100%;
+          margin: 0 0 10px;
+        }
+      }
+
+      .input-short {
+        width: 100%;
+      }
+
+      .icon-label {
+        display: inline-block;
+      }
+
+      // Applies on /dashboard/issues
+      .project-item-select-holder {
+        display: block;
+        margin: 0;
+      }
     }
 
     /* Small devices (tablets, 768px and lower) */

@@ -88,12 +88,9 @@ describe NotificationService, services: true do
           note.project.namespace_id = group.id
           note.project.group.add_user(@u_watcher, GroupMember::MASTER)
           note.project.save
-          user_project = note.project.project_members.find_by_user_id(@u_watcher.id)
-          user_project.notification_level = Notification::N_PARTICIPATING
-          user_project.save
-          group_member = note.project.group.group_members.find_by_user_id(@u_watcher.id)
-          group_member.notification_level = Notification::N_GLOBAL
-          group_member.save
+
+          @u_watcher.notification_settings_for(note.project).participating!
+          @u_watcher.notification_settings_for(note.project.group).global!
           ActionMailer::Base.deliveries.clear
         end
 
@@ -108,6 +105,33 @@ describe NotificationService, services: true do
           should_not_email(@u_participating)
           should_not_email(@u_disabled)
         end
+      end
+    end
+
+    context 'confidential issue note' do
+      let(:project) { create(:empty_project, :public) }
+      let(:author) { create(:user) }
+      let(:assignee) { create(:user) }
+      let(:non_member) { create(:user) }
+      let(:member) { create(:user) }
+      let(:admin) { create(:admin) }
+      let(:confidential_issue) { create(:issue, :confidential, project: project, author: author, assignee: assignee) }
+      let(:note) { create(:note_on_issue, noteable: confidential_issue, project: project, note: "#{author.to_reference} #{assignee.to_reference} #{non_member.to_reference} #{member.to_reference} #{admin.to_reference}") }
+
+      it 'filters out users that can not read the issue' do
+        project.team << [member, :developer]
+
+        expect(SentNotification).to receive(:record).with(confidential_issue, any_args).exactly(4).times
+
+        ActionMailer::Base.deliveries.clear
+
+        notification.new_note(note)
+
+        should_not_email(non_member)
+        should_email(author)
+        should_email(assignee)
+        should_email(member)
+        should_email(admin)
       end
     end
 
@@ -188,7 +212,7 @@ describe NotificationService, services: true do
         end
 
         it do
-          @u_committer.update_attributes(notification_level: Notification::N_MENTION)
+          @u_committer.update_attributes(notification_level: :mention)
           notification.new_note(note)
           should_not_email(@u_committer)
         end
@@ -219,7 +243,7 @@ describe NotificationService, services: true do
       end
 
       it do
-        issue.assignee.update_attributes(notification_level: Notification::N_MENTION)
+        issue.assignee.update_attributes(notification_level: :mention)
         notification.new_issue(issue, @u_disabled)
 
         should_not_email(issue.assignee)
@@ -232,6 +256,36 @@ describe NotificationService, services: true do
         notification.new_issue(issue, @u_disabled)
 
         should_email(subscriber)
+      end
+
+      context 'confidential issues' do
+        let(:author) { create(:user) }
+        let(:assignee) { create(:user) }
+        let(:non_member) { create(:user) }
+        let(:member) { create(:user) }
+        let(:admin) { create(:admin) }
+        let(:confidential_issue) { create(:issue, :confidential, project: project, title: 'Confidential issue', author: author, assignee: assignee) }
+
+        it "emails subscribers of the issue's labels that can read the issue" do
+          project.team << [member, :developer]
+
+          label = create(:label, issues: [confidential_issue])
+          label.toggle_subscription(non_member)
+          label.toggle_subscription(author)
+          label.toggle_subscription(assignee)
+          label.toggle_subscription(member)
+          label.toggle_subscription(admin)
+
+          ActionMailer::Base.deliveries.clear
+
+          notification.new_issue(confidential_issue, @u_disabled)
+
+          should_not_email(non_member)
+          should_not_email(author)
+          should_email(assignee)
+          should_email(member)
+          should_email(admin)
+        end
       end
     end
 
@@ -331,6 +385,37 @@ describe NotificationService, services: true do
         should_not_email(@u_participating)
         should_not_email(subscriber_to_label)
         should_email(subscriber_to_label2)
+      end
+
+      context 'confidential issues' do
+        let(:author) { create(:user) }
+        let(:assignee) { create(:user) }
+        let(:non_member) { create(:user) }
+        let(:member) { create(:user) }
+        let(:admin) { create(:admin) }
+        let(:confidential_issue) { create(:issue, :confidential, project: project, title: 'Confidential issue', author: author, assignee: assignee) }
+        let!(:label_1) { create(:label, issues: [confidential_issue]) }
+        let!(:label_2) { create(:label) }
+
+        it "emails subscribers of the issue's labels that can read the issue" do
+          project.team << [member, :developer]
+
+          label_2.toggle_subscription(non_member)
+          label_2.toggle_subscription(author)
+          label_2.toggle_subscription(assignee)
+          label_2.toggle_subscription(member)
+          label_2.toggle_subscription(admin)
+
+          ActionMailer::Base.deliveries.clear
+
+          notification.relabeled_issue(confidential_issue, [label_2], @u_disabled)
+
+          should_not_email(non_member)
+          should_email(author)
+          should_email(assignee)
+          should_email(member)
+          should_email(admin)
+        end
       end
     end
 
@@ -508,13 +593,13 @@ describe NotificationService, services: true do
   end
 
   def build_team(project)
-    @u_watcher = create(:user, notification_level: Notification::N_WATCH)
-    @u_participating = create(:user, notification_level: Notification::N_PARTICIPATING)
-    @u_participant_mentioned = create(:user, username: 'participant', notification_level: Notification::N_PARTICIPATING)
-    @u_disabled = create(:user, notification_level: Notification::N_DISABLED)
-    @u_mentioned = create(:user, username: 'mention', notification_level: Notification::N_MENTION)
+    @u_watcher = create(:user, notification_level: :watch)
+    @u_participating = create(:user, notification_level: :participating)
+    @u_participant_mentioned = create(:user, username: 'participant', notification_level: :participating)
+    @u_disabled = create(:user, notification_level: :disabled)
+    @u_mentioned = create(:user, username: 'mention', notification_level: :mention)
     @u_committer = create(:user, username: 'committer')
-    @u_not_mentioned = create(:user, username: 'regular', notification_level: Notification::N_PARTICIPATING)
+    @u_not_mentioned = create(:user, username: 'regular', notification_level: :participating)
     @u_outsider_mentioned = create(:user, username: 'outsider')
 
     project.team << [@u_watcher, :master]
@@ -529,8 +614,8 @@ describe NotificationService, services: true do
   def add_users_with_subscription(project, issuable)
     @subscriber = create :user
     @unsubscriber = create :user
-    @subscribed_participant = create(:user, username: 'subscribed_participant', notification_level: Notification::N_PARTICIPATING)
-    @watcher_and_subscriber = create(:user, notification_level: Notification::N_WATCH)
+    @subscribed_participant = create(:user, username: 'subscribed_participant', notification_level: :participating)
+    @watcher_and_subscriber = create(:user, notification_level: :watch)
 
     project.team << [@subscribed_participant, :master]
     project.team << [@subscriber, :master]

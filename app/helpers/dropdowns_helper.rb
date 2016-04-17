@@ -60,7 +60,7 @@ module DropdownsHelper
       title_output << content_tag(:span, title)
 
       title_output << content_tag(:button, class: "dropdown-title-button dropdown-menu-close", aria: { label: "Close" }, type: "button") do
-        icon('times')
+        icon('times', class: 'dropdown-menu-close-icon')
       end
 
       title_output.html_safe
@@ -70,7 +70,8 @@ module DropdownsHelper
   def dropdown_filter(placeholder)
     content_tag :div, class: "dropdown-input" do
       filter_output = search_field_tag nil, nil, class: "dropdown-input-field", placeholder: placeholder
-      filter_output << icon('search')
+      filter_output << icon('search', class: "dropdown-input-search")
+      filter_output << icon('times', class: "dropdown-input-clear js-dropdown-input-clear", role: "button")
 
       filter_output.html_safe
     end

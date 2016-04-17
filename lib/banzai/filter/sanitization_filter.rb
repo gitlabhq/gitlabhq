@@ -1,6 +1,3 @@
-require 'html/pipeline/filter'
-require 'html/pipeline/sanitization_filter'
-
 module Banzai
   module Filter
     # Sanitize HTML

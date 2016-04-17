@@ -19,7 +19,7 @@ many projects, you can have a single or a small number of runners that handle
 multiple projects. This makes it easier to maintain and update runners.
 
 **Specific runners** are useful for jobs that have special requirements or for
-projects with a very demand. If a job has certain requirements, you can set
+projects with a specific demand. If a job has certain requirements, you can set
 up the specific runner with this in mind, while not having to do this for all
 runners. For example, if you want to deploy a certain project, you can setup
 a specific runner to have the right credentials for this.

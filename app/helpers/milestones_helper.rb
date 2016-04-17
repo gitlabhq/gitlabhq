@@ -50,7 +50,7 @@ module MilestonesHelper
     if @project
       namespace_project_milestones_path(@project.namespace, @project, :json)
     else
-      milestones_dashboard_path(:json)
+      dashboard_milestones_path(:json)
     end
   end
 

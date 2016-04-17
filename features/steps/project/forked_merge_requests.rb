@@ -34,10 +34,14 @@ class Spinach::Features::ProjectForkedMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I fill out a "Merge Request On Forked Project" merge request' do
-    select @forked_project.path_with_namespace, from: "merge_request_source_project_id"
-    select @project.path_with_namespace, from: "merge_request_target_project_id"
-    select "fix", from: "merge_request_source_branch"
-    select "master", from: "merge_request_target_branch"
+    first('.js-source-project').click
+    first('.dropdown-source-project a', text: @forked_project.path_with_namespace)
+
+    first('.js-target-project').click
+    first('.dropdown-target-project a', text: @project.path_with_namespace)
+
+    first('.js-source-branch').click
+    first('.dropdown-source-branch .dropdown-content a', text: 'fix').click
 
     click_button "Compare branches and continue"
 
@@ -115,10 +119,10 @@ class Spinach::Features::ProjectForkedMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I fill out an invalid "Merge Request On Forked Project" merge request' do
-    expect(find(:select, "merge_request_source_project_id", {}).value).to eq @forked_project.id.to_s
-    expect(find(:select, "merge_request_target_project_id", {}).value).to eq @project.id.to_s
-    expect(find(:select, "merge_request_source_branch", {}).value).to eq ""
-    expect(find(:select, "merge_request_target_branch", {}).value).to eq "master"
+    expect(find_by_id("merge_request_source_project_id", visible: false).value).to eq @forked_project.id.to_s
+    expect(find_by_id("merge_request_target_project_id", visible: false).value).to eq @project.id.to_s
+    expect(find_by_id("merge_request_source_branch", visible: false).value).to eq nil
+    expect(find_by_id("merge_request_target_branch", visible: false).value).to eq "master"
     click_button "Compare branches"
   end
 
@@ -127,7 +131,7 @@ class Spinach::Features::ProjectForkedMergeRequests < Spinach::FeatureSteps
   end
 
   step 'the target repository should be the original repository' do
-    expect(page).to have_select("merge_request_target_project_id", selected: @project.path_with_namespace)
+    expect(find_by_id("merge_request_target_project_id").value).to eq "#{@project.id}"
   end
 
   step 'I click "Assign to" dropdown"' do

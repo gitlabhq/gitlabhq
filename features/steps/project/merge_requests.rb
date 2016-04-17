@@ -77,11 +77,11 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I should see that I am subscribed' do
-    expect(find('.subscribe-button span')).to have_content 'Unsubscribe'
+    expect(find('.issuable-subscribe-button span')).to have_content 'Unsubscribe'
   end
 
   step 'I should see that I am unsubscribed' do
-    expect(find('.subscribe-button span')).to have_content 'Subscribe'
+    expect(find('.issuable-subscribe-button span')).to have_content 'Subscribe'
   end
 
   step 'I click button "Unsubscribe"' do
@@ -93,8 +93,12 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I submit new merge request "Wiki Feature"' do
-    select "fix", from: "merge_request_source_branch"
-    select "feature", from: "merge_request_target_branch"
+    find('.js-source-branch').click
+    find('.dropdown-source-branch .dropdown-content a', text: 'fix').click
+
+    find('.js-target-branch').click
+    first('.dropdown-target-branch .dropdown-content a', text: 'feature').click
+
     click_button "Compare branches"
     fill_in "merge_request_title", with: "Wiki Feature"
     click_button "Submit merge request"
@@ -326,7 +330,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
   step 'I should see a discussion has started on diff' do
     page.within(".notes .discussion") do
-      page.should have_content "#{current_user.name} started a discussion"
+      page.should have_content "#{current_user.name} #{current_user.to_reference} started a discussion"
       page.should have_content sample_commit.line_code_path
       page.should have_content "Line is wrong"
     end
@@ -334,7 +338,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
   step 'I should see a discussion by user "John Doe" has started on diff' do
     page.within(".notes .discussion") do
-      page.should have_content "#{user_exists("John Doe").name} started a discussion"
+      page.should have_content "#{user_exists("John Doe").name} #{user_exists("John Doe").to_reference} started a discussion"
       page.should have_content sample_commit.line_code_path
       page.should have_content "Line is wrong"
     end
@@ -350,7 +354,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
   step 'I should see a discussion has started on commit diff' do
     page.within(".notes .discussion") do
-      page.should have_content "#{current_user.name} started a discussion on commit"
+      page.should have_content "#{current_user.name} #{current_user.to_reference} started a discussion on commit"
       page.should have_content sample_commit.line_code_path
       page.should have_content "Line is wrong"
     end
@@ -358,7 +362,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
   step 'I should see a discussion has started on commit' do
     page.within(".notes .discussion") do
-      page.should have_content "#{current_user.name} started a discussion on commit"
+      page.should have_content "#{current_user.name} #{current_user.to_reference} started a discussion on commit"
       page.should have_content "One comment to rule them all"
     end
   end

@@ -1,8 +1,7 @@
 - page_title           "#{@merge_request.title} (#{@merge_request.to_reference})", "Merge Requests"
 - page_description     @merge_request.description
 - page_card_attributes @merge_request.card_attributes
-
-= render "header_title"
+- header_title project_title(@project, "Merge Requests", namespace_project_merge_requests_path(@project.namespace, @project))
 
 - if params[:view] == 'parallel'
   - fluid_layout true
@@ -10,7 +9,7 @@
 .merge-request{'data-url' => merge_request_path(@merge_request)}
   = render "projects/merge_requests/show/mr_title"
 
-  .merge-request-details.issuable-details
+  .merge-request-details.issuable-details{data: {id: @merge_request.project.id}}
     = render "projects/merge_requests/show/mr_box"
     .append-bottom-default.mr-source-target.prepend-top-default
       - if @merge_request.open?
@@ -32,8 +31,7 @@
         %span Request to merge
         %span.label-branch= source_branch_with_namespace(@merge_request)
         %span into
-        = link_to namespace_project_commits_path(@project.namespace, @project, @merge_request.target_branch), class: "label-branch" do
-          = @merge_request.target_branch
+        = link_to @merge_request.target_branch, namespace_project_commits_path(@project.namespace, @project, @merge_request.target_branch), class: "label-branch"
         - if @merge_request.open? && @merge_request.diverged_from_target_branch?
           %span (#{pluralize(@merge_request.diverged_commits_count, 'commit')} behind)
 
@@ -51,7 +49,7 @@
         %li.notes-tab
           = link_to namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: {target: 'div#notes', action: 'notes', toggle: 'tab'} do
             Discussion
-            %span.badge= @merge_request.mr_and_commit_notes.user.count
+            %span.badge= @merge_request.mr_and_commit_notes.user.nonawards.count
         %li.commits-tab
           = link_to commits_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: {target: 'div#commits', action: 'commits', toggle: 'tab'} do
             Commits

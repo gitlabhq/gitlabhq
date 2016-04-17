@@ -16,6 +16,16 @@ module IssuablesHelper
     base_issuable_scope(issuable).where('iid > ?', issuable.iid).last
   end
 
+  def issuable_json_path(issuable)
+    project = issuable.project
+
+    if issuable.kind_of?(MergeRequest)
+      namespace_project_merge_request_path(project.namespace, project, issuable.iid, :json)
+    else
+      namespace_project_issue_path(project.namespace, project, issuable.iid, :json)
+    end
+  end
+
   def prev_issuable_for(issuable)
     base_issuable_scope(issuable).where('iid < ?', issuable.iid).first
   end
@@ -34,6 +44,23 @@ module IssuablesHelper
       user.name
     else
       default_label
+    end
+  end
+
+  def milestone_dropdown_label(milestone_title, default_label = "Milestone")
+    if milestone_title == Milestone::Upcoming.name
+      milestone_title = Milestone::Upcoming.title
+    end
+
+    h(milestone_title.presence || default_label)
+  end
+
+  def issuable_meta(issuable, project, text)
+    output = content_tag :strong, "#{text} #{issuable.to_reference}", class: "identifier"
+    output << " opened #{time_ago_with_tooltip(issuable.created_at)} by".html_safe
+    output << content_tag(:strong) do
+      author_output = link_to_member(project, issuable.author, size: 24, mobile_classes: "hidden-xs")
+      author_output << link_to_member(project, issuable.author, size: 24, by_username: true, avatar: false, mobile_classes: "hidden-sm hidden-md hidden-lg")
     end
   end
 

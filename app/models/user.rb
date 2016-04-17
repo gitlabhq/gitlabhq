@@ -143,6 +143,7 @@ class User < ActiveRecord::Base
   has_many :spam_logs,                dependent: :destroy
   has_many :builds,                   dependent: :nullify, class_name: 'Ci::Build'
   has_many :todos,                    dependent: :destroy
+  has_many :notification_settings,    dependent: :destroy
 
   #
   # Validations
@@ -157,7 +158,7 @@ class User < ActiveRecord::Base
     presence: true,
     uniqueness: { case_sensitive: false }
 
-  validates :notification_level, inclusion: { in: Notification.notification_levels }, presence: true
+  validates :notification_level, presence: true
   validate :namespace_uniq, if: ->(user) { user.username_changed? }
   validate :avatar_type, if: ->(user) { user.avatar.present? && user.avatar_changed? }
   validate :unique_email, if: ->(user) { user.email_changed? }
@@ -184,11 +185,18 @@ class User < ActiveRecord::Base
 
   # User's Dashboard preference
   # Note: When adding an option, it MUST go on the end of the array.
-  enum dashboard: [:projects, :stars, :project_activity, :starred_project_activity]
+  enum dashboard: [:projects, :stars, :project_activity, :starred_project_activity, :groups, :todos]
 
   # User's Project preference
   # Note: When adding an option, it MUST go on the end of the array.
   enum project_view: [:readme, :activity, :files]
+
+  # Notification level
+  # Note: When adding an option, it MUST go on the end of the array.
+  #
+  # TODO: Add '_prefix: :notification' to enum when update to Rails 5. https://github.com/rails/rails/pull/19813
+  # Because user.notification_disabled? is much better than user.disabled?
+  enum notification_level: [:disabled, :participating, :watch, :global, :mention]
 
   alias_attribute :private_token, :authentication_token
 
@@ -349,10 +357,6 @@ class User < ActiveRecord::Base
     "#{self.class.reference_prefix}#{username}"
   end
 
-  def notification
-    @notification ||= Notification.new(self)
-  end
-
   def generate_password
     if self.force_random_password
       self.password = self.password_confirmation = Devise.friendly_token.first(8)
@@ -408,6 +412,8 @@ class User < ActiveRecord::Base
   end
 
   def owns_notification_email
+    return if self.temp_oauth_email?
+
     self.errors.add(:notification_email, "is not an email you own") unless self.all_emails.include?(self.notification_email)
   end
 
@@ -823,6 +829,10 @@ class User < ActiveRecord::Base
         select(:runner_id)
       Ci::Runner.specific.where(id: runner_ids)
     end
+  end
+
+  def notification_settings_for(source)
+    notification_settings.find_or_initialize_by(source: source)
   end
 
   private

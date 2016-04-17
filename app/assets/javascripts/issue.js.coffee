@@ -6,25 +6,12 @@ class @Issue
   constructor: ->
     # Prevent duplicate event bindings
     @disableTaskList()
-    @fixAffixScroll()
-    @initParticipants()
     if $('a.btn-close').length
       @initTaskList()
       @initIssueBtnEventListeners()
 
-  fixAffixScroll: ->
-    fixAffix = ->
-      $discussion = $('.issuable-discussion')
-      $sidebar = $('.issuable-sidebar')
-      if $sidebar.hasClass('no-affix')
-        $sidebar.removeClass(['affix-top','affix'])
-      discussionHeight = $discussion.height()
-      sidebarHeight = $sidebar.height()
-      if sidebarHeight > discussionHeight
-        $discussion.height(sidebarHeight + 50)
-        $sidebar.addClass('no-affix')
-    $(window).on('resize', fixAffix)
-    fixAffix()
+    @initMergeRequests()
+    @initRelatedBranches()
 
   initTaskList: ->
     $('.detail-page-description .js-task-list-container').taskList('enable')
@@ -50,7 +37,7 @@ class @Issue
           issueStatus = if isClose then 'close' else 'open'
           new Flash(issueFailMessage, 'alert')
         success: (data, textStatus, jqXHR) ->
-          if data.saved
+          if 'id' of data
             $(document).trigger('issuable:change');
             if isClose
               $('a.btn-close').addClass('hidden')
@@ -86,26 +73,22 @@ class @Issue
       url: $('form.js-issuable-update').attr('action')
       data: patchData
 
-  initParticipants: ->
-    _this = @
-    $(document).on "click", ".js-participants-more", @toggleHiddenParticipants
+  initMergeRequests: ->
+    $container = $('#merge-requests')
 
-    $(".js-participants-author").each (i) ->
-      if i >= _this.PARTICIPANTS_ROW_COUNT
-        $(@)
-          .addClass "js-participants-hidden"
-          .hide()
+    $.getJSON($container.data('url'))
+      .error ->
+        new Flash('Failed to load referenced merge requests', 'alert')
+      .success (data) ->
+        if 'html' of data
+          $container.html(data.html)
 
-  toggleHiddenParticipants: (e) ->
-    e.preventDefault()
+  initRelatedBranches: ->
+    $container = $('#related-branches')
 
-    currentText = $(this).text().trim()
-    lessText = $(this).data("less-text")
-    originalText = $(this).data("original-text")
-
-    if currentText is originalText
-      $(this).text(lessText)
-    else
-      $(this).text(originalText)
-
-    $(".js-participants-hidden").toggle()
+    $.getJSON($container.data('url'))
+      .error ->
+        new Flash('Failed to load related branches', 'alert')
+      .success (data) ->
+        if 'html' of data
+          $container.html(data.html)

@@ -26,4 +26,10 @@ describe Gitlab::Metrics::System do
       end
     end
   end
+
+  describe '.cpu_time' do
+    it 'returns a Fixnum' do
+      expect(described_class.cpu_time).to be_an_instance_of(Fixnum)
+    end
+  end
 end

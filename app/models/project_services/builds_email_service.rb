@@ -23,7 +23,7 @@ class BuildsEmailService < Service
   prop_accessor :recipients
   boolean_accessor :add_pusher
   boolean_accessor :notify_only_broken_builds
-  validates :recipients, presence: true, if: :activated?
+  validates :recipients, presence: true, if: ->(s) { s.activated? && !s.add_pusher? }
 
   def initialize_properties
     if properties.nil?
@@ -50,12 +50,15 @@ class BuildsEmailService < Service
 
   def execute(push_data)
     return unless supported_events.include?(push_data[:object_kind])
+    return unless should_build_be_notified?(push_data)
 
-    if should_build_be_notified?(push_data)
+    recipients = all_recipients(push_data)
+
+    if recipients.any?
       BuildEmailWorker.perform_async(
         push_data[:build_id],
-        all_recipients(push_data),
-        push_data,
+        recipients,
+        push_data
       )
     end
   end
@@ -84,10 +87,14 @@ class BuildsEmailService < Service
   end
 
   def all_recipients(data)
-    all_recipients = recipients.split(',')
+    all_recipients = []
+
+    unless recipients.blank?
+      all_recipients += recipients.split(',').compact.reject(&:blank?)
+    end
 
     if add_pusher? && data[:user][:email]
-      all_recipients << "#{data[:user][:email]}"
+      all_recipients << data[:user][:email]
     end
 
     all_recipients

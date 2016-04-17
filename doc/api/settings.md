@@ -26,7 +26,6 @@ Example response:
    "default_branch_protection" : 2,
    "restricted_visibility_levels" : [],
    "signin_enabled" : true,
-   "twitter_sharing_enabled" : true,
    "after_sign_out_path" : null,
    "max_attachment_size" : 10,
    "user_oauth_applications" : true,
@@ -57,7 +56,6 @@ PUT /application/settings
 | `sign_in_text`      | string  | no  | Text on login page |
 | `home_page_url`     | string  | no  | Redirect to this URL when not logged in |
 | `default_branch_protection` | integer | no | Determine if developers can push to master. Can take `0` _(not protected, both developers and masters can push new commits, force push or delete the branch)_, `1` _(partially protected, developers can push new commits, but cannot force push or delete the branch, masters can do anything)_ or `2` _(fully protected, developers cannot push new commits, force push or delete the branch, masters can do anything)_ as a parameter. Default is `1`. |
-| `twitter_sharing_enabled` | boolean | no | Allow users to share project creation on Twitter |
 | `restricted_visibility_levels` | array of integers | no | Selected levels cannot be used by non-admin users for projects or snippets. Can take `0` _(Private)_, `1` _(Internal)_ and `2` _(Public)_ as a parameter. Default is null which means there is no restriction. |
 | `max_attachment_size` | integer | no | Limit attachment size in MB |
 | `session_expire_delay` | integer | no | Session duration in minutes. GitLab restart is required to apply changes |
@@ -85,7 +83,6 @@ Example response:
   "updated_at": "2015-06-30T13:22:42.210Z",
   "home_page_url": "",
   "default_branch_protection": 2,
-  "twitter_sharing_enabled": true,
   "restricted_visibility_levels": [],
   "max_attachment_size": 10,
   "session_expire_delay": 10080,

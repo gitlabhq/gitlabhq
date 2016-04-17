@@ -4,13 +4,12 @@ describe 'Gitlab::NoteDataBuilder', lib: true do
   let(:project) { create(:project) }
   let(:user) { create(:user) }
   let(:data) { Gitlab::NoteDataBuilder.build(note, user) }
-  let(:note_url) { Gitlab::UrlBuilder.new(:note).build(note.id) }
   let(:fixed_time) { Time.at(1425600000) } # Avoid time precision errors
 
   before(:each) do
     expect(data).to have_key(:object_attributes)
     expect(data[:object_attributes]).to have_key(:url)
-    expect(data[:object_attributes][:url]).to eq(note_url)
+    expect(data[:object_attributes][:url]).to eq(Gitlab::UrlBuilder.build(note))
     expect(data[:object_kind]).to eq('note')
     expect(data[:user]).to eq(user.hook_attrs)
   end

@@ -21,3 +21,145 @@
   }
 }
 
+.search {
+  margin-right: 10px;
+  margin-left: 10px;
+  margin-top: ($header-height - 35) / 2;
+
+  form {
+    @extend .form-control;
+    margin: 0;
+    padding: 4px;
+    width: $search-input-width;
+    line-height: 24px;
+  }
+
+  .location-text {
+    font-style: normal;
+  }
+
+  .search-input {
+    border: none;
+    font-size: 14px;
+    outline: none;
+    padding: 0;
+    margin-left: 5px;
+    line-height: 25px;
+    width: 98%;
+  }
+
+  .location-badge {
+    line-height: 25px;
+    padding: 0 5px;
+    border-radius: $border-radius-default;
+    font-size: 14px;
+    font-style: normal;
+    color: $location-badge-color;
+    display: inline-block;
+    background-color: $location-badge-bg;
+    vertical-align: top;
+  }
+
+  .search-input-container {
+    display: -webkit-flex;
+    display: flex;
+    position: relative;
+  }
+
+  .search-location-badge, .search-input-wrap {
+    // Fallback if flexbox is not supported
+    display: inline-block;
+  }
+
+  .search-input-wrap {
+    width: 100%;
+
+    .search-icon, .clear-icon {
+      position: absolute;
+      right: 5px;
+      top: 0;
+      color: $location-icon-color;
+
+      &:before {
+        font-family: FontAwesome;
+        font-weight: normal;
+        font-style: normal;
+      }
+    }
+
+    .search-icon {
+      @extend .fa-search;
+      @include transition(color .15s);
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+    }
+
+    .clear-icon {
+      @extend .fa-times;
+      display: none;
+    }
+
+    // Rewrite position. Dropdown menu should be relative to .search-input-container
+    .dropdown {
+      position: static;
+    }
+
+    .dropdown-header {
+      text-transform: uppercase;
+      font-size: 11px;
+    }
+
+    // Custom dropdown positioning
+    .dropdown-menu {
+      top: 30px;
+      left: -5px;
+      padding: 0;
+
+      ul {
+        padding: 10px 0;
+      }
+    }
+
+    .dropdown-content {
+      max-height: 350px;
+    }
+  }
+
+  &.search-active {
+    form {
+      @extend .form-control:focus;
+      border-color: $dropdown-input-focus-border;
+      box-shadow: 0 0 4px $search-input-focus-shadow-color;
+    }
+
+    .location-badge {
+      @include transition(all .15s);
+      background-color: $location-badge-active-bg;
+      color: $white-light;
+    }
+
+    .search-input-wrap {
+      i {
+        color: $location-icon-active-color;
+      }
+    }
+  }
+
+  &.has-value {
+    .search-icon {
+      display: none;
+    }
+
+    .clear-icon {
+      cursor: pointer;
+      display: block;
+    }
+  }
+
+  &.has-location-badge {
+    .search-input-wrap {
+      width: 78%;
+    }
+  }
+}

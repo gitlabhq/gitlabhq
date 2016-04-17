@@ -104,6 +104,15 @@ describe Project, models: true do
     end
   end
 
+  describe 'default_scope' do
+    it 'excludes projects pending deletion from the results' do
+      project = create(:empty_project)
+      create(:empty_project, pending_delete: true)
+
+      expect(Project.all).to eq [project]
+    end
+  end
+
   describe 'project token' do
     it 'should set an random token if none provided' do
       project = FactoryGirl.create :empty_project, runners_token: ''
@@ -421,6 +430,12 @@ describe Project, models: true do
       end
 
       it { should eq "http://localhost#{avatar_path}" }
+    end
+
+    context 'when git repo is empty' do
+      let(:project) { create(:empty_project) }
+
+      it { should eq nil }
     end
   end
 

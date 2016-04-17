@@ -30,6 +30,10 @@
 }
 
 .issuable-sidebar {
+  a {
+    color: inherit;
+  }
+
   .block {
     @include clearfix;
     padding: $gl-padding 0;
@@ -89,7 +93,7 @@
   }
 
   .cross-project-reference {
-    color: $gl-link-color;
+    color: inherit;
 
     span {
       white-space: nowrap;
@@ -133,6 +137,12 @@
 
     .value {
       line-height: 1;
+
+      .assign-yourself {
+        margin-top: 10px;
+        font-weight: normal;
+        display: block;
+      }
     }
 
     .bold {
@@ -160,12 +170,6 @@
       margin-top: 4px;
       font-size: 13px;
       font-weight: normal;
-    }
-  }
-
-  .subscribe-button {
-    span {
-      margin-top: 0;
     }
   }
 
@@ -252,10 +256,21 @@
       text-decoration: none;
     }
   }
-}
 
-.btn-default.gutter-toggle {
-  margin-top: 4px;
+  .dropdown-content {
+    a:hover {
+      color: inherit;
+    }
+  }
+
+  .dropdown-menu-toggle {
+    width: 100%;
+    padding-top: 6px;
+  }
+
+  .open .dropdown-menu {
+    width: 100%;
+  }
 }
 
 .detail-page-description {
@@ -296,4 +311,57 @@
   a {
     color: #8c8c8c;
   }
+}
+
+.issuable-form-padding-top {
+  @media (min-width: $screen-sm-min) {
+    padding-top: 7px;
+  }
+}
+
+.issuable-status-box {
+  float: none;
+  display: inline-block;
+  margin-top: 0;
+
+  @media (max-width: $screen-xs-max) {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+}
+
+.issuable-header {
+  position: relative;
+  padding-left: 45px;
+  padding-right: 45px;
+  line-height: 35px;
+
+  @media (min-width: $screen-sm-min) {
+    float: left;
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
+.issuable-actions {
+  padding-top: 10px;
+
+  @media (min-width: $screen-sm-min) {
+    float: right;
+    padding-top: 0;
+  }
+}
+
+.issuable-gutter-toggle {
+  @media (max-width: $screen-sm-max) {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+}
+
+.issuable-meta {
+  display: inline-block;
+  line-height: 18px;
 }

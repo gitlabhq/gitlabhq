@@ -227,9 +227,9 @@ sudo usermod -aG redis git
 ### Clone the Source
 
     # Clone GitLab repository
-    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 8-6-stable gitlab
+    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 8-7-stable gitlab
 
-**Note:** You can change `8-6-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
+**Note:** You can change `8-7-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
 
 ### Configure It
 
@@ -283,8 +283,12 @@ sudo usermod -aG redis git
     # Copy the example Rack attack config
     sudo -u git -H cp config/initializers/rack_attack.rb.example config/initializers/rack_attack.rb
 
-    # Configure Git global settings for git user, used when editing via web editor
+    # Configure Git global settings for git user
+    # 'autocrlf' is needed for the web editor
     sudo -u git -H git config --global core.autocrlf input
+
+    # Disable 'git gc --auto' because GitLab already runs 'git gc' when needed
+    sudo -u git -H git config --global gc.auto 0
 
     # Configure Redis connection settings
     sudo -u git -H cp config/resque.yml.example config/resque.yml
@@ -525,6 +529,16 @@ See the [omniauth integration document](../integration/omniauth.md)
 
 GitLab can build your projects. To enable that feature you need GitLab Runners to do that for you.
 Checkout the [GitLab Runner section](https://about.gitlab.com/gitlab-ci/#gitlab-runner) to install it
+
+### Adding your Trusted Proxies
+
+If you are using a reverse proxy on an separate machine, you may want to add the
+proxy to the trusted proxies list. Otherwise users will appear signed in from the
+proxy's IP address.
+
+You can add trusted proxies in `config/gitlab.yml` by customizing the `trusted_proxies`
+option in section 1. Save the file and [reconfigure GitLab](../administration/restart_gitlab.md)
+for the changes to take effect.
 
 ### Custom Redis Connection
 

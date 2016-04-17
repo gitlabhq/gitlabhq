@@ -70,13 +70,6 @@
     display: none;
   }
 
-  .issue-details {
-    .creator,
-    .page-title .btn-close {
-      display: none;
-    }
-  }
-
   %ul.notes .note-role, .note-actions {
     display: none;
   }
@@ -107,7 +100,7 @@
   }
 
   .page-title {
-    .note_created_ago, .new-issue-link {
+    .note-created-ago, .new-issue-link {
       display: none;
     }
   }
@@ -116,7 +109,7 @@
     display: none;
   }
 
-  aside:not(.right-sidebar){
+  aside:not(.right-sidebar) {
     display: none;
   }
 

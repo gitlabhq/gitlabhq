@@ -244,6 +244,68 @@ module API
         end
       end
 
+      # Archive project
+      #
+      # Parameters:
+      #   id (required) - The ID of a project
+      # Example Request:
+      #   PUT /projects/:id/archive
+      post ':id/archive' do
+        authorize!(:archive_project, user_project)
+
+        user_project.archive!
+
+        present user_project, with: Entities::Project
+      end
+
+      # Unarchive project
+      #
+      # Parameters:
+      #   id (required) - The ID of a project
+      # Example Request:
+      #   PUT /projects/:id/unarchive
+      post ':id/unarchive' do
+        authorize!(:archive_project, user_project)
+
+        user_project.unarchive!
+
+        present user_project, with: Entities::Project
+      end
+
+      # Star project
+      #
+      # Parameters:
+      #   id (required) - The ID of a project
+      # Example Request:
+      #   POST /projects/:id/star
+      post ':id/star' do
+        if current_user.starred?(user_project)
+          not_modified!
+        else
+          current_user.toggle_star(user_project)
+          user_project.reload
+
+          present user_project, with: Entities::Project
+        end
+      end
+
+      # Unstar project
+      #
+      # Parameters:
+      #   id (required) - The ID of a project
+      # Example Request:
+      #   DELETE /projects/:id/star
+      delete ':id/star' do
+        if current_user.starred?(user_project)
+          current_user.toggle_star(user_project)
+          user_project.reload
+
+          present user_project, with: Entities::Project
+        else
+          not_modified!
+        end
+      end
+
       # Remove project
       #
       # Parameters:

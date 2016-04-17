@@ -1,8 +1,5 @@
 = form_for [:admin, @group], html: { class: "form-horizontal" } do |f|
-  - if @group.errors.any?
-    .alert.alert-danger
-      %span= @group.errors.full_messages.first
-
+  = form_errors(@group)
   = render 'shared/group_form', f: f
 
   .form-group.group-description-holder

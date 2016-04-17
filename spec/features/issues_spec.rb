@@ -22,7 +22,7 @@ describe 'Issues', feature: true do
 
     before do
       visit edit_namespace_project_issue_path(project.namespace, project, issue)
-      click_link "Edit"
+      click_button "Go full screen"
     end
 
     it 'should open new issue popup' do
@@ -34,20 +34,7 @@ describe 'Issues', feature: true do
         fill_in 'issue_title', with: 'bug 345'
         fill_in 'issue_description', with: 'bug description'
       end
-
-      it 'does not change issue count' do
-        expect { click_button 'Save changes' }.to_not change { Issue.count }
-      end
-
-      it 'should update issue fields' do
-        click_button 'Save changes'
-
-        expect(page).to have_content @user.name
-        expect(page).to have_content 'bug 345'
-        expect(page).to have_content project.name
-      end
     end
-
   end
 
   describe 'Editing issue assignee' do
@@ -58,7 +45,7 @@ describe 'Issues', feature: true do
              project: project)
     end
 
-    it 'allows user to select unasigned', js: true do
+    it 'allows user to select unassigned', js: true do
       visit edit_namespace_project_issue_path(project.namespace, project, issue)
 
       expect(page).to have_content "Assignee #{@user.name}"
@@ -70,10 +57,22 @@ describe 'Issues', feature: true do
       click_button 'Save changes'
 
       page.within('.assignee') do
-        expect(page).to have_content 'None'
+        expect(page).to have_content 'No assignee - assign yourself'
       end
 
       expect(issue.reload.assignee).to be_nil
+    end
+  end
+
+  describe 'Issue info' do
+    it 'excludes award_emoji from comment count' do
+      issue = create(:issue, author: @user, assignee: @user, project: project, title: 'foobar')
+      create(:upvote_note, noteable: issue)
+
+      visit namespace_project_issues_path(project.namespace, project, assignee_id: @user.id)
+
+      expect(page).to have_content 'foobar'
+      expect(page.all('.issue-no-comments').first.text).to eq "0"
     end
   end
 
@@ -198,20 +197,26 @@ describe 'Issues', feature: true do
   end
 
   describe 'update assignee from issue#show' do
-    let(:issue) { create(:issue, project: project, author: @user) }
+    let(:issue) { create(:issue, project: project, author: @user, assignee: @user) }
 
-    context 'by autorized user' do
+    context 'by authorized user' do
 
-      it 'with dropdown menu' do
+      it 'allows user to select unassigned', js: true do
         visit namespace_project_issue_path(project.namespace, project, issue)
 
-        find('.issuable-sidebar #issue_assignee_id').
-          set project.team.members.first.id
-        click_button 'Update Issue'
+        page.within('.assignee') do
+          expect(page).to have_content "#{@user.name}"
+        end
 
-        expect(page).to have_content 'Assignee'
-        has_select?('issue_assignee_id',
-                    selected: project.team.members.first.name)
+        find('.block.assignee .edit-link').click
+        sleep 2 # wait for ajax stuff to complete
+        first('.dropdown-menu-user-link').click
+        sleep 2
+        page.within('.assignee') do
+          expect(page).to have_content 'No assignee'
+        end
+
+        expect(issue.reload.assignee).to be_nil
       end
     end
 
@@ -221,8 +226,6 @@ describe 'Issues', feature: true do
 
       before :each do
         project.team << [[guest], :guest]
-        issue.assignee = @user
-        issue.save
       end
 
       it 'shows assignee text', js: true do
@@ -241,20 +244,23 @@ describe 'Issues', feature: true do
 
     context 'by authorized user' do
 
-      it 'with dropdown menu' do
+
+      it 'allows user to select unassigned', js: true do
         visit namespace_project_issue_path(project.namespace, project, issue)
 
-        find('.issuable-sidebar').
-          select(milestone.title, from: 'issue_milestone_id')
-        click_button 'Update Issue'
-
-        expect(page).to have_content "Milestone changed to #{milestone.title}"
-
         page.within('.milestone') do
-          expect(page).to have_content milestone.title
+          expect(page).to have_content "None"
         end
 
-        has_select?('issue_assignee_id', selected: milestone.title)
+        find('.block.milestone .edit-link').click
+        sleep 2 # wait for ajax stuff to complete
+        first('.dropdown-content li').click
+        sleep 2
+        page.within('.milestone') do
+          expect(page).to have_content 'None'
+        end
+
+        expect(issue.reload.milestone).to be_nil
       end
     end
 
@@ -282,25 +288,6 @@ describe 'Issues', feature: true do
       before :each do
         issue.assignee = user2
         issue.save
-      end
-
-      it 'allows user to remove assignee', js: true do
-        visit namespace_project_issue_path(project.namespace, project, issue)
-
-        page.within('.assignee') do
-          expect(page).to have_content user2.name
-        end
-
-        find('.assignee .edit-link').click
-        sleep 2 # wait for ajax stuff to complete
-        first('.user-result').click
-
-        page.within('.assignee') do
-          expect(page).to have_content 'None'
-        end
-
-        sleep 2 # wait for ajax stuff to complete
-        expect(issue.reload.assignee).to be_nil
       end
     end
   end

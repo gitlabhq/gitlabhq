@@ -26,7 +26,9 @@ module Projects
 
       GitlabShellOneShotWorker.perform_async(:gc, @project.path_with_namespace)
     ensure
-      @project.update_column(:pushes_since_gc, 0)
+      Gitlab::Metrics.measure(:reset_pushes_since_gc) do
+        @project.update_column(:pushes_since_gc, 0)
+      end
     end
 
     def needed?
@@ -34,14 +36,18 @@ module Projects
     end
 
     def increment!
-      @project.increment!(:pushes_since_gc)
+      Gitlab::Metrics.measure(:increment_pushes_since_gc) do
+        @project.increment!(:pushes_since_gc)
+      end
     end
 
     private
 
     def try_obtain_lease
-      lease = ::Gitlab::ExclusiveLease.new("project_housekeeping:#{@project.id}", timeout: LEASE_TIMEOUT)
-      lease.try_obtain
+      Gitlab::Metrics.measure(:obtain_housekeeping_lease) do
+        lease = ::Gitlab::ExclusiveLease.new("project_housekeeping:#{@project.id}", timeout: LEASE_TIMEOUT)
+        lease.try_obtain
+      end
     end
   end
 end

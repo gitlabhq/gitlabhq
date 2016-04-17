@@ -78,6 +78,6 @@ module FilterSpecHelper
   # Shortcut to Rails' auto-generated routes helpers, to avoid including the
   # module
   def urls
-    Gitlab::Application.routes.url_helpers
+    Gitlab::Routing.url_helpers
   end
 end

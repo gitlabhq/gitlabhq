@@ -138,6 +138,12 @@
     }
   }
 
+  a.no-attachment-icon {
+    &:before {
+      display: none;
+    }
+  }
+
   /* Link to current header. */
   h1, h2, h3, h4, h5, h6 {
     position: relative;
@@ -244,14 +250,6 @@ a > code {
  * Textareas intended for GFM
  *
  */
-textarea.js-gfm-input {
-  font-family: $monospace_font;
-  color: $gl-text-color;
-}
-
-.md-preview {
-}
-
 .strikethrough {
   text-decoration: line-through;
 }

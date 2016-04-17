@@ -22,6 +22,8 @@ describe MergeWorker do
 
       merge_request.reload
       expect(merge_request).to be_merged
+
+      source_project.repository.expire_branches_cache
       expect(source_project.repository.branch_names).not_to include('markdown')
     end
   end

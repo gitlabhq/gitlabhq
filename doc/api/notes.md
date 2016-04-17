@@ -32,6 +32,7 @@ Parameters:
       "created_at": "2013-09-30T13:46:01Z"
     },
     "created_at": "2013-10-02T09:22:45Z",
+    "updated_at": "2013-10-02T10:22:45Z",
     "system": true,
     "upvote": false,
     "downvote": false,
@@ -51,6 +52,7 @@ Parameters:
       "created_at": "2013-09-30T13:46:01Z"
     },
     "created_at": "2013-10-02T09:56:03Z",
+    "updated_at": "2013-10-02T09:56:03Z",
     "system": true,
     "upvote": false,
     "downvote": false,
@@ -87,6 +89,7 @@ Parameters:
 - `id` (required) - The ID of a project
 - `issue_id` (required) - The ID of an issue
 - `body` (required) - The content of a note
+- `created_at` (optional) - Date time string, ISO 8601 formatted, e.g. 2016-03-11T03:45:40Z
 
 ### Modify existing issue note
 
@@ -102,6 +105,53 @@ Parameters:
 - `issue_id` (required) - The ID of an issue
 - `note_id` (required) - The ID of a note
 - `body` (required) - The content of a note
+
+### Delete an issue note
+
+Deletes an existing note of an issue. On success, this API method returns 200
+and the deleted note. If the note does not exist, the API returns 404.
+
+```
+DELETE /projects/:id/issues/:issue_id/notes/:note_id
+```
+
+Parameters:
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer | yes | The ID of a project |
+| `issue_id` | integer | yes | The ID of an issue |
+| `note_id` | integer | yes | The ID of a note |
+
+```bash
+curl -X DELETE -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/issues/11/notes/636
+```
+
+Example Response:
+
+```json
+{
+  "id": 636,
+  "body": "This is a good idea.",
+  "attachment": null,
+  "author": {
+    "id": 1,
+    "username": "pipin",
+    "email": "admin@example.com",
+    "name": "Pip",
+    "state": "active",
+    "created_at": "2013-09-30T13:46:01Z",
+    "avatar_url": "http://www.gravatar.com/avatar/5224fd70153710e92fb8bcf79ac29d67?s=80&d=identicon",
+    "web_url": "https://gitlab.example.com/u/pipin"
+  },
+  "created_at": "2016-04-05T22:10:44.164Z",
+  "system": false,
+  "noteable_id": 11,
+  "noteable_type": "Issue",
+  "upvote": false,
+  "downvote": false
+}
+```
 
 ## Snippets
 
@@ -180,6 +230,53 @@ Parameters:
 - `note_id` (required) - The ID of a note
 - `body` (required) - The content of a note
 
+### Delete a snippet note
+
+Deletes an existing note of a snippet. On success, this API method returns 200
+and the deleted note. If the note does not exist, the API returns 404.
+
+```
+DELETE /projects/:id/snippets/:snippet_id/notes/:note_id
+```
+
+Parameters:
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer | yes | The ID of a project |
+| `snippet_id` | integer | yes | The ID of a snippet |
+| `note_id` | integer | yes | The ID of a note |
+
+```bash
+curl -X DELETE -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/snippets/52/notes/1659
+```
+
+Example Response:
+
+```json
+{
+  "id": 1659,
+  "body": "This is a good idea.",
+  "attachment": null,
+  "author": {
+    "id": 1,
+    "username": "pipin",
+    "email": "admin@example.com",
+    "name": "Pip",
+    "state": "active",
+    "created_at": "2013-09-30T13:46:01Z",
+    "avatar_url": "http://www.gravatar.com/avatar/5224fd70153710e92fb8bcf79ac29d67?s=80&d=identicon",
+    "web_url": "https://gitlab.example.com/u/pipin"
+  },
+  "created_at": "2016-04-06T16:51:53.239Z",
+  "system": false,
+  "noteable_id": 52,
+  "noteable_type": "Snippet",
+  "upvote": false,
+  "downvote": false
+}
+```
+
 ## Merge Requests
 
 ### List all merge request notes
@@ -223,6 +320,7 @@ Parameters:
     "created_at": "2013-09-30T13:46:01Z"
   },
   "created_at": "2013-10-02T08:57:14Z",
+  "updated_at": "2013-10-02T08:57:14Z",
   "system": false,
   "upvote": false,
   "downvote": false,
@@ -259,3 +357,50 @@ Parameters:
 - `merge_request_id` (required) - The ID of a merge request
 - `note_id` (required) - The ID of a note
 - `body` (required) - The content of a note
+
+### Delete a merge request note
+
+Deletes an existing note of a merge request. On success, this API method returns
+200 and the deleted note. If the note does not exist, the API returns 404.
+
+```
+DELETE /projects/:id/merge_requests/:merge_request_id/notes/:note_id
+```
+
+Parameters:
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer | yes | The ID of a project |
+| `merge_request_id` | integer | yes | The ID of a merge request |
+| `note_id` | integer | yes | The ID of a note |
+
+```bash
+curl -X DELETE -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/merge_requests/7/notes/1602
+```
+
+Example Response:
+
+```json
+{
+  "id": 1602,
+  "body": "This is a good idea.",
+  "attachment": null,
+  "author": {
+    "id": 1,
+    "username": "pipin",
+    "email": "admin@example.com",
+    "name": "Pip",
+    "state": "active",
+    "created_at": "2013-09-30T13:46:01Z",
+    "avatar_url": "http://www.gravatar.com/avatar/5224fd70153710e92fb8bcf79ac29d67?s=80&d=identicon",
+    "web_url": "https://gitlab.example.com/u/pipin"
+  },
+  "created_at": "2016-04-05T22:11:59.923Z",
+  "system": false,
+  "noteable_id": 7,
+  "noteable_type": "MergeRequest",
+  "upvote": false,
+  "downvote": false
+}
+```

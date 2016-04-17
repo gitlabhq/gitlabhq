@@ -46,6 +46,15 @@ production: &base
     #
     # relative_url_root: /gitlab
 
+    # Trusted Proxies
+    # Customize if you have GitLab behind a reverse proxy which is running on a different machine.
+    # Add the IP address for your reverse proxy to the list, otherwise users will appear signed in from that address.
+    trusted_proxies:
+      # Examples:
+      #- 192.168.1.0/24
+      #- 192.168.2.1
+      #- 2001:0db8::/32
+
     # Uncomment and customize if you can't use the default user to run GitLab (default: 'git')
     # user: git
 
@@ -80,7 +89,7 @@ production: &base
     # This happens when the commit is pushed or merged into the default branch of a project.
     # When not specified the default issue_closing_pattern as specified below will be used.
     # Tip: you can test your closing pattern at http://rubular.com.
-    # issue_closing_pattern: '((?:[Cc]los(?:e[sd]?|ing)|[Ff]ix(?:e[sd]|ing)?) +(?:(?:issues? +)?%{issue_ref}(?:(?:, *| +and +)?))+)'
+    # issue_closing_pattern: '((?:[Cc]los(?:e[sd]?|ing)|[Ff]ix(?:e[sd]|ing)?|[Rr]esolv(?:e[sd]?|ing))(:?) +(?:(?:issues? +)?%{issue_ref}(?:(?:, *| +and +)?)|([A-Z][A-Z0-9_]+-\d+))+)'
 
     ## Default project features settings
     default_projects_features:
@@ -106,7 +115,7 @@ production: &base
     enabled: false
 
     # The email address including the `%{key}` placeholder that will be replaced to reference the item being replied to.
-    # The `%{key}` placeholder is added after the user part, after a `+` character, before the `@`.
+    # The placeholder can be omitted but if present, it must appear in the "user" part of the address (before the `@`).
     address: "gitlab-incoming+%{key}@gmail.com"
 
     # Email account username
@@ -155,7 +164,17 @@ production: &base
     # Flag stuck CI builds as failed
     stuck_ci_builds_worker:
       cron: "0 0 * * *"
+    # Periodically run 'git fsck' on all repositories. If started more than
+    # once per hour you will have concurrent 'git fsck' jobs.
+    repository_check_worker:
+      cron: "20 * * * *"
+    # Send admin emails once a day
+    admin_email_worker:
+      cron: "0 0 * * *"
 
+    # Remove outdated repository archives
+    repository_archive_cache_worker:
+      cron: "0 * * * *"
 
   #
   # 2. GitLab CI settings
@@ -304,6 +323,13 @@ production: &base
     # (default: false)
     auto_link_saml_user: false
 
+    # Set different Omniauth providers as external so that all users creating accounts
+    # via these providers will not be able to have access to internal projects. You
+    # will need to use the full name of the provider, like `google_oauth2` for Google.
+    # Refer to the examples below for the full names of the supported providers.
+    # (default: [])
+    external_providers: []
+
     ## Auth providers
     # Uncomment the following lines and fill in the data of the auth provider you want to use
     # If your favorite auth provider is not listed you can use others:
@@ -345,6 +371,8 @@ production: &base
       #
       # - { name: 'saml',
       #     label: 'Our SAML Provider',
+      #     groups_attribute: 'Groups',
+      #     external_groups: ['Contractors', 'Freelancers'],
       #     args: {
       #             assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback',
       #             idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
@@ -352,6 +380,7 @@ production: &base
       #             issuer: 'https://gitlab.example.com',
       #             name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:transient'
       #           } }
+      #
       # - { name: 'crowd',
       #     args: {
       #       crowd_server_url: 'CROWD SERVER URL',

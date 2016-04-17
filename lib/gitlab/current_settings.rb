@@ -21,7 +21,6 @@ module Gitlab
         default_branch_protection: Settings.gitlab['default_branch_protection'],
         signup_enabled: Settings.gitlab['signup_enabled'],
         signin_enabled: Settings.gitlab['signin_enabled'],
-        twitter_sharing_enabled: Settings.gitlab['twitter_sharing_enabled'],
         gravatar_enabled: Settings.gravatar['enabled'],
         sign_in_text: Settings.extra['sign_in_text'],
         restricted_visibility_levels: Settings.gitlab['restricted_visibility_levels'],
@@ -35,7 +34,8 @@ module Gitlab
         max_artifacts_size: Settings.artifacts['max_size'],
         require_two_factor_authentication: false,
         two_factor_grace_period: 48,
-        akismet_enabled: false
+        akismet_enabled: false,
+        repository_checks_enabled: true,
       )
     end
 

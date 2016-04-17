@@ -72,9 +72,9 @@ p { margin: 0; padding: 0; }
 
 ### Colors
 
-HEX (hexadecimal) colors short-form should use shortform where possible, and 
-should use lower case letters to differenciate between letters and numbers, e.
-g. `#E3E3E3` vs. `#e3e3e3`.
+HEX (hexadecimal) colors should use shorthand where possible, and should use 
+lower case letters to differentiate between letters and numbers, e.g. `#E3E3E3`
+vs. `#e3e3e3`.
 
 ```scss
 // Bad
@@ -160,6 +160,7 @@ is slightly more performant.
 ```
 
 ### Selectors with a `js-` Prefix
+
 Do not use any selector prefixed with `js-` for styling purposes. These 
 selectors are intended for use only with JavaScript to allow for removal or 
 renaming without breaking styling.
@@ -187,8 +188,28 @@ CSSComb globally (system-wide). Run it in the GitLab directory with
 
 Note that this won't fix every problem, but it should fix a majority.
 
+### Ignoring issues
+
+If you want a line or set of lines to be ignored by the linter, you can use 
+`// scss-lint:disable RuleName` ([more info][disabling-linters]):
+
+```scss
+// This lint rule is disabled because the class name comes from a gem.
+// scss-lint:disable SelectorFormat
+.ui_charcoal {
+  background-color: #333;
+}
+// scss-lint:enable SelectorFormat
+```
+
+Make sure a comment is added on the line above the `disable` rule, otherwise the
+linter will throw a warning. `DisableLinterReason` is enabled to make sure the 
+style guide isn't being ignored, and to communicate to others why the style 
+guide is ignored in this instance.
+
 [csscomb]: https://github.com/csscomb/csscomb.js
 [node]: https://github.com/nodejs/node
 [npm]: https://www.npmjs.com/
 [scss-lint]: https://github.com/brigade/scss-lint
 [scss-lint-documentation]: https://github.com/brigade/scss-lint/blob/master/lib/scss_lint/linter/README.md
+[disabling-linters]: https://github.com/brigade/scss-lint#disabling-linters-via-source
