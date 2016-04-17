@@ -48,7 +48,7 @@ describe API::API, api: true  do
         expect(response.status).to eq(404)
       end
 
-      it "should return not_found for CI status" do
+      it "should return nil for commit without CI" do
         get api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}", user)
         expect(response.status).to eq(200)
         expect(json_response['status']).to be_nil

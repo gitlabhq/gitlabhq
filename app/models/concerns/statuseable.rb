@@ -7,7 +7,7 @@ module Statuseable
     def status_sql
       builds = all.select('count(*)').to_sql
       success = all.success.select('count(*)').to_sql
-      ignored = all.ignored.select('count(*)').to_sql if all.try(:ignored)
+      ignored = all.ignored.select('count(*)').to_sql if all.respond_to?(:ignored)
       ignored ||= '0'
       pending = all.pending.select('count(*)').to_sql
       running = all.running.select('count(*)').to_sql
