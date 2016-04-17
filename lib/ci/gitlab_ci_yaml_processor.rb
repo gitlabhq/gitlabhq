@@ -153,6 +153,7 @@ module Ci
       validate_job_types!(name, job)
 
       validate_job_stage!(name, job) if job[:stage]
+      validate_job_variables!(name, job) if job[:variables]
       validate_job_cache!(name, job) if job[:cache]
       validate_job_artifacts!(name, job) if job[:artifacts]
       validate_job_dependencies!(name, job) if job[:dependencies]
@@ -211,6 +212,13 @@ module Ci
     def validate_job_stage!(name, job)
       unless job[:stage].is_a?(String) && job[:stage].in?(stages)
         raise ValidationError, "#{name} job: stage parameter should be #{stages.join(", ")}"
+      end
+    end
+
+    def validate_job_variables!(name, job)
+      if job[:variables] && !validate_variables(job[:variables])
+        raise ValidationError,
+          "#{name} job: variables should be a map of key-valued strings"
       end
     end
 

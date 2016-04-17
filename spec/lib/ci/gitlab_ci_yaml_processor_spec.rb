@@ -366,22 +366,41 @@ module Ci
       end
 
       context 'when job variables are defined' do
-        it 'returns job variables' do
-          variables =  {
-            KEY1: 'value1',
-            SOME_KEY_2: 'value2'
-          }
+        context 'when syntax is correct' do
+          it 'returns job variables' do
+            variables =  {
+              KEY1: 'value1',
+              SOME_KEY_2: 'value2'
+            }
 
-          config =  YAML.dump(
-            { before_script: ['pwd'],
-              rspec: {
-                variables: variables,
-                script: 'rspec' }
-            })
+            config =  YAML.dump(
+              { before_script: ['pwd'],
+                rspec: {
+                  variables: variables,
+                  script: 'rspec' }
+              })
 
-          config_processor = GitlabCiYamlProcessor.new(config, path)
+            config_processor = GitlabCiYamlProcessor.new(config, path)
 
-          expect(config_processor.job_variables(:rspec)).to eq variables
+            expect(config_processor.job_variables(:rspec)).to eq variables
+          end
+        end
+
+        context 'when syntax is incorrect' do
+          it 'raises error' do
+            variables = [:KEY1, 'value1', :KEY2, 'value2']
+
+            config =  YAML.dump(
+              { before_script: ['pwd'],
+                rspec: {
+                  variables: variables,
+                  script: 'rspec' }
+              })
+
+            expect { GitlabCiYamlProcessor.new(config, path) }
+              .to raise_error(GitlabCiYamlProcessor::ValidationError,
+                               /job: variables should be a map/)
+          end
         end
       end
 
