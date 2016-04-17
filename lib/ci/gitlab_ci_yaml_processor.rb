@@ -4,12 +4,12 @@ module Ci
 
     DEFAULT_STAGES = %w(build test deploy)
     DEFAULT_STAGE = 'test'
-    ALLOWED_YAML_KEYS = [:before_script, :finally_script, :image, :services, :types, :stages, :variables, :cache]
+    ALLOWED_YAML_KEYS = [:before_script, :after_script, :image, :services, :types, :stages, :variables, :cache]
     ALLOWED_JOB_KEYS = [:tags, :script, :only, :except, :type, :image, :services,
                         :allow_failure, :type, :stage, :when, :artifacts, :cache,
                         :dependencies]
 
-    attr_reader :before_script, :finally_script, :image, :services, :variables, :path, :cache
+    attr_reader :before_script, :after_script, :image, :services, :variables, :path, :cache
 
     def initialize(config, path = nil)
       @config = YAML.safe_load(config, [Symbol], [], true)
@@ -44,7 +44,7 @@ module Ci
 
     def initial_parsing
       @before_script = @config[:before_script] || []
-      @finally_script = @config[:finally_script]
+      @after_script = @config[:after_script]
       @image = @config[:image]
       @services = @config[:services]
       @stages = @config[:stages] || @config[:types]
@@ -86,7 +86,7 @@ module Ci
           artifacts: job[:artifacts],
           cache: job[:cache] || @cache,
           dependencies: job[:dependencies],
-          finally_script: @finally_script,
+          after_script: @after_script,
         }.compact
       }
     end
@@ -104,8 +104,8 @@ module Ci
         raise ValidationError, "before_script should be an array of strings"
       end
 
-      unless @finally_script.nil? || validate_array_of_strings(@finally_script)
-        raise ValidationError, "finally_script should be an array of strings"
+      unless @after_script.nil? || validate_array_of_strings(@after_script)
+        raise ValidationError, "after_script should be an array of strings"
       end
 
       unless @image.nil? || @image.is_a?(String)
