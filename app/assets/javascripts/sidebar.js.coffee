@@ -3,27 +3,27 @@
 leftSidebarCollapsed = 'page-sidebar-collapsed'
 leftSidebarExpanded = 'page-sidebar-expanded'
 
-@RightSidebar =
-  # set gutter state to one of this two values "expanded_gutter" or "collapsed_gutter"
-  setGutterState: (state) ->
-    gutterState = undefined
-    if state = 'expanded_gutter'
-      gutterState = 'right-sidebar-expanded'
-    else if state = 'collapsed_gutter'
-      gutterState = 'right-sidebar-collapsed'
-    else
-      throw new Error 'Unexpected argument, expected "expanded_gutter" or "collapsed_gutter"'
+@issuableSidebar =
+  init: ->
+    issuableSidebar.initLeftSidebarClick()
 
-    $.cookie(state, $('.page-with-sidebar').hasClass(gutterState), { path: '/' })
+    size = bp.getBreakpointSize() if bp?
 
-  # "expanded_gutter" or "collapsed_gutter"
-  getGutterState: (state) ->
-    if state is 'expanded_gutter' or state is 'collapsed_gutter'
-      $.cookie(state)
-    else
-      throw new Error 'Unexpected argument, expected "expanded_gutter" or "collapsed_gutter"'
+    if size is "xs" or size is "sm"
+      if $('.page-with-sidebar').hasClass(leftSidebarExpanded)
+        @toggleLeftSidebar()
 
-  collapseSidebar: ->
+  initLeftSidebarClick: ->
+    $(document).on("click", '.toggle-nav-collapse', (e) =>
+      e.preventDefault()
+
+      @toggleLeftSidebar()
+    )
+
+  getGutterState: () ->
+    $.cookie('collapsed_gutter')
+
+  collapseRightSidebar: ->
     if bp? and bp.getBreakpointSize() isnt 'lg'
       $gutterIcon = $('.js-sidebar-toggle i:visible')
 
@@ -34,8 +34,8 @@ leftSidebarExpanded = 'page-sidebar-expanded'
           $gutterIcon.closest('a').trigger('click', [true])
       , 0)
 
-  expandSidebar: ->
-    return if @getGutterState('collapsed_gutter') == 'true'
+  expandRightSidebar: ->
+    return if @getGutterState() == 'true'
 
     $gutterIcon = $('.js-sidebar-toggle i:visible')
 
@@ -46,26 +46,16 @@ leftSidebarExpanded = 'page-sidebar-expanded'
         $gutterIcon.closest('a').trigger('click', [true])
     , 0)
 
-toggleLeftSidebar = ->
-  $('.page-with-sidebar').toggleClass("#{leftSidebarCollapsed} #{leftSidebarExpanded}")
-  $('header').toggleClass("header-collapsed header-expanded")
-  $('.toggle-nav-collapse i').toggleClass("fa-angle-right fa-angle-left")
-  $.cookie("collapsed_nav", $('.page-with-sidebar').hasClass(leftSidebarCollapsed), { path: '/' })
+  toggleLeftSidebar: ->
+    $('.page-with-sidebar').toggleClass("#{leftSidebarCollapsed} #{leftSidebarExpanded}")
+    $('header').toggleClass("header-collapsed header-expanded")
+    $('.toggle-nav-collapse i').toggleClass("fa-angle-right fa-angle-left")
+    $.cookie("collapsed_nav", $('.page-with-sidebar').hasClass(leftSidebarCollapsed), { path: '/' })
 
-  setTimeout ( ->
-    niceScrollBars = $('.nicescroll').niceScroll();
-    niceScrollBars.updateScrollBar();
-  ), 300
-
-$(document).on("click", '.toggle-nav-collapse', (e) ->
-  e.preventDefault()
-
-  toggleLeftSidebar()
-)
+    setTimeout ( ->
+      niceScrollBars = $('.nicescroll').niceScroll();
+      niceScrollBars.updateScrollBar();
+    ), 300
 
 $ ->
-  size = bp.getBreakpointSize()
-
-  if size is "xs" or size is "sm"
-    if $('.page-with-sidebar').hasClass(leftSidebarExpanded)
-      toggleLeftSidebar()
+  issuableSidebar.init()

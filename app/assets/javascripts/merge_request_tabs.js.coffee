@@ -70,15 +70,15 @@ class @MergeRequestTabs
 
     if action == 'commits'
       @loadCommits($target.attr('href'))
-      RightSidebar.expandSidebar()
+      issuableSidebar.expandRightSidebar()
     else if action == 'diffs'
       @loadDiff($target.attr('href'))
-      RightSidebar.collapseSidebar()
+      issuableSidebar.collapseRightSidebar()
     else if action == 'builds'
       @loadBuilds($target.attr('href'))
-      RightSidebar.expandSidebar()
+      issuableSidebar.expandRightSidebar()
     else
-      RightSidebar.expandSidebar()
+      issuableSidebar.expandRightSidebar()
 
     @setCurrentAction(action)
 
