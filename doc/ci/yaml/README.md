@@ -30,6 +30,7 @@ If you want a quick introduction to GitLab CI, follow our
     - [artifacts](#artifacts)
         - [artifacts:name](#artifacts-name)
     - [dependencies](#dependencies)
+    - [before_script and after_script](#before_script-and-after_script)
 - [Hidden jobs](#hidden-jobs)
 - [Special YAML features](#special-yaml-features)
     - [Anchors](#anchors)
@@ -342,6 +343,8 @@ job_name:
 | dependencies  | no | Define other builds that a build depends on so that you can pass artifacts between them|
 | artifacts     | no | Define list build artifacts |
 | cache         | no | Define list of files that should be cached between subsequent runs |
+| before_script | no | Override a set of commands that are executed before build |
+| after_script  | no | Override a set of commands that are executed after build |
 
 ### script
 
@@ -684,6 +687,23 @@ test:linux:
 deploy:
   stage: deploy
   script: make deploy
+```
+
+### before_script and after_script
+
+It's possible to overwrite globally defined `before_script` and `after_script`:
+
+```yaml
+before_script
+- global before script
+
+job:
+  before_script:
+  - execute this instead of global before script
+  script:
+  - my command
+  after_script:
+  - execute this after my script
 ```
 
 ## Hidden jobs
