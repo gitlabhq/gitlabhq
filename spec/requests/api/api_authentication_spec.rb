@@ -1,8 +1,10 @@
 require 'spec_helper'
 
-describe API, api: true do
-  include API::Helpers
+describe API::Helpers::Authentication, api: true do
+
+  include API::Helpers::Authentication
   include ApiHelpers
+
   let(:user) { create(:user) }
   let(:admin) { create(:admin) }
   let(:key) { create(:key, user: user) }
@@ -13,25 +15,25 @@ describe API, api: true do
   def set_env(token_usr, identifier)
     clear_env
     clear_param
-    env[API::Helpers::PRIVATE_TOKEN_HEADER] = token_usr.private_token
-    env[API::Helpers::SUDO_HEADER] = identifier
+    env[API::Helpers::Authentication::PRIVATE_TOKEN_HEADER] = token_usr.private_token
+    env[API::Helpers::Authentication::SUDO_HEADER] = identifier
   end
 
   def set_param(token_usr, identifier)
     clear_env
     clear_param
-    params[API::Helpers::PRIVATE_TOKEN_PARAM] = token_usr.private_token
-    params[API::Helpers::SUDO_PARAM] = identifier
+    params[API::Helpers::Authentication::PRIVATE_TOKEN_PARAM] = token_usr.private_token
+    params[API::Helpers::Authentication::SUDO_PARAM] = identifier
   end
 
   def clear_env
-    env.delete(API::Helpers::PRIVATE_TOKEN_HEADER)
-    env.delete(API::Helpers::SUDO_HEADER)
+    env.delete(API::Helpers::Authentication::PRIVATE_TOKEN_HEADER)
+    env.delete(API::Helpers::Authentication::SUDO_HEADER)
   end
 
   def clear_param
-    params.delete(API::Helpers::PRIVATE_TOKEN_PARAM)
-    params.delete(API::Helpers::SUDO_PARAM)
+    params.delete(API::Helpers::Authentication::PRIVATE_TOKEN_PARAM)
+    params.delete(API::Helpers::Authentication::SUDO_PARAM)
   end
 
   def error!(message, status)
@@ -40,22 +42,22 @@ describe API, api: true do
 
   describe ".current_user" do
     it "should return nil for an invalid token" do
-      env[API::Helpers::PRIVATE_TOKEN_HEADER] = 'invalid token'
+      env[API::Helpers::Authentication::PRIVATE_TOKEN_HEADER] = 'invalid token'
       allow_any_instance_of(self.class).to receive(:doorkeeper_guard){ false }
       expect(current_user).to be_nil
     end
 
     it "should return nil for a user without access" do
-      env[API::Helpers::PRIVATE_TOKEN_HEADER] = user.private_token
+      env[API::Helpers::Authentication::PRIVATE_TOKEN_HEADER] = user.private_token
       allow(Gitlab::UserAccess).to receive(:allowed?).and_return(false)
       expect(current_user).to be_nil
     end
 
     it "should leave user as is when sudo not specified" do
-      env[API::Helpers::PRIVATE_TOKEN_HEADER] = user.private_token
+      env[API::Helpers::Authentication::PRIVATE_TOKEN_HEADER] = user.private_token
       expect(current_user).to eq(user)
       clear_env
-      params[API::Helpers::PRIVATE_TOKEN_PARAM] = user.private_token
+      params[API::Helpers::Authentication::PRIVATE_TOKEN_PARAM] = user.private_token
       expect(current_user).to eq(user)
     end
 
