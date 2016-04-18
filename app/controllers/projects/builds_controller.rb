@@ -63,14 +63,11 @@ class Projects::BuildsController < Projects::ApplicationController
   end
 
   def raw
-    response.headers['Content-Type'] = 'text/plain; charset=utf-8'
     if @build.has_trace?
-      response.headers['X-Sendfile'] = @build.path_to_trace
+      send_file @build.path_to_trace, type: 'text/plain; charset=utf-8', disposition: 'inline'
     else
-      response.status = 404
+      render_404
     end
-
-    render nothing: true
   end
 
   private
