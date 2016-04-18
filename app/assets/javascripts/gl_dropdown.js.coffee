@@ -247,7 +247,7 @@ class GitLabDropdown
     if @options.multiSelect
       $target = $(e.target)
 
-      if not $target.hasClass('dropdown-menu-close') and not $target.hasClass('dropdown-menu-close-icon') and ($target.attr('href') is '#')
+      if not $target.hasClass('dropdown-menu-close') and not $target.hasClass('dropdown-menu-close-icon') and not $target.data('is-link')
         e.stopPropagation()
         return false
       else
