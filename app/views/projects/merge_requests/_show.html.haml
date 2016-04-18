@@ -1,8 +1,7 @@
 - page_title           "#{@merge_request.title} (#{@merge_request.to_reference})", "Merge Requests"
 - page_description     @merge_request.description
 - page_card_attributes @merge_request.card_attributes
-
-= render "header_title"
+- header_title project_title(@project, "Merge Requests", namespace_project_merge_requests_path(@project.namespace, @project))
 
 - if params[:view] == 'parallel'
   - fluid_layout true

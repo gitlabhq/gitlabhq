@@ -2,7 +2,7 @@ module SharedIssuable
   include Spinach::DSL
 
   def edit_issuable
-    find(:css, '.issuable-edit').click
+    find('.issuable-edit', visible: true).click
   end
 
   step 'project "Community" has "Community issue" open issue' do

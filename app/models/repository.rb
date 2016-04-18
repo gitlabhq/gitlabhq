@@ -12,11 +12,13 @@ class Repository
   attr_accessor :path_with_namespace, :project
 
   def self.clean_old_archives
-    repository_downloads_path = Gitlab.config.gitlab.repository_downloads_path
+    Gitlab::Metrics.measure(:clean_old_archives) do
+      repository_downloads_path = Gitlab.config.gitlab.repository_downloads_path
 
-    return unless File.directory?(repository_downloads_path)
+      return unless File.directory?(repository_downloads_path)
 
-    Gitlab::Popen.popen(%W(find #{repository_downloads_path} -not -path #{repository_downloads_path} -mmin +120 -delete))
+      Gitlab::Popen.popen(%W(find #{repository_downloads_path} -not -path #{repository_downloads_path} -mmin +120 -delete))
+    end
   end
 
   def initialize(path_with_namespace, project)

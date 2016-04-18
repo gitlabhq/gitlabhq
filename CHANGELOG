@@ -1,6 +1,8 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.7.0 (unreleased)
+  - Method instrumentation now uses Module#prepend instead of aliasing methods
+  - Repository.clean_old_archives is now instrumented
   - The Projects::HousekeepingService class has extra instrumentation
   - All service classes (those residing in app/services) are now instrumented
   - Developers can now add custom tags to transactions
@@ -57,6 +59,7 @@ v 8.7.0 (unreleased)
   - Decouple membership and notifications
   - Fix creation of merge requests for orphaned branches (Stan Hu)
   - API: Ability to retrieve a single tag (Robert Schilling)
+  - While signing up, don't persist the user password across form redisplays
   - Fall back to `In-Reply-To` and `References` headers when sub-addressing is not available (David Padilla)
   - Remove "Congratulations!" tweet button on newly-created project. (Connor Shea)
   - Fix admin/projects when using visibility levels on search (PotHix)
@@ -73,13 +76,19 @@ v 8.7.0 (unreleased)
   - Delete tags using Rugged for performance reasons (Robert Schilling)
   - Diffs load at the correct point when linking from from number
   - Selected diff rows highlight
-  - Fix emoji catgories in the emoji picker
+  - Fix emoji categories in the emoji picker
   - Add encrypted credentials for imported projects and migrate old ones
+  - Author and participants are displayed first on users autocompletion
+  - Show number sign on external issue reference text (Florent Baldino)
 
 v 8.6.6
   - Expire the exists cache before deletion to ensure project dir actually exists (Stan Hu). !3413
   - Fix error on language detection when repository has no HEAD (e.g., master branch) (Jeroen Bobbeldijk). !3654
   - Fix revoking of authorized OAuth applications (Connor Shea). !3690
+  - Fix error on language detection when repository has no HEAD (e.g., master branch). !3654 (Jeroen Bobbeldijk)
+  - Project switcher uses new dropdown styling
+  - Issuable header is consistent between issues and merge requests
+  - Improved spacing in issuable header on mobile
 
 v 8.6.5
   - Fix importing from GitHub Enterprise. !3529

@@ -33,8 +33,16 @@ describe Gitlab::Metrics::Instrumentation do
         described_class.instrument_method(@dummy, :foo)
       end
 
-      it 'renames the original method' do
-        expect(@dummy).to respond_to(:_original_foo)
+      it 'instruments the Class' do
+        target = @dummy.singleton_class
+
+        expect(described_class.instrumented?(target)).to eq(true)
+      end
+
+      it 'defines a proxy method' do
+        mod = described_class.proxy_module(@dummy.singleton_class)
+
+        expect(mod.method_defined?(:foo)).to eq(true)
       end
 
       it 'calls the instrumented method with the correct arguments' do
@@ -76,6 +84,14 @@ describe Gitlab::Metrics::Instrumentation do
 
         expect(dummy.method(:test).arity).to eq(0)
       end
+
+      describe 'when a module is instrumented multiple times' do
+        it 'calls the instrumented method with the correct arguments' do
+          described_class.instrument_method(@dummy, :foo)
+
+          expect(@dummy.foo).to eq('foo')
+        end
+      end
     end
 
     describe 'with metrics disabled' do
@@ -86,7 +102,9 @@ describe Gitlab::Metrics::Instrumentation do
       it 'does not instrument the method' do
         described_class.instrument_method(@dummy, :foo)
 
-        expect(@dummy).to_not respond_to(:_original_foo)
+        target = @dummy.singleton_class
+
+        expect(described_class.instrumented?(target)).to eq(false)
       end
     end
   end
@@ -100,8 +118,14 @@ describe Gitlab::Metrics::Instrumentation do
           instrument_instance_method(@dummy, :bar)
       end
 
-      it 'renames the original method' do
-        expect(@dummy.method_defined?(:_original_bar)).to eq(true)
+      it 'instruments instances of the Class' do
+        expect(described_class.instrumented?(@dummy)).to eq(true)
+      end
+
+      it 'defines a proxy method' do
+        mod = described_class.proxy_module(@dummy)
+
+        expect(mod.method_defined?(:bar)).to eq(true)
       end
 
       it 'calls the instrumented method with the correct arguments' do
@@ -144,7 +168,7 @@ describe Gitlab::Metrics::Instrumentation do
         described_class.
           instrument_instance_method(@dummy, :bar)
 
-        expect(@dummy.method_defined?(:_original_bar)).to eq(false)
+        expect(described_class.instrumented?(@dummy)).to eq(false)
       end
     end
   end
@@ -167,18 +191,17 @@ describe Gitlab::Metrics::Instrumentation do
     it 'recursively instruments a class hierarchy' do
       described_class.instrument_class_hierarchy(@dummy)
 
-      expect(@child1).to respond_to(:_original_child1_foo)
-      expect(@child2).to respond_to(:_original_child2_foo)
+      expect(described_class.instrumented?(@child1.singleton_class)).to eq(true)
+      expect(described_class.instrumented?(@child2.singleton_class)).to eq(true)
 
-      expect(@child1.method_defined?(:_original_child1_bar)).to eq(true)
-      expect(@child2.method_defined?(:_original_child2_bar)).to eq(true)
+      expect(described_class.instrumented?(@child1)).to eq(true)
+      expect(described_class.instrumented?(@child2)).to eq(true)
     end
 
     it 'does not instrument the root module' do
       described_class.instrument_class_hierarchy(@dummy)
 
-      expect(@dummy).to_not respond_to(:_original_foo)
-      expect(@dummy.method_defined?(:_original_bar)).to eq(false)
+      expect(described_class.instrumented?(@dummy)).to eq(false)
     end
   end
 
@@ -190,7 +213,7 @@ describe Gitlab::Metrics::Instrumentation do
     it 'instruments all public class methods' do
       described_class.instrument_methods(@dummy)
 
-      expect(@dummy).to respond_to(:_original_foo)
+      expect(described_class.instrumented?(@dummy.singleton_class)).to eq(true)
     end
 
     it 'only instruments methods directly defined in the module' do
@@ -223,7 +246,7 @@ describe Gitlab::Metrics::Instrumentation do
     it 'instruments all public instance methods' do
       described_class.instrument_instance_methods(@dummy)
 
-      expect(@dummy.method_defined?(:_original_bar)).to eq(true)
+      expect(described_class.instrumented?(@dummy)).to eq(true)
     end
 
     it 'only instruments methods directly defined in the module' do
