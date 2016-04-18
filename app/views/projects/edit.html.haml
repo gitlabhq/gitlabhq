@@ -84,6 +84,16 @@
                     %br
                     %span.descr Share code pastes with others out of git repository
 
+            - if Gitlab.config.registry.enabled
+              .form-group
+                .col-sm-offset-2.col-sm-10
+                  .checkbox
+                    = f.label :images_enabled do
+                      = f.check_box :images_enabled
+                      %strong Images
+                      %br
+                      %span.descr Use Docker Registry for this repository
+
           = render 'builds_settings', f: f
 
           %fieldset.features
