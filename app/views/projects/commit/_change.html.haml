@@ -1,13 +1,21 @@
-#modal-revert-commit.modal
+- case type.to_s
+- when 'revert'
+  - label = 'Revert'
+  - target_label = 'Revert in branch'
+- when 'cherry-pick'
+  - label = 'Cherry-pick'
+  - target_label = 'Pick into branch'
+
+.modal{id: "modal-#{type}-commit"}
   .modal-dialog
     .modal-content
       .modal-header
         %a.close{href: "#", "data-dismiss" => "modal"} ×
-        %h3.page-title== Revert this #{revert_commit_type(commit)}
+        %h3.page-title== #{label} this #{commit.change_type_title}
       .modal-body
-        = form_tag revert_namespace_project_commit_path(@project.namespace, @project, commit.id), method: :post, remote: false, class: 'form-horizontal js-create-dir-form js-requires-input' do
+        = form_tag send("#{type.underscore}_namespace_project_commit_path", @project.namespace, @project, commit.id), method: :post, remote: false, class: 'form-horizontal js-#{type}-form js-requires-input' do
           .form-group.branch
-            = label_tag 'target_branch', 'Revert in branch', class: 'control-label'
+            = label_tag 'target_branch', target_label, class: 'control-label'
             .col-sm-10
               = select_tag "target_branch", grouped_options_refs, class: "select2 select2-sm js-target-branch"
               - if can?(current_user, :push_code, @project)
@@ -20,7 +28,7 @@
               - else
                 = hidden_field_tag 'create_merge_request', 1
           .form-actions
-            = submit_tag "Revert", class: 'btn btn-create'
+            = submit_tag label, class: 'btn btn-create'
             = link_to "Cancel", '#', class: "btn btn-cancel", "data-dismiss" => "modal"
 
             - unless can?(current_user, :push_code, @project)
@@ -28,4 +36,4 @@
                 = commit_in_fork_help
 
 :javascript
-  new NewCommitForm($('.js-create-dir-form'))
+  new NewCommitForm($('.js-#{type}-form'))

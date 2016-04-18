@@ -218,6 +218,10 @@ class Commit
   def revert_branch_name
     "revert-#{short_id}"
   end
+  
+  def cherry_pick_branch_name
+    project.repository.next_branch("cherry-pick-#{short_id}", mild: true)
+  end
 
   def revert_description
     if merged_merge_request
@@ -251,6 +255,10 @@ class Commit
         note.all_references(current_user).commits
       end
     end.any? { |commit_ref| commit_ref.reverts_commit?(self) }
+  end
+
+  def change_type_title
+    merged_merge_request ? 'merge request' : 'commit'
   end
 
   private

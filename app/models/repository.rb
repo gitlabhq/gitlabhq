@@ -547,15 +547,18 @@ class Repository
     commit(sha)
   end
 
-  def next_patch_branch
-    patch_branch_ids = self.branch_names.map do |n|
-      result = n.match(/\Apatch-([0-9]+)\z/)
+  def next_branch(name, opts={})
+    branch_ids = self.branch_names.map do |n|
+      next 1 if n == name
+      result = n.match(/\A#{name}-([0-9]+)\z/)
       result[1].to_i if result
     end.compact
 
-    highest_patch_branch_id = patch_branch_ids.max || 0
+    highest_branch_id = branch_ids.max || 0
 
-    "patch-#{highest_patch_branch_id + 1}"
+    return name if opts[:mild] && 0 == highest_branch_id
+
+    "#{name}-#{highest_branch_id + 1}"
   end
 
   # Remove archives older than 2 hours
@@ -758,6 +761,28 @@ class Repository
     end
   end
 
+  def cherry_pick(user, commit, base_branch, cherry_pick_tree_id = nil)
+    source_sha = find_branch(base_branch).target
+    cherry_pick_tree_id ||= check_cherry_pick_content(commit, base_branch)
+
+    return false unless cherry_pick_tree_id
+
+    commit_with_hooks(user, base_branch) do |ref|
+      committer = user_to_committer(user)
+      source_sha = Rugged::Commit.create(rugged,
+        message: commit.message,
+        author: {
+          email: commit.author_email,
+          name: commit.author_name,
+          time: commit.authored_date
+        },
+        committer: committer,
+        tree: cherry_pick_tree_id,
+        parents: [rugged.lookup(source_sha)],
+        update_ref: ref)
+    end
+  end
+
   def check_revert_content(commit, base_branch)
     source_sha = find_branch(base_branch).target
     args       = [commit.id, source_sha]
@@ -767,6 +792,20 @@ class Repository
     return false if revert_index.conflicts?
 
     tree_id = revert_index.write_tree(rugged)
+    return false unless diff_exists?(source_sha, tree_id)
+
+    tree_id
+  end
+
+  def check_cherry_pick_content(commit, base_branch)
+    source_sha = find_branch(base_branch).target
+    args       = [commit.id, source_sha]
+    args       << 1 if commit.merge_commit?
+
+    cherry_pick_index = rugged.cherrypick_commit(*args)
+    return false if cherry_pick_index.conflicts?
+
+    tree_id = cherry_pick_index.write_tree(rugged)
     return false unless diff_exists?(source_sha, tree_id)
 
     tree_id

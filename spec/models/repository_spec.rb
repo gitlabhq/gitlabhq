@@ -541,6 +541,41 @@ describe Repository, models: true do
     end
   end
 
+  describe '#cherry_pick' do
+    let(:conflict_commit) { repository.commit('c642fe9b8b9f28f9225d7ea953fe14e74748d53b') }
+    let(:pickable_commit) { repository.commit('7d3b0f7cff5f37573aea97cebfd5692ea1689924') }
+    let(:pickable_merge) { repository.commit('e56497bb5f03a90a51293fc6d516788730953899') }
+
+    context 'when there is a conflict' do
+      it 'should abort the operation' do
+        expect(repository.cherry_pick(user, conflict_commit, 'master')).to eq(false)
+      end
+    end
+
+    context 'when commit was already cherry-picked' do
+      it 'should abort the operation' do
+        repository.cherry_pick(user, pickable_commit, 'master')
+
+        expect(repository.cherry_pick(user, pickable_commit, 'master')).to eq(false)
+      end
+    end
+
+    context 'when commit can be cherry-picked' do
+      it 'should cherry-pick the changes' do
+        expect(repository.cherry_pick(user, pickable_commit, 'master')).to be_truthy
+      end
+    end
+
+    context 'cherry-picking a merge commit' do
+      it 'should cherry-pick the changes' do
+        expect(repository.blob_at_branch('master', 'foo/bar/.gitkeep')).to be_nil
+
+        repository.cherry_pick(user, pickable_merge, 'master')
+        expect(repository.blob_at_branch('master', 'foo/bar/.gitkeep')).not_to be_nil
+      end
+    end
+  end
+
   describe '#before_delete' do
     describe 'when a repository does not exist' do
       before do
