@@ -156,12 +156,15 @@
 .search-holder {
   @media (min-width: $screen-sm-min) {
     display: -webkit-flex;
-    display:         flex;
+    display: -ms-flexbox;
+    display: flex;
   }
 
   .search-field-holder {
+    -webkit-flex: 1 0 auto;
+    -ms-flex: 1 0 auto;
+    flex: 1 0 auto;
     position: relative;
-    width: 100%;
     margin-right: 0;
 
     @media (min-width: $screen-sm-min) {
@@ -203,6 +206,7 @@
   .dropdown-menu-toggle {
     width: 100%;
     margin-top: 5px;
+    border-radius: $border-radius-base;
 
     @media (min-width: $screen-sm-min) {
       width: 160px;
