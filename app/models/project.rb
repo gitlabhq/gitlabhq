@@ -90,7 +90,8 @@ class Project < ActiveRecord::Base
   after_destroy :remove_pages
 
   after_update :update_forks_visibility_level
-  after_update :remove_mirror_repository_reference, if: :import_url_changed?
+  after_update :remove_mirror_repository_reference,
+               if: ->(project) { project.mirror? && project.import_url_updated? }
 
   ActsAsTaggableOn.strict_case_match = true
   acts_as_taggable_on :tags
@@ -1247,6 +1248,11 @@ class Project < ActiveRecord::Base
 
   def ff_merge_must_be_possible?
     self.merge_requests_ff_only_enabled || self.merge_requests_rebase_enabled
+  end
+
+  def import_url_updated?
+    # check if import_url has been updated and it's not just the first assignment
+    import_url_changed? && changes['import_url'].first
   end
 
   private
