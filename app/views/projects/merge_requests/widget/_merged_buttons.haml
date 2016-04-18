@@ -9,3 +9,4 @@
         Remove Source Branch
     - if mr_can_be_reverted
       = revert_commit_link(@merge_request.merge_commit, namespace_project_merge_request_path(@project.namespace, @project, @merge_request), btn_class: 'sm')
+    = cherry_pick_commit_link(@merge_request.merge_commit, namespace_project_merge_request_path(@project.namespace, @project, @merge_request), btn_class: 'sm')

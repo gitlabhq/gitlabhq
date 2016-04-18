@@ -13,4 +13,5 @@
          diff_refs: @diff_refs
 = render "projects/notes/notes_with_form"
 - if can_collaborate_with_project?
-  = render "projects/commit/revert", commit: @commit, title: @commit.title
+  - %w(revert cherry-pick).each do |type|
+    = render "projects/commit/change", type: type, commit: @commit, title: @commit.title
