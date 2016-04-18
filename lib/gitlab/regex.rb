@@ -96,5 +96,9 @@ module Gitlab
         (?<![\/.])                (?# rule #6-7)
       }x.freeze
     end
+
+    def image_reference_regex
+      git_reference_regex
+    end
   end
 end

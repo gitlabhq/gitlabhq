@@ -370,6 +370,10 @@ class Project < ActiveRecord::Base
     @repository ||= Repository.new(path_with_namespace, self)
   end
 
+  def registry
+    @registry ||= Registry.new(path_with_namespace, self)
+  end
+
   def registry_repository_url
     "#{Gitlab.config.registry.host_with_port}/#{path_with_namespace}" if images_enabled? && Gitlab.config.registry.enabled
   end

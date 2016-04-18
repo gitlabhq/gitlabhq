@@ -1,0 +1,48 @@
+- page_title "Images"
+= render "header_title"
+
+.top-area
+  .nav-controls
+
+.gray-content-block
+  A list of Docker Images for this project
+
+%ul.content-list
+  - if @tags.blank?
+    %li
+      .nothing-here-block No images to show
+  - else
+    .table-holder
+      %table.table.builds
+        %thead
+          %tr
+            %th Name
+            %th Layers
+            %th Size
+            %th Created
+            %th Docker
+            %th
+
+        - @tags.sort.each do |tag|
+          - details = @registry.tag(tag)
+          - layer = details['history'].first
+          - if layer && layer['v1Compatibility']
+            - layer_data = JSON.parse(layer['v1Compatibility'])
+          %tr
+            %td
+              = link_to namespace_project_image_path(@project.namespace, @project, tag) do
+                #{details['name']}:#{details['tag']}
+            %td
+              = details['fsLayers'].length
+            %td
+              = number_to_human_size(details['fsLayers'].inject(0) { |sum, d| sum + @registry.blob_size(d['blobSum']) }.bytes)
+            %td
+              - if layer_data
+                = time_ago_in_words(DateTime.rfc3339(layer_data['created']))
+            %td
+              - if layer_data
+                = layer_data['docker_version']
+            %td.content
+              .controls.hidden-xs.pull-right
+                = link_to namespace_project_image_path(@project.namespace, @project, tag), class: 'btn btn-remove has-tooltip', title: "Remove", data: { confirm: "Are you sure?" }, method: :delete do
+                  = icon("trash cred")

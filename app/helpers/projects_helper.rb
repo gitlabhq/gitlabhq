@@ -152,6 +152,10 @@ module ProjectsHelper
       nav_tabs << :builds
     end
 
+    if can?(current_user, :read_image, project)
+      nav_tabs << :images
+    end
+
     if can?(current_user, :admin_project, project)
       nav_tabs << :settings
     end
