@@ -12,7 +12,8 @@
         %p.light
           Users with access to this project are listed below.
         = render "new_project_member"
-    = render "pending", members: @project_members.request
+
+    = render "shared/members/requests", entity: @project, members: @project_members
 
   = render "team", members: @project_members.non_request
 

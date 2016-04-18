@@ -20,7 +20,7 @@
 require 'spec_helper'
 
 describe GroupMember, models: true do
-  context 'notification' do
+  describe 'notifications' do
     describe "#after_create" do
       it "should send email to user" do
         membership = build(:group_member)
@@ -48,6 +48,26 @@ describe GroupMember, models: true do
       it "does not send an email when the access level has not changed" do
         expect(@group_member).not_to receive(:notification_service)
         @group_member.update_attribute(:access_level, GroupMember::OWNER)
+      end
+    end
+
+    describe 'after accept_request' do
+      let(:member) { create(:group_member, user: nil, created_by: build_stubbed(:user), requested_at: Time.now) }
+
+      it "calls #accept_group_access_request" do
+        expect_any_instance_of(NotificationService).to receive(:new_group_member)
+
+        member.accept_request
+      end
+    end
+
+    describe 'after decline_request' do
+      let(:member) { create(:group_member, user: nil, created_by: build_stubbed(:user), requested_at: Time.now) }
+
+      it "calls #decline_group_access_request" do
+        expect_any_instance_of(NotificationService).to receive(:decline_group_access_request)
+
+        member.decline_request
       end
     end
   end

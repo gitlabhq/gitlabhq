@@ -128,9 +128,7 @@ class Spinach::Features::GroupMembers < Spinach::FeatureSteps
     member = mary_jane_member
 
     page.within "#group_member_#{member.id}" do
-      page.within '.member-access-level' do
-        expect(page).to have_content "Developer"
-      end
+      expect(page).to have_content "Developer"
     end
   end
 

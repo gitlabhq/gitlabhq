@@ -400,6 +400,54 @@ describe Notify do
       end
     end
 
+    describe 'project access requested' do
+      let(:project) { create(:project) }
+      let(:user) { create(:user) }
+      let(:project_member) do
+        project.request_access(user)
+        project.project_members.find_by(created_by_id: user.id)
+      end
+      subject { Notify.project_access_requested_email(project_member.id) }
+
+      it_behaves_like 'an email sent from GitLab'
+      it_behaves_like 'it should not have Gmail Actions links'
+      it_behaves_like "a user cannot unsubscribe through footer link"
+
+      it 'has the correct subject' do
+        is_expected.to have_subject /Request to join #{project.name_with_namespace} project/
+      end
+
+      it 'contains name of project' do
+        is_expected.to have_body_text /#{project.name}/
+      end
+
+      it 'contains new user role' do
+        is_expected.to have_body_text /#{project_member.human_access}/
+      end
+    end
+
+    describe 'project access denied' do
+      let(:project) { create(:project) }
+      let(:user) { create(:user) }
+      let(:project_member) do
+        project.request_access(user)
+        project.project_members.find_by(created_by_id: user.id)
+      end
+      subject { Notify.project_access_denied_email(project.id, user.id) }
+
+      it_behaves_like 'an email sent from GitLab'
+      it_behaves_like 'it should not have Gmail Actions links'
+      it_behaves_like "a user cannot unsubscribe through footer link"
+
+      it 'has the correct subject' do
+        is_expected.to have_subject /Access to #{project.name_with_namespace} project was denied/
+      end
+
+      it 'contains name of project' do
+        is_expected.to have_body_text /#{project.name}/
+      end
+    end
+
     describe 'project access changed' do
       let(:project) { create(:project) }
       let(:user) { create(:user) }
@@ -411,7 +459,7 @@ describe Notify do
       it_behaves_like "a user cannot unsubscribe through footer link"
 
       it 'has the correct subject' do
-        is_expected.to have_subject /Access to project was granted/
+        is_expected.to have_subject /Access to #{project.name_with_namespace} project was granted/
       end
 
       it 'contains name of project' do
@@ -535,6 +583,54 @@ describe Notify do
     end
   end
 
+  describe 'group access requested' do
+    let(:group) { create(:group) }
+    let(:user) { create(:user) }
+    let(:group_member) do
+      group.request_access(user)
+      group.group_members.find_by(created_by_id: user.id)
+    end
+    subject { Notify.group_access_requested_email(group_member.id) }
+
+    it_behaves_like 'an email sent from GitLab'
+    it_behaves_like 'it should not have Gmail Actions links'
+    it_behaves_like "a user cannot unsubscribe through footer link"
+
+    it 'has the correct subject' do
+      is_expected.to have_subject /Request to join #{group.name} group/
+    end
+
+    it 'contains name of group' do
+      is_expected.to have_body_text /#{group.name}/
+    end
+
+    it 'contains new user role' do
+      is_expected.to have_body_text /#{group_member.human_access}/
+    end
+  end
+
+  describe 'group access denied' do
+    let(:group) { create(:group) }
+    let(:user) { create(:user) }
+    let(:group_member) do
+      group.request_access(user)
+      group.group_members.find_by(created_by_id: user.id)
+    end
+    subject { Notify.group_access_denied_email(group.id, user.id) }
+
+    it_behaves_like 'an email sent from GitLab'
+    it_behaves_like 'it should not have Gmail Actions links'
+    it_behaves_like "a user cannot unsubscribe through footer link"
+
+    it 'has the correct subject' do
+      is_expected.to have_subject /Access to #{group.name} group was denied/
+    end
+
+    it 'contains name of group' do
+      is_expected.to have_body_text /#{group.name}/
+    end
+  end
+
   describe 'group access changed' do
     let(:group) { create(:group) }
     let(:user) { create(:user) }
@@ -547,7 +643,7 @@ describe Notify do
     it_behaves_like "a user cannot unsubscribe through footer link"
 
     it 'has the correct subject' do
-      is_expected.to have_subject /Access to group was granted/
+      is_expected.to have_subject /Access to #{group.name} group was granted/
     end
 
     it 'contains name of project' do

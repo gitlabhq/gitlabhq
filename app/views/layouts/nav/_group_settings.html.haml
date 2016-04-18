@@ -1,20 +1,3 @@
 - if current_user
-  - if access = @group.users.find_by(id: current_user.id)
-    .controls
-      .dropdown.group-settings-dropdown
-        %a.dropdown-new.btn.btn-default#group-settings-button{href: '#', 'data-toggle' => 'dropdown'}
-          = icon('cog')
-          = icon('caret-down')
-        %ul.dropdown-menu.dropdown-menu-align-right
-          - if can?(current_user, :admin_group, @group)
-            = nav_link(path: 'groups#projects') do
-              = link_to projects_group_path(@group), title: 'Projects' do
-                Projects
-            %li.divider
-            %li
-              = link_to edit_group_path(@group) do
-                Edit Group
-          %li
-            = link_to leave_group_group_members_path(@group),
-              data: { confirm: leave_group_message(@group.name) }, method: :delete, title: 'Leave group' do
-              Leave Group
+  .controls
+    = render 'shared/group_or_project_home_dropdown', entity: @group

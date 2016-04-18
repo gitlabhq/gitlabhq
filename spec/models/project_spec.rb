@@ -29,6 +29,17 @@ describe Project, models: true do
     it { is_expected.to have_many(:variables) }
     it { is_expected.to have_many(:triggers) }
     it { is_expected.to have_many(:todos).dependent(:destroy) }
+
+    describe '#project_members' do
+      let(:user) { create(:user) }
+      let(:project) { create(:project) }
+
+      before { project.request_access(user) }
+
+      it 'does not includes membership requests' do
+        expect(user.project_members).to be_empty
+      end
+    end
   end
 
   describe 'modules' do

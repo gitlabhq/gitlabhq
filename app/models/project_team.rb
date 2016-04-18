@@ -21,16 +21,6 @@ class ProjectTeam
     end
   end
 
-  def find(user_id)
-    user = project.users.find_by(id: user_id)
-
-    if group
-      user ||= group.users.find_by(id: user_id)
-    end
-
-    user
-  end
-
   def find_member(user_id)
     member = project.project_members.find_by(user_id: user_id)
 
@@ -61,13 +51,10 @@ class ProjectTeam
     ProjectMember.truncate_team(project)
   end
 
-  def users
-    members
-  end
-
   def members
     @members ||= fetch_members
   end
+  alias_method :users, :members
 
   def guests
     @guests ||= fetch_members(:guests)
@@ -115,12 +102,6 @@ class ProjectTeam
     false
   end
 
-  def pending?(user)
-    project.project_members.each do |member|
-      return member.pending? if member.user_id == user.id
-    end
-  end
-
   def guest?(user)
     max_member_access(user.id) == Gitlab::Access::GUEST
   end
@@ -145,10 +126,6 @@ class ProjectTeam
     else
       member
     end
-  end
-
-  def human_max_access(user_id)
-    Gitlab::Access.options_with_owner.key(max_member_access(user_id))
   end
 
   # This method assumes project and group members are eager loaded for optimal
@@ -179,6 +156,7 @@ class ProjectTeam
     access.compact.max
   end
 
+  private
 
   def max_invited_level(user_id)
     project.project_group_links.map do |group_link|
@@ -194,8 +172,6 @@ class ProjectTeam
       access
     end.compact.max
   end
-
-  private
 
   def fetch_members(level = nil)
     project_members = project.project_members

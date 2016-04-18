@@ -1,64 +1,38 @@
 module Emails
   module Projects
-    def project_access_granted_email(project_member_id)
-      @project_member = ProjectMember.find project_member_id
-      @project = @project_member.project
+    def project_access_requested_email(project_member_id)
+      setup_project_member_mail(project_member_id)
 
-      @target_url = namespace_project_url(@project.namespace, @project)
+      @requester = @project_member.created_by
+
+      project_admins = User.where(id: @project.project_members.admins.pluck(:user_id)).pluck(:notification_email)
+
+      mail(to: project_admins,
+           subject: subject("Request to join #{@project.name_with_namespace} project"))
+    end
+
+    def project_access_granted_email(project_member_id)
+      setup_project_member_mail(project_member_id)
+
       @current_user = @project_member.user
 
-      mail(to: @project_member.user.notification_email,
-           subject: subject("Access to project was granted"))
+      mail(to: @current_user.notification_email,
+           subject: subject("Access to #{@project.name_with_namespace} project was granted"))
     end
 
-    def project_member_requested_access(project_member_id)
-      @project_member = ProjectMember.find project_member_id
-      @project = @project_member.project
+    def project_access_denied_email(project_id, user_id)
+      @project = Project.find(project_id)
+      @current_user = User.find(user_id)
       @target_url = namespace_project_url(@project.namespace, @project)
 
-      project_admins = ProjectMember.in_project(@project)
-        .where(access_level: [Gitlab::Access::OWNER, Gitlab::Access::MASTER])
-        .pluck(:notification_email)
-
-      project_admins.each do |address|
-        mail(to: address,
-             subject: subject("Request to join project: #{@project.name_with_namespace}"))
-      end
+      mail(to: @current_user.notification_email,
+           subject: subject("Access to #{@project.name_with_namespace} project was denied"))
     end
-
-    def project_request_access_accepted_email(project_member_id)
-      @project_member = ProjectMember.find project_member_id
-      return if @project_member.created_by.nil?
-
-      @project = @project_member.project
-
-      @target_url = namespace_project_url(@project.namespace, @project)
-      @current_user = @project_member.created_by
-
-      mail(to: @project_member.created_by.notification_email,
-           subject: subject('Request for access granted'))
-    end
-
-    def project_request_access_declined_email(project_member_id)
-      @project_member = ProjectMember.find project_member_id
-      return if @project_member.created_by.nil?
-
-      @project = @project_member.project
-
-      @target_url = namespace_project_url(@project.namespace, @project)
-      @current_user = @project_member.created_by
-
-      mail(to: @project_member.created_by.notification_email,
-           subject: subject('Request for access declined'))
-    end
-
 
     def project_member_invited_email(project_member_id, token)
-      @project_member = ProjectMember.find project_member_id
-      @project = @project_member.project
-      @token = token
+      setup_project_member_mail(project_member_id)
 
-      @target_url = namespace_project_url(@project.namespace, @project)
+      @token = token
       @current_user = @project_member.user
 
       mail(to: @project_member.invite_email,
@@ -66,12 +40,9 @@ module Emails
     end
 
     def project_invite_accepted_email(project_member_id)
-      @project_member = ProjectMember.find project_member_id
+      setup_project_member_mail(project_member_id)
       return if @project_member.created_by.nil?
 
-      @project = @project_member.project
-
-      @target_url = namespace_project_url(@project.namespace, @project)
       @current_user = @project_member.created_by
 
       mail(to: @project_member.created_by.notification_email,
@@ -116,6 +87,14 @@ module Emails
       mail(from:      sender(@message.author_id, @message.send_from_committer_email?),
            reply_to:  @message.reply_to,
            subject:   @message.subject)
+    end
+
+    private
+
+    def setup_project_member_mail(project_member_id)
+      @project_member = ProjectMember.find(project_member_id)
+      @project = @project_member.project
+      @target_url = namespace_project_url(@project.namespace, @project)
     end
   end
 end

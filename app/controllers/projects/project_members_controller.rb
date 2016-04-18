@@ -14,9 +14,10 @@ class Projects::ProjectMembersController < Projects::ApplicationController
     @project_members = @project_members.order('access_level DESC')
 
     @group = @project.group
+
     if @group
       @group_members = @group.group_members
-      @group_members = @group_members.non_invite unless can?(current_user, :admin_group, @group)
+      @group_members = @group_members.non_pending unless can?(current_user, :admin_group, @group)
 
       if params[:search].present?
         users = @group.users.search(params[:search]).to_a
@@ -49,7 +50,7 @@ class Projects::ProjectMembersController < Projects::ApplicationController
 
     return render_403 unless can?(current_user, :destroy_project_member, @project_member)
 
-    @project_member.destroy
+    @project_member.request? ? @project_member.decline_request : @project_member.destroy
 
     respond_to do |format|
       format.html do
@@ -74,15 +75,20 @@ class Projects::ProjectMembersController < Projects::ApplicationController
   end
 
   def leave
-    @project_member = @project.project_members.find_by(user_id: current_user)
+    @project_member =
+      @project.project_members.find_by(user_id: current_user.id) ||
+      @project.project_members.find_by(created_by_id: current_user.id)
 
     if can?(current_user, :destroy_project_member, @project_member)
+      notice =
+        if @project_member.request?
+          'You withdrawn your access request to the project.'
+        else
+          'You left the project.'
+        end
       @project_member.destroy
 
-      respond_to do |format|
-        format.html { redirect_to dashboard_projects_path, notice: "You left the project." }
-        format.js { head :ok }
-      end
+      redirect_to dashboard_projects_path, notice: notice
     else
       if current_user == @project.owner
         message = 'You can not leave your own project. Transfer or delete the project.'
@@ -94,30 +100,20 @@ class Projects::ProjectMembersController < Projects::ApplicationController
   end
 
   def request_access
-    redirect_path = namespace_project_path(@project.namespace, @project)
-    # current_user
-    # @project
-    @project_member = ProjectMember.new(source: @project, access_level: ProjectMember::DEVELOPER, user_id: current_user.id, created_by_id: current_user.id, requested: true)
-    @project_member.save!
+    @project.request_access(current_user)
 
-
-    redirect_to redirect_path, notice: 'Your request for access has been queued for review.'
+    redirect_to namespace_project_path(@project.namespace, @project),
+                notice: 'Your request for access has been queued for review.'
   end
 
-  def approval
-    @project_member = @project.project_members.find(params[:id])
+  def approve
+    @project_member = @project.project_members.request.find(params[:id])
 
     return render_403 unless can?(current_user, :update_project_member, @project_member)
 
-    @project_member.requested = nil
-    @project_member.save!
+    @project_member.accept_request
 
-    respond_to do |format|
-      format.html do
-        redirect_to namespace_project_project_members_path(@project.namespace, @project)
-      end
-      format.js { render nothing: true }
-    end
+    redirect_to namespace_project_project_members_path(@project.namespace, @project)
   end
 
   def apply_import

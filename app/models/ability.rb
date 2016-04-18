@@ -153,7 +153,7 @@ class Ability
 
       RequestStore.store[key] ||= begin
         # Push abilities on the users team role
-        rules.push(*project_team_rules(project.team, user)) unless project.team.pending?(user)
+        rules.push(*project_team_rules(project.team, user))
 
         if project.owner == user ||
           (project.group && project.group.has_owner?(user)) ||
@@ -187,6 +187,8 @@ class Ability
         project_report_rules
       elsif team.guest?(user)
         project_guest_rules
+      else
+        []
       end
     end
 
@@ -458,6 +460,8 @@ class Ability
           rules << :destroy_group_member
         elsif user == target_user
           rules << :destroy_group_member
+        elsif subject.request? && user == subject.created_by
+          rules << :destroy_group_member
         end
       end
 
@@ -476,6 +480,8 @@ class Ability
           rules << :update_project_member
           rules << :destroy_project_member
         elsif user == target_user
+          rules << :destroy_project_member
+        elsif subject.request? && user == subject.created_by
           rules << :destroy_project_member
         end
       end

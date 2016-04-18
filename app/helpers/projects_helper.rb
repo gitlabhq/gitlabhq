@@ -1,16 +1,6 @@
 module ProjectsHelper
-  def remove_from_project_team_message(project, member)
-    if !member.user
-      "You are going to revoke the invitation for #{member.invite_email} to join #{project.name} project team. Are you sure?"
-    elsif member.request?
-      "You are going to deny #{member.user.name}'s request to join #{project.name} project team. Are you sure?"
-    else
-      "You are going to remove #{member.user.name} from #{project.name} project team. Are you sure?"
-    end
-  end
-
-  def approve_for_project_team_message(project, member)
-    "You are going to approve #{member.user.name}'s request for #{member.human_access} access to the #{project.name} project team. Are you sure?"
+  def max_access_level(project, user)
+    Gitlab::Access.options_with_owner.key(project.team.max_member_access(user.id))
   end
 
   def link_to_project(project)
@@ -118,14 +108,6 @@ module ProjectsHelper
       project.forked_from_project.visibility_level > Gitlab::VisibilityLevel::PRIVATE
     else
       true
-    end
-  end
-
-  def user_max_access_in_project(user_id, project)
-    level = project.team.max_member_access(user_id)
-
-    if level
-      Gitlab::Access.options_with_owner.key(level)
     end
   end
 
@@ -290,10 +272,6 @@ module ProjectsHelper
     when "finished"
       "success"
     end
-  end
-
-  def leave_project_message(project)
-    "Are you sure you want to leave \"#{project.name}\" project?"
   end
 
   def new_readme_path

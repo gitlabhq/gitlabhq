@@ -173,16 +173,13 @@ class NotificationService
     end
   end
 
-  def request_access_project_member(project_member)
-    mailer.project_member_requested_access(project_member.id).deliver_later
+  # Project access request
+  def new_project_access_request(project_member)
+    mailer.project_access_requested_email(project_member.id).deliver_later
   end
 
-  def accept_project_request_access(project_member)
-    mailer.project_request_access_accepted_email(project_member.id).deliver_later
-  end
-
-  def decline_project_request_access(project_member)
-    mailer.project_request_access_declined_email(project_member.id).deliver_later
+  def decline_project_access_request(project, user)
+    mailer.project_access_denied_email(project.id, user.id).deliver_later
   end
 
   def invite_project_member(project_member, token)
@@ -208,6 +205,15 @@ class NotificationService
 
   def update_project_member(project_member)
     mailer.project_access_granted_email(project_member.id).deliver_later
+  end
+
+  # Group access request
+  def new_group_access_request(group_member)
+    mailer.group_access_requested_email(group_member.id).deliver_later
+  end
+
+  def decline_group_access_request(group, user)
+    mailer.group_access_denied_email(group.id, user.id).deliver_later
   end
 
   def invite_group_member(group_member, token)

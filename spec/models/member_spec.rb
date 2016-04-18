@@ -55,6 +55,47 @@ describe Member, models: true do
     end
   end
 
+  describe 'Scopes' do
+    before do
+      project = create(:project)
+      @invited_member = build(:project_member, user: nil).tap { |m| m.generate_invite_token! }
+      @accepted_invite_member = build(:project_member, user: nil).tap { |m| m.generate_invite_token! && m.accept_invite!(build(:user)) }
+
+      requested_user = create(:user).tap { |u| project.request_access(u) }
+      @requested_member = project.project_members.find_by(created_by_id: requested_user.id)
+      accepted_request_user = create(:user).tap { |u| project.request_access(u) }
+      @accepted_request_member = project.project_members.find_by(created_by_id: accepted_request_user.id).tap { |m| m.accept_request }
+    end
+
+    describe '#invite' do
+      it { expect(described_class.invite).to include @invited_member }
+      it { expect(described_class.invite).not_to include @accepted_invite_member }
+      it { expect(described_class.invite).not_to include @requested_member }
+      it { expect(described_class.invite).not_to include @accepted_request_member }
+    end
+
+    describe '#request' do
+      it { expect(described_class.request).not_to include @invited_member }
+      it { expect(described_class.request).not_to include @accepted_invite_member }
+      it { expect(described_class.request).to include @requested_member }
+      it { expect(described_class.request).not_to include @accepted_request_member }
+    end
+
+    describe '#non_request' do
+      it { expect(described_class.non_request).to include @invited_member }
+      it { expect(described_class.non_request).to include @accepted_invite_member }
+      it { expect(described_class.non_request).not_to include @requested_member }
+      it { expect(described_class.non_request).to include @accepted_request_member }
+    end
+
+    describe '#non_pending' do
+      it { expect(described_class.non_pending).not_to include @invited_member }
+      it { expect(described_class.non_pending).to include @accepted_invite_member }
+      it { expect(described_class.non_pending).not_to include @requested_member }
+      it { expect(described_class.non_pending).to include @accepted_request_member }
+    end
+  end
+
   describe "Delegate methods" do
     it { is_expected.to respond_to(:user_name) }
     it { is_expected.to respond_to(:user_email) }
@@ -94,6 +135,54 @@ describe Member, models: true do
 
         expect(project.project_members.invite.pluck(:invite_email)).to include("user@example.com")
       end
+    end
+  end
+
+  describe '#accept_request' do
+    let(:user) { create(:user) }
+    let(:member) { create(:project_member, requested_at: Time.now.utc, user: nil, created_by: user) }
+
+    it 'returns true' do
+      expect(member.accept_request).to be_truthy
+    end
+
+    it 'sets the user' do
+      member.accept_request
+
+      expect(member.user).to eq(user)
+    end
+
+    it 'clears requested_at' do
+      member.accept_request
+
+      expect(member.requested_at).to be_nil
+    end
+
+    it 'calls #after_accept_request' do
+      expect(member).to receive(:after_accept_request)
+
+      member.accept_request
+    end
+  end
+
+  describe '#decline_request' do
+    let(:user) { create(:user) }
+    let(:member) { create(:project_member, requested_at: Time.now.utc, user: nil, created_by: user) }
+
+    it 'returns true' do
+      expect(member.decline_request).to be_truthy
+    end
+
+    it 'destroys the member' do
+      member.decline_request
+
+      expect(member).to be_destroyed
+    end
+
+    it 'calls #after_decline_request' do
+      expect(member).to receive(:after_decline_request)
+
+      member.decline_request
     end
   end
 

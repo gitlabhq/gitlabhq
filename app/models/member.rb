@@ -8,7 +8,7 @@ class Member < ActiveRecord::Base
   belongs_to :user
   belongs_to :source, polymorphic: true
 
-  validates :user, presence: true, unless: :invite?
+  validates :user, presence: true, unless: :pending?
   validates :source, presence: true
   validates :user_id, uniqueness: { scope: [:source_type, :source_id],
                                     message: "already exists in source",
@@ -26,29 +26,25 @@ class Member < ActiveRecord::Base
       allow_nil: true
     }
 
-  scope :invite, -> { where(user_id: nil) }
-  scope :non_invite, -> { where('user_id IS NOT NULL') }
-  scope :request, -> { where(requested: true) }
-  scope :non_request, -> { where(requested: nil) }
-  scope :pending, -> { where("user_id IS NULL OR requested") }
-  scope :non_pending, -> { self.non_invite.non_request }
+  scope :invite, -> { where.not(invite_token: nil) }
+  scope :request, -> { where.not(requested_at: nil) }
+  scope :non_request, -> { where(requested_at: nil) }
+  scope :non_pending, -> { where.not(user_id: nil) }
 
   scope :guests, -> { where(access_level: GUEST) }
   scope :reporters, -> { where(access_level: REPORTER) }
   scope :developers, -> { where(access_level: DEVELOPER) }
   scope :masters,  -> { where(access_level: MASTER) }
   scope :owners,  -> { where(access_level: OWNER) }
+  scope :admins,  -> { where(access_level: [OWNER, MASTER]) }
 
   before_validation :generate_invite_token, on: :create, if: -> (member) { member.invite_email.present? }
 
   after_create :send_invite, if: :invite?
-  after_create :send_request_access, if: :request?
-
+  after_create :send_request, if: :request?
   after_create :create_notification_setting, unless: :pending?
   after_create :post_create_hook, unless: :pending?
-
   after_update :post_update_hook, unless: :pending?
-
   after_destroy :post_destroy_hook, unless: :pending?
 
   delegate :name, :username, :email, to: :user, prefix: true
@@ -111,31 +107,29 @@ class Member < ActiveRecord::Base
   end
 
   def request?
-    self.requested
+    user.nil? && created_by.present? && requested_at.present?
   end
 
   def invite?
     self.invite_token.present?
   end
 
-  def accept_request_access!
+  def accept_request
     return false unless request?
 
-    self.request = false
-    saved = self.save
+    updated = self.update(user: created_by, requested_at: nil)
+    after_accept_request if updated
 
-    after_accept_request_access if saved
-
-    saved
+    updated
   end
 
-  def decline_request_access!
+  def decline_request
     return false unless request?
 
-    destroyed = self.destroy
-    after_decline_request_access if destroyed
+    self.destroy
+    after_decline_request if destroyed?
 
-    destroyed
+    destroyed?
   end
 
   def accept_invite!(new_user)
@@ -191,11 +185,11 @@ class Member < ActiveRecord::Base
 
   private
 
-  def send_request_access
+  def send_invite
     # override in subclass
   end
 
-  def send_invite
+  def send_request
     # override in subclass
   end
 
@@ -211,19 +205,19 @@ class Member < ActiveRecord::Base
     system_hook_service.execute_hooks_for(self, :destroy)
   end
 
-  def after_accept_request_access
-    post_create_hook
-  end
-
-  def after_decline_request_access
-    # override in subclass
-  end
-
   def after_accept_invite
     post_create_hook
   end
 
   def after_decline_invite
+    # override in subclass
+  end
+
+  def after_accept_request
+    post_create_hook
+  end
+
+  def after_decline_request
     # override in subclass
   end
 

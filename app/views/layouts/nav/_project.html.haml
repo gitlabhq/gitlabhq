@@ -8,19 +8,6 @@
         = icon('caret-down')
       %ul.dropdown-menu.dropdown-menu-align-right
         = render 'layouts/nav/project_settings'
-
-          - if access
-            %li
-              = link_to leave_namespace_project_project_members_path(@project.namespace, @project),
-                data: { confirm: leave_project_message(@project) }, method: :delete, title: 'Leave project' do
-                Leave Project
-    - else
-      = link_to request_access_namespace_project_project_members_path(@project.namespace, @project),
-        class: 'btn btn-gray', style: 'margin-left: 10px', method: :post, title: 'Request access' do
-        Request Access
-
-
-
         %li.divider
         - if can_edit
           %li
@@ -28,13 +15,18 @@
               Edit Project
         - if access
           %li
-            = link_to leave_namespace_project_project_members_path(@project.namespace, @project),
-              data: { confirm: leave_project_message(@project) }, method: :delete, title: 'Leave project' do
+            = link_to leave_path(@project),
+              data: { confirm: leave_confirmation_message(@project) }, method: :delete do
               Leave Project
+        - elsif @project.access_requested?(current_user)
+          %li
+            = link_to leave_path(@project),
+              data: { confirm: withdraw_request_message(@project) }, method: :delete do
+              Withdraw Request
         - else
           %li
-            = link_to request_access_namespace_project_project_members_path(@project.namespace, @project),
-              class: 'btn btn-gray', style: 'margin-left: 10px', method: :post, title: 'Request access' do
+            = link_to request_access_path(@project),
+              class: 'btn btn-gray', style: 'margin-left: 10px', method: :post do
               Request Access
 
 %div{ class: nav_control_class }

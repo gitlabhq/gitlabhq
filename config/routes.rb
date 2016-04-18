@@ -410,8 +410,15 @@ Rails.application.routes.draw do
 
     scope module: :groups do
       resources :group_members, only: [:index, :create, :update, :destroy] do
-        post :resend_invite, on: :member
-        delete :leave, on: :collection
+        collection do
+          delete :leave
+          post :request_access
+        end
+
+        member do
+          post :resend_invite
+          post :approve
+        end
       end
 
       resource :avatar, only: [:destroy]
@@ -778,7 +785,7 @@ Rails.application.routes.draw do
 
           member do
             post :resend_invite
-            post :approval
+            post :approve
           end
         end
 

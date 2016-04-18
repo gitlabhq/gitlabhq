@@ -5,6 +5,7 @@ class Project < ActiveRecord::Base
   include Gitlab::ShellAdapter
   include Gitlab::VisibilityLevel
   include Gitlab::CurrentSettings
+  include AccessRequestable
   include Referable
   include Sortable
   include AfterCommitQueue
@@ -102,7 +103,7 @@ class Project < ActiveRecord::Base
   has_many :snippets,           dependent: :destroy, class_name: 'ProjectSnippet'
   has_many :hooks,              dependent: :destroy, class_name: 'ProjectHook'
   has_many :protected_branches, dependent: :destroy
-  has_many :project_members, dependent: :destroy, as: :source, class_name: 'ProjectMember'
+  has_many :project_members,    dependent: :destroy, as: :source, class_name: 'ProjectMember'
   has_many :users, through: :project_members
   has_many :deploy_keys_projects, dependent: :destroy
   has_many :deploy_keys, through: :deploy_keys_projects
@@ -678,16 +679,6 @@ class Project < ActiveRecord::Base
     else
       namespace.try(:owner)
     end
-  end
-
-  def project_member_by_name_or_email(name = nil, email = nil)
-    user = users.find_by('name like ? or email like ?', name, email)
-    project_members.where(user: user) if user
-  end
-
-  # Get Team Member record by user id
-  def project_member_by_id(user_id)
-    project_members.find_by(user_id: user_id)
   end
 
   def name_with_namespace

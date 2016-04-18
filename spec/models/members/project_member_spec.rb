@@ -135,4 +135,26 @@ describe ProjectMember, models: true do
     it { expect(@project_1.users).to be_empty }
     it { expect(@project_2.users).to be_empty }
   end
+
+  describe 'notifications' do
+    describe 'after accept_request' do
+      let(:member) { create(:project_member, user: nil, created_by: build_stubbed(:user), requested_at: Time.now) }
+
+      it 'calls #accept_project_access_request' do
+        expect_any_instance_of(NotificationService).to receive(:new_project_member)
+
+        member.accept_request
+      end
+    end
+
+    describe 'after decline_request' do
+      let(:member) { create(:project_member, user: nil, created_by: build_stubbed(:user), requested_at: Time.now) }
+
+      it 'calls #decline_project_access_request' do
+        expect_any_instance_of(NotificationService).to receive(:decline_project_access_request)
+
+        member.decline_request
+      end
+    end
+  end
 end

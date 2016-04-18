@@ -1,11 +1,11 @@
 class Groups::GroupMembersController < Groups::ApplicationController
   # Authorize
-  before_action :authorize_admin_group_member!, except: [:index, :leave]
+  before_action :authorize_admin_group_member!, except: [:index, :leave, :request_access]
 
   def index
     @project = @group.projects.find(params[:project_id]) if params[:project_id]
     @members = @group.group_members
-    @members = @members.non_invite unless can?(current_user, :admin_group, @group)
+    @members = @members.non_pending unless can?(current_user, :admin_group, @group)
 
     if params[:search].present?
       users = @group.users.search(params[:search]).to_a
@@ -36,7 +36,7 @@ class Groups::GroupMembersController < Groups::ApplicationController
 
     return render_403 unless can?(current_user, :destroy_group_member, @group_member)
 
-    @group_member.destroy
+    @group_member.request? ? @group_member.decline_request : @group_member.destroy
 
     respond_to do |format|
       format.html { redirect_to group_group_members_path(@group), notice: 'User was successfully removed from group.' }
@@ -59,12 +59,20 @@ class Groups::GroupMembersController < Groups::ApplicationController
   end
 
   def leave
-    @group_member = @group.group_members.find_by(user_id: current_user)
+    @group_member =
+      @group.group_members.find_by(user_id: current_user.id) ||
+      @group.group_members.find_by(created_by_id: current_user.id)
 
     if can?(current_user, :destroy_group_member, @group_member)
+      notice =
+        if @group_member.request?
+          'You withdrawn your access request to the group.'
+        else
+          "You left #{@group.name} group."
+        end
       @group_member.destroy
 
-      redirect_to(dashboard_groups_path, notice: "You left #{group.name} group.")
+      redirect_to dashboard_groups_path, notice: notice
     else
       if @group.last_owner?(current_user)
         redirect_to(dashboard_groups_path, alert: "You can not leave #{group.name} group because you're the last owner. Transfer or delete the group.")
@@ -72,6 +80,22 @@ class Groups::GroupMembersController < Groups::ApplicationController
         return render_403
       end
     end
+  end
+
+  def request_access
+    @group.request_access(current_user)
+
+    redirect_to group_path(@group), notice: 'Your request for access has been queued for review.'
+  end
+
+  def approve
+    @group_member = @group.group_members.request.find(params[:id])
+
+    return render_403 unless can?(current_user, :update_group_member, @group_member)
+
+    @group_member.accept_request
+
+    redirect_to group_group_members_path(@group)
   end
 
   protected
