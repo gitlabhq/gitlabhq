@@ -45,7 +45,10 @@ module Ci
     end
 
     def job_variables(name)
-      @jobs[name.to_sym].try(:fetch, :variables, []) || []
+      job = @jobs[name.to_sym]
+      return [] unless job
+
+      job.fetch(:variables, [])
     end
 
     private
@@ -123,7 +126,7 @@ module Ci
       end
 
       unless @variables.nil? || validate_variables(@variables)
-        raise ValidationError, "variables should be a map of key-valued strings"
+        raise ValidationError, "variables should be a map of key-value strings"
       end
 
       if @cache
@@ -216,9 +219,9 @@ module Ci
     end
 
     def validate_job_variables!(name, job)
-      if job[:variables] && !validate_variables(job[:variables])
+      unless validate_variables(job[:variables])
         raise ValidationError,
-          "#{name} job: variables should be a map of key-valued strings"
+          "#{name} job: variables should be a map of key-value strings"
       end
     end
 
