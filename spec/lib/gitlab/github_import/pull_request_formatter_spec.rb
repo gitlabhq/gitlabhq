@@ -35,6 +35,7 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
 
       it 'returns formatted attributes' do
         expected = {
+          iid: 1347,
           title: 'New feature',
           description: "*Created by: octocat*\n\nPlease pull these awesome changes",
           source_project: project,
@@ -58,6 +59,7 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
 
       it 'returns formatted attributes' do
         expected = {
+          iid: 1347,
           title: 'New feature',
           description: "*Created by: octocat*\n\nPlease pull these awesome changes",
           source_project: project,
@@ -81,6 +83,7 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
 
       it 'returns formatted attributes' do
         expected = {
+          iid: 1347,
           title: 'New feature',
           description: "*Created by: octocat*\n\nPlease pull these awesome changes",
           source_project: project,

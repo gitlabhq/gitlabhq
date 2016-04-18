@@ -3,6 +3,7 @@ module Gitlab
     class PullRequestFormatter < BaseFormatter
       def attributes
         {
+          iid: number,
           title: raw_data.title,
           description: description,
           source_project: source_project,
