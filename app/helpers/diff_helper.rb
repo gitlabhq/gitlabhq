@@ -150,6 +150,6 @@ module DiffHelper
   end
 
   def toggle_whitespace_link(url)
-    link_to "#{hide_whitespace? ? 'Show' : 'Hide'} whitespace changes", url, class: 'btn btn-default'
+    link_to "#{hide_whitespace? ? 'Show' : 'Hide'} whitespace changes", url, class: 'btn btn-default hidden-xs'
   end
 end
