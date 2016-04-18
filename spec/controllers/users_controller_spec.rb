@@ -33,7 +33,30 @@ describe UsersController do
         it 'renders the show template' do
           get :show, username: user.username
 
-          expect(response).to be_success
+          expect(response.status).to eq(200)
+          expect(response).to render_template('show')
+        end
+      end
+    end
+
+    context 'when public visibility level is restricted' do
+      before do
+        stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::PUBLIC])
+      end
+
+      context 'when logged out' do
+        it 'renders 404' do
+          get :show, username: user.username
+          expect(response.status).to eq(404)
+        end
+      end
+
+      context 'when logged in' do
+        before { sign_in(user) }
+
+        it 'renders show' do
+          get :show, username: user.username
+          expect(response.status).to eq(200)
           expect(response).to render_template('show')
         end
       end
