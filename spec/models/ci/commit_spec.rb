@@ -355,7 +355,7 @@ describe Ci::Commit, models: true do
     end
 
     context 'update state' do
-      let(:current) { Time.now.change(:usec => 0) }
+      let(:current) { Time.now.change(usec: 0) }
       let(:build) { FactoryGirl.create :ci_build, :success, commit: commit, started_at: current - 120, finished_at: current - 60 }
 
       before do
