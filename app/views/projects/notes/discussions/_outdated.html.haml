@@ -5,14 +5,10 @@
     .inline.discussion-headline-light
       = "#{note.author.to_reference} started a discussion"
       on the outdated diff
+      = time_ago_with_tooltip(note.created_at, placement: "bottom", html_class: "discussion_updated_ago")
     .discussion-actions
       = link_to "#", class: "note-action-button discussion-toggle-button js-toggle-button" do
         %i.fa.fa-chevron-down
         Show/hide discussion
-    .last-update.hide.js-toggle-content
-      - last_note = discussion_notes.last
-      last updated by
-      = link_to_member(@project, last_note.author, avatar: false)
-      #{time_ago_with_tooltip(last_note.updated_at, placement: 'bottom', html_class: 'discussion_updated_ago')}
   .discussion-body.js-toggle-content.hide
     = render "projects/notes/discussions/diff", discussion_notes: discussion_notes, note: note

@@ -98,19 +98,6 @@ module Gitlab
                                    "#{path}.git", "#{new_path}.git"])
     end
 
-    # Update HEAD for repository
-    #
-    # path - project path with namespace
-    # branch - repository branch name
-    #
-    # Ex.
-    #  update_repository_head("gitlab/gitlab-ci", "3-1-stable")
-    #
-    def update_repository_head(path, branch)
-      Gitlab::Utils.system_silent([gitlab_shell_projects_path, 'update-head',
-                                   "#{path}.git", branch])
-    end
-
     # Fork repository to new namespace
     #
     # path - project path with namespace
@@ -136,33 +123,6 @@ module Gitlab
                                    'rm-project', "#{name}.git"])
     end
 
-    # Add repository branch from passed ref
-    #
-    # path - project path with namespace
-    # branch_name - new branch name
-    # ref - HEAD for new branch
-    #
-    # Ex.
-    #   add_branch("gitlab/gitlab-ci", "4-0-stable", "master")
-    #
-    def add_branch(path, branch_name, ref)
-      Gitlab::Utils.system_silent([gitlab_shell_projects_path, 'create-branch',
-                                   "#{path}.git", branch_name, ref])
-    end
-
-    # Remove repository branch
-    #
-    # path - project path with namespace
-    # branch_name - branch name to remove
-    #
-    # Ex.
-    #   rm_branch("gitlab/gitlab-ci", "4-0-stable")
-    #
-    def rm_branch(path, branch_name)
-      Gitlab::Utils.system_silent([gitlab_shell_projects_path, 'rm-branch',
-                                   "#{path}.git", branch_name])
-    end
-
     # Add repository tag from passed ref
     #
     # path - project path with namespace
@@ -179,19 +139,6 @@ module Gitlab
                #{tag_name} #{ref})
       cmd << message unless message.nil? || message.empty?
       Gitlab::Utils.system_silent(cmd)
-    end
-
-    # Remove repository tag
-    #
-    # path - project path with namespace
-    # tag_name - tag name to remove
-    #
-    # Ex.
-    #   rm_tag("gitlab/gitlab-ci", "v4.0")
-    #
-    def rm_tag(path, tag_name)
-      Gitlab::Utils.system_silent([gitlab_shell_projects_path, 'rm-tag',
-                                   "#{path}.git", tag_name])
     end
 
     # Gc repository

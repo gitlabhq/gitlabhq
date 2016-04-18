@@ -1,9 +1,7 @@
-# I'm borrowing this class from: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/3066
-# So we should fix the conflict once the CE -> EE merge process starts.
 module Gitlab
   class ImportUrl
     def initialize(url, credentials: nil)
-      @url = URI.parse(url)
+      @url = URI.parse(URI.encode(url))
       @credentials = credentials
     end
 

@@ -816,11 +816,9 @@ describe Repository, models: true do
   describe '#rm_tag' do
     it 'removes a tag' do
       expect(repository).to receive(:before_remove_tag)
+      expect(repository.rugged.tags).to receive(:delete).with('v1.1.0')
 
-      expect_any_instance_of(Gitlab::Shell).to receive(:rm_tag).
-        with(repository.path_with_namespace, '8.5')
-
-      repository.rm_tag('8.5')
+      repository.rm_tag('v1.1.0')
     end
   end
 
@@ -1019,6 +1017,30 @@ describe Repository, models: true do
       expect(repository.upstream_branches.size).to eq(1)
       expect(repository.upstream_branches.first).to be_an_instance_of(Gitlab::Git::Branch)
       expect(repository.upstream_branches.first.name).to eq('upstream_branch')
+    end
+  end
+
+  describe '.clean_old_archives' do
+    let(:path) { Gitlab.config.gitlab.repository_downloads_path }
+
+    context 'when the downloads directory does not exist' do
+      it 'does not remove any archives' do
+        expect(File).to receive(:directory?).with(path).and_return(false)
+
+        expect(Gitlab::Popen).not_to receive(:popen)
+
+        described_class.clean_old_archives
+      end
+    end
+
+    context 'when the downloads directory exists' do
+      it 'removes old archives' do
+        expect(File).to receive(:directory?).with(path).and_return(true)
+
+        expect(Gitlab::Popen).to receive(:popen)
+
+        described_class.clean_old_archives
+      end
     end
   end
 

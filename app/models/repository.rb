@@ -20,11 +20,13 @@ class Repository
   delegate :push_remote_branches, :delete_remote_branches, to: :gitlab_shell
 
   def self.clean_old_archives
-    repository_downloads_path = Gitlab.config.gitlab.repository_downloads_path
+    Gitlab::Metrics.measure(:clean_old_archives) do
+      repository_downloads_path = Gitlab.config.gitlab.repository_downloads_path
 
-    return unless File.directory?(repository_downloads_path)
+      return unless File.directory?(repository_downloads_path)
 
-    Gitlab::Popen.popen(%W(find #{repository_downloads_path} -not -path #{repository_downloads_path} -mmin +120 -delete))
+      Gitlab::Popen.popen(%W(find #{repository_downloads_path} -not -path #{repository_downloads_path} -mmin +120 -delete))
+    end
   end
 
   def initialize(path_with_namespace, project)
@@ -183,7 +185,12 @@ class Repository
   def rm_tag(tag_name)
     before_remove_tag
 
-    gitlab_shell.rm_tag(path_with_namespace, tag_name)
+    begin
+      rugged.tags.delete(tag_name)
+      true
+    rescue Rugged::ReferenceError
+      false
+    end
   end
 
   def add_remote(name, url)
