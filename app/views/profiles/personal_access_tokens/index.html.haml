@@ -18,6 +18,10 @@
         = f.label :name, class: 'label-light'
         = f.text_field :name, class: "form-control", required: true
 
+      .form-group
+        = f.label :expires_at, class: 'label-light'
+        = f.text_field :expires_at, class: "form-control datepicker", required: false
+
       .prepend-top-default
         = f.submit 'Add Personal Access Token', class: "btn btn-create"
 
@@ -34,13 +38,19 @@
               %th Name
               %th Token
               %th Created At
+              %th Expires At
               %th Actions
           %tbody
-            - @user.personal_access_tokens.order(:revoked).each do |token|
+            - @user.personal_access_tokens.order("revoked, expires_at").each do |token|
               %tr
                 %td= token.name
                 %td= token.token
                 %td= token.created_at
+                - if token.expires_at.present?
+                  %td= token.expires_at.to_date
+                - else
+                  %td
+                    %span.personal-access-tokens-never-expires-label Never
                 - if token.revoked?
                   %td
                     %span.personal-access-tokens-revoked-label Revoked
@@ -49,3 +59,9 @@
 
     - else
       %span You don't have any tokens yet.
+
+:javascript
+  $(".datepicker").datepicker({
+    dateFormat: "yy-mm-dd",
+    onSelect: function(dateText, inst) { $("#personal_access_token_expires_at").val(dateText) }
+  }).datepicker("setDate", $.datepicker.parseDate('yy-mm-dd', $('#personal_access_token_expires_at').val()));

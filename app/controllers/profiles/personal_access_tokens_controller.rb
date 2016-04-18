@@ -31,6 +31,6 @@ class Profiles::PersonalAccessTokensController < ApplicationController
   private
 
   def personal_access_token_params
-    params.require(:personal_access_token).permit(:name)
+    params.require(:personal_access_token).permit(:name, :expires_at)
   end
 end

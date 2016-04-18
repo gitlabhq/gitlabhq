@@ -1,7 +1,7 @@
 class PersonalAccessToken < ActiveRecord::Base
   belongs_to :user
 
-  scope :active, -> { where.not(revoked: true) }
+  scope :active, -> { where.not(revoked: true).where("expires_at >= :current", current: Time.current) }
 
   def self.generate(params)
     personal_access_token = self.new(params)
