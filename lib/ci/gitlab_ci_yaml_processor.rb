@@ -112,17 +112,6 @@ module Ci
       true
     end
 
-    def validate_job!(name, job)
-      validate_job_name!(name)
-      validate_job_keys!(name, job)
-      validate_job_types!(name, job)
-
-      validate_job_stage!(name, job) if job[:stage]
-      validate_job_cache!(name, job) if job[:cache]
-      validate_job_artifacts!(name, job) if job[:artifacts]
-      validate_job_dependencies!(name, job) if job[:dependencies]
-    end
-
     private
 
     def validate_global!
@@ -162,12 +151,9 @@ module Ci
         raise ValidationError, "cache:untracked parameter should be an boolean"
       end
 
-<<<<<<< HEAD
       if @cache[:paths] && !validate_array_of_strings(@cache[:paths])
         raise ValidationError, "cache:paths parameter should be an array of strings"
       end
-=======
-      true
     end
 
     def validate_job!(name, job)
@@ -180,7 +166,6 @@ module Ci
       validate_job_cache!(name, job) if job[:cache]
       validate_job_artifacts!(name, job) if job[:artifacts]
       validate_job_dependencies!(name, job) if job[:dependencies]
->>>>>>> origin/master
     end
 
     def validate_job_name!(name)
