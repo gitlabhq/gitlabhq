@@ -4,8 +4,9 @@ When receiving a build from GitLab CI, the runner prepares the build environment
 It starts by setting a list of **predefined variables** (Environment Variables) and a list of **user-defined variables**
 
 The variables can be overwritten. They take precedence over each other in this order:
+1. Trigger variables
 1. Secure variables
-1. YAML-defined job-leve variables
+1. YAML-defined job-level variables
 1. YAML-defined global variables
 1. Predefined variables
 
