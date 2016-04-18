@@ -7,12 +7,13 @@ module SelectsHelper
     value = opts[:selected] || ''
     placeholder = opts[:placeholder] || 'Search for a user'
 
-    null_user = opts[:null_user] || false
-    any_user = opts[:any_user] || false
-    email_user = opts[:email_user] || false
-    first_user = opts[:first_user] && current_user ? current_user.username : false
-    current_user = opts[:current_user] || false
-    project = opts[:project] || @project
+    null_user     = opts[:null_user]    || false
+    any_user      = opts[:any_user]     || false
+    email_user    = opts[:email_user]   || false
+    first_user    = opts[:first_user] && current_user ? current_user.username : false
+    current_user  = opts[:current_user] || false
+    author_id     = opts[:author_id]    || ''
+    project       = opts[:project]      || @project
     push_code_to_protected_branches = opts[:push_code_to_protected_branches]
 
     html = {
@@ -24,7 +25,8 @@ module SelectsHelper
         email_user: email_user,
         first_user: first_user,
         current_user: current_user,
-        "push-code-to-protected-branches" => push_code_to_protected_branches
+        "push-code-to-protected-branches" => push_code_to_protected_branches,
+        author_id: author_id
       }
     }
 

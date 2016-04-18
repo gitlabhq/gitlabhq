@@ -11,7 +11,7 @@
 = cache(cache_key) do
   %li.commit.js-toggle-container{ id: "commit-#{commit.short_id}" }
     .commit-row-title
-      %span.item-title.str-truncated
+      %span.item-title
         = link_to_gfm commit.title, namespace_project_commit_path(project.namespace, project, commit.id), class: "commit-row-message"
         - if commit.description?
           %a.text-expander.js-toggle-button ...

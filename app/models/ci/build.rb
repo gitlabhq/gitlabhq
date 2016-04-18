@@ -366,11 +366,23 @@ module Ci
       self.update(erased_by: user, erased_at: Time.now)
     end
 
-    private
-
     def yaml_variables
+      global_yaml_variables + job_yaml_variables
+    end
+
+    def global_yaml_variables
       if commit.config_processor
-        commit.config_processor.variables.map do |key, value|
+        commit.config_processor.global_variables.map do |key, value|
+          { key: key, value: value, public: true }
+        end
+      else
+        []
+      end
+    end
+
+    def job_yaml_variables
+      if commit.config_processor
+        commit.config_processor.job_variables(name).map do |key, value|
           { key: key, value: value, public: true }
         end
       else

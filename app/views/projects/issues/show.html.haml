@@ -1,81 +1,79 @@
 - page_title           "#{@issue.title} (##{@issue.iid})", "Issues"
 - page_description     @issue.description
 - page_card_attributes @issue.card_attributes
+- header_title         project_title(@project, "Issues", namespace_project_issues_path(@project.namespace, @project))
 
-= render "header_title"
+.clearfix.detail-page-header
+  .issuable-header
+    .issuable-status-box.status-box.status-box-closed{ class: issue_button_visibility(@issue, false) }
+      = icon('check', class: "hidden-sm hidden-md hidden-lg")
+      %span.hidden-xs
+        Closed
+    .issuable-status-box.status-box.status-box-open{ class: issue_button_visibility(@issue, true) }
+      = icon('circle-o', class: "hidden-sm hidden-md hidden-lg")
+      %span.hidden-xs Open
 
-.issue
-  .detail-page-header.issuable-header
-    .pull-left
-      .status-box{ class: "status-box-closed #{issue_button_visibility(@issue, false)}"}
-        %span.hidden-xs
-          Closed
-        %span.hidden-sm.hidden-md.hidden-lg
-          = icon('check')
-      .status-box{ class: "status-box-open #{issue_button_visibility(@issue, true)}"}
-        %span.hidden-xs
-          Open
-        %span.hidden-sm.hidden-md.hidden-lg
-          = icon('circle-o')
-
-    %a.btn.btn-default.pull-right.visible-xs-block.gutter-toggle.js-sidebar-toggle{ href: "#" }
+    %a.btn.btn-default.pull-right.visible-xs-block.gutter-toggle.issuable-gutter-toggle.js-sidebar-toggle{ href: "#" }
       = icon('angle-double-left')
 
-    .issue-meta
+    .issuable-meta
       = confidential_icon(@issue)
-      %strong.identifier
-        Issue ##{@issue.iid}
-      %span.creator
-        opened
-        .editor-details
-          .editor-details
-            = time_ago_with_tooltip(@issue.created_at)
-            by
-            %strong
-              = link_to_member(@project, @issue.author, size: 24, mobile_classes: "hidden-xs")
-            %strong
-              = link_to_member(@project, @issue.author, size: 24, mobile_classes: "hidden-sm hidden-md hidden-lg",
-                by_username: true, avatar: false)
+      = issuable_meta(@issue, @project, "Issue")
 
-    .pull-right.issue-btn-group
-      - if can?(current_user, :create_issue, @project)
-        = link_to new_namespace_project_issue_path(@project.namespace, @project), class: 'btn btn-nr btn-grouped new-issue-link btn-success', title: 'New issue', id: 'new_issue_link' do
-          = icon('plus')
-          New issue
-      - if can?(current_user, :update_issue, @issue)
-        = link_to 'Reopen issue', issue_path(@issue, issue: {state_event: :reopen}, status_only: true, format: 'json'), data: {no_turbolink: true}, class: "btn btn-nr btn-grouped btn-reopen #{issue_button_visibility(@issue, false)}", title: 'Reopen issue'
-        = link_to 'Close issue', issue_path(@issue, issue: {state_event: :close}, status_only: true, format: 'json'), data: {no_turbolink: true}, class: "btn btn-nr btn-grouped btn-close #{issue_button_visibility(@issue, true)}", title: 'Close issue'
-        = link_to edit_namespace_project_issue_path(@project.namespace, @project, @issue), class: 'btn btn-nr btn-grouped issuable-edit' do
-          = icon('pencil-square-o')
-          Edit
+  - if can?(current_user, :create_issue, @project) || can?(current_user, :update_issue, @issue)
+    .issuable-actions
+      .clearfix.issue-btn-group.dropdown
+        %button.btn.btn-default.pull-left.hidden-md.hidden-lg{ data: { toggle: "dropdown" } }
+          %span.caret
+          Options
+        .dropdown-menu.dropdown-menu-align-right.hidden-lg
+          %ul
+            - if can?(current_user, :create_issue, @project)
+              %li
+                = link_to 'New issue', new_namespace_project_issue_path(@project.namespace, @project), title: 'New issue', id: 'new_issue_link'
+            - if can?(current_user, :update_issue, @issue)
+              %li
+                = link_to 'Reopen issue', issue_path(@issue, issue: { state_event: :reopen }, status_only: true, format: 'json'), data: {no_turbolink: true}, class: "btn-reopen #{issue_button_visibility(@issue, false)}", title: 'Reopen issue'
+              %li
+                = link_to 'Close issue', issue_path(@issue, issue: { state_event: :close }, status_only: true, format: 'json'), data: {no_turbolink: true}, class: "btn-close #{issue_button_visibility(@issue, true)}", title: 'Close issue'
+              %li
+                = link_to 'Edit', edit_namespace_project_issue_path(@project.namespace, @project, @issue)
+        - if can?(current_user, :create_issue, @project)
+          = link_to new_namespace_project_issue_path(@project.namespace, @project), class: 'hidden-xs hidden-sm btn btn-nr btn-grouped new-issue-link btn-success', title: 'New issue', id: 'new_issue_link' do
+            = icon('plus')
+            New issue
+        - if can?(current_user, :update_issue, @issue)
+          = link_to 'Reopen issue', issue_path(@issue, issue: { state_event: :reopen }, status_only: true, format: 'json'), data: {no_turbolink: true}, class: "hidden-xs hidden-sm btn btn-nr btn-grouped btn-reopen #{issue_button_visibility(@issue, false)}", title: 'Reopen issue'
+          = link_to 'Close issue', issue_path(@issue, issue: { state_event: :close }, status_only: true, format: 'json'), data: {no_turbolink: true}, class: "hidden-xs hidden-sm btn btn-nr btn-grouped btn-close #{issue_button_visibility(@issue, true)}", title: 'Close issue'
+          = link_to edit_namespace_project_issue_path(@project.namespace, @project, @issue), class: 'hidden-xs hidden-sm btn btn-nr btn-grouped issuable-edit' do
+            = icon('pencil-square-o')
+            Edit
 
-  .issue-details.issuable-details
-    .detail-page-description.content-block
-      %h2.title
-        = markdown escape_once(@issue.title), pipeline: :single_line
-      %div
-        - if @issue.description.present?
-          .description{class: can?(current_user, :update_issue, @issue) ? 'js-task-list-container' : ''}
-            .wiki
-              = preserve do
-                = markdown(@issue.description, cache_key: [@issue, "description"])
-            %textarea.hidden.js-task-list-field
-              = @issue.description
-      = edited_time_ago_with_tooltip(@issue, placement: 'bottom', html_class: 'issue_edited_ago')
 
-      #merge-requests{'data-url' => referenced_merge_requests_namespace_project_issue_url(@project.namespace, @project, @issue)}
-        // This element is filled in using JavaScript.
+.issue-details.issuable-details
+  .detail-page-description.content-block
+    %h2.title
+      = markdown escape_once(@issue.title), pipeline: :single_line
+    - if @issue.description.present?
+      .description{ class: can?(current_user, :update_issue, @issue) ? 'js-task-list-container' : '' }
+        .wiki
+          = preserve do
+            = markdown(@issue.description, cache_key: [@issue, "description"])
+        %textarea.hidden.js-task-list-field
+          = @issue.description
+    = edited_time_ago_with_tooltip(@issue, placement: 'bottom', html_class: 'issue_edited_ago')
 
-      #related-branches{'data-url' => related_branches_namespace_project_issue_url(@project.namespace, @project, @issue)}
-        // This element is filled in using JavaScript.
+    #merge-requests{ data: { url: referenced_merge_requests_namespace_project_issue_url(@project.namespace, @project, @issue) } }
+      // This element is filled in using JavaScript.
 
-    .content-block.content-block-small
-      = render 'new_branch'
-      = render 'votes/votes_block', votable: @issue
+    #related-branches{ data: { url: related_branches_namespace_project_issue_url(@project.namespace, @project, @issue) } }
+      // This element is filled in using JavaScript.
 
-    .row
-      %section.col-md-12
-        .issuable-discussion
-          = render 'projects/issues/discussion'
+  .content-block.content-block-small
+    = render 'new_branch'
+    = render 'votes/votes_block', votable: @issue
+
+  %section.issuable-discussion
+    = render 'projects/issues/discussion'
 
 = render 'shared/issuable/sidebar', issuable: @issue

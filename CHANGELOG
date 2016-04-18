@@ -1,12 +1,16 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.7.0 (unreleased)
-  - The Projects::HousekeepingService class has extra instrumentation (Yorick Peterse)
-  - Fix revoking of authorized OAuth applications (Connor Shea)
-  - All service classes (those residing in app/services) are now instrumented (Yorick Peterse)
-  - Developers can now add custom tags to transactions (Yorick Peterse)
-  - Loading of an issue's referenced merge requests and related branches is now done asynchronously (Yorick Peterse)
+  - Method instrumentation now uses Module#prepend instead of aliasing methods
+  - Repository.clean_old_archives is now instrumented
+  - Add support for environment variables on a job level in CI configuration file
+  - SQL query counts are now tracked per transaction
+  - The Projects::HousekeepingService class has extra instrumentation
+  - All service classes (those residing in app/services) are now instrumented
+  - Developers can now add custom tags to transactions
+  - Loading of an issue's referenced merge requests and related branches is now done asynchronously
   - Enable gzip for assets, makes the page size significantly smaller. !3544 / !3632 (Connor Shea)
+  - Project switcher uses new dropdown styling
   - Load award emoji images separately unless opening the full picker. Saves several hundred KBs of data for most pages. (Connor Shea)
   - Do not include award_emojis in issue and merge_request comment_count !3610 (Lucas Charles)
   - All images in discussions and wikis now link to their source files !3464 (Connor Shea).
@@ -14,7 +18,7 @@ v 8.7.0 (unreleased)
   - Add setting for customizing the list of trusted proxies !3524
   - Allow projects to be transfered to a lower visibility level group
   - Fix `signed_in_ip` being set to 127.0.0.1 when using a reverse proxy !3524
-  - Improved Markdown rendering performance !3389 (Yorick Peterse)
+  - Improved Markdown rendering performance !3389
   - Don't attempt to look up an avatar in repo if repo directory does not exist (Stan Hu)
   - API: Ability to subscribe and unsubscribe from issues and merge requests (Robert Schilling)
   - Expose project badges in project settings
@@ -42,6 +46,7 @@ v 8.7.0 (unreleased)
   - Add default scope to projects to exclude projects pending deletion
   - Allow to close merge requests which source projects(forks) are deleted.
   - Ensure empty recipients are rejected in BuildsEmailService
+  - Use rugged to change HEAD in Project#change_head (P.S.V.R)
   - API: Ability to filter milestones by state `active` and `closed` (Robert Schilling)
   - API: Fix milestone filtering by `iid` (Robert Schilling)
   - API: Delete notes of issues, snippets, and merge requests (Robert Schilling)
@@ -50,10 +55,12 @@ v 8.7.0 (unreleased)
   - Fix high CPU usage when PostReceive receives refs/merge-requests/<id>
   - Hide `Create a group` help block when creating a new project in a group
   - Implement 'TODOs View' as an option for dashboard preferences !3379 (Elias W.)
+  - Allow issues and merge requests to be assigned to the author !2765
   - Gracefully handle notes on deleted commits in merge requests (Stan Hu)
   - Decouple membership and notifications
   - Fix creation of merge requests for orphaned branches (Stan Hu)
   - API: Ability to retrieve a single tag (Robert Schilling)
+  - While signing up, don't persist the user password across form redisplays
   - Fall back to `In-Reply-To` and `References` headers when sub-addressing is not available (David Padilla)
   - Remove "Congratulations!" tweet button on newly-created project. (Connor Shea)
   - Fix admin/projects when using visibility levels on search (PotHix)
@@ -69,14 +76,23 @@ v 8.7.0 (unreleased)
   - Fix repository cache invalidation issue when project is recreated with an empty repo (Stan Hu)
   - Fix: Allow empty recipients list for builds emails service when pushed is added (Frank Groeneveld)
   - Improved markdown forms
+  - Delete tags using Rugged for performance reasons (Robert Schilling)
   - Diffs load at the correct point when linking from from number
   - Selected diff rows highlight
-  - Fix emoji catgories in the emoji picker
+  - Fix emoji categories in the emoji picker
   - Add encrypted credentials for imported projects and migrate old ones
+  - Author and participants are displayed first on users autocompletion
+  - Show number sign on external issue reference text (Florent Baldino)
+  - Updated print style for issues
 
 v 8.6.6
+  - Expire the exists cache before deletion to ensure project dir actually exists (Stan Hu). !3413
+  - Fix error on language detection when repository has no HEAD (e.g., master branch) (Jeroen Bobbeldijk). !3654
+  - Fix revoking of authorized OAuth applications (Connor Shea). !3690
   - Fix error on language detection when repository has no HEAD (e.g., master branch). !3654 (Jeroen Bobbeldijk)
   - Project switcher uses new dropdown styling
+  - Issuable header is consistent between issues and merge requests
+  - Improved spacing in issuable header on mobile
 
 v 8.6.5
   - Fix importing from GitHub Enterprise. !3529
@@ -294,7 +310,7 @@ v 8.5.1
 
 v 8.5.0
   - Fix duplicate "me" in tooltip of the "thumbsup" awards Emoji (Stan Hu)
-  - Cache various Repository methods to improve performance (Yorick Peterse)
+  - Cache various Repository methods to improve performance
   - Fix duplicated branch creation/deletion Webhooks/service notifications when using Web UI (Stan Hu)
   - Ensure rake tasks that don't need a DB connection can be run without one
   - Update New Relic gem to 3.14.1.311 (Stan Hu)

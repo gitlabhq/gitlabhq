@@ -1027,7 +1027,9 @@ class Project < ActiveRecord::Base
 
   def change_head(branch)
     repository.before_change_head
-    gitlab_shell.update_repository_head(self.path_with_namespace, branch)
+    repository.rugged.references.create('HEAD',
+                                        "refs/heads/#{branch}",
+                                        force: true)
     reload_default_branch
   end
 
