@@ -16,13 +16,23 @@ module Gitlab
       end
 
       def execute
-        import_issues && import_pull_requests && import_wiki
+        import_labels && import_issues && import_pull_requests && import_wiki
       end
 
       private
 
       def import_data_credentials
         @import_data_credentials ||= project.import_data.credentials if project.import_data
+      end
+
+      def import_labels
+        client.labels(project.import_source).each do |raw_data|
+          Label.create!(LabelFormatter.new(project, raw_data).attributes)
+        end
+
+        true
+      rescue ActiveRecord::RecordInvalid => e
+        raise Projects::ImportService::Error, e.message
       end
 
       def import_issues
