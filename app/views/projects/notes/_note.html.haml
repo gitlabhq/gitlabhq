@@ -1,4 +1,5 @@
-%li.timeline-entry{ id: dom_id(note), class: [dom_class(note), "note-row-#{note.id}", ('system-note' if note.system)] }
+- note_editable = note_editable?(note)
+%li.timeline-entry{ id: dom_id(note), class: [dom_class(note), "note-row-#{note.id}", ('system-note' if note.system)], data: {author_id: note.author.id, editable: note_editable} }
   .timeline-entry-inner
     .timeline-icon
       %a{href: user_path(note.author)}
@@ -15,16 +16,16 @@
           - if access
             %span.note-role
               = access
-          - if note_editable?(note)
+          - if note_editable
             = link_to '#', title: 'Edit comment', class: 'note-action-button js-note-edit' do
               = icon('pencil')
             = link_to namespace_project_note_path(note.project.namespace, note.project, note), title: 'Remove comment', method: :delete, data: { confirm: 'Are you sure you want to remove this comment?' }, remote: true, class: 'note-action-button js-note-delete danger' do
               = icon('trash-o')
-      .note-body{class: note_editable?(note) ? 'js-task-list-container' : ''}
+      .note-body{class: note_editable ? 'js-task-list-container' : ''}
         .note-text
           = preserve do
             = markdown(note.note, pipeline: :note, cache_key: [note, "note"])
-        - if note_editable?(note)
+        - if note_editable
           = render 'projects/notes/edit_form', note: note
       = edited_time_ago_with_tooltip(note, placement: 'bottom', html_class: 'note_edited_ago', include_author: true)
 

@@ -7,9 +7,9 @@ module Ci
     ALLOWED_YAML_KEYS = [:before_script, :after_script, :image, :services, :types, :stages, :variables, :cache]
     ALLOWED_JOB_KEYS = [:tags, :script, :only, :except, :type, :image, :services,
                         :allow_failure, :type, :stage, :when, :artifacts, :cache,
-                        :dependencies, :before_script, :after_script]
+                        :dependencies, :before_script, :after_script, :variables]
 
-    attr_reader :before_script, :after_script, :image, :services, :variables, :path, :cache
+    attr_reader :before_script, :after_script, :image, :services, :path, :cache
 
     def initialize(config, path = nil)
       @config = YAML.safe_load(config, [Symbol], [], true)
@@ -38,6 +38,17 @@ module Ci
 
     def stages
       @stages || DEFAULT_STAGES
+    end
+
+    def global_variables
+      @variables
+    end
+
+    def job_variables(name)
+      job = @jobs[name.to_sym]
+      return [] unless job
+
+      job.fetch(:variables, [])
     end
 
     private
@@ -136,7 +147,7 @@ module Ci
       end
 
       unless @variables.nil? || validate_variables(@variables)
-        raise ValidationError, "variables should be a map of key-valued strings"
+        raise ValidationError, "variables should be a map of key-value strings"
       end
 
       validate_global_cache! if @cache
@@ -151,9 +162,25 @@ module Ci
         raise ValidationError, "cache:untracked parameter should be an boolean"
       end
 
+<<<<<<< HEAD
       if @cache[:paths] && !validate_array_of_strings(@cache[:paths])
         raise ValidationError, "cache:paths parameter should be an array of strings"
       end
+=======
+      true
+    end
+
+    def validate_job!(name, job)
+      validate_job_name!(name)
+      validate_job_keys!(name, job)
+      validate_job_types!(name, job)
+
+      validate_job_stage!(name, job) if job[:stage]
+      validate_job_variables!(name, job) if job[:variables]
+      validate_job_cache!(name, job) if job[:cache]
+      validate_job_artifacts!(name, job) if job[:artifacts]
+      validate_job_dependencies!(name, job) if job[:dependencies]
+>>>>>>> origin/master
     end
 
     def validate_job_name!(name)
@@ -215,6 +242,13 @@ module Ci
     def validate_job_stage!(name, job)
       unless job[:stage].is_a?(String) && job[:stage].in?(stages)
         raise ValidationError, "#{name} job: stage parameter should be #{stages.join(", ")}"
+      end
+    end
+
+    def validate_job_variables!(name, job)
+      unless validate_variables(job[:variables])
+        raise ValidationError,
+          "#{name} job: variables should be a map of key-value strings"
       end
     end
 
