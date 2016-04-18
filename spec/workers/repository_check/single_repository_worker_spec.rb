@@ -12,7 +12,7 @@ describe RepositoryCheck::SingleRepositoryWorker do
     subject.perform(project.id)
     expect(project.reload.last_repository_check_failed).to eq(false)
 
-    FileUtils.rm_rf(project.wiki.repository.path_to_repo)
+    destroy_wiki(project)
     subject.perform(project.id)
 
     expect(project.reload.last_repository_check_failed).to eq(true)
@@ -21,10 +21,14 @@ describe RepositoryCheck::SingleRepositoryWorker do
   it 'skips wikis when disabled' do
     project = create(:project_empty_repo, wiki_enabled: false)
     # Make sure the test would fail if it checked the wiki repo
-    FileUtils.rm_rf(project.wiki.repository.path_to_repo)
+    destroy_wiki(project)
 
     subject.perform(project.id)
 
     expect(project.reload.last_repository_check_failed).to eq(false)
+  end
+
+  def destroy_wiki(project)
+    FileUtils.rm_rf(project.wiki.repository.path_to_repo)
   end
 end
