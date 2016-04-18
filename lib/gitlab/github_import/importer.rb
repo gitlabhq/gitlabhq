@@ -16,7 +16,8 @@ module Gitlab
       end
 
       def execute
-        import_labels && import_issues && import_pull_requests && import_wiki
+        import_labels && import_milestones && import_issues &&
+          import_pull_requests && import_wiki
       end
 
       private
@@ -28,6 +29,16 @@ module Gitlab
       def import_labels
         client.labels(project.import_source).each do |raw_data|
           Label.create!(LabelFormatter.new(project, raw_data).attributes)
+        end
+
+        true
+      rescue ActiveRecord::RecordInvalid => e
+        raise Projects::ImportService::Error, e.message
+      end
+
+      def import_milestones
+        client.list_milestones(project.import_source, state: :all).each do |raw_data|
+          Milestone.create!(MilestoneFormatter.new(project, raw_data).attributes)
         end
 
         true
