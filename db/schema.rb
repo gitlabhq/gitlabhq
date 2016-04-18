@@ -808,8 +808,8 @@ ActiveRecord::Schema.define(version: 20160414064845) do
     t.integer "project_id"
     t.text    "data"
     t.text    "encrypted_credentials"
-    t.text    "encrypted_credentials_iv"
-    t.text    "encrypted_credentials_salt"
+    t.string  "encrypted_credentials_iv"
+    t.string  "encrypted_credentials_salt"
   end
 
   create_table "projects", force: :cascade do |t|
