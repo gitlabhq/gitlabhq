@@ -232,28 +232,4 @@ describe CommitStatus, models: true do
       end
     end
   end
-
-  describe '#branch?' do
-    subject { commit_status.branch? }
-
-    context 'is not a tag' do
-      before do
-        commit_status.tag = false
-      end
-
-      it 'return true when tag is set to false' do
-        is_expected.to be_truthy
-      end
-    end
-
-    context 'is not a tag' do
-      before do
-        commit_status.tag = true
-      end
-
-      it 'return false when tag is set to true' do
-        is_expected.to be_falsey
-      end
-    end
-  end
 end

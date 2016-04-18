@@ -110,7 +110,7 @@ class CommitStatus < ActiveRecord::Base
       elsif started_at
         Time.now - started_at
       end
-    duration.to_i
+    duration
   end
 
   def stuck?

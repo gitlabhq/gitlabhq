@@ -355,7 +355,8 @@ describe Ci::Commit, models: true do
     end
 
     context 'update state' do
-      let(:build) { FactoryGirl.create :ci_build, :success, commit: commit, started_at: Time.now - 120, finished_at: Time.now - 60 }
+      let(:current) { Time.now.change(:usec => 0) }
+      let(:build) { FactoryGirl.create :ci_build, :success, commit: commit, started_at: current - 120, finished_at: current - 60 }
 
       before do
         build
@@ -365,6 +366,30 @@ describe Ci::Commit, models: true do
         it "update #{param}" do
           expect(commit.send(param)).to eq(build.send(param))
         end
+      end
+    end
+  end
+
+  describe '#branch?' do
+    subject { commit.branch? }
+
+    context 'is not a tag' do
+      before do
+        commit.tag = false
+      end
+
+      it 'return true when tag is set to false' do
+        is_expected.to be_truthy
+      end
+    end
+
+    context 'is not a tag' do
+      before do
+        commit.tag = true
+      end
+
+      it 'return false when tag is set to true' do
+        is_expected.to be_falsey
       end
     end
   end
