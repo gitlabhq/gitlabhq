@@ -43,6 +43,7 @@ module Gitlab
 
           if gh_issue.valid?
             issue = Issue.create!(gh_issue.attributes)
+            apply_labels(gh_issue.number, issue)
 
             if gh_issue.has_comments?
               import_comments(gh_issue.number, issue)
@@ -65,6 +66,7 @@ module Gitlab
             merge_request = MergeRequest.new(pull_request.attributes)
 
             if merge_request.save
+              apply_labels(pull_request.number, merge_request)
               import_comments(pull_request.number, merge_request)
               import_comments_on_diff(pull_request.number, merge_request)
             end
@@ -74,6 +76,18 @@ module Gitlab
         true
       rescue ActiveRecord::RecordInvalid => e
         raise Projects::ImportService::Error, e.message
+      end
+
+      def apply_labels(number, issuable)
+        issue = client.issue(project.import_source, number)
+
+        if issue.labels.count > 0
+          label_ids = issue.labels.map do |raw|
+            Label.find_by(LabelFormatter.new(project, raw).attributes).try(:id)
+          end
+
+          issuable.update_attribute(:label_ids, label_ids)
+        end
       end
 
       def import_comments(issue_number, noteable)
