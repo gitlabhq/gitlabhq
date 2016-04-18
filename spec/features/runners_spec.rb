@@ -83,12 +83,11 @@ describe "Runners" do
   describe "shared runners description" do
     let(:shared_runners_text) { 'custom shared runners description' }
 
-    before { stub_application_setting(shared_runners_text: shared_runners_text) }
-
     before do
-      @project = FactoryGirl.create :empty_project, shared_runners_enabled: false
-      @project.team << [user, :master]
-      visit runners_path(@project)
+      stub_application_setting(shared_runners_text: shared_runners_text)
+      project = FactoryGirl.create :empty_project, shared_runners_enabled: false
+      project.team << [user, :master]
+      visit runners_path(project)
     end
 
     it "sees shared runners description" do
