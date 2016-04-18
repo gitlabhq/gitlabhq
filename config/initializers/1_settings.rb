@@ -27,6 +27,30 @@ class Settings < Settingslogic
       ].join('')
     end
 
+    def build_registry_api_url
+      if registry.port.to_i == (registry.https ? 443 : 80)
+        custom_port = nil
+      else
+        custom_port = ":#{registry.port}"
+      end
+      [ registry.protocol,
+        "://",
+        registry.internal_host,
+        custom_port
+      ].join('')
+    end
+
+    def build_registry_host_with_port
+      if registry.port.to_i == (registry.https ? 443 : 80)
+        custom_port = nil
+      else
+        custom_port = ":#{registry.port}"
+      end
+      [ registry.host,
+        custom_port
+      ].join('')
+    end
+
     def build_gitlab_shell_ssh_path_prefix
       user_host = "#{gitlab_shell.ssh_user}@#{gitlab_shell.ssh_host}"
 
@@ -211,6 +235,7 @@ Settings.gitlab.default_projects_features['merge_requests'] = true if Settings.g
 Settings.gitlab.default_projects_features['wiki']           = true if Settings.gitlab.default_projects_features['wiki'].nil?
 Settings.gitlab.default_projects_features['snippets']       = false if Settings.gitlab.default_projects_features['snippets'].nil?
 Settings.gitlab.default_projects_features['builds']         = true if Settings.gitlab.default_projects_features['builds'].nil?
+Settings.gitlab.default_projects_features['images']         = true if Settings.gitlab.default_projects_features['images'].nil?
 Settings.gitlab.default_projects_features['visibility_level']    = Settings.send(:verify_constant, Gitlab::VisibilityLevel, Settings.gitlab.default_projects_features['visibility_level'], Gitlab::VisibilityLevel::PRIVATE)
 Settings.gitlab['repository_downloads_path'] = File.join(Settings.shared['path'], 'cache/archive') if Settings.gitlab['repository_downloads_path'].nil?
 Settings.gitlab['restricted_signup_domains'] ||= []
@@ -241,6 +266,20 @@ Settings['artifacts'] ||= Settingslogic.new({})
 Settings.artifacts['enabled']      = true if Settings.artifacts['enabled'].nil?
 Settings.artifacts['path']         = File.expand_path(Settings.artifacts['path'] || File.join(Settings.shared['path'], "artifacts"), Rails.root)
 Settings.artifacts['max_size']    ||= 100 # in megabytes
+
+#
+# Registry
+#
+Settings['registry'] ||= Settingslogic.new({})
+Settings.registry['registry']     = false if Settings.registry['enabled'].nil?
+Settings.registry['path']         = File.expand_path(Settings.registry['path'] || File.join(Settings.shared['path'], "registry"), Rails.root)
+Settings.registry['host']         ||= "example.com"
+Settings.registry['internal_host']||= "localhost"
+Settings.registry['https']        = false if Settings.registry['https'].nil?
+Settings.registry['port']         ||= Settings.registry.https ? 443 : 80
+Settings.registry['protocol']     ||= Settings.registry.https ? "https" : "http"
+Settings.registry['api_url']      ||= Settings.send(:build_registry_api_url)
+Settings.registry['host_port']    ||= Settings.send(:build_registry_host_with_port)
 
 #
 # Git LFS

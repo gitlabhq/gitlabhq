@@ -426,6 +426,7 @@ module Ci
       variables << { key: :CI_BUILD_NAME, value: name, public: true }
       variables << { key: :CI_BUILD_STAGE, value: stage, public: true }
       variables << { key: :CI_BUILD_TRIGGERED, value: 'true', public: true } if trigger_request
+      variables << { key: :CI_DOCKER_REGISTRY, value: project.registry_repository_url, public: true } if project.registry_repository_url
       variables
     end
   end

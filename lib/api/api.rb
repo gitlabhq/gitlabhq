@@ -58,5 +58,6 @@ module API
     mount Variables
     mount Runners
     mount Licenses
+    mount Auth
   end
 end

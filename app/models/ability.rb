@@ -203,6 +203,7 @@ class Ability
         :admin_label,
         :read_commit_status,
         :read_build,
+        :read_image,
       ]
     end
 
@@ -216,7 +217,9 @@ class Ability
         :update_build,
         :create_merge_request,
         :create_wiki,
-        :push_code
+        :push_code,
+        :create_image,
+        :update_image,
       ]
     end
 
@@ -242,7 +245,8 @@ class Ability
         :admin_wiki,
         :admin_project,
         :admin_commit_status,
-        :admin_build
+        :admin_build,
+        :admin_image
       ]
     end
 
