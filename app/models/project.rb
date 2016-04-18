@@ -91,7 +91,7 @@ class Project < ActiveRecord::Base
 
   after_update :update_forks_visibility_level
   after_update :remove_mirror_repository_reference,
-               if: ->(project) { project.mirror? && project.import_url_changed? }
+               if: ->(project) { project.mirror? && project.import_url_updated? }
 
   ActsAsTaggableOn.strict_case_match = true
   acts_as_taggable_on :tags
@@ -1250,6 +1250,11 @@ class Project < ActiveRecord::Base
     self.merge_requests_ff_only_enabled || self.merge_requests_rebase_enabled
   end
 
+  def import_url_updated?
+    # check if import_url has been updated and it's not just the first assignment
+    import_url_changed? && changes['import_url'].first
+  end
+
   private
 
   def update_forks_visibility_level
@@ -1264,8 +1269,6 @@ class Project < ActiveRecord::Base
   end
 
   def remove_mirror_repository_reference
-    # return if it's the first assignment
-    return unless changes['import_url'] && changes['import_url'].first
     repository.remove_remote(Repository::MIRROR_REMOTE)
   end
 
