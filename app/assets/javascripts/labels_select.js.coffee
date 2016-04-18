@@ -2,15 +2,14 @@ class @LabelsSelect
   constructor: ->
     $('.js-label-select').each (i, dropdown) ->
       $dropdown = $(dropdown)
-      $parent = $dropdown.parent()
       projectId = $dropdown.data('project-id')
       labelUrl = $dropdown.data('labels')
       issueUpdateURL = $dropdown.data('issueUpdate')
       selectedLabel = $dropdown.data('selected')
       if selectedLabel?
         selectedLabel = selectedLabel.split(',')
-      newLabelField = $('#new_label_name', $parent)
-      newColorField = $('#new_label_color', $parent)
+      newLabelField = $('#new_label_name')
+      newColorField = $('#new_label_color')
       showNo = $dropdown.data('show-no')
       showAny = $dropdown.data('show-any')
       defaultLabel = $dropdown.data('default-label')
@@ -19,9 +18,9 @@ class @LabelsSelect
       $block = $selectbox.closest('.block')
       $sidebarCollapsedValue = $block.find('.sidebar-collapsed-icon span')
       $value = $block.find('.value')
-      $newLabelError = $('.js-label-error', $parent)
-      $colorPreview = $('.js-dropdown-label-color-preview', $parent)
-      $newLabelCreateButton = $('.js-new-label-btn', $parent)
+      $newLabelError = $('.js-label-error')
+      $colorPreview = $('.js-dropdown-label-color-preview')
+      $newLabelCreateButton = $('.js-new-label-btn')
 
       $newLabelError.hide()
       $loading = $block.find('.block-loading').fadeOut()
