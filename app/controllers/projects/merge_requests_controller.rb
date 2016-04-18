@@ -197,6 +197,12 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       return
     end
 
+    merge_request_service = MergeRequests::MergeService.new(@project, current_user, merge_params)
+    unless merge_request_service.hooks_validation_pass?(@merge_request)
+      @status = :hook_validation_error
+      return
+    end
+
     TodoService.new.merge_merge_request(merge_request, current_user)
 
     @merge_request.update(merge_error: nil)

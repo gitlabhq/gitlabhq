@@ -2,11 +2,18 @@
 
 FactoryGirl.define do
   factory :git_hook do
-    force_push_regex "MyString"
+    force_push_regex 'feature\/.*'
     deny_delete_tag false
-    delete_branch_regex "MyString"
+    delete_branch_regex 'bug\/.*'
     project
-    commit_message_regex "MyString"
+
+    trait :commit_message do
+      commit_message_regex "(f|F)ixes #\d+.*"
+    end
+
+    trait :author_email do
+      author_email_regex '.*@veryspecificedomain.com'
+    end
 
     factory :git_hook_sample do
       is_sample true
