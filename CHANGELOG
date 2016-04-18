@@ -56,6 +56,7 @@ v 8.7.0 (unreleased)
   - Decouple membership and notifications
   - Fix creation of merge requests for orphaned branches (Stan Hu)
   - API: Ability to retrieve a single tag (Robert Schilling)
+  - While signing up, don't persist the user password across form redisplays
   - Fall back to `In-Reply-To` and `References` headers when sub-addressing is not available (David Padilla)
   - Remove "Congratulations!" tweet button on newly-created project. (Connor Shea)
   - Fix admin/projects when using visibility levels on search (PotHix)
@@ -66,7 +67,6 @@ v 8.7.0 (unreleased)
   - Update number of Todos in the sidebar when it's marked as "Done". !3600
   - API: Expose 'updated_at' for issue, snippet, and merge request notes (Robert Schilling)
   - API: User can leave a project through the API when not master or owner. !3613
-  - While signing up, don't persist the user password across form redisplays
   - Fix repository cache invalidation issue when project is recreated with an empty repo (Stan Hu)
   - Fix: Allow empty recipients list for builds emails service when pushed is added (Frank Groeneveld)
   - Improved markdown forms
