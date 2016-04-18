@@ -295,3 +295,6 @@ $ ->
 
   checkInitialSidebarSize()
   new Aside()
+
+  if gon.sentry_dsn?
+    Raven.config('your public dsn').install()
