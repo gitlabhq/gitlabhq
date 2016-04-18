@@ -295,12 +295,12 @@ module Ci
       
       describe "before_script" do
         context "in global context" do
-          let(:config) {
+          let(:config) do
             {
               before_script: ["global script"],
               test: { script: ["script"] }
             }
-          }
+          end
           
           it "return commands with scripts concencaced" do
             expect(subject[:commands]).to eq("global script\nscript")
@@ -308,12 +308,12 @@ module Ci
         end
  
         context "overwritten in local context" do
-          let(:config) {
+          let(:config) do
             {
               before_script: ["global script"],
               test: { before_script: ["local script"], script: ["script"] }
             }
-          }
+          end
 
           it "return commands with scripts concencaced" do
             expect(subject[:commands]).to eq("local script\nscript")
@@ -322,11 +322,11 @@ module Ci
       end
 
       describe "script" do
-        let(:config) {
+        let(:config) do
           {
             test: { script: ["script"] }
           }
-        }
+        end
 
         it "return commands with scripts concencaced" do
           expect(subject[:commands]).to eq("script")
@@ -348,12 +348,12 @@ module Ci
         end
 
         context "overwritten in local context" do
-          let(:config) {
+          let(:config) do
             {
               after_script: ["local after_script"],
               test: { after_script: ["local after_script"], script: ["script"] }
             }
-          }
+          end
 
           it "return after_script in options" do
             expect(subject[:options][:after_script]).to eq(["local after_script"])

@@ -160,6 +160,7 @@ module Ci
       validate_job_name!(name)
       validate_job_keys!(name, job)
       validate_job_types!(name, job)
+      validate_job_script!(name, job)
 
       validate_job_stage!(name, job) if job[:stage]
       validate_job_variables!(name, job) if job[:variables]
@@ -183,18 +184,6 @@ module Ci
     end
 
     def validate_job_types!(name, job)
-      if !validate_string(job[:script]) && !validate_array_of_strings(job[:script])
-        raise ValidationError, "#{name} job: script should be a string or an array of a strings"
-      end
-
-      if job[:before_script] && !validate_array_of_strings(job[:before_script])
-        raise ValidationError, "#{name} job: before_script should be an array of strings"
-      end
-
-      if job[:after_script] && !validate_array_of_strings(job[:after_script])
-        raise ValidationError, "#{name} job: after_script should be an array of strings"
-      end
-
       if job[:image] && !validate_string(job[:image])
         raise ValidationError, "#{name} job: image should be a string"
       end
@@ -221,6 +210,20 @@ module Ci
 
       if job[:when] && !job[:when].in?(%w(on_success on_failure always))
         raise ValidationError, "#{name} job: when parameter should be on_success, on_failure or always"
+      end
+    end
+
+    def validate_job_script!(name, job)
+      if !validate_string(job[:script]) && !validate_array_of_strings(job[:script])
+        raise ValidationError, "#{name} job: script should be a string or an array of a strings"
+      end
+
+      if job[:before_script] && !validate_array_of_strings(job[:before_script])
+        raise ValidationError, "#{name} job: before_script should be an array of strings"
+      end
+
+      if job[:after_script] && !validate_array_of_strings(job[:after_script])
+        raise ValidationError, "#{name} job: after_script should be an array of strings"
       end
     end
 
