@@ -48,7 +48,7 @@ describe Projects::ProjectMembersController do
   end
 
   describe 'index' do
-    let(:project) { create(:project, :internal) }
+    let(:project) { create(:project, :private) }
 
     context 'when user is member' do
       let(:member) { create(:user) }
@@ -59,18 +59,7 @@ describe Projects::ProjectMembersController do
         get :index, namespace_id: project.namespace.to_param, project_id: project.to_param
       end
 
-       it { expect(response.status).to eq(200) }
-    end
-
-    context 'when user is not member' do
-      let(:not_member) { create(:user) }
-
-      before do
-        sign_in(not_member)
-        get :index, namespace_id: project.namespace.to_param, project_id: project.to_param
-      end
-
-      it { expect(response.status).to eq(403) }
+      it { expect(response.status).to eq(200) }
     end
   end
 end

@@ -154,17 +154,9 @@ class Ability
       end
     end
 
-    def project_member_rules(team, user)
-      all_members_rules = []
-
-      #Rules only for members which does not include public behavior
-      all_members_rules << :read_members_list if team.members.include?(user)
-      all_members_rules
-    end
-
     def project_team_rules(team, user)
       # Rules based on role in project
-      filtered_rules = if team.master?(user)
+      if team.master?(user)
         project_master_rules
       elsif team.developer?(user)
         project_dev_rules
@@ -173,8 +165,6 @@ class Ability
       elsif team.guest?(user)
         project_guest_rules
       end
-
-      Array(filtered_rules) + project_member_rules(team, user)
     end
 
     def public_project_rules
@@ -199,7 +189,8 @@ class Ability
         :create_project,
         :create_issue,
         :create_note,
-        :upload_file
+        :upload_file,
+        :read_members_list
       ]
     end
 
