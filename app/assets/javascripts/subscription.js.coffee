@@ -2,7 +2,7 @@ class @Subscription
   constructor: (container) ->
     $container = $(container)
     @url = $container.attr('data-url')
-    @subscribe_button = $container.find('.subscribe-button')
+    @subscribe_button = $container.find('.js-subscribe-button')
     @subscription_status = $container.find('.subscription-status')
     @subscribe_button.unbind('click').click(@toggleSubscription)
 

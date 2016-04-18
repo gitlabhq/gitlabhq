@@ -283,31 +283,9 @@ class @Notes
   show the form
   ###
   setupNoteForm: (form) ->
-    disableButtonIfEmptyField form.find(".js-note-text"), form.find(".js-comment-button")
-    form.removeClass "js-new-note-form"
-    form.find('.div-dropzone').remove()
-
-    # hide discard button
-    form.find('.js-note-discard').hide()
-
-    # setup preview buttons
-    previewButton = form.find(".js-md-preview-button")
+    new GLForm form
 
     textarea = form.find(".js-note-text")
-
-    textarea.on "input", ->
-      if $(this).val().trim() isnt ""
-        previewButton.removeClass("turn-off").addClass "turn-on"
-      else
-        previewButton.removeClass("turn-on").addClass "turn-off"
-
-    textarea.on 'focus', ->
-      $(this).closest('.md-area').addClass 'is-focused'
-
-    textarea.on 'blur', ->
-      $(this).closest('.md-area').removeClass 'is-focused'
-
-    autosize(textarea)
 
     new Autosave textarea, [
       "Note"
@@ -316,11 +294,6 @@ class @Notes
       form.find("#note_noteable_type").val()
       form.find("#note_noteable_id").val()
     ]
-
-    # remove notify commit author checkbox for non-commit notes
-    GitLab.GfmAutoComplete.setup()
-    new DropzoneInput(form)
-    form.show()
 
   ###
   Called in response to the new note form being submitted
@@ -375,34 +348,15 @@ class @Notes
     note = $(this).closest(".note")
     note.addClass "is-editting"
     form = note.find(".note-edit-form")
-    isNewForm = form.is(':not(.gfm-form)')
-    if isNewForm
-      form.addClass('gfm-form')
+
     form.addClass('current-note-edit-form')
 
     # Show the attachment delete link
     note.find(".js-note-attachment-delete").show()
 
-    # Setup markdown form
-    if isNewForm
-      GitLab.GfmAutoComplete.setup()
-      new DropzoneInput(form)
+    new GLForm form
 
-    textarea = form.find("textarea")
-    textarea.focus()
-
-    if isNewForm
-      autosize(textarea)
-
-    # HACK (rspeicher/DouweM): Work around a Chrome 43 bug(?).
-    # The textarea has the correct value, Chrome just won't show it unless we
-    # modify it, so let's clear it and re-set it!
-    value = textarea.val()
-    textarea.val ""
-    textarea.val value
-
-    if isNewForm
-      disableButtonIfEmptyField textarea, form.find(".js-comment-button")
+    form.find(".js-note-text").focus()
 
   ###
   Called in response to clicking the edit note link
@@ -559,6 +513,9 @@ class @Notes
   removeDiscussionNoteForm: (form)->
     row = form.closest("tr")
 
+    glForm = form.data 'gl-form'
+    glForm.destroy()
+
     form.find(".js-note-text").data("autosave").reset()
 
     # show the reply button (will only work for replies)
@@ -569,7 +526,6 @@ class @Notes
     else
       # only remove the form
       form.remove()
-
 
   cancelDiscussionForm: (e) =>
     e.preventDefault()

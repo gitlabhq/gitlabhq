@@ -29,7 +29,11 @@ $(document).on 'keydown.quick_submit', '.js-quick-submit', (e) ->
   e.preventDefault()
 
   $form = $(e.target).closest('form')
-  $form.find('input[type=submit], button[type=submit]').disable()
+  $submit_button = $form.find('input[type=submit], button[type=submit]')
+
+  return if $submit_button.attr('disabled')
+
+  $submit_button.disable()
   $form.submit()
 
 # If the user tabs to a submit button on a `js-quick-submit` form, display a

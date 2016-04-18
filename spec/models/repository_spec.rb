@@ -94,6 +94,12 @@ describe Repository, models: true do
 
     it { is_expected.to be_an Array }
 
+    it 'regex-escapes the query string' do
+      results = repository.search_files("test\\", 'master')
+
+      expect(results.first).not_to start_with('fatal:')
+    end
+
     describe 'result' do
       subject { results.first }
 
@@ -393,6 +399,8 @@ describe Repository, models: true do
   describe '#expire_cache' do
     it 'expires all caches' do
       expect(repository).to receive(:expire_branch_cache)
+      expect(repository).to receive(:expire_branch_count_cache)
+      expect(repository).to receive(:expire_tag_count_cache)
 
       repository.expire_cache
     end
@@ -762,11 +770,9 @@ describe Repository, models: true do
   describe '#rm_tag' do
     it 'removes a tag' do
       expect(repository).to receive(:before_remove_tag)
+      expect(repository.rugged.tags).to receive(:delete).with('v1.1.0')
 
-      expect_any_instance_of(Gitlab::Shell).to receive(:rm_tag).
-        with(repository.path_with_namespace, '8.5')
-
-      repository.rm_tag('8.5')
+      repository.rm_tag('v1.1.0')
     end
   end
 

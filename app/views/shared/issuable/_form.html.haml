@@ -4,7 +4,7 @@
   = f.label :title, class: 'control-label'
   .col-sm-10
     = f.text_field :title, maxlength: 255, autofocus: true, autocomplete: 'off',
-        class: 'form-control pad js-gfm-input', required: true
+        class: 'form-control pad', required: true
 
     - if issuable.is_a?(MergeRequest)
       %p.help-block
@@ -29,7 +29,8 @@
 
     = render layout: 'projects/md_preview', locals: { preview_class: "md-preview", referenced_users: true } do
       = render 'projects/zen', f: f, attr: :description,
-                               classes: 'description form-control'
+                               classes: 'note-textarea',
+                               placeholder: "Write a comment or drag your files here..."
       = render 'projects/notes/hints'
       .clearfix
       .error-alert
@@ -70,13 +71,13 @@
         - if can? current_user, :admin_milestone, issuable.project
           = link_to 'Create new milestone', new_namespace_project_milestone_path(issuable.project.namespace, issuable.project), target: :blank
   .form-group
+    - has_labels = issuable.project.labels.any?
     = f.label :label_ids, "Labels", class: 'control-label'
-    .col-sm-10
-      - if issuable.project.labels.any?
+    .col-sm-10{ class: ('issuable-form-padding-top' if !has_labels) }
+      - if has_labels
         = f.collection_select :label_ids, issuable.project.labels.all, :id, :name,
           { selected: issuable.label_ids }, multiple: true, class: 'select2', data: { placeholder: "Select labels" }
       - else
-        .prepend-top-10
         %span.light No labels yet.
       &nbsp;
       - if can? current_user, :admin_label, issuable.project
@@ -128,8 +129,6 @@
   - else
     .pull-right
       - if current_user.can?(:"destroy_#{issuable.to_ability_name}", @project)
-        = link_to polymorphic_path([@project.namespace.becomes(Namespace), @project, issuable]), data: { confirm: "#{issuable.class.name.titleize} will be removed! Are you sure?" },
-                                                                                                  method: :delete, class: 'btn btn-grouped' do
-          = icon('trash-o')
-          Delete
+        = link_to 'Delete', polymorphic_path([@project.namespace.becomes(Namespace), @project, issuable]), data: { confirm: "#{issuable.class.name.titleize} will be removed! Are you sure?" },
+                                                                                                  method: :delete, class: 'btn btn-danger btn-grouped'
       = link_to 'Cancel', polymorphic_path([@project.namespace.becomes(Namespace), @project, issuable]), class: 'btn btn-grouped btn-cancel'

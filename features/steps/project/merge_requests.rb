@@ -77,11 +77,11 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I should see that I am subscribed' do
-    expect(find('.subscribe-button span')).to have_content 'Unsubscribe'
+    expect(find('.issuable-subscribe-button span')).to have_content 'Unsubscribe'
   end
 
   step 'I should see that I am unsubscribed' do
-    expect(find('.subscribe-button span')).to have_content 'Subscribe'
+    expect(find('.issuable-subscribe-button span')).to have_content 'Subscribe'
   end
 
   step 'I click button "Unsubscribe"' do

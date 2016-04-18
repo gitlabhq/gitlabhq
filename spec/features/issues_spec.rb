@@ -45,7 +45,7 @@ describe 'Issues', feature: true do
              project: project)
     end
 
-    it 'allows user to select unasigned', js: true do
+    it 'allows user to select unassigned', js: true do
       visit edit_namespace_project_issue_path(project.namespace, project, issue)
 
       expect(page).to have_content "Assignee #{@user.name}"
@@ -61,6 +61,18 @@ describe 'Issues', feature: true do
       end
 
       expect(issue.reload.assignee).to be_nil
+    end
+  end
+
+  describe 'Issue info' do
+    it 'excludes award_emoji from comment count' do
+      issue = create(:issue, author: @user, assignee: @user, project: project, title: 'foobar')
+      create(:upvote_note, noteable: issue)
+
+      visit namespace_project_issues_path(project.namespace, project, assignee_id: @user.id)
+
+      expect(page).to have_content 'foobar'
+      expect(page.all('.issue-no-comments').first.text).to eq "0"
     end
   end
 
@@ -187,7 +199,7 @@ describe 'Issues', feature: true do
   describe 'update assignee from issue#show' do
     let(:issue) { create(:issue, project: project, author: @user, assignee: @user) }
 
-    context 'by autorized user' do
+    context 'by authorized user' do
 
       it 'allows user to select unassigned', js: true do
         visit namespace_project_issue_path(project.namespace, project, issue)
@@ -280,11 +292,49 @@ describe 'Issues', feature: true do
     end
   end
 
+  describe 'new issue' do
+    context 'dropzone upload file', js: true do
+      before do
+        visit new_namespace_project_issue_path(project.namespace, project)
+      end
+
+      it 'should upload file when dragging into textarea' do
+        drop_in_dropzone test_image_file
+
+        # Wait for the file to upload
+        sleep 1
+
+        expect(page.find_field("issue_description").value).to have_content 'banana_sample'
+      end
+    end
+  end
+
   def first_issue
     page.all('ul.issues-list > li').first.text
   end
 
   def last_issue
     page.all('ul.issues-list > li').last.text
+  end
+
+  def drop_in_dropzone(file_path)
+    # Generate a fake input selector
+    page.execute_script <<-JS
+      var fakeFileInput = window.$('<input/>').attr(
+        {id: 'fakeFileInput', type: 'file'}
+      ).appendTo('body');
+    JS
+    # Attach the file to the fake input selector with Capybara
+    attach_file("fakeFileInput", file_path)
+    # Add the file to a fileList array and trigger the fake drop event
+    page.execute_script <<-JS
+      var fileList = [$('#fakeFileInput')[0].files[0]];
+      var e = jQuery.Event('drop', { dataTransfer : { files : fileList } });
+      $('.div-dropzone')[0].dropzone.listeners[0].events.drop(e);
+    JS
+  end
+
+  def test_image_file
+    File.join(Rails.root, 'spec', 'fixtures', 'banana_sample.gif')
   end
 end
