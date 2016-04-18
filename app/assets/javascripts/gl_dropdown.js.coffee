@@ -32,10 +32,8 @@ class GitLabDropdownFilter
       else if @input.val() is "" and $inputContainer.hasClass HAS_VALUE_CLASS
         $inputContainer.removeClass HAS_VALUE_CLASS
 
-      if keyCode is 13 and @input.val() isnt ""
-        if @options.enterCallback
-          @options.enterCallback()
-        return
+      if keyCode is 13
+        return false
 
       clearTimeout timeout
       timeout = setTimeout =>
@@ -132,7 +130,6 @@ class GitLabDropdown
       @filterInput = @getElement(FILTER_INPUT)
       @highlight = false
       @filterInputBlur = true
-      @enterCallback = true
     } = @options
 
     self = @
@@ -178,9 +175,6 @@ class GitLabDropdown
         callback: (data) =>
           currentIndex = -1
           @parseData data
-        enterCallback: =>
-          if @enterCallback
-            @selectRowAtIndex 0
 
     # Event listeners
 
