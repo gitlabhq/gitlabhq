@@ -32,6 +32,7 @@ describe Gitlab::GithubImport::IssueFormatter, lib: true do
         expected = {
           iid: 1347,
           project: project,
+          milestone: nil,
           title: 'Found a bug',
           description: "*Created by: octocat*\n\nI'm having a problem with this.",
           state: 'opened',
@@ -53,6 +54,7 @@ describe Gitlab::GithubImport::IssueFormatter, lib: true do
         expected = {
           iid: 1347,
           project: project,
+          milestone: nil,
           title: 'Found a bug',
           description: "*Created by: octocat*\n\nI'm having a problem with this.",
           state: 'closed',
@@ -77,6 +79,21 @@ describe Gitlab::GithubImport::IssueFormatter, lib: true do
         gl_user = create(:omniauth_user, extern_uid: octocat.id, provider: 'github')
 
         expect(issue.attributes.fetch(:assignee_id)).to eq gl_user.id
+      end
+    end
+
+    context 'when it has a milestone' do
+      let(:milestone) { OpenStruct.new(number: 45) }
+      let(:raw_data) { OpenStruct.new(base_data.merge(milestone: milestone)) }
+
+      it 'returns nil when milestone does not exist' do
+        expect(issue.attributes.fetch(:milestone)).to be_nil
+      end
+
+      it 'returns milestone when it exists' do
+        milestone = create(:milestone, project: project, iid: 45)
+
+        expect(issue.attributes.fetch(:milestone)).to eq milestone
       end
     end
 

@@ -43,6 +43,7 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
           target_project: project,
           target_branch: 'master',
           state: 'opened',
+          milestone: nil,
           author_id: project.creator_id,
           assignee_id: nil,
           created_at: created_at,
@@ -67,6 +68,7 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
           target_project: project,
           target_branch: 'master',
           state: 'closed',
+          milestone: nil,
           author_id: project.creator_id,
           assignee_id: nil,
           created_at: created_at,
@@ -91,6 +93,7 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
           target_project: project,
           target_branch: 'master',
           state: 'merged',
+          milestone: nil,
           author_id: project.creator_id,
           assignee_id: nil,
           created_at: created_at,
@@ -126,6 +129,21 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
         gl_user = create(:omniauth_user, extern_uid: octocat.id, provider: 'github')
 
         expect(pull_request.attributes.fetch(:author_id)).to eq gl_user.id
+      end
+    end
+
+    context 'when it has a milestone' do
+      let(:milestone) { OpenStruct.new(number: 45) }
+      let(:raw_data) { OpenStruct.new(base_data.merge(milestone: milestone)) }
+
+      it 'returns nil when milestone does not exists' do
+        expect(pull_request.attributes.fetch(:milestone)).to be_nil
+      end
+
+      it 'returns milestone when is exists' do
+        milestone = create(:milestone, project: project, iid: 45)
+
+        expect(pull_request.attributes.fetch(:milestone)).to eq milestone
       end
     end
   end
