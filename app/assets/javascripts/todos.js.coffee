@@ -96,7 +96,7 @@ class @Todos
           page: currPages - 1
         url = gl.utils.mergeUrlParams(pageParams, url)
 
-      location.replace url
+      Turbolinks.visit(url)
 
   goToTodoUrl: (e)->
     todoLink = $(this).data('url')
