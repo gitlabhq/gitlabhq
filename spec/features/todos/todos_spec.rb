@@ -9,7 +9,7 @@ describe 'Dashboard Todos', feature: true do
   let(:todos_total){ todos_per_page + 1 }
 
   describe 'GET /dashboard/todos' do
-    context 'User do not have todos' do
+    context 'User does not have todos' do
       before do
         login_as(user)
         visit dashboard_todos_path
