@@ -295,12 +295,12 @@ module Ci
       
       describe "after_script" do
         context "in global context" do
-          let(:config) {
+          let(:config) do
             {
               after_script: ["after_script"],
               test: { script: ["script"] }
             }
-          }
+          end
 
           it "return after_script in options" do
             expect(subject[:options][:after_script]).to eq(["after_script"])
