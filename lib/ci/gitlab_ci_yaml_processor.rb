@@ -92,6 +92,29 @@ module Ci
     end
 
     def validate!
+      validate_global!
+
+      @jobs.each do |name, job|
+        validate_job!(name, job)
+      end
+
+      true
+    end
+
+    def validate_job!(name, job)
+      validate_job_name!(name)
+      validate_job_keys!(name, job)
+      validate_job_types!(name, job)
+
+      validate_job_stage!(name, job) if job[:stage]
+      validate_job_cache!(name, job) if job[:cache]
+      validate_job_artifacts!(name, job) if job[:artifacts]
+      validate_job_dependencies!(name, job) if job[:dependencies]
+    end
+
+    private
+
+    def validate_global!
       unless validate_array_of_strings(@before_script)
         raise ValidationError, "before_script should be an array of strings"
       end
@@ -116,39 +139,22 @@ module Ci
         raise ValidationError, "variables should be a map of key-valued strings"
       end
 
-      if @cache
-        if @cache[:key] && !validate_string(@cache[:key])
-          raise ValidationError, "cache:key parameter should be a string"
-        end
-
-        if @cache[:untracked] && !validate_boolean(@cache[:untracked])
-          raise ValidationError, "cache:untracked parameter should be an boolean"
-        end
-
-        if @cache[:paths] && !validate_array_of_strings(@cache[:paths])
-          raise ValidationError, "cache:paths parameter should be an array of strings"
-        end
-      end
-
-      @jobs.each do |name, job|
-        validate_job!(name, job)
-      end
-
-      true
+      validate_global_cache! if @cache
     end
 
-    def validate_job!(name, job)
-      validate_job_name!(name)
-      validate_job_keys!(name, job)
-      validate_job_types!(name, job)
+    def validate_global_cache!
+      if @cache[:key] && !validate_string(@cache[:key])
+        raise ValidationError, "cache:key parameter should be a string"
+      end
 
-      validate_job_stage!(name, job) if job[:stage]
-      validate_job_cache!(name, job) if job[:cache]
-      validate_job_artifacts!(name, job) if job[:artifacts]
-      validate_job_dependencies!(name, job) if job[:dependencies]
+      if @cache[:untracked] && !validate_boolean(@cache[:untracked])
+        raise ValidationError, "cache:untracked parameter should be an boolean"
+      end
+
+      if @cache[:paths] && !validate_array_of_strings(@cache[:paths])
+        raise ValidationError, "cache:paths parameter should be an array of strings"
+      end
     end
-
-    private
 
     def validate_job_name!(name)
       if name.blank? || !validate_string(name)
