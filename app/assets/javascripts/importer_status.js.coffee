@@ -23,14 +23,14 @@ class @ImporterStatus
 
     $('.js-import-all')
       .off 'click'
-      .on 'click', (e) =>
-        $btn = $(e.currentTarget)
+      .on 'click', (e) ->
+        $btn = $(@)
         $btn
           .disable()
           .addClass 'is-loading'
 
         $('.js-add-to-import').each ->
-          $(this).click()
+          $(this).trigger('click')
 
   setAutoUpdate: ->
     setInterval (=>
