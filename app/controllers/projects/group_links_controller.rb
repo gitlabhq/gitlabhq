@@ -10,10 +10,9 @@ class Projects::GroupLinksController < Projects::ApplicationController
     group = Group.find(params[:link_group_id])
 
     if can?(current_user, :read_group, group)
-      link = project.project_group_links.new
-      link.group_id = params[:link_group_id]
-      link.group_access = params[:link_group_access]
-      link.save
+      project.project_group_links.create(
+        group: group, group_access: params[:link_group_access]
+      )
     else
       return render_404
     end
