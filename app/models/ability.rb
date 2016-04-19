@@ -19,7 +19,7 @@ class Ability
         when Namespace then namespace_abilities(user, subject)
         when GroupMember then group_member_abilities(user, subject)
         when ProjectMember then project_member_abilities(user, subject)
-	when User then user_abilities
+        when User then user_abilities
         else []
         end.concat(global_abilities(user))
 
