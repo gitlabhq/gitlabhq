@@ -38,6 +38,8 @@ describe AutocompleteController do
         get(:users, project_id: project.id, push_code_to_protected_branches: 'true')
       end
 
+      let(:body) { JSON.parse(response.body) }
+
       it { expect(body).to be_kind_of(Array) }
       it { expect(body.size).to eq 1 }
       it { expect(body.first["username"]).to eq user.username }
