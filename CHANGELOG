@@ -14,6 +14,7 @@ v 8.7.0 (unreleased)
   - Developers can now add custom tags to transactions
   - Loading of an issue's referenced merge requests and related branches is now done asynchronously
   - Enable gzip for assets, makes the page size significantly smaller. !3544 / !3632 (Connor Shea)
+  - Add support to cherry-pick any commit into any branch in the web interface (Minqi Pan)
   - Project switcher uses new dropdown styling
   - Load award emoji images separately unless opening the full picker. Saves several hundred KBs of data for most pages. (Connor Shea)
   - Do not include award_emojis in issue and merge_request comment_count !3610 (Lucas Charles)
@@ -102,8 +103,9 @@ v 8.7.0 (unreleased)
   - Fix GitHub project's link in the import page when provider has a custom URL
 
 v 8.6.7 (unreleased)
+  - Fix persistent XSS vulnerability in `commit_person_link` helper
+  - Fix persistent XSS vulnerability in Label and Milestone dropdowns
   - Fix vulnerability that made it possible to enumerate private projects belonging to group
-  - Add support to cherry-pick any commit into any branch in the web interface (Minqi Pan)
 
 v 8.6.6
   - Expire the exists cache before deletion to ensure project dir actually exists (Stan Hu). !3413
