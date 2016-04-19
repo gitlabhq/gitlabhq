@@ -299,6 +299,7 @@ $ ->
 
   if gon.sentry_dsn?
     Raven.config(gon.sentry_dsn, {
+      includePaths: [/gon.relative_url_root/]
       ignoreErrors: [
         # Random plugins/extensions
         'top.GLOBALS',
@@ -336,6 +337,5 @@ $ ->
 
   if gon.current_user_id
     Raven.setUserContext({
-      api_token: gon.api_token,
       id: gon.current_user_id
     })
