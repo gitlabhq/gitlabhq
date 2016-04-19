@@ -27,6 +27,7 @@ v 8.7.0 (unreleased)
   - Make /profile/keys/new redirect to /profile/keys for back-compat. !3717
   - Preserve time notes/comments have been updated at when moving issue
   - Make HTTP(s) label consistent on clone bar (Stan Hu)
+  - Add support for `after_script`, requires Runner 1.2 (Kamil Trzciński)
   - Expose label description in API (Mariusz Jachimowicz)
   - API: Ability to update a group (Robert Schilling)
   - API: Ability to move issues (Robert Schilling)
