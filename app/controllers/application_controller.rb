@@ -7,7 +7,8 @@ class ApplicationController < ActionController::Base
   include GitlabRoutingHelper
   include PageLayoutHelper
 
-  before_action :authenticate_user_from_token!
+  before_action :authenticate_user_from_private_token!
+  before_action :authenticate_user_from_personal_access_token!
   before_action :authenticate_user!
   before_action :validate_user_service_ticket!
   before_action :reject_blocked!
@@ -65,7 +66,7 @@ class ApplicationController < ActionController::Base
 
   # From https://github.com/plataformatec/devise/wiki/How-To:-Simple-Token-Authentication-Example
   # https://gist.github.com/josevalim/fb706b1e933ef01e4fb6
-  def authenticate_user_from_token!
+  def authenticate_user_from_private_token!
     user_token = if params[:authenticity_token].presence
                    params[:authenticity_token].presence
                  elsif params[:private_token].presence
@@ -74,6 +75,20 @@ class ApplicationController < ActionController::Base
                    request.headers['PRIVATE-TOKEN']
                  end
     user = user_token && User.find_by_authentication_token(user_token.to_s)
+
+    if user
+      # Notice we are passing store false, so the user is not
+      # actually stored in the session and a token is needed
+      # for every request. If you want the token to work as a
+      # sign in token, you can simply remove store: false.
+      sign_in user, store: false
+    end
+  end
+
+  def authenticate_user_from_personal_access_token!
+    token_string = params[:personal_access_token].presence || request.headers['PERSONAL_ACCESS_TOKEN'].presence
+    personal_access_token = PersonalAccessToken.active.find_by_token(token_string)
+    user = personal_access_token && personal_access_token.user
 
     if user
       # Notice we are passing store false, so the user is not
