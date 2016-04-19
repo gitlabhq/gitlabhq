@@ -74,6 +74,7 @@ v 8.7.0 (unreleased)
   - Selected diff rows highlight
   - Fix emoji categories in the emoji picker
   - Add encrypted credentials for imported projects and migrate old ones
+  - Properly format all merge request references with ! rather than # !3740 (Ben Bodenmiller)
   - Author and participants are displayed first on users autocompletion
 
 v 8.6.6

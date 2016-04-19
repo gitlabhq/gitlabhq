@@ -1,7 +1,7 @@
-- page_title "Edit", "#{@merge_request.title} (##{@merge_request.iid})", "Merge Requests"
+- page_title "Edit", "#{@merge_request.title} (#{@merge_request.to_reference}", "Merge Requests"
 = render "header_title"
 
 %h3.page-title
-  Edit Merge Request ##{@merge_request.iid}
+  Edit Merge Request #{@merge_request.to_reference}
 %hr
 = render 'form'
