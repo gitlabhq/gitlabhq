@@ -87,6 +87,7 @@ v 8.7.0 (unreleased)
   - Fix emoji categories in the emoji picker
   - API: Properly display annotated tags for GET /projects/:id/repository/tags (Robert Schilling)
   - Add encrypted credentials for imported projects and migrate old ones
+  - Properly format all merge request references with ! rather than # !3740 (Ben Bodenmiller)
   - Author and participants are displayed first on users autocompletion
   - Show number sign on external issue reference text (Florent Baldino)
   - Updated print style for issues
