@@ -100,7 +100,6 @@ class Projects::IssuesController < Projects::ApplicationController
     end
 
     respond_to do |format|
-      format.js
       format.html do
         if @issue.valid?
           redirect_to issue_path(@issue)
