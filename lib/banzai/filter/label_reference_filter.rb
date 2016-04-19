@@ -20,7 +20,7 @@ module Banzai
         text.gsub(pattern) do |match|
           project = project_from_ref($~[:project])
           params = label_params($~[:label_id].to_i, $~[:label_name])
-          label = project.labels.find_by(params)
+          label = project.labels.find_by(params) if project
 
           if label
             yield match, label.id, $~[:project], $~
