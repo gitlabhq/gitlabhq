@@ -15,7 +15,7 @@ describe RepositoryCheckMailer do
     it 'mentions the number of failed checks' do
       mail = described_class.notify(3)
 
-      expect(mail).to have_subject '3 projects failed their last repository check'
+      expect(mail).to have_subject 'GitLab Admin | 3 projects failed their last repository check'
     end
   end
 end

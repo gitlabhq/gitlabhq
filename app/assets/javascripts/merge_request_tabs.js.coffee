@@ -183,9 +183,10 @@ class @MergeRequestTabs
       else
         $diffLine = $('td', $diffLine)
 
-      $diffLine.addClass 'hll'
-      diffLineTop = $diffLine.offset().top
-      navBarHeight = $('.navbar-gitlab').outerHeight()
+      if $diffLine.length
+        $diffLine.addClass 'hll'
+        diffLineTop = $diffLine.offset().top
+        navBarHeight = $('.navbar-gitlab').outerHeight()
 
   loadBuilds: (source) ->
     return if @buildsLoaded

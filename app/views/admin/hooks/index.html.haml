@@ -17,6 +17,27 @@
     .col-sm-10
       = f.text_field :url, class: "form-control"
   .form-group
+    = f.label :url, "Trigger", class: 'control-label'
+    .col-sm-10.prepend-top-10
+      %div
+        System hook will be triggered on set of events like creating project
+        or adding ssh key. But you can also enable extra triggers like Push events.
+
+      %div.prepend-top-default
+        = f.check_box :push_events, class: 'pull-left'
+        .prepend-left-20
+          = f.label :push_events, class: 'list-label' do
+            %strong Push events
+          %p.light
+            This url will be triggered by a push to the repository
+      %div
+        = f.check_box :tag_push_events, class: 'pull-left'
+        .prepend-left-20
+          = f.label :tag_push_events, class: 'list-label' do
+            %strong Tag push events
+          %p.light
+            This url will be triggered when a new tag is pushed to the repository
+  .form-group
     = f.label :enable_ssl_verification, "SSL verification", class: 'control-label checkbox'
     .col-sm-10
       .checkbox
@@ -31,13 +52,16 @@
   .panel.panel-default
     .panel-heading
       System hooks (#{@hooks.count})
-    %ul.well-list
+    %ul.content-list
       - @hooks.each do |hook|
         %li
-          .list-item-name
-            %strong= hook.url
-            %p SSL Verification: #{hook.enable_ssl_verification ? "enabled" : "disabled"}
-
-          .pull-right
+          .controls
             = link_to 'Test Hook', admin_hook_test_path(hook), class: "btn btn-sm"
             = link_to 'Remove', admin_hook_path(hook), data: { confirm: 'Are you sure?' }, method: :delete, class: "btn btn-remove btn-sm"
+          .monospace= hook.url
+          %div
+            - %w(push_events tag_push_events issues_events note_events merge_requests_events build_events).each do |trigger|
+              - if hook.send(trigger)
+                %span.label.label-gray= trigger.titleize
+            %span.label.label-gray SSL Verification: #{hook.enable_ssl_verification ? "enabled" : "disabled"}
+

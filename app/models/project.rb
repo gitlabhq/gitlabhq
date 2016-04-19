@@ -831,8 +831,8 @@ class Project < ActiveRecord::Base
     end
   end
 
-  def hook_attrs
-    {
+  def hook_attrs(backward: true)
+    attrs = {
       name: name,
       description: description,
       web_url: web_url,
@@ -843,12 +843,19 @@ class Project < ActiveRecord::Base
       visibility_level: visibility_level,
       path_with_namespace: path_with_namespace,
       default_branch: default_branch,
-      # Backward compatibility
-      homepage: web_url,
-      url: url_to_repo,
-      ssh_url: ssh_url_to_repo,
-      http_url: http_url_to_repo
     }
+
+    # Backward compatibility
+    if backward
+      attrs.merge!({
+                    homepage: web_url,
+                    url: url_to_repo,
+                    ssh_url: ssh_url_to_repo,
+                    http_url: http_url_to_repo
+                  })
+    end
+
+    attrs
   end
 
   # Reset events cache related to this project
