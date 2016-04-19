@@ -116,6 +116,7 @@ v 8.6.7 (unreleased)
   - Copying and pasting a diff no longer pastes the line numbers or +/-
   - Code wraps when viewing diff in parallel view
   - Add null check to formData when updating profile content to fix Firefox bug
+  - Diff code scrolls horizontally while viewing inline
 
 v 8.6.6
   - Expire the exists cache before deletion to ensure project dir actually exists (Stan Hu). !3413
