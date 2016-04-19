@@ -26,7 +26,9 @@
         .btn-group{ data: data_attrs }
           - restricted_level_checkboxes('restricted-visibility-help').each do |level|
             = level
-        %span.help-block#restricted-visibility-help Selected levels cannot be used by non-admin users for projects or snippets
+        %span.help-block#restricted-visibility-help
+          Selected levels cannot be used by non-admin users for projects or snippets.
+          If the public level is restricted, user profiles are only visible to logged in users.
     .form-group
       = f.label :import_sources, class: 'control-label col-sm-2'
       .col-sm-10
@@ -166,7 +168,11 @@
           = f.label :shared_runners_enabled do
             = f.check_box :shared_runners_enabled
             Enable shared runners for new projects
-
+    .form-group
+      = f.label :shared_runners_text, class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.text_area :shared_runners_text, class: 'form-control', rows: 4
+        .help-block Markdown enabled
     .form-group
       = f.label :max_artifacts_size, 'Maximum artifacts size (MB)', class: 'control-label col-sm-2'
       .col-sm-10

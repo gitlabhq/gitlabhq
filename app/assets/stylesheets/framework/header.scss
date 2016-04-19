@@ -71,7 +71,7 @@ header {
   .header-content {
     position: relative;
     height: $header-height;
-    padding-right: 20px;
+    padding-right: 40px;
 
     @media (min-width: $screen-sm-min) {
       padding-right: 0;
@@ -120,6 +120,10 @@ header {
       float: right;
       border-top: none;
     }
+  }
+
+  .project-item-select-holder {
+    display: inline;
   }
 
   .impersonation i {

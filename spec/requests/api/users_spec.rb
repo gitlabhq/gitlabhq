@@ -20,6 +20,24 @@ describe API::API, api: true  do
     end
 
     context "when authenticated" do
+      #These specs are written just in case API authentication is not required anymore
+      context "when public level is restricted" do
+        before do
+          stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::PUBLIC])
+          allow_any_instance_of(API::Helpers).to receive(:authenticate!).and_return(true)
+        end
+
+        it "renders 403" do
+          get api("/users")
+          expect(response.status).to eq(403)
+        end
+
+        it "renders 404" do
+          get api("/users/#{user.id}")
+          expect(response.status).to eq(404)
+        end
+      end
+
       it "should return an array of users" do
         get api("/users", user)
         expect(response.status).to eq(200)

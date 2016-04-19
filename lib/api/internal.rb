@@ -23,6 +23,8 @@ module API
       end
 
       post "/allowed" do
+        Gitlab::Metrics.tag_transaction('action', 'Grape#/internal/allowed')
+
         status 200
 
         actor =

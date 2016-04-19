@@ -74,6 +74,7 @@ class GitPushService < BaseService
     mirror_update = @project.mirror? && @project.repository.up_to_date_with_upstream?(branch_name)
 
     EventCreateService.new.push(@project, current_user, build_push_data)
+    SystemHooksService.new.execute_hooks(build_push_data_system_hook.dup, :push_hooks)
     @project.execute_hooks(build_push_data.dup, :push_hooks)
     @project.execute_services(build_push_data.dup, :push_hooks)
 
@@ -150,6 +151,11 @@ class GitPushService < BaseService
   def build_push_data
     @push_data ||= Gitlab::PushDataBuilder.
       build(@project, current_user, params[:oldrev], params[:newrev], params[:ref], push_commits)
+  end
+
+  def build_push_data_system_hook
+    @push_data_system ||= Gitlab::PushDataBuilder.
+      build(@project, current_user, params[:oldrev], params[:newrev], params[:ref], [])
   end
 
   def push_to_existing_branch?

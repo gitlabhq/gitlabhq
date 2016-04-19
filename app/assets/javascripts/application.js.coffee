@@ -177,7 +177,7 @@ $ ->
   $('.trigger-submit').on 'change', ->
     $(@).parents('form').submit()
 
-  gl.utils.localTimeAgo($('abbr.timeago, .js-timeago'), false)
+  gl.utils.localTimeAgo($('abbr.timeago, .js-timeago'), true)
 
   # Flash
   if (flash = $(".flash-container")).length > 0

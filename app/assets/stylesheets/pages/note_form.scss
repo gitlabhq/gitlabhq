@@ -61,11 +61,11 @@
     padding: $gl-padding-top $gl-padding;
     border: 1px solid $note-form-border-color;
     border-radius: $border-radius-base;
+    transition: border-color ease-in-out 0.15s,
+                box-shadow ease-in-out 0.15s;
 
     &.is-focused {
-      border-color: $focus-border-color;
-      box-shadow: 0 0 2px $black-transparent,
-                  0 0 4px rgba($focus-border-color, .4);
+      @extend .form-control:focus;
 
       .comment-toolbar,
       .nav-links {
