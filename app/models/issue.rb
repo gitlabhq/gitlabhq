@@ -104,10 +104,16 @@ class Issue < ActiveRecord::Base
     end
   end
 
-  def related_branches
-    project.repository.branch_names.select do |branch|
+  # All branches containing the current issue's ID, except for
+  # those with a merge request open referencing the current issue.
+  def related_branches(current_user)
+    branches_with_iid = project.repository.branch_names.select do |branch|
       branch =~ /\A#{iid}-(?!\d+-stable)/i
     end
+
+    branches_with_merge_request = self.referenced_merge_requests(current_user).map(&:source_branch)
+
+    branches_with_iid - branches_with_merge_request
   end
 
   # Reset issue events cache
@@ -151,13 +157,17 @@ class Issue < ActiveRecord::Base
   end
 
   def to_branch_name
-    "#{iid}-#{title.parameterize}"
+    if self.confidential?
+      "#{iid}-confidential-issue"
+    else
+      "#{iid}-#{title.parameterize}"
+    end
   end
 
   def can_be_worked_on?(current_user)
     !self.closed? &&
       !self.project.forked? &&
-      self.related_branches.empty? &&
+      self.related_branches(current_user).empty? &&
       self.closed_by_merge_requests(current_user).empty?
   end
 end

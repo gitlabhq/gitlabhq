@@ -77,6 +77,7 @@ v 8.7.0 (unreleased)
   - API: Do not leak group existence via return code (Robert Schilling)
   - ClosingIssueExtractor regex now also works with colons. e.g. "Fixes: #1234" !3591
   - Update number of Todos in the sidebar when it's marked as "Done". !3600
+  - Sanitize branch names created for confidential issues
   - API: Expose 'updated_at' for issue, snippet, and merge request notes (Robert Schilling)
   - API: User can leave a project through the API when not master or owner. !3613
   - Fix repository cache invalidation issue when project is recreated with an empty repo (Stan Hu)
