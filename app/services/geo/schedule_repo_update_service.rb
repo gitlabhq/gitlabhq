@@ -1,15 +1,14 @@
 module Geo
   class ScheduleRepoUpdateService
-    attr_reader :projects
+    attr_reader :id, :clone_url
 
-    def initialize(projects)
-      @projects = projects
+    def initialize(params)
+      @id = params[:project_id]
+      @clone_url = params[:project][:git_ssh_url]
     end
 
     def execute
-      @projects.each do |project|
-        GeoRepositoryUpdateWorker.perform_async(project['id'], project['clone_url'])
-      end
+      GeoRepositoryUpdateWorker.perform_async(@id, @clone_url)
     end
   end
 end
