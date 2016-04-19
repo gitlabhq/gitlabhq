@@ -20,7 +20,6 @@
 #
 
 require 'carrierwave/orm/activerecord'
-require 'file_size_validator'
 
 class Issue < ActiveRecord::Base
   include InternalId
