@@ -58,12 +58,12 @@ curl -X PUT "https://gitlab.example.com/ci/api/v1/builds/1234" -F "token=t0k3n" 
 
 ### Incremental build trace update
 
-Using this method you need to send trace content as a request body. You need also to provide the `Content-Range` header
-with a range of sent trace part. Note, that you need to send parts in a proper order, so the begining of the part
-must starts just after the end of the previous part. If you will mess the parts, then GitLab CI AIP will return `416
+Using this method you need to send trace content as a request body. You also need to provide the `Content-Range` header
+with a range of sent trace part. Note that you need to send parts in the proper order, so the begining of the part
+must start just after the end of the previous part. If you provide the wrong part, then GitLab CI API will return `416
 Range Not Satisfiable` response with a header `Range: 0-X`, where `X` is the current trace length.
 
-For example: if you receive `Range: 0-11` in the response, then your next part must contains `Content-Range: 11-...`
+For example, if you receive `Range: 0-11` in the response, then your next part must contain a `Content-Range: 11-...`
 header and a trace part covered by this range.
 
 For a valid update API will return `202` response with:
