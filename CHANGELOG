@@ -1,5 +1,8 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+v 8.5.11
+  - No changes
+
 v 8.5.10
   - Fix a 2FA authentication spoofing vulnerability.
 
