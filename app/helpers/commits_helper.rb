@@ -152,7 +152,7 @@ module CommitsHelper
 
     options = {
       class: "commit-#{options[:source]}-link has_tooltip",
-      data: { :'original-title' => sanitize(source_email) }
+      title: source_email
     }
 
     if user.nil?
