@@ -53,7 +53,7 @@ class @MilestoneSelect
             defaultLabel
         fieldName: $dropdown.data('field-name')
         text: (milestone) ->
-          milestone.title
+          _.escape(milestone.title)
         id: (milestone) ->
           if !useId
             milestone.name

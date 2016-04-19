@@ -126,7 +126,7 @@ class @LabelsSelect
           "<li>
             <a href='#' class='#{selected}'>
               #{color}
-              #{label.title}
+              #{_.escape(label.title)}
             </a>
           </li>"
         filterable: true
