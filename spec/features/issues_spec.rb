@@ -154,7 +154,7 @@ describe 'Issues', feature: true do
     end
 
     describe 'sorting by due date' do
-       before do
+      before do
         foo.update(due_date: 1.day.from_now)
         bar.update(due_date: 6.days.from_now)
       end
