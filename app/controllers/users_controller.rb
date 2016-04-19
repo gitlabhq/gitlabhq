@@ -1,6 +1,7 @@
 class UsersController < ApplicationController
   skip_before_action :authenticate_user!
-  before_action :set_user
+  before_action :user
+  before_action :authorize_read_user!, only: [:show]
 
   def show
     respond_to do |format|
@@ -75,22 +76,26 @@ class UsersController < ApplicationController
 
   private
 
-  def set_user
-    @user = User.find_by_username!(params[:username])
+  def authorize_read_user!
+    render_404 unless can?(current_user, :read_user, user)
+  end
+
+  def user
+    @user ||= User.find_by_username!(params[:username])
   end
 
   def contributed_projects
-    ContributedProjectsFinder.new(@user).execute(current_user)
+    ContributedProjectsFinder.new(user).execute(current_user)
   end
 
   def contributions_calendar
     @contributions_calendar ||= Gitlab::ContributionsCalendar.
-      new(contributed_projects, @user)
+      new(contributed_projects, user)
   end
 
   def load_events
     # Get user activity feed for projects common for both users
-    @events = @user.recent_events.
+    @events = user.recent_events.
       merge(projects_for_current_user).
       references(:project).
       with_associations.
@@ -99,16 +104,16 @@ class UsersController < ApplicationController
 
   def load_projects
     @projects =
-      PersonalProjectsFinder.new(@user).execute(current_user)
+      PersonalProjectsFinder.new(user).execute(current_user)
       .page(params[:page])
   end
 
   def load_contributed_projects
-    @contributed_projects = contributed_projects.joined(@user)
+    @contributed_projects = contributed_projects.joined(user)
   end
 
   def load_groups
-    @groups = JoinedGroupsFinder.new(@user).execute(current_user)
+    @groups = JoinedGroupsFinder.new(user).execute(current_user)
   end
 
   def projects_for_current_user

@@ -1,6 +1,6 @@
 %ul#notes-list.notes.main-notes-list.timeline
   = render "projects/notes/notes"
-%ul.notes.timeline
+%ul.notes.notes-form.timeline
   %li.timeline-entry
     - if can? current_user, :create_note, @project
       .timeline-icon.hidden-xs.hidden-sm

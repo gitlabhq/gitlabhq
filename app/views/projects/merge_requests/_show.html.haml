@@ -1,8 +1,7 @@
 - page_title           "#{@merge_request.title} (#{@merge_request.to_reference})", "Merge Requests"
 - page_description     @merge_request.description
 - page_card_attributes @merge_request.card_attributes
-
-= render "header_title"
+- header_title project_title(@project, "Merge Requests", namespace_project_merge_requests_path(@project.namespace, @project))
 
 - if params[:view] == 'parallel'
   - fluid_layout true
@@ -32,8 +31,8 @@
         %span Request to merge
         %span.label-branch= source_branch_with_namespace(@merge_request)
         %span into
-        = link_to namespace_project_commits_path(@project.namespace, @project, @merge_request.target_branch), class: "label-branch" do
-          = @merge_request.target_branch
+        %span.label-branch
+          = link_to @merge_request.target_branch, namespace_project_commits_path(@project.namespace, @project, @merge_request.target_branch)
         - if @merge_request.open? && @merge_request.diverged_from_target_branch?
           %span (#{pluralize(@merge_request.diverged_commits_count, 'commit')} behind)
 

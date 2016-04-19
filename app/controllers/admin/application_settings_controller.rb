@@ -75,6 +75,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :admin_notification_email,
       :user_oauth_applications,
       :shared_runners_enabled,
+      :shared_runners_text,
       :max_artifacts_size,
       :metrics_enabled,
       :metrics_host,
@@ -92,6 +93,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :akismet_api_key,
       :email_author_in_body,
       :repository_checks_enabled,
+      :metrics_packet_size,
       restricted_visibility_levels: [],
       import_sources: []
     )

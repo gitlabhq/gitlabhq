@@ -171,6 +171,11 @@ ul.notes {
 
       &.parallel {
         border-width: 1px;
+
+        .code,
+        code {
+          white-space: pre-wrap;
+        }
       }
 
       .notes {
@@ -198,6 +203,12 @@ ul.notes {
   color: $notes-light-color;
 }
 
+.discussion-headline-light {
+  a {
+    color: $gl-link-color;
+  }
+}
+
 /**
  * Actions for Discussions/Notes
  */
@@ -207,6 +218,17 @@ ul.notes {
   float: right;
   margin-left: 10px;
   color: $notes-action-color;
+}
+
+.discussion-actions {
+  @media (max-width: $screen-sm-max) {
+    float: none;
+    margin-left: 0;
+
+    .note-action-button {
+      margin-left: 0;
+    }
+  }
 }
 
 .note-action-button,
