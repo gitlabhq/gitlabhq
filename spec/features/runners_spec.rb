@@ -81,7 +81,8 @@ describe "Runners" do
   end
 
   describe "shared runners description" do
-    let(:shared_runners_text) { 'custom shared runners description' }
+    let(:shared_runners_text) { 'custom **shared** runners description' }
+    let(:shared_runners_html) { 'custom shared runners description' }
 
     before do
       stub_application_setting(shared_runners_text: shared_runners_text)
@@ -91,7 +92,7 @@ describe "Runners" do
     end
 
     it "sees shared runners description" do
-      expect(page.find(".shared-runners-description")).to have_content(shared_runners_text)
+      expect(page.find(".shared-runners-description")).to have_content(shared_runners_html)
     end
   end
 
