@@ -31,5 +31,5 @@
       by
       = commit_author_link(commit, avatar: true, size: 24)
       .committed_ago
-        #{time_ago_with_tooltip(commit.committed_date, skip_js: true)} &nbsp;
+        #{time_ago_with_tooltip(commit.committed_date)} &nbsp;
       = link_to_browse_code(project, commit)
