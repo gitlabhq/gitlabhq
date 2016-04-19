@@ -12,7 +12,7 @@ class Projects::CommitController < Projects::ApplicationController
   before_action :authorize_read_commit_status!, only: [:builds]
   before_action :commit
   before_action :define_show_vars, only: [:show, :builds]
-  before_action :authorize_edit_tree!, only: [:revert]
+  before_action :authorize_edit_tree!, only: [:revert, :cherry_pick]
 
   def show
     apply_diff_view_cookie!
@@ -60,27 +60,32 @@ class Projects::CommitController < Projects::ApplicationController
   end
 
   def revert
-    assign_revert_commit_vars
+    assign_change_commit_vars(@commit.revert_branch_name)
 
     return render_404 if @target_branch.blank?
 
-    create_commit(Commits::RevertService, success_notice: "The #{revert_type_title} has been successfully reverted.",
-                                          success_path: successful_revert_path, failure_path: failed_revert_path)
+    create_commit(Commits::RevertService, success_notice: "The #{@commit.change_type_title} has been successfully reverted.",
+                                          success_path: successful_change_path, failure_path: failed_change_path)
+  end
+  
+  def cherry_pick
+    assign_change_commit_vars(@commit.cherry_pick_branch_name)
+    
+    return render_404 if @target_branch.blank?
+
+    create_commit(Commits::CherryPickService, success_notice: "The #{@commit.change_type_title} has been successfully cherry-picked.",
+                                              success_path: successful_change_path, failure_path: failed_change_path)
   end
 
   private
 
-  def revert_type_title
-    @commit.merged_merge_request ? 'merge request' : 'commit'
-  end
-
-  def successful_revert_path
+  def successful_change_path
     return referenced_merge_request_url if @commit.merged_merge_request
 
     namespace_project_commits_url(@project.namespace, @project, @target_branch)
   end
 
-  def failed_revert_path
+  def failed_change_path
     return referenced_merge_request_url if @commit.merged_merge_request
 
     namespace_project_commit_url(@project.namespace, @project, params[:id])
@@ -111,14 +116,13 @@ class Projects::CommitController < Projects::ApplicationController
     @statuses = ci_commit.statuses if ci_commit
   end
 
-  def assign_revert_commit_vars
+  def assign_change_commit_vars(mr_source_branch)
     @commit = project.commit(params[:id])
     @target_branch = params[:target_branch]
-    @mr_source_branch = @commit.revert_branch_name
+    @mr_source_branch = mr_source_branch
     @mr_target_branch = @target_branch
     @commit_params = {
       commit: @commit,
-      revert_type_title: revert_type_title,
       create_merge_request: params[:create_merge_request].present? || different_project?
     }
   end

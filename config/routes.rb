@@ -549,6 +549,7 @@ Rails.application.routes.draw do
             post :cancel_builds
             post :retry_builds
             post :revert
+            post :cherry_pick
           end
         end
 

@@ -66,7 +66,7 @@ module TreeHelper
       ref
     else
       project = tree_edit_project(project)
-      project.repository.next_patch_branch
+      project.repository.next_branch('patch')
     end
   end
 
