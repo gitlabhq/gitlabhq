@@ -154,6 +154,9 @@ class GitLabDropdown
             @fullData = data
 
             @parseData @fullData
+
+            if @options.filterable
+              @filterInput.trigger 'keyup'
         }
 
     # Init filterable
