@@ -1,4 +1,4 @@
-class Profiles::PersonalAccessTokensController < ApplicationController
+class Profiles::PersonalAccessTokensController < Profiles::ApplicationController
   def index
     @user = current_user
 
