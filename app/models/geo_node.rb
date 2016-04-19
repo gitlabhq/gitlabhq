@@ -118,5 +118,7 @@ class GeoNode < ActiveRecord::Base
     self.build_system_hook if system_hook.nil?
     self.system_hook.token = SecureRandom.hex(20) unless self.system_hook.token.present?
     self.system_hook.url = geo_events_url if uri.present?
+    self.system_hook.push_events = true
+    self.system_hook.tag_push_events = true
   end
 end

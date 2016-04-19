@@ -5,30 +5,28 @@ describe API::API, api: true do
   let(:admin) { create(:admin) }
   let(:user) { create(:user) }
   let(:geo_node) { build(:geo_node) }
+  let(:geo_token_header) do
+    { 'X-Gitlab-Token' => geo_node.system_hook.token }
+  end
 
-  describe 'POST /geo/refresh_projects' do
-    before(:each) { allow_any_instance_of(::Geo::ScheduleRepoUpdateService).to receive(:execute) }
+  before(:each) do
+    allow(Gitlab::Geo).to receive(:current_node) { geo_node }
+  end
 
-    it 'starts refresh process if admin and correct params' do
-      post api('/geo/refresh_projects', admin), projects: ['1', '2', '3']
-      expect(response.status).to eq 201
+  describe 'POST /geo/receive_events authentication' do
+    it 'denies access if token is not present' do
+      post api('/geo/receive_events')
+      expect(response.status).to eq 401
     end
 
-    it 'denies access if not admin' do
-      post api('/geo/refresh_projects', user)
-      expect(response.status).to eq 403
+    it 'denies access if token is invalid' do
+      post api('/geo/receive_events'), nil, { 'X-Gitlab-Token' => 'nothing' }
+      expect(response.status).to eq 401
     end
   end
 
-  describe 'POST /geo/receive_events' do
-    before(:each) do
-      allow_any_instance_of(::Geo::ScheduleKeyChangeService).to receive(:execute)
-      allow(Gitlab::Geo).to receive(:current_node) { geo_node }
-    end
-
-    let(:geo_token_header) do
-      { 'X-Gitlab-Token' => geo_node.system_hook.token }
-    end
+  describe 'POST /geo/receive_events key events' do
+    before(:each) { allow_any_instance_of(::Geo::ScheduleKeyChangeService).to receive(:execute) }
 
     let(:key_create_payload) do
       {
@@ -61,15 +59,43 @@ describe API::API, api: true do
       post api('/geo/receive_events'), key_destroy_payload, geo_token_header
       expect(response.status).to eq 201
     end
+  end
 
-    it 'denies access if token is not present' do
-      post api('/geo/receive_events')
-      expect(response.status).to eq 401
+  describe 'POST /geo/receive_events push events' do
+    before(:each) { allow_any_instance_of(::Geo::ScheduleRepoUpdateService).to receive(:execute) }
+
+    let(:push_payload) do
+      {
+        'event_name' => 'push',
+        'project_id' => 1,
+        'project' => {
+          'git_ssh_url' => 'git@example.com:mike/diaspora.git'
+        }
+      }
     end
 
-    it 'denies access if token is invalid' do
-      post api('/geo/receive_events'), nil, { 'X-Gitlab-Token' => 'nothing' }
-      expect(response.status).to eq 401
+    it 'starts refresh process if admin and correct params' do
+      post api('/geo/receive_events'), push_payload, geo_token_header
+      expect(response.status).to eq 201
+    end
+  end
+
+  describe 'POST /geo/receive_events push_tag events' do
+    before(:each) { allow_any_instance_of(::Geo::ScheduleWikiRepoUpdateService).to receive(:execute) }
+
+    let(:tag_push_payload) do
+      {
+        'event_name' => 'tag_push',
+        'project_id' => 1,
+        'project' => {
+          'git_ssh_url' => 'git@example.com:mike/diaspora.git'
+        }
+      }
+    end
+
+    it 'starts refresh process if admin and correct params' do
+      post api('/geo/receive_events'), tag_push_payload, geo_token_header
+      expect(response.status).to eq 201
     end
   end
 end

@@ -2,12 +2,10 @@ module Geo
   class NotifyNodesService < BaseNotify
 
     def initialize
-      @proj_queue = Gitlab::Geo::UpdateQueue.new('updated_projects')
       @wiki_queue = Gitlab::Geo::UpdateQueue.new('updated_wikis')
     end
 
     def execute
-      process(@proj_queue, :notify_projects_url)
       process(@wiki_queue, :notify_wikis_url)
     end
 
