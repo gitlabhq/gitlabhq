@@ -10,7 +10,7 @@
     - merge_request = @build.merge_request
     - if merge_request
       via
-      = link_to "merge request ##{merge_request.iid}", merge_request_path(merge_request)
+      = link_to "merge request #{merge_request.to_reference}", merge_request_path(merge_request)
 
   #up-build-trace
   - builds = @build.commit.matrix_builds(@build)

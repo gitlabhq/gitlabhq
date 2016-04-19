@@ -38,7 +38,7 @@ module Emails
       {
         from: sender(@note.author_id),
         to: recipient(recipient_id),
-        subject: subject("#{@note.noteable.title} (##{@note.noteable.iid})")
+        subject: subject("#{@note.noteable.title} (#{@note.noteable.to_reference})")
       }
     end
 

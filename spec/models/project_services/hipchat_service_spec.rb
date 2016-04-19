@@ -152,7 +152,7 @@ describe HipchatService, models: true do
 
         obj_attr = merge_sample_data[:object_attributes]
         expect(message).to eq("#{user.name} opened " \
-            "<a href=\"#{obj_attr[:url]}\">merge request ##{obj_attr["iid"]}</a> in " \
+            "<a href=\"#{obj_attr[:url]}\">merge request !#{obj_attr["iid"]}</a> in " \
             "<a href=\"#{project.web_url}\">#{project_name}</a>: " \
             "<b>Awesome merge request</b>" \
             "<pre>please fix</pre>")
@@ -202,7 +202,7 @@ describe HipchatService, models: true do
         title = data[:merge_request]['title']
 
         expect(message).to eq("#{user.name} commented on " \
-            "<a href=\"#{obj_attr[:url]}\">merge request ##{merge_id}</a> in " \
+            "<a href=\"#{obj_attr[:url]}\">merge request !#{merge_id}</a> in " \
             "<a href=\"#{project.web_url}\">#{project_name}</a>: " \
             "<b>#{title}</b>" \
             "<pre>merge request note</pre>")

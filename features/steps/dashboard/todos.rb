@@ -31,7 +31,7 @@ class Spinach::Features::DashboardTodos < Spinach::FeatureSteps
     expect(page).to have_content 'Done 0'
 
     expect(page).to have_link project.name_with_namespace
-    should_see_todo(1, "John Doe assigned you merge request !#{merge_request.iid}", merge_request.title)
+    should_see_todo(1, "John Doe assigned you merge request #{merge_request.to_reference}", merge_request.title)
     should_see_todo(2, "John Doe mentioned you on issue ##{issue.iid}", "#{current_user.to_reference} Wdyt?")
     should_see_todo(3, "John Doe assigned you issue ##{issue.iid}", issue.title)
     should_see_todo(4, "Mary Jane mentioned you on issue ##{issue.iid}", issue.title)
@@ -45,7 +45,7 @@ class Spinach::Features::DashboardTodos < Spinach::FeatureSteps
     page.within('.nav-sidebar') { expect(page).to have_content 'Todos 3' }
     expect(page).to have_content 'To do 3'
     expect(page).to have_content 'Done 1'
-    should_not_see_todo "John Doe assigned you merge request !#{merge_request.iid}"
+    should_not_see_todo "John Doe assigned you merge request #{merge_request.to_reference}"
   end
 
   step 'I click on the "Done" tab' do
@@ -54,7 +54,7 @@ class Spinach::Features::DashboardTodos < Spinach::FeatureSteps
 
   step 'I should see all todos marked as done' do
     expect(page).to have_link project.name_with_namespace
-    should_see_todo(1, "John Doe assigned you merge request !#{merge_request.iid}", merge_request.title, false)
+    should_see_todo(1, "John Doe assigned you merge request #{merge_request.to_reference}", merge_request.title, false)
   end
 
   step 'I filter by "Enterprise"' do
@@ -82,11 +82,11 @@ class Spinach::Features::DashboardTodos < Spinach::FeatureSteps
   end
 
   step 'I should not see todos related to "Merge Requests" in the list' do
-    should_not_see_todo "John Doe assigned you merge request !#{merge_request.iid}"
+    should_not_see_todo "John Doe assigned you merge request #{merge_request.to_reference}"
   end
 
   step 'I should not see todos related to "Assignments" in the list' do
-    should_not_see_todo "John Doe assigned you merge request !#{merge_request.iid}"
+    should_not_see_todo "John Doe assigned you merge request #{merge_request.to_reference}"
     should_not_see_todo "John Doe assigned you issue ##{issue.iid}"
   end
 
