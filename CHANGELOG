@@ -83,6 +83,7 @@ v 8.7.0 (unreleased)
   - Diffs load at the correct point when linking from from number
   - Selected diff rows highlight
   - Fix emoji categories in the emoji picker
+  - API: Properly display annotated tags for GET /projects/:id/repository/tags (Robert Schilling)
   - Add encrypted credentials for imported projects and migrate old ones
   - Author and participants are displayed first on users autocompletion
   - Show number sign on external issue reference text (Florent Baldino)
