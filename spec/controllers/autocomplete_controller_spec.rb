@@ -13,12 +13,12 @@ describe AutocompleteController do
       project.team << [user2, :developer]
     end
 
-    let(:body) { JSON.parse(response.body) }
-
     describe 'GET #users with project ID' do
       before do
         get(:users, project_id: project.id)
       end
+
+      let(:body) { JSON.parse(response.body) }
 
       it { expect(body).to be_kind_of(Array) }
       it { expect(body.size).to eq 2 }
@@ -37,6 +37,8 @@ describe AutocompleteController do
       before do
         get(:users, project_id: project.id, push_code_to_protected_branches: 'true')
       end
+
+      let(:body) { JSON.parse(response.body) }
 
       it { expect(body).to be_kind_of(Array) }
       it { expect(body.size).to eq 1 }
@@ -152,6 +154,26 @@ describe AutocompleteController do
 
       it { expect(body).to be_kind_of(Array) }
       it { expect(body.size).to eq 0 }
+    end
+  end
+
+  context 'author of issuable included' do
+    before do
+      sign_in(user)
+    end
+
+    let(:body) { JSON.parse(response.body) }
+
+    it 'includes the author' do
+      get(:users, author_id: non_member.id)
+
+      expect(body.first["username"]).to eq non_member.username
+    end
+
+    it 'rejects non existent user ids' do
+      get(:users, author_id: 99999)
+
+      expect(body.collect { |u| u['id'] }).not_to include(99999)
     end
   end
 end

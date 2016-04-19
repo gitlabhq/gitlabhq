@@ -556,8 +556,8 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
     click_button "Submit merge request"
 
-    page.within '.detail-page-header' do
-      click_link "Edit"
+    page.within '.issuable-actions' do
+      first(:link, 'Edit', visible: true).click
     end
 
     page.within 'ul.approver-list' do

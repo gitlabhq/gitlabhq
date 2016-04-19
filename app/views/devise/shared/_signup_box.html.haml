@@ -6,18 +6,17 @@
     .login-heading
       %h3 Create an account
   .login-body
-    - user = params[:user].present? ? params[:user] : {}
     = form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f|
       .devise-errors
         = devise_error_messages!
       %div
-        = f.text_field :name, class: "form-control top", value: user[:name], placeholder: "Name", required: true
+        = f.text_field :name, class: "form-control top", placeholder: "Name", required: true
       %div
-        = f.text_field :username, class: "form-control middle", value: user[:username], placeholder: "Username", required: true
+        = f.text_field :username, class: "form-control middle", placeholder: "Username", required: true
       %div
-        = f.email_field :email, class: "form-control middle", value: user[:email], placeholder: "Email", required: true
+        = f.email_field :email, class: "form-control middle", placeholder: "Email", required: true
       .form-group.append-bottom-20#password-strength
-        = f.password_field :password, class: "form-control bottom", value: user[:password], id: "user_password_sign_up", placeholder: "Password", required: true
+        = f.password_field :password, class: "form-control bottom", id: "user_password_sign_up", placeholder: "Password", required: true
       %div
       - if current_application_settings.recaptcha_enabled
         = recaptcha_tags

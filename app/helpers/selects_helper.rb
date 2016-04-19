@@ -5,30 +5,26 @@ module SelectsHelper
     css_class << "skip_ldap " if opts[:skip_ldap]
     css_class << (opts[:class] || '')
     value = opts[:selected] || ''
-    placeholder = opts[:placeholder] || 'Search for a user'
-
-    null_user = opts[:null_user] || false
-    any_user = opts[:any_user] || false
-    email_user = opts[:email_user] || false
+    
     first_user = opts[:first_user] && current_user ? current_user.username : false
-    current_user = opts[:current_user] || false
-    project = opts[:project] || @project
-    push_code_to_protected_branches = opts[:push_code_to_protected_branches]
-
+    
     html = {
       class: css_class,
       data: {
-        placeholder: placeholder,
-        null_user: null_user,
-        any_user: any_user,
-        email_user: email_user,
+        placeholder: opts[:placeholder]   || 'Search for a user',
+        null_user: opts[:null_user]       || false,
+        any_user: opts[:any_user]         || false,
+        email_user: opts[:email_user]     || false,
         first_user: first_user,
-        current_user: current_user,
-        "push-code-to-protected-branches" => push_code_to_protected_branches
+        current_user: opts[:current_user] || false,
+        "push-code-to-protected-branches" => opts[:push_code_to_protected_branches],
+        author_id: opts[:author_id]       || ''
       }
     }
 
     unless opts[:scope] == :all
+      project = opts[:project] || @project
+
       if project
         html['data-project-id'] = project.id
       elsif @group

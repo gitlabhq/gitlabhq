@@ -345,11 +345,11 @@
             %ul
               %li
                 %a.dropdown-menu-user-link.is-active{href: "#"}
-                  = link_to_member_avatar(current_user, size: 30)
+                  = link_to_member_avatar(@user, size: 30)
                   %strong.dropdown-menu-user-full-name
-                    = current_user.name
+                    = @user.name
                   .dropdown-menu-user-username
-                    = current_user.to_reference
+                    = @user.to_reference
 
   .example
     %div
@@ -372,11 +372,11 @@
               %ul
                 %li
                   %a.dropdown-menu-user-link.is-active{href: "#"}
-                    = link_to_member_avatar(current_user, size: 30)
+                    = link_to_member_avatar(@user, size: 30)
                     %strong.dropdown-menu-user-full-name
-                      = current_user.name
+                      = @user.name
                     .dropdown-menu-user-username
-                      = current_user.to_reference
+                      = @user.to_reference
           .dropdown-page-two
             .dropdown-title
               %button.dropdown-title-button.dropdown-menu-back{aria: {label: "Go back"}}

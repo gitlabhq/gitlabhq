@@ -90,7 +90,8 @@ class Project < ActiveRecord::Base
   after_destroy :remove_pages
 
   after_update :update_forks_visibility_level
-  after_update :remove_mirror_repository_reference, if: :import_url_changed?
+  after_update :remove_mirror_repository_reference,
+               if: ->(project) { project.mirror? && project.import_url_updated? }
 
   ActsAsTaggableOn.strict_case_match = true
   acts_as_taggable_on :tags
@@ -459,6 +460,35 @@ class Project < ActiveRecord::Base
     ProjectCacheWorker.perform_async(self.id)
 
     self.import_data.destroy if self.import_data
+  end
+
+  def import_url=(value)
+    import_url = Gitlab::ImportUrl.new(value)
+    create_or_update_import_data(credentials: import_url.credentials)
+    super(import_url.sanitized_url)
+  end
+
+  def import_url
+    if import_data && super
+      import_url = Gitlab::ImportUrl.new(super, credentials: import_data.credentials)
+      import_url.full_url
+    else
+      super
+    end
+  end
+
+  def create_or_update_import_data(data: nil, credentials: nil)
+    project_import_data = import_data || build_import_data
+    if data
+      project_import_data.data ||= {}
+      project_import_data.data = project_import_data.data.merge(data)
+    end
+    if credentials
+      project_import_data.credentials ||= {}
+      project_import_data.credentials = project_import_data.credentials.merge(credentials)
+    end
+
+    project_import_data.save
   end
 
   def import?
@@ -997,7 +1027,9 @@ class Project < ActiveRecord::Base
 
   def change_head(branch)
     repository.before_change_head
-    gitlab_shell.update_repository_head(self.path_with_namespace, branch)
+    repository.rugged.references.create('HEAD',
+                                        "refs/heads/#{branch}",
+                                        force: true)
     reload_default_branch
   end
 
@@ -1216,6 +1248,11 @@ class Project < ActiveRecord::Base
 
   def ff_merge_must_be_possible?
     self.merge_requests_ff_only_enabled || self.merge_requests_rebase_enabled
+  end
+
+  def import_url_updated?
+    # check if import_url has been updated and it's not just the first assignment
+    import_url_changed? && changes['import_url'].first
   end
 
   private

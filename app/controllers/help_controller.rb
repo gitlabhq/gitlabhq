@@ -51,6 +51,7 @@ class HelpController < ApplicationController
   end
 
   def ui
+    @user = User.new(id: 0, name: 'John Doe', username: '@johndoe')
   end
 
   private
