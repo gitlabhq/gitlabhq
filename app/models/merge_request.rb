@@ -27,9 +27,6 @@
 #  merge_commit_sha          :string
 #
 
-require Rails.root.join("app/models/commit")
-require Rails.root.join("lib/static_model")
-
 class MergeRequest < ActiveRecord::Base
   include InternalId
   include Issuable
