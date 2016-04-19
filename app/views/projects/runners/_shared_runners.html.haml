@@ -4,7 +4,7 @@
   - if shared_runners_text.present?
     = markdown(shared_runners_text, pipeline: 'plain_markdown')
   - else
-    GitLab Runners do not offer secure isolation between projects that they do builds for. You are TRUSTING all GitLab users who can push code to project A, B or C to run shell scripts on the machine hosting runner X.
+    Shared runners execute code of different projects on the same Runner unless you configure GitLab Runner Autoscale with MaxBuilds 1 (which it is on GitLab.com).
   %hr
   - if @project.shared_runners_enabled?
     = link_to toggle_shared_runners_namespace_project_runners_path(@project.namespace, @project), class: 'btn btn-warning', method: :post do
