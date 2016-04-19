@@ -1,5 +1,99 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+v 8.7.0 (unreleased)
+  - Transactions for /internal/allowed now have an "action" tag set
+  - Method instrumentation now uses Module#prepend instead of aliasing methods
+  - Repository.clean_old_archives is now instrumented
+  - Add support for environment variables on a job level in CI configuration file
+  - SQL query counts are now tracked per transaction
+  - The Projects::HousekeepingService class has extra instrumentation
+  - All service classes (those residing in app/services) are now instrumented
+  - Developers can now add custom tags to transactions
+  - Loading of an issue's referenced merge requests and related branches is now done asynchronously
+  - Enable gzip for assets, makes the page size significantly smaller. !3544 / !3632 (Connor Shea)
+  - Project switcher uses new dropdown styling
+  - Load award emoji images separately unless opening the full picker. Saves several hundred KBs of data for most pages. (Connor Shea)
+  - Do not include award_emojis in issue and merge_request comment_count !3610 (Lucas Charles)
+  - Restrict user profiles when public visibility level is restricted.
+  - All images in discussions and wikis now link to their source files !3464 (Connor Shea).
+  - Return status code 303 after a branch DELETE operation to avoid project deletion (Stan Hu)
+  - Add setting for customizing the list of trusted proxies !3524
+  - Allow projects to be transfered to a lower visibility level group
+  - Fix `signed_in_ip` being set to 127.0.0.1 when using a reverse proxy !3524
+  - Improved Markdown rendering performance !3389
+  - Don't attempt to look up an avatar in repo if repo directory does not exist (Stan Hu)
+  - API: Ability to subscribe and unsubscribe from issues and merge requests (Robert Schilling)
+  - Expose project badges in project settings
+  - Make /profile/keys/new redirect to /profile/keys for back-compat. !3717
+  - Preserve time notes/comments have been updated at when moving issue
+  - Make HTTP(s) label consistent on clone bar (Stan Hu)
+  - Expose label description in API (Mariusz Jachimowicz)
+  - API: Ability to update a group (Robert Schilling)
+  - API: Ability to move issues (Robert Schilling)
+  - Fix Error 500 after renaming a project path (Stan Hu)
+  - Fix a bug whith trailing slash in teamcity_url (Charles May)
+  - Allow back dating on issues when created or updated through the API
+  - Allow back dating on issue notes when created through the API
+  - Fix avatar stretching by providing a cropping feature
+  - API: Expose `subscribed` for issues and merge requests (Robert Schilling)
+  - Allow SAML to handle external users based on user's information !3530
+  - Allow Omniauth providers to be marked as `external` !3657
+  - Add endpoints to archive or unarchive a project !3372
+  - Fix a bug whith trailing slash in bamboo_url
+  - Add links to CI setup documentation from project settings and builds pages
+  - Handle nil descriptions in Slack issue messages (Stan Hu)
+  - Add automated repository integrity checks
+  - API: Expose open_issues_count, closed_issues_count, open_merge_requests_count for labels (Robert Schilling)
+  - API: Ability to star and unstar a project (Robert Schilling)
+  - Add default scope to projects to exclude projects pending deletion
+  - Allow to close merge requests which source projects(forks) are deleted.
+  - Ensure empty recipients are rejected in BuildsEmailService
+  - Use rugged to change HEAD in Project#change_head (P.S.V.R)
+  - API: Ability to filter milestones by state `active` and `closed` (Robert Schilling)
+  - API: Fix milestone filtering by `iid` (Robert Schilling)
+  - API: Delete notes of issues, snippets, and merge requests (Robert Schilling)
+  - Implement 'Groups View' as an option for dashboard preferences !3379 (Elias W.)
+  - Better errors handling when creating milestones inside groups
+  - Fix high CPU usage when PostReceive receives refs/merge-requests/<id>
+  - Hide `Create a group` help block when creating a new project in a group
+  - Implement 'TODOs View' as an option for dashboard preferences !3379 (Elias W.)
+  - Allow issues and merge requests to be assigned to the author !2765
+  - Gracefully handle notes on deleted commits in merge requests (Stan Hu)
+  - Decouple membership and notifications
+  - Fix creation of merge requests for orphaned branches (Stan Hu)
+  - API: Ability to retrieve a single tag (Robert Schilling)
+  - While signing up, don't persist the user password across form redisplays
+  - Fall back to `In-Reply-To` and `References` headers when sub-addressing is not available (David Padilla)
+  - Remove "Congratulations!" tweet button on newly-created project. (Connor Shea)
+  - Fix admin/projects when using visibility levels on search (PotHix)
+  - Build status notifications
+  - API: Expose user location (Robert Schilling)
+  - API: Do not leak group existence via return code (Robert Schilling)
+  - ClosingIssueExtractor regex now also works with colons. e.g. "Fixes: #1234" !3591
+  - Update number of Todos in the sidebar when it's marked as "Done". !3600
+  - API: Expose 'updated_at' for issue, snippet, and merge request notes (Robert Schilling)
+  - API: User can leave a project through the API when not master or owner. !3613
+  - Fix repository cache invalidation issue when project is recreated with an empty repo (Stan Hu)
+  - Fix: Allow empty recipients list for builds emails service when pushed is added (Frank Groeneveld)
+  - Improved markdown forms
+  - Delete tags using Rugged for performance reasons (Robert Schilling)
+  - Diffs load at the correct point when linking from from number
+  - Selected diff rows highlight
+  - Fix emoji categories in the emoji picker
+  - Add encrypted credentials for imported projects and migrate old ones
+  - Author and participants are displayed first on users autocompletion
+  - Show number sign on external issue reference text (Florent Baldino)
+  - Updated print style for issues
+  - Use GitHub Issue/PR number as iid to keep references
+  - Import GitHub labels
+  - Import GitHub milestones
+  - Fix emoji catgories in the emoji picker
+  - Execute system web hooks on push to the project
+  - Allow enable/disable push events for system hooks
+
+v 8.6.7
+  - Fix vulnerability that made it possible to enumerate private projects belonging to group
+
 v 8.6.6
   - Expire the exists cache before deletion to ensure project dir actually exists (Stan Hu). !3413
   - Fix error on language detection when repository has no HEAD (e.g., master branch) (Jeroen Bobbeldijk). !3654
