@@ -4,6 +4,12 @@ Your GitLab instance can perform HTTP POST requests on the following events: `pr
 
 System hooks can be used, e.g. for logging or changing information in a LDAP server.
 
+> **Note:**
+>
+> We follow the same structure from Webhooks for Push and Tag events, but we never display commits.
+>
+> Same deprecations from Webhooks are valid here.
+
 ## Hooks request example
 
 **Request header**:
@@ -276,7 +282,22 @@ X-Gitlab-Event: System Hook
     "visibility_level":0,
     "path_with_namespace":"mike/diaspora",
     "default_branch":"master",
-  }
+    "homepage":"http://example.com/mike/diaspora",
+    "url":"git@example.com:mike/diaspora.git",
+    "ssh_url":"git@example.com:mike/diaspora.git",
+    "http_url":"http://example.com/mike/diaspora.git"
+  },
+  "repository":{
+    "name": "Diaspora",
+    "url": "git@example.com:mike/diaspora.git",
+    "description": "",
+    "homepage": "http://example.com/mike/diaspora",
+    "git_http_url":"http://example.com/mike/diaspora.git",
+    "git_ssh_url":"git@example.com:mike/diaspora.git",
+    "visibility_level":0
+  },
+  "commits": [],
+  "total_commits_count": 0
 }
 ```
 
@@ -314,6 +335,21 @@ X-Gitlab-Event: System Hook
     "visibility_level":0,
     "path_with_namespace":"jsmith/example",
     "default_branch":"master",
-  }
+    "homepage":"http://example.com/jsmith/example",
+    "url":"git@example.com:jsmith/example.git",
+    "ssh_url":"git@example.com:jsmith/example.git",
+    "http_url":"http://example.com/jsmith/example.git"
+  },
+  "repository":{
+    "name": "Example",
+    "url": "ssh://git@example.com/jsmith/example.git",
+    "description": "",
+    "homepage": "http://example.com/jsmith/example",
+    "git_http_url":"http://example.com/jsmith/example.git",
+    "git_ssh_url":"git@example.com:jsmith/example.git",
+    "visibility_level":0
+  },
+  "commits": [],
+  "total_commits_count": 0
 }
 ```

@@ -38,6 +38,6 @@ class GitTagPushService < BaseService
 
   def build_system_push_data
     Gitlab::PushDataBuilder.
-      build_system(project, current_user, params[:oldrev], params[:newrev], params[:ref])
+      build(project, current_user, params[:oldrev], params[:newrev], params[:ref], [], '')
   end
 end

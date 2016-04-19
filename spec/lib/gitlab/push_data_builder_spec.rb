@@ -34,6 +34,12 @@ describe Gitlab::PushDataBuilder, lib: true do
     it { expect(data[:checkout_sha]).to eq('5937ac0a7beb003549fc5fd26fc247adbce4a52e') }
     it { expect(data[:after]).to eq('8a2a6eb295bb170b34c24c76c49ed0e9b2eaf34b') }
     it { expect(data[:ref]).to eq('refs/tags/v1.1.0') }
+    it { expect(data[:user_id]).to eq(user.id) }
+    it { expect(data[:user_name]).to eq(user.name) }
+    it { expect(data[:user_email]).to eq(user.email) }
+    it { expect(data[:user_avatar]).to eq(user.avatar_url) }
+    it { expect(data[:project_id]).to eq(project.id) }
+    it { expect(data[:project]).to be_a(Hash) }
     it { expect(data[:commits]).to be_empty }
     it { expect(data[:total_commits_count]).to be_zero }
 
@@ -44,27 +50,5 @@ describe Gitlab::PushDataBuilder, lib: true do
       expect { described_class.build(spy, spy, spy, spy, spy, nil) }.
         not_to raise_error
     end
-  end
-
-  describe '.build_system' do
-    let(:data) do
-      described_class.build_system(project, user, Gitlab::Git::BLANK_SHA,
-                                   '8a2a6eb295bb170b34c24c76c49ed0e9b2eaf34b',
-                                   'refs/tags/v1.1.0')
-    end
-
-    it { expect(data).to be_a(Hash) }
-    it { expect(data[:before]).to eq(Gitlab::Git::BLANK_SHA) }
-    it { expect(data[:checkout_sha]).to eq('5937ac0a7beb003549fc5fd26fc247adbce4a52e') }
-    it { expect(data[:after]).to eq('8a2a6eb295bb170b34c24c76c49ed0e9b2eaf34b') }
-    it { expect(data[:ref]).to eq('refs/tags/v1.1.0') }
-    it { expect(data[:user_id]).to eq(user.id) }
-    it { expect(data[:user_name]).to eq(user.name) }
-    it { expect(data[:user_email]).to eq(user.email) }
-    it { expect(data[:user_avatar]).to eq(user.avatar_url) }
-    it { expect(data[:project_id]).to eq(project.id) }
-    it { expect(data[:project]).to be_a(Hash) }
-
-    include_examples 'project hook data'
   end
 end

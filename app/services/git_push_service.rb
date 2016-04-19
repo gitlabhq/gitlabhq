@@ -141,7 +141,7 @@ class GitPushService < BaseService
 
   def build_push_data_system_hook
     @push_data_system ||= Gitlab::PushDataBuilder.
-      build_system(@project, current_user, params[:oldrev], params[:newrev], params[:ref])
+      build(@project, current_user, params[:oldrev], params[:newrev], params[:ref], [])
   end
 
   def push_to_existing_branch?

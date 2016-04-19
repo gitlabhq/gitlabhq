@@ -41,6 +41,7 @@ module Gitlab
         # Hash to be passed as post_receive_data
         data = {
           object_kind: type,
+          event_name: type,
           before: oldrev,
           after: newrev,
           ref: ref,
@@ -57,26 +58,6 @@ module Gitlab
           # DEPRECATED
           repository: project.hook_attrs.slice(:name, :url, :description, :homepage,
                                                :git_http_url, :git_ssh_url, :visibility_level)
-        }
-
-        data
-      end
-
-      def build_system(project, user, oldrev, newrev, ref)
-        type = Gitlab::Git.tag_ref?(ref) ? 'tag_push' : 'push'
-
-        data = {
-          event_name: type,
-          before: oldrev,
-          after: newrev,
-          ref: ref,
-          checkout_sha: checkout_sha(project.repository, newrev, ref),
-          user_id: user.id,
-          user_name: user.name,
-          user_email: user.email,
-          user_avatar: user.avatar_url,
-          project_id: project.id,
-          project: project.hook_attrs(backward: false)
         }
 
         data
