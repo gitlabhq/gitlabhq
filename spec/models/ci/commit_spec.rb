@@ -258,6 +258,24 @@ describe Ci::Commit, models: true do
           expect(commit.status).to eq('failed')
         end
       end
+
+      context 'when build is canceled in the second stage' do
+        it 'does not schedule builds after build has been canceled' do
+          expect(create_builds).to be_truthy
+          expect(commit.builds.pluck(:name)).to contain_exactly('build')
+          expect(commit.builds.pluck(:status)).to contain_exactly('pending')
+          commit.builds.running_or_pending.each(&:success)
+
+          expect(commit.builds.running_or_pending).to_not be_empty
+
+          expect(commit.builds.pluck(:name)).to contain_exactly('build', 'test')
+          expect(commit.builds.pluck(:status)).to contain_exactly('success', 'pending')
+          commit.builds.running_or_pending.each(&:cancel)
+
+          expect(commit.builds.running_or_pending).to be_empty
+          expect(commit.reload.status).to eq('canceled')
+        end
+      end
     end
   end
 
