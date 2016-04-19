@@ -120,6 +120,7 @@ module API
             actions: @actions
           ],
           iss: Gitlab.config.registry.issuer,
+          aud: "docker",
           exp: Time.now.to_i + 3600
         }
       end
