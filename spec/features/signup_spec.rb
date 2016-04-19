@@ -7,10 +7,10 @@ feature 'Signup', feature: true do
 
       visit root_path
 
-      fill_in 'user_name',                with: user.name
-      fill_in 'user_username',            with: user.username
-      fill_in 'user_email',               with: user.email
-      fill_in 'user_password_sign_up',    with: user.password
+      fill_in 'new_user_name',     with: user.name
+      fill_in 'new_user_username', with: user.username
+      fill_in 'new_user_email',    with: user.email
+      fill_in 'new_user_password', with: user.password
       click_button "Sign up"
 
       expect(current_path).to eq user_session_path
@@ -25,10 +25,10 @@ feature 'Signup', feature: true do
 
       visit root_path
 
-      fill_in 'user_name',                with: user.name
-      fill_in 'user_username',            with: user.username
-      fill_in 'user_email',               with: existing_user.email
-      fill_in 'user_password_sign_up',    with: user.password
+      fill_in 'new_user_name',     with: user.name
+      fill_in 'new_user_username', with: user.username
+      fill_in 'new_user_email',    with: existing_user.email
+      fill_in 'new_user_password', with: user.password
       click_button "Sign up"
 
       expect(current_path).to eq user_registration_path
@@ -42,10 +42,10 @@ feature 'Signup', feature: true do
 
       visit root_path
 
-      fill_in 'user_name',                with: user.name
-      fill_in 'user_username',            with: user.username
-      fill_in 'user_email',               with: existing_user.email
-      fill_in 'user_password_sign_up',    with: user.password
+      fill_in 'new_user_name',     with: user.name
+      fill_in 'new_user_username', with: user.username
+      fill_in 'new_user_email',    with: existing_user.email
+      fill_in 'new_user_password', with: user.password
       click_button "Sign up"
 
       expect(current_path).to eq user_registration_path
