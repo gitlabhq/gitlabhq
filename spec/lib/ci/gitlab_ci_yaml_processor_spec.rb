@@ -293,6 +293,46 @@ module Ci
       
       subject { config_processor.builds_for_stage_and_ref("test", "master").first }
       
+      describe "before_script" do
+        context "in global context" do
+          let(:config) do
+            {
+              before_script: ["global script"],
+              test: { script: ["script"] }
+            }
+          end
+          
+          it "return commands with scripts concencaced" do
+            expect(subject[:commands]).to eq("global script\nscript")
+          end
+        end
+ 
+        context "overwritten in local context" do
+          let(:config) do
+            {
+              before_script: ["global script"],
+              test: { before_script: ["local script"], script: ["script"] }
+            }
+          end
+
+          it "return commands with scripts concencaced" do
+            expect(subject[:commands]).to eq("local script\nscript")
+          end
+        end
+      end
+
+      describe "script" do
+        let(:config) do
+          {
+            test: { script: ["script"] }
+          }
+        end
+
+        it "return commands with scripts concencaced" do
+          expect(subject[:commands]).to eq("script")
+        end
+      end
+
       describe "after_script" do
         context "in global context" do
           let(:config) do
@@ -304,6 +344,19 @@ module Ci
 
           it "return after_script in options" do
             expect(subject[:options][:after_script]).to eq(["after_script"])
+          end
+        end
+
+        context "overwritten in local context" do
+          let(:config) do
+            {
+              after_script: ["local after_script"],
+              test: { after_script: ["local after_script"], script: ["script"] }
+            }
+          end
+
+          it "return after_script in options" do
+            expect(subject[:options][:after_script]).to eq(["local after_script"])
           end
         end
       end
@@ -614,7 +667,7 @@ module Ci
           stage_idx: 1,
           name: :normal_job,
           only: nil,
-          commands: "\ntest",
+          commands: "test",
           tag_list: [],
           options: {},
           when: "on_success",
@@ -641,7 +694,7 @@ EOT
           stage_idx: 1,
           name: :job1,
           only: nil,
-          commands: "\nexecute-script-for-job",
+          commands: "execute-script-for-job",
           tag_list: [],
           options: {},
           when: "on_success",
@@ -653,7 +706,7 @@ EOT
           stage_idx: 1,
           name: :job2,
           only: nil,
-          commands: "\nexecute-script-for-job",
+          commands: "execute-script-for-job",
           tag_list: [],
           options: {},
           when: "on_success",
@@ -685,11 +738,25 @@ EOT
         end.to raise_error(GitlabCiYamlProcessor::ValidationError, "before_script should be an array of strings")
       end
 
+      it "returns errors if job before_script parameter is not an array of strings" do
+        config = YAML.dump({ rspec: { script: "test", before_script: [10, "test"] } })
+        expect do
+          GitlabCiYamlProcessor.new(config, path)
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "rspec job: before_script should be an array of strings")
+      end
+
       it "returns errors if after_script parameter is invalid" do
         config = YAML.dump({ after_script: "bundle update", rspec: { script: "test" } })
         expect do
           GitlabCiYamlProcessor.new(config, path)
         end.to raise_error(GitlabCiYamlProcessor::ValidationError, "after_script should be an array of strings")
+      end
+
+      it "returns errors if job after_script parameter is not an array of strings" do
+        config = YAML.dump({ rspec: { script: "test", after_script: [10, "test"] } })
+        expect do
+          GitlabCiYamlProcessor.new(config, path)
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "rspec job: after_script should be an array of strings")
       end
 
       it "returns errors if image parameter is invalid" do
