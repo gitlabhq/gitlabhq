@@ -93,7 +93,9 @@ class @UsersSelect
 
       $dropdown.glDropdown(
         data: (term, callback) =>
-          @users term, (users) =>
+          isAuthorFilter = $('.js-author-search')
+
+          @users term, term is '' and isAuthorFilter, (users) =>
             if term.length is 0
               showDivider = 0
 
@@ -138,7 +140,7 @@ class @UsersSelect
 
         toggleLabel: (selected) ->
           if selected && 'id' of selected
-            selected.name
+            if selected.text then selected.text else selected.name
           else
             defaultLabel
 
@@ -219,7 +221,7 @@ class @UsersSelect
         multiple: $(select).hasClass('multiselect')
         minimumInputLength: 0
         query: (query) =>
-          @users query.term, (users) =>
+          @users query.term, false, (users) =>
             data = { results: users }
 
             if query.term.length == 0
@@ -302,7 +304,7 @@ class @UsersSelect
 
   # Return users list. Filtered by query
   # Only active users retrieved
-  users: (query, callback) =>
+  users: (query, fromProject, callback) =>
     url = @buildUrl(@usersPath)
 
     $.ajax(
@@ -311,7 +313,7 @@ class @UsersSelect
         search: query
         per_page: 20
         active: true
-        project_id: @projectId
+        project_id: @projectId if fromProject
         group_id: @groupId
         current_user: @showCurrentUser
         author_id: @authorId

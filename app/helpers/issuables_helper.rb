@@ -50,14 +50,10 @@ module IssuablesHelper
   end
 
   def user_dropdown_label(user_id, default_label)
+    return default_label if user_id.nil?
     return "Unassigned" if user_id == "0"
 
-    if @project
-      member = @project.team.find_member(user_id)
-      user = member.user if member
-    else
-      user = User.find_by(id: user_id)
-    end
+    user = User.find_by(id: user_id)
 
     if user
       user.name
