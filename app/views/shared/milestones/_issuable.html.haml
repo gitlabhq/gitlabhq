@@ -23,5 +23,5 @@
 
     - if assignee
       = link_to polymorphic_path(base_url_args, { milestone_title: @milestone.title, assignee_id: issuable.assignee_id, state: 'all' }),
-                class: 'has_tooltip', data: { 'original-title' => "Assigned to #{sanitize(assignee.name)}", container: 'body' } do
+                class: 'has_tooltip', title: "Assigned to #{assignee.name}", data: { container: 'body' } do
         - image_tag(avatar_icon(issuable.assignee, 16), class: "avatar s16", alt: '')
