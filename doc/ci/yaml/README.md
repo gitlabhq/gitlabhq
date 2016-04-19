@@ -15,6 +15,7 @@ If you want a quick introduction to GitLab CI, follow our
 - [.gitlab-ci.yml](#gitlab-ci-yml)
     - [image and services](#image-and-services)
     - [before_script](#before_script)
+    - [after_script](#after_script)
     - [stages](#stages)
     - [types](#types)
     - [variables](#variables)
@@ -30,6 +31,7 @@ If you want a quick introduction to GitLab CI, follow our
     - [artifacts](#artifacts)
         - [artifacts:name](#artifacts-name)
     - [dependencies](#dependencies)
+    - [before_script and after_script](#before_script-and-after_script)
 - [Hidden jobs](#hidden-jobs)
 - [Special YAML features](#special-yaml-features)
     - [Anchors](#anchors)
@@ -81,6 +83,9 @@ services:
 before_script:
   - bundle install
 
+after_script:
+  - rm secrets
+
 stages:
   - build
   - test
@@ -105,6 +110,7 @@ There are a few reserved `keywords` that **cannot** be used as job names:
 | stages        | no | Define build stages |
 | types         | no | Alias for `stages` |
 | before_script | no | Define commands that run before each job's script |
+| after_script  | no | Define commands that run after each job's script |
 | variables     | no | Define build variables |
 | cache         | no | Define list of files that should be cached between subsequent runs |
 
@@ -118,6 +124,14 @@ used for time of the build. The configuration of this feature is covered in
 
 `before_script` is used to define the command that should be run before all
 builds, including deploy builds. This can be an array or a multi-line string.
+
+### after_script
+
+>**Note:**
+Introduced in GitLab 8.7 and GitLab Runner v1.2.
+
+`after_script` is used to define the command that will be run after for all
+builds. This has to be an array or a multi-line string.
 
 ### stages
 
@@ -336,6 +350,8 @@ job_name:
 | dependencies  | no | Define other builds that a build depends on so that you can pass artifacts between them|
 | artifacts     | no | Define list build artifacts |
 | cache         | no | Define list of files that should be cached between subsequent runs |
+| before_script | no | Override a set of commands that are executed before build |
+| after_script  | no | Override a set of commands that are executed after build |
 
 ### script
 
@@ -690,6 +706,23 @@ test:linux:
 deploy:
   stage: deploy
   script: make deploy
+```
+
+### before_script and after_script
+
+It's possible to overwrite globally defined `before_script` and `after_script`:
+
+```yaml
+before_script
+- global before script
+
+job:
+  before_script:
+  - execute this instead of global before script
+  script:
+  - my command
+  after_script:
+  - execute this after my script
 ```
 
 ## Hidden jobs

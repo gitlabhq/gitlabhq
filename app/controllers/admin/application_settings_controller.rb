@@ -76,6 +76,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :admin_notification_email,
       :user_oauth_applications,
       :shared_runners_enabled,
+      :shared_runners_text,
       :max_artifacts_size,
       :max_pages_size,
       :metrics_enabled,

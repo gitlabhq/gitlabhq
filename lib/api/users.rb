@@ -11,6 +11,10 @@ module API
       #  GET /users?search=Admin
       #  GET /users?username=root
       get do
+        unless can?(current_user, :read_users_list, nil)
+          render_api_error!("Not authorized.", 403)
+        end
+
         if params[:username].present?
           @users = User.where(username: params[:username])
         else
@@ -38,10 +42,12 @@ module API
       get ":id" do
         @user = User.find(params[:id])
 
-        if current_user.is_admin?
+        if current_user && current_user.is_admin?
           present @user, with: Entities::UserFull
-        else
+        elsif can?(current_user, :read_user, @user)
           present @user, with: Entities::User
+        else
+          render_api_error!("User not found.", 404)
         end
       end
 

@@ -44,6 +44,7 @@ X-Gitlab-Event: Push Hook
   "before": "95790bf891e76fee5e1747ab589903a6a1f80f22",
   "after": "da1560886d4f094c3e6c9ef40349f7d38b5d27d7",
   "ref": "refs/heads/master",
+  "checkout_sha": "da1560886d4f094c3e6c9ef40349f7d38b5d27d7",
   "user_id": 4,
   "user_name": "John Smith",
   "user_email": "john@example.com",
@@ -121,9 +122,10 @@ X-Gitlab-Event: Tag Push Hook
 ```json
 {
   "object_kind": "tag_push",
-  "ref": "refs/tags/v1.0.0",
   "before": "0000000000000000000000000000000000000000",
   "after": "82b3d5ae55f7080f1e6022629cdb57bfae7cccc7",
+  "ref": "refs/tags/v1.0.0",
+  "checkout_sha": "82b3d5ae55f7080f1e6022629cdb57bfae7cccc7",
   "user_id": 1,
   "user_name": "John Smith",
   "user_avatar": "https://s.gravatar.com/avatar/d4c74594d841139328695756648b6bd6?s=8://s.gravatar.com/avatar/d4c74594d841139328695756648b6bd6?s=80",

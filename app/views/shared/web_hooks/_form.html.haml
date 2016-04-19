@@ -77,18 +77,16 @@
   .panel.panel-default
     .panel-heading
       Webhooks (#{hooks.count})
-    %ul.well-list
-      - hook_types = %w(push_events tag_push_events note_events issues_events merge_requests_events build_events)
-
+    %ul.content-list
       - hooks.each do |hook|
         %li
-          .pull-right
+          .controls
             = link_to 'Test Hook', polymorphic_path(url_components + [hook], action: :test), class: "btn btn-sm btn-grouped"
             = link_to 'Remove', polymorphic_path(url_components + [hook]), data: { confirm: 'Are you sure?'}, method: :delete, class: "btn btn-remove btn-sm btn-grouped"
-          .clearfix
-            %span.monospace= hook.url
           %p
-            - hook_types.each do |hook_type|
+          .monospace= hook.url
+          %div
+            - %w(push_events tag_push_events issues_events note_events merge_requests_events build_events).each do |hook_type|
               - if hook.send(hook_type)
                 %span.label.label-gray= hook_type.titleize
-            SSL Verification: #{hook.enable_ssl_verification ? "enabled" : "disabled"}
+            %span.label.label-gray SSL Verification: #{hook.enable_ssl_verification ? "enabled" : "disabled"}

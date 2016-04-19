@@ -15,10 +15,10 @@ module RepositoryCheck
     private
   
     def check(project)
+      repositories = [project.repository]
+      repositories << project.wiki.repository if project.wiki_enabled?
       # Use 'map do', not 'all? do', to prevent short-circuiting
-      [project.repository, project.wiki.repository].map do |repository|
-        git_fsck(repository.path_to_repo)
-      end.all?
+      repositories.map { |repository| git_fsck(repository.path_to_repo) }.all?
     end
   
     def git_fsck(path)

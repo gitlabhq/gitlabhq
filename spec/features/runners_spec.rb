@@ -80,6 +80,22 @@ describe "Runners" do
     end
   end
 
+  describe "shared runners description" do
+    let(:shared_runners_text) { 'custom **shared** runners description' }
+    let(:shared_runners_html) { 'custom shared runners description' }
+
+    before do
+      stub_application_setting(shared_runners_text: shared_runners_text)
+      project = FactoryGirl.create :empty_project, shared_runners_enabled: false
+      project.team << [user, :master]
+      visit runners_path(project)
+    end
+
+    it "sees shared runners description" do
+      expect(page.find(".shared-runners-description")).to have_content(shared_runners_html)
+    end
+  end
+
   describe "show page" do
     before do
       @project = FactoryGirl.create :empty_project

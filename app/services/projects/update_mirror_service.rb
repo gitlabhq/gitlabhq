@@ -75,7 +75,16 @@ module Projects
 
         next if old_tag_target == tag.target
 
-        GitTagPushService.new.execute(project, current_user, old_tag_target, tag.target, "#{Gitlab::Git::TAG_REF_PREFIX}#{tag.name}", mirror_update: true)
+        GitTagPushService.new(
+          project,
+          current_user,
+          {
+            oldrev: old_tag_target,
+            newrev: tag.target,
+            ref: "#{Gitlab::Git::TAG_REF_PREFIX}#{tag.name}",
+            mirror_update: true
+          }
+        ).execute
       end
 
       fetch_result
