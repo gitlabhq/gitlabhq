@@ -3,6 +3,7 @@
     Issues.initTemplates()
     Issues.initSearch()
     Issues.initChecks()
+    Issues.toggleLabelFilters()
 
     $("body").on "ajax:success", ".close_issue, .reopen_issue", ->
       t = $(this)
@@ -20,10 +21,19 @@
     Issue.labelRow = _.template(
       '<% _.each(labels, function(label){ %>
         <span class="label-row">
-          <a href="#"><span class="label color-label" style="background-color: <%= label.color %>; color: #FFFFFF" title="<%= label.description %>" data-container="body"><%= label.title %></span></a>
+          <a href="#"><span class="label color-label has-tooltip" style="background-color: <%= label.color %>; color: #FFFFFF" title="<%= label.description %>" data-container="body"><%= label.title %></span></a>
         </span>
       <% }); %>'
     )
+
+  toggleLabelFilters: ()->
+    $filteredLabels = $('.filtered-labels')
+    if $filteredLabels.find('.label-row').length > 0
+      #$filteredLabels.show()
+      $filteredLabels.slideDown().css({'overflow':'visible'})
+    else
+      #$filteredLabels.hide()
+      $filteredLabels.slideUp().css({'overflow':'visible'})
 
   reload: ->
     Issues.initChecks()
@@ -43,13 +53,15 @@
     paramKeys = ['author_id', 'milestone_title', 'assignee_id', 'issue_search']
 
     for paramKey in paramKeys
-      newParams[paramKey] = gl.utils.getUrlParameter(paramKey) or ''
+      newParams[paramKey] = gl.utils.getParameterValues(paramKey)[0] or ''
 
     if stateFilters.length
       stateFilters.find('a').each ->
         initialUrl = gl.utils.removeParamQueryString($(this).attr('href'), 'label_name[]')
-        if gl.utils.getParamQueryString('label_name[]')
-          newUrl = "#{gl.utils.mergeUrlParams(newParams, initialUrl)}&#{gl.utils.getParamQueryString('label_name[]')}"
+        labelNameValues = gl.utils.getParameterValues('label_name[]')
+        if labelNameValues
+          labelNameQueryString = ("label_name[]=#{value}" for value in labelNameValues).join('&')
+          newUrl = "#{gl.utils.mergeUrlParams(newParams, initialUrl)}&#{labelNameQueryString}"
         else
           newUrl = gl.utils.mergeUrlParams(newParams, initialUrl)
         $(this).attr 'href', newUrl
@@ -84,29 +96,24 @@
         Issues.reload()
         Issues.updateStateFilters()
         $filteredLabels = $('.filtered-labels')
-        $filteredLabelsSpans = $filteredLabels.find('span')
+        $filteredLabelsSpans = $filteredLabels.find('.label-row')
         gl.animate.animateEach(
-          $filteredLabelsSpans,
-          'fadeOutDown', 20, {
-            cssStart: {
+          $filteredLabelsSpans, 'fadeOutDown', 20,
+            cssStart:
               opacity: 1
-            },
-            cssEnd: {
+            cssEnd:
               opacity: 0
-            }
-        }).then( ->
+        ).then( ->
           if typeof Issue.labelRow is 'function'
             $filteredLabels.html(Issue.labelRow(data))
-          $spans = $filteredLabels.find('span')
-          $spans.css('opacity',0)
-          return gl.animate.animateEach($spans, 'fadeInUp', 20, {
-            cssStart: {
+          Issues.toggleLabelFilters()
+          $spans = $filteredLabels.find('.label-row')
+          $spans.css('opacity', 0)
+          return gl.animate.animateEach $spans, 'fadeInUp', 20,
+            cssStart:
               opacity: 0
-            },
-            cssEnd: {
+            cssEnd:
               opacity: 1
-            }
-          })
         )
 
       dataType: "json"
