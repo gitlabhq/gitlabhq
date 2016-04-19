@@ -189,7 +189,9 @@ v 8.6.1
   - Fixes issue with assign milestone not loading milestone list. !3346
   - Fix an issue causing the Dashboard/Milestones page to be blank. !3348
 
-v 8.6.0 (unreleased)
+v 8.6.0
+  - Add ability to move issue to another project
+  - Prevent tokens in the import URL to be showed by the UI
   - Fix bug where wrong commit ID was being used in a merge request diff to show old image (Stan Hu)
   - Add confidential issues
   - Bump gitlab_git to 9.0.3 (Stan Hu)

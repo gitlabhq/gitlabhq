@@ -46,6 +46,9 @@ class Issue < ActiveRecord::Base
   scope :open_for, ->(user) { opened.assigned_to(user) }
   scope :in_projects, ->(project_ids) { where(project_id: project_ids) }
 
+  scope :order_due_date_asc, -> { reorder('issues.due_date IS NULL, issues.due_date ASC') }
+  scope :order_due_date_desc, -> { reorder('issues.due_date IS NULL, issues.due_date DESC') }
+
   state_machine :state, initial: :opened do
     event :close do
       transition [:reopened, :opened] => :closed
@@ -87,6 +90,15 @@ class Issue < ActiveRecord::Base
 
   def self.link_reference_pattern
     @link_reference_pattern ||= super("issues", /(?<issue>\d+)/)
+  end
+
+  def self.sort(method)
+    case method.to_s
+    when 'due_date_asc' then order_due_date_asc
+    when 'due_date_desc'  then order_due_date_desc
+    else
+      super
+    end
   end
 
   def to_reference(from_project = nil)

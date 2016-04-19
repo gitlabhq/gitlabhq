@@ -114,7 +114,7 @@ class IssuableFinder
   end
 
   def due_date?
-    params[:due_date].present?
+    params[:due_date].present? && klass.column_names.include?('due_date')
   end
 
   def filter_by_no_due_date?
@@ -305,8 +305,6 @@ class IssuableFinder
   end
 
   def by_due_date(items)
-    return items unless klass.column_names.include?('due_date')
-
     if due_date?
       if filter_by_no_due_date?
         items = items.without_due_date
