@@ -33,8 +33,8 @@ module Sortable
       when 'created_desc' then order_created_desc
       when 'id_desc' then order_id_desc
       when 'id_asc' then order_id_asc
-      when 'due_date_asc' then order_due_date_asc
-      when 'due_date_desc' then order_due_date_desc
+      when 'due_date_asc', 'due_date_desc'
+        column_names.include?('due_date') ? send("order_#{method}") : all
       else
         all
       end

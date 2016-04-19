@@ -366,19 +366,6 @@ ActiveRecord::Schema.define(version: 20160419120017) do
   add_index "emails", ["email"], name: "index_emails_on_email", unique: true, using: :btree
   add_index "emails", ["user_id"], name: "index_emails_on_user_id", using: :btree
 
-  create_table "emoji_awards", force: :cascade do |t|
-    t.string   "name"
-    t.integer  "user_id"
-    t.integer  "awardable_id"
-    t.string   "awardable_type"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "emoji_awards", ["awardable_id"], name: "index_emoji_awards_on_awardable_id", using: :btree
-  add_index "emoji_awards", ["awardable_type"], name: "index_emoji_awards_on_awardable_type", using: :btree
-  add_index "emoji_awards", ["user_id"], name: "index_emoji_awards_on_user_id", using: :btree
-
   create_table "events", force: :cascade do |t|
     t.string   "target_type"
     t.integer  "target_id"

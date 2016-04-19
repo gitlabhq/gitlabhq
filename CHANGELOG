@@ -19,6 +19,7 @@ v 8.7.0 (unreleased)
   - Load award emoji images separately unless opening the full picker. Saves several hundred KBs of data for most pages. (Connor Shea)
   - Do not include award_emojis in issue and merge_request comment_count !3610 (Lucas Charles)
   - Restrict user profiles when public visibility level is restricted.
+  - Add ability set due date to issues, sort and filter issues by due date (Mehmet Beydogan)
   - All images in discussions and wikis now link to their source files !3464 (Connor Shea).
   - Return status code 303 after a branch DELETE operation to avoid project deletion (Stan Hu)
   - Add setting for customizing the list of trusted proxies !3524
@@ -188,12 +189,6 @@ v 8.6.1
   - Fixes issue with assign milestone not loading milestone list. !3346
   - Fix an issue causing the Dashboard/Milestones page to be blank. !3348
 
-v 8.6.0
-  - Add ability to move issue to another project
-  - Prevent tokens in the import URL to be showed by the UI
-v 8.7.0(unreleased)
-  - Add ability set due date to issues, sort and filter issues by due date(Mehmet Beydogan)
-
 v 8.6.0 (unreleased)
   - Fix bug where wrong commit ID was being used in a merge request diff to show old image (Stan Hu)
   - Add confidential issues
@@ -271,7 +266,6 @@ v 8.5.7
 
 v 8.5.6
   - Obtain a lease before querying LDAP
-  - Add ability set due date to issues, sort and filter issues by due date
 
 v 8.5.5
   - Ensure removing a project removes associated Todo entries

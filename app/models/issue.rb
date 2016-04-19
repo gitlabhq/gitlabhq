@@ -28,12 +28,12 @@ class Issue < ActiveRecord::Base
   include Sortable
   include Taskable
 
-  DueDateStruct = Struct.new(:title, :name)
-  NoDueDate = DueDateStruct.new('No Due Date', '0')
-  AnyDueDate = DueDateStruct.new('Any Due Date', '')
-  OverDue = DueDateStruct.new('Overdue', 'overdue')
-  DueThisWeek = DueDateStruct.new('Due This Week', 'week')
-  DueThisMonth = DueDateStruct.new('Due This Month', 'month')
+  DueDateStruct = Struct.new(:title, :name).freeze
+  NoDueDate     = DueDateStruct.new('No Due Date', '0').freeze
+  AnyDueDate    = DueDateStruct.new('Any Due Date', '').freeze
+  Overdue       = DueDateStruct.new('Overdue', 'overdue').freeze
+  DueThisWeek   = DueDateStruct.new('Due This Week', 'week').freeze
+  DueThisMonth  = DueDateStruct.new('Due This Month', 'month').freeze
 
   ActsAsTaggableOn.strict_case_match = true
 
@@ -178,10 +178,6 @@ class Issue < ActiveRecord::Base
   end
 
   def overdue?
-    if due_date
-      due_date.past?
-    else
-      false
-    end
+    due_date.try(:past?) || false
   end
 end

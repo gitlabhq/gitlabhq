@@ -122,7 +122,7 @@ class IssuableFinder
   end
 
   def filter_by_overdue?
-    due_date? && params[:due_date] == Issue::OverDue.name
+    due_date? && params[:due_date] == Issue::Overdue.name
   end
 
   def filter_by_due_this_week?
@@ -305,17 +305,20 @@ class IssuableFinder
   end
 
   def by_due_date(items)
+    return items unless klass.column_names.include?('due_date')
+
     if due_date?
       if filter_by_no_due_date?
         items = items.without_due_date
       elsif filter_by_overdue?
-        items = items.overdue
+        items = items.due_before(Date.today)
       elsif filter_by_due_this_week?
-        items = items.due_between(Date.today.beginning_of_week, Date.today.end_of_week + 1.day)
+        items = items.due_between(Date.today.beginning_of_week, Date.today.end_of_week)
       elsif filter_by_due_this_month?
-        items = items.due_between(Date.today.beginning_of_month, Date.today.end_of_month + 1.day)
+        items = items.due_between(Date.today.beginning_of_month, Date.today.end_of_month)
       end
     end
+
     items
   end
 

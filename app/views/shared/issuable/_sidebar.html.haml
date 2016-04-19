@@ -58,7 +58,7 @@
             - if issuable.milestone
               = issuable.milestone.title
             - else
-              No
+              None
         .title.hide-collapsed
           Milestone
           = icon('spinner spin', class: 'block-loading')
@@ -74,17 +74,15 @@
         .selectbox.hide-collapsed
           = f.hidden_field 'milestone_id', value: issuable.milestone_id, id: nil
           = dropdown_tag('Milestone', options: { title: 'Assign milestone', toggle_class: 'js-milestone-select js-extra-options', filter: true, dropdown_class: 'dropdown-menu-selectable', placeholder: 'Search milestones', data: { show_no: true, field_name: "#{issuable.to_ability_name}[milestone_id]", project_id: @project.id, issuable_id: issuable.id, milestones: namespace_project_milestones_path(@project.namespace, @project, :json), ability_name: issuable.to_ability_name, issue_update: issuable_json_path(issuable), use_id: true }})
-      - if issuable.has_attribute? :due_date
+
+      - if issuable.has_attribute?(:due_date)
         .block.due_date
           .sidebar-collapsed-icon
             = icon('calendar')
             %span.js-due-date-sidebar-value
-              - if issuable.due_date
-                = issuable.due_date.to_s(:medium)
-              - else
-                None
+              = issuable.due_date.try(:to_s, :medium) || 'None'
           .title.hide-collapsed
-            Due Date
+            Due date
             = icon('spinner spin', class: 'block-loading')
             - if can?(current_user, :"admin_#{issuable.to_ability_name}", @project)
               = link_to 'Edit', '#', class: 'edit-link pull-right'
@@ -96,13 +94,13 @@
           - if can?(current_user, :"admin_#{issuable.to_ability_name}", @project)
             .selectbox.hide-collapsed
               = hidden_field_tag "#{issuable.to_ability_name}[due_date]", issuable.due_date
+              = f.hidden_field :due_date, value: issuable.due_date
               .dropdown
-                %button.dropdown-menu-toggle.js-due-date-select{ type: "button", data: { toggle: "dropdown", field_name: "#{issuable.to_ability_name}[due_date]", ability_name: issuable.to_ability_name, issue_update: issuable_json_path(issuable) } }
-                  %span.dropdown-toggle-text
-                    Due date
-                  = icon("chevron-down")
+                %button.dropdown-menu-toggle.js-due-date-select{ type: 'button', data: { toggle: 'dropdown', field_name: "#{issuable.to_ability_name}[due_date]", ability_name: issuable.to_ability_name, issue_update: issuable_json_path(issuable) } }
+                  %span.dropdown-toggle-text Due date
+                  = icon('chevron-down')
                 .dropdown-menu.dropdown-menu-due-date
-                  = dropdown_title("Due date")
+                  = dropdown_title('Due date')
                   = dropdown_content do
                     .js-due-date-calendar
 
