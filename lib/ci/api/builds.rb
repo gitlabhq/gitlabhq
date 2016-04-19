@@ -71,8 +71,9 @@ module Ci
           content_range = request.headers['Content-Range']
           content_range = content_range.split('-')
 
-          unless build.trace_length == content_range[0].to_i
-            return error!('416 Range Not Satisfiable', 416, { 'Range' => "0-#{build.trace_length}" })
+          current_length = build.trace_length
+          unless current_length == content_range[0].to_i
+            return error!('416 Range Not Satisfiable', 416, { 'Range' => "0-#{current_length}" })
           end
 
           build.append_trace(request.body.read, content_range[0].to_i)

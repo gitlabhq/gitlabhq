@@ -253,7 +253,7 @@ module Ci
     def append_trace(trace_part, offset)
       recreate_trace_dir
 
-      File.truncate(path_to_trace, offset)
+      File.truncate(path_to_trace, offset) if File.exist?(path_to_trace)
       File.open(path_to_trace, 'a') do |f|
         f.write(trace_part)
       end
