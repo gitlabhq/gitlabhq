@@ -440,7 +440,7 @@ module API
       expose :key, :value
     end
 
-    class License < Grape::Entity
+    class RepoLicense < Grape::Entity
       expose :key, :name, :nickname
       expose :featured, as: :popular
       expose :url, as: :html_url

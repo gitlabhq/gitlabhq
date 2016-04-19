@@ -24,7 +24,7 @@ module API
       options = {
         featured: params[:popular].present? ? true : nil
       }
-      present Licensee::License.all(options), with: Entities::License
+      present Licensee::License.all(options), with: Entities::RepoLicense
     end
 
     # Get text for specific license
@@ -52,7 +52,7 @@ module API
       fullname = params[:fullname].presence || current_user.try(:name)
       license.content.gsub!(FULLNAME_TEMPLATE_REGEX, fullname) if fullname
 
-      present license, with: Entities::License
+      present license, with: Entities::RepoLicense
     end
   end
 end
