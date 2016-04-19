@@ -118,6 +118,7 @@
                               Manage labels
                             - else
                               View labels
+                  = dropdown_loading
 
       = render "shared/issuable/participants", participants: issuable.participants(current_user)
       - if current_user
