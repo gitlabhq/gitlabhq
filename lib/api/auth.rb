@@ -3,12 +3,12 @@ module API
   class Auth < Grape::API
     namespace 'auth' do
       get 'token' do
-        required_attributes! [:scope, :service]
-        keys = attributes_for_keys [:scope, :service]
+        required_attributes! [:service]
+        keys = attributes_for_keys [:offline_token, :scope, :service]
 
         case keys[:service]
         when 'docker'
-          docker_token_auth(keys[:scope])
+          docker_token_auth(keys[:scope], keys[:offline_token])
         else
           not_found!
         end
@@ -16,19 +16,23 @@ module API
     end
 
     helpers do
-      def docker_token_auth(scope)
-        @type, @path, actions = scope.split(':', 3)
-        bad_request!("invalid type: #{type}") unless type == 'repository'
-
-        @actions = actions.split(',')
-        bad_request!('missing actions') if @actions.empty?
-
-        @project = Project.find_with_namespace(path)
-        not_found!('Project') unless @project
-
+      def docker_token_auth(scope, offline_token)
         auth!
 
-        authorize_actions!(@actions)
+        if offline_token
+          forbidden! unless @user
+        elsif scope
+          @type, @path, actions = scope.split(':', 3)
+          bad_request!("invalid type: #{@type}") unless @type == 'repository'
+
+          @actions = actions.split(',')
+          bad_request!('missing actions') if @actions.empty?
+
+          @project = Project.find_with_namespace(@path)
+          not_found!('Project') unless @project
+
+          authorize_actions!(@actions)
+        end
 
         { token: encode(docker_payload) }
       end
@@ -50,7 +54,7 @@ module API
         @user = authenticate_user(login, password)
 
         if @user
-          request.env['REMOTE_USER'] = @auth.username
+          request.env['REMOTE_USER'] = @user.username
         end
       end
 
@@ -70,10 +74,6 @@ module API
 
       def authenticate_user(login, password)
         user = Gitlab::Auth.new.find(login, password)
-
-        unless user
-          user = oauth_access_token_check(login, password)
-        end
 
         # If the user authenticated successfully, we reset the auth failure count
         # from Rack::Attack for that IP. A client may attempt to authenticate
