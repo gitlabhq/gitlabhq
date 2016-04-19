@@ -275,6 +275,7 @@ Settings.registry['registry']     = false if Settings.registry['enabled'].nil?
 Settings.registry['path']         = File.expand_path(Settings.registry['path'] || File.join(Settings.shared['path'], "registry"), Rails.root)
 Settings.registry['host']         ||= "example.com"
 Settings.registry['internal_host']||= "localhost"
+Settings.registry['key']          ||= nil
 Settings.registry['https']        = false if Settings.registry['https'].nil?
 Settings.registry['port']         ||= Settings.registry.https ? 443 : 80
 Settings.registry['protocol']     ||= Settings.registry.https ? "https" : "http"

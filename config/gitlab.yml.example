@@ -176,6 +176,16 @@ production: &base
     repository_archive_cache_worker:
       cron: "0 * * * *"
 
+  registry:
+    # enabled: true
+    # host: localhost
+    # port: 5000
+    # https: false
+    # internal_host: localhost
+    # key: config/registry.key
+    # issuer: omnibus-certificate
+    # path: shared/registry
+
   #
   # 2. GitLab CI settings
   # ==========================

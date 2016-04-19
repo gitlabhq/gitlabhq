@@ -119,12 +119,13 @@ module API
             name: @path,
             actions: @actions
           ],
+          iss: Gitlab.config.registry.issuer,
           exp: Time.now.to_i + 3600
         }
       end
 
       def private_key
-        @private_key ||= OpenSSL::PKey::RSA.new File.read 'config/registry.key'
+        @private_key ||= OpenSSL::PKey::RSA.new File.read Gitlab.config.registry.key
       end
 
       def encode(payload)
