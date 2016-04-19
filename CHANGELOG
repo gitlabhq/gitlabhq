@@ -87,6 +87,8 @@ v 8.7.0 (unreleased)
   - Use GitHub Issue/PR number as iid to keep references
   - Import GitHub labels
   - Import GitHub milestones
+  - Fix emoji catgories in the emoji picker
+  - Execute system web hooks on push to the project
 
 v 8.6.6
   - Expire the exists cache before deletion to ensure project dir actually exists (Stan Hu). !3413
