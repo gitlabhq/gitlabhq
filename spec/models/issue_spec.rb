@@ -248,7 +248,7 @@ describe Issue, models: true do
 
     it "does not contain the issue title if confidential" do
       issue = create(:issue, title: 'testing-issue', confidential: true)
-      expect(issue.to_branch_name).to match /\Aissue/
+      expect(issue.to_branch_name).to match /confidential-issue\z/
     end
   end
 end

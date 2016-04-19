@@ -158,7 +158,7 @@ class Issue < ActiveRecord::Base
 
   def to_branch_name
     if self.confidential?
-      "issue-#{iid}"
+      "#{iid}-confidential-issue"
     else
       "#{iid}-#{title.parameterize}"
     end
