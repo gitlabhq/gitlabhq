@@ -1,6 +1,7 @@
 class Profiles::PersonalAccessTokensController < Profiles::ApplicationController
   def index
-    @user = current_user
+    @active_personal_access_tokens = current_user.personal_access_tokens.active.order(:expires_at)
+    @inactive_personal_access_tokens = current_user.personal_access_tokens.inactive
 
     # Prefer this to `@user.personal_access_tokens.new`, because it
     # litters the view's call to `@user.personal_access_tokens` with

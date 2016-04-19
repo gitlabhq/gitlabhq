@@ -27,38 +27,64 @@
 
     %hr
 
-    %h5
-      Active Personal Access Tokens
+    %h5= "Active Personal Access Tokens (#{@active_personal_access_tokens.count})"
 
-    - if @user.personal_access_tokens.exists?
+    - if @active_personal_access_tokens.exists?
       .table-responsive
-        %table.table.table-striped
+        %table.table.table-striped.table-hover
           %thead
             %tr
               %th Name
               %th Token
-              %th Created At
-              %th Expires At
+              %th Created
+              %th Expires
               %th Actions
           %tbody
-            - @user.personal_access_tokens.order("revoked, expires_at").each do |token|
+            - @active_personal_access_tokens.active.each do |token|
               %tr
                 %td= token.name
-                %td= token.token
-                %td= token.created_at
+                %td.input-group.personal-access-tokens-token-column
+                  %input.form-control{type: "text", value: token.token, readonly: true}
+                  %div.input-group-btn
+                    %button.btn.btn-default{type: "button", data: {clipboard_text: token.token}}
+                      %i.fa.fa-clipboard
+                %td= token.created_at.to_date
                 - if token.expires_at.present?
                   %td= token.expires_at.to_date
                 - else
                   %td
                     %span.personal-access-tokens-never-expires-label Never
-                - if token.revoked?
-                  %td
-                    %span.personal-access-tokens-revoked-label Revoked
-                - else
-                  %td= link_to "Revoke", revoke_profile_personal_access_token_path(token), method: :put, class: "btn btn-danger", data: {confirm: t('profile.personal_access_tokens.revoke.confirmation')}
+                %td= link_to "Revoke", revoke_profile_personal_access_token_path(token), method: :put, class: "btn btn-danger", data: {confirm: t('profile.personal_access_tokens.revoke.confirmation')}
 
     - else
-      %span You don't have any tokens yet.
+      %span You don't have any active tokens yet.
+
+    %hr
+
+    %h5= "Inactive Personal Access Tokens (#{@inactive_personal_access_tokens.count})"
+
+    - if @inactive_personal_access_tokens.exists?
+      .table-responsive
+        %table.table.table-striped.table-hover
+          %thead
+            %tr
+              %th Name
+              %th Token
+              %th Created
+          %tbody
+            - @inactive_personal_access_tokens.order("revoked, expires_at").each do |token|
+              %tr
+                %td= token.name
+                %td.input-group.personal-access-tokens-token-column
+                  %input.form-control{type: "text", value: token.token, readonly: true}
+                  %div.input-group-btn
+                    %button.btn.btn-default{type: "button", data: {clipboard_text: token.token}}
+                      %i.fa.fa-clipboard
+                %td= token.created_at.to_date
+
+    - else
+      %span No inactive tokens.
+
 
 :javascript
   $(".datepicker").datepicker({
