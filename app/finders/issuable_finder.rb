@@ -117,7 +117,7 @@ class IssuableFinder
   end
 
   def filter_by_no_label?
-    labels? && params[:label_name] == Label::None.title
+    labels? && params[:label_name].include?(Label::None.title)
   end
 
   def labels

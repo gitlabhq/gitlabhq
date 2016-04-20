@@ -201,16 +201,21 @@ class @LabelsSelect
             callback data
 
         renderRow: (label) ->
-          selectedClass = ''
+          removesAll = label.id is 0 or label.id is undefined
+
+          selectedClass = []
           if $form.find("input[type='hidden']\
             [name='#{$dropdown.data('fieldName')}']\
             [value='#{this.id(label)}']").length
-            selectedClass = 'is-active'
+            selectedClass.push 'is-active'
+
+          if $dropdown.hasClass('js-multiselect') and removesAll
+            selectedClass.push 'dropdown-clear-active'
 
           color = if label.color? then "<span class='dropdown-label-box' style='background-color: #{label.color}'></span>" else ""
 
           "<li>
-            <a href='#' class='#{selectedClass}'>
+            <a href='#' class='#{selectedClass.join(' ')}'>
               #{color}
               #{label.title}
             </a>
@@ -237,9 +242,7 @@ class @LabelsSelect
             defaultLabel
         fieldName: $dropdown.data('field-name')
         id: (label) ->
-          if label.isAny?
-            ''
-          else if $dropdown.hasClass "js-filter-submit"
+          if $dropdown.hasClass("js-filter-submit") and not label.isAny?
             label.title
           else
             label.id
