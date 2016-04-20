@@ -113,26 +113,6 @@ class IssuableFinder
       end
   end
 
-  def due_date?
-    params[:due_date].present? && klass.column_names.include?('due_date')
-  end
-
-  def filter_by_no_due_date?
-    due_date? && params[:due_date] == Issue::NoDueDate.name
-  end
-
-  def filter_by_overdue?
-    due_date? && params[:due_date] == Issue::Overdue.name
-  end
-
-  def filter_by_due_this_week?
-    due_date? && params[:due_date] == Issue::DueThisWeek.name
-  end
-
-  def filter_by_due_this_month?
-    due_date? && params[:due_date] == Issue::DueThisMonth.name
-  end
-
   def labels?
     params[:label_name].present?
   end
@@ -318,6 +298,26 @@ class IssuableFinder
     end
 
     items
+  end
+
+  def filter_by_no_due_date?
+    due_date? && params[:due_date] == Issue::NoDueDate.name
+  end
+
+  def filter_by_overdue?
+    due_date? && params[:due_date] == Issue::Overdue.name
+  end
+
+  def filter_by_due_this_week?
+    due_date? && params[:due_date] == Issue::DueThisWeek.name
+  end
+
+  def filter_by_due_this_month?
+    due_date? && params[:due_date] == Issue::DueThisMonth.name
+  end
+
+  def due_date?
+    params[:due_date].present? && klass.column_names.include?('due_date')
   end
 
   def label_names

@@ -40,10 +40,6 @@ module Issuable
     scope :with_label, ->(title) { joins(:labels).where(labels: { title: title }) }
     scope :without_label, -> { joins("LEFT OUTER JOIN label_links ON label_links.target_type = '#{name}' AND label_links.target_id = #{table_name}.id").where(label_links: { id: nil }) }
 
-    scope :without_due_date, -> { where('issues.due_date IS NULL') }
-    scope :due_before, ->(date) { where('issues.due_date < ?', date) }
-    scope :due_between, ->(from_date, to_date) { where('issues.due_date >= ?', from_date).where('issues.due_date <= ?', to_date) }
-
     scope :join_project, -> { joins(:project) }
     scope :references_project, -> { references(:project) }
     scope :non_archived, -> { join_project.where(projects: { archived: false }) }

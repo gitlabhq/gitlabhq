@@ -46,6 +46,10 @@ class Issue < ActiveRecord::Base
   scope :open_for, ->(user) { opened.assigned_to(user) }
   scope :in_projects, ->(project_ids) { where(project_id: project_ids) }
 
+  scope :without_due_date, -> { where(due_date: nil) }
+  scope :due_before, ->(date) { where('issues.due_date < ?', date) }
+  scope :due_between, ->(from_date, to_date) { where('issues.due_date >= ?', from_date).where('issues.due_date <= ?', to_date) }
+
   scope :order_due_date_asc, -> { reorder('issues.due_date IS NULL, issues.due_date ASC') }
   scope :order_due_date_desc, -> { reorder('issues.due_date IS NULL, issues.due_date DESC') }
 
