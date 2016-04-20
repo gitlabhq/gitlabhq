@@ -220,13 +220,13 @@ describe Issue, "Issuable" do
     it 'finds issue with 1 label' do
       setup_labels([example_label])
 
-      expect(Issue.with_label(example_label).count).to eq(1)
+      expect(Issue.with_label(example_label).size).to eq(1)
     end
 
     it 'finds issue with 2 labels' do
       setup_labels(example_labels)
 
-      expect(Issue.with_label(example_labels).to_a.count).to eq(1)
+      expect(Issue.with_label(example_labels).to_a.size).to eq(1)
     end
 
     def setup_labels(label_names)
