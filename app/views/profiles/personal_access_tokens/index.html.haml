@@ -28,9 +28,9 @@
 
     %hr
 
-    %h5= "Active Personal Access Tokens (#{@active_personal_access_tokens.count})"
+    %h5= "Active Personal Access Tokens (#{@active_personal_access_tokens.length})"
 
-    - if @active_personal_access_tokens.exists?
+    - if @active_personal_access_tokens.present?
       .table-responsive
         %table.table.table-striped.table-hover.active-personal-access-tokens
           %thead
@@ -41,7 +41,7 @@
               %th Expires
               %th Actions
           %tbody
-            - @active_personal_access_tokens.active.each do |token|
+            - @active_personal_access_tokens.each do |token|
               %tr
                 %td= token.name
                 %td.input-group.personal-access-tokens-token-column
@@ -62,9 +62,9 @@
 
     %hr
 
-    %h5= "Inactive Personal Access Tokens (#{@inactive_personal_access_tokens.count})"
+    %h5= "Inactive Personal Access Tokens (#{@inactive_personal_access_tokens.length})"
 
-    - if @inactive_personal_access_tokens.exists?
+    - if @inactive_personal_access_tokens.present?
       .table-responsive
         %table.table.table-striped.table-hover.inactive-personal-access-tokens
           %thead
@@ -73,7 +73,7 @@
               %th Token
               %th Created
           %tbody
-            - @inactive_personal_access_tokens.order("revoked, expires_at").each do |token|
+            - @inactive_personal_access_tokens.each do |token|
               %tr
                 %td= token.name
                 %td.input-group.personal-access-tokens-token-column
