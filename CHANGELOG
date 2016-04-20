@@ -102,6 +102,7 @@ v 8.7.0 (unreleased)
   - Allow enable/disable push events for system hooks
   - Fix GitHub project's link in the import page when provider has a custom URL
   - Add RAW build trace output and button on build page
+  - Add incremental build trace update into CI API
 
 v 8.6.7 (unreleased)
   - Fix vulnerability that made it possible to enumerate private projects belonging to group
