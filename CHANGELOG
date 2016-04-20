@@ -37,6 +37,8 @@ v 8.7.0 (unreleased)
   - Fix a bug whith trailing slash in teamcity_url (Charles May)
   - Allow back dating on issues when created or updated through the API
   - Allow back dating on issue notes when created through the API
+  - Propose license template when creating a new LICENSE file
+  - API: Expose /licenses and /licenses/:key
   - Fix avatar stretching by providing a cropping feature
   - API: Expose `subscribed` for issues and merge requests (Robert Schilling)
   - Allow SAML to handle external users based on user's information !3530
