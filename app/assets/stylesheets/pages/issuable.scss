@@ -242,7 +242,7 @@
     }
   }
 
-  .btn {
+  .issuable-pager {
     background: $gray-normal;
     border: 1px solid $border-gray-normal;
     &:hover {
@@ -251,7 +251,7 @@
     }
   }
 
-  a:not(.btn) {
+  a:not(.issuable-pager) {
     &:hover {
       color: $md-link-color;
       text-decoration: none;
