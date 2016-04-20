@@ -1,9 +1,11 @@
 - if params[:label_name].present?
-  = hidden_field_tag(:label_name, params[:label_name])
+  - if params[:label_name].respond_to?('any?')
+    - params[:label_name].each do |label|
+      = hidden_field_tag "label_name[]", label, id: nil
 .dropdown
-  %button.dropdown-menu-toggle.js-label-select.js-filter-submit.js-extra-options{type: "button", data: {toggle: "dropdown", field_name: "label_name", show_no: "true", show_any: "true", selected: params[:label_name], project_id: @project.try(:id), labels: labels_filter_path, default_label: "Label"}}
+  %button.dropdown-menu-toggle.js-label-select.js-filter-submit.js-multiselect.js-extra-options{type: "button", data: {toggle: "dropdown", field_name: "label_name[]", show_no: "true", show_any: "true", selected: params[:label_name], project_id: @project.try(:id), labels: labels_filter_path, default_label: "Label"}}
     %span.dropdown-toggle-text
-      = h(params[:label_name].presence || "Label")
+      = h(multi_label_name(params[:label_name], "Label"))
     = icon('chevron-down')
   .dropdown-menu.dropdown-select.dropdown-menu-paging.dropdown-menu-labels.dropdown-menu-selectable
     .dropdown-page-one

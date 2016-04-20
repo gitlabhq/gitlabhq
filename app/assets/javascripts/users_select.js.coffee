@@ -158,7 +158,7 @@ class @UsersSelect
 
           if $dropdown.hasClass('js-filter-submit') and (isIssueIndex or isMRIndex)
             selectedId = user.id
-            Issues.filterResults $dropdown.closest('form')
+            Issuable.filterResults $dropdown.closest('form')
           else if $dropdown.hasClass 'js-filter-submit'
             $dropdown.closest('form').submit()
           else
