@@ -295,36 +295,49 @@ Deleting tmp directories...[DONE]
 
 ### Omnibus installations
 
-We will assume that you have installed GitLab from an omnibus package and run
-`sudo gitlab-ctl reconfigure` at least once.
+This procedure assumes that:
 
-First make sure your backup tar file is in `/var/opt/gitlab/backups` (or wherever `gitlab_rails['backup_path']` points to).
+- You have installed the exact same version of GitLab Omnibus with which the
+  backup was created
+- You have run `sudo gitlab-ctl reconfigure` at least once
+- GitLab is running.  If not, start it using `sudo gitlab-ctl start`.
+
+First make sure your backup tar file is in the backup directory described in the
+`gitlab.rb` configuration `gitlab_rails['backup_path']`. The default is
+`/var/opt/gitlab/backups`.
 
 ```shell
 sudo cp 1393513186_gitlab_backup.tar /var/opt/gitlab/backups/
 ```
 
-Next, restore the backup by running the restore command. You need to specify the
-timestamp of the backup you are restoring.
+Stop the processes that are connected to the database.  Leave the rest of GitLab
+running:
 
 ```shell
-# Stop processes that are connected to the database
 sudo gitlab-ctl stop unicorn
 sudo gitlab-ctl stop sidekiq
+# Verify
+sudo gitlab-ctl status
+```
 
+Next, restore the backup, specifying the timestamp of the backup you wish to
+restore:
+
+```shell
 # This command will overwrite the contents of your GitLab database!
 sudo gitlab-rake gitlab:backup:restore BACKUP=1393513186
+```
 
-# Start GitLab
+Restart and check GitLab:
+
+```shell
 sudo gitlab-ctl start
-
-# Check GitLab
 sudo gitlab-rake gitlab:check SANITIZE=true
 ```
 
 If there is a GitLab version mismatch between your backup tar file and the installed
-version of GitLab, the restore command will abort with an error. Install a package for
-the [required version](https://www.gitlab.com/downloads/archives/) and try again.
+version of GitLab, the restore command will abort with an error. Install the
+[correct GitLab version](https://www.gitlab.com/downloads/archives/) and try again.
 
 ## Configure cron to make daily backups
 
