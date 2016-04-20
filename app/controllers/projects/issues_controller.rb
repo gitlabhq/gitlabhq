@@ -192,7 +192,7 @@ class Projects::IssuesController < Projects::ApplicationController
   def issue_params
     params.require(:issue).permit(
       :title, :assignee_id, :position, :description, :confidential,
-      :milestone_id, :state_event, :task_num, label_ids: []
+      :milestone_id, :due_date, :state_event, :task_num, label_ids: []
     )
   end
 
