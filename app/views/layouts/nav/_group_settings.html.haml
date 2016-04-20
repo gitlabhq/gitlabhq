@@ -25,10 +25,10 @@
           %span
             LDAP Groups
     = nav_link(controller: :hooks) do
-      = link_to group_hooks_path(@group), title: "Web Hooks" do
+      = link_to group_hooks_path(@group), title: "Webhooks" do
         %i.fa.fa-link
         %span
-          Web Hooks
+          Webhooks
     = nav_link(controller: :audit_events) do
       = link_to group_audit_events_path(@group), title: "Audit Events" do
         %i.fa.fa-file-text-o

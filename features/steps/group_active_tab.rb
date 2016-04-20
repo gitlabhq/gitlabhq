@@ -15,15 +15,15 @@ class Spinach::Features::GroupActiveTab < Spinach::FeatureSteps
     end
   end
 
-  step 'the active sub nav should be Web Hooks' do
-    ensure_active_sub_nav('Web Hooks')
+  step 'the active sub nav should be Webhooks' do
+    ensure_active_sub_nav('Webhooks')
   end
 
   step 'I go to "Audit Events"' do
     click_link 'Audit Events'
   end
 
-  step 'I go to "Web Hooks"' do
-    click_link 'Web Hooks'
+  step 'I go to "Webhooks"' do
+    click_link 'Webhooks'
   end
 end

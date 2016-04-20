@@ -14,7 +14,7 @@ Webhooks can be used to update an external issue tracker, trigger CI builds, upd
 
 In GitLab Enterprise Edition you can configure web hooks globally for the whole
 group. You can add the group level web hooks on the group settings page
-**Settings > Web Hooks**.
+**Settings > Webhooks**.
 
 ## SSL Verification
 
