@@ -87,6 +87,7 @@ v 8.7.0 (unreleased)
   - Fix: Allow empty recipients list for builds emails service when pushed is added (Frank Groeneveld)
   - Improved markdown forms
   - Delete tags using Rugged for performance reasons (Robert Schilling)
+  - Add Slack notifications when Wiki is edited (Sebastian Klier)
   - Diffs load at the correct point when linking from from number
   - Selected diff rows highlight
   - Fix emoji categories in the emoji picker
