@@ -107,6 +107,9 @@ v 8.7.0 (unreleased)
 v 8.6.7 (unreleased)
   - Fix vulnerability that made it possible to enumerate private projects belonging to group
   - Add support to cherry-pick any commit into any branch in the web interface (Minqi Pan)
+  - Diff design updates (colors, button styles, etc)
+  - Copying and pasting a diff no longer pastes the line numbers or +/-
+  - Add null check to formData when updating profile content to fix Firefox bug
 
 v 8.6.6
   - Expire the exists cache before deletion to ensure project dir actually exists (Stan Hu). !3413
