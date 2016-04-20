@@ -1,10 +1,20 @@
 class @Sidebar
   constructor: (currentUser) ->
+    @sidebar = $('aside')
+
     @addEventListeners()
 
   addEventListeners: ->
-    $('aside').on('click', '.sidebar-collapsed-icon', @sidebarCollapseClicked)
-    $('.dropdown').on('hidden.gl.dropdown', @sidebarDropdownHidden)
+    _this = @
+    @sidebar.on 'click', '.sidebar-collapsed-icon', (e) ->
+      e.preventDefault()
+      $block = $(@).closest('.block')
+      _this.openDropdown($block);
+
+    $('.dropdown').on 'hidden.gl.dropdown', (e) ->
+      e.preventDefault()
+      $block = $(@).closest('.block')
+      _this.sidebarDropdownHidden($block)
     $('.dropdown').on('loading.gl.dropdown', @sidebarDropdownLoading)
     $('.dropdown').on('loaded.gl.dropdown', @sidebarDropdownLoaded)
 
@@ -30,26 +40,44 @@ class @Sidebar
     else
       i.show()
 
+  openDropdown: (blockOrName) ->
+    $block = if _.isString(blockOrName) then @getBlock(blockOrName) else blockOrName
 
-  sidebarCollapseClicked: (e) ->
-    e.preventDefault()
-    $block = $(@).closest('.block')
+    $block.find('.edit-link').trigger('click')
 
-    $('aside')
-      .find('.gutter-toggle')
-      .trigger('click')
-    $editLink = $block.find('.edit-link')
+    if not @isOpen()
+      @setCollapseAfterUpdate($block)
+      @toggleSidebar('open')
 
-    if $editLink.length
-      $editLink.trigger('click')
-      $block.addClass('collapse-after-update')
-      $('.page-with-sidebar').addClass('with-overlay')
+  setCollapseAfterUpdate: ($block) ->
+    $block.addClass('collapse-after-update')
+    $('.page-with-sidebar').addClass('with-overlay')
 
-  sidebarDropdownHidden: (e) ->
-    $block = $(@).closest('.block')
+  sidebarDropdownHidden: ($block) ->
     if $block.hasClass('collapse-after-update')
       $block.removeClass('collapse-after-update')
       $('.page-with-sidebar').removeClass('with-overlay')
-      $('aside')
-        .find('.gutter-toggle')
-        .trigger('click')
+      @toggleSidebar('hide')
+
+  triggerOpenSidebar: ->
+    @sidebar
+      .find('.js-sidebar-toggle')
+      .trigger('click')
+
+  toggleSidebar: (action = 'toggle') ->
+    if action is 'toggle'
+      @triggerOpenSidebar()
+
+    if action is 'open'
+      @triggerOpenSidebar() if not @isOpen()
+
+    if action is 'hide'
+      @triggerOpenSidebar() is @isOpen()
+
+  isOpen: ->
+    @sidebar.is('.right-sidebar-expanded')
+
+  getBlock: (name) ->
+    @sidebar.find(".block.#{name}")
+
+
