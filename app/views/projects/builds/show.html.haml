@@ -110,7 +110,7 @@
                   = icon('folder-open')
                   Browse
 
-      .build-widget
+      .build-widget.build-controls
         %h4.title
           Build ##{@build.id}
           - if can?(current_user, :update_build, @project)
@@ -127,6 +127,9 @@
                             data: { confirm: 'Are you sure you want to erase this build?' } do
                     = icon('eraser')
                     Erase
+                - if @build.has_trace?
+                  = link_to 'Raw', raw_namespace_project_build_path(@project.namespace, @project, @build),
+                            class: 'btn btn-sm btn-success', target: '_blank'
 
         .clearfix
           - if @build.duration
