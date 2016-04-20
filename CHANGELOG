@@ -86,6 +86,7 @@ v 8.7.0 (unreleased)
   - Fix repository cache invalidation issue when project is recreated with an empty repo (Stan Hu)
   - Fix: Allow empty recipients list for builds emails service when pushed is added (Frank Groeneveld)
   - Improved markdown forms
+  - Show JavaScript errors in sentry
   - Delete tags using Rugged for performance reasons (Robert Schilling)
   - Add Slack notifications when Wiki is edited (Sebastian Klier)
   - Diffs load at the correct point when linking from from number
