@@ -112,6 +112,7 @@ v 8.7.0 (unreleased)
   - Fix GitHub project's link in the import page when provider has a custom URL
   - Add RAW build trace output and button on build page
   - Add incremental build trace update into CI API
+  - Implement GFM references for milestones (Alejandro Rodríguez)
 
 v 8.6.7
   - Fix persistent XSS vulnerability in `commit_person_link` helper
