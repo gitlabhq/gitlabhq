@@ -254,6 +254,18 @@ describe SystemNoteService, services: true do
     end
   end
 
+  describe '.change_confidentiality' do
+    subject { described_class.change_confidentiality(noteable, project, author) }
+
+    context 'when noteable responds to `confidential`' do
+      it_behaves_like 'a system note'
+
+      it 'sets the note text' do
+        expect(subject.note).to eq "Marked as not confidential"
+      end
+    end
+  end
+
   describe '.change_branch' do
     subject { described_class.change_branch(noteable, project, author, 'target', old_branch, new_branch) }
     let(:old_branch) { 'old_branch'}

@@ -36,6 +36,12 @@ class IssuableBaseService < BaseService
     end
   end
 
+  def create_confidentiality_note(issuable)
+    SystemNoteService.change_confidentiality(
+      issuable, issuable.project, current_user
+    )
+  end
+
   def filter_params(issuable_ability_name = :issue)
     filter_assignee
     filter_milestone

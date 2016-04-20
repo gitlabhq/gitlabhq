@@ -175,6 +175,25 @@ class SystemNoteService
     create_note(noteable: noteable, project: project, author: author, note: body)
   end
 
+  # Called when the confidentiality changes
+  #
+  # noteable    - Noteable object that responds to 'confidential'
+  # project     - Project owning noteable
+  # author      - User performing the change
+  #
+  # Example Note text:
+  #
+  # "Marked as confidential"
+  #
+  # Returns the created Note object
+  def self.change_confidentiality(noteable, project, author)
+    return unless noteable.respond_to?(:confidential)
+
+    confidentiality_status = noteable.confidential ? "confidential" : "not confidential"
+    body = "Marked as #{confidentiality_status}"
+    create_note(noteable: noteable, project: project, author: author, note: body)
+  end
+
   # Called when a branch in Noteable is changed
   #
   # noteable    - Noteable object

@@ -10,6 +10,7 @@ v 8.8.0 (unreleased)
   - Escape HTML in commit titles in system note messages
   - Improve multiple branch push performance by memoizing permission checking
   - Log to application.log when an admin starts and stops impersonating a user
+  - Changing the confidentiality of an issue now creates a new system note (Alex Moore-Niemi)
   - Updated gitlab_git to 10.1.0
   - GitAccess#protected_tag? no longer loads all tags just to check if a single one exists
   - Reduce delay in destroying a project from 1-minute to immediately

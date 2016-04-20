@@ -10,7 +10,7 @@ module Issues
       end
 
       if issue.previous_changes.include?('title') ||
-         issue.previous_changes.include?('description')
+          issue.previous_changes.include?('description')
         todo_service.update_issue(issue, current_user)
       end
 
@@ -22,6 +22,10 @@ module Issues
         create_assignee_note(issue)
         notification_service.reassigned_issue(issue, current_user)
         todo_service.reassigned_issue(issue, current_user)
+      end
+
+      if issue.previous_changes.include?('confidential')
+        create_confidentiality_note(issue)
       end
 
       added_labels = issue.labels - old_labels

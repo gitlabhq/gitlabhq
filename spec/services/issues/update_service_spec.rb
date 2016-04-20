@@ -27,11 +27,6 @@ describe Issues::UpdateService, services: true do
       end
     end
 
-    def update_issue(opts)
-      @issue = Issues::UpdateService.new(project, user, opts).execute(issue)
-      @issue.reload
-    end
-
     context "valid params" do
       before do
         opts = {
@@ -39,7 +34,8 @@ describe Issues::UpdateService, services: true do
           description: 'Also please fix',
           assignee_id: user2.id,
           state_event: 'close',
-          label_ids: [label.id]
+          label_ids: [label.id],
+          confidential: true
         }
 
         perform_enqueued_jobs do
@@ -84,6 +80,18 @@ describe Issues::UpdateService, services: true do
         expect(note).not_to be_nil
         expect(note.note).to eq 'Title changed from **Old title** to **New title**'
       end
+
+      it 'creates system note about confidentiality change' do
+        note = find_note('Marked as confidential')
+
+        expect(note).not_to be_nil
+        expect(note.note).to eq 'Marked as confidential'
+      end
+    end
+
+    def update_issue(opts)
+      @issue = Issues::UpdateService.new(project, user, opts).execute(issue)
+      @issue.reload
     end
 
     context 'todos' do
