@@ -41,6 +41,7 @@ v 8.7.0 (unreleased)
   - Add endpoints to archive or unarchive a project !3372
   - Fix a bug whith trailing slash in bamboo_url
   - Add links to CI setup documentation from project settings and builds pages
+  - Display project members page to all members
   - Handle nil descriptions in Slack issue messages (Stan Hu)
   - Add automated repository integrity checks
   - API: Expose open_issues_count, closed_issues_count, open_merge_requests_count for labels (Robert Schilling)

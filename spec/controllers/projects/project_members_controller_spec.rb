@@ -47,7 +47,7 @@ describe Projects::ProjectMembersController do
     end
   end
 
-  describe 'index' do
+  describe '#index' do
     let(:project) { create(:project, :private) }
 
     context 'when user is member' do
