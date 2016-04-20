@@ -88,6 +88,9 @@ v 8.7.0 (unreleased)
   - Fix: Allow empty recipients list for builds emails service when pushed is added (Frank Groeneveld)
   - Improved markdown forms
   - Show JavaScript errors in sentry
+  - Diff design updates (colors, button styles, etc)
+  - Copying and pasting a diff no longer pastes the line numbers or +/-
+  - Add null check to formData when updating profile content to fix Firefox bug
   - Delete tags using Rugged for performance reasons (Robert Schilling)
   - Add Slack notifications when Wiki is edited (Sebastian Klier)
   - Diffs load at the correct point when linking from from number
@@ -109,21 +112,16 @@ v 8.7.0 (unreleased)
   - Add RAW build trace output and button on build page
   - Add incremental build trace update into CI API
 
-v 8.6.7 (unreleased)
+v 8.6.7
   - Fix persistent XSS vulnerability in `commit_person_link` helper
   - Fix persistent XSS vulnerability in Label and Milestone dropdowns
   - Fix vulnerability that made it possible to enumerate private projects belonging to group
-  - Add support to cherry-pick any commit into any branch in the web interface (Minqi Pan)
-  - Diff design updates (colors, button styles, etc)
-  - Copying and pasting a diff no longer pastes the line numbers or +/-
-  - Add null check to formData when updating profile content to fix Firefox bug
 
 v 8.6.6
   - Expire the exists cache before deletion to ensure project dir actually exists (Stan Hu). !3413
   - Fix error on language detection when repository has no HEAD (e.g., master branch) (Jeroen Bobbeldijk). !3654
   - Fix revoking of authorized OAuth applications (Connor Shea). !3690
   - Fix error on language detection when repository has no HEAD (e.g., master branch). !3654 (Jeroen Bobbeldijk)
-  - Project switcher uses new dropdown styling
   - Issuable header is consistent between issues and merge requests
   - Improved spacing in issuable header on mobile
 
@@ -254,6 +252,9 @@ v 8.6.0
   - Canceled builds are now ignored in compound build status if marked as `allowed to fail`
   - Trigger a todo for mentions on commits page
   - Let project owners and admins soft delete issues and merge requests
+
+v 8.5.11
+  - Fix persistent XSS vulnerability in `commit_person_link` helper
 
 v 8.5.10
   - Fix a 2FA authentication spoofing vulnerability.
@@ -402,6 +403,9 @@ v 8.5.0
   - Show label row when filtering issues or merge requests by label (Nuttanart Pornprasitsakul)
   - Add Todos
 
+v 8.4.9
+  - Fix persistent XSS vulnerability in `commit_person_link` helper
+
 v 8.4.8
   - Fix a 2FA authentication spoofing vulnerability.
 
@@ -523,6 +527,9 @@ v 8.4.0
   - Added X-GitLab-... headers to emails from CI and Email On Push services (Anton Baklanov)
   - Add IP check against DNSBLs at account sign-up
   - Added cache:key to .gitlab-ci.yml allowing to fine tune the caching
+
+v 8.3.8
+  - Fix persistent XSS vulnerability in `commit_person_link` helper
 
 v 8.3.7
   - Fix a 2FA authentication spoofing vulnerability.
