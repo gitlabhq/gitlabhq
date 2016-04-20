@@ -117,7 +117,7 @@ class IssuableFinder
   end
 
   def filter_by_no_label?
-    labels? && params[:label_name] == Label::None.title
+    labels? && params[:label_name].include?(Label::None.title)
   end
 
   def labels
@@ -278,7 +278,9 @@ class IssuableFinder
       end
     end
 
-    items
+    # When filtering by multiple labels we may end up duplicating issues (if one
+    # has multiple labels). This ensures we only return unique issues.
+    items.distinct
   end
 
   def label_names

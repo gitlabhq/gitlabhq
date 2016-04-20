@@ -386,12 +386,12 @@ class GitLabDropdown
       else
         selectedObject
     else
-      if !value?
-        field.remove()
-
-      if not @options.multiSelect
+      if not @options.multiSelect or el.hasClass('dropdown-clear-active')
         @dropdown.find(".#{ACTIVE_CLASS}").removeClass ACTIVE_CLASS
         @dropdown.parent().find("input[name='#{fieldName}']").remove()
+
+      if !value?
+        field.remove()
 
       # Toggle active class for the tick mark
       el.addClass ACTIVE_CLASS

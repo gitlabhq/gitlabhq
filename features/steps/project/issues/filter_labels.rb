@@ -32,6 +32,10 @@ class Spinach::Features::ProjectIssuesFilterLabels < Spinach::FeatureSteps
     page.find('.js-label-select').click
     sleep 0.5
     execute_script("$('.dropdown-menu-labels li:contains(\"bug\") a').click()")
+  end
+
+  step 'I click "dropdown close button"' do
+    page.first('.labels-filter .dropdown-title .dropdown-menu-close-icon').click
     sleep 2
   end
 
