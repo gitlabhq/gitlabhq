@@ -90,5 +90,16 @@
 :javascript
   $(".datepicker").datepicker({
     dateFormat: "yy-mm-dd",
-    onSelect: function(dateText, inst) { $("#personal_access_token_expires_at").val(dateText) }
-  }).datepicker("setDate", $.datepicker.parseDate('yy-mm-dd', $('#personal_access_token_expires_at').val()));
+    beforeShow: function() {
+      ////////////////////////////////////////////////////////////////
+      // 1. Need the setTimeout because the datepicker doesn't have //
+      //    an `afterShow` callback.                                //
+      // 2. Need to set the z-index like this because we don't want //
+      //    to target datepickers outside the current page, which   //
+      //    will happen if we set this in CSS directly.             //
+      ////////////////////////////////////////////////////////////////
+      setTimeout(function(){
+        $('.ui-datepicker').css('z-index', 3);
+      }, 0);
+    }
+  });
