@@ -1,12 +1,14 @@
-- source_branch_exists = local_assigns.fetch(:source_branch_exists, false)
-- mr_can_be_reverted = @merge_request.can_be_reverted?
+- can_remove_source_branch = local_assigns.fetch(:source_branch_exists, false) && @merge_request.can_remove_source_branch?(current_user)
+- mr_can_be_reverted = @merge_request.can_be_reverted?(current_user)
+- mr_can_be_cherry_picked = @merge_request.can_be_cherry_picked?
 
-- if source_branch_exists || mr_can_be_reverted
+- if can_remove_source_branch || mr_can_be_reverted || mr_can_be_cherry_picked
   .btn-group
-    - if source_branch_exists
+    - if can_remove_source_branch
       = link_to namespace_project_branch_path(@merge_request.source_project.namespace, @merge_request.source_project, @merge_request.source_branch), remote: true, method: :delete, class: "btn btn-default btn-grouped btn-sm remove_source_branch" do
         = icon('trash-o')
         Remove Source Branch
     - if mr_can_be_reverted
       = revert_commit_link(@merge_request.merge_commit, namespace_project_merge_request_path(@project.namespace, @project, @merge_request), btn_class: 'sm')
-    = cherry_pick_commit_link(@merge_request.merge_commit, namespace_project_merge_request_path(@project.namespace, @project, @merge_request), btn_class: 'sm')
+    - if mr_can_be_cherry_picked
+      = cherry_pick_commit_link(@merge_request.merge_commit, namespace_project_merge_request_path(@project.namespace, @project, @merge_request), btn_class: 'sm')

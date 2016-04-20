@@ -602,4 +602,8 @@ class MergeRequest < ActiveRecord::Base
   def can_be_reverted?(current_user = nil)
     merge_commit && !merge_commit.has_been_reverted?(current_user, self)
   end
+
+  def can_be_cherry_picked?
+    merge_commit
+  end
 end
