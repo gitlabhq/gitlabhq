@@ -1,9 +1,7 @@
 @Issues =
   init: ->
-    Issues.initTemplates()
-    Issues.initSearch()
+    Issues.created = true
     Issues.initChecks()
-    Issues.toggleLabelFilters()
 
     $("body").on "ajax:success", ".close_issue, .reopen_issue", ->
       t = $(this)
@@ -17,90 +15,12 @@
         else
           $(this).html totalIssues - 1
 
-  initTemplates: ->
-    Issue.labelRow = _.template(
-      '<% _.each(labels, function(label){ %>
-        <span class="label-row">
-          <a href="#"><span class="label color-label has-tooltip" style="background-color: <%= label.color %>; color: #FFFFFF" title="<%= _.escape(label.description) %>" data-container="body"><%= _.escape(label.title) %></span></a>
-        </span>
-      <% }); %>'
-    )
-
-  toggleLabelFilters: ()->
-    $filteredLabels = $('.filtered-labels')
-    if $filteredLabels.find('.label-row').length > 0
-      $filteredLabels.removeClass('hidden')
-    else
-      $filteredLabels.addClass('hidden')
-
-  reload: ->
-    Issues.initChecks()
-    $('#filter_issue_search').val($('#issue_search').val())
-
   initChecks: ->
     $(".check_all_issues").click ->
       $(".selected_issue").prop("checked", @checked)
       Issues.checkChanged()
 
     $(".selected_issue").bind "change", Issues.checkChanged
-
-  # Update state filters if present in page
-  updateStateFilters: ->
-    stateFilters =  $('.issues-state-filters')
-    newParams = {}
-    paramKeys = ['author_id', 'milestone_title', 'assignee_id', 'issue_search']
-
-    for paramKey in paramKeys
-      newParams[paramKey] = gl.utils.getParameterValues(paramKey)[0] or ''
-
-    if stateFilters.length
-      stateFilters.find('a').each ->
-        initialUrl = gl.utils.removeParamQueryString($(this).attr('href'), 'label_name[]')
-        labelNameValues = gl.utils.getParameterValues('label_name[]')
-        if labelNameValues
-          labelNameQueryString = ("label_name[]=#{value}" for value in labelNameValues).join('&')
-          newUrl = "#{gl.utils.mergeUrlParams(newParams, initialUrl)}&#{labelNameQueryString}"
-        else
-          newUrl = gl.utils.mergeUrlParams(newParams, initialUrl)
-        $(this).attr 'href', newUrl
-
-  # Make sure we trigger ajax request only after user stop typing
-  initSearch: ->
-    @timer = null
-    $("#issue_search").keyup ->
-      clearTimeout(@timer)
-      @timer = setTimeout( ->
-        Issues.filterResults $("#issue_search_form")
-      , 500)
-
-  filterResults: (form) =>
-    formData = form.serialize()
-
-    $('.issues-holder, .merge-requests-holder').css("opacity", '0.5')
-    formAction = form.attr('action')
-    issuesUrl = formAction
-    issuesUrl += ("#{if formAction.indexOf("?") < 0 then '?' else '&'}")
-    issuesUrl += formData
-    $.ajax
-      type: "GET"
-      url: formAction
-      data: formData
-      complete: ->
-        $('.issues-holder, .merge-requests-holder').css("opacity", '1.0')
-      success: (data) ->
-        $('.issues-holder, .merge-requests-holder').html(data.html)
-        # Change url so if user reload a page - search results are saved
-        history.replaceState {page: issuesUrl}, document.title, issuesUrl
-        Issues.reload()
-        Issues.updateStateFilters()
-        $filteredLabels = $('.filtered-labels')
-
-        if typeof Issue.labelRow is 'function'
-          $filteredLabels.html(Issue.labelRow(data))
-
-        Issues.toggleLabelFilters()
-
-      dataType: "json"
 
   checkChanged: ->
     checked_issues = $(".selected_issue:checked")

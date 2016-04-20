@@ -97,7 +97,7 @@ class @MilestoneSelect
               selectedMilestone = selected.name
             else
               selectedMilestone = ''
-            Issues.filterResults $dropdown.closest('form')
+            Issuable.filterResults $dropdown.closest('form')
           else if $dropdown.hasClass('js-filter-submit')
             $dropdown.closest('form').submit()
           else

@@ -257,7 +257,7 @@ class @LabelsSelect
               selectedLabels = $dropdown
                 .closest('form')
                 .find("input:hidden[name='#{$dropdown.data('fieldName')}']")
-              Issues.filterResults $dropdown.closest('form')
+              Issuable.filterResults $dropdown.closest('form')
             else if $dropdown.hasClass('js-filter-submit')
               $dropdown.closest('form').submit()
             else
@@ -271,7 +271,7 @@ class @LabelsSelect
           if $dropdown.hasClass('js-filter-submit') and (isIssueIndex or isMRIndex)
             if not $dropdown.hasClass 'js-multiselect'
               selectedLabel = label.title
-              Issues.filterResults $dropdown.closest('form')
+              Issuable.filterResults $dropdown.closest('form')
           else if $dropdown.hasClass 'js-filter-submit'
             $dropdown.closest('form').submit()
           else

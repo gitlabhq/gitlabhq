@@ -41,7 +41,7 @@ class Projects::IssuesController < Projects::ApplicationController
       format.json do
         render json: {
           html: view_to_html_string("projects/issues/_issues"),
-          labels: @labels
+          labels: @labels.as_json(methods: :text_color)
         }
       end
     end
