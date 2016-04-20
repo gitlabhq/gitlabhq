@@ -42,7 +42,7 @@ Signed-off-by: Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>
 eos
     )
   end
-
+  
   def another_sample_commit
     OpenStruct.new(
       id: "e56497bb5f03a90a51293fc6d516788730953899",

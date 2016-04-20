@@ -190,6 +190,9 @@ gem 'babosa', '~> 1.0.2'
 # Sanitizes SVG input
 gem "loofah", "~> 2.0.3"
 
+# Working with license
+gem 'licensee', '~> 8.0.0'
+
 # Protect against bruteforcing
 gem "rack-attack", '~> 4.3.1'
 
@@ -315,7 +318,7 @@ end
 
 gem "newrelic_rpm", '~> 3.14'
 
-gem 'octokit', '~> 3.8.0'
+gem 'octokit', '~> 4.3.0'
 
 gem "mail_room", "~> 0.6.1"
 

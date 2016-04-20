@@ -118,6 +118,7 @@
                               Manage labels
                             - else
                               View labels
+                  = dropdown_loading
 
       = render "shared/issuable/participants", participants: issuable.participants(current_user)
       - if current_user
@@ -150,6 +151,6 @@
     :javascript
       new MilestoneSelect('{"namespace":"#{@project.namespace.path}","path":"#{@project.path}"}');
       new LabelsSelect();
-      new IssuableContext('#{current_user.to_json(only: [:username, :id, :name])}');
+      new IssuableContext('#{escape_javascript(current_user.to_json(only: [:username, :id, :name]))}');
       new Subscription('.subscription')
       new Sidebar();
