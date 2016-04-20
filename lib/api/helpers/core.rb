@@ -132,7 +132,7 @@ module API
         if params[:labels].present?
           params[:labels].split(',').each do |label_name|
             label = user_project.labels.create_with(
-                color: Label::DEFAULT_COLOR).find_or_initialize_by(
+              color: Label::DEFAULT_COLOR).find_or_initialize_by(
                 title: label_name.strip)
 
             if label.invalid?
@@ -274,9 +274,9 @@ module API
         bad_request!('Bad file path') unless file_path.start_with?(uploads_path)
 
         UploadedFile.new(
-            file_path,
-            params["#{field}.name"],
-            params["#{field}.type"] || 'application/octet-stream',
+          file_path,
+          params["#{field}.name"],
+          params["#{field}.type"] || 'application/octet-stream',
         )
       end
 
@@ -288,11 +288,11 @@ module API
 
         # Support download acceleration
         case headers['X-Sendfile-Type']
-          when 'X-Sendfile'
-            header['X-Sendfile'] = path
-            body
-          else
-            file FileStreamer.new(path)
+        when 'X-Sendfile'
+          header['X-Sendfile'] = path
+          body
+        else
+          file FileStreamer.new(path)
         end
       end
 
