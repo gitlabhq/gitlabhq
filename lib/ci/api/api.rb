@@ -23,6 +23,8 @@ module Ci
         rack_response({ 'message' => '500 Internal Server Error' }, 500)
       end
 
+      content_type :txt,  'text/plain'
+      content_type :json, 'application/json'
       format :json
 
       helpers ::Ci::API::Helpers
