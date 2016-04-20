@@ -115,6 +115,15 @@ module Gitlab
       trans.add_tag(name, value) if trans
     end
 
+    # Sets the action of the current transaction (if any)
+    #
+    # action - The name of the action.
+    def self.action=(action)
+      trans = current_transaction
+
+      trans.action = action if trans
+    end
+
     # When enabled this should be set before being used as the usual pattern
     # "@foo ||= bar" is _not_ thread-safe.
     if enabled?
