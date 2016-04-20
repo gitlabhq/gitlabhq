@@ -6,7 +6,7 @@ class Projects::ServicesController < Projects::ApplicationController
                     :description, :issues_url, :new_issue_url, :restrict_to_branch, :channel,
                     :colorize_messages, :channels,
                     :push_events, :issues_events, :merge_requests_events, :tag_push_events,
-                    :note_events, :build_events,
+                    :note_events, :build_events, :wiki_page_events,
                     :notify_only_broken_builds, :add_pusher,
                     :send_from_committer_email, :disable_diffs, :external_wiki_url,
                     :notify, :color,
