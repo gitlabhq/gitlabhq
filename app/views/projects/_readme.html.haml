@@ -9,7 +9,7 @@
 - else
   .gray-content-block.second-block.center
     %h3.page-title
-      This project does not have README yet
+      This project does not have a README yet
     - if can?(current_user, :push_code, @project)
       %p
         A
@@ -18,5 +18,5 @@
         distributed with computer software, forming part of its documentation.
       %p
         We recommend you to
-        = link_to "add README", new_readme_path, class: 'underlined-link'
+        = link_to "add a README", new_readme_path, class: 'underlined-link'
         file to the repository and GitLab will render it here instead of this message.

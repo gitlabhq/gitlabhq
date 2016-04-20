@@ -135,22 +135,69 @@ describe Repository, models: true do
 
   end
 
-  describe "#license" do
+  describe '#license_blob' do
     before do
-      repository.send(:cache).expire(:license)
+      repository.send(:cache).expire(:license_blob)
+      repository.remove_file(user, 'LICENSE', 'Remove LICENSE', 'master')
     end
 
-    it 'test selection preference' do
-      files = [TestBlob.new('file'), TestBlob.new('license'), TestBlob.new('copying')]
-      expect(repository.tree).to receive(:blobs).and_return(files)
+    it 'looks in the root_ref only' do
+      repository.remove_file(user, 'LICENSE', 'Remove LICENSE', 'markdown')
+      repository.commit_file(user, 'LICENSE', Licensee::License.new('mit').content, 'Add LICENSE', 'markdown', false)
 
-      expect(repository.license.name).to eq('license')
+      expect(repository.license_blob).to be_nil
     end
 
-    it 'also accepts licence instead of license' do
-      expect(repository.tree).to receive(:blobs).and_return([TestBlob.new('licence')])
+    it 'favors license file with no extension' do
+      repository.commit_file(user, 'LICENSE', Licensee::License.new('mit').content, 'Add LICENSE', 'master', false)
+      repository.commit_file(user, 'LICENSE.md', Licensee::License.new('mit').content, 'Add LICENSE.md', 'master', false)
 
-      expect(repository.license.name).to eq('licence')
+      expect(repository.license_blob.name).to eq('LICENSE')
+    end
+
+    it 'favors .md file to .txt' do
+      repository.commit_file(user, 'LICENSE.md', Licensee::License.new('mit').content, 'Add LICENSE.md', 'master', false)
+      repository.commit_file(user, 'LICENSE.txt', Licensee::License.new('mit').content, 'Add LICENSE.txt', 'master', false)
+
+      expect(repository.license_blob.name).to eq('LICENSE.md')
+    end
+
+    it 'favors LICENCE to LICENSE' do
+      repository.commit_file(user, 'LICENSE', Licensee::License.new('mit').content, 'Add LICENSE', 'master', false)
+      repository.commit_file(user, 'LICENCE', Licensee::License.new('mit').content, 'Add LICENCE', 'master', false)
+
+      expect(repository.license_blob.name).to eq('LICENCE')
+    end
+
+    it 'favors LICENSE to COPYING' do
+      repository.commit_file(user, 'LICENSE', Licensee::License.new('mit').content, 'Add LICENSE', 'master', false)
+      repository.commit_file(user, 'COPYING', Licensee::License.new('mit').content, 'Add COPYING', 'master', false)
+
+      expect(repository.license_blob.name).to eq('LICENSE')
+    end
+
+    it 'favors LICENCE to COPYING' do
+      repository.commit_file(user, 'LICENCE', Licensee::License.new('mit').content, 'Add LICENCE', 'master', false)
+      repository.commit_file(user, 'COPYING', Licensee::License.new('mit').content, 'Add COPYING', 'master', false)
+
+      expect(repository.license_blob.name).to eq('LICENCE')
+    end
+  end
+
+  describe '#license_key' do
+    before do
+      repository.send(:cache).expire(:license_key)
+      repository.remove_file(user, 'LICENSE', 'Remove LICENSE', 'master')
+    end
+
+    it 'returns "no-license" when no license is detected' do
+      expect(repository.license_key).to eq('no-license')
+    end
+
+    it 'returns the license key' do
+      repository.commit_file(user, 'LICENSE', Licensee::License.new('mit').content, 'Add LICENSE', 'master', false)
+
+      expect(repository.license_key).to eq('mit')
     end
   end
 

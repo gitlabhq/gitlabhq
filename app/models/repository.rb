@@ -228,7 +228,8 @@ class Repository
 
   def cache_keys
     %i(size branch_names tag_names commit_count
-       readme version contribution_guide changelog license)
+       readme version contribution_guide changelog
+       license_blob license_key)
   end
 
   def build_cache
@@ -461,27 +462,21 @@ class Repository
     end
   end
 
-  def license
-    cache.fetch(:license) do
-      licenses =  tree(:head).blobs.find_all do |file|
-                    file.name =~ /\A(copying|license|licence)/i
-                  end
+  def license_blob
+    return nil if !exists? || empty?
 
-      preferences = [
-        /\Alicen[sc]e\z/i,        # LICENSE, LICENCE
-        /\Alicen[sc]e\./i,        # LICENSE.md, LICENSE.txt
-        /\Acopying\z/i,           # COPYING
-        /\Acopying\.(?!lesser)/i, # COPYING.txt
-        /Acopying.lesser/i        # COPYING.LESSER
-      ]
-
-      license = nil
-      preferences.each do |r|
-        license = licenses.find { |l| l.name =~ r }
-        break if license
+    cache.fetch(:license_blob) do
+      if licensee_project.license
+        blob_at_branch(root_ref, licensee_project.matched_file.filename)
       end
+    end
+  end
 
-      license
+  def license_key
+    return nil if !exists? || empty?
+
+    cache.fetch(:license_key) do
+      licensee_project.license.try(:key) || 'no-license'
     end
   end
 
@@ -963,5 +958,9 @@ class Repository
 
   def cache
     @cache ||= RepositoryCache.new(path_with_namespace)
+  end
+
+  def licensee_project
+    @licensee_project ||= Licensee.project(path)
   end
 end
