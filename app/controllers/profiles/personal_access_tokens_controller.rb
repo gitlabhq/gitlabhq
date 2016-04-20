@@ -32,6 +32,8 @@ class Profiles::PersonalAccessTokensController < Profiles::ApplicationController
   private
 
   def personal_access_token_params
-    params.require(:personal_access_token).permit(:name, :expires_at)
+    # We aren't using `personal_access_token` as the root param because the authentication
+    # system expects to find a token string there - it's off-limits to us.
+    params.require(:personal_access_token_params).permit(:name, :expires_at)
   end
 end

@@ -12,7 +12,8 @@
       Add a Personal Access Token
     %p.profile-settings-content
       Pick a name for the application, and we'll give you a unique token.
-    = form_for [:profile, @personal_access_token], method: :post, html: { class: 'js-requires-input' } do |f|
+    = form_for [:profile, @personal_access_token], as: "personal_access_token_params",
+                method: :post, html: { class: 'js-requires-input' } do |f|
 
       .form-group
         = f.label :name, class: 'label-light'
