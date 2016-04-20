@@ -78,11 +78,15 @@ namespace :gitlab do
       [Project, Issue, MergeRequest, Snippet, Note, Milestone].each do |klass|
         klass.__elasticsearch__.create_index!
 
+        print "Indexing #{klass} records... "
+
         if klass == Note
           Note.searchable.import
         else
           klass.import
         end
+
+        puts "done".green
       end
     end
 
