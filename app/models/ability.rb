@@ -189,8 +189,7 @@ class Ability
         :create_project,
         :create_issue,
         :create_note,
-        :upload_file,
-        :read_members_list
+        :upload_file
       ]
     end
 
