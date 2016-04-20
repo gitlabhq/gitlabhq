@@ -6,6 +6,9 @@ v 8.7.0 (unreleased)
   - [Elastic] Stabilize database indexer if database is inconsistent
   - Add ability to sync to remote mirrors. !249
 
+v 8.6.7
+  - No EE-specific changes
+
 v 8.6.6
   - Concat AD group recursive member results with regular member results. !333
   - Fix LDAP group sync regression for groups with member value `uid=<username>`. !335
@@ -59,6 +62,9 @@ v 8.6.0
   - Allow SSL verification to be configurable when importing GitHub projects
   - Disable git-hooks for git annex commits
 
+v 8.5.11
+  - Fix vulnerability that made it possible to enumerate private projects belonging to group
+
 v 8.5.10
   - No EE-specific changes
 
@@ -108,6 +114,9 @@ v 8.5.0
   - Fix of Elastic indexer. Stabilze indexer when serialized data is corrupted
   - [Elastic] Don't index unnecessary data into elastic
 
+v 8.4.9
+  - Fix vulnerability that made it possible to enumerate private projects belonging to group
+
 v 8.4.8
   - No EE-specific changes
 
@@ -151,6 +160,9 @@ v 8.4.0
   - Add option to enforce a semi-linear history by only allowing merge requests to be merged that have been rebased
   - Add option to trigger builds when branches or tags are updated from a mirrored upstream repository
   - Ability to use Elasticsearch as a search engine
+
+v 8.3.8
+  - Fix vulnerability that made it possible to enumerate private projects belonging to group
 
 v 8.3.7
   - No EE-specific changes
