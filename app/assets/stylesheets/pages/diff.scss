@@ -86,7 +86,7 @@
         }
 
         span {
-          white-space: pre;
+          white-space: pre-wrap;
         }
       }
     }
@@ -335,7 +335,7 @@
 }
 
 .diff-file .line_content {
-  white-space: pre;
+  white-space: pre-wrap;
 }
 
 .diff-wrap-lines .line_content {
