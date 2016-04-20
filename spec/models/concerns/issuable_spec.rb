@@ -212,4 +212,28 @@ describe Issue, "Issuable" do
       expect(issue.downvotes).to eq(1)
     end
   end
+
+  describe ".with_label" do
+    let(:example_label) { 'test1' }
+    let(:example_labels) { ['test1', 'test2'] }
+
+    it 'finds issue with 1 label' do
+      setup_labels([example_label])
+
+      expect(Issue.with_label(example_label).count).to eq(1)
+    end
+
+    it 'finds issue with 2 labels' do
+      setup_labels(example_labels)
+
+      expect(Issue.with_label(example_labels).to_a.count).to eq(1)
+    end
+
+    def setup_labels(label_names)
+      labels = label_names.map do |label|
+        create(:label, project: issue.project, title: label)
+      end
+      issue.labels << labels
+    end
+  end
 end

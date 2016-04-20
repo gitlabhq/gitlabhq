@@ -32,7 +32,7 @@ module MilestonesHelper
   end
 
   def milestone_issues_by_label_count(milestone, label, state:)
-    milestone.issues.with_label([label.title]).send(state).size
+    milestone.issues.with_label(label.title).send(state).size
   end
 
   def milestone_progress_bar(milestone)

@@ -270,8 +270,7 @@ class IssuableFinder
       if filter_by_no_label?
         items = items.without_label
       else
-        items = items.with_label(label_names.flatten)
-
+        items = items.with_label(label_names)
         if projects
           items = items.where(labels: { project_id: projects })
         end
@@ -282,7 +281,7 @@ class IssuableFinder
   end
 
   def label_names
-    params[:label_name].split(',')
+    params[:label_name].is_a?(String) ? params[:label_name].split(',') : params[:label_name]
   end
 
   def current_user_related?
