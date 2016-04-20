@@ -224,7 +224,7 @@ class @LabelsSelect
           selected_labels = $('.js-label-select').siblings('.dropdown-menu-labels').find('.is-active')
 
           if selected and selected.title?
-            if selected_labels and selected_labels.length > 1
+            if selected_labels.length > 1
               "#{selected.title} +#{selected_labels.length - 1} more"
             else
               selected.title
@@ -247,7 +247,7 @@ class @LabelsSelect
         hidden: ->
           page = $('body').data 'page'
           isIssueIndex = page is 'projects:issues:index'
-          isMRIndex = page is page is 'projects:merge_requests:index'
+          isMRIndex = page is 'projects:merge_requests:index'
 
           $selectbox.hide()
           # display:block overrides the hide-collapse rule
@@ -256,11 +256,8 @@ class @LabelsSelect
             if $dropdown.hasClass('js-filter-submit') and (isIssueIndex or isMRIndex)
               selectedLabels = $dropdown
                 .closest('form')
-                .find("input[type='hidden'][name='#{$dropdown.data('fieldName')}']")
-              Issues.filterResults(
-                $dropdown.closest('form'),
-                $dropdown.data('fieldName')
-              )
+                .find("input:hidden[name='#{$dropdown.data('fieldName')}']")
+              Issues.filterResults $dropdown.closest('form')
             else if $dropdown.hasClass('js-filter-submit')
               $dropdown.closest('form').submit()
             else
@@ -270,7 +267,7 @@ class @LabelsSelect
         clicked: (label) ->
           page = $('body').data 'page'
           isIssueIndex = page is 'projects:issues:index'
-          isMRIndex = page is page is 'projects:merge_requests:index'
+          isMRIndex = page is 'projects:merge_requests:index'
           if $dropdown.hasClass('js-filter-submit') and (isIssueIndex or isMRIndex)
             if not $dropdown.hasClass 'js-multiselect'
               selectedLabel = label.title
