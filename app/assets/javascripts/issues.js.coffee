@@ -21,7 +21,7 @@
     Issue.labelRow = _.template(
       '<% _.each(labels, function(label){ %>
         <span class="label-row">
-          <a href="#"><span class="label color-label has-tooltip" style="background-color: <%= label.color %>; color: #FFFFFF" title="<%= label.description %>" data-container="body"><%= label.title %></span></a>
+          <a href="#"><span class="label color-label has-tooltip" style="background-color: <%= label.color %>; color: #FFFFFF" title="<%= _.escape(label.description) %>" data-container="body"><%= _.escape(label.title) %></span></a>
         </span>
       <% }); %>'
     )

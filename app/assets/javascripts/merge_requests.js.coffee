@@ -3,7 +3,6 @@
 #
 @MergeRequests =
   init: ->
-    $('.filtered-labels').hide()
     MergeRequests.initSearch()
 
   # Make sure we trigger ajax request only after user stop typing
