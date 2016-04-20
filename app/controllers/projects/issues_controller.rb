@@ -128,10 +128,7 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def related_branches
-    merge_requests = @issue.referenced_merge_requests(current_user)
-
-    @related_branches = @issue.related_branches -
-      merge_requests.map(&:source_branch)
+    @related_branches = @issue.related_branches(current_user)
 
     respond_to do |format|
       format.json do

@@ -11,6 +11,8 @@ module Gitlab
     module Instrumentation
       SERIES = 'method_calls'
 
+      PROXY_IVAR = :@__gitlab_instrumentation_proxy
+
       def self.configure
         yield self
       end
@@ -91,6 +93,18 @@ module Gitlab
         end
       end
 
+      # Returns true if a module is instrumented.
+      #
+      # mod - The module to check
+      def self.instrumented?(mod)
+        mod.instance_variable_defined?(PROXY_IVAR)
+      end
+
+      # Returns the proxy module (if any) of `mod`.
+      def self.proxy_module(mod)
+        mod.instance_variable_get(PROXY_IVAR)
+      end
+
       # Instruments a method.
       #
       # type - The type (:class or :instance) of method to instrument.
@@ -99,9 +113,8 @@ module Gitlab
       def self.instrument(type, mod, name)
         return unless Metrics.enabled?
 
-        name       = name.to_sym
-        alias_name = :"_original_#{name}"
-        target     = type == :instance ? mod : mod.singleton_class
+        name   = name.to_sym
+        target = type == :instance ? mod : mod.singleton_class
 
         if type == :instance
           target = mod
@@ -112,6 +125,12 @@ module Gitlab
           label  = "#{mod.name}.#{name}"
           method = mod.method(name)
         end
+
+        unless instrumented?(target)
+          target.instance_variable_set(PROXY_IVAR, Module.new)
+        end
+
+        proxy_module = self.proxy_module(target)
 
         # Some code out there (e.g. the "state_machine" Gem) checks the arity of
         # a method to make sure it only passes arguments when the method expects
@@ -125,17 +144,13 @@ module Gitlab
           args_signature = '*args, &block'
         end
 
-        send_signature = "__send__(#{alias_name.inspect}, #{args_signature})"
-
-        target.class_eval <<-EOF, __FILE__, __LINE__ + 1
-          alias_method #{alias_name.inspect}, #{name.inspect}
-
+        proxy_module.class_eval <<-EOF, __FILE__, __LINE__ + 1
           def #{name}(#{args_signature})
             trans = Gitlab::Metrics::Instrumentation.transaction
 
             if trans
               start    = Time.now
-              retval   = #{send_signature}
+              retval   = super
               duration = (Time.now - start) * 1000.0
 
               if duration >= Gitlab::Metrics.method_call_threshold
@@ -148,10 +163,12 @@ module Gitlab
 
               retval
             else
-              #{send_signature}
+              super
             end
           end
         EOF
+
+        target.prepend(proxy_module)
       end
 
       # Small layer of indirection to make it easier to stub out the current

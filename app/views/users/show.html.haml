@@ -6,8 +6,6 @@
 = content_for :meta_tags do
   = auto_discovery_link_tag(:atom, user_url(@user, format: :atom), title: "#{@user.name} activity")
 
-= render 'shared/show_aside'
-
 .user-profile
   .cover-block
     .cover-controls

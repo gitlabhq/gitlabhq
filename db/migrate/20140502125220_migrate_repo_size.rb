@@ -1,19 +1,26 @@
 class MigrateRepoSize < ActiveRecord::Migration
   def up
-    Project.reset_column_information
-    Project.find_each(batch_size: 500) do |project|
+    project_data = execute('SELECT projects.id, namespaces.path AS namespace_path, projects.path AS project_path FROM projects LEFT JOIN namespaces ON projects.namespace_id = namespaces.id')
+
+    project_data.each do |project|
+      id = project['id']
+      namespace_path = project['namespace_path'] || ''
+      path = File.join(Gitlab.config.gitlab_shell.repos_path, namespace_path, project['project_path'] + '.git')
+
       begin
-        if project.empty_repo?
+        repo = Gitlab::Git::Repository.new(path)
+        if repo.empty?
           print '-'
         else
-          project.update_repository_size
+          size = repo.size
           print '.'
+          execute("UPDATE projects SET repository_size = #{size} WHERE id = #{id}")
         end
-      rescue
-        print 'F'
+      rescue => e
+        puts "\nFailed to update project #{id}: #{e}"
       end
     end
-    puts 'Done'
+    puts "\nDone"
   end
 
   def down

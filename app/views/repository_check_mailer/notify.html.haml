@@ -3,3 +3,6 @@
 
 %p
   = link_to "See the affected projects in the GitLab admin panel", admin_namespaces_projects_url(last_repository_check_failed: 1)
+
+%p
+  You are receiving this message because you are a GitLab administrator for #{Gitlab.config.gitlab.url}.

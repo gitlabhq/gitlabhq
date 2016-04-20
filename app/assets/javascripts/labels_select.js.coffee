@@ -29,13 +29,13 @@ class @LabelsSelect
       if issueUpdateURL
         labelHTMLTemplate = _.template(
             '<% _.each(labels, function(label){ %>
-            <a href="<%= ["",issueURLSplit[1], issueURLSplit[2],""].join("/") %>issues?label_name=<%= label.title %>">
-            <span class="label has-tooltip color-label" title="<%= label.description %>" style="background-color: <%= label.color %>;">
-            <%= label.title %>
+            <a href="<%= ["",issueURLSplit[1], issueURLSplit[2],""].join("/") %>issues?label_name=<%= _.escape(label.title) %>">
+            <span class="label has-tooltip color-label" title="<%= _.escape(label.description) %>" style="background-color: <%= label.color %>;">
+            <%= _.escape(label.title) %>
             </span>
             </a>
             <% }); %>'
-        );
+        )
         labelNoneHTMLTemplate = _.template('<div class="light">None</div>')
 
       if newLabelField.length
@@ -191,7 +191,7 @@ class @LabelsSelect
           "<li>
             <a href='#' class='#{selectedClass}'>
               #{color}
-              #{label.title}
+              #{_.escape(label.title)}
             </a>
           </li>"
         filterable: true

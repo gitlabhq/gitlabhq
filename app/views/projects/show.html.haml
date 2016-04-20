@@ -36,9 +36,9 @@
       %li
         = link_to 'Changelog', changelog_path(@project)
 
-    - if @repository.license
+    - if @repository.license_blob
       %li
-        = link_to 'License', license_path(@project)
+        = link_to license_short_name(@project), license_path(@project)
 
     - if @repository.contribution_guide
       %li
@@ -47,15 +47,15 @@
     - if current_user && can_push_branch?(@project, @project.default_branch)
       - unless @repository.changelog
         %li.missing
-          = link_to add_changelog_path(@project) do
+          = link_to add_special_file_path(@project, file_name: 'CHANGELOG') do
             Add Changelog
-      - unless @repository.license
+      - unless @repository.license_blob
         %li.missing
-          = link_to add_license_path(@project) do
+          = link_to add_special_file_path(@project, file_name: 'LICENSE') do
             Add License
       - unless @repository.contribution_guide
         %li.missing
-          = link_to add_contribution_guide_path(@project) do
+          = link_to add_special_file_path(@project, file_name: 'CONTRIBUTING.md', commit_message: 'Add contribution guide') do
             Add Contribution guide
 
 - if @repository.commit
