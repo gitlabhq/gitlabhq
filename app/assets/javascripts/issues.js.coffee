@@ -29,11 +29,9 @@
   toggleLabelFilters: ()->
     $filteredLabels = $('.filtered-labels')
     if $filteredLabels.find('.label-row').length > 0
-      #$filteredLabels.show()
-      $filteredLabels.slideDown().css({'overflow':'visible'})
+      $filteredLabels.removeClass('hidden')
     else
-      #$filteredLabels.hide()
-      $filteredLabels.slideUp().css({'overflow':'visible'})
+      $filteredLabels.addClass('hidden')
 
   reload: ->
     Issues.initChecks()
@@ -96,25 +94,11 @@
         Issues.reload()
         Issues.updateStateFilters()
         $filteredLabels = $('.filtered-labels')
-        $filteredLabelsSpans = $filteredLabels.find('.label-row')
-        gl.animate.animateEach(
-          $filteredLabelsSpans, 'fadeOutDown', 20,
-            cssStart:
-              opacity: 1
-            cssEnd:
-              opacity: 0
-        ).then( ->
-          if typeof Issue.labelRow is 'function'
-            $filteredLabels.html(Issue.labelRow(data))
-          Issues.toggleLabelFilters()
-          $spans = $filteredLabels.find('.label-row')
-          $spans.css('opacity', 0)
-          return gl.animate.animateEach $spans, 'fadeInUp', 20,
-            cssStart:
-              opacity: 0
-            cssEnd:
-              opacity: 1
-        )
+
+        if typeof Issue.labelRow is 'function'
+          $filteredLabels.html(Issue.labelRow(data))
+
+        Issues.toggleLabelFilters()
 
       dataType: "json"
 

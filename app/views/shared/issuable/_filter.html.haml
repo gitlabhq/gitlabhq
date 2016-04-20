@@ -46,7 +46,7 @@
           .filter-item.inline
             = button_tag "Update issues", class: "btn update_selected_issues btn-save"
 
-  .gray-content-block.second-block.filtered-labels
+  .gray-content-block.second-block.filtered-labels{ class: ("hidden" if !@labels) }
     - if @labels
       = render "shared/labels_row", labels: @labels
 
