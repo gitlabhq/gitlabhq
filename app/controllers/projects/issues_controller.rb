@@ -33,14 +33,15 @@ class Projects::IssuesController < Projects::ApplicationController
     end
 
     @issues = @issues.page(params[:page])
-    @label = @project.labels.find_by(title: params[:label_name])
+    @labels = @project.labels.where(title: params[:label_name])
 
     respond_to do |format|
       format.html
       format.atom { render layout: false }
       format.json do
         render json: {
-          html: view_to_html_string("projects/issues/_issues")
+          html: view_to_html_string("projects/issues/_issues"),
+          labels: @labels.as_json(methods: :text_color)
         }
       end
     end
@@ -191,7 +192,7 @@ class Projects::IssuesController < Projects::ApplicationController
   def issue_params
     params.require(:issue).permit(
       :title, :assignee_id, :position, :description, :confidential,
-      :milestone_id, :state_event, :task_num, label_ids: []
+      :milestone_id, :due_date, :state_event, :task_num, label_ids: []
     )
   end
 
