@@ -800,11 +800,13 @@ describe Repository, models: true do
 
   describe "Elastic search", elastic: true do
     before do
+      stub_application_setting(elasticsearch_search: true, elasticsearch_indexing: true)
       Repository.__elasticsearch__.create_index!
     end
 
     after do
       Repository.__elasticsearch__.delete_index!
+      stub_application_setting(elasticsearch_search: false, elasticsearch_indexing: false)
     end
 
     describe :find_commits_by_message_with_elastic do

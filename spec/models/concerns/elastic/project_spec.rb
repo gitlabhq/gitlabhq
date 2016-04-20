@@ -1,14 +1,14 @@
 require 'spec_helper'
 
-describe "Projects", elastic: true do
+describe Project, elastic: true do
   before do
-    allow(Gitlab.config.elasticsearch).to receive(:enabled).and_return(true)
-    Project.__elasticsearch__.create_index!
+    stub_application_setting(elasticsearch_search: true, elasticsearch_indexing: true)
+    described_class.__elasticsearch__.create_index!
   end
 
   after do
-    allow(Gitlab.config.elasticsearch).to receive(:enabled).and_return(false)
-    Project.__elasticsearch__.delete_index!
+    described_class.__elasticsearch__.delete_index!
+    stub_application_setting(elasticsearch_search: false, elasticsearch_indexing: false)
   end
 
   it "searches projects" do
@@ -18,11 +18,11 @@ describe "Projects", elastic: true do
     create :empty_project, path: 'someone_elses_project'
     project_ids = [project.id, project1.id, project2.id]
 
-    Project.__elasticsearch__.refresh_index!
+    described_class.__elasticsearch__.refresh_index!
 
-    expect(Project.elastic_search('test', options: { pids: project_ids }).total_count).to eq(1)
-    expect(Project.elastic_search('test1', options: { pids: project_ids }).total_count).to eq(1)
-    expect(Project.elastic_search('someone_elses_project', options: { pids: project_ids }).total_count).to eq(0)
+    expect(described_class.elastic_search('test', options: { pids: project_ids }).total_count).to eq(1)
+    expect(described_class.elastic_search('test1', options: { pids: project_ids }).total_count).to eq(1)
+    expect(described_class.elastic_search('someone_elses_project', options: { pids: project_ids }).total_count).to eq(0)
   end
 
   it "returns json with all needed elements" do

@@ -88,6 +88,10 @@ ActiveRecord::Schema.define(version: 20160615142710) do
     t.boolean  "send_user_confirmation_email",          default: false
     t.integer  "container_registry_token_expire_delay", default: 5
     t.text     "after_sign_up_text"
+    t.boolean  "elasticsearch_indexing",                default: false,       null: false
+    t.boolean  "elasticsearch_search",                  default: false,       null: false
+    t.string   "elasticsearch_host",                    default: "localhost"
+    t.string   "elasticsearch_port",                    default: "9200"
   end
 
   create_table "approvals", force: :cascade do |t|

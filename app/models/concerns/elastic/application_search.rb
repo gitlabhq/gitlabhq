@@ -1,14 +1,10 @@
 module Elastic
   module ApplicationSearch
     extend ActiveSupport::Concern
+    extend Gitlab::CurrentSettings
 
     included do
       include Elasticsearch::Model
-
-      self.__elasticsearch__.client = Elasticsearch::Client.new(
-        host: Gitlab.config.elasticsearch.host,
-        port: Gitlab.config.elasticsearch.port
-      )
 
       index_name [Rails.application.class.parent_name.downcase, self.name.downcase, Rails.env].join('-')
 
@@ -31,13 +27,13 @@ module Elastic
         }
 
       after_commit on: :create do
-        if Gitlab.config.elasticsearch.enabled && self.searchable?
+        if current_application_settings.elasticsearch_indexing? && self.searchable?
           ElasticIndexerWorker.perform_async(:index, self.class.to_s, self.id)
         end
       end
 
       after_commit on: :update do
-        if Gitlab.config.elasticsearch.enabled && self.searchable?
+        if current_application_settings.elasticsearch_indexing? && self.searchable?
           ElasticIndexerWorker.perform_async(
             :update,
             self.class.to_s,
@@ -48,12 +44,12 @@ module Elastic
       end
 
       after_commit on: :destroy do
-        if Gitlab.config.elasticsearch.enabled && self.searchable?
+        if current_application_settings.elasticsearch_indexing? && self.searchable?
           ElasticIndexerWorker.perform_async(:delete, self.class.to_s, self.id)
         end
       end
 
-      # Should be overridden in the models where not eveything should be indexed
+      # Should be overridden in the models where some records should be skipped
       def searchable?
         true
       end

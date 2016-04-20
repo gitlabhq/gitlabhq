@@ -1,14 +1,14 @@
 require 'spec_helper'
 
-describe "Issue", elastic: true do
+describe Issue, elastic: true do
   before do
-    allow(Gitlab.config.elasticsearch).to receive(:enabled).and_return(true)
-    Issue.__elasticsearch__.create_index!
+    stub_application_setting(elasticsearch_search: true, elasticsearch_indexing: true)
+    described_class.__elasticsearch__.create_index!
   end
 
   after do
-    allow(Gitlab.config.elasticsearch).to receive(:enabled).and_return(false)
-    Issue.__elasticsearch__.delete_index!
+    described_class.__elasticsearch__.delete_index!
+    stub_application_setting(elasticsearch_search: false, elasticsearch_indexing: false)
   end
 
   it "searches issues" do
@@ -21,11 +21,11 @@ describe "Issue", elastic: true do
     # The issue I have no access to
     create :issue, title: 'bla-bla term'
 
-    Issue.__elasticsearch__.refresh_index!
+    described_class.__elasticsearch__.refresh_index!
 
     options = { project_ids: [project.id] }
 
-    expect(Issue.elastic_search('term', options: options).total_count).to eq(2)
+    expect(described_class.elastic_search('term', options: options).total_count).to eq(2)
   end
 
   it "returns json with all needed elements" do

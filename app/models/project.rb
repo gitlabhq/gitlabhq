@@ -229,7 +229,7 @@ class Project < ActiveRecord::Base
         project.save
       end
 
-      if Gitlab.config.elasticsearch.enabled
+      if current_application_settings.elasticsearch_indexing?
         project.repository.index_blobs
         project.repository.index_commits
       end

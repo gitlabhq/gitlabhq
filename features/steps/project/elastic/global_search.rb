@@ -1,8 +1,11 @@
+require Rails.root.join('spec', 'support', 'stub_configuration')
+
 class Spinach::Features::GlobalSearch < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedPaths
   include SharedProject
   include SharedElastic
+  include StubConfiguration
 
   before do
     [::Project, Issue, MergeRequest, Milestone].each do |model|
@@ -15,7 +18,7 @@ class Spinach::Features::GlobalSearch < Spinach::FeatureSteps
       model.__elasticsearch__.delete_index!
     end
 
-    allow(Gitlab.config.elasticsearch).to receive(:enabled).and_return(false)
+    stub_application_setting(elasticsearch_search: false, elasticsearch_indexing: false)
   end
 
   step 'project has all data available for the search' do
