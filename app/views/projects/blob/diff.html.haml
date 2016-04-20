@@ -10,7 +10,7 @@
     %tr.line_holder{ id: line_old }
       %td.old_line.diff-line-num{ data: { linenumber: line_old } }
         = link_to raw(line_old), "##{line_old}"
-      %td.new_line.diff-line-num
+      %td.new_line.diff-line-num{ data: { linenumber: line_old } }
         = link_to raw(line_new) , "##{line_old}"
       %td.line_content.noteable_line==#{' ' * @form.indent}#{line}
 
