@@ -201,7 +201,7 @@ class @LabelsSelect
             callback data
 
         renderRow: (label) ->
-          removesAll = label.id is 0 or label.id is undefined
+          removesAll = label.id is 0 or not label.id?
 
           selectedClass = []
           if $form.find("input[type='hidden']\
