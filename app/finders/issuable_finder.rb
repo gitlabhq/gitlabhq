@@ -39,6 +39,7 @@ class IssuableFinder
     items = by_assignee(items)
     items = by_author(items)
     items = by_label(items)
+    items = by_due_date(items)
     sort(items)
   end
 
@@ -117,7 +118,7 @@ class IssuableFinder
   end
 
   def filter_by_no_label?
-    labels? && params[:label_name] == Label::None.title
+    labels? && params[:label_name].include?(Label::None.title)
   end
 
   def labels
@@ -278,7 +279,45 @@ class IssuableFinder
       end
     end
 
+    # When filtering by multiple labels we may end up duplicating issues (if one
+    # has multiple labels). This ensures we only return unique issues.
+    items.distinct
+  end
+
+  def by_due_date(items)
+    if due_date?
+      if filter_by_no_due_date?
+        items = items.without_due_date
+      elsif filter_by_overdue?
+        items = items.due_before(Date.today)
+      elsif filter_by_due_this_week?
+        items = items.due_between(Date.today.beginning_of_week, Date.today.end_of_week)
+      elsif filter_by_due_this_month?
+        items = items.due_between(Date.today.beginning_of_month, Date.today.end_of_month)
+      end
+    end
+
     items
+  end
+
+  def filter_by_no_due_date?
+    due_date? && params[:due_date] == Issue::NoDueDate.name
+  end
+
+  def filter_by_overdue?
+    due_date? && params[:due_date] == Issue::Overdue.name
+  end
+
+  def filter_by_due_this_week?
+    due_date? && params[:due_date] == Issue::DueThisWeek.name
+  end
+
+  def filter_by_due_this_month?
+    due_date? && params[:due_date] == Issue::DueThisMonth.name
+  end
+
+  def due_date?
+    params[:due_date].present? && klass.column_names.include?('due_date')
   end
 
   def label_names

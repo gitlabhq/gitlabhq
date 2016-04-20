@@ -81,16 +81,8 @@ ul.notes {
         @include md-typography;
 
         // On diffs code should wrap nicely and not overflow
-        p {
-          code {
-            white-space: normal;
-          }
-
-          pre {
-            code {
-              white-space: pre;
-            }
-          }
+        code {
+          white-space: pre-wrap;
         }
 
         // Reset ul style types since we're nested inside a ul already
@@ -137,7 +129,7 @@ ul.notes {
     margin-right: 10px;
   }
   .line_content {
-    white-space: pre;
+    white-space: pre-wrap;
   }
 }
 
@@ -171,11 +163,6 @@ ul.notes {
 
       &.parallel {
         border-width: 1px;
-
-        .code,
-        code {
-          white-space: pre-wrap;
-        }
       }
 
       .notes {
@@ -308,7 +295,7 @@ ul.notes {
     padding: 4px;
     font-size: 16px;
     color: $gl-link-color;
-    margin-left: -60px;
+    margin-left: -56px;
     position: absolute;
     z-index: 10;
     width: 32px;

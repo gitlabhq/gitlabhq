@@ -90,3 +90,12 @@
   box-shadow: none;
   width: 100%;
 }
+
+.md {
+  &.md-preview-holder {
+    code {
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+  }
+}
