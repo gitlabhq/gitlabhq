@@ -27,7 +27,6 @@
     %pre.body
       = strip_gpg_signature(@tag.message)
 
-
 .append-bottom-default.prepend-top-default
   - if @release.description.present?
     .description
