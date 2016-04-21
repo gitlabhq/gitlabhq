@@ -129,24 +129,9 @@
                   Label
                 = icon('chevron-down')
               .dropdown-menu.dropdown-select.dropdown-menu-paging.dropdown-menu-labels.dropdown-menu-selectable
-                .dropdown-page-one
-                  = dropdown_title("Assign labels")
-                  = dropdown_filter("Search labels")
-                  = dropdown_content
-                  - if @project
-                    = dropdown_footer do
-                      %ul.dropdown-footer-list
-                        - if can? current_user, :admin_label, @project
-                          %li
-                            %a.dropdown-toggle-page{href: "#"}
-                              Create new
-                        %li
-                          = link_to namespace_project_labels_path(@project.namespace, @project) do
-                            - if can? current_user, :admin_label, @project
-                              Manage labels
-                            - else
-                              View labels
-                  = dropdown_loading
+                = render partial: "shared/issuable/label_page_default"
+                - if can? current_user, :admin_label, @project and @project
+                  = render partial: "shared/issuable/label_page_create"
 
       = render "shared/issuable/participants", participants: issuable.participants(current_user)
       - if current_user
