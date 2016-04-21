@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 feature 'Issue filtering by Labels', feature: true do
+  include WaitForAjax
+
   let(:project) { create(:project, :public) }
   let!(:user)   { create(:user)}
   let!(:label)  { create(:label, project: project) }
@@ -33,10 +35,10 @@ feature 'Issue filtering by Labels', feature: true do
   context 'filter by label bug', js: true do
     before do
       page.find('.js-label-select').click
-      sleep 0.5
+      wait_for_ajax
       execute_script("$('.dropdown-menu-labels li:contains(\"bug\") a').click()")
       page.first('.labels-filter .dropdown-title .dropdown-menu-close-icon').click
-      sleep 2
+      wait_for_ajax
     end
 
     it 'should show issue "Bugfix1" and "Bugfix2" in issues list' do
@@ -61,10 +63,10 @@ feature 'Issue filtering by Labels', feature: true do
   context 'filter by label feature', js: true do
     before do
       page.find('.js-label-select').click
-      sleep 0.5
+      wait_for_ajax
       execute_script("$('.dropdown-menu-labels li:contains(\"feature\") a').click()")
       page.first('.labels-filter .dropdown-title .dropdown-menu-close-icon').click
-      sleep 2
+      wait_for_ajax
     end
 
     it 'should show issue "Feature1" in issues list' do
@@ -89,10 +91,10 @@ feature 'Issue filtering by Labels', feature: true do
   context 'filter by label enhancement', js: true do
     before do
       page.find('.js-label-select').click
-      sleep 0.5
+      wait_for_ajax
       execute_script("$('.dropdown-menu-labels li:contains(\"enhancement\") a').click()")
       page.first('.labels-filter .dropdown-title .dropdown-menu-close-icon').click
-      sleep 2
+      wait_for_ajax
     end
 
     it 'should show issue "Bugfix2" in issues list' do
@@ -117,11 +119,11 @@ feature 'Issue filtering by Labels', feature: true do
   context 'filter by label enhancement or feature', js: true do
     before do
       page.find('.js-label-select').click
-      sleep 0.5
+      wait_for_ajax
       execute_script("$('.dropdown-menu-labels li:contains(\"enhancement\") a').click()")
       execute_script("$('.dropdown-menu-labels li:contains(\"feature\") a').click()")
       page.first('.labels-filter .dropdown-title .dropdown-menu-close-icon').click
-      sleep 2
+      wait_for_ajax
     end
 
     it 'should not show "Bugfix1" or "Feature1" in issues list' do
@@ -142,11 +144,11 @@ feature 'Issue filtering by Labels', feature: true do
   context 'filter by label enhancement and bug in issues list', js: true do
     before do
       page.find('.js-label-select').click
-      sleep 0.5
+      wait_for_ajax
       execute_script("$('.dropdown-menu-labels li:contains(\"enhancement\") a').click()")
       execute_script("$('.dropdown-menu-labels li:contains(\"bug\") a').click()")
       page.first('.labels-filter .dropdown-title .dropdown-menu-close-icon').click
-      sleep 2
+      wait_for_ajax
     end
 
     it 'should show issue "Bugfix2" in issues list' do
