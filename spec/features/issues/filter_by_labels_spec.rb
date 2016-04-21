@@ -6,12 +6,8 @@ feature 'Issue filtering by Labels', feature: true do
   let(:project) { create(:project, :public) }
   let!(:user)   { create(:user)}
   let!(:label)  { create(:label, project: project) }
-  let(:bug) { create(:label, project: project, title: 'bug') }
-  let(:feature) { create(:label, project: project, title: 'feature') }
-  let(:enhancement) { create(:label, project: project, title: 'enhancement') }
 
   before do
-
     bug = create(:label, project: project, title: 'bug')
     feature = create(:label, project: project, title: 'feature')
     enhancement = create(:label, project: project, title: 'enhancement')

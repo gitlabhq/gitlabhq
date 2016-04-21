@@ -214,41 +214,32 @@ describe Issue, "Issuable" do
   end
 
   describe ".with_label" do
-    let(:example_label) { 'test1' }
-    let(:example_labels) { ['test1', 'test2'] }
+    let(:project) { create(:project, :public) }
+    let(:bug) { create(:label, project: project, title: 'bug') }
+    let(:feature) { create(:label, project: project, title: 'feature') }
+    let(:enhancement) { create(:label, project: project, title: 'enhancement') }
+    let(:issue1) { create(:issue, title: "Bugfix1", project: project) }
+    let(:issue2) { create(:issue, title: "Bugfix2", project: project) }
+    let(:issue3) { create(:issue, title: "Feature1", project: project) }
 
     before(:each) do
-      setup_other_issue
+      issue1.labels << bug
+      issue1.labels << feature
+      issue2.labels << bug
+      issue2.labels << enhancement
+      issue3.labels << feature
     end
 
-    it 'finds the correct issue with 1 label' do
-      setup_labels([example_label])
-
-      expect(Issue.with_label(example_label)).to eq([issue])
+    it 'finds the correct issue containing just enhancement label' do
+      expect(Issue.with_label(enhancement.title)).to match_array([issue2])
     end
 
-    it 'finds the correct issue with 2 labels' do
-      setup_labels(example_labels)
-
-      expect(Issue.with_label(example_labels)).to eq([issue])
+    it 'finds the correct issues containing the same label' do
+      expect(Issue.with_label(bug.title)).to match_array([issue1, issue2])
     end
 
-    it 'finds the correct issue with 1 of 2 labels' do
-      setup_labels(example_labels)
-
-      expect(Issue.with_label(example_label)).to eq([issue])
-    end
-
-    def setup_labels(label_names)
-      labels = label_names.map do |label|
-        create(:label, project: issue.project, title: label)
-      end
-      issue.labels << labels
-    end
-
-    def setup_other_issue
-      issue2 = create(:issue)
-      issue2.labels << create(:label, project: issue2.project, title: 'other_label')
+    it 'finds the correct issues containing only both labels' do
+      expect(Issue.with_label([bug.title, enhancement.title])).to match_array([issue2])
     end
   end
 end
