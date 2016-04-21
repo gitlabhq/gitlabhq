@@ -23,7 +23,7 @@ module SearchHelper
     if collection.count > 0
       from = collection.offset_value + 1
       to = collection.offset_value + collection.length
-      count = collection.count
+      count = collection.total_count
 
       "Showing #{from} - #{to} of #{count} #{scope.humanize(capitalize: false)} for \"#{term}\""
     end
