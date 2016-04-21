@@ -225,6 +225,7 @@ class @SearchAutocomplete
               <i class='location-text'>#{category}#{value}</i>
             </span>"
     @locationBadgeEl.html(html)
+    @searchInput.trigger('locationBadgeAdded')
     @wrap.addClass('has-location-badge')
 
   restoreOriginalState: ->
@@ -261,7 +262,7 @@ class @SearchAutocomplete
 
     # Reset state
     @resetSearchState()
-
+    @searchInput.trigger('locationBadgeRemoved')
     @wrap.removeClass('has-location-badge')
 
   disableAutocomplete: ->
