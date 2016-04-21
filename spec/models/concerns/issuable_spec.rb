@@ -217,16 +217,26 @@ describe Issue, "Issuable" do
     let(:example_label) { 'test1' }
     let(:example_labels) { ['test1', 'test2'] }
 
-    it 'finds issue with 1 label' do
-      setup_labels([example_label])
-
-      expect(Issue.with_label(example_label).size).to eq(1)
+    before(:each) do
+      setup_other_issue
     end
 
-    it 'finds issue with 2 labels' do
+    it 'finds the correct issue with 1 label' do
+      setup_labels([example_label])
+
+      expect(Issue.with_label(example_label)).to eq([issue])
+    end
+
+    it 'finds the correct issue with 2 labels' do
       setup_labels(example_labels)
 
-      expect(Issue.with_label(example_labels).to_a.size).to eq(1)
+      expect(Issue.with_label(example_labels)).to eq([issue])
+    end
+
+    it 'finds the correct issue with 1 of 2 labels' do
+      setup_labels(example_labels)
+
+      expect(Issue.with_label(example_label)).to eq([issue])
     end
 
     def setup_labels(label_names)
@@ -234,6 +244,11 @@ describe Issue, "Issuable" do
         create(:label, project: issue.project, title: label)
       end
       issue.labels << labels
+    end
+
+    def setup_other_issue
+      issue2 = create(:issue)
+      issue2.labels << create(:label, project: issue2.project, title: 'other_label')
     end
   end
 end
