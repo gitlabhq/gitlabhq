@@ -7,7 +7,7 @@ module Gitlab
           title: raw_data.title,
           description: description,
           source_project: source_project,
-          source_branch: source_branch.name,
+          source_branch: source_branch,
           target_project: target_project,
           target_branch: target_branch.name,
           state: state,
@@ -25,6 +25,22 @@ module Gitlab
 
       def valid?
         !cross_project? && source_branch.present? && target_branch.present?
+      end
+
+      def cross_project?
+        source_repo.present? && target_repo.present? && source_repo.id != target_repo.id
+      end
+
+      def source_branch_exists?
+        source_project.repository.branch_names.include?(source_branch)
+      end
+
+      def source_branch
+        raw_data.head.ref
+      end
+
+      def source_sha
+        raw_data.head.sha
       end
 
       private
@@ -51,10 +67,6 @@ module Gitlab
         raw_data.body || ""
       end
 
-      def cross_project?
-        source_repo.present? && target_repo.present? && source_repo.id != target_repo.id
-      end
-
       def description
         formatter.author_line(author) + body
       end
@@ -71,10 +83,6 @@ module Gitlab
 
       def source_repo
         raw_data.head.repo
-      end
-
-      def source_branch
-        source_project.repository.find_branch(raw_data.head.ref)
       end
 
       def target_project

@@ -3,12 +3,15 @@ module Gitlab
     class Importer
       include Gitlab::ShellAdapter
 
-      attr_reader :project, :client
+      attr_reader :client, :project, :repo, :repo_url
 
       def initialize(project)
         @project = project
-        if import_data_credentials
-          @client = Client.new(import_data_credentials[:user])
+        @repo = project.import_source
+        @repo_url = project.import_url
+
+        if credentials
+          @client = Client.new(credentials[:user])
           @formatter = Gitlab::ImportFormatter.new
         else
           raise Projects::ImportService::Error, "Unable to find project import data credentials for project ID: #{@project.id}"
@@ -22,8 +25,8 @@ module Gitlab
 
       private
 
-      def import_data_credentials
-        @import_data_credentials ||= project.import_data.credentials if project.import_data
+      def credentials
+        @credentials ||= project.import_data.credentials if project.import_data
       end
 
       def import_labels
@@ -68,20 +71,29 @@ module Gitlab
       end
 
       def import_pull_requests
-        client.pull_requests(project.import_source, state: :all,
-                                                    sort: :created,
-                                                    direction: :asc).each do |raw_data|
-          pull_request = PullRequestFormatter.new(project, raw_data)
+        pull_requests = client.pull_requests(repo, state: :all, sort: :created, direction: :asc)
+                              .map { |raw| PullRequestFormatter.new(project, raw) }
+                              .reject(&:cross_project?)
 
-          if pull_request.valid?
-            merge_request = MergeRequest.new(pull_request.attributes)
+        source_branches_removed = pull_requests.reject(&:source_branch_exists?)
+        source_branches_removed.each do |pull_request|
+          client.create_ref(repo, "refs/heads/#{pull_request.source_branch}", pull_request.source_sha)
+        end
 
-            if merge_request.save
-              apply_labels(pull_request.number, merge_request)
-              import_comments(pull_request.number, merge_request)
-              import_comments_on_diff(pull_request.number, merge_request)
-            end
+        project.repository.fetch_ref(repo_url, '+refs/heads/*', 'refs/heads/*')
+
+        pull_requests.each do |pull_request|
+          merge_request = MergeRequest.new(pull_request.attributes)
+
+          if merge_request.save
+            apply_labels(pull_request.number, merge_request)
+            import_comments(pull_request.number, merge_request)
+            import_comments_on_diff(pull_request.number, merge_request)
           end
+        end
+
+        source_branches_removed.each do |pull_request|
+          client.delete_ref(repo, "heads/#{pull_request.source_branch}")
         end
 
         true
