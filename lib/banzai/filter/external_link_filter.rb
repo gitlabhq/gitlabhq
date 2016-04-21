@@ -15,7 +15,7 @@ module Banzai
           # Skip internal links
           next if link.start_with?(internal_url)
 
-          node.set_attribute('rel', 'nofollow')
+          node.set_attribute('rel', 'nofollow noreferrer')
         end
 
         doc
