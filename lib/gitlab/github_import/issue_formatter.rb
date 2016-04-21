@@ -5,6 +5,7 @@ module Gitlab
         {
           iid: number,
           project: project,
+          milestone: milestone,
           title: raw_data.title,
           description: description,
           state: state,
@@ -53,6 +54,12 @@ module Gitlab
 
       def description
         @formatter.author_line(author) + body
+      end
+
+      def milestone
+        if raw_data.milestone.present?
+          project.milestones.find_by(iid: raw_data.milestone.number)
+        end
       end
 
       def state

@@ -58,6 +58,6 @@
               %th Coverage
             %th
 
-        = render @builds, commit_sha: true, stage: true, allow_retry: true, coverage: @project.build_coverage_enabled?
+        = render @builds, commit_sha: true, ref: true, stage: true, allow_retry: true, coverage: @project.build_coverage_enabled?
 
     = paginate @builds, theme: 'gitlab'

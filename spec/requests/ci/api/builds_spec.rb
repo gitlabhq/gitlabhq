@@ -20,8 +20,8 @@ describe Ci::API::API do
 
     describe "POST /builds/register" do
       it "should start a build" do
-        commit = FactoryGirl.create(:ci_commit, project: project)
-        commit.create_builds('master', false, nil)
+        commit = FactoryGirl.create(:ci_commit, project: project, ref: 'master')
+        commit.create_builds(nil)
         build = commit.builds.first
 
         post ci_api("/builds/register"), token: runner.token, info: { platform: :darwin }
@@ -56,8 +56,8 @@ describe Ci::API::API do
       end
 
       it "returns options" do
-        commit = FactoryGirl.create(:ci_commit, project: project)
-        commit.create_builds('master', false, nil)
+        commit = FactoryGirl.create(:ci_commit, project: project, ref: 'master')
+        commit.create_builds(nil)
 
         post ci_api("/builds/register"), token: runner.token, info: { platform: :darwin }
 
@@ -66,8 +66,8 @@ describe Ci::API::API do
       end
 
       it "returns variables" do
-        commit = FactoryGirl.create(:ci_commit, project: project)
-        commit.create_builds('master', false, nil)
+        commit = FactoryGirl.create(:ci_commit, project: project, ref: 'master')
+        commit.create_builds(nil)
         project.variables << Ci::Variable.new(key: "SECRET_KEY", value: "secret_value")
 
         post ci_api("/builds/register"), token: runner.token, info: { platform: :darwin }
@@ -83,10 +83,10 @@ describe Ci::API::API do
 
       it "returns variables for triggers" do
         trigger = FactoryGirl.create(:ci_trigger, project: project)
-        commit = FactoryGirl.create(:ci_commit, project: project)
+        commit = FactoryGirl.create(:ci_commit, project: project, ref: 'master')
 
         trigger_request = FactoryGirl.create(:ci_trigger_request_with_variables, commit: commit, trigger: trigger)
-        commit.create_builds('master', false, nil, trigger_request)
+        commit.create_builds(nil, trigger_request)
         project.variables << Ci::Variable.new(key: "SECRET_KEY", value: "secret_value")
 
         post ci_api("/builds/register"), token: runner.token, info: { platform: :darwin }
@@ -103,8 +103,8 @@ describe Ci::API::API do
       end
 
       it "returns dependent builds" do
-        commit = FactoryGirl.create(:ci_commit, project: project)
-        commit.create_builds('master', false, nil, nil)
+        commit = FactoryGirl.create(:ci_commit, project: project, ref: 'master')
+        commit.create_builds(nil, nil)
         commit.builds.where(stage: 'test').each(&:success)
 
         post ci_api("/builds/register"), token: runner.token, info: { platform: :darwin }
@@ -153,6 +153,52 @@ describe Ci::API::API do
         it 'should respond with forbidden' do
           expect(response.status).to eq 403
         end
+      end
+    end
+
+    describe 'PATCH /builds/:id/trace.txt' do
+      let(:build) { create(:ci_build, :trace, runner_id: runner.id) }
+      let(:headers) { { Ci::API::Helpers::BUILD_TOKEN_HEADER => build.token, 'Content-Type' => 'text/plain' } }
+      let(:headers_with_range) { headers.merge({ 'Content-Range' => '11-20' }) }
+
+      before do
+        build.run!
+        patch ci_api("/builds/#{build.id}/trace.txt"), ' appended', headers_with_range
+      end
+
+      context 'when request is valid' do
+        it { expect(response.status).to eq 202 }
+        it { expect(build.reload.trace).to eq 'BUILD TRACE appended' }
+        it { expect(response.header).to have_key 'Range' }
+        it { expect(response.header).to have_key 'Build-Status' }
+      end
+
+      context 'when content-range start is too big' do
+        let(:headers_with_range) { headers.merge({ 'Content-Range' => '15-20' }) }
+
+        it { expect(response.status).to eq 416 }
+        it { expect(response.header).to have_key 'Range' }
+        it { expect(response.header['Range']).to eq '0-11' }
+      end
+
+      context 'when content-range start is too small' do
+        let(:headers_with_range) { headers.merge({ 'Content-Range' => '8-20' }) }
+
+        it { expect(response.status).to eq 416 }
+        it { expect(response.header).to have_key 'Range' }
+        it { expect(response.header['Range']).to eq '0-11' }
+      end
+
+      context 'when Content-Range header is missing' do
+        let(:headers_with_range) { headers.merge({}) }
+
+        it { expect(response.status).to eq 400 }
+      end
+
+      context 'when build has been errased' do
+        let(:build) { create(:ci_build, runner_id: runner.id, erased_at: Time.now) }
+
+        it { expect(response.status).to eq 403 }
       end
     end
 

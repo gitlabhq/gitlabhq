@@ -26,6 +26,10 @@
     line-height: 42px;
     padding-top: 7px;
     padding-bottom: 7px;
+
+    .pull-right {
+      height: 20px;
+    }
   }
 
   .editor-ref {
@@ -52,5 +56,10 @@
 
   .select2 {
     float: right;
+  }
+
+  .encoding-selector,
+  .license-selector {
+    display: inline-block;
   }
 }

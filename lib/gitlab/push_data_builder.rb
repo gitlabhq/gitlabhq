@@ -36,11 +36,12 @@ module Gitlab
           commit.hook_attrs(with_changed_files: true)
         end
 
-        type = Gitlab::Git.tag_ref?(ref) ? "tag_push" : "push"
+        type = Gitlab::Git.tag_ref?(ref) ? 'tag_push' : 'push'
 
         # Hash to be passed as post_receive_data
         data = {
           object_kind: type,
+          event_name: type,
           before: oldrev,
           after: newrev,
           ref: ref,

@@ -282,8 +282,8 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
     click_link 'Create empty bare repository'
   end
 
-  step 'I click on "add a file" link' do
-    click_link 'adding README'
+  step 'I click on "README" link' do
+    click_link 'README'
 
     # Remove pre-receive hook so we can push without auth
     FileUtils.rm_f(File.join(@project.repository.path, 'hooks', 'pre-receive'))

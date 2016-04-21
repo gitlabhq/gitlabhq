@@ -24,9 +24,9 @@
             %li{ class: issue_button_visibility(@merge_request, false) }
               = link_to 'Reopen', merge_request_path(@merge_request, merge_request: {state_event: :reopen }), method: :put, class: 'reopen-mr-link', title: 'Reopen merge request'
             %li
-              = link_to 'Edit', edit_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), class: 'issuable-edit', id: 'edit_merge_request'
+              = link_to 'Edit', edit_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), class: 'issuable-edit'
         = link_to 'Close', merge_request_path(@merge_request, merge_request: { state_event: :close }), method: :put, class: "hidden-xs hidden-sm btn btn-nr btn-grouped btn-close #{issue_button_visibility(@merge_request, true)}", title: 'Close merge request'
         = link_to 'Reopen', merge_request_path(@merge_request, merge_request: {state_event: :reopen }), method: :put, class: "hidden-xs hidden-sm btn btn-nr btn-grouped btn-reopen reopen-mr-link #{issue_button_visibility(@merge_request, false)}", title: 'Reopen merge request'
-        = link_to edit_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), class: "hidden-xs hidden-sm btn btn-nr btn-grouped issuable-edit", id: 'edit_merge_request' do
+        = link_to edit_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), class: "hidden-xs hidden-sm btn btn-nr btn-grouped issuable-edit" do
           = icon('pencil-square-o')
           Edit
