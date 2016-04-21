@@ -57,10 +57,11 @@ class IssuableBaseService < BaseService
   end
 
   def filter_milestone
-    return unless params[:milestone_id]
+    milestone_id = params[:milestone_id]
+    return unless milestone_id
 
-    if params[:milestone_id] == IssuableFinder::NONE ||
-        Milestone.find(params[:milestone_id]).try(:project) != project
+    if milestone_id == IssuableFinder::NONE ||
+        project.milestones.find_by(id: milestone_id).nil?
       params[:milestone_id] = ''
     end
   end
@@ -68,9 +69,8 @@ class IssuableBaseService < BaseService
   def filter_labels
     return if params[:label_ids].to_a.empty?
 
-    params[:label_ids].select! do |label_id|
-      Label.find(label_id).try(:project) == project
-    end
+    params[:label_ids] =
+      project.labels.where(id: params[:label_ids]).pluck(:id)
   end
 
   def update(issuable)

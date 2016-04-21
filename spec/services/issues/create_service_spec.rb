@@ -4,13 +4,13 @@ describe Issues::CreateService, services: true do
   let(:project) { create(:empty_project) }
   let(:user) { create(:user) }
 
-  describe :execute do
-    let(:issue) { Issues::CreateService.new(project, user, opts).execute }
+  describe '#execute' do
+    let(:issue) { described_class.new(project, user, opts).execute }
 
-    context 'valid params' do
+    context 'when params are valid' do
       let(:assignee) { create(:user) }
       let(:milestone) { create(:milestone, project: project) }
-      let(:labels) { create_list(:label, 4, project: project) }
+      let(:labels) { create_pair(:label, project: project) }
 
       before do
         project.team << [user, :master]
@@ -45,7 +45,7 @@ describe Issues::CreateService, services: true do
         expect(Todo.where(attributes).count).to eq 1
       end
 
-      context 'label that belongs to different project' do
+      context 'when label belongs to different project' do
         let(:label) { create(:label) }
 
         let(:opts) do
@@ -59,7 +59,7 @@ describe Issues::CreateService, services: true do
         end
       end
 
-      context 'milestone that belongs to different project' do
+      context 'when milestone belongs to different project' do
         let(:milestone) { create(:milestone) }
 
         let(:opts) do
