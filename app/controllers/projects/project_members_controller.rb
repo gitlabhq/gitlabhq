@@ -1,6 +1,6 @@
 class Projects::ProjectMembersController < Projects::ApplicationController
   # Authorize
-  before_action :authorize_admin_project_member!, except: :leave
+  before_action :authorize_admin_project_member!, except: [:leave, :index]
 
   def index
     @project_members = @project.project_members
