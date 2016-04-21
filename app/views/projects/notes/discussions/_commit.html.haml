@@ -8,21 +8,18 @@
       = "#{note.author.to_reference} started a discussion on #{commit_description}"
       - if commit
         = link_to(commit.short_id, namespace_project_commit_path(note.project.namespace, note.project, note.noteable), class: 'monospace')
+      = time_ago_with_tooltip(note.created_at, placement: "bottom", html_class: "discussion_updated_ago")
     .discussion-actions
       = link_to "#", class: "note-action-button discussion-toggle-button js-toggle-button" do
         %i.fa.fa-chevron-up
         Show/hide discussion
-    .last-update.hide.js-toggle-content
-      - last_note = discussion_notes.last
-      last updated by
-      = link_to_member(@project, last_note.author, avatar: false)
-      #{time_ago_with_tooltip(last_note.updated_at, placement: 'bottom', html_class: 'discussion_updated_ago')}
   .discussion-body.js-toggle-content
     - if note.for_diff_line?
       = render "projects/notes/discussions/diff", discussion_notes: discussion_notes, note: note
     - else
       .panel.panel-default
         .notes{ data: { discussion_id: discussion_notes.first.discussion_id } }
-          = render discussion_notes
+          %ul.notes.timeline
+            = render discussion_notes
         .discussion-reply-holder
           = link_to_reply_diff(discussion_notes.first)

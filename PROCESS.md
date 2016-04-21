@@ -105,6 +105,25 @@ sensitive as to how you word things. Use Emoji to express your feelings (heart,
 star, smile, etc.). Some good tips about giving feedback to merge requests is in
 the [Thoughtbot code review guide].
 
+## Feature Freeze
+
+5 working days before the 22nd the stable branches for the upcoming release will
+be frozen for major changes. Merge requests may still be merged into master
+during this period. By freezing the stable branches prior to a release there's
+no need to worry about last minute merge requests potentially breaking a lot of
+things.
+
+What is considered to be a major change is determined on a case by case basis as
+this definition depends very much on the context of changes. For example, a 5
+line change might have a big impact on the entire application. Ultimately the
+decision will be made by those reviewing a merge request and the release
+manager.
+
+During the feature freeze all merge requests that are meant to go into the next
+release should have the correct milestone assigned _and_ have the label
+~"Pick into Stable" set. Merge requests without a milestone and this label will
+not be merged into any stable branches.
+
 ## Copy & paste responses
 
 ### Improperly formatted issue

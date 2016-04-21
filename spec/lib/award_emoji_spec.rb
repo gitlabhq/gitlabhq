@@ -16,4 +16,11 @@ describe AwardEmoji do
       end
     end
   end
+
+  describe '.emoji_by_category' do
+    it "only contains known categories" do
+      undefined_categories = AwardEmoji.emoji_by_category.keys - AwardEmoji::CATEGORIES.keys
+      expect(undefined_categories).to be_empty
+    end
+  end
 end

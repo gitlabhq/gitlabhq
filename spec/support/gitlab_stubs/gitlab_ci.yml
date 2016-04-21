@@ -4,7 +4,7 @@ services:
 
 before_script:
   - gem install bundler
-  - bundle install 
+  - bundle install
   - bundle exec rake db:create
 
 variables:
@@ -17,7 +17,7 @@ types:
 
 rspec:
   script: "rake spec"
-  tags: 
+  tags:
     - ruby
     - postgres
   only:
@@ -26,27 +26,32 @@ rspec:
 spinach:
   script: "rake spinach"
   allow_failure: true
-  tags: 
+  tags:
     - ruby
     - mysql
   except:
     - tags
 
 staging:
+  variables:
+    KEY1: value1
+    KEY2: value2
   script: "cap deploy stating"
   type: deploy
-  tags: 
+  tags:
     - ruby
     - mysql
   except:
     - stable
 
 production:
+  variables:
+    DB_NAME: mysql
   type: deploy
-  script: 
+  script:
     - cap deploy production
     - cap notify
-  tags: 
+  tags:
     - ruby
     - mysql
   only:

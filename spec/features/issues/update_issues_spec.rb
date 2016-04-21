@@ -48,7 +48,7 @@ feature 'Multiple issue updating from issues#index', feature: true do
       click_update_issues_button
 
       page.within('.issue .controls') do
-        expect(find('.author_link')["data-original-title"]).to have_content(user.name)
+        expect(find('.author_link')["title"]).to have_content(user.name)
       end
     end
 

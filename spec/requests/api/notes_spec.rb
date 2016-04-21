@@ -158,6 +158,19 @@ describe API::API, api: true  do
         post api("/projects/#{project.id}/issues/#{issue.id}/notes"), body: 'hi!'
         expect(response.status).to eq(401)
       end
+
+      context 'when an admin or owner makes the request' do
+        it 'accepts the creation date to be set' do
+          creation_time = 2.weeks.ago
+          post api("/projects/#{project.id}/issues/#{issue.id}/notes", user),
+            body: 'hi!', created_at: creation_time
+          expect(response.status).to eq(201)
+          expect(json_response['body']).to eq('hi!')
+          expect(json_response['author']['username']).to eq(user.username)
+          expect(Time.parse(json_response['created_at'])).to be_within(1.second).of(creation_time)
+        end
+      end
+
     end
 
     context "when noteable is a Snippet" do

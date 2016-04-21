@@ -77,7 +77,7 @@
           Merge Requests
           %span.count.merge_counter= number_with_delimiter(@project.merge_requests.opened.count)
 
-  - if project_nav_tab? :settings
+  - if project_nav_tab? :team
     = nav_link(controller: [:project_members, :teams]) do
       = link_to namespace_project_project_members_path(@project.namespace, @project), title: 'Members', class: 'team-tab tab' do
         = icon('users fw')

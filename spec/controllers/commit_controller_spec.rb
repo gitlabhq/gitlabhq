@@ -4,6 +4,8 @@ describe Projects::CommitController do
   let(:project) { create(:project) }
   let(:user)    { create(:user) }
   let(:commit)  { project.commit("master") }
+  let(:master_pickable_sha) { '7d3b0f7cff5f37573aea97cebfd5692ea1689924' }
+  let(:master_pickable_commit)  { project.commit(master_pickable_sha) }
 
   before do
     sign_in(user)
@@ -189,6 +191,55 @@ describe Projects::CommitController do
 
         expect(response).to redirect_to namespace_project_commit_path(project.namespace, project, commit.id)
         expect(flash[:alert]).to match('Sorry, we cannot revert this commit automatically.')
+      end
+    end
+  end
+
+  describe '#cherry_pick' do
+    context 'when target branch is not provided' do
+      it 'should render the 404 page' do
+        post(:cherry_pick,
+            namespace_id: project.namespace.to_param,
+            project_id: project.to_param,
+            id: master_pickable_commit.id)
+
+        expect(response).not_to be_success
+        expect(response.status).to eq(404)
+      end
+    end
+
+    context 'when the cherry-pick was successful' do
+      it 'should redirect to the commits page' do
+        post(:cherry_pick,
+            namespace_id: project.namespace.to_param,
+            project_id: project.to_param,
+            target_branch: 'master',
+            id: master_pickable_commit.id)
+
+        expect(response).to redirect_to namespace_project_commits_path(project.namespace, project, 'master')
+        expect(flash[:notice]).to eq('The commit has been successfully cherry-picked.')
+      end
+    end
+
+    context 'when the cherry_pick failed' do
+      before do
+        post(:cherry_pick,
+            namespace_id: project.namespace.to_param,
+            project_id: project.to_param,
+            target_branch: 'master',
+            id: master_pickable_commit.id)
+      end
+
+      it 'should redirect to the commit page' do
+        # Cherry-picking a commit that has been already cherry-picked.
+        post(:cherry_pick,
+            namespace_id: project.namespace.to_param,
+            project_id: project.to_param,
+            target_branch: 'master',
+            id: master_pickable_commit.id)
+
+        expect(response).to redirect_to namespace_project_commit_path(project.namespace, project, master_pickable_commit.id)
+        expect(flash[:alert]).to match('Sorry, we cannot cherry-pick this commit automatically.')
       end
     end
   end

@@ -77,11 +77,11 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I should see that I am subscribed' do
-    expect(find('.subscribe-button span')).to have_content 'Unsubscribe'
+    expect(find('.issuable-subscribe-button span')).to have_content 'Unsubscribe'
   end
 
   step 'I should see that I am unsubscribed' do
-    expect(find('.subscribe-button span')).to have_content 'Subscribe'
+    expect(find('.issuable-subscribe-button span')).to have_content 'Subscribe'
   end
 
   step 'I click button "Unsubscribe"' do
@@ -519,7 +519,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   step '"Bug NS-05" has CI status' do
     project = merge_request.source_project
     project.enable_ci
-    ci_commit = create :ci_commit, project: project, sha: merge_request.last_commit.id
+    ci_commit = create :ci_commit, project: project, sha: merge_request.last_commit.id, ref: merge_request.source_branch
     create :ci_build, commit: ci_commit
   end
 

@@ -117,7 +117,7 @@ module API
       #   assignee_id (optional)  - The ID of a user to assign issue
       #   milestone_id (optional) - The ID of a milestone to assign issue
       #   labels (optional)       - The labels of an issue
-      #   created_at (optional)   - The date
+      #   created_at (optional)   - Date time string, ISO 8601 formatted
       # Example Request:
       #   POST /projects/:id/issues
       post ":id/issues" do
@@ -166,12 +166,15 @@ module API
       #   milestone_id (optional) - The ID of a milestone to assign issue
       #   labels (optional) - The labels of an issue
       #   state_event (optional) - The state event of an issue (close|reopen)
+      #   updated_at (optional) - Date time string, ISO 8601 formatted
       # Example Request:
       #   PUT /projects/:id/issues/:issue_id
       put ":id/issues/:issue_id" do
         issue = user_project.issues.find(params[:issue_id])
         authorize! :update_issue, issue
-        attrs = attributes_for_keys [:title, :description, :assignee_id, :milestone_id, :state_event]
+        keys = [:title, :description, :assignee_id, :milestone_id, :state_event]
+        keys << :updated_at if current_user.admin? || user_project.owner == current_user
+        attrs = attributes_for_keys(keys)
 
         # Validate label names in advance
         if (errors = validate_label_params(params)).any?
@@ -195,6 +198,29 @@ module API
         end
       end
 
+      # Move an existing issue
+      #
+      # Parameters:
+      #  id (required)            - The ID of a project
+      #  issue_id (required)      - The ID of a project issue
+      #  to_project_id (required) - The ID of the new project
+      # Example Request:
+      #   POST /projects/:id/issues/:issue_id/move
+      post ':id/issues/:issue_id/move' do
+        required_attributes! [:to_project_id]
+
+        issue = user_project.issues.find(params[:issue_id])
+        new_project = Project.find(params[:to_project_id])
+
+        begin
+          issue = ::Issues::MoveService.new(user_project, current_user).execute(issue, new_project)
+          present issue, with: Entities::Issue, current_user: current_user
+        rescue ::Issues::MoveService::MoveError => error
+          render_api_error!(error.message, 400)
+        end
+      end
+
+      #
       # Delete a project issue
       #
       # Parameters:
@@ -207,6 +233,42 @@ module API
 
         authorize!(:destroy_issue, issue)
         issue.destroy
+      end
+
+      # Subscribes to a project issue
+      #
+      # Parameters:
+      #  id (required)       - The ID of a project
+      #  issue_id (required) - The ID of a project issue
+      # Example Request:
+      #   POST /projects/:id/issues/:issue_id/subscription
+      post ':id/issues/:issue_id/subscription' do
+        issue = user_project.issues.find(params[:issue_id])
+
+        if issue.subscribed?(current_user)
+          not_modified!
+        else
+          issue.toggle_subscription(current_user)
+          present issue, with: Entities::Issue, current_user: current_user
+        end
+      end
+
+      # Unsubscribes from a project issue
+      #
+      # Parameters:
+      #  id (required)       - The ID of a project
+      #  issue_id (required) - The ID of a project issue
+      # Example Request:
+      #   DELETE /projects/:id/issues/:issue_id/subscription
+      delete ':id/issues/:issue_id/subscription' do
+        issue = user_project.issues.find(params[:issue_id])
+
+        if issue.subscribed?(current_user)
+          issue.unsubscribe(current_user)
+          present issue, with: Entities::Issue, current_user: current_user
+        else
+          not_modified!
+        end
       end
     end
   end

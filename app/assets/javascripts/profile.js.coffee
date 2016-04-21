@@ -18,8 +18,11 @@ class @Profile
       $(this).find('.btn-save').enable()
       $(this).find('.loading-gif').hide()
 
-    $('.update-notifications').on 'ajax:complete', ->
-      $(this).find('.btn-save').enable()
+    $('.update-notifications').on 'ajax:success', (e, data) ->
+      if data.saved
+        new Flash("Notification settings saved", "notice")
+      else
+        new Flash("Failed to save new settings", "alert")
 
     @bindEvents()
 
@@ -42,9 +45,10 @@ class @Profile
 
   saveForm: ->
     self = @
-
     formData = new FormData(@form[0])
-    formData.append('user[avatar]', @avatarGlCrop.getBlob(), 'avatar.png')
+
+    avatarBlob = @avatarGlCrop.getBlob()
+    formData.append('user[avatar]', avatarBlob, 'avatar.png') if avatarBlob?
 
     $.ajax
       url: @form.attr('action')

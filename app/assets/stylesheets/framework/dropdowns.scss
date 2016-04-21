@@ -248,7 +248,7 @@
 
 .dropdown-title {
   position: relative;
-  padding: 0 25px 15px;
+  padding: 0 25px 10px;
   margin: 0 10px 10px;
   font-weight: 600;
   line-height: 1;
@@ -278,7 +278,7 @@
   right: 5px;
   width: 20px;
   height: 20px;
-  top: -1px;
+  top: -3px;
 }
 
 .dropdown-menu-back {
@@ -358,6 +358,13 @@
   border-top: 1px solid $dropdown-divider-color;
 }
 
+.dropdown-due-date-footer {
+  padding-top: 0;
+  margin-left: 10px;
+  margin-right: 10px;
+  border-top: 0;
+}
+
 .dropdown-footer-list {
   font-size: 14px;
 
@@ -394,4 +401,123 @@
   width: 15px;
   height: 15px;
   border-radius: $border-radius-base;
+}
+
+.dropdown-menu-due-date {
+  .dropdown-content {
+    max-height: 230px;
+  }
+
+  .ui-widget {
+    table {
+      margin: 0;
+    }
+
+    &.ui-datepicker-inline {
+      padding: 0 10px;
+      border: 0;
+      width: 100%;
+    }
+
+    .ui-datepicker-header {
+      padding: 0 8px 10px;
+      border: 0;
+
+      .ui-icon {
+        background: none;
+        font-size: 20px;
+        text-indent: 0;
+
+        &:before {
+          display: block;
+          position: relative;
+          top: -2px;
+          color: $dropdown-title-btn-color;
+          font: normal normal normal 14px/1 FontAwesome;
+          font-size: inherit;
+          text-rendering: auto;
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
+        }
+      }
+    }
+
+    .ui-state-active,
+    .ui-state-hover {
+      color: $md-link-color;
+      background-color: $calendar-hover-bg;
+    }
+
+    .ui-datepicker-prev,
+    .ui-datepicker-next {
+      top: 0;
+      height: 15px;
+      cursor: pointer;
+
+      &:hover {
+        background-color: transparent;
+        border: 0;
+
+        .ui-icon:before {
+          color: $md-link-color;
+        }
+      }
+    }
+
+    .ui-datepicker-prev {
+      left: 0;
+
+      .ui-icon:before {
+        content: '\f104';
+        text-align: left;
+      }
+    }
+
+    .ui-datepicker-next {
+      right: 0;
+
+      .ui-icon:before {
+        content: '\f105';
+        text-align: right;
+      }
+    }
+
+    td {
+      padding: 0;
+      border: 1px solid $calendar-border-color;
+
+      &:first-child {
+        border-left: 0;
+      }
+
+      &:last-child {
+        border-right: 0;
+      }
+
+      a {
+        line-height: 17px;
+        border: 0;
+        border-radius: 0;
+      }
+    }
+
+    .ui-datepicker-title {
+      color: $gl-gray;
+      font-size: 15px;
+      line-height: 1;
+      font-weight: normal;
+    }
+  }
+
+  th {
+    padding: 2px 0;
+    color: $calendar-header-color;
+    font-weight: normal;
+    text-transform: lowercase;
+    border-top: 1px solid $calendar-border-color;
+  }
+
+  .ui-datepicker-unselectable {
+    background-color: $calendar-unselectable-bg;
+  }
 }

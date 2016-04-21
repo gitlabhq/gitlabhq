@@ -606,3 +606,151 @@ Example response:
    },
 ]
 ```
+
+## Subscribe to a merge request
+
+Subscribes the authenticated user to a merge request to receive notification. If
+the operation is successful, status code `201` together with the updated merge
+request is returned. If the user is already subscribed to the merge request, the
+status code `304` is returned. If the project or merge request is not found,
+status code `404` is returned.
+
+```
+POST /projects/:id/merge_requests/:merge_request_id/subscription
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer | yes | The ID of a project |
+| `merge_request_id` | integer | yes   | The ID of the merge request |
+
+```bash
+curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/merge_requests/17/subscription
+```
+
+Example response:
+
+```json
+{
+  "id": 17,
+  "iid": 1,
+  "project_id": 5,
+  "title": "Et et sequi est impedit nulla ut rem et voluptatem.",
+  "description": "Consequatur velit eos rerum optio autem. Quia id officia quaerat dolorum optio. Illo laudantium aut ipsum dolorem.",
+  "state": "opened",
+  "created_at": "2016-04-05T21:42:23.233Z",
+  "updated_at": "2016-04-05T22:11:52.900Z",
+  "target_branch": "ui-dev-kit",
+  "source_branch": "version-1-9",
+  "upvotes": 0,
+  "downvotes": 0,
+  "author": {
+    "name": "Eileen Skiles",
+    "username": "leila",
+    "id": 19,
+    "state": "active",
+    "avatar_url": "http://www.gravatar.com/avatar/39ce4a2822cc896933ffbd68c1470e55?s=80&d=identicon",
+    "web_url": "https://gitlab.example.com/u/leila"
+  },
+  "assignee": {
+    "name": "Celine Wehner",
+    "username": "carli",
+    "id": 16,
+    "state": "active",
+    "avatar_url": "http://www.gravatar.com/avatar/f4cd5605b769dd2ce405a27c6e6f2684?s=80&d=identicon",
+    "web_url": "https://gitlab.example.com/u/carli"
+  },
+  "source_project_id": 5,
+  "target_project_id": 5,
+  "labels": [],
+  "work_in_progress": false,
+  "milestone": {
+    "id": 7,
+    "iid": 1,
+    "project_id": 5,
+    "title": "v2.0",
+    "description": "Corrupti eveniet et velit occaecati dolorem est rerum aut.",
+    "state": "closed",
+    "created_at": "2016-04-05T21:41:40.905Z",
+    "updated_at": "2016-04-05T21:41:40.905Z",
+    "due_date": null
+  },
+  "merge_when_build_succeeds": false,
+  "merge_status": "cannot_be_merged",
+  "subscribed": true
+}
+```
+
+## Unsubscribe from a merge request
+
+Unsubscribes the authenticated user from a merge request to not receive
+notifications from that merge request. If the operation is successful, status
+code `200` together with the updated merge request is returned. If the user is
+not subscribed to the merge request, the status code `304` is returned. If the
+project or merge request is not found, status code `404` is returned.
+
+```
+DELETE /projects/:id/merge_requests/:merge_request_id/subscription
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer | yes | The ID of a project |
+| `merge_request_id` | integer | yes   | The ID of the merge request |
+
+```bash
+curl -X DELETE -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/merge_requests/17/subscription
+```
+
+Example response:
+
+```json
+{
+  "id": 17,
+  "iid": 1,
+  "project_id": 5,
+  "title": "Et et sequi est impedit nulla ut rem et voluptatem.",
+  "description": "Consequatur velit eos rerum optio autem. Quia id officia quaerat dolorum optio. Illo laudantium aut ipsum dolorem.",
+  "state": "opened",
+  "created_at": "2016-04-05T21:42:23.233Z",
+  "updated_at": "2016-04-05T22:11:52.900Z",
+  "target_branch": "ui-dev-kit",
+  "source_branch": "version-1-9",
+  "upvotes": 0,
+  "downvotes": 0,
+  "author": {
+    "name": "Eileen Skiles",
+    "username": "leila",
+    "id": 19,
+    "state": "active",
+    "avatar_url": "http://www.gravatar.com/avatar/39ce4a2822cc896933ffbd68c1470e55?s=80&d=identicon",
+    "web_url": "https://gitlab.example.com/u/leila"
+  },
+  "assignee": {
+    "name": "Celine Wehner",
+    "username": "carli",
+    "id": 16,
+    "state": "active",
+    "avatar_url": "http://www.gravatar.com/avatar/f4cd5605b769dd2ce405a27c6e6f2684?s=80&d=identicon",
+    "web_url": "https://gitlab.example.com/u/carli"
+  },
+  "source_project_id": 5,
+  "target_project_id": 5,
+  "labels": [],
+  "work_in_progress": false,
+  "milestone": {
+    "id": 7,
+    "iid": 1,
+    "project_id": 5,
+    "title": "v2.0",
+    "description": "Corrupti eveniet et velit occaecati dolorem est rerum aut.",
+    "state": "closed",
+    "created_at": "2016-04-05T21:41:40.905Z",
+    "updated_at": "2016-04-05T21:41:40.905Z",
+    "due_date": null
+  },
+  "merge_when_build_succeeds": false,
+  "merge_status": "cannot_be_merged",
+  "subscribed": false
+}
+```

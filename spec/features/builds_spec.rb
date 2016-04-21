@@ -86,6 +86,20 @@ describe "Builds" do
         end
       end
     end
+
+    context 'Build raw trace' do
+      before do
+        @build.run!
+        @build.trace = 'BUILD TRACE'
+        visit namespace_project_build_path(@project.namespace, @project, @build)
+      end
+
+      it do
+        page.within('.build-controls') do
+          expect(page).to have_link 'Raw'
+        end
+      end
+    end
   end
 
   describe "POST /:project/builds/:id/cancel" do
@@ -119,5 +133,21 @@ describe "Builds" do
     end
 
     it { expect(page.response_headers['Content-Type']).to eq(artifacts_file.content_type) }
+  end
+
+  describe "GET /:project/builds/:id/raw" do
+    before do
+      Capybara.current_session.driver.header('X-Sendfile-Type', 'X-Sendfile')
+      @build.run!
+      @build.trace = 'BUILD TRACE'
+      visit namespace_project_build_path(@project.namespace, @project, @build)
+    end
+
+    it 'sends the right headers' do
+      page.within('.build-controls') { click_link 'Raw' }
+
+      expect(page.response_headers['Content-Type']).to eq('text/plain; charset=utf-8')
+      expect(page.response_headers['X-Sendfile']).to eq(@build.path_to_trace)
+    end
   end
 end

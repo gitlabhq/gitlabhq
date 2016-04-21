@@ -32,6 +32,7 @@ class Service < ActiveRecord::Base
   default_value_for :tag_push_events, true
   default_value_for :note_events, true
   default_value_for :build_events, true
+  default_value_for :wiki_page_events, true
 
   after_initialize :initialize_properties
 
@@ -53,6 +54,7 @@ class Service < ActiveRecord::Base
   scope :merge_request_hooks, -> { where(merge_requests_events: true, active: true) }
   scope :note_hooks, -> { where(note_events: true, active: true) }
   scope :build_hooks, -> { where(build_events: true, active: true) }
+  scope :wiki_page_hooks, -> { where(wiki_page_events: true, active: true) }
 
   default_value_for :category, 'common'
 
@@ -94,7 +96,7 @@ class Service < ActiveRecord::Base
   end
 
   def supported_events
-    %w(push tag_push issue merge_request)
+    %w(push tag_push issue merge_request wiki_page)
   end
 
   def execute(data)

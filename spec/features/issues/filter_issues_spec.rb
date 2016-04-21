@@ -76,6 +76,43 @@ describe 'Filter issues', feature: true do
     end
   end
 
+  describe 'Filter issues for label from issues#index', js: true do
+    before do
+      visit namespace_project_issues_path(project.namespace, project)
+      find('.js-label-select').click
+    end
+
+    it 'should filter by any label' do
+      find('.dropdown-menu-labels a', text: 'Any Label').click
+      page.first('.labels-filter .dropdown-title .dropdown-menu-close-icon').click
+      sleep 2
+
+      page.within '.labels-filter' do
+        expect(page).to have_content 'Any Label'
+      end
+      expect(find('.js-label-select .dropdown-toggle-text')).to have_content('Any Label')
+    end
+
+    it 'should filter by no label' do
+      find('.dropdown-menu-labels a', text: 'No Label').click
+      page.first('.labels-filter .dropdown-title .dropdown-menu-close-icon').click
+      sleep 2
+
+      page.within '.labels-filter' do
+        expect(page).to have_content 'No Label'
+      end
+      expect(find('.js-label-select .dropdown-toggle-text')).to have_content('No Label')
+    end
+
+    it 'should filter by no label' do
+      find('.dropdown-menu-labels a', text: label.title).click
+      page.within '.labels-filter' do
+        expect(page).to have_content label.title
+      end
+      expect(find('.js-label-select .dropdown-toggle-text')).to have_content(label.title)
+    end
+  end
+
   describe 'Filter issues for assignee and label from issues#index' do
 
     before do
@@ -90,6 +127,7 @@ describe 'Filter issues', feature: true do
       find('.js-label-select').click
 
       find('.dropdown-menu-labels .dropdown-content a', text: label.title).click
+      page.first('.labels-filter .dropdown-title .dropdown-menu-close-icon').click
 
       sleep 2
     end

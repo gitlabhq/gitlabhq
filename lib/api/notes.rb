@@ -61,6 +61,7 @@ module API
         #   id (required) - The ID of a project
         #   noteable_id (required) - The ID of an issue or snippet
         #   body (required) - The content of a note
+        #   created_at (optional) - The date
         # Example Request:
         #   POST /projects/:id/issues/:noteable_id/notes
         #   POST /projects/:id/snippets/:noteable_id/notes
@@ -72,6 +73,10 @@ module API
            noteable_type: noteables_str.classify,
            noteable_id: params[noteable_id_str]
           }
+
+          if params[:created_at] && (current_user.is_admin? || user_project.owner == current_user)
+            opts[:created_at] = params[:created_at]
+          end
 
           @note = ::Notes::CreateService.new(user_project, current_user, opts).execute
 
