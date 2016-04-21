@@ -7,17 +7,17 @@
       .form-group
         = f.label :name, class: 'control-label'
         .col-sm-10
-          = f.text_field :name, required: true, autocomplete: "off", class: 'form-control'
+          = f.text_field :name, required: true, autocomplete: 'off', class: 'form-control'
           %span.help-inline * required
       .form-group
         = f.label :username, class: 'control-label'
         .col-sm-10
-          = f.text_field :username, required: true, autocomplete: "off", class: 'form-control'
+          = f.text_field :username, required: true, autocomplete: 'off', autocorrect: 'off', autocapitalize: 'off', spellcheck: false, class: 'form-control'
           %span.help-inline * required
       .form-group
         = f.label :email, class: 'control-label'
         .col-sm-10
-          = f.text_field :email, required: true, autocomplete: "off", class: 'form-control'
+          = f.text_field :email, required: true, autocomplete: 'off', class: 'form-control'
           %span.help-inline * required
 
     - if @user.new_record?

@@ -52,7 +52,7 @@ module ProjectsHelper
       link_to(author_html, user_path(author), class: "author_link #{"#{opts[:mobile_classes]}" if opts[:mobile_classes]}").html_safe
     else
       title = opts[:title].sub(":name", sanitize(author.name))
-      link_to(author_html, user_path(author), class: "author_link has-tooltip", data: { 'original-title'.to_sym => title, container: 'body' } ).html_safe
+      link_to(author_html, user_path(author), class: "author_link has-tooltip", title: title, data: { container: 'body' } ).html_safe
     end
   end
 
@@ -216,40 +216,14 @@ module ProjectsHelper
     end
   end
 
-  def add_contribution_guide_path(project)
-    if project && !project.repository.contribution_guide
-      namespace_project_new_blob_path(
-        project.namespace,
-        project,
-        project.default_branch,
-        file_name:      "CONTRIBUTING.md",
-        commit_message: "Add contribution guide"
-      )
-    end
-  end
-
-  def add_changelog_path(project)
-    if project && !project.repository.changelog
-      namespace_project_new_blob_path(
-        project.namespace,
-        project,
-        project.default_branch,
-        file_name:      "CHANGELOG",
-        commit_message: "Add changelog"
-      )
-    end
-  end
-
-  def add_license_path(project)
-    if project && !project.repository.license
-      namespace_project_new_blob_path(
-        project.namespace,
-        project,
-        project.default_branch,
-        file_name:      "LICENSE",
-        commit_message: "Add license"
-      )
-    end
+  def add_special_file_path(project, file_name:, commit_message: nil)
+    namespace_project_new_blob_path(
+      project.namespace,
+      project,
+      project.default_branch || 'master',
+      file_name:      file_name,
+      commit_message: commit_message || "Add #{file_name.downcase}"
+    )
   end
 
   def contribution_guide_path(project)
@@ -272,7 +246,7 @@ module ProjectsHelper
   end
 
   def license_path(project)
-    filename_path(project, :license)
+    filename_path(project, :license_blob)
   end
 
   def version_path(project)
@@ -306,6 +280,13 @@ module ProjectsHelper
     namespace_project_new_blob_path(@project.namespace, @project, tree_join(ref), file_name: 'README.md')
   end
 
+  def new_license_path
+    ref = @repository.root_ref if @repository
+    ref ||= 'master'
+
+    namespace_project_new_blob_path(@project.namespace, @project, tree_join(ref), file_name: 'LICENSE')
+  end
+
   def last_push_event
     if current_user
       current_user.recent_push(@project.id)
@@ -333,6 +314,12 @@ module ProjectsHelper
 
   def current_ref
     @ref || @repository.try(:root_ref)
+  end
+
+  def license_short_name(project)
+    license = Licensee::License.new(project.repository.license_key)
+
+    license.nickname || license.name
   end
 
   private

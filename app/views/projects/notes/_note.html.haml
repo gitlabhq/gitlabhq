@@ -8,7 +8,9 @@
       .note-header
         = link_to_member(note.project, note.author, avatar: false)
         .inline.note-headline-light
-          = "#{note.author.to_reference} commented"
+          = "#{note.author.to_reference}"
+          - if !note.system
+            commented
           %a{ href: "##{dom_id(note)}" }
             = time_ago_with_tooltip(note.created_at, placement: 'bottom', html_class: 'note-created-ago')
         .note-actions

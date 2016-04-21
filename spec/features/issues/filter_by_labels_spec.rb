@@ -122,9 +122,13 @@ feature 'Issue filtering by Labels', feature: true do
       sleep 2
     end
 
-    it 'should not show "Bugfix1" or "Feature1" in issues list' do
+    it 'should show issue "Bugfix2" or "Feature1" in issues list' do
+      expect(page).to have_content "Bugfix2"
+      expect(page).to have_content "Feature1"
+    end
+
+    it 'should not show "Bugfix1" in issues list' do
       expect(page).not_to have_content "Bugfix1"
-      expect(page).not_to have_content "Feature1"
     end
 
     it 'should show label "enhancement" and "feature" in filtered-labels' do
@@ -137,7 +141,7 @@ feature 'Issue filtering by Labels', feature: true do
     end
   end
 
-  context 'filter by label enhancement and bug in issues list', js: true do
+  context 'filter by label enhancement or bug in issues list', js: true do
     before do
       page.find('.js-label-select').click
       sleep 0.5
@@ -147,8 +151,9 @@ feature 'Issue filtering by Labels', feature: true do
       sleep 2
     end
 
-    it 'should show issue "Bugfix2" in issues list' do
+    it 'should show issue "Bugfix2" or "Bugfix1" in issues list' do
       expect(page).to have_content "Bugfix2"
+      expect(page).to have_content "Bugfix1"
     end
 
     it 'should not show "Feature1"' do

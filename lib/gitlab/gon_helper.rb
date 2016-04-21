@@ -7,6 +7,7 @@ module Gitlab
       gon.max_file_size          = current_application_settings.max_attachment_size
       gon.relative_url_root      = Gitlab.config.gitlab.relative_url_root
       gon.user_color_scheme      = Gitlab::ColorSchemes.for_user(current_user).css_class
+      gon.sentry_dsn             = ApplicationSetting.current.sentry_dsn if Rails.env.production?
 
       if current_user
         gon.current_user_id = current_user.id

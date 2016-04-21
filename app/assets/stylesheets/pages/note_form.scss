@@ -42,6 +42,7 @@
 .note-textarea {
   display: block;
   padding: 10px 0;
+  color: $gl-gray;
   font-family: $regular_font;
   border: 0;
 
@@ -81,18 +82,6 @@
       .comment-toolbar,
       .nav-links {
         border-color: $gl-success;
-      }
-    }
-
-    p {
-      code {
-        white-space: normal;
-      }
-
-      pre {
-        code {
-          white-space: pre;
-        }
       }
     }
   }

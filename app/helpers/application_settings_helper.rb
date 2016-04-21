@@ -15,6 +15,10 @@ module ApplicationSettingsHelper
     current_application_settings.sign_in_text
   end
 
+  def shared_runners_text
+    current_application_settings.shared_runners_text
+  end
+
   def user_oauth_applications?
     current_application_settings.user_oauth_applications
   end

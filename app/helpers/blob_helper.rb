@@ -173,4 +173,15 @@ module BlobHelper
     response.etag = @blob.id
     !stale
   end
+
+  def licenses_for_select
+    return @licenses_for_select if defined?(@licenses_for_select)
+
+    licenses = Licensee::License.all
+
+    @licenses_for_select = {
+      Popular: licenses.select(&:featured).map { |license| [license.name, license.key] },
+      Other: licenses.reject(&:featured).map { |license| [license.name, license.key] }
+    }
+  end
 end

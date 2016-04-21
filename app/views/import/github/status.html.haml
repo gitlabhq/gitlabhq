@@ -26,7 +26,7 @@
       - @already_added_projects.each do |project|
         %tr{id: "project_#{project.id}", class: "#{project_status_css_class(project.import_status)}"}
           %td
-            = link_to project.import_source, "https://github.com/#{project.import_source}", target: "_blank"
+            = github_project_link(project.import_source)
           %td
             = link_to project.path_with_namespace, [project.namespace.becomes(Namespace), project]
           %td.job-status
@@ -43,7 +43,7 @@
       - @repos.each do |repo|
         %tr{id: "repo_#{repo.id}"}
           %td
-            = link_to repo.full_name, "https://github.com/#{repo.full_name}", target: "_blank"
+            = github_project_link(repo.full_name)
           %td.import-target
             = repo.full_name
           %td.import-actions.job-status
