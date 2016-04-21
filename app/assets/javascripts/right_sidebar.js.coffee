@@ -5,16 +5,8 @@ class @Sidebar
     @addEventListeners()
 
   addEventListeners: ->
-    _this = @
-    @sidebar.on 'click', '.sidebar-collapsed-icon', (e) ->
-      e.preventDefault()
-      $block = $(@).closest('.block')
-      _this.openDropdown($block);
-
-    $('.dropdown').on 'hidden.gl.dropdown', (e) ->
-      e.preventDefault()
-      $block = $(@).closest('.block')
-      _this.sidebarDropdownHidden($block)
+    @sidebar.on('click', '.sidebar-collapsed-icon', @, @sidebarCollapseClicked)
+    $('.dropdown').on('hidden.gl.dropdown', @, @onSidebarDropdownHidden)
     $('.dropdown').on('loading.gl.dropdown', @sidebarDropdownLoading)
     $('.dropdown').on('loaded.gl.dropdown', @sidebarDropdownLoaded)
 
@@ -40,6 +32,12 @@ class @Sidebar
     else
       i.show()
 
+  sidebarCollapseClicked: (e) ->
+    sidebar = e.data
+    e.preventDefault()
+    $block = $(@).closest('.block')
+    sidebar.openDropdown($block);
+
   openDropdown: (blockOrName) ->
     $block = if _.isString(blockOrName) then @getBlock(blockOrName) else blockOrName
 
@@ -52,6 +50,12 @@ class @Sidebar
   setCollapseAfterUpdate: ($block) ->
     $block.addClass('collapse-after-update')
     $('.page-with-sidebar').addClass('with-overlay')
+
+  onSidebarDropdownHidden: (e) ->
+    sidebar = e.data
+    e.preventDefault()
+    $block = $(@).closest('.block')
+    sidebar.sidebarDropdownHidden($block)
 
   sidebarDropdownHidden: ($block) ->
     if $block.hasClass('collapse-after-update')
