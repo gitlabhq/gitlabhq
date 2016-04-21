@@ -6,31 +6,31 @@ describe Issues::CreateService, services: true do
   let(:assignee) { create(:user) }
 
   describe :execute do
+    let(:issue) { Issues::CreateService.new(project, user, opts).execute }
+
     context 'valid params' do
       before do
         project.team << [user, :master]
         project.team << [assignee, :master]
-
-        opts = {
-          title: 'Awesome issue',
-          description: 'please fix',
-          assignee: assignee
-        }
-
-        @issue = Issues::CreateService.new(project, user, opts).execute
       end
 
-      it { expect(@issue).to be_valid }
-      it { expect(@issue.title).to eq('Awesome issue') }
-      it { expect(@issue.assignee).to eq assignee }
+      let(:opts) do
+        { title: 'Awesome issue',
+          description: 'please fix',
+          assignee: assignee }
+      end
+
+      it { expect(issue).to be_valid }
+      it { expect(issue.title).to eq('Awesome issue') }
+      it { expect(issue.assignee).to eq assignee }
 
       it 'creates a pending todo for new assignee' do
         attributes = {
           project: project,
           author: user,
           user: assignee,
-          target_id: @issue.id,
-          target_type: @issue.class.name,
+          target_id: issue.id,
+          target_type: issue.class.name,
           action: Todo::ASSIGNED,
           state: :pending
         }
@@ -39,8 +39,8 @@ describe Issues::CreateService, services: true do
       end
 
       context 'label that belongs to different project' do
-        let(:issue) { Issues::CreateService.new(project, user, opts).execute }
         let(:label) { create(:label) }
+
         let(:opts) do
           { title: 'Title',
             description: 'Description',
@@ -53,15 +53,15 @@ describe Issues::CreateService, services: true do
       end
 
       context 'milestone that belongs to different project' do
-        let(:issue) { Issues::CreateService.new(project, user, opts).execute }
         let(:milestone) { create(:milestone) }
+
         let(:opts) do
           { title: 'Title',
             description: 'Description',
             milestone_id: milestone.id }
         end
 
-        it 'does not assign label' do
+        it 'does not assign milestone' do
           expect(issue.milestone).to_not eq milestone
         end
       end
