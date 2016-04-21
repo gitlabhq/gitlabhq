@@ -321,6 +321,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
   def define_widget_vars
     @ci_commit = @merge_request.ci_commit
+    @ci_commits = [@ci_commit].compact
     closes_issues
   end
 

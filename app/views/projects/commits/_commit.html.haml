@@ -4,9 +4,8 @@
   - notes = commit.notes
   - note_count = notes.user.count
 
-- ci_commit = project.ci_commit(commit.sha)
 - cache_key = [project.path_with_namespace, commit.id, current_application_settings, note_count]
-- cache_key.push(ci_commit.status) if ci_commit
+- cache_key.push(commit.status) if commit.status
 
 = cache(cache_key) do
   %li.commit.js-toggle-container{ id: "commit-#{commit.short_id}" }
@@ -17,8 +16,8 @@
           %a.text-expander.js-toggle-button ...
 
       .pull-right
-        - if ci_commit
-          = render_ci_status(ci_commit)
+        - if commit.status
+          = render_ci_status(commit)
         = clipboard_button(clipboard_text: commit.id)
         = link_to commit.short_id, namespace_project_commit_path(project.namespace, project, commit), class: "commit_short_id"
 

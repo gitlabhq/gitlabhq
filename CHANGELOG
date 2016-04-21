@@ -68,6 +68,7 @@ v 8.7.0 (unreleased)
   - Hide `Create a group` help block when creating a new project in a group
   - Implement 'TODOs View' as an option for dashboard preferences !3379 (Elias W.)
   - Allow issues and merge requests to be assigned to the author !2765
+  - Make Ci::Commit to group only similar builds and make it stateful (ref, tag)
   - Gracefully handle notes on deleted commits in merge requests (Stan Hu)
   - Decouple membership and notifications
   - Fix creation of merge requests for orphaned branches (Stan Hu)
