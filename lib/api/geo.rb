@@ -30,6 +30,9 @@ module API
         when 'tag_push'
           required_attributes! %w(event_name project_id project)
           ::Geo::ScheduleWikiRepoUpdateService.new(params).execute
+        when 'project_destroy'
+          required_attributes! %w(event_name project_id path_with_namespace)
+          ::Geo::ScheduleRepoDestroyService.new(params).execute
         end
       end
     end
