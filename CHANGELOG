@@ -54,7 +54,7 @@ v 8.7.0 (unreleased)
   - Add links to CI setup documentation from project settings and builds pages
   - Display project members page to all members
   - Handle nil descriptions in Slack issue messages (Stan Hu)
-  - Add automated repository integrity checks
+  - Add automated repository integrity checks (OFF by default)
   - API: Expose open_issues_count, closed_issues_count, open_merge_requests_count for labels (Robert Schilling)
   - API: Ability to star and unstar a project (Robert Schilling)
   - Add default scope to projects to exclude projects pending deletion
