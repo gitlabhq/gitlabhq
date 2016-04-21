@@ -63,9 +63,8 @@ module Ci
       @cache = @config[:cache]
       @config.except!(*ALLOWED_YAML_KEYS)
 
-      # anything that doesn't have script is considered as unknown
       @config.each do |name, param|
-        raise ValidationError, "Unknown parameter: #{name}" unless param.is_a?(Hash) && param.has_key?(:script)
+        raise ValidationError, "Unknown parameter: #{name}" unless is_a_job?(name, param)
       end
 
       unless @config.values.any?{|job| job.is_a?(Hash)}
@@ -78,6 +77,12 @@ module Ci
         stage = job[:stage] || job[:type] || DEFAULT_STAGE
         @jobs[key] = { stage: stage }.merge(job)
       end
+    end
+
+    def is_a_job?(name, value)
+      return true if value.is_a?(Hash) && value.has_key?(:script)
+      return true if name.to_s.start_with?('.')
+      false
     end
 
     def build_job(name, job)
@@ -111,8 +116,6 @@ module Ci
 
       true
     end
-
-    private
 
     def validate_global!
       unless validate_array_of_strings(@before_script)
