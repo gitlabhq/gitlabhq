@@ -21,10 +21,11 @@
     %li
       = link_to filter_projects_path(sort: @sort, archived: true), class: ("is-active" if params[:archived].present?) do
         Show archived projects
-    %li.divider
-    %li
-      = link_to filter_projects_path(sort: @sort, personal: nil), class: ("is-active" unless personal) do
-        Owned by anyone
-    %li
-      = link_to filter_projects_path(sort: @sort, personal: true), class: ("is-active" if personal) do
-        Owned by me
+    - if current_user
+      %li.divider
+      %li
+        = link_to filter_projects_path(sort: @sort, personal: nil), class: ("is-active" unless personal) do
+          Owned by anyone
+      %li
+        = link_to filter_projects_path(sort: @sort, personal: true), class: ("is-active" if personal) do
+          Owned by me
