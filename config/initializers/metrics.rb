@@ -107,6 +107,10 @@ if Gitlab::Metrics.enabled?
       config.instrument_methods(const)
       config.instrument_instance_methods(const)
     end
+
+    # Instrument the classes used for checking if somebody has push access.
+    config.instrument_instance_methods(Gitlab::GitAccess)
+    config.instrument_instance_methods(Gitlab::GitAccessWiki)
   end
 
   GC::Profiler.enable
