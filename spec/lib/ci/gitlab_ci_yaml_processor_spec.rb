@@ -727,7 +727,7 @@ module Ci
       end
 
       context 'When template is a job' do
-        let (:config) do
+        let(:config) do
           <<EOT
 job1: &JOBTMPL
   stage: build
@@ -741,7 +741,7 @@ EOT
       end
 
       context 'When template is a hidden job' do
-        let (:config) do
+        let(:config) do
           <<EOT
 .template: &JOBTMPL
   stage: build
@@ -757,7 +757,7 @@ EOT
       end
 
       context "When job adds it's own keys to a template definition" do
-        let (:config) do
+        let(:config) do
           <<EOT
 .template: &JOBTMPL
   stage: build
