@@ -178,6 +178,19 @@ describe 'Issues', feature: true do
 
         expect(first_issue).to include('foo')
       end
+
+      context 'with a filter on labels' do
+        let(:label) { create(:label, project: project) }
+        before { create(:label_link, label: label, target: foo) }
+
+        it 'sorts by least recently due date by excluding nil due dates' do
+          bar.update(due_date: nil)
+
+          visit namespace_project_issues_path(project.namespace, project, label_names: [label.name], sort: sort_value_due_date_later)
+
+          expect(first_issue).to include('foo')
+        end
+      end
     end
 
     describe 'filtering by due date' do
