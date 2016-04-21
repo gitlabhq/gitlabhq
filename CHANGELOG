@@ -4,6 +4,7 @@ v 8.8.0 (unreleased)
 
 v 8.7.0 (unreleased)
   - The number of InfluxDB points stored per UDP packet can now be configured
+  - Fix error when cross-project label reference used with non-existent project
   - Transactions for /internal/allowed now have an "action" tag set
   - Method instrumentation now uses Module#prepend instead of aliasing methods
   - Repository.clean_old_archives is now instrumented
@@ -50,6 +51,7 @@ v 8.7.0 (unreleased)
   - Add endpoints to archive or unarchive a project !3372
   - Fix a bug whith trailing slash in bamboo_url
   - Add links to CI setup documentation from project settings and builds pages
+  - Display project members page to all members
   - Handle nil descriptions in Slack issue messages (Stan Hu)
   - Add automated repository integrity checks
   - API: Expose open_issues_count, closed_issues_count, open_merge_requests_count for labels (Robert Schilling)
@@ -68,6 +70,7 @@ v 8.7.0 (unreleased)
   - Hide `Create a group` help block when creating a new project in a group
   - Implement 'TODOs View' as an option for dashboard preferences !3379 (Elias W.)
   - Allow issues and merge requests to be assigned to the author !2765
+  - Make Ci::Commit to group only similar builds and make it stateful (ref, tag)
   - Gracefully handle notes on deleted commits in merge requests (Stan Hu)
   - Decouple membership and notifications
   - Fix creation of merge requests for orphaned branches (Stan Hu)
@@ -87,10 +90,10 @@ v 8.7.0 (unreleased)
   - Fix repository cache invalidation issue when project is recreated with an empty repo (Stan Hu)
   - Fix: Allow empty recipients list for builds emails service when pushed is added (Frank Groeneveld)
   - Improved markdown forms
-  - Show JavaScript errors in sentry
   - Diff design updates (colors, button styles, etc)
   - Copying and pasting a diff no longer pastes the line numbers or +/-
   - Add null check to formData when updating profile content to fix Firefox bug
+  - Disable spellcheck and autocorrect for username field in admin page
   - Delete tags using Rugged for performance reasons (Robert Schilling)
   - Add Slack notifications when Wiki is edited (Sebastian Klier)
   - Diffs load at the correct point when linking from from number

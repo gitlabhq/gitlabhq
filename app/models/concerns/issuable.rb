@@ -37,7 +37,6 @@ module Issuable
     scope :closed, -> { with_state(:closed) }
     scope :order_milestone_due_desc, -> { joins(:milestone).reorder('milestones.due_date DESC, milestones.id DESC') }
     scope :order_milestone_due_asc, -> { joins(:milestone).reorder('milestones.due_date ASC, milestones.id ASC') }
-    scope :with_label, ->(title) { joins(:labels).where(labels: { title: title }) }
     scope :without_label, -> { joins("LEFT OUTER JOIN label_links ON label_links.target_type = '#{name}' AND label_links.target_id = #{table_name}.id").where(label_links: { id: nil }) }
 
     scope :join_project, -> { joins(:project) }
@@ -121,6 +120,14 @@ module Issuable
       ).join_sources
 
       joins(join_clause).group(issuable_table[:id]).reorder("COUNT(notes.id) DESC")
+    end
+
+    def with_label(title)
+      if title.is_a?(Array) && title.count > 1
+        joins(:labels).where(labels: { title: title }).group('issues.id').having("count(distinct labels.title) = #{title.count}")
+      else
+        joins(:labels).where(labels: { title: title })
+      end
     end
   end
 

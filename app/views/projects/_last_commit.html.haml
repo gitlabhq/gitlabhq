@@ -1,9 +1,8 @@
 .project-last-commit
-  - ci_commit = project.ci_commit(commit.sha)
-  - if ci_commit
-    = link_to ci_status_path(ci_commit), class: "ci-status ci-#{ci_commit.status}" do
-      = ci_status_icon(ci_commit)
-      = ci_status_label(ci_commit)
+  - if commit.status
+    = link_to builds_namespace_project_commit_path(commit.project.namespace, commit.project, commit), class: "ci-status ci-#{commit.status}" do
+      = ci_icon_for_status(commit.status)
+      = ci_label_for_status(commit.status)
 
   = link_to commit.short_id, namespace_project_commit_path(project.namespace, project, commit), class: "commit_short_id"
   = link_to_gfm commit.title, namespace_project_commit_path(project.namespace, project, commit), class: "commit-row-message"

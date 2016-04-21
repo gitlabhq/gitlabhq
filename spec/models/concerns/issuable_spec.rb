@@ -212,4 +212,34 @@ describe Issue, "Issuable" do
       expect(issue.downvotes).to eq(1)
     end
   end
+
+  describe ".with_label" do
+    let(:project) { create(:project, :public) }
+    let(:bug) { create(:label, project: project, title: 'bug') }
+    let(:feature) { create(:label, project: project, title: 'feature') }
+    let(:enhancement) { create(:label, project: project, title: 'enhancement') }
+    let(:issue1) { create(:issue, title: "Bugfix1", project: project) }
+    let(:issue2) { create(:issue, title: "Bugfix2", project: project) }
+    let(:issue3) { create(:issue, title: "Feature1", project: project) }
+
+    before(:each) do
+      issue1.labels << bug
+      issue1.labels << feature
+      issue2.labels << bug
+      issue2.labels << enhancement
+      issue3.labels << feature
+    end
+
+    it 'finds the correct issue containing just enhancement label' do
+      expect(Issue.with_label(enhancement.title)).to match_array([issue2])
+    end
+
+    it 'finds the correct issues containing the same label' do
+      expect(Issue.with_label(bug.title)).to match_array([issue1, issue2])
+    end
+
+    it 'finds the correct issues containing only both labels' do
+      expect(Issue.with_label([bug.title, enhancement.title])).to match_array([issue2])
+    end
+  end
 end

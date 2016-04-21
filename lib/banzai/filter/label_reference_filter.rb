@@ -18,15 +18,36 @@ module Banzai
 
       def references_in(text, pattern = Label.reference_pattern)
         text.gsub(pattern) do |match|
-          project = project_from_ref($~[:project])
-          params = label_params($~[:label_id].to_i, $~[:label_name])
-          label = project.labels.find_by(params)
+          label = find_label($~[:project], $~[:label_id], $~[:label_name])
 
           if label
             yield match, label.id, $~[:project], $~
           else
             match
           end
+        end
+      end
+
+      def find_label(project_ref, label_id, label_name)
+        project = project_from_ref(project_ref)
+        return unless project
+
+        label_params = label_params(label_id, label_name)
+        project.labels.find_by(label_params)
+      end
+
+      # Parameters to pass to `Label.find_by` based on the given arguments
+      #
+      # id   - Integer ID to pass. If present, returns {id: id}
+      # name - String name to pass. If `id` is absent, finds by name without
+      #        surrounding quotes.
+      #
+      # Returns a Hash.
+      def label_params(id, name)
+        if name
+          { name: name.tr('"', '') }
+        else
+          { id: id.to_i }
         end
       end
 
@@ -41,21 +62,6 @@ module Banzai
           LabelsHelper.render_colored_label(object)
         else
           LabelsHelper.render_colored_cross_project_label(object)
-        end
-      end
-
-      # Parameters to pass to `Label.find_by` based on the given arguments
-      #
-      # id   - Integer ID to pass. If present, returns {id: id}
-      # name - String name to pass. If `id` is absent, finds by name without
-      #        surrounding quotes.
-      #
-      # Returns a Hash.
-      def label_params(id, name)
-        if name
-          { name: name.tr('"', '') }
-        else
-          { id: id }
         end
       end
     end

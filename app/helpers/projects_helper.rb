@@ -144,6 +144,10 @@ module ProjectsHelper
       nav_tabs << :settings
     end
 
+    if can?(current_user, :read_project_member, project)
+      nav_tabs << :team
+    end
+
     if can?(current_user, :read_issue, project)
       nav_tabs << :issues
     end
