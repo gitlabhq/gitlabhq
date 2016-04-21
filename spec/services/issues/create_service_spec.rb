@@ -37,6 +37,34 @@ describe Issues::CreateService, services: true do
 
         expect(Todo.where(attributes).count).to eq 1
       end
+
+      context 'label that belongs to different project' do
+        let(:issue) { Issues::CreateService.new(project, user, opts).execute }
+        let(:label) { create(:label) }
+        let(:opts) do
+          { title: 'Title',
+            description: 'Description',
+            label_ids: [label.id] }
+        end
+
+        it 'does not assign label'do
+          expect(issue.labels).to_not include label
+        end
+      end
+
+      context 'milestone that belongs to different project' do
+        let(:issue) { Issues::CreateService.new(project, user, opts).execute }
+        let(:milestone) { create(:milestone) }
+        let(:opts) do
+          { title: 'Title',
+            description: 'Description',
+            milestone_id: milestone.id }
+        end
+
+        it 'does not assign label' do
+          expect(issue.milestone).to_not eq milestone
+        end
+      end
     end
   end
 end
