@@ -278,9 +278,7 @@ class IssuableFinder
       end
     end
 
-    # When filtering by multiple labels we may end up duplicating issues (if one
-    # has multiple labels). This ensures we only return unique issues.
-    items.distinct
+    items
   end
 
   def by_due_date(items)
