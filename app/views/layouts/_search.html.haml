@@ -21,6 +21,21 @@
                   %a.is-focused.dropdown-menu-empty-link
                     Loading...
             = dropdown_loading
+          - if current_user.id
+            .dropdown-menu.hidden
+              .category-search-dropdown.dropdown-page-two
+                %ul
+                  %li.dropdown-header
+                    %span Go to
+                  %li
+                    = link_to 'Issues Assigned to me', issues_dashboard_url(assignee_id: current_user.id)
+                  %li
+                    = link_to "Issues I've created", issues_dashboard_url(author_id: current_user.id)
+                  %li.divider
+                  %li
+                    = link_to 'Merge Requests Assigned to me', merge_requests_dashboard_url(assignee_id: current_user.id)
+                  %li
+                    = link_to "Merge Requests I've created", merge_requests_dashboard_url(author_id: current_user.id)
           %i.search-icon
           %i.clear-icon.js-clear-input
 
