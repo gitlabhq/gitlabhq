@@ -345,7 +345,7 @@ class Event < ActiveRecord::Base
   end
 
   def reset_project_activity
-    if project
+    if project && Gitlab::ExclusiveLease.new("project:update_last_activity_at:#{project.id}", timeout: 60).try_obtain
       project.update_column(:last_activity_at, self.created_at)
     end
   end
