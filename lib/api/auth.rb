@@ -113,6 +113,7 @@ module API
       end
 
       def docker_payload
+        issued_at = Time.now
         {
           access: [
             type: @type,
@@ -121,8 +122,14 @@ module API
           ],
           iss: Gitlab.config.registry.issuer,
           aud: "docker",
+          sub: @user.try(:username),
+          aud: @service,
+          iat: issued_at,
+          nbf: issued_at - 5.seconds,
+          exp: issued_at + 60.minutes,
+          jti: SecureRandom.uuid,
           exp: Time.now.to_i + 3600
-        }
+        }.compact
       end
 
       def private_key
@@ -130,7 +137,10 @@ module API
       end
 
       def encode(payload)
-        JWT.encode(payload, private_key, 'RS256')
+        headers = {
+          kid: kid(private_key)
+        }
+        JWT.encode(payload, private_key, 'RS256', headers)
       end
 
       def authorize_actions!(actions)
@@ -148,6 +158,15 @@ module API
         else
           false
         end
+      end
+
+      def kid(private_key)
+        sha256 = Digest::SHA256.new
+        sha256.update(private_key.public_key.to_der)
+        payload = StringIO.new(sha256.digest).read(30)
+        Base32.encode(payload).split("").each_slice(4).each_with_object([]) do |slice, mem|
+          mem << slice.join
+        end.join(":")
       end
 
       class BasicRequest < Rack::Auth::AbstractRequest
