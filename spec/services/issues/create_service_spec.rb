@@ -3,12 +3,15 @@ require 'spec_helper'
 describe Issues::CreateService, services: true do
   let(:project) { create(:empty_project) }
   let(:user) { create(:user) }
-  let(:assignee) { create(:user) }
 
   describe :execute do
     let(:issue) { Issues::CreateService.new(project, user, opts).execute }
 
     context 'valid params' do
+      let(:assignee) { create(:user) }
+      let(:milestone) { create(:milestone, project: project) }
+      let(:labels) { create_list(:label, 4, project: project) }
+
       before do
         project.team << [user, :master]
         project.team << [assignee, :master]
@@ -17,12 +20,16 @@ describe Issues::CreateService, services: true do
       let(:opts) do
         { title: 'Awesome issue',
           description: 'please fix',
-          assignee: assignee }
+          assignee: assignee,
+          label_ids: labels.map(&:id),
+          milestone_id: milestone.id }
       end
 
       it { expect(issue).to be_valid }
       it { expect(issue.title).to eq('Awesome issue') }
       it { expect(issue.assignee).to eq assignee }
+      it { expect(issue.labels).to match_array labels }
+      it { expect(issue.milestone).to eq milestone }
 
       it 'creates a pending todo for new assignee' do
         attributes = {
