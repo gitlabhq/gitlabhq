@@ -3,6 +3,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 v 8.8.0 (unreleased)
 
 v 8.7.0 (unreleased)
+  - Gitlab::GitAccess and Gitlab::GitAccessWiki are now instrumented
   - The number of InfluxDB points stored per UDP packet can now be configured
   - Fix error when cross-project label reference used with non-existent project
   - Transactions for /internal/allowed now have an "action" tag set
