@@ -61,28 +61,23 @@ module Ci
       @stages = @config[:stages] || @config[:types]
       @variables = @config[:variables] || {}
       @cache = @config[:cache]
-      @config.except!(*ALLOWED_YAML_KEYS)
-
-      @config.each do |name, param|
-        raise ValidationError, "Unknown parameter: #{name}" unless is_a_job?(name, param)
-      end
-
-      unless @config.values.any?{|job| job.is_a?(Hash)}
-        raise ValidationError, "Please define at least one job"
-      end
-
       @jobs = {}
-      @config.each do |key, job|
-        next if key.to_s.start_with?('.')
-        stage = job[:stage] || job[:type] || DEFAULT_STAGE
-        @jobs[key] = { stage: stage }.merge(job)
+
+      @config.except!(*ALLOWED_YAML_KEYS)
+      @config.each do |name, param|
+        add_job(name, param)
       end
+
+      raise ValidationError, "Please define at least one job" if @jobs.none?
     end
 
-    def is_a_job?(name, value)
-      return true if value.is_a?(Hash) && value.has_key?(:script)
-      return true if name.to_s.start_with?('.')
-      false
+    def add_job(name, job)
+      return if name.to_s.start_with?('.')
+
+      raise ValidationError, "Unknown parameter: #{name}" unless job.is_a?(Hash) && job.has_key?(:script)
+
+      stage = job[:stage] || job[:type] || DEFAULT_STAGE
+      @jobs[name] = { stage: stage }.merge(job)
     end
 
     def build_job(name, job)
