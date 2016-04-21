@@ -189,6 +189,7 @@ v 8.7.0
   - Add Slack notifications when Wiki is edited (Sebastian Klier)
   - Diffs load at the correct point when linking from from number
   - Selected diff rows highlight
+  - Toggle sign-up confirmation emails in application settings
   - Fix emoji categories in the emoji picker
   - API: Properly display annotated tags for GET /projects/:id/repository/tags (Robert Schilling)
   - Add encrypted credentials for imported projects and migrate old ones

@@ -106,6 +106,12 @@
     .form-group
       .col-sm-offset-2.col-sm-10
         .checkbox
+          = f.label :skip_confirmation_email do
+            = f.check_box :skip_user_confirmation_email
+            Skip sign-up email confirmation
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
           = f.label :signin_enabled do
             = f.check_box :signin_enabled
             Sign-in enabled
