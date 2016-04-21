@@ -157,7 +157,6 @@ class @LabelsSelect
           data.issueURLSplit = issueURLSplit
           labelCount = 0
           if data.labels.length
-            console.log data.labels
             template = labelHTMLTemplate(data)
             labelCount = data.labels.length
           else
