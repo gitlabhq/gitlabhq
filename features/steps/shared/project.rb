@@ -102,10 +102,6 @@ module SharedProject
     @project ||= Project.first
   end
 
-  step 'I should see the new issue page' do
-    expect(page).to have_content('New Issue')
-  end
-
   # ----------------------------------------
   # Project permissions
   # ----------------------------------------
