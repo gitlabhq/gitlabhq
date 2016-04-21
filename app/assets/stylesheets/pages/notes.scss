@@ -81,10 +81,8 @@ ul.notes {
         @include md-typography;
 
         // On diffs code should wrap nicely and not overflow
-        pre {
-          code {
-            white-space: pre;
-          }
+        code {
+          white-space: pre-wrap;
         }
 
         // Reset ul style types since we're nested inside a ul already
@@ -111,6 +109,10 @@ ul.notes {
           border-color: darken(#f5f5f5, 8%);
           margin: 10px 0;
         }
+      }
+
+      a {
+        word-break: break-all;
       }
     }
 
@@ -145,18 +147,26 @@ ul.notes {
       background: $background-color;
       color: $text-color;
     }
+
     &.notes_line2 {
       text-align: center;
       padding: 10px 0;
       border-left: 1px solid #ddd !important;
     }
+
     &.notes_content {
-      background-color: #fff;
+      background-color: $background-color;
       border-width: 1px 0;
       padding: 0;
       vertical-align: top;
+      white-space: normal;
+
       &.parallel {
         border-width: 1px;
+      }
+
+      .notes {
+        background-color: $white-light;
       }
     }
   }
@@ -180,6 +190,12 @@ ul.notes {
   color: $notes-light-color;
 }
 
+.discussion-headline-light {
+  a {
+    color: $gl-link-color;
+  }
+}
+
 /**
  * Actions for Discussions/Notes
  */
@@ -189,6 +205,17 @@ ul.notes {
   float: right;
   margin-left: 10px;
   color: $notes-action-color;
+}
+
+.discussion-actions {
+  @media (max-width: $screen-sm-max) {
+    float: none;
+    margin-left: 0;
+
+    .note-action-button {
+      margin-left: 0;
+    }
+  }
 }
 
 .note-action-button,
@@ -258,8 +285,7 @@ ul.notes {
 
 .diff-file tr.line_holder {
   @mixin show-add-diff-note {
-    filter: alpha(opacity=100);
-    opacity: 1.0;
+    display: inline-block;
   }
 
   .add-diff-note {
@@ -269,17 +295,12 @@ ul.notes {
     padding: 4px;
     font-size: 16px;
     color: $gl-link-color;
-    margin-left: -60px;
+    margin-left: -56px;
     position: absolute;
     z-index: 10;
     width: 32px;
-
-    transition: all 0.2s ease;
-
     // "hide" it by default
-    opacity: 0.0;
-    filter: alpha(opacity=0);
-
+    display: none;
     &:hover {
       background: $gl-info;
       color: #fff;

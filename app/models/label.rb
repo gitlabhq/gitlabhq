@@ -113,6 +113,10 @@ class Label < ActiveRecord::Base
     template
   end
 
+  def text_color
+    LabelsHelper::text_color_for_bg(self.color)
+  end
+
   private
 
   def label_format_reference(format = :id)

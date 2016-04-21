@@ -184,7 +184,7 @@ module ApplicationHelper
     element = content_tag :time, time.to_s,
       class: "#{html_class} js-timeago #{"js-timeago-pending" unless skip_js}",
       datetime: time.to_time.getutc.iso8601,
-      title: time.in_time_zone.to_s(:medium),
+      title: time.to_time.in_time_zone.to_s(:medium),
       data: { toggle: 'tooltip', placement: placement, container: 'body' }
 
     unless skip_js
@@ -254,11 +254,11 @@ module ApplicationHelper
 
   def page_filter_path(options = {})
     without = options.delete(:without)
+    add_label = options.delete(:label)
 
     exist_opts = {
       state: params[:state],
       scope: params[:scope],
-      label_name: params[:label_name],
       milestone_title: params[:milestone_title],
       assignee_id: params[:assignee_id],
       author_id: params[:author_id],
@@ -275,6 +275,13 @@ module ApplicationHelper
 
     path = request.path
     path << "?#{options.to_param}"
+    if add_label
+      if params[:label_name].present? and params[:label_name].respond_to?('any?')
+        params[:label_name].each do |label|
+          path << "&label_name[]=#{label}"
+        end
+      end
+    end
     path
   end
 

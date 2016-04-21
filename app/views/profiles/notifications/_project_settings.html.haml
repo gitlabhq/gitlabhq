@@ -1,0 +1,13 @@
+%li.notification-list-item
+  %span.notification.fa.fa-holder.append-right-5
+    - if setting.global?
+      = notification_icon(current_user.notification_level)
+    - else
+      = notification_icon(setting.level)
+
+  %span.str-truncated
+    = link_to_project(project)
+
+  .pull-right
+    = form_for [project.namespace.becomes(Namespace), project, setting], remote: true, html: { class: 'update-notifications' } do |f|
+      = f.select :level, NotificationSetting.levels.keys, {}, class: 'form-control trigger-submit'

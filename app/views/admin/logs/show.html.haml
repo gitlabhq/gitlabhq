@@ -1,6 +1,7 @@
 - page_title "Logs"
 - loggers = [Gitlab::GitLogger, Gitlab::AppLogger,
-             Gitlab::ProductionLogger, Gitlab::SidekiqLogger]
+             Gitlab::ProductionLogger, Gitlab::SidekiqLogger,
+             Gitlab::RepositoryCheckLogger]
 %ul.nav-links.log-tabs
   - loggers.each do |klass|
     %li{ class: (klass == Gitlab::GitLogger ? 'active' : '') }

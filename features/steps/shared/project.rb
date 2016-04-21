@@ -230,7 +230,7 @@ module SharedProject
 
   step 'project "Shop" has CI build' do
     project = Project.find_by(name: "Shop")
-    create :ci_commit, project: project, sha: project.commit.sha
+    create :ci_commit, project: project, sha: project.commit.sha, ref: 'master', status: 'skipped'
   end
 
   step 'I should see last commit with CI status' do

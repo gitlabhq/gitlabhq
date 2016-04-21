@@ -1,5 +1,50 @@
 # Configuration of your builds with .gitlab-ci.yml
 
+This document describes the usage of `.gitlab-ci.yml`, the file that is used by
+GitLab Runner to manage your project's builds.
+
+If you want a quick introduction to GitLab CI, follow our
+[quick start guide](../quick_start/README.md).
+
+---
+
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [.gitlab-ci.yml](#gitlab-ci-yml)
+    - [image and services](#image-and-services)
+    - [before_script](#before_script)
+    - [after_script](#after_script)
+    - [stages](#stages)
+    - [types](#types)
+    - [variables](#variables)
+    - [cache](#cache)
+        - [cache:key](#cache-key)
+- [Jobs](#jobs)
+    - [script](#script)
+    - [stage](#stage)
+    - [job variables](#job-variables)
+    - [only and except](#only-and-except)
+    - [tags](#tags)
+    - [when](#when)
+    - [artifacts](#artifacts)
+        - [artifacts:name](#artifacts-name)
+    - [dependencies](#dependencies)
+    - [before_script and after_script](#before_script-and-after_script)
+- [Hidden jobs](#hidden-jobs)
+- [Special YAML features](#special-yaml-features)
+    - [Anchors](#anchors)
+- [Validate the .gitlab-ci.yml](#validate-the-gitlab-ci-yml)
+- [Skipping builds](#skipping-builds)
+- [Examples](#examples)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
+---
+
+## .gitlab-ci.yml
+
 From version 7.12, GitLab CI uses a [YAML](https://en.wikipedia.org/wiki/YAML)
 file (`.gitlab-ci.yml`) for the project configuration. It is placed in the root
 of your repository and contains definitions of how your project should be built.
@@ -23,11 +68,9 @@ Of course a command can execute code directly (`./configure;make;make install`)
 or run a script (`test.sh`) in the repository.
 
 Jobs are used to create builds, which are then picked up by
-[runners](../runners/README.md) and executed within the environment of the
-runner. What is important, is that each job is run independently from each
+[Runners](../runners/README.md) and executed within the environment of the
+Runner. What is important, is that each job is run independently from each
 other.
-
-## .gitlab-ci.yml
 
 The YAML syntax allows for using more complex job specifications than in the
 above example:
@@ -39,6 +82,9 @@ services:
 
 before_script:
   - bundle install
+
+after_script:
+  - rm secrets
 
 stages:
   - build
@@ -64,6 +110,7 @@ There are a few reserved `keywords` that **cannot** be used as job names:
 | stages        | no | Define build stages |
 | types         | no | Alias for `stages` |
 | before_script | no | Define commands that run before each job's script |
+| after_script  | no | Define commands that run after each job's script |
 | variables     | no | Define build variables |
 | cache         | no | Define list of files that should be cached between subsequent runs |
 
@@ -71,12 +118,20 @@ There are a few reserved `keywords` that **cannot** be used as job names:
 
 This allows to specify a custom Docker image and a list of services that can be
 used for time of the build. The configuration of this feature is covered in
-separate document: [Use Docker](../docker/README.md).
+[a separate document](../docker/README.md).
 
 ### before_script
 
 `before_script` is used to define the command that should be run before all
 builds, including deploy builds. This can be an array or a multi-line string.
+
+### after_script
+
+>**Note:**
+Introduced in GitLab 8.7 and GitLab Runner v1.2.
+
+`after_script` is used to define the command that will be run after for all
+builds. This has to be an array or a multi-line string.
 
 ### stages
 
@@ -86,7 +141,8 @@ The specification of `stages` allows for having flexible multi stage pipelines.
 The ordering of elements in `stages` defines the ordering of builds' execution:
 
 1. Builds of the same stage are run in parallel.
-1. Builds of next stage are run after success.
+1. Builds of the next stage are run after the jobs from the previous stage
+   complete successfully.
 
 Let's consider the following example, which defines 3 stages:
 
@@ -98,9 +154,9 @@ stages:
 ```
 
 1. First all jobs of `build` are executed in parallel.
-1. If all jobs of `build` succeeds, the `test` jobs are executed in parallel.
-1. If all jobs of `test` succeeds, the `deploy` jobs are executed in parallel.
-1. If all jobs of `deploy` succeeds, the commit is marked as `success`.
+1. If all jobs of `build` succeed, the `test` jobs are executed in parallel.
+1. If all jobs of `test` succeed, the `deploy` jobs are executed in parallel.
+1. If all jobs of `deploy` succeed, the commit is marked as `success`.
 1. If any of the previous jobs fails, the commit is marked as `failed` and no
    jobs of further stage are executed.
 
@@ -132,6 +188,8 @@ These variables can be later used in all executed commands and scripts.
 
 The YAML-defined variables are also set to all created service containers,
 thus allowing to fine tune them.
+
+Variables can be also defined on [job level](#job-variables).
 
 ### cache
 
@@ -278,23 +336,26 @@ job_name:
 
 | Keyword       | Required | Description |
 |---------------|----------|-------------|
-| script        | yes | Defines a shell script which is executed by runner |
+| script        | yes | Defines a shell script which is executed by Runner |
 | image         | no | Use docker image, covered in [Using Docker Images](../docker/using_docker_images.md#define-image-and-services-from-gitlab-ciyml) |
 | services      | no | Use docker services, covered in [Using Docker Images](../docker/using_docker_images.md#define-image-and-services-from-gitlab-ciyml) |
 | stage         | no | Defines a build stage (default: `test`) |
 | type          | no | Alias for `stage` |
+| variables     | no | Define build variables on a job level |
 | only          | no | Defines a list of git refs for which build is created |
 | except        | no | Defines a list of git refs for which build is not created |
-| tags          | no | Defines a list of tags which are used to select runner |
+| tags          | no | Defines a list of tags which are used to select Runner |
 | allow_failure | no | Allow build to fail. Failed build doesn't contribute to commit status |
 | when          | no | Define when to run build. Can be `on_success`, `on_failure` or `always` |
 | dependencies  | no | Define other builds that a build depends on so that you can pass artifacts between them|
 | artifacts     | no | Define list build artifacts |
 | cache         | no | Define list of files that should be cached between subsequent runs |
+| before_script | no | Override a set of commands that are executed before build |
+| after_script  | no | Override a set of commands that are executed after build |
 
 ### script
 
-`script` is a shell script which is executed by the runner. For example:
+`script` is a shell script which is executed by the Runner. For example:
 
 ```yaml
 job:
@@ -373,15 +434,27 @@ job:
 The above example will run `job` for all branches on `gitlab-org/gitlab-ce`,
 except master.
 
+### job variables
+
+It is possible to define build variables using a `variables` keyword on a job
+level. It works basically the same way as its global-level equivalent but
+allows you to define job-specific build variables.
+
+When the `variables` keyword is used on a job level, it overrides global YAML
+build variables and predefined variables.
+
+Build variables priority is defined in
+[variables documentation](../variables/README.md).
+
 ### tags
 
-`tags` is used to select specific runners from the list of all runners that are
+`tags` is used to select specific Runners from the list of all Runners that are
 allowed to run this project.
 
-During the registration of a runner, you can specify the runner's tags, for
+During the registration of a Runner, you can specify the Runner's tags, for
 example `ruby`, `postgres`, `development`.
 
-`tags` allow you to run builds with runners that have the specified tags
+`tags` allow you to run builds with Runners that have the specified tags
 assigned to them:
 
 ```yaml
@@ -391,7 +464,7 @@ job:
     - postgres
 ```
 
-The specification above, will make sure that `job` is built by a runner that
+The specification above, will make sure that `job` is built by a Runner that
 has both `ruby` AND `postgres` tags defined.
 
 ### when
@@ -633,6 +706,23 @@ test:linux:
 deploy:
   stage: deploy
   script: make deploy
+```
+
+### before_script and after_script
+
+It's possible to overwrite globally defined `before_script` and `after_script`:
+
+```yaml
+before_script
+- global before script
+
+job:
+  before_script:
+  - execute this instead of global before script
+  script:
+  - my command
+  after_script:
+  - execute this after my script
 ```
 
 ## Hidden jobs

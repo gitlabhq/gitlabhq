@@ -9,4 +9,14 @@ class Spinach::Features::ProfileNotifications < Spinach::FeatureSteps
   step 'I should see global notifications settings' do
     expect(page).to have_content "Notifications"
   end
+
+  step 'I select Mention setting from dropdown' do
+    select 'mention', from: 'notification_setting_level'
+  end
+
+  step 'I should see Notification saved message' do
+    page.within '.flash-container' do
+      expect(page).to have_content 'Notification settings saved'
+    end
+  end
 end

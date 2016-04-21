@@ -14,5 +14,5 @@
               cancel_path: namespace_project_tree_path(@project.namespace, @project, @id)
 
 :javascript
-  blob = new NewBlob(gon.relative_url_root + "#{Gitlab::Application.config.assets.prefix}", null)
+  blob = new EditBlob(gon.relative_url_root + "#{Gitlab::Application.config.assets.prefix}")
   new NewCommitForm($('.js-new-blob-form'))

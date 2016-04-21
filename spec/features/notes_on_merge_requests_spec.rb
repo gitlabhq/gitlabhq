@@ -4,6 +4,20 @@ describe 'Comments', feature: true do
   include RepoHelpers
   include WaitForAjax
 
+  describe 'On merge requests page', feature: true do
+    it 'excludes award_emoji from comment count' do
+      merge_request = create(:merge_request)
+      project = merge_request.source_project
+      create(:upvote_note, noteable: merge_request, project: project)
+
+      login_as :admin
+      visit namespace_project_merge_requests_path(project.namespace, project)
+
+      expect(merge_request.mr_and_commit_notes.count).to eq 1
+      expect(page.all('.merge-request-no-comments').first.text).to eq "0"
+    end
+  end
+
   describe 'On a merge request', js: true, feature: true do
     let!(:merge_request) { create(:merge_request) }
     let!(:project) { merge_request.source_project }
@@ -127,6 +141,17 @@ describe 'Comments', feature: true do
           is_expected.not_to have_css('.current-note-edit-form')
           wait_for_ajax
         end
+      end
+    end
+
+    describe 'comment info' do
+      it 'excludes award_emoji from comment count' do
+        create(:upvote_note, noteable: merge_request, project: project)
+
+        visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+
+        expect(merge_request.mr_and_commit_notes.count).to eq 2
+        expect(find('.notes-tab span.badge').text).to eq "1"
       end
     end
   end

@@ -163,21 +163,7 @@ describe CommitStatus, models: true do
     end
 
     it 'return unique statuses' do
-      is_expected.to eq([@commit2, @commit3, @commit4, @commit5])
-    end
-  end
-
-  describe :for_ref do
-    subject { CommitStatus.for_ref('bb').order(:id) }
-
-    before do
-      @commit1 = FactoryGirl.create :commit_status, commit: commit, name: 'aa', ref: 'bb', status: 'running'
-      @commit2 = FactoryGirl.create :commit_status, commit: commit, name: 'cc', ref: 'cc', status: 'pending'
-      @commit3 = FactoryGirl.create :commit_status, commit: commit, name: 'aa', ref: nil, status: 'success'
-    end
-
-    it 'return statuses with equal and nil ref set' do
-      is_expected.to eq([@commit1])
+      is_expected.to eq([@commit4, @commit5])
     end
   end
 
@@ -194,6 +180,56 @@ describe CommitStatus, models: true do
 
     it 'return statuses that are running or pending' do
       is_expected.to eq([@commit1, @commit2])
+    end
+  end
+
+  describe '#before_sha' do
+    subject { commit_status.before_sha }
+
+    context 'when no before_sha is set for ci::commit' do
+      before { commit.before_sha = nil }
+
+      it 'return blank sha' do
+        is_expected.to eq(Gitlab::Git::BLANK_SHA)
+      end
+    end
+
+    context 'for before_sha set for ci::commit' do
+      let(:value) { '1234' }
+      before { commit.before_sha = value }
+
+      it 'return the set value' do
+        is_expected.to eq(value)
+      end
+    end
+  end
+
+  describe '#stages' do
+    before do
+      FactoryGirl.create :commit_status, commit: commit, stage: 'build', stage_idx: 0, status: 'success'
+      FactoryGirl.create :commit_status, commit: commit, stage: 'build', stage_idx: 0, status: 'failed'
+      FactoryGirl.create :commit_status, commit: commit, stage: 'deploy', stage_idx: 2, status: 'running'
+      FactoryGirl.create :commit_status, commit: commit, stage: 'test', stage_idx: 1, status: 'success'
+    end
+
+    context 'stages list' do
+      subject { CommitStatus.where(commit: commit).stages }
+
+      it 'return ordered list of stages' do
+        is_expected.to eq(%w(build test deploy))
+      end
+    end
+
+    context 'stages with statuses' do
+      subject { CommitStatus.where(commit: commit).stages_status }
+
+      it 'return list of stages with statuses' do
+        is_expected.to eq({
+          'build' => 'failed',
+          'test' => 'success',
+          'deploy' => 'running'
+        })
+      end
     end
   end
 end

@@ -27,7 +27,7 @@
           = icon('thumbs-down')
           = downvotes
 
-      - note_count = issue.notes.user.count
+      - note_count = issue.notes.user.nonawards.count
       - if note_count > 0
         %li
           = link_to issue_path(issue) + "#notes" do
@@ -48,6 +48,11 @@
       = link_to namespace_project_issues_path(issue.project.namespace, issue.project, milestone_title: issue.milestone.title) do
         = icon('clock-o')
         = issue.milestone.title
+    - if issue.due_date
+      %span{class: "#{'cred' if issue.overdue?}"}
+        &nbsp;
+        = icon('calendar')
+        = issue.due_date.to_s(:medium)
     - if issue.labels.any?
       &nbsp;
       - issue.labels.each do |label|

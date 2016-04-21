@@ -75,6 +75,9 @@ class @Notes
     # when issue status changes, we need to refresh data
     $(document).on "issuable:change", @refresh
 
+    # when a key is clicked on the notes
+    $(document).on "keydown", ".js-note-text", @keydownNoteText
+
   cleanBinding: ->
     $(document).off "ajax:success", ".js-main-target-form"
     $(document).off "ajax:success", ".js-discussion-note-form"
@@ -92,9 +95,18 @@ class @Notes
     $(document).off "click", ".js-note-target-reopen"
     $(document).off "click", ".js-note-target-close"
     $(document).off "click", ".js-note-discard"
+    $(document).off "keydown", ".js-note-text"
 
     $('.note .js-task-list-container').taskList('disable')
     $(document).off 'tasklist:changed', '.note .js-task-list-container'
+
+  keydownNoteText: (e) ->
+    $this = $(this)
+    if $this.val() is '' and e.which is 38 #aka the up key
+      myLastNote = $("li.note[data-author-id='#{gon.current_user_id}'][data-editable]:last")
+      if myLastNote.length
+        myLastNoteEditBtn = myLastNote.find('.js-note-edit')
+        myLastNoteEditBtn.trigger('click', [true, myLastNote])
 
   initRefresh: ->
     clearInterval(Notes.interval)
@@ -163,9 +175,15 @@ class @Notes
     else if @isNewNote(note)
       @note_ids.push(note.id)
 
-      $('ul.main-notes-list')
+      $notesList = $('ul.main-notes-list')
+
+      $notesList
         .append(note.html)
         .syntaxHighlight()
+
+      # Update datetime format on the recent note
+      gl.utils.localTimeAgo($notesList.find("#note_#{note.id} .js-timeago"), false)
+
       @initTaskList()
       @updateNotesCount(1)
 
@@ -216,6 +234,8 @@ class @Notes
     else
       # append new note to all matching discussions
       discussionContainer.append note_html
+
+    gl.utils.localTimeAgo($('.js-timeago', note_html), false)
 
     @updateNotesCount(1)
 
@@ -275,31 +295,9 @@ class @Notes
   show the form
   ###
   setupNoteForm: (form) ->
-    disableButtonIfEmptyField form.find(".js-note-text"), form.find(".js-comment-button")
-    form.removeClass "js-new-note-form"
-    form.find('.div-dropzone').remove()
-
-    # hide discard button
-    form.find('.js-note-discard').hide()
-
-    # setup preview buttons
-    previewButton = form.find(".js-md-preview-button")
+    new GLForm form
 
     textarea = form.find(".js-note-text")
-
-    textarea.on "input", ->
-      if $(this).val().trim() isnt ""
-        previewButton.removeClass("turn-off").addClass "turn-on"
-      else
-        previewButton.removeClass("turn-on").addClass "turn-off"
-
-    textarea.on 'focus', ->
-      $(this).closest('.md-area').addClass 'is-focused'
-
-    textarea.on 'blur', ->
-      $(this).closest('.md-area').removeClass 'is-focused'
-
-    autosize(textarea)
 
     new Autosave textarea, [
       "Note"
@@ -308,11 +306,6 @@ class @Notes
       form.find("#note_noteable_type").val()
       form.find("#note_noteable_id").val()
     ]
-
-    # remove notify commit author checkbox for non-commit notes
-    GitLab.GfmAutoComplete.setup()
-    new DropzoneInput(form)
-    form.show()
 
   ###
   Called in response to the new note form being submitted
@@ -345,7 +338,9 @@ class @Notes
   updateNote: (_xhr, note, _status) =>
     # Convert returned HTML to a jQuery object so we can modify it further
     $html = $(note.html)
-    $('.js-timeago', $html).timeago()
+
+    gl.utils.localTimeAgo($('.js-timeago', $html))
+
     $html.syntaxHighlight()
     $html.find('.js-task-list-container').taskList('enable')
 
@@ -360,39 +355,38 @@ class @Notes
   Adds a hidden div with the original content of the note to fill the edit note form with
   if the user cancels
   ###
-  showEditForm: (e) ->
+  showEditForm: (e, scrollTo, myLastNote) ->
     e.preventDefault()
     note = $(this).closest(".note")
     note.addClass "is-editting"
     form = note.find(".note-edit-form")
-    isNewForm = form.is(':not(.gfm-form)')
-    if isNewForm
-      form.addClass('gfm-form')
+
     form.addClass('current-note-edit-form')
 
     # Show the attachment delete link
     note.find(".js-note-attachment-delete").show()
 
-    # Setup markdown form
-    if isNewForm
-      GitLab.GfmAutoComplete.setup()
-      new DropzoneInput(form)
+    done = ($noteText) ->
+      # Neat little trick to put the cursor at the end
+      noteTextVal = $noteText.val()
+      $noteText.val('').val(noteTextVal);
 
-    textarea = form.find("textarea")
-    textarea.focus()
-
-    if isNewForm
-      autosize(textarea)
-
-    # HACK (rspeicher/DouweM): Work around a Chrome 43 bug(?).
-    # The textarea has the correct value, Chrome just won't show it unless we
-    # modify it, so let's clear it and re-set it!
-    value = textarea.val()
-    textarea.val ""
-    textarea.val value
-
-    if isNewForm
-      disableButtonIfEmptyField textarea, form.find(".js-comment-button")
+    new GLForm form
+    if scrollTo? and myLastNote?
+      # scroll to the bottom 
+      # so the open of the last element doesn't make a jump
+      $('html, body').scrollTop($(document).height());
+      $('html, body').animate({
+        scrollTop: myLastNote.offset().top - 150  
+      }, 500, ->
+        $noteText = form.find(".js-note-text")
+        $noteText.focus()
+        done($noteText)
+      );
+    else
+      $noteText = form.find('.js-note-text')
+      $noteText.focus()
+      done($noteText)
 
   ###
   Called in response to clicking the edit note link
@@ -549,6 +543,9 @@ class @Notes
   removeDiscussionNoteForm: (form)->
     row = form.closest("tr")
 
+    glForm = form.data 'gl-form'
+    glForm.destroy()
+
     form.find(".js-note-text").data("autosave").reset()
 
     # show the reply button (will only work for replies)
@@ -559,7 +556,6 @@ class @Notes
     else
       # only remove the form
       form.remove()
-
 
   cancelDiscussionForm: (e) =>
     e.preventDefault()

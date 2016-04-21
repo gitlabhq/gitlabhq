@@ -62,6 +62,22 @@ describe IssuesFinder do
         expect(issues).to eq([issue2])
       end
 
+      it 'returns unique issues when filtering by multiple labels' do
+        label2 = create(:label, project: project2)
+
+        create(:label_link, label: label2, target: issue2)
+
+        params = {
+          scope:      'all',
+          label_name: [label.title, label2.title].join(','),
+          state:      'opened'
+        }
+
+        issues = IssuesFinder.new(user, params).execute
+
+        expect(issues).to eq([issue2])
+      end
+
       it 'should filter by no label name' do
         params = { scope: "all", label_name: Label::None.title, state: 'opened' }
         issues = IssuesFinder.new(user, params).execute

@@ -11,7 +11,7 @@ retry() {
     return 1
 }
 
-if [ -f /.dockerinit ]; then
+if [ -f /.dockerenv ] || [ -f ./dockerinit ]; then
     mkdir -p vendor
 
     # Install phantomjs package

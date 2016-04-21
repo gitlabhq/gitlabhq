@@ -19,21 +19,28 @@
 module Ci
   class Commit < ActiveRecord::Base
     extend Ci::Model
+    include Statuseable
 
     belongs_to :project, class_name: '::Project', foreign_key: :gl_project_id
     has_many :statuses, class_name: 'CommitStatus'
     has_many :builds, class_name: 'Ci::Build'
     has_many :trigger_requests, dependent: :destroy, class_name: 'Ci::TriggerRequest'
 
+    delegate :stages, to: :statuses
+
     validates_presence_of :sha
+    validates_presence_of :status
     validate :valid_commit_sha
+
+    # Invalidate object and save if when touched
+    after_touch :update_state
 
     def self.truncate_sha(sha)
       sha[0...8]
     end
 
-    def to_param
-      sha
+    def self.stages
+      CommitStatus.where(commit: all).stages
     end
 
     def project_id
@@ -68,15 +75,20 @@ module Ci
       nil
     end
 
-    def stage
-      running_or_pending = statuses.latest.running_or_pending.ordered
-      running_or_pending.first.try(:stage)
+    def branch?
+      !tag?
     end
 
-    def create_builds(ref, tag, user, trigger_request = nil)
+    def retryable?
+      builds.latest.any? do |build|
+        build.failed? && build.retryable?
+      end
+    end
+
+    def create_builds(user, trigger_request = nil)
       return unless config_processor
       config_processor.stages.any? do |stage|
-        CreateBuildsService.new.execute(self, stage, ref, tag, user, trigger_request, 'success').present?
+        CreateBuildsService.new(self).execute(stage, user, 'success', trigger_request).present?
       end
     end
 
@@ -84,7 +96,7 @@ module Ci
       return unless config_processor
 
       # don't create other builds if this one is retried
-      latest_builds = builds.similar(build).latest
+      latest_builds = builds.latest
       return unless latest_builds.exists?(build.id)
 
       # get list of stages after this build
@@ -92,88 +104,21 @@ module Ci
       next_stages.delete(build.stage)
 
       # get status for all prior builds
-      prior_builds = latest_builds.reject { |other_build| next_stages.include?(other_build.stage) }
-      status = Ci::Status.get_status(prior_builds)
+      prior_builds = latest_builds.where.not(stage: next_stages)
+      prior_status = prior_builds.status
 
       # create builds for next stages based
       next_stages.any? do |stage|
-        CreateBuildsService.new.execute(self, stage, build.ref, build.tag, build.user, build.trigger_request, status).present?
+        CreateBuildsService.new(self).execute(stage, build.user, prior_status, build.trigger_request).present?
       end
-    end
-
-    def refs
-      statuses.order(:ref).pluck(:ref).uniq
-    end
-
-    def latest_statuses
-      @latest_statuses ||= statuses.latest.to_a
-    end
-
-    def latest_statuses_for_ref(ref)
-      latest_statuses.select { |status| status.ref == ref }
-    end
-
-    def matrix_builds(build = nil)
-      matrix_builds = builds.latest.ordered
-      matrix_builds = matrix_builds.similar(build) if build
-      matrix_builds.to_a
     end
 
     def retried
       @retried ||= (statuses.order(id: :desc) - statuses.latest)
     end
 
-    def status
-      if yaml_errors.present?
-        return 'failed'
-      end
-
-      @status ||= Ci::Status.get_status(latest_statuses)
-    end
-
-    def pending?
-      status == 'pending'
-    end
-
-    def running?
-      status == 'running'
-    end
-
-    def success?
-      status == 'success'
-    end
-
-    def failed?
-      status == 'failed'
-    end
-
-    def canceled?
-      status == 'canceled'
-    end
-
-    def active?
-      running? || pending?
-    end
-
-    def complete?
-      canceled? || success? || failed?
-    end
-
-    def duration
-      duration_array = statuses.map(&:duration).compact
-      duration_array.reduce(:+).to_i
-    end
-
-    def started_at
-      @started_at ||= statuses.order('started_at ASC').first.try(:started_at)
-    end
-
-    def finished_at
-      @finished_at ||= statuses.order('finished_at DESC').first.try(:finished_at)
-    end
-
     def coverage
-      coverage_array = latest_statuses.map(&:coverage).compact
+      coverage_array = statuses.latest.map(&:coverage).compact
       if coverage_array.size >= 1
         '%.2f' % (coverage_array.reduce(:+) / coverage_array.size)
       end
@@ -181,23 +126,29 @@ module Ci
 
     def config_processor
       return nil unless ci_yaml_file
-      @config_processor ||= Ci::GitlabCiYamlProcessor.new(ci_yaml_file, project.path_with_namespace)
-    rescue Ci::GitlabCiYamlProcessor::ValidationError, Psych::SyntaxError => e
-      save_yaml_error(e.message)
-      nil
-    rescue
-      save_yaml_error("Undefined error")
-      nil
+      return @config_processor if defined?(@config_processor)
+
+      @config_processor ||= begin
+        Ci::GitlabCiYamlProcessor.new(ci_yaml_file, project.path_with_namespace)
+      rescue Ci::GitlabCiYamlProcessor::ValidationError, Psych::SyntaxError => e
+        save_yaml_error(e.message)
+        nil
+      rescue
+        save_yaml_error("Undefined error")
+        nil
+      end
     end
 
     def ci_yaml_file
+      return @ci_yaml_file if defined?(@ci_yaml_file)
+
       @ci_yaml_file ||= begin
         blob = project.repository.blob_at(sha, '.gitlab-ci.yml')
         blob.load_all_data!(project.repository)
         blob.data
+      rescue
+        nil
       end
-    rescue
-      nil
     end
 
     def skip_ci?
@@ -206,10 +157,23 @@ module Ci
 
     private
 
+    def update_state
+      statuses.reload
+      self.status = if yaml_errors.blank?
+                      statuses.latest.status || 'skipped'
+                    else
+                      'failed'
+                    end
+      self.started_at = statuses.started_at
+      self.finished_at = statuses.finished_at
+      self.duration = statuses.latest.duration
+      save
+    end
+
     def save_yaml_error(error)
       return if self.yaml_errors?
       self.yaml_errors = error
-      save
+      update_state
     end
   end
 end

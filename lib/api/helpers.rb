@@ -91,8 +91,7 @@ module API
       if can?(current_user, :read_group, group)
         group
       else
-        forbidden!("#{current_user.username} lacks sufficient "\
-        "access to #{group.name}")
+        not_found!('Group')
       end
     end
 
@@ -239,6 +238,10 @@ module API
 
     def file_to_large!
       render_api_error!('413 Request Entity Too Large', 413)
+    end
+
+    def not_modified!
+      render_api_error!('304 Not Modified', 304)
     end
 
     def render_validation_error!(model)

@@ -75,6 +75,11 @@ li.commit {
     }
   }
 
+  .item-title {
+    display: inline-block;
+    max-width: 70%;
+  }
+
   .commit-row-description {
     font-size: 14px;
     border-left: 1px solid #eee;

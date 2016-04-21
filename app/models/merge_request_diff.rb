@@ -11,8 +11,6 @@
 #  updated_at       :datetime
 #
 
-require Rails.root.join("app/models/commit")
-
 class MergeRequestDiff < ActiveRecord::Base
   include Sortable
 

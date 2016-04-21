@@ -190,6 +190,9 @@ gem 'babosa', '~> 1.0.2'
 # Sanitizes SVG input
 gem "loofah", "~> 2.0.3"
 
+# Working with license
+gem 'licensee', '~> 8.0.0'
+
 # Protect against bruteforcing
 gem "rack-attack", '~> 4.3.1'
 
@@ -285,9 +288,9 @@ group :development, :test do
   gem 'teaspoon', '~> 1.1.0'
   gem 'teaspoon-jasmine', '~> 2.2.0'
 
-  gem 'spring', '~> 1.6.4'
+  gem 'spring',                   '~> 1.7.0'
   gem 'spring-commands-rspec',    '~> 1.0.4'
-  gem 'spring-commands-spinach',  '~> 1.0.0'
+  gem 'spring-commands-spinach',  '~> 1.1.0'
   gem 'spring-commands-teaspoon', '~> 0.0.2'
 
   gem 'rubocop', '~> 0.38.0', require: false
@@ -315,7 +318,7 @@ end
 
 gem "newrelic_rpm", '~> 3.14'
 
-gem 'octokit', '~> 3.8.0'
+gem 'octokit', '~> 4.3.0'
 
 gem "mail_room", "~> 0.6.1"
 

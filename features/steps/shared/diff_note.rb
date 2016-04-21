@@ -227,7 +227,7 @@ module SharedDiffNote
   end
 
   def click_diff_line(code)
-    find("button[data-line-code='#{code}']").click
+    find("button[data-line-code='#{code}']").trigger('click')
   end
 
   def click_parallel_diff_line(code, line_type)
