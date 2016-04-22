@@ -44,45 +44,53 @@
           This issue is confidential and should only be visible to team members
 
 - if can?(current_user, :"admin_#{issuable.to_ability_name}", issuable.project)
+  - has_due_date = issuable.has_attribute?(:due_date)
   %hr
-  .form-group
-    .issue-assignee
-      = f.label :assignee_id, "Assignee", class: 'control-label'
-      .col-sm-10
-        .issuable-form-select-holder
-          = users_select_tag("#{issuable.class.model_name.param_key}[assignee_id]",
-              placeholder: 'Select assignee', class: 'custom-form-control', null_user: true,
-              selected: issuable.assignee_id, project: @target_project || @project,
-              first_user: true, current_user: true, include_blank: true)
-        &nbsp;
-        = link_to 'Assign to me', '#', class: 'btn assign-to-me-link'
-  .form-group
-    .issue-milestone
-      = f.label :milestone_id, "Milestone", class: 'control-label'
-      .col-sm-10
-        - if milestone_options(issuable).present?
+  .row
+    %div{ class: (has_due_date ? "col-lg-6" : "col-sm-12") }
+      .form-group.issue-assignee
+        = f.label :assignee_id, "Assignee", class: "control-label #{"col-lg-4" if has_due_date}"
+        .col-sm-10{ class: ("col-lg-8" if has_due_date) }
           .issuable-form-select-holder
-            = f.select(:milestone_id, milestone_options(issuable),
-              { include_blank: true }, { class: 'select2', data: { placeholder: 'Select milestone' } })
-        - else
-          .prepend-top-10
-          %span.light No open milestones available.
-        &nbsp;
-        - if can? current_user, :admin_milestone, issuable.project
-          = link_to 'Create new milestone', new_namespace_project_milestone_path(issuable.project.namespace, issuable.project), target: :blank
-  .form-group
-    - has_labels = issuable.project.labels.any?
-    = f.label :label_ids, "Labels", class: 'control-label'
-    .col-sm-10{ class: ('issuable-form-padding-top' if !has_labels) }
-      - if has_labels
-        .issuable-form-select-holder
-          = f.collection_select :label_ids, issuable.project.labels.all, :id, :name,
-            { selected: issuable.label_ids }, multiple: true, class: 'select2', data: { placeholder: "Select labels" }
-      - else
-        %span.light No labels yet.
-      &nbsp;
-      - if can? current_user, :admin_label, issuable.project
-        = link_to 'Create new label', new_namespace_project_label_path(issuable.project.namespace, issuable.project), target: :blank
+            = users_select_tag("#{issuable.class.model_name.param_key}[assignee_id]",
+                placeholder: 'Select assignee', class: 'custom-form-control', null_user: true,
+                selected: issuable.assignee_id, project: @target_project || @project,
+                first_user: true, current_user: true, include_blank: true)
+          %br
+          = link_to 'Assign to me', '#', class: 'assign-to-me-link prepend-top-5 inline'
+      .form-group.issue-milestone
+        = f.label :milestone_id, "Milestone", class: "control-label #{"col-lg-4" if has_due_date}"
+        .col-sm-10{ class: ("col-lg-8" if has_due_date) }
+          - if milestone_options(issuable).present?
+            .issuable-form-select-holder
+              = f.select(:milestone_id, milestone_options(issuable),
+                { include_blank: true }, { class: 'select2', data: { placeholder: 'Select milestone' } })
+          - else
+            .prepend-top-10
+            %span.light No open milestones available.
+          - if can? current_user, :admin_milestone, issuable.project
+            %br
+            = link_to 'Create new milestone', new_namespace_project_milestone_path(issuable.project.namespace, issuable.project), target: :blank, class: "prepend-top-5 inline"
+      .form-group
+        - has_labels = issuable.project.labels.any?
+        = f.label :label_ids, "Labels", class: "control-label #{"col-lg-4" if has_due_date}"
+        .col-sm-10{ class: "#{"col-lg-8" if has_due_date} #{'issuable-form-padding-top' if !has_labels}" }
+          - if has_labels
+            .issuable-form-select-holder
+              = f.collection_select :label_ids, issuable.project.labels.all, :id, :name,
+                { selected: issuable.label_ids }, multiple: true, class: 'select2', data: { placeholder: "Select labels" }
+          - else
+            %span.light No labels yet.
+          - if can? current_user, :admin_label, issuable.project
+            %br
+            = link_to 'Create new label', new_namespace_project_label_path(issuable.project.namespace, issuable.project), target: :blank, class: "prepend-top-5 inline"
+    - if issuable.has_attribute?(:due_date)
+      .col-lg-6
+        .form-group
+          = f.label :due_date, "Due date", class: "control-label"
+          = f.hidden_field :due_date, id: "issuable-due-date"
+          .col-sm-10
+            .datepicker
 
 - if issuable.can_move?(current_user)
   %hr
