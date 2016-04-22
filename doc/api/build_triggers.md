@@ -113,6 +113,6 @@ curl -X DELETE -H "PRIVATE_TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.
     "deleted_at": "2015-12-24T12:32:20.100Z",
     "last_used": null,
     "token": "7b9148c158980bbd9bcea92c17522d",
-    "updated_at": "2015-12-23T16:25:56.760Z"
+    "updated_at": "2015-12-24T12:32:20.100Z"
 }
 ```
