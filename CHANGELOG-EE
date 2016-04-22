@@ -1,6 +1,6 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
-v 8.7.0 (unreleased)
+v 8.7.0
   - Update GitLab Pages to 0.2.1: support user-defined 404 pages
   - Refactor group sync to pull access level logic to its own class. !306
   - [Elastic] Stabilize database indexer if database is inconsistent
