@@ -81,8 +81,8 @@ Host example.com                    # The FQDN of the primary Geo node
 ## Primary Node GitLab setup
 
 >**Note:**
-You will need to setup your database into a **Master <-> Slave** replication
-topology, and your Primary node should always point to a database's Master
+You will need to setup your database into a **Primary <-> Secondary (read-only)** replication
+topology, and your Primary node should always point to a database's Primary
 instance. If you haven't done that already, read [database replication](./database.md).
 
 Go to the server that you chose to be your primary, and visit
