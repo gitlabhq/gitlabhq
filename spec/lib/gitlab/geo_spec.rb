@@ -68,4 +68,21 @@ describe Gitlab::Geo, lib: true do
       expect(described_class.geo_node?(host: 'inexistent', port: 1234)).to be_falsey
     end
   end
+
+  describe 'license_allows?' do
+    it 'returns true if license has Geo addon' do
+      allow_any_instance_of(License).to receive(:add_on?).with('GitLab_Geo') { true }
+      expect(described_class.license_allows?).to be_truthy
+    end
+
+    it 'returns false if license doesnt have Geo addon' do
+      allow_any_instance_of(License).to receive(:add_on?).with('GitLab_Geo') { false }
+      expect(described_class.license_allows?).to be_falsey
+    end
+
+    it 'returns false if no license is present' do
+      allow(License).to receive(:current) { nil }
+      expect(described_class.license_allows?).to be_falsey
+    end
+  end
 end
