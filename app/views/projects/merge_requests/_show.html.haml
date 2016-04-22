@@ -3,7 +3,7 @@
 - page_card_attributes @merge_request.card_attributes
 - header_title project_title(@project, "Merge Requests", namespace_project_merge_requests_path(@project.namespace, @project))
 
-- if params[:view] == 'parallel'
+- if diff_view == 'parallel'
   - fluid_layout true
 
 .merge-request{'data-url' => merge_request_path(@merge_request)}
