@@ -55,7 +55,6 @@ class @AwardsHandler
         , 200
 
   addAward: (emoji) ->
-    emoji = @normilizeEmojiName(emoji)
     @postEmoji emoji, =>
       @addAwardToEmojiBar(emoji)
 
@@ -64,7 +63,6 @@ class @AwardsHandler
   addAwardToEmojiBar: (emoji) ->
     @addEmojiToFrequentlyUsedList(emoji)
 
-    emoji = @normilizeEmojiName(emoji)
     if @exist(emoji)
       if @isActive(emoji)
         @decrementCounter(emoji)
@@ -164,9 +162,6 @@ class @AwardsHandler
     $('body, html').animate({
       scrollTop: $('.awards').offset().top - 80
     }, 200)
-
-  normilizeEmojiName: (emoji) ->
-    emoji
 
   addEmojiToFrequentlyUsedList: (emoji) ->
     frequently_used_emojis = @getFrequentlyUsedEmojis()

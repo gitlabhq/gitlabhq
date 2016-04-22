@@ -53,8 +53,7 @@ class AwardEmoji
   end
 
   def self.unicode
-    emojis
-    emojis.map{|key, value| { key => emojis[key]["unicode"] } }.inject(:merge!)
+    @unicode ||= emojis.map {|key, value| { key => emojis[key]["unicode"] } }.inject(:merge!)
   end
 
   def self.aliases
