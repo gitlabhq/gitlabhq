@@ -119,27 +119,37 @@ class Projects::GitHttpController < Projects::ApplicationController
 
   def project
     return @project if defined?(@project)
-    @project = find_project
+
+    project_id, _ = project_id_with_suffix
+    if project_id.blank?
+      @project = nil
+    else
+      @project = Project.find_with_namespace("#{params[:namespace_id]}/#{project_id}")
+    end
   end
 
-  def id
-    id = params[:project_id]
-    return if id.nil?
+  # This method returns two values so that we can parse
+  # params[:project_id] (untrusted input!) in exactly one place.
+  def project_id_with_suffix
+    id = params[:project_id] || ''
 
     %w{.wiki.git .git}.each do |suffix|
-      # Be careful to only remove the suffix from the end of 'id'.
-      # Accidentally removing it from the middle is how security
-      # vulnerabilities happen!
-      return id.slice(0, id.length - suffix.length) if id.end_with?(suffix)
+      if id.end_with?(suffix)
+        # Be careful to only remove the suffix from the end of 'id'.
+        # Accidentally removing it from the middle is how security
+        # vulnerabilities happen!
+        return [id.slice(0, id.length - suffix.length), suffix]
+      end
     end
 
-    # No valid id was found.
-    nil
+    # Something is wrong with params[:project_id]; do not pass it on.
+    [nil, nil]
   end
 
   def repository
     @repository ||= begin
-      if params[:project_id].end_with?('.wiki.git')
+      _, suffix = project_id_with_suffix
+      if suffix == '.wiki.git'
         project.wiki.repository
       else
         project.repository

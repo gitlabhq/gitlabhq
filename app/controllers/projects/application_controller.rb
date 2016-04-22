@@ -10,6 +10,9 @@ class Projects::ApplicationController < ApplicationController
 
   def project
     unless @project
+      namespace = params[:namespace_id]
+      id = params[:project_id] || params[:id]
+
       # Redirect from
       #   localhost/group/project.git
       # to
@@ -20,11 +23,12 @@ class Projects::ApplicationController < ApplicationController
         return
       end
 
-      @project = find_project
+      project_path = "#{namespace}/#{id}"
+      @project = Project.find_with_namespace(project_path)
 
       if @project && can?(current_user, :read_project, @project)
-        if @project.path_with_namespace != path_with_namespace
-          redirect_to request.original_url.gsub(path_with_namespace, @project.path_with_namespace)
+        if @project.path_with_namespace != project_path
+          redirect_to request.original_url.gsub(project_path, @project.path_with_namespace)
         end
       else
         @project = nil
@@ -38,22 +42,6 @@ class Projects::ApplicationController < ApplicationController
     end
 
     @project
-  end
-
-  def id
-    params[:project_id] || params[:id]
-  end
-  
-  def namespace
-    params[:namespace_id]
-  end
-  
-  def path_with_namespace
-    "#{namespace}/#{id}"
-  end
-  
-  def find_project
-    Project.find_with_namespace(path_with_namespace)
   end
 
   def repository
