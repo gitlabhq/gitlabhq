@@ -60,7 +60,7 @@ module Gitlab
       end
 
       def whitelisted_routes
-        logout_route || WHITELISTED.any? { |path| @request.path.include?(path) } || sidekiq_route
+        logout_route || grack_route || WHITELISTED.any? { |path| @request.path.include?(path) } || sidekiq_route
       end
 
       def logout_route
@@ -69,6 +69,10 @@ module Gitlab
 
       def sidekiq_route
         @request.path.start_with?('/admin/sidekiq')
+      end
+
+      def grack_route
+        @request.path.end_with?('.git/git-upload-pack')
       end
     end
   end
