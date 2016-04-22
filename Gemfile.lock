@@ -134,7 +134,7 @@ GEM
       execjs
     coffee-script-source (1.10.0)
     colorize (0.7.7)
-    concurrent-ruby (1.0.0)
+    concurrent-ruby (1.0.1)
     connection_pool (2.2.0)
     coveralls (0.8.13)
       json (~> 1.8)
@@ -629,7 +629,7 @@ GEM
     recaptcha (1.0.2)
       json
     redcarpet (3.3.3)
-    redis (3.2.2)
+    redis (3.3.0)
     redis-actionpack (4.0.1)
       actionpack (~> 4)
       redis-rack (~> 1.5.0)
@@ -736,10 +736,9 @@ GEM
       rack
     shoulda-matchers (2.8.0)
       activesupport (>= 3.0.0)
-    sidekiq (4.0.1)
+    sidekiq (4.1.1)
       concurrent-ruby (~> 1.0)
       connection_pool (~> 2.2, >= 2.2.0)
-      json (~> 1.0)
       redis (~> 3.2, >= 3.2.1)
     sidekiq-cron (0.4.0)
       redis-namespace (>= 1.5.2)
