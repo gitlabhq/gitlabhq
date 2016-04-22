@@ -48,8 +48,7 @@
       %span
         Help
 
-  %li.separate-item
-  = nav_link(controller: :profile) do
+  = nav_link(html_options: {class: profile_tab_class}) do
     = link_to profile_path, title: 'Profile Settings', data: {placement: 'bottom'} do
       = icon('user fw')
       %span

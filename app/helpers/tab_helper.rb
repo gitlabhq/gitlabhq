@@ -110,4 +110,12 @@ module TabHelper
       'active'
     end
   end
+
+  def profile_tab_class
+    if controller.controller_path =~ /\Aprofiles/
+      return 'active'
+    end
+
+    'active' if current_controller?('oauth/applications')
+  end
 end

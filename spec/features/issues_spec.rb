@@ -112,7 +112,7 @@ describe 'Issues', feature: true do
   end
 
   describe 'filter issue' do
-    titles = ['foo','bar','baz']
+    titles = %w[foo bar baz]
     titles.each_with_index do |title, index|
       let!(title.to_sym) do
         create(:issue, title: title,
@@ -153,8 +153,94 @@ describe 'Issues', feature: true do
       expect(first_issue).to include('baz')
     end
 
+    describe 'sorting by due date' do
+      before do
+        foo.update(due_date: 1.day.from_now)
+        bar.update(due_date: 6.days.from_now)
+      end
+
+      it 'sorts by recently due date' do
+        visit namespace_project_issues_path(project.namespace, project, sort: sort_value_due_date_soon)
+
+        expect(first_issue).to include('foo')
+      end
+
+      it 'sorts by least recently due date' do
+        visit namespace_project_issues_path(project.namespace, project, sort: sort_value_due_date_later)
+
+        expect(first_issue).to include('bar')
+      end
+
+      it 'sorts by least recently due date by excluding nil due dates' do
+        bar.update(due_date: nil)
+
+        visit namespace_project_issues_path(project.namespace, project, sort: sort_value_due_date_later)
+
+        expect(first_issue).to include('foo')
+      end
+    end
+
+    describe 'filtering by due date' do
+      before do
+        foo.update(due_date: 1.day.from_now)
+        bar.update(due_date: 6.days.from_now)
+      end
+
+      it 'filters by none' do
+        visit namespace_project_issues_path(project.namespace, project, due_date: Issue::NoDueDate.name)
+
+        expect(page).not_to have_content('foo')
+        expect(page).not_to have_content('bar')
+        expect(page).to have_content('baz')
+      end
+
+      it 'filters by any' do
+        visit namespace_project_issues_path(project.namespace, project, due_date: Issue::AnyDueDate.name)
+
+        expect(page).to have_content('foo')
+        expect(page).to have_content('bar')
+        expect(page).to have_content('baz')
+      end
+
+      it 'filters by due this week' do
+        foo.update(due_date: Date.today.beginning_of_week + 2.days)
+        bar.update(due_date: Date.today.end_of_week)
+        baz.update(due_date: Date.today - 8.days)
+
+        visit namespace_project_issues_path(project.namespace, project, due_date: Issue::DueThisWeek.name)
+
+        expect(page).to have_content('foo')
+        expect(page).to have_content('bar')
+        expect(page).not_to have_content('baz')
+      end
+
+      it 'filters by due this month' do
+        foo.update(due_date: Date.today.beginning_of_month + 2.days)
+        bar.update(due_date: Date.today.end_of_month)
+        baz.update(due_date: Date.today - 50.days)
+
+        visit namespace_project_issues_path(project.namespace, project, due_date: Issue::DueThisMonth.name)
+
+        expect(page).to have_content('foo')
+        expect(page).to have_content('bar')
+        expect(page).not_to have_content('baz')
+      end
+
+      it 'filters by overdue' do
+        foo.update(due_date: Date.today + 2.days)
+        bar.update(due_date: Date.today + 20.days)
+        baz.update(due_date: Date.yesterday)
+
+        visit namespace_project_issues_path(project.namespace, project, due_date: Issue::Overdue.name)
+
+        expect(page).not_to have_content('foo')
+        expect(page).not_to have_content('bar')
+        expect(page).to have_content('baz')
+      end
+    end
+
     describe 'sorting by milestone' do
-      before :each do
+      before do
         foo.milestone = newer_due_milestone
         foo.save
         bar.milestone = later_due_milestone
@@ -177,7 +263,7 @@ describe 'Issues', feature: true do
     describe 'combine filter and sort' do
       let(:user2) { create(:user) }
 
-      before :each do
+      before do
         foo.assignee = user2
         foo.save
         bar.assignee = user2
@@ -224,7 +310,7 @@ describe 'Issues', feature: true do
 
       let(:guest) { create(:user) }
 
-      before :each do
+      before do
         project.team << [[guest], :guest]
       end
 
@@ -288,7 +374,7 @@ describe 'Issues', feature: true do
     context 'by unauthorized user' do
       let(:guest) { create(:user) }
 
-      before :each do
+      before do
         project.team << [guest, :guest]
         issue.milestone = milestone
         issue.save
@@ -306,7 +392,7 @@ describe 'Issues', feature: true do
     describe 'removing assignee' do
       let(:user2) { create(:user) }
 
-      before :each do
+      before do
         issue.assignee = user2
         issue.save
       end

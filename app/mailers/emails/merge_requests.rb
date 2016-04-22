@@ -56,7 +56,7 @@ module Emails
       {
         from: sender(sender_id),
         to: recipient(recipient_id),
-        subject: subject("#{@merge_request.title} (##{@merge_request.iid})")
+        subject: subject("#{@merge_request.title} (#{@merge_request.to_reference})")
       }
     end
   end

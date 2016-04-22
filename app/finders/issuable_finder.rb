@@ -40,6 +40,7 @@ class IssuableFinder
     items = by_author(items)
     items = by_label(items)
     items = by_weight(items)
+    items = by_due_date(items)
     sort(items)
   end
 
@@ -118,7 +119,7 @@ class IssuableFinder
   end
 
   def filter_by_no_label?
-    labels? && params[:label_name] == Label::None.title
+    labels? && params[:label_name].include?(Label::None.title)
   end
 
   def labels
@@ -272,42 +273,35 @@ class IssuableFinder
         items = items.without_label
       else
         items = items.with_label(label_names)
-
         if projects
           items = items.where(labels: { project_id: projects })
         end
       end
     end
 
+    # When filtering by multiple labels we may end up duplicating issues (if one
+    # has multiple labels). This ensures we only return unique issues.
+    items.distinct
+  end
+
+  def by_due_date(items)
+    if due_date?
+      if filter_by_no_due_date?
+        items = items.without_due_date
+      elsif filter_by_overdue?
+        items = items.due_before(Date.today)
+      elsif filter_by_due_this_week?
+        items = items.due_between(Date.today.beginning_of_week, Date.today.end_of_week)
+      elsif filter_by_due_this_month?
+        items = items.due_between(Date.today.beginning_of_month, Date.today.end_of_month)
+      end
+    end
+
     items
   end
 
-  def by_weight(items)
-    return items unless weights?
-
-    if filter_by_no_weight?
-      items.where(weight: [-1, nil])
-    elsif filter_by_any_weight?
-      items.where.not(weight: [-1, nil])
-    else
-      items.where(weight: params[:weight])
-    end
-  end
-
-  def weights?
-    params[:weight].present? && params[:weight] != Issue::WEIGHT_ALL
-  end
-
-  def filter_by_no_weight?
-    params[:weight] == Issue::WEIGHT_NONE
-  end
-
-  def filter_by_any_weight?
-    params[:weight] == Issue::WEIGHT_ANY
-  end
-
   def label_names
-    params[:label_name].split(',')
+    params[:label_name].is_a?(String) ? params[:label_name].split(',') : params[:label_name]
   end
 
   def current_user_related?

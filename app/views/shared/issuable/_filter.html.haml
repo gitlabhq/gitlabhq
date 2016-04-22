@@ -23,19 +23,6 @@
 
         .filter-item.inline.labels-filter
           = render "shared/issuable/label_dropdown"
-
-        - if controller.controller_name == 'issues'
-          .filter-item.inline.weight-filter
-            - if params[:weight]
-              = hidden_field_tag(:weight, params[:weight])
-            = dropdown_tag("Weight", options: { title: "Filter by weight", toggle_class: 'js-weight-select js-filter-submit', dropdown_class: "dropdown-menu-selectable",
-              placeholder: "Search weight", data: { field_name: "weight" } }) do
-              %ul
-                - Issue.weight_options.each do |weight|
-                  %li
-                    %a{href: "#", data: { id: weight }, class: ("is-active" if params[:weight] == weight.to_s)}
-                      = weight
-
         .pull-right
           = render 'shared/sort_dropdown'
 
@@ -59,9 +46,10 @@
           .filter-item.inline
             = button_tag "Update issues", class: "btn update_selected_issues btn-save"
 
-- if @label
-  .gray-content-block.second-block
-    = render "shared/label_row", label: @label
+  - if !@labels.nil?
+    .gray-content-block.second-block.filtered-labels{ class: ("hidden" if !@labels.any?) }
+      - if @labels.any?
+        = render "shared/labels_row", labels: @labels
 
 :javascript
   new UsersSelect();

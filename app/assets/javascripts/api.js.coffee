@@ -7,6 +7,7 @@
   group_projects_path: "/api/:version/groups/:id/projects.json"
   projects_path: "/api/:version/projects.json"
   labels_path: "/api/:version/projects/:id/labels"
+  license_path: "/api/:version/licenses/:key"
 
   group: (group_id, callback) ->
     url = Api.buildUrl(Api.group_path)
@@ -93,6 +94,16 @@
       dataType: "json"
     ).done (projects) ->
       callback(projects)
+
+  # Return text for a specific license
+  licenseText: (key, data, callback) ->
+    url = Api.buildUrl(Api.license_path).replace(':key', key)
+
+    $.ajax(
+      url: url
+      data: data
+    ).done (license) ->
+      callback(license)
 
   buildUrl: (url) ->
     url = gon.relative_url_root + url if gon.relative_url_root?

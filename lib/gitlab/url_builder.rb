@@ -20,6 +20,8 @@ module Gitlab
         merge_request_url(object)
       when Note
         note_url
+      when WikiPage
+        wiki_page_url
       else
         raise NotImplementedError.new("No URL builder defined for #{object.class}")
       end
@@ -57,6 +59,10 @@ module Gitlab
         snippet = Snippet.find(object.noteable_id)
         project_snippet_url(snippet, anchor: dom_id(object))
       end
+    end
+
+    def wiki_page_url
+      "#{Gitlab.config.gitlab.url}#{object.wiki.wiki_base_path}/#{object.slug}"
     end
   end
 end

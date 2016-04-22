@@ -1,17 +1,9 @@
-%ul.nav.nav-sidebar
-  = nav_link do
-    = link_to root_path, title: 'Go to dashboard', class: 'back-link' do
-      = icon('caret-square-o-left fw')
-      %span
-        Go to dashboard
-
-  %li.separate-item
-
+%ul.nav-links
   = nav_link(path: 'profiles#show', html_options: {class: 'home'}) do
     = link_to profile_path, title: 'Profile Settings' do
       = icon('user fw')
       %span
-        Profile Settings
+        Profile
   = nav_link(controller: [:accounts, :two_factor_auths]) do
     = link_to profile_account_path, title: 'Account' do
       = icon('gear fw')
@@ -27,7 +19,6 @@
       = icon('envelope-o fw')
       %span
         Emails
-        %span.count= number_with_delimiter(current_user.emails.count + 1)
   - unless current_user.ldap_user?
     = nav_link(controller: :passwords) do
       = link_to edit_profile_password_path, title: 'Password' do
@@ -45,7 +36,6 @@
       = icon('key fw')
       %span
         SSH Keys
-        %span.count= number_with_delimiter(current_user.keys.count)
   = nav_link(controller: :preferences) do
     = link_to profile_preferences_path, title: 'Preferences' do
       -# TODO (rspeicher): Better icon?

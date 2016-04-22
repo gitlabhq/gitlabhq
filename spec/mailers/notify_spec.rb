@@ -214,7 +214,7 @@ describe Notify do
           it_behaves_like 'an unsubscribeable thread'
 
           it 'has the correct subject' do
-            is_expected.to have_subject /#{merge_request.title} \(##{merge_request.iid}\)/
+            is_expected.to have_subject /#{merge_request.title} \(#{merge_request.to_reference}\)/
           end
 
           it 'contains a link to the new merge request' do
@@ -287,7 +287,7 @@ describe Notify do
           end
 
           it 'has the correct subject' do
-            is_expected.to have_subject /#{merge_request.title} \(##{merge_request.iid}\)/
+            is_expected.to have_subject /#{merge_request.title} \(#{merge_request.to_reference}\)/
           end
 
           it 'contains the name of the previous assignee' do
@@ -321,7 +321,7 @@ describe Notify do
           end
 
           it 'has the correct subject' do
-            is_expected.to have_subject /#{merge_request.title} \(##{merge_request.iid}\)/
+            is_expected.to have_subject /#{merge_request.title} \(#{merge_request.to_reference}\)/
           end
 
           it 'contains the names of the added labels' do
@@ -350,7 +350,7 @@ describe Notify do
           end
 
           it 'has the correct subject' do
-            is_expected.to have_subject /#{merge_request.title} \(##{merge_request.iid}\)/i
+            is_expected.to have_subject /#{merge_request.title} \(#{merge_request.to_reference}\)/i
           end
 
           it 'contains the new status' do
@@ -383,7 +383,7 @@ describe Notify do
           end
 
           it 'has the correct subject' do
-            is_expected.to have_subject /#{merge_request.title} \(##{merge_request.iid}\)/
+            is_expected.to have_subject /#{merge_request.title} \(#{merge_request.to_reference}\)/
           end
 
           it 'contains the new status' do
@@ -521,7 +521,7 @@ describe Notify do
         it_behaves_like 'an unsubscribeable thread'
 
         it 'has the correct subject' do
-          is_expected.to have_subject /#{merge_request.title} \(##{merge_request.iid}\)/
+          is_expected.to have_subject /#{merge_request.title} \(#{merge_request.to_reference}\)/
         end
 
         it 'contains a link to the merge request note' do

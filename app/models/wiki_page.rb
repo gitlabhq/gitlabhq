@@ -29,6 +29,10 @@ class WikiPage
   # new Page values before writing to the Gollum repository.
   attr_accessor :attributes
 
+  def hook_attrs
+    attributes
+  end
+
   def initialize(wiki, page = nil, persisted = false)
     @wiki       = wiki
     @page       = page

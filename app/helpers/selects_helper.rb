@@ -5,9 +5,9 @@ module SelectsHelper
     css_class << "skip_ldap " if opts[:skip_ldap]
     css_class << (opts[:class] || '')
     value = opts[:selected] || ''
-    
+
     first_user = opts[:first_user] && current_user ? current_user.username : false
-    
+
     html = {
       class: css_class,
       data: {

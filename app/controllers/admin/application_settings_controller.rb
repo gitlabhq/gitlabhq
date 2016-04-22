@@ -95,6 +95,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :akismet_api_key,
       :email_author_in_body,
       :repository_checks_enabled,
+      :metrics_packet_size,
       restricted_visibility_levels: [],
       import_sources: []
     )

@@ -16,6 +16,25 @@ module IssuablesHelper
     base_issuable_scope(issuable).where('iid > ?', issuable.iid).last
   end
 
+  def multi_label_name(current_labels, default_label)
+    # current_labels may be a string from before
+    if current_labels.is_a?(Array)
+      if current_labels.count > 1
+        "#{current_labels[0]} +#{current_labels.count - 1} more"
+      else
+        current_labels[0]
+      end
+    elsif current_labels.is_a?(String)
+      if current_labels.nil? || current_labels.empty?
+        default_label
+      else
+        current_labels
+      end
+    else
+      default_label
+    end
+  end
+
   def issuable_json_path(issuable)
     project = issuable.project
 
