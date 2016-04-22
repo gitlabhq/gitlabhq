@@ -100,7 +100,7 @@ describe Issues::BulkUpdateService do
   describe :update_milestone do
 
     before do
-      @milestone = create :milestone
+      @milestone = create(:milestone, project: @project)
       @params = {
         issues_ids: [issue.id],
         milestone_id: @milestone.id
