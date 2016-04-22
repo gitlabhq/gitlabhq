@@ -42,6 +42,7 @@
 - [Housekeeping](administration/housekeeping.md) Keep your Git repository tidy and fast.
 - [GitLab Performance Monitoring](monitoring/performance/introduction.md) Configure GitLab and InfluxDB for measuring performance metrics
 - [Sidekiq Troubleshooting](administration/troubleshooting/sidekiq.md) Debug when Sidekiq appears hung and is not processing jobs
+- [High Availability](administration/high-availability/README.md) Configure multiple servers for scaling or high availability
 
 ## Contributor documentation
 
