@@ -1,6 +1,6 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
-v 8.7.0 (unreleased)
+v 8.7.0
   - Gitlab::GitAccess and Gitlab::GitAccessWiki are now instrumented
   - Fix vulnerability that made it possible to gain access to private labels and milestones
   - The number of InfluxDB points stored per UDP packet can now be configured
