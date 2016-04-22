@@ -32,10 +32,8 @@ class GitLabDropdownFilter
       else if @input.val() is "" and $inputContainer.hasClass HAS_VALUE_CLASS
         $inputContainer.removeClass HAS_VALUE_CLASS
 
-      if keyCode is 13 and @input.val() isnt ""
-        if @options.enterCallback
-          @options.enterCallback()
-        return
+      if keyCode is 13
+        return false
 
       clearTimeout timeout
       timeout = setTimeout =>
@@ -122,7 +120,9 @@ class GitLabDropdown
   FILTER_INPUT = '.dropdown-input .dropdown-input-field'
 
   constructor: (@el, @options) ->
-    @dropdown = $(@el).parent()
+    self = @
+    selector = $(@el).data "target"
+    @dropdown = if selector? then $(selector) else $(@el).parent()
 
     # Set Defaults
     {
@@ -130,7 +130,6 @@ class GitLabDropdown
       @filterInput = @getElement(FILTER_INPUT)
       @highlight = false
       @filterInputBlur = true
-      @enterCallback = true
     } = @options
 
     self = @
@@ -155,6 +154,9 @@ class GitLabDropdown
             @fullData = data
 
             @parseData @fullData
+
+            if @options.filterable
+              @filterInput.trigger 'keyup'
         }
 
     # Init filterable
@@ -176,9 +178,6 @@ class GitLabDropdown
         callback: (data) =>
           currentIndex = -1
           @parseData data
-        enterCallback: =>
-          if @enterCallback
-            @selectRowAtIndex 0
 
     # Event listeners
 
@@ -387,12 +386,12 @@ class GitLabDropdown
       else
         selectedObject
     else
-      if !value?
-        field.remove()
-
-      if not @options.multiSelect
+      if not @options.multiSelect or el.hasClass('dropdown-clear-active')
         @dropdown.find(".#{ACTIVE_CLASS}").removeClass ACTIVE_CLASS
         @dropdown.parent().find("input[name='#{fieldName}']").remove()
+
+      if !value?
+        field.remove()
 
       # Toggle active class for the tick mark
       el.addClass ACTIVE_CLASS

@@ -264,6 +264,7 @@ Rails.application.routes.draw do
 
         member do
           put :transfer
+          post :repository_check
         end
 
         resources :runner_projects
@@ -281,6 +282,7 @@ Rails.application.routes.draw do
     resource :application_settings, only: [:show, :update] do
       resources :services
       put :reset_runners_token
+      put :clear_repository_check_states
     end
 
     resources :labels
@@ -326,7 +328,7 @@ Rails.application.routes.draw do
         end
       end
       resource :preferences, only: [:show, :update]
-      resources :keys, except: [:new]
+      resources :keys
       resources :emails, only: [:index, :create, :destroy]
       resource :avatar, only: [:destroy]
       resource :two_factor_auth, only: [:new, :create, :destroy] do
@@ -406,6 +408,7 @@ Rails.application.routes.draw do
 
       resource :avatar, only: [:destroy]
       resources :milestones, constraints: { id: /[^\/]+/ }, only: [:index, :show, :update, :new, :create]
+      resource :notification_setting, only: [:update]
     end
   end
 
@@ -548,6 +551,7 @@ Rails.application.routes.draw do
             post :cancel_builds
             post :retry_builds
             post :revert
+            post :cherry_pick
           end
         end
 
@@ -609,6 +613,7 @@ Rails.application.routes.draw do
 
         resources :forks, only: [:index, :new, :create]
         resource :import, only: [:new, :create, :show]
+        resource :notification_setting, only: [:update]
 
         resources :refs, only: [] do
           collection do
@@ -666,6 +671,7 @@ Rails.application.routes.draw do
             post :cancel
             post :retry
             post :erase
+            get :raw
           end
 
           resource :artifacts, only: [] do
@@ -701,6 +707,8 @@ Rails.application.routes.draw do
         resources :issues, constraints: { id: /\d+/ } do
           member do
             post :toggle_subscription
+            get :referenced_merge_requests
+            get :related_branches
           end
           collection do
             post  :bulk_update

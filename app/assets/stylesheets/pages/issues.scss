@@ -86,41 +86,9 @@ form.edit-issue {
 @media (max-width: $screen-xs-max) {
   .issue-btn-group {
     width: 100%;
-    margin-top: 5px;
-
-    .btn-group {
-      width: 100%;
-
-      ul {
-        width: 100%;
-        text-align: center;
-      }
-    }
 
     .btn {
       width: 100%;
-
-      &:first-child:not(:last-child) {
-
-      }
-
-      &:not(:first-child):not(:last-child) {
-        margin-top: 10px;
-      }
-
-      &:last-child:not(:first-child) {
-        margin-top: 10px;
-      }
-    }
-  }
-
-  .issue {
-    &:hover  .issue-actions {
-      display: none !important;
-    }
-
-    .issue-updated-at {
-      display: none;
     }
   }
 }
@@ -132,12 +100,4 @@ form.edit-issue {
 .issue-closed-by-widget {
   color: $gl-text-color;
   margin-left: 52px;
-}
-
-.editor-details {
-  display: block;
-
-  @media (min-width: $screen-sm-min) {
-    display: inline-block;
-  }
 }

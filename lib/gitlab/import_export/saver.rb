@@ -31,7 +31,7 @@ module Gitlab
       end
 
       def archive_file
-        @archive_file ||= File.join(@storage_path, '..', 'project.tar.gz')
+        @archive_file ||= File.join(@storage_path, '..', "#{Time.now.strftime('%Y-%m-%d_%H-%M-%3N')}_project_export.tar.gz")
       end
     end
   end

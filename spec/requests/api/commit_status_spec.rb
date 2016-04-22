@@ -16,7 +16,8 @@ describe API::CommitStatus, api: true do
     let(:get_url) { "/projects/#{project.id}/repository/commits/#{sha}/statuses" }
 
     context 'ci commit exists' do
-      let!(:ci_commit) { project.ensure_ci_commit(commit.id) }
+      let!(:master) { project.ci_commits.create(sha: commit.id, ref: 'master') }
+      let!(:develop) { project.ci_commits.create(sha: commit.id, ref: 'develop') }
 
       it_behaves_like 'a paginated resources' do
         let(:request) { get api(get_url, reporter) }
@@ -25,16 +26,16 @@ describe API::CommitStatus, api: true do
       context "reporter user" do
         let(:statuses_id) { json_response.map { |status| status['id'] } }
 
-        def create_status(opts = {})
-          create(:commit_status, { commit: ci_commit }.merge(opts))
+        def create_status(commit, opts = {})
+          create(:commit_status, { commit: commit, ref: commit.ref }.merge(opts))
         end
 
-        let!(:status1) { create_status(status: 'running') }
-        let!(:status2) { create_status(name: 'coverage', status: 'pending') }
-        let!(:status3) { create_status(ref: 'develop', status: 'running', allow_failure: true) }
-        let!(:status4) { create_status(name: 'coverage', status: 'success') }
-        let!(:status5) { create_status(name: 'coverage', ref: 'develop', status: 'success') }
-        let!(:status6) { create_status(status: 'success') }
+        let!(:status1) { create_status(master, status: 'running') }
+        let!(:status2) { create_status(master, name: 'coverage', status: 'pending') }
+        let!(:status3) { create_status(develop, status: 'running', allow_failure: true) }
+        let!(:status4) { create_status(master, name: 'coverage', status: 'success') }
+        let!(:status5) { create_status(develop, name: 'coverage', status: 'success') }
+        let!(:status6) { create_status(master, status: 'success') }
 
         context 'latest commit statuses' do
           before { get api(get_url, reporter) }

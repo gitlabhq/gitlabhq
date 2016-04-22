@@ -42,11 +42,9 @@ feature 'issue move to another project' do
 
       expect(current_url).to include project_path(new_project)
 
-      page.within('.issue') do
-        expect(page).to have_content("Text with #{cross_reference}!1")
-        expect(page).to have_content("Moved from #{cross_reference}#1")
-        expect(page).to have_content(issue.title)
-      end
+      expect(page).to have_content("Text with #{cross_reference}!1")
+      expect(page).to have_content("Moved from #{cross_reference}#1")
+      expect(page).to have_content(issue.title)
     end
 
     context 'projects user does not have permission to move issue to exist' do
@@ -74,7 +72,7 @@ feature 'issue move to another project' do
 
   def edit_issue(issue)
     visit issue_path(issue)
-    page.within('.issuable-header') { click_link 'Edit' }
+    page.within('.issuable-actions') { first(:link, 'Edit').click }
   end
 
   def issue_path(issue)

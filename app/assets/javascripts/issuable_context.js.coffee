@@ -9,21 +9,29 @@ class @IssuableContext
     $(".issuable-sidebar .inline-update").on "change", ".js-assignee", ->
       $(this).submit()
 
-    $(document).off("click", ".edit-link").on "click",".edit-link", (e) ->
-      $block = $(@).parents('.block')
-      $selectbox = $block.find('.selectbox')
-      if $selectbox.is(':visible')
-        $selectbox.hide()
-        $block.find('.value').show()
-      else
-        $selectbox.show()
-        $block.find('.value').hide()
+    $(document)
+      .off 'click', '.dropdown-content a'
+      .on 'click', '.dropdown-content a', (e) ->
+        e.preventDefault()
 
-      if $selectbox.is(':visible')
-        setTimeout (->
-          $block.find('.dropdown-menu-toggle').trigger 'click'
-        ), 0
-      
+    $(document)
+      .off 'click', '.edit-link'
+      .on 'click', '.edit-link', (e) ->
+        e.preventDefault()
+
+        $block = $(@).parents('.block')
+        $selectbox = $block.find('.selectbox')
+        if $selectbox.is(':visible')
+          $selectbox.hide()
+          $block.find('.value').show()
+        else
+          $selectbox.show()
+          $block.find('.value').hide()
+
+        if $selectbox.is(':visible')
+          setTimeout ->
+            $block.find('.dropdown-menu-toggle').trigger 'click'
+          , 0
 
     $(".right-sidebar").niceScroll()
 

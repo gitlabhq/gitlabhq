@@ -13,10 +13,15 @@
     how FogBugz email addresses and usernames are imported into GitLab.
   %hr
   %p
-  = button_tag 'Import all projects', class: 'btn btn-success js-import-all'
+  = button_tag class: 'btn btn-import btn-success js-import-all' do
+    Import all projects
+    = icon("spinner spin", class: "loading-icon")
 
-.table-holder
+.table-responsive
   %table.table.import-jobs
+    %colgroup.import-jobs-from-col
+    %colgroup.import-jobs-to-col
+    %colgroup.import-jobs-status-col
     %thead
       %tr
         %th From FogBugz
@@ -28,7 +33,7 @@
           %td
             = project.import_source
           %td
-            %strong= link_to project.path_with_namespace, [project.namespace.becomes(Namespace), project]
+            = link_to project.path_with_namespace, [project.namespace.becomes(Namespace), project]
           %td.job-status
             - if project.import_status == 'finished'
               %span
@@ -47,7 +52,9 @@
           %td.import-target
             = "#{current_user.username}/#{repo.name}"
           %td.import-actions.job-status
-            = button_tag "Import", class: "btn js-add-to-import"
+            = button_tag class: "btn btn-import js-add-to-import" do
+              Import
+              = icon("spinner spin", class: "loading-icon")
 
 :javascript
   new ImporterStatus("#{jobs_import_fogbugz_path}", "#{import_fogbugz_path}");

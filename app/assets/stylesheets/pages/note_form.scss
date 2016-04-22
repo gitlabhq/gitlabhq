@@ -40,7 +40,9 @@
 }
 
 .note-textarea {
+  display: block;
   padding: 10px 0;
+  color: $gl-gray;
   font-family: $regular_font;
   border: 0;
 
@@ -60,15 +62,26 @@
     padding: $gl-padding-top $gl-padding;
     border: 1px solid $note-form-border-color;
     border-radius: $border-radius-base;
+    transition: border-color ease-in-out 0.15s,
+                box-shadow ease-in-out 0.15s;
 
     &.is-focused {
-      border-color: $focus-border-color;
-      box-shadow: 0 0 2px rgba(#000, .2),
-                  0 0 4px rgba($focus-border-color, .4);
+      @extend .form-control:focus;
 
       .comment-toolbar,
       .nav-links {
         border-color: $focus-border-color;
+      }
+    }
+
+    &.is-dropzone-hover {
+      border-color: $gl-success;
+      box-shadow: 0 0 2px $black-transparent,
+                  0 0 4px $gl-success-focus;
+
+      .comment-toolbar,
+      .nav-links {
+        border-color: $gl-success;
       }
     }
   }
@@ -76,7 +89,7 @@
 
 .discussion-form {
   padding: $gl-padding-top $gl-padding;
-  background-color: #fff;
+  background-color: $white-light;
 }
 
 .note-edit-form {

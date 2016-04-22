@@ -15,8 +15,8 @@ class Commit
   DIFF_SAFE_LINES = Gitlab::Git::DiffCollection::DEFAULT_LIMITS[:max_lines]
 
   # Commits above this size will not be rendered in HTML
-  DIFF_HARD_LIMIT_FILES = 1000 unless defined?(DIFF_HARD_LIMIT_FILES)
-  DIFF_HARD_LIMIT_LINES = 50000 unless defined?(DIFF_HARD_LIMIT_LINES)
+  DIFF_HARD_LIMIT_FILES = 1000
+  DIFF_HARD_LIMIT_LINES = 50000
 
   class << self
     def decorate(commits, project)
@@ -150,13 +150,11 @@ class Commit
   end
 
   def hook_attrs(with_changed_files: false)
-    path_with_namespace = project.path_with_namespace
-
     data = {
       id: id,
       message: safe_message,
       timestamp: committed_date.xmlschema,
-      url: "#{Gitlab.config.gitlab.url}/#{path_with_namespace}/commit/#{id}",
+      url: Gitlab::UrlBuilder.build(self),
       author: {
         name: author_name,
         email: author_email
@@ -209,16 +207,21 @@ class Commit
     @raw.short_id(7)
   end
 
-  def ci_commit
-    project.ci_commit(sha)
+  def ci_commits
+    @ci_commits ||= project.ci_commits.where(sha: sha)
   end
 
   def status
-    ci_commit.try(:status) || :not_found
+    return @status if defined?(@status)
+    @status ||= ci_commits.status
   end
 
   def revert_branch_name
     "revert-#{short_id}"
+  end
+  
+  def cherry_pick_branch_name
+    project.repository.next_branch("cherry-pick-#{short_id}", mild: true)
   end
 
   def revert_description
@@ -253,6 +256,10 @@ class Commit
         note.all_references(current_user).commits
       end
     end.any? { |commit_ref| commit_ref.reverts_commit?(self) }
+  end
+
+  def change_type_title
+    merged_merge_request ? 'merge request' : 'commit'
   end
 
   private

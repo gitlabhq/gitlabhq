@@ -27,7 +27,7 @@ module Gitlab
       end
 
       def project_filename
-        "#{@project.name}.bundle"
+        "project.bundle"
       end
 
       def path_to_repo

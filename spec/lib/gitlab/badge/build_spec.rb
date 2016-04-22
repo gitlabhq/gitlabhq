@@ -42,7 +42,7 @@ describe Gitlab::Badge::Build do
   end
 
   context 'build exists' do
-    let(:ci_commit) { create(:ci_commit, project: project, sha: sha) }
+    let(:ci_commit) { create(:ci_commit, project: project, sha: sha, ref: branch) }
     let!(:build) { create(:ci_build, commit: ci_commit) }
 
 
@@ -57,7 +57,7 @@ describe Gitlab::Badge::Build do
       describe '#data' do
         let(:data) { badge.data }
 
-        it 'contains infromation about success' do
+        it 'contains information about success' do
           expect(status_node(data, 'success')).to be_truthy
         end
       end
@@ -74,7 +74,7 @@ describe Gitlab::Badge::Build do
       describe '#data' do
         let(:data) { badge.data }
 
-        it 'contains infromation about failure' do
+        it 'contains information about failure' do
           expect(status_node(data, 'failed')).to be_truthy
         end
       end

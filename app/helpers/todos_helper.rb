@@ -20,6 +20,8 @@ module TodosHelper
   end
 
   def todo_target_path(todo)
+    return unless todo.target.present?
+
     anchor = dom_id(todo.note) if todo.note.present?
 
     if todo.for_commit?

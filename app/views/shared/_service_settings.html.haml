@@ -62,6 +62,14 @@
               %strong Build events
             %p.light
               This url will be triggered when a build status changes
+      - if @service.supported_events.include?("wiki_page")
+        %div
+          = form.check_box :wiki_page_events, class: 'pull-left'
+          .prepend-left-20
+            = form.label :wiki_page_events, class: 'list-label' do
+              %strong Wiki Page events
+            %p.light
+              This url will be triggered when a wiki page is created/updated
 
 
 - @service.fields.each do |field|

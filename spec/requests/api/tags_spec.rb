@@ -32,9 +32,11 @@ describe API::API, api: true  do
 
       it "should return an array of project tags with release info" do
         get api("/projects/#{project.id}/repository/tags", user)
+
         expect(response.status).to eq(200)
         expect(json_response).to be_an Array
         expect(json_response.first['name']).to eq(tag_name)
+        expect(json_response.first['message']).to eq('Version 1.1.0')
         expect(json_response.first['release']['description']).to eq(description)
       end
     end

@@ -25,7 +25,7 @@ module Gitlab
       end
 
       def project_filename
-        "#{@project.name}.json"
+        "project.json"
       end
 
       def project_json_tree

@@ -27,9 +27,6 @@
 #  merge_commit_sha          :string
 #
 
-require Rails.root.join("app/models/commit")
-require Rails.root.join("lib/static_model")
-
 class MergeRequest < ActiveRecord::Base
   include InternalId
   include Issuable
@@ -45,10 +42,12 @@ class MergeRequest < ActiveRecord::Base
 
   serialize :merge_params, Hash
 
-  after_create :create_merge_request_diff
+  after_create :create_merge_request_diff, unless: :importing
   after_update :update_merge_request_diff
 
   delegate :commits, :diffs, :real_size, to: :merge_request_diff, prefix: nil
+
+  attr_accessor :importing
 
   # When this attribute is true some MR validation is ignored
   # It allows us to close or modify broken merge requests
@@ -123,12 +122,12 @@ class MergeRequest < ActiveRecord::Base
     end
   end
 
-  validates :source_project, presence: true, unless: :allow_broken
+  validates :source_project, presence: true, unless: [:allow_broken, :importing]
   validates :source_branch, presence: true
   validates :target_project, presence: true
   validates :target_branch, presence: true
   validates :merge_user, presence: true, if: :merge_when_build_succeeds?
-  validate :validate_branches
+  validate :validate_branches, unless: [:allow_broken, :importing]
   validate :validate_fork
 
   scope :by_branch, ->(branch_name) { where("(source_branch LIKE :branch) OR (target_branch LIKE :branch)", branch: branch_name) }
@@ -218,7 +217,7 @@ class MergeRequest < ActiveRecord::Base
     end
 
     if opened? || reopened?
-      similar_mrs = self.target_project.merge_requests.where(source_branch: source_branch, target_branch: target_branch, source_project_id: source_project.id).opened
+      similar_mrs = self.target_project.merge_requests.where(source_branch: source_branch, target_branch: target_branch, source_project_id: source_project.try(:id)).opened
       similar_mrs = similar_mrs.where('id not in (?)', self.id) if self.id
       if similar_mrs.any?
         errors.add :validate_branches,
@@ -345,7 +344,7 @@ class MergeRequest < ActiveRecord::Base
 
   def hook_attrs
     attrs = {
-      source: source_project.hook_attrs,
+      source: source_project.try(:hook_attrs),
       target: target_project.hook_attrs,
       last_commit: nil,
       work_in_progress: work_in_progress?
@@ -589,7 +588,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def ci_commit
-    @ci_commit ||= source_project.ci_commit(last_commit.id) if last_commit && source_project
+    @ci_commit ||= source_project.ci_commit(last_commit.id, source_branch) if last_commit && source_project
   end
 
   def diff_refs
@@ -604,5 +603,9 @@ class MergeRequest < ActiveRecord::Base
 
   def can_be_reverted?(current_user = nil)
     merge_commit && !merge_commit.has_been_reverted?(current_user, self)
+  end
+
+  def can_be_cherry_picked?
+    merge_commit
   end
 end

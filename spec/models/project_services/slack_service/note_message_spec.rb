@@ -63,7 +63,7 @@ describe SlackService::NoteMessage, models: true do
     it 'returns a message regarding notes on a merge request' do
       message = SlackService::NoteMessage.new(@args)
       expect(message.pretext).to eq("Test User commented on " \
-      "<url|merge request #30> in <somewhere.com|project_name>: " \
+      "<url|merge request !30> in <somewhere.com|project_name>: " \
       "*merge request title*")
       expected_attachments =  [
           {

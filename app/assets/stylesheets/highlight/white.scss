@@ -21,6 +21,12 @@
 
   // Diff line
   .line_holder {
+    td.diff-line-num.hll:not(.empty-cell),
+    td.line_content.hll:not(.empty-cell) {
+      background-color: #f8eec7;
+      border-color: darken(#f8eec7, 15%);
+    }
+
     .diff-line-num {
       &.old {
         background-color: $line-number-old;

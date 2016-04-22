@@ -263,14 +263,19 @@ module API
       expose :id, :path, :kind
     end
 
-    class ProjectAccess < Grape::Entity
+    class Member < Grape::Entity
       expose :access_level
-      expose :notification_level
+      expose :notification_level do |member, options|
+        if member.notification_setting
+          NotificationSetting.levels[member.notification_setting.level]
+        end
+      end
     end
 
-    class GroupAccess < Grape::Entity
-      expose :access_level
-      expose :notification_level
+    class ProjectAccess < Member
+    end
+
+    class GroupAccess < Member
     end
 
     class ProjectService < Grape::Entity
@@ -433,6 +438,18 @@ module API
 
     class Variable < Grape::Entity
       expose :key, :value
+    end
+
+    class RepoLicense < Grape::Entity
+      expose :key, :name, :nickname
+      expose :featured, as: :popular
+      expose :url, as: :html_url
+      expose(:source_url) { |license| license.meta['source'] }
+      expose(:description) { |license| license.meta['description'] }
+      expose(:conditions) { |license| license.meta['conditions'] }
+      expose(:permissions) { |license| license.meta['permissions'] }
+      expose(:limitations) { |license| license.meta['limitations'] }
+      expose :content
     end
   end
 end

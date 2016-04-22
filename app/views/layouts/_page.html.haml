@@ -25,6 +25,10 @@
   .content-wrapper
     = render "layouts/flash"
     = yield :flash_message
+    - if defined?(nav) && nav
+      .layout-nav
+        %div{ class: container_class }
+          = render "layouts/nav/#{nav}"
     %div{ class: (container_class unless @no_container) }
       .content
         .clearfix

@@ -15,7 +15,6 @@
 #
 
 require 'carrierwave/orm/activerecord'
-require 'file_size_validator'
 
 class Group < Namespace
   include Gitlab::ConfigHelper
@@ -27,6 +26,7 @@ class Group < Namespace
   has_many :users, through: :group_members
   has_many :project_group_links, dependent: :destroy
   has_many :shared_projects, through: :project_group_links, source: :project
+  has_many :notification_settings, dependent: :destroy, as: :source
 
   validate :avatar_type, if: ->(user) { user.avatar.present? && user.avatar_changed? }
   validate :visibility_level_allowed_by_projects

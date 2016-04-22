@@ -14,7 +14,8 @@ module Gitlab
         method_call_threshold: current_application_settings[:metrics_method_call_threshold],
         host:                  current_application_settings[:metrics_host],
         port:                  current_application_settings[:metrics_port],
-        sample_interval:       current_application_settings[:metrics_sample_interval] || 15
+        sample_interval:       current_application_settings[:metrics_sample_interval] || 15,
+        packet_size:           current_application_settings[:metrics_packet_size] || 1
       }
     end
 
@@ -41,9 +42,9 @@ module Gitlab
       prepared = prepare_metrics(metrics)
 
       pool.with do |connection|
-        prepared.each do |metric|
+        prepared.each_slice(settings[:packet_size]) do |slice|
           begin
-            connection.write_points([metric])
+            connection.write_points(slice)
           rescue StandardError
           end
         end
@@ -102,6 +103,25 @@ module Gitlab
       trans.increment("#{name}_call_count", 1)
 
       retval
+    end
+
+    # Adds a tag to the current transaction (if any)
+    #
+    # name - The name of the tag to add.
+    # value - The value of the tag.
+    def self.tag_transaction(name, value)
+      trans = current_transaction
+
+      trans.add_tag(name, value) if trans
+    end
+
+    # Sets the action of the current transaction (if any)
+    #
+    # action - The name of the action.
+    def self.action=(action)
+      trans = current_transaction
+
+      trans.action = action if trans
     end
 
     # When enabled this should be set before being used as the usual pattern

@@ -11,8 +11,6 @@
 #  updated_at       :datetime
 #
 
-require Rails.root.join("app/models/commit")
-
 class MergeRequestDiff < ActiveRecord::Base
   include Sortable
 
@@ -37,7 +35,9 @@ class MergeRequestDiff < ActiveRecord::Base
   serialize :st_commits
   serialize :st_diffs
 
-  after_create :reload_content
+  after_create :reload_content, unless: :importing
+
+  attr_accessor :importing
 
   def reload_content
     reload_commits
