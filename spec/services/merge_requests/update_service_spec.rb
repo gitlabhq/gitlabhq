@@ -1,13 +1,18 @@
 require 'spec_helper'
 
 describe MergeRequests::UpdateService, services: true do
+  let(:project) { create(:project) }
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let(:user3) { create(:user) }
-  let(:merge_request) { create(:merge_request, :simple, title: 'Old title', assignee_id: user3.id) }
-  let(:project) { merge_request.project }
-  let(:label) { create(:label) }
+  let(:label) { create(:label, project: project) }
   let(:label2) { create(:label) }
+
+  let(:merge_request) do
+    create(:merge_request, :simple, title: 'Old title',
+                                    assignee_id: user3.id,
+                                    source_project: project)
+  end
 
   before do
     project.team << [user, :master]
