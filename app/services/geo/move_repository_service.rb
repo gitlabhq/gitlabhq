@@ -1,5 +1,5 @@
 module Geo
-  class RenameRepositoryService
+  class MoveRepositoryService
     include Gitlab::ShellAdapter
 
     attr_reader :id, :name, :old_path_with_namespace, :new_path_with_namespace
@@ -14,6 +14,9 @@ module Geo
     def execute
       project = Project.find(id)
       project.expire_caches_before_rename(old_path_with_namespace)
+
+      # Make sure target directory exists (used when transfering repositories)
+      project.namespace.ensure_dir_exist
 
       if gitlab_shell.mv_repository(old_path_with_namespace, new_path_with_namespace)
         # If repository moved successfully we need to send update instructions to users.

@@ -10,7 +10,7 @@ module Geo
     end
 
     def execute
-      GeoRepositoryRenameWorker.perform_async(id, name, old_path_with_namespace, path_with_namespace)
+      GeoRepositoryMoveWorker.perform_async(id, name, old_path_with_namespace, path_with_namespace)
     end
   end
 end
