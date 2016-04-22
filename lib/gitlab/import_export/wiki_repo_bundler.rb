@@ -19,7 +19,7 @@ module Gitlab
       private
 
       def project_filename
-        "#{@project.name}.wiki.bundle"
+        "project.wiki.bundle"
       end
 
       def path_to_repo
