@@ -652,7 +652,7 @@ module Ci
       subject { config_processor.builds_for_stage_and_ref("test", "master") }
 
       shared_examples 'hidden_job_handling' do
-        it "doesn't create jobs that starts with dot" do
+        it "doesn't create jobs that start with dot" do
           expect(subject.size).to eq(1)
           expect(subject.first).to eq({
             except: nil,
@@ -669,7 +669,7 @@ module Ci
         end
       end
 
-      context 'When hidden job have a script definition' do
+      context 'when hidden job have a script definition' do
         let(:config) do
           YAML.dump({
                       '.hidden_job' => { image: 'ruby:2.1', script: 'test' },
@@ -680,7 +680,7 @@ module Ci
         it_behaves_like 'hidden_job_handling'
       end
 
-      context "When hidden job doesn't have a script definition" do
+      context "when hidden job doesn't have a script definition" do
         let(:config) do
           YAML.dump({
                       '.hidden_job' => { image: 'ruby:2.1' },
@@ -726,7 +726,7 @@ module Ci
         end
       end
 
-      context 'When template is a job' do
+      context 'when template is a job' do
         let(:config) do
           <<EOT
 job1: &JOBTMPL
@@ -740,7 +740,7 @@ EOT
         it_behaves_like 'job_templates_handling'
       end
 
-      context 'When template is a hidden job' do
+      context 'when template is a hidden job' do
         let(:config) do
           <<EOT
 .template: &JOBTMPL
@@ -756,7 +756,7 @@ EOT
         it_behaves_like 'job_templates_handling'
       end
 
-      context "When job adds it's own keys to a template definition" do
+      context 'when job adds its own keys to a template definition' do
         let(:config) do
           <<EOT
 .template: &JOBTMPL
