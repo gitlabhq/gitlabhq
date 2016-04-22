@@ -279,9 +279,31 @@ class IssuableFinder
       end
     end
 
-    # When filtering by multiple labels we may end up duplicating issues (if one
-    # has multiple labels). This ensures we only return unique issues.
-    items.distinct
+    items
+  end
+
+  def by_weight(items)
+    return items unless weights?
+
+    if filter_by_no_weight?
+      items.where(weight: [-1, nil])
+    elsif filter_by_any_weight?
+      items.where.not(weight: [-1, nil])
+    else
+      items.where(weight: params[:weight])
+    end
+  end
+
+  def weights?
+    params[:weight].present? && params[:weight] != Issue::WEIGHT_ALL
+  end
+
+  def filter_by_no_weight?
+    params[:weight] == Issue::WEIGHT_NONE
+  end
+
+  def filter_by_any_weight?
+    params[:weight] == Issue::WEIGHT_ANY
   end
 
   def by_due_date(items)
@@ -298,6 +320,26 @@ class IssuableFinder
     end
 
     items
+  end
+
+  def filter_by_no_due_date?
+    due_date? && params[:due_date] == Issue::NoDueDate.name
+  end
+
+  def filter_by_overdue?
+    due_date? && params[:due_date] == Issue::Overdue.name
+  end
+
+  def filter_by_due_this_week?
+    due_date? && params[:due_date] == Issue::DueThisWeek.name
+  end
+
+  def filter_by_due_this_month?
+    due_date? && params[:due_date] == Issue::DueThisMonth.name
+  end
+
+  def due_date?
+    params[:due_date].present? && klass.column_names.include?('due_date')
   end
 
   def label_names
