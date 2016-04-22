@@ -317,6 +317,27 @@ describe 'Issues', feature: true do
 
         expect(issue.reload.assignee).to be_nil
       end
+
+      it 'allows user to select an assignee', js: true do
+        issue2 = create(:issue, project: project, author: @user)
+        visit namespace_project_issue_path(project.namespace, project, issue2)
+
+        page.within('.assignee') do
+          expect(page).to have_content "No assignee"
+        end
+
+        page.within '.assignee' do
+          click_link 'Edit'
+        end
+        
+        page.within '.dropdown-menu-user' do
+          click_link @user.name
+        end
+
+        page.within('.assignee') do
+          expect(page).to have_content @user.name
+        end
+      end
     end
 
     context 'by unauthorized user' do
