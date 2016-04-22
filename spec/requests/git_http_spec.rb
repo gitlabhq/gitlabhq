@@ -54,7 +54,6 @@ describe 'Git HTTP requests', lib: true do
 
   context "when the project exists" do
     let(:path) { "#{project.path_with_namespace}.git" }
-    let(:env) { {} }
 
     context "when the project is public" do
       before do
@@ -62,13 +61,13 @@ describe 'Git HTTP requests', lib: true do
       end
 
       it "downloads get status 200" do
-        download(path, env) do |response|
+        download(path, {}) do |response|
           expect(response.status).to eq(200)
         end
       end
 
       it "uploads get status 401" do
-        upload(path, env) do |response|
+        upload(path, {}) do |response|
           expect(response.status).to eq(401)
         end
       end
@@ -97,7 +96,7 @@ describe 'Git HTTP requests', lib: true do
         it "responds with status 404" do
           allow(Gitlab.config.gitlab_shell).to receive(:upload_pack).and_return(false)
 
-          download(path, env) do |response|
+          download(path, {}) do |response|
             expect(response.status).to eq(404)
           end
         end
@@ -111,13 +110,13 @@ describe 'Git HTTP requests', lib: true do
 
       context "when no authentication is provided" do
         it "responds with status 401 to downloads" do
-          download(path, env) do |response|
+          download(path, {}) do |response|
             expect(response.status).to eq(401)
           end
         end
 
         it "responds with status 401 to uploads" do
-          upload(path, env) do |response|
+          upload(path, {}) do |response|
             expect(response.status).to eq(401)
           end
         end
