@@ -80,7 +80,7 @@ describe 'Issues', feature: true do
           click_link date.day
         end
 
-        expect(find('#issuable-due-date', :visible => false).value).to eq date.to_s
+        expect(find('#issuable-due-date', visible: false).value).to eq date.to_s
 
         click_button 'Submit issue'
 
@@ -100,7 +100,7 @@ describe 'Issues', feature: true do
       it 'should save with due date' do
         date = Date.today.at_beginning_of_month
 
-        expect(find('#issuable-due-date', :visible => false).value).to eq date.to_s
+        expect(find('#issuable-due-date', visible: false).value).to eq date.to_s
 
         date = date.tomorrow
 
@@ -111,7 +111,7 @@ describe 'Issues', feature: true do
           click_link date.day
         end
 
-        expect(find('#issuable-due-date', :visible => false).value).to eq date.to_s
+        expect(find('#issuable-due-date', visible: false).value).to eq date.to_s
 
         click_button 'Save changes'
 
