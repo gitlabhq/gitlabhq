@@ -167,8 +167,8 @@ class @Notes
       return
 
     if note.award
-      awards_handler.addAwardToEmojiBar(note.note)
-      awards_handler.scrollToAwards()
+      awardsHandler.addAwardToEmojiBar(note.note)
+      awardsHandler.scrollToAwards()
 
     # render note if it not present in loaded list
     # or skip if rendered
@@ -373,11 +373,11 @@ class @Notes
 
     new GLForm form
     if scrollTo? and myLastNote?
-      # scroll to the bottom 
+      # scroll to the bottom
       # so the open of the last element doesn't make a jump
       $('html, body').scrollTop($(document).height());
       $('html, body').animate({
-        scrollTop: myLastNote.offset().top - 150  
+        scrollTop: myLastNote.offset().top - 150
       }, 500, ->
         $noteText = form.find(".js-note-text")
         $noteText.focus()

@@ -1,5 +1,5 @@
 class @AwardsHandler
-  constructor: (@get_emojis_url, @post_emoji_url, @noteable_type, @noteable_id, @unicodes) ->
+  constructor: (@getEmojisUrl, @postEmojiUrl, @noteableType, @noteableId, @unicodes) ->
     $(".js-add-award").on "click", (event) =>
       event.stopPropagation()
       event.preventDefault()
@@ -23,13 +23,13 @@ class @AwardsHandler
       .find(".icon")
       .data "emoji"
 
-    if emoji is "thumbsup" and awards_handler.didUserClickEmoji $(this), "thumbsdown"
-      awards_handler.addAward "thumbsdown"
+    if emoji is "thumbsup" and awardsHandler.didUserClickEmoji $(this), "thumbsdown"
+      awardsHandler.addAward "thumbsdown"
 
-    else if emoji is "thumbsdown" and awards_handler.didUserClickEmoji $(this), "thumbsup"
-      awards_handler.addAward "thumbsup"
+    else if emoji is "thumbsdown" and awardsHandler.didUserClickEmoji $(this), "thumbsup"
+      awardsHandler.addAward "thumbsup"
 
-    awards_handler.addAward emoji
+    awardsHandler.addAward emoji
 
     $(this).trigger 'blur'
 
@@ -47,7 +47,7 @@ class @AwardsHandler
         $("#emoji_search").focus()
     else
       $('.js-add-award').addClass "is-loading"
-      $.get @get_emojis_url, (response) =>
+      $.get @getEmojisUrl, (response) =>
         $('.js-add-award').removeClass "is-loading"
         $(".js-award-holder").append response
         setTimeout =>
@@ -99,25 +99,25 @@ class @AwardsHandler
       emojiIcon.remove()
 
   removeMeFromAuthorList: (emoji) ->
-    award_block = @findEmojiIcon(emoji).parent()
-    authors = award_block
+    awardBlock = @findEmojiIcon(emoji).parent()
+    authors = awardBlock
       .attr("data-original-title")
       .split(", ")
     authors.splice(authors.indexOf("me"),1)
-    award_block
+    awardBlock
       .closest(".js-emoji-btn")
       .attr("data-original-title", authors.join(", "))
-    @resetTooltip(award_block)
+    @resetTooltip(awardBlock)
 
   addMeToAuthorList: (emoji) ->
-    award_block = @findEmojiIcon(emoji).parent()
-    origTitle = award_block.attr("data-original-title").trim()
+    awardBlock = @findEmojiIcon(emoji).parent()
+    origTitle = awardBlock.attr("data-original-title").trim()
     authors = []
     if origTitle
       authors = origTitle.split(', ')
     authors.push("me")
-    award_block.attr("data-original-title", authors.join(", "))
-    @resetTooltip(award_block)
+    awardBlock.attr("data-original-title", authors.join(", "))
+    @resetTooltip(awardBlock)
 
   resetTooltip: (award) ->
     award.tooltip("destroy")
@@ -139,20 +139,28 @@ class @AwardsHandler
       "</button>"
     )
 
-    emoji_node = $(nodes.join("\n"))
+    $(nodes.join("\n"))
       .insertBefore(".js-award-holder")
       .find(".emoji-icon")
       .data("emoji", emoji)
     $('.award-control').tooltip()
 
   resolveNameToCssClass: (emoji) ->
-    "emoji-#{@unicodes[emoji]}"
+    emoji_icon = $(".emoji-menu-content [data-emoji='#{emoji}']")
+
+    if emoji_icon.length > 0
+      unicodeName = emoji_icon.data('unicode-name')
+    else
+      # Find by alias
+      unicodeName = $(".emoji-menu-content [data-aliases*=':#{emoji}:']").data('unicode-name')
+
+    "emoji-#{unicodeName}"
 
   postEmoji: (emoji, callback) ->
-    $.post @post_emoji_url, { note: {
+    $.post @postEmojiUrl, { note: {
       note: ":#{emoji}:"
-      noteable_type: @noteable_type
-      noteable_id: @noteable_id
+      noteable_type: @noteableType
+      noteable_id: @noteableId
     }},(data) ->
       if data.ok
         callback.call()
@@ -166,21 +174,21 @@ class @AwardsHandler
     }, 200)
 
   addEmojiToFrequentlyUsedList: (emoji) ->
-    frequently_used_emojis = @getFrequentlyUsedEmojis()
-    frequently_used_emojis.push(emoji)
-    $.cookie('frequently_used_emojis', frequently_used_emojis.join(","), { expires: 365 })
+    frequentlyUsedEmojis = @getFrequentlyUsedEmojis()
+    frequentlyUsedEmojis.push(emoji)
+    $.cookie('frequently_used_emojis', frequentlyUsedEmojis.join(","), { expires: 365 })
 
   getFrequentlyUsedEmojis: ->
-    frequently_used_emojis = ($.cookie('frequently_used_emojis') || "").split(",")
-    _.compact(_.uniq(frequently_used_emojis))
+    frequentlyUsedEmojis = ($.cookie('frequently_used_emojis') || "").split(",")
+    _.compact(_.uniq(frequentlyUsedEmojis))
 
   renderFrequentlyUsedBlock: ->
     if $.cookie('frequently_used_emojis')
-      frequently_used_emojis = @getFrequentlyUsedEmojis()
+      frequentlyUsedEmojis = @getFrequentlyUsedEmojis()
 
       ul = $("<ul>")
 
-      for emoji in frequently_used_emojis
+      for emoji in frequentlyUsedEmojis
         do (emoji) ->
           $(".emoji-menu-content [data-emoji='#{emoji}']").closest("li").clone().appendTo(ul)
 
@@ -196,8 +204,8 @@ class @AwardsHandler
       if term
         # Generate a search result block
         h5 = $("<h5>").text("Search results").addClass("emoji-search")
-        found_emojis = @searchEmojis(term).show()
-        ul = $("<ul>").addClass("emoji-menu-list emoji-menu-search").append(found_emojis)
+        foundEmojis = @searchEmojis(term).show()
+        ul = $("<ul>").addClass("emoji-menu-list emoji-menu-search").append(foundEmojis)
         $(".emoji-menu-content ul, .emoji-menu-content h5").hide()
         $(".emoji-menu-content").append(h5).append(ul)
       else
