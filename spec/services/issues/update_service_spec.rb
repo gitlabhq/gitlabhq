@@ -4,9 +4,15 @@ describe Issues::UpdateService, services: true do
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let(:user3) { create(:user) }
-  let(:issue) { create(:issue, title: 'Old title', assignee_id: user3.id) }
-  let(:label) { create(:label) }
-  let(:project) { issue.project }
+  let(:project) { create(:empty_project) }
+  let(:label) { create(:label, project: project) }
+  let(:label2) { create(:label) }
+
+  let(:issue) do
+    create(:issue, title: 'Old title',
+                   assignee_id: user3.id,
+                   project: project)
+  end
 
   before do
     project.team << [user, :master]
