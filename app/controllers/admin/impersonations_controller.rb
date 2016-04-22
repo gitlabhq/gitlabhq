@@ -14,10 +14,6 @@ class Admin::ImpersonationsController < Admin::ApplicationController
 
   private
 
-  def user
-    @user ||= User.find(params[:id])
-  end
-
   def impersonator
     @impersonator ||= User.find(session[:impersonator_id]) if session[:impersonator_id]
   end
