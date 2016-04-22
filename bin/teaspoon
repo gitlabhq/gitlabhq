@@ -4,6 +4,5 @@ begin
 rescue LoadError => e
   raise unless e.message.include?('spring')
 end
-APP_PATH = File.expand_path('../../config/application', __FILE__)
-require_relative '../config/boot'
-require 'rails/commands'
+require 'bundler/setup'
+load Gem.bin_path('teaspoon', 'teaspoon')
