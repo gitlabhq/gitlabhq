@@ -75,10 +75,11 @@ module Gitlab
                               .map { |raw| PullRequestFormatter.new(project, raw) }
                               .reject(&:cross_project?)
 
-        source_branches_removed = pull_requests.reject(&:source_branch_exists?)
-        source_branches_removed.each do |pull_request|
-          client.create_ref(repo, "refs/heads/#{pull_request.source_branch}", pull_request.source_sha)
-        end
+        source_branches_removed = pull_requests.reject(&:source_branch_exists?).map { |pr| [pr.source_branch, pr.source_sha] }
+        target_branches_removed = pull_requests.reject(&:target_branch_exists?).map { |pr| [pr.target_branch, pr.target_sha] }
+        branches_removed = source_branches_removed | target_branches_removed
+
+        create_refs(branches_removed)
 
         project.repository.fetch_ref(repo_url, '+refs/heads/*', 'refs/heads/*')
 
@@ -92,13 +93,23 @@ module Gitlab
           end
         end
 
-        source_branches_removed.each do |pull_request|
-          client.delete_ref(repo, "heads/#{pull_request.source_branch}")
-        end
+        delete_refs(branches_removed)
 
         true
       rescue ActiveRecord::RecordInvalid => e
         raise Projects::ImportService::Error, e.message
+      end
+
+      def create_refs(branches)
+        branches.each do |branch|
+          client.create_ref(repo, "refs/heads/#{branch.first}", branch.last)
+        end
+      end
+
+      def delete_refs(branches)
+        branches.each do |branch|
+          client.delete_ref(repo, "heads/#{branch.first}")
+        end
       end
 
       def apply_labels(number, issuable)

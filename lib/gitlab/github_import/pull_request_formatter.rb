@@ -9,7 +9,7 @@ module Gitlab
           source_project: source_project,
           source_branch: source_branch,
           target_project: target_project,
-          target_branch: target_branch.name,
+          target_branch: target_branch,
           state: state,
           milestone: milestone,
           author_id: author_id,
@@ -41,6 +41,18 @@ module Gitlab
 
       def source_sha
         raw_data.head.sha
+      end
+
+      def target_branch_exists?
+        target_project.repository.branch_names.include?(target_branch)
+      end
+
+      def target_branch
+        raw_data.base.ref
+      end
+
+      def target_sha
+        raw_data.base.sha
       end
 
       private
@@ -91,10 +103,6 @@ module Gitlab
 
       def target_repo
         raw_data.base.repo
-      end
-
-      def target_branch
-        target_project.repository.find_branch(raw_data.base.ref)
       end
 
       def state
