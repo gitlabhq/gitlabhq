@@ -37,7 +37,7 @@ describe Admin::ImpersonationsController do
           session[:impersonator_id] = impersonator.id
         end
 
-        context "when the impersonator is not impersonator (anymore)" do
+        context "when the impersonator is not admin (anymore)" do
           before do
             impersonator.admin = false
             impersonator.save
