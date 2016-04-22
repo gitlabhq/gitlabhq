@@ -1,20 +1,11 @@
 class Projects::GitHttpController < Projects::ApplicationController
   skip_before_action :repository
   before_action :authenticate_user
-  before_action :project_found?
+  before_action :ensure_project_found?
 
-  # We support two actions (git push and git pull) which use four
-  # different HTTP requests:
-  #
-  # - GET /foo/bar.git/info/refs?service=git-upload-pack (pull)
-  # - GET /foo/bar.git/info/refs?service=git-receive-pack (push)
-  # - POST /foo/bar.git/git-upload-pack (pull)
-  # - POST /foo/bar.git/git-receive-pack" (push)
-  #
-  # The Rails routes divide these four requests over three methods:
-  # info_refs, git_upload_pack, and git_receive_pack.
-
-  def git_rpc
+  # GET /foo/bar.git/info/refs?service=git-upload-pack (git pull)
+  # GET /foo/bar.git/info/refs?service=git-receive-pack (git push)
+  def info_refs
     if upload_pack? && upload_pack_allowed?
       render_ok
     elsif receive_pack? && receive_pack_allowed?
@@ -24,8 +15,22 @@ class Projects::GitHttpController < Projects::ApplicationController
     end
   end
 
-  %i{info_refs git_receive_pack git_upload_pack}.each do |method|
-    alias_method method, :git_rpc
+  # POST /foo/bar.git/git-upload-pack (git pull)
+  def git_upload_pack
+    if upload_pack? && upload_pack_allowed?
+      render_ok
+    else
+      render_not_found
+    end
+  end
+
+  # POST /foo/bar.git/git-receive-pack" (git push)
+  def git_receive_pack
+    if receive_pack? && receive_pack_allowed?
+      render_ok
+    else
+      render_not_found
+    end
   end
 
   private
@@ -34,7 +39,7 @@ class Projects::GitHttpController < Projects::ApplicationController
     return if project && project.public? && upload_pack?
 
     authenticate_or_request_with_http_basic do |login, password|
-      return @ci = true if ci_request?(login, password)
+      return @ci = true if valid_ci_request?(login, password)
 
       @user = Gitlab::Auth.new.find(login, password)
       @user ||= oauth_access_token_check(login, password)
@@ -42,19 +47,21 @@ class Projects::GitHttpController < Projects::ApplicationController
     end
   end
 
-  def project_found?
+  def ensure_project_found?
     render_not_found if project.blank?
   end
 
-  def ci_request?(login, password)
-    matched_login = /(?<s>^[a-zA-Z]*-ci)-token$/.match(login)
+  def valid_ci_request?(login, password)
+    matched_login = /(?<service>^[a-zA-Z]*-ci)-token$/.match(login)
 
     if project && matched_login.present? && upload_pack?
-      underscored_service = matched_login['s'].underscore
+      underscored_service = matched_login['service'].underscore
 
       if underscored_service == 'gitlab_ci'
         return project && project.valid_build_token?(password)
       elsif Service.available_services_names.include?(underscored_service)
+        # We treat underscored_service as a trusted input because it is included
+        # in the Service.available_services_names whitelist.
         service_method = "#{underscored_service}_service"
         service = project.send(service_method)
 
@@ -126,6 +133,7 @@ class Projects::GitHttpController < Projects::ApplicationController
       return id.slice(0, id.length - suffix.length) if id.end_with?(suffix)
     end
 
+    # No valid id was found.
     nil
   end
 
@@ -140,14 +148,14 @@ class Projects::GitHttpController < Projects::ApplicationController
   end
 
   def upload_pack?
-    rpc == 'git-upload-pack'
+    git_command == 'git-upload-pack'
   end
 
   def receive_pack?
-    rpc == 'git-receive-pack'
+    git_command == 'git-receive-pack'
   end
 
-  def rpc
+  def git_command
     if action_name == 'info_refs'
       params[:service]
     else
@@ -178,11 +186,8 @@ class Projects::GitHttpController < Projects::ApplicationController
       true
     elsif user
       Gitlab::GitAccess.new(user, project).download_access_check.allowed?
-    elsif project.public?
-      # Allow clone/fetch for public projects
-      true
     else
-      false
+      project.public?
     end
   end
 
