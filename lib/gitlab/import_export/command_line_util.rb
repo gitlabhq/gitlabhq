@@ -24,13 +24,13 @@ module Gitlab
       end
 
       def tar_with_options(archive:, dir:, options:)
-        cmd = %W(tar -#{options} #{archive} -C #{dir} .)
+        cmd = %W(tar -#{options} #{archive} -C #{dir})
         _output, status = Gitlab::Popen.popen(cmd)
         status.zero?
       end
 
       def untar_with_options(archive:, dir:, options:)
-        cmd = %W(tar -#{options} #{archive)} -C #{dir})
+        cmd = %W(tar -#{options} #{archive} -C #{dir})
         _output, status = Gitlab::Popen.popen(cmd)
         status.zero?
       end

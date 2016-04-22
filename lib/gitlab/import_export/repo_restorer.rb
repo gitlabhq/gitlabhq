@@ -3,9 +3,9 @@ module Gitlab
     class RepoRestorer
       include Gitlab::ImportExport::CommandLineUtil
 
-      def initialize(project: , path: )
+      def initialize(project: , path:, bundler_file: )
         @project = project
-        @path = path
+        @path = File.join(path, bundler_file)
       end
 
       def restore

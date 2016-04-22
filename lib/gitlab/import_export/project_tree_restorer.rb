@@ -4,7 +4,7 @@ module Gitlab
       attr_reader :project
 
       def initialize(path:, user:)
-        @path = path
+        @path = File.join(path, 'project.json')
         @user = user
       end
 

@@ -7,19 +7,19 @@ module Gitlab
         new(*args).import
       end
 
-      def initialize(archive_file:, storage_path:)
+      def initialize(archive_file: , storage_path:)
         @archive_file = archive_file
         @storage_path = storage_path
       end
 
       def import
-        decompress_export
+        decompress_archive
       end
 
       private
 
-      def decompress
-        untar_czf(archive: archive_file, dir: @storage_path)
+      def decompress_archive
+        untar_czf(archive: @archive_file, dir: @storage_path)
       end
     end
   end
