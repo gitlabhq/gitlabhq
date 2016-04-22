@@ -80,6 +80,7 @@ v 8.7.0 (unreleased)
   - Remove "Congratulations!" tweet button on newly-created project. (Connor Shea)
   - Fix admin/projects when using visibility levels on search (PotHix)
   - Build status notifications
+  - Update email confirmation interface
   - API: Expose user location (Robert Schilling)
   - API: Do not leak group existence via return code (Robert Schilling)
   - ClosingIssueExtractor regex now also works with colons. e.g. "Fixes: #1234" !3591
