@@ -300,14 +300,6 @@ describe Projects::MergeRequestsController do
 
       expect(response.cookies['diff_view']).to eq('parallel')
     end
-
-    it 'assigns :view param based on cookie' do
-      request.cookies['diff_view'] = 'parallel'
-
-      go
-
-      expect(controller.params[:view]).to eq 'parallel'
-    end
   end
 
   describe 'GET commits' do
