@@ -22,9 +22,7 @@
                     Loading...
             = dropdown_loading
           - if current_user.id
-            .dropdown-menu.hidden
-              .category-search-dropdown.dropdown-page-two
-                = render "search/header_category_search", label: label, project: @project
+            = render "search/header_category_search", label: label, project: @project
           %i.search-icon
           %i.clear-icon.js-clear-input
 

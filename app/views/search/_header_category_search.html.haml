@@ -1,28 +1,30 @@
-- if @project
-  %ul.project-category-search
-    %li.dropdown-header
-      %span
-        Go to in
-        = @project.name
-    %li
-      = link_to 'Issues Assigned to me', namespace_project_issues_path(@project.namespace, @project,assignee_id: current_user.id)
-    %li
-      = link_to "Issues I've created", namespace_project_issues_path(@project.namespace, @project,author_id: current_user.id)
-    %li.divider
-    %li
-      = link_to 'Merge Requests Assigned to me', namespace_project_merge_requests_path(@project.namespace, @project,assignee_id: current_user.id)
-    %li
-      = link_to "Merge Requests I've created", namespace_project_merge_requests_path(@project.namespace, @project,author_id: current_user.id)
+.dropdown-menu.hidden.category-search
+  .category-search-dropdown
+    - if @project
+      %ul.project-category-search
+        %li.dropdown-header
+          %span
+            Go to in
+            = @project.name
+        %li
+          = link_to 'Issues Assigned to me', namespace_project_issues_path(@project.namespace, @project,assignee_id: current_user.id)
+        %li
+          = link_to "Issues I've created", namespace_project_issues_path(@project.namespace, @project,author_id: current_user.id)
+        %li.divider
+        %li
+          = link_to 'Merge Requests Assigned to me', namespace_project_merge_requests_path(@project.namespace, @project,assignee_id: current_user.id)
+        %li
+          = link_to "Merge Requests I've created", namespace_project_merge_requests_path(@project.namespace, @project,author_id: current_user.id)
 
-%ul.general-category-search{ class: ("hidden" if label.present? && @project) }
-  %li.dropdown-header
-    %span Go to in general
-  %li
-    = link_to 'Issues Assigned to me', issues_dashboard_url(assignee_id: current_user.id)
-  %li
-    = link_to "Issues I've created", issues_dashboard_url(author_id: current_user.id)
-  %li.divider
-  %li
-    = link_to 'Merge Requests Assigned to me', merge_requests_dashboard_url(assignee_id: current_user.id)
-  %li
-    = link_to "Merge Requests I've created", merge_requests_dashboard_url(author_id: current_user.id)
+      %ul.general-category-search{ class: ("hidden" if label.present? && @project) }
+        %li.dropdown-header
+          %span Go to in general
+        %li
+          = link_to 'Issues Assigned to me', issues_dashboard_url(assignee_id: current_user.id)
+        %li
+          = link_to "Issues I've created", issues_dashboard_url(author_id: current_user.id)
+        %li.divider
+        %li
+          = link_to 'Merge Requests Assigned to me', merge_requests_dashboard_url(assignee_id: current_user.id)
+        %li
+          = link_to "Merge Requests I've created", merge_requests_dashboard_url(author_id: current_user.id)
