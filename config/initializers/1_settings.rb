@@ -140,6 +140,30 @@ Settings.omniauth.cas3['session_duration'] ||= 8.hours
 Settings.omniauth['session_tickets'] ||= Settingslogic.new({})
 Settings.omniauth.session_tickets['cas3'] = 'ticket'
 
+# Fill out omniauth-gitlab settings. It is needed for easy set up GHE or GH by just specifying url.
+
+github_default_url = "https://github.com"
+github_settings = Settings.omniauth['providers'].find { |provider| provider["name"] == "github"}
+
+if github_settings
+  # For compatibility with old config files (before 7.8)
+  # where people dont have url in github settings
+  if github_settings['url'].blank?
+    github_settings['url'] = github_default_url
+  end
+
+  github_settings["args"] ||= Settingslogic.new({})
+
+  if github_settings["url"].include?(github_default_url)
+    github_settings["args"]["client_options"] = OmniAuth::Strategies::GitHub.default_options[:client_options]
+  else
+    github_settings["args"]["client_options"] = {
+      "site" =>          File.join(github_settings["url"], "api/v3"),
+      "authorize_url" => File.join(github_settings["url"], "login/oauth/authorize"),
+      "token_url" =>     File.join(github_settings["url"], "login/oauth/access_token")
+    }
+  end
+end
 
 Settings['shared'] ||= Settingslogic.new({})
 Settings.shared['path'] = File.expand_path(Settings.shared['path'] || "shared", Rails.root)
