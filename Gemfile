@@ -243,7 +243,7 @@ group :development do
   gem 'brakeman', '~> 3.2.0', require: false
 
   gem "annotate", "~> 2.7.0"
-  gem "letter_opener", '~> 1.1.2'
+  gem 'letter_opener_web', '~> 1.3.0'
   gem 'quiet_assets', '~> 1.0.2'
   gem 'rerun', '~> 0.11.0'
   gem 'bullet', require: false
