@@ -42,7 +42,7 @@ module API
         identifier ||= params[SUDO_PARAM] || env[SUDO_HEADER]
 
         # Regex for integers
-        if !!(identifier =~ /^[0-9]+$/)
+        if !!(identifier =~ /\A[0-9]+\z/)
           identifier.to_i
         else
           identifier
