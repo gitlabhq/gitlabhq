@@ -14,7 +14,8 @@ complete the process.
 - [Create SSH key pairs for Geo nodes](#create-ssh-key-pairs-for-geo-nodes)
 - [Primary Node GitLab setup](#primary-node-gitlab-setup)
 - [Secondary Node GitLab setup](#secondary-node-gitlab-setup)
-    - [Authorized keys regeneration](#authorized-keys-regeneration)
+  - [Database Encryptation Key](#database-encryptation-key)
+  - [Authorized keys regeneration](#authorized-keys-regeneration)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -81,8 +82,8 @@ Host example.com                    # The FQDN of the primary Geo node
 ## Primary Node GitLab setup
 
 >**Note:**
-You will need to setup your database into a **Master <-> Slave** replication
-topology, and your Primary node should always point to a database's Master
+You will need to setup your database into a **Primary <-> Secondary (read-only)** replication
+topology, and your Primary node should always point to a database's Primary
 instance. If you haven't done that already, read [database replication](./database.md).
 
 Go to the server that you chose to be your primary, and visit
@@ -118,6 +119,18 @@ Edition installation, with some extra requirements:
 - You should point your database connection to a [replicated instance](./database.md).
 - Your secondary node should be allowed to communicate via HTTP/HTTPS and
   SSH with your primary node (make sure your firewall is not blocking that).
+
+### Database Encryption Key
+
+GitLab stores a unique encryption key in disk that we use to safely store sensitive
+data in the database.
+
+Any secondary node must have the exact same value for `db_key_base` as defined in the primary one.
+
+For Omnibus installations it is stored at `/etc/gitlab/gitlab-secrets.json`.
+
+For Source installations it is stored at `/home/git/gitlab/config/secrets.yml`.
+
 
 ### Authorized keys regeneration
 

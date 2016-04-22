@@ -13,8 +13,8 @@ module Gitlab
         @env = env
 
         if disallowed_request? && Gitlab::Geo.secondary?
-          Rails.logger.debug('Gitlab Geo: preventing possible non readonly operation')
-          error_message = 'You cannot do writing operations on a secondary Gitlab Geo instance'
+          Rails.logger.debug('GitLab Geo: preventing possible non readonly operation')
+          error_message = 'You cannot do writing operations on a secondary GitLab Geo instance'
 
           if json_request?
             return [403, { 'Content-Type' => 'application/json' }, [{ 'message' => error_message }.to_json]]
@@ -60,11 +60,19 @@ module Gitlab
       end
 
       def whitelisted_routes
-        logout_route || WHITELISTED.any? { |path| @request.path.include?(path) }
+        logout_route || grack_route || WHITELISTED.any? { |path| @request.path.include?(path) } || sidekiq_route
       end
 
       def logout_route
         route_hash[:controller] == 'sessions' && route_hash[:action] == 'destroy'
+      end
+
+      def sidekiq_route
+        @request.path.start_with?('/admin/sidekiq')
+      end
+
+      def grack_route
+        @request.path.end_with?('.git/git-upload-pack')
       end
     end
   end

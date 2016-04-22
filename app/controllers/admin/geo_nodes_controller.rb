@@ -1,4 +1,6 @@
 class Admin::GeoNodesController < Admin::ApplicationController
+  before_action :check_license
+
   def index
     @nodes = GeoNode.all
     @node = GeoNode.new
@@ -40,5 +42,12 @@ class Admin::GeoNodesController < Admin::ApplicationController
 
   def geo_node_params
     params.require(:geo_node).permit(:url, :primary, geo_node_key_attributes: [:key])
+  end
+
+  def check_license
+    unless Gitlab::Geo.license_allows?
+      flash[:alert] = 'You need a diferent license to enable Geo replication'
+      redirect_to admin_license_path
+    end
   end
 end

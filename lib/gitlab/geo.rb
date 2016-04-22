@@ -22,6 +22,10 @@ module Gitlab
       RequestStore.store[:geo_node_enabled] ||= GeoNode.exists?
     end
 
+    def self.license_allows?
+      ::License.current && ::License.current.add_on?('GitLab_Geo')
+    end
+
     def self.primary?
       RequestStore.store[:geo_node_primary?] ||= self.enabled? && self.current_node && self.current_node.primary?
     end

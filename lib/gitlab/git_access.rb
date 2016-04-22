@@ -70,6 +70,10 @@ module Gitlab
         return build_status_object(false, 'The project you were looking for could not be found.')
       end
 
+      if Gitlab::Geo.secondary? && !Gitlab::Geo.license_allows?
+        return build_status_object(false, 'Your current license does not have GitLab Geo add-on enabled.')
+      end
+
       case cmd
       when *DOWNLOAD_COMMANDS
         download_access_check
@@ -94,7 +98,7 @@ module Gitlab
 
     def push_access_check(changes)
 
-      if Gitlab::Geo.enabled? && Gitlab::Geo.secondary?
+      if Gitlab::Geo.secondary?
         return build_status_object(false, "You can't push code on a secondary GitLab Geo node.")
       end
 
