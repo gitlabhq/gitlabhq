@@ -27,7 +27,7 @@ class Spinach::Features::ProjectPages < Spinach::FeatureSteps
   end
 
   step 'pages are deployed' do
-    commit = @project.ensure_ci_commit(@project.commit('HEAD').sha)
+    commit = @project.ensure_ci_commit(@project.commit('HEAD').sha, 'HEAD')
     build = build(:ci_build,
                    project: @project,
                    commit: commit,
