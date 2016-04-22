@@ -108,6 +108,7 @@ v 8.7.0 (unreleased)
   - Updated print style for issues
   - Use GitHub Issue/PR number as iid to keep references
   - Import GitHub labels
+  - Add option to filter by "Owned projects" on dashboard page
   - Import GitHub milestones
   - Fix emoji catgories in the emoji picker
   - Execute system web hooks on push to the project
