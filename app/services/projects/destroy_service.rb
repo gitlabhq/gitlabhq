@@ -17,9 +17,6 @@ module Projects
 
       project.team.truncate
 
-      repo_path = project.path_with_namespace
-      wiki_path = repo_path + '.wiki'
-
       # Flush the cache for both repositories. This has to be done _before_
       # removing the physical repositories as some expiration code depends on
       # Git data (e.g. a list of branch names).
@@ -27,14 +24,7 @@ module Projects
 
       Project.transaction do
         project.destroy!
-
-        unless remove_repository(repo_path)
-          raise_error('Failed to remove project repository. Please try again or contact administrator')
-        end
-
-        unless remove_repository(wiki_path)
-          raise_error('Failed to remove wiki repository. Please try again or contact administrator')
-        end
+        trash_repositories!
       end
 
       log_info("Project \"#{project.name}\" was removed")
@@ -42,7 +32,38 @@ module Projects
       true
     end
 
+    # Removes physical repository in a Geo replicated secondary node
+    # There is no need to do any database operation as it will be
+    # replicated by itself.
+    def geo_replicate
+      # Flush the cache for both repositories. This has to be done _before_
+      # removing the physical repositories as some expiration code depends on
+      # Git data (e.g. a list of branch names).
+      flush_caches(project, wiki_path)
+
+      trash_repositories!
+      log_info("Project \"#{project.name}\" was removed")
+    end
+
     private
+
+    def repo_path
+      project.path_with_namespace
+    end
+
+    def wiki_path
+      repo_path + '.wiki'
+    end
+
+    def trash_repositories!
+      unless remove_repository(repo_path)
+        raise_error('Failed to remove project repository. Please try again or contact administrator')
+      end
+
+      unless remove_repository(wiki_path)
+        raise_error('Failed to remove wiki repository. Please try again or contact administrator')
+      end
+    end
 
     def remove_repository(path)
       # Skip repository removal. We use this flag when remove user or group
