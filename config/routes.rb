@@ -73,6 +73,9 @@ Rails.application.routes.draw do
     mount Sidekiq::Web, at: '/admin/sidekiq', as: :sidekiq
   end
 
+  # Health check
+  health_check_routes
+
   # Enable Grack support
   mount Grack::AuthSpawner, at: '/', constraints: lambda { |request| /[-\/\w\.]+\.git\//.match(request.path_info) }, via: [:get, :post, :put]
 

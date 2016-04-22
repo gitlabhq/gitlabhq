@@ -402,6 +402,8 @@ GEM
       html2haml (>= 1.0.1)
       railties (>= 4.0.1)
     hashie (3.4.3)
+    health_check (1.5.1)
+      rails (>= 2.3.0)
     highline (1.7.8)
     hipchat (1.5.2)
       httparty
@@ -947,6 +949,7 @@ DEPENDENCIES
   grape (~> 0.13.0)
   grape-entity (~> 0.4.2)
   haml-rails (~> 0.9.0)
+  health_check (~> 1.5.1)
   hipchat (~> 1.5.0)
   html-pipeline (~> 1.11.0)
   httparty (~> 0.13.3)
