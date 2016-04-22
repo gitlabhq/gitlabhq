@@ -12,6 +12,7 @@ class @LabelsSelect
       newColorField = $('#new_label_color')
       showNo = $dropdown.data('show-no')
       showAny = $dropdown.data('show-any')
+      useId = $dropdown.data('use-id')
       defaultLabel = $dropdown.data('default-label')
       abilityName = $dropdown.data('ability-name')
       $selectbox = $dropdown.closest('.selectbox')
@@ -284,6 +285,9 @@ class @LabelsSelect
 
         multiSelect: $dropdown.hasClass 'js-multiselect'
         clicked: (label) ->
+          if $dropdown.hasClass('js-filter-bulk-update')
+            return
+
           page = $('body').data 'page'
           isIssueIndex = page is 'projects:issues:index'
           isMRIndex = page is 'projects:merge_requests:index'

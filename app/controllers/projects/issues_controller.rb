@@ -216,7 +216,8 @@ class Projects::IssuesController < Projects::ApplicationController
       :issues_ids,
       :assignee_id,
       :milestone_id,
-      :state_event
+      :state_event,
+      :label_ids
     )
   end
 end
