@@ -7,6 +7,7 @@ $ ->
   #   %div.js-toggle-content
   #
   $("body").on "click", ".js-toggle-button", (e) ->
+    console.log(e);
     $(@).find('i').
       toggleClass('fa fa-chevron-down').
       toggleClass('fa fa-chevron-up')
