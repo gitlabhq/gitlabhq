@@ -101,7 +101,6 @@ class Projects::IssuesController < Projects::ApplicationController
     end
 
     respond_to do |format|
-      format.js
       format.html do
         if @issue.valid?
           redirect_to issue_path(@issue)
@@ -110,7 +109,7 @@ class Projects::IssuesController < Projects::ApplicationController
         end
       end
       format.json do
-        render json: @issue.to_json(include: [:milestone, :labels, assignee: { methods: :avatar_url }])
+        render json: @issue.to_json(include: [:milestone, labels: { methods: :text_color }, assignee: { methods: :avatar_url }])
       end
     end
   end

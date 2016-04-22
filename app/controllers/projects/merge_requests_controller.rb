@@ -149,13 +149,12 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
     if @merge_request.valid?
       respond_to do |format|
-        format.js
         format.html do
           redirect_to([@merge_request.target_project.namespace.becomes(Namespace),
                        @merge_request.target_project, @merge_request])
         end
         format.json do
-          render json: @merge_request.to_json(include: [:milestone, :labels, assignee: { methods: :avatar_url }])
+          render json: @merge_request.to_json(include: [:milestone, labels: { methods: :text_color }, assignee: { methods: :avatar_url }])
         end
       end
     else
