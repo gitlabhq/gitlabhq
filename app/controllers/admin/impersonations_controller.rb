@@ -3,13 +3,13 @@ class Admin::ImpersonationsController < Admin::ApplicationController
   before_action :authenticate_impersonator!
 
   def destroy
-    redirect_path = admin_user_path(current_user)
+    original_user = current_user
 
     warden.set_user(impersonator, scope: :user)
 
     session[:impersonator_id] = nil
 
-    redirect_to redirect_path
+    redirect_to admin_user_path(original_user)
   end
 
   private
