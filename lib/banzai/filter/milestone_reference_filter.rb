@@ -17,15 +17,29 @@ module Banzai
         return super(text, pattern) if pattern != Milestone.reference_pattern
 
         text.gsub(pattern) do |match|
-          project = project_from_ref($~[:project])
-          params = milestone_params($~[:milestone_iid].to_i, $~[:milestone_name])
-          milestone = project.milestones.find_by(params)
+          milestone = find_milestone($~[:project], $~[:milestone_iid], $~[:milestone_name])
 
           if milestone
             yield match, milestone.iid, $~[:project], $~
           else
             match
           end
+        end
+      end
+
+      def find_milestone(project_ref, milestone_id, milestone_name)
+        project = project_from_ref(project_ref)
+        return unless project
+
+        milestone_params = milestone_params(milestone_id, milestone_name)
+        project.milestones.find_by(milestone_params)
+      end
+
+      def milestone_params(iid, name)
+        if name
+          { name: name.tr('"', '') }
+        else
+          { iid: iid.to_i }
         end
       end
 
@@ -41,14 +55,6 @@ module Banzai
         else
           "#{escape_once(super)} <i>in #{escape_once(object.project.path_with_namespace)}</i>".
             html_safe
-        end
-      end
-
-      def milestone_params(iid, name)
-        if name
-          { name: name.tr('"', '') }
-        else
-          { iid: iid }
         end
       end
     end
