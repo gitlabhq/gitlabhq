@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.8.0 (unreleased)
+  - Implement GFM references for milestones (Alejandro Rodríguez)
 
 v 8.7.1 (unreleased)
   - Use the `can?` helper instead of `current_user.can?`
@@ -121,7 +122,6 @@ v 8.7.0
   - Fix GitHub project's link in the import page when provider has a custom URL
   - Add RAW build trace output and button on build page
   - Add incremental build trace update into CI API
-  - Implement GFM references for milestones (Alejandro Rodríguez)
 
 v 8.6.7
   - Fix persistent XSS vulnerability in `commit_person_link` helper
