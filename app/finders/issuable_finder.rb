@@ -272,16 +272,13 @@ class IssuableFinder
         items = items.without_label
       else
         items = items.with_label(label_names)
-
         if projects
           items = items.where(labels: { project_id: projects })
         end
       end
     end
 
-    # When filtering by multiple labels we may end up duplicating issues (if one
-    # has multiple labels). This ensures we only return unique issues.
-    items.distinct
+    items
   end
 
   def by_due_date(items)
@@ -321,7 +318,7 @@ class IssuableFinder
   end
 
   def label_names
-    params[:label_name].split(',')
+    params[:label_name].is_a?(String) ? params[:label_name].split(',') : params[:label_name]
   end
 
   def current_user_related?

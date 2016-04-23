@@ -38,12 +38,14 @@
 
     .filename {
       &.old {
+        display: inline-block;
         span.idiff {
           background-color: #f8cbcb;
         }
       }
 
       &.new {
+        display: inline-block;
         span.idiff {
           background-color: #a6f3a6;
         }
@@ -129,6 +131,11 @@
       td.line-numbers {
         float: none;
         border-left: 1px solid #ddd;
+
+        i {
+          float: none;
+          margin-right: 0;
+        }
       }
       td.lines {
         padding: 0;

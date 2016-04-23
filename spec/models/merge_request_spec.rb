@@ -404,12 +404,12 @@ describe MergeRequest, models: true do
     describe 'when the source project exists' do
       it 'returns the latest commit' do
         commit    = double(:commit, id: '123abc')
-        ci_commit = double(:ci_commit)
+        ci_commit = double(:ci_commit, ref: 'master')
 
         allow(subject).to receive(:last_commit).and_return(commit)
 
         expect(subject.source_project).to receive(:ci_commit).
-          with('123abc').
+          with('123abc', 'master').
           and_return(ci_commit)
 
         expect(subject.ci_commit).to eq(ci_commit)

@@ -1,26 +1,26 @@
 require 'rails_helper'
 
 feature 'Issue filtering by Labels', feature: true do
+  include WaitForAjax
+
   let(:project) { create(:project, :public) }
   let!(:user)   { create(:user)}
   let!(:label)  { create(:label, project: project) }
 
   before do
-    ['bug', 'feature', 'enhancement'].each do |title|
-      create(:label,
-             project: project,
-             title: title)
-    end
+    bug = create(:label, project: project, title: 'bug')
+    feature = create(:label, project: project, title: 'feature')
+    enhancement = create(:label, project: project, title: 'enhancement')
 
     issue1 = create(:issue, title: "Bugfix1", project: project)
-    issue1.labels << project.labels.find_by(title: 'bug')
+    issue1.labels << bug
 
     issue2 = create(:issue, title: "Bugfix2", project: project)
-    issue2.labels << project.labels.find_by(title: 'bug')
-    issue2.labels << project.labels.find_by(title: 'enhancement')
+    issue2.labels << bug
+    issue2.labels << enhancement
 
     issue3 = create(:issue, title: "Feature1", project: project)
-    issue3.labels << project.labels.find_by(title: 'feature')
+    issue3.labels << feature
 
     project.team << [user, :master]
     login_as(user)
@@ -31,10 +31,10 @@ feature 'Issue filtering by Labels', feature: true do
   context 'filter by label bug', js: true do
     before do
       page.find('.js-label-select').click
-      sleep 0.5
+      wait_for_ajax
       execute_script("$('.dropdown-menu-labels li:contains(\"bug\") a').click()")
       page.first('.labels-filter .dropdown-title .dropdown-menu-close-icon').click
-      sleep 2
+      wait_for_ajax
     end
 
     it 'should show issue "Bugfix1" and "Bugfix2" in issues list' do
@@ -59,10 +59,10 @@ feature 'Issue filtering by Labels', feature: true do
   context 'filter by label feature', js: true do
     before do
       page.find('.js-label-select').click
-      sleep 0.5
+      wait_for_ajax
       execute_script("$('.dropdown-menu-labels li:contains(\"feature\") a').click()")
       page.first('.labels-filter .dropdown-title .dropdown-menu-close-icon').click
-      sleep 2
+      wait_for_ajax
     end
 
     it 'should show issue "Feature1" in issues list' do
@@ -87,10 +87,10 @@ feature 'Issue filtering by Labels', feature: true do
   context 'filter by label enhancement', js: true do
     before do
       page.find('.js-label-select').click
-      sleep 0.5
+      wait_for_ajax
       execute_script("$('.dropdown-menu-labels li:contains(\"enhancement\") a').click()")
       page.first('.labels-filter .dropdown-title .dropdown-menu-close-icon').click
-      sleep 2
+      wait_for_ajax
     end
 
     it 'should show issue "Bugfix2" in issues list' do
@@ -115,20 +115,16 @@ feature 'Issue filtering by Labels', feature: true do
   context 'filter by label enhancement or feature', js: true do
     before do
       page.find('.js-label-select').click
-      sleep 0.5
+      wait_for_ajax
       execute_script("$('.dropdown-menu-labels li:contains(\"enhancement\") a').click()")
       execute_script("$('.dropdown-menu-labels li:contains(\"feature\") a').click()")
       page.first('.labels-filter .dropdown-title .dropdown-menu-close-icon').click
-      sleep 2
+      wait_for_ajax
     end
 
-    it 'should show issue "Bugfix2" or "Feature1" in issues list' do
-      expect(page).to have_content "Bugfix2"
-      expect(page).to have_content "Feature1"
-    end
-
-    it 'should not show "Bugfix1" in issues list' do
+    it 'should not show "Bugfix1" or "Feature1" in issues list' do
       expect(page).not_to have_content "Bugfix1"
+      expect(page).not_to have_content "Feature1"
     end
 
     it 'should show label "enhancement" and "feature" in filtered-labels' do
@@ -141,19 +137,18 @@ feature 'Issue filtering by Labels', feature: true do
     end
   end
 
-  context 'filter by label enhancement or bug in issues list', js: true do
+  context 'filter by label enhancement and bug in issues list', js: true do
     before do
       page.find('.js-label-select').click
-      sleep 0.5
+      wait_for_ajax
       execute_script("$('.dropdown-menu-labels li:contains(\"enhancement\") a').click()")
       execute_script("$('.dropdown-menu-labels li:contains(\"bug\") a').click()")
       page.first('.labels-filter .dropdown-title .dropdown-menu-close-icon').click
-      sleep 2
+      wait_for_ajax
     end
 
-    it 'should show issue "Bugfix2" or "Bugfix1" in issues list' do
+    it 'should show issue "Bugfix2" in issues list' do
       expect(page).to have_content "Bugfix2"
-      expect(page).to have_content "Bugfix1"
     end
 
     it 'should not show "Feature1"' do

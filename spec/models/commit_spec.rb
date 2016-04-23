@@ -163,4 +163,12 @@ eos
       it { expect(commit.reverts_commit?(another_commit)).to be_truthy }
     end
   end
+
+  describe '#ci_commits' do
+    # TODO: kamil
+  end
+
+  describe '#status' do
+    # TODO: kamil
+  end
 end

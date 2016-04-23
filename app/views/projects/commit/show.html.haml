@@ -5,7 +5,7 @@
 
 .prepend-top-default
   = render "commit_box"
-- if @ci_commit
+- if @commit.status
   = render "ci_menu"
 - else
   %div.block-connector

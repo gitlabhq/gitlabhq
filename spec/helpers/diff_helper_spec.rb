@@ -11,6 +11,26 @@ describe DiffHelper do
   let(:diff_refs) { [commit.parent, commit] }
   let(:diff_file) { Gitlab::Diff::File.new(diff, diff_refs) }
 
+  describe 'diff_view' do
+    it 'returns a valid value when cookie is set' do
+      helper.request.cookies[:diff_view] = 'parallel'
+
+      expect(helper.diff_view).to eq 'parallel'
+    end
+
+    it 'returns a default value when cookie is invalid' do
+      helper.request.cookies[:diff_view] = 'invalid'
+
+      expect(helper.diff_view).to eq 'inline'
+    end
+
+    it 'returns a default value when cookie is nil' do
+      expect(helper.request.cookies).to be_empty
+
+      expect(helper.diff_view).to eq 'inline'
+    end
+  end
+
   describe 'diff_hard_limit_enabled?' do
     it 'should return true if param is provided' do
       allow(controller).to receive(:params) { { force_show_diff: true } }

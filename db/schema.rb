@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160419120017) do
+ActiveRecord::Schema.define(version: 20160421130527) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -77,7 +77,7 @@ ActiveRecord::Schema.define(version: 20160419120017) do
     t.string   "akismet_api_key"
     t.boolean  "email_author_in_body",              default: false
     t.integer  "default_group_visibility"
-    t.boolean  "repository_checks_enabled",         default: true
+    t.boolean  "repository_checks_enabled",         default: false
     t.integer  "metrics_packet_size",               default: 1
     t.text     "shared_runners_text"
   end
@@ -171,14 +171,21 @@ ActiveRecord::Schema.define(version: 20160419120017) do
     t.text     "yaml_errors"
     t.datetime "committed_at"
     t.integer  "gl_project_id"
+    t.string   "status"
+    t.datetime "started_at"
+    t.datetime "finished_at"
+    t.integer  "duration"
   end
 
+  add_index "ci_commits", ["gl_project_id", "sha"], name: "index_ci_commits_on_gl_project_id_and_sha", using: :btree
+  add_index "ci_commits", ["gl_project_id", "status"], name: "index_ci_commits_on_gl_project_id_and_status", using: :btree
   add_index "ci_commits", ["gl_project_id"], name: "index_ci_commits_on_gl_project_id", using: :btree
   add_index "ci_commits", ["project_id", "committed_at", "id"], name: "index_ci_commits_on_project_id_and_committed_at_and_id", using: :btree
   add_index "ci_commits", ["project_id", "committed_at"], name: "index_ci_commits_on_project_id_and_committed_at", using: :btree
   add_index "ci_commits", ["project_id", "sha"], name: "index_ci_commits_on_project_id_and_sha", using: :btree
   add_index "ci_commits", ["project_id"], name: "index_ci_commits_on_project_id", using: :btree
   add_index "ci_commits", ["sha"], name: "index_ci_commits_on_sha", using: :btree
+  add_index "ci_commits", ["status"], name: "index_ci_commits_on_status", using: :btree
 
   create_table "ci_events", force: :cascade do |t|
     t.integer  "project_id"

@@ -149,13 +149,12 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
     if @merge_request.valid?
       respond_to do |format|
-        format.js
         format.html do
           redirect_to([@merge_request.target_project.namespace.becomes(Namespace),
                        @merge_request.target_project, @merge_request])
         end
         format.json do
-          render json: @merge_request.to_json(include: [:milestone, :labels, assignee: { methods: :avatar_url }])
+          render json: @merge_request.to_json(include: { milestone: {}, assignee: { methods: :avatar_url }, labels: { methods: :text_color } })
         end
       end
     else
@@ -321,6 +320,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
   def define_widget_vars
     @ci_commit = @merge_request.ci_commit
+    @ci_commits = [@ci_commit].compact
     closes_issues
   end
 

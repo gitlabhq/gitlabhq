@@ -33,30 +33,23 @@
 #
 
 class CommitStatus < ActiveRecord::Base
+  include Statuseable
+
   self.table_name = 'ci_builds'
 
   belongs_to :project, class_name: '::Project', foreign_key: :gl_project_id
-  belongs_to :commit, class_name: 'Ci::Commit'
+  belongs_to :commit, class_name: 'Ci::Commit', touch: true
   belongs_to :user
 
   validates :commit, presence: true
-  validates :status, inclusion: { in: %w(pending running failed success canceled) }
 
   validates_presence_of :name
 
   alias_attribute :author, :user
 
-  scope :running, -> { where(status: 'running') }
-  scope :pending, -> { where(status: 'pending') }
-  scope :success, -> { where(status: 'success') }
-  scope :failed, -> { where(status: 'failed')  }
-  scope :running_or_pending, -> { where(status: [:running, :pending]) }
-  scope :finished, -> { where(status: [:success, :failed, :canceled]) }
-  scope :latest, -> { where(id: unscope(:select).select('max(id)').group(:name, :ref)) }
+  scope :latest, -> { where(id: unscope(:select).select('max(id)').group(:name, :commit_id)) }
   scope :ordered, -> { order(:ref, :stage_idx, :name) }
-  scope :for_ref, ->(ref) { where(ref: ref) }
-
-  AVAILABLE_STATUSES = ['pending', 'running', 'success', 'failed', 'canceled']
+  scope :ignored, -> { where(allow_failure: true, status: [:failed, :canceled]) }
 
   state_machine :status, initial: :pending do
     event :run do
@@ -86,31 +79,24 @@ class CommitStatus < ActiveRecord::Base
     after_transition [:pending, :running] => :success do |commit_status|
       MergeRequests::MergeWhenBuildSucceedsService.new(commit_status.commit.project, nil).trigger(commit_status)
     end
-
-    state :pending, value: 'pending'
-    state :running, value: 'running'
-    state :failed, value: 'failed'
-    state :success, value: 'success'
-    state :canceled, value: 'canceled'
   end
 
-  delegate :sha, :short_sha, to: :commit, prefix: false
+  delegate :sha, :short_sha, to: :commit
 
-  # TODO: this should be removed with all references
   def before_sha
-    Gitlab::Git::BLANK_SHA
+    commit.before_sha || Gitlab::Git::BLANK_SHA
   end
 
-  def started?
-    !pending? && !canceled? && started_at
+  def self.stages
+    order_by = 'max(stage_idx)'
+    group('stage').order(order_by).pluck(:stage, order_by).map(&:first).compact
   end
 
-  def active?
-    running? || pending?
-  end
-
-  def complete?
-    canceled? || success? || failed?
+  def self.stages_status
+    all.stages.inject({}) do |h, stage|
+      h[stage] = all.where(stage: stage).status
+      h
+    end
   end
 
   def ignored?
@@ -118,11 +104,13 @@ class CommitStatus < ActiveRecord::Base
   end
 
   def duration
-    if started_at && finished_at
-      finished_at - started_at
-    elsif started_at
-      Time.now - started_at
-    end
+    duration =
+      if started_at && finished_at
+        finished_at - started_at
+      elsif started_at
+        Time.now - started_at
+      end
+    duration
   end
 
   def stuck?
