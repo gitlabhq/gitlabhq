@@ -102,7 +102,8 @@ class @Todos
     todoLink = $(this).data('url')
     return unless todoLink
 
-    if e.metaKey
+    # Allow Meta-Click or Mouse3-click to open in a new tab
+    if e.metaKey or e.which is 2
       e.preventDefault()
       window.open(todoLink,'_blank')
     else
