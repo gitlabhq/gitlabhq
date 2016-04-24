@@ -5,6 +5,7 @@ v 8.8.0 (unreleased)
   - Fix error when visiting commit builds page before build was updated
   - Add 'l' shortcut to open Label dropdown on issuables and 'i' to create new issue on a project
   - Updated search UI
+  - Replace Devise Async with Devise ActiveJob integration. !3902 (Connor Shea)
 
 v 8.7.1 (unreleased)
   - Throttle the update of `project.last_activity_at` to 1 minute. !3848
