@@ -1,71 +1,57 @@
-.cover-block
-  %div{ class: container_class }
-    %div
-      = link_to group_icon(@group), target: '_blank' do
-        = image_tag group_icon(@group), class: "avatar group-avatar s60"
+%div{ class: container_class }
+  - if current_user
+    .controls
+      %span.dropdown.group-settings-dropdown
+        %a.dropdown-new.btn.btn-gray#group-settings-button{href: '#', 'data-toggle' => 'dropdown'}
+          = icon('cog')
+          = icon('angle-down')
+        %ul.dropdown-menu.dropdown-menu-align-right
+          = nav_link(path: 'groups#projects') do
+            = link_to projects_group_path(@group), title: 'Projects' do
+              Projects
+          %li.divider
+          - if @group && can?(current_user, :admin_group, @group)
+            %li
+              = link_to edit_group_path(@group) do
+                Edit Group
+          - if access = @group.users.find(current_user)
+            %li
+              = link_to leave_group_group_members_path(@group),
+                data: { confirm: leave_group_message(@group.name) }, method: :delete, title: 'Leave group' do
+                Leave Group
 
-      %h1.title
-        @#{@group.path}
-        %span.visibility-icon.has-tooltip{ data: { container: 'body' }, title: visibility_icon_description(@group) }
-          = visibility_level_icon(@group.visibility_level, fw: false)
-
-      - if @group.description.present?
-        .description
-          = markdown(@group.description, pipeline: :description)
-
-    - if current_user
-      .controls
-        %span.dropdown.group-settings-dropdown
-          %a.dropdown-new.btn.btn-gray#group-settings-button{href: '#', 'data-toggle' => 'dropdown'}
-            = icon('cog')
-            = icon('angle-down')
-          %ul.dropdown-menu.dropdown-menu-align-right
-            = nav_link(path: 'groups#projects') do
-              = link_to projects_group_path(@group), title: 'Projects' do
-                Projects
-            %li.divider
-            - if @group && can?(current_user, :admin_group, @group)
-              %li
-                = link_to edit_group_path(@group) do
-                  Edit Group
-            - if access = @group.users.find(current_user)
-              %li
-                = link_to leave_group_group_members_path(@group),
-                  data: { confirm: leave_group_message(@group.name) }, method: :delete, title: 'Leave group' do
-                  Leave Group
-
-    %ul.nav-links
-      = nav_link(path: 'groups#show', html_options: {class: 'home'}) do
-        = link_to group_path(@group), title: 'Home' do
-          = icon('group fw')
-          %span
-            Group
-      = nav_link(path: 'groups#activity') do
-        = link_to activity_group_path(@group), title: 'Activity' do
-          = icon('dashboard fw')
-          %span
-            Activity
-      = nav_link(controller: [:group, :milestones]) do
-        = link_to group_milestones_path(@group), title: 'Milestones' do
-          = icon('clock-o fw')
-          %span
-            Milestones
-      = nav_link(path: 'groups#issues') do
-        = link_to issues_group_path(@group), title: 'Issues' do
-          = icon('exclamation-circle fw')
-          %span
-            Issues
-            - issues = IssuesFinder.new(current_user, group_id: @group.id, state: 'opened').execute
-            %span.count= number_with_delimiter(issues.count)
-      = nav_link(path: 'groups#merge_requests') do
-        = link_to merge_requests_group_path(@group), title: 'Merge Requests' do
-          = icon('tasks fw')
-          %span
-            Merge Requests
-            - merge_requests = MergeRequestsFinder.new(current_user, group_id: @group.id, state: 'opened').execute
-            %span.count= number_with_delimiter(merge_requests.count)
-      = nav_link(controller: [:group_members]) do
-        = link_to group_group_members_path(@group), title: 'Members' do
-          = icon('users fw')
-          %span
-            Members
+  %ul.nav-links
+    = nav_link(path: 'groups#show', html_options: {class: 'home'}) do
+      = link_to group_path(@group), title: 'Home' do
+        = icon('group fw')
+        %span
+          Group
+    = nav_link(path: 'groups#activity') do
+      = link_to activity_group_path(@group), title: 'Activity' do
+        = icon('dashboard fw')
+        %span
+          Activity
+    = nav_link(controller: [:group, :milestones]) do
+      = link_to group_milestones_path(@group), title: 'Milestones' do
+        = icon('clock-o fw')
+        %span
+          Milestones
+    = nav_link(path: 'groups#issues') do
+      = link_to issues_group_path(@group), title: 'Issues' do
+        = icon('exclamation-circle fw')
+        %span
+          Issues
+          - issues = IssuesFinder.new(current_user, group_id: @group.id, state: 'opened').execute
+          %span.count= number_with_delimiter(issues.count)
+    = nav_link(path: 'groups#merge_requests') do
+      = link_to merge_requests_group_path(@group), title: 'Merge Requests' do
+        = icon('tasks fw')
+        %span
+          Merge Requests
+          - merge_requests = MergeRequestsFinder.new(current_user, group_id: @group.id, state: 'opened').execute
+          %span.count= number_with_delimiter(merge_requests.count)
+    = nav_link(controller: [:group_members]) do
+      = link_to group_group_members_path(@group), title: 'Members' do
+        = icon('users fw')
+        %span
+          Members
