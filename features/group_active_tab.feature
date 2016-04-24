@@ -10,9 +10,9 @@ Feature: Group Active Tab
     And no other sub navs should be active
     And the active main tab should be Settings
 
-  Scenario: On Web Hooks
-    When I go to "Web Hooks"
-    Then the active sub nav should be Web Hooks
+  Scenario: On Webhooks
+    When I go to "Webhooks"
+    Then the active sub nav should be Webhooks
     And no other sub navs should be active
     And the active main tab should be Settings
 
