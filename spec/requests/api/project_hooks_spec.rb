@@ -148,14 +148,24 @@ describe API::API, 'ProjectHooks', api: true do
       expect(response.status).to eq(200)
     end
 
-    it "should return success when deleting non existent hook" do
+    it "should return a 404 error when deleting non existent hook" do
       delete api("/projects/#{project.id}/hooks/42", user)
-      expect(response.status).to eq(200)
+      expect(response.status).to eq(404)
     end
 
     it "should return a 405 error if hook id not given" do
       delete api("/projects/#{project.id}/hooks", user)
       expect(response.status).to eq(405)
+    end
+
+    it "shold return a 404 if a user attempts to delete project hooks he/she does not own" do
+      test_user = create(:user)
+      other_project = create(:project)
+      other_project.team << [test_user, :master]
+
+      delete api("/projects/#{other_project.id}/hooks/#{hook.id}", test_user)
+      expect(response.status).to eq(404)
+      expect(WebHook.exists?(hook.id)).to be_truthy
     end
   end
 end
