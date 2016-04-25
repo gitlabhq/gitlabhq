@@ -217,7 +217,7 @@ class Projects::IssuesController < Projects::ApplicationController
       :assignee_id,
       :milestone_id,
       :state_event,
-      :label_ids
+      label_ids: []
     )
   end
 end
