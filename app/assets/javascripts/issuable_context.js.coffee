@@ -10,8 +10,8 @@ class @IssuableContext
       $(this).submit()
 
     $(document)
-      .off 'click', '.dropdown-content a'
-      .on 'click', '.dropdown-content a', (e) ->
+      .off 'click', '.issuable-sidebar .dropdown-content a'
+      .on 'click', '.issuable-sidebar .dropdown-content a', (e) ->
         e.preventDefault()
 
     $(document)
