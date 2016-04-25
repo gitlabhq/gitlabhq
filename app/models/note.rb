@@ -33,6 +33,12 @@ class Note < ActiveRecord::Base
   validates :commit_id, presence: true, if: ->(n) { n.noteable_type == 'Commit' }
   validates :author, presence: true
 
+  validate do |note|
+    unless note.noteable.project == project
+      errors.add(:invalid_project, 'Note and noteable project mismatch')
+    end
+  end
+
   mount_uploader :attachment, AttachmentUploader
 
   # Scopes
