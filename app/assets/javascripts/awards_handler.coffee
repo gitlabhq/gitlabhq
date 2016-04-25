@@ -31,6 +31,8 @@ class @AwardsHandler
 
     awards_handler.addAward emoji
 
+    $(this).trigger 'blur'
+
   didUserClickEmoji: (that, emoji) ->
     if $(that).siblings("button:has([data-emoji=#{emoji}])").attr("data-original-title")
       $(that).siblings("button:has([data-emoji=#{emoji}])").attr("data-original-title").indexOf('me') > -1
