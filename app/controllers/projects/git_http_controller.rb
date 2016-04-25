@@ -1,7 +1,9 @@
 class Projects::GitHttpController < Projects::ApplicationController
+  attr_reader :user
+
   skip_before_action :repository
   before_action :authenticate_user
-  before_action :ensure_project_found?
+  before_action :ensure_project_found!
 
   # GET /foo/bar.git/info/refs?service=git-upload-pack (git pull)
   # GET /foo/bar.git/info/refs?service=git-receive-pack (git push)
@@ -47,29 +49,29 @@ class Projects::GitHttpController < Projects::ApplicationController
     end
   end
 
-  def ensure_project_found?
+  def ensure_project_found!
     render_not_found if project.blank?
   end
 
   def valid_ci_request?(login, password)
     matched_login = /(?<service>^[a-zA-Z]*-ci)-token$/.match(login)
 
-    if project && matched_login.present? && upload_pack?
-      underscored_service = matched_login['service'].underscore
-
-      if underscored_service == 'gitlab_ci'
-        return project && project.valid_build_token?(password)
-      elsif Service.available_services_names.include?(underscored_service)
-        # We treat underscored_service as a trusted input because it is included
-        # in the Service.available_services_names whitelist.
-        service_method = "#{underscored_service}_service"
-        service = project.send(service_method)
-
-        return service && service.activated? && service.valid_token?(password)
-      end
+    unless project && matched_login.present? && upload_pack?
+      return false
     end
 
-    false
+    underscored_service = matched_login['service'].underscore
+
+    if underscored_service == 'gitlab_ci'
+      project && project.valid_build_token?(password)
+    elsif Service.available_services_names.include?(underscored_service)
+      # We treat underscored_service as a trusted input because it is included
+      # in the Service.available_services_names whitelist.
+      service_method = "#{underscored_service}_service"
+      service = project.send(service_method)
+
+      service && service.activated? && service.valid_token?(password)
+    end
   end
 
   def oauth_access_token_check(login, password)
@@ -183,10 +185,6 @@ class Projects::GitHttpController < Projects::ApplicationController
 
   def ci?
     !!@ci
-  end
-
-  def user
-    @user
   end
 
   def upload_pack_allowed?
