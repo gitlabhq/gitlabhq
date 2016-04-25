@@ -7,6 +7,7 @@ v 8.3.9
   - Prevent privilege escalation via "impersonate" feature
   - Prevent users from deleting Webhooks via API they do not own
   - Prevent information disclosure via snippet API
+  - Prevent information disclosure via new merge request page
 
 v 8.3.8
   - Remove persistent XSS vulnerability in `commit_person_link` helper
