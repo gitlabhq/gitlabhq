@@ -4,6 +4,7 @@ v 8.3.9
   - Fix a window.opener bug that could lead to XSS and open redirects
   - Prevent XSS via custom issue tracker URL
   - Prevent privilege escalation via "impersonate" feature
+  - Prevent users from deleting Webhooks via API they do not own
 
 v 8.3.8
   - Remove persistent XSS vulnerability in `commit_person_link` helper
