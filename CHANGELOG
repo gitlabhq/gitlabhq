@@ -8,6 +8,8 @@ v 8.7.1 (unreleased)
   - Fix license detection to detect all license files, not only known licenses. !3878
   - Use the `can?` helper instead of `current_user.can?`. !3882
   - Prevent users from deleting Webhooks via API they do not own
+  - Use the `can?` helper instead of `current_user.can?`
+  - Filter confidential issues from milestones API if user does not have access
 
 v 8.7.0
   - Gitlab::GitAccess and Gitlab::GitAccessWiki are now instrumented
