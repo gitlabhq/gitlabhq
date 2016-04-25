@@ -8,7 +8,7 @@ describe 'Comments', feature: true do
     it 'excludes award_emoji from comment count' do
       merge_request = create(:merge_request)
       project = merge_request.source_project
-      create(:upvote_note, noteable: merge_request, project: project)
+      create(:award_emoji, awardable: merge_request, project: project)
 
       login_as :admin
       visit namespace_project_merge_requests_path(project.namespace, project)
@@ -146,7 +146,7 @@ describe 'Comments', feature: true do
 
     describe 'comment info' do
       it 'excludes award_emoji from comment count' do
-        create(:upvote_note, noteable: merge_request, project: project)
+        create(:award_emoji, awardable: merge_request, project: project)
 
         visit namespace_project_merge_request_path(project.namespace, project, merge_request)
 

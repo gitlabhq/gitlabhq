@@ -12,6 +12,10 @@ describe Issue, "Issuable" do
     it { is_expected.to have_many(:todos).dependent(:destroy) }
   end
 
+  describe 'Included modules' do
+    it { is_expected.to include_module(Awardable) }
+  end
+
   describe "Validation" do
     before do
       allow(subject).to receive(:set_iid).and_return(false)

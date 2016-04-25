@@ -150,7 +150,7 @@ class @Notes
   renderNote: (note) ->
     unless note.valid
       if note.award
-        flash = new Flash('You have already awarded this emoji, and it we\'ve removed it', 'alert')
+        flash = new Flash('You have already awarded this emoji, it has been removed', 'alert')
         flash.pinTo('.header-content')
       return
 

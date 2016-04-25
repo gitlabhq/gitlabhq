@@ -131,7 +131,7 @@ module IssuesHelper
         class: "icon emoji-icon emoji-#{unicode}",
         title: name,
         data: data
-    else 
+    else
       # Emoji icons displayed separately, used for the awards already given
       # to an issue or merge request.
       content_tag :img, "",
@@ -145,12 +145,9 @@ module IssuesHelper
   end
 
   def award_user_list(awards, current_user)
-    list = 
-      awards.map do |award|
-        award.user == current_user ? "me" : award.user.name
-      end
-
-    list.join(", ")
+    awards.map do |award|
+      award.user == current_user ? 'me' : award.user.name
+    end.join(', ')
   end
 
   def award_active_class(awards, current_user)

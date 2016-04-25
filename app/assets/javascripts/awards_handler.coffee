@@ -4,21 +4,21 @@ class @AwardsHandler
 
     $(document)
       .off "click", ".js-add-award"
-      .on "click", ".js-add-award", (event) =>
-        event.stopPropagation()
-        event.preventDefault()
+      .on "click", ".js-add-award", (e) =>
+        e.stopPropagation()
+        e.preventDefault()
 
-        @showEmojiMenu $(event.currentTarget)
+        @showEmojiMenu $(e.currentTarget)
 
-    $("html").on 'click', (event) ->
-      if !$(event.target).closest(".emoji-menu").length
+    $("html").on 'click', (e) ->
+      if !$(e.target).closest(".emoji-menu").length
         if $(".emoji-menu").is(":visible")
           $('.js-add-award.is-active').removeClass 'is-active'
           $(".emoji-menu").removeClass "is-visible"
 
     $(document)
       .off "click", ".js-emoji-btn"
-      .on "click", ".js-emoji-btn", (e) => @handleClick(e)
+      .on "click", ".js-emoji-btn", @handleClick.bind(@)
 
   handleClick: (e) ->
     e.preventDefault()
@@ -31,7 +31,8 @@ class @AwardsHandler
     else if $votesBlock.length is 0
       $votesBlock = $addAwardBtn.closest('.js-awards-block')
 
-    $votesBlock.addClass 'js-awards-block-current'
+    @currentVoteBlock = $votesBlock
+
     awardUrl = $votesBlock.data 'award-url'
     emoji = $emojiBtn
       .find(".icon")
@@ -103,7 +104,6 @@ class @AwardsHandler
     emoji = @normilizeEmojiName(emoji)
     @postEmoji awardUrl, emoji, =>
       @addAwardToEmojiBar(emoji)
-      $('.js-awards-block').removeClass 'js-awards-block-current'
 
     $(".emoji-menu").removeClass "is-visible"
 
@@ -210,7 +210,7 @@ class @AwardsHandler
         callback.call()
 
   findEmojiIcon: (emoji) ->
-    $(".js-awards-block-current.awards > .js-emoji-btn [data-emoji='#{emoji}']")
+    @currentVoteBlock.find(".js-emoji-btn [data-emoji='#{emoji}']")
 
   scrollToAwards: ->
     $('body, html').animate({

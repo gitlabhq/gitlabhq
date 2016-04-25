@@ -211,4 +211,18 @@ describe Projects::IssuesController do
       end
     end
   end
+
+  describe 'POST #toggle_award_emoji' do
+    before do
+      sign_in(user)
+      project.team << [user, :developer]
+    end
+
+    it "yields status code 200" do
+      post(:toggle_award_emoji, namespace_id: project.namespace.path,
+                                project_id: project.path, id: issue.iid, name: "thumbsup")
+
+      expect(response.status).to eq(200)
+    end
+  end
 end

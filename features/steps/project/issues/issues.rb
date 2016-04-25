@@ -191,15 +191,15 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
   end
 
   step 'issue "Release 0.4" have 2 upvotes and 1 downvote' do
-    issue = Issue.find_by(title: 'Release 0.4')
-    create_list(:upvote_note, 2, project: project, noteable: issue)
-    create(:downvote_note, project: project, noteable: issue)
+    awardable = Issue.find_by(title: 'Release 0.4')
+    create_list(:upvote, 2, project: project, awardable: awardable)
+    create(:downvote, project: project, awardable: awardable)
   end
 
   step 'issue "Tweet control" have 1 upvote and 2 downvotes' do
     issue = Issue.find_by(title: 'Tweet control')
-    create(:upvote_note, project: project, noteable: issue)
-    create_list(:downvote_note, 2, project: project, noteable: issue)
+    create(:upvote, project: project, noteable: issue)
+    create_list(:downvote, 2, project: project, noteable: issue)
   end
 
   step 'The list should be sorted by "Least popular"' do

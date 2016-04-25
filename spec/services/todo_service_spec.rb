@@ -137,7 +137,6 @@ describe TodoService, services: true do
       let(:note_on_commit) { create(:note_on_commit, project: project, author: john_doe, note: mentions) }
       let(:note_on_confidential_issue) { create(:note_on_issue, noteable: confidential_issue, project: project, note: mentions) }
       let(:note_on_project_snippet) { create(:note_on_project_snippet, project: project, author: john_doe, note: mentions) }
-      let(:award_note) { create(:note, :award, project: project, noteable: issue, author: john_doe, note: 'thumbsup') }
       let(:system_note) { create(:system_note, project: project, noteable: issue) }
 
       it 'mark related pending todos to the noteable for the note author as done' do
@@ -145,13 +144,6 @@ describe TodoService, services: true do
         second_todo = create(:todo, :assigned, user: john_doe, project: project, target: issue, author: author)
 
         service.new_note(note, john_doe)
-
-        expect(first_todo.reload).to be_done
-        expect(second_todo.reload).to be_done
-      end
-
-      it 'mark related pending todos to the noteable for the award note author as done' do
-        service.new_note(award_note, john_doe)
 
         expect(first_todo.reload).to be_done
         expect(second_todo.reload).to be_done
@@ -284,6 +276,15 @@ describe TodoService, services: true do
 
         expect(first_todo.reload).to be_done
         expect(second_todo.reload).to be_done
+      end
+    end
+
+    describe '#new_award_emoji' do
+      it 'marks related pending todos to the target for the user as done' do
+        todo = create(:todo, user: john_doe, project: project, target: mr_assigned, author: author)
+        service.new_award_emoji(mr_assigned, john_doe)
+
+        expect(todo.reload).to be_done
       end
     end
   end

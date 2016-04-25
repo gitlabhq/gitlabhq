@@ -22,7 +22,7 @@ class Projects::NotesController < Projects::ApplicationController
   def create
     @note = Notes::CreateService.new(project, current_user, note_params).execute
 
-    @note = note.is_a?(AwardEmoji) ? @note.to_note_json : note_json(@note)
+    @note = @note.is_a?(AwardEmoji) ? @note.to_note_json : note_json(@note)
 
     respond_to do |format|
       format.json { render json: @note }
@@ -63,7 +63,6 @@ class Projects::NotesController < Projects::ApplicationController
   def note
     @note ||= @project.notes.find(params[:id])
   end
-  alias_method :awardable, :note
 
   def note_to_html(note)
     render_to_string(

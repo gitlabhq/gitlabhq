@@ -67,7 +67,7 @@ describe 'Issues', feature: true do
   describe 'Issue info' do
     it 'excludes award_emoji from comment count' do
       issue = create(:issue, author: @user, assignee: @user, project: project, title: 'foobar')
-      create(:upvote_note, noteable: issue)
+      create(:award_emoji, awardable: issue)
 
       visit namespace_project_issues_path(project.namespace, project, assignee_id: @user.id)
 
