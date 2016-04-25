@@ -15,7 +15,7 @@
               = icon('search')
           - if session[:impersonator_id]
             %li.impersonation
-              = link_to stop_impersonation_admin_users_path, method: :delete, title: 'Stop impersonation', data: { toggle: 'tooltip', placement: 'bottom' } do
+              = link_to admin_impersonation_path, method: :delete, title: 'Stop impersonation', data: { toggle: 'tooltip', placement: 'bottom' } do
                 = icon('user-secret fw')
           - if current_user.is_admin?
             %li

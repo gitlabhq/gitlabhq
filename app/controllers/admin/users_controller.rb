@@ -31,6 +31,22 @@ class Admin::UsersController < Admin::ApplicationController
     user
   end
 
+  def impersonate
+    if user.blocked?
+      flash[:alert] = "You cannot impersonate a blocked user"
+
+      redirect_to admin_user_path(user)
+    else
+      session[:impersonator_id] = current_user.id
+
+      warden.set_user(user, scope: :user)
+
+      flash[:alert] = "You are now impersonating #{user.username}"
+
+      redirect_to root_path
+    end
+  end
+
   def block
     if user.block
       redirect_back_or_admin_user(notice: "Successfully blocked")
