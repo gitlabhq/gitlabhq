@@ -14,7 +14,9 @@
         = groups_select_tag(:link_group_id, skip_group: @project.group.try(:path))
       .form-group
         = label_tag :link_group_access, "Max access level", class: "label-light"
-        = select_tag :link_group_access, options_for_select(ProjectGroupLink.access_options, ProjectGroupLink.default_access), class: "form-control"
+        .select-wrapper
+          = select_tag :link_group_access, options_for_select(ProjectGroupLink.access_options, ProjectGroupLink.default_access), class: "form-control select-control"
+          %span.caret
       = submit_tag "Share", class: "btn btn-create"
   .col-sm-12
     %hr
