@@ -28,8 +28,7 @@ module Ci
       format :json
 
       helpers ::Ci::API::Helpers
-      helpers ::API::Helpers::Core
-      helpers ::API::Helpers::Authentication
+      helpers ::API::Helpers
       helpers Gitlab::CurrentSettings
 
       mount Builds

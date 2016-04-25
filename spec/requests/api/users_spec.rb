@@ -24,7 +24,7 @@ describe API::API, api: true  do
       context "when public level is restricted" do
         before do
           stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::PUBLIC])
-          allow_any_instance_of(API::Helpers::Authentication).to receive(:authenticate!).and_return(true)
+          allow_any_instance_of(API::Helpers).to receive(:authenticate!).and_return(true)
         end
 
         it "renders 403" do

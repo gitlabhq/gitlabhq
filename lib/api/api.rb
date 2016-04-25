@@ -1,5 +1,4 @@
 Dir["#{Rails.root}/lib/api/*.rb"].each {|file| require file}
-Dir["#{Rails.root}/lib/api/helpers/*.rb"].each {|file| require file}
 
 module API
   class API < Grape::API
@@ -26,8 +25,7 @@ module API
     format :json
     content_type :txt, "text/plain"
 
-    helpers Helpers::Core
-    helpers Helpers::Authentication
+    helpers Helpers
 
     mount Groups
     mount GroupMembers
