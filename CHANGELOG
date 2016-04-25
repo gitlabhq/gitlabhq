@@ -5,6 +5,7 @@ v 8.8.0 (unreleased)
 
 v 8.7.1 (unreleased)
   - Use the `can?` helper instead of `current_user.can?`
+  - Fix .gitlab-ci.yml parsing issue when hidde job is a template without script definition
 
 v 8.7.0
   - Gitlab::GitAccess and Gitlab::GitAccessWiki are now instrumented
