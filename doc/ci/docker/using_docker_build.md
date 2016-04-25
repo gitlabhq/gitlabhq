@@ -8,7 +8,7 @@ This is one of new trends in Continuous Integration/Deployment to:
 
 1. create application image,
 1. run test against created image,
-1. push image to remote registry, 
+1. push image to remote registry,
 1. deploy server from pushed image
 
 It's also useful in case when your application already has the `Dockerfile` that can be used to create and test image:
@@ -46,22 +46,22 @@ GitLab Runner then executes build scripts as `gitlab-runner` user.
     For more information how to install Docker on different systems checkout the [Supported installations](https://docs.docker.com/installation/).
 
 3. Add `gitlab-runner` user to `docker` group:
-    
+
     ```bash
     $ sudo usermod -aG docker gitlab-runner
     ```
 
 4. Verify that `gitlab-runner` has access to Docker:
-  
+
     ```bash
     $ sudo -u gitlab-runner -H docker info
     ```
-    
+
     You can now verify that everything works by adding `docker info` to `.gitlab-ci.yml`:
     ```yaml
     before_script:
       - docker info
-    
+
     build_image:
       script:
         - docker build -t my-docker-image .
@@ -88,24 +88,56 @@ In order to do that follow the steps:
       --token RUNNER_TOKEN \
       --executor docker \
       --description "My Docker Runner" \
-      --docker-image "gitlab/dind:latest" \
+      --docker-image "docker:latest" \
       --docker-privileged
     ```
-  
-    The above command will register new Runner to use special [gitlab/dind](https://registry.hub.docker.com/u/gitlab/dind/) image which is provided by GitLab Inc.
-    The image at the start runs Docker daemon in [docker-in-docker](https://blog.docker.com/2013/09/docker-can-now-run-within-docker/) mode.
 
-1. You can now use `docker` from build script:
-    
-    ```yaml
-    before_script:
-      - docker info
-    
-    build_image:
-      script:
-        - docker build -t my-docker-image .
-        - docker run my-docker-image /script/to/run/tests
+    The above command will register a new Runner to use special `docker:latest` image which is provided by Docker
+    creators. **Notice that it's using the `privileged` mode to start build and service containers.** If you want to use
+    [docker-in-docker](https://blog.docker.com/2013/09/docker-can-now-run-within-docker/) mode, you always have to use
+    `privileged = true` in your docker containers.
+
+    The above command will create a `config.toml` entry similar to this:
+
+    ```
+    [[runners]]
+      url = "https://gitlab.com/ci"
+      token = TOKEN
+      executor = "docker"
+      [runners.docker]
+        tls_verify = false
+        image = "docker:latest"
+        privileged = true
+        disable_cache = false
+        volumes = ["/cache"]
+      [runners.cache]
+        Insecure = false
     ```
 
-1. However, by enabling `--docker-privileged` you are effectively disables all security mechanisms of containers and exposing your host to privilege escalation which can lead to container breakout.
-For more information, check out [Runtime privilege](https://docs.docker.com/reference/run/#runtime-privilege-linux-capabilities-and-lxc-configuration).
+    If you want to use Shared Runners available on your GitLab CE/EE installation, to build docker images, then
+    make sure that your Shared Runners configuration have `privileged` mode set to `true`.
+
+1. You can now use `docker` from build script:
+
+    ```yaml
+    image: docker:latest
+
+    services:
+    - docker:dind
+
+    before_script:
+      - docker info
+
+    build:
+      stage: build
+      script:
+      - docker build -t my-docker-image .
+      - docker run my-docker-image /script/to/run/tests
+    ```
+
+1. However, by enabling `--docker-privileged` you are effectively disables all security mechanisms of containers and
+   exposing your host to privilege escalation which can lead to container breakout.
+
+   For more information, check out [Runtime privilege](https://docs.docker.com/reference/run/#runtime-privilege-linux-capabilities-and-lxc-configuration).
+
+An example project using this approach can be found here: https://gitlab.com/gitlab-examples/docker.
