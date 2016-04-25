@@ -4,6 +4,7 @@ v 8.2.5
   - Fix a window.opener bug that could lead to XSS and open redirects
   - Prevent privilege escalation via "impersonate" feature
   - Prevent users from deleting Webhooks via API they do not own
+  - Prevent information disclosure via snippet API
 
 v 8.2.4
   - Bump Git version requirement to 2.7.4
