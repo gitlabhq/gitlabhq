@@ -1,7 +1,7 @@
-- grouped_awards = awardable.grouped_awards(inline)
+- grouped_emojis = awardable.grouped_awards(inline)
 .awards.js-awards-block{ class: ("hidden" if !inline && grouped_emojis.size == 0), data: { award_url: url_for([:toggle_award_emoji, @project.namespace.becomes(Namespace), @project, awardable]) } }
-  - awards_sort(grouped_awards).each do |emoji, awards|
-    %button.btn.award-control.js-emoji-btn.has-tooltip{ type: "button", class: (award_active_class(awards, current_user)), title: award_user_list(awards, current_user), data: { placement: "bottom" } }
+  - awards_sort(grouped_emojis).each do |emoji, awards|
+    %button.btn.award-control.js-emoji-btn.has-tooltip{ type: "button", class: (award_active_class(awards, current_user)),data: { placement: "bottom", original_title:  award_user_list(awards, current_user)} }
       = emoji_icon(emoji)
       %span.award-control-text.js-counter
         = awards.count

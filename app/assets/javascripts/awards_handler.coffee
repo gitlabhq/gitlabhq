@@ -1,63 +1,109 @@
 class @AwardsHandler
-  constructor: (@get_emojis_url, @post_emoji_url, @noteable_type, @noteable_id, @aliases) ->
-    $(".js-add-award").on "click", (event) =>
-      event.stopPropagation()
-      event.preventDefault()
+  constructor: ->
+    @aliases = gl.emoji.emojiAliases()
 
-      @showEmojiMenu()
+    $(document)
+      .off "click", ".js-add-award"
+      .on "click", ".js-add-award", (event) =>
+        event.stopPropagation()
+        event.preventDefault()
+
+        @showEmojiMenu $(event.currentTarget)
 
     $("html").on 'click', (event) ->
       if !$(event.target).closest(".emoji-menu").length
         if $(".emoji-menu").is(":visible")
+          $('.js-add-award.is-active').removeClass 'is-active'
           $(".emoji-menu").removeClass "is-visible"
 
-    $(".awards")
-      .off "click"
-      .on "click", ".js-emoji-btn", @handleClick
-
-    @renderFrequentlyUsedBlock()
+    $(document)
+      .off "click", ".js-emoji-btn"
+      .on "click", ".js-emoji-btn", (e) => @handleClick(e)
 
   handleClick: (e) ->
     e.preventDefault()
-    emoji = $(this)
+    $emojiBtn = $(e.currentTarget)
+    $addAwardBtn = $('.js-add-award.is-active')
+    $votesBlock = $($addAwardBtn.closest('.js-award-holder').data('target'))
+
+    if $addAwardBtn.length is 0
+      $votesBlock = $emojiBtn.closest('.js-awards-block')
+    else if $votesBlock.length is 0
+      $votesBlock = $addAwardBtn.closest('.js-awards-block')
+
+    $votesBlock.addClass 'js-awards-block-current'
+    awardUrl = $votesBlock.data 'award-url'
+    emoji = $emojiBtn
       .find(".icon")
       .data "emoji"
 
-    if emoji is "thumbsup" and awards_handler.didUserClickEmoji $(this), "thumbsdown"
-      awards_handler.addAward "thumbsdown"
+    if emoji is "thumbsup" and @didUserClickEmoji $emojiBtn, "thumbsdown"
+      @addAward awardUrl, "thumbsdown"
 
-    else if emoji is "thumbsdown" and awards_handler.didUserClickEmoji $(this), "thumbsup"
-      awards_handler.addAward "thumbsup"
+    else if emoji is "thumbsdown" and @didUserClickEmoji $emojiBtn, "thumbsup"
+      @addAward awardUrl, "thumbsup"
 
-    awards_handler.addAward emoji
+    @addAward awardUrl, emoji
 
-  didUserClickEmoji: (that, emoji) ->
-    if $(that).siblings("button:has([data-emoji=#{emoji}])").attr("data-original-title")
-      $(that).siblings("button:has([data-emoji=#{emoji}])").attr("data-original-title").indexOf('me') > -1
+  didUserClickEmoji: (emojiBtn, emoji) ->
+    if emojiBtn.siblings("button:has([data-emoji=#{emoji}])").attr("data-original-title")
+      emojiBtn.siblings("button:has([data-emoji=#{emoji}])").attr("data-original-title").indexOf('me') > -1
 
-  showEmojiMenu: ->
-    if $(".emoji-menu").length
-      if $(".emoji-menu").is ".is-visible"
-        $(".emoji-menu").removeClass "is-visible"
+  showEmojiMenu: ($addBtn) ->
+    $menu = $('.emoji-menu')
+    if $menu.length
+      $holder = $addBtn.closest('.js-award-holder')
+
+      if $menu.is ".is-visible"
+        $addBtn.removeClass "is-active"
+        $menu.removeClass "is-visible"
         $("#emoji_search").blur()
       else
         $(".emoji-menu").addClass "is-visible"
+        $addBtn.addClass "is-active"
+        @positionMenu($menu, $addBtn)
+
+        $menu.addClass "is-visible"
         $("#emoji_search").focus()
     else
-      $('.js-add-award').addClass "is-loading"
-      $.get @get_emojis_url, (response) =>
-        $('.js-add-award').removeClass "is-loading"
-        $(".js-award-holder").append response
+      $addBtn.addClass "is-loading is-active"
+      $.get $addBtn.data('award-menu-url'), (response) =>
+        $addBtn.removeClass "is-loading"
+        $('body').append response
+
+        $menu = $(".emoji-menu")
+
+        @positionMenu($menu, $addBtn)
+
+        @renderFrequentlyUsedBlock()
         setTimeout =>
-          $(".emoji-menu").addClass "is-visible"
+          $menu.addClass "is-visible"
           $("#emoji_search").focus()
           @setupSearch()
         , 200
 
-  addAward: (emoji) ->
+  positionMenu: ($menu, $addBtn) ->
+    position = $addBtn.data('position')
+
+    # The menu could potentially be off-screen or in a hidden overflow element
+    # So we position the element absolute in the body
+    css =
+      top: "#{$addBtn.offset().top + $addBtn.outerHeight()}px"
+
+    if position? and position is 'right'
+      css.left = "#{($addBtn.offset().left - $menu.outerWidth()) + 20}px"
+      $menu.addClass "is-aligned-right"
+    else
+      css.left = "#{$addBtn.offset().left}px"
+      $menu.removeClass "is-aligned-right"
+
+    $menu.css(css)
+
+  addAward: (awardUrl, emoji) ->
     emoji = @normilizeEmojiName(emoji)
-    @postEmoji emoji, =>
+    @postEmoji awardUrl, emoji, =>
       @addAwardToEmojiBar(emoji)
+      $('.js-awards-block').removeClass 'js-awards-block-current'
 
     $(".emoji-menu").removeClass "is-visible"
 
@@ -65,58 +111,60 @@ class @AwardsHandler
     @addEmojiToFrequentlyUsedList(emoji)
 
     emoji = @normilizeEmojiName(emoji)
-    if @exist(emoji)
-      if @isActive(emoji)
-        @decrementCounter(emoji)
+    $emojiBtn = @findEmojiIcon(emoji).parent()
+
+    if $emojiBtn.length > 0
+      if @isActive($emojiBtn)
+        @decrementCounter($emojiBtn, emoji)
       else
-        counter = @findEmojiIcon(emoji).siblings(".js-counter")
-        counter.text(parseInt(counter.text()) + 1)
-        counter.parent().addClass("active")
-        @addMeToAuthorList(emoji)
+        $counter = $emojiBtn.find('.js-counter')
+        $counter.text(parseInt($counter.text()) + 1)
+        $emojiBtn.addClass("active")
+        @addMeToUserList(emoji)
     else
       @createEmoji(emoji)
 
-  exist: (emoji) ->
-    @findEmojiIcon(emoji).length > 0
+  isActive: ($emojiBtn) ->
+    $emojiBtn.hasClass("active")
 
-  isActive: (emoji) ->
-    @findEmojiIcon(emoji).parent().hasClass("active")
+  decrementCounter: ($emojiBtn, emoji) ->
+    $awardsBlock = $emojiBtn.closest('.js-awards-block')
+    isntNoteBody = $emojiBtn.closest('.note-body').length is 0
+    counter = $('.js-counter', $emojiBtn)
+    counterNumber = parseInt(counter.text())
 
-  decrementCounter: (emoji) ->
-    counter = @findEmojiIcon(emoji).siblings(".js-counter")
-    emojiIcon = counter.parent()
-    if parseInt(counter.text()) > 1
-      counter.text(parseInt(counter.text()) - 1)
-      emojiIcon.removeClass("active")
-      @removeMeFromAuthorList(emoji)
-    else if emoji == "thumbsup" || emoji == "thumbsdown"
-      emojiIcon.tooltip("destroy")
-      counter.text(0)
-      emojiIcon.removeClass("active")
-      @removeMeFromAuthorList(emoji)
+    if counterNumber > 1
+      counter.text(counterNumber - 1)
+      @removeMeFromUserList($emojiBtn, emoji)
+    else if (emoji == "thumbsup" || emoji == "thumbsdown") && isntNoteBody
+      $emojiBtn.tooltip("destroy")
+      counter.text('0')
+      @removeMeFromUserList($emojiBtn, emoji)
     else
-      emojiIcon.tooltip("destroy")
-      emojiIcon.remove()
+      $emojiBtn.tooltip("destroy")
+      $emojiBtn.remove()
 
-  removeMeFromAuthorList: (emoji) ->
-    award_block = @findEmojiIcon(emoji).parent()
+    $emojiBtn.removeClass("active")
+
+  removeMeFromUserList: ($emojiBtn, emoji) ->
+    award_block = $emojiBtn
     authors = award_block
       .attr("data-original-title")
       .split(", ")
-    authors.splice(authors.indexOf("me"),1)
+    authors.splice(authors.indexOf("me"), 1)
     award_block
       .closest(".js-emoji-btn")
       .attr("data-original-title", authors.join(", "))
     @resetTooltip(award_block)
 
-  addMeToAuthorList: (emoji) ->
+  addMeToUserList: (emoji) ->
     award_block = @findEmojiIcon(emoji).parent()
     origTitle = award_block.attr("data-original-title").trim()
-    authors = []
+    users = []
     if origTitle
-      authors = origTitle.split(', ')
-    authors.push("me")
-    award_block.attr("data-original-title", authors.join(", "))
+      users = origTitle.split(', ')
+    users.push("me")
+    award_block.attr("data-original-title", users.join(", "))
     @resetTooltip(award_block)
 
   resetTooltip: (award) ->
@@ -127,23 +175,23 @@ class @AwardsHandler
       award.tooltip()
     ), 200
 
-
   createEmoji: (emoji) ->
     emojiCssClass = @resolveNameToCssClass(emoji)
 
-    nodes = []
-    nodes.push(
-      "<button class='btn award-control js-emoji-btn has-tooltip active' data-original-title='me'>",
-      "<div class='icon emoji-icon #{emojiCssClass}' data-emoji='#{emoji}'></div>",
-      "<span class='award-control-text js-counter'>1</span>",
-      "</button>"
-    )
+    buttonHtml = "<button class='btn award-control js-emoji-btn has-tooltip active' title='me' data-placement='bottom'>
+      <div class='icon emoji-icon #{emojiCssClass}' data-emoji='#{emoji}'></div>
+      <span class='award-control-text js-counter'>1</span>
+    </button>"
 
-    emoji_node = $(nodes.join("\n"))
-      .insertBefore(".js-award-holder")
+    emoji_node = $(buttonHtml)
+      .insertBefore(".js-awards-block-current .js-award-holder:not(.js-award-action-btn)")
       .find(".emoji-icon")
       .data("emoji", emoji)
     $('.award-control').tooltip()
+
+    $currentBlock = $('.js-awards-block-current')
+    if $currentBlock.is('.hidden')
+      $currentBlock.removeClass 'hidden'
 
   resolveNameToCssClass: (emoji) ->
     emoji_icon = $(".emoji-menu-content [data-emoji='#{emoji}']")
@@ -156,17 +204,13 @@ class @AwardsHandler
 
     "emoji-#{unicodeName}"
 
-  postEmoji: (emoji, callback) ->
-    $.post @post_emoji_url, { note: {
-      note: ":#{emoji}:"
-      noteable_type: @noteable_type
-      noteable_id: @noteable_id
-    }},(data) ->
+  postEmoji: (awardUrl, emoji, callback) ->
+    $.post awardUrl, { name: emoji }, (data) ->
       if data.ok
         callback.call()
 
   findEmojiIcon: (emoji) ->
-    $(".awards > .js-emoji-btn [data-emoji='#{emoji}']")
+    $(".js-awards-block-current.awards > .js-emoji-btn [data-emoji='#{emoji}']")
 
   scrollToAwards: ->
     $('body, html').animate({
@@ -189,16 +233,15 @@ class @AwardsHandler
     if $.cookie('frequently_used_emojis')
       frequently_used_emojis = @getFrequentlyUsedEmojis()
 
-      ul = $("<ul>")
+      ul = $("<ul class='clearfix emoji-menu-list'>")
 
       for emoji in frequently_used_emojis
-        do (emoji) ->
-          $(".emoji-menu-content [data-emoji='#{emoji}']").closest("li").clone().appendTo(ul)
+        $(".emoji-menu-content [data-emoji='#{emoji}']").closest("li").clone().appendTo(ul)
 
       $("input.emoji-search").after(ul).after($("<h5>").text("Frequently used"))
 
   setupSearch: ->
-    $("input.emoji-search").keyup (ev) =>
+    $("input.emoji-search").on 'keyup', (ev) =>
       term = $(ev.target).val()
 
       # Clean previous search results
