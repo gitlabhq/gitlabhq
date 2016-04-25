@@ -156,6 +156,12 @@ Rails.application.routes.draw do
       get   :new_user_map,    path: :user_map
       post  :create_user_map, path: :user_map
     end
+
+    resource :gitlab_project, only: [:create, :new], controller: :gitlab_projects do
+      get :status
+      get :callback
+      get :jobs
+    end
   end
 
   #
