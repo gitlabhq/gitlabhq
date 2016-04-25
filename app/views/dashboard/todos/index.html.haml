@@ -25,7 +25,7 @@
         = icon('spinner spin')
 
 .todos-filters
-  .gray-content-block.second-block
+  .row-content-block.second-block
     = form_tag todos_filter_path(without: [:project_id, :author_id, :type, :action_id]), method: :get, class: 'filter-form' do
       .filter-item.inline
         = select_tag('project_id', todo_projects_options,

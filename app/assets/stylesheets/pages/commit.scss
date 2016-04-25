@@ -31,8 +31,16 @@
   }
   .commit-committer-link,
   .commit-author-link {
-    color: #444;
+    color: $gl-gray;
     font-weight: bold;
+  }
+
+  .ci-status {
+    margin-right: 10px;
+  }
+
+  .fa-clipboard {
+    color: $dropdown-title-btn-color;
   }
 }
 
@@ -42,7 +50,7 @@
   .commit-title {
     margin: 0;
     font-size: 23px;
-    color: #313236;
+    color: $gl-gray-dark;
   }
 
   .commit-description {

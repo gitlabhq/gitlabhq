@@ -34,7 +34,7 @@
         = icon('wrench')
         %span CI Lint
 
-.gray-content-block
+.row-content-block
   #{(@scope || 'running').capitalize} builds from this project
 
 %ul.content-list
@@ -52,6 +52,7 @@
             %th Ref
             %th Stage
             %th Name
+            %th Tags
             %th Duration
             %th Finished at
             - if @project.build_coverage_enabled?
