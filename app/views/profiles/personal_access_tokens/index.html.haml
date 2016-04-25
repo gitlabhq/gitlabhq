@@ -21,7 +21,8 @@
 
       .form-group
         = f.label :expires_at, class: 'label-light'
-        = f.text_field :expires_at, class: "form-control datepicker", required: false
+        = f.hidden_field :expires_at, class: "form-control", required: false
+        .datepicker
 
       .prepend-top-default
         = f.submit 'Add Personal Access Token', class: "btn btn-create"
@@ -90,16 +91,5 @@
 :javascript
   $(".datepicker").datepicker({
     dateFormat: "yy-mm-dd",
-    beforeShow: function() {
-      ////////////////////////////////////////////////////////////////
-      // 1. Need the setTimeout because the datepicker doesn't have //
-      //    an `afterShow` callback.                                //
-      // 2. Need to set the z-index like this because we don't want //
-      //    to target datepickers outside the current page, which   //
-      //    will happen if we set this in CSS directly.             //
-      ////////////////////////////////////////////////////////////////
-      setTimeout(function(){
-        $('.ui-datepicker').css('z-index', 3);
-      }, 0);
-    }
-  });
+    onSelect: function(dateText, inst) { $("#personal_access_token_params_expires_at").val(dateText) }
+  }).datepicker("setDate", $.datepicker.parseDate('yy-mm-dd', $('#personal_access_token_params_expires_at').val()));

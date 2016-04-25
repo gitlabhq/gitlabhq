@@ -1,4 +1,7 @@
 class PersonalAccessToken < ActiveRecord::Base
+  include TokenAuthenticatable
+  add_authentication_token_field :token
+
   belongs_to :user
 
   scope :active, -> { where(revoked: false).where("expires_at >= NOW() OR expires_at IS NULL") }
@@ -6,7 +9,7 @@ class PersonalAccessToken < ActiveRecord::Base
 
   def self.generate(params)
     personal_access_token = self.new(params)
-    personal_access_token.token = Devise.friendly_token(50)
+    personal_access_token.ensure_token
     personal_access_token
   end
 

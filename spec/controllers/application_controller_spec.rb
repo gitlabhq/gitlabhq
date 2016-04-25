@@ -40,12 +40,6 @@ describe ApplicationController do
 
     let(:user) { create(:user) }
 
-    it "logs the user in when the 'authenticity_token' param is populated with the private token" do
-      get :index, authenticity_token: user.private_token
-      expect(response.status).to eq(200)
-      expect(response.body).to eq("authenticated")
-    end
-
     it "logs the user in when the 'private_token' param is populated with the private token" do
       get :index, private_token: user.private_token
       expect(response.status).to eq(200)
