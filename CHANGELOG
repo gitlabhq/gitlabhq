@@ -18,7 +18,6 @@ v 8.7.1 (unreleased)
   - Fix .gitlab-ci.yml parsing issue when hidde job is a template without script definition. !3849
   - Fix license detection to detect all license files, not only known licenses. !3878
   - Use the `can?` helper instead of `current_user.can?`. !3882
-  - Prevent users from deleting Webhooks via API they do not own
   - Fix Error 500 due to stale cache when projects are renamed or transferred
   - Fix .gitlab-ci.yml parsing issue when hidde job is a template without script definition
 
