@@ -71,7 +71,7 @@ issuable_created = false
   updateStateFilters: ->
     stateFilters =  $('.issues-state-filters, .dropdown-menu-sort')
     newParams = {}
-    paramKeys = ['author_id', 'milestone_title', 'assignee_id', 'issue_search']
+    paramKeys = ['author_id', 'milestone_title', 'assignee_id', 'issue_search', 'issue_search']
 
     for paramKey in paramKeys
       newParams[paramKey] = gl.utils.getParameterValues(paramKey)[0] or ''
