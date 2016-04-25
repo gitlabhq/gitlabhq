@@ -239,8 +239,8 @@ is specific to your project.
 Then create some service containers:
 
 ```
-docker run -d -n service-mysql mysql:latest
-docker run -d -n service-postgres postgres:latest
+docker run -d --name service-mysql mysql:latest
+docker run -d --name service-postgres postgres:latest
 ```
 
 This will create two service containers, named `service-mysql` and
