@@ -27,6 +27,8 @@ class JiraService < IssueTrackerService
   prop_accessor :username, :password, :api_url, :jira_issue_transition_id,
                 :title, :description, :project_url, :issues_url, :new_issue_url
 
+  validates :api_url, presence: true, url: true, if: :activated?
+
   before_validation :set_api_url, :set_jira_issue_transition_id
 
   before_update :reset_password

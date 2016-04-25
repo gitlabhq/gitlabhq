@@ -30,6 +30,18 @@ describe IssuesHelper do
       expect(url_for_project_issues).to eq ""
     end
 
+    it 'returns an empty string if project_url is invalid' do
+      expect(project).to receive_message_chain('issues_tracker.project_url') { 'javascript:alert("foo");' }
+
+      expect(url_for_project_issues(project)).to eq ''
+    end
+
+    it 'returns an empty string if project_path is invalid' do
+      expect(project).to receive_message_chain('issues_tracker.project_path') { 'javascript:alert("foo");' }
+
+      expect(url_for_project_issues(project, only_path: true)).to eq ''
+    end
+
     describe "when external tracker was enabled and then config removed" do
       before do
         @project = ext_project
@@ -68,6 +80,18 @@ describe IssuesHelper do
       expect(url_for_issue(issue.iid)).to eq ""
     end
 
+    it 'returns an empty string if issue_url is invalid' do
+      expect(project).to receive_message_chain('issues_tracker.issue_url') { 'javascript:alert("foo");' }
+
+      expect(url_for_issue(issue.iid, project)).to eq ''
+    end
+
+    it 'returns an empty string if issue_path is invalid' do
+      expect(project).to receive_message_chain('issues_tracker.issue_path') { 'javascript:alert("foo");' }
+
+      expect(url_for_issue(issue.iid, project, only_path: true)).to eq ''
+    end
+
     describe "when external tracker was enabled and then config removed" do
       before do
         @project = ext_project
@@ -103,6 +127,18 @@ describe IssuesHelper do
       @project = nil
 
       expect(url_for_new_issue).to eq ""
+    end
+
+    it 'returns an empty string if issue_url is invalid' do
+      expect(project).to receive_message_chain('issues_tracker.new_issue_url') { 'javascript:alert("foo");' }
+
+      expect(url_for_new_issue(project)).to eq ''
+    end
+
+    it 'returns an empty string if issue_path is invalid' do
+      expect(project).to receive_message_chain('issues_tracker.new_issue_path') { 'javascript:alert("foo");' }
+
+      expect(url_for_new_issue(project, only_path: true)).to eq ''
     end
 
     describe "when external tracker was enabled and then config removed" do

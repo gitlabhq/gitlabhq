@@ -20,7 +20,7 @@
 
 class IssueTrackerService < Service
 
-  validates :project_url, :issues_url, :new_issue_url, presence: true, if: :activated?
+  validates :project_url, :issues_url, :new_issue_url, presence: true, url: true, if: :activated?
 
   def category
     :issue_tracker

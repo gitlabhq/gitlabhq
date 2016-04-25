@@ -21,7 +21,7 @@
 class SlackService < Service
   prop_accessor :webhook, :username, :channel
   boolean_accessor :notify_only_broken_builds
-  validates :webhook, presence: true, if: :activated?
+  validates :webhook, presence: true, url: true, if: :activated?
 
   def initialize_properties
     if properties.nil?
