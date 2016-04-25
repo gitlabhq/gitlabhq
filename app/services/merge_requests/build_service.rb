@@ -9,6 +9,9 @@ module MergeRequests
       merge_request.compare_commits = []
       merge_request.compare_diffs = []
       merge_request.source_project = project unless merge_request.source_project
+
+      merge_request.target_project = nil unless can?(current_user, :read_project, merge_request.target_project)
+
       merge_request.target_project ||= (project.forked_from_project || project)
       merge_request.target_branch ||= merge_request.target_project.default_branch
 
