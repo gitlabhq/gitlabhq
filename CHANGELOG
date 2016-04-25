@@ -4,6 +4,7 @@ v 8.8.0 (unreleased)
   - Remove future dates from contribution calendar graph.
 
 v 8.7.1 (unreleased)
+  - Prevent users from deleting Webhooks via API they do not own
   - Use the `can?` helper instead of `current_user.can?`
 
 v 8.7.0
