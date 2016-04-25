@@ -132,7 +132,6 @@ describe Repository, models: true do
         it { expect(subject.basename).to eq('a/b/c') }
       end
     end
-
   end
 
   describe '#license_blob' do
@@ -148,39 +147,18 @@ describe Repository, models: true do
       expect(repository.license_blob).to be_nil
     end
 
-    it 'favors license file with no extension' do
-      repository.commit_file(user, 'LICENSE', Licensee::License.new('mit').content, 'Add LICENSE', 'master', false)
-      repository.commit_file(user, 'LICENSE.md', Licensee::License.new('mit').content, 'Add LICENSE.md', 'master', false)
+    it 'detects license file with no recognizable open-source license content' do
+      repository.commit_file(user, 'LICENSE', 'Copyright!', 'Add LICENSE', 'master', false)
 
       expect(repository.license_blob.name).to eq('LICENSE')
     end
 
-    it 'favors .md file to .txt' do
-      repository.commit_file(user, 'LICENSE.md', Licensee::License.new('mit').content, 'Add LICENSE.md', 'master', false)
-      repository.commit_file(user, 'LICENSE.txt', Licensee::License.new('mit').content, 'Add LICENSE.txt', 'master', false)
+    %w[LICENSE LICENCE LiCensE LICENSE.md LICENSE.foo COPYING COPYING.md].each do |filename|
+      it "detects '#{filename}'" do
+        repository.commit_file(user, filename, Licensee::License.new('mit').content, "Add #{filename}", 'master', false)
 
-      expect(repository.license_blob.name).to eq('LICENSE.md')
-    end
-
-    it 'favors LICENCE to LICENSE' do
-      repository.commit_file(user, 'LICENSE', Licensee::License.new('mit').content, 'Add LICENSE', 'master', false)
-      repository.commit_file(user, 'LICENCE', Licensee::License.new('mit').content, 'Add LICENCE', 'master', false)
-
-      expect(repository.license_blob.name).to eq('LICENCE')
-    end
-
-    it 'favors LICENSE to COPYING' do
-      repository.commit_file(user, 'LICENSE', Licensee::License.new('mit').content, 'Add LICENSE', 'master', false)
-      repository.commit_file(user, 'COPYING', Licensee::License.new('mit').content, 'Add COPYING', 'master', false)
-
-      expect(repository.license_blob.name).to eq('LICENSE')
-    end
-
-    it 'favors LICENCE to COPYING' do
-      repository.commit_file(user, 'LICENCE', Licensee::License.new('mit').content, 'Add LICENCE', 'master', false)
-      repository.commit_file(user, 'COPYING', Licensee::License.new('mit').content, 'Add COPYING', 'master', false)
-
-      expect(repository.license_blob.name).to eq('LICENCE')
+        expect(repository.license_blob.name).to eq(filename)
+      end
     end
   end
 
@@ -190,8 +168,14 @@ describe Repository, models: true do
       repository.remove_file(user, 'LICENSE', 'Remove LICENSE', 'master')
     end
 
-    it 'returns "no-license" when no license is detected' do
-      expect(repository.license_key).to eq('no-license')
+    it 'returns nil when no license is detected' do
+      expect(repository.license_key).to be_nil
+    end
+
+    it 'detects license file with no recognizable open-source license content' do
+      repository.commit_file(user, 'LICENSE', 'Copyright!', 'Add LICENSE', 'master', false)
+
+      expect(repository.license_key).to be_nil
     end
 
     it 'returns the license key' do

@@ -87,8 +87,8 @@ class @MergeRequestTabs
     if window.location.hash
       navBarHeight = $('.navbar-gitlab').outerHeight()
 
-      $el = $("#{container} #{window.location.hash}")
-      $.scrollTo("#{container} #{window.location.hash}", offset: -navBarHeight) if $el.length
+      $el = $("#{container} #{window.location.hash}:not(.match)")
+      $.scrollTo("#{container} #{window.location.hash}:not(.match)", offset: -navBarHeight) if $el.length
 
   # Activate a tab based on the current action
   activateTab: (action) ->
@@ -176,12 +176,12 @@ class @MergeRequestTabs
 
     if locationHash isnt ''
       hashClassString = ".#{locationHash.replace('#', '')}"
-      $diffLine = $(locationHash)
+      $diffLine = $("#{locationHash}:not(.match)", $('#diffs'))
 
-      if $diffLine.is ':not(tr)'
-        $diffLine = $("td#{locationHash}, td#{hashClassString}")
+      if not $diffLine.is 'tr'
+        $diffLine = $('#diffs').find("td#{locationHash}, td#{hashClassString}")
       else
-        $diffLine = $('td', $diffLine)
+        $diffLine = $diffLine.find('td')
 
       if $diffLine.length
         $diffLine.addClass 'hll'
