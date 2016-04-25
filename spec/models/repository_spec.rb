@@ -858,16 +858,30 @@ describe Repository, models: true do
   end
 
   describe '#add_tag' do
-    it 'adds a tag' do
-      user = build_stubbed(:user)
-      expect(repository).to receive(:before_push_tag)
-      expect(repository.rugged.tags).to receive(:create).
-        with('8.5', 'master',
-             hash_including(message: 'foo',
-                            tagger: hash_including(name: user.name, email: user.email))).
-        and_call_original
+    context 'with a valid target' do
+      let(:user) { build_stubbed(:user) }
 
-      repository.add_tag(user, '8.5', 'master', 'foo')
+      it 'creates the tag using rugged' do
+        expect(repository.rugged.tags).to receive(:create).
+          with('8.5', repository.commit('master').id,
+            hash_including(message: 'foo',
+                           tagger: hash_including(name: user.name, email: user.email))).
+          and_call_original
+
+        repository.add_tag(user, '8.5', 'master', 'foo')
+      end
+
+      it 'returns a Gitlab::Git::Tag object' do
+        tag = repository.add_tag(user, '8.5', 'master', 'foo')
+
+        expect(tag).to be_a(Gitlab::Git::Tag)
+      end
+    end
+
+    context 'with an invalid target' do
+      it 'returns false' do
+        expect(repository.add_tag(user, '8.5', 'bar', 'foo')).to be false
+      end
     end
   end
 
