@@ -109,6 +109,10 @@ ul.notes {
           border-color: darken(#f5f5f5, 8%);
           margin: 10px 0;
         }
+
+        code {
+          word-break: keep-all;
+        }
       }
 
       a {
