@@ -190,8 +190,6 @@ Rails.application.routes.draw do
       resources :keys, only: [:show, :destroy]
       resources :identities, except: [:show]
 
-      delete 'stop_impersonation' => 'impersonation#destroy', on: :collection
-
       member do
         get :projects
         get :keys
@@ -201,11 +199,13 @@ Rails.application.routes.draw do
         put :unblock
         put :unlock
         put :confirm
-        post 'impersonate' => 'impersonation#create'
+        post :impersonate
         patch :disable_two_factor
         delete 'remove/:email_id', action: 'remove_email', as: 'remove_email'
       end
     end
+
+    resource :impersonation, only: :destroy
 
     resources :abuse_reports, only: [:index, :destroy]
     resources :applications
