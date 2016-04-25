@@ -3,6 +3,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 v 8.8.0 (unreleased)
   - Remove future dates from contribution calendar graph.
   - Fix error when visiting commit builds page before build was updated
+  - Add 'l' shortcut to open Label dropdown on issuables and 'i' to create new issue on a project
 
 v 8.7.1 (unreleased)
   - Fix .gitlab-ci.yml parsing issue when hidde job is a template without script definition. !3849
@@ -118,7 +119,6 @@ v 8.7.0
   - Show number sign on external issue reference text (Florent Baldino)
   - Updated print style for issues
   - Use GitHub Issue/PR number as iid to keep references
-  - Add 'l' shortcut to open Label dropdown on issuables and 'i' to create new issue on a project
   - Import GitHub labels
   - Add option to filter by "Owned projects" on dashboard page
   - Import GitHub milestones
