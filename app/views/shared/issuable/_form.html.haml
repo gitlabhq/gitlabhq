@@ -84,7 +84,7 @@
           - if can? current_user, :admin_label, issuable.project
             %br
             = link_to 'Create new label', new_namespace_project_label_path(issuable.project.namespace, issuable.project), target: :blank, class: "prepend-top-5 inline"
-    - if issuable.has_attribute?(:due_date)
+    - if has_due_date
       .col-lg-6
         .form-group
           = f.label :due_date, "Due date", class: "control-label"
