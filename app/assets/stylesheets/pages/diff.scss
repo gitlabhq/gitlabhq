@@ -131,8 +131,13 @@
       margin: 0;
       padding: 0 0.5em;
       border: none;
+
       &.parallel {
         display: table-cell;
+
+        span {
+          word-break: break-all;
+        }
       }
     }
 
