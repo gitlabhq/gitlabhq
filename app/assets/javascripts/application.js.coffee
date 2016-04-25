@@ -205,6 +205,15 @@ $ ->
     $('.header-content .navbar-collapse').toggle()
     $('.navbar-toggle').toggleClass('active')
 
+    navIcon = $('.navbar-toggle').find('.fa')
+
+    if $(navIcon).hasClass('fa-chevron-left')
+      $(navIcon).removeClass('fa-chevron-left')
+      $(navIcon).addClass('fa-chevron-right')
+    else
+      $(navIcon).removeClass('fa-chevron-right')
+      $(navIcon).addClass('fa-chevron-left')
+
   # Show/hide comments on diff
   $("body").on "click", ".js-toggle-diff-comments", (e) ->
     $(@).toggleClass('active')
