@@ -12,7 +12,6 @@ class @LabelsSelect
       newColorField = $('#new_label_color')
       showNo = $dropdown.data('show-no')
       showAny = $dropdown.data('show-any')
-      useId = $dropdown.data('use-id')
       defaultLabel = $dropdown.data('default-label')
       abilityName = $dropdown.data('ability-name')
       $selectbox = $dropdown.closest('.selectbox')
