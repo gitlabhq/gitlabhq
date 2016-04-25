@@ -223,7 +223,7 @@ class @LabelsSelect
         fieldName: $dropdown.data('field-name')
         id: (label) ->
           if $dropdown.hasClass("js-filter-submit") and not label.isAny?
-            label.title
+            _.escape label.title
           else
             label.id
 

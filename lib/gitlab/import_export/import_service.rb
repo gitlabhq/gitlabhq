@@ -1,9 +1,18 @@
-module Projects
+module Gitlab
   module ImportExport
-    class ExportService < BaseService
-      def execute(options = {})
-        archive_file = options[:archive_file]
-        Gitlab::ImportExport::Importer.import(archive_file: archive_file, storage_path: storage_path)
+    class ImportService
+
+      def self.execute(*args)
+        new(args).execute
+      end
+
+      def initialize(options = {})
+        @archive_file = options[:archive_file]
+        @current_user = options[:owner]
+      end
+
+      def execute
+        Gitlab::ImportExport::Importer.import(archive_file: @archive_file, storage_path: storage_path)
         restore_project_tree
         restore_repo(project_tree.project)
       end
