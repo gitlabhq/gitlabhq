@@ -587,6 +587,7 @@ Rails.application.routes.draw do
             post :cancel_builds
             post :retry_builds
             post :revert
+            post :cherry_pick
           end
         end
 
@@ -719,6 +720,7 @@ Rails.application.routes.draw do
             post :cancel
             post :retry
             post :erase
+            get :raw
           end
 
           resource :artifacts, only: [] do

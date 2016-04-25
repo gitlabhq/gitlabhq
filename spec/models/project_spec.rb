@@ -494,9 +494,22 @@ describe Project, models: true do
 
   describe :ci_commit do
     let(:project) { create :project }
-    let(:commit) { create :ci_commit, project: project }
+    let(:commit) { create :ci_commit, project: project, ref: 'master' }
 
-    it { expect(project.ci_commit(commit.sha)).to eq(commit) }
+    subject { project.ci_commit(commit.sha, 'master') }
+
+    it { is_expected.to eq(commit) }
+
+    context 'return latest' do
+      let(:commit2) { create :ci_commit, project: project, ref: 'master' }
+
+      before do
+        commit
+        commit2
+      end
+
+      it { is_expected.to eq(commit2) }
+    end
   end
 
   describe :builds_enabled do

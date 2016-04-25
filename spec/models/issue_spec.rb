@@ -191,18 +191,36 @@ describe Issue, models: true do
   end
 
   describe '#related_branches' do
-    it 'selects the right branches' do
-      allow(subject.project.repository).to receive(:branch_names).
-        and_return(['mpempe', "#{subject.iid}mepmep", subject.to_branch_name])
+    let(:user) { build(:admin) }
 
-      expect(subject.related_branches).to eq([subject.to_branch_name])
+    before do
+      allow(subject.project.repository).to receive(:branch_names).
+                                            and_return(["mpempe", "#{subject.iid}mepmep", subject.to_branch_name, "#{subject.iid}-branch"])
+
+      # Without this stub, the `create(:merge_request)` above fails because it can't find
+      # the source branch. This seems like a reasonable compromise, in comparison with
+      # setting up a full repo here.
+      allow_any_instance_of(MergeRequest).to receive(:create_merge_request_diff)
+    end
+
+    it "selects the right branches when there are no referenced merge requests" do
+      expect(subject.related_branches(user)).to eq([subject.to_branch_name, "#{subject.iid}-branch"])
+    end
+
+    it "selects the right branches when there is a referenced merge request" do
+      merge_request = create(:merge_request, { description: "Closes ##{subject.iid}",
+                                               source_project: subject.project,
+                                               source_branch: "#{subject.iid}-branch" })
+      merge_request.create_cross_references!(user)
+      expect(subject.referenced_merge_requests).to_not be_empty
+      expect(subject.related_branches(user)).to eq([subject.to_branch_name])
     end
 
     it 'excludes stable branches from the related branches' do
       allow(subject.project.repository).to receive(:branch_names).
         and_return(["#{subject.iid}-0-stable"])
 
-      expect(subject.related_branches).to eq []
+      expect(subject.related_branches(user)).to eq []
     end
   end
 
@@ -217,11 +235,20 @@ describe Issue, models: true do
     let(:subject) { create :issue }
   end
 
-  describe '#to_branch_name' do
-    let(:issue) { create(:issue, title: 'a' * 30) }
+  describe "#to_branch_name" do
+    let(:issue) { create(:issue, title: 'testing-issue') }
 
     it 'starts with the issue iid' do
-      expect(issue.to_branch_name).to match /\A#{issue.iid}-a+\z/
+      expect(issue.to_branch_name).to match /\A#{issue.iid}-[A-Za-z\-]+\z/
+    end
+
+    it "contains the issue title if not confidential" do
+      expect(issue.to_branch_name).to match /testing-issue\z/
+    end
+
+    it "does not contain the issue title if confidential" do
+      issue = create(:issue, title: 'testing-issue', confidential: true)
+      expect(issue.to_branch_name).to match /confidential-issue\z/
     end
   end
 end

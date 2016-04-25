@@ -15,7 +15,6 @@
 #
 
 require 'carrierwave/orm/activerecord'
-require 'file_size_validator'
 
 class Group < Namespace
   include Gitlab::ConfigHelper

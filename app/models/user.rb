@@ -63,7 +63,6 @@
 #
 
 require 'carrierwave/orm/activerecord'
-require 'file_size_validator'
 
 class User < ActiveRecord::Base
   extend Gitlab::ConfigHelper

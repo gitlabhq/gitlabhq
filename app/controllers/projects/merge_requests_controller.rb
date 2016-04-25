@@ -39,13 +39,14 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @merge_requests = @merge_requests.page(params[:page])
     @merge_requests = @merge_requests.preload(:target_project)
 
-    @label = @project.labels.find_by(title: params[:label_name])
+    @labels = @project.labels.where(title: params[:label_name])
 
     respond_to do |format|
       format.html
       format.json do
         render json: {
-          html: view_to_html_string("projects/merge_requests/_merge_requests")
+          html: view_to_html_string("projects/merge_requests/_merge_requests"),
+          labels: @labels.as_json(methods: :text_color)
         }
       end
     end
@@ -353,6 +354,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
   def define_widget_vars
     @ci_commit = @merge_request.ci_commit
+    @ci_commits = [@ci_commit].compact
     closes_issues
   end
 

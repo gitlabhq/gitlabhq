@@ -59,9 +59,10 @@
           .filter-item.inline
             = button_tag "Update issues", class: "btn update_selected_issues btn-save"
 
-- if @label
-  .gray-content-block.second-block
-    = render "shared/label_row", label: @label
+  - if !@labels.nil?
+    .gray-content-block.second-block.filtered-labels{ class: ("hidden" if !@labels.any?) }
+      - if @labels.any?
+        = render "shared/labels_row", labels: @labels
 
 :javascript
   new UsersSelect();

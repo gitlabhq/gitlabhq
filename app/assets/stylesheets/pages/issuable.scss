@@ -128,6 +128,7 @@
   top: 58px;
   bottom: 0;
   right: 0;
+  z-index: 10;
   transition: width .3s;
   background: $gray-light;
   padding: 10px 20px;
@@ -241,7 +242,7 @@
     }
   }
 
-  .btn {
+  .issuable-pager {
     background: $gray-normal;
     border: 1px solid $border-gray-normal;
     &:hover {
@@ -250,7 +251,7 @@
     }
   }
 
-  a:not(.btn) {
+  a:not(.issuable-pager) {
     &:hover {
       color: $md-link-color;
       text-decoration: none;

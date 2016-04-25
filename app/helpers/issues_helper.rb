@@ -131,7 +131,7 @@ module IssuesHelper
         class: "icon emoji-icon emoji-#{unicode}",
         title: name,
         data: data
-    else 
+    else
       # Emoji icons displayed separately, used for the awards already given
       # to an issue or merge request.
       content_tag :img, "",
@@ -171,6 +171,19 @@ module IssuesHelper
       end
     end.to_h
   end
+
+  def due_date_options
+    options = [
+      Issue::AnyDueDate,
+      Issue::NoDueDate,
+      Issue::DueThisWeek,
+      Issue::DueThisMonth,
+      Issue::Overdue
+    ]
+
+    options_from_collection_for_select(options, 'name', 'title', params[:due_date])
+  end
+
 
   def issues_weight_options(selected = nil, edit: false)
     weights = edit ? edit_weights : issue_weights

@@ -1,7 +1,7 @@
 class Projects::BuildsController < Projects::ApplicationController
   before_action :build, except: [:index, :cancel_all]
   before_action :authorize_read_build!, except: [:cancel, :cancel_all, :retry]
-  before_action :authorize_update_build!, except: [:index, :show, :status]
+  before_action :authorize_update_build!, except: [:index, :show, :status, :raw]
   layout 'project'
 
   def index
@@ -60,6 +60,14 @@ class Projects::BuildsController < Projects::ApplicationController
     @build.erase(erased_by: current_user)
     redirect_to namespace_project_build_path(project.namespace, project, @build),
                 notice: "Build has been sucessfully erased!"
+  end
+
+  def raw
+    if @build.has_trace?
+      send_file @build.path_to_trace, type: 'text/plain; charset=utf-8', disposition: 'inline'
+    else
+      render_404
+    end
   end
 
   private

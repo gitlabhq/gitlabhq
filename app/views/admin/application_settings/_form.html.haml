@@ -231,6 +231,13 @@
         .help-block
           The sampling interval in seconds. Sampled data includes memory usage,
           retained Ruby objects, file descriptors and so on.
+    .form-group
+      = f.label :metrics_packet_size, 'Metrics per packet', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :metrics_packet_size, class: 'form-control'
+        .help-block
+          The amount of points to store in a single UDP packet. More points
+          results in fewer but larger UDP packets being sent.
 
   %fieldset
     %legend Spam and Anti-bot Protection
@@ -299,7 +306,7 @@
             = f.check_box :repository_checks_enabled
             Enable Repository Checks
           .help-block
-            GitLab will periodically run 
+            GitLab will periodically run
             %a{ href: 'https://www.kernel.org/pub/software/scm/git/docs/git-fsck.html', target: 'blank' } 'git fsck'
             in all project and wiki repositories to look for silent disk corruption issues.
     .form-group
@@ -307,7 +314,7 @@
         = link_to 'Clear all repository checks', clear_repository_check_states_admin_application_settings_path, data: { confirm: 'This will clear repository check states for ALL projects in the database. This cannot be undone. Are you sure?' }, method: :put, class: "btn btn-sm btn-remove"
         .help-block
           If you got a lot of false alarms from repository checks you can choose to clear all repository check information from the database.
- 
+
 
   .form-actions
     = f.submit 'Save', class: 'btn btn-save'

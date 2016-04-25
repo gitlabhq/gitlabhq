@@ -18,6 +18,7 @@
       Browse Files
     - unless @commit.has_been_reverted?(current_user)
       = revert_commit_link(@commit, namespace_project_commit_path(@project.namespace, @project, @commit.id))
+    = cherry_pick_commit_link(@commit, namespace_project_commit_path(@project.namespace, @project, @commit.id))
   %div
 
 %p
@@ -42,12 +43,12 @@
   - @commit.parents.each do |parent|
     = link_to parent.short_id, namespace_project_commit_path(@project.namespace, @project, parent), class: "monospace"
 
-- if @ci_commit
+- if @commit.status
   .pull-right
-    = link_to ci_status_path(@ci_commit), class: "ci-status ci-#{@ci_commit.status}" do
-      = ci_status_icon(@ci_commit)
+    = link_to builds_namespace_project_commit_path(@project.namespace, @project, @commit.id), class: "ci-status ci-#{@commit.status}" do
+      = ci_icon_for_status(@commit.status)
       build:
-      = ci_status_label(@ci_commit)
+      = ci_label_for_status(@commit.status)
 
 .commit-info-row.branches
   %i.fa.fa-spinner.fa-spin

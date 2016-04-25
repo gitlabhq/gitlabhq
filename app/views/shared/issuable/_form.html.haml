@@ -83,8 +83,9 @@
     = f.label :label_ids, "Labels", class: 'control-label'
     .col-sm-10{ class: ('issuable-form-padding-top' if !has_labels) }
       - if has_labels
-        = f.collection_select :label_ids, issuable.project.labels.all, :id, :name,
-          { selected: issuable.label_ids }, multiple: true, class: 'select2', data: { placeholder: "Select labels" }
+        .issuable-form-select-holder
+          = f.collection_select :label_ids, issuable.project.labels.all, :id, :name,
+            { selected: issuable.label_ids }, multiple: true, class: 'select2', data: { placeholder: "Select labels" }
       - else
         %span.light No labels yet.
       &nbsp;
@@ -96,9 +97,10 @@
   .form-group
     = label_tag :move_to_project_id, 'Move', class: 'control-label'
     .col-sm-10
-      - projects = project_options(issuable, current_user, ability: :admin_issue)
-      = select_tag(:move_to_project_id, projects, include_blank: true,
-                   class: 'select2', data: { placeholder: 'Select project' })
+      .issuable-form-select-holder
+        - projects = project_options(issuable, current_user, ability: :admin_issue)
+        = select_tag(:move_to_project_id, projects, include_blank: true,
+                     class: 'select2', data: { placeholder: 'Select project' })
       &nbsp;
       %span{ data: { toggle: 'tooltip', placement: 'auto top' }, style: 'cursor: default',
       title: 'Moving an issue will copy the discussion to a different project and close it here. All participants will be notified of the new location.' }
@@ -149,13 +151,15 @@
     .form-group
       = f.label :source_branch, class: 'control-label'
       .col-sm-10
-        = f.select(:source_branch, [@merge_request.source_branch], { }, { class: 'source_branch select2 span2', disabled: true })
+        .issuable-form-select-holder
+          = f.select(:source_branch, [@merge_request.source_branch], { }, { class: 'source_branch select2 span2', disabled: true })
   .form-group
     = f.label :target_branch, class: 'control-label'
     .col-sm-10
-      = f.select(:target_branch, @merge_request.target_branches, { include_blank: true }, { class: 'target_branch select2 span2', disabled: @merge_request.new_record?, data: {placeholder: "Select branch"} })
+      .issuable-form-select-holder
+        = f.select(:target_branch, @merge_request.target_branches, { include_blank: true }, { class: 'target_branch select2 span2', disabled: @merge_request.new_record?, data: {placeholder: "Select branch"} })
       - if @merge_request.new_record?
-        %p.help-block
+        &nbsp;
         = link_to 'Change branches', mr_change_branches_path(@merge_request)
 
 - is_footer = !(issuable.is_a?(MergeRequest) && issuable.new_record?)
