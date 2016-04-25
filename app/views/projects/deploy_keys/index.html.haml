@@ -12,7 +12,7 @@
     = render "form"
   .col-lg-9.col-lg-offset-3
     %hr
-  .col-lg-9.col-lg-offset-3.append-bottom-default
+  .col-lg-9.col-lg-offset-3.append-bottom-default.deploy-keys
     %h5.prepend-top-0
       Enabled deploy keys for this project (#{@enabled_keys.size})
     - if @enabled_keys.any?
@@ -21,8 +21,7 @@
     - else
       .profile-settings-message.text-center
         No deploy keys found. Create one with the form above or add existing one below.
-  .col-lg-9.col-lg-offset-3.append-bottom-default
-    %h5.prepend-top-0
+    %h5.prepend-top-default
       Deploy keys from projects you have access to (#{@available_project_keys.size})
     - if @available_project_keys.any?
       %ul.well-list
@@ -30,9 +29,8 @@
     - else
       .profile-settings-message.text-center
         No deploy keys from your projects could be found. Create one with the form above or add existing one below.
-  - if @available_public_keys.any?
-    .col-lg-9.col-lg-offset-3.append-bottom-default
-      %h5.prepend-top-0
+    - if @available_public_keys.any?
+      %h5.prepend-top-default
         Public deploy keys available to any project (#{@available_public_keys.size})
       %ul.well-list
         = render @available_public_keys
