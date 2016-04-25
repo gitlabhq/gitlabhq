@@ -140,43 +140,34 @@ describe API::API, api: true  do
       get api("/projects/#{project.id}/milestones/#{milestone.id}/issues")
       expect(response.status).to eq(401)
     end
-  end
 
-  describe 'confidential issues' do
-    it 'should return confidential issues to team members' do
-      public_project = create(:project, :public)
-      user = create(:user)
-      milestone = create(:milestone, project: public_project)
-      issue = create(:issue, project: public_project)
-      confidential_issue = create(:issue, confidential: true, project: public_project)
-      public_project.team << [user, :developer]
-      milestone.issues << issue
-      milestone.issues << confidential_issue
+    describe 'confidential issues' do
+      let(:public_project) { create(:project, :public) }
+      let(:milestone) { create(:milestone, project: public_project) }
+      let(:issue) { create(:issue, project: public_project) }
+      let(:confidential_issue) { create(:issue, confidential: true, project: public_project) }
+      before do
+        public_project.team << [user, :developer]
+        milestone.issues << issue << confidential_issue
+      end
 
-      get api("/projects/#{public_project.id}/milestones/#{milestone.id}/issues", user)
+      it 'returns confidential issues to team members' do
+        get api("/projects/#{public_project.id}/milestones/#{milestone.id}/issues", user)
 
-      expect(response.status).to eq(200)
-      expect(json_response).to be_an Array
-      expect(json_response.size).to eq(2)
-      expect(json_response.map { |issue| issue['id'] }).to include(issue.id, confidential_issue.id)
-    end
+        expect(response.status).to eq(200)
+        expect(json_response).to be_an Array
+        expect(json_response.size).to eq(2)
+        expect(json_response.map { |issue| issue['id'] }).to include(issue.id, confidential_issue.id)
+      end
 
-    it 'should not return confidential issues to regular users' do
-      public_project = create(:project, :public)
-      normal_user = create(:user)
-      milestone = create(:milestone, project: public_project)
-      issue = create(:issue, project: public_project)
-      confidential_issue = create(:issue, confidential: true, project: public_project)
-      public_project.team << [user, :developer]
-      milestone.issues << issue
-      milestone.issues << confidential_issue
+      it 'does not return confidential issues to regular users' do
+        get api("/projects/#{public_project.id}/milestones/#{milestone.id}/issues", create(:user))
 
-      get api("/projects/#{public_project.id}/milestones/#{milestone.id}/issues", normal_user)
-
-      expect(response.status).to eq(200)
-      expect(json_response).to be_an Array
-      expect(json_response.size).to eq(1)
-      expect(json_response.map { |issue| issue['id'] }).to include(issue.id)
+        expect(response.status).to eq(200)
+        expect(json_response).to be_an Array
+        expect(json_response.size).to eq(1)
+        expect(json_response.map { |issue| issue['id'] }).to include(issue.id)
+      end
     end
   end
 end
