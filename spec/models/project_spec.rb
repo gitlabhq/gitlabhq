@@ -706,11 +706,8 @@ describe Project, models: true do
         with('foo.wiki', project).
         and_return(wiki)
 
-      expect(repo).to receive(:expire_cache)
-      expect(repo).to receive(:expire_emptiness_caches)
-
-      expect(wiki).to receive(:expire_cache)
-      expect(wiki).to receive(:expire_emptiness_caches)
+      expect(repo).to receive(:before_delete)
+      expect(wiki).to receive(:before_delete)
 
       project.expire_caches_before_rename('foo')
     end
