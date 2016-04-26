@@ -73,7 +73,7 @@ module Gitlab
       def import_pull_requests
         pull_requests = client.pull_requests(repo, state: :all, sort: :created, direction: :asc)
                               .map { |raw| PullRequestFormatter.new(project, raw) }
-                              .reject(&:cross_project?)
+                              .select(&:valid?)
 
         source_branches_removed = pull_requests.reject(&:source_branch_exists?).map { |pr| [pr.source_branch, pr.source_sha] }
         target_branches_removed = pull_requests.reject(&:target_branch_exists?).map { |pr| [pr.target_branch, pr.target_sha] }

@@ -24,11 +24,7 @@ module Gitlab
       end
 
       def valid?
-        !cross_project? && source_branch.present? && target_branch.present?
-      end
-
-      def cross_project?
-        source_repo.present? && target_repo.present? && source_repo.id != target_repo.id
+        !cross_project?
       end
 
       def source_branch_exists?
@@ -77,6 +73,10 @@ module Gitlab
 
       def body
         raw_data.body || ""
+      end
+
+      def cross_project?
+        source_repo.present? && target_repo.present? && source_repo.id != target_repo.id
       end
 
       def description

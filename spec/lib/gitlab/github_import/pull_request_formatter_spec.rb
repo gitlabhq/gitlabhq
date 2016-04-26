@@ -4,9 +4,9 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
   let(:project) { create(:project) }
   let(:repository) { double(id: 1, fork: false) }
   let(:source_repo) { repository }
-  let(:source_branch) { double(ref: 'feature', repo: source_repo) }
+  let(:source_branch) { double(ref: 'feature', repo: source_repo, sha: '2e5d3239642f9161dcbbc4b70a211a68e5e45e2b') }
   let(:target_repo) { repository }
-  let(:target_branch) { double(ref: 'master', repo: target_repo) }
+  let(:target_branch) { double(ref: 'master', repo: target_repo, sha: '8ffb3c15a5475e59ae909384297fede4badcb4c7') }
   let(:octocat) { double(id: 123456, login: 'octocat') }
   let(:created_at) { DateTime.strptime('2011-01-26T19:01:12Z') }
   let(:updated_at) { DateTime.strptime('2011-01-27T19:01:12Z') }
@@ -137,11 +137,11 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
       let(:milestone) { double(number: 45) }
       let(:raw_data) { double(base_data.merge(milestone: milestone)) }
 
-      it 'returns nil when milestone does not exists' do
+      it 'returns nil when milestone does not exist' do
         expect(pull_request.attributes.fetch(:milestone)).to be_nil
       end
 
-      it 'returns milestone when is exists' do
+      it 'returns milestone when it exists' do
         milestone = create(:milestone, project: project, iid: 45)
 
         expect(pull_request.attributes.fetch(:milestone)).to eq milestone
@@ -157,32 +157,80 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
     end
   end
 
+  describe '#source_branch' do
+    let(:raw_data) { double(base_data) }
+
+    it 'returns head ref' do
+      expect(pull_request.source_branch).to eq 'feature'
+    end
+  end
+
+  describe '#source_sha' do
+    let(:raw_data) { double(base_data) }
+
+    it 'returns head sha' do
+      expect(pull_request.source_sha).to eq '2e5d3239642f9161dcbbc4b70a211a68e5e45e2b'
+    end
+  end
+
+  describe '#source_branch_exists?' do
+    context 'when source branch exists' do
+      let(:raw_data) { double(base_data) }
+
+      it 'returns true' do
+        expect(pull_request.source_branch_exists?).to eq true
+      end
+    end
+
+    context 'when source branch does not exist' do
+      let(:raw_data) { double(base_data.merge(head: double(ref: 'removed-branch').as_null_object)) }
+
+      it 'returns false' do
+        expect(pull_request.source_branch_exists?).to eq false
+      end
+    end
+  end
+
+  describe '#target_branch' do
+    let(:raw_data) { double(base_data) }
+
+    it 'returns base ref' do
+      expect(pull_request.target_branch).to eq 'master'
+    end
+  end
+
+  describe '#target_sha' do
+    let(:raw_data) { double(base_data) }
+
+    it 'returns base sha' do
+      expect(pull_request.target_sha).to eq '8ffb3c15a5475e59ae909384297fede4badcb4c7'
+    end
+  end
+
+  describe '#target_branch_exists?' do
+    context 'when target branch exists' do
+      let(:raw_data) { double(base_data) }
+
+      it 'returns true' do
+        expect(pull_request.target_branch_exists?).to eq true
+      end
+    end
+
+    context 'when target branch does not exist' do
+      let(:raw_data) { double(base_data.merge(base: double(ref: 'removed-branch').as_null_object)) }
+
+      it 'returns false' do
+        expect(pull_request.target_branch_exists?).to eq false
+      end
+    end
+  end
+
   describe '#valid?' do
-    let(:invalid_branch) { double(ref: 'invalid-branch').as_null_object }
+    context 'when source, and target repos are not a fork' do
+      let(:raw_data) { double(base_data) }
 
-    context 'when source, and target repositories are the same' do
-      context 'and source and target branches exists' do
-        let(:raw_data) { double(base_data.merge(head: source_branch, base: target_branch)) }
-
-        it 'returns true' do
-          expect(pull_request.valid?).to eq true
-        end
-      end
-
-      context 'and source branch doesn not exists' do
-        let(:raw_data) { double(base_data.merge(head: invalid_branch, base: target_branch)) }
-
-        it 'returns false' do
-          expect(pull_request.valid?).to eq false
-        end
-      end
-
-      context 'and target branch doesn not exists' do
-        let(:raw_data) { double(base_data.merge(head: source_branch, base: invalid_branch)) }
-
-        it 'returns false' do
-          expect(pull_request.valid?).to eq false
-        end
+      it 'returns true' do
+        expect(pull_request.valid?).to eq true
       end
     end
 
