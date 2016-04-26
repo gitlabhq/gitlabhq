@@ -3,7 +3,7 @@ require 'spec_helper'
 describe API::API, api: true  do
   include ApiHelpers
   let(:user) { create(:user) }
-  let!(:project) { create(:project, namespace: user.namespace ) }
+  let!(:project) { create(:project, namespace: user.namespace) }
   let!(:issue) { create(:issue, project: project, author: user) }
   let!(:merge_request) { create(:merge_request, source_project: project, target_project: project, author: user) }
   let!(:snippet) { create(:project_snippet, project: project, author: user) }
@@ -22,7 +22,7 @@ describe API::API, api: true  do
       end
 
       it "should return a 404 error when issue id not found" do
-        get api("/projects/#{project.id}/issues/123/notes", user)
+        get api("/projects/#{project.id}/issues/12345/notes", user)
         expect(response.status).to eq(404)
       end
     end
@@ -65,7 +65,7 @@ describe API::API, api: true  do
       end
 
       it "should return a 404 error if issue note not found" do
-        get api("/projects/#{project.id}/issues/#{issue.id}/notes/123", user)
+        get api("/projects/#{project.id}/issues/#{issue.id}/notes/12345", user)
         expect(response.status).to eq(404)
       end
     end
@@ -78,7 +78,7 @@ describe API::API, api: true  do
       end
 
       it "should return a 404 error if snippet note not found" do
-        get api("/projects/#{project.id}/snippets/#{snippet.id}/notes/123", user)
+        get api("/projects/#{project.id}/snippets/#{snippet.id}/notes/12345", user)
         expect(response.status).to eq(404)
       end
     end
@@ -122,6 +122,27 @@ describe API::API, api: true  do
         expect(response.status).to eq(401)
       end
     end
+
+    context 'when user does not have access to create noteable' do
+      let(:private_issue) { create(:issue, project: create(:project, :private)) }
+
+      ##
+      # We are posting to project user has access to, but we use issue id
+      # from a different project, see #15577
+      #
+      before do
+        post api("/projects/#{project.id}/issues/#{private_issue.id}/notes", user),
+             body: 'Hi!'
+      end
+
+      it 'responds with 500' do
+        expect(response.status).to eq 500
+      end
+
+      it 'does not create new note' do
+        expect(private_issue.notes.reload).to be_empty
+      end
+    end
   end
 
   describe "POST /projects/:id/noteable/:noteable_id/notes to test observer on create" do
@@ -142,7 +163,7 @@ describe API::API, api: true  do
       end
 
       it 'should return a 404 error when note id not found' do
-        put api("/projects/#{project.id}/issues/#{issue.id}/notes/123", user),
+        put api("/projects/#{project.id}/issues/#{issue.id}/notes/12345", user),
                 body: 'Hello!'
         expect(response.status).to eq(404)
       end
@@ -164,7 +185,7 @@ describe API::API, api: true  do
 
       it 'should return a 404 error when note id not found' do
         put api("/projects/#{project.id}/snippets/#{snippet.id}/"\
-                  "notes/123", user), body: "Hello!"
+                  "notes/12345", user), body: "Hello!"
         expect(response.status).to eq(404)
       end
     end
@@ -179,10 +200,9 @@ describe API::API, api: true  do
 
       it 'should return a 404 error when note id not found' do
         put api("/projects/#{project.id}/merge_requests/#{merge_request.id}/"\
-                  "notes/123", user), body: "Hello!"
+                  "notes/12345", user), body: "Hello!"
         expect(response.status).to eq(404)
       end
     end
   end
-
 end
