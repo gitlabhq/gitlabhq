@@ -3,6 +3,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 v 8.8.0 (unreleased)
   - [Elastic] Database indexer prints its status
   - [Elastic][Fix] Database indexer skips projects with invalid HEAD reference
+  - Set KRB5 as default clone protocol when Kerberos is enabled and user is logged in (Borja Aparicio)
 
 v 8.7.2
   - Fix MR notifications for slack and hipchat when approvals are fullfiled. !325

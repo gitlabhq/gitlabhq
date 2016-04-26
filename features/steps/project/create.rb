@@ -13,10 +13,16 @@ class Spinach::Features::ProjectCreate < Spinach::FeatureSteps
     expect(current_path).to eq namespace_project_path(Project.last.namespace, Project.last)
   end
 
-  step 'I should see empty project instuctions' do
+  step 'I should see empty project instructions' do
     expect(page).to have_content "git init"
     expect(page).to have_content "git remote"
     expect(page).to have_content Project.last.url_to_repo
+  end
+
+  step 'I should see empty project instructions with Kerberos as default url' do
+    expect(page).to have_content "git init"
+    expect(page).to have_content "git remote"
+    expect(page).to have_content Project.last.kerberos_url_to_repo
   end
 
   step 'KRB5 enabled' do
@@ -29,12 +35,18 @@ class Spinach::Features::ProjectCreate < Spinach::FeatureSteps
     allow(Gitlab.config.kerberos).to receive(:enabled).and_return(false)
   end
 
-  step 'I see empty project instuctions' do
+  step 'I see empty project instructions' do
     expect(page).to have_content "git init"
     expect(page).to have_content "git remote"
     expect(page).to have_content Project.last.url_to_repo
   end
 
+  step 'I see empty project instructions with Kerberos as default url' do
+    expect(page).to have_content "git init"
+    expect(page).to have_content "git remote"
+    expect(page).to have_content Project.last.kerberos_url_to_repo
+
+  end
   step 'I click on HTTP' do
     find('#clone-dropdown').click
     find('.http-selector').click
@@ -55,7 +67,7 @@ class Spinach::Features::ProjectCreate < Spinach::FeatureSteps
 
   step 'If I click on KRB5' do
     find('#clone-dropdown').click
-    find('#kerberos-btn').click
+    find('.kerberos-selector').click
   end
 
   step 'Remote url should update to kerberos link' do

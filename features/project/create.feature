@@ -5,13 +5,24 @@ Feature: Project Create
   Should be able to create a new one
 
   @javascript
-  Scenario: User create a project
+  Scenario: User create a project with Kerberos disabled
     Given I sign in as a user
+    And KRB5 disabled
     When I visit new project page
     And I have an ssh key
     And fill project form with valid data
     Then I should see project page
-    And I should see empty project instuctions
+    And I should see empty project instructions
+
+  @javascript
+  Scenario: User create a project with Kerberos enabled 
+    Given I sign in as a user
+    And KRB5 enabled
+    When I visit new project page
+    And I have an ssh key
+    And fill project form with valid data
+    Then I should see project page
+    And I should see empty project instructions with Kerberos as default url
 
   @javascript
   Scenario: Empty project instructions with Kerberos disabled
@@ -20,7 +31,7 @@ Feature: Project Create
     And I have an ssh key
     When I visit new project page
     And fill project form with valid data
-    Then I see empty project instuctions
+    Then I see empty project instructions
     And I click on HTTP
     Then Remote url should update to http link
     And If I click on SSH
@@ -33,7 +44,7 @@ Feature: Project Create
     And I have an ssh key
     When I visit new project page
     And fill project form with valid data
-    Then I see empty project instuctions
+    Then I see empty project instructions with Kerberos as default url
     And I click on HTTP
     Then Remote url should update to http link
     And If I click on SSH
