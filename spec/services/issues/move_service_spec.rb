@@ -21,6 +21,15 @@ describe Issues::MoveService, services: true do
     before do
       old_project.team << [user, :reporter]
       new_project.team << [user, :reporter]
+
+      create(:milestone, project_id: old_project.id, title: 'v1.0')
+      create(:milestone, project_id: new_project.id, title: 'v1.0')
+
+      old_issue.labels << create(:label, project_id: old_project.id, title: 'label1')
+      old_issue.labels << create(:label, project_id: old_project.id, title: 'label2')
+
+      new_project.labels << create(:label, title: 'label1')
+      new_project.labels << create(:label, title: 'label2')
     end
   end
 
@@ -37,6 +46,17 @@ describe Issues::MoveService, services: true do
 
         it 'creates a new issue in a new project' do
           expect(new_issue.project).to eq new_project
+        end
+
+        it 'assigns milestone to new issue' do
+          expect(new_issue.reload.milestone.title).to eq 'v1.0'
+        end
+
+        it 'assign labels to new issue' do
+          expected_label_titles = new_issue.reload.labels.map(&:title)
+          expect(expected_label_titles).to include 'label1'
+          expect(expected_label_titles).to include 'label2'
+          expect(expected_label_titles.size).to eq 2
         end
 
         it 'rewrites issue title' do
