@@ -37,7 +37,7 @@ module LabelsHelper
     link = send("namespace_project_#{type.to_s.pluralize}_path",
                 project.namespace,
                 project,
-                label_name: label.name)
+                label_name: [label.name])
 
     if block_given?
       link_to link, &block
