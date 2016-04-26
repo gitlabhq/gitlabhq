@@ -49,6 +49,7 @@ module Gitlab
         project = Gitlab::ImportExport::ProjectFactory.create(
           project_params: project_params, user: @user)
         project.save
+        project.import_start
         project
       end
 

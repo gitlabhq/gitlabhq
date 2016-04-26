@@ -7,7 +7,8 @@ class Import::GitlabProjectsController < Import::BaseController
   #TODO permissions stuff
 
   def new
-
+    @namespace_id = project_params[:namespace_id]
+    @path = project_params[:path]
   end
 
   def status
@@ -27,19 +28,25 @@ class Import::GitlabProjectsController < Import::BaseController
 
   def create
     file = params[:file]
-   # @project_name =
 
     repo_owner = current_user.username
     @target_namespace = params[:new_namespace].presence || repo_owner
 
-    namespace = get_or_create_namespace || (render and return)
-
-    @project = Project.create_from_import_job(current_user.id, File.expand_path(file.path))
+    @project = Project.create_from_import_job(current_user_id: current_user.id,
+                                              tmp_file: File.expand_path(file.path),
+                                              namespace_id: @namespace_id,
+                                              project_path: @path)
   end
 
   private
 
   def verify_gitlab_project_import_enabled
     render_404 unless gitlab_project_import_enabled?
+  end
+
+  def project_params
+    params.require(:project).permit(
+      :path, :namespace_id,
+    )
   end
 end

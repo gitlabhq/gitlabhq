@@ -6,15 +6,17 @@ module Gitlab
         new(args).execute
       end
 
-      def initialize(options = {})
-        @archive_file = options[:archive_file]
-        @current_user = options[:owner]
+      def initialize(archive_file:, owner:, namespace_id:, project_path:)
+        @archive_file = archive_file
+        @current_user = owner
+        @namespace_path = Namespace.find(namespace_id).path
+        @project_path = project_path
       end
 
       def execute
         Gitlab::ImportExport::Importer.import(archive_file: @archive_file, storage_path: storage_path)
         restore_project_tree
-        restore_repo(project_tree.project)
+        restore_repo
       end
 
       private
@@ -27,12 +29,16 @@ module Gitlab
         @project_tree ||= Gitlab::ImportExport::ProjectTreeRestorer.new(path: storage_path, user: @current_user)
       end
 
-      def restore_repo(project)
-        Gitlab::ImportExport::RepoRestorer.new(path: storage_path, project: project).restore
+      def restore_repo
+        Gitlab::ImportExport::RepoRestorer.new(path: storage_path, project: project_tree.project).restore
       end
 
       def storage_path
-        @storage_path ||= Gitlab::ImportExport.export_path(relative_path: project.path_with_namespace)
+        @storage_path ||= Gitlab::ImportExport.export_path(relative_path: path_with_namespace)
+      end
+
+      def path_with_namespace
+        File.join(@namespace_path, @project_path)
       end
     end
   end

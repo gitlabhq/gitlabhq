@@ -360,13 +360,13 @@ class Project < ActiveRecord::Base
       where(id: user.authorized_projects.select(:id).reorder(nil))
     end
 
-    def create_from_import_job(current_user_id:, tmp_file:)
-      job_id = ProjectImportWorker.perform_async(current_user_id, tmp_file)
+    def create_from_import_job(current_user_id:, tmp_file:, namespace_id:, project_path:)
+      job_id = ProjectImportWorker.perform_async(current_user_id, tmp_file, namespace_id, project_path)
 
       if job_id
-        Rails.logger.info "Import job started for #{path_with_namespace} with job ID #{job_id}"
+        Rails.logger.info "Import job started for export #{tmp_file} with job ID #{job_id}"
       else
-        Rails.logger.error "Import job failed to start for #{path_with_namespace}"
+        Rails.logger.error "Import job failed to start for #{tmp_file}"
       end
     end
   end

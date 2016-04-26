@@ -2,12 +2,15 @@ class ProjectImportWorker
   include Sidekiq::Worker
   include Gitlab::ShellAdapter
 
-  sidekiq_options queue: :gitlab_shell
+  sidekiq_options queue: :gitlab_shell, retry: false
 
-  def perform(current_user_id, tmp_file)
+  def perform(current_user_id, tmp_file, namespace_id, path)
     current_user = User.find(current_user_id)
 
-    project = Gitlab::ImportExport::ImportService.execute(archive_file: tmp_file, owner: current_user)
+    project = Gitlab::ImportExport::ImportService.execute(archive_file: tmp_file,
+                                                          owner: current_user,
+                                                          namespace_id: namespace_id,
+                                                          project_path: path)
 
     # TODO: Move this to import service
     # if result[:status] == :error
