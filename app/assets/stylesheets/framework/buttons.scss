@@ -251,3 +251,9 @@
 .btn-file-option {
   background: linear-gradient(180deg, $white-light 25%, $gray-light 100%);
 }
+
+.btn-refresh {
+  i {
+    color: $gl-icon-color;
+  }
+}

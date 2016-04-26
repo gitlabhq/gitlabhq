@@ -76,5 +76,5 @@
           = link_to cancel_namespace_project_build_path(build.project.namespace, build.project, build, return_to: request.original_url), method: :post, title: 'Cancel' do
             %i.fa.fa-remove.cred
         - elsif defined?(allow_retry) && allow_retry && build.retryable?
-          = link_to retry_namespace_project_build_path(build.project.namespace, build.project, build, return_to: request.original_url), method: :post, title: 'Retry' do
+          = link_to retry_namespace_project_build_path(build.project.namespace, build.project, build, return_to: request.original_url), method: :post, title: 'Retry', class: 'btn btn-refresh' do
             %i.fa.fa-refresh

@@ -35,12 +35,18 @@
     font-weight: bold;
   }
 
-  .ci-status {
-    margin-right: 10px;
+  .time_ago {
+    margin-left: 8px;
   }
 
   .fa-clipboard {
     color: $dropdown-title-btn-color;
+  }
+
+  .commit-info {
+    &.branches {
+      margin-left: 8px;
+    }
   }
 }
 
@@ -88,6 +94,14 @@
     a {
       color: $gl-text-color;
     }
+  }
+}
+
+.commit-action-buttons {
+  i {
+    color: $gl-icon-color;
+    font-size: 13px;
+    margin-right: 3px;
   }
 }
 

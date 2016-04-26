@@ -83,3 +83,16 @@
     }
   }
 }
+
+table.builds {
+
+  .build-link {
+    a {
+      color: $gl-dark-link-color;
+    }
+  }
+
+  .btn-refresh {
+    margin-left: 10px;
+  }
+}

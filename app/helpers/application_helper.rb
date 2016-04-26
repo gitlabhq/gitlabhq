@@ -316,8 +316,7 @@ module ApplicationHelper
     html = content_tag :span, entity_title
 
     if count.present?
-      html += " "
-      html += content_tag :span, number_with_delimiter(count), class: 'badge'
+      html += content_tag :span, " (#{number_with_delimiter(count)})"
     end
 
     html.html_safe
