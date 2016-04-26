@@ -6,6 +6,8 @@ class SearchController < ApplicationController
   layout 'search'
 
   def show
+    return if params[:search].nil? || params[:search].blank?
+
     if params[:project_id].present?
       @project = Project.find_by(id: params[:project_id])
       @project = nil unless can?(current_user, :download_code, @project)
@@ -16,7 +18,6 @@ class SearchController < ApplicationController
       @group = nil unless can?(current_user, :read_group, @group)
     end
 
-    return if params[:search].nil? || params[:search].blank?
     @search_term = params[:search]
 
     @scope = params[:scope]
@@ -43,7 +44,7 @@ class SearchController < ApplicationController
         Search::GlobalService.new(current_user, params).execute
       end
 
-    @objects = @search_results.objects(@scope, params[:page])
+    @search_objects = @search_results.objects(@scope, params[:page])
   end
 
   def autocomplete

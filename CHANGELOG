@@ -4,6 +4,7 @@ v 8.8.0 (unreleased)
   - Remove future dates from contribution calendar graph.
   - Fix error when visiting commit builds page before build was updated
   - Add 'l' shortcut to open Label dropdown on issuables and 'i' to create new issue on a project
+  - Updated search UI
 
 v 8.7.1 (unreleased)
   - Fix .gitlab-ci.yml parsing issue when hidde job is a template without script definition. !3849
@@ -133,7 +134,6 @@ v 8.6.7
   - Fix persistent XSS vulnerability in `commit_person_link` helper
   - Fix persistent XSS vulnerability in Label and Milestone dropdowns
   - Fix vulnerability that made it possible to enumerate private projects belonging to group
-  - Updated search UI
 
 v 8.6.6
   - Expire the exists cache before deletion to ensure project dir actually exists (Stan Hu). !3413
