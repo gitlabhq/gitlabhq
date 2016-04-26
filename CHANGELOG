@@ -5,7 +5,6 @@ v 8.5.12
   - Prevent XSS via Git branch and tag names
   - Prevent XSS via custom issue tracker URL
   - Fix vulnerability that leaks private labels and milestones
-  - Prevent XSS with in label dropdown
   - Prevent privilege escalation via "impersonate" feature
   - Prevent users from deleting Webhooks via API they do not own
   - Prevent information disclosure via milestone API
