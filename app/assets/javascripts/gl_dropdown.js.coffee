@@ -144,6 +144,7 @@ class GitLabDropdown
   LOADING_CLASS = "is-loading"
   PAGE_TWO_CLASS = "is-page-two"
   ACTIVE_CLASS = "is-active"
+  INDETERMINATE_CLASS = "is-indeterminate"
   currentIndex = -1
 
   FILTER_INPUT = '.dropdown-input .dropdown-input-field'
@@ -319,8 +320,6 @@ class GitLabDropdown
   hidden: (e) =>
     @removeArrayKeyEvent()
 
-    return if @dropdown.find('.dropdown-menu-toggle').hasClass('js-filter-bulk-update')
-
     if @options.filterable
       @dropdown
         .find(".dropdown-input-field")
@@ -455,6 +454,17 @@ class GitLabDropdown
         $(@el).find(".dropdown-toggle-text").text @options.toggleLabel
       else
         selectedObject
+    else if el.hasClass(INDETERMINATE_CLASS)
+      el.addClass ACTIVE_CLASS
+      el.removeClass INDETERMINATE_CLASS
+
+      if !value?
+        field.remove()
+
+      if !field.length and fieldName
+        @addInput(fieldName, value)
+
+      return selectedObject
     else
       if not @options.multiSelect or el.hasClass('dropdown-clear-active')
         @dropdown.find(".#{ACTIVE_CLASS}").removeClass ACTIVE_CLASS
@@ -471,16 +481,22 @@ class GitLabDropdown
         $(@el).find(".dropdown-toggle-text").text @options.toggleLabel(selectedObject, el)
       if value?
         if !field.length and fieldName
-          # Create hidden input for form
-          input = "<input type='hidden' name='#{fieldName}' value='#{value}' />"
-          if @options.inputId?
-            input = $(input)
-                      .attr('id', @options.inputId)
-          @dropdown.before input
+          @addInput(fieldName, value)
         else
           field.val value
 
       return selectedObject
+
+  addInput: (fieldName, value)->
+    # Create hidden input for form
+    input = "<input type='hidden' name='#{fieldName}' value='#{value}' />"
+    if @options.inputId?
+      input = $(input)
+                .attr('id', @options.inputId)
+    @dropdown.before input
+
+  removeInputs: ->
+    @dropdown.parent().find('input[type="hidden"]').remove()
 
   selectRowAtIndex: (e, index) ->
     selector = ".dropdown-content li:not(.divider,.dropdown-header,.separator):eq(#{index}) a"

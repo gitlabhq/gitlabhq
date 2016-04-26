@@ -271,8 +271,6 @@ class @LabelsSelect
             label.id
 
         hidden: ->
-          return if $dropdown.hasClass('js-filter-bulk-update')
-
           page = $('body').data 'page'
           isIssueIndex = page is 'projects:issues:index'
           isMRIndex = page is 'projects:merge_requests:index'
@@ -289,7 +287,12 @@ class @LabelsSelect
             else if $dropdown.hasClass('js-filter-submit')
               $dropdown.closest('form').submit()
             else
-              saveLabelData()
+              if not $dropdown.hasClass 'js-filter-bulk-update'
+                saveLabelData()
+
+          if $dropdown.hasClass('js-filter-bulk-update')
+            @removeInputs()
+            $dropdown.parent().find('.is-active, .is-indeterminate').removeClass()
 
         multiSelect: $dropdown.hasClass 'js-multiselect'
         clicked: (label) ->
