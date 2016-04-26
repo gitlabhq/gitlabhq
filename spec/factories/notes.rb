@@ -9,7 +9,7 @@ FactoryGirl.define do
     author
     noteable { create(:issue, project: project) }
 
-    factory :note_on_issue,              aliases: [:votable_note]
+    factory :note_on_issue,              traits: [:on_issue], aliases: [:votable_note]
     factory :note_on_commit,             traits: [:on_commit]
     factory :note_on_commit_diff,        traits: [:on_commit, :on_diff], class: LegacyDiffNote
     factory :note_on_merge_request,      traits: [:on_merge_request]
@@ -19,22 +19,31 @@ FactoryGirl.define do
     factory :downvote_note,              traits: [:award, :downvote]
     factory :upvote_note,                traits: [:award, :upvote]
 
+    trait :on_issue do
+      noteable_type 'Issue'
+    end
+
     trait :on_commit do
       noteable nil
       commit_id RepoHelpers.sample_commit.id
       noteable_type "Commit"
     end
 
-    trait :on_diff do
-      line_code "0_184_184"
-    end
-
     trait :on_merge_request do
-      noteable { create(:merge_request, project: project) }
+      noteable_type 'MergeRequest'
+      noteable do
+        create(:merge_request, source_project: project,
+                               target_project: project)
+      end
     end
 
     trait :on_project_snippet do
+      noteable_type 'Snippet'
       noteable { create(:snippet, project: project) }
+    end
+
+    trait :on_diff do
+      line_code "0_184_184"
     end
 
     trait :system do

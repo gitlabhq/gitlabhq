@@ -348,7 +348,7 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
 
   step 'another user adds a comment with text "Yay!" to issue "Release 0.4"' do
     issue = Issue.find_by!(title: 'Release 0.4')
-    create(:note_on_issue, noteable: issue,  note: 'Yay!')
+    create(:note_on_issue, noteable: issue, project: project, note: 'Yay!')
   end
 
   step 'I should see a new comment with text "Yay!"' do
