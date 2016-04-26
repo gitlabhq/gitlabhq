@@ -232,7 +232,7 @@
   a {
     padding-left: 25px;
 
-    &.indeterminate, &.is-active{
+    &.is-indeterminate, &.is-active{
       &::before {
         position: absolute;
         left: 5px;
@@ -246,7 +246,7 @@
       }
     }
 
-    &.indeterminate::before {
+    &.is-indeterminate::before {
       content: "\f068";
     }
 

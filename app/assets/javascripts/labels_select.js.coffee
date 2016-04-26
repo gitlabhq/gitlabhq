@@ -205,7 +205,7 @@ class @LabelsSelect
           if $dropdown.hasClass('js-filter-bulk-update')
             indeterminate = instance.indeterminateIds
             if indeterminate.indexOf(label.id) isnt -1
-              selectedClass.push 'indeterminate'
+              selectedClass.push 'is-indeterminate'
 
           if $form.find("input[type='hidden']\
             [name='#{$dropdown.data('fieldName')}']\
