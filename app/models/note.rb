@@ -34,7 +34,7 @@ class Note < ActiveRecord::Base
   validates :author, presence: true
 
   validate unless: :for_commit? do |note|
-    unless note.noteable.try(:project) == project
+    unless note.noteable.try(:project) == note.project
       errors.add(:invalid_project, 'Note and noteable project mismatch')
     end
   end
