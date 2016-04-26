@@ -58,7 +58,7 @@ describe MergeRequests::UpdateService, services: true do
       it { expect(@merge_request.assignee).to eq(user2) }
       it { expect(@merge_request).to be_closed }
       it { expect(@merge_request.labels.count).to eq(1) }
-      it { expect(@merge_request.labels.first.title).to eq('Bug') }
+      it { expect(@merge_request.labels.first).to eq(label) }
       it { expect(@merge_request.target_branch).to eq('target') }
 
       it 'should execute hooks with update action' do

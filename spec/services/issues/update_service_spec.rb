@@ -52,7 +52,7 @@ describe Issues::UpdateService, services: true do
       it { expect(@issue.assignee).to eq(user2) }
       it { expect(@issue).to be_closed }
       it { expect(@issue.labels.count).to eq(1) }
-      it { expect(@issue.labels.first.title).to eq('Bug') }
+      it { expect(@issue.labels.first).to eq(label) }
 
       it 'should send email to user2 about assign of new issue and email to user3 about issue unassignment' do
         deliveries = ActionMailer::Base.deliveries
