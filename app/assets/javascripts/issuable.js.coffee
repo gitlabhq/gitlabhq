@@ -23,7 +23,16 @@ issuable_created = false
       .on 'keyup', ->
         clearTimeout(@timer)
         @timer = setTimeout( ->
-          Issuable.filterResults $('#issue_search_form')
+          $search = $('#issue_search')
+          $form = $('.js-filter-form')
+          $input = $("input[name='#{$search.attr('name')}']", $form)
+
+          if $input.length is 0
+            $form.append "<input type='hidden' name='#{$search.attr('name')}' value='#{$search.val()}'/>"
+          else
+            $input.val $search.val()
+
+          Issuable.filterResults $form
         , 500)
 
   toggleLabelFilters: ->
