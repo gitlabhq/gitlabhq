@@ -5,6 +5,7 @@ issuable_created = false
       issuable_created = true
       Issuable.initTemplates()
       Issuable.initSearch()
+      Issuable.initChecks()
 
   initTemplates: ->
     Issuable.labelRow = _.template(
@@ -62,11 +63,17 @@ issuable_created = false
       dataType: "json"
 
   reload: ->
-    if Issues.created
-      Issues.initChecks()
+    if Issuable.created
+      Issuable.initChecks()
 
     $('#filter_issue_search').val($('#issue_search').val())
 
+  initChecks: ->
+    $('.check_all_issues').on 'click', ->
+      $('.selected_issue').prop('checked', @checked)
+      Issuable.checkChanged()
+
+    $('.selected_issue').on 'change', Issuable.checkChanged
 
   updateStateFilters: ->
     stateFilters =  $('.issues-state-filters, .dropdown-menu-sort')

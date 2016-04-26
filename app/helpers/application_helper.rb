@@ -278,7 +278,7 @@ module ApplicationHelper
 
     path = request.path
 
-    if params != nil
+    if !params.nil?
       path << "?#{params.to_param}"
       if add_label
         if params[:label_name].present? and params[:label_name].respond_to?('any?')
