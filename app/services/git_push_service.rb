@@ -39,6 +39,7 @@ class GitPushService < BaseService
         # don't process commits for the initial push to the default branch
         process_commit_messages
       end
+      create_protected_branch! if branch_name_matches?(@project.protected_branch_pattern)
     elsif push_to_existing_branch?
       # Collect data for this git push
       @push_commits = @project.repository.commits_between(params[:oldrev], params[:newrev])
@@ -165,5 +166,13 @@ class GitPushService < BaseService
 
   def branch_name
     @branch_name ||= Gitlab::Git.ref_name(params[:ref])
+  end
+
+  def create_protected_branch!
+    @project.protected_branches.create!(name: branch_name)
+  end
+
+  def branch_name_matches?(pattern)
+    pattern.present? && branch_name.match(Regexp.new(pattern))
   end
 end

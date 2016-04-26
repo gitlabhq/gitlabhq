@@ -774,6 +774,7 @@ ActiveRecord::Schema.define(version: 20160530150109) do
     t.boolean  "last_repository_check_failed"
     t.datetime "last_repository_check_at"
     t.boolean  "container_registry_enabled"
+    t.string   "protected_branch_pattern"
   end
 
   add_index "projects", ["builds_enabled", "shared_runners_enabled"], name: "index_projects_on_builds_enabled_and_shared_runners_enabled", using: :btree

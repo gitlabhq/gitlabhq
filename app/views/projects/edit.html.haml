@@ -84,6 +84,33 @@
                   %br
                   %span.descr Enable Container Registry for this repository
         %hr
+        %fieldset.branches.append-bottom-0
+          %h5.prepend-top-0
+            Branches
+          .form-group
+            = f.label :auto_protected_branch_pattern, 'Auto-protected branch pattern', class: 'control-label'
+            .col-sm-10
+              .input-group
+                %span.input-group-addon /
+                = f.text_field :auto_protected_branch_pattern,
+                               class: 'form-control',
+                               placeholder: '^[0-9]+-[0-9]+-stable$'
+                %span.input-group-addon /
+              %p.help-block
+                We will use this regular expression to automatically
+                = link_to 'protect branches', namespace_project_protected_branches_path(@project.namespace, @project)
+                on creation. Leave blank if you want to disable this feature.
+          .form-group
+            .checkbox
+              = f.label :developers_can_push_to_auto_protected_branch do
+                = f.check_box :developers_can_push_to_auto_protected_branch
+                %strong Developers can push to auto-protected branches
+                %br
+                %span.descr
+                  Allow developers to push to auto-protected branch. This setting can also be set for each
+                  = succeed '.' do
+                    = link_to 'protected branch', namespace_project_protected_branches_path(@project.namespace, @project)
+        %hr
         = render 'builds_settings', f: f
         %hr
         %fieldset.features.append-bottom-default
@@ -103,6 +130,22 @@
             - if @project.avatar?
               %hr
               = link_to 'Remove avatar', namespace_project_avatar_path(@project.namespace, @project), data: { confirm: "Project avatar will be removed. Are you sure?"}, method: :delete, class: "btn btn-remove btn-sm remove-avatar"
+
+          %fieldset.features
+            %legend
+              Miscellaneous:
+
+            .form-group
+              = f.label :protected_branch_pattern, "Protected branch pattern", class: 'control-label'
+              .col-sm-10
+                .input-group
+                  %span.input-group-addon /
+                  = f.text_field :protected_branch_pattern, value: @project.protected_branch_pattern, maxlength: 2000, class: "form-control", placeholder: '^[1-9]-[1-9]-stable$'
+                  %span.input-group-addon /
+                %p.help-block
+                  We will use this regular expression to automatically #{ link_to "protect branches", namespace_project_protected_branches_path(@project.namespace, @project)  } on creation.
+                  Leave blank if you want to disable this feature
+
         = f.submit 'Save changes', class: "btn btn-save"
   .row.prepend-top-default
   %hr

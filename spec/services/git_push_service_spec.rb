@@ -17,9 +17,10 @@ describe GitPushService, services: true do
 
     let(:oldrev) { @oldrev }
     let(:newrev) { @newrev }
+    let(:ref) { @ref}
 
     subject do
-      execute_service(project, user, oldrev, newrev, @ref )
+      execute_service(project, user, oldrev, newrev, ref)
     end
 
     context 'new branch' do
@@ -39,6 +40,37 @@ describe GitPushService, services: true do
         expect(project.repository).to receive(:expire_has_visible_content_cache)
 
         subject
+      end
+
+      describe 'branch protection' do
+        before do
+          stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_NONE)
+        end
+
+        context 'when protected branch pattern is disabled' do
+          it 'does not create a new protected branch' do
+            project.protected_branch_pattern = ""
+            expect { subject }.not_to change { project.protected_branches.count }
+          end
+        end
+
+        context 'when branch name does not match protected branch pattern' do
+          it 'does not create a new protected branch' do
+            project.protected_branch_pattern = '^[1-9]-[1-9]-stable$'
+            expect { subject }.not_to change { project.protected_branches.count }
+          end
+        end
+
+        context 'when branch name matches protected branch pattern' do
+          let(:ref) { 'refs/heads/1-1-stable' }
+
+          it 'creates a new protected branch' do
+            project.protected_branch_pattern = '^[1-9]-[1-9]-stable$'
+            expect{ subject }.to change { project.protected_branches.count }.by(1)
+            expect(project.protected_branches.last.name).to eq "1-1-stable"
+            expect(project.protected_branches.last.developers_can_push).to eq false
+          end
+        end
       end
     end
 
