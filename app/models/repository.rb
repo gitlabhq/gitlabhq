@@ -457,7 +457,7 @@ class Repository
   def changelog
     cache.fetch(:changelog) do
       tree(:head).blobs.find do |file|
-        file.name =~ /\A(changelog|history)/i
+        file.name =~ /\A(changelog|history|changes|news)/i
       end
     end
   end
