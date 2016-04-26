@@ -29,13 +29,15 @@ class Note < ActiveRecord::Base
   # Attachments are deprecated and are handled by Markdown uploader
   validates :attachment, file_size: { maximum: :max_attachment_size }
 
-  validates :noteable_id, presence: true, if: ->(n) { n.noteable_type.present? && n.noteable_type != 'Commit' }
-  validates :commit_id, presence: true, if: ->(n) { n.noteable_type == 'Commit' }
+  validates :noteable_id, presence: true, unless: :for_commit?
+  validates :commit_id, presence: true, if: :for_commit?
   validates :author, presence: true
 
-  validate do |note|
-    unless note.noteable.project == project
-      errors.add(:invalid_project, 'Note and noteable project mismatch')
+  with_options unless: :for_commit? do
+    validate do |note|
+      unless note.noteable.try(:project) == project
+        errors.add(:invalid_project, 'Note and noteable project mismatch')
+      end
     end
   end
 
