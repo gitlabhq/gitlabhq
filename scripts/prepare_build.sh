@@ -1,10 +1,30 @@
 #!/bin/bash
-if [ -f /.dockerinit ]; then
-    wget -q http://ftp.de.debian.org/debian/pool/main/p/phantomjs/phantomjs_1.9.0-1+b1_amd64.deb
-    dpkg -i phantomjs_1.9.0-1+b1_amd64.deb
 
-    apt-get update -qq
-    apt-get install -y -qq libicu-dev libkrb5-dev cmake nodejs postgresql-client mysql-client
+retry() {
+    for i in $(seq 1 3); do
+        if eval "$@"; then
+            return 0
+        fi
+        sleep 3s
+        echo "Retrying..."
+    done
+    return 1
+}
+
+if [ -f /.dockerenv ] || [ -f ./dockerinit ]; then
+    mkdir -p vendor
+
+    # Install phantomjs package
+    pushd vendor
+    if [ ! -e phantomjs_1.9.8-0jessie_amd64.deb ]; then
+        wget -q https://gitlab.com/axil/phantomjs-debian/raw/master/phantomjs_1.9.8-0jessie_amd64.deb
+    fi
+    dpkg -i phantomjs_1.9.8-0jessie_amd64.deb
+    popd
+
+    # Try to install packages
+    retry 'apt-get update -yqqq; apt-get -o dir::cache::archives="vendor/apt" install -y -qq --force-yes \
+      libicu-dev libkrb5-dev cmake nodejs postgresql-client mysql-client unzip'
 
     cp config/database.yml.mysql config/database.yml
     sed -i 's/username:.*/username: root/g' config/database.yml
@@ -13,8 +33,8 @@ if [ -f /.dockerinit ]; then
 
     cp config/resque.yml.example config/resque.yml
     sed -i 's/localhost/redis/g' config/resque.yml
-    FLAGS=(--deployment --path /cache)
-    export FLAGS
+
+    export FLAGS=(--path vendor --retry 3)
 else
     export PATH=$HOME/bin:/usr/local/bin:/usr/bin:/bin
     cp config/database.yml.mysql config/database.yml
