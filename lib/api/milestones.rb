@@ -87,15 +87,7 @@ module API
         authorize! :read_milestone, user_project
 
         @milestone = user_project.milestones.find(params[:milestone_id])
-
-        finder_params = {
-          project_id: user_project.id,
-          milestone_title: @milestone.title,
-          state: 'all'
-        }
-
-        issues = IssuesFinder.new(current_user, finder_params).execute
-        present paginate(issues), with: Entities::Issue, current_user: current_user
+        present paginate(@milestone.issues), with: Entities::Issue
       end
 
     end
