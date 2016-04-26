@@ -359,6 +359,16 @@ class Project < ActiveRecord::Base
     def visible_to_user(user)
       where(id: user.authorized_projects.select(:id).reorder(nil))
     end
+
+    def create_from_import_job(current_user_id:, tmp_file:)
+      job_id = ProjectImportWorker.perform_async(current_user_id, tmp_file)
+
+      if job_id
+        Rails.logger.info "Import job started for #{path_with_namespace} with job ID #{job_id}"
+      else
+        Rails.logger.error "Import job failed to start for #{path_with_namespace}"
+      end
+    end
   end
 
   def team

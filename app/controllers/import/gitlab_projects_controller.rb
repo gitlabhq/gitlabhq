@@ -26,7 +26,7 @@ class Import::GitlabProjectsController < Import::BaseController
   end
 
   def create
-    @file = params[:file]
+    file = params[:file]
    # @project_name =
 
     repo_owner = current_user.username
@@ -34,7 +34,7 @@ class Import::GitlabProjectsController < Import::BaseController
 
     namespace = get_or_create_namespace || (render and return)
 
-    @project = Gitlab::ImportExport::ImportService.execute(archive_file: file, owner: repo_owner)
+    @project = Project.create_from_import_job(current_user.id, File.expand_path(file.path))
   end
 
   private
