@@ -9,7 +9,13 @@ module DiffHelper
   end
 
   def diff_view
-    params[:view] == 'parallel' ? 'parallel' : 'inline'
+    diff_views = %w(inline parallel)
+
+    if diff_views.include?(cookies[:diff_view])
+      cookies[:diff_view]
+    else
+      diff_views.first
+    end
   end
 
   def diff_hard_limit_enabled?
@@ -40,10 +46,11 @@ module DiffHelper
     (unfold) ? 'unfold js-unfold' : ''
   end
 
-  def diff_line_content(line)
+  def diff_line_content(line, line_type = nil)
     if line.blank?
       " &nbsp;".html_safe
     else
+      line[0] = ' ' if %w[new old].include?(line_type)
       line
     end
   end

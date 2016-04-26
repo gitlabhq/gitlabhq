@@ -443,7 +443,20 @@ describe Project, models: true do
     let(:project) { create :project }
     let(:commit) { create :ci_commit, project: project, ref: 'master' }
 
-    it { expect(project.ci_commit(commit.sha, 'master')).to eq(commit) }
+    subject { project.ci_commit(commit.sha, 'master') }
+
+    it { is_expected.to eq(commit) }
+
+    context 'return latest' do
+      let(:commit2) { create :ci_commit, project: project, ref: 'master' }
+
+      before do
+        commit
+        commit2
+      end
+
+      it { is_expected.to eq(commit2) }
+    end
   end
 
   describe :builds_enabled do
@@ -706,11 +719,8 @@ describe Project, models: true do
         with('foo.wiki', project).
         and_return(wiki)
 
-      expect(repo).to receive(:expire_cache)
-      expect(repo).to receive(:expire_emptiness_caches)
-
-      expect(wiki).to receive(:expire_cache)
-      expect(wiki).to receive(:expire_emptiness_caches)
+      expect(repo).to receive(:before_delete)
+      expect(wiki).to receive(:before_delete)
 
       project.expire_caches_before_rename('foo')
     end

@@ -81,16 +81,8 @@ ul.notes {
         @include md-typography;
 
         // On diffs code should wrap nicely and not overflow
-        p {
-          code {
-            white-space: normal;
-          }
-
-          pre {
-            code {
-              white-space: pre;
-            }
-          }
+        code {
+          white-space: pre-wrap;
         }
 
         // Reset ul style types since we're nested inside a ul already
@@ -117,6 +109,10 @@ ul.notes {
           border-color: darken(#f5f5f5, 8%);
           margin: 10px 0;
         }
+
+        code {
+          word-break: keep-all;
+        }
       }
 
       a {
@@ -137,7 +133,7 @@ ul.notes {
     margin-right: 10px;
   }
   .line_content {
-    white-space: pre;
+    white-space: pre-wrap;
   }
 }
 
@@ -191,11 +187,20 @@ ul.notes {
     }
   }
 
+  .author_link {
+    color: $gl-gray;
+  }
 }
 
 .note-headline-light,
 .discussion-headline-light {
   color: $notes-light-color;
+}
+
+.discussion-headline-light {
+  a {
+    color: $gl-link-color;
+  }
 }
 
 /**
@@ -207,6 +212,17 @@ ul.notes {
   float: right;
   margin-left: 10px;
   color: $notes-action-color;
+}
+
+.discussion-actions {
+  @media (max-width: $screen-sm-max) {
+    float: none;
+    margin-left: 0;
+
+    .note-action-button {
+      margin-left: 0;
+    }
+  }
 }
 
 .note-action-button,
@@ -276,8 +292,7 @@ ul.notes {
 
 .diff-file tr.line_holder {
   @mixin show-add-diff-note {
-    filter: alpha(opacity=100);
-    opacity: 1.0;
+    display: inline-block;
   }
 
   .add-diff-note {
@@ -287,17 +302,12 @@ ul.notes {
     padding: 4px;
     font-size: 16px;
     color: $gl-link-color;
-    margin-left: -60px;
+    margin-left: -56px;
     position: absolute;
     z-index: 10;
     width: 32px;
-
-    transition: all 0.2s ease;
-
     // "hide" it by default
-    opacity: 0.0;
-    filter: alpha(opacity=0);
-
+    display: none;
     &:hover {
       background: $gl-info;
       color: #fff;

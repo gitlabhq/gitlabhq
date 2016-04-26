@@ -40,7 +40,6 @@
 #
 
 require 'carrierwave/orm/activerecord'
-require 'file_size_validator'
 
 class Project < ActiveRecord::Base
   include Gitlab::ConfigHelper
@@ -407,6 +406,35 @@ class Project < ActiveRecord::Base
     ProjectCacheWorker.perform_async(self.id)
 
     self.import_data.destroy if self.import_data
+  end
+
+  def import_url=(value)
+    import_url = Gitlab::ImportUrl.new(value)
+    create_or_update_import_data(credentials: import_url.credentials)
+    super(import_url.sanitized_url)
+  end
+
+  def import_url
+    if import_data && super
+      import_url = Gitlab::ImportUrl.new(super, credentials: import_data.credentials)
+      import_url.full_url
+    else
+      super
+    end
+  end
+
+  def create_or_update_import_data(data: nil, credentials: nil)
+    project_import_data = import_data || build_import_data
+    if data
+      project_import_data.data ||= {}
+      project_import_data.data = project_import_data.data.merge(data)
+    end
+    if credentials
+      project_import_data.credentials ||= {}
+      project_import_data.credentials = project_import_data.credentials.merge(credentials)
+    end
+
+    project_import_data.save
   end
 
   def import?
@@ -792,18 +820,16 @@ class Project < ActiveRecord::Base
     wiki = Repository.new("#{old_path}.wiki", self)
 
     if repo.exists?
-      repo.expire_cache
-      repo.expire_emptiness_caches
+      repo.before_delete
     end
 
     if wiki.exists?
-      wiki.expire_cache
-      wiki.expire_emptiness_caches
+      wiki.before_delete
     end
   end
 
-  def hook_attrs
-    {
+  def hook_attrs(backward: true)
+    attrs = {
       name: name,
       description: description,
       web_url: web_url,
@@ -814,12 +840,19 @@ class Project < ActiveRecord::Base
       visibility_level: visibility_level,
       path_with_namespace: path_with_namespace,
       default_branch: default_branch,
-      # Backward compatibility
-      homepage: web_url,
-      url: url_to_repo,
-      ssh_url: ssh_url_to_repo,
-      http_url: http_url_to_repo
     }
+
+    # Backward compatibility
+    if backward
+      attrs.merge!({
+                    homepage: web_url,
+                    url: url_to_repo,
+                    ssh_url: ssh_url_to_repo,
+                    http_url: http_url_to_repo
+                  })
+    end
+
+    attrs
   end
 
   # Reset events cache related to this project
@@ -865,7 +898,9 @@ class Project < ActiveRecord::Base
 
   def change_head(branch)
     repository.before_change_head
-    gitlab_shell.update_repository_head(self.path_with_namespace, branch)
+    repository.rugged.references.create('HEAD',
+                                        "refs/heads/#{branch}",
+                                        force: true)
     reload_default_branch
   end
 
@@ -927,7 +962,7 @@ class Project < ActiveRecord::Base
   end
 
   def ci_commit(sha, ref)
-    ci_commits.find_by(sha: sha, ref: ref)
+    ci_commits.order(id: :desc).find_by(sha: sha, ref: ref)
   end
 
   def ensure_ci_commit(sha, ref)

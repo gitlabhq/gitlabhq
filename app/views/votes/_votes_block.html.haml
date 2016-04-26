@@ -19,12 +19,12 @@
     var post_emoji_url = "#{award_toggle_namespace_project_notes_path(@project.namespace, @project)}";
     var noteable_type = "#{votable.class.name.underscore}";
     var noteable_id = "#{votable.id}";
-    var aliases = #{AwardEmoji.aliases.to_json};
+    var unicodes = #{AwardEmoji.unicode.to_json};
 
     window.awards_handler = new AwardsHandler(
       get_emojis_url,
       post_emoji_url,
       noteable_type,
       noteable_id,
-      aliases
+      unicodes
     );

@@ -156,6 +156,52 @@ describe Ci::API::API do
       end
     end
 
+    describe 'PATCH /builds/:id/trace.txt' do
+      let(:build) { create(:ci_build, :trace, runner_id: runner.id) }
+      let(:headers) { { Ci::API::Helpers::BUILD_TOKEN_HEADER => build.token, 'Content-Type' => 'text/plain' } }
+      let(:headers_with_range) { headers.merge({ 'Content-Range' => '11-20' }) }
+
+      before do
+        build.run!
+        patch ci_api("/builds/#{build.id}/trace.txt"), ' appended', headers_with_range
+      end
+
+      context 'when request is valid' do
+        it { expect(response.status).to eq 202 }
+        it { expect(build.reload.trace).to eq 'BUILD TRACE appended' }
+        it { expect(response.header).to have_key 'Range' }
+        it { expect(response.header).to have_key 'Build-Status' }
+      end
+
+      context 'when content-range start is too big' do
+        let(:headers_with_range) { headers.merge({ 'Content-Range' => '15-20' }) }
+
+        it { expect(response.status).to eq 416 }
+        it { expect(response.header).to have_key 'Range' }
+        it { expect(response.header['Range']).to eq '0-11' }
+      end
+
+      context 'when content-range start is too small' do
+        let(:headers_with_range) { headers.merge({ 'Content-Range' => '8-20' }) }
+
+        it { expect(response.status).to eq 416 }
+        it { expect(response.header).to have_key 'Range' }
+        it { expect(response.header['Range']).to eq '0-11' }
+      end
+
+      context 'when Content-Range header is missing' do
+        let(:headers_with_range) { headers.merge({}) }
+
+        it { expect(response.status).to eq 400 }
+      end
+
+      context 'when build has been errased' do
+        let(:build) { create(:ci_build, runner_id: runner.id, erased_at: Time.now) }
+
+        it { expect(response.status).to eq 403 }
+      end
+    end
+
     context "Artifacts" do
       let(:file_upload) { fixture_file_upload(Rails.root + 'spec/fixtures/banana_sample.gif', 'image/gif') }
       let(:file_upload2) { fixture_file_upload(Rails.root + 'spec/fixtures/dk.png', 'image/gif') }

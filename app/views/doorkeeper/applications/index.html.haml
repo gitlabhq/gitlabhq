@@ -1,5 +1,4 @@
 - page_title "Applications"
-- header_title page_title, applications_profile_path
 
 .row.prepend-top-default
   .col-lg-3.profile-settings-sidebar
@@ -68,7 +67,7 @@
                   %td= app.name
                   %td= token.created_at
                   %td= token.scopes
-                  %td= render 'delete_form', application: app
+                  %td= render 'doorkeeper/authorized_applications/delete_form', application: app
               - @authorized_anonymous_tokens.each do |token|
                 %tr
                   %td

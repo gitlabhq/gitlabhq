@@ -6,7 +6,7 @@ class @LabelsSelect
       labelUrl = $dropdown.data('labels')
       issueUpdateURL = $dropdown.data('issueUpdate')
       selectedLabel = $dropdown.data('selected')
-      if selectedLabel?
+      if selectedLabel? and not $dropdown.hasClass 'js-multiselect'
         selectedLabel = selectedLabel.split(',')
       newLabelField = $('#new_label_name')
       newColorField = $('#new_label_color')
@@ -16,33 +16,32 @@ class @LabelsSelect
       abilityName = $dropdown.data('ability-name')
       $selectbox = $dropdown.closest('.selectbox')
       $block = $selectbox.closest('.block')
+      $form = $dropdown.closest('form')
       $sidebarCollapsedValue = $block.find('.sidebar-collapsed-icon span')
       $value = $block.find('.value')
+      $newLabelError = $('.js-label-error')
+      $colorPreview = $('.js-dropdown-label-color-preview')
+      $newLabelCreateButton = $('.js-new-label-btn')
+
+      $newLabelError.hide()
       $loading = $block.find('.block-loading').fadeOut()
-
-      if newLabelField.length
-        $newLabelCreateButton = $('.js-new-label-btn')
-        $colorPreview = $('.js-dropdown-label-color-preview')
-        $newLabelError = $dropdown.parent().find('.js-label-error')
-        $newLabelError.hide()
-
-        # Suggested colors in the dropdown to chose from pre-chosen colors
-        $('.suggest-colors-dropdown a').on 'click', (e) ->
 
       issueURLSplit = issueUpdateURL.split('/') if issueUpdateURL?
       if issueUpdateURL
         labelHTMLTemplate = _.template(
             '<% _.each(labels, function(label){ %>
-            <a href="<%= ["",issueURLSplit[1], issueURLSplit[2],""].join("/") %>issues?label_name=<%= label.title %>">
-            <span class="label color-label" style="background-color: <%= label.color %>;">
-            <%= label.title %>
+            <a href="<%= ["",issueURLSplit[1], issueURLSplit[2],""].join("/") %>issues?label_name=<%= _.escape(label.title) %>">
+            <span class="label has-tooltip color-label" title="<%= _.escape(label.description) %>" style="background-color: <%= label.color %>; color: <%= label.text_color %>;">
+            <%= _.escape(label.title) %>
             </span>
             </a>
             <% }); %>'
-        );
+        )
         labelNoneHTMLTemplate = _.template('<div class="light">None</div>')
 
-      if newLabelField.length and $dropdown.hasClass 'js-extra-options'
+      if newLabelField.length
+
+        # Suggested colors in the dropdown to chose from pre-chosen colors
         $('.suggest-colors-dropdown a').on "click", (e) ->
           e.preventDefault()
           e.stopPropagation()
@@ -81,25 +80,24 @@ class @LabelsSelect
         enableLabelCreateButton = ->
           if newLabelField.val() isnt '' and newColorField.val() isnt ''
             $newLabelError.hide()
-            $('.js-new-label-btn').disable()
-
-            # Create new label with API
-            Api.newLabel projectId, {
-              name: newLabelField.val()
-              color: newColorField.val()
-            }, (label) ->
-              $('.js-new-label-btn').enable()
-
-              if label.message?
-                $newLabelError
-                  .text label.message
-                  .show()
-              else
-                $('.dropdown-menu-back', $dropdown.parent()).trigger 'click'
-
             $newLabelCreateButton.enable()
           else
             $newLabelCreateButton.disable()
+
+        saveLabel = ->
+          # Create new label with API
+          Api.newLabel projectId, {
+            name: newLabelField.val()
+            color: newColorField.val()
+          }, (label) ->
+            $newLabelCreateButton.enable()
+
+            if label.message?
+              $newLabelError
+                .text label.message
+                .show()
+            else
+              $('.dropdown-menu-back', $dropdown.parent()).trigger 'click'
 
         newLabelField.on 'keyup change', enableLabelCreateButton
 
@@ -111,24 +109,7 @@ class @LabelsSelect
           .on 'click', (e) ->
             e.preventDefault()
             e.stopPropagation()
-
-            if newLabelField.val() isnt '' and newColorField.val() isnt ''
-              $newLabelError.hide()
-              $('.js-new-label-btn').disable()
-
-              # Create new label with API
-              Api.newLabel projectId, {
-                name: newLabelField.val()
-                color: newColorField.val()
-              }, (label) ->
-                $('.js-new-label-btn').enable()
-
-                if label.message?
-                  $newLabelError
-                    .text label.message
-                    .show()
-                else
-                  $('.dropdown-menu-back', $dropdown.parent()).trigger 'click'
+            saveLabel()
 
       saveLabelData = ->
         selected = $dropdown
@@ -165,11 +146,13 @@ class @LabelsSelect
             .html(template)
           $sidebarCollapsedValue.text(labelCount)
 
+          $('.has-tooltip', $value).tooltip(container: 'body')
+
           $value
             .find('a')
             .each((i) ->
               setTimeout(=>
-                glAnimate($(@), 'pulse')
+                gl.animate.animate($(@), 'pulse')
               ,200 * i
               )
             )
@@ -198,18 +181,23 @@ class @LabelsSelect
             callback data
 
         renderRow: (label) ->
-          selectedClass = ''
-          if $selectbox.find("input[type='hidden']\
-            [name='#{$dropdown.data('field-name')}']\
-            [value='#{label.id}']").length
-            selectedClass = 'is-active'
+          removesAll = label.id is 0 or not label.id?
+
+          selectedClass = []
+          if $form.find("input[type='hidden']\
+            [name='#{$dropdown.data('fieldName')}']\
+            [value='#{this.id(label)}']").length
+            selectedClass.push 'is-active'
+
+          if $dropdown.hasClass('js-multiselect') and removesAll
+            selectedClass.push 'dropdown-clear-active'
 
           color = if label.color? then "<span class='dropdown-label-box' style='background-color: #{label.color}'></span>" else ""
 
           "<li>
-            <a href='#' class='#{selectedClass}'>
+            <a href='#' class='#{selectedClass.join(' ')}'>
               #{color}
-              #{label.title}
+              #{_.escape(label.title)}
             </a>
           </li>"
         filterable: true
@@ -217,37 +205,56 @@ class @LabelsSelect
           fields: ['title']
         selectable: true
 
-        toggleLabel: (selected) ->
+        toggleLabel: (selected, el) ->
+          selected_labels = $('.js-label-select').siblings('.dropdown-menu-labels').find('.is-active')
+
           if selected and selected.title?
-            selected.title
+            if selected_labels.length > 1
+              "#{selected.title} +#{selected_labels.length - 1} more"
+            else
+              selected.title
+          else if not selected and selected_labels.length isnt 0
+            if selected_labels.length > 1
+              "#{$(selected_labels[0]).text()} +#{selected_labels.length - 1} more"
+            else if selected_labels.length is 1
+              $(selected_labels).text()
           else
             defaultLabel
         fieldName: $dropdown.data('field-name')
         id: (label) ->
-          if label.isAny?
-            ''
-          else if $dropdown.hasClass "js-filter-submit"
-            label.title
+          if $dropdown.hasClass("js-filter-submit") and not label.isAny?
+            _.escape label.title
           else
             label.id
 
         hidden: ->
+          page = $('body').data 'page'
+          isIssueIndex = page is 'projects:issues:index'
+          isMRIndex = page is 'projects:merge_requests:index'
+
           $selectbox.hide()
           # display:block overrides the hide-collapse rule
           $value.removeAttr('style')
           if $dropdown.hasClass 'js-multiselect'
-            saveLabelData()
+            if $dropdown.hasClass('js-filter-submit') and (isIssueIndex or isMRIndex)
+              selectedLabels = $dropdown
+                .closest('form')
+                .find("input:hidden[name='#{$dropdown.data('fieldName')}']")
+              Issuable.filterResults $dropdown.closest('form')
+            else if $dropdown.hasClass('js-filter-submit')
+              $dropdown.closest('form').submit()
+            else
+              saveLabelData()
 
         multiSelect: $dropdown.hasClass 'js-multiselect'
         clicked: (label) ->
           page = $('body').data 'page'
           isIssueIndex = page is 'projects:issues:index'
-          isMRIndex = page is page is 'projects:merge_requests:index'
-
+          isMRIndex = page is 'projects:merge_requests:index'
           if $dropdown.hasClass('js-filter-submit') and (isIssueIndex or isMRIndex)
-            selectedLabel = label.title
-
-            Issues.filterResults $dropdown.closest('form')
+            if not $dropdown.hasClass 'js-multiselect'
+              selectedLabel = label.title
+              Issuable.filterResults $dropdown.closest('form')
           else if $dropdown.hasClass 'js-filter-submit'
             $dropdown.closest('form').submit()
           else

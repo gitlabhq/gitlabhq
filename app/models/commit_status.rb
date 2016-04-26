@@ -33,7 +33,7 @@
 #
 
 class CommitStatus < ActiveRecord::Base
-  include CiStatus
+  include Statuseable
 
   self.table_name = 'ci_builds'
 
@@ -81,7 +81,11 @@ class CommitStatus < ActiveRecord::Base
     end
   end
 
-  delegate :before_sha, :sha, :short_sha, to: :commit, prefix: false
+  delegate :sha, :short_sha, to: :commit
+
+  def before_sha
+    commit.before_sha || Gitlab::Git::BLANK_SHA
+  end
 
   def self.stages
     order_by = 'max(stage_idx)'
@@ -89,7 +93,10 @@ class CommitStatus < ActiveRecord::Base
   end
 
   def self.stages_status
-    Hash[group(:stage).pluck(:stage, self.status_sql)]
+    all.stages.inject({}) do |h, stage|
+      h[stage] = all.where(stage: stage).status
+      h
+    end
   end
 
   def ignored?
@@ -97,11 +104,13 @@ class CommitStatus < ActiveRecord::Base
   end
 
   def duration
-    if started_at && finished_at
-      finished_at - started_at
-    elsif started_at
-      Time.now - started_at
-    end
+    duration =
+      if started_at && finished_at
+        finished_at - started_at
+      elsif started_at
+        Time.now - started_at
+      end
+    duration
   end
 
   def stuck?

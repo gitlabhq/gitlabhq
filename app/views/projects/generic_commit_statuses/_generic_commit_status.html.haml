@@ -15,12 +15,13 @@
   - if defined?(commit_sha) && commit_sha
     %td
       = link_to generic_commit_status.short_sha, namespace_project_commit_path(generic_commit_status.project.namespace, generic_commit_status.project, generic_commit_status.sha), class: "monospace"
-      
-  %td
-    - if generic_commit_status.ref
-      = link_to generic_commit_status.ref, namespace_project_commits_path(generic_commit_status.project.namespace, generic_commit_status.project, generic_commit_status.ref)
-    - else
-      .light none
+
+  - if defined?(ref) && ref
+    %td
+      - if generic_commit_status.ref
+        = link_to generic_commit_status.ref, namespace_project_commits_path(generic_commit_status.project.namespace, generic_commit_status.project, generic_commit_status.ref)
+      - else
+        .light none
 
   - if defined?(runner) && runner
     %td

@@ -94,6 +94,12 @@ describe Repository, models: true do
 
     it { is_expected.to be_an Array }
 
+    it 'regex-escapes the query string' do
+      results = repository.search_files("test\\", 'master')
+
+      expect(results.first).not_to start_with('fatal:')
+    end
+
     describe 'result' do
       subject { results.first }
 
@@ -126,25 +132,56 @@ describe Repository, models: true do
         it { expect(subject.basename).to eq('a/b/c') }
       end
     end
-
   end
 
-  describe "#license" do
+  describe '#license_blob' do
     before do
-      repository.send(:cache).expire(:license)
+      repository.send(:cache).expire(:license_blob)
+      repository.remove_file(user, 'LICENSE', 'Remove LICENSE', 'master')
     end
 
-    it 'test selection preference' do
-      files = [TestBlob.new('file'), TestBlob.new('license'), TestBlob.new('copying')]
-      expect(repository.tree).to receive(:blobs).and_return(files)
+    it 'looks in the root_ref only' do
+      repository.remove_file(user, 'LICENSE', 'Remove LICENSE', 'markdown')
+      repository.commit_file(user, 'LICENSE', Licensee::License.new('mit').content, 'Add LICENSE', 'markdown', false)
 
-      expect(repository.license.name).to eq('license')
+      expect(repository.license_blob).to be_nil
     end
 
-    it 'also accepts licence instead of license' do
-      expect(repository.tree).to receive(:blobs).and_return([TestBlob.new('licence')])
+    it 'detects license file with no recognizable open-source license content' do
+      repository.commit_file(user, 'LICENSE', 'Copyright!', 'Add LICENSE', 'master', false)
 
-      expect(repository.license.name).to eq('licence')
+      expect(repository.license_blob.name).to eq('LICENSE')
+    end
+
+    %w[LICENSE LICENCE LiCensE LICENSE.md LICENSE.foo COPYING COPYING.md].each do |filename|
+      it "detects '#{filename}'" do
+        repository.commit_file(user, filename, Licensee::License.new('mit').content, "Add #{filename}", 'master', false)
+
+        expect(repository.license_blob.name).to eq(filename)
+      end
+    end
+  end
+
+  describe '#license_key' do
+    before do
+      repository.send(:cache).expire(:license_key)
+      repository.remove_file(user, 'LICENSE', 'Remove LICENSE', 'master')
+    end
+
+    it 'returns nil when no license is detected' do
+      expect(repository.license_key).to be_nil
+    end
+
+    it 'detects license file with no recognizable open-source license content' do
+      repository.commit_file(user, 'LICENSE', 'Copyright!', 'Add LICENSE', 'master', false)
+
+      expect(repository.license_key).to be_nil
+    end
+
+    it 'returns the license key' do
+      repository.commit_file(user, 'LICENSE', Licensee::License.new('mit').content, 'Add LICENSE', 'master', false)
+
+      expect(repository.license_key).to eq('mit')
     end
   end
 
@@ -535,6 +572,41 @@ describe Repository, models: true do
     end
   end
 
+  describe '#cherry_pick' do
+    let(:conflict_commit) { repository.commit('c642fe9b8b9f28f9225d7ea953fe14e74748d53b') }
+    let(:pickable_commit) { repository.commit('7d3b0f7cff5f37573aea97cebfd5692ea1689924') }
+    let(:pickable_merge) { repository.commit('e56497bb5f03a90a51293fc6d516788730953899') }
+
+    context 'when there is a conflict' do
+      it 'should abort the operation' do
+        expect(repository.cherry_pick(user, conflict_commit, 'master')).to eq(false)
+      end
+    end
+
+    context 'when commit was already cherry-picked' do
+      it 'should abort the operation' do
+        repository.cherry_pick(user, pickable_commit, 'master')
+
+        expect(repository.cherry_pick(user, pickable_commit, 'master')).to eq(false)
+      end
+    end
+
+    context 'when commit can be cherry-picked' do
+      it 'should cherry-pick the changes' do
+        expect(repository.cherry_pick(user, pickable_commit, 'master')).to be_truthy
+      end
+    end
+
+    context 'cherry-picking a merge commit' do
+      it 'should cherry-pick the changes' do
+        expect(repository.blob_at_branch('master', 'foo/bar/.gitkeep')).to be_nil
+
+        repository.cherry_pick(user, pickable_merge, 'master')
+        expect(repository.blob_at_branch('master', 'foo/bar/.gitkeep')).not_to be_nil
+      end
+    end
+  end
+
   describe '#before_delete' do
     describe 'when a repository does not exist' do
       before do
@@ -764,11 +836,9 @@ describe Repository, models: true do
   describe '#rm_tag' do
     it 'removes a tag' do
       expect(repository).to receive(:before_remove_tag)
+      expect(repository.rugged.tags).to receive(:delete).with('v1.1.0')
 
-      expect_any_instance_of(Gitlab::Shell).to receive(:rm_tag).
-        with(repository.path_with_namespace, '8.5')
-
-      repository.rm_tag('8.5')
+      repository.rm_tag('v1.1.0')
     end
   end
 
@@ -906,9 +976,32 @@ describe Repository, models: true do
     end
   end
 
+  describe '.clean_old_archives' do
+    let(:path) { Gitlab.config.gitlab.repository_downloads_path }
+
+    context 'when the downloads directory does not exist' do
+      it 'does not remove any archives' do
+        expect(File).to receive(:directory?).with(path).and_return(false)
+
+        expect(Gitlab::Popen).not_to receive(:popen)
+
+        described_class.clean_old_archives
+      end
+    end
+
+    context 'when the downloads directory exists' do
+      it 'removes old archives' do
+        expect(File).to receive(:directory?).with(path).and_return(true)
+
+        expect(Gitlab::Popen).to receive(:popen)
+
+        described_class.clean_old_archives
+      end
+    end
+  end
+
   def create_remote_branch(remote_name, branch_name, target)
     rugged = repository.rugged
     rugged.references.create("refs/remotes/#{remote_name}/#{branch_name}", target)
   end
-
 end

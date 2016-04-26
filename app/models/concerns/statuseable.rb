@@ -1,4 +1,4 @@
-module CiStatus
+module Statuseable
   extend ActiveSupport::Concern
 
   AVAILABLE_STATUSES = %w(pending running success failed canceled skipped)
@@ -7,7 +7,7 @@ module CiStatus
     def status_sql
       builds = all.select('count(*)').to_sql
       success = all.success.select('count(*)').to_sql
-      ignored = all.ignored.select('count(*)').to_sql if all.try(:ignored)
+      ignored = all.ignored.select('count(*)').to_sql if all.respond_to?(:ignored)
       ignored ||= '0'
       pending = all.pending.select('count(*)').to_sql
       running = all.running.select('count(*)').to_sql
@@ -33,7 +33,7 @@ module CiStatus
 
     def duration
       duration_array = all.map(&:duration).compact
-      duration_array.reduce(:+).to_i
+      duration_array.reduce(:+)
     end
 
     def started_at
@@ -41,7 +41,7 @@ module CiStatus
     end
 
     def finished_at
-      all.minimum(:finished_at)
+      all.maximum(:finished_at)
     end
   end
 

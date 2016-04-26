@@ -1,7 +1,8 @@
 # Import your project from GitHub to GitLab
 
-_**Note:** In order to enable the GitHub import setting, you should first
-enable the [GitHub integration][gh-import] in your GitLab instance._
+>**Note:**
+In order to enable the GitHub import setting, you should first
+enable the [GitHub integration][gh-import] in your GitLab instance.
 
 At its current state, GitHub importer can import:
 
@@ -10,10 +11,13 @@ At its current state, GitHub importer can import:
 - the issues (introduced in GitLab 7.7)
 - the pull requests (introduced in GitLab 8.4)
 - the wiki pages (introduced in GitLab 8.4)
+- the milestones (introduced in GitLab 8.7)
+- the labels (introduced in GitLab 8.7)
 
-It is not yet possible to import your labels, milestones and cross-repository
-pull requests (those from forks). We are working on improving this in the near
-future.
+With GitLab 8.7+, references to pull requests and issues are preserved.
+
+It is not yet possible to import your cross-repository pull requests (those from
+forks). We are working on improving this in the near future.
 
 The importer page is visible when you [create a new project][new-project].
 Click on the **GitHub** link and you will be redirected to GitHub for

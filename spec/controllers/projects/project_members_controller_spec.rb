@@ -46,4 +46,20 @@ describe Projects::ProjectMembersController do
       end
     end
   end
+
+  describe '#index' do
+    let(:project) { create(:project, :private) }
+
+    context 'when user is member' do
+      let(:member) { create(:user) }
+
+      before do
+        project.team << [member, :guest]
+        sign_in(member)
+        get :index, namespace_id: project.namespace.to_param, project_id: project.to_param
+      end
+
+      it { expect(response.status).to eq(200) }
+    end
+  end
 end

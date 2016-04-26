@@ -65,7 +65,7 @@ linters:
   
   # Reports when you have an empty rule set.
   EmptyRule:
-    enabled: false
+    enabled: true
   
   # Reports when you have an @extend directive.
   ExtendDirective:

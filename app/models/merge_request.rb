@@ -27,9 +27,6 @@
 #  merge_commit_sha          :string
 #
 
-require Rails.root.join("app/models/commit")
-require Rails.root.join("lib/static_model")
-
 class MergeRequest < ActiveRecord::Base
   include InternalId
   include Issuable
@@ -604,5 +601,9 @@ class MergeRequest < ActiveRecord::Base
 
   def can_be_reverted?(current_user = nil)
     merge_commit && !merge_commit.has_been_reverted?(current_user, self)
+  end
+
+  def can_be_cherry_picked?
+    merge_commit
   end
 end

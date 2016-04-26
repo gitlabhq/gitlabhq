@@ -18,6 +18,7 @@
       Browse Files
     - unless @commit.has_been_reverted?(current_user)
       = revert_commit_link(@commit, namespace_project_commit_path(@project.namespace, @project, @commit.id))
+    = cherry_pick_commit_link(@commit, namespace_project_commit_path(@project.namespace, @project, @commit.id))
   %div
 
 %p

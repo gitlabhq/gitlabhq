@@ -52,6 +52,12 @@
           %li
             phpunit --coverage-text --colors=never (PHP) -
             %code ^\s*Lines:\s*\d+.\d+\%
+          %li
+            gcovr (C/C++) -
+            %code ^TOTAL.*\s+(\d+\%)$
+          %li
+            tap --coverage-report=text-summary (Node.js) -
+            %code ^Statements\s*:\s*([^%]+)
 
   .form-group
     .col-sm-offset-2.col-sm-10

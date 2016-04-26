@@ -150,6 +150,7 @@ $light-grey-header: #faf9f9;
  */
 $gl-primary: $blue-normal;
 $gl-success: $green-normal;
+$gl-success-focus: rgba($gl-success, .4);
 $gl-info: $blue-normal;
 $gl-warning: $orange-normal;
 $gl-danger: $red-normal;
@@ -167,8 +168,12 @@ $line-removed: #fbe9eb;
 $line-removed-dark: #fac5cd;
 $line-number-old: #f9d7dc;
 $line-number-new: #ddfbe6;
+$line-number-select: #fbf2da;
 $match-line: #fafafa;
 $table-border-gray: #f0f0f0;
+$line-target-blue: #eaf3fc;
+$line-select-yellow: #fcf8e7;
+$line-select-yellow-dark: #f0e2bd;
 /*
  * Fonts
  */
@@ -240,3 +245,8 @@ $note-form-border-color: #e5e5e5;
 $note-toolbar-color: #959494;
 
 $zen-control-hover-color: #111;
+
+$calendar-header-color: #b8b8b8;
+$calendar-hover-bg: #ecf3fe;
+$calendar-border-color: rgba(#000, .1);
+$calendar-unselectable-bg: #faf9f9;

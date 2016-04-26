@@ -38,13 +38,14 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @merge_requests = @merge_requests.page(params[:page])
     @merge_requests = @merge_requests.preload(:target_project)
 
-    @label = @project.labels.find_by(title: params[:label_name])
+    @labels = @project.labels.where(title: params[:label_name])
 
     respond_to do |format|
       format.html
       format.json do
         render json: {
-          html: view_to_html_string("projects/merge_requests/_merge_requests")
+          html: view_to_html_string("projects/merge_requests/_merge_requests"),
+          labels: @labels.as_json(methods: :text_color)
         }
       end
     end
@@ -148,13 +149,12 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
     if @merge_request.valid?
       respond_to do |format|
-        format.js
         format.html do
           redirect_to([@merge_request.target_project.namespace.becomes(Namespace),
                        @merge_request.target_project, @merge_request])
         end
         format.json do
-          render json: @merge_request.to_json(include: [:milestone, :labels, assignee: { methods: :avatar_url }])
+          render json: @merge_request.to_json(include: { milestone: {}, assignee: { methods: :avatar_url }, labels: { methods: :text_color } })
         end
       end
     else

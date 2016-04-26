@@ -22,7 +22,17 @@
 #= require cal-heatmap
 #= require turbolinks
 #= require autosave
-#= require bootstrap
+#= require bootstrap/affix
+#= require bootstrap/alert
+#= require bootstrap/button
+#= require bootstrap/collapse
+#= require bootstrap/dropdown
+#= require bootstrap/modal
+#= require bootstrap/scrollspy
+#= require bootstrap/tab
+#= require bootstrap/transition
+#= require bootstrap/tooltip
+#= require bootstrap/popover
 #= require select2
 #= require raphael
 #= require g.raphael
@@ -164,7 +174,7 @@ $ ->
   $('.trigger-submit').on 'change', ->
     $(@).parents('form').submit()
 
-  gl.utils.localTimeAgo($('abbr.timeago, .js-timeago'), false)
+  gl.utils.localTimeAgo($('abbr.timeago, .js-timeago'), true)
 
   # Flash
   if (flash = $(".flash-container")).length > 0

@@ -34,8 +34,11 @@ module Projects
           raise TransferError.new("Project with same path in target namespace already exists")
         end
 
-        # Apply new namespace id
+        project.expire_caches_before_rename(old_path)
+
+        # Apply new namespace id and visibility level
         project.namespace = new_namespace
+        project.visibility_level = new_namespace.visibility_level unless project.visibility_level_allowed_by_group?
         project.save!
 
         # Notifications
@@ -56,7 +59,7 @@ module Projects
         Gitlab::UploadsTransfer.new.move_project(project.path, old_namespace.path, new_namespace.path)
 
         project.old_path_with_namespace = old_path
-        
+
         SystemHooksService.new.execute_hooks_for(project, :transfer)
         true
       end

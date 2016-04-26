@@ -60,7 +60,7 @@ class SlackService < Service
   end
 
   def supported_events
-    %w(push issue merge_request note tag_push build)
+    %w(push issue merge_request note tag_push build wiki_page)
   end
 
   def execute(data)
@@ -90,6 +90,8 @@ class SlackService < Service
         NoteMessage.new(data)
       when "build"
         BuildMessage.new(data) if should_build_be_notified?(data)
+      when "wiki_page"
+        WikiPageMessage.new(data)
       end
 
     opt = {}
@@ -133,3 +135,4 @@ require "slack_service/push_message"
 require "slack_service/merge_message"
 require "slack_service/note_message"
 require "slack_service/build_message"
+require "slack_service/wiki_page_message"

@@ -178,7 +178,7 @@ gem 'ruby-fogbugz', '~> 0.2.1'
 gem 'd3_rails', '~> 3.5.0'
 
 #cal-heatmap
-gem 'cal-heatmap-rails', '~> 3.5.0'
+gem 'cal-heatmap-rails', '~> 3.6.0'
 
 # underscore-rails
 gem "underscore-rails", "~> 1.8.0"
@@ -189,6 +189,9 @@ gem 'babosa', '~> 1.0.2'
 
 # Sanitizes SVG input
 gem "loofah", "~> 2.0.3"
+
+# Working with license
+gem 'licensee', '~> 8.0.0'
 
 # Protect against bruteforcing
 gem "rack-attack", '~> 4.3.1'
@@ -214,7 +217,7 @@ gem 'font-awesome-rails', '~> 4.2'
 gem 'gitlab_emoji',       '~> 0.3.0'
 gem 'gon',                '~> 6.0.1'
 gem 'jquery-atwho-rails', '~> 1.3.2'
-gem 'jquery-rails',       '~> 4.0.0'
+gem 'jquery-rails',       '~> 4.1.0'
 gem 'jquery-scrollto-rails', '~> 1.4.3'
 gem 'jquery-ui-rails',    '~> 5.0.0'
 gem 'raphael-rails',      '~> 2.1.2'
@@ -315,7 +318,7 @@ end
 
 gem "newrelic_rpm", '~> 3.14'
 
-gem 'octokit', '~> 3.8.0'
+gem 'octokit', '~> 4.3.0'
 
 gem "mail_room", "~> 0.6.1"
 

@@ -13,7 +13,7 @@ GitLab offers a [continuous integration][ci] service. If you
 and configure your GitLab project to use a [Runner], then each merge request or
 push triggers a build.
 
-The `.gitlab-ci.yml` file tells the GitLab runner what do to. By default it
+The `.gitlab-ci.yml` file tells the GitLab runner what to do. By default it
 runs three [stages]: `build`, `test`, and `deploy`.
 
 If everything runs OK (no non-zero return values), you'll get a nice green
