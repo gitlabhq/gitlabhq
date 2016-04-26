@@ -89,8 +89,8 @@ describe Note, models: true do
   end
 
   describe "#all_references" do
-    let!(:note1) { create(:note) }
-    let!(:note2) { create(:note) }
+    let!(:note1) { create(:note_on_issue) }
+    let!(:note2) { create(:note_on_issue) }
 
     it "reads the rendered note body from the cache" do
       expect(Banzai::Renderer).to receive(:render).with(note1.note, pipeline: :note, cache_key: [note1, "note"], project: note1.project)
@@ -102,7 +102,7 @@ describe Note, models: true do
   end
 
   describe '.search' do
-    let(:note) { create(:note, note: 'WoW') }
+    let(:note) { create(:note_on_issue, note: 'WoW') }
 
     it 'returns notes with matching content' do
       expect(described_class.search(note.note)).to eq([note])
