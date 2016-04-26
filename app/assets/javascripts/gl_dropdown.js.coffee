@@ -11,6 +11,8 @@ class GitLabDropdownFilter
     $inputContainer = @input.parent()
     $clearButton = $inputContainer.find('.js-dropdown-input-clear')
 
+    @indeterminatedIds = []
+
     # Clear click
     $clearButton.on 'click', (e) =>
       e.preventDefault()
@@ -298,6 +300,13 @@ class GitLabDropdown
   opened: =>
     @addArrowKeyEvent()
 
+    if @options.setIndeterminatedIds
+      @options.setIndeterminatedIds.call(@)
+
+    # Makes indeterminated items effective
+    if @fullData and @dropdown.find('.dropdown-menu-toggle').hasClass('js-filter-bulk-update')
+      @parseData @fullData
+
     contentHtml = $('.dropdown-content', @dropdown).html()
     if @remote && contentHtml is ""
       @remote.execute()
@@ -309,6 +318,9 @@ class GitLabDropdown
 
   hidden: (e) =>
     @removeArrayKeyEvent()
+
+    return if @dropdown.find('.dropdown-menu-toggle').hasClass('js-filter-bulk-update')
+
     if @options.filterable
       @dropdown
         .find(".dropdown-input-field")
@@ -358,7 +370,7 @@ class GitLabDropdown
 
     if @options.renderRow
       # Call the render function
-      html = @options.renderRow(data)
+      html = @options.renderRow.call(@options, data, @)
     else
       if not selected
         value = if @options.id then @options.id(data) else data.id

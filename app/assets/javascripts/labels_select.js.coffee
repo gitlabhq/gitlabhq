@@ -1,5 +1,7 @@
 class @LabelsSelect
   constructor: ->
+    _this = @
+
     $('.js-label-select').each (i, dropdown) ->
       $dropdown = $(dropdown)
       projectId = $dropdown.data('project-id')
@@ -196,14 +198,24 @@ class @LabelsSelect
 
             callback data
 
-        renderRow: (label) ->
+        renderRow: (label, instance) ->
+          selectedClass = []
           removesAll = label.id is 0 or not label.id?
 
-          selectedClass = []
+          if $dropdown.hasClass('js-filter-bulk-update')
+            indeterminated = instance.indeterminatedIds
+            if indeterminated.indexOf(label.id) isnt -1
+              selectedClass.push 'indeterminated'
+
           if $form.find("input[type='hidden']\
             [name='#{$dropdown.data('fieldName')}']\
             [value='#{this.id(label)}']").length
             selectedClass.push 'is-active'
+
+            index = selectedClass.indexOf('indeterminated')
+
+            if index isnt -1
+              selectedClass.splice(index, 1)
 
           if $dropdown.hasClass('js-multiselect') and removesAll
             selectedClass.push 'dropdown-clear-active'
@@ -264,6 +276,8 @@ class @LabelsSelect
             label.id
 
         hidden: ->
+          return if $dropdown.hasClass('js-filter-bulk-update')
+
           page = $('body').data 'page'
           isIssueIndex = page is 'projects:issues:index'
           isMRIndex = page is 'projects:merge_requests:index'
@@ -301,4 +315,18 @@ class @LabelsSelect
               return
             else
               saveLabelData()
+
+        setIndeterminatedIds: ->
+          if @dropdown.find('.dropdown-menu-toggle').hasClass('js-filter-bulk-update')
+            console.log 'options.setIndeterminatedIds'
+            @indeterminatedIds = _this.getIndeterminatedIds()
       )
+
+  getIndeterminatedIds: ->
+    label_ids = []
+
+    $('.selected_issue:checked').each (i, el) ->
+      issue_id = $(el).data('id')
+      label_ids.push $("#issue_#{issue_id}").data('labels')
+
+    _.flatten(label_ids)
