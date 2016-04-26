@@ -203,19 +203,14 @@ class @LabelsSelect
           removesAll = label.id is 0 or not label.id?
 
           if $dropdown.hasClass('js-filter-bulk-update')
-            indeterminated = instance.indeterminatedIds
-            if indeterminated.indexOf(label.id) isnt -1
-              selectedClass.push 'indeterminated'
+            indeterminate = instance.indeterminateIds
+            if indeterminate.indexOf(label.id) isnt -1
+              selectedClass.push 'indeterminate'
 
           if $form.find("input[type='hidden']\
             [name='#{$dropdown.data('fieldName')}']\
             [value='#{this.id(label)}']").length
             selectedClass.push 'is-active'
-
-            index = selectedClass.indexOf('indeterminated')
-
-            if index isnt -1
-              selectedClass.splice(index, 1)
 
           if $dropdown.hasClass('js-multiselect') and removesAll
             selectedClass.push 'dropdown-clear-active'
@@ -316,13 +311,13 @@ class @LabelsSelect
             else
               saveLabelData()
 
-        setIndeterminatedIds: ->
+        setIndeterminateIds: ->
           if @dropdown.find('.dropdown-menu-toggle').hasClass('js-filter-bulk-update')
-            console.log 'options.setIndeterminatedIds'
-            @indeterminatedIds = _this.getIndeterminatedIds()
+            console.log 'options.setIndeterminateIds'
+            @indeterminateIds = _this.getIndeterminateIds()
       )
 
-  getIndeterminatedIds: ->
+  getIndeterminateIds: ->
     label_ids = []
 
     $('.selected_issue:checked').each (i, el) ->

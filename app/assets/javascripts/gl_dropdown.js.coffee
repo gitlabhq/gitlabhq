@@ -11,7 +11,7 @@ class GitLabDropdownFilter
     $inputContainer = @input.parent()
     $clearButton = $inputContainer.find('.js-dropdown-input-clear')
 
-    @indeterminatedIds = []
+    @indeterminateIds = []
 
     # Clear click
     $clearButton.on 'click', (e) =>
@@ -300,10 +300,10 @@ class GitLabDropdown
   opened: =>
     @addArrowKeyEvent()
 
-    if @options.setIndeterminatedIds
-      @options.setIndeterminatedIds.call(@)
+    if @options.setIndeterminateIds
+      @options.setIndeterminateIds.call(@)
 
-    # Makes indeterminated items effective
+    # Makes indeterminate items effective
     if @fullData and @dropdown.find('.dropdown-menu-toggle').hasClass('js-filter-bulk-update')
       @parseData @fullData
 
