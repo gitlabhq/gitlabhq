@@ -1,10 +1,8 @@
-- if @search_results.empty?
+- if @search_objects.empty?
   = render partial: "search/results/empty"
 - else
   .gray-content-block
-    Search results for
-    %code
-      = @search_term
+    = search_entries_info(@search_objects, @scope, @search_term)
     - unless @show_snippets
       - if @project
         in project #{link_to @project.name_with_namespace, [@project.namespace.becomes(Namespace), @project]}
@@ -15,12 +13,9 @@
     .search-results
       - if @scope == 'projects'
         .term
-          = render 'shared/projects/list', projects: @objects
+          = render 'shared/projects/list', projects: @search_objects
       - else
-        = render partial: "search/results/#{@scope.singularize}", collection: @objects
+        = render partial: "search/results/#{@scope.singularize}", collection: @search_objects
 
     - if @scope != 'projects'
-      = paginate @objects, theme: 'gitlab'
-
-:javascript
-  $(".search-results .term").highlight("#{escape_javascript(params[:search])}");
+      = paginate(@search_objects, theme: 'gitlab')
