@@ -6,6 +6,7 @@ v 8.8.0 (unreleased)
   - Add 'l' shortcut to open Label dropdown on issuables and 'i' to create new issue on a project
 
 v 8.7.1 (unreleased)
+  - Throttle the update of `project.last_activity_at` to 1 minute. !3848
   - Fix .gitlab-ci.yml parsing issue when hidde job is a template without script definition. !3849
   - Fix license detection to detect all license files, not only known licenses. !3878
   - Use the `can?` helper instead of `current_user.can?`. !3882

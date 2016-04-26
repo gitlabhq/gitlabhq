@@ -30,32 +30,29 @@ describe Event, models: true do
     it { is_expected.to respond_to(:commits) }
   end
 
+  describe 'Callbacks' do
+    describe 'after_create :reset_project_activity' do
+      let(:project) { create(:project) }
+
+      context "project's last activity was less than 5 minutes ago" do
+        it 'does not update project.last_activity_at if it has been touched less than 5 minutes ago' do
+          create_event(project, project.owner)
+          project.update_column(:last_activity_at, 5.minutes.ago)
+          project_last_activity_at = project.last_activity_at
+
+          create_event(project, project.owner)
+
+          expect(project.last_activity_at).to eq(project_last_activity_at)
+        end
+      end
+    end
+  end
+
   describe "Push event" do
     before do
       project = create(:project)
       @user = project.owner
-
-      data = {
-        before: Gitlab::Git::BLANK_SHA,
-        after: "0220c11b9a3e6c69dc8fd35321254ca9a7b98f7e",
-        ref: "refs/heads/master",
-        user_id: @user.id,
-        user_name: @user.name,
-        repository: {
-          name: project.name,
-          url: "localhost/rubinius",
-          description: "",
-          homepage: "localhost/rubinius",
-          private: true
-        }
-      }
-
-      @event = Event.create(
-        project: project,
-        action: Event::PUSHED,
-        data: data,
-        author_id: @user.id
-      )
+      @event = create_event(project, @user)
     end
 
     it { expect(@event.push?).to be_truthy }
@@ -142,5 +139,29 @@ describe Event, models: true do
 
       it { is_expected.to eq([event2]) }
     end
+  end
+
+  def create_event(project, user, attrs = {})
+    data = {
+      before: Gitlab::Git::BLANK_SHA,
+      after: "0220c11b9a3e6c69dc8fd35321254ca9a7b98f7e",
+      ref: "refs/heads/master",
+      user_id: user.id,
+      user_name: user.name,
+      repository: {
+        name: project.name,
+        url: "localhost/rubinius",
+        description: "",
+        homepage: "localhost/rubinius",
+        private: true
+      }
+    }
+
+    Event.create({
+      project: project,
+      action: Event::PUSHED,
+      data: data,
+      author_id: user.id
+    }.merge(attrs))
   end
 end
