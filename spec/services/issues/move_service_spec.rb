@@ -7,10 +7,11 @@ describe Issues::MoveService, services: true do
   let(:description) { 'Some issue description' }
   let(:old_project) { create(:project) }
   let(:new_project) { create(:project) }
+  let!(:milestone1) { create(:milestone, project_id: old_project.id, title: 'v9.0') }
 
   let(:old_issue) do
     create(:issue, title: title, description: description,
-                   project: old_project, author: author)
+                   project: old_project, author: author, milestone: milestone1)
   end
 
   let(:move_service) do
@@ -22,8 +23,7 @@ describe Issues::MoveService, services: true do
       old_project.team << [user, :reporter]
       new_project.team << [user, :reporter]
 
-      create(:milestone, project_id: old_project.id, title: 'v1.0')
-      create(:milestone, project_id: new_project.id, title: 'v1.0')
+      create(:milestone, project_id: new_project.id, title: 'v9.0')
 
       old_issue.labels << create(:label, project_id: old_project.id, title: 'label1')
       old_issue.labels << create(:label, project_id: old_project.id, title: 'label2')
@@ -49,7 +49,7 @@ describe Issues::MoveService, services: true do
         end
 
         it 'assigns milestone to new issue' do
-          expect(new_issue.reload.milestone.title).to eq 'v1.0'
+          expect(new_issue.reload.milestone.title).to eq 'v9.0'
         end
 
         it 'assign labels to new issue' do
@@ -90,11 +90,6 @@ describe Issues::MoveService, services: true do
 
         it 'preserves author' do
           expect(new_issue.author).to eq author
-        end
-
-        it 'removes data that is invalid in new context' do
-          expect(new_issue.milestone).to be_nil
-          expect(new_issue.labels).to be_empty
         end
 
         it 'creates a new internal id for issue' do
