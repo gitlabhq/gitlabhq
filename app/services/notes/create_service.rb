@@ -5,6 +5,8 @@ module Notes
       note.author = current_user
       note.system = false
 
+      return unless valid_project?(note)
+
       if note.save
         notification_service.new_note(note)
 
@@ -27,6 +29,15 @@ module Notes
       note_data = hook_data(note)
       note.project.execute_hooks(note_data, :note_hooks)
       note.project.execute_services(note_data, :note_hooks)
+    end
+
+    private
+
+    def valid_project?(note)
+      return false unless project
+      return true if note.for_commit?
+
+      note.noteable.try(:project) == project
     end
   end
 end
