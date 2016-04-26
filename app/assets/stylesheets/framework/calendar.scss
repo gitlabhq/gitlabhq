@@ -68,3 +68,33 @@
     font-weight: 550;
   }
 }
+
+.user-contrib-cell {
+  fill: #ededed;
+  cursor: pointer;
+
+  &:hover {
+    stroke: #000;
+  }
+}
+
+.user-contrib-cell-1 {
+  fill: #acd5f2;
+}
+
+.user-contrib-cell-3 {
+  fill: #7fa8d1;
+}
+
+.user-contrib-cell-4 {
+  fill: #49729b;
+}
+
+.user-contrib-cell-5 {
+  fill: #254e77;
+}
+
+.user-contrib-text {
+  font-size: 12px;
+  fill: #959494;
+}
