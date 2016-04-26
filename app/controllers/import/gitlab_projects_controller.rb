@@ -1,14 +1,13 @@
-class Import::GitlabProjectController < Import::BaseController
+class Import::GitlabProjectsController < Import::BaseController
   before_action :verify_gitlab_project_import_enabled
-  before_action :gitlab_project_auth, except: :callback
+  #before_action :gitlab_project_auth, except: :callback
 
   rescue_from OAuth::Error, with: :gitlab_project_unauthorized
 
   #TODO permissions stuff
 
-  def callback
+  def new
 
-    redirect_to status_import_gitlab_project_url
   end
 
   def status

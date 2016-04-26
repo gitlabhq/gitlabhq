@@ -159,7 +159,6 @@ Rails.application.routes.draw do
 
     resource :gitlab_project, only: [:create, :new], controller: :gitlab_projects do
       get :status
-      get :callback
       get :jobs
     end
   end

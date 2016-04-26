@@ -91,14 +91,12 @@
                   %span Repo by URL
 
               - if gitlab_project_import_enabled?
-                = link_to "#", class: 'btn import_gitlab_project', onclick: '$(".js-toggle-content2").toggle();' do
+                = link_to new_import_gitlab_project_path, class: 'btn import_gitlab_project' do
                   %i.fa.fa-gitlab
                   %span GitLab project
 
           .js-toggle-content.hide
             = render "shared/import_form", f: f
-          .js-toggle-content2.hide
-            = render "project_import_form", f: f
 
       .prepend-botton-10
 
