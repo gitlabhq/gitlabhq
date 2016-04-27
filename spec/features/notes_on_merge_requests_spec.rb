@@ -151,7 +151,7 @@ describe 'Comments', feature: true do
         visit namespace_project_merge_request_path(project.namespace, project, merge_request)
 
         expect(merge_request.mr_and_commit_notes.count).to eq 2
-        expect(find('.notes-tab span.badge').text).to eq "1"
+        expect(find('.notes-tab span').text).to eq "(1)"
       end
     end
   end

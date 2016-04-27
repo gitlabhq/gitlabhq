@@ -252,7 +252,8 @@
   background: linear-gradient(180deg, $white-light 25%, $gray-light 100%);
 }
 
-.btn-refresh {
+.btn-build {
+  margin-left: 10px;
   i {
     color: $gl-icon-color;
   }
