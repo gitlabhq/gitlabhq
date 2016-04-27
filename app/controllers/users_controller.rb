@@ -74,8 +74,6 @@ class UsersController < ApplicationController
   def calendar
     calendar = contributions_calendar
     @timestamps = calendar.timestamps
-    @starting_year = calendar.starting_year
-    @starting_month = calendar.starting_month
 
     render 'calendar', layout: false
   end

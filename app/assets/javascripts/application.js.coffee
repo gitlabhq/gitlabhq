@@ -19,7 +19,6 @@
 #= require jquery.scrollTo
 #= require jquery.turbolinks
 #= require d3
-#= require cal-heatmap
 #= require turbolinks
 #= require autosave
 #= require bootstrap/affix

@@ -26,75 +26,28 @@
   }
 }
 
-/**
-* This overwrites the default values of the cal-heatmap gem
-*/
-.calendar {
-  .qi {
-    fill: #fff;
-  }
+.user-calendar {
+  text-align: center;
 
-  .q1 {
-    fill: #ededed !important;
-  }
-
-  .q2 {
-    fill: #acd5f2 !important;
-  }
-
-  .q3 {
-    fill: #7fa8d1 !important;
-  }
-
-  .q4 {
-    fill: #49729b !important;
-  }
-
-  .q5 {
-    fill: #254e77 !important;
-  }
-
-  .future {
-    visibility: hidden;
-  }
-
-  .domain-background {
-    fill: none;
-    shape-rendering: crispedges;
-  }
-
-  .ch-tooltip {
-    padding: 3px;
-    font-weight: 550;
+  .calendar {
+    display: inline-block;
   }
 }
 
 .user-contrib-cell {
-  fill: #ededed;
-  cursor: pointer;
-
   &:hover {
+    cursor: pointer;
     stroke: #000;
   }
-}
-
-.user-contrib-cell-1 {
-  fill: #acd5f2;
-}
-
-.user-contrib-cell-3 {
-  fill: #7fa8d1;
-}
-
-.user-contrib-cell-4 {
-  fill: #49729b;
-}
-
-.user-contrib-cell-5 {
-  fill: #254e77;
 }
 
 .user-contrib-text {
   font-size: 12px;
   fill: #959494;
+}
+
+.calendar-hint {
+  margin-top: -23px;
+  float: right;
+  font-size: 12px;
 }
