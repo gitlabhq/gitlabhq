@@ -80,9 +80,9 @@ ActiveRecord::Schema.define(version: 20160421130527) do
     t.string   "sentry_dsn"
     t.boolean  "email_author_in_body",              default: false
     t.integer  "default_group_visibility"
-    t.boolean  "repository_checks_enabled",         default: true
-    t.integer  "metrics_packet_size",               default: 1
+    t.boolean  "repository_checks_enabled",         default: false
     t.text     "shared_runners_text"
+    t.integer  "metrics_packet_size",               default: 1
   end
 
   create_table "approvals", force: :cascade do |t|
