@@ -177,9 +177,6 @@ gem 'ruby-fogbugz', '~> 0.2.1'
 # d3
 gem 'd3_rails', '~> 3.5.0'
 
-#cal-heatmap
-gem 'cal-heatmap-rails', '~> 3.6.0'
-
 # underscore-rails
 gem "underscore-rails", "~> 1.8.0"
 
