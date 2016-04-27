@@ -12,7 +12,7 @@ class Spinach::Features::User < Spinach::FeatureSteps
     user = User.find_by(name: 'John Doe')
     project = contributed_project
 
-    # Issue controbution
+    # Issue contribution
     issue_params = { title: 'Bug in old browser' }
     Issues::CreateService.new(project, user, issue_params).execute
 
