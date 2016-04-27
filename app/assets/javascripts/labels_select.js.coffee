@@ -30,7 +30,7 @@ class @LabelsSelect
       if issueUpdateURL
         labelHTMLTemplate = _.template(
             '<% _.each(labels, function(label){ %>
-            <a href="<%= ["",issueURLSplit[1], issueURLSplit[2],""].join("/") %>issues?label_name=<%= _.escape(label.title) %>">
+            <a href="<%= ["",issueURLSplit[1], issueURLSplit[2],""].join("/") %>issues?label_name[]=<%= _.escape(label.title) %>">
             <span class="label has-tooltip color-label" title="<%= _.escape(label.description) %>" style="background-color: <%= label.color %>; color: <%= label.text_color %>;">
             <%= _.escape(label.title) %>
             </span>
