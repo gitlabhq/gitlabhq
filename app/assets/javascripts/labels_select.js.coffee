@@ -318,6 +318,20 @@ class @LabelsSelect
             @indeterminateIds = _this.getIndeterminateIds()
       )
 
+    @bindEvents()
+
+  bindEvents: ->
+    $('body').on 'change', '.selected_issue', @onSelectCheckboxIssue
+
+  onSelectCheckboxIssue: ->
+    return if $('.selected_issue:checked').length
+
+    # Remove inputs
+    $('.issues_bulk_update .labels-filter input[type="hidden"]').remove()
+
+    # Also restore button text
+    $('.issues_bulk_update .labels-filter .dropdown-toggle-text').text('Label')
+
   getIndeterminateIds: ->
     label_ids = []
 
