@@ -416,13 +416,13 @@ class GitLabDropdown
       return selectedObject
 
   selectRowAtIndex: (index) ->
-    selector = ".dropdown-content li:not(.divider):eq(#{index}) a"
+    selector = ".dropdown-content li:not(.divider):has('a'):eq(#{index}) a"
 
     if @dropdown.find(".dropdown-toggle-page").length
       selector = ".dropdown-page-one #{selector}"
 
     # simulate a click on the first link
-    $(selector, @dropdown).trigger "click"
+    $(selector, @dropdown)[0].click() if $(selector, @dropdown)[0]
 
   addArrowKeyEvent: ->
     ARROW_KEY_CODES = [38, 40]
@@ -457,6 +457,8 @@ class GitLabDropdown
         return false
 
       if currentKeyCode is 13
+        e.preventDefault()
+        e.stopImmediatePropagation()
         @selectRowAtIndex currentIndex
 
   removeArrayKeyEvent: ->
