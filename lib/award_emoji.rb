@@ -52,6 +52,10 @@ class AwardEmoji
     end
   end
 
+  def self.unicode
+    @unicode ||= emojis.map {|key, value| { key => emojis[key]["unicode"] } }.inject(:merge!)
+  end
+
   def self.aliases
     @aliases ||= begin
       json_path = File.join(Rails.root, 'fixtures', 'emojis', 'aliases.json' )

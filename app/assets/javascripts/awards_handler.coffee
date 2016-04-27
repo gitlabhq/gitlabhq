@@ -1,5 +1,5 @@
 class @AwardsHandler
-  constructor: (@get_emojis_url, @post_emoji_url, @noteable_type, @noteable_id, @aliases) ->
+  constructor: (@get_emojis_url, @post_emoji_url, @noteable_type, @noteable_id, @unicodes) ->
     $(".js-add-award").on "click", (event) =>
       event.stopPropagation()
       event.preventDefault()
@@ -57,7 +57,6 @@ class @AwardsHandler
         , 200
 
   addAward: (emoji) ->
-    emoji = @normilizeEmojiName(emoji)
     @postEmoji emoji, =>
       @addAwardToEmojiBar(emoji)
 
@@ -66,7 +65,6 @@ class @AwardsHandler
   addAwardToEmojiBar: (emoji) ->
     @addEmojiToFrequentlyUsedList(emoji)
 
-    emoji = @normilizeEmojiName(emoji)
     if @exist(emoji)
       if @isActive(emoji)
         @decrementCounter(emoji)
@@ -148,15 +146,7 @@ class @AwardsHandler
     $('.award-control').tooltip()
 
   resolveNameToCssClass: (emoji) ->
-    emoji_icon = $(".emoji-menu-content [data-emoji='#{emoji}']")
-
-    if emoji_icon.length > 0
-      unicodeName = emoji_icon.data("unicode-name")
-    else
-      # Find by alias
-      unicodeName = $(".emoji-menu-content [data-aliases*=':#{emoji}:']").data("unicode-name")
-
-    "emoji-#{unicodeName}"
+    "emoji-#{@unicodes[emoji]}"
 
   postEmoji: (emoji, callback) ->
     $.post @post_emoji_url, { note: {
@@ -174,9 +164,6 @@ class @AwardsHandler
     $('body, html').animate({
       scrollTop: $('.awards').offset().top - 80
     }, 200)
-
-  normilizeEmojiName: (emoji) ->
-    @aliases[emoji] || emoji
 
   addEmojiToFrequentlyUsedList: (emoji) ->
     frequently_used_emojis = @getFrequentlyUsedEmojis()
