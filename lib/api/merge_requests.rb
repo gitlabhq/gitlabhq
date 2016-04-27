@@ -228,7 +228,7 @@ module API
           # Merge request can not be merged
           # because user dont have permissions to push into target branch
           unauthorized! unless merge_request.can_be_merged_by?(current_user)
-          not_allowed! if !merge_request.open? || merge_request.work_in_progress?
+          not_allowed! if !merge_request.open? || merge_request.work_in_progress? || merge_request.cannot_be_merged_because_build_failed?
 
           merge_request.check_if_can_be_merged
 
