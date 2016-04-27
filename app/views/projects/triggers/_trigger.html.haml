@@ -1,7 +1,6 @@
 %tr
   %td
-    .clearfix
-      %span.monospace= trigger.token
+    %span.monospace= trigger.token
 
   %td
     - if trigger.last_trigger_request
@@ -9,6 +8,5 @@
     - else
       Never
 
-  %td
-    .pull-right
-      = link_to 'Revoke', namespace_project_trigger_path(@project.namespace, @project, trigger), data: { confirm: 'Are you sure?'}, method: :delete, class: "btn btn-danger btn-sm btn-grouped"
+  %td.text-right
+    = link_to 'Revoke', namespace_project_trigger_path(@project.namespace, @project, trigger), data: { confirm: 'Are you sure?'}, method: :delete, class: "btn btn-warning btn-sm"
