@@ -78,7 +78,7 @@ GitHub will generate an application ID and secret key for you to use.
         args: { scope: 'user:email' } }
     ```
 
-    __Replace `https://github.example.com/` with your GitHub URL__
+    __Replace `https://github.example.com/` with your GitHub URL.__
 
 1.  Change 'YOUR_APP_ID' to the client ID from the GitHub application page from step 7.
 

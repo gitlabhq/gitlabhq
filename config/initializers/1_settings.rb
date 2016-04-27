@@ -143,7 +143,7 @@ Settings.omniauth.session_tickets['cas3'] = 'ticket'
 # Fill out omniauth-gitlab settings. It is needed for easy set up GHE or GH by just specifying url.
 
 github_default_url = "https://github.com"
-github_settings = Settings.omniauth['providers'].find { |provider| provider["name"] == "github"}
+github_settings = Settings.omniauth['providers'].find { |provider| provider["name"] == "github" }
 
 if github_settings
   # For compatibility with old config files (before 7.8)
@@ -158,9 +158,9 @@ if github_settings
     github_settings["args"]["client_options"] = OmniAuth::Strategies::GitHub.default_options[:client_options]
   else
     github_settings["args"]["client_options"] = {
-      "site" =>          File.join(github_settings["url"], "api/v3"),
+      "site"          => File.join(github_settings["url"], "api/v3"),
       "authorize_url" => File.join(github_settings["url"], "login/oauth/authorize"),
-      "token_url" =>     File.join(github_settings["url"], "login/oauth/access_token")
+      "token_url"     => File.join(github_settings["url"], "login/oauth/access_token")
     }
   end
 end
