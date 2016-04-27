@@ -21,8 +21,6 @@
                   %a.is-focused.dropdown-menu-empty-link
                     Loading...
             = dropdown_loading
-          - if current_user.id
-            = render "search/header_category_search", label: label, project: @project
           %i.search-icon
           %i.clear-icon.js-clear-input
 
@@ -40,6 +38,10 @@
         = hidden_field_tag :scope, 'commits'
       - else
         = hidden_field_tag :search_code, true
+
+      .current-project-opts.hide{:'data-user-issues-path' => namespace_project_issues_path(@project.namespace, @project), :'data-user-mr-path' => namespace_project_merge_requests_path(@project.namespace, @project), :'data-project-name' => @project.name}
+
+    .dashboard-opts.hide{:'data-user-issues-path' => issues_dashboard_url, :'data-user-mr-path' => merge_requests_dashboard_url}
 
     - if @snippet || @snippets
       = hidden_field_tag :snippets, true

@@ -263,6 +263,7 @@ class @SearchAutocomplete
     # Reset state
     @resetSearchState()
     @searchInput.trigger('locationBadgeRemoved')
+
     @wrap.removeClass('has-location-badge')
 
   disableAutocomplete: ->
