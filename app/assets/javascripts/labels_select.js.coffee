@@ -316,7 +316,6 @@ class @LabelsSelect
 
         setIndeterminateIds: ->
           if @dropdown.find('.dropdown-menu-toggle').hasClass('js-filter-bulk-update')
-            console.log 'options.setIndeterminateIds'
             @indeterminateIds = _this.getIndeterminateIds()
       )
 
