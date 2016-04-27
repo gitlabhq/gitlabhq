@@ -3,6 +3,17 @@ Please view this file on the master branch, on stable branches it's out of date.
 v 8.8.0 (unreleased)
 
 v 8.7.1 (unreleased)
+  - Prevent privilege escalation via "impersonate" feature
+  - Prevent privilege escalation via notes API
+  - Prevent privilege escalation via project webhook API
+  - Prevent XSS via Git branch and tag names
+  - Prevent XSS via custom issue tracker URL
+  - Prevent XSS via `window.opener`
+  - Prevent XSS via label drop-down
+  - Prevent information disclosure via milestone API
+  - Prevent information disclosure via snippet API
+  - Prevent information disclosure via project labels
+  - Prevent information disclosure via new merge request page
   - Use the `can?` helper instead of `current_user.can?`
   - Fix .gitlab-ci.yml parsing issue when hidde job is a template without script definition. !3849
   - Fix license detection to detect all license files, not only known licenses. !3878
