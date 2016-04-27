@@ -440,7 +440,7 @@ class GitLabDropdown
         e.stopImmediatePropagation()
 
         PREV_INDEX = currentIndex
-        $listItems = $(selector, @dropdown)
+        $listItems = $(selector, @dropdown).has('a')
 
         # if @options.filterable
         #   $input.blur()

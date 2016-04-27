@@ -159,6 +159,7 @@ class @SearchAutocomplete
     @loadingSuggestions = false
 
     @dropdown.addClass('open')
+    @dropdown.trigger 'shown.bs.dropdown'
     @searchInput.removeClass('disabled')
 
   onSearchInputKeyDown: =>
@@ -267,6 +268,7 @@ class @SearchAutocomplete
   disableAutocomplete: ->
     @searchInput.addClass('disabled')
     @dropdown.removeClass('open')
+    @dropdown.trigger 'hidden.bs.dropdown'
     @restoreMenu()
 
   restoreMenu: ->
