@@ -3,9 +3,10 @@ module Gitlab
     class ProjectTreeRestorer
       attr_reader :project
 
-      def initialize(path:, user:)
+      def initialize(path:, user:, project_path:)
         @path = File.join(path, 'project.json')
         @user = user
+        @project_path = project_path
       end
 
       def restore
@@ -48,6 +49,7 @@ module Gitlab
         project_params = @tree_hash.reject { |_key, value| value.is_a?(Array) }
         project = Gitlab::ImportExport::ProjectFactory.create(
           project_params: project_params, user: @user)
+        project.path = @project_path
         project.save
         project.import_start
         project

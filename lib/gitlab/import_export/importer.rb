@@ -13,6 +13,7 @@ module Gitlab
       end
 
       def import
+        FileUtils.mkdir_p(@storage_path)
         decompress_archive
       end
 

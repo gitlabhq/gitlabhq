@@ -3,7 +3,7 @@ module Gitlab
     class ImportService
 
       def self.execute(*args)
-        new(args).execute
+        new(*args).execute
       end
 
       def initialize(archive_file:, owner:, namespace_id:, project_path:)
@@ -26,7 +26,7 @@ module Gitlab
       end
 
       def project_tree
-        @project_tree ||= Gitlab::ImportExport::ProjectTreeRestorer.new(path: storage_path, user: @current_user)
+        @project_tree ||= Gitlab::ImportExport::ProjectTreeRestorer.new(path: storage_path, user: @current_user, project_path: @project_path)
       end
 
       def restore_repo
