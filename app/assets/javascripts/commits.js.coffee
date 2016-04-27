@@ -1,7 +1,7 @@
 class @CommitsList
   @timer = null
 
-  @init: (ref, limit) ->
+  @init: (limit) ->
     $("body").on "click", ".day-commits-table li.commit", (event) ->
       if event.target.nodeName != "A"
         location.href = $(this).attr("url")

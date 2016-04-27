@@ -953,13 +953,11 @@ class Project < ActiveRecord::Base
     wiki = Repository.new("#{old_path}.wiki", self)
 
     if repo.exists?
-      repo.expire_cache
-      repo.expire_emptiness_caches
+      repo.before_delete
     end
 
     if wiki.exists?
-      wiki.expire_cache
-      wiki.expire_emptiness_caches
+      wiki.before_delete
     end
   end
 

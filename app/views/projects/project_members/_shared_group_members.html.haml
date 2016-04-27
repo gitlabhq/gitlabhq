@@ -8,7 +8,7 @@
       group, members with
       %strong #{group_links.human_access}
       role (#{shared_group_users_count})
-      - if current_user.can?(:admin_group, shared_group)
+      - if can?(current_user, :admin_group, shared_group)
         .panel-head-actions
           = link_to group_group_members_path(shared_group), class: 'btn btn-sm' do
             %i.fa.fa-pencil-square-o

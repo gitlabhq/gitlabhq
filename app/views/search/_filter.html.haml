@@ -1,47 +1,33 @@
-.dropdown.inline
-  %button.dropdown-toggle.btn.btn-sm{type: 'button', 'data-toggle' => 'dropdown'}
-    %span.light Group:
-    - if @group.present?
-      %strong= @group.name
-    - else
-      Any
-    %b.caret
-  .dropdown-menu.dropdown-select.dropdown-menu-selectable
-    .dropdown-title
-      %span Filter results by group
-      %button.dropdown-title-button.dropdown-menu-close{aria: {label: "Close"}}
-        = icon('times')
-    .dropdown-content
-      %ul
-        %li
-          = link_to search_filter_path(group_id: nil), class: ("is-active" if !params[:group_id].present?) do
-            Any
-        %li.divider
-        - current_user.authorized_groups.sort_by(&:name).each do |group|
-          %li
-            = link_to search_filter_path(group_id: group.id, project_id: nil), class: ("is-active" if params[:group_id] == group.id.to_s) do
-              = group.name
+- if params[:group_id].present?
+  = hidden_field_tag :group_id, params[:group_id]
+- if params[:project_id].present?
+  = hidden_field_tag :project_id, params[:project_id]
+.dropdown
+  %button.dropdown-menu-toggle.btn.js-search-group-dropdown{ type: "button", data: { toggle: "dropdown", default_label: "Group:" } }
+    %span.dropdown-toggle-text
+      Group:
+      - if @group.present?
+        = @group.name
+      - else
+        Any
+    = icon("chevron-down")
+  .dropdown-menu.dropdown-select.dropdown-menu-selectable.dropdown-menu-align-right
+    = dropdown_title("Filter results by group")
+    = dropdown_filter("Search groups")
+    = dropdown_content
+    = dropdown_loading
 
-.dropdown.inline.prepend-left-10.project-filter
-  %button.dropdown-toggle.btn.btn-sm{type: 'button', 'data-toggle' => 'dropdown'}
-    %span.light Project:
-    - if @project.present?
-      %strong= @project.name_with_namespace
-    - else
-      Any
-    %b.caret
-  .dropdown-menu.dropdown-select.dropdown-menu-selectable
-    .dropdown-title
-      %span Filter results by project
-      %button.dropdown-title-button.dropdown-menu-close{aria: {label: "Close"}}
-        = icon('times')
-    .dropdown-content
-      %ul
-        %li
-          = link_to search_filter_path(project_id: nil), class: ("is-active" if !params[:project_id].present?) do
-            Any
-        %li.divider
-        - current_user.authorized_projects.sort_by(&:name_with_namespace).each do |project|
-          %li
-            = link_to search_filter_path(project_id: project.id, group_id: nil), class: ("is-active" if params[:project_id] == project.id.to_s) do
-              = project.name_with_namespace
+.dropdown.project-filter
+  %button.dropdown-menu-toggle.btn.js-search-project-dropdown{ type: "button", data: { toggle: "dropdown", default_label: "Project:" } }
+    %span.dropdown-toggle-text
+      Project:
+      - if @project.present?
+        = @project.name_with_namespace
+      - else
+        Any
+    = icon("chevron-down")
+  .dropdown-menu.dropdown-select.dropdown-menu-selectable.dropdown-menu-align-right
+    = dropdown_title("Filter results by project")
+    = dropdown_filter("Search projects")
+    = dropdown_content
+    = dropdown_loading

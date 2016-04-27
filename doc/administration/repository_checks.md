@@ -1,7 +1,8 @@
 # Repository checks
 
 >**Note:**
-This feature was [introduced][ce-3232] in GitLab 8.7.
+This feature was [introduced][ce-3232] in GitLab 8.7. It is OFF by
+default because it still causes too many false alarms.
 
 Git has a built-in mechanism, [git fsck][git-fsck], to verify the
 integrity of all data commited to a repository. GitLab administrators
