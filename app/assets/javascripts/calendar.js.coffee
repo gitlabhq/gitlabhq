@@ -1,5 +1,6 @@
 class @Calendar
   constructor: (timestamps, calendar_activities_path) ->
+    currentSelectedDate = ''
     # Get the highest value from the timestampes
     highestValue = 0
     _.each timestamps, (count) ->
@@ -89,7 +90,14 @@ class @Calendar
       .attr 'width', 15
       .attr 'height', 15
       .attr 'title', (stamp) ->
-        "#{stamp.count} contributions<br />#{gl.utils.formatDate stamp.date}"
+        contribText = 'No contributions'
+
+        if stamp.count > 0
+          contribText = "#{stamp.count} contribution#{if stamp.count > 1 then 's' else ''}"
+
+        date = dateFormat(stamp.date, 'mmm d, yyyy')
+
+        "#{contribText}<br />#{date}"
       .attr 'class', 'user-contrib-cell js-tooltip'
       .attr 'fill', (stamp) ->
         if stamp.count isnt 0
@@ -98,16 +106,22 @@ class @Calendar
           '#ededed'
       .attr 'data-container', 'body'
       .on 'click', (stamp) ->
-        date = stamp.date
-        formated_date = date.getFullYear() + "-" + (date.getMonth()+1) + "-" + date.getDate()
-        $.ajax
-          url: calendar_activities_path
-          data:
-            date: formated_date
-          cache: false
-          dataType: "html"
-          success: (data) ->
-            $(".user-calendar-activities").html data
+        if currentSelectedDate is ''
+          currentSelectedDate = stamp.date
+          formated_date = currentSelectedDate.getFullYear() + "-" + (currentSelectedDate.getMonth()+1) + "-" + currentSelectedDate.getDate()
+
+          $.ajax
+            url: calendar_activities_path
+            data:
+              date: formated_date
+            cache: false
+            dataType: 'html'
+            success: (data) ->
+              $('.user-calendar-activities').html data
+        else
+          currentSelectedDate = ''
+          $('.user-calendar-activities, .content_list').html ''
+          Pager.getOld()
 
     # Month titles
     svg.append 'g'
