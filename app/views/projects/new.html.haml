@@ -91,7 +91,7 @@
                   %span Repo by URL
 
               - if gitlab_project_import_enabled?
-                = link_to new_import_gitlab_project_path, class: 'btn import_gitlab_project' do
+                = link_to new_import_gitlab_project_path, class: 'btn import_gitlab_project project-submit' do
                   %i.fa.fa-gitlab
                   %span GitLab project
 
@@ -126,4 +126,8 @@
   });
   $('.modal-header .close').bind('click', function() {
     $(".modal").hide();
+  });
+  $('.import_gitlab_project').bind('click', function() {
+    var _href = $("a.import_gitlab_project").attr("href");
+    $(".import_gitlab_project").attr("href", _href + '?namespace_id=' + $("#project_namespace_id").val() + '&path=' + $("#project_path").val());
   });

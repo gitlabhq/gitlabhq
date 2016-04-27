@@ -9,9 +9,12 @@
   %p
     To get started you add your project export file below.
   .form-group
+    = hidden_field_tag :namespace_id, @namespace_id
+    = hidden_field_tag :path, @path
     = label_tag :file, class: 'control-label' do
       %span GitLab export file
     .col-sm-10
       = file_field_tag :file, class: ''
+
   .form-actions
     = submit_tag 'Continue to the next step', class: 'btn btn-create'

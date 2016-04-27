@@ -27,15 +27,18 @@ class Import::GitlabProjectsController < Import::BaseController
   end
 
   def create
+    # TODO verify access to namespace and path
     file = params[:file]
+    namespace_id = project_params[:namespace_id]
+    path = project_params[:path]
 
     repo_owner = current_user.username
     @target_namespace = params[:new_namespace].presence || repo_owner
 
     @project = Project.create_from_import_job(current_user_id: current_user.id,
                                               tmp_file: File.expand_path(file.path),
-                                              namespace_id: @namespace_id,
-                                              project_path: @path)
+                                              namespace_id: namespace_id,
+                                              project_path: path)
   end
 
   private
@@ -45,7 +48,7 @@ class Import::GitlabProjectsController < Import::BaseController
   end
 
   def project_params
-    params.require(:project).permit(
+    params.permit(
       :path, :namespace_id,
     )
   end
