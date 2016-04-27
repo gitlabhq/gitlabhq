@@ -53,6 +53,7 @@ class Dispatcher
         shortcut_handler = new ShortcutsIssuable(true)
         new ZenMode()
       when "projects:merge_requests:diffs"
+        new CreateIssueFromComment()
         new Diff()
         new ZenMode()
       when 'projects:merge_requests:index'

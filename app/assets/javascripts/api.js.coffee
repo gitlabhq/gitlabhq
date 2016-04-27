@@ -7,6 +7,7 @@
   labelsPath: "/api/:version/projects/:id/labels"
   licensePath: "/api/:version/licenses/:key"
   gitignorePath: "/api/:version/gitignores/:key"
+  issuesPath: "/api/:version/projects/:id/issues"
 
   group: (group_id, callback) ->
     url = Api.buildUrl(Api.groupPath)
@@ -76,6 +77,21 @@
       dataType: "json"
     ).done (label) ->
       callback(label)
+    .error (message) ->
+      callback(message.responseJSON)
+
+  newIssue: (project_id, data, callback) ->
+    url = Api.buildUrl(Api.issues_path)
+    url = url.replace(':id', project_id)
+
+    data.private_token = gon.api_token
+    $.ajax(
+      url: url
+      type: "POST"
+      data: data
+      dataType: "json"
+    ).done (issue) ->
+      callback(issue)
     .error (message) ->
       callback(message.responseJSON)
 

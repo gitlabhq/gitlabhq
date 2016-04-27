@@ -64,7 +64,7 @@
             Changes
             %span.badge= @merge_request.diff_size
 
-      .tab-content
+      .tab-content{data: { project_id: @project.id } }
         #notes.notes.tab-pane.voting_notes
           .content-block.content-block-small.oneline-block
             = render 'votes/votes_block', votable: @merge_request

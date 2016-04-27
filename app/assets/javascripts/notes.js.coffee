@@ -535,6 +535,7 @@ class @Notes
 
       # show the form
       @setupDiscussionNoteForm $link, newForm
+      $link.trigger('createIssueFromComment:show')
 
   ###
   Called in response to "cancel" on a diff note form.

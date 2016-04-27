@@ -7,6 +7,11 @@
       %li
         %a.js-md-preview-button{ href: "#md-preview-holder", tabindex: -1 }
           Preview
+      - if @merge_request
+        %li.create-issue-from-note.hidden
+          = check_box_tag 'create-issue'
+          %span
+            Make an issue from this note
       %li.pull-right
         %button.zen-control.zen-control-full.js-zen-enter{ type: 'button', tabindex: -1 }
           Go full screen
