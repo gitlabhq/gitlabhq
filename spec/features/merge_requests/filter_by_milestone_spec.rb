@@ -21,14 +21,14 @@ feature 'Merge Request filtering by Milestone', feature: true do
   end
 
   context 'filters by upcoming milestone', js: true do
-    it 'should not show issues with no expiry' do
+    it 'should show issues with no expiry' do
       create(:merge_request, :with_diffs, source_project: project)
       create(:merge_request, :simple, source_project: project, milestone: milestone)
 
       visit_merge_requests(project)
       filter_by_milestone(Milestone::Upcoming.title)
 
-      expect(page).to have_css('.merge-request', count: 0)
+      expect(page).to have_css('.merge-request', count: 2)
     end
 
     it 'should show issues in future' do
@@ -42,7 +42,7 @@ feature 'Merge Request filtering by Milestone', feature: true do
       expect(page).to have_css('.merge-request', count: 1)
     end
 
-    it 'should not show issues in past' do
+    it 'should show issues in past' do
       milestone = create(:milestone, project: project, due_date: Date.yesterday)
       create(:merge_request, :with_diffs, source_project: project)
       create(:merge_request, :simple, source_project: project, milestone: milestone)
@@ -50,7 +50,7 @@ feature 'Merge Request filtering by Milestone', feature: true do
       visit_merge_requests(project)
       filter_by_milestone(Milestone::Upcoming.title)
 
-      expect(page).to have_css('.merge-request', count: 0)
+      expect(page).to have_css('.merge-request', count: 2)
     end
   end
 

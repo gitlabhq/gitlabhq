@@ -37,8 +37,8 @@ module Issuable
     scope :closed, -> { with_state(:closed) }
 
     scope :left_joins_milestones,    -> { joins("LEFT OUTER JOIN milestones ON #{table_name}.milestone_id = milestones.id") }
-    scope :order_milestone_due_desc, -> { outer_join_milestone.reorder('milestones.due_date IS NULL ASC, milestones.due_date DESC, milestones.id DESC') }
-    scope :order_milestone_due_asc, -> { outer_join_milestone.reorder('milestones.due_date IS NULL ASC, milestones.due_date ASC, milestones.id ASC') }
+    scope :order_milestone_due_desc, -> { left_joins_milestones.reorder('CASE WHEN milestones.due_date IS NULL then 0 ELSE 1 END DESC, CASE WHEN milestones.id IS NULL then 0 ELSE 1 END DESC, milestones.due_date DESC') }
+    scope :order_milestone_due_asc,  -> { left_joins_milestones.reorder('CASE WHEN milestones.due_date IS NULL then 1 ELSE 0 END ASC, CASE WHEN milestones.id IS NULL then 1 ELSE 0 END ASC, milestones.due_date ASC') }
 
     scope :without_label, -> { joins("LEFT OUTER JOIN label_links ON label_links.target_type = '#{name}' AND label_links.target_id = #{table_name}.id").where(label_links: { id: nil }) }
     scope :join_project, -> { joins(:project) }

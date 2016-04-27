@@ -15,14 +15,14 @@ feature 'Issue filtering by Milestone', feature: true do
   end
 
   context 'filters by upcoming milestone', js: true do
-    it 'should not show issues with no expiry' do
+    it 'should show issues with no expiry' do
       create(:issue, project: project)
       create(:issue, project: project, milestone: milestone)
 
       visit_issues(project)
       filter_by_milestone(Milestone::Upcoming.title)
 
-      expect(page).to have_css('.issue', count: 0)
+      expect(page).to have_css('.issue', count: 2)
     end
 
     it 'should show issues in future' do
@@ -36,7 +36,7 @@ feature 'Issue filtering by Milestone', feature: true do
       expect(page).to have_css('.issue', count: 1)
     end
 
-    it 'should not show issues in past' do
+    it 'should show issues in past' do
       milestone = create(:milestone, project: project, due_date: Date.yesterday)
       create(:issue, project: project)
       create(:issue, project: project, milestone: milestone)
@@ -44,7 +44,7 @@ feature 'Issue filtering by Milestone', feature: true do
       visit_issues(project)
       filter_by_milestone(Milestone::Upcoming.title)
 
-      expect(page).to have_css('.issue', count: 0)
+      expect(page).to have_css('.issue', count: 2)
     end
   end
 

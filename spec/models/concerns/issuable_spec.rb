@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Issue, "Issuable" do
-  let!(:issue) { create(:issue) }
+  let(:issue) { create(:issue) }
   let(:user) { create(:user) }
 
   describe "Associations" do
@@ -119,6 +119,8 @@ describe Issue, "Issuable" do
     #Issues/MRs with milestones ordered by date
     #Issues/MRs with milestones without dates
     #Issues/MRs without milestones
+
+    let!(:issue) { create(:issue) }
     let(:project) { issue.project }
     let!(:early_milestone) { create(:milestone, project: project, due_date: 10.days.from_now) }
     let!(:late_milestone) { create(:milestone, project: project, due_date: 30.days.from_now) }
