@@ -291,7 +291,6 @@ class @LabelsSelect
                 saveLabelData()
 
           if $dropdown.hasClass('js-filter-bulk-update')
-            @removeInputs()
             $dropdown.parent().find('.is-active, .is-indeterminate').removeClass()
 
         multiSelect: $dropdown.hasClass 'js-multiselect'
