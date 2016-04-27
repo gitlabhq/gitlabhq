@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Issue, "Issuable" do
-  let(:issue) { create(:issue) }
+  let!(:issue) { create(:issue) }
   let(:user) { create(:user) }
 
   describe "Associations" do
@@ -113,6 +113,45 @@ describe Issue, "Issuable" do
       expect(issue.new?).to be_falsey
     end
   end
+
+  describe "#sort" do
+    #Correct order is:
+    #Issues/MRs with milestones ordered by date
+    #Issues/MRs with milestones without dates
+    #Issues/MRs without milestones
+    let(:project) { issue.project }
+    let!(:early_milestone) { create(:milestone, project: project, due_date: 10.days.from_now) }
+    let!(:late_milestone) { create(:milestone, project: project, due_date: 30.days.from_now) }
+    let!(:issue1) { create(:issue, project: project, milestone: early_milestone) }
+    let!(:issue2) { create(:issue, project: project, milestone: late_milestone) }
+    let!(:issue3) { create(:issue, project: project) }
+
+
+    context "milestone due later" do
+      subject { Issue.where(project_id: project.id).order_milestone_due_desc }
+      before  { @issues = subject }
+
+      it "puts issues with nil values at the end of collection" do
+        expect(@issues.first).to eq(issue2)
+        expect(@issues.second).to eq(issue1)
+        expect(@issues.third).to eq(issue)
+        expect(@issues.fourth).to eq(issue3)
+      end
+    end
+
+    context "milestone due soon" do
+      subject { Issue.where(project_id: project.id).order_milestone_due_asc }
+      before  { @issues = subject }
+
+      it "puts issues with nil values at the end of collection" do
+        expect(@issues.first).to eq(issue1)
+        expect(@issues.second).to eq(issue2)
+        expect(@issues.third).to eq(issue)
+        expect(@issues.fourth).to eq(issue3)
+      end
+    end
+  end
+
 
   describe '#subscribed?' do
     context 'user is not a participant in the issue' do
