@@ -45,7 +45,7 @@ class CategorySearchDropdown
     @dropdownContent.html(html)
 
   categorySearchDropdownTemplate: (issueUrl, mrUrl, name, userId) ->
-    "<ul>
+    "<ul class='category-dropdown-search'>
       <li class='dropdown-header'><span>Go to in #{name}</span></li>
       <li><a href='#{issueUrl}/?assignee_id=#{userId}'>Issues Assigned to me</a></li>
       <li><a href='#{issueUrl}/?author_id=#{userId}'>Issues I've created</a></li>

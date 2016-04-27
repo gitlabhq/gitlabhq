@@ -378,9 +378,12 @@ class GitLabDropdown
   rowClicked: (el) ->
     fieldName = @options.fieldName
     selectedIndex = el.parent().index()
+    value = undefined
     if @renderedData
       selectedObject = @renderedData[selectedIndex]
-    value = if @options.id then @options.id(selectedObject, el) else selectedObject.id
+      value = selectedObject.id
+
+    value = @options.id(selectedObject, el) if @options.id
     field = @dropdown.parent().find("input[name='#{fieldName}'][value='#{value}']")
     if el.hasClass(ACTIVE_CLASS)
       el.removeClass(ACTIVE_CLASS)

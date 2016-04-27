@@ -186,7 +186,7 @@ class @SearchAutocomplete
       else
         # Handle the case when deleting the input value other than backspace
         # e.g. Pressing ctrl + backspace or ctrl + x
-        if @searchInput.val() is ''
+        if @searchInput.val() is '' and not @wrap.find('.category-dropdown-search').length
           @disableAutocomplete()
         else
           # We should display the menu only when input is not empty
@@ -278,7 +278,7 @@ class @SearchAutocomplete
     @dropdownContent.html(html)
 
   onClick: (item, $el, e) ->
-    if location.pathname.indexOf(item.url) isnt -1
+    if location.pathname.indexOf(item.url if item) isnt -1
       e.preventDefault()
       if not @badgePresent
         if item.category is 'Projects'

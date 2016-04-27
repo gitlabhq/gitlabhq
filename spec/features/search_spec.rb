@@ -74,25 +74,18 @@ describe 'Search', feature: true  do
         it 'should show category search dropdown' do
           page.find('#search').click
 
-          expect(page).to have_selector('.category-search-dropdown')
-          expect(page).not_to have_selector('.general-category-search')
-        end
-
-        it 'should hide the location search dropdown' do
-          page.find('#search').click
-
-          expect(page).not_to have_selector('.dropdown-select')
+          expect(page).to have_selector('.dropdown-header', text: /go to in #{project.name}/i)
         end
       end
 
-      context 'click the links in the catgeory search dropdown' do
+      context 'click the links in the catgeory search dropdown', js: true do
 
         before do
           page.find('#search').click
         end
 
         it 'should take user to her issues page when issues assigned is clicked' do
-          find('.project-category-search').click_link 'Issues Assigned to me'
+          find('.category-dropdown-search').click_link 'Issues Assigned to me'
           sleep 2
 
           expect(page).to have_selector('.issues-holder')
@@ -100,7 +93,7 @@ describe 'Search', feature: true  do
         end
 
         it 'should take user to her issues page when issues authored is clicked' do
-          find('.project-category-search').click_link "Issues I've created"
+          find('.category-dropdown-search').click_link "Issues I've created"
           sleep 2
 
           expect(page).to have_selector('.issues-holder')
@@ -108,7 +101,7 @@ describe 'Search', feature: true  do
         end
 
         it 'should take user to her MR page when MR assigned is clicked' do
-          find('.project-category-search').click_link "Merge Requests Assigned to me"
+          find('.category-dropdown-search').click_link "Merge Requests Assigned to me"
           sleep 2
 
           expect(page).to have_selector('.merge-requests-holder')
@@ -116,7 +109,7 @@ describe 'Search', feature: true  do
         end
 
         it 'should take user to her MR page when MR authored is clicked' do
-          find('.project-category-search').click_link "Merge Requests I've created"
+          find('.category-dropdown-search').click_link "Merge Requests I've created"
           sleep 2
 
           expect(page).to have_selector('.merge-requests-holder')
@@ -131,12 +124,8 @@ describe 'Search', feature: true  do
           end
         end
 
-        it 'should hide the category search dropdown' do
-          expect(page).not_to have_selector('.category-search-dropdown')
-        end
-
-        it 'should show the location search dropdown' do
-          expect(page).to have_selector('.dropdown-select')
+        it 'should not display the category search dropdown' do
+          expect(page).not_to have_selector('.dropdown-header', text: /go to in #{project.name}/i)
         end
       end
     end
