@@ -35,10 +35,10 @@ module API
           ::Geo::ScheduleRepoDestroyService.new(params).execute
         when 'project_rename'
           required_attributes! %w(event_name project_id path_with_namespace old_path_with_namespace)
-          ::Geo::ScheduleRepoRenameService.new(params).execute
+          ::Geo::ScheduleRepoMoveService.new(params).execute
         when 'project_transfer'
           required_attributes! %w(event_name project_id path_with_namespace old_path_with_namespace)
-          ::Geo::ScheduleRepoRenameService.new(params).execute
+          ::Geo::ScheduleRepoMoveService.new(params).execute
         end
       end
     end
