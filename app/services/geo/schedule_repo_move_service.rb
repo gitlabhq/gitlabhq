@@ -1,5 +1,5 @@
 module Geo
-  class ScheduleRepoRenameService
+  class ScheduleRepoMoveService
     attr_reader :id, :name, :old_path_with_namespace, :path_with_namespace
 
     def initialize(params)
