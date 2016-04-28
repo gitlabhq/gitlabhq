@@ -309,7 +309,8 @@ class User < ActiveRecord::Base
   end
 
   def check_confirmation_email
-    skip_confirmation! if current_application_settings.skip_user_confirmation_email
+    byebug
+    skip_confirmation! unless current_application_settings.send_user_confirmation_email
   end
 
   def recently_sent_password_reset?

@@ -2,6 +2,8 @@ require 'spec_helper'
 
 feature 'Signup', feature: true do
   describe 'signup with no errors' do
+    before { allow_any_instance_of(ApplicationSetting).to receive(:send_user_confirmation_email).and_return(true) }
+
     it 'creates the user account and sends a confirmation email' do
       user = build(:user)
 
