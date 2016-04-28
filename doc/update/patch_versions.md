@@ -47,7 +47,7 @@ sudo -u git -H git checkout v`cat /home/git/gitlab/GITLAB_SHELL_VERSION` -b v`ca
 ```bash
 cd /home/git/gitlab-workhorse
 sudo -u git -H git fetch
-sudo -u git -H git checkout `cat /home/git/gitlab/GITLAB_WORKHORSE_VERSION` -b `cat /home/git/gitlab/GITLAB_WORKHORSE_VERSION`
+sudo -u git -H git checkout v`cat /home/git/gitlab/GITLAB_WORKHORSE_VERSION` -b v`cat /home/git/gitlab/GITLAB_WORKHORSE_VERSION`
 sudo -u git -H make
 ```
 
