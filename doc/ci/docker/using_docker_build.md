@@ -75,15 +75,19 @@ For more information please checkout [On Docker security: `docker` group conside
 
 ## 2. Use docker-in-docker executor
 
-Second approach is to use special Docker image with all tools installed (`docker` and `docker-compose`) and run build script in context of that image in privileged mode.
+The second approach is to use the special Docker image with all tools installed
+(`docker` and `docker-compose`) and run the build script in context of that
+image in privileged mode.
+
 In order to do that follow the steps:
 
 1. Install [GitLab Runner](https://gitlab.com/gitlab-org/gitlab-ci-multi-runner/#installation).
 
-1. Register GitLab Runner from command line to use `docker` and `privileged` mode:
+1. Register GitLab Runner from the command line to use `docker` and `privileged`
+   mode:
 
     ```bash
-    $ sudo gitlab-runner register -n \
+    sudo gitlab-runner register -n \
       --url https://gitlab.com/ci \
       --token RUNNER_TOKEN \
       --executor docker \
@@ -92,10 +96,11 @@ In order to do that follow the steps:
       --docker-privileged
     ```
 
-    The above command will register a new Runner to use special `docker:latest` image which is provided by Docker
-    creators. **Notice that it's using the `privileged` mode to start build and service containers.** If you want to use
-    [docker-in-docker](https://blog.docker.com/2013/09/docker-can-now-run-within-docker/) mode, you always have to use
-    `privileged = true` in your docker containers.
+    The above command will register a new Runner to use the special
+    `docker:latest` image which is provided by Docker. **Notice that it's using
+    the `privileged` mode to start the build and service containers.** If you
+    want to use [docker-in-docker] mode, you always have to use `privileged = true`
+    in your Docker containers.
 
     The above command will create a `config.toml` entry similar to this:
 
@@ -114,8 +119,9 @@ In order to do that follow the steps:
         Insecure = false
     ```
 
-    If you want to use Shared Runners available on your GitLab CE/EE installation, to build docker images, then
-    make sure that your Shared Runners configuration have `privileged` mode set to `true`.
+    If you want to use the Shared Runners available on your GitLab CE/EE
+    installation in order to build Docker images, then make sure that your
+    Shared Runners configuration has the `privileged` mode set to `true`.
 
 1. You can now use `docker` from build script:
 
@@ -126,7 +132,7 @@ In order to do that follow the steps:
     - docker:dind
 
     before_script:
-      - docker info
+    - docker info
 
     build:
       stage: build
@@ -135,9 +141,14 @@ In order to do that follow the steps:
       - docker run my-docker-image /script/to/run/tests
     ```
 
-1. However, by enabling `--docker-privileged` you are effectively disables all security mechanisms of containers and
-   exposing your host to privilege escalation which can lead to container breakout.
+1. However, by enabling `--docker-privileged` you are effectively disabling all
+   the security mechanisms of containers and exposing your host to privilege
+   escalation which can lead to container breakout.
 
-   For more information, check out [Runtime privilege](https://docs.docker.com/reference/run/#runtime-privilege-linux-capabilities-and-lxc-configuration).
+   For more information, check out the official Docker documentation on
+   [Runtime privilege and Linux capabilities][docker-cap].
 
 An example project using this approach can be found here: https://gitlab.com/gitlab-examples/docker.
+
+[docker-in-docker]: https://blog.docker.com/2013/09/docker-can-now-run-within-docker/
+[docker-cap]: https://docs.docker.com/reference/run/#runtime-privilege-and-linux-capabilities
