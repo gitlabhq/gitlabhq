@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.8.0 (unreleased)
+  - Assign labels and milestone to target project when moving issue
   - Remove future dates from contribution calendar graph.
   - Fix error when visiting commit builds page before build was updated
   - Add 'l' shortcut to open Label dropdown on issuables and 'i' to create new issue on a project
