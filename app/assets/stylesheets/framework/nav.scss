@@ -185,3 +185,22 @@
     }
   }
 }
+
+.layout-nav {
+  background: $gray-light;
+  border-bottom: 1px solid $border-color;
+
+  .controls {
+    float: right;
+    position: relative;
+    top: 10px;
+
+    .dropdown {
+      margin-left: 7px;
+    }
+  }
+
+  .nav-links {
+    border-bottom: none;
+  }
+}
