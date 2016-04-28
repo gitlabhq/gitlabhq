@@ -3,6 +3,10 @@
     = image_tag avatar_icon(todo.author_email, 40), class: 'avatar s40', alt:''
     .todo-title.title
       - unless todo.build_failed?
+        - if (todo.target.is_a?(MergeRequest) || todo.target.is_a?(Issue)) && ['closed', 'merged'].include?(todo.target.state)
+          %span.target-status
+            = todo_target_state_pill(todo)
+
         %span.author-name
           - if todo.author
             = link_to_author(todo)
@@ -16,10 +20,6 @@
           (removed)
 
       &middot; #{time_ago_with_tooltip(todo.created_at)}
-
-      - if (todo.target.is_a?(MergeRequest) || todo.target.is_a?(Issue)) && ['closed', 'merged'].include?(todo.target.state)
-        %span.target-status
-          = todo_target_state_pill(todo)
 
     - if todo.pending?
       .todo-actions.pull-right
