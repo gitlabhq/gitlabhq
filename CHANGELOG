@@ -110,6 +110,11 @@ v 8.7.4
   - Running rake gitlab:db:drop_tables now drops tables with cascade !4020
   - Running rake gitlab:db:drop_tables uses "IF EXISTS" as a precaution !4100
   - Use a case-insensitive comparison in sanitizing URI schemes
+  - Fix always showing build notification message when switching between merge requests
+  - Links for Redmine issue references are generated correctly again (Benedikt Huss)
+  - Fix an issue when filtering merge requests with more than one label. !3886
+  - Fix links on wiki pages for relative url setups. !4026 (Artem Sidorenko)
+  - Todos will display target state if issuable target is 'Closed' or 'Merged'
 
 v 8.7.3
   - Emails, Gitlab::Email::Message, Gitlab::Diff, and Premailer::Adapter::Nokogiri are now instrumented
