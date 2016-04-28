@@ -191,6 +191,7 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def export
+    #TODO:  Move to worker
     ::Projects::ImportExport::ExportService.new(@project, current_user).execute
 
     redirect_to(
@@ -267,6 +268,7 @@ class ProjectsController < Projects::ApplicationController
 
   def export_project_path
     # TODO: move this, probably to ImportExport and refactor
-    File.join(Settings.shared['path'], 'tmp/project_exports', @project.path_with_namespace, 'project.tar.gz')
+    folder = File.join(Settings.shared['path'], 'tmp/project_exports', @project.path_with_namespace)
+    Dir.glob("#{folder}/*export.tar.gz").max_by {|f| File.ctime(f)}
   end
 end

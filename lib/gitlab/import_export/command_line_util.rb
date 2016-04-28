@@ -24,7 +24,7 @@ module Gitlab
       end
 
       def tar_with_options(archive:, dir:, options:)
-        cmd = %W(tar -#{options} #{archive} #{dir})
+        cmd = %W(tar -#{options} #{archive} -C #{dir} .)
         _output, status = Gitlab::Popen.popen(cmd)
         status.zero?
       end

@@ -14,6 +14,7 @@ module Gitlab
       def save
         if compress_and_save
           remove_storage_path
+          Rails.logger.info("Saved project export #{archive_file}")
           archive_file
         else
           false
