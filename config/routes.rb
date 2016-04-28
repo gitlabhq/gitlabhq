@@ -708,6 +708,7 @@ Rails.application.routes.draw do
             post :toggle_subscription
             get :referenced_merge_requests
             get :related_branches
+            get :can_create_branch
           end
           collection do
             post  :bulk_update

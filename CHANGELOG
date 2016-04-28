@@ -10,6 +10,9 @@ v 8.7.1
   - Prevent users from deleting Webhooks via API they do not own
   - Fix Error 500 due to stale cache when projects are renamed or transferred
   - Fix .gitlab-ci.yml parsing issue when hidde job is a template without script definition
+  - Update width of search box to fix Safari bug. !3900 (Jedidiah)
+  - The "New Branch" button is now loaded asynchronously
+  - Use the `can?` helper instead of `current_user.can?`
 
 v 8.7.0
   - Gitlab::GitAccess and Gitlab::GitAccessWiki are now instrumented
