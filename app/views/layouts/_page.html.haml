@@ -22,12 +22,12 @@
         = image_tag avatar_icon(current_user, 60), alt: 'Profile', class: 'avatar avatar s36'
         .username
           = current_user.username
+  - if defined?(nav) && nav
+    .layout-nav
+      = render "layouts/nav/#{nav}"
   .content-wrapper
     = render "layouts/flash"
     = yield :flash_message
-    - if defined?(nav) && nav
-      .layout-nav
-        = render "layouts/nav/#{nav}"
     %div{ class: (container_class unless @no_container) }
       .content
         .clearfix

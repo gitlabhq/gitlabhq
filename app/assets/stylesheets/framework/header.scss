@@ -28,7 +28,7 @@ header {
     min-height: $header-height;
     background-color: $gray-light;
     border: none;
-    border-bottom: 1px solid $gray-light;
+    border-bottom: 1px solid $border-color;
 
     .container-fluid {
       width: 100% !important;

@@ -187,7 +187,10 @@
 }
 
 .layout-nav {
-  background: $background-color;
+  position: relative;
+  z-index: 101;
+  margin-top: -1px;
+  background: $gray-light;
   border-bottom: 1px solid $border-color;
 
   .container-fluid {
