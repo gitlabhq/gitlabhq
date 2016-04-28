@@ -28,8 +28,7 @@ describe Issues::MoveService, services: true do
       ['label1', 'label2'].each do |label|
         old_issue.labels << create(:label,
           project_id: old_project.id,
-          title: label
-        )
+          title: label)
       end
 
       new_project.labels << create(:label, title: 'label1')
