@@ -41,9 +41,9 @@ module TodosHelper
     klass = 'status-box '
     klass << "status-box-#{todo.target.state.dasherize}"
 
-    content_tag(:span, nil, class: klass) {
+    content_tag(:span, nil, class: klass) do
       todo.target.state.capitalize
-    }
+    end
   end
 
   def todos_filter_params
