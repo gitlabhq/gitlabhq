@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160419120017) do
+ActiveRecord::Schema.define(version: 20160421130527) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -80,7 +80,7 @@ ActiveRecord::Schema.define(version: 20160419120017) do
     t.string   "sentry_dsn"
     t.boolean  "email_author_in_body",              default: false
     t.integer  "default_group_visibility"
-    t.boolean  "repository_checks_enabled",         default: true
+    t.boolean  "repository_checks_enabled",         default: false
     t.text     "shared_runners_text"
     t.integer  "metrics_packet_size",               default: 1
   end

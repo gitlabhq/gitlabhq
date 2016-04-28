@@ -123,6 +123,18 @@ module ProjectsHelper
     end
   end
 
+  def license_short_name(project)
+    no_license_key = project.repository.license_key.nil? ||
+      # Back-compat if cache contains 'no-license', can be removed in a few weeks
+      project.repository.license_key == 'no-license'
+
+    return 'LICENSE' if no_license_key
+
+    license = Licensee::License.new(project.repository.license_key)
+
+    license.nickname || license.name
+  end
+
   private
 
   def get_project_nav_tabs(project, current_user)
@@ -332,14 +344,6 @@ module ProjectsHelper
   def current_ref
     @ref || @repository.try(:root_ref)
   end
-
-  def license_short_name(project)
-    license = Licensee::License.new(project.repository.license_key)
-
-    license.nickname || license.name
-  end
-
-  private
 
   def filename_path(project, filename)
     if project && blob = project.repository.send(filename)

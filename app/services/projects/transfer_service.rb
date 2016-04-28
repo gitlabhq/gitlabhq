@@ -34,6 +34,8 @@ module Projects
           raise TransferError.new("Project with same path in target namespace already exists")
         end
 
+        project.expire_caches_before_rename(old_path)
+
         # Apply new namespace id and visibility level
         project.namespace = new_namespace
         project.visibility_level = new_namespace.visibility_level unless project.visibility_level_allowed_by_group?

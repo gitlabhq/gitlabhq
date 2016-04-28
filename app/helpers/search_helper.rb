@@ -19,6 +19,16 @@ module SearchHelper
     end
   end
 
+  def search_entries_info(collection, scope, term)
+    return unless collection.count > 0
+
+    from = collection.offset_value + 1
+    to = collection.offset_value + collection.count
+    count = collection.total_count
+
+    "Showing #{from} - #{to} of #{count} #{scope.humanize(capitalize: false)} for \"#{term}\""
+  end
+
   private
 
   # Autocomplete results for various settings pages

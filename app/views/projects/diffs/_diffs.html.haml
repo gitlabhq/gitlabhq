@@ -1,3 +1,4 @@
+- show_whitespace_toggle = local_assigns.fetch(:show_whitespace_toggle, true)
 - if diff_view == 'parallel'
   - fluid_layout true
 
@@ -5,6 +6,11 @@
 
 .content-block.oneline-block.files-changed
   .inline-parallel-buttons
+    - if show_whitespace_toggle
+      - if current_controller?(:commit)
+        = commit_diff_whitespace_link(@project, @commit, class: 'hidden-xs')
+      - elsif current_controller?(:merge_requests)
+        = diff_merge_request_whitespace_link(@project, @merge_request, class: 'hidden-xs')
     .btn-group
       = inline_diff_btn
       = parallel_diff_btn

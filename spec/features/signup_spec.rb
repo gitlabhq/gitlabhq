@@ -13,8 +13,8 @@ feature 'Signup', feature: true do
       fill_in 'user_password_sign_up',    with: user.password
       click_button "Sign up"
 
-      expect(current_path).to eq user_session_path
-      expect(page).to have_content("A message with a confirmation link has been sent to your email address.")
+      expect(current_path).to eq users_almost_there_path
+      expect(page).to have_content("Please check your email to confirm your account")
     end
   end
 

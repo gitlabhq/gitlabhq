@@ -108,6 +108,8 @@ class Dispatcher
         new BuildArtifacts()
       when 'projects:group_links:index'
         new GroupsSelect()
+      when 'search:show'
+        new Search()
       when 'projects:mirrors:show', 'projects:mirrors:update'
         new UsersSelect()
       when 'admin:emails:show'
