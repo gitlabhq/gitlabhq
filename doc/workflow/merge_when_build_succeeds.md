@@ -35,23 +35,26 @@ will automatically be merged after all.
 In case new commits are pushed while the builds are still running, the automatic
 merge is automatically canceled to allow the new changes to be reviewed.
 
-## Only allow merge requests to be merged when the build succeeds
+## Only allow merge requests to be merged if the build succeeds
 
 >**Note:**
 This feature was [introduced][ce-3828] in GitLab 8.8.
 
-To avoid accidental merges when the builds are failing, you have the option to
-restrict merge requests from being merged when the builds have failed.
-This option can be set at a project level, navigating to your project's
-**Settings** under the "Merge requests" section.
+To avoid accidental merges when the builds are failing, you can restrict merge
+requests from being merged when the builds have failed. This option can be set
+at a project level, navigating to your project's **Settings** under the
+"Merge requests" section.
 
 ![Merge Request settings](img/merge_when_build_succeds_merge_request_settings.png)
 
-When reviewing a merge request, if CI is running the user will only be able to merge it when success
+By enabling this option, as long as the builds are running, the "Accept Merge
+Request" button will disappear, and the only option will be to "Merge When Build
+Succeeds".
 
-![Restricted Merge Request to be merged only if green is build](img/merge_when_build_succeds_only_green_build.png)
+![Restricted Merge Request to be merged only if green is build](img/merge_when_build_succeeds_only_green_build.png)
 
-When reviewing a merge request, if CI build failed the user won't be able to merge it.
+If the builds fail you will not be able to merge the merge request and a
+descriptive message will tell you why.
 
 ![Failed restricted Merge Request to be merged only if green is build](img/merge_when_build_succeds_only_build_failed.png)
 
