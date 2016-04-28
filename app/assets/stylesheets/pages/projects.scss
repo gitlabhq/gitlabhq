@@ -279,12 +279,6 @@ a.deploy-project-label {
   }
 }
 
-table.table.protected-branches-list tr.no-border {
-  th, td {
-    border: 0;
-  }
-}
-
 .project-import .btn {
   float: left;
   margin-right: 10px;
@@ -495,5 +489,16 @@ pre.light-well {
 
   i:nth-child(2) {
     color: #fff;
+  }
+}
+
+.protected-branches-list {
+  a {
+    color: $gl-gray;
+    font-weight: 600;
+
+    &:hover {
+      color: $gl-link-color;
+    }
   }
 }
