@@ -1,12 +1,28 @@
-%ul.nav.nav-sidebar
-  = nav_link do
-    = link_to root_path, title: 'Go to dashboard', class: 'back-link' do
-      = icon('caret-square-o-left fw')
-      %span
-        Go to dashboard
+- if current_user
+  .controls
+    - if current_path?('groups#show')
+      = link_to icon('rss'), group_path(@group, { format: :atom, private_token: current_user.private_token }), title: "Feed", class: 'btn btn-gray rss-btn'
 
-  %li.separate-item
+    %span.dropdown.group-settings-dropdown
+      %a.dropdown-new.btn.btn-gray#group-settings-button{href: '#', 'data-toggle' => 'dropdown'}
+        = icon('cog')
+        = icon('angle-down')
+      %ul.dropdown-menu.dropdown-menu-align-right
+        = nav_link(path: 'groups#projects') do
+          = link_to projects_group_path(@group), title: 'Projects' do
+            Projects
+        %li.divider
+        - if @group && can?(current_user, :admin_group, @group)
+          %li
+            = link_to edit_group_path(@group) do
+              Edit Group
+        - if access = @group.users.find(current_user)
+          %li
+            = link_to leave_group_group_members_path(@group),
+              data: { confirm: leave_group_message(@group.name) }, method: :delete, title: 'Leave group' do
+              Leave Group
 
+%ul.nav-links
   = nav_link(path: 'groups#show', html_options: {class: 'home'}) do
     = link_to group_path(@group), title: 'Home' do
       = icon('group fw')
@@ -28,22 +44,16 @@
       %span
         Issues
         - issues = IssuesFinder.new(current_user, group_id: @group.id, state: 'opened').execute
-        %span.count= number_with_delimiter(issues.count)
+        %span.badge.count= number_with_delimiter(issues.count)
   = nav_link(path: 'groups#merge_requests') do
     = link_to merge_requests_group_path(@group), title: 'Merge Requests' do
       = icon('tasks fw')
       %span
         Merge Requests
         - merge_requests = MergeRequestsFinder.new(current_user, group_id: @group.id, state: 'opened').execute
-        %span.count= number_with_delimiter(merge_requests.count)
+        %span.badge.count= number_with_delimiter(merge_requests.count)
   = nav_link(controller: [:group_members]) do
     = link_to group_group_members_path(@group), title: 'Members' do
       = icon('users fw')
       %span
         Members
-  - if can?(current_user, :admin_group, @group)
-    = nav_link(html_options: { class: "separate-item" }) do
-      = link_to edit_group_path(@group), title: 'Settings' do
-        = icon ('cogs fw')
-        %span
-          Settings
