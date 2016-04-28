@@ -7,13 +7,11 @@
   .select2-choice {
     background: #fff;
     border-color: $input-border;
-    border-color: $border-white-light;
     height: 35px;
     padding: $gl-vert-padding $gl-btn-padding;
     font-size: $gl-font-size;
     line-height: 1.42857143;
-
-    @include border-radius($border-radius-default);
+    border-radius: $border-radius-base;
 
     .select2-arrow {
       background-image: none;
@@ -196,6 +194,14 @@
 
   &.input-clamp {
     max-width: 100%;
+  }
+}
+
+.select2-highlighted {
+  .group-result {
+    .group-path {
+      color: #fff;
+    }
   }
 }
 
