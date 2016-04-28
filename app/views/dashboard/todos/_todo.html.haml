@@ -17,6 +17,10 @@
 
       &middot; #{time_ago_with_tooltip(todo.created_at)}
 
+      - if (todo.target.is_a?(MergeRequest) || todo.target.is_a?(Issue)) && ['closed', 'merged'].include?(todo.target.state)
+        %span.target-status
+          = todo_target_state_pill(todo)
+
     - if todo.pending?
       .todo-actions.pull-right
         = link_to [:dashboard, todo], method: :delete, class: 'btn btn-loading done-todo' do

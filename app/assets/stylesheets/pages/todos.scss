@@ -29,6 +29,14 @@
 .todo-item {
   .todo-title {
     @include str-truncated(calc(100% - 174px));
+    overflow: visible;
+  }
+
+  .status-box {
+    margin: 0;
+    float: none;
+    display: inline-block;
+    font-weight: normal;
   }
 
   .todo-body {

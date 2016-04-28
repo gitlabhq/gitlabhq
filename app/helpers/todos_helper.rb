@@ -37,6 +37,15 @@ module TodosHelper
     end
   end
 
+  def todo_target_state_pill(todo)
+    klass = 'status-box '
+    klass << "status-box-#{todo.target.state.dasherize}"
+
+    content_tag(:span, nil, class: klass) {
+      todo.target.state.capitalize
+    }
+  end
+
   def todos_filter_params
     {
       state:      params[:state],
