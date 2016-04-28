@@ -1,6 +1,10 @@
 class @Calendar
   constructor: (timestamps, calendar_activities_path) ->
     currentSelectedDate = ''
+    daySpace = 1
+    daySize = 15
+    daySizeWithSpace = daySize + (daySpace * 2)
+
     # Get the highest value from the timestampes
     highestValue = 0
     _.each timestamps, (count) ->
@@ -51,7 +55,7 @@ class @Calendar
     months = []
     svg = d3.select '.js-contrib-calendar'
       .append 'svg'
-      .attr 'width', 54 * 17
+      .attr 'width', 54 * daySizeWithSpace
       .attr 'height', 167
       .attr 'class', 'contrib-calendar'
 
@@ -64,7 +68,7 @@ class @Calendar
         _.each group, (stamp, a) ->
           if a is 0 and stamp.day is 0
             month = stamp.date.getMonth()
-            x = (17 * i + 1) + 17
+            x = (daySizeWithSpace * i + 1) + daySizeWithSpace
             lastMonth = _.last(months)
             if lastMonth?
               lastMonthX = lastMonth.x
@@ -73,12 +77,12 @@ class @Calendar
               months.push
                 month: month
                 x: x
-            else if month isnt lastMonth.month and x - 17 isnt lastMonthX
+            else if month isnt lastMonth.month and x - daySizeWithSpace isnt lastMonthX
               months.push
                 month: month
                 x: x
 
-        "translate(#{(17 * i + 1) + 17}, 18)"
+        "translate(#{(daySizeWithSpace * i + 1) + daySizeWithSpace}, 18)"
       .selectAll 'rect'
       .data (stamp) ->
         stamp
@@ -86,9 +90,9 @@ class @Calendar
       .append 'rect'
       .attr 'x', '0'
       .attr 'y', (stamp, i) ->
-        (17 * stamp.day)
-      .attr 'width', 15
-      .attr 'height', 15
+        (daySizeWithSpace * stamp.day)
+      .attr 'width', daySize
+      .attr 'height', daySize
       .attr 'title', (stamp) ->
         contribText = 'No contributions'
 
@@ -106,22 +110,22 @@ class @Calendar
           '#ededed'
       .attr 'data-container', 'body'
       .on 'click', (stamp) ->
-        if currentSelectedDate is ''
+        if currentSelectedDate isnt stamp.date
           currentSelectedDate = stamp.date
-          formated_date = currentSelectedDate.getFullYear() + "-" + (currentSelectedDate.getMonth()+1) + "-" + currentSelectedDate.getDate()
+          formatted_date = currentSelectedDate.getFullYear() + "-" + (currentSelectedDate.getMonth()+1) + "-" + currentSelectedDate.getDate()
 
           $.ajax
             url: calendar_activities_path
             data:
-              date: formated_date
+              date: formatted_date
             cache: false
             dataType: 'html'
+            beforeSend: ->
+              $('.user-calendar-activities').html '<div class="text-center"><i class="fa fa-spinner fa-spin user-calendar-activities-loading"></i></div>'
             success: (data) ->
               $('.user-calendar-activities').html data
         else
-          currentSelectedDate = ''
-          $('.user-calendar-activities, .content_list').html ''
-          Pager.getOld()
+          $('.user-calendar-activities').html ''
 
     # Month titles
     svg.append 'g'
@@ -139,13 +143,13 @@ class @Calendar
     # Day titles
     days = [{
       text: 'M'
-      y: 29 + (17 * 1)
+      y: 29 + (daySizeWithSpace * 1)
     }, {
       text: 'W'
-      y: 29 + (17 * 3)
+      y: 29 + (daySizeWithSpace * 3)
     }, {
       text: 'F'
-      y: 29 + (17 * 5)
+      y: 29 + (daySizeWithSpace * 5)
     }]
     svg.append 'g'
       .selectAll 'text'
@@ -162,15 +166,15 @@ class @Calendar
 
     # Key with color boxes
     svg.append 'g'
-      .attr 'transform', "translate(18, #{17 * 8 + 16})"
+      .attr 'transform', "translate(18, #{daySizeWithSpace * 8 + 16})"
       .selectAll 'rect'
       .data keyColors
       .enter()
       .append 'rect'
-      .attr 'width', 15
-      .attr 'height', 15
+      .attr 'width', daySize
+      .attr 'height', daySize
       .attr 'x', (color, i) ->
-        17 * i
+        daySizeWithSpace * i
       .attr 'y', 0
       .attr 'fill', (color) ->
         color
