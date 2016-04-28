@@ -5,7 +5,7 @@ describe MergeRequests::BuildService, services: true do
 
   let(:project) { create(:project) }
   let(:user) { create(:user) }
-  let(:issue) { create(:issue, project: project) }
+  let(:issue) { create(:issue, project: project, title: 'A bug') }
   let(:description) { nil }
   let(:source_branch) { 'feature-branch' }
   let(:target_branch) { 'master' }
@@ -139,6 +139,32 @@ describe MergeRequests::BuildService, services: true do
 
         it 'keeps the description from the initial params' do
           expect(merge_request.description).to eq(description)
+        end
+      end
+
+      context 'branch starts with GitLab issue IID followed by a hyphen' do
+        let(:source_branch) { "#{issue.iid}-fix-issue" }
+
+        it 'sets the title to: Resolves "$issue-title"' do
+          expect(merge_request.title).to eq("Resolve \"#{issue.title}\"")
+        end
+
+        context 'issue does not exist' do
+          let(:source_branch) { "#{issue.iid.succ}-fix-issue" }
+
+          it 'uses the title of the branch as the merge request title' do
+            expect(merge_request.title).to eq("#{issue.iid.succ} fix issue")
+          end
+        end
+      end
+
+      context 'branch starts with external issue IID followed by a hyphen' do
+        let(:source_branch) { '12345-fix-issue' }
+
+        before { allow(project).to receive(:default_issues_tracker?).and_return(false) }
+
+        it 'sets the title to: Resolves External Issue $issue-iid' do
+          expect(merge_request.title).to eq('Resolve External Issue 12345')
         end
       end
     end
