@@ -5,7 +5,10 @@
     %h4.prepend-top-0
       = page_title
     %p.light
-      Rules that define what git pushes are accepted for this project. Request new rules for free by creating an issue on the <a href="https://gitlab.com/gitlab-org/gitlab-ee/issues/">GitLab EE issue tracker</a> and labeling it 'Feature proposal'. Or if you can please contribute a tested merge request.
+      Git Hooks outline what is accepted for this project. You can request new rules (for free) by creating an issue on our
+      = succeed '.' do
+        %a{ href: "https://gitlab.com/gitlab-org/gitlab-ee/issues/" }GitLab EE issue tracker
+      Alternatively, submit a merge request to GitLab EE.
   .col-lg-9
     %h5.prepend-top-0
       Add new web hook
