@@ -26,7 +26,7 @@ header {
     z-index: 100;
     margin-bottom: 0;
     min-height: $header-height;
-    background-color: #fff;
+    background-color: $gray-light;
     border: none;
     border-bottom: 1px solid #eee;
 
@@ -47,7 +47,7 @@ header {
         text-align: center;
 
         &:hover, &:focus, &:active {
-          background-color: #fff;
+          background-color: $gray-light;
         }
       }
 
