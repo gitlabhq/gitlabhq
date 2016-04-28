@@ -94,7 +94,7 @@ class GitPushService < BaseService
   end
 
   def index_commits_blobs
-    indexer = Elastic::Indexer.new
+    indexer = Gitlab::Elastic::Indexer.new
     indexer.run(
       @project.id,
       project.repository.path_to_repo,

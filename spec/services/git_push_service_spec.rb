@@ -147,7 +147,7 @@ describe GitPushService, services: true do
     end
 
     it "triggers indexer" do
-      expect_any_instance_of(Elastic::Indexer).to receive(:run)
+      expect_any_instance_of(Gitlab::Elastic::Indexer).to receive(:run)
 
       execute_service(project, user, @oldrev, @newrev, @ref )
     end

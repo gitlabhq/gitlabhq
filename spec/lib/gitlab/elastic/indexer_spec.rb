@@ -16,6 +16,6 @@ describe "Indexer" do
       )
     ).and_return([[''], 0])
 
-    Elastic::Indexer.new.run(1, 'full_repo_path', '000000', '1d1f2d')
+    Gitlab::Elastic::Indexer.new.run(1, 'full_repo_path', '000000', '1d1f2d')
   end
 end
