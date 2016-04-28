@@ -3,8 +3,8 @@ class Projects::IssuesController < Projects::ApplicationController
   include IssuableActions
 
   before_action :module_enabled
-  before_action :issue,
-    only: [:edit, :update, :show, :referenced_merge_requests, :related_branches]
+  before_action :issue, only: [:edit, :update, :show, :referenced_merge_requests,
+                               :related_branches, :can_create_branch]
 
   # Allow read any issue
   before_action :authorize_read_issue!, only: [:show]
@@ -135,6 +135,18 @@ class Projects::IssuesController < Projects::ApplicationController
         render json: {
           html: view_to_html_string('projects/issues/_related_branches')
         }
+      end
+    end
+  end
+
+  def can_create_branch
+    can_create = current_user &&
+      can?(current_user, :push_code, @project) &&
+      @issue.can_be_worked_on?(current_user)
+
+    respond_to do |format|
+      format.json do
+        render json: { can_create_branch: can_create }
       end
     end
   end
