@@ -5,7 +5,8 @@ describe MergeRequests::BuildService, services: true do
 
   let(:project) { create(:project) }
   let(:user) { create(:user) }
-  let(:issue) { create(:issue, project: project, title: 'A bug') }
+  let(:issue_confidential) { false }
+  let(:issue) { create(:issue, project: project, title: 'A bug', confidential: issue_confidential) }
   let(:description) { nil }
   let(:source_branch) { 'feature-branch' }
   let(:target_branch) { 'master' }
@@ -154,6 +155,14 @@ describe MergeRequests::BuildService, services: true do
 
           it 'uses the title of the branch as the merge request title' do
             expect(merge_request.title).to eq("#{issue.iid.succ} fix issue")
+          end
+        end
+
+        context 'issue is confidential' do
+          let(:issue_confidential) { true }
+
+          it 'uses the title of the branch as the merge request title' do
+            expect(merge_request.title).to eq("#{issue.iid} fix issue")
           end
         end
       end
