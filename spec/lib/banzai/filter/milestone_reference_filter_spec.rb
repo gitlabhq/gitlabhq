@@ -66,10 +66,5 @@ describe Banzai::Filter::MilestoneReferenceFilter, lib: true do
       expect(link).to have_attribute('data-milestone')
       expect(link.attr('data-milestone')).to eq milestone.id.to_s
     end
-
-    it 'adds to the results hash' do
-      result = reference_pipeline_result("milestone #{reference}")
-      expect(result[:references][:milestone]).to eq [milestone]
-    end
   end
 end

@@ -22,11 +22,11 @@ module Banzai
       private
 
       def user_can_see_reference?(node)
-        if node.has_attribute?('data-reference-filter')
-          reference_type = node.attr('data-reference-filter')
-          reference_filter = Banzai::Filter.const_get(reference_type)
+        if node.has_attribute?('data-reference-type')
+          reference_type = node.attr('data-reference-type')
+          parser = Banzai::ReferenceParser[reference_type].new(nil, current_user)
 
-          reference_filter.user_can_see_reference?(current_user, node, context)
+          parser.user_can_see_reference?(current_user, node)
         else
           true
         end

@@ -36,24 +36,6 @@ describe Banzai::Filter::UserReferenceFilter, lib: true do
       expect(doc.css('a').first.attr('href'))
         .to eq urls.namespace_project_url(project.namespace, project)
     end
-
-    context "when the author is a member of the project" do
-
-      it 'adds to the results hash' do
-        result = reference_pipeline_result("Hey #{reference}", author: project.creator)
-        expect(result[:references][:user]).to eq [project.creator]
-      end
-    end
-
-    context "when the author is not a member of the project" do
-
-      let(:other_user) { create(:user) }
-
-      it "doesn't add to the results hash" do
-        result = reference_pipeline_result("Hey #{reference}", author: other_user)
-        expect(result[:references][:user]).to eq []
-      end
-    end
   end
 
   context 'mentioning a user' do
@@ -83,11 +65,6 @@ describe Banzai::Filter::UserReferenceFilter, lib: true do
       expect(link).to have_attribute('data-user')
       expect(link.attr('data-user')).to eq user.namespace.owner_id.to_s
     end
-
-    it 'adds to the results hash' do
-      result = reference_pipeline_result("Hey #{reference}")
-      expect(result[:references][:user]).to eq [user]
-    end
   end
 
   context 'mentioning a group' do
@@ -105,11 +82,6 @@ describe Banzai::Filter::UserReferenceFilter, lib: true do
 
       expect(link).to have_attribute('data-group')
       expect(link.attr('data-group')).to eq group.id.to_s
-    end
-
-    it 'adds to the results hash' do
-      result = reference_pipeline_result("Hey #{reference}")
-      expect(result[:references][:user]).to eq group.users
     end
   end
 
@@ -150,11 +122,6 @@ describe Banzai::Filter::UserReferenceFilter, lib: true do
 
       expect(link).to have_attribute('data-user')
       expect(link.attr('data-user')).to eq user.namespace.owner_id.to_s
-    end
-
-    it 'adds to the results hash' do
-      result = reference_pipeline_result("Hey #{reference}")
-      expect(result[:references][:user]).to eq [user]
     end
   end
 end

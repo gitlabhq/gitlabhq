@@ -2,6 +2,8 @@ module Banzai
   module Filter
     # HTML filter that replaces label references with links.
     class LabelReferenceFilter < AbstractReferenceFilter
+      self.reference_type = :label
+
       def self.object_class
         Label
       end

@@ -78,11 +78,6 @@ describe Banzai::Filter::MergeRequestReferenceFilter, lib: true do
       expect(link).not_to match %r(https?://)
       expect(link).to eq urls.namespace_project_merge_request_url(project.namespace, project, merge, only_path: true)
     end
-
-    it 'adds to the results hash' do
-      result = reference_pipeline_result("Merge #{reference}")
-      expect(result[:references][:merge_request]).to eq [merge]
-    end
   end
 
   context 'cross-project reference' do
@@ -109,11 +104,6 @@ describe Banzai::Filter::MergeRequestReferenceFilter, lib: true do
 
       expect(reference_filter(act).to_html).to eq exp
     end
-
-    it 'adds to the results hash' do
-      result = reference_pipeline_result("Merge #{reference}")
-      expect(result[:references][:merge_request]).to eq [merge]
-    end
   end
 
   context 'cross-project URL reference' do
@@ -132,11 +122,6 @@ describe Banzai::Filter::MergeRequestReferenceFilter, lib: true do
     it 'links with adjacent text' do
       doc = reference_filter("Merge (#{reference}.)")
       expect(doc.to_html).to match(/\(<a.+>#{Regexp.escape(merge.to_reference(project))} \(diffs, comment 123\)<\/a>\.\)/)
-    end
-
-    it 'adds to the results hash' do
-      result = reference_pipeline_result("Merge #{reference}")
-      expect(result[:references][:merge_request]).to eq [merge]
     end
   end
 end

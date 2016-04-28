@@ -31,23 +31,21 @@ module Banzai
       @texts << Renderer.render(text, context)
     end
 
-    def references(type, context = {})
-      filter = Banzai::Filter["#{type}_reference"]
+    def references(type, project, current_user = nil, author = nil)
+      processor = Banzai::ReferenceParser[type].
+        new(project, current_user, author)
 
-      context.merge!(
-        pipeline: :reference_extraction,
+      refs = Set.new
 
-        # ReferenceGathererFilter
-        reference_filter: filter
-      )
+      @texts.each do |html|
+        doc = Nokogiri::HTML.fragment(html)
 
-      self.class.lazily do
-        @texts.flat_map do |html|
-          text_context = context.dup
-          result = Renderer.render_result(html, text_context)
-          result[:references][type]
-        end.uniq
+        processor.process(doc).each do |ref|
+          refs << ref
+        end
       end
+
+      refs.to_a
     end
   end
 end

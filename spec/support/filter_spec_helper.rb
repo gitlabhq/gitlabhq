@@ -40,8 +40,7 @@ module FilterSpecHelper
 
     filters = [
       Banzai::Filter::AutolinkFilter,
-      described_class,
-      Banzai::Filter::ReferenceGathererFilter
+      described_class
     ]
 
     HTML::Pipeline.new(filters, context)

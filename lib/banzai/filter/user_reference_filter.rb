@@ -4,6 +4,8 @@ module Banzai
     #
     # A special `@all` reference is also supported.
     class UserReferenceFilter < ReferenceFilter
+      self.reference_type = :user
+
       # Public: Find `@user` user references in text
       #
       #   UserReferenceFilter.references_in(text) do |match, username|
@@ -18,43 +20,6 @@ module Banzai
       def self.references_in(text)
         text.gsub(User.reference_pattern) do |match|
           yield match, $~[:user]
-        end
-      end
-
-      def self.referenced_by(node)
-        if node.has_attribute?('data-group')
-          group = Group.find(node.attr('data-group')) rescue nil
-          return unless group
-
-          { user: group.users }
-        elsif node.has_attribute?('data-user')
-          { user: LazyReference.new(User, node.attr('data-user')) }
-        elsif node.has_attribute?('data-project')
-          project = Project.find(node.attr('data-project')) rescue nil
-          return unless project
-
-          { user: project.team.members.flatten }
-        end
-      end
-
-      def self.user_can_see_reference?(user, node, context)
-        if node.has_attribute?('data-group')
-          group = Group.find(node.attr('data-group')) rescue nil
-          Ability.abilities.allowed?(user, :read_group, group)
-        else
-          super
-        end
-      end
-
-      def self.user_can_reference?(user, node, context)
-        # Only team members can reference `@all`
-        if node.has_attribute?('data-project')
-          project = Project.find(node.attr('data-project')) rescue nil
-          return false unless project
-
-          user && project.team.member?(user)
-        else
-          super
         end
       end
 
