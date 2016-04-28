@@ -20,7 +20,7 @@ module Gitlab
       private
 
       def decompress_archive
-        untar_czf(archive: @archive_file, dir: @storage_path)
+        untar_zxf(archive: @archive_file, dir: @storage_path)
       end
     end
   end
