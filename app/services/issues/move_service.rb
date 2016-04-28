@@ -42,7 +42,7 @@ module Issues
 
     def create_new_issue
       new_params = { id: nil, iid: nil, label_ids: cloneable_label_ids,
-                     milestone: cloneable_milestone_id,
+                     milestone_id: cloneable_milestone_id,
                      project: @new_project, author: @old_issue.author,
                      description: rewrite_content(@old_issue.description) }
 
@@ -51,11 +51,13 @@ module Issues
     end
 
     def cloneable_label_ids
-      @new_project.labels.where(title: @old_issue.labels.pluck(:title)).pluck(:id)
+      @new_project.labels
+        .where(title: @old_issue.labels.pluck(:title)).pluck(:id)
     end
 
     def cloneable_milestone_id
-      @new_project.milestones.find_by(title: @old_issue.milestone.try(:title))
+      @new_project.milestones
+        .find_by(title: @old_issue.milestone.try(:title)).try(:id)
     end
 
     def rewrite_notes

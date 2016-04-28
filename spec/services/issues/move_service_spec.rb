@@ -7,7 +7,9 @@ describe Issues::MoveService, services: true do
   let(:description) { 'Some issue description' }
   let(:old_project) { create(:project) }
   let(:new_project) { create(:project) }
-  let!(:milestone1) { create(:milestone, project_id: old_project.id, title: 'v9.0') }
+  let!(:milestone1) do
+    create(:milestone, project_id: old_project.id, title: 'v9.0')
+  end
 
   let(:old_issue) do
     create(:issue, title: title, description: description,
@@ -23,10 +25,12 @@ describe Issues::MoveService, services: true do
       old_project.team << [user, :reporter]
       new_project.team << [user, :reporter]
 
-      create(:milestone, project_id: new_project.id, title: 'v9.0')
-
-      old_issue.labels << create(:label, project_id: old_project.id, title: 'label1')
-      old_issue.labels << create(:label, project_id: old_project.id, title: 'label2')
+      ['label1', 'label2'].each do |label|
+        old_issue.labels << create(:label,
+          project_id: old_project.id,
+          title: label
+        )
+      end
 
       new_project.labels << create(:label, title: 'label1')
       new_project.labels << create(:label, title: 'label2')
@@ -35,6 +39,10 @@ describe Issues::MoveService, services: true do
 
   describe '#execute' do
     shared_context 'issue move executed' do
+      let!(:milestone2) do
+        create(:milestone, project_id: new_project.id, title: 'v9.0')
+      end
+
       let!(:new_issue) { move_service.execute(old_issue, new_project) }
     end
 
