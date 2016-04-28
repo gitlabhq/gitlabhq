@@ -1,4 +1,6 @@
-unless Rails.env.test?
+rack_attack_enabled = Gitlab.config.rack_attack.git_basic_auth['enabled']
+
+unless Rails.env.test? || !rack_attack_enabled
   # Tell the Rack::Attack Rack middleware to maintain an IP blacklist. We will
   # update the blacklist from Grack::Auth#authenticate_user.
   Rack::Attack.blacklist('Git HTTP Basic Auth') do |req|
