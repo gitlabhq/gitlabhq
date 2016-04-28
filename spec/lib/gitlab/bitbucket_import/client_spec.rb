@@ -53,11 +53,10 @@ describe Gitlab::BitbucketImport::Client, lib: true do
     it 'calls .from_project with no errors' do
       project = create(:empty_project)
       project.create_or_update_import_data(credentials:
-                                             { :user => "git",
-                                               :password => nil,
-                                               :bb_session =>
-                                                 { :bitbucket_access_token => "test",
-                                                   :bitbucket_access_token_secret => "test" } })
+                                             { user: "git",
+                                               password: nil,
+                                               bb_session: { bitbucket_access_token: "test",
+                                                             bitbucket_access_token_secret: "test" } })
       project.import_url = "ssh://git@bitbucket.org/test/test.git"
 
       expect { described_class.from_project(project) }.to_not raise_error
