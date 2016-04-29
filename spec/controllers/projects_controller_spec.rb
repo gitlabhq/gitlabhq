@@ -8,10 +8,43 @@ describe ProjectsController do
   let(:txt)     { fixture_file_upload(Rails.root + 'spec/fixtures/doc_sample.txt', 'text/plain') }
 
   describe "GET show" do
+    context "user not project member" do
+      before { sign_in(user) }
+
+      context "user does not have access to project" do
+        let(:private_project) { create(:project, :private) }
+
+        it "does not initialize notification setting" do
+          get :show, namespace_id: private_project.namespace.path, id: private_project.path
+          expect(assigns(:notification_setting)).to be_nil
+        end
+      end
+
+      context "user has access to project" do
+        context "and does not have notification setting" do
+          it "initializes notification as disabled" do
+            get :show, namespace_id: public_project.namespace.path, id: public_project.path
+            expect(assigns(:notification_setting).level).to eq("disabled")
+          end
+        end
+
+        context "and has notification setting" do
+          before do
+            setting = user.notification_settings_for(public_project)
+            setting.level = :global
+            setting.save
+          end
+
+          it "shows current notification setting" do
+            get :show, namespace_id: public_project.namespace.path, id: public_project.path
+            expect(assigns(:notification_setting).level).to eq("global")
+          end
+        end
+      end
+    end
 
     context "rendering default project view" do
       render_views
-
       it "renders the activity view" do
         allow(controller).to receive(:current_user).and_return(user)
         allow(user).to receive(:project_view).and_return('activity')

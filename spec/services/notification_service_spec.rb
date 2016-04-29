@@ -119,7 +119,10 @@ describe NotificationService, services: true do
       let(:note) { create(:note_on_issue, noteable: confidential_issue, project: project, note: "#{author.to_reference} #{assignee.to_reference} #{non_member.to_reference} #{member.to_reference} #{admin.to_reference}") }
 
       it 'filters out users that can not read the issue' do
+        project.team << [admin, :master]
+        project.team << [author, :developer]
         project.team << [member, :developer]
+        project.team << [assignee, :developer]
 
         expect(SentNotification).to receive(:record).with(confidential_issue, any_args).exactly(4).times
 
@@ -143,7 +146,8 @@ describe NotificationService, services: true do
 
       before do
         build_team(note.project)
-        note.project.team << [note.author, :master]
+        note.project.team << [[note.author, note.noteable.author, note.noteable.assignee], :master]
+
         ActionMailer::Base.deliveries.clear
       end
 
@@ -260,6 +264,7 @@ describe NotificationService, services: true do
     before do
       build_team(issue.project)
       add_users_with_subscription(issue.project, issue)
+      project.team << [[issue.assignee, issue.author], :developer]
       ActionMailer::Base.deliveries.clear
     end
 
@@ -491,6 +496,7 @@ describe NotificationService, services: true do
     before do
       build_team(merge_request.target_project)
       add_users_with_subscription(merge_request.target_project, merge_request)
+      project.team << [merge_request.assignee, :developer]
       ActionMailer::Base.deliveries.clear
     end
 

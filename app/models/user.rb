@@ -777,7 +777,14 @@ class User < ActiveRecord::Base
   end
 
   def notification_settings_for(source)
-    notification_settings.find_or_initialize_by(source: source)
+    notification_setting  = notification_settings.find_or_initialize_by({ source: source })
+
+    if source.is_a?(Project)
+      membership = source.team.find_member(self.id)
+      notification_setting.level = :disabled unless membership.present? || notification_setting.persisted?
+    end
+
+    notification_setting
   end
 
   private

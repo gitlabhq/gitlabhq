@@ -102,9 +102,7 @@ class ProjectsController < Projects::ApplicationController
     respond_to do |format|
       format.html do
         if current_user
-          @membership = @project.team.find_member(current_user.id)
-
-          if @membership
+          if can?(current_user, :read_project, @project)
             @notification_setting = current_user.notification_settings_for(@project)
           end
         end
