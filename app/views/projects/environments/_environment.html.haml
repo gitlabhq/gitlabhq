@@ -1,0 +1,58 @@
+%tr.commit
+  - commit = build.commit
+  - status = build.status
+
+  %td
+    %strong
+      = link_to build.environment, namespace_project_environment_path(@project.namespace, @project, build.environment), class: "monospace"
+
+  %td.commit-link
+    = link_to namespace_project_pipeline_path(@project.namespace, @project, commit.id), class: "ci-status ci-#{commit.status}" do
+      = ci_icon_for_status(commit.status)
+      %strong ##{commit.id}
+
+  %td.commit-link
+    = link_to namespace_project_build_path(@project.namespace, @project, build.id), class: "ci-status ci-#{build.status}" do
+      = ci_icon_for_status(build.status)
+      %strong ##{build.id}
+
+  %td
+    %div.branch-commit
+      - if commit.ref
+        = link_to commit.ref, namespace_project_commits_path(@project.namespace, @project, commit.ref), class: "monospace"
+        &middot;
+      = link_to commit.short_sha, namespace_project_commit_path(@project.namespace, @project, commit.sha), class: "commit-id monospace"
+
+      %p
+        %span
+          - if commit_data = commit.commit_data
+            = link_to_gfm commit_data.title, namespace_project_commit_path(@project.namespace, @project, commit_data.id), class: "commit-row-message"
+          - else
+            Cant find HEAD commit for this branch
+
+  %td
+    - if build.started_at && build.finished_at
+      %p
+        %i.fa.fa-clock-o
+        &nbsp;
+        #{duration_in_words(build.finished_at, build.started_at)}
+    - if build.finished_at
+      %p
+        %i.fa.fa-calendar
+        &nbsp;
+        #{time_ago_with_tooltip(build.finished_at)}
+
+  %td
+    .controls.hidden-xs.pull-right
+      - manual = commit.builds.latest.manual_actions.to_a
+      - if manual.any?
+        .dropdown.inline
+          %button.dropdown-toggle.btn{type: 'button', 'data-toggle' => 'dropdown'}
+            = icon('play')
+            %b.caret
+          %ul.dropdown-menu.dropdown-menu-align-right
+            - manual.each do |manual_build|
+              %li
+                = link_to '#', rel: 'nofollow' do
+                  %i.fa.fa-play
+                  %span #{manual_build.name}

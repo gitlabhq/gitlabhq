@@ -1,0 +1,30 @@
+- page_title "Environments"
+
+= render "header_title"
+
+.gray-content-block
+  Latest deployments for
+  %strong
+    = @environment
+
+%ul.content-list
+  - if @builds.blank?
+    %li
+      .nothing-here-block No builds to show for specific environment
+  - else
+    .table-holder
+      %table.table.builds
+        %thead
+          %tr
+            %th Status
+            %th Build ID
+            %th Commit
+            %th Ref
+            %th Name
+            %th Duration
+            %th Finished at
+            %th
+
+        = render @builds, commit_sha: true, ref: true, allow_retry: true
+
+    = paginate @builds, theme: 'gitlab'

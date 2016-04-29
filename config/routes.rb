@@ -704,6 +704,8 @@ Rails.application.routes.draw do
           end
         end
 
+        resources :environments, only: [:index, :show]
+
         resources :builds, only: [:index, :show], constraints: { id: /\d+/ } do
           collection do
             post :cancel_all
