@@ -13,7 +13,10 @@ v 8.8.0 (unreleased)
   - Backport GitLab Enterprise support from EE
   - Files over 5MB can only be viewed in their raw form, files over 1MB without highlighting !3718
 
-v 8.7.1 (unreleased)
+v 8.7.2
+  - The "New Branch" button is now loaded asynchronously
+
+v 8.7.1
   - Throttle the update of `project.last_activity_at` to 1 minute. !3848
   - Fix .gitlab-ci.yml parsing issue when hidde job is a template without script definition. !3849
   - Fix license detection to detect all license files, not only known licenses. !3878
@@ -21,7 +24,6 @@ v 8.7.1 (unreleased)
   - Prevent users from deleting Webhooks via API they do not own
   - Fix Error 500 due to stale cache when projects are renamed or transferred
   - Update width of search box to fix Safari bug. !3900 (Jedidiah)
-  - The "New Branch" button is now loaded asynchronously
   - Use the `can?` helper instead of `current_user.can?`
 
 v 8.7.0
