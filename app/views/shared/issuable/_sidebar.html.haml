@@ -147,14 +147,13 @@
             = icon('rss')
           .title.hide-collapsed
             Notifications
-          - subscribtion_status = subscribed ? 'subscribed' : 'unsubscribed'
-          %button.btn.btn-block.btn-gray.js-subscribe-button.issuable-subscribe-button.hide-collapsed{ type: "button" }
-            %span= subscribed ? 'Unsubscribe' : 'Subscribe'
-          .subscription-status.hide-collapsed{data: {status: subscribtion_status}}
-            .unsubscribed{class: ( 'hidden' if subscribed )}
-              You're not receiving notifications from this thread.
-            .subscribed{class: ( 'hidden' unless subscribed )}
-              You're receiving notifications because you're subscribed to this thread.
+          %button.btn.btn-block.btn-gray.js-subscribe-button.issuable-subscribe-button.hide-collapsed{ type: "button", data: { subscribed: subscribed } }
+            = icon(subscribed ? 'volume-up' : 'volume-off')
+            = subscribed ? 'Unsubscribe' : 'Subscribe'
+          .subscription-status.hide-collapsed
+            You are 
+            %span.negation{ style: ("display:none;" if subscribed) } not 
+            subscribed
 
       - project_ref = cross_project_reference(@project, issuable)
       .block.project-reference

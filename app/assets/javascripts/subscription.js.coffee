@@ -2,20 +2,31 @@ class @Subscription
   constructor: (container) ->
     $container = $(container)
     @url = $container.attr('data-url')
-    @subscribe_button = $container.find('.js-subscribe-button')
-    @subscription_status = $container.find('.subscription-status')
-    @subscribe_button.unbind('click').click(@toggleSubscription)
+    @subscribeButton = $container.find('.js-subscribe-button')
+    @subscribeButton.off('click').click(@toggleSubscription)
+    @subscribedHTML = '<i class="fa fa-volume-up"></i> Unsubscribe'
+    @unsubscribedHTML = '<i class="fa fa-volume-off"></i> Subscribe'
 
-  toggleSubscription: (event) =>
-    btn = $(event.currentTarget)
-    action = btn.find('span').text()
-    current_status = @subscription_status.attr('data-status')
-    btn.addClass('disabled')
+  toggleSubscription: (e) =>
+    btn = $(e.currentTarget)
+    subscribed = @subscribeButton.attr('data-subscribed')?
+    btn
+      .addClass('disabled')
+      .prop('disabled','disabled')
 
     $.post @url, =>
-      btn.removeClass('disabled')
-      status = if current_status == 'subscribed' then 'unsubscribed' else 'subscribed'
-      @subscription_status.attr('data-status', status)
-      action = if status == 'subscribed' then 'Unsubscribe' else 'Subscribe'
-      btn.find('span').text(action)
-      @subscription_status.find('>div').toggleClass('hidden')
+      subscribed = not subscribed
+      btn
+        .removeClass('disabled')
+        .prop('disabled', false);
+      if subscribed
+        @subscribeButton.attr('data-subscribed',true)
+        btn.html(@subscribedHTML)
+        btn.closest('div').find('.negation').hide()
+        return
+      else
+        @subscribeButton.removeAttr('data-subscribed', subscribed)
+        btn.html(@unsubscribedHTML)
+        btn.closest('div').find('.negation').show()
+        return
+    return
