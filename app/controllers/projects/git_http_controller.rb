@@ -41,82 +41,20 @@ class Projects::GitHttpController < Projects::ApplicationController
     return if project && project.public? && upload_pack?
 
     authenticate_or_request_with_http_basic do |login, password|
-      return @ci = true if valid_ci_request?(login, password)
+      user, type = Gitlab::Auth.find(login, password, project: project, ip: request.ip)
 
-      @user = Gitlab::Auth.new.find(login, password)
-      @user ||= oauth_access_token_check(login, password)
-      rate_limit_ip!(login, @user)
+      if (type == :ci) && upload_pack?
+        @ci = true
+      elsif (type == :oauth) && !upload_pack?
+        @user = nil
+      else
+        @user = user
+      end
     end
   end
 
   def ensure_project_found!
     render_not_found if project.blank?
-  end
-
-  def valid_ci_request?(login, password)
-    matched_login = /(?<service>^[a-zA-Z]*-ci)-token$/.match(login)
-
-    unless project && matched_login.present? && upload_pack?
-      return false
-    end
-
-    underscored_service = matched_login['service'].underscore
-
-    if underscored_service == 'gitlab_ci'
-      project && project.valid_build_token?(password)
-    elsif Service.available_services_names.include?(underscored_service)
-      # We treat underscored_service as a trusted input because it is included
-      # in the Service.available_services_names whitelist.
-      service_method = "#{underscored_service}_service"
-      service = project.send(service_method)
-
-      service && service.activated? && service.valid_token?(password)
-    end
-  end
-
-  def oauth_access_token_check(login, password)
-    if login == "oauth2" && upload_pack? && password.present?
-      token = Doorkeeper::AccessToken.by_token(password)
-      token && token.accessible? && User.find_by(id: token.resource_owner_id)
-    end
-  end
-
-  def rate_limit_ip!(login, user)
-    # If the user authenticated successfully, we reset the auth failure count
-    # from Rack::Attack for that IP. A client may attempt to authenticate
-    # with a username and blank password first, and only after it receives
-    # a 401 error does it present a password. Resetting the count prevents
-    # false positives from occurring.
-    #
-    # Otherwise, we let Rack::Attack know there was a failed authentication
-    # attempt from this IP. This information is stored in the Rails cache
-    # (Redis) and will be used by the Rack::Attack middleware to decide
-    # whether to block requests from this IP.
-
-    config = Gitlab.config.rack_attack.git_basic_auth
-    return user unless config.enabled
-
-    if user
-      # A successful login will reset the auth failure count from this IP
-      Rack::Attack::Allow2Ban.reset(request.ip, config)
-    else
-      banned = Rack::Attack::Allow2Ban.filter(request.ip, config) do
-        # Unless the IP is whitelisted, return true so that Allow2Ban
-        # increments the counter (stored in Rails.cache) for the IP
-        if config.ip_whitelist.include?(request.ip)
-          false
-        else
-          true
-        end
-      end
-
-      if banned
-        Rails.logger.info "IP #{request.ip} failed to login " \
-          "as #{login} but has been temporarily banned from Git auth"
-      end
-    end
-
-    user
   end
 
   def project
