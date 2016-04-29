@@ -938,6 +938,16 @@ class Repository
     raw_repository.ls_files(actual_ref)
   end
 
+  def copy_gitattributes(ref)
+    actual_ref = ref || root_ref
+    begin
+      raw_repository.copy_gitattributes(actual_ref)
+      true
+    rescue Gitlab::Git::Repository::InvalidRef
+      false
+    end
+  end
+
   def main_language
     return if empty? || rugged.head_unborn?
 

@@ -795,6 +795,16 @@ describe Repository, models: true do
 
   end
 
+  describe "#copy_gitattributes" do
+    it 'returns true with a valid ref' do
+      expect(repository.copy_gitattributes('master')).to be_truthy
+    end
+
+    it 'returns false with an invalid ref' do
+      expect(repository.copy_gitattributes('invalid')).to be_falsey
+    end
+  end
+
   describe "#main_language" do
     it 'shows the main language of the project' do
       expect(repository.main_language).to eq("Ruby")
