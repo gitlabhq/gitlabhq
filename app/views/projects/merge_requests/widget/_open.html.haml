@@ -1,7 +1,9 @@
 .mr-state-widget
   = render 'projects/merge_requests/widget/heading'
   .mr-widget-body
-    - if @project.archived?
+    - if Gitlab::Geo.secondary?
+      = render 'projects/merge_requests/widget/open/geo'
+    - elsif @project.archived?
       = render 'projects/merge_requests/widget/open/archived'
     - elsif @merge_request.commits.blank?
       = render 'projects/merge_requests/widget/open/nothing'
