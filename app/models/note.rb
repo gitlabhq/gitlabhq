@@ -29,6 +29,7 @@ class Note < ActiveRecord::Base
   # Attachments are deprecated and are handled by Markdown uploader
   validates :attachment, file_size: { maximum: :max_attachment_size }
 
+  validates :noteable_type, presence: true
   validates :noteable_id, presence: true, unless: :for_commit?
   validates :commit_id, presence: true, if: :for_commit?
   validates :author, presence: true
