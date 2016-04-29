@@ -139,6 +139,7 @@ describe HipchatService, models: true do
       let(:merge_request) { create(:merge_request, description: 'please fix', title: 'Awesome merge request', target_project: project, source_project: project) }
       let(:merge_service) { MergeRequests::CreateService.new(project, user) }
       let(:merge_sample_data) { merge_service.hook_data(merge_request, 'open') }
+      let(:approved_merge_sample_data) { merge_service.hook_data(merge_request, 'approved') }
 
       it "should call Hipchat API for merge requests events" do
         hipchat.execute(merge_sample_data)
@@ -146,16 +147,28 @@ describe HipchatService, models: true do
         expect(WebMock).to have_requested(:post, api_url).once
       end
 
-      it "should create a merge request message" do
-        message = hipchat.send(:create_merge_request_message,
-                               merge_sample_data)
+      context 'merge request message' do
+        it 'creates a message for opened merge requests' do
+          message = hipchat.send(:create_merge_request_message, merge_sample_data)
 
-        obj_attr = merge_sample_data[:object_attributes]
-        expect(message).to eq("#{user.name} opened " \
-            "<a href=\"#{obj_attr[:url]}\">merge request !#{obj_attr["iid"]}</a> in " \
+          obj_attr = merge_sample_data[:object_attributes]
+          expect(message).to eq("#{user.name} opened " \
+            "<a href=\"#{obj_attr[:url]}\">merge request !#{obj_attr['iid']}</a> in " \
             "<a href=\"#{project.web_url}\">#{project_name}</a>: " \
-            "<b>Awesome merge request</b>" \
-            "<pre>please fix</pre>")
+            '<b>Awesome merge request</b>' \
+            '<pre>please fix</pre>')
+        end
+
+        it 'creates a message for approved merge requests' do
+          message = hipchat.send(:create_merge_request_message, approved_merge_sample_data)
+
+          obj_attr = approved_merge_sample_data[:object_attributes]
+          expect(message).to eq("#{user.name} approved " \
+            "<a href=\"#{obj_attr[:url]}\">merge request !#{obj_attr['iid']}</a> in " \
+            "<a href=\"#{project.web_url}\">#{project_name}</a>: " \
+            '<b>Awesome merge request</b>' \
+            '<pre>please fix</pre>')
+        end
       end
     end
 

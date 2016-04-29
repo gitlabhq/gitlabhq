@@ -177,14 +177,17 @@ class HipchatService < Service
 
     obj_attr = data[:object_attributes]
     obj_attr = HashWithIndifferentAccess.new(obj_attr)
-    merge_request_id = obj_attr[:iid]
+    merge_request_iid = obj_attr[:iid]
     state = obj_attr[:state]
     description = obj_attr[:description]
     title = obj_attr[:title]
+    action = obj_attr[:action]
 
-    merge_request_url = "#{project_url}/merge_requests/#{merge_request_id}"
-    merge_request_link = "<a href=\"#{merge_request_url}\">merge request !#{merge_request_id}</a>"
-    message = "#{user_name} #{state} #{merge_request_link} in " \
+    state_or_action_text = (action == 'approved') ? action : state
+
+    merge_request_url = "#{project_url}/merge_requests/#{merge_request_iid}"
+    merge_request_link = "<a href=\"#{merge_request_url}\">merge request !#{merge_request_iid}</a>"
+    message = "#{user_name} #{state_or_action_text} #{merge_request_link} in " \
       "#{project_link}: <b>#{title}</b>"
 
     if description
