@@ -378,7 +378,7 @@ class GitLabDropdown
   rowClicked: (el) ->
     fieldName = @options.fieldName
     selectedIndex = el.parent().index()
-    value = undefined
+
     if @renderedData
       selectedObject = @renderedData[selectedIndex]
       value = selectedObject.id

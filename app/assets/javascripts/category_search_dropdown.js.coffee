@@ -2,16 +2,16 @@ class CategorySearchDropdown
 
   constructor: ->
     @search = $('.search')
-    @searchInput = @search.find('#search')
-    @dropDown = @search.find('.dropdown')
-    @dropdownContent = @dropDown.find('.dropdown-content')
+    @searchInput = $('#search')
+    @dropdown = @search.find('.dropdown')
+    @dropdownContent = @dropdown.find('.dropdown-content')
 
-    @searchInput.on 'focusin click', (e) =>
+    @searchInput.on 'focus click', (e) =>
       if gon.current_user_id
         @showCategoryDropDown()
 
     @searchInput.on 'keypress', (e) =>
-      if $(e.currentTarget).has('#search') and not $(e.currentTarget).val()
+      if not $(e.currentTarget).val()
         @restoreMenu()
 
     @searchInput.on 'locationBadgeRemoved locationBadgeAdded', (e) =>
@@ -23,7 +23,6 @@ class CategorySearchDropdown
     $currentProjectOpts = @search.find('.current-project-opts')
     $generalOpts = @search.find('.dashboard-opts')
     userId = gon.current_user_id
-    issueUrl = mrUrl = projectName = undefined
 
     if $currentProjectOpts.length and @search.hasClass('has-location-badge')
       issueUrl = $currentProjectOpts.data('user-issues-path')
@@ -36,7 +35,6 @@ class CategorySearchDropdown
 
     html = @categorySearchDropdownTemplate(issueUrl, mrUrl, projectName, userId)
     @dropdownContent.html(html)
-    @dropDown.addClass('open')
 
   restoreMenu: ->
     html = "<ul>
