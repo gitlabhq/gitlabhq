@@ -184,4 +184,8 @@ module BlobHelper
       Other: licenses.reject(&:featured).map { |license| [license.name, license.key] }
     }
   end
+
+  def gitignores_for_select
+    @gitignores_for_select ||= Gitlab::Gitignore.all
+  end
 end
