@@ -176,7 +176,7 @@ module Gitlab
     end
 
     def protected_tag?(tag_name)
-      project.repository.tag_names.include?(tag_name)
+      project.repository.tag_exists?(tag_name)
     end
 
     def user_allowed?
