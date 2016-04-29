@@ -3,9 +3,10 @@ module Gitlab
     class RepoRestorer
       include Gitlab::ImportExport::CommandLineUtil
 
-      def initialize(project: , path:, bundler_file: )
+      def initialize(project: , path: )
         @project = project
-        @path = File.join(path, bundler_file)
+        # TODO remove magic keyword and move it to a shared config
+        @path = File.join(path, 'project.bundle')
       end
 
       def restore

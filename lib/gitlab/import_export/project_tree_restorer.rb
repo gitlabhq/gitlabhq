@@ -1,7 +1,6 @@
 module Gitlab
   module ImportExport
     class ProjectTreeRestorer
-      attr_reader :project
 
       def initialize(path:, user:, project_path:)
         @path = File.join(path, 'project.json')
@@ -14,6 +13,10 @@ module Gitlab
         @tree_hash = ActiveSupport::JSON.decode(json)
         @project_members = @tree_hash.delete('project_members')
         create_relations
+      end
+
+      def project
+        @project ||= create_project
       end
 
       private
@@ -41,17 +44,12 @@ module Gitlab
         Gitlab::ImportExport::ImportExportReader.tree.reject { |model| model.is_a?(Hash) && model[:project_members] }
       end
 
-      def project
-        @project ||= create_project
-      end
-
       def create_project
         project_params = @tree_hash.reject { |_key, value| value.is_a?(Array) }
         project = Gitlab::ImportExport::ProjectFactory.create(
           project_params: project_params, user: @user)
         project.path = @project_path
         project.save
-        project.import_start
         project
       end
 
