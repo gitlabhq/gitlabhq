@@ -4,9 +4,9 @@ module Issues
       issues_ids   = params.delete(:issues_ids).split(",")
       issue_params = params
 
-      issue_params.delete(:state_event)   unless issue_params[:state_event].present?
-      issue_params.delete(:milestone_id)  unless issue_params[:milestone_id].present?
-      issue_params.delete(:assignee_id)   unless issue_params[:assignee_id].present?
+      [:state_event, :milestone_id, :assignee_id, :label_ids, :add_label_ids, :remove_label_ids].each do |key|
+        issue_params.delete(key) unless issue_params[key].present?
+      end
 
       issues = Issue.where(id: issues_ids)
       issues.each do |issue|
