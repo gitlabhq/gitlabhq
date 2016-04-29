@@ -66,7 +66,6 @@ module Gitlab
       end
 
       def process_sub_relation(relation_hash, relation_item, sub_relation)
-        sub_relation_object = nil
         if relation_hash.is_a?(Array)
           sub_relation_object = create_relation(sub_relation, relation_hash)
         else
