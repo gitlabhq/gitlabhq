@@ -179,6 +179,25 @@ describe 'Git HTTP requests', lib: true do
               end
             end
 
+            context "when an oauth token is provided" do
+              before do
+                application = Doorkeeper::Application.create!(name: "MyApp", redirect_uri: "https://app.com", owner: user)
+                @token = Doorkeeper::AccessToken.create!(application_id: application.id, resource_owner_id: user.id)
+              end
+
+              it "downloads get status 200" do
+                clone_get "#{project.path_with_namespace}.git", user: 'oauth2', password: @token.token
+
+                expect(response.status).to eq(200)
+              end
+
+              it "uploads get status 401 (no project existence information leak)" do
+                push_get "#{project.path_with_namespace}.git", user: 'oauth2', password: @token.token
+
+                expect(response.status).to eq(401)
+              end
+            end
+
             context "when blank password attempts follow a valid login" do
               def attempt_login(include_password)
                 password = include_password ? user.password : ""
