@@ -735,19 +735,17 @@ class Project < ActiveRecord::Base
   end
 
   def open_branches
-    all_branches = repository.branches
+    # We're using a Set here as checking values in a large Set is faster than
+    # checking values in a large Array.
+    protected_set = Set.new(protected_branch_names)
 
-    if protected_branches.present?
-      all_branches.reject! do |branch|
-        protected_branches_names.include?(branch.name)
-      end
+    repository.branches.reject do |branch|
+      protected_set.include?(branch.name)
     end
-
-    all_branches
   end
 
-  def protected_branches_names
-    @protected_branches_names ||= protected_branches.map(&:name)
+  def protected_branch_names
+    @protected_branch_names ||= protected_branches.pluck(:name)
   end
 
   def root_ref?(branch)
@@ -764,7 +762,7 @@ class Project < ActiveRecord::Base
 
   # Check if current branch name is marked as protected in the system
   def protected_branch?(branch_name)
-    protected_branches_names.include?(branch_name)
+    protected_branches.where(name: branch_name).any?
   end
 
   def developers_can_push_to_protected_branch?(branch_name)
