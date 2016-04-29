@@ -46,4 +46,4 @@
               %span.label.label-info Public Email
             - if email.email === current_user.notification_email
               %span.label.label-info Notification Email
-          = link_to 'Remove', profile_email_path(email), data: { confirm: 'Are you sure?'}, method: :delete, class: 'btn btn-sm btn-remove pull-right'
+            = link_to 'Remove', profile_email_path(email), data: { confirm: 'Are you sure?'}, method: :delete, class: 'btn btn-sm btn-warning prepend-left-10'
