@@ -764,7 +764,7 @@ class Project < ActiveRecord::Base
 
   # Check if current branch name is marked as protected in the system
   def protected_branch?(branch_name)
-    protected_branches_names.include?(branch_name)
+    protected_branches.where(name: branch_name).any?
   end
 
   def developers_can_push_to_protected_branch?(branch_name)
