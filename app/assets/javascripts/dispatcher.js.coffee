@@ -49,6 +49,7 @@ class Dispatcher
         new ZenMode()
         new GLForm($('.release-form'))
       when 'projects:merge_requests:show'
+        new CreateIssueFromComment()
         new Diff()
         shortcut_handler = new ShortcutsIssuable(true)
         new ZenMode()

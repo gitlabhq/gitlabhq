@@ -225,6 +225,7 @@ class @Notes
 
       # Add note to 'Changes' page discussions
       discussionContainer.append note_html
+      $('#diffs').trigger('note:created', note)
 
       # Init discussion on 'Discussion' page if it is merge request page
       if $('body').attr('data-page').indexOf('projects:merge_request') is 0
@@ -234,6 +235,7 @@ class @Notes
     else
       # append new note to all matching discussions
       discussionContainer.append note_html
+      $('#diffs').trigger('note:created', note)
 
     gl.utils.localTimeAgo($('.js-timeago', note_html), false)
 

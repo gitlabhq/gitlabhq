@@ -88,12 +88,13 @@
     $.ajax(
       url: url
       type: "POST"
+      context: @
       data: data
       dataType: "json"
     ).done (issue) ->
-      callback(issue)
+      callback.call(@, issue)
     .error (message) ->
-      callback(message.responseJSON)
+      callback.call(@, message.responseJSON)
 
   # Return group projects list. Filtered by query
   groupProjects: (group_id, query, callback) ->
