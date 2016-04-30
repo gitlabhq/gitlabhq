@@ -405,7 +405,7 @@ class Project < ActiveRecord::Base
 
     ProjectCacheWorker.perform_async(self.id)
 
-    self.import_data.destroy if self.import_data
+    self.import_data.destroy if !mirror? && import_data
   end
 
   def import_url=(value)
