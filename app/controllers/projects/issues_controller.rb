@@ -96,6 +96,8 @@ class Projects::IssuesController < Projects::ApplicationController
 
     if params[:move_to_project_id].to_i > 0
       new_project = Project.find(params[:move_to_project_id])
+      return render_404 unless issue.can_move?(current_user, new_project)
+
       move_service = Issues::MoveService.new(project, current_user)
       @issue = move_service.execute(@issue, new_project)
     end
