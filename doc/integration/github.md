@@ -9,7 +9,9 @@ GitHub will generate an application ID and secret key for you to use.
 
 1.  Navigate to your individual user settings or an organization's settings, depending on how you want the application registered. It does not matter if the application is registered as an individual or an organization - that is entirely up to you.
 
-1.  Select "Applications" in the left menu.
+1.  Select "OAuth applications" in the left menu.
+
+1.  If you already have applications listed, switch to the "Developer applications" tab.
 
 1.  Select "Register new application".
 
