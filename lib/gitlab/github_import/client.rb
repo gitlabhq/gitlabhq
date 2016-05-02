@@ -4,26 +4,39 @@ module Gitlab
       GITHUB_SAFE_REMAINING_REQUESTS = 100
       GITHUB_SAFE_SLEEP_TIME = 500
 
-      attr_reader :client, :api
+      attr_reader :access_token
 
       def initialize(access_token)
-        @client = ::OAuth2::Client.new(
+        @access_token = access_token
+
+        if access_token
+          ::Octokit.auto_paginate = false
+        end
+      end
+
+      def api
+        @api ||= ::Octokit::Client.new(
+          access_token: access_token,
+          api_endpoint: github_options[:site],
+          # If there is no config, we're connecting to github.com and we
+          # should verify ssl.
+          connection_options: {
+            ssl: { verify: config ? config['verify_ssl'] : true }
+          }
+        )
+      end
+
+      def client
+        unless config
+          raise Projects::ImportService::Error,
+            'OAuth configuration for GitHub missing.'
+        end
+
+        @client ||= ::OAuth2::Client.new(
           config.app_id,
           config.app_secret,
           github_options.merge(ssl: { verify: config['verify_ssl'] })
         )
-
-        if access_token
-          ::Octokit.auto_paginate = false
-
-          @api = ::Octokit::Client.new(
-            access_token: access_token,
-            api_endpoint: github_options[:site],
-            connection_options: {
-              ssl: { verify: config['verify_ssl'] }
-            }
-          )
-        end
       end
 
       def authorize_url(redirect_uri)
@@ -56,7 +69,11 @@ module Gitlab
       end
 
       def github_options
-        config["args"]["client_options"].deep_symbolize_keys
+        if config
+          config["args"]["client_options"].deep_symbolize_keys
+        else
+          OmniAuth::Strategies::GitHub.default_options[:client_options].symbolize_keys
+        end
       end
 
       def rate_limit
