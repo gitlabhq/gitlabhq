@@ -37,7 +37,7 @@ describe Gitlab::Auth, lib: true do
       ip = 'ip'
 
       expect(gl_auth).to receive(:rate_limit!).with(ip, success: false, login: login)
-      expect(gl_auth.find(login, 'bar', project: nil, ip: ip)).to eq ([nil, nil])
+      expect(gl_auth.find(login, 'bar', project: nil, ip: ip)).to eq([nil, nil])
     end
   end
 

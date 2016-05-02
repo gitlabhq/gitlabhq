@@ -36,9 +36,9 @@ module Gitlab
           "git-archive:#{encode(params)}",
         ]
       end
-      
+
       protected
-      
+
       def encode(hash)
         Base64.urlsafe_encode64(JSON.dump(hash))
       end
