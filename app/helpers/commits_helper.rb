@@ -204,6 +204,14 @@ module CommitsHelper
     end
   end
 
+  def commit_author_avatar(commit, options = {})
+    user = commit.send(:author)
+    source_email = clean(commit.send "author_email".to_sym)
+    person_email = user.try(:email) || source_email
+
+    image_tag(avatar_icon(person_email, options[:size]), class: "avatar #{"s#{options[:size]}" if options[:size]}", width: options[:size], alt: "")
+  end
+
   def view_file_btn(commit_sha, diff, project)
     link_to(
       namespace_project_blob_path(project.namespace, project,
