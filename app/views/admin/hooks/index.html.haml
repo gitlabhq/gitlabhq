@@ -13,9 +13,15 @@
   = form_errors(@hook)
 
   .form-group
-    = f.label :url, "URL:", class: 'control-label'
+    = f.label :url, 'URL', class: 'control-label'
     .col-sm-10
-      = f.text_field :url, class: "form-control"
+      = f.text_field :url, class: 'form-control'
+  .form-group
+    = f.label :token, 'Secret Token', class: 'control-label'
+    .col-sm-10
+      = f.text_field :token, class: 'form-control'
+      %p.help-block
+        Use this token to validate received payloads
   .form-group
     = f.label :url, "Trigger", class: 'control-label'
     .col-sm-10.prepend-top-10
