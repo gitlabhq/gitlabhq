@@ -11,12 +11,7 @@ module API
     # Example Request:
     #  POST /session
     post "/session" do
-      user, _ = Gitlab::Auth.find(
-        params[:email] || params[:login],
-        params[:password],
-        project: nil,
-        ip: request.ip
-      )
+      user = Gitlab::Auth.find_by_master_or_ldap(params[:email] || params[:login], params[:password])
 
       return unauthorized! unless user
       present user, with: Entities::UserLogin
