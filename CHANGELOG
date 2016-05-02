@@ -4,6 +4,7 @@ v 8.8.0 (unreleased)
   - Project#open_branches has been cleaned up and no longer loads entire records into memory.
   - Make build status canceled if any of the jobs was canceled and none failed
   - Remove future dates from contribution calendar graph.
+  - Support e-mail notifications for comments on project snippets
   - Use ActionDispatch Remote IP for Akismet checking
   - Fix error when visiting commit builds page before build was updated
   - Add 'l' shortcut to open Label dropdown on issuables and 'i' to create new issue on a project
