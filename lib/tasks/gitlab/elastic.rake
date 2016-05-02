@@ -24,28 +24,30 @@ namespace :gitlab do
       indexer = Elastic::Indexer.new
 
       projects.find_each do |project|
-        if project.repository.exists? && !project.repository.empty?
+        repository = project.repository
+
+        if repository.exists? && !repository.empty?
           puts "Indexing #{project.name_with_namespace} (ID=#{project.id})..."
 
           index_status = IndexStatus.find_or_create_by(project: project)
 
           begin
-            head_sha = project.repository.commit.sha
+            head_commit = repository.commit
 
-            if index_status.last_commit == head_sha
+            if !head_commit || index_status.last_commit == head_commit.sha
               puts "Skipped".yellow
               next
             end
 
             indexer.run(
               project.id,
-              project.repository.path_to_repo,
-              project.index_status.last_commit
+              repository.path_to_repo,
+              index_status.last_commit
             )
 
             # During indexing the new commits can be pushed,
             # the last_commit parameter only indicates that at least this commit is in index
-            index_status.update(last_commit: head_sha, indexed_at: DateTime.now)
+            index_status.update(last_commit: head_commit.sha, indexed_at: DateTime.now)
             puts "Done!".green
           rescue StandardError => e
             puts "#{e.message}, trace - #{e.backtrace}"
