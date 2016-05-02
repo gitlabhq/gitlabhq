@@ -47,18 +47,11 @@
     :when: 2016-04-17 21:42:31.420186000 Z
 - - :license
   - rdoc
-  - GPLv2
+  - ruby
   - :who: 
     :why: https://github.com/rdoc/rdoc/blob/master/LICENSE.rdoc
     :versions: []
     :when: 2016-04-17 21:43:30.480413000 Z
-- - :license
-  - rubypants
-  - unknown
-  - :who: 
-    :why: https://github.com/jmcnevin/rubypants/blob/master/LICENSE.rdoc
-    :versions: []
-    :when: 2016-04-17 21:44:49.443453000 Z
 - - :license
   - expression_parser
   - MIT
@@ -87,3 +80,117 @@
     :why: https://github.com/minad/creole#license
     :versions: []
     :when: 2016-04-17 21:49:10.329759000 Z
+- - :license
+  - eventmachine
+  - ruby
+  - :who: 
+    :why: https://github.com/eventmachine/eventmachine/blob/master/LICENSE
+    :versions: []
+    :when: 2016-04-17 21:49:10.329759001 Z
+- - :whitelist
+  - Apache 2.0
+  - :who: Connor Shea
+    :why: http://choosealicense.com/licenses/apache-2.0/
+    :versions: []
+    :when: 2016-05-02 05:27:43.762702000 Z
+- - :blacklist
+  - GPLv2
+  - :who: Connor Shea
+    :why: GPL-licensed libraries cannot be linked to from non-GPL projects.
+    :versions: []
+    :when: 2016-05-02 05:29:27.637336000 Z
+- - :blacklist
+  - GPLv3
+  - :who: Connor Shea
+    :why: GPL-licensed libraries cannot be linked to from non-GPL projects.
+    :versions: []
+    :when: 2016-05-02 05:29:43.904715000 Z
+- - :whitelist
+  - ruby
+  - :who: Connor Shea
+    :why: https://github.com/ruby/ruby/blob/ruby_1_8_6/COPYING
+    :versions: []
+    :when: 2016-05-02 05:31:54.498490000 Z
+- - :whitelist
+  - LGPL
+  - :who: Connor Shea
+    :why: http://www.gnu.org/licenses/license-list.html#LGPLv2.1
+    :versions: []
+    :when: 2016-05-02 05:32:48.645841000 Z
+- - :whitelist
+  - ISC
+  - :who: Connor Shea
+    :why: http://www.gnu.org/licenses/license-list.html#ISC
+    :versions: []
+    :when: 2016-05-02 05:42:01.894452000 Z
+- - :whitelist
+  - New BSD
+  - :who: Connor Shea
+    :why: https://opensource.org/licenses/BSD-3-Clause
+    :versions: []
+    :when: 2016-05-02 05:44:38.246021000 Z
+- - :license
+  - unicorn
+  - ruby
+  - :who: 
+    :why: 
+    :versions: []
+    :when: 2016-05-02 05:45:28.817510000 Z
+- - :license
+  - unicorn-worker-killer
+  - ruby
+  - :who: 
+    :why: 
+    :versions: []
+    :when: 2016-05-02 05:45:38.323867000 Z
+- - :license
+  - json
+  - ruby
+  - :who: 
+    :why: 
+    :versions: []
+    :when: 2016-05-02 05:50:07.826564000 Z
+- - :license
+  - unf
+  - BSD
+  - :who: 
+    :why: 
+    :versions: []
+    :when: 2016-05-02 05:51:46.886872000 Z
+- - :whitelist
+  - LGPL-2.1+
+  - :who: 
+    :why: Equivalent to LGPL.
+    :versions: []
+    :when: 2016-05-02 05:52:56.303239000 Z
+- - :whitelist
+  - BSD
+  - :who: 
+    :why: https://opensource.org/licenses/BSD-2-Clause
+    :versions: []
+    :when: 2016-05-02 05:55:09.796363000 Z
+- - :license
+  - rubypants
+  - MIT
+  - :who: 
+    :why: 
+    :versions: []
+    :when: 2016-05-02 05:56:50.696858000 Z
+- - :ignore
+  - bundler
+  - :who: 
+    :why: 
+    :versions: []
+    :when: 2016-05-02 06:41:31.504230000 Z
+- - :heed
+  - bundler
+  - :who: 
+    :why: 
+    :versions: []
+    :when: 2016-05-02 06:41:38.703526000 Z
+- - :ignore
+  - bundler
+  - :who: 
+    :why: Bundler is MIT licensed but will sometimes fail in CI.
+    :versions: []
+    :when: 2016-05-02 06:42:08.045090000 Z

@@ -796,6 +796,7 @@ GEM
       builder
       expression_parser
       rinku
+    xml-simple (1.1.5)
     xpath (2.0.0)
       nokogiri (~> 1.3)
 
