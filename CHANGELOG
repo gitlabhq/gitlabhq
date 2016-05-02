@@ -4,6 +4,7 @@ v 8.8.0 (unreleased)
 
 v 8.7.2
   - The "New Branch" button is now loaded asynchronously
+  - Fix error 500 when trying to create a wiki page
 
 v 8.7.1
 v 8.7.1 (unreleased)
