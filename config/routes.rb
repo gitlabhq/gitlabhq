@@ -63,6 +63,9 @@ Rails.application.routes.draw do
   get 'search' => 'search#show'
   get 'search/autocomplete' => 'search#autocomplete', as: :search_autocomplete
 
+  # JSON Web Token
+  get 'jwt/auth' => 'jwt#auth'
+
   # API
   API::API.logger Rails.logger
   mount API::API => '/api'
