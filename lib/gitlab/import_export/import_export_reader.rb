@@ -57,8 +57,10 @@ module Gitlab
       end
 
       def add_new_class(current_key, included_classes_hash, value)
+        only_except_hash = check_only_and_except(value)
+        # TODO: refactor this
+        value = (value.is_a?(Hash) ? value.merge(only_except_hash) : { value => only_except_hash }) if only_except_hash
         new_hash = { include: value }
-        new_hash.merge!(check_only_and_except(value))
         included_classes_hash[current_key] = new_hash
       end
 

@@ -131,3 +131,14 @@
     var _href = $("a.import_gitlab_project").attr("href");
     $(".import_gitlab_project").attr("href", _href + '?namespace_id=' + $("#project_namespace_id").val() + '&path=' + $("#project_path").val());
   });
+  $('.import_gitlab_project').attr('disabled',true)
+  $('.import_gitlab_project').attr('title', 'Project path required.');
+   $('#project_path').keyup(function(){
+        if($(this).val().length !=0) {
+            $('.import_gitlab_project').attr('disabled', false);
+            $('.import_gitlab_project').attr('title','');
+        } else {
+            $('.import_gitlab_project').attr('disabled',true);
+            $('.import_gitlab_project').attr('title', 'Project path required.');
+        }
+    })
