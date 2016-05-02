@@ -258,7 +258,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def check_if_can_be_merged
-    return unless unchecked?
+    return unless unchecked? && !Gitlab::Geo.secondary?
 
     can_be_merged =
       !broken? && project.repository.can_be_merged?(source_sha, target_branch)
