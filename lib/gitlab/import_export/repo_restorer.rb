@@ -15,7 +15,7 @@ module Gitlab
 
         FileUtils.mkdir_p(repos_path)
         FileUtils.mkdir_p(path_to_repo)
-        untar_zxf(archive: @path, dir: path_to_repo)
+        untar_xf(archive: @path, dir: path_to_repo)
       end
 
       private

@@ -9,7 +9,7 @@ module Gitlab
         untar_with_options(archive: archive, dir: dir, options: 'zxf')
       end
 
-      def untar_czf(archive:, dir:)
+      def untar_xf(archive:, dir:)
         untar_with_options(archive: archive, dir: dir, options: 'xf')
       end
 

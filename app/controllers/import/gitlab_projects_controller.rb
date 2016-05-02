@@ -12,13 +12,7 @@ class Import::GitlabProjectsController < Import::BaseController
   end
 
   def status
-    @repos = client.projects
-    @incompatible_repos = client.incompatible_projects
 
-    @already_added_projects = current_user.created_projects.where(import_type: "gitlab_project")
-    already_added_projects_names = @already_added_projects.pluck(:import_source)
-
-    @repos.to_a.reject!{ |repo| already_added_projects_names.include? "#{repo["owner"]}/#{repo["slug"]}" }
   end
 
   def jobs
@@ -39,6 +33,8 @@ class Import::GitlabProjectsController < Import::BaseController
                                               tmp_file: File.expand_path(file.path),
                                               namespace_id: namespace_id,
                                               project_path: path)
+
+    redirect_to status_import_gitlab_project_path
   end
 
   private

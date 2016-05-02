@@ -8,6 +8,8 @@ feature 'project import', feature: true, js: true do
   let(:file) { File.join(Rails.root, 'spec', 'features', 'projects', 'import_export', 'test_project_export.tar.gz') }
 
   background do
+    export_path = "#{Dir::tmpdir}/import_file_spec"
+    allow_any_instance_of(Gitlab::ImportExport).to receive(:storage_path).and_return(export_path)
     login_as(user)
   end
 
@@ -27,9 +29,6 @@ feature 'project import', feature: true, js: true do
     sleep 1
 
     click_on 'Continue to the next step'
-
-    sleep 1
-
   end
 
   def drop_in_dropzone(file_path)

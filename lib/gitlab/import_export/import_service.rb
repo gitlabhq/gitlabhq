@@ -15,8 +15,7 @@ module Gitlab
 
       def execute
         Gitlab::ImportExport::Importer.import(archive_file: @archive_file, storage_path: storage_path)
-        restore_project_tree
-        restore_repo
+        project_tree.project if [restore_project_tree, restore_repo].all?
       end
 
       private
