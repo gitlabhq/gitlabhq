@@ -62,7 +62,7 @@ class CommitRange
   def initialize(range_string, project)
     @project = project
 
-    range_string.strip!
+    range_string = range_string.strip
 
     unless range_string =~ /\A#{PATTERN}\z/
       raise ArgumentError, "invalid CommitRange string format: #{range_string}"

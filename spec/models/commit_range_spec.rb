@@ -24,6 +24,16 @@ describe CommitRange, models: true do
     expect { described_class.new("Foo", project) }.to raise_error(ArgumentError)
   end
 
+  describe '#initialize' do
+    it 'does not modify strings in-place' do
+      input = "#{sha_from}...#{sha_to}   "
+
+      described_class.new(input, project)
+
+      expect(input).to eq("#{sha_from}...#{sha_to}   ")
+    end
+  end
+
   describe '#to_s' do
     it 'is correct for three-dot syntax' do
       expect(range.to_s).to eq "#{full_sha_from}...#{full_sha_to}"
