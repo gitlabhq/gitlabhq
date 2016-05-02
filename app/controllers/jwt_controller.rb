@@ -2,6 +2,10 @@ class JwtController < ApplicationController
   skip_before_action :authenticate_user!
   skip_before_action :verify_authenticity_token
 
+  SERVICES = {
+    'docker' => Jwt::DockerAuthenticationService,
+  }
+
   def auth
     @authenticated = authenticate_with_http_basic do |login, password|
       @ci_project = ci_project(login, password)
@@ -9,46 +13,22 @@ class JwtController < ApplicationController
     end
 
     unless @authenticated
-      return render_403 if has_basic_credentials?
+      head :forbidden if ActionController::HttpAuthentication::Basic.has_basic_credentials?(request)
     end
 
-    case params[:service]
-    when 'docker'
-      docker_token_auth(params[:scope], params[:offline_token])
-    else
-      return render_404
-    end
+    service = SERVICES[params[:service]]
+    head :not_found unless service
+
+    result = service.new(@ci_project, @user, auth_params).execute
+    return head result[:http_status] if result[:http_status]
+
+    render json: result
   end
 
   private
 
-  def render_400
-    head :invalid_request
-  end
-
-  def render_404
-    head :not_found
-  end
-
-  def render_403
-    head :forbidden
-  end
-
-  def docker_token_auth(scope, offline_token)
-    payload = {
-      aud: params[:service],
-      sub: @user.try(:username)
-    }
-
-    if offline_token
-      return render_403 unless @user
-    elsif scope
-      access = process_access(scope)
-      return render_404 unless access
-      payload[:access] = [access]
-    end
-
-    render json: { token: encode(payload) }
+  def auth_params
+    params.permit(:service, :scope, :offline_token, :account, :client_id)
   end
 
   def ci_project(login, password)
@@ -101,73 +81,5 @@ class JwtController < ApplicationController
     end
 
     user
-  end
-
-  def process_access(scope)
-    type, name, actions = scope.split(':', 3)
-    actions = actions.split(',')
-
-    case type
-    when 'repository'
-      process_repository_access(type, name, actions)
-    end
-  end
-
-  def process_repository_access(type, name, actions)
-    project = Project.find_with_namespace(name)
-    return unless project
-
-    actions = actions.select do |action|
-      can_access?(project, action)
-    end
-
-    { type: 'repository', name: name, actions: actions } if actions
-  end
-
-  def default_payload
-    {
-      aud: 'docker',
-      sub: @user.try(:username),
-      aud: params[:service],
-    }
-  end
-
-  def private_key
-    @private_key ||= OpenSSL::PKey::RSA.new File.read Gitlab.config.registry.key
-  end
-
-  def encode(payload)
-    issued_at = Time.now
-    payload = payload.merge(
-      iss: Gitlab.config.registry.issuer,
-      iat: issued_at.to_i,
-      nbf: issued_at.to_i - 5.seconds.to_i,
-      exp: issued_at.to_i + 60.minutes.to_i,
-      jti: SecureRandom.uuid,
-    )
-    headers = {
-      kid: kid(private_key)
-    }
-    JWT.encode(payload, private_key, 'RS256', headers)
-  end
-
-  def can_access?(project, action)
-    case action
-    when 'pull'
-      project == @ci_project || can?(@user, :download_code, project)
-    when 'push'
-      project == @ci_project || can?(@user, :push_code, project)
-    else
-      false
-    end
-  end
-
-  def kid(private_key)
-    sha256 = Digest::SHA256.new
-    sha256.update(private_key.public_key.to_der)
-    payload = StringIO.new(sha256.digest).read(30)
-    Base32.encode(payload).split('').each_slice(4).each_with_object([]) do |slice, mem|
-      mem << slice.join
-    end.join(':')
   end
 end
