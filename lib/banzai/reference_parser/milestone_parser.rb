@@ -3,8 +3,10 @@ module Banzai
     class MilestoneParser < Parser
       self.reference_type = :milestone
 
-      def referenced_by(node)
-        [LazyReference.new(Milestone, node.attr('data-milestone'))]
+      def referenced_by(nodes)
+        ids = nodes.map { |node| node.attr('data-milestone') }
+
+        Milestone.where(id: ids)
       end
     end
   end

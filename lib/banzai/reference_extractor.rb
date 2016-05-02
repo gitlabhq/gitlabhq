@@ -35,17 +35,19 @@ module Banzai
       processor = Banzai::ReferenceParser[type].
         new(project, current_user, author)
 
-      refs = Set.new
+      processor.process(html_documents)
+    end
 
-      @texts.each do |html|
-        doc = Nokogiri::HTML.fragment(html)
+    private
 
-        processor.process(doc).each do |ref|
-          refs << ref
-        end
+    def html_documents
+      # This ensures that we don't memoize anything until we have a number of
+      # text blobs to parse.
+      if @texts.empty?
+        []
+      else
+        @html_documents ||= @texts.map { |html| Nokogiri::HTML.fragment(html) }
       end
-
-      refs.to_a
     end
   end
 end

@@ -17,11 +17,11 @@ describe Banzai::ReferenceParser::UserParser, lib: true do
         it 'returns the users of the group' do
           create(:group_member, group: group, user: user)
 
-          expect(parser.referenced_by(link)).to eq([user])
+          expect(parser.referenced_by([link])).to eq([user])
         end
 
         it 'returns an empty Array when the group has no users' do
-          expect(parser.referenced_by(link)).to eq([])
+          expect(parser.referenced_by([link])).to eq([])
         end
       end
 
@@ -29,22 +29,16 @@ describe Banzai::ReferenceParser::UserParser, lib: true do
         it 'returns an empty Array' do
           link['data-group'] = ''
 
-          expect(parser.referenced_by(link)).to eq([])
+          expect(parser.referenced_by([link])).to eq([])
         end
       end
     end
 
     context 'when the link has a data-user attribute' do
-      it 'returns an Array of Banzai::LazyReference instances' do
+      it 'returns an Array of users' do
         link['data-user'] = user.id.to_s
 
-        refs = parser.referenced_by(link)
-
-        expect(refs).to be_an_instance_of(Array)
-
-        expect(refs[0]).to be_an_instance_of(Banzai::LazyReference)
-        expect(refs[0].klass).to eq(User)
-        expect(refs[0].ids).to eq([user.id])
+        expect(parser.referenced_by([link])).to eq([user])
       end
     end
 
@@ -62,7 +56,7 @@ describe Banzai::ReferenceParser::UserParser, lib: true do
 
           # This uses an explicit sort to make sure this spec doesn't randomly
           # fail when objects are returned in a different order.
-          refs = parser.referenced_by(link).sort_by(&:id)
+          refs = parser.referenced_by([link]).sort_by(&:id)
 
           expect(refs).to eq([user, contributor])
         end
@@ -72,7 +66,7 @@ describe Banzai::ReferenceParser::UserParser, lib: true do
         it 'returns an empty Array' do
           link['data-project'] = ''
 
-          expect(parser.referenced_by(link)).to eq([])
+          expect(parser.referenced_by([link])).to eq([])
         end
       end
     end

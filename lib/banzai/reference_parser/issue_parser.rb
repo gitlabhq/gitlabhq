@@ -12,8 +12,10 @@ module Banzai
         Ability.abilities.allowed?(user, :read_issue, issue)
       end
 
-      def referenced_by(node)
-        [LazyReference.new(Issue, node.attr('data-issue'))]
+      def referenced_by(nodes)
+        ids = nodes.map { |node| node.attr('data-issue') }
+
+        Issue.where(id: ids)
       end
     end
   end

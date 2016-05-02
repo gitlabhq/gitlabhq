@@ -16,7 +16,7 @@ describe Banzai::ReferenceParser::ExternalIssueParser, lib: true do
         it 'returns an Array of ExternalIssue instances' do
           link['data-external-issue'] = '123'
 
-          refs = parser.referenced_by(link)
+          refs = parser.referenced_by([link])
 
           expect(refs).to eq([ExternalIssue.new('123', project)])
         end
@@ -24,15 +24,37 @@ describe Banzai::ReferenceParser::ExternalIssueParser, lib: true do
 
       context 'when the link does not have a data-external-issue attribute' do
         it 'returns an empty Array' do
-          expect(parser.referenced_by(link)).to eq([])
+          expect(parser.referenced_by([link])).to eq([])
         end
       end
     end
 
     context 'when the link does not have a data-project attribute' do
       it 'returns an empty Array' do
-        expect(parser.referenced_by(link)).to eq([])
+        expect(parser.referenced_by([link])).to eq([])
       end
+    end
+  end
+
+  describe '#issue_ids_per_project' do
+    before do
+      link['data-project'] = project.id.to_s
+    end
+
+    it 'returns a Hash containing range IDs per project' do
+      link['data-external-issue'] = '123'
+
+      hash = parser.issue_ids_per_project([link])
+
+      expect(hash).to be_an_instance_of(Hash)
+
+      expect(hash[project.id].to_a).to eq(['123'])
+    end
+
+    it 'does not add a project when the data-external-issue attribute is empty' do
+      hash = parser.issue_ids_per_project([link])
+
+      expect(hash).to be_empty
     end
   end
 end

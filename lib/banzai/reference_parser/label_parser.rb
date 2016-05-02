@@ -3,8 +3,10 @@ module Banzai
     class LabelParser < Parser
       self.reference_type = :label
 
-      def referenced_by(node)
-        [LazyReference.new(Label, node.attr('data-label'))]
+      def referenced_by(nodes)
+        ids = nodes.map { |node| node.attr('data-label') }
+
+        Label.where(id: ids)
       end
     end
   end

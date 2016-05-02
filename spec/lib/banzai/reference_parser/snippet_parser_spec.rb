@@ -8,16 +8,22 @@ describe Banzai::ReferenceParser::SnippetParser, lib: true do
   let(:link) { Nokogiri::HTML.fragment('<a></a>').children[0] }
 
   describe '#referenced_by' do
-    it 'returns an Array of Banzai::LazyReference instances' do
-      link['data-snippet'] = snippet.id.to_s
+    describe 'when the link has a data-snippet attribute' do
+      context 'using an existing snippet ID' do
+        it 'returns an Array of snippets' do
+          link['data-snippet'] = snippet.id.to_s
 
-      refs = parser.referenced_by(link)
+          expect(parser.referenced_by([link])).to eq([snippet])
+        end
+      end
 
-      expect(refs).to be_an_instance_of(Array)
+      context 'using a non-existing snippet ID' do
+        it 'returns an empty Array' do
+          link['data-snippet'] = ''
 
-      expect(refs[0]).to be_an_instance_of(Banzai::LazyReference)
-      expect(refs[0].klass).to eq(Snippet)
-      expect(refs[0].ids).to eq([snippet.id])
+          expect(parser.referenced_by([link])).to eq([])
+        end
+      end
     end
   end
 end

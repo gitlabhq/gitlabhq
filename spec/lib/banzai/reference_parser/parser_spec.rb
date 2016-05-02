@@ -87,25 +87,27 @@ describe Banzai::ReferenceParser::Parser, lib: true do
       document = Nokogiri::HTML.fragment('<a class="gfm"></a><a class="gfm" data-reference-type="test"></a>')
 
       expect(instance).to receive(:gather_references).
-        with(document.children[1]).
+        with([document.children[1]]).
         and_return([user])
 
-      expect(instance.process(document)).to eq([user])
+      expect(instance.process([document])).to eq([user])
     end
   end
 
   describe '#gather_references' do
     let(:link) { double(:link) }
 
-    it 'returns an empty Array if the user can not reference a link' do
+    it 'does not process links a user can not reference' do
       expect(parser).to receive(:user_can_reference?).
         with(user, link).
         and_return(false)
 
-      expect(parser.gather_references(link)).to eq([])
+      expect(parser).to receive(:referenced_by).with([])
+
+      parser.gather_references([link])
     end
 
-    it 'returns an empty Array if the user can not see a reference' do
+    it 'does not process links a user can not see' do
       expect(parser).to receive(:user_can_reference?).
         with(user, link).
         and_return(true)
@@ -114,7 +116,9 @@ describe Banzai::ReferenceParser::Parser, lib: true do
         with(user, link).
         and_return(false)
 
-      expect(parser.gather_references(link)).to eq([])
+      expect(parser).to receive(:referenced_by).with([])
+
+      parser.gather_references([link])
     end
 
     it 'returns the references if a user can reference and see a link' do
@@ -126,9 +130,9 @@ describe Banzai::ReferenceParser::Parser, lib: true do
         with(user, link).
         and_return(true)
 
-      expect(parser).to receive(:referenced_by).with(link)
+      expect(parser).to receive(:referenced_by).with([link])
 
-      parser.gather_references(link)
+      parser.gather_references([link])
     end
   end
 end

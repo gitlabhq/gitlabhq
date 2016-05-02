@@ -20,56 +20,92 @@ describe Banzai::ReferenceParser::CommitParser, lib: true do
         it 'returns an Array of commits' do
           commit = double(:commit)
 
-          expect(parser).to receive(:find_object).
-            with(project, '123').
-            and_return(commit)
+          allow_any_instance_of(Project).to receive(:valid_repo?).
+            and_return(true)
 
-          expect(parser.referenced_by(link)).to eq([commit])
+          expect(parser).to receive(:find_commits).
+            with(project, ['123']).
+            and_return([commit])
+
+          expect(parser.referenced_by([link])).to eq([commit])
         end
 
         it 'returns an empty Array when the commit could not be found' do
-          expect(parser).to receive(:find_object).
-            with(project, '123').
-            and_return(nil)
+          allow_any_instance_of(Project).to receive(:valid_repo?).
+            and_return(true)
 
-          expect(parser.referenced_by(link)).to eq([])
+          expect(parser).to receive(:find_commits).
+            with(project, ['123']).
+            and_return([])
+
+          expect(parser.referenced_by([link])).to eq([])
+        end
+
+        it 'skips projects without valid repositories' do
+          allow_any_instance_of(Project).to receive(:valid_repo?).
+            and_return(false)
+
+          expect(parser).not_to receive(:find_commits)
+
+          expect(parser.referenced_by([link])).to eq([])
         end
       end
 
       context 'when the link does not have a data-commit attribute' do
         it 'returns an empty Array' do
-          expect(parser).not_to receive(:find_object)
+          allow_any_instance_of(Project).to receive(:valid_repo?).
+            and_return(true)
 
-          expect(parser.referenced_by(link)).to eq([])
+          expect(parser.referenced_by([link])).to eq([])
         end
       end
     end
 
     context 'when the link does not have a data-project attribute' do
       it 'returns an empty Array' do
-        expect(parser.referenced_by(link)).to eq([])
+        allow_any_instance_of(Project).to receive(:valid_repo?).
+          and_return(true)
+
+        expect(parser.referenced_by([link])).to eq([])
       end
     end
   end
 
-  describe '#find_object' do
-    context 'when the project has a valid repository' do
-      it 'returns a commit' do
-        commit = double(:commit)
-
-        expect(project).to receive(:valid_repo?).and_return(true)
-        expect(project).to receive(:commit).with('123').and_return(commit)
-
-        expect(parser.find_object(project, '123')).to eq(commit)
-      end
+  describe '#commit_ids_per_project' do
+    before do
+      link['data-project'] = project.id.to_s
     end
 
-    context 'when the project does not have a valid repository' do
-      it 'returns nil' do
-        expect(project).to receive(:valid_repo?).and_return(false)
+    it 'returns a Hash containing commit IDs per project' do
+      link['data-commit'] = '123'
 
-        expect(parser.find_object(project, '123')).to be_nil
-      end
+      hash = parser.commit_ids_per_project([link])
+
+      expect(hash).to be_an_instance_of(Hash)
+
+      expect(hash[project.id].to_a).to eq(['123'])
+    end
+
+    it 'does not add a project when the data-commit attribute is empty' do
+      hash = parser.commit_ids_per_project([link])
+
+      expect(hash).to be_empty
+    end
+  end
+
+  describe '#find_commits' do
+    it 'returns an Array of commit objects' do
+      commit = double(:commit)
+
+      expect(project).to receive(:commit).with('123').and_return(commit)
+
+      expect(parser.find_commits(project, %w{123})).to eq([commit])
+    end
+
+    it 'skips commit IDs for which no commit could be found' do
+      expect(project).to receive(:commit).with('123').and_return(nil)
+
+      expect(parser.find_commits(project, %w{123})).to eq([])
     end
   end
 end

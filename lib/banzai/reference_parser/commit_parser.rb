@@ -3,26 +3,47 @@ module Banzai
     class CommitParser < Parser
       self.reference_type = :commit
 
-      def referenced_by(node)
-        project = Project.find_by(id: node.attr("data-project"))
+      def referenced_by(nodes)
+        commit_ids = commit_ids_per_project(nodes)
+        projects = find_projects(commit_ids.keys)
+        commits = []
 
-        return [] unless project
+        projects.each do |project|
+          next unless project.valid_repo?
 
-        id = node.attr("data-commit")
+          commits.concat(find_commits(project, commit_ids[project.id]))
+        end
 
-        return [] if id.blank?
-
-        object = find_object(project, id)
-
-        object ? [object] : []
+        commits
       end
 
-      def find_object(project, id)
-        if project.valid_repo?
-          project.commit(id)
-        else
-          nil
+      def commit_ids_per_project(nodes)
+        commit_ids = Hash.new { |hash, key| hash[key] = Set.new }
+
+        nodes.each do |node|
+          project_id = node.attr('data-project').to_i
+          id = node.attr('data-commit')
+
+          commit_ids[project_id] << id if id
         end
+
+        commit_ids
+      end
+
+      def find_commits(project, ids)
+        commits = []
+
+        ids.each do |id|
+          commit = project.commit(id)
+
+          commits << commit if commit
+        end
+
+        commits
+      end
+
+      def find_projects(ids)
+        Project.where(id: ids)
       end
     end
   end

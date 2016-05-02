@@ -38,16 +38,22 @@ describe Banzai::ReferenceParser::IssueParser, lib: true do
   end
 
   describe '#referenced_by' do
-    it 'returns an Array of Banzai::LazyReference instances' do
-      link['data-issue'] = issue.id.to_s
+    describe 'when the link has a data-issue attribute' do
+      context 'using an existing issue ID' do
+        it 'returns an Array of issues' do
+          link['data-issue'] = issue.id.to_s
 
-      refs = parser.referenced_by(link)
+          expect(parser.referenced_by([link])).to eq([issue])
+        end
+      end
 
-      expect(refs).to be_an_instance_of(Array)
+      context 'using a non-existing issue ID' do
+        it 'returns an empty Array' do
+          link['data-issue'] = ''
 
-      expect(refs[0]).to be_an_instance_of(Banzai::LazyReference)
-      expect(refs[0].klass).to eq(Issue)
-      expect(refs[0].ids).to eq([issue.id])
+          expect(parser.referenced_by([link])).to eq([])
+        end
+      end
     end
   end
 end

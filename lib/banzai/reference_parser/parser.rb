@@ -31,35 +31,34 @@ module Banzai
         true
       end
 
-      def referenced_by(node)
+      def referenced_by(nodes)
         raise NotImplementedError, "#{self.class} does not implement #{__method__}"
       end
 
-      def process(document)
-        refs = Set.new
+      def process(documents)
         type = self.class.reference_type
+        nodes = []
 
-        Querying.css(document, "a[data-reference-type='#{type}'].gfm").each do |node|
-          gather_references(node).each do |ref|
-            refs << ref
-          end
+        documents.each do |document|
+          nodes.concat(
+            Querying.css(document, "a[data-reference-type='#{type}'].gfm")
+          )
         end
 
-        refs = refs.to_a
-
-        if ReferenceExtractor.lazy?
-          refs
-        else
-          ReferenceExtractor.lazily(refs)
-        end
+        gather_references(nodes)
       end
 
-      def gather_references(node)
-        return [] if author && !user_can_reference?(author, node)
+      def gather_references(nodes)
+        selected = []
 
-        return [] unless user_can_see_reference?(current_user, node)
+        nodes.each do |node|
+          next if author && !user_can_reference?(author, node)
+          next unless user_can_see_reference?(current_user, node)
 
-        referenced_by(node)
+          selected << node
+        end
+
+        referenced_by(selected)
       end
 
       private

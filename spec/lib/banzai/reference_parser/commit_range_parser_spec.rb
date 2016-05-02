@@ -24,7 +24,7 @@ describe Banzai::ReferenceParser::CommitRangeParser, lib: true do
             with(project, '123..456').
             and_return(range)
 
-          expect(parser.referenced_by(link)).to eq([range])
+          expect(parser.referenced_by([link])).to eq([range])
         end
 
         it 'returns an empty Array when the commit range could not be found' do
@@ -32,21 +32,63 @@ describe Banzai::ReferenceParser::CommitRangeParser, lib: true do
             with(project, '123..456').
             and_return(nil)
 
-          expect(parser.referenced_by(link)).to eq([])
+          expect(parser.referenced_by([link])).to eq([])
         end
       end
 
       context 'when the link does not have a data-commit-range attribute' do
         it 'returns an empty Array' do
-          expect(parser.referenced_by(link)).to eq([])
+          expect(parser.referenced_by([link])).to eq([])
         end
       end
     end
 
     context 'when the link does not have a data-project attribute' do
       it 'returns an empty Array' do
-        expect(parser.referenced_by(link)).to eq([])
+        expect(parser.referenced_by([link])).to eq([])
       end
+    end
+  end
+
+  describe '#commit_range_ids_per_project' do
+    before do
+      link['data-project'] = project.id.to_s
+    end
+
+    it 'returns a Hash containing range IDs per project' do
+      link['data-commit-range'] = '123..456'
+
+      hash = parser.commit_range_ids_per_project([link])
+
+      expect(hash).to be_an_instance_of(Hash)
+
+      expect(hash[project.id].to_a).to eq(['123..456'])
+    end
+
+    it 'does not add a project when the data-commit-range attribute is empty' do
+      hash = parser.commit_range_ids_per_project([link])
+
+      expect(hash).to be_empty
+    end
+  end
+
+  describe '#find_ranges' do
+    it 'returns an Array of range objects' do
+      range = double(:commit)
+
+      expect(parser).to receive(:find_object).
+        with(project, '123..456').
+        and_return(range)
+
+      expect(parser.find_ranges(project, ['123..456'])).to eq([range])
+    end
+
+    it 'skips ranges that could not be found' do
+      expect(parser).to receive(:find_object).
+        with(project, '123..456').
+        and_return(nil)
+
+      expect(parser.find_ranges(project, ['123..456'])).to eq([])
     end
   end
 
