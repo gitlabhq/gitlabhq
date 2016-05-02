@@ -140,7 +140,6 @@ v 8.7.0
   - Import GitHub labels
   - Add option to filter by "Owned projects" on dashboard page
   - Import GitHub milestones
-  - Fix emoji catgories in the emoji picker
   - Execute system web hooks on push to the project
   - Allow enable/disable push events for system hooks
   - Fix GitHub project's link in the import page when provider has a custom URL
