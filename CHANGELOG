@@ -11,6 +11,7 @@ v 8.8.0 (unreleased)
   - Display informative message when new milestone is created
   - Replace Devise Async with Devise ActiveJob integration. !3902 (Connor Shea)
   - Allow "NEWS" and "CHANGES" as alternative names for CHANGELOG. !3768 (Connor Shea)
+  - Improve design of commits list
   - Added button to toggle whitespaces changes on diff view
   - Backport GitLab Enterprise support from EE
   - Files over 5MB can only be viewed in their raw form, files over 1MB without highlighting !3718

@@ -105,21 +105,21 @@ module CommitsHelper
           "Browse File »",
           namespace_project_blob_path(project.namespace, project,
                                       tree_join(commit.id, @path)),
-          class: "pull-right"
+          class: "browse-code btn"
         )
       elsif @path.present?
         return link_to(
           "Browse Directory »",
           namespace_project_tree_path(project.namespace, project,
                                       tree_join(commit.id, @path)),
-          class: "pull-right"
+          class: "browse-code btn"
         )
       end
     end
     link_to(
       "Browse Files",
       namespace_project_tree_path(project.namespace, project, commit),
-      class: "pull-right"
+      class: "browse-code btn"
     )
   end
 

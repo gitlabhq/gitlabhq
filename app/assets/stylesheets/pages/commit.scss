@@ -2,11 +2,26 @@
   display: block;
 }
 
+.commit-row {
+  display: inline-block;
+  width: 70%;
+}
+
 .commit-header {
   background-color: $background-color;
 
   .light {
     margin-left: 10px;
+  }
+}
+
+.pull-right {
+  .commit_short_id, .ci-status-link, {
+    padding: 0 5px;
+  }
+
+  .browse-code {
+    margin: 0 5px;
   }
 }
 
