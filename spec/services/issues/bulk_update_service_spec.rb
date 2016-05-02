@@ -111,4 +111,152 @@ describe Issues::BulkUpdateService, services: true do
     end
   end
 
+  describe 'updating labels' do
+    def create_issue_with_labels(labels)
+      create(:issue, project: project) { |issue| issue.labels = labels }
+    end
+
+    let(:user) { create(:user) }
+    let(:project) { Projects::CreateService.new(user, namespace: user.namespace, name: 'test').execute }
+    let(:label_1) { create(:label, project: project) }
+    let(:label_2) { create(:label, project: project) }
+    let(:label_3) { create(:label, project: project) }
+
+    let(:issue_all_labels) { create_issue_with_labels([label_1, label_2, label_3]) }
+    let(:issue_labels_1_and_2) { create_issue_with_labels([label_1, label_2]) }
+    let(:issue_labels_1_and_3) { create_issue_with_labels([label_1, label_3]) }
+    let(:issue_no_labels) { create(:issue, project: project) }
+    let(:issues) { [issue_all_labels, issue_labels_1_and_2, issue_labels_1_and_3, issue_no_labels] }
+
+    let(:labels) { [] }
+    let(:add_labels) { [] }
+    let(:remove_labels) { [] }
+
+    let(:params) do
+      {
+        label_ids: labels.map(&:id),
+        add_label_ids: add_labels.map(&:id),
+        remove_label_ids: remove_labels.map(&:id),
+        issues_ids: issues.map(&:id).join(',')
+      }
+    end
+
+    before { Issues::BulkUpdateService.new(project, user, params).execute }
+
+    context 'when label_ids are passed' do
+      let(:issues) { [issue_all_labels, issue_no_labels] }
+      let(:labels) { [label_1, label_2] }
+
+      it 'updates the labels of all issues passed to the labels passed' do
+        expect(issues.map(&:reload).map(&:label_ids)).to all(eq(labels.map(&:id)))
+      end
+
+      it 'does not update issues not passed in' do
+        expect(issue_labels_1_and_2.label_ids).to contain_exactly(label_1.id, label_2.id)
+      end
+    end
+
+    context 'when add_label_ids are passed' do
+      let(:issues) { [issue_all_labels, issue_labels_1_and_3, issue_no_labels] }
+      let(:add_labels) { [label_1, label_2, label_3] }
+
+      it 'adds those label IDs to all issues passed' do
+        expect(issues.map(&:reload).map(&:label_ids)).to all(include(*add_labels.map(&:id)))
+      end
+
+      it 'does not update issues not passed in' do
+        expect(issue_labels_1_and_2.label_ids).to contain_exactly(label_1.id, label_2.id)
+      end
+    end
+
+    context 'when remove_label_ids are passed' do
+      let(:issues) { [issue_all_labels, issue_labels_1_and_3, issue_no_labels] }
+      let(:remove_labels) { [label_1, label_2, label_3] }
+
+      it 'removes those label IDs from all issues passed' do
+        expect(issues.map(&:reload).map(&:label_ids)).to all(be_empty)
+      end
+
+      it 'does not update issues not passed in' do
+        expect(issue_labels_1_and_2.label_ids).to contain_exactly(label_1.id, label_2.id)
+      end
+    end
+
+    context 'when add_label_ids and remove_label_ids are passed' do
+      let(:issues) { [issue_all_labels, issue_labels_1_and_3, issue_no_labels] }
+      let(:add_labels) { [label_1] }
+      let(:remove_labels) { [label_3] }
+
+      it 'adds the label IDs to all issues passed' do
+        expect(issues.map(&:reload).map(&:label_ids)).to all(include(label_1.id))
+      end
+
+      it 'removes the label IDs from all issues passed' do
+        expect(issues.map(&:reload).map(&:label_ids).flatten).not_to include(label_3.id)
+      end
+
+      it 'does not update issues not passed in' do
+        expect(issue_labels_1_and_2.label_ids).to contain_exactly(label_1.id, label_2.id)
+      end
+    end
+
+    context 'when add_label_ids and label_ids are passed' do
+      let(:issues) { [issue_all_labels, issue_labels_1_and_2, issue_labels_1_and_3] }
+      let(:labels) { [label_3] }
+      let(:add_labels) { [label_2] }
+
+      it 'adds the label IDs to all issues passed' do
+        expect(issues.map(&:reload).map(&:label_ids)).to all(include(label_2.id))
+      end
+
+      it 'ignores the label IDs parameter' do
+        expect(issues.map(&:reload).map(&:label_ids)).to all(include(label_1.id))
+      end
+
+      it 'does not update issues not passed in' do
+        expect(issue_no_labels.label_ids).to be_empty
+      end
+    end
+
+    context 'when remove_label_ids and label_ids are passed' do
+      let(:issues) { [issue_no_labels, issue_labels_1_and_2] }
+      let(:labels) { [label_3] }
+      let(:remove_labels) { [label_2] }
+
+      it 'remove the label IDs from all issues passed' do
+        expect(issues.map(&:reload).map(&:label_ids).flatten).not_to include(label_2.id)
+      end
+
+      it 'ignores the label IDs parameter' do
+        expect(issues.map(&:reload).map(&:label_ids).flatten).not_to include(label_3.id)
+      end
+
+      it 'does not update issues not passed in' do
+        expect(issue_all_labels.label_ids).to contain_exactly(label_1.id, label_2.id, label_3.id)
+      end
+    end
+
+    context 'when add_label_ids, remove_label_ids, and label_ids are passed' do
+      let(:issues) { [issue_labels_1_and_3, issue_no_labels] }
+      let(:labels) { [label_2] }
+      let(:add_labels) { [label_1] }
+      let(:remove_labels) { [label_3] }
+
+      it 'adds the label IDs to all issues passed' do
+        expect(issues.map(&:reload).map(&:label_ids)).to all(include(label_1.id))
+      end
+
+      it 'removes the label IDs from all issues passed' do
+        expect(issues.map(&:reload).map(&:label_ids).flatten).not_to include(label_3.id)
+      end
+
+      it 'ignores the label IDs parameter' do
+        expect(issues.map(&:reload).map(&:label_ids).flatten).not_to include(label_2.id)
+      end
+
+      it 'does not update issues not passed in' do
+        expect(issue_labels_1_and_2.label_ids).to contain_exactly(label_1.id, label_2.id)
+      end
+    end
+  end
 end
