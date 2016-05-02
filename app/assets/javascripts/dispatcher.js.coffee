@@ -100,6 +100,8 @@ class Dispatcher
         shortcut_handler = new ShortcutsNavigation()
       when 'projects:labels:new', 'projects:labels:edit'
         new Labels()
+      when 'projects:labels:index'
+        new LabelManager()
       when 'projects:network:show'
         # Ensure we don't create a particular shortcut handler here. This is
         # already created, where the network graph is created.

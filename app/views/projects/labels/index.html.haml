@@ -10,13 +10,22 @@
         New label
 
 .labels
-  - if @labels.present?
-    %ul.content-list.manage-labels-list
-      = render @labels
-    = paginate @labels, theme: 'gitlab'
-  - else
-    .nothing-here-block
-      - if can? current_user, :admin_label, @project
-        Create a label or #{link_to 'generate a default set of labels', generate_namespace_project_labels_path(@project.namespace, @project), method: :post}.
+  .prioritized-labels
+    %h5 Prioritized Label
+    %ul.content-list.manage-labels-list.js-prioritized-labels{ "data-url" => set_sorting_namespace_project_labels_path(@project.namespace, @project) }
+      - if @prioritized.present?
+        = render @prioritized
       - else
-        No labels created
+        %p.empty-message No prioritized labels yet
+  .other-labels
+    %h5 Other Labels
+    - if @labels.present?
+      %ul.content-list.manage-labels-list.js-other-labels
+        = render @labels
+      = paginate @labels, theme: 'gitlab'
+    - else
+      .nothing-here-block
+        - if can? current_user, :admin_label, @project
+          Create a label or #{link_to 'generate a default set of labels', generate_namespace_project_labels_path(@project.namespace, @project), method: :post}.
+        - else
+          No labels created

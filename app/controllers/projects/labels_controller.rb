@@ -11,7 +11,8 @@ class Projects::LabelsController < Projects::ApplicationController
   respond_to :js, :html
 
   def index
-    @labels = @project.labels.page(params[:page])
+    @labels = @project.labels.prioritized(false).page(params[:page])
+    @prioritized = @project.labels.prioritized
 
     respond_to do |format|
       format.html
@@ -68,6 +69,25 @@ class Projects::LabelsController < Projects::ApplicationController
                     notice: 'Label was removed')
       end
       format.js
+    end
+  end
+
+  def toggle_priority
+    priority = label.priority
+
+    respond_to do |format|
+      if label.update_attributes(priority: !priority)
+        format.json { render json: label }
+      else
+        message = label.errors.full_messages.uniq.join('. ')
+        format.json { render json: { message: message }, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  def set_sorting
+    respond_to do |format|
+      format.json { render json: {message: 'success'}}
     end
   end
 

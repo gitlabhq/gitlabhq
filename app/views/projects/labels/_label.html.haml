@@ -1,4 +1,12 @@
-%li{ id: dom_id(label), data: { id: label.id } }
+- label_css_id = dom_id(label)
+%li{id: label_css_id, :"data-id" => label.id}
+  %a.js-toggle-priority{:href => "#",
+    :"data-url" => toggle_priority_namespace_project_label_path(@project.namespace, @project, label),
+    :"data-dom-id" => "#{label_css_id}" }
+    %span.add-priority
+      (+)
+    %span.remove-priority
+      (-)
   = render "shared/label_row", label: label
   .pull-info-right
     %span.append-right-20
@@ -24,4 +32,4 @@
 
 - if current_user
   :javascript
-    new Subscription('##{dom_id(label)} .label-subscription');
+    new Subscription('##{label_css_id} .label-subscription');

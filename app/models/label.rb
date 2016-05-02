@@ -19,6 +19,7 @@ class Label < ActiveRecord::Base
 
   validates :color, color: true, allow_blank: false
   validates :project, presence: true, unless: Proc.new { |service| service.template? }
+  validates :priority, presence: false, default: false
 
   # Don't allow '?', '&', and ',' for label titles
   validates :title,
@@ -29,6 +30,7 @@ class Label < ActiveRecord::Base
   default_scope { order(title: :asc) }
 
   scope :templates, ->  { where(template: true) }
+  scope :prioritized, ->(value = true) { where(priority: value) }
 
   alias_attribute :name, :title
 
