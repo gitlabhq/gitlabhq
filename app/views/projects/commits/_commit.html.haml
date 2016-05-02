@@ -9,6 +9,7 @@
 
 = cache(cache_key) do
   %li.commit.js-toggle-container{ id: "commit-#{commit.short_id}" }
+    = image_tag avatar_icon(commit.send(:author), 40), class: "avatar s40", alt:''
     .commit-row-title
       %span.item-title
         = link_to_gfm commit.title, namespace_project_commit_path(project.namespace, project, commit.id), class: "commit-row-message"
@@ -27,8 +28,8 @@
           = preserve(markdown(escape_once(commit.description), pipeline: :single_line))
 
     .commit-row-info
-      by
-      = commit_author_link(commit, avatar: true, size: 24)
+      = commit_author_link(commit, avatar: false)
+      authored
       .committed_ago
         #{time_ago_with_tooltip(commit.committed_date)} &nbsp;
       = link_to_browse_code(project, commit)

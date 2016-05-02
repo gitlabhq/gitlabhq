@@ -5,14 +5,14 @@
 
 - commits.group_by { |c| c.committed_date.to_date }.sort.reverse.each do |day, commits|
   .row.commits-row
-    .col-md-2.hidden-xs.hidden-sm
-      %h5.commits-row-date
-        %i.fa.fa-calendar
-        %span= day.strftime('%d %b, %Y')
-      .light
-        = pluralize(commits.count, 'commit')
-    .col-md-10.col-sm-12
+    .col-md-12.col-sm-12
       %ul.content-list
+        %li.commit-header
+          .light
+            %span
+              = day.strftime('%d %b, %Y')
+              &#46;
+            = pluralize(commits.count, 'commit')
         = render commits, project: project
   %hr.lists-separator
 
