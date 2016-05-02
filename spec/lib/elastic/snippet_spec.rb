@@ -12,34 +12,35 @@ describe "Snippet", elastic: true do
   end
 
   it "searches snippets by code" do
-    @snippet = create :personal_snippet, content: 'genius code'
-    @snippet1 = create :personal_snippet
+    user = create :user
 
-    # the snippet I have no access to
-    @snippet2 = create :personal_snippet, content: 'genius code'
+    snippet = create :personal_snippet, :private, content: 'genius code', author: user
+    create :personal_snippet, :private, content: 'genius code'
+    create :personal_snippet, :private
 
-    @snippet_ids = [@snippet.id, @snippet1.id]
+    snippet3 = create :personal_snippet, :public, content: 'genius code'
 
     Snippet.__elasticsearch__.refresh_index!
 
-    options = { ids: @snippet_ids }
+    options = { author_id: user.id }
 
-    expect(Snippet.elastic_search_code('genius code', options: options).total_count).to eq(1)
+    result = Snippet.elastic_search_code('genius code', options: options)
+
+    expect(result.total_count).to eq(2)
+    expect(result.records.map(&:id)).to include(snippet.id, snippet3.id)
   end
 
   it "searches snippets by title and file_name" do
-    @snippet = create :snippet, title: 'home'
-    @snippet1 = create :snippet, file_name: 'index.php'
-    @snippet2 = create :snippet
+    user = create :user
 
-    # the snippet I have no access to
-    @snippet3 = create :snippet, title: 'home'
+    create :snippet, :public, title: 'home'
+    create :snippet, :private, title: 'home 1'
+    create :snippet, :public, file_name: 'index.php'
+    create :snippet
 
-    @snippet_ids = [@snippet.id, @snippet1.id, @snippet2.id]
-    
     Snippet.__elasticsearch__.refresh_index!
 
-    options = { ids: @snippet_ids }
+    options = { author_id: user.id }
 
     expect(Snippet.elastic_search('home', options: options).total_count).to eq(1)
     expect(Snippet.elastic_search('index.php', options:  options).total_count).to eq(1)
@@ -58,10 +59,8 @@ describe "Snippet", elastic: true do
       'state',
       'project_id',
       'author_id',
+      'visibility_level'
     )
-
-    expected_hash['project'] = { 'id' => snippet.project.id }
-    expected_hash['author'] = { 'id' => snippet.author.id }
 
     expect(snippet.as_indexed_json).to eq(expected_hash)
   end

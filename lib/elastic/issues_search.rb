@@ -21,9 +21,6 @@ module Elastic
         indexes :author_id,   type: :integer
         indexes :assignee_id, type: :integer
 
-        indexes :project,     type: :nested
-        indexes :author,      type: :nested
-
         indexes :confidential, type: :boolean
 
         indexes :updated_at_sort, type: :date,   index: :not_analyzed
@@ -58,9 +55,9 @@ module Elastic
       end
 
       def self.confidentiality_filter(query_hash, current_user)
-        return query_hash if current_user.present? && current_user.admin?
+        return query_hash if current_user && current_user.admin?
 
-        filter = if current_user.present?
+        filter = if current_user
                    {
                      bool: {
                        should: [
@@ -86,7 +83,7 @@ module Elastic
                    { term: { confidential: false } }
                  end
 
-        query_hash[:query][:filtered][:filter][:bool][:must] << filter
+        query_hash[:query][:bool][:must] << filter
         query_hash
       end
     end

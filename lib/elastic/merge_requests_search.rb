@@ -26,10 +26,6 @@ module Elastic
         indexes :target_project_id, type: :integer
         indexes :author_id,         type: :integer
 
-        indexes :source_project,  type: :nested
-        indexes :target_project,  type: :nested
-        indexes :author,          type: :nested
-
         indexes :updated_at_sort, type: :string, index: 'not_analyzed'
       end
 
@@ -56,9 +52,6 @@ module Elastic
           data[attr.to_s] = self.send(attr)
         end
 
-        data['source_project'] = { 'id' => source_project_id }
-        data['target_project'] = { 'id' => target_project_id }
-        data['author'] = { 'id' => author_id }
         data['updated_at_sort'] = updated_at
         data
       end
@@ -71,15 +64,11 @@ module Elastic
         end
 
         if options[:project_ids]
-          query_hash[:query][:filtered][:filter] = {
-            and: [
-              {
-                terms: {
-                  target_project_id: [options[:project_ids]].flatten
-                }
-              }
-            ]
-          }
+          query_hash[:query][:bool][:filter] = [{
+            terms: {
+              target_project_id: [options[:project_ids]].flatten
+            }
+          }]
         end
 
         self.__elasticsearch__.search(query_hash)

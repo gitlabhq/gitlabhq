@@ -68,22 +68,22 @@ module Elastic
         query_hash = if query.present?
                        {
                          query: {
-                           filtered: {
-                             query: {
+                           bool: {
+                             must: [{
                                multi_match: {
                                  fields: fields,
                                  query: query,
                                  operator: :and
                                }
-                             },
-                           },
+                             }]
+                           }
                          }
                        }
                      else
                        {
                          query: {
-                           filtered: {
-                             query: { match_all: {} }
+                           bool: {
+                             must: { match_all: {} }
                            }
                          },
                          track_scores: true
@@ -103,8 +103,8 @@ module Elastic
       def iid_query_hash(query_hash, iid)
         {
           query: {
-            filtered: {
-               query: { match: { iid: iid } }
+            bool: {
+               must: [{ term: { iid: iid } }]
             }
           }
         }
@@ -112,7 +112,7 @@ module Elastic
 
       def project_ids_filter(query_hash, project_ids)
         if project_ids
-          query_hash[:query][:filtered][:filter] = {
+          query_hash[:query][:bool][:filter] = {
             bool: {
               must: [ { terms: { project_id: project_ids } } ]
             }

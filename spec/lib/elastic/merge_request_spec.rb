@@ -47,9 +47,6 @@ describe "MergeRequest", elastic: true do
       'author_id'
     )
 
-    expected_hash['source_project'] = { 'id' => merge_request.source_project_id }
-    expected_hash['target_project'] = { 'id' => merge_request.target_project_id }
-    expected_hash['author']         = { 'id' => merge_request.author.id }
     expected_hash['updated_at_sort'] = merge_request.updated_at
 
     expect(merge_request.as_indexed_json).to eq(expected_hash)
