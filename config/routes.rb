@@ -89,8 +89,6 @@ Rails.application.routes.draw do
     end
   end
 
-  get '/s/:username' => 'snippets#index', as: :user_snippets, constraints: { username: /.*/ }
-
   #
   # Invites
   #
@@ -353,6 +351,9 @@ Rails.application.routes.draw do
       constraints: { username: /.*/ }
 
   get 'u/:username/contributed' => 'users#contributed', as: :user_contributed_projects,
+      constraints: { username: /.*/ }
+
+  get 'u/:username/snippets' => 'users#snippets', as: :user_snippets,
       constraints: { username: /.*/ }
 
   get '/u/:username' => 'users#show', as: :user,
