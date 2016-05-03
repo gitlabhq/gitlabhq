@@ -42,9 +42,12 @@
           = preserve do
             = markdown @milestone.description
 
-- if @milestone.complete?(current_user) && @milestone.active?
+- if @milestone.total_items_count(current_user).zero?
   .alert.alert-success.prepend-top-default
-    %span All issues for this milestone are closed. You may close milestone now.
+    %span Assign some issues to this milestone.
+- elsif @milestone.complete?(current_user) && @milestone.active?
+  .alert.alert-success.prepend-top-default
+    %span All issues for this milestone are closed. You may close this milestone now.
 
 = render 'shared/milestones/summary', milestone: @milestone, project: @project
 = render 'shared/milestones/tabs', milestone: @milestone

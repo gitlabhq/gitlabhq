@@ -26,8 +26,9 @@ module Gitlab
         false
       end
 
+      # TODO remove magic keyword and move it to a shared config
       def project_filename
-        "#{@project.name}.bundle"
+        "project.bundle"
       end
 
       def path_to_repo

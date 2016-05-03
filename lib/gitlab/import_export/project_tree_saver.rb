@@ -24,8 +24,9 @@ module Gitlab
         false
       end
 
+      # TODO remove magic keyword and move it to a shared config
       def project_filename
-        "#{@project.name}.json"
+        "project.json"
       end
 
       def project_json_tree

@@ -68,12 +68,12 @@ describe 'Dashboard Todos', feature: true do
       describe 'completing last todo from last page', js: true do
         it 'redirects to the previous page' do
           visit dashboard_todos_path(page: 2)
-          expect(page).to have_content(Todo.first.body)
+          expect(page).to have_css("#todo_#{Todo.last.id}")
 
           click_link('Done')
 
           expect(current_path).to eq dashboard_todos_path
-          expect(page).to have_content(Todo.last.body)
+          expect(page).to have_css("#todo_#{Todo.first.id}")
         end
       end
     end

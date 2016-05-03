@@ -134,7 +134,43 @@ describe Repository, models: true do
     end
   end
 
-  describe '#license_blob' do
+  describe "#changelog" do
+    before do
+      repository.send(:cache).expire(:changelog)
+    end
+
+    it 'accepts changelog' do
+      expect(repository.tree).to receive(:blobs).and_return([TestBlob.new('changelog')])
+
+      expect(repository.changelog.name).to eq('changelog')
+    end
+
+    it 'accepts news instead of changelog' do
+      expect(repository.tree).to receive(:blobs).and_return([TestBlob.new('news')])
+
+      expect(repository.changelog.name).to eq('news')
+    end
+
+    it 'accepts history instead of changelog' do
+      expect(repository.tree).to receive(:blobs).and_return([TestBlob.new('history')])
+
+      expect(repository.changelog.name).to eq('history')
+    end
+
+    it 'accepts changes instead of changelog' do
+      expect(repository.tree).to receive(:blobs).and_return([TestBlob.new('changes')])
+
+      expect(repository.changelog.name).to eq('changes')
+    end
+
+    it 'is case-insensitive' do
+      expect(repository.tree).to receive(:blobs).and_return([TestBlob.new('CHANGELOG')])
+
+      expect(repository.changelog.name).to eq('CHANGELOG')
+    end
+  end
+
+  describe "#license_blob" do
     before do
       repository.send(:cache).expire(:license_blob)
       repository.remove_file(user, 'LICENSE', 'Remove LICENSE', 'master')
@@ -757,6 +793,16 @@ describe Repository, models: true do
       repository.after_create
     end
 
+  end
+
+  describe "#copy_gitattributes" do
+    it 'returns true with a valid ref' do
+      expect(repository.copy_gitattributes('master')).to be_truthy
+    end
+
+    it 'returns false with an invalid ref' do
+      expect(repository.copy_gitattributes('invalid')).to be_falsey
+    end
   end
 
   describe "#main_language" do

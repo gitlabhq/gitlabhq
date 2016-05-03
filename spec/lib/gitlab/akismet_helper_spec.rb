@@ -24,7 +24,7 @@ describe Gitlab::AkismetHelper, type: :helper do
   describe '#is_spam?' do
     it 'returns true for spam' do
       environment = {
-        'REMOTE_ADDR' => '127.0.0.1',
+        'action_dispatch.remote_ip' => '127.0.0.1',
         'HTTP_USER_AGENT' => 'Test User Agent'
       }
 
