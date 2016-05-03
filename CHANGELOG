@@ -5,9 +5,9 @@ v 8.8.0 (unreleased)
 v 8.7.2
   - The "New Branch" button is now loaded asynchronously
   - Fix error 500 when trying to create a wiki page
+  - Updated spacing between notification label and button
 
 v 8.7.1
-v 8.7.1 (unreleased)
   - Prevent privilege escalation via "impersonate" feature
   - Prevent privilege escalation via notes API
   - Prevent privilege escalation via project webhook API
