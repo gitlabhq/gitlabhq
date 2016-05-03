@@ -198,13 +198,35 @@
     .dropdown {
       margin-left: 7px;
     }
-  }
 
-  .nav-links {
-    border-bottom: none;
+    @media (max-width: $screen-md-max) {
+      float: none;
+      margin-bottom: 10px;
 
-    a {
-      padding-top: 2px;
+      .btn {
+        width: 20%;
+      }
     }
+
+    @media (max-width: $screen-xs-max) {
+      text-align: center;
+
+      .rss-btn,
+      .dropdown-new {
+        display: inline-block;
+        width: 48%;
+      }
+    }
+  }
+}
+
+.nav-links {
+  border-bottom: none;
+  white-space: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+
+  a {
+    padding-top: 2px;
   }
 }

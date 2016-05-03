@@ -156,6 +156,26 @@
     border-bottom: 1px solid $border-color;
     text-align: left;
     padding: 24px 0;
+
+    .group-info {
+      p {
+        margin-bottom: 0;
+      }
+    }
+
+    @media (max-width: $screen-xs-max) {
+      text-align: center;
+
+      .avatar {
+        float: none;
+      }
+    }
+  }
+
+  .group-info {
+    h1 {
+      display: inline;
+    }
   }
 }
 
