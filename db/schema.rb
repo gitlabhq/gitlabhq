@@ -78,8 +78,8 @@ ActiveRecord::Schema.define(version: 20160421130527) do
     t.boolean  "email_author_in_body",              default: false
     t.integer  "default_group_visibility"
     t.boolean  "repository_checks_enabled",         default: false
-    t.text     "shared_runners_text"
     t.integer  "metrics_packet_size",               default: 1
+    t.text     "shared_runners_text"
   end
 
   create_table "audit_events", force: :cascade do |t|
@@ -426,9 +426,9 @@ ActiveRecord::Schema.define(version: 20160421130527) do
     t.string   "state"
     t.integer  "iid"
     t.integer  "updated_by_id"
+    t.integer  "moved_to_id"
     t.boolean  "confidential",  default: false
     t.datetime "deleted_at"
-    t.integer  "moved_to_id"
     t.date     "due_date"
   end
 
