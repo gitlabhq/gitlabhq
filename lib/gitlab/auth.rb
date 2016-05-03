@@ -4,7 +4,8 @@ module Gitlab
       def find(login, password, project:, ip:)
         raise "Must provide an IP for rate limiting" if ip.nil?
 
-        user, type = nil, nil
+        user = nil
+        type = nil
 
         if valid_ci_request?(login, password, project)
           type = :ci
