@@ -26,9 +26,9 @@ header {
     z-index: 100;
     margin-bottom: 0;
     min-height: $header-height;
-    background-color: $gray-light;
+    background-color: $background-color;
     border: none;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid $border-color;
 
     .container-fluid {
       width: 100% !important;
@@ -47,7 +47,7 @@ header {
         text-align: center;
 
         &:hover, &:focus, &:active {
-          background-color: $gray-light;
+          background-color: $background-color;
         }
       }
 

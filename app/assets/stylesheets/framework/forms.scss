@@ -78,6 +78,24 @@ label {
   border-radius: 3px;
 }
 
+.select-wrapper {
+  position: relative;
+
+  .caret {
+    position: absolute;
+    right: 10px;
+    top: $gl-padding;
+    color: $gray-darkest;
+    pointer-events: none;
+  }
+}
+
+.select-control {
+  padding-left: 10px;
+  padding-right: 10px;
+  -webkit-appearance: none;
+}
+
 .form-control-inline {
   display: inline;
 }
