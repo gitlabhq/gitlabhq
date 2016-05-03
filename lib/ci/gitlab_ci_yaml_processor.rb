@@ -61,23 +61,21 @@ module Ci
       @stages = @config[:stages] || @config[:types]
       @variables = @config[:variables] || {}
       @cache = @config[:cache]
-      @config.except!(*ALLOWED_YAML_KEYS)
-
-      # anything that doesn't have script is considered as unknown
-      @config.each do |name, param|
-        raise ValidationError, "Unknown parameter: #{name}" unless param.is_a?(Hash) && param.has_key?(:script)
-      end
-
-      unless @config.values.any?{|job| job.is_a?(Hash)}
-        raise ValidationError, "Please define at least one job"
-      end
-
       @jobs = {}
-      @config.each do |key, job|
-        next if key.to_s.start_with?('.')
-        stage = job[:stage] || job[:type] || DEFAULT_STAGE
-        @jobs[key] = { stage: stage }.merge(job)
-      end
+
+      @config.except!(*ALLOWED_YAML_KEYS)
+      @config.each { |name, param| add_job(name, param) }
+
+      raise ValidationError, "Please define at least one job" if @jobs.none?
+    end
+
+    def add_job(name, job)
+      return if name.to_s.start_with?('.')
+
+      raise ValidationError, "Unknown parameter: #{name}" unless job.is_a?(Hash) && job.has_key?(:script)
+
+      stage = job[:stage] || job[:type] || DEFAULT_STAGE
+      @jobs[name] = { stage: stage }.merge(job)
     end
 
     def build_job(name, job)
@@ -111,8 +109,6 @@ module Ci
 
       true
     end
-
-    private
 
     def validate_global!
       unless validate_array_of_strings(@before_script)

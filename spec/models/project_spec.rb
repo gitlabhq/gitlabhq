@@ -719,11 +719,8 @@ describe Project, models: true do
         with('foo.wiki', project).
         and_return(wiki)
 
-      expect(repo).to receive(:expire_cache)
-      expect(repo).to receive(:expire_emptiness_caches)
-
-      expect(wiki).to receive(:expire_cache)
-      expect(wiki).to receive(:expire_emptiness_caches)
+      expect(repo).to receive(:before_delete)
+      expect(wiki).to receive(:before_delete)
 
       project.expire_caches_before_rename('foo')
     end
@@ -799,6 +796,20 @@ describe Project, models: true do
 
         project.create_repository
       end
+    end
+  end
+
+  describe '#protected_branch?' do
+    let(:project) { create(:empty_project) }
+
+    it 'returns true when a branch is a protected branch' do
+      project.protected_branches.create!(name: 'foo')
+
+      expect(project.protected_branch?('foo')).to eq(true)
+    end
+
+    it 'returns false when a branch is not a protected branch' do
+      expect(project.protected_branch?('foo')).to eq(false)
     end
   end
 end

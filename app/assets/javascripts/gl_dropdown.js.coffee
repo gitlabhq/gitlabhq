@@ -184,6 +184,9 @@ class GitLabDropdown
     @dropdown.on "shown.bs.dropdown", @opened
     @dropdown.on "hidden.bs.dropdown", @hidden
     @dropdown.on "click", ".dropdown-menu, .dropdown-menu-close", @shouldPropagate
+    @dropdown.on 'keyup', (e) =>
+      if e.which is 27 # Escape key
+        $('.dropdown-menu-close', @dropdown).trigger 'click'
 
     if @dropdown.find(".dropdown-toggle-page").length
       @dropdown.find(".dropdown-toggle-page, .dropdown-menu-back").on "click", (e) =>
@@ -221,6 +224,9 @@ class GitLabDropdown
 
     menu.toggleClass PAGE_TWO_CLASS
 
+    # Focus first visible input on active page
+    @dropdown.find('[class^="dropdown-page-"]:visible :text:visible:first').focus()
+
   parseData: (data) ->
     @renderedData = data
 
@@ -240,7 +246,8 @@ class GitLabDropdown
   shouldPropagate: (e) =>
     if @options.multiSelect
       $target = $(e.target)
-      if not $target.hasClass('dropdown-menu-close') and not $target.hasClass('dropdown-menu-close-icon')
+
+      if not $target.hasClass('dropdown-menu-close') and not $target.hasClass('dropdown-menu-close-icon') and not $target.data('is-link')
         e.stopPropagation()
         return false
       else
@@ -375,7 +382,6 @@ class GitLabDropdown
       selectedObject = @renderedData[selectedIndex]
     value = if @options.id then @options.id(selectedObject, el) else selectedObject.id
     field = @dropdown.parent().find("input[name='#{fieldName}'][value='#{value}']")
-
     if el.hasClass(ACTIVE_CLASS)
       el.removeClass(ACTIVE_CLASS)
       field.remove()

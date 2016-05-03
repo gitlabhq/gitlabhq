@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160419120017) do
+ActiveRecord::Schema.define(version: 20160421130527) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -77,7 +77,7 @@ ActiveRecord::Schema.define(version: 20160419120017) do
     t.string   "akismet_api_key"
     t.boolean  "email_author_in_body",              default: false
     t.integer  "default_group_visibility"
-    t.boolean  "repository_checks_enabled",         default: true
+    t.boolean  "repository_checks_enabled",         default: false
     t.integer  "metrics_packet_size",               default: 1
     t.text     "shared_runners_text"
   end
@@ -1025,6 +1025,7 @@ ActiveRecord::Schema.define(version: 20160419120017) do
     t.boolean  "enable_ssl_verification",              default: true
     t.boolean  "build_events",                         default: false,         null: false
     t.boolean  "wiki_page_events",                     default: false,         null: false
+    t.string   "token"
   end
 
   add_index "web_hooks", ["created_at", "id"], name: "index_web_hooks_on_created_at_and_id", using: :btree

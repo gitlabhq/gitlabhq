@@ -648,70 +648,131 @@ module Ci
     end
 
     describe "Hidden jobs" do
-      let(:config) do
-        YAML.dump({
-                    '.hidden_job' => { script: 'test' },
-                    'normal_job' => { script: 'test' }
-                  })
-      end
-
       let(:config_processor) { GitlabCiYamlProcessor.new(config) }
-
       subject { config_processor.builds_for_stage_and_ref("test", "master") }
 
-      it "doesn't create jobs that starts with dot" do
-        expect(subject.size).to eq(1)
-        expect(subject.first).to eq({
-          except: nil,
-          stage: "test",
-          stage_idx: 1,
-          name: :normal_job,
-          only: nil,
-          commands: "test",
-          tag_list: [],
-          options: {},
-          when: "on_success",
-          allow_failure: false
-        })
+      shared_examples 'hidden_job_handling' do
+        it "doesn't create jobs that start with dot" do
+          expect(subject.size).to eq(1)
+          expect(subject.first).to eq({
+            except: nil,
+            stage: "test",
+            stage_idx: 1,
+            name: :normal_job,
+            only: nil,
+            commands: "test",
+            tag_list: [],
+            options: {},
+            when: "on_success",
+            allow_failure: false
+          })
+        end
+      end
+
+      context 'when hidden job have a script definition' do
+        let(:config) do
+          YAML.dump({
+                      '.hidden_job' => { image: 'ruby:2.1', script: 'test' },
+                      'normal_job' => { script: 'test' }
+                    })
+        end
+
+        it_behaves_like 'hidden_job_handling'
+      end
+
+      context "when hidden job doesn't have a script definition" do
+        let(:config) do
+          YAML.dump({
+                      '.hidden_job' => { image: 'ruby:2.1' },
+                      'normal_job' => { script: 'test' }
+                    })
+        end
+
+        it_behaves_like 'hidden_job_handling'
       end
     end
 
     describe "YAML Alias/Anchor" do
-      it "is correctly supported for jobs" do
-        config = <<EOT
+      let(:config_processor) { GitlabCiYamlProcessor.new(config) }
+      subject { config_processor.builds_for_stage_and_ref("build", "master") }
+
+      shared_examples 'job_templates_handling' do
+        it "is correctly supported for jobs" do
+          expect(subject.size).to eq(2)
+          expect(subject.first).to eq({
+            except: nil,
+            stage: "build",
+            stage_idx: 0,
+            name: :job1,
+            only: nil,
+            commands: "execute-script-for-job",
+            tag_list: [],
+            options: {},
+            when: "on_success",
+            allow_failure: false
+          })
+          expect(subject.second).to eq({
+            except: nil,
+            stage: "build",
+            stage_idx: 0,
+            name: :job2,
+            only: nil,
+            commands: "execute-script-for-job",
+            tag_list: [],
+            options: {},
+            when: "on_success",
+            allow_failure: false
+          })
+        end
+      end
+
+      context 'when template is a job' do
+        let(:config) do
+          <<EOT
 job1: &JOBTMPL
+  stage: build
   script: execute-script-for-job
 
 job2: *JOBTMPL
 EOT
+        end
 
-        config_processor = GitlabCiYamlProcessor.new(config)
+        it_behaves_like 'job_templates_handling'
+      end
 
-        expect(config_processor.builds_for_stage_and_ref("test", "master").size).to eq(2)
-        expect(config_processor.builds_for_stage_and_ref("test", "master").first).to eq({
-          except: nil,
-          stage: "test",
-          stage_idx: 1,
-          name: :job1,
-          only: nil,
-          commands: "execute-script-for-job",
-          tag_list: [],
-          options: {},
-          when: "on_success",
-          allow_failure: false
-        })
-        expect(config_processor.builds_for_stage_and_ref("test", "master").second).to eq({
-          except: nil,
-          stage: "test",
-          stage_idx: 1,
-          name: :job2,
-          only: nil,
-          commands: "execute-script-for-job",
-          tag_list: [],
-          options: {},
-          when: "on_success",
-          allow_failure: false
-        })
+      context 'when template is a hidden job' do
+        let(:config) do
+          <<EOT
+.template: &JOBTMPL
+  stage: build
+  script: execute-script-for-job
+
+job1: *JOBTMPL
+
+job2: *JOBTMPL
+EOT
+        end
+
+        it_behaves_like 'job_templates_handling'
+      end
+
+      context 'when job adds its own keys to a template definition' do
+        let(:config) do
+          <<EOT
+.template: &JOBTMPL
+  stage: build
+
+job1:
+  <<: *JOBTMPL
+  script: execute-script-for-job
+
+job2:
+  <<: *JOBTMPL
+  script: execute-script-for-job
+EOT
+        end
+
+        it_behaves_like 'job_templates_handling'
       end
     end
 

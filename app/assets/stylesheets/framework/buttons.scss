@@ -139,9 +139,17 @@
     pointer-events: auto !important;
   }
 
+  &[disabled] {
+    pointer-events: none !important;
+  }
+
   .caret {
     margin-left: 5px;
   }
+}
+
+.btn-lg {
+  padding: 12px 20px;
 }
 
 .btn-transparent {

@@ -43,51 +43,65 @@ describe WebHook, models: true do
   end
 
   describe "execute" do
+    let(:project) { create(:project) }
+    let(:project_hook) { create(:project_hook) }
+
     before(:each) do
-      @project_hook = create(:project_hook)
-      @project = create(:project)
-      @project.hooks << [@project_hook]
+      project.hooks << [project_hook]
       @data = { before: 'oldrev', after: 'newrev', ref: 'ref' }
 
-      WebMock.stub_request(:post, @project_hook.url)
+      WebMock.stub_request(:post, project_hook.url)
+    end
+
+    context 'when token is defined' do
+      let(:project_hook) { create(:project_hook, :token) }
+
+      it 'POSTs to the webhook URL' do
+        project_hook.execute(@data, 'push_hooks')
+        expect(WebMock).to have_requested(:post, project_hook.url).with(
+          headers: { 'Content-Type' => 'application/json',
+                     'X-Gitlab-Event' => 'Push Hook',
+                     'X-Gitlab-Token' => project_hook.token }
+        ).once
+      end
     end
 
     it "POSTs to the webhook URL" do
-      @project_hook.execute(@data, 'push_hooks')
-      expect(WebMock).to have_requested(:post, @project_hook.url).with(
-        headers: { 'Content-Type'=>'application/json', 'X-Gitlab-Event'=>'Push Hook' }
+      project_hook.execute(@data, 'push_hooks')
+      expect(WebMock).to have_requested(:post, project_hook.url).with(
+        headers: { 'Content-Type' => 'application/json', 'X-Gitlab-Event' => 'Push Hook' }
       ).once
     end
 
     it "POSTs the data as JSON" do
-      @project_hook.execute(@data, 'push_hooks')
-      expect(WebMock).to have_requested(:post, @project_hook.url).with(
-        headers: { 'Content-Type'=>'application/json', 'X-Gitlab-Event'=>'Push Hook' }
+      project_hook.execute(@data, 'push_hooks')
+      expect(WebMock).to have_requested(:post, project_hook.url).with(
+        headers: { 'Content-Type' => 'application/json', 'X-Gitlab-Event' => 'Push Hook' }
       ).once
     end
 
     it "catches exceptions" do
       expect(WebHook).to receive(:post).and_raise("Some HTTP Post error")
 
-      expect { @project_hook.execute(@data, 'push_hooks') }.to raise_error(RuntimeError)
+      expect { project_hook.execute(@data, 'push_hooks') }.to raise_error(RuntimeError)
     end
 
     it "handles SSL exceptions" do
       expect(WebHook).to receive(:post).and_raise(OpenSSL::SSL::SSLError.new('SSL error'))
 
-      expect(@project_hook.execute(@data, 'push_hooks')).to eq([false, 'SSL error'])
+      expect(project_hook.execute(@data, 'push_hooks')).to eq([false, 'SSL error'])
     end
 
     it "handles 200 status code" do
-      WebMock.stub_request(:post, @project_hook.url).to_return(status: 200, body: "Success")
+      WebMock.stub_request(:post, project_hook.url).to_return(status: 200, body: "Success")
 
-      expect(@project_hook.execute(@data, 'push_hooks')).to eq([true, 'Success'])
+      expect(project_hook.execute(@data, 'push_hooks')).to eq([true, 'Success'])
     end
 
     it "handles 2xx status codes" do
-      WebMock.stub_request(:post, @project_hook.url).to_return(status: 201, body: "Success")
+      WebMock.stub_request(:post, project_hook.url).to_return(status: 201, body: "Success")
 
-      expect(@project_hook.execute(@data, 'push_hooks')).to eq([true, 'Success'])
+      expect(project_hook.execute(@data, 'push_hooks')).to eq([true, 'Success'])
     end
   end
 end

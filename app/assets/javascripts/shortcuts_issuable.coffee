@@ -4,18 +4,8 @@
 class @ShortcutsIssuable extends ShortcutsNavigation
   constructor: (isMergeRequest) ->
     super()
-    Mousetrap.bind('a', ->
-      $('.block.assignee .edit-link').trigger('click')
-      return false
-    )
-    Mousetrap.bind('m', ->
-      $('.block.milestone .edit-link').trigger('click')
-      return false
-    )
-    Mousetrap.bind('r', =>
-      @replyWithSelectedText()
-      return false
-    )
+    Mousetrap.bind('a', @openSidebarDropdown.bind(@, 'assignee'))
+    Mousetrap.bind('m', @openSidebarDropdown.bind(@, 'milestone'))
     Mousetrap.bind('j', =>
       @prevIssue()
       return false
@@ -28,7 +18,7 @@ class @ShortcutsIssuable extends ShortcutsNavigation
       @editIssue()
       return false
     )
-
+    Mousetrap.bind('l', @openSidebarDropdown.bind(@, 'labels'))
 
     if isMergeRequest
       @enabledHelp.push('.hidden-shortcut.merge_requests')
@@ -71,3 +61,7 @@ class @ShortcutsIssuable extends ShortcutsNavigation
   editIssue: ->
     $editBtn = $('.issuable-edit')
     Turbolinks.visit($editBtn.attr('href'))
+
+  openSidebarDropdown: (name) ->
+    sidebar.openDropdown(name)
+    return false

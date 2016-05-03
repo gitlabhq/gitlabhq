@@ -42,7 +42,7 @@
   font-size: 15px;
   text-align: left;
   border: 1px solid $dropdown-toggle-border-color;
-  border-radius: $dropdown-border-radius;
+  border-radius: $border-radius-base;
   outline: 0;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -80,7 +80,7 @@
   padding: 10px 0;
   background-color: $dropdown-bg;
   border: 1px solid $dropdown-border-color;
-  border-radius: $dropdown-border-radius;
+  border-radius: $border-radius-base;
   box-shadow: 0 2px 4px $dropdown-shadow-color;
 
   &.is-loading {
@@ -320,7 +320,7 @@
   }
 }
 
-.dropdown-input-field {
+.dropdown-input-field, .default-dropdown-input {
   width: 100%;
   padding: 0 7px;
   color: $dropdown-input-color;

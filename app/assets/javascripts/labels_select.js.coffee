@@ -19,23 +19,19 @@ class @LabelsSelect
       $form = $dropdown.closest('form')
       $sidebarCollapsedValue = $block.find('.sidebar-collapsed-icon span')
       $value = $block.find('.value')
+      $newLabelError = $('.js-label-error')
+      $colorPreview = $('.js-dropdown-label-color-preview')
+      $newLabelCreateButton = $('.js-new-label-btn')
+
+      $newLabelError.hide()
       $loading = $block.find('.block-loading').fadeOut()
-
-      if newLabelField.length
-        $newLabelCreateButton = $('.js-new-label-btn')
-        $colorPreview = $('.js-dropdown-label-color-preview')
-        $newLabelError = $dropdown.parent().find('.js-label-error')
-        $newLabelError.hide()
-
-        # Suggested colors in the dropdown to chose from pre-chosen colors
-        $('.suggest-colors-dropdown a').on 'click', (e) ->
 
       issueURLSplit = issueUpdateURL.split('/') if issueUpdateURL?
       if issueUpdateURL
         labelHTMLTemplate = _.template(
             '<% _.each(labels, function(label){ %>
-            <a href="<%= ["",issueURLSplit[1], issueURLSplit[2],""].join("/") %>issues?label_name=<%= _.escape(label.title) %>">
-            <span class="label has-tooltip color-label" title="<%= _.escape(label.description) %>" style="background-color: <%= label.color %>;">
+            <a href="<%= ["",issueURLSplit[1], issueURLSplit[2],""].join("/") %>issues?label_name[]=<%= _.escape(label.title) %>">
+            <span class="label has-tooltip color-label" title="<%= _.escape(label.description) %>" style="background-color: <%= label.color %>; color: <%= label.text_color %>;">
             <%= _.escape(label.title) %>
             </span>
             </a>
@@ -43,7 +39,9 @@ class @LabelsSelect
         )
         labelNoneHTMLTemplate = _.template('<div class="light">None</div>')
 
-      if newLabelField.length and $dropdown.hasClass 'js-extra-options'
+      if newLabelField.length
+
+        # Suggested colors in the dropdown to chose from pre-chosen colors
         $('.suggest-colors-dropdown a').on "click", (e) ->
           e.preventDefault()
           e.stopPropagation()
@@ -82,25 +80,24 @@ class @LabelsSelect
         enableLabelCreateButton = ->
           if newLabelField.val() isnt '' and newColorField.val() isnt ''
             $newLabelError.hide()
-            $('.js-new-label-btn').disable()
-
-            # Create new label with API
-            Api.newLabel projectId, {
-              name: newLabelField.val()
-              color: newColorField.val()
-            }, (label) ->
-              $('.js-new-label-btn').enable()
-
-              if label.message?
-                $newLabelError
-                  .text label.message
-                  .show()
-              else
-                $('.dropdown-menu-back', $dropdown.parent()).trigger 'click'
-
             $newLabelCreateButton.enable()
           else
             $newLabelCreateButton.disable()
+
+        saveLabel = ->
+          # Create new label with API
+          Api.newLabel projectId, {
+            name: newLabelField.val()
+            color: newColorField.val()
+          }, (label) ->
+            $newLabelCreateButton.enable()
+
+            if label.message?
+              $newLabelError
+                .text label.message
+                .show()
+            else
+              $('.dropdown-menu-back', $dropdown.parent()).trigger 'click'
 
         newLabelField.on 'keyup change', enableLabelCreateButton
 
@@ -112,24 +109,7 @@ class @LabelsSelect
           .on 'click', (e) ->
             e.preventDefault()
             e.stopPropagation()
-
-            if newLabelField.val() isnt '' and newColorField.val() isnt ''
-              $newLabelError.hide()
-              $('.js-new-label-btn').disable()
-
-              # Create new label with API
-              Api.newLabel projectId, {
-                name: newLabelField.val()
-                color: newColorField.val()
-              }, (label) ->
-                $('.js-new-label-btn').enable()
-
-                if label.message?
-                  $newLabelError
-                    .text label.message
-                    .show()
-                else
-                  $('.dropdown-menu-back', $dropdown.parent()).trigger 'click'
+            saveLabel()
 
       saveLabelData = ->
         selected = $dropdown
@@ -183,6 +163,21 @@ class @LabelsSelect
           $.ajax(
             url: labelUrl
           ).done (data) ->
+            data = _.chain data
+              .groupBy (label) ->
+                label.title
+              .map (label) ->
+                color = _.map label, (dup) ->
+                  dup.color
+
+                return {
+                  id: label[0].id
+                  title: label[0].title
+                  color: color
+                  duplicate: color.length > 1
+                }
+              .value()
+
             if $dropdown.hasClass 'js-extra-options'
               if showNo
                 data.unshift(
@@ -198,6 +193,7 @@ class @LabelsSelect
 
               if data.length > 2
                 data.splice 2, 0, 'divider'
+
             callback data
 
         renderRow: (label) ->
@@ -212,11 +208,31 @@ class @LabelsSelect
           if $dropdown.hasClass('js-multiselect') and removesAll
             selectedClass.push 'dropdown-clear-active'
 
-          color = if label.color? then "<span class='dropdown-label-box' style='background-color: #{label.color}'></span>" else ""
+          if label.duplicate
+            spacing = 100 / label.color.length
+
+            # Reduce the colors to 4
+            label.color = label.color.filter (color, i) ->
+              i < 4
+
+            color = _.map(label.color, (color, i) ->
+              percentFirst = Math.floor(spacing * i)
+              percentSecond = Math.floor(spacing * (i + 1))
+              "#{color} #{percentFirst}%,#{color} #{percentSecond}% "
+            ).join(',')
+            color = "linear-gradient(#{color})"
+          else
+            if label.color?
+              color = label.color[0]
+
+          if color
+            colorEl = "<span class='dropdown-label-box' style='background: #{color}'></span>"
+          else
+            colorEl = ''
 
           "<li>
             <a href='#' class='#{selectedClass.join(' ')}'>
-              #{color}
+              #{colorEl}
               #{_.escape(label.title)}
             </a>
           </li>"
@@ -243,7 +259,7 @@ class @LabelsSelect
         fieldName: $dropdown.data('field-name')
         id: (label) ->
           if $dropdown.hasClass("js-filter-submit") and not label.isAny?
-            label.title
+            _.escape label.title
           else
             label.id
 

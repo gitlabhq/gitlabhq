@@ -16,6 +16,7 @@
 #  note_events             :boolean          default(FALSE), not null
 #  enable_ssl_verification :boolean          default(TRUE)
 #  build_events            :boolean          default(FALSE), not null
+#  token                   :string
 #
 
 class ServiceHook < WebHook

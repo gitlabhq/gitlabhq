@@ -3,8 +3,8 @@ class Projects::IssuesController < Projects::ApplicationController
   include IssuableActions
 
   before_action :module_enabled
-  before_action :issue,
-    only: [:edit, :update, :show, :referenced_merge_requests, :related_branches]
+  before_action :issue, only: [:edit, :update, :show, :referenced_merge_requests,
+                               :related_branches, :can_create_branch]
 
   # Allow read any issue
   before_action :authorize_read_issue!, only: [:show]
@@ -96,12 +96,13 @@ class Projects::IssuesController < Projects::ApplicationController
 
     if params[:move_to_project_id].to_i > 0
       new_project = Project.find(params[:move_to_project_id])
+      return render_404 unless issue.can_move?(current_user, new_project)
+
       move_service = Issues::MoveService.new(project, current_user)
       @issue = move_service.execute(@issue, new_project)
     end
 
     respond_to do |format|
-      format.js
       format.html do
         if @issue.valid?
           redirect_to issue_path(@issue)
@@ -110,7 +111,7 @@ class Projects::IssuesController < Projects::ApplicationController
         end
       end
       format.json do
-        render json: @issue.to_json(include: [:milestone, :labels, assignee: { methods: :avatar_url }])
+        render json: @issue.to_json(include: { milestone: {}, assignee: { methods: :avatar_url }, labels: { methods: :text_color } })
       end
     end
   end
@@ -136,6 +137,18 @@ class Projects::IssuesController < Projects::ApplicationController
         render json: {
           html: view_to_html_string('projects/issues/_related_branches')
         }
+      end
+    end
+  end
+
+  def can_create_branch
+    can_create = current_user &&
+      can?(current_user, :push_code, @project) &&
+      @issue.can_be_worked_on?(current_user)
+
+    respond_to do |format|
+      format.json do
+        render json: { can_create_branch: can_create }
       end
     end
   end

@@ -1,12 +1,10 @@
 require 'spec_helper'
 
 describe 'Dashboard Todos', feature: true do
-  let(:user){ create(:user) }
-  let(:author){ create(:user) }
-  let(:project){ create(:project) }
-  let(:issue){ create(:issue) }
-  let(:todos_per_page){ Todo.default_per_page }
-  let(:todos_total){ todos_per_page + 1 }
+  let(:user)    { create(:user) }
+  let(:author)  { create(:user) }
+  let(:project) { create(:project) }
+  let(:issue)   { create(:issue) }
 
   describe 'GET /dashboard/todos' do
     context 'User does not have todos' do
@@ -46,32 +44,36 @@ describe 'Dashboard Todos', feature: true do
     end
 
     context 'User has multiple pages of Todos' do
-      let(:todo_total_pages){ (todos_total.to_f/todos_per_page).ceil }
-
       before do
-        todos_total.times do
-          create(:todo, :mentioned, user: user, project: project, target: issue, author: author)
-        end
+        allow(Todo).to receive(:default_per_page).and_return(1)
+
+        # Create just enough records to cause us to paginate
+        create_list(:todo, 2, :mentioned, user: user, project: project, target: issue, author: author)
 
         login_as(user)
-        visit dashboard_todos_path
       end
 
       it 'is paginated' do
+        visit dashboard_todos_path
+
         expect(page).to have_selector('.gl-pagination')
       end
 
       it 'is has the right number of pages' do
-        expect(page).to have_selector('.gl-pagination .page', count: todo_total_pages)
+        visit dashboard_todos_path
+
+        expect(page).to have_selector('.gl-pagination .page', count: 2)
       end
 
-      describe 'deleting last todo from last page', js: true do
+      describe 'completing last todo from last page', js: true do
         it 'redirects to the previous page' do
-          page.within('.gl-pagination') do
-            click_link todo_total_pages.to_s
-          end
-          first('.done-todo').click
-          expect(page).to have_content(Todo.last.body)
+          visit dashboard_todos_path(page: 2)
+          expect(page).to have_css("#todo_#{Todo.last.id}")
+
+          click_link('Done')
+
+          expect(current_path).to eq dashboard_todos_path
+          expect(page).to have_css("#todo_#{Todo.first.id}")
         end
       end
     end
