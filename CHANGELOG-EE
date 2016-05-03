@@ -6,6 +6,7 @@ v 8.8.0 (unreleased)
 
 v 8.7.2
   - Fix MR notifications for slack and hipchat when approvals are fullfiled. !325
+  - GitLab Geo: Merge requests on Secondary should not check mergeable status
 
 v 8.7.1
   - No EE-specific changes
