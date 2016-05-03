@@ -28,7 +28,7 @@ class Projects::HooksController < Projects::ApplicationController
       status, message = TestHookService.new.execute(hook, current_user)
 
       if status
-        flash[:notice] = 'Hook successfully executed.'
+        flash[:notice] = "Hook successfully executed, HTTP #{status} #{message}"
       else
         flash[:alert] = "Hook execution failed: #{message}"
       end
