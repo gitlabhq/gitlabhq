@@ -18,9 +18,10 @@ v 8.8.0 (unreleased)
   - Add support for supressing text diffs using .gitattributes on the default branch (Matt Oakes)
   - Added multiple colors for labels in dropdowns when dups happen.
 
-v 8.7.2 (unreleased)
+v 8.7.2
   - The "New Branch" button is now loaded asynchronously
   - Fix error 500 when trying to create a wiki page
+  - Updated spacing between notification label and button
 
 v 8.7.1
   - Throttle the update of `project.last_activity_at` to 1 minute. !3848
