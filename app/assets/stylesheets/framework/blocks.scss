@@ -150,6 +150,13 @@
       right: auto;
     }
   }
+
+  &.groups-cover-block {
+    background: $white-light;
+    border-bottom: 1px solid $border-color;
+    text-align: left;
+    padding: 24px 0;
+  }
 }
 
 .block-connector {

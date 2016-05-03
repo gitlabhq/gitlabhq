@@ -26,8 +26,8 @@
     }
 
     &.active a {
-      color: #000;
-      border-bottom: 2px solid #4688f1;
+      border-bottom: 2px solid $link-underline-blue;
+      color: $black;
     }
 
     .badge {
@@ -193,7 +193,7 @@
   .controls {
     float: right;
     position: relative;
-    top: 10px;
+    top: 0;
 
     .dropdown {
       margin-left: 7px;
@@ -202,5 +202,9 @@
 
   .nav-links {
     border-bottom: none;
+
+    a {
+      padding-top: 2px;
+    }
   }
 }
