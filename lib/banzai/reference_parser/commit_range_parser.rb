@@ -16,16 +16,7 @@ module Banzai
       end
 
       def commit_range_ids_per_project(nodes)
-        range_ids = Hash.new { |hash, key| hash[key] = Set.new }
-
-        nodes.each do |node|
-          project_id = node.attr('data-project').to_i
-          id = node.attr('data-commit-range')
-
-          range_ids[project_id] << id if id
-        end
-
-        range_ids
+        gather_attributes_per_project(nodes, 'data-commit-range')
       end
 
       def find_ranges(project, range_ids)

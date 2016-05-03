@@ -35,6 +35,19 @@ module Banzai
         raise NotImplementedError, "#{self.class} does not implement #{__method__}"
       end
 
+      def gather_attributes_per_project(nodes, attribute)
+        per_project = Hash.new { |hash, key| hash[key] = Set.new }
+
+        nodes.each do |node|
+          project_id = node.attr('data-project').to_i
+          id = node.attr(attribute)
+
+          per_project[project_id] << id if id
+        end
+
+        per_project
+      end
+
       def process(documents)
         type = self.class.reference_type
         nodes = []

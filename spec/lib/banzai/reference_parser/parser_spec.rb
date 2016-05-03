@@ -77,6 +77,19 @@ describe Banzai::ReferenceParser::Parser, lib: true do
     end
   end
 
+  describe '#gather_attributes_per_project' do
+    it 'returns a Hash containing attribute values per project' do
+      link = Nokogiri::HTML.fragment('<a data-project="1" data-foo="2"></a>').
+        children[0]
+
+      hash = parser.gather_attributes_per_project([link], 'data-foo')
+
+      expect(hash).to be_an_instance_of(Hash)
+
+      expect(hash[1].to_a).to eq(['2'])
+    end
+  end
+
   describe '#process' do
     it 'gathers the references for every node matching the reference type' do
       dummy = Class.new(described_class) do

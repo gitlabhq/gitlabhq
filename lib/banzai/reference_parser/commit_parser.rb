@@ -18,16 +18,7 @@ module Banzai
       end
 
       def commit_ids_per_project(nodes)
-        commit_ids = Hash.new { |hash, key| hash[key] = Set.new }
-
-        nodes.each do |node|
-          project_id = node.attr('data-project').to_i
-          id = node.attr('data-commit')
-
-          commit_ids[project_id] << id if id
-        end
-
-        commit_ids
+        gather_attributes_per_project(nodes, 'data-commit')
       end
 
       def find_commits(project, ids)
