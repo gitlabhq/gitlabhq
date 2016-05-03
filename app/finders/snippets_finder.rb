@@ -51,7 +51,7 @@ class SnippetsFinder
     snippets = project.snippets.fresh
 
     if current_user
-      if project.team.member?(current_user.id)
+      if project.team.member?(current_user.id) || current_user.admin?
         snippets
       else
         snippets.public_and_internal
