@@ -5,6 +5,14 @@ module Gitlab
         tar_with_options(archive: archive, dir: dir, options: 'cf')
       end
 
+      def untar_zxf(archive:, dir:)
+        untar_with_options(archive: archive, dir: dir, options: 'zxf')
+      end
+
+      def untar_xf(archive:, dir:)
+        untar_with_options(archive: archive, dir: dir, options: 'xf')
+      end
+
       def tar_czf(archive:, dir:)
         tar_with_options(archive: archive, dir: dir, options: 'czf')
       end
@@ -17,6 +25,12 @@ module Gitlab
 
       def tar_with_options(archive:, dir:, options:)
         cmd = %W(tar -#{options} #{archive} -C #{dir} .)
+        _output, status = Gitlab::Popen.popen(cmd)
+        status.zero?
+      end
+
+      def untar_with_options(archive:, dir:, options:)
+        cmd = %W(tar -#{options} #{archive} -C #{dir})
         _output, status = Gitlab::Popen.popen(cmd)
         status.zero?
       end
