@@ -17,6 +17,7 @@ v 8.8.0 (unreleased)
   - Files over 5MB can only be viewed in their raw form, files over 1MB without highlighting !3718
   - Add support for supressing text diffs using .gitattributes on the default branch (Matt Oakes)
   - Added multiple colors for labels in dropdowns when dups happen.
+  - Improve description for the Two-factor Authentication sign-in screen. (Connor Shea)
 
 v 8.7.2
   - The "New Branch" button is now loaded asynchronously
