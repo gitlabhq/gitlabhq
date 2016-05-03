@@ -3,7 +3,7 @@
     = image_tag avatar_icon(todo.author_email, 40), class: 'avatar s40', alt:''
     .todo-title.title
       - unless todo.build_failed?
-        - if (todo.target.is_a?(MergeRequest) || todo.target.is_a?(Issue)) && ['closed', 'merged'].include?(todo.target.state)
+        - if show_todo_state?(todo)
           %span.target-status
             = todo_target_state_pill(todo)
 
