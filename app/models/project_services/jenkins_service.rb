@@ -46,14 +46,9 @@ class JenkinsService < CiService
   end
 
   def execute(data)
-    self.class.post(
-      hook_url,
-      body: data.to_json,
-      headers: {
-        'Content-Type' => 'application/json',
-        'Authorization' => "Basic #{auth}"
-      }
-    )
+    return unless supported_events.include?(data[:object_kind])
+
+    service_hook.execute(data, "#{data[:object_kind]}_hook")
   end
 
   def test(data)
