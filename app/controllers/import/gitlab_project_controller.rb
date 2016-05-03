@@ -28,12 +28,11 @@ class Import::GitlabProjectController < Import::BaseController
 
   def create
     @file = params[:file]
-   # @project_name =
 
     repo_owner = current_user.username
     @target_namespace = params[:new_namespace].presence || repo_owner
 
-    namespace = get_or_create_namespace || (render and return)
+    # namespace = get_or_create_namespace || (render and return)
 
     @project = Gitlab::ImportExport::ImportService.execute(archive_file: file, owner: repo_owner)
   end
