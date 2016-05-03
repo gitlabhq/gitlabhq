@@ -18,7 +18,7 @@ v 8.8.0 (unreleased)
   - Add support for supressing text diffs using .gitattributes on the default branch (Matt Oakes)
   - Added multiple colors for labels in dropdowns when dups happen.
 
-v 8.7.2
+v 8.7.2 (unreleased)
   - The "New Branch" button is now loaded asynchronously
   - Fix error 500 when trying to create a wiki page
 
@@ -147,6 +147,19 @@ v 8.7.0
   - Fix GitHub project's link in the import page when provider has a custom URL
   - Add RAW build trace output and button on build page
   - Add incremental build trace update into CI API
+
+v 8.6.8
+  - Prevent privilege escalation via "impersonate" feature
+  - Prevent privilege escalation via notes API
+  - Prevent privilege escalation via project webhook API
+  - Prevent XSS via Git branch and tag names
+  - Prevent XSS via custom issue tracker URL
+  - Prevent XSS via `window.opener`
+  - Prevent XSS via label drop-down
+  - Prevent information disclosure via milestone API
+  - Prevent information disclosure via snippet API
+  - Prevent information disclosure via project labels
+  - Prevent information disclosure via new merge request page
 
 v 8.6.7
   - Fix persistent XSS vulnerability in `commit_person_link` helper
@@ -288,6 +301,17 @@ v 8.6.0
   - Canceled builds are now ignored in compound build status if marked as `allowed to fail`
   - Trigger a todo for mentions on commits page
   - Let project owners and admins soft delete issues and merge requests
+
+v 8.5.12
+  - Prevent privilege escalation via "impersonate" feature
+  - Prevent privilege escalation via notes API
+  - Prevent privilege escalation via project webhook API
+  - Prevent XSS via Git branch and tag names
+  - Prevent XSS via custom issue tracker URL
+  - Prevent XSS via `window.opener`
+  - Prevent information disclosure via snippet API
+  - Prevent information disclosure via project labels
+  - Prevent information disclosure via new merge request page
 
 v 8.5.11
   - Fix persistent XSS vulnerability in `commit_person_link` helper
@@ -439,6 +463,17 @@ v 8.5.0
   - Show label row when filtering issues or merge requests by label (Nuttanart Pornprasitsakul)
   - Add Todos
 
+v 8.4.10
+  - Prevent privilege escalation via "impersonate" feature
+  - Prevent privilege escalation via notes API
+  - Prevent privilege escalation via project webhook API
+  - Prevent XSS via Git branch and tag names
+  - Prevent XSS via custom issue tracker URL
+  - Prevent XSS via `window.opener`
+  - Prevent information disclosure via snippet API
+  - Prevent information disclosure via project labels
+  - Prevent information disclosure via new merge request page
+
 v 8.4.9
   - Fix persistent XSS vulnerability in `commit_person_link` helper
 
@@ -564,6 +599,15 @@ v 8.4.0
   - Add IP check against DNSBLs at account sign-up
   - Added cache:key to .gitlab-ci.yml allowing to fine tune the caching
 
+v 8.3.9
+  - Prevent privilege escalation via "impersonate" feature
+  - Prevent privilege escalation via notes API
+  - Prevent privilege escalation via project webhook API
+  - Prevent XSS via custom issue tracker URL
+  - Prevent XSS via `window.opener`
+  - Prevent information disclosure via project labels
+  - Prevent information disclosure via new merge request page
+
 v 8.3.8
   - Fix persistent XSS vulnerability in `commit_person_link` helper
 
@@ -672,6 +716,17 @@ v 8.3.0
   - Fix online editor should not remove newlines at the end of the file
   - Expose Git's version in the admin area
   - Show "New Merge Request" buttons on canonical repos when you have a fork (Josh Frye)
+
+v 8.2.5
+  - Prevent privilege escalation via "impersonate" feature
+  - Prevent privilege escalation via notes API
+  - Prevent privilege escalation via project webhook API
+  - Prevent XSS via `window.opener`
+  - Prevent information disclosure via project labels
+  - Prevent information disclosure via new merge request page
+
+v 8.2.4
+  - Bump Git version requirement to 2.7.4
 
 v 8.2.3
   - Fix application settings cache not expiring after changes (Stan Hu)
