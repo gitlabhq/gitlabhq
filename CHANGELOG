@@ -32,6 +32,7 @@ v 8.8.0 (unreleased)
   - Backport GitHub Enterprise import support from EE
   - Create tags using Rugged for performance reasons. !3745
   - API: Expose Issue#user_notes_count. !3126 (Anton Popov)
+  - Don't show forks button when user can't view forks
   - Files over 5MB can only be viewed in their raw form, files over 1MB without highlighting !3718
   - Add support for supressing text diffs using .gitattributes on the default branch (Matt Oakes)
   - Add eager load paths to help prevent dependency load issues in Sidekiq workers. !3724
