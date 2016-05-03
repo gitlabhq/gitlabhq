@@ -85,7 +85,7 @@ describe 'Search', feature: true  do
         end
 
         it 'should take user to her issues page when issues assigned is clicked' do
-          find('.category-dropdown-search').click_link 'Issues Assigned to me'
+          find('.category-dropdown-search').click_link 'Issues assigned to me'
           sleep 2
 
           expect(page).to have_selector('.issues-holder')
@@ -101,7 +101,7 @@ describe 'Search', feature: true  do
         end
 
         it 'should take user to her MR page when MR assigned is clicked' do
-          find('.category-dropdown-search').click_link "Merge Requests Assigned to me"
+          find('.category-dropdown-search').click_link "Merge requests assigned to me"
           sleep 2
 
           expect(page).to have_selector('.merge-requests-holder')
@@ -109,7 +109,7 @@ describe 'Search', feature: true  do
         end
 
         it 'should take user to her MR page when MR authored is clicked' do
-          find('.category-dropdown-search').click_link "Merge Requests I've created"
+          find('.category-dropdown-search').click_link "Merge requests I've created"
           sleep 2
 
           expect(page).to have_selector('.merge-requests-holder')

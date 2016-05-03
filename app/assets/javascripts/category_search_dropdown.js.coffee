@@ -45,11 +45,11 @@ class CategorySearchDropdown
   categorySearchDropdownTemplate: (issueUrl, mrUrl, name, userId) ->
     "<ul class='category-dropdown-search'>
       <li class='dropdown-header'><span>Go to in #{name}</span></li>
-      <li><a href='#{issueUrl}/?assignee_id=#{userId}'>Issues Assigned to me</a></li>
+      <li><a href='#{issueUrl}/?assignee_id=#{userId}'>Issues assigned to me</a></li>
       <li><a href='#{issueUrl}/?author_id=#{userId}'>Issues I've created</a></li>
       <li class='divider'><li>
-      <li><a href='#{mrUrl}/?assignee_id=#{userId}'>Merge Requests Assigned to me</a></li>
-      <li><a href='#{mrUrl}/?author_id=#{userId}'>Merge Requests I've created</a></li>
+      <li><a href='#{mrUrl}/?assignee_id=#{userId}'>Merge requests assigned to me</a></li>
+      <li><a href='#{mrUrl}/?author_id=#{userId}'>Merge requests I've created</a></li>
     </ul>"
 
 $ ->

@@ -8,6 +8,7 @@ v 8.8.0 (unreleased)
   - Use ActionDispatch Remote IP for Akismet checking
   - Fix error when visiting commit builds page before build was updated
   - Add 'l' shortcut to open Label dropdown on issuables and 'i' to create new issue on a project
+  - Categorize search query in project header
   - Updated search UI
   - Display informative message when new milestone is created
   - Replace Devise Async with Devise ActiveJob integration. !3902 (Connor Shea)
