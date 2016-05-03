@@ -21,7 +21,7 @@ describe Gitlab::ImportExport::ProjectTreeSaver, services: true do
              labels: [label],
              snippets: [snippet],
              releases: [release]
-             )
+            )
     end
     let!(:ci_commit) { create(:ci_commit, project: project, sha: merge_request.last_commit.id, ref: merge_request.source_branch, statuses: [commit_status]) }
     let!(:milestone) { create(:milestone, title: "Milestone v1.2", project: project) }

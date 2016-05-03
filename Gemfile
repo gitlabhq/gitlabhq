@@ -19,8 +19,7 @@ gem "pg", '~> 0.18.2', group: :postgres
 
 # Authentication libraries
 gem 'devise',                 '~> 3.5.4'
-gem 'devise-async',           '~> 0.9.0'
-gem 'doorkeeper',             '~> 2.2.0'
+gem 'doorkeeper',             '~> 3.1'
 gem 'omniauth',               '~> 1.3.1'
 gem 'omniauth-auth0',         '~> 1.4.1'
 gem 'omniauth-azure-oauth2',  '~> 0.0.6'
@@ -217,7 +216,7 @@ gem 'font-awesome-rails', '~> 4.6.1'
 gem 'gitlab_emoji',       '~> 0.3.0'
 gem 'gon',                '~> 6.0.1'
 gem 'jquery-atwho-rails', '~> 1.3.2'
-gem 'jquery-rails',       '~> 4.0.0'
+gem 'jquery-rails',       '~> 4.1.0'
 gem 'jquery-scrollto-rails', '~> 1.4.3'
 gem 'jquery-ui-rails',    '~> 5.0.0'
 gem 'raphael-rails',      '~> 2.1.2'
@@ -243,7 +242,7 @@ group :development do
   gem 'brakeman', '~> 3.2.0', require: false
 
   gem "annotate", "~> 2.7.0"
-  gem "letter_opener", '~> 1.1.2'
+  gem 'letter_opener_web', '~> 1.3.0'
   gem 'quiet_assets', '~> 1.0.2'
   gem 'rerun', '~> 0.11.0'
   gem 'bullet', require: false

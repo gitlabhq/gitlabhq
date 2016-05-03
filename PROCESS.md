@@ -59,7 +59,7 @@ core team members will mention this person.
 
 Workflow labels are purposely not very detailed since that would be hard to keep
 updated as you would need to re-evaluate them after every comment. We optionally
-use functional labels on demand when want to group related issues to get an
+use functional labels on demand when we want to group related issues to get an
 overview (for example all issues related to RVM, to tackle them in one go) and
 to add details to the issue.
 
@@ -73,6 +73,7 @@ in support or comment for further detail. Do not use `feature request`.
 - ~bug is an issue reporting undesirable or incorrect behavior.
 - ~customer is an issue reported by enterprise subscribers. This label should
 be accompanied by *bug* or *feature proposal* labels.
+
 Example workflow: when a UX designer provided a design but it needs frontend work they remove the UX label and add the frontend label.
 
 ## Functional labels

@@ -244,11 +244,11 @@ linters:
   
   # URLs should be valid and not contain protocols or domain names.
   UrlFormat:
-    enabled: false
+    enabled: true
 
   # URLs should always be enclosed within quotes.
   UrlQuotes:
-    enabled: false
+    enabled: true
 
   # Properties, like color and font, are easier to read and maintain
   # when defined using variables rather than literals.

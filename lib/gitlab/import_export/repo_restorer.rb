@@ -11,7 +11,7 @@ module Gitlab
 
       def restore
         return false unless File.exists?(@path)
-          # Move repos dir to 'repositories.old' dir
+        # Move repos dir to 'repositories.old' dir
 
         FileUtils.mkdir_p(repos_path)
         FileUtils.mkdir_p(path_to_repo)

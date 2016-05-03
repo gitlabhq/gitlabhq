@@ -139,6 +139,10 @@
     pointer-events: auto !important;
   }
 
+  &[disabled] {
+    pointer-events: none !important;
+  }
+
   .caret {
     margin-left: 5px;
   }

@@ -457,7 +457,7 @@ class Repository
   def changelog
     cache.fetch(:changelog) do
       tree(:head).blobs.find do |file|
-        file.name =~ /\A(changelog|history)/i
+        file.name =~ /\A(changelog|history|changes|news)/i
       end
     end
   end
@@ -936,6 +936,16 @@ class Repository
   def ls_files(ref)
     actual_ref = ref || root_ref
     raw_repository.ls_files(actual_ref)
+  end
+
+  def copy_gitattributes(ref)
+    actual_ref = ref || root_ref
+    begin
+      raw_repository.copy_gitattributes(actual_ref)
+      true
+    rescue Gitlab::Git::Repository::InvalidRef
+      false
+    end
   end
 
   def main_language
