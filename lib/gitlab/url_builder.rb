@@ -62,7 +62,7 @@ module Gitlab
     end
 
     def wiki_page_url
-      "#{Gitlab.config.gitlab.url}#{object.wiki.wiki_base_path}/#{object.slug}"
+      "#{object.wiki.wiki_base_path}/#{object.slug}"
     end
   end
 end
