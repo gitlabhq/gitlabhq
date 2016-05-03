@@ -7,7 +7,7 @@ consistent performance of GitLab.
 
 The process of solving performance problems is roughly as follows:
 
-1. Make sure there's an issue open somewhere (e.g. on the GitLab CE issue
+1. Make sure there's an issue open somewhere (e.g., on the GitLab CE issue
    tracker), create one if there isn't. See [#15607][#15607] for an example.
 2. Measure the performance of the code in a production environment such as
    GitLab.com (see the [Tooling](#tooling) section below). Performance should be
@@ -27,7 +27,7 @@ When providing timings make sure to provide:
 * The 99th percentile
 * The mean
 
-When providing screenshots of graphs make sure that both the X and Y axes and
+When providing screenshots of graphs, make sure that both the X and Y axes and
 the legend are clearly visible. If you happen to have access to GitLab.com's own
 monitoring tools you should also provide a link to any relevant
 graphs/dashboards.
@@ -37,7 +37,7 @@ graphs/dashboards.
 GitLab provides two built-in tools to aid the process of improving performance:
 
 * [Sherlock](doc/development/profiling.md#sherlock)
-* [GitLab Performance Monitoring](doc/monitoring/performance)
+* [GitLab Performance Monitoring](doc/monitoring/performance/monitoring.md)
 
 GitLab employees can use GitLab.com's performance monitoring systems located at
 <http://performance.gitlab.net>, this requires you to log in using your
@@ -48,7 +48,7 @@ own InfluxDB + Grafana stack.
 
 Benchmarks are almost always useless. Benchmarks usually only test small bits of
 code in isolation and often only measure the best case scenario. On top of that,
-benchmarks for libraries (e.g. a Gem) tend to be biased in favour of the
+benchmarks for libraries (e.g., a Gem) tend to be biased in favour of the
 library. After all there's little benefit to an author publishing a benchmark
 that shows they perform worse than their competitors.
 
@@ -102,7 +102,7 @@ In short:
 
 ## Importance of Changes
 
-When working on performance improvements it's important to always ask yourself
+When working on performance improvements, it's important to always ask yourself
 the question "How important is it to improve the performance of this piece of
 code?". Not every piece of code is equally important and it would be a waste to
 spend a week trying to improve something that only impacts a tiny fraction of
@@ -114,7 +114,7 @@ There is no clear set of steps that you can follow to determine if a certain
 piece of code is worth optimizing. The only two things you can do are:
 
 1. Think about what the code does, how it's used, how many times it's called and
-   how much time is spent in it relative to the total execution time (e.g. the
+   how much time is spent in it relative to the total execution time (e.g., the
    total time spent in a web request).
 2. Ask others (preferably in the form of an issue).
 
@@ -159,7 +159,7 @@ if repository.exists?
 end
 ```
 
-You can instead just write:
+You can just write:
 
 ```ruby
 repository.branch_names.each do |name|
@@ -170,21 +170,21 @@ end
 ## Caching
 
 Operations that will often return the same result should be cached using Redis,
-in particular Git operations. When caching data in Redis make sure the cache is
+in particular Git operations. When caching data in Redis, make sure the cache is
 flushed whenever needed. For example, a cache for the list of tags should be
 flushed whenever a new tag is pushed or a tag is removed.
 
-When adding cache expiration code for repositories this code should be placed in
-one of the before/after hooks residing in the Repository class. For example, if
-a cache should be flushed after importing a repository this code should be added
-to `Repository#after_import`. This ensures the cache logic stays within the
-Repository class instead of leaking into other classes.
+When adding cache expiration code for repositories, this code should be placed
+in one of the before/after hooks residing in the Repository class. For example,
+if a cache should be flushed after importing a repository this code should be
+added to `Repository#after_import`. This ensures the cache logic stays within
+the Repository class instead of leaking into other classes.
 
-When caching data make sure to also memoize the result in an instance variable.
-While retrieving data from Redis is much faster than raw Git operations it still
-has overhead. By caching the result in an instance variable repeated calls to
+When caching data, make sure to also memoize the result in an instance variable.
+While retrieving data from Redis is much faster than raw Git operations, it still
+has overhead. By caching the result in an instance variable, repeated calls to
 the same method won't end up retrieving data from Redis upon every call. When
-memoizing cached data in an instance variable make sure to also reset the
+memoizing cached data in an instance variable, make sure to also reset the
 instance variable when flushing the cache. An example:
 
 
@@ -224,10 +224,10 @@ positive impact on performance.
 This feature of Ruby wasn't really meant to make things faster directly, instead
 it was meant to reduce the number of allocations. Depending on the size of the
 String and how frequently it would be allocated (before the `.freeze` call was
-added) this _may_ make things faster, but there's no guarantee it will.
+added), this _may_ make things faster, but there's no guarantee it will.
 
-Another common flavour of this is to not only freeze a String but also assign it
-to a constant, for example:
+Another common flavour of this is to not only freeze a String, but also assign
+it to a constant, for example:
 
 ```ruby
 SOME_CONSTANT = 'foo'.freeze
@@ -248,8 +248,8 @@ SOME_CONSTANT = 'bar'
 ### Moving Allocations to Constants
 
 Storing an object as a constant so you only allocate it once _may_ improve
-performance but there's no guarantee this will. Looking up constants has an
-impact on runtime performance and as such using a constant instead of
+performance, but there's no guarantee this will. Looking up constants has an
+impact on runtime performance, and as such, using a constant instead of
 referencing an object directly may even slow code down.
 
 [#15607]: https://gitlab.com/gitlab-org/gitlab-ce/issues/15607
