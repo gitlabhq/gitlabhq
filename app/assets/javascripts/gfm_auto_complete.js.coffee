@@ -14,6 +14,10 @@ GitLab.GfmAutoComplete =
   Members:
     template: '<li>${username} <small>${title}</small></li>'
 
+  Labels:
+    template: '<li>${title} <div style="background-color:${color};height:15px;width:15px;display:inline-block;float:right">
+              </div></li>'
+
   # Issues and MergeRequests
   Issues:
     template: '<li><small>${id}</small> ${title}</li>'
@@ -94,6 +98,25 @@ GitLab.GfmAutoComplete =
             title:  sanitize(m.title)
             search: "#{m.iid} #{m.title}"
 
+    @input.atwho
+      at: '~'
+      alias: 'labels'
+      searchKey: 'search'
+      displayTpl: @Labels.template
+      insertTpl: '${atwho-at}${title}'
+      callbacks:
+        beforeSave: (merges) ->
+          sanitizeLabelTitle = (title)->
+            if /\w+\s+\w+/g.test(title)
+              "\"#{sanitize(title)}\""
+            else
+              sanitize(title)
+
+          $.map merges, (m) ->
+            title: sanitizeLabelTitle(m.title)
+            color: m.color
+            search: "#{m.title}"
+
   destroyAtWho: ->
     @input.atwho('destroy')
 
@@ -109,3 +132,5 @@ GitLab.GfmAutoComplete =
     @input.atwho 'load', 'mergerequests', data.mergerequests
     # load emojis
     @input.atwho 'load', ':', data.emojis
+    # load labels
+    @input.atwho 'load', '~', data.labels

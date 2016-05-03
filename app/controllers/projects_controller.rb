@@ -148,6 +148,7 @@ class ProjectsController < Projects::ApplicationController
       emojis: AwardEmoji.urls,
       issues: autocomplete.issues,
       mergerequests: autocomplete.merge_requests,
+      labels: autocomplete.labels,
       members: participants
     }
 
