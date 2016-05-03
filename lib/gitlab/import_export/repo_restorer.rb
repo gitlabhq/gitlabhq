@@ -3,18 +3,19 @@ module Gitlab
     class RepoRestorer
       include Gitlab::ImportExport::CommandLineUtil
 
-      def initialize(project: , path:, bundler_file: )
+      def initialize(project: , path: )
         @project = project
-        @path = File.join(path, bundler_file)
+        # TODO remove magic keyword and move it to a shared config
+        @path = File.join(path, 'project.bundle')
       end
 
       def restore
         return false unless File.exists?(@path)
-          # Move repos dir to 'repositories.old' dir
+        # Move repos dir to 'repositories.old' dir
 
         FileUtils.mkdir_p(repos_path)
         FileUtils.mkdir_p(path_to_repo)
-        untar_cf(archive: @path, dir: path_to_repo)
+        untar_xf(archive: @path, dir: path_to_repo)
       end
 
       private

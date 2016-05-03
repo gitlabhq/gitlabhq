@@ -13,13 +13,14 @@ module Gitlab
       end
 
       def import
+        FileUtils.mkdir_p(@storage_path)
         decompress_archive
       end
 
       private
 
       def decompress_archive
-        untar_czf(archive: @archive_file, dir: @storage_path)
+        untar_zxf(archive: @archive_file, dir: @storage_path)
       end
     end
   end
