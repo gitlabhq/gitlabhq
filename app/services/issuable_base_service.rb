@@ -80,7 +80,7 @@ class IssuableBaseService < BaseService
 
   def filter_labels_by_name(keys)
     keys.each do |key|
-      return if params[key].to_a.empty?
+      next if params[key].to_a.empty?
 
       params[key] = project.labels.where(id: params[key]).pluck(:id)
     end
