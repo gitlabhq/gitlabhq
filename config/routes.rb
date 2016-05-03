@@ -42,10 +42,9 @@ Rails.application.routes.draw do
 
     resource :lint, only: [:show, :create]
 
-    resources :projects do
+    resources :projects, only: [:index, :show] do
       member do
         get :status, to: 'projects#badge'
-        get :integration
       end
     end
 
@@ -137,20 +136,20 @@ Rails.application.routes.draw do
   # Import
   #
   namespace :import do
-    resource :github, only: [:create, :new], controller: :github do
+    resource :github, only: [:create], controller: :github do
       post :personal_access_token
       get :status
       get :callback
       get :jobs
     end
 
-    resource :gitlab, only: [:create, :new], controller: :gitlab do
+    resource :gitlab, only: [:create], controller: :gitlab do
       get :status
       get :callback
       get :jobs
     end
 
-    resource :bitbucket, only: [:create, :new], controller: :bitbucket do
+    resource :bitbucket, only: [:create], controller: :bitbucket do
       get :status
       get :callback
       get :jobs
@@ -243,7 +242,6 @@ Rails.application.routes.draw do
         get :projects
         get :keys
         get :groups
-        put :team_update
         put :block
         put :unblock
         put :unlock
@@ -296,11 +294,11 @@ Rails.application.routes.draw do
           post :repository_check
         end
 
-        resources :runner_projects, only: [:create, :destroy]
+        resources :runner_projects, only: [:index, :create, :destroy]
       end
     end
 
-    resource :appearances, path: 'appearance' do
+    resource :appearances, only: [:show, :create, :update], path: 'appearance' do
       member do
         get :preview
         delete :logo
@@ -309,7 +307,7 @@ Rails.application.routes.draw do
     end
 
     resource :application_settings, only: [:show, :update] do
-      resources :services
+      resources :services, only: [:index, :edit, :update]
       put :reset_runners_token
       put :reset_health_check_token
       put :clear_repository_check_states
@@ -346,7 +344,7 @@ Rails.application.routes.draw do
     end
 
     scope module: :profiles do
-      resource :account, only: [:show, :update] do
+      resource :account, only: [:show] do
         member do
           delete :unlink
         end
@@ -358,7 +356,7 @@ Rails.application.routes.draw do
         end
       end
       resource :preferences, only: [:show, :update]
-      resources :keys
+      resources :keys, only: [:index, :show, :new, :create, :destroy]
       resources :emails, only: [:index, :create, :destroy]
       resource :avatar, only: [:destroy]
 
@@ -660,7 +658,7 @@ Rails.application.routes.draw do
           post '/wikis/*id/markdown_preview', to: 'wikis#markdown_preview', constraints: WIKI_SLUG_ID, as: 'wiki_markdown_preview'
         end
 
-        resource :repository, only: [:show, :create] do
+        resource :repository, only: [:create] do
           member do
             get 'archive', constraints: { format: Gitlab::Regex.archive_formats_regex }
           end
@@ -782,7 +780,7 @@ Rails.application.routes.draw do
           end
         end
 
-        resources :labels, constraints: { id: /\d+/ } do
+        resources :labels, except: [:show], constraints: { id: /\d+/ } do
           collection do
             post :generate
             post :set_priorities
@@ -807,7 +805,7 @@ Rails.application.routes.draw do
           end
         end
 
-        resources :project_members, except: [:new, :edit], constraints: { id: /[a-zA-Z.\/0-9_\-#%+]+/ }, concerns: :access_requestable do
+        resources :project_members, except: [:show, :new, :edit], constraints: { id: /[a-zA-Z.\/0-9_\-#%+]+/ }, concerns: :access_requestable do
           collection do
             delete :leave
 
