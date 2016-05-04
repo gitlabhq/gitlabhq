@@ -1,11 +1,23 @@
-- page_title "Images"
+- page_title "Container Images"
 = render "header_title"
 
-.top-area
-  .nav-controls
+.light.prepend-top-default
+  %p
+    A 'container image' is a snapshot of a container.
+    You can host your 'container images' with GitLab.
+    %br
+    To start using container images hosted on GitLab you first need to login:
+    %pre
+      %code
+        docker login #{Gitlab.config.registry.host_port}
+    %br
+    Then you are free to create and upload a container images with build and push commands:
+    %pre
+      docker build -t #{Gitlab.config.registry.host_port}/#{@project.path_with_namespace} .
+      %br
+      docker push #{Gitlab.config.registry.host_port}/#{@project.path_with_namespace}
 
-.gray-content-block
-  A list of Docker Images for this project
+%hr
 
 %ul.content-list
   - if @tags.blank?
@@ -25,15 +37,15 @@
         - @tags.each do |tag|
           %tr
             %td
-              = link_to namespace_project_image_path(@project.namespace, @project, tag.name) do
-                #{tag.repository.name}:#{tag.name}
+              #{tag.repository.name}:#{tag.name}
+              = clipboard_button(clipboard_text: "docker pull #{Gitlab.config.registry.host_port}/#{tag.repository.name}:#{tag.name}")
             %td
               - if layer = tag.layers.first
                 \##{layer.short_revision}
             %td
-              = pluralize(tag.layers.size, "layer")
-              &nbsp;
               = number_to_human_size(tag.total_size)
+              &middot;
+              = pluralize(tag.layers.size, "layer")
             %td
               = time_ago_in_words(tag.created_at)
             %td.content
