@@ -3,18 +3,18 @@
 # Table name: ci_runners
 #
 #  id           :integer          not null, primary key
-#  token        :string(255)
+#  token        :string
 #  created_at   :datetime
 #  updated_at   :datetime
-#  description  :string(255)
+#  description  :string
 #  contacted_at :datetime
 #  active       :boolean          default(TRUE), not null
 #  is_shared    :boolean          default(FALSE)
-#  name         :string(255)
-#  version      :string(255)
-#  revision     :string(255)
-#  platform     :string(255)
-#  architecture :string(255)
+#  name         :string
+#  version      :string
+#  revision     :string
+#  platform     :string
+#  architecture :string
 #
 
 module Ci

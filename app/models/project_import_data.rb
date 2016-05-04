@@ -2,9 +2,12 @@
 #
 # Table name: project_import_data
 #
-#  id         :integer          not null, primary key
-#  project_id :integer
-#  data       :text
+#  id                         :integer          not null, primary key
+#  project_id                 :integer
+#  data                       :text
+#  encrypted_credentials      :text
+#  encrypted_credentials_iv   :text
+#  encrypted_credentials_salt :text
 #
 
 require 'carrierwave/orm/activerecord'
