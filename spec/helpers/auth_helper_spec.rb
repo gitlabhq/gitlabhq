@@ -36,5 +36,23 @@ describe AuthHelper do
       expect(helper.enabled_button_based_providers).to include('twitter')
       expect(helper.enabled_button_based_providers).to_not include('github')
     end
+
+    it 'returns true for button_based_providers_enabled? because there providers' do
+      allow(helper).to receive(:auth_providers) { [:twitter, :github] }
+
+      expect(helper.button_based_providers_enabled?).to be true
+    end
+
+    it 'returns false for button_based_providers_enabled? because there providers' do
+      settings.update_attribute(
+        :disabled_oauth_sign_in_sources,
+        ['github', 'twitter']
+      )
+
+      allow(helper).to receive(:auth_providers) { [:twitter, :github] }
+      allow(helper).to receive(:current_application_settings) {  settings }
+
+      expect(helper.button_based_providers_enabled?).to be false
+    end
   end
 end
