@@ -3,6 +3,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 v 8.8.0 (unreleased)
   - Project#open_branches has been cleaned up and no longer loads entire records into memory.
   - Make build status canceled if any of the jobs was canceled and none failed
+  - Sanitize repo paths in new project error message
   - Remove future dates from contribution calendar graph.
   - Support e-mail notifications for comments on project snippets
   - Use ActionDispatch Remote IP for Akismet checking
