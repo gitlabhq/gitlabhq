@@ -17,6 +17,7 @@ v 8.8.0 (unreleased)
   - Add support for supressing text diffs using .gitattributes on the default branch (Matt Oakes)
   - Added multiple colors for labels in dropdowns when dups happen.
   - Improve description for the Two-factor Authentication sign-in screen. (Connor Shea)
+  - API support for the 'since' and 'until' operators on commit requests (Paco Guzman)
 
 v 8.7.3
   - Emails, Gitlab::Email::Message, Gitlab::Diff, and Premailer::Adapter::Nokogiri are now instrumented

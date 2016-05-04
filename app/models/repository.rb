@@ -87,13 +87,15 @@ class Repository
     nil
   end
 
-  def commits(ref, path = nil, limit = nil, offset = nil, skip_merges = false)
+  def commits(ref, path: nil, limit: nil, offset: nil, skip_merges: false, after: nil, before: nil)
     options = {
       repo: raw_repository,
       ref: ref,
       path: path,
       limit: limit,
       offset: offset,
+      after: after,
+      before: before,
       # --follow doesn't play well with --skip. See:
       # https://gitlab.com/gitlab-org/gitlab-ce/issues/3574#note_3040520
       follow: false,
@@ -575,7 +577,7 @@ class Repository
   end
 
   def contributors
-    commits = self.commits(nil, nil, 2000, 0, true)
+    commits = self.commits(nil, limit: 2000, offset: 0, skip_merges: true)
 
     commits.group_by(&:author_email).map do |email, commits|
       contributor = Gitlab::Contributor.new
