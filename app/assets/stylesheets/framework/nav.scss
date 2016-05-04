@@ -140,6 +140,12 @@
       }
     }
 
+    .project-filter-form {
+      input {
+        background-color: $background-color;
+      }
+    }
+
     @media (max-width: $screen-xs-max) {
       padding-bottom: 0;
 
@@ -187,13 +193,17 @@
 }
 
 .layout-nav {
+  position: fixed;
+  top: 58px;
+  width: 100%;
+  z-index: 1;
   background: $background-color;
   border-bottom: 1px solid $border-color;
+  transition-duration: .3s;
 
   .controls {
     float: right;
-    position: relative;
-    top: 0;
+    padding: 12px 5px 0 0;
 
     .dropdown {
       margin-left: 7px;
@@ -218,15 +228,21 @@
       }
     }
   }
+
+  .nav-links {
+    border-bottom: none;
+
+    li {
+
+      .badge {
+        color: $gl-icon-color;
+      }
+
+    }
+  }
+
 }
 
-.nav-links {
-  border-bottom: none;
-  white-space: nowrap;
-  overflow-x: auto;
-  overflow-y: hidden;
-
-  a {
-    padding-top: 2px;
-  }
+.page-with-layout-nav {
+  margin-top: 56px;
 }

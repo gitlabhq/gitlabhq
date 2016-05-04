@@ -254,6 +254,10 @@
       }
     }
   }
+
+  .layout-nav {
+    padding-right: $sidebar_collapsed_width;
+  }
 }
 
 .page-sidebar-expanded {
@@ -279,6 +283,10 @@
         }
       }
     }
+  }
+
+  .layout-nav {
+    padding-right: $sidebar_width;
   }
 }
 
