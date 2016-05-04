@@ -31,7 +31,8 @@ module ImageRegistry
       end
     end
 
-    def delete
+    def delete_tags
+      return unless tags
       tags.each(:delete)
     end
   end
