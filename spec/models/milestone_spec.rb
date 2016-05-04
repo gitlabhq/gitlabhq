@@ -34,6 +34,14 @@ describe Milestone, models: true do
   let(:issue) { create(:issue) }
   let(:user) { create(:user) }
 
+  describe "#title" do
+    let(:milestone) { create(:milestone, title: "<b>test</b>") }
+
+    it "sanitizes title" do
+      expect(milestone.title).to eq("test")
+    end
+  end
+
   describe "unique milestone title per project" do
     it "shouldn't accept the same title in a project twice" do
       new_milestone = Milestone.new(project: milestone.project, title: milestone.title)

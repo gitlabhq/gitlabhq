@@ -55,6 +55,14 @@ describe Label, models: true do
     end
   end
 
+  describe "#title" do
+    let(:label) { create(:label, title: "<b>test</b>") }
+
+    it "sanitizes title" do
+      expect(label.title).to eq("test")
+    end
+  end
+
   describe '#to_reference' do
     context 'using id' do
       it 'returns a String reference to the object' do
