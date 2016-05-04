@@ -8,6 +8,13 @@ class RegistrationsController < Devise::RegistrationsController
 
   def create
     if !Gitlab::Recaptcha.load_configurations! || verify_recaptcha
+      # To avoid duplicate form fields on the login page, the registration form
+      # names fields using `new_user`, but Devise still wants the params in
+      # `user`.
+      if params["new_#{resource_name}"].present? && params[resource_name].blank?
+        params[resource_name] = params.delete(:"new_#{resource_name}")
+      end
+
       super
     else
       flash[:alert] = "There was an error with the reCAPTCHA code below. Please re-enter the code."
