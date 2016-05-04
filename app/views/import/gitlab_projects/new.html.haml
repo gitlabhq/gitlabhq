@@ -1,18 +1,18 @@
 - page_title "GitLab Import"
 - header_title "Projects", root_path
 %h3.page-title
-  %i.fa.fa-bug
+  %i.fa.fa-gitlab
   Import projects from GitLab
 %hr
 
 = form_tag import_gitlab_project_path, class: 'form-horizontal', multipart: true do
   %p
-    To get started you add your project export file below.
+    To get started add your exported project file below:
   .form-group
     = hidden_field_tag :namespace_id, @namespace_id
     = hidden_field_tag :path, @path
     = label_tag :file, class: 'control-label' do
-      %span GitLab export file
+      %span GitLab project export
     .col-sm-10
       = file_field_tag :file, class: ''
 
