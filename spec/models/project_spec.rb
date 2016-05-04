@@ -894,4 +894,27 @@ describe Project, models: true do
       end
     end
   end
+
+  describe 'handling import URL' do
+    context 'when project is a mirror' do
+      it 'returns the full URL' do
+        project = create(:project, :mirror, import_url: 'http://user:pass@test.com')
+
+        project.import_finish
+
+        expect(project.reload.import_url).to eq('http://user:pass@test.com')
+      end
+    end
+
+    context 'when project is not a mirror' do
+      it 'returns the sanitized URL' do
+        project = create(:project, import_status: 'started', import_url: 'http://user:pass@test.com')
+
+        project.import_finish
+
+        expect(project.reload.import_url).to eq('http://test.com')
+      end
+    end
+
+  end
 end
