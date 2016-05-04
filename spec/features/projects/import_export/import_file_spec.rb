@@ -25,7 +25,7 @@ feature 'project import', feature: true, js: true do
     fill_in :project_path, with:'test-project-path', visible: true
     click_link 'GitLab project'
 
-    expect(page).to have_content('GitLab export file')
+    expect(page).to have_content('GitLab project export')
     expect(URI.parse(current_url).query).to eq('namespace_id=2&path=test-project-path')
 
     attach_file('file', file)
