@@ -1,6 +1,28 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.8.0 (unreleased)
+  - Project#open_branches has been cleaned up and no longer loads entire records into memory.
+  - Make build status canceled if any of the jobs was canceled and none failed
+  - Sanitize repo paths in new project error message
+  - Remove future dates from contribution calendar graph.
+  - Support e-mail notifications for comments on project snippets
+  - Use ActionDispatch Remote IP for Akismet checking
+  - Fix error when visiting commit builds page before build was updated
+  - Add 'l' shortcut to open Label dropdown on issuables and 'i' to create new issue on a project
+  - Updated search UI
+  - Display informative message when new milestone is created
+  - Allow "NEWS" and "CHANGES" as alternative names for CHANGELOG. !3768 (Connor Shea)
+  - Added button to toggle whitespaces changes on diff view
+  - Backport GitLab Enterprise support from EE
+  - Create tags using Rugged for performance reasons. !3745
+  - Files over 5MB can only be viewed in their raw form, files over 1MB without highlighting !3718
+  - Add support for supressing text diffs using .gitattributes on the default branch (Matt Oakes)
+  - Added multiple colors for labels in dropdowns when dups happen.
+  - Improve description for the Two-factor Authentication sign-in screen. (Connor Shea)
+  - API support for the 'since' and 'until' operators on commit requests (Paco Guzman)
+  - Fix Gravatar hint in user profile when Gravatar is disabled. !3988 (Artem Sidorenko)
+  - Expire repository exists? and has_visible_content? caches after a push if necessary
+  - Merge request widget displays TeamCity build state and code coverage correctly again.
 
 v 8.7.3
   - Emails, Gitlab::Email::Message, Gitlab::Diff, and Premailer::Adapter::Nokogiri are now instrumented
