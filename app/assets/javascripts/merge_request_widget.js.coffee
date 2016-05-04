@@ -68,20 +68,18 @@ class @MergeRequestWidget
     $.getJSON @opts.ci_status_url, (data) =>
       @readyForCICheck = true
 
-      if @firstCICheck || @opts.ci_status is ''
-        if @firstCICheck
-          @firstCICheck = false
+      if data.status is ''
+        return
+
+      if @firstCiCheck || data.status isnt @opts.ci_status and data.status?
         @opts.ci_status = data.status
         @showCIStatus data.status
         if data.coverage
           @showCICoverage data.coverage
 
-      if data.status isnt @opts.ci_status and data.status?
-        @showCIStatus data.status
-        if data.coverage
-          @showCICoverage data.coverage
-
-        if showNotification
+        # The first check should only update the UI, a notification
+        # should only be displayed on status changes
+        if showNotification and not @firstCiCheck
           status = @ciLabelForStatus(data.status)
 
           if status is "preparing"
@@ -104,8 +102,7 @@ class @MergeRequestWidget
               @close()
               Turbolinks.visit _this.opts.builds_path
           )
-
-        @opts.ci_status = data.status
+        @firstCiCheck = false
 
   showCIStatus: (state) ->
     $('.ci_widget').hide()
