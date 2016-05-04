@@ -114,6 +114,25 @@ describe Issue, "Issuable" do
     end
   end
 
+  describe "#sort" do
+    let!(:issue)  { create(:issue) }
+    let(:project) { issue.project }
+    let!(:issue2) { create(:issue, weight: 1, project: project) }
+    let!(:issue3) { create(:issue, weight: 2, project: project) }
+    let!(:issue4) { create(:issue, weight: 3, project: project) }
+
+    it "sorts by weight desc" do
+      issues = Issue.where(project_id: project.id).sort('weight_desc')
+      expect(issues).to match_array([issue4, issue3, issue2, issue])
+    end
+
+
+    it "sorts by weight asc" do
+      issues = Issue.where(project_id: project.id).sort('weight_asc')
+      expect(issues).to match_array([issue2, issue3, issue4, issue])
+    end
+  end
+
   describe '#subscribed?' do
     context 'user is not a participant in the issue' do
       before { allow(issue).to receive(:participants).with(user).and_return([]) }
