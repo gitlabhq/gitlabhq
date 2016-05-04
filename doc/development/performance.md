@@ -16,7 +16,7 @@ The process of solving performance problems is roughly as follows:
    timings, etc) to the issue mentioned in step 1.
 4. Solve the problem.
 5. Create a merge request, assign the "performance" label and ping the right
-   people (e.g. [@yorickpeterse][@yorickpeterse] and [@joshfng][@joshfng]).
+   people (e.g. [@yorickpeterse][yorickpeterse] and [@joshfng][joshfng]).
 6. Once a change has been deployed make sure to _again_ measure for at least 24
    hours to see if your changes have any impact on the production environment.
 7. Repeat until you're done.
@@ -253,6 +253,6 @@ impact on runtime performance, and as such, using a constant instead of
 referencing an object directly may even slow code down.
 
 [#15607]: https://gitlab.com/gitlab-org/gitlab-ce/issues/15607
-[@yorickpeterse]: https://gitlab.com/u/yorickpeterse
-[@joshfng]: https://gitlab.com/u/joshfng
+[yorickpeterse]: https://gitlab.com/u/yorickpeterse
+[joshfng]: https://gitlab.com/u/joshfng
 [anti-pattern]: https://en.wikipedia.org/wiki/Anti-pattern
