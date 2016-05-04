@@ -25,11 +25,15 @@ module ImageRegistry
       @digest = client.repository_tag_digest(repository.name, name)
     end
 
-    def config
-      return @config if defined?(@config)
+    def config_blob
+      return @config_blob if defined?(@config_blob)
       return unless manifest && manifest['config']
-      blob = ImageRegistry::Blob.new(repository, manifest['config'])
-      @config = ImageRegistry::Config.new(self, blob)
+      @config_blob = ImageRegistry::Blob.new(repository, manifest['config'])
+    end
+
+    def config
+      return unless config_blob
+      @config ||= ImageRegistry::Config.new(self, config_blob)
     end
 
     def created_at
@@ -53,6 +57,15 @@ module ImageRegistry
     def delete
       return unless digest
       client.delete_repository_tag(repository.name, digest)
+    end
+
+    def copy_to(repository)
+      return unless manifest
+      layers.each do |blob|
+        repository.mount_blob(blob)
+      end
+      repository.mount_blob(config_blob)
+      repository.mount_manifest(name, manifest.to_json)
     end
 
     def client

@@ -39,7 +39,7 @@ module ImageRegistry
     end
 
     def repository_mount_blob(name, digest, from)
-      @faraday.post("/v2/#{name}/blobls/uploads/?mount=#{digest}&from=#{from}").status == 201
+      @faraday.post("/v2/#{name}/blobs/uploads/?mount=#{digest}&from=#{from}").status == 201
     end
 
     def repository_tag_digest(name, reference)

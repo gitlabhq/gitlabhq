@@ -43,5 +43,9 @@ module ImageRegistry
       return @data if defined?(@data)
       @data ||= client.blob(repository.name, digest, type)
     end
+
+    def mount_to(to_repository)
+      client.repository_mount_blob(to_repository.name, digest, repository.name)
+    end
   end
 end
