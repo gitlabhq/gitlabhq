@@ -110,7 +110,7 @@
             = f.check_box :signin_enabled
             Sign-in enabled
     .form-group
-      = f.label :disable_oauth_signin_sources, class: 'control-label col-sm-2'
+      = f.label :disable_oauth_signin_sources, 'Disable OAuth Sign-In sources', class: 'control-label col-sm-2'
       .col-sm-10
         - data_attrs = { toggle: 'buttons' }
         .btn-group{ data: data_attrs }
