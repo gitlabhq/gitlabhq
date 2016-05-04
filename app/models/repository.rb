@@ -148,10 +148,20 @@ class Repository
     find_branch(branch_name)
   end
 
-  def add_tag(tag_name, ref, message = nil)
-    before_push_tag
+  def add_tag(user, tag_name, target, message = nil)
+    oldrev = Gitlab::Git::BLANK_SHA
+    ref    = Gitlab::Git::TAG_REF_PREFIX + tag_name
+    target = commit(target).try(:id)
 
-    gitlab_shell.add_tag(path_with_namespace, tag_name, ref, message)
+    return false unless target
+
+    options = { message: message, tagger: user_to_committer(user) } if message
+
+    GitHooksService.new.execute(user, path_to_repo, oldrev, target, ref) do
+      rugged.tags.create(tag_name, target, options)
+    end
+
+    find_tag(tag_name)
   end
 
   def rm_branch(user, branch_name)
