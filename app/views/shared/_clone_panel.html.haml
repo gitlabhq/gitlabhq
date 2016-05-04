@@ -13,8 +13,7 @@
         = http_clone_button(project)
       - if alternative_kerberos_url?
         %li
-          %a#kerberos-btn{href: @project.kerberos_url_to_repo}
-            KRB5
+          = kerberos_clone_button(project)
 
   = text_field_tag :project_clone, default_url_to_repo(project), class: "js-select-on-focus form-control", readonly: true
   .input-group-btn

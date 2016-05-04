@@ -55,18 +55,17 @@ module ButtonHelper
   end
 
   def kerberos_clone_button(project)
-    klass = 'btn js-protocol-switch'
-    klass << ' active'      if default_clone_protocol == 'kerberos'
+    klass = 'kerberos-selector'
     klass << ' has-tooltip'
 
-    content_tag :button, 'KRB5',
+    content_tag :a, 'KRB5',
       class: klass,
+      href: project.kerberos_url_to_repo,
       data: {
-        clone: project.kerberos_url_to_repo,
-        container: 'body',
         html: 'true',
-        title: 'Get a Kerberos token for your account with kinit<br>to pull or push via Kerberos.'
-      },
-      type: :button
+        placement: 'right',
+        container: 'body',
+        title: 'Get a Kerberos token for your<br>account with kinit.'
+      }
   end
 end

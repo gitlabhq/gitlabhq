@@ -88,20 +88,29 @@ describe ProjectsHelper do
   end
 
   describe 'default_clone_protocol' do
-    describe 'using HTTP' do
+    context 'when user is not logged in and gitlab protocol is HTTP' do
       it 'returns HTTP' do
-        expect(helper).to receive(:current_user).and_return(nil)
+        allow(helper).to receive(:current_user).and_return(nil)
 
         expect(helper.send(:default_clone_protocol)).to eq('http')
       end
     end
 
-    describe 'using HTTPS' do
+    context 'when user is not logged in and gitlab protocol is HTTPS' do
       it 'returns HTTPS' do
-        allow(Gitlab.config.gitlab).to receive(:protocol).and_return('https')
-        expect(helper).to receive(:current_user).and_return(nil)
+        stub_config_setting(protocol: 'https')
+        allow(helper).to receive(:current_user).and_return(nil)
 
         expect(helper.send(:default_clone_protocol)).to eq('https')
+      end
+    end
+
+    context 'when gitlab.config.kerberos is enabled and user is logged in' do
+      it 'returns krb5 as default protocol' do
+        allow(Gitlab.config.kerberos).to receive(:enabled).and_return(true)
+        allow(helper).to receive(:current_user).and_return(double)
+
+        expect(helper.send(:default_clone_protocol)).to eq('krb5')
       end
     end
   end
