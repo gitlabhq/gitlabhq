@@ -29,7 +29,7 @@
         %thead
           %tr
             %th Name
-            %th Revision
+            %th Digest
             %th Size
             %th Created
             %th
@@ -41,7 +41,10 @@
               = clipboard_button(clipboard_text: "docker pull #{Gitlab.config.registry.host_port}/#{tag.repository.name}:#{tag.name}")
             %td
               - if layer = tag.layers.first
-                \##{layer.short_revision}
+                %span.has-tooltip(title="#{layer.revision}")
+                  = layer.short_revision
+              - else
+                \-
             %td
               = number_to_human_size(tag.total_size)
               &middot;

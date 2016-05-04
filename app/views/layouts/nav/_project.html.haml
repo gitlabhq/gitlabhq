@@ -49,9 +49,9 @@
   - if project_nav_tab? :images
     = nav_link(controller: %w(images)) do
       = link_to project_images_path(@project), title: 'Images', class: 'shortcuts-images' do
-        = icon('image fw')
+        = icon('hdd-o fw')
         %span
-          Images
+          Container Images
 
   - if project_nav_tab? :graphs
     = nav_link(controller: %w(graphs)) do
