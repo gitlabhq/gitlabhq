@@ -80,6 +80,7 @@ ActiveRecord::Schema.define(version: 20160508194200) do
     t.boolean  "repository_checks_enabled",         default: false
     t.text     "shared_runners_text"
     t.integer  "metrics_packet_size",               default: 1
+    t.text     "disabled_oauth_sign_in_sources"
   end
 
   create_table "audit_events", force: :cascade do |t|
