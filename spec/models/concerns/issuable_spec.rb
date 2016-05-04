@@ -228,9 +228,11 @@ describe Issue, "Issuable" do
   end
 
   describe "votes" do
+    let(:project) { issue.project }
+
     before do
-      issue.notes.awards.create!(note: "thumbsup", author: user, project: issue.project)
-      issue.notes.awards.create!(note: "thumbsdown", author: user, project: issue.project)
+      issue.notes.awards.create!(note: "thumbsup", author: user, project: project)
+      issue.notes.awards.create!(note: "thumbsdown", author: user, project: project)
     end
 
     it "returns correct values" do

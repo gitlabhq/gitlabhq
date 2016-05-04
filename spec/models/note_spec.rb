@@ -13,29 +13,30 @@ describe Note, models: true do
     it { is_expected.to validate_presence_of(:note) }
     it { is_expected.to validate_presence_of(:project) }
 
-    context 'when note is comment on commit' do
+    context 'when note is on commit' do
       before { allow(subject).to receive(:for_commit?).and_return(true) }
 
       it { is_expected.to validate_presence_of(:commit_id) }
       it { is_expected.to_not validate_presence_of(:noteable_id) }
     end
 
-    context 'when note is not comment on commit' do
+    context 'when note is not on commit' do
       before { allow(subject).to receive(:for_commit?).and_return(false) }
 
       it { is_expected.to_not validate_presence_of(:commit_id) }
       it { is_expected.to validate_presence_of(:noteable_id) }
     end
 
-    context 'when noteable and note project is different' do
+    context 'when noteable and note project differ' do
       subject do
-        build(:note, noteable: create(:issue), project: create(:project))
+        build(:note, noteable: build_stubbed(:issue),
+                     project: build_stubbed(:project))
       end
 
       it { is_expected.to be_invalid }
     end
 
-    context 'when noteable and note project is the same one' do
+    context 'when noteable and note project are the same' do
       subject { create(:note) }
       it { is_expected.to be_valid }
     end
