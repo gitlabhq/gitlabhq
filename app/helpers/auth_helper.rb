@@ -44,6 +44,10 @@ module AuthHelper
     button_based_providers.map(&:to_s) - disabled_providers
   end
 
+  def button_based_providers_enabled?
+    !enabled_button_based_providers.empty?
+  end
+
   def provider_image_tag(provider, size = 64)
     label = label_for_provider(provider)
 
