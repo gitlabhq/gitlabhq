@@ -1,7 +1,7 @@
 class ProjectImportWorker
   include Sidekiq::Worker
-  include Gitlab::ShellAdapter
 
+  # TODO: enabled retry - disabled for QA purposes
   sidekiq_options queue: :gitlab_shell, retry: false
 
   def perform(current_user_id, tmp_file, namespace_id, path)
