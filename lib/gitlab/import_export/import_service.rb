@@ -9,7 +9,7 @@ module Gitlab
       def initialize(archive_file:, owner:, namespace_id:, project_path:)
         @archive_file = archive_file
         @current_user = owner
-        @namespace_path = Namespace.find(namespace_id).path
+        @namespace = Namespace.find(namespace_id)
         @project_path = project_path
       end
 
@@ -25,7 +25,7 @@ module Gitlab
       end
 
       def project_tree
-        @project_tree ||= Gitlab::ImportExport::ProjectTreeRestorer.new(path: storage_path, user: @current_user, project_path: @project_path)
+        @project_tree ||= Gitlab::ImportExport::ProjectTreeRestorer.new(path: storage_path, user: @current_user, project_path: @project_path, namespace_id: @namespace.id)
       end
 
       def restore_repo
@@ -37,7 +37,7 @@ module Gitlab
       end
 
       def path_with_namespace
-        File.join(@namespace_path, @project_path)
+        File.join(@namespace.path, @project_path)
       end
     end
   end
