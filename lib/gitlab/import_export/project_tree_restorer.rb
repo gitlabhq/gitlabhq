@@ -2,10 +2,11 @@ module Gitlab
   module ImportExport
     class ProjectTreeRestorer
 
-      def initialize(path:, user:, project_path:)
+      def initialize(path:, user:, project_path:, namespace_id:)
         @path = File.join(path, 'project.json')
         @user = user
         @project_path = project_path
+        @namespace_id = namespace_id
       end
 
       def restore
@@ -30,9 +31,8 @@ module Gitlab
         saved = []
         relation_list.each do |relation|
           next if !relation.is_a?(Hash) && tree_hash[relation.to_s].blank?
-          if relation.is_a?(Hash)
-            create_sub_relations(relation, tree_hash)
-          end
+          create_sub_relations(relation, tree_hash) if relation.is_a?(Hash)
+
           relation_key = relation.is_a?(Hash) ? relation.keys.first : relation
           relation_hash = create_relation(relation_key, tree_hash[relation_key.to_s])
           saved << project.update_attribute(relation_key, relation_hash)
@@ -47,7 +47,7 @@ module Gitlab
       def create_project
         project_params = @tree_hash.reject { |_key, value| value.is_a?(Array) }
         project = Gitlab::ImportExport::ProjectFactory.create(
-          project_params: project_params, user: @user)
+          project_params: project_params, user: @user, namespace_id: @namespace_id)
         project.path = @project_path
         project.name = @project_path
         project.save

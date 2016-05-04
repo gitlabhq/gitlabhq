@@ -3,7 +3,7 @@ module Gitlab
     class RepoRestorer
       include Gitlab::ImportExport::CommandLineUtil
 
-      def initialize(project: , path: )
+      def initialize(project:, path:)
         @project = project
         # TODO remove magic keyword and move it to a shared config
         @path = File.join(path, 'project.bundle')
