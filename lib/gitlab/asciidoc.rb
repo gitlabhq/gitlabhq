@@ -35,5 +35,11 @@ module Gitlab
 
       html.html_safe
     end
+
+    # Does the given document contain a valid :stem: attribute declaration
+    # that activates support for STEM (i.e. math)?
+    def self.contains_stem?(input)
+      input =~ /^:stem:/
+    end
   end
 end

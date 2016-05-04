@@ -34,6 +34,7 @@ class @EditBlob
       , (response) ->
         currentPane.empty().append response
         currentPane.syntaxHighlight()
+        $(document).trigger('mathjax:typeset')
 
     else
       @editor.focus()
