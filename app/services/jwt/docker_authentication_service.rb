@@ -8,6 +8,17 @@ module Jwt
       { token: token.encoded }
     end
 
+    def self.full_access_token(*names)
+      registry = Gitlab.config.registry
+      token = ::Jwt::RSAToken.new(registry.key)
+      token.issuer = registry.issuer
+      token.audience = 'docker'
+      token[:access] = names.map do |name|
+        { type: 'repository', name: name, actions: %w(pull push) }
+      end
+      token.encoded
+    end
+
     private
 
     def token
