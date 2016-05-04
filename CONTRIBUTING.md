@@ -142,6 +142,16 @@ code snippet right after your description in a new line: `~"feature proposal"`.
 Please keep feature proposals as small and simple as possible, complex ones
 might be edited to make them small and simple.
 
+You are encouraged to use the template below for feature proposals.
+
+```
+## Description including problem, use cases, benefits, and/or goals
+
+## Proposal
+
+## Links / references
+```
+
 For changes in the interface, it can be helpful to create a mockup first.
 If you want to create something yourself, consider opening an issue first to
 discuss whether it is interesting to include this in GitLab.
