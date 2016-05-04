@@ -2,6 +2,9 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.8.0 (unreleased)
 
+v 8.7.3
+  - Emails, Gitlab::Email::Message, Gitlab::Diff, and Premailer::Adapter::Nokogiri are now instrumented
+
 v 8.7.2
   - The "New Branch" button is now loaded asynchronously
   - Fix error 500 when trying to create a wiki page
