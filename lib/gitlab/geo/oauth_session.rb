@@ -14,6 +14,12 @@ module Gitlab
         hmac == generate_oauth_hmac(salt, return_to)
       end
 
+      def is_logout_state_valid?(access_token)
+        return false unless state
+        salt, hmac = state.split(':', 2)
+        hmac == generate_oauth_hmac(salt, access_token)
+      end
+
       def generate_oauth_state
         return unless return_to
         hmac = generate_oauth_hmac(oauth_salt, return_to)

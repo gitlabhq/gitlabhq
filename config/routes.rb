@@ -56,6 +56,7 @@ Rails.application.routes.draw do
   namespace :oauth do
     get 'geo/auth' => 'geo_auth#auth'
     get 'geo/callback' => 'geo_auth#callback'
+    get 'geo/logout' => 'geo_auth#logout'
   end
 
   # Autocomplete

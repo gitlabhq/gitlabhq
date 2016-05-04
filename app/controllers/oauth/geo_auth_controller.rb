@@ -25,11 +25,22 @@ class Oauth::GeoAuthController < ActionController::Base
     user = User.find(remote_user['id'])
 
     if user && sign_in(user, bypass: true)
+      session[:access_token] = token
       return_to = oauth.get_oauth_state_return_to
       redirect_to(return_to || root_path)
     else
       invalid_credentials
     end
+  end
+
+  def logout
+    oauth = Gitlab::Geo::OauthSession.new(state: params[:state])
+
+    if oauth.is_logout_state_valid?(params[:token])
+      sign_out current_user
+    end
+
+    redirect_to root_path
   end
 
   private
