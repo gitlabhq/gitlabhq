@@ -1044,4 +1044,14 @@ class Project < ActiveRecord::Base
   def wiki
     @wiki ||= ProjectWiki.new(self, self.owner)
   end
+
+  def add_export_job(current_user_id:)
+    job_id = ProjectExportWorker.perform_async(current_user_id, self.id)
+
+    if job_id
+      Rails.logger.info "Export job started for project ID #{self.id} with job ID #{job_id}"
+    else
+      Rails.logger.error "Export job failed to start for project ID #{self.id}"
+    end
+  end
 end
