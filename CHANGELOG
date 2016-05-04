@@ -19,6 +19,7 @@ v 8.8.0 (unreleased)
   - Added multiple colors for labels in dropdowns when dups happen.
   - Improve description for the Two-factor Authentication sign-in screen. (Connor Shea)
   - API support for the 'since' and 'until' operators on commit requests (Paco Guzman)
+  - Fix Gravatar hint in user profile when Gravatar is disabled. !3988 (Artem Sidorenko)
 
 v 8.7.3
   - Emails, Gitlab::Email::Message, Gitlab::Diff, and Premailer::Adapter::Nokogiri are now instrumented
