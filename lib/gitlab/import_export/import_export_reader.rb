@@ -41,7 +41,7 @@ module Gitlab
           current_key = hash.keys.first
           value = process_current_class(hash, included_classes_hash, value)
           if included_classes_hash[current_key]
-            add_class(current_key, included_classes_hash, value)
+            add_to_class(current_key, included_classes_hash, value)
           else
             add_new_class(current_key, included_classes_hash, value)
           end
@@ -58,13 +58,18 @@ module Gitlab
 
       def add_new_class(current_key, included_classes_hash, value)
         only_except_hash = check_only_and_except(value)
-        # TODO: refactor this
-        value = (value.is_a?(Hash) ? value.merge(only_except_hash) : { value => only_except_hash }) if only_except_hash
-        new_hash = { include: value }
-        included_classes_hash[current_key] = new_hash
+        parsed_hash = { include: value }
+        unless only_except_hash.empty?
+          if value.is_a?(Hash)
+            parsed_hash = { include: value.merge(only_except_hash) }
+          else
+            parsed_hash = { include: { value => only_except_hash } }
+          end
+        end
+        included_classes_hash[current_key] = parsed_hash
       end
 
-      def add_class(current_key, included_classes_hash, value)
+      def add_to_class(current_key, included_classes_hash, value)
         only_except_hash = check_only_and_except(value)
         value = { value => only_except_hash } unless only_except_hash.empty?
         old_values = included_classes_hash[current_key][:include]
