@@ -953,10 +953,9 @@ Performance/DoubleStartEndWith:
 Performance/EndWith:
   Enabled: false
 
-# TODO: Enable LstripRstrip Cop.
 # Use `strip` instead of `lstrip.rstrip`.
 Performance/LstripRstrip:
-  Enabled: false
+  Enabled: true
 
 # TODO: Enable RangeInclude Cop.
 # Use `Range#cover?` instead of `Range#include?`.

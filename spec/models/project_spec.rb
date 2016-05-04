@@ -894,4 +894,18 @@ describe Project, models: true do
       end
     end
   end
+
+  describe '#protected_branch?' do
+    let(:project) { create(:empty_project) }
+
+    it 'returns true when a branch is a protected branch' do
+      project.protected_branches.create!(name: 'foo')
+
+      expect(project.protected_branch?('foo')).to eq(true)
+    end
+
+    it 'returns false when a branch is not a protected branch' do
+      expect(project.protected_branch?('foo')).to eq(false)
+    end
+  end
 end

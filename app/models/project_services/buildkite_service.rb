@@ -26,7 +26,7 @@ class BuildkiteService < CiService
 
   prop_accessor :project_url, :token, :enable_ssl_verification
 
-  validates :project_url, presence: true, if: :activated?
+  validates :project_url, presence: true, url: true, if: :activated?
   validates :token, presence: true, if: :activated?
 
   after_save :compose_service_hook, if: :activated?
@@ -91,7 +91,7 @@ class BuildkiteService < CiService
       { type: 'text',
         name: 'project_url',
         placeholder: "#{ENDPOINT}/example/project" },
-      
+
       { type: 'checkbox',
         name: 'enable_ssl_verification',
         title: "Enable SSL verification" }
