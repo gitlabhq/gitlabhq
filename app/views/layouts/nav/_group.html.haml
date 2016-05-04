@@ -6,7 +6,7 @@
     %span.dropdown.group-settings-dropdown
       %a.dropdown-new.btn.btn-gray#group-settings-button{href: '#', 'data-toggle' => 'dropdown'}
         = icon('cog')
-        = icon('angle-down')
+        = icon('caret-down')
       %ul.dropdown-menu.dropdown-menu-align-right
         = nav_link(path: 'groups#projects') do
           = link_to projects_group_path(@group), title: 'Projects' do

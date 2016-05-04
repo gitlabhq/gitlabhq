@@ -158,6 +158,10 @@
     padding: 24px 0;
 
     .group-info {
+      .cover-title {
+        margin-top: 9px;
+      }
+
       p {
         margin-bottom: 0;
       }
@@ -173,8 +177,12 @@
   }
 
   .group-info {
+
     h1 {
       display: inline;
+      font-weight: normal;
+      font-size: 24px;
+      color: $gl-title-color;
     }
   }
 }
