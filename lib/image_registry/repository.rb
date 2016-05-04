@@ -25,7 +25,7 @@ module ImageRegistry
 
     def tags
       return @tags if defined?(@tags)
-      return unless manifest && manifest['tags']
+      return [] unless manifest && manifest['tags']
       @tags = manifest['tags'].map do |tag|
         ImageRegistry::Tag.new(self, tag)
       end

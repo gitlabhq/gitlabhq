@@ -19,7 +19,7 @@ module ImageRegistry
         if options[:user] && options[:password]
           builder.request(:basic_auth, options[:user].to_s, options[:password].to_s)
         elsif options[:token]
-          builder.request(:authentication, :Bearer, options[:token].to_s)
+          builder.request(:authorization, :bearer, options[:token].to_s)
         end
 
         builder.adapter :net_http
