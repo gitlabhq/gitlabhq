@@ -191,8 +191,7 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def export
-    #TODO:  Move to worker
-    ::Projects::ImportExport::ExportService.new(@project, current_user).execute
+    @project.add_export_job(current_user_id: current_user.id)
 
     redirect_to(
       edit_project_path(@project),
@@ -201,7 +200,11 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def download_export
-    send_file export_project_path, disposition: 'attachment'
+    if export_project_path
+      send_file export_project_path, disposition: 'attachment'
+    else
+      render_404
+    end
   end
 
   def toggle_star
