@@ -344,12 +344,12 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     end
   end
 
-  step 'I should see a badge of "(1)" next to the discussion link' do
-    expect_discussion_badge_to_have_counter("(1)")
+  step 'I should see a badge of "1" next to the discussion link' do
+    expect_discussion_badge_to_have_counter("1")
   end
 
-  step 'I should see a badge of "(0)" next to the discussion link' do
-    expect_discussion_badge_to_have_counter("(0)")
+  step 'I should see a badge of "0" next to the discussion link' do
+    expect_discussion_badge_to_have_counter("0")
   end
 
   step 'I should see a discussion has started on commit diff' do
@@ -572,7 +572,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   def expect_discussion_badge_to_have_counter(value)
-    page.within(".notes-tab span") do
+    page.within(".notes-tab .badge") do
       page.should have_content value
     end
   end

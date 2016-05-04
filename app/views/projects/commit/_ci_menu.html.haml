@@ -2,8 +2,8 @@
   = nav_link(path: 'commit#show') do
     = link_to namespace_project_commit_path(@project.namespace, @project, @commit.id) do
       Changes
-      %span (#{@diffs.count})
+      %span.badge= @diffs.count
   = nav_link(path: 'commit#builds') do
     = link_to builds_namespace_project_commit_path(@project.namespace, @project, @commit.id) do
       Builds
-      %span (#{@statuses.count})
+      %span.badge= @statuses.count

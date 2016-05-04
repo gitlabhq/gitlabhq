@@ -13,26 +13,26 @@
     %li{ class: ("active" unless params[:scope]) }
       = link_to dashboard_snippets_path do
         All
-        %span
-          (#{current_user.snippets.count})
+        %span.badge
+          = current_user.snippets.count
 
     %li{ class: ("active" if params[:scope] == "are_private") }
       = link_to dashboard_snippets_path(scope: 'are_private') do
         Private
-        %span
-          (#{current_user.snippets.are_private.count})
+        %span.badge
+          = current_user.snippets.are_private.count
 
     %li{ class: ("active" if params[:scope] == "are_internal") }
       = link_to dashboard_snippets_path(scope: 'are_internal') do
         Internal
-        %span
-          (#{current_user.snippets.are_internal.count})
+        %span.badge
+          = current_user.snippets.are_internal.count
 
     %li{ class: ("active" if params[:scope] == "are_public") }
       = link_to dashboard_snippets_path(scope: 'are_public') do
         Public
-        %span
-          (#{current_user.snippets.are_public.count})
+        %span.badge
+          = current_user.snippets.are_public.count
 
 = render 'snippets/snippets'
 
