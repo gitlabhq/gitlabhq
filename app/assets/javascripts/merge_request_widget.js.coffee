@@ -68,13 +68,13 @@ class @MergeRequestWidget
     $.getJSON @opts.ci_status_url, (data) =>
       @readyForCICheck = true
 
-      if @firstCICheck
-        @firstCICheck = false
+      if @firstCICheck || @opts.ci_status is ''
+        if @firstCICheck
+          @firstCICheck = false
         @opts.ci_status = data.status
-
-      if @opts.ci_status is ''
-        @opts.ci_status = data.status
-        return
+        @showCIStatus data.status
+        if data.coverage
+          @showCICoverage data.coverage
 
       if data.status isnt @opts.ci_status and data.status?
         @showCIStatus data.status
