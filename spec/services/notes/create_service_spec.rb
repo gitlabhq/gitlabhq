@@ -14,12 +14,44 @@ describe Notes::CreateService, services: true do
           noteable_type: 'Issue',
           noteable_id: issue.id
         }
-        
+
         @note = Notes::CreateService.new(project, user, opts).execute
       end
 
       it { expect(@note).to be_valid }
       it { expect(@note.note).to eq('Awesome comment') }
+    end
+  end
+
+  describe "#new_issue" do
+    let(:content) do
+      <<-NOTE
+      My new title
+      ---
+      This is my body
+      NOTE
+    end
+    let(:merge_request) { create(:merge_request) }
+    let(:params) { {note: content, noteable_type: "MergeRequest", noteable_id: merge_request.id} }
+
+    before do
+      project.team << [user, :master]
+    end
+
+    it "creates a new issue" do
+      expect { Notes::CreateService.new(project, user, params).new_issue }.to change { Issue.count }.by(1)
+    end
+
+    it 'sets a bota a note and a reference' do
+      expect { Notes::CreateService.new(project, user, params).new_issue }.to change { Note.count }.by(2)
+    end
+
+    it "parses the note" do
+      Notes::CreateService.new(project, user, params).new_issue
+      new_issue = Issue.last
+      
+      expect(new_issue.title).to eq 'My new title'
+      expect(new_issue.description).to eq 'This is my body'
     end
   end
 

@@ -100,6 +100,19 @@ ActiveRecord::Schema.define(version: 20160530150109) do
   add_index "audit_events", ["entity_id", "entity_type"], name: "index_audit_events_on_entity_id_and_entity_type", using: :btree
   add_index "audit_events", ["type"], name: "index_audit_events_on_type", using: :btree
 
+  create_table "award_emoji", force: :cascade do |t|
+    t.string   "name"
+    t.integer  "user_id"
+    t.integer  "awardable_id"
+    t.string   "awardable_type"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "award_emoji", ["awardable_id"], name: "index_award_emoji_on_awardable_id", using: :btree
+  add_index "award_emoji", ["awardable_type"], name: "index_award_emoji_on_awardable_type", using: :btree
+  add_index "award_emoji", ["user_id"], name: "index_award_emoji_on_user_id", using: :btree
+
   create_table "broadcast_messages", force: :cascade do |t|
     t.text     "message",    null: false
     t.datetime "starts_at"
