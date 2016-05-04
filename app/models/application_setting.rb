@@ -119,6 +119,16 @@ class ApplicationSetting < ActiveRecord::Base
     end
   end
 
+  validates_each :disabled_oauth_sign_in_sources do |record, attr, value|
+    unless value.nil?
+      value.each do |source|
+        unless Devise.omniauth_providers.include?(source.to_sym)
+          record.errors.add(attr, "'#{source}' is not an ouath sign-in source")
+        end
+      end
+    end
+  end
+
   before_save :ensure_runners_registration_token
 
   after_commit do
