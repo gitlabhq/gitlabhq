@@ -110,6 +110,16 @@
             = f.check_box :signin_enabled
             Sign-in enabled
     .form-group
+      = f.label :disable_oauth_signin_sources, class: 'control-label col-sm-2'
+      .col-sm-10
+        - data_attrs = { toggle: 'buttons' }
+        .btn-group{ data: data_attrs }
+          - oauth_providers_checkboxes('oauth-providers-help').each do |source|
+            = source
+        %span.help-block#oauth-providers-help
+          Enabled OmniAuth must be configured for GitHub
+          = link_to "(?)", help_page_path("integration", "github")
+    .form-group
       = f.label :two_factor_authentication, 'Two-factor authentication', class: 'control-label col-sm-2'
       .col-sm-10
         .checkbox
