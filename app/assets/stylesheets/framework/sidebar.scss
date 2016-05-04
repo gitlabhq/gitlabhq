@@ -3,6 +3,7 @@
   position: absolute;
   width: 58px;
   cursor: pointer;
+  margin-top: 8px;
 }
 
 .page-with-sidebar {
@@ -62,7 +63,7 @@
       float: left;
       height: $header-height;
       width: 100%;
-      padding: 11px 0 11px 22px;
+      padding-left: 22px;
       overflow: hidden;
       outline: none;
       transition-duration: .3s;
@@ -85,7 +86,7 @@
           margin: 0;
           margin-left: 50px;
           font-size: 19px;
-          line-height: 41px;
+          line-height: 50px;
           font-weight: normal;
         }
       }
