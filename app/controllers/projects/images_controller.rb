@@ -5,22 +5,24 @@ class Projects::ImagesController < Projects::ApplicationController
   layout 'project'
 
   def index
-    @tags = registry.tags
+    @tags = image_repository.tags
   end
 
   def destroy
-    # registry.destroy_tag(tag['fsLayers'].first['blobSum'])
-    registry.destroy_tag(registry.tag_digest(params[:id]))
-    redirect_to namespace_project_images_path(project.namespace, project)
+    if tag.delete
+      redirect_to namespace_project_images_path(project.namespace, project)
+    else
+      redirect_to namespace_project_images_path(project.namespace, project), alert: 'Failed to remove tag'
+    end
   end
 
   private
 
-  def registry
-    @registry ||= project.registry
+  def image_repository
+    @image_repository ||= project.image_repository
   end
 
   def tag
-    @tag ||= registry.tag(params[:id])
+    @tag ||= image_repository[params[:id]]
   end
 end
