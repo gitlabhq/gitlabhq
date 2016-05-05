@@ -64,6 +64,10 @@ describe Gitlab::Geo::OauthSession do
   describe '#generate_logout_state' do
     subject { described_class.new(access_token: access_token) }
 
+    it 'returns nil when access_token is not defined' do
+      expect(described_class.new.generate_logout_state).to be_nil
+    end
+
     it 'returns a string with salt and encrypted access token colon separated' do
       state = subject.generate_logout_state
       expect(state).to be_a String
