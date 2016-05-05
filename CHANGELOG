@@ -5,6 +5,7 @@ v 8.8.0 (unreleased)
   - Log to application.log when an admin starts and stops impersonating a user
   - Make build status canceled if any of the jobs was canceled and none failed
   - Sanitize repo paths in new project error message
+  - Bump mail_room to 0.7.0 to fix stuck IDLE connections
   - Remove future dates from contribution calendar graph.
   - Support e-mail notifications for comments on project snippets
   - Use ActionDispatch Remote IP for Akismet checking
