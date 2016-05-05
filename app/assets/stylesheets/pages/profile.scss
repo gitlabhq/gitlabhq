@@ -222,16 +222,4 @@
       }
     }
   }
-
-  .cover-controls {
-    @media (max-width: $screen-xs-max) {
-      position: static;
-      margin-bottom: 20px;
-
-      .btn {
-        display: inline-block;
-        width: 48%;
-      }
-    }
-  }
 }
