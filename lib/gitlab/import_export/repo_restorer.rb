@@ -3,18 +3,20 @@ module Gitlab
     class RepoRestorer
       include Gitlab::ImportExport::CommandLineUtil
 
-      def initialize(project:, path_to_bundle: )
+      def initialize(project:, path_to_bundle:)
         @project = project
         @path_to_bundle = path_to_bundle
       end
 
       def restore
-        return true unless File.exists?(@path)
+        return true unless File.exists?(@path_to_bundle)
 
         FileUtils.mkdir_p(repos_path)
         FileUtils.mkdir_p(path_to_repo)
 
         git_unbundle(git_bin_path: Gitlab.config.git.bin_path, repo_path: path_to_repo, bundle_path: @path_to_bundle)
+      rescue
+        false
       end
 
       private
