@@ -12,6 +12,7 @@ v 8.8.0 (unreleased)
   - Fix error when visiting commit builds page before build was updated
   - Add 'l' shortcut to open Label dropdown on issuables and 'i' to create new issue on a project
   - Updated search UI
+  - Add filter dropdown in commit page
   - Display informative message when new milestone is created
   - Allow "NEWS" and "CHANGES" as alternative names for CHANGELOG. !3768 (Connor Shea)
   - Added button to toggle whitespaces changes on diff view

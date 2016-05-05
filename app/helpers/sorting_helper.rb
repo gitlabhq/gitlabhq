@@ -45,7 +45,7 @@ module SortingHelper
   end
 
   def sort_title_recently_released
-    'Last released'
+    'Recently released'
   end
 
   def sort_title_oldest_released
