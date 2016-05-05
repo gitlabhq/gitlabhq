@@ -26,6 +26,7 @@ v 8.8.0 (unreleased)
 v 8.7.3
   - Emails, Gitlab::Email::Message, Gitlab::Diff, and Premailer::Adapter::Nokogiri are now instrumented
   - Merge request widget displays TeamCity build state and code coverage correctly again.
+  - Fix the line code when importing PR review comments from GitHub. !4010
 
 v 8.7.2
   - The "New Branch" button is now loaded asynchronously
