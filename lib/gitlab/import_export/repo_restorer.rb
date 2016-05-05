@@ -14,7 +14,7 @@ module Gitlab
         FileUtils.mkdir_p(repos_path)
         FileUtils.mkdir_p(path_to_repo)
 
-        git_unbundle(git_bin_path: Gitlab.config.git.bin_path, repo_path: path_to_repo, bundle_path: @path_to_bundle)
+        git_unbundle(repo_path: path_to_repo, bundle_path: @path_to_bundle)
       rescue
         false
       end
