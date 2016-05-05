@@ -259,11 +259,11 @@ describe Ci::Build, models: true do
   end
 
   describe '#can_be_served?' do
-    let(:runner) { FactoryGirl.create :ci_runner }
+    let(:runner) { create(:ci_runner) }
 
     before { build.project.runners << runner }
 
-    context 'runner without tags' do
+    context 'when runner does not have tags' do
       it 'can handle builds without tags' do
         expect(build.can_be_served?(runner)).to be_truthy
       end
@@ -274,21 +274,37 @@ describe Ci::Build, models: true do
       end
     end
 
-    context 'runner with tags' do
+    context 'when runner has tags' do
       before { runner.tag_list = ['bb', 'cc'] }
 
-      it 'can handle builds without tags' do
-        expect(build.can_be_served?(runner)).to be_truthy
+      shared_examples 'tagged build picker' do
+        it 'can handle build with matching tags' do
+          build.tag_list = ['bb']
+          expect(build.can_be_served?(runner)).to be_truthy
+        end
+
+        it 'cannot handle build without matching tags' do
+          build.tag_list = ['aa']
+          expect(build.can_be_served?(runner)).to be_falsey
+        end
       end
 
-      it 'can handle build with matching tags' do
-        build.tag_list = ['bb']
-        expect(build.can_be_served?(runner)).to be_truthy
+      context 'when runner can pick untagged jobs' do
+        it 'can handle builds without tags' do
+          expect(build.can_be_served?(runner)).to be_truthy
+        end
+
+        it_behaves_like 'tagged build picker'
       end
 
-      it 'cannot handle build with not matching tags' do
-        build.tag_list = ['aa']
-        expect(build.can_be_served?(runner)).to be_falsey
+      context 'when runner can not pick untagged jobs' do
+        before { runner.run_untagged = false }
+
+        it 'can not handle builds without tags' do
+          expect(build.can_be_served?(runner)).to be_falsey
+        end
+
+        it_behaves_like 'tagged build picker'
       end
     end
   end
