@@ -110,4 +110,33 @@ describe "Runners" do
       expect(page).to have_content(@specific_runner.platform)
     end
   end
+
+  feature 'configuring runners ability to picking untagged jobs' do
+    given(:project) { create(:empty_project) }
+    given(:runner) { create(:ci_runner) }
+
+    background do
+      project.team << [user, :master]
+      project.runners << runner
+    end
+
+    scenario 'user checks default configuration' do
+      visit namespace_project_runner_path(project.namespace, project, runner)
+
+      expect(page).to have_content 'Can run untagged jobs Yes'
+    end
+
+    scenario 'user want to prevent runner from running untagged job' do
+      visit runners_path(project)
+      page.within('.activated-specific-runners') do
+        first('small > a').click
+      end
+
+      uncheck 'runner_run_untagged'
+      click_button 'Save changes'
+
+      expect(page).to have_content 'Can run untagged jobs No'
+      expect(runner.reload.run_untagged?).to eq false
+    end
+  end
 end
