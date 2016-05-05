@@ -1,3 +1,10 @@
+- if project_nav_tab? :team
+  = nav_link(controller: [:project_members, :teams]) do
+    = link_to namespace_project_project_members_path(@project.namespace, @project), title: 'Members', class: 'team-tab tab' do
+      = icon('users fw')
+      %span
+        Members
+
 - if @project.allowed_to_share_with_group?
   = nav_link(controller: :group_links) do
     = link_to namespace_project_group_links_path(@project.namespace, @project), title: "Groups" do
