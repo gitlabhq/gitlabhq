@@ -183,6 +183,22 @@ module API
       Gitlab::Access.options_with_owner.values.include? level.to_i
     end
 
+    # Checks the occurrences of datetime attributes, each attribute if present in the params hash must be in ISO 8601
+    # format (YYYY-MM-DDTHH:MM:SSZ) or a Bad Request error is invoked.
+    #
+    # Parameters:
+    #   keys (required) - An array consisting of elements that must be parseable as dates from the params hash
+    def datetime_attributes!(*keys)
+      keys.each do |key|
+        begin
+          params[key] = Time.xmlschema(params[key]) if params[key].present?
+        rescue ArgumentError
+          message = "\"" + key.to_s + "\" must be a timestamp in ISO 8601 format: YYYY-MM-DDTHH:MM:SSZ"
+          render_api_error!(message, 400)
+        end
+      end
+    end
+
     def issuable_order_by
       if params["order_by"] == 'updated_at'
         'updated_at'

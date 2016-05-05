@@ -99,7 +99,7 @@ class @UserTabs
     @setCurrentAction(action)
 
   activateTab: (action) ->
-    @parentEl.find(".nav-links .#{action}-tab a").tab('show')
+    @parentEl.find(".nav-links .js-#{action}-tab a").tab('show')
 
   setTab: (source, action) ->
     return if @loaded[action] is true

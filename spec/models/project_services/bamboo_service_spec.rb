@@ -27,86 +27,51 @@ describe BambooService, models: true do
   end
 
   describe 'Validations' do
-    describe '#bamboo_url' do
-      it 'does not validate the presence of bamboo_url if service is not active' do
-        bamboo_service = service
-        bamboo_service.active = false
+    subject { service }
 
-        expect(bamboo_service).not_to validate_presence_of(:bamboo_url)
+    context 'when service is active' do
+      before { subject.active = true }
+
+      it { is_expected.to validate_presence_of(:build_key) }
+      it { is_expected.to validate_presence_of(:bamboo_url) }
+      it_behaves_like 'issue tracker service URL attribute', :bamboo_url
+
+      describe '#username' do
+        it 'does not validate the presence of username if password is nil' do
+          subject.password = nil
+
+          expect(subject).not_to validate_presence_of(:username)
+        end
+
+        it 'validates the presence of username if password is present' do
+          subject.password = 'secret'
+
+          expect(subject).to validate_presence_of(:username)
+        end
       end
 
-      it 'validates the presence of bamboo_url if service is active' do
-        bamboo_service = service
-        bamboo_service.active = true
+      describe '#password' do
+        it 'does not validate the presence of password if username is nil' do
+          subject.username = nil
 
-        expect(bamboo_service).to validate_presence_of(:bamboo_url)
-      end
-    end
+          expect(subject).not_to validate_presence_of(:password)
+        end
 
-    describe '#build_key' do
-      it 'does not validate the presence of build_key if service is not active' do
-        bamboo_service = service
-        bamboo_service.active = false
+        it 'validates the presence of password if username is present' do
+          subject.username = 'john'
 
-        expect(bamboo_service).not_to validate_presence_of(:build_key)
-      end
-
-      it 'validates the presence of build_key if service is active' do
-        bamboo_service = service
-        bamboo_service.active = true
-
-        expect(bamboo_service).to validate_presence_of(:build_key)
-      end
-    end
-
-    describe '#username' do
-      it 'does not validate the presence of username if service is not active' do
-        bamboo_service = service
-        bamboo_service.active = false
-
-        expect(bamboo_service).not_to validate_presence_of(:username)
-      end
-
-      it 'does not validate the presence of username if username is nil' do
-        bamboo_service = service
-        bamboo_service.active = true
-        bamboo_service.password = nil
-
-        expect(bamboo_service).not_to validate_presence_of(:username)
-      end
-
-      it 'validates the presence of username if service is active and username is present' do
-        bamboo_service = service
-        bamboo_service.active = true
-        bamboo_service.password = 'secret'
-
-        expect(bamboo_service).to validate_presence_of(:username)
+          expect(subject).to validate_presence_of(:password)
+        end
       end
     end
 
-    describe '#password' do
-      it 'does not validate the presence of password if service is not active' do
-        bamboo_service = service
-        bamboo_service.active = false
+    context 'when service is inactive' do
+      before { subject.active = false }
 
-        expect(bamboo_service).not_to validate_presence_of(:password)
-      end
-
-      it 'does not validate the presence of password if username is nil' do
-        bamboo_service = service
-        bamboo_service.active = true
-        bamboo_service.username = nil
-
-        expect(bamboo_service).not_to validate_presence_of(:password)
-      end
-
-      it 'validates the presence of password if service is active and username is present' do
-        bamboo_service = service
-        bamboo_service.active = true
-        bamboo_service.username = 'john'
-
-        expect(bamboo_service).to validate_presence_of(:password)
-      end
+      it { is_expected.not_to validate_presence_of(:build_key) }
+      it { is_expected.not_to validate_presence_of(:bamboo_url) }
+      it { is_expected.not_to validate_presence_of(:username) }
+      it { is_expected.not_to validate_presence_of(:password) }
     end
   end
 

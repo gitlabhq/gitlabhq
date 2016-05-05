@@ -114,10 +114,6 @@ ul.notes {
           word-break: keep-all;
         }
       }
-
-      a {
-        word-break: break-all;
-      }
     }
 
     .note-header {
@@ -215,7 +211,7 @@ ul.notes {
 }
 
 .discussion-actions {
-  @media (max-width: $screen-sm-max) {
+  @media (max-width: $screen-md-max) {
     float: none;
     margin-left: 0;
 

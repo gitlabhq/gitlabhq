@@ -15,16 +15,16 @@
 
 - if current_user
   :javascript
-    var get_emojis_url = "#{emojis_path}";
-    var post_emoji_url = "#{award_toggle_namespace_project_notes_path(@project.namespace, @project)}";
-    var noteable_type = "#{votable.class.name.underscore}";
-    var noteable_id = "#{votable.id}";
+    var getEmojisUrl = "#{emojis_path}";
+    var postEmojiUrl = "#{award_toggle_namespace_project_notes_path(@project.namespace, @project)}";
+    var noteableType = "#{votable.class.name.underscore}";
+    var noteableId = "#{votable.id}";
     var unicodes = #{AwardEmoji.unicode.to_json};
 
-    window.awards_handler = new AwardsHandler(
-      get_emojis_url,
-      post_emoji_url,
-      noteable_type,
-      noteable_id,
+    window.awardsHandler = new AwardsHandler(
+      getEmojisUrl,
+      postEmojiUrl,
+      noteableType,
+      noteableId,
       unicodes
     );

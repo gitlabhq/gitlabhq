@@ -1,31 +1,33 @@
 - page_title "Protected branches"
-%h3.page-title Protected branches
-%p.light Keep stable branches secure and force developers to use Merge Requests
-%hr
 
-.well
-  %p Protected branches are designed to
-  %ul
-    %li prevent pushes from everybody except #{link_to "masters", help_page_path("permissions", "permissions"), class: "vlink"}
-    %li prevent anyone from force pushing to the branch
-    %li prevent anyone from deleting the branch
-  %p Read more about #{link_to "project permissions", help_page_path("permissions", "permissions"), class: "underlined-link"}
+.row.prepend-top-default.append-bottom-default
+  .col-lg-3
+    %h4.prepend-top-0
+      = page_title
+    %p Keep stable branches secure and force developers to use Merge Requests
+  .col-lg-9
+    %h5.prepend-top-0
+      Protect a branch
+    .account-well.append-bottom-default
+      %p.light-header.append-bottom-0 Protected branches are designed to
+      %ul
+        %li prevent pushes from everybody except #{link_to "masters", help_page_path("permissions", "permissions"), class: "vlink"}
+        %li prevent anyone from force pushing to the branch
+        %li prevent anyone from deleting the branch
+      %p.append-bottom-0 Read more about #{link_to "project permissions", help_page_path("permissions", "permissions"), class: "underlined-link"}
+    - if can? current_user, :admin_project, @project
+      = form_for [@project.namespace.becomes(Namespace), @project, @protected_branch] do |f|
+        = form_errors(@protected_branch)
 
-- if can? current_user, :admin_project, @project
-  = form_for [@project.namespace.becomes(Namespace), @project, @protected_branch], html: { class: 'form-horizontal' } do |f|
-    = form_errors(@protected_branch)
-
-    .form-group
-      = f.label :name, "Branch", class: 'control-label'
-      .col-sm-10
-        = f.select(:name, @project.open_branches.map { |br| [br.name, br.name] } , {include_blank: true}, {class: "select2", data: {placeholder: "Select branch"}})
-    .form-group
-      .col-sm-offset-2.col-sm-10
-        .checkbox
-          = f.label :developers_can_push do
-            = f.check_box :developers_can_push
-            %strong Developers can push
-          .help-block Allow developers to push to this branch
-    .form-actions
-      = f.submit 'Protect', class: "btn-create btn"
-= render 'branches_list'
+        .form-group
+          = f.label :name, "Branch", class: "label-light"
+          = f.select(:name, @project.open_branches.map { |br| [br.name, br.name] } , {include_blank: true}, {class: "select2", data: {placeholder: "Select branch"}})
+        .form-group
+          = f.check_box :developers_can_push, class: "pull-left"
+          .prepend-left-20
+            = f.label :developers_can_push, "Developers can push", class: "label-light append-bottom-0"
+            %p.light.append-bottom-0
+              Allow developers to push to this branch
+        = f.submit "Protect", class: "btn-create btn"
+    %hr
+    = render "branches_list"

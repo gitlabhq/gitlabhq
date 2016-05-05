@@ -152,7 +152,6 @@ production: &base
   ## Gravatar
   ## For Libravatar see: http://doc.gitlab.com/ce/customization/libravatar.html
   gravatar:
-    enabled: true                 # Use user avatar image from Gravatar.com (default: true)
     # gravatar urls: possible placeholders: %{hash} %{size} %{email}
     # plain_url: "http://..."     # default: http://www.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon
     # ssl_url:   "https://..."    # default: https://secure.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon
@@ -168,9 +167,9 @@ production: &base
     # once per hour you will have concurrent 'git fsck' jobs.
     repository_check_worker:
       cron: "20 * * * *"
-    # Send admin emails once a day
+    # Send admin emails once a week
     admin_email_worker:
-      cron: "0 0 * * *"
+      cron: "0 0 * * 0"
 
     # Remove outdated repository archives
     repository_archive_cache_worker:
@@ -350,6 +349,8 @@ production: &base
       # - { name: 'github',
       #     app_id: 'YOUR_APP_ID',
       #     app_secret: 'YOUR_APP_SECRET',
+      #     url: "https://github.com/",
+      #     verify_ssl: true,
       #     args: { scope: 'user:email' } }
       # - { name: 'bitbucket',
       #     app_id: 'YOUR_APP_ID',

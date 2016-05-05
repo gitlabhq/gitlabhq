@@ -38,7 +38,7 @@ source edition, and GitLab Enterprise Edition (EE) which is our commercial
 edition. Throughout this guide you will see references to CE and EE for
 abbreviation.
 
-If you have read this guide and want to know how the GitLab [core team][core-team]
+If you have read this guide and want to know how the GitLab [core team]
 operates please see [the GitLab contributing process](PROCESS.md).
 
 ## Contributor license agreement
@@ -135,11 +135,22 @@ For feature proposals for EE, open an issue on the
 
 In order to help track the feature proposals, we have created a
 [`feature proposal`][fpl] label. For the time being, users that are not members
-of the project cannot add labels. You can instead ask one of the [core team][core-team]
-members to add the label `feature proposal` to the issue.
+of the project cannot add labels. You can instead ask one of the [core team]
+members to add the label `feature proposal` to the issue or add the following
+code snippet right after your description in a new line: `~"feature proposal"`.
 
 Please keep feature proposals as small and simple as possible, complex ones
 might be edited to make them small and simple.
+
+You are encouraged to use the template below for feature proposals.
+
+```
+## Description including problem, use cases, benefits, and/or goals
+
+## Proposal
+
+## Links / references
+```
 
 For changes in the interface, it can be helpful to create a mockup first.
 If you want to create something yourself, consider opening an issue first to
@@ -344,12 +355,11 @@ is it will be merged (quickly). After that you can send more MRs to enhance it.
 For examples of feedback on merge requests please look at already
 [closed merge requests][closed-merge-requests]. If you would like quick feedback
 on your merge request feel free to mention one of the Merge Marshalls in the
-[core team][core-team] or one of the
-[Merge request coaches](https://about.gitlab.com/team/).
+[core team] or one of the [Merge request coaches](https://about.gitlab.com/team/).
 Please ensure that your merge request meets the contribution acceptance criteria.
 
 When having your code reviewed and when reviewing merge requests please take the
-[Thoughtbot code review guide] into account.
+[code review guidelines](doc/development/code_review.md) into account.
 
 ### Merge request description format
 
@@ -497,7 +507,7 @@ reported by emailing `contact@gitlab.com`.
 This Code of Conduct is adapted from the [Contributor Covenant][contributor-covenant], version 1.1.0,
 available at [http://contributor-covenant.org/version/1/1/0/](http://contributor-covenant.org/version/1/1/0/).
 
-[core-team]: https://about.gitlab.com/core-team/
+[core team]: https://about.gitlab.com/core-team/
 [getting-help]: https://about.gitlab.com/getting-help/
 [codetriage]: http://www.codetriage.com/gitlabhq/gitlabhq
 [up-for-grabs]: https://gitlab.com/gitlab-org/gitlab-ce/issues?label_name=up-for-grabs
@@ -523,4 +533,3 @@ available at [http://contributor-covenant.org/version/1/1/0/](http://contributor
 [gitlab-design]: https://gitlab.com/gitlab-org/gitlab-design
 [free Antetype viewer (Mac OSX only)]: https://itunes.apple.com/us/app/antetype-viewer/id824152298?mt=12
 [`gitlab1.atype` file]: https://gitlab.com/gitlab-org/gitlab-design/tree/master/gitlab1.atype/
-[Thoughtbot code review guide]: https://github.com/thoughtbot/guides/tree/master/code-review
