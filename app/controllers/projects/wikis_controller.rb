@@ -40,9 +40,9 @@ class Projects::WikisController < Projects::ApplicationController
   end
 
   def update
-    @page = @project_wiki.find_page(params[:id])
-
     return render('empty') unless can?(current_user, :create_wiki, @project)
+
+    @page = @project_wiki.find_page(params[:id])
 
     if @page = WikiPages::UpdateService.new(@project, current_user, wiki_params).execute(@page)
       # Triggers repository update on secondary nodes when Geo is enabled

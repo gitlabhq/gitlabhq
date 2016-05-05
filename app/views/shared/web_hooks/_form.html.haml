@@ -19,6 +19,11 @@
     .col-sm-10
       = f.text_field :url, class: "form-control", placeholder: 'http://example.com/trigger-ci.json'
   .form-group
+    = f.label :token, "Secret Token", class: 'label-light'
+    = f.text_field :token, class: "form-control", placeholder: ''
+    %p.help-block
+      Use this token to validate received payloads
+  .form-group
     = f.label :url, "Trigger", class: 'control-label'
     .col-sm-10.prepend-top-10
       %div

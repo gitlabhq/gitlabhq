@@ -1,7 +1,8 @@
 module WikiPages
   class CreateService < WikiPages::BaseService
     def execute
-      page = WikiPage.new(@project.wiki)
+      project_wiki = ProjectWiki.new(@project, current_user)
+      page = WikiPage.new(project_wiki)
 
       if page.create(@params)
         execute_hooks(page, 'create')

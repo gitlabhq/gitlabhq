@@ -184,6 +184,9 @@ class GitLabDropdown
     @dropdown.on "shown.bs.dropdown", @opened
     @dropdown.on "hidden.bs.dropdown", @hidden
     @dropdown.on "click", ".dropdown-menu, .dropdown-menu-close", @shouldPropagate
+    @dropdown.on 'keyup', (e) =>
+      if e.which is 27 # Escape key
+        $('.dropdown-menu-close', @dropdown).trigger 'click'
 
     if @dropdown.find(".dropdown-toggle-page").length
       @dropdown.find(".dropdown-toggle-page, .dropdown-menu-back").on "click", (e) =>

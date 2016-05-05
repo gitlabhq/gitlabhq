@@ -435,8 +435,8 @@ describe Project, models: true do
       stub_request(:post, project_hook.url)
       stub_request(:post, group_hook.url)
 
-      expect_any_instance_of(ProjectHook).to receive(:async_execute).and_return(true)
       expect_any_instance_of(GroupHook).to receive(:async_execute).and_return(true)
+      expect_any_instance_of(ProjectHook).to receive(:async_execute).and_return(true)
 
       project.execute_hooks({}, :push_hooks)
     end
@@ -917,4 +917,19 @@ describe Project, models: true do
     end
 
   end
+
+  describe '#protected_branch?' do
+    let(:project) { create(:empty_project) }
+
+    it 'returns true when a branch is a protected branch' do
+      project.protected_branches.create!(name: 'foo')
+
+      expect(project.protected_branch?('foo')).to eq(true)
+    end
+
+    it 'returns false when a branch is not a protected branch' do
+      expect(project.protected_branch?('foo')).to eq(false)
+    end
+  end
+
 end
