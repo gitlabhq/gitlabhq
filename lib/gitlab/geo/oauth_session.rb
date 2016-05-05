@@ -24,14 +24,14 @@ module Gitlab
       def generate_logout_state
         cipher = logout_token_cipher(oauth_salt, :encrypt)
         encrypted = cipher.update(access_token) + cipher.final
-        "#{oauth_salt}:#{encrypted}"
+        "#{oauth_salt}:#{Base64.urlsafe_encode64(encrypted)}"
       end
 
       def extract_logout_token
         return unless state
         salt, encrypted = state.split(':', 2)
         decipher = logout_token_cipher(salt, :decrypt)
-        decipher.update(encrypted) + decipher.final
+        decipher.update(Base64.urlsafe_decode64(encrypted)) + decipher.final
       end
 
       def get_oauth_state_return_to
