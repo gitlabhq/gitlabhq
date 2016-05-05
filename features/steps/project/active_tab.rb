@@ -82,7 +82,9 @@ class Spinach::Features::ProjectActiveTab < Spinach::FeatureSteps
   # Sub Tabs: Issues
 
   step 'I click the "Milestones" tab' do
-    click_link('Milestones')
+    page.within('.layout-nav') do
+      click_link('Milestones')
+    end
   end
 
   step 'I click the "Labels" tab' do
@@ -99,5 +101,13 @@ class Spinach::Features::ProjectActiveTab < Spinach::FeatureSteps
 
   step 'the active main tab should be Labels' do
     ensure_active_main_tab('Labels')
+  end
+
+  step 'no other main tabs should be active' do
+    expect(page).to have_selector('.layout-nav .nav-links > li.active', count: 1)
+  end
+
+  def ensure_active_main_tab(content)
+    expect(find('.layout-nav li.active')).to have_content(content)
   end
 end
