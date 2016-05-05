@@ -134,7 +134,7 @@ GEM
       execjs
     coffee-script-source (1.10.0)
     colorize (0.7.7)
-    concurrent-ruby (1.0.1)
+    concurrent-ruby (1.0.2)
     connection_pool (2.2.0)
     coveralls (0.8.13)
       json (~> 1.8)
@@ -740,7 +740,7 @@ GEM
       rack
     shoulda-matchers (2.8.0)
       activesupport (>= 3.0.0)
-    sidekiq (4.1.1)
+    sidekiq (4.1.2)
       concurrent-ruby (~> 1.0)
       connection_pool (~> 2.2, >= 2.2.0)
       redis (~> 3.2, >= 3.2.1)
