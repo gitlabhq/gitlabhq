@@ -17,6 +17,7 @@ class Dispatcher
     switch page
       when 'projects:issues:index'
         Issuable.init()
+        new IssuableBulkActions()
         shortcut_handler = new ShortcutsNavigation()
       when 'projects:issues:show'
         new Issue()
