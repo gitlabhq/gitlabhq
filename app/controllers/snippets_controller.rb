@@ -10,28 +10,10 @@ class SnippetsController < ApplicationController
   # Allow destroy snippet
   before_action :authorize_admin_snippet!, only: [:destroy]
 
-  skip_before_action :authenticate_user!, only: [:index, :user_index, :show, :raw]
+  skip_before_action :authenticate_user!, only: [:show, :raw]
 
   layout 'snippets'
   respond_to :html
-
-  def index
-    if params[:username].present?
-      @user = User.find_by(username: params[:username])
-
-      render_404 and return unless @user
-
-      @snippets = SnippetsFinder.new.execute(current_user, {
-        filter: :by_user,
-        user: @user,
-        scope: params[:scope] }).
-      page(params[:page])
-
-      render 'index'
-    else
-      redirect_to(current_user ? dashboard_snippets_path : explore_snippets_path)
-    end
-  end
 
   def new
     @snippet = PersonalSnippet.new

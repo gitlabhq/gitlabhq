@@ -27,16 +27,8 @@ end
 #          PUT    /snippets/:id(.:format)      snippets#update
 #          DELETE /snippets/:id(.:format)      snippets#destroy
 describe SnippetsController, "routing" do
-  it "to #user_index" do
-    expect(get("/s/User")).to route_to('snippets#index', username: 'User')
-  end
-
   it "to #raw" do
     expect(get("/snippets/1/raw")).to route_to('snippets#raw', id: '1')
-  end
-
-  it "to #index" do
-    expect(get("/snippets")).to route_to('snippets#index')
   end
 
   it "to #create" do
