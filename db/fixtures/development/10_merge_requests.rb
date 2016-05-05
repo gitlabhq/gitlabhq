@@ -1,6 +1,9 @@
 Gitlab::Seeder.quiet do
+  # Limit the number of merge requests per project to avoid long seeds
+  MAX_NUM_MERGE_REQUESTS = 10
+
   Project.all.reject(&:empty_repo?).each do |project|
-    branches = project.repository.branch_names
+    branches = project.repository.branch_names.sample(MAX_NUM_MERGE_REQUESTS * 2)
 
     branches.each do |branch_name|
       break if branches.size < 2
