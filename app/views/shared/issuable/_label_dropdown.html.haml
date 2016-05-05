@@ -20,5 +20,6 @@
   .dropdown-menu.dropdown-select.dropdown-menu-paging.dropdown-menu-labels.dropdown-menu-selectable
     = render partial: "shared/issuable/label_page_default", locals: { title: "Filter by label" }
     - if can? current_user, :admin_label, @project and @project
+    = render partial: "shared/issuable/label_page_default", locals: { title: "Filter by label", show_footer: show_footer }
       = render partial: "shared/issuable/label_page_create"
     = dropdown_loading
