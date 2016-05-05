@@ -435,8 +435,8 @@ describe Project, models: true do
       stub_request(:post, project_hook.url)
       stub_request(:post, group_hook.url)
 
-      expect_any_instance_of(ProjectHook).to receive(:async_execute).and_return(true)
       expect_any_instance_of(GroupHook).to receive(:async_execute).and_return(true)
+      expect_any_instance_of(ProjectHook).to receive(:async_execute).and_return(true)
 
       project.execute_hooks({}, :push_hooks)
     end

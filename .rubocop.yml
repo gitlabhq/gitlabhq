@@ -276,7 +276,7 @@ Style/IdenticalConditionalBranches:
   Enabled: false
 
 # Checks the indentation of the first line of the right-hand-side of a
-# multi-line assignment. 
+# multi-line assignment.
 Style/IndentAssignment:
   Enabled: false
 
@@ -691,7 +691,7 @@ Style/ZeroLengthPredicate:
 # branches, and conditions.
 Metrics/AbcSize:
   Enabled: true
-  Max: 60
+  Max: 64
 
 # Avoid excessive block nesting.
 Metrics/BlockNesting:
