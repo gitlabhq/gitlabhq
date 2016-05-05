@@ -33,14 +33,14 @@ module Elastic
 
         query_hash = {
           query: {
-            filtered: {
-              query: { match: { note: query } },
+            bool: {
+              must: { match: { note: query } },
             },
           }
         }
 
         if query.blank?
-          query_hash[:query][:filtered][:query] = { match_all: {} }
+          query_hash[:query][:bool][:must] = { match_all: {} }
           query_hash[:track_scores] = true
         end
 

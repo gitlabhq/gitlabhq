@@ -83,17 +83,6 @@ module Elastic
           }
         end
 
-        if !options[:owner_id].blank?
-          filters << {
-            nested: {
-              path: :owner,
-              filter: {
-                term: { "owner.id" => options[:owner_id] }
-              }
-            }
-          }
-        end
-
         if options[:pids]
           filters << {
             ids: {
@@ -102,7 +91,7 @@ module Elastic
           }
         end
 
-        query_hash[:query][:filtered][:filter] = { and: filters }
+        query_hash[:query][:bool][:filter] = { and: filters }
 
         query_hash[:sort] = [:_score]
 

@@ -1,6 +1,11 @@
 module Gitlab
   module Elastic
     class SnippetSearchResults < ::Gitlab::SnippetSearchResults
+      def initialize(user, query)
+        @user = user
+        @query = query
+      end
+
       def objects(scope, page = nil)
         case scope
         when 'snippet_titles'
@@ -16,7 +21,7 @@ module Gitlab
 
       def snippet_titles
         opt = {
-          ids: limit_snippets
+          author_id: @user.id
         }
 
         Snippet.elastic_search(query, options: opt)
@@ -24,7 +29,7 @@ module Gitlab
 
       def snippet_blobs
         opt = {
-          ids: limit_snippets
+          author_id: @user.id
         }
 
         Snippet.elastic_search_code(query, options: opt)
