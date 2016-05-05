@@ -61,6 +61,36 @@ describe Gitlab::Geo::OauthSession do
     end
   end
 
+  describe '#generate_logout_state' do
+    subject { described_class.new(access_token: access_token) }
+
+    it 'returns a string with salt and encrypted access token colon separated' do
+      state = subject.generate_logout_state
+      expect(state).to be_a String
+      expect(state).not_to be_blank
+
+      salt, encrypted = state.split(':', 2)
+      expect(salt).not_to be_blank
+      expect(encrypted).not_to be_blank
+    end
+  end
+
+  describe '#extract_logout_token' do
+    subject { described_class.new(access_token: access_token) }
+
+    it 'returns nil when state is not defined' do
+      expect(subject.extract_logout_token).to be_nil
+    end
+
+    it 'encrypted access token is recoverable' do
+      state = subject.generate_logout_state
+      subject.state = state
+
+      access_token = subject.extract_logout_token
+      expect(access_token).to eq access_token
+    end
+  end
+
   describe '#authorized_url' do
     subject { described_class.new(return_to: oauth_return_to) }
 

@@ -9,6 +9,7 @@ class SessionsController < Devise::SessionsController
     if: :two_factor_enabled?, only: [:create]
   prepend_before_action :store_redirect_path, only: [:new]
   before_action :gitlab_geo_login, only: [:new]
+  before_action :gitlab_geo_logout, only: [:destroy]
   before_action :auto_sign_in_with_provider, only: [:new]
   before_action :load_recaptcha
 
@@ -120,6 +121,11 @@ class SessionsController < Devise::SessionsController
 
       redirect_to oauth_geo_auth_url(state: oauth.generate_oauth_state)
     end
+  end
+
+  def gitlab_geo_logout
+    oauth = Gitlab::Geo::OauthSession.new(access_token: session[:access_token])
+    @geo_logout_state = oauth.generate_logout_state
   end
 
   def auto_sign_in_with_provider

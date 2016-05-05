@@ -71,7 +71,7 @@ class GeoNode < ActiveRecord::Base
 
   def oauth_logout_url(access_token)
     logout_uri = URI.join(uri, "#{uri.path}/", 'oauth/geo/logout')
-    logout_uri.query="token=#{access_token}"
+    logout_uri.query="state=#{access_token}"
     logout_uri.to_s
   end
 

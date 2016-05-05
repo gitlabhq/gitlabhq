@@ -35,9 +35,17 @@ class Oauth::GeoAuthController < ActionController::Base
 
   def logout
     oauth = Gitlab::Geo::OauthSession.new(state: params[:state])
+    access_token = oauth.extract_logout_token
+    access_token_status = Oauth2::AccessTokenValidationService.validate(access_token)
 
-    if oauth.is_logout_state_valid?(params[:token])
-      sign_out current_user
+    if access_token_status == Oauth2::AccessTokenValidationService::VALID
+      user = User.find(access_token.resource_owner_id)
+
+      if current_user == user
+        sign_out current_user
+      end
+    else
+
     end
 
     redirect_to root_path
@@ -47,6 +55,11 @@ class Oauth::GeoAuthController < ActionController::Base
 
   def undefined_oauth_application
     @error = 'There are no OAuth application defined for this Geo node. Please ask your administrator to visit "Geo Nodes" on admin screen and click on "Repair authentication".'
+    render :error, layout: 'errors'
+  end
+
+  def access_token_error(status)
+    @error = "There is a problem with the OAuth access_token: #{status}"
     render :error, layout: 'errors'
   end
 end

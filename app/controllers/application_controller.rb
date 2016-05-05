@@ -118,7 +118,7 @@ class ApplicationController < ActionController::Base
 
   def after_sign_out_path_for(resource)
     if Gitlab::Geo.secondary?
-      Gitlab::Geo.primary_node.oauth_logout_url(session[:access_token])
+      Gitlab::Geo.primary_node.oauth_logout_url(@geo_logout_state)
     else
       current_application_settings.after_sign_out_path.presence || new_user_session_path
     end

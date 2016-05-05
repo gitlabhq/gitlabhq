@@ -3,6 +3,7 @@ module Gitlab
     class OauthSession
       include ActiveModel::Model
 
+      attr_accessor :access_token
       attr_accessor :state
       attr_accessor :return_to
 
@@ -14,16 +15,23 @@ module Gitlab
         hmac == generate_oauth_hmac(salt, return_to)
       end
 
-      def is_logout_state_valid?(access_token)
-        return false unless state
-        salt, hmac = state.split(':', 2)
-        hmac == generate_oauth_hmac(salt, access_token)
-      end
-
       def generate_oauth_state
         return unless return_to
         hmac = generate_oauth_hmac(oauth_salt, return_to)
         "#{oauth_salt}:#{hmac}:#{return_to}"
+      end
+
+      def generate_logout_state
+        cipher = logout_token_cipher(oauth_salt, :encrypt)
+        encrypted = cipher.update(access_token) + cipher.final
+        "#{oauth_salt}:#{encrypted}"
+      end
+
+      def extract_logout_token
+        return unless state
+        salt, encrypted = state.split(':', 2)
+        decipher = logout_token_cipher(salt, :decrypt)
+        decipher.update(encrypted) + decipher.final
       end
 
       def get_oauth_state_return_to
@@ -52,6 +60,14 @@ module Gitlab
         digest = OpenSSL::Digest.new('sha256')
         key = Gitlab::Application.secrets.secret_key_base + salt
         OpenSSL::HMAC.hexdigest(digest, key, return_to)
+      end
+
+      def logout_token_cipher(salt, operation)
+        cipher = OpenSSL::Cipher::AES.new(128, :CBC)
+        cipher.send(operation)
+        cipher.iv=salt
+        cipher.key="#{oauth_app.uid}#{oauth_app.secret}"
+        cipher
       end
 
       def oauth_salt
