@@ -23,10 +23,10 @@ v 8.8.0 (unreleased)
   - API support for the 'since' and 'until' operators on commit requests (Paco Guzman)
   - Fix Gravatar hint in user profile when Gravatar is disabled. !3988 (Artem Sidorenko)
   - Expire repository exists? and has_visible_content? caches after a push if necessary
-  - Merge request widget displays TeamCity build state and code coverage correctly again.
 
 v 8.7.3
   - Emails, Gitlab::Email::Message, Gitlab::Diff, and Premailer::Adapter::Nokogiri are now instrumented
+  - Merge request widget displays TeamCity build state and code coverage correctly again.
 
 v 8.7.2
   - The "New Branch" button is now loaded asynchronously
