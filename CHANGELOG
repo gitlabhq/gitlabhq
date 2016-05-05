@@ -31,12 +31,12 @@ v 8.7.3
   - Merge request widget displays TeamCity build state and code coverage correctly again.
   - Fix the line code when importing PR review comments from GitHub. !4010
   - Wikis are now initialized on legacy projects when checking repositories
-  - Label titles in filters are now escaped properly
 
 v 8.7.2
   - The "New Branch" button is now loaded asynchronously
   - Fix error 500 when trying to create a wiki page
   - Updated spacing between notification label and button
+  - Label titles in filters are now escaped properly
 
 v 8.7.1
   - Throttle the update of `project.last_activity_at` to 1 minute. !3848
