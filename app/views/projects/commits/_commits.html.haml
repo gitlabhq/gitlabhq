@@ -11,7 +11,7 @@
           .light
             %span
               = day.strftime('%d %b, %Y')
-              &#46;
+            &#8226;
             = pluralize(commits.count, 'commit')
         = render commits, project: project
   %hr.lists-separator

@@ -82,6 +82,10 @@ li.commit {
   .item-title {
     display: inline-block;
     max-width: 70%;
+
+    .text-expander {
+      color: $btn-white-active;
+    }
   }
 
   .commit-row-description {
@@ -97,6 +101,10 @@ li.commit {
       background: inherit;
       padding: 0;
       margin: 0;
+
+      @media (max-width: $screen-xs-max) {
+        width: 100%;
+      }
     }
 
     a {
@@ -105,11 +113,11 @@ li.commit {
   }
 
   .commit-row-info {
-    color: $gl-gray;
+    color: $btn-white-active;
     line-height: 24px;
 
     a {
-      color: $gl-gray;
+      color: $btn-white-active;
     }
 
     .avatar {

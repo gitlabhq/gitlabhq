@@ -4,24 +4,54 @@
 
 .commit-row {
   display: inline-block;
-  width: 70%;
-}
+  width: 64%;
 
-.commit-header {
-  background-color: $background-color;
-
-  .light {
-    margin-left: 10px;
+  @media (max-width: $screen-md-min) {
+    width: inherit;
   }
 }
 
-.pull-right {
-  .commit_short_id, .ci-status-link, {
-    padding: 0 5px;
+.content-list {
+  .commit-header {
+    background-color: $background-color;
+    padding: 4px 0;
+
+    .light {
+      margin-left: 10px;
+      color: $btn-white-active;
+    }
   }
 
-  .browse-code {
-    margin: 0 5px;
+  .commit {
+    .avatar {
+      margin-right: 10px;
+    }
+  }
+
+  .pull-info-right {
+    float: right;
+
+    .commit_short_id, .ci-status-link, {
+      padding: 0 5px;
+    }
+
+    .commit_short_id {
+      display: inline-block;
+      width: 73px;
+      font-weight: 600;
+    }
+
+    .btn-clipboard, .browse-code {
+      color: $btn-white-active;
+    }
+
+    .browse-code {
+      margin: 0 5px;
+    }
+
+    @media (max-width: $screen-xs-max) {
+      float: none;
+    }
   }
 }
 

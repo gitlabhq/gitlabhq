@@ -9,7 +9,7 @@
 
 = cache(cache_key) do
   %li.commit.js-toggle-container{ id: "commit-#{commit.short_id}" }
-    = commit_author_avatar(commit, size: 30)
+    = commit_author_avatar(commit, size: 32)
     .commit-row
       %span.commit-row-title
         %span.item-title
@@ -23,7 +23,7 @@
         .committed_ago
           #{time_ago_with_tooltip(commit.committed_date)} &nbsp;
 
-    .pull-right
+    .pull-info-right
       - if commit.status
         = render_ci_status(commit)
       = clipboard_button(clipboard_text: commit.id)
