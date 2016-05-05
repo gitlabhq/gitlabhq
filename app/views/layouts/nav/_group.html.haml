@@ -1,8 +1,5 @@
 - if current_user
   .controls
-    - if current_path?('groups#show')
-      = link_to icon('rss'), group_path(@group, { format: :atom, private_token: current_user.private_token }), title: "Feed", class: 'btn btn-gray rss-btn'
-
     %span.dropdown.group-settings-dropdown
       %a.dropdown-new.btn.btn-gray#group-settings-button{href: '#', 'data-toggle' => 'dropdown'}
         = icon('cog')
