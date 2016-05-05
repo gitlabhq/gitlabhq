@@ -222,29 +222,13 @@
     .dropdown {
       margin-left: 7px;
     }
-
-    @media (max-width: $screen-md-max) {
-      float: none;
-      margin-bottom: 10px;
-
-      .btn {
-        width: 20%;
-      }
-    }
-
-    @media (max-width: $screen-xs-max) {
-      text-align: center;
-
-      .rss-btn,
-      .dropdown-new {
-        display: inline-block;
-        width: 48%;
-      }
-    }
   }
 
   .nav-links {
     border-bottom: none;
+    height: 51px;
+    white-space: nowrap;
+    overflow-x: auto;
 
     li {
 
