@@ -2,7 +2,8 @@
   = nav_link(controller: [:commit, :commits]) do
     = link_to namespace_project_commits_path(@project.namespace, @project, current_ref) do
       Commits
-      %span.badge= number_with_delimiter(@repository.commit_count)
+      %span.badge
+        = number_with_delimiter(@repository.commit_count)
 
   = nav_link(controller: %w(network)) do
     = link_to namespace_project_network_path(@project.namespace, @project, current_ref) do

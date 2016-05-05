@@ -18,7 +18,7 @@
   line-height: 36px;
 }
 
-.gray-content-block {
+.row-content-block {
   margin-top: 0;
   margin-bottom: -$gl-padding;
   background-color: $background-color;
@@ -81,6 +81,11 @@
       margin-left: 10px;
     }
   }
+
+  &.build-content {
+    background-color: $white-light;
+    border-top: none;
+  }
 }
 
 .cover-block {
@@ -113,7 +118,7 @@
     line-height: 1.1;
 
     h1 {
-      color: #313236;
+      color: $gl-gray-dark;
       margin-bottom: 6px;
       font-size: 23px;
     }
