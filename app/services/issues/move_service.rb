@@ -46,7 +46,7 @@ module Issues
                      project: @new_project, author: @old_issue.author,
                      description: rewrite_content(@old_issue.description) }
 
-      new_params = @old_issue.serializable_hash.merge(new_params)
+      new_params = @old_issue.serializable_hash.symbolize_keys.merge(new_params)
       CreateService.new(@new_project, @current_user, new_params).execute
     end
 

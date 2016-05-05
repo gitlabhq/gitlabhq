@@ -7,9 +7,7 @@ describe Issues::MoveService, services: true do
   let(:description) { 'Some issue description' }
   let(:old_project) { create(:project) }
   let(:new_project) { create(:project) }
-  let!(:milestone1) do
-    create(:milestone, project_id: old_project.id, title: 'v9.0')
-  end
+  let(:milestone1) { create(:milestone, project_id: old_project.id, title: 'v9.0') }
 
   let(:old_issue) do
     create(:issue, title: title, description: description,
@@ -57,6 +55,7 @@ describe Issues::MoveService, services: true do
 
         it 'assigns milestone to new issue' do
           expect(new_issue.reload.milestone.title).to eq 'v9.0'
+          expect(new_issue.reload.milestone).to eq(milestone2)
         end
 
         it 'assign labels to new issue' do
@@ -64,6 +63,11 @@ describe Issues::MoveService, services: true do
           expect(expected_label_titles).to include 'label1'
           expect(expected_label_titles).to include 'label2'
           expect(expected_label_titles.size).to eq 2
+
+          new_issue.labels.each do |label|
+            expect(new_project.labels).to include(label)
+            expect(old_project.labels).not_to include(label)
+          end
         end
 
         it 'rewrites issue title' do
