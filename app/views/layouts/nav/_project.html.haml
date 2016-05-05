@@ -87,13 +87,6 @@
           Merge Requests
           %span.badge.count.merge_counter= number_with_delimiter(@project.merge_requests.opened.count)
 
-  - if project_nav_tab? :team
-    = nav_link(controller: [:project_members, :teams]) do
-      = link_to namespace_project_project_members_path(@project.namespace, @project), title: 'Members', class: 'team-tab tab' do
-        = icon('users fw')
-        %span
-          Members
-
   - if project_nav_tab? :labels
     = nav_link(controller: :labels) do
       = link_to namespace_project_labels_path(@project.namespace, @project), title: 'Labels' do
@@ -107,13 +100,6 @@
         = icon('book fw')
         %span
           Wiki
-
-  -#- if project_nav_tab? :forks
-    -#= nav_link(controller: :forks, action: :index) do
-      -#= link_to namespace_project_forks_path(@project.namespace, @project), title: 'Forks' do
-        -#= icon('code-fork fw')
-        -#%span
-          -#Forks
 
   - if project_nav_tab? :snippets
     = nav_link(controller: :snippets) do
