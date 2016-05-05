@@ -17,6 +17,7 @@ class GitPushService < BaseService
   #  6. Checks if the project's main language has changed
   #
   def execute
+    @project.repository.after_create if @project.empty_repo?
     @project.repository.after_push_commit(branch_name, params[:newrev])
 
     if push_remove_branch?
@@ -42,7 +43,12 @@ class GitPushService < BaseService
       # Collect data for this git push
       @push_commits = @project.repository.commits_between(params[:oldrev], params[:newrev])
       process_commit_messages
+
+      # Update the bare repositories info/attributes file using the contents of the default branches
+      # .gitattributes file
+      update_gitattributes if is_default_branch?
     end
+
     # Update merge requests that may be affected by this push. A new branch
     # could cause the last commit of a merge request to change.
     update_merge_requests
@@ -52,6 +58,10 @@ class GitPushService < BaseService
     update_main_language
 
     perform_housekeeping
+  end
+
+  def update_gitattributes
+    @project.repository.copy_gitattributes(params[:ref])
   end
 
   def update_main_language
