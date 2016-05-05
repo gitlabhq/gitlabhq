@@ -237,13 +237,23 @@ class @LabelsSelect
           else
             colorEl = ''
 
+          # We need to identify which items are actually labels
+          labelIdHtml = labelClass = ''
+
+          if label.id
+            # Add label id only for labels
+            labelIdHtml = "data-label-id='#{label.id}'"
+
+            # Add class only for labels
+            labelClass = 'label-item'
+
           "<li>
-            <a href='#' class='#{selectedClass.join(' ')}'>
+            <a href='#' #{labelIdHtml} class='#{labelClass} #{selectedClass.join(' ')}'>
               #{colorEl}
               #{_.escape(label.title)}
             </a>
           </li>"
-        filterable: true
+        persistWhenHide: $dropdown.data('persistWhenHide')
         search:
           fields: ['title']
         selectable: true
@@ -291,7 +301,9 @@ class @LabelsSelect
                 saveLabelData()
 
           if $dropdown.hasClass('js-filter-bulk-update')
-            $dropdown.parent().find('.is-active, .is-indeterminate').removeClass()
+            # If we are persisting state we need the classes
+            if not @options.persistWhenHide
+              $dropdown.parent().find('.is-active, .is-indeterminate').removeClass()
 
         multiSelect: $dropdown.hasClass 'js-multiselect'
         clicked: (label) ->
