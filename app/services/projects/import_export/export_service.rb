@@ -4,8 +4,10 @@ module Projects
 
       def execute(options = {})
         @shared = Gitlab::ImportExport::Shared.new(relative_path: File.join(project.path_with_namespace, 'work'))
+        # TODO handle errors
         save_project_tree
         bundle_repo
+        bundle_wiki_repo
         save_all
       end
 
@@ -17,6 +19,10 @@ module Projects
 
       def bundle_repo
         Gitlab::ImportExport::RepoBundler.new(project: project, shared: @shared).bundle
+      end
+
+      def bundle_wiki_repo
+        Gitlab::ImportExport::WikiRepoBundler.new(project: project, shared: @shared).bundle
       end
 
       def save_all
