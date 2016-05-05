@@ -115,41 +115,30 @@ describe Issue, "Issuable" do
   end
 
   describe "#sort" do
-    #Correct order is:
-    #Issues/MRs with milestones ordered by date
-    #Issues/MRs with milestones without dates
-    #Issues/MRs without milestones
+    let(:project) { build_stubbed(:empty_project) }
 
-    let!(:issue) { create(:issue) }
-    let(:project) { issue.project }
-    let!(:early_milestone) { create(:milestone, project: project, due_date: 10.days.from_now) }
-    let!(:late_milestone) { create(:milestone, project: project, due_date: 30.days.from_now) }
-    let!(:issue1) { create(:issue, project: project, milestone: early_milestone) }
-    let!(:issue2) { create(:issue, project: project, milestone: late_milestone) }
-    let!(:issue3) { create(:issue, project: project) }
+    context "by milestone due date" do
+      #Correct order is:
+      #Issues/MRs with milestones ordered by date
+      #Issues/MRs with milestones without dates
+      #Issues/MRs without milestones
+
+      let!(:issue) { create(:issue, project: project) }
+      let!(:early_milestone) { create(:milestone, project: project, due_date: 10.days.from_now) }
+      let!(:late_milestone) { create(:milestone, project: project, due_date: 30.days.from_now) }
+      let!(:issue1) { create(:issue, project: project, milestone: early_milestone) }
+      let!(:issue2) { create(:issue, project: project, milestone: late_milestone) }
+      let!(:issue3) { create(:issue, project: project) }
 
 
-    context "milestone due later" do
-      subject { Issue.where(project_id: project.id).order_milestone_due_desc }
-      before  { @issues = subject }
-
-      it "puts issues with nil values at the end of collection" do
-        expect(@issues.first).to eq(issue2)
-        expect(@issues.second).to eq(issue1)
-        expect(@issues.third).to eq(issue)
-        expect(@issues.fourth).to eq(issue3)
+      it "sorts desc" do
+        issues = project.issues.sort('milestone_due_desc')
+        expect(issues).to match_array([issue2, issue1, issue, issue3])
       end
-    end
 
-    context "milestone due soon" do
-      subject { Issue.where(project_id: project.id).order_milestone_due_asc }
-      before  { @issues = subject }
-
-      it "puts issues with nil values at the end of collection" do
-        expect(@issues.first).to eq(issue1)
-        expect(@issues.second).to eq(issue2)
-        expect(@issues.third).to eq(issue)
-        expect(@issues.fourth).to eq(issue3)
+      it "sorts asc" do
+        issues = project.issues.sort('milestone_due_asc')
+        expect(issues).to match_array([issue1, issue2, issue, issue3])
       end
     end
   end
