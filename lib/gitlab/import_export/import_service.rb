@@ -14,7 +14,8 @@ module Gitlab
       end
 
       def execute
-        Gitlab::ImportExport::Importer.import(archive_file: @archive_file, storage_path: storage_path)
+        Gitlab::ImportExport::Importer.import(archive_file: @archive_file,
+                                              storage_path: storage_path)
         project_tree.project if [restore_project_tree, restore_repo, restore_wiki_repo].all?
       end
 
@@ -25,15 +26,20 @@ module Gitlab
       end
 
       def project_tree
-        @project_tree ||= Gitlab::ImportExport::ProjectTreeRestorer.new(path: storage_path, user: @current_user, project_path: @project_path, namespace_id: @namespace.id)
+        @project_tree ||= Gitlab::ImportExport::ProjectTreeRestorer.new(path: storage_path,
+                                                                        user: @current_user,
+                                                                        project_path: @project_path,
+                                                                        namespace_id: @namespace.id)
       end
 
       def restore_repo
-        Gitlab::ImportExport::RepoRestorer.new(path_to_bundle: repo_path, project: project_tree.project).restore
+        Gitlab::ImportExport::RepoRestorer.new(path_to_bundle: repo_path,
+                                               project: project_tree.project).restore
       end
 
       def restore_wiki_repo
-        Gitlab::ImportExport::RepoRestorer.new(path_to_bundle: wiki_repo_path, project: ProjectWiki.new(project_tree.project)).restore
+        Gitlab::ImportExport::RepoRestorer.new(path_to_bundle: wiki_repo_path,
+                                               project: ProjectWiki.new(project_tree.project)).restore
       end
 
       def storage_path

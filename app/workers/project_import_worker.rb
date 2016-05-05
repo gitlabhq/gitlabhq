@@ -11,15 +11,15 @@ class ProjectImportWorker
                                                           owner: current_user,
                                                           namespace_id: namespace_id,
                                                           project_path: path)
+    if project
+      project.repository.after_import
+      project.import_finish
+    else
+      logger.error("There was an error during the import: #{tmpfile}")
+    end
+  end
 
-    # TODO: Move this to import service
-    # if result[:status] == :error
-    #   project.update(import_error: result[:message])
-    #   project.import_fail
-    #   return
-    # end
-
-    project.repository.after_import
-    project.import_finish
+  def logger
+    Sidekiq.logger
   end
 end
