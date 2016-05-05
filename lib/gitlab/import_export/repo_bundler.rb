@@ -20,9 +20,8 @@ module Gitlab
 
       def bundle_to_disk
         FileUtils.mkdir_p(@export_path)
-        tar_cf(archive: full_path, dir: path_to_repo)
+        git_bundle(repo_path: path_to_repo, bundle_path: @full_path)
       rescue
-        #TODO: handle error
         false
       end
 

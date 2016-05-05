@@ -3,7 +3,7 @@ module Gitlab
     class WikiRepoBundler < RepoBundler
       def bundle
         @wiki = ProjectWiki.new(@project)
-        return false if !wiki?
+        return true if !wiki? # it's okay to have no Wiki
         @full_path = File.join(@export_path, project_filename)
         bundle_to_disk
       end
@@ -12,7 +12,6 @@ module Gitlab
         FileUtils.mkdir_p(@export_path)
         git_bundle(repo_path: path_to_repo, bundle_path: @full_path)
       rescue
-        #TODO: handle error
         false
       end
 
