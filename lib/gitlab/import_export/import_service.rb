@@ -45,11 +45,11 @@ module Gitlab
       end
 
       def repo_path
-        File.join('storage_path', 'project.bundle')
+        File.join(storage_path, 'project.bundle')
       end
 
       def wiki_repo_path
-        File.join('storage_path', 'project.wiki.bundle')
+        File.join(storage_path, 'project.wiki.bundle')
       end
     end
   end
