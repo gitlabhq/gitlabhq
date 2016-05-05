@@ -317,12 +317,17 @@ class GitLabDropdown
   hidden: (e) =>
     @removeArrayKeyEvent()
 
+    $input = @dropdown.find(".dropdown-input-field")
+
     if @options.filterable
-      @dropdown
-        .find(".dropdown-input-field")
+      $input
         .blur()
         .val("")
-        .trigger("keyup")
+
+    # Triggering 'keyup' will re-render the dropdown which is not always required
+    # specially if we want to keep the state of the dropdown needed for bulk-assignment
+    if not @options.persistWhenHide
+      $input.trigger("keyup")
 
     if @dropdown.find(".dropdown-toggle-page").length
       $('.dropdown-menu', @dropdown).removeClass PAGE_TWO_CLASS
