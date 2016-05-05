@@ -26,6 +26,13 @@ module Ci
         .where("ci_runner_projects.gl_project_id = :project_id OR ci_runners.is_shared = true", project_id: project_id)
     end
 
+    validate do |runner|
+      if runner.tag_list.empty? && !runner.run_untagged?
+        errors.add(:tags_errors,
+          'Runner without tags must be able to pick untagged jobs!')
+      end
+    end
+
     acts_as_taggable
 
     # Searches for runners matching the given query.

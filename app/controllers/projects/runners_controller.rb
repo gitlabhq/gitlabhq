@@ -20,7 +20,8 @@ class Projects::RunnersController < Projects::ApplicationController
     if @runner.update_attributes(runner_params)
       redirect_to runner_path(@runner), notice: 'Runner was successfully updated.'
     else
-      redirect_to runner_path(@runner), alert: 'Runner was not updated.'
+      flash[:alert] = @runner.errors.full_messages.to_sentence
+      render 'edit'
     end
   end
 
