@@ -33,7 +33,7 @@ module Gitlab
       end
 
       def restore_wiki_repo
-        Gitlab::ImportExport::RepoRestorer.new(path_to_bundle: wiki_repo_path, project: project_tree.project).restore
+        Gitlab::ImportExport::RepoRestorer.new(path_to_bundle: wiki_repo_path, project: ProjectWiki.new(project_tree.project)).restore
       end
 
       def storage_path
