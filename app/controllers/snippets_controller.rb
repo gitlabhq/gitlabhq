@@ -43,7 +43,7 @@ class SnippetsController < ApplicationController
 
     @snippet.destroy
 
-    redirect_to snippets_path
+    redirect_to dashboard_snippets_path
   end
 
   def raw
