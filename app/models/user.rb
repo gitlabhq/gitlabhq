@@ -308,7 +308,7 @@ class User < ActiveRecord::Base
 
   def generate_password
     if self.force_random_password
-      self.password = self.password_confirmation = Devise.friendly_token.first(8)
+      self.password = self.password_confirmation = Devise.friendly_token.first(Devise.password_length.min)
     end
   end
 
