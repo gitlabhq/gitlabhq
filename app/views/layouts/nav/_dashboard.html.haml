@@ -11,6 +11,7 @@
         Todos
   = nav_link(path: 'dashboard#activity') do
     = link_to activity_dashboard_path, class: 'dashboard-shortcuts-activity', title: 'Activity' do
+<<<<<<< e6daf1f899b412ded9a16674865b09f31fc7c75a
       = icon('dashboard fw')
       .nav-link-text
         Activity
@@ -28,6 +29,25 @@
     = link_to assigned_issues_dashboard_path, title: 'Issues', class: 'dashboard-shortcuts-issues' do
       = icon('exclamation-circle fw')
       .nav-link-text
+=======
+      = navbar_icon('activity')
+      %span
+        Activity
+  = nav_link(controller: [:groups, 'groups/milestones', 'groups/group_members']) do
+    = link_to dashboard_groups_path, title: 'Groups' do
+      = navbar_icon('group')
+      %span
+        Groups
+  = nav_link(controller: 'dashboard/milestones') do
+    = link_to dashboard_milestones_path, title: 'Milestones' do
+      = navbar_icon('milestones')
+      %span
+        Milestones
+  = nav_link(path: 'dashboard#issues') do
+    = link_to assigned_issues_dashboard_path, title: 'Issues', class: 'dashboard-shortcuts-issues' do
+      = navbar_icon('issues')
+      %span
+>>>>>>> Start adding SVG icons
         Issues
   = nav_link(path: 'dashboard#merge_requests') do
     = link_to assigned_mrs_dashboard_path, title: 'Merge Requests', class: 'dashboard-shortcuts-merge_requests' do

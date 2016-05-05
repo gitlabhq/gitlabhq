@@ -113,6 +113,14 @@
         color: $gray-light;
       }
 
+      path {
+        fill: $gray-light;
+      }
+
+      svg {
+        margin-right: 13px;
+      }
+
       .nav-link-text {
         margin-top: 3px;
         font-size: 13px;
