@@ -8,6 +8,21 @@
       = link_to new_namespace_project_tag_path(@project.namespace, @project), class: 'btn btn-create new-tag-btn' do
         = icon('plus')
         New tag
+      &nbsp;
+      .dropdown.inline
+        %button.dropdown-toggle.btn{type: 'button', 'data-toggle' => 'dropdown'}
+          %span.light
+          - if @sort.present?
+            = @sort.humanize
+          - else
+            Filter
+          %b.caret
+        %ul.dropdown-menu.dropdown-menu-align-right
+          %li
+            = link_to namespace_project_tags_path(sort: 'recently_released') do
+              = sort_title_recently_released
+            = link_to namespace_project_tags_path(sort: 'last_released') do
+              = sort_title_oldest_released
   .oneline
     Tags give the ability to mark specific points in history as being important
 

@@ -6,7 +6,8 @@ class Projects::TagsController < Projects::ApplicationController
   before_action :authorize_admin_project!, only: [:destroy]
 
   def index
-    sorted = VersionSorter.rsort(@repository.tag_names)
+    @sort = params[:sort]
+    sorted = tags_sorted_by(@sort)
     @tags = Kaminari.paginate_array(sorted).page(params[:page])
     @releases = project.releases.where(tag: @tags)
   end
@@ -39,6 +40,21 @@ class Projects::TagsController < Projects::ApplicationController
         redirect_to namespace_project_tags_path(@project.namespace, @project)
       end
       format.js
+    end
+  end
+
+  private
+
+  def tags_sorted_by(value)
+    default_sort = VersionSorter.rsort(@repository.tag_names)
+
+    case value
+    when 'recently_released'
+      default_sort
+    when 'last_released'
+      VersionSorter.sort(@repository.tag_names)
+    else
+      default_sort
     end
   end
 end

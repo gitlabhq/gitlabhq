@@ -44,6 +44,14 @@ module SortingHelper
     'Last created'
   end
 
+  def sort_title_recently_released
+    'Last released'
+  end
+
+  def sort_title_oldest_released
+    'Oldest released'
+  end
+
   def sort_title_milestone_soon
     'Milestone due soon'
   end
