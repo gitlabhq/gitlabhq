@@ -65,8 +65,8 @@ module Gitlab
       def logout_token_cipher(salt, operation)
         cipher = OpenSSL::Cipher::AES.new(128, :CBC)
         cipher.send(operation)
-        cipher.iv=salt
-        cipher.key="#{oauth_app.uid}#{oauth_app.secret}"
+        cipher.iv = salt
+        cipher.key = Gitlab::Application.secrets.secret_key_base
         cipher
       end
 
