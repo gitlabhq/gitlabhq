@@ -21,7 +21,7 @@ module Gitlab
       @repo = @merge_request.target_project.repository
 
       list_of_involved_files.each do |path|
-        @repo.commits(@merge_request.target_branch, path, COMMITS_TO_CONSIDER).each do |commit|
+        @repo.commits(@merge_request.target_branch, path: path, limit: COMMITS_TO_CONSIDER).each do |commit|
           @users[commit.author] += 1 if commit.author
         end
       end
@@ -34,7 +34,7 @@ module Gitlab
       compare_diffs = diffable.first.diffs
 
       return [] unless compare_diffs.present?
-      
+
       compare_diffs.map do |diff|
         if diff.deleted_file || diff.renamed_file
           diff.old_path
