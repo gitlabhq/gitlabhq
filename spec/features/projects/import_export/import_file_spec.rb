@@ -7,6 +7,7 @@ feature 'project import', feature: true, js: true do
   let!(:namespace) { create(:namespace, name: "asd", owner: user) }
   let(:file) { File.join(Rails.root, 'spec', 'features', 'projects', 'import_export', 'test_project_export.tar.gz') }
   let(:export_path) { "#{Dir::tmpdir}/import_file_spec" }
+  let(:project) { Project.last }
   background do
     allow_any_instance_of(Gitlab::ImportExport).to receive(:storage_path).and_return(export_path)
     login_as(user)
@@ -32,8 +33,15 @@ feature 'project import', feature: true, js: true do
 
     click_on 'Continue to the next step' # import starts
 
-    expect(Project.last).not_to be_nil
-    expect(Project.last.issues).not_to be_empty
-    expect(Project.last.repo_exists?).to be true
+    expect(project).not_to be_nil
+    expect(project.issues).not_to be_empty
+    expect(project.merge_requests).not_to be_empty
+    expect(project.repo_exists?).to be true
+    expect(wiki_exists?).to be true
+  end
+
+  def wiki_exists?
+    wiki = ProjectWiki.new(project)
+    File.exists?(wiki.repository.path_to_repo) && !wiki.repository.empty?
   end
 end
