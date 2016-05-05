@@ -14,6 +14,8 @@ module Gitlab
         @tree_hash = ActiveSupport::JSON.decode(json)
         @project_members = @tree_hash.delete('project_members')
         create_relations
+      rescue
+        false
       end
 
       def project
@@ -50,7 +52,7 @@ module Gitlab
           project_params: project_params, user: @user, namespace_id: @namespace_id)
         project.path = @project_path
         project.name = @project_path
-        project.save
+        project.save!
         project
       end
 
