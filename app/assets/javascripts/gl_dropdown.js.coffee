@@ -37,20 +37,20 @@ class GitLabDropdownFilter
       if keyCode is 13
         return false
 
-      clearTimeout timeout
-      timeout = setTimeout =>
-        blur_field = @shouldBlur keyCode
-        search_text = @input.val()
+      # Only filter asynchronously only if option remote is set
+      if @options.remote
+        clearTimeout timeout
+        timeout = setTimeout =>
+          blur_field = @shouldBlur keyCode
 
-        if blur_field and @filterInputBlur
-          @input.blur()
+          if blur_field and @filterInputBlur
+            @input.blur()
 
-        if @options.remote
-          @options.query search_text, (data) =>
+          @options.query @input.val(), (data) =>
             @options.callback(data)
-        else
-          @filter search_text
-      , 250
+        , 250
+      else
+        @filter @input.val()
 
   shouldBlur: (keyCode) ->
     return BLUR_KEYCODES.indexOf(keyCode) >= 0
