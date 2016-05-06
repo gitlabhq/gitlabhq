@@ -125,7 +125,13 @@ shared runners will only run the jobs they are equipped to run.
 For instance, at GitLab we have runners tagged with "rails" if they contain
 the appropriate dependencies to run Rails test suites.
 
-### Be Careful with Sensitive Information
+### Prevent runner with tags from picking jobs without tags
+
+You can configure runner to prevent it from picking jobs with tags when
+runnner does not have tags assigned. This configuration setting is available
+in GitLab interface when editting runner details.
+
+### Be careful with sensitive information
 
 If you can run a build on a runner, you can get access to any code it runs
 and get the token of the runner. With shared runners, this means that anyone
