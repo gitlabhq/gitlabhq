@@ -7,8 +7,11 @@ module Banzai
     #
     class RedactorFilter < HTML::Pipeline::Filter
       def call
-        Querying.css(doc, 'a.gfm').each do |node|
-          unless user_can_see_reference?(node)
+        nodes = Querying.css(doc, 'a.gfm[data-reference-type]')
+        visible = nodes_visible_to_user(nodes)
+
+        nodes.each do |node|
+          unless visible.include?(node)
             # The reference should be replaced by the original text,
             # which is not always the same as the rendered text.
             text = node.attr('data-original') || node.text
@@ -21,15 +24,21 @@ module Banzai
 
       private
 
-      def user_can_see_reference?(node)
-        if node.has_attribute?('data-reference-type')
-          reference_type = node.attr('data-reference-type')
-          parser = Banzai::ReferenceParser[reference_type].new(nil, current_user)
+      def nodes_visible_to_user(nodes)
+        per_type = Hash.new { |h, k| h[k] = [] }
+        visible = Set.new
 
-          parser.user_can_see_reference?(current_user, node)
-        else
-          true
+        nodes.each do |node|
+          per_type[node.attr('data-reference-type')] << node
         end
+
+        per_type.each do |type, nodes|
+          parser = Banzai::ReferenceParser[type].new(nil, current_user)
+
+          visible.merge(parser.nodes_visible_to_user(current_user, nodes))
+        end
+
+        visible
       end
 
       def current_user

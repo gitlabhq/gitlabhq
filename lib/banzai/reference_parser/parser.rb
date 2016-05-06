@@ -29,7 +29,7 @@ module Banzai
           if node.has_attribute?(project_attr)
             node_project = projects[node.attr(project_attr).to_i]
 
-            if node_project && node_project.id == project.id
+            if node_project && project && node_project.id == project.id
               true
             else
               Ability.abilities.allowed?(user, :read_project, node_project)
