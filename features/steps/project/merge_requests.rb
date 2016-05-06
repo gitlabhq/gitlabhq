@@ -402,18 +402,6 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     end
   end
 
-  step 'I click link "Hide inline discussion" of the third file' do
-    page.within '.files [id^=diff]:nth-child(3)' do
-      find('.js-toggle-diff-comments').trigger('click')
-    end
-  end
-
-  step 'I click link "Show inline discussion" of the third file' do
-    page.within '.files [id^=diff]:nth-child(3)' do
-      find('.js-toggle-diff-comments').trigger('click')
-    end
-  end
-
   step 'I should not see a comment like "Line is wrong" in the third file' do
     page.within '.files [id^=diff]:nth-child(3)' do
       expect(page).not_to have_visible_content "Line is wrong"
