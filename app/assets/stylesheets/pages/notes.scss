@@ -168,6 +168,11 @@ ul.notes {
       .notes {
         background-color: $white-light;
       }
+
+      a code {
+        top: 0;
+        margin-right: 0;
+      }
     }
   }
 }
