@@ -22,24 +22,47 @@ module Banzai
           find_users_for_projects(project_ids)
       end
 
-      def user_can_see_reference?(user, node)
-        if node.has_attribute?('data-group')
-          group = Group.find_by(id: node.attr('data-group'))
-          Ability.abilities.allowed?(user, :read_group, group)
-        else
-          super
+      def nodes_visible_to_user(user, nodes)
+        group_attr = 'data-group'
+        groups = grouped_objects_for_nodes(nodes, Group, group_attr)
+        visible = []
+        remaining = []
+
+        nodes.each do |node|
+          if node.has_attribute?(group_attr)
+            node_group = groups.fetch(node.attr(group_attr).to_i)
+            allowed = Ability.abilities.allowed?(user, :read_group, node_group)
+
+            visible << node if allowed
+          # Remaining nodes will be processed by the parent class'
+          # implementation of this method.
+          else
+            remaining << node
+          end
         end
+
+        visible + super(current_user, remaining)
       end
 
-      def user_can_reference?(user, node)
-        # Only team members can reference `@all`
-        if node.has_attribute?('data-project')
-          project = Project.find_by(id: node.attr('data-project'))
-          return false unless project
+      def nodes_user_can_reference(current_user, nodes)
+        project_attr = 'data-project'
+        author_attr = 'data-author'
 
-          user && project.team.member?(user)
-        else
-          super
+        projects = projects_for_nodes(nodes)
+        users = grouped_objects_for_nodes(nodes, User, author_attr)
+
+        nodes.select do |node|
+          project_id = node.attr(project_attr)
+          user_id = node.attr(author_attr)
+
+          if project_id && user_id
+            project = projects[project_id.to_i]
+            user = users[user_id.to_i]
+
+            project && user ? project.team.member?(user) : false
+          else
+            true
+          end
         end
       end
 

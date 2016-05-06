@@ -72,41 +72,41 @@ describe Banzai::ReferenceParser::UserParser, lib: true do
     end
   end
 
-  describe '#user_can_see_reference?' do
+  describe '#nodes_visible_to_use?' do
     context 'when the link has a data-group attribute' do
       context 'using an existing group ID' do
         before do
           link['data-group'] = group.id.to_s
         end
 
-        it 'returns true if the user can read the group' do
+        it 'returns the nodes if the user can read the group' do
           expect(Ability.abilities).to receive(:allowed?).
             with(user, :read_group, group).
             and_return(true)
 
-          expect(parser.user_can_see_reference?(user, link)).to eq(true)
+          expect(parser.nodes_visible_to_user(user, [link])).to eq([link])
         end
 
-        it 'returns false if the user can read the group' do
+        it 'returns an empty Array if the user can not read the group' do
           expect(Ability.abilities).to receive(:allowed?).
             with(user, :read_group, group).
             and_return(false)
 
-          expect(parser.user_can_see_reference?(user, link)).to eq(false)
+          expect(parser.nodes_visible_to_user(user, [link])).to eq([])
         end
       end
 
       context 'when the link does not have a data-group attribute' do
         context 'with a data-project attribute' do
-          it 'returns true if the attribute value equals the current project ID' do
+          it 'returns the nodes if the attribute value equals the current project ID' do
             link['data-project'] = project.id.to_s
 
             expect(Ability.abilities).not_to receive(:allowed?)
 
-            expect(parser.user_can_see_reference?(user, link)).to eq(true)
+            expect(parser.nodes_visible_to_user(user, [link])).to eq([link])
           end
 
-          it 'returns true if the user can read the project' do
+          it 'returns the nodes if the user can read the project' do
             other_project = create(:empty_project, :public)
 
             link['data-project'] = other_project.id.to_s
@@ -115,10 +115,10 @@ describe Banzai::ReferenceParser::UserParser, lib: true do
               with(user, :read_project, other_project).
               and_return(true)
 
-            expect(parser.user_can_see_reference?(user, link)).to eq(true)
+            expect(parser.nodes_visible_to_user(user, [link])).to eq([link])
           end
 
-          it 'returns false if the user can not read the project' do
+          it 'returns an empty Array if the user can not read the project' do
             other_project = create(:empty_project, :public)
 
             link['data-project'] = other_project.id.to_s
@@ -127,45 +127,55 @@ describe Banzai::ReferenceParser::UserParser, lib: true do
               with(user, :read_project, other_project).
               and_return(false)
 
-            expect(parser.user_can_see_reference?(user, link)).to eq(false)
+            expect(parser.nodes_visible_to_user(user, [link])).to eq([])
           end
         end
 
         context 'without a data-project attribute' do
-          it 'returns true' do
-            expect(parser.user_can_see_reference?(user, link)).to eq(true)
+          it 'returns the nodes' do
+            expect(parser.nodes_visible_to_user(user, [link])).to eq([link])
           end
         end
       end
     end
   end
 
-  describe '#user_can_reference?' do
-    context 'when the link has a data-project attribute' do
-      it 'returns true when the user is a member of the project' do
+  describe '#nodes_user_can_reference' do
+    context 'when the link has a data-author attribute' do
+      it 'returns the nodes when the user is a member of the project' do
         project.team << [user, :developer]
 
         link['data-project'] = project.id.to_s
+        link['data-author'] = user.id.to_s
 
-        expect(parser.user_can_reference?(user, link)).to eq(true)
+        expect(parser.nodes_user_can_reference(user, [link])).to eq([link])
       end
 
-      it 'returns false when the project could not be found' do
+      it 'returns an empty Array when the project could not be found' do
         link['data-project'] = ''
+        link['data-author'] = user.id.to_s
 
-        expect(parser.user_can_reference?(user, link)).to eq(false)
+        expect(parser.nodes_user_can_reference(user, [link])).to eq([])
       end
 
-      it 'returns false when the user is not a team member' do
+      it 'returns an empty Array when the user could not be found' do
         link['data-project'] = project.id.to_s
+        link['data-author'] = ''
 
-        expect(parser.user_can_reference?(user, link)).to eq(false)
+        expect(parser.nodes_user_can_reference(user, [link])).to eq([])
+      end
+
+      it 'returns an empty Array when the user is not a team member' do
+        link['data-project'] = project.id.to_s
+        link['data-author'] = user.id.to_s
+
+        expect(parser.nodes_user_can_reference(user, [link])).to eq([])
       end
     end
 
-    context 'when the link does not have a data-project attribute' do
-      it 'returns true' do
-        expect(parser.user_can_reference?(user, link)).to eq(true)
+    context 'when the link does not have a data-author attribute' do
+      it 'returns the nodes' do
+        expect(parser.nodes_user_can_reference(user, [link])).to eq([link])
       end
     end
   end

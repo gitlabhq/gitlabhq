@@ -7,32 +7,32 @@ describe Banzai::ReferenceParser::IssueParser, lib: true do
   let(:parser) { described_class.new(project, user, user) }
   let(:link) { Nokogiri::HTML.fragment('<a></a>').children[0] }
 
-  describe '#user_can_see_reference?' do
+  describe '#nodes_visible_to_user' do
     context 'when the link has a data-issue attribute' do
       before do
         link['data-issue'] = issue.id.to_s
       end
 
-      it 'returns true when the user can read the issue' do
+      it 'returns the nodes when the user can read the issue' do
         expect(Ability.abilities).to receive(:allowed?).
           with(user, :read_issue, issue).
           and_return(true)
 
-        expect(parser.user_can_see_reference?(user, link)).to eq(true)
+        expect(parser.nodes_visible_to_user(user, [link])).to eq([link])
       end
 
-      it 'returns false when the user can not read the issue' do
+      it 'returns an empty Array when the user can not read the issue' do
         expect(Ability.abilities).to receive(:allowed?).
           with(user, :read_issue, issue).
           and_return(false)
 
-        expect(parser.user_can_see_reference?(user, link)).to eq(false)
+        expect(parser.nodes_visible_to_user(user, [link])).to eq([])
       end
     end
 
     context 'when the link does not have a data-issue attribute' do
-      it 'returns false' do
-        expect(parser.user_can_see_reference?(user, link)).to eq(false)
+      it 'returns an empty Array' do
+        expect(parser.nodes_visible_to_user(user, [link])).to eq([])
       end
     end
   end
@@ -54,6 +54,15 @@ describe Banzai::ReferenceParser::IssueParser, lib: true do
           expect(parser.referenced_by([link])).to eq([])
         end
       end
+    end
+  end
+
+  describe '#issues_for_nodes' do
+    it 'returns a Hash containing the issues for a list of nodes' do
+      link['data-issue'] = issue.id.to_s
+      nodes = [link]
+
+      expect(parser.issues_for_nodes(nodes)).to eq({issue.id => issue})
     end
   end
 end

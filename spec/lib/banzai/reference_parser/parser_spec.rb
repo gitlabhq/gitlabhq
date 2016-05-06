@@ -14,18 +14,18 @@ describe Banzai::ReferenceParser::Parser, lib: true do
     end
   end
 
-  describe '#user_can_see_reference?' do
+  describe '#nodes_visible_to_user' do
     let(:link) { Nokogiri::HTML.fragment('<a></a>').children[0] }
 
     context 'when the link has a data-project attribute' do
-      it 'returns true if the attribute value equals the current project ID' do
+      it 'returns the nodes if the attribute value equals the current project ID' do
         link['data-project'] = project.id.to_s
 
         expect(Ability.abilities).not_to receive(:allowed?)
-        expect(parser.user_can_see_reference?(user, link)).to eq(true)
+        expect(parser.nodes_visible_to_user(user, [link])).to eq([link])
       end
 
-      it 'returns true if the user can read the project' do
+      it 'returns the nodes if the user can read the project' do
         other_project = create(:empty_project, :public)
 
         link['data-project'] = other_project.id.to_s
@@ -34,16 +34,16 @@ describe Banzai::ReferenceParser::Parser, lib: true do
           with(user, :read_project, other_project).
           and_return(true)
 
-        expect(parser.user_can_see_reference?(user, link)).to eq(true)
+        expect(parser.nodes_visible_to_user(user, [link])).to eq([link])
       end
 
-      it 'returns false when the attribute value is empty' do
+      it 'returns an empty Array when the attribute value is empty' do
         link['data-project'] = ''
 
-        expect(parser.user_can_see_reference?(user, link)).to eq(false)
+        expect(parser.nodes_visible_to_user(user, [link])).to eq([])
       end
 
-      it 'returns false when the user can not read the project' do
+      it 'returns an empty Array when the user can not read the project' do
         other_project = create(:empty_project, :public)
 
         link['data-project'] = other_project.id.to_s
@@ -52,20 +52,22 @@ describe Banzai::ReferenceParser::Parser, lib: true do
           with(user, :read_project, other_project).
           and_return(false)
 
-        expect(parser.user_can_see_reference?(user, link)).to eq(false)
+        expect(parser.nodes_visible_to_user(user, [link])).to eq([])
       end
     end
 
     context 'when the link does not have a data-project attribute' do
-      it 'returns true' do
-        expect(parser.user_can_see_reference?(user, link)).to eq(true)
+      it 'returns the nodes' do
+        expect(parser.nodes_visible_to_user(user, [link])).to eq([link])
       end
     end
   end
 
-  describe '#user_can_reference?' do
-    it 'returns true' do
-      expect(parser.user_can_reference?(user, double(:link))).to eq(true)
+  describe '#nodes_user_can_reference' do
+    it 'returns the nodes' do
+      link = double(:link)
+
+      expect(parser.nodes_user_can_reference(user, [link])).to eq([link])
     end
   end
 
@@ -111,9 +113,9 @@ describe Banzai::ReferenceParser::Parser, lib: true do
     let(:link) { double(:link) }
 
     it 'does not process links a user can not reference' do
-      expect(parser).to receive(:user_can_reference?).
-        with(user, link).
-        and_return(false)
+      expect(parser).to receive(:nodes_user_can_reference).
+        with(user, [link]).
+        and_return([])
 
       expect(parser).to receive(:referenced_by).with([])
 
@@ -121,13 +123,13 @@ describe Banzai::ReferenceParser::Parser, lib: true do
     end
 
     it 'does not process links a user can not see' do
-      expect(parser).to receive(:user_can_reference?).
-        with(user, link).
-        and_return(true)
+      expect(parser).to receive(:nodes_user_can_reference).
+        with(user, [link]).
+        and_return([link])
 
-      expect(parser).to receive(:user_can_see_reference?).
-        with(user, link).
-        and_return(false)
+      expect(parser).to receive(:nodes_visible_to_user).
+        with(user, [link]).
+        and_return([])
 
       expect(parser).to receive(:referenced_by).with([])
 
@@ -135,13 +137,13 @@ describe Banzai::ReferenceParser::Parser, lib: true do
     end
 
     it 'returns the references if a user can reference and see a link' do
-      expect(parser).to receive(:user_can_reference?).
-        with(user, link).
-        and_return(true)
+      expect(parser).to receive(:nodes_user_can_reference).
+        with(user, [link]).
+        and_return([link])
 
-      expect(parser).to receive(:user_can_see_reference?).
-        with(user, link).
-        and_return(true)
+      expect(parser).to receive(:nodes_visible_to_user).
+        with(user, [link]).
+        and_return([link])
 
       expect(parser).to receive(:referenced_by).with([link])
 
