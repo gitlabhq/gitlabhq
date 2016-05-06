@@ -46,6 +46,7 @@ v 8.8.0
   - Sanitize repo paths in new project error message
   - Bump mail_room to 0.7.0 to fix stuck IDLE connections
   - Remove future dates from contribution calendar graph.
+  - Add rake task 'gitlab:db:configure' for conditionally seeding or migrating the database
   - Support e-mail notifications for comments on project snippets
   - Fix API leak of notes of unauthorized issues, snippets and merge requests
   - Use ActionDispatch Remote IP for Akismet checking

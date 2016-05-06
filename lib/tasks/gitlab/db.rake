@@ -38,8 +38,7 @@ namespace :gitlab do
     end
 
     desc 'Configures the database by running migrate, or by loading the schema and seeding if needed'
-    task :configure => :environment do
-      # Runs migrate if the schema has already been loaded, otherwise loads the schema and seeds
+    task configure: :environment do
       if ActiveRecord::Base.connection.table_exists? 'schema_migrations'
         Rake::Task['db:migrate'].invoke
       else
