@@ -1,23 +1,23 @@
 # Model relationships to be included in the project import/export
-:project_tree:
-  - :issues:
+project_tree:
+  - issues:
     - :notes
   - :labels
   - :milestones
   - :snippets
   - :releases
   - :events
-  - :project_members:
+  - project_members:
     - :user
-  - :merge_requests:
+  - merge_requests:
     - :merge_request_diff
     - :notes
-  - :ci_commits:
+  - ci_commits:
     - :statuses
 
 # Only include the following attributes for the models specified.
-:attributes_only:
-  :project:
+included_attributes:
+  project:
     - :name
     - :path
     - :description
@@ -28,12 +28,12 @@
     - :snippets_enabled
     - :visibility_level
     - :archived
-  :user:
+  user:
     - :id
     - :email
     - :username
 
 # Do not include the following attributes for the models specified.
-:attributes_except:
-  :snippets:
+excluded_attributes:
+  snippets:
     - :expired_at

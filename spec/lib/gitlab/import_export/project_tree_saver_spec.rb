@@ -1,42 +1,20 @@
 require 'spec_helper'
 
 describe Gitlab::ImportExport::ProjectTreeSaver, services: true do
-  describe :save do
+  describe 'saves the project tree into a json object' do
 
-    # TODO refactor this into a setup method
-
-    let(:user) { create(:user) }
-    let(:issue) { create(:issue, assignee: user) }
-    let(:merge_request) { create(:merge_request) }
-    let(:label) { create(:label) }
-    let(:snippet) { create(:project_snippet) }
-    let(:commit_status) { create(:commit_status) }
-    let(:release) { create(:release) }
-    let!(:project) do
-      create(:project,
-             :public,
-             name: 'searchable_project',
-             issues: [issue],
-             merge_requests: [merge_request],
-             labels: [label],
-             snippets: [snippet],
-             releases: [release]
-            )
-    end
-    let!(:ci_commit) { create(:ci_commit, project: project, sha: merge_request.last_commit.id, ref: merge_request.source_branch, statuses: [commit_status]) }
-    let!(:milestone) { create(:milestone, title: "Milestone v1.2", project: project) }
-    let(:export_path) { "#{Dir::tmpdir}/project_tree_saver_spec" }
     let(:shared) { Gitlab::ImportExport::Shared.new(relative_path: project.path_with_namespace) }
-    let(:project_tree_saver) { Gitlab::ImportExport::ProjectTreeSaver.new(project: project, shared: shared) }
-    let!(:issue_note) { create(:note, note: ":+1: issue", noteable: issue) }
-    let!(:merge_request_note) { create(:note, note: ":+1: merge_request", noteable: merge_request) }
+    let(:project_tree_saver) { described_class.new(project: project, shared: shared) }
+    let(:export_path) { "#{Dir::tmpdir}/project_tree_saver_spec" }
+    let(:user) { create(:user) }
+    let(:project) { setup_project }
 
-    before(:each) do
+    before do
       project.team << [user, :master]
       allow_any_instance_of(Gitlab::ImportExport).to receive(:storage_path).and_return(export_path)
     end
 
-    after(:each) do
+    after do
       FileUtils.rm_rf(export_path)
     end
 
@@ -107,6 +85,30 @@ describe Gitlab::ImportExport::ProjectTreeSaver, services: true do
         expect(saved_project_json['ci_commits']).not_to be_empty
       end
     end
+  end
+
+  def setup_project
+    issue = create(:issue, assignee: user)
+    merge_request = create(:merge_request)
+    label = create(:label)
+    snippet = create(:project_snippet)
+    commit_status = create(:commit_status)
+    release = create(:release)
+
+    project = create(:project,
+                     :public,
+                     issues: [issue],
+                     merge_requests: [merge_request],
+                     labels: [label],
+                     snippets: [snippet],
+                     releases: [release]
+                    )
+
+    create(:ci_commit, project: project, sha: merge_request.last_commit.id, ref: merge_request.source_branch, statuses: [commit_status])
+    create(:milestone, project: project)
+    create(:note, noteable: issue)
+    create(:note, noteable: merge_request)
+    project
   end
 
   def project_json(filename)
