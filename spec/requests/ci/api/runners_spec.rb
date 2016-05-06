@@ -15,13 +15,17 @@ describe Ci::API::API do
     context 'when runner token is provided' do
       before { post ci_api("/runners/register"), token: registration_token }
 
-      it 'creates runner' do
+      it 'creates runner with default values' do
         expect(response.status).to eq(201)
+        expect(Ci::Runner.first.run_untagged).to be true
       end
     end
 
     context 'when runner description is provided' do
-      before { post ci_api("/runners/register"), token: registration_token, description: "server.hostname" }
+      before do
+        post ci_api("/runners/register"), token: registration_token,
+                                          description: "server.hostname"
+      end
 
       it 'creates runner' do
         expect(response.status).to eq(201)
@@ -30,11 +34,36 @@ describe Ci::API::API do
     end
 
     context 'when runner tags are provided' do
-      before { post ci_api("/runners/register"), token: registration_token, tag_list: "tag1, tag2" }
+      before do
+        post ci_api("/runners/register"), token: registration_token,
+                                          tag_list: "tag1, tag2"
+      end
 
       it 'creates runner' do
         expect(response.status).to eq(201)
         expect(Ci::Runner.first.tag_list.sort).to eq(["tag1", "tag2"])
+      end
+    end
+
+    context 'when option for running untagged jobs is provided' do
+      context 'when tags are provided' do
+        it 'creates runner' do
+          post ci_api("/runners/register"), token: registration_token,
+                                            run_untagged: false,
+                                            tag_list: ['tag']
+
+          expect(response.status).to eq(201)
+          expect(Ci::Runner.first.run_untagged).to be false
+        end
+      end
+
+      context 'when tags are not provided' do
+        it 'does not create runner' do
+          post ci_api("/runners/register"), token: registration_token,
+                                            run_untagged: false
+
+          expect(response.status).to eq(404)
+        end
       end
     end
 

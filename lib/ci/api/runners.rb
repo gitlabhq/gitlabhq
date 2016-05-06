@@ -28,20 +28,17 @@ module Ci
         post "register" do
           required_attributes! [:token]
 
+          attributes = { description: params[:description],
+                         tag_list: params[:tag_list],
+                         run_untagged: params[:run_untagged] || true }
+
           runner =
             if runner_registration_token_valid?
               # Create shared runner. Requires admin access
-              Ci::Runner.create(
-                description: params[:description],
-                tag_list: params[:tag_list],
-                is_shared: true
-              )
+              Ci::Runner.create(attributes.merge(is_shared: true))
             elsif project = Project.find_by(runners_token: params[:token])
               # Create a specific runner for project.
-              project.runners.create(
-                description: params[:description],
-                tag_list: params[:tag_list]
-              )
+              project.runners.create(attributes)
             end
 
           return forbidden! unless runner
