@@ -14,7 +14,8 @@ module Gitlab
         @tree_hash = ActiveSupport::JSON.decode(json)
         @project_members = @tree_hash.delete('project_members')
         create_relations
-      rescue
+      rescue => e
+        # TODO: handle errors better, move them to a shared thing
         false
       end
 
@@ -83,7 +84,7 @@ module Gitlab
 
       def relation_from_factory(relation, relation_hash)
         Gitlab::ImportExport::RelationFactory.create(
-          relation_sym: relation, relation_hash: relation_hash.merge('project_id' => project.id), members_map: members_map)
+          relation_sym: relation.to_sym, relation_hash: relation_hash.merge('project_id' => project.id), members_map: members_map)
       end
     end
   end

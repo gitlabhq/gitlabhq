@@ -1,4 +1,4 @@
-require 'rspec'
+require 'spec_helper'
 
 describe Gitlab::ImportExport::ImportExportReader do
 
@@ -17,7 +17,7 @@ describe Gitlab::ImportExport::ImportExportReader do
   end
 
   it 'should generate hash from project tree config' do
-    allow(described_class).to receive(:config).and_return(YAML.load_file(test_config))
+    allow(described_class).to receive(:config).and_return(YAML.load_file(test_config).deep_symbolize_keys)
 
     expect(described_class.project_tree).to eq(project_tree_hash)
   end

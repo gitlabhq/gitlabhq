@@ -4,7 +4,7 @@ module Gitlab
       extend self
 
       def project_tree
-        { only: atts_only[:project], include: build_hash(tree) }
+        { only: included_attributes[:project], include: build_hash(tree) }
       end
 
       def tree
@@ -14,24 +14,24 @@ module Gitlab
       private
 
       def config
-        @config ||= YAML.load_file('lib/gitlab/import_export/import_export.yml')
+        @config ||= YAML.load_file('lib/gitlab/import_export/import_export.yml').with_indifferent_access
       end
 
-      def atts_only
-        config[:attributes_only]
+      def included_attributes
+        config[:included_attributes] || {}
       end
 
-      def atts_except
-        config[:attributes_except]
+      def excluded_attributes
+        config[:excluded_attributes] || {}
       end
 
       def build_hash(array)
-        array.map do |el|
-          if el.is_a?(Hash)
-            process_include(el)
+        array.map do |model_object|
+          if model_object.is_a?(Hash)
+            process_include(model_object)
           else
-            only_except_hash = check_only_and_except(el)
-            only_except_hash.empty? ? el : { el => only_except_hash }
+            only_except_hash = check_only_and_except(model_object)
+            only_except_hash.empty? ? model_object : { model_object => only_except_hash }
           end
         end
       end
@@ -82,12 +82,12 @@ module Gitlab
 
       def check_only(value)
         key = key_from_hash(value)
-        atts_only[key].nil? ? {} : { only: atts_only[key] }
+        included_attributes[key].nil? ? {} : { only: included_attributes[key] }
       end
 
       def check_except(value)
         key = key_from_hash(value)
-        atts_except[key].nil? ? {} : { except: atts_except[key] }
+        excluded_attributes[key].nil? ? {} : { except: excluded_attributes[key] }
       end
 
       def key_from_hash(value)
