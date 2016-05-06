@@ -126,17 +126,21 @@ describe "Runners" do
       expect(page).to have_content 'Can run untagged jobs Yes'
     end
 
-    scenario 'user want to prevent runner from running untagged job' do
-      visit runners_path(project)
-      page.within('.activated-specific-runners') do
-        first('small > a').click
+    context 'when runner has tags' do
+      before { runner.update_attribute(:tag_list, ['tag']) }
+
+      scenario 'user want to prevent runner from running untagged job' do
+        visit runners_path(project)
+        page.within('.activated-specific-runners') do
+          first('small > a').click
+        end
+
+        uncheck 'runner_run_untagged'
+        click_button 'Save changes'
+
+        expect(page).to have_content 'Can run untagged jobs No'
+        expect(runner.reload.run_untagged?).to eq false
       end
-
-      uncheck 'runner_run_untagged'
-      click_button 'Save changes'
-
-      expect(page).to have_content 'Can run untagged jobs No'
-      expect(runner.reload.run_untagged?).to eq false
     end
   end
 end
