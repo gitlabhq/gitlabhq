@@ -13,6 +13,7 @@ class @EditBlob
 
     @initModePanesAndLinks()
     new BlobLicenseSelector(@editor)
+    new BlobGitIgnoreSelectors(editor: @editor)
 
   initModePanesAndLinks: ->
     @$editModePanes = $(".js-edit-mode-pane")

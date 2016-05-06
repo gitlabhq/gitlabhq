@@ -6,6 +6,7 @@
   projects_path: "/api/:version/projects.json"
   labels_path: "/api/:version/projects/:id/labels"
   license_path: "/api/:version/licenses/:key"
+  gitignoretext_path: "/api/:version/gitignores/:key"
 
   group: (group_id, callback) ->
     url = Api.buildUrl(Api.group_path)
@@ -102,6 +103,12 @@
       data: data
     ).done (license) ->
       callback(license)
+
+  gitIgnoreText: (key, callback) ->
+    url = Api.buildUrl(Api.gitignoretext_path).replace(':key', key)
+
+    $.get url, (gitignore) ->
+      callback(gitignore)
 
   buildUrl: (url) ->
     url = gon.relative_url_root + url if gon.relative_url_root?
