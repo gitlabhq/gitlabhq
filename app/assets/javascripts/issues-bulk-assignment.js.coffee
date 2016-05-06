@@ -48,7 +48,6 @@ class @IssuableBulkActions
 
     @getSelectedIssues().map ->
       _labels = $(@).data('labels')
-      console.log _labels
       if _labels
         _labels.map (labelId)->
           labels.push(labelId) if labels.indexOf(labelId) is -1
