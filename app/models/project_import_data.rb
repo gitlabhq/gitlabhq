@@ -6,8 +6,8 @@
 #  project_id                 :integer
 #  data                       :text
 #  encrypted_credentials      :text
-#  encrypted_credentials_iv   :text
-#  encrypted_credentials_salt :text
+#  encrypted_credentials_iv   :string
+#  encrypted_credentials_salt :string
 #
 
 require 'carrierwave/orm/activerecord'
