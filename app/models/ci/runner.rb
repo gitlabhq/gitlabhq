@@ -27,9 +27,9 @@ module Ci
     end
 
     validate do |runner|
-      if runner.tag_list.empty? && !runner.run_untagged?
-        errors.add(:tags_errors,
-          'Runner without tags must be able to pick untagged jobs!')
+      unless runner.has_tags? || runner.run_untagged?
+        errors.add(:tags_list,
+          'can not be empty when runner is not allowed to pick untagged jobs')
       end
     end
 
@@ -102,6 +102,10 @@ module Ci
 
     def short_sha
       token[0...8] if token
+    end
+
+    def has_tags?
+      tag_list.any?
     end
   end
 end
