@@ -44,7 +44,6 @@ module Issuable
     scope :join_project, -> { joins(:project) }
     scope :references_project, -> { references(:project) }
     scope :non_archived, -> { join_project.where(projects: { archived: false }) }
-    scope :outer_join_milestone, -> { joins("LEFT OUTER JOIN milestones ON milestones.id = #{table_name}.milestone_id") }
 
     delegate :name,
              :email,

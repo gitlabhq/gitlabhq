@@ -130,7 +130,6 @@ describe Issue, "Issuable" do
       let!(:issue2) { create(:issue, project: project, milestone: late_milestone) }
       let!(:issue3) { create(:issue, project: project) }
 
-
       it "sorts desc" do
         issues = project.issues.sort('milestone_due_desc')
         expect(issues).to match_array([issue2, issue1, issue, issue3])
