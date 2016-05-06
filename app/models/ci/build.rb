@@ -4,7 +4,7 @@
 #
 #  id                 :integer          not null, primary key
 #  project_id         :integer
-#  status             :string(255)
+#  status             :string
 #  finished_at        :datetime
 #  trace              :text
 #  created_at         :datetime
@@ -15,19 +15,19 @@
 #  commit_id          :integer
 #  commands           :text
 #  job_id             :integer
-#  name               :string(255)
+#  name               :string
 #  deploy             :boolean          default(FALSE)
 #  options            :text
 #  allow_failure      :boolean          default(FALSE), not null
-#  stage              :string(255)
+#  stage              :string
 #  trigger_request_id :integer
 #  stage_idx          :integer
 #  tag                :boolean
-#  ref                :string(255)
+#  ref                :string
 #  user_id            :integer
-#  type               :string(255)
-#  target_url         :string(255)
-#  description        :string(255)
+#  type               :string
+#  target_url         :string
+#  description        :string
 #  artifacts_file     :text
 #  gl_project_id      :integer
 #  artifacts_metadata :text

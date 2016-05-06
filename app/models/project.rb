@@ -2,41 +2,46 @@
 #
 # Table name: projects
 #
-#  id                     :integer          not null, primary key
-#  name                   :string(255)
-#  path                   :string(255)
-#  description            :text
-#  created_at             :datetime
-#  updated_at             :datetime
-#  creator_id             :integer
-#  issues_enabled         :boolean          default(TRUE), not null
-#  wall_enabled           :boolean          default(TRUE), not null
-#  merge_requests_enabled :boolean          default(TRUE), not null
-#  wiki_enabled           :boolean          default(TRUE), not null
-#  namespace_id           :integer
-#  issues_tracker         :string(255)      default("gitlab"), not null
-#  issues_tracker_id      :string(255)
-#  snippets_enabled       :boolean          default(TRUE), not null
-#  last_activity_at       :datetime
-#  import_url             :string(255)
-#  visibility_level       :integer          default(0), not null
-#  archived               :boolean          default(FALSE), not null
-#  avatar                 :string(255)
-#  import_status          :string(255)
-#  repository_size        :float            default(0.0)
-#  star_count             :integer          default(0), not null
-#  import_type            :string(255)
-#  import_source          :string(255)
-#  commit_count           :integer          default(0)
-#  import_error           :text
-#  ci_id                  :integer
-#  builds_enabled         :boolean          default(TRUE), not null
-#  shared_runners_enabled :boolean          default(TRUE), not null
-#  runners_token          :string
-#  build_coverage_regex   :string
-#  build_allow_git_fetch  :boolean          default(TRUE), not null
-#  build_timeout          :integer          default(3600), not null
-#  pending_delete         :boolean
+#  id                           :integer          not null, primary key
+#  name                         :string
+#  path                         :string
+#  description                  :text
+#  created_at                   :datetime
+#  updated_at                   :datetime
+#  creator_id                   :integer
+#  issues_enabled               :boolean          default(TRUE), not null
+#  wall_enabled                 :boolean          default(TRUE), not null
+#  merge_requests_enabled       :boolean          default(TRUE), not null
+#  wiki_enabled                 :boolean          default(TRUE), not null
+#  namespace_id                 :integer
+#  issues_tracker               :string           default("gitlab"), not null
+#  issues_tracker_id            :string
+#  snippets_enabled             :boolean          default(TRUE), not null
+#  last_activity_at             :datetime
+#  import_url                   :string
+#  visibility_level             :integer          default(0), not null
+#  archived                     :boolean          default(FALSE), not null
+#  avatar                       :string
+#  import_status                :string
+#  repository_size              :float            default(0.0)
+#  star_count                   :integer          default(0), not null
+#  import_type                  :string
+#  import_source                :string
+#  commit_count                 :integer          default(0)
+#  import_error                 :text
+#  ci_id                        :integer
+#  builds_enabled               :boolean          default(TRUE), not null
+#  shared_runners_enabled       :boolean          default(TRUE), not null
+#  runners_token                :string
+#  build_coverage_regex         :string
+#  build_allow_git_fetch        :boolean          default(TRUE), not null
+#  build_timeout                :integer          default(3600), not null
+#  pending_delete               :boolean          default(FALSE)
+#  public_builds                :boolean          default(TRUE), not null
+#  main_language                :string
+#  pushes_since_gc              :integer          default(0)
+#  last_repository_check_failed :boolean
+#  last_repository_check_at     :datetime
 #
 
 require 'carrierwave/orm/activerecord'

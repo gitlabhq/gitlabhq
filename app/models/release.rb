@@ -3,7 +3,7 @@
 # Table name: releases
 #
 #  id          :integer          not null, primary key
-#  tag         :string(255)
+#  tag         :string
 #  description :text
 #  project_id  :integer
 #  created_at  :datetime

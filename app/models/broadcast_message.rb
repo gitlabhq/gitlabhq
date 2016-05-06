@@ -8,8 +8,8 @@
 #  ends_at    :datetime
 #  created_at :datetime
 #  updated_at :datetime
-#  color      :string(255)
-#  font       :string(255)
+#  color      :string
+#  font       :string
 #
 
 class BroadcastMessage < ActiveRecord::Base

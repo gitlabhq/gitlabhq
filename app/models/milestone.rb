@@ -3,13 +3,13 @@
 # Table name: milestones
 #
 #  id          :integer          not null, primary key
-#  title       :string(255)      not null
+#  title       :string           not null
 #  project_id  :integer          not null
 #  description :text
 #  due_date    :date
 #  created_at  :datetime
 #  updated_at  :datetime
-#  state       :string(255)
+#  state       :string
 #  iid         :integer
 #
 

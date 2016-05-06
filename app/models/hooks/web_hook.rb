@@ -16,7 +16,7 @@
 #  note_events             :boolean          default(FALSE), not null
 #  enable_ssl_verification :boolean          default(TRUE)
 #  build_events            :boolean          default(FALSE), not null
-#  token                   :string
+#  wiki_page_events        :boolean          default(FALSE), not null
 #
 
 class WebHook < ActiveRecord::Base

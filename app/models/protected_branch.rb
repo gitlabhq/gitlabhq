@@ -4,7 +4,7 @@
 #
 #  id                  :integer          not null, primary key
 #  project_id          :integer          not null
-#  name                :string(255)      not null
+#  name                :string           not null
 #  created_at          :datetime
 #  updated_at          :datetime
 #  developers_can_push :boolean          default(FALSE), not null
