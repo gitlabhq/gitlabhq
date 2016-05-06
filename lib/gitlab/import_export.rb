@@ -11,7 +11,7 @@ module Gitlab
     end
 
     def project_tree
-      Gitlab::ImportExport::ImportExportReader.project_tree
+      Gitlab::ImportExport::ImportExportReader.new.project_tree
     end
 
     def storage_path
