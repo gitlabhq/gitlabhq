@@ -19,7 +19,7 @@ GitHub will generate an application ID and secret key for you to use.
     - Application name: This can be anything. Consider something like "\<Organization\>'s GitLab" or "\<Your Name\>'s GitLab" or something else descriptive.
     - Homepage URL: The URL to your GitLab installation. 'https://gitlab.company.com'
     - Application description: Fill this in if you wish.
-    - Default authorization callback URL is '${YOUR_DOMAIN}/import/github/callback'
+    - Default authorization callback URL is '${YOUR_DOMAIN}'
 1.  Select "Register application".
 
 1.  You should now see a Client ID and Client Secret near the top right of the page (see screenshot). 
@@ -48,13 +48,14 @@ GitHub will generate an application ID and secret key for you to use.
 
     For omnibus package:
 
+    For GitHub.com:
+    
     ```ruby
       gitlab_rails['omniauth_providers'] = [
         {
           "name" => "github",
           "app_id" => "YOUR_APP_ID",
           "app_secret" => "YOUR_APP_SECRET",
-          "url" => "https://github.com/",
           "args" => { "scope" => "user:email" }
         }
       ]
@@ -86,7 +87,7 @@ GitHub will generate an application ID and secret key for you to use.
 
 1.  Change 'YOUR_APP_SECRET' to the client secret from the GitHub application page  from step 7.
 
-1.  Save the configuration file.
+1.  Save the configuration file and run `sudo gitlab-ctl reconfigure`.
 
 1.  Restart GitLab for the changes to take effect.
 
