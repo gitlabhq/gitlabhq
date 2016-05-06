@@ -20,6 +20,10 @@ To see how GitLab looks please see the [features page on our website](https://ab
 - Completely free and open source (MIT Expat license)
 - Powered by [Ruby on Rails](https://github.com/rails/rails)
 
+## Hiring
+
+We're hiring developers, support people, and production engineers all the time, please see our [jobs page](https://about.gitlab.com/jobs/).
+
 ## Editions
 
 There are two editions of GitLab:
