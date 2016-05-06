@@ -16,7 +16,7 @@ describe RegistrationsController do
       it 'logs user in directly' do
         post(:create, user_params)
         expect(ActionMailer::Base.deliveries.last).to be_nil
-        expect(subject.current_user).to be
+        expect(subject.current_user).to_not be_nil
       end
     end
 
