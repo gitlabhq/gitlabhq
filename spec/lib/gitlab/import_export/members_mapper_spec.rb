@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Gitlab::ImportExport::MembersMapper, services: true do
-  describe :map do
+  describe 'map members' do
 
     let(:user) { create(:user) }
     let(:project) { create(:project, :public, name: 'searchable_project') }
@@ -31,7 +31,7 @@ describe Gitlab::ImportExport::MembersMapper, services: true do
     end
 
     let(:members_mapper) do
-      Gitlab::ImportExport::MembersMapper.new(
+      described_class.new(
         exported_members: exported_members, user: user, project_id: project.id)
     end
 
