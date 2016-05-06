@@ -95,7 +95,7 @@ class RemoteMirror < ActiveRecord::Base
 
   def mark_as_failed(error_message)
     update_fail
-    update_column(:last_error, error_message)
+    update_column(:last_error, Gitlab::UrlCredentialsFilter.process(error_message))
   end
 
   def url=(value)

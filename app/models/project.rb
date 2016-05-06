@@ -571,7 +571,7 @@ class Project < ActiveRecord::Base
 
   def mark_import_as_failed(error_message)
     import_fail
-    update_column(:import_error, error_message)
+    update_column(:import_error, Gitlab::UrlCredentialsFilter.process(error_message))
   end
 
   def has_remote_mirror?
