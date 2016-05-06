@@ -66,7 +66,7 @@ $gl-padding-top: 10px;
 $row-hover: #f4f8fe;
 $progress-color: #c0392b;
 $avatar_radius: 50%;
-$header-height: 58px;
+$header-height: 50px;
 $fixed-layout-width: 1280px;
 $gl-avatar-size: 40px;
 $error-exclamation-point: #e62958;
@@ -75,6 +75,8 @@ $btn-transparent-color: #8f8f8f;
 $settings-icon-size: 18px;
 $provider-btn-group-border: #e5e5e5;
 $provider-btn-not-active-color: #4688f1;
+$link-underline-blue: #4a8bee;
+$layout-link-gray: #7e7c7c;
 
 /*
  * Color schema
@@ -109,6 +111,7 @@ $red-light: #e52c5a;
 $red-normal: #d22852;
 $red-dark: darken($red-normal, 5%);
 
+$black: #000;
 $black-transparent: rgba(0, 0, 0, 0.3);
 
 $border-white-light: #f1f2f4;

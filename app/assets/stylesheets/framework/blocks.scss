@@ -155,6 +155,41 @@
       right: auto;
     }
   }
+
+  &.groups-cover-block {
+    background: $white-light;
+    border-bottom: 1px solid $border-color;
+    text-align: left;
+    padding: 24px 0;
+
+    .group-info {
+      .cover-title {
+        margin-top: 9px;
+      }
+
+      p {
+        margin-bottom: 0;
+      }
+    }
+
+    @media (max-width: $screen-xs-max) {
+      text-align: center;
+
+      .avatar {
+        float: none;
+      }
+    }
+  }
+
+  .group-info {
+
+    h1 {
+      display: inline;
+      font-weight: normal;
+      font-size: 24px;
+      color: $gl-title-color;
+    }
+  }
 }
 
 .block-connector {
