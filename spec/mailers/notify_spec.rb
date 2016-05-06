@@ -593,7 +593,7 @@ describe Notify do
     let(:user) { create(:user) }
     let(:tree_path) { namespace_project_tree_path(project.namespace, project, "master") }
 
-    subject { Notify.repository_push_email(project.id, 'devs@company.name', author_id: user.id, ref: 'refs/heads/master', action: :create) }
+    subject { Notify.repository_push_email(project.id, author_id: user.id, ref: 'refs/heads/master', action: :create) }
 
     it_behaves_like 'it should not have Gmail Actions links'
     it_behaves_like "a user cannot unsubscribe through footer link"
@@ -604,10 +604,6 @@ describe Notify do
       sender = subject.header[:from].addrs[0]
       expect(sender.display_name).to eq(user.name)
       expect(sender.address).to eq(gitlab_sender)
-    end
-
-    it 'is sent to recipient' do
-      is_expected.to deliver_to 'devs@company.name'
     end
 
     it 'has the correct subject' do
@@ -624,7 +620,7 @@ describe Notify do
     let(:user) { create(:user) }
     let(:tree_path) { namespace_project_tree_path(project.namespace, project, "v1.0") }
 
-    subject { Notify.repository_push_email(project.id, 'devs@company.name', author_id: user.id, ref: 'refs/tags/v1.0', action: :create) }
+    subject { Notify.repository_push_email(project.id, author_id: user.id, ref: 'refs/tags/v1.0', action: :create) }
 
     it_behaves_like 'it should not have Gmail Actions links'
     it_behaves_like "a user cannot unsubscribe through footer link"
@@ -635,10 +631,6 @@ describe Notify do
       sender = subject.header[:from].addrs[0]
       expect(sender.display_name).to eq(user.name)
       expect(sender.address).to eq(gitlab_sender)
-    end
-
-    it 'is sent to recipient' do
-      is_expected.to deliver_to 'devs@company.name'
     end
 
     it 'has the correct subject' do
@@ -654,7 +646,7 @@ describe Notify do
     let(:example_site_path) { root_path }
     let(:user) { create(:user) }
 
-    subject { Notify.repository_push_email(project.id, 'devs@company.name', author_id: user.id, ref: 'refs/heads/master', action: :delete) }
+    subject { Notify.repository_push_email(project.id, author_id: user.id, ref: 'refs/heads/master', action: :delete) }
 
     it_behaves_like 'it should not have Gmail Actions links'
     it_behaves_like "a user cannot unsubscribe through footer link"
@@ -665,10 +657,6 @@ describe Notify do
       sender = subject.header[:from].addrs[0]
       expect(sender.display_name).to eq(user.name)
       expect(sender.address).to eq(gitlab_sender)
-    end
-
-    it 'is sent to recipient' do
-      is_expected.to deliver_to 'devs@company.name'
     end
 
     it 'has the correct subject' do
@@ -680,7 +668,7 @@ describe Notify do
     let(:example_site_path) { root_path }
     let(:user) { create(:user) }
 
-    subject { Notify.repository_push_email(project.id, 'devs@company.name', author_id: user.id, ref: 'refs/tags/v1.0', action: :delete) }
+    subject { Notify.repository_push_email(project.id, author_id: user.id, ref: 'refs/tags/v1.0', action: :delete) }
 
     it_behaves_like 'it should not have Gmail Actions links'
     it_behaves_like "a user cannot unsubscribe through footer link"
@@ -691,10 +679,6 @@ describe Notify do
       sender = subject.header[:from].addrs[0]
       expect(sender.display_name).to eq(user.name)
       expect(sender.address).to eq(gitlab_sender)
-    end
-
-    it 'is sent to recipient' do
-      is_expected.to deliver_to 'devs@company.name'
     end
 
     it 'has the correct subject' do
@@ -710,7 +694,7 @@ describe Notify do
     let(:diff_path) { namespace_project_compare_path(project.namespace, project, from: Commit.new(compare.base, project), to: Commit.new(compare.head, project)) }
     let(:send_from_committer_email) { false }
 
-    subject { Notify.repository_push_email(project.id, 'devs@company.name', author_id: user.id, ref: 'refs/heads/master', action: :push, compare: compare, reverse_compare: false, send_from_committer_email: send_from_committer_email) }
+    subject { Notify.repository_push_email(project.id, author_id: user.id, ref: 'refs/heads/master', action: :push, compare: compare, reverse_compare: false, send_from_committer_email: send_from_committer_email) }
 
     it_behaves_like 'it should not have Gmail Actions links'
     it_behaves_like "a user cannot unsubscribe through footer link"
@@ -721,10 +705,6 @@ describe Notify do
       sender = subject.header[:from].addrs[0]
       expect(sender.display_name).to eq(user.name)
       expect(sender.address).to eq(gitlab_sender)
-    end
-
-    it 'is sent to recipient' do
-      is_expected.to deliver_to 'devs@company.name'
     end
 
     it 'has the correct subject' do
@@ -818,7 +798,7 @@ describe Notify do
     let(:commits) { Commit.decorate(compare.commits, nil) }
     let(:diff_path) { namespace_project_commit_path(project.namespace, project, commits.first) }
 
-    subject { Notify.repository_push_email(project.id, 'devs@company.name', author_id: user.id, ref: 'refs/heads/master', action: :push, compare: compare) }
+    subject { Notify.repository_push_email(project.id, author_id: user.id, ref: 'refs/heads/master', action: :push, compare: compare) }
 
     it_behaves_like 'it should show Gmail Actions View Commit link'
     it_behaves_like "a user cannot unsubscribe through footer link"
@@ -829,10 +809,6 @@ describe Notify do
       sender = subject.header[:from].addrs[0]
       expect(sender.display_name).to eq(user.name)
       expect(sender.address).to eq(gitlab_sender)
-    end
-
-    it 'is sent to recipient' do
-      is_expected.to deliver_to 'devs@company.name'
     end
 
     it 'has the correct subject' do

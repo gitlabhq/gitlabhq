@@ -59,9 +59,9 @@ module Emails
            subject: subject("Project was moved"))
     end
 
-    def repository_push_email(project_id, recipient, opts = {})
+    def repository_push_email(project_id, opts = {})
       @message =
-        Gitlab::Email::Message::RepositoryPush.new(self, project_id, recipient, opts)
+        Gitlab::Email::Message::RepositoryPush.new(self, project_id, opts)
 
       # used in notify layout
       @target_url = @message.target_url
@@ -72,7 +72,6 @@ module Emails
 
       mail(from:      sender(@message.author_id, @message.send_from_committer_email?),
            reply_to:  @message.reply_to,
-           to:        @message.recipient,
            subject:   @message.subject)
     end
   end
