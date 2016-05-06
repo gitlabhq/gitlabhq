@@ -309,6 +309,18 @@ describe Ci::Build, models: true do
     end
   end
 
+  describe '#has_tags?' do
+    context 'when build has tags' do
+      subject { create(:ci_build, tag_list: ['tag']) }
+      it { is_expected.to have_tags }
+    end
+
+    context 'when build does not have tags' do
+      subject { create(:ci_build, tag_list: []) }
+      it { is_expected.to_not have_tags }
+    end
+  end
+
   describe '#any_runners_online?' do
     subject { build.any_runners_online? }
 
