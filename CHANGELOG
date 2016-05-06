@@ -63,6 +63,7 @@ v 8.8.0
   - Make 'upcoming' filter for milestones work better across projects
   - Sanitize repo paths in new project error message
   - Bump mail_room to 0.7.0 to fix stuck IDLE connections
+  - Improve note validation to prevent errors when creating invalid note via API
   - Remove future dates from contribution calendar graph.
   - Support e-mail notifications for comments on project snippets
   - Fix API leak of notes of unauthorized issues, snippets and merge requests
