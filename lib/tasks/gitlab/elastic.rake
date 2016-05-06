@@ -103,11 +103,15 @@ namespace :gitlab do
       klass = model_name.constantize
       klass.__elasticsearch__.create_index! force: true
 
+      print "Reindexing #{klass} records... "
+
       if klass == Note
         Note.searchable.import
       else
         klass.import
       end
+
+      puts "done".green
     end
 
     desc "GitLab | Create empty Elasticsearch indexes"
@@ -122,7 +126,37 @@ namespace :gitlab do
         ProjectWiki,
         Repository
       ].each do |klass|
+        print "Creating index for #{klass}... "
+
         klass.__elasticsearch__.create_index!
+
+        puts "done".green
+      end
+    end
+
+    desc "GitLab | Clear Elasticsearch indexing status"
+    task clear_index_status: :environment do
+      IndexStatus.destroy_all
+      puts "Done".green
+    end
+
+    desc "GitLab | Delete Elasticsearch indexes"
+    task delete_indexes: :environment do
+      [
+        Project,
+        Issue,
+        MergeRequest,
+        Snippet,
+        Note,
+        Milestone,
+        ProjectWiki,
+        Repository
+      ].each do |klass|
+        print "Delete index for #{klass}... "
+
+        klass.__elasticsearch__.delete_index!
+
+        puts "done".green
       end
     end
 
