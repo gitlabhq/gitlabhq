@@ -3,19 +3,13 @@ module Gitlab
     class ProjectTreeSaver
       attr_reader :full_path
 
-      def initialize(project: , shared: )
+      def initialize(project:, shared:)
         @project = project
         @export_path = shared.export_path
+        @full_path = File.join(@export_path, project_filename)
       end
 
       def save
-        @full_path = File.join(@export_path, project_filename)
-        save_to_disk
-      end
-
-      private
-
-      def save_to_disk
         FileUtils.mkdir_p(@export_path)
         File.write(full_path, project_json_tree)
         true
@@ -23,6 +17,8 @@ module Gitlab
         # TODO: handle error
         false
       end
+
+      private
 
       # TODO remove magic keyword and move it to a shared config
       def project_filename
