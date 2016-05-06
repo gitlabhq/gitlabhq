@@ -106,6 +106,35 @@ describe NotificationService, services: true do
           should_not_email(@u_disabled)
         end
       end
+
+      context 'when user is not project member' do
+        let(:user) { create(:user) }
+        let(:project) { create(:empty_project, :public) }
+        let(:issue) { create(:issue, project: project, assignee: create(:user)) }
+        let(:note) { create(:note_on_issue, noteable: issue, project_id: issue.project_id, note: 'anything') }
+
+        before { ActionMailer::Base.deliveries.clear }
+
+        context "and has notification setting" do
+          before do
+            setting = user.notification_settings_for(project)
+            setting.level = :watch
+            setting.save
+          end
+
+          it "sends user email" do
+            notification.new_note(note)
+            should_email(user)
+          end
+        end
+
+        context "and does note have notification setting" do
+          it "does not send email" do
+            notification.new_note(note)
+            should_not_email(user)
+          end
+        end
+      end
     end
 
     context 'confidential issue note' do
@@ -147,7 +176,6 @@ describe NotificationService, services: true do
       before do
         build_team(note.project)
         note.project.team << [[note.author, note.noteable.author, note.noteable.assignee], :master]
-
         ActionMailer::Base.deliveries.clear
       end
 

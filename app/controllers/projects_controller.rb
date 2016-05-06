@@ -101,11 +101,7 @@ class ProjectsController < Projects::ApplicationController
 
     respond_to do |format|
       format.html do
-        if current_user
-          if can?(current_user, :read_project, @project)
-            @notification_setting = current_user.notification_settings_for(@project)
-          end
-        end
+        @notification_setting = current_user.notification_settings_for(@project) if current_user
 
         if @project.repository_exists?
           if @project.empty_repo?
