@@ -17,6 +17,8 @@ module Gitlab
         execute(%W(#{git_bin_path} clone --bare #{bundle_path} #{repo_path}))
       end
 
+      private
+
       def tar_with_options(archive:, dir:, options:)
         execute(%W(tar -#{options} #{archive} -C #{dir} .))
       end
