@@ -79,9 +79,11 @@ module Banzai
 
       def link_to_all(link_text: nil)
         project = context[:project]
+        author = context[:author]
+
         url = urls.namespace_project_url(project.namespace, project,
                                          only_path: context[:only_path])
-        data = data_attribute(project: project.id)
+        data = data_attribute(project: project.id, author: author.id)
         text = link_text || User.reference_prefix + 'all'
 
         link_tag(url, data, text)

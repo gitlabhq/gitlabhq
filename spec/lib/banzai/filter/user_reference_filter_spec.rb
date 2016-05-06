@@ -31,10 +31,16 @@ describe Banzai::Filter::UserReferenceFilter, lib: true do
     end
 
     it 'supports a special @all mention' do
-      doc = reference_filter("Hey #{reference}")
+      doc = reference_filter("Hey #{reference}", author: user)
       expect(doc.css('a').length).to eq 1
       expect(doc.css('a').first.attr('href'))
         .to eq urls.namespace_project_url(project.namespace, project)
+    end
+
+    it 'includes a data-author attribute' do
+      doc = reference_filter(reference, author: user)
+
+      expect(doc.css('a').first.attr('data-author')).to eq(user.id.to_s)
     end
   end
 

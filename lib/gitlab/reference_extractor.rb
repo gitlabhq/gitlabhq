@@ -4,10 +4,9 @@ module Gitlab
     REFERABLES = %i(user issue label milestone merge_request snippet commit commit_range)
     attr_accessor :project, :current_user, :author
 
-    def initialize(project, current_user = nil, author = nil)
+    def initialize(project, current_user = nil)
       @project = project
       @current_user = current_user
-      @author = author
 
       @references = {}
 
@@ -19,7 +18,7 @@ module Gitlab
     end
 
     def references(type)
-      super(type, project, current_user, author)
+      super(type, project, current_user)
     end
 
     REFERABLES.each do |type|

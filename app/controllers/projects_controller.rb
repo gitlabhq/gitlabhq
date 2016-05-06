@@ -202,8 +202,8 @@ class ProjectsController < Projects::ApplicationController
   def markdown_preview
     text = params[:text]
 
-    ext = Gitlab::ReferenceExtractor.new(@project, current_user, current_user)
-    ext.analyze(text)
+    ext = Gitlab::ReferenceExtractor.new(@project, current_user)
+    ext.analyze(text, author: current_user)
 
     render json: {
       body:       view_context.markdown(text),

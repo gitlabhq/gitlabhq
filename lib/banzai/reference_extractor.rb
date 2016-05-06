@@ -31,9 +31,9 @@ module Banzai
       @texts << Renderer.render(text, context)
     end
 
-    def references(type, project, current_user = nil, author = nil)
+    def references(type, project, current_user = nil)
       processor = Banzai::ReferenceParser[type].
-        new(project, current_user, author)
+        new(project, current_user)
 
       processor.process(html_documents)
     end
