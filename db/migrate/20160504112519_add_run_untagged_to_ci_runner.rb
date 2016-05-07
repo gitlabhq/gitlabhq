@@ -6,6 +6,6 @@ class AddRunUntaggedToCiRunner < ActiveRecord::Migration
   # caused by the default value.
   #
   def change
-    add_column :ci_runners, :run_untagged, :boolean, default: true
+    add_column :ci_runners, :run_untagged, :boolean, default: true, null: false
   end
 end
