@@ -273,7 +273,7 @@ creation.
 [Docker Fundamentals]: https://docs.docker.com/engine/understanding-docker/
 [hub]: https://hub.docker.com/
 [linking-containers]: https://docs.docker.com/engine/userguide/networking/default_network/dockerlinks/
-[tutum/wordpress]: https://registry.hub.docker.com/u/tutum/wordpress/
-[postgres-hub]: https://registry.hub.docker.com/u/library/postgres/
-[mysql-hub]: https://registry.hub.docker.com/u/library/mysql/
+[tutum/wordpress]: https://hub.docker.com/r/tutum/wordpress/
+[postgres-hub]: https://hub.docker.com/r/_/postgres/
+[mysql-hub]: https://hub.docker.com/r/_/mysql/
 [runner-priv-reg]: https://gitlab.com/gitlab-org/gitlab-ci-multi-runner/blob/master/docs/configuration/advanced-configuration.md#using-a-private-docker-registry
