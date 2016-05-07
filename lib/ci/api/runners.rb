@@ -29,8 +29,11 @@ module Ci
           required_attributes! [:token]
 
           attributes = { description: params[:description],
-                         tag_list: params[:tag_list],
-                         run_untagged: params[:run_untagged] || true }
+                         tag_list: params[:tag_list] }
+
+          unless params[:run_untagged].nil?
+            attributes.merge!(run_untagged: params[:run_untagged])
+          end
 
           runner =
             if runner_registration_token_valid?
