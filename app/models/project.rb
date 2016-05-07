@@ -1039,4 +1039,11 @@ class Project < ActiveRecord::Base
   def wiki
     @wiki ||= ProjectWiki.new(self, self.owner)
   end
+
+  def schedule_delete!(user_id, params)
+    # Queue this task for after the commit, so once we mark pending_delete it will run
+    run_after_commit { ProjectDestroyWorker.perform_async(id, user_id, params) }
+
+    update_attribute(:pending_delete, true)
+  end
 end
