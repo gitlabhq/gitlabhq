@@ -31,7 +31,9 @@ module Banzai
       end
 
       def build_url(uri)
-        File.join(Gitlab.config.gitlab.url, context[:project].path_with_namespace, uri)
+        return '#' unless project = context[:project]
+
+        File.join(Gitlab.config.gitlab.url, project.path_with_namespace, uri)
       end
 
       # Ensure that a :project key exists in context
