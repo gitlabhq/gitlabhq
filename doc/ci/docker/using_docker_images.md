@@ -64,7 +64,7 @@ You can see some widely used services examples in the relevant documentation of
 ### How is service linked to the build
 
 To better understand how the container linking works, read
-[Linking containers together](https://docs.docker.com/userguide/dockerlinks/).
+[Linking containers together][linking-containers].
 
 To summarize, if you add `mysql` as service to your application, the image will
 then be used to create a container that is linked to the build container.
