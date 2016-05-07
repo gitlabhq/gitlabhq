@@ -2,10 +2,7 @@
 
 %h4 Runner ##{@runner.id}
 
-- if @runner.errors.any?
-  .error-message.js-errors
-    - @runner.errors.full_messages.each do |error|
-      %div= error
+= form_errors(@runner)
 
 %hr
  = render 'form', runner: @runner, runner_form_url: runner_path(@runner)
