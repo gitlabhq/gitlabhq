@@ -150,7 +150,8 @@ module EventsHelper
         link_to(
           namespace_project_commit_path(event.project.namespace, event.project,
                                         event.note_commit_id,
-                                        anchor: dom_id(event.target), title: h(event.target_title)),
+                                        anchor: dom_id(event.target)),
+          title: h(event.target_title),
           class: "commit_short_id"
         ) do
           "#{event.note_target_type} #{event.note_short_commit_id}"
