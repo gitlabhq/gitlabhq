@@ -32,6 +32,9 @@ v 8.8.0 (unreleased)
   - Expire repository exists? and has_visible_content? caches after a push if necessary
   - Fix unintentional filtering bug in issues sorted by milestone due (Takuya Noguchi)
 
+v 8.7.4
+  - Fix always showing build notification message when switching between merge requests
+
 v 8.7.3
   - Emails, Gitlab::Email::Message, Gitlab::Diff, and Premailer::Adapter::Nokogiri are now instrumented
   - Merge request widget displays TeamCity build state and code coverage correctly again.

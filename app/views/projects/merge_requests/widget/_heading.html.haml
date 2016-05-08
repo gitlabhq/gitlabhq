@@ -42,8 +42,3 @@
     .ci_widget.ci-error{style: "display:none"}
       = icon("times-circle")
       Could not connect to the CI server. Please check your settings and try again.
-
-  :javascript
-    $(function() {
-      merge_request_widget.getCIStatus(false);
-    });
