@@ -56,6 +56,9 @@ v 8.7.4
   - Running rake gitlab:db:drop_tables uses "IF EXISTS" as a precaution !4100
   - Use a case-insensitive comparison in sanitizing URI schemes
 
+v 8.7.4
+  - Fix always showing build notification message when switching between merge requests
+
 v 8.7.3
   - Emails, Gitlab::Email::Message, Gitlab::Diff, and Premailer::Adapter::Nokogiri are now instrumented
   - Merge request widget displays TeamCity build state and code coverage correctly again.
