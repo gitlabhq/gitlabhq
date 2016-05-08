@@ -13,8 +13,8 @@ describe Projects::DestroyService, services: true do
     end
 
     it { expect(Project.all).not_to include(project) }
-    it { expect(Dir.exists?(path)).to be_falsey }
-    it { expect(Dir.exists?(remove_path)).to be_falsey }
+    it { expect(Dir.exist?(path)).to be_falsey }
+    it { expect(Dir.exist?(remove_path)).to be_falsey }
   end
 
   context 'Sidekiq fake' do
@@ -24,8 +24,8 @@ describe Projects::DestroyService, services: true do
     end
 
     it { expect(Project.all).not_to include(project) }
-    it { expect(Dir.exists?(path)).to be_falsey }
-    it { expect(Dir.exists?(remove_path)).to be_truthy }
+    it { expect(Dir.exist?(path)).to be_falsey }
+    it { expect(Dir.exist?(remove_path)).to be_truthy }
   end
 
   def destroy_project(project, user, params)

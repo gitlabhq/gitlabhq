@@ -42,7 +42,7 @@ module Gitlab
       config_file = File.expand_path('../../../config/resque.yml', __FILE__)
   
       @url = "redis://localhost:6379"
-      if File.exists?(config_file)
+      if File.exist?(config_file)
         @url =YAML.load_file(config_file)[rails_env]
       end
     end
