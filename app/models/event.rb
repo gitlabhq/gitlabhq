@@ -3,9 +3,9 @@
 # Table name: events
 #
 #  id          :integer          not null, primary key
-#  target_type :string(255)
+#  target_type :string
 #  target_id   :integer
-#  title       :string(255)
+#  title       :string
 #  data        :text
 #  project_id  :integer
 #  created_at  :datetime

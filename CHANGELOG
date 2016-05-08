@@ -2,20 +2,27 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.8.0 (unreleased)
   - Snippets tab under user profile. !4001 (Long Nguyen)
+  - Assign labels and milestone to target project when moving issue. !3934 (Long Nguyen)
   - Project#open_branches has been cleaned up and no longer loads entire records into memory.
   - Log to application.log when an admin starts and stops impersonating a user
+  - Updated gitlab_git to 10.1.0
+  - GitAccess#protected_tag? no longer loads all tags just to check if a single one exists
+  - Reduce delay in destroying a project from 1-minute to immediately
   - Make build status canceled if any of the jobs was canceled and none failed
+  - Upgrade Sidekiq to 4.1.2
   - Sanitize repo paths in new project error message
+  - Bump mail_room to 0.7.0 to fix stuck IDLE connections
   - Remove future dates from contribution calendar graph.
   - Support e-mail notifications for comments on project snippets
   - Use ActionDispatch Remote IP for Akismet checking
   - Fix error when visiting commit builds page before build was updated
   - Add 'l' shortcut to open Label dropdown on issuables and 'i' to create new issue on a project
+  - Update SVG sanitizer to conform to SVG 1.1
   - Updated search UI
   - Display informative message when new milestone is created
   - Allow "NEWS" and "CHANGES" as alternative names for CHANGELOG. !3768 (Connor Shea)
   - Added button to toggle whitespaces changes on diff view
-  - Backport GitLab Enterprise support from EE
+  - Backport GitHub Enterprise import support from EE
   - Create tags using Rugged for performance reasons. !3745
   - Files over 5MB can only be viewed in their raw form, files over 1MB without highlighting !3718
   - Add support for supressing text diffs using .gitattributes on the default branch (Matt Oakes)
@@ -24,15 +31,19 @@ v 8.8.0 (unreleased)
   - API support for the 'since' and 'until' operators on commit requests (Paco Guzman)
   - Fix Gravatar hint in user profile when Gravatar is disabled. !3988 (Artem Sidorenko)
   - Expire repository exists? and has_visible_content? caches after a push if necessary
-  - Merge request widget displays TeamCity build state and code coverage correctly again.
+  - Fix unintentional filtering bug in issues sorted by milestone due (Takuya Noguchi)
 
 v 8.7.3
   - Emails, Gitlab::Email::Message, Gitlab::Diff, and Premailer::Adapter::Nokogiri are now instrumented
+  - Merge request widget displays TeamCity build state and code coverage correctly again.
+  - Fix the line code when importing PR review comments from GitHub. !4010
+  - Wikis are now initialized on legacy projects when checking repositories
 
 v 8.7.2
   - The "New Branch" button is now loaded asynchronously
   - Fix error 500 when trying to create a wiki page
   - Updated spacing between notification label and button
+  - Label titles in filters are now escaped properly
 
 v 8.7.1
   - Throttle the update of `project.last_activity_at` to 1 minute. !3848

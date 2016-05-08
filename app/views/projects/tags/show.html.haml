@@ -2,7 +2,7 @@
 = render "projects/commits/header_title"
 = render "projects/commits/head"
 
-.gray-content-block
+.row-content-block
   .pull-right
     - if can?(current_user, :push_code, @project)
       = link_to edit_namespace_project_tag_release_path(@project.namespace, @project, @tag.name), class: 'btn-grouped btn has-tooltip', title: 'Edit release notes' do

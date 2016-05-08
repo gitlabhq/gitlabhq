@@ -5,7 +5,7 @@
 #  id                :integer          not null, primary key
 #  user_id           :integer
 #  subscribable_id   :integer
-#  subscribable_type :string(255)
+#  subscribable_type :string
 #  subscribed        :boolean
 #  created_at        :datetime
 #  updated_at        :datetime
