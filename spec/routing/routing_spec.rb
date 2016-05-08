@@ -31,6 +31,10 @@ describe SnippetsController, "routing" do
     expect(get("/snippets/1/raw")).to route_to('snippets#raw', id: '1')
   end
 
+  it "to #index" do
+    expect(get("/snippets")).to route_to('snippets#index')
+  end
+
   it "to #create" do
     expect(post("/snippets")).to route_to('snippets#create')
   end

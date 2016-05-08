@@ -91,6 +91,9 @@ Rails.application.routes.draw do
     end
   end
 
+  get '/s/:username', to: redirect('/u/:username/snippets'),
+                      constraints: { username: /[a-zA-Z.0-9_\-]+(?<!\.atom)/ }
+
   #
   # Invites
   #
@@ -340,26 +343,20 @@ Rails.application.routes.draw do
     end
   end
 
-  get 'u/:username/calendar' => 'users#calendar', as: :user_calendar,
-      constraints: { username: /.*/ }
-
-  get 'u/:username/calendar_activities' => 'users#calendar_activities', as: :user_calendar_activities,
-      constraints: { username: /.*/ }
-
-  get 'u/:username/groups' => 'users#groups', as: :user_groups,
-      constraints: { username: /.*/ }
-
-  get 'u/:username/projects' => 'users#projects', as: :user_projects,
-      constraints: { username: /.*/ }
-
-  get 'u/:username/contributed' => 'users#contributed', as: :user_contributed_projects,
-      constraints: { username: /.*/ }
-
-  get 'u/:username/snippets' => 'users#snippets', as: :user_snippets,
-      constraints: { username: /.*/ }
-
-  get '/u/:username' => 'users#show', as: :user,
-      constraints: { username: /[a-zA-Z.0-9_\-]+(?<!\.atom)/ }
+  resources(:users,
+            path: 'u',
+            param: :username,
+            constraints: { username: /[a-zA-Z.0-9_\-]+(?<!\.atom)/ },
+            only: :show) do
+    member do
+      get :calendar, as: :calendar
+      get :calendar_activities, as: :calendar_activities
+      get :groups, as: :groups
+      get :projects, as: :projects
+      get :contributed, as: :contributed_projects
+      get :snippets, as: :snippets
+    end
+  end
 
   #
   # Dashboard Area
