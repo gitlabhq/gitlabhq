@@ -343,19 +343,16 @@ Rails.application.routes.draw do
     end
   end
 
-  resources(:users,
-            path: 'u',
-            param: :username,
-            constraints: { username: /[a-zA-Z.0-9_\-]+(?<!\.atom)/ },
-            only: :show) do
-    member do
-      get :calendar, as: :calendar
-      get :calendar_activities, as: :calendar_activities
-      get :groups, as: :groups
-      get :projects, as: :projects
-      get :contributed, as: :contributed_projects
-      get :snippets, as: :snippets
-    end
+  scope(path: 'u/:username',
+        constraints: { username: /[a-zA-Z.0-9_\-]+(?<!\.atom)/ },
+        controller: :users) do
+    get :calendar, action: :calendar, as: :user_calendar
+    get :calendar_activities, action: :calendar_activities, as: :user_calendar_activities
+    get :groups, action: :groups, as: :user_groups
+    get :projects, action: :projects, as: :user_projects
+    get :contributed, action: :contributed, as: :user_contributed_projects
+    get :snippets, action: :snippets, as: :user_snippets
+    get '/', action: :show, as: :user
   end
 
   #
