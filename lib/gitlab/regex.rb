@@ -97,7 +97,7 @@ module Gitlab
       }x.freeze
     end
 
-    def image_reference_regex
+    def container_registry_reference_regex
       git_reference_regex
     end
   end

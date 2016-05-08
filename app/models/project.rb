@@ -370,10 +370,10 @@ class Project < ActiveRecord::Base
     @repository ||= Repository.new(path_with_namespace, self)
   end
 
-  def image_repository
+  def container_registry
     @registry_token ||= Jwt::DockerAuthenticationService.full_access_token(path_with_namespace)
     @registry ||= ImageRegistry::Registry.new(Gitlab.config.registry.api_url, token: @registry_token)
-    @image_repository ||= ImageRegistry::Repository.new(@registry, path_with_namespace)
+    @container_registry ||= ImageRegistry::Repository.new(@registry, path_with_namespace)
   end
 
   def registry_repository_url

@@ -690,7 +690,7 @@ Rails.application.routes.draw do
           end
         end
 
-        resources :images, only: [:index, :destroy], constraints: { id: Gitlab::Regex.image_reference_regex }
+        resources :container_registry, only: [:index, :destroy], constraints: { id: Gitlab::Regex.container_registry_reference_regex }
 
         resources :milestones, constraints: { id: /\d+/ } do
           member do

@@ -1,4 +1,4 @@
-- page_title "Container Images"
+- page_title "Container Registry"
 = render "header_title"
 
 .light.prepend-top-default
@@ -53,5 +53,5 @@
               = time_ago_in_words(tag.created_at)
             %td.content
               .controls.hidden-xs.pull-right
-                = link_to namespace_project_image_path(@project.namespace, @project, tag.name), class: 'btn btn-remove has-tooltip', title: "Remove", data: { confirm: "Are you sure?" }, method: :delete do
+                = link_to namespace_project_container_registry_path(@project.namespace, @project, tag.name), class: 'btn btn-remove has-tooltip', title: "Remove", data: { confirm: "Are you sure?" }, method: :delete do
                   = icon("trash cred")
