@@ -42,6 +42,9 @@ v 8.7.4
   - Fix links on wiki pages for relative url setups. !4026 (Artem Sidorenko)
   - Links for Redmine issue references are generated correctly again (Benedikt Huss)
 
+v 8.7.4
+  - Fix always showing build notification message when switching between merge requests
+
 v 8.7.3
   - Emails, Gitlab::Email::Message, Gitlab::Diff, and Premailer::Adapter::Nokogiri are now instrumented
   - Merge request widget displays TeamCity build state and code coverage correctly again.
