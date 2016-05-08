@@ -31,11 +31,11 @@ There are two editions of GitLab:
 
 On [about.gitlab.com](https://about.gitlab.com/) you can find more information about:
 
-- [Subscriptions](https://about.gitlab.com/subscription/)
+- [Subscriptions](https://about.gitlab.com/pricing/)
 - [Consultancy](https://about.gitlab.com/consultancy/)
 - [Community](https://about.gitlab.com/community/)
 - [Hosted GitLab.com](https://about.gitlab.com/gitlab-com/) use GitLab as a free service
-- [GitLab Enterprise Edition](https://about.gitlab.com/gitlab-ee/) with additional features aimed at larger organizations.
+- [GitLab Enterprise Edition](https://about.gitlab.com/features/#enterprise) with additional features aimed at larger organizations.
 - [GitLab CI](https://about.gitlab.com/gitlab-ci/) a continuous integration (CI) server that is easy to integrate with GitLab.
 
 ## Requirements
