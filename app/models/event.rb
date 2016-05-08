@@ -279,15 +279,15 @@ class Event < ActiveRecord::Base
   end
 
   def note_commit?
-    target.noteable_type == "Commit"
+    target.for_commit?
   end
 
   def issue_note?
-    note? && target && target.noteable_type == "Issue"
+    note? && target && target.for_issue?
   end
 
   def note_project_snippet?
-    target.noteable_type == "Snippet"
+    target.for_snippet?
   end
 
   def note_target
