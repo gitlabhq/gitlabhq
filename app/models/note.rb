@@ -19,6 +19,7 @@ class Note < ActiveRecord::Base
   delegate :gfm_reference, :local_reference, to: :noteable
   delegate :name, to: :project, prefix: true
   delegate :name, :email, to: :author, prefix: true
+  delegate :title, to: :noteable, allow_nil: true
 
   before_validation :set_award!
 

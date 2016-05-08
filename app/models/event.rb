@@ -80,7 +80,7 @@ class Event < ActiveRecord::Base
   end
 
   def target_title
-    target.title if target && target.respond_to?(:title)
+    target.try(:title)
   end
 
   def created?
