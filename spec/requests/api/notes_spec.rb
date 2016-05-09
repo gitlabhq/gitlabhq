@@ -57,6 +57,15 @@ describe API::API, api: true  do
           expect(json_response).to be_empty
         end
 
+        context "and issue is confidential" do
+          before { ext_issue.update_attributes(confidential: true) }
+
+          it "returns 404" do
+            get api("/projects/#{ext_proj.id}/issues/#{ext_issue.id}/notes", user)
+            expect(response.status).to eq(404)
+          end
+        end
+
         context "and current user can view the note" do
           it "should return an empty array" do
             get api("/projects/#{ext_proj.id}/issues/#{ext_issue.id}/notes", private_user)
@@ -80,6 +89,11 @@ describe API::API, api: true  do
         get api("/projects/#{project.id}/snippets/42/notes", user)
         expect(response.status).to eq(404)
       end
+
+      it "returns 404 when not authorized" do
+        get api("/projects/#{project.id}/snippets/#{snippet.id}/notes", private_user)
+        expect(response.status).to eq(404)
+      end
     end
 
     context "when noteable is a Merge Request" do
@@ -92,6 +106,11 @@ describe API::API, api: true  do
 
       it "should return a 404 error if merge request id not found" do
         get api("/projects/#{project.id}/merge_requests/4444/notes", user)
+        expect(response.status).to eq(404)
+      end
+
+      it "returns 404 when not authorized" do
+        get api("/projects/#{project.id}/merge_requests/4444/notes", private_user)
         expect(response.status).to eq(404)
       end
     end

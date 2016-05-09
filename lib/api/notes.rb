@@ -20,19 +20,24 @@ module API
         #   GET /projects/:id/snippets/:noteable_id/notes
         get ":id/#{noteables_str}/:#{noteable_id_str}/notes" do
           @noteable = user_project.send(:"#{noteables_str}").find(params[:"#{noteable_id_str}"])
+          read_ability_name = "read_#{@noteable.class.to_s.underscore.downcase}".to_sym
 
-          # We exclude notes that are cross-references and that cannot be viewed
-          # by the current user. By doing this exclusion at this level and not
-          # at the DB query level (which we cannot in that case), the current
-          # page can have less elements than :per_page even if
-          # there's more than one page.
-          notes =
-            # paginate() only works with a relation. This could lead to a
-            # mismatch between the pagination headers info and the actual notes
-            # array returned, but this is really a edge-case.
-            paginate(@noteable.notes).
-            reject { |n| n.cross_reference_not_visible_for?(current_user) }
-          present notes, with: Entities::Note
+          if can?(current_user, read_ability_name, @noteable)
+            # We exclude notes that are cross-references and that cannot be viewed
+            # by the current user. By doing this exclusion at this level and not
+            # at the DB query level (which we cannot in that case), the current
+            # page can have less elements than :per_page even if
+            # there's more than one page.
+            notes =
+              # paginate() only works with a relation. This could lead to a
+              # mismatch between the pagination headers info and the actual notes
+              # array returned, but this is really a edge-case.
+              paginate(@noteable.notes).
+              reject { |n| n.cross_reference_not_visible_for?(current_user) }
+            present notes, with: Entities::Note
+          else
+            render_api_error!("Not found.", 404)
+          end
         end
 
         # Get a single +noteable+ note
