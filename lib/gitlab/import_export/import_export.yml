@@ -22,7 +22,6 @@ included_attributes:
     - :path
     - :description
     - :issues_enabled
-    - :wall_enabled
     - :merge_requests_enabled
     - :wiki_enabled
     - :snippets_enabled
