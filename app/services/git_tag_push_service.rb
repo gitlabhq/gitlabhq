@@ -2,6 +2,7 @@ class GitTagPushService < BaseService
   attr_accessor :push_data
 
   def execute
+    project.repository.after_create if project.empty_repo?
     project.repository.before_push_tag
 
     @push_data = build_push_data

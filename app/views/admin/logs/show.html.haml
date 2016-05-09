@@ -7,7 +7,7 @@
     %li{ class: (klass == Gitlab::GitLogger ? 'active' : '') }
       = link_to klass::file_name, "##{klass::file_name_noext}",
           'data-toggle' => 'tab'
-.gray-content-block
+.row-content-block
   To prevent performance issues admin logs output the last 2000 lines
 .tab-content
   - loggers.each do |klass|

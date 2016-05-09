@@ -114,10 +114,6 @@ ul.notes {
           word-break: keep-all;
         }
       }
-
-      a {
-        word-break: break-all;
-      }
     }
 
     .note-header {
@@ -171,6 +167,11 @@ ul.notes {
 
       .notes {
         background-color: $white-light;
+      }
+
+      a code {
+        top: 0;
+        margin-right: 0;
       }
     }
   }

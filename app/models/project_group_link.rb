@@ -1,3 +1,15 @@
+# == Schema Information
+#
+# Table name: project_group_links
+#
+#  id           :integer          not null, primary key
+#  project_id   :integer          not null
+#  group_id     :integer          not null
+#  created_at   :datetime
+#  updated_at   :datetime
+#  group_access :integer          default(30), not null
+#
+
 class ProjectGroupLink < ActiveRecord::Base
   GUEST     = 10
   REPORTER  = 20
