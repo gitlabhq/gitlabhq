@@ -5,11 +5,11 @@
 #  id            :integer          not null, primary key
 #  project_id    :integer
 #  noteable_id   :integer
-#  noteable_type :string(255)
+#  noteable_type :string
 #  recipient_id  :integer
-#  commit_id     :string(255)
-#  line_code     :string(255)
-#  reply_key     :string(255)      not null
+#  commit_id     :string
+#  reply_key     :string           not null
+#  line_code     :string
 #
 
 class SentNotification < ActiveRecord::Base

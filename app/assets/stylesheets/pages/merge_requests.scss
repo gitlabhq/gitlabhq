@@ -104,7 +104,7 @@
       font-weight: 600;
       font-size: 17px;
       margin: 5px 0;
-      color: #313236;
+      color: $gl-gray-dark;
     }
 
     p:last-child {
@@ -136,7 +136,7 @@
 }
 
 .label-branch {
-  color: #313236;
+  color: $gl-gray-dark;
   font-family: $monospace_font;
   font-weight: bold;
   overflow: hidden;
@@ -272,3 +272,19 @@
   display: inline-block;
   width: 250px;
 }
+
+.table-holder {
+  .builds {
+
+    th {
+      background-color: $white-light;
+      color: $gl-placeholder-color;
+    }
+
+    th,
+    td {
+      padding: 16px;
+    }
+  }
+}
+

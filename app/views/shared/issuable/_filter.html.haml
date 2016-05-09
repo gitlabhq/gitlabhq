@@ -1,5 +1,5 @@
 .issues-filters
-  .issues-details-filters.gray-content-block.second-block
+  .issues-details-filters.row-content-block.second-block
     = form_tag page_filter_path(without: [:assignee_id, :author_id, :milestone_title, :label_name]), method: :get, class: 'filter-form' do
       - if controller.controller_name == 'issues' && can?(current_user, :admin_issue, @project)
         .check-all-holder
@@ -48,7 +48,7 @@
             = button_tag "Update issues", class: "btn update_selected_issues btn-save"
 
   - if !@labels.nil?
-    .gray-content-block.second-block.filtered-labels{ class: ("hidden" if !@labels.any?) }
+    .row-content-block.second-block.filtered-labels{ class: ("hidden" if !@labels.any?) }
       - if @labels.any?
         = render "shared/labels_row", labels: @labels
 

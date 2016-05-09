@@ -5,7 +5,7 @@
 #  id          :integer          not null, primary key
 #  label_id    :integer
 #  target_id   :integer
-#  target_type :string(255)
+#  target_type :string
 #  created_at  :datetime
 #  updated_at  :datetime
 #

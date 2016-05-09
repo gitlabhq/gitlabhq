@@ -142,6 +142,16 @@ code snippet right after your description in a new line: `~"feature proposal"`.
 Please keep feature proposals as small and simple as possible, complex ones
 might be edited to make them small and simple.
 
+You are encouraged to use the template below for feature proposals.
+
+```
+## Description including problem, use cases, benefits, and/or goals
+
+## Proposal
+
+## Links / references
+```
+
 For changes in the interface, it can be helpful to create a mockup first.
 If you want to create something yourself, consider opening an issue first to
 discuss whether it is interesting to include this in GitLab.
@@ -349,7 +359,7 @@ on your merge request feel free to mention one of the Merge Marshalls in the
 Please ensure that your merge request meets the contribution acceptance criteria.
 
 When having your code reviewed and when reviewing merge requests please take the
-[Thoughtbot code review guide] into account.
+[code review guidelines](doc/development/code_review.md) into account.
 
 ### Merge request description format
 
@@ -523,4 +533,3 @@ available at [http://contributor-covenant.org/version/1/1/0/](http://contributor
 [gitlab-design]: https://gitlab.com/gitlab-org/gitlab-design
 [free Antetype viewer (Mac OSX only)]: https://itunes.apple.com/us/app/antetype-viewer/id824152298?mt=12
 [`gitlab1.atype` file]: https://gitlab.com/gitlab-org/gitlab-design/tree/master/gitlab1.atype/
-[Thoughtbot code review guide]: https://github.com/thoughtbot/guides/tree/master/code-review

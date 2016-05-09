@@ -117,7 +117,7 @@ class ApplicationController < ActionController::Base
   end
 
   def after_sign_out_path_for(resource)
-    current_application_settings.after_sign_out_path || new_user_session_path
+    current_application_settings.after_sign_out_path.presence || new_user_session_path
   end
 
   def abilities

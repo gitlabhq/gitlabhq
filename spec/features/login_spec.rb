@@ -37,7 +37,7 @@ feature 'Login', feature: true do
       end
 
       def enter_code(code)
-        fill_in 'Two-factor authentication code', with: code
+        fill_in 'Two-factor Authentication code', with: code
         click_button 'Verify code'
       end
 

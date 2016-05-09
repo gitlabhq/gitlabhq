@@ -3,7 +3,7 @@
 # Table name: ci_triggers
 #
 #  id            :integer          not null, primary key
-#  token         :string(255)
+#  token         :string
 #  project_id    :integer
 #  deleted_at    :datetime
 #  created_at    :datetime

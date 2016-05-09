@@ -3,12 +3,12 @@
 # Table name: services
 #
 #  id                    :integer          not null, primary key
-#  type                  :string(255)
-#  title                 :string(255)
+#  type                  :string
+#  title                 :string
 #  project_id            :integer
-#  created_at            :datetime
-#  updated_at            :datetime
-#  active                :boolean          default(FALSE), not null
+#  created_at            :datetime         not null
+#  updated_at            :datetime         not null
+#  active                :boolean          not null
 #  properties            :text
 #  template              :boolean          default(FALSE)
 #  push_events           :boolean          default(TRUE)
@@ -17,6 +17,9 @@
 #  tag_push_events       :boolean          default(TRUE)
 #  note_events           :boolean          default(TRUE), not null
 #  build_events          :boolean          default(FALSE), not null
+#  category              :string           default("common"), not null
+#  default               :boolean          default(FALSE)
+#  wiki_page_events      :boolean          default(TRUE)
 #
 
 class PivotaltrackerService < Service

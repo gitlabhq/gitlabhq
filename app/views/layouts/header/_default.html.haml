@@ -23,6 +23,7 @@
                   = icon('wrench fw')
             %li
               = link_to dashboard_todos_path, title: 'Todos', data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
+                = icon('bell fw')
                 %span.badge.todos-pending-count
                   = todos_pending_count
             - if current_user.can_create_project?

@@ -205,3 +205,21 @@
     text-align: center;
   }
 }
+
+.user-profile {
+  @media (max-width: $screen-xs-max) {
+    .cover-block {
+      padding-top: 20px;
+    }
+
+    .cover-controls {
+      position: static;
+      margin-bottom: 20px;
+
+      .btn {
+        display: inline-block;
+        width: 48%;
+      }
+    }
+  }
+}
