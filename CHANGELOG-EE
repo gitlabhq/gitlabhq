@@ -7,6 +7,7 @@ v 8.8.0 (unreleased)
   - [Elastic] Add rake task for removing all indexes
   - [Elastic] Add rake task for clearing indexing status
   - Set KRB5 as default clone protocol when Kerberos is enabled and user is logged in (Borja Aparicio)
+  - Reduce emails-on-push HTML size by using a simple monospace font
 
 v 8.7.2
   - Fix MR notifications for slack and hipchat when approvals are fullfiled. !325
