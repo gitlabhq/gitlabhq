@@ -86,7 +86,7 @@ class User < ActiveRecord::Base
   default_value_for :theme_id, gitlab_config.default_theme
 
   devise :two_factor_authenticatable,
-         otp_secret_encryption_key: File.read(Rails.root.join('.secret')).chomp
+         otp_secret_encryption_key: Gitlab::Application.config.secret_key_base
   alias_attribute :two_factor_enabled, :otp_required_for_login
 
   devise :two_factor_backupable, otp_number_of_backup_codes: 10
