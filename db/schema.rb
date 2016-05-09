@@ -285,6 +285,7 @@ ActiveRecord::Schema.define(version: 20160608155312) do
     t.string   "platform"
     t.string   "architecture"
     t.boolean  "run_untagged", default: true,  null: false
+    t.boolean  "locked",       default: false, null: false
   end
 
   add_index "ci_runners", ["description"], name: "index_ci_runners_on_description_trigram", using: :gin, opclasses: {"description"=>"gin_trgm_ops"}
