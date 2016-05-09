@@ -272,7 +272,6 @@ Settings.artifacts['max_size']    ||= 100 # in megabytes
 #
 Settings['registry'] ||= Settingslogic.new({})
 Settings.registry['registry']     = false if Settings.registry['enabled'].nil?
-Settings.registry['path']         = File.expand_path(Settings.registry['path'] || File.join(Settings.shared['path'], "registry"), Rails.root)
 Settings.registry['host']         ||= "example.com"
 Settings.registry['internal_host']||= "localhost"
 Settings.registry['key']          ||= nil

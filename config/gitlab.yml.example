@@ -184,7 +184,6 @@ production: &base
     # internal_host: localhost
     # key: config/registry.key
     # issuer: omnibus-certificate
-    # path: shared/registry
 
   #
   # 2. GitLab CI settings
