@@ -5,12 +5,12 @@ module Jwt
         return error('forbidden', 403) unless current_user
       end
 
-      { token: token.encoded }
+      { token: authorized_token.encoded }
     end
 
     private
 
-    def token
+    def authorized_token
       token = ::Jwt::RSAToken.new(registry.key)
       token.issuer = registry.issuer
       token.audience = params[:service]
@@ -37,22 +37,22 @@ module Jwt
     end
 
     def process_repository_access(type, name, actions)
-      current_project = Project.find_with_namespace(name)
-      return unless current_project
+      requested_project = Project.find_with_namespace(name)
+      return unless requested_project
 
       actions = actions.select do |action|
-        can_access?(current_project, action)
+        can_access?(requested_project, action)
       end
 
       { type: type, name: name, actions: actions } if actions
     end
 
-    def can_access?(current_project, action)
-      case action
+    def can_access?(requested_project, requested_action)
+      case requested_action
       when 'pull'
-        current_project == project || can?(current_user, :download_code, current_project)
+        requested_project.public? || requested_project == project || can?(current_user, :download_code, requested_project)
       when 'push'
-        current_project == project || can?(current_user, :push_code, current_project)
+        requested_project == project || can?(current_user, :push_code, requested_project)
       else
         false
       end

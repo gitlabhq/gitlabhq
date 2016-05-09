@@ -8,8 +8,9 @@ class JwtController < ApplicationController
 
   def auth
     @authenticated = authenticate_with_http_basic do |login, password|
-      @ci_project = ci_project(login, password)
-      @user = authenticate_user(login, password) unless @ci_project
+      # if it's possible we first try to authenticate project with login and password
+      @project = authenticate_project(login, password)
+      @user = authenticate_user(login, password) unless @project
     end
 
     unless @authenticated
@@ -19,7 +20,7 @@ class JwtController < ApplicationController
     service = SERVICES[params[:service]]
     head :not_found unless service
 
-    result = service.new(@ci_project, @user, auth_params).execute
+    result = service.new(@project, @user, auth_params).execute
     return head result[:http_status] if result[:http_status]
 
     render json: result
@@ -31,7 +32,7 @@ class JwtController < ApplicationController
     params.permit(:service, :scope, :offline_token, :account, :client_id)
   end
 
-  def ci_project(login, password)
+  def authenticate_project(login, password)
     matched_login = /(?<s>^[a-zA-Z]*-ci)-token$/.match(login)
 
     if matched_login.present?
