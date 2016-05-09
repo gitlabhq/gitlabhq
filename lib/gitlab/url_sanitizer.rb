@@ -1,5 +1,11 @@
 module Gitlab
-  class ImportUrl
+  class UrlSanitizer
+    def self.sanitize(content)
+      regexp = URI::Parser.new.make_regexp(['http', 'https', 'ssh', 'git'])
+
+      content.gsub(regexp) { |url| new(url).sanitized_url }
+    end
+
     def initialize(url, credentials: nil)
       @url = URI.parse(URI.encode(url))
       @credentials = credentials

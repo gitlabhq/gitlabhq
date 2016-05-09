@@ -95,11 +95,11 @@ class RemoteMirror < ActiveRecord::Base
 
   def mark_as_failed(error_message)
     update_fail
-    update_column(:last_error, Gitlab::UrlCredentialsFilter.process(error_message))
+    update_column(:last_error, Gitlab::UrlSanitizer.sanitize(error_message))
   end
 
   def url=(value)
-    mirror_url = Gitlab::ImportUrl.new(value)
+    mirror_url = Gitlab::UrlSanitizer.new(value)
     self.credentials = mirror_url.credentials
 
     super(mirror_url.sanitized_url)
@@ -107,7 +107,7 @@ class RemoteMirror < ActiveRecord::Base
 
   def url
     if super
-      Gitlab::ImportUrl.new(super, credentials: credentials).full_url
+      Gitlab::UrlSanitizer.new(super, credentials: credentials).full_url
     end
   end
 
