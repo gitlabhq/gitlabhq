@@ -17,30 +17,30 @@ module Gitlab
       private
 
       def build_hash(model_list)
-        model_list.map do |model_object|
-          if model_object.is_a?(Hash)
-            process_include(model_object)
+        model_list.map do |model_object_hash|
+          if model_object_hash.is_a?(Hash)
+            process_model_object(model_object_hash)
           else
-            @attributes_parser.find(model_object)
+            @attributes_parser.find(model_object_hash)
           end
         end
       end
 
-      def process_include(hash, included_classes_hash = {})
-        hash.values.flatten.each do |value|
-          current_key = hash.keys.first
-          value = process_current_class(hash, included_classes_hash, value)
+      def process_model_object(model_object_hash, included_classes_hash = {})
+        model_object_hash.values.flatten.each do |model_object|
+          current_key = model_object_hash.keys.first
+          model_object = process_current_class(model_object_hash, included_classes_hash, model_object)
           if included_classes_hash[current_key]
-            add_to_class(current_key, included_classes_hash, value)
+            add_to_class(current_key, included_classes_hash, model_object)
           else
-            add_new_class(current_key, included_classes_hash, value)
+            add_new_class(current_key, included_classes_hash, model_object)
           end
         end
         included_classes_hash
       end
 
       def process_current_class(hash, included_classes_hash, value)
-        value = value.is_a?(Hash) ? process_include(hash, included_classes_hash) : value
+        value = value.is_a?(Hash) ? process_model_object(hash, included_classes_hash) : value
         attributes_hash = @attributes_parser.find_attributes_only(hash.keys.first)
         included_classes_hash[hash.keys.first] ||= attributes_hash unless attributes_hash.empty?
         value
