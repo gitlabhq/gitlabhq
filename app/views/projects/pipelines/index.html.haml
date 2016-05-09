@@ -29,7 +29,6 @@
         = icon('plus')
         New
 
-    - if can?(current_user, :update_build, @project)
       - unless @repository.gitlab_ci_yml
         = link_to 'Get started with Pipelines', help_page_path('ci/quick_start', 'README'), class: 'btn btn-info'
 
@@ -54,7 +53,7 @@
     .table-holder
       %table.table.builds
         %tbody
-          %th Pipeline ID
+          %th ID
           %th Commit
           - @pipelines.stages.each do |stage|
             %th
