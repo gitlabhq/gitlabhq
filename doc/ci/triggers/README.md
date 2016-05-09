@@ -85,6 +85,12 @@ curl -X POST \
 
 In this case, the project with ID `9` will get rebuilt on `master` branch.
 
+Alternatively, you can pass the `token` and `ref` arguments in the query string:
+
+```bash
+curl -X POST \
+    "https://gitlab.example.com/api/v3/projects/9/trigger/builds?token=TOKEN&ref=master"
+```
 
 ### Triggering a build within `.gitlab-ci.yml`
 

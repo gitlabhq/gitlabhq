@@ -1,4 +1,4 @@
-.gray-content-block.middle-block
+.row-content-block.build-content.middle-block
   .pull-right
     - if can?(current_user, :update_build, @project)
       - if ci_commit.builds.latest.failed.any?(&:retryable?)
@@ -36,19 +36,6 @@
 
 .table-holder
   %table.table.builds
-    - builds = ci_commit.statuses.latest.ordered
-    - CommitStatus.where(id: builds).stages.each do |stage|
-      - stage_builds = builds.where(stage: stage)
-      %tr
-        %th{colspan: 10}
-          %strong
-            - stage_status = CommitStatus.where(id: stage_builds.ids).status
-            %span{class: "ci-status-link ci-status-icon-#{stage_status}"}
-              = ci_icon_for_status(stage_status)
-            &nbsp;
-            = stage.titleize.pluralize
-        = render stage_builds, coverage: @project.build_coverage_enabled?, tage: false, ref: false, allow_retry: true
-        = render ci_commit.retried.select { |build| build.stage == stage }, coverage: @project.build_coverage_enabled?, stage: false, ref: false, retried: true
-      %tr
-        %td{colspan: 10}
-          &nbsp;
+    - stages = ci_commit.statuses.latest.stages_status
+    - stages.each do |stage, status|
+      = render 'ci_stage', stage: stage, status: status

@@ -128,7 +128,7 @@ module Gitlab
       action =
         if project.protected_branch?(branch_name(ref))
           protected_branch_action(oldrev, newrev, branch_name(ref))
-        elsif protected_tag?(tag_name(ref))
+        elsif (tag_ref = tag_name(ref)) && protected_tag?(tag_ref)
           # Prevent any changes to existing git tag unless user has permissions
           :admin_project
         else
@@ -176,7 +176,7 @@ module Gitlab
     end
 
     def protected_tag?(tag_name)
-      project.repository.tag_names.include?(tag_name)
+      project.repository.tag_exists?(tag_name)
     end
 
     def user_allowed?

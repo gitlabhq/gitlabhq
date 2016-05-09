@@ -3,11 +3,11 @@
 # Table name: lfs_objects
 #
 #  id         :integer          not null, primary key
-#  oid        :string(255)      not null
+#  oid        :string           not null
 #  size       :integer          not null
 #  created_at :datetime
 #  updated_at :datetime
-#  file       :string(255)
+#  file       :string
 #
 
 class LfsObject < ActiveRecord::Base

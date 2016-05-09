@@ -1,0 +1,15 @@
+- statuses = ci_commit.statuses.where(stage: stage).to_a
+- retried = statuses.select(&:retried?)
+- latest = statuses - retried
+%tr
+  %th{colspan: 10}
+    %strong
+      %span{class: "ci-status-link ci-status-icon-#{status}"}
+        = ci_icon_for_status(status)
+      &nbsp;
+      = stage.titleize.pluralize
+  = render latest, coverage: @project.build_coverage_enabled?, tage: false, ref: false, allow_retry: true
+  = render retried, coverage: @project.build_coverage_enabled?, stage: false, ref: false, retried: true
+  %tr
+    %td{colspan: 10}
+      &nbsp;

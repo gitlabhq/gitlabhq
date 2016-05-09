@@ -16,6 +16,8 @@
 #  note_events             :boolean          default(FALSE), not null
 #  enable_ssl_verification :boolean          default(TRUE)
 #  build_events            :boolean          default(FALSE), not null
+#  wiki_page_events        :boolean          default(FALSE), not null
+#  token                   :string
 #
 
 class SystemHook < WebHook

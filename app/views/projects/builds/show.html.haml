@@ -2,7 +2,7 @@
 = render "header_title"
 
 .build-page
-  .gray-content-block.top-block
+  .row-content-block.top-block
     Build ##{@build.id} for commit
     %strong.monospace= link_to @build.commit.short_sha, ci_status_path(@build.commit)
     from
@@ -34,7 +34,7 @@
             %i.fa.fa-warning
             This build was retried.
 
-  .gray-content-block.middle-block
+  .row-content-block.middle-block
     .build-head
       .clearfix
         = ci_status_with_icon(@build.status)

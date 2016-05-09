@@ -3,55 +3,55 @@
 # Table name: users
 #
 #  id                          :integer          not null, primary key
-#  email                       :string(255)      default(""), not null
-#  encrypted_password          :string(255)      default(""), not null
-#  reset_password_token        :string(255)
+#  email                       :string           default(""), not null
+#  encrypted_password          :string           default(""), not null
+#  reset_password_token        :string
 #  reset_password_sent_at      :datetime
 #  remember_created_at         :datetime
 #  sign_in_count               :integer          default(0)
 #  current_sign_in_at          :datetime
 #  last_sign_in_at             :datetime
-#  current_sign_in_ip          :string(255)
-#  last_sign_in_ip             :string(255)
+#  current_sign_in_ip          :string
+#  last_sign_in_ip             :string
 #  created_at                  :datetime
 #  updated_at                  :datetime
-#  name                        :string(255)
+#  name                        :string
 #  admin                       :boolean          default(FALSE), not null
 #  projects_limit              :integer          default(10)
-#  skype                       :string(255)      default(""), not null
-#  linkedin                    :string(255)      default(""), not null
-#  twitter                     :string(255)      default(""), not null
-#  authentication_token        :string(255)
+#  skype                       :string           default(""), not null
+#  linkedin                    :string           default(""), not null
+#  twitter                     :string           default(""), not null
+#  authentication_token        :string
 #  theme_id                    :integer          default(1), not null
-#  bio                         :string(255)
+#  bio                         :string
 #  failed_attempts             :integer          default(0)
 #  locked_at                   :datetime
-#  username                    :string(255)
+#  username                    :string
 #  can_create_group            :boolean          default(TRUE), not null
 #  can_create_team             :boolean          default(TRUE), not null
-#  state                       :string(255)
+#  state                       :string
 #  color_scheme_id             :integer          default(1), not null
 #  notification_level          :integer          default(1), not null
 #  password_expires_at         :datetime
 #  created_by_id               :integer
 #  last_credential_check_at    :datetime
-#  avatar                      :string(255)
-#  confirmation_token          :string(255)
+#  avatar                      :string
+#  confirmation_token          :string
 #  confirmed_at                :datetime
 #  confirmation_sent_at        :datetime
-#  unconfirmed_email           :string(255)
+#  unconfirmed_email           :string
 #  hide_no_ssh_key             :boolean          default(FALSE)
-#  website_url                 :string(255)      default(""), not null
-#  notification_email          :string(255)
+#  website_url                 :string           default(""), not null
+#  notification_email          :string
 #  hide_no_password            :boolean          default(FALSE)
 #  password_automatically_set  :boolean          default(FALSE)
-#  location                    :string(255)
-#  encrypted_otp_secret        :string(255)
-#  encrypted_otp_secret_iv     :string(255)
-#  encrypted_otp_secret_salt   :string(255)
+#  location                    :string
+#  encrypted_otp_secret        :string
+#  encrypted_otp_secret_iv     :string
+#  encrypted_otp_secret_salt   :string
 #  otp_required_for_login      :boolean          default(FALSE), not null
 #  otp_backup_codes            :text
-#  public_email                :string(255)      default(""), not null
+#  public_email                :string           default(""), not null
 #  dashboard                   :integer          default(0)
 #  project_view                :integer          default(0)
 #  consumed_timestep           :integer
@@ -59,7 +59,8 @@
 #  hide_project_limit          :boolean          default(FALSE)
 #  unlock_token                :string
 #  otp_grace_period_started_at :datetime
-#  external                    :boolean           default(FALSE)
+#  ldap_email                  :boolean          default(FALSE), not null
+#  external                    :boolean          default(FALSE)
 #
 
 require 'carrierwave/orm/activerecord'

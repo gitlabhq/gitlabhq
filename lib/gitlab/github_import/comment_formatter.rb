@@ -28,13 +28,26 @@ module Gitlab
       end
 
       def line_code
-        if on_diff?
-          Gitlab::Diff::LineCode.generate(raw_data.path, raw_data.position, 0)
-        end
+        return unless on_diff?
+
+        parsed_lines = Gitlab::Diff::Parser.new.parse(diff_hunk.lines)
+        generate_line_code(parsed_lines.to_a.last)
+      end
+
+      def generate_line_code(line)
+        Gitlab::Diff::LineCode.generate(file_path, line.new_pos, line.old_pos)
       end
 
       def on_diff?
-        raw_data.path && raw_data.position
+        diff_hunk.present?
+      end
+
+      def diff_hunk
+        raw_data.diff_hunk
+      end
+
+      def file_path
+        raw_data.path
       end
 
       def note

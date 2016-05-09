@@ -57,11 +57,11 @@ class Spinach::Features::ProjectCommitsTags < Spinach::FeatureSteps
   end
 
   step 'I should see new an error that tag ref is invalid' do
-    expect(page).to have_content 'Invalid reference name'
+    expect(page).to have_content 'Target foo is invalid'
   end
 
   step 'I should see new an error that tag already exists' do
-    expect(page).to have_content 'Tag already exists'
+    expect(page).to have_content 'Tag v1.0.0 already exists'
   end
 
   step "I visit tag 'v1.1.0' page" do

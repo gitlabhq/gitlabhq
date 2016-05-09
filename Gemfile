@@ -19,8 +19,8 @@ gem "pg", '~> 0.18.2', group: :postgres
 
 # Authentication libraries
 gem 'devise',                 '~> 3.5.4'
+gem 'doorkeeper',             '~> 3.1'
 gem 'devise-async',           '~> 0.9.0'
-gem 'doorkeeper',             '~> 2.2.0'
 gem 'omniauth',               '~> 1.3.1'
 gem 'omniauth-auth0',         '~> 1.4.1'
 gem 'omniauth-azure-oauth2',  '~> 0.0.6'
@@ -243,7 +243,7 @@ group :development do
   gem 'brakeman', '~> 3.2.0', require: false
 
   gem "annotate", "~> 2.7.0"
-  gem "letter_opener", '~> 1.1.2'
+  gem 'letter_opener_web', '~> 1.3.0'
   gem 'quiet_assets', '~> 1.0.2'
   gem 'rerun', '~> 0.11.0'
   gem 'bullet', require: false
@@ -270,7 +270,7 @@ group :development, :test do
 
   gem 'database_cleaner',   '~> 1.4.0'
   gem 'factory_girl_rails', '~> 4.6.0'
-  gem 'rspec-rails',        '~> 3.3.0'
+  gem 'rspec-rails',        '~> 3.4.0'
   gem 'rspec-retry'
   gem 'spinach-rails',      '~> 0.2.1'
   gem 'spinach-rerun-reporter', '~> 0.0.2'
@@ -320,7 +320,7 @@ gem "newrelic_rpm", '~> 3.14'
 
 gem 'octokit', '~> 4.3.0'
 
-gem "mail_room", "~> 0.6.1"
+gem "mail_room", "~> 0.7"
 
 gem 'email_reply_parser', '~> 0.5.8'
 

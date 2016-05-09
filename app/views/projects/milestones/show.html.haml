@@ -24,15 +24,15 @@
       - else
         = link_to 'Reopen Milestone', namespace_project_milestone_path(@project.namespace, @project, @milestone, milestone: {state_event: :activate }), method: :put, class: "btn btn-reopen btn-nr btn-grouped"
 
-      = link_to namespace_project_milestone_path(@project.namespace, @project, @milestone), data: { confirm: 'Are you sure?' }, method: :delete, class: "btn btn-grouped btn-nr" do
-        = icon('trash-o')
-        Delete
-
       = link_to edit_namespace_project_milestone_path(@project.namespace, @project, @milestone), class: "btn btn-grouped btn-nr" do
         = icon('pencil-square-o')
         Edit
 
-.detail-page-description.milestone-detail.second-block
+      = link_to namespace_project_milestone_path(@project.namespace, @project, @milestone), data: { confirm: 'Are you sure?' }, method: :delete, class: "btn btn-grouped btn-danger" do
+        = icon('trash-o')
+        Delete
+
+.detail-page-description.milestone-detail
   %h2.title
     = markdown escape_once(@milestone.title), pipeline: :single_line
   %div
@@ -42,9 +42,12 @@
           = preserve do
             = markdown @milestone.description
 
-- if @milestone.complete?(current_user) && @milestone.active?
+- if @milestone.total_items_count(current_user).zero?
   .alert.alert-success.prepend-top-default
-    %span All issues for this milestone are closed. You may close milestone now.
+    %span Assign some issues to this milestone.
+- elsif @milestone.complete?(current_user) && @milestone.active?
+  .alert.alert-success.prepend-top-default
+    %span All issues for this milestone are closed. You may close this milestone now.
 
 = render 'shared/milestones/summary', milestone: @milestone, project: @project
 = render 'shared/milestones/tabs', milestone: @milestone

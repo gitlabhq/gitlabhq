@@ -4,9 +4,9 @@
 #
 #  id            :integer          not null, primary key
 #  project_id    :integer
-#  ref           :string(255)
-#  sha           :string(255)
-#  before_sha    :string(255)
+#  ref           :string
+#  sha           :string
+#  before_sha    :string
 #  push_data     :text
 #  created_at    :datetime
 #  updated_at    :datetime
@@ -14,6 +14,10 @@
 #  yaml_errors   :text
 #  committed_at  :datetime
 #  gl_project_id :integer
+#  status        :string
+#  started_at    :datetime
+#  finished_at   :datetime
+#  duration      :integer
 #
 
 module Ci

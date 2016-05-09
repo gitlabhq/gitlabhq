@@ -1,12 +1,6 @@
-%ul.nav.nav-sidebar
-  = nav_link do
-    = link_to root_path, title: 'Go to dashboard', class: 'back-link' do
-      = icon('caret-square-o-left fw')
-      %span
-        Go to dashboard
+= render 'layouts/nav/group_settings'
 
-  %li.separate-item
-
+%ul.nav-links
   = nav_link(path: 'groups#show', html_options: {class: 'home'}) do
     = link_to group_path(@group), title: 'Home' do
       = icon('group fw')
@@ -28,22 +22,16 @@
       %span
         Issues
         - issues = IssuesFinder.new(current_user, group_id: @group.id, state: 'opened').execute
-        %span.count= number_with_delimiter(issues.count)
+        %span.badge.count= number_with_delimiter(issues.count)
   = nav_link(path: 'groups#merge_requests') do
     = link_to merge_requests_group_path(@group), title: 'Merge Requests' do
       = icon('tasks fw')
       %span
         Merge Requests
         - merge_requests = MergeRequestsFinder.new(current_user, group_id: @group.id, state: 'opened').execute
-        %span.count= number_with_delimiter(merge_requests.count)
+        %span.badge.count= number_with_delimiter(merge_requests.count)
   = nav_link(controller: [:group_members]) do
     = link_to group_group_members_path(@group), title: 'Members' do
       = icon('users fw')
       %span
         Members
-  - if can?(current_user, :admin_group, @group)
-    = nav_link(html_options: { class: "separate-item" }) do
-      = link_to edit_group_path(@group), title: 'Settings' do
-        = icon ('cogs fw')
-        %span
-          Settings
