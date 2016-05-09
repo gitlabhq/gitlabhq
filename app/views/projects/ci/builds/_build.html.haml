@@ -42,25 +42,43 @@
   %td
     = build.name
 
-    .label-container
-      - if build.tags.any?
-        - build.tags.each do |tag|
-          %span.label.label-primary
-            = tag
-      - if build.try(:trigger_request)
-        %span.label.label-info triggered
-      - if build.try(:allow_failure)
-        %span.label.label-danger allowed to fail
-      - if defined?(retried) && retried
-        %span.label.label-warning retried
+    .pull-right
+      .label-container
+        - if build.tags.any?
+          - build.tags.each do |tag|
+            %span.label.label-primary
+              = tag
+        - if build.try(:trigger_request)
+          %span.label.label-info triggered
+        - if build.try(:allow_failure)
+          %span.label.label-danger allowed to fail
+        - if defined?(retried) && retried
+          %span.label.label-warning retried
 
-  %td.duration
-    - if build.duration
-      #{duration_in_words(build.finished_at, build.started_at)}
+  - if defined?(new_duration) && new_duration
+    %td.duration
+      - if build.duration
+        %p
+          %i.fa.fa-clock-o
+          &nbsp;
+          #{duration_in_words(build.finished_at, build.started_at)}
+      - if build.finished_at
+        %p
+          %i.fa.fa-calendar
+          &nbsp;
+          #{time_ago_with_tooltip(build.finished_at)}
+  - else
+    %td.duration
+      - if build.duration
+        %i.fa.fa-clock-o
+        &nbsp;
+        #{duration_in_words(build.finished_at, build.started_at)}
 
-  %td.timestamp
-    - if build.finished_at
-      %span #{time_ago_with_tooltip(build.finished_at)}
+    %td.timestamp
+      - if build.finished_at
+        %i.fa.fa-calendar
+        &nbsp;
+        %span #{time_ago_with_tooltip(build.finished_at)}
 
   - if defined?(coverage) && coverage
     %td.coverage

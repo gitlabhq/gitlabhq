@@ -89,7 +89,7 @@ class CommitStatus < ActiveRecord::Base
 
   def self.stages
     order_by = 'max(stage_idx)'
-    group('stage').order(order_by).pluck(:stage, order_by).map(&:first).compact
+    CommitStatus.where(id: all).group('stage').order(order_by).pluck(:stage, order_by).map(&:first).compact
   end
 
   def self.stages_status

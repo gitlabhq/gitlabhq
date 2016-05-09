@@ -38,7 +38,12 @@
         %span CI Lint
 
 .gray-content-block
-  Pipelines for #{(@scope || 'changes')} on this project
+  - if @scope == 'running'
+    Running pipelines for this project
+  - elsif @scope.nil?
+    Pipelines for this project
+  - else
+    #{@scope.titleize} for this project
 
 %ul.content-list
   - stages = @pipelines.stages

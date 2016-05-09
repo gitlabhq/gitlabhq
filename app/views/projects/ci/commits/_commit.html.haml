@@ -35,7 +35,8 @@
     - stages.each do |stage|
       %td
         - if status = stages_status[stage]
-          %span.has-tooltip(title="#{stage.titleize}: #{status}"){class: "ci-status-icon-#{status}"}
+          - tooltip = "#{stage.titleize}: #{status}"
+          %span.has-tooltip(title="#{tooltip}"){class: "ci-status-icon-#{status}"}
             = ci_icon_for_status(status)
 
   %td
@@ -52,7 +53,7 @@
 
   %td
     .controls.hidden-xs.pull-right
-      - artifacts = commit.builds.latest
+      - artifacts = commit.builds.latest.select { |b| b.artifacts? }
       - if artifacts.present?
         .dropdown.inline
           %button.dropdown-toggle.btn{type: 'button', 'data-toggle' => 'dropdown'}
@@ -66,6 +67,7 @@
                   %span #{build.name}
 
       - if can?(current_user, :update_pipeline, @project)
+        &nbsp;
         - if commit.retryable? && commit.builds.failed.any?
           = link_to retry_namespace_project_pipeline_path(@project.namespace, @project, commit.id), class: 'btn has-tooltip', title: "Retry", method: :post do
             = icon("repeat")
