@@ -29,7 +29,10 @@ namespace :gitlab do
       tables.delete 'schema_migrations'
       # Truncate schema_migrations to ensure migrations re-run
       connection.execute('TRUNCATE schema_migrations')
-      tables.each { |t| connection.execute("DROP TABLE #{t}") }
+      # Drop tables with cascade to avoid dependent table errors
+      # PG: http://www.postgresql.org/docs/current/static/ddl-depend.html
+      # MySQL: http://dev.mysql.com/doc/refman/5.7/en/drop-table.html
+      tables.each { |t| connection.execute("DROP TABLE #{t} CASCADE") }
     end
   end
 end

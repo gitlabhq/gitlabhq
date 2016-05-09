@@ -43,9 +43,4 @@ class CreateBranchService < BaseService
     out[:branch] = branch
     out
   end
-
-  def build_push_data(project, user, branch)
-    Gitlab::PushDataBuilder.
-      build(project, user, Gitlab::Git::BLANK_SHA, branch.target, "#{Gitlab::Git::BRANCH_REF_PREFIX}#{branch.name}", [])
-  end
 end

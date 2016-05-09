@@ -1,9 +1,9 @@
 module RepositoryCheck
   class SingleRepositoryWorker
     include Sidekiq::Worker
-  
+
     sidekiq_options retry: false
-  
+
     def perform(project_id)
       project = Project.find(project_id)
       project.update_columns(
@@ -11,20 +11,32 @@ module RepositoryCheck
         last_repository_check_at: Time.now,
       )
     end
-  
+
     private
-  
+
     def check(project)
-      repositories = [project.repository]
-      repositories << project.wiki.repository if project.wiki_enabled?
-      # Use 'map do', not 'all? do', to prevent short-circuiting
-      repositories.map { |repository| git_fsck(repository.path_to_repo) }.all?
+      if !git_fsck(project.repository)
+        false
+      elsif project.wiki_enabled?
+        # Historically some projects never had their wiki repos initialized;
+        # this happens on project creation now. Let's initialize an empty repo
+        # if it is not already there.
+        begin
+          project.create_wiki
+        rescue Rugged::RepositoryError
+        end
+
+        git_fsck(project.wiki.repository)
+      else
+        true
+      end
     end
-  
-    def git_fsck(path)
+
+    def git_fsck(repository)
+      path = repository.path_to_repo
       cmd = %W(nice git --git-dir=#{path} fsck)
       output, status = Gitlab::Popen.popen(cmd)
-  
+
       if status.zero?
         true
       else

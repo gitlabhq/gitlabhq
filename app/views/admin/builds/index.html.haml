@@ -19,7 +19,7 @@
     - if @all_builds.running_or_pending.any?
       = link_to 'Cancel all', cancel_all_admin_builds_path, data: { confirm: 'Are you sure?' }, class: 'btn btn-danger', method: :post
 
-.gray-content-block.second-block
+.row-content-block.second-block
   #{(@scope || 'running').capitalize} builds
 
 %ul.content-list
@@ -38,6 +38,7 @@
             %th Ref
             %th Runner
             %th Name
+            %th Tags
             %th Duration
             %th Finished at
             %th

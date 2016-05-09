@@ -12,7 +12,7 @@
 = render 'projects/last_push'
 = render "home_panel"
 
-.project-stats.gray-content-block.second-block
+.project-stats.row-content-block.second-block
   %ul.nav
     %li
       = link_to namespace_project_commits_path(@project.namespace, @project, current_ref) do

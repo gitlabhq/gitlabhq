@@ -8,14 +8,14 @@
       = link_to todos_filter_path(state: 'pending') do
         %span
           To do
-        %span{class: 'badge'}
+        %span.badge
           = todos_pending_count
     - todo_done_active = ('active' if params[:state] == 'done')
     %li{class: "todos-done #{todo_done_active}"}
       = link_to todos_filter_path(state: 'done') do
         %span
           Done
-        %span{class: 'badge'}
+        %span.badge
           = todos_done_count
 
   .nav-controls
@@ -25,7 +25,7 @@
         = icon('spinner spin')
 
 .todos-filters
-  .gray-content-block.second-block
+  .row-content-block.second-block
     = form_tag todos_filter_path(without: [:project_id, :author_id, :type, :action_id]), method: :get, class: 'filter-form' do
       .filter-item.inline
         = select_tag('project_id', todo_projects_options,

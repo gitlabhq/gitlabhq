@@ -41,21 +41,45 @@ module MergeRequests
         merge_request.can_be_created = false
       end
 
+      set_title_and_description(merge_request)
+    end
+
+    private
+
+    # When your branch name starts with an iid followed by a dash this pattern will be
+    # interpreted as the user wants to close that issue on this project.
+    #
+    # For example:
+    # - Issue 112 exists, title: Emoji don't show up in commit title
+    # - Source branch is: 112-fix-mep-mep
+    #
+    # Will lead to:
+    # - Appending `Closes #112` to the description
+    # - Setting the title as 'Resolves "Emoji don't show up in commit title"' if there is
+    #   more than one commit in the MR
+    #
+    def set_title_and_description(merge_request)
+      if match = merge_request.source_branch.match(/\A(\d+)-/)
+        iid = match[1]
+      end
+
       commits = merge_request.compare_commits
       if commits && commits.count == 1
         commit = commits.first
         merge_request.title       = commit.title
         merge_request.description ||= commit.description.try(:strip)
+      elsif iid && (issue = merge_request.target_project.get_issue(iid)) && !issue.try(:confidential?)
+        case issue
+        when Issue
+          merge_request.title = "Resolve \"#{issue.title}\""
+        when ExternalIssue
+          merge_request.title = "Resolve #{issue.title}"
+        end
       else
         merge_request.title = merge_request.source_branch.titleize.humanize
       end
 
-      # When your branch name starts with an iid followed by a dash this pattern will
-      # be interpreted as the use wants to close that issue on this project
-      # Pattern example: 112-fix-mep-mep
-      # Will lead to appending `Closes #112` to the description
-      if match = merge_request.source_branch.match(/\A(\d+)-/)
-        iid = match[1]
+      if iid
         closes_issue = "Closes ##{iid}"
 
         if merge_request.description.present?
