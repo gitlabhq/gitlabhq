@@ -42,12 +42,12 @@
   %td
     - if commit.started_at && commit.finished_at
       %p
-        %i.fa.fa-clock-o
+        = icon("clock-o")
         &nbsp;
         #{duration_in_words(commit.finished_at, commit.started_at)}
     - if commit.finished_at
       %p
-        %i.fa.fa-calendar
+        = icon("calendar")
         &nbsp;
         #{time_ago_with_tooltip(commit.finished_at)}
 
@@ -63,7 +63,7 @@
             - artifacts.each do |build|
               %li
                 = link_to download_namespace_project_build_artifacts_path(@project.namespace, @project, build), rel: 'nofollow' do
-                  %i.fa.fa-download
+                  = icon("download")
                   %span #{build.name}
 
       - if can?(current_user, :update_pipeline, @project)
@@ -74,4 +74,4 @@
         &nbsp;
         - if commit.active?
           = link_to cancel_namespace_project_pipeline_path(@project.namespace, @project, commit.id), class: 'btn btn-remove has-tooltip', title: "Cancel", method: :post do
-            = icon("remove cred")
+            = icon("remove", class: "cred")

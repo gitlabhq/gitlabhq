@@ -89,6 +89,14 @@ module Ci
       end
     end
 
+    def cancel_running
+      builds.running_or_pending.each(&:cancel)
+    end
+
+    def retry_failed
+      builds.latest.failed.select(&:retryable?).each(&:retry)
+    end
+
     def latest?
       return false unless ref
       commit = project.commit(ref)

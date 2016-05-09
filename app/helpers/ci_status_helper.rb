@@ -50,16 +50,18 @@ module CiStatusHelper
     render_status_with_link('pipeline', pipeline.status, path, tooltip_placement)
   end
 
+  def no_runners_for_project?(project)
+    project.runners.blank? &&
+      Ci::Runner.shared.blank?
+  end
+
+  private
+
   def render_status_with_link(type, status, path, tooltip_placement)
     link_to ci_icon_for_status(status),
             path,
             class: "ci-status-link ci-status-icon-#{status.dasherize}",
             title: "#{type.titleize}: #{ci_label_for_status(status)}",
             data: { toggle: 'tooltip', placement: tooltip_placement }
-  end
-
-  def no_runners_for_project?(project)
-    project.runners.blank? &&
-      Ci::Runner.shared.blank?
   end
 end
