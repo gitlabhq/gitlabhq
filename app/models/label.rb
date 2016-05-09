@@ -117,6 +117,10 @@ class Label < ActiveRecord::Base
     LabelsHelper::text_color_for_bg(self.color)
   end
 
+  def title=(value)
+    write_attribute(:title, Sanitize.clean(value.to_s)) if value.present?
+  end
+
   private
 
   def label_format_reference(format = :id)

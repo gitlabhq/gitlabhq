@@ -21,6 +21,7 @@ v 8.8.0 (unreleased)
   - Update SVG sanitizer to conform to SVG 1.1
   - Updated search UI
   - Display informative message when new milestone is created
+  - Sanitize milestones and labels titles
   - Allow "NEWS" and "CHANGES" as alternative names for CHANGELOG. !3768 (Connor Shea)
   - Added button to toggle whitespaces changes on diff view
   - Backport GitHub Enterprise import support from EE

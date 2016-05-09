@@ -129,6 +129,10 @@ class Milestone < ActiveRecord::Base
     nil
   end
 
+  def title=(value)
+    write_attribute(:title, Sanitize.clean(value.to_s)) if value.present?
+  end
+
   # Sorts the issues for the given IDs.
   #
   # This method runs a single SQL query using a CASE statement to update the
