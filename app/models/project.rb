@@ -462,14 +462,14 @@ class Project < ActiveRecord::Base
   end
 
   def import_url=(value)
-    import_url = Gitlab::ImportUrl.new(value)
+    import_url = Gitlab::UrlSanitizer.new(value)
     create_or_update_import_data(credentials: import_url.credentials)
     super(import_url.sanitized_url)
   end
 
   def import_url
     if import_data && super
-      import_url = Gitlab::ImportUrl.new(super, credentials: import_data.credentials)
+      import_url = Gitlab::UrlSanitizer.new(super, credentials: import_data.credentials)
       import_url.full_url
     else
       super
@@ -571,7 +571,7 @@ class Project < ActiveRecord::Base
 
   def mark_import_as_failed(error_message)
     import_fail
-    update_column(:import_error, error_message)
+    update_column(:import_error, Gitlab::UrlSanitizer.sanitize(error_message))
   end
 
   def has_remote_mirror?
