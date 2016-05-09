@@ -117,9 +117,6 @@
             .btn-group{ data: data_attrs }
               - oauth_providers_checkboxes('oauth-providers-help').each do |source|
                 = source
-            %span.help-block#oauth-providers-help
-              Enabled OmniAuth must be configured for GitHub
-              = link_to "(?)", help_page_path("integration", "github")
     .form-group
       = f.label :two_factor_authentication, 'Two-factor authentication', class: 'control-label col-sm-2'
       .col-sm-10
