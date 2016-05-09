@@ -164,10 +164,20 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
   end
 
   describe '#source_branch' do
-    let(:raw_data) { double(base_data) }
+    context 'when source branch exists' do
+      let(:raw_data) { double(base_data) }
 
-    it 'returns head ref' do
-      expect(pull_request.source_branch).to eq 'feature'
+      it 'returns head ref' do
+        expect(pull_request.source_branch).to eq 'feature'
+      end
+    end
+
+    context 'when source branch does not exist' do
+      let(:raw_data) { double(base_data.merge(head: double(ref: 'removed-branch', sha: '2e5d3239642f9161dcbbc4b70a211a68e5e45e2b'))) }
+
+      it 'returns head ref' do
+        expect(pull_request.source_branch).to eq 'removed-branch-2e5d3239'
+      end
     end
   end
 
@@ -198,10 +208,20 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
   end
 
   describe '#target_branch' do
-    let(:raw_data) { double(base_data) }
+    context 'when target branch exists' do
+      let(:raw_data) { double(base_data) }
 
-    it 'returns base ref' do
-      expect(pull_request.target_branch).to eq 'master'
+      it 'returns base ref' do
+        expect(pull_request.target_branch).to eq 'master'
+      end
+    end
+
+    context 'when target branch does not exist' do
+      let(:raw_data) { double(base_data.merge(base: double(ref: 'removed-branch', sha: '8ffb3c15a5475e59ae909384297fede4badcb4c7'))) }
+
+      it 'returns head ref' do
+        expect(pull_request.target_branch).to eq 'removed-branch-8ffb3c15'
+      end
     end
   end
 

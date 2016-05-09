@@ -30,11 +30,19 @@ module Gitlab
       end
 
       def source_branch_exists?
-        source_project.repository.branch_names.include?(source_branch)
+        source_project.repository.branch_exists?(source_ref)
       end
 
       def source_branch
-        raw_data.head.ref
+        @source_branch ||= if source_branch_exists?
+                             source_ref
+                           else
+                             "#{source_ref}-#{short_id(source_sha)}"
+                           end
+      end
+
+      def short_id(sha, length = 7)
+        sha.to_s[0..length]
       end
 
       def source_sha
@@ -42,11 +50,15 @@ module Gitlab
       end
 
       def target_branch_exists?
-        target_project.repository.branch_names.include?(target_branch)
+        target_project.repository.branch_exists?(target_ref)
       end
 
       def target_branch
-        raw_data.base.ref
+        @target_branch ||= if target_branch_exists?
+                             target_ref
+                           else
+                             "#{target_ref}-#{short_id(target_sha)}"
+                           end
       end
 
       def target_sha
@@ -99,12 +111,20 @@ module Gitlab
         raw_data.head.repo
       end
 
+      def source_ref
+        raw_data.head.ref
+      end
+
       def target_project
         project
       end
 
       def target_repo
         raw_data.base.repo
+      end
+
+      def target_ref
+        raw_data.base.ref
       end
 
       def state
