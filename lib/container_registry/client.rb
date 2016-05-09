@@ -1,7 +1,7 @@
 require 'faraday'
 require 'faraday_middleware'
 
-module ImageRegistry
+module ContainerRegistry
   class Client
     attr_accessor :uri
 

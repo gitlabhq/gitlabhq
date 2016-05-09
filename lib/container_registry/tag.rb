@@ -1,4 +1,4 @@
-module ImageRegistry
+module ContainerRegistry
   class Tag
     attr_reader :repository, :name
 
@@ -28,12 +28,12 @@ module ImageRegistry
     def config_blob
       return @config_blob if defined?(@config_blob)
       return unless manifest && manifest['config']
-      @config_blob = ImageRegistry::Blob.new(repository, manifest['config'])
+      @config_blob = ContainerRegistry::Blob.new(repository, manifest['config'])
     end
 
     def config
       return unless config_blob
-      @config ||= ImageRegistry::Config.new(self, config_blob)
+      @config ||= ContainerRegistry::Config.new(self, config_blob)
     end
 
     def created_at
@@ -45,7 +45,7 @@ module ImageRegistry
       return @layers if defined?(@layers)
       return unless manifest
       @layers = manifest['layers'].map do |layer|
-        ImageRegistry::Blob.new(repository, layer)
+        ContainerRegistry::Blob.new(repository, layer)
       end
     end
 

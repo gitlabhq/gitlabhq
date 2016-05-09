@@ -1,4 +1,4 @@
-module ImageRegistry
+module ContainerRegistry
   class Repository
     attr_reader :registry, :name
 
@@ -11,7 +11,7 @@ module ImageRegistry
     end
 
     def [](tag)
-      ImageRegistry::Tag.new(self, tag)
+      ContainerRegistry::Tag.new(self, tag)
     end
 
     def manifest
@@ -27,7 +27,7 @@ module ImageRegistry
       return @tags if defined?(@tags)
       return [] unless manifest && manifest['tags']
       @tags = manifest['tags'].map do |tag|
-        ImageRegistry::Tag.new(self, tag)
+        ContainerRegistry::Tag.new(self, tag)
       end
       @tags ||= []
     end

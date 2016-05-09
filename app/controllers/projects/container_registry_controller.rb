@@ -5,10 +5,7 @@ class Projects::ContainerRegistryController < Projects::ApplicationController
   layout 'project'
 
   def index
-    @tags = container_registry.tags
-
-    other_repository = container_registry.registry["gitlab/gitlab-test3"]
-    container_registry.copy_to(other_repository)
+    @tags = container_registry_repository.tags
   end
 
   def destroy
@@ -21,8 +18,8 @@ class Projects::ContainerRegistryController < Projects::ApplicationController
 
   private
 
-  def container_registry
-    @container_registry ||= project.container_registry
+  def container_registry_repository
+    @container_registry_repository ||= project.container_registry_repository
   end
 
   def tag

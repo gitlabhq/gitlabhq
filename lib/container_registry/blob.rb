@@ -1,4 +1,4 @@
-module ImageRegistry
+module ContainerRegistry
   class Blob
     attr_reader :repository, :config
 

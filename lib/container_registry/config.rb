@@ -1,4 +1,4 @@
-module ImageRegistry
+module ContainerRegistry
   class Config
     attr_reader :tag, :blob, :data
 
