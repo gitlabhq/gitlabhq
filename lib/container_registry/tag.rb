@@ -15,6 +15,10 @@ module ContainerRegistry
       @manifest = client.repository_manifest(repository.name, name)
     end
 
+    def path
+      "#{repository.path}:#{name}"
+    end
+
     def [](key)
       return unless manifest
       manifest[key]

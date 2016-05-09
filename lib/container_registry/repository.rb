@@ -10,6 +10,10 @@ module ContainerRegistry
       @client ||= registry.client
     end
 
+    def path
+      [registry.path, name].compact.join('/')
+    end
+
     def [](tag)
       ContainerRegistry::Tag.new(self, tag)
     end

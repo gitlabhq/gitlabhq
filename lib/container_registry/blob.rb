@@ -11,6 +11,10 @@ module ContainerRegistry
       digest.present?
     end
 
+    def path
+      "#{repository.path}@#{digest}"
+    end
+
     def digest
       config['digest']
     end
