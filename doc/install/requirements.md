@@ -64,7 +64,10 @@ If you have enough RAM memory and a recent CPU the speed of GitLab is mainly lim
 ### Memory
 
 You need at least 2GB of addressable memory (RAM + swap) to install and use GitLab!
-With less memory GitLab will give strange errors during the reconfigure run and 500 errors during usage.
+The operating system and any other running applications will also be using memory
+so keep in mind that you need at least 2GB available before running GitLab. With
+less memory GitLab will give strange errors during the reconfigure run and 500
+errors during usage.
 
 - 512MB RAM + 1.5GB of swap is the absolute minimum but we strongly **advise against** this amount of memory. See the unicorn worker section below for more advice.
 - 1GB RAM + 1GB swap supports up to 100 users but it will be very slow
@@ -76,6 +79,10 @@ With less memory GitLab will give strange errors during the reconfigure run and 
 - 64GB RAM supports up to 16,000 users
 - 128GB RAM supports up to 32,000 users
 - More users? Run it on [multiple application servers](https://about.gitlab.com/high-availability/)
+
+We recommend having at least 1GB of swap on your server, even if you currently have
+enough available RAM. Having swap will help reduce the chance of errors occuring
+if your available memory changes.
 
 Notice: The 25 workers of Sidekiq will show up as separate processes in your process overview (such as top or htop) but they share the same RAM allocation since Sidekiq is a multithreaded application. Please see the section below about Unicorn workers for information about many you need of those.
 

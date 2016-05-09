@@ -8,6 +8,7 @@
 - [How to dump production data to staging](db_dump.md)
 - [Instrumentation](instrumentation.md)
 - [Migration Style Guide](migration_style_guide.md) for creating safe migrations
+- [Performance guidelines](performance.md)
 - [Rake tasks](rake_tasks.md) for development
 - [Shell commands](shell_commands.md) in the GitLab codebase
 - [Sidekiq debugging](sidekiq_debugging.md)

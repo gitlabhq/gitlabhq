@@ -4,14 +4,14 @@
 #
 #  id            :integer          not null, primary key
 #  note          :text
-#  noteable_type :string(255)
+#  noteable_type :string
 #  author_id     :integer
 #  created_at    :datetime
 #  updated_at    :datetime
 #  project_id    :integer
-#  attachment    :string(255)
-#  line_code     :string(255)
-#  commit_id     :string(255)
+#  attachment    :string
+#  line_code     :string
+#  commit_id     :string
 #  noteable_id   :integer
 #  system        :boolean          default(FALSE), not null
 #  st_diff       :text

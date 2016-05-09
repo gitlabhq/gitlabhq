@@ -4,11 +4,11 @@
 #
 #  id                   :integer          not null, primary key
 #  project_id           :integer
-#  key                  :string(255)
+#  key                  :string
 #  value                :text
 #  encrypted_value      :text
-#  encrypted_value_salt :string(255)
-#  encrypted_value_iv   :string(255)
+#  encrypted_value_salt :string
+#  encrypted_value_iv   :string
 #  gl_project_id        :integer
 #
 

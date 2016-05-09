@@ -20,6 +20,7 @@ GET /users
     "name": "John Smith",
     "state": "active",
     "avatar_url": "http://localhost:3000/uploads/user/avatar/1/cd8.jpeg",
+    "web_url": "http://localhost:3000/u/john_smith"
   },
   {
     "id": 2,
@@ -27,6 +28,7 @@ GET /users
     "name": "Jack Smith",
     "state": "blocked",
     "avatar_url": "http://gravatar.com/../e32131cd8.jpeg",
+    "web_url": "http://localhost:3000/u/jack_smith"
   }
 ]
 ```
@@ -45,21 +47,31 @@ GET /users
     "email": "john@example.com",
     "name": "John Smith",
     "state": "active",
+    "avatar_url": "http://localhost:3000/uploads/user/avatar/1/index.jpg",
+    "web_url": "http://localhost:3000/u/john_smith",
     "created_at": "2012-05-23T08:00:58Z",
+    "is_admin": false,
     "bio": null,
+    "location": null,
     "skype": "",
     "linkedin": "",
     "twitter": "",
     "website_url": "",
-    "extern_uid": "john.smith",
-    "provider": "provider_name",
+    "last_sign_in_at": "2012-06-01T11:41:01Z",
+    "confirmed_at": "2012-05-23T09:05:22Z",
     "theme_id": 1,
     "color_scheme_id": 2,
-    "is_admin": false,
-    "avatar_url": "http://localhost:3000/uploads/user/avatar/1/cd8.jpeg",
+    "projects_limit": 100,
+    "current_sign_in_at": "2012-06-02T06:36:55Z",
+    "identities": [
+      {"provider": "github", "extern_uid": "2435223452345"},
+      {"provider": "bitbucket", "extern_uid": "john.smith"},
+      {"provider": "google_oauth2", "extern_uid": "8776128412476123468721346"}
+    ],
     "can_create_group": true,
-    "current_sign_in_at": "2014-03-19T13:12:15Z",
-    "two_factor_enabled": true
+    "can_create_project": true,
+    "two_factor_enabled": true,
+    "external": false
   },
   {
     "id": 2,
@@ -67,24 +79,27 @@ GET /users
     "email": "jack@example.com",
     "name": "Jack Smith",
     "state": "blocked",
+    "avatar_url": "http://localhost:3000/uploads/user/avatar/2/index.jpg",
+    "web_url": "http://localhost:3000/u/jack_smith",
     "created_at": "2012-05-23T08:01:01Z",
+    "is_admin": false,
     "bio": null,
     "location": null,
     "skype": "",
     "linkedin": "",
     "twitter": "",
     "website_url": "",
-    "extern_uid": "jack.smith",
-    "provider": "provider_name",
+    "last_sign_in_at": null,
+    "confirmed_at": "2012-05-30T16:53:06.148Z",
     "theme_id": 1,
     "color_scheme_id": 3,
-    "is_admin": false,
-    "avatar_url": "http://localhost:3000/uploads/user/avatar/1/cd8.jpeg",
-    "can_create_group": true,
-    "can_create_project": true,
     "projects_limit": 100,
     "current_sign_in_at": "2014-03-19T17:54:13Z",
-    "two_factor_enabled": false
+    "identities": [],
+    "can_create_group": true,
+    "can_create_project": true,
+    "two_factor_enabled": true,
+    "external": false
   }
 ]
 ```
@@ -124,6 +139,7 @@ Parameters:
   "name": "John Smith",
   "state": "active",
   "avatar_url": "http://localhost:3000/uploads/user/avatar/1/cd8.jpeg",
+  "web_url": "http://localhost:3000/u/john_smith",
   "created_at": "2012-05-23T08:00:58Z",
   "is_admin": false,
   "bio": null,
@@ -152,23 +168,31 @@ Parameters:
   "email": "john@example.com",
   "name": "John Smith",
   "state": "active",
+  "avatar_url": "http://localhost:3000/uploads/user/avatar/1/index.jpg",
+  "web_url": "http://localhost:3000/u/john_smith",
   "created_at": "2012-05-23T08:00:58Z",
-  "confirmed_at": "2012-05-23T08:00:58Z",
-  "last_sign_in_at": "2015-03-23T08:00:58Z",
+  "is_admin": false,
   "bio": null,
   "location": null,
   "skype": "",
   "linkedin": "",
   "twitter": "",
   "website_url": "",
-  "extern_uid": "john.smith",
-  "provider": "provider_name",
+  "last_sign_in_at": "2012-06-01T11:41:01Z",
+  "confirmed_at": "2012-05-23T09:05:22Z",
   "theme_id": 1,
   "color_scheme_id": 2,
-  "is_admin": false,
+  "projects_limit": 100,
+  "current_sign_in_at": "2012-06-02T06:36:55Z",
+  "identities": [
+    {"provider": "github", "extern_uid": "2435223452345"},
+    {"provider": "bitbucket", "extern_uid": "john.smith"},
+    {"provider": "google_oauth2", "extern_uid": "8776128412476123468721346"}
+  ],
   "can_create_group": true,
   "can_create_project": true,
-  "projects_limit": 100
+  "two_factor_enabled": true,
+  "external": false
 }
 ```
 
@@ -261,21 +285,33 @@ GET /user
   "username": "john_smith",
   "email": "john@example.com",
   "name": "John Smith",
-  "private_token": "dd34asd13as",
   "state": "active",
+  "avatar_url": "http://localhost:3000/uploads/user/avatar/1/index.jpg",
+  "web_url": "http://localhost:3000/u/john_smith",
   "created_at": "2012-05-23T08:00:58Z",
+  "is_admin": false,
   "bio": null,
   "location": null,
   "skype": "",
   "linkedin": "",
   "twitter": "",
   "website_url": "",
+  "last_sign_in_at": "2012-06-01T11:41:01Z",
+  "confirmed_at": "2012-05-23T09:05:22Z",
   "theme_id": 1,
   "color_scheme_id": 2,
-  "is_admin": false,
+  "projects_limit": 100,
+  "current_sign_in_at": "2012-06-02T06:36:55Z",
+  "identities": [
+    {"provider": "github", "extern_uid": "2435223452345"},
+    {"provider": "bitbucket", "extern_uid": "john_smith"},
+    {"provider": "google_oauth2", "extern_uid": "8776128412476123468721346"}
+  ],
   "can_create_group": true,
   "can_create_project": true,
-  "projects_limit": 100
+  "two_factor_enabled": true,
+  "external": false,
+  "private_token": "dd34asd13as"
 }
 ```
 
