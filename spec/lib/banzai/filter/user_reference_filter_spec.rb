@@ -37,10 +37,16 @@ describe Banzai::Filter::UserReferenceFilter, lib: true do
         .to eq urls.namespace_project_url(project.namespace, project)
     end
 
-    it 'includes a data-author attribute' do
+    it 'includes a data-author attribute when there is an author' do
       doc = reference_filter(reference, author: user)
 
       expect(doc.css('a').first.attr('data-author')).to eq(user.id.to_s)
+    end
+
+    it 'does not include a data-author attribute when there is no author' do
+      doc = reference_filter(reference)
+
+      expect(doc.css('a').first.has_attribute?('data-author')).to eq(false)
     end
   end
 
