@@ -74,7 +74,7 @@ Rails.application.routes.draw do
   end
 
   # Health check
-  health_check_routes
+  get 'health_check(/:checks)(.:format)'  => 'health_check#index'
 
   # Enable Grack support
   mount Grack::AuthSpawner, at: '/', constraints: lambda { |request| /[-\/\w\.]+\.git\//.match(request.path_info) }, via: [:get, :post, :put]
@@ -256,6 +256,7 @@ Rails.application.routes.draw do
     end
 
     resource :logs, only: [:show]
+    resource :health_check, controller: 'health_check', only: [:show]
     resource :background_jobs, controller: 'background_jobs', only: [:show]
 
     resources :namespaces, path: '/projects', constraints: { id: /[a-zA-Z.0-9_\-]+/ }, only: [] do
@@ -287,6 +288,7 @@ Rails.application.routes.draw do
     resource :application_settings, only: [:show, :update] do
       resources :services
       put :reset_runners_token
+      put :reset_health_check_token
       put :clear_repository_check_states
     end
 

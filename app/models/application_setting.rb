@@ -1,6 +1,7 @@
 class ApplicationSetting < ActiveRecord::Base
   include TokenAuthenticatable
   add_authentication_token_field :runners_registration_token
+  add_authentication_token_field :health_check_access_token
 
   CACHE_KEY = 'application_setting.last'
 
@@ -70,6 +71,7 @@ class ApplicationSetting < ActiveRecord::Base
   end
 
   before_save :ensure_runners_registration_token
+  before_save :ensure_health_check_access_token
 
   after_commit do
     Rails.cache.write(CACHE_KEY, self)
@@ -132,5 +134,9 @@ class ApplicationSetting < ActiveRecord::Base
 
   def runners_registration_token
     ensure_runners_registration_token!
+  end
+
+  def health_check_access_token
+    ensure_health_check_access_token!
   end
 end

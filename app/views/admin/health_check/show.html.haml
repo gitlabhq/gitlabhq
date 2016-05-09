@@ -1,0 +1,40 @@
+- page_title "Health Check"
+
+%h3.page-title
+  Health Check
+%p.light
+  Health information can be reteived as plain text, json, or xml using:
+  %ul
+    %li
+      %code= "/health_check?token=#{current_application_settings.health_check_access_token}"
+    %li
+      %code= "/health_check.json?token=#{current_application_settings.health_check_access_token}"
+    %li
+      %code= "/health_check.xml?token=#{current_application_settings.health_check_access_token}"
+
+.bs-callout.clearfix
+  .pull-left
+    %p
+      You can reset the health check access token by pressing the button below.
+    %p
+      = button_to reset_health_check_token_admin_application_settings_path,
+        method: :put, class: 'btn btn-default',
+        data: { confirm: 'Are you sure you want to reset the health check token?' } do
+        = icon('refresh')
+        Reset health check access token
+
+%hr
+.panel.panel-default
+  .panel-heading
+    Current Status:
+    - if @errors.blank?
+      = icon('circle', class: 'cgreen')
+      Healthy
+    - else
+      = icon('warning', class: 'cred')
+      Unhealthy
+  .panel-body
+    - if @errors.blank?
+      No Health Problems Detected
+    - else
+      = @errors
