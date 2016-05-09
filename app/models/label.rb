@@ -117,9 +117,8 @@ class Label < ActiveRecord::Base
     LabelsHelper::text_color_for_bg(self.color)
   end
 
-  def title= value
-    value = Sanitize.clean(value.to_s) if value
-    write_attribute(:title, Sanitize.clean(value))
+  def title=(value)
+    write_attribute(:title, Sanitize.clean(value.to_s)) if value.present?
   end
 
   private

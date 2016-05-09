@@ -129,9 +129,8 @@ class Milestone < ActiveRecord::Base
     nil
   end
 
-  def title= value
-    value = Sanitize.clean(value.to_s) if value
-    write_attribute(:title, value)
+  def title=(value)
+    write_attribute(:title, Sanitize.clean(value.to_s)) if value.present?
   end
 
   # Sorts the issues for the given IDs.
