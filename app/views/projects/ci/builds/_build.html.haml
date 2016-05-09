@@ -55,30 +55,17 @@
         - if defined?(retried) && retried
           %span.label.label-warning retried
 
-  - if defined?(new_duration) && new_duration
-    %td.duration
-      - if build.duration
-        %p
-          = icon("clock-o")
-          &nbsp;
-          #{duration_in_words(build.finished_at, build.started_at)}
-      - if build.finished_at
-        %p
-          = icon("calendar")
-          &nbsp;
-          #{time_ago_with_tooltip(build.finished_at)}
-  - else
-    %td.duration
-      - if build.duration
-        = icon("clock-o")
-        &nbsp;
-        #{duration_in_words(build.finished_at, build.started_at)}
+  %td.duration
+    - if build.duration
+      = icon("clock-o")
+      &nbsp;
+      #{duration_in_words(build.finished_at, build.started_at)}
 
-    %td.timestamp
-      - if build.finished_at
-        = icon("calendar")
-        &nbsp;
-        %span #{time_ago_with_tooltip(build.finished_at)}
+  %td.timestamp
+    - if build.finished_at
+      = icon("calendar")
+      &nbsp;
+      %span #{time_ago_with_tooltip(build.finished_at)}
 
   - if defined?(coverage) && coverage
     %td.coverage

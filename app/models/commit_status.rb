@@ -91,12 +91,12 @@ class CommitStatus < ActiveRecord::Base
   end
 
   def self.stages
-    # We group by stage name, but order stages by their's index
+    # We group by stage name, but order stages by theirs' index
     unscoped.from(all, :sg).group('stage').order('max(stage_idx)', 'stage').pluck('sg.stage')
   end
 
   def self.stages_status
-    # We execute subquery for each of the stages which calculates an Stage Status
+    # We execute subquery for each stage to calculate a stage status
     statuses = unscoped.from(all, :sg).group('stage').pluck('sg.stage', all.where('stage=sg.stage').status_sql)
     statuses.inject({}) do |h, k|
       h[k.first] = k.last
