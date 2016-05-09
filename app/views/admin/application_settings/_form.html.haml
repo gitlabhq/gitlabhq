@@ -109,14 +109,14 @@
           = f.label :signin_enabled do
             = f.check_box :signin_enabled
             Sign-in enabled
-      - if omniauth_enabled? && !button_based_providers.empty?
-        .form-group
-          = f.label :disable_oauth_signin_sources, 'Disable OAuth Sign-In sources', class: 'control-label col-sm-2'
-          .col-sm-10
-            - data_attrs = { toggle: 'buttons' }
-            .btn-group{ data: data_attrs }
-              - oauth_providers_checkboxes('oauth-providers-help').each do |source|
-                = source
+    - if omniauth_enabled? && !button_based_providers.empty?
+      .form-group
+        = f.label :disable_oauth_signin_sources, 'Disable OAuth Sign-In sources', class: 'control-label col-sm-2'
+        .col-sm-10
+          - data_attrs = { toggle: 'buttons' }
+          .btn-group{ data: data_attrs }
+            - oauth_providers_checkboxes('oauth-providers-help').each do |source|
+              = source
     .form-group
       = f.label :two_factor_authentication, 'Two-factor authentication', class: 'control-label col-sm-2'
       .col-sm-10
