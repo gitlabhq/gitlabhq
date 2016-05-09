@@ -132,8 +132,12 @@ module Ci
     end
 
     def trace_html
-      html = Ci::Ansi2html::convert(trace) if trace.present?
-      html || ''
+      trace_with_state[:html]
+    end
+
+    def trace_with_state(state = nil)
+      trace_with_state = Ci::Ansi2html::convert(trace, state) if trace.present?
+      trace_with_state || {}
     end
 
     def timeout
