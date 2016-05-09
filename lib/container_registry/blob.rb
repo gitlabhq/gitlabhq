@@ -44,7 +44,6 @@ module ContainerRegistry
     end
 
     def data
-      return @data if defined?(@data)
       @data ||= client.blob(repository.name, digest, type)
     end
 

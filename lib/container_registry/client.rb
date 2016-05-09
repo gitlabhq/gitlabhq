@@ -9,20 +9,8 @@ module ContainerRegistry
 
     def initialize(base_uri, options = {})
       @base_uri = base_uri
-      @faraday = Faraday.new(@base_uri) do |builder|
-        builder.request :json
-        builder.headers['Accept'] = MANIFEST_VERSION
-
-        builder.response :json, :content_type => /\bjson$/
-        builder.response :json, :content_type => 'application/vnd.docker.distribution.manifest.v1+prettyjws'
-
-        if options[:user] && options[:password]
-          builder.request(:basic_auth, options[:user].to_s, options[:password].to_s)
-        elsif options[:token]
-          builder.request(:authorization, :bearer, options[:token].to_s)
-        end
-
-        builder.adapter :net_http
+      @faraday = Faraday.new(@base_uri) do |conn|
+        initialize_connection(conn)
       end
     end
 
@@ -59,6 +47,23 @@ module ContainerRegistry
 
     def delete_blob(name, digest)
       @faraday.delete("/v2/#{name}/blobs/#{digest}").success?
+    end
+    
+    private
+    
+    def initialize_connection(conn)
+      conn.request :json
+      conn.headers['Accept'] = MANIFEST_VERSION
+
+      conn.response :json, :content_type => /\bjson$/
+
+      if options[:user] && options[:password]
+        conn.request(:basic_auth, options[:user].to_s, options[:password].to_s)
+      elsif options[:token]
+        conn.request(:authorization, :bearer, options[:token].to_s)
+      end
+
+      conn.adapter :net_http
     end
   end
 end
