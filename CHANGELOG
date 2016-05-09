@@ -35,6 +35,7 @@ v 8.8.0 (unreleased)
   - Fix Gravatar hint in user profile when Gravatar is disabled. !3988 (Artem Sidorenko)
   - Expire repository exists? and has_visible_content? caches after a push if necessary
   - Fix unintentional filtering bug in issues sorted by milestone due (Takuya Noguchi)
+  - Fix adding a todo for private group members (Ahmad Sherif)
 
 v 8.7.4
   - Fix always showing build notification message when switching between merge requests
