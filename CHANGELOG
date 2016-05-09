@@ -18,6 +18,7 @@ v 8.8.0 (unreleased)
   - Add 'l' shortcut to open Label dropdown on issuables and 'i' to create new issue on a project
   - Update SVG sanitizer to conform to SVG 1.1
   - Updated search UI
+  - Added authentication service for Container Registry
   - Display informative message when new milestone is created
   - Allow "NEWS" and "CHANGES" as alternative names for CHANGELOG. !3768 (Connor Shea)
   - Added button to toggle whitespaces changes on diff view
