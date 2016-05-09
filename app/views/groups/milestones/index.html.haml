@@ -1,5 +1,4 @@
 - page_title "Milestones"
-- header_title group_title(@group, "Milestones", group_milestones_path(@group))
 
 .top-area
   = render 'shared/milestones_filter'
@@ -10,7 +9,7 @@
         = icon('plus')
         New Milestone
 
-.gray-content-block
+.row-content-block
   Only milestones from
   %strong #{@group.name}
   group are listed here.

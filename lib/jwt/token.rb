@@ -4,19 +4,21 @@ module Jwt
     attr_accessor :issued_at, :not_before, :expire_time
 
     def initialize
-      @payload = {}
       @id = SecureRandom.uuid
       @issued_at = Time.now
+      # we give a few seconds for time shift
       @not_before = issued_at - 5.seconds
+      # default 60 seconds should be more than enough for this authentication token
       @expire_time = issued_at + 1.minute
+      @custom_payload = {}
     end
 
     def [](key)
-      @payload[key]
+      @custom_payload[key]
     end
 
     def []=(key, value)
-      @payload[key] = value
+      @custom_payload[key] = value
     end
 
     def encoded
@@ -24,11 +26,7 @@ module Jwt
     end
 
     def payload
-      @payload.merge(default_payload)
-    end
-
-    def to_json
-      payload.to_json
+      @custom_payload.merge(default_payload)
     end
 
     private

@@ -10,21 +10,20 @@
 #  sign_in_text                      :text
 #  created_at                        :datetime
 #  updated_at                        :datetime
-#  home_page_url                     :string(255)
+#  home_page_url                     :string
 #  default_branch_protection         :integer          default(2)
 #  restricted_visibility_levels      :text
 #  version_check_enabled             :boolean          default(TRUE)
 #  max_attachment_size               :integer          default(10), not null
 #  default_project_visibility        :integer
 #  default_snippet_visibility        :integer
-#  default_group_visibility          :integer
 #  restricted_signup_domains         :text
 #  user_oauth_applications           :boolean          default(TRUE)
-#  after_sign_out_path               :string(255)
+#  after_sign_out_path               :string
 #  session_expire_delay              :integer          default(10080), not null
 #  import_sources                    :text
 #  help_page_text                    :text
-#  admin_notification_email          :string(255)
+#  admin_notification_email          :string
 #  shared_runners_enabled            :boolean          default(TRUE), not null
 #  max_artifacts_size                :integer          default(100), not null
 #  runners_registration_token        :string
@@ -32,8 +31,6 @@
 #  two_factor_grace_period           :integer          default(48)
 #  metrics_enabled                   :boolean          default(FALSE)
 #  metrics_host                      :string           default("localhost")
-#  metrics_username                  :string
-#  metrics_password                  :string
 #  metrics_pool_size                 :integer          default(16)
 #  metrics_timeout                   :integer          default(10)
 #  metrics_method_call_threshold     :integer          default(10)
@@ -41,9 +38,16 @@
 #  recaptcha_site_key                :string
 #  recaptcha_private_key             :string
 #  metrics_port                      :integer          default(8089)
+#  metrics_sample_interval           :integer          default(15)
 #  sentry_enabled                    :boolean          default(FALSE)
 #  sentry_dsn                        :string
+#  akismet_enabled                   :boolean          default(FALSE)
+#  akismet_api_key                   :string
 #  email_author_in_body              :boolean          default(FALSE)
+#  default_group_visibility          :integer
+#  repository_checks_enabled         :boolean          default(FALSE)
+#  metrics_packet_size               :integer          default(1)
+#  shared_runners_text               :text
 #
 
 class ApplicationSetting < ActiveRecord::Base

@@ -30,6 +30,10 @@ header {
     border: none;
     border-bottom: 1px solid $border-color;
 
+    &.with-horizontal-nav {
+      border-bottom: none;
+    }
+
     .container-fluid {
       width: 100% !important;
       filter: none;

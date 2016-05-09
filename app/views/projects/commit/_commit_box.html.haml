@@ -1,4 +1,4 @@
-.pull-right
+.pull-right.commit-action-buttons
   %div
     - if @notes_count > 0
       %span.btn.disabled.btn-grouped
@@ -22,10 +22,12 @@
   %div
 
 %p
-  %span.light Commit
-  = link_to @commit.id, namespace_project_commit_path(@project.namespace, @project, @commit), class: "monospace"
-  = clipboard_button(clipboard_text: @commit.id)
 .commit-info-row
+  - if @commit.status
+    = link_to builds_namespace_project_commit_path(@project.namespace, @project, @commit.id), class: "ci-status ci-#{@commit.status}" do
+      = ci_icon_for_status(@commit.status)
+      build:
+      = ci_label_for_status(@commit.status)
   %span.light Authored by
   %strong
     = commit_author_link(@commit, avatar: true, size: 24)
@@ -39,19 +41,15 @@
     #{time_ago_with_tooltip(@commit.committed_date)}
 
 .commit-info-row
+  %span.light Commit
+  = link_to @commit.id, namespace_project_commit_path(@project.namespace, @project, @commit), class: "monospace"
+  = clipboard_button(clipboard_text: @commit.id)
   %span.cgray= pluralize(@commit.parents.count, "parent")
   - @commit.parents.each do |parent|
     = link_to parent.short_id, namespace_project_commit_path(@project.namespace, @project, parent), class: "monospace"
 
-- if @commit.status
-  .pull-right
-    = link_to builds_namespace_project_commit_path(@project.namespace, @project, @commit.id), class: "ci-status ci-#{@commit.status}" do
-      = ci_icon_for_status(@commit.status)
-      build:
-      = ci_label_for_status(@commit.status)
-
-.commit-info-row.branches
-  %i.fa.fa-spinner.fa-spin
+  %span.commit-info.branches
+    %i.fa.fa-spinner.fa-spin
 
 .commit-box.content-block
   %h3.commit-title
@@ -61,4 +59,4 @@
       = preserve(markdown(escape_once(@commit.description), pipeline: :single_line))
 
 :javascript
-  $(".commit-info-row.branches").load("#{branches_namespace_project_commit_path(@project.namespace, @project, @commit.id)}");
+  $(".commit-info.branches").load("#{branches_namespace_project_commit_path(@project.namespace, @project, @commit.id)}");

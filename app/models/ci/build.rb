@@ -4,7 +4,7 @@
 #
 #  id                 :integer          not null, primary key
 #  project_id         :integer
-#  status             :string(255)
+#  status             :string
 #  finished_at        :datetime
 #  trace              :text
 #  created_at         :datetime
@@ -15,19 +15,19 @@
 #  commit_id          :integer
 #  commands           :text
 #  job_id             :integer
-#  name               :string(255)
+#  name               :string
 #  deploy             :boolean          default(FALSE)
 #  options            :text
 #  allow_failure      :boolean          default(FALSE), not null
-#  stage              :string(255)
+#  stage              :string
 #  trigger_request_id :integer
 #  stage_idx          :integer
 #  tag                :boolean
-#  ref                :string(255)
+#  ref                :string
 #  user_id            :integer
-#  type               :string(255)
-#  target_url         :string(255)
-#  description        :string(255)
+#  type               :string
+#  target_url         :string
+#  description        :string
 #  artifacts_file     :text
 #  gl_project_id      :integer
 #  artifacts_metadata :text
@@ -426,7 +426,6 @@ module Ci
       variables << { key: :CI_BUILD_NAME, value: name, public: true }
       variables << { key: :CI_BUILD_STAGE, value: stage, public: true }
       variables << { key: :CI_BUILD_TRIGGERED, value: 'true', public: true } if trigger_request
-      variables << { key: :CI_DOCKER_REGISTRY, value: project.registry_repository_url, public: true } if project.registry_repository_url
       variables
     end
   end

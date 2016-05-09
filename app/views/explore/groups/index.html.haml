@@ -6,7 +6,7 @@
 - else
   = render 'explore/head'
 
-.gray-content-block.clearfix
+.row-content-block.clearfix
   .pull-left
     = form_tag explore_groups_path, method: :get, class: 'form-inline form-tiny' do |f|
       = hidden_field_tag :sort, @sort

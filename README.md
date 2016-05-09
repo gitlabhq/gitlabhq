@@ -1,6 +1,6 @@
 # GitLab
 
-[![build status](https://ci.gitlab.com/projects/1/status.svg?ref=master)](https://ci.gitlab.com/projects/1?ref=master)
+[![build status](https://gitlab.com/gitlab-org/gitlab-ce/badges/master/build.svg)](https://gitlab.com/gitlab-org/gitlab-ce/commits/master)
 [![Build Status](https://semaphoreci.com/api/v1/projects/2f1a5809-418b-4cc2-a1f4-819607579fe7/400484/shields_badge.svg)](https://semaphoreci.com/gitlabhq/gitlabhq)
 [![Code Climate](https://codeclimate.com/github/gitlabhq/gitlabhq.svg)](https://codeclimate.com/github/gitlabhq/gitlabhq)
 [![Coverage Status](https://coveralls.io/repos/gitlabhq/gitlabhq/badge.svg?branch=master)](https://coveralls.io/r/gitlabhq/gitlabhq?branch=master)
@@ -19,6 +19,10 @@ To see how GitLab looks please see the [features page on our website](https://ab
 - Used by more than 100,000 organizations, GitLab is the most popular solution to manage Git repositories on-premises
 - Completely free and open source (MIT Expat license)
 - Powered by [Ruby on Rails](https://github.com/rails/rails)
+
+## Hiring
+
+We're hiring developers, support people, and production engineers all the time, please see our [jobs page](https://about.gitlab.com/jobs/).
 
 ## Editions
 
@@ -80,7 +84,7 @@ There are a lot of [third-party applications integrating with GitLab](https://ab
 
 ## GitLab release cycle
 
-For more information about the release process see the [release documentation](http://doc.gitlab.com/ce/release/).
+For more information about the release process see the [release documentation](https://gitlab.com/gitlab-org/release-tools/blob/master/README.md).
 
 ## Upgrading
 

@@ -1,11 +1,13 @@
 module Jwt
-  class DockerAuthenticationService < BaseService
+  class ContainerRegistryAuthenticationService < BaseService
     def execute
       if params[:offline_token]
         return error('forbidden', 403) unless current_user
       end
 
-      { token: token.encoded }
+      return error('forbidden', 401) if scopes.empty?
+
+      { token: authorized_token(scopes).encoded }
     end
 
     def self.full_access_token(*names)
@@ -21,7 +23,7 @@ module Jwt
 
     private
 
-    def token
+    def authorized_token(access)
       token = ::Jwt::RSAToken.new(registry.key)
       token.issuer = registry.issuer
       token.audience = params[:service]
@@ -30,11 +32,13 @@ module Jwt
       token
     end
 
-    def access
+    def scopes
       return unless params[:scope]
 
-      scope = process_scope(params[:scope])
-      [scope].compact
+      @scopes ||= begin
+        scope = process_scope(params[:scope])
+        [scope].compact
+      end
     end
 
     def process_scope(scope)
@@ -48,22 +52,22 @@ module Jwt
     end
 
     def process_repository_access(type, name, actions)
-      current_project = Project.find_with_namespace(name)
-      return unless current_project
+      requested_project = Project.find_with_namespace(name)
+      return unless requested_project
 
       actions = actions.select do |action|
-        can_access?(current_project, action)
+        can_access?(requested_project, action)
       end
 
-      { type: type, name: name, actions: actions } if actions
+      { type: type, name: name, actions: actions } if actions.present?
     end
 
-    def can_access?(current_project, action)
-      case action
+    def can_access?(requested_project, requested_action)
+      case requested_action
       when 'pull'
-        current_project == project || can?(current_user, :download_code, current_project)
+        requested_project.public? || requested_project == project || can?(current_user, :read_container_registry, requested_project)
       when 'push'
-        current_project == project || can?(current_user, :push_code, current_project)
+        requested_project == project || can?(current_user, :create_container_registry, requested_project)
       else
         false
       end
