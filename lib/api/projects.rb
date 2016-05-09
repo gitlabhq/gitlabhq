@@ -94,7 +94,7 @@ module API
       #   builds_enabled (optional)
       #   wiki_enabled (optional)
       #   snippets_enabled (optional)
-      #   images_enabled (optional)
+      #   container_registry_enabled (optional)
       #   shared_runners_enabled (optional)
       #   namespace_id (optional) - defaults to user namespace
       #   public (optional) - if true same as setting visibility_level = 20
@@ -113,7 +113,7 @@ module API
                                      :builds_enabled,
                                      :wiki_enabled,
                                      :snippets_enabled,
-                                     :images_enabled,
+                                     :container_registry_enabled,
                                      :shared_runners_enabled,
                                      :namespace_id,
                                      :public,
@@ -145,7 +145,7 @@ module API
       #   builds_enabled (optional)
       #   wiki_enabled (optional)
       #   snippets_enabled (optional)
-      #   images_enabled (optional)
+      #   container_registry_enabled (optional)
       #   shared_runners_enabled (optional)
       #   public (optional) - if true same as setting visibility_level = 20
       #   visibility_level (optional)
@@ -209,7 +209,7 @@ module API
       #   builds_enabled (optional)
       #   wiki_enabled (optional)
       #   snippets_enabled (optional)
-      #   images_enabled (optional)
+      #   container_registry_enabled (optional)
       #   shared_runners_enabled (optional)
       #   public (optional) - if true same as setting visibility_level = 20
       #   visibility_level (optional) - visibility level of a project
@@ -226,7 +226,7 @@ module API
                                      :builds_enabled,
                                      :wiki_enabled,
                                      :snippets_enabled,
-                                     :images_enabled,
+                                     :container_registry_enabled,
                                      :shared_runners_enabled,
                                      :public,
                                      :visibility_level,
