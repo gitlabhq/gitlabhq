@@ -22,4 +22,4 @@
 
 .detail-page-description.row-content-block.second-block
   %h2.title
-    = markdown escape_once(@snippet.title), pipeline: :single_line
+    = markdown escape_once(@snippet.title), pipeline: :single_line, author: @snippet.author
