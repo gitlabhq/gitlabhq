@@ -1,17 +1,20 @@
 module Gitlab
   module GithubImport
     class PullRequestFormatter < BaseFormatter
+      delegate :exists?, :name, :project, :repo, :sha, to: :source_branch, prefix: true
+      delegate :exists?, :name, :project, :repo, :sha, to: :target_branch, prefix: true
+
       def attributes
         {
           iid: number,
           title: raw_data.title,
           description: description,
-          source_project: source_project,
-          source_branch: source_branch,
-          head_source_sha: source_sha,
-          target_project: target_project,
-          target_branch: target_branch,
-          base_target_sha: target_sha,
+          source_project: source_branch_project,
+          source_branch: source_branch_name,
+          head_source_sha: source_branch_sha,
+          target_project: target_branch_project,
+          target_branch: target_branch_name,
+          base_target_sha: target_branch_sha,
           state: state,
           milestone: milestone,
           author_id: author_id,
@@ -29,40 +32,12 @@ module Gitlab
         !cross_project?
       end
 
-      def source_branch_exists?
-        source_project.repository.branch_exists?(source_ref)
-      end
-
       def source_branch
-        @source_branch ||= if source_branch_exists?
-                             source_ref
-                           else
-                             "#{source_ref}-#{short_id(source_sha)}"
-                           end
-      end
-
-      def short_id(sha, length = 7)
-        sha.to_s[0..length]
-      end
-
-      def source_sha
-        raw_data.head.sha
-      end
-
-      def target_branch_exists?
-        target_project.repository.branch_exists?(target_ref)
+        @source_branch ||= BranchFormatter.new(project, raw_data.head)
       end
 
       def target_branch
-        @target_branch ||= if target_branch_exists?
-                             target_ref
-                           else
-                             "#{target_ref}-#{short_id(target_sha)}"
-                           end
-      end
-
-      def target_sha
-        raw_data.base.sha
+        @target_branch ||= BranchFormatter.new(project, raw_data.base)
       end
 
       private
@@ -90,7 +65,8 @@ module Gitlab
       end
 
       def cross_project?
-        source_repo.present? && target_repo.present? && source_repo.id != target_repo.id
+        source_branch_repo.present? && target_branch_repo.present? &&
+          source_branch_repo.id != target_branch_repo.id
       end
 
       def description
@@ -101,30 +77,6 @@ module Gitlab
         if raw_data.milestone.present?
           project.milestones.find_by(iid: raw_data.milestone.number)
         end
-      end
-
-      def source_project
-        project
-      end
-
-      def source_repo
-        raw_data.head.repo
-      end
-
-      def source_ref
-        raw_data.head.ref
-      end
-
-      def target_project
-        project
-      end
-
-      def target_repo
-        raw_data.base.repo
-      end
-
-      def target_ref
-        raw_data.base.ref
       end
 
       def state
