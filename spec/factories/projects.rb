@@ -92,6 +92,12 @@ FactoryGirl.define do
       mirror true
       mirror_user_id { creator_id }
     end
+
+    trait :empty_repo do
+      after(:create) do |project|
+        project.create_repository
+      end
+    end
   end
 
   # Project with empty repository
@@ -99,9 +105,7 @@ FactoryGirl.define do
   # This is a case when you just created a project
   # but not pushed any code there yet
   factory :project_empty_repo, parent: :empty_project do
-    after :create do |project|
-      project.create_repository
-    end
+    empty_repo
   end
 
   # Project with test repository

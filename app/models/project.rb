@@ -269,7 +269,7 @@ class Project < ActiveRecord::Base
     state :failed
 
     after_transition any => :started, do: :schedule_add_import_job
-    after_transition any => :finished, do: :clear_import_data
+    after_transition any => :finished, do: :reset_cache_and_import_attrs
 
     after_transition started: :finished do |project, transaction|
       if project.mirror?
@@ -453,12 +453,12 @@ class Project < ActiveRecord::Base
     end
   end
 
-  def clear_import_data
+  def reset_cache_and_import_attrs
     update(import_error: nil)
 
     ProjectCacheWorker.perform_async(self.id)
 
-    self.import_data.destroy if self.import_data
+    self.import_data.destroy if !mirror? && import_data
   end
 
   def import_url=(value)

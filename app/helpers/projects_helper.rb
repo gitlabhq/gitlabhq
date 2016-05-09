@@ -209,7 +209,10 @@ module ProjectsHelper
   end
 
   def default_url_to_repo(project = @project)
-    if default_clone_protocol == "ssh"
+    case default_clone_protocol
+    when 'krb5'
+      project.kerberos_url_to_repo
+    when 'ssh'
       project.ssh_url_to_repo
     else
       project.http_url_to_repo
@@ -217,7 +220,9 @@ module ProjectsHelper
   end
 
   def default_clone_protocol
-    if !current_user || current_user.require_ssh_key?
+    if alternative_kerberos_url? && current_user
+      "krb5"
+    elsif !current_user || current_user.require_ssh_key?
       gitlab_config.protocol
     else
       "ssh"
