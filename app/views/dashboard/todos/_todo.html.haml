@@ -4,8 +4,7 @@
     .todo-title.title
       - unless todo.build_failed?
         - if show_todo_state?(todo)
-          %span.target-status
-            = todo_target_state_pill(todo)
+          = todo_target_state_pill(todo)
 
         %span.author-name
           - if todo.author

@@ -38,16 +38,13 @@ module TodosHelper
   end
 
   def todo_target_state_pill(todo)
-    klass = 'status-box '
-    klass << "status-box-#{todo.target.state.dasherize}"
-
-    content_tag(:span, nil, class: klass) do
-      todo.target.state.capitalize
+    if show_todo_state?(todo)
+      content_tag(:span, nil, class: 'target-status') do
+        content_tag(:span, nil, class: "status-box status-box-#{todo.target.state.dasherize}") do
+          todo.target.state.capitalize
+        end
+      end
     end
-  end
-
-  def show_todo_state?(todo)
-    (todo.target.is_a?(MergeRequest) || todo.target.is_a?(Issue)) && ['closed', 'merged'].include?(todo.target.state)
   end
 
   def todos_filter_params
@@ -107,5 +104,11 @@ module TodosHelper
     ]
 
     options_from_collection_for_select(types, 'name', 'title', params[:type])
+  end
+
+  private
+
+  def show_todo_state?(todo)
+    (todo.target.is_a?(MergeRequest) || todo.target.is_a?(Issue)) && ['closed', 'merged'].include?(todo.target.state)
   end
 end
