@@ -3,7 +3,7 @@ class JwtController < ApplicationController
   skip_before_action :verify_authenticity_token
 
   SERVICES = {
-    'docker' => Jwt::DockerAuthenticationService,
+    'container_registry' => Jwt::ContainerRegistryAuthenticationService,
   }
 
   def auth

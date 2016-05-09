@@ -1,16 +1,18 @@
 module Jwt
-  class DockerAuthenticationService < BaseService
+  class ContainerRegistryAuthenticationService < BaseService
     def execute
       if params[:offline_token]
         return error('forbidden', 403) unless current_user
       end
 
-      { token: authorized_token.encoded }
+      return error('forbidden', 401) if scopes.empty?
+
+      { token: authorized_token(scopes).encoded }
     end
 
     private
 
-    def authorized_token
+    def authorized_token(access)
       token = ::Jwt::RSAToken.new(registry.key)
       token.issuer = registry.issuer
       token.audience = params[:service]
@@ -19,11 +21,13 @@ module Jwt
       token
     end
 
-    def access
+    def scopes
       return unless params[:scope]
 
-      scope = process_scope(params[:scope])
-      [scope].compact
+      @scopes ||= begin
+        scope = process_scope(params[:scope])
+        [scope].compact
+      end
     end
 
     def process_scope(scope)
@@ -44,15 +48,15 @@ module Jwt
         can_access?(requested_project, action)
       end
 
-      { type: type, name: name, actions: actions } if actions
+      { type: type, name: name, actions: actions } if actions.present?
     end
 
     def can_access?(requested_project, requested_action)
       case requested_action
       when 'pull'
-        requested_project.public? || requested_project == project || can?(current_user, :download_code, requested_project)
+        requested_project.public? || requested_project == project || can?(current_user, :read_container_registry, requested_project)
       when 'push'
-        requested_project == project || can?(current_user, :push_code, requested_project)
+        requested_project == project || can?(current_user, :create_container_registry, requested_project)
       else
         false
       end
