@@ -1,18 +1,3 @@
-# == Schema Information
-#
-# Table name: milestones
-#
-#  id          :integer          not null, primary key
-#  title       :string(255)      not null
-#  project_id  :integer          not null
-#  description :text
-#  due_date    :date
-#  created_at  :datetime
-#  updated_at  :datetime
-#  state       :string(255)
-#  iid         :integer
-#
-
 require 'spec_helper'
 
 describe Milestone, models: true do

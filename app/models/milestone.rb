@@ -1,18 +1,3 @@
-# == Schema Information
-#
-# Table name: milestones
-#
-#  id          :integer          not null, primary key
-#  title       :string           not null
-#  project_id  :integer          not null
-#  description :text
-#  due_date    :date
-#  created_at  :datetime
-#  updated_at  :datetime
-#  state       :string
-#  iid         :integer
-#
-
 class Milestone < ActiveRecord::Base
   # Represents a "No Milestone" state used for filtering Issues and Merge
   # Requests that have no milestone assigned.

@@ -1,17 +1,3 @@
-# == Schema Information
-#
-# Table name: labels
-#
-#  id          :integer          not null, primary key
-#  title       :string
-#  color       :string
-#  project_id  :integer
-#  created_at  :datetime
-#  updated_at  :datetime
-#  template    :boolean          default(FALSE)
-#  description :string
-#
-
 class Label < ActiveRecord::Base
   include Referable
   include Subscribable
