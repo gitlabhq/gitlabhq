@@ -156,7 +156,12 @@ class Projects::IssuesController < Projects::ApplicationController
 
   def bulk_update
     result = Issues::BulkUpdateService.new(project, current_user, bulk_update_params).execute
-    redirect_back_or_default(default: { action: 'index' }, options: { notice: "#{result[:count]} issues updated" })
+
+    respond_to do |format|
+      format.json do
+        render json: { notice: "#{result[:count]} issues updated" }
+      end
+    end
   end
 
   protected
