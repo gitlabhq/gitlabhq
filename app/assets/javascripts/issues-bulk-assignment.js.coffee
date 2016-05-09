@@ -29,7 +29,7 @@ class @IssuableBulkActions
             data: @getFormDataAsObject()
 
     xhr.done (response, status, xhr) ->
-      Turbolinks.visit(location.href)
+      location.reload()
 
     xhr.fail ->
       console.error 'fail'
