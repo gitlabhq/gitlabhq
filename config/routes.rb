@@ -1,5 +1,6 @@
 require 'sidekiq/web'
 require 'sidekiq/cron/web'
+require 'api/api'
 
 Rails.application.routes.draw do
   if Gitlab::Sherlock.enabled?
