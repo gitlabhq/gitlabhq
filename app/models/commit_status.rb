@@ -51,7 +51,7 @@ class CommitStatus < ActiveRecord::Base
   alias_attribute :author, :user
 
   scope :latest, -> { where(id: unscope(:select).select('max(id)').group(:name, :commit_id)) }
-  scope :ordered, -> { order(:ref, :stage_idx, :name) }
+  scope :ordered, -> { order(:name) }
   scope :ignored, -> { where(allow_failure: true, status: [:failed, :canceled]) }
 
   state_machine :status, initial: :pending do
@@ -91,13 +91,15 @@ class CommitStatus < ActiveRecord::Base
   end
 
   def self.stages
-    order_by = 'max(stage_idx)'
-    CommitStatus.where(id: all).group('stage').order(order_by).pluck(:stage, order_by).map(&:first).compact
+    # We group by stage name, but order stages by their's index
+    unscoped.from(all, :sg).group('stage').order('max(stage_idx)', 'stage').pluck('sg.stage')
   end
 
   def self.stages_status
-    all.stages.inject({}) do |h, stage|
-      h[stage] = all.where(stage: stage).status
+    # We execute subquery for each of the stages which calculates an Stage Status
+    statuses = unscoped.from(all, :sg).group('stage').pluck('sg.stage', all.where('stage=sg.stage').status_sql)
+    statuses.inject({}) do |h, k|
+      h[k.first] = k.last
       h
     end
   end

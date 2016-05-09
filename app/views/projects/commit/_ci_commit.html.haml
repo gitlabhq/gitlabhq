@@ -36,6 +36,5 @@
 
 .table-holder
   %table.table.builds
-    - stages = ci_commit.statuses.latest.stages_status
-    - stages.each do |stage, status|
-      = render 'ci_stage', stage: stage, status: status
+    - ci_commit.statuses.stages.each do |stage|
+      = render 'projects/commit/ci_stage', stage: stage, statuses: ci_commit.statuses.where(stage: stage)
