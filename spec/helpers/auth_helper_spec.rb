@@ -19,8 +19,11 @@ describe AuthHelper do
   end
 
   describe 'enabled_button_based_providers' do
-    it 'returns all the enabled providers from settings' do
+    before do
       allow(helper).to receive(:auth_providers) { [:twitter, :github] }
+    end
+
+    it 'returns all the enabled providers from settings' do
       expect(helper.enabled_button_based_providers).to include(*['twitter', 'github'])
     end
 
@@ -29,15 +32,11 @@ describe AuthHelper do
         disabled_oauth_sign_in_sources: ['github']
       )
 
-      allow(helper).to receive(:auth_providers) { [:twitter, :github] }
-
       expect(helper.enabled_button_based_providers).to include('twitter')
       expect(helper.enabled_button_based_providers).to_not include('github')
     end
 
     it 'returns true for button_based_providers_enabled? because there providers' do
-      allow(helper).to receive(:auth_providers) { [:twitter, :github] }
-
       expect(helper.button_based_providers_enabled?).to be true
     end
 
@@ -45,8 +44,6 @@ describe AuthHelper do
       stub_application_setting(
         disabled_oauth_sign_in_sources: ['github', 'twitter']
       )
-
-      allow(helper).to receive(:auth_providers) { [:twitter, :github] }
 
       expect(helper.button_based_providers_enabled?).to be false
     end
