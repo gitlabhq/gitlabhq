@@ -24,7 +24,7 @@ describe AuthHelper do
       expect(helper.enabled_button_based_providers).to include(*['twitter', 'github'])
     end
 
-    it 'should not return github as provider because it\'s disabled from settings' do
+    it "should not return github as provider because it's disabled from settings" do
       settings.update_attribute(
         :disabled_oauth_sign_in_sources,
         ['github']
