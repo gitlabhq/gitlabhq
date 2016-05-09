@@ -2,8 +2,6 @@ require "spec_helper"
 
 describe AuthHelper do
   describe "button_based_providers" do
-    let(:settings) { ApplicationSetting.create_from_defaults }
-
     it 'returns all enabled providers from devise' do
       allow(helper).to receive(:auth_providers) { [:twitter, :github] }
       expect(helper.button_based_providers).to include(*[:twitter, :github])
@@ -25,13 +23,11 @@ describe AuthHelper do
     end
 
     it "should not return github as provider because it's disabled from settings" do
-      settings.update_attribute(
-        :disabled_oauth_sign_in_sources,
-        ['github']
+      stub_application_setting(
+        disabled_oauth_sign_in_sources: ['github']
       )
 
       allow(helper).to receive(:auth_providers) { [:twitter, :github] }
-      allow(helper).to receive(:current_application_settings) {  settings }
 
       expect(helper.enabled_button_based_providers).to include('twitter')
       expect(helper.enabled_button_based_providers).to_not include('github')
@@ -44,13 +40,11 @@ describe AuthHelper do
     end
 
     it 'returns false for button_based_providers_enabled? because there providers' do
-      settings.update_attribute(
-        :disabled_oauth_sign_in_sources,
-        ['github', 'twitter']
+      stub_application_setting(
+        disabled_oauth_sign_in_sources: ['github', 'twitter']
       )
 
       allow(helper).to receive(:auth_providers) { [:twitter, :github] }
-      allow(helper).to receive(:current_application_settings) {  settings }
 
       expect(helper.button_based_providers_enabled?).to be false
     end
