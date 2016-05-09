@@ -16,7 +16,9 @@ describe AuthHelper do
       allow(helper).to receive(:auth_providers) { [] }
       expect(helper.button_based_providers).to eq([])
     end
+  end
 
+  describe 'enabled_button_based_providers' do
     it 'returns all the enabled providers from settings' do
       allow(helper).to receive(:auth_providers) { [:twitter, :github] }
       expect(helper.enabled_button_based_providers).to include(*['twitter', 'github'])
