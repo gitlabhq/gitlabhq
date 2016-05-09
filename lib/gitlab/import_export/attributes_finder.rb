@@ -11,8 +11,9 @@ module Gitlab
         parsed_hash.empty? ? model_object : { model_object => parsed_hash }
       end
 
-      def find_attributes_only(value)
-        find_included(value).merge(find_excluded(value))
+      def parse(model_object)
+        parsed_hash = find_attributes_only(model_object)
+        yield parsed_hash unless parsed_hash.empty?
       end
 
       def find_included(value)
@@ -26,6 +27,10 @@ module Gitlab
       end
 
       private
+
+      def find_attributes_only(value)
+        find_included(value).merge(find_excluded(value))
+      end
 
       def key_from_hash(value)
         value.is_a?(Hash) ? value.keys.first : value
