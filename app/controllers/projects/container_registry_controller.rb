@@ -1,6 +1,6 @@
 class Projects::ContainerRegistryController < Projects::ApplicationController
-  before_action :authorize_read_image!
-  before_action :authorize_update_image!, only: [:destroy]
+  before_action :authorize_read_container_registry!
+  before_action :authorize_update_container_registry!, only: [:destroy]
   before_action :tag, except: [:index]
   layout 'project'
 
@@ -23,6 +23,6 @@ class Projects::ContainerRegistryController < Projects::ApplicationController
   end
 
   def tag
-    @tag ||= container_registry[params[:id]]
+    @tag ||= container_registry_repository[params[:id]]
   end
 end

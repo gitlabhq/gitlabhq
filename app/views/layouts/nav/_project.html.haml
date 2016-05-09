@@ -46,9 +46,9 @@
           Builds
           %span.count.builds_counter= number_with_delimiter(@project.builds.running_or_pending.count(:all))
 
-  - if project_nav_tab? :images
+  - if project_nav_tab? :container_registry
     = nav_link(controller: %w(container_registry)) do
-      = link_to project_container_registry_path(@project), title: 'Container Registry', class: 'shortcuts-images' do
+      = link_to project_container_registry_path(@project), title: 'Container Registry', class: 'shortcuts-container-registry' do
         = icon('hdd-o fw')
         %span
           Container Registry
