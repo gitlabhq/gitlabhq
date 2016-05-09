@@ -27,7 +27,7 @@ module Projects
         project.destroy!
 
         unless remove_registry_tags
-          raise_error('Failed to remove project image registry. Please try again or contact administrator')
+          raise_error('Failed to remove project container registry. Please try again or contact administrator')
         end
 
         unless remove_repository(repo_path)

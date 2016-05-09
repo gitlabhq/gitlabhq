@@ -1,5 +1,7 @@
 module Jwt
   class ContainerRegistryAuthenticationService < BaseService
+    AUDIENCE = 'container_registry'
+
     def execute
       if params[:offline_token]
         return error('forbidden', 403) unless current_user
@@ -14,7 +16,7 @@ module Jwt
       registry = Gitlab.config.registry
       token = ::Jwt::RSAToken.new(registry.key)
       token.issuer = registry.issuer
-      token.audience = 'docker'
+      token.audience = AUDIENCE
       token[:access] = names.map do |name|
         { type: 'repository', name: name, actions: %w(pull push) }
       end
@@ -26,7 +28,7 @@ module Jwt
     def authorized_token(access)
       token = ::Jwt::RSAToken.new(registry.key)
       token.issuer = registry.issuer
-      token.audience = params[:service]
+      token.audience = AUDIENCE
       token.subject = current_user.try(:username)
       token[:access] = access
       token

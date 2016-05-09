@@ -10,7 +10,7 @@ module ContainerRegistry
     def initialize(base_uri, options = {})
       @base_uri = base_uri
       @faraday = Faraday.new(@base_uri) do |conn|
-        initialize_connection(conn)
+        initialize_connection(conn, options)
       end
     end
 
@@ -51,7 +51,7 @@ module ContainerRegistry
     
     private
     
-    def initialize_connection(conn)
+    def initialize_connection(conn, options)
       conn.request :json
       conn.headers['Accept'] = MANIFEST_VERSION
 

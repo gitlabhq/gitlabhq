@@ -1,0 +1,20 @@
+%tr.tag
+  %td
+    = escape_once(tag.name)
+    = clipboard_button(clipboard_text: "docker pull #{tag.path}")
+  %td
+    - if layer = tag.layers.first
+      %span.has-tooltip(title="#{layer.revision}")
+        = layer.short_revision
+    - else
+      \-
+  %td
+    = number_to_human_size(tag.total_size)
+    &middot;
+    = pluralize(tag.layers.size, "layer")
+  %td
+    = time_ago_in_words(tag.created_at)
+  %td.content
+    .controls.hidden-xs.pull-right
+      = link_to namespace_project_container_registry_path(@project.namespace, @project, tag.name), class: 'btn btn-remove has-tooltip', title: "Remove", data: { confirm: "Are you sure?" }, method: :delete do
+        = icon("trash cred")
