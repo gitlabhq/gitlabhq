@@ -10,7 +10,6 @@
 #  updated_at                   :datetime
 #  creator_id                   :integer
 #  issues_enabled               :boolean          default(TRUE), not null
-#  wall_enabled                 :boolean          default(TRUE), not null
 #  merge_requests_enabled       :boolean          default(TRUE), not null
 #  wiki_enabled                 :boolean          default(TRUE), not null
 #  namespace_id                 :integer
@@ -67,7 +66,6 @@ class Project < ActiveRecord::Base
   default_value_for :merge_requests_enabled, gitlab_config_features.merge_requests
   default_value_for :builds_enabled, gitlab_config_features.builds
   default_value_for :wiki_enabled, gitlab_config_features.wiki
-  default_value_for :wall_enabled, false
   default_value_for :snippets_enabled, gitlab_config_features.snippets
   default_value_for(:shared_runners_enabled) { current_application_settings.shared_runners_enabled }
 
@@ -767,7 +765,7 @@ class Project < ActiveRecord::Base
 
   # Check if current branch name is marked as protected in the system
   def protected_branch?(branch_name)
-    protected_branches.where(name: branch_name).any?
+    protected_branch_names.include?(branch_name)
   end
 
   def developers_can_push_to_protected_branch?(branch_name)

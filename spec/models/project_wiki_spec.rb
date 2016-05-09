@@ -38,7 +38,9 @@ describe ProjectWiki, models: true do
 
   describe "#wiki_base_path" do
     it "returns the wiki base path" do
-      wiki_base_path = "/#{project.path_with_namespace}/wikis"
+      gitlab_url = Gitlab.config.gitlab.url
+      wiki_base_path = "#{gitlab_url}/#{project.path_with_namespace}/wikis"
+
       expect(subject.wiki_base_path).to eq(wiki_base_path)
     end
   end

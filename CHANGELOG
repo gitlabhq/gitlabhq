@@ -3,6 +3,8 @@ Please view this file on the master branch, on stable branches it's out of date.
 v 8.8.0 (unreleased)
   - Assign labels and milestone to target project when moving issue. !3934 (Long Nguyen)
   - Project#open_branches has been cleaned up and no longer loads entire records into memory.
+  - Escape HTML in commit titles in system note messages
+  - Improve multiple branch push performance by memoizing permission checking
   - Log to application.log when an admin starts and stops impersonating a user
   - Updated gitlab_git to 10.1.0
   - GitAccess#protected_tag? no longer loads all tags just to check if a single one exists
@@ -16,6 +18,7 @@ v 8.8.0 (unreleased)
   - Use ActionDispatch Remote IP for Akismet checking
   - Fix error when visiting commit builds page before build was updated
   - Add 'l' shortcut to open Label dropdown on issuables and 'i' to create new issue on a project
+  - Update SVG sanitizer to conform to SVG 1.1
   - Updated search UI
   - Display informative message when new milestone is created
   - Allow "NEWS" and "CHANGES" as alternative names for CHANGELOG. !3768 (Connor Shea)
@@ -30,6 +33,10 @@ v 8.8.0 (unreleased)
   - Fix Gravatar hint in user profile when Gravatar is disabled. !3988 (Artem Sidorenko)
   - Expire repository exists? and has_visible_content? caches after a push if necessary
   - Fix unintentional filtering bug in issues sorted by milestone due (Takuya Noguchi)
+
+v 8.7.4
+  - Fix always showing build notification message when switching between merge requests
+  - Fix links on wiki pages for relative url setups. !4026 (Artem Sidorenko)
 
 v 8.7.3
   - Emails, Gitlab::Email::Message, Gitlab::Diff, and Premailer::Adapter::Nokogiri are now instrumented
