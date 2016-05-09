@@ -4,14 +4,14 @@ module Gitlab
       #FIXME
 
       def initialize(config: 'lib/gitlab/import_export/import_export.yml')
-        config = YAML.load_file('lib/gitlab/import_export/import_export.yml').with_indifferent_access
-        @tree = config[:project_tree]
-        @attributes_parser = Gitlab::ImportExport::AttributesFinder.new(included_attributes: config[:included_attributes],
-                                                                        excluded_attributes: config[:excluded_attributes])
+        config_hash = YAML.load_file(config).with_indifferent_access
+        @tree = config_hash[:project_tree]
+        @attributes_parser = Gitlab::ImportExport::AttributesFinder.new(included_attributes: config_hash[:included_attributes],
+                                                                        excluded_attributes: config_hash[:excluded_attributes])
       end
 
       def project_tree
-        { only: @attributes_parser.find_included(:project), include: build_hash(@tree) }
+        @attributes_parser.find_included(:project).merge(include: build_hash(@tree))
       end
 
       private

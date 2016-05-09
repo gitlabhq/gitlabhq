@@ -17,6 +17,6 @@ describe Gitlab::ImportExport::ImportExportReader do
   end
 
   it 'should generate hash from project tree config' do
-    expect(described_class.new(config: test_config).project_tree).to eq(project_tree_hash)
+    expect(described_class.new(config: test_config).project_tree) =~ (project_tree_hash)
   end
 end
