@@ -391,6 +391,12 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def has_container_registry_tags?
+    if container_registry_enabled? && Gitlab.config.registry.enabled
+      container_registry_repository.tags.any?
+    end
+  end
+
   def commit(id = 'HEAD')
     repository.commit(id)
   end
@@ -805,6 +811,11 @@ class Project < ActiveRecord::Base
     new_path_with_namespace = File.join(namespace_dir, path)
 
     expire_caches_before_rename(old_path_with_namespace)
+
+    if has_container_registry_tags?
+      # we currently doesn't support renaming repository if it contains tags in container registry
+      raise Exception.new('repository cannot be renamed, due to tags in container registry')
+    end
 
     if gitlab_shell.mv_repository(old_path_with_namespace, new_path_with_namespace)
       # If repository moved successfully we need to send update instructions to users.
