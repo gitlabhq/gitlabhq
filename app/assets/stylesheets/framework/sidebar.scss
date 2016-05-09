@@ -210,14 +210,32 @@
   }
 }
 
+.sidebar-wrapper {
+  &.hidden-nav {
+    width: 0;
+  }
+}
+
 .page-sidebar-collapsed {
   padding-left: $sidebar_collapsed_width;
+
+  @media (max-width: $screen-xs-min) {
+    padding-left: 0;
+  }
 
   .sidebar-wrapper {
     width: $sidebar_collapsed_width;
 
+    @media (max-width: $screen-xs-min) {
+      width: 0;
+    }
+
     .header-logo {
       width: $sidebar_collapsed_width;
+
+      @media (max-width: $screen-xs-min) {
+        width: 0;
+      }
 
       a {
         padding-left: ($sidebar_collapsed_width - 36) / 2;
@@ -244,11 +262,21 @@
 
     .collapse-nav a {
       width: $sidebar_collapsed_width;
+
+      @media (max-width: $screen-xs-min) {
+        width: 0;
+      }
     }
 
     .sidebar-user {
       padding-left: ($sidebar_collapsed_width - 36) / 2;
       width: $sidebar_collapsed_width;
+
+      @media (max-width: $screen-xs-min) {
+        width: 0;
+        padding-left: 0;
+        padding-right: 0;
+      }
 
       .username {
         display: none;
@@ -258,6 +286,10 @@
 
   .layout-nav {
     padding-right: $sidebar_collapsed_width;
+
+    @media (max-width: $screen-xs-min) {
+      padding-right: 0;;
+    }
   }
 }
 
@@ -266,6 +298,10 @@
 
   @media (min-width: $screen-md-min) {
     padding-left: $sidebar_width;
+  }
+
+  @media (max-width: $screen-xs-min) {
+    padding-left: 0;
   }
 
   .sidebar-wrapper {
@@ -288,6 +324,10 @@
 
   .layout-nav {
     padding-right: $sidebar_width;
+
+    @media (max-width: $screen-xs-min) {
+      padding-right: 0;;
+    }
   }
 }
 
