@@ -16,7 +16,7 @@ Webhooks can be used to update an external issue tracker, trigger CI builds, upd
 ## Webhook endpoint tips
 
 If you are writing your own endpoint (web server) that will receive
-GitLab web hooks keep in mind the following things:
+GitLab webhooks keep in mind the following things:
 
 -   Your endpoint should send its HTTP response as fast as possible. If
     you wait too long, GitLab may decide the hook failed and retry it.
