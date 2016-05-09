@@ -23,6 +23,7 @@ module Ci
 
     LAST_CONTACT_TIME = 5.minutes.ago
     AVAILABLE_SCOPES = ['specific', 'shared', 'active', 'paused', 'online']
+    FORM_EDITABLE = [:description, :tag_list, :active]
 
     has_many :builds, class_name: 'Ci::Build'
     has_many :runner_projects, dependent: :destroy, class_name: 'Ci::RunnerProject'
