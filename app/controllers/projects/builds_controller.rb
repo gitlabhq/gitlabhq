@@ -41,7 +41,7 @@ class Projects::BuildsController < Projects::ApplicationController
   def trace
     respond_to do |format|
       format.json do
-        render json: @build.trace_with_state(params_state).merge!(id: @build.id, status: @build.status)
+        render json: @build.trace_with_state(params[:state]).merge!(id: @build.id, status: @build.status)
       end
     end
   end
@@ -79,13 +79,6 @@ class Projects::BuildsController < Projects::ApplicationController
   end
 
   private
-
-  def params_state
-    begin
-      JSON.parse(params[:state], symbolize_names: true)
-    rescue
-    end
-  end
 
   def build
     @build ||= project.builds.unscoped.find_by!(id: params[:id])

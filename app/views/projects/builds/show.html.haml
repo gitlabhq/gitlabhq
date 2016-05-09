@@ -1,6 +1,6 @@
 - page_title "#{@build.name} (##{@build.id})", "Builds"
 = render "header_title"
-- trace = build.trace_for_state
+- trace_with_state = @build.trace_with_state
 
 .build-page
   .row-content-block.top-block
@@ -86,7 +86,7 @@
         %pre.trace#build-trace
           %code.bash
             = preserve do
-              = raw trace[:html]
+              = raw trace_with_state[:html]
               - if @build.active?
                 %i{:class => "fa fa-refresh fa-spin"}
 
@@ -219,4 +219,4 @@
 
 
   :javascript
-    new CiBuild("#{namespace_project_build_url(@project.namespace, @project, @build)}", "#{@build.status}", "#{trace[:state]}")
+    new CiBuild("#{namespace_project_build_url(@project.namespace, @project, @build)}", "#{@build.status}", "#{trace_with_state[:state]}")

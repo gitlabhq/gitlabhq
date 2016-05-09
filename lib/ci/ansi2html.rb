@@ -90,7 +90,7 @@ module Ci
 
       def convert(raw, new_state)
         reset_state
-        restore_state(new_state) if new_state && new_state[:offset].to_i < raw.length
+        restore_state(raw, new_state) if new_state
 
         start = @offset
         ansi = raw[@offset..-1]
@@ -187,15 +187,20 @@ module Ci
       end
 
       def state
-        STATE_PARAMS.inject({}) do |h, param|
+        state = STATE_PARAMS.inject({}) do |h, param|
           h[param] = send(param)
           h
         end
+        Base64.urlsafe_encode64(state.to_json)
       end
 
-      def restore_state(new_state)
+      def restore_state(raw, new_state)
+        state = Base64.urlsafe_decode64(new_state)
+        state = JSON.parse(state, symbolize_names: true)
+        return if state[:offset].to_i > raw.length
+
         STATE_PARAMS.each do |param|
-          send("#{param}=".to_sym, new_state[param])
+          send("#{param}=".to_sym, state[param])
         end
       end
 
