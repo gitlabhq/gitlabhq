@@ -127,9 +127,9 @@ the appropriate dependencies to run Rails test suites.
 
 ### Prevent runner with tags from picking jobs without tags
 
-You can configure runner to prevent it from picking jobs with tags when
-runnner does not have tags assigned. This configuration setting is available
-in GitLab interface when editting runner details.
+You can configure a runner to prevent it from picking jobs with tags when
+the runnner does not have tags assigned. This setting is available on each
+runner in *Project Settings* > *Runners*.
 
 ### Be careful with sensitive information
 

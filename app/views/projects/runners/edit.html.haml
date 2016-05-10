@@ -2,7 +2,5 @@
 
 %h4 Runner ##{@runner.id}
 
-= form_errors(@runner)
-
 %hr
  = render 'form', runner: @runner, runner_form_url: runner_path(@runner)
