@@ -17,11 +17,11 @@ module Gitlab
       private
 
       def build_hash(model_list)
-        model_list.map do |model_object_hash|
-          if model_object_hash.is_a?(Hash)
-            build_json_config_hash(model_object_hash)
+        model_list.map do |model_objects|
+          if model_objects.is_a?(Hash)
+            build_json_config_hash(model_objects)
           else
-            @attributes_parser.find(model_object_hash)
+            @attributes_parser.find(model_objects)
           end
         end
       end
