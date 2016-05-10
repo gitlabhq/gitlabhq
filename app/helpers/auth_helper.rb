@@ -45,7 +45,7 @@ module AuthHelper
   end
 
   def button_based_providers_enabled?
-    !enabled_button_based_providers.empty?
+    enabled_button_based_providers.any?
   end
 
   def provider_image_tag(provider, size = 64)
