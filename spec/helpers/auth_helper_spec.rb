@@ -23,29 +23,43 @@ describe AuthHelper do
       allow(helper).to receive(:auth_providers) { [:twitter, :github] }
     end
 
-    it 'returns all the enabled providers from settings' do
-      expect(helper.enabled_button_based_providers).to include(*['twitter', 'github'])
+    context 'all providers are enabled to sign in' do
+      it 'returns all the enabled providers from settings' do
+        expect(helper.enabled_button_based_providers).to include('twitter', 'github')
+      end
     end
 
-    it "should not return github as provider because it's disabled from settings" do
-      stub_application_setting(
-        disabled_oauth_sign_in_sources: ['github']
-      )
+    context 'GitHub OAuth sign in is disabled from application setting' do
+      it "doesn't return github as provider" do
+        stub_application_setting(
+          disabled_oauth_sign_in_sources: ['github']
+        )
 
-      expect(helper.enabled_button_based_providers).to include('twitter')
-      expect(helper.enabled_button_based_providers).to_not include('github')
+        expect(helper.enabled_button_based_providers).to include('twitter')
+        expect(helper.enabled_button_based_providers).to_not include('github')
+      end
+    end
+  end
+
+  describe 'button_based_providers_enabled?' do
+    before do
+      allow(helper).to receive(:auth_providers) { [:twitter, :github] }
     end
 
-    it 'returns true for button_based_providers_enabled? because there providers' do
-      expect(helper.button_based_providers_enabled?).to be true
+    context 'button based providers enabled' do
+      it 'returns true' do
+        expect(helper.button_based_providers_enabled?).to be true
+      end
     end
 
-    it 'returns false for button_based_providers_enabled? because there providers' do
-      stub_application_setting(
-        disabled_oauth_sign_in_sources: ['github', 'twitter']
-      )
+    context 'all the button based providers are disabled via application_setting' do
+      it 'returns false' do
+        stub_application_setting(
+          disabled_oauth_sign_in_sources: ['github', 'twitter']
+        )
 
-      expect(helper.button_based_providers_enabled?).to be false
+        expect(helper.button_based_providers_enabled?).to be false
+      end
     end
   end
 end
