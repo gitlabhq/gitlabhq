@@ -8,6 +8,8 @@ module Banzai
     #
     class UploadLinkFilter < HTML::Pipeline::Filter
       def call
+        return doc unless project
+
         doc.search('a').each do |el|
           process_link_attr el.attribute('href')
         end
@@ -31,9 +33,11 @@ module Banzai
       end
 
       def build_url(uri)
-        return '#' unless project = context[:project]
-
         File.join(Gitlab.config.gitlab.url, project.path_with_namespace, uri)
+      end
+
+      def project
+        context[:project]
       end
 
       # Ensure that a :project key exists in context

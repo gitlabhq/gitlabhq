@@ -79,13 +79,13 @@ describe Banzai::Filter::UploadLinkFilter, lib: true do
     let(:upload_link) { link('/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg') }
 
     it 'does not raise error' do
-      expect { raw_filter(upload_link, project: nil) }.to_not raise_error
+      expect { raw_filter(upload_link, project: nil) }.not_to raise_error
     end
 
-    it 'provides an empty link' do
+    it 'does not rewrite link' do
       doc = raw_filter(upload_link, project: nil)
 
-      expect(doc.at_css('a')['href']).to eq '#'
+      expect(doc.to_html).to eq upload_link
     end
   end
 end
