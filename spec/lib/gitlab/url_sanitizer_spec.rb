@@ -31,16 +31,16 @@ describe Gitlab::UrlSanitizer, lib: true do
       })
     end
 
-    it 'remove credentials from HTTP URLs' do
-      expect(filtered_content).to include("http://test.com/root/repoC.git/")
+    it 'mask the credentials from HTTP URLs' do
+      expect(filtered_content).to include("http://*****:*****@test.com/root/repoC.git/")
     end
 
-    it 'remove credentials from HTTPS URLs' do
-      expect(filtered_content).to include("https://test.com/root/repoA.git/")
+    it 'mask the credentials from HTTPS URLs' do
+      expect(filtered_content).to include("https://*****:*****@test.com/root/repoA.git/")
     end
 
-    it 'remove credentials from SSH URLs' do
-      expect(filtered_content).to include("ssh://host.test/path/to/repo.git")
+    it 'mask credentials from SSH URLs' do
+      expect(filtered_content).to include("ssh://*****@host.test/path/to/repo.git")
     end
 
     it 'does not modify Git URLs' do
