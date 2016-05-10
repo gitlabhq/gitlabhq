@@ -261,7 +261,7 @@ describe Gitlab::LDAP::GroupSync, lib: true do
 
           allow_any_instance_of(Gitlab::LDAP::Group)
             .to receive(:adapter).and_return(adapter)
-  
+
           user1.identities.create(
             provider: 'ldapmain',
             extern_uid: "uid=#{user1.username},ou=users,dc=example,dc=com"
@@ -270,7 +270,7 @@ describe Gitlab::LDAP::GroupSync, lib: true do
             provider: 'ldapmain',
             extern_uid: "uid=#{user2.username},ou=users,dc=example,dc=com"
           )
-  
+
           allow(Gitlab::LDAP::Group)
             .to receive(:find_by_cn)
               .with('ldap_group1', kind_of(Gitlab::LDAP::Adapter))
@@ -279,12 +279,16 @@ describe Gitlab::LDAP::GroupSync, lib: true do
             .to receive(:find_by_cn)
               .with('ldap_group2', kind_of(Gitlab::LDAP::Adapter))
               .and_return(Gitlab::LDAP::Group.new(ldap_group2))
-   
+
+          group1.members.destroy_all
+          group1.ldap_group_links.destroy_all
           group1.ldap_group_links.create(
             cn: 'ldap_group1',
             group_access: Gitlab::Access::DEVELOPER,
             provider: 'ldapmain'
           )
+          group2.members.destroy_all
+          group2.ldap_group_links.destroy_all
           group2.ldap_group_links.create(
             cn: 'ldap_group2',
             group_access: Gitlab::Access::OWNER,
