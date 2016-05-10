@@ -111,8 +111,19 @@ describe Note, models: true do
     let!(:note2) { create(:note) }
 
     it "reads the rendered note body from the cache" do
-      expect(Banzai::Renderer).to receive(:render).with(note1.note, pipeline: :note, cache_key: [note1, "note"], project: note1.project)
-      expect(Banzai::Renderer).to receive(:render).with(note2.note, pipeline: :note, cache_key: [note2, "note"], project: note2.project)
+      expect(Banzai::Renderer).to receive(:render).
+        with(note1.note,
+             pipeline: :note,
+             cache_key: [note1, "note"],
+             project: note1.project,
+             author: note1.author)
+
+      expect(Banzai::Renderer).to receive(:render).
+        with(note2.note,
+             pipeline: :note,
+             cache_key: [note2, "note"],
+             project: note2.project,
+             author: note2.author)
 
       note1.all_references
       note2.all_references
