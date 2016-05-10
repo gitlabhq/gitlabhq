@@ -3,7 +3,7 @@ GEM
   specs:
     CFPropertyList (2.3.2)
     RedCloth (4.2.9)
-    ace-rails-ap (2.0.1)
+    ace-rails-ap (4.0.2)
     actionmailer (4.2.6)
       actionpack (= 4.2.6)
       actionview (= 4.2.6)
@@ -882,7 +882,7 @@ PLATFORMS
 
 DEPENDENCIES
   RedCloth (~> 4.2.9)
-  ace-rails-ap (~> 2.0.1)
+  ace-rails-ap (~> 4.0.2)
   activerecord-deprecated_finders (~> 1.0.3)
   activerecord-session_store (~> 0.1.0)
   acts-as-taggable-on (~> 3.4)
