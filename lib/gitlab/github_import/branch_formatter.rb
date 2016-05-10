@@ -15,6 +15,10 @@ module Gitlab
         repo.present?
       end
 
+      def valid?
+        repo.present?
+      end
+
       private
 
       def short_id

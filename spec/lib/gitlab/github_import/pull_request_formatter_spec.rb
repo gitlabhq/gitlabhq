@@ -173,7 +173,7 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
     end
 
     context 'when source repo is a fork' do
-      let(:source_repo) { double(id: 2, fork: true) }
+      let(:source_repo) { double(id: 2) }
       let(:raw_data) { double(base_data) }
 
       it 'returns false' do
@@ -182,7 +182,7 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
     end
 
     context 'when target repo is a fork' do
-      let(:target_repo) { double(id: 2, fork: true) }
+      let(:target_repo) { double(id: 2) }
       let(:raw_data) { double(base_data) }
 
       it 'returns false' do

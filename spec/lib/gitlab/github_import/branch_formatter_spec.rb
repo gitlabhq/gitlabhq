@@ -54,4 +54,18 @@ describe Gitlab::GithubImport::BranchFormatter, lib: true do
       expect(branch.sha).to eq '2e5d3239642f9161dcbbc4b70a211a68e5e45e2b'
     end
   end
+
+  describe '#valid?' do
+    it 'returns true when repository exists' do
+      branch = described_class.new(project, double(raw))
+
+      expect(branch.valid?).to eq true
+    end
+
+    it 'returns false when repository does not exist' do
+      branch = described_class.new(project, double(raw.merge(repo: nil)))
+
+      expect(branch.valid?).to eq false
+    end
+  end
 end

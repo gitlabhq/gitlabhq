@@ -29,7 +29,7 @@ module Gitlab
       end
 
       def valid?
-        !cross_project?
+        source_branch.valid? && target_branch.valid? && !cross_project?
       end
 
       def source_branch
@@ -65,8 +65,7 @@ module Gitlab
       end
 
       def cross_project?
-        source_branch_repo.present? && target_branch_repo.present? &&
-          source_branch_repo.id != target_branch_repo.id
+        source_branch_repo.id != target_branch_repo.id
       end
 
       def description
