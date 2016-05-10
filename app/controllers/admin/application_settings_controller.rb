@@ -57,7 +57,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
 
     params[:application_setting][:disabled_oauth_sign_in_sources] =
       AuthHelper.button_based_providers.map(&:to_s) -
-      (enabled_oauth_sign_in_sources.nil? ? [] : enabled_oauth_sign_in_sources)
+      Array(enabled_oauth_sign_in_sources)
 
     params[:application_setting].delete(:enabled_oauth_sign_in_sources)
 
