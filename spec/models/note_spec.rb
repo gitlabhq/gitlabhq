@@ -43,12 +43,8 @@ describe Note, models: true do
       expect(note.noteable.id).to eq(commit.id)
     end
 
-    it "should be recognized by #for_diff_line?" do
-      expect(note).to be_for_diff_line
-    end
-
-    it "should be recognized by #for_commit_diff_line?" do
-      expect(note).to be_for_commit_diff_line
+    it "should be recognized by #legacy_diff_note?" do
+      expect(note).to be_legacy_diff_note
     end
   end
 

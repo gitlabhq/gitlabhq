@@ -22,7 +22,7 @@ class Projects::CompareController < Projects::ApplicationController
       @base_commit = @project.merge_base_commit(@base_ref, @head_ref)
       @diffs = compare.diffs(diff_options)
       @diff_refs = [@base_commit, @commit]
-      @line_notes = []
+      @grouped_diff_notes = {}
     end
   end
 
