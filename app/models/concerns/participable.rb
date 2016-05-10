@@ -38,34 +38,29 @@ module Participable
   # Be aware that this method makes a lot of sql queries.
   # Save result into variable if you are going to reuse it inside same request
   def participants(current_user = self.author)
-    participants =
-      Gitlab::ReferenceExtractor.lazily do
-        self.class.participant_attrs.flat_map do |attr|
-          value =
-            if attr.respond_to?(:call)
-              instance_exec(current_user, &attr)
-            else
-              send(attr)
-            end
+    participants = Set.new
 
-          participants_for(value, current_user)
-        end.compact.uniq
-      end
+    self.class.participant_attrs.each do |attr|
+      value =
+        if attr.respond_to?(:call)
+          instance_exec(current_user, &attr)
+        else
+          send(attr)
+        end
 
-    unless Gitlab::ReferenceExtractor.lazy?
-      participants.select! do |user|
-        user.can?(:read_project, project)
-      end
+      result = participants_for(value, current_user)
+
+      participants.merge(result) if result
     end
 
-    participants
+    participants.to_a
   end
 
   private
 
   def participants_for(value, current_user = nil)
     case value
-    when User, Banzai::LazyReference
+    when User
       [value]
     when Enumerable, ActiveRecord::Relation
       value.flat_map { |v| participants_for(v, current_user) }

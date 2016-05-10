@@ -44,20 +44,12 @@ module Mentionable
   end
 
   def all_references(current_user = nil, text = nil)
-    ext = Gitlab::ReferenceExtractor.new(self.project, current_user || self.author)
+    ext = Gitlab::ReferenceExtractor.new(project, current_user || author)
 
     if text
       ext.analyze(text, author: author)
     else
-      self.class.mentionable_attrs.each do |attr, options|
-        text = send(attr)
-
-        context = options.dup
-        context[:cache_key] = [self, attr] if context.delete(:cache) && self.persisted?
-        context[:author] = author
-
-        ext.analyze(text, context)
-      end
+      analyze_attributes(ext)
     end
 
     ext
@@ -129,5 +121,33 @@ module Mentionable
   # the specified target.
   def cross_reference_exists?(target)
     SystemNoteService.cross_reference_exists?(target, local_reference)
+  end
+
+  def analyze_attributes(ext)
+    author = self.author
+
+    self.class.mentionable_attrs.each do |(attr, options)|
+      result = send(attr)
+
+      if result.is_a?(ActiveRecord::Relation)
+        result.each do |object|
+          object.class.mentionable_attrs.each do |(sub_attr, sub_opts)|
+            if object.respond_to?(:author)
+              sub_author = object.author
+            else
+              sub_author = author
+            end
+
+            ext.analyze(
+              object.send(sub_attr),
+              sub_opts.merge(cache_key: [object, sub_attr], author: sub_author)
+            )
+          end
+        end
+      else
+        ext.analyze(result,
+                    options.merge(cache_key: [self, attr], author: author))
+      end
+    end
   end
 end

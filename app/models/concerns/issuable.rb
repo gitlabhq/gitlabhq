@@ -57,7 +57,10 @@ module Issuable
 
     attr_mentionable :title, pipeline: :single_line
     attr_mentionable :description, cache: true
-    participant :author, :assignee, :notes_with_associations
+    attr_mentionable :notes_with_associations
+
+    participant :author, :assignee
+
     strip_attributes :title
 
     acts_as_paranoid

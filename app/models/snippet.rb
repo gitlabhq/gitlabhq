@@ -2,6 +2,7 @@ class Snippet < ActiveRecord::Base
   include Gitlab::VisibilityLevel
   include Linguist::BlobHelper
   include Participable
+  include Mentionable
   include Referable
   include Sortable
 
@@ -30,7 +31,10 @@ class Snippet < ActiveRecord::Base
   scope :public_and_internal, -> { where(visibility_level: [Snippet::PUBLIC, Snippet::INTERNAL]) }
   scope :fresh,   -> { order("created_at DESC") }
 
-  participant :author, :notes
+  scope :notes_with_associations, -> { includes(:author, :project) }
+
+  participant :author
+  attr_mentionable :notes_with_associations
 
   def self.reference_prefix
     '$'
