@@ -56,7 +56,7 @@ module Issuable
              prefix: true
 
     attr_mentionable :title, pipeline: :single_line
-    attr_mentionable :description, cache: true
+    attr_mentionable :description
     attr_mentionable :notes_with_associations
 
     participant :author, :assignee
