@@ -291,14 +291,16 @@ describe Gitlab::LDAP::GroupSync, lib: true do
           group2.ldap_group_links.destroy_all
           group2.ldap_group_links.create(
             cn: 'ldap_group2',
-            group_access: Gitlab::Access::OWNER,
+            group_access: Gitlab::Access::MASTER,
             provider: 'ldapmain'
           )
 
           group_sync.sync_groups
 
           expect(group1.members.pluck(:user_id).sort).to eq([user1.id, user2.id].sort)
+          expect(group1.members.pluck(:access_level).uniq).to eq([Gitlab::Access::DEVELOPER])
           expect(group2.members.pluck(:user_id)).to eq([user2.id])
+          expect(group2.members.pluck(:access_level).uniq).to eq([Gitlab::Access::MASTER])
         end
       end
     end
