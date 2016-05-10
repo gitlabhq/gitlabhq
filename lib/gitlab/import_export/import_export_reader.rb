@@ -2,16 +2,18 @@ module Gitlab
   module ImportExport
     class ImportExportReader
 
-      def initialize(config: 'lib/gitlab/import_export/import_export.yml')
-        config_hash = YAML.load_file(config).with_indifferent_access
+      def initialize(config: 'lib/gitlab/import_export/import_export.yml', shared:)
+        @shared = shared
+        config_hash = YAML.load_file(config).deep_symbolize_keys
         @tree = config_hash[:project_tree]
         @attributes_parser = Gitlab::ImportExport::AttributesFinder.new(included_attributes: config_hash[:included_attributes],
                                                                         excluded_attributes: config_hash[:excluded_attributes])
-        @json_config_hash = {}
       end
 
       def project_tree
         @attributes_parser.find_included(:project).merge(include: build_hash(@tree))
+      rescue => e
+        @shared.error(e.message)
       end
 
       private
@@ -27,6 +29,8 @@ module Gitlab
       end
 
       def build_json_config_hash(model_object_hash)
+        @json_config_hash = {}
+
         model_object_hash.values.flatten.each do |model_object|
           current_key = model_object_hash.keys.first
 
@@ -61,7 +65,7 @@ module Gitlab
       end
 
       def hash_or_merge(value, hash)
-        value.is_a?(Hash) ? value.merge(hash) : hash
+        value.is_a?(Hash) ? value.merge(hash) : { value => hash }
       end
     end
   end

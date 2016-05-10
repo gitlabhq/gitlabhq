@@ -4,8 +4,8 @@ module Projects
 
       def execute(options = {})
         @shared = Gitlab::ImportExport::Shared.new(relative_path: File.join(project.path_with_namespace, 'work'))
-        # TODO handle errors
         save_all if [save_project_tree, bundle_repo, bundle_wiki_repo].all?
+        notify_worker if @shared.errors.any?
       end
 
       private
@@ -23,7 +23,11 @@ module Projects
       end
 
       def save_all
-        Gitlab::ImportExport::Saver.save(storage_path: @shared.export_path)
+        Gitlab::ImportExport::Saver.save(shared: @shared)
+      end
+
+      def notify_worker
+        raise Gitlab::ImportExport::Error @shared.errors.join(', ')
       end
     end
   end
