@@ -253,8 +253,10 @@
         width: auto;
 
         a {
-          padding-left: 23px;
-          transition-duration: .3s;
+          @media (min-width: $screen-xs-min) {
+            padding-left: 23px;
+            transition-duration: .3s;
+          }
 
           span {
             display: none;
