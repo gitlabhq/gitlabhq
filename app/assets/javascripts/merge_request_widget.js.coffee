@@ -9,11 +9,12 @@ class @MergeRequestWidget
   constructor: (@opts) ->
     $('#modal_merge_info').modal(show: false)
     @firstCICheck = true
-    @readyForCICheck = true
+    @readyForCICheck = false
     clearInterval @fetchBuildStatusInterval
 
     @clearEventListeners()
     @addEventListeners()
+    @getCIStatus(false)
     @pollCIStatus()
     notifyPermissions()
 
@@ -71,7 +72,7 @@ class @MergeRequestWidget
       if data.status is ''
         return
 
-      if @firstCiCheck || data.status isnt @opts.ci_status and data.status?
+      if @firstCICheck || data.status isnt @opts.ci_status and data.status?
         @opts.ci_status = data.status
         @showCIStatus data.status
         if data.coverage
@@ -79,7 +80,7 @@ class @MergeRequestWidget
 
         # The first check should only update the UI, a notification
         # should only be displayed on status changes
-        if showNotification and not @firstCiCheck
+        if showNotification and not @firstCICheck
           status = @ciLabelForStatus(data.status)
 
           if status is "preparing"
@@ -102,7 +103,7 @@ class @MergeRequestWidget
               @close()
               Turbolinks.visit _this.opts.builds_path
           )
-        @firstCiCheck = false
+        @firstCICheck = false
 
   showCIStatus: (state) ->
     $('.ci_widget').hide()

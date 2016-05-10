@@ -205,7 +205,8 @@ module ProjectsHelper
   end
 
   def default_url_to_repo(project = @project)
-    if default_clone_protocol == "ssh"
+    case default_clone_protocol
+    when 'ssh'
       project.ssh_url_to_repo
     else
       project.http_url_to_repo

@@ -1,49 +1,3 @@
-# == Schema Information
-#
-# Table name: projects
-#
-#  id                           :integer          not null, primary key
-#  name                         :string
-#  path                         :string
-#  description                  :text
-#  created_at                   :datetime
-#  updated_at                   :datetime
-#  creator_id                   :integer
-#  issues_enabled               :boolean          default(TRUE), not null
-#  wall_enabled                 :boolean          default(TRUE), not null
-#  merge_requests_enabled       :boolean          default(TRUE), not null
-#  wiki_enabled                 :boolean          default(TRUE), not null
-#  namespace_id                 :integer
-#  issues_tracker               :string           default("gitlab"), not null
-#  issues_tracker_id            :string
-#  snippets_enabled             :boolean          default(TRUE), not null
-#  last_activity_at             :datetime
-#  import_url                   :string
-#  visibility_level             :integer          default(0), not null
-#  archived                     :boolean          default(FALSE), not null
-#  avatar                       :string
-#  import_status                :string
-#  repository_size              :float            default(0.0)
-#  star_count                   :integer          default(0), not null
-#  import_type                  :string
-#  import_source                :string
-#  commit_count                 :integer          default(0)
-#  import_error                 :text
-#  ci_id                        :integer
-#  builds_enabled               :boolean          default(TRUE), not null
-#  shared_runners_enabled       :boolean          default(TRUE), not null
-#  runners_token                :string
-#  build_coverage_regex         :string
-#  build_allow_git_fetch        :boolean          default(TRUE), not null
-#  build_timeout                :integer          default(3600), not null
-#  pending_delete               :boolean          default(FALSE)
-#  public_builds                :boolean          default(TRUE), not null
-#  main_language                :string
-#  pushes_since_gc              :integer          default(0)
-#  last_repository_check_failed :boolean
-#  last_repository_check_at     :datetime
-#
-
 require 'carrierwave/orm/activerecord'
 
 class Project < ActiveRecord::Base
@@ -67,7 +21,6 @@ class Project < ActiveRecord::Base
   default_value_for :merge_requests_enabled, gitlab_config_features.merge_requests
   default_value_for :builds_enabled, gitlab_config_features.builds
   default_value_for :wiki_enabled, gitlab_config_features.wiki
-  default_value_for :wall_enabled, false
   default_value_for :snippets_enabled, gitlab_config_features.snippets
   default_value_for(:shared_runners_enabled) { current_application_settings.shared_runners_enabled }
 
@@ -767,7 +720,7 @@ class Project < ActiveRecord::Base
 
   # Check if current branch name is marked as protected in the system
   def protected_branch?(branch_name)
-    protected_branches.where(name: branch_name).any?
+    protected_branch_names.include?(branch_name)
   end
 
   def developers_can_push_to_protected_branch?(branch_name)
