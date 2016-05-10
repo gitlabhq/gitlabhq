@@ -63,13 +63,13 @@ module ApplicationSettingsHelper
 
   def oauth_providers_checkboxes(help_block_id)
     button_based_providers.map do |source|
-      checked = current_application_settings.disabled_oauth_sign_in_sources.include?(source.to_s)
+      disabled = current_application_settings.disabled_oauth_sign_in_sources.include?(source.to_s)
       css_class = 'btn'
-      css_class += ' active' if checked
-      checkbox_name = 'application_setting[disabled_oauth_sign_in_sources][]'
+      css_class += ' active' unless disabled
+      checkbox_name = 'application_setting[enabled_oauth_sign_in_sources][]'
 
       label_tag(checkbox_name, class: css_class) do
-        check_box_tag(checkbox_name, source, checked,
+        check_box_tag(checkbox_name, source, !disabled,
                       autocomplete: 'off',
                       'aria-describedby' => help_block_id) + Gitlab::OAuth::Provider.label_for(source)
       end
