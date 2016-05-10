@@ -344,15 +344,16 @@ Rails.application.routes.draw do
   end
 
   scope(path: 'u/:username',
+        as: :user,
         constraints: { username: /[a-zA-Z.0-9_\-]+(?<!\.atom)/ },
         controller: :users) do
-    get :calendar, action: :calendar, as: :user_calendar
-    get :calendar_activities, action: :calendar_activities, as: :user_calendar_activities
-    get :groups, action: :groups, as: :user_groups
-    get :projects, action: :projects, as: :user_projects
-    get :contributed, action: :contributed, as: :user_contributed_projects
-    get :snippets, action: :snippets, as: :user_snippets
-    get '/', action: :show, as: :user
+    get :calendar
+    get :calendar_activities
+    get :groups
+    get :projects
+    get :contributed, as: :contributed_projects
+    get :snippets
+    get '/', action: :show
   end
 
   #
