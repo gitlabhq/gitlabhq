@@ -7,21 +7,22 @@ module Gitlab
 
       def initialize(project: , shared: )
         @project = project
-        @export_path = shared.export_path
+        @shared = shared
       end
 
       def bundle
         return false if @project.empty_repo?
-        @full_path = File.join(@export_path, project_filename)
+        @full_path = File.join(@shared.export_path, project_filename)
         bundle_to_disk
       end
 
       private
 
       def bundle_to_disk
-        FileUtils.mkdir_p(@export_path)
+        FileUtils.mkdir_p(@shared.export_path)
         git_bundle(repo_path: path_to_repo, bundle_path: @full_path)
-      rescue
+      rescue => e
+        @shared.error(e.message)
         false
       end
 
