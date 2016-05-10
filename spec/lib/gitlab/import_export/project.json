@@ -3,7 +3,6 @@
   "path": "gitlabhq",
   "description": null,
   "issues_enabled": true,
-  "wall_enabled": false,
   "merge_requests_enabled": true,
   "wiki_enabled": true,
   "snippets_enabled": true,
