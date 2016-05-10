@@ -1,18 +1,3 @@
-# == Schema Information
-#
-# Table name: keys
-#
-#  id          :integer          not null, primary key
-#  user_id     :integer
-#  created_at  :datetime
-#  updated_at  :datetime
-#  key         :text
-#  title       :string
-#  type        :string
-#  fingerprint :string
-#  public      :boolean          default(FALSE), not null
-#
-
 require 'digest/md5'
 
 class Key < ActiveRecord::Base
