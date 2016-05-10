@@ -24,7 +24,7 @@ module Banzai
 
       def nodes_visible_to_user(user, nodes)
         group_attr = 'data-group'
-        groups = grouped_objects_for_nodes(nodes, Group, group_attr)
+        groups = lazy { grouped_objects_for_nodes(nodes, Group, group_attr) }
         visible = []
         remaining = []
 
@@ -50,14 +50,16 @@ module Banzai
         project_attr = 'data-project'
         author_attr = 'data-author'
 
-        projects = projects_for_nodes(nodes)
-        users = grouped_objects_for_nodes(nodes, User, author_attr)
+        projects = lazy { projects_for_nodes(nodes) }
+        users = lazy { grouped_objects_for_nodes(nodes, User, author_attr) }
 
         nodes.select do |node|
           project_id = node.attr(project_attr)
           user_id = node.attr(author_attr)
 
-          if project_id && user_id
+          if project && project_id && project.id == project_id.to_i
+            true
+          elsif project_id && user_id
             project = projects[project_id.to_i]
             user = users[user_id.to_i]
 

@@ -22,17 +22,17 @@ module Banzai
 
       # Returns all the nodes that are visible to the given user.
       def nodes_visible_to_user(user, nodes)
-        projects = projects_for_nodes(nodes)
+        projects = lazy { projects_for_nodes(nodes) }
         project_attr = 'data-project'
 
         nodes.select do |node|
           if node.has_attribute?(project_attr)
-            node_project = projects[node.attr(project_attr).to_i]
+            node_id = node.attr(project_attr).to_i
 
-            if node_project && project && node_project.id == project.id
+            if project && project.id == node_id
               true
             else
-              Ability.abilities.allowed?(user, :read_project, node_project)
+              Ability.abilities.allowed?(user, :read_project, projects[node_id])
             end
           else
             true
@@ -131,6 +131,10 @@ module Banzai
 
       def project
         @project
+      end
+
+      def lazy(&block)
+        Gitlab::Lazy.new(&block)
       end
     end
   end
