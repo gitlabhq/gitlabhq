@@ -248,15 +248,15 @@ describe Gitlab::LDAP::GroupSync, lib: true do
       context 'when access level spillover could happen' do
         it 'does not erroneously add users' do
           ldap_group2 = Net::LDAP::Entry.from_single_ldif_string(
-          <<-EOS.strip_heredoc
-            dn: cn=ldap_group2,ou=groups,dc=example,dc=com
-            cn: ldap_group2
-            description: LDAP Group 2
-            gidnumber: 55
-            uniqueMember: uid=#{user2.username},ou=users,dc=example,dc=com
-            objectclass: top
-            objectclass: groupOfNames
-          EOS
+            <<-EOS.strip_heredoc
+              dn: cn=ldap_group2,ou=groups,dc=example,dc=com
+              cn: ldap_group2
+              description: LDAP Group 2
+              gidnumber: 55
+              uniqueMember: uid=#{user2.username},ou=users,dc=example,dc=com
+              objectclass: top
+              objectclass: groupOfNames
+            EOS
           )
 
           allow_any_instance_of(Gitlab::LDAP::Group)
