@@ -123,7 +123,7 @@ class ApplicationSetting < ActiveRecord::Base
     unless value.nil?
       value.each do |source|
         unless Devise.omniauth_providers.include?(source.to_sym)
-          record.errors.add(attr, "'#{source}' is not an ouath sign-in source")
+          record.errors.add(attr, "'#{source}' is not an OAuth sign-in source")
         end
       end
     end
