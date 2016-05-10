@@ -59,7 +59,7 @@ class WebHook < ActiveRecord::Base
                               basic_auth: auth)
     end
 
-    [response.code, ActionView::Base.full_sanitizer.sanitize(response.to_s)]
+    [response.code, response.to_s]
   rescue SocketError, OpenSSL::SSL::SSLError, Errno::ECONNRESET, Errno::ECONNREFUSED, Net::OpenTimeout => e
     logger.error("WebHook Error => #{e}")
     [false, e.to_s]
