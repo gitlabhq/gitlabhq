@@ -6,6 +6,7 @@ module Projects
 
     def execute
       forked_from_project_id = params.delete(:forked_from_project_id)
+      import_data = params.delete(:import_data)
 
       @project = Project.new(params)
 
@@ -50,6 +51,7 @@ module Projects
       end
 
       Project.transaction do
+        @project.create_or_update_import_data(data: import_data[:data], credentials: import_data[:credentials]) if import_data
         @project.save
 
         if @project.persisted? && !@project.import?
