@@ -3,6 +3,9 @@
 %h3.page-title
   Health Check
 %p.light
+  Access token is
+  %code{ id:'health-check-token' }= "#{current_application_settings.health_check_access_token}"
+%p.light
   Health information can be reteived as plain text, json, or xml using:
   %ul
     %li

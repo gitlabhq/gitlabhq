@@ -243,3 +243,13 @@ describe "Groups", "routing" do
     expect(get('/1')).to route_to('namespaces#show', id: '1')
   end
 end
+
+describe HealthCheckController, 'routing' do
+  it 'to #index' do
+    expect(get('/health_check')).to route_to('health_check#index')
+  end
+
+  it 'also supports passing checks in the url' do
+    expect(get('/health_check/email')).to route_to('health_check#index', checks: 'email')
+  end
+end
