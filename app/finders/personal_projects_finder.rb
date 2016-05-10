@@ -21,8 +21,8 @@ class PersonalProjectsFinder < UnionFinder
   def all_projects(current_user)
     projects = []
 
-    projects << @user.personal_projects.visible_to_user(current_user) if current_user
-    projects << @user.personal_projects.public_to_user(current_user)
+    projects << @user.personal_projects.without_pending_delete.visible_to_user(current_user) if current_user
+    projects << @user.personal_projects.without_pending_delete.public_to_user(current_user)
 
     projects
   end

@@ -46,6 +46,7 @@ v 8.8.0 (unreleased)
 
 v 8.7.5
   - Fix relative links in wiki pages. !4050
+  - Excluding projects pending deletion is now down using explicit scoping
 
 v 8.7.4
   - Links for Redmine issue references are generated correctly again !4048 (Benedikt Huss)

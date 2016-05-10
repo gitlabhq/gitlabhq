@@ -8,7 +8,7 @@ module Gitlab
 
     def initialize(current_user, limit_projects, query)
       @current_user = current_user
-      @limit_projects = limit_projects || Project.all
+      @limit_projects = limit_projects || Project.without_pending_delete
       @query = Shellwords.shellescape(query) if query.present?
     end
 

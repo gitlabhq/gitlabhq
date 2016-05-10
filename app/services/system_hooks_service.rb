@@ -91,7 +91,7 @@ class SystemHooksService
   end
 
   def project_member_data(model)
-    project = model.project || Project.unscoped.find(model.source_id)
+    project = model.project || Project.find(model.source_id)
 
     {
       project_name:                 project.name,

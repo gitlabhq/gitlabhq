@@ -56,7 +56,7 @@ module API
       #   GET /projects/all
       get '/all' do
         authenticated_as_admin!
-        @projects = Project.all
+        @projects = Project.without_pending_delete
         @projects = filter_projects(@projects)
         @projects = paginate @projects
         present @projects, with: Entities::ProjectWithAccess, user: current_user

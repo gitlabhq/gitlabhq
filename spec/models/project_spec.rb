@@ -64,12 +64,12 @@ describe Project, models: true do
     end
   end
 
-  describe 'default_scope' do
-    it 'excludes projects pending deletion from the results' do
-      project = create(:empty_project)
-      create(:empty_project, pending_delete: true)
+  describe 'without_pending_delete scope' do
+    it 'excludes projects pending deletion' do
+      create(:project)
+      create(:project, pending_delete: true)
 
-      expect(Project.all).to eq [project]
+      expect(Project.without_pending_delete.count).to be 1
     end
   end
 

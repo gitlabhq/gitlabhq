@@ -11,7 +11,7 @@ class ProjectsFinder < UnionFinder
     projects = []
 
     projects << current_user.authorized_projects if current_user
-    projects << Project.unscoped.public_to_user(current_user)
+    projects << Project.without_pending_delete.public_to_user(current_user)
 
     projects
   end

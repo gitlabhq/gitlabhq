@@ -3,7 +3,7 @@ class Admin::ProjectsController < Admin::ApplicationController
   before_action :group, only: [:show, :transfer]
 
   def index
-    @projects = Project.all
+    @projects = Project.without_pending_delete
     @projects = @projects.in_namespace(params[:namespace_id]) if params[:namespace_id].present?
     @projects = @projects.where("projects.visibility_level IN (?)", params[:visibility_levels]) if params[:visibility_levels].present?
     @projects = @projects.with_push if params[:with_push].present?

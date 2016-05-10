@@ -12,9 +12,9 @@ class Admin::RunnersController < Admin::ApplicationController
     @builds = @runner.builds.order('id DESC').first(30)
     @projects =
       if params[:search].present?
-        ::Project.search(params[:search])
+        ::Project.without_pending_delete.search(params[:search])
       else
-        Project.all
+        Project.without_pending_delete
       end
     @projects = @projects.where.not(id: @runner.projects.select(:id)) if @runner.projects.any?
     @projects = @projects.page(params[:page]).per(30)

@@ -163,9 +163,6 @@ class Project < ActiveRecord::Base
 
   mount_uploader :avatar, AvatarUploader
 
-  # Scopes
-  default_scope { where(pending_delete: false) }
-
   scope :sorted_by_activity, -> { reorder(last_activity_at: :desc) }
   scope :sorted_by_stars, -> { reorder('projects.star_count DESC') }
   scope :sorted_by_names, -> { joins(:namespace).reorder('namespaces.name ASC, projects.name ASC') }
@@ -179,6 +176,7 @@ class Project < ActiveRecord::Base
   scope :joined, ->(user) { where('namespace_id != ?', user.namespace_id) }
   scope :non_archived, -> { where(archived: false) }
   scope :for_milestones, ->(ids) { joins(:milestones).where('milestones.id' => ids).distinct }
+  scope :without_pending_delete, -> { where(pending_delete: false) }
 
   state_machine :import_status, initial: :none do
     event :import_start do
