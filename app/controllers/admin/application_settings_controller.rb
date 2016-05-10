@@ -104,7 +104,6 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :metrics_packet_size,
       restricted_visibility_levels: [],
       import_sources: [],
-      enabled_oauth_sign_in_sources: [],
       disabled_oauth_sign_in_sources: []
     )
   end
