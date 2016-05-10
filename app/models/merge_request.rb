@@ -1,33 +1,3 @@
-# == Schema Information
-#
-# Table name: merge_requests
-#
-#  id                        :integer          not null, primary key
-#  target_branch             :string           not null
-#  source_branch             :string           not null
-#  source_project_id         :integer          not null
-#  author_id                 :integer
-#  assignee_id               :integer
-#  title                     :string
-#  created_at                :datetime
-#  updated_at                :datetime
-#  milestone_id              :integer
-#  state                     :string
-#  merge_status              :string
-#  target_project_id         :integer          not null
-#  iid                       :integer
-#  description               :text
-#  position                  :integer          default(0)
-#  locked_at                 :datetime
-#  updated_by_id             :integer
-#  merge_error               :string
-#  merge_params              :text
-#  merge_when_build_succeeds :boolean          default(FALSE), not null
-#  merge_user_id             :integer
-#  merge_commit_sha          :string
-#  deleted_at                :datetime
-#
-
 class MergeRequest < ActiveRecord::Base
   include InternalId
   include Issuable

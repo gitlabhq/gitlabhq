@@ -23,6 +23,7 @@ v 8.8.0 (unreleased)
   - Updated search UI
   - Display informative message when new milestone is created
   - Sanitize milestones and labels titles
+  - Support multi-line tag messages. !3833 (Calin Seciu)
   - Allow "NEWS" and "CHANGES" as alternative names for CHANGELOG. !3768 (Connor Shea)
   - Added button to toggle whitespaces changes on diff view
   - Backport GitHub Enterprise import support from EE
@@ -40,7 +41,7 @@ v 8.8.0 (unreleased)
 
 v 8.7.4
   - Fix always showing build notification message when switching between merge requests
-  - Fix links on wiki pages for relative url setups. !4026 (Artem Sidorenko)
+  - Links for Redmine issue references are generated correctly again (Benedikt Huss)
 
 v 8.7.3
   - Emails, Gitlab::Email::Message, Gitlab::Diff, and Premailer::Adapter::Nokogiri are now instrumented
