@@ -51,6 +51,7 @@ v 8.8.0 (unreleased)
   - Add API endpoints for un/subscribing from/to a label. !4051 (Ahmad Sherif)
   - Hide left sidebar on phone screens to give more space for content
   - Redesign navigation for profile and group pages
+  - Import pull requests from GitHub where the source or target branches were removed
 
 v 8.7.5
   - Fix relative links in wiki pages. !4050
