@@ -233,6 +233,8 @@ describe User, models: true do
       @project = create :project, namespace: @user.namespace
       @project_2 = create :project, group: create(:group) # Grant MASTER access to the user
       @project_3 = create :project, group: create(:group) # Grant DEVELOPER access to the user
+      @project_4 = create :project, group: create(:group)
+      @project_5 = create :project, group: create(:group)
 
       @project_2.team << [@user, :master]
       @project_3.team << [@user, :developer]
@@ -781,5 +783,27 @@ describe User, models: true do
     subject { user.authorized_projects }
 
     it { is_expected.to eq([private_project]) }
+  end
+
+  describe '#viewable_starred_projects' do
+    let(:user) { create(:user) }
+    let(:public_project) { create(:project, :public) }
+    let(:private_project) { create(:project, :private) }
+    let(:private_viewable_project) { create(:project, :private) }
+    let(:viewable?) { -> (project) { user.can?(:read_project, project) } }
+    let(:projects) { [public_project, private_project, private_viewable_project] }
+
+    before do
+      private_viewable_project.team << [user, Gitlab::Access::MASTER]
+      projects.each { |project| user.toggle_star(project) }
+    end
+
+    it 'returns only starred projects the user can view' do
+      expect(user.viewable_starred_projects).to all(satisfy(&viewable?))
+    end
+
+    it 'rejects only starred projects the user can not view' do
+      expect(projects - user.viewable_starred_projects).not_to include(satisfy(&viewable?))
+    end
   end
 end
