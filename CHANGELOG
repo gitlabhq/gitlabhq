@@ -39,7 +39,6 @@ v 8.8.0 (unreleased)
 
 v 8.7.4
   - Fix always showing build notification message when switching between merge requests
-  - Fix links on wiki pages for relative url setups. !4026 (Artem Sidorenko)
   - Links for Redmine issue references are generated correctly again (Benedikt Huss)
 
 v 8.7.3
