@@ -37,8 +37,7 @@ describe Gitlab::Geo::OauthSession do
 
   describe '#generate_oauth_state' do
     it 'returns nil when return_to is not present' do
-      state = subject.generate_oauth_state
-      expect(state).to be_nil
+      expect(subject.generate_oauth_state).to be_nil
     end
 
     context 'when return_to is present' do
@@ -62,14 +61,12 @@ describe Gitlab::Geo::OauthSession do
   end
 
   describe '#generate_logout_state' do
-    subject { described_class.new(access_token: access_token) }
-
     it 'returns nil when access_token is not defined' do
       expect(described_class.new.generate_logout_state).to be_nil
     end
 
     it 'returns a string with salt and encrypted access token colon separated' do
-      state = subject.generate_logout_state
+      state = described_class.new(access_token: access_token).generate_logout_state
       expect(state).to be_a String
       expect(state).not_to be_blank
 
@@ -87,8 +84,7 @@ describe Gitlab::Geo::OauthSession do
     end
 
     it 'encrypted access token is recoverable' do
-      state = subject.generate_logout_state
-      subject.state = state
+      subject.generate_logout_state
 
       access_token = subject.extract_logout_token
       expect(access_token).to eq access_token

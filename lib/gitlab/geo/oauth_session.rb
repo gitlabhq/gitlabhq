@@ -19,7 +19,7 @@ module Gitlab
         return unless return_to
 
         hmac = generate_oauth_hmac(oauth_salt, return_to)
-        "#{oauth_salt}:#{hmac}:#{return_to}"
+        self.state = "#{oauth_salt}:#{hmac}:#{return_to}"
       end
 
       def generate_logout_state
@@ -27,7 +27,7 @@ module Gitlab
 
         cipher = logout_token_cipher(oauth_salt, :encrypt)
         encrypted = cipher.update(access_token) + cipher.final
-        "#{oauth_salt}:#{Base64.urlsafe_encode64(encrypted)}"
+        self.state = "#{oauth_salt}:#{Base64.urlsafe_encode64(encrypted)}"
       end
 
       def extract_logout_token
@@ -61,7 +61,7 @@ module Gitlab
 
       def generate_oauth_hmac(salt, return_to)
         return false unless return_to
-        
+
         digest = OpenSSL::Digest.new('sha256')
         key = Gitlab::Application.secrets.secret_key_base + salt
         OpenSSL::HMAC.hexdigest(digest, key, return_to)
