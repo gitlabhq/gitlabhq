@@ -79,8 +79,6 @@ module Gitlab
 
         create_refs(branches_removed)
 
-        project.repository.fetch_ref(repo_url, '+refs/heads/*', 'refs/heads/*')
-
         pull_requests.each do |pull_request|
           merge_request = MergeRequest.new(pull_request.attributes)
 
@@ -102,11 +100,14 @@ module Gitlab
         branches.each do |name, sha|
           client.create_ref(repo, "refs/heads/#{name}", sha)
         end
+
+        project.repository.fetch_ref(repo_url, '+refs/heads/*', 'refs/heads/*')
       end
 
       def delete_refs(branches)
         branches.each do |name, _|
           client.delete_ref(repo, "heads/#{name}")
+          project.repository.rm_branch(project.creator, name)
         end
       end
 
