@@ -5,16 +5,16 @@ module Gitlab
 
       def initialize(project:, shared:)
         @project = project
-        @export_path = shared.export_path
-        @full_path = File.join(@export_path, project_filename)
+        @shared = shared
+        @full_path = File.join(@shared.export_path, project_filename)
       end
 
       def save
-        FileUtils.mkdir_p(@export_path)
+        FileUtils.mkdir_p(@shared.export_path)
         File.write(full_path, project_json_tree)
         true
-      rescue
-        # TODO: handle error
+      rescue => e
+        @shared.error(e.message)
         false
       end
 
@@ -26,7 +26,7 @@ module Gitlab
       end
 
       def project_json_tree
-        @project.to_json(Gitlab::ImportExport.project_tree)
+        @project.to_json(Gitlab::ImportExport::ImportExportReader.new(shared: @shared).project_tree)
       end
     end
   end

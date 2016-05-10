@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Gitlab::ImportExport::ImportExportReader do
-
+  let(:shared) { Gitlab::ImportExport::Shared.new(relative_path:'') }
   let(:test_config) { 'spec/support/import_export/import_export.yml' }
   let(:project_tree_hash) do
     {
@@ -17,6 +17,6 @@ describe Gitlab::ImportExport::ImportExportReader do
   end
 
   it 'should generate hash from project tree config' do
-    expect(described_class.new(config: test_config).project_tree) =~ (project_tree_hash)
+    expect(described_class.new(config: test_config, shared: shared).project_tree) =~ (project_tree_hash)
   end
 end
