@@ -70,6 +70,7 @@ v 8.7.5
   - Fix always showing build notification message when switching between merge requests !4086
   - Fix an issue when filtering merge requests with more than one label. !3886
   - Fix short note for the default scope on build page (Takuya Noguchi)
+  - Improve Issue formatting for the Slack Service (Jeroen van Baarsen)
 
 v 8.7.4
   - Links for Redmine issue references are generated correctly again !4048 (Benedikt Huss)
@@ -892,9 +893,6 @@ v 8.1.3
   - Spread out runner contacted_at updates
   - Use issue editor as cross reference comment author when issue is edited with a new mention
   - Add Facebook authentication
-
-v 8.1.2
-  - Improve Issue formatting for the Slack Service (Jeroen van Baarsen)
 
 v 8.1.1
   - Fix cloning Wiki repositories via HTTP (Stan Hu)
