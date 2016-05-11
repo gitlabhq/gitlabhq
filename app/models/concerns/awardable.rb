@@ -34,23 +34,23 @@ module Awardable
     end
   end
 
-  def grouped_awards(with_thumbs = true)
+  def grouped_awards(with_thumbs: true)
     awards = award_emoji.group_by(&:name)
 
     if with_thumbs
-      awards[AwardEmoji::UPVOTE_NAME]   ||= AwardEmoji.none
-      awards[AwardEmoji::DOWNVOTE_NAME] ||= AwardEmoji.none
+      awards[AwardEmoji::UPVOTE_NAME]   ||= []
+      awards[AwardEmoji::DOWNVOTE_NAME] ||= []
     end
 
     awards
   end
 
   def downvotes
-    award_emoji.where(name: AwardEmoji::DOWNVOTE_NAME).count
+    award_emoji.downvotes.count
   end
 
   def upvotes
-    award_emoji.where(name: AwardEmoji::UPVOTE_NAME).count
+    award_emoji.upvotes.count
   end
 
   def emoji_awardable?

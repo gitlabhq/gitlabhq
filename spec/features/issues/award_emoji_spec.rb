@@ -28,7 +28,6 @@ describe 'Awards Emoji', feature: true do
     end
 
     context 'click the thumbsup emoji' do
-
       it 'should increment the thumbsup emoji', js: true do
         find('[data-emoji="thumbsup"]').click
         sleep 2
@@ -41,7 +40,6 @@ describe 'Awards Emoji', feature: true do
     end
 
     context 'click the thumbsdown emoji' do
-
       it 'should increment the thumbsdown emoji', js: true do
         find('[data-emoji="thumbsdown"]').click
         sleep 2
