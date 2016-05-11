@@ -7,20 +7,23 @@ module Gitlab
         new(*args).import
       end
 
-      def initialize(archive_file: , storage_path:)
+      def initialize(archive_file: , shared:)
         @archive_file = archive_file
-        @storage_path = storage_path
+        @shared = shared
       end
 
       def import
-        FileUtils.mkdir_p(@storage_path)
+        FileUtils.mkdir_p(@shared.storage_path)
         decompress_archive
+      rescue => e
+        @shared.error(e.message)
+        false
       end
 
       private
 
       def decompress_archive
-        untar_zxf(archive: @archive_file, dir: @storage_path)
+        untar_zxf(archive: @archive_file, dir: @shared.storage_path)
       end
     end
   end

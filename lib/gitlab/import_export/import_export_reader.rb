@@ -2,6 +2,8 @@ module Gitlab
   module ImportExport
     class ImportExportReader
 
+      attr_reader :tree
+
       def initialize(config: 'lib/gitlab/import_export/import_export.yml', shared:)
         @shared = shared
         config_hash = YAML.load_file(config).deep_symbolize_keys

@@ -13,7 +13,6 @@ class ProjectImportWorker
                                                           project_path: path)
     if project
       project.repository.after_import
-      project.import_finish
     else
       logger.error("There was an error during the import: #{tmp_file}")
     end
