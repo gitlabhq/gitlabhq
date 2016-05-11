@@ -31,8 +31,22 @@
   }
   .commit-committer-link,
   .commit-author-link {
-    color: #444;
+    color: $gl-gray;
     font-weight: bold;
+  }
+
+  .time_ago {
+    margin-left: 8px;
+  }
+
+  .fa-clipboard {
+    color: $dropdown-title-btn-color;
+  }
+
+  .commit-info {
+    &.branches {
+      margin-left: 8px;
+    }
   }
 }
 
@@ -42,7 +56,7 @@
   .commit-title {
     margin: 0;
     font-size: 23px;
-    color: #313236;
+    color: $gl-gray-dark;
   }
 
   .commit-description {
@@ -80,6 +94,14 @@
     a {
       color: $gl-text-color;
     }
+  }
+}
+
+.commit-action-buttons {
+  i {
+    color: $gl-icon-color;
+    font-size: 13px;
+    margin-right: 3px;
   }
 }
 

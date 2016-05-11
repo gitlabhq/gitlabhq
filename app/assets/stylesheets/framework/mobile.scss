@@ -30,7 +30,7 @@
   }
 
   .rss-btn {
-    display: none !important;
+    display: none;
   }
 
   .project-home-links {
@@ -68,13 +68,6 @@
 
   .issue-info, .merge-request-info {
     display: none;
-  }
-
-  .issue-details {
-    .creator,
-    .page-title .btn-close {
-      display: none;
-    }
   }
 
   %ul.notes .note-role, .note-actions {

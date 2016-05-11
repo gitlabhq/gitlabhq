@@ -5,7 +5,7 @@
     - @related_branches.each do |branch|
       %li
         - sha = @project.repository.find_branch(branch).target
-        - ci_commit = @project.ci_commit(sha) if sha
+        - ci_commit = @project.ci_commit(sha, branch) if sha
         - if ci_commit
           %span.related-branch-ci-status
             = render_ci_status(ci_commit)

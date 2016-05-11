@@ -80,16 +80,8 @@ ul.notes {
         @include md-typography;
 
         // On diffs code should wrap nicely and not overflow
-        p {
-          code {
-            white-space: normal;
-          }
-
-          pre {
-            code {
-              white-space: pre;
-            }
-          }
+        code {
+          white-space: pre-wrap;
         }
 
         // Reset ul style types since we're nested inside a ul already
@@ -116,10 +108,10 @@ ul.notes {
           border-color: darken(#f5f5f5, 8%);
           margin: 10px 0;
         }
-      }
 
-      a {
-        word-break: break-all;
+        code {
+          word-break: keep-all;
+        }
       }
     }
 
@@ -136,7 +128,7 @@ ul.notes {
     margin-right: 10px;
   }
   .line_content {
-    white-space: pre;
+    white-space: pre-wrap;
   }
 }
 
@@ -175,6 +167,11 @@ ul.notes {
       .notes {
         background-color: $white-light;
       }
+
+      a code {
+        top: 0;
+        margin-right: 0;
+      }
     }
   }
 }
@@ -190,11 +187,20 @@ ul.notes {
     }
   }
 
+  .author_link {
+    color: $gl-gray;
+  }
 }
 
 .note-headline-light,
 .discussion-headline-light {
   color: $notes-light-color;
+}
+
+.discussion-headline-light {
+  a {
+    color: $gl-link-color;
+  }
 }
 
 /**
@@ -206,6 +212,17 @@ ul.notes {
   float: right;
   margin-left: 10px;
   color: $notes-action-color;
+}
+
+.discussion-actions {
+  @media (max-width: $screen-md-max) {
+    float: none;
+    margin-left: 0;
+
+    .note-action-button {
+      margin-left: 0;
+    }
+  }
 }
 
 .note-action-button,
@@ -285,7 +302,7 @@ ul.notes {
     padding: 4px;
     font-size: 16px;
     color: $gl-link-color;
-    margin-left: -60px;
+    margin-left: -56px;
     position: absolute;
     z-index: 10;
     width: 32px;

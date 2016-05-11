@@ -32,9 +32,11 @@ describe API::API, api: true  do
 
       it "should return an array of project tags with release info" do
         get api("/projects/#{project.id}/repository/tags", user)
+
         expect(response.status).to eq(200)
         expect(json_response).to be_an Array
         expect(json_response.first['name']).to eq(tag_name)
+        expect(json_response.first['message']).to eq('Version 1.1.0')
         expect(json_response.first['release']['description']).to eq(description)
       end
     end
@@ -145,7 +147,7 @@ describe API::API, api: true  do
            tag_name: 'v8.0.0',
            ref: 'master'
       expect(response.status).to eq(400)
-      expect(json_response['message']).to eq('Tag already exists')
+      expect(json_response['message']).to eq('Tag v8.0.0 already exists')
     end
 
     it 'should return 400 if ref name is invalid' do
@@ -153,7 +155,7 @@ describe API::API, api: true  do
            tag_name: 'mytag',
            ref: 'foo'
       expect(response.status).to eq(400)
-      expect(json_response['message']).to eq('Invalid reference name')
+      expect(json_response['message']).to eq('Target foo is invalid')
     end
   end
 

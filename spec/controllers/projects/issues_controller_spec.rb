@@ -40,6 +40,45 @@ describe Projects::IssuesController do
     end
   end
 
+  describe 'PUT #update' do
+    context 'when moving issue to another private project' do
+      let(:another_project) { create(:project, :private) }
+
+      before do
+        sign_in(user)
+        project.team << [user, :developer]
+      end
+
+      context 'when user has access to move issue' do
+        before { another_project.team << [user, :reporter] }
+
+        it 'moves issue to another project' do
+          move_issue
+
+          expect(response).to have_http_status :found
+          expect(another_project.issues).to_not be_empty
+        end
+      end
+
+      context 'when user does not have access to move issue' do
+        it 'responds with 404' do
+          move_issue
+
+          expect(response).to have_http_status :not_found
+        end
+      end
+
+      def move_issue
+        put :update,
+          namespace_id: project.namespace.to_param,
+          project_id: project.to_param,
+          id: issue.iid,
+          issue: { title: 'New title' },
+          move_to_project_id: another_project.id
+      end
+    end
+  end
+
   describe 'Confidential Issues' do
     let(:project) { create(:project_empty_repo, :public) }
     let(:assignee) { create(:assignee) }

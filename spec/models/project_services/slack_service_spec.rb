@@ -26,13 +26,18 @@ describe SlackService, models: true do
     it { is_expected.to have_one :service_hook }
   end
 
-  describe "Validations" do
-    context "active" do
-      before do
-        subject.active = true
-      end
+  describe 'Validations' do
+    context 'when service is active' do
+      before { subject.active = true }
 
-      it { is_expected.to validate_presence_of :webhook }
+      it { is_expected.to validate_presence_of(:webhook) }
+      it_behaves_like 'issue tracker service URL attribute', :webhook
+    end
+
+    context 'when service is inactive' do
+      before { subject.active = false }
+
+      it { is_expected.not_to validate_presence_of(:webhook) }
     end
   end
 
@@ -75,6 +80,17 @@ describe SlackService, models: true do
       @merge_request = merge_service.execute
       @merge_sample_data = merge_service.hook_data(@merge_request,
                                                    'open')
+
+      opts = {
+        title: "Awesome wiki_page",
+        content: "Some text describing some thing or another",
+        format: "md",
+        message: "user created page: Awesome wiki_page"
+      }
+
+      wiki_page_service = WikiPages::CreateService.new(project, user, opts)
+      @wiki_page = wiki_page_service.execute
+      @wiki_page_sample_data = wiki_page_service.hook_data(@wiki_page, 'create')
     end
 
     it "should call Slack API for push events" do
@@ -91,6 +107,12 @@ describe SlackService, models: true do
 
     it "should call Slack API for merge requests events" do
       slack.execute(@merge_sample_data)
+
+      expect(WebMock).to have_requested(:post, webhook_url).once
+    end
+
+    it "should call Slack API for wiki page events" do
+      slack.execute(@wiki_page_sample_data)
 
       expect(WebMock).to have_requested(:post, webhook_url).once
     end

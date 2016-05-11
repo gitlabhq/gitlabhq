@@ -1,19 +1,3 @@
-# == Schema Information
-#
-# Table name: events
-#
-#  id          :integer          not null, primary key
-#  target_type :string(255)
-#  target_id   :integer
-#  title       :string(255)
-#  data        :text
-#  project_id  :integer
-#  created_at  :datetime
-#  updated_at  :datetime
-#  action      :integer
-#  author_id   :integer
-#
-
 class Event < ActiveRecord::Base
   include Sortable
   default_scope { where.not(author_id: nil) }
@@ -345,7 +329,7 @@ class Event < ActiveRecord::Base
   end
 
   def reset_project_activity
-    if project
+    if project && Gitlab::ExclusiveLease.new("project:update_last_activity_at:#{project.id}", timeout: 60).try_obtain
       project.update_column(:last_activity_at, self.created_at)
     end
   end

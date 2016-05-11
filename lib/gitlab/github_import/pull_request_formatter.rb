@@ -3,6 +3,7 @@ module Gitlab
     class PullRequestFormatter < BaseFormatter
       def attributes
         {
+          iid: number,
           title: raw_data.title,
           description: description,
           source_project: source_project,
@@ -10,6 +11,7 @@ module Gitlab
           target_project: target_project,
           target_branch: target_branch.name,
           state: state,
+          milestone: milestone,
           author_id: author_id,
           assignee_id: assignee_id,
           created_at: raw_data.created_at,
@@ -55,6 +57,12 @@ module Gitlab
 
       def description
         formatter.author_line(author) + body
+      end
+
+      def milestone
+        if raw_data.milestone.present?
+          project.milestones.find_by(iid: raw_data.milestone.number)
+        end
       end
 
       def source_project

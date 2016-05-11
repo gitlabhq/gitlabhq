@@ -3,8 +3,8 @@ module BlobHelper
     Gitlab::Highlight.new(blob_name, blob_content, nowrap: nowrap)
   end
 
-  def highlight(blob_name, blob_content, nowrap: false)
-    Gitlab::Highlight.highlight(blob_name, blob_content, nowrap: nowrap)
+  def highlight(blob_name, blob_content, nowrap: false, plain: false)
+    Gitlab::Highlight.highlight(blob_name, blob_content, nowrap: nowrap, plain: plain)
   end
 
   def no_highlight_files
@@ -131,7 +131,7 @@ module BlobHelper
   # elements and attributes. Note that this whitelist is by no means complete
   # and may omit some elements.
   def sanitize_svg(blob)
-    blob.data = Loofah.scrub_fragment(blob.data, :strip).to_xml
+    blob.data = Gitlab::Sanitizers::SVG.clean(blob.data)
     blob
   end
 
@@ -172,5 +172,16 @@ module BlobHelper
 
     response.etag = @blob.id
     !stale
+  end
+
+  def licenses_for_select
+    return @licenses_for_select if defined?(@licenses_for_select)
+
+    licenses = Licensee::License.all
+
+    @licenses_for_select = {
+      Popular: licenses.select(&:featured).map { |license| [license.name, license.key] },
+      Other: licenses.reject(&:featured).map { |license| [license.name, license.key] }
+    }
   end
 end

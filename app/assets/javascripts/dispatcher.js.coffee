@@ -17,6 +17,7 @@ class Dispatcher
     switch page
       when 'projects:issues:index'
         Issues.init()
+        Issuable.init()
         shortcut_handler = new ShortcutsNavigation()
       when 'projects:issues:show'
         new Issue()
@@ -59,7 +60,7 @@ class Dispatcher
         new ZenMode()
       when 'projects:merge_requests:index'
         shortcut_handler = new ShortcutsNavigation()
-        MergeRequests.init()
+        Issuable.init()
       when 'dashboard:activity'
         new Activities()
       when 'dashboard:projects:starred'
@@ -109,6 +110,8 @@ class Dispatcher
         new BuildArtifacts()
       when 'projects:group_links:index'
         new GroupsSelect()
+      when 'search:show'
+        new Search()
 
     switch path.first()
       when 'admin'

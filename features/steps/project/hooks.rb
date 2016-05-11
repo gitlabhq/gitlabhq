@@ -48,12 +48,12 @@ class Spinach::Features::ProjectHooks < Spinach::FeatureSteps
 
   step 'I click test hook button' do
     stub_request(:post, @hook.url).to_return(status: 200)
-    click_link 'Test Hook'
+    click_link 'Test'
   end
 
   step 'I click test hook button with invalid URL' do
     stub_request(:post, @hook.url).to_raise(SocketError)
-    click_link 'Test Hook'
+    click_link 'Test'
   end
 
   step 'hook should be triggered' do

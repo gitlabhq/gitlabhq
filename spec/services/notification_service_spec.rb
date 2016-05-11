@@ -10,7 +10,7 @@ describe NotificationService, services: true do
   end
 
   describe 'Keys' do
-    describe :new_key do
+    describe '#new_key' do
       let!(:key) { create(:personal_key) }
 
       it { expect(notification.new_key(key)).to be_truthy }
@@ -22,7 +22,7 @@ describe NotificationService, services: true do
   end
 
   describe 'Email' do
-    describe :new_email do
+    describe '#new_email' do
       let!(:email) { create(:email) }
 
       it { expect(notification.new_email(email)).to be_truthy }
@@ -147,8 +147,8 @@ describe NotificationService, services: true do
         ActionMailer::Base.deliveries.clear
       end
 
-      describe :new_note do
-        it do
+      describe '#new_note' do
+        it 'notifies the team members' do
           notification.new_note(note)
 
           # Notify all team members
@@ -177,6 +177,39 @@ describe NotificationService, services: true do
       end
     end
 
+    context 'project snippet note' do
+      let(:project) { create(:empty_project, :public) }
+      let(:snippet) { create(:project_snippet, project: project, author: create(:user)) }
+      let(:note) { create(:note_on_project_snippet, noteable: snippet, project_id: snippet.project.id, note: '@all mentioned') }
+
+      before do
+        build_team(note.project)
+        note.project.team << [note.author, :master]
+        ActionMailer::Base.deliveries.clear
+      end
+
+      describe '#new_note' do
+        it 'notifies the team members' do
+          notification.new_note(note)
+
+          # Notify all team members
+          note.project.team.members.each do |member|
+            # User with disabled notification should not be notified
+            next if member.id == @u_disabled.id
+            # Author should not be notified
+            next if member.id == note.author.id
+            should_email(member)
+          end
+
+          should_email(note.noteable.author)
+          should_not_email(note.author)
+          should_email(@u_mentioned)
+          should_not_email(@u_disabled)
+          should_email(@u_not_mentioned)
+        end
+      end
+    end
+
     context 'commit note' do
       let(:project) { create(:project, :public) }
       let(:note) { create(:note_on_commit, project: project) }
@@ -187,7 +220,7 @@ describe NotificationService, services: true do
         allow_any_instance_of(Commit).to receive(:author).and_return(@u_committer)
       end
 
-      describe :new_note, :perform_enqueued_jobs do
+      describe '#new_note, #perform_enqueued_jobs' do
         it do
           notification.new_note(note)
 
@@ -230,7 +263,7 @@ describe NotificationService, services: true do
       ActionMailer::Base.deliveries.clear
     end
 
-    describe :new_issue do
+    describe '#new_issue' do
       it do
         notification.new_issue(issue, @u_disabled)
 
@@ -289,7 +322,7 @@ describe NotificationService, services: true do
       end
     end
 
-    describe :reassigned_issue do
+    describe '#reassigned_issue' do
       it 'emails new assignee' do
         notification.reassigned_issue(issue, @u_disabled)
 
@@ -419,7 +452,7 @@ describe NotificationService, services: true do
       end
     end
 
-    describe :close_issue do
+    describe '#close_issue' do
       it 'should sent email to issue assignee and issue author' do
         notification.close_issue(issue, @u_disabled)
 
@@ -435,7 +468,7 @@ describe NotificationService, services: true do
       end
     end
 
-    describe :reopen_issue do
+    describe '#reopen_issue' do
       it 'should send email to issue assignee and issue author' do
         notification.reopen_issue(issue, @u_disabled)
 
@@ -461,7 +494,7 @@ describe NotificationService, services: true do
       ActionMailer::Base.deliveries.clear
     end
 
-    describe :new_merge_request do
+    describe '#new_merge_request' do
       it do
         notification.new_merge_request(merge_request, @u_disabled)
 
@@ -483,7 +516,7 @@ describe NotificationService, services: true do
       end
     end
 
-    describe :reassigned_merge_request do
+    describe '#reassigned_merge_request' do
       it do
         notification.reassigned_merge_request(merge_request, merge_request.author)
 
@@ -498,7 +531,7 @@ describe NotificationService, services: true do
       end
     end
 
-    describe :relabel_merge_request do
+    describe '#relabel_merge_request' do
       let(:label) { create(:label, merge_requests: [merge_request]) }
       let(:label2) { create(:label) }
       let!(:subscriber_to_label) { create(:user).tap { |u| label.toggle_subscription(u) } }
@@ -527,7 +560,7 @@ describe NotificationService, services: true do
       end
     end
 
-    describe :closed_merge_request do
+    describe '#closed_merge_request' do
       it do
         notification.close_mr(merge_request, @u_disabled)
 
@@ -542,7 +575,7 @@ describe NotificationService, services: true do
       end
     end
 
-    describe :merged_merge_request do
+    describe '#merged_merge_request' do
       it do
         notification.merge_mr(merge_request, @u_disabled)
 
@@ -557,7 +590,7 @@ describe NotificationService, services: true do
       end
     end
 
-    describe :reopen_merge_request do
+    describe '#reopen_merge_request' do
       it do
         notification.reopen_mr(merge_request, @u_disabled)
 
@@ -581,7 +614,7 @@ describe NotificationService, services: true do
       ActionMailer::Base.deliveries.clear
     end
 
-    describe :project_was_moved do
+    describe '#project_was_moved' do
       it do
         notification.project_was_moved(project, "gitlab/gitlab")
 

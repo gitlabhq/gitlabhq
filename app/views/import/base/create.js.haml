@@ -20,10 +20,10 @@
     job.attr("id", "project_#{@project.id}")
     target_field = job.find(".import-target")
     target_field.empty()
-    target_field.append('<strong>#{link_to @project.path_with_namespace, namespace_project_path(@project.namespace, @project)}</strong>')
+    target_field.append('#{link_to @project.path_with_namespace, namespace_project_path(@project.namespace, @project)}')
     $("table.import-jobs tbody").prepend(job)
     job.addClass("active").find(".import-actions").html("<i class='fa fa-spinner fa-spin'></i> started")
 - else
   :plain
     job = $("tr#repo_#{@repo_id}")
-    job.find(".import-actions").html("<i class='fa fa-exclamation-circle'> Error saving project: #{escape_javascript(@project.errors.full_messages.join(','))}</i>")
+    job.find(".import-actions").html("<i class='fa fa-exclamation-circle'></i> Error saving project: #{escape_javascript(@project.errors.full_messages.join(','))}")

@@ -18,6 +18,7 @@ class Ability
       when Namespace then namespace_abilities(user, subject)
       when GroupMember then group_member_abilities(user, subject)
       when ProjectMember then project_member_abilities(user, subject)
+      when User then user_abilities
       else []
       end.concat(global_abilities(user))
     end
@@ -35,6 +36,8 @@ class Ability
         anonymous_project_abilities(subject)
       when subject.is_a?(Group) || subject.respond_to?(:group)
         anonymous_group_abilities(subject)
+      when subject.is_a?(User)
+        anonymous_user_abilities
       else
         []
       end
@@ -81,17 +84,17 @@ class Ability
     end
 
     def anonymous_group_abilities(subject)
+      rules = []
+
       group = if subject.is_a?(Group)
                 subject
               else
                 subject.group
               end
 
-      if group && group.public?
-        [:read_group]
-      else
-        []
-      end
+      rules << :read_group if group.public?
+
+      rules
     end
 
     def anonymous_personal_snippet_abilities(snippet)
@@ -110,9 +113,14 @@ class Ability
       end
     end
 
+    def anonymous_user_abilities
+      [:read_user] unless restricted_public_level?
+    end
+
     def global_abilities(user)
       rules = []
       rules << :create_group if user.can_create_group
+      rules << :read_users_list
       rules
     end
 
@@ -163,7 +171,7 @@ class Ability
       @public_project_rules ||= project_guest_rules + [
         :download_code,
         :fork_project,
-        :read_commit_status,
+        :read_commit_status
       ]
     end
 
@@ -284,7 +292,6 @@ class Ability
 
     def group_abilities(user, group)
       rules = []
-
       rules << :read_group if can_read_group?(user, group)
 
       # Only group masters and group owners can create new projects
@@ -456,6 +463,10 @@ class Ability
       rules
     end
 
+    def user_abilities
+      [:read_user]
+    end
+
     def abilities
       @abilities ||= begin
         abilities = Six.new
@@ -469,6 +480,10 @@ class Ability
     end
 
     private
+
+    def restricted_public_level?
+      current_application_settings.restricted_visibility_levels.include?(Gitlab::VisibilityLevel::PUBLIC)
+    end
 
     def named_abilities(name)
       [

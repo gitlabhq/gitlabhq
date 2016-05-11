@@ -1,19 +1,3 @@
-# == Schema Information
-#
-# Table name: snippets
-#
-#  id               :integer          not null, primary key
-#  title            :string(255)
-#  content          :text
-#  author_id        :integer          not null
-#  project_id       :integer
-#  created_at       :datetime
-#  updated_at       :datetime
-#  file_name        :string(255)
-#  type             :string(255)
-#  visibility_level :integer          default(0), not null
-#
-
 class Snippet < ActiveRecord::Base
   include Gitlab::VisibilityLevel
   include Linguist::BlobHelper
@@ -110,6 +94,10 @@ class Snippet < ActiveRecord::Base
 
   def visibility_level_field
     visibility_level
+  end
+
+  def no_highlighting?
+    content.lines.count > 1000
   end
 
   class << self

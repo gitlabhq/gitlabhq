@@ -34,6 +34,7 @@
     background: #fff;
     color: #333;
     border-radius: 0 0 3px 3px;
+    -webkit-overflow-scrolling: auto;
 
     .unfold {
       cursor: pointer;
@@ -86,7 +87,7 @@
         }
 
         span {
-          white-space: pre;
+          white-space: pre-wrap;
         }
       }
     }
@@ -97,7 +98,11 @@
       }
 
       td.line_content.parallel {
-        width: 50%;
+        width: 46%;
+      }
+
+      .add-diff-note {
+        margin-left: -65px;
       }
     }
 
@@ -126,8 +131,13 @@
       margin: 0;
       padding: 0 0.5em;
       border: none;
+
       &.parallel {
         display: table-cell;
+
+        span {
+          word-break: break-all;
+        }
       }
     }
 
@@ -335,7 +345,7 @@
 }
 
 .diff-file .line_content {
-  white-space: pre;
+  white-space: pre-wrap;
 }
 
 .diff-wrap-lines .line_content {

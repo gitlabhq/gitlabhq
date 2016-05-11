@@ -4,12 +4,12 @@ module Ci
 
     DEFAULT_STAGES = %w(build test deploy)
     DEFAULT_STAGE = 'test'
-    ALLOWED_YAML_KEYS = [:before_script, :image, :services, :types, :stages, :variables, :cache]
+    ALLOWED_YAML_KEYS = [:before_script, :after_script, :image, :services, :types, :stages, :variables, :cache]
     ALLOWED_JOB_KEYS = [:tags, :script, :only, :except, :type, :image, :services,
                         :allow_failure, :type, :stage, :when, :artifacts, :cache,
-                        :dependencies]
+                        :dependencies, :before_script, :after_script, :variables]
 
-    attr_reader :before_script, :image, :services, :variables, :path, :cache
+    attr_reader :before_script, :after_script, :image, :services, :path, :cache
 
     def initialize(config, path = nil)
       @config = YAML.safe_load(config, [Symbol], [], true)
@@ -40,39 +40,49 @@ module Ci
       @stages || DEFAULT_STAGES
     end
 
+    def global_variables
+      @variables
+    end
+
+    def job_variables(name)
+      job = @jobs[name.to_sym]
+      return [] unless job
+
+      job.fetch(:variables, [])
+    end
+
     private
 
     def initial_parsing
       @before_script = @config[:before_script] || []
+      @after_script = @config[:after_script]
       @image = @config[:image]
       @services = @config[:services]
       @stages = @config[:stages] || @config[:types]
       @variables = @config[:variables] || {}
       @cache = @config[:cache]
-      @config.except!(*ALLOWED_YAML_KEYS)
-
-      # anything that doesn't have script is considered as unknown
-      @config.each do |name, param|
-        raise ValidationError, "Unknown parameter: #{name}" unless param.is_a?(Hash) && param.has_key?(:script)
-      end
-
-      unless @config.values.any?{|job| job.is_a?(Hash)}
-        raise ValidationError, "Please define at least one job"
-      end
-
       @jobs = {}
-      @config.each do |key, job|
-        next if key.to_s.start_with?('.')
-        stage = job[:stage] || job[:type] || DEFAULT_STAGE
-        @jobs[key] = { stage: stage }.merge(job)
-      end
+
+      @config.except!(*ALLOWED_YAML_KEYS)
+      @config.each { |name, param| add_job(name, param) }
+
+      raise ValidationError, "Please define at least one job" if @jobs.none?
+    end
+
+    def add_job(name, job)
+      return if name.to_s.start_with?('.')
+
+      raise ValidationError, "Unknown parameter: #{name}" unless job.is_a?(Hash) && job.has_key?(:script)
+
+      stage = job[:stage] || job[:type] || DEFAULT_STAGE
+      @jobs[name] = { stage: stage }.merge(job)
     end
 
     def build_job(name, job)
       {
         stage_idx: stages.index(job[:stage]),
         stage: job[:stage],
-        commands: "#{@before_script.join("\n")}\n#{normalize_script(job[:script])}",
+        commands: [job[:before_script] || @before_script, job[:script]].flatten.join("\n"),
         tag_list: job[:tags] || [],
         name: name,
         only: job[:only],
@@ -85,21 +95,28 @@ module Ci
           artifacts: job[:artifacts],
           cache: job[:cache] || @cache,
           dependencies: job[:dependencies],
+          after_script: job[:after_script] || @after_script,
         }.compact
       }
     end
 
-    def normalize_script(script)
-      if script.is_a? Array
-        script.join("\n")
-      else
-        script
+    def validate!
+      validate_global!
+
+      @jobs.each do |name, job|
+        validate_job!(name, job)
       end
+
+      true
     end
 
-    def validate!
+    def validate_global!
       unless validate_array_of_strings(@before_script)
         raise ValidationError, "before_script should be an array of strings"
+      end
+
+      unless @after_script.nil? || validate_array_of_strings(@after_script)
+        raise ValidationError, "after_script should be an array of strings"
       end
 
       unless @image.nil? || @image.is_a?(String)
@@ -115,42 +132,38 @@ module Ci
       end
 
       unless @variables.nil? || validate_variables(@variables)
-        raise ValidationError, "variables should be a map of key-valued strings"
+        raise ValidationError, "variables should be a map of key-value strings"
       end
 
-      if @cache
-        if @cache[:key] && !validate_string(@cache[:key])
-          raise ValidationError, "cache:key parameter should be a string"
-        end
+      validate_global_cache! if @cache
+    end
 
-        if @cache[:untracked] && !validate_boolean(@cache[:untracked])
-          raise ValidationError, "cache:untracked parameter should be an boolean"
-        end
-
-        if @cache[:paths] && !validate_array_of_strings(@cache[:paths])
-          raise ValidationError, "cache:paths parameter should be an array of strings"
-        end
+    def validate_global_cache!
+      if @cache[:key] && !validate_string(@cache[:key])
+        raise ValidationError, "cache:key parameter should be a string"
       end
 
-      @jobs.each do |name, job|
-        validate_job!(name, job)
+      if @cache[:untracked] && !validate_boolean(@cache[:untracked])
+        raise ValidationError, "cache:untracked parameter should be an boolean"
       end
 
-      true
+      if @cache[:paths] && !validate_array_of_strings(@cache[:paths])
+        raise ValidationError, "cache:paths parameter should be an array of strings"
+      end
     end
 
     def validate_job!(name, job)
       validate_job_name!(name)
       validate_job_keys!(name, job)
       validate_job_types!(name, job)
+      validate_job_script!(name, job)
 
       validate_job_stage!(name, job) if job[:stage]
+      validate_job_variables!(name, job) if job[:variables]
       validate_job_cache!(name, job) if job[:cache]
       validate_job_artifacts!(name, job) if job[:artifacts]
       validate_job_dependencies!(name, job) if job[:dependencies]
     end
-
-    private
 
     def validate_job_name!(name)
       if name.blank? || !validate_string(name)
@@ -167,10 +180,6 @@ module Ci
     end
 
     def validate_job_types!(name, job)
-      if !validate_string(job[:script]) && !validate_array_of_strings(job[:script])
-        raise ValidationError, "#{name} job: script should be a string or an array of a strings"
-      end
-
       if job[:image] && !validate_string(job[:image])
         raise ValidationError, "#{name} job: image should be a string"
       end
@@ -200,9 +209,30 @@ module Ci
       end
     end
 
+    def validate_job_script!(name, job)
+      if !validate_string(job[:script]) && !validate_array_of_strings(job[:script])
+        raise ValidationError, "#{name} job: script should be a string or an array of a strings"
+      end
+
+      if job[:before_script] && !validate_array_of_strings(job[:before_script])
+        raise ValidationError, "#{name} job: before_script should be an array of strings"
+      end
+
+      if job[:after_script] && !validate_array_of_strings(job[:after_script])
+        raise ValidationError, "#{name} job: after_script should be an array of strings"
+      end
+    end
+
     def validate_job_stage!(name, job)
       unless job[:stage].is_a?(String) && job[:stage].in?(stages)
         raise ValidationError, "#{name} job: stage parameter should be #{stages.join(", ")}"
+      end
+    end
+
+    def validate_job_variables!(name, job)
+      unless validate_variables(job[:variables])
+        raise ValidationError,
+          "#{name} job: variables should be a map of key-value strings"
       end
     end
 

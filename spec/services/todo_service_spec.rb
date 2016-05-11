@@ -55,6 +55,25 @@ describe TodoService, services: true do
         should_create_todo(user: admin, target: confidential_issue, author: john_doe, action: Todo::MENTIONED)
         should_not_create_todo(user: john_doe, target: confidential_issue, author: john_doe, action: Todo::MENTIONED)
       end
+
+      context 'when a private group is mentioned' do
+        let(:group) { create :group, :private }
+        let(:project) { create :project, :private, group: group }
+        let(:issue) { create :issue, author: author, project: project, description: group.to_reference }
+
+        before do
+          group.add_owner(author)
+          group.add_user(member, Gitlab::Access::DEVELOPER)
+          group.add_user(john_doe, Gitlab::Access::DEVELOPER)
+
+          service.new_issue(issue, author)
+        end
+
+        it 'creates a todo for group members' do
+          should_create_todo(user: member, target: issue)
+          should_create_todo(user: john_doe, target: issue)
+        end
+      end
     end
 
     describe '#update_issue' do

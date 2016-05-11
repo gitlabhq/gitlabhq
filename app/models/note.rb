@@ -1,25 +1,4 @@
-# == Schema Information
-#
-# Table name: notes
-#
-#  id            :integer          not null, primary key
-#  note          :text
-#  noteable_type :string(255)
-#  author_id     :integer
-#  created_at    :datetime
-#  updated_at    :datetime
-#  project_id    :integer
-#  attachment    :string(255)
-#  line_code     :string(255)
-#  commit_id     :string(255)
-#  noteable_id   :integer
-#  system        :boolean          default(FALSE), not null
-#  st_diff       :text
-#  updated_by_id :integer
-#
-
 require 'carrierwave/orm/activerecord'
-require 'file_size_validator'
 
 class Note < ActiveRecord::Base
   include Gitlab::CurrentSettings
@@ -345,7 +324,7 @@ class Note < ActiveRecord::Base
   end
 
   def create_award_emoji
-    self.noteable.award_emoji(award_emoji_name, author)	
+    self.noteable.award_emoji(award_emoji_name, author)
   end
 
   def clear_blank_line_code!

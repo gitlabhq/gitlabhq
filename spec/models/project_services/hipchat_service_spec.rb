@@ -26,6 +26,20 @@ describe HipchatService, models: true do
     it { is_expected.to have_one :service_hook }
   end
 
+  describe 'Validations' do
+    context 'when service is active' do
+      before { subject.active = true }
+
+      it { is_expected.to validate_presence_of(:token) }
+    end
+
+    context 'when service is inactive' do
+      before { subject.active = false }
+
+      it { is_expected.not_to validate_presence_of(:token) }
+    end
+  end
+
   describe "Execute" do
     let(:hipchat) { HipchatService.new }
     let(:user)    { create(:user, username: 'username') }
@@ -152,7 +166,7 @@ describe HipchatService, models: true do
 
         obj_attr = merge_sample_data[:object_attributes]
         expect(message).to eq("#{user.name} opened " \
-            "<a href=\"#{obj_attr[:url]}\">merge request ##{obj_attr["iid"]}</a> in " \
+            "<a href=\"#{obj_attr[:url]}\">merge request !#{obj_attr["iid"]}</a> in " \
             "<a href=\"#{project.web_url}\">#{project_name}</a>: " \
             "<b>Awesome merge request</b>" \
             "<pre>please fix</pre>")
@@ -202,7 +216,7 @@ describe HipchatService, models: true do
         title = data[:merge_request]['title']
 
         expect(message).to eq("#{user.name} commented on " \
-            "<a href=\"#{obj_attr[:url]}\">merge request ##{merge_id}</a> in " \
+            "<a href=\"#{obj_attr[:url]}\">merge request !#{merge_id}</a> in " \
             "<a href=\"#{project.web_url}\">#{project_name}</a>: " \
             "<b>#{title}</b>" \
             "<pre>merge request note</pre>")

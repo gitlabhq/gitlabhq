@@ -1,24 +1,3 @@
-# == Schema Information
-#
-# Table name: services
-#
-#  id                    :integer          not null, primary key
-#  type                  :string(255)
-#  title                 :string(255)
-#  project_id            :integer
-#  created_at            :datetime
-#  updated_at            :datetime
-#  active                :boolean          default(FALSE), not null
-#  properties            :text
-#  template              :boolean          default(FALSE)
-#  push_events           :boolean          default(TRUE)
-#  issues_events         :boolean          default(TRUE)
-#  merge_requests_events :boolean          default(TRUE)
-#  tag_push_events       :boolean          default(TRUE)
-#  note_events           :boolean          default(TRUE), not null
-#  build_events          :boolean          default(FALSE), not null
-#
-
 class HipchatService < Service
   MAX_COMMITS = 3
 
@@ -183,7 +162,7 @@ class HipchatService < Service
     title = obj_attr[:title]
 
     merge_request_url = "#{project_url}/merge_requests/#{merge_request_id}"
-    merge_request_link = "<a href=\"#{merge_request_url}\">merge request ##{merge_request_id}</a>"
+    merge_request_link = "<a href=\"#{merge_request_url}\">merge request !#{merge_request_id}</a>"
     message = "#{user_name} #{state} #{merge_request_link} in " \
       "#{project_link}: <b>#{title}</b>"
 
@@ -224,7 +203,7 @@ class HipchatService < Service
     when "MergeRequest"
       subj_attr = HashWithIndifferentAccess.new(data[:merge_request])
       subject_id = subj_attr[:iid]
-      subject_desc = "##{subject_id}"
+      subject_desc = "!#{subject_id}"
       subject_type = "merge request"
       title = format_title(subj_attr[:title])
     when "Snippet"

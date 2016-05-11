@@ -28,6 +28,9 @@ describe Gitlab::Metrics::Subscribers::ActiveRecord do
         expect(transaction).to receive(:increment).
           with(:sql_duration, 0.2)
 
+        expect(transaction).to receive(:increment).
+          with(:sql_count, 1)
+
         subscriber.sql(event)
       end
     end

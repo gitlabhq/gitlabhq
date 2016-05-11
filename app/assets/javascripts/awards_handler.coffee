@@ -105,7 +105,7 @@ class @AwardsHandler
     @postEmoji awardUrl, emoji, =>
       @addAwardToEmojiBar(emoji)
 
-    $(".emoji-menu").removeClass "is-visible"
+    $('.emoji-menu').removeClass 'is-visible'
 
   addAwardToEmojiBar: (emoji) ->
     @addEmojiToFrequentlyUsedList(emoji)
@@ -168,7 +168,7 @@ class @AwardsHandler
     @resetTooltip(award_block)
 
   resetTooltip: (award) ->
-    award.tooltip("destroy")
+    award.tooltip('destroy')
 
     # "destroy" call is asynchronous and there is no appropriate callback on it, this is why we need to set timeout.
     setTimeout (->
@@ -194,13 +194,13 @@ class @AwardsHandler
       $currentBlock.removeClass 'hidden'
 
   resolveNameToCssClass: (emoji) ->
-    emoji_icon = $(".emoji-menu-content [data-emoji='#{emoji}']")
+    emojiIcon = $(".emoji-menu-content [data-emoji='#{emoji}']")
 
-    if emoji_icon.length > 0
-      unicodeName = emoji_icon.data("unicode-name")
+    if emojiIcon.length > 0
+      unicodeName = emojiIcon.data('unicode-name')
     else
       # Find by alias
-      unicodeName = $(".emoji-menu-content [data-aliases*=':#{emoji}:']").data("unicode-name")
+      unicodeName = $(".emoji-menu-content [data-aliases*=':#{emoji}:']").data('unicode-name')
 
     "emoji-#{unicodeName}"
 
@@ -217,45 +217,42 @@ class @AwardsHandler
       scrollTop: $('.awards').offset().top - 80
     }, 200)
 
-  normilizeEmojiName: (emoji) ->
-    @aliases[emoji] || emoji
-
   addEmojiToFrequentlyUsedList: (emoji) ->
-    frequently_used_emojis = @getFrequentlyUsedEmojis()
-    frequently_used_emojis.push(emoji)
-    $.cookie('frequently_used_emojis', frequently_used_emojis.join(","), { expires: 365 })
+    frequentlyUsedEmojis = @getFrequentlyUsedEmojis()
+    frequentlyUsedEmojis.push(emoji)
+    $.cookie('frequently_used_emojis', frequentlyUsedEmojis.join(','), { expires: 365 })
 
   getFrequentlyUsedEmojis: ->
-    frequently_used_emojis = ($.cookie('frequently_used_emojis') || "").split(",")
-    _.compact(_.uniq(frequently_used_emojis))
+    frequentlyUsedEmojis = ($.cookie('frequently_used_emojis') || '').split(',')
+    _.compact(_.uniq(frequentlyUsedEmojis))
 
   renderFrequentlyUsedBlock: ->
     if $.cookie('frequently_used_emojis')
-      frequently_used_emojis = @getFrequentlyUsedEmojis()
+      frequentlyUsedEmojis = @getFrequentlyUsedEmojis()
 
       ul = $("<ul class='clearfix emoji-menu-list'>")
 
       for emoji in frequently_used_emojis
         $(".emoji-menu-content [data-emoji='#{emoji}']").closest("li").clone().appendTo(ul)
 
-      $("input.emoji-search").after(ul).after($("<h5>").text("Frequently used"))
+      $('input.emoji-search').after(ul).after($('<h5>').text('Frequently used'))
 
   setupSearch: ->
-    $("input.emoji-search").on 'keyup', (ev) =>
+    $('input.emoji-search').keyup (ev) =>
       term = $(ev.target).val()
 
       # Clean previous search results
-      $("ul.emoji-menu-search, h5.emoji-search").remove()
+      $('ul.emoji-menu-search, h5.emoji-search').remove()
 
       if term
         # Generate a search result block
-        h5 = $("<h5>").text("Search results").addClass("emoji-search")
-        found_emojis = @searchEmojis(term).show()
-        ul = $("<ul>").addClass("emoji-menu-list emoji-menu-search").append(found_emojis)
-        $(".emoji-menu-content ul, .emoji-menu-content h5").hide()
-        $(".emoji-menu-content").append(h5).append(ul)
+        h5 = $('<h5>').text('Search results').addClass('emoji-search')
+        foundEmojis = @searchEmojis(term).show()
+        ul = $('<ul>').addClass('emoji-menu-list emoji-menu-search').append(foundEmojis)
+        $('.emoji-menu-content ul, .emoji-menu-content h5').hide()
+        $('.emoji-menu-content').append(h5).append(ul)
       else
-        $(".emoji-menu-content").children().show()
+        $('.emoji-menu-content').children().show()
 
   searchEmojis: (term)->
     $(".emoji-menu-content [data-emoji*='#{term}']").closest("li").clone()
