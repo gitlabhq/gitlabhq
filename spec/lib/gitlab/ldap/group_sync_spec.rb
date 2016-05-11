@@ -548,6 +548,40 @@ describe Gitlab::LDAP::GroupSync, lib: true do
             }.from(nil).to(user1.username)
         end
       end
+
+      context 'with invalid DNs in the LDAP group' do
+        let(:ldap_group) do
+          Gitlab::LDAP::Group.new(
+            Net::LDAP::Entry.from_single_ldif_string(
+              <<-EOS.strip_heredoc
+                dn: cn=ldap_group1,ou=groups,dc=example,dc=com
+                cn: ldap_group1
+                member:
+                member: uid=#{user1.username},ou=users,dc=example,dc=com
+                member: foo, bar
+                description: LDAP Group 1
+                objectclass: top
+                objectclass: groupOfUniqueNames
+              EOS
+            )
+          )
+        end
+
+        # Check that the blank member and malformed member logged an error
+        it 'expects two errors to be logged' do
+          expect(Rails.logger).to receive(:error) do |&block|
+            expect(block.call).to match /^Found malformed DN:/
+          end.twice
+
+          group_sync.sync_groups
+        end
+
+        it 'expects the valid user to be added' do
+          expect { group_sync.sync_groups }
+            .to change { group1.members.where(user_id: user1.id).any? }
+              .from(false).to(true)
+        end
+      end
     end
   end
 
