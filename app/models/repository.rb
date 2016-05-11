@@ -89,7 +89,7 @@ class Repository
   def commit(id = 'HEAD')
     return nil unless exists?
     commit = Gitlab::Git::Commit.find(raw_repository, id)
-    commit = Commit.new(commit, @project) if commit
+    commit = ::Commit.new(commit, @project) if commit
     commit
   rescue Rugged::OdbError
     nil
@@ -507,7 +507,7 @@ class Repository
   def version
     cache.fetch(:version) do
       tree(:head).blobs.find do |file|
-        file.name.downcase == 'version'
+        file.name.casecmp('version').zero?
       end
     end
   end

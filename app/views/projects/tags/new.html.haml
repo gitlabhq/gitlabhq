@@ -23,7 +23,7 @@
   .form-group
     = label_tag :message, nil, class: 'control-label'
     .col-sm-10
-      = text_field_tag :message, nil, required: false, tabindex: 3, class: 'form-control'
+      = text_area_tag :message, nil, required: false, tabindex: 3, class: 'form-control', rows: 5
       .help-block Optionally, enter a message to create an annotated tag.
   %hr
   .form-group

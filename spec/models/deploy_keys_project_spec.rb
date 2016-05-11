@@ -1,14 +1,3 @@
-# == Schema Information
-#
-# Table name: deploy_keys_projects
-#
-#  id            :integer          not null, primary key
-#  deploy_key_id :integer          not null
-#  project_id    :integer          not null
-#  created_at    :datetime
-#  updated_at    :datetime
-#
-
 require 'spec_helper'
 
 describe DeployKeysProject, models: true do

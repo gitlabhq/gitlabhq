@@ -8,6 +8,10 @@ describe Banzai::Filter::UploadLinkFilter, lib: true do
       project: project
     })
 
+    raw_filter(doc, contexts)
+  end
+
+  def raw_filter(doc, contexts = {})
     described_class.call(doc, contexts)
   end
 
@@ -94,6 +98,20 @@ describe Banzai::Filter::UploadLinkFilter, lib: true do
         doc = filter(link('http://example.com'))
         expect(doc.at_css('a')['href']).to eq 'http://example.com'
       end
+    end
+  end
+
+  context 'when project context does not exist' do
+    let(:upload_link) { link('/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg') }
+
+    it 'does not raise error' do
+      expect { raw_filter(upload_link, project: nil) }.not_to raise_error
+    end
+
+    it 'does not rewrite link' do
+      doc = raw_filter(upload_link, project: nil)
+
+      expect(doc.to_html).to eq upload_link
     end
   end
 end

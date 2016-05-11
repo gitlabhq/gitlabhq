@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160421130527) do
+ActiveRecord::Schema.define(version: 20160508194200) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -501,8 +501,8 @@ ActiveRecord::Schema.define(version: 20160421130527) do
     t.integer  "weight"
     t.boolean  "confidential",  default: false
     t.datetime "deleted_at"
-    t.integer  "moved_to_id"
     t.date     "due_date"
+    t.integer  "moved_to_id"
   end
 
   add_index "issues", ["assignee_id"], name: "index_issues_on_assignee_id", using: :btree

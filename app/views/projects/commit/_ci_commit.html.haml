@@ -1,4 +1,4 @@
-.gray-content-block.middle-block
+.row-content-block.build-content.middle-block
   .pull-right
     - if can?(current_user, :update_build, @project)
       - if ci_commit.builds.latest.failed.any?(&:retryable?)
@@ -40,6 +40,7 @@
         %th Build ID
         %th Stage
         %th Name
+        %th Tags
         %th Duration
         %th Finished at
         - if @project.build_coverage_enabled?
@@ -49,7 +50,7 @@
     = render builds, coverage: @project.build_coverage_enabled?, stage: true, ref: false, allow_retry: true
 
 - if ci_commit.retried.any?
-  .gray-content-block.second-block
+  .row-content-block.second-block
     Retried builds
 
   .table-holder
@@ -61,6 +62,7 @@
           %th Ref
           %th Stage
           %th Name
+          %th Tags
           %th Duration
           %th Finished at
           - if @project.build_coverage_enabled?

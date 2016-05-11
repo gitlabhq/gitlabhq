@@ -937,10 +937,9 @@ Lint/Void:
 
 ##################### Performance ############################
 
-# TODO: Enable Casecmp Cop.
 # Use `casecmp` rather than `downcase ==`.
 Performance/Casecmp:
-  Enabled: false
+  Enabled: true
 
 # TODO: Enable DoubleStartEndWith Cop.
 # Use `str.{start,end}_with?(x, ..., y, ...)` instead of
@@ -990,11 +989,12 @@ Performance/RedundantSortBy:
 # string.
 Performance/StartWith:
   Enabled: false
+
 # Use `tr` instead of `gsub` when you are replacing the same number of
 # characters. Use `delete` instead of `gsub` when you are deleting
 # characters.
 Performance/StringReplacement:
-  Enabled: false
+  Enabled: true
 
 # TODO: Enable TimesMap Cop.
 # Checks for `.times.map` calls.

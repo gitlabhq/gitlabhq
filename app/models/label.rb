@@ -1,17 +1,3 @@
-# == Schema Information
-#
-# Table name: labels
-#
-#  id           :integer          not null, primary key
-#  title        :string(255)
-#  color        :string(255)
-#  project_id   :integer
-#  created_at   :datetime
-#  updated_at   :datetime
-#  template     :boolean          default(FALSE)
-#  description  :string(255)
-#
-
 class Label < ActiveRecord::Base
   include Referable
   include Subscribable
@@ -115,6 +101,10 @@ class Label < ActiveRecord::Base
 
   def text_color
     LabelsHelper::text_color_for_bg(self.color)
+  end
+
+  def title=(value)
+    write_attribute(:title, Sanitize.clean(value.to_s)) if value.present?
   end
 
   private
