@@ -15,7 +15,7 @@ class ProjectImportWorker
       project.repository.after_import
       project.import_finish
     else
-      logger.error("There was an error during the import: #{tmpfile}")
+      logger.error("There was an error during the import: #{tmp_file}")
     end
   end
 

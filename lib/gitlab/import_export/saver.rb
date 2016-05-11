@@ -13,7 +13,7 @@ module Gitlab
 
       def save
         if compress_and_save
-          remove_@shared.storage_path
+          remove_storage_path
           Rails.logger.info("Saved project export #{archive_file}")
           archive_file
         else
@@ -30,7 +30,7 @@ module Gitlab
         tar_czf(archive: archive_file, dir: @shared.storage_path)
       end
 
-      def remove_shared.storage_path
+      def remove_storage_path
         FileUtils.rm_rf(@shared.storage_path)
       end
 
