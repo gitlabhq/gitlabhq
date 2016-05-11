@@ -6,7 +6,8 @@ module Banzai
       def referenced_by(nodes)
         ids = nodes.map { |node| node.attr('data-merge-request') }
 
-        MergeRequest.where(id: ids)
+        MergeRequest.includes(:author, :assignee, :target_project).
+          where(id: ids)
       end
     end
   end
