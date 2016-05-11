@@ -59,6 +59,10 @@ module Projects
         end
       end
 
+      Project.transaction do
+        @project.import_start if @project.import?
+      end
+
       after_create_actions if @project.persisted?
 
       @project
@@ -95,8 +99,6 @@ module Projects
       unless @project.group
         @project.team << [current_user, :master, current_user]
       end
-
-      @project.import_start if @project.import?
     end
   end
 end

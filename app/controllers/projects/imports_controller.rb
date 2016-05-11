@@ -19,7 +19,10 @@ class Projects::ImportsController < Projects::ApplicationController
       if @project.import_failed?
         @project.import_retry
       else
-        @project.import_start
+        Project.transaction do
+          @project.import_start
+        end
+        @project.add_import_job if @project.persisted?
       end
     end
 
