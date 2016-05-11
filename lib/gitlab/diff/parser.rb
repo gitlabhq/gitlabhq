@@ -18,7 +18,7 @@ module Gitlab
           @lines.each do |line|
             next if filename?(line)
   
-            full_line = line.gsub(/\n/, '')
+            full_line = line.delete("\n")
   
             if line.match(/^@@ -/)
               type = "match"
