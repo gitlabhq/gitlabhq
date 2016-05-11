@@ -59,7 +59,8 @@ module Issuable
     attr_mentionable :description
     attr_mentionable :notes_with_associations
 
-    participant :author, :assignee
+    participant :author, index: 0
+    participant :assignee, index: 1
 
     strip_attributes :title
 

@@ -12,7 +12,10 @@
 #
 #       # ...
 #
-#       participant :author, :assignee, :notes, ->(current_user) { mentioned_users(current_user) }
+#       participant :author
+#       participant :assignee
+#       participant :notes
+#       participant ->(current_user) { mentioned_users(current_user) }
 #     end
 #
 #     issue = Issue.last
@@ -27,8 +30,13 @@ module Participable
   module ClassMethods
     # Adds a list of participant attributes. Attributes can either be symbols or
     # Procs.
-    def participant(*attrs)
-      participant_attrs.concat(attrs)
+    #
+    # attr - The name of the attribute or a Proc
+    # index - The position of the returned object in the Array returned by
+    #         `#participants`. By default the attribute is inserted at the end
+    #         of the list.
+    def participant(attr, index: -1)
+      participant_attrs.insert(index, attr)
     end
 
     def participant_attrs

@@ -7,6 +7,6 @@ class ProjectSnippet < Snippet
   # Scopes
   scope :fresh, -> { order("created_at DESC") }
 
-  participant :author
+  participant :author, index: 0
   attr_mentionable :notes_with_associations
 end

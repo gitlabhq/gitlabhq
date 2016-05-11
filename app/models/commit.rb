@@ -8,7 +8,10 @@ class Commit
   include StaticModel
 
   attr_mentionable :safe_message, pipeline: :single_line
-  participant :author, :committer, :notes
+
+  participant :author, index: 0
+  participant :committer, index: 1
+  participant :notes, index: 2
 
   attr_accessor :project
 

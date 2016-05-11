@@ -33,7 +33,7 @@ class Snippet < ActiveRecord::Base
 
   scope :notes_with_associations, -> { includes(:author, :project) }
 
-  participant :author
+  participant :author, index: 0
   attr_mentionable :notes_with_associations
 
   def self.reference_prefix
