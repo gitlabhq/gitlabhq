@@ -39,10 +39,9 @@ module Banzai
         @reference_type
       end
 
-      def initialize(project = nil, current_user = nil, author = nil)
+      def initialize(project = nil, current_user = nil)
         @project = project
         @current_user = current_user
-        @author = author
       end
 
       # Returns all the nodes containing references that the user can refer to.

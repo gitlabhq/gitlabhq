@@ -4,7 +4,7 @@ describe Banzai::ReferenceParser::SnippetParser, lib: true do
   let(:project) { create(:empty_project, :public) }
   let(:user) { create(:user) }
   let(:snippet) { create(:snippet, project: project) }
-  let(:parser) { described_class.new(project, user, user) }
+  let(:parser) { described_class.new(project, user) }
   let(:link) { Nokogiri::HTML.fragment('<a></a>').children[0] }
 
   describe '#referenced_by' do

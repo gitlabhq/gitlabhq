@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Banzai::ReferenceParser::MergeRequestParser, lib: true do
   let(:user) { create(:user) }
   let(:merge_request) { create(:merge_request) }
-  let(:parser) { described_class.new(merge_request.target_project, user, user) }
+  let(:parser) { described_class.new(merge_request.target_project, user) }
   let(:link) { Nokogiri::HTML.fragment('<a></a>').children[0] }
 
   describe '#referenced_by' do

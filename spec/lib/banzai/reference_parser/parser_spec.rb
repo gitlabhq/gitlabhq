@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Banzai::ReferenceParser::Parser, lib: true do
   let(:user) { create(:user) }
   let(:project) { create(:empty_project, :public) }
-  let(:parser) { described_class.new(project, user, user) }
+  let(:parser) { described_class.new(project, user) }
 
   describe '.reference_type=' do
     it 'sets the reference type as a Symbol' do
@@ -132,7 +132,7 @@ describe Banzai::ReferenceParser::Parser, lib: true do
         self.reference_type = :test
       end
 
-      instance = dummy.new(project, user, user)
+      instance = dummy.new(project, user)
       document = Nokogiri::HTML.fragment('<a class="gfm"></a><a class="gfm" data-reference-type="test"></a>')
 
       expect(instance).to receive(:gather_references).
