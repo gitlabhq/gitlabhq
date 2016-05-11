@@ -60,7 +60,7 @@ docker-php-ext-install pdo_mysql
 You might wonder what `docker-php-ext-install` is. In short, it is a script
 provided by the official php docker image that you can use to easilly install
 extensions. For more information read the the documentation at
-<https://hub.docker.com/_/php/>.
+<https://hub.docker.com/r/_/php/>.
 
 Now that we created the script that contains all prerequisites for our build
 environment, let's add it in `.gitlab-ci.yml`:
@@ -92,7 +92,7 @@ Finally, commit your files and push them to GitLab to see your build succeeding
 The final `.gitlab-ci.yml` should look similar to this:
 
 ```yaml
-# Select image from https://hub.docker.com/_/php/
+# Select image from https://hub.docker.com/r/_/php/
 image: php:5.6
 
 before_script:
@@ -278,7 +278,7 @@ that runs on [GitLab.com](https://gitlab.com) using our publicly available
 Want to hack on it? Simply fork it, commit and push  your changes. Within a few
 moments the changes will be picked by a public runner and the build will begin.
 
-[php-hub]: https://hub.docker.com/_/php/
+[php-hub]: https://hub.docker.com/r/_/php/
 [phpenv]: https://github.com/phpenv/phpenv
 [phpenv-installation]: https://github.com/phpenv/phpenv#installation
 [php-example-repo]: https://gitlab.com/gitlab-examples/php

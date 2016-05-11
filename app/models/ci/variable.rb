@@ -1,17 +1,3 @@
-# == Schema Information
-#
-# Table name: ci_variables
-#
-#  id                   :integer          not null, primary key
-#  project_id           :integer
-#  key                  :string
-#  value                :text
-#  encrypted_value      :text
-#  encrypted_value_salt :string
-#  encrypted_value_iv   :string
-#  gl_project_id        :integer
-#
-
 module Ci
   class Variable < ActiveRecord::Base
     extend Ci::Model

@@ -3,7 +3,7 @@ GEM
   specs:
     CFPropertyList (2.3.2)
     RedCloth (4.2.9)
-    ace-rails-ap (2.0.1)
+    ace-rails-ap (4.0.2)
     actionmailer (4.2.6)
       actionpack (= 4.2.6)
       actionview (= 4.2.6)
@@ -51,9 +51,6 @@ GEM
       activerecord (>= 3.0)
     akismet (2.0.0)
     allocations (1.0.4)
-    annotate (2.7.0)
-      activerecord (>= 3.2, < 6.0)
-      rake (~> 10.4)
     arel (6.0.3)
     asana (0.4.0)
       faraday (~> 0.9)
@@ -885,7 +882,7 @@ PLATFORMS
 
 DEPENDENCIES
   RedCloth (~> 4.2.9)
-  ace-rails-ap (~> 2.0.1)
+  ace-rails-ap (~> 4.0.2)
   activerecord-deprecated_finders (~> 1.0.3)
   activerecord-session_store (~> 0.1.0)
   acts-as-taggable-on (~> 3.4)
@@ -893,7 +890,6 @@ DEPENDENCIES
   after_commit_queue
   akismet (~> 2.0)
   allocations (~> 1.0)
-  annotate (~> 2.7.0)
   asana (~> 0.4.0)
   asciidoctor (~> 1.5.2)
   attr_encrypted (~> 1.3.4)
@@ -1061,4 +1057,4 @@ DEPENDENCIES
   wikicloth (= 0.8.1)
 
 BUNDLED WITH
-   1.12.1
+   1.12.3

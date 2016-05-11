@@ -81,7 +81,7 @@ class Repository
   def commit(id = 'HEAD')
     return nil unless exists?
     commit = Gitlab::Git::Commit.find(raw_repository, id)
-    commit = Commit.new(commit, @project) if commit
+    commit = ::Commit.new(commit, @project) if commit
     commit
   rescue Rugged::OdbError
     nil

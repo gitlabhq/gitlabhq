@@ -1,22 +1,3 @@
-# == Schema Information
-#
-# Table name: ci_runners
-#
-#  id           :integer          not null, primary key
-#  token        :string
-#  created_at   :datetime
-#  updated_at   :datetime
-#  description  :string
-#  contacted_at :datetime
-#  active       :boolean          default(TRUE), not null
-#  is_shared    :boolean          default(FALSE)
-#  name         :string
-#  version      :string
-#  revision     :string
-#  platform     :string
-#  architecture :string
-#
-
 module Ci
   class Runner < ActiveRecord::Base
     extend Ci::Model

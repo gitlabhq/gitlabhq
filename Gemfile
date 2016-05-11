@@ -197,7 +197,7 @@ gem 'licensee', '~> 8.0.0'
 gem "rack-attack", '~> 4.3.1'
 
 # Ace editor
-gem 'ace-rails-ap', '~> 2.0.1'
+gem 'ace-rails-ap', '~> 4.0.2'
 
 # Keyboard shortcuts
 gem 'mousetrap-rails', '~> 1.4.6'
@@ -242,7 +242,6 @@ group :development do
   gem "foreman"
   gem 'brakeman', '~> 3.2.0', require: false
 
-  gem "annotate", "~> 2.7.0"
   gem 'letter_opener_web', '~> 1.3.0'
   gem 'quiet_assets', '~> 1.0.2'
   gem 'rerun', '~> 0.11.0'
