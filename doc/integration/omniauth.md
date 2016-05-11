@@ -201,7 +201,7 @@ This setting was introduced with version 8.8 of GitLab.
 Administrators are able to enable or disable Sign In via some OmniAuth providers.
 
 >**Note:**
-By default Sign In is enabled via all the OAuth Providers that have been configured in config/gitlab.yml.
+By default Sign In is enabled via all the OAuth Providers that have been configured in `config/gitlab.yml`.
 
 In order to enable/disable an OmniAuth provider, go to Admin Area -> Settings -> Sign-in Restrictions section -> Enabled OAuth Sign-In sources and select the providers you want to enable or disable.
 
