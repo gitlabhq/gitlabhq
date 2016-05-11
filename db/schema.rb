@@ -70,16 +70,16 @@ ActiveRecord::Schema.define(version: 20160508194200) do
     t.string   "recaptcha_site_key"
     t.string   "recaptcha_private_key"
     t.integer  "metrics_port",                      default: 8089
-    t.boolean  "akismet_enabled",                   default: false
-    t.string   "akismet_api_key"
     t.integer  "metrics_sample_interval",           default: 15
     t.boolean  "sentry_enabled",                    default: false
     t.string   "sentry_dsn"
+    t.boolean  "akismet_enabled",                   default: false
+    t.string   "akismet_api_key"
     t.boolean  "email_author_in_body",              default: false
     t.integer  "default_group_visibility"
     t.boolean  "repository_checks_enabled",         default: false
-    t.text     "shared_runners_text"
     t.integer  "metrics_packet_size",               default: 1
+    t.text     "shared_runners_text"
     t.text     "disabled_oauth_sign_in_sources"
   end
 
@@ -427,10 +427,10 @@ ActiveRecord::Schema.define(version: 20160508194200) do
     t.string   "state"
     t.integer  "iid"
     t.integer  "updated_by_id"
+    t.integer  "moved_to_id"
     t.boolean  "confidential",  default: false
     t.datetime "deleted_at"
     t.date     "due_date"
-    t.integer  "moved_to_id"
   end
 
   add_index "issues", ["assignee_id"], name: "index_issues_on_assignee_id", using: :btree
@@ -717,8 +717,8 @@ ActiveRecord::Schema.define(version: 20160508194200) do
     t.integer "project_id"
     t.text    "data"
     t.text    "encrypted_credentials"
-    t.string  "encrypted_credentials_iv"
-    t.string  "encrypted_credentials_salt"
+    t.text    "encrypted_credentials_iv"
+    t.text    "encrypted_credentials_salt"
   end
 
   create_table "projects", force: :cascade do |t|
@@ -816,9 +816,9 @@ ActiveRecord::Schema.define(version: 20160508194200) do
     t.string   "type"
     t.string   "title"
     t.integer  "project_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.boolean  "active",                default: false,    null: false
+    t.datetime "created_at",                               null: false
+    t.datetime "updated_at",                               null: false
+    t.boolean  "active",                                   null: false
     t.text     "properties"
     t.boolean  "template",              default: false
     t.boolean  "push_events",           default: true
