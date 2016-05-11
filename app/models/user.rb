@@ -381,6 +381,11 @@ class User < ActiveRecord::Base
     Project.where("projects.id IN (#{projects_union.to_sql})")
   end
 
+  def viewable_starred_projects
+    starred_projects.where("projects.visibility_level IN (?) OR projects.id IN (#{projects_union.to_sql})",
+                           [Project::PUBLIC, Project::INTERNAL])
+  end
+
   def owned_projects
     @owned_projects ||=
       Project.where('namespace_id IN (?) OR namespace_id = ?',
