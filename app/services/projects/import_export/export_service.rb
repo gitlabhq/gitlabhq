@@ -27,7 +27,7 @@ module Projects
       end
 
       def notify_worker
-        raise Gitlab::ImportExport::Error @shared.errors.join(', ')
+        raise Gitlab::ImportExport::Error.new(@shared.errors.join(', '))
       end
     end
   end
