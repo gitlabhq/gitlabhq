@@ -17,15 +17,16 @@
 #
 #     issue = Issue.last
 #     users = issue.participants
-#     # `users` will contain the issue's author, its assignee,
-#     # all users returned by its #mentioned_users method,
-#     # as well as all participants to all of the issue's notes,
-#     # since Note implements Participable as well.
+#
+#     # `users` will contain the issue's author, its assignee, and # all users
+#     # returned by its #mentioned_users method,
 #
 module Participable
   extend ActiveSupport::Concern
 
   module ClassMethods
+    # Adds a list of participant attributes. Attributes can either be symbols or
+    # Procs.
     def participant(*attrs)
       participant_attrs.concat(attrs)
     end
@@ -35,22 +36,37 @@ module Participable
     end
   end
 
-  # Be aware that this method makes a lot of sql queries.
-  # Save result into variable if you are going to reuse it inside same request
+  # Returns the users participating in a discussion.
+  #
+  # For every regular attribute this method will check if the returned user can
+  # read the current project. When a Proc is used this method assumes the Proc's
+  # return value _only_ includes users that have the appropriate permissions.
+  # This requirement is put in place to reduce the number of queries needed to
+  # check if every user has access to the project.
+  #
+  # Returns an Array of User instances.
   def participants(current_user = self.author)
     participants = Set.new
 
     self.class.participant_attrs.each do |attr|
+      check = false
       value =
         if attr.respond_to?(:call)
           instance_exec(current_user, &attr)
         else
+          check = true
           send(attr)
         end
 
+      next unless value
+
       result = participants_for(value, current_user)
 
-      participants.merge(result) if result
+      if result
+        result.select! { |user| user.can?(:read_project, project) } if check
+
+        participants.merge(result)
+      end
     end
 
     participants.to_a
