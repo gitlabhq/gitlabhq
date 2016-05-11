@@ -83,7 +83,7 @@ Rails.application.routes.draw do
   get 'help'                  => 'help#index'
   get 'help/:category/:file'  => 'help#show', as: :help_page, constraints: { category: /.*/, file: /[^\/\.]+/ }
   get 'help/shortcuts'
-  get 'help/ui'               => 'help#ui'
+  get 'help/ui' => 'help#ui'
 
   #
   # Global snippets
