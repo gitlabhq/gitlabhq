@@ -1,5 +1,35 @@
 module Banzai
   module ReferenceParser
+    # Base class for reference parsing classes.
+    #
+    # Each reference parser class should extend this class and implement the
+    # instance method `referenced_by`. This method takes an Array of HTML nodes
+    # to process and should return an Array of references (e.g. an Array of User
+    # objects).
+    #
+    # Each parser should also specify its reference type by calling
+    # `self.reference_type = ...` in the body of the class. The value of this
+    # method should be a symbol such as `:issue` or `:merge_request`. For
+    # example:
+    #
+    #     class IssueParser < Parser
+    #       self.reference_type = :issue
+    #     end
+    #
+    # The reference type is used to determine what nodes to pass to the
+    # `referenced_by` method.
+    #
+    # Each class can implement two additional methods:
+    #
+    # * `nodes_user_can_reference`: returns an Array of nodes the given user can
+    #   refer to.
+    # * `nodes_visible_to_user`: returns an Array of nodes that are visible to
+    #   the given user.
+    #
+    # You only need to overwrite these methods if you want to tweak who can see
+    # which references. For example, the IssueParser class defines its own
+    # `nodes_visible_to_user` method so it can ensure users can only see issues
+    # they have access to.
     class Parser
       def self.reference_type=(type)
         @reference_type = type.to_sym
@@ -106,6 +136,8 @@ module Banzai
         values.to_a
       end
 
+      # Processes the list of HTML documents and returns an Array containing all
+      # the references.
       def process(documents)
         type = self.class.reference_type
         nodes = []
@@ -119,6 +151,7 @@ module Banzai
         gather_references(nodes)
       end
 
+      # Gathers the references for the given HTML nodes.
       def gather_references(nodes)
         nodes = nodes_user_can_reference(current_user, nodes)
         nodes = nodes_visible_to_user(current_user, nodes)
@@ -126,6 +159,12 @@ module Banzai
         referenced_by(nodes)
       end
 
+      # Returns a Hash containing the projects for a given list of HTML nodes.
+      #
+      # The returned Hash uses the following format:
+      #
+      #     { project ID => project }
+      #
       def projects_for_nodes(nodes)
         @projects_for_nodes ||= {}
 
