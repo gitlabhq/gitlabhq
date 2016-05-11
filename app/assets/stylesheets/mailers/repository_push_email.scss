@@ -2,7 +2,7 @@
 
 table.code {
   width: 100%;
-  font-family: $monospace_font;
+  font-family: monospace;
   border: none;
   border-collapse: separate;
   margin: 0;
@@ -13,7 +13,7 @@ table.code {
 
   td {
     line-height: $code_line_height;
-    font-family: $monospace_font;
+    font-family: monospace;
     font-size: $code_font_size;
   }
 
