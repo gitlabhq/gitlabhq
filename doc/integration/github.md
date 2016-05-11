@@ -2,7 +2,7 @@
 
 Import projects from GitHub and login to your GitLab instance with your GitHub account.
 
-To enable the GitHub OmniAuth provider you must register your application with GitHub. 
+To enable the GitHub OmniAuth provider you must register your application with GitHub.
 GitHub will generate an application ID and secret key for you to use.
 
 1.  Sign in to GitHub.
@@ -22,7 +22,7 @@ GitHub will generate an application ID and secret key for you to use.
     - Default authorization callback URL is '${YOUR_DOMAIN}/import/github/callback'
 1.  Select "Register application".
 
-1.  You should now see a Client ID and Client Secret near the top right of the page (see screenshot). 
+1.  You should now see a Client ID and Client Secret near the top right of the page (see screenshot).
     Keep this page open as you continue configuration.
     ![GitHub app](img/github_app.png)
 
@@ -88,8 +88,10 @@ GitHub will generate an application ID and secret key for you to use.
 
 1.  Save the configuration file.
 
+1.  If you're using the omnibus package, reconfigure GitLab (```gitlab-ctl reconfigure```).
+
 1.  Restart GitLab for the changes to take effect.
 
-On the sign in page there should now be a GitHub icon below the regular sign in form. 
-Click the icon to begin the authentication process. GitHub will ask the user to sign in and authorize the GitLab application. 
+On the sign in page there should now be a GitHub icon below the regular sign in form.
+Click the icon to begin the authentication process. GitHub will ask the user to sign in and authorize the GitLab application.
 If everything goes well the user will be returned to GitLab and will be signed in.

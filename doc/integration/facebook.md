@@ -90,6 +90,8 @@ something else descriptive.
 
 1.  Change 'YOUR_APP_SECRET' to the API secret from the Facebook page in step 10.
 
+1.  If you're using the omnibus package, reconfigure GitLab (```gitlab-ctl reconfigure```).
+
 1.  Save the configuration file.
 
 1.  Restart GitLab for the changes to take effect.

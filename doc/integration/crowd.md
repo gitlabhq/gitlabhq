@@ -28,7 +28,7 @@ To enable the Crowd OmniAuth provider you must register your application with Cr
       gitlab_rails['omniauth_providers'] = [
         {
           "name" => "crowd",
-          "args" => { 
+          "args" => {
             "crowd_server_url" => "CROWD",
             "application_name" => "YOUR_APP_NAME",
             "application_password" => "YOUR_APP_PASSWORD"
@@ -52,6 +52,8 @@ To enable the Crowd OmniAuth provider you must register your application with Cr
 1.  Change 'YOUR_APP_PASSWORD' to the application password you've set.
 
 1.  Save the configuration file.
+
+1.  If you're using the omnibus package, reconfigure GitLab (```gitlab-ctl reconfigure```).
 
 1.  Restart GitLab for the changes to take effect.
 
