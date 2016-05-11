@@ -4,7 +4,7 @@ module Banzai
       self.reference_type = :milestone
 
       def referenced_by(nodes)
-        ids = nodes.map { |node| node.attr('data-milestone') }
+        ids = unique_attribute_values(nodes, 'data-milestone')
 
         Milestone.where(id: ids)
       end

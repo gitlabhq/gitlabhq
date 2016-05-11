@@ -85,15 +85,25 @@ module Banzai
       #
       # Returns a Hash.
       def grouped_objects_for_nodes(nodes, collection, attribute)
-        ids = []
-
-        nodes.each do |node|
-          ids << node.attr(attribute).to_i if node.has_attribute?(attribute)
-        end
+        ids = unique_attribute_values(nodes, attribute)
 
         collection.where(id: ids).each_with_object({}) do |row, hash|
           hash[row.id] = row
         end
+      end
+
+      # Returns an Array containing all unique values of an attribute of the
+      # given nodes.
+      def unique_attribute_values(nodes, attribute)
+        values = Set.new
+
+        nodes.each do |node|
+          if node.has_attribute?(attribute)
+            values << node.attr(attribute)
+          end
+        end
+
+        values.to_a
       end
 
       def process(documents)

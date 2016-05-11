@@ -4,7 +4,7 @@ module Banzai
       self.reference_type = :snippet
 
       def referenced_by(nodes)
-        ids = nodes.map { |node| node.attr('data-snippet') }
+        ids = unique_attribute_values(nodes, 'data-snippet')
 
         Snippet.where(id: ids)
       end

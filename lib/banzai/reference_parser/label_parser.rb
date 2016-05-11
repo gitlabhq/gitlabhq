@@ -4,7 +4,7 @@ module Banzai
       self.reference_type = :label
 
       def referenced_by(nodes)
-        ids = nodes.map { |node| node.attr('data-label') }
+        ids = unique_attribute_values(nodes, 'data-label')
 
         Label.where(id: ids)
       end

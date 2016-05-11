@@ -92,6 +92,40 @@ describe Banzai::ReferenceParser::Parser, lib: true do
     end
   end
 
+  describe '#grouped_objects_for_nodes' do
+    it 'returns a Hash grouping objects per ID' do
+      nodes = [double(:node)]
+
+      expect(parser).to receive(:unique_attribute_values).
+        with(nodes, 'data-user').
+        and_return([user.id])
+
+      hash = parser.grouped_objects_for_nodes(nodes, User, 'data-user')
+
+      expect(hash).to eq({ user.id => user })
+    end
+  end
+
+  describe '#unique_attribute_values' do
+    it 'returns an Array of unique values' do
+      link = double(:link)
+
+      expect(link).to receive(:has_attribute?).
+        with('data-foo').
+        twice.
+        and_return(true)
+
+      expect(link).to receive(:attr).
+        with('data-foo').
+        twice.
+        and_return('1')
+
+      nodes = [link, link]
+
+      expect(parser.unique_attribute_values(nodes, 'data-foo')).to eq(['1'])
+    end
+  end
+
   describe '#process' do
     it 'gathers the references for every node matching the reference type' do
       dummy = Class.new(described_class) do
