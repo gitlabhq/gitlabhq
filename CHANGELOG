@@ -43,9 +43,13 @@ v 8.8.0 (unreleased)
   - Bump ace-rails-ap gem version from 2.0.1 to 4.0.2 which upgrades Ace Editor from 1.1.2 to 1.2.3
 
 v 8.7.4
-  - Fix always showing build notification message when switching between merge requests
-  - Links for Redmine issue references are generated correctly again (Benedikt Huss)
-  - Fix an issue when filtering merge requests with more than one label. !3886
+  - Links for Redmine issue references are generated correctly again !4048 (Benedikt Huss)
+  - Fix setting trusted proxies !3970
+  - Fix BitBucket importer bug when throwing exceptions !3941
+  - Use sign out path only if not empty !3989
+  - Running rake gitlab:db:drop_tables now drops tables with cascade !4020
+  - Running rake gitlab:db:drop_tables uses "IF EXISTS" as a precaution !4100
+  - Use a case-insensitive comparison in sanitizing URI schemes
 
 v 8.7.3
   - Emails, Gitlab::Email::Message, Gitlab::Diff, and Premailer::Adapter::Nokogiri are now instrumented
