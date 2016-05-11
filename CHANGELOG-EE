@@ -6,6 +6,8 @@ v 8.8.0 (unreleased)
   - [Elastic] More efficient snippets search
   - [Elastic] Add rake task for removing all indexes
   - [Elastic] Add rake task for clearing indexing status
+  - [Elastic] Improve code search
+  - [Elastic] Fix encoding issues during indexing
   - Set KRB5 as default clone protocol when Kerberos is enabled and user is logged in (Borja Aparicio)
 
 v 8.7.2
