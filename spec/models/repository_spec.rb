@@ -561,7 +561,7 @@ describe Repository, models: true do
   end
 
   describe :skip_merged_commit do
-    subject { repository.commits(Gitlab::Git::BRANCH_REF_PREFIX + "'test'", nil, 100, 0, true).map{ |k| k.id } }
+    subject { repository.commits(Gitlab::Git::BRANCH_REF_PREFIX + "'test'", limit: 100, skip_merges: true).map{ |k| k.id } }
 
     it { is_expected.not_to include('e56497bb5f03a90a51293fc6d516788730953899') }
   end
@@ -795,6 +795,16 @@ describe Repository, models: true do
 
   end
 
+  describe "#copy_gitattributes" do
+    it 'returns true with a valid ref' do
+      expect(repository.copy_gitattributes('master')).to be_truthy
+    end
+
+    it 'returns false with an invalid ref' do
+      expect(repository.copy_gitattributes('invalid')).to be_falsey
+    end
+  end
+
   describe "#main_language" do
     it 'shows the main language of the project' do
       expect(repository.main_language).to eq("Ruby")
@@ -848,13 +858,30 @@ describe Repository, models: true do
   end
 
   describe '#add_tag' do
-    it 'adds a tag' do
-      expect(repository).to receive(:before_push_tag)
+    context 'with a valid target' do
+      let(:user) { build_stubbed(:user) }
 
-      expect_any_instance_of(Gitlab::Shell).to receive(:add_tag).
-        with(repository.path_with_namespace, '8.5', 'master', 'foo')
+      it 'creates the tag using rugged' do
+        expect(repository.rugged.tags).to receive(:create).
+          with('8.5', repository.commit('master').id,
+            hash_including(message: 'foo',
+                           tagger: hash_including(name: user.name, email: user.email))).
+          and_call_original
 
-      repository.add_tag('8.5', 'master', 'foo')
+        repository.add_tag(user, '8.5', 'master', 'foo')
+      end
+
+      it 'returns a Gitlab::Git::Tag object' do
+        tag = repository.add_tag(user, '8.5', 'master', 'foo')
+
+        expect(tag).to be_a(Gitlab::Git::Tag)
+      end
+    end
+
+    context 'with an invalid target' do
+      it 'returns false' do
+        expect(repository.add_tag(user, '8.5', 'bar', 'foo')).to be false
+      end
     end
   end
 

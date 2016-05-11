@@ -1,23 +1,30 @@
 require File.expand_path('../boot', __FILE__)
 
 require 'rails/all'
-require 'devise'
-I18n.config.enforce_available_locales = false
+
 Bundler.require(:default, Rails.env)
-require_relative '../lib/gitlab/redis'
 
 module Gitlab
   class Application < Rails::Application
+    require_dependency Rails.root.join('lib/gitlab/redis')
+
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
 
-    # Custom directories with classes and modules you want to be autoloadable.
-    config.autoload_paths.push(*%W(#{config.root}/lib
-                                   #{config.root}/app/models/hooks
-                                   #{config.root}/app/models/concerns
-                                   #{config.root}/app/models/project_services
-                                   #{config.root}/app/models/members))
+    # Sidekiq uses eager loading, but directories not in the standard Rails
+    # directories must be added to the eager load paths:
+    # https://github.com/mperham/sidekiq/wiki/FAQ#why-doesnt-sidekiq-autoload-my-rails-application-code
+    # Also, there is no need to add `lib` to autoload_paths since autoloading is
+    # configured to check for eager loaded paths:
+    # https://github.com/rails/rails/blob/v4.2.6/railties/lib/rails/engine.rb#L687
+    # This is a nice reference article on autoloading/eager loading:
+    # http://blog.arkency.com/2014/11/dont-forget-about-eager-load-when-extending-autoload
+    config.eager_load_paths.push(*%W(#{config.root}/lib
+                                     #{config.root}/app/models/ci
+                                     #{config.root}/app/models/hooks
+                                     #{config.root}/app/models/members
+                                     #{config.root}/app/models/project_services))
 
     # Only load the plugins named here, in the order given (default is alphabetical).
     # :all can be used as a placeholder for all plugins not explicitly named.
@@ -32,7 +39,30 @@ module Gitlab
     config.encoding = "utf-8"
 
     # Configure sensitive parameters which will be filtered from the log file.
-    config.filter_parameters.push(:password, :password_confirmation, :private_token, :otp_attempt, :variables, :import_url)
+    # 
+    # Parameters filtered:
+    # - Password (:password, :password_confirmation)
+    # - Private tokens (:private_token)
+    # - Two-factor tokens (:otp_attempt)
+    # - Repo/Project Import URLs (:import_url)
+    # - Build variables (:variables)
+    # - GitLab Pages SSL cert/key info (:certificate, :encrypted_key)
+    # - Webhook URLs (:hook)
+    # - Sentry DSN (:sentry_dsn)
+    # - Deploy keys (:key)
+    config.filter_parameters += %i(
+      certificate
+      encrypted_key
+      hook
+      import_url
+      key
+      otp_attempt
+      password
+      password_confirmation
+      private_token
+      sentry_dsn
+      variables
+    )
 
     # Enable escaping HTML in JSON.
     config.active_support.escape_html_entities_in_json = true

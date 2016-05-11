@@ -214,8 +214,6 @@ Rails.application.routes.draw do
       resources :keys, only: [:show, :destroy]
       resources :identities, except: [:show]
 
-      delete 'stop_impersonation' => 'impersonation#destroy', on: :collection
-
       member do
         get :projects
         get :keys
@@ -225,11 +223,13 @@ Rails.application.routes.draw do
         put :unblock
         put :unlock
         put :confirm
-        post 'impersonate' => 'impersonation#create'
+        post :impersonate
         patch :disable_two_factor
         delete 'remove/:email_id', action: 'remove_email', as: 'remove_email'
       end
     end
+
+    resource :impersonation, only: :destroy
 
     resources :abuse_reports, only: [:index, :destroy]
     resources :spam_logs, only: [:index, :destroy]
@@ -715,6 +715,7 @@ Rails.application.routes.draw do
             post :toggle_subscription
             get :referenced_merge_requests
             get :related_branches
+            get :can_create_branch
           end
           collection do
             post  :bulk_update

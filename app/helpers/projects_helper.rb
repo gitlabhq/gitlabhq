@@ -200,16 +200,13 @@ module ProjectsHelper
   end
 
   def repository_size(project = @project)
-    "#{project.repository_size} MB"
-  rescue
-    # In order to prevent 500 error
-    # when application cannot allocate memory
-    # to calculate repo size - just show 'Unknown'
-    'unknown'
+    size_in_bytes = project.repository_size * 1.megabyte
+    number_to_human_size(size_in_bytes, delimiter: ',', precision: 2)
   end
 
   def default_url_to_repo(project = @project)
-    if default_clone_protocol == "ssh"
+    case default_clone_protocol
+    when 'ssh'
       project.ssh_url_to_repo
     else
       project.http_url_to_repo
@@ -340,5 +337,11 @@ module ProjectsHelper
         tree_join(project.default_branch, blob.name)
       )
     end
+  end
+
+  def sanitize_repo_path(message)
+    return '' unless message.present?
+
+    message.strip.gsub(Gitlab.config.gitlab_shell.repos_path.chomp('/'), "[REPOS PATH]")
   end
 end

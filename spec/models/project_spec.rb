@@ -1,43 +1,3 @@
-# == Schema Information
-#
-# Table name: projects
-#
-#  id                     :integer          not null, primary key
-#  name                   :string(255)
-#  path                   :string(255)
-#  description            :text
-#  created_at             :datetime
-#  updated_at             :datetime
-#  creator_id             :integer
-#  issues_enabled         :boolean          default(TRUE), not null
-#  wall_enabled           :boolean          default(TRUE), not null
-#  merge_requests_enabled :boolean          default(TRUE), not null
-#  wiki_enabled           :boolean          default(TRUE), not null
-#  namespace_id           :integer
-#  issues_tracker         :string(255)      default("gitlab"), not null
-#  issues_tracker_id      :string(255)
-#  snippets_enabled       :boolean          default(TRUE), not null
-#  last_activity_at       :datetime
-#  import_url             :string(255)
-#  visibility_level       :integer          default(0), not null
-#  archived               :boolean          default(FALSE), not null
-#  avatar                 :string(255)
-#  import_status          :string(255)
-#  repository_size        :float            default(0.0)
-#  star_count             :integer          default(0), not null
-#  import_type            :string(255)
-#  import_source          :string(255)
-#  commit_count           :integer          default(0)
-#  import_error           :text
-#  ci_id                  :integer
-#  builds_enabled         :boolean          default(TRUE), not null
-#  shared_runners_enabled :boolean          default(TRUE), not null
-#  runners_token          :string
-#  build_coverage_regex   :string
-#  build_allow_git_fetch  :boolean          default(TRUE), not null
-#  build_timeout          :integer          default(3600), not null
-#
-
 require 'spec_helper'
 
 describe Project, models: true do
@@ -796,6 +756,20 @@ describe Project, models: true do
 
         project.create_repository
       end
+    end
+  end
+
+  describe '#protected_branch?' do
+    let(:project) { create(:empty_project) }
+
+    it 'returns true when a branch is a protected branch' do
+      project.protected_branches.create!(name: 'foo')
+
+      expect(project.protected_branch?('foo')).to eq(true)
+    end
+
+    it 'returns false when a branch is not a protected branch' do
+      expect(project.protected_branch?('foo')).to eq(false)
     end
   end
 end

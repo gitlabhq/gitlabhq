@@ -12,7 +12,7 @@ module Gitlab
           token_secret = import_data_credentials[:bb_session][:bitbucket_access_token_secret]
           new(token, token_secret)
         else
-          raise Projects::ImportService::Error, "Unable to find project import data credentials for project ID: #{@project.id}"
+          raise Projects::ImportService::Error, "Unable to find project import data credentials for project ID: #{project.id}"
         end
       end
 

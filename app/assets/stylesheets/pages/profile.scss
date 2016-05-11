@@ -205,6 +205,7 @@
     text-align: center;
   }
 }
+
 .personal-access-tokens-revoked-label {
   color: #bbb;
 }
@@ -215,4 +216,22 @@
 
 .personal-access-tokens-token-column {
   max-width: 500px
+}
+
+.user-profile {
+  @media (max-width: $screen-xs-max) {
+    .cover-block {
+      padding-top: 20px;
+    }
+
+    .cover-controls {
+      position: static;
+      margin-bottom: 20px;
+
+      .btn {
+        display: inline-block;
+        width: 46%;
+      }
+    }
+  }
 }

@@ -21,7 +21,6 @@ Feature: Project Deploy Keys
 
   Scenario: I add new deploy key
     Given I visit project deploy keys page
-    When I click 'New Deploy Key'
     And I submit new deploy key
     Then I should be on deploy keys page
     And I should see newly created deploy key
