@@ -120,7 +120,7 @@ class ApplicationController < ActionController::Base
     if Gitlab::Geo.secondary?
       Gitlab::Geo.primary_node.url
     else
-      current_application_settings.after_sign_out_path || new_user_session_path
+      current_application_settings.after_sign_out_path.presence || new_user_session_path
     end
   end
 

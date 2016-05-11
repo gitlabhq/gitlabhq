@@ -19,12 +19,12 @@ get_unicorn_pid()
 
 start()
 {
-  $unicorn_cmd -D
+  exec $unicorn_cmd -D
 }
 
 start_foreground()
 {
-  $unicorn_cmd
+  exec $unicorn_cmd
 }
 
 stop()

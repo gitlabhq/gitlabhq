@@ -110,7 +110,7 @@ There are a lot of [third-party applications integrating with GitLab](https://ab
 
 ## GitLab release cycle
 
-For more information about the release process see the [release documentation](http://doc.gitlab.com/ce/release/).
+For more information about the release process see the [release documentation](https://gitlab.com/gitlab-org/release-tools/blob/master/README.md).
 
 ## Upgrading
 

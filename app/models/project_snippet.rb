@@ -27,4 +27,6 @@ class ProjectSnippet < Snippet
 
   # Scopes
   scope :fresh, -> { order("created_at DESC") }
+
+  participant :author, :notes
 end

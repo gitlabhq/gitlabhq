@@ -113,6 +113,10 @@ class Snippet < ActiveRecord::Base
     visibility_level
   end
 
+  def no_highlighting?
+    content.lines.count > 1000
+  end
+
   class << self
     # Searches for snippets with a matching title or file name.
     #

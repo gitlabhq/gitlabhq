@@ -19,7 +19,8 @@ gem "pg", '~> 0.18.2', group: :postgres
 
 # Authentication libraries
 gem 'devise',                 '~> 3.5.4'
-gem 'doorkeeper',             '~> 2.2.0'
+gem 'doorkeeper',             '~> 3.1'
+gem 'devise-async',           '~> 0.9.0'
 gem 'omniauth',               '~> 1.3.1'
 gem 'omniauth-auth0',         '~> 1.4.1'
 gem 'omniauth-azure-oauth2',  '~> 0.0.6'
@@ -279,7 +280,7 @@ group :development, :test do
 
   gem 'database_cleaner',   '~> 1.4.0'
   gem 'factory_girl_rails', '~> 4.6.0'
-  gem 'rspec-rails',        '~> 3.3.0'
+  gem 'rspec-rails',        '~> 3.4.0'
   gem 'rspec-retry'
   gem 'spinach-rails',      '~> 0.2.1'
   gem 'spinach-rerun-reporter', '~> 0.0.2'

@@ -147,7 +147,7 @@ describe GitPushService, services: true do
     end
 
     it "triggers indexer" do
-      expect_any_instance_of(Elastic::Indexer).to receive(:run)
+      expect_any_instance_of(Gitlab::Elastic::Indexer).to receive(:run)
 
       execute_service(project, user, @oldrev, @newrev, @ref )
     end
@@ -212,6 +212,36 @@ describe GitPushService, services: true do
         let(:ref) { 'refs/heads/feature/branch' }
 
         it { expect(project.main_language).to eq(nil) }
+      end
+    end
+  end
+
+
+  describe "Updates git attributes" do
+    context "for default branch" do
+      it "calls the copy attributes method for the first push to the default branch" do
+        expect(project.repository).to receive(:copy_gitattributes).with('master')
+
+        execute_service(project, user, @blankrev, 'newrev', 'refs/heads/master')
+      end
+
+      it "calls the copy attributes method for changes to the default branch" do
+        expect(project.repository).to receive(:copy_gitattributes).with('refs/heads/master')
+
+        execute_service(project, user, 'oldrev', 'newrev', 'refs/heads/master')
+      end
+    end
+
+    context "for non-default branch" do
+      before do
+        # Make sure the "default" branch is different
+        allow(project).to receive(:default_branch).and_return('not-master')
+      end
+
+      it "does not call copy attributes method" do
+        expect(project.repository).not_to receive(:copy_gitattributes)
+
+        execute_service(project, user, @oldrev, @newrev, @ref)
       end
     end
   end

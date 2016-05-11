@@ -30,7 +30,7 @@ class @LabelsSelect
       if issueUpdateURL
         labelHTMLTemplate = _.template(
             '<% _.each(labels, function(label){ %>
-            <a href="<%= ["",issueURLSplit[1], issueURLSplit[2],""].join("/") %>issues?label_name=<%= _.escape(label.title) %>">
+            <a href="<%= ["",issueURLSplit[1], issueURLSplit[2],""].join("/") %>issues?label_name[]=<%= _.escape(label.title) %>">
             <span class="label has-tooltip color-label" title="<%= _.escape(label.description) %>" style="background-color: <%= label.color %>; color: <%= label.text_color %>;">
             <%= _.escape(label.title) %>
             </span>
@@ -163,6 +163,21 @@ class @LabelsSelect
           $.ajax(
             url: labelUrl
           ).done (data) ->
+            data = _.chain data
+              .groupBy (label) ->
+                label.title
+              .map (label) ->
+                color = _.map label, (dup) ->
+                  dup.color
+
+                return {
+                  id: label[0].id
+                  title: label[0].title
+                  color: color
+                  duplicate: color.length > 1
+                }
+              .value()
+
             if $dropdown.hasClass 'js-extra-options'
               if showNo
                 data.unshift(
@@ -178,6 +193,7 @@ class @LabelsSelect
 
               if data.length > 2
                 data.splice 2, 0, 'divider'
+
             callback data
 
         renderRow: (label) ->
@@ -192,11 +208,31 @@ class @LabelsSelect
           if $dropdown.hasClass('js-multiselect') and removesAll
             selectedClass.push 'dropdown-clear-active'
 
-          color = if label.color? then "<span class='dropdown-label-box' style='background-color: #{label.color}'></span>" else ""
+          if label.duplicate
+            spacing = 100 / label.color.length
+
+            # Reduce the colors to 4
+            label.color = label.color.filter (color, i) ->
+              i < 4
+
+            color = _.map(label.color, (color, i) ->
+              percentFirst = Math.floor(spacing * i)
+              percentSecond = Math.floor(spacing * (i + 1))
+              "#{color} #{percentFirst}%,#{color} #{percentSecond}% "
+            ).join(',')
+            color = "linear-gradient(#{color})"
+          else
+            if label.color?
+              color = label.color[0]
+
+          if color
+            colorEl = "<span class='dropdown-label-box' style='background: #{color}'></span>"
+          else
+            colorEl = ''
 
           "<li>
             <a href='#' class='#{selectedClass.join(' ')}'>
-              #{color}
+              #{colorEl}
               #{_.escape(label.title)}
             </a>
           </li>"

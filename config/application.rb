@@ -33,7 +33,30 @@ module Gitlab
     config.encoding = "utf-8"
 
     # Configure sensitive parameters which will be filtered from the log file.
-    config.filter_parameters.push(:password, :password_confirmation, :private_token, :otp_attempt, :variables, :import_url)
+    # 
+    # Parameters filtered:
+    # - Password (:password, :password_confirmation)
+    # - Private tokens (:private_token)
+    # - Two-factor tokens (:otp_attempt)
+    # - Repo/Project Import URLs (:import_url)
+    # - Build variables (:variables)
+    # - GitLab Pages SSL cert/key info (:certificate, :encrypted_key)
+    # - Webhook URLs (:hook)
+    # - Sentry DSN (:sentry_dsn)
+    # - Deploy keys (:key)
+    config.filter_parameters += %i(
+      certificate
+      encrypted_key
+      hook
+      import_url
+      key
+      otp_attempt
+      password
+      password_confirmation
+      private_token
+      sentry_dsn
+      variables
+    )
 
     # Enable escaping HTML in JSON.
     config.active_support.escape_html_entities_in_json = true

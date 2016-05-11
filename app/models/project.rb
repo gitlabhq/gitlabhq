@@ -462,14 +462,14 @@ class Project < ActiveRecord::Base
   end
 
   def import_url=(value)
-    import_url = Gitlab::ImportUrl.new(value)
+    import_url = Gitlab::UrlSanitizer.new(value)
     create_or_update_import_data(credentials: import_url.credentials)
     super(import_url.sanitized_url)
   end
 
   def import_url
     if import_data && super
-      import_url = Gitlab::ImportUrl.new(super, credentials: import_data.credentials)
+      import_url = Gitlab::UrlSanitizer.new(super, credentials: import_data.credentials)
       import_url.full_url
     else
       super
@@ -519,12 +519,7 @@ class Project < ActiveRecord::Base
   end
 
   def safe_import_url
-    result = URI.parse(self.import_url)
-    result.password = '*****' unless result.password.nil?
-    result.user = '*****' unless result.user.nil? || result.user == "git" #tokens or other data may be saved as user
-    result.to_s
-  rescue
-    self.import_url
+    Gitlab::UrlSanitizer.new(import_url).masked_url
   end
 
   def mirror_updated?
@@ -571,7 +566,7 @@ class Project < ActiveRecord::Base
 
   def mark_import_as_failed(error_message)
     import_fail
-    update_column(:import_error, error_message)
+    update_column(:import_error, Gitlab::UrlSanitizer.sanitize(error_message))
   end
 
   def has_remote_mirror?
@@ -862,19 +857,17 @@ class Project < ActiveRecord::Base
   end
 
   def open_branches
-    all_branches = repository.branches
+    # We're using a Set here as checking values in a large Set is faster than
+    # checking values in a large Array.
+    protected_set = Set.new(protected_branch_names)
 
-    if protected_branches.present?
-      all_branches.reject! do |branch|
-        protected_branches_names.include?(branch.name)
-      end
+    repository.branches.reject do |branch|
+      protected_set.include?(branch.name)
     end
-
-    all_branches
   end
 
-  def protected_branches_names
-    @protected_branches_names ||= protected_branches.map(&:name)
+  def protected_branch_names
+    @protected_branch_names ||= protected_branches.pluck(:name)
   end
 
   def root_ref?(branch)
@@ -896,7 +889,7 @@ class Project < ActiveRecord::Base
 
   # Check if current branch name is marked as protected in the system
   def protected_branch?(branch_name)
-    protected_branches_names.include?(branch_name)
+    protected_branches.where(name: branch_name).any?
   end
 
   def developers_can_push_to_protected_branch?(branch_name)
@@ -1034,6 +1027,7 @@ class Project < ActiveRecord::Base
     repository.rugged.references.create('HEAD',
                                         "refs/heads/#{branch}",
                                         force: true)
+    repository.copy_gitattributes(branch)
     reload_default_branch
   end
 

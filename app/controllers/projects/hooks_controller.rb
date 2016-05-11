@@ -52,8 +52,16 @@ class Projects::HooksController < Projects::ApplicationController
   end
 
   def hook_params
-    params.require(:hook).permit(:url, :push_events, :issues_events,
-      :merge_requests_events, :tag_push_events, :note_events,
-      :build_events, :enable_ssl_verification)
+    params.require(:hook).permit(
+      :build_events,
+      :enable_ssl_verification,
+      :issues_events,
+      :merge_requests_events,
+      :note_events,
+      :push_events,
+      :tag_push_events,
+      :token,
+      :url
+    )
   end
 end

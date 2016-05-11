@@ -167,6 +167,15 @@ sudo gitlab-rake gitlab:elastic:index_database
 # Installations from source
 bundle exec rake gitlab:elastic:index_database RAILS_ENV=production
 ```
+To index all available entities:
+
+```
+# Omnibus installations
+sudo gitlab-rake gitlab:elastic:index
+
+# Installations from source
+bundle exec rake gitlab:elastic:index RAILS_ENV=production
+```
 
 ## Disable Elasticsearch
 
@@ -248,7 +257,7 @@ To minimize downtime of the search feature we recommend the following:
 1. Index all repositories using the `gitlab:elastic:index_repositories` Rake
    task (see above). You'll probably want to do this in parallel.
 
-1. Enable Elasticsearch and restart GitLab.
+1. Enable Elasticsearch and restart GitLab. Note that once enabled the index will be updated when new data is pushed to the GitLab server.
 
 1. Run indexers for database (with the `UPDATE_INDEX=1` parameter), wikis, and
    repositories. By running  the repository indexer twice you will be sure that
