@@ -383,7 +383,7 @@ class User < ActiveRecord::Base
 
   def viewable_starred_projects
     starred_projects.where("projects.visibility_level IN (?) OR projects.id IN (#{projects_union.to_sql})",
-                           [Gitlab::VisibilityLevel::PUBLIC, Gitlab::VisibilityLevel::INTERNAL])
+                           [Project::PUBLIC, Project::INTERNAL])
   end
 
   def owned_projects
