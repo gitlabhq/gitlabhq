@@ -19,8 +19,8 @@ module GeoDynamicBackoff
 
   def geometric_backoff_strategy(count)
     # This strategy is based on the original one from sidekiq
-    count = count-30 # we must start counting after 30
-    (count ** 4) + 15 + (rand(30)*(count+1))
+    count = count - 30 # we must start counting after 30
+    (count**4) + 15 + (rand(30) * (count + 1))
   end
 
 end

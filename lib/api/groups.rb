@@ -40,7 +40,7 @@ module API
 
         if @group.save
           # NOTE: add backwards compatibility for single ldap link
-          ldap_attrs  = attributes_for_keys [:ldap_cn, :ldap_access]
+          ldap_attrs = attributes_for_keys [:ldap_cn, :ldap_access]
           if ldap_attrs.present?
             @group.ldap_group_links.create({
               cn: ldap_attrs[:ldap_cn],
