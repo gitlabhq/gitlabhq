@@ -49,7 +49,7 @@ module Mentionable
     if text
       ext.analyze(text, author: author)
     else
-      analyze_attributes(ext)
+      analyze_references_in_attributes(ext)
     end
 
     ext
@@ -97,6 +97,36 @@ module Mentionable
     create_cross_references!(author, preexisting)
   end
 
+  def analyze_references_in_attributes(ext)
+    self.class.mentionable_attrs.each do |(attr, options)|
+      result = send(attr)
+
+      if result.is_a?(ActiveRecord::Relation)
+        analyze_references_in_collection(ext, result)
+      else
+        ext.analyze(result,
+                    options.merge(cache_key: [self, attr], author: author))
+      end
+    end
+  end
+
+  def analyze_references_in_collection(ext, collection)
+    collection.each do |object|
+      object.class.mentionable_attrs.each do |(attr, opts)|
+        if object.respond_to?(:author)
+          sub_author = object.author
+        else
+          sub_author = author
+        end
+
+        ext.analyze(
+          object.send(attr),
+          opts.merge(cache_key: [object, attr], author: sub_author)
+        )
+      end
+    end
+  end
+
   private
 
   # Returns a Hash of changed mentionable fields
@@ -121,33 +151,5 @@ module Mentionable
   # the specified target.
   def cross_reference_exists?(target)
     SystemNoteService.cross_reference_exists?(target, local_reference)
-  end
-
-  def analyze_attributes(ext)
-    author = self.author
-
-    self.class.mentionable_attrs.each do |(attr, options)|
-      result = send(attr)
-
-      if result.is_a?(ActiveRecord::Relation)
-        result.each do |object|
-          object.class.mentionable_attrs.each do |(sub_attr, sub_opts)|
-            if object.respond_to?(:author)
-              sub_author = object.author
-            else
-              sub_author = author
-            end
-
-            ext.analyze(
-              object.send(sub_attr),
-              sub_opts.merge(cache_key: [object, sub_attr], author: sub_author)
-            )
-          end
-        end
-      else
-        ext.analyze(result,
-                    options.merge(cache_key: [self, attr], author: author))
-      end
-    end
   end
 end

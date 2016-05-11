@@ -194,6 +194,10 @@ class Commit
     project.notes.for_commit_id(self.id)
   end
 
+  def notes_with_associations
+    notes.includes(:author, :project)
+  end
+
   def method_missing(m, *args, &block)
     @raw.send(m, *args, &block)
   end
@@ -219,7 +223,7 @@ class Commit
   def revert_branch_name
     "revert-#{short_id}"
   end
-  
+
   def cherry_pick_branch_name
     project.repository.next_branch("cherry-pick-#{short_id}", mild: true)
   end
@@ -251,11 +255,14 @@ class Commit
   end
 
   def has_been_reverted?(current_user = nil, noteable = self)
-    Gitlab::ReferenceExtractor.lazily do
-      noteable.notes.system.flat_map do |note|
-        note.all_references(current_user).commits
-      end
-    end.any? { |commit_ref| commit_ref.reverts_commit?(self) }
+    ext = Gitlab::ReferenceExtractor.new(project, current_user)
+    collection = noteable.notes_with_associations.system
+
+    # This is a bit of an odd setup since we want to analyze a custom
+    # collection instead of one returned by an attr_mentionable attribute.
+    noteable.analyze_references_in_collection(ext, collection)
+
+    ext.commits.any? { |commit_ref| commit_ref.reverts_commit?(self) }
   end
 
   def change_type_title
