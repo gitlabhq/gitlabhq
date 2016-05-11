@@ -201,9 +201,13 @@
   border-bottom: 1px solid $border-color;
   transition-duration: .3s;
 
+  .container-fluid {
+    position: relative;
+  }
+
   .controls {
     float: right;
-    padding: 7px 5px 0 0;
+    padding: 7px 0 0;
 
     i {
       color: $layout-link-gray;

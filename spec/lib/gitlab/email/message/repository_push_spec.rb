@@ -8,7 +8,7 @@ describe Gitlab::Email::Message::RepositoryPush do
   let!(:author) { create(:author, name: 'Author') }
 
   let(:message) do
-    described_class.new(Notify, project.id, 'recipient@example.com', opts)
+    described_class.new(Notify, project.id, opts)
   end
 
   context 'new commits have been pushed to repository' do
