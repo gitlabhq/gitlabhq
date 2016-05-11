@@ -47,9 +47,3 @@ describe 'MergeRequestWidget', ->
       spy = spyOn(@class, 'showCICoverage').and.stub()
       @class.getCIStatus(false)
       expect(spy).not.toHaveBeenCalled()
-
-    it 'should not display a notification on the first check after the widget has been created', ->
-      spy = spyOn(window, 'notify')
-      @class = new MergeRequestWidget(@opts)
-      @class.getCIStatus(true)
-      expect(spy).not.toHaveBeenCalled()
