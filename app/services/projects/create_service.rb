@@ -50,18 +50,9 @@ module Projects
         @project.build_forked_project_link(forked_from_project_id: forked_from_project_id)
       end
 
-      Project.transaction do
-        @project.create_or_update_import_data(data: import_data[:data], credentials: import_data[:credentials]) if import_data
-        @project.save
+      process_import_data(import_data)
 
-        if @project.persisted? && !@project.import?
-          raise 'Failed to create repository' unless @project.create_repository
-        end
-      end
-
-      Project.transaction do
-        @project.import_start if @project.import?
-      end
+      start_import if @project.import?
 
       after_create_actions if @project.persisted?
 
@@ -98,6 +89,23 @@ module Projects
 
       unless @project.group
         @project.team << [current_user, :master, current_user]
+      end
+    end
+
+    def start_import
+      Project.transaction do
+        @project.import_start
+      end
+    end
+
+    def process_import_data(import_data)
+      Project.transaction do
+        @project.create_or_update_import_data(data: import_data[:data], credentials: import_data[:credentials]) if import_data
+        @project.save
+
+        if @project.persisted? && !@project.import?
+          raise 'Failed to create repository' unless @project.create_repository
+        end
       end
     end
   end
