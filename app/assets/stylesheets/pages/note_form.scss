@@ -150,9 +150,17 @@
 }
 
 .comment-toolbar {
-  padding-top: $gl-padding-top;
+  padding-top: 11px;
   color: $note-toolbar-color;
   border-top: 1px solid $border-color;
+  
+  .toolbar-button {
+    float: right;
+  }
+
+  .toolbar-text {
+    float: right;
+  }
 }
 
 .toolbar-button {
