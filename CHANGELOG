@@ -1,7 +1,6 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.7.4
-  - Fix always showing build notification message when switching between merge requests !4086
   - Fix links on wiki pages for relative url setups. !4026 (Artem Sidorenko)
   - Links for Redmine issue references are generated correctly again !4048 (Benedikt Huss)
   - Fix setting trusted proxies !3970
@@ -10,9 +9,6 @@ v 8.7.4
   - Running rake gitlab:db:drop_tables now drops tables with cascade !4020
   - Running rake gitlab:db:drop_tables uses "IF EXISTS" as a precaution !4100
   - Use a case-insensitive comparison in sanitizing URI schemes
-
-v 8.7.4
-  - Fix always showing build notification message when switching between merge requests
 
 v 8.7.3
   - Emails, Gitlab::Email::Message, Gitlab::Diff, and Premailer::Adapter::Nokogiri are now instrumented
