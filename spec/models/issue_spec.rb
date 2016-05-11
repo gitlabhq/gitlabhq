@@ -231,4 +231,25 @@ describe Issue, models: true do
       expect(issue.to_branch_name).to match /confidential-issue\z/
     end
   end
+
+  describe '#participants' do
+    let(:project) { create(:project, :public) }
+    let(:issue) { create(:issue, project: project) }
+
+    let!(:note1) do
+      create(:note_on_issue, noteable: issue, project: project, note: 'a')
+    end
+
+    let!(:note2) do
+      create(:note_on_issue, noteable: issue, project: project, note: 'b')
+    end
+
+    it 'includes the issue author as the first participant' do
+      expect(issue.participants[0]).to eq(issue.author)
+    end
+
+    it 'includes the authors of the notes' do
+      expect(issue.participants).to include(note1.author, note2.author)
+    end
+  end
 end

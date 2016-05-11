@@ -284,4 +284,14 @@ describe Note, models: true do
       expect { note.valid? }.to change(note, :line_code).to(nil)
     end
   end
+
+  describe '#participants' do
+    it 'includes the note author' do
+      project = create(:project, :public)
+      issue = create(:issue, project: project)
+      note = create(:note_on_issue, noteable: issue, project: project)
+
+      expect(note.participants).to include(note.author)
+    end
+  end
 end
