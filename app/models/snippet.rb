@@ -31,9 +31,9 @@ class Snippet < ActiveRecord::Base
   scope :public_and_internal, -> { where(visibility_level: [Snippet::PUBLIC, Snippet::INTERNAL]) }
   scope :fresh,   -> { order("created_at DESC") }
 
-  scope :notes_with_associations, -> { includes(:author, :project) }
-
   participant :author, index: 0
+  participant :note_authors, index: 1
+
   attr_mentionable :notes_with_associations
 
   def self.reference_prefix
@@ -102,6 +102,14 @@ class Snippet < ActiveRecord::Base
 
   def no_highlighting?
     content.lines.count > 1000
+  end
+
+  def notes_with_associations
+    notes.includes(:author, :project)
+  end
+
+  def note_authors
+    User.where(id: notes.select(:author_id))
   end
 
   class << self

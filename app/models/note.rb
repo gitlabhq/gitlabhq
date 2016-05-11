@@ -8,7 +8,7 @@ class Note < ActiveRecord::Base
   default_value_for :system, false
 
   attr_mentionable :note, pipeline: :note
-  participant :author
+  participant :author, index: 0
 
   belongs_to :project
   belongs_to :noteable, polymorphic: true, touch: true

@@ -11,7 +11,7 @@ class Commit
 
   participant :author, index: 0
   participant :committer, index: 1
-  participant :notes, index: 2
+  participant :note_authors, index: 2
 
   attr_accessor :project
 
@@ -199,6 +199,10 @@ class Commit
 
   def notes_with_associations
     notes.includes(:author, :project)
+  end
+
+  def note_authors
+    User.where(id: notes.select(:author_id))
   end
 
   def method_missing(m, *args, &block)

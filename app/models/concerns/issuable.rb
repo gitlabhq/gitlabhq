@@ -61,6 +61,7 @@ module Issuable
 
     participant :author, index: 0
     participant :assignee, index: 1
+    participant :note_authors, index: 2
 
     strip_attributes :title
 
@@ -222,6 +223,10 @@ module Issuable
 
   def notes_with_associations
     notes.includes(:author, :project)
+  end
+
+  def note_authors
+    User.where(id: notes.select(:author_id))
   end
 
   def updated_tasks
