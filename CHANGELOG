@@ -9,7 +9,6 @@ v 8.7.4
   - Running rake gitlab:db:drop_tables now drops tables with cascade !4020
   - Running rake gitlab:db:drop_tables uses "IF EXISTS" as a precaution !4100
   - Use a case-insensitive comparison in sanitizing URI schemes
-  - Links for Redmine issue references are generated correctly again (Benedikt Huss)
 
 v 8.7.3
   - Emails, Gitlab::Email::Message, Gitlab::Diff, and Premailer::Adapter::Nokogiri are now instrumented
