@@ -21,6 +21,7 @@ v 8.8.0 (unreleased)
   - Fix error when visiting commit builds page before build was updated
   - Add 'l' shortcut to open Label dropdown on issuables and 'i' to create new issue on a project
   - Update SVG sanitizer to conform to SVG 1.1
+  - Speed up push emails with multiple recipients by only generating the email once
   - Updated search UI
   - Display informative message when new milestone is created
   - Sanitize milestones and labels titles
