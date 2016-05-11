@@ -67,6 +67,7 @@ module Gitlab
 
           logger.debug { "Syncing '#{group.name}' group" }
 
+          access_levels = Gitlab::LDAP::AccessLevels.new
           # Only iterate over group links for the current provider
           group.ldap_group_links.with_provider(provider).each do |group_link|
             if member_dns = dns_for_group_cn(group_link.cn)
@@ -77,8 +78,8 @@ module Gitlab
             end
           end
 
-          update_existing_group_membership(group)
-          add_new_members(group)
+          update_existing_group_membership(group, access_levels)
+          add_new_members(group, access_levels)
 
           group.update(last_ldap_sync_at: Time.now)
 
@@ -140,10 +141,6 @@ module Gitlab
 
       def config
         @config ||= Gitlab::LDAP::Config.new(provider)
-      end
-
-      def access_levels
-        @access_levels ||= Gitlab::LDAP::AccessLevels.new
       end
 
       def group_base
@@ -227,7 +224,7 @@ module Gitlab
         identity.save
       end
 
-      def update_existing_group_membership(group)
+      def update_existing_group_membership(group, access_levels)
         logger.debug { "Updating existing membership for '#{group.name}' group" }
 
         select_and_preload_group_members(group).each do |member|
@@ -270,7 +267,7 @@ module Gitlab
         end
       end
 
-      def add_new_members(group)
+      def add_new_members(group, access_levels)
         logger.debug { "Adding new members to '#{group.name}' group" }
 
         access_levels.each do |member_dn, access_level|

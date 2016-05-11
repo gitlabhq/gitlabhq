@@ -244,6 +244,65 @@ describe Gitlab::LDAP::GroupSync, lib: true do
           end
         end
       end
+
+      context 'when access level spillover could happen' do
+        it 'does not erroneously add users' do
+          ldap_group2 = Net::LDAP::Entry.from_single_ldif_string(
+            <<-EOS.strip_heredoc
+              dn: cn=ldap_group2,ou=groups,dc=example,dc=com
+              cn: ldap_group2
+              description: LDAP Group 2
+              gidnumber: 55
+              uniqueMember: uid=#{user2.username},ou=users,dc=example,dc=com
+              objectclass: top
+              objectclass: groupOfNames
+            EOS
+          )
+
+          allow_any_instance_of(Gitlab::LDAP::Group)
+            .to receive(:adapter).and_return(adapter)
+
+          user1.identities.create(
+            provider: 'ldapmain',
+            extern_uid: "uid=#{user1.username},ou=users,dc=example,dc=com"
+          )
+          user2.identities.create(
+            provider: 'ldapmain',
+            extern_uid: "uid=#{user2.username},ou=users,dc=example,dc=com"
+          )
+
+          allow(Gitlab::LDAP::Group)
+            .to receive(:find_by_cn)
+              .with('ldap_group1', kind_of(Gitlab::LDAP::Adapter))
+              .and_return(Gitlab::LDAP::Group.new(ldap_group1))
+          allow(Gitlab::LDAP::Group)
+            .to receive(:find_by_cn)
+              .with('ldap_group2', kind_of(Gitlab::LDAP::Adapter))
+              .and_return(Gitlab::LDAP::Group.new(ldap_group2))
+
+          group1.members.destroy_all
+          group1.ldap_group_links.destroy_all
+          group1.ldap_group_links.create(
+            cn: 'ldap_group1',
+            group_access: Gitlab::Access::DEVELOPER,
+            provider: 'ldapmain'
+          )
+          group2.members.destroy_all
+          group2.ldap_group_links.destroy_all
+          group2.ldap_group_links.create(
+            cn: 'ldap_group2',
+            group_access: Gitlab::Access::MASTER,
+            provider: 'ldapmain'
+          )
+
+          group_sync.sync_groups
+
+          expect(group1.members.pluck(:user_id).sort).to eq([user1.id, user2.id].sort)
+          expect(group1.members.pluck(:access_level).uniq).to eq([Gitlab::Access::DEVELOPER])
+          expect(group2.members.pluck(:user_id)).to eq([user2.id])
+          expect(group2.members.pluck(:access_level).uniq).to eq([Gitlab::Access::MASTER])
+        end
+      end
     end
 
     # Test that membership can be resolved for all different type of LDAP groups
