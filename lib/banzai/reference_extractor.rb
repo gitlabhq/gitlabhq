@@ -1,28 +1,6 @@
 module Banzai
   # Extract possible GFM references from an arbitrary String for further processing.
   class ReferenceExtractor
-    class << self
-      LAZY_KEY = :banzai_reference_extractor_lazy
-
-      def lazy?
-        Thread.current[LAZY_KEY]
-      end
-
-      def lazily(values = nil, &block)
-        return (values || block.call).uniq if lazy?
-
-        begin
-          Thread.current[LAZY_KEY] = true
-
-          values ||= block.call
-
-          Banzai::LazyReference.load(values.uniq).uniq
-        ensure
-          Thread.current[LAZY_KEY] = false
-        end
-      end
-    end
-
     def initialize
       @texts = []
     end
