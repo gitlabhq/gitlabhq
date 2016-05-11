@@ -63,8 +63,7 @@ ul.notes {
     &.is-editting {
       .note-header,
       .note-text,
-      .edited-text,
-      .note-awards {
+      .edited-text {
         display: none;
       }
 
@@ -74,6 +73,8 @@ ul.notes {
     }
 
     .note-body {
+      overflow: auto;
+
       .note-text {
         overflow: auto;
         word-wrap: break-word;
@@ -320,42 +321,6 @@ ul.notes {
     .add-diff-note {
       @include show-add-diff-note;
     }
-  }
-}
-
-.note-award-control {
-  display: block;
-
-  &:hover,
-  &:focus {
-    text-decoration: none;
-  }
-
-  .award-control-icon-loading {
-    display: none;
-  }
-
-  &.is-loading {
-    .award-control-icon-normal {
-      display: none;
-    }
-
-    .award-control-icon-loading {
-      display: block;
-    }
- }
-}
-
-.note-awards {
-  .awards {
-    padding-top: 10px;
-  }
-
-  .award-control {
-    padding-top: 2px;
-    padding-bottom: 2px;
-    color: #8f8f8f;
-    font-size: 13px;
   }
 }
 

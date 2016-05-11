@@ -162,13 +162,13 @@ class @Notes
   renderNote: (note) ->
     unless note.valid
       if note.award
-        flash = new Flash('You have already awarded this emoji, it has been removed', 'alert')
+        flash = new Flash('You have already used this award emoji!', 'alert')
         flash.pinTo('.header-content')
       return
 
     if note.award
-      awards_handler.addAwardToEmojiBar(note.name)
-      awards_handler.scrollToAwards()
+      awardsHandler.addAwardToEmojiBar(note.note)
+      awardsHandler.scrollToAwards()
 
     # render note if it not present in loaded list
     # or skip if rendered

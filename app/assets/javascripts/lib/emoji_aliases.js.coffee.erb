@@ -1,9 +1,0 @@
-((w) ->
-
-  w.gl ?= {}
-  w.gl.emoji ?= {}
-
-  w.gl.emoji.emojiAliases = ->
-    JSON.parse('<%= Gitlab::AwardEmoji.aliases.to_json %>')
-
-) window

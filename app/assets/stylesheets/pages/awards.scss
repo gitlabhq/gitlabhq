@@ -1,4 +1,6 @@
 .awards {
+  line-height: 34px;
+
   .emoji-icon {
     width: 20px;
     height: 20px;
@@ -7,6 +9,8 @@
 
 .emoji-menu {
   position: absolute;
+  top: 100%;
+  left: 0;
   margin-top: 3px;
   z-index: 1000;
   min-width: 160px;
@@ -19,12 +23,7 @@
   opacity: 0;
   transform: scale(.2);
   transform-origin: 0 -45px;
-  transition: .3s cubic-bezier(.87,-.41,.19,1.44);
-  transition-property: transform, opacity;
-
-  &.is-aligned-right {
-    transform-origin: 100% -45px;
-  }
+  transition: all .3s cubic-bezier(.87,-.41,.19,1.44);
 
   &.is-visible {
     pointer-events: all;
@@ -108,7 +107,7 @@
   }
 
   &.is-loading {
-    .award-control-icon-normal {
+    .award-control-icon {
       display: none;
     }
 
