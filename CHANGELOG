@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.8.0 (unreleased)
+  - Fix error when using link to uploads in global snippets
   - Assign labels and milestone to target project when moving issue. !3934 (Long Nguyen)
   - Use a case-insensitive comparison in sanitizing URI schemes
   - Project#open_branches has been cleaned up and no longer loads entire records into memory.
@@ -20,6 +21,7 @@ v 8.8.0 (unreleased)
   - Fix error when visiting commit builds page before build was updated
   - Add 'l' shortcut to open Label dropdown on issuables and 'i' to create new issue on a project
   - Update SVG sanitizer to conform to SVG 1.1
+  - Speed up push emails with multiple recipients by only generating the email once
   - Updated search UI
   - Display informative message when new milestone is created
   - Sanitize milestones and labels titles
@@ -31,6 +33,7 @@ v 8.8.0 (unreleased)
   - API: Expose Issue#user_notes_count. !3126 (Anton Popov)
   - Files over 5MB can only be viewed in their raw form, files over 1MB without highlighting !3718
   - Add support for supressing text diffs using .gitattributes on the default branch (Matt Oakes)
+  - Add eager load paths to help prevent dependency load issues in Sidekiq workers. !3724
   - Added multiple colors for labels in dropdowns when dups happen.
   - Improve description for the Two-factor Authentication sign-in screen. (Connor Shea)
   - API support for the 'since' and 'until' operators on commit requests (Paco Guzman)
@@ -38,10 +41,16 @@ v 8.8.0 (unreleased)
   - Expire repository exists? and has_visible_content? caches after a push if necessary
   - Fix unintentional filtering bug in issues sorted by milestone due (Takuya Noguchi)
   - Fix adding a todo for private group members (Ahmad Sherif)
+  - Bump ace-rails-ap gem version from 2.0.1 to 4.0.2 which upgrades Ace Editor from 1.1.2 to 1.2.3
 
 v 8.7.4
-  - Fix always showing build notification message when switching between merge requests
-  - Links for Redmine issue references are generated correctly again (Benedikt Huss)
+  - Links for Redmine issue references are generated correctly again !4048 (Benedikt Huss)
+  - Fix setting trusted proxies !3970
+  - Fix BitBucket importer bug when throwing exceptions !3941
+  - Use sign out path only if not empty !3989
+  - Running rake gitlab:db:drop_tables now drops tables with cascade !4020
+  - Running rake gitlab:db:drop_tables uses "IF EXISTS" as a precaution !4100
+  - Use a case-insensitive comparison in sanitizing URI schemes
 
 v 8.7.3
   - Emails, Gitlab::Email::Message, Gitlab::Diff, and Premailer::Adapter::Nokogiri are now instrumented
