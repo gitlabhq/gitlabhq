@@ -21,7 +21,7 @@ namespace :gitlab do
 
       projects = apply_project_filters(projects)
 
-      indexer = Elastic::Indexer.new
+      indexer = Gitlab::Elastic::Indexer.new
 
       projects.find_each do |project|
         repository = project.repository
