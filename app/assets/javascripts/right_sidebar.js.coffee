@@ -76,7 +76,7 @@ class @Sidebar
       @triggerOpenSidebar() if not @isOpen()
 
     if action is 'hide'
-      @triggerOpenSidebar() is @isOpen()
+      @triggerOpenSidebar() if @isOpen()
 
   isOpen: ->
     @sidebar.is('.right-sidebar-expanded')
