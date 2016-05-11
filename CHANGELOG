@@ -12,7 +12,7 @@ v 8.8.0 (unreleased)
   - GitAccess#protected_tag? no longer loads all tags just to check if a single one exists
   - Reduce delay in destroying a project from 1-minute to immediately
   - Make build status canceled if any of the jobs was canceled and none failed
-  - Allow authentication using personal acces tokens
+  - Allow authentication using personal access tokens
   - Upgrade Sidekiq to 4.1.2
   - Sanitize repo paths in new project error message
   - Bump mail_room to 0.7.0 to fix stuck IDLE connections

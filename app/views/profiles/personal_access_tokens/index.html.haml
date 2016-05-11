@@ -46,9 +46,9 @@
               %tr
                 %td= token.name
                 %td.input-group.personal-access-tokens-token-column
-                  %input.form-control{type: "text", value: token.token, readonly: true}
+                  %input.form-control{ type: "text", value: token.token, readonly: true }
                   %div.input-group-btn
-                    %button.btn.btn-default{type: "button", data: {clipboard_text: token.token}}
+                    %button.btn.btn-default{ type: "button", data: { clipboard_text: token.token } }
                       %i.fa.fa-clipboard
                 %td= token.created_at.to_date
                 - if token.expires_at.present?
@@ -56,7 +56,7 @@
                 - else
                   %td
                     %span.personal-access-tokens-never-expires-label Never
-                %td= link_to "Revoke", revoke_profile_personal_access_token_path(token), method: :put, class: "btn btn-danger", data: {confirm: t('profile.personal_access_tokens.revoke.confirmation')}
+                %td= link_to "Revoke", revoke_profile_personal_access_token_path(token), method: :put, class: "btn btn-danger", data: { confirm: "Are you sure? This cannot be undone." }
 
     - else
       %span You don't have any active tokens yet.
@@ -78,9 +78,9 @@
               %tr
                 %td= token.name
                 %td.input-group.personal-access-tokens-token-column
-                  %input.form-control{type: "text", value: token.token, readonly: true}
+                  %input.form-control{ type: "text", value: token.token, readonly: true }
                   %div.input-group-btn
-                    %button.btn.btn-default{type: "button", data: {clipboard_text: token.token}}
+                    %button.btn.btn-default{ type: "button", data: { clipboard_text: token.token } }
                       %i.fa.fa-clipboard
                 %td= token.created_at.to_date
 
