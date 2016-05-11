@@ -105,9 +105,9 @@ describe Gitlab::Database::MigrationHelpers, lib: true do
         expect(model).to receive(:remove_column).
           with(:projects, :foo)
 
-        expect {
+        expect do
           model.add_column_with_default(:projects, :foo, :integer, default: 10)
-        }.to raise_error(RuntimeError)
+        end.to raise_error(RuntimeError)
       end
     end
 
@@ -115,9 +115,9 @@ describe Gitlab::Database::MigrationHelpers, lib: true do
       it 'raises RuntimeError' do
         expect(model).to receive(:transaction_open?).and_return(true)
 
-        expect {
+        expect do
           model.add_column_with_default(:projects, :foo, :integer, default: 10)
-        }.to raise_error(RuntimeError)
+        end.to raise_error(RuntimeError)
       end
     end
   end

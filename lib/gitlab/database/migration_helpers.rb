@@ -119,7 +119,9 @@ module Gitlab
           transaction do
             update_column_in_batches(table, column, default)
           end
-        rescue Exception => error
+        # We want to rescue _all_ exceptions here, even those that don't inherit
+        # from StandardError.
+        rescue Exception => error # rubocop: disable all
           remove_column(table, column)
 
           raise error
