@@ -72,20 +72,20 @@ describe ApplicationController do
     let(:personal_access_token) { create(:personal_access_token, user: user) }
 
     it "logs the user in when the 'personal_access_token' param is populated with the personal access token" do
-      get :index, personal_access_token: personal_access_token.token
+      get :index, private_token: personal_access_token.token
       expect(response.status).to eq(200)
       expect(response.body).to eq('authenticated')
     end
 
     it "logs the user in when the 'PERSONAL_ACCESS_TOKEN' header is populated with the personal access token" do
-      @request.headers["PERSONAL_ACCESS_TOKEN"] = personal_access_token.token
+      @request.headers["PRIVATE-TOKEN"] = personal_access_token.token
       get :index
       expect(response.status).to eq(200)
       expect(response.body).to eq('authenticated')
     end
 
     it "doesn't log the user in otherwise" do
-      get :index, personal_access_token: "token"
+      get :index, private_token: "token"
       expect(response.status).to_not eq(200)
       expect(response.body).to_not eq('authenticated')
     end

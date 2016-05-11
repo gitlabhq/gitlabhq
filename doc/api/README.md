@@ -77,8 +77,8 @@ You can create as many personal access tokens as you like from your GitLab
 profile (`/profile/personal_access_tokens`); perhaps one for each application
 that needs access to the GitLab API.
 
-Once you have your token, pass it to the API using either the `personal_access_token` 
-parameter or the `PERSONAL-ACCESS-TOKEN` header.
+Once you have your token, pass it to the API using either the `private_token`
+parameter or the `PRIVATE-TOKEN` header.
 
 ## Basic Usage
 

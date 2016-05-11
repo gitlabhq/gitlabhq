@@ -4,8 +4,8 @@ module API
     PRIVATE_TOKEN_PARAM = :private_token
     SUDO_HEADER ="HTTP_SUDO"
     SUDO_PARAM = :sudo
-    PERSONAL_ACCESS_TOKEN_PARAM = :personal_access_token
-    PERSONAL_ACCESS_TOKEN_HEADER = "HTTP_PERSONAL_ACCESS_TOKEN"
+    PERSONAL_ACCESS_TOKEN_PARAM = PRIVATE_TOKEN_PARAM
+    PERSONAL_ACCESS_TOKEN_HEADER = PRIVATE_TOKEN_HEADER
 
     def parse_boolean(value)
       [ true, 1, '1', 't', 'T', 'true', 'TRUE', 'on', 'ON' ].include?(value)

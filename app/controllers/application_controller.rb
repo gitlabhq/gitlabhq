@@ -80,7 +80,7 @@ class ApplicationController < ActionController::Base
   end
 
   def authenticate_user_from_personal_access_token!
-    token_string = params[:personal_access_token].presence || request.headers['PERSONAL_ACCESS_TOKEN'].presence
+    token_string = params[:private_token].presence || request.headers['PRIVATE-TOKEN'].presence
     personal_access_token = PersonalAccessToken.active.find_by_token(token_string)
     user = personal_access_token && personal_access_token.user
 
