@@ -116,6 +116,9 @@
           .btn-group{ data: { toggle: 'buttons' } }
             - oauth_providers_checkboxes('oauth-providers-help').each do |source|
               = source
+          %span.help-block#oauth-providers-help
+            Enabled OmniAuth must be configured for
+            = oauth_providers_with_help_links.to_sentence.html_safe
     .form-group
       = f.label :two_factor_authentication, 'Two-factor authentication', class: 'control-label col-sm-2'
       .col-sm-10
