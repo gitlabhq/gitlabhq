@@ -937,10 +937,9 @@ Lint/Void:
 
 ##################### Performance ############################
 
-# TODO: Enable Casecmp Cop.
 # Use `casecmp` rather than `downcase ==`.
 Performance/Casecmp:
-  Enabled: false
+  Enabled: true
 
 # TODO: Enable DoubleStartEndWith Cop.
 # Use `str.{start,end}_with?(x, ..., y, ...)` instead of
