@@ -2,11 +2,12 @@ module Gitlab
   module ImportExport
     class ProjectTreeRestorer
 
-      def initialize(path:, user:, project_path:, namespace_id:)
-        @path = File.join(path, 'project.json')
+      def initialize(user:, shared:, namespace_id:)
+        @path = File.join(shared.export_path, 'project.json')
         @user = user
-        @project_path = project_path
+        @project_path = shared.opts[:project_path]
         @namespace_id = namespace_id
+        @shared = shared
       end
 
       def restore
@@ -15,7 +16,7 @@ module Gitlab
         @project_members = @tree_hash.delete('project_members')
         create_relations
       rescue => e
-        # TODO: handle errors better, move them to a shared thing
+        @shared.error(e.message)
         false
       end
 
@@ -44,7 +45,9 @@ module Gitlab
       end
 
       def default_relation_list
-        Gitlab::ImportExport::ImportExportReader.tree.reject { |model| model.is_a?(Hash) && model[:project_members] }
+        Gitlab::ImportExport::ImportExportReader.new(shared: @shared).tree.reject do |model|
+          model.is_a?(Hash) && model[:project_members]
+        end
       end
 
       def create_project

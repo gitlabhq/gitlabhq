@@ -5,7 +5,8 @@ describe Gitlab::ImportExport::ProjectTreeRestorer, services: true do
 
     let(:user) { create(:user) }
     let(:namespace) { create(:namespace, owner: user) }
-    let(:project_tree_restorer) { described_class.new(path: Rails.root.join("spec/lib/gitlab/import_export/"), user: user, project_path: 'project', namespace_id: namespace.id) }
+    let(:shared) { Gitlab::ImportExport::Shared.new(relative_path: "../../../spec/lib/gitlab/import_export/", project_path: 'path') }
+    let(:project_tree_restorer) { described_class.new(user: user, shared: shared, namespace_id: namespace.id) }
 
     context 'JSON' do
       let(:restored_project_json) do
