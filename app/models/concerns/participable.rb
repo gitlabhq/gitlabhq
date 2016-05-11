@@ -70,11 +70,22 @@ module Participable
 
       result = participants_for(value, current_user)
 
-      if result
-        result.select! { |user| user.can?(:read_project, project) } if check
+      next unless result
 
-        participants.merge(result)
+      if check
+        result.select! do |user|
+          # If the user has already been added to the Set we know they have
+          # access to the current Project, thus we don't need to check for this
+          # again.
+          if participants.include?(user)
+            true
+          else
+            user.can?(:read_project, project)
+          end
+        end
       end
+
+      participants.merge(result)
     end
 
     participants.to_a
