@@ -1,4 +1,4 @@
-describe Jwt::Token do
+describe JWT::Token do
   let(:token) { described_class.new }
 
   context 'custom parameters' do

@@ -1,4 +1,4 @@
-describe Jwt::RSAToken do
+describe JWT::RSAToken do
   let(:rsa_key) { generate_key }
   let(:rsa_token) { described_class.new(nil) }
   let(:rsa_encoded) { rsa_token.encoded }
