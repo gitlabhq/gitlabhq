@@ -13,7 +13,7 @@ feature "Admin Health Check", feature: true do
     end
 
     it { page.has_text? 'Health Check' }
-    it { page.has_text? 'Health information can be reteived' }
+    it { page.has_text? 'Health information can be retrieved' }
 
     it 'has a health check access token' do
       token = current_application_settings.health_check_access_token
