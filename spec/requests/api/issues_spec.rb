@@ -623,6 +623,12 @@ describe API::API, api: true  do
 
       expect(response.status).to eq(404)
     end
+
+    it 'returns 404 if the issue is confidential' do
+      post api("/projects/#{project.id}/issues/#{confidential_issue.id}/subscription", non_member)
+
+      expect(response.status).to eq(404)
+    end
   end
 
   describe 'DELETE :id/issues/:issue_id/subscription' do
@@ -641,6 +647,12 @@ describe API::API, api: true  do
 
     it 'returns 404 if the issue is not found' do
       delete api("/projects/#{project.id}/issues/123/subscription", user)
+
+      expect(response.status).to eq(404)
+    end
+
+    it 'returns 404 if the issue is confidential' do
+      delete api("/projects/#{project.id}/issues/#{confidential_issue.id}/subscription", non_member)
 
       expect(response.status).to eq(404)
     end

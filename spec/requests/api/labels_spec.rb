@@ -190,4 +190,86 @@ describe API::API, api: true  do
       expect(json_response['message']['color']).to eq(['must be a valid color code'])
     end
   end
+
+  describe "POST /projects/:id/labels/:label_id/subscription" do
+    context "when label_id is a label title" do
+      it "should subscribe to the label" do
+        post api("/projects/#{project.id}/labels/#{label1.title}/subscription", user)
+
+        expect(response.status).to eq(201)
+        expect(json_response["name"]).to eq(label1.title)
+        expect(json_response["subscribed"]).to be_truthy
+      end
+    end
+
+    context "when label_id is a label ID" do
+      it "should subscribe to the label" do
+        post api("/projects/#{project.id}/labels/#{label1.id}/subscription", user)
+
+        expect(response.status).to eq(201)
+        expect(json_response["name"]).to eq(label1.title)
+        expect(json_response["subscribed"]).to be_truthy
+      end
+    end
+
+    context "when user is already subscribed to label" do
+      before { label1.subscribe(user) }
+
+      it "should return 304" do
+        post api("/projects/#{project.id}/labels/#{label1.id}/subscription", user)
+
+        expect(response.status).to eq(304)
+      end
+    end
+
+    context "when label ID is not found" do
+      it "should a return 404 error" do
+        post api("/projects/#{project.id}/labels/1234/subscription", user)
+
+        expect(response.status).to eq(404)
+      end
+    end
+  end
+
+  describe "DELETE /projects/:id/labels/:label_id/subscription" do
+    before { label1.subscribe(user) }
+
+    context "when label_id is a label title" do
+      it "should unsubscribe from the label" do
+        delete api("/projects/#{project.id}/labels/#{label1.title}/subscription", user)
+
+        expect(response.status).to eq(200)
+        expect(json_response["name"]).to eq(label1.title)
+        expect(json_response["subscribed"]).to be_falsey
+      end
+    end
+
+    context "when label_id is a label ID" do
+      it "should unsubscribe from the label" do
+        delete api("/projects/#{project.id}/labels/#{label1.id}/subscription", user)
+
+        expect(response.status).to eq(200)
+        expect(json_response["name"]).to eq(label1.title)
+        expect(json_response["subscribed"]).to be_falsey
+      end
+    end
+
+    context "when user is already unsubscribed from label" do
+      before { label1.unsubscribe(user) }
+
+      it "should return 304" do
+        delete api("/projects/#{project.id}/labels/#{label1.id}/subscription", user)
+
+        expect(response.status).to eq(304)
+      end
+    end
+
+    context "when label ID is not found" do
+      it "should a return 404 error" do
+        delete api("/projects/#{project.id}/labels/1234/subscription", user)
+
+        expect(response.status).to eq(404)
+      end
+    end
+  end
 end
