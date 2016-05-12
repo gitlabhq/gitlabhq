@@ -278,7 +278,7 @@ class Event < ActiveRecord::Base
     Commit.truncate_sha(note_commit_id)
   end
 
-  def note_commit?
+  def commit_note?
     target.for_commit?
   end
 
@@ -295,7 +295,7 @@ class Event < ActiveRecord::Base
   end
 
   def note_target_id
-    if note_commit?
+    if commit_note?
       target.commit_id
     else
       target.noteable_id.to_s

@@ -57,7 +57,7 @@ module EventsHelper
       words << event.ref_name
       words << "at"
     elsif event.commented?
-      if event.note_commit?
+      if event.commit_note?
         words << event.note_short_commit_id
       else
         words << "##{truncate event.note_target_iid}"
@@ -84,12 +84,12 @@ module EventsHelper
     elsif event.merge_request?
       namespace_project_merge_request_url(event.project.namespace,
                                           event.project, event.merge_request)
-    elsif event.note? && event.note_commit?
+    elsif event.note? && event.commit_note?
       namespace_project_commit_url(event.project.namespace, event.project,
                                    event.note_target)
     elsif event.note?
       if event.note_target
-        if event.note_commit?
+        if event.commit_note?
           namespace_project_commit_path(event.project.namespace, event.project,
                                         event.note_commit_id,
                                         anchor: dom_id(event.target))
@@ -134,7 +134,7 @@ module EventsHelper
   end
 
   def event_note_target_path(event)
-    if event.note? && event.note_commit?
+    if event.note? && event.commit_note?
       namespace_project_commit_path(event.project.namespace, event.project,
                                     event.note_target)
     else
@@ -146,7 +146,7 @@ module EventsHelper
 
   def event_note_title_html(event)
     if event.note_target
-      if event.note_commit?
+      if event.commit_note?
         link_to(
           namespace_project_commit_path(event.project.namespace, event.project,
                                         event.note_commit_id,
