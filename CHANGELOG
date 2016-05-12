@@ -1,5 +1,52 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+v 8.8.0 (unreleased)
+  - Snippets tab under user profile. !4001 (Long Nguyen)
+  - Fix error when using link to uploads in global snippets
+  - Assign labels and milestone to target project when moving issue. !3934 (Long Nguyen)
+  - Use a case-insensitive comparison in sanitizing URI schemes
+  - Project#open_branches has been cleaned up and no longer loads entire records into memory.
+  - Escape HTML in commit titles in system note messages
+  - Improve multiple branch push performance by memoizing permission checking
+  - Log to application.log when an admin starts and stops impersonating a user
+  - Updated gitlab_git to 10.1.0
+  - GitAccess#protected_tag? no longer loads all tags just to check if a single one exists
+  - Reduce delay in destroying a project from 1-minute to immediately
+  - Make build status canceled if any of the jobs was canceled and none failed
+  - Upgrade Sidekiq to 4.1.2
+  - Sanitize repo paths in new project error message
+  - Bump mail_room to 0.7.0 to fix stuck IDLE connections
+  - Remove future dates from contribution calendar graph.
+  - Support e-mail notifications for comments on project snippets
+  - Use ActionDispatch Remote IP for Akismet checking
+  - Fix error when visiting commit builds page before build was updated
+  - Add 'l' shortcut to open Label dropdown on issuables and 'i' to create new issue on a project
+  - Update SVG sanitizer to conform to SVG 1.1
+  - Speed up push emails with multiple recipients by only generating the email once
+  - Updated search UI
+  - Display informative message when new milestone is created
+  - Sanitize milestones and labels titles
+  - Support multi-line tag messages. !3833 (Calin Seciu)
+  - Allow "NEWS" and "CHANGES" as alternative names for CHANGELOG. !3768 (Connor Shea)
+  - Added button to toggle whitespaces changes on diff view
+  - Backport GitHub Enterprise import support from EE
+  - Create tags using Rugged for performance reasons. !3745
+  - API: Expose Issue#user_notes_count. !3126 (Anton Popov)
+  - Files over 5MB can only be viewed in their raw form, files over 1MB without highlighting !3718
+  - Add support for supressing text diffs using .gitattributes on the default branch (Matt Oakes)
+  - Add eager load paths to help prevent dependency load issues in Sidekiq workers. !3724
+  - Added multiple colors for labels in dropdowns when dups happen.
+  - Improve description for the Two-factor Authentication sign-in screen. (Connor Shea)
+  - API support for the 'since' and 'until' operators on commit requests (Paco Guzman)
+  - Fix Gravatar hint in user profile when Gravatar is disabled. !3988 (Artem Sidorenko)
+  - Expire repository exists? and has_visible_content? caches after a push if necessary
+  - Fix unintentional filtering bug in issues sorted by milestone due (Takuya Noguchi)
+  - Fix adding a todo for private group members (Ahmad Sherif)
+  - Bump ace-rails-ap gem version from 2.0.1 to 4.0.2 which upgrades Ace Editor from 1.1.2 to 1.2.3
+
+v 8.7.5
+  - Fix relative links in wiki pages. !4050
+
 v 8.7.4
   - Links for Redmine issue references are generated correctly again !4048 (Benedikt Huss)
   - Fix setting trusted proxies !3970
