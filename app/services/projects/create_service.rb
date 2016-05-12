@@ -50,7 +50,7 @@ module Projects
         @project.build_forked_project_link(forked_from_project_id: forked_from_project_id)
       end
 
-      process_import_data(import_data)
+      save_project_and_import_data(import_data)
 
       start_import if @project.import?
 
@@ -100,7 +100,7 @@ module Projects
       end
     end
 
-    def process_import_data(import_data)
+    def save_project_and_import_data(import_data)
       Project.transaction do
         @project.create_or_update_import_data(data: import_data[:data], credentials: import_data[:credentials]) if import_data
         @project.save
