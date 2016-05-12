@@ -43,6 +43,7 @@ v 8.8.0 (unreleased)
   - Fix unintentional filtering bug in issues sorted by milestone due (Takuya Noguchi)
   - Fix adding a todo for private group members (Ahmad Sherif)
   - Bump ace-rails-ap gem version from 2.0.1 to 4.0.2 which upgrades Ace Editor from 1.1.2 to 1.2.3
+  - Total method execution timings are no longer tracked
 
 v 8.7.5
   - Fix relative links in wiki pages. !4050
