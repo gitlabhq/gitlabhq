@@ -51,5 +51,17 @@ describe Notes::CreateService, services: true do
       expect(note).to be_valid
       expect(note.note).to eq(opts[:note])
     end
+
+    it "normalizes the emoji name" do
+      opts = {
+        note: ':+1:',
+        noteable_type: 'Issue',
+        noteable_id: issue.id
+      }
+
+      expect_any_instance_of(ToggleAwardEmojiService).to receive(:execute).with(issue, "thumbsup")
+
+      Notes::CreateService.new(project, user, opts).execute
+    end
   end
 end

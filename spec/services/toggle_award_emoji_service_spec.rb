@@ -16,23 +16,17 @@ describe ToggleAwardEmoji, services: true do
       ToggleAwardEmojiService.new(project, user).execute(issue, "thumbsdown")
     end
 
-    it 'normalizes the emoji name' do
-      expect(issue).to receive(:toggle_award_emoji).with("thumbsup", user)
-
-      ToggleAwardEmojiService.new(project, user).execute(issue, ":+1:")
-    end
-
     context 'when the emoji is set' do
       it 'removes the emoji' do
         create(:award_emoji, awardable: issue, user: user)
 
-        expect { ToggleAwardEmojiService.new(project, user).execute(issue, ":+1:") }.to change { AwardEmoji.count }.by(-1)
+        expect { ToggleAwardEmojiService.new(project, user).execute(issue, "thumbsup") }.to change { AwardEmoji.count }.by(-1)
       end
     end
 
     context 'when the award is not set yet' do
       it 'awards the emoji' do
-        expect { ToggleAwardEmojiService.new(project, user).execute(issue, ":+1:") }.to change { AwardEmoji.count }.by(1)
+        expect { ToggleAwardEmojiService.new(project, user).execute(issue, "thumbsup") }.to change { AwardEmoji.count }.by(1)
       end
     end
   end
