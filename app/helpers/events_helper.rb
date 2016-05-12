@@ -57,11 +57,7 @@ module EventsHelper
       words << event.ref_name
       words << "at"
     elsif event.commented?
-      if event.commit_note?
-        words << event.note_short_commit_id
-      else
-        words << "##{truncate event.note_target_iid}"
-      end
+      words << event.note_target_reference
       words << "at"
     elsif event.milestone?
       words << "##{event.target_iid}" if event.target_iid
@@ -89,16 +85,7 @@ module EventsHelper
                                    event.note_target)
     elsif event.note?
       if event.note_target
-        if event.commit_note?
-          namespace_project_commit_path(event.project.namespace, event.project,
-                                        event.note_commit_id,
-                                        anchor: dom_id(event.target))
-        elsif event.project_snippet_note?
-          namespace_project_snippet_path(event.project.namespace,
-                                         event.project, event.note_target)
-        else
-          event_note_target_path(event)
-        end
+        event_note_target_path(event)
       end
     elsif event.push?
       push_event_feed_url(event)
@@ -135,42 +122,29 @@ module EventsHelper
 
   def event_note_target_path(event)
     if event.note? && event.commit_note?
-      namespace_project_commit_path(event.project.namespace, event.project,
-                                    event.note_target)
+      namespace_project_commit_path(event.project.namespace,
+                                    event.project,
+                                    event.note_target,
+                                    anchor: dom_id(event.target))
+    elsif event.project_snippet_note?
+      namespace_project_snippet_path(event.project.namespace,
+                                     event.project,
+                                     event.note_target,
+                                     anchor: dom_id(event.target))
     else
       polymorphic_path([event.project.namespace.becomes(Namespace),
                         event.project, event.note_target],
-                       anchor: dom_id(event.target))
+                        anchor: dom_id(event.target))
     end
   end
 
   def event_note_title_html(event)
     if event.note_target
-      if event.commit_note?
-        link_to(
-          namespace_project_commit_path(event.project.namespace, event.project,
-                                        event.note_commit_id,
-                                        anchor: dom_id(event.target)),
-          title: event.target_title,
-          class: "commit_short_id"
-        ) do
-          "#{event.note_target_type} #{event.note_short_commit_id}"
-        end
-      elsif event.project_snippet_note?
-        link_to(namespace_project_snippet_path(event.project.namespace,
-                                               event.project,
-                                               event.note_target), title: event.project.name) do
-          "#{event.note_target_type} #{truncate event.note_target.to_reference}"
-        end
-      else
-        link_to event_note_target_path(event), title: event.target_title do
-          "#{event.note_target_type} #{truncate event.note_target.to_reference}"
-        end
+      link_to(event_note_target_path(event), title: event.target_title, class: 'has-tooltip') do
+        "#{event.note_target_type} #{event.note_target_reference}"
       end
     else
-      content_tag :strong do
-        "(deleted)"
-      end
+      content_tag(:strong, '(deleted)')
     end
   end
 

@@ -266,16 +266,8 @@ class Event < ActiveRecord::Base
     branch? && project.default_branch != branch_name
   end
 
-  def note_commit_id
-    target.commit_id
-  end
-
   def target_iid
     target.respond_to?(:iid) ? target.iid : target_id
-  end
-
-  def note_short_commit_id
-    Commit.truncate_sha(note_commit_id)
   end
 
   def commit_note?
@@ -302,12 +294,15 @@ class Event < ActiveRecord::Base
     end
   end
 
-  def note_target_iid
-    if note_target.respond_to?(:iid)
-      note_target.iid
+  def note_target_reference
+    return unless note_target
+
+    # Commit#to_reference returns the full SHA, but we want the short one here
+    if commit_note?
+      note_target.short_id
     else
-      note_target_id
-    end.to_s
+      note_target.to_reference
+    end
   end
 
   def note_target_type
