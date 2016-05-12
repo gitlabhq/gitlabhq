@@ -60,9 +60,23 @@ class GitLabDropdownFilter
       results = data
 
       if search_text isnt ''
-        results = fuzzaldrinPlus.filter(data, search_text,
-          key: @options.keys
-        )
+        # handle groups
+        if _.isArray(data)
+          results = fuzzaldrinPlus.filter(data, search_text,
+            key: @options.keys
+          )
+        else if _.isObject(data)
+          results = {}
+          for key, group of data
+            tmp = fuzzaldrinPlus.filter(group, search_text,
+              key: @options.keys
+            )
+
+            if tmp.length
+              results[key] = []
+
+              tmp.map (item) ->
+                results[key].push item
 
       @options.callback results
     else
@@ -141,8 +155,9 @@ class GitLabDropdown
     searchFields = if @options.search then @options.search.fields else [];
 
     if @options.data
-      # If data is an array
-      if _.isArray @options.data
+      # If we provided data
+      # data could be an array of objects or a group of arrays
+      if _.isObject(@options.data) and not _.isFunction(@options.data)
         @fullData = @options.data
         @parseData @options.data
       else
@@ -230,18 +245,32 @@ class GitLabDropdown
   parseData: (data) ->
     @renderedData = data
 
-    # Render each row
-    html = $.map data, (obj) =>
-      return @renderItem(obj)
-
     if @options.filterable and data.length is 0
       # render no matching results
       html = [@noResults()]
+    else
+      # Handle array groups
+      if String(data) is "[object Object]"
+        html = []
+        for name, groupData of data
+          # Add header for each group
+          html.push(@renderItem(header: name, name))
+
+          @renderData(groupData, name)
+            .map (item) ->
+              html.push item
+      else
+        # Render each row
+        html = @renderData(data)
 
     # Render the full menu
     full_html = @renderMenu(html.join(""))
 
     @appendMenu(full_html)
+
+  renderData: (data, group = false) ->
+    $.map data, (obj, index) =>
+      return @renderItem(obj, group, index)
 
   shouldPropagate: (e) =>
     if @options.multiSelect
@@ -299,11 +328,10 @@ class GitLabDropdown
     selector = '.dropdown-content'
     if @dropdown.find(".dropdown-toggle-page").length
       selector = ".dropdown-page-one .dropdown-content"
-
     $(selector, @dropdown).html html
 
   # Render the row
-  renderItem: (data) ->
+  renderItem: (data, group = false, index = false) ->
     html = ""
 
     # Divider
@@ -346,8 +374,13 @@ class GitLabDropdown
       if @highlight
         text = @highlightTextMatches(text, @filterInput.val())
 
+      if group
+        groupAttrs = "data-group='#{group}' data-index='#{index}'"
+      else
+        groupAttrs = ''
+
       html = "<li>
-        <a href='#{url}' class='#{cssClass}'>
+        <a href='#{url}' #{groupAttrs} class='#{cssClass}'>
           #{text}
         </a>
       </li>"
@@ -377,9 +410,15 @@ class GitLabDropdown
 
   rowClicked: (el) ->
     fieldName = @options.fieldName
-    selectedIndex = el.parent().index()
     if @renderedData
-      selectedObject = @renderedData[selectedIndex]
+      groupName = el.data('group')
+      if groupName
+        selectedIndex = el.data('index')
+        selectedObject = @renderedData[groupName][selectedIndex]
+      else
+        selectedIndex = el.parent().index()
+        selectedObject = @renderedData[selectedIndex]
+
     value = if @options.id then @options.id(selectedObject, el) else selectedObject.id
     field = @dropdown.parent().find("input[name='#{fieldName}'][value='#{value}']")
     if el.hasClass(ACTIVE_CLASS)

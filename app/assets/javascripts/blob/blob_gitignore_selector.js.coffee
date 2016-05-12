@@ -29,7 +29,8 @@ class @BlobGitIgnoreSelector
     filename = @fileNameInput.val() or $('.editor-file-name').text().trim()
     @wrapper.toggleClass 'hidden', filename isnt '.gitignore'
 
-  onClick: (item) ->
+  onClick: (item, el, e) ->
+    e.preventDefault()
     @requestIgnoreFile(item.text)
 
   requestIgnoreFile: (name) ->

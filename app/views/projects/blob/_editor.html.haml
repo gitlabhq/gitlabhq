@@ -17,9 +17,7 @@
         = select_tag :license_type, grouped_options_for_select(licenses_for_select, @project.repository.license_key), include_blank: true, class: 'select2 license-select', data: {placeholder: 'Choose a license template', project: @project.name, fullname: @project.namespace.human_name}
 
       .gitignore-selector.hidden
-        = dropdown_tag("Choose a .gitignore template", options: { toggle_class: 'js-gitignore-selector', title: "Choose a template", filter: true, placeholder: "Filter projects", data: { filenames: Gitlab::Gitignore.all.map.with_index{ |v| {text: v.name} } } } )
-
-        -# = select_tag :gitignore_template, options_for_select(Gitlab::Gitignore.all.map(&:name)), include_blank: true, class: 'select2 gitignore-select', data: {placeholder: 'Choose a .gitignore template'}
+        = dropdown_tag("Choose a .gitignore template", options: { toggle_class: 'js-gitignore-selector', title: "Choose a template", filter: true, placeholder: "Filter", data: { filenames: gitignores_for_select } } )
 
       .encoding-selector
         = select_tag :encoding, options_for_select([ "base64", "text" ], "text"), class: 'select2'
