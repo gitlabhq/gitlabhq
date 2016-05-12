@@ -71,15 +71,8 @@ module ApplicationSettingsHelper
       label_tag(checkbox_name, class: css_class) do
         check_box_tag(checkbox_name, source, !disabled,
                       autocomplete: 'off',
-                      aria: { describedby: help_block_id }) + Gitlab::OAuth::Provider.label_for(source)
+                      'aria-describedby' => help_block_id) + Gitlab::OAuth::Provider.label_for(source)
       end
-    end
-  end
-
-  def oauth_providers_with_help_links
-    button_based_providers.map do |provider|
-      Gitlab::OAuth::Provider.label_for(provider) + ' ' +
-        link_to("(?)", help_page_path("integration", provider))
     end
   end
 end
