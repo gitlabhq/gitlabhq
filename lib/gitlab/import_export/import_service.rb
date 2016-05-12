@@ -44,7 +44,7 @@ module Gitlab
       end
 
       def path_with_namespace
-        File.join(@namespace.path, @project_path)
+        File.join(@namespace.path, @shared.opts[:project_path])
       end
 
       def repo_path
