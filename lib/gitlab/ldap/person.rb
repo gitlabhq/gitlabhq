@@ -66,11 +66,11 @@ module Gitlab
       def windows_domain_name
         # The following is only meaningful for Active Directory
         require 'net/ldap/dn'
-        dn_components=[]
+        dn_components = []
         Net::LDAP::DN.new(dn).each_pair { |name, value| dn_components << { name: name, value: value } }
         dn_components.
           reverse.
-          take_while { |rdn| rdn[:name].upcase=='DC' }. # Domain Component
+          take_while { |rdn| rdn[:name].upcase == 'DC' }. # Domain Component
           map { |rdn| rdn[:value] }.
           reverse.
           join('.')

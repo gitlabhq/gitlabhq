@@ -31,7 +31,7 @@ describe "MergeRequest", elastic: true do
   it "returns json with all needed elements" do
     merge_request = create :merge_request
 
-    expected_hash =  merge_request.attributes.extract!(
+    expected_hash = merge_request.attributes.extract!(
       'id',
       'iid',
       'target_branch',

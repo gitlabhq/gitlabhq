@@ -31,7 +31,7 @@ describe "Milestone", elastic: true do
   it "returns json with all needed elements" do
     milestone = create :milestone
 
-    expected_hash =  milestone.attributes.extract!(
+    expected_hash = milestone.attributes.extract!(
       'id',
       'title',
       'description',
