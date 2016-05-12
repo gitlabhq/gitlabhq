@@ -43,6 +43,9 @@ v 8.8.0 (unreleased)
   - Fix adding a todo for private group members (Ahmad Sherif)
   - Bump ace-rails-ap gem version from 2.0.1 to 4.0.2 which upgrades Ace Editor from 1.1.2 to 1.2.3
 
+v 8.7.5
+  - Fix Bitbucket imports not finding the import data
+
 v 8.7.4
   - Links for Redmine issue references are generated correctly again !4048 (Benedikt Huss)
   - Fix setting trusted proxies !3970
