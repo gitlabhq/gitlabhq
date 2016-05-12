@@ -291,7 +291,7 @@ class Ability
         rules += named_abilities('build')
       end
 
-      unless project.container_registry_enabled
+      unless project.container_registry_enabled && Gitlab.config.registry.enabled
         rules += named_abilities('container_registry')
       end
 

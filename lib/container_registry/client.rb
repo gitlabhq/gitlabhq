@@ -55,7 +55,7 @@ module ContainerRegistry
       conn.request :json
       conn.headers['Accept'] = MANIFEST_VERSION
 
-      conn.response :json, :content_type => /\bjson$/
+      conn.response :json, content_type: /\bjson$/
 
       if options[:user] && options[:password]
         conn.request(:basic_auth, options[:user].to_s, options[:password].to_s)

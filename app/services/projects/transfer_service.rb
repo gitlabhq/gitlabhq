@@ -36,7 +36,7 @@ module Projects
 
         if project.has_container_registry_tags?
           # we currently doesn't support renaming repository if it contains tags in container registry
-          raise TransferError.new('Repository cannot be renamed, due to tags in container registry')
+          raise TransferError.new('Project cannot be transferred, because tags are present in its container registry')
         end
 
         project.expire_caches_before_rename(old_path)

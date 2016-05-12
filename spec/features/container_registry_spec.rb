@@ -5,14 +5,18 @@ describe "Container Registry" do
   let(:repository) { project.container_registry_repository }
   let(:tag_name) { 'latest' }
   let(:tags) { [tag_name] }
-
-  before do
+  let(:registry_settings) do
+    {
+      enabled: true
+    }
   end
 
   before do
     login_as(:user)
     project.team << [@user, :developer]
     stub_container_registry(*tags)
+    allow(Gitlab.config.registry).to receive_messages(registry_settings)
+    allow(JWT::ContainerRegistryAuthenticationService).to receive(:full_access_token).and_return('token')
   end
 
   describe 'GET /:project/container_registry' do
@@ -22,6 +26,7 @@ describe "Container Registry" do
 
     context 'when no tags' do
       let(:tags) { [] }
+
       it { expect(page).to have_content('No images in Container Registry for this project') }
     end
 
@@ -37,6 +42,7 @@ describe "Container Registry" do
 
     it do
       expect_any_instance_of(::ContainerRegistry::Tag).to receive(:delete).and_return(true)
+
       click_on 'Remove'
     end
   end

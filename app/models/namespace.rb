@@ -128,7 +128,7 @@ class Namespace < ActiveRecord::Base
     gitlab_shell.add_namespace(path_was)
 
     if any_project_has_container_registry_tags?
-      raise Exception.new('namespace cannot be moved, because at least one project has tags in container registry')
+      raise Exception.new('Namespace cannot be moved, because at least one project has tags in container registry')
     end
 
     if gitlab_shell.mv_namespace(path_was, path)

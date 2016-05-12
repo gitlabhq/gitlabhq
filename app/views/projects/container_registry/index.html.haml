@@ -18,7 +18,7 @@
           %code
             docker login #{Gitlab.config.registry.host_port}
         %br
-        Then you are free to create and upload a container images with build and push commands:
+        Then you are free to create and upload a container image with build and push commands:
         %pre
           docker build -t #{escape_once(@project.container_registry_repository_url)} .
           %br
@@ -33,7 +33,8 @@
             %th Image ID
             %th Size
             %th Created
-            %th
+            - if can?(current_user, :update_container_registry, @project)
+              %th
 
         - @tags.each do |tag|
           = render 'tag', tag: tag

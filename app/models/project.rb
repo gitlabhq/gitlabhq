@@ -377,7 +377,7 @@ class Project < ActiveRecord::Base
 
   def container_registry_repository
     @container_registry_repository ||= begin
-      token = Jwt::ContainerRegistryAuthenticationService.full_access_token(path_with_namespace)
+      token = JWT::ContainerRegistryAuthenticationService.full_access_token(path_with_namespace)
       url = Gitlab.config.registry.api_url
       host_port = Gitlab.config.registry.host_port
       registry = ContainerRegistry::Registry.new(url, token: token, path: host_port)
@@ -814,7 +814,7 @@ class Project < ActiveRecord::Base
 
     if has_container_registry_tags?
       # we currently doesn't support renaming repository if it contains tags in container registry
-      raise Exception.new('repository cannot be renamed, due to tags in container registry')
+      raise Exception.new('Project cannot be renamed, because tags are present in its container registry')
     end
 
     if gitlab_shell.mv_repository(old_path_with_namespace, new_path_with_namespace)

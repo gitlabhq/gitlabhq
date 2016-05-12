@@ -30,19 +30,21 @@ module ContainerRegistry
     def tags
       return @tags if defined?(@tags)
       return [] unless manifest && manifest['tags']
+
       @tags = manifest['tags'].map do |tag|
         ContainerRegistry::Tag.new(self, tag)
       end
-      @tags ||= []
     end
 
     def delete_tags
       return unless tags
+
       tags.each(:delete)
     end
 
     def mount_blob(blob)
       return unless blob
+
       client.repository_mount_blob(name, blob.digest, blob.repository.name)
     end
 
