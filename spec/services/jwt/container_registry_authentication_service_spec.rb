@@ -1,23 +1,23 @@
 require 'spec_helper'
 
-describe Jwt::ContainerRegistryAuthenticationService, services: true do
+describe JWT::ContainerRegistryAuthenticationService, services: true do
   let(:current_project) { nil }
   let(:current_user) { nil }
   let(:current_params) { {} }
   let(:rsa_key) { OpenSSL::PKey::RSA.generate(512) }
-  let(:registry_settings) {
+  let(:registry_settings) do
     {
       issuer: 'rspec',
       key: nil
     }
-  }
+  end
   let(:payload) { JWT.decode(subject[:token], rsa_key).first }
 
   subject { described_class.new(current_project, current_user, current_params).execute }
 
   before do
     allow(Gitlab.config.registry).to receive_messages(registry_settings)
-    allow_any_instance_of(Jwt::RSAToken).to receive(:key).and_return(rsa_key)
+    allow_any_instance_of(JWT::RSAToken).to receive(:key).and_return(rsa_key)
   end
 
   shared_examples 'an authenticated' do
@@ -26,13 +26,13 @@ describe Jwt::ContainerRegistryAuthenticationService, services: true do
   end
 
   shared_examples 'a accessible' do
-    let(:access) {
+    let(:access) do
       [{
          'type' => 'repository',
          'name' => project.path_with_namespace,
          'actions' => actions,
        }]
-    }
+    end
 
     it_behaves_like 'an authenticated'
     it { expect(payload).to include('access' => access) }
@@ -68,9 +68,9 @@ describe Jwt::ContainerRegistryAuthenticationService, services: true do
     context 'allow developer to push images' do
       before { project.team << [current_user, :developer] }
 
-      let(:current_params) {
+      let(:current_params) do
         { scope: "repository:#{project.path_with_namespace}:push" }
-      }
+      end
 
       it_behaves_like 'a pushable'
     end
@@ -78,9 +78,9 @@ describe Jwt::ContainerRegistryAuthenticationService, services: true do
     context 'allow reporter to pull images' do
       before { project.team << [current_user, :reporter] }
 
-      let(:current_params) {
+      let(:current_params) do
         { scope: "repository:#{project.path_with_namespace}:pull" }
-      }
+      end
 
       it_behaves_like 'a pullable'
     end
@@ -88,9 +88,9 @@ describe Jwt::ContainerRegistryAuthenticationService, services: true do
     context 'return a least of privileges' do
       before { project.team << [current_user, :reporter] }
 
-      let(:current_params) {
+      let(:current_params) do
         { scope: "repository:#{project.path_with_namespace}:push,pull" }
-      }
+      end
 
       it_behaves_like 'a pullable'
     end
@@ -98,9 +98,9 @@ describe Jwt::ContainerRegistryAuthenticationService, services: true do
     context 'disallow guest to pull or push images' do
       before { project.team << [current_user, :guest] }
 
-      let(:current_params) {
+      let(:current_params) do
         { scope: "repository:#{project.path_with_namespace}:pull,push" }
-      }
+      end
 
       it_behaves_like 'a forbidden'
     end
@@ -110,9 +110,9 @@ describe Jwt::ContainerRegistryAuthenticationService, services: true do
     let(:current_project) { create(:empty_project) }
 
     context 'allow to pull and push images' do
-      let(:current_params) {
+      let(:current_params) do
         { scope: "repository:#{current_project.path_with_namespace}:pull,push" }
-      }
+      end
 
       it_behaves_like 'a pullable and pushable' do
         let(:project) { current_project }
@@ -121,9 +121,9 @@ describe Jwt::ContainerRegistryAuthenticationService, services: true do
 
     context 'for other projects' do
       context 'when pulling' do
-        let(:current_params) {
+        let(:current_params) do
           { scope: "repository:#{project.path_with_namespace}:pull" }
-        }
+        end
 
         context 'allow for public' do
           let(:project) { create(:empty_project, :public) }
@@ -137,9 +137,9 @@ describe Jwt::ContainerRegistryAuthenticationService, services: true do
       end
 
       context 'when pushing' do
-        let(:current_params) {
+        let(:current_params) do
           { scope: "repository:#{project.path_with_namespace}:push" }
-        }
+        end
 
         context 'disallow for all' do
           let(:project) { create(:empty_project, :public) }
@@ -152,9 +152,9 @@ describe Jwt::ContainerRegistryAuthenticationService, services: true do
 
   context 'unauthorized' do
     context 'for invalid scope' do
-      let(:current_params) {
+      let(:current_params) do
         { scope: 'invalid:aa:bb' }
-      }
+      end
 
       it_behaves_like 'a forbidden'
     end
@@ -162,9 +162,9 @@ describe Jwt::ContainerRegistryAuthenticationService, services: true do
     context 'for private project' do
       let(:project) { create(:empty_project, :private) }
 
-      let(:current_params) {
+      let(:current_params) do
         { scope: "repository:#{project.path_with_namespace}:pull" }
-      }
+      end
 
       it_behaves_like 'a forbidden'
     end
@@ -173,17 +173,17 @@ describe Jwt::ContainerRegistryAuthenticationService, services: true do
       let(:project) { create(:empty_project, :public) }
 
       context 'when pulling and pushing' do
-        let(:current_params) {
+        let(:current_params) do
           { scope: "repository:#{project.path_with_namespace}:pull,push" }
-        }
+        end
 
         it_behaves_like 'a pullable'
       end
 
       context 'when pushing' do
-        let(:current_params) {
+        let(:current_params) do
           { scope: "repository:#{project.path_with_namespace}:push" }
-        }
+        end
 
         it_behaves_like 'a forbidden'
       end

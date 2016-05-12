@@ -1,11 +1,11 @@
-module Jwt
+module JWT
   class ContainerRegistryAuthenticationService < BaseService
     def execute
       if params[:offline_token]
         return error('forbidden', 403) unless current_user
       end
 
-      return error('forbidden', 401) if scopes.empty?
+      return error('forbidden', 401) if scopes.blank?
 
       { token: authorized_token(scopes).encoded }
     end
@@ -13,7 +13,7 @@ module Jwt
     private
 
     def authorized_token(access)
-      token = ::Jwt::RSAToken.new(registry.key)
+      token = ::JWT::RSAToken.new(registry.key)
       token.issuer = registry.issuer
       token.audience = params[:service]
       token.subject = current_user.try(:username)

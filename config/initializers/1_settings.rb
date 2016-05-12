@@ -271,7 +271,7 @@ Settings.artifacts['max_size']    ||= 100 # in megabytes
 # Registry
 #
 Settings['registry'] ||= Settingslogic.new({})
-Settings.registry['registry']     = false if Settings.registry['enabled'].nil?
+Settings.registry['enabled']     = false if Settings.registry['enabled'].nil?
 Settings.registry['host']         ||= "example.com"
 Settings.registry['internal_host']||= "localhost"
 Settings.registry['key']          ||= nil
