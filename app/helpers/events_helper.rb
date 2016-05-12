@@ -39,15 +39,6 @@ module EventsHelper
     end
   end
 
-  def icon_for_event
-    {
-      EventFilter.push     => 'upload',
-      EventFilter.merged   => 'check-square-o',
-      EventFilter.comments => 'comments',
-      EventFilter.team     => 'user',
-    }
-  end
-
   def event_preposition(event)
     if event.push? || event.commented? || event.target
       "at"
