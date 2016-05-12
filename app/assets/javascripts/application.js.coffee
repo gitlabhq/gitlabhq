@@ -295,4 +295,6 @@ $ ->
       fitSidebarForSize()
 
   checkInitialSidebarSize()
-  new Aside()
+
+  new Aside
+  new CategorySearchDropdown

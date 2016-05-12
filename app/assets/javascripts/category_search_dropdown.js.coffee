@@ -34,9 +34,9 @@ class @CategorySearchDropdown
 
   showCategoryDropDown: ->
 
-    userId = gon.current_user_id
+    $body            = $ 'body'
+    userId           = gon.current_user_id
     hasLocationBadge = @searchWidget.hasClass 'has-location-badge'
-    $body            = $('body')
     isInProjectsPage = $body.data('page').split(':').first() is 'projects'
 
     if isInProjectsPage and gl.projectOptions and hasLocationBadge
@@ -54,7 +54,7 @@ class @CategorySearchDropdown
   restoreMenu: ->
 
     html = "<ul><li><a class='dropdown-menu-empty-link is-focused'>Loading...</a></li></ul>"
-    @dropdownContent.html(html)
+    @dropdownContent.html html
 
 
   categorySearchDropdownTemplate: (issuesPath, mrPath, name, userId) ->
@@ -67,6 +67,3 @@ class @CategorySearchDropdown
       <li><a href='#{mrPath}/?assignee_id=#{userId}'>Merge requests assigned to me</a></li>
       <li><a href='#{mrPath}/?author_id=#{userId}'>Merge requests I've created</a></li>
     </ul>"
-
-$ ->
-  new CategorySearchDropdown()
