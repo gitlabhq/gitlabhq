@@ -53,6 +53,12 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       end
     end
 
+    enabled_oauth_sign_in_sources = params[:application_setting].delete(:enabled_oauth_sign_in_sources)
+
+    params[:application_setting][:disabled_oauth_sign_in_sources] =
+      AuthHelper.button_based_providers.map(&:to_s) -
+      Array(enabled_oauth_sign_in_sources)
+
     params.require(:application_setting).permit(
       :default_projects_limit,
       :default_branch_protection,
@@ -95,7 +101,8 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :repository_checks_enabled,
       :metrics_packet_size,
       restricted_visibility_levels: [],
-      import_sources: []
+      import_sources: [],
+      disabled_oauth_sign_in_sources: []
     )
   end
 end
