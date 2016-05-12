@@ -3,6 +3,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 v 8.7.5
   - Fix relative links in wiki pages. !4050
   - Fix always showing build notification message when switching between merge requests !4086
+  - Fix an issue when filtering merge requests with more than one label. !3886
 
 v 8.7.4
   - Links for Redmine issue references are generated correctly again !4048 (Benedikt Huss)
@@ -14,7 +15,6 @@ v 8.7.4
   - Use a case-insensitive comparison in sanitizing URI schemes
   - Fix always showing build notification message when switching between merge requests
   - Links for Redmine issue references are generated correctly again (Benedikt Huss)
-  - Fix an issue when filtering merge requests with more than one label. !3886
 
 v 8.7.3
   - Emails, Gitlab::Email::Message, Gitlab::Diff, and Premailer::Adapter::Nokogiri are now instrumented
