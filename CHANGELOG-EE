@@ -10,6 +10,9 @@ v 8.8.0 (unreleased)
   - Set KRB5 as default clone protocol when Kerberos is enabled and user is logged in (Borja Aparicio)
   - Reduce emails-on-push HTML size by using a simple monospace font
 
+v 8.7.5
+  - No EE-specific changes
+
 v 8.7.4
   - Delete ProjectImportData record only if Project is not a mirror !370
   - Fixed typo in GitLab GEO license check alert !379
