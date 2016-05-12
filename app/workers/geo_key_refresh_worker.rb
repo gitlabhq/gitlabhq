@@ -1,6 +1,6 @@
 class GeoKeyRefreshWorker
   include Sidekiq::Worker
-  include GeoDynamicBackoff
+  include ::GeoDynamicBackoff
 
   sidekiq_options queue: :default
 

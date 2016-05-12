@@ -26,6 +26,7 @@ module API
     # Ensure the namespace is right, otherwise we might load Grape::API::Helpers
     helpers ::API::Helpers
 
+    mount ::API::Geo
     mount ::API::Groups
     mount ::API::GroupMembers
     mount ::API::Users
