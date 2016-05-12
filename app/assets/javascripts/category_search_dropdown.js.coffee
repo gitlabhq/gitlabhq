@@ -37,7 +37,7 @@ class @CategorySearchDropdown
     $body            = $ 'body'
     userId           = gon.current_user_id
     hasLocationBadge = @searchWidget.hasClass 'has-location-badge'
-    isInProjectsPage = $body.data('page').split(':').first() is 'projects'
+    isInProjectsPage = $body.data('page').split(':')[0] is 'projects'
 
     if isInProjectsPage and gl.projectOptions and hasLocationBadge
       projectSlug = $body.data 'project'
