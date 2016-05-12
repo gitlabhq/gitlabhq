@@ -93,7 +93,7 @@ module EventsHelper
           namespace_project_commit_path(event.project.namespace, event.project,
                                         event.note_commit_id,
                                         anchor: dom_id(event.target))
-        elsif event.note_project_snippet?
+        elsif event.project_snippet_note?
           namespace_project_snippet_path(event.project.namespace,
                                          event.project, event.note_target)
         else
@@ -156,7 +156,7 @@ module EventsHelper
         ) do
           "#{event.note_target_type} #{event.note_short_commit_id}"
         end
-      elsif event.note_project_snippet?
+      elsif event.project_snippet_note?
         link_to(namespace_project_snippet_path(event.project.namespace,
                                                event.project,
                                                event.note_target), title: event.project.name) do

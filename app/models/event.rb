@@ -286,7 +286,7 @@ class Event < ActiveRecord::Base
     note? && target && target.for_issue?
   end
 
-  def note_project_snippet?
+  def project_snippet_note?
     target.for_snippet?
   end
 
