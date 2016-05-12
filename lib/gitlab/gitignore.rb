@@ -2,15 +2,16 @@ module Gitlab
   class Gitignore
     FILTER_REGEX = /\.gitignore\z/.freeze
 
-    attr_accessor :name, :directory
+    def initialize(path)
+      @path = path
+    end
 
-    def initialize(name, directory)
-      @name       = name
-      @directory  = directory
+    def name
+      File.basename(@path, '.gitignore')
     end
 
     def content
-      File.read(path)
+      File.read(@path)
     end
 
     class << self
@@ -22,46 +23,33 @@ module Gitlab
         file_name = "#{key}.gitignore"
 
         directory = select_directory(file_name)
-        directory ? new(key, directory) : nil
+        directory ? new(File.join(directory, file_name)) : nil
       end
 
       def global
-        files_for_folder(global_dir).map { |f| new(f, global_dir) }
+        files_for_folder(global_dir).map { |file| new(File.join(global_dir, file)) }
       end
 
       def languages_frameworks
-        files_for_folder(gitignore_dir).map { |f| new(f, gitignore_dir) }
+        files_for_folder(gitignore_dir).map { |file| new(File.join(gitignore_dir, file)) }
       end
-    end
 
-    private
+      private
 
-    def path
-      File.expand_path("#{name}.gitignore", directory)
-    end
-
-    class << self
       def select_directory(file_name)
-        [self.gitignore_dir, self.global_dir].find { |dir| File.exist?(File.expand_path(file_name, dir)) }
+        [gitignore_dir, global_dir].find { |dir| File.exist?(File.join(dir, file_name)) }
       end
 
       def global_dir
-        File.expand_path('Global', gitignore_dir)
+        File.join(gitignore_dir, 'Global')
       end
 
       def gitignore_dir
-        File.expand_path('vendor/gitignore', Rails.root)
+        Rails.root.join('vendor/gitignore')
       end
 
       def files_for_folder(dir)
-        gitignores = []
-        Dir.entries(dir).each do |e|
-          next unless e.end_with?('.gitignore')
-
-          gitignores << e.gsub(FILTER_REGEX, '')
-        end
-
-        gitignores
+        Dir.glob("#{dir.to_s}/*.gitignore").map { |file| file.gsub(FILTER_REGEX, '') }
       end
     end
   end

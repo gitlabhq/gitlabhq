@@ -13,8 +13,8 @@ describe API::Gitignores, api: true  do
   describe 'Entity GitignoresList' do
     before { get api('/gitignores') }
 
-    it { expect(json_response.first['name']).to be_truthy }
-    it { expect(json_response.first['content']).to be_falsey }
+    it { expect(json_response.first['name']).not_to be_nil }
+    it { expect(json_response.first['content']).to be_nil }
   end
 
   describe 'GET /gitignores' do

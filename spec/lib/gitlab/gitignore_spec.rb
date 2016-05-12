@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe Gitlab::Gitignore do
   subject { Gitlab::Gitignore }
+
   describe '.all' do
     it 'strips the gitignore suffix' do
       expect(subject.all.first.name).not_to end_with('.gitignore')
@@ -24,12 +25,13 @@ describe Gitlab::Gitignore do
       ruby = subject.find('Ruby')
 
       expect(ruby).to be_a Gitlab::Gitignore
+      expect(ruby.name).to eq('Ruby')
     end
   end
 
   describe '#content' do
     it 'loads the full file' do
-      gitignore = subject.new('Ruby', File.expand_path('vendor/gitignore', Rails.root))
+      gitignore = subject.new(Rails.root.join('vendor/gitignore/Ruby.gitignore'))
 
       expect(gitignore.name).to eq 'Ruby'
       expect(gitignore.content).to start_with('*.gem')
