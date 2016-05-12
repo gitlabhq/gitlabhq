@@ -10,10 +10,6 @@
             = nav_link(path: 'groups#projects') do
               = link_to projects_group_path(@group), title: 'Projects' do
                 Projects
-            %li.divider
-            %li
-              = link_to edit_group_path(@group) do
-                Edit Group
             - if ldap_enabled?
               = nav_link(controller: :ldap_group_links) do
                 = link_to group_ldap_group_links_path(@group), title: "LDAP Groups" do
@@ -30,6 +26,10 @@
                 %i.fa.fa-file-text-o
                 %span
                   Audit Events
+            %li.divider
+            %li
+              = link_to edit_group_path(@group) do
+                Edit Group
           %li
             = link_to leave_group_group_members_path(@group),
               data: { confirm: leave_group_message(@group.name) }, method: :delete, title: 'Leave group' do

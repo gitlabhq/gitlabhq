@@ -53,7 +53,9 @@ class Spinach::Features::GroupsManagement < Spinach::FeatureSteps
 
   step 'I go to project settings' do
     @project = Project.find_by(name: "Open")
-    click_link 'Projects'
+    page.within '.layout-nav' do
+      click_link 'Projects'
+    end
 
     link = "/#{@project.path_with_namespace}/project_members"
     find(:xpath, "//a[@href=\"#{link}\"]").click
