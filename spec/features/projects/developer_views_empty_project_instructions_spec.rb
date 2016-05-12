@@ -46,7 +46,6 @@ feature 'Developer views empty project instructions', feature: true do
     end
   end
 
-<<<<<<< HEAD
   context 'with Kerberos enabled' do
     background do
       allow(Gitlab.config.kerberos).to receive(:enabled).and_return(true)
@@ -59,8 +58,6 @@ feature 'Developer views empty project instructions', feature: true do
     end
   end
 
-=======
->>>>>>> e77a9a342e175c7274350ef6d655bde496eca778
   def visit_project
     visit namespace_project_path(project.namespace, project)
   end
