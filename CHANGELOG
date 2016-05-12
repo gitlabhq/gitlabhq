@@ -54,6 +54,7 @@ v 8.7.5
   - Fix relative links in wiki pages. !4050
   - Fix always showing build notification message when switching between merge requests !4086
   - Fix an issue when filtering merge requests with more than one label. !3886
+  - Fix short note for the default scope on build page (Takuya Noguchi)
 
 v 8.7.4
   - Links for Redmine issue references are generated correctly again !4048 (Benedikt Huss)
