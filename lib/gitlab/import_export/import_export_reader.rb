@@ -39,8 +39,20 @@ module Gitlab
           @attributes_parser.parse(current_key) { |hash| @json_config_hash[current_key] ||= hash }
 
           handle_model_object(current_key, model_object)
+          process_sub_model(current_key, model_object) if model_object.is_a?(Hash)
         end
         @json_config_hash
+      end
+
+      def process_sub_model(current_key, model_object)
+        sub_model_json = build_json_config_hash(model_object).dup
+        @json_config_hash.slice!(current_key)
+
+        if @json_config_hash[current_key] && @json_config_hash[current_key][:include]
+          @json_config_hash[current_key][:include] << sub_model_json
+        else
+          @json_config_hash[current_key] = { include: sub_model_json }
+        end
       end
 
       def handle_model_object(current_key, model_object)
