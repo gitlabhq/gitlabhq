@@ -34,18 +34,32 @@ describe Gitlab::BitbucketImport::Client, lib: true do
     it 'retrieves issues over a number of pages' do
       stub_request(:get,
                    "https://bitbucket.org/api/1.0/repositories/#{project_id}/issues?limit=50&sort=utc_created_on&start=0").
-          to_return(status: 200,
-                    body: first_sample_data.to_json,
-                    headers: {})
+        to_return(status: 200,
+                  body: first_sample_data.to_json,
+                  headers: {})
 
       stub_request(:get,
                    "https://bitbucket.org/api/1.0/repositories/#{project_id}/issues?limit=50&sort=utc_created_on&start=50").
-          to_return(status: 200,
-                    body: second_sample_data.to_json,
-                    headers: {})
+        to_return(status: 200,
+                  body: second_sample_data.to_json,
+                  headers: {})
 
       issues = client.issues(project_id)
       expect(issues.count).to eq(95)
+    end
+  end
+
+  context 'project import' do
+    it 'calls .from_project with no errors' do
+      project = create(:empty_project)
+      project.create_or_update_import_data(credentials:
+                                             { user: "git",
+                                               password: nil,
+                                               bb_session: { bitbucket_access_token: "test",
+                                                             bitbucket_access_token_secret: "test" } })
+      project.import_url = "ssh://git@bitbucket.org/test/test.git"
+
+      expect { described_class.from_project(project) }.to_not raise_error
     end
   end
 end

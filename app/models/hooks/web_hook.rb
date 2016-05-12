@@ -1,24 +1,3 @@
-# == Schema Information
-#
-# Table name: web_hooks
-#
-#  id                      :integer          not null, primary key
-#  url                     :string(2000)
-#  project_id              :integer
-#  created_at              :datetime
-#  updated_at              :datetime
-#  type                    :string           default("ProjectHook")
-#  service_id              :integer
-#  push_events             :boolean          default(TRUE), not null
-#  issues_events           :boolean          default(FALSE), not null
-#  merge_requests_events   :boolean          default(FALSE), not null
-#  tag_push_events         :boolean          default(FALSE)
-#  note_events             :boolean          default(FALSE), not null
-#  enable_ssl_verification :boolean          default(TRUE)
-#  build_events            :boolean          default(FALSE), not null
-#  token                   :string
-#
-
 class WebHook < ActiveRecord::Base
   include Sortable
   include HTTParty
@@ -59,7 +38,7 @@ class WebHook < ActiveRecord::Base
                               basic_auth: auth)
     end
 
-    [(response.code >= 200 && response.code < 300), ActionView::Base.full_sanitizer.sanitize(response.to_s)]
+    [response.code, response.to_s]
   rescue SocketError, OpenSSL::SSL::SSLError, Errno::ECONNRESET, Errno::ECONNREFUSED, Net::OpenTimeout => e
     logger.error("WebHook Error => #{e}")
     [false, e.to_s]

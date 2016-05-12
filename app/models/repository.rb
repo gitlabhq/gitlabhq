@@ -81,19 +81,21 @@ class Repository
   def commit(id = 'HEAD')
     return nil unless exists?
     commit = Gitlab::Git::Commit.find(raw_repository, id)
-    commit = Commit.new(commit, @project) if commit
+    commit = ::Commit.new(commit, @project) if commit
     commit
   rescue Rugged::OdbError
     nil
   end
 
-  def commits(ref, path = nil, limit = nil, offset = nil, skip_merges = false)
+  def commits(ref, path: nil, limit: nil, offset: nil, skip_merges: false, after: nil, before: nil)
     options = {
       repo: raw_repository,
       ref: ref,
       path: path,
       limit: limit,
       offset: offset,
+      after: after,
+      before: before,
       # --follow doesn't play well with --skip. See:
       # https://gitlab.com/gitlab-org/gitlab-ce/issues/3574#note_3040520
       follow: false,
@@ -146,10 +148,20 @@ class Repository
     find_branch(branch_name)
   end
 
-  def add_tag(tag_name, ref, message = nil)
-    before_push_tag
+  def add_tag(user, tag_name, target, message = nil)
+    oldrev = Gitlab::Git::BLANK_SHA
+    ref    = Gitlab::Git::TAG_REF_PREFIX + tag_name
+    target = commit(target).try(:id)
 
-    gitlab_shell.add_tag(path_with_namespace, tag_name, ref, message)
+    return false unless target
+
+    options = { message: message, tagger: user_to_committer(user) } if message
+
+    GitHooksService.new.execute(user, path_to_repo, oldrev, target, ref) do
+      rugged.tags.create(tag_name, target, options)
+    end
+
+    find_tag(tag_name)
   end
 
   def rm_branch(user, branch_name)
@@ -441,7 +453,7 @@ class Repository
   def version
     cache.fetch(:version) do
       tree(:head).blobs.find do |file|
-        file.name.downcase == 'version'
+        file.name.casecmp('version').zero?
       end
     end
   end
@@ -575,7 +587,7 @@ class Repository
   end
 
   def contributors
-    commits = self.commits(nil, nil, 2000, 0, true)
+    commits = self.commits(nil, limit: 2000, offset: 0, skip_merges: true)
 
     commits.group_by(&:author_email).map do |email, commits|
       contributor = Gitlab::Contributor.new

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe API::CommitStatus, api: true do
+describe API::CommitStatuses, api: true do
   include ApiHelpers
 
   let!(:project) { create(:project) }

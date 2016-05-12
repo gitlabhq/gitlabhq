@@ -40,6 +40,7 @@
   %td
     = build.name
 
+  %td
     .label-container
       - if build.tags.any?
         - build.tags.each do |tag|
@@ -68,12 +69,12 @@
   %td
     .pull-right
       - if can?(current_user, :read_build, build) && build.artifacts?
-        = link_to download_namespace_project_build_artifacts_path(build.project.namespace, build.project, build), title: 'Download artifacts' do
+        = link_to download_namespace_project_build_artifacts_path(build.project.namespace, build.project, build), title: 'Download artifacts', class: 'btn btn-build' do
           %i.fa.fa-download
       - if can?(current_user, :update_build, build)
         - if build.active?
-          = link_to cancel_namespace_project_build_path(build.project.namespace, build.project, build, return_to: request.original_url), method: :post, title: 'Cancel' do
+          = link_to cancel_namespace_project_build_path(build.project.namespace, build.project, build, return_to: request.original_url), method: :post, title: 'Cancel', class: 'btn btn-build' do
             %i.fa.fa-remove.cred
         - elsif defined?(allow_retry) && allow_retry && build.retryable?
-          = link_to retry_namespace_project_build_path(build.project.namespace, build.project, build, return_to: request.original_url), method: :post, title: 'Retry' do
-            %i.fa.fa-repeat
+          = link_to retry_namespace_project_build_path(build.project.namespace, build.project, build, return_to: request.original_url), method: :post, title: 'Retry', class: 'btn btn-build' do
+            %i.fa.fa-refresh

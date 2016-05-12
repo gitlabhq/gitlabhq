@@ -44,7 +44,7 @@ module API
       # Example Request:
       #   GET /projects/starred
       get '/starred' do
-        @projects = current_user.starred_projects
+        @projects = current_user.viewable_starred_projects
         @projects = filter_projects(@projects)
         @projects = paginate @projects
         present @projects, with: Entities::Project

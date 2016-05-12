@@ -7,9 +7,7 @@ module Projects
     DELETED_FLAG = '+deleted'
 
     def pending_delete!
-      project.update_attribute(:pending_delete, true)
-
-      ProjectDestroyWorker.perform_in(1.minute, project.id, current_user.id, params)
+      project.schedule_delete!(current_user.id, params)
     end
 
     def execute
@@ -37,7 +35,7 @@ module Projects
         end
       end
 
-      log_info("Project \"#{project.name}\" was removed")
+      log_info("Project \"#{project.path_with_namespace}\" was removed")
       system_hook_service.execute_hooks_for(project, :destroy)
       true
     end

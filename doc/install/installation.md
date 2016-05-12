@@ -157,22 +157,64 @@ Create a `git` user for GitLab:
 
 ## 5. Database
 
-We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](database_mysql.md). *Note*: because we need to make use of extensions you need at least pgsql 9.1.
+We recommend using a PostgreSQL database. For MySQL check the
+[MySQL setup guide](database_mysql.md).
 
-    # Install the database packages
-    sudo apt-get install -y postgresql postgresql-client libpq-dev
+> **Note**: because we need to make use of extensions you need at least pgsql 9.1.
 
-    # Create a user for GitLab
+1. Install the database packages:
+
+    ```bash
+    sudo apt-get install -y postgresql postgresql-client libpq-dev postgresql-contrib
+    ```
+
+1. Create a database user for GitLab:
+
+    ```bash
     sudo -u postgres psql -d template1 -c "CREATE USER git CREATEDB;"
+    ```
 
-    # Create the GitLab production database & grant all privileges on database
+1. Create the GitLab production database and grant all privileges on database:
+
+    ```bash
     sudo -u postgres psql -d template1 -c "CREATE DATABASE gitlabhq_production OWNER git;"
+    ```
 
-    # Try connecting to the new database with the new user
+1. Create the `pg_trgm` extension (required for GitLab 8.6+):
+
+    ```bash
+    sudo -u postgres psql -d template1 -c "CREATE EXTENSION IF NOT EXISTS pg_trgm;"
+    ```
+
+1. Try connecting to the new database with the new user:
+
+    ```bash
     sudo -u git -H psql -d gitlabhq_production
+    ```
 
-    # Quit the database session
+1. Check if the `pg_trgm` extension is enabled:
+
+    ```bash
+    SELECT true AS enabled
+    FROM pg_available_extensions
+    WHERE name = 'pg_trgm'
+    AND installed_version IS NOT NULL;
+    ```
+
+    If the extension is enabled this will produce the following output:
+
+    ```
+    enabled
+    ---------
+     t
+    (1 row)
+    ```
+
+1. Quit the database session:
+
+    ```bash
     gitlabhq_production> \q
+    ```
 
 ## 6. Redis
 
@@ -227,7 +269,7 @@ sudo usermod -aG redis git
 ### Clone the Source
 
     # Clone GitLab repository
-    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 8-7-stable gitlab
+    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 8-8-stable gitlab
 
 **Note:** You can change `8-7-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
 

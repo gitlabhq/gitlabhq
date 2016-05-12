@@ -1,5 +1,4 @@
 - page_title "Members"
-- header_title group_title(@group, "Members", group_group_members_path(@group))
 
 .group-members-page.prepend-top-default
   - if current_user && current_user.can?(:admin_group_member, @group)
