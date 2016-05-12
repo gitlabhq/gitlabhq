@@ -65,6 +65,10 @@ describe Gitlab::ImportExport::ProjectTreeSaver, services: true do
         expect(saved_project_json['issues'].first['notes']).not_to be_empty
       end
 
+      it 'has author on issue comments' do
+        expect(saved_project_json['issues'].first['notes'].first['author']).not_to be_empty
+      end
+
       it 'has project members' do
         expect(saved_project_json['project_members']).not_to be_empty
       end
@@ -77,6 +81,9 @@ describe Gitlab::ImportExport::ProjectTreeSaver, services: true do
         expect(saved_project_json['merge_requests'].first['notes']).not_to be_empty
       end
 
+      it 'has author on merge requests comments' do
+        expect(saved_project_json['merge_requests'].first['notes'].first['author']).not_to be_empty
+      end
       it 'has commit statuses' do
         expect(saved_project_json['ci_commits'].first['statuses']).not_to be_empty
       end
