@@ -10,7 +10,7 @@ module Gitlab
         @archive_file = archive_file
         @current_user = owner
         @namespace = Namespace.find(namespace_id)
-        @shared = Gitlab::ImportExport::Shared.new(relative_path: path_with_namespace, project_path: project_path)
+        @shared = Gitlab::ImportExport::Shared.new(relative_path: path_with_namespace(project_path), project_path: project_path)
       end
 
       def execute
@@ -43,8 +43,8 @@ module Gitlab
                                                project: ProjectWiki.new(project_tree.project)).restore
       end
 
-      def path_with_namespace
-        File.join(@namespace.path, @shared.opts[:project_path])
+      def path_with_namespace(project_path)
+        File.join(@namespace.path, project_path)
       end
 
       def repo_path
