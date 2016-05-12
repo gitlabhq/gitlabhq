@@ -332,3 +332,6 @@ gem 'oauth2', '~> 1.0.0'
 
 # Soft deletion
 gem "paranoia", "~> 2.0"
+
+# Health check
+gem 'health_check', '~> 1.5.1'

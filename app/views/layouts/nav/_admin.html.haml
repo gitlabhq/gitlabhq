@@ -41,6 +41,11 @@
       = icon('file-text fw')
       %span
         Logs
+  = nav_link(controller: :health_check) do
+    = link_to admin_health_check_path, title: 'Health Check' do
+      = icon('medkit fw')
+      %span
+        Health Check
   = nav_link(controller: :broadcast_messages) do
     = link_to admin_broadcast_messages_path, title: 'Messages' do
       = icon('bullhorn fw')

@@ -73,6 +73,9 @@ Rails.application.routes.draw do
     mount Sidekiq::Web, at: '/admin/sidekiq', as: :sidekiq
   end
 
+  # Health check
+  get 'health_check(/:checks)'  => 'health_check#index', as: :health_check
+
   # Enable Grack support
   mount Grack::AuthSpawner, at: '/', constraints: lambda { |request| /[-\/\w\.]+\.git\//.match(request.path_info) }, via: [:get, :post, :put]
 
@@ -254,6 +257,7 @@ Rails.application.routes.draw do
     end
 
     resource :logs, only: [:show]
+    resource :health_check, controller: 'health_check', only: [:show]
     resource :background_jobs, controller: 'background_jobs', only: [:show]
 
     resources :namespaces, path: '/projects', constraints: { id: /[a-zA-Z.0-9_\-]+/ }, only: [] do
@@ -285,6 +289,7 @@ Rails.application.routes.draw do
     resource :application_settings, only: [:show, :update] do
       resources :services
       put :reset_runners_token
+      put :reset_health_check_token
       put :clear_repository_check_states
     end
 
@@ -668,6 +673,7 @@ Rails.application.routes.draw do
             post :cancel
             post :retry
             post :erase
+            get :trace
             get :raw
           end
 
