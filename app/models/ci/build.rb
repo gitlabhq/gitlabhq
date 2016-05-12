@@ -205,7 +205,7 @@ module Ci
     end
 
     def recreate_trace_dir
-      unless Dir.exists?(dir_to_trace)
+      unless Dir.exist?(dir_to_trace)
         FileUtils.mkdir_p(dir_to_trace)
       end
     end
