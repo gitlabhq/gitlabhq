@@ -103,7 +103,7 @@ module Gitlab
             verified_admin_users << user
           else
             logger.debug do
-              <<-MSG.strip_heredoc.gsub(/\n/, ' ')
+              <<-MSG.strip_heredoc.tr("\n", ' ')
                 #{self.class.name}: User with DN `#{member_dn}` should have admin
                 access but there is no user in GitLab with that identity.
                 Membership will be updated once the user signs in for the first time.
@@ -277,7 +277,7 @@ module Gitlab
             add_or_update_user_membership(user, group, access_level)
           else
             logger.debug do
-              <<-MSG.strip_heredoc.gsub(/\n/, ' ')
+              <<-MSG.strip_heredoc.tr("\n", ' ')
                 #{self.class.name}: User with DN `#{member_dn}` should have access
                 to '#{group.name}' group but there is no user in GitLab with that
                 identity. Membership will be updated once the user signs in for
@@ -301,7 +301,7 @@ module Gitlab
 
       def warn_cannot_remove_last_owner(user, group)
         logger.warn do
-          <<-MSG.strip_heredoc.gsub(/\n/, ' ')
+          <<-MSG.strip_heredoc.tr("\n", ' ')
             #{self.class.name}: LDAP group sync cannot remove #{user.name}
             (#{user.id}) from group #{group.name} (#{group.id}) as this is
             the group's last owner

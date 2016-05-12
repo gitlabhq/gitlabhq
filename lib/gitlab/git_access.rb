@@ -258,7 +258,7 @@ module Gitlab
           return build_status_object(false, "Author '#{commit.author_email}' is not a member of team")
         end
 
-        if commit.author_email.downcase != commit.committer_email.downcase
+        if commit.author_email.casecmp(commit.committer_email) == -1
           unless User.existing_member?(commit.committer_email.downcase)
             return build_status_object(false, "Committer '#{commit.committer_email}' is not a member of team")
           end
