@@ -14,6 +14,13 @@ describe HealthCheckController do
     end
 
     context 'when services are up and an access token is provided' do
+      it 'supports passing the token in the header' do
+        request.headers['TOKEN'] = token
+        get :index
+        expect(response).to be_success
+        expect(response.content_type).to eq 'text/plain'
+      end
+
       it 'supports successful plaintest response' do
         get :index, token: token
         expect(response).to be_success
@@ -53,6 +60,14 @@ describe HealthCheckController do
       before do
         allow(HealthCheck::Utils).to receive(:process_checks).with('standard').and_return('The server is on fire')
         allow(HealthCheck::Utils).to receive(:process_checks).with('email').and_return('Email is on fire')
+      end
+
+      it 'supports passing the token in the header' do
+        request.headers['TOKEN'] = token
+        get :index
+        expect(response.status).to eq(500)
+        expect(response.content_type).to eq 'text/plain'
+        expect(response.body).to include('The server is on fire')
       end
 
       it 'supports failure plaintest response' do
