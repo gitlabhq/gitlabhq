@@ -95,7 +95,7 @@ module Ci
     end
 
     def trace_html
-      trace_with_state[:html]
+      trace_with_state[:html] || ''
     end
 
     def trace_with_state(state = nil)
