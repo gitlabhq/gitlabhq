@@ -233,23 +233,40 @@ describe Issue, models: true do
   end
 
   describe '#participants' do
-    let(:project) { create(:project, :public) }
-    let(:issue) { create(:issue, project: project) }
+    context 'using a public project' do
+      let(:project) { create(:project, :public) }
+      let(:issue) { create(:issue, project: project) }
 
-    let!(:note1) do
-      create(:note_on_issue, noteable: issue, project: project, note: 'a')
+      let!(:note1) do
+        create(:note_on_issue, noteable: issue, project: project, note: 'a')
+      end
+
+      let!(:note2) do
+        create(:note_on_issue, noteable: issue, project: project, note: 'b')
+      end
+
+      it 'includes the issue author as the first participant' do
+        expect(issue.participants[0]).to eq(issue.author)
+      end
+
+      it 'includes the authors of the notes' do
+        expect(issue.participants).to include(note1.author, note2.author)
+      end
     end
 
-    let!(:note2) do
-      create(:note_on_issue, noteable: issue, project: project, note: 'b')
-    end
+    context 'using a private project' do
+      it 'does not include mentioned users that do not have access to the project' do
+        project = create(:project)
+        user = create(:user)
+        issue = create(:issue, project: project)
 
-    it 'includes the issue author as the first participant' do
-      expect(issue.participants[0]).to eq(issue.author)
-    end
+        create(:note_on_issue,
+               noteable: issue,
+               project: project,
+               note: user.to_reference)
 
-    it 'includes the authors of the notes' do
-      expect(issue.participants).to include(note1.author, note2.author)
+        expect(issue.participants).not_to include(user)
+      end
     end
   end
 end
