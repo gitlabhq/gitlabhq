@@ -21,7 +21,7 @@
 #     issue = Issue.last
 #     users = issue.participants
 #
-#     # `users` will contain the issue's author, its assignee, and # all users
+#     # `users` will contain the issue's author, its assignee, and all users
 #     # returned by its #mentioned_users method,
 #
 module Participable
@@ -46,23 +46,15 @@ module Participable
 
   # Returns the users participating in a discussion.
   #
-  # For every regular attribute this method will check if the returned user can
-  # read the current project. When a Proc is used this method assumes the Proc's
-  # return value _only_ includes users that have the appropriate permissions.
-  # This requirement is put in place to reduce the number of queries needed to
-  # check if every user has access to the project.
-  #
   # Returns an Array of User instances.
   def participants(current_user = self.author)
     participants = Set.new
 
     self.class.participant_attrs.each do |attr|
-      check = false
       value =
         if attr.respond_to?(:call)
           instance_exec(current_user, &attr)
         else
-          check = true
           send(attr)
         end
 
@@ -70,25 +62,10 @@ module Participable
 
       result = participants_for(value, current_user)
 
-      next unless result
-
-      if check
-        result.select! do |user|
-          # If the user has already been added to the Set we know they have
-          # access to the current Project, thus we don't need to check for this
-          # again.
-          if participants.include?(user)
-            true
-          else
-            user.can?(:read_project, project)
-          end
-        end
-      end
-
-      participants.merge(result)
+      participants.merge(result) if result
     end
 
-    participants.to_a
+    Ability.users_that_can_read_project(participants.to_a, project)
   end
 
   private
