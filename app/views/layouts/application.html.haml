@@ -1,11 +1,15 @@
 !!! 5
 %html{ lang: "en"}
   = render "layouts/head"
-  %body{class: "#{user_application_theme}", 'data-page' => body_data_page}
-    -# Ideally this would be inside the head, but turbolinks only evaluates page-specific JS in the body.
-    = yield :scripts_body_top
+  - if @project
+    %body{class: "#{user_application_theme}", 'data-page' => body_data_page, 'data-project' => "#{@project.path}"}
+  - else
+    %body{class: "#{user_application_theme}", 'data-page' => body_data_page}
 
-    = render "layouts/header/default", title: header_title
-    = render 'layouts/page', sidebar: sidebar, nav: nav
+  -# Ideally this would be inside the head, but turbolinks only evaluates page-specific JS in the body.
+  = yield :scripts_body_top
 
-    = yield :scripts_body
+  = render "layouts/header/default", title: header_title
+  = render 'layouts/page', sidebar: sidebar, nav: nav
+
+  = yield :scripts_body
