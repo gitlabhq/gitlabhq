@@ -1,6 +1,6 @@
 = render 'layouts/nav/group_settings'
 
-%ul.nav-links
+%ul.nav-links#scrolling-tabs
   = nav_link(path: 'groups#show', html_options: {class: 'home'}) do
     = link_to group_path(@group), title: 'Home' do
       = icon('group fw')
@@ -35,3 +35,4 @@
       = icon('users fw')
       %span
         Members
+  = icon('arrow-right')

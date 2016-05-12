@@ -256,6 +256,30 @@
       display: none;
     }
 
+    .fa-arrow-right {
+      display: none;
+      position: absolute;
+      color: #7e7c7c;
+      bottom: 11px;
+      right: 0;
+      padding: 10px 10px 10px 25px;
+      background: -webkit-linear-gradient(left, rgba(250, 250, 250, 0.4), $background-color 45%);
+
+      &.end-scroll {
+        opacity: 0;
+        transition-duration: .3s;
+      }
+    }
+
+    @media (max-width: 790px) {
+      margin-right: 19px;
+
+      .fa-arrow-right {
+        display: block;
+        transition-duration: .3s;
+      }
+    }
+
     li {
 
       a {
@@ -275,6 +299,11 @@
       .badge {
         color: $gl-icon-color;
       }
+    }
+
+    &.end-scroll {
+      margin-right: 0;
+      transition-duration: .3s;
     }
   }
 
