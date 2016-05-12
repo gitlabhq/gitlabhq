@@ -7,7 +7,7 @@ To enable the Twitter OmniAuth provider you must register your application with 
 1.  Select "Create new app"
 
 1.  Fill in the application details.
-    - Name: This can be anything. Consider something like "\<Organization\>'s GitLab" or "\<Your Name\>'s GitLab" or
+    - Name: This can be anything. Consider something like `<Organization>'s GitLab` or `<Your Name>'s GitLab` or
     something else descriptive.
     - Description: Create a description.
     - Website: The URL to your GitLab installation. 'https://gitlab.example.com'

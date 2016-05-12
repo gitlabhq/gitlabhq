@@ -14,7 +14,7 @@ GitLab.com will generate an application ID and secret key for you to use.
 1.  Select "New application".
 
 1.  Provide the required details.
-    - Name: This can be anything. Consider something like "\<Organization\>'s GitLab" or "\<Your Name\>'s GitLab" or something else descriptive.
+    - Name: This can be anything. Consider something like `<Organization>'s GitLab` or `<Your Name>'s GitLab` or something else descriptive.
     - Redirect URI:
 
     ```
