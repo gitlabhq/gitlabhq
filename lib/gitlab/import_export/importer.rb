@@ -13,7 +13,7 @@ module Gitlab
       end
 
       def import
-        FileUtils.mkdir_p(@shared.storage_path)
+        FileUtils.mkdir_p(@shared.export_path)
         decompress_archive
       rescue => e
         @shared.error(e.message)
@@ -23,7 +23,7 @@ module Gitlab
       private
 
       def decompress_archive
-        untar_zxf(archive: @archive_file, dir: @shared.storage_path)
+        untar_zxf(archive: @archive_file, dir: @shared.export_path)
       end
     end
   end
