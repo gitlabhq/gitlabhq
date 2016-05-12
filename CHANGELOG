@@ -36,6 +36,7 @@ v 8.8.0 (unreleased)
   - Add support for supressing text diffs using .gitattributes on the default branch (Matt Oakes)
   - Add eager load paths to help prevent dependency load issues in Sidekiq workers. !3724
   - Added multiple colors for labels in dropdowns when dups happen.
+  - Always group commits by server timezone, not commit timestamp
   - Improve description for the Two-factor Authentication sign-in screen. (Connor Shea)
   - API support for the 'since' and 'until' operators on commit requests (Paco Guzman)
   - Fix Gravatar hint in user profile when Gravatar is disabled. !3988 (Artem Sidorenko)
