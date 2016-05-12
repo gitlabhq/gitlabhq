@@ -58,6 +58,6 @@ class Admin::RunnersController < Admin::ApplicationController
   end
 
   def runner_params
-    params.require(:runner).permit(:token, :description, :tag_list, :active)
+    params.require(:runner).permit(Ci::Runner::FORM_EDITABLE)
   end
 end
