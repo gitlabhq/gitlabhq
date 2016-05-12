@@ -63,7 +63,7 @@
       float: left;
       height: $header-height;
       width: 100%;
-      padding-left: 16px;
+      padding-left: 22px;
       overflow: hidden;
       outline: none;
       transition-duration: .3s;
@@ -78,7 +78,7 @@
       }
 
       .gitlab-text-container {
-        width: 220px;
+        width: 230px;
 
         h3 {
           width: 158px;
@@ -146,12 +146,12 @@
 
     a {
       padding: 7px 15px;
-      transition-duration: .3s;
       font-size: $gl-font-size;
       line-height: 24px;
       color: $gray;
       display: block;
       text-decoration: none;
+      padding-left: 23px;
       font-weight: normal;
       outline: none;
 
@@ -253,11 +253,6 @@
         width: auto;
 
         a {
-          @media (min-width: $screen-xs-min) {
-            padding-left: 23px;
-            transition-duration: .3s;
-          }
-
           span {
             display: none;
           }
@@ -317,7 +312,7 @@
     }
 
     .nav-sidebar li a {
-      width: 220px;
+      width: $sidebar_width;
 
       &.back-link {
         i {
