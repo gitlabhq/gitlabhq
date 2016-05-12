@@ -115,6 +115,7 @@ v 8.7.6
   - Fix links on wiki pages for relative url setups. !4131 (Artem Sidorenko)
   - Fix import from GitLab.com to a private instance failure. !4181
   - Fix external imports not finding the import data. !4106
+  - Fix notification delay when changing status of an issue
 
 v 8.7.5
   - Fix relative links in wiki pages. !4050
