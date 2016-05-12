@@ -56,6 +56,8 @@ module Projects
 
       after_create_actions if @project.persisted?
 
+      @project.add_import_job if @project.import?
+
       @project
     rescue => e
       message = "Unable to save project: #{e.message}"
