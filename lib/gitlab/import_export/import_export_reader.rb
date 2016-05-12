@@ -55,7 +55,7 @@ module Gitlab
         parsed_hash = { include: value }
 
         @attributes_parser.parse(value) do |hash|
-            parsed_hash = { include: hash_or_merge(value, hash) }
+          parsed_hash = { include: hash_or_merge(value, hash) }
         end
         @json_config_hash[current_key] = parsed_hash
       end
