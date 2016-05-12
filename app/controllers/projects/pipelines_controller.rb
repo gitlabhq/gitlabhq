@@ -7,8 +7,10 @@ class Projects::PipelinesController < Projects::ApplicationController
 
   def index
     @scope = params[:scope]
-    @all_pipelines = project.ci_commits
-    @pipelines = PipelinesFinder.new(project).execute(@all_pipelines, @scope)
+    all_pipelines = project.ci_commits
+    @pipelines_count = all_pipelines.count
+    @running_or_pending_count = all_pipelines.running_or_pending.count
+    @pipelines = PipelinesFinder.new(project).execute(all_pipelines, @scope)
     @pipelines = @pipelines.order(id: :desc).page(params[:page]).per(30)
   end
 
@@ -22,7 +24,7 @@ class Projects::PipelinesController < Projects::ApplicationController
     rescue ArgumentError => e
       @error = e.message
       render 'new'
-    rescue => e
+    rescue
       @error = 'Undefined error'
       render 'new'
     end

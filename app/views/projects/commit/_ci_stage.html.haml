@@ -6,8 +6,9 @@
       - status = latest.status
       %span{class: "ci-status-link ci-status-icon-#{status}"}
         = ci_icon_for_status(status)
-      &nbsp;
-      = stage.titleize.pluralize
+      - if stage
+        &nbsp;
+        = stage.titleize.pluralize
   = render latest.ordered, coverage: @project.build_coverage_enabled?, tage: false, ref: false, allow_retry: true
   = render retried.ordered, coverage: @project.build_coverage_enabled?, stage: false, ref: false, retried: true
   %tr
