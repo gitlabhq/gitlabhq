@@ -63,7 +63,7 @@ module Gitlab
             FROM #{quoted_table}
             ORDER BY id ASC
             LIMIT 1 OFFSET #{processed + batch_size}
-          }.strip_heredoc).to_hash.first
+          }).to_hash.first
 
           query = %Q{
             UPDATE #{quoted_table}
