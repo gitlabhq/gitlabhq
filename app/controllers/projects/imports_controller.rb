@@ -22,7 +22,7 @@ class Projects::ImportsController < Projects::ApplicationController
         Project.transaction do
           @project.import_start
         end
-        @project.add_import_job if @project.persisted?
+        @project.add_import_job
       end
     end
 

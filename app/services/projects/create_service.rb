@@ -103,9 +103,8 @@ module Projects
     def save_project_and_import_data(import_data)
       Project.transaction do
         @project.create_or_update_import_data(data: import_data[:data], credentials: import_data[:credentials]) if import_data
-        @project.save
 
-        if @project.persisted? && !@project.import?
+        if @project.save && !@project.import?
           raise 'Failed to create repository' unless @project.create_repository
         end
       end
