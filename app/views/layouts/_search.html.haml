@@ -39,9 +39,20 @@
       - else
         = hidden_field_tag :search_code, true
 
-      .current-project-opts.hide{ data: { user_issues_path: namespace_project_issues_path(@project.namespace, @project), user_mr_path: namespace_project_merge_requests_path(@project.namespace, @project), project_name: @project.name } }
+      :javascript
+        gl.projectOptions = gl.projectOptions || {};
+        gl.projectOptions["#{@project.path}"] = {
+          issuesPath: "#{namespace_project_issues_path(@project.namespace, @project)}",
+          mrPath: "#{namespace_project_merge_requests_path(@project.namespace, @project)}",
+          projectName: "#{@project.name}"
+        };
 
-    .dashboard-opts.hide{ data: { user_issues_path: issues_dashboard_url, user_mr_path: merge_requests_dashboard_url } }
+    :javascript
+      gl.dashboardOptions = {
+        issuesPath: "#{issues_dashboard_url}",
+        mrPath: "#{merge_requests_dashboard_url}"
+      };
+
 
     - if @snippet || @snippets
       = hidden_field_tag :snippets, true
