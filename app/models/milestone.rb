@@ -1,18 +1,3 @@
-# == Schema Information
-#
-# Table name: milestones
-#
-#  id          :integer          not null, primary key
-#  title       :string           not null
-#  project_id  :integer          not null
-#  description :text
-#  due_date    :date
-#  created_at  :datetime
-#  updated_at  :datetime
-#  state       :string
-#  iid         :integer
-#
-
 class Milestone < ActiveRecord::Base
   # Represents a "No Milestone" state used for filtering Issues and Merge
   # Requests that have no milestone assigned.
@@ -127,6 +112,10 @@ class Milestone < ActiveRecord::Base
 
   def author_id
     nil
+  end
+
+  def title=(value)
+    write_attribute(:title, Sanitize.clean(value.to_s)) if value.present?
   end
 
   # Sorts the issues for the given IDs.

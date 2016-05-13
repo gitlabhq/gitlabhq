@@ -19,6 +19,7 @@ describe 'Admin Builds' do
           visit admin_builds_path
 
           expect(page).to have_selector('.nav-links li.active', text: 'All')
+          expect(page).to have_selector('.row-content-block', text: 'All builds')
           expect(page.all('.build-link').size).to eq(4)
           expect(page).to have_link 'Cancel all'
         end

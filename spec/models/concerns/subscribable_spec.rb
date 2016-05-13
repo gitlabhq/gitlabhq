@@ -44,6 +44,16 @@ describe Subscribable, 'Subscribable' do
     end
   end
 
+  describe '#subscribe' do
+    it 'subscribes the given user' do
+      expect(resource.subscribed?(user)).to be_falsey
+
+      resource.subscribe(user)
+
+      expect(resource.subscribed?(user)).to be_truthy
+    end
+  end
+
   describe '#unsubscribe' do
     it 'unsubscribes the given current user' do
       resource.subscriptions.create(user: user, subscribed: true)

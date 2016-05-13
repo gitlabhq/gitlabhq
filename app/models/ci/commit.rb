@@ -1,25 +1,3 @@
-# == Schema Information
-#
-# Table name: ci_commits
-#
-#  id            :integer          not null, primary key
-#  project_id    :integer
-#  ref           :string
-#  sha           :string
-#  before_sha    :string
-#  push_data     :text
-#  created_at    :datetime
-#  updated_at    :datetime
-#  tag           :boolean          default(FALSE)
-#  yaml_errors   :text
-#  committed_at  :datetime
-#  gl_project_id :integer
-#  status        :string
-#  started_at    :datetime
-#  finished_at   :datetime
-#  duration      :integer
-#
-
 module Ci
   class Commit < ActiveRecord::Base
     extend Ci::Model

@@ -351,7 +351,7 @@ class SystemNoteService
   # Returns an Array of Strings
   def self.new_commit_summary(new_commits)
     new_commits.collect do |commit|
-      "* #{commit.short_id} - #{commit.title}"
+      "* #{commit.short_id} - #{escape_html(commit.title)}"
     end
   end
 
@@ -432,5 +432,9 @@ class SystemNoteService
     cross_reference = noteable_ref.to_reference(project)
     body = "Moved #{direction} #{cross_reference}"
     create_note(noteable: noteable, project: project, author: author, note: body)
+  end
+
+  def self.escape_html(text)
+    Rack::Utils.escape_html(text)
   end
 end

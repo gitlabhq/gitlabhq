@@ -138,10 +138,10 @@ module ProjectsHelper
   private
 
   def get_project_nav_tabs(project, current_user)
-    nav_tabs = [:home, :forks]
+    nav_tabs = [:home]
 
     if !project.empty_repo? && can?(current_user, :download_code, project)
-      nav_tabs << [:files, :commits, :network, :graphs]
+      nav_tabs << [:files, :commits, :network, :graphs, :forks]
     end
 
     if project.repo_exists? && can?(current_user, :read_merge_request, project)
@@ -209,7 +209,8 @@ module ProjectsHelper
   end
 
   def default_url_to_repo(project = @project)
-    if default_clone_protocol == "ssh"
+    case default_clone_protocol
+    when 'ssh'
       project.ssh_url_to_repo
     else
       project.http_url_to_repo

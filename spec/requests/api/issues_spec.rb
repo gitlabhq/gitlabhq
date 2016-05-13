@@ -39,6 +39,7 @@ describe API::API, api: true  do
   let!(:empty_milestone) do
     create(:milestone, title: '2.0.0', project: project)
   end
+  let!(:note) { create(:note_on_issue, author: user, project: project, noteable: issue) }
 
   before { project.team << [user, :reporter] }
 
@@ -232,8 +233,28 @@ describe API::API, api: true  do
   end
 
   describe "GET /projects/:id/issues/:issue_id" do
+    it 'exposes known attributes' do
+      get api("/projects/#{project.id}/issues/#{issue.id}", user)
+
+      expect(response.status).to eq(200)
+      expect(json_response['id']).to eq(issue.id)
+      expect(json_response['iid']).to eq(issue.iid)
+      expect(json_response['project_id']).to eq(issue.project.id)
+      expect(json_response['title']).to eq(issue.title)
+      expect(json_response['description']).to eq(issue.description)
+      expect(json_response['state']).to eq(issue.state)
+      expect(json_response['created_at']).to be_present
+      expect(json_response['updated_at']).to be_present
+      expect(json_response['labels']).to eq(issue.label_names)
+      expect(json_response['milestone']).to be_a Hash
+      expect(json_response['assignee']).to be_a Hash
+      expect(json_response['author']).to be_a Hash
+      expect(json_response['user_notes_count']).to be(1)
+    end
+
     it "should return a project issue by id" do
       get api("/projects/#{project.id}/issues/#{issue.id}", user)
+
       expect(response.status).to eq(200)
       expect(json_response['title']).to eq(issue.title)
       expect(json_response['iid']).to eq(issue.iid)
@@ -602,6 +623,12 @@ describe API::API, api: true  do
 
       expect(response.status).to eq(404)
     end
+
+    it 'returns 404 if the issue is confidential' do
+      post api("/projects/#{project.id}/issues/#{confidential_issue.id}/subscription", non_member)
+
+      expect(response.status).to eq(404)
+    end
   end
 
   describe 'DELETE :id/issues/:issue_id/subscription' do
@@ -620,6 +647,12 @@ describe API::API, api: true  do
 
     it 'returns 404 if the issue is not found' do
       delete api("/projects/#{project.id}/issues/123/subscription", user)
+
+      expect(response.status).to eq(404)
+    end
+
+    it 'returns 404 if the issue is confidential' do
+      delete api("/projects/#{project.id}/issues/#{confidential_issue.id}/subscription", non_member)
 
       expect(response.status).to eq(404)
     end
