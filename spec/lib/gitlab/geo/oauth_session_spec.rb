@@ -83,6 +83,13 @@ describe Gitlab::Geo::OauthSession do
       expect(subject.extract_logout_token).to be_nil
     end
 
+    it 'returns false when decryptation fails' do
+      subject.generate_logout_state
+      allow_any_instance_of(OpenSSL::Cipher::AES).to receive(:final) { raise OpenSSL::OpenSSLError }
+      
+      expect(subject.extract_logout_token).to be_falsey
+    end
+
     it 'encrypted access token is recoverable' do
       subject.generate_logout_state
 
