@@ -70,7 +70,7 @@ module Gitlab
         Net::LDAP::DN.new(dn).each_pair { |name, value| dn_components << { name: name, value: value } }
         dn_components.
           reverse.
-          take_while { |rdn| rdn[:name].upcase == 'DC' }. # Domain Component
+          take_while { |rdn| rdn[:name].casecmp('DC').zero? }. # Domain Component
           map { |rdn| rdn[:value] }.
           reverse.
           join('.')
