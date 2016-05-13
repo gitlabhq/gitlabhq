@@ -1,10 +1,10 @@
-class @BlobGitIgnoreSelector
+class @BlobGitignoreSelector
   constructor: (opts) ->
     {
       @dropdown
       @editor
-      @wrapper        = @dropdown.parents('.gitignore-selector')
-      @fileNameInput  = $('#file_name')
+      @$wrapper        = @dropdown.closest('.gitignore-selector')
+      @$filenameInput  = $('#file_name')
       @data           = @dropdown.data('filenames')
     } = opts
 
@@ -13,51 +13,46 @@ class @BlobGitIgnoreSelector
       filterable: true,
       selectable: true,
       search:
-        fields: ['text']
-      clicked: @onClick.bind(@)
+        fields: ['name']
+      clicked: @onClick
+      text: (gitignore) ->
+        gitignore.name
     )
 
-    @toggleGitIgnoreSelector()
+    @toggleGitignoreSelector()
     @bindEvents()
 
   bindEvents: ->
-    @fileNameInput
+    @$filenameInput
       .on 'keyup blur', (e) =>
-        @toggleGitIgnoreSelector()
+        @toggleGitignoreSelector()
 
-  toggleGitIgnoreSelector: ->
-    filename = @fileNameInput.val() or $('.editor-file-name').text().trim()
-    @wrapper.toggleClass 'hidden', filename isnt '.gitignore'
+  toggleGitignoreSelector: ->
+    filename = @$filenameInput.val() or $('.editor-file-name').text().trim()
+    @$wrapper.toggleClass 'hidden', filename isnt '.gitignore'
 
-  onClick: (item, el, e) ->
+  onClick: (item, el, e) =>
     e.preventDefault()
-    @requestIgnoreFile(item.text)
+    @requestIgnoreFile(item.name)
 
   requestIgnoreFile: (name) ->
-    Api.gitIgnoreText name, @requestIgnoreFileSuccess.bind(@)
+    Api.gitignoreText name, @requestIgnoreFileSuccess.bind(@)
 
   requestIgnoreFileSuccess: (gitignore) ->
-    @editor.setValue(gitignore.content, -1)
-
-    # Move cursor position to end of file
-    row = @editor.session.getLength() - 1
-    column = @editor.session.getLine(row).length
-    @editor.gotoLine(row + 1, column)
+    @editor.setValue(gitignore.content, 1)
     @editor.focus()
 
-class @BlobGitIgnoreSelectors
+class @BlobGitignoreSelectors
   constructor: (opts) ->
-    _this = @
-
     {
-      @dropdowns = $('.js-gitignore-selector')
+      @$dropdowns = $('.js-gitignore-selector')
       @editor
     } = opts
 
-    @dropdowns.each ->
-      $dropdown = $(@)
+    @$dropdowns.each (i, dropdown) =>
+      $dropdown = $(dropdown)
 
-      new BlobGitIgnoreSelector(
+      new BlobGitignoreSelector(
         dropdown: $dropdown,
-        editor: _this.editor
+        editor: @editor
       )

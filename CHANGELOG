@@ -66,13 +66,12 @@ v 8.8.0 (unreleased)
   - All Grape API helpers are now instrumented
   - Improve Issue formatting for the Slack Service (Jeroen van Baarsen)
   - Fixed advice on invalid permissions on upload path !2948 (Ludovic Perrine)
+  - When creating a .gitignore file a dropdown with templates will be provided
 
 v 8.7.6
   - Fix links on wiki pages for relative url setups. !4131 (Artem Sidorenko)
   - Fix import from GitLab.com to a private instance failure. !4181
   - Fix external imports not finding the import data. !4106
-  - Fix import from gitlab.com to a private instance failure
-  - When creating a .gitignore file a dropdown with templates will be provided
 
 v 8.7.5
   - Fix relative links in wiki pages. !4050

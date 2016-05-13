@@ -12,15 +12,15 @@ module API
     # Get the text for a specific gitignore
     #
     # Parameters:
-    #   key (required) - The key of a license
+    #   name (required) - The name of a license
     #
     # Example Request:
-    #   GET /gitignores/elixir
+    #   GET /gitignores/Elixir
     #
-    get 'gitignores/:key' do
-      required_attributes! [:key]
+    get 'gitignores/:name' do
+      required_attributes! [:name]
 
-      gitignore = Gitlab::Gitignore.find(params[:key])
+      gitignore = Gitlab::Gitignore.find(params[:name])
       not_found!('.gitignore') unless gitignore
 
       present gitignore, with: Entities::Gitignore

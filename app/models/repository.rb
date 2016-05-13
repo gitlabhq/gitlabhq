@@ -245,7 +245,7 @@ class Repository
   def cache_keys
     %i(size branch_names tag_names commit_count
        readme version contribution_guide changelog
-       license_blob license_key)
+       license_blob license_key gitignore)
   end
 
   def build_cache
@@ -254,6 +254,10 @@ class Repository
         send(key)
       end
     end
+  end
+
+  def expire_gitignore
+    cache.expire(:gitignore)
   end
 
   def expire_tags_cache

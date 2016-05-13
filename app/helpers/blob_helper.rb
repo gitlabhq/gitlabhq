@@ -185,13 +185,13 @@ module BlobHelper
     }
   end
 
-  def gitignores_for_select
-    return @gitignores_for_select if defined?(@gitignores_for_select)
+  def gitignore_names
+    return @gitignore_names if defined?(@gitignore_names)
 
-    @gitignores_for_select = {
-      Global: Gitlab::Gitignore.global.map{ |v| { text: v.name } },
+    @gitignore_names = {
+      Global: Gitlab::Gitignore.global.map { |gitignore| { name: gitignore.name } },
       # Note that the key here doesn't cover it really
-      Languages: Gitlab::Gitignore.languages_frameworks.map{ |v| { text: v.name } }
+      Languages: Gitlab::Gitignore.languages_frameworks.map{ |gitignore| { name: gitignore.name } }
     }
   end
 end

@@ -60,23 +60,36 @@ class GitLabDropdownFilter
       results = data
 
       if search_text isnt ''
-        # handle groups
+        # When data is an array of objects therefore [object Array] e.g.
+        # [
+        #   { prop: 'foo' },
+        #   { prop: 'baz' }
+        # ]
         if _.isArray(data)
           results = fuzzaldrinPlus.filter(data, search_text,
             key: @options.keys
           )
-        else if _.isObject(data)
-          results = {}
-          for key, group of data
-            tmp = fuzzaldrinPlus.filter(group, search_text,
-              key: @options.keys
-            )
+        else
+          # If data is grouped therefore an [object Object]. e.g.
+          # {
+          #   groupName1: [
+          #     { prop: 'foo' },
+          #     { prop: 'baz' }
+          #   ],
+          #   groupName2: [
+          #     { prop: 'abc' },
+          #     { prop: 'def' }
+          #   ]
+          # }
+          if gl.utils.isObject data
+            results = {}
+            for key, group of data
+              tmp = fuzzaldrinPlus.filter(group, search_text,
+                key: @options.keys
+              )
 
-            if tmp.length
-              results[key] = []
-
-              tmp.map (item) ->
-                results[key].push item
+              if tmp.length
+                results[key] = tmp.map (item) -> item
 
       @options.callback results
     else
@@ -250,7 +263,7 @@ class GitLabDropdown
       html = [@noResults()]
     else
       # Handle array groups
-      if String(data) is "[object Object]"
+      if gl.utils.isObject data
         html = []
         for name, groupData of data
           # Add header for each group
@@ -269,7 +282,7 @@ class GitLabDropdown
     @appendMenu(full_html)
 
   renderData: (data, group = false) ->
-    $.map data, (obj, index) =>
+    data.map (obj, index) =>
       return @renderItem(obj, group, index)
 
   shouldPropagate: (e) =>
@@ -416,7 +429,7 @@ class GitLabDropdown
         selectedIndex = el.data('index')
         selectedObject = @renderedData[groupName][selectedIndex]
       else
-        selectedIndex = el.parent().index()
+        selectedIndex = el.closest('li').index()
         selectedObject = @renderedData[selectedIndex]
 
     value = if @options.id then @options.id(selectedObject, el) else selectedObject.id
