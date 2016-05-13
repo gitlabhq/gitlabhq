@@ -28,12 +28,12 @@ module Gitlab
       end
 
       def update_missing_author(relation_hash, members_map)
-        old_author_id = relation_hash['author_id'].dup
+        old_author_id = relation_hash['author_id']
         relation_hash['author_id'] = members_map.map[old_author_id]
         return unless members_map.note_member_list.include?(old_author_id)
 
         relation_hash['note'] = ('*Blank note*') if relation_hash['note'].blank?
-        relation_hash['note'].join(missing_author_note(relation_hash['updated_at'],
+        relation_hash['note'] += (missing_author_note(relation_hash['updated_at'],
                                                        relation_hash['author']['name']))
         relation_hash.delete('author')
       end
