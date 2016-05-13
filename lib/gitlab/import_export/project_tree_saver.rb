@@ -6,7 +6,7 @@ module Gitlab
       def initialize(project:, shared:)
         @project = project
         @shared = shared
-        @full_path = File.join(@shared.export_path, project_filename)
+        @full_path = File.join(@shared.export_path, ImportExport.project_filename)
       end
 
       def save
@@ -19,11 +19,6 @@ module Gitlab
       end
 
       private
-
-      # TODO remove magic keyword and move it to a shared config
-      def project_filename
-        "project.json"
-      end
 
       def project_json_tree
         @project.to_json(Gitlab::ImportExport::ImportExportReader.new(shared: @shared).project_tree)

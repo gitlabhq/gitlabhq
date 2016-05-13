@@ -9,5 +9,13 @@ module Gitlab
     def storage_path
       File.join(Settings.shared['path'], 'tmp/project_exports')
     end
+
+    def project_filename
+      "project.json"
+    end
+
+    def project_bundle_filename
+      "project.bundle"
+    end
   end
 end
