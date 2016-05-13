@@ -3,7 +3,7 @@ class JwtController < ApplicationController
   skip_before_action :verify_authenticity_token
 
   SERVICES = {
-    'container_registry' => JWT::ContainerRegistryAuthenticationService,
+    'container_registry' => ::Gitlab::JWT::ContainerRegistryAuthenticationService,
   }
 
   def auth
