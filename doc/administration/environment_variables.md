@@ -58,4 +58,4 @@ to the naming scheme `GITLAB_#{name in 1_settings.rb in upper case}`.
 
 It's possible to preconfigure the GitLab docker image by adding the environment
 variable `GITLAB_OMNIBUS_CONFIG` to the `docker run` command.
-For more information see the ['preconfigure-docker-container' section in the Omnibus documentation](http://doc.gitlab.com/omnibus/docker/#preconfigure-docker-container).
+For more information see the ['preconfigure-docker-container' section in the Omnibus documentation](http://docs.gitlab.com/omnibus/docker/#preconfigure-docker-container).
