@@ -443,12 +443,12 @@ module Ci
       context 'when job variables are defined' do
         context 'when syntax is correct' do
           it 'returns job variables' do
-            variables =  {
+            variables = {
               KEY1: 'value1',
               SOME_KEY_2: 'value2'
             }
 
-            config =  YAML.dump(
+            config = YAML.dump(
               { before_script: ['pwd'],
                 rspec: {
                   variables: variables,

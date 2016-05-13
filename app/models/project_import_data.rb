@@ -1,15 +1,3 @@
-# == Schema Information
-#
-# Table name: project_import_data
-#
-#  id                         :integer          not null, primary key
-#  project_id                 :integer
-#  data                       :text
-#  encrypted_credentials      :text
-#  encrypted_credentials_iv   :string
-#  encrypted_credentials_salt :string
-#
-
 require 'carrierwave/orm/activerecord'
 
 class ProjectImportData < ActiveRecord::Base

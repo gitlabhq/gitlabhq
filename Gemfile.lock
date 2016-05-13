@@ -3,7 +3,7 @@ GEM
   specs:
     CFPropertyList (2.3.2)
     RedCloth (4.2.9)
-    ace-rails-ap (2.0.1)
+    ace-rails-ap (4.0.2)
     actionmailer (4.2.6)
       actionpack (= 4.2.6)
       actionview (= 4.2.6)
@@ -33,7 +33,6 @@ GEM
       activemodel (= 4.2.6)
       activesupport (= 4.2.6)
       arel (~> 6.0)
-    activerecord-deprecated_finders (1.0.4)
     activerecord-session_store (0.1.2)
       actionpack (>= 4.0.0, < 5)
       activerecord (>= 4.0.0, < 5)
@@ -51,9 +50,6 @@ GEM
       activerecord (>= 3.0)
     akismet (2.0.0)
     allocations (1.0.4)
-    annotate (2.7.0)
-      activerecord (>= 3.2, < 6.0)
-      rake (~> 10.4)
     arel (6.0.3)
     asana (0.4.0)
       faraday (~> 0.9)
@@ -405,6 +401,8 @@ GEM
       html2haml (>= 1.0.1)
       railties (>= 4.0.1)
     hashie (3.4.3)
+    health_check (1.5.1)
+      rails (>= 2.3.0)
     highline (1.7.8)
     hipchat (1.5.2)
       httparty
@@ -435,8 +433,6 @@ GEM
       rails-dom-testing (>= 1, < 3)
       railties (>= 4.2.0)
       thor (>= 0.14, < 2.0)
-    jquery-scrollto-rails (1.4.3)
-      railties (> 3.1, < 5.0)
     jquery-turbolinks (2.1.0)
       railties (>= 3.1.0)
       turbolinks
@@ -885,15 +881,13 @@ PLATFORMS
 
 DEPENDENCIES
   RedCloth (~> 4.2.9)
-  ace-rails-ap (~> 2.0.1)
-  activerecord-deprecated_finders (~> 1.0.3)
+  ace-rails-ap (~> 4.0.2)
   activerecord-session_store (~> 0.1.0)
   acts-as-taggable-on (~> 3.4)
   addressable (~> 2.3.8)
   after_commit_queue
   akismet (~> 2.0)
   allocations (~> 1.0)
-  annotate (~> 2.7.0)
   asana (~> 0.4.0)
   asciidoctor (~> 1.5.2)
   attr_encrypted (~> 1.3.4)
@@ -951,13 +945,13 @@ DEPENDENCIES
   grape (~> 0.13.0)
   grape-entity (~> 0.4.2)
   haml-rails (~> 0.9.0)
+  health_check (~> 1.5.1)
   hipchat (~> 1.5.0)
   html-pipeline (~> 1.11.0)
   httparty (~> 0.13.3)
   influxdb (~> 0.2)
   jquery-atwho-rails (~> 1.3.2)
   jquery-rails (~> 4.1.0)
-  jquery-scrollto-rails (~> 1.4.3)
   jquery-turbolinks (~> 2.1.0)
   jquery-ui-rails (~> 5.0.0)
   kaminari (~> 0.16.3)
@@ -1061,4 +1055,4 @@ DEPENDENCIES
   wikicloth (= 0.8.1)
 
 BUNDLED WITH
-   1.12.1
+   1.12.3

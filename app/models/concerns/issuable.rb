@@ -124,8 +124,8 @@ module Issuable
     end
 
     def with_label(title)
-      if title.is_a?(Array) && title.count > 1
-        joins(:labels).where(labels: { title: title }).group('issues.id').having("count(distinct labels.title) = #{title.count}")
+      if title.is_a?(Array) && title.size > 1
+        joins(:labels).where(labels: { title: title }).group(arel_table[:id]).having("COUNT(DISTINCT labels.title) = #{title.size}")
       else
         joins(:labels).where(labels: { title: title })
       end
@@ -158,6 +158,10 @@ module Issuable
 
   def upvotes
     notes.awards.where(note: "thumbsup").count
+  end
+
+  def user_notes_count
+    notes.user.count
   end
 
   def subscribed_without_subscriptions?(user)

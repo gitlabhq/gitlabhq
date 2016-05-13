@@ -9,9 +9,6 @@
 @mixin gitlab-theme($color-light, $color, $color-darker, $color-dark) {
   .page-with-sidebar {
     .header-logo {
-      background-color: $color;
-      border-color: $color;
-
       a {
         color: $color-light;
 
@@ -21,9 +18,13 @@
       }
 
       &:hover {
-        background-color: $color-darker;
+        background-color: $color-dark;
         a {
           color: #fff;
+
+          h3 {
+            color: #fff;
+          }
         }
       }
     }
