@@ -2,7 +2,7 @@ module API
   module Helpers
     PRIVATE_TOKEN_HEADER = "HTTP_PRIVATE_TOKEN"
     PRIVATE_TOKEN_PARAM = :private_token
-    SUDO_HEADER ="HTTP_SUDO"
+    SUDO_HEADER = "HTTP_SUDO"
     SUDO_PARAM = :sudo
 
     def parse_boolean(value)

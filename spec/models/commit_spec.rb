@@ -56,7 +56,7 @@ describe Commit, models: true do
     end
 
     it "does not truncates a message with a newline after 80 but less 100 characters" do
-      message =<<eos
+      message = <<eos
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sodales id felis id blandit.
 Vivamus egestas lacinia lacus, sed rutrum mauris.
 eos
