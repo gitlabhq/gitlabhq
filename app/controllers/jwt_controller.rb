@@ -1,22 +1,13 @@
 class JwtController < ApplicationController
   skip_before_action :authenticate_user!
   skip_before_action :verify_authenticity_token
+  before_action :authenticate_project_or_user
 
   SERVICES = {
     'container_registry' => ::Gitlab::JWT::ContainerRegistryAuthenticationService,
   }
 
   def auth
-    @authenticated = authenticate_with_http_basic do |login, password|
-      # if it's possible we first try to authenticate project with login and password
-      @project = authenticate_project(login, password)
-      @user = authenticate_user(login, password) unless @project
-    end
-
-    unless @authenticated
-      head :forbidden if ActionController::HttpAuthentication::Basic.has_basic_credentials?(request)
-    end
-
     service = SERVICES[params[:service]]
     head :not_found unless service
 
@@ -28,19 +19,28 @@ class JwtController < ApplicationController
 
   private
 
+  def authenticate_project_or_user
+    authenticate_with_http_basic do |login, password|
+      # if it's possible we first try to authenticate project with login and password
+      @project = authenticate_project(login, password)
+      return if @project
+
+      @user = authenticate_user(login, password)
+      return if @user
+    end
+
+    if ActionController::HttpAuthentication::Basic.has_basic_credentials?(request)
+      head :forbidden
+    end
+  end
+
   def auth_params
     params.permit(:service, :scope, :offline_token, :account, :client_id)
   end
 
   def authenticate_project(login, password)
-    matched_login = /(?<s>^[a-zA-Z]*-ci)-token$/.match(login)
-
-    if matched_login.present?
-      underscored_service = matched_login['s'].underscore
-
-      if underscored_service == 'gitlab_ci'
-        Project.find_by(builds_enabled: true, runners_token: password)
-      end
+    if login == 'gitlab_ci_token'
+      Project.find_by(builds_enabled: true, runners_token: password)
     end
   end
 
@@ -77,6 +77,7 @@ class JwtController < ApplicationController
         if banned
           Rails.logger.info "IP #{request.ip} failed to login " \
               "as #{login} but has been temporarily banned from Git auth"
+          return
         end
       end
     end
