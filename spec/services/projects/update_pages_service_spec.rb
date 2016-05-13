@@ -5,7 +5,7 @@ describe Projects::UpdatePagesService do
   let(:pipeline) { create :ci_pipeline, project: project, sha: project.commit('HEAD').sha }
   let(:build) { create :ci_build, pipeline: pipeline, ref: 'HEAD' }
   let(:invalid_file) { fixture_file_upload(Rails.root + 'spec/fixtures/dk.png') }
-  
+
   subject { described_class.new(project, build) }
 
   before do
@@ -18,7 +18,7 @@ describe Projects::UpdatePagesService do
       let(:empty_file) { fixture_file_upload(Rails.root + "spec/fixtures/pages_empty.#{format}") }
       let(:metadata) do
         filename = Rails.root + "spec/fixtures/pages.#{format}.meta"
-        fixture_file_upload(filename) if File.exists?(filename)
+        fixture_file_upload(filename) if File.exist?(filename)
       end
 
       before do
@@ -73,7 +73,7 @@ describe Projects::UpdatePagesService do
     build.update_attributes(artifacts_file: invalid_file)
     expect(execute).not_to eq(:success)
   end
-  
+
   def execute
     subject.execute[:status]
   end
