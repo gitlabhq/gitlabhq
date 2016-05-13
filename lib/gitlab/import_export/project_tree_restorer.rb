@@ -94,8 +94,10 @@ module Gitlab
       end
 
       def relation_from_factory(relation, relation_hash)
-        Gitlab::ImportExport::RelationFactory.create(
-          relation_sym: relation.to_sym, relation_hash: relation_hash.merge('project_id' => project.id), members_mapper: members_mapper)
+        Gitlab::ImportExport::RelationFactory.create(relation_sym: relation.to_sym,
+                                                     relation_hash: relation_hash.merge('project_id' => project.id),
+                                                     members_mapper: members_mapper,
+                                                     user_admin: @user.is_admin?)
       end
     end
   end

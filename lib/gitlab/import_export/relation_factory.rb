@@ -6,11 +6,11 @@ module Gitlab
       OVERRIDES = { snippets: :project_snippets, ci_commits: 'Ci::Commit', statuses: 'commit_status' }.freeze
       USER_REFERENCES = %w(author_id assignee_id updated_by_id).freeze
 
-      def create(relation_sym:, relation_hash:, members_mapper:)
+      def create(relation_sym:, relation_hash:, members_mapper:, user_admin:)
         relation_sym = parse_relation_sym(relation_sym)
         klass = parse_relation(relation_hash, relation_sym)
 
-        update_missing_author(relation_hash, members_mapper) if relation_sym == :notes
+        update_missing_author(relation_hash, members_mapper, user_admin) if relation_sym == :notes
         update_user_references(relation_hash, members_mapper.map)
         update_project_references(relation_hash, klass)
 
@@ -27,12 +27,19 @@ module Gitlab
         end
       end
 
-      def update_missing_author(relation_hash, members_map)
+      def update_missing_author(relation_hash, members_map, user_admin)
         old_author_id = relation_hash['author_id']
-        relation_hash['author_id'] = members_map.map[old_author_id]
+
+        # Users with admin access have access to mapping of users
+        if user_admin
+          relation_hash['author_id'] = members_map.default_project_member
+        else
+          relation_hash['author_id'] = members_map.map[old_author_id]
+        end
+
         author = relation_hash.delete('author')
 
-        return unless members_map.note_member_list.include?(old_author_id)
+        return unless user_admin && members_map.note_member_list.include?(old_author_id)
 
         relation_hash['note'] = ('*Blank note*') if relation_hash['note'].blank?
         relation_hash['note'] += (missing_author_note(relation_hash['updated_at'], author['name']))

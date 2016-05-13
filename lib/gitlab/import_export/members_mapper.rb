@@ -18,6 +18,16 @@ module Gitlab
         @map = generate_map
       end
 
+      def default_project_member
+        @default_project_member ||=
+          begin
+            return @project.project_members.first.user.id unless @project.project_members.empty?
+            default_member = ProjectMember.new(default_project_member_hash)
+            default_member.save!
+            default_member.user.id
+          end
+      end
+
       private
 
       def generate_map
@@ -37,16 +47,6 @@ module Gitlab
 
       def member_hash(member)
         member.except('id').merge(source_id: @project.id)
-      end
-
-      def default_project_member
-        @default_project_member ||=
-          begin
-            return @project.project_members.first.user.id unless @project.project_members.empty?
-            default_member = ProjectMember.new(default_project_member_hash)
-            default_member.save!
-            default_member.user.id
-          end
       end
 
       def default_project_member_hash
