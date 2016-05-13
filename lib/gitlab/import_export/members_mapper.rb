@@ -4,10 +4,10 @@ module Gitlab
 
       attr_reader :map, :note_member_list
 
-      def initialize(exported_members:, user:, project_id:)
+      def initialize(exported_members:, user:, project:)
         @exported_members = exported_members
         @user = user
-        @project_id = project_id
+        @project = project
         @note_member_list = []
 
         @project_member_map = Hash.new do |_, key|
@@ -36,20 +36,21 @@ module Gitlab
       end
 
       def member_hash(member)
-        member.except('id').merge(source_id: @project_id)
+        member.except('id').merge(source_id: @project.id)
       end
 
-      #TODO: If default, then we need to leave a comment 'Comment by <original username>' on comments
       def default_project_member
         @default_project_member ||=
           begin
+            return @project.project_members.first.user.id unless @project.project_members.empty?
             default_member = ProjectMember.new(default_project_member_hash)
-            default_member.user.id if default_member.save
+            default_member.save!
+            default_member.user.id
           end
       end
 
       def default_project_member_hash
-        { user: @user, access_level: ProjectMember::MASTER, source_id: @project_id }
+        { user: @user, access_level: ProjectMember::MASTER, source_id: @project.id }
       end
 
       def find_project_user_query(member)

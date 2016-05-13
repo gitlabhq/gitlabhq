@@ -29,7 +29,7 @@ module Gitlab
       def members_mapper
         @members_mapper ||= Gitlab::ImportExport::MembersMapper.new(exported_members: @project_members,
                                                                     user: @user,
-                                                                    project_id: project.id)
+                                                                    project: project)
       end
 
       def create_relations(relation_list = default_relation_list, tree_hash = @tree_hash)

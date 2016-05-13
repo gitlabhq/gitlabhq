@@ -32,7 +32,7 @@ describe Gitlab::ImportExport::MembersMapper, services: true do
 
     let(:members_mapper) do
       described_class.new(
-        exported_members: exported_members, user: user, project_id: project.id)
+        exported_members: exported_members, user: user, project: project)
     end
 
     it 'maps a project member' do
