@@ -22,7 +22,6 @@ class Projects::CommitController < Projects::ApplicationController
     @note = @project.build_commit_note(commit)
     @notes = commit.notes.non_diff_notes.fresh
     @noteable = @commit
-    @comments_allowed = true
     @comments_target  = {
       noteable_type: 'Commit',
       commit_id: @commit.id

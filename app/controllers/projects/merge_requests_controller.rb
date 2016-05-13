@@ -73,7 +73,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     # but we need it for the "View file @ ..." link by deleted files
     @base_commit ||= @merge_request.first_commit.parent || @merge_request.first_commit
 
-    @comments_allowed = true
     @comments_target = {
       noteable_type: 'MergeRequest',
       noteable_id: @merge_request.id
@@ -118,6 +117,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @commit = @merge_request.last_commit
     @base_commit = @merge_request.diff_base_commit
     @diffs = @merge_request.compare.diffs(diff_options) if @merge_request.compare
+    @diff_notes_disabled = true
 
     @ci_commit = @merge_request.ci_commit
     @statuses = @ci_commit.statuses if @ci_commit
