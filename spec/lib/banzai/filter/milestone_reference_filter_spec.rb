@@ -43,7 +43,7 @@ describe Banzai::Filter::MilestoneReferenceFilter, lib: true do
       milestone.update_attribute(:title, %{"></a>whatever<a title="})
 
       doc = reference_filter("milestone #{reference}")
-      expect(doc.text).to eq "milestone #{milestone.title}"
+      expect(doc.text).to eq "milestone \">whatever"
     end
 
     it 'includes default classes' do

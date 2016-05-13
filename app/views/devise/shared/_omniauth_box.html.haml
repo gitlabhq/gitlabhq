@@ -1,7 +1,7 @@
 %p
   %span.light
     Sign in with &nbsp;
-  - providers = button_based_providers
+  - providers = enabled_button_based_providers
   - providers.each do |provider|
     %span.light
       - has_icon = provider_has_icon?(provider)

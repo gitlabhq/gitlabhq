@@ -1,18 +1,3 @@
-# == Schema Information
-#
-# Table name: merge_request_diffs
-#
-#  id               :integer          not null, primary key
-#  state            :string
-#  st_commits       :text
-#  st_diffs         :text
-#  merge_request_id :integer          not null
-#  created_at       :datetime
-#  updated_at       :datetime
-#  base_commit_sha  :string
-#  real_size        :string
-#
-
 class MergeRequestDiff < ActiveRecord::Base
   include Sortable
 

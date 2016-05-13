@@ -33,7 +33,7 @@ describe SystemHook, models: true do
       Projects::CreateService.new(user, name: 'empty').execute
       expect(WebMock).to have_requested(:post, system_hook.url).with(
         body: /project_create/,
-        headers: { 'Content-Type'=>'application/json', 'X-Gitlab-Event'=>'System Hook' }
+        headers: { 'Content-Type' => 'application/json', 'X-Gitlab-Event' => 'System Hook' }
       ).once
     end
 
@@ -42,7 +42,7 @@ describe SystemHook, models: true do
 
       expect(WebMock).to have_requested(:post, system_hook.url).with(
         body: /project_destroy/,
-        headers: { 'Content-Type'=>'application/json', 'X-Gitlab-Event'=>'System Hook' }
+        headers: { 'Content-Type' => 'application/json', 'X-Gitlab-Event' => 'System Hook' }
       ).once
     end
 
@@ -51,7 +51,7 @@ describe SystemHook, models: true do
       
       expect(WebMock).to have_requested(:post, system_hook.url).with(
         body: /user_create/,
-        headers: { 'Content-Type'=>'application/json', 'X-Gitlab-Event'=>'System Hook' }
+        headers: { 'Content-Type' => 'application/json', 'X-Gitlab-Event' => 'System Hook' }
       ).once
     end
 
@@ -60,7 +60,7 @@ describe SystemHook, models: true do
 
       expect(WebMock).to have_requested(:post, system_hook.url).with(
         body: /user_destroy/,
-        headers: { 'Content-Type'=>'application/json', 'X-Gitlab-Event'=>'System Hook' }
+        headers: { 'Content-Type' => 'application/json', 'X-Gitlab-Event' => 'System Hook' }
       ).once
     end
 
@@ -69,7 +69,7 @@ describe SystemHook, models: true do
 
       expect(WebMock).to have_requested(:post, system_hook.url).with(
         body: /user_add_to_team/,
-        headers: { 'Content-Type'=>'application/json', 'X-Gitlab-Event'=>'System Hook' }
+        headers: { 'Content-Type' => 'application/json', 'X-Gitlab-Event' => 'System Hook' }
       ).once
     end
 
@@ -79,7 +79,7 @@ describe SystemHook, models: true do
 
       expect(WebMock).to have_requested(:post, system_hook.url).with(
         body: /user_remove_from_team/,
-        headers: { 'Content-Type'=>'application/json', 'X-Gitlab-Event'=>'System Hook' }
+        headers: { 'Content-Type' => 'application/json', 'X-Gitlab-Event' => 'System Hook' }
       ).once
     end
 
@@ -88,7 +88,7 @@ describe SystemHook, models: true do
 
       expect(WebMock).to have_requested(:post, system_hook.url).with(
         body: /group_create/,
-        headers: { 'Content-Type'=>'application/json', 'X-Gitlab-Event'=>'System Hook' }
+        headers: { 'Content-Type' => 'application/json', 'X-Gitlab-Event' => 'System Hook' }
       ).once
     end
 
@@ -97,7 +97,7 @@ describe SystemHook, models: true do
 
       expect(WebMock).to have_requested(:post, system_hook.url).with(
         body: /group_destroy/,
-        headers: { 'Content-Type'=>'application/json', 'X-Gitlab-Event'=>'System Hook' }
+        headers: { 'Content-Type' => 'application/json', 'X-Gitlab-Event' => 'System Hook' }
       ).once
     end
 
@@ -106,7 +106,7 @@ describe SystemHook, models: true do
 
       expect(WebMock).to have_requested(:post, system_hook.url).with(
         body: /user_add_to_group/,
-        headers: { 'Content-Type'=>'application/json', 'X-Gitlab-Event'=>'System Hook' }
+        headers: { 'Content-Type' => 'application/json', 'X-Gitlab-Event' => 'System Hook' }
       ).once
     end
 
@@ -116,7 +116,7 @@ describe SystemHook, models: true do
 
       expect(WebMock).to have_requested(:post, system_hook.url).with(
         body: /user_remove_from_group/,
-        headers: { 'Content-Type'=>'application/json', 'X-Gitlab-Event'=>'System Hook' }
+        headers: { 'Content-Type' => 'application/json', 'X-Gitlab-Event' => 'System Hook' }
       ).once
     end
   end

@@ -171,10 +171,10 @@ module API
       expose :label_names, as: :labels
       expose :milestone, using: Entities::Milestone
       expose :assignee, :author, using: Entities::UserBasic
-
       expose :subscribed do |issue, options|
         issue.subscribed?(options[:current_user])
       end
+      expose :user_notes_count
     end
 
     class MergeRequest < ProjectEntity
@@ -188,10 +188,10 @@ module API
       expose :milestone, using: Entities::Milestone
       expose :merge_when_build_succeeds
       expose :merge_status
-
       expose :subscribed do |merge_request, options|
         merge_request.subscribed?(options[:current_user])
       end
+      expose :user_notes_count
     end
 
     class MergeRequestChanges < MergeRequest
@@ -308,6 +308,10 @@ module API
     class Label < Grape::Entity
       expose :name, :color, :description
       expose :open_issues_count, :closed_issues_count, :open_merge_requests_count
+
+      expose :subscribed do |label, options|
+        label.subscribed?(options[:current_user])
+      end
     end
 
     class Compare < Grape::Entity
