@@ -12,7 +12,7 @@ module Gitlab
 
       def bundle
         return false if @project.empty_repo?
-        @full_path = File.join(@shared.export_path, project_filename)
+        @full_path = File.join(@shared.export_path, ImportExport.project_bundle_filename)
         bundle_to_disk
       end
 
@@ -24,11 +24,6 @@ module Gitlab
       rescue => e
         @shared.error(e)
         false
-      end
-
-      # TODO remove magic keyword and move it to a shared config
-      def project_filename
-        "project.bundle"
       end
 
       def path_to_repo
