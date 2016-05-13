@@ -1,7 +1,8 @@
 # Model relationships to be included in the project import/export
 project_tree:
   - issues:
-    - :notes
+    - notes:
+        :author
   - :labels
   - :milestones
   - :snippets
@@ -10,8 +11,9 @@ project_tree:
   - project_members:
     - :user
   - merge_requests:
+    - notes:
+        :author
     - :merge_request_diff
-    - :notes
   - ci_commits:
     - :statuses
 
@@ -31,6 +33,8 @@ included_attributes:
     - :id
     - :email
     - :username
+  author:
+    - :name
 
 # Do not include the following attributes for the models specified.
 excluded_attributes:

@@ -42,9 +42,11 @@ describe Gitlab::ImportExport::MembersMapper, services: true do
     it 'defaults to importer project member if it does not exist' do
       expect(members_mapper.map[-1]).to eq(user.id)
     end
-  end
 
-  def project_member_user_id(id)
-    members_mapper.map[id]
+    it 'updates missing author IDs on missing project member' do
+      members_mapper.map[-1]
+
+      expect(members_mapper.note_member_list.first).to eq(-1)
+    end
   end
 end

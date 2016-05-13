@@ -16,7 +16,7 @@ module Gitlab
         @project_members = @tree_hash.delete('project_members')
         create_relations
       rescue => e
-        @shared.error(e.message)
+        @shared.error(e)
         false
       end
 
@@ -26,9 +26,10 @@ module Gitlab
 
       private
 
-      def members_map
-        @members ||= Gitlab::ImportExport::MembersMapper.map(
-          exported_members: @project_members, user: @user, project_id: project.id)
+      def members_mapper
+        @members_mapper ||= Gitlab::ImportExport::MembersMapper.new(exported_members: @project_members,
+                                                                    user: @user,
+                                                                    project_id: project.id)
       end
 
       def create_relations(relation_list = default_relation_list, tree_hash = @tree_hash)
@@ -61,11 +62,18 @@ module Gitlab
       end
 
       def create_sub_relations(relation, tree_hash)
-        tree_hash[relation.keys.first.to_s].each do |relation_item|
+        relation_key = relation.keys.first.to_s
+        tree_hash[relation_key].each do |relation_item|
           relation.values.flatten.each do |sub_relation|
-            relation_hash = relation_item[sub_relation.to_s]
-            next if relation_hash.blank?
-            process_sub_relation(relation_hash, relation_item, sub_relation)
+
+            if sub_relation.is_a?(Hash)
+              relation_hash =  relation_item[sub_relation.keys.first.to_s]
+              sub_relation = sub_relation.keys.first
+            else
+              relation_hash = relation_item[sub_relation.to_s]
+            end
+
+            process_sub_relation(relation_hash, relation_item, sub_relation) unless relation_hash.blank?
           end
         end
       end
@@ -87,7 +95,7 @@ module Gitlab
 
       def relation_from_factory(relation, relation_hash)
         Gitlab::ImportExport::RelationFactory.create(
-          relation_sym: relation.to_sym, relation_hash: relation_hash.merge('project_id' => project.id), members_map: members_map)
+          relation_sym: relation.to_sym, relation_hash: relation_hash.merge('project_id' => project.id), members_mapper: members_mapper)
       end
     end
   end
