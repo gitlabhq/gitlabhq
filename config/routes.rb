@@ -78,6 +78,9 @@ Rails.application.routes.draw do
     mount Sidekiq::Web, at: '/admin/sidekiq', as: :sidekiq
   end
 
+  # Health check
+  get 'health_check(/:checks)'  => 'health_check#index', as: :health_check
+
   # Enable Grack support
   mount Grack::AuthSpawner, at: '/', constraints: lambda { |request| /[-\/\w\.]+\.git\//.match(request.path_info) }, via: [:get, :post, :put]
 
@@ -96,7 +99,8 @@ Rails.application.routes.draw do
     end
   end
 
-  get '/s/:username' => 'snippets#index', as: :user_snippets, constraints: { username: /.*/ }
+  get '/s/:username', to: redirect('/u/%{username}/snippets'),
+                      constraints: { username: /[a-zA-Z.0-9_\-]+(?<!\.atom)/ }
 
   #
   # Invites
@@ -260,6 +264,7 @@ Rails.application.routes.draw do
     end
 
     resource :logs, only: [:show]
+    resource :health_check, controller: 'health_check', only: [:show]
     resource :background_jobs, controller: 'background_jobs', only: [:show]
     resource :email, only: [:show, :create]
 
@@ -292,6 +297,7 @@ Rails.application.routes.draw do
     resource :application_settings, only: [:show, :update] do
       resources :services
       put :reset_runners_token
+      put :reset_health_check_token
       put :clear_repository_check_states
     end
 
@@ -360,23 +366,18 @@ Rails.application.routes.draw do
     end
   end
 
-  get 'u/:username/calendar' => 'users#calendar', as: :user_calendar,
-      constraints: { username: /.*/ }
-
-  get 'u/:username/calendar_activities' => 'users#calendar_activities', as: :user_calendar_activities,
-      constraints: { username: /.*/ }
-
-  get 'u/:username/groups' => 'users#groups', as: :user_groups,
-      constraints: { username: /.*/ }
-
-  get 'u/:username/projects' => 'users#projects', as: :user_projects,
-      constraints: { username: /.*/ }
-
-  get 'u/:username/contributed' => 'users#contributed', as: :user_contributed_projects,
-      constraints: { username: /.*/ }
-
-  get '/u/:username' => 'users#show', as: :user,
-      constraints: { username: /[a-zA-Z.0-9_\-]+(?<!\.atom)/ }
+  scope(path: 'u/:username',
+        as: :user,
+        constraints: { username: /[a-zA-Z.0-9_\-]+(?<!\.atom)/ },
+        controller: :users) do
+    get :calendar
+    get :calendar_activities
+    get :groups
+    get :projects
+    get :contributed, as: :contributed_projects
+    get :snippets
+    get '/', action: :show
+  end
 
   #
   # Dashboard Area
@@ -724,6 +725,7 @@ Rails.application.routes.draw do
             post :cancel
             post :retry
             post :erase
+            get :trace
             get :raw
           end
 

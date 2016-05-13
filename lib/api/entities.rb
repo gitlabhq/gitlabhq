@@ -325,6 +325,10 @@ module API
     class Label < Grape::Entity
       expose :name, :color, :description
       expose :open_issues_count, :closed_issues_count, :open_merge_requests_count
+
+      expose :subscribed do |label, options|
+        label.subscribed?(options[:current_user])
+      end
     end
 
     class Compare < Grape::Entity

@@ -58,6 +58,19 @@ class UsersController < ApplicationController
     end
   end
 
+  def snippets
+    load_snippets
+
+    respond_to do |format|
+      format.html { render 'show' }
+      format.json do
+        render json: {
+          html: view_to_html_string("snippets/_snippets", collection: @snippets)
+        }
+      end
+    end
+  end
+
   def calendar
     calendar = contributions_calendar
     @timestamps = calendar.timestamps
@@ -114,6 +127,15 @@ class UsersController < ApplicationController
 
   def load_groups
     @groups = JoinedGroupsFinder.new(user).execute(current_user)
+  end
+
+  def load_snippets
+    @snippets = SnippetsFinder.new.execute(
+      current_user,
+      filter: :by_user,
+      user: user,
+      scope: params[:scope]
+    ).page(params[:page])
   end
 
   def projects_for_current_user

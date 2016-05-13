@@ -25,7 +25,7 @@ class DashboardController < Dashboard::ApplicationController
   def load_events
     projects =
       if params[:filter] == "starred"
-        current_user.starred_projects
+        current_user.viewable_starred_projects
       else
         current_user.authorized_projects
       end

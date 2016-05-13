@@ -25,7 +25,7 @@ module Projects
         trash_repositories!
       end
 
-      log_info("Project \"#{project.name}\" was removed")
+      log_info("Project \"#{project.path_with_namespace}\" was removed")
       system_hook_service.execute_hooks_for(project, :destroy)
       true
     end

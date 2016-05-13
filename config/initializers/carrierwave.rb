@@ -2,7 +2,7 @@ CarrierWave::SanitizedFile.sanitize_regexp = /[^[:word:]\.\-\+]/
 
 aws_file = Rails.root.join('config', 'aws.yml')
 
-if File.exists?(aws_file)
+if File.exist?(aws_file)
   AWS_CONFIG = YAML.load(File.read(aws_file))[Rails.env]
 
   CarrierWave.configure do |config|

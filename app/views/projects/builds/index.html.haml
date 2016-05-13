@@ -36,7 +36,7 @@
         %span CI Lint
 
 .row-content-block
-  #{(@scope || 'running').capitalize} builds from this project
+  #{(@scope || 'all').capitalize} builds from this project
 
 %ul.content-list
   - if @builds.blank?

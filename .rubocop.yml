@@ -770,7 +770,7 @@ Lint/DefEndAlignment:
 
 # Check for deprecated class method calls.
 Lint/DeprecatedClassMethods:
-  Enabled: false
+  Enabled: true
 
 # Check for duplicate method definitions.
 Lint/DuplicateMethods:

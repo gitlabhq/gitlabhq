@@ -25,7 +25,7 @@ module Projects
 
         # Check if we did extract public directory
         archive_public_path = File.join(archive_path, 'public')
-        raise 'pages miss the public folder' unless Dir.exists?(archive_public_path)
+        raise 'pages miss the public folder' unless Dir.exist?(archive_public_path)
         raise 'pages are outdated' unless latest?
 
         deploy_page!(archive_public_path)
