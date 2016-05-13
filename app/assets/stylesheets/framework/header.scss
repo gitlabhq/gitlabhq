@@ -6,12 +6,12 @@ header {
   transition-duration: .3s;
 
   &.navbar-empty {
-    height: 58px;
+    height: $header-height;
     background: #fff;
     border-bottom: 1px solid $btn-gray-hover;
 
     .center-logo {
-      margin: 11px 0;
+      margin: 8px 0;
       text-align: center;
 
       #tanuki-logo, img {
