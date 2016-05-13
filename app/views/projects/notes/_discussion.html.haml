@@ -26,7 +26,7 @@
                 = link_to diffs_namespace_project_merge_request_path(note.project.namespace, note.project, note.noteable, anchor: note.line_code) do
                   the diff
               - else
-                the outdated diff
+                an outdated diff
 
             = time_ago_with_tooltip(note.created_at, placement: "bottom", html_class: "note-created-ago")
 
