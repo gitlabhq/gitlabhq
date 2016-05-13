@@ -41,6 +41,6 @@
 
         .discussion-body.js-toggle-content{ class: ("hide" unless expanded) }
           - if note.diff_note?
-            = render "projects/notes/discussions/legacy_diff_with_notes", discussion_notes: discussion_notes
+            = render "projects/notes/discussions/diff_with_notes", discussion_notes: discussion_notes
           - else
             = render "projects/notes/discussions/notes", discussion_notes: discussion_notes
