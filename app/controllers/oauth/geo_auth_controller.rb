@@ -37,21 +37,11 @@ class Oauth::GeoAuthController < ActionController::Base
     oauth = Gitlab::Geo::OauthSession.new(state: params[:state])
     token_string = oauth.extract_logout_token
 
-    unless token_string && token_string.is_utf8?
-      access_token_error('invalid')
-    end
-
-    access_token = Doorkeeper::AccessToken.by_token(token_string)
-    access_token_status = Oauth2::AccessTokenValidationService.validate(access_token)
-
-    if access_token_status == Oauth2::AccessTokenValidationService::VALID
-      user = User.find(access_token.resource_owner_id)
-
-      if current_user == user
-        sign_out current_user
-      end
+    logout = Oauth2::LogoutTokenValidationService.new(current_user, token_string)
+    if logout.valid?
+      sign_out current_user
     else
-      access_token_error('invalid')
+      access_token_error(logout.status)
     end
 
     redirect_to root_path
