@@ -138,10 +138,10 @@ module ProjectsHelper
   private
 
   def get_project_nav_tabs(project, current_user)
-    nav_tabs = [:home, :forks]
+    nav_tabs = [:home]
 
     if !project.empty_repo? && can?(current_user, :download_code, project)
-      nav_tabs << [:files, :commits, :network, :graphs]
+      nav_tabs << [:files, :commits, :network, :graphs, :forks]
     end
 
     if project.repo_exists? && can?(current_user, :read_merge_request, project)

@@ -570,7 +570,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def ref_is_fetched?
-    File.exists?(File.join(project.repository.path_to_repo, ref_path))
+    File.exist?(File.join(project.repository.path_to_repo, ref_path))
   end
 
   def ensure_ref_fetched

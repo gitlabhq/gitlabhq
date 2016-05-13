@@ -95,6 +95,17 @@ module API
       end
     end
 
+    def find_project_label(id)
+      label = user_project.labels.find_by_id(id) || user_project.labels.find_by_title(id)
+      label || not_found!('Label')
+    end
+
+    def find_project_issue(id)
+      issue = user_project.issues.find(id)
+      not_found! unless can?(current_user, :read_issue, issue)
+      issue
+    end
+
     def paginate(relation)
       relation.page(params[:page]).per(params[:per_page].to_i).tap do |data|
         add_pagination_headers(data)

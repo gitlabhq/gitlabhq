@@ -64,6 +64,6 @@ class Projects::RunnersController < Projects::ApplicationController
   end
 
   def runner_params
-    params.require(:runner).permit(:description, :tag_list, :active)
+    params.require(:runner).permit(Ci::Runner::FORM_EDITABLE)
   end
 end
