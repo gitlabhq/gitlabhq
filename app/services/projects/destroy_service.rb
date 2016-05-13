@@ -64,7 +64,7 @@ module Projects
     end
 
     def remove_registry_tags
-      return unless Gitlab.config.registry.enabled
+      return true unless Gitlab.config.registry.enabled
 
       project.container_registry_repository.delete_tags
     end

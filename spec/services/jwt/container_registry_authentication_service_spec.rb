@@ -7,6 +7,7 @@ describe JWT::ContainerRegistryAuthenticationService, services: true do
   let(:rsa_key) { OpenSSL::PKey::RSA.generate(512) }
   let(:registry_settings) do
     {
+      enabled: true,
       issuer: 'rspec',
       key: nil
     }
@@ -146,7 +147,20 @@ describe JWT::ContainerRegistryAuthenticationService, services: true do
           it_behaves_like 'a forbidden'
         end
       end
+    end
 
+    context 'for project without container registry' do
+      let(:project) { create(:empty_project, :public, container_registry_enabled: false) }
+
+      before { project.update(container_registry_enabled: false) }
+
+      context 'disallow when pulling' do
+        let(:current_params) do
+          { scope: "repository:#{project.path_with_namespace}:pull" }
+        end
+
+        it_behaves_like 'a forbidden'
+      end
     end
   end
 
