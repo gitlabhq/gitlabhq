@@ -21,13 +21,9 @@ class Import::GitlabProjectsController < Import::BaseController
   private
 
   def verify_project_and_namespace_access
-    unless namespace_access? && project_access?
+    unless namespace_access?
       render_403
     end
-  end
-
-  def project_access?
-    can?(current_user, :admin_project, @project)
   end
 
   def namespace_access?
