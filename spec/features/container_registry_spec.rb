@@ -16,7 +16,7 @@ describe "Container Registry" do
     project.team << [@user, :developer]
     stub_container_registry(*tags)
     allow(Gitlab.config.registry).to receive_messages(registry_settings)
-    allow(JWT::ContainerRegistryAuthenticationService).to receive(:full_access_token).and_return('token')
+    allow(Gitlab::JWT::ContainerRegistryAuthenticationService).to receive(:full_access_token).and_return('token')
   end
 
   describe 'GET /:project/container_registry' do

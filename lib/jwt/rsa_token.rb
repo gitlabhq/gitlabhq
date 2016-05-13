@@ -24,11 +24,13 @@ module JWT
       @key ||= OpenSSL::PKey::RSA.new(key_data)
     end
 
+    def public_key
+      key.public_key
+    end
+
     def kid
-      sha256 = Digest::SHA256.new
-      sha256.update(key.public_key.to_der)
-      payload = StringIO.new(sha256.digest).read(30)
-      Base32.encode(payload).split('').each_slice(4).each_with_object([]) do |slice, mem|
+      fingerprint = Digest::SHA256.digest(public_key.to_der)
+      Base32.encode(fingerprint).split('').each_slice(4).each_with_object([]) do |slice, mem|
         mem << slice.join
       end.join(':')
     end
