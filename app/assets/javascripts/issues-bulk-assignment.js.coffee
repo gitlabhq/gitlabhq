@@ -32,10 +32,9 @@ class @IssuableBulkActions
       location.reload()
 
     xhr.fail ->
-      console.error 'fail'
+      new Flash("Issue update failed")
 
-    xhr.always ->
-      _this.onFormSubmitAlways()
+    xhr.always @onFormSubmitAlways.bind(@)
 
   onFormSubmitAlways: ->
     @form.find('[type="submit"]').enable()
@@ -49,7 +48,7 @@ class @IssuableBulkActions
     @getSelectedIssues().map ->
       _labels = $(@).data('labels')
       if _labels
-        _labels.map (labelId)->
+        _labels.map (labelId) ->
           labels.push(labelId) if labels.indexOf(labelId) is -1
 
     labels
@@ -85,10 +84,10 @@ class @IssuableBulkActions
         add_label_ids     : []
         remove_label_ids  : []
 
-    for id in @getLabelsToApply()
+    @getLabelsToApply().map (id) ->
       formData.update.add_label_ids.push id
 
-    for id in @getLabelsToRemove()
+    @getLabelsToRemove().map (id) ->
       formData.update.remove_label_ids.push id
 
     formData
@@ -97,7 +96,7 @@ class @IssuableBulkActions
     labelIds = []
     $labels = @form.find('.labels-filter input[name="update[label_ids][]"]')
 
-    for label in $labels
+    $labels.each (k, label) ->
       labelIds.push $(label).val() if label
 
     labelIds

@@ -460,10 +460,10 @@ class GitLabDropdown
       el.addClass ACTIVE_CLASS
       el.removeClass INDETERMINATE_CLASS
 
-      if !value?
+      if not value?
         field.remove()
 
-      if !field.length and fieldName
+      if not field.length and fieldName
         @addInput(fieldName, value)
 
       return selectedObject
@@ -491,14 +491,12 @@ class GitLabDropdown
 
   addInput: (fieldName, value)->
     # Create hidden input for form
-    input = "<input type='hidden' name='#{fieldName}' value='#{value}' />"
-    if @options.inputId?
-      input = $(input)
-                .attr('id', @options.inputId)
-    @dropdown.before input
+    $input = $("<input type='hidden' name='#{fieldName}' value='#{value}' />")
 
-  removeInputs: ->
-    @dropdown.parent().find('input[type="hidden"]').remove()
+    if @options.inputId?
+      $input.attr('id', @options.inputId)
+
+    @dropdown.before $input
 
   selectRowAtIndex: (e, index) ->
     selector = ".dropdown-content li:not(.divider,.dropdown-header,.separator):eq(#{index}) a"

@@ -27,7 +27,7 @@ feature 'Issues > Labels bulk assignment', feature: true do
           before do
             check 'check_all_issues'
             open_labels_dropdown ['bug']
-            click_button 'Update issues'
+            update_issues
           end
 
           it do
@@ -40,7 +40,7 @@ feature 'Issues > Labels bulk assignment', feature: true do
           before do
             check "selected_issue_#{issue1.id}"
             open_labels_dropdown ['bug']
-            click_button 'Update issues'
+            update_issues
           end
 
           it do
@@ -55,7 +55,7 @@ feature 'Issues > Labels bulk assignment', feature: true do
           before do
             check 'check_all_issues'
             open_labels_dropdown ['bug', 'feature']
-            click_button 'Update issues'
+            update_issues
           end
 
           it do
@@ -70,7 +70,7 @@ feature 'Issues > Labels bulk assignment', feature: true do
           before do
             check "selected_issue_#{issue1.id}"
             open_labels_dropdown ['bug', 'feature']
-            click_button 'Update issues'
+            update_issues
           end
 
           it do
@@ -95,7 +95,7 @@ feature 'Issues > Labels bulk assignment', feature: true do
 
           check 'check_all_issues'
           unmark_labels_in_dropdown ['bug', 'feature']
-          click_button 'Update issues'
+          update_issues
         end
 
         it do
@@ -115,7 +115,7 @@ feature 'Issues > Labels bulk assignment', feature: true do
 
           check_issue issue1
           unmark_labels_in_dropdown ['bug']
-          click_button 'Update issues'
+          update_issues
         end
 
         it do
@@ -136,7 +136,7 @@ feature 'Issues > Labels bulk assignment', feature: true do
           check_issue issue1
           check_issue issue2
           unmark_labels_in_dropdown ['bug']
-          click_button 'Update issues'
+          update_issues
         end
 
         it do
@@ -187,5 +187,10 @@ feature 'Issues > Labels bulk assignment', feature: true do
     page.within('.issues-list') do
       check "selected_issue_#{issue.id}"
     end
+  end
+
+  def update_issues
+    click_button 'Update issues'
+    wait_for_ajax
   end
 end
