@@ -74,7 +74,7 @@ Rails.application.routes.draw do
   end
 
   # Health check
-  get 'health_check(/:checks)'  => 'health_check#index', as: :health_check
+  get 'health_check(/:checks)' => 'health_check#index', as: :health_check
 
   # Enable Grack support
   mount Grack::AuthSpawner, at: '/', constraints: lambda { |request| /[-\/\w\.]+\.git\//.match(request.path_info) }, via: [:get, :post, :put]
