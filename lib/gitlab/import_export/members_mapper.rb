@@ -10,6 +10,10 @@ module Gitlab
         @project = project
         @note_member_list = []
 
+        # This needs to run first, as second call would be from generate_map
+        # which means project members already exist.
+        default_project_member
+
         @project_member_map = Hash.new do |_, key|
           @note_member_list << key
           default_project_member
