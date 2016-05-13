@@ -227,7 +227,7 @@ module API
 
     class CommitNote < Grape::Entity
       expose :note
-      expose(:path) { |note| note.diff_file_name if note.legacy_diff_note? }
+      expose(:path) { |note| note.diff_file_path if note.legacy_diff_note? }
       expose(:line) { |note| note.diff_new_line if note.legacy_diff_note? }
       expose(:line_type) { |note| note.diff_line_type if note.legacy_diff_note? }
       expose :author, using: Entities::UserBasic

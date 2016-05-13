@@ -112,6 +112,10 @@ class Note < ActiveRecord::Base
     false
   end
 
+  def active?
+    true
+  end
+
   def discussion_id
     @discussion_id ||=
       if for_merge_request?
