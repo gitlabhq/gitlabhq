@@ -41,6 +41,8 @@ class Admin::UsersController < Admin::ApplicationController
 
       warden.set_user(user, scope: :user)
 
+      Gitlab::AppLogger.info("User #{current_user.username} has started impersonating #{user.username}")
+
       flash[:alert] = "You are now impersonating #{user.username}"
 
       redirect_to root_path

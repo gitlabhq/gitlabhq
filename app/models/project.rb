@@ -1,57 +1,3 @@
-# == Schema Information
-#
-# Table name: projects
-#
-#  id                               :integer          not null, primary key
-#  name                             :string(255)
-#  path                             :string(255)
-#  description                      :text
-#  created_at                       :datetime
-#  updated_at                       :datetime
-#  creator_id                       :integer
-#  issues_enabled                   :boolean          default(TRUE), not null
-#  wall_enabled                     :boolean          default(TRUE), not null
-#  merge_requests_enabled           :boolean          default(TRUE), not null
-#  wiki_enabled                     :boolean          default(TRUE), not null
-#  namespace_id                     :integer
-#  issues_tracker                   :string(255)      default("gitlab"), not null
-#  issues_tracker_id                :string(255)
-#  snippets_enabled                 :boolean          default(TRUE), not null
-#  last_activity_at                 :datetime
-#  import_url                       :string(255)
-#  visibility_level                 :integer          default(0), not null
-#  archived                         :boolean          default(FALSE), not null
-#  avatar                           :string(255)
-#  import_status                    :string(255)
-#  repository_size                  :float            default(0.0)
-#  star_count                       :integer          default(0), not null
-#  import_type                      :string(255)
-#  import_source                    :string(255)
-#  commit_count                     :integer          default(0)
-#  import_error                     :text
-#  ci_id                            :integer
-#  builds_enabled                   :boolean          default(TRUE), not null
-#  shared_runners_enabled           :boolean          default(TRUE), not null
-#  runners_token                    :string
-#  build_coverage_regex             :string
-#  build_allow_git_fetch            :boolean          default(TRUE), not null
-#  build_timeout                    :integer          default(3600), not null
-#  pending_delete                   :boolean          default(FALSE)
-#  public_builds                    :boolean          default(TRUE), not null
-#  merge_requests_template          :text
-#  merge_requests_rebase_enabled    :boolean          default(FALSE)
-#  approvals_before_merge           :integer          default(0), not null
-#  reset_approvals_on_push          :boolean          default(TRUE)
-#  merge_requests_ff_only_enabled   :boolean          default(FALSE)
-#  issues_template                  :text
-#  mirror                           :boolean          default(FALSE), not null
-#  mirror_last_update_at            :datetime
-#  mirror_last_successful_update_at :datetime
-#  mirror_user_id                   :integer
-#  mirror_trigger_builds            :boolean          default(FALSE), not null
-#  main_language                    :string
-#
-
 require 'carrierwave/orm/activerecord'
 
 class Project < ActiveRecord::Base
@@ -76,7 +22,6 @@ class Project < ActiveRecord::Base
   default_value_for :merge_requests_enabled, gitlab_config_features.merge_requests
   default_value_for :builds_enabled, gitlab_config_features.builds
   default_value_for :wiki_enabled, gitlab_config_features.wiki
-  default_value_for :wall_enabled, false
   default_value_for :snippets_enabled, gitlab_config_features.snippets
   default_value_for(:shared_runners_enabled) { current_application_settings.shared_runners_enabled }
 
@@ -889,7 +834,7 @@ class Project < ActiveRecord::Base
 
   # Check if current branch name is marked as protected in the system
   def protected_branch?(branch_name)
-    protected_branches.where(name: branch_name).any?
+    protected_branch_names.include?(branch_name)
   end
 
   def developers_can_push_to_protected_branch?(branch_name)
@@ -1183,6 +1128,13 @@ class Project < ActiveRecord::Base
 
   def pages_deployed?
     Dir.exist?(public_pages_path)
+  end
+
+  def schedule_delete!(user_id, params)
+    # Queue this task for after the commit, so once we mark pending_delete it will run
+    run_after_commit { ProjectDestroyWorker.perform_async(id, user_id, params) }
+
+    update_attribute(:pending_delete, true)
   end
 
   def pages_url

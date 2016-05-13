@@ -264,12 +264,14 @@ describe 'Issues', feature: true do
         visit namespace_project_issues_path(project.namespace, project, sort: sort_value_milestone_soon)
 
         expect(first_issue).to include('foo')
+        expect(last_issue).to include('baz')
       end
 
       it 'sorts by least recently due milestone' do
         visit namespace_project_issues_path(project.namespace, project, sort: sort_value_milestone_later)
 
         expect(first_issue).to include('bar')
+        expect(last_issue).to include('baz')
       end
     end
 

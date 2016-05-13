@@ -24,24 +24,14 @@ repositories to use Git LFS before downgrading to the Community Edition.
 
 ### Remove Jenkins CI Service entries from the database
 
-<<<<<<< HEAD
-The `JenkinsService` and `JenkinsDeprecatedService` classes are only available on the
-Enterprise Edition codebase, so if you downgrade to the Community Edition, you'll come
-across an error similar to the following:
-=======
 The `JenkinsService` class is only available on the Enterprise Edition codebase,
 so if you downgrade to the Community Edition, you'll come across the following
 error:
->>>>>>> 6c0ed6399054db00d8abcc33ad2aa7df59de52bf
 
 ```
 Completed 500 Internal Server Error in 497ms (ActiveRecord: 32.2ms)
 
-<<<<<<< HEAD
-ActionView::Template::Error (The single-table inheritance mechanism failed to locate the subclass: 'JenkinsDeprecatedService'. This
-=======
 ActionView::Template::Error (The single-table inheritance mechanism failed to locate the subclass: 'JenkinsService'. This
->>>>>>> 6c0ed6399054db00d8abcc33ad2aa7df59de52bf
 error is raised because the column 'type' is reserved for storing the class in case of inheritance. Please rename this
 column if you didn't intend it to be used for storing the inheritance class or overwrite Service.inheritance_column to
 use another column for that information.)
@@ -49,31 +39,18 @@ use another column for that information.)
 
 All services are created automatically for every project you have, so in order
 to avoid getting this error, you need to remove all instances of the
-<<<<<<< HEAD
-`JenkinsService` and `JenkinsDeprecatedService` from your database:
-=======
 `JenkinsService` from your database:
->>>>>>> 6c0ed6399054db00d8abcc33ad2aa7df59de52bf
 
 **Omnibus Installation**
 
 ```
 $ sudo gitlab-rails runner "Service.where(type: 'JenkinsService').delete_all"
-<<<<<<< HEAD
-$ sudo gitlab-rails runner "Service.where(type: 'JenkinsDeprecatedService').delete_all"
-=======
->>>>>>> 6c0ed6399054db00d8abcc33ad2aa7df59de52bf
 ```
 
 **Source Installation**
 
 ```
-<<<<<<< HEAD
-$ RAILS_ENV=production bundle exec rails runner "Service.where(type: 'JenkinsService').delete_all"
-$ RAILS_ENV=production bundle exec rails runner "Service.where(type: 'JenkinsDeprecatedService').delete_all"
-=======
 $ bundle exec rails runner "Service.where(type: 'JenkinsService').delete_all" production
->>>>>>> 6c0ed6399054db00d8abcc33ad2aa7df59de52bf
 ```
 
 ## Downgrade to CE

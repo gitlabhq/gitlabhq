@@ -1,18 +1,3 @@
-# == Schema Information
-#
-# Table name: milestones
-#
-#  id          :integer          not null, primary key
-#  title       :string(255)      not null
-#  project_id  :integer          not null
-#  description :text
-#  due_date    :date
-#  created_at  :datetime
-#  updated_at  :datetime
-#  state       :string(255)
-#  iid         :integer
-#
-
 require 'spec_helper'
 
 describe Milestone, models: true do
@@ -33,6 +18,14 @@ describe Milestone, models: true do
   let(:milestone) { create(:milestone) }
   let(:issue) { create(:issue) }
   let(:user) { create(:user) }
+
+  describe "#title" do
+    let(:milestone) { create(:milestone, title: "<b>test</b>") }
+
+    it "sanitizes title" do
+      expect(milestone.title).to eq("test")
+    end
+  end
 
   describe "unique milestone title per project" do
     it "shouldn't accept the same title in a project twice" do

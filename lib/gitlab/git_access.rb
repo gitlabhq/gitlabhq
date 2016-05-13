@@ -149,20 +149,25 @@ module Gitlab
       build_status_object(true)
     end
 
+    def can_user_do_action?(action)
+      @permission_cache ||= {}
+      @permission_cache[action] ||= user.can?(action, project)
+    end
+
     def change_access_check(change)
       oldrev, newrev, ref = change.split(' ')
 
       action =
         if project.protected_branch?(branch_name(ref))
           protected_branch_action(oldrev, newrev, branch_name(ref))
-        elsif protected_tag?(tag_name(ref))
+        elsif (tag_ref = tag_name(ref)) && protected_tag?(tag_ref)
           # Prevent any changes to existing git tag unless user has permissions
           :admin_project
         else
           :push_code
         end
 
-      unless user.can?(action, project)
+      unless can_user_do_action?(action)
         status =
           case action
           when :force_push_code_to_protected_branches
@@ -253,7 +258,7 @@ module Gitlab
           return build_status_object(false, "Author '#{commit.author_email}' is not a member of team")
         end
 
-        if commit.author_email.downcase != commit.committer_email.downcase
+        if commit.author_email.casecmp(commit.committer_email) == -1
           unless User.existing_member?(commit.committer_email.downcase)
             return build_status_object(false, "Committer '#{commit.committer_email}' is not a member of team")
           end
@@ -305,7 +310,7 @@ module Gitlab
     end
 
     def protected_tag?(tag_name)
-      project.repository.tag_names.include?(tag_name)
+      project.repository.tag_exists?(tag_name)
     end
 
     def user_allowed?

@@ -43,7 +43,7 @@ class Spinach::Features::GroupsManagement < Spinach::FeatureSteps
   step 'I go to group settings page' do
     visit dashboard_groups_path
     click_link 'Sourcing'
-    click_link 'Settings'
+    click_link 'Edit Group'
   end
 
   step 'I enable membership lock' do
@@ -53,7 +53,9 @@ class Spinach::Features::GroupsManagement < Spinach::FeatureSteps
 
   step 'I go to project settings' do
     @project = Project.find_by(name: "Open")
-    click_link 'Projects'
+    page.within '.layout-nav' do
+      click_link 'Projects'
+    end
 
     link = "/#{@project.path_with_namespace}/project_members"
     find(:xpath, "//a[@href=\"#{link}\"]").click

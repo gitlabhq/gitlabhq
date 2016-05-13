@@ -207,7 +207,7 @@ gem 'licensee', '~> 8.0.0'
 gem "rack-attack", '~> 4.3.1'
 
 # Ace editor
-gem 'ace-rails-ap', '~> 2.0.1'
+gem 'ace-rails-ap', '~> 4.0.2'
 
 # Keyboard shortcuts
 gem 'mousetrap-rails', '~> 1.4.6'
@@ -228,7 +228,6 @@ gem 'gitlab_emoji',       '~> 0.3.0'
 gem 'gon',                '~> 6.0.1'
 gem 'jquery-atwho-rails', '~> 1.3.2'
 gem 'jquery-rails',       '~> 4.1.0'
-gem 'jquery-scrollto-rails', '~> 1.4.3'
 gem 'jquery-ui-rails',    '~> 5.0.0'
 gem 'raphael-rails',      '~> 2.1.2'
 gem 'request_store',      '~> 1.3.0'
@@ -252,7 +251,6 @@ group :development do
   gem "foreman"
   gem 'brakeman', '~> 3.2.0', require: false
 
-  gem "annotate", "~> 2.7.0"
   gem 'letter_opener_web', '~> 1.3.0'
   gem 'quiet_assets', '~> 1.0.2'
   gem 'rerun', '~> 0.11.0'
@@ -330,7 +328,7 @@ gem "newrelic_rpm", '~> 3.14'
 
 gem 'octokit', '~> 4.3.0'
 
-gem "mail_room", "~> 0.6.1"
+gem "mail_room", "~> 0.7"
 
 gem 'email_reply_parser', '~> 0.5.8'
 
