@@ -52,15 +52,15 @@ describe "Pipelines" do
         before { click_link('Retry') }
 
         it { expect(page).to_not have_link('Retry') }
-        it { expect(page).to have_selector('.ci-running') }
+        it { expect(page).to have_selector('.ci-pending') }
       end
     end
 
     context 'downloadable pipelines' do
-      before { visit namespace_project_pipelines_path(project.namespace, project) }
-
       context 'with artifacts' do
-        let!(:with_artifacts) { create(:ci_build, :success, :artifacts, commit: pipeline, name: 'rspec tests', stage: 'test') }
+        let!(:with_artifacts) { create(:ci_build, :artifacts, :success, commit: pipeline, name: 'rspec tests', stage: 'test') }
+
+        before { visit namespace_project_pipelines_path(project.namespace, project) }
 
         it { expect(page).to have_selector('.build-artifacts') }
         it { expect(page).to have_link(with_artifacts.name) }
@@ -78,10 +78,10 @@ describe "Pipelines" do
     let(:pipeline) { create(:ci_commit, project: project, ref: 'master') }
 
     before do
-      @success = create(:ci_build, :success, commit: pipeline, stage: 'build')
-      @failed = create(:ci_build, :failed, commit: pipeline, stage: 'test', commands: 'test')
-      @running = create(:ci_build, :running, commit: pipeline, stage: 'deploy')
-      @external = create(:generic_commit_status, :success, commit: pipeline, stage: 'external')
+      @success = create(:ci_build, :success, commit: pipeline, stage: 'build', name: 'build')
+      @failed = create(:ci_build, :failed, commit: pipeline, stage: 'test', name: 'test', commands: 'test')
+      @running = create(:ci_build, :running, commit: pipeline, stage: 'deploy', name: 'deploy')
+      @external = create(:generic_commit_status, status: 'success', commit: pipeline, name: 'jenkins', stage: 'external')
     end
 
     before { visit namespace_project_pipeline_path(project.namespace, project, pipeline) }
@@ -126,7 +126,10 @@ describe "Pipelines" do
     before { visit new_namespace_project_pipeline_path(project.namespace, project) }
 
     context 'for valid commit' do
-      before { fill_in('Create for', with: 'master') }
+      before do
+        fill_in('Create for', with: 'master')
+        stub_ci_commit_to_return_yaml_file
+      end
 
       it { expect{ click_on 'Create pipeline' }.to change{ Ci::Commit.count }.by(1) }
     end

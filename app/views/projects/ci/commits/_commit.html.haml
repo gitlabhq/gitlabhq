@@ -31,10 +31,9 @@
             Cant find HEAD commit for this branch
 
 
-    - stages_status = commit.statuses.stages_status
     - stages.each do |stage|
       %td
-        - if status = stages_status[stage]
+        - if status = commit.statuses.status_for_stage(stage)
           - tooltip = "#{stage.titleize}: #{status}"
           %span.has-tooltip(title="#{tooltip}"){class: "ci-status-icon-#{status}"}
             = ci_icon_for_status(status)

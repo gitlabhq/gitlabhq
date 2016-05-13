@@ -354,7 +354,7 @@ class Project < ActiveRecord::Base
       join_body = "INNER JOIN (
         SELECT project_id, COUNT(*) AS amount
         FROM notes
-        WHERE created_at >= #{sanitize(since)}project.ci_commits
+        WHERE created_at >= #{sanitize(since)}
         GROUP BY project_id
       ) join_note_counts ON projects.id = join_note_counts.project_id"
 
