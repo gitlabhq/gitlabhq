@@ -5,9 +5,13 @@ describe Gitlab::ImportExport::ProjectTreeRestorer, services: true do
 
     let(:user) { create(:user) }
     let(:namespace) { create(:namespace, owner: user) }
-    let(:shared) { Gitlab::ImportExport::Shared.new(relative_path: "../../../spec/lib/gitlab/import_export/", project_path: 'path') }
+    let(:shared) { Gitlab::ImportExport::Shared.new(relative_path: "", project_path: 'path') }
     let(:project_tree_restorer) { described_class.new(user: user, shared: shared, namespace_id: namespace.id) }
-    let!(:restored_project_json) { project_tree_restorer.restore }
+    let(:restored_project_json) { project_tree_restorer.restore }
+
+    before do
+      allow(shared).to receive(:export_path).and_return('spec/lib/gitlab/import_export/')
+    end
 
     context 'JSON' do
       it 'restores models based on JSON' do
