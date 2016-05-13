@@ -55,7 +55,7 @@
     .controls.hidden-xs.pull-right
       - artifacts = commit.builds.latest.select { |b| b.artifacts? }
       - if artifacts.present?
-        .dropdown.inline
+        .dropdown.inline.build-artifacts
           %button.dropdown-toggle.btn{type: 'button', 'data-toggle' => 'dropdown'}
             = icon('download')
             %b.caret
