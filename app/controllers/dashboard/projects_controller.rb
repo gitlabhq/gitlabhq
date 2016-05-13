@@ -4,7 +4,7 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
   before_action :event_filter
 
   def index
-    @projects = current_user.authorized_projects.without_pending_delete.sorted_by_activity
+    @projects = ProjectsFinder.execute(current_user, scope: :authorized).sorted_by_activity
     @projects = filter_projects(@projects)
     @projects = @projects.includes(:namespace)
     @projects = @projects.sort(@sort = params[:sort])
@@ -28,7 +28,7 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
   end
 
   def starred
-    @projects = current_user.viewable_starred_projects.without_pending_delete.sorted_by_activity
+    @projects = ProjectsFinder.execute(current_user, scope: :viewable_starred_projects).sorted_by_activity
     @projects = filter_projects(@projects)
     @projects = @projects.includes(:namespace, :forked_from_project, :tags)
     @projects = @projects.sort(@sort = params[:sort])

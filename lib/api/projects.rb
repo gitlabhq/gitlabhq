@@ -22,10 +22,10 @@ module API
       # Example Request:
       #   GET /projects
       get do
-        @projects = current_user.authorized_projects
-        @projects = filter_projects(@projects)
-        @projects = paginate @projects
-        present @projects, with: Entities::ProjectWithAccess, user: current_user
+        projects = ProjectsFinder.execute(current_user, scope: :authorized)
+        projects = filter_projects(projects)
+        projects = paginate(projects)
+        present projects, with: Entities::ProjectWithAccess, user: current_user
       end
 
       # Get an owned projects list for authenticated user
@@ -43,6 +43,7 @@ module API
       #
       # Example Request:
       #   GET /projects/starred
+      # TODO ZJ -- Use the ProjectsFinder here
       get '/starred' do
         @projects = current_user.viewable_starred_projects
         @projects = filter_projects(@projects)
@@ -56,7 +57,7 @@ module API
       #   GET /projects/all
       get '/all' do
         authenticated_as_admin!
-        @projects = Project.without_pending_delete
+        @projects = ProjectsFinder.execute(current_user, scope: :all)
         @projects = filter_projects(@projects)
         @projects = paginate @projects
         present @projects, with: Entities::ProjectWithAccess, user: current_user

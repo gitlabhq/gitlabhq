@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.8.0 (unreleased)
+  - Excluding projects pending deletion is now down using explicit scoping
   - Snippets tab under user profile. !4001 (Long Nguyen)
   - Fix error when using link to uploads in global snippets
   - Assign labels and milestone to target project when moving issue. !3934 (Long Nguyen)
@@ -46,7 +47,6 @@ v 8.8.0 (unreleased)
 
 v 8.7.5
   - Fix relative links in wiki pages. !4050
-  - Excluding projects pending deletion is now down using explicit scoping
 
 v 8.7.4
   - Links for Redmine issue references are generated correctly again !4048 (Benedikt Huss)

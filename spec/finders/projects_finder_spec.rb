@@ -91,5 +91,13 @@ describe ProjectsFinder do
         end
       end
     end
+
+    describe 'as admin' do
+      it 'returns all projects' do
+        admin = create(:user, :admin)
+
+        expect(ProjectsFinder.new.execute(admin)).to eq([shared_project, public_project, internal_project, private_project])
+      end
+    end
   end
 end
