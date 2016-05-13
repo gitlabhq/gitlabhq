@@ -52,7 +52,7 @@ module Projects
 
       save_project_and_import_data(import_data)
 
-      start_import if @project.import?
+      @project.import_start if @project.import?
 
       after_create_actions if @project.persisted?
 
@@ -91,12 +91,6 @@ module Projects
 
       unless @project.group
         @project.team << [current_user, :master, current_user]
-      end
-    end
-
-    def start_import
-      Project.transaction do
-        @project.import_start
       end
     end
 
