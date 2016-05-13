@@ -8,6 +8,12 @@ describe Gitlab::UrlSanitizer, lib: true do
 
   describe '#full_url' do
     it { expect(url_sanitizer.full_url).to eq("https://blah:password@github.com/me/project.git") }
+
+    it 'supports scp-like URLs' do
+      sanitizer = described_class.new('user@server:project.git')
+
+      expect(sanitizer.full_url).to eq('user@server:project.git')
+    end
   end
 
   describe '#sanitized_url' do
@@ -28,6 +34,8 @@ describe Gitlab::UrlSanitizer, lib: true do
          ssh://user@host.test/path/to/repo.git
          remote: Not Found
          git://host.test/path/to/repo.git
+         remote: Not Found
+         user@server:project.git
       })
     end
 
@@ -46,6 +54,10 @@ describe Gitlab::UrlSanitizer, lib: true do
     it 'does not modify Git URLs' do
       # git protocol does not support authentication
       expect(filtered_content).to include("git://host.test/path/to/repo.git")
+    end
+
+    it 'does not modify scp-like URLs' do
+      expect(filtered_content).to include("user@server:project.git")
     end
   end
 end
