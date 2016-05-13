@@ -58,6 +58,8 @@ module API
       # Get a ssh key using the fingerprint
       #
       get "/authorized_keys" do
+        Gitlab::Metrics.action = 'Grape#/internal/authorized_keys'
+
         fingerprint = params.fetch(:fingerprint) do
           Gitlab::InsecureKeyFingerprint.new(params.fetch(:key)).fingerprint
         end
