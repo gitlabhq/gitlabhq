@@ -16,7 +16,7 @@ module Gitlab
         FileUtils.mkdir_p(@shared.export_path)
         decompress_archive
       rescue => e
-        @shared.error(e.message)
+        @shared.error(e)
         false
       end
 

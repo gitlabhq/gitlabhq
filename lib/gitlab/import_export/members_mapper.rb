@@ -2,26 +2,31 @@ module Gitlab
   module ImportExport
     class MembersMapper
 
-      def self.map(*args)
-        new(*args).map
-      end
+      attr_reader :map, :note_member_list
 
       def initialize(exported_members:, user:, project_id:)
         @exported_members = exported_members
         @user = user
         @project_id = project_id
+        @note_member_list = []
+
+        @project_member_map = Hash.new do |_, key|
+          @note_member_list << key
+          default_project_member
+        end
+
+        @map = generate_map
       end
 
-      def map
-        @project_member_map = Hash.new(default_project_member)
+      private
+
+      def generate_map
         @exported_members.each do |member|
           existing_user = User.where(find_project_user_query(member)).first
           assign_member(existing_user, member) if existing_user
         end
         @project_member_map
       end
-
-      private
 
       def assign_member(existing_user, member)
         old_user_id = member['user']['id']

@@ -13,9 +13,11 @@ module Gitlab
         @export_path ||= Gitlab::ImportExport.export_path(relative_path: @opts[:relative_path])
       end
 
-      def error(message)
-        error_out(message, caller[0].dup)
-        @errors << message
+      def error(error)
+        error_out(error.message, caller[0].dup)
+        @errors << error.message
+        # Debug:
+        Rails.logger.error(error.backtrace)
       end
 
       private

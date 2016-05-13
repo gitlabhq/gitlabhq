@@ -7,12 +7,9 @@ describe Gitlab::ImportExport::ProjectTreeRestorer, services: true do
     let(:namespace) { create(:namespace, owner: user) }
     let(:shared) { Gitlab::ImportExport::Shared.new(relative_path: "../../../spec/lib/gitlab/import_export/", project_path: 'path') }
     let(:project_tree_restorer) { described_class.new(user: user, shared: shared, namespace_id: namespace.id) }
+    let!(:restored_project_json) { project_tree_restorer.restore }
 
     context 'JSON' do
-      let(:restored_project_json) do
-        project_tree_restorer.restore
-      end
-
       it 'restores models based on JSON' do
         expect(restored_project_json).to be true
       end

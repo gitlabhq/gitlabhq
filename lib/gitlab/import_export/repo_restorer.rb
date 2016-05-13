@@ -17,7 +17,7 @@ module Gitlab
 
         git_unbundle(repo_path: path_to_repo, bundle_path: @path_to_bundle)
       rescue => e
-        @shared.error(e.message)
+        @shared.error(e)
         false
       end
 

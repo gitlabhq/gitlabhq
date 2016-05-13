@@ -14,7 +14,7 @@ module Gitlab
         File.write(full_path, project_json_tree)
         true
       rescue => e
-        @shared.error(e.message)
+        @shared.error(e)
         false
       end
 

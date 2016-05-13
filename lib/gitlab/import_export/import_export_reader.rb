@@ -15,7 +15,7 @@ module Gitlab
       def project_tree
         @attributes_parser.find_included(:project).merge(include: build_hash(@tree))
       rescue => e
-        @shared.error(e.message)
+        @shared.error(e)
       end
 
       private
