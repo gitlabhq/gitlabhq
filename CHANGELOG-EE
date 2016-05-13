@@ -10,6 +10,7 @@ v 8.8.0 (unreleased)
   - Set KRB5 as default clone protocol when Kerberos is enabled and user is logged in (Borja Aparicio)
   - Reduce emails-on-push HTML size by using a simple monospace font
   - API requests to /internal/authorized_keys are now tagged properly
+  - Geo: Single Sign Out support !380
 
 v 8.7.5
   - No EE-specific changes
