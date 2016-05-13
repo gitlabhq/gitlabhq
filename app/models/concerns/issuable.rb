@@ -48,12 +48,6 @@ module Issuable
     scope :non_archived, -> { join_project.where(projects: { archived: false }) }
 
 
-    def self.order_priority(labels)
-      select("#{table_name}.*, (#{Label.high_priority(name, table_name, labels).to_sql}) AS highest_priority")
-        .group("#{table_name}.id")
-        .reorder(nulls_last('highest_priority', 'ASC'))
-    end
-
     delegate :name,
              :email,
              to: :author,
@@ -111,16 +105,22 @@ module Issuable
       where(t[:title].matches(pattern).or(t[:description].matches(pattern)))
     end
 
-    def sort(method, labels = [])
+    def sort(method, excluded_labels: [])
       case method.to_s
       when 'milestone_due_asc' then order_milestone_due_asc
       when 'milestone_due_desc' then order_milestone_due_desc
       when 'downvotes_desc' then order_downvotes_desc
       when 'upvotes_desc' then order_upvotes_desc
-      when 'priority' then order_priority(labels)
+      when 'priority' then order_labels_priority(excluded_labels: excluded_labels)
       else
         order_by(method)
       end
+    end
+
+    def order_labels_priority(excluded_labels: [])
+      select("#{table_name}.*, (#{highest_label_priority(excluded_labels).to_sql}) AS highest_priority").
+        group(arel_table[:id]).
+        reorder(Gitlab::Database.nulls_last_order('highest_priority', 'ASC'))
     end
 
     def with_label(title, sort = nil)
@@ -145,6 +145,20 @@ module Issuable
       end
 
       grouping_columns
+    end
+
+    private
+
+    def highest_label_priority(excluded_labels)
+      query = Label.select(Label.arel_table[:priority].minimum).
+        joins(:label_links).
+        where(label_links: { target_type: name }).
+        where("label_links.target_id = #{table_name}.id").
+        reorder(nil)
+
+      query.where.not(title: excluded_labels) if excluded_labels.present?
+
+      query
     end
   end
 

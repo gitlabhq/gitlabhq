@@ -19,7 +19,6 @@ class Label < ActiveRecord::Base
 
   validates :color, color: true, allow_blank: false
   validates :project, presence: true, unless: Proc.new { |service| service.template? }
-  validates :priority, presence: false, default: false
 
   # Don't allow '?', '&', and ',' for label titles
   validates :title,
@@ -32,21 +31,11 @@ class Label < ActiveRecord::Base
   default_scope { order(title: :asc) }
 
   scope :templates, ->  { where(template: true) }
-  scope :prioritized, ->(value = true) { where(priority: value) }
 
-  def self.high_priority(name, table_name, labels)
-    unfiltered = unscoped
-      .select("MIN(labels.priority)")
-      .joins("INNER JOIN label_links ON label_links.label_id = labels.id")
-      .where("label_links.target_type = '#{name}'")
-      .where("label_links.target_id = #{table_name}.id")
-      .where("labels.project_id = #{table_name}.project_id")
+  def self.prioritized(bool = true)
+    query = bool ? where.not(priority: nil) : where(priority: nil)
 
-    if labels.empty?
-      unfiltered
-    else
-      unfiltered.where("labels.title NOT IN (?)", labels)
-    end
+    query.reorder(Gitlab::Database.nulls_last_order(:priority), :title)
   end
 
   alias_attribute :name, :title
@@ -139,8 +128,6 @@ class Label < ActiveRecord::Base
   end
 
   def nillify_priority
-    unless self.priority.present?
-      self.priority = nil
-    end
+    self.priority = nil if priority.blank?
   end
 end

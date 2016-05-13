@@ -25,7 +25,7 @@ class @LabelManager
     action = if $btn.parents('.js-prioritized-labels').length then 'remove' else 'add'
     _this.toggleLabelPriority($label, action)
 
-  toggleLabelPriority: ($label, action, pasive = false) ->
+  toggleLabelPriority: ($label, action, persistState = false) ->
     _this = @
     url = $label.find('.js-toggle-priority').data 'url'
 
@@ -46,16 +46,19 @@ class @LabelManager
     $label.detach().appendTo($target)
 
     # Return if we are not persisting state
-    return if pasive
+    return if persistState
 
-    xhr = $.post url
+    if action is 'remove'
+      xhr = $.ajax url: url, type: 'DELETE'
 
-    # If request fails, put label back to Other labels group
-    xhr.fail ->
-      _this.toggleLabelPriority($label, 'remove', true)
+      # If request fails, put label back to Other labels group
+      xhr.fail ->
+        _this.toggleLabelPriority($label, 'remove', true)
 
-      # Show a message
-      new Flash('Unable to update label prioritization at this time' , 'alert')
+        # Show a message
+        new Flash('Unable to update label prioritization at this time' , 'alert')
+    else
+      @savePrioritySort()
 
   onPrioritySortUpdate: ->
     @savePrioritySort()

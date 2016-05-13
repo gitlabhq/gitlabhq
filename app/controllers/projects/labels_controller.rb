@@ -72,11 +72,9 @@ class Projects::LabelsController < Projects::ApplicationController
     end
   end
 
-  def toggle_priority
-    priority = label.priority
-
+  def remove_priority
     respond_to do |format|
-      if label.update_attributes(priority: !priority)
+      if label.update_attribute(:priority, nil)
         format.json { render json: label }
       else
         message = label.errors.full_messages.uniq.join('. ')
@@ -86,8 +84,15 @@ class Projects::LabelsController < Projects::ApplicationController
   end
 
   def set_sorting
+    Label.transaction do
+      params[:label_ids].each_with_index do |label_id, index|
+        label = @project.labels.find_by_id(label_id)
+        label.update_attribute(:priority, index) if label
+      end
+    end
+
     respond_to do |format|
-      format.json { render json: {message: 'success'}}
+      format.json { render json: { message: 'success' } }
     end
   end
 
