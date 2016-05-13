@@ -33,7 +33,6 @@ GEM
       activemodel (= 4.2.6)
       activesupport (= 4.2.6)
       arel (~> 6.0)
-    activerecord-deprecated_finders (1.0.4)
     activerecord-session_store (0.1.2)
       actionpack (>= 4.0.0, < 5)
       activerecord (>= 4.0.0, < 5)
@@ -883,7 +882,6 @@ PLATFORMS
 DEPENDENCIES
   RedCloth (~> 4.2.9)
   ace-rails-ap (~> 4.0.2)
-  activerecord-deprecated_finders (~> 1.0.3)
   activerecord-session_store (~> 0.1.0)
   acts-as-taggable-on (~> 3.4)
   addressable (~> 2.3.8)
