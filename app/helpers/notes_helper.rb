@@ -1,7 +1,7 @@
 module NotesHelper
   # Helps to distinguish e.g. commit notes in mr notes list
   def note_for_main_target?(note)
-    (@noteable.class.name == note.noteable_type && !note.for_diff_line?)
+    @noteable.class.name == note.noteable_type && !note.diff_note?
   end
 
   def note_target_fields(note)
@@ -15,16 +15,6 @@ module NotesHelper
     note.editable? && can?(current_user, :admin_note, note)
   end
 
-  def link_to_commit_diff_line_note(note)
-    if note.for_commit_diff_line?
-      link_to(
-        "#{note.diff_file_name}:L#{note.diff_new_line}",
-        namespace_project_commit_path(@project.namespace, @project,
-                                      note.noteable, anchor: note.line_code)
-      )
-    end
-  end
-
   def noteable_json(noteable)
     {
       id: noteable.id,
@@ -35,7 +25,7 @@ module NotesHelper
   end
 
   def link_to_new_diff_note(line_code, line_type = nil)
-    discussion_id = Note.build_discussion_id(
+    discussion_id = LegacyDiffNote.build_discussion_id(
       @comments_target[:noteable_type],
       @comments_target[:noteable_id] || @comments_target[:commit_id],
       line_code
@@ -45,9 +35,10 @@ module NotesHelper
       noteable_type: @comments_target[:noteable_type],
       noteable_id:   @comments_target[:noteable_id],
       commit_id:     @comments_target[:commit_id],
+      line_type:     line_type,
       line_code:     line_code,
-      discussion_id: discussion_id,
-      line_type:     line_type
+      note_type:     LegacyDiffNote.name,
+      discussion_id: discussion_id
     }
 
     button_tag(class: 'btn add-diff-note js-add-diff-note-button',
@@ -57,17 +48,23 @@ module NotesHelper
     end
   end
 
-  def link_to_reply_diff(note, line_type = nil)
+  def link_to_reply_discussion(note, line_type = nil)
     return unless current_user
 
     data = {
       noteable_type: note.noteable_type,
       noteable_id:   note.noteable_id,
       commit_id:     note.commit_id,
-      line_code:     note.line_code,
       discussion_id: note.discussion_id,
       line_type:     line_type
     }
+
+    if note.diff_note?
+      data.merge!(
+        line_code: note.line_code,
+        note_type: LegacyDiffNote.name
+      )
+    end
 
     button_tag 'Reply...', class: 'btn btn-text-field js-discussion-reply-button',
                            data: data, title: 'Add a reply'
