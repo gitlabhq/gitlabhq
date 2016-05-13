@@ -3,10 +3,23 @@ Please view this file on the master branch, on stable branches it's out of date.
 v 8.8.0 (unreleased)
   - [Elastic] Database indexer prints its status
   - [Elastic][Fix] Database indexer skips projects with invalid HEAD reference
+  - Fix skipping pages when restoring backups
   - [Elastic] More efficient snippets search
   - [Elastic] Add rake task for removing all indexes
   - [Elastic] Add rake task for clearing indexing status
   - Set KRB5 as default clone protocol when Kerberos is enabled and user is logged in (Borja Aparicio)
+  - Reduce emails-on-push HTML size by using a simple monospace font
+
+v 8.7.5
+  - No EE-specific changes
+
+v 8.7.4
+  - Delete ProjectImportData record only if Project is not a mirror !370
+  - Fixed typo in GitLab GEO license check alert !379
+  - Fix LDAP access level spillover bug !499
+
+v 8.7.3
+  - No EE-specific changes
 
 v 8.7.2
   - Fix MR notifications for slack and hipchat when approvals are fullfiled. !325

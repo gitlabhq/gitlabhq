@@ -30,7 +30,7 @@ describe "Note", elastic: true do
   it "returns json with all needed elements" do
     note = create :note
 
-    expected_hash =  note.attributes.extract!(
+    expected_hash = note.attributes.extract!(
       'id',
       'note',
       'project_id',
