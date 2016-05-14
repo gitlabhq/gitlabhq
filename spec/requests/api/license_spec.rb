@@ -24,4 +24,29 @@ describe API::API, api: true  do
       expect(response.status).to eq 403
     end
   end
+
+  describe 'POST /license' do
+    it 'adds a new license if admin is logged in' do
+      post api('/license', admin), license: gl_license.export
+
+      expect(response.status).to eq 201
+      expect(json_response['user_limit']).to eq 0
+      expect(Date.parse(json_response['starts_at'])).to eq Date.today - 1.month
+      expect(Date.parse(json_response['expires_at'])).to eq Date.today + 11.months
+      expect(json_response['active_users']).to eq 1
+      expect(json_response['licensee']).to_not be_empty
+    end
+
+    it 'denies access if not admin' do
+      post api('/license', user), license: license
+
+      expect(response.status).to eq 403
+    end
+
+    it 'returns 400 if the license cannot be saved' do
+      post api('/license', admin), license: 'foo'
+
+      expect(response.status).to eq(400)
+    end
+  end
 end

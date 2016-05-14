@@ -4,6 +4,7 @@ v 8.8.0 (unreleased)
   - [Elastic] Database indexer prints its status
   - [Elastic][Fix] Database indexer skips projects with invalid HEAD reference
   - Fix skipping pages when restoring backups
+  - Add EE license via API !400
   - [Elastic] More efficient snippets search
   - [Elastic] Add rake task for removing all indexes
   - [Elastic] Add rake task for clearing indexing status
