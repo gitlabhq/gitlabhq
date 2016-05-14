@@ -61,6 +61,7 @@ class Ability
           :read_merge_request,
           :read_note,
           :read_commit_status,
+          :read_container_registry,
           :download_code
         ]
 

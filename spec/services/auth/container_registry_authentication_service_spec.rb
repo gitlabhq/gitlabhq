@@ -7,6 +7,7 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
   let(:rsa_key) { OpenSSL::PKey::RSA.generate(512) }
   let(:registry_settings) do
     {
+      enabled: true,
       issuer: 'rspec',
       key: nil
     }

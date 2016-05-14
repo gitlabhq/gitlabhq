@@ -1,6 +1,10 @@
 module Auth
   class ContainerRegistryAuthenticationService < BaseService
+    AUDIENCE = 'container_registry'
+
     def execute
+      return error('not found', 404) unless registry.enabled
+
       if params[:offline_token]
         return error('forbidden', 403) unless current_user
       end
@@ -52,9 +56,11 @@ module Auth
     end
 
     def can_access?(requested_project, requested_action)
+      return false unless requested_project.container_registry_enabled?
+
       case requested_action
       when 'pull'
-        requested_project.public? || requested_project == project || can?(current_user, :read_container_registry, requested_project)
+        requested_project == project || can?(current_user, :read_container_registry, requested_project)
       when 'push'
         requested_project == project || can?(current_user, :create_container_registry, requested_project)
       else
