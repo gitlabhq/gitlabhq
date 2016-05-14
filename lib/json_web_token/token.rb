@@ -1,4 +1,4 @@
-module JWT
+module JSONWebToken
   class Token
     attr_accessor :issuer, :subject, :audience, :id
     attr_accessor :issued_at, :not_before, :expire_time

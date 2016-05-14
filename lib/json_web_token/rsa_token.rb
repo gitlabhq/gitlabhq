@@ -1,4 +1,4 @@
-module JWT
+module JSONWebToken
   class RSAToken < Token
     attr_reader :key_file
 
@@ -29,10 +29,14 @@ module JWT
     end
 
     def kid
-      fingerprint = Digest::SHA256.digest(public_key.to_der)
-      Base32.encode(fingerprint).split('').each_slice(4).each_with_object([]) do |slice, mem|
-        mem << slice.join
-      end.join(':')
+      # calculate sha256 from DER encoded ASN1
+      kid = Digest::SHA256.digest(public_key.to_der)
+
+      # we encode only 30 bytes with base32
+      kid = Base32.encode(kid[0..29])
+
+      # insert colon every 4 characters
+      kid.scan(/.{4}/).join(':')
     end
   end
 end

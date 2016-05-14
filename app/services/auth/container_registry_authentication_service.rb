@@ -9,9 +9,9 @@ module Auth
         return error('forbidden', 403) unless current_user
       end
 
-      return error('forbidden', 401) if scopes.blank?
+      return error('forbidden', 401) unless scope
 
-      { token: authorized_token(scopes).encoded }
+      { token: authorized_token(scope).encoded }
     end
 
     def self.full_access_token(*names)
@@ -27,32 +27,27 @@ module Auth
 
     private
 
-    def authorized_token(access)
-      token = ::JWT::RSAToken.new(registry.key)
+    def authorized_token(*accesses)
+      token = JSONWebToken::RSAToken.new(registry.key)
       token.issuer = registry.issuer
       token.audience = params[:service]
       token.subject = current_user.try(:username)
-      token[:access] = access
+      token[:access] = accesses
       token
     end
 
-    def scopes
+    def scope
       return unless params[:scope]
 
-      @scopes ||= begin
-        scope = process_scope(params[:scope])
-        [scope].compact
-      end
+      @scope ||= process_scope(params[:scope])
     end
 
     def process_scope(scope)
       type, name, actions = scope.split(':', 3)
       actions = actions.split(',')
+      return unless type == 'repository'
 
-      case type
-      when 'repository'
-        process_repository_access(type, name, actions)
-      end
+      process_repository_access(type, name, actions)
     end
 
     def process_repository_access(type, name, actions)
@@ -71,9 +66,9 @@ module Auth
 
       case requested_action
       when 'pull'
-        requested_project == project || can?(current_user, :read_container_registry, requested_project)
+        requested_project == project || can?(current_user, :read_container_image, requested_project)
       when 'push'
-        requested_project == project || can?(current_user, :create_container_registry, requested_project)
+        requested_project == project || can?(current_user, :create_container_image, requested_project)
       else
         false
       end
