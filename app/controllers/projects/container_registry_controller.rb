@@ -1,6 +1,6 @@
 class Projects::ContainerRegistryController < Projects::ApplicationController
-  before_action :authorize_read_container_registry!
-  before_action :authorize_update_container_registry!, only: [:destroy]
+  before_action :authorize_read_container_image!
+  before_action :authorize_update_container_image!, only: [:destroy]
   layout 'project'
 
   def index

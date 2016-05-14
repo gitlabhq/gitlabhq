@@ -33,7 +33,7 @@
             %th Image ID
             %th Size
             %th Created
-            - if can?(current_user, :update_container_registry, @project)
+            - if can?(current_user, :update_container_image, @project)
               %th
 
         - @tags.each do |tag|
