@@ -18,8 +18,7 @@ cat ~/.ssh/id_rsa.pub
 If you see a long string starting with `ssh-rsa`, you can skip the `ssh-keygen` step.
 
 Note: It is a best practice to use a password for an SSH key, but it is not
-required and you can skip creating a password by pressing enter. Note that
-the password you choose here can't be altered or retrieved.
+required and you can skip creating a password by pressing enter.
 
 To generate a new SSH key, use the following command:
 ```bash
