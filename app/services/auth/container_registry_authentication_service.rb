@@ -67,6 +67,8 @@ module Auth
     end
 
     def can_access?(requested_project, requested_action)
+      return false unless requested_project.container_registry_enabled?
+
       case requested_action
       when 'pull'
         requested_project == project || can?(current_user, :read_container_registry, requested_project)
