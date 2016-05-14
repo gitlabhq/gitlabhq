@@ -4,7 +4,7 @@ class JwtController < ApplicationController
   before_action :authenticate_project_or_user
 
   SERVICES = {
-    ::Gitlab::JWT::ContainerRegistryAuthenticationService::AUDIENCE => ::Gitlab::JWT::ContainerRegistryAuthenticationService,
+    Auth::ContainerRegistryAuthenticationService::AUDIENCE => Auth::ContainerRegistryAuthenticationService,
   }
 
   def auth
