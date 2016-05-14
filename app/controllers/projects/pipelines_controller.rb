@@ -22,10 +22,10 @@ class Projects::PipelinesController < Projects::ApplicationController
       pipeline = Ci::CreatePipelineService.new(project, current_user, create_params).execute
       redirect_to namespace_project_pipeline_path(project.namespace, project, pipeline)
     rescue ArgumentError => e
-      @error = e.message
+      flash[:alert] = e.message
       render 'new'
     rescue
-      @error = 'Undefined error'
+      flash[:alert] = 'Undefined error'
       render 'new'
     end
   end
