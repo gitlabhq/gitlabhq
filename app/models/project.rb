@@ -332,20 +332,20 @@ class Project < ActiveRecord::Base
     @container_registry_repository ||= begin
       token = Auth::ContainerRegistryAuthenticationService.full_access_token(path_with_namespace)
       url = Gitlab.config.registry.api_url
-      host_port = Gitlab.config.registry.host_port
-      registry = ContainerRegistry::Registry.new(url, token: token, path: host_port)
+      host = Gitlab.config.registry.host
+      registry = ContainerRegistry::Registry.new(url, token: token, path: host)
       registry[path_with_namespace]
     end
   end
 
   def container_registry_repository_url
-    if container_registry_enabled? && Gitlab.config.registry.enabled
-      "#{Gitlab.config.registry.host_port}/#{path_with_namespace}"
+    if Gitlab.config.registry.enabled
+      "#{Gitlab.config.registry.host}/#{path_with_namespace}"
     end
   end
 
   def has_container_registry_tags?
-    if container_registry_enabled? && Gitlab.config.registry.enabled
+    if Gitlab.config.registry.enabled
       container_registry_repository.tags.any?
     end
   end
