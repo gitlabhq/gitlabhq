@@ -27,30 +27,6 @@ class Settings < Settingslogic
       ].join('')
     end
 
-    def build_registry_api_url
-      if registry.port.to_i == (registry.https ? 443 : 80)
-        custom_port = nil
-      else
-        custom_port = ":#{registry.port}"
-      end
-      [ registry.protocol,
-        "://",
-        registry.internal_host,
-        custom_port
-      ].join('')
-    end
-
-    def build_registry_host_with_port
-      if registry.port.to_i == (registry.https ? 443 : 80)
-        custom_port = nil
-      else
-        custom_port = ":#{registry.port}"
-      end
-      [ registry.host,
-        custom_port
-      ].join('')
-    end
-
     def build_gitlab_shell_ssh_path_prefix
       user_host = "#{gitlab_shell.ssh_user}@#{gitlab_shell.ssh_host}"
 
@@ -271,15 +247,11 @@ Settings.artifacts['max_size']   ||= 100 # in megabytes
 # Registry
 #
 Settings['registry'] ||= Settingslogic.new({})
-Settings.registry['enabled']     = false if Settings.registry['enabled'].nil?
-Settings.registry['host']         ||= "example.com"
-Settings.registry['internal_host']||= "localhost"
-Settings.registry['key']          ||= nil
-Settings.registry['https']        = false if Settings.registry['https'].nil?
-Settings.registry['port']         ||= Settings.registry.https ? 443 : 80
-Settings.registry['protocol']     ||= Settings.registry.https ? "https" : "http"
-Settings.registry['api_url']      ||= Settings.send(:build_registry_api_url)
-Settings.registry['host_port']    ||= Settings.send(:build_registry_host_with_port)
+Settings.registry['enabled']       ||= false
+Settings.registry['host']          ||= "example.com"
+Settings.registry['api_url']       ||= "http://localhost:5000/"
+Settings.registry['key']           ||= nil
+Settings.registry['issuer']        ||= nil
 
 #
 # Git LFS

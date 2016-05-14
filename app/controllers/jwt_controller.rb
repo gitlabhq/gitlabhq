@@ -12,9 +12,8 @@ class JwtController < ApplicationController
     head :not_found unless service
 
     result = service.new(@project, @user, auth_params).execute
-    return head result[:http_status] if result[:http_status]
 
-    render json: result
+    render json: result, status: result[:http_status]
   end
 
   private
@@ -27,10 +26,8 @@ class JwtController < ApplicationController
 
       @user = authenticate_user(login, password)
       return if @user
-    end
 
-    if ActionController::HttpAuthentication::Basic.has_basic_credentials?(request)
-      head :forbidden
+      render_403
     end
   end
 
