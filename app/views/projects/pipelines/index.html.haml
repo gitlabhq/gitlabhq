@@ -55,7 +55,7 @@
         %tbody
           %th ID
           %th Commit
-          - @pipelines.stages.each do |stage|
+          - stages.each do |stage|
             %th
               %span.has-tooltip(title="#{stage.titleize}")
                 = truncate(stage.titleize.pluralize, length: 8)

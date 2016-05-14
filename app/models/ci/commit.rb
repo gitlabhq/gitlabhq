@@ -8,8 +8,6 @@ module Ci
     has_many :builds, class_name: 'Ci::Build'
     has_many :trigger_requests, dependent: :destroy, class_name: 'Ci::TriggerRequest'
 
-    delegate :stages, to: :statuses
-
     validates_presence_of :sha
     validates_presence_of :status
     validate :valid_commit_sha
@@ -22,7 +20,8 @@ module Ci
     end
 
     def self.stages
-      CommitStatus.where(commit: all).stages
+      # We use pluck here due to problems with MySQL which doesn't allow LIMIT/OFFSET in queries
+      CommitStatus.where(commit: pluck(:id)).stages
     end
 
     def project_id
