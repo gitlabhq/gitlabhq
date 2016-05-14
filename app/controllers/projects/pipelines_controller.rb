@@ -31,9 +31,6 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def show
-    respond_to do |format|
-      format.html
-    end
   end
 
   def retry

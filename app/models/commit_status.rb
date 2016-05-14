@@ -55,7 +55,7 @@ class CommitStatus < ActiveRecord::Base
 
   def self.stages
     # We group by stage name, but order stages by theirs' index
-    unscoped.where(id: all).group('stage').order('max(stage_idx)', 'stage').pluck('stage')
+    unscoped.where(id: all.ids).group('stage').order('max(stage_idx)', 'stage').pluck('stage')
   end
 
   def self.status_for_stage(stage)
