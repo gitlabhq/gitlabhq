@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe JWT::ContainerRegistryAuthenticationService, services: true do
+describe Auth::ContainerRegistryAuthenticationService, services: true do
   let(:current_project) { nil }
   let(:current_user) { nil }
   let(:current_params) { {} }
