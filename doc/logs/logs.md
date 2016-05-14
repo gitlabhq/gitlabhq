@@ -1,6 +1,6 @@
 ## Log system
 GitLab has advanced log system so everything is logging and you can analize your instance using various system log files.
-In addition to system log files, GitLab Enterprise Edition comes with Audit Events. Find more about them [in Audit Events documentation](http://doc.gitlab.com/ee/administration/audit_events.html)
+In addition to system log files, GitLab Enterprise Edition comes with Audit Events. Find more about them [in Audit Events documentation](http://docs.gitlab.com/ee/administration/audit_events.html)
 
 System log files are typically plain text in a standard log file format. This guide talks about how to read and use these system log files.
 

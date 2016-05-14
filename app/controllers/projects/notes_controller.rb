@@ -96,7 +96,7 @@ class Projects::NotesController < Projects::ApplicationController
   end
 
   def note_to_discussion_html(note)
-    return unless note.for_diff_line?
+    return unless note.diff_note?
 
     if params[:view] == 'parallel'
       template = "projects/notes/_diff_notes_with_reply_parallel"
@@ -120,7 +120,7 @@ class Projects::NotesController < Projects::ApplicationController
   end
 
   def note_to_discussion_with_diff_html(note)
-    return unless note.for_diff_line?
+    return unless note.diff_note?
 
     render_to_string(
       "projects/notes/_discussion",
@@ -158,7 +158,7 @@ class Projects::NotesController < Projects::ApplicationController
   def note_params
     params.require(:note).permit(
       :note, :noteable, :noteable_id, :noteable_type, :project_id,
-      :attachment, :line_code, :commit_id
+      :attachment, :line_code, :commit_id, :type
     )
   end
 

@@ -43,4 +43,12 @@ module NavHelper
     class_name += " with-horizontal-nav" if defined?(nav) && nav
     class_name
   end
+
+  def layout_nav_class
+    "page-with-layout-nav" if defined?(nav) && nav
+  end
+
+  def layout_dropdown_class
+    "controls-dropdown-visible" if current_user
+  end
 end

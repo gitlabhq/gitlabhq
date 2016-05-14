@@ -73,12 +73,12 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     # but we need it for the "View file @ ..." link by deleted files
     @base_commit ||= @merge_request.first_commit.parent || @merge_request.first_commit
 
-    @comments_allowed = @reply_allowed = true
     @comments_target = {
       noteable_type: 'MergeRequest',
       noteable_id: @merge_request.id
     }
-    @line_notes = @merge_request.notes.where("line_code is not null")
+
+    @grouped_diff_notes = @merge_request.notes.grouped_diff_notes
 
     respond_to do |format|
       format.html
@@ -117,6 +117,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @commit = @merge_request.last_commit
     @base_commit = @merge_request.diff_base_commit
     @diffs = @merge_request.compare.diffs(diff_options) if @merge_request.compare
+    @diff_notes_disabled = true
 
     @ci_commit = @merge_request.ci_commit
     @statuses = @ci_commit.statuses if @ci_commit
@@ -300,7 +301,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     # Build a note object for comment form
     @note = @project.notes.new(noteable: @merge_request)
     @notes = @merge_request.mr_and_commit_notes.nonawards.inc_author.fresh
-    @discussions = Note.discussions_from_notes(@notes)
+    @discussions = @notes.discussions
     @noteable = @merge_request
 
     # Get commits from repository
