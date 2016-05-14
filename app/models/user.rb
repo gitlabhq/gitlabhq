@@ -77,7 +77,7 @@ class User < ActiveRecord::Base
   has_one  :abuse_report,             dependent: :destroy
   has_many :spam_logs,                dependent: :destroy
   has_many :builds,                   dependent: :nullify, class_name: 'Ci::Build'
-  has_many :todos,                    dependent: :destroy
+  has_many :todos, -> { joins("join members on members.source_id = todos.project_id and members.user_id = todos.user_id") }, dependent: :destroy
   has_many :notification_settings,    dependent: :destroy
 
   #
