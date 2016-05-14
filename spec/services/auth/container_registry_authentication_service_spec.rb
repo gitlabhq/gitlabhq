@@ -18,7 +18,7 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
 
   before do
     allow(Gitlab.config.registry).to receive_messages(registry_settings)
-    allow_any_instance_of(JWT::RSAToken).to receive(:key).and_return(rsa_key)
+    allow_any_instance_of(JSONWebToken::RSAToken).to receive(:key).and_return(rsa_key)
   end
 
   shared_examples 'an authenticated' do

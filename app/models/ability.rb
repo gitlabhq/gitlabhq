@@ -61,7 +61,7 @@ class Ability
           :read_merge_request,
           :read_note,
           :read_commit_status,
-          :read_container_registry,
+          :read_container_image,
           :download_code
         ]
 
@@ -204,7 +204,7 @@ class Ability
         :admin_label,
         :read_commit_status,
         :read_build,
-        :read_container_registry,
+        :read_container_image,
       ]
     end
 
@@ -219,8 +219,8 @@ class Ability
         :create_merge_request,
         :create_wiki,
         :push_code,
-        :create_container_registry,
-        :update_container_registry,
+        :create_container_image,
+        :update_container_image,
       ]
     end
 
@@ -247,7 +247,7 @@ class Ability
         :admin_project,
         :admin_commit_status,
         :admin_build,
-        :admin_container_registry,
+        :admin_container_image,
       ]
     end
 
@@ -293,7 +293,7 @@ class Ability
       end
 
       unless project.container_registry_enabled
-        rules += named_abilities('container_registry')
+        rules += named_abilities('container_image')
       end
 
       rules

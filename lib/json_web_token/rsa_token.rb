@@ -1,4 +1,4 @@
-module JWT
+module JSONWebToken
   class RSAToken < Token
     attr_reader :key_file
 
