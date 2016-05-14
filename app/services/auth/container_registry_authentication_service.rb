@@ -69,7 +69,7 @@ module Auth
     def can_access?(requested_project, requested_action)
       case requested_action
       when 'pull'
-        requested_project.public? || requested_project == project || can?(current_user, :read_container_registry, requested_project)
+        requested_project == project || can?(current_user, :read_container_registry, requested_project)
       when 'push'
         requested_project == project || can?(current_user, :create_container_registry, requested_project)
       else
