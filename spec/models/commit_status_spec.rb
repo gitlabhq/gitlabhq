@@ -185,5 +185,17 @@ describe CommitStatus, models: true do
         is_expected.to eq(%w(build test deploy))
       end
     end
+
+    context 'stages with statuses' do
+      subject { CommitStatus.where(commit: commit).stages_status }
+
+      it 'return list of stages with statuses' do
+        is_expected.to eq({
+          'build' => 'failed',
+          'test' => 'success',
+          'deploy' => 'running'
+        })
+      end
+    end
   end
 end

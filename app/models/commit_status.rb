@@ -55,11 +55,16 @@ class CommitStatus < ActiveRecord::Base
 
   def self.stages
     # We group by stage name, but order stages by theirs' index
-    unscoped.where(id: all.ids).group('stage').order('max(stage_idx)', 'stage').pluck('stage')
+    unscoped.from(all, :sg).group('stage').order('max(stage_idx)', 'stage').pluck('sg.stage')
   end
 
-  def self.status_for_stage(stage)
-    where(stage: stage).status
+  def self.stages_status
+    # We execute subquery for each stage to calculate a stage status
+    statuses = unscoped.from(all, :sg).group('stage').pluck('sg.stage', all.where('stage=sg.stage').status_sql)
+    statuses.inject({}) do |h, k|
+      h[k.first] = k.last
+      h
+    end
   end
 
   def ignored?
