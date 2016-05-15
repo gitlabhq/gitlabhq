@@ -1,6 +1,18 @@
 # GitLab Container Registry Administration
 
-Documentation on how to use Container Registry are under [TODO](TODO.md).
+> **Note:**
+This feature was [introduced][ce-4040] in GitLab 8.8.
+
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [Configuration](#configuration)
+    - [Container Registry under its own domain](#container-registry-under-its-own-domain)
+    - [Container Registry under existing GitLab domain](#container-registry-under-existing-gitlab-domain)
+- [Container Registry storage path](#container-registry-storage-path)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ## Configuration
 
@@ -12,23 +24,25 @@ This means that the Container Registry requires a SSL certificate.
 There are two options on how this can be configured:
 
 1. Use its own domain - needs a SSL certificate for that specific domain
-(eg. registry.example.com) or a wildcard certificate if hosted under a subdomain
-(eg. registry.gitlab.example.com)
+   (eg. registry.example.com) or a wildcard certificate if hosted under a subdomain
+   (eg. registry.gitlab.example.com)
 1. Use existing GitLab domain and expose the registry on a port - can reuse
-existing GitLab SSL certificate
+   existing GitLab SSL certificate
 
-Note that using HTTP is possible,
-[see insecure Registry document.](https://github.com/docker/distribution/blob/master/docs/insecure.md)
+Note that using HTTP is possible but not recommended,
+[see insecure Registry document][docker-insecure].
 
 Please take this into consideration before configuring Container Registry for
 the first time.
 
-## Container Registry under its own domain
+### Container Registry under its own domain
 
 Lets assume that you want the Container Registry to be accessible at
 `https://registry.gitlab.example.com`.
 
-### Omnibus GitLab packages
+---
+
+**Omnibus GitLab packages**
 
 Place your SSL certificate and key in
 `/etc/gitlab/ssl/registry.gitlab.example.com.crt`
@@ -66,7 +80,7 @@ registry_nginx['ssl_certificate'] = "/etc/gitlab/ssl/certificate.pem"
 registry_nginx['ssl_certificate_key'] = "/etc/gitlab/ssl/certificate.key"
 ```
 
-## Container Registry under existing GitLab domain
+### Container Registry under existing GitLab domain
 
 Lets assume that your GitLab instance is accessible at
 `https://gitlab.example.com`. You can expose the Container Registry under
@@ -74,7 +88,9 @@ a separate port.
 
 Lets assume that you've exposed port `4567` in your network firewall.
 
-### Omnibus GitLab packages
+**Omnibus GitLab packages**
+
+---
 
 Your `/etc/gitlab/gitlab.rb` should contain the Container Registry URL as
 well as the path to the existing SSL certificate and key used by GitLab.
@@ -105,7 +121,9 @@ with their GitLab credentials.
 It is possible to change path where containers will be stored by the Container
 Registry.
 
-### Omnibus GitLab packages
+**Omnibus GitLab packages**
+
+---
 
 By default, the path Container Registry is using to store the containers is in
 `/var/opt/gitlab/gitlab-rails/shared/registry`.
@@ -125,3 +143,5 @@ have access to this directory.
 
 [reconfigure gitlab]: ../../administration/restart_gitlab.md "How to restart GitLab documentation"
 [wildcard certificate]: "https://en.wikipedia.org/wiki/Wildcard_certificate"
+[ce-4040]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/4040
+[docker-insecure]: https://github.com/docker/distribution/blob/master/docs/insecure.md
