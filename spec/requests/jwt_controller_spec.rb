@@ -1,61 +1,58 @@
 require 'spec_helper'
 
 describe JwtController do
-  let(:services) { { 'test' => TestService } }
-  let(:parameters) { { service: 'test' } }
-  let(:ok_status) { { status: 'OK' } }
+  let(:service) { double(execute: {}) }
+  let(:service_class) { double(new: service) }
+  let(:service_name) { 'test' }
+  let(:parameters) { { service: service_name } }
 
-  before { allow_any_instance_of(JwtController).to receive(:SERVICES).and_return services }
+  before { stub_const('JwtController::SERVICES', service_name => service_class) }
 
   context 'existing service' do
-    before { expect_any_instance_of(TestService).to receive(:execute).and_return(ok_status) }
-
     subject! { get '/jwt/auth', parameters }
 
     it { expect(response.status).to eq(200) }
+
+    context 'returning custom http code' do
+      let(:service) { double(execute: { http_status: 505 }) }
+
+      it { expect(response.status).to eq(505) }
+    end
   end
 
   context 'when using authorized request' do
     context 'using CI token' do
       let(:project) { create(:empty_project, runners_token: 'token', builds_enabled: builds_enabled) }
-      let(:headers) { { HTTP_AUTHENTICATION: authorize('gitlab-ci-token', project.runners_token) } }
+      let(:headers) { { authorization: credentials('gitlab_ci_token', project.runners_token) } }
+
+      subject! { get '/jwt/auth', parameters, headers }
 
       context 'project with enabled CI' do
         let(:builds_enabled) { true }
 
-        it do
-          expect(TestService).to receive(:new).with(project, nil, parameters).and_call_original
-
-          get '/jwt/auth', parameters, headers
-        end
+        it { expect(service_class).to have_received(:new).with(project, nil, parameters) }
       end
 
       context 'project with disabled CI' do
         let(:builds_enabled) { false }
 
-        it do
-          expect(TestService).to receive(:new).with(project, nil, parameters).and_call_original
-
-          get '/jwt/auth', parameters, headers
-        end
+        it { expect(response.status).to eq(403) }
       end
     end
 
     context 'using User login' do
       let(:user) { create(:user) }
-      let(:headers) { { HTTP_AUTHENTICATION: authorize('user', 'password') } }
+      let(:headers) { { authorization: credentials('user', 'password') } }
 
       before { expect_any_instance_of(Gitlab::Auth).to receive(:find).with('user', 'password').and_return(user) }
 
-      it do
-        expect(TestService).to receive(:new).with(nil, user, parameters).and_call_original
+      subject! { get '/jwt/auth', parameters, headers }
 
-        get '/jwt/auth', parameters, headers
-      end
+      it { expect(service_class).to have_received(:new).with(nil, user, parameters) }
     end
 
     context 'using invalid login' do
-      let(:headers) { { HTTP_AUTHENTICATION: authorize('invalid', 'password') } }
+      let(:headers) { { authorization: credentials('invalid', 'password') } }
 
       subject! { get '/jwt/auth', parameters, headers }
 
@@ -69,19 +66,7 @@ describe JwtController do
     it { expect(response.status).to eq(404) }
   end
 
-  def authorize(login, password)
+  def credentials(login, password)
     ActionController::HttpAuthentication::Basic.encode_credentials(login, password)
-  end
-
-  class TestService
-    attr_accessor :project, :current_user, :params
-
-    def initialize(project, user, params = {})
-      @project, @current_user, @params = project, user, params.dup
-    end
-
-    def execute
-      { status: 'OK' }
-    end
   end
 end
