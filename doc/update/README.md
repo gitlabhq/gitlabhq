@@ -29,7 +29,7 @@ Based on your installation, choose a section below that fits your needs.
 
 ## Omnibus Packages
 
-- The [Omnibus update guide](http://doc.gitlab.com/omnibus/update/README.html)
+- The [Omnibus update guide](http://docs.gitlab.com/omnibus/update/README.html)
   contains the steps needed to update an Omnibus GitLab package.
 
 ## Installation from source
@@ -86,10 +86,10 @@ possible.
   information about configuring GitLab to work with a MySQL database.
 - [Restoring from backup after a failed upgrade](restore_after_failure.md)
 
-[omnidocker]: http://doc.gitlab.com/omnibus/docker/README.html
+[omnidocker]: http://docs.gitlab.com/omnibus/docker/README.html
 [source-ee]: https://gitlab.com/gitlab-org/gitlab-ee/tree/master/doc/update
 [source-ce]: https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/update
 [ee-ce]: ../downgrade_ee_to_ce/README.md
 [ce]: https://about.gitlab.com/features/#community
 [ee]: https://about.gitlab.com/features/#enterprise
-[omni-ce-ee]: http://doc.gitlab.com/omnibus/update/README.html#from-community-edition-to-enterprise-edition
+[omni-ce-ee]: http://docs.gitlab.com/omnibus/update/README.html#from-community-edition-to-enterprise-edition

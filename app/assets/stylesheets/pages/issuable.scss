@@ -125,7 +125,7 @@
 
 .right-sidebar {
   position: fixed;
-  top: 58px;
+  top: $header-height;
   bottom: 0;
   right: 0;
   z-index: 10;

@@ -131,7 +131,7 @@ When you feel comfortable with it to be merged you assign it to the person that 
 There is room for more feedback and after the assigned person feels comfortable with the result the branch is merged.
 If the assigned person does not feel comfortable they can close the merge request without merging.
 
-In GitLab it is common to protect the long-lived branches (e.g. the master branch) so that normal developers [can't modify these protected branches](http://doc.gitlab.com/ce/permissions/permissions.html).
+In GitLab it is common to protect the long-lived branches (e.g. the master branch) so that normal developers [can't modify these protected branches](http://docs.gitlab.com/ce/permissions/permissions.html).
 So if you want to merge it into a protected branch you assign it to someone with master authorizations.
 
 ## Issues with GitLab flow
@@ -187,7 +187,7 @@ If you have an issue that spans across multiple repositories, the best thing is 
 ![Vim screen showing the rebase view](rebase.png)
 
 With git you can use an interactive rebase (`rebase -i`) to squash multiple commits into one and reorder them.
-In GitLab EE and .com you can also [rebase before merge](http://doc.gitlab.com/ee/workflow/rebase_before_merge.html) from the web interface.
+In GitLab EE and .com you can also [rebase before merge](http://docs.gitlab.com/ee/workflow/rebase_before_merge.html) from the web interface.
 This functionality is useful if you made a couple of commits for small changes during development and want to replace them with a single commit or if you want to make the order more logical.
 However you should never rebase commits you have pushed to a remote server.
 Somebody can have referred to the commits or cherry-picked them.

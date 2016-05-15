@@ -18,7 +18,7 @@ module SelectsHelper
         first_user: first_user,
         current_user: opts[:current_user] || false,
         "push-code-to-protected-branches" => opts[:push_code_to_protected_branches],
-        author_id: opts[:author_id]       || ''
+        author_id: opts[:author_id] || ''
       }
     }
 
