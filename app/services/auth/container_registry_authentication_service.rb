@@ -7,9 +7,9 @@ module Auth
 
       if params[:offline_token]
         return error('forbidden', 403) unless current_user
+      else
+        return error('forbidden', 401) unless scope
       end
-
-      return error('forbidden', 401) unless scope
 
       { token: authorized_token(scope).encoded }
     end
@@ -21,7 +21,7 @@ module Auth
       token.issuer = registry.issuer
       token.audience = params[:service]
       token.subject = current_user.try(:username)
-      token[:access] = accesses
+      token[:access] = accesses.compact
       token
     end
 
