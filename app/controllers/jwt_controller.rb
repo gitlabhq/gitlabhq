@@ -9,7 +9,7 @@ class JwtController < ApplicationController
 
   def auth
     service = SERVICES[params[:service]]
-    head :not_found unless service
+    return head :not_found unless service
 
     result = service.new(@project, @user, auth_params).execute
 
