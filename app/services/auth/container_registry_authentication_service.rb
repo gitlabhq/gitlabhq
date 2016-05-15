@@ -6,9 +6,9 @@ module Auth
       return error('not found', 404) unless registry.enabled
 
       if params[:offline_token]
-        return error('forbidden', 403) unless current_user
+        return error('forbidden', 401) unless current_user
       else
-        return error('forbidden', 401) unless scope
+        return error('forbidden', 403) unless scope
       end
 
       { token: authorized_token(scope).encoded }

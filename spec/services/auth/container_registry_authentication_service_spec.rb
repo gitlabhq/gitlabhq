@@ -57,11 +57,6 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
     end
   end
 
-  shared_examples 'a unauthorized' do
-    it { is_expected.to include(http_status: 401) }
-    it { is_expected.to_not include(:token) }
-  end
-
   shared_examples 'a forbidden' do
     it { is_expected.to include(http_status: 403) }
     it { is_expected.to_not include(:token) }
@@ -116,7 +111,7 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
         { scope: "repository:#{project.path_with_namespace}:pull,push" }
       end
 
-      it_behaves_like 'a unauthorized'
+      it_behaves_like 'a forbidden'
     end
   end
 
@@ -154,7 +149,7 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
 
         context 'disallow for private' do
           let(:project) { create(:empty_project, :private) }
-          it_behaves_like 'a unauthorized'
+          it_behaves_like 'a forbidden'
         end
       end
 
@@ -165,7 +160,7 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
 
         context 'disallow for all' do
           let(:project) { create(:empty_project, :public) }
-          it_behaves_like 'a unauthorized'
+          it_behaves_like 'a forbidden'
         end
       end
     end
@@ -199,7 +194,7 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
         { scope: 'invalid:aa:bb' }
       end
 
-      it_behaves_like 'a unauthorized'
+      it_behaves_like 'a forbidden'
     end
 
     context 'for private project' do
@@ -209,7 +204,7 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
         { scope: "repository:#{project.path_with_namespace}:pull" }
       end
 
-      it_behaves_like 'a unauthorized'
+      it_behaves_like 'a forbidden'
     end
 
     context 'for public project' do
@@ -228,7 +223,7 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
           { scope: "repository:#{project.path_with_namespace}:push" }
         end
 
-        it_behaves_like 'a unauthorized'
+        it_behaves_like 'a forbidden'
       end
     end
   end
