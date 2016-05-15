@@ -16,7 +16,7 @@ module Auth
 
     def self.full_access_token(*names)
       registry = Gitlab.config.registry
-      token = ::JWT::RSAToken.new(registry.key)
+      token = JSONWebToken::RSAToken.new(registry.key)
       token.issuer = registry.issuer
       token.audience = AUDIENCE
       token[:access] = names.map do |name|
