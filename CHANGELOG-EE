@@ -9,6 +9,7 @@ v 8.8.0 (unreleased)
   - [Elastic] Add rake task for clearing indexing status
   - [Elastic] Improve code search
   - [Elastic] Fix encoding issues during indexing
+  - Warn admin if current active count exceeds license
   - Set KRB5 as default clone protocol when Kerberos is enabled and user is logged in (Borja Aparicio)
   - Reduce emails-on-push HTML size by using a simple monospace font
   - API requests to /internal/authorized_keys are now tagged properly
