@@ -20,7 +20,7 @@ describe 'gitlab:db namespace rake task' do
 
   describe 'configure' do
     it 'should invoke db:migrate when schema has already been loaded' do
-      allow(ActiveRecord::Base.connection).to receive(:table_exists?).and_return(true)
+      allow(ActiveRecord::Base.connection).to receive(:tables).and_return(['default'])
       expect(Rake::Task['db:migrate']).to receive(:invoke)
       expect(Rake::Task['db:schema:load']).not_to receive(:invoke)
       expect(Rake::Task['db:seed_fu']).not_to receive(:invoke)
@@ -28,7 +28,7 @@ describe 'gitlab:db namespace rake task' do
     end
 
     it 'should invoke db:shema:load and db:seed_fu when schema is not loaded' do
-      allow(ActiveRecord::Base.connection).to receive(:table_exists?).and_return(false)
+      allow(ActiveRecord::Base.connection).to receive(:tables).and_return([])
       expect(Rake::Task['db:schema:load']).to receive(:invoke)
       expect(Rake::Task['db:seed_fu']).to receive(:invoke)
       expect(Rake::Task['db:migrate']).not_to receive(:invoke)
@@ -46,7 +46,7 @@ describe 'gitlab:db namespace rake task' do
     end
 
     it 'should not invoke seed after a failed schema_load' do
-      allow(ActiveRecord::Base.connection).to receive(:table_exists?).and_return(false)
+      allow(ActiveRecord::Base.connection).to receive(:tables).and_return([])
       allow(Rake::Task['db:schema:load']).to receive(:invoke).and_raise(RuntimeError, 'error')
       expect(Rake::Task['db:schema:load']).to receive(:invoke)
       expect(Rake::Task['db:seed_fu']).not_to receive(:invoke)
