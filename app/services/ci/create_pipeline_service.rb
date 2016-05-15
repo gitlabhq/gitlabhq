@@ -13,6 +13,8 @@ module Ci
         raise RuntimeError, 'Insufficient permissions to create a new pipeline'
       end
 
+      pipeline = new_pipeline
+
       Ci::Commit.transaction do
         unless pipeline.config_processor
           raise ArgumentError, pipeline.yaml_errors || 'Missing .gitlab-ci.yml file'
@@ -27,16 +29,16 @@ module Ci
 
     private
 
+    def new_pipeline
+      project.ci_commits.new(sha: commit.id, ref: params[:ref], before_sha: Gitlab::Git::BLANK_SHA)
+    end
+
     def ref_names
       @ref_names ||= project.repository.ref_names
     end
 
     def commit
       @commit ||= project.commit(params[:ref])
-    end
-
-    def pipeline
-      @pipeline ||= project.ci_commits.new(sha: commit.id, ref: params[:ref], before_sha: Gitlab::Git::BLANK_SHA)
     end
   end
 end
