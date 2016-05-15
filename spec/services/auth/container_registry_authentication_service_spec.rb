@@ -57,14 +57,27 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
     end
   end
 
-  shared_examples 'a forbidden' do
+  shared_examples 'a unauthorized' do
     it { is_expected.to include(http_status: 401) }
+    it { is_expected.to_not include(:token) }
+  end
+
+  shared_examples 'a forbidden' do
+    it { is_expected.to include(http_status: 403) }
     it { is_expected.to_not include(:token) }
   end
 
   context 'user authorization' do
     let(:project) { create(:project) }
     let(:current_user) { create(:user) }
+
+    context 'allow to use offline_token' do
+      let(:current_params) do
+        { offline_token: true }
+      end
+
+      it_behaves_like 'an authenticated'
+    end
 
     context 'allow developer to push images' do
       before { project.team << [current_user, :developer] }
@@ -103,12 +116,20 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
         { scope: "repository:#{project.path_with_namespace}:pull,push" }
       end
 
-      it_behaves_like 'a forbidden'
+      it_behaves_like 'a unauthorized'
     end
   end
 
   context 'project authorization' do
     let(:current_project) { create(:empty_project) }
+
+    context 'disallow to use offline_token' do
+      let(:current_params) do
+        { offline_token: true }
+      end
+
+      it_behaves_like 'a forbidden'
+    end
 
     context 'allow to pull and push images' do
       let(:current_params) do
@@ -133,7 +154,7 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
 
         context 'disallow for private' do
           let(:project) { create(:empty_project, :private) }
-          it_behaves_like 'a forbidden'
+          it_behaves_like 'a unauthorized'
         end
       end
 
@@ -144,7 +165,7 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
 
         context 'disallow for all' do
           let(:project) { create(:empty_project, :public) }
-          it_behaves_like 'a forbidden'
+          it_behaves_like 'a unauthorized'
         end
       end
     end
@@ -165,12 +186,20 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
   end
 
   context 'unauthorized' do
+    context 'disallow to use offline_token' do
+      let(:current_params) do
+        { offline_token: true }
+      end
+
+      it_behaves_like 'a forbidden'
+    end
+
     context 'for invalid scope' do
       let(:current_params) do
         { scope: 'invalid:aa:bb' }
       end
 
-      it_behaves_like 'a forbidden'
+      it_behaves_like 'a unauthorized'
     end
 
     context 'for private project' do
@@ -180,7 +209,7 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
         { scope: "repository:#{project.path_with_namespace}:pull" }
       end
 
-      it_behaves_like 'a forbidden'
+      it_behaves_like 'a unauthorized'
     end
 
     context 'for public project' do
@@ -199,7 +228,7 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
           { scope: "repository:#{project.path_with_namespace}:push" }
         end
 
-        it_behaves_like 'a forbidden'
+        it_behaves_like 'a unauthorized'
       end
     end
   end
