@@ -178,7 +178,8 @@ production: &base
 
   registry:
     # enabled: true
-    # host: localhost
+    # host: registry.example.com
+    # port: 5000
     # api_url: http://localhost:5000/
     # key: config/registry.key
     # issuer: omnibus-certificate
