@@ -35,7 +35,7 @@ describe NotificationService, services: true do
 
   describe 'Notes' do
     context 'issue note' do
-      let(:project) { create(:empty_project, :private) }
+      let(:project) { create(:empty_project, :internal) }
       let(:issue) { create(:issue, project: project, assignee: create(:user)) }
       let(:mentioned_issue) { create(:issue, assignee: issue.assignee) }
       let(:note) { create(:note_on_issue, noteable: issue, project_id: issue.project_id, note: '@mention referenced, @outsider also') }
@@ -52,8 +52,8 @@ describe NotificationService, services: true do
         it do
           add_users_with_subscription(note.project, issue)
 
-          # Ensure create SentNotification by noteable = issue 6 times, not noteable = note
-          expect(SentNotification).to receive(:record).with(issue, any_args).exactly(7).times
+          # Ensure create SentNotification by noteable = issue 7 times, not noteable = note
+          expect(SentNotification).to receive(:record).with(issue, any_args).exactly(8).times
 
           ActionMailer::Base.deliveries.clear
 
@@ -66,6 +66,7 @@ describe NotificationService, services: true do
           should_email(@subscriber)
           should_email(@watcher_and_subscriber)
           should_email(@subscribed_participant)
+          should_email(@u_guest_watcher)
           should_not_email(note.author)
           should_not_email(@u_participating)
           should_not_email(@u_disabled)
@@ -100,39 +101,11 @@ describe NotificationService, services: true do
           should_email(note.noteable.author)
           should_email(note.noteable.assignee)
           should_email(@u_mentioned)
+          should_email(@u_guest_watcher)
           should_not_email(@u_watcher)
           should_not_email(note.author)
           should_not_email(@u_participating)
           should_not_email(@u_disabled)
-        end
-      end
-
-      context 'when user is not project member' do
-        let(:user) { create(:user) }
-        let(:project) { create(:empty_project, :public) }
-        let(:issue) { create(:issue, project: project, assignee: create(:user)) }
-        let(:note) { create(:note_on_issue, noteable: issue, project_id: issue.project_id, note: 'anything') }
-
-        before { ActionMailer::Base.deliveries.clear }
-
-        context "and has notification setting" do
-          before do
-            setting = user.notification_settings_for(project)
-            setting.level = :watch
-            setting.save
-          end
-
-          it "sends user email" do
-            notification.new_note(note)
-            should_email(user)
-          end
-        end
-
-        context "and does note have notification setting" do
-          it "does not send email" do
-            notification.new_note(note)
-            should_not_email(user)
-          end
         end
       end
     end
@@ -192,6 +165,7 @@ describe NotificationService, services: true do
             should_email(member)
           end
 
+          should_email(@u_guest_watcher)
           should_email(note.noteable.author)
           should_email(note.noteable.assignee)
           should_not_email(note.author)
@@ -216,7 +190,7 @@ describe NotificationService, services: true do
 
       before do
         build_team(note.project)
-        note.project.team << [note.author, :master]
+        note.project.team << [[note.author, note.noteable.author], :master]
         ActionMailer::Base.deliveries.clear
       end
 
@@ -233,6 +207,7 @@ describe NotificationService, services: true do
             should_email(member)
           end
 
+          should_email(@u_guest_watcher)
           should_email(note.noteable.author)
           should_not_email(note.author)
           should_email(@u_mentioned)
@@ -256,6 +231,7 @@ describe NotificationService, services: true do
         it do
           notification.new_note(note)
 
+          should_email(@u_guest_watcher)
           should_email(@u_committer)
           should_email(@u_watcher)
           should_not_email(@u_mentioned)
@@ -268,6 +244,7 @@ describe NotificationService, services: true do
           note.update_attribute(:note, '@mention referenced')
           notification.new_note(note)
 
+          should_email(@u_guest_watcher)
           should_email(@u_committer)
           should_email(@u_watcher)
           should_email(@u_mentioned)
@@ -302,6 +279,7 @@ describe NotificationService, services: true do
 
         should_email(issue.assignee)
         should_email(@u_watcher)
+        should_email(@u_guest_watcher)
         should_email(@u_participant_mentioned)
         should_not_email(@u_mentioned)
         should_not_email(@u_participating)
@@ -361,6 +339,7 @@ describe NotificationService, services: true do
 
         should_email(issue.assignee)
         should_email(@u_watcher)
+        should_email(@u_guest_watcher)
         should_email(@u_participant_mentioned)
         should_email(@subscriber)
         should_not_email(@unsubscriber)
@@ -375,6 +354,7 @@ describe NotificationService, services: true do
 
         should_email(@u_mentioned)
         should_email(@u_watcher)
+        should_email(@u_guest_watcher)
         should_email(@u_participant_mentioned)
         should_email(@subscriber)
         should_not_email(@unsubscriber)
@@ -389,6 +369,7 @@ describe NotificationService, services: true do
         expect(issue.assignee).to be @u_mentioned
         should_email(issue.assignee)
         should_email(@u_watcher)
+        should_email(@u_guest_watcher)
         should_email(@u_participant_mentioned)
         should_email(@subscriber)
         should_not_email(@unsubscriber)
@@ -403,6 +384,7 @@ describe NotificationService, services: true do
         expect(issue.assignee).to be @u_mentioned
         should_email(issue.assignee)
         should_email(@u_watcher)
+        should_email(@u_guest_watcher)
         should_email(@u_participant_mentioned)
         should_email(@subscriber)
         should_not_email(@unsubscriber)
@@ -416,6 +398,7 @@ describe NotificationService, services: true do
 
         expect(issue.assignee).to be @u_mentioned
         should_email(@u_watcher)
+        should_email(@u_guest_watcher)
         should_email(@u_participant_mentioned)
         should_email(@subscriber)
         should_not_email(issue.assignee)
@@ -444,6 +427,7 @@ describe NotificationService, services: true do
         should_not_email(issue.assignee)
         should_not_email(issue.author)
         should_not_email(@u_watcher)
+        should_not_email(@u_guest_watcher)
         should_not_email(@u_participant_mentioned)
         should_not_email(@subscriber)
         should_not_email(@watcher_and_subscriber)
@@ -492,6 +476,7 @@ describe NotificationService, services: true do
         should_email(issue.assignee)
         should_email(issue.author)
         should_email(@u_watcher)
+        should_email(@u_guest_watcher)
         should_email(@u_participant_mentioned)
         should_email(@subscriber)
         should_email(@watcher_and_subscriber)
@@ -508,6 +493,7 @@ describe NotificationService, services: true do
         should_email(issue.assignee)
         should_email(issue.author)
         should_email(@u_watcher)
+        should_email(@u_guest_watcher)
         should_email(@u_participant_mentioned)
         should_email(@subscriber)
         should_email(@watcher_and_subscriber)
@@ -536,6 +522,7 @@ describe NotificationService, services: true do
         should_email(@u_watcher)
         should_email(@watcher_and_subscriber)
         should_email(@u_participant_mentioned)
+        should_email(@u_guest_watcher)
         should_not_email(@u_participating)
         should_not_email(@u_disabled)
       end
@@ -559,6 +546,7 @@ describe NotificationService, services: true do
         should_email(@u_participant_mentioned)
         should_email(@subscriber)
         should_email(@watcher_and_subscriber)
+        should_email(@u_guest_watcher)
         should_not_email(@unsubscriber)
         should_not_email(@u_participating)
         should_not_email(@u_disabled)
@@ -600,6 +588,7 @@ describe NotificationService, services: true do
 
         should_email(merge_request.assignee)
         should_email(@u_watcher)
+        should_email(@u_guest_watcher)
         should_email(@u_participant_mentioned)
         should_email(@subscriber)
         should_email(@watcher_and_subscriber)
@@ -618,6 +607,7 @@ describe NotificationService, services: true do
         should_email(@u_participant_mentioned)
         should_email(@subscriber)
         should_email(@watcher_and_subscriber)
+        should_email(@u_guest_watcher)
         should_not_email(@unsubscriber)
         should_not_email(@u_participating)
         should_not_email(@u_disabled)
@@ -633,6 +623,7 @@ describe NotificationService, services: true do
         should_email(@u_participant_mentioned)
         should_email(@subscriber)
         should_email(@watcher_and_subscriber)
+        should_email(@u_guest_watcher)
         should_not_email(@unsubscriber)
         should_not_email(@u_participating)
         should_not_email(@u_disabled)
@@ -654,6 +645,7 @@ describe NotificationService, services: true do
 
         should_email(@u_watcher)
         should_email(@u_participating)
+        should_not_email(@u_guest_watcher)
         should_not_email(@u_disabled)
       end
     end
@@ -669,6 +661,8 @@ describe NotificationService, services: true do
     @u_not_mentioned = create(:user, username: 'regular', notification_level: :participating)
     @u_outsider_mentioned = create(:user, username: 'outsider')
 
+    create_guest_watcher
+
     project.team << [@u_watcher, :master]
     project.team << [@u_participating, :master]
     project.team << [@u_participant_mentioned, :master]
@@ -676,6 +670,13 @@ describe NotificationService, services: true do
     project.team << [@u_mentioned, :master]
     project.team << [@u_committer, :master]
     project.team << [@u_not_mentioned, :master]
+  end
+
+  def create_guest_watcher
+    @u_guest_watcher = create(:user, username: 'guest_watching')
+    setting = @u_guest_watcher.notification_settings_for(project)
+    setting.level = :watch
+    setting.save
   end
 
   def add_users_with_subscription(project, issuable)
