@@ -3,4 +3,5 @@ class Spinach::Features::DashboardShortcuts < Spinach::FeatureSteps
   include SharedPaths
   include SharedProject
   include SharedSidebarActiveTab
+  include SharedShortcuts
 end
