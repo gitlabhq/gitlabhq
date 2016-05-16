@@ -53,7 +53,6 @@ feature 'issue move to another project' do
       background { another_project.team << [user, :guest] }
 
       scenario 'browsing projects in projects select' do
-        options = [ '', 'No project', new_project.name_with_namespace ]
         click_link 'Select project'
 
         page.within '.select2-results' do
