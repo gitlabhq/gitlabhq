@@ -70,7 +70,7 @@
 - if current_user.can_change_username?
   .row.prepend-top-default
     .col-lg-3.profile-settings-sidebar
-      %h4.prepend-top-0.change-username-title
+      %h4.prepend-top-0.warning-title
         Change username
       %p
         Changing your username will change path to all personal projects!
@@ -94,7 +94,7 @@
 - if signup_enabled?
   .row.prepend-top-default
     .col-lg-3.profile-settings-sidebar
-      %h4.prepend-top-0.remove-account-title
+      %h4.prepend-top-0.danger-title
         Remove account
     .col-lg-9
       - if @user.can_be_removed?
