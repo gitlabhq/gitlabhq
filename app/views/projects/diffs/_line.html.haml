@@ -15,7 +15,7 @@
         = link_text
       - else
         = link_to "", "##{line_code}", id: line_code, data: { linenumber: link_text }
-      - if @comments_allowed && can?(current_user, :create_note, @project)
+      - if !@diff_notes_disabled && can?(current_user, :create_note, @project)
         = link_to_new_diff_note(line_code)
     %td.new_line.diff-line-num{ class: type, data: { linenumber: line.new_pos } }
       - link_text = type == "old" ? "&nbsp;".html_safe : line.new_pos

@@ -64,6 +64,9 @@ Rails.application.routes.draw do
   get 'search' => 'search#show'
   get 'search/autocomplete' => 'search#autocomplete', as: :search_autocomplete
 
+  # JSON Web Token
+  get 'jwt/auth' => 'jwt#auth'
+
   # API
   API::API.logger Rails.logger
   mount API::API => '/api'
@@ -74,7 +77,7 @@ Rails.application.routes.draw do
   end
 
   # Health check
-  get 'health_check(/:checks)'  => 'health_check#index', as: :health_check
+  get 'health_check(/:checks)' => 'health_check#index', as: :health_check
 
   # Enable Grack support
   mount Grack::AuthSpawner, at: '/', constraints: lambda { |request| /[-\/\w\.]+\.git\//.match(request.path_info) }, via: [:get, :post, :put]
@@ -83,7 +86,7 @@ Rails.application.routes.draw do
   get 'help'                  => 'help#index'
   get 'help/:category/:file'  => 'help#show', as: :help_page, constraints: { category: /.*/, file: /[^\/\.]+/ }
   get 'help/shortcuts'
-  get 'help/ui'               => 'help#ui'
+  get 'help/ui' => 'help#ui'
 
   #
   # Global snippets
