@@ -152,7 +152,7 @@ module ProjectsHelper
       nav_tabs << :builds
     end
 
-    if can?(current_user, :read_container_image, project)
+    if project.container_registry_repository_url.present? && can?(current_user, :read_container_image, project)
       nav_tabs << :container_registry
     end
 
