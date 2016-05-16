@@ -89,9 +89,9 @@ Rails.application.routes.draw do
   mount Grack::AuthSpawner, at: '/', constraints: lambda { |request| /[-\/\w\.]+\.git\/(info\/lfs|gitlab-lfs)/.match(request.path_info) }, via: [:get, :post, :put]
 
   # Help
+  
   get 'help'                  => 'help#index'
-  get 'help/:category/:file'  => 'help#show', as: :help_page, constraints: { category: /.*/, file: /[^\/\.]+/ }
-  get 'help/:category/:subcategory/:file'  => 'help#show', as: :deep_help_page, constraints: { category: /.*/, subcategory: /.*/, file: /[^\/\.]+/ }
+  get 'help/*path'            => 'help#show', as: :help_page
   get 'help/shortcuts'
   get 'help/ui' => 'help#ui'
 
