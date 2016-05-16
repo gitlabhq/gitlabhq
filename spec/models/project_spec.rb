@@ -772,4 +772,79 @@ describe Project, models: true do
       expect(project.protected_branch?('foo')).to eq(false)
     end
   end
+
+  describe '#container_registry_repository' do
+    let(:project) { create(:empty_project) }
+
+    subject { project.container_registry_repository }
+
+    it { is_expected.to_not be_nil }
+  end
+
+  describe '#container_registry_repository_url' do
+    let(:project) { create(:empty_project) }
+
+    subject { project.container_registry_repository_url }
+
+    before { allow(Gitlab.config.registry).to receive_messages(registry_settings) }
+
+    context 'for enabled registry' do
+      let(:registry_settings) do
+        {
+          enabled: true,
+          host_port: 'example.com',
+        }
+      end
+
+      it { is_expected.to_not be_nil }
+    end
+
+    context 'for disabled registry' do
+      let(:registry_settings) do
+        {
+          enabled: false
+        }
+      end
+
+      it { is_expected.to be_nil }
+    end
+  end
+
+  describe '#has_container_registry_tags?' do
+    let(:project) { create(:empty_project) }
+
+    subject { project.has_container_registry_tags? }
+
+    before { allow(Gitlab.config.registry).to receive_messages(registry_settings) }
+
+    context 'for enabled registry' do
+      let(:registry_settings) do
+        {
+          enabled: true
+        }
+      end
+
+      context 'with tags' do
+        before { stub_container_registry('test', 'test2') }
+
+        it { is_expected.to be_truthy }
+      end
+
+      context 'when no tags' do
+        before { stub_container_registry }
+
+        it { is_expected.to be_falsey }
+      end
+    end
+
+    context 'for disabled registry' do
+      let(:registry_settings) do
+        {
+          enabled: false
+        }
+      end
+
+      it { is_expected.to be_falsey }
+    end
+  end
 end

@@ -7,6 +7,7 @@ describe Ci::API::API do
   let(:registration_token) { 'abcdefg123456' }
 
   before do
+    stub_gitlab_calls
     stub_application_setting(runners_registration_token: registration_token)
   end
 
