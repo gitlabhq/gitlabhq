@@ -15,6 +15,7 @@ v 8.8.0 (unreleased)
   - Make build status canceled if any of the jobs was canceled and none failed
   - Upgrade Sidekiq to 4.1.2
   - Added /health_check endpoint for checking service status
+  - Make 'upcoming' filter for milestones work better across projects
   - Sanitize repo paths in new project error message
   - Bump mail_room to 0.7.0 to fix stuck IDLE connections
   - Remove future dates from contribution calendar graph.
