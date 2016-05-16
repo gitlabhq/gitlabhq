@@ -273,7 +273,7 @@ module ApplicationHelper
       end
     end
 
-    path = request.path
+    path = request.path << ".json"
     path << "?#{options.to_param}"
     if add_label
       if params[:label_name].present? and params[:label_name].respond_to?('any?')
