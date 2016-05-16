@@ -10,7 +10,6 @@ module Gitlab
       end
 
       def save
-        FileUtils.mkdir_p(@shared.export_path)
         File.write(full_path, project_json_tree)
         true
       rescue => e
