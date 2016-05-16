@@ -196,7 +196,7 @@
   position: fixed;
   top: $header-height;
   width: 100%;
-  z-index: 1;
+  z-index: 3;
   background: $background-color;
   border-bottom: 1px solid $border-color;
   transition-duration: .3s;
@@ -237,6 +237,10 @@
 
       @media (max-width: $screen-xs-min) {
         margin-left: 0;
+      }
+
+      li.active {
+        font-weight: bold;
       }
     }
   }
