@@ -14,7 +14,7 @@ describe "Container Registry" do
   before do
     login_as(:user)
     project.team << [@user, :developer]
-    stub_container_registry(*tags)
+    stub_container_registry_tags(*tags)
     allow(Gitlab.config.registry).to receive_messages(registry_settings)
     allow(Auth::ContainerRegistryAuthenticationService).to receive(:full_access_token).and_return('token')
   end

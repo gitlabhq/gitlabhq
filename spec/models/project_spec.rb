@@ -634,11 +634,11 @@ describe Project, models: true do
       # Project#gitlab_shell returns a new instance of Gitlab::Shell on every
       # call. This makes testing a bit easier.
       allow(project).to receive(:gitlab_shell).and_return(gitlab_shell)
+
+      allow(project).to receive(:previous_changes).and_return('path' => ['foo'])
     end
 
     it 'renames a repository' do
-      allow(project).to receive(:previous_changes).and_return('path' => ['foo'])
-
       ns = project.namespace_dir
 
       expect(gitlab_shell).to receive(:mv_repository).
@@ -662,6 +662,17 @@ describe Project, models: true do
       expect(project).to receive(:expire_caches_before_rename)
 
       project.rename_repo
+    end
+
+    context 'container registry with tags' do
+      before do
+        stub_container_registry_config(enabled: true)
+        stub_container_registry_tags('tag')
+      end
+
+      subject { project.rename_repo }
+
+      it { expect{subject}.to raise_error(Exception) }
     end
   end
 
@@ -825,13 +836,13 @@ describe Project, models: true do
       end
 
       context 'with tags' do
-        before { stub_container_registry('test', 'test2') }
+        before { stub_container_registry_tags('test', 'test2') }
 
         it { is_expected.to be_truthy }
       end
 
       context 'when no tags' do
-        before { stub_container_registry }
+        before { stub_container_registry_tags }
 
         it { is_expected.to be_falsey }
       end

@@ -39,7 +39,7 @@ module ContainerRegistry
     def delete_tags
       return unless tags
 
-      tags.each(:delete)
+      tags.all?(&:delete)
     end
 
     def mount_blob(blob)

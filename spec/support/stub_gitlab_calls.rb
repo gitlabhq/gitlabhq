@@ -25,7 +25,11 @@ module StubGitlabCalls
     allow_any_instance_of(Project).to receive(:builds_enabled?).and_return(false)
   end
 
-  def stub_container_registry(*tags)
+  def stub_container_registry_config(registry_settings)
+    allow(Gitlab.config.registry).to receive_messages(registry_settings)
+  end
+
+  def stub_container_registry_tags(*tags)
     allow_any_instance_of(ContainerRegistry::Client).to receive(:repository_tags).and_return(
       { "tags" => tags }
     )
