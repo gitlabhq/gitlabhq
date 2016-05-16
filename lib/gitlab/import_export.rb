@@ -23,5 +23,9 @@ module Gitlab
     def version_filename
       'VERSION'
     end
+
+    def version
+      VERSION
+    end
   end
 end
