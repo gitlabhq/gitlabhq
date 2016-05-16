@@ -16,7 +16,7 @@ module Gitlab
       def execute
         Gitlab::ImportExport::Importer.import(archive_file: @archive_file,
                                               shared: @shared)
-        if [restore_project_tree, restore_repo, restore_wiki_repo].all?
+        if [restore_version, restore_project_tree, restore_repo, restore_wiki_repo].all?
           project_tree.project
         else
           project_tree.project.destroy if project_tree.project
@@ -25,6 +25,10 @@ module Gitlab
       end
 
       private
+
+      def restore_version
+        Gitlab::ImportExport::VersionRestorer.restore(shared: @shared)
+      end
 
       def restore_project_tree
         project_tree.restore

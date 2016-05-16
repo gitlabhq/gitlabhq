@@ -4,11 +4,15 @@ module Projects
 
       def execute(options = {})
         @shared = Gitlab::ImportExport::Shared.new(relative_path: File.join(project.path_with_namespace, 'work'))
-        save_all if [save_project_tree, bundle_repo, bundle_wiki_repo].all?
-        notify_worker if @shared.errors.any?
+        save_all if [save_version, save_project_tree, bundle_repo, bundle_wiki_repo].all?
+        cleanup_and_notify_worker if @shared.errors.any?
       end
 
       private
+
+      def save_version
+        Gitlab::ImportExport::VersionSaver.save(shared: @shared)
+      end
 
       def save_project_tree
         Gitlab::ImportExport::ProjectTreeSaver.new(project: project, shared: @shared).save
@@ -26,7 +30,8 @@ module Projects
         Gitlab::ImportExport::Saver.save(shared: @shared)
       end
 
-      def notify_worker
+      def cleanup_and_notify_worker
+        FileUtils.rm_rf(@shared.export_path)
         raise Gitlab::ImportExport::Error.new(@shared.errors.join(', '))
       end
     end
