@@ -285,6 +285,7 @@ class @Notes
     form.addClass "js-main-target-form"
 
     form.find("#note_line_code").remove()
+    form.find("#note_type").remove()
 
   ###
   General note form setup.
@@ -472,6 +473,7 @@ class @Notes
   setupDiscussionNoteForm: (dataHolder, form) =>
     # setup note target
     form.attr 'id', "new-discussion-note-form-#{dataHolder.data("discussionId")}"
+    form.find("#note_type").val dataHolder.data("noteType")
     form.find("#line_type").val dataHolder.data("lineType")
     form.find("#note_commit_id").val dataHolder.data("commitId")
     form.find("#note_line_code").val dataHolder.data("lineCode")

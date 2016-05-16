@@ -19,7 +19,7 @@ See the documentation below for details on how to configure these services.
 
 GitLab Enterprise Edition contains [advanced Jenkins support][jenkins].
 
-[jenkins]: http://doc.gitlab.com/ee/integration/jenkins.html
+[jenkins]: http://docs.gitlab.com/ee/integration/jenkins.html
 
 
 ## Project services
