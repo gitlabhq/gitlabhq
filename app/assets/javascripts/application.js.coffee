@@ -122,7 +122,11 @@ window.onload = ->
 $ ->
   bootstrapBreakpoint = bp.getBreakpointSize()
 
-  $(".nicescroll").niceScroll(cursoropacitymax: '0.4', cursorcolor: '#FFF', cursorborder: "1px solid #FFF")
+  $(".nicescroll .nav-sidebar").niceScroll(
+    cursoropacitymax: '0.4'
+    cursorcolor: '#FFF'
+    cursorborder: "1px solid #FFF"
+  )
 
   # Click a .js-select-on-focus field, select the contents
   $(".js-select-on-focus").on "focusin", ->

@@ -51,10 +51,11 @@
 .sidebar-wrapper {
   .header-logo {
     border-bottom: 1px solid transparent;
-    float: left;
     height: $header-height;
-    width: $sidebar_width;
-    position: fixed;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
     z-index: 999;
     overflow: hidden;
     transition-duration: .3s;
@@ -99,9 +100,10 @@
 
   .sidebar-user {
     padding: 7px 22px;
-    position: fixed;
+    position: absolute;
+    left: 0;
     bottom: 40px;
-    width: $sidebar_width;
+    width: 100%;
     overflow: hidden;
     transition-duration: .3s;
 
@@ -126,6 +128,11 @@
 
 
 .nav-sidebar {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
   margin-top: 14 + $header-height;
   margin-bottom: 100px;
   transition-duration: .3s;
@@ -137,14 +144,15 @@
   }
 
   li {
-    width: $sidebar_width;
-
     &.separate-item {
       padding-top: 10px;
       margin-top: 10px;
     }
 
     a {
+      position: relative;
+      display: block;
+      width: 100%;
       padding: 7px 15px;
       font-size: $gl-font-size;
       line-height: 24px;
@@ -154,6 +162,7 @@
       padding-left: 23px;
       font-weight: normal;
       outline: none;
+      white-space: nowrap;
 
       &:hover {
         text-decoration: none;
@@ -170,7 +179,9 @@
       }
 
       .count {
-        float: right;
+        position: absolute;
+        top: 7px;
+        right: 15px;
         background: #eee;
         padding: 0 8px;
         @include border-radius(6px);
@@ -192,9 +203,9 @@
   }
 }
 
-.collapse-nav a {
-  width: $sidebar_width;
-  position: fixed;
+.toggle-nav-collapse {
+  width: 100%;
+  position: absolute;
   bottom: 0;
   left: 0;
   font-size: 13px;
@@ -247,8 +258,6 @@
     }
 
     .nav-sidebar {
-      width: $sidebar_collapsed_width;
-
       li {
         width: auto;
 
@@ -257,14 +266,6 @@
             display: none;
           }
         }
-      }
-    }
-
-    .collapse-nav a {
-      width: $sidebar_collapsed_width;
-
-      @media (max-width: $screen-xs-min) {
-        width: 0;
       }
     }
 
@@ -307,13 +308,7 @@
   .sidebar-wrapper {
     width: $sidebar_width;
 
-    .nav-sidebar {
-      width: $sidebar_width;
-    }
-
     .nav-sidebar li a {
-      width: $sidebar_width;
-
       &.back-link {
         i {
           opacity: 0;

@@ -8,9 +8,9 @@ toggleSidebar = ->
   $.cookie("collapsed_nav", $('.page-with-sidebar').hasClass(collapsed), { path: '/' })
 
   setTimeout ( ->
-    niceScrollBars = $('.nicescroll').niceScroll();
+    niceScrollBars = $('.nicescroll .nav-sidebar').niceScroll();
     niceScrollBars.updateScrollBar();
-  ), 300
+  ), 500
 
 $(document).on("click", '.toggle-nav-collapse, .side-nav-toggle', (e) ->
   e.preventDefault()
