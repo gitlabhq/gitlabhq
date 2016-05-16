@@ -46,7 +46,7 @@ v 8.8.0 (unreleased)
   - API support for the 'since' and 'until' operators on commit requests (Paco Guzman)
   - Fix Gravatar hint in user profile when Gravatar is disabled. !3988 (Artem Sidorenko)
   - Expire repository exists? and has_visible_content? caches after a push if necessary
-  - Fix unintentional filtering bug in issues sorted by milestone due (Takuya Noguchi)
+  - Fix unintentional filtering bug in Issue/MR sorted by milestone due (Takuya Noguchi)
   - Fix adding a todo for private group members (Ahmad Sherif)
   - Bump ace-rails-ap gem version from 2.0.1 to 4.0.2 which upgrades Ace Editor from 1.1.2 to 1.2.3
   - Total method execution timings are no longer tracked
