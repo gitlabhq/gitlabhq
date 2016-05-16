@@ -67,6 +67,9 @@ v 8.7.6
 v 8.7.6
   - Fix external imports not finding the import data
 
+v 8.7.6
+  - Fix links on wiki pages for relative url setups. !4131 (Artem Sidorenko)
+
 v 8.7.5
   - Fix relative links in wiki pages. !4050
   - Fix always showing build notification message when switching between merge requests !4086

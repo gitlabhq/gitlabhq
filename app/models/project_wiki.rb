@@ -40,7 +40,7 @@ class ProjectWiki
   end
 
   def wiki_base_path
-    ["/", @project.path_with_namespace, "/wikis"].join('')
+    [Gitlab.config.gitlab.relative_url_root, "/", @project.path_with_namespace, "/wikis"].join('')
   end
 
   # Returns the Gollum::Wiki object.
