@@ -5,7 +5,7 @@ module Gitlab
 
       attr_reader :full_path
 
-      def initialize(project: , shared: )
+      def initialize(project:, shared:)
         @project = project
         @shared = shared
       end
