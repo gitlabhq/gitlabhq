@@ -53,11 +53,19 @@ module Gitlab
       def update_project_references(relation_hash, klass)
         project_id = relation_hash.delete('project_id')
 
+        if relation_hash['source_project_id'] && relation_hash['target_project_id']
+          # If source and target are the same, populate them with the new project ID.
+          if relation_hash['target_project_id'] == relation_hash['source_project_id']
+            relation_hash['source_project_id'] = project_id
+          else
+            relation_hash['source_project_id'] = -1
+          end
+        end
+        relation_hash['target_project_id'] = project_id if relation_hash['target_project_id']
+
         # project_id may not be part of the export, but we always need to populate it if required.
         relation_hash['project_id'] = project_id if klass.column_names.include?('project_id')
         relation_hash['gl_project_id'] = project_id if relation_hash ['gl_project_id']
-        relation_hash['target_project_id'] = project_id if relation_hash['target_project_id']
-        relation_hash['source_project_id'] = -1 if relation_hash['source_project_id']
       end
 
       def relation_class(relation_sym)
