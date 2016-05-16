@@ -253,7 +253,7 @@ Settings.registry['port']          ||= nil
 Settings.registry['api_url']       ||= "http://localhost:5000/"
 Settings.registry['key']           ||= nil
 Settings.registry['issuer']        ||= nil
-Settings.registry['host_port']     ||= [Settings.registry['host'], Settings.registry['port']].join(':')
+Settings.registry['host_port']     ||= [Settings.registry['host'], Settings.registry['port']].compact.join(':')
 
 #
 # Git LFS
