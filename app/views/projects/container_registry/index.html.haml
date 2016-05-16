@@ -16,7 +16,7 @@
         To start using container images hosted on GitLab you first need to login:
         %pre
           %code
-            docker login #{Gitlab.config.registry.host}
+            docker login #{Gitlab.config.registry.host_port}
         %br
         Then you are free to create and upload a container image with build and push commands:
         %pre

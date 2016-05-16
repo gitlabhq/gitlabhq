@@ -249,9 +249,11 @@ Settings.artifacts['max_size']   ||= 100 # in megabytes
 Settings['registry'] ||= Settingslogic.new({})
 Settings.registry['enabled']       ||= false
 Settings.registry['host']          ||= "example.com"
+Settings.registry['port']          ||= nil
 Settings.registry['api_url']       ||= "http://localhost:5000/"
 Settings.registry['key']           ||= nil
 Settings.registry['issuer']        ||= nil
+Settings.registry['host_port']     ||= [Settings.registry['host'], Settings.registry['port']].join(':')
 
 #
 # Git LFS
