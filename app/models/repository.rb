@@ -877,7 +877,7 @@ class Repository
   def check_revert_content(commit, base_branch)
     source_sha = find_branch(base_branch).target
     args       = [commit.id, source_sha]
-    args       << { mainline: 1 } if commit.merge_commit?
+    args << { mainline: 1 } if commit.merge_commit?
 
     revert_index = rugged.revert_commit(*args)
     return false if revert_index.conflicts?
@@ -891,7 +891,7 @@ class Repository
   def check_cherry_pick_content(commit, base_branch)
     source_sha = find_branch(base_branch).target
     args       = [commit.id, source_sha]
-    args       << 1 if commit.merge_commit?
+    args << 1 if commit.merge_commit?
 
     cherry_pick_index = rugged.cherrypick_commit(*args)
     return false if cherry_pick_index.conflicts?

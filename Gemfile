@@ -333,7 +333,6 @@ gem "mail_room", "~> 0.7"
 gem 'email_reply_parser', '~> 0.5.8'
 
 ## CI
-gem 'activerecord-deprecated_finders', '~> 1.0.3'
 gem 'activerecord-session_store', '~> 0.1.0'
 gem "nested_form", '~> 0.3.2'
 

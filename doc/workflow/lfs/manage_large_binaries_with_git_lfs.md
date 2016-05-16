@@ -4,7 +4,7 @@ Managing large files such as audio, video and graphics files has always been one
 of the shortcomings of Git. The general recommendation is to not have Git repositories
 larger than 1GB to preserve performance.
 
-GitLab already supports [managing large files with git annex](http://doc.gitlab.com/ee/workflow/git_annex.html)
+GitLab already supports [managing large files with git annex](http://docs.gitlab.com/ee/workflow/git_annex.html)
 (EE only), however in certain environments it is not always convenient to use
 different commands to differentiate between the large files and regular ones.
 

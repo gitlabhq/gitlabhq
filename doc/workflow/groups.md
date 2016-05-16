@@ -54,7 +54,7 @@ If necessary, you can increase the access level of an individual user for a spec
 ## Managing group memberships via LDAP
 
 In GitLab Enterprise Edition it is possible to manage GitLab group memberships using LDAP groups.
-See [the GitLab Enterprise Edition documentation](http://doc.gitlab.com/ee/integration/ldap.html) for more information.
+See [the GitLab Enterprise Edition documentation](http://docs.gitlab.com/ee/integration/ldap.html) for more information.
 
 ## Allowing only admins to create groups
 

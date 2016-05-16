@@ -50,5 +50,5 @@ labels, milestones, and cross-repository pull requests. We are working on
 improving this in the near future.
 
 [gh-import]: ../../integration/github.md "GitHub integration"
-[ee-gh]: http://doc.gitlab.com/ee/integration/github.html "GitHub integration for GitLab EE"
+[ee-gh]: http://docs.gitlab.com/ee/integration/github.html "GitHub integration for GitLab EE"
 [new-project]: ../../gitlab-basics/create-project.md "How to create a new project in GitLab"

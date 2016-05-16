@@ -1,7 +1,7 @@
 - if current_user
   - if access = @group.users.find_by(id: current_user.id)
     .controls
-      %span.dropdown.group-settings-dropdown
+      .dropdown.group-settings-dropdown
         %a.dropdown-new.btn.btn-default#group-settings-button{href: '#', 'data-toggle' => 'dropdown'}
           = icon('cog')
           = icon('caret-down')
