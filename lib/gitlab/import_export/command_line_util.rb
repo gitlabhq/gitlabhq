@@ -9,11 +9,11 @@ module Gitlab
         untar_with_options(archive: archive, dir: dir, options: 'zxf')
       end
 
-      def git_bundle(git_bin_path: Gitlab.config.git.bin_path, repo_path:, bundle_path:)
+      def git_bundle(repo_path:, bundle_path:)
         execute(%W(#{git_bin_path} --git-dir=#{repo_path} bundle create #{bundle_path} --all))
       end
 
-      def git_unbundle(git_bin_path: Gitlab.config.git.bin_path, repo_path:, bundle_path:)
+      def git_unbundle(repo_path:, bundle_path:)
         execute(%W(#{git_bin_path} clone --bare #{bundle_path} #{repo_path}))
       end
 
@@ -30,6 +30,10 @@ module Gitlab
       def execute(cmd)
         _output, status = Gitlab::Popen.popen(cmd)
         status.zero?
+      end
+
+      def git_bin_path
+        Gitlab.config.git.bin_path
       end
     end
   end

@@ -3,14 +3,13 @@ module Gitlab
     class WikiRepoBundler < RepoBundler
       def bundle
         @wiki = ProjectWiki.new(@project)
-        return true if !wiki? # it's okay to have no Wiki
-        @full_path = File.join(@shared.export_path, project_filename)
-        bundle_to_disk
+        return true unless wiki_repository_exists? # it's okay to have no Wiki
+        bundle_to_disk(File.join(@shared.export_path, project_filename))
       end
 
-      def bundle_to_disk
+      def bundle_to_disk(full_path)
         FileUtils.mkdir_p(@shared.export_path)
-        git_bundle(repo_path: path_to_repo, bundle_path: @full_path)
+        git_bundle(repo_path: path_to_repo, bundle_path: full_path)
       rescue => e
         @shared.error(e.message)
         false
@@ -26,7 +25,7 @@ module Gitlab
         @wiki.repository.path_to_repo
       end
 
-      def wiki?
+      def wiki_repository_exists?
         File.exists?(@wiki.repository.path_to_repo) && !@wiki.repository.empty?
       end
     end
