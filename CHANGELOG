@@ -57,6 +57,7 @@ v 8.8.0 (unreleased)
   - Redesign navigation for profile and group pages
   - Add counter metrics for rails cache
   - Import pull requests from GitHub where the source or target branches were removed
+  - All Grape API helpers are now instrumented
 
 v 8.7.6
   - Fix links on wiki pages for relative url setups. !4131 (Artem Sidorenko)
