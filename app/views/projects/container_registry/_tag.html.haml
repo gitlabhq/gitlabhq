@@ -4,7 +4,7 @@
     = clipboard_button(clipboard_text: "docker pull #{tag.path}")
   %td
     - if layer = tag.layers.first
-      %span.has-tooltip(title="#{layer.revision}")
+      %span.has-tooltip{ title: "#{layer.revision}" }
         = layer.short_revision
     - else
       \-
