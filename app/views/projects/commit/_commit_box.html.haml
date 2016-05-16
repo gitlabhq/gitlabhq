@@ -23,20 +23,6 @@
 
 %p
 .commit-info-row
-  - if defined?(pipeline) && pipeline
-    .pull-right
-      = link_to namespace_project_pipeline_path(@project.namespace, @project, pipeline), class: "ci-status ci-#{pipeline.status}" do
-        = ci_icon_for_status(pipeline.status)
-        Pipeline:
-        = ci_label_for_status(pipeline.status)
-
-  - elsif @commit.status
-    .pull-right
-      = link_to builds_namespace_project_commit_path(@project.namespace, @project, @commit.id), class: "ci-status ci-#{@commit.status}" do
-        = ci_icon_for_status(@commit.status)
-        Build:
-        = ci_label_for_status(@commit.status)
-
   %span.light Authored by
   %strong
     = commit_author_link(@commit, avatar: true, size: 24)
@@ -59,6 +45,27 @@
 
   %span.commit-info.branches
     %i.fa.fa-spinner.fa-spin
+
+- if defined?(pipeline) && pipeline
+  .commit-info-row
+    Pipeline
+    = link_to namespace_project_pipeline_path(@project.namespace, @project, pipeline), class: "ci-status-link ci-status-icon-#{pipeline.status}" do
+      = ci_icon_for_status(pipeline.status)
+      = ci_label_for_status(pipeline.status)
+    - if pipeline.duration
+      in
+      = time_interval_in_words 3600
+
+- elsif @commit.status
+  .commit-info-row
+    Builds for
+    = pluralize(@commit.ci_commits.count, 'pipeline')
+    = link_to builds_namespace_project_commit_path(@project.namespace, @project, @commit.id), class: "ci-status-link ci-status-icon-#{@commit.status}" do
+      = ci_icon_for_status(@commit.status)
+      = ci_label_for_status(@commit.status)
+    - if @commit.ci_commits.duration
+      in
+      = time_interval_in_words @commit.ci_commits.duration
 
 .commit-box.content-block
   %h3.commit-title
