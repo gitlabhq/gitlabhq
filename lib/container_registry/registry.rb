@@ -3,7 +3,7 @@ module ContainerRegistry
     attr_reader :uri, :client, :path
 
     def initialize(uri, options = {})
-      @path = uri || options[:path]
+      @path = options[:path] || uri
       @uri = URI.parse(uri)
       @client = ContainerRegistry::Client.new(uri, options)
     end
