@@ -195,6 +195,10 @@ class Repository
     cache.fetch(:branch_names) { branches.map(&:name) }
   end
 
+  def branch_exists?(branch_name)
+    branch_names.include?(branch_name)
+  end
+
   def tag_names
     cache.fetch(:tag_names) { raw_repository.tag_names }
   end
