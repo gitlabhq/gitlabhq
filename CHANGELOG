@@ -5,6 +5,7 @@ v 8.8.0 (unreleased)
   - Fix error when using link to uploads in global snippets
   - Assign labels and milestone to target project when moving issue. !3934 (Long Nguyen)
   - Use a case-insensitive comparison in sanitizing URI schemes
+  - Toggle sign-up confirmation emails in application settings
   - Project#open_branches has been cleaned up and no longer loads entire records into memory.
   - Escape HTML in commit titles in system note messages
   - Improve multiple branch push performance by memoizing permission checking
@@ -28,8 +29,6 @@ v 8.8.0 (unreleased)
   - Display informative message when new milestone is created
   - Sanitize milestones and labels titles
   - Support multi-line tag messages. !3833 (Calin Seciu)
-  - Toggle sign-up confirmation emails in application settings
-  - Replace Devise Async with Devise ActiveJob integration. !3902 (Connor Shea)
   - Allow "NEWS" and "CHANGES" as alternative names for CHANGELOG. !3768 (Connor Shea)
   - Added button to toggle whitespaces changes on diff view
   - Backport GitHub Enterprise import support from EE
