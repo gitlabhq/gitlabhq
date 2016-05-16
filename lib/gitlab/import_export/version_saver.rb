@@ -11,8 +11,10 @@ module Gitlab
       end
 
       def save
+        FileUtils.mkdir_p(@shared.export_path)
+
         File.open(version_file, 'w') do |file|
-          file.write(Gitlab::ImportExport.VERSION)
+          file.write(Gitlab::ImportExport.version)
         end
       rescue => e
         @shared.error(e)
