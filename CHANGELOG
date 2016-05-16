@@ -25,6 +25,7 @@ v 8.8.0 (unreleased)
   - Update SVG sanitizer to conform to SVG 1.1
   - Speed up push emails with multiple recipients by only generating the email once
   - Updated search UI
+  - Added authentication service for Container Registry
   - Display informative message when new milestone is created
   - Sanitize milestones and labels titles
   - Support multi-line tag messages. !3833 (Calin Seciu)

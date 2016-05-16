@@ -22,6 +22,7 @@ class Project < ActiveRecord::Base
   default_value_for :builds_enabled, gitlab_config_features.builds
   default_value_for :wiki_enabled, gitlab_config_features.wiki
   default_value_for :snippets_enabled, gitlab_config_features.snippets
+  default_value_for :container_registry_enabled, gitlab_config_features.container_registry
   default_value_for(:shared_runners_enabled) { current_application_settings.shared_runners_enabled }
 
   # set last_activity_at to the same as created_at
@@ -325,6 +326,12 @@ class Project < ActiveRecord::Base
 
   def repository
     @repository ||= Repository.new(path_with_namespace, self)
+  end
+
+  def container_registry_url
+    if container_registry_enabled? && Gitlab.config.registry.enabled
+      "#{Gitlab.config.registry.host_with_port}/#{path_with_namespace}"
+    end
   end
 
   def commit(id = 'HEAD')

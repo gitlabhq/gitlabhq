@@ -36,6 +36,7 @@ gem 'omniauth-shibboleth',    '~> 1.2.0'
 gem 'omniauth-twitter',       '~> 1.2.0'
 gem 'omniauth_crowd',         '~> 2.2.0'
 gem 'rack-oauth2',            '~> 1.2.1'
+gem 'jwt'
 
 # Spam and anti-bot protection
 gem 'recaptcha', require: 'recaptcha/rails'
@@ -224,6 +225,7 @@ gem 'request_store',      '~> 1.3.0'
 gem 'select2-rails',      '~> 3.5.9'
 gem 'virtus',             '~> 1.0.1'
 gem 'net-ssh',            '~> 3.0.1'
+gem 'base32',             '~> 0.3.0'
 
 # Sentry integration
 gem 'sentry-raven', '~> 0.15'
