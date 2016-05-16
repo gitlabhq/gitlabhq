@@ -19,7 +19,7 @@
       - if commit.triggered?
         %span.label.label-primary triggered
       - if commit.yaml_errors.present?
-        %span.label.label-danger.has-tooltip(title="#{commit.yaml_errors}") yaml invalid
+        %span.label.label-danger.has-tooltip{ title: "#{commit.yaml_errors}" } yaml invalid
       - if commit.builds.any?(&:stuck?)
         %span.label.label-warning stuck
 
@@ -36,7 +36,7 @@
       %td
         - if status = stages_status[stage]
           - tooltip = "#{stage.titleize}: #{status}"
-          %span.has-tooltip(title="#{tooltip}"){class: "ci-status-icon-#{status}"}
+          %span.has-tooltip{ title: "#{tooltip}", class: "ci-status-icon-#{status}" }
             = ci_icon_for_status(status)
 
   %td
@@ -74,4 +74,4 @@
         &nbsp;
         - if commit.active?
           = link_to cancel_namespace_project_pipeline_path(@project.namespace, @project, commit.id), class: 'btn btn-remove has-tooltip', title: "Cancel", method: :post do
-            = icon("remove", class: "cred")
+            = icon("remove")

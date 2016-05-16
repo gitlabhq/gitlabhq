@@ -27,14 +27,14 @@
     .pull-right
       = link_to namespace_project_pipeline_path(@project.namespace, @project, pipeline), class: "ci-status ci-#{pipeline.status}" do
         = ci_icon_for_status(pipeline.status)
-        pipeline:
+        Pipeline:
         = ci_label_for_status(pipeline.status)
 
   - elsif @commit.status
     .pull-right
       = link_to builds_namespace_project_commit_path(@project.namespace, @project, @commit.id), class: "ci-status ci-#{@commit.status}" do
         = ci_icon_for_status(@commit.status)
-        build:
+        Build:
         = ci_label_for_status(@commit.status)
 
   %span.light Authored by

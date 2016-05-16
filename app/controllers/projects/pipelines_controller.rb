@@ -25,7 +25,7 @@ class Projects::PipelinesController < Projects::ApplicationController
       flash[:alert] = e.message
       render 'new'
     rescue
-      flash[:alert] = 'Undefined error'
+      flash[:alert] = 'The pipeline could not be created. Please try again.'
       render 'new'
     end
   end
