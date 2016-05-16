@@ -26,7 +26,7 @@ that runs Redis.
     ```ruby
       external_url 'https://gitlab.example.com'
 
-      # Disable all components except PostgreSQL
+      # Disable all components except Redis
       redis['enable'] = true
       bootstrap['enable'] = false
       nginx['enable'] = false
