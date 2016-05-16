@@ -29,6 +29,7 @@ v 8.8.0 (unreleased)
   - Display informative message when new milestone is created
   - Sanitize milestones and labels titles
   - Support multi-line tag messages. !3833 (Calin Seciu)
+  - Force users to reset their password after an admin changes it
   - Allow "NEWS" and "CHANGES" as alternative names for CHANGELOG. !3768 (Connor Shea)
   - Added button to toggle whitespaces changes on diff view
   - Backport GitHub Enterprise import support from EE
