@@ -5,6 +5,7 @@ v 8.8.0 (unreleased)
   - Fix error when using link to uploads in global snippets
   - Assign labels and milestone to target project when moving issue. !3934 (Long Nguyen)
   - Use a case-insensitive comparison in sanitizing URI schemes
+  - Toggle sign-up confirmation emails in application settings
   - Project#open_branches has been cleaned up and no longer loads entire records into memory.
   - Escape HTML in commit titles in system note messages
   - Improve multiple branch push performance by memoizing permission checking
