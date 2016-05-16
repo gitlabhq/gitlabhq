@@ -397,5 +397,9 @@ module API
       error!(errors[:access_level], 422) if errors[:access_level].any?
       not_found!(errors)
     end
+
+    def noteable_ability_name(noteable)
+      "read_#{noteable.class.to_s.underscore.downcase}".to_sym
+    end
   end
 end

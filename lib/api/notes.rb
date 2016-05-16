@@ -20,9 +20,8 @@ module API
         #   GET /projects/:id/snippets/:noteable_id/notes
         get ":id/#{noteables_str}/:#{noteable_id_str}/notes" do
           @noteable = user_project.send(noteables_str.to_sym).find(params[noteable_id_str.to_sym])
-          read_ability_name = "read_#{@noteable.class.to_s.underscore.downcase}".to_sym
 
-          if can?(current_user, read_ability_name, @noteable)
+          if can?(current_user, noteable_ability_name(@noteable), @noteable)
             # We exclude notes that are cross-references and that cannot be viewed
             # by the current user. By doing this exclusion at this level and not
             # at the DB query level (which we cannot in that case), the current
@@ -52,11 +51,12 @@ module API
         get ":id/#{noteables_str}/:#{noteable_id_str}/notes/:note_id" do
           @noteable = user_project.send(noteables_str.to_sym).find(params[noteable_id_str.to_sym])
           @note = @noteable.notes.find(params[:note_id])
+          can_read_note = can?(current_user, noteable_ability_name(@noteable), @noteable) && !@note.cross_reference_not_visible_for?(current_user)
 
-          if @note.cross_reference_not_visible_for?(current_user)
-            not_found!("Note")
-          else
+          if can_read_note
             present @note, with: Entities::Note
+          else
+            not_found!("Note")
           end
         end
 

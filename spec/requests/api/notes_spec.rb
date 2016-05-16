@@ -3,7 +3,7 @@ require 'spec_helper'
 describe API::API, api: true  do
   include ApiHelpers
   let(:user) { create(:user) }
-  let!(:project) { create(:project, namespace: user.namespace) }
+  let!(:project) { create(:project, :public, namespace: user.namespace) }
   let!(:issue) { create(:issue, project: project, author: user) }
   let!(:merge_request) { create(:merge_request, source_project: project, target_project: project, author: user) }
   let!(:snippet) { create(:project_snippet, project: project, author: user) }
@@ -51,7 +51,7 @@ describe API::API, api: true  do
         expect(response.status).to eq(404)
       end
 
-      context "that references a private issue" do
+      context "and current user cannot view the notes" do
         it "should return an empty array" do
           get api("/projects/#{ext_proj.id}/issues/#{ext_issue.id}/notes", user)
 
@@ -142,12 +142,23 @@ describe API::API, api: true  do
         expect(response.status).to eq(404)
       end
 
-      context "that references a private issue" do
+      context "and current user cannot view the note" do
         it "should return a 404 error" do
           get api("/projects/#{ext_proj.id}/issues/#{ext_issue.id}/notes/#{cross_reference_note.id}", user)
 
           expect(response.status).to eq(404)
         end
+
+        context "when issue is confidential" do
+          before { issue.update_attributes(confidential: true) }
+
+          it "returns 404" do
+            get api("/projects/#{project.id}/issues/#{issue.id}/notes/#{issue_note.id}", private_user)
+
+            expect(response.status).to eq(404)
+          end
+        end
+
 
         context "and current user can view the note" do
           it "should return an issue note by id" do
