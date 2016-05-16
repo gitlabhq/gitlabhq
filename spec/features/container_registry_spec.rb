@@ -5,17 +5,12 @@ describe "Container Registry" do
   let(:repository) { project.container_registry_repository }
   let(:tag_name) { 'latest' }
   let(:tags) { [tag_name] }
-  let(:registry_settings) do
-    {
-      enabled: true
-    }
-  end
 
   before do
     login_as(:user)
     project.team << [@user, :developer]
     stub_container_registry_tags(*tags)
-    allow(Gitlab.config.registry).to receive_messages(registry_settings)
+    stub_container_registry_config(enabled: true)
     allow(Auth::ContainerRegistryAuthenticationService).to receive(:full_access_token).and_return('token')
   end
 

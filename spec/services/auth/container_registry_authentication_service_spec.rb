@@ -5,19 +5,12 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
   let(:current_user) { nil }
   let(:current_params) { {} }
   let(:rsa_key) { OpenSSL::PKey::RSA.generate(512) }
-  let(:registry_settings) do
-    {
-      enabled: true,
-      issuer: 'rspec',
-      key: nil
-    }
-  end
   let(:payload) { JWT.decode(subject[:token], rsa_key).first }
 
   subject { described_class.new(current_project, current_user, current_params).execute }
 
   before do
-    allow(Gitlab.config.registry).to receive_messages(registry_settings)
+    stub_container_registry_config(enabled: true, issuer: 'rspec', key: nil)
     allow_any_instance_of(JSONWebToken::RSAToken).to receive(:key).and_return(rsa_key)
   end
 

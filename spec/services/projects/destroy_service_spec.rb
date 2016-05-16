@@ -29,14 +29,8 @@ describe Projects::DestroyService, services: true do
   end
 
   context 'container registry' do
-    let(:registry_settings) do
-      {
-        enabled: true
-      }
-    end
-
     before do
-      allow(Gitlab.config.registry).to receive_messages(registry_settings)
+      stub_container_registry_config(enabled: true)
       stub_container_registry_tags('tag')
     end
 

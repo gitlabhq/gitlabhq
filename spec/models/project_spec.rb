@@ -797,7 +797,7 @@ describe Project, models: true do
 
     subject { project.container_registry_repository_url }
 
-    before { allow(Gitlab.config.registry).to receive_messages(registry_settings) }
+    before { stub_container_registry_config(**registry_settings) }
 
     context 'for enabled registry' do
       let(:registry_settings) do
@@ -826,14 +826,8 @@ describe Project, models: true do
 
     subject { project.has_container_registry_tags? }
 
-    before { allow(Gitlab.config.registry).to receive_messages(registry_settings) }
-
     context 'for enabled registry' do
-      let(:registry_settings) do
-        {
-          enabled: true
-        }
-      end
+      before { stub_container_registry_config(enabled: true) }
 
       context 'with tags' do
         before { stub_container_registry_tags('test', 'test2') }
@@ -849,11 +843,7 @@ describe Project, models: true do
     end
 
     context 'for disabled registry' do
-      let(:registry_settings) do
-        {
-          enabled: false
-        }
-      end
+      before { stub_container_registry_config(enabled: false) }
 
       it { is_expected.to be_falsey }
     end
