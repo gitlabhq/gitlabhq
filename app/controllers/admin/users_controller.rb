@@ -119,6 +119,7 @@ class Admin::UsersController < Admin::ApplicationController
       user_params_with_pass.merge!(
         password: params[:user][:password],
         password_confirmation: params[:user][:password_confirmation],
+        password_expires_at: Time.now
       )
     end
 

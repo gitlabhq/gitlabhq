@@ -106,6 +106,12 @@
     .form-group
       .col-sm-offset-2.col-sm-10
         .checkbox
+          = f.label :send_user_confirmation_email do
+            = f.check_box :send_user_confirmation_email
+            Send confirmation email on sign-up
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
           = f.label :signin_enabled do
             = f.check_box :signin_enabled
             Sign-in enabled

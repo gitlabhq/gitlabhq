@@ -29,6 +29,10 @@ class MergeRequest < ActiveRecord::Base
   # when creating new merge request
   attr_accessor :can_be_created, :compare_commits, :compare
 
+  # Temporary fields to store target_sha, and base_sha to
+  # compare when importing pull requests from GitHub
+  attr_accessor :base_target_sha, :head_source_sha
+
   state_machine :state, initial: :opened do
     event :close do
       transition [:reopened, :opened] => :closed
@@ -546,10 +550,14 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def target_sha
-    @target_sha ||= target_project.repository.commit(target_branch).try(:sha)
+    return @base_target_sha if defined?(@base_target_sha)
+
+    target_project.repository.commit(target_branch).try(:sha)
   end
 
   def source_sha
+    return @head_source_sha if defined?(@head_source_sha)
+
     last_commit.try(:sha) || source_tip.try(:sha)
   end
 
