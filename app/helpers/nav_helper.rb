@@ -51,4 +51,8 @@ module NavHelper
   def layout_dropdown_class
     "controls-dropdown-visible" if current_user
   end
+
+  def nav_control_class
+    "nav-control" if current_user
+  end
 end
