@@ -221,7 +221,9 @@ describe Milestone, models: true do
 
     let!(:past_milestone_project_3) { create(:milestone, project: project_3, due_date: Time.now - 1.day) }
 
-    let(:milestone_ids) { Milestone.upcoming_ids_by_projects(projects) }
+    # The call to `#try` is because this returns a relation with a Postgres DB,
+    # and an array of IDs with a MySQL DB.
+    let(:milestone_ids) { Milestone.upcoming_ids_by_projects(projects).map { |id| id.try(:id) || id } }
 
     it 'returns the next upcoming open milestone ID for each project' do
       expect(milestone_ids).to contain_exactly(current_milestone_project_1.id, current_milestone_project_2.id)

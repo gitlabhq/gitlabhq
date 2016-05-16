@@ -71,7 +71,7 @@ class Milestone < ActiveRecord::Base
     rel = unscoped.of_projects(projects).active.where('due_date > ?', Time.now)
 
     if Gitlab::Database.postgresql?
-      rel.order(:project_id, :due_date).pluck('DISTINCT ON (project_id) id')
+      rel.order(:project_id, :due_date).select('DISTINCT ON (project_id) id')
     else
       rel.
         group(:project_id).
