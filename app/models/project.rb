@@ -336,7 +336,7 @@ class Project < ActiveRecord::Base
       url = Gitlab.config.registry.api_url
       host_port = Gitlab.config.registry.host_port
       registry = ContainerRegistry::Registry.new(url, token: token, path: host_port)
-      registry[path_with_namespace]
+      registry.repository(path_with_namespace)
     end
   end
 

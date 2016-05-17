@@ -2,6 +2,8 @@ module ContainerRegistry
   class Blob
     attr_reader :repository, :config
 
+    delegate :registry, :client, to: :repository
+
     def initialize(repository, config)
       @repository = repository
       @config = config || {}
@@ -35,20 +37,12 @@ module ContainerRegistry
       revision[0..8]
     end
 
-    def client
-      @client ||= repository.client
-    end
-
     def delete
       client.delete_blob(repository.name, digest)
     end
 
     def data
       @data ||= client.blob(repository.name, digest, type)
-    end
-
-    def mount_to(to_repository)
-      client.repository_mount_blob(to_repository.name, digest, repository.name)
     end
   end
 end

@@ -22,14 +22,6 @@ module ContainerRegistry
       @faraday.get("/v2/#{name}/manifests/#{reference}").body
     end
 
-    def put_repository_manifest(name, reference, manifest)
-      @faraday.put("/v2/#{name}/manifests/#{reference}", manifest, { "Content-Type" => MANIFEST_VERSION }).success?
-    end
-
-    def repository_mount_blob(name, digest, from)
-      @faraday.post("/v2/#{name}/blobs/uploads/?mount=#{digest}&from=#{from}").status == 201
-    end
-
     def repository_tag_digest(name, reference)
       response = @faraday.head("/v2/#{name}/manifests/#{reference}")
       response.headers['docker-content-digest'] if response.success?

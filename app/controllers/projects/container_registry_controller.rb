@@ -22,6 +22,6 @@ class Projects::ContainerRegistryController < Projects::ApplicationController
   end
 
   def tag
-    @tag ||= container_registry_repository[params[:id]]
+    @tag ||= container_registry_repository.tag(params[:id])
   end
 end

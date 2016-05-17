@@ -2,6 +2,8 @@ module ContainerRegistry
   class Tag
     attr_reader :repository, :name
 
+    delegate :registry, :client, to: :repository
+
     def initialize(repository, name)
       @repository, @name = repository, name
     end
@@ -36,7 +38,7 @@ module ContainerRegistry
       return @config_blob if defined?(@config_blob)
       return unless manifest && manifest['config']
 
-      @config_blob = ContainerRegistry::Blob.new(repository, manifest['config'])
+      @config_blob = repository.blob(manifest['config'])
     end
 
     def config
@@ -56,7 +58,7 @@ module ContainerRegistry
       return unless manifest
 
       @layers = manifest['layers'].map do |layer|
-        ContainerRegistry::Blob.new(repository, layer)
+        repository.blob(layer)
       end
     end
 
@@ -70,20 +72,6 @@ module ContainerRegistry
       return unless digest
 
       client.delete_repository_tag(repository.name, digest)
-    end
-
-    def copy_to(repository)
-      return unless manifest
-
-      layers.each do |blob|
-        repository.mount_blob(blob)
-      end
-      repository.mount_blob(config_blob)
-      repository.mount_manifest(name, manifest.to_json)
-    end
-
-    def client
-      @client ||= repository.client
     end
   end
 end

@@ -8,7 +8,7 @@ module ContainerRegistry
       @client = ContainerRegistry::Client.new(uri, options)
     end
 
-    def [](name)
+    def repository(name)
       ContainerRegistry::Repository.new(self, name)
     end
 
