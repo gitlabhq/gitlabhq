@@ -8,8 +8,8 @@ This feature was [introduced][ce-4040] in GitLab 8.8.
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
 - [Configuration](#configuration)
-    - [Container Registry under its own domain](#container-registry-under-its-own-domain)
     - [Container Registry under existing GitLab domain](#container-registry-under-existing-gitlab-domain)
+    - [Container Registry under its own domain](#container-registry-under-its-own-domain)
 - [Container Registry storage path](#container-registry-storage-path)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -26,7 +26,7 @@ There are two options on how this can be configured:
 1. Use its own domain - needs a SSL certificate for that specific domain
    (eg. registry.example.com) or a wildcard certificate if hosted under a subdomain
    (eg. registry.gitlab.example.com)
-1. Use existing GitLab domain and expose the registry on a port - can reuse
+1. Use the existing GitLab domain and expose the registry on a port - can reuse
    existing GitLab SSL certificate
 
 Note that using HTTP is possible but not recommended,
@@ -34,6 +34,42 @@ Note that using HTTP is possible but not recommended,
 
 Please take this into consideration before configuring Container Registry for
 the first time.
+
+### Container Registry under existing GitLab domain
+
+Lets assume that your GitLab instance is accessible at
+`https://gitlab.example.com`. You can expose the Container Registry under
+a separate port.
+
+Lets assume that you've exposed port `4567` in your network firewall.
+
+**Omnibus GitLab packages**
+
+---
+
+Your `/etc/gitlab/gitlab.rb` should contain the Container Registry URL as
+well as the path to the existing SSL certificate and key used by GitLab.
+
+```ruby
+registry_external_url 'https://gitlab.example.com:4567'
+
+## If your SSL certificate is not in /etc/gitlab/ssl/gitlab.example.com.crt
+## and key not in /etc/gitlab/ssl/gitlab.example.com.key uncomment the lines
+## below
+
+# registry_nginx['ssl_certificate'] = "/path/to/certificate.pem"
+# registry_nginx['ssl_certificate_key'] = "/path/to/certificate.key"
+```
+
+Save the file and [reconfigure GitLab][] for the changes to take effect.
+
+Users should now be able to login to the Container Registry using:
+
+```bash
+docker login gitlab.example.com:4567
+```
+
+with their GitLab credentials.
 
 ### Container Registry under its own domain
 
@@ -79,42 +115,6 @@ registry_external_url 'https://registry.gitlab.example.com'
 registry_nginx['ssl_certificate'] = "/etc/gitlab/ssl/certificate.pem"
 registry_nginx['ssl_certificate_key'] = "/etc/gitlab/ssl/certificate.key"
 ```
-
-### Container Registry under existing GitLab domain
-
-Lets assume that your GitLab instance is accessible at
-`https://gitlab.example.com`. You can expose the Container Registry under
-a separate port.
-
-Lets assume that you've exposed port `4567` in your network firewall.
-
-**Omnibus GitLab packages**
-
----
-
-Your `/etc/gitlab/gitlab.rb` should contain the Container Registry URL as
-well as the path to the existing SSL certificate and key used by GitLab.
-
-```ruby
-registry_external_url 'https://gitlab.example.com:4567'
-
-## If your SSL certificate is not in /etc/gitlab/ssl/gitlab.example.com.crt
-## and key not in /etc/gitlab/ssl/gitlab.example.com.key uncomment the lines
-## below
-
-# registry_nginx['ssl_certificate'] = "/path/to/certificate.pem"
-# registry_nginx['ssl_certificate_key'] = "/path/to/certificate.key"
-```
-
-Save the file and [reconfigure GitLab][] for the changes to take effect.
-
-Users should now be able to login to the Container Registry using:
-
-```bash
-docker login gitlab.example.com:4567
-```
-
-with their GitLab credentials.
 
 ## Container Registry storage path
 
