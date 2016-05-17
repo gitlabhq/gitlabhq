@@ -159,7 +159,7 @@ Rails.application.routes.draw do
       post  :create_user_map, path: :user_map
     end
 
-    resource :gitlab_project, only: [:create, :new], controller: :gitlab_projects do
+    resource :gitlab_project, only: [:create, :new] do
       post :create
     end
   end
