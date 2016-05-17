@@ -134,27 +134,16 @@ For feature proposals for EE, open an issue on the
 [issue tracker of EE][ee-tracker].
 
 In order to help track the feature proposals, we have created a
-[`feature proposal`][fpl] label. For the time being, users that are not members
-of the project cannot add labels. You can instead ask one of the [core team]
+[`feature proposal`][fpl] label. Users that are not members
+of the project can't add labels. You can instead ask one of the [core team]
 members to add the label `feature proposal` to the issue or add the following
 code snippet right after your description in a new line: `~"feature proposal"`.
 
 Please keep feature proposals as small and simple as possible, complex ones
-might be edited to make them small and simple.
+might be edited to make them small and simple. See also
+[the product guidelines on creating good proposals for changes][product-guidelines].
 
-You are encouraged to use the template below for feature proposals.
-
-```
-## Description including problem, use cases, benefits, and/or goals
-
-## Proposal
-
-## Links / references
-```
-
-For changes in the interface, it can be helpful to create a mockup first.
-If you want to create something yourself, consider opening an issue first to
-discuss whether it is interesting to include this in GitLab.
+[product-guidelines]: PRODUCT.md
 
 ### Issue tracker guidelines
 
