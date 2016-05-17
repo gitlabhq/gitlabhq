@@ -55,12 +55,16 @@ class Projects::BranchesController < Projects::ApplicationController
   end
 
   def update_status
-    if params[:protected_branch]
+    branch = @project.protected_branches.find(params[:branch_id])
+
+    if branch.nil?
       branch = @project.protected_branches.new
-      branch.name = params[:id]
+      branch.name = params[:branch_id]
       branch.save
     else
-      @project.protected_branches.find(params[:id]).destroy
+      if params[:protected_branch] == 'false'
+        branch.destroy
+      end
     end
 
     redirect_to namespace_project_branches_path(@project.namespace,

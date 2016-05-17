@@ -3,6 +3,7 @@
 - diverging_commit_counts = @repository.diverging_commit_counts(branch)
 - number_commits_behind = diverging_commit_counts[:behind]
 - number_commits_ahead = diverging_commit_counts[:ahead]
+- protected_branch = @project.protected_branches.find_by_name(branch.name)
 %li(class="js-branch-#{branch.name}")
   %div
     = link_to namespace_project_tree_path(@project.namespace, @project, branch.name) do
@@ -39,9 +40,9 @@
             %ul
               %li.dropdown-header Settings
               %li
-                = link_to "Protected", namespace_project_branch_update_status_path(@project.namespace, @project, branch.name, protected_branch: true), method: :post, class: ("is-active" if @project.protected_branch? branch.name)
+                = link_to "Protected", namespace_project_branch_update_status_path(@project.namespace, @project, protected_branch || branch.name, protected_branch: true), method: :post, class: ("is-active" if @project.protected_branch? branch.name)
               %li
-                = link_to "Unprotected", namespace_project_branch_update_status_path(@project.namespace, @project, branch.name), method: :post, class: ("is-active" if !@project.protected_branch? branch.name)
+                = link_to "Unprotected", namespace_project_branch_update_status_path(@project.namespace, @project, protected_branch || branch.name, protected_branch: false), method: :post, class: ("is-active" if !@project.protected_branch? branch.name)
               - if can_remove_branch?(@project, branch.name)
                 %li.divider
                 %li
