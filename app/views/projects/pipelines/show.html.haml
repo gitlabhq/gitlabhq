@@ -3,7 +3,7 @@
 = render "header_title"
 .prepend-top-default
   - if @commit
-    = render "projects/commit/commit_box", pipeline: @pipeline
+    = render "projects/pipelines/info"
   %div.block-connector
 
 = render "projects/commit/ci_commit", ci_commit: @pipeline
