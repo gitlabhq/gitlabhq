@@ -50,6 +50,11 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
     end
   end
 
+  shared_examples 'an unauthorized' do
+    it { is_expected.to include(http_status: 401) }
+    it { is_expected.to_not include(:token) }
+  end
+
   shared_examples 'a forbidden' do
     it { is_expected.to include(http_status: 403) }
     it { is_expected.to_not include(:token) }
@@ -116,7 +121,7 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
         { offline_token: true }
       end
 
-      it_behaves_like 'a forbidden'
+      it_behaves_like 'an unauthorized'
     end
 
     context 'allow to pull and push images' do
@@ -179,7 +184,7 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
         { offline_token: true }
       end
 
-      it_behaves_like 'a forbidden'
+      it_behaves_like 'an unauthorized'
     end
 
     context 'for invalid scope' do

@@ -787,6 +787,8 @@ describe Project, models: true do
   describe '#container_registry_repository' do
     let(:project) { create(:empty_project) }
 
+    before { stub_container_registry_config(enabled: true) }
+
     subject { project.container_registry_repository }
 
     it { is_expected.to_not be_nil }
