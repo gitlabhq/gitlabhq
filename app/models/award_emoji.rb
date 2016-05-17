@@ -23,13 +23,4 @@ class AwardEmoji < ActiveRecord::Base
   def upvote?
     self.name == UPVOTE_NAME
   end
-
-  def to_note_json
-    {
-      valid:  valid?,
-      award:  true,
-      id:     id,
-      name:   name
-    }
-  end
 end

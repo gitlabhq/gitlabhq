@@ -7,7 +7,9 @@ module ToggleAwardEmoji
 
   def toggle_award_emoji
     name = params.require(:name)
+
     awardable.toggle_award_emoji(name, current_user)
+    TodoService.new.new_award_emoji(awardable, current_user)
 
     render json: { ok: true }
   end
