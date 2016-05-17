@@ -6,12 +6,20 @@ issuable_created = false
       Issuable.initTemplates()
       Issuable.initSearch()
       Issuable.initChecks()
+      Issuable.initLabelFilterRemove()
 
   initTemplates: ->
     Issuable.labelRow = _.template(
       '<% _.each(labels, function(label){ %>
         <span class="label-row">
-          <a href="#"><span class="label color-label has-tooltip" style="background-color: <%= label.color %>; color: <%= label.text_color %>" title="<%= _.escape(label.description) %>" data-container="body"><%= _.escape(label.title) %></span></a>
+          <a href="#">
+            <span class="label color-label has-tooltip" style="background-color: <%= label.color %>; color: <%= label.text_color %>" title="<%= _.escape(label.description) %>" data-container="body">
+              <%= _.escape(label.title) %>
+            </span>
+          </a>
+          <button type="button" class="btn btn-sm btn-transparent append-right-5 js-label-filter-remove" data-label="<%= _.escape(label.title) %>">
+            <i class="fa fa-times"></i>
+          </button>
         </span>
       <% }); %>'
     )
@@ -34,6 +42,20 @@ issuable_created = false
 
           Issuable.filterResults $form
         , 500)
+
+  initLabelFilterRemove: ->
+    $(document)
+      .off 'click', '.js-label-filter-remove'
+      .on 'click', '.js-label-filter-remove', (e) ->
+        $button = $(@)
+
+        # Remove the label input box
+        $('input[name="label_name[]"]')
+          .filter -> @value is $button.data('label')
+          .remove()
+
+        # Submit the form to get new data
+        Issuable.filterResults $('.filter-form')
 
   toggleLabelFilters: ->
     $filteredLabels = $('.filtered-labels')

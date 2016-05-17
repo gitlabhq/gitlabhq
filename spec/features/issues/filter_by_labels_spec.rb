@@ -54,6 +54,11 @@ feature 'Issue filtering by Labels', feature: true do
       expect(find('.filtered-labels')).not_to have_content "feature"
       expect(find('.filtered-labels')).not_to have_content "enhancement"
     end
+
+    it 'should remove label "bug"' do
+      first('.js-label-filter-remove').click
+      expect(find('.filtered-labels')).to have_no_content "bug"
+    end
   end
 
   context 'filter by label feature', js: true do
@@ -134,6 +139,11 @@ feature 'Issue filtering by Labels', feature: true do
 
     it 'should not show label "bug" in filtered-labels' do
       expect(find('.filtered-labels')).not_to have_content "bug"
+    end
+
+    it 'should remove label "enhancement"' do
+      first('.js-label-filter-remove').click
+      expect(find('.filtered-labels')).to have_no_content "enhancement"
     end
   end
 
