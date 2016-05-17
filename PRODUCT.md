@@ -47,3 +47,8 @@ An engineer working on an issue is not expected to first read through a long com
 ## Scheduling issues
 
 Scheduling issues happens according to milestones. This has to be done in close collaboration with engineering.
+
+## Labels
+
+Issues should have relevant labels applied. For most changes, this would be
+~"feature proposal". See [PROCESS](PROCESS.md) for more details.
