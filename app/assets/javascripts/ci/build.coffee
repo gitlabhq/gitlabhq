@@ -28,12 +28,13 @@ class CiBuild
       #
       CiBuild.interval = setInterval =>
         if window.location.href.split("#").first() is build_url
+          last_state = @state
           $.ajax
             url: build_url + "/trace.json?state=" + encodeURIComponent(@state)
             dataType: "json"
             success: (log) =>
-              @state = log.state
-              if log.status is "running"
+              if last_state is @state and log.status is "running"
+                @state = if log.state then log.state else ""
                 if log.append
                   $('.fa-refresh').before log.html
                 else
