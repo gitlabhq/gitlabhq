@@ -9,6 +9,7 @@ module ContainerRegistry
 
     def [](key)
       return unless data
+
       data[key]
     end
   end

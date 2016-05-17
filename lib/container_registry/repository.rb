@@ -20,6 +20,7 @@ module ContainerRegistry
 
     def manifest
       return @manifest if defined?(@manifest)
+
       @manifest = client.repository_tags(name)
     end
 
