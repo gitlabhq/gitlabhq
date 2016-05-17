@@ -114,6 +114,7 @@ class User < ActiveRecord::Base
   before_save :ensure_external_user_rights
   after_save :ensure_namespace_correct
   after_initialize :set_projects_limit
+  before_create :check_confirmation_email
   after_create :post_create_hook
   after_destroy :post_destroy_hook
 
@@ -337,6 +338,10 @@ class User < ActiveRecord::Base
     self.reset_password_sent_at = Time.now.utc
 
     @reset_token
+  end
+
+  def check_confirmation_email
+    skip_confirmation! unless current_application_settings.send_user_confirmation_email
   end
 
   def recently_sent_password_reset?

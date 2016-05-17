@@ -154,6 +154,7 @@ describe User, models: true do
   end
 
   describe '#confirm' do
+    before { allow(current_application_settings).to receive(:send_user_confirmation_email).and_return(true) }
     let(:user) { create(:user, confirmed_at: nil, unconfirmed_email: 'test@gitlab.com') }
 
     it 'returns unconfirmed' do

@@ -120,7 +120,8 @@ class ApplicationSetting < ActiveRecord::Base
       recaptcha_enabled: false,
       akismet_enabled: false,
       repository_checks_enabled: true,
-      disabled_oauth_sign_in_sources: []
+      disabled_oauth_sign_in_sources: [],
+      send_user_confirmation_email: false
     )
   end
 
