@@ -688,7 +688,9 @@ Rails.application.routes.draw do
           end
         end
 
-        resources :branches, only: [:index, :new, :create, :destroy], constraints: { id: Gitlab::Regex.git_reference_regex }
+        resources :branches, only: [:index, :new, :create, :destroy], constraints: { id: Gitlab::Regex.git_reference_regex } do
+          post :update_status
+        end
         resources :tags, only: [:index, :show, :new, :create, :destroy], constraints: { id: Gitlab::Regex.git_reference_regex } do
           resource :release, only: [:edit, :update]
         end

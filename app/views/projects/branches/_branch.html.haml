@@ -20,16 +20,38 @@
         protected
     .controls.hidden-xs
       - if create_mr_button?(@repository.root_ref, branch.name)
-        = link_to create_mr_path(@repository.root_ref, branch.name), class: 'btn btn-grouped btn-xs' do
+        = link_to create_mr_path(@repository.root_ref, branch.name), class: 'btn btn-default btn-grouped btn-xs' do
+          = icon('plus')
           Merge Request
 
       - if branch.name != @repository.root_ref
-        = link_to namespace_project_compare_index_path(@project.namespace, @project, from: @repository.root_ref, to: branch.name), class: 'btn btn-grouped btn-xs', method: :post, title: "Compare" do
+        = link_to namespace_project_compare_index_path(@project.namespace, @project, from: @repository.root_ref, to: branch.name), class: 'btn btn-default btn-grouped btn-xs', method: :post, title: "Compare" do
+          = icon("exchange")
           Compare
 
-      - if can_remove_branch?(@project, branch.name)
-        = link_to namespace_project_branch_path(@project.namespace, @project, branch.name), class: 'btn btn-grouped btn-xs btn-remove remove-row has-tooltip', title: "Delete branch", method: :delete, data: { confirm: "Deleting the '#{branch.name}' branch cannot be undone. Are you sure?", container: 'body' }, remote: true do
-          = icon("trash-o")
+      - if can? current_user, :admin_project, @project
+        .dropdown.inline
+          %button.btn.btn-default.btn-xs{ type: "button", data: { toggle: "dropdown" } }
+            %span.sr-only Settings
+            = icon("gear")
+            %span.caret
+          .dropdown-menu.dropdown-menu-selectable.dropdown-menu-align-right
+            %ul
+              %li.dropdown-header Settings
+              %li
+                = link_to "Protected", namespace_project_branch_update_status_path(@project.namespace, @project, branch.name, protected_branch: true), method: :post, class: ("is-active" if @project.protected_branch? branch.name)
+              %li
+                = link_to "Unprotected", namespace_project_branch_update_status_path(@project.namespace, @project, branch.name), method: :post, class: ("is-active" if !@project.protected_branch? branch.name)
+              - if can_remove_branch?(@project, branch.name)
+                %li.divider
+                %li
+                  = link_to namespace_project_branch_path(@project.namespace, @project, branch.name), class: "btn btn-warning branch-delete-button block", title: "Delete branch", method: :delete, data: { confirm: "Deleting the '#{branch.name}' branch cannot be undone. Are you sure?" }, remote: true do
+                    Delete branch
+              - else
+                %li.divider
+                %li
+                  %a{ href: "#", class: ("is-active" if @project.developers_can_push_to_protected_branch?(branch.name)) }
+                    Developers can push
 
     - if branch.name != @repository.root_ref
       .divergence-graph{ title: "#{number_commits_ahead} commits ahead, #{number_commits_behind} commits behind #{@repository.root_ref}" }

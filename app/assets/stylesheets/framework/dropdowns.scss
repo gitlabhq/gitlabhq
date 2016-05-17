@@ -119,7 +119,7 @@
     background-color: $dropdown-divider-color;
   }
 
-  a {
+  a:not(.btn) {
     display: block;
     position: relative;
     padding: 5px 10px;
@@ -238,7 +238,7 @@
 }
 
 .dropdown-menu-selectable {
-  a {
+  a:not(.btn) {
     padding-left: 25px;
 
     &.is-indeterminate, &.is-active {

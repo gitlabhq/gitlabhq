@@ -148,6 +148,10 @@ ul.content-list {
           margin-right: 0;
         }
       }
+
+      .btn:not(.branch-delete-button) {
+        padding: 10px 14px;
+      }
     }
 
     // When dragging a list item

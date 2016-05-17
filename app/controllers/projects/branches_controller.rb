@@ -54,6 +54,19 @@ class Projects::BranchesController < Projects::ApplicationController
     end
   end
 
+  def update_status
+    if params[:protected_branch]
+      branch = @project.protected_branches.new
+      branch.name = params[:id]
+      branch.save
+    else
+      @project.protected_branches.find(params[:id]).destroy
+    end
+
+    redirect_to namespace_project_branches_path(@project.namespace,
+                                                          @project)
+  end
+
   private
 
   def ref
