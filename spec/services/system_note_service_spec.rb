@@ -244,24 +244,16 @@ describe SystemNoteService, services: true do
           to eq "Title changed from **Old title** to **#{noteable.title}**"
       end
     end
-
-    context 'when noteable does not respond to `title' do
-      let(:noteable) { double('noteable') }
-
-      it 'returns nil' do
-        expect(subject).to be_nil
-      end
-    end
   end
 
-  describe '.change_confidentiality' do
-    subject { described_class.change_confidentiality(noteable, project, author) }
+  describe '.change_issue_confidentiality' do
+    subject { described_class.change_issue_confidentiality(noteable, project, author) }
 
     context 'when noteable responds to `confidential`' do
       it_behaves_like 'a system note'
 
       it 'sets the note text' do
-        expect(subject.note).to eq "Marked as not confidential"
+        expect(subject.note).to eq 'Made the issue visible'
       end
     end
   end

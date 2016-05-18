@@ -82,10 +82,10 @@ describe Issues::UpdateService, services: true do
       end
 
       it 'creates system note about confidentiality change' do
-        note = find_note('Marked as confidential')
+        note = find_note('Made the issue confidential')
 
         expect(note).not_to be_nil
-        expect(note.note).to eq 'Marked as confidential'
+        expect(note.note).to eq 'Made the issue confidential'
       end
     end
 
