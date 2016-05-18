@@ -6,6 +6,8 @@ v 8.8.0 (unreleased)
   - Assign labels and milestone to target project when moving issue. !3934 (Long Nguyen)
   - Use a case-insensitive comparison in sanitizing URI schemes
   - Toggle sign-up confirmation emails in application settings
+  - Added `InlineDiffFilter` to the markdown parser. (Adam Butler)
+  - Added inline diff styling for `change_title` system notes. (Adam Butler)
   - Project#open_branches has been cleaned up and no longer loads entire records into memory.
   - Escape HTML in commit titles in system note messages
   - Improve multiple branch push performance by memoizing permission checking
@@ -100,10 +102,6 @@ v 8.7.1
   - Prevent users from deleting Webhooks via API they do not own
   - Fix Error 500 due to stale cache when projects are renamed or transferred
   - Update width of search box to fix Safari bug. !3900 (Jedidiah)
-  - Added inline diff styling for `change_title` system notes. !3576 (Adam Butler)
-  - Added `InlineDiffFilter` to the markdown parser. !3576 (Adam Butler)
-
-v 8.7.1 (unreleased)
   - Use the `can?` helper instead of `current_user.can?`
 
 v 8.7.0
