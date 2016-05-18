@@ -65,6 +65,11 @@ describe Gitlab::Geo::OauthSession do
       expect(described_class.new.generate_logout_state).to be_nil
     end
 
+    it 'returns false when encryptation fails' do
+      allow_any_instance_of(OpenSSL::Cipher::AES).to receive(:final) { raise OpenSSL::OpenSSLError }
+      expect(subject.generate_logout_state).to be_falsey
+    end
+
     it 'returns a string with salt and encrypted access token colon separated' do
       state = described_class.new(access_token: access_token).generate_logout_state
       expect(state).to be_a String
@@ -86,7 +91,7 @@ describe Gitlab::Geo::OauthSession do
     it 'returns false when decryptation fails' do
       subject.generate_logout_state
       allow_any_instance_of(OpenSSL::Cipher::AES).to receive(:final) { raise OpenSSL::OpenSSLError }
-      
+
       expect(subject.extract_logout_token).to be_falsey
     end
 

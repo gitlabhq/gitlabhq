@@ -43,7 +43,7 @@ class Oauth::GeoAuthController < ActionController::Base
       sign_out current_user
       redirect_to root_path
     else
-      access_token_error(result[:error])
+      access_token_error(result[:message])
     end
   end
 
