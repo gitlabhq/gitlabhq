@@ -8,12 +8,8 @@ module Banzai
     #   :project (required) - Current project, ignored if reference is cross-project.
     #   :only_path          - Generate path-only links.
     class ReferenceFilter < HTML::Pipeline::Filter
-      def self.reference_type=(type)
-        @reference_type = type.to_sym
-      end
-
-      def self.reference_type
-        @reference_type
+      class << self
+        attr_accessor :reference_type
       end
 
       # Returns a data attribute String to attach to a reference link

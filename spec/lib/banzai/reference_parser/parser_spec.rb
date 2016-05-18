@@ -6,9 +6,9 @@ describe Banzai::ReferenceParser::Parser, lib: true do
   let(:parser) { described_class.new(project, user) }
 
   describe '.reference_type=' do
-    it 'sets the reference type as a Symbol' do
+    it 'sets the reference type' do
       dummy = Class.new(described_class)
-      dummy.reference_type = 'foo'
+      dummy.reference_type = :foo
 
       expect(dummy.reference_type).to eq(:foo)
     end

@@ -31,12 +31,8 @@ module Banzai
     # `nodes_visible_to_user` method so it can ensure users can only see issues
     # they have access to.
     class Parser
-      def self.reference_type=(type)
-        @reference_type = type.to_sym
-      end
-
-      def self.reference_type
-        @reference_type
+      class << self
+        attr_accessor :reference_type
       end
 
       def initialize(project = nil, current_user = nil)
