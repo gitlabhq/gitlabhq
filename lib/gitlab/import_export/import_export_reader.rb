@@ -7,7 +7,8 @@ module Gitlab
         config_hash = YAML.load_file(config).deep_symbolize_keys
         @tree = config_hash[:project_tree]
         @attributes_parser = Gitlab::ImportExport::AttributesFinder.new(included_attributes: config_hash[:included_attributes],
-                                                                        excluded_attributes: config_hash[:excluded_attributes])
+                                                                        excluded_attributes: config_hash[:excluded_attributes],
+                                                                        methods: config_hash[:methods])
       end
 
       def project_tree

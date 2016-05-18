@@ -46,3 +46,7 @@ included_attributes:
 excluded_attributes:
   snippets:
     - :expired_at
+
+methods:
+  statuses:
+    - :type
