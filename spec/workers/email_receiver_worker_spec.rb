@@ -17,7 +17,7 @@ describe EmailReceiverWorker do
 
     context "when an error occurs" do
       before do
-        allow_any_instance_of(Gitlab::Email::Receiver).to receive(:execute).and_raise(Gitlab::Email::Receiver::EmptyEmailError)
+        allow_any_instance_of(Gitlab::Email::Receiver).to receive(:execute).and_raise(Gitlab::Email::EmptyEmailError)
       end
 
       it "sends out a rejection email" do
