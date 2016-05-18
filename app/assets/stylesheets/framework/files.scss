@@ -5,6 +5,10 @@
 .file-holder {
   border: 1px solid $border-color;
 
+  &.file-holder-no-border {
+    border: 0;
+  }
+
   &.readme-holder {
     margin: $gl-padding-top 0;
   }
@@ -23,8 +27,17 @@
     word-wrap: break-word;
     border-radius: 3px 3px 0 0;
 
+    &.file-title-clear {
+      padding-left: 0;
+      padding-right: 0;
+      background-color: transparent;
+
+      .file-actions {
+        right: 0;
+      }
+    }
+
     .file-actions {
-      float: right;
       position: absolute;
       top: 5px;
       right: 15px;
