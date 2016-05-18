@@ -26,7 +26,7 @@ module Ci
         .where("ci_runner_projects.gl_project_id = :project_id OR ci_runners.is_shared = true", project_id: project_id)
     end
 
-    validate :verify_tags_constraints
+    validate :tag_constraints
 
     acts_as_taggable
 
@@ -105,7 +105,7 @@ module Ci
 
     private
 
-    def verify_tags_constraints
+    def tag_constraints
       unless has_tags? || run_untagged?
         errors.add(:tags_list,
           'can not be empty when runner is not allowed to pick untagged jobs')
