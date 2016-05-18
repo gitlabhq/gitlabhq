@@ -33,7 +33,7 @@ module Banzai
             node_group = groups[node.attr(group_attr).to_i]
 
             if node_group &&
-              Ability.abilities.allowed?(user, :read_group, node_group)
+              can?(user, :read_group, node_group)
               visible << node
             end
           # Remaining nodes will be processed by the parent class'

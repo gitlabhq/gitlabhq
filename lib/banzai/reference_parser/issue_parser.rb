@@ -13,7 +13,7 @@ module Banzai
         nodes.select do |node|
           issue = issues[node.attr(issue_attr).to_i]
 
-          issue ? Ability.abilities.allowed?(user, :read_issue, issue) : false
+          issue ? can?(user, :read_issue, issue) : false
         end
       end
 

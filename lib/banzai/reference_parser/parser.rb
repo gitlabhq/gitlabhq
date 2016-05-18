@@ -57,7 +57,7 @@ module Banzai
             if project && project.id == node_id
               true
             else
-              Ability.abilities.allowed?(user, :read_project, projects[node_id])
+              can?(user, :read_project, projects[node_id])
             end
           else
             true
@@ -165,6 +165,14 @@ module Banzai
 
         @projects_for_nodes[nodes] ||=
           grouped_objects_for_nodes(nodes, Project, 'data-project')
+      end
+
+      def can?(user, permission, subject)
+        if user
+          user.can?(permission, subject)
+        else
+          false
+        end
       end
 
       private

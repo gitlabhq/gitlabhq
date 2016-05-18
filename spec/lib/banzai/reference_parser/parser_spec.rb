@@ -184,4 +184,15 @@ describe Banzai::ReferenceParser::Parser, lib: true do
       parser.gather_references([link])
     end
   end
+
+  describe '#can?' do
+    it 'delegates the permissions check to the given User object' do
+      user = double(:user)
+
+      expect(user).to receive(:can?).
+        with(:read_project, project)
+
+      parser.can?(user, :read_project, project)
+    end
+  end
 end
