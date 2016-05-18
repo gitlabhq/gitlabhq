@@ -2,9 +2,10 @@ module Gitlab
   module ImportExport
     class AttributesFinder
     
-      def initialize(included_attributes:, excluded_attributes:)
+      def initialize(included_attributes:, excluded_attributes:, methods:)
         @included_attributes = included_attributes || {}
         @excluded_attributes = excluded_attributes || {}
+        @methods = methods || {}
       end
 
       def find(model_object)
@@ -27,10 +28,15 @@ module Gitlab
         @excluded_attributes[key].nil? ? {} : { except: @excluded_attributes[key] }
       end
 
+      def find_method(value)
+        key = key_from_hash(value)
+        @methods[key].nil? ? {} : { methods: @methods[key] }
+      end
+
       private
 
       def find_attributes_only(value)
-        find_included(value).merge(find_excluded(value))
+        find_included(value).merge(find_excluded(value)).merge(find_method(value))
       end
 
       def key_from_hash(value)
