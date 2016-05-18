@@ -24,6 +24,10 @@ module Gitlab
         }
       end
 
+      def create!
+        MergeRequest.create!(self.attributes)
+      end
+
       def number
         raw_data.number
       end

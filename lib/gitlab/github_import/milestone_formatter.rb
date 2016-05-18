@@ -14,6 +14,10 @@ module Gitlab
         }
       end
 
+      def create!
+        Milestone.create!(self.attributes)
+      end
+
       private
 
       def number

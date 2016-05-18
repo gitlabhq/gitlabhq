@@ -9,6 +9,10 @@ module Gitlab
         }
       end
 
+      def create!
+        Label.create!(self.attributes)
+      end
+
       private
 
       def color
