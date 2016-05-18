@@ -100,6 +100,12 @@ describe Repository, models: true do
       expect(results.first).not_to start_with('fatal:')
     end
 
+    it 'properly handles an unmatched parenthesis' do
+      results = repository.search_files("test(", 'master')
+
+      expect(results.first).not_to start_with('fatal:')
+    end
+
     describe 'result' do
       subject { results.first }
 
