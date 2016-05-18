@@ -5,7 +5,7 @@ GitLab provides a health check endpoint for uptime monitoring on the `health_che
 endpoint. The health check reports on the overall system status based on the status of
 the database connection, the state of the database migrations, and the ability to write
 and access the cache. This endpoint can be provided to uptime monitoring services like
-[Pingdom][pindom], [Nagios][nagios-health], and [NewRelic][newrelic-health].
+[Pingdom][pingdom], [Nagios][nagios-health], and [NewRelic][newrelic-health].
 
 ## Access Token
 
