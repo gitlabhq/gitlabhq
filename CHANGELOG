@@ -21,6 +21,7 @@ v 8.8.0 (unreleased)
   - Bump mail_room to 0.7.0 to fix stuck IDLE connections
   - Remove future dates from contribution calendar graph.
   - Support e-mail notifications for comments on project snippets
+  - Fix API leak of notes of unauthorized issues, snippets and merge requests
   - Use ActionDispatch Remote IP for Akismet checking
   - Fix error when visiting commit builds page before build was updated
   - Add 'l' shortcut to open Label dropdown on issuables and 'i' to create new issue on a project
@@ -38,6 +39,7 @@ v 8.8.0 (unreleased)
   - Create tags using Rugged for performance reasons. !3745
   - API: Expose Issue#user_notes_count. !3126 (Anton Popov)
   - Don't show forks button when user can't view forks
+  - Fix atom feed links and rendering
   - Files over 5MB can only be viewed in their raw form, files over 1MB without highlighting !3718
   - Add support for supressing text diffs using .gitattributes on the default branch (Matt Oakes)
   - Add eager load paths to help prevent dependency load issues in Sidekiq workers. !3724
@@ -57,9 +59,13 @@ v 8.8.0 (unreleased)
   - Redesign navigation for profile and group pages
   - Add counter metrics for rails cache
   - Import pull requests from GitHub where the source or target branches were removed
+  - All Grape API helpers are now instrumented
+  - Improve Issue formatting for the Slack Service (Jeroen van Baarsen)
 
 v 8.7.6
   - Fix links on wiki pages for relative url setups. !4131 (Artem Sidorenko)
+  - Fix import from GitLab.com to a private instance failure. !4181
+  - Fix external imports not finding the import data. !4106
 
 v 8.7.5
   - Fix relative links in wiki pages. !4050
@@ -889,7 +895,7 @@ v 8.1.3
   - Use issue editor as cross reference comment author when issue is edited with a new mention
   - Add Facebook authentication
 
-v 8.1.2
+v 8.1.1
   - Fix cloning Wiki repositories via HTTP (Stan Hu)
   - Add migration to remove satellites directory
   - Fix specific runners visibility

@@ -19,20 +19,24 @@ module API
         #   GET /projects/:id/issues/:noteable_id/notes
         #   GET /projects/:id/snippets/:noteable_id/notes
         get ":id/#{noteables_str}/:#{noteable_id_str}/notes" do
-          @noteable = user_project.send(:"#{noteables_str}").find(params[:"#{noteable_id_str}"])
+          @noteable = user_project.send(noteables_str.to_sym).find(params[noteable_id_str.to_sym])
 
-          # We exclude notes that are cross-references and that cannot be viewed
-          # by the current user. By doing this exclusion at this level and not
-          # at the DB query level (which we cannot in that case), the current
-          # page can have less elements than :per_page even if
-          # there's more than one page.
-          notes =
-            # paginate() only works with a relation. This could lead to a
-            # mismatch between the pagination headers info and the actual notes
-            # array returned, but this is really a edge-case.
-            paginate(@noteable.notes).
-            reject { |n| n.cross_reference_not_visible_for?(current_user) }
-          present notes, with: Entities::Note
+          if can?(current_user, noteable_read_ability_name(@noteable), @noteable)
+            # We exclude notes that are cross-references and that cannot be viewed
+            # by the current user. By doing this exclusion at this level and not
+            # at the DB query level (which we cannot in that case), the current
+            # page can have less elements than :per_page even if
+            # there's more than one page.
+            notes =
+              # paginate() only works with a relation. This could lead to a
+              # mismatch between the pagination headers info and the actual notes
+              # array returned, but this is really a edge-case.
+              paginate(@noteable.notes).
+              reject { |n| n.cross_reference_not_visible_for?(current_user) }
+            present notes, with: Entities::Note
+          else
+            not_found!("Notes")
+          end
         end
 
         # Get a single +noteable+ note
@@ -45,13 +49,14 @@ module API
         #   GET /projects/:id/issues/:noteable_id/notes/:note_id
         #   GET /projects/:id/snippets/:noteable_id/notes/:note_id
         get ":id/#{noteables_str}/:#{noteable_id_str}/notes/:note_id" do
-          @noteable = user_project.send(:"#{noteables_str}").find(params[:"#{noteable_id_str}"])
+          @noteable = user_project.send(noteables_str.to_sym).find(params[noteable_id_str.to_sym])
           @note = @noteable.notes.find(params[:note_id])
+          can_read_note = can?(current_user, noteable_read_ability_name(@noteable), @noteable) && !@note.cross_reference_not_visible_for?(current_user)
 
-          if @note.cross_reference_not_visible_for?(current_user)
-            not_found!("Note")
-          else
+          if can_read_note
             present @note, with: Entities::Note
+          else
+            not_found!("Note")
           end
         end
 
@@ -134,6 +139,12 @@ module API
 
           present note, with: Entities::Note
         end
+      end
+    end
+
+    helpers do
+      def noteable_read_ability_name(noteable)
+        "read_#{noteable.class.to_s.underscore.downcase}".to_sym
       end
     end
   end
