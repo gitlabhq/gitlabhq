@@ -10,6 +10,7 @@ v 8.8.0 (unreleased)
   - [Elastic] Improve code search
   - [Elastic] Fix encoding issues during indexing
   - Set KRB5 as default clone protocol when Kerberos is enabled and user is logged in (Borja Aparicio)
+  - Add support for Admin Groups to SAML
   - Reduce emails-on-push HTML size by using a simple monospace font
   - API requests to /internal/authorized_keys are now tagged properly
 
