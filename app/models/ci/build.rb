@@ -285,8 +285,8 @@ module Ci
       project.runners_token
     end
 
-    def valid_token? token
-      project.valid_runners_token? token
+    def valid_token?(token)
+      project.valid_runners_token?(token)
     end
 
     def can_be_served?(runner)
