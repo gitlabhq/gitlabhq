@@ -22,7 +22,7 @@ module Gitlab
         update_user_references(relation_hash, members_mapper.map)
         update_project_references(relation_hash, klass)
 
-        imported_object(klass, relation_hash)
+        generate_imported_object(klass, relation_hash, relation_sym)
       end
 
       private
@@ -58,6 +58,18 @@ module Gitlab
         "\n\n *By #{author_name} on #{timestamp} (imported from GitLab project)*"
       end
 
+      def generate_imported_object(klass, relation_hash, relation_sym)
+        if relation_sym == 'commit_status' # call #trace= method after assigning the other attributes
+          trace = relation_hash.delete('trace')
+          imported_object(klass, relation_hash) do |imported_object|
+            imported_object.trace = trace
+            imported_object.commit_id = nil
+          end
+        else
+          imported_object(klass, relation_hash)
+        end
+      end
+
       def update_project_references(relation_hash, klass)
         project_id = relation_hash.delete('project_id')
 
@@ -86,6 +98,7 @@ module Gitlab
 
       def imported_object(klass, relation_hash)
         imported_object = klass.new(relation_hash)
+        yield(imported_object) if block_given?
         imported_object.importing = true if imported_object.respond_to?(:importing)
         imported_object
       end
