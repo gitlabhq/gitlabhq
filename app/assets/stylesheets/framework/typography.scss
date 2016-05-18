@@ -271,9 +271,9 @@ h1, h2, h3, h4 {
 }
 
 .idiff.deletion {
-  background: $gl-idiff-deletion;
+  background: $line-removed-dark;
 }
 
 .idiff.addition {
-  background: $gl-idiff-addition;
+  background: $line-added-dark;
 }

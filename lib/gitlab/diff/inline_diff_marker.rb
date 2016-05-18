@@ -28,8 +28,18 @@ module Gitlab
 
         # Mark each range
         marker_ranges.each_with_index do |range, index|
-          before_content = markdown ? "{#{MARKDOWN_SYMBOLS[mode]}" : "<span class='#{html_class_names(marker_ranges, mode, index)}'>"
-          after_content = markdown ? "#{MARKDOWN_SYMBOLS[mode]}}" : "</span>"
+          before_content =
+            if markdown
+              "{#{MARKDOWN_SYMBOLS[mode]}"
+            else
+              "<span class='#{html_class_names(marker_ranges, mode, index)}'>"
+            end
+          after_content =
+            if markdown
+              "#{MARKDOWN_SYMBOLS[mode]}}"
+            else
+              "</span>"
+            end
           offset = insert_around_range(rich_line, range, before_content, after_content, offset)
         end
 
