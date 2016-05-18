@@ -21,7 +21,7 @@ describe 'gitlab:app namespace rake task' do
   end
 
   def reenable_backup_sub_tasks
-    %w{db repo uploads builds artifacts lfs}.each do |subtask|
+    %w{db repo uploads builds artifacts lfs registry}.each do |subtask|
       Rake::Task["gitlab:backup:#{subtask}:create"].reenable
     end
   end
@@ -65,6 +65,7 @@ describe 'gitlab:app namespace rake task' do
         expect(Rake::Task['gitlab:backup:uploads:restore']).to receive(:invoke)
         expect(Rake::Task['gitlab:backup:artifacts:restore']).to receive(:invoke)
         expect(Rake::Task['gitlab:backup:lfs:restore']).to receive(:invoke)
+        expect(Rake::Task['gitlab:backup:registry:restore']).to receive(:invoke)
         expect(Rake::Task['gitlab:shell:setup']).to receive(:invoke)
         expect { run_rake_task('gitlab:backup:restore') }.not_to raise_error
       end
@@ -122,7 +123,7 @@ describe 'gitlab:app namespace rake task' do
 
     it 'should set correct permissions on the tar contents' do
       tar_contents, exit_status = Gitlab::Popen.popen(
-        %W{tar -tvf #{@backup_tar} db uploads.tar.gz repositories builds.tar.gz artifacts.tar.gz lfs.tar.gz}
+        %W{tar -tvf #{@backup_tar} db uploads.tar.gz repositories builds.tar.gz artifacts.tar.gz lfs.tar.gz registry.tar.gz}
       )
       expect(exit_status).to eq(0)
       expect(tar_contents).to match('db/')
@@ -131,12 +132,13 @@ describe 'gitlab:app namespace rake task' do
       expect(tar_contents).to match('builds.tar.gz')
       expect(tar_contents).to match('artifacts.tar.gz')
       expect(tar_contents).to match('lfs.tar.gz')
-      expect(tar_contents).not_to match(/^.{4,9}[rwx].* (database.sql.gz|uploads.tar.gz|repositories|builds.tar.gz|artifacts.tar.gz)\/$/)
+      expect(tar_contents).to match('registry.tar.gz')
+      expect(tar_contents).not_to match(/^.{4,9}[rwx].* (database.sql.gz|uploads.tar.gz|repositories|builds.tar.gz|artifacts.tar.gz|registry.tar.gz)\/$/)
     end
 
     it 'should delete temp directories' do
       temp_dirs = Dir.glob(
-        File.join(Gitlab.config.backup.path, '{db,repositories,uploads,builds,artifacts,lfs}')
+        File.join(Gitlab.config.backup.path, '{db,repositories,uploads,builds,artifacts,lfs,registry}')
       )
 
       expect(temp_dirs).to be_empty
@@ -172,7 +174,7 @@ describe 'gitlab:app namespace rake task' do
 
     it "does not contain skipped item" do
       tar_contents, _exit_status = Gitlab::Popen.popen(
-        %W{tar -tvf #{@backup_tar} db uploads.tar.gz repositories builds.tar.gz artifacts.tar.gz lfs.tar.gz}
+        %W{tar -tvf #{@backup_tar} db uploads.tar.gz repositories builds.tar.gz artifacts.tar.gz lfs.tar.gz registry.tar.gz}
       )
 
       expect(tar_contents).to match('db/')
@@ -180,6 +182,7 @@ describe 'gitlab:app namespace rake task' do
       expect(tar_contents).to match('builds.tar.gz')
       expect(tar_contents).to match('artifacts.tar.gz')
       expect(tar_contents).to match('lfs.tar.gz')
+      expect(tar_contents).to match('registry.tar.gz')
       expect(tar_contents).not_to match('repositories/')
     end
 
@@ -195,6 +198,7 @@ describe 'gitlab:app namespace rake task' do
       expect(Rake::Task['gitlab:backup:builds:restore']).to receive :invoke
       expect(Rake::Task['gitlab:backup:artifacts:restore']).to receive :invoke
       expect(Rake::Task['gitlab:backup:lfs:restore']).to receive :invoke
+      expect(Rake::Task['gitlab:backup:registry:restore']).to receive :invoke
       expect(Rake::Task['gitlab:shell:setup']).to receive :invoke
       expect { run_rake_task('gitlab:backup:restore') }.not_to raise_error
     end
