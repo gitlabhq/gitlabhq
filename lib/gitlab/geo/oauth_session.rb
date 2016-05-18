@@ -28,6 +28,8 @@ module Gitlab
         cipher = logout_token_cipher(oauth_salt, :encrypt)
         encrypted = cipher.update(access_token) + cipher.final
         self.state = "#{oauth_salt}:#{Base64.urlsafe_encode64(encrypted)}"
+      rescue OpenSSL::OpenSSLError
+        return false
       end
 
       def extract_logout_token

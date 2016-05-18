@@ -1,5 +1,5 @@
 module Oauth2
-  class LogoutTokenValidationService
+  class LogoutTokenValidationService < ::BaseService
     attr_reader :status, :current_user
 
     def initialize(user, access_token_string)
@@ -10,16 +10,16 @@ module Oauth2
     def validate
       return false unless access_token
 
-      @status = Oauth2::AccessTokenValidationService.validate(access_token)
+      status = Oauth2::AccessTokenValidationService.validate(access_token)
 
-      if @status == Oauth2::AccessTokenValidationService::VALID
+      if status == Oauth2::AccessTokenValidationService::VALID
         user = User.find(access_token.resource_owner_id)
 
         if current_user == user
-          true
+          success
         end
       else
-        false
+        error(status)
       end
     end
 
