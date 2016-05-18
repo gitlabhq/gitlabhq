@@ -44,6 +44,15 @@
       %p.build-detail-row
         %span.build-light-text Erased:
         #{time_ago_with_tooltip(@build.erased_at)}
+    - elsif @build.artifacts_expired?
+      %p.build-detail-row.artifacts-expired.alert.alert-warning
+        The artifacts were removed #{time_ago_with_tooltip(@build.artifacts_expire_at)}
+    - elsif @build.artifacts_expire_at
+      %p.build-detail-row.artifacts-expired.alert.alert-info
+        The artifacts will be removed at #{time_ago_with_tooltip(@build.artifacts_expire_at)}
+        .pull-right
+          = link_to keep_artifacts_namespace_project_build_artifacts_path(@project.namespace, @project, @build), class: 'btn btn-sm btn-primary' do
+            Keep
     %p.build-detail-row
       %span.build-light-text Runner:
       - if @build.runner && current_user && current_user.admin

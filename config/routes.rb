@@ -714,6 +714,7 @@ Rails.application.routes.draw do
             post :cancel
             post :retry
             post :erase
+            post :keep_artifacts
             get :trace
             get :raw
           end

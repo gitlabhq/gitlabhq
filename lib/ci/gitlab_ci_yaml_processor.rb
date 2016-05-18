@@ -9,7 +9,7 @@ module Ci
                         :allow_failure, :type, :stage, :when, :artifacts, :cache,
                         :dependencies, :before_script, :after_script, :variables]
     ALLOWED_CACHE_KEYS = [:key, :untracked, :paths]
-    ALLOWED_ARTIFACTS_KEYS = [:name, :untracked, :paths, :when]
+    ALLOWED_ARTIFACTS_KEYS = [:name, :untracked, :paths, :when, :expire_in]
 
     attr_reader :before_script, :after_script, :image, :services, :path, :cache
 

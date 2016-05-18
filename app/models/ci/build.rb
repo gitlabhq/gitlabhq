@@ -11,6 +11,8 @@ module Ci
 
     scope :unstarted, ->() { where(runner_id: nil) }
     scope :ignore_failures, ->() { where(allow_failure: false) }
+    scope :with_artifacts, ->() { where.not(artifacts_file: nil) }
+    scope :with_artifacts_expired, ->() { with_artifacts.where('artifacts_expire_at < ?', Time.now) }
 
     mount_uploader :artifacts_file, ArtifactUploader
     mount_uploader :artifacts_metadata, ArtifactUploader
@@ -328,11 +330,15 @@ module Ci
       Gitlab::Ci::Build::Artifacts::Metadata.new(artifacts_metadata.path, path, **options).to_entry
     end
 
+    def erase_artifacts!
+      remove_artifacts_file!
+      remove_artifacts_metadata!
+    end
+
     def erase(opts = {})
       return false unless erasable?
 
-      remove_artifacts_file!
-      remove_artifacts_metadata!
+      erase_artifacts!
       erase_trace!
       update_erased!(opts[:erased_by])
     end
@@ -343,6 +349,14 @@ module Ci
 
     def erased?
       !self.erased_at.nil?
+    end
+
+    def artifacts_expired?
+      self.artifacts_expire_at < Time.now && !artifacts?
+    end
+
+    def keep_artifacts
+      self.update(artifacts_expire_at: nil)
     end
 
     private
