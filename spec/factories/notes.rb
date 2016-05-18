@@ -37,10 +37,7 @@ FactoryGirl.define do
 
     trait :on_merge_request do
       noteable_type 'MergeRequest'
-      noteable do
-        create(:merge_request, source_project: project,
-                               target_project: project)
-      end
+      noteable { create(:merge_request, source_project: project) }
     end
 
     trait :on_project_snippet do
