@@ -204,7 +204,6 @@ class Project < ActiveRecord::Base
     state :finished
     state :failed
 
-    after_transition any => :started, do: :schedule_add_import_job
     after_transition any => :finished, do: :clear_import_data
   end
 
@@ -347,10 +346,6 @@ class Project < ActiveRecord::Base
 
   def saved?
     id && persisted?
-  end
-
-  def schedule_add_import_job
-    run_after_commit(:add_import_job)
   end
 
   def add_import_job
