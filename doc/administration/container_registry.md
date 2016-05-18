@@ -7,33 +7,49 @@ This feature was [introduced][ce-4040] in GitLab 8.8.
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
-- [Configuration](#configuration)
+- [Assumptions](#assumptions)
+- [Container Registry domain configuration](#container-registry-domain-configuration)
     - [Container Registry under existing GitLab domain](#container-registry-under-existing-gitlab-domain)
     - [Container Registry under its own domain](#container-registry-under-its-own-domain)
 - [Container Registry storage path](#container-registry-storage-path)
+- [Disable Container Registry](#disable-container-registry)
+- [Changelog](#changelog)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-## Configuration
+## Assumptions
 
-Containers can be large in size and they are stored on the server GitLab is
-installed on.
+If you are using Omnibus, you have to bare in mind the following:
 
-The Container Registry works under HTTPS by default.
-This means that the Container Registry requires a SSL certificate.
-There are two options on how this can be configured:
+- The container Registry will be enabled by default if GitLab is configured
+  with HTTPS and it will listen on port `5005`. If you want the Registry to
+  listen on a port other than `5005` which is the default, read [#Container Registry under existing GitLab domain](#container-registry-under-existing-gitlab-domain)
+  on how to achieve that. You will also have to configure your firewall to allow
+  connections to that port.
+- The Container Registry works under HTTPS by default. Note that using HTTP is
+  possible but not recommended and out of the scope of this document,
+  [see the insecure Registry documentation][docker-insecure] if you want to
+  implement this.
 
-1. Use its own domain - needs a SSL certificate for that specific domain
-   (eg. registry.example.com) or a wildcard certificate if hosted under a subdomain
-   (eg. registry.gitlab.example.com)
-1. Use the existing GitLab domain and expose the registry on a port - can reuse
-   existing GitLab SSL certificate
+## Container Registry domain configuration
 
-Note that using HTTP is possible but not recommended,
-[see insecure Registry document][docker-insecure].
+There are two ways you can configure the container Registry domain. Either use
+the existing GitLab domain where in that case the Registry will listen on a port,
+or use a completely separate domain. Since the container Registry requires a
+TLS certificate, in the end it all boils down to how easy or pricey is to
+get a new TLS certificate.
 
-Please take this into consideration before configuring Container Registry for
-the first time.
+1. If the Registry is configured to use its own domain, you will need a TLS
+   certificate for that specific domain (e.g., `registry.example.com`) or maybe
+   a wildcard certificate if hosted under a subdomain (e.g., `registry.gitlab.example.com`).
+1. If the Registry is configured to use the existing GitLab domain, you can
+   expose the Registry on a port so that you can reuse the existing GitLab TLS
+   certificate.
+
+Please take this into consideration before configuring the Container Registry
+for the first time.
+
+Read more about Docker Registry at https://docs.docker.com/registry/introduction/.
 
 ### Container Registry under existing GitLab domain
 
@@ -141,7 +157,13 @@ Save the file and [reconfigure GitLab][] for the changes to take effect.
 **NOTE** You should confirm that the GitLab, registry and the web server user
 have access to this directory.
 
+## Disable Container Registry
+
+
+## Changelog
+
+
 [reconfigure gitlab]: ../../administration/restart_gitlab.md "How to restart GitLab documentation"
 [wildcard certificate]: "https://en.wikipedia.org/wiki/Wildcard_certificate"
 [ce-4040]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/4040
-[docker-insecure]: https://github.com/docker/distribution/blob/master/docs/insecure.md
+[docker-insecure]: https://docs.docker.com/registry/insecure/
