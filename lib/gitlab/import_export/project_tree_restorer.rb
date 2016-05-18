@@ -14,7 +14,6 @@ module Gitlab
         json = IO.read(@path)
         @tree_hash = ActiveSupport::JSON.decode(json)
         @project_members = @tree_hash.delete('project_members')
-        @commits = @tree_hash.delete('ci_commits')
         create_relations
       rescue => e
         @shared.error(e)
@@ -33,13 +32,6 @@ module Gitlab
                                                                     project: project)
       end
 
-      def commits_mapper
-        @commits_mapper ||= Gitlab::ImportExport::CommitMapper.new(commits: @commits,
-                                                                   members_map: members_mapper.map,
-                                                                   project_id: project.id,
-                                                                   user_admin: @user.is_admin?)
-      end
-
       def create_relations(relation_list = default_relation_list, tree_hash = @tree_hash)
         saved = []
         relation_list.each do |relation|
@@ -55,7 +47,7 @@ module Gitlab
 
       def default_relation_list
         Gitlab::ImportExport::ImportExportReader.new(shared: @shared).tree.reject do |model|
-          model.is_a?(Hash) && (model[:project_members] || model[:ci_commits])
+          model.is_a?(Hash) && model[:project_members]
         end
       end
 
@@ -73,8 +65,9 @@ module Gitlab
         relation_key = relation.keys.first.to_s
         tree_hash[relation_key].each do |relation_item|
           relation.values.flatten.each do |sub_relation|
+
             if sub_relation.is_a?(Hash)
-              relation_hash = relation_item[sub_relation.keys.first.to_s]
+              relation_hash =  relation_item[sub_relation.keys.first.to_s]
               sub_relation = sub_relation.keys.first
             else
               relation_hash = relation_item[sub_relation.to_s]
@@ -104,7 +97,6 @@ module Gitlab
         Gitlab::ImportExport::RelationFactory.create(relation_sym: relation.to_sym,
                                                      relation_hash: relation_hash.merge('project_id' => project.id),
                                                      members_mapper: members_mapper,
-                                                     commits_mapper: commits_mapper,
                                                      user_admin: @user.is_admin?)
       end
     end

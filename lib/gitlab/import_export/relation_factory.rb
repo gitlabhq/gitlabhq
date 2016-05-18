@@ -3,27 +3,21 @@ module Gitlab
     module RelationFactory
       extend self
 
-      OVERRIDES = { snippets: :project_snippets,
-                    ci_commits: 'Ci::Commit',
-                    statuses: 'commit_status',
-                    variables: 'Ci::Variable',
-                    triggers: 'Ci::Trigger',
-                    builds: 'Ci::Build',
-                    hooks: 'ProjectHook' }.freeze
-      USER_REFERENCES = %w(author_id assignee_id updated_by_id user_id).freeze
+      OVERRIDES = { snippets: :project_snippets, ci_commits: 'Ci::Commit', statuses: 'commit_status' }.freeze
+      USER_REFERENCES = %w(author_id assignee_id updated_by_id).freeze
 
-      def create(relation_sym:, relation_hash:, members_mapper:, commits_mapper:, user_admin:)
+      def create(relation_sym:, relation_hash:, members_mapper:, user_admin:)
         relation_sym = parse_relation_sym(relation_sym)
         klass = parse_relation(relation_hash, relation_sym)
 
         update_missing_author(relation_hash, members_mapper, user_admin) if relation_sym == :notes
         update_user_references(relation_hash, members_mapper.map)
         update_project_references(relation_hash, klass)
-        update_commit_references(relation_hash, commits_mapper.ids_map) if commits_mapper
 
-        generate_imported_object(klass, relation_hash, relation_sym)
+        imported_object(klass, relation_hash)
       end
 
+      private
 
       def update_user_references(relation_hash, members_map)
         USER_REFERENCES.each do |reference|
@@ -31,32 +25,6 @@ module Gitlab
             relation_hash[reference] = members_map[relation_hash[reference]]
           end
         end
-      end
-
-      def update_project_references(relation_hash, klass)
-        project_id = relation_hash.delete('project_id')
-
-        if relation_hash['source_project_id'] && relation_hash['target_project_id']
-          # If source and target are the same, populate them with the new project ID.
-          if relation_hash['target_project_id'] == relation_hash['source_project_id']
-            relation_hash['source_project_id'] = project_id
-          else
-            relation_hash['source_project_id'] = -1
-          end
-        end
-        relation_hash['target_project_id'] = project_id if relation_hash['target_project_id']
-
-        # project_id may not be part of the export, but we always need to populate it if required.
-        relation_hash['project_id'] = project_id if klass.column_names.include?('project_id')
-        relation_hash['gl_project_id'] = project_id if relation_hash['gl_project_id']
-      end
-
-      private
-
-      def update_commit_references(relation_hash, commit_ids_map)
-        return unless relation_hash['commit_id']
-        old_commit_id = relation_hash['commit_id']
-        relation_hash['commit_id'] = commit_ids_map[old_commit_id]
       end
 
       def update_missing_author(relation_hash, members_map, user_admin)
@@ -82,15 +50,22 @@ module Gitlab
         "\n\n *By #{author_name} on #{timestamp} (imported from GitLab project)*"
       end
 
-      def generate_imported_object(klass, relation_hash, relation_sym)
-        if relation_sym == 'Ci::Build' # call #trace= method after assigning the other attributes
-          trace = relation_hash.delete('trace')
-          imported_object(klass, relation_hash) do |imported_object|
-            imported_object.trace = trace
+      def update_project_references(relation_hash, klass)
+        project_id = relation_hash.delete('project_id')
+
+        if relation_hash['source_project_id'] && relation_hash['target_project_id']
+          # If source and target are the same, populate them with the new project ID.
+          if relation_hash['target_project_id'] == relation_hash['source_project_id']
+            relation_hash['source_project_id'] = project_id
+          else
+            relation_hash['source_project_id'] = -1
           end
-        else
-          imported_object(klass, relation_hash)
         end
+        relation_hash['target_project_id'] = project_id if relation_hash['target_project_id']
+
+        # project_id may not be part of the export, but we always need to populate it if required.
+        relation_hash['project_id'] = project_id if klass.column_names.include?('project_id')
+        relation_hash['gl_project_id'] = project_id if relation_hash ['gl_project_id']
       end
 
       def relation_class(relation_sym)
@@ -103,7 +78,6 @@ module Gitlab
 
       def imported_object(klass, relation_hash)
         imported_object = klass.new(relation_hash)
-        yield(imported_object) if block_given?
         imported_object.importing = true if imported_object.respond_to?(:importing)
         imported_object
       end
