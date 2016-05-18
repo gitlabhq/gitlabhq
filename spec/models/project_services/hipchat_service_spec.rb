@@ -211,7 +211,7 @@ describe HipchatService, models: true do
         end
 
         let(:merge_request_note) do
-          create(:note_on_merge_request, noteable_id: merge_request.id,
+          create(:note_on_merge_request, noteable: merge_request,
                                          project: project,
                                          note: "merge request note")
         end
@@ -239,7 +239,7 @@ describe HipchatService, models: true do
       context 'when issue comment event triggered' do
         let(:issue) { create(:issue, project: project) }
         let(:issue_note) do
-          create(:note_on_issue, noteable_id: issue.id, project: project,
+          create(:note_on_issue, noteable: issue, project: project,
                                  note: "issue note")
         end
 
@@ -264,7 +264,7 @@ describe HipchatService, models: true do
       context 'when snippet comment event triggered' do
         let(:snippet) { create(:project_snippet, project: project) }
         let(:snippet_note) do
-          create(:note_on_project_snippet, noteable_id: snippet.id,
+          create(:note_on_project_snippet, noteable: snippet,
                                            project: project,
                                            note: "snippet note")
         end

@@ -7,7 +7,7 @@ FactoryGirl.define do
     project
     note "Note"
     author
-    noteable { create(:issue, project: project) }
+    on_issue
 
     factory :note_on_commit,             traits: [:on_commit]
     factory :note_on_commit_diff,        traits: [:on_commit, :on_diff], class: LegacyDiffNote
@@ -21,8 +21,8 @@ FactoryGirl.define do
 
     trait :on_commit do
       noteable nil
-      noteable_type 'Commit'
       noteable_id nil
+      noteable_type 'Commit'
       commit_id RepoHelpers.sample_commit.id
     end
 
@@ -31,17 +31,14 @@ FactoryGirl.define do
     end
 
     trait :on_issue do
-      noteable_type 'Issue'
       noteable { create(:issue, project: project) }
     end
 
     trait :on_merge_request do
-      noteable_type 'MergeRequest'
       noteable { create(:merge_request, source_project: project) }
     end
 
     trait :on_project_snippet do
-      noteable_type 'Snippet'
       noteable { create(:snippet, project: project) }
     end
 
