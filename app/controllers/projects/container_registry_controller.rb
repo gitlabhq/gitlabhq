@@ -8,10 +8,12 @@ class Projects::ContainerRegistryController < Projects::ApplicationController
   end
 
   def destroy
+    url = namespace_project_container_registry_index_path(project.namespace, project)
+
     if tag.delete
-      redirect_to namespace_project_container_registry_index_path(project.namespace, project)
+      redirect_to url
     else
-      redirect_to namespace_project_container_registry_index_path(project.namespace, project), alert: 'Failed to remove tag'
+      redirect_to url, alert: 'Failed to remove tag'
     end
   end
 

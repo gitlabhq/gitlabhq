@@ -331,6 +331,8 @@ class Project < ActiveRecord::Base
   end
 
   def container_registry_repository
+    return unless Gitlab.config.registry.enabled
+
     @container_registry_repository ||= begin
       token = Auth::ContainerRegistryAuthenticationService.full_access_token(path_with_namespace)
       url = Gitlab.config.registry.api_url
@@ -347,9 +349,9 @@ class Project < ActiveRecord::Base
   end
 
   def has_container_registry_tags?
-    if Gitlab.config.registry.enabled
-      container_registry_repository.tags.any?
-    end
+    return unless container_registry_repository
+
+    container_registry_repository.tags.any?
   end
 
   def commit(id = 'HEAD')
