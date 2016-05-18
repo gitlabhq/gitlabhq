@@ -36,6 +36,7 @@ v 8.9.0 (unreleased)
   - Links from a wiki page to other wiki pages should be rewritten as expected
   - Add option to project to only allow merge requests to be merged if the build succeeds (Rui Santos)
   - Fix issues filter when ordering by milestone
+  - Added artifacts:when to .gitlab-ci.yml - this requires GitLab Runner 1.3
   - Todos will display target state if issuable target is 'Closed' or 'Merged'
   - Fix bug when sorting issues by milestone due date and filtering by two or more labels
   - Add support for using Yubikeys (U2F) for two-factor authentication
