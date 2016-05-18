@@ -3,7 +3,15 @@ module Gitlab
     module RelationFactory
       extend self
 
-      OVERRIDES = { snippets: :project_snippets, ci_commits: 'Ci::Commit', statuses: 'commit_status' }.freeze
+
+      OVERRIDES = { snippets: :project_snippets,
+                    ci_commits: 'Ci::Commit',
+                    statuses: 'commit_status',
+                    variables: 'Ci::Variable',
+                    triggers: 'Ci::Trigger',
+                    builds: 'Ci::Build',
+                    hooks: 'ProjectHook' }.freeze
+
       USER_REFERENCES = %w(author_id assignee_id updated_by_id).freeze
 
       def create(relation_sym:, relation_hash:, members_mapper:, user_admin:)
