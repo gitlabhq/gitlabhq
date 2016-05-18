@@ -59,6 +59,7 @@ v 8.8.0 (unreleased)
   - Add counter metrics for rails cache
   - Import pull requests from GitHub where the source or target branches were removed
   - All Grape API helpers are now instrumented
+  - Improve Issue formatting for the Slack Service (Jeroen van Baarsen)
 
 v 8.7.6
   - Fix links on wiki pages for relative url setups. !4131 (Artem Sidorenko)
@@ -70,7 +71,6 @@ v 8.7.5
   - Fix always showing build notification message when switching between merge requests !4086
   - Fix an issue when filtering merge requests with more than one label. !3886
   - Fix short note for the default scope on build page (Takuya Noguchi)
-  - Improve Issue formatting for the Slack Service (Jeroen van Baarsen)
 
 v 8.7.4
   - Links for Redmine issue references are generated correctly again !4048 (Benedikt Huss)
