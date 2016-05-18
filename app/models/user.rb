@@ -397,11 +397,6 @@ class User < ActiveRecord::Base
                     owned_groups.select(:id), namespace.id).joins(:namespace)
   end
 
-  # Team membership in authorized projects
-  def tm_in_authorized_projects
-    ProjectMember.where(source_id: authorized_projects.map(&:id), user_id: self.id)
-  end
-
   def is_admin?
     admin
   end
@@ -489,10 +484,6 @@ class User < ActiveRecord::Base
 
   def name_with_username
     "#{name} (#{username})"
-  end
-
-  def tm_of(project)
-    project.project_member_by_id(self.id)
   end
 
   def already_forked?(project)
