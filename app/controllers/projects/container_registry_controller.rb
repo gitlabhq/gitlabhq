@@ -1,4 +1,5 @@
 class Projects::ContainerRegistryController < Projects::ApplicationController
+  before_action :verify_registry_enabled
   before_action :authorize_read_container_image!
   before_action :authorize_update_container_image!, only: [:destroy]
   layout 'project'
@@ -18,6 +19,10 @@ class Projects::ContainerRegistryController < Projects::ApplicationController
   end
 
   private
+
+  def verify_registry_enabled
+    render_404 unless Gitlab.config.registry.enabled
+  end
 
   def container_registry_repository
     @container_registry_repository ||= project.container_registry_repository

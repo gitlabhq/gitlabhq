@@ -152,7 +152,7 @@ module ProjectsHelper
       nav_tabs << :builds
     end
 
-    if project.container_registry_repository_url.present? && can?(current_user, :read_container_image, project)
+    if Gitlab.config.registry.enabled && can?(current_user, :read_container_image, project)
       nav_tabs << :container_registry
     end
 
