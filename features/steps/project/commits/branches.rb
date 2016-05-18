@@ -75,8 +75,8 @@ class Spinach::Features::ProjectCommitsBranches < Spinach::FeatureSteps
 
   step "I click branch 'improve/awesome' delete link" do
     page.within '.js-branch-improve\/awesome' do
-      find('.branch-delete-button', visible: false).click
-      sleep 0.05
+      first('.js-branch-settings-toggle').click
+      find('.branch-delete-button').click
     end
   end
 

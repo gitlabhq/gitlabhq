@@ -11,7 +11,6 @@ class Projects::ProtectedBranchesController < Projects::ApplicationController
   end
 
   def create
-    branch_params = protected_branch_params
     @project.protected_branches.create(protected_branch_params)
 
     if params[:protected_branch][:branch_index].nil?

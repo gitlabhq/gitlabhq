@@ -3,7 +3,7 @@
 - diverging_commit_counts = @repository.diverging_commit_counts(branch)
 - number_commits_behind = diverging_commit_counts[:behind]
 - number_commits_ahead = diverging_commit_counts[:ahead]
-- protected_branch = @project.protected_branches.find_by_name(branch.name)
+- protected_branch = @protected_branches.find_by_name(branch.name)
 %li(class="js-branch-#{branch.name}")
   %div
     = link_to namespace_project_tree_path(@project.namespace, @project, branch.name) do
@@ -32,7 +32,7 @@
 
       - if can? current_user, :admin_project, @project
         .dropdown.inline
-          %button.btn.btn-default.btn-xs{ type: "button", data: { toggle: "dropdown" } }
+          %button.btn.btn-default.btn-xs.js-branch-settings-toggle{ type: "button", data: { toggle: "dropdown" } }
             %span.sr-only Settings
             = icon("gear")
             %span.caret
@@ -46,13 +46,13 @@
                   = button_tag type: "submit", class: "dropdown-link #{"is-active" if @project.protected_branch? branch.name}", disabled: @project.protected_branch?(branch.name) do
                     Protected
               %li
-                = link_to "Unprotect", [@project.namespace.becomes(Namespace), @project, protected_branch, branch_index: true], data: { confirm: 'Branch will be writable for developers. Are you sure?' }, method: :delete, class: ("is-active" if !@project.protected_branch? branch.name)
+                = link_to "Unprotected", [@project.namespace.becomes(Namespace), @project, protected_branch, branch_index: true], data: { confirm: 'Branch will be writable for developers. Are you sure?' }, method: :delete, class: ("is-active" if !@project.protected_branch? branch.name)
               - if can_remove_branch?(@project, branch.name)
                 %li.divider
                 %li
-                  = link_to namespace_project_branch_path(@project.namespace, @project, branch.name), class: "btn btn-warning branch-delete-button block", title: "Delete branch", method: :delete, data: { confirm: "Deleting the '#{branch.name}' branch cannot be undone. Are you sure?" }, remote: true do
+                  = link_to namespace_project_branch_path(@project.namespace, @project, branch.name), class: "btn btn-warning branch-delete-button block", title: "Delete branch", method: :delete, data: { confirm: "Deleting the '#{branch.name}' branch cannot be undone. Are you sure?" } do
                     Delete branch
-              - else
+              - elsif !protected_branch.nil?
                 %li.divider
                 %li
                   %a.js-branch-dev-push{ href: "#", class: ("is-active" if @project.developers_can_push_to_protected_branch?(branch.name)), data: { value: protected_branch.id, url: namespace_project_protected_branch_path(@project.namespace, @project, protected_branch) } }

@@ -8,6 +8,9 @@ class Projects::BranchesController < Projects::ApplicationController
   def index
     @sort = params[:sort] || 'name'
     @branches = @repository.branches_sorted_by(@sort)
+    branch_names = @branches.map(&:name)
+    @protected_branches = @project.protected_branches.where(name: branch_names)
+
     @branches = Kaminari.paginate_array(@branches).page(params[:page])
 
     @max_commits = @branches.reduce(0) do |memo, branch|
