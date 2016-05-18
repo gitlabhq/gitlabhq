@@ -1,15 +1,12 @@
 - page_title "New Pipeline"
 = render "header_title"
 
-- if @error
-  .alert.alert-danger
-    %button{ type: "button", class: "close", "data-dismiss" => "alert"} &times;
-    = @error
 %h3.page-title
   New Pipeline
 %hr
 
-= form_tag namespace_project_pipelines_path, method: :post, id: "new-pipeline-form", class: "form-horizontal js-new-pipeline-form js-requires-input" do
+= form_for @pipeline, url: namespace_project_pipelines_path(@project.namespace, @project), html: { id: "new-pipeline-form", class: "form-horizontal js-new-pipeline-form js-requires-input" } do
+  = form_errors(@pipeline)
   .form-group
     = label_tag :ref, 'Create for', class: 'control-label'
     .col-sm-10

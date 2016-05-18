@@ -1,37 +1,45 @@
 module Ci
   class CreatePipelineService < BaseService
     def execute
+      pipeline = project.ci_commits.new
+
       unless ref_names.include?(params[:ref])
-        raise ArgumentError, 'Reference not found'
+        pipeline.errors.add(:base, 'Reference not found')
+        return pipeline
       end
 
       unless commit
-        raise ArgumentError, 'Commit not found'
+        pipeline.errors.add(:base, 'Commit not found')
+        return pipeline
       end
 
       unless can?(current_user, :create_pipeline, project)
-        raise RuntimeError, 'Insufficient permissions to create a new pipeline'
+        pipeline.errors.add(:base, 'Insufficient permissions to create a new pipeline')
+        return pipeline
       end
 
-      pipeline = new_pipeline
+      begin
+        Ci::Commit.transaction do
+          pipeline.sha = commit.id
+          pipeline.ref = params[:ref]
+          pipeline.before_sha = Gitlab::Git::BLANK_SHA
 
-      Ci::Commit.transaction do
-        unless pipeline.config_processor
-          raise ArgumentError, pipeline.yaml_errors || 'Missing .gitlab-ci.yml file'
+          unless pipeline.config_processor
+            pipeline.errors.add(:base, pipeline.yaml_errors || 'Missing .gitlab-ci.yml file')
+            raise ActiveRecord::Rollback
+          end
+
+          pipeline.save!
+          pipeline.create_builds(current_user)
         end
-
-        pipeline.save!
-        pipeline.create_builds(current_user)
+      rescue
+        pipeline.errors.add(:base, 'The pipeline could not be created. Please try again.')
       end
 
       pipeline
     end
 
     private
-
-    def new_pipeline
-      project.ci_commits.new(sha: commit.id, ref: params[:ref], before_sha: Gitlab::Git::BLANK_SHA)
-    end
 
     def ref_names
       @ref_names ||= project.repository.ref_names

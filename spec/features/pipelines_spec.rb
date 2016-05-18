@@ -126,12 +126,19 @@ describe "Pipelines" do
     before { visit new_namespace_project_pipeline_path(project.namespace, project) }
 
     context 'for valid commit' do
-      before do
-        fill_in('Create for', with: 'master')
-        stub_ci_commit_to_return_yaml_file
+      before { fill_in('Create for', with: 'master') }
+
+      context 'with gitlab-ci.yml' do
+        before { stub_ci_commit_to_return_yaml_file }
+
+        it { expect{ click_on 'Create pipeline' }.to change{ Ci::Commit.count }.by(1) }
       end
 
-      it { expect{ click_on 'Create pipeline' }.to change{ Ci::Commit.count }.by(1) }
+      context 'without gitlab-ci.yml' do
+        before { click_on 'Create pipeline' }
+
+        it { expect(page).to have_content('Missing .gitlab-ci.yml file') }
+      end
     end
 
     context 'for invalid commit' do

@@ -15,19 +15,17 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def new
+    @pipeline = project.ci_commits.new
   end
 
   def create
-    begin
-      pipeline = Ci::CreatePipelineService.new(project, current_user, create_params).execute
-      redirect_to namespace_project_pipeline_path(project.namespace, project, pipeline)
-    rescue ArgumentError => e
-      flash[:alert] = e.message
+    @pipeline = Ci::CreatePipelineService.new(project, current_user, create_params).execute
+    unless @pipeline.persisted?
       render 'new'
-    rescue
-      flash[:alert] = 'The pipeline could not be created. Please try again.'
-      render 'new'
+      return
     end
+
+    redirect_to namespace_project_pipeline_path(project.namespace, project, @pipeline)
   end
 
   def show
