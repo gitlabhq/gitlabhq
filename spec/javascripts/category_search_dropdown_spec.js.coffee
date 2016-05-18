@@ -3,7 +3,8 @@
 
 widget     = null
 userId     = 1
-window.gon = current_user_id : userId
+window.gon or= {}
+window.gon.current_user_id = userId
 
 dashboardIssuesPath = '/dashboard/issues'
 dashboardMRsPath    = '/dashboard/merge_requests'
