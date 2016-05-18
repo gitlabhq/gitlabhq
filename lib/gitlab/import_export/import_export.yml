@@ -16,6 +16,13 @@ project_tree:
     - :merge_request_diff
   - ci_commits:
     - :statuses
+  - :builds
+  - :variables
+  - :triggers
+  - :deploy_keys
+  - :services
+  - :hooks
+  - :protected_branches
 
 # Only include the following attributes for the models specified.
 included_attributes:
