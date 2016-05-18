@@ -15,7 +15,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def new
-    @pipeline = project.ci_commits.new
+    @pipeline = project.ci_commits.new(ref: @project.default_branch)
   end
 
   def create
@@ -46,7 +46,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   private
 
   def create_params
-    params.permit(:ref)
+    params.require(:pipeline).permit(:ref)
   end
 
   def pipeline

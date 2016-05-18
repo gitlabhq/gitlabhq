@@ -5,15 +5,15 @@
   New Pipeline
 %hr
 
-= form_for @pipeline, url: namespace_project_pipelines_path(@project.namespace, @project), html: { id: "new-pipeline-form", class: "form-horizontal js-new-pipeline-form js-requires-input" } do
+= form_for @pipeline, as: :pipeline, url: namespace_project_pipelines_path(@project.namespace, @project), html: { id: "new-pipeline-form", class: "form-horizontal js-new-pipeline-form js-requires-input" } do |f|
   = form_errors(@pipeline)
   .form-group
-    = label_tag :ref, 'Create for', class: 'control-label'
+    = f.label :ref, 'Create for', class: 'control-label'
     .col-sm-10
-      = text_field_tag :ref, params[:ref] || @project.default_branch, required: true, tabindex: 2, class: 'form-control'
+      = f.text_field :ref, required: true, tabindex: 2, class: 'form-control'
       .help-block Existing branch name, tag
   .form-actions
-    = button_tag 'Create pipeline', class: 'btn btn-create', tabindex: 3
+    = f.submit 'Create pipeline', class: 'btn btn-create', tabindex: 3
     = link_to 'Cancel', namespace_project_pipelines_path(@project.namespace, @project), class: 'btn btn-cancel'
 
 :javascript

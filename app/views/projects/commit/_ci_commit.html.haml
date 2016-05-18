@@ -7,8 +7,8 @@
       - if ci_commit.builds.running_or_pending.any?
         = link_to "Cancel running", cancel_namespace_project_pipeline_path(@project.namespace, @project, ci_commit.id), data: { confirm: 'Are you sure?' }, class: 'btn btn-grouped btn-danger', method: :post
 
-  - if defined?(pipeline_details) && pipeline_details
-    .oneline
+  .oneline.clearfix
+    - if defined?(pipeline_details) && pipeline_details
       Pipeline
       = link_to "##{ci_commit.id}", namespace_project_pipeline_path(@project.namespace, @project, ci_commit.id), class: "monospace"
       with

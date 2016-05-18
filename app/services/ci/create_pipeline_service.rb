@@ -1,7 +1,7 @@
 module Ci
   class CreatePipelineService < BaseService
     def execute
-      pipeline = project.ci_commits.new
+      pipeline = project.ci_commits.new(params)
 
       unless ref_names.include?(params[:ref])
         pipeline.errors.add(:base, 'Reference not found')
@@ -21,8 +21,6 @@ module Ci
       begin
         Ci::Commit.transaction do
           pipeline.sha = commit.id
-          pipeline.ref = params[:ref]
-          pipeline.before_sha = Gitlab::Git::BLANK_SHA
 
           unless pipeline.config_processor
             pipeline.errors.add(:base, pipeline.yaml_errors || 'Missing .gitlab-ci.yml file')
