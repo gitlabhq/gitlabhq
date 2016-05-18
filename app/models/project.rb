@@ -329,10 +329,28 @@ class Project < ActiveRecord::Base
     @repository ||= Repository.new(path_with_namespace, self)
   end
 
-  def container_registry_url
-    if container_registry_enabled? && Gitlab.config.registry.enabled
-      "#{Gitlab.config.registry.host_with_port}/#{path_with_namespace}"
+  def container_registry_repository
+    return unless Gitlab.config.registry.enabled
+
+    @container_registry_repository ||= begin
+      token = Auth::ContainerRegistryAuthenticationService.full_access_token(path_with_namespace)
+      url = Gitlab.config.registry.api_url
+      host_port = Gitlab.config.registry.host_port
+      registry = ContainerRegistry::Registry.new(url, token: token, path: host_port)
+      registry.repository(path_with_namespace)
     end
+  end
+
+  def container_registry_repository_url
+    if Gitlab.config.registry.enabled
+      "#{Gitlab.config.registry.host_port}/#{path_with_namespace}"
+    end
+  end
+
+  def has_container_registry_tags?
+    return unless container_registry_repository
+
+    container_registry_repository.tags.any?
   end
 
   def commit(id = 'HEAD')
@@ -745,6 +763,11 @@ class Project < ActiveRecord::Base
     new_path_with_namespace = File.join(namespace_dir, path)
 
     expire_caches_before_rename(old_path_with_namespace)
+
+    if has_container_registry_tags?
+      # we currently doesn't support renaming repository if it contains tags in container registry
+      raise Exception.new('Project cannot be renamed, because tags are present in its container registry')
+    end
 
     if gitlab_shell.mv_repository(old_path_with_namespace, new_path_with_namespace)
       # If repository moved successfully we need to send update instructions to users.
