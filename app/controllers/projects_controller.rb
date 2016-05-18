@@ -235,7 +235,8 @@ class ProjectsController < Projects::ApplicationController
   def project_params
     params.require(:project).permit(
       :name, :path, :description, :issues_tracker, :tag_list, :runners_token,
-      :issues_enabled, :merge_requests_enabled, :snippets_enabled, :issues_tracker_id, :default_branch,
+      :issues_enabled, :merge_requests_enabled, :snippets_enabled, :container_registry_enabled,
+      :issues_tracker_id, :default_branch,
       :wiki_enabled, :visibility_level, :import_url, :last_activity_at, :namespace_id, :avatar,
       :builds_enabled, :build_allow_git_fetch, :build_timeout_in_minutes, :build_coverage_regex,
       :public_builds,

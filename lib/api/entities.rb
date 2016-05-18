@@ -66,7 +66,8 @@ module API
       expose :owner, using: Entities::UserBasic, unless: ->(project, options) { project.group }
       expose :name, :name_with_namespace
       expose :path, :path_with_namespace
-      expose :issues_enabled, :merge_requests_enabled, :wiki_enabled, :builds_enabled, :snippets_enabled, :created_at, :last_activity_at
+      expose :issues_enabled, :merge_requests_enabled, :wiki_enabled, :builds_enabled, :snippets_enabled, :container_registry_enabled
+      expose :created_at, :last_activity_at
       expose :shared_runners_enabled
       expose :creator_id
       expose :namespace
@@ -227,9 +228,9 @@ module API
 
     class CommitNote < Grape::Entity
       expose :note
-      expose(:path) { |note| note.diff_file_name }
-      expose(:line) { |note| note.diff_new_line }
-      expose(:line_type) { |note| note.diff_line_type }
+      expose(:path) { |note| note.diff_file_path if note.legacy_diff_note? }
+      expose(:line) { |note| note.diff_new_line if note.legacy_diff_note? }
+      expose(:line_type) { |note| note.diff_line_type if note.legacy_diff_note? }
       expose :author, using: Entities::UserBasic
       expose :created_at
     end

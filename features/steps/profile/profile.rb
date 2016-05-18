@@ -166,7 +166,7 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
   end
 
   step 'I have group with projects' do
-    @group   = create(:group)
+    @group = create(:group)
     @group.add_owner(current_user)
     @project = create(:project, namespace: @group)
     @event   = create(:closed_issue_event, project: @project)

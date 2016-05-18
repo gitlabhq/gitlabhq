@@ -20,7 +20,7 @@ if File.exist?(aws_file)
     config.fog_public = false
 
     # optional, defaults to {}
-    config.fog_attributes = { 'Cache-Control'=>'max-age=315576000' }
+    config.fog_attributes = { 'Cache-Control' => 'max-age=315576000' }
 
     # optional time (in seconds) that authenticated urls will be valid.
     # when fog_public is false and provider is AWS or Google, defaults to 600

@@ -5,6 +5,7 @@ v 8.8.0 (unreleased)
   - Fix error when using link to uploads in global snippets
   - Assign labels and milestone to target project when moving issue. !3934 (Long Nguyen)
   - Use a case-insensitive comparison in sanitizing URI schemes
+  - Toggle sign-up confirmation emails in application settings
   - Project#open_branches has been cleaned up and no longer loads entire records into memory.
   - Escape HTML in commit titles in system note messages
   - Improve multiple branch push performance by memoizing permission checking
@@ -15,10 +16,12 @@ v 8.8.0 (unreleased)
   - Make build status canceled if any of the jobs was canceled and none failed
   - Upgrade Sidekiq to 4.1.2
   - Added /health_check endpoint for checking service status
+  - Make 'upcoming' filter for milestones work better across projects
   - Sanitize repo paths in new project error message
   - Bump mail_room to 0.7.0 to fix stuck IDLE connections
   - Remove future dates from contribution calendar graph.
   - Support e-mail notifications for comments on project snippets
+  - Fix API leak of notes of unauthorized issues, snippets and merge requests
   - Use ActionDispatch Remote IP for Akismet checking
   - Fix error when visiting commit builds page before build was updated
   - Add 'l' shortcut to open Label dropdown on issuables and 'i' to create new issue on a project
@@ -26,9 +29,11 @@ v 8.8.0 (unreleased)
   - Update SVG sanitizer to conform to SVG 1.1
   - Speed up push emails with multiple recipients by only generating the email once
   - Updated search UI
+  - Added authentication service for Container Registry
   - Display informative message when new milestone is created
   - Sanitize milestones and labels titles
   - Support multi-line tag messages. !3833 (Calin Seciu)
+  - Force users to reset their password after an admin changes it
   - Allow "NEWS" and "CHANGES" as alternative names for CHANGELOG. !3768 (Connor Shea)
   - Added button to toggle whitespaces changes on diff view
   - Backport GitHub Enterprise import support from EE
@@ -44,12 +49,23 @@ v 8.8.0 (unreleased)
   - API support for the 'since' and 'until' operators on commit requests (Paco Guzman)
   - Fix Gravatar hint in user profile when Gravatar is disabled. !3988 (Artem Sidorenko)
   - Expire repository exists? and has_visible_content? caches after a push if necessary
-  - Fix unintentional filtering bug in issues sorted by milestone due (Takuya Noguchi)
+  - Fix unintentional filtering bug in Issue/MR sorted by milestone due (Takuya Noguchi)
   - Fix adding a todo for private group members (Ahmad Sherif)
   - Bump ace-rails-ap gem version from 2.0.1 to 4.0.2 which upgrades Ace Editor from 1.1.2 to 1.2.3
   - Total method execution timings are no longer tracked
   - Allow Admins to remove the Login with buttons for OAuth services and still be able to import !4034. (Andrei Gliga)
   - Add API endpoints for un/subscribing from/to a label. !4051 (Ahmad Sherif)
+  - Hide left sidebar on phone screens to give more space for content
+  - Redesign navigation for profile and group pages
+  - Add counter metrics for rails cache
+  - Import pull requests from GitHub where the source or target branches were removed
+  - All Grape API helpers are now instrumented
+  - Improve Issue formatting for the Slack Service (Jeroen van Baarsen)
+
+v 8.7.6
+  - Fix links on wiki pages for relative url setups. !4131 (Artem Sidorenko)
+  - Fix import from GitLab.com to a private instance failure. !4181
+  - Fix external imports not finding the import data. !4106
 
 v 8.7.5
   - Fix relative links in wiki pages. !4050
@@ -879,7 +895,7 @@ v 8.1.3
   - Use issue editor as cross reference comment author when issue is edited with a new mention
   - Add Facebook authentication
 
-v 8.1.2
+v 8.1.1
   - Fix cloning Wiki repositories via HTTP (Stan Hu)
   - Add migration to remove satellites directory
   - Fix specific runners visibility

@@ -312,7 +312,7 @@
     }
 
     .nav-sidebar li a {
-      width: 230px;
+      width: $sidebar_width;
 
       &.back-link {
         i {

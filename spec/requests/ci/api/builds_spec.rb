@@ -402,8 +402,8 @@ describe Ci::API::API do
         context 'build has artifacts' do
           let(:build) { create(:ci_build, :artifacts) }
           let(:download_headers) do
-            { 'Content-Transfer-Encoding'=>'binary',
-              'Content-Disposition'=>'attachment; filename=ci_build_artifacts.zip' }
+            { 'Content-Transfer-Encoding' => 'binary',
+              'Content-Disposition' => 'attachment; filename=ci_build_artifacts.zip' }
           end
 
           it 'should download artifact' do
