@@ -59,7 +59,7 @@ describe Notes::CreateService, services: true do
         noteable_id: issue.id
       }
 
-      expect_any_instance_of(ToggleAwardEmojiService).to receive(:execute).with(issue, "thumbsup")
+      expect_any_instance_of(TodoService).to receive(:new_award_emoji).with(issue, user)
 
       Notes::CreateService.new(project, user, opts).execute
     end

@@ -8,12 +8,12 @@ describe 'Comments', feature: true do
     it 'excludes award_emoji from comment count' do
       merge_request = create(:merge_request)
       project = merge_request.source_project
-      create(:award_emoji, awardable: merge_request, project: project)
+      create(:award_emoji, awardable: merge_request)
 
       login_as :admin
       visit namespace_project_merge_requests_path(project.namespace, project)
 
-      expect(merge_request.mr_and_commit_notes.count).to eq 1
+      expect(merge_request.mr_and_commit_notes.count).to eq 0
       expect(page.all('.merge-request-no-comments').first.text).to eq "0"
     end
   end
@@ -146,11 +146,11 @@ describe 'Comments', feature: true do
 
     describe 'comment info' do
       it 'excludes award_emoji from comment count' do
-        create(:award_emoji, awardable: merge_request, project: project)
+        create(:award_emoji, awardable: merge_request)
 
         visit namespace_project_merge_request_path(project.namespace, project, merge_request)
 
-        expect(merge_request.mr_and_commit_notes.count).to eq 2
+        expect(merge_request.mr_and_commit_notes.count).to eq 1
         expect(find('.notes-tab span.badge').text).to eq "1"
       end
     end

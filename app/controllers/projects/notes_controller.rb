@@ -22,10 +22,8 @@ class Projects::NotesController < Projects::ApplicationController
   def create
     @note = Notes::CreateService.new(project, current_user, note_params).execute
 
-    @note = @note.is_a?(AwardEmoji) ? @note.to_note_json : note_json(@note)
-
     respond_to do |format|
-      format.json { render json: @note }
+      format.json { render json: note_json(@note) }
       format.html { redirect_back_or_default }
     end
   end
@@ -109,7 +107,14 @@ class Projects::NotesController < Projects::ApplicationController
   end
 
   def note_json(note)
-    if note.valid?
+    if note.is_a?(AwardEmoji)
+      {
+        valid:  note.valid?,
+        award:  true,
+        id:     note.id,
+        name:   note.name
+      }
+    elsif note.valid?
       {
         valid: true,
         id: note.id,
