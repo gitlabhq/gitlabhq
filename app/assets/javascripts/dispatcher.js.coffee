@@ -20,6 +20,7 @@ class Dispatcher
         new IssuableBulkActions()
         shortcut_handler = new ShortcutsNavigation()
       when 'projects:issues:show'
+        Issuable.init()
         new Issue()
         shortcut_handler = new ShortcutsIssuable()
         new ZenMode()
@@ -51,6 +52,7 @@ class Dispatcher
         new ZenMode()
         new GLForm($('.release-form'))
       when 'projects:merge_requests:show'
+        Issuable.init()
         new Diff()
         shortcut_handler = new ShortcutsIssuable(true)
         new ZenMode()

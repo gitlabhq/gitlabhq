@@ -41,15 +41,9 @@ class @Issue
           if 'id' of data
             $(document).trigger('issuable:change');
             if isClose
-              $('a.btn-close').addClass('hidden')
-              $('a.btn-reopen').removeClass('hidden')
-              $('div.status-box-closed').removeClass('hidden')
-              $('div.status-box-open').addClass('hidden')
+              Issuable.showClosedButtons()
             else
-              $('a.btn-reopen').addClass('hidden')
-              $('a.btn-close').removeClass('hidden')
-              $('div.status-box-closed').addClass('hidden')
-              $('div.status-box-open').removeClass('hidden')
+              Issuable.showOpenButtons()
           else
             new Flash(issueFailMessage, 'alert')
           $this.prop('disabled', false)

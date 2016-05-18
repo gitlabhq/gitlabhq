@@ -1,4 +1,5 @@
 #= require lib/utils/text_utility
+#= require issuable
 #= require issue
 
 describe 'Issue', ->

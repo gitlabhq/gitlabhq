@@ -2,7 +2,7 @@
 - page_description     @issue.description
 - page_card_attributes @issue.card_attributes
 
-.clearfix.detail-page-header
+.clearfix.detail-page-header.js-issuable-header{ data: { status: issuable_status(@issue) } }
   .issuable-header
     .issuable-status-box.status-box.status-box-closed{ class: issue_button_visibility(@issue, false) }
       = icon('check', class: "hidden-sm hidden-md hidden-lg")
