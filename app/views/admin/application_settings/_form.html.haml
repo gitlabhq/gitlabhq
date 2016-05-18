@@ -106,9 +106,22 @@
     .form-group
       .col-sm-offset-2.col-sm-10
         .checkbox
+          = f.label :send_user_confirmation_email do
+            = f.check_box :send_user_confirmation_email
+            Send confirmation email on sign-up
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
           = f.label :signin_enabled do
             = f.check_box :signin_enabled
             Sign-in enabled
+    - if omniauth_enabled? && button_based_providers.any?
+      .form-group
+        = f.label :enabled_oauth_sign_in_sources, 'Enabled OAuth Sign-In sources', class: 'control-label col-sm-2'
+        .col-sm-10
+          .btn-group{ data: { toggle: 'buttons' } }
+            - oauth_providers_checkboxes.each do |source|
+              = source
     .form-group
       = f.label :two_factor_authentication, 'Two-factor authentication', class: 'control-label col-sm-2'
       .col-sm-10

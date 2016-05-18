@@ -5,7 +5,7 @@ module Gitlab
 
       def initialize(project)
         @project = project
-        credentials = import_data
+        credentials = project.import_data
         if credentials && credentials[:password]
           @client = Client.new(credentials[:password])
           @formatter = Gitlab::ImportFormatter.new

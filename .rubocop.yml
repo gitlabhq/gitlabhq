@@ -276,7 +276,7 @@ Style/IdenticalConditionalBranches:
   Enabled: false
 
 # Checks the indentation of the first line of the right-hand-side of a
-# multi-line assignment. 
+# multi-line assignment.
 Style/IndentAssignment:
   Enabled: false
 
@@ -531,7 +531,7 @@ Style/SpaceAroundKeyword:
 
 # Use a single space around operators.
 Style/SpaceAroundOperators:
-  Enabled: false
+  Enabled: true
 
 # Checks that the left block brace has or doesn't have space before it.
 Style/SpaceBeforeBlockBraces:
@@ -770,7 +770,7 @@ Lint/DefEndAlignment:
 
 # Check for deprecated class method calls.
 Lint/DeprecatedClassMethods:
-  Enabled: false
+  Enabled: true
 
 # Check for duplicate method definitions.
 Lint/DuplicateMethods:

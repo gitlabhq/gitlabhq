@@ -126,7 +126,7 @@ class Spinach::Features::ProjectTeamManagement < Spinach::FeatureSteps
 
   step 'I share project with group "OpenSource"' do
     project = Project.find_by(name: 'Shop')
-    os_group   = create(:group, name: 'OpenSource')
+    os_group = create(:group, name: 'OpenSource')
     create(:project, group: os_group)
     @os_user1 = create(:user)
     @os_user2 = create(:user)

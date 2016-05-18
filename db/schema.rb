@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160508194200) do
+ActiveRecord::Schema.define(version: 20160509201028) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -80,6 +80,8 @@ ActiveRecord::Schema.define(version: 20160508194200) do
     t.boolean  "repository_checks_enabled",         default: false
     t.text     "shared_runners_text"
     t.integer  "metrics_packet_size",               default: 1
+    t.text     "disabled_oauth_sign_in_sources"
+    t.string   "health_check_access_token"
   end
 
   create_table "audit_events", force: :cascade do |t|
@@ -643,9 +645,10 @@ ActiveRecord::Schema.define(version: 20160508194200) do
     t.string   "line_code"
     t.string   "commit_id"
     t.integer  "noteable_id"
-    t.boolean  "system",        default: false, null: false
+    t.boolean  "system",            default: false, null: false
     t.text     "st_diff"
     t.integer  "updated_by_id"
+    t.string   "type"
   end
 
   add_index "notes", ["author_id"], name: "index_notes_on_author_id", using: :btree
@@ -770,6 +773,7 @@ ActiveRecord::Schema.define(version: 20160508194200) do
     t.integer  "pushes_since_gc",              default: 0
     t.boolean  "last_repository_check_failed"
     t.datetime "last_repository_check_at"
+    t.boolean  "container_registry_enabled"
   end
 
   add_index "projects", ["builds_enabled", "shared_runners_enabled"], name: "index_projects_on_builds_enabled_and_shared_runners_enabled", using: :btree

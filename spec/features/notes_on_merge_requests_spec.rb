@@ -192,7 +192,7 @@ describe 'Comments', feature: true do
         end
 
         it 'should be removed when canceled' do
-          page.within(".diff-file form[id$='#{line_code}']") do
+          page.within(".diff-file form[id$='#{line_code}-true']") do
             find('.js-close-discussion-note-form').trigger('click')
           end
 

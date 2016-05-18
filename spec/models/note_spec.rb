@@ -34,24 +34,6 @@ describe Note, models: true do
     end
   end
 
-  describe "Commit diff line notes" do
-    let!(:note) { create(:note_on_commit_diff, note: "+1 from me") }
-    let!(:commit) { note.noteable }
-
-    it "should save a valid note" do
-      expect(note.commit_id).to eq(commit.id)
-      expect(note.noteable.id).to eq(commit.id)
-    end
-
-    it "should be recognized by #for_diff_line?" do
-      expect(note).to be_for_diff_line
-    end
-
-    it "should be recognized by #for_commit_diff_line?" do
-      expect(note).to be_for_commit_diff_line
-    end
-  end
-
   describe 'authorization' do
     before do
       @p1 = create(:project)

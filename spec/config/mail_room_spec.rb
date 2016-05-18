@@ -43,7 +43,7 @@ describe "mail_room.yml" do
       redis_config_file = Rails.root.join('config', 'resque.yml')
 
       redis_url =
-        if File.exists?(redis_config_file)
+        if File.exist?(redis_config_file)
           YAML.load_file(redis_config_file)[Rails.env]
         else
           "redis://localhost:6379"
