@@ -9,19 +9,13 @@ class Admin::RunnersController < Admin::ApplicationController
   end
 
   def show
-    @builds = @runner.builds.order('id DESC').first(30)
-    @projects =
-      if params[:search].present?
-        ::Project.search(params[:search])
-      else
-        Project.all
-      end
-    @projects = @projects.where.not(id: @runner.projects.select(:id)) if @runner.projects.any?
-    @projects = @projects.page(params[:page]).per(30)
+    set_builds_and_projects
   end
 
   def update
-    @runner.update_attributes(runner_params)
+    unless @runner.update_attributes(runner_params)
+      set_builds_and_projects and return render 'show'
+    end
 
     respond_to do |format|
       format.js
@@ -59,5 +53,17 @@ class Admin::RunnersController < Admin::ApplicationController
 
   def runner_params
     params.require(:runner).permit(Ci::Runner::FORM_EDITABLE)
+  end
+
+  def set_builds_and_projects
+    @builds = runner.builds.order('id DESC').first(30)
+    @projects =
+      if params[:search].present?
+        ::Project.search(params[:search])
+      else
+        Project.all
+      end
+    @projects = @projects.where.not(id: runner.projects.select(:id)) if runner.projects.any?
+    @projects = @projects.page(params[:page]).per(30)
   end
 end
