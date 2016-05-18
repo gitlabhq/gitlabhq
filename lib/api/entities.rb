@@ -56,10 +56,6 @@ module API
       expose :id
       expose :name, :name_with_namespace
       expose :path, :path_with_namespace
-
-      expose :web_url do |project, options|
-        Gitlab::Application.routes.url_helpers.namespace_project_url(project.namespace, project)
-      end
     end
 
     class Project < Grape::Entity
