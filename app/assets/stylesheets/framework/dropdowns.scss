@@ -119,13 +119,18 @@
     background-color: $dropdown-divider-color;
   }
 
-  a:not(.btn) {
+  a:not(.btn),
+  .dropdown-link {
     display: block;
     position: relative;
     padding: 5px 10px;
+    width: 100%;
     color: $dropdown-link-color;
+    background-color: transparent;
     line-height: initial;
+    text-align: left;
     text-overflow: ellipsis;
+    border: 0;
     border-radius: 2px;
     white-space: nowrap;
     overflow: hidden;
@@ -238,7 +243,8 @@
 }
 
 .dropdown-menu-selectable {
-  a:not(.btn) {
+  a:not(.btn),
+  .dropdown-link {
     padding-left: 25px;
 
     &.is-indeterminate, &.is-active {

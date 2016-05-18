@@ -40,9 +40,13 @@
             %ul
               %li.dropdown-header Settings
               %li
-                = link_to "Protected", namespace_project_branch_update_status_path(@project.namespace, @project, protected_branch || branch.name, protected_branch: true), method: :post, class: ("is-active" if @project.protected_branch? branch.name)
+                = form_for [@project.namespace.becomes(Namespace), @project, @project.protected_branches.new] do |f|
+                  = f.hidden_field :branch_index, value: "true"
+                  = f.hidden_field :name, value: branch.name
+                  = button_tag type: "submit", class: "dropdown-link #{"is-active" if @project.protected_branch? branch.name}", disabled: @project.protected_branch?(branch.name) do
+                    Protected
               %li
-                = link_to "Unprotected", namespace_project_branch_update_status_path(@project.namespace, @project, protected_branch || branch.name, protected_branch: false), method: :post, class: ("is-active" if !@project.protected_branch? branch.name)
+                = link_to "Unprotect", [@project.namespace.becomes(Namespace), @project, protected_branch, branch_index: true], data: { confirm: 'Branch will be writable for developers. Are you sure?' }, method: :delete, class: ("is-active" if !@project.protected_branch? branch.name)
               - if can_remove_branch?(@project, branch.name)
                 %li.divider
                 %li
@@ -51,7 +55,7 @@
               - else
                 %li.divider
                 %li
-                  %a{ href: "#", class: ("is-active" if @project.developers_can_push_to_protected_branch?(branch.name)) }
+                  %a.js-branch-dev-push{ href: "#", class: ("is-active" if @project.developers_can_push_to_protected_branch?(branch.name)), data: { value: protected_branch.id, url: namespace_project_protected_branch_path(@project.namespace, @project, protected_branch) } }
                     Developers can push
 
     - if branch.name != @repository.root_ref

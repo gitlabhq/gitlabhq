@@ -11,9 +11,16 @@ class Projects::ProtectedBranchesController < Projects::ApplicationController
   end
 
   def create
+    branch_params = protected_branch_params
     @project.protected_branches.create(protected_branch_params)
-    redirect_to namespace_project_protected_branches_path(@project.namespace,
-                                                          @project)
+
+    if params[:protected_branch][:branch_index].nil?
+      redirect_to namespace_project_protected_branches_path(@project.namespace,
+                                                            @project)
+    else
+      redirect_to namespace_project_branches_path(@project.namespace,
+                                                  @project)
+    end
   end
 
   def update
@@ -38,7 +45,14 @@ class Projects::ProtectedBranchesController < Projects::ApplicationController
     @project.protected_branches.find(params[:id]).destroy
 
     respond_to do |format|
-      format.html { redirect_to namespace_project_protected_branches_path }
+      format.html do
+        if params[:branch_index].nil?
+          redirect_to namespace_project_protected_branches_path
+        else
+          redirect_to namespace_project_branches_path(@project.namespace,
+                                                      @project)
+        end
+      end
       format.js { head :ok }
     end
   end
