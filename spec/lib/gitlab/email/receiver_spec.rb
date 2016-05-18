@@ -88,8 +88,8 @@ describe Gitlab::Email::Receiver, lib: true do
       project.update_attribute(:visibility_level, Project::PRIVATE)
     end
 
-    it "raises a UserNotAuthorizedError" do
-      expect { receiver.execute }.to raise_error(Gitlab::Email::UserNotAuthorizedError)
+    it "raises a ProjectNotFound" do
+      expect { receiver.execute }.to raise_error(Gitlab::Email::ProjectNotFound)
     end
   end
 

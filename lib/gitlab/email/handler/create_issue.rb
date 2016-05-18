@@ -10,9 +10,6 @@ module Gitlab
         end
 
         def execute
-          # Must be private project without access
-          raise ProjectNotFound unless author.can?(:read_project, project)
-
           validate_permission!(:create_issue)
           validate_authentication_token!
 
