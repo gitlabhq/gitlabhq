@@ -666,6 +666,13 @@ Rails.application.routes.draw do
         resources :variables, only: [:index, :show, :update, :create, :destroy]
         resources :triggers, only: [:index, :create, :destroy]
 
+        resources :pipelines, only: [:index, :new, :create, :show] do
+          member do
+            post :cancel
+            post :retry
+          end
+        end
+
         resources :builds, only: [:index, :show], constraints: { id: /\d+/ } do
           collection do
             post :cancel_all
