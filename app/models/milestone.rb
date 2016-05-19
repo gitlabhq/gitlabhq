@@ -67,7 +67,7 @@ class Milestone < ActiveRecord::Base
     # NOTE: The iid pattern only matches when all characters on the expression
     # are digits, so it will match %2 but not %2.1 because that's probably a
     # milestone name and we want it to be matched as such.
-    %r{
+    @reference_pattern ||= %r{
       (#{Project.reference_pattern})?
       #{Regexp.escape(reference_prefix)}
       (?:
@@ -195,7 +195,7 @@ class Milestone < ActiveRecord::Base
   private
 
   def milestone_format_reference(format = :iid)
-    raise StandardError, 'Unknown format' unless [:iid, :name].include?(format)
+    raise ArgumentError, 'Unknown format' unless [:iid, :name].include?(format)
 
     if format == :name && !name.include?('"')
       %("#{name}")
