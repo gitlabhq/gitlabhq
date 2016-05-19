@@ -9,6 +9,7 @@ class @Issue
     if $('a.btn-close').length
       @initTaskList()
       @initIssueBtnEventListeners()
+      @initEditableIssue()
 
     @initMergeRequests()
     @initRelatedBranches()
@@ -17,6 +18,25 @@ class @Issue
   initTaskList: ->
     $('.detail-page-description .js-task-list-container').taskList('enable')
     $(document).on 'tasklist:changed', '.detail-page-description .js-task-list-container', @updateTaskList
+
+  initEditableIssue: ->
+    console.log('initEditableIssue')
+    # Rather than check permissions. It is cheaper to add through JS if possible.
+    $('.detail-page-description .title')
+    .on('mouseover', (e) ->
+      $(this).css('border', '1px solid #CCC')
+    )
+    .on('mouseout', (e) ->
+      $(this).css('border', 'none')
+    )
+    .on('click', (e) ->
+      $this = $(this)
+      oldText = $this.text().trim()
+      console.log(oldText)
+      $this.text('')
+      $this.changeElementType('input')
+      $this.val(oldText)
+    )
 
   initIssueBtnEventListeners: ->
     _this = @

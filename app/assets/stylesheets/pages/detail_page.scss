@@ -22,7 +22,13 @@
   .title {
     margin: 0;
     font-size: 23px;
+    padding: 5px;
     color: $gl-gray-dark;
+
+    &:hover {
+      padding: 4px;
+      cursor: text;
+    }
   }
 
   .description {
