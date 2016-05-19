@@ -51,7 +51,7 @@
 .label-row {
   .label-name {
     display: inline-block;
-    width: 200px;
+    width: 170px;
 
     @media (max-width: $screen-xs-min) {
       display: block;
@@ -140,13 +140,32 @@
 }
 
 .prioritized-labels {
+  margin-bottom: 30px;
+
   .add-priority {
     display: none;
+    color: $gray-light;
   }
 }
 
 .other-labels {
   .remove-priority {
     display: none;
+  }
+}
+
+.toggle-priority {
+  display: inline-block;
+  vertical-align: middle;
+
+  button {
+    border-color: transparent;
+    padding: 5px 8px;
+    vertical-align: top;
+    font-size: 14px;
+
+    &:hover {
+      border-color: transparent;
+    }
   }
 }

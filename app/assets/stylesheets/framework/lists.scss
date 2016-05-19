@@ -141,6 +141,18 @@ ul.content-list {
         padding: 10px 14px;
       }
     }
+
+    // When dragging a list item
+    &.ui-sortable-helper {
+      border-bottom: none;
+    }
+
+    &.list-placeholder {
+      background-color: $gray-light;
+      border: dotted 1px $gray-dark;
+      margin: 1px 0;
+      min-height: 30px;
+    }
   }
 }
 

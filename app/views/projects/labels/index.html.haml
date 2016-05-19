@@ -10,7 +10,7 @@
         New label
 
 .labels
-  .prioritized-labels
+  .prioritized-labels{ class: ('hide' if params[:page].present?)}
     %h5 Prioritized Label
     %ul.content-list.manage-labels-list.js-prioritized-labels{ "data-url" => set_sorting_namespace_project_labels_path(@project.namespace, @project) }
       - if @prioritized.present?

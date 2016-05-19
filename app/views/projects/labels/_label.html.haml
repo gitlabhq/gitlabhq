@@ -1,12 +1,5 @@
 - label_css_id = dom_id(label)
 %li{id: label_css_id, :"data-id" => label.id}
-  %a.js-toggle-priority{:href => "#",
-    :"data-url" => remove_priority_namespace_project_label_path(@project.namespace, @project, label),
-    :"data-dom-id" => "#{label_css_id}" }
-    %span.add-priority
-      (+)
-    %span.remove-priority
-      (-)
   = render "shared/label_row", label: label
   .pull-info-right
     %span.append-right-20

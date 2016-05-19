@@ -9,6 +9,8 @@ class @LabelManager
 
     @prioritizedLabels.sortable(
       items: 'li'
+      placeholder: 'list-placeholder'
+      axis: 'y'
       update: @onPrioritySortUpdate.bind(@)
     )
 
