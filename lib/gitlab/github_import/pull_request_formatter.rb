@@ -1,15 +1,20 @@
 module Gitlab
   module GithubImport
     class PullRequestFormatter < BaseFormatter
+      delegate :exists?, :name, :project, :repo, :sha, to: :source_branch, prefix: true
+      delegate :exists?, :name, :project, :repo, :sha, to: :target_branch, prefix: true
+
       def attributes
         {
           iid: number,
           title: raw_data.title,
           description: description,
-          source_project: source_project,
-          source_branch: source_branch.name,
-          target_project: target_project,
-          target_branch: target_branch.name,
+          source_project: source_branch_project,
+          source_branch: source_branch_name,
+          head_source_sha: source_branch_sha,
+          target_project: target_branch_project,
+          target_branch: target_branch_name,
+          base_target_sha: target_branch_sha,
           state: state,
           milestone: milestone,
           author_id: author_id,
@@ -24,7 +29,15 @@ module Gitlab
       end
 
       def valid?
-        !cross_project? && source_branch.present? && target_branch.present?
+        source_branch.valid? && target_branch.valid? && !cross_project?
+      end
+
+      def source_branch
+        @source_branch ||= BranchFormatter.new(project, raw_data.head)
+      end
+
+      def target_branch
+        @target_branch ||= BranchFormatter.new(project, raw_data.base)
       end
 
       private
@@ -52,7 +65,7 @@ module Gitlab
       end
 
       def cross_project?
-        source_repo.present? && target_repo.present? && source_repo.id != target_repo.id
+        source_branch_repo.id != target_branch_repo.id
       end
 
       def description
@@ -63,30 +76,6 @@ module Gitlab
         if raw_data.milestone.present?
           project.milestones.find_by(iid: raw_data.milestone.number)
         end
-      end
-
-      def source_project
-        project
-      end
-
-      def source_repo
-        raw_data.head.repo
-      end
-
-      def source_branch
-        source_project.repository.find_branch(raw_data.head.ref)
-      end
-
-      def target_project
-        project
-      end
-
-      def target_repo
-        raw_data.base.repo
-      end
-
-      def target_branch
-        target_project.repository.find_branch(raw_data.base.ref)
       end
 
       def state

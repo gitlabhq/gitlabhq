@@ -724,10 +724,11 @@ ActiveRecord::Schema.define(version: 20160509201028) do
     t.string   "line_code"
     t.string   "commit_id"
     t.integer  "noteable_id"
-    t.boolean  "system",        default: false, null: false
+    t.boolean  "system",            default: false, null: false
     t.text     "st_diff"
     t.integer  "updated_by_id"
-    t.boolean  "is_award",      default: false, null: false
+    t.boolean  "is_award",          default: false, null: false
+    t.string   "type"
   end
 
   add_index "notes", ["author_id"], name: "index_notes_on_author_id", using: :btree
@@ -876,6 +877,7 @@ ActiveRecord::Schema.define(version: 20160509201028) do
     t.integer  "pushes_since_gc",                  default: 0
     t.boolean  "last_repository_check_failed"
     t.datetime "last_repository_check_at"
+    t.boolean  "container_registry_enabled"
   end
 
   add_index "projects", ["builds_enabled", "shared_runners_enabled"], name: "index_projects_on_builds_enabled_and_shared_runners_enabled", using: :btree

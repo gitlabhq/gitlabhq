@@ -6,8 +6,45 @@ describe Gitlab::UrlSanitizer, lib: true do
     described_class.new("https://github.com/me/project.git", credentials: credentials)
   end
 
-  describe '#full_url' do
-    it { expect(url_sanitizer.full_url).to eq("https://blah:password@github.com/me/project.git") }
+  describe '.sanitize' do
+    def sanitize_url(url)
+      # We want to try with multi-line content because is how error messages are formatted
+      described_class.sanitize(%Q{
+         remote: Not Found
+         fatal: repository '#{url}' not found
+      })
+    end
+
+    it 'mask the credentials from HTTP URLs' do
+      filtered_content = sanitize_url('http://user:pass@test.com/root/repoC.git/')
+
+      expect(filtered_content).to include("http://*****:*****@test.com/root/repoC.git/")
+    end
+
+    it 'mask the credentials from HTTPS URLs' do
+      filtered_content = sanitize_url('https://user:pass@test.com/root/repoA.git/')
+
+      expect(filtered_content).to include("https://*****:*****@test.com/root/repoA.git/")
+    end
+
+    it 'mask credentials from SSH URLs' do
+      filtered_content = sanitize_url('ssh://user@host.test/path/to/repo.git')
+
+      expect(filtered_content).to include("ssh://*****@host.test/path/to/repo.git")
+    end
+
+    it 'does not modify Git URLs' do
+      # git protocol does not support authentication
+      filtered_content = sanitize_url('git://host.test/path/to/repo.git')
+
+      expect(filtered_content).to include("git://host.test/path/to/repo.git")
+    end
+
+    it 'does not modify scp-like URLs' do
+      filtered_content = sanitize_url('user@server:project.git')
+
+      expect(filtered_content).to include("user@server:project.git")
+    end
   end
 
   describe '#sanitized_url' do
@@ -18,34 +55,14 @@ describe Gitlab::UrlSanitizer, lib: true do
     it { expect(url_sanitizer.credentials).to eq(credentials) }
   end
 
-  describe '.sanitize' do
-    let(:filtered_content) do
-      described_class.sanitize(%Q{remote: Not Found
-         fatal: repository 'http://user:pass@test.com/root/repoC.git/' not found
-         remote: Not Found
-         fatal: repository 'https://user:pass@test.com/root/repoA.git/' not found
-         remote: Not Found
-         ssh://user@host.test/path/to/repo.git
-         remote: Not Found
-         git://host.test/path/to/repo.git
-      })
-    end
+  describe '#full_url' do
+    it { expect(url_sanitizer.full_url).to eq("https://blah:password@github.com/me/project.git") }
 
-    it 'mask the credentials from HTTP URLs' do
-      expect(filtered_content).to include("http://*****:*****@test.com/root/repoC.git/")
-    end
+    it 'supports scp-like URLs' do
+      sanitizer = described_class.new('user@server:project.git')
 
-    it 'mask the credentials from HTTPS URLs' do
-      expect(filtered_content).to include("https://*****:*****@test.com/root/repoA.git/")
-    end
-
-    it 'mask credentials from SSH URLs' do
-      expect(filtered_content).to include("ssh://*****@host.test/path/to/repo.git")
-    end
-
-    it 'does not modify Git URLs' do
-      # git protocol does not support authentication
-      expect(filtered_content).to include("git://host.test/path/to/repo.git")
+      expect(sanitizer.full_url).to eq('user@server:project.git')
     end
   end
+
 end

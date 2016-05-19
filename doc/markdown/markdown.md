@@ -402,7 +402,7 @@ There are two ways to create links, inline-style and reference-style.
 
 [I'm a reference-style link][Arbitrary case-insensitive reference text]
 
-[I'm a relative reference to a repository file](LICENSE)
+[I'm a relative reference to a repository file](LICENSE)[^1]
 
 [You can use numbers for reference-style link definitions][1]
 
@@ -594,3 +594,4 @@ By including colons in the header row, you can align the text within that column
 
 [rouge]: http://rouge.jneen.net/ "Rouge website"
 [redcarpet]: https://github.com/vmg/redcarpet "Redcarpet website"
+[^1]: This link will be broken if you see this document from the Help page or docs.gitlab.com

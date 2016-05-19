@@ -42,7 +42,7 @@ class ProjectWiki
   end
 
   def wiki_base_path
-    ["/", @project.path_with_namespace, "/wikis"].join('')
+    [Gitlab.config.gitlab.relative_url_root, "/", @project.path_with_namespace, "/wikis"].join('')
   end
 
   # Returns the Gollum::Wiki object.
@@ -125,7 +125,7 @@ class ProjectWiki
   end
 
   def page_title_and_dir(title)
-    title_array =  title.split("/")
+    title_array = title.split("/")
     title = title_array.pop
     [title, title_array.join("/")]
   end

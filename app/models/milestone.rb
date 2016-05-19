@@ -68,8 +68,18 @@ class Milestone < ActiveRecord::Base
     @link_reference_pattern ||= super("milestones", /(?<milestone>\d+)/)
   end
 
-  def self.upcoming
-    self.where('due_date > ?', Time.now).reorder(due_date: :asc).first
+  def self.upcoming_ids_by_projects(projects)
+    rel = unscoped.of_projects(projects).active.where('due_date > ?', Time.now)
+
+    if Gitlab::Database.postgresql?
+      rel.order(:project_id, :due_date).select('DISTINCT ON (project_id) id')
+    else
+      rel.
+        group(:project_id).
+        having('due_date = MIN(due_date)').
+        pluck(:id, :project_id, :due_date).
+        map(&:first)
+    end
   end
 
   def to_reference(from_project = nil)

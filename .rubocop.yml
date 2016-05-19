@@ -21,6 +21,7 @@ AllCops:
     - 'lib/email_validator.rb'
     - 'lib/gitlab/upgrader.rb'
     - 'lib/gitlab/seeder.rb'
+    - 'lib/templates/**/*'
 
 
 ##################### Style ##################################
@@ -531,7 +532,7 @@ Style/SpaceAroundKeyword:
 
 # Use a single space around operators.
 Style/SpaceAroundOperators:
-  Enabled: false
+  Enabled: true
 
 # Checks that the left block brace has or doesn't have space before it.
 Style/SpaceBeforeBlockBraces:

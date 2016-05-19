@@ -10,8 +10,8 @@ describe Gitlab::Ci::Build::Artifacts::Metadata::Entry do
       'path/dir_1/subdir/subfile' => { size: 10 },
       'path/second_dir' => {},
       'path/second_dir/dir_3/file_2' => { size: 10 },
-      'path/second_dir/dir_3/file_3'=> { size: 10 },
-      'another_directory/'=> {},
+      'path/second_dir/dir_3/file_3' => { size: 10 },
+      'another_directory/' => {},
       'another_file' => {},
       '/file/with/absolute_path' => {} }
   end

@@ -23,6 +23,10 @@ module Projects
       Project.transaction do
         project.destroy!
         trash_repositories!
+
+        unless remove_registry_tags
+          raise_error('Failed to remove project container registry. Please try again or contact administrator')
+        end
       end
 
       log_info("Project \"#{project.path_with_namespace}\" was removed")
@@ -78,6 +82,12 @@ module Projects
       else
         false
       end
+    end
+
+    def remove_registry_tags
+      return true unless Gitlab.config.registry.enabled
+
+      project.container_registry_repository.delete_tags
     end
 
     def raise_error(message)
