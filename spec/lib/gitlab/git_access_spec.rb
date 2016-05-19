@@ -70,6 +70,27 @@ describe Gitlab::GitAccess, lib: true do
         expect(access.can_push_to_branch?(@branch.name)).to be_falsey
       end
     end
+
+    describe 'merge to protected branch if allowed for developers' do
+      before do
+        @branch = create :protected_branch, project: project, developers_can_merge: true
+      end
+
+      it "returns true if user is a master" do
+        project.team << [user, :master]
+        expect(access.can_merge_to_branch?(@branch.name)).to be_truthy
+      end
+
+      it "returns true if user is a developer" do
+        project.team << [user, :developer]
+        expect(access.can_merge_to_branch?(@branch.name)).to be_truthy
+      end
+
+      it "returns false if user is a reporter" do
+        project.team << [user, :reporter]
+        expect(access.can_merge_to_branch?(@branch.name)).to be_falsey
+      end
+    end
   end
 
   describe '#check with single protocols allowed' do

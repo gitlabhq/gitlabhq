@@ -48,6 +48,16 @@ module Gitlab
       end
     end
 
+    def can_merge_to_branch?(ref)
+      return false unless user
+
+      if project.protected_branch?(ref) && !project.developers_can_merge_to_protected_branch?(ref)
+        user.can?(:push_code_to_protected_branches, project)
+      else
+        user.can?(:push_code, project)
+      end
+    end
+
     def can_read_project?
       if user
         user.can?(:read_project, project)
