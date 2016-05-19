@@ -305,6 +305,25 @@ describe TodoService, services: true do
         expect(second_todo.reload).to be_done
       end
     end
+
+    describe '#merge_request_build_failed' do
+      it 'creates a pending todo for the merge request author' do
+        service.merge_request_build_failed(mr_unassigned)
+
+        should_create_todo(user: author, target: mr_unassigned, action: Todo::BUILD_FAILED)
+      end
+    end
+
+    describe '#merge_request_push' do
+      it 'marks related pending todos to the target for the user as done' do
+        first_todo = create(:todo, :build_failed, user: author, project: project, target: mr_assigned, author: john_doe)
+        second_todo = create(:todo, :build_failed, user: john_doe, project: project, target: mr_assigned, author: john_doe)
+        service.merge_request_push(mr_assigned, author)
+
+        expect(first_todo.reload).to be_done
+        expect(second_todo.reload).not_to be_done
+      end
+    end
   end
 
   def should_create_todo(attributes = {})

@@ -18,18 +18,15 @@ class CreateCommitBuildsService
       return false
     end
 
-    commit = project.ci_commit(sha, ref)
-    unless commit
-      commit = project.ci_commits.new(sha: sha, ref: ref, before_sha: before_sha, tag: tag)
+    commit = Ci::Commit.new(project: project, sha: sha, ref: ref, before_sha: before_sha, tag: tag)
 
-      # Skip creating ci_commit when no gitlab-ci.yml is found
-      unless commit.ci_yaml_file
-        return false
-      end
-
-      # Create a new ci_commit
-      commit.save!
+    # Skip creating ci_commit when no gitlab-ci.yml is found
+    unless commit.ci_yaml_file
+      return false
     end
+
+    # Create a new ci_commit
+    commit.save!
 
     # Skip creating builds for commits that have [ci skip]
     unless commit.skip_ci?

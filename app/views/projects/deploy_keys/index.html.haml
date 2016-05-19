@@ -19,7 +19,7 @@
       %ul.well-list
         = render @enabled_keys
     - else
-      .profile-settings-message.text-center
+      .settings-message.text-center
         No deploy keys found. Create one with the form above or add existing one below.
     %h5.prepend-top-default
       Deploy keys from projects you have access to (#{@available_project_keys.size})
@@ -27,7 +27,7 @@
       %ul.well-list
         = render @available_project_keys
     - else
-      .profile-settings-message.text-center
+      .settings-message.text-center
         No deploy keys from your projects could be found. Create one with the form above or add existing one below.
     - if @available_public_keys.any?
       %h5.prepend-top-default

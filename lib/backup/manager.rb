@@ -157,7 +157,7 @@ module Backup
     end
 
     def archives_to_backup
-      %w{uploads builds artifacts lfs}.map{ |name| (name + ".tar.gz") unless skipped?(name) }.compact
+      %w{uploads builds artifacts lfs registry}.map{ |name| (name + ".tar.gz") unless skipped?(name) }.compact
     end
 
     def folders_to_backup

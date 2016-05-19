@@ -12,44 +12,85 @@ describe Ci::API::API do
   end
 
   describe "POST /runners/register" do
-    describe "should create a runner if token provided" do
+    context 'when runner token is provided' do
       before { post ci_api("/runners/register"), token: registration_token }
 
-      it { expect(response.status).to eq(201) }
+      it 'creates runner with default values' do
+        expect(response).to have_http_status 201
+        expect(Ci::Runner.first.run_untagged).to be true
+      end
     end
 
-    describe "should create a runner with description" do
-      before { post ci_api("/runners/register"), token: registration_token, description: "server.hostname" }
+    context 'when runner description is provided' do
+      before do
+        post ci_api("/runners/register"), token: registration_token,
+                                          description: "server.hostname"
+      end
 
-      it { expect(response.status).to eq(201) }
-      it { expect(Ci::Runner.first.description).to eq("server.hostname") }
+      it 'creates runner' do
+        expect(response).to have_http_status 201
+        expect(Ci::Runner.first.description).to eq("server.hostname")
+      end
     end
 
-    describe "should create a runner with tags" do
-      before { post ci_api("/runners/register"), token: registration_token, tag_list: "tag1, tag2" }
+    context 'when runner tags are provided' do
+      before do
+        post ci_api("/runners/register"), token: registration_token,
+                                          tag_list: "tag1, tag2"
+      end
 
-      it { expect(response.status).to eq(201) }
-      it { expect(Ci::Runner.first.tag_list.sort).to eq(["tag1", "tag2"]) }
+      it 'creates runner' do
+        expect(response).to have_http_status 201
+        expect(Ci::Runner.first.tag_list.sort).to eq(["tag1", "tag2"])
+      end
     end
 
-    describe "should create a runner if project token provided" do
+    context 'when option for running untagged jobs is provided' do
+      context 'when tags are provided' do
+        it 'creates runner' do
+          post ci_api("/runners/register"), token: registration_token,
+                                            run_untagged: false,
+                                            tag_list: ['tag']
+
+          expect(response).to have_http_status 201
+          expect(Ci::Runner.first.run_untagged).to be false
+        end
+      end
+
+      context 'when tags are not provided' do
+        it 'does not create runner' do
+          post ci_api("/runners/register"), token: registration_token,
+                                            run_untagged: false
+
+          expect(response).to have_http_status 404
+        end
+      end
+    end
+
+    context 'when project token is provided' do
       let(:project) { FactoryGirl.create(:empty_project) }
       before { post ci_api("/runners/register"), token: project.runners_token }
 
-      it { expect(response.status).to eq(201) }
-      it { expect(project.runners.size).to eq(1) }
+      it 'creates runner' do
+        expect(response).to have_http_status 201
+        expect(project.runners.size).to eq(1)
+      end
     end
 
-    it "should return 403 error if token is invalid" do
-      post ci_api("/runners/register"), token: 'invalid'
+    context 'when token is invalid' do
+      it 'returns 403 error' do
+        post ci_api("/runners/register"), token: 'invalid'
 
-      expect(response.status).to eq(403)
+        expect(response).to have_http_status 403
+      end
     end
 
-    it "should return 400 error if no token" do
-      post ci_api("/runners/register")
+    context 'when no token provided' do
+      it 'returns 400 error' do
+        post ci_api("/runners/register")
 
-      expect(response.status).to eq(400)
+        expect(response).to have_http_status 400
+      end
     end
 
     %w(name version revision platform architecture).each do |param|
@@ -60,7 +101,7 @@ describe Ci::API::API do
 
         it do
           post ci_api("/runners/register"), token: registration_token, info: { param => value }
-          expect(response.status).to eq(201)
+          expect(response).to have_http_status 201
           is_expected.to eq(value)
         end
       end
@@ -71,7 +112,7 @@ describe Ci::API::API do
     let!(:runner) { FactoryGirl.create(:ci_runner) }
     before { delete ci_api("/runners/delete"), token: runner.token }
 
-    it { expect(response.status).to eq(200) }
+    it { expect(response).to have_http_status 200 }
     it { expect(Ci::Runner.count).to eq(0) }
   end
 end
