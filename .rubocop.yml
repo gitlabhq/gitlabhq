@@ -21,7 +21,7 @@ AllCops:
     - 'lib/email_validator.rb'
     - 'lib/gitlab/upgrader.rb'
     - 'lib/gitlab/seeder.rb'
-    - 'lib/templates/**/*'
+    - 'generator_templates/**/*'
 
 
 ##################### Style ##################################

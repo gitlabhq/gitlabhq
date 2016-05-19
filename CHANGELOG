@@ -6,8 +6,10 @@ v 8.8.0 (unreleased)
   - Assign labels and milestone to target project when moving issue. !3934 (Long Nguyen)
   - Use a case-insensitive comparison in sanitizing URI schemes
   - Toggle sign-up confirmation emails in application settings
+  - Make it possible to prevent tagged runner from picking untagged jobs
   - Project#open_branches has been cleaned up and no longer loads entire records into memory.
   - Escape HTML in commit titles in system note messages
+  - Fix creation of Ci::Commit object which can lead to pending, failed in some scenarios
   - Improve multiple branch push performance by memoizing permission checking
   - Log to application.log when an admin starts and stops impersonating a user
   - Changing the confidentiality of an issue now creates a new system note (Alex Moore-Niemi)

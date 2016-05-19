@@ -184,21 +184,24 @@ describe API::Runners, api: true  do
           description = shared_runner.description
           active = shared_runner.active
 
-          put api("/runners/#{shared_runner.id}", admin), description: "#{description}_updated", active: !active,
-                                                          tag_list: ['ruby2.1', 'pgsql', 'mysql']
+          update_runner(shared_runner.id, admin, description: "#{description}_updated",
+                                                 active: !active,
+                                                 tag_list: ['ruby2.1', 'pgsql', 'mysql'],
+                                                 run_untagged: 'false')
           shared_runner.reload
 
           expect(response.status).to eq(200)
           expect(shared_runner.description).to eq("#{description}_updated")
           expect(shared_runner.active).to eq(!active)
           expect(shared_runner.tag_list).to include('ruby2.1', 'pgsql', 'mysql')
+          expect(shared_runner.run_untagged?).to be false
         end
       end
 
       context 'when runner is not shared' do
         it 'should update runner' do
           description = specific_runner.description
-          put api("/runners/#{specific_runner.id}", admin), description: 'test'
+          update_runner(specific_runner.id, admin, description: 'test')
           specific_runner.reload
 
           expect(response.status).to eq(200)
@@ -208,9 +211,13 @@ describe API::Runners, api: true  do
       end
 
       it 'should return 404 if runner does not exists' do
-        put api('/runners/9999', admin), description: 'test'
+        update_runner(9999, admin, description: 'test')
 
         expect(response.status).to eq(404)
+      end
+
+      def update_runner(id, user, args)
+        put api("/runners/#{id}", user), args
       end
     end
 

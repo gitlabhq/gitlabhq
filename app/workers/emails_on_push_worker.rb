@@ -51,14 +51,14 @@ class EmailsOnPushWorker
         send_email(
           recipient,
           project_id,
-          author_id:                  author_id,
-          ref:                        ref,
-          action:                     action,
-          compare:                    compare,
-          reverse_compare:            reverse_compare,
-          diff_refs:                  diff_refs,
-          send_from_committer_email:  send_from_committer_email,
-          disable_diffs:              disable_diffs
+          author_id:                 author_id,
+          ref:                       ref,
+          action:                    action,
+          compare:                   compare,
+          reverse_compare:           reverse_compare,
+          diff_refs:                 diff_refs,
+          send_from_committer_email: send_from_committer_email,
+          disable_diffs:             disable_diffs
         )
 
       # These are input errors and won't be corrected even if Sidekiq retries

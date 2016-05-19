@@ -47,7 +47,7 @@ module Gitlab
           first['count'].
           to_i
 
-        # Update in batches of 5% with an upper limit of 5000 rows.
+        # Update in batches of 5%
         batch_size = ((total / 100.0) * 5.0).ceil
 
         while processed < total

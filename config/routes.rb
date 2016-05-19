@@ -718,6 +718,13 @@ Rails.application.routes.draw do
         end
         resources :git_hooks, constraints: { id: /\d+/ }
 
+        resources :pipelines, only: [:index, :new, :create, :show] do
+          member do
+            post :cancel
+            post :retry
+          end
+        end
+
         resources :builds, only: [:index, :show], constraints: { id: /\d+/ } do
           collection do
             post :cancel_all
