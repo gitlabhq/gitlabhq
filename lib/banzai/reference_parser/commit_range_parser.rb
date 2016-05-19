@@ -6,13 +6,10 @@ module Banzai
       def referenced_by(nodes)
         range_ids = commit_range_ids_per_project(nodes)
         projects = find_projects_for_hash_keys(range_ids)
-        ranges = []
 
-        projects.each do |project|
-          ranges.concat(find_ranges(project, range_ids[project.id]))
+        projects.flat_map do |project|
+          find_ranges(project, range_ids[project.id])
         end
-
-        ranges
       end
 
       def commit_range_ids_per_project(nodes)

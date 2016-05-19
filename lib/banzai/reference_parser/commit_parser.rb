@@ -6,15 +6,10 @@ module Banzai
       def referenced_by(nodes)
         commit_ids = commit_ids_per_project(nodes)
         projects = find_projects_for_hash_keys(commit_ids)
-        commits = []
 
-        projects.each do |project|
-          next unless project.valid_repo?
-
-          commits.concat(find_commits(project, commit_ids[project.id]))
+        projects.flat_map do |project|
+          find_commits(project, commit_ids[project.id])
         end
-
-        commits
       end
 
       def commit_ids_per_project(nodes)
@@ -23,6 +18,8 @@ module Banzai
 
       def find_commits(project, ids)
         commits = []
+
+        return commits unless project.valid_repo?
 
         ids.each do |id|
           commit = project.commit(id)

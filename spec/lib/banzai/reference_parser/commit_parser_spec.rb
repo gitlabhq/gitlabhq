@@ -47,8 +47,6 @@ describe Banzai::ReferenceParser::CommitParser, lib: true do
           allow_any_instance_of(Project).to receive(:valid_repo?).
             and_return(false)
 
-          expect(subject).not_to receive(:find_commits)
-
           expect(subject.referenced_by([link])).to eq([])
         end
       end
@@ -100,12 +98,14 @@ describe Banzai::ReferenceParser::CommitParser, lib: true do
       commit = double(:commit)
 
       expect(project).to receive(:commit).with('123').and_return(commit)
+      expect(project).to receive(:valid_repo?).and_return(true)
 
       expect(subject.find_commits(project, %w{123})).to eq([commit])
     end
 
     it 'skips commit IDs for which no commit could be found' do
       expect(project).to receive(:commit).with('123').and_return(nil)
+      expect(project).to receive(:valid_repo?).and_return(true)
 
       expect(subject.find_commits(project, %w{123})).to eq([])
     end
