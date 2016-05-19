@@ -3,7 +3,6 @@ module Gitlab
     module RelationFactory
       extend self
 
-
       OVERRIDES = { snippets: :project_snippets,
                     ci_commits: 'Ci::Commit',
                     statuses: 'commit_status',
