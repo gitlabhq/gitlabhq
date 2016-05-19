@@ -2,11 +2,6 @@ module Banzai
   module ReferenceParser
     # Base class for reference parsing classes.
     #
-    # Each reference parser class should extend this class and implement the
-    # instance method `referenced_by`. This method takes an Array of HTML nodes
-    # to process and should return an Array of references (e.g. an Array of User
-    # objects).
-    #
     # Each parser should also specify its reference type by calling
     # `self.reference_type = ...` in the body of the class. The value of this
     # method should be a symbol such as `:issue` or `:merge_request`. For
