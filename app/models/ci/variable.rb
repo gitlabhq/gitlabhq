@@ -11,6 +11,9 @@ module Ci
       format: { with: /\A[a-zA-Z0-9_]+\z/,
                 message: "can contain only letters, digits and '_'." }
 
-    attr_encrypted :value, mode: :per_attribute_iv_and_salt, key: Gitlab::Application.secrets.db_key_base
+    attr_encrypted :value, 
+       mode: :per_attribute_iv_and_salt,
+       key: Gitlab::Application.secrets.db_key_base,
+       algorithm: 'aes-256-cbc'
   end
 end

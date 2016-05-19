@@ -20,6 +20,11 @@ class User < ActiveRecord::Base
   default_value_for :hide_no_password, false
   default_value_for :theme_id, gitlab_config.default_theme
 
+  attr_encrypted :otp_secret,
+    key:       Gitlab::Application.config.secret_key_base,
+    mode:      :per_attribute_iv_and_salt,
+    algorithm: 'aes-256-cbc'
+
   devise :two_factor_authenticatable,
          otp_secret_encryption_key: Gitlab::Application.config.secret_key_base
   alias_attribute :two_factor_enabled, :otp_required_for_login

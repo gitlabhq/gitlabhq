@@ -121,7 +121,7 @@ feature 'Login', feature: true do
       user = create(:user, password: 'not-the-default')
 
       login_with(user)
-      expect(page).to have_content('Invalid login or password.')
+      expect(page).to have_content('Invalid Login or password.')
     end
   end
 
