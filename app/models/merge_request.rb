@@ -552,7 +552,8 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def can_be_merged_by?(user)
-    ::Gitlab::GitAccess.new(user, project, 'web').can_push_to_branch?(target_branch)
+    access = ::Gitlab::GitAccess.new(user, project, 'web')
+    access.can_push_to_branch?(target_branch) || access.can_merge_to_branch?(target_branch)
   end
 
   def mergeable_ci_state?
