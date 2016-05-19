@@ -51,7 +51,7 @@ module Banzai
       end
 
       # Returns all the nodes containing references that the user can refer to.
-      def nodes_user_can_reference(current_user, nodes)
+      def nodes_user_can_reference(user, nodes)
         nodes
       end
 
