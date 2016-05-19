@@ -13,7 +13,7 @@ module Banzai
       end
 
       def commit_ids_per_project(nodes)
-        gather_attributes_per_project(nodes, 'data-commit')
+        gather_attributes_per_project(nodes, self.class.data_attribute)
       end
 
       def find_commits(project, ids)

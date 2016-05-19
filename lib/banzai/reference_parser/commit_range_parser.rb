@@ -13,7 +13,7 @@ module Banzai
       end
 
       def commit_range_ids_per_project(nodes)
-        gather_attributes_per_project(nodes, 'data-commit-range')
+        gather_attributes_per_project(nodes, self.class.data_attribute)
       end
 
       def find_ranges(project, range_ids)

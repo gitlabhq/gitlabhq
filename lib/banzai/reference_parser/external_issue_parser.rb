@@ -18,7 +18,7 @@ module Banzai
       end
 
       def issue_ids_per_project(nodes)
-        gather_attributes_per_project(nodes, 'data-external-issue')
+        gather_attributes_per_project(nodes, self.class.data_attribute)
       end
     end
   end

@@ -8,10 +8,9 @@ module Banzai
         return nodes if project && project.external_issue_tracker
 
         issues = issues_for_nodes(nodes)
-        issue_attr = 'data-issue'
 
         nodes.select do |node|
-          issue = issues[node.attr(issue_attr).to_i]
+          issue = issues[node.attr(self.class.data_attribute).to_i]
 
           issue ? can?(user, :read_issue, issue) : false
         end
@@ -25,7 +24,7 @@ module Banzai
         @issues_for_nodes ||= grouped_objects_for_nodes(
           nodes,
           Issue.all.includes(:author, :assignee, :project),
-          'data-issue'
+          self.class.data_attribute
         )
       end
     end

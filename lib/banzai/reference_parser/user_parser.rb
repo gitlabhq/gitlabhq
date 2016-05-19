@@ -11,8 +11,8 @@ module Banzai
         nodes.each do |node|
           if node.has_attribute?('data-group')
             group_ids << node.attr('data-group').to_i
-          elsif node.has_attribute?('data-user')
-            user_ids << node.attr('data-user').to_i
+          elsif node.has_attribute?(self.class.data_attribute)
+            user_ids << node.attr(self.class.data_attribute).to_i
           elsif node.has_attribute?('data-project')
             project_ids << node.attr('data-project').to_i
           end
