@@ -98,7 +98,7 @@ module Mentionable
   end
 
   def analyze_references_in_attributes(ext)
-    self.class.mentionable_attrs.each do |(attr, options)|
+    self.class.mentionable_attrs.each do |attr, options|
       result = send(attr)
 
       if result.is_a?(ActiveRecord::Relation)
