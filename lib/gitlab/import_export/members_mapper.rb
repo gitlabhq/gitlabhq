@@ -25,7 +25,6 @@ module Gitlab
       def default_project_member
         @default_project_member ||=
           begin
-            return @project.project_members.first.user.id unless @project.project_members.empty?
             default_member = ProjectMember.new(default_project_member_hash)
             default_member.save!
             default_member.user.id

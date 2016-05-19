@@ -39,11 +39,11 @@ module Gitlab
       def update_missing_author(relation_hash, members_map, user_admin)
         old_author_id = relation_hash['author_id']
 
-        # Users with admin access have access to mapping of users
+        # Users with admin access can map users
         if user_admin
-          relation_hash['author_id'] = members_map.default_project_member
-        else
           relation_hash['author_id'] = members_map.map[old_author_id]
+        else
+          relation_hash['author_id'] = members_map.default_project_member
         end
 
         author = relation_hash.delete('author')
