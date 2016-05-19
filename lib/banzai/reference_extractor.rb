@@ -21,11 +21,9 @@ module Banzai
     def html_documents
       # This ensures that we don't memoize anything until we have a number of
       # text blobs to parse.
-      if @texts.empty?
-        []
-      else
-        @html_documents ||= @texts.map { |html| Nokogiri::HTML.fragment(html) }
-      end
+      return [] if @texts.empty?
+
+      @html_documents ||= @texts.map { |html| Nokogiri::HTML.fragment(html) }
     end
   end
 end
