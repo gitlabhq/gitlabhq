@@ -16,7 +16,7 @@ module Gitlab
       def execute
         Gitlab::ImportExport::Importer.import(archive_file: @archive_file,
                                               shared: @shared)
-        if [restore_version, restore_project_tree, restore_repo, restore_wiki_repo].all?
+        if [restore_version, restore_project_tree, restore_repo, restore_wiki_repo, restore_uploads].all?
           project_tree.project
         else
           project_tree.project.destroy if project_tree.project
@@ -50,6 +50,10 @@ module Gitlab
         Gitlab::ImportExport::RepoRestorer.new(path_to_bundle: wiki_repo_path,
                                                shared: @shared,
                                                project: ProjectWiki.new(project_tree.project)).restore
+      end
+
+      def restore_uploads
+        Gitlab::ImportExport::UploadsRestorer.restore(project: project_tree.project, shared: @shared)
       end
 
       def path_with_namespace(project_path)
