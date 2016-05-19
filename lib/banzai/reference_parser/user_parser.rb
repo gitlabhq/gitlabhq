@@ -71,23 +71,21 @@ module Banzai
       end
 
       def find_users(ids)
-        ids.empty? ? [] : User.where(id: ids).to_a
+        return [] if ids.empty?
+
+        User.where(id: ids).to_a
       end
 
       def find_users_for_groups(ids)
-        if ids.empty?
-          []
-        else
-          User.joins(:group_members).where(members: { source_id: ids }).to_a
-        end
+        return [] if ids.empty?
+
+        User.joins(:group_members).where(members: { source_id: ids }).to_a
       end
 
       def find_users_for_projects(ids)
-        if ids.empty?
-          []
-        else
-          Project.where(id: ids).flat_map { |p| p.team.members.to_a }
-        end
+        return [] if ids.empty?
+
+        Project.where(id: ids).flat_map { |p| p.team.members.to_a }
       end
     end
   end
