@@ -9,7 +9,7 @@ class <%= migration_class_name %> < ActiveRecord::Migration
   # existing transaction. When using "add_concurrent_index" make sure that this
   # method is the _only_ method called in the migration, any other changes
   # should go in a separate migration. This ensures that upon failure _only_ the
-  # index creation failes and can be re-tried or reverted easily.
+  # index creation fails and can be retried or reverted easily.
   #
   # To disable transactions uncomment the following line and remove these
   # comments:
