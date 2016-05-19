@@ -11,16 +11,16 @@
         = pluralize label.open_issues_count(current_user), 'open issue'
 
     - if current_user
-      .label-subscription{data: {url: toggle_subscription_namespace_project_label_path(@project.namespace, @project, label)}}
-        .subscription-status{data: {status: label_subscription_status(label)}}
+      .label-subscription{ data: { url: toggle_subscription_namespace_project_label_path(@project.namespace, @project, label) } }
+        .subscription-status{ data: { status: label_subscription_status(label) } }
 
         %button.js-subscribe-button.label-subscribe-button.btn.action-buttons{ type: "button", data: { toggle: "tooltip" } }
           %span= label_subscription_toggle_button_text(label)
 
     - if can? current_user, :admin_label, @project
-      = link_to edit_namespace_project_label_path(@project.namespace, @project, label), title: "Edit", class: 'btn action-buttons', data: {toggle: "tooltip"} do
+      = link_to edit_namespace_project_label_path(@project.namespace, @project, label), title: "Edit", class: 'btn action-buttons', data: { toggle: 'tooltip' } do
         %i.fa.fa-pencil-square-o
-      = link_to namespace_project_label_path(@project.namespace, @project, label), title: "Delete", class: 'btn action-buttons remove-row', method: :delete, remote: true, data: {confirm: "Remove this label? Are you sure?", toggle: "tooltip"} do
+      = link_to namespace_project_label_path(@project.namespace, @project, label), title: "Delete", class: 'btn action-buttons remove-row', method: :delete, remote: true, data: { confirm: 'Remove this label? Are you sure?', toggle: 'tooltip' } do
         %i.fa.fa-trash-o
 
 - if current_user
