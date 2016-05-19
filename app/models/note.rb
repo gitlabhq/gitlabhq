@@ -193,7 +193,7 @@ class Note < ActiveRecord::Base
   end
 
   def award_emoji_supported?
-    noteable.is_a?(Awardable) && !for_diff_line?
+    noteable.is_a?(Awardable) && !line_code.present?
   end
 
   def contains_emoji_only?
