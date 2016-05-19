@@ -90,6 +90,7 @@ v 8.8.0
   - Fixed advice on invalid permissions on upload path !2948 (Ludovic Perrine)
   - Allows MR authors to have the source branch removed when merging the MR. !2801 (Jeroen Jacobs)
   - When creating a .gitignore file a dropdown with templates will be provided
+  - Todos will display target state if issuable target is 'Closed' or 'Merged'
 
 v 8.7.6
   - Fix links on wiki pages for relative url setups. !4131 (Artem Sidorenko)
@@ -101,7 +102,6 @@ v 8.7.5
   - Fix always showing build notification message when switching between merge requests !4086
   - Fix an issue when filtering merge requests with more than one label. !3886
   - Fix short note for the default scope on build page (Takuya Noguchi)
-  - Todos will display target state if issuable target is 'Closed' or 'Merged'
 
 v 8.7.4
   - Links for Redmine issue references are generated correctly again !4048 (Benedikt Huss)
