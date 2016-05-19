@@ -24,20 +24,20 @@ describe ProjectsController do
         context "and does not have notification setting" do
           it "initializes notification as disabled" do
             get :show, namespace_id: public_project.namespace.path, id: public_project.path
-            expect(assigns(:notification_setting).level).to eq("disabled")
+            expect(assigns(:notification_setting).level).to eq("global")
           end
         end
 
         context "and has notification setting" do
           before do
             setting = user.notification_settings_for(public_project)
-            setting.level = :global
+            setting.level = :watch
             setting.save
           end
 
           it "shows current notification setting" do
             get :show, namespace_id: public_project.namespace.path, id: public_project.path
-            expect(assigns(:notification_setting).level).to eq("global")
+            expect(assigns(:notification_setting).level).to eq("watch")
           end
         end
       end
@@ -45,6 +45,7 @@ describe ProjectsController do
 
     context "rendering default project view" do
       render_views
+
       it "renders the activity view" do
         allow(controller).to receive(:current_user).and_return(user)
         allow(user).to receive(:project_view).and_return('activity')

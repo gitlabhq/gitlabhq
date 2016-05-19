@@ -17,7 +17,6 @@ describe MergeRequests::UpdateService, services: true do
   before do
     project.team << [user, :master]
     project.team << [user2, :developer]
-    project.team << [user3, :developer]
   end
 
   describe 'execute' do

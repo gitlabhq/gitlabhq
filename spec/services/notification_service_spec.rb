@@ -35,7 +35,7 @@ describe NotificationService, services: true do
 
   describe 'Notes' do
     context 'issue note' do
-      let(:project) { create(:empty_project, :internal) }
+      let(:project) { create(:empty_project, :private) }
       let(:issue) { create(:issue, project: project, assignee: create(:user)) }
       let(:mentioned_issue) { create(:issue, assignee: issue.assignee) }
       let(:note) { create(:note_on_issue, noteable: issue, project_id: issue.project_id, note: '@mention referenced, @outsider also') }
@@ -52,8 +52,8 @@ describe NotificationService, services: true do
         it do
           add_users_with_subscription(note.project, issue)
 
-          # Ensure create SentNotification by noteable = issue 7 times, not noteable = note
-          expect(SentNotification).to receive(:record).with(issue, any_args).exactly(8).times
+          # Ensure create SentNotification by noteable = issue 6 times, not noteable = note
+          expect(SentNotification).to receive(:record).with(issue, any_args).exactly(7).times
 
           ActionMailer::Base.deliveries.clear
 
@@ -66,7 +66,7 @@ describe NotificationService, services: true do
           should_email(@subscriber)
           should_email(@watcher_and_subscriber)
           should_email(@subscribed_participant)
-          should_email(@u_guest_watcher)
+          should_not_email(@u_guest_watcher)
           should_not_email(note.author)
           should_not_email(@u_participating)
           should_not_email(@u_disabled)
@@ -101,7 +101,7 @@ describe NotificationService, services: true do
           should_email(note.noteable.author)
           should_email(note.noteable.assignee)
           should_email(@u_mentioned)
-          should_email(@u_guest_watcher)
+          should_not_email(@u_guest_watcher)
           should_not_email(@u_watcher)
           should_not_email(note.author)
           should_not_email(@u_participating)
@@ -121,10 +121,7 @@ describe NotificationService, services: true do
       let(:note) { create(:note_on_issue, noteable: confidential_issue, project: project, note: "#{author.to_reference} #{assignee.to_reference} #{non_member.to_reference} #{member.to_reference} #{admin.to_reference}") }
 
       it 'filters out users that can not read the issue' do
-        project.team << [admin, :master]
-        project.team << [author, :developer]
         project.team << [member, :developer]
-        project.team << [assignee, :developer]
 
         expect(SentNotification).to receive(:record).with(confidential_issue, any_args).exactly(4).times
 
@@ -148,7 +145,7 @@ describe NotificationService, services: true do
 
       before do
         build_team(note.project)
-        note.project.team << [[note.author, note.noteable.author, note.noteable.assignee], :master]
+        note.project.team << [note.author, :master]
         ActionMailer::Base.deliveries.clear
       end
 
@@ -190,7 +187,7 @@ describe NotificationService, services: true do
 
       before do
         build_team(note.project)
-        note.project.team << [[note.author, note.noteable.author], :master]
+        note.project.team << [note.author, :master]
         ActionMailer::Base.deliveries.clear
       end
 
@@ -269,7 +266,6 @@ describe NotificationService, services: true do
     before do
       build_team(issue.project)
       add_users_with_subscription(issue.project, issue)
-      project.team << [[issue.assignee, issue.author], :developer]
       ActionMailer::Base.deliveries.clear
     end
 
@@ -510,7 +506,6 @@ describe NotificationService, services: true do
     before do
       build_team(merge_request.target_project)
       add_users_with_subscription(merge_request.target_project, merge_request)
-      project.team << [merge_request.assignee, :developer]
       ActionMailer::Base.deliveries.clear
     end
 
