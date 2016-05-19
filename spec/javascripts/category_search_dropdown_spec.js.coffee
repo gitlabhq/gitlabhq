@@ -1,5 +1,7 @@
 #= require category_search_dropdown
 #= require jquery
+#= require lib/common_utils
+
 
 widget     = null
 userId     = 1
@@ -25,21 +27,21 @@ addBodyAttributes = (page = 'groups') ->
 # Mock `gl` object in window for dashboard specific page. App code will need it.
 mockDashboardOptions = ->
 
-  window.gl =
-    dashboardOptions:
-      issuesPath: dashboardIssuesPath
-      mrPath    : dashboardMRsPath
+  window.gl or= {}
+  window.gl.dashboardOptions =
+    issuesPath: dashboardIssuesPath
+    mrPath    : dashboardMRsPath
 
 
 # Mock `gl` object in window for project specific page. App code will need it.
 mockProjectOptions = ->
 
-  window.gl =
-    projectOptions  :
-      'gitlab-ce'   :
-        issuesPath  : projectIssuesPath
-        mrPath      : projectMRsPath
-        projectName : projectName
+  window.gl or= {}
+  window.gl.projectOptions =
+    'gitlab-ce'   :
+      issuesPath  : projectIssuesPath
+      mrPath      : projectMRsPath
+      projectName : projectName
 
 
 assertLinks = (list, a1, a2, a3, a4) ->
