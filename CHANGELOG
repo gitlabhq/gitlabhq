@@ -2,11 +2,8 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.7.6
   - Fix links on wiki pages for relative url setups. !4131 (Artem Sidorenko)
-  - Fix import from gitlab.com to a private instance failure
-  - Fix external imports not finding the import data
-
-v 8.7.6
-  - Fix links on wiki pages for relative url setups. !4131 (Artem Sidorenko)
+  - Fix import from GitLab.com to a private instance failure. !4181
+  - Fix external imports not finding the import data. !4106
 
 v 8.7.5
   - Fix relative links in wiki pages. !4050
