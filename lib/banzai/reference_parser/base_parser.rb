@@ -155,12 +155,9 @@ module Banzai
       # the references.
       def process(documents)
         type = self.class.reference_type
-        nodes = []
 
-        documents.each do |document|
-          nodes.concat(
-            Querying.css(document, "a[data-reference-type='#{type}'].gfm")
-          )
+        nodes = documents.flat_map do |document|
+          Querying.css(document, "a[data-reference-type='#{type}'].gfm").to_a
         end
 
         gather_references(nodes)
