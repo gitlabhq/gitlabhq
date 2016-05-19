@@ -14,14 +14,19 @@ module Gitlab
       def save
         return true unless File.directory?(uploads_path)
 
-        FileUtils.copy_entry(uploads_path, uploads_export_path)
-        true
+        copy_files(uploads_path, uploads_export_path)
       rescue => e
-        @shared.error(e.message)
+        @shared.error(e)
         false
       end
 
       private
+
+      def copy_files(source, destination)
+        FileUtils.mkdir_p(destination)
+        FileUtils.copy_entry(source, destination)
+        true
+      end
 
       def uploads_export_path
         File.join(@shared.export_path, 'uploads')
