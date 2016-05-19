@@ -35,10 +35,10 @@ class @CategorySearchDropdown
   showCategoryDropDown: ->
 
     userId           = gon.current_user_id
+    projectSlug      = gl.utils.getProjectSlug()
     hasLocationBadge = @searchWidget.hasClass 'has-location-badge'
 
-    if gl.isInProjectPage() and gl.projectOptions and hasLocationBadge
-      projectSlug = $('body').data 'project'
+    if gl.projectOptions and projectSlug and hasLocationBadge
       { issuesPath, mrPath, projectName } = gl.projectOptions[projectSlug]
 
     else if gl.dashboardOptions
