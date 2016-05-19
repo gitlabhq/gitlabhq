@@ -27,6 +27,8 @@ module Banzai
       #
       # Returns a String
       def data_attribute(attributes = {})
+        attributes = attributes.reject { |_, v| v.nil? }
+
         attributes[:reference_type] = self.class.reference_type
         attributes.delete(:original) if context[:no_original_data]
         attributes.map { |key, value| %Q(data-#{key.to_s.dasherize}="#{escape_once(value)}") }.join(" ")

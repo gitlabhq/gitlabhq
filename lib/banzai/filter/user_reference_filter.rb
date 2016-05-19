@@ -84,13 +84,7 @@ module Banzai
         url = urls.namespace_project_url(project.namespace, project,
                                          only_path: context[:only_path])
 
-        data_attrs = { project: project.id }
-
-        if author
-          data_attrs[:author] = author.id
-        end
-
-        data = data_attribute(data_attrs)
+        data = data_attribute(project: project.id, author: author.try(:id))
         text = link_text || User.reference_prefix + 'all'
 
         link_tag(url, data, text)
