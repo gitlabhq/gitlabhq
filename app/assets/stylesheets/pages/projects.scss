@@ -48,15 +48,20 @@
     }
   }
 
+  .cover-title {
+    margin-bottom: 0;
+  }
+
   .project-image-container {
     @include make-sm-column(1);
     max-width: 86px;
     min-width: 86px;
     padding-right: 0;
+    margin: 11px 0;
 
     @media (max-width: $screen-md-max) {
       padding-left: 0;
-      margin-bottom: 10px;
+      margin: 0 0 10px;
       max-width: none;
       min-width: none;
 
