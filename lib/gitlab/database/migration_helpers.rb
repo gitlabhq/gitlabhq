@@ -75,7 +75,7 @@ module Gitlab
             query += " AND id < #{stop_row['id']}"
           end
 
-          execute(query.strip_heredoc)
+          execute(query)
 
           processed += batch_size
         end
