@@ -1,6 +1,4 @@
 class BambooService < CiService
-  include HTTParty
-
   prop_accessor :bamboo_url, :build_key, :username, :password
 
   validates :bamboo_url, presence: true, url: true, if: :activated?
@@ -112,8 +110,19 @@ class BambooService < CiService
   def execute(data)
     return unless supported_events.include?(data[:object_kind])
 
-    # Bamboo requires a GET and does not take any data.
+    # Bamboo requires a GET and does take authentification
     url = URI.join(bamboo_url, "/updateAndBuild.action?buildKey=#{build_key}").to_s
-    self.class.get(url, verify: false)
+
+    if username.blank? && password.blank?
+      HTTParty.get(url, verify: false)
+    else
+      url << '&os_authType=basic'
+      auth = {
+        username: username,
+        password: password
+      }
+      HTTParty.get(url, verify: false, basic_auth: auth)
+    end
+
   end
 end
