@@ -89,6 +89,7 @@ v 8.7.3
   - Merge request widget displays TeamCity build state and code coverage correctly again.
   - Fix the line code when importing PR review comments from GitHub. !4010
   - Wikis are now initialized on legacy projects when checking repositories
+  - Remove animate.css in favor of a smaller subset of animations. !3937 (Connor Shea)
 
 v 8.7.2
   - The "New Branch" button is now loaded asynchronously
