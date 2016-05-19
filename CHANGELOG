@@ -62,6 +62,7 @@ v 8.8.0 (unreleased)
   - Import pull requests from GitHub where the source or target branches were removed
   - All Grape API helpers are now instrumented
   - Improve Issue formatting for the Slack Service (Jeroen van Baarsen)
+  - Fixed advice on invalid permissions on upload path !2948 (Ludovic Perrine)
 
 v 8.7.6
   - Fix links on wiki pages for relative url setups. !4131 (Artem Sidorenko)
