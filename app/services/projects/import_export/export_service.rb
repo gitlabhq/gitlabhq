@@ -4,7 +4,7 @@ module Projects
 
       def execute(options = {})
         @shared = Gitlab::ImportExport::Shared.new(relative_path: File.join(project.path_with_namespace, 'work'))
-        save_all if [save_version, save_project_tree, bundle_repo, bundle_wiki_repo].all?
+        save_all if [save_version, save_project_tree, save_uploads, bundle_repo, bundle_wiki_repo].all?
         cleanup_and_notify_worker if @shared.errors.any?
       end
 
@@ -16,6 +16,10 @@ module Projects
 
       def save_project_tree
         Gitlab::ImportExport::ProjectTreeSaver.new(project: project, shared: @shared).save
+      end
+
+      def save_uploads
+        Gitlab::ImportExport::UploadsSaver.save(project: project, shared: @shared)
       end
 
       def bundle_repo
