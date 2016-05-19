@@ -1,6 +1,6 @@
 module Banzai
   module ReferenceParser
-    class IssueParser < Parser
+    class IssueParser < BaseParser
       self.reference_type = :issue
 
       def nodes_visible_to_user(user, nodes)

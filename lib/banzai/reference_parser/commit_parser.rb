@@ -1,6 +1,6 @@
 module Banzai
   module ReferenceParser
-    class CommitParser < Parser
+    class CommitParser < BaseParser
       self.reference_type = :commit
 
       def referenced_by(nodes)

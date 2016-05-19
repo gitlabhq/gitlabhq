@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Banzai::ReferenceParser::Parser, lib: true do
+describe Banzai::ReferenceParser::BaseParser, lib: true do
   let(:user) { create(:user) }
   let(:project) { create(:empty_project, :public) }
 

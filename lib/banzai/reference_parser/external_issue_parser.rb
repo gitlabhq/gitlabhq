@@ -1,6 +1,6 @@
 module Banzai
   module ReferenceParser
-    class ExternalIssueParser < Parser
+    class ExternalIssueParser < BaseParser
       self.reference_type = :external_issue
 
       def referenced_by(nodes)

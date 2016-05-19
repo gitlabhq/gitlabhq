@@ -1,6 +1,6 @@
 module Banzai
   module ReferenceParser
-    class LabelParser < Parser
+    class LabelParser < BaseParser
       self.reference_type = :label
 
       def references_relation

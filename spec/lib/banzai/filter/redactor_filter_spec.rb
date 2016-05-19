@@ -17,7 +17,7 @@ describe Banzai::Filter::RedactorFilter, lib: true do
 
   context 'with data-project' do
     let(:parser_class) do
-      Class.new(Banzai::ReferenceParser::Parser) do
+      Class.new(Banzai::ReferenceParser::BaseParser) do
         self.reference_type = :test
       end
     end

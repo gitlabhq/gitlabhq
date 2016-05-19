@@ -12,7 +12,7 @@ module Banzai
     # method should be a symbol such as `:issue` or `:merge_request`. For
     # example:
     #
-    #     class IssueParser < Parser
+    #     class IssueParser < BaseParser
     #       self.reference_type = :issue
     #     end
     #
@@ -36,7 +36,7 @@ module Banzai
     # which references. For example, the IssueParser class defines its own
     # `nodes_visible_to_user` method so it can ensure users can only see issues
     # they have access to.
-    class Parser
+    class BaseParser
       class << self
         attr_accessor :reference_type
       end

@@ -1,6 +1,6 @@
 module Banzai
   module ReferenceParser
-    class CommitRangeParser < Parser
+    class CommitRangeParser < BaseParser
       self.reference_type = :commit_range
 
       def referenced_by(nodes)

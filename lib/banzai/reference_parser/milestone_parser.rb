@@ -1,6 +1,6 @@
 module Banzai
   module ReferenceParser
-    class MilestoneParser < Parser
+    class MilestoneParser < BaseParser
       self.reference_type = :milestone
 
       def references_relation

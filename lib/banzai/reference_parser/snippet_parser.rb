@@ -1,6 +1,6 @@
 module Banzai
   module ReferenceParser
-    class SnippetParser < Parser
+    class SnippetParser < BaseParser
       self.reference_type = :snippet
 
       def references_relation

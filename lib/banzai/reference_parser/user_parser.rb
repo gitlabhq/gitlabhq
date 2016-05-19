@@ -1,6 +1,6 @@
 module Banzai
   module ReferenceParser
-    class UserParser < Parser
+    class UserParser < BaseParser
       self.reference_type = :user
 
       def referenced_by(nodes)
