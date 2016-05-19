@@ -86,6 +86,24 @@ class License < ActiveRecord::Base
     add_ons[code].to_i > 0
   end
 
+  def user_count
+    return unless self.license? && self.restricted?(:active_user_count)
+
+    self.restrictions[:active_user_count]
+  end
+
+  def warn_upgrade_license_message?
+    restricted_user_count = user_count
+
+    return unless restricted_user_count
+
+    return false unless Time.now >= self.starts_at + 3.months
+
+    active_user_count = User.active.count
+
+    restricted_user_count && active_user_count > restricted_user_count
+  end
+
   private
 
   def reset_current
@@ -103,9 +121,9 @@ class License < ActiveRecord::Base
   end
 
   def active_user_count
-    return unless self.license? && self.restricted?(:active_user_count)
+    restricted_user_count = user_count
 
-    restricted_user_count = self.restrictions[:active_user_count]
+    return unless restricted_user_count
 
     date_range = (self.starts_at - 1.year)..self.starts_at
     active_user_count = HistoricalData.during(date_range).maximum(:active_user_count) || 0

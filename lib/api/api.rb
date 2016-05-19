@@ -56,12 +56,12 @@ module API
     mount ::API::Settings
     mount ::API::Keys
     mount ::API::Tags
-    mount ::API::LicenseInfo
+    mount ::API::License
     mount ::API::Triggers
     mount ::API::Builds
     mount ::API::Variables
     mount ::API::Runners
-    mount ::API::Licenses
+    mount ::API::LicenseTemplates
     mount ::API::Subscriptions
   end
 end

@@ -1,4 +1,8 @@
 module LicenseHelper
+  def current_active_user_count
+    User.active.count
+  end
+
   def license_message(signed_in: signed_in?, is_admin: (current_user && current_user.is_admin?))
     @license_message ||=
       if License.current
@@ -33,13 +37,15 @@ module LicenseHelper
 
     return unless signed_in
 
-    return unless (license.notify_admins? && is_admin) || license.notify_users?
+    return unless ((license.notify_admins? || license.warn_upgrade_license_message?) && is_admin) || license.notify_users?
 
     message = []
 
-    message << "The GitLab Enterprise Edition license"
-    message << (license.expired? ? "expired" : "will expire")
-    message << "on #{license.expires_at}."
+    unless license.warn_upgrade_license_message?
+      message << "The GitLab Enterprise Edition license"
+      message << (license.expired? ? "expired" : "will expire")
+      message << "on #{license.expires_at}."
+    end
 
     if license.expired? && license.will_block_changes?
       message << "Pushing code and creation of issues and merge requests"
@@ -50,18 +56,24 @@ module LicenseHelper
         else
           "will be disabled on #{license.block_changes_at}."
         end
+
+      message <<
+        if is_admin
+          "Upload a new license in the admin area"
+        else
+          "Ask an admin to upload a new license"
+        end
+
+      message << "to"
+      message << (license.block_changes? ? "restore" : "ensure uninterrupted")
+      message << "service."
+    elsif license.warn_upgrade_license_message?
+      message << "Your GitLab license currently covers #{license.user_count}"
+      message << "users, but it looks like your site has grown to"
+      message << "#{current_active_user_count} users. Please contact"
+      message << "sales@gitlab.com to increase the seats on your license."
+      message << "Thank you for choosing GitLab."
     end
-
-    message <<
-      if is_admin
-        "Upload a new license in the admin area"
-      else
-        "Ask an admin to upload a new license"
-      end
-
-    message << "to"
-    message << (license.block_changes? ? "restore" : "ensure uninterrupted")
-    message << "service."
 
     message.join(" ")
   end
