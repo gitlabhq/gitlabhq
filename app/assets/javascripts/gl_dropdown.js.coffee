@@ -460,7 +460,7 @@ class GitLabDropdown
         return false
 
       if currentKeyCode is 13
-        @selectRowAtIndex currentIndex
+        @selectRowAtIndex if currentIndex < 0 then 0 else currentIndex
 
   removeArrayKeyEvent: ->
     $('body').off 'keydown'
