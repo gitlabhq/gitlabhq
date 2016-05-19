@@ -2,7 +2,7 @@ module API
   module Helpers
     PRIVATE_TOKEN_HEADER = "HTTP_PRIVATE_TOKEN"
     PRIVATE_TOKEN_PARAM = :private_token
-    SUDO_HEADER ="HTTP_SUDO"
+    SUDO_HEADER = "HTTP_SUDO"
     SUDO_PARAM = :sudo
 
     def parse_boolean(value)
@@ -95,6 +95,17 @@ module API
       end
     end
 
+    def find_project_label(id)
+      label = user_project.labels.find_by_id(id) || user_project.labels.find_by_title(id)
+      label || not_found!('Label')
+    end
+
+    def find_project_issue(id)
+      issue = user_project.issues.find(id)
+      not_found! unless can?(current_user, :read_issue, issue)
+      issue
+    end
+
     def paginate(relation)
       relation.page(params[:page]).per(params[:per_page].to_i).tap do |data|
         add_pagination_headers(data)
@@ -181,6 +192,22 @@ module API
 
     def validate_access_level?(level)
       Gitlab::Access.options_with_owner.values.include? level.to_i
+    end
+
+    # Checks the occurrences of datetime attributes, each attribute if present in the params hash must be in ISO 8601
+    # format (YYYY-MM-DDTHH:MM:SSZ) or a Bad Request error is invoked.
+    #
+    # Parameters:
+    #   keys (required) - An array consisting of elements that must be parseable as dates from the params hash
+    def datetime_attributes!(*keys)
+      keys.each do |key|
+        begin
+          params[key] = Time.xmlschema(params[key]) if params[key].present?
+        rescue ArgumentError
+          message = "\"" + key.to_s + "\" must be a timestamp in ISO 8601 format: YYYY-MM-DDTHH:MM:SSZ"
+          render_api_error!(message, 400)
+        end
+      end
     end
 
     def issuable_order_by

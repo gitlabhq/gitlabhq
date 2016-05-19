@@ -165,3 +165,73 @@ Example response:
    "description": "Documentation"
 }
 ```
+
+## Subscribe to a label
+
+Subscribes the authenticated user to a label to receive notifications. If the
+operation is successful, status code `201` together with the updated label is
+returned. If the user is already subscribed to the label, the status code `304`
+is returned. If the project or label is not found, status code `404` is
+returned.
+
+```
+POST /projects/:id/labels/:label_id/subscription
+```
+
+| Attribute  | Type              | Required | Description                          |
+| ---------- | ----------------- | -------- | ------------------------------------ |
+| `id`       | integer           | yes      | The ID of a project                  |
+| `label_id` | integer or string | yes      | The ID or title of a project's label |
+
+```bash
+curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/labels/1/subscription
+```
+
+Example response:
+
+```json
+{
+    "name": "Docs",
+    "color": "#cc0033",
+    "description": "",
+    "open_issues_count": 0,
+    "closed_issues_count": 0,
+    "open_merge_requests_count": 0,
+    "subscribed": true
+}
+```
+
+## Unsubscribe from a label
+
+Unsubscribes the authenticated user from a label to not receive notifications
+from it. If the operation is successful, status code `200` together with the
+updated label is returned. If the user is not subscribed to the label, the
+status code `304` is returned. If the project or label is not found, status code
+`404` is returned.
+
+```
+DELETE /projects/:id/labels/:label_id/subscription
+```
+
+| Attribute  | Type              | Required | Description                          |
+| ---------- | ----------------- | -------- | ------------------------------------ |
+| `id`       | integer           | yes      | The ID of a project                  |
+| `label_id` | integer or string | yes      | The ID or title of a project's label |
+
+```bash
+curl -X DELETE -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/labels/1/subscription
+```
+
+Example response:
+
+```json
+{
+    "name": "Docs",
+    "color": "#cc0033",
+    "description": "",
+    "open_issues_count": 0,
+    "closed_issues_count": 0,
+    "open_merge_requests_count": 0,
+    "subscribed": false
+}
+```

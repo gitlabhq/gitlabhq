@@ -1,27 +1,5 @@
-# == Schema Information
-#
-# Table name: notes
-#
-#  id            :integer          not null, primary key
-#  note          :text
-#  noteable_type :string(255)
-#  author_id     :integer
-#  created_at    :datetime
-#  updated_at    :datetime
-#  project_id    :integer
-#  attachment    :string(255)
-#  line_code     :string(255)
-#  commit_id     :string(255)
-#  noteable_id   :integer
-#  system        :boolean          default(FALSE), not null
-#  st_diff       :text
-#  updated_by_id :integer
-#  is_award      :boolean          default(FALSE), not null
-#
-
-require 'carrierwave/orm/activerecord'
-
 class Note < ActiveRecord::Base
+  extend ActiveModel::Naming
   include Gitlab::CurrentSettings
   include Participable
   include Mentionable
@@ -41,14 +19,13 @@ class Note < ActiveRecord::Base
   delegate :gfm_reference, :local_reference, to: :noteable
   delegate :name, to: :project, prefix: true
   delegate :name, :email, to: :author, prefix: true
+  delegate :title, to: :noteable, allow_nil: true
 
   before_validation :set_award!
-  before_validation :clear_blank_line_code!
 
   validates :note, :project, presence: true
   validates :note, uniqueness: { scope: [:author, :noteable_type, :noteable_id] }, if: ->(n) { n.is_award }
   validates :note, inclusion: { in: Emoji.emojis_names }, if: ->(n) { n.is_award }
-  validates :line_code, line_code: true, allow_blank: true
   # Attachments are deprecated and are handled by Markdown uploader
   validates :attachment, file_size: { maximum: :max_attachment_size }
 
@@ -62,8 +39,6 @@ class Note < ActiveRecord::Base
   scope :awards, ->{ where(is_award: true) }
   scope :nonawards, ->{ where(is_award: false) }
   scope :for_commit_id, ->(commit_id) { where(noteable_type: "Commit", commit_id: commit_id) }
-  scope :inline, ->{ where("line_code IS NOT NULL") }
-  scope :not_inline, ->{ where(line_code: nil) }
   scope :system, ->{ where(system: true) }
   scope :user, ->{ where(system: false) }
   scope :common, ->{ where(noteable_type: ["", nil]) }
@@ -71,38 +46,31 @@ class Note < ActiveRecord::Base
   scope :inc_author_project, ->{ includes(:project, :author) }
   scope :inc_author, ->{ includes(:author) }
 
+  scope :legacy_diff_notes, ->{ where(type: 'LegacyDiffNote') }
+  scope :non_diff_notes, ->{ where(type: ['Note', nil]) }
+
   scope :with_associations, -> do
     includes(:author, :noteable, :updated_by,
              project: [:project_members, { group: [:group_members] }])
   end
 
-  serialize :st_diff
-  before_create :set_diff, if: ->(n) { n.line_code.present? }
+  before_validation :clear_blank_line_code!
 
   class << self
-    def discussions_from_notes(notes)
-      discussion_ids = []
-      discussions = []
-
-      notes.each do |note|
-        next if discussion_ids.include?(note.discussion_id)
-
-        # don't group notes for the main target
-        if !note.for_diff_line? && note.for_merge_request?
-          discussions << [note]
-        else
-          discussions << notes.select do |other_note|
-            note.discussion_id == other_note.discussion_id
-          end
-          discussion_ids << note.discussion_id
-        end
-      end
-
-      discussions
+    def model_name
+      ActiveModel::Name.new(self, nil, 'note')
     end
 
-    def build_discussion_id(type, id, line_code)
-      [:discussion, type.try(:underscore), id, line_code].join("-").to_sym
+    def build_discussion_id(noteable_type, noteable_id)
+      [:discussion, noteable_type.try(:underscore), noteable_id].join("-")
+    end
+
+    def discussions
+      all.group_by(&:discussion_id).values
+    end
+
+    def grouped_diff_notes
+      legacy_diff_notes.select(&:active?).sort_by(&:created_at).group_by(&:line_code)
     end
 
     # Searches for notes matching the given query.
@@ -137,165 +105,37 @@ class Note < ActiveRecord::Base
     system && SystemNoteService.cross_reference?(note)
   end
 
-  def max_attachment_size
-    current_application_settings.max_attachment_size.megabytes.to_i
+  def diff_note?
+    false
   end
 
-  def find_diff
-    return nil unless noteable
-    return @diff if defined?(@diff)
+  def legacy_diff_note?
+    false
+  end
 
-    # Don't use ||= because nil is a valid value for @diff
-    @diff = noteable.diffs(Commit.max_diff_options).find do |d|
-      Digest::SHA1.hexdigest(d.new_path) == diff_file_index if d.new_path
-    end
+  def active?
+    true
+  end
+
+  def discussion_id
+    @discussion_id ||=
+      if for_merge_request?
+        [:discussion, :note, id].join("-")
+      else
+        self.class.build_discussion_id(noteable_type, noteable_id || commit_id)
+      end
+  end
+
+  def max_attachment_size
+    current_application_settings.max_attachment_size.megabytes.to_i
   end
 
   def hook_attrs
     attributes
   end
 
-  def set_diff
-    # First lets find notes with same diff
-    # before iterating over all mr diffs
-    diff = diff_for_line_code unless for_merge_request?
-    diff ||= find_diff
-
-    self.st_diff = diff.to_hash if diff
-  end
-
-  def diff
-    @diff ||= Gitlab::Git::Diff.new(st_diff) if st_diff.respond_to?(:map)
-  end
-
-  def diff_for_line_code
-    Note.where(noteable_id: noteable_id, noteable_type: noteable_type, line_code: line_code).last.try(:diff)
-  end
-
-  # Check if this note is part of an "active" discussion
-  #
-  # This will always return true for anything except MergeRequest noteables,
-  # which have special logic.
-  #
-  # If the note's current diff cannot be matched in the MergeRequest's current
-  # diff, it's considered inactive.
-  def active?
-    return true unless self.diff
-    return false unless noteable
-    return @active if defined?(@active)
-
-    noteable_diff = find_noteable_diff
-
-    if noteable_diff
-      parsed_lines = Gitlab::Diff::Parser.new.parse(noteable_diff.diff.each_line)
-
-      @active = parsed_lines.any? { |line_obj| line_obj.text == diff_line }
-    else
-      @active = false
-    end
-
-    @active
-  end
-
-  def diff_file_index
-    line_code.split('_')[0] if line_code
-  end
-
-  def diff_file_name
-    diff.new_path if diff
-  end
-
-  def file_path
-    if diff.new_path.present?
-      diff.new_path
-    elsif diff.old_path.present?
-      diff.old_path
-    end
-  end
-
-  def diff_old_line
-    line_code.split('_')[1].to_i if line_code
-  end
-
-  def diff_new_line
-    line_code.split('_')[2].to_i if line_code
-  end
-
-  def generate_line_code(line)
-    Gitlab::Diff::LineCode.generate(file_path, line.new_pos, line.old_pos)
-  end
-
-  def diff_line
-    return @diff_line if @diff_line
-
-    if diff
-      diff_lines.each do |line|
-        if generate_line_code(line) == self.line_code
-          @diff_line = line.text
-        end
-      end
-    end
-
-    @diff_line
-  end
-
-  def diff_line_type
-    return @diff_line_type if @diff_line_type
-
-    if diff
-      diff_lines.each do |line|
-        if generate_line_code(line) == self.line_code
-          @diff_line_type = line.type
-        end
-      end
-    end
-
-    @diff_line_type
-  end
-
-  def truncated_diff_lines
-    max_number_of_lines = 16
-    prev_match_line = nil
-    prev_lines = []
-
-    highlighted_diff_lines.each do |line|
-      if line.type == "match"
-        prev_lines.clear
-        prev_match_line = line
-      else
-        prev_lines << line
-
-        break if generate_line_code(line) == self.line_code
-
-        prev_lines.shift if prev_lines.length >= max_number_of_lines
-      end
-    end
-
-    prev_lines
-  end
-
-  def diff_lines
-    @diff_lines ||= Gitlab::Diff::Parser.new.parse(diff.diff.each_line)
-  end
-
-  def highlighted_diff_lines
-    Gitlab::Diff::Highlight.new(diff_lines).highlight
-  end
-
-  def discussion_id
-    @discussion_id ||= Note.build_discussion_id(noteable_type, noteable_id || commit_id, line_code)
-  end
-
   def for_commit?
     noteable_type == "Commit"
-  end
-
-  def for_commit_diff_line?
-    for_commit? && for_diff_line?
-  end
-
-  def for_diff_line?
-    line_code.present?
   end
 
   def for_issue?
@@ -304,10 +144,6 @@ class Note < ActiveRecord::Base
 
   def for_merge_request?
     noteable_type == "MergeRequest"
-  end
-
-  def for_merge_request_diff_line?
-    for_merge_request? && for_diff_line?
   end
 
   def for_snippet?
@@ -382,14 +218,8 @@ class Note < ActiveRecord::Base
     self.line_code = nil if self.line_code.blank?
   end
 
-  # Find the diff on noteable that matches our own
-  def find_noteable_diff
-    diffs = noteable.diffs(Commit.max_diff_options)
-    diffs.find { |d| d.new_path == self.diff.new_path }
-  end
-
   def awards_supported?
-    (for_issue? || for_merge_request?) && !for_diff_line?
+    (for_issue? || for_merge_request?) && !diff_note?
   end
 
   def contains_emoji_only?

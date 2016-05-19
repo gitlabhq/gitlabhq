@@ -8,11 +8,11 @@
       %p
         - if @user.avatar?
           You can change your avatar here
-          - if Gitlab.config.gravatar.enabled
+          - if gravatar_enabled?
             or remove the current avatar to revert to #{link_to Gitlab.config.gravatar.host, "http://" + Gitlab.config.gravatar.host}
         - else
           You can upload an avatar here
-          - if Gitlab.config.gravatar.enabled
+          - if gravatar_enabled?
             or change it at #{link_to Gitlab.config.gravatar.host, "http://" + Gitlab.config.gravatar.host}
     .col-lg-9
       .clearfix.avatar-image.append-bottom-default

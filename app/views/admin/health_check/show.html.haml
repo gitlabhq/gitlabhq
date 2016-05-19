@@ -1,0 +1,49 @@
+- page_title "Health Check"
+
+%h3.page-title
+  Health Check
+.bs-callout.clearfix
+  .pull-left
+    %p
+  Access token is
+  %code#health-check-token= current_application_settings.health_check_access_token
+  = button_to reset_health_check_token_admin_application_settings_path,
+    method: :put, class: 'btn btn-default',
+    data: { confirm: 'Are you sure you want to reset the health check token?' } do
+    = icon('refresh')
+    Reset health check access token
+%p.light
+  Health information can be retrieved as plain text, JSON, or XML using:
+  %ul
+    %li
+      %code= health_check_url(token: current_application_settings.health_check_access_token)
+    %li
+      %code= health_check_url(token: current_application_settings.health_check_access_token, format: :json)
+    %li
+      %code= health_check_url(token: current_application_settings.health_check_access_token, format: :xml)
+
+%p.light
+  You can also ask for the status of specific services:
+  %ul
+    %li
+      %code= health_check_url(token: current_application_settings.health_check_access_token, checks: :cache)
+    %li
+      %code= health_check_url(token: current_application_settings.health_check_access_token, checks: :database)
+    %li
+      %code= health_check_url(token: current_application_settings.health_check_access_token, checks: :migrations)
+
+%hr
+.panel.panel-default
+  .panel-heading
+    Current Status:
+    - if @errors.blank?
+      = icon('circle', class: 'cgreen')
+      Healthy
+    - else
+      = icon('warning', class: 'cred')
+      Unhealthy
+  .panel-body
+    - if @errors.blank?
+      No Health Problems Detected
+    - else
+      = @errors

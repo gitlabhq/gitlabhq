@@ -3,6 +3,7 @@
   position: absolute;
   width: 58px;
   cursor: pointer;
+  margin-top: 8px;
 }
 
 .page-with-sidebar {
@@ -62,7 +63,7 @@
       float: left;
       height: $header-height;
       width: 100%;
-      padding: 11px 0 11px 22px;
+      padding-left: 22px;
       overflow: hidden;
       outline: none;
       transition-duration: .3s;
@@ -85,7 +86,7 @@
           margin: 0;
           margin-left: 50px;
           font-size: 19px;
-          line-height: 41px;
+          line-height: 50px;
           font-weight: normal;
         }
       }
@@ -97,7 +98,7 @@
   }
 
   .sidebar-user {
-    padding: 9px 22px;
+    padding: 7px 22px;
     position: fixed;
     bottom: 40px;
     width: $sidebar_width;
@@ -209,14 +210,32 @@
   }
 }
 
+.sidebar-wrapper {
+  &.hidden-nav {
+    width: 0;
+  }
+}
+
 .page-sidebar-collapsed {
   padding-left: $sidebar_collapsed_width;
+
+  @media (max-width: $screen-xs-min) {
+    padding-left: 0;
+  }
 
   .sidebar-wrapper {
     width: $sidebar_collapsed_width;
 
+    @media (max-width: $screen-xs-min) {
+      width: 0;
+    }
+
     .header-logo {
       width: $sidebar_collapsed_width;
+
+      @media (max-width: $screen-xs-min) {
+        width: 0;
+      }
 
       a {
         padding-left: ($sidebar_collapsed_width - 36) / 2;
@@ -243,15 +262,33 @@
 
     .collapse-nav a {
       width: $sidebar_collapsed_width;
+
+      @media (max-width: $screen-xs-min) {
+        width: 0;
+      }
     }
 
     .sidebar-user {
       padding-left: ($sidebar_collapsed_width - 36) / 2;
       width: $sidebar_collapsed_width;
 
+      @media (max-width: $screen-xs-min) {
+        width: 0;
+        padding-left: 0;
+        padding-right: 0;
+      }
+
       .username {
         display: none;
       }
+    }
+  }
+
+  .layout-nav {
+    padding-right: $sidebar_collapsed_width;
+
+    @media (max-width: $screen-xs-min) {
+      padding-right: 0;;
     }
   }
 }
@@ -263,6 +300,10 @@
     padding-left: $sidebar_width;
   }
 
+  @media (max-width: $screen-xs-min) {
+    padding-left: 0;
+  }
+
   .sidebar-wrapper {
     width: $sidebar_width;
 
@@ -271,13 +312,27 @@
     }
 
     .nav-sidebar li a {
-      width: 230px;
+      width: $sidebar_width;
 
       &.back-link {
         i {
           opacity: 0;
         }
       }
+    }
+  }
+
+  .layout-nav {
+    @media (max-width: $screen-xs-min) {
+      padding-right: 0;;
+    }
+
+    @media (min-width: $screen-xs-min) and (max-width: $screen-md-min) {
+      padding-right: 62px;
+    }
+
+    @media (min-width: $screen-md-min) {
+      padding-right: $sidebar_width;
     }
   }
 }

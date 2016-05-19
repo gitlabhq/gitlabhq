@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160421130527) do
+ActiveRecord::Schema.define(version: 20160509201028) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -70,16 +70,18 @@ ActiveRecord::Schema.define(version: 20160421130527) do
     t.string   "recaptcha_site_key"
     t.string   "recaptcha_private_key"
     t.integer  "metrics_port",                      default: 8089
+    t.boolean  "akismet_enabled",                   default: false
+    t.string   "akismet_api_key"
     t.integer  "metrics_sample_interval",           default: 15
     t.boolean  "sentry_enabled",                    default: false
     t.string   "sentry_dsn"
-    t.boolean  "akismet_enabled",                   default: false
-    t.string   "akismet_api_key"
     t.boolean  "email_author_in_body",              default: false
     t.integer  "default_group_visibility"
     t.boolean  "repository_checks_enabled",         default: false
-    t.integer  "metrics_packet_size",               default: 1
     t.text     "shared_runners_text"
+    t.integer  "metrics_packet_size",               default: 1
+    t.text     "disabled_oauth_sign_in_sources"
+    t.string   "health_check_access_token"
   end
 
   create_table "audit_events", force: :cascade do |t|
@@ -426,10 +428,10 @@ ActiveRecord::Schema.define(version: 20160421130527) do
     t.string   "state"
     t.integer  "iid"
     t.integer  "updated_by_id"
-    t.integer  "moved_to_id"
     t.boolean  "confidential",  default: false
     t.datetime "deleted_at"
     t.date     "due_date"
+    t.integer  "moved_to_id"
   end
 
   add_index "issues", ["assignee_id"], name: "index_issues_on_assignee_id", using: :btree
@@ -630,10 +632,11 @@ ActiveRecord::Schema.define(version: 20160421130527) do
     t.string   "line_code"
     t.string   "commit_id"
     t.integer  "noteable_id"
-    t.boolean  "system",        default: false, null: false
+    t.boolean  "system",            default: false, null: false
     t.text     "st_diff"
     t.integer  "updated_by_id"
-    t.boolean  "is_award",      default: false, null: false
+    t.boolean  "is_award",          default: false, null: false
+    t.string   "type"
   end
 
   add_index "notes", ["author_id"], name: "index_notes_on_author_id", using: :btree
@@ -716,8 +719,8 @@ ActiveRecord::Schema.define(version: 20160421130527) do
     t.integer "project_id"
     t.text    "data"
     t.text    "encrypted_credentials"
-    t.text    "encrypted_credentials_iv"
-    t.text    "encrypted_credentials_salt"
+    t.string  "encrypted_credentials_iv"
+    t.string  "encrypted_credentials_salt"
   end
 
   create_table "projects", force: :cascade do |t|
@@ -728,7 +731,6 @@ ActiveRecord::Schema.define(version: 20160421130527) do
     t.datetime "updated_at"
     t.integer  "creator_id"
     t.boolean  "issues_enabled",               default: true,     null: false
-    t.boolean  "wall_enabled",                 default: true,     null: false
     t.boolean  "merge_requests_enabled",       default: true,     null: false
     t.boolean  "wiki_enabled",                 default: true,     null: false
     t.integer  "namespace_id"
@@ -760,6 +762,7 @@ ActiveRecord::Schema.define(version: 20160421130527) do
     t.integer  "pushes_since_gc",              default: 0
     t.boolean  "last_repository_check_failed"
     t.datetime "last_repository_check_at"
+    t.boolean  "container_registry_enabled"
   end
 
   add_index "projects", ["builds_enabled", "shared_runners_enabled"], name: "index_projects_on_builds_enabled_and_shared_runners_enabled", using: :btree
@@ -816,9 +819,9 @@ ActiveRecord::Schema.define(version: 20160421130527) do
     t.string   "type"
     t.string   "title"
     t.integer  "project_id"
-    t.datetime "created_at",                               null: false
-    t.datetime "updated_at",                               null: false
-    t.boolean  "active",                                   null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean  "active",                default: false,    null: false
     t.text     "properties"
     t.boolean  "template",              default: false
     t.boolean  "push_events",           default: true
@@ -1025,6 +1028,7 @@ ActiveRecord::Schema.define(version: 20160421130527) do
     t.boolean  "enable_ssl_verification",              default: true
     t.boolean  "build_events",                         default: false,         null: false
     t.boolean  "wiki_page_events",                     default: false,         null: false
+    t.string   "token"
   end
 
   add_index "web_hooks", ["created_at", "id"], name: "index_web_hooks_on_created_at_and_id", using: :btree

@@ -9,8 +9,7 @@
 @mixin gitlab-theme($color-light, $color, $color-darker, $color-dark) {
   .page-with-sidebar {
     .header-logo {
-      background-color: $color;
-      border-color: $color;
+      background: $color-darker;
 
       a {
         color: $color-light;
@@ -21,9 +20,13 @@
       }
 
       &:hover {
-        background-color: $color-darker;
+        background-color: $color-dark;
         a {
           color: #fff;
+
+          h3 {
+            color: #fff;
+          }
         }
       }
     }
@@ -87,8 +90,8 @@
 }
 
 $theme-blue: #2980b9;
-$theme-charcoal: #333c47;
-$theme-graphite: #888;
+$theme-charcoal: #3d454d;
+$theme-graphite: #666;
 $theme-gray: #373737;
 $theme-green: #019875;
 $theme-violet: #548;
@@ -99,11 +102,11 @@ body {
   }
 
   &.ui_charcoal {
-    @include gitlab-theme(#c5d0de, $theme-charcoal, #2b333d, #24272d);
+    @include gitlab-theme(#d6d7d9, #485157, $theme-charcoal, #353b41);
   }
 
   &.ui_graphite {
-    @include gitlab-theme(#ccc, $theme-graphite, #777, #666);
+    @include gitlab-theme(#ccc, #777, $theme-graphite, #555);
   }
 
   &.ui_gray {

@@ -1,28 +1,10 @@
-# == Schema Information
-#
-# Table name: ci_runners
-#
-#  id           :integer          not null, primary key
-#  token        :string(255)
-#  created_at   :datetime
-#  updated_at   :datetime
-#  description  :string(255)
-#  contacted_at :datetime
-#  active       :boolean          default(TRUE), not null
-#  is_shared    :boolean          default(FALSE)
-#  name         :string(255)
-#  version      :string(255)
-#  revision     :string(255)
-#  platform     :string(255)
-#  architecture :string(255)
-#
-
 module Ci
   class Runner < ActiveRecord::Base
     extend Ci::Model
 
     LAST_CONTACT_TIME = 5.minutes.ago
-    AVAILABLE_SCOPES = ['specific', 'shared', 'active', 'paused', 'online']
+    AVAILABLE_SCOPES = %w[specific shared active paused online]
+    FORM_EDITABLE = %i[description tag_list active]
 
     has_many :builds, class_name: 'Ci::Build'
     has_many :runner_projects, dependent: :destroy, class_name: 'Ci::RunnerProject'

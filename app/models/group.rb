@@ -1,19 +1,3 @@
-# == Schema Information
-#
-# Table name: namespaces
-#
-#  id                     :integer          not null, primary key
-#  name                   :string(255)      not null
-#  path                   :string(255)      not null
-#  owner_id               :integer
-#  visibility_level       :integer          default(20), not null
-#  created_at             :datetime
-#  updated_at             :datetime
-#  type                   :string(255)
-#  description            :string(255)      default(""), not null
-#  avatar                 :string(255)
-#
-
 require 'carrierwave/orm/activerecord'
 
 class Group < Namespace

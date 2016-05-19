@@ -132,10 +132,45 @@ describe Repository, models: true do
         it { expect(subject.basename).to eq('a/b/c') }
       end
     end
-
   end
 
-  describe '#license_blob' do
+  describe "#changelog" do
+    before do
+      repository.send(:cache).expire(:changelog)
+    end
+
+    it 'accepts changelog' do
+      expect(repository.tree).to receive(:blobs).and_return([TestBlob.new('changelog')])
+
+      expect(repository.changelog.name).to eq('changelog')
+    end
+
+    it 'accepts news instead of changelog' do
+      expect(repository.tree).to receive(:blobs).and_return([TestBlob.new('news')])
+
+      expect(repository.changelog.name).to eq('news')
+    end
+
+    it 'accepts history instead of changelog' do
+      expect(repository.tree).to receive(:blobs).and_return([TestBlob.new('history')])
+
+      expect(repository.changelog.name).to eq('history')
+    end
+
+    it 'accepts changes instead of changelog' do
+      expect(repository.tree).to receive(:blobs).and_return([TestBlob.new('changes')])
+
+      expect(repository.changelog.name).to eq('changes')
+    end
+
+    it 'is case-insensitive' do
+      expect(repository.tree).to receive(:blobs).and_return([TestBlob.new('CHANGELOG')])
+
+      expect(repository.changelog.name).to eq('CHANGELOG')
+    end
+  end
+
+  describe "#license_blob" do
     before do
       repository.send(:cache).expire(:license_blob)
       repository.remove_file(user, 'LICENSE', 'Remove LICENSE', 'master')
@@ -148,39 +183,18 @@ describe Repository, models: true do
       expect(repository.license_blob).to be_nil
     end
 
-    it 'favors license file with no extension' do
-      repository.commit_file(user, 'LICENSE', Licensee::License.new('mit').content, 'Add LICENSE', 'master', false)
-      repository.commit_file(user, 'LICENSE.md', Licensee::License.new('mit').content, 'Add LICENSE.md', 'master', false)
+    it 'detects license file with no recognizable open-source license content' do
+      repository.commit_file(user, 'LICENSE', 'Copyright!', 'Add LICENSE', 'master', false)
 
       expect(repository.license_blob.name).to eq('LICENSE')
     end
 
-    it 'favors .md file to .txt' do
-      repository.commit_file(user, 'LICENSE.md', Licensee::License.new('mit').content, 'Add LICENSE.md', 'master', false)
-      repository.commit_file(user, 'LICENSE.txt', Licensee::License.new('mit').content, 'Add LICENSE.txt', 'master', false)
+    %w[LICENSE LICENCE LiCensE LICENSE.md LICENSE.foo COPYING COPYING.md].each do |filename|
+      it "detects '#{filename}'" do
+        repository.commit_file(user, filename, Licensee::License.new('mit').content, "Add #{filename}", 'master', false)
 
-      expect(repository.license_blob.name).to eq('LICENSE.md')
-    end
-
-    it 'favors LICENCE to LICENSE' do
-      repository.commit_file(user, 'LICENSE', Licensee::License.new('mit').content, 'Add LICENSE', 'master', false)
-      repository.commit_file(user, 'LICENCE', Licensee::License.new('mit').content, 'Add LICENCE', 'master', false)
-
-      expect(repository.license_blob.name).to eq('LICENCE')
-    end
-
-    it 'favors LICENSE to COPYING' do
-      repository.commit_file(user, 'LICENSE', Licensee::License.new('mit').content, 'Add LICENSE', 'master', false)
-      repository.commit_file(user, 'COPYING', Licensee::License.new('mit').content, 'Add COPYING', 'master', false)
-
-      expect(repository.license_blob.name).to eq('LICENSE')
-    end
-
-    it 'favors LICENCE to COPYING' do
-      repository.commit_file(user, 'LICENCE', Licensee::License.new('mit').content, 'Add LICENCE', 'master', false)
-      repository.commit_file(user, 'COPYING', Licensee::License.new('mit').content, 'Add COPYING', 'master', false)
-
-      expect(repository.license_blob.name).to eq('LICENCE')
+        expect(repository.license_blob.name).to eq(filename)
+      end
     end
   end
 
@@ -190,8 +204,14 @@ describe Repository, models: true do
       repository.remove_file(user, 'LICENSE', 'Remove LICENSE', 'master')
     end
 
-    it 'returns "no-license" when no license is detected' do
-      expect(repository.license_key).to eq('no-license')
+    it 'returns nil when no license is detected' do
+      expect(repository.license_key).to be_nil
+    end
+
+    it 'detects license file with no recognizable open-source license content' do
+      repository.commit_file(user, 'LICENSE', 'Copyright!', 'Add LICENSE', 'master', false)
+
+      expect(repository.license_key).to be_nil
     end
 
     it 'returns the license key' do
@@ -541,7 +561,7 @@ describe Repository, models: true do
   end
 
   describe :skip_merged_commit do
-    subject { repository.commits(Gitlab::Git::BRANCH_REF_PREFIX + "'test'", nil, 100, 0, true).map{ |k| k.id } }
+    subject { repository.commits(Gitlab::Git::BRANCH_REF_PREFIX + "'test'", limit: 100, skip_merges: true).map{ |k| k.id } }
 
     it { is_expected.not_to include('e56497bb5f03a90a51293fc6d516788730953899') }
   end
@@ -775,6 +795,16 @@ describe Repository, models: true do
 
   end
 
+  describe "#copy_gitattributes" do
+    it 'returns true with a valid ref' do
+      expect(repository.copy_gitattributes('master')).to be_truthy
+    end
+
+    it 'returns false with an invalid ref' do
+      expect(repository.copy_gitattributes('invalid')).to be_falsey
+    end
+  end
+
   describe "#main_language" do
     it 'shows the main language of the project' do
       expect(repository.main_language).to eq("Ruby")
@@ -828,13 +858,30 @@ describe Repository, models: true do
   end
 
   describe '#add_tag' do
-    it 'adds a tag' do
-      expect(repository).to receive(:before_push_tag)
+    context 'with a valid target' do
+      let(:user) { build_stubbed(:user) }
 
-      expect_any_instance_of(Gitlab::Shell).to receive(:add_tag).
-        with(repository.path_with_namespace, '8.5', 'master', 'foo')
+      it 'creates the tag using rugged' do
+        expect(repository.rugged.tags).to receive(:create).
+          with('8.5', repository.commit('master').id,
+            hash_including(message: 'foo',
+                           tagger: hash_including(name: user.name, email: user.email))).
+          and_call_original
 
-      repository.add_tag('8.5', 'master', 'foo')
+        repository.add_tag(user, '8.5', 'master', 'foo')
+      end
+
+      it 'returns a Gitlab::Git::Tag object' do
+        tag = repository.add_tag(user, '8.5', 'master', 'foo')
+
+        expect(tag).to be_a(Gitlab::Git::Tag)
+      end
+    end
+
+    context 'with an invalid target' do
+      it 'returns false' do
+        expect(repository.add_tag(user, '8.5', 'bar', 'foo')).to be false
+      end
     end
   end
 

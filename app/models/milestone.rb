@@ -1,18 +1,3 @@
-# == Schema Information
-#
-# Table name: milestones
-#
-#  id          :integer          not null, primary key
-#  title       :string(255)      not null
-#  project_id  :integer          not null
-#  description :text
-#  due_date    :date
-#  created_at  :datetime
-#  updated_at  :datetime
-#  state       :string(255)
-#  iid         :integer
-#
-
 class Milestone < ActiveRecord::Base
   # Represents a "No Milestone" state used for filtering Issues and Merge
   # Requests that have no milestone assigned.
@@ -101,8 +86,18 @@ class Milestone < ActiveRecord::Base
     @link_reference_pattern ||= super("milestones", /(?<milestone>\d+)/)
   end
 
-  def self.upcoming
-    self.where('due_date > ?', Time.now).reorder(due_date: :asc).first
+  def self.upcoming_ids_by_projects(projects)
+    rel = unscoped.of_projects(projects).active.where('due_date > ?', Time.now)
+
+    if Gitlab::Database.postgresql?
+      rel.order(:project_id, :due_date).select('DISTINCT ON (project_id) id')
+    else
+      rel.
+        group(:project_id).
+        having('due_date = MIN(due_date)').
+        pluck(:id, :project_id, :due_date).
+        map(&:first)
+    end
   end
 
   ##
@@ -159,6 +154,10 @@ class Milestone < ActiveRecord::Base
 
   def author_id
     nil
+  end
+
+  def title=(value)
+    write_attribute(:title, Sanitize.clean(value.to_s)) if value.present?
   end
 
   # Sorts the issues for the given IDs.

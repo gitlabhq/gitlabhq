@@ -7,9 +7,7 @@ module Projects
     DELETED_FLAG = '+deleted'
 
     def pending_delete!
-      project.update_attribute(:pending_delete, true)
-
-      ProjectDestroyWorker.perform_in(1.minute, project.id, current_user.id, params)
+      project.schedule_delete!(current_user.id, params)
     end
 
     def execute
@@ -28,6 +26,10 @@ module Projects
       Project.transaction do
         project.destroy!
 
+        unless remove_registry_tags
+          raise_error('Failed to remove project container registry. Please try again or contact administrator')
+        end
+
         unless remove_repository(repo_path)
           raise_error('Failed to remove project repository. Please try again or contact administrator')
         end
@@ -37,7 +39,7 @@ module Projects
         end
       end
 
-      log_info("Project \"#{project.name}\" was removed")
+      log_info("Project \"#{project.path_with_namespace}\" was removed")
       system_hook_service.execute_hooks_for(project, :destroy)
       true
     end
@@ -59,6 +61,12 @@ module Projects
       else
         false
       end
+    end
+
+    def remove_registry_tags
+      return true unless Gitlab.config.registry.enabled
+
+      project.container_registry_repository.delete_tags
     end
 
     def raise_error(message)

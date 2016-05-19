@@ -61,7 +61,33 @@ describe Statuseable do
         let(:statuses) do
           [create(type, status: :success), create(type, status: :canceled)]
         end
+
+        it { is_expected.to eq 'canceled' }
+      end
+
+      context 'one failed and one canceled' do
+        let(:statuses) do
+          [create(type, status: :failed), create(type, status: :canceled)]
+        end
+
         it { is_expected.to eq 'failed' }
+      end
+
+      context 'one failed but allowed to fail and one canceled' do
+        let(:statuses) do
+          [create(type, status: :failed, allow_failure: true),
+           create(type, status: :canceled)]
+        end
+
+        it { is_expected.to eq 'canceled' }
+      end
+
+      context 'one running one canceled' do
+        let(:statuses) do
+          [create(type, status: :running), create(type, status: :canceled)]
+        end
+
+        it { is_expected.to eq 'running' }
       end
 
       context 'all canceled' do

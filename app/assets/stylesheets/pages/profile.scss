@@ -18,7 +18,8 @@
 }
 
 .account-btn-link,
-.profile-settings-sidebar a {
+.profile-settings-sidebar a,
+.settings-sidebar a {
   color: $md-link-color;
 }
 
@@ -123,12 +124,6 @@
   }
 }
 
-.key-icon {
-  color: $ssh-key-icon-color;
-  font-size: $ssh-key-icon-size;
-  line-height: 42px;
-}
-
 .key-created-at {
   line-height: 42px;
 }
@@ -180,14 +175,6 @@
   }
 }
 
-.profile-settings-message {
-  line-height: 32px;
-  color: $warning-message-color;
-  background-color: $warning-message-bg;
-  border: 1px solid $warning-message-border;
-  border-radius: $border-radius-base;
-}
-
 .oauth-applications {
   form {
     display: inline-block;
@@ -216,5 +203,23 @@
   .crop-controls {
     padding: 10px 0 0;
     text-align: center;
+  }
+}
+
+.user-profile {
+  @media (max-width: $screen-xs-max) {
+    .cover-block {
+      padding-top: 20px;
+    }
+
+    .cover-controls {
+      position: static;
+      margin-bottom: 20px;
+
+      .btn {
+        display: inline-block;
+        width: 46%;
+      }
+    }
   }
 }

@@ -1,23 +1,3 @@
-# == Schema Information
-#
-# Table name: web_hooks
-#
-#  id                      :integer          not null, primary key
-#  url                     :string(2000)
-#  project_id              :integer
-#  created_at              :datetime
-#  updated_at              :datetime
-#  type                    :string           default("ProjectHook")
-#  service_id              :integer
-#  push_events             :boolean          default(TRUE), not null
-#  issues_events           :boolean          default(FALSE), not null
-#  merge_requests_events   :boolean          default(FALSE), not null
-#  tag_push_events         :boolean          default(FALSE)
-#  note_events             :boolean          default(FALSE), not null
-#  enable_ssl_verification :boolean          default(TRUE)
-#  build_events            :boolean          default(FALSE), not null
-#
-
 class WebHook < ActiveRecord::Base
   include Sortable
   include HTTParty
@@ -43,28 +23,22 @@ class WebHook < ActiveRecord::Base
     if parsed_url.userinfo.blank?
       response = WebHook.post(url,
                               body: data.to_json,
-                              headers: {
-                                  "Content-Type" => "application/json",
-                                  "X-Gitlab-Event" => hook_name.singularize.titleize
-                              },
+                              headers: build_headers(hook_name),
                               verify: enable_ssl_verification)
     else
-      post_url = url.gsub("#{parsed_url.userinfo}@", "")
+      post_url = url.gsub("#{parsed_url.userinfo}@", '')
       auth = {
         username: CGI.unescape(parsed_url.user),
         password: CGI.unescape(parsed_url.password),
       }
       response = WebHook.post(post_url,
                               body: data.to_json,
-                              headers: {
-                                  "Content-Type" => "application/json",
-                                  "X-Gitlab-Event" => hook_name.singularize.titleize
-                              },
+                              headers: build_headers(hook_name),
                               verify: enable_ssl_verification,
                               basic_auth: auth)
     end
 
-    [(response.code >= 200 && response.code < 300), ActionView::Base.full_sanitizer.sanitize(response.to_s)]
+    [response.code, response.to_s]
   rescue SocketError, OpenSSL::SSL::SSLError, Errno::ECONNRESET, Errno::ECONNREFUSED, Net::OpenTimeout => e
     logger.error("WebHook Error => #{e}")
     [false, e.to_s]
@@ -72,5 +46,16 @@ class WebHook < ActiveRecord::Base
 
   def async_execute(data, hook_name)
     Sidekiq::Client.enqueue(ProjectWebHookWorker, id, data, hook_name)
+  end
+
+  private
+
+  def build_headers(hook_name)
+    headers = {
+      'Content-Type' => 'application/json',
+      'X-Gitlab-Event' => hook_name.singularize.titleize
+    }
+    headers['X-Gitlab-Token'] = token if token.present?
+    headers
   end
 end

@@ -117,7 +117,7 @@ class ApplicationController < ActionController::Base
   end
 
   def after_sign_out_path_for(resource)
-    current_application_settings.after_sign_out_path || new_user_session_path
+    current_application_settings.after_sign_out_path.presence || new_user_session_path
   end
 
   def abilities
@@ -176,7 +176,7 @@ class ApplicationController < ActionController::Base
   end
 
   def check_password_expiration
-    if current_user && current_user.password_expires_at && current_user.password_expires_at < Time.now  && !current_user.ldap_user?
+    if current_user && current_user.password_expires_at && current_user.password_expires_at < Time.now && !current_user.ldap_user?
       redirect_to new_profile_password_path and return
     end
   end

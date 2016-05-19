@@ -1,24 +1,3 @@
-# == Schema Information
-#
-# Table name: notes
-#
-#  id            :integer          not null, primary key
-#  note          :text
-#  noteable_type :string(255)
-#  author_id     :integer
-#  created_at    :datetime
-#  updated_at    :datetime
-#  project_id    :integer
-#  attachment    :string(255)
-#  line_code     :string(255)
-#  commit_id     :string(255)
-#  noteable_id   :integer
-#  system        :boolean          default(FALSE), not null
-#  st_diff       :text
-#  updated_by_id :integer
-#  is_award      :boolean          default(FALSE), not null
-#
-
 require 'spec_helper'
 
 describe Note, models: true do
@@ -52,24 +31,6 @@ describe Note, models: true do
 
     it "should be recognized by #for_commit?" do
       expect(note).to be_for_commit
-    end
-  end
-
-  describe "Commit diff line notes" do
-    let!(:note) { create(:note_on_commit_diff, note: "+1 from me") }
-    let!(:commit) { note.noteable }
-
-    it "should save a valid note" do
-      expect(note.commit_id).to eq(commit.id)
-      expect(note.noteable.id).to eq(commit.id)
-    end
-
-    it "should be recognized by #for_diff_line?" do
-      expect(note).to be_for_diff_line
-    end
-
-    it "should be recognized by #for_commit_diff_line?" do
-      expect(note).to be_for_commit_diff_line
     end
   end
 
@@ -169,66 +130,6 @@ describe Note, models: true do
     end
   end
 
-  describe '#active?' do
-    it 'is always true when the note has no associated diff' do
-      note = build(:note)
-
-      expect(note).to receive(:diff).and_return(nil)
-
-      expect(note).to be_active
-    end
-
-    it 'is never true when the note has no noteable associated' do
-      note = build(:note)
-
-      expect(note).to receive(:diff).and_return(double)
-      expect(note).to receive(:noteable).and_return(nil)
-
-      expect(note).not_to be_active
-    end
-
-    it 'returns the memoized value if defined' do
-      note = build(:note)
-
-      expect(note).to receive(:diff).and_return(double)
-      expect(note).to receive(:noteable).and_return(double)
-
-      note.instance_variable_set(:@active, 'foo')
-      expect(note).not_to receive(:find_noteable_diff)
-
-      expect(note.active?).to eq 'foo'
-    end
-
-    context 'for a merge request noteable' do
-      it 'is false when noteable has no matching diff' do
-        merge = build_stubbed(:merge_request, :simple)
-        note = build(:note, noteable: merge)
-
-        allow(note).to receive(:diff).and_return(double)
-        expect(note).to receive(:find_noteable_diff).and_return(nil)
-
-        expect(note).not_to be_active
-      end
-
-      it 'is true when noteable has a matching diff' do
-        merge = create(:merge_request, :simple)
-
-        # Generate a real line_code value so we know it will match. We use a
-        # random line from a random diff just for funsies.
-        diff = merge.diffs.to_a.sample
-        line = Gitlab::Diff::Parser.new.parse(diff.diff.each_line).to_a.sample
-        code = Gitlab::Diff::LineCode.generate(diff.new_path, line.new_pos, line.old_pos)
-
-        # We're persisting in order to trigger the set_diff callback
-        note = create(:note, noteable: merge, line_code: code)
-
-        # Make sure we don't get a false positive from a guard clause
-        expect(note).to receive(:find_noteable_diff).and_call_original
-        expect(note).to be_active
-      end
-    end
-  end
-
   describe "editable?" do
     it "returns true" do
       note = build(:note)
@@ -279,7 +180,7 @@ describe Note, models: true do
     end
 
     it "is not an award emoji when comment is on a diff" do
-      note = create(:note, note: ":blowfish:", noteable: merge_request, line_code: "11d5d2e667e9da4f7f610f81d86c974b146b13bd_0_2")
+      note = create(:note_on_merge_request_diff, note: ":blowfish:", noteable: merge_request, line_code: "11d5d2e667e9da4f7f610f81d86c974b146b13bd_0_2")
       note = note.reload
 
       expect(note.note).to eq(":blowfish:")

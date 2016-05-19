@@ -36,6 +36,12 @@ module Subscribable
       update(subscribed: !subscribed?(user))
   end
 
+  def subscribe(user)
+    subscriptions.
+      find_or_initialize_by(user_id: user.id).
+      update(subscribed: true)
+  end
+
   def unsubscribe(user)
     subscriptions.
       find_or_initialize_by(user_id: user.id).

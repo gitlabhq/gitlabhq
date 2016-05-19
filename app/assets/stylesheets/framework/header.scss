@@ -6,12 +6,12 @@ header {
   transition-duration: .3s;
 
   &.navbar-empty {
-    height: 58px;
+    height: $header-height;
     background: #fff;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid $btn-gray-hover;
 
     .center-logo {
-      margin: 11px 0;
+      margin: 8px 0;
       text-align: center;
 
       #tanuki-logo, img {
@@ -22,13 +22,21 @@ header {
   }
 
   &.navbar-gitlab {
-    padding: 0 20px;
+    padding: 0 16px;
     z-index: 100;
     margin-bottom: 0;
-    min-height: $header-height;
-    background-color: #fff;
+    height: $header-height;
+    background-color: $background-color;
     border: none;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid $border-color;
+
+    @media (max-width: $screen-xs-min) {
+      padding: 0 16px;
+    }
+
+    &.with-horizontal-nav {
+      border-bottom: none;
+    }
 
     .container-fluid {
       width: 100% !important;
@@ -47,7 +55,7 @@ header {
         text-align: center;
 
         &:hover, &:focus, &:active {
-          background-color: #fff;
+          background-color: $background-color;
         }
       }
 
@@ -56,14 +64,42 @@ header {
         margin: 6px 0;
         border-radius: 0;
         position: absolute;
-        right: 2px;
+        right: -10px;
+        padding: 6px 10px;
 
         &:hover {
-          background-color: #eee;
+          background-color: $btn-gray-hover;
         }
+
         &.active {
           color: $gl-icon-color;
         }
+      }
+    }
+
+    &.header-collapsed {
+      padding: 0 16px;
+    }
+
+    .side-nav-toggle {
+      display: none;
+      position: absolute;
+      left: -10px;
+      margin: 6px 0;
+      padding: 6px 10px;
+      border: none;
+      background-color: $background-color;
+
+      &:hover {
+        background-color: $btn-gray-hover;
+      }
+
+      &:focus {
+        outline: none;
+      }
+
+      @media (max-width: $screen-xs-min) {
+        display: block;
       }
     }
   }
@@ -72,6 +108,10 @@ header {
     position: relative;
     height: $header-height;
     padding-right: 40px;
+
+    @media (max-width: $screen-xs-min) {
+      padding-left: 40px;
+    }
 
     @media (min-width: $screen-sm-min) {
       padding-right: 0;
@@ -141,6 +181,10 @@ header {
   @media (min-width: $screen-md-min) {
     @include collapsed-header;
   }
+
+  @media (max-width: $screen-xs-min) {
+    margin-left: 0;
+  }
 }
 
 .header-expanded {
@@ -148,6 +192,10 @@ header {
 
   @media (min-width: $screen-md-min) {
     margin-left: $sidebar_width;
+  }
+
+  @media (max-width: $screen-xs-min) {
+    margin-left: 0;
   }
 }
 

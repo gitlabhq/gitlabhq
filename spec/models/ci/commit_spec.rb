@@ -1,21 +1,3 @@
-# == Schema Information
-#
-# Table name: ci_commits
-#
-#  id            :integer          not null, primary key
-#  project_id    :integer
-#  ref           :string(255)
-#  sha           :string(255)
-#  before_sha    :string(255)
-#  push_data     :text
-#  created_at    :datetime
-#  updated_at    :datetime
-#  tag           :boolean          default(FALSE)
-#  yaml_errors   :text
-#  committed_at  :datetime
-#  gl_project_id :integer
-#
-
 require 'spec_helper'
 
 describe Ci::Commit, models: true do
@@ -158,97 +140,123 @@ describe Ci::Commit, models: true do
         stub_ci_commit_yaml_file(YAML.dump(yaml))
       end
 
-      it 'properly creates builds' do
-        expect(create_builds).to be_truthy
-        expect(commit.builds.pluck(:name)).to contain_exactly('build')
-        expect(commit.builds.pluck(:status)).to contain_exactly('pending')
-        commit.builds.running_or_pending.each(&:success)
+      context 'when builds are successful' do
+        it 'properly creates builds' do
+          expect(create_builds).to be_truthy
+          expect(commit.builds.pluck(:name)).to contain_exactly('build')
+          expect(commit.builds.pluck(:status)).to contain_exactly('pending')
+          commit.builds.running_or_pending.each(&:success)
 
-        expect(commit.builds.pluck(:name)).to contain_exactly('build', 'test')
-        expect(commit.builds.pluck(:status)).to contain_exactly('success', 'pending')
-        commit.builds.running_or_pending.each(&:success)
+          expect(commit.builds.pluck(:name)).to contain_exactly('build', 'test')
+          expect(commit.builds.pluck(:status)).to contain_exactly('success', 'pending')
+          commit.builds.running_or_pending.each(&:success)
 
-        expect(commit.builds.pluck(:status)).to contain_exactly('success', 'success', 'pending')
-        expect(commit.builds.pluck(:name)).to contain_exactly('build', 'test', 'deploy')
-        commit.builds.running_or_pending.each(&:success)
+          expect(commit.builds.pluck(:name)).to contain_exactly('build', 'test', 'deploy')
+          expect(commit.builds.pluck(:status)).to contain_exactly('success', 'success', 'pending')
+          commit.builds.running_or_pending.each(&:success)
 
-        expect(commit.builds.pluck(:name)).to contain_exactly('build', 'test', 'deploy', 'cleanup')
-        expect(commit.builds.pluck(:status)).to contain_exactly('success', 'success', 'success', 'pending')
-        commit.builds.running_or_pending.each(&:success)
+          expect(commit.builds.pluck(:name)).to contain_exactly('build', 'test', 'deploy', 'cleanup')
+          expect(commit.builds.pluck(:status)).to contain_exactly('success', 'success', 'success', 'pending')
+          commit.builds.running_or_pending.each(&:success)
 
-        expect(commit.builds.pluck(:status)).to contain_exactly('success', 'success', 'success', 'success')
-        commit.reload
-        expect(commit.status).to eq('success')
+          expect(commit.builds.pluck(:status)).to contain_exactly('success', 'success', 'success', 'success')
+          commit.reload
+          expect(commit.status).to eq('success')
+        end
       end
 
-      it 'properly creates builds when test fails' do
-        expect(create_builds).to be_truthy
-        expect(commit.builds.pluck(:name)).to contain_exactly('build')
-        expect(commit.builds.pluck(:status)).to contain_exactly('pending')
-        commit.builds.running_or_pending.each(&:success)
+      context 'when test job fails' do
+        it 'properly creates builds' do
+          expect(create_builds).to be_truthy
+          expect(commit.builds.pluck(:name)).to contain_exactly('build')
+          expect(commit.builds.pluck(:status)).to contain_exactly('pending')
+          commit.builds.running_or_pending.each(&:success)
 
-        expect(commit.builds.pluck(:name)).to contain_exactly('build', 'test')
-        expect(commit.builds.pluck(:status)).to contain_exactly('success', 'pending')
-        commit.builds.running_or_pending.each(&:drop)
+          expect(commit.builds.pluck(:name)).to contain_exactly('build', 'test')
+          expect(commit.builds.pluck(:status)).to contain_exactly('success', 'pending')
+          commit.builds.running_or_pending.each(&:drop)
 
-        expect(commit.builds.pluck(:name)).to contain_exactly('build', 'test', 'test_failure')
-        expect(commit.builds.pluck(:status)).to contain_exactly('success', 'failed', 'pending')
-        commit.builds.running_or_pending.each(&:success)
+          expect(commit.builds.pluck(:name)).to contain_exactly('build', 'test', 'test_failure')
+          expect(commit.builds.pluck(:status)).to contain_exactly('success', 'failed', 'pending')
+          commit.builds.running_or_pending.each(&:success)
 
-        expect(commit.builds.pluck(:name)).to contain_exactly('build', 'test', 'test_failure', 'cleanup')
-        expect(commit.builds.pluck(:status)).to contain_exactly('success', 'failed', 'success', 'pending')
-        commit.builds.running_or_pending.each(&:success)
+          expect(commit.builds.pluck(:name)).to contain_exactly('build', 'test', 'test_failure', 'cleanup')
+          expect(commit.builds.pluck(:status)).to contain_exactly('success', 'failed', 'success', 'pending')
+          commit.builds.running_or_pending.each(&:success)
 
-        expect(commit.builds.pluck(:status)).to contain_exactly('success', 'failed', 'success', 'success')
-        commit.reload
-        expect(commit.status).to eq('failed')
+          expect(commit.builds.pluck(:status)).to contain_exactly('success', 'failed', 'success', 'success')
+          commit.reload
+          expect(commit.status).to eq('failed')
+        end
       end
 
-      it 'properly creates builds when test and test_failure fails' do
-        expect(create_builds).to be_truthy
-        expect(commit.builds.pluck(:name)).to contain_exactly('build')
-        expect(commit.builds.pluck(:status)).to contain_exactly('pending')
-        commit.builds.running_or_pending.each(&:success)
+      context 'when test and test_failure jobs fail' do
+        it 'properly creates builds' do
+          expect(create_builds).to be_truthy
+          expect(commit.builds.pluck(:name)).to contain_exactly('build')
+          expect(commit.builds.pluck(:status)).to contain_exactly('pending')
+          commit.builds.running_or_pending.each(&:success)
 
-        expect(commit.builds.pluck(:name)).to contain_exactly('build', 'test')
-        expect(commit.builds.pluck(:status)).to contain_exactly('success', 'pending')
-        commit.builds.running_or_pending.each(&:drop)
+          expect(commit.builds.pluck(:name)).to contain_exactly('build', 'test')
+          expect(commit.builds.pluck(:status)).to contain_exactly('success', 'pending')
+          commit.builds.running_or_pending.each(&:drop)
 
-        expect(commit.builds.pluck(:name)).to contain_exactly('build', 'test', 'test_failure')
-        expect(commit.builds.pluck(:status)).to contain_exactly('success', 'failed', 'pending')
-        commit.builds.running_or_pending.each(&:drop)
+          expect(commit.builds.pluck(:name)).to contain_exactly('build', 'test', 'test_failure')
+          expect(commit.builds.pluck(:status)).to contain_exactly('success', 'failed', 'pending')
+          commit.builds.running_or_pending.each(&:drop)
 
-        expect(commit.builds.pluck(:name)).to contain_exactly('build', 'test', 'test_failure', 'cleanup')
-        expect(commit.builds.pluck(:status)).to contain_exactly('success', 'failed', 'failed', 'pending')
-        commit.builds.running_or_pending.each(&:success)
+          expect(commit.builds.pluck(:name)).to contain_exactly('build', 'test', 'test_failure', 'cleanup')
+          expect(commit.builds.pluck(:status)).to contain_exactly('success', 'failed', 'failed', 'pending')
+          commit.builds.running_or_pending.each(&:success)
 
-        expect(commit.builds.pluck(:name)).to contain_exactly('build', 'test', 'test_failure', 'cleanup')
-        expect(commit.builds.pluck(:status)).to contain_exactly('success', 'failed', 'failed', 'success')
-        commit.reload
-        expect(commit.status).to eq('failed')
+          expect(commit.builds.pluck(:name)).to contain_exactly('build', 'test', 'test_failure', 'cleanup')
+          expect(commit.builds.pluck(:status)).to contain_exactly('success', 'failed', 'failed', 'success')
+          commit.reload
+          expect(commit.status).to eq('failed')
+        end
       end
 
-      it 'properly creates builds when deploy fails' do
-        expect(create_builds).to be_truthy
-        expect(commit.builds.pluck(:name)).to contain_exactly('build')
-        expect(commit.builds.pluck(:status)).to contain_exactly('pending')
-        commit.builds.running_or_pending.each(&:success)
+      context 'when deploy job fails' do
+        it 'properly creates builds' do
+          expect(create_builds).to be_truthy
+          expect(commit.builds.pluck(:name)).to contain_exactly('build')
+          expect(commit.builds.pluck(:status)).to contain_exactly('pending')
+          commit.builds.running_or_pending.each(&:success)
 
-        expect(commit.builds.pluck(:name)).to contain_exactly('build', 'test')
-        expect(commit.builds.pluck(:status)).to contain_exactly('success', 'pending')
-        commit.builds.running_or_pending.each(&:success)
+          expect(commit.builds.pluck(:name)).to contain_exactly('build', 'test')
+          expect(commit.builds.pluck(:status)).to contain_exactly('success', 'pending')
+          commit.builds.running_or_pending.each(&:success)
 
-        expect(commit.builds.pluck(:name)).to contain_exactly('build', 'test', 'deploy')
-        expect(commit.builds.pluck(:status)).to contain_exactly('success', 'success', 'pending')
-        commit.builds.running_or_pending.each(&:drop)
+          expect(commit.builds.pluck(:name)).to contain_exactly('build', 'test', 'deploy')
+          expect(commit.builds.pluck(:status)).to contain_exactly('success', 'success', 'pending')
+          commit.builds.running_or_pending.each(&:drop)
 
-        expect(commit.builds.pluck(:name)).to contain_exactly('build', 'test', 'deploy', 'cleanup')
-        expect(commit.builds.pluck(:status)).to contain_exactly('success', 'success', 'failed', 'pending')
-        commit.builds.running_or_pending.each(&:success)
+          expect(commit.builds.pluck(:name)).to contain_exactly('build', 'test', 'deploy', 'cleanup')
+          expect(commit.builds.pluck(:status)).to contain_exactly('success', 'success', 'failed', 'pending')
+          commit.builds.running_or_pending.each(&:success)
 
-        expect(commit.builds.pluck(:status)).to contain_exactly('success', 'success', 'failed', 'success')
-        commit.reload
-        expect(commit.status).to eq('failed')
+          expect(commit.builds.pluck(:status)).to contain_exactly('success', 'success', 'failed', 'success')
+          commit.reload
+          expect(commit.status).to eq('failed')
+        end
+      end
+
+      context 'when build is canceled in the second stage' do
+        it 'does not schedule builds after build has been canceled' do
+          expect(create_builds).to be_truthy
+          expect(commit.builds.pluck(:name)).to contain_exactly('build')
+          expect(commit.builds.pluck(:status)).to contain_exactly('pending')
+          commit.builds.running_or_pending.each(&:success)
+
+          expect(commit.builds.running_or_pending).to_not be_empty
+
+          expect(commit.builds.pluck(:name)).to contain_exactly('build', 'test')
+          expect(commit.builds.pluck(:status)).to contain_exactly('success', 'pending')
+          commit.builds.running_or_pending.each(&:cancel)
+
+          expect(commit.builds.running_or_pending).to be_empty
+          expect(commit.reload.status).to eq('canceled')
+        end
       end
     end
   end

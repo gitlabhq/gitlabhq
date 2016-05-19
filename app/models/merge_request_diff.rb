@@ -1,16 +1,3 @@
-# == Schema Information
-#
-# Table name: merge_request_diffs
-#
-#  id               :integer          not null, primary key
-#  state            :string(255)
-#  st_commits       :text
-#  st_diffs         :text
-#  merge_request_id :integer          not null
-#  created_at       :datetime
-#  updated_at       :datetime
-#
-
 class MergeRequestDiff < ActiveRecord::Base
   include Sortable
 
@@ -19,7 +6,7 @@ class MergeRequestDiff < ActiveRecord::Base
 
   belongs_to :merge_request
 
-  delegate :target_branch, :source_branch, to: :merge_request, prefix: nil
+  delegate :head_source_sha, :target_branch, :source_branch, to: :merge_request, prefix: nil
 
   state_machine :state, initial: :empty do
     state :collected
@@ -51,8 +38,8 @@ class MergeRequestDiff < ActiveRecord::Base
       @diffs_no_whitespace ||= begin
         compare = Gitlab::Git::Compare.new(
           self.repository.raw_repository,
-          self.target_branch,
-          self.source_sha,
+          self.base,
+          self.head,
         )
         compare.diffs(options)
       end
@@ -157,7 +144,7 @@ class MergeRequestDiff < ActiveRecord::Base
 
     self.st_diffs = new_diffs
 
-    self.base_commit_sha = self.repository.merge_base(self.source_sha, self.target_branch)
+    self.base_commit_sha = self.repository.merge_base(self.head, self.base)
 
     self.save
   end
@@ -173,8 +160,22 @@ class MergeRequestDiff < ActiveRecord::Base
   end
 
   def source_sha
+    return head_source_sha if head_source_sha.present?
+
     source_commit = merge_request.source_project.commit(source_branch)
     source_commit.try(:sha)
+  end
+
+  def target_sha
+    merge_request.target_sha
+  end
+
+  def base
+    self.target_sha || self.target_branch
+  end
+
+  def head
+    self.source_sha
   end
 
   def compare
@@ -185,8 +186,8 @@ class MergeRequestDiff < ActiveRecord::Base
 
         Gitlab::Git::Compare.new(
           self.repository.raw_repository,
-          self.target_branch,
-          self.source_sha
+          self.base,
+          self.head
         )
       end
   end

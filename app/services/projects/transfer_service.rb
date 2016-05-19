@@ -34,6 +34,13 @@ module Projects
           raise TransferError.new("Project with same path in target namespace already exists")
         end
 
+        if project.has_container_registry_tags?
+          # we currently doesn't support renaming repository if it contains tags in container registry
+          raise TransferError.new('Project cannot be transferred, because tags are present in its container registry')
+        end
+
+        project.expire_caches_before_rename(old_path)
+
         # Apply new namespace id and visibility level
         project.namespace = new_namespace
         project.visibility_level = new_namespace.visibility_level unless project.visibility_level_allowed_by_group?

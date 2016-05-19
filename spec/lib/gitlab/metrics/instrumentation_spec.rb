@@ -56,9 +56,6 @@ describe Gitlab::Metrics::Instrumentation do
         allow(described_class).to receive(:transaction).
           and_return(transaction)
 
-        expect(transaction).to receive(:increment).
-          with(:method_duration, a_kind_of(Numeric))
-
         expect(transaction).to receive(:add_metric).
           with(described_class::SERIES, an_instance_of(Hash),
                method: 'Dummy.foo')
@@ -138,9 +135,6 @@ describe Gitlab::Metrics::Instrumentation do
 
         allow(described_class).to receive(:transaction).
           and_return(transaction)
-
-        expect(transaction).to receive(:increment).
-          with(:method_duration, a_kind_of(Numeric))
 
         expect(transaction).to receive(:add_metric).
           with(described_class::SERIES, an_instance_of(Hash),

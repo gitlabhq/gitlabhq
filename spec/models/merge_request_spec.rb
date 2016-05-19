@@ -1,32 +1,3 @@
-# == Schema Information
-#
-# Table name: merge_requests
-#
-#  id                        :integer          not null, primary key
-#  target_branch             :string(255)      not null
-#  source_branch             :string(255)      not null
-#  source_project_id         :integer          not null
-#  author_id                 :integer
-#  assignee_id               :integer
-#  title                     :string(255)
-#  created_at                :datetime
-#  updated_at                :datetime
-#  milestone_id              :integer
-#  state                     :string(255)
-#  merge_status              :string(255)
-#  target_project_id         :integer          not null
-#  iid                       :integer
-#  description               :text
-#  position                  :integer          default(0)
-#  locked_at                 :datetime
-#  updated_by_id             :integer
-#  merge_error               :string(255)
-#  merge_params              :text
-#  merge_when_build_succeeds :boolean          default(FALSE), not null
-#  merge_user_id             :integer
-#  merge_commit_sha          :string
-#
-
 require 'spec_helper'
 
 describe MergeRequest, models: true do
@@ -93,7 +64,13 @@ describe MergeRequest, models: true do
 
   describe '#target_sha' do
     context 'when the target branch does not exist anymore' do
-      subject { create(:merge_request).tap { |mr| mr.update_attribute(:target_branch, 'deleted') } }
+      let(:project) { create(:project) }
+
+      subject { create(:merge_request, source_project: project, target_project: project) }
+
+      before do
+        project.repository.raw_repository.delete_branch(subject.target_branch)
+      end
 
       it 'returns nil' do
         expect(subject.target_sha).to be_nil
@@ -318,7 +295,12 @@ describe MergeRequest, models: true do
     let(:fork_project) { create(:project, forked_from_project: project) }
 
     context 'when the target branch does not exist anymore' do
-      subject { create(:merge_request).tap { |mr| mr.update_attribute(:target_branch, 'deleted') } }
+      subject { create(:merge_request, source_project: project, target_project: project) }
+
+      before do
+        project.repository.raw_repository.delete_branch(subject.target_branch)
+        subject.reload
+      end
 
       it 'does not crash' do
         expect{ subject.diverged_commits_count }.not_to raise_error

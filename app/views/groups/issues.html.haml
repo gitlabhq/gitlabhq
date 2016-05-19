@@ -1,5 +1,4 @@
 - page_title "Issues"
-- header_title group_title(@group, "Issues", issues_group_path(@group))
 = content_for :meta_tags do
   - if current_user
     = auto_discovery_link_tag(:atom, issues_group_url(@group, format: :atom, private_token: current_user.private_token), title: "#{@group.name} issues")
@@ -16,7 +15,7 @@
 
 = render 'shared/issuable/filter', type: :issues
 
-.gray-content-block.second-block
+.row-content-block.second-block
   Only issues from
   %strong #{@group.name}
   group are listed here.

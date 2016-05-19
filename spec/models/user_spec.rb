@@ -1,66 +1,3 @@
-# == Schema Information
-#
-# Table name: users
-#
-#  id                          :integer          not null, primary key
-#  email                       :string(255)      default(""), not null
-#  encrypted_password          :string(255)      default(""), not null
-#  reset_password_token        :string(255)
-#  reset_password_sent_at      :datetime
-#  remember_created_at         :datetime
-#  sign_in_count               :integer          default(0)
-#  current_sign_in_at          :datetime
-#  last_sign_in_at             :datetime
-#  current_sign_in_ip          :string(255)
-#  last_sign_in_ip             :string(255)
-#  created_at                  :datetime
-#  updated_at                  :datetime
-#  name                        :string(255)
-#  admin                       :boolean          default(FALSE), not null
-#  projects_limit              :integer          default(10)
-#  skype                       :string(255)      default(""), not null
-#  linkedin                    :string(255)      default(""), not null
-#  twitter                     :string(255)      default(""), not null
-#  authentication_token        :string(255)
-#  theme_id                    :integer          default(1), not null
-#  bio                         :string(255)
-#  failed_attempts             :integer          default(0)
-#  locked_at                   :datetime
-#  username                    :string(255)
-#  can_create_group            :boolean          default(TRUE), not null
-#  can_create_team             :boolean          default(TRUE), not null
-#  state                       :string(255)
-#  color_scheme_id             :integer          default(1), not null
-#  notification_level          :integer          default(1), not null
-#  password_expires_at         :datetime
-#  created_by_id               :integer
-#  last_credential_check_at    :datetime
-#  avatar                      :string(255)
-#  confirmation_token          :string(255)
-#  confirmed_at                :datetime
-#  confirmation_sent_at        :datetime
-#  unconfirmed_email           :string(255)
-#  hide_no_ssh_key             :boolean          default(FALSE)
-#  website_url                 :string(255)      default(""), not null
-#  notification_email          :string(255)
-#  hide_no_password            :boolean          default(FALSE)
-#  password_automatically_set  :boolean          default(FALSE)
-#  location                    :string(255)
-#  encrypted_otp_secret        :string(255)
-#  encrypted_otp_secret_iv     :string(255)
-#  encrypted_otp_secret_salt   :string(255)
-#  otp_required_for_login      :boolean          default(FALSE), not null
-#  otp_backup_codes            :text
-#  public_email                :string(255)      default(""), not null
-#  dashboard                   :integer          default(0)
-#  project_view                :integer          default(0)
-#  consumed_timestep           :integer
-#  layout                      :integer          default(0)
-#  hide_project_limit          :boolean          default(FALSE)
-#  unlock_token                :string
-#  otp_grace_period_started_at :datetime
-#
-
 require 'spec_helper'
 
 describe User, models: true do
@@ -204,6 +141,7 @@ describe User, models: true do
   end
 
   describe '#confirm' do
+    before { allow(current_application_settings).to receive(:send_user_confirmation_email).and_return(true) }
     let(:user) { create(:user, confirmed_at: nil, unconfirmed_email: 'test@gitlab.com') }
 
     it 'returns unconfirmed' do
@@ -844,5 +782,24 @@ describe User, models: true do
     subject { user.authorized_projects }
 
     it { is_expected.to eq([private_project]) }
+  end
+
+  describe '#viewable_starred_projects' do
+    let(:user) { create(:user) }
+    let(:public_project) { create(:empty_project, :public) }
+    let(:private_project) { create(:empty_project, :private) }
+    let(:private_viewable_project) { create(:empty_project, :private) }
+
+    before do
+      private_viewable_project.team << [user, Gitlab::Access::MASTER]
+
+      [public_project, private_project, private_viewable_project].each do |project|
+        user.toggle_star(project)
+      end
+    end
+
+    it 'returns only starred projects the user can view' do
+      expect(user.viewable_starred_projects).not_to include(private_project)
+    end
   end
 end

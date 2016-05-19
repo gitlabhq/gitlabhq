@@ -23,7 +23,7 @@ module DiffHelper
   end
 
   def diff_options
-    options = { ignore_whitespace_change: params[:w] == '1' }
+    options = { ignore_whitespace_change: hide_whitespace? }
     if diff_hard_limit_enabled?
       options.merge!(Commit.max_diff_options)
     end
@@ -55,22 +55,18 @@ module DiffHelper
     end
   end
 
-  def line_comments
-    @line_comments ||= @line_notes.select(&:active?).sort_by(&:created_at).group_by(&:line_code)
-  end
+  def organize_comments(left, right)
+    notes_left = notes_right = nil
 
-  def organize_comments(type_left, type_right, line_code_left, line_code_right)
-    comments_left = comments_right = nil
-
-    unless type_left.nil? && type_right == 'new'
-      comments_left = line_comments[line_code_left]
+    unless left[:type].nil? && right[:type] == 'new'
+      notes_left = @grouped_diff_notes[left[:line_code]]
     end
 
-    unless type_left.nil? && type_right.nil?
-      comments_right = line_comments[line_code_right]
+    unless left[:type].nil? && right[:type].nil?
+      notes_right = @grouped_diff_notes[right[:line_code]]
     end
 
-    [comments_left, comments_right]
+    [notes_left, notes_right]
   end
 
   def inline_diff_btn
@@ -96,8 +92,8 @@ module DiffHelper
     ].join(' ').html_safe
   end
 
-  def commit_for_diff(diff)
-    if diff.deleted_file
+  def commit_for_diff(diff_file)
+    if diff_file.deleted_file
       @base_commit || @commit.parent || @commit
     else
       @commit
@@ -127,5 +123,32 @@ module DiffHelper
     link_to url_for(params_copy), id: "#{name}-diff-btn", class: (selected ? 'btn active' : 'btn'), data: { view_type: name } do
       title
     end
+  end
+
+  def commit_diff_whitespace_link(project, commit, options)
+    url = namespace_project_commit_path(project.namespace, project, commit.id, params_with_whitespace)
+    toggle_whitespace_link(url, options)
+  end
+
+  def diff_merge_request_whitespace_link(project, merge_request, options)
+    url = diffs_namespace_project_merge_request_path(project.namespace, project, merge_request, params_with_whitespace)
+    toggle_whitespace_link(url, options)
+  end
+
+  private
+
+  def hide_whitespace?
+    params[:w] == '1'
+  end
+
+  def params_with_whitespace
+    hide_whitespace? ? request.query_parameters.except(:w) : request.query_parameters.merge(w: 1)
+  end
+
+  def toggle_whitespace_link(url, options)
+    options[:class] ||= ''
+    options[:class] << ' btn btn-default'
+
+    link_to "#{hide_whitespace? ? 'Show' : 'Hide'} whitespace changes", url, class: options[:class]
   end
 end

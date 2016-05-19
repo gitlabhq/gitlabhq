@@ -109,10 +109,10 @@ ul.notes {
           border-color: darken(#f5f5f5, 8%);
           margin: 10px 0;
         }
-      }
 
-      a {
-        word-break: break-all;
+        code {
+          word-break: keep-all;
+        }
       }
     }
 
@@ -168,6 +168,11 @@ ul.notes {
       .notes {
         background-color: $white-light;
       }
+
+      a code {
+        top: 0;
+        margin-right: 0;
+      }
     }
   }
 }
@@ -211,7 +216,7 @@ ul.notes {
 }
 
 .discussion-actions {
-  @media (max-width: $screen-sm-max) {
+  @media (max-width: $screen-md-max) {
     float: none;
     margin-left: 0;
 
@@ -221,8 +226,7 @@ ul.notes {
   }
 }
 
-.note-action-button,
-.discussion-action-button {
+.note-action-button {
   display: inline-block;
   margin-left: 10px;
   line-height: 24px;

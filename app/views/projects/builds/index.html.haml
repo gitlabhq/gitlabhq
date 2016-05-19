@@ -9,6 +9,7 @@
         %span.badge.js-totalbuilds-count
           = number_with_delimiter(@all_builds.count(:id))
 
+
     %li{class: ('active' if @scope == 'running')}
       = link_to project_builds_path(@project, scope: :running) do
         Running
@@ -34,8 +35,8 @@
         = icon('wrench')
         %span CI Lint
 
-.gray-content-block
-  #{(@scope || 'running').capitalize} builds from this project
+.row-content-block
+  #{(@scope || 'all').capitalize} builds from this project
 
 %ul.content-list
   - if @builds.blank?
@@ -52,6 +53,7 @@
             %th Ref
             %th Stage
             %th Name
+            %th Tags
             %th Duration
             %th Finished at
             - if @project.build_coverage_enabled?

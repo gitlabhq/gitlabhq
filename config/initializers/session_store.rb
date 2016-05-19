@@ -22,7 +22,7 @@ else
     key: '_gitlab_session',
     secure: Gitlab.config.gitlab.https,
     httponly: true,
-    expire_after: Settings.gitlab['session_expire_delay'] * 60,
+    expires_in: Settings.gitlab['session_expire_delay'] * 60,
     path: (Rails.application.config.relative_url_root.nil?) ? '/' : Gitlab::Application.config.relative_url_root
   )
 end

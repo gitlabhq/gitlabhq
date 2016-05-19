@@ -88,21 +88,56 @@ describe ProjectsHelper do
   end
 
   describe 'default_clone_protocol' do
-    describe 'using HTTP' do
+    context 'when user is not logged in and gitlab protocol is HTTP' do
       it 'returns HTTP' do
-        expect(helper).to receive(:current_user).and_return(nil)
+        allow(helper).to receive(:current_user).and_return(nil)
 
         expect(helper.send(:default_clone_protocol)).to eq('http')
       end
     end
 
-    describe 'using HTTPS' do
+    context 'when user is not logged in and gitlab protocol is HTTPS' do
       it 'returns HTTPS' do
-        allow(Gitlab.config.gitlab).to receive(:protocol).and_return('https')
-        expect(helper).to receive(:current_user).and_return(nil)
+        stub_config_setting(protocol: 'https')
+        allow(helper).to receive(:current_user).and_return(nil)
 
         expect(helper.send(:default_clone_protocol)).to eq('https')
       end
+    end
+  end
+
+  describe '#license_short_name' do
+    let(:project) { create(:project) }
+
+    context 'when project.repository has a license_key' do
+      it 'returns the nickname of the license if present' do
+        allow(project.repository).to receive(:license_key).and_return('agpl-3.0')
+
+        expect(helper.license_short_name(project)).to eq('GNU AGPLv3')
+      end
+
+      it 'returns the name of the license if nickname is not present' do
+        allow(project.repository).to receive(:license_key).and_return('mit')
+
+        expect(helper.license_short_name(project)).to eq('MIT License')
+      end
+    end
+
+    context 'when project.repository has no license_key but a license_blob' do
+      it 'returns LICENSE' do
+        allow(project.repository).to receive(:license_key).and_return(nil)
+
+        expect(helper.license_short_name(project)).to eq('LICENSE')
+      end
+    end
+  end
+
+  describe '#sanitized_import_error' do
+    it 'removes the repo path' do
+      repo = File.join(Gitlab.config.gitlab_shell.repos_path, '/namespace/test.git')
+      import_error = "Could not clone #{repo}\n"
+
+      expect(sanitize_repo_path(import_error)).to eq('Could not clone [REPOS PATH]/namespace/test.git')
     end
   end
 end

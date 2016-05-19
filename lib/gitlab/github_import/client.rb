@@ -7,12 +7,19 @@ module Gitlab
         @client = ::OAuth2::Client.new(
           config.app_id,
           config.app_secret,
-          github_options
+          github_options.merge(ssl: { verify: config['verify_ssl'] })
         )
 
         if access_token
           ::Octokit.auto_paginate = true
-          @api = ::Octokit::Client.new(access_token: access_token)
+
+          @api = ::Octokit::Client.new(
+            access_token: access_token,
+            api_endpoint: github_options[:site],
+            connection_options: {
+              ssl: { verify: config['verify_ssl'] }
+            }
+          )
         end
       end
 
@@ -42,11 +49,11 @@ module Gitlab
       private
 
       def config
-        Gitlab.config.omniauth.providers.find{|provider| provider.name == "github"}
+        Gitlab.config.omniauth.providers.find { |provider| provider.name == "github" }
       end
 
       def github_options
-        OmniAuth::Strategies::GitHub.default_options[:client_options].to_h.symbolize_keys
+        config["args"]["client_options"].deep_symbolize_keys
       end
     end
   end

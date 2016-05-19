@@ -10,20 +10,20 @@ describe API::API, api: true  do
   let(:admin) { create(:admin) }
   let(:project) { create(:project, creator_id: user.id, namespace: user.namespace) }
   let(:project2) { create(:project, path: 'project2', creator_id: user.id, namespace: user.namespace) }
-  let(:project3) { create(:project, path: 'project3', creator_id: user.id, namespace: user.namespace) }
-  let(:snippet) { create(:project_snippet, author: user, project: project, title: 'example') }
+  let(:snippet) { create(:project_snippet, :public, author: user, project: project, title: 'example') }
   let(:project_member) { create(:project_member, :master, user: user, project: project) }
   let(:project_member2) { create(:project_member, :developer, user: user3, project: project) }
   let(:user4) { create(:user) }
   let(:project3) do
     create(:project,
+    :private,
     name: 'second_project',
     path: 'second_project',
     creator_id: user.id,
     namespace: user.namespace,
     merge_requests_enabled: false,
     issues_enabled: false, wiki_enabled: false,
-    snippets_enabled: false, visibility_level: 0)
+    snippets_enabled: false)
   end
   let(:project_member3) do
     create(:project_member,
@@ -164,21 +164,18 @@ describe API::API, api: true  do
   end
 
   describe 'GET /projects/starred' do
+    let(:public_project) { create(:project, :public) }
+
     before do
-      admin.starred_projects << project
-      admin.save!
+      project_member2
+      user3.update_attributes(starred_projects: [project, project2, project3, public_project])
     end
 
-    it 'should return the starred projects' do
-      get api('/projects/all', admin)
+    it 'should return the starred projects viewable by the user' do
+      get api('/projects/starred', user3)
       expect(response.status).to eq(200)
       expect(json_response).to be_an Array
-
-      expect(json_response).to satisfy do |response|
-        response.one? do |entry|
-          entry['name'] == project.name
-        end
-      end
+      expect(json_response.map { |project| project['id'] }).to contain_exactly(project.id, public_project.id)
     end
   end
 

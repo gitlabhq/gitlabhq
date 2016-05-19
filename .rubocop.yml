@@ -276,7 +276,7 @@ Style/IdenticalConditionalBranches:
   Enabled: false
 
 # Checks the indentation of the first line of the right-hand-side of a
-# multi-line assignment. 
+# multi-line assignment.
 Style/IndentAssignment:
   Enabled: false
 
@@ -531,7 +531,7 @@ Style/SpaceAroundKeyword:
 
 # Use a single space around operators.
 Style/SpaceAroundOperators:
-  Enabled: false
+  Enabled: true
 
 # Checks that the left block brace has or doesn't have space before it.
 Style/SpaceBeforeBlockBraces:
@@ -770,7 +770,7 @@ Lint/DefEndAlignment:
 
 # Check for deprecated class method calls.
 Lint/DeprecatedClassMethods:
-  Enabled: false
+  Enabled: true
 
 # Check for duplicate method definitions.
 Lint/DuplicateMethods:
@@ -937,10 +937,9 @@ Lint/Void:
 
 ##################### Performance ############################
 
-# TODO: Enable Casecmp Cop.
 # Use `casecmp` rather than `downcase ==`.
 Performance/Casecmp:
-  Enabled: false
+  Enabled: true
 
 # TODO: Enable DoubleStartEndWith Cop.
 # Use `str.{start,end}_with?(x, ..., y, ...)` instead of
@@ -953,10 +952,9 @@ Performance/DoubleStartEndWith:
 Performance/EndWith:
   Enabled: false
 
-# TODO: Enable LstripRstrip Cop.
 # Use `strip` instead of `lstrip.rstrip`.
 Performance/LstripRstrip:
-  Enabled: false
+  Enabled: true
 
 # TODO: Enable RangeInclude Cop.
 # Use `Range#cover?` instead of `Range#include?`.
@@ -991,11 +989,12 @@ Performance/RedundantSortBy:
 # string.
 Performance/StartWith:
   Enabled: false
+
 # Use `tr` instead of `gsub` when you are replacing the same number of
 # characters. Use `delete` instead of `gsub` when you are deleting
 # characters.
 Performance/StringReplacement:
-  Enabled: false
+  Enabled: true
 
 # TODO: Enable TimesMap Cop.
 # Checks for `.times.map` calls.

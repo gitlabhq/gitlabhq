@@ -1,4 +1,4 @@
-.gray-content-block.middle-block
+.row-content-block.build-content.middle-block
   .pull-right
     - if can?(current_user, :update_build, @project)
       - if ci_commit.builds.latest.failed.any?(&:retryable?)
@@ -16,7 +16,7 @@
     - if defined?(link_to_commit) && link_to_commit
       for commit
       = link_to ci_commit.short_sha, namespace_project_commit_path(@project.namespace, @project, ci_commit.sha), class: "monospace"
-    - if ci_commit.duration > 0
+    - if ci_commit.duration
       in
       = time_interval_in_words ci_commit.duration
 
@@ -40,6 +40,7 @@
         %th Build ID
         %th Stage
         %th Name
+        %th Tags
         %th Duration
         %th Finished at
         - if @project.build_coverage_enabled?
@@ -49,7 +50,7 @@
     = render builds, coverage: @project.build_coverage_enabled?, stage: true, ref: false, allow_retry: true
 
 - if ci_commit.retried.any?
-  .gray-content-block.second-block
+  .row-content-block.second-block
     Retried builds
 
   .table-holder
@@ -61,6 +62,7 @@
           %th Ref
           %th Stage
           %th Name
+          %th Tags
           %th Duration
           %th Finished at
           - if @project.build_coverage_enabled?
