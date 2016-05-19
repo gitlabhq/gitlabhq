@@ -22,9 +22,7 @@ module Banzai
       end
 
       def issues_for_nodes(nodes)
-        @issues_for_nodes ||= {}
-
-        @issues_for_nodes[nodes] ||= grouped_objects_for_nodes(
+        @issues_for_nodes ||= grouped_objects_for_nodes(
           nodes,
           Issue.all.includes(:author, :assignee, :project),
           'data-issue'

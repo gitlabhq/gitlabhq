@@ -186,9 +186,7 @@ module Banzai
       #     { project ID => project }
       #
       def projects_for_nodes(nodes)
-        @projects_for_nodes ||= {}
-
-        @projects_for_nodes[nodes] ||=
+        @projects_for_nodes ||=
           grouped_objects_for_nodes(nodes, Project, 'data-project')
       end
 
