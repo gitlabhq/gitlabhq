@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Banzai::ReferenceParser::BaseParser, lib: true do
+  include ReferenceParserHelpers
+
   let(:user) { create(:user) }
   let(:project) { create(:empty_project, :public) }
 
@@ -22,7 +24,7 @@ describe Banzai::ReferenceParser::BaseParser, lib: true do
   end
 
   describe '#nodes_visible_to_user' do
-    let(:link) { Nokogiri::HTML.fragment('<a></a>').children[0] }
+    let(:link) { empty_html_link }
 
     context 'when the link has a data-project attribute' do
       it 'returns the nodes if the attribute value equals the current project ID' do

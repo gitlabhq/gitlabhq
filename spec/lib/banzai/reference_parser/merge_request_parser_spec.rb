@@ -1,10 +1,12 @@
 require 'spec_helper'
 
 describe Banzai::ReferenceParser::MergeRequestParser, lib: true do
+  include ReferenceParserHelpers
+
   let(:user) { create(:user) }
   let(:merge_request) { create(:merge_request) }
   subject { described_class.new(merge_request.target_project, user) }
-  let(:link) { Nokogiri::HTML.fragment('<a></a>').children[0] }
+  let(:link) { empty_html_link }
 
   describe '#referenced_by' do
     describe 'when the link has a data-merge-request attribute' do

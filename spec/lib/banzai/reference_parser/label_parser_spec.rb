@@ -1,11 +1,13 @@
 require 'spec_helper'
 
 describe Banzai::ReferenceParser::LabelParser, lib: true do
+  include ReferenceParserHelpers
+
   let(:project) { create(:empty_project, :public) }
   let(:user) { create(:user) }
   let(:label) { create(:label, project: project) }
   subject { described_class.new(project, user) }
-  let(:link) { Nokogiri::HTML.fragment('<a></a>').children[0] }
+  let(:link) { empty_html_link }
 
   describe '#referenced_by' do
     describe 'when the link has a data-label attribute' do

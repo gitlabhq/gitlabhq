@@ -1,11 +1,13 @@
 require 'spec_helper'
 
 describe Banzai::ReferenceParser::IssueParser, lib: true do
+  include ReferenceParserHelpers
+
   let(:project) { create(:empty_project, :public) }
   let(:user) { create(:user) }
   let(:issue) { create(:issue, project: project) }
   subject { described_class.new(project, user) }
-  let(:link) { Nokogiri::HTML.fragment('<a></a>').children[0] }
+  let(:link) { empty_html_link }
 
   describe '#nodes_visible_to_user' do
     context 'when the link has a data-issue attribute' do
