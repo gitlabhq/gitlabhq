@@ -129,7 +129,7 @@ describe "Runners" do
     context 'when runner has tags' do
       before { runner.update_attribute(:tag_list, ['tag']) }
 
-      scenario 'user want to prevent runner from running untagged job' do
+      scenario 'user wants to prevent runner from running untagged job' do
         visit runners_path(project)
         page.within('.activated-specific-runners') do
           first('small > a').click

@@ -16,7 +16,7 @@ describe Ci::API::API do
       before { post ci_api("/runners/register"), token: registration_token }
 
       it 'creates runner with default values' do
-        expect(response.status).to eq(201)
+        expect(response).to have_http_status 201
         expect(Ci::Runner.first.run_untagged).to be true
       end
     end
@@ -28,7 +28,7 @@ describe Ci::API::API do
       end
 
       it 'creates runner' do
-        expect(response.status).to eq(201)
+        expect(response).to have_http_status 201
         expect(Ci::Runner.first.description).to eq("server.hostname")
       end
     end
@@ -40,7 +40,7 @@ describe Ci::API::API do
       end
 
       it 'creates runner' do
-        expect(response.status).to eq(201)
+        expect(response).to have_http_status 201
         expect(Ci::Runner.first.tag_list.sort).to eq(["tag1", "tag2"])
       end
     end
@@ -52,7 +52,7 @@ describe Ci::API::API do
                                             run_untagged: false,
                                             tag_list: ['tag']
 
-          expect(response.status).to eq(201)
+          expect(response).to have_http_status 201
           expect(Ci::Runner.first.run_untagged).to be false
         end
       end
@@ -62,7 +62,7 @@ describe Ci::API::API do
           post ci_api("/runners/register"), token: registration_token,
                                             run_untagged: false
 
-          expect(response.status).to eq(404)
+          expect(response).to have_http_status 404
         end
       end
     end
@@ -72,7 +72,7 @@ describe Ci::API::API do
       before { post ci_api("/runners/register"), token: project.runners_token }
 
       it 'creates runner' do
-        expect(response.status).to eq(201)
+        expect(response).to have_http_status 201
         expect(project.runners.size).to eq(1)
       end
     end
@@ -81,7 +81,7 @@ describe Ci::API::API do
       it 'returns 403 error' do
         post ci_api("/runners/register"), token: 'invalid'
 
-        expect(response.status).to eq(403)
+        expect(response).to have_http_status 403
       end
     end
 
@@ -89,7 +89,7 @@ describe Ci::API::API do
       it 'returns 400 error' do
         post ci_api("/runners/register")
 
-        expect(response.status).to eq(400)
+        expect(response).to have_http_status 400
       end
     end
 
@@ -101,7 +101,7 @@ describe Ci::API::API do
 
         it do
           post ci_api("/runners/register"), token: registration_token, info: { param => value }
-          expect(response.status).to eq(201)
+          expect(response).to have_http_status 201
           is_expected.to eq(value)
         end
       end
@@ -112,7 +112,7 @@ describe Ci::API::API do
     let!(:runner) { FactoryGirl.create(:ci_runner) }
     before { delete ci_api("/runners/delete"), token: runner.token }
 
-    it { expect(response.status).to eq(200) }
+    it { expect(response).to have_http_status 200 }
     it { expect(Ci::Runner.count).to eq(0) }
   end
 end

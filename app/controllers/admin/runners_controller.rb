@@ -9,17 +9,18 @@ class Admin::RunnersController < Admin::ApplicationController
   end
 
   def show
-    set_builds_and_projects
+    assign_builds_and_projects
   end
 
   def update
-    unless @runner.update_attributes(runner_params)
-      set_builds_and_projects and return render 'show'
-    end
-
-    respond_to do |format|
-      format.js
-      format.html { redirect_to admin_runner_path(@runner) }
+    if @runner.update_attributes(runner_params)
+      respond_to do |format|
+        format.js
+        format.html { redirect_to admin_runner_path(@runner) }
+      end
+    else
+      assign_builds_and_projects
+      render 'show'
     end
   end
 
@@ -55,7 +56,7 @@ class Admin::RunnersController < Admin::ApplicationController
     params.require(:runner).permit(Ci::Runner::FORM_EDITABLE)
   end
 
-  def set_builds_and_projects
+  def assign_builds_and_projects
     @builds = runner.builds.order('id DESC').first(30)
     @projects =
       if params[:search].present?
