@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe API::Licenses, api: true  do
+describe API::API, api: true  do
   include ApiHelpers
 
   describe 'Entity' do
