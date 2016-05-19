@@ -3,10 +3,8 @@ module Banzai
     class MilestoneParser < Parser
       self.reference_type = :milestone
 
-      def referenced_by(nodes)
-        ids = unique_attribute_values(nodes, 'data-milestone')
-
-        Milestone.where(id: ids)
+      def references_relation
+        Milestone
       end
     end
   end

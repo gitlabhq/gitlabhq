@@ -3,7 +3,14 @@ require 'spec_helper'
 describe Banzai::ReferenceParser::Parser, lib: true do
   let(:user) { create(:user) }
   let(:project) { create(:empty_project, :public) }
-  let(:parser) { described_class.new(project, user) }
+
+  let :parser do
+    klass = Class.new(described_class) do
+      self.reference_type = :foo
+    end
+
+    klass.new(project, user)
+  end
 
   describe '.reference_type=' do
     it 'sets the reference type' do
@@ -72,10 +79,29 @@ describe Banzai::ReferenceParser::Parser, lib: true do
   end
 
   describe '#referenced_by' do
-    it 'raises NotImplementedError' do
-      link = double(:link)
+    context 'when references_relation is implemented' do
+      it 'returns a collection of objects' do
+        links = Nokogiri::HTML.fragment("<a data-foo='#{user.id}'></a>").
+          children
 
-      expect { parser.referenced_by(link) }.to raise_error(NotImplementedError)
+        expect(parser).to receive(:references_relation).and_return(User)
+        expect(parser.referenced_by(links)).to eq([user])
+      end
+    end
+
+    context 'when references_relation is not implemented' do
+      it 'raises NotImplementedError' do
+        links = Nokogiri::HTML.fragment('<a data-foo="1"></a>').children
+
+        expect { parser.referenced_by(links) }.
+          to raise_error(NotImplementedError)
+      end
+    end
+  end
+
+  describe '#references_relation' do
+    it 'raises NotImplementedError' do
+      expect { parser.references_relation }.to raise_error(NotImplementedError)
     end
   end
 

@@ -19,6 +19,12 @@ module Banzai
     # The reference type is used to determine what nodes to pass to the
     # `referenced_by` method.
     #
+    # Parser classes should either implement the instance method
+    # `references_relation` or overwrite `referenced_by`. The
+    # `references_relation` method is supposed to return an
+    # ActiveRecord::Relation used as a base relation for retrieving the objects
+    # referenced in a set of HTML nodes.
+    #
     # Each class can implement two additional methods:
     #
     # * `nodes_user_can_reference`: returns an Array of nodes the given user can
@@ -33,6 +39,15 @@ module Banzai
     class Parser
       class << self
         attr_accessor :reference_type
+      end
+
+      # Returns the attribute name containing the value for every object to be
+      # parsed by the current parser.
+      #
+      # For example, for a parser class that returns "Animal" objects this
+      # attribute would be "data-animal".
+      def self.data_attribute
+        @data_attribute ||= "data-#{reference_type.to_s.dasherize}"
       end
 
       def initialize(project = nil, current_user = nil)
@@ -65,8 +80,18 @@ module Banzai
         end
       end
 
+      # Returns an Array of objects referenced by any of the given HTML nodes.
       def referenced_by(nodes)
-        raise NotImplementedError, "#{self.class} does not implement #{__method__}"
+        ids = unique_attribute_values(nodes, self.class.data_attribute)
+
+        references_relation.where(id: ids)
+      end
+
+      # Returns the ActiveRecord::Relation to use for querying references in the
+      # DB.
+      def references_relation
+        raise NotImplementedError,
+          "#{self.class} does not implement #{__method__}"
       end
 
       # Returns a Hash containing attribute values per project ID.
