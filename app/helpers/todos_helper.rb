@@ -38,11 +38,11 @@ module TodosHelper
   end
 
   def todo_target_state_pill(todo)
-    if show_todo_state?(todo)
-      content_tag(:span, nil, class: 'target-status') do
-        content_tag(:span, nil, class: "status-box status-box-#{todo.target.state.dasherize}") do
-          todo.target.state.capitalize
-        end
+    return unless show_todo_state?(todo)
+
+    content_tag(:span, nil, class: 'target-status') do
+      content_tag(:span, nil, class: "status-box status-box-#{todo.target.state.dasherize}") do
+        todo.target.state.capitalize
       end
     end
   end
