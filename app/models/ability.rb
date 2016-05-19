@@ -205,6 +205,7 @@ class Ability
         :read_commit_status,
         :read_build,
         :read_container_image,
+        :read_pipeline,
       ]
     end
 
@@ -216,6 +217,8 @@ class Ability
         :update_commit_status,
         :create_build,
         :update_build,
+        :create_pipeline,
+        :update_pipeline,
         :create_merge_request,
         :create_wiki,
         :push_code,
@@ -248,6 +251,7 @@ class Ability
         :admin_commit_status,
         :admin_build,
         :admin_container_image,
+        :admin_pipeline
       ]
     end
 
@@ -290,6 +294,7 @@ class Ability
 
       unless project.builds_enabled
         rules += named_abilities('build')
+        rules += named_abilities('pipeline')
       end
 
       unless project.container_registry_enabled
