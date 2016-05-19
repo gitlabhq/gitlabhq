@@ -71,11 +71,8 @@ class @LabelManager
             data:
               label_ids: @getSortedLabelsIds()
 
-    xhr.done ->
-      console.log 'done'
-
     xhr.fail ->
-      console.log 'fail'
+      new Flash('Unable to update label prioritization at this time' , 'alert')
 
   getSortedLabelsIds: ->
     sortedIds = []
