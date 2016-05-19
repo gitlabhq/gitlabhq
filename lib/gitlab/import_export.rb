@@ -27,5 +27,9 @@ module Gitlab
     def version
       VERSION
     end
+
+    def reset_tokens?
+      true
+    end
   end
 end

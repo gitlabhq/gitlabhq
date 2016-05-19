@@ -12,7 +12,7 @@ module Gitlab
                     builds: 'Ci::Build',
                     hooks: 'ProjectHook' }.freeze
 
-      USER_REFERENCES = %w(author_id assignee_id updated_by_id).freeze
+      USER_REFERENCES = %w(author_id assignee_id updated_by_id user_id).freeze
 
       def create(relation_sym:, relation_hash:, members_mapper:, user_admin:)
         relation_sym = parse_relation_sym(relation_sym)
@@ -21,6 +21,7 @@ module Gitlab
         update_missing_author(relation_hash, members_mapper, user_admin) if relation_sym == :notes
         update_user_references(relation_hash, members_mapper.map)
         update_project_references(relation_hash, klass)
+        reset_tokens(relation_hash) if relation_sym == 'Ci::Trigger'
 
         generate_imported_object(klass, relation_hash, relation_sym)
       end
@@ -86,6 +87,13 @@ module Gitlab
         # project_id may not be part of the export, but we always need to populate it if required.
         relation_hash['project_id'] = project_id if klass.column_names.include?('project_id')
         relation_hash['gl_project_id'] = project_id if relation_hash ['gl_project_id']
+      end
+
+      def reset_tokens(relation_hash)
+        return unless Gitlab::ImportExport.reset_tokens?
+
+        # If we import/export a project to the same instance, tokens will have to be reseated.
+        relation_hash['token'] = nil
       end
 
       def relation_class(relation_sym)

@@ -50,11 +50,11 @@ module Gitlab
       end
 
       def member_hash(member)
-        member.except('id').merge(source_id: @project.id)
+        member.except('id').merge(source_id: @project.id, importing: true)
       end
 
       def default_project_member_hash
-        { user: @user, access_level: ProjectMember::MASTER, source_id: @project.id }
+        { user: @user, access_level: ProjectMember::MASTER, source_id: @project.id, importing: true }
       end
 
       def find_project_user_query(member)
