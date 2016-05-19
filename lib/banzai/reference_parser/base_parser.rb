@@ -202,13 +202,7 @@ module Banzai
 
       private
 
-      def current_user
-        @current_user
-      end
-
-      def project
-        @project
-      end
+      attr_reader :current_user, :project
 
       def lazy(&block)
         Gitlab::Lazy.new(&block)
