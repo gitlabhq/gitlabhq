@@ -200,6 +200,10 @@ module Banzai
         end
       end
 
+      def find_projects_for_hash_keys(hash)
+        Project.where(id: hash.keys)
+      end
+
       private
 
       attr_reader :current_user, :project

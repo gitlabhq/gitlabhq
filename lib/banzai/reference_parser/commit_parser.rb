@@ -5,7 +5,7 @@ module Banzai
 
       def referenced_by(nodes)
         commit_ids = commit_ids_per_project(nodes)
-        projects = find_projects(commit_ids.keys)
+        projects = find_projects_for_hash_keys(commit_ids)
         commits = []
 
         projects.each do |project|
@@ -31,10 +31,6 @@ module Banzai
         end
 
         commits
-      end
-
-      def find_projects(ids)
-        Project.where(id: ids)
       end
     end
   end

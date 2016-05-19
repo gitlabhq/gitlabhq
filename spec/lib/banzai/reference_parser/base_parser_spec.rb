@@ -223,4 +223,11 @@ describe Banzai::ReferenceParser::BaseParser, lib: true do
       subject.can?(user, :read_project, project)
     end
   end
+
+  describe '#find_projects_for_hash_keys' do
+    it 'returns a list of Projects' do
+      expect(subject.find_projects_for_hash_keys(project.id => project)).
+        to eq([project])
+    end
+  end
 end

@@ -5,7 +5,7 @@ module Banzai
 
       def referenced_by(nodes)
         range_ids = commit_range_ids_per_project(nodes)
-        projects = find_projects(range_ids.keys)
+        projects = find_projects_for_hash_keys(range_ids)
         ranges = []
 
         projects.each do |project|
@@ -35,10 +35,6 @@ module Banzai
         range = CommitRange.new(id, project)
 
         range.valid_commits? ? range : nil
-      end
-
-      def find_projects(ids)
-        Project.where(id: ids)
       end
     end
   end

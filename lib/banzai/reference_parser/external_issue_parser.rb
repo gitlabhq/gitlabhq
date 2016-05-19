@@ -5,7 +5,7 @@ module Banzai
 
       def referenced_by(nodes)
         issue_ids = issue_ids_per_project(nodes)
-        projects = find_projects(issue_ids.keys)
+        projects = find_projects_for_hash_keys(issue_ids)
         issues = []
 
         projects.each do |project|
@@ -19,10 +19,6 @@ module Banzai
 
       def issue_ids_per_project(nodes)
         gather_attributes_per_project(nodes, 'data-external-issue')
-      end
-
-      def find_projects(ids)
-        Project.where(id: ids)
       end
     end
   end
