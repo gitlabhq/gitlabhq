@@ -31,6 +31,7 @@ module Issuable
     scope :unassigned, -> { where("assignee_id IS NULL") }
     scope :of_projects, ->(ids) { where(project_id: ids) }
     scope :of_milestones, ->(ids) { where(milestone_id: ids) }
+    scope :with_milestone, ->(title) { left_joins_milestones.where(milestones: { title: title }) }
     scope :opened, -> { with_state(:opened, :reopened) }
     scope :only_opened, -> { with_state(:opened) }
     scope :only_reopened, -> { with_state(:reopened) }
@@ -44,6 +45,7 @@ module Issuable
     scope :join_project, -> { joins(:project) }
     scope :references_project, -> { references(:project) }
     scope :non_archived, -> { join_project.where(projects: { archived: false }) }
+
 
     delegate :name,
              :email,
