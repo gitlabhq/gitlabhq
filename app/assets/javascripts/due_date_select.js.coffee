@@ -11,6 +11,7 @@ class @DueDateSelect
       $block = $dropdown.closest('.block')
       $selectbox = $dropdown.closest('.selectbox')
       $value = $block.find('.value')
+      $valueContent = $block.find('.value-content')
       $sidebarValue = $('.js-due-date-sidebar-value', $block)
 
       fieldName = $dropdown.data('field-name')
@@ -26,8 +27,12 @@ class @DueDateSelect
       addDueDate = ->
         # Create the post date
         value = $("input[name='#{fieldName}']").val()
-        date = new Date value.replace(new RegExp('-', 'g'), ',')
-        mediumDate = $.datepicker.formatDate 'M d, yy', date
+
+        if value isnt ''
+          date = new Date value.replace(new RegExp('-', 'g'), ',')
+          mediumDate = $.datepicker.formatDate 'M d, yy', date
+        else
+          mediumDate = 'None'
 
         data = {}
         data[abilityName] = {}
@@ -43,12 +48,22 @@ class @DueDateSelect
             $selectbox.hide()
             $value.removeAttr('style')
 
-            $value.html(mediumDate)
+            $valueContent.html(mediumDate)
             $sidebarValue.html(mediumDate)
+
+            if value isnt ''
+              $('.js-remove-due-date-holder').removeClass 'hidden'
+            else
+              $('.js-remove-due-date-holder').addClass 'hidden'
         ).done (data) ->
           $dropdown.trigger('loaded.gl.dropdown')
           $dropdown.dropdown('toggle')
           $loading.fadeOut()
+
+      $block.on 'click', '.js-remove-due-date', (e) ->
+        e.preventDefault()
+        $("input[name='#{fieldName}']").val ''
+        addDueDate()
 
       $datePicker.datepicker(
         dateFormat: 'yy-mm-dd',
