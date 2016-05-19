@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Banzai::ReferenceParser::CommitParser, lib: true do
   let(:project) { create(:empty_project, :public) }
   let(:user) { create(:user) }
-  let(:parser) { described_class.new(project, user) }
+  subject { described_class.new(project, user) }
   let(:link) { Nokogiri::HTML.fragment('<a></a>').children[0] }
 
   describe '#referenced_by' do
@@ -23,31 +23,31 @@ describe Banzai::ReferenceParser::CommitParser, lib: true do
           allow_any_instance_of(Project).to receive(:valid_repo?).
             and_return(true)
 
-          expect(parser).to receive(:find_commits).
+          expect(subject).to receive(:find_commits).
             with(project, ['123']).
             and_return([commit])
 
-          expect(parser.referenced_by([link])).to eq([commit])
+          expect(subject.referenced_by([link])).to eq([commit])
         end
 
         it 'returns an empty Array when the commit could not be found' do
           allow_any_instance_of(Project).to receive(:valid_repo?).
             and_return(true)
 
-          expect(parser).to receive(:find_commits).
+          expect(subject).to receive(:find_commits).
             with(project, ['123']).
             and_return([])
 
-          expect(parser.referenced_by([link])).to eq([])
+          expect(subject.referenced_by([link])).to eq([])
         end
 
         it 'skips projects without valid repositories' do
           allow_any_instance_of(Project).to receive(:valid_repo?).
             and_return(false)
 
-          expect(parser).not_to receive(:find_commits)
+          expect(subject).not_to receive(:find_commits)
 
-          expect(parser.referenced_by([link])).to eq([])
+          expect(subject.referenced_by([link])).to eq([])
         end
       end
 
@@ -56,7 +56,7 @@ describe Banzai::ReferenceParser::CommitParser, lib: true do
           allow_any_instance_of(Project).to receive(:valid_repo?).
             and_return(true)
 
-          expect(parser.referenced_by([link])).to eq([])
+          expect(subject.referenced_by([link])).to eq([])
         end
       end
     end
@@ -66,7 +66,7 @@ describe Banzai::ReferenceParser::CommitParser, lib: true do
         allow_any_instance_of(Project).to receive(:valid_repo?).
           and_return(true)
 
-        expect(parser.referenced_by([link])).to eq([])
+        expect(subject.referenced_by([link])).to eq([])
       end
     end
   end
@@ -79,7 +79,7 @@ describe Banzai::ReferenceParser::CommitParser, lib: true do
     it 'returns a Hash containing commit IDs per project' do
       link['data-commit'] = '123'
 
-      hash = parser.commit_ids_per_project([link])
+      hash = subject.commit_ids_per_project([link])
 
       expect(hash).to be_an_instance_of(Hash)
 
@@ -87,7 +87,7 @@ describe Banzai::ReferenceParser::CommitParser, lib: true do
     end
 
     it 'does not add a project when the data-commit attribute is empty' do
-      hash = parser.commit_ids_per_project([link])
+      hash = subject.commit_ids_per_project([link])
 
       expect(hash).to be_empty
     end
@@ -99,13 +99,13 @@ describe Banzai::ReferenceParser::CommitParser, lib: true do
 
       expect(project).to receive(:commit).with('123').and_return(commit)
 
-      expect(parser.find_commits(project, %w{123})).to eq([commit])
+      expect(subject.find_commits(project, %w{123})).to eq([commit])
     end
 
     it 'skips commit IDs for which no commit could be found' do
       expect(project).to receive(:commit).with('123').and_return(nil)
 
-      expect(parser.find_commits(project, %w{123})).to eq([])
+      expect(subject.find_commits(project, %w{123})).to eq([])
     end
   end
 end

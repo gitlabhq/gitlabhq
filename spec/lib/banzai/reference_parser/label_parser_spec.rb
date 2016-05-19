@@ -4,7 +4,7 @@ describe Banzai::ReferenceParser::LabelParser, lib: true do
   let(:project) { create(:empty_project, :public) }
   let(:user) { create(:user) }
   let(:label) { create(:label, project: project) }
-  let(:parser) { described_class.new(project, user) }
+  subject { described_class.new(project, user) }
   let(:link) { Nokogiri::HTML.fragment('<a></a>').children[0] }
 
   describe '#referenced_by' do
@@ -13,7 +13,7 @@ describe Banzai::ReferenceParser::LabelParser, lib: true do
         it 'returns an Array of labels' do
           link['data-label'] = label.id.to_s
 
-          expect(parser.referenced_by([link])).to eq([label])
+          expect(subject.referenced_by([link])).to eq([label])
         end
       end
 
@@ -21,7 +21,7 @@ describe Banzai::ReferenceParser::LabelParser, lib: true do
         it 'returns an empty Array' do
           link['data-label'] = ''
 
-          expect(parser.referenced_by([link])).to eq([])
+          expect(subject.referenced_by([link])).to eq([])
         end
       end
     end

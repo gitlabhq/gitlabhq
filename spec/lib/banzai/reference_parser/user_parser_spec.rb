@@ -4,7 +4,7 @@ describe Banzai::ReferenceParser::UserParser, lib: true do
   let(:group) { create(:group) }
   let(:user) { create(:user) }
   let(:project) { create(:empty_project, :public, group: group, creator: user) }
-  let(:parser) { described_class.new(project, user) }
+  subject { described_class.new(project, user) }
   let(:link) { Nokogiri::HTML.fragment('<a></a>').children[0] }
 
   describe '#referenced_by' do
@@ -17,11 +17,11 @@ describe Banzai::ReferenceParser::UserParser, lib: true do
         it 'returns the users of the group' do
           create(:group_member, group: group, user: user)
 
-          expect(parser.referenced_by([link])).to eq([user])
+          expect(subject.referenced_by([link])).to eq([user])
         end
 
         it 'returns an empty Array when the group has no users' do
-          expect(parser.referenced_by([link])).to eq([])
+          expect(subject.referenced_by([link])).to eq([])
         end
       end
 
@@ -29,7 +29,7 @@ describe Banzai::ReferenceParser::UserParser, lib: true do
         it 'returns an empty Array' do
           link['data-group'] = ''
 
-          expect(parser.referenced_by([link])).to eq([])
+          expect(subject.referenced_by([link])).to eq([])
         end
       end
     end
@@ -38,7 +38,7 @@ describe Banzai::ReferenceParser::UserParser, lib: true do
       it 'returns an Array of users' do
         link['data-user'] = user.id.to_s
 
-        expect(parser.referenced_by([link])).to eq([user])
+        expect(subject.referenced_by([link])).to eq([user])
       end
     end
 
@@ -56,7 +56,7 @@ describe Banzai::ReferenceParser::UserParser, lib: true do
 
           # This uses an explicit sort to make sure this spec doesn't randomly
           # fail when objects are returned in a different order.
-          refs = parser.referenced_by([link]).sort_by(&:id)
+          refs = subject.referenced_by([link]).sort_by(&:id)
 
           expect(refs).to eq([user, contributor])
         end
@@ -66,7 +66,7 @@ describe Banzai::ReferenceParser::UserParser, lib: true do
         it 'returns an empty Array' do
           link['data-project'] = ''
 
-          expect(parser.referenced_by([link])).to eq([])
+          expect(subject.referenced_by([link])).to eq([])
         end
       end
     end
@@ -84,7 +84,7 @@ describe Banzai::ReferenceParser::UserParser, lib: true do
             with(user, :read_group, group).
             and_return(true)
 
-          expect(parser.nodes_visible_to_user(user, [link])).to eq([link])
+          expect(subject.nodes_visible_to_user(user, [link])).to eq([link])
         end
 
         it 'returns an empty Array if the user can not read the group' do
@@ -92,7 +92,7 @@ describe Banzai::ReferenceParser::UserParser, lib: true do
             with(user, :read_group, group).
             and_return(false)
 
-          expect(parser.nodes_visible_to_user(user, [link])).to eq([])
+          expect(subject.nodes_visible_to_user(user, [link])).to eq([])
         end
       end
 
@@ -103,7 +103,7 @@ describe Banzai::ReferenceParser::UserParser, lib: true do
 
             expect(Ability.abilities).not_to receive(:allowed?)
 
-            expect(parser.nodes_visible_to_user(user, [link])).to eq([link])
+            expect(subject.nodes_visible_to_user(user, [link])).to eq([link])
           end
 
           it 'returns the nodes if the user can read the project' do
@@ -115,7 +115,7 @@ describe Banzai::ReferenceParser::UserParser, lib: true do
               with(user, :read_project, other_project).
               and_return(true)
 
-            expect(parser.nodes_visible_to_user(user, [link])).to eq([link])
+            expect(subject.nodes_visible_to_user(user, [link])).to eq([link])
           end
 
           it 'returns an empty Array if the user can not read the project' do
@@ -127,13 +127,13 @@ describe Banzai::ReferenceParser::UserParser, lib: true do
               with(user, :read_project, other_project).
               and_return(false)
 
-            expect(parser.nodes_visible_to_user(user, [link])).to eq([])
+            expect(subject.nodes_visible_to_user(user, [link])).to eq([])
           end
         end
 
         context 'without a data-project attribute' do
           it 'returns the nodes' do
-            expect(parser.nodes_visible_to_user(user, [link])).to eq([link])
+            expect(subject.nodes_visible_to_user(user, [link])).to eq([link])
           end
         end
       end
@@ -149,14 +149,14 @@ describe Banzai::ReferenceParser::UserParser, lib: true do
         link['data-project'] = other_project.id.to_s
         link['data-author'] = user.id.to_s
 
-        expect(parser.nodes_user_can_reference(user, [link])).to eq([link])
+        expect(subject.nodes_user_can_reference(user, [link])).to eq([link])
       end
 
       it 'returns an empty Array when the project could not be found' do
         link['data-project'] = ''
         link['data-author'] = user.id.to_s
 
-        expect(parser.nodes_user_can_reference(user, [link])).to eq([])
+        expect(subject.nodes_user_can_reference(user, [link])).to eq([])
       end
 
       it 'returns an empty Array when the user could not be found' do
@@ -165,7 +165,7 @@ describe Banzai::ReferenceParser::UserParser, lib: true do
         link['data-project'] = other_project.id.to_s
         link['data-author'] = ''
 
-        expect(parser.nodes_user_can_reference(user, [link])).to eq([])
+        expect(subject.nodes_user_can_reference(user, [link])).to eq([])
       end
 
       it 'returns an empty Array when the user is not a team member' do
@@ -174,13 +174,13 @@ describe Banzai::ReferenceParser::UserParser, lib: true do
         link['data-project'] = other_project.id.to_s
         link['data-author'] = user.id.to_s
 
-        expect(parser.nodes_user_can_reference(user, [link])).to eq([])
+        expect(subject.nodes_user_can_reference(user, [link])).to eq([])
       end
     end
 
     context 'when the link does not have a data-author attribute' do
       it 'returns the nodes' do
-        expect(parser.nodes_user_can_reference(user, [link])).to eq([link])
+        expect(subject.nodes_user_can_reference(user, [link])).to eq([link])
       end
     end
   end
