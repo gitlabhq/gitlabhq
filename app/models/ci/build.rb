@@ -291,7 +291,13 @@ module Ci
     end
 
     def can_be_served?(runner)
+      return false unless has_tags? || runner.run_untagged?
+
       (tag_list - runner.tag_list).empty?
+    end
+
+    def has_tags?
+      tag_list.any?
     end
 
     def any_runners_online?
