@@ -1,10 +1,7 @@
 !!! 5
 %html{ lang: "en"}
   = render "layouts/head"
-  - if @project
-    %body{class: "#{user_application_theme}", 'data-page' => body_data_page, 'data-project' => "#{@project.path}"}
-  - else
-    %body{class: "#{user_application_theme}", 'data-page' => body_data_page}
+  %body{class: "#{user_application_theme}", 'data-page' => body_data_page, 'data-project' => "#{@project.path if @project}"}
 
   -# Ideally this would be inside the head, but turbolinks only evaluates page-specific JS in the body.
   = yield :scripts_body_top
