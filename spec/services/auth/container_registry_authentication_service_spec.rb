@@ -5,19 +5,12 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
   let(:current_user) { nil }
   let(:current_params) { {} }
   let(:rsa_key) { OpenSSL::PKey::RSA.generate(512) }
-  let(:registry_settings) do
-    {
-      enabled: true,
-      issuer: 'rspec',
-      key: nil
-    }
-  end
   let(:payload) { JWT.decode(subject[:token], rsa_key).first }
 
   subject { described_class.new(current_project, current_user, current_params).execute }
 
   before do
-    allow(Gitlab.config.registry).to receive_messages(registry_settings)
+    stub_container_registry_config(enabled: true, issuer: 'rspec', key: nil)
     allow_any_instance_of(JSONWebToken::RSAToken).to receive(:key).and_return(rsa_key)
   end
 
@@ -55,6 +48,11 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
     it_behaves_like 'a accessible' do
       let(:actions) { ['pull', 'push'] }
     end
+  end
+
+  shared_examples 'an unauthorized' do
+    it { is_expected.to include(http_status: 401) }
+    it { is_expected.to_not include(:token) }
   end
 
   shared_examples 'a forbidden' do
@@ -123,7 +121,7 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
         { offline_token: true }
       end
 
-      it_behaves_like 'a forbidden'
+      it_behaves_like 'an unauthorized'
     end
 
     context 'allow to pull and push images' do
@@ -164,6 +162,20 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
         end
       end
     end
+
+    context 'for project without container registry' do
+      let(:project) { create(:empty_project, :public, container_registry_enabled: false) }
+
+      before { project.update(container_registry_enabled: false) }
+
+      context 'disallow when pulling' do
+        let(:current_params) do
+          { scope: "repository:#{project.path_with_namespace}:pull" }
+        end
+
+        it_behaves_like 'a forbidden'
+      end
+    end
   end
 
   context 'unauthorized' do
@@ -172,7 +184,7 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
         { offline_token: true }
       end
 
-      it_behaves_like 'a forbidden'
+      it_behaves_like 'an unauthorized'
     end
 
     context 'for invalid scope' do

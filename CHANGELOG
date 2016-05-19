@@ -10,6 +10,7 @@ v 8.8.0 (unreleased)
   - Escape HTML in commit titles in system note messages
   - Improve multiple branch push performance by memoizing permission checking
   - Log to application.log when an admin starts and stops impersonating a user
+  - Changing the confidentiality of an issue now creates a new system note (Alex Moore-Niemi)
   - Updated gitlab_git to 10.1.0
   - GitAccess#protected_tag? no longer loads all tags just to check if a single one exists
   - Reduce delay in destroying a project from 1-minute to immediately
@@ -21,6 +22,7 @@ v 8.8.0 (unreleased)
   - Bump mail_room to 0.7.0 to fix stuck IDLE connections
   - Remove future dates from contribution calendar graph.
   - Support e-mail notifications for comments on project snippets
+  - Fix API leak of notes of unauthorized issues, snippets and merge requests
   - Use ActionDispatch Remote IP for Akismet checking
   - Fix error when visiting commit builds page before build was updated
   - Add 'l' shortcut to open Label dropdown on issuables and 'i' to create new issue on a project
@@ -38,6 +40,7 @@ v 8.8.0 (unreleased)
   - Create tags using Rugged for performance reasons. !3745
   - API: Expose Issue#user_notes_count. !3126 (Anton Popov)
   - Don't show forks button when user can't view forks
+  - Fix atom feed links and rendering
   - Files over 5MB can only be viewed in their raw form, files over 1MB without highlighting !3718
   - Add support for supressing text diffs using .gitattributes on the default branch (Matt Oakes)
   - Add eager load paths to help prevent dependency load issues in Sidekiq workers. !3724
@@ -57,9 +60,14 @@ v 8.8.0 (unreleased)
   - Redesign navigation for profile and group pages
   - Add counter metrics for rails cache
   - Import pull requests from GitHub where the source or target branches were removed
+  - All Grape API helpers are now instrumented
+  - Improve Issue formatting for the Slack Service (Jeroen van Baarsen)
+  - Fixed advice on invalid permissions on upload path !2948 (Ludovic Perrine)
 
 v 8.7.6
   - Fix links on wiki pages for relative url setups. !4131 (Artem Sidorenko)
+  - Fix import from GitLab.com to a private instance failure. !4181
+  - Fix external imports not finding the import data. !4106
 
 v 8.7.5
   - Fix relative links in wiki pages. !4050
@@ -889,7 +897,7 @@ v 8.1.3
   - Use issue editor as cross reference comment author when issue is edited with a new mention
   - Add Facebook authentication
 
-v 8.1.2
+v 8.1.1
   - Fix cloning Wiki repositories via HTTP (Stan Hu)
   - Add migration to remove satellites directory
   - Fix specific runners visibility
@@ -1514,19 +1522,16 @@ v 7.10.0
   - Fix stuck Merge Request merging events from old installations (Ben Bodenmiller)
   - Fix merge request comments on files with multiple commits
   - Fix Resource Owner Password Authentication Flow
-
-v 7.9.4
-  - Security: Fix project import URL regex to prevent arbitary local repos from being imported
-  - Fixed issue where only 25 commits would load in file listings
-  - Fix LDAP identities  after config update
-
-v 7.9.3
-  - Contains no changes
   - Add icons to Add dropdown items.
   - Allow admin to create public deploy keys that are accessible to any project.
   - Warn when gitlab-shell version doesn't match requirement.
   - Skip email confirmation when set by admin or via LDAP.
   - Only allow users to reference groups, projects, issues, MRs, commits they have access to.
+
+v 7.9.4
+  - Security: Fix project import URL regex to prevent arbitary local repos from being imported
+  - Fixed issue where only 25 commits would load in file listings
+  - Fix LDAP identities  after config update
 
 v 7.9.3
   - Contains no changes
