@@ -19,6 +19,7 @@
 class Todo < ActiveRecord::Base
   ASSIGNED  = 1
   MENTIONED = 2
+  IMPORTED = 3
 
   belongs_to :author, class_name: "User"
   belongs_to :note
@@ -56,6 +57,10 @@ class Todo < ActiveRecord::Base
 
   def for_commit?
     target_type == "Commit"
+  end
+
+  def for_project?
+    target_type == "Project"
   end
 
   # override to return commits, which are not active record

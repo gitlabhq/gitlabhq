@@ -94,6 +94,8 @@ class Project < ActiveRecord::Base
   attr_accessor :new_default_branch
   attr_accessor :old_path_with_namespace
 
+  alias_attribute :title, :name
+
   # Relations
   belongs_to :creator, foreign_key: 'creator_id', class_name: 'User'
   belongs_to :group, -> { where(type: Group) }, foreign_key: 'namespace_id'

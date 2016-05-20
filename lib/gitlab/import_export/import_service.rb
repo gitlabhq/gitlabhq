@@ -17,6 +17,7 @@ module Gitlab
         Gitlab::ImportExport::Importer.import(archive_file: @archive_file,
                                               shared: @shared)
         if [restore_version, restore_project_tree, restore_repo, restore_wiki_repo, restore_uploads].all?
+          Todo.create(attributes_for_todo)
           project_tree.project
         else
           project_tree.project.destroy if project_tree.project
@@ -66,6 +67,18 @@ module Gitlab
 
       def wiki_repo_path
         File.join(@shared.export_path, 'project.wiki.bundle')
+      end
+
+      def attributes_for_todo
+        { user_id: @current_user.id,
+          project_id: project_tree.project.id,
+          target_type: 'Project',
+          target: project_tree.project,
+          action: Todo::IMPORTED,
+          author_id: @current_user.id,
+          state: :pending,
+          target_id: project_tree.project.id
+        }
       end
     end
   end

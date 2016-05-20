@@ -9,8 +9,12 @@ module TodosHelper
 
   def todo_action_name(todo)
     case todo.action
-    when Todo::ASSIGNED then 'assigned you'
-    when Todo::MENTIONED then 'mentioned you on'
+      when Todo::ASSIGNED then
+        'assigned you'
+      when Todo::MENTIONED then
+        'mentioned you on'
+      when Todo::IMPORTED then
+        'imported successfully'
     end
   end
 
@@ -27,6 +31,8 @@ module TodosHelper
     if todo.for_commit?
       namespace_project_commit_path(todo.project.namespace.becomes(Namespace), todo.project,
                                     todo.target, anchor: anchor)
+    elsif todo.for_project?
+      namespace_project_path(todo.project.namespace, todo.project)
     else
       polymorphic_path([todo.project.namespace.becomes(Namespace),
                         todo.project, todo.target], anchor: anchor)
