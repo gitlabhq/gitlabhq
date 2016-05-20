@@ -15,6 +15,9 @@ v 8.8.0 (unreleased)
   - Reduce emails-on-push HTML size by using a simple monospace font
   - API requests to /internal/authorized_keys are now tagged properly
 
+v 8.7.6
+  - Bump GitLab Pages to 0.2.4 to fix Content-Type for predefined 404
+
 v 8.7.5
   - No EE-specific changes
 
