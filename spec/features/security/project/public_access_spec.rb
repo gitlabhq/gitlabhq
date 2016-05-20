@@ -378,11 +378,6 @@ describe "Public Project Access", feature: true  do
   describe "GET /:project_path/branches" do
     subject { namespace_project_branches_path(project.namespace, project) }
 
-    before do
-      # Speed increase
-      allow_any_instance_of(Project).to receive(:branches).and_return([])
-    end
-
     it { is_expected.to be_allowed_for :admin }
     it { is_expected.to be_allowed_for owner }
     it { is_expected.to be_allowed_for master }
