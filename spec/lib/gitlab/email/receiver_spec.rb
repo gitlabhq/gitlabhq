@@ -238,15 +238,6 @@ describe Gitlab::Email::Receiver, lib: true do
         it "raises a ProjectNotFound if the user is not a member" do
           expect { receiver.execute }.to raise_error(Gitlab::Email::ProjectNotFound)
         end
-
-        it "raises a UserNotAuthorizedError if the user has no sufficient permission" do
-          skip("Find a role which can :read_project but can't :create_issue")
-
-          project.update(group: create(:group))
-          project.group.add_guest(user)
-
-          expect { receiver.execute }.to raise_error(Gitlab::Email::UserNotAuthorizedError)
-        end
       end
     end
   end
