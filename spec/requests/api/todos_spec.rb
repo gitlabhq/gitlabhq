@@ -16,23 +16,26 @@ describe API::Todos, api: true do
 
   describe 'GET /todos' do
     context 'when unauthenticated' do
-      it 'should return authentication error' do
+      it 'returns authentication error' do
         get api('/todos')
+
         expect(response.status).to eq(401)
       end
     end
 
     context 'when authenticated' do
-      it 'should return an array of pending todos for current user' do
+      it 'returns an array of pending todos for current user' do
         get api('/todos', john_doe)
+
         expect(response.status).to eq(200)
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(3)
       end
 
       context 'and using the author filter' do
-        it 'should filter based on author_id param' do
+        it 'filters based on author_id param' do
           get api('/todos', john_doe), { author_id: author_2.id }
+
           expect(response.status).to eq(200)
           expect(json_response).to be_an Array
           expect(json_response.length).to eq(2)
@@ -40,8 +43,9 @@ describe API::Todos, api: true do
       end
 
       context 'and using the type filter' do
-        it 'should filter based on type param' do
+        it 'filters based on type param' do
           get api('/todos', john_doe), { type: 'MergeRequest' }
+
           expect(response.status).to eq(200)
           expect(json_response).to be_an Array
           expect(json_response.length).to eq(1)
@@ -49,8 +53,9 @@ describe API::Todos, api: true do
       end
 
       context 'and using the state filter' do
-        it 'should filter based on state param' do
+        it 'filters based on state param' do
           get api('/todos', john_doe), { state: 'done' }
+
           expect(response.status).to eq(200)
           expect(json_response).to be_an Array
           expect(json_response.length).to eq(1)
@@ -58,9 +63,10 @@ describe API::Todos, api: true do
       end
 
       context 'and using the project filter' do
-        it 'should filter based on project_id param' do
+        it 'filters based on project_id param' do
           project_2.team << [john_doe, :developer]
           get api('/todos', john_doe), { project_id: project_2.id }
+
           expect(response.status).to eq(200)
           expect(json_response).to be_an Array
           expect(json_response.length).to eq(1)
@@ -71,15 +77,17 @@ describe API::Todos, api: true do
 
   describe 'DELETE /todos/:id' do
     context 'when unauthenticated' do
-      it 'should return authentication error' do
+      it 'returns authentication error' do
         delete api("/todos/#{pending_1.id}")
+
         expect(response.status).to eq(401)
       end
     end
 
     context 'when authenticated' do
-      it 'should mark a todo as done' do
+      it 'marks a todo as done' do
         delete api("/todos/#{pending_1.id}", john_doe)
+
         expect(response.status).to eq(200)
         expect(pending_1.reload).to be_done
       end
@@ -88,15 +96,17 @@ describe API::Todos, api: true do
 
   describe 'DELETE /todos' do
     context 'when unauthenticated' do
-      it 'should return authentication error' do
+      it 'returns authentication error' do
         delete api('/todos')
+
         expect(response.status).to eq(401)
       end
     end
 
     context 'when authenticated' do
-      it 'should mark all todos as done' do
+      it 'marks all todos as done' do
         delete api('/todos', john_doe)
+
         expect(response.status).to eq(200)
         expect(pending_1.reload).to be_done
         expect(pending_2.reload).to be_done
