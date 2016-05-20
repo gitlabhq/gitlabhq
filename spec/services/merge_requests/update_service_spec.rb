@@ -39,7 +39,8 @@ describe MergeRequests::UpdateService, services: true do
           assignee_id: user2.id,
           state_event: 'close',
           label_ids: [label.id],
-          target_branch: 'target'
+          target_branch: 'target',
+          force_remove_source_branch: '1'
         }
       end
 
@@ -61,6 +62,7 @@ describe MergeRequests::UpdateService, services: true do
       it { expect(@merge_request.labels.count).to eq(1) }
       it { expect(@merge_request.labels.first.title).to eq(label.name) }
       it { expect(@merge_request.target_branch).to eq('target') }
+      it { expect(@merge_request.merge_params['force_remove_source_branch']).to eq('1') }
 
       it 'should execute hooks with update action' do
         expect(service).to have_received(:execute_hooks).
