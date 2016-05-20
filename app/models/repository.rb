@@ -479,7 +479,7 @@ class Repository
   end
 
   def license_blob
-    return nil if !exists? || empty?
+    return nil unless head_exists?
 
     cache.fetch(:license_blob) do
       tree(:head).blobs.find do |file|
@@ -489,7 +489,7 @@ class Repository
   end
 
   def license_key
-    return nil if !exists? || empty?
+    return nil unless head_exists?
 
     cache.fetch(:license_key) do
       Licensee.license(path).try(:key)
@@ -497,7 +497,7 @@ class Repository
   end
 
   def gitlab_ci_yml
-    return nil if !exists? || empty?
+    return nil unless head_exists?
 
     @gitlab_ci_yml ||= tree(:head).blobs.find do |file|
       file.name == '.gitlab-ci.yml'
@@ -965,7 +965,7 @@ class Repository
   end
 
   def main_language
-    return if empty? || rugged.head_unborn?
+    return unless head_exists?
 
     Linguist::Repository.new(rugged, rugged.head.target_id).language
   end
@@ -984,5 +984,9 @@ class Repository
 
   def cache
     @cache ||= RepositoryCache.new(path_with_namespace)
+  end
+
+  def head_exists?
+    exists? && !empty? && !rugged.head_unborn?
   end
 end
