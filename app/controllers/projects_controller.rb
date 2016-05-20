@@ -147,6 +147,7 @@ class ProjectsController < Projects::ApplicationController
     @suggestions = {
       emojis: AwardEmoji.urls,
       issues: autocomplete.issues,
+      milestones: autocomplete.milestones,
       mergerequests: autocomplete.merge_requests,
       members: participants
     }
