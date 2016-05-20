@@ -44,7 +44,7 @@
   - else
     #{@scope.titleize} for this project
 
-%ul.content-list
+%ul.content-list.pipelines
   - stages = @pipelines.stages
   - if @pipelines.blank?
     %li
@@ -56,8 +56,8 @@
           %th ID
           %th Commit
           - stages.each do |stage|
-            %th
-              %span.pipeline-stage.has-tooltip{ title: "#{stage.titleize}" }
+            %th.stage
+              %span.has-tooltip{ title: "#{stage.titleize}" }
                 = stage.titleize.pluralize
           %th
           %th
