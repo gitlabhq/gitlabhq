@@ -43,7 +43,7 @@ describe Blob do
         text?: false
       )
 
-      described_class.decorate(double).tap do |blob|
+      described_class.decorate(spy).tap do |blob|
         allow(blob).to receive_messages(overrides)
       end
     end
