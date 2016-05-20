@@ -8,7 +8,7 @@ module Gitlab
       if File.exist?('/proc')
         # Returns the current process' memory usage in bytes.
         def self.memory_usage
-          mem   = 0
+          mem = 0
           match = File.read('/proc/self/status').match(/VmRSS:\s+(\d+)/)
 
           if match and match[1]
@@ -21,6 +21,15 @@ module Gitlab
         def self.file_descriptor_count
           Dir.glob('/proc/self/fd/*').length
         end
+
+        def self.load_average
+          loadavg = File.read('/proc/loadavg').scan(/\d+.\d+/)
+          if loadavg && loadavg[0] && loadavg[1] && loadavg[2]
+            loadavg[0..2].map { |value| value.to_f }
+          else
+            [0.0, 0.0, 0.0]
+          end
+        end
       else
         def self.memory_usage
           0.0
@@ -28,6 +37,10 @@ module Gitlab
 
         def self.file_descriptor_count
           0
+        end
+
+        def self.load_average
+          [0.0, 0.0, 0.0]
         end
       end
 

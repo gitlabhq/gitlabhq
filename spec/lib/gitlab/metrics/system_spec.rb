@@ -27,6 +27,14 @@ describe Gitlab::Metrics::System do
     end
   end
 
+  describe '.load_average' do
+    it 'returns the amount of load as 3 values array' do
+      expect(described_class.load_average[0]).to be >= 0.0
+      expect(described_class.load_average[1]).to be >= 0.0
+      expect(described_class.load_average[2]).to be >= 0.0
+    end
+  end
+
   describe '.cpu_time' do
     it 'returns a Fixnum' do
       expect(described_class.cpu_time).to be_an_instance_of(Fixnum)
