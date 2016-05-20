@@ -8,6 +8,7 @@
 * [Multiple underscores in words](#multiple-underscores-in-words)
 * [URL auto-linking](#url-auto-linking)
 * [Code and Syntax Highlighting](#code-and-syntax-highlighting)
+* [Inline Diff](#inline-diff)
 * [Emoji](#emoji)
 * [Special GitLab references](#special-gitlab-references)
 * [Task lists](#task-lists)
@@ -152,6 +153,19 @@ No language indicated, so no syntax highlighting.
 s = "There is no highlighting for this."
 But let's throw in a <b>tag</b>.
 ```
+
+## Inline Diff
+
+With inline diffs tags you can display {+ additions +} or [- deletions -].
+
+The wrapping tags can be either curly braces or square brackets [+ additions +] or {- deletions -}.
+
+However the wrapping tags cannot be mixed as such:
+
+- {+ additions +]
+- [+ additions +}
+- {- deletions -]
+- [- deletions -}
 
 ## Emoji
 

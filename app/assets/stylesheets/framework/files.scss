@@ -36,22 +36,6 @@
       }
     }
 
-    .filename {
-      &.old {
-        display: inline-block;
-        span.idiff {
-          background-color: #f8cbcb;
-        }
-      }
-
-      &.new {
-        display: inline-block;
-        span.idiff {
-          background-color: #a6f3a6;
-        }
-      }
-    }
-
     a:not(.btn) {
       color: $gl-dark-link-color;
     }
