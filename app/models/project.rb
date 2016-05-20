@@ -216,7 +216,7 @@ class Project < ActiveRecord::Base
     state :finished
     state :failed
 
-    after_transition any => :finished, do: :clear_import_data
+    after_transition any => :finished, do: :reset_cache_and_import_attrs
 
     after_transition started: :finished do |project, transaction|
       if project.mirror?
@@ -400,7 +400,7 @@ class Project < ActiveRecord::Base
     end
   end
 
-  def clear_import_data
+  def reset_cache_and_import_attrs
     update(import_error: nil)
 
     ProjectCacheWorker.perform_async(self.id)
