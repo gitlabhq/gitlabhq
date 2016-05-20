@@ -224,11 +224,11 @@ describe Gitlab::Email::Receiver, lib: true do
         end
       end
 
-      context "when the authentication_token token didn't match" do
+      context "when we can't find the authentication_token" do
         let!(:email_raw) { fixture_file("emails/wrong_authentication_token.eml") }
 
-        it "raises an UserNotAuthorizedError" do
-          expect { receiver.execute }.to raise_error(Gitlab::Email::UserNotAuthorizedError)
+        it "raises an UserNotFoundError" do
+          expect { receiver.execute }.to raise_error(Gitlab::Email::UserNotFoundError)
         end
       end
 

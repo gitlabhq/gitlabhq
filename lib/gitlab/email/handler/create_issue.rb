@@ -11,7 +11,6 @@ module Gitlab
 
         def execute
           validate_permission!(:create_issue)
-          validate_authentication_token!
 
           verify_record(
             create_issue,
@@ -21,10 +20,7 @@ module Gitlab
         end
 
         def author
-          @author ||= mail.from.find do |email|
-            user = User.find_by_any_email(email)
-            break user if user
-          end
+          @author ||= User.find_by(authentication_token: authentication_token)
         end
 
         def project
@@ -47,11 +43,6 @@ module Gitlab
             title:       mail.subject,
             description: message
           ).execute
-        end
-
-        def validate_authentication_token!
-          raise UserNotAuthorizedError unless author.authentication_token ==
-                                                authentication_token
         end
       end
     end
