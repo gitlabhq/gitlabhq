@@ -216,7 +216,6 @@ class Project < ActiveRecord::Base
     state :finished
     state :failed
 
-    after_transition any => :started, do: :schedule_add_import_job
     after_transition any => :finished, do: :clear_import_data
 
     after_transition started: :finished do |project, transaction|
