@@ -56,8 +56,8 @@
                 placeholder: 'Select assignee', class: 'custom-form-control', null_user: true,
                 selected: issuable.assignee_id, project: @target_project || @project,
                 first_user: true, current_user: true, include_blank: true)
-          %br
-          = link_to 'Assign to me', '#', class: 'assign-to-me-link prepend-top-5 inline'
+          %div
+            = link_to 'Assign to me', '#', class: 'assign-to-me-link prepend-top-5 inline'
       .form-group.issue-milestone
         = f.label :milestone_id, "Milestone", class: "control-label #{"col-lg-4" if has_due_date}"
         .col-sm-10{ class: ("col-lg-8" if has_due_date) }
@@ -69,8 +69,8 @@
             .prepend-top-10
             %span.light No open milestones available.
           - if can? current_user, :admin_milestone, issuable.project
-            %br
-            = link_to 'Create new milestone', new_namespace_project_milestone_path(issuable.project.namespace, issuable.project), target: :blank, class: "prepend-top-5 inline"
+            %div
+              = link_to 'Create new milestone', new_namespace_project_milestone_path(issuable.project.namespace, issuable.project), target: :blank, class: "prepend-top-5 inline"
       .form-group
         - has_labels = issuable.project.labels.any?
         = f.label :label_ids, "Labels", class: "control-label #{"col-lg-4" if has_due_date}"
@@ -82,8 +82,8 @@
           - else
             %span.light No labels yet.
           - if can? current_user, :admin_label, issuable.project
-            %br
-            = link_to 'Create new label', new_namespace_project_label_path(issuable.project.namespace, issuable.project), target: :blank, class: "prepend-top-5 inline"
+            %div
+              = link_to 'Create new label', new_namespace_project_label_path(issuable.project.namespace, issuable.project), target: :blank, class: "prepend-top-5 inline"
     - if has_due_date
       .col-lg-6
         .form-group
