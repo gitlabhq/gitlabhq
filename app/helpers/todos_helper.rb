@@ -9,12 +9,12 @@ module TodosHelper
 
   def todo_action_name(todo)
     case todo.action
-      when Todo::ASSIGNED then
-        'assigned you'
-      when Todo::MENTIONED then
-        'mentioned you on'
-      when Todo::IMPORTED then
-        'imported successfully'
+    when Todo::ASSIGNED then
+      'assigned you'
+    when Todo::MENTIONED then
+      'mentioned you on'
+    when Todo::IMPORTED then
+      'imported successfully'
     end
   end
 
