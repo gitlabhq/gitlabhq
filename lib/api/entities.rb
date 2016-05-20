@@ -457,5 +457,13 @@ module API
       expose(:limitations) { |license| license.meta['limitations'] }
       expose :content
     end
+
+    class GitignoresList < Grape::Entity
+      expose :name
+    end
+
+    class Gitignore < Grape::Entity
+      expose :name, :content
+    end
   end
 end
