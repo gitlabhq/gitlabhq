@@ -16,7 +16,7 @@ describe Gitlab::Sherlock::Middleware, lib: true do
 
     describe 'when instrumentation is disabled' do
       it "doesn't instrument a request" do
-        allow(middleware).to receive(:instrument).and_return(false)
+        allow(middleware).to receive(:instrument?).and_return(false)
         allow(app).to receive(:call)
 
         middleware.call({})
