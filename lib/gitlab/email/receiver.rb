@@ -60,7 +60,7 @@ module Gitlab
 
       def key_from_additional_headers
         Array(mail.references).find do |mail_id|
-          key = Gitlab::IncomingEmail.key_from_fallback_reply_mail_id(mail_id)
+          key = Gitlab::IncomingEmail.key_from_fallback_message_id(mail_id)
           break key if key
         end
       end
