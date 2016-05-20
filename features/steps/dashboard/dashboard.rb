@@ -13,7 +13,7 @@ class Spinach::Features::Dashboard < Spinach::FeatureSteps
   end
 
   step 'I should see "Shop" project CI status' do
-    expect(page).to have_link "Build skipped"
+    expect(page).to have_link "Commit: skipped"
   end
 
   step 'I should see last push widget' do

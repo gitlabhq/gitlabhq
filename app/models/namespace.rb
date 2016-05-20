@@ -110,6 +110,10 @@ class Namespace < ActiveRecord::Base
     # Ensure old directory exists before moving it
     gitlab_shell.add_namespace(path_was)
 
+    if any_project_has_container_registry_tags?
+      raise Exception.new('Namespace cannot be moved, because at least one project has tags in container registry')
+    end
+
     if gitlab_shell.mv_namespace(path_was, path)
       Gitlab::UploadsTransfer.new.rename_namespace(path_was, path)
 
@@ -129,6 +133,10 @@ class Namespace < ActiveRecord::Base
       # db changes in order to prevent out of sync between db and fs
       raise Exception.new('namespace directory cannot be moved')
     end
+  end
+
+  def any_project_has_container_registry_tags?
+    projects.any?(&:has_container_registry_tags?)
   end
 
   def send_update_instructions

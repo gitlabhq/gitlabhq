@@ -269,6 +269,7 @@ ActiveRecord::Schema.define(version: 20160509201028) do
     t.string   "revision"
     t.string   "platform"
     t.string   "architecture"
+    t.boolean  "run_untagged", default: true,  null: false
   end
 
   add_index "ci_runners", ["description"], name: "index_ci_runners_on_description_trigram", using: :gin, opclasses: {"description"=>"gin_trgm_ops"}
@@ -762,6 +763,7 @@ ActiveRecord::Schema.define(version: 20160509201028) do
     t.integer  "pushes_since_gc",              default: 0
     t.boolean  "last_repository_check_failed"
     t.datetime "last_repository_check_at"
+    t.boolean  "container_registry_enabled"
   end
 
   add_index "projects", ["builds_enabled", "shared_runners_enabled"], name: "index_projects_on_builds_enabled_and_shared_runners_enabled", using: :btree

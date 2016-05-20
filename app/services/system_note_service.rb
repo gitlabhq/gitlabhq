@@ -169,10 +169,24 @@ class SystemNoteService
   #
   # Returns the created Note object
   def self.change_title(noteable, project, author, old_title)
-    return unless noteable.respond_to?(:title)
-
     body = "Title changed from **#{old_title}** to **#{noteable.title}**"
     create_note(noteable: noteable, project: project, author: author, note: body)
+  end
+
+  # Called when the confidentiality changes
+  #
+  # issue   - Issue object
+  # project - Project owning the issue
+  # author  - User performing the change
+  #
+  # Example Note text:
+  #
+  # "Made the issue confidential"
+  #
+  # Returns the created Note object
+  def self.change_issue_confidentiality(issue, project, author)
+    body = issue.confidential ? 'Made the issue confidential' : 'Made the issue visible'
+    create_note(noteable: issue, project: project, author: author, note: body)
   end
 
   # Called when a branch in Noteable is changed
