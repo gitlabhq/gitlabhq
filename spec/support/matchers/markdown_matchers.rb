@@ -168,6 +168,16 @@ module MarkdownMatchers
       expect(actual).to have_selector('input[checked]', count: 3)
     end
   end
+
+  # InlineDiffFilter
+  matcher :parse_inline_diffs do
+    set_default_markdown_messages
+
+    match do |actual|
+      expect(actual).to have_selector('span.idiff.addition', count: 2)
+      expect(actual).to have_selector('span.idiff.deletion', count: 2)
+    end
+  end
 end
 
 # Monkeypatch the matcher DSL so that we can reduce some noisy duplication for
