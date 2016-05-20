@@ -106,9 +106,8 @@ issuable_created = false
   checkChanged: ->
     checked_issues = $('.selected_issue:checked')
     if checked_issues.length > 0
-      ids = []
-      $.each checked_issues, (index, value) ->
-        ids.push $(value).data('id')
+      ids = $.map checked_issues, (value) ->
+        $(value).data('id')
 
       $('#update_issues_ids').val ids
       $('.issues-other-filters').hide()
