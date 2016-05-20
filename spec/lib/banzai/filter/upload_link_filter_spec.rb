@@ -80,12 +80,6 @@ describe Banzai::Filter::UploadLinkFilter, lib: true do
       path = '/uploads/한글.png'
       escaped = Addressable::URI.escape(path)
 
-      # Stub these methods so the file doesn't actually need to be in the repo
-      allow_any_instance_of(described_class).
-        to receive(:file_exists?).and_return(true)
-      allow_any_instance_of(described_class).
-        to receive(:image?).with(path).and_return(true)
-
       doc = filter(image(escaped))
       expect(doc.at_css('img')['src']).to match "#{Gitlab.config.gitlab.url}/#{project.path_with_namespace}/uploads/%ED%95%9C%EA%B8%80.png"
     end
