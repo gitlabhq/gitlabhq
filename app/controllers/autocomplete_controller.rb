@@ -40,7 +40,7 @@ class AutocompleteController < ApplicationController
     end
 
     no_project = OpenStruct.new(id: 0, name_with_namespace: 'No project')
-    projects.unshift(no_project.marshal_dump)
+    projects.unshift(no_project.to_h)
     projects.delete(project)
 
     render json: projects.to_json(only: [:id, :name_with_namespace], methods: :name_with_namespace)

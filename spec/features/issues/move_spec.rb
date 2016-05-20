@@ -47,7 +47,7 @@ feature 'issue move to another project' do
       expect(page).to have_content(issue.title)
     end
 
-    context 'projects user does not have permission to move issue to exist', js: true do
+    context 'user does not have permission to move the issue to a project', js: true do
       let!(:private_project) { create(:project, :private) }
       let(:another_project) { create(:project) }
       background { another_project.team << [user, :guest] }
