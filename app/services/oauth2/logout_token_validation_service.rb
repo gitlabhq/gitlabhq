@@ -2,14 +2,16 @@ module Oauth2
   class LogoutTokenValidationService < ::BaseService
     attr_reader :status, :current_user
 
-    def initialize(user, access_token_string)
-      @access_token_string = access_token_string
+    def initialize(user, params={})
+      if params && params[:state] && !params[:state].empty?
+        oauth = Gitlab::Geo::OauthSession.new(state: params[:state])
+        @access_token_string = oauth.extract_logout_token
+      end
       @current_user = user
     end
 
-    def validate
-      return false unless access_token
-
+    def execute
+      return error('access token not found') unless access_token
       status = Oauth2::AccessTokenValidationService.validate(access_token)
 
       if status == Oauth2::AccessTokenValidationService::VALID

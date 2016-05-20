@@ -34,10 +34,7 @@ class Oauth::GeoAuthController < ActionController::Base
   end
 
   def logout
-    oauth = Gitlab::Geo::OauthSession.new(state: params[:state])
-    token_string = oauth.extract_logout_token
-
-    logout = Oauth2::LogoutTokenValidationService.new(current_user, token_string)
+    logout = Oauth2::LogoutTokenValidationService.new(current_user, params)
     result = logout.validate
     if result[:status] == :success
       sign_out current_user
