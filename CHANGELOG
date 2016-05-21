@@ -1,12 +1,16 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.8.0 (unreleased)
+  - Implement GFM references for milestones (Alejandro Rodríguez)
   - Snippets tab under user profile. !4001 (Long Nguyen)
   - Fix error when using link to uploads in global snippets
+  - Fix Error 500 when attempting to retrieve project license when HEAD points to non-existent ref
   - Assign labels and milestone to target project when moving issue. !3934 (Long Nguyen)
   - Use a case-insensitive comparison in sanitizing URI schemes
   - Toggle sign-up confirmation emails in application settings
   - Make it possible to prevent tagged runner from picking untagged jobs
+  - Added `InlineDiffFilter` to the markdown parser. (Adam Butler)
+  - Added inline diff styling for `change_title` system notes. (Adam Butler)
   - Project#open_branches has been cleaned up and no longer loads entire records into memory.
   - Escape HTML in commit titles in system note messages
   - Fix creation of Ci::Commit object which can lead to pending, failed in some scenarios
@@ -40,6 +44,7 @@ v 8.8.0 (unreleased)
   - Added button to toggle whitespaces changes on diff view
   - Backport GitHub Enterprise import support from EE
   - Create tags using Rugged for performance reasons. !3745
+  - Allow guests to set notification level in projects
   - API: Expose Issue#user_notes_count. !3126 (Anton Popov)
   - Don't show forks button when user can't view forks
   - Fix atom feed links and rendering
@@ -65,6 +70,8 @@ v 8.8.0 (unreleased)
   - All Grape API helpers are now instrumented
   - Improve Issue formatting for the Slack Service (Jeroen van Baarsen)
   - Fixed advice on invalid permissions on upload path !2948 (Ludovic Perrine)
+  - Allows MR authors to have the source branch removed when merging the MR. !2801 (Jeroen Jacobs)
+  - When creating a .gitignore file a dropdown with templates will be provided
 
 v 8.7.6
   - Fix links on wiki pages for relative url setups. !4131 (Artem Sidorenko)

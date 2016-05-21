@@ -12,7 +12,8 @@
       = link_to new_namespace_project_fork_path(@project.namespace, @project), title: "Fork project", class: 'btn has-tooltip' do
         = icon('code-fork fw')
         Fork
-      = link_to namespace_project_forks_path(@project.namespace, @project), class: 'count-with-arrow' do
+      %div.count-with-arrow
         %span.arrow
         %span.count
-          = @project.forks_count
+          = link_to namespace_project_forks_path(@project.namespace, @project) do
+            = @project.forks_count

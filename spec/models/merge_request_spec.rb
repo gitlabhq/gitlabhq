@@ -260,13 +260,18 @@ describe MergeRequest, models: true do
   end
 
   describe "#reset_merge_when_build_succeeds" do
-    let(:merge_if_green) { create :merge_request, merge_when_build_succeeds: true, merge_user: create(:user) }
+    let(:merge_if_green) do
+      create :merge_request, merge_when_build_succeeds: true, merge_user: create(:user),
+                             merge_params: { "should_remove_source_branch" => "1", "commit_message" => "msg" }
+    end
 
     it "sets the item to false" do
       merge_if_green.reset_merge_when_build_succeeds
       merge_if_green.reload
 
       expect(merge_if_green.merge_when_build_succeeds).to be_falsey
+      expect(merge_if_green.merge_params["should_remove_source_branch"]).to be_nil
+      expect(merge_if_green.merge_params["commit_message"]).to be_nil
     end
   end
 
