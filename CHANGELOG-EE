@@ -15,6 +15,7 @@ v 8.8.0 (unreleased)
   - Add support for Admin Groups to SAML
   - Reduce emails-on-push HTML size by using a simple monospace font
   - API requests to /internal/authorized_keys are now tagged properly
+  - Geo: Single Sign Out support !380
 
 v 8.7.6
   - Bump GitLab Pages to 0.2.4 to fix Content-Type for predefined 404

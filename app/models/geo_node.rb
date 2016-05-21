@@ -69,6 +69,12 @@ class GeoNode < ActiveRecord::Base
     URI.join(uri, "#{uri.path}/", 'oauth/geo/callback').to_s
   end
 
+  def oauth_logout_url(state)
+    logout_uri = URI.join(uri, "#{uri.path}/", 'oauth/geo/logout')
+    logout_uri.query = "state=#{state}"
+    logout_uri.to_s
+  end
+
   def missing_oauth_application?
     self.primary? ? false : !oauth_application.present?
   end
