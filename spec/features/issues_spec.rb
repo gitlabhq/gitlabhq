@@ -64,6 +64,64 @@ describe 'Issues', feature: true do
     end
   end
 
+  describe 'due date', js: true do
+    context 'on new form' do
+      before do
+        visit new_namespace_project_issue_path(project.namespace, project)
+      end
+
+      it 'should save with due date' do
+        date = Date.today.at_beginning_of_month
+
+        fill_in 'issue_title', with: 'bug 345'
+        fill_in 'issue_description', with: 'bug description'
+
+        page.within '.datepicker' do
+          click_link date.day
+        end
+
+        expect(find('#issuable-due-date', visible: false).value).to eq date.to_s
+
+        click_button 'Submit issue'
+
+        page.within '.issuable-sidebar' do
+          expect(page).to have_content date.to_s(:medium)
+        end
+      end
+    end
+
+    context 'on edit form' do
+      let(:issue) { create(:issue, author: @user,project: project, due_date: Date.today.at_beginning_of_month.to_s) }
+
+      before do
+        visit edit_namespace_project_issue_path(project.namespace, project, issue)
+      end
+
+      it 'should save with due date' do
+        date = Date.today.at_beginning_of_month
+
+        expect(find('#issuable-due-date', visible: false).value).to eq date.to_s
+
+        date = date.tomorrow
+
+        fill_in 'issue_title', with: 'bug 345'
+        fill_in 'issue_description', with: 'bug description'
+
+        page.within '.datepicker' do
+          click_link date.day
+        end
+
+        expect(find('#issuable-due-date', visible: false).value).to eq date.to_s
+
+        click_button 'Save changes'
+
+        page.within '.issuable-sidebar' do
+          expect(page).to have_content date.to_s(:medium)
+        end
+      end
+    end
+  end
+
   describe 'Issue info' do
     it 'excludes award_emoji from comment count' do
       issue = create(:issue, author: @user, assignee: @user, project: project, title: 'foobar')
@@ -331,7 +389,7 @@ describe 'Issues', feature: true do
         page.within '.assignee' do
           click_link 'Edit'
         end
-        
+
         page.within '.dropdown-menu-user' do
           click_link @user.name
         end
