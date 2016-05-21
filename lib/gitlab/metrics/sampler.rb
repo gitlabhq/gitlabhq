@@ -101,7 +101,7 @@ module Gitlab
 
       def sample_load_average
         loadavg = System.load_average
-        add_metric('sys_loadavg', {:'1min' => loadavg[0], :'5min' => loadavg[1], :'15min' => loadavg[2]})
+        add_metric('sys_loadavg', { :'1min' => loadavg[0], :'5min' => loadavg[1], :'15min' => loadavg[2] })
       end
 
       def add_metric(series, values, tags = {})

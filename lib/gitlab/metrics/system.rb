@@ -25,7 +25,7 @@ module Gitlab
         def self.load_average
           loadavg = File.read('/proc/loadavg').scan(/\d+.\d+/)
           if loadavg && loadavg[0] && loadavg[1] && loadavg[2]
-            loadavg[0..2].map { |value| value.to_f }
+            loadavg[0..2].map(&:to_f)
           else
             [0.0, 0.0, 0.0]
           end
