@@ -9,6 +9,7 @@ class SessionsController < Devise::SessionsController
     if: :two_factor_enabled?, only: [:create]
   prepend_before_action :store_redirect_path, only: [:new]
   before_action :gitlab_geo_login, only: [:new]
+  before_action :gitlab_geo_logout, only: [:destroy]
   before_action :auto_sign_in_with_provider, only: [:new]
   before_action :load_recaptcha
 
@@ -111,15 +112,23 @@ class SessionsController < Devise::SessionsController
   end
 
   def gitlab_geo_login
-    if !signed_in? && Gitlab::Geo.enabled? && Gitlab::Geo.secondary?
-      oauth = Gitlab::Geo::OauthSession.new
+    return unless Gitlab::Geo.secondary?
+    return if signed_in?
 
-      # share full url with primary node by shared session
-      user_return_to = URI.join(root_url, session[:user_return_to].to_s).to_s
-      oauth.return_to = @redirect_to || user_return_to
+    oauth = Gitlab::Geo::OauthSession.new
 
-      redirect_to oauth_geo_auth_url(state: oauth.generate_oauth_state)
-    end
+    # share full url with primary node by oauth state
+    user_return_to = URI.join(root_url, session[:user_return_to].to_s).to_s
+    oauth.return_to = @redirect_to || user_return_to
+
+    redirect_to oauth_geo_auth_url(state: oauth.generate_oauth_state)
+  end
+
+  def gitlab_geo_logout
+    return unless Gitlab::Geo.secondary?
+
+    oauth = Gitlab::Geo::OauthSession.new(access_token: session[:access_token])
+    @geo_logout_state = oauth.generate_logout_state
   end
 
   def auto_sign_in_with_provider

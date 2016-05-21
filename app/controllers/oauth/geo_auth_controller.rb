@@ -15,16 +15,17 @@ class Oauth::GeoAuthController < ActionController::Base
   def callback
     oauth = Gitlab::Geo::OauthSession.new(state: params[:state])
     unless oauth.is_oauth_state_valid?
-      redirect_to new_user_sessions_path
+      redirect_to new_user_session_path
       return
     end
 
     token = oauth.get_token(params[:code], redirect_uri: oauth_geo_callback_url)
     remote_user = oauth.authenticate_with_gitlab(token)
 
-    user = User.find(remote_user['id'])
+    user = User.find_by(id: remote_user['id'])
 
     if user && sign_in(user, bypass: true)
+      session[:access_token] = token
       return_to = oauth.get_oauth_state_return_to
       redirect_to(return_to || root_path)
     else
@@ -32,10 +33,31 @@ class Oauth::GeoAuthController < ActionController::Base
     end
   end
 
+  def logout
+    logout = Oauth2::LogoutTokenValidationService.new(current_user, params)
+    result = logout.execute
+    if result[:status] == :success
+      sign_out current_user
+      redirect_to root_path
+    else
+      access_token_error(result[:message])
+    end
+  end
+
   private
+
+  def invalid_credentials
+    @error = 'Cannot find user to login. Your account may have been deleted.'
+    render :error, layout: 'errors'
+  end
 
   def undefined_oauth_application
     @error = 'There are no OAuth application defined for this Geo node. Please ask your administrator to visit "Geo Nodes" on admin screen and click on "Repair authentication".'
+    render :error, layout: 'errors'
+  end
+
+  def access_token_error(status)
+    @error = "There is a problem with the OAuth access_token: #{status}"
     render :error, layout: 'errors'
   end
 end

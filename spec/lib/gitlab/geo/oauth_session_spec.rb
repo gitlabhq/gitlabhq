@@ -37,8 +37,7 @@ describe Gitlab::Geo::OauthSession do
 
   describe '#generate_oauth_state' do
     it 'returns nil when return_to is not present' do
-      state = subject.generate_oauth_state
-      expect(state).to be_nil
+      expect(subject.generate_oauth_state).to be_nil
     end
 
     context 'when return_to is present' do
@@ -58,6 +57,49 @@ describe Gitlab::Geo::OauthSession do
 
     it 'returns return_to value' do
       expect(subject.get_oauth_state_return_to).to eq(oauth_return_to)
+    end
+  end
+
+  describe '#generate_logout_state' do
+    it 'returns nil when access_token is not defined' do
+      expect(described_class.new.generate_logout_state).to be_nil
+    end
+
+    it 'returns false when encryptation fails' do
+      allow_any_instance_of(OpenSSL::Cipher::AES).to receive(:final) { raise OpenSSL::OpenSSLError }
+      expect(subject.generate_logout_state).to be_falsey
+    end
+
+    it 'returns a string with salt and encrypted access token colon separated' do
+      state = described_class.new(access_token: access_token).generate_logout_state
+      expect(state).to be_a String
+      expect(state).not_to be_blank
+
+      salt, encrypted = state.split(':', 2)
+      expect(salt).not_to be_blank
+      expect(encrypted).not_to be_blank
+    end
+  end
+
+  describe '#extract_logout_token' do
+    subject { described_class.new(access_token: access_token) }
+
+    it 'returns nil when state is not defined' do
+      expect(subject.extract_logout_token).to be_nil
+    end
+
+    it 'returns false when decryptation fails' do
+      subject.generate_logout_state
+      allow_any_instance_of(OpenSSL::Cipher::AES).to receive(:final) { raise OpenSSL::OpenSSLError }
+
+      expect(subject.extract_logout_token).to be_falsey
+    end
+
+    it 'encrypted access token is recoverable' do
+      subject.generate_logout_state
+
+      access_token = subject.extract_logout_token
+      expect(access_token).to eq access_token
     end
   end
 
