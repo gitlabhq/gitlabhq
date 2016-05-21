@@ -14,11 +14,11 @@ module API
       #
       # Example Request:
       #  GET /todos
+      #
       get do
-        @todos = find_todos
-        @todos = paginate @todos
+        todos = find_todos
 
-        present @todos, with: Entities::Todo
+        present paginate(todos), with: Entities::Todo
       end
 
       # Mark todo as done
@@ -31,10 +31,10 @@ module API
       #  DELETE /todos/:id
       #
       delete ':id' do
-        @todo = current_user.todos.find(params[:id])
-        @todo.done
+        todo = current_user.todos.find(params[:id])
+        todo.done
 
-        present @todo, with: Entities::Todo
+        present todo, with: Entities::Todo
       end
 
       # Mark all todos as done
@@ -44,10 +44,10 @@ module API
       #  DELETE /todos
       #
       delete do
-        @todos = find_todos
-        @todos.each(&:done)
+        todos = find_todos
+        todos.each(&:done)
 
-        present @todos, with: Entities::Todo
+        present paginate(todos), with: Entities::Todo
       end
     end
   end
