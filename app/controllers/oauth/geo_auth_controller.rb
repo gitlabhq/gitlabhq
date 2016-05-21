@@ -35,7 +35,7 @@ class Oauth::GeoAuthController < ActionController::Base
 
   def logout
     logout = Oauth2::LogoutTokenValidationService.new(current_user, params)
-    result = logout.validate
+    result = logout.execute
     if result[:status] == :success
       sign_out current_user
       redirect_to root_path
@@ -47,7 +47,7 @@ class Oauth::GeoAuthController < ActionController::Base
   private
 
   def invalid_credentials
-    @error = 'Cannot find user to login. Your account must have been deleted.'
+    @error = 'Cannot find user to login. Your account may have been deleted.'
     render :error, layout: 'errors'
   end
 

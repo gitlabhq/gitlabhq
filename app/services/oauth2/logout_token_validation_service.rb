@@ -1,12 +1,9 @@
 module Oauth2
   class LogoutTokenValidationService < ::BaseService
-    attr_reader :status, :current_user
+    attr_reader :status
 
     def initialize(user, params={})
-      if params && params[:state] && !params[:state].empty?
-        oauth = Gitlab::Geo::OauthSession.new(state: params[:state])
-        @access_token_string = oauth.extract_logout_token
-      end
+      @params = params
       @current_user = user
     end
 
@@ -26,9 +23,17 @@ module Oauth2
     end
 
     def access_token
-      return unless @access_token_string && @access_token_string.is_utf8?
+      @access_token ||= begin
+        return unless params[:state] && !params[:state].empty?
 
-      @access_token ||= Doorkeeper::AccessToken.by_token(@access_token_string)
+        oauth_session = Gitlab::Geo::OauthSession.new(state: params[:state])
+
+        logout_token = oauth_session.extract_logout_token
+        return unless logout_token && logout_token.is_utf8?
+
+        Doorkeeper::AccessToken.by_token(logout_token)
+      end
+
     end
   end
 end

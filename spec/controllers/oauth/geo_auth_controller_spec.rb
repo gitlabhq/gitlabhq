@@ -7,7 +7,7 @@ describe Oauth::GeoAuthController do
   let(:auth_state) { Gitlab::Geo::OauthSession.new(access_token: access_token, return_to: projects_url).generate_oauth_state }
   let(:primary_node_url) { 'http://localhost:3001/' }
 
-  before(:each) do
+  before do
     allow_any_instance_of(Gitlab::Geo::OauthSession).to receive(:oauth_app) { oauth_app }
     allow_any_instance_of(Gitlab::Geo::OauthSession).to receive(:primary_node_url) { primary_node_url }
   end
@@ -34,7 +34,7 @@ describe Oauth::GeoAuthController do
     let(:primary_node_oauth_endpoint) { Gitlab::Geo::OauthSession.new.authorize_url(redirect_uri: oauth_geo_callback_url, state: callback_state) }
 
     context 'redirection' do
-      before(:each) do
+      before do
         allow_any_instance_of(Gitlab::Geo::OauthSession).to receive(:get_token) { 'token' }
         allow_any_instance_of(Gitlab::Geo::OauthSession).to receive(:authenticate_with_gitlab) { user.attributes }
       end
@@ -57,7 +57,7 @@ describe Oauth::GeoAuthController do
       let(:fake_response) { double('Faraday::Response', headers: {}, body: '', status: 403) }
       let(:oauth_error) { OAuth2::Error.new(OAuth2::Response.new(fake_response)) }
 
-      before(:each) do
+      before do
         expect_any_instance_of(Gitlab::Geo::OauthSession).to receive(:get_token) { access_token }
         expect_any_instance_of(Gitlab::Geo::OauthSession).to receive(:authenticate_with_gitlab).and_raise(oauth_error)
       end
@@ -72,7 +72,7 @@ describe Oauth::GeoAuthController do
     context 'inexistent local user' do
       render_views
 
-      before(:each) do
+      before do
         expect_any_instance_of(Gitlab::Geo::OauthSession).to receive(:get_token) { 'token' }
         expect_any_instance_of(Gitlab::Geo::OauthSession).to receive(:authenticate_with_gitlab) { User.new(id: 999999) }
       end
@@ -92,7 +92,7 @@ describe Oauth::GeoAuthController do
     context 'access_token error' do
       render_views
 
-      before(:each) do
+      before do
         allow(controller).to receive(:current_user) { user }
       end
 
@@ -103,7 +103,7 @@ describe Oauth::GeoAuthController do
       end
 
       it 'handles access token problems' do
-        allow_any_instance_of(Oauth2::LogoutTokenValidationService).to receive(:validate) { { status: :error, message: :expired } }
+        allow_any_instance_of(Oauth2::LogoutTokenValidationService).to receive(:execute) { { status: :error, message: :expired } }
         get :logout, state: logout_state
 
         expect(response.body).to include("There is a problem with the OAuth access_token: #{:expired}")
