@@ -21,7 +21,6 @@ require 'spec_helper'
 
 describe ProjectMember, models: true do
   describe 'associations' do
-    it { is_expected.to have_many(:todos).through(:user) }
     it { is_expected.to belong_to(:project).class_name('Project').with_foreign_key(:source_id) }
   end
 

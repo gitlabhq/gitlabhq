@@ -3,7 +3,6 @@ class ProjectMember < Member
 
   include Gitlab::ShellAdapter
 
-  has_many :todos, through: :user
   belongs_to :project, class_name: 'Project', foreign_key: 'source_id'
 
   # Make sure project member points only to project as it source
@@ -15,7 +14,7 @@ class ProjectMember < Member
   scope :in_projects, ->(projects) { where(source_id: projects.pluck(:id)) }
   scope :with_user, ->(user) { where(user_id: user.id) }
 
-  before_destroy { todos.each(&:destroy) }
+  before_destroy { user.todos.where(project_id: source_id).each(&:destroy) }
 
   class << self
 
