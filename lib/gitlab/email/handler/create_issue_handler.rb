@@ -12,7 +12,7 @@ module Gitlab
         def execute
           validate_permission!(:create_issue)
 
-          verify_record(
+          verify_record!(
             create_issue,
             InvalidIssueError,
             "The issue could not be created for the following reasons:"

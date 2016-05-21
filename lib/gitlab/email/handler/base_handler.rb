@@ -42,7 +42,7 @@ module Gitlab
           end.join
         end
 
-        def verify_record(record, exception, error_title)
+        def verify_record!(record, exception, error_title)
           return if record.persisted?
 
           msg = error_title + record.errors.full_messages.map do |error|
