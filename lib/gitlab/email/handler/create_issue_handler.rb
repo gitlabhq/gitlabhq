@@ -1,10 +1,10 @@
 
-require 'gitlab/email/handler'
+require 'gitlab/email/handler/base_handler'
 
 module Gitlab
   module Email
-    class Handler
-      class CreateIssue < Handler
+    module Handler
+      class CreateIssueHandler < BaseHandler
         def can_handle?
           !!project
         end

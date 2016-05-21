@@ -1,10 +1,10 @@
 
-require 'gitlab/email/handler'
+require 'gitlab/email/handler/base_handler'
 
 module Gitlab
   module Email
-    class Handler
-      class CreateNote < Handler
+    module Handler
+      class CreateNoteHandler < BaseHandler
         def can_handle?
           !!sent_notification
         end

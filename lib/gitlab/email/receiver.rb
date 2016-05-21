@@ -1,6 +1,5 @@
 
-require 'gitlab/email/handler/create_note'
-require 'gitlab/email/handler/create_issue'
+require 'gitlab/email/handler'
 
 # Inspired in great part by Discourse's Email::Receiver
 module Gitlab
@@ -31,7 +30,7 @@ module Gitlab
 
         raise SentNotificationNotFoundError unless mail_key
 
-        if handler = find_handler(mail, mail_key)
+        if handler = Handler.for(mail, mail_key)
           handler.execute
         elsif mail_key =~ %r{/|\+}
           # Sent Notification mail_key would not have / or +
@@ -63,13 +62,6 @@ module Gitlab
         Array(mail.references).find do |mail_id|
           key = Gitlab::IncomingEmail.key_from_fallback_message_id(mail_id)
           break key if key
-        end
-      end
-
-      def find_handler(mail, mail_key)
-        [Handler::CreateNote, Handler::CreateIssue].find do |klass|
-          handler = klass.new(mail, mail_key)
-          break handler if handler.can_handle?
         end
       end
     end
