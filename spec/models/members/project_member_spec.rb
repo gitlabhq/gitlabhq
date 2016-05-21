@@ -47,14 +47,14 @@ describe ProjectMember, models: true do
     end
 
     it "destroy itself and delete associated todos" do
-      expect(owner.todos.size).to eq(2)
-      expect(master.todos.size).to eq(3)
+      expect(owner.user.todos.size).to eq(2)
+      expect(master.user.todos.size).to eq(3)
       expect(Todo.count).to eq(5)
 
       master_todo_ids = master_todos.map(&:id)
       master.destroy
 
-      expect(owner.todos.size).to eq(2)
+      expect(owner.user.todos.size).to eq(2)
       expect(Todo.count).to eq(2)
       master_todo_ids.each do |id|
         expect(Todo.exists?(id)).to eq(false)
