@@ -19,15 +19,16 @@ module Gitlab
     class InvalidIssueError < ProcessingError; end
 
     class Receiver
-      attr_reader :mail
-
       def initialize(raw)
-        raise EmptyEmailError if raw.blank?
-        @mail = build_mail(raw)
+        @raw = raw
       end
 
       def execute
-        mail_key = extract_mail_key
+        raise EmptyEmailError if @raw.blank?
+
+        mail = build_mail
+        mail_key = extract_mail_key(mail)
+
         raise SentNotificationNotFoundError unless mail_key
 
         if handler = find_handler(mail, mail_key)
@@ -40,25 +41,25 @@ module Gitlab
         end
       end
 
-      def build_mail(raw)
-        Mail::Message.new(raw)
+      def build_mail
+        Mail::Message.new(@raw)
       rescue Encoding::UndefinedConversionError,
              Encoding::InvalidByteSequenceError => e
         raise EmailUnparsableError, e
       end
 
-      def extract_mail_key
-        key_from_to_header || key_from_additional_headers
+      def extract_mail_key(mail)
+        key_from_to_header(mail) || key_from_additional_headers(mail)
       end
 
-      def key_from_to_header
+      def key_from_to_header(mail)
         mail.to.find do |address|
           key = Gitlab::IncomingEmail.key_from_address(address)
           break key if key
         end
       end
 
-      def key_from_additional_headers
+      def key_from_additional_headers(mail)
         Array(mail.references).find do |mail_id|
           key = Gitlab::IncomingEmail.key_from_fallback_message_id(mail_id)
           break key if key
