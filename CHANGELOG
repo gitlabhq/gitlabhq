@@ -1,6 +1,6 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
-v 8.8.0 (unreleased)
+v 8.8.0
   - Implement GFM references for milestones (Alejandro Rodríguez)
   - Snippets tab under user profile. !4001 (Long Nguyen)
   - Fix error when using link to uploads in global snippets
