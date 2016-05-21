@@ -20,7 +20,7 @@ module Auth
       token.issuer = registry.issuer
       token.audience = AUDIENCE
       token[:access] = names.map do |name|
-        { type: 'repository', name: name, actions: %w(pull push) }
+        { type: 'repository', name: name, actions: %w(*) }
       end
       token.encoded
     end
