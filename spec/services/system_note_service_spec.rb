@@ -241,7 +241,7 @@ describe SystemNoteService, services: true do
 
       it 'sets the note text' do
         expect(subject.note).
-          to eq "Title changed from **Old title** to **#{noteable.title}**"
+          to eq "Changed title: **{-Old title-}** → **{+#{noteable.title}+}**"
       end
     end
   end

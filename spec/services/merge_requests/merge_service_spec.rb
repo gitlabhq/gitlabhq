@@ -38,6 +38,21 @@ describe MergeRequests::MergeService, services: true do
       end
     end
 
+    context 'remove source branch by author' do
+      let(:service) do
+        merge_request.merge_params['force_remove_source_branch'] = '1'
+        merge_request.save!
+        MergeRequests::MergeService.new(project, user, commit_message: 'Awesome message')
+      end
+
+      it 'removes the source branch' do
+        expect(DeleteBranchService).to receive(:new).
+          with(merge_request.source_project, merge_request.author).
+          and_call_original
+        service.execute(merge_request)
+      end
+    end
+
     context "error handling" do
       let(:service) { MergeRequests::MergeService.new(project, user, commit_message: 'Awesome message') }
 
