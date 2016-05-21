@@ -36,10 +36,10 @@
         - status = stages_status[stage]
         - tooltip = "#{stage.titleize}: #{status || 'not found'}"
         - if status
-          = link_to namespace_project_pipeline_path(@project.namespace, @project, commit.id, anchor: stage), class: "has-tooltip ci-status-icon-#{status || 'skipped'}", title: tooltip do
+          = link_to namespace_project_pipeline_path(@project.namespace, @project, commit.id, anchor: stage), class: "has-tooltip ci-status-icon-#{status}", title: tooltip do
             = ci_icon_for_status(status)
         - else
-          .light
+          .light.has-tooltip{ title: tooltip }
             \-
 
   %td
