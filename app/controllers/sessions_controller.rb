@@ -114,7 +114,7 @@ class SessionsController < Devise::SessionsController
   def gitlab_geo_login
     return unless Gitlab::Geo.secondary?
     return if signed_in?
-    
+
     oauth = Gitlab::Geo::OauthSession.new
 
     # share full url with primary node by oauth state

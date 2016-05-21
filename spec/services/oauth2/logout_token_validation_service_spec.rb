@@ -6,11 +6,6 @@ describe Oauth2::LogoutTokenValidationService, services: true do
   let(:logout_state) { Gitlab::Geo::OauthSession.new(access_token: access_token).generate_logout_state }
 
   context '#execute' do
-    it 'returns error when params are nil' do
-      result = described_class.new(user, nil).execute
-      expect(result[:status]).to eq(:error)
-    end
-
     it 'return error when params are empty' do
       result = described_class.new(user, {}).execute
       expect(result[:status]).to eq(:error)

@@ -24,7 +24,7 @@ module Oauth2
 
     def access_token
       @access_token ||= begin
-        return unless params[:state] && !params[:state].empty?
+        return unless  params[:state] && !params[:state].empty?
 
         oauth_session = Gitlab::Geo::OauthSession.new(state: params[:state])
 

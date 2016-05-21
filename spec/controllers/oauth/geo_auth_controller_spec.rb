@@ -81,7 +81,7 @@ describe Oauth::GeoAuthController do
         get :callback, state: callback_state
 
         expect(response.code).to eq '200'
-        expect(response.body).to include('Your account must have been deleted')
+        expect(response.body).to include('Your account may have been deleted')
       end
     end
   end
