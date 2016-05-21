@@ -15,7 +15,7 @@
 #       participant :author
 #       participant :assignee
 #       participant :notes
-#       participant ->(current_user) { mentioned_users(current_user) }
+#       participant ->(current_user, ext) { all_references(current_user, ext: ext) }
 #     end
 #
 #     issue = Issue.last
@@ -35,8 +35,8 @@ module Participable
     # index - The position of the returned object in the Array returned by
     #         `#participants`. By default the attribute is inserted at the end
     #         of the list.
-    def participant(attr, index: -1)
-      participant_attrs.insert(index, attr)
+    def participant(attr)
+      participant_attrs << attr
     end
 
     def participant_attrs
@@ -47,37 +47,45 @@ module Participable
   # Returns the users participating in a discussion.
   #
   # Returns an Array of User instances.
-  def participants(current_user = self.author)
+  def participants(current_user = nil, ext: nil, filter_access: true, load_references: true)
+    ext ||= Gitlab::ReferenceExtractor.new(project, current_user || author)
+
     participants = Set.new
 
     self.class.participant_attrs.each do |attr|
       value =
         if attr.respond_to?(:call)
-          instance_exec(current_user, &attr)
+          instance_exec(current_user, ext: ext, &attr)
         else
           send(attr)
         end
 
       next unless value
 
-      result = participants_for(value, current_user)
+      result = participants_for(value, current_user: current_user, ext: ext)
 
       participants.merge(result) if result
     end
 
-    Ability.users_that_can_read_project(participants.to_a, project)
+    participants.merge(ext.users) if load_references
+
+    users = participants.to_a
+
+    users = Ability.users_that_can_read_project(users, project) if filter_access
+
+    users
   end
 
   private
 
-  def participants_for(value, current_user = nil)
+  def participants_for(value, current_user: nil, ext: ext)
     case value
     when User
       [value]
     when Enumerable, ActiveRecord::Relation
-      value.flat_map { |v| participants_for(v, current_user) }
+      value.flat_map { |v| participants_for(v, current_user: current_user, ext: ext) }
     when Participable
-      value.participants(current_user)
+      value.participants(current_user, ext: ext, filter_access: false, load_references: false)
     end
   end
 end

@@ -57,11 +57,10 @@ module Issuable
 
     attr_mentionable :title, pipeline: :single_line
     attr_mentionable :description
-    attr_mentionable :notes_with_associations
 
-    participant :author, index: 0
-    participant :assignee, index: 1
-    participant :note_authors, index: 2
+    participant :author
+    participant :assignee
+    participant :notes_with_associations
 
     strip_attributes :title
 
@@ -223,10 +222,6 @@ module Issuable
 
   def notes_with_associations
     notes.includes(:author, :project)
-  end
-
-  def note_authors
-    User.where(id: notes.select(:author_id))
   end
 
   def updated_tasks

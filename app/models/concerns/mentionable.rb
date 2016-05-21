@@ -23,7 +23,7 @@ module Mentionable
 
   included do
     if self < Participable
-      participant ->(current_user) { mentioned_users(current_user) }
+      participant ->(current_user, ext:) { all_references(current_user, ext: ext) }
     end
   end
 
@@ -43,13 +43,18 @@ module Mentionable
     self
   end
 
-  def all_references(current_user = nil, text = nil)
-    ext = Gitlab::ReferenceExtractor.new(project, current_user || author)
+  def all_references(current_user = nil, text = nil, ext: nil)
+    ext ||= Gitlab::ReferenceExtractor.new(project, current_user || author)
 
     if text
       ext.analyze(text, author: author)
     else
-      analyze_references_in_attributes(ext)
+      self.class.mentionable_attrs.each do |attr, options|
+        text = send(attr)
+
+        options = options.merge(cache_key: [self, attr], author: author)
+        ext.analyze(text, options)
+      end
     end
 
     ext

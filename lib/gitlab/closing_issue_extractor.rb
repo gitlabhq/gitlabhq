@@ -15,12 +15,10 @@ module Gitlab
     def closed_by_message(message)
       return [] if message.nil?
 
-      closing_statements = []
       message.scan(ISSUE_CLOSING_REGEX) do
-        closing_statements << Regexp.last_match[0]
+        text = Regexp.last_match[0]
+        @extractor.analyze(text)
       end
-
-      @extractor.analyze(closing_statements.join(" "))
 
       @extractor.issues
     end

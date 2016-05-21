@@ -8,11 +8,10 @@ class Commit
   include StaticModel
 
   attr_mentionable :safe_message, pipeline: :single_line
-  attr_mentionable :notes_with_associations
 
-  participant :author, index: 0
-  participant :committer, index: 1
-  participant :note_authors, index: 2
+  participant :author
+  participant :committer
+  participant :notes_with_associations
 
   attr_accessor :project
 
@@ -202,10 +201,6 @@ class Commit
     notes.includes(:author, :project)
   end
 
-  def note_authors
-    User.where(id: notes.select(:author_id))
-  end
-
   def method_missing(m, *args, &block)
     @raw.send(m, *args, &block)
   end
@@ -263,12 +258,11 @@ class Commit
   end
 
   def has_been_reverted?(current_user = nil, noteable = self)
-    ext = Gitlab::ReferenceExtractor.new(project, current_user)
-    collection = noteable.notes_with_associations.system
+    ext = Gitlab::ReferenceExtractor.new(project, current_user || author)
 
-    # This is a bit of an odd setup since we want to analyze a custom
-    # collection instead of one returned by an attr_mentionable attribute.
-    noteable.analyze_references_in_collection(ext, collection)
+    noteable.notes.system.each do |note|
+      note.all_references(current_user, ext: ext)
+    end
 
     ext.commits.any? { |commit_ref| commit_ref.reverts_commit?(self) }
   end

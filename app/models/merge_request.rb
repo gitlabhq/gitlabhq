@@ -340,14 +340,12 @@ class MergeRequest < ActiveRecord::Base
 
   # Return the set of issues that will be closed if this merge request is accepted.
   def closes_issues(current_user = self.author)
-    if target_branch == project.default_branch
-      messages = commits.map(&:safe_message) << description
+    return [] unless target_branch == project.default_branch
 
-      Gitlab::ClosingIssueExtractor.new(project, current_user).
-        closed_by_message(messages.join("\n"))
-    else
-      []
-    end
+    messages = commits.map(&:safe_message) << description
+
+    Gitlab::ClosingIssueExtractor.new(project, current_user).
+      closed_by_message(messages.join("\n"))
   end
 
   def target_project_path

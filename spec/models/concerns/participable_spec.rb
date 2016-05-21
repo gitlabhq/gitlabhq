@@ -14,13 +14,6 @@ describe Participable, models: true do
 
       expect(model.participant_attrs).to eq([:foo, :bar])
     end
-
-    it 'supports inserting attributes at a specific location' do
-      model.participant(:foo)
-      model.participant(:bar, index: 0)
-
-      expect(model.participant_attrs).to eq([:bar, :foo])
-    end
   end
 
   describe '#participants' do
@@ -34,9 +27,9 @@ describe Participable, models: true do
       project = build(:project, :public)
       instance = model.new
 
-      expect(instance).to receive(:foo).and_return(user2)
-      expect(instance).to receive(:bar).and_return(user3)
-      expect(instance).to receive(:project).and_return(project)
+      allow(instance).to receive(:foo).and_return(user2)
+      allow(instance).to receive(:bar).and_return(user3)
+      allow(instance).to receive(:project).and_return(project)
 
       expect(instance.participants(user1)).to eq([user2, user3])
     end
@@ -51,7 +44,7 @@ describe Participable, models: true do
 
         instance = model.new
 
-        expect(instance).to receive(:project).and_return(project)
+        allow(instance).to receive(:project).and_return(project)
         expect(instance.participants(user1)).to eq([user2])
       end
 
@@ -63,7 +56,7 @@ describe Participable, models: true do
 
         instance = model.new
 
-        expect(instance).to receive(:project).and_return(project)
+        allow(instance).to receive(:project).and_return(project)
         expect(instance.participants(user1)).to eq([user1])
       end
     end
