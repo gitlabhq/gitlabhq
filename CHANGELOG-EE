@@ -1,6 +1,6 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
-v 8.8.0 (unreleased)
+v 8.8.0
   - [Elastic] Database indexer prints its status
   - [Elastic][Fix] Database indexer skips projects with invalid HEAD reference
   - Fix skipping pages when restoring backups
