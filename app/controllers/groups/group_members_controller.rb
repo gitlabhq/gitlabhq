@@ -39,7 +39,7 @@ class Groups::GroupMembersController < Groups::ApplicationController
     @group_member.destroy
 
     respond_to do |format|
-      format.html { redirect_to group_group_members_path(@group), notice: 'User was successfully removed from group.' }
+      format.html { redirect_to group_group_members_path(@group), notice: '用户从群组删除成功。' }
       format.js { head :ok }
     end
   end

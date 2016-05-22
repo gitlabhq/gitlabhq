@@ -18,7 +18,7 @@ class RegistrationsController < Devise::RegistrationsController
 
       super
     else
-      flash[:alert] = "There was an error with the reCAPTCHA code below. Please re-enter the code."
+      flash[:alert] = "验证码错误，请重新输入。"
       flash.delete :recaptcha_error
       render action: 'new'
     end

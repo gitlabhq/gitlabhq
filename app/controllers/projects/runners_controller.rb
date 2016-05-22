@@ -18,7 +18,7 @@ class Projects::RunnersController < Projects::ApplicationController
 
   def update
     if @runner.update_attributes(runner_params)
-      redirect_to runner_path(@runner), notice: 'Runner was successfully updated.'
+      redirect_to runner_path(@runner), notice: 'Runner 更新成功。'
     else
       render 'edit'
     end

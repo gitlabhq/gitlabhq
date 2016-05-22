@@ -15,7 +15,7 @@ class Projects::VariablesController < Projects::ApplicationController
     @variable = @project.variables.find(params[:id])
 
     if @variable.update_attributes(project_params)
-      redirect_to namespace_project_variables_path(project.namespace, project), notice: 'Variable was successfully updated.'
+      redirect_to namespace_project_variables_path(project.namespace, project), notice: '变量更新成功。'
     else
       render action: "show"
     end
@@ -25,7 +25,7 @@ class Projects::VariablesController < Projects::ApplicationController
     @variable = Ci::Variable.new(project_params)
 
     if @variable.valid? && @project.variables << @variable
-      redirect_to namespace_project_variables_path(project.namespace, project), notice: 'Variables were successfully updated.'
+      redirect_to namespace_project_variables_path(project.namespace, project), notice: '变量更新成功。'
     else
       render action: "index"
     end
@@ -35,7 +35,7 @@ class Projects::VariablesController < Projects::ApplicationController
     @key = @project.variables.find(params[:id])
     @key.destroy
 
-    redirect_to namespace_project_variables_path(project.namespace, project), notice: 'Variable was successfully removed.'
+    redirect_to namespace_project_variables_path(project.namespace, project), notice: '变量删除成功。'
   end
 
   private

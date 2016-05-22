@@ -44,7 +44,7 @@ class Admin::UsersController < Admin::ApplicationController
 
       Gitlab::AppLogger.info("User #{current_user.username} has started impersonating #{user.username}")
 
-      flash[:alert] = "You are now impersonating #{user.username}"
+      flash[:alert] = "你正在假冒 #{user.username}"
 
       redirect_to root_path
     end
@@ -154,7 +154,7 @@ class Admin::UsersController < Admin::ApplicationController
     user.update_secondary_emails!
 
     respond_to do |format|
-      format.html { redirect_back_or_admin_user(notice: "Successfully removed email.") }
+      format.html { redirect_back_or_admin_user(notice: "删除邮箱成功。") }
       format.js { head :ok }
     end
   end

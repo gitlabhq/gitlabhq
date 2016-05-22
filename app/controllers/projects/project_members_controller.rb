@@ -80,12 +80,12 @@ class Projects::ProjectMembersController < Projects::ApplicationController
       @project_member.destroy
 
       respond_to do |format|
-        format.html { redirect_to dashboard_projects_path, notice: "You left the project." }
+        format.html { redirect_to dashboard_projects_path, notice: "你已离开项目。" }
         format.js { head :ok }
       end
     else
       if current_user == @project.owner
-        message = 'You can not leave your own project. Transfer or delete the project.'
+        message = '你不能从自己拥有的项目离开。请转移或删除项目。'
         redirect_back_or_default(default: { action: 'index' }, options: { alert: message })
       else
         render_403

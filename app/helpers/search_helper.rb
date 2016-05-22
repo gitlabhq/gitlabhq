@@ -62,16 +62,16 @@ module SearchHelper
       ref = @ref || @project.repository.root_ref
 
       [
-        { category: "Current Project", label: "Files",          url: namespace_project_tree_path(@project.namespace, @project, ref) },
-        { category: "Current Project", label: "Commits",        url: namespace_project_commits_path(@project.namespace, @project, ref) },
-        { category: "Current Project", label: "Network",        url: namespace_project_network_path(@project.namespace, @project, ref) },
-        { category: "Current Project", label: "Graph",          url: namespace_project_graph_path(@project.namespace, @project, ref) },
-        { category: "Current Project", label: "Issues",         url: namespace_project_issues_path(@project.namespace, @project) },
-        { category: "Current Project", label: "Merge Requests", url: namespace_project_merge_requests_path(@project.namespace, @project) },
-        { category: "Current Project", label: "Milestones",     url: namespace_project_milestones_path(@project.namespace, @project) },
-        { category: "Current Project", label: "Snippets",       url: namespace_project_snippets_path(@project.namespace, @project) },
-        { category: "Current Project", label: "Members",        url: namespace_project_project_members_path(@project.namespace, @project) },
-        { category: "Current Project", label: "Wiki",           url: namespace_project_wikis_path(@project.namespace, @project) },
+        { category: "当前项目", label: "文件",          url: namespace_project_tree_path(@project.namespace, @project, ref) },
+        { category: "当前项目", label: "提交",        url: namespace_project_commits_path(@project.namespace, @project, ref) },
+        { category: "当前项目", label: "网络",        url: namespace_project_network_path(@project.namespace, @project, ref) },
+        { category: "当前项目", label: "图表",          url: namespace_project_graph_path(@project.namespace, @project, ref) },
+        { category: "当前项目", label: "问题",         url: namespace_project_issues_path(@project.namespace, @project) },
+        { category: "当前项目", label: "合并请求", url: namespace_project_merge_requests_path(@project.namespace, @project) },
+        { category: "当前项目", label: "里程碑",     url: namespace_project_milestones_path(@project.namespace, @project) },
+        { category: "当前项目", label: "代码片段",       url: namespace_project_snippets_path(@project.namespace, @project) },
+        { category: "当前项目", label: "成员",        url: namespace_project_project_members_path(@project.namespace, @project) },
+        { category: "当前项目", label: "维基",           url: namespace_project_wikis_path(@project.namespace, @project) },
       ]
     else
       []

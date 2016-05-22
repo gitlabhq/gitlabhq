@@ -38,6 +38,23 @@ module CiStatusHelper
     icon(icon_name + ' fw')
   end
 
+  def ci_status_zh(status)
+    case status
+      when 'pending'
+        '排队'
+      when 'running'
+        '运行'
+      when 'success'
+        '成功'
+      when 'failed'
+        '失败'
+      when 'canceled'
+        '取消'
+      else
+         '未知'
+    end
+  end
+
   def render_commit_status(commit, tooltip_placement: 'auto left')
     project = commit.project
     path = builds_namespace_project_commit_path(project.namespace, project, commit)

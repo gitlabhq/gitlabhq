@@ -67,7 +67,7 @@ module NotesHelper
       )
     end
 
-    button_tag 'Reply...', class: 'btn btn-text-field js-discussion-reply-button',
-                           data: data, title: 'Add a reply'
+    button_tag '回复...', class: 'btn btn-text-field js-discussion-reply-button',
+                           data: data, title: '增加回复'
   end
 end

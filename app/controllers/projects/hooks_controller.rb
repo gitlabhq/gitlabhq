@@ -29,14 +29,14 @@ class Projects::HooksController < Projects::ApplicationController
       status, message = TestHookService.new.execute(hook, current_user)
 
       if status && status >= 200 && status < 400
-        flash[:notice] = "Hook executed successfully: HTTP #{status}"
+        flash[:notice] = "钩子执行成功：HTTP #{status}"
       elsif status
-        flash[:alert] = "Hook executed successfully but returned HTTP #{status} #{message}"
+        flash[:alert] = "钩子执行成功但返回 HTTP #{status} #{message}"
       else
-        flash[:alert] = "Hook execution failed: #{message}"
+        flash[:alert] = "钩子执行失败：#{message}"
       end
     else
-      flash[:alert] = 'Hook execution failed. Ensure the project has commits.'
+      flash[:alert] = '钩子执行失败。确保项目已提交。'
     end
 
     redirect_back_or_default(default: { action: 'index' })

@@ -56,7 +56,7 @@ module Emails
       @target_url = namespace_project_url(@project.namespace, @project)
       @old_path_with_namespace = old_path_with_namespace
       mail(to: @user.notification_email,
-           subject: subject("Project was moved"))
+           subject: subject("项目被移动"))
     end
 
     def repository_push_email(project_id, opts = {})
