@@ -4,6 +4,8 @@ v 8.8.0
 v 8.8.1 (unreleased)
   - Fix MySQL compatibility in zero downtime migrations helpers
   - Fix the CI login to Container Registry (the gitlab-ci-token user)
+v 8.8.1 (unreleased)
+  - Fix MySQL compatibility in zero downtime migrations helpers
 
 v 8.8.0 (unreleased)
   - Implement GFM references for milestones (Alejandro Rodríguez)
