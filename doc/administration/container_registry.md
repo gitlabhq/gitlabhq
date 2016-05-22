@@ -120,21 +120,19 @@ GitLab from source respectively.
 
 **Omnibus GitLab installations**
 
->**Note:**
-If you are using HTTPS in your Omnibus packages, then the Registry will be
-enabled by default and exposed under port `5005`. Follow the steps below only if
-you want to change the default port.
-
 1. Your `/etc/gitlab/gitlab.rb` should contain the Registry URL as well as the
    path to the existing TLS certificate and key used by GitLab:
 
     ```ruby
-    gitlab_rails['registry_port'] = "4567"
     gitlab_rails['registry_host'] = "gitlab.example.com"
+    gitlab_rails['registry_port'] = "4567"
 
     # The following setting is needed for NGINX
     registry_external_url 'https://gitlab.example.com:4567'
     ```
+
+    Note how the `registry_external_url` is listening on HTTPS and is a
+    conjunction of `registry_host` and `registry_port`.
 
     If your TLS certificate is not in `/etc/gitlab/ssl/gitlab.example.com.crt`
     and key not in `/etc/gitlab/ssl/gitlab.example.com.key` uncomment the lines
@@ -213,7 +211,6 @@ certificate in addition to the URL, in this case `/etc/gitlab/gitlab.rb` will
 look like:
 >
 ```ruby
-registry_external_url 'https://registry.gitlab.example.com'
 registry_nginx['ssl_certificate'] = "/etc/gitlab/ssl/certificate.pem"
 registry_nginx['ssl_certificate_key'] = "/etc/gitlab/ssl/certificate.key"
 ```
@@ -229,7 +226,6 @@ registry_nginx['ssl_certificate_key'] = "/etc/gitlab/ssl/certificate.key"
     registry:
       enabled: true
       host: registry.gitlab.example.com
-      port: 4567
     ```
 
 1. Save the file and [restart GitLab][] for the changes to take effect.
@@ -246,31 +242,36 @@ docker login registry.gitlab.example.com
 
 ## Disable Container Registry site-wide
 
+>**Note:**
+Disabling the Registry in the Rails GitLab application as set by the following
+steps, will not remove any existing Docker images. This is handled by the
+Registry application itself.
+
 **Omnibus GitLab**
 
-```ruby
-gitlab_rails['registry_enabled'] = true
-```
+1. Open `/etc/gitlab/gitlab.rb` and set `gitlab_rails['registry_enabled']` to
+   `false` and comment out the `registry_external_url`:
 
-```
-# gitlab_rails['registry_port'] = "5005"
-# gitlab_rails['registry_host'] = "registry.gitlab.example.com"
-# gitlab_rails['registry_api_url'] = "http://localhost:5000"
-# gitlab_rails['registry_key_path'] = "/var/opt/gitlab/gitlab-rails/certificate.key"
-# gitlab_rails['registry_path'] = "/var/opt/gitlab/gitlab-rails/shared/registry"
-# gitlab_rails['registry_issuer'] = "omnibus-gitlab-issuer"
+    ```ruby
+    gitlab_rails['registry_enabled'] = false
+    # registry_external_url 'https://registry.gitlab.example.com'
+    ```
 
-# Settings used by Registry application
-# registry['enable'] = true
-# registry['username'] = "registry"
-# registry['group'] = "registry"
-# registry['uid'] = nil
-# registry['gid'] = nil
-# registry['dir'] = "/var/opt/gitlab/registry"
-# registry['log_directory'] = "/var/log/gitlab/registry"
-# registry['log_level'] = "info"
-# registry['rootcertbundle'] = "/var/opt/gitlab/registry/certificate.crt"
-```
+1. Save the file and [reconfigure GitLab][] for the changes to take effect.
+
+---
+
+**Installations from source**
+
+1. Open `/home/git/gitlab/config/gitlab.yml`, find the `registry` entry and
+   set `enabled` to `false`:
+
+    ```
+    registry:
+      enabled: false
+    ```
+
+1. Save the file and [restart GitLab][] for the changes to take effect.
 
 ## Disable Container Registry per project
 
@@ -280,9 +281,9 @@ on how to achieve that.
 
 ## Disable Container Registry for new projects site-wide
 
-The Registry is enabled by default on all new projects. To disable this function
-and let the owners of a project to enable Registry by themselves, follow the
-steps below.
+If the Container Registry is enabled, then it will be available on all new
+projects. To disable this function and let the owners of a project to enable
+the Container Registry by themselves, follow the steps below.
 
 ---
 
