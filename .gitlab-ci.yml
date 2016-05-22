@@ -13,6 +13,8 @@ variables:
   MYSQL_ALLOW_EMPTY_PASSWORD: "1"
   # retry tests only in CI environment
   RSPEC_RETRY_RETRY_COUNT: "3"
+  RAILS_ENV: "test"
+  SIMPLECOV: "true"
 
 before_script:
   - source ./scripts/prepare_build.sh
@@ -23,15 +25,11 @@ before_script:
   - touch log/application.log
   - touch log/test.log
   - retry bundle install --without postgres production --jobs $(nproc) "${FLAGS[@]}"
-  - RAILS_ENV=test bundle exec rake db:drop db:create db:schema:load db:migrate
+  - bundle exec rake db:drop db:create db:schema:load db:migrate
 
 .rspec_tests: &rspec_tests
   stage: test
-  variables:
-    RAILS_ENV: "test"
-    SIMPLECOV: "true"
   script:
-    - touch knapsack_rspec_report.json
     - JOB_NAME=( $CI_BUILD_NAME )
     - export CI_NODE_INDEX=${JOB_NAME[1]}
     - export CI_NODE_TOTAL=${JOB_NAME[2]}
@@ -40,11 +38,7 @@ before_script:
 
 .spinach_tests: &spinach_tests
   stage: test
-  variables:
-    RAILS_ENV: "test"
-    SIMPLECOV: "true"
   script:
-    - touch knapsack_cucumber_report.json
     - JOB_NAME=( $CI_BUILD_NAME )
     - export CI_NODE_INDEX=${JOB_NAME[1]}
     - export CI_NODE_TOTAL=${JOB_NAME[2]}
@@ -52,8 +46,21 @@ before_script:
     - bundle exec rake knapsack:cucumber
 
 stages:
+- build
 - test
 - notifications
+
+prepare:
+  stage: build
+  script:
+    - bundle exec rake assets:precompile
+    - echo "{}" > knapsack_rspec_report.json
+    - echo "{}" > knapsack_cucumber_report.json
+  artifacts:
+    paths:
+    - assets/public/
+    - knapsack_rspec_report.json
+    - knapsack_cucumber_report.json
 
 spec 0 10: *rspec_tests
 spec 1 10: *rspec_tests
@@ -80,7 +87,7 @@ spinach 9 10: *spinach_tests
 teaspoon:
   stage: test
   script:
-    - RAILS_ENV=test bundle exec teaspoon
+    - bundle exec teaspoon
 
 rubocop:
   stage: test
@@ -117,7 +124,7 @@ bundler:audit:
 db-migrate-reset:
   stage: test
   script:
-    - RAILS_ENV=test bundle exec rake db:migrate:reset
+    - bundle exec rake db:migrate:reset
 
 # Ruby 2.2 jobs
 
@@ -127,8 +134,8 @@ spec:feature:ruby22:
   only:
     - master
   script:
-    - RAILS_ENV=test bundle exec rake assets:precompile 2>/dev/null
-    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:feature
+    - bundle exec rake assets:precompile 2>/dev/null
+    - bundle exec rake spec:feature
   cache:
     key: "ruby22"
     paths:
@@ -140,7 +147,7 @@ spec:api:ruby22:
   only:
   - master
   script:
-    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:api
+    - bundle exec rake spec:api
   cache:
     key: "ruby22"
     paths:
@@ -152,7 +159,7 @@ spec:models:ruby22:
   only:
   - master
   script:
-    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:models
+    - bundle exec rake spec:models
   cache:
     key: "ruby22"
     paths:
@@ -164,7 +171,7 @@ spec:lib:ruby22:
   only:
   - master
   script:
-    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:lib
+    - bundle exec rake spec:lib
   cache:
     key: "ruby22"
     paths:
@@ -176,7 +183,7 @@ spec:services:ruby22:
   only:
   - master
   script:
-    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:services
+    - bundle exec rake spec:services
   cache:
     key: "ruby22"
     paths:
@@ -188,7 +195,7 @@ spec:other:ruby22:
   only:
   - master
   script:
-    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:other
+    - bundle exec rake spec:other
   cache:
     key: "ruby22"
     paths:
@@ -200,8 +207,8 @@ spinach:project:half:ruby22:
   only:
   - master
   script:
-    - RAILS_ENV=test bundle exec rake assets:precompile 2>/dev/null
-    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spinach:project:half
+    - bundle exec rake assets:precompile 2>/dev/null
+    - bundle exec rake spinach:project:half
   cache:
     key: "ruby22"
     paths:
@@ -213,8 +220,8 @@ spinach:project:rest:ruby22:
   only:
   - master
   script:
-    - RAILS_ENV=test bundle exec rake assets:precompile 2>/dev/null
-    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spinach:project:rest
+    - bundle exec rake assets:precompile 2>/dev/null
+    - bundle exec rake spinach:project:rest
   cache:
     key: "ruby22"
     paths:
@@ -226,8 +233,8 @@ spinach:other:ruby22:
   only:
   - master
   script:
-    - RAILS_ENV=test bundle exec rake assets:precompile 2>/dev/null
-    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spinach:other
+    - bundle exec rake assets:precompile 2>/dev/null
+    - bundle exec rake spinach:other
   cache:
     key: "ruby22"
     paths:
