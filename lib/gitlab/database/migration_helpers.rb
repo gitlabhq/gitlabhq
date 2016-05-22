@@ -39,7 +39,8 @@ module Gitlab
       def update_column_in_batches(table, column, value)
         quoted_table = quote_table_name(table)
         quoted_column = quote_column_name(column)
-        quoted_value = quote(value)
+        # workaround for #17711
+        quoted_value = connection.quote(value)
         processed = 0
 
         total = exec_query("SELECT COUNT(*) AS count FROM #{quoted_table}").
