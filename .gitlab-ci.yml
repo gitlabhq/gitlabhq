@@ -20,7 +20,7 @@ variables:
 before_script:
   - source ./scripts/prepare_build.sh
   - cp config/gitlab.yml.example config/gitlab.yml
-  - retry gem install bundler
+  #- retry gem install bundler
   - retry bundle install --without postgres production --jobs $(nproc) "${FLAGS[@]}"
   - '[ "$USE_DB" != "true" ] || bundle exec rake db:drop db:create db:schema:load db:migrate'
 
@@ -31,7 +31,10 @@ stages:
 
 test-bundler:
   stage: build
+  variables:
+    USE_DB: "false"
   script:
+    - retry gem install bundler
     - bundle exec bundle --version
 
 prepare:
