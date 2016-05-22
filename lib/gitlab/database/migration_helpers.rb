@@ -39,7 +39,14 @@ module Gitlab
       def update_column_in_batches(table, column, value)
         quoted_table = quote_table_name(table)
         quoted_column = quote_column_name(column)
-        # workaround for #17711
+
+        ##
+        # Workaround for #17711
+        #
+        # It looks like for MySQL `ActiveRecord::Base.conntection.quote(true)`
+        # returns correct value (1), but `ActiveRecord::Migration.new.quote`
+        # returns incorrect value ('true'), which causes migrations to fail.
+        #
         quoted_value = connection.quote(value)
         processed = 0
 
