@@ -29,6 +29,11 @@ stages:
 - test
 - notifications
 
+test-bundler:
+  stage: build
+  script:
+    - bundle exec bundle --version
+
 prepare:
   stage: build
   variables:
