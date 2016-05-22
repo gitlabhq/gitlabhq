@@ -24,8 +24,8 @@ class Spinach::Features::ProjectIssuesLabels < Spinach::FeatureSteps
 
   step 'I should see labels help message' do
     page.within '.labels' do
-      expect(page).to have_content 'Create first label or generate default set of '\
-                               'labels'
+      expect(page).to have_content 'Create a label or generate a default set '\
+                                   'of labels'
     end
   end
 
