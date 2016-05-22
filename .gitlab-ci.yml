@@ -38,7 +38,7 @@ prepare:
     - echo "{}" > knapsack_cucumber_report.json
   artifacts:
     paths:
-    - assets/public/
+    - public/assets/
     - knapsack_rspec_report.json
     - knapsack_cucumber_report.json
 
