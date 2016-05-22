@@ -14,7 +14,7 @@ class ProjectMember < Member
   scope :in_projects, ->(projects) { where(source_id: projects.pluck(:id)) }
   scope :with_user, ->(user) { where(user_id: user.id) }
 
-  before_destroy { user.todos.where(project_id: source_id).each(&:destroy) }
+  before_destroy { user.todos.where(project_id: source_id).each(&:destroy) if user }
 
   class << self
 
