@@ -58,6 +58,12 @@ describe Gitlab::Database::MigrationHelpers, lib: true do
 
       expect(Project.where(import_error: 'foo').count).to eq(5)
     end
+
+    it 'updates boolean values correctly' do
+      model.update_column_in_batches(:projects, :archived, true)
+
+      expect(Project.where(archived: true).count).to eq(5)
+    end
   end
 
   describe '#add_column_with_default' do
