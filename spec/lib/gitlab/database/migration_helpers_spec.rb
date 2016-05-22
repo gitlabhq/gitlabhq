@@ -2,14 +2,12 @@ require 'spec_helper'
 
 describe Gitlab::Database::MigrationHelpers, lib: true do
   let(:model) do
-    Class.new do
-      include Gitlab::Database::MigrationHelpers
-
-      def method_missing(name, *args, &block)
-        ActiveRecord::Base.connection.send(name, *args, &block)
-      end
-    end.new
+    ActiveRecord::Migration.new.extend(
+      Gitlab::Database::MigrationHelpers
+    )
   end
+
+  before { allow(model).to receive(:puts) }
 
   describe '#add_concurrent_index' do
     context 'outside a transaction' do
@@ -59,6 +57,12 @@ describe Gitlab::Database::MigrationHelpers, lib: true do
       model.update_column_in_batches(:projects, :import_error, 'foo')
 
       expect(Project.where(import_error: 'foo').count).to eq(5)
+    end
+
+    it 'updates boolean values correctly' do
+      model.update_column_in_batches(:projects, :archived, true)
+
+      expect(Project.where(archived: true).count).to eq(5)
     end
   end
 

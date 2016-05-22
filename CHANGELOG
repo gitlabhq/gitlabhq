@@ -1,5 +1,8 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+v 8.8.1 (unreleased)
+  - Fix MySQL compatibility in zero downtime migrations helpers
+
 v 8.8.0 (unreleased)
   - Implement GFM references for milestones (Alejandro Rodríguez)
   - Snippets tab under user profile. !4001 (Long Nguyen)
