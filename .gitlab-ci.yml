@@ -25,58 +25,55 @@ before_script:
   - retry bundle install --without postgres production --jobs $(nproc) "${FLAGS[@]}"
   - RAILS_ENV=test bundle exec rake db:drop db:create db:schema:load db:migrate
 
+.rspec_tests: &rspec_tests
+  stage: test
+  variables:
+    RAILS_ENV: "test"
+    SIMPLECOV: "true"
+  script:
+    - JOB_NAME=( $CI_BUILD_NAME )
+    - export CI_NODE_INDEX=${JOB_NAME[1]}
+    - export CI_NODE_TOTAL=${JOB_NAME[2]}
+    - bundle exec rake assets:precompile 2>/dev/null
+    - bundle exec rake knapsack:rspec
+
+.spinach_tests: &spinach_tests
+  stage: test
+  variables:
+    RAILS_ENV: "test"
+    SIMPLECOV: "true"
+  script:
+    - JOB_NAME=( $CI_BUILD_NAME )
+    - export CI_NODE_INDEX=${JOB_NAME[1]}
+    - export CI_NODE_TOTAL=${JOB_NAME[2]}
+    - bundle exec rake assets:precompile 2>/dev/null
+    - bundle exec rake knapsack:cucumber
+
 stages:
 - test
 - notifications
 
-spec:feature:
-  stage: test
-  script:
-    - RAILS_ENV=test bundle exec rake assets:precompile 2>/dev/null
-    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:feature
+spec 0 10: *rspec_tests
+spec 1 10: *rspec_tests
+spec 2 10: *rspec_tests
+spec 3 10: *rspec_tests
+spec 4 10: *rspec_tests
+spec 5 10: *rspec_tests
+spec 6 10: *rspec_tests
+spec 7 10: *rspec_tests
+spec 8 10: *rspec_tests
+spec 9 10: *rspec_tests
 
-spec:api:
-  stage: test
-  script:
-    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:api
-
-spec:models:
-  stage: test
-  script:
-    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:models
-
-spec:lib:
-  stage: test
-  script:
-    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:lib
-
-spec:services:
-  stage: test
-  script:
-    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:services
-
-spec:other:
-  stage: test
-  script:
-    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:other
-
-spinach:project:half:
-  stage: test
-  script:
-    - RAILS_ENV=test bundle exec rake assets:precompile 2>/dev/null
-    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spinach:project:half
-
-spinach:project:rest:
-  stage: test
-  script:
-    - RAILS_ENV=test bundle exec rake assets:precompile 2>/dev/null
-    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spinach:project:rest
-
-spinach:other:
-  stage: test
-  script:
-    - RAILS_ENV=test bundle exec rake assets:precompile 2>/dev/null
-    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spinach:other
+spinach 0 10: *spinach_tests
+spinach 1 10: *spinach_tests
+spinach 2 10: *spinach_tests
+spinach 3 10: *spinach_tests
+spinach 4 10: *spinach_tests
+spinach 5 10: *spinach_tests
+spinach 6 10: *spinach_tests
+spinach 7 10: *spinach_tests
+spinach 8 10: *spinach_tests
+spinach 9 10: *spinach_tests
 
 teaspoon:
   stage: test
