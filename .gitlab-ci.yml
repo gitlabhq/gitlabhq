@@ -15,35 +15,13 @@ variables:
   RSPEC_RETRY_RETRY_COUNT: "3"
   RAILS_ENV: "test"
   SIMPLECOV: "true"
+  USE_DB: "true"
 
 before_script:
   - source ./scripts/prepare_build.sh
-  - ruby -v
-  - which ruby
-  - retry gem install bundler --no-ri --no-rdoc
   - cp config/gitlab.yml.example config/gitlab.yml
-  - touch log/application.log
-  - touch log/test.log
   - retry bundle install --without postgres production --jobs $(nproc) "${FLAGS[@]}"
-  - bundle exec rake db:drop db:create db:schema:load db:migrate
-
-.rspec_tests: &rspec_tests
-  stage: test
-  script:
-    - JOB_NAME=( $CI_BUILD_NAME )
-    - export CI_NODE_INDEX=${JOB_NAME[1]}
-    - export CI_NODE_TOTAL=${JOB_NAME[2]}
-    - bundle exec rake assets:precompile 2>/dev/null
-    - bundle exec rake knapsack:rspec
-
-.spinach_tests: &spinach_tests
-  stage: test
-  script:
-    - JOB_NAME=( $CI_BUILD_NAME )
-    - export CI_NODE_INDEX=${JOB_NAME[1]}
-    - export CI_NODE_TOTAL=${JOB_NAME[2]}
-    - bundle exec rake assets:precompile 2>/dev/null
-    - bundle exec rake knapsack:cucumber
+  - '[ "$USE_DB" != "true" ] || bundle exec rake db:drop db:create db:schema:load db:migrate'
 
 stages:
 - build
@@ -52,6 +30,8 @@ stages:
 
 prepare:
   stage: build
+  variables:
+    USE_DB: "false"
   script:
     - bundle exec rake assets:precompile
     - echo "{}" > knapsack_rspec_report.json
@@ -62,57 +42,48 @@ prepare:
     - knapsack_rspec_report.json
     - knapsack_cucumber_report.json
 
-spec 0 10: *rspec_tests
-spec 1 10: *rspec_tests
-spec 2 10: *rspec_tests
-spec 3 10: *rspec_tests
-spec 4 10: *rspec_tests
-spec 5 10: *rspec_tests
-spec 6 10: *rspec_tests
-spec 7 10: *rspec_tests
-spec 8 10: *rspec_tests
-spec 9 10: *rspec_tests
-
-spinach 0 10: *spinach_tests
-spinach 1 10: *spinach_tests
-spinach 2 10: *spinach_tests
-spinach 3 10: *spinach_tests
-spinach 4 10: *spinach_tests
-spinach 5 10: *spinach_tests
-spinach 6 10: *spinach_tests
-spinach 7 10: *spinach_tests
-spinach 8 10: *spinach_tests
-spinach 9 10: *spinach_tests
-
-teaspoon:
+.knapsack: &knapsack
   stage: test
   script:
-    - bundle exec teaspoon
+    - JOB_NAME=( $CI_BUILD_NAME )
+    - export CI_NODE_INDEX=${JOB_NAME[1]}
+    - export CI_NODE_TOTAL=${JOB_NAME[2]}
+    - bundle exec rake knapsack:${JOB_NAME[0]}
 
-rubocop:
+.exec: &exec
   stage: test
   script:
-    - bundle exec rubocop
+    - bundle exec $CI_BUILD_NAME
 
-scss-lint:
-  stage: test
-  script:
-    - bundle exec rake scss_lint
+rspec 0 10: *knapsack
+rspec 1 10: *knapsack
+rspec 2 10: *knapsack
+rspec 3 10: *knapsack
+rspec 4 10: *knapsack
+rspec 5 10: *knapsack
+rspec 6 10: *knapsack
+rspec 7 10: *knapsack
+rspec 8 10: *knapsack
+rspec 9 10: *knapsack
 
-brakeman:
-  stage: test
-  script:
-    - bundle exec rake brakeman
+spinach 0 10: *knapsack
+spinach 1 10: *knapsack
+spinach 2 10: *knapsack
+spinach 3 10: *knapsack
+spinach 4 10: *knapsack
+spinach 5 10: *knapsack
+spinach 6 10: *knapsack
+spinach 7 10: *knapsack
+spinach 8 10: *knapsack
+spinach 9 10: *knapsack
 
-flog:
-  stage: test
-  script:
-    - bundle exec rake flog
-
-flay:
-  stage: test
-  script:
-    - bundle exec rake flay
+teaspoon: *exec
+rubocop: *exec
+rake scss_lint: *exec
+rake brakeman: *exec
+rake flog: *exec
+rake flay: *exec
+rake db:migrate:reset: *exec
 
 bundler:audit:
   stage: test
@@ -120,11 +91,6 @@ bundler:audit:
     - master
   script:
     - "bundle exec bundle-audit check --update --ignore OSVDB-115941"
-
-db-migrate-reset:
-  stage: test
-  script:
-    - bundle exec rake db:migrate:reset
 
 # Ruby 2.2 jobs
 
