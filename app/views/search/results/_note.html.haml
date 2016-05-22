@@ -5,12 +5,12 @@
   %h5.note-search-caption.str-truncated
     %i.fa.fa-comment
     = link_to_member(project, note.author, avatar: false)
-    commented on
+    评论在
     = link_to project.name_with_namespace, project
     &middot;
 
     - if note.for_commit?
-      = link_to "Commit #{truncate_sha(note.commit_id)}", note_url
+      = link_to "提交 #{truncate_sha(note.commit_id)}", note_url
     - else
       %span #{note.noteable_type.titleize} ##{noteable_identifier}
       &middot;

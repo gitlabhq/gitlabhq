@@ -1,3 +1,4 @@
+#encoding: utf-8
 module Gitlab
   # Module containing GitLab's application theme definitions and helper methods
   # for accessing them.
@@ -10,12 +11,12 @@ module Gitlab
 
     # All available Themes
     THEMES = [
-      Theme.new(1, 'Graphite', 'ui_graphite'),
-      Theme.new(2, 'Charcoal', 'ui_charcoal'),
-      Theme.new(3, 'Green',    'ui_green'),
-      Theme.new(4, 'Gray',     'ui_gray'),
-      Theme.new(5, 'Violet',   'ui_violet'),
-      Theme.new(6, 'Blue',     'ui_blue')
+      Theme.new(1, '石墨色', 'ui_graphite'),
+      Theme.new(2, '炭黑色', 'ui_charcoal'),
+      Theme.new(3, '绿色',    'ui_green'),
+      Theme.new(4, '灰色',     'ui_gray'),
+      Theme.new(5, '紫色',   'ui_violet'),
+      Theme.new(6, '蓝色',     'ui_blue')
     ].freeze
 
     # Convenience method to get a space-separated String of all the theme

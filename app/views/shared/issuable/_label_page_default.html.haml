@@ -1,5 +1,5 @@
-- title = local_assigns.fetch(:title, 'Assign labels')
-- filter_placeholder = local_assigns.fetch(:filter_placeholder, 'Search labels')
+- title = local_assigns.fetch(:title, '指派标记')
+- filter_placeholder = local_assigns.fetch(:filter_placeholder, '搜索标记')
 .dropdown-page-one
   = dropdown_title(title)
   = dropdown_filter(filter_placeholder)
@@ -10,11 +10,11 @@
         - if can? current_user, :admin_label, @project
           %li
             %a.dropdown-toggle-page{href: "#"}
-              Create new
+              创建新的
         %li
           = link_to namespace_project_labels_path(@project.namespace, @project), :"data-is-link" => true do
             - if can? current_user, :admin_label, @project
-              Manage labels
+              管理标记
             - else
-              View labels
+              查看标记
   = dropdown_loading

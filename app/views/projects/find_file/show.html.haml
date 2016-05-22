@@ -1,5 +1,5 @@
-- page_title "Find File", @ref
-- header_title project_title(@project, "Files", project_files_path(@project))
+- page_title "查找文件", @ref
+- header_title project_title(@project, "文件", project_files_path(@project))
 
 .file-finder-holder.tree-holder.clearfix
   .nav-block
@@ -10,7 +10,7 @@
         = link_to namespace_project_tree_path(@project.namespace, @project, @ref) do
           = @project.path
       %li.file-finder
-        %input#file_find.form-control.file-finder-input{type: "text", placeholder: 'Find by path', autocomplete: 'off'}
+        %input#file_find.form-control.file-finder-input{type: "text", placeholder: '按路径查找文件', autocomplete: 'off'}
 
   %div.tree-content-holder
     .table-holder

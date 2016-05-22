@@ -1,14 +1,15 @@
+#encoding: utf-8
 module GroupsHelper
   def remove_user_from_group_message(group, member)
     if member.user
-      "Are you sure you want to remove \"#{member.user.name}\" from \"#{group.name}\"?"
+      "确定要从 \"#{group.name}\" 删除 \"#{member.user.name}\"？"
     else
-      "Are you sure you want to revoke the invitation for \"#{member.invite_email}\" to join \"#{group.name}\"?"
+      "确定要收回邀请 \"#{member.invite_email}\" 加入到 \"#{group.name}\"？"
     end
   end
 
   def leave_group_message(group)
-    "Are you sure you want to leave \"#{group}\" group?"
+    "确定要离开 \"#{group}\" 群组么？"
   end
 
   def should_user_see_group_roles?(user, group)

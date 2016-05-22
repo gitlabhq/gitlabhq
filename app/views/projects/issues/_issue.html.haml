@@ -10,11 +10,11 @@
     %ul.controls
       - if issue.closed?
         %li
-          CLOSED
+          已关闭
 
       - if issue.assignee
         %li
-          = link_to_member(@project, issue.assignee, name: false, title: "Assigned to :name")
+          = link_to_member(@project, issue.assignee, name: false, title: "指派给 :name")
 
       - upvotes, downvotes = issue.upvotes, issue.downvotes
       - if upvotes > 0
@@ -35,8 +35,8 @@
 
   .issue-info
     #{issue.to_reference} &middot;
-    opened #{time_ago_with_tooltip(issue.created_at, placement: 'bottom')}
-    by #{link_to_member(@project, issue.author, avatar: false)}
+    #{link_to_member(@project, issue.author, avatar: false)}
+    在 #{time_ago_with_tooltip(issue.created_at, placement: 'bottom')} 开启
     - if issue.milestone
       &nbsp;
       = link_to namespace_project_issues_path(issue.project.namespace, issue.project, milestone_title: issue.milestone.title) do
@@ -57,4 +57,4 @@
         = issue.task_status
 
     .pull-right.issue-updated-at
-      %span updated #{time_ago_with_tooltip(issue.updated_at, placement: 'bottom', html_class: 'issue_update_ago')}
+      %span #{time_ago_with_tooltip(issue.updated_at, placement: 'bottom', html_class: 'issue_update_ago')}更新

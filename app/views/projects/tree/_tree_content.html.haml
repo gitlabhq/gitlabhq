@@ -3,10 +3,10 @@
     %table.table#tree-slider{class: "table_#{@hex_path} tree-table" }
       %thead
         %tr
-          %th Name
-          %th Last Update
+          %th 名称
+          %th 最后更新
           %th.hidden-xs
-            .pull-left Last Commit
+            .pull-left 最后提交
             .last-commit.hidden-sm.pull-left
               &nbsp;
               %i.fa.fa-angle-right
@@ -15,7 +15,7 @@
                 = link_to @commit.short_id, namespace_project_commit_path(@project.namespace, @project, @commit), class: "monospace"
                 &ndash;
                 = truncate(@commit.title, length: 50)
-            = link_to 'History', namespace_project_commits_path(@project.namespace, @project, @id), class: 'pull-right'
+            = link_to '历史', namespace_project_commits_path(@project.namespace, @project, @id), class: 'pull-right'
 
       - if @path.present?
         %tr.tree-item
@@ -30,7 +30,7 @@
     = render "projects/tree/readme", readme: tree.readme
 
 - if can_edit_tree?
-  = render 'projects/blob/upload', title: 'Upload New File', placeholder: 'Upload new file', button_title: 'Upload file', form_path: namespace_project_create_blob_path(@project.namespace, @project, @id), method: :post
+  = render 'projects/blob/upload', title: '上传新文件', placeholder: '上传新文件', button_title: '上传文件', form_path: namespace_project_create_blob_path(@project.namespace, @project, @id), method: :post
   = render 'projects/blob/new_dir'
 
 :javascript

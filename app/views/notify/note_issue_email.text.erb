@@ -1,9 +1,9 @@
-New comment for Issue <%= @issue.iid %>
+问题 <%= @issue.iid %> 有了新评论
 
 <%= url_for(namespace_project_issue_url(@issue.project.namespace, @issue.project, @issue, anchor: "note_#{@note.id}")) %>
 
 
-Author: <%= @note.author_name %>
+作者: <%= @note.author_name %>
 
 <%= @note.note %>
 

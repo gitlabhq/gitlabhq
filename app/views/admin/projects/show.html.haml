@@ -1,52 +1,52 @@
-- page_title @project.name_with_namespace, "Projects"
+- page_title @project.name_with_namespace, "项目"
 %h3.page-title
-  Project: #{@project.name_with_namespace}
+  项目：#{@project.name_with_namespace}
   = link_to edit_project_path(@project), class: "btn btn-nr pull-right" do
     %i.fa.fa-pencil-square-o
-    Edit
+    编辑
 %hr
 - if @project.last_repository_check_failed?
   .row
     .col-md-12
       .panel
         .panel-heading.alert.alert-danger
-          Last repository check
-          = "(#{time_ago_in_words(@project.last_repository_check_at)} ago)"
-          failed. See
+          最后一次版本仓库检查
+          = "(#{time_ago_in_words(@project.last_repository_check_at)} 之前)"
+          失败. 查看
           = link_to 'repocheck.log', admin_logs_path
-          for error messages.
+          获取错误信息。
 .row
   .col-md-6
     .panel.panel-default
       .panel-heading
-        Project info:
+        项目信息：
       %ul.well-list
         %li
-          %span.light Name:
+          %span.light 名称：
           %strong
             = link_to @project.name, project_path(@project)
         %li
-          %span.light Namespace:
+          %span.light 命名空间：
           %strong
             - if @project.namespace
               = link_to @project.namespace.human_name, [:admin, @project.group || @project.owner]
             - else
-              Global
+              全局
         %li
-          %span.light Owned by:
+          %span.light 拥有者：
           %strong
             - if @project.owner
               = link_to @project.owner_name, [:admin, @project.owner]
             - else
-              (deleted)
+              (已删除)
 
         %li
-          %span.light Created by:
+          %span.light 创建者：
           %strong
-            = @project.creator.try(:name) || '(deleted)'
+            = @project.creator.try(:name) || '(已删除)'
 
         %li
-          %span.light Created on:
+          %span.light 创建时间：
           %strong
             = @project.created_at.to_s(:medium)
 
@@ -60,32 +60,32 @@
             = link_to @project.ssh_url_to_repo, project_path(@project)
         - if @project.repository.exists?
           %li
-            %span.light fs:
+            %span.light 文件系统：
             %strong
               = @project.repository.path_to_repo
 
           %li
-            %span.light Size
+            %span.light 大小
             %strong
               = repository_size(@project)
 
           %li
-            %span.light last commit:
+            %span.light 最后提交：
             %strong
               = last_commit(@project)
         - else
           %li
-            %span.light repository:
+            %span.light 版本库：
             %strong.cred
-              does not exist
+              不存在
 
         - if @project.archived?
           %li
-            %span.light archived:
-            %strong repository is read-only
+            %span.light 已归档：
+            %strong 版本库只读
 
         %li
-          %span.light access:
+          %span.light 访问：
           %strong
             %span{ class: visibility_level_color(@project.visibility_level) }
               = visibility_level_icon(@project.visibility_level)
@@ -93,50 +93,50 @@
 
     .panel.panel-default
       .panel-heading
-        Transfer project
+        转移项目
       .panel-body
         = form_for @project, url: transfer_admin_namespace_project_path(@project.namespace, @project), method: :put, html: { class: 'form-horizontal' } do |f|
           .form-group
-            = f.label :new_namespace_id, "Namespace", class: 'control-label'
+            = f.label :new_namespace_id, "命名空间", class: 'control-label'
             .col-sm-10
               = namespace_select_tag :new_namespace_id, selected: params[:namespace_id], class: 'input-large'
 
           .form-group
             .col-sm-offset-2.col-sm-10
-              = f.submit 'Transfer', class: 'btn btn-primary'
+              = f.submit '转移', class: 'btn btn-primary'
 
     .panel.panel-default.repository-check
       .panel-heading
-        Repository check
+        版本仓库检查
       .panel-body
         = form_for @project, url: repository_check_admin_namespace_project_path(@project.namespace, @project), method: :post do |f|
           .form-group
             - if @project.last_repository_check_at.nil?
-              This repository has never been checked.
+              此版本仓库还未被检查过。
             - else
-              This repository was last checked
-              = @project.last_repository_check_at.to_s(:medium) + '.'
-              The check
+              此版本仓库最后检查时间在
+              = @project.last_repository_check_at.to_s(:medium) + '。'
+              该检查
               - if @project.last_repository_check_failed?
-                = succeed '.' do
-                  %strong.cred failed
-                See
+                = succeed '。' do
+                  %strong.cred 失败
+                查看
                 = link_to 'repocheck.log', admin_logs_path
-                for error messages.
+                获取错误信息。
               - else
-                passed.
+                正常。
 
             = link_to icon('question-circle'), help_page_path('administration', 'repository_checks')
 
           .form-group
-            = f.submit 'Trigger repository check', class: 'btn btn-primary'
+            = f.submit '触发版本仓库检查', class: 'btn btn-primary'
 
   .col-md-6
     - if @group
       .panel.panel-default
         .panel-heading
           %strong #{@group.name}
-          group members (#{@group.group_members.count})
+          群组成员 (#{@group.group_members.count})
           .pull-right
             = link_to admin_group_path(@group), class: 'btn btn-xs' do
               %i.fa.fa-pencil-square-o
@@ -148,13 +148,13 @@
 
     .panel.panel-default
       .panel-heading
-        Project members
+        项目成员
         %small
           (#{@project.users.count})
         .pull-right
           = link_to namespace_project_project_members_path(@project.namespace, @project), class: "btn btn-xs" do
             %i.fa.fa-pencil-square-o
-            Manage Access
+            管理权限
       %ul.well-list.project_members
         - @project_members.each do |project_member|
           - user = project_member.user
@@ -169,7 +169,7 @@
                 (invited)
             .pull-right
               - if project_member.owner?
-                %span.light Owner
+                %span.light 拥有者
               - else
                 %span.light= project_member.human_access
                 = link_to namespace_project_project_member_path(@project.namespace, @project, project_member), data: { confirm: remove_from_project_team_message(@project, project_member)}, method: :delete, remote: true, class: "btn btn-sm btn-remove" do

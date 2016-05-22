@@ -1,16 +1,16 @@
 %p
-  Hi #{@user['name']}!
+  你好 #{@user['name']}!
 %p
   - if Gitlab.config.gitlab.signup_enabled
-    Your account has been created successfully.
+    你的账号创建成功。
   - else
-    The Administrator created an account for you. Now you are a member of the company GitLab application.
+    管理员创建了你的账号。现在你已是 GitLab 应用的成员。
 %p
-  login..........................................
+  账号..........................................
   %code= @user['email']
 
 - if @user.created_by_id
   %p
-    = link_to "Click here to set your password", edit_password_url(@user, reset_password_token: @token)
+    = link_to "点击这里设置你的密码", edit_password_url(@user, reset_password_token: @token)
   %p
     = raw reset_token_expire_message

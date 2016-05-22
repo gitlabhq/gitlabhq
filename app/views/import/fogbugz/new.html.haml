@@ -1,26 +1,25 @@
-- page_title "FogBugz Import"
-- header_title "Projects", root_path
+- page_title "FogBugz 导入"
+- header_title "项目", root_path
 %h3.page-title
   %i.fa.fa-bug
-  Import projects from FogBugz
+  从 FogBugz 导入项目
 %hr
 
 = form_tag callback_import_fogbugz_path, class: 'form-horizontal' do
   %p
-    To get started you enter your FogBugz URL and login information below.
-    In the next steps, you'll be able to map users and select the projects
-    you want to import.
+    请先在下面填入你的 FogBugz 链接和登录信息。
+    然后在下一步，你可以映射用户和选择你想要导入的项目。
   .form-group
-    = label_tag :uri, 'FogBugz URL', class: 'control-label'
+    = label_tag :uri, 'FogBugz 链接', class: 'control-label'
     .col-sm-4
       = text_field_tag :uri, nil, placeholder: 'https://mycompany.fogbugz.com', class: 'form-control'
   .form-group
-    = label_tag :email, 'FogBugz Email', class: 'control-label'
+    = label_tag :email, 'FogBugz 邮箱', class: 'control-label'
     .col-sm-4
       = text_field_tag :email, nil, class: 'form-control'
   .form-group
-    = label_tag :password, 'FogBugz Password', class: 'control-label'
+    = label_tag :password, 'FogBugz 密码', class: 'control-label'
     .col-sm-4
       = password_field_tag :password, nil, class: 'form-control'
   .form-actions
-    = submit_tag 'Continue to the next step', class: 'btn btn-create'
+    = submit_tag '继续下一步', class: 'btn btn-create'

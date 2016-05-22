@@ -1,25 +1,25 @@
-- page_title    "New Password"
-- header_title  "New Password"
-%h3.page-title Setup new password
+- page_title    "新密码"
+- header_title  "新密码"
+%h3.page-title 设置新密码
 %hr
 = form_for @user, url: profile_password_path, method: :post, html: { class: 'form-horizontal '} do |f|
   %p.slead
-    Please set a new password before proceeding.
+    请立即设置一个新密码。
     %br
-    After a successful password update you will be redirected to login screen.
+    密码被成功修改后将会重定向到登录页面。
 
   = form_errors(@user)
 
   - unless @user.password_automatically_set?
     .form-group
-      = f.label :current_password, class: 'control-label'
+      = f.label :current_password, '当前密码', class: 'control-label'
       .col-sm-10= f.password_field :current_password, required: true, class: 'form-control'
   .form-group
-    = f.label :password, class: 'control-label'
+    = f.label :password, '密码', class: 'control-label'
     .col-sm-10= f.password_field :password, required: true, class: 'form-control'
   .form-group
-    = f.label :password_confirmation, class: 'control-label'
+    = f.label :password_confirmation, '确认密码', class: 'control-label'
     .col-sm-10
       = f.password_field :password_confirmation, required: true, class: 'form-control'
   .form-actions
-    = f.submit 'Set new password', class: "btn btn-create"
+    = f.submit '设置新密码', class: "btn btn-create"

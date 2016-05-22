@@ -1,19 +1,19 @@
 .top-area
   %ul.nav-links
     = nav_link(html_options: {class: params[:id] == 'home' ? 'active' : '' }) do
-      = link_to 'Home', namespace_project_wiki_path(@project.namespace, @project, :home)
+      = link_to '主页', namespace_project_wiki_path(@project.namespace, @project, :home)
 
     = nav_link(path: 'wikis#pages') do
-      = link_to 'Pages', namespace_project_wiki_pages_path(@project.namespace, @project)
+      = link_to '页面', namespace_project_wiki_pages_path(@project.namespace, @project)
 
     = nav_link(path: 'wikis#git_access') do
       = link_to namespace_project_wikis_git_access_path(@project.namespace, @project) do
-        Git Access
+        Git 访问
 
   .nav-controls
     - if can?(current_user, :create_wiki, @project)
       = link_to '#modal-new-wiki', class: "add-new-wiki btn btn-new", "data-toggle" => "modal" do
         = icon('plus')
-        New Page
+        新页面
 
 = render 'projects/wikis/new'

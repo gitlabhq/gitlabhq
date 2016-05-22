@@ -37,8 +37,8 @@ class @ProjectSelect
       @includeGroups = $(select).data('include-groups')
       @orderBy = $(select).data('order-by') || 'id'
 
-      placeholder = "Search for project"
-      placeholder += " or group" if @includeGroups
+      placeholder = "搜索项目"
+      placeholder += "或群组" if @includeGroups
 
       $(select).select2
         placeholder: placeholder

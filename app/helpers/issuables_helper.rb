@@ -50,7 +50,7 @@ module IssuablesHelper
   end
 
   def user_dropdown_label(user_id, default_label)
-    return "Unassigned" if user_id == "0"
+    return "未指派" if user_id == "0"
 
     if @project
       member = @project.team.find_member(user_id)
@@ -66,7 +66,7 @@ module IssuablesHelper
     end
   end
 
-  def milestone_dropdown_label(milestone_title, default_label = "Milestone")
+  def milestone_dropdown_label(milestone_title, default_label = "里程碑")
     if milestone_title == Milestone::Upcoming.name
       milestone_title = Milestone::Upcoming.title
     end
@@ -76,11 +76,12 @@ module IssuablesHelper
 
   def issuable_meta(issuable, project, text)
     output = content_tag :strong, "#{text} #{issuable.to_reference}", class: "identifier"
-    output << " opened #{time_ago_with_tooltip(issuable.created_at)} by".html_safe
+    output << " 在#{time_ago_with_tooltip(issuable.created_at)}由".html_safe
     output << content_tag(:strong) do
       author_output = link_to_member(project, issuable.author, size: 24, mobile_classes: "hidden-xs")
       author_output << link_to_member(project, issuable.author, size: 24, by_username: true, avatar: false, mobile_classes: "hidden-sm hidden-md hidden-lg")
     end
+    output << " 打开".html_safe
   end
 
   private

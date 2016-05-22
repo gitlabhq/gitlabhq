@@ -3,8 +3,8 @@
 
 .row.prepend-top-default
   .col-md-4
-    = render 'shared/milestones/issuables', args.merge(title: 'Unstarted Issues (open and unassigned)', issuables: issues.opened.unassigned, id: 'unassigned', show_counter: true)
+    = render 'shared/milestones/issuables', args.merge(title: '未开始的问题 (未关闭 & 未指派)', issuables: issues.opened.unassigned, id: 'unassigned', show_counter: true)
   .col-md-4
-    = render 'shared/milestones/issuables', args.merge(title: 'Ongoing Issues (open and assigned)', issuables: issues.opened.assigned, id: 'ongoing', show_counter: true)
+    = render 'shared/milestones/issuables', args.merge(title: '正在进行的问题 (未关闭 & 已指派)', issuables: issues.opened.assigned, id: 'ongoing', show_counter: true)
   .col-md-4
-    = render 'shared/milestones/issuables', args.merge(title: 'Completed Issues (closed)', issuables: issues.closed, id: 'closed', show_counter: true)
+    = render 'shared/milestones/issuables', args.merge(title: '完成的问题 (已关闭)', issuables: issues.closed, id: 'closed', show_counter: true)

@@ -1,3 +1,4 @@
+#encoding: utf-8
 module EventsHelper
   def link_to_author(event)
     author = event.author
@@ -17,7 +18,7 @@ module EventsHelper
                   event.target_type.titleize.downcase
                 end
               else
-                'project'
+                '项目'
               end
 
     [event.action_name, target].join(" ")
@@ -29,7 +30,7 @@ module EventsHelper
     link_opts = {
       class: "event-filter-link",
       id:    "#{key}_event_filter",
-      title: "Filter by #{tooltip.downcase}",
+      title: "#{tooltip.downcase}过滤",
     }
 
     content_tag :li, class: active do

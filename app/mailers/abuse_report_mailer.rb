@@ -8,7 +8,7 @@ class AbuseReportMailer < BaseMailer
 
     mail(
       to:       current_application_settings.admin_notification_email,
-      subject:  "#{@abuse_report.user.name} (#{@abuse_report.user.username}) was reported for abuse"
+      subject:  "#{@abuse_report.user.name} (#{@abuse_report.user.username}) 被举报违规"
     )
   end
 

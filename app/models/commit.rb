@@ -219,7 +219,7 @@ class Commit
   def revert_branch_name
     "revert-#{short_id}"
   end
-  
+
   def cherry_pick_branch_name
     project.repository.next_branch("cherry-pick-#{short_id}", mild: true)
   end
@@ -259,7 +259,7 @@ class Commit
   end
 
   def change_type_title
-    merged_merge_request ? 'merge request' : 'commit'
+    merged_merge_request ? '合并请求' : '提交'
   end
 
   private

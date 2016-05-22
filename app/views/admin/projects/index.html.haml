@@ -1,4 +1,4 @@
-- page_title "Projects"
+- page_title "项目"
 = render 'shared/show_aside'
 
 .row.prepend-top-default
@@ -6,30 +6,30 @@
     .panel.admin-filter
       = form_tag admin_namespaces_projects_path, method: :get, class: '' do
         .form-group
-          = label_tag :name, 'Name:'
+          = label_tag :name, '名称：'
           = text_field_tag :name, params[:name], class: "form-control"
 
         .form-group
-          = label_tag :namespace_id, "Namespace"
+          = label_tag :namespace_id, "命名空间"
           = namespace_select_tag :namespace_id, selected: params[:namespace_id], class: 'input-large'
 
         .form-group
-          %strong Activity
+          %strong 活动
           .checkbox
             = label_tag :with_push do
               = check_box_tag :with_push, 1, params[:with_push]
-              %span Projects with push events
+              %span 项目有推送事件
           .checkbox
             = label_tag :abandoned do
               = check_box_tag :abandoned, 1, params[:abandoned]
-              %span No activity over 6 month
+              %span 6 个月不再活动
           .checkbox
             = label_tag :with_archived do
               = check_box_tag :with_archived, 1, params[:with_archived]
-              %span Show archived projects
+              %span 显示已归档项目
 
         %fieldset
-          %strong Visibility level:
+          %strong 可见等级：
           .visibility-levels
             - Project.visibility_levels.each do |label, level|
               .checkbox
@@ -39,20 +39,20 @@
                     = visibility_level_icon(level)
                     = label
         %fieldset
-          %strong Problems
+          %strong 问题
           .checkbox
             = label_tag :last_repository_check_failed do
               = check_box_tag :last_repository_check_failed, 1, params[:last_repository_check_failed]
-              %span Last repository check failed
+              %span 最后一次版本仓库检查失败
 
         = hidden_field_tag :sort, params[:sort]
-        = button_tag "Search", class: "btn submit btn-primary"
-        = link_to "Reset", admin_namespaces_projects_path, class: "btn btn-cancel"
+        = button_tag "搜索", class: "btn submit btn-primary"
+        = link_to "重置", admin_namespaces_projects_path, class: "btn btn-cancel"
 
   %section.col-md-9
     .panel.panel-default
       .panel-heading
-        Projects (#{@projects.total_count})
+        项目 (#{@projects.total_count})
         .controls
           .dropdown.inline
             %button.dropdown-toggle.btn.btn-sm{type: 'button', 'data-toggle' => 'dropdown'}
@@ -74,7 +74,7 @@
                   = sort_title_oldest_updated
                 = link_to admin_namespaces_projects_path(sort: sort_value_largest_repo) do
                   = sort_title_largest_repo
-          = link_to 'New Project', new_project_path, class: "btn btn-sm btn-success"
+          = link_to '新项目', new_project_path, class: "btn btn-sm btn-success"
       %ul.well-list
         - @projects.each do |project|
           %li
@@ -87,8 +87,8 @@
                 %span.label.label-warning archived
               %span.label.label-gray
                 = repository_size(project)
-              = link_to 'Edit', edit_namespace_project_path(project.namespace, project), id: "edit_#{dom_id(project)}", class: "btn btn-sm"
-              = link_to 'Destroy', [project.namespace.becomes(Namespace), project], data: { confirm: remove_project_message(project) }, method: :delete, class: "btn btn-sm btn-remove"
+              = link_to '编辑', edit_namespace_project_path(project.namespace, project), id: "edit_#{dom_id(project)}", class: "btn btn-sm"
+              = link_to '销毁', [project.namespace.becomes(Namespace), project], data: { confirm: remove_project_message(project) }, method: :delete, class: "btn btn-sm btn-remove"
         - if @projects.blank?
-          .nothing-here-block 0 projects matches
+          .nothing-here-block 没有匹配的项目
     = paginate @projects, theme: "gitlab"

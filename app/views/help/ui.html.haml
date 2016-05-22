@@ -80,75 +80,75 @@
         = link_to '#', class: 'btn btn-gray' do
           = icon('rss')
 
-  %h2#lists Lists
+  %h2#lists 列表
 
   .lead
-    Simple list using
+    简单列表
     %code .content-list
 
   .example
     %ul.content-list
       %li
-        One item
+        一个项目
       %li
-        One item
+        一个项目
       %li
-        One item
+        一个项目
 
   .lead
-    List with avatar, title and description using
+    带有头像、标题和描述的列表
     %code .content-list
 
   .example
     %ul.content-list
       %li
         = image_tag 'no_avatar.png', class: 'avatar s40'
-        .title Title
-        .description Description
+        .title 标题
+        .description 描述
       %li
         = image_tag 'no_avatar.png', class: 'avatar s40'
-        .title Title
-        .description Description
+        .title 标题
+        .description 描述
       %li
         = image_tag 'no_avatar.png', class: 'avatar s40'
-        .title Title
-        .description Description
+        .title 标题
+        .description 描述
 
   .lead
-    List with hover effect
+    悬停效果列表
     %code .well-list
   .example
     %ul.well-list
       %li
-        One item
+        一个项目
       %li
-        One item
+        一个项目
       %li
-        One item
+        一个项目
 
   .lead
-    List inside panel
+    面板内列表
   .example
     .panel.panel-default
-      .panel-heading Your list
+      .panel-heading 你的列表
       %ul.well-list
         %li
-          One item
+          一个项目
         %li
-          One item
+          一个项目
         %li
-          One item
+          一个项目
 
-  %h2#tables Tables
+  %h2#tables 表格
 
   .example
     %table.table
       %thead
         %tr
           %th #
-          %th First Name
-          %th Last Name
-          %th Username
+          %th 名字
+          %th 姓氏
+          %th 用户名
       %tbody
         %tr
           %td 1
@@ -166,164 +166,164 @@
           %td the Bird
           %td @twitter
 
-  %h2#navs Navigation
+  %h2#navs 导航条
 
   .lead
-    Holder for top page navigation. Includes navigation, search field, sorting and button
+    页面顶部导航。包括导航、搜索区域、排序和按钮
     %code .top-area
 
   .example
     .top-area
       %ul.nav-links
         %li.active
-          %a Open
+          %a 打开的
         %li
-          %a Closed
+          %a 关闭的
       .nav-controls
         = text_field_tag 'sample', nil, class: 'form-control'
         .dropdown
           %button.dropdown-menu-toggle{type: 'button', 'data-toggle' => 'dropdown'}
-            %span Sort by name
+            %span 按名称排序
             = icon('chevron-down')
           %ul.dropdown-menu
             %li
-              %a Sort by date
+              %a 按日期排序
 
-        = link_to 'New issue', '#', class: 'btn btn-new'
+        = link_to '新问题', '#', class: 'btn btn-new'
 
   .lead
-    Only nav links without button and search
+    不含按钮和搜索的导航
     %code .nav-links
   .example
     %ul.nav-links
       %li.active
-        %a Open
+        %a 打开的
       %li
-        %a Closed
+        %a 关闭的
 
 
-  %h2#buttons Buttons
+  %h2#buttons 按钮
 
   .example
-    %button.btn.btn-default{:type => "button"} Default
-    %button.btn.btn-gray{:type => "button"} Gray
-    %button.btn.btn-primary{:type => "button"} Primary
-    %button.btn.btn-success{:type => "button"} Success
-    %button.btn.btn-info{:type => "button"} Info
-    %button.btn.btn-warning{:type => "button"} Warning
-    %button.btn.btn-danger{:type => "button"} Danger
-    %button.btn.btn-link{:type => "button"} Link
+    %button.btn.btn-default{:type => "button"} 默认
+    %button.btn.btn-gray{:type => "button"} 灰色
+    %button.btn.btn-primary{:type => "button"} 主要
+    %button.btn.btn-success{:type => "button"} 成功
+    %button.btn.btn-info{:type => "button"} 信息
+    %button.btn.btn-warning{:type => "button"} 警告
+    %button.btn.btn-danger{:type => "button"} 危险
+    %button.btn.btn-link{:type => "button"} 链接
 
-  %h2#dropdowns Dropdowns
+  %h2#dropdowns 下拉
 
   .example
     .clearfix
       .dropdown.inline.pull-left
         %button.dropdown-menu-toggle{type: 'button', data: {toggle: 'dropdown'}}
-          Dropdown
+          下拉
           = icon('chevron-down')
         %ul.dropdown-menu
           %li
             %a{href: "#"}
-              Dropdown Option
+              下拉选项
       .dropdown.inline.pull-right
         %button.dropdown-menu-toggle{type: 'button', data: {toggle: 'dropdown'}}
-          Dropdown
+          下拉
           = icon('chevron-down')
         %ul.dropdown-menu.dropdown-menu-align-right
           %li
             %a{href: "#"}
-              Dropdown Option
+              下拉选项
   .example
     %div
       .dropdown.inline
         %button.dropdown-menu-toggle{type: 'button', data: {toggle: 'dropdown'}}
-          Dropdown
+          下拉
           = icon('chevron-down')
         %ul.dropdown-menu.dropdown-menu-selectable
           %li
             %a.is-active{href: "#"}
-              Dropdown Option
+              下拉选项
   .example
     %div
       .dropdown.inline
         %button.dropdown-menu-toggle{type: 'button', data: {toggle: 'dropdown'}}
-          Dropdown
+          下拉
           = icon('chevron-down')
         .dropdown-menu.dropdown-select.dropdown-menu-selectable
           .dropdown-title
-            %span Dropdown Title
-            %button.dropdown-title-button.dropdown-menu-close{aria: {label: "Close"}}
+            %span 下拉标题
+            %button.dropdown-title-button.dropdown-menu-close{aria: {label: "关闭"}}
               = icon('times')
           .dropdown-input
-            %input.dropdown-input-field{type: "search", placeholder: "Filter results"}
+            %input.dropdown-input-field{type: "search", placeholder: "过滤结果"}
             = icon('search')
           .dropdown-content
             %ul
               %li
                 %a.is-active{href: "#"}
-                  Dropdown Option
+                  下拉选项
               %li
                 %a{href: "#"}
-                  Dropdown Option
+                  下拉选项
               %li.divider
               %li
                 %a{href: "#"}
-                  Dropdown Option
+                  下拉选项
               %li
                 %a{href: "#"}
-                  Dropdown Option
+                  下拉选项
               %li
                 %a{href: "#"}
-                  Dropdown Option
+                  下拉选项
               %li
                 %a{href: "#"}
-                  Dropdown Option
+                  下拉选项
               %li
                 %a{href: "#"}
-                  Dropdown Option
+                  下拉选项
           .dropdown-footer
-            %strong Tip:
-            If an author is not a member of this project, you can still filter by his name while using the search field.
+            %strong 提示：
+            即使是非此项目的成员，你也能通过搜索框搜索到他的名字。
       .dropdown.inline
         %button.dropdown-menu-toggle{type: 'button', data: {toggle: 'dropdown'}}
-          Dropdown loading
+          正在载入下拉
           = icon('chevron-down')
         .dropdown-menu.dropdown-select.dropdown-menu-selectable.is-loading
           .dropdown-title
-            %span Dropdown Title
-            %button.dropdown-title-button.dropdown-menu-close{aria: {label: "Close"}}
+            %span 下拉标题
+            %button.dropdown-title-button.dropdown-menu-close{aria: {label: "关闭"}}
               = icon('times')
           .dropdown-input
-            %input.dropdown-input-field{type: "search", placeholder: "Filter results"}
+            %input.dropdown-input-field{type: "search", placeholder: "过滤结果"}
             = icon('search')
           .dropdown-content
             %ul
               %li
                 %a.is-active{href: "#"}
-                  Dropdown Option
+                  下拉选项
               %li
                 %a{href: "#"}
-                  Dropdown Option
+                  下拉选项
               %li.divider
               %li
                 %a{href: "#"}
-                  Dropdown Option
+                  下拉选项
               %li
                 %a{href: "#"}
-                  Dropdown Option
+                  下拉选项
               %li
                 %a{href: "#"}
-                  Dropdown Option
+                  下拉选项
               %li
                 %a{href: "#"}
-                  Dropdown Option
+                  下拉选项
               %li
                 %a{href: "#"}
-                  Dropdown Option
+                  下拉选项
           .dropdown-footer
-            %strong Tip:
-            If an author is not a member of this project, you can still filter by his name while using the search field.
+            %strong 提示：
+            即使是非此项目的成员，你也能通过搜索框搜索到他的名字。
           .dropdown-loading
             = icon('spinner spin')
 
@@ -331,15 +331,15 @@
     %div
       .dropdown.inline
         %button.dropdown-menu-toggle{type: 'button', data: {toggle: 'dropdown'}}
-          Dropdown user
+          下拉用户
           = icon('chevron-down')
         .dropdown-menu.dropdown-select.dropdown-menu-selectable.dropdown-menu-user
           .dropdown-title
-            %span Dropdown Title
-            %button.dropdown-title-button.dropdown-menu-close{aria: {label: "Close"}}
+            %span 下拉标题
+            %button.dropdown-title-button.dropdown-menu-close{aria: {label: "关闭"}}
               = icon('times')
           .dropdown-input
-            %input.dropdown-input-field{type: "search", placeholder: "Filter results"}
+            %input.dropdown-input-field{type: "search", placeholder: "过滤结果"}
             = icon('search')
           .dropdown-content
             %ul
@@ -355,18 +355,18 @@
     %div
       .dropdown.inline
         %button.dropdown-menu-toggle{type: 'button', data: {toggle: 'dropdown'}}
-          Dropdown page 2
+          下拉页 2
           = icon('chevron-down')
         .dropdown-menu.dropdown-select.dropdown-menu-selectable.dropdown-menu-user.dropdown-menu-paging.is-page-two
           .dropdown-page-one
             .dropdown-title
-              %button.dropdown-title-button.dropdown-menu-back{aria: {label: "Go back"}}
+              %button.dropdown-title-button.dropdown-menu-back{aria: {label: "返回"}}
                 = icon('arrow-left')
-              %span Dropdown Title
-              %button.dropdown-title-button.dropdown-menu-close{aria: {label: "Close"}}
+              %span 下拉标题
+              %button.dropdown-title-button.dropdown-menu-close{aria: {label: "关闭"}}
                 = icon('times')
             .dropdown-input
-              %input.dropdown-input-field{type: "search", placeholder: "Filter results"}
+              %input.dropdown-input-field{type: "search", placeholder: "过滤结果"}
               = icon('search')
             .dropdown-content
               %ul
@@ -379,30 +379,30 @@
                       = @user.to_reference
           .dropdown-page-two
             .dropdown-title
-              %button.dropdown-title-button.dropdown-menu-back{aria: {label: "Go back"}}
+              %button.dropdown-title-button.dropdown-menu-back{aria: {label: "返回"}}
                 = icon('arrow-left')
-              %span Create label
-              %button.dropdown-title-button.dropdown-menu-close{aria: {label: "Close"}}
+              %span 创建标记
+              %button.dropdown-title-button.dropdown-menu-close{aria: {label: "关闭"}}
                 = icon('times')
             .dropdown-input
-              %input.dropdown-input-field{type: "search", placeholder: "Name new label"}
+              %input.dropdown-input-field{type: "search", placeholder: "新标记名称"}
             .dropdown-content
               %button.btn.btn-primary
-                Create
+                创建
 
   .example
     %div
       .dropdown.inline
         %button#js-project-dropdown.dropdown-menu-toggle{type: 'button', data: {toggle: 'dropdown'}}
-          Projects
+          项目
           = icon('chevron-down')
         .dropdown-menu.dropdown-select.dropdown-menu-selectable
           .dropdown-title
-            %span Go to project
-            %button.dropdown-title-button.dropdown-menu-close{aria: {label: "Close"}}
+            %span 转到项目
+            %button.dropdown-title-button.dropdown-menu-close{aria: {label: "关闭"}}
               = icon('times')
           .dropdown-input
-            %input.dropdown-input-field{type: "search", placeholder: "Filter results"}
+            %input.dropdown-input-field{type: "search", placeholder: "过滤结果"}
             = icon('search')
           .dropdown-content
           .dropdown-loading
@@ -433,35 +433,35 @@
 
   .example
     %div
-      = dropdown_tag("Projects", options: { title: "Go to project", filter: true, placeholder: "Filter projects" })
+      = dropdown_tag("项目", options: { title: "转到项目", filter: true, placeholder: "过滤项目" })
 
-  %h2#panels Panels
+  %h2#panels 面板
 
   .row
     .col-md-6
       .panel.panel-success
-        .panel-heading Success
+        .panel-heading 成功
         .panel-body
           = lorem
       .panel.panel-primary
-        .panel-heading Primary
+        .panel-heading 主要
         .panel-body
           = lorem
       .panel.panel-info
-        .panel-heading Info
+        .panel-heading 信息
         .panel-body
           = lorem
     .col-md-6
       .panel.panel-warning
-        .panel-heading Warning
+        .panel-heading 警告
         .panel-body
           = lorem
       .panel.panel-danger
-        .panel-heading Danger
+        .panel-heading 危险
         .panel-body
           = lorem
 
-  %h2#alert Alerts
+  %h2#alert 警告
 
   .row
     .col-md-6
@@ -477,51 +477,51 @@
       .alert.alert-danger
         = lorem
 
-  %h2#forms Forms
+  %h2#forms 表单
 
   .lead
-    Horizontal form when label rendered inline with input
+    输入框前带标签的横向表单
     %code form.horizontal-form
 
   .example
     %form.form-horizontal
       .form-group
-        %label.col-sm-2.control-label{:for => "inputEmail3"} Email
+        %label.col-sm-2.control-label{:for => "inputEmail3"} 邮箱
         .col-sm-10
-          %input#inputEmail3.form-control{:placeholder => "Email", :type => "email"}/
+          %input#inputEmail3.form-control{:placeholder => "邮箱", :type => "email"}/
       .form-group
-        %label.col-sm-2.control-label{:for => "inputPassword3"} Password
+        %label.col-sm-2.control-label{:for => "inputPassword3"} 密码
         .col-sm-10
-          %input#inputPassword3.form-control{:placeholder => "Password", :type => "password"}/
+          %input#inputPassword3.form-control{:placeholder => "密码", :type => "password"}/
       .form-group
         .col-sm-offset-2.col-sm-10
           .checkbox
             %label
               %input{:type => "checkbox"}/
-              Remember me
+              记住我
       .form-group
         .col-sm-offset-2.col-sm-10
-          %button.btn.btn-default{:type => "submit"} Sign in
+          %button.btn.btn-default{:type => "submit"} 登录
 
   .lead
-    Form when label rendered above input
+    输入框上方带标签的表单
     %code form
 
   .example
     %form
       .form-group
-        %label{:for => "exampleInputEmail1"} Email address
-        %input#exampleInputEmail1.form-control{:placeholder => "Enter email", :type => "email"}/
+        %label{:for => "exampleInputEmail1"} 邮箱地址
+        %input#exampleInputEmail1.form-control{:placeholder => "输入邮箱", :type => "email"}/
       .form-group
-        %label{:for => "exampleInputPassword1"} Password
-        %input#exampleInputPassword1.form-control{:placeholder => "Password", :type => "password"}/
+        %label{:for => "exampleInputPassword1"} 密码
+        %input#exampleInputPassword1.form-control{:placeholder => "密码", :type => "password"}/
       .checkbox
         %label
           %input{:type => "checkbox"}/
-          Remember me
-      %button.btn.btn-default{:type => "submit"} Sign in
+          记住我
+      %button.btn.btn-default{:type => "submit"} 登录
 
-  %h2#file File
+  %h2#file 文件
   %h4
     %code .file-holder
 
@@ -532,21 +532,21 @@
         Awesome file
         .file-actions
           .btn-group
-            %a.btn Edit
-            %a.btn.btn-danger Remove
+            %a.btn 编辑
+            %a.btn.btn-danger 删除
       .file-contenta.code
         = render 'shared/file_highlight', blob: blob
 
   %h2#markdown Markdown
   %h4
-    %code .md or .wiki and others
+    %code .md 或 .wiki 和其他
 
-  Markdown rendering has a bit different css and presented in next UI elements:
+  Markdown 会在下列 UI 元素中使用，并具有一些不同的 css 展示效果：
 
   %ul
-    %li comment
-    %li issue, merge request description
-    %li wiki page
-    %li help page
+    %li 评论
+    %li 问题、合并请求描述
+    %li 维基页面
+    %li 帮助页面
 
-  You can check how markdown rendered at #{link_to 'Markdown help page', help_page_path("markdown", "markdown")}.
+  你可以在 #{link_to 'Markdown 帮助页', help_page_path("markdown", "markdown")}中查看 markdown 展示详情。

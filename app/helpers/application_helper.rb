@@ -1,3 +1,4 @@
+#encoding: utf-8
 require 'digest/md5'
 require 'uri'
 
@@ -95,24 +96,24 @@ module ApplicationHelper
     if project.repo_exists?
       time_ago_with_tooltip(project.repository.commit.committed_date)
     else
-      'Never'
+      '从未'
     end
   rescue
-    'Never'
+    '从未'
   end
 
   def grouped_options_refs
     repository = @project.repository
 
     options = [
-      ['Branches', repository.branch_names],
-      ['Tags', VersionSorter.rsort(repository.tag_names)]
+      ['分支', repository.branch_names],
+      ['标签', VersionSorter.rsort(repository.tag_names)]
     ]
 
     # If reference is commit id - we should add it to branch/tag selectbox
     if(@ref && !options.flatten.include?(@ref) &&
        @ref =~ /\A[0-9a-zA-Z]{6,52}\z/)
-      options << ['Commit', [@ref]]
+      options << ['提交', [@ref]]
     end
 
     grouped_options_for_select(options, @ref || @project.default_branch)
@@ -200,11 +201,11 @@ module ApplicationHelper
     return if object.updated_at == object.created_at
 
     content_tag :small, class: "edited-text" do
-      output = content_tag(:span, "Edited ")
+      output = content_tag(:span, "编辑时间 ")
       output << time_ago_with_tooltip(object.updated_at, placement: placement, html_class: html_class)
 
       if include_author && object.updated_by && object.updated_by != object.author
-        output << content_tag(:span, " by ")
+        output << content_tag(:span, " 由 ")
         output << link_to_member(object.project, object.updated_by, avatar: false, author_class: nil)
       end
 
@@ -299,7 +300,10 @@ module ApplicationHelper
 
   def state_filters_text_for(entity, project)
     titles = {
-      opened: "Open"
+      opened: "未关闭",
+      closed: "已关闭",
+      merged: "已合并",
+      all: "所有",
     }
 
     entity_title = titles[entity] || entity.to_s.humanize

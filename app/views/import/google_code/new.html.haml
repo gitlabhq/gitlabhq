@@ -1,62 +1,62 @@
-- page_title "Google Code import"
-- header_title "Projects", root_path
+- page_title "Google 代码导入"
+- header_title "项目", root_path
 %h3.page-title
   %i.fa.fa-google
-  Import projects from Google Code
+  从 Google 代码导入项目
 %hr
 
 = form_tag callback_import_google_code_path, class: 'form-horizontal', multipart: true do
   %p
-    Follow the steps below to export your Google Code project data.
-    In the next step, you'll be able to select the projects you want to import.
+    按照下面的步骤来导入 Google Code 项目数据。
+    在下一步，请先选择要导入的项目。
   %ol
     %li
       %p
-        Go to
-        #{link_to "Google Takeout", "https://www.google.com/settings/takeout", target: "_blank"}.
+        转到
+        #{link_to "下载数据 (Google Takeout)", "https://www.google.com/settings/takeout", target: "_blank"}.
     %li
       %p
-        Make sure you're logged into the account that owns the projects you'd like to import.
+        请先确保已登录到要导入项目的账号。
     %li
       %p
-        Click the <strong>Select none</strong> button on the right, since we only need "Google Code Project Hosting".
+        先在右侧点击<strong>全部不选</strong>按钮，以保证只选择“Google 代码 Project Hosting”选项.
     %li
       %p
-        Scroll down to <strong>Google Code Project Hosting</strong> and enable the switch on the right.
+        向下滚动到 <strong>Google 代码 Project Hosting</strong>，在右边开启选择。
     %li
       %p
-        Choose <strong>Next</strong> at the bottom of the page.
+        在页面底部点击<strong>下一步</strong>。
     %li
       %p
-        Leave the "File type" and "Delivery method" options on their default values.
+        “文件类型”与“投放方式”选项保持其默认值即可。
     %li
       %p
-        Choose <strong>Create archive</strong> and wait for archiving to complete.
+        点击<strong>创建归档文件</strong>，然后等待归档完成。
     %li
       %p
-        Click the <strong>Download</strong> button and wait for downloading to complete.
+        点击<strong>下载</strong>按钮，然后等待下载完成。
     %li
       %p
-        Find the downloaded ZIP file and decompress it.
+        找到下载的 ZIP 文件再解压。
     %li
       %p
-        Find the newly extracted <code>Takeout/Google Code Project Hosting/GoogleCodeProjectHosting.json</code> file.
+        找到新解压出来的 <code>Takeout/Google代码Project Hosting/Google代码ProjectHosting.json</code> 文件。
     %li
       %p
-        Upload <code>GoogleCodeProjectHosting.json</code> here:
+        上传 <code>Google代码ProjectHosting.json</code> 到这里：
       %p
         %input{type: "file", name: "dump_file", id: "dump_file"}
     %li
       %p
-        Do you want to customize how Google Code email addresses and usernames are imported into GitLab?
+        是否想自定义 Google 代码邮箱地址和用户名导入到 GitLab？
       %p
         = label_tag :create_user_map_0 do
           = radio_button_tag :create_user_map, 0, true
-          No, directly import the existing email addresses and usernames.
+          否，直接导入到已存在的邮箱地址和用户名。
       %p
         = label_tag :create_user_map_1 do
           = radio_button_tag :create_user_map, 1, false
-          Yes, let me map Google Code users to full names or GitLab users.
+          是，映射 Google 代码用户到完整的姓名或 GitLab 用户。
     %li
       %p
-        = submit_tag 'Continue to the next step', class: "btn btn-create"
+        = submit_tag '继续下一步', class: "btn btn-create"

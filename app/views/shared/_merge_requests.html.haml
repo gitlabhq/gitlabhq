@@ -6,7 +6,7 @@
         = link_to project.name_with_namespace, namespace_project_merge_requests_path(project.namespace, project)
         - if can?(current_user, :create_merge_request, project)
           .pull-right
-            = link_to 'New merge request', new_namespace_project_merge_request_path(project.namespace, project)
+            = link_to '新合并请求', new_namespace_project_merge_request_path(project.namespace, project)
 
       %ul.content-list.mr-list
         - group[1].each do |merge_request|
@@ -14,4 +14,4 @@
   = paginate @merge_requests, theme: "gitlab"
 
 - else
-  .nothing-here-block No merge requests to show
+  .nothing-here-block 没有合并请求显示

@@ -53,11 +53,11 @@ class CampfireService < Service
     message << "#{push[:user_name]} "
 
     if Gitlab::Git.blank_ref?(before)
-      message << "pushed new branch #{ref} \n"
+      message << "推送了新的分支 #{ref} \n"
     elsif Gitlab::Git.blank_ref?(after)
-      message << "removed branch #{ref} \n"
+      message << "删除了分支 #{ref} \n"
     else
-      message << "pushed #{push[:total_commits_count]} commits to #{ref}. "
+      message << "推送了 #{push[:total_commits_count]} 个提交到 #{ref}。"
       message << "#{project.web_url}/compare/#{before}...#{after}"
     end
 

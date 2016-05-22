@@ -1,3 +1,4 @@
+#encoding: utf-8
 class ProfilesController < Profiles::ApplicationController
   include ActionView::Helpers::SanitizeHelper
 
@@ -13,12 +14,12 @@ class ProfilesController < Profiles::ApplicationController
 
     respond_to do |format|
       if @user.update_attributes(user_params)
-        message = "Profile was successfully updated"
+        message = "个人资料已成功更新"
         format.html { redirect_back_or_default(default: { action: 'show' }, options: { notice: message }) }
         format.json { render json: { message: message } }
       else
         message = @user.errors.full_messages.uniq.join('. ')
-        format.html { redirect_back_or_default(default: { action: 'show' }, options: { alert: "Failed to update profile. #{message}" }) }
+        format.html { redirect_back_or_default(default: { action: 'show' }, options: { alert: "更新个人资料失败。#{message}" }) }
         format.json { render json: { message: message }, status: :unprocessable_entity }
       end
     end
@@ -26,7 +27,7 @@ class ProfilesController < Profiles::ApplicationController
 
   def reset_private_token
     if current_user.reset_authentication_token!
-      flash[:notice] = "Token was successfully updated"
+      flash[:notice] = "令牌已成功更新"
     end
 
     redirect_to profile_account_path

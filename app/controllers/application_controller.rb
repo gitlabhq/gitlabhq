@@ -1,3 +1,4 @@
+#encoding: utf-8
 require 'gon'
 require 'fogbugz'
 
@@ -101,7 +102,7 @@ class ApplicationController < ActionController::Base
   def reject_blocked!
     if current_user && current_user.blocked?
       sign_out current_user
-      flash[:alert] = "Your account is blocked. Retry when an admin has unblocked it."
+      flash[:alert] = "你的账号被禁用。请在管理员启用该账号后重试。"
       redirect_to new_user_session_path
     end
   end
@@ -109,7 +110,7 @@ class ApplicationController < ActionController::Base
   def after_sign_in_path_for(resource)
     if resource.is_a?(User) && resource.respond_to?(:blocked?) && resource.blocked?
       sign_out resource
-      flash[:alert] = "Your account is blocked. Retry when an admin has unblocked it."
+      flash[:alert] = "你的账号被禁用。请在管理员启用该账号后重试。"
       new_user_session_path
     else
       stored_location_for(:redirect) || stored_location_for(resource) || root_path
@@ -241,7 +242,7 @@ class ApplicationController < ActionController::Base
 
   def require_email
     if current_user && current_user.temp_oauth_email?
-      redirect_to profile_path, notice: 'Please complete your profile with email address' and return
+      redirect_to profile_path, notice: '请在个人资料中填写邮箱地址' and return
     end
   end
 

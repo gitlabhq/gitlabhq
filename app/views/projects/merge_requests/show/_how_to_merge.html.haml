@@ -3,11 +3,11 @@
     .modal-content
       .modal-header
         %a.close{href: "#", "data-dismiss" => "modal"} ×
-        %h3 Check out, review, and merge locally
+        %h3 检出，在本地审查和合并
       .modal-body
         %p
-          %strong Step 1.
-          Fetch and check out the branch for this merge request
+          %strong 第 1 步.
+          获取并检出此合并请求的分支
         = clipboard_button(clipboard_target: 'pre#merge-info-1')
         %pre.dark#merge-info-1
           - if @merge_request.for_fork?
@@ -19,12 +19,12 @@
               git fetch origin
               git checkout -b #{h @merge_request.source_branch} origin/#{h @merge_request.source_branch}
         %p
-          %strong Step 2.
-          Review the changes locally
+          %strong 第 2 步.
+          本地审查变更
 
         %p
-          %strong Step 3.
-          Merge the branch and fix any conflicts that come up
+          %strong 第 3 步.
+          合并分支并修复出现的任何冲突
         = clipboard_button(clipboard_target: 'pre#merge-info-3')
         %pre.dark#merge-info-3
           - if @merge_request.for_fork?
@@ -36,19 +36,20 @@
               git checkout #{h @merge_request.target_branch}
               git merge --no-ff #{h @merge_request.source_branch}
         %p
-          %strong Step 4.
-          Push the result of the merge to GitLab
+          %strong 第 4 步.
+          推送合并的结果到 GitLab
         = clipboard_button(clipboard_target: 'pre#merge-info-4')
         %pre.dark#merge-info-4
           :preserve
             git push origin #{h @merge_request.target_branch}
         - unless @merge_request.can_be_merged_by?(current_user)
           %p
-            Note that pushing to GitLab requires write access to this repository.
+            请注意推送到 GitLab 需要有此仓库的写权限。
         %p
-          %strong Tip:
-          You can also checkout merge requests locally by
-          %a{href: 'https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/workflow/merge_requests.md#checkout-merge-requests-locally', target: '_blank'} following these guidelines
+          %strong 提示：
+          你可以使用
+          %a{href: 'https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/workflow/merge_requests.md#checkout-merge-requests-locally', target: '_blank'} 此指南
+          在本地检出合并请求
 
 :javascript
   $(function(){

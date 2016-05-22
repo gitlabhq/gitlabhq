@@ -134,6 +134,10 @@ class Issue < ActiveRecord::Base
     project
   end
 
+  def zh_name
+    '问题'
+  end
+
   # From all notes on this issue, we'll select the system notes about linked
   # merge requests. Of those, the MRs closing `self` are returned.
   def closed_by_merge_requests(current_user = nil)

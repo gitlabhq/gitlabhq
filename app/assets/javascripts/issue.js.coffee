@@ -20,7 +20,7 @@ class @Issue
 
   initIssueBtnEventListeners: ->
     _this = @
-    issueFailMessage = 'Unable to update this issue at this time.'
+    issueFailMessage = '此时无法更新这个问题。'
     $('a.btn-close, a.btn-reopen').on 'click', (e) ->
       e.preventDefault()
       e.stopImmediatePropagation()
@@ -79,7 +79,7 @@ class @Issue
 
     $.getJSON($container.data('url'))
       .error ->
-        new Flash('Failed to load referenced merge requests', 'alert')
+        new Flash('加载引用的合并请求失败', 'alert')
       .success (data) ->
         if 'html' of data
           $container.html(data.html)
@@ -89,7 +89,7 @@ class @Issue
 
     $.getJSON($container.data('url'))
       .error ->
-        new Flash('Failed to load related branches', 'alert')
+        new Flash('加载关联的分支失败', 'alert')
       .success (data) ->
         if 'html' of data
           $container.html(data.html)
@@ -106,7 +106,7 @@ class @Issue
         $container.find('.checking').hide()
         $container.find('.unavailable').show()
 
-        new Flash('Failed to check if a new branch can be created.', 'alert')
+        new Flash('检查能否创建新分支失败', 'alert')
       .success (data) ->
         if data.can_create_branch
           $container.find('.checking').hide()

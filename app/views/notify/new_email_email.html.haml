@@ -1,10 +1,10 @@
 %p
-  Hi #{@user.name}!
+  你好 #{@user.name}!
 %p
-  A new email was added to your account:
+  你的账号增加了一个新的邮箱：
 %p
-  email:
+  邮箱：
   %code= @email.email
 %p
-  If this email was added in error, you can remove it here:
-  = link_to "Emails", profile_emails_url
+  如果错误增加该邮箱，可以在这里删除它：
+  = link_to "邮箱", profile_emails_url

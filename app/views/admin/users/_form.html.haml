@@ -3,70 +3,70 @@
     = form_errors(@user)
 
     %fieldset
-      %legend Account
+      %legend 账号
       .form-group
-        = f.label :name, class: 'control-label'
+        = f.label :name, "姓名", class: 'control-label'
         .col-sm-10
           = f.text_field :name, required: true, autocomplete: 'off', class: 'form-control'
-          %span.help-inline * required
+          %span.help-inline * 必须填写
       .form-group
-        = f.label :username, class: 'control-label'
+        = f.label :username, "用户名", class: 'control-label'
         .col-sm-10
           = f.text_field :username, required: true, autocomplete: 'off', autocorrect: 'off', autocapitalize: 'off', spellcheck: false, class: 'form-control'
-          %span.help-inline * required
+          %span.help-inline * 必须填写
       .form-group
-        = f.label :email, class: 'control-label'
+        = f.label :email, "邮箱", class: 'control-label'
         .col-sm-10
           = f.text_field :email, required: true, autocomplete: 'off', class: 'form-control'
-          %span.help-inline * required
+          %span.help-inline * 必须填写
 
     - if @user.new_record?
       %fieldset
-        %legend Password
+        %legend 密码
         .form-group
-          = f.label :password, class: 'control-label'
+          = f.label :password, "密码", class: 'control-label'
           .col-sm-10
             %strong
-              Reset link will be generated and sent to the user.
+              重置链接将自动生成临时密码发送给用户。
               %br
-              User will be forced to set the password on first sign in.
+              用户在第一次登录后需要强制修改密码。
     - else
       %fieldset
-        %legend Password
+        %legend 密码
         .form-group
-          = f.label :password, class: 'control-label'
+          = f.label :password, "密码", class: 'control-label'
           .col-sm-10= f.password_field :password, disabled: f.object.force_random_password, class: 'form-control'
         .form-group
-          = f.label :password_confirmation, class: 'control-label'
+          = f.label :password_confirmation, "确认密码", class: 'control-label'
           .col-sm-10= f.password_field :password_confirmation, disabled: f.object.force_random_password, class: 'form-control'
 
     %fieldset
-      %legend Access
+      %legend 权限
       .form-group
-        = f.label :projects_limit, class: 'control-label'
+        = f.label :projects_limit, "项目限制", class: 'control-label'
         .col-sm-10= f.number_field :projects_limit, class: 'form-control'
 
       .form-group
-        = f.label :can_create_group, class: 'control-label'
+        = f.label :can_create_group, "是否可以创建群组", class: 'control-label'
         .col-sm-10= f.check_box :can_create_group
 
       .form-group
-        = f.label :admin, class: 'control-label'
+        = f.label :admin, "管理", class: 'control-label'
         - if current_user == @user
           .col-sm-10= f.check_box :admin, disabled: true
-          .col-sm-10 You cannot remove your own admin rights.
+          .col-sm-10 不能删除自己的管理权限。
         - else
           .col-sm-10= f.check_box :admin
 
       .form-group
-        = f.label :external, class: 'control-label'
+        = f.label :external, "外部", class: 'control-label'
         .col-sm-10= f.check_box :external
-        .col-sm-10 External users cannot see internal or private projects unless access is explicitly granted. Also, external users cannot create projects or groups.
+        .col-sm-10 除非明确授权，外部用户无法看到任何内部和私有项目。同样，外部用户无法创建项目和群组。
 
     %fieldset
-      %legend Profile
+      %legend 个人资料
       .form-group
-        = f.label :avatar, class: 'control-label'
+        = f.label :avatar, "头像", class: 'control-label'
         .col-sm-10
           = f.file_field :avatar
 
@@ -74,19 +74,19 @@
         = f.label :skype, class: 'control-label'
         .col-sm-10= f.text_field :skype, class: 'form-control'
       .form-group
-        = f.label :linkedin, class: 'control-label'
+        = f.label :linkedin, "领英", class: 'control-label'
         .col-sm-10= f.text_field :linkedin, class: 'form-control'
       .form-group
-        = f.label :twitter, class: 'control-label'
+        = f.label :twitter, "推特", class: 'control-label'
         .col-sm-10= f.text_field :twitter, class: 'form-control'
       .form-group
-        = f.label :website_url, 'Website', class: 'control-label'
+        = f.label :website_url, "网址", class: 'control-label'
         .col-sm-10= f.text_field :website_url, class: 'form-control'
 
     .form-actions
       - if @user.new_record?
-        = f.submit 'Create user', class: "btn btn-create"
-        = link_to 'Cancel', admin_users_path, class: "btn btn-cancel"
+        = f.submit '创建用户', class: "btn btn-create"
+        = link_to '取消', admin_users_path, class: "btn btn-cancel"
       - else
-        = f.submit 'Save changes', class: "btn btn-save"
-        = link_to 'Cancel', admin_user_path(@user), class: "btn btn-cancel"
+        = f.submit '保存修改', class: "btn btn-save"
+        = link_to '取消', admin_user_path(@user), class: "btn btn-cancel"

@@ -1,4 +1,4 @@
-You have been invited <%= "by #{@project_member.created_by.name} " if @project_member.created_by %>to join project <%= @project.name_with_namespace %> as <%= @project_member.human_access %>.
+你被<%= " #{@project_member.created_by.name} " if @project_member.created_by %>邀请加入到项目 <%= @project.name_with_namespace %> 身份是 <%= @project_member.human_access %>。
 
-Accept invitation: <%= invite_url(@token) %>
-Decline invitation: <%= decline_invite_url(@token) %>
+接受邀请: <%= invite_url(@token) %>
+拒绝邀请: <%= decline_invite_url(@token) %>

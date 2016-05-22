@@ -2,12 +2,12 @@
   = render "projects/diffs/diffs", diffs: @merge_request.diffs(diff_options),
     project: @merge_request.project, diff_refs: @merge_request.diff_refs
 - elsif @merge_request_diff.empty?
-  .nothing-here-block Nothing to merge from #{@merge_request.source_branch} into #{@merge_request.target_branch}
+  .nothing-here-block 从 #{@merge_request.source_branch} 到 #{@merge_request.target_branch} 无需合并
 - else
   .alert.alert-warning
     %h4
-      Changes view for this comparison is extremely large.
+      此比较的变更视图非常巨大。
     %p
-      You can
-      = link_to "download it", merge_request_path(@merge_request, format: :diff), class: "vlink"
-      instead.
+      可以
+      = link_to "下载差异", merge_request_path(@merge_request, format: :diff), class: "vlink"
+      到本地查看。

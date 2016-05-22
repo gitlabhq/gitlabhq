@@ -1,3 +1,4 @@
+#encoding: utf-8
 class Projects::ServicesController < Projects::ApplicationController
   ALLOWED_PARAMS = [:title, :token, :type, :active, :api_key, :api_url, :api_version, :subdomain,
                     :room, :recipients, :project_url, :webhook,
@@ -37,7 +38,7 @@ class Projects::ServicesController < Projects::ApplicationController
       redirect_to(
         edit_namespace_project_service_path(@project.namespace, @project,
                                             @service.to_param, notice:
-                                            'Successfully updated.')
+                                            '已更新成功。')
       )
     else
       render 'edit'
@@ -48,9 +49,9 @@ class Projects::ServicesController < Projects::ApplicationController
     data = Gitlab::PushDataBuilder.build_sample(project, current_user)
     outcome = @service.test(data)
     if outcome[:success]
-      message = { notice: 'We sent a request to the provided URL' }
+      message = { notice: '已发送请求到提供的链接' }
     else
-      error_message = "We tried to send a request to the provided URL but an error occurred"
+      error_message = "已发送请求到提供的链接，但收到一个错误回应"
       error_message << ": #{outcome[:result]}" if outcome[:result].present?
       message = { alert: error_message }
     end

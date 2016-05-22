@@ -13,7 +13,7 @@ class Projects::RunnerProjectsController < Projects::ApplicationController
     if @runner.assign_to(project, current_user)
       redirect_to path
     else
-      redirect_to path, alert: 'Failed adding runner to project'
+      redirect_to path, alert: '增加 runner 到项目失败'
     end
   end
 

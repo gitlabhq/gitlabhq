@@ -2,9 +2,9 @@ class Milestone < ActiveRecord::Base
   # Represents a "No Milestone" state used for filtering Issues and Merge
   # Requests that have no milestone assigned.
   MilestoneStruct = Struct.new(:title, :name, :id)
-  None = MilestoneStruct.new('No Milestone', 'No Milestone', 0)
-  Any = MilestoneStruct.new('Any Milestone', '', -1)
-  Upcoming = MilestoneStruct.new('Upcoming', '#upcoming', -2)
+  None = MilestoneStruct.new('无里程碑', 'No Milestone', 0)
+  Any = MilestoneStruct.new('任何里程碑', '', -1)
+  Upcoming = MilestoneStruct.new('即将到来', '#upcoming', -2)
 
   include InternalId
   include Sortable
@@ -137,9 +137,9 @@ class Milestone < ActiveRecord::Base
   def expires_at
     if due_date
       if due_date.past?
-        "expired on #{due_date.to_s(:medium)}"
+        "过期时间 #{due_date.to_s(:medium)}"
       else
-        "expires on #{due_date.to_s(:medium)}"
+        "过期时间 #{due_date.to_s(:medium)}"
       end
     end
   end

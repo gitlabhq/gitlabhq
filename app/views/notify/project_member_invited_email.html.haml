@@ -1,13 +1,12 @@
 %p
-  You have been invited 
+  你被
   - if inviter = @project_member.created_by
-    by
     = link_to inviter.name, user_url(inviter)
-  to join project
+  邀请加入项目
   = link_to @project.name_with_namespace, namespace_project_url(@project.namespace, @project)
-  as #{@project_member.human_access}.
+  身份是 #{@project_member.human_access}。
 
 %p
-  = link_to 'Accept invitation', invite_url(@token)
-  or
-  = link_to 'decline', decline_invite_url(@token)
+  = link_to '接受邀请', invite_url(@token)
+  或者
+  = link_to '拒绝', decline_invite_url(@token)

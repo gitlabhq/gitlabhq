@@ -1,7 +1,7 @@
-Hi <%= @user.name %>!
+你好 <%= @user.name %>!
 
-A new public key was added to your account:
+你的账号增加了一个新的公钥:
 
-Title: <%= @key.title %>
+标题: <%= @key.title %>
 
-If this key was added in error, you can remove it at <%= profile_keys_url %>
+如果错误增加该 SSH 密钥，可以在这里删除它: <%= profile_keys_url %>

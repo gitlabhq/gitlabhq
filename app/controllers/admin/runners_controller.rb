@@ -32,17 +32,17 @@ class Admin::RunnersController < Admin::ApplicationController
 
   def resume
     if @runner.update_attributes(active: true)
-      redirect_to admin_runners_path, notice: 'Runner was successfully updated.'
+      redirect_to admin_runners_path, notice: 'Runner 更新成功。'
     else
-      redirect_to admin_runners_path, alert: 'Runner was not updated.'
+      redirect_to admin_runners_path, alert: 'Runner 未更新。'
     end
   end
 
   def pause
     if @runner.update_attributes(active: false)
-      redirect_to admin_runners_path, notice: 'Runner was successfully updated.'
+      redirect_to admin_runners_path, notice: 'Runner 更新成功。'
     else
-      redirect_to admin_runners_path, alert: 'Runner was not updated.'
+      redirect_to admin_runners_path, alert: 'Runner 未更新。'
     end
   end
 

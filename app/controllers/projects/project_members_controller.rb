@@ -67,9 +67,9 @@ class Projects::ProjectMembersController < Projects::ApplicationController
     if @project_member.invite?
       @project_member.resend_invite
 
-      redirect_to redirect_path, notice: 'The invitation was successfully resent.'
+      redirect_to redirect_path, notice: '邀请重发成功。'
     else
-      redirect_to redirect_path, alert: 'The invitation has already been accepted.'
+      redirect_to redirect_path, alert: '邀请已被接受。'
     end
   end
 
@@ -98,7 +98,7 @@ class Projects::ProjectMembersController < Projects::ApplicationController
 
     if can?(current_user, :read_project_member, source_project)
       status = @project.team.import(source_project, current_user)
-      notice = status ? "Successfully imported" : "Import failed"
+      notice = status ? "导入成功" : "导入失败"
     else
       return render_404
     end

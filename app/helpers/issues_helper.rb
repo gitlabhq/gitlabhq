@@ -1,3 +1,4 @@
+#encoding: utf-8
 module IssuesHelper
   def issue_css_classes(issue)
     classes = "issue"
@@ -10,7 +11,7 @@ module IssuesHelper
   # to allow filtering issues by an unassigned User or Milestone
   def unassigned_filter
     # Milestone uses :title, Issue uses :name
-    OpenStruct.new(id: 0, title: 'None (backlog)', name: 'Unassigned')
+    OpenStruct.new(id: 0, title: '无 (积压)', name: '未指派')
   end
 
   def url_for_project_issues(project = @project, options = {})
@@ -82,7 +83,7 @@ module IssuesHelper
       current_user.can?(ability, project)
     end
 
-    no_project = OpenStruct.new(id: 0, name_with_namespace: 'No project')
+    no_project = OpenStruct.new(id: 0, name_with_namespace: '没有项目')
     projects.unshift(no_project)
     projects.delete(issuable.project)
 

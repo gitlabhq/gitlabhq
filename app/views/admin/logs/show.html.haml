@@ -1,4 +1,4 @@
-- page_title "Logs"
+- page_title "日志"
 - loggers = [Gitlab::GitLogger, Gitlab::AppLogger,
              Gitlab::ProductionLogger, Gitlab::SidekiqLogger,
              Gitlab::RepositoryCheckLogger]
@@ -20,7 +20,7 @@
           .pull-right
             = link_to '#', class: 'log-bottom' do
               %i.fa.fa-arrow-down
-              Scroll down
+              向下滚动
         .file-content.logs
           %ol
             - klass.read_latest.each do |line|

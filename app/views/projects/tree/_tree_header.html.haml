@@ -15,7 +15,7 @@
   - if current_user
     %li
       - if !on_top_of_branch?
-        %span.btn.add-to-tree.disabled.has-tooltip{title: "You can only add files when you are on a branch", data: { container: 'body' }}
+        %span.btn.add-to-tree.disabled.has-tooltip{title: "您只能在分支上增加文件", data: { container: 'body' }}
           = icon('plus')
       - else
         %span.dropdown
@@ -26,15 +26,15 @@
               %li
                 = link_to namespace_project_new_blob_path(@project.namespace, @project, @id) do
                   = icon('pencil fw')
-                  New file
+                  新文件
               %li
                 = link_to '#modal-upload-blob', { 'data-target' => '#modal-upload-blob', 'data-toggle' => 'modal'} do
                   = icon('file fw')
-                  Upload file
+                  上传文件
               %li
                 = link_to '#modal-create-new-dir', { 'data-target' => '#modal-create-new-dir', 'data-toggle' => 'modal'} do
                   = icon('folder fw')
-                  New directory
+                  新目录
             - elsif can?(current_user, :fork_project, @project)
               %li
                 - continue_params = { to:         namespace_project_new_blob_path(@project.namespace, @project, @id),
@@ -44,32 +44,32 @@
                                                                                         continue:       continue_params)
                 = link_to fork_path, method: :post do
                   = icon('pencil fw')
-                  New file
+                  新文件
               %li
                 - continue_params = { to:         request.fullpath,
-                                      notice:     edit_in_new_fork_notice + " Try to upload a file again.",
+                                      notice:     edit_in_new_fork_notice + " 重试上传文件。",
                                       notice_now: edit_in_new_fork_notice_now }
                 - fork_path = namespace_project_forks_path(@project.namespace, @project, namespace_key:  current_user.namespace.id,
                                                                                         continue:       continue_params)
                 = link_to fork_path, method: :post do
                   = icon('file fw')
-                  Upload file
+                  上传文件
               %li
                 - continue_params = { to:         request.fullpath,
-                                      notice:     edit_in_new_fork_notice + " Try to create a new directory again.",
+                                      notice:     edit_in_new_fork_notice + " 重试创建目录。",
                                       notice_now: edit_in_new_fork_notice_now }
                 - fork_path = namespace_project_forks_path(@project.namespace, @project, namespace_key:  current_user.namespace.id,
                                                                                         continue:       continue_params)
                 = link_to fork_path, method: :post do
                   = icon('folder fw')
-                  New directory
+                  新目录
 
             %li.divider
             %li
               = link_to new_namespace_project_branch_path(@project.namespace, @project) do
                 = icon('code-fork fw')
-                New branch
+                新分支
             %li
               = link_to new_namespace_project_tag_path(@project.namespace, @project) do
                 = icon('tags fw')
-                New tag
+                新标签

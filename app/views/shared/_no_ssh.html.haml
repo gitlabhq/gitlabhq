@@ -1,8 +1,8 @@
 - if cookies[:hide_no_ssh_message].blank? && !current_user.hide_no_ssh_key && current_user.require_ssh_key?
   .no-ssh-key-message.alert.alert-warning.hidden-xs
-    You won't be able to pull or push project code via SSH until you #{link_to 'add an SSH key', profile_keys_path, class: 'alert-link'} to your profile
+    你的账号没有配置用于拉取/推送 SSH 版本库的密钥，请立即在个人资料中#{link_to '增加 SSH 密钥', profile_keys_path, class: 'alert-link'}
 
     .pull-right
-      = link_to "Don't show again", profile_path(user: {hide_no_ssh_key: true}), method: :put, class: 'alert-link'
+      = link_to "不再显示", profile_path(user: {hide_no_ssh_key: true}), method: :put, class: 'alert-link'
       |
-      = link_to 'Remind later', '#', class: 'hide-no-ssh-message alert-link'
+      = link_to '稍后提示', '#', class: 'hide-no-ssh-message alert-link'

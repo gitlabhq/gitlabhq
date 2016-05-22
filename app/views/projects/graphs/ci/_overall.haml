@@ -1,19 +1,19 @@
-%h4 Overall stats
+%h4 整体统计
 %ul
   %li
-    Total:
-    %strong= pluralize @project.builds.count(:all), 'build'
+    合计：
+    %strong= pluralize @project.builds.count(:all), '次构建', '次构建'
   %li
-    Successful:
-    %strong= pluralize @project.builds.success.count(:all), 'build'
+    成功：
+    %strong= pluralize @project.builds.success.count(:all), '次构建', '次构建'
   %li
-    Failed:
-    %strong= pluralize @project.builds.failed.count(:all), 'build'
+    失败：
+    %strong= pluralize @project.builds.failed.count(:all), '次构建', '次构建'
   %li
-    Success ratio:
+    成功率：
     %strong
       #{success_ratio(@project.builds.success, @project.builds.failed)}%
   %li
-    Commits covered:
+    提交覆盖：
     %strong
       = @project.ci_commits.count(:all)

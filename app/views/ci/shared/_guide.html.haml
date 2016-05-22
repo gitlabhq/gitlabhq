@@ -1,13 +1,13 @@
 .bs-callout.help-callout
-  %h4 How to setup CI for this project
+  %h4 如何给此项目设置 CI
 
   %ol
     %li
-      Add at least one runner to the project.
-      Go to #{link_to 'Runners page', runners_path(@project), target: :blank} for instructions.
+      增加至少一个 runner 给此项目。
+      转到 #{link_to 'Runners 页面', runners_path(@project), target: :blank}去操作。
     %li
-      Put the .gitlab-ci.yml in the root of your repository. Examples can be found in
-      #{link_to "Configuring project (.gitlab-ci.yml)", "http://doc.gitlab.com/ci/yaml/README.html", target: :blank}.
-      You can also test your .gitlab-ci.yml in the #{link_to "Lint", ci_lint_path}
+      在你的仓库跟目录增加 .gitlab-ci.yml 文件。可以在
+      #{link_to "配置项目 (.gitlab-ci.yml)", "http://doc.gitlab.com/ci/yaml/README.html", target: :blank}中找到示例。
+      你也可以使用 #{link_to "Lint", ci_lint_path} 工具来测试你的 .gitlab-ci.yml 文件。
     %li
-      Return to this page and refresh it, it should show a new build.
+      返回到此页面再刷新，将会显示一个新的构建。

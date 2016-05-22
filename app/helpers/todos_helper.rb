@@ -65,9 +65,9 @@ module TodosHelper
 
   def todo_actions_options
     actions = [
-      OpenStruct.new(id: '', title: 'Any Action'),
-      OpenStruct.new(id: Todo::ASSIGNED, title: 'Assigned'),
-      OpenStruct.new(id: Todo::MENTIONED, title: 'Mentioned')
+      OpenStruct.new(id: '', title: '任何动作'),
+      OpenStruct.new(id: Todo::ASSIGNED, title: '被指派'),
+      OpenStruct.new(id: Todo::MENTIONED, title: '被提及')
     ]
 
     options_from_collection_for_select(actions, 'id', 'title', params[:action_id])
@@ -81,16 +81,16 @@ module TodosHelper
       OpenStruct.new(id: project.id, title: project.name_with_namespace)
     end
 
-    projects.unshift(OpenStruct.new(id: '', title: 'Any Project'))
+    projects.unshift(OpenStruct.new(id: '', title: '任何项目'))
 
     options_from_collection_for_select(projects, 'id', 'title', params[:project_id])
   end
 
   def todo_types_options
     types = [
-      OpenStruct.new(title: 'Any Type', name: ''),
-      OpenStruct.new(title: 'Issue', name: 'Issue'),
-      OpenStruct.new(title: 'Merge Request', name: 'MergeRequest')
+      OpenStruct.new(title: '任何类型', name: ''),
+      OpenStruct.new(title: '问题', name: 'Issue'),
+      OpenStruct.new(title: '合并请求', name: 'MergeRequest')
     ]
 
     options_from_collection_for_select(types, 'name', 'title', params[:type])

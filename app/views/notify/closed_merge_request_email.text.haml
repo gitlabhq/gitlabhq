@@ -1,8 +1,8 @@
-= "Merge Request #{@merge_request.to_reference} was closed by #{@updated_by.name}"
+= "#{@updated_by.name} 关闭了合并请求  #{@merge_request.to_reference}"
 
-Merge Request url: #{namespace_project_merge_request_url(@merge_request.target_project.namespace, @merge_request.target_project, @merge_request)}
+合并请求链接: #{namespace_project_merge_request_url(@merge_request.target_project.namespace, @merge_request.target_project, @merge_request)}
 
 = merge_path_description(@merge_request, 'to')
 
-Author: #{@merge_request.author_name}
-Assignee: #{@merge_request.assignee_name}
+作者: #{@merge_request.author_name}
+指派给: #{@merge_request.assignee_name}

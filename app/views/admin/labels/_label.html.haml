@@ -3,5 +3,5 @@
     = render_colored_label(label, tooltip: false)
     = markdown(label.description, pipeline: :single_line)
     .pull-right
-      = link_to 'Edit', edit_admin_label_path(label), class: 'btn btn-sm'
-      = link_to 'Delete', admin_label_path(label), class: 'btn btn-sm btn-remove remove-row', method: :delete, remote: true, data: {confirm: "Delete this label? Are you sure?"}
+      = link_to '编辑', edit_admin_label_path(label), class: 'btn btn-sm'
+      = link_to '删除', admin_label_path(label), class: 'btn btn-sm btn-remove remove-row', method: :delete, remote: true, data: {confirm: "确定要删除此标记么？"}

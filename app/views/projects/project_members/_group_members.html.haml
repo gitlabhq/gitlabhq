@@ -1,17 +1,17 @@
 .panel.panel-default
   .panel-heading
     %strong #{@group.name}
-    group members
+    群组成员
     %small
       (#{members.count})
     - if can?(current_user, :admin_group_member, @group)
       .controls
         = link_to group_group_members_path(@group), class: 'btn' do
           = icon('pencil-square-o')
-          Manage group members
+          编辑群组成员
   %ul.content-list
     - members.limit(20).each do |member|
       = render 'groups/group_members/group_member', member: member, show_controls: false
     - if members.count > 20
       %li
-        and #{members.count - 20} more. For full list visit #{link_to 'group members page', group_group_members_path(@group)}
+        和 #{members.count - 20} 个更多成员。完整列表请访问#{link_to '群组成员页面', group_group_members_path(@group)}

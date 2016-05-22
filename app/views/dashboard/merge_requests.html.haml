@@ -1,10 +1,10 @@
-- page_title "Merge Requests"
-- header_title  "Merge Requests", merge_requests_dashboard_path(assignee_id: current_user.id)
+- page_title "合并请求"
+- header_title  "合并请求", merge_requests_dashboard_path(assignee_id: current_user.id)
 
 .top-area
   = render 'shared/issuable/nav', type: :merge_requests
   .nav-controls
-    = render 'shared/new_project_item_select', path: 'merge_requests/new', label: "New Merge Request"
+    = render 'shared/new_project_item_select', path: 'merge_requests/new', label: "新合并请求"
 
 = render 'shared/issuable/filter', type: :merge_requests
 

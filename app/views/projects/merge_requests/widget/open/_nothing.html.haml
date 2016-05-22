@@ -1,8 +1,9 @@
 %h4 
   = icon("exclamation-triangle")
-  Nothing to merge from
+  从
   %span.label-branch= source_branch_with_namespace(@merge_request)
-  into
+  到
   %span.label-branch= @merge_request.target_branch
+  无需合并
 %p
-  Please push new commits to the source branch or use a different target branch.
+  请推送新的提交到来源分支或者使用其他的目标分支。

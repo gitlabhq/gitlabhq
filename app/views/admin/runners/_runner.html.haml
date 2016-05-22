@@ -1,11 +1,11 @@
 %tr{id: dom_id(runner)}
   %td
     - if runner.shared?
-      %span.label.label-success shared
+      %span.label.label-success 共享的
     - else
-      %span.label.label-info specific
+      %span.label.label-info 特定的
     - unless runner.active?
-      %span.label.label-danger paused
+      %span.label.label-danger 暂停的
 
   %td
     = link_to admin_runner_path(runner) do
@@ -25,16 +25,16 @@
         = tag
   %td
     - if runner.contacted_at
-      #{time_ago_in_words(runner.contacted_at)} ago
+      #{time_ago_in_words(runner.contacted_at)}之前
     - else
-      Never
+      从未
   %td
     .pull-right
-      = link_to 'Edit', admin_runner_path(runner), class: 'btn btn-sm'
+      = link_to '编辑', admin_runner_path(runner), class: 'btn btn-sm'
       &nbsp;
       - if runner.active?
-        = link_to 'Pause', [:pause, :admin, runner], data: { confirm: "Are you sure?" }, method: :get, class: 'btn btn-danger btn-sm'
+        = link_to '暂停', [:pause, :admin, runner], data: { confirm: "确定要继续么？" }, method: :get, class: 'btn btn-danger btn-sm'
       - else
-        = link_to 'Resume', [:resume, :admin, runner], method: :get, class: 'btn btn-success btn-sm'
-      = link_to 'Remove', [:admin, runner], data: { confirm: "Are you sure?" }, method: :delete, class: 'btn btn-danger btn-sm'
+        = link_to '继续', [:resume, :admin, runner], method: :get, class: 'btn btn-success btn-sm'
+      = link_to '删除', [:admin, runner], data: { confirm: "确定要继续么？" }, method: :delete, class: 'btn btn-danger btn-sm'
 

@@ -6,28 +6,28 @@
       = page_title
     %p
       - if user_oauth_applications?
-        Manage applications that can use GitLab as an OAuth provider,
-        and applications that you've authorized to use your account.
+        管理将 GitLab 作为 OAuth 提供者的应用，
+        和授权使用你的账号的应用。
       - else
-        Manage applications that you've authorized to use your account.
+        管理授权使用你的账号的应用。
   .col-lg-9
     - if user_oauth_applications?
       %h5.prepend-top-0
-        Add new application
+        增加新的应用
       = render 'form', application: @application
       %hr
     - if user_oauth_applications?
       .oauth-applications
         %h5
-          Your applications (#{@applications.size})
+          您的应用 (#{@applications.size})
         - if @applications.any?
           .table-responsive
             %table.table
               %thead
                 %tr
-                  %th Name
-                  %th Callback URL
-                  %th Clients
+                  %th 名称
+                  %th 回调链接
+                  %th 客户端
                   %th.last-heading
               %tbody
                 - @applications.each do |application|

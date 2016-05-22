@@ -1,15 +1,15 @@
-%h2 Check your .gitlab-ci.yml
+%h2 检查你的 .gitlab-ci.yml
 %hr
 
 .row
   = form_tag ci_lint_path, method: :post do
     .form-group
-      = label_tag(:content, 'Content of .gitlab-ci.yml', class: 'control-label text-nowrap')
+      = label_tag(:content, '.gitlab-ci.yml 内容', class: 'control-label text-nowrap')
       .col-sm-12
         = text_area_tag(:content, @content, class: 'form-control span1', rows: 7, require: true)
     .col-sm-12
       .pull-left.prepend-top-10
-        = submit_tag('Validate', class: 'btn btn-success submit-yml')
+        = submit_tag('验证', class: 'btn btn-success submit-yml')
 
 .row.prepend-top-20
   .col-sm-12

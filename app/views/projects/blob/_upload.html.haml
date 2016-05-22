@@ -9,8 +9,8 @@
           .dropzone
             .dropzone-previews.blob-upload-dropzone-previews
               %p.dz-message.light
-                Attach a file by drag &amp; drop or
-                = link_to 'click to upload', '#', class: "markdown-selector"
+                拖放文件到此处或者
+                = link_to '点击上传', '#', class: "markdown-selector"
           %br
           .dropzone-alerts{class: "alert alert-danger data", style: "display:none"}
 
@@ -18,7 +18,7 @@
 
           .form-actions
             = button_tag button_title, class: 'btn btn-small btn-create btn-upload-file', id: 'submit-all'
-            = link_to "Cancel", '#', class: "btn btn-cancel", "data-dismiss" => "modal"
+            = link_to "取消", '#', class: "btn btn-cancel", "data-dismiss" => "modal"
 
             - unless can?(current_user, :push_code, @project)
               .inline.prepend-left-10

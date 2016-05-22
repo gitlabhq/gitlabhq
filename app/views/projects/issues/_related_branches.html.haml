@@ -1,6 +1,6 @@
 - if @related_branches.any?
   %h2.related-branches-title
-    = pluralize(@related_branches.count, 'Related Branch')
+    = pluralize(@related_branches.count, '个相关分支', '个相关分支')
   %ul.unstyled-list
     - @related_branches.each do |branch|
       %li

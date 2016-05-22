@@ -199,70 +199,70 @@
                       #{URI.join(root_url, @project.namespace.path)}/
                     = f.text_field :path, class: 'form-control'
                 %ul
-                  %li Be careful. Renaming a project's repository can have unintended side effects.
-                  %li You will need to update your local repositories to point to the new location.
+                  %li 请小心。重命名项目仓库可能有意想不到的副作用。
+                  %li 需要更新本地版本仓库指向新位置。
             .form-actions
-              = f.submit 'Rename project', class: "btn btn-warning"
+              = f.submit '重命名项目', class: "btn btn-warning"
 
       - if can?(current_user, :change_namespace, @project)
         .panel.panel-default.panel.panel-danger
-          .panel-heading Transfer project
+          .panel-heading 转移项目
           .errors-holder
           .panel-body
             = form_for([@project.namespace.becomes(Namespace), @project], url: transfer_namespace_project_path(@project.namespace, @project), method: :put, remote: true, html: { class: 'transfer-project form-horizontal' }) do |f|
               .form-group
                 = label_tag :new_namespace_id, nil, class: 'control-label' do
-                  %span Namespace
+                  %span 命名空间
                 .col-sm-9
                   .form-group
-                    = select_tag :new_namespace_id, namespaces_options(@project.namespace_id), { prompt: 'Choose a project namespace', class: 'select2' }
+                    = select_tag :new_namespace_id, namespaces_options(@project.namespace_id), { prompt: '选择项目命名空间', class: 'select2' }
                   %ul
-                    %li Be careful. Changing the project's namespace can have unintended side effects.
-                    %li You can only transfer the project to namespaces you manage.
-                    %li You will need to update your local repositories to point to the new location.
-                    %li Project visibility level will be changed to match namespace rules when transfering to a group.
+                    %li 请注意：更改项目的命名空间可能有意想不到的副作用。
+                    %li 只能将项目转移到能管理到的命名空间。
+                    %li 需要更新本地版本仓库指向新位置。
+                    %li 项目转移到群组时其可见度等级将自动匹配新的命名空间规则。
               .form-actions
-                = f.submit 'Transfer project', class: "btn btn-remove js-confirm-danger", data: { "confirm-danger-message" => transfer_project_message(@project) }
+                = f.submit '转移项目', class: "btn btn-remove js-confirm-danger", data: { "confirm-danger-message" => transfer_project_message(@project) }
       - else
-        .nothing-here-block Only the project owner can transfer a project
+        .nothing-here-block 只有项目所有者才能转移项目
 
       - if @project.forked?
         - if can?(current_user, :remove_fork_project, @project)
           = form_for([@project.namespace.becomes(Namespace), @project], url: remove_fork_namespace_project_path(@project.namespace, @project), method: :delete, remote: true, html: { class: 'transfer-project form-horizontal' }) do |f|
             .panel.panel-default.panel.panel-danger
-              .panel-heading Remove fork relationship
+              .panel-heading 删除派生关系
               .panel-body
                 %p
-                  This will remove the fork relationship to source project
-                  #{link_to @project.forked_from_project.name_with_namespace, project_path(@project.forked_from_project)}.
+                  将删除从源项目
+                  #{link_to @project.forked_from_project.name_with_namespace, project_path(@project.forked_from_project)} 的派生关系。
                   %br
-                  %strong Once removed, the fork relationship cannot be restored and you will no longer be able to send merge requests to the source.
+                  %strong 一旦删除，派生关系无法恢复；也将无法在提交合并请求到源项目。
                 .form-actions
-                  = button_to 'Remove fork relationship', '#', class: "btn btn-remove js-confirm-danger", data: { "confirm-danger-message" => remove_fork_project_message(@project) }
+                  = button_to '删除派生关系', '#', class: "btn btn-remove js-confirm-danger", data: { "confirm-danger-message" => remove_fork_project_message(@project) }
         - else
-          .nothing-here-block Only the project owner can remove the fork relationship.
+          .nothing-here-block 只有项目所有者才能删除派生关系。
 
       - if can?(current_user, :remove_project, @project)
         .panel.panel-default.panel.panel-danger
-          .panel-heading Remove project
+          .panel-heading 删除项目
           .panel-body
             = form_tag(namespace_project_path(@project.namespace, @project), method: :delete, class: 'form-horizontal') do
               %p
-                Removing the project will delete its repository and all related resources including issues, merge requests etc.
+                删除项目将删除其版本仓库及所有相关资源，包括问题，合并请求等。
                 %br
-                %strong Removed projects cannot be restored!
+                %strong 删除项目无法恢复！
               .form-actions
-                = button_to 'Remove project', '#', class: "btn btn-remove js-confirm-danger", data: { "confirm-danger-message" => remove_project_message(@project) }
+                = button_to '删除项目', '#', class: "btn btn-remove js-confirm-danger", data: { "confirm-danger-message" => remove_project_message(@project) }
       - else
-        .nothing-here-block Only the project owner can remove a project.
+        .nothing-here-block 只有项目所有者才能删除项目。
 
 
 .save-project-loader.hide
   .center
     %h2
       %i.fa.fa-spinner.fa-spin
-      Saving project.
-    %p Please wait a moment, this page will automatically refresh when ready.
+      正在保存项目。
+    %p 请稍等片刻，页面会在准备好后自动刷新。
 
 
 = render 'shared/confirm_modal', phrase: @project.path

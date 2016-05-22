@@ -1,21 +1,21 @@
-- page_title "Bitbucket import"
+- page_title "Bitbucket 导入"
 - header_title "Projects", root_path
 %h3.page-title
   %i.fa.fa-bitbucket
-  Import projects from Bitbucket
+  从 Bitbucket 导入项目
 
 - if @repos.any?
   %p.light
-    Select projects you want to import.
+    选择要导入的项目。
   %hr
   %p
   - if @incompatible_repos.any?
     = button_tag class: "btn btn-import btn-success js-import-all" do
-      Import all compatible projects
+      导入所有兼容项目
       = icon("spinner spin", class: "loading-icon")
   - else
     = button_tag class: "btn btn-success js-import-all" do
-      Import all projects
+      导入所有项目
       = icon("spinner spin", class: "loading-icon")
 
 .table-responsive
@@ -25,9 +25,9 @@
     %colgroup.import-jobs-status-col
     %thead
       %tr
-        %th From Bitbucket
-        %th To GitLab
-        %th Status
+        %th 从 Bitbucket
+        %th 到 GitLab
+        %th 状态
     %tbody
       - @already_added_projects.each do |project|
         %tr{id: "project_#{project.id}", class: "#{project_status_css_class(project.import_status)}"}
@@ -39,10 +39,10 @@
             - if project.import_status == 'finished'
               %span
                 %i.fa.fa-check
-                done
+                完成
             - elsif project.import_status == 'started'
               %i.fa.fa-spinner.fa-spin
-              started
+              已开始
             - else
               = project.human_import_status_name
 
@@ -54,7 +54,7 @@
             = "#{repo["owner"]}/#{repo["slug"]}"
           %td.import-actions.job-status
             = button_tag class: "btn btn-import js-add-to-import" do
-              Import
+              导入
               = icon("spinner spin", class: "loading-icon")
       - @incompatible_repos.each do |repo|
         %tr{id: "repo_#{repo["owner"]}___#{repo["slug"]}"}
@@ -62,17 +62,17 @@
             = link_to "#{repo["owner"]}/#{repo["slug"]}", "https://bitbucket.org/#{repo["owner"]}/#{repo["slug"]}", target: "_blank"
           %td.import-target
           %td.import-actions-job-status
-            = label_tag "Incompatible Project", nil, class: "label label-danger"
+            = label_tag "不兼容项目", nil, class: "label label-danger"
 
 - if @incompatible_repos.any?
   %p
-    One or more of your Bitbucket projects cannot be imported into GitLab
-    directly because they use Subversion or Mercurial for version control,
-    rather than Git. Please convert
-    = link_to "them to Git,", "https://www.atlassian.com/git/tutorials/migrating-overview"
-    and go through the
-    = link_to "import flow", status_import_bitbucket_path, "data-no-turbolink" => "true"
-    again.
+    一个或多个 Bitbucket 项目无法直接导入到 GitLab，
+    因为其使用 Subversion 或 Mercurial 版本控制，
+    而不是 Git。请转换
+    = link_to "它们为 Git，", "https://www.atlassian.com/git/tutorials/migrating-overview"
+    然后重新
+    = link_to "导入", status_import_bitbucket_path, "data-no-turbolink" => "true"
+    。
 
 
 :javascript

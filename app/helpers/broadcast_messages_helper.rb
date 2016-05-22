@@ -24,11 +24,11 @@ module BroadcastMessagesHelper
 
   def broadcast_message_status(broadcast_message)
     if broadcast_message.active?
-      'Active'
+      '当前'
     elsif broadcast_message.ended?
-      'Expired'
+      '已过期'
     else
-      'Pending'
+      '排队'
     end
   end
 

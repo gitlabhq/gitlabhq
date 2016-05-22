@@ -3,11 +3,11 @@
     .modal-content
       .modal-header
         %a.close{href: "#", "data-dismiss" => "modal"} ×
-        %h3 Import projects from GitHub
+        %h3 从 GitHub 导入项目
       .modal-body
-        To enable importing projects from GitHub,
+        要开启从 GitHub 导入项目，
         - if current_user.admin?
-          as administrator you need to configure
+          作为管理员你需要配置
         - else
-          ask your Gitlab administrator to configure
-        == #{link_to 'OAuth integration', help_page_path("integration", "github")}.
+          请求你的 GitLab 管理员去配置
+        == #{link_to 'OAuth 集成', help_page_path("integration", "github")}.

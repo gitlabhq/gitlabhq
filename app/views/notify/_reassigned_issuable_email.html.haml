@@ -1,10 +1,10 @@
 %p
-  Assignee changed
+  改变指派
   - if @previous_assignee
-    from
+    从
     %strong #{@previous_assignee.name}
-  to
+  到
   - if issuable.assignee_id
     %strong #{issuable.assignee_name}
   - else
-    %strong Unassigned
+    %strong 未指派

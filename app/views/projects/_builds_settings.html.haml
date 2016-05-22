@@ -1,47 +1,46 @@
 %fieldset.builds-feature
   %legend
-    Builds:
+    构建：
 
   - unless @repository.gitlab_ci_yml
     .form-group
       .col-sm-offset-2.col-sm-10
-        %p Builds need to be configured before you can begin using Continuous Integration.
-        = link_to 'Get started with Builds', help_page_path('ci/quick_start', 'README'), class: 'btn btn-info'
+        %p 在使用持续集成前，需要先配置构建。
+        = link_to '开始使用构建', help_page_path('ci/quick_start', 'README'), class: 'btn btn-info'
         %hr
 
   .form-group
     .col-sm-offset-2.col-sm-10
-      %p Get recent application code using the following command:
+      %p 使用下面的命令来获取程序代码：
       .radio
         = f.label :build_allow_git_fetch_false do
           = f.radio_button :build_allow_git_fetch, 'false'
           %strong git clone
           %br
-          %span.descr Slower but makes sure you have a clean dir before every build
+          %span.descr 比较慢，但可以在每次构建前保证你有一个干净的文件目录
       .radio
         = f.label :build_allow_git_fetch_true do
           = f.radio_button :build_allow_git_fetch, 'true'
           %strong git fetch
           %br
-          %span.descr Faster
+          %span.descr 比较快
 
   .form-group
-    = f.label :build_timeout_in_minutes, 'Timeout', class: 'control-label'
+    = f.label :build_timeout_in_minutes, '超时', class: 'control-label'
     .col-sm-10
       = f.number_field :build_timeout_in_minutes, class: 'form-control', min: '0'
-      %p.help-block per build in minutes
+      %p.help-block 每次构建时间的最大分钟数
   .form-group
-    = f.label :build_coverage_regex, "Test coverage parsing", class: 'control-label'
+    = f.label :build_coverage_regex, "测试覆盖解析", class: 'control-label'
     .col-sm-10
       .input-group
         %span.input-group-addon /
         = f.text_field :build_coverage_regex, class: 'form-control', placeholder: '\(\d+.\d+\%\) covered'
         %span.input-group-addon /
       %p.help-block
-        We will use this regular expression to find test coverage output in build trace.
-        Leave blank if you want to disable this feature
+        我们将使用此正则表达式在构建信息中查找测试覆盖输出。如果不想使用此功能，请留空
       .bs-callout.bs-callout-info
-        %p Below are examples of regex for existing tools:
+        %p 下面是现有工具的正则表达式例子：
         %ul
           %li
             Simplecov (Ruby) -
@@ -64,11 +63,11 @@
       .checkbox
         = f.label :public_builds do
           = f.check_box :public_builds
-          %strong Public builds
-        .help-block Allow everyone to access builds for Public and Internal projects
+          %strong 公开构建
+        .help-block 允许所有人访问公开和内部项目的构建
 
   .form-group
-    = f.label :runners_token, "Runners token", class: 'control-label'
+    = f.label :runners_token, "Runners 授权", class: 'control-label'
     .col-sm-10
       = f.text_field :runners_token, class: "form-control", placeholder: 'xEeFCaDAB89'
-      %p.help-block The secure token used to checkout project.
+      %p.help-block 此安全授权码将用于检出项目。

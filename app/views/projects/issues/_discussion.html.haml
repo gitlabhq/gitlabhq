@@ -1,7 +1,7 @@
 - content_for :note_actions do
   - if can?(current_user, :update_issue, @issue)
-    = link_to 'Reopen issue', issue_path(@issue, issue: {state_event: :reopen}, status_only: true, format: 'json'), data: {no_turbolink: true, original_text: "Reopen issue", alternative_text: "Comment & reopen issue"}, class: "btn btn-nr btn-grouped btn-reopen btn-comment js-note-target-reopen #{issue_button_visibility(@issue, false)}", title: 'Reopen issue'
-    = link_to 'Close issue', issue_path(@issue, issue: {state_event: :close}, status_only: true, format: 'json'), data: {no_turbolink: true, original_text: "Close issue", alternative_text: "Comment & close issue"}, class: "btn btn-nr btn-grouped btn-close btn-comment js-note-target-close #{issue_button_visibility(@issue, true)}", title: 'Close issue'
+    = link_to '重新打开问题', issue_path(@issue, issue: {state_event: :reopen}, status_only: true, format: 'json'), data: {no_turbolink: true, original_text: "重新打开问题", alternative_text: "评论 & 重新打开问题"}, class: "btn btn-nr btn-grouped btn-reopen btn-comment js-note-target-reopen #{issue_button_visibility(@issue, false)}", title: '重新打开问题'
+    = link_to '关闭问题', issue_path(@issue, issue: {state_event: :close}, status_only: true, format: 'json'), data: {no_turbolink: true, original_text: "关闭问题", alternative_text: "评论 & 关闭问题"}, class: "btn btn-nr btn-grouped btn-close btn-comment js-note-target-close #{issue_button_visibility(@issue, true)}", title: '关闭问题'
 
 #notes
   = render 'projects/notes/notes_with_form'

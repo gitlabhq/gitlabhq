@@ -1,3 +1,4 @@
+#encoding: utf-8
 class PasswordsController < Devise::PasswordsController
   before_action :resource_from_email, only: [:create]
   before_action :prevent_ldap_reset,  only: [:create]
@@ -17,7 +18,7 @@ class PasswordsController < Devise::PasswordsController
       ).first_or_initialize
 
       unless user.reset_password_period_valid?
-        flash[:alert] = 'Your password reset token has expired.'
+        flash[:alert] = '使用的密码重置授权已过期。'
         redirect_to(new_user_password_url(user_email: user['email']))
       end
     end
@@ -42,7 +43,7 @@ class PasswordsController < Devise::PasswordsController
     return unless resource && resource.ldap_user?
 
     redirect_to after_sending_reset_password_instructions_path_for(resource_name),
-      alert: "Cannot reset password for LDAP user."
+      alert: "无法重设 LDAP 用户的密码。"
   end
 
   def throttle_reset

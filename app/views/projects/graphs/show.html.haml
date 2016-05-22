@@ -1,4 +1,4 @@
-- page_title "Contributors", "Graphs"
+- page_title "贡献者统计", "图表"
 = render "header_title"
 = render 'head'
 
@@ -12,14 +12,14 @@
   .center
     %h3.page-title
       %i.fa.fa-spinner.fa-spin
-      Building repository graph.
-    %p.slead Please wait a moment, this page will automatically refresh when ready.
+      正在构建版本库图表。
+    %p.slead 请稍候，成功后会自动刷新页面。
 
 .stat-graph.hide
   .header.clearfix
     %h3#date_header.page-title
     %p.light
-      Commits to #{@ref}, excluding merge commits. Limited by 6,000 commits
+      提交到 #{@ref}，排除合并提交。限制为 6,000 次提交。
     %input#brush_change{:type => "hidden"}
   .graphs
     #contributors-master

@@ -9,5 +9,5 @@
 - if can_edit_blob?(@blob)
   = render 'projects/blob/remove'
 
-  - title = "Replace #{@blob.name}"
-  = render 'projects/blob/upload', title: title, placeholder: title, button_title: 'Replace file', form_path: namespace_project_update_blob_path(@project.namespace, @project, @id), method: :put
+  - title = "替换 #{@blob.name}"
+  = render 'projects/blob/upload', title: title, placeholder: title, button_title: '替换文件', form_path: namespace_project_update_blob_path(@project.namespace, @project, @id), method: :put

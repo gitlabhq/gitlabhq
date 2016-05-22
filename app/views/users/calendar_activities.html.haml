@@ -1,5 +1,5 @@
 %h4.prepend-top-20
-  %span.light Contributions for
+  %span.light 贡献
   %strong #{@calendar_date.to_s(:short)}
 
 %ul.bordered-list
@@ -15,7 +15,7 @@
         - if event.target
           %strong= link_to "##{event.target_iid}", [event.project.namespace.becomes(Namespace), event.project, event.target]
 
-      at
+      在
       %strong
         - if event.project
           = link_to_project event.project

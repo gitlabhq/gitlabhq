@@ -1,21 +1,21 @@
-%h3.page-title Authorize required
+%h3.page-title 需要认证
 %main{:role => "main"}
   %p.h4
-    Authorize
+    允许
     %strong.text-info= @pre_auth.client.name
-    to use your account?
+    使用你的账号么？
 
   - if current_user.admin?
     .text-warning.prepend-top-20
       %p
         = icon("exclamation-triangle fw")
-        You are an admin, which means granting access to
+        您是管理员，这意味着
         %strong #{@pre_auth.client.name}
-        will allow them to interact with GitLab as an admin as well. Proceed with caution.
+        也一样能以 GitLab 管理员身份进行操作。请谨慎操作。
 
   - if @pre_auth.scopes
     #oauth-permissions
-      %p This application will be able to:
+      %p 此应用将用于:
       %ul.text-info
         - @pre_auth.scopes.each do |scope|
           %li= t scope, scope: [:doorkeeper, :scopes]
@@ -27,11 +27,11 @@
       = hidden_field_tag :state, @pre_auth.state
       = hidden_field_tag :response_type, @pre_auth.response_type
       = hidden_field_tag :scope, @pre_auth.scope
-      = submit_tag "Authorize", class: "btn btn-success wide pull-left"
+      = submit_tag "认证", class: "btn btn-success wide pull-left"
     = form_tag oauth_authorization_path, method: :delete do
       = hidden_field_tag :client_id, @pre_auth.client.uid
       = hidden_field_tag :redirect_uri, @pre_auth.redirect_uri
       = hidden_field_tag :state, @pre_auth.state
       = hidden_field_tag :response_type, @pre_auth.response_type
       = hidden_field_tag :scope, @pre_auth.scope
-      = submit_tag "Deny", class: "btn btn-danger prepend-left-10"
+      = submit_tag "拒绝", class: "btn btn-danger prepend-left-10"

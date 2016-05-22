@@ -73,15 +73,15 @@ class PushoverService < Service
     after = data[:after]
 
     if Gitlab::Git.blank_ref?(before)
-      message = "#{data[:user_name]} pushed new branch \"#{ref}\"."
+      message = "#{data[:user_name]} 推送了新的分支 \"#{ref}\"。"
     elsif Gitlab::Git.blank_ref?(after)
-      message = "#{data[:user_name]} deleted branch \"#{ref}\"."
+      message = "#{data[:user_name]} 删除了分支 \"#{ref}\"。"
     else
-      message = "#{data[:user_name]} push to branch \"#{ref}\"."
+      message = "#{data[:user_name]} 推送到了分支 \"#{ref}\"。"
     end
 
     if data[:total_commits_count] > 0
-      message << "\nTotal commits count: #{data[:total_commits_count]}"
+      message << "\n合计提交数量： #{data[:total_commits_count]}"
     end
 
     pushover_data = {
@@ -92,7 +92,7 @@ class PushoverService < Service
       title: "#{project.name_with_namespace}",
       message: message,
       url: data[:project][:web_url],
-      url_title: "See project #{project.name_with_namespace}"
+      url_title: "查看项目 #{project.name_with_namespace}"
     }
 
     # Sound parameter MUST NOT be sent to API if not selected

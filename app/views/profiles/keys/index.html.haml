@@ -5,16 +5,16 @@
     %h4.prepend-top-0
       = page_title
     %p
-      SSH keys allow you to establish a secure connection between your computer and GitLab.
+      SSH 密钥用于在您的电脑和 GitLab 建立安全连接。
   .col-lg-9
     %h5.prepend-top-0
-      Add an SSH key
+      增加 SSH 密钥
     %p.profile-settings-content
-      Before you can add an SSH key you need to
-      = link_to "generate it.", help_page_path("ssh", "README")
+      在增加 SSH 密钥之前需要先
+      = link_to "生成密钥。", help_page_path("ssh", "README")
     = render 'form'
     %hr
     %h5
-      Your SSH keys (#{@keys.count})
+      您的 SSH 密钥 (#{@keys.count})
     %div.append-bottom-default
       = render 'key_table'

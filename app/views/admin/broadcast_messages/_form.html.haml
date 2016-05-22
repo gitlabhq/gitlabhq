@@ -1,38 +1,38 @@
 .broadcast-message-preview{ style: broadcast_message_style(@broadcast_message) }
   = icon('bullhorn')
   .js-broadcast-message-preview
-    = render_broadcast_message(@broadcast_message.message.presence || "Your message here")
+    = render_broadcast_message(@broadcast_message.message.presence || "信息预览")
 
 = form_for [:admin, @broadcast_message], html: { class: 'broadcast-message-form form-horizontal js-quick-submit js-requires-input'} do |f|
   = form_errors(@broadcast_message)
 
   .form-group
-    = f.label :message, class: 'control-label'
+    = f.label :message, "信息", class: 'control-label'
     .col-sm-10
       = f.text_area :message, class: "form-control js-autosize",
         required: true,
         data: { preview_path: preview_admin_broadcast_messages_path }
   .form-group.js-toggle-colors-container
     .col-sm-10.col-sm-offset-2
-      = link_to 'Customize colors', '#', class: 'js-toggle-colors-link'
+      = link_to '自定义颜色', '#', class: 'js-toggle-colors-link'
   .form-group.js-toggle-colors-container.hide
-    = f.label :color, "Background Color", class: 'control-label'
+    = f.label :color, "背景颜色", class: 'control-label'
     .col-sm-10
       = f.color_field :color, class: "form-control"
   .form-group.js-toggle-colors-container.hide
-    = f.label :font, "Font Color", class: 'control-label'
+    = f.label :font, "字体颜色", class: 'control-label'
     .col-sm-10
       = f.color_field :font, class: "form-control"
   .form-group
-    = f.label :starts_at, class: 'control-label'
+    = f.label :starts_at, "开始时间", class: 'control-label'
     .col-sm-10.datetime-controls
       = f.datetime_select :starts_at, {}, class: 'form-control form-control-inline'
   .form-group
-    = f.label :ends_at, class: 'control-label'
+    = f.label :ends_at, "结束时间", class: 'control-label'
     .col-sm-10.datetime-controls
       = f.datetime_select :ends_at, {}, class: 'form-control form-control-inline'
   .form-actions
     - if @broadcast_message.persisted?
-      = f.submit "Update broadcast message", class: "btn btn-create"
+      = f.submit "更新广播信息", class: "btn btn-create"
     - else
-      = f.submit "Add broadcast message", class: "btn btn-create"
+      = f.submit "增加广播信息", class: "btn btn-create"

@@ -1,7 +1,7 @@
 = form_errors(issuable)
 
 .form-group
-  = f.label :title, class: 'control-label'
+  = f.label :title, '标题', class: 'control-label'
   .col-sm-10
     = f.text_field :title, maxlength: 255, autofocus: true, autocomplete: 'off',
         class: 'form-control pad', required: true
@@ -10,27 +10,27 @@
       %p.help-block
         .js-wip-explanation
           %a.js-toggle-wip{href: "", tabindex: -1}
-            Remove the
+            从标题中删除
             %code WIP:
-            prefix from the title
-          to allow this
-          %strong Work In Progress
-          merge request to be merged when it's ready.
+            前缀
+          表示允许此标识为
+          %strong 正在处理中
+          的合并请求已准备好可以被接受。
         .js-no-wip-explanation
           %a.js-toggle-wip{href: "", tabindex: -1}
-            Start the title with
+            标题以
             %code WIP:
-          to prevent a
-          %strong Work In Progress
-          merge request from being merged before it's ready.
+          开头将合并请求标识为
+          %strong 正在处理中
+          表示其还未准备好可以接受合并。
 .form-group.detail-page-description
-  = f.label :description, 'Description', class: 'control-label'
+  = f.label :description, '描述', class: 'control-label'
   .col-sm-10
 
     = render layout: 'projects/md_preview', locals: { preview_class: "md-preview", referenced_users: true } do
       = render 'projects/zen', f: f, attr: :description,
                                classes: 'note-textarea',
-                               placeholder: "Write a comment or drag your files here..."
+                               placeholder: "撰写评论或拖放文件到此处..."
       = render 'projects/notes/hints'
       .clearfix
       .error-alert

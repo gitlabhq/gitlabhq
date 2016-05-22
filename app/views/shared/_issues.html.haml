@@ -6,11 +6,11 @@
         = link_to project.name_with_namespace, namespace_project_issues_path(project.namespace, project)
         - if can?(current_user, :create_issue, project)
           .pull-right
-            = link_to 'New issue', new_namespace_project_issue_path(project.namespace, project)
+            = link_to '新问题', new_namespace_project_issue_path(project.namespace, project)
 
       %ul.content-list.issues-list
         - group[1].each do |issue|
           = render 'projects/issues/issue', issue: issue
   = paginate @issues, theme: "gitlab"
 - else
-  .nothing-here-block No issues to show
+  .nothing-here-block 没有问题

@@ -167,7 +167,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     MergeRequests::UpdateService.new(project, current_user, title: @merge_request.wipless_title).execute(@merge_request)
 
     redirect_to namespace_project_merge_request_path(@project.namespace, @project, @merge_request),
-      notice: "The merge request can now be merged."
+      notice: "合并请求现在可以合并。"
   end
 
   def merge_check

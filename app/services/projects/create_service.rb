@@ -60,7 +60,7 @@ module Projects
 
       @project
     rescue => e
-      message = "Unable to save project: #{e.message}"
+      message = "无法保存项目: #{e.message}"
       Rails.logger.error(message)
       @project.errors.add(:base, message) if @project
       @project

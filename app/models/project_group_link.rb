@@ -9,7 +9,7 @@ class ProjectGroupLink < ActiveRecord::Base
 
   validates :project_id, presence: true
   validates :group_id, presence: true
-  validates :group_id, uniqueness: { scope: [:project_id], message: "already shared with this group" }
+  validates :group_id, uniqueness: { scope: [:project_id], message: "已与该群组共享" }
   validates :group_access, presence: true
   validates :group_access, inclusion: { in: Gitlab::Access.values }, presence: true
   validate :different_group

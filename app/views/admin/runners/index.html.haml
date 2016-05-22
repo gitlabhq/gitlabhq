@@ -1,51 +1,51 @@
 %p.lead.prepend-top-default
   %span
-    To register a new runner you should enter the following registration token.
-    With this token the runner will request a unique runner token and use that for future communication.
-    Registration token is
+    要注册新的 runner 你需要输入后面的注册授权码。
+    Runner 将使用这个唯一授权码来标识自己，并使用它和服务器通信。
+    注册授权码是
     %code{ id: 'runners-token' } #{current_application_settings.runners_registration_token}
 
 .bs-callout.clearfix
   .pull-left
     %p
-      You can reset runners registration token by pressing a button below.
+      你可以点击下面的按钮重置 runner 的注册授权码。
     %p
       = button_to reset_runners_token_admin_application_settings_path,
         method: :put, class: 'btn btn-default',
-        data: { confirm: 'Are you sure you want to reset registration token?' } do
+        data: { confirm: '确定要继续重置注册授权码么？' } do
         = icon('refresh')
-        Reset runners registration token
+        重置 runner 注册授权码
 
 .bs-callout
   %p
-    A 'runner' is a process which runs a build.
-    You can setup as many runners as you need.
+    一个 'runner' 就是一个运行构建的进程。
+    你可以按照自己的需要设置很多个 runner。
     %br
-    Runners can be placed on separate users, servers, and even on your local machine.
+    Runners 可以被部署在不同的用户、服务器上，甚至在你本地使用的机器上。
     %br
 
   %div
-    %span Each runner can be in one of the following states:
+    %span 每个 runner 可以是下列状态之一：
     %ul
       %li
-        %span.label.label-success shared
-        \- run builds from all unassigned projects
+        %span.label.label-success 共享的
+        \- 会运行全部未特殊指定项目的构建
       %li
-        %span.label.label-info specific
-        \- run builds from assigned projects
+        %span.label.label-info 特定的
+        \- 只运行被特殊指定到该 runner 的项目的构建
       %li
-        %span.label.label-danger paused
-        \- runner will not receive any new builds
+        %span.label.label-danger 暂停的
+        \- 该 runner 不会接受任何新构建
 
 .append-bottom-20.clearfix
   .pull-left
     = form_tag admin_runners_path, id: 'runners-search', class: 'form-inline', method: :get do
       .form-group
-        = search_field_tag :search, params[:search], class: 'form-control', placeholder: 'Runner description or token', spellcheck: false
-      = submit_tag 'Search', class: 'btn'
+        = search_field_tag :search, params[:search], class: 'form-control', placeholder: 'Runner 描述或授权码', spellcheck: false
+      = submit_tag '搜索', class: 'btn'
 
   .pull-right.light
-    Runners with last contact less than a minute ago: #{@active_runners_cnt}
+    最后联系时间少于一分钟前的 runner 数量：#{@active_runners_cnt}
 
 %br
 
@@ -53,13 +53,13 @@
   %table.table
     %thead
       %tr
-        %th Type
-        %th Runner token
-        %th Description
-        %th Projects
-        %th Builds
-        %th Tags
-        %th Last contact
+        %th 类型
+        %th Runner 授权码
+        %th 描述
+        %th 项目
+        %th 构建
+        %th 标签
+        %th 最后联系
         %th
 
     - @runners.each do |runner|

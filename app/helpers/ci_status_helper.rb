@@ -16,9 +16,9 @@ module CiStatusHelper
 
   def ci_label_for_status(status)
     if status == 'success'
-      'passed'
+      '通过'
     else
-      status
+      ci_status_zh(status)
     end
   end
 

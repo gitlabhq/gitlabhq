@@ -1,17 +1,17 @@
-- page_title "Import members"
+- page_title "导入成员"
 = render "header_title"
 
 %h3.page-title
-  Import members from another project
+  从其他项目导入成员
 %p.light
-  Only project members will be imported. Group members will be skipped.
+  只有项目成员才能被导入。群组成员会被跳过。
 %hr
 = form_tag apply_import_namespace_project_project_members_path(@project.namespace, @project), method: 'post', class: 'form-horizontal' do
   .form-group
-    = label_tag :source_project_id, "Project", class: 'control-label'
-    .col-sm-10= select_tag(:source_project_id, options_from_collection_for_select(current_user.authorized_projects, :id, :name_with_namespace), prompt: "Select project", class: "select2 lg", required: true)
+    = label_tag :source_project_id, "项目", class: 'control-label'
+    .col-sm-10= select_tag(:source_project_id, options_from_collection_for_select(current_user.authorized_projects, :id, :name_with_namespace), prompt: "选择项目", class: "select2 lg", required: true)
 
   .form-actions
-    = button_tag 'Import project members', class: "btn btn-create"
-    = link_to "Cancel", namespace_project_project_members_path(@project.namespace, @project), class: "btn btn-cancel"
+    = button_tag '导入项目成员', class: "btn btn-create"
+    = link_to "取消", namespace_project_project_members_path(@project.namespace, @project), class: "btn btn-cancel"
 

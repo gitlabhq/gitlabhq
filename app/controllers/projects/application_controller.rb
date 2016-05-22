@@ -77,7 +77,7 @@ class Projects::ApplicationController < ApplicationController
     unless @repository.branch_names.include?(@ref)
       redirect_to(
         namespace_project_tree_path(@project.namespace, @project, @ref),
-        notice: "This action is not allowed unless you are on a branch"
+        notice: "除在分支的顶层外不允许本操作"
       )
     end
   end

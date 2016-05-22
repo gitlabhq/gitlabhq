@@ -1,9 +1,9 @@
 %ul.nav-links.no-top.no-bottom.commit-ci-menu
   = nav_link(path: 'commit#show') do
     = link_to namespace_project_commit_path(@project.namespace, @project, @commit.id) do
-      Changes
+      变更
       %span.badge= @diffs.count
   = nav_link(path: 'commit#builds') do
     = link_to builds_namespace_project_commit_path(@project.namespace, @project, @commit.id) do
-      Builds
+      构建
       %span.badge= @statuses.count

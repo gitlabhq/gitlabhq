@@ -1,17 +1,17 @@
-- page_title milestone.title, "Milestones"
+- page_title milestone.title, "里程碑"
 
 - group = local_assigns[:group]
 
 .detail-page-header
   .status-box{ class: "status-box-#{milestone.closed? ? 'closed' : 'open'}" }
     - if milestone.closed?
-      Closed
+      已关闭
     - elsif milestone.expired?
-      Expired
+      已过期
     - else
-      Open
+      未关闭
   %span.identifier
-    Milestone #{milestone.title}
+    里程碑 #{milestone.title}
   - if milestone.expires_at
     %span.creator
       &middot;
@@ -30,17 +30,17 @@
 
 - if milestone.complete?(current_user) && milestone.active?
   .alert.alert-success.prepend-top-default
-    - close_msg = group ? 'You may close the milestone now.' : 'Navigate to the project to close the milestone.'
-    %span All issues for this milestone are closed. #{close_msg}
+    - close_msg = group ? '可以关闭此里程碑。' : '导航到此项目去关闭此里程碑。'
+    %span 该里程碑的全部问题都已关闭。#{close_msg}
 
 .table-holder
   %table.table
     %thead
       %tr
-        %th Project
-        %th Open issues
-        %th State
-        %th Due date
+        %th 项目
+        %th 未关闭问题
+        %th 状态
+        %th 到期日
     - milestone.milestones.each do |ms|
       %tr
         %td
@@ -50,9 +50,9 @@
           = ms.issues_visible_to_user(current_user).opened.count
         %td
           - if ms.closed?
-            Closed
+            已关闭
           - else
-            Open
+            未关闭
         %td
           = ms.expires_at
 

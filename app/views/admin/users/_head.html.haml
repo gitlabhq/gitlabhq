@@ -1,26 +1,26 @@
 %h3.page-title
   = @user.name
   - if @user.blocked?
-    %span.cred (Blocked)
+    %span.cred (禁用的)
   - if @user.admin
-    %span.cred (Admin)
+    %span.cred (管理)
 
   .pull-right
     - unless @user == current_user || @user.blocked?
-      = link_to 'Impersonate', impersonate_admin_user_path(@user), method: :post, class: "btn btn-nr btn-grouped btn-info"
+      = link_to '假冒', impersonate_admin_user_path(@user), method: :post, class: "btn btn-nr btn-grouped btn-info"
     = link_to edit_admin_user_path(@user), class: "btn btn-nr btn-grouped" do
       %i.fa.fa-pencil-square-o
-      Edit
+      编辑
 %hr
 %ul.nav-links
   = nav_link(path: 'users#show') do
-    = link_to "Account", admin_user_path(@user)
+    = link_to "账户", admin_user_path(@user)
   = nav_link(path: 'users#groups') do
-    = link_to "Groups", groups_admin_user_path(@user)
+    = link_to "群组", groups_admin_user_path(@user)
   = nav_link(path: 'users#projects') do
-    = link_to "Projects", projects_admin_user_path(@user)
+    = link_to "项目", projects_admin_user_path(@user)
   = nav_link(path: 'users#keys') do
-    = link_to "SSH keys", keys_admin_user_path(@user)
+    = link_to "SSH 密钥", keys_admin_user_path(@user)
   = nav_link(controller: :identities) do
-    = link_to "Identities", admin_user_identities_path(@user)
+    = link_to "身份", admin_user_identities_path(@user)
 .append-bottom-default

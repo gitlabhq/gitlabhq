@@ -1,9 +1,9 @@
-- page_title "Groups", @user.name, "Users"
+- page_title "群组", @user.name, "用户"
 = render 'admin/users/head'
 
 - if @user.group_members.present?
   .panel.panel-default
-    .panel-heading Groups:
+    .panel-heading 群组：
     %ul.well-list
       - @user.group_members.each do |group_member|
         - group = group_member.group
@@ -13,7 +13,7 @@
           .pull-right
             %span.light= group_member.human_access
             - unless group_member.owner?
-              = link_to group_group_member_path(group, group_member), data: { confirm: remove_user_from_group_message(group, group_member) }, method: :delete, remote: true, class: "btn-xs btn btn-remove", title: 'Remove user from group' do
+              = link_to group_group_member_path(group, group_member), data: { confirm: remove_user_from_group_message(group, group_member) }, method: :delete, remote: true, class: "btn-xs btn btn-remove", title: '从群组中删除用户' do
                 %i.fa.fa-times.fa-inverse
 - else
-  .nothing-here-block This user has no groups.
+  .nothing-here-block 此用户没有群组。

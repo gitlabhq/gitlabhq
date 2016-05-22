@@ -6,9 +6,9 @@
   %td.build-link
     - if can?(current_user, :read_build, build.project)
       = link_to namespace_project_build_url(build.project.namespace, build.project, build) do
-        %strong Build ##{build.id}
+        %strong 构建 ##{build.id}
     - else
-      %strong Build ##{build.id}
+      %strong 构建 ##{build.id}
 
     - if build.stuck?
       %i.fa.fa-warning.text-warning
@@ -24,13 +24,13 @@
     - if build.ref
       = link_to build.ref, namespace_project_commits_path(build.project.namespace, build.project, build.ref)
     - else
-      .light none
+      .light 无
 
   %td
     - if build.try(:runner)
       = runner_link(build.runner)
     - else
-      .light none
+      .light 无
 
   %td
     #{build.stage} / #{build.name}

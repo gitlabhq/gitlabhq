@@ -11,7 +11,7 @@ class Member < ActiveRecord::Base
   validates :user, presence: true, unless: :invite?
   validates :source, presence: true
   validates :user_id, uniqueness: { scope: [:source_type, :source_id],
-                                    message: "already exists in source",
+                                    message: "已经存在于源",
                                     allow_nil: true }
   validates :access_level, inclusion: { in: Gitlab::Access.all_values }, presence: true
   validates :invite_email,

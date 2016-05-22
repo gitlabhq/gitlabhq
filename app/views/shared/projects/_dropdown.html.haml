@@ -8,7 +8,7 @@
     %b.caret
   %ul.dropdown-menu.dropdown-menu-align-right.dropdown-menu-selectable
     %li.dropdown-header
-      Sort by
+      排序：
     - projects_sort_options_hash.each do |value, title|
       %li
         = link_to filter_projects_path(sort: value, archived: archived, personal: personal), class: ("is-active" if @sort == value) do
@@ -17,15 +17,15 @@
     %li.divider
     %li
       = link_to filter_projects_path(sort: @sort, archived: nil), class: ("is-active" unless params[:archived].present?) do
-        Hide archived projects
+        隐藏归档的项目
     %li
       = link_to filter_projects_path(sort: @sort, archived: true), class: ("is-active" if params[:archived].present?) do
-        Show archived projects
+        显示归档的项目
     - if current_user
       %li.divider
       %li
         = link_to filter_projects_path(sort: @sort, personal: nil), class: ("is-active" unless personal) do
-          Owned by anyone
+          属于任何人
       %li
         = link_to filter_projects_path(sort: @sort, personal: true), class: ("is-active" if personal) do
-          Owned by me
+          属于我

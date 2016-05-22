@@ -1,14 +1,14 @@
-- page_title "Import in progress"
+- page_title "正在导入"
 .save-project-loader
   .center
     %h2
       %i.fa.fa-spinner.fa-spin
       - if @project.forked?
-        Forking in progress.
+        正在派生。
       - else
-        Import in progress.
+        正在导入。
     - unless @project.forked?
       %p.monospace git clone --bare #{@project.safe_import_url}
-    %p Please wait while we import the repository for you. Refresh at will.
+    %p 请稍候，正在导入仓库。将自动刷新。
     :javascript
       new ProjectImport();

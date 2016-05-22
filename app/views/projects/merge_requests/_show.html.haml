@@ -1,7 +1,7 @@
-- page_title           "#{@merge_request.title} (#{@merge_request.to_reference})", "Merge Requests"
+- page_title           "#{@merge_request.title} (#{@merge_request.to_reference})", "合并请求"
 - page_description     @merge_request.description
 - page_card_attributes @merge_request.card_attributes
-- header_title project_title(@project, "Merge Requests", namespace_project_merge_requests_path(@project.namespace, @project))
+- header_title project_title(@project, "合并请求", namespace_project_merge_requests_path(@project.namespace, @project))
 
 - if diff_view == 'parallel'
   - fluid_layout true
@@ -17,52 +17,52 @@
           - if @merge_request.source_branch_exists?
             = link_to "#modal_merge_info", class: "btn btn-sm", "data-toggle" => "modal" do
               = icon('cloud-download fw')
-              Check out branch
+              检出分支
 
           %span.dropdown
             %a.btn.btn-sm.dropdown-toggle{ data: {toggle: :dropdown} }
               = icon('download')
-              Download as
+              下载为
               %span.caret
             %ul.dropdown-menu
-              %li= link_to "Email Patches", merge_request_path(@merge_request, format: :patch)
-              %li= link_to "Plain Diff",    merge_request_path(@merge_request, format: :diff)
+              %li= link_to "邮件补丁", merge_request_path(@merge_request, format: :patch)
+              %li= link_to "差异文件",    merge_request_path(@merge_request, format: :diff)
       .normal
-        %span Request to merge
+        %span 请求合并
         %span.label-branch= source_branch_with_namespace(@merge_request)
-        %span into
+        %span 到
         %span.label-branch
           = link_to @merge_request.target_branch, namespace_project_commits_path(@project.namespace, @project, @merge_request.target_branch)
         - if @merge_request.open? && @merge_request.diverged_from_target_branch?
-          %span (#{pluralize(@merge_request.diverged_commits_count, 'commit')} behind)
+          %span (落后 #{pluralize(@merge_request.diverged_commits_count, '次提交', '次提交')})
 
     = render "projects/merge_requests/show/how_to_merge"
     = render "projects/merge_requests/widget/show.html.haml"
 
     - if @merge_request.source_branch_exists? && @merge_request.mergeable? && @merge_request.can_be_merged_by?(current_user)
       .light.prepend-top-default
-        You can also accept this merge request manually using the
-        = succeed '.' do
-          = link_to "command line", "#modal_merge_info", class: "how_to_merge_link vlink", title: "How To Merge", "data-toggle" => "modal"
+        也可以使用
+        = succeed '手工接受此合并请求。' do
+          = link_to "命令行", "#modal_merge_info", class: "how_to_merge_link vlink", title: "如何合并", "data-toggle" => "modal"
 
     - if @commits.present?
       %ul.merge-request-tabs.nav-links.no-top.no-bottom
         %li.notes-tab
           = link_to namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: {target: 'div#notes', action: 'notes', toggle: 'tab'} do
-            Discussion
+            讨论
             %span.badge= @merge_request.mr_and_commit_notes.user.nonawards.count
         %li.commits-tab
           = link_to commits_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: {target: 'div#commits', action: 'commits', toggle: 'tab'} do
-            Commits
+            提交
             %span.badge= @commits.size
         - if @ci_commit
           %li.builds-tab
             = link_to builds_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: {target: '#builds', action: 'builds', toggle: 'tab'} do
-              Builds
+              构建
               %span.badge= @statuses.size
         %li.diffs-tab
           = link_to diffs_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: {target: 'div#diffs', action: 'diffs', toggle: 'tab'} do
-            Changes
+            变更
             %span.badge= @merge_request.diff_size
 
       .tab-content

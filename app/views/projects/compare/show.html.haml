@@ -14,12 +14,12 @@
   .light-well.prepend-top-default
     .center
       %h4
-        There isn't anything to compare.
+        没有内容需要比较。
       %p.slead
         - if params[:to] == params[:from]
           %span.label-branch #{params[:from]}
-          and
+          与
           %span.label-branch #{params[:to]}
-          are the same.
+          内容一致。
         - else
-          You'll need to use different branch names to get a valid comparison.
+          需要选择不同的分支用于比较。

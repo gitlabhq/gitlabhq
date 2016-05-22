@@ -1,4 +1,4 @@
-- page_title "Sign in"
+- page_title "登录"
 %div
   - if signin_enabled? || ldap_enabled? || crowd_enabled?
     = render 'devise/shared/signin_box'
@@ -16,4 +16,4 @@
   -# Show a message if none of the mechanisms above are enabled
   - if !signin_enabled? && !ldap_enabled? && !(omniauth_enabled? && devise_mapping.omniauthable?)
     %div
-      No authentication methods configured.
+      没有配置任何认证方式。

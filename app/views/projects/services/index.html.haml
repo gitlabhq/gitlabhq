@@ -1,15 +1,15 @@
-- page_title "Services"
-%h3.page-title Project services
-%p.light Project services allow you to integrate GitLab with other applications
+- page_title "服务"
+%h3.page-title 项目服务
+%p.light 项目服务用于集成其他应用
 
 .table-holder
   %table.table
     %thead
       %tr
         %th
-        %th Service
-        %th Description
-        %th Last edit
+        %th 服务
+        %th 描述
+        %th 最后编辑
     - @services.sort_by(&:title).each do |service|
       %tr
         %td
@@ -21,4 +21,4 @@
           = service.description
         %td.light
           = time_ago_in_words service.updated_at
-          ago
+          之前

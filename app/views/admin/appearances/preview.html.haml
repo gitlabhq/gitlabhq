@@ -1,11 +1,11 @@
-- page_title "Preview | Appearance"
+- page_title "预览 | 外观"
 %h3.page-title
-  Appearance settings - Preview
+  外观设置 - 预览
 %hr
 
 .ui-box
   .title
-    Sign-in page
+    登录页面
   %div
     .login-page
       .container
@@ -23,7 +23,7 @@
                 = brand_text
             .col-sm-4
               .login-box
-                %h3.page-title Sign in
-                = text_field_tag :login, nil, class: "form-control top", placeholder: "Username or Email"
-                = password_field_tag :password, nil, class: "form-control bottom", placeholder: "Password"
-                = button_tag "Sign in", class: "btn-create btn"
+                %h3.page-title 登录
+                = text_field_tag :login, nil, class: "form-control top", placeholder: "用户名或邮箱"
+                = password_field_tag :password, nil, class: "form-control bottom", placeholder: "密码"
+                = button_tag "登录", class: "btn-create btn"

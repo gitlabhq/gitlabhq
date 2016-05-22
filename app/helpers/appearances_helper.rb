@@ -1,9 +1,10 @@
+#encoding: utf-8
 module AppearancesHelper
   def brand_title
     if brand_item && brand_item.title
       brand_item.title
     else
-      'GitLab Community Edition'
+      'GitLab 社区版'
     end
   end
 

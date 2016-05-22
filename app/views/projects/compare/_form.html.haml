@@ -1,24 +1,24 @@
 = form_tag namespace_project_compare_index_path(@project.namespace, @project), method: :post, class: 'form-inline js-requires-input' do
   .clearfix
     - if params[:to] && params[:from]
-      = link_to 'switch', {from: params[:to], to: params[:from]}, {class: 'commits-compare-switch has-tooltip', title: 'Switch base of comparison'}
+      = link_to '切换', {from: params[:to], to: params[:from]}, {class: 'commits-compare-switch has-tooltip', title: '切换比较基准'}
     .form-group
       .input-group.inline-input-group
-        %span.input-group-addon from
+        %span.input-group-addon 从
         = text_field_tag :from, params[:from], class: "form-control", required: true
     = "..."
     .form-group
       .input-group.inline-input-group
-        %span.input-group-addon to
+        %span.input-group-addon 到
         = text_field_tag :to, params[:to], class: "form-control", required: true
     &nbsp;
-    = button_tag "Compare", class: "btn btn-create commits-compare-btn"
+    = button_tag "比较", class: "btn btn-create commits-compare-btn"
     - if @merge_request.present?
-      = link_to "View Open Merge Request", namespace_project_merge_request_path(@project.namespace, @project, @merge_request), class: 'prepend-left-10 btn'
+      = link_to "查看未关闭的合并请求", namespace_project_merge_request_path(@project.namespace, @project, @merge_request), class: 'prepend-left-10 btn'
     - elsif create_mr_button?
       = link_to create_mr_path, class: 'prepend-left-10 btn' do
         = icon("plus")
-        Create Merge Request
+        创建合并请求
 
 :javascript
   var availableTags = #{@project.repository.ref_names.to_json};

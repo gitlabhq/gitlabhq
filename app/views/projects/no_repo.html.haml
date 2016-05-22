@@ -1,22 +1,22 @@
 %h2
   %i.fa.fa-warning
-  No repository
+  没有仓库
 
 %p.slead
-  The repository for this project does not exist.
+  该项目的仓库不存在。
   %br
-  This means you can not push code until you create an empty repository or import existing one.
+  这意味着如果不创建一个新仓库或者导入已存在的仓库，就不能推送代码。
 %hr
 
 .no-repo-actions
   = link_to namespace_project_repository_path(@project.namespace, @project), method: :post, class: 'btn btn-primary' do
-    Create empty bare repository
+    创建空的纯仓库
 
   %strong.prepend-left-10.append-right-10 or
 
   = link_to new_namespace_project_import_path(@project.namespace, @project), class: 'btn' do
-    Import repository
+    导入仓库
 
 - if can? current_user, :remove_project, @project
   .prepend-top-20
-    = link_to 'Remove project', project_path(@project), data: { confirm: remove_project_message(@project)}, method: :delete, class: "btn btn-remove pull-right"
+    = link_to '删除项目', project_path(@project), data: { confirm: remove_project_message(@project)}, method: :delete, class: "btn btn-remove pull-right"

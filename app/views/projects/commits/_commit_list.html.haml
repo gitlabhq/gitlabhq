@@ -3,12 +3,12 @@
 
 %div.panel.panel-default
   .panel-heading
-    Commits (#{@commits.count})
+    提交 (#{@commits.count})
   - if hidden > 0
     %ul.content-list
       - commits.each do |commit|
         = render "projects/commits/inline_commit", commit: commit, project: @project
       %li.warning-row.unstyled
-        #{number_with_delimiter(hidden)} additional commits have been omitted to prevent performance issues.
+        #{number_with_delimiter(hidden)} 次更多提交因为性能问题而隐藏。
   - else
     %ul.content-list= render commits, project: @project

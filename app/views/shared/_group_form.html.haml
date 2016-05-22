@@ -1,13 +1,13 @@
 - if @group.persisted?
   .form-group
     = f.label :name, class: 'control-label' do
-      Group name
+      群组名称
     .col-sm-10
       = f.text_field :name, placeholder: 'open-source', class: 'form-control'
 
 .form-group
   = f.label :path, class: 'control-label' do
-    Group path
+    群组路径
   .col-sm-10
     .input-group
       .input-group-addon
@@ -17,13 +17,13 @@
     - if @group.persisted?
       .alert.alert-warning.prepend-top-10
         %ul
-          %li Changing group path can have unintended side effects.
-          %li Renaming group path will rename directory for all related projects
-          %li It will change web url for access group and group projects.
-          %li It will change the git path to repositories under this group.
+          %li 修改群组路径会存在意想不到的副作用。
+          %li 重命名群组路径会重命名全部相关项目的路径
+          %li 包括改变群组和群组项目的网页访问链接。
+          %li 包括改变群组下版本库的 git 路径。
 
 .form-group.group-description-holder
-  = f.label :description, class: 'control-label'
+  = f.label :description, '描述', class: 'control-label'
   .col-sm-10
     = f.text_area :description, maxlength: 250,
         class: 'form-control js-gfm-input', rows: 4

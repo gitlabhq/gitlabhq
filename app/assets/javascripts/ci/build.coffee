@@ -17,10 +17,10 @@ class CiBuild
         state = $(this).data("state")
         if "enabled" is state
           $(this).data "state", "disabled"
-          $(this).text "enable autoscroll"
+          $(this).text "开启自动滚动"
         else
           $(this).data "state", "enabled"
-          $(this).text "disable autoscroll"
+          $(this).text "关闭自动滚动"
 
       #
       # Check for new build output if user still watching build page

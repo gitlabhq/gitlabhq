@@ -1,8 +1,8 @@
-- page_title "Commits", @ref
+- page_title "提交", @ref
 = render "header_title"
 = content_for :meta_tags do
   - if current_user
-    = auto_discovery_link_tag(:atom, namespace_project_commits_url(@project.namespace, @project, @ref, format: :atom, private_token: current_user.private_token), title: "#{@project.name}:#{@ref} commits")
+    = auto_discovery_link_tag(:atom, namespace_project_commits_url(@project.namespace, @project, @ref, format: :atom, private_token: current_user.private_token), title: "#{@project.name}:#{@ref} 提交")
 
 = render "head"
 
@@ -13,20 +13,20 @@
   .block-controls.hidden-xs.hidden-sm
     - if @merge_request.present?
       .control
-        = link_to "View Open Merge Request", namespace_project_merge_request_path(@project.namespace, @project, @merge_request), class: 'btn'
+        = link_to "查看未关闭的合并请求", namespace_project_merge_request_path(@project.namespace, @project, @merge_request), class: 'btn'
     - elsif create_mr_button?(@repository.root_ref, @ref)
       .control
         = link_to create_mr_path(@repository.root_ref, @ref), class: 'btn btn-success' do
           = icon('plus')
-          Create Merge Request
+          创建合并请求
 
     .control
       = form_tag(namespace_project_commits_path(@project.namespace, @project, @id), method: :get, class: 'pull-left commits-search-form') do
-        = search_field_tag :search, params[:search], { placeholder: 'Filter by commit message', id: 'commits-search', class: 'form-control search-text-input', spellcheck: false }
+        = search_field_tag :search, params[:search], { placeholder: '按提交信息过滤', id: 'commits-search', class: 'form-control search-text-input', spellcheck: false }
 
     - if current_user && current_user.private_token
       .control
-        = link_to namespace_project_commits_path(@project.namespace, @project, @ref, {format: :atom, private_token: current_user.private_token}), title: "Commits Feed", class: 'btn' do
+        = link_to namespace_project_commits_path(@project.namespace, @project, @ref, {format: :atom, private_token: current_user.private_token}), title: "提交动态", class: 'btn' do
           = icon("rss")
 
 

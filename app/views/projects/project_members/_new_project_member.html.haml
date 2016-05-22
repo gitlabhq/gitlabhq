@@ -1,18 +1,18 @@
 = form_for @project_member, as: :project_member, url: namespace_project_project_members_path(@project.namespace, @project), html: { class: 'form-horizontal users-project-form' } do |f|
   .form-group
-    = f.label :user_ids, "People", class: 'control-label'
+    = f.label :user_ids, "人", class: 'control-label'
     .col-sm-10
       = users_select_tag(:user_ids, multiple: true, class: 'input-large', scope: :all, email_user: true)
       .help-block
-        Search for users by name, username, or email, or invite new ones using their email address.
+        搜索已存在的用户或使用邮箱地址邀请新用户。
 
   .form-group
-    = f.label :access_level, "Project Access", class: 'control-label'
+    = f.label :access_level, "项目访问", class: 'control-label'
     .col-sm-10
       = select_tag :access_level, options_for_select(ProjectMember.access_roles, @project_member.access_level), class: "project-access-select select2"
       .help-block
-        Read more about role permissions
-        %strong= link_to "here", help_page_path("permissions", "permissions"), class: "vlink"
+        关于角色权限的更多内容请参阅
+        %strong= link_to "这里", help_page_path("permissions", "permissions"), class: "vlink"
 
   .form-actions
-    = f.submit 'Add users to project', class: "btn btn-create"
+    = f.submit '增加用户到项目', class: "btn btn-create"

@@ -9,7 +9,7 @@ module IssuableActions
     issuable.destroy
 
     name = issuable.class.name.titleize.downcase
-    flash[:notice] = "The #{name} was successfully deleted."
+    flash[:notice] = "#{name} 删除成功。"
     redirect_to polymorphic_path([@project.namespace.becomes(Namespace), @project, issuable.class])
   end
 

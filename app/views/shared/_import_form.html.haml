@@ -1,16 +1,16 @@
 .form-group.import-url-data
   = f.label :import_url, class: 'control-label' do
-    %span Git repository URL
+    %span Git 仓库的链接
   .col-sm-10
     = f.text_field :import_url, class: 'form-control', placeholder: 'https://username:password@gitlab.company.com/group/project.git'
 
     .well.prepend-top-20
       %ul
         %li
-          The repository must be accessible over <code>http://</code>, <code>https://</code> or <code>git://</code>.
+          版本仓库必须使用 <code>http://</code>、<code>https://</code> 或 <code>git://</code> 访问。
         %li
-          If your HTTP repository is not publicly accessible, add authentication information to the URL: <code>https://username:password@gitlab.company.com/group/project.git</code>.
+          链接必须能公开访问或指定用户名和密码类似：<code>https://username:password@gitlab.company.com/group/project.git</code>。
         %li
-          The import will time out after 15 minutes. For repositories that take longer, use a clone/push combination.
+          导入超过 4 分钟将会超时。对于大仓库，请使用 clone/push 组合操作。
         %li
-          To migrate an SVN repository, check out #{link_to "this document", "http://doc.gitlab.com/ce/workflow/importing/migrating_from_svn.html"}.
+          对于合并 SVN 仓库，请查看#{link_to "此文档", "http://doc.gitlab.com/ce/workflow/importing/migrating_from_svn.html"}。

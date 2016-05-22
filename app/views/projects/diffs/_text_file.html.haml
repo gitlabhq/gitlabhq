@@ -1,7 +1,7 @@
 - too_big = diff_file.diff_lines.count > Commit::DIFF_SAFE_LINES
 - if too_big
   .suppressed-container
-    %a.show-suppressed-diff.js-show-suppressed-diff Changes suppressed. Click to show.
+    %a.show-suppressed-diff.js-show-suppressed-diff 修改有限制。点击显示。
 
 %table.text-file.code.js-syntax-highlight{ class: too_big ? 'hide' : '' }
 
@@ -22,4 +22,4 @@
 
 - if diff_file.diff.blank? && diff_file.mode_changed?
   .file-mode-changed
-    File mode changed
+    文件模式已改变

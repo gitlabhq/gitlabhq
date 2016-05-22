@@ -1,6 +1,6 @@
 - if @user.valid?
   :plain
-    new Flash("Username sucessfully changed", "notice")
+    new Flash("账号已成功修改", "notice")
 - else
   :plain
-    new Flash("Username change failed - #{@user.errors.full_messages.first}", "alert")
+    new Flash("账号修改失败 - #{@user.errors.full_messages.first}", "alert")

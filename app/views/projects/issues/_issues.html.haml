@@ -2,7 +2,7 @@
   = render @issues
   - if @issues.blank?
     %li
-      .nothing-here-block No issues to show
+      .nothing-here-block 没有问题
 
 - if @issues.present?
   = paginate @issues, theme: "gitlab"

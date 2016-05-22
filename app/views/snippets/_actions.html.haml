@@ -1,11 +1,11 @@
-= link_to new_snippet_path, class: 'btn btn-grouped new-snippet-link', title: "New Snippet" do
+= link_to new_snippet_path, class: 'btn btn-grouped new-snippet-link', title: "新代码片段" do
   = icon('plus')
-  New Snippet
+  新代码片段
 - if can?(current_user, :update_personal_snippet, @snippet)
   = link_to edit_snippet_path(@snippet), class: "btn btn-grouped snippable-edit" do
     = icon('pencil-square-o')
-    Edit
+    编辑
 - if can?(current_user, :admin_personal_snippet, @snippet)
-  = link_to snippet_path(@snippet), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-grouped btn-remove", title: 'Delete Snippet' do
+  = link_to snippet_path(@snippet), method: :delete, data: { confirm: "确定要继续么？" }, class: "btn btn-grouped btn-remove", title: '删除代码片段' do
     = icon('trash-o')
-    Delete
+    删除

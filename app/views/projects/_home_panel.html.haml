@@ -14,7 +14,7 @@
 
   - if forked_from_project = @project.forked_from_project
     .cover-desc
-      Forked from
+      派生自
       = link_to project_path(forked_from_project) do
         = forked_from_project.namespace.try(:name)
 
@@ -33,12 +33,12 @@
             - if can_edit
               %li
                 = link_to edit_project_path(@project) do
-                  Edit Project
+                  编辑项目
             - if access
               %li
                 = link_to leave_namespace_project_project_members_path(@project.namespace, @project),
-                  data: { confirm: leave_project_message(@project) }, method: :delete, title: 'Leave project' do
-                  Leave Project
+                  data: { confirm: leave_project_message(@project) }, method: :delete, title: '离开项目' do
+                  离开项目
 
   .project-repo-buttons
     .split-one.count-buttons

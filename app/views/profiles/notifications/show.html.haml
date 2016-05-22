@@ -13,60 +13,60 @@
       %h4
         = page_title
       %p
-        You can specify notification level per group or per project.
+        你也可以单独指定每个群组或项目的通知等级。
       %p
-        By default, all projects and groups will use the global notifications setting.
+        所有项目和群组默认使用全局通知设置。
     .col-lg-9
       %h5
-        Global notification settings
+        全局通知设置
 
       = form_for @user, url: profile_notifications_path, method: :put, html: { class: 'update-notifications prepend-top-default' } do |f|
         .form-group
-          = f.label :notification_email, class: "label-light"
+          = f.label :notification_email, '通知邮箱', class: "label-light"
           = f.select :notification_email, @user.all_emails, { include_blank: false }, class: "select2"
         .form-group
-          = f.label :notification_level, class: 'label-light'
+          = f.label :notification_level, '通知等级', class: 'label-light'
           .radio
             = f.label :notification_level, value: :disabled do
               = f.radio_button :notification_level, :disabled
               .level-title
-                Disabled
-              %p You will not get any notifications via email
+                关闭
+              %p 将不会通过邮件收到任何通知
 
           .radio
             = f.label :notification_level, value: :mention do
               = f.radio_button :notification_level, :mention
               .level-title
-                On Mention
-              %p You will receive notifications only for comments in which you were @mentioned
+                被提及
+              %p 只收到评论中 @自己 的通知
 
           .radio
             = f.label :notification_level, value: :participating do
               = f.radio_button :notification_level, :participating
               .level-title
-                Participating
-              %p You will only receive notifications from related resources (e.g. from your commits or assigned issues)
+                参与
+              %p 只收到有关的通知 (比如：来自自己的提交或指派给自己的问题)
 
           .radio
             = f.label :notification_level, value: :watch do
               = f.radio_button :notification_level, :watch
               .level-title
-                Watch
-              %p You will receive notifications for any activity
+                关注
+              %p 将收到参与项目的所有通知
 
         .prepend-top-default
-          = f.submit 'Update settings', class: "btn btn-create"
+          = f.submit '更新设置', class: "btn btn-create"
       %hr
       %h5
-        Groups (#{@group_notifications.count})
+        群组 (#{@group_notifications.count})
       %div
         %ul.bordered-list
           - @group_notifications.each do |setting|
             = render 'group_settings', setting: setting, group: setting.source
       %h5
-        Projects (#{@project_notifications.count})
+        项目 (#{@project_notifications.count})
       %p.account-well
-        To specify the notification level per project of a group you belong to, you need to visit project page and change notification level there.
+        给所属群组的每个项目指定通知等级，需要访问项目页面去设置通知等级。
       .append-bottom-default
         %ul.bordered-list
           - @project_notifications.each do |setting|

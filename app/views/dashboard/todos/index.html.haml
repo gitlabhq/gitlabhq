@@ -1,5 +1,5 @@
-- page_title "Todos"
-- header_title "Todos", dashboard_todos_path
+- page_title "待办事项"
+- header_title "待办事项", dashboard_todos_path
 
 .top-area
   %ul.nav-links
@@ -30,18 +30,18 @@
       .filter-item.inline
         = select_tag('project_id', todo_projects_options,
           class: 'select2 trigger-submit', include_blank: true,
-          data: {placeholder: 'Project'})
+          data: {placeholder: '项目'})
       .filter-item.inline
         = users_select_tag(:author_id, selected: params[:author_id],
-          placeholder: 'Author', class: 'trigger-submit', any_user: "Any Author", first_user: true, current_user: true)
+          placeholder: '作者', class: 'trigger-submit', any_user: "任何作者", first_user: true, current_user: true)
       .filter-item.inline
         = select_tag('type', todo_types_options,
           class: 'select2 trigger-submit', include_blank: true,
-          data: {placeholder: 'Type'})
+          data: {placeholder: '类型'})
       .filter-item.inline.actions-filter
         = select_tag('action_id', todo_actions_options,
           class: 'select2 trigger-submit', include_blank: true,
-          data: {placeholder: 'Action'})
+          data: {placeholder: '动作'})
 
 .prepend-top-default
   - if @todos.any?
@@ -56,7 +56,7 @@
           = render group[1]
     = paginate @todos, theme: "gitlab"
   - else
-    .nothing-here-block You're all done!
+    .nothing-here-block 全部已完成！
 
 :javascript
   new UsersSelect();

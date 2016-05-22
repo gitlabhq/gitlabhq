@@ -5,8 +5,8 @@
     = identity.extern_uid
   %td
     = link_to edit_admin_user_identity_path(@user, identity), class: 'btn btn-xs btn-grouped' do
-      Edit
+      编辑
     = link_to [:admin, @user, identity], method: :delete,
       class: 'btn btn-xs btn-danger',
-      data: { confirm: "Are you sure you want to remove this identity?" } do
-      Delete
+      data: { confirm: "确定要删除此身份么？" } do
+      删除

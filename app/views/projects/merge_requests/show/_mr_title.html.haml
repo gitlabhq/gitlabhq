@@ -9,24 +9,24 @@
       = icon('angle-double-left')
 
     .issuable-meta
-      = issuable_meta(@merge_request, @project, "Merge Request")
+      = issuable_meta(@merge_request, @project, "合并请求")
 
   - if can?(current_user, :update_merge_request, @merge_request)
     .issuable-actions
       .clearfix.issue-btn-group.dropdown
         %button.btn.btn-default.pull-left.hidden-md.hidden-lg{ data: { toggle: "dropdown" } }
           %span.caret
-          Options
+          选项
         .dropdown-menu.dropdown-menu-align-right.hidden-lg
           %ul
             %li{ class: issue_button_visibility(@merge_request, true) }
-              = link_to 'Close', merge_request_path(@merge_request, merge_request: { state_event: :close }), method: :put, title: 'Close merge request'
+              = link_to '关闭', merge_request_path(@merge_request, merge_request: { state_event: :close }), method: :put, title: '关闭合并请求'
             %li{ class: issue_button_visibility(@merge_request, false) }
-              = link_to 'Reopen', merge_request_path(@merge_request, merge_request: {state_event: :reopen }), method: :put, class: 'reopen-mr-link', title: 'Reopen merge request'
+              = link_to '重新打开', merge_request_path(@merge_request, merge_request: {state_event: :reopen }), method: :put, class: 'reopen-mr-link', title: '重新打开合并请求'
             %li
-              = link_to 'Edit', edit_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), class: 'issuable-edit'
-        = link_to 'Close', merge_request_path(@merge_request, merge_request: { state_event: :close }), method: :put, class: "hidden-xs hidden-sm btn btn-nr btn-grouped btn-close #{issue_button_visibility(@merge_request, true)}", title: 'Close merge request'
-        = link_to 'Reopen', merge_request_path(@merge_request, merge_request: {state_event: :reopen }), method: :put, class: "hidden-xs hidden-sm btn btn-nr btn-grouped btn-reopen reopen-mr-link #{issue_button_visibility(@merge_request, false)}", title: 'Reopen merge request'
+              = link_to '编辑', edit_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), class: 'issuable-edit'
+        = link_to '关闭', merge_request_path(@merge_request, merge_request: { state_event: :close }), method: :put, class: "hidden-xs hidden-sm btn btn-nr btn-grouped btn-close #{issue_button_visibility(@merge_request, true)}", title: '关闭合并请求'
+        = link_to '重新打开', merge_request_path(@merge_request, merge_request: {state_event: :reopen }), method: :put, class: "hidden-xs hidden-sm btn btn-nr btn-grouped btn-reopen reopen-mr-link #{issue_button_visibility(@merge_request, false)}", title: '重新打开合并请求'
         = link_to edit_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), class: "hidden-xs hidden-sm btn btn-nr btn-grouped issuable-edit" do
           = icon('pencil-square-o')
-          Edit
+          编辑

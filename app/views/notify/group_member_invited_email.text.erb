@@ -1,4 +1,4 @@
-You have been invited <%= "by #{@group_member.created_by.name} " if @group_member.created_by %>to join group <%= @group.name %> as <%= @group_member.human_access %>.
+你被<%= " #{@group_member.created_by.name} " if @group_member.created_by %>邀请加入群组<%= @group.name %> 身份是 <%= @group_member.human_access %>。
 
-Accept invitation: <%= invite_url(@token) %>
-Decline invitation: <%= decline_invite_url(@token) %>
+接受邀请: <%= invite_url(@token) %>
+拒绝邀请: <%= decline_invite_url(@token) %>

@@ -1,5 +1,5 @@
-- page_title    "Groups"
-- header_title  "Groups", dashboard_groups_path
+- page_title    "群组"
+- header_title  "群组", dashboard_groups_path
 
 - if current_user
   = render 'dashboard/groups_head'
@@ -11,9 +11,9 @@
     = form_tag explore_groups_path, method: :get, class: 'form-inline form-tiny' do |f|
       = hidden_field_tag :sort, @sort
       .form-group
-        = search_field_tag :search, params[:search], placeholder: "Filter by name", class: "form-control search-text-input", id: "groups_search", spellcheck: false
+        = search_field_tag :search, params[:search], placeholder: "按名称过滤", class: "form-control search-text-input", id: "groups_search", spellcheck: false
       .form-group
-        = button_tag 'Search', class: "btn btn-default"
+        = button_tag '搜索', class: "btn btn-default"
 
   .pull-right
     .dropdown.inline
@@ -39,7 +39,7 @@
   - @groups.each do |group|
     = render 'shared/groups/group', group: group
   - unless @groups.present?
-    .nothing-here-block No public groups
+    .nothing-here-block 没有公开群组
 
 
 = paginate @groups, theme: "gitlab"

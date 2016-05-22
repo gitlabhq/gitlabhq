@@ -13,7 +13,7 @@ class Import::FogbugzController < Import::BaseController
       res = Gitlab::FogbugzImport::Client.new(import_params.symbolize_keys)
     rescue
       # If the URI is invalid various errors can occur
-      return redirect_to new_import_fogbugz_path, alert: 'Could not connect to FogBugz, check your URL'
+      return redirect_to new_import_fogbugz_path, alert: '无法连接 FogBugz，请检查你的链接'
     end
     session[:fogbugz_token] = res.get_token
     session[:fogbugz_uri] = params[:uri]
@@ -29,14 +29,14 @@ class Import::FogbugzController < Import::BaseController
     user_map = params[:users]
 
     unless user_map.is_a?(Hash) && user_map.all? { |k, v| !v[:name].blank? }
-      flash.now[:alert] = 'All users must have a name.'
+      flash.now[:alert] = '所有用户必须有一个名字。'
 
       render 'new_user_map' and return
     end
 
     session[:fogbugz_user_map] = user_map
 
-    flash[:notice] = 'The user map has been saved. Continue by selecting the projects you want to import.'
+    flash[:notice] = '用户映射已保存。请选择要导入的项目继续。'
 
     redirect_to status_import_fogbugz_path
   end

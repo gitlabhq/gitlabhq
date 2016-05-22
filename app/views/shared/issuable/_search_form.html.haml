@@ -1,5 +1,5 @@
 = form_tag(path, method: :get, id: "issue_search_form", class: 'issue-search-form') do
-  = search_field_tag :issue_search, params[:issue_search], { placeholder: 'Filter by name ...', class: 'form-control issue_search search-text-input input-short', spellcheck: false }
+  = search_field_tag :issue_search, params[:issue_search], { placeholder: '按名称过滤...', class: 'form-control issue_search search-text-input input-short', spellcheck: false }
   = hidden_field_tag :state, params['state']
   = hidden_field_tag :scope, params['scope']
   = hidden_field_tag :assignee_id, params['assignee_id']

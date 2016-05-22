@@ -43,14 +43,14 @@ module CreatesCommit
   private
 
   def update_flash_notice(success_notice)
-    flash[:notice] = success_notice || "Your changes have been successfully committed."
+    flash[:notice] = success_notice || "你的变更已提交成功。"
 
     if create_merge_request?
       if merge_request_exists?
         flash[:notice] = nil
       else
-        target = different_project? ? "project" : "branch"
-        flash[:notice] << " You can now submit a merge request to get this change into the original #{target}."
+        target = different_project? ? "项目" : "分支"
+        flash[:notice] << "你现在可以提交一个带有此变更的合并请求给原始的#{target}。"
       end
     end
   end

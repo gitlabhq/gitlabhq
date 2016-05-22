@@ -1,36 +1,36 @@
-- page_title    "Snippets"
-- header_title  "Snippets", dashboard_snippets_path
+- page_title    "代码片段"
+- header_title  "代码片段", dashboard_snippets_path
 
 = render 'dashboard/snippets_head'
 
 .nav-block
   .controls
-    = link_to new_snippet_path, class: "btn btn-new", title: "New Snippet" do
+    = link_to new_snippet_path, class: "btn btn-new", title: "新代码片段" do
       = icon('plus')
-      New Snippet
+      新代码片段
 
   .nav-links.snippet-scope-menu
     %li{ class: ("active" unless params[:scope]) }
       = link_to dashboard_snippets_path do
-        All
+        全部
         %span.badge
           = current_user.snippets.count
 
     %li{ class: ("active" if params[:scope] == "are_private") }
       = link_to dashboard_snippets_path(scope: 'are_private') do
-        Private
+        私有
         %span.badge
           = current_user.snippets.are_private.count
 
     %li{ class: ("active" if params[:scope] == "are_internal") }
       = link_to dashboard_snippets_path(scope: 'are_internal') do
-        Internal
+        内部
         %span.badge
           = current_user.snippets.are_internal.count
 
     %li{ class: ("active" if params[:scope] == "are_public") }
       = link_to dashboard_snippets_path(scope: 'are_public') do
-        Public
+        公开
         %span.badge
           = current_user.snippets.are_public.count
 

@@ -1,12 +1,12 @@
-- page_title "Import repository"
+- page_title "导入仓库"
 %h3.page-title
-  Import repository
+  导入仓库
 
 %hr
 
 - if @project.import_failed?
   .panel.panel-danger
-    .panel-heading The repository could not be imported.
+    .panel-heading 版本仓库无法被导入。
     .panel-body
       %pre
         :preserve
@@ -16,4 +16,4 @@
   = render "shared/import_form", f: f
 
   .form-actions
-    = f.submit 'Start import', class: "btn btn-create", tabindex: 4
+    = f.submit '开始导入', class: "btn btn-create", tabindex: 4

@@ -75,7 +75,7 @@ class Event < ActiveRecord::Base
     if project
       project.name_with_namespace
     else
-      "(deleted project)"
+      "(已删除的项目)"
     end
   end
 
@@ -166,32 +166,32 @@ class Event < ActiveRecord::Base
   def action_name
     if push?
       if new_ref?
-        "pushed new"
+        "推送了新的"
       elsif rm_ref?
-        "deleted"
+        "删除了"
       else
-        "pushed to"
+        "推送到了"
       end
     elsif closed?
-      "closed"
+      "关闭了"
     elsif merged?
-      "accepted"
+      "接受了"
     elsif joined?
-      'joined'
+      '加入了'
     elsif left?
-      'left'
+      '离开了'
     elsif destroyed?
-      'destroyed'
+      '删除了'
     elsif commented?
-      "commented on"
+      "评论了"
     elsif created_project?
       if project.external_import?
-        "imported"
+        "导入了"
       else
-        "created"
+        "创建了"
       end
     else
-      "opened"
+      "打开了"
     end
   end
 
@@ -255,7 +255,22 @@ class Event < ActiveRecord::Base
   end
 
   def ref_type
-    tag? ? "tag" : "branch"
+    tag? ? "标签" : "分支"
+  end
+
+  def target_type_zh
+    case target_type
+    when "Milestone"
+      "里程碑"
+    when "Note"
+      "批注"
+    when "Issue"
+      "问题"
+    when "MergeRequest"
+      "合并请求"
+    else
+      target_type
+    end
   end
 
   def push_with_commits?
@@ -306,11 +321,18 @@ class Event < ActiveRecord::Base
   end
 
   def note_target_type
-    if target.noteable_type.present?
-      target.noteable_type.titleize
+    case target.noteable_type
+    when "Commit"
+      "提交"
+    when "Issue"
+      "问题"
+    when "Snippet"
+      "代码片段"
+    when "MergeRequest"
+      "合并请求"
     else
-      "Wall"
-    end.downcase
+      target.noteable_type
+    end
   end
 
   def body?

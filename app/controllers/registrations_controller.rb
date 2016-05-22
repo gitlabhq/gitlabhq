@@ -1,3 +1,4 @@
+#encoding: utf-8
 class RegistrationsController < Devise::RegistrationsController
   before_action :signup_enabled?
   include Recaptcha::Verify
@@ -27,7 +28,7 @@ class RegistrationsController < Devise::RegistrationsController
     DeleteUserService.new(current_user).execute(current_user)
 
     respond_to do |format|
-      format.html { redirect_to new_user_session_path, notice: "Account successfully removed." }
+      format.html { redirect_to new_user_session_path, notice: "账号删除成功。" }
     end
   end
 

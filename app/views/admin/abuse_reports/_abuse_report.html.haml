@@ -5,27 +5,27 @@
     - if user
       = link_to user.name, [:admin, user]
       .light.small
-        Joined #{time_ago_with_tooltip(user.created_at)}
+        加入时间：#{time_ago_with_tooltip(user.created_at)}
     - else
-      (removed)
+      (已删除)
   %td
     - if reporter
       = link_to reporter.name, [:admin, reporter]
     - else
-      (removed)
+      (已删除)
     .light.small
       = time_ago_with_tooltip(abuse_report.created_at)
   %td
     = markdown(abuse_report.message.squish!, pipeline: :single_line)
   %td
     - if user
-      = link_to 'Remove user & report', admin_abuse_report_path(abuse_report, remove_user: true),
-        data: { confirm: "USER #{user.name} WILL BE REMOVED! Are you sure?" }, remote: true, method: :delete, class: "btn btn-xs btn-remove js-remove-tr"
+      = link_to '删除用户和举报', admin_abuse_report_path(abuse_report, remove_user: true),
+        data: { confirm: "确定要删除 #{user.name} 用户么？" }, remote: true, method: :delete, class: "btn btn-xs btn-remove js-remove-tr"
 
   %td
     - if user && !user.blocked?
-      = link_to 'Block user', block_admin_user_path(user), data: {confirm: 'USER WILL BE BLOCKED! Are you sure?'}, method: :put, class: "btn btn-xs"
+      = link_to '禁用用户', block_admin_user_path(user), data: {confirm: '确定要禁用用户么？'}, method: :put, class: "btn btn-xs"
     - else
       .btn.btn-xs.disabled
-        Already Blocked
-    = link_to 'Remove report', [:admin, abuse_report], remote: true, method: :delete, class: "btn btn-xs btn-close js-remove-tr"
+        已被禁用
+    = link_to '删除举报', [:admin, abuse_report], remote: true, method: :delete, class: "btn btn-xs btn-close js-remove-tr"

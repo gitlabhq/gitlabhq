@@ -1,11 +1,11 @@
 %ul.nav-links
   = nav_link(action: :show) do
-    = link_to 'Contributors', namespace_project_graph_path
+    = link_to '贡献者', namespace_project_graph_path
   = nav_link(action: :commits) do
-    = link_to 'Commits', commits_namespace_project_graph_path
+    = link_to '提交', commits_namespace_project_graph_path
   = nav_link(action: :languages) do
-    = link_to 'Languages', languages_namespace_project_graph_path
+    = link_to '语言', languages_namespace_project_graph_path
   - if @project.builds_enabled?
     = nav_link(action: :ci) do
       = link_to ci_namespace_project_graph_path do
-        Continuous Integration
+        持续集成

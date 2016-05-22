@@ -4,10 +4,10 @@
       = link_to namespace_project_branches_path(@project.namespace, @project, branch_name: @issue.to_branch_name, issue_iid: @issue.iid), method: :post, class: 'btn has-tooltip', title: @issue.to_branch_name, disabled: 'disabled' do
         .checking
           %i.fa.fa-spinner.fa-spin
-          Checking branches
+          正在检查分支
         .available(style="display: none")
           %i.fa.fa-code-fork
-          New branch
+          新分支
         .unavailable(style="display: none")
           %i.fa.fa-exclamation-triangle
-          New branch unavailable
+          新分支不可用

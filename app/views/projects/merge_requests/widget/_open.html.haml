@@ -24,6 +24,6 @@
     .mr-widget-footer
       %span
         %i.fa.fa-check
-        Accepting this merge request will close #{"issue".pluralize(@closes_issues.size)}
-        = succeed '.' do
+        正在接受此合并请求并将关闭 #{"个问题".pluralize(@closes_issues.size)}
+        = succeed '。' do
           != markdown issues_sentence(@closes_issues), pipeline: :gfm

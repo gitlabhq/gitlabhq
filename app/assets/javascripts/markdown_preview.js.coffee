@@ -13,10 +13,10 @@ class @MarkdownPreview
     mdText  = form.find('textarea.markdown-area').val()
 
     if mdText.trim().length == 0
-      preview.text('Nothing to preview.')
+      preview.text('没有预览内容。')
       @hideReferencedUsers(form)
     else
-      preview.text('Loading...')
+      preview.text('正在载入...')
       @renderMarkdown mdText, (response) =>
         preview.html(response.body)
         preview.syntaxHighlight()

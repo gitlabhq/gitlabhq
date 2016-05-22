@@ -6,26 +6,28 @@
     - if can? current_user, :push_code, @project
       = link_to new_namespace_project_branch_path(@project.namespace, @project), class: 'btn btn-create' do
         = icon('plus')
-        New branch
+        新分支
       &nbsp;
     .dropdown.inline
       %button.dropdown-toggle.btn{type: 'button', 'data-toggle' => 'dropdown'}
         %span.light
-        - if @sort.present?
-          = @sort.humanize
+        - if params[:sort] == 'recently_updated'
+          = sort_title_recently_updated
+        - elsif params[:sort] == 'last_updated'
+          = sort_title_oldest_updated
         - else
-          Name
+          名称
         %b.caret
       %ul.dropdown-menu.dropdown-menu-align-right
         %li
           = link_to namespace_project_branches_path(sort: nil) do
-            Name
+            名称
           = link_to namespace_project_branches_path(sort: 'recently_updated') do
             = sort_title_recently_updated
           = link_to namespace_project_branches_path(sort: 'last_updated') do
             = sort_title_oldest_updated
   .oneline
-    Protected branches can be managed in project settings
+    在项目设置中保护的分支无法被合并
 - unless @branches.empty?
   %ul.content-list.all-branches
     - @branches.each do |branch|

@@ -1,19 +1,19 @@
-#{@message.author_name} #{@message.action_name} #{@message.ref_type} #{@message.ref_name} at #{@message.project_name_with_namespace}
+#{@message.author_name} #{@message.action_name} #{@message.ref_type} #{@message.ref_name} 在 #{@message.project_name_with_namespace}
 - if @message.compare
   \
   \
   - if @message.reverse_compare?
-    WARNING: The push did not contain any new commits, but force pushed to delete the commits and changes below.
+    警告：此推送不包含任何提交，但强制推送会删除下面的提交和变更。
     \
     \
-  = @message.reverse_compare? ? "Deleted commits:" : "Commits:"
+  = @message.reverse_compare? ? "删除的提交：" : "提交："
   - @message.commits.each do |commit|
-    #{commit.short_id} by #{commit.author_name} at #{commit.committed_date.to_s(:iso8601)}
+    #{commit.short_id} by #{commit.author_name} 在 #{commit.committed_date.to_s(:iso8601)}
     #{commit.safe_message}
     \- - - - -
   \
   \
-  #{pluralize @message.diffs_count, "changed file"}:
+  #{pluralize @message.diffs_count, "个修改的文件", "个修改的文件"}:
   \
   - @message.diffs.each do |diff|
     - if diff.deleted_file

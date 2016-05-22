@@ -1,18 +1,18 @@
 = form_for @group_member, url: group_group_members_path(@group), html: { class: 'form-horizontal users-group-form' } do |f|
   .form-group
-    = f.label :user_ids, "People", class: 'control-label'
+    = f.label :user_ids, "人", class: 'control-label'
     .col-sm-10
       = users_select_tag(:user_ids, multiple: true, class: 'input-large', scope: :all, email_user: true)
       .help-block
-        Search for users by name, username, or email, or invite new ones using their email address.
+        搜索已存在的用户或者使用他们的邮箱地址邀请。
 
   .form-group
-    = f.label :access_level, "Group Access", class: 'control-label'
+    = f.label :access_level, "群组访问", class: 'control-label'
     .col-sm-10
       = select_tag :access_level, options_for_select(GroupMember.access_level_roles, @group_member.access_level), class: "project-access-select select2"
       .help-block
-        Read more about role permissions
-        %strong= link_to "here", help_page_path("permissions", "permissions"), class: "vlink"
+        了解更多角色权限相关请点击
+        %strong= link_to "这里", help_page_path("permissions", "permissions"), class: "vlink"
 
   .form-actions
-    = f.submit 'Add users to group', class: "btn btn-create"
+    = f.submit '增加用户到群组', class: "btn btn-create"

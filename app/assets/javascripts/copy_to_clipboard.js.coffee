@@ -17,7 +17,7 @@ genericError = (e) ->
   else
     key = 'Ctrl'
 
-  showTooltip(e.trigger, "Press #{key}-C to copy")
+  showTooltip(e.trigger, "按 #{key}-C 复制")
 
 showTooltip = (target, title) ->
   $(target).

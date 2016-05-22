@@ -1,44 +1,44 @@
 %ul.nav.nav-sidebar
   = nav_link do
-    = link_to project_path(@project), title: 'Go to project', class: 'back-link' do
+    = link_to project_path(@project), title: '转到项目', class: 'back-link' do
       = icon('caret-square-o-left fw')
       %span
-        Go to project
+        转到项目
 
   %li.separate-item
 
   %ul.sidebar-subnav
     = nav_link(path: 'projects#edit') do
-      = link_to edit_project_path(@project), title: 'Project Settings' do
+      = link_to edit_project_path(@project), title: '项目设置' do
         = icon('pencil-square-o fw')
         %span
-          Project Settings
+          项目设置
     - if @project.allowed_to_share_with_group?
       = nav_link(controller: :group_links) do
-        = link_to namespace_project_group_links_path(@project.namespace, @project), title: "Groups" do
+        = link_to namespace_project_group_links_path(@project.namespace, @project), title: "群组" do
           = icon('share-square-o fw')
           %span
-            Groups
+            群组
     = nav_link(controller: :deploy_keys) do
-      = link_to namespace_project_deploy_keys_path(@project.namespace, @project), title: 'Deploy Keys' do
+      = link_to namespace_project_deploy_keys_path(@project.namespace, @project), title: '部署密钥' do
         = icon('key fw')
         %span
-          Deploy Keys
+          部署密钥
     = nav_link(controller: :hooks) do
-      = link_to namespace_project_hooks_path(@project.namespace, @project), title: 'Webhooks' do
+      = link_to namespace_project_hooks_path(@project.namespace, @project), title: 'Web 钩子' do
         = icon('link fw')
         %span
-          Webhooks
+          Web 钩子
     = nav_link(controller: :services) do
-      = link_to namespace_project_services_path(@project.namespace, @project), title: 'Services' do
+      = link_to namespace_project_services_path(@project.namespace, @project), title: '服务' do
         = icon('cogs fw')
         %span
-          Services
+          服务
     = nav_link(controller: :protected_branches) do
-      = link_to namespace_project_protected_branches_path(@project.namespace, @project), title: 'Protected Branches' do
+      = link_to namespace_project_protected_branches_path(@project.namespace, @project), title: '保护分支' do
         = icon('lock fw')
         %span
-          Protected Branches
+          保护分支
 
     - if @project.builds_enabled?
       = nav_link(controller: :runners) do
@@ -47,17 +47,17 @@
           %span
             Runners
       = nav_link(controller: :variables) do
-        = link_to namespace_project_variables_path(@project.namespace, @project), title: 'Variables' do
+        = link_to namespace_project_variables_path(@project.namespace, @project), title: '变量' do
           = icon('code fw')
           %span
-            Variables
+            变量
       = nav_link(controller: :triggers) do
-        = link_to namespace_project_triggers_path(@project.namespace, @project), title: 'Triggers' do
+        = link_to namespace_project_triggers_path(@project.namespace, @project), title: '触发器' do
           = icon('retweet fw')
           %span
-            Triggers
+            触发器
       = nav_link(controller: :badges) do
-        = link_to namespace_project_badges_path(@project.namespace, @project), title: 'Badges' do
+        = link_to namespace_project_badges_path(@project.namespace, @project), title: '徽章' do
           = icon('star-half-empty fw')
           %span
-            Badges
+            徽章

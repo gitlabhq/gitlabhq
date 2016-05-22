@@ -1,11 +1,11 @@
 %p
   #{link_to @abuse_report.user.name, user_url(@abuse_report.user)} 
-  (@#{@abuse_report.user.username}) was reported for abuse by 
+  (@#{@abuse_report.user.username}) 被
   #{link_to @abuse_report.reporter.name, user_url(@abuse_report.reporter)} 
-  (@#{@abuse_report.reporter.username}).
+  (@#{@abuse_report.reporter.username}) 举报为滥用行为。
 
 %blockquote
   = @abuse_report.message
 
 %p
-  = link_to "View details", admin_abuse_reports_url
+  = link_to "查看明细", admin_abuse_reports_url

@@ -2,10 +2,13 @@ class @Calendar
   constructor: (timestamps, starting_year, starting_month, calendar_activities_path) ->
     cal = new CalHeatMap()
     cal.init
-      itemName: ["contribution"]
+      itemName: ["次贡献", "次贡献"]
       data: timestamps
       start: new Date(starting_year, starting_month)
-      domainLabelFormat: "%b"
+      domainLabelFormat: "%-m 月"
+      subDomainDateFormat: "%Y-%m-%d"
+      subDomainTitleFormat:
+        filled: "{date}：{count} {name}"
       id: "cal-heatmap"
       domain: "month"
       subDomain: "day"

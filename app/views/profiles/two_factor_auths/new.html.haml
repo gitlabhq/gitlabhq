@@ -1,39 +1,39 @@
-- page_title 'Two-factor Authentication', 'Account'
+- page_title '两步验证', '账号'
 
 .row.prepend-top-default
   .col-lg-3
     %h4.prepend-top-0
-      Two-factor Authentication (2FA)
+      两步验证 (2FA)
     %p
-      Increase your account's security by enabling two-factor authentication (2FA).
+      开启两步验证 (2FA) 增加账户安全性。
   .col-lg-9
     %p
-      Download the Google Authenticator application from App Store for iOS or Google Play for Android and scan this code.
-      More information is available in the #{link_to('documentation', help_page_path('profile', 'two_factor_authentication'))}.
+      请从 iOS 的 App Store 或 Android 的 Google Play 下载谷歌身份验证器 (Google Authenticator) 应用，然后扫描下面的二维码。
+      更多可用的信息请参阅此#{link_to('文档', help_page_path('profile', 'two_factor_authentication'))}。
     .row.append-bottom-10
       .col-md-3
         = raw @qr_code
       .col-md-9
         .account-well
           %p.prepend-top-0.append-bottom-0
-            Can't scan the code?
+            无法扫描代码？
           %p.prepend-top-0.append-bottom-0
-            To add the entry manually, provide the following details to the application on your phone.
+            选择手动输入账户请在手机应用上输入下列明细内容。
           %p.prepend-top-0.append-bottom-0
-            Account:
+            账户：
             = current_user.email
           %p.prepend-top-0.append-bottom-0
-            Key:
+            密钥：
             = current_user.otp_secret.scan(/.{4}/).join(' ')
           %p.two-factor-new-manual-content
-            Time based: Yes
+            基于时间：是
     = form_tag profile_two_factor_auth_path, method: :post do |f|
       - if @error
         .alert.alert-danger
           = @error
       .form-group
-        = label_tag :pin_code, nil, class: "label-light"
+        = label_tag :pin_code, 'Pin 码', class: "label-light"
         = text_field_tag :pin_code, nil, class: "form-control", required: true
       .prepend-top-default
-        = submit_tag 'Enable two-factor authentication', class: 'btn btn-success'
-        = link_to 'Configure it later', skip_profile_two_factor_auth_path, :method => :patch,  class: 'btn btn-cancel' if two_factor_skippable?
+        = submit_tag '开启两步验证', class: 'btn btn-success'
+        = link_to '稍后配置', skip_profile_two_factor_auth_path, :method => :patch,  class: 'btn btn-cancel' if two_factor_skippable?

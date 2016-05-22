@@ -1,15 +1,15 @@
-- page_title "Identities", @user.name, "Users"
+- page_title "身份", @user.name, "用户"
 = render 'admin/users/head'
 
-= link_to 'New Identity', new_admin_user_identity_path, class: 'pull-right btn btn-new'
+= link_to '新身份', new_admin_user_identity_path, class: 'pull-right btn btn-new'
 - if @identities.present?
   .table-holder
     %table.table
       %thead
         %tr
-          %th Provider
-          %th Identifier
+          %th 提供者
+          %th 身份
           %th
       = render @identities
 - else
-  %h4 This user has no identities
+  %h4 此用户没有任何身份

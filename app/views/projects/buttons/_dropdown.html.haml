@@ -11,19 +11,19 @@
         %li
           = link_to url_for_new_issue(@project, only_path: true) do
             = icon('exclamation-circle fw')
-            New issue
+            新问题
 
       - if merge_project
         %li
           = link_to new_namespace_project_merge_request_path(merge_project.namespace, merge_project) do
             = icon('tasks fw')
-            New merge request
+            新合并请求
 
       - if can_create_snippet
         %li
           = link_to new_namespace_project_snippet_path(@project.namespace, @project) do
             = icon('file-text-o fw')
-            New snippet
+            新代码片段
 
       - if can_create_issue || merge_project || can_create_snippet
         %li.divider
@@ -32,20 +32,20 @@
         %li
           = link_to namespace_project_new_blob_path(@project.namespace, @project, @project.default_branch || 'master') do
             = icon('file fw')
-            New file
+            新文件
         %li
           = link_to new_namespace_project_branch_path(@project.namespace, @project) do
             = icon('code-fork fw')
-            New branch
+            新分支
         %li
           = link_to new_namespace_project_tag_path(@project.namespace, @project) do
             = icon('tags fw')
-            New tag
+            新标签
       - elsif current_user && current_user.already_forked?(@project)
         %li
           = link_to namespace_project_new_blob_path(@project.namespace, @project, @project.default_branch || 'master') do
             = icon('file fw')
-            New file
+            新文件
       - elsif can?(current_user, :fork_project, @project)
         %li
           - continue_params = { to:         namespace_project_new_blob_path(@project.namespace, @project, @project.default_branch || 'master'),
@@ -55,4 +55,4 @@
                                                                                   continue:       continue_params)
           = link_to fork_path, method: :post do
             = icon('file fw')
-            New file
+            新文件

@@ -1,4 +1,4 @@
-- page_title "Edit", @blob.path, @ref
+- page_title "编辑", @blob.path, @ref
 = render "header_title"
 
 .file-editor
@@ -6,7 +6,7 @@
     %li.active
       = link_to '#editor' do
         = icon('edit')
-        Edit File
+        编辑文件
 
     %li
       = link_to '#preview', 'data-preview-url' => namespace_project_preview_blob_path(@project.namespace, @project, @id) do
@@ -15,7 +15,7 @@
 
   = form_tag(namespace_project_update_blob_path(@project.namespace, @project, @id), method: :put, class: 'form-horizontal js-quick-submit js-requires-input js-edit-blob-form') do
     = render 'projects/blob/editor', ref: @ref, path: @path, blob_data: @blob.data
-    = render 'shared/new_commit_form', placeholder: "Update #{@blob.name}"
+    = render 'shared/new_commit_form', placeholder: "更新 #{@blob.name}"
 
     = hidden_field_tag 'last_commit', @last_commit
     = hidden_field_tag 'content', '', id: "file-content"

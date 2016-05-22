@@ -3,20 +3,20 @@
 .top-area
   %ul.nav-links
     = nav_link(page: [dashboard_projects_path, root_path]) do
-      = link_to dashboard_projects_path, title: 'Home', class: 'shortcuts-activity', data: {placement: 'right'} do
-        Your Projects
+      = link_to dashboard_projects_path, title: '主页', class: 'shortcuts-activity', data: {placement: 'right'} do
+        你的项目
     = nav_link(page: starred_dashboard_projects_path) do
-      = link_to starred_dashboard_projects_path, title: 'Starred Projects', data: {placement: 'right'} do
-        Starred Projects
+      = link_to starred_dashboard_projects_path, title: '星标项目', data: {placement: 'right'} do
+        星标项目
     = nav_link(page: [explore_root_path, trending_explore_projects_path, starred_explore_projects_path, explore_projects_path]) do
-      = link_to explore_root_path, title: 'Explore', data: {placement: 'right'} do
-        Explore Projects
+      = link_to explore_root_path, title: '浏览', data: {placement: 'right'} do
+        浏览项目
 
   .nav-controls
     = form_tag request.original_url, method: :get, class: 'project-filter-form', id: 'project-filter-form' do |f|
-      = search_field_tag :filter_projects, params[:filter_projects], placeholder: 'Filter by name...', class: 'project-filter-form-field form-control input-short projects-list-filter', spellcheck: false, id: 'project-filter-form-field', tabindex: "2"
+      = search_field_tag :filter_projects, params[:filter_projects], placeholder: '按名称过滤...', class: 'project-filter-form-field form-control input-short projects-list-filter', spellcheck: false, id: 'project-filter-form-field', tabindex: "2"
     = render 'shared/projects/dropdown'
     - if current_user.can_create_project?
       = link_to new_project_path, class: 'btn btn-new' do
         = icon('plus')
-        New Project
+        新项目

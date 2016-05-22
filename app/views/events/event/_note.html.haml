@@ -2,13 +2,12 @@
   %span.author_name= link_to_author event
   %span.event_label
     = event.action_name
+    - if event.project
+      = link_to_project event.project
+    - else
+      = event.project_name
+    的
     = event_note_title_html(event)
-    at
-
-  - if event.project
-    = link_to_project event.project
-  - else
-    = event.project_name
 
 .event-body
   .event-note

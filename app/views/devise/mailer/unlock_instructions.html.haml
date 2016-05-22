@@ -1,10 +1,9 @@
 %p
-Hello #{@resource.name}!
+你好 #{@resource.name}!
 
 %p
-  Your GitLab account has been locked due to an excessive amount of unsuccessful
-  sign in attempts. Your account will automatically unlock in
+  由于账号被试图攻击，你的 GitLab 账号被锁定。你的账号将在
   = time_ago_in_words(Devise.unlock_in.from_now)
-  or you may click the link below to unlock now.
+  自动解锁或者点击下面的链接马上解锁你的账号。
 
-%p= link_to 'Unlock your account', unlock_url(@resource, unlock_token: @token)
+%p= link_to '解锁你的账号', unlock_url(@resource, unlock_token: @token)

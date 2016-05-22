@@ -3,7 +3,7 @@
     = form_errors(@snippet)
 
     .form-group
-      = f.label :title, class: 'control-label'
+      = f.label :title, "标题", class: 'control-label'
       .col-sm-10
         = f.text_field :title, class: 'form-control', required: true, autofocus: true
 
@@ -11,25 +11,25 @@
 
     .file-editor
       .form-group
-        = f.label :file_name, "File", class: 'control-label'
+        = f.label :file_name, "文件", class: 'control-label'
         .col-sm-10
           .file-holder.snippet
             .file-title
-              = f.text_field :file_name, placeholder: "Optionally name this file to add code highlighting, e.g. example.rb for Ruby.", class: 'form-control snippet-file-name'
+              = f.text_field :file_name, placeholder: "可选的文件名称以便增加代码高亮，比如 example.rb 显示 Ruby 代码。", class: 'form-control snippet-file-name'
             .file-content.code
               %pre#editor= @snippet.content
               = f.hidden_field :content, class: 'snippet-file-content'
 
     .form-actions
       - if @snippet.new_record?
-        = f.submit 'Create snippet', class: "btn-create btn"
+        = f.submit '创建代码片段', class: "btn-create btn"
       - else
-        = f.submit 'Save changes', class: "btn-save btn"
+        = f.submit '保存修改', class: "btn-save btn"
 
       - if @snippet.project_id
-        = link_to "Cancel", namespace_project_snippets_path(@project.namespace, @project), class: "btn btn-cancel"
+        = link_to "取消", namespace_project_snippets_path(@project.namespace, @project), class: "btn btn-cancel"
       - else
-        = link_to "Cancel", snippets_path(@project), class: "btn btn-cancel"
+        = link_to "取消", snippets_path(@project), class: "btn btn-cancel"
 
 :javascript
   var editor = ace.edit("editor");

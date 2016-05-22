@@ -1,14 +1,14 @@
 .panel.panel-default
   .panel-heading
     %strong #{@project.name}
-    project members
+    项目成员
     %small
       (#{members.count})
     .controls
       = form_tag namespace_project_project_members_path(@project.namespace, @project), method: :get, class: 'form-inline member-search-form'  do
         .form-group
-          = search_field_tag :search, params[:search], { placeholder: 'Find existing member by name', class: 'form-control', spellcheck: false }
-        = button_tag class: 'btn', title: 'Search' do
+          = search_field_tag :search, params[:search], { placeholder: '使用名称查找已存在的成员', class: 'form-control', spellcheck: false }
+        = button_tag class: 'btn', title: '搜索' do
           = icon("search")
   %ul.content-list
     - members.each do |project_member|

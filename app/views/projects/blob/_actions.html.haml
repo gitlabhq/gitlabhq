@@ -1,17 +1,17 @@
 .btn-group.tree-btn-group
-  = link_to 'Raw', namespace_project_raw_path(@project.namespace, @project, @id),
+  = link_to '原文件', namespace_project_raw_path(@project.namespace, @project, @id),
       class: 'btn btn-sm', target: '_blank'
   -# only show normal/blame view links for text files
   - if blob_text_viewable?(@blob)
     - if current_page? namespace_project_blame_path(@project.namespace, @project, @id)
-      = link_to 'Normal View', namespace_project_blob_path(@project.namespace, @project, @id),
+      = link_to '普通视图', namespace_project_blob_path(@project.namespace, @project, @id),
           class: 'btn btn-sm'
     - else
-      = link_to 'Blame', namespace_project_blame_path(@project.namespace, @project, @id),
+      = link_to '审查', namespace_project_blame_path(@project.namespace, @project, @id),
           class: 'btn btn-sm' unless @blob.empty?
-  = link_to 'History', namespace_project_commits_path(@project.namespace, @project, @id),
+  = link_to '历史', namespace_project_commits_path(@project.namespace, @project, @id),
       class: 'btn btn-sm'
-  = link_to 'Permalink', namespace_project_blob_path(@project.namespace, @project,
+  = link_to '永久链接', namespace_project_blob_path(@project.namespace, @project,
       tree_join(@commit.sha, @path)), class: 'btn btn-sm'
 
 - if current_user

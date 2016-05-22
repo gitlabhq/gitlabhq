@@ -1,16 +1,16 @@
 .top-area
   .nav-text
-    - full_count_title = "#{@public_forks_count} public and #{@private_forks_count} private"
-    == #{pluralize(@total_forks_count, 'fork')}: #{full_count_title}
+    - full_count_title = "#{@public_forks_count} 个公开和 #{@private_forks_count} 个私有"
+    == #{pluralize(@total_forks_count, '个派生', '个派生')}: #{full_count_title}
 
   .nav-controls
     = form_tag request.original_url, method: :get, class: 'project-filter-form', id: 'project-filter-form' do |f|
-      = search_field_tag :filter_projects, nil, placeholder: 'Search forks', class: 'projects-list-filter project-filter-form-field form-control input-short',
+      = search_field_tag :filter_projects, nil, placeholder: '搜索派生', class: 'projects-list-filter project-filter-form-field form-control input-short',
         spellcheck: false, data: { 'filter-selector' => 'span.namespace-name' }
 
     .dropdown
       %button.dropdown-toggle.btn.sort-forks{type: 'button', 'data-toggle' => 'dropdown'}
-        %span.light sort:
+        %span.light 排序：
         - if @sort.present?
           = sort_options_hash[@sort]
         - else
@@ -30,13 +30,13 @@
 
     - if current_user && can?(current_user, :fork_project, @project)
       - if current_user.already_forked?(@project) && current_user.manageable_namespaces.size < 2
-        = link_to namespace_project_path(current_user, current_user.fork_of(@project)), title: 'Go to your fork', class: 'btn btn-new' do
+        = link_to namespace_project_path(current_user, current_user.fork_of(@project)), title: '转到您的派生', class: 'btn btn-new' do
           = icon('code-fork fw')
-          Fork
+          派生
       - else
-        = link_to new_namespace_project_fork_path(@project.namespace, @project), title: "Fork project", class: 'btn btn-new' do
+        = link_to new_namespace_project_fork_path(@project.namespace, @project), title: "派生项目", class: 'btn btn-new' do
           = icon('code-fork fw')
-          Fork
+          派生
 
 
 = render 'projects', projects: @forks
@@ -44,5 +44,5 @@
 - if @private_forks_count > 0
   .private-forks-notice
     = icon('lock fw', base: 'circle', class: 'fa-lg private-fork-icon')
-    %strong= pluralize(@private_forks_count, 'private fork')
-    %span you have no access to.
+    %strong= pluralize(@private_forks_count, '个私有派生', '个私有派生')
+    %span 您没有权限访问。

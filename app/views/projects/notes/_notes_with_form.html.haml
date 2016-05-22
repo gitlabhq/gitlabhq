@@ -11,11 +11,11 @@
     - else
       .disabled-comment.text-center
         .disabled-comment-text.inline
-          Please
-          = link_to "register",new_user_session_path
-          or
-          = link_to "login",new_user_session_path
-          to post a comment
+          请
+          = link_to "注册",new_user_session_path
+          或
+          = link_to "登录",new_user_session_path
+          后发表评论
 
 :javascript
   var notes = new Notes("#{namespace_project_notes_path(namespace_id: @project.namespace, target_id: @noteable.id, target_type: @noteable.class.name.underscore)}", #{@notes.map(&:id).to_json}, #{Time.now.to_i}, "#{diff_view}")

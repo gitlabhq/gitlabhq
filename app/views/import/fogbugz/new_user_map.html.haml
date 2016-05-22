@@ -1,8 +1,8 @@
-- page_title 'User map', 'FogBugz import'
-- header_title "Projects", root_path
+- page_title '用户映射', 'FogBugz 导入'
+- header_title "项目", root_path
 %h3.page-title
   %i.fa.fa-bug
-  Import projects from FogBugz
+  从 FogBugz 导入项目
 %hr
 
 = form_tag create_user_map_import_fogbugz_path, class: 'form-horizontal' do
@@ -13,14 +13,14 @@
     The user map is a mapping of the FogBugz users that participated on your projects to the way their email address and usernames wil be imported into GitLab. You can change this by populating the table below.
   %ul
     %li
-      %strong Default: Map a FogBugz account ID to a full name
+      %strong 默认：映射 FogBugz 账号 ID 到完整姓名
       %p
         An empty GitLab User field will add the FogBugz user's full name
         (e.g. "By John Smith") in the description of all issues and comments.
         It will also associate and/or assign these issues and comments with
         the project creator.
     %li
-      %strong Map a FogBugz account ID to a GitLab user
+      %strong 映射 FogBugz 账号 ID 到 GitLab 用户
       %p
         Selecting a GitLab user will add a link to the GitLab user in the descriptions
         of issues and comments (e.g. "By <a href="#">@johnsmith</a>"). It will also
@@ -31,9 +31,9 @@
       %thead
         %tr
           %th ID
-          %th Name
-          %th Email
-          %th GitLab User
+          %th 名称
+          %th 邮箱
+          %th GitLab 用户
       %tbody
         - @user_map.each do |id, user|
           %tr
@@ -45,7 +45,7 @@
                 scope: :all, email_user: true, selected: user[:gitlab_user])
 
   .form-actions
-    = submit_tag 'Continue to the next step', class: 'btn btn-create'
+    = submit_tag '继续下一步', class: 'btn btn-create'
 
 :javascript
   new UsersSelect();

@@ -7,7 +7,7 @@ class EmailRejectionMailer < BaseMailer
 
     headers = {
       to: @original_message.from,
-      subject: "[Rejected] #{@original_message.subject}"
+      subject: "[拒收] #{@original_message.subject}"
     }
 
     headers['Message-ID'] = "<#{SecureRandom.hex}@#{Gitlab.config.gitlab.host}>"

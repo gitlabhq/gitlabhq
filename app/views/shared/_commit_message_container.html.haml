@@ -1,7 +1,7 @@
 .form-group.commit_message-group
   - nonce = SecureRandom.hex
   = label_tag "commit_message-#{nonce}", class: 'control-label' do
-    Commit message
+    提交信息
   .col-sm-10
     .commit-message-container
       .max-width-marker
@@ -12,5 +12,4 @@
           id: "commit_message-#{nonce}"
     - if local_assigns[:hint]
       %p.hint
-        Try to keep the first line under 52 characters
-        and the others under 72.
+        建议第一行最多 52 个字节，其他行最多 72 字节。

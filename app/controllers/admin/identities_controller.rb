@@ -11,7 +11,7 @@ class Admin::IdentitiesController < Admin::ApplicationController
     @identity.user_id = user.id
 
     if @identity.save
-      redirect_to admin_user_identities_path(@user), notice: 'User identity was successfully created.'
+      redirect_to admin_user_identities_path(@user), notice: '用户身份创建成功。'
     else
       render :new
     end
@@ -27,7 +27,7 @@ class Admin::IdentitiesController < Admin::ApplicationController
   def update
     if @identity.update_attributes(identity_params)
       RepairLdapBlockedUserService.new(@user).execute
-      redirect_to admin_user_identities_path(@user), notice: 'User identity was successfully updated.'
+      redirect_to admin_user_identities_path(@user), notice: '用户身份更新成功。'
     else
       render :edit
     end
@@ -36,9 +36,9 @@ class Admin::IdentitiesController < Admin::ApplicationController
   def destroy
     if @identity.destroy
       RepairLdapBlockedUserService.new(@user).execute
-      redirect_to admin_user_identities_path(@user), notice: 'User identity was successfully removed.'
+      redirect_to admin_user_identities_path(@user), notice: '用户身份删除成功。'
     else
-      redirect_to admin_user_identities_path(@user), alert: 'Failed to remove user identity.'
+      redirect_to admin_user_identities_path(@user), alert: '删除用户身份失败。'
     end
   end
 

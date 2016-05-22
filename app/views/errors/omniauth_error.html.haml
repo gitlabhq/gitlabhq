@@ -1,13 +1,13 @@
-- page_title "Auth Error"
+- page_title "认证错误"
 %h1 422
-%h3 Sign-in using #{@provider} auth failed
+%h3 使用 #{@provider} 认证登录失败
 %hr
-%p Sign-in failed because #{@error}.
-%p There are couple of steps you can take:
+%p 因为 #{@error} 造成登录失败。
+%p 可能是因为下列原因造成：
 
 %ul
-  %li Try logging in using your email
-  %li Try logging in using your username
-  %li If you have forgotten your password, try recovering it using #{ link_to "Password recovery", new_password_path(resource_name) }
+  %li 使用您的邮箱尝试登录
+  %li 使用您的用户名尝试登录
+  %li 如果您忘记密码，请使用#{ link_to "密码找回", new_password_path(resource_name) }功能找回密码
 
-%p If none of the options work, try contacting the GitLab administrator.
+%p 如果不是上诉原因，请联系 GitLab 管理员。

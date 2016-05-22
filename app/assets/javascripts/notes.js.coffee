@@ -162,7 +162,7 @@ class @Notes
   renderNote: (note) ->
     unless note.valid
       if note.award
-        flash = new Flash('You have already used this award emoji!', 'alert')
+        flash = new Flash('你已经赞过！', 'alert')
         flash.pinTo('.header-content')
       return
 
@@ -317,7 +317,7 @@ class @Notes
     @renderNote(note)
 
   addNoteError: (xhr, note, status) =>
-    flash = new Flash('Your comment could not be submitted! Please check your network connection and try again.', 'alert')
+    flash = new Flash('无法提交你的评论！请检查你的网络连接后重试。', 'alert')
     flash.pinTo('.md-area')
 
   ###

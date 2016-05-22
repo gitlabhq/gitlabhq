@@ -1,29 +1,29 @@
 %ul.nav.nav-sidebar
   = nav_link(controller: :dashboard, html_options: {class: 'home'}) do
-    = link_to admin_root_path, title: 'Overview' do
+    = link_to admin_root_path, title: '概览' do
       = icon('dashboard fw')
       %span
-        Overview
+        概览
   = nav_link(controller: [:admin, :projects]) do
-    = link_to admin_namespaces_projects_path, title: 'Projects' do
+    = link_to admin_namespaces_projects_path, title: '项目' do
       = icon('cube fw')
       %span
-        Projects
+        项目
   = nav_link(controller: :users) do
-    = link_to admin_users_path, title: 'Users' do
+    = link_to admin_users_path, title: '用户' do
       = icon('user fw')
       %span
-        Users
+        用户
   = nav_link(controller: :groups) do
-    = link_to admin_groups_path, title: 'Groups' do
+    = link_to admin_groups_path, title: '群组' do
       = icon('group fw')
       %span
-        Groups
+        群组
   = nav_link(controller: :deploy_keys) do
-    = link_to admin_deploy_keys_path, title: 'Deploy Keys' do
+    = link_to admin_deploy_keys_path, title: '部署密钥' do
       = icon('key fw')
       %span
-        Deploy Keys
+        部署密钥
   = nav_link path: ['runners#index', 'runners#show'] do
     = link_to admin_runners_path, title: 'Runners' do
       = icon('cog fw')

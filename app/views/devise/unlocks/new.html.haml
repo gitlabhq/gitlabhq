@@ -1,14 +1,14 @@
 .login-box
   .login-heading
-    %h3 Resend unlock email
+    %h3 重新发送解锁邮件
   .login-body
     = form_for(resource, as: resource_name, url: unlock_path(resource_name), html: { method: :post }) do |f|
       .devise-errors
         = devise_error_messages!
       .clearfix.append-bottom-20
-        = f.email_field :email, class: 'form-control', placeholder: 'Email', autofocus: 'autofocus', autocapitalize: 'off', autocorrect: 'off'
+        = f.email_field :email, class: 'form-control', placeholder: '邮箱', autofocus: 'autofocus', autocapitalize: 'off', autocorrect: 'off'
       .clearfix
-        = f.submit 'Resend unlock instructions', class: 'btn btn-success'
+        = f.submit '重新发送解锁指令', class: 'btn btn-success'
 
 .clearfix.prepend-top-20
   = render 'devise/shared/sign_in_link'

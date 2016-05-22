@@ -1,6 +1,6 @@
 .form-actions
-  = button_tag 'Commit Changes', class: 'btn commit-btn js-commit-button btn-create'
-  = link_to 'Cancel', cancel_path,
+  = button_tag '提交修改', class: 'btn commit-btn js-commit-button btn-create'
+  = link_to '取消', cancel_path,
             class: 'btn btn-cancel', data: {confirm: leave_edit_message}
 
   - unless can?(current_user, :push_code, @project)

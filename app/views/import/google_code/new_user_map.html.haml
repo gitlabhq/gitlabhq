@@ -1,36 +1,36 @@
-- page_title "User map", "Google Code import"
-- header_title "Projects", root_path
+- page_title "用户映射", "Google 代码导入"
+- header_title "项目", root_path
 %h3.page-title
   %i.fa.fa-google
-  Import projects from Google Code
+  从 Google 代码导入项目
 %hr
 
 = form_tag create_user_map_import_google_code_path, class: 'form-horizontal' do
   %p
-    Customize how Google Code email addresses and usernames are imported into GitLab.
-    In the next step, you'll be able to select the projects you want to import.
+    自定义 Google 代码邮箱地址和用户名导入到 GitLab。
+    下一步，请先选择要导入的项目。
   %p
     The user map is a JSON document mapping the Google Code users that participated on your projects to the way their email addresses and usernames will be imported into GitLab. You can change this by changing the value on the right hand side of <code>:</code>. Be sure to preserve the surrounding double quotes, other punctuation and the email address or username on the left hand side.
   %ul
     %li
-      %strong Default: Directly import the Google Code email address or username
+      %strong 默认：直接导入 Google 代码邮箱地址或用户名
       %p
         <code>"johnsmith@example.com": "johnsm...@example.com"</code>
         will add "By johnsm...@example.com" to all issues and comments originally created by johnsmith@example.com.
         The email address or username is masked to ensure the user's privacy.
     %li
-      %strong Map a Google Code user to a GitLab user
+      %strong 映射 Google 代码用户到 GitLab 用户
       %p
         <code>"johnsmith@example.com": "@johnsmith"</code>
         will add "By <a href="#">@johnsmith</a>" to all issues and comments originally created by johnsmith@example.com,
         and will set <a href="#">@johnsmith</a> as the assignee on all issues originally assigned to johnsmith@example.com.
     %li
-      %strong Map a Google Code user to a full name
+      %strong 映射 Google 代码用户到完整姓名
       %p
         <code>"johnsmith@example.com": "John Smith"</code>
         will add "By John Smith" to all issues and comments originally created by johnsmith@example.com.
     %li
-      %strong Map a Google Code user to a full email address
+      %strong 映射 Google 代码用户到完整邮箱地址
       %p
         <code>"johnsmith@example.com": "johnsmith@example.com"</code>
         will add "By <a href="#">johnsmith@example.com</a>" to all issues and comments originally created by johnsmith@example.com.
@@ -41,4 +41,4 @@
       = text_area_tag :user_map, JSON.pretty_generate(@user_map), class: 'form-control', rows: 15
 
   .form-actions
-    = submit_tag 'Continue to the next step', class: "btn btn-create"
+    = submit_tag '继续下一步', class: "btn btn-create"

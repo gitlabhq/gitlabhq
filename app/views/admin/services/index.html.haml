@@ -1,15 +1,15 @@
-- page_title "Service Templates"
-%h3.page-title Service templates
-%p.light Service template allows you to set default values for project services
+- page_title "服务模板"
+%h3.page-title 服务模板
+%p.light 服务模板可以为项目服务设置默认值
 
 .table-holder
   %table.table
     %thead
       %tr
         %th
-        %th Service
-        %th Description
-        %th Last edit
+        %th 服务
+        %th 描述
+        %th 最后编辑
     - @services.sort_by(&:title).each do |service|
       %tr
         %td
@@ -21,4 +21,4 @@
           = service.description
         %td.light
           = time_ago_in_words service.updated_at
-          ago
+          过去

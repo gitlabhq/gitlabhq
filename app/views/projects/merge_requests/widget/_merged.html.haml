@@ -2,32 +2,32 @@
   = render 'projects/merge_requests/widget/heading'
   .mr-widget-body
     %h4
-      Merged
+      已合并
       - if @merge_request.merge_event
-        by #{link_to_member(@project, @merge_request.merge_event.author, avatar: true)}
+        提交者：#{link_to_member(@project, @merge_request.merge_event.author, avatar: true)}
         #{time_ago_with_tooltip(@merge_request.merge_event.created_at)}
     %div
       - if !@merge_request.source_branch_exists? || (params[:delete_source] == 'true')
         %p
-          The changes were merged into
-          #{link_to @merge_request.target_branch, namespace_project_commits_path(@project.namespace, @project, @merge_request.target_branch), class: "label-branch"}.
-          The source branch has been removed.
+          变更已合并到
+          #{link_to @merge_request.target_branch, namespace_project_commits_path(@project.namespace, @project, @merge_request.target_branch), class: "label-branch"}，
+          来源分支已被删除。
         = render 'projects/merge_requests/widget/merged_buttons'
       - elsif @merge_request.can_remove_source_branch?(current_user)
         .remove_source_branch_widget
           %p
-            The changes were merged into
-            #{link_to @merge_request.target_branch, namespace_project_commits_path(@project.namespace, @project, @merge_request.target_branch), class: "label-branch"}.
-            You can remove the source branch now.
+            变更已合并到
+            #{link_to @merge_request.target_branch, namespace_project_commits_path(@project.namespace, @project, @merge_request.target_branch), class: "label-branch"}，
+            你现在可以删除来源分支。
           = render 'projects/merge_requests/widget/merged_buttons', source_branch_exists: true
         .remove_source_branch_widget.failed.hide
           %p
-            Failed to remove source branch '#{@merge_request.source_branch}'.
+            删除来源分支 '#{@merge_request.source_branch}' 失败。
 
         .remove_source_branch_in_progress.hide
           %p
             = icon('spinner spin')
-            Removing source branch '#{@merge_request.source_branch}'. Please wait, this page will be automatically reloaded.
+            正在删除来源分支 '#{@merge_request.source_branch}'。请稍候，页面将会被自动重载。
 
         :javascript
           $('.remove_source_branch').on('click', function() {

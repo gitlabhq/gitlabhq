@@ -5,7 +5,7 @@
       - if snippet_title.private?
         %span.label.label-gray
           %i.fa.fa-lock
-          private
+          私有
     %span.cgray.monospace.tiny.pull-right.term
       = snippet_title.file_name
 
@@ -16,7 +16,7 @@
   .snippet-info
     = "##{snippet_title.id}"
     %span
-      by
+      属于
       = link_to user_snippets_path(snippet_title.author) do
         = image_tag avatar_icon(snippet_title.author_email), class: "avatar avatar-inline s16", alt: ''
         = snippet_title.author_name

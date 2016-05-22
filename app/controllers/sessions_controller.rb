@@ -49,7 +49,7 @@ class SessionsController < Devise::SessionsController
     user.save
 
     redirect_to edit_user_password_path(reset_password_token: token),
-      notice: "Please create a password for your new account."
+      notice: "请为您的新帐户创建密码。"
   end
 
   def user_params
@@ -98,7 +98,7 @@ class SessionsController < Devise::SessionsController
 
         sign_in(user) and return
       else
-        flash.now[:alert] = 'Invalid two-factor code.'
+        flash.now[:alert] = '无效的两步验证代码。'
         render :two_factor and return
       end
     else

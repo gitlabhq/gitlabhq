@@ -1,10 +1,10 @@
 %p
-  Hi #{@user.name}!
+  你好 #{@user.name}!
 %p
-  A new public key was added to your account:
+  你的账号增加了一个新的公钥:
 %p
-  title:
+  标题:
   %code= @key.title
 %p
-  If this key was added in error, you can remove it under
-  = link_to "SSH Keys", profile_keys_url
+  如果错误增加该 SSH 密钥，可以在这里删除它:
+  = link_to "SSH 密钥", profile_keys_url

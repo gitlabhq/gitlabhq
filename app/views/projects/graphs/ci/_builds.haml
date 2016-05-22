@@ -1,29 +1,29 @@
-%h4 Build charts
+%h4 构建图表
 %p
   &nbsp;
   %span.cgreen
     = icon("circle")
-    success
+    成功
   &nbsp;
   %span.cgray
     = icon("circle")
-    all
+    全部
 
 .prepend-top-default
   %p.light
-    Builds for last week
+    上周构建图表
     (#{date_from_to(Date.today - 7.days, Date.today)})
   %canvas#weekChart{height: 200}
 
 .prepend-top-default
   %p.light
-    Builds for last month
+    上月构建图表
     (#{date_from_to(Date.today - 30.days, Date.today)})
   %canvas#monthChart{height: 200}
 
 .prepend-top-default
   %p.light
-    Builds for last year
+    去年构建图表
   %canvas#yearChart.padded{height: 250}
 
 - [:week, :month, :year].each do |scope|

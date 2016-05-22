@@ -3,19 +3,19 @@
     .modal-content
       .modal-header
         %a.close{href: "#", "data-dismiss" => "modal"} ×
-        %h3.page-title Create New Directory
+        %h3.page-title 创建新目录
       .modal-body
         = form_tag namespace_project_create_dir_path(@project.namespace, @project, @id), method: :post, remote: false, class: 'form-horizontal js-create-dir-form js-quick-submit js-requires-input' do
           .form-group
-            = label_tag :dir_name, 'Directory name', class: 'control-label'
+            = label_tag :dir_name, '目录名称', class: 'control-label'
             .col-sm-10
               = text_field_tag :dir_name, params[:dir_name], required: true, class: 'form-control'
 
-          = render 'shared/new_commit_form', placeholder: "Add new directory"
+          = render 'shared/new_commit_form', placeholder: "增加新目录"
 
           .form-actions
-            = submit_tag "Create directory", class: 'btn btn-create'
-            = link_to "Cancel", '#', class: "btn btn-cancel", "data-dismiss" => "modal"
+            = submit_tag "创建目录", class: 'btn btn-create'
+            = link_to "取消", '#', class: "btn btn-cancel", "data-dismiss" => "modal"
 
             - unless can?(current_user, :push_code, @project)
               .inline.prepend-left-10

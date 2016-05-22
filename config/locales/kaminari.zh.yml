@@ -1,0 +1,17 @@
+zh:
+  views:
+    pagination:
+      first: "第一页"
+      last: "最后一页"
+      previous: "上一页"
+      next: "下一页"
+      truncate: "..."
+  helpers:
+    page_entries_info:
+      one_page:
+        display_entries:
+          zero: "没有任何数据"
+          one: "共 <b>1</b> 条数据"
+          other: "共 <b>%{count}</b> 条数据"
+      more_pages:
+        display_entries: "显示数据 <b>%{first}&nbsp;-&nbsp;%{last}</b> 共 <b>%{total}</b> 条"

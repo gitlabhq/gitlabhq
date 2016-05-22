@@ -26,7 +26,7 @@ class @ContributorsStatGraph
     commits = $('<span/>', {
       class: 'graph-author-commits-count'
     })
-    commits.text(author.commits + " commits")
+    commits.text(author.commits + " 次提交")
     $('<span/>').append(commits)
 
   create_author_header: (author) ->
@@ -63,8 +63,8 @@ class @ContributorsStatGraph
     @field = field
   change_date_header: ->
     x_domain = ContributorsGraph.prototype.x_domain
-    print_date_format = d3.time.format("%B %e %Y")
-    print = print_date_format(x_domain[0]) + " - " + print_date_format(x_domain[1])
+    print_date_format = d3.time.format("%Y-%m-%d")
+    print = print_date_format(x_domain[0]) + " 到 " + print_date_format(x_domain[1])
     $("#date_header").text(print)
   redraw_author_commit_info: (author) ->
     author_list_item = $(@authors[author.author_name].list_item)

@@ -1,27 +1,27 @@
-- page_title @application.name, "Applications"
+- page_title @application.name, "应用"
 %h3.page-title
-  Application: #{@application.name}
+  应用：#{@application.name}
 
 .table-holder
   %table.table
     %tr
       %td
-        Application Id
+        应用 Id
       %td
         %code#application_id= @application.uid
     %tr
       %td
-        Secret:
+        密匙：
       %td
         %code#secret= @application.secret
 
     %tr
       %td
-        Callback url
+        回调链接
       %td
         - @application.redirect_uri.split.each do |uri|
           %div
             %span.monospace= uri
 .form-actions
-  = link_to 'Edit', edit_oauth_application_path(@application), class: 'btn btn-primary wide pull-left'
+  = link_to '编辑', edit_oauth_application_path(@application), class: 'btn btn-primary wide pull-left'
   = render 'delete_form', application: @application, submit_btn_css: 'btn btn-danger prepend-left-10'

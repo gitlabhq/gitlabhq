@@ -4,21 +4,21 @@
     .block.issuable-sidebar-header
       %span.issuable-count.hide-collapsed.pull-left
         = issuable.iid
-        of
+        \/
         = issuables_count(issuable)
       %a.gutter-toggle.pull-right.js-sidebar-toggle{href: '#'}
         = sidebar_gutter_toggle_icon
       .issuable-nav.hide-collapsed.pull-right.btn-group{role: 'group', "aria-label" => '...'}
         - if prev_issuable = prev_issuable_for(issuable)
-          = link_to 'Prev', [@project.namespace.becomes(Namespace), @project, prev_issuable], class: 'btn btn-default prev-btn issuable-pager'
+          = link_to '上一个', [@project.namespace.becomes(Namespace), @project, prev_issuable], class: 'btn btn-default prev-btn issuable-pager'
         - else
           %a.btn.btn-default.issuable-pager.disabled{href: '#'}
-            Prev
+            上一个
         - if next_issuable = next_issuable_for(issuable)
-          = link_to 'Next', [@project.namespace.becomes(Namespace), @project, next_issuable], class: 'btn btn-default next-btn issuable-pager'
+          = link_to '下一个', [@project.namespace.becomes(Namespace), @project, next_issuable], class: 'btn btn-default next-btn issuable-pager'
         - else
           %a.btn.btn-default.issuable-pager.disabled{href: '#'}
-            Next
+            下一个
 
     = form_for [@project.namespace.becomes(Namespace), @project, issuable], remote: true, format: :json, html: {class: 'issuable-context-form inline-update js-issuable-update'} do |f|
       .block.assignee
@@ -28,28 +28,28 @@
           - else
             = icon('user')
         .title.hide-collapsed
-          Assignee
+          指派
           = icon('spinner spin', class: 'block-loading')
           - if can_edit_issuable
-            = link_to 'Edit', '#', class: 'edit-link pull-right'
+            = link_to '编辑', '#', class: 'edit-link pull-right'
         .value.bold.hide-collapsed
           - if issuable.assignee
             = link_to_member(@project, issuable.assignee, size: 32) do
               - if issuable.instance_of?(MergeRequest) && !issuable.can_be_merged_by?(issuable.assignee)
-                %span.pull-right.cannot-be-merged{ data: { toggle: 'tooltip', placement: 'left' }, title: 'Not allowed to merge' }
+                %span.pull-right.cannot-be-merged{ data: { toggle: 'tooltip', placement: 'left' }, title: '不允许合并' }
                   = icon('exclamation-triangle')
               %span.username
                 = issuable.assignee.to_reference
           - else
             %span.assign-yourself
-              No assignee
+              无指派
               - if can_edit_issuable
                 %a.js-assign-yourself{ href: '#' }
-                  \- assign yourself
+                  \- 指派给你自己
 
         .selectbox.hide-collapsed
           = f.hidden_field 'assignee_id', value: issuable.assignee_id, id: 'issue_assignee_id'
-          = dropdown_tag('Select assignee', options: { toggle_class: 'js-user-search js-author-search', title: 'Assign to', filter: true, dropdown_class: 'dropdown-menu-user dropdown-menu-selectable dropdown-menu-author', placeholder: 'Search users', data: { first_user: (current_user.username if current_user), current_user: true, project_id: (@project.id if @project), author_id: issuable.author_id, field_name: "#{issuable.to_ability_name}[assignee_id]", issue_update: issuable_json_path(issuable), ability_name: issuable.to_ability_name, null_user: true } })
+          = dropdown_tag('选择指派', options: { toggle_class: 'js-user-search js-author-search', title: '指派给', filter: true, dropdown_class: 'dropdown-menu-user dropdown-menu-selectable dropdown-menu-author', placeholder: '搜索用户', data: { first_user: (current_user.username if current_user), current_user: true, project_id: (@project.id if @project), author_id: issuable.author_id, field_name: "#{issuable.to_ability_name}[assignee_id]", issue_update: issuable_json_path(issuable), ability_name: issuable.to_ability_name, null_user: true } })
 
       .block.milestone
         .sidebar-collapsed-icon
@@ -58,48 +58,48 @@
             - if issuable.milestone
               = issuable.milestone.title
             - else
-              None
+              无
         .title.hide-collapsed
-          Milestone
+          里程碑
           = icon('spinner spin', class: 'block-loading')
           - if can_edit_issuable
-            = link_to 'Edit', '#', class: 'edit-link pull-right'
+            = link_to '编辑', '#', class: 'edit-link pull-right'
         .value.bold.hide-collapsed
           - if issuable.milestone
             = link_to namespace_project_milestone_path(@project.namespace, @project, issuable.milestone) do
               = issuable.milestone.title
           - else
-            .light None
+            .light 无
 
         .selectbox.hide-collapsed
           = f.hidden_field 'milestone_id', value: issuable.milestone_id, id: nil
-          = dropdown_tag('Milestone', options: { title: 'Assign milestone', toggle_class: 'js-milestone-select js-extra-options', filter: true, dropdown_class: 'dropdown-menu-selectable', placeholder: 'Search milestones', data: { show_no: true, field_name: "#{issuable.to_ability_name}[milestone_id]", project_id: @project.id, issuable_id: issuable.id, milestones: namespace_project_milestones_path(@project.namespace, @project, :json), ability_name: issuable.to_ability_name, issue_update: issuable_json_path(issuable), use_id: true }})
+          = dropdown_tag('里程碑', options: { title: '指派里程碑', toggle_class: 'js-milestone-select js-extra-options', filter: true, dropdown_class: 'dropdown-menu-selectable', placeholder: '选择里程碑', data: { show_no: true, field_name: "#{issuable.to_ability_name}[milestone_id]", project_id: @project.id, issuable_id: issuable.id, milestones: namespace_project_milestones_path(@project.namespace, @project, :json), ability_name: issuable.to_ability_name, issue_update: issuable_json_path(issuable), use_id: true }})
 
       - if issuable.has_attribute?(:due_date)
         .block.due_date
           .sidebar-collapsed-icon
             = icon('calendar')
             %span.js-due-date-sidebar-value
-              = issuable.due_date.try(:to_s, :medium) || 'None'
+              = issuable.due_date.try(:to_s, :medium) || '无'
           .title.hide-collapsed
-            Due date
+            到期日
             = icon('spinner spin', class: 'block-loading')
             - if can?(current_user, :"admin_#{issuable.to_ability_name}", @project)
-              = link_to 'Edit', '#', class: 'edit-link pull-right'
+              = link_to '编辑', '#', class: 'edit-link pull-right'
           .value.bold.hide-collapsed
             - if issuable.due_date
               = issuable.due_date.to_s(:medium)
             - else
-              .light None
+              .light 无
           - if can?(current_user, :"admin_#{issuable.to_ability_name}", @project)
             .selectbox.hide-collapsed
               = f.hidden_field :due_date, value: issuable.due_date
               .dropdown
                 %button.dropdown-menu-toggle.js-due-date-select{ type: 'button', data: { toggle: 'dropdown', field_name: "#{issuable.to_ability_name}[due_date]", ability_name: issuable.to_ability_name, issue_update: issuable_json_path(issuable) } }
-                  %span.dropdown-toggle-text Due date
+                  %span.dropdown-toggle-text 到期日
                   = icon('chevron-down')
                 .dropdown-menu.dropdown-menu-due-date
-                  = dropdown_title('Due date')
+                  = dropdown_title('到期日')
                   = dropdown_content do
                     .js-due-date-calendar
 
@@ -110,16 +110,16 @@
             %span
               = issuable.labels.count
           .title.hide-collapsed
-            Labels
+            标记
             = icon('spinner spin', class: 'block-loading')
             - if can_edit_issuable
-              = link_to 'Edit', '#', class: 'edit-link pull-right'
+              = link_to '编辑', '#', class: 'edit-link pull-right'
           .value.bold.issuable-show-labels.hide-collapsed{ class: ("has-labels" if issuable.labels.any?) }
             - if issuable.labels.any?
               - issuable.labels.each do |label|
                 = link_to_label(label, type: issuable.to_ability_name)
             - else
-              .light None
+              .light 无
           .selectbox.hide-collapsed
             - issuable.labels.each do |label|
               = hidden_field_tag "#{issuable.to_ability_name}[label_names][]", label.id, id: nil
@@ -140,15 +140,15 @@
           .sidebar-collapsed-icon
             = icon('rss')
           .title.hide-collapsed
-            Notifications
+            通知
           - subscribtion_status = subscribed ? 'subscribed' : 'unsubscribed'
           %button.btn.btn-block.btn-gray.js-subscribe-button.issuable-subscribe-button.hide-collapsed{ type: "button" }
-            %span= subscribed ? 'Unsubscribe' : 'Subscribe'
+            %span= subscribed ? '取消订阅' : '订阅'
           .subscription-status.hide-collapsed{data: {status: subscribtion_status}}
             .unsubscribed{class: ( 'hidden' if subscribed )}
-              You're not receiving notifications from this thread.
+              你将不会再收到此主题的通知。
             .subscribed{class: ( 'hidden' unless subscribed )}
-              You're receiving notifications because you're subscribed to this thread.
+              因为你订阅了本主题，将会收到相关通知。
 
       - project_ref = cross_project_reference(@project, issuable)
       .block.project-reference
@@ -156,7 +156,7 @@
           = clipboard_button(clipboard_text: project_ref)
         .cross-project-reference.hide-collapsed
           %span
-            Reference:
+            参考：
             %cite{title: project_ref}
               = project_ref
           = clipboard_button(clipboard_text: project_ref)

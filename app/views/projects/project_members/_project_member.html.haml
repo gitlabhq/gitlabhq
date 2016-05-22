@@ -9,41 +9,41 @@
         = link_to user.name, user_path(user)
       %span.cgray= user.username
       - if user == current_user
-        %span.label.label-success It's you
+        %span.label.label-success 自己
       - if user.blocked?
         %label.label.label-danger
-          %strong Blocked
+          %strong 已禁用
     - else
       = image_tag avatar_icon(member.invite_email, 24), class: "avatar s24", alt: ''
       %strong
         = member.invite_email
       %span.cgray
-        invited
+        被
         - if member.created_by
-          by
           = link_to member.created_by.name, user_path(member.created_by)
+        邀请
         = time_ago_with_tooltip(member.created_at)
 
       - if can?(current_user, :admin_project_member, @project)
-        = link_to resend_invite_namespace_project_project_member_path(@project.namespace, @project, member), method: :post, class: "btn-xs btn", title: 'Resend invite' do
-          Resend invite
+        = link_to resend_invite_namespace_project_project_member_path(@project.namespace, @project, member), method: :post, class: "btn-xs btn", title: '重发邀请' do
+          重发邀请
 
   - if can?(current_user, :admin_project_member, @project)
     .pull-right
       %strong= member.human_access
       - if can?(current_user, :update_project_member, member)
         = button_tag class: "btn-xs btn js-toggle-button",
-                     title: 'Edit access level', type: 'button' do
+                     title: '编辑访问等级', type: 'button' do
           %i.fa.fa-pencil-square-o
 
       - if can?(current_user, :destroy_project_member, member)
         &nbsp;
         - if current_user == user
-          = link_to leave_namespace_project_project_members_path(@project.namespace, @project), data: { confirm: leave_project_message(@project) }, method: :delete, class: "btn-xs btn btn-remove", title: 'Leave project' do
+          = link_to leave_namespace_project_project_members_path(@project.namespace, @project), data: { confirm: leave_project_message(@project) }, method: :delete, class: "btn-xs btn btn-remove", title: '离开项目' do
             = icon("sign-out")
-            Leave
+            离开
         - else
-          = link_to namespace_project_project_member_path(@project.namespace, @project, member), data: { confirm: remove_from_project_team_message(@project, member) }, method: :delete, remote: true, class: "btn-xs btn btn-remove", title: 'Remove user from team' do
+          = link_to namespace_project_project_member_path(@project.namespace, @project, member), data: { confirm: remove_from_project_team_message(@project, member) }, method: :delete, remote: true, class: "btn-xs btn btn-remove", title: '从团队中删除用户' do
             %i.fa.fa-minus.fa-inverse
 
     .edit-member.hide.js-toggle-content
@@ -52,4 +52,4 @@
         .prepend-top-10
           = f.select :access_level, options_for_select(ProjectMember.access_roles, member.access_level), {}, class: 'form-control'
         .prepend-top-10
-          = f.submit 'Save', class: 'btn btn-save'
+          = f.submit '保存', class: 'btn btn-save'

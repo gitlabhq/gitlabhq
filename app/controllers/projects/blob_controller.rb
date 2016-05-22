@@ -1,3 +1,4 @@
+#encoding: utf-8
 # Controller for viewing a file's blame
 class Projects::BlobController < Projects::ApplicationController
   include ExtractsPath
@@ -22,7 +23,7 @@ class Projects::BlobController < Projects::ApplicationController
   end
 
   def create
-    create_commit(Files::CreateService, success_notice: "The file has been successfully created.",
+    create_commit(Files::CreateService, success_notice: "文件已创建成功。",
                                         success_path: namespace_project_blob_path(@project.namespace, @project, File.join(@target_branch, @file_path)),
                                         failure_view: :new,
                                         failure_path: namespace_project_new_blob_path(@project.namespace, @project, @ref))
@@ -62,7 +63,7 @@ class Projects::BlobController < Projects::ApplicationController
   end
 
   def destroy
-    create_commit(Files::DeleteService, success_notice: "The file has been successfully deleted.",
+    create_commit(Files::DeleteService, success_notice: "文件已删除成功。",
                                         success_path: namespace_project_tree_path(@project.namespace, @project, @target_branch),
                                         failure_view: :show,
                                         failure_path: namespace_project_blob_path(@project.namespace, @project, @id))

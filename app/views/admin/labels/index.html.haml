@@ -1,10 +1,10 @@
-- page_title "Labels"
+- page_title "标记"
 
 %div
   = link_to new_admin_label_path, class: "pull-right btn btn-nr btn-new" do
-    New label
+    新标记
   %h3.page-title
-    Labels
+    标记
 %hr
 
 .labels
@@ -14,5 +14,4 @@
     = paginate @labels, theme: 'gitlab'
   - else
     .light-well
-      .nothing-here-block There are no labels yet
-
+      .nothing-here-block 还没有标记

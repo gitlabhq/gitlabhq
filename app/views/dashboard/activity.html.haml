@@ -1,9 +1,9 @@
 = content_for :meta_tags do
   - if current_user
-    = auto_discovery_link_tag(:atom, dashboard_projects_url(format: :atom, private_token: current_user.private_token), title: "All activity")
+    = auto_discovery_link_tag(:atom, dashboard_projects_url(format: :atom, private_token: current_user.private_token), title: "所有活动")
 
-- page_title    "Activity"
-- header_title  "Activity", activity_dashboard_path
+- page_title    "活动"
+- header_title  "活动", activity_dashboard_path
 
 = render 'dashboard/activity_head'
 

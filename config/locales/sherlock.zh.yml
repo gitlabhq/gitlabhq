@@ -1,0 +1,37 @@
+zh:
+  sherlock:
+    title: 夏洛克
+    delete_all_transactions: 删除所有事务
+    introduction: >
+      显示夏洛克记录的所有事务列表。
+      夏洛克自己的请求被忽略。
+    no_transactions: 没有事务显示
+    no_queries: 没有查询显示
+    no_file_samples: 没有文件样本显示
+    all_transactions: 所有事务
+    transaction: 事务
+    query: 查询
+    file_sample: 文件样本
+    type: 类型
+    path: 路径
+    time: 时间
+    queries: 查询
+    finished_at: 结束时间
+    ago: 之前
+    view: 查看
+    seconds: 秒
+    milliseconds: ms
+    general:  常规
+    id: ID
+    time_inclusive: 时间 (包括所有)
+    backtrace: 回溯
+    application_backtrace: 应用回溯
+    full_backtrace: 全部回溯
+    origin: 来源
+    line: 行
+    line_capitalized: 行
+    copy_to_clipboard: 复制到剪贴板
+    query_plan: 查询计划
+    events: 实践
+    percent: '%'
+    count: 总计

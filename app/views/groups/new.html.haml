@@ -1,8 +1,8 @@
-- page_title    'New Group'
-- header_title  "Groups", dashboard_groups_path
+- page_title    '新群组'
+- header_title  "群组", dashboard_groups_path
 
 %h3.page-title
-  New Group
+  新群组
 %hr
 
 = form_for @group, html: { class: 'group-form form-horizontal' } do |f|
@@ -10,7 +10,7 @@
   = render 'shared/group_form', f: f, autofocus: true
 
   .form-group.group-description-holder
-    = f.label :avatar, "Group avatar", class: 'control-label'
+    = f.label :avatar, "群组头像", class: 'control-label'
     .col-sm-10
       = render 'shared/choose_group_avatar_button', f: f
 
@@ -21,5 +21,5 @@
       = render 'shared/group_tips'
 
   .form-actions
-    = f.submit 'Create group', class: "btn btn-create", tabindex: 3
-    = link_to 'Cancel', dashboard_groups_path, class: 'btn btn-cancel'
+    = f.submit '创建群组', class: "btn btn-create", tabindex: 3
+    = link_to '取消', dashboard_groups_path, class: 'btn btn-cancel'

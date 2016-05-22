@@ -1,16 +1,16 @@
-- page_title "Background Jobs"
-%h3.page-title Background Jobs
-%p.light GitLab uses #{link_to "sidekiq", "http://sidekiq.org/"} library for async job processing
+- page_title "后台作业"
+%h3.page-title 后台作业
+%p.light GitLab 使用 #{link_to "sidekiq", "http://sidekiq.org/"} 库同步作业处理
 
 %hr
 
 .panel.panel-default
-  .panel-heading Sidekiq running processes
+  .panel-heading Sidekiq 运行进程
   .panel-body
     - if @sidekiq_processes.empty?
       %h4.cred
         %i.fa.fa-exclamation-triangle
-        There are no running sidekiq processes. Please restart GitLab
+        没有运行的 sidekiq 进程，请重新启动 GitLab
     - else
       .table-holder
         %table.table
@@ -35,10 +35,10 @@
       .clearfix
         %p
           %i.fa.fa-exclamation-circle
-          If '[25 of 25 busy]' is shown, restart GitLab with 'sudo service gitlab reload'.
+          如果显示 '[25 of 25 busy]' 请使用 'sudo service gitlab reload' 重新启动 GitLab。
         %p
           %i.fa.fa-exclamation-circle
-          If more than one sidekiq process is listed, stop GitLab, kill the remaining sidekiq processes (sudo pkill -u #{gitlab_config.user} -f sidekiq) and restart GitLab.
+          如果列出超过一个 sidekiq 进程，请停止 GitLab，杀死剩余的 sidekiq 进程 (sudo pkill -u #{Settings.gitlab.user} -f sidekiq)，然后重新启动 GitLab。
 
 
 

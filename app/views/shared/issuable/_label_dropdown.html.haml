@@ -3,12 +3,12 @@
     - params[:label_name].each do |label|
       = hidden_field_tag "label_name[]", label, id: nil
 .dropdown
-  %button.dropdown-menu-toggle.js-label-select.js-filter-submit.js-multiselect.js-extra-options{type: "button", data: {toggle: "dropdown", field_name: "label_name[]", show_no: "true", show_any: "true", selected: params[:label_name], project_id: @project.try(:id), labels: labels_filter_path, default_label: "Label"}}
+  %button.dropdown-menu-toggle.js-label-select.js-filter-submit.js-multiselect.js-extra-options{type: "button", data: {toggle: "dropdown", field_name: "label_name[]", show_no: "true", show_any: "true", selected: params[:label_name], project_id: @project.try(:id), labels: labels_filter_path, default_label: "标记"}}
     %span.dropdown-toggle-text
-      = h(multi_label_name(params[:label_name], "Label"))
+      = h(multi_label_name(params[:label_name], "标记"))
     = icon('chevron-down')
   .dropdown-menu.dropdown-select.dropdown-menu-paging.dropdown-menu-labels.dropdown-menu-selectable
-    = render partial: "shared/issuable/label_page_default", locals: { title: "Filter by label" }
+    = render partial: "shared/issuable/label_page_default", locals: { title: "按标记过滤" }
     - if can? current_user, :admin_label, @project and @project
       = render partial: "shared/issuable/label_page_create"
     = dropdown_loading

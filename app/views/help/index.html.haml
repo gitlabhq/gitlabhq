@@ -1,13 +1,13 @@
 %div
   %h1
     GitLab
-    Community Edition
+    社区版
     - if user_signed_in?
       %span= Gitlab::VERSION
       %small= Gitlab::REVISION
       = version_status_badge
   %p.slead
-    GitLab is open source software to collaborate on code.
+    GitLab 是用于代码协作的开源软件。
     %br
     Manage git repositories with fine-grained access controls that keep your code secure.
     %br
@@ -17,7 +17,10 @@
     %br
     Used by more than 100,000 organizations, GitLab is the most popular solution to manage git repositories on-premises.
     %br
-    Read more about GitLab at #{link_to promo_host, promo_url, target: '_blank'}.
+    了解 Gitlab 更多内容请访问 #{link_to promo_host, promo_url, target: '_blank'}。
+    %br
+    需要改进中文翻译，比如将上面的大段英文和下面的文档翻译，请#{link_to '派生 https://gitlab.com/larryli/gitlab 项目', 'https://gitlab.com/larryli/gitlab/fork/new'}，
+    修改文件后提交#{link_to '合并请求', 'https://gitlab.com/larryli/gitlab/merge_requests/new'}。
     - if current_application_settings.help_page_text.present?
       %hr
       = markdown(current_application_settings.help_page_text)
@@ -32,10 +35,10 @@
   .col-md-4
     .panel.panel-default
       .panel-heading
-        Quick help
+        快速帮助
       %ul.well-list
-        %li= link_to 'See our website for getting help', promo_url + '/getting-help/'
-        %li= link_to 'Use the search bar on the top of this page', '#', onclick: 'Shortcuts.focusSearch(event)'
-        %li= link_to 'Use shortcuts', '#', onclick: 'Shortcuts.showHelp(event)'
-        %li= link_to 'Get a support subscription', 'https://about.gitlab.com/pricing/'
-        %li= link_to 'Compare GitLab editions', 'https://about.gitlab.com/features/#compare'
+        %li= link_to '查看我们的网站获取帮助', promo_url + '/getting-help/'
+        %li= link_to '使用页面顶部的搜索功能', '#', onclick: 'Shortcuts.focusSearch(event)'
+        %li= link_to '键盘快捷键', '#', onclick: 'Shortcuts.showHelp(event)'
+        %li= link_to '获取技术支持订阅', 'https://about.gitlab.com/pricing/'
+        %li= link_to '比较 GitLab 版本', 'https://about.gitlab.com/features/#compare'

@@ -8,15 +8,15 @@ class @Star
       toggleStar = (isStarred) ->
         $this.parent().find('.star-count').text data.star_count
         if isStarred
-          $starSpan.removeClass('starred').text 'Star'
+          $starSpan.removeClass('starred').text '星标'
           $starIcon.removeClass('fa-star').addClass 'fa-star-o'
         else
-          $starSpan.addClass('starred').text 'Unstar'
+          $starSpan.addClass('starred').text '取消星标'
           $starIcon.removeClass('fa-star-o').addClass 'fa-star'
         return
 
       toggleStar $starSpan.hasClass('starred')
       return
     ).on 'ajax:error', (e, xhr, status, error) ->
-      new Flash('Star toggle failed. Try again later.', 'alert')
+      new Flash('星标切换失败，请稍后重试。', 'alert')
       return

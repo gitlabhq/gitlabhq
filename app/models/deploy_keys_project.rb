@@ -3,7 +3,7 @@ class DeployKeysProject < ActiveRecord::Base
   belongs_to :deploy_key
 
   validates :deploy_key_id, presence: true
-  validates :deploy_key_id, uniqueness: { scope: [:project_id], message: "already exists in project" }
+  validates :deploy_key_id, uniqueness: { scope: [:project_id], message: "已经存在于项目" }
   validates :project_id, presence: true
 
   after_destroy :destroy_orphaned_deploy_key

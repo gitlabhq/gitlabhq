@@ -2,20 +2,20 @@
   = form_errors(application)
 
   .form-group
-    = f.label :name, class: 'label-light'
+    = f.label :name, "名称", class: 'label-light'
     = f.text_field :name, class: 'form-control', required: true
 
   .form-group
-    = f.label :redirect_uri, class: 'label-light'
+    = f.label :redirect_uri, "重定向 URI", class: 'label-light'
     = f.text_area :redirect_uri, class: 'form-control', required: true
 
     %span.help-block
-      Use one line per URI
+      每个 URI 使用一行
     - if Doorkeeper.configuration.native_redirect_uri
       %span.help-block
-        Use
+        使用
         %code= Doorkeeper.configuration.native_redirect_uri
-        for local tests
+        作为本地测试
 
   .prepend-top-default
-    = f.submit 'Save application', class: "btn btn-create"
+    = f.submit '保存应用', class: "btn btn-create"

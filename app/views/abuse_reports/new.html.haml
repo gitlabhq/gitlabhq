@@ -1,22 +1,22 @@
-- page_title "Report abuse"
-%h3.page-title Report abuse
-%p Please use this form to report users who create spam issues, comments or behave inappropriately.
+- page_title "滥用举报"
+%h3.page-title 滥用举报
+%p 请使用此表单举报创建垃圾问题和评论或其他不当使用的用户。
 %hr
 = form_for @abuse_report, html: { class: 'form-horizontal js-quick-submit js-requires-input'} do |f|
   = form_errors(@abuse_report)
 
   = f.hidden_field :user_id
   .form-group
-    = f.label :user_id, class: 'control-label'
+    = f.label :user_id, '用户 ID', class: 'control-label'
     .col-sm-10
       - name = "#{@abuse_report.user.name} (@#{@abuse_report.user.username})"
       = text_field_tag :user_name, name, class: "form-control", readonly: true
   .form-group
-    = f.label :message, class: 'control-label'
+    = f.label :message, '信息', class: 'control-label'
     .col-sm-10
       = f.text_area :message, class: "form-control", rows: 2, required: true, value: sanitize(@ref_url)
       .help-block
-        Explain the problem with this user. If appropriate, provide a link to the relevant issue or comment.
+        详细描述该用户的问题。如果可以，请提供相关问题或评论的链接地址。
 
   .form-actions
-    = f.submit "Send report", class: "btn btn-create"
+    = f.submit "发送举报", class: "btn btn-create"

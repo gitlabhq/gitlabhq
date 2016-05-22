@@ -1,20 +1,20 @@
 - if current_user
-  = link_to toggle_star_namespace_project_path(@project.namespace, @project), class: 'btn star-btn toggle-star has-tooltip', method: :post, remote: true, title: "Star project" do
+  = link_to toggle_star_namespace_project_path(@project.namespace, @project), class: 'btn star-btn toggle-star has-tooltip', method: :post, remote: true, title: "星标项目" do
     - if current_user.starred?(@project)
       = icon('star fw')
-      %span.starred Unstar
+      %span.starred 取消星标
     - else
       = icon('star-o fw')
-      %span Star
+      %span 星标
   %div.count-with-arrow
     %span.arrow
     %span.count.star-count
       = @project.star_count
 
 - else
-  = link_to new_user_session_path, class: 'btn has-tooltip star-btn', title: 'You must sign in to star a project' do
+  = link_to new_user_session_path, class: 'btn has-tooltip star-btn', title: '必须登录后才能给项目加注星标' do
     = icon('star fw')
-    Star
+    星标
   %div.count-with-arrow
     %span.arrow
     %span.count

@@ -1,8 +1,8 @@
-- page_title    'New Project'
-- header_title  "Projects", root_path
+- page_title    '新项目'
+- header_title  "项目", root_path
 
 %h3.page-title
-  New Project
+  新项目
 %hr
 
 .project-edit-container
@@ -13,7 +13,7 @@
     = form_for @project, html: { class: 'new_project form-horizontal js-requires-input' } do |f|
       .form-group.project-name-holder
         = f.label :path, class: 'control-label' do
-          Project path
+          项目路径
         .col-sm-10
           .input-group
             - if current_user.can_select_namespace?
@@ -29,13 +29,13 @@
 
           - if current_user.can_create_group?
             .help-block
-              Want to house several dependent projects under the same namespace?
-              = link_to "Create a group", new_group_path
+              希望将几个相关联的项目放置于同一个命名空间下？
+              = link_to "创建群组", new_group_path
 
       - if import_sources_enabled?
         .project-import.js-toggle-container
           .form-group
-            %label.control-label Import project from
+            %label.control-label 导入项目
             .col-sm-10
               - if github_import_enabled?
                 - if github_import_configured?
@@ -78,7 +78,7 @@
               - if google_code_import_enabled?
                 = link_to new_import_google_code_path, class: 'btn import_google_code' do
                   %i.fa.fa-google
-                  Google Code
+                  Google 代码
 
               - if fogbugz_import_enabled?
                 = link_to new_import_fogbugz_path, class: 'btn import_fogbugz' do
@@ -88,7 +88,7 @@
               - if git_import_enabled?
                 = link_to "#", class: 'btn js-toggle-button import_git' do
                   %i.fa.fa-git
-                  %span Any repo by URL
+                  %span 其他仓库的链接
 
           .js-toggle-content.hide
             = render "shared/import_form", f: f
@@ -97,22 +97,22 @@
 
       .form-group
         = f.label :description, class: 'control-label' do
-          Description
-          %span.light (optional)
+          描述
+          %span.light (可选)
         .col-sm-10
           = f.text_area :description, class: "form-control", rows: 3, maxlength: 250, tabindex: 3
       = render 'shared/visibility_level', f: f, visibility_level: default_project_visibility, can_change_visibility_level: true, form_model: @project
 
       .form-actions
-        = f.submit 'Create project', class: "btn btn-create project-submit", tabindex: 4
-        = link_to 'Cancel', dashboard_projects_path, class: 'btn btn-cancel'
+        = f.submit '创建项目', class: "btn btn-create project-submit", tabindex: 4
+        = link_to '取消', dashboard_projects_path, class: 'btn btn-cancel'
 
 .save-project-loader.hide
   .center
     %h2
       %i.fa.fa-spinner.fa-spin
-      Creating project &amp; repository.
-    %p Please wait a moment, this page will automatically refresh when ready.
+      正在创建项目 &amp; 版本库。
+    %p 请稍候，页面会处理完成后自动刷新。
 
 :javascript
   $('.how_to_import_link').bind('click', function (e) {

@@ -9,7 +9,7 @@
 
 .form-group
   - if type == "password" && value.present?
-    = form.label name, "Change #{title}", class: "control-label"
+    = form.label name, "修改 #{title}", class: "control-label"
   - else
     = form.label name, title, class: "control-label"
   .col-sm-10

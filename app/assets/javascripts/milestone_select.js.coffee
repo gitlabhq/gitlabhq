@@ -39,21 +39,21 @@ class @MilestoneSelect
               extraOptions.push(
                 id: 0
                 name: ''
-                title: 'Any Milestone'
+                title: '任何里程碑'
               )
 
             if showNo
               extraOptions.push(
                 id: -1
                 name: 'No Milestone'
-                title: 'No Milestone'
+                title: '无里程碑'
               )
 
             if showUpcoming
               extraOptions.push(
                 id: -2
                 name: '#upcoming'
-                title: 'Upcoming'
+                title: '即将到来'
               )
 
             if extraOptions.length > 2

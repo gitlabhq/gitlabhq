@@ -13,14 +13,14 @@
     .pull-right
       - if @runners.include?(runner)
         - if runner.belongs_to_one_project?
-          = link_to 'Remove runner', runner_path(runner), data: { confirm: "Are you sure?" }, method: :delete, class: 'btn btn-danger btn-sm'
+          = link_to '删除 runner', runner_path(runner), data: { confirm: "确定要继续么？" }, method: :delete, class: 'btn btn-danger btn-sm'
         - else
           - runner_project = @project.runner_projects.find_by(runner_id: runner)
-          = link_to 'Disable for this project', namespace_project_runner_project_path(@project.namespace, @project, runner_project), data: { confirm: "Are you sure?" }, method: :delete, class: 'btn btn-danger btn-sm'
+          = link_to '在此项目禁用', namespace_project_runner_project_path(@project.namespace, @project, runner_project), data: { confirm: "确定要继续么？" }, method: :delete, class: 'btn btn-danger btn-sm'
       - elsif runner.specific?
         = form_for [@project.namespace.becomes(Namespace), @project, @project.runner_projects.new] do |f|
           = f.hidden_field :runner_id, value: runner.id
-          = f.submit 'Enable for this project', class: 'btn btn-sm'
+          = f.submit '在此项目启用', class: 'btn btn-sm'
   .pull-right
     %small.light
       \##{runner.id}

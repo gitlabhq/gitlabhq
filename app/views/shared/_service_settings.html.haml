@@ -6,70 +6,70 @@
       = markdown @service.help
 
 .form-group
-  = form.label :active, "Active", class: "control-label"
+  = form.label :active, "激活", class: "control-label"
   .col-sm-10
     = form.check_box :active
 
 - if @service.supported_events.length > 1
   .form-group
-    = form.label :url, "Trigger", class: 'control-label'
+    = form.label :url, "触发", class: 'control-label'
     .col-sm-10
       - if @service.supported_events.include?("push")
         %div
           = form.check_box :push_events, class: 'pull-left'
           .prepend-left-20
             = form.label :push_events, class: 'list-label' do
-              %strong Push events
+              %strong 推送事件
             %p.light
-              This url will be triggered by a push to the repository
+              推送仓库时将触发此链接
       - if @service.supported_events.include?("tag_push")
         %div
           = form.check_box :tag_push_events, class: 'pull-left'
           .prepend-left-20
             = form.label :tag_push_events, class: 'list-label' do
-              %strong Tag push events
+              %strong 标签推送事件
             %p.light
-              This url will be triggered when a new tag is pushed to the repository
+              新标签推送仓库时将触发此链接
       - if @service.supported_events.include?("note")
         %div
           = form.check_box :note_events, class: 'pull-left'
           .prepend-left-20
             = form.label :note_events, class: 'list-label' do
-              %strong Comments
+              %strong 评论
             %p.light
-              This url will be triggered when someone adds a comment
+              有人增加评论时将触发此链接
       - if @service.supported_events.include?("issue")
         %div
           = form.check_box :issues_events, class: 'pull-left'
           .prepend-left-20
             = form.label :issues_events, class: 'list-label' do
-              %strong Issues events
+              %strong 问题事件
             %p.light
-              This url will be triggered when an issue is created/updated/merged
+              问题创建、更新、合并时将触发此链接
       - if @service.supported_events.include?("merge_request")
         %div
           = form.check_box :merge_requests_events, class: 'pull-left'
           .prepend-left-20
             = form.label :merge_requests_events, class: 'list-label' do
-              %strong Merge Request events
+              %strong 合并请求事件
             %p.light
-              This url will be triggered when a merge request is created/updated/merged
+              合并请求创建、更新、合并时将触发此链接
       - if @service.supported_events.include?("build")
         %div
           = form.check_box :build_events, class: 'pull-left'
           .prepend-left-20
             = form.label :build_events, class: 'list-label' do
-              %strong Build events
+              %strong 构建事件
             %p.light
-              This url will be triggered when a build status changes
+              构建状态改变时将触发此链接
       - if @service.supported_events.include?("wiki_page")
         %div
           = form.check_box :wiki_page_events, class: 'pull-left'
           .prepend-left-20
             = form.label :wiki_page_events, class: 'list-label' do
-              %strong Wiki Page events
+              %strong 维基页面事件
             %p.light
-              This url will be triggered when a wiki page is created/updated
+              维基页面创建、更新时将触发此链接
 
 
 - @service.fields.each do |field|

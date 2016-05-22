@@ -1,4 +1,4 @@
-- page_title "New Branch"
+- page_title "新分支"
 = render "projects/commits/header_title"
 
 - if @error
@@ -6,23 +6,23 @@
     %button{ type: "button", class: "close", "data-dismiss" => "alert"} &times;
     = @error
 %h3.page-title
-  New Branch
+  新分支
 %hr
 
 = form_tag namespace_project_branches_path, method: :post, id: "new-branch-form", class: "form-horizontal js-create-branch-form js-requires-input" do
   .form-group
-    = label_tag :branch_name, nil, class: 'control-label'
+    = label_tag :branch_name, '分支名称', class: 'control-label'
     .col-sm-10
       = text_field_tag :branch_name, params[:branch_name], required: true, tabindex: 1, autofocus: true, class: 'form-control js-branch-name'
       .help-block.text-danger.js-branch-name-error
   .form-group
-    = label_tag :ref, 'Create from', class: 'control-label'
+    = label_tag :ref, '创建自', class: 'control-label'
     .col-sm-10
       = text_field_tag :ref, params[:ref] || @project.default_branch, required: true, tabindex: 2, class: 'form-control'
-      .help-block Existing branch name, tag, or commit SHA
+      .help-block 已存在的分支名、标签或提交 SHA
   .form-actions
-    = button_tag 'Create branch', class: 'btn btn-create', tabindex: 3
-    = link_to 'Cancel', namespace_project_branches_path(@project.namespace, @project), class: 'btn btn-cancel'
+    = button_tag '创建分支', class: 'btn btn-create', tabindex: 3
+    = link_to '取消', namespace_project_branches_path(@project.namespace, @project), class: 'btn btn-cancel'
 
 :javascript
   var availableRefs = #{@project.repository.ref_names.to_json};

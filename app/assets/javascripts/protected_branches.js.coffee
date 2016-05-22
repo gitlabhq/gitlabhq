@@ -18,4 +18,4 @@ $ ->
           row.closest('tr').effect('highlight')
 
         error: ->
-          new Flash("Failed to update branch!", "alert")
+          new Flash("更新分支失败！", "alert")

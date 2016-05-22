@@ -1,10 +1,10 @@
-Hi <%= @user.name %>!
+你好 <%= @user.name %>!
 
-The Administrator created an account for you. Now you are a member of the company GitLab application.
+管理员创建了你的账号。现在你已是 GitLab 应用的成员。
 
-login.................. <%= @user.email %>
+账号.................. <%= @user.email %>
 <% if @user.created_by_id %>
-  <%= link_to "Click here to set your password", edit_password_url(@user, :reset_password_token => @token) %>
+  <%= link_to "点击这里设置你的密码", edit_password_url(@user, :reset_password_token => @token) %>
 
   <%= reset_token_expire_message %>
 <% end %>

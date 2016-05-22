@@ -57,40 +57,40 @@
             = f.text_field :email, class: "form-control", required: true
           - if @user.unconfirmed_email.present?
             %span.help-block
-              Please click the link in the confirmation email before continuing. It was sent to
-              = succeed "." do
+              请点击确认邮件中的链接继续操作。其已经被发送到
+              = succeed "。" do
                 %strong #{@user.unconfirmed_email}
               %p
-              = link_to "Resend confirmation e-mail", user_confirmation_path(user: { email: @user.unconfirmed_email }), method: :post
+              = link_to "重发确认邮件", user_confirmation_path(user: { email: @user.unconfirmed_email }), method: :post
 
           - else
-            %span.help-block We also use email for avatar detection if no avatar is uploaded.
+            %span.help-block 如果没有上传头像将使用邮箱头像服务。
       .form-group
-        = f.label :public_email, class: "label-light"
-        = f.select :public_email, options_for_select(@user.all_emails, selected: @user.public_email), {include_blank: 'Do not show on profile'}, class: "select2"
-        %span.help-block This email will be displayed on your public profile.
+        = f.label :public_email, '公开邮箱', class: "label-light"
+        = f.select :public_email, options_for_select(@user.all_emails, selected: @user.public_email), {include_blank: '不在个人资料中显示'}, class: "select2"
+        %span.help-block 此邮箱将显示在公开的个人资料上。
       .form-group
         = f.label :skype, class: "label-light"
         = f.text_field :skype, class: "form-control"
       .form-group
-        = f.label :linkedin, class: "label-light"
+        = f.label :linkedin, '领英', class: "label-light"
         = f.text_field :linkedin, class: "form-control"
       .form-group
-        = f.label :twitter, class: "label-light"
+        = f.label :twitter, '推特', class: "label-light"
         = f.text_field :twitter, class: "form-control"
       .form-group
-        = f.label :website_url, 'Website', class: "label-light"
+        = f.label :website_url, '网址', class: "label-light"
         = f.text_field :website_url, class: "form-control"
       .form-group
-        = f.label :location, 'Location', class: "label-light"
+        = f.label :location, '位置', class: "label-light"
         = f.text_field :location, class: "form-control"
       .form-group
-        = f.label :bio, class: "label-light"
+        = f.label :bio, '简历', class: "label-light"
         = f.text_area :bio, rows: 4, class: "form-control", maxlength: 250
-        %span.help-block Tell us about yourself in fewer than 250 characters.
+        %span.help-block 使用少于 250 字符的文字描述自己。
       .prepend-top-default.append-bottom-default
-        = f.submit 'Update profile settings', class: "btn btn-success"
-        = link_to "Cancel", user_path(current_user), class: "btn btn-cancel"
+        = f.submit '更新个人资料设置', class: "btn btn-success"
+        = link_to "取消", user_path(current_user), class: "btn btn-cancel"
 
 .modal.modal-profile-crop
   .modal-dialog

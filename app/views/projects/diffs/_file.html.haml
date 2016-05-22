@@ -18,7 +18,7 @@
           %span
             = diff_file.new_path
           - if diff_file.deleted_file
-            deleted
+            已删除
 
       - if diff_file.mode_changed?
         %small
@@ -26,7 +26,7 @@
 
       .file-actions.hidden-xs
         - if blob_text_viewable?(blob)
-          = link_to '#', class: 'js-toggle-diff-comments btn active has-tooltip btn-file-option', title: "Toggle comments for this file" do
+          = link_to '#', class: 'js-toggle-diff-comments btn active has-tooltip btn-file-option', title: "切换此文件的评论显示" do
             = icon('comment')
           \
 

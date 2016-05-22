@@ -16,9 +16,9 @@
     %hr
   .col-lg-3.profile-settings-sidebar
     %h4.prepend-top-0
-      Syntax highlighting theme
+      语法高亮主题
     %p
-      This setting allow you to customize the appearance of the syntax.
+      此设置允许自定义语法显示。
   .col-lg-9.syntax-theme
     - Gitlab::ColorSchemes.each do |scheme|
       = label_tag do
@@ -29,27 +29,27 @@
     %hr
   .col-lg-3.profile-settings-sidebar
     %h4.prepend-top-0
-      Behavior
+      行为
     %p
-      This setting allows you to customize the behavior of the system layout and default views.
+      此设置允许自定义系统布局和默认视图的行为。
   .col-lg-9
     .form-group
       = f.label :layout, class: 'label-light' do
-        Layout width
+        页面宽度
       = f.select :layout, layout_choices, {}, class: 'form-control'
       .help-block
-        Choose between fixed (max. 1200px) and fluid (100%) application layout.
+        选择固定 (最大 1200px) 或自适应 (100%) 页面宽度。
     .form-group
       = f.label :dashboard, class: 'label-light' do
-        Default Dashboard
+        默认仪表盘
         = link_to('(?)', help_page_path('profile', 'preferences') + '#default-dashboard', target: '_blank')
       = f.select :dashboard, dashboard_choices, {}, class: 'form-control'
     .form-group
       = f.label :project_view, class: 'label-light' do
-        Project view
+        项目视图
         = link_to('(?)', help_page_path('profile', 'preferences') + '#default-project-view', target: '_blank')
       = f.select :project_view, project_view_choices, {}, class: 'form-control'
       .help-block
-        Choose what content you want to see on a project's home page.
+        选择访问项目页面时看到的内容。
     .form-group
-      = f.submit 'Save changes', class: 'btn btn-save'
+      = f.submit '保存修改', class: 'btn btn-save'

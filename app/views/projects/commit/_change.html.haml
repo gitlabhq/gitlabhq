@@ -1,17 +1,17 @@
 - case type.to_s
 - when 'revert'
-  - label = 'Revert'
-  - target_label = 'Revert in branch'
+  - label = '恢复'
+  - target_label = '在分支里恢复'
 - when 'cherry-pick'
-  - label = 'Cherry-pick'
-  - target_label = 'Pick into branch'
+  - label = '挑选 Cherry-pick '
+  - target_label = '挑选到分支'
 
 .modal{id: "modal-#{type}-commit"}
   .modal-dialog
     .modal-content
       .modal-header
         %a.close{href: "#", "data-dismiss" => "modal"} ×
-        %h3.page-title== #{label} this #{commit.change_type_title}
+        %h3.page-title== #{label}此#{commit.change_type_title}
       .modal-body
         = form_tag send("#{type.underscore}_namespace_project_commit_path", @project.namespace, @project, commit.id), method: :post, remote: false, class: 'form-horizontal js-#{type}-form js-requires-input' do
           .form-group.branch
@@ -24,12 +24,12 @@
                     - nonce = SecureRandom.hex
                     = label_tag "create_merge_request-#{nonce}" do
                       = check_box_tag 'create_merge_request', 1, true, class: 'js-create-merge-request', id: "create_merge_request-#{nonce}"
-                      Start a <strong>new merge request</strong> with these changes
+                      使用这些变更开启一个<strong>新的合并请求</strong>
               - else
                 = hidden_field_tag 'create_merge_request', 1
           .form-actions
             = submit_tag label, class: 'btn btn-create'
-            = link_to "Cancel", '#', class: "btn btn-cancel", "data-dismiss" => "modal"
+            = link_to "取消", '#', class: "btn btn-cancel", "data-dismiss" => "modal"
 
             - unless can?(current_user, :push_code, @project)
               .inline.prepend-left-10

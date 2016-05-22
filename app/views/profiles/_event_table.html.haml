@@ -1,15 +1,15 @@
 %h5.prepend-top-0
-  History of authentications
+  认证历史记录
 
 %ul.well-list
   - events.each do |event|
     %li
       %span.description
         = audit_icon(event.details[:with], class: "append-right-5")
-        Signed in with
+        使用
         = event.details[:with]
-        authentication
+        认证登录
       %span.pull-right
-        #{time_ago_in_words event.created_at} ago
+        #{time_ago_in_words event.created_at}之前
 
 = paginate events, theme: "gitlab"

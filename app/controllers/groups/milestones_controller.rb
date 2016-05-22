@@ -52,13 +52,13 @@ class Groups::MilestonesController < Groups::ApplicationController
 
     true
   rescue ActiveRecord::ActiveRecordError => e
-    flash.now[:alert] = "An error occurred while creating the milestone: #{e.message}"
+    flash.now[:alert] = "创建里程碑时发生错误：#{e.message}"
     false
   end
 
   def render_new_with_error(empty_project_ids)
     @milestone = Milestone.new(milestone_params)
-    @milestone.errors.add(:project_id, "Please select at least one project.") if empty_project_ids
+    @milestone.errors.add(:project_id, "请至少选择一个项目。") if empty_project_ids
     render :new
   end
 

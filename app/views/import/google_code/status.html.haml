@@ -1,25 +1,25 @@
-- page_title "Google Code import"
-- header_title "Projects", root_path
+- page_title "Google 代码导入"
+- header_title "项目", root_path
 %h3.page-title
   %i.fa.fa-google
-  Import projects from Google Code
+  从 Google 代码导入项目
 
 - if @repos.any?
   %p.light
-    Select projects you want to import.
+    选择要导入的项目。
   %p.light
-    Optionally, you can
-    = link_to "customize", new_user_map_import_google_code_path
-    how Google Code email addresses and usernames are imported into GitLab.
+    可选项，可以
+    = link_to "自定义", new_user_map_import_google_code_path
+    Google 代码邮箱地址和用户名来导入到 GitLab。
   %hr
   %p
   - if @incompatible_repos.any?
     = button_tag class: "btn btn-import btn-success js-import-all" do
-      Import all compatible projects
+      导入所有兼容项目
       = icon("spinner spin", class: "loading-icon")
   - else
     = button_tag class: "btn btn-import btn-success js-import-all" do
-      Import all projects
+      导入所有项目
       = icon("spinner spin", class: "loading-icon")
 
 .table-responsive
@@ -29,9 +29,9 @@
     %colgroup.import-jobs-status-col
     %thead
       %tr
-        %th From Google Code
-        %th To GitLab
-        %th Status
+        %th 从 Google 代码
+        %th 到 GitLab
+        %th 状态
     %tbody
       - @already_added_projects.each do |project|
         %tr{id: "project_#{project.id}", class: "#{project_status_css_class(project.import_status)}"}
@@ -43,10 +43,10 @@
             - if project.import_status == 'finished'
               %span
                 %i.fa.fa-check
-                done
+                完成
             - elsif project.import_status == 'started'
               %i.fa.fa-spinner.fa-spin
-              started
+              已开始
             - else
               = project.human_import_status_name
 
@@ -58,7 +58,7 @@
             = "#{current_user.username}/#{repo.name}"
           %td.import-actions.job-status
             = button_tag class: "btn btn-import js-add-to-import" do
-              Import
+              导入
               = icon("spinner spin", class: "loading-icon")
       - @incompatible_repos.each do |repo|
         %tr{id: "repo_#{repo.id}"}
@@ -66,16 +66,15 @@
             = link_to repo.name, "https://code.google.com/p/#{repo.name}", target: "_blank"
           %td.import-target
           %td.import-actions-job-status
-            = label_tag "Incompatible Project", nil, class: "label label-danger"
+            = label_tag "不兼容项目", nil, class: "label label-danger"
 
 - if @incompatible_repos.any?
   %p
-    One or more of your Google Code projects cannot be imported into GitLab
-    directly because they use Subversion or Mercurial for version control,
-    rather than Git. Please convert them to Git on Google Code, and go
-    through the
-    = link_to "import flow", new_import_google_code_path
-    again.
+    因为有些项目使用 Subversion(svn) 或 Mercurial(hg) 版本控制
+    而不是 Git，所以无法导入到 GitLab。
+    请在 Google 代码上通过
+    = link_to "导入工作流", new_import_google_code_path
+    将其转换成 Git 后再试。
 
 :javascript
   new ImporterStatus("#{jobs_import_google_code_path}", "#{import_google_code_path}");

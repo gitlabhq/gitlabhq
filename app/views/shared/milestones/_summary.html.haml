@@ -2,27 +2,27 @@
 
 .context.prepend-top-default
   .milestone-summary
-    %h4 Progress
+    %h4 进度
     %strong= milestone.issues_visible_to_user(current_user).size
-    issues:
+    问题：
     %span.milestone-stat
       %strong= milestone.issues_visible_to_user(current_user).opened.size
-      open and
+      个未关闭和
       %strong= milestone.issues_visible_to_user(current_user).closed.size
-      closed
+      个已关闭
     %span.milestone-stat
       %strong== #{milestone.percent_complete(current_user)}%
-      complete
+      完成
 
     %span.milestone-stat
       %span.remaining-days= milestone_remaining_days(milestone)
     %span.pull-right.tab-issues-buttons
       - if project && can?(current_user, :create_issue, project)
-        = link_to new_namespace_project_issue_path(project.namespace, project, issue: { milestone_id: milestone.id }), class: "btn  btn-grouped", title: "New Issue" do
+        = link_to new_namespace_project_issue_path(project.namespace, project, issue: { milestone_id: milestone.id }), class: "btn  btn-grouped", title: "新问题" do
           %i.fa.fa-plus
-          New Issue
-      = link_to 'Browse Issues', milestones_browse_issuables_path(milestone, type: :issues), class: "btn btn-grouped"
+          新问题
+      = link_to '浏览问题', milestones_browse_issuables_path(milestone, type: :issues), class: "btn btn-grouped"
     %span.pull-right.tab-merge-requests-buttons.hidden
-      = link_to 'Browse Merge Requests', milestones_browse_issuables_path(milestone, type: :merge_requests), class: "btn btn-grouped"
+      = link_to '浏览合并请求', milestones_browse_issuables_path(milestone, type: :merge_requests), class: "btn btn-grouped"
 
   = milestone_progress_bar(milestone)

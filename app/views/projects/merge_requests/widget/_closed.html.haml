@@ -2,11 +2,11 @@
   = render 'projects/merge_requests/widget/heading'
   .mr-widget-body
     %h4
-      Closed
+      已关闭
       - if @merge_request.closed_event
-        by #{link_to_member(@project, @merge_request.closed_event.author, avatar: true)}
+        由 #{link_to_member(@project, @merge_request.closed_event.author, avatar: true)}
         #{time_ago_with_tooltip(@merge_request.closed_event.created_at)}
     %p 
-      = succeed '.' do
-        The changes were not merged into
+      = succeed '。' do
+        变更未合并到
         %span.label-branch= @merge_request.target_branch

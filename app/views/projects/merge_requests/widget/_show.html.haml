@@ -15,13 +15,13 @@
     gitlab_icon: "#{asset_path 'gitlab_logo.png'}",
     ci_status: "",
     ci_message: {
-      normal: "Build {{status}} for \"{{title}}\"",
-      preparing: "{{status}} build for \"{{title}}\""
+      normal: "\"{{title}}\" 的构建{{status}}",
+      preparing: "\"{{title}}\" 的构建{{status}}"
     },
     ci_enable: #{@project.ci_service ? "true" : "false"},
     ci_title: {
-      preparing: "{{status}} build",
-      normal: "Build {{status}}"
+      preparing: "{{status}} 构建",
+      normal: "构建 {{status}}"
     },
     builds_path: "#{builds_namespace_project_merge_request_path(@project.namespace, @project, @merge_request)}"
   };

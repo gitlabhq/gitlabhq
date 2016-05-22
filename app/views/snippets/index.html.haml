@@ -1,13 +1,13 @@
-- page_title "By #{@user.name}", "Snippets"
+- page_title "属于 #{@user.name}", "代码片段"
 
 %ol.breadcrumb
   %li
     = link_to snippets_path do
-      Snippets
+      代码片段
   %li
     = @user.name
   .pull-right.hidden-xs
     = link_to user_path(@user) do
-      #{@user.name} profile page
+      #{@user.name} 个人资料页面
 
 = render 'snippets'

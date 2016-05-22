@@ -1,3 +1,4 @@
+#encoding: utf-8
 module NotificationsHelper
   include IconsHelper
 
@@ -22,10 +23,16 @@ module NotificationsHelper
 
   def notification_title(level)
     case level.to_sym
+    when :disabled
+      '关闭'
     when :participating
-      'Participate'
+      '参与'
+    when :watch
+      '关注'
     when :mention
-      'On mention'
+      '被提及'
+    when :global
+      '全局'
     else
       level.to_s.titlecase
     end

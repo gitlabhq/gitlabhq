@@ -3,7 +3,7 @@
   = render 'shared/group_form', f: f
 
   .form-group.group-description-holder
-    = f.label :avatar, "Group avatar", class: 'control-label'
+    = f.label :avatar, "群组头像", class: 'control-label'
     .col-sm-10
       = render 'shared/choose_group_avatar_button', f: f
 
@@ -15,10 +15,10 @@
         .alert.alert-info
           = render 'shared/group_tips'
     .form-actions
-      = f.submit 'Create group', class: "btn btn-create"
-      = link_to  'Cancel', admin_groups_path, class: "btn btn-cancel"
+      = f.submit '创建群组', class: "btn btn-create"
+      = link_to  '取消', admin_groups_path, class: "btn btn-cancel"
 
   - else
     .form-actions
-      = f.submit 'Save changes', class: "btn btn-save"
-      = link_to  'Cancel', admin_group_path(@group), class: "btn btn-cancel"
+      = f.submit '保存修改', class: "btn btn-save"
+      = link_to  '取消', admin_group_path(@group), class: "btn btn-cancel"

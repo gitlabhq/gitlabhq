@@ -1,11 +1,11 @@
 %h4
-  This merge request is currently a Work In Progress
+  此合并请求当前正在处理中
 
 - if can?(current_user, :update_merge_request, @merge_request)
   %p
-    When this merge request is ready,
+    当合并请求准备好时，
     = link_to remove_wip_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), method: :post do
-      remove the
+      请从标题中删除
       %code WIP:
-      prefix from the title
-    to allow it to be merged.
+      前缀，
+    以表示该合并请求可以被接受。

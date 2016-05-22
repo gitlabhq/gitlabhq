@@ -77,7 +77,7 @@ class SlackService
     end
 
     def commented_on_message(target_link, title)
-      @message = "#{@user_name} commented on #{target_link} in #{project_link}: *#{title}*"
+      @message = "#{@user_name} 评论了 #{project_link} 的 #{target_link}：*#{title}*"
     end
   end
 end

@@ -1,3 +1,4 @@
+#encoding: utf-8
 # Gitlab::Access module
 #
 # Define allowed roles that can be used
@@ -27,16 +28,16 @@ module Gitlab
 
       def options
         {
-          "Guest"     => GUEST,
-          "Reporter"  => REPORTER,
-          "Developer" => DEVELOPER,
-          "Master"    => MASTER,
+          "访客"     => GUEST,
+          "报告者"   => REPORTER,
+          "开发人员" => DEVELOPER,
+          "主程序员" => MASTER,
         }
       end
 
       def options_with_owner
         options.merge(
-          "Owner" => OWNER
+          "所有者"   => OWNER
         )
       end
 
@@ -51,9 +52,9 @@ module Gitlab
 
       def protection_options
         {
-          "Not protected: Both developers and masters can push new commits, force push, or delete the branch." => PROTECTION_NONE,
-          "Partially protected: Developers can push new commits, but cannot force push or delete the branch. Masters can do all of those." => PROTECTION_DEV_CAN_PUSH,
-          "Fully protected: Developers cannot push new commits, force push, or delete the branch. Only masters can do any of those." => PROTECTION_FULL,
+          "不保护：开发人员和主程序员都可以推送新提交、强制推送和删除分支。" => PROTECTION_NONE,
+          "部分保护：开发人员可以推送新提交，但不能强制推送和删除分支。主程序员可以做上述操作。" => PROTECTION_DEV_CAN_PUSH,
+          "完全保护：开发人员不能推送新提交、强制推送和删除分支。只有主程序员可以做上述操作。" => PROTECTION_FULL,
         }
       end
 

@@ -10,9 +10,9 @@
   = render 'shared/service_settings', form: form
 
   .form-actions
-    = form.submit 'Save changes', class: 'btn btn-save'
+    = form.submit '保存修改', class: 'btn btn-save'
     &nbsp;
     - if @service.valid? && @service.activated?
       - disabled = @service.can_test? ? '':'disabled'
-      = link_to 'Test settings', test_namespace_project_service_path(@project.namespace, @project, @service.to_param), class: "btn #{disabled}"
-    = link_to "Cancel", namespace_project_services_path(@project.namespace, @project), class: "btn btn-cancel"
+      = link_to '测试设置', test_namespace_project_service_path(@project.namespace, @project, @service.to_param), class: "btn #{disabled}"
+    = link_to "取消", namespace_project_services_path(@project.namespace, @project), class: "btn btn-cancel"

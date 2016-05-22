@@ -11,36 +11,36 @@
           = image_tag group_icon(@group), alt: '', class: 'avatar group-avatar s160'
           %p.light
             - if @group.avatar?
-              You can change your group avatar here
+              你可以在这里修改群组头像
             - else
-              You can upload a group avatar here
+              你可以在这里上传群组头像
           = render 'shared/choose_group_avatar_button', f: f
           - if @group.avatar?
             %hr
-            = link_to 'Remove avatar', group_avatar_path(@group.to_param), data: { confirm: "Group avatar will be removed. Are you sure?"}, method: :delete, class: "btn btn-remove btn-sm remove-avatar"
+            = link_to '删除头像', group_avatar_path(@group.to_param), data: { confirm: "确定要删除群组头像么？"}, method: :delete, class: "btn btn-remove btn-sm remove-avatar"
 
       = render 'shared/visibility_level', f: f, visibility_level: @group.visibility_level, can_change_visibility_level: can_change_group_visibility_level?(@group), form_model: @group
 
       .form-group
         %hr
         = f.label :share_with_group_lock, class: 'control-label' do
-          Share with group lock
+          群共享锁
         .col-sm-10
           .checkbox
             = f.check_box :share_with_group_lock
-            %span.descr Prevent sharing a project with another group within this group
+            %span.descr 禁止此群组与其他群组共享项目
 
 
       .form-actions
-        = f.submit 'Save group', class: "btn btn-save"
+        = f.submit '保存群组', class: "btn btn-save"
 
 .panel.panel-danger
-  .panel-heading Remove group
+  .panel-heading 删除群组
   .panel-body
     %p
-      Removing group will cause all child projects and resources to be removed.
+      删除群组将删除全部子项目和相关资源。
       %br
-      %strong Removed group can not be restored!
+      %strong 删除群组无法恢复！
 
     .form-actions
-      = link_to 'Remove Group', @group, data: {confirm: 'Removed group can not be restored! Are you sure?'}, method: :delete, class: "btn btn-remove"
+      = link_to '删除群组', @group, data: {confirm: '删除群组无法恢复！确定要继续么？'}, method: :delete, class: "btn btn-remove"

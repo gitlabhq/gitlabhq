@@ -1,17 +1,17 @@
-- page_title "Deploy Keys"
+- page_title "部署密钥"
 .panel.panel-default.prepend-top-default
   .panel-heading
-    Public deploy keys (#{@deploy_keys.count})
+    公开的部署密钥 (#{@deploy_keys.count})
     .controls
-      = link_to 'New Deploy Key', new_admin_deploy_key_path, class: "btn btn-new btn-sm"
+      = link_to '新部署密钥', new_admin_deploy_key_path, class: "btn btn-new btn-sm"
   - if @deploy_keys.any?
     .table-holder
       %table.table
         %thead.panel-heading
           %tr
-            %th Title
-            %th Fingerprint
-            %th Added at
+            %th 标题
+            %th 指纹
+            %th 增加时间
             %th
         %tbody
           - @deploy_keys.each do |deploy_key|
@@ -22,6 +22,6 @@
                 %code.key-fingerprint= deploy_key.fingerprint
               %td
                 %span.cgray
-                  added #{time_ago_with_tooltip(deploy_key.created_at)}
+                  增加时间 #{time_ago_with_tooltip(deploy_key.created_at)}
               %td
-                = link_to 'Remove', admin_deploy_key_path(deploy_key), data: { confirm: 'Are you sure?'}, method: :delete, class: "btn btn-sm btn-remove delete-key pull-right"
+                = link_to '删除', admin_deploy_key_path(deploy_key), data: { confirm: '确定要继续么？'}, method: :delete, class: "btn btn-sm btn-remove delete-key pull-right"

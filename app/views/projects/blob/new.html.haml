@@ -1,13 +1,13 @@
-- page_title "New File", @path.presence, @ref
+- page_title "新文件", @path.presence, @ref
 = render "header_title"
 
 %h3.page-title
-  New File
+  新文件
 
 .file-editor
   = form_tag(namespace_project_create_blob_path(@project.namespace, @project, @id), method: :post, class: 'form-horizontal js-new-blob-form js-quick-submit js-requires-input') do
     = render 'projects/blob/editor', ref: @ref
-    = render 'shared/new_commit_form', placeholder: "Add new file"
+    = render 'shared/new_commit_form', placeholder: "增加新文件"
 
     = hidden_field_tag 'content', '', id: 'file-content'
     = render 'projects/commit_button', ref: @ref,

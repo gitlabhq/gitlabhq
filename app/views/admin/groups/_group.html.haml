@@ -3,8 +3,8 @@
 
 %li.group-row{ class: css_class }
   .controls.hidden-xs
-    = link_to 'Edit', edit_admin_group_path(group), id: "edit_#{dom_id(group)}", class: 'btn btn-grouped btn-sm'
-    = link_to 'Destroy', [:admin, group], data: {confirm: "REMOVE #{group.name}? Are you sure?"}, method: :delete, class: 'btn btn-grouped btn-sm btn-remove'
+    = link_to '编辑', edit_admin_group_path(group), id: "edit_#{dom_id(group)}", class: 'btn btn-grouped btn-sm'
+    = link_to '销毁', [:admin, group], data: {confirm: "确定要删除 #{group.name}？"}, method: :delete, class: 'btn btn-grouped btn-sm btn-remove'
 
   .stats
     %span

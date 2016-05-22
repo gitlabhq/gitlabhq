@@ -8,7 +8,7 @@ module Emails
       @current_user = @group_member.user
 
       mail(to: @group_member.user.notification_email,
-           subject: subject("Access to group was granted"))
+           subject: subject("被授予访问群组"))
     end
 
     def group_member_invited_email(group_member_id, token)
@@ -20,7 +20,7 @@ module Emails
       @current_user = @group_member.user
 
       mail(to: @group_member.invite_email,
-           subject: "Invitation to join group #{@group.name}")
+           subject: "邀请加入群组 #{@group.name}")
     end
 
     def group_invite_accepted_email(group_member_id)
@@ -33,7 +33,7 @@ module Emails
       @current_user = @group_member.created_by
 
       mail(to: @group_member.created_by.notification_email,
-           subject: subject("Invitation accepted"))
+           subject: subject("邀请被接受"))
     end
 
     def group_invite_declined_email(group_id, invite_email, access_level, created_by_id)
@@ -46,7 +46,7 @@ module Emails
       
       @target_url = group_url(@group)
       mail(to: @created_by.notification_email,
-           subject: subject("Invitation declined"))
+           subject: subject("邀请被拒绝"))
     end
   end
 end

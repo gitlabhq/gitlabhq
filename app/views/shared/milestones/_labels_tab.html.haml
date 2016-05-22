@@ -13,7 +13,7 @@
       .pull-info-right
         %span.append-right-20
           = link_to milestones_label_path(options.merge(state: 'opened')) do
-            - pluralize milestone_issues_by_label_count(@milestone, label, state: :opened), 'open issue'
+            - pluralize milestone_issues_by_label_count(@milestone, label, state: :opened), '个未关闭问题', '个未关闭问题'
         %span.append-right-20
           = link_to milestones_label_path(options.merge(state: 'closed')) do
-            - pluralize milestone_issues_by_label_count(@milestone, label, state: :closed), 'closed issue'
+            - pluralize milestone_issues_by_label_count(@milestone, label, state: :closed), '个已关闭问题', '个已关闭问题'

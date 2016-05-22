@@ -8,9 +8,9 @@
     .col-md-2.hidden-xs.hidden-sm
       %h5.commits-row-date
         %i.fa.fa-calendar
-        %span= day.strftime('%d %b, %Y')
+        %span= day.strftime('%Y-%m-%d')
       .light
-        = pluralize(commits.count, 'commit')
+        = pluralize(commits.count, '次提交', '次提交')
     .col-md-10.col-sm-12
       %ul.content-list
         = render commits, project: project

@@ -44,5 +44,5 @@
               = icon('paperclip')
               = note.attachment_identifier
               = link_to delete_attachment_namespace_project_note_path(note.project.namespace, note.project, note),
-                title: 'Delete this attachment', method: :delete, remote: true, data: { confirm: 'Are you sure you want to remove the attachment?' }, class: 'danger js-note-attachment-delete' do
+                title: '删除此附件', method: :delete, remote: true, data: { confirm: '确定要删除此附件么？' }, class: 'danger js-note-attachment-delete' do
                 = icon('trash-o', class: 'cred')

@@ -1,13 +1,13 @@
 .top-area
   %ul.nav-links
     = nav_link(page: dashboard_groups_path) do
-      = link_to dashboard_groups_path, title: 'Your groups' do
-        Your Groups
+      = link_to dashboard_groups_path, title: '你的群组' do
+        你的群组
     = nav_link(page: explore_groups_path) do
-      = link_to explore_groups_path, title: 'Explore groups' do
-        Explore Groups
+      = link_to explore_groups_path, title: '浏览群组' do
+        浏览群组
   - if current_user.can_create_group?
     .nav-controls
       = link_to new_group_path, class: "btn btn-new" do
         = icon('plus')
-        New Group
+        新群组

@@ -1,19 +1,19 @@
 %ul.nav-links.no-top.no-bottom
   %li.active
     = link_to '#tab-issues', 'data-toggle' => 'tab', 'data-show' => '.tab-issues-buttons' do
-      Issues
+      问题
       %span.badge= milestone.issues_visible_to_user(current_user).size
   %li
     = link_to '#tab-merge-requests', 'data-toggle' => 'tab', 'data-show' => '.tab-merge-requests-buttons' do
-      Merge Requests
+      合并请求
       %span.badge= milestone.merge_requests.size
   %li
     = link_to '#tab-participants', 'data-toggle' => 'tab' do
-      Participants
+      参与者
       %span.badge= milestone.participants.count
   %li
     = link_to '#tab-labels', 'data-toggle' => 'tab' do
-      Labels
+      标记
       %span.badge= milestone.labels.count
 
 - show_project_name = local_assigns.fetch(:show_project_name, false)

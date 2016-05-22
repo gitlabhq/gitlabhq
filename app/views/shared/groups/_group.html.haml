@@ -9,7 +9,7 @@
         = link_to edit_group_path(group), class: "btn-sm btn btn-grouped" do
           %i.fa.fa-cogs
 
-      = link_to leave_group_group_members_path(group), data: { confirm: leave_group_message(group.name) }, method: :delete, class: "btn-sm btn btn-grouped", title: 'Leave this group' do
+      = link_to leave_group_group_members_path(group), data: { confirm: leave_group_message(group.name) }, method: :delete, class: "btn-sm btn btn-grouped", title: '离开此群组' do
         = icon('sign-out')
 
   .stats
@@ -30,7 +30,7 @@
       = group.name
 
     - if group_member
-      as
+      身份：
       %span #{group_member.human_access}
 
   - if group.description.present?

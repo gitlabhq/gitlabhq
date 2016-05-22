@@ -15,18 +15,18 @@
         = render 'projects/tags/download', ref: tag.name, project: @project
 
       - if can?(current_user, :push_code, @project)
-        = link_to edit_namespace_project_tag_release_path(@project.namespace, @project, tag.name), class: 'btn-grouped btn has-tooltip', title: "Edit release notes" do
+        = link_to edit_namespace_project_tag_release_path(@project.namespace, @project, tag.name), class: 'btn-grouped btn has-tooltip', title: "编辑发布备注" do
           = icon("pencil")
 
       - if can?(current_user, :admin_project, @project)
-        = link_to namespace_project_tag_path(@project.namespace, @project, tag.name), class: 'btn btn-grouped btn-xs btn-remove remove-row has-tooltip', title: "Delete tag", method: :delete, data: { confirm: "Deleting the '#{tag.name}' tag cannot be undone. Are you sure?", container: 'body' }, remote: true do
+        = link_to namespace_project_tag_path(@project.namespace, @project, tag.name), class: 'btn btn-grouped btn-xs btn-remove remove-row has-tooltip', title: "删除标签", method: :delete, data: { confirm: "删除标签 '#{tag.name}' 无法恢复，确定要继续么？", container: 'body' }, remote: true do
           = icon("trash-o")
 
   - if commit
     = render 'projects/branches/commit', commit: commit, project: @project
   - else
     %p
-      Cant find HEAD commit for this tag
+      无法找到该标签的 HEAD 提交
   - if release && release.description.present?
     .description.prepend-top-default
       .wiki

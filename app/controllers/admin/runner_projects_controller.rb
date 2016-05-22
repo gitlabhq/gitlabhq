@@ -12,7 +12,7 @@ class Admin::RunnerProjectsController < Admin::ApplicationController
     if @runner.assign_to(@project, current_user)
       redirect_to admin_runner_path(@runner)
     else
-      redirect_to admin_runner_path(@runner), alert: 'Failed adding runner to project'
+      redirect_to admin_runner_path(@runner), alert: '增加 runner 到项目失败'
     end
   end
 

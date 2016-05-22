@@ -59,10 +59,10 @@
             = link_to admin_users_path(sort: sort_value_oldest_updated, filter: params[:filter]) do
               = sort_title_oldest_updated
 
-      = link_to 'New User', new_admin_user_path, class: "btn btn-new"
+      = link_to '新用户', new_admin_user_path, class: "btn btn-new"
     = form_tag admin_users_path, method: :get, class: 'form-inline' do
       .form-group
-        = search_field_tag :name, params[:name], placeholder: 'Name, email or username', class: 'form-control', spellcheck: false
+        = search_field_tag :name, params[:name], placeholder: '姓名、邮箱或用户名', class: 'form-control', spellcheck: false
         = hidden_field_tag "filter", params[:filter]
       = button_tag class: 'btn btn-primary' do
         %i.fa.fa-search
@@ -79,29 +79,29 @@
             = icon("user", class: "cgreen")
           = link_to user.name, [:admin, user]
           - if user.admin?
-            %strong.cred (Admin)
+            %strong.cred (管理)
           - if user.external?
-            %strong.cred (External)
+            %strong.cred (外部)
           - if user == current_user
-            %span.cred It's you!
+            %span.cred 自己
         .pull-right
           %span.light
             %i.fa.fa-envelope
             = mail_to user.email, user.email, class: 'light'
           &nbsp;
           .pull-right
-            = link_to 'Edit', edit_admin_user_path(user), id: "edit_#{dom_id(user)}", class: 'btn-grouped btn btn-xs'
+            = link_to '编辑', edit_admin_user_path(user), id: "edit_#{dom_id(user)}", class: 'btn-grouped btn btn-xs'
             - unless user == current_user
               - if user.ldap_blocked?
-                = link_to '#', title: 'Cannot unblock LDAP blocked users', data: {toggle: 'tooltip'}, class: 'btn-grouped btn btn-xs btn-success disabled' do
+                = link_to '#', title: '无法启用 LDAP 禁用用户', data: {toggle: 'tooltip'}, class: 'btn-grouped btn btn-xs btn-success disabled' do
                   %i.fa.fa-lock
-                  Unblock
+                  启用
               - elsif user.blocked?
-                = link_to 'Unblock', unblock_admin_user_path(user), method: :put, class: 'btn-grouped btn btn-xs btn-success'
+                = link_to '启用', unblock_admin_user_path(user), method: :put, class: 'btn-grouped btn btn-xs btn-success'
               - else
-                = link_to 'Block', block_admin_user_path(user), data: {confirm: 'USER WILL BE BLOCKED! Are you sure?'}, method: :put, class: 'btn-grouped btn btn-xs btn-warning'
+                = link_to '禁用', block_admin_user_path(user), data: {confirm: '用户将被禁用！确定要继续么？'}, method: :put, class: 'btn-grouped btn btn-xs btn-warning'
               - if user.access_locked?
-                = link_to 'Unlock', unlock_admin_user_path(user), method: :put, class: 'btn-grouped btn btn-xs btn-success', data: { confirm: 'Are you sure?' }
+                = link_to '解锁', unlock_admin_user_path(user), method: :put, class: 'btn-grouped btn btn-xs btn-success', data: { confirm: '确定要继续么？' }
               - if user.can_be_removed?
-                = link_to 'Destroy', [:admin, user], data: { confirm: "USER #{user.name} WILL BE REMOVED! All issues, merge requests and groups linked to this user will also be removed! Maybe block the user instead? Are you sure?" }, method: :delete, class: 'btn-grouped btn btn-xs btn-remove'
+                = link_to '销毁', [:admin, user], data: { confirm: "用户 #{user.name} 将被删除！所有该用户的相关内容也会被删除！要不要只禁用用户？确定要继续么？" }, method: :delete, class: 'btn-grouped btn btn-xs btn-remove'
 = paginate @users, theme: "gitlab"

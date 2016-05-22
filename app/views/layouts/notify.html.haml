@@ -14,20 +14,20 @@
         %br
         - if @target_url
           - if @reply_by_email
-            Reply to this email directly or
-            #{link_to "view it on GitLab", @target_url}.
+            直接回复此邮件或
+            #{link_to "在 GitLab 上查看", @target_url}.
           - else
-            #{link_to "View it on GitLab", @target_url}.
+            #{link_to "在 GitLab 上查看", @target_url}.
           %br
           -# Don't link the host in the line below, one link in the email is easier to quickly click than two.
-          You're receiving this email because of your account on #{Gitlab.config.gitlab.host}.
-          If you'd like to receive fewer emails, you can
+          因为你在 #{Gitlab.config.gitlab.host} 拥有账号，所以会收到此通知。
+          如果你不喜欢接受此类通知邮件，你可以在通知设置中调整设置
           - if @labels_url
             adjust your #{link_to 'label subscriptions', @labels_url}.
           - else
             - if @sent_notification && @sent_notification.unsubscribable?
-              = link_to "unsubscribe", unsubscribe_sent_notification_url(@sent_notification)
-              from this thread or
-            adjust your notification settings.
+              或在此主题中
+              = link_to "取消订阅", unsubscribe_sent_notification_url(@sent_notification)
+            。
 
           = email_action @target_url

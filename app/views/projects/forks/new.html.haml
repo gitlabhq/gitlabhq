@@ -1,8 +1,8 @@
-- page_title "Fork project"
+- page_title "派生项目"
 - if @namespaces.present?
-  %h3.page-title Fork project
+  %h3.page-title 派生项目
   %p.lead
-    Click to fork the project to a user or group
+    点击派生项目到用户或群组
   %hr
 
   .fork-namespaces
@@ -12,34 +12,34 @@
           .col-md-2.col-sm-3
             - if fork = namespace.find_fork_of(@project)
               .fork-thumbnail
-                = link_to project_path(fork), title: "Visit project fork", class: 'has-tooltip' do
+                = link_to project_path(fork), title: "查看项目派生", class: 'has-tooltip' do
                   = image_tag namespace_icon(namespace, 100)
                   .caption
                     %strong
                       = namespace.human_name
                     %div.text-primary
-                      Already forked
+                      已派生
 
             - else
               .fork-thumbnail
-                = link_to namespace_project_forks_path(@project.namespace, @project, namespace_key: namespace.id), title: "Fork here", method: "POST", class: 'has-tooltip' do
+                = link_to namespace_project_forks_path(@project.namespace, @project, namespace_key: namespace.id), title: "派生", method: "POST", class: 'has-tooltip' do
                   = image_tag namespace_icon(namespace, 100)
                   .caption
                     %strong
                       = namespace.human_name
 
     %p.light
-      Fork is a copy of a project repository.
+      派生是创建项目仓库的副本。
       %br
-      Forking a repository allows you to do changes without affecting the original project.
+      派生的仓库允许你在不影响原有项目的情况下修改新内容。
 - else
-  %h3 No available namespaces to fork the project
+  %h3 没有可用的命名空间来派生项目
   %p.slead
-    You must have permission to create a project in a namespace before forking.
+    在派生之前，你必须拥有在命名空间中创建项目的权限。
 
 .save-project-loader.hide
   .center
     %h2
       %i.fa.fa-spinner.fa-spin
-      Forking repository
-    %p Please wait a moment, this page will automatically refresh when ready.
+      正在派生仓库
+    %p 请稍后，本页面将在准备好后自动刷新。

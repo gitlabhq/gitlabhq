@@ -1,9 +1,9 @@
 = form_tag(user_omniauth_callback_path(server['provider_name']), id: 'new_ldap_user' ) do
-  = text_field_tag :username, nil, {class: "form-control top", placeholder: "#{server['label']} Login", autofocus: "autofocus"}
-  = password_field_tag :password, nil, {class: "form-control bottom", placeholder: "Password"}
+  = text_field_tag :username, nil, {class: "form-control top", placeholder: "#{server['label']} 登录", autofocus: "autofocus"}
+  = password_field_tag :password, nil, {class: "form-control bottom", placeholder: "密码"}
   - if devise_mapping.rememberable?
     .remember-me.checkbox
       %label{for: "remember_me"}
         = check_box_tag :remember_me, '1', false, id: 'remember_me'
-        %span Remember me
-  = button_tag "Sign in", class: "btn-save btn"
+        %span 记住我
+  = button_tag "登录", class: "btn-save btn"

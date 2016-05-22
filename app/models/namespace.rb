@@ -97,7 +97,7 @@ class Namespace < ActiveRecord::Base
     new_path = "#{path}+#{id}+deleted"
 
     if gitlab_shell.mv_namespace(path, new_path)
-      message = "Namespace directory \"#{path}\" moved to \"#{new_path}\""
+      message = "命名空间目录 \"#{path}\" 移动到 \"#{new_path}\""
       Gitlab::AppLogger.info message
 
       # Remove namespace directroy async with delay so

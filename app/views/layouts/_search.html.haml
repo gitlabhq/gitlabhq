@@ -1,7 +1,7 @@
 - if controller.controller_path =~ /^groups/ && @group.persisted?
-  - label = 'This group'
+  - label = '此群组'
 - if controller.controller_path =~ /^projects/ && @project.persisted?
-  - label = 'This project'
+  - label = '此项目'
 
 .search.search-form{class: "#{'has-location-badge' if label.present?}"}
   = form_tag search_path, method: :get, class: 'navbar-form' do |f|
@@ -13,13 +13,13 @@
               = label
       .search-input-wrap
         .dropdown{ data: {url: search_autocomplete_path } }
-          = search_field_tag "search", nil, placeholder: 'Search', class: "search-input dropdown-menu-toggle", spellcheck: false, tabindex: "1", autocomplete: 'off',  data: { toggle: 'dropdown' }
+          = search_field_tag "search", nil, placeholder: '搜索', class: "search-input dropdown-menu-toggle", spellcheck: false, tabindex: "1", autocomplete: 'off',  data: { toggle: 'dropdown' }
           .dropdown-menu.dropdown-select
             = dropdown_content do
               %ul
                 %li
                   %a.is-focused.dropdown-menu-empty-link
-                    Loading...
+                    正在载入...
             = dropdown_loading
           %i.search-icon
           %i.clear-icon.js-clear-input
@@ -42,5 +42,5 @@
     - if @snippet || @snippets
       = hidden_field_tag :snippets, true
     = hidden_field_tag :repository_ref, @ref
-    = button_tag 'Go' if ENV['RAILS_ENV'] == 'test'
+    = button_tag '转到' if ENV['RAILS_ENV'] == 'test'
     .search-autocomplete-opts.hide{:'data-autocomplete-path' => search_autocomplete_path, :'data-autocomplete-project-id' => @project.try(:id), :'data-autocomplete-project-ref' => @ref }

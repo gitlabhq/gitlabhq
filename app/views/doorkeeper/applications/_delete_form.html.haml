@@ -2,9 +2,9 @@
 = form_tag oauth_application_path(application) do
   %input{:name => "_method", :type => "hidden", :value => "delete"}/
   - if defined? small
-    = button_tag type: "submit", class: "btn btn-transparent", data: { confirm: "Are you sure?" } do
+    = button_tag type: "submit", class: "btn btn-transparent", data: { confirm: "确定要继续么？" } do
       %span.sr-only
-        Destroy
+        销毁
       = icon('trash')
   - else
-    = submit_tag 'Destroy', data: { confirm: "Are you sure?" }, class: submit_btn_css
+    = submit_tag '销毁', data: { confirm: "确定要继续么？" }, class: submit_btn_css

@@ -4,7 +4,7 @@ class @GroupsSelect
       skip_ldap = $(select).hasClass('skip_ldap')
 
       $(select).select2
-        placeholder: "Search for a group"
+        placeholder: "搜索群组"
         multiple: $(select).hasClass('multiselect')
         minimumInputLength: 0
         query: (query) ->

@@ -1,25 +1,25 @@
 - publicish_project_count = ProjectsFinder.new.execute(current_user).count
-%h3.page-title Welcome to GitLab!
-%p.light Self hosted Git management application.
+%h3.page-title 欢迎来到 GitLab！
+%p.light 自托管 Git 管理应用。
 %hr
 %div
   .dashboard-intro-icon
     %i.fa.fa-bookmark-o
   .dashboard-intro-text
     %p.slead
-      You don't have access to any projects right now.
+      你现在不能访问任何项目。
       %br
       - if current_user.can_create_project?
-        You can create up to
-        %strong= pluralize(number_with_delimiter(current_user.projects_limit), "project") + "."
+        你可以最多创建
+        %strong= pluralize(number_with_delimiter(current_user.projects_limit), "个项目", "个项目") + "。"
       - else
-        If you are added to a project, it will be displayed here.
+        如果你加入了项目，它将会显示在这里。
 
     - if current_user.can_create_project?
       .link_holder
         = link_to new_project_path, class: "btn btn-new" do
           = icon('plus')
-          New Project
+          新项目
 
 - if current_user.can_create_group?
   %hr
@@ -28,13 +28,13 @@
       %i.fa.fa-users
     .dashboard-intro-text
       %p.slead
-        You can create a group for several dependent projects.
+        你可以创建一个存放多个相关项目的群组。
         %br
-        Groups are the best way to manage projects and members.
+        群组是管理项目和成员的最佳方式。
       .link_holder
         = link_to new_group_path, class: "btn btn-new" do
           %i.fa.fa-plus
-          New Group
+          新群组
 
 -if publicish_project_count > 0
   %hr
@@ -43,11 +43,11 @@
       %i.fa.fa-globe
     .dashboard-intro-text
       %p.slead
-        There are
+        此服务器上有
         %strong= number_with_delimiter(publicish_project_count)
-        public projects on this server.
+        个公开项目。
         %br
-        Public projects are an easy way to allow everyone to have read-only access.
+        公开项目允许全部人都可以只读访问。
       .link_holder
         = link_to trending_explore_projects_path, class: "btn btn-new" do
-          Browse public projects
+          浏览公开项目

@@ -41,9 +41,9 @@ class @ImporterStatus
 
           if job.import_status == 'finished'
             job_item.removeClass("active").addClass("success")
-            status_field.html('<span><i class="fa fa-check"></i> done</span>')
+            status_field.html('<span><i class="fa fa-check"></i> 完成</span>')
           else if job.import_status == 'started'
-            status_field.html("<i class='fa fa-spinner fa-spin'></i> started")
+            status_field.html("<i class='fa fa-spinner fa-spin'></i> 已开始")
           else
             status_field.html(job.import_status)
 

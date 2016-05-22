@@ -1,3 +1,4 @@
+#encoding: utf-8
 module EmailsHelper
 
   # Google Actions
@@ -35,19 +36,19 @@ module EmailsHelper
   def password_reset_token_valid_time
     valid_hours = Devise.reset_password_within / 60 / 60
     if valid_hours >= 24
-      unit = 'day'
+      unit = '天'
       valid_length = (valid_hours / 24).floor
     else
-      unit = 'hour'
+      unit = '小时'
       valid_length = valid_hours.floor
     end
 
-    pluralize(valid_length, unit)
+    pluralize(valid_length, unit, unit)
   end
 
   def reset_token_expire_message
-    link_tag = link_to('request a new one', new_user_password_url(user_email: @user.email))
-    msg = "This link is valid for #{password_reset_token_valid_time}.  "
-    msg << "After it expires, you can #{link_tag}."
+    link_tag = link_to('申请一个新的', new_user_password_url(user_email: @user.email))
+    msg = "此链接在 #{password_reset_token_valid_time}内有效。"
+    msg << "过期后请#{link_tag}。"
   end
 end

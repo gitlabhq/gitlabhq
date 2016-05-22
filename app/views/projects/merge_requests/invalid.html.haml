@@ -1,4 +1,4 @@
-- page_title "#{@merge_request.title} (#{@merge_request.to_reference}", "Merge Requests"
+- page_title "#{@merge_request.title} (#{@merge_request.to_reference}", "合并请求"
 = render "header_title"
 
 .merge-request
@@ -7,20 +7,19 @@
 
   .alert.alert-danger
     %p
-      We cannot render this merge request properly because
+      我们不能展示此合并请求，是因为
       - if @merge_request.for_fork? && !@merge_request.source_project
-        fork project was removed
+        派生项目被删除
       - elsif !@merge_request.source_branch_exists?
-        %span.label.label-inverse= @merge_request.source_branch
-        does not exist in
         %span.label.label-info= @merge_request.source_project_path
+        中不存在
+        %span.label.label-inverse= @merge_request.source_branch
       - elsif !@merge_request.target_branch_exists?
-        %span.label.label-inverse= @merge_request.target_branch
-        does not exist in
         %span.label.label-info= @merge_request.target_project_path
+        中不存在
+        %span.label.label-inverse= @merge_request.target_branch
       - else
-        of internal error
+        存在内部错误
 
     %strong
-      Please close Merge Request or change branches with existing one
-
+      请关闭此合并请求或者修改为存在的分支

@@ -5,28 +5,28 @@
     %h4.prepend-top-0
       = page_title
     %p
-      After a successful password update, you will be redirected to the login page where you can log in with your new password.
+      密码被成功修改后将会重定向到登录页面使用新密码重新登录。
   .col-lg-9
     %h5.prepend-top-0
-      Change your password
+      修改密码
       - unless @user.password_automatically_set?
-        or recover your current one
+        或恢复当前密码
     = form_for @user, url: profile_password_path, method: :put, html: {class: "update-password"} do |f|
       = form_errors(@user)
 
       - unless @user.password_automatically_set?
         .form-group
-          = f.label :current_password, class: 'label-light'
+          = f.label :current_password, '当前密码', class: 'label-light'
           = f.password_field :current_password, required: true, class: 'form-control'
           %p.help-block
-            You must provide your current password in order to change it.
+            必须提供当前密码才能修改密码。
       .form-group
-        = f.label :password, 'New password', class: 'label-light'
+        = f.label :password, '新密码', class: 'label-light'
         = f.password_field :password, required: true, class: 'form-control'
       .form-group
-        = f.label :password_confirmation, class: 'label-light'
+        = f.label :password_confirmation, '确认密码', class: 'label-light'
         = f.password_field :password_confirmation, required: true, class: 'form-control'
       .prepend-top-default.append-bottom-default
-        = f.submit 'Save password', class: "btn btn-create append-right-10"
+        = f.submit '保存密码', class: "btn btn-create append-right-10"
         - unless @user.password_automatically_set?
-          = link_to "I forgot my password", reset_profile_password_path, method: :put, class: "account-btn-link"
+          = link_to "我忘记了自己的密码", reset_profile_password_path, method: :put, class: "account-btn-link"

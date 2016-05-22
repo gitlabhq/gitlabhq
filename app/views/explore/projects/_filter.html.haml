@@ -2,16 +2,16 @@
   .dropdown
     %a.dropdown-toggle.btn{href: '#', "data-toggle" => "dropdown"}
       = icon('globe')
-      %span.light Visibility:
+      %span.light 可见度：
       - if params[:visibility_level].present?
         = visibility_level_label(params[:visibility_level].to_i)
       - else
-        Any
+        任何
       %b.caret
     %ul.dropdown-menu
       %li
         = link_to filter_projects_path(visibility_level: nil) do
-          Any
+          任何
       - Gitlab::VisibilityLevel.values.each do |level|
         %li{ class: (level.to_s == params[:visibility_level]) ? 'active' : 'light' }
           = link_to filter_projects_path(visibility_level: level) do
@@ -22,16 +22,16 @@
   .dropdown
     %a.dropdown-toggle.btn{href: '#', "data-toggle" => "dropdown"}
       = icon('tags')
-      %span.light Tags:
+      %span.light 标签：
       - if params[:tag].present?
         = params[:tag]
       - else
-        Any
+        任何
       %b.caret
     %ul.dropdown-menu
       %li
         = link_to filter_projects_path(tag: nil) do
-          Any
+          任何
 
       - @tags.each do |tag|
         %li{ class: (tag.name == params[:tag]) ? 'active' : 'light' }

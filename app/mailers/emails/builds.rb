@@ -6,7 +6,7 @@ module Emails
 
       add_project_headers
       add_build_headers('failed')
-      mail(to: to, subject: subject("Build failed for #{@project.name}", @build.short_sha))
+      mail(to: to, subject: subject("项目 #{@project.name} 构建失败", @build.short_sha))
     end
 
     def build_success_email(build_id, to)
@@ -15,7 +15,7 @@ module Emails
 
       add_project_headers
       add_build_headers('success')
-      mail(to: to, subject: subject("Build success for #{@project.name}", @build.short_sha))
+      mail(to: to, subject: subject("项目 #{@project.name} 构建成功", @build.short_sha))
     end
 
     private

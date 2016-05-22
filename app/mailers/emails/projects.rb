@@ -8,7 +8,7 @@ module Emails
       @current_user = @project_member.user
 
       mail(to: @project_member.user.notification_email,
-           subject: subject("Access to project was granted"))
+           subject: subject("被授予访问项目"))
     end
 
     def project_member_invited_email(project_member_id, token)
@@ -20,7 +20,7 @@ module Emails
       @current_user = @project_member.user
 
       mail(to: @project_member.invite_email,
-           subject: "Invitation to join project #{@project.name_with_namespace}")
+           subject: "邀请加入项目 #{@project.name_with_namespace}")
     end
 
     def project_invite_accepted_email(project_member_id)
@@ -33,7 +33,7 @@ module Emails
       @current_user = @project_member.created_by
 
       mail(to: @project_member.created_by.notification_email,
-           subject: subject("Invitation accepted"))
+           subject: subject("邀请被接受"))
     end
 
     def project_invite_declined_email(project_id, invite_email, access_level, created_by_id)
@@ -47,7 +47,7 @@ module Emails
       @target_url = namespace_project_url(@project.namespace, @project)
 
       mail(to: @created_by.notification_email,
-           subject: subject("Invitation declined"))
+           subject: subject("邀请被拒绝"))
     end
 
     def project_was_moved_email(project_id, user_id, old_path_with_namespace)

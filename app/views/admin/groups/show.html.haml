@@ -1,46 +1,46 @@
-- page_title @group.name, "Groups"
+- page_title @group.name, "群组"
 %h3.page-title
-  Group: #{@group.name}
+  群组：#{@group.name}
 
   = link_to edit_admin_group_path(@group), class: "btn pull-right" do
     %i.fa.fa-pencil-square-o
-    Edit
+    编辑
 %hr
 .row
   .col-md-6
     .panel.panel-default
       .panel-heading
-        Group info:
+        群组信息：
       %ul.well-list
         %li
           = image_tag group_icon(@group), class: "avatar s60"
         %li
-          %span.light Name:
+          %span.light 名称：
           %strong= @group.name
         %li
-          %span.light Path:
+          %span.light 路径：
           %strong
             = @group.path
 
         %li
-          %span.light Description:
+          %span.light 描述：
           %strong
             = @group.description
 
         %li
-          %span.light Visibility level:
+          %span.light 可见等级：
           %strong
             = visibility_level_label(@group.visibility_level)
 
         %li
-          %span.light Created on:
+          %span.light 创建时间：
           %strong
             = @group.created_at.to_s(:medium)
 
     .panel.panel-default
       .panel-heading
         %h3.panel-title
-          Projects
+          项目
           %span.badge
             #{@group.projects.count}
       %ul.well-list
@@ -58,7 +58,7 @@
     - if @group.shared_projects.any?
       .panel.panel-default
         .panel-heading
-          Projects shared with #{@group.name}
+          #{@group.name} 共享项目
           %span.badge
             #{@group.shared_projects.count}
         %ul.well-list
@@ -75,11 +75,12 @@
     - if can?(current_user, :admin_group_member, @group)
       .panel.panel-default
         .panel-heading
-          Add user(s) to the group:
+          增加用户到群组：
         .panel-body.form-holder
           %p.light
-            Read more about project permissions
-            %strong= link_to "here", help_page_path("permissions", "permissions"), class: "vlink"
+            关于项目的权限点击
+            %strong= link_to "这里", help_page_path("permissions", "permissions"), class: "vlink"
+            了解更多信息
 
           = form_tag members_update_admin_group_path(@group), id: "new_project_member", class: "bulk_import", method: :put  do
             %div
@@ -87,11 +88,11 @@
             %div.prepend-top-10
               = select_tag :access_level, options_for_select(GroupMember.access_level_roles), class: "project-access-select select2"
             %hr
-            = button_tag 'Add users to group', class: "btn btn-create"
+            = button_tag '增加用户到群组', class: "btn btn-create"
     .panel.panel-default
       .panel-heading
         %h3.panel-title
-          Members
+          成员
           %span.badge
             #{@group.group_members.count}
       %ul.well-list.group-users-list
@@ -105,11 +106,11 @@
               - else
                 %strong
                   = member.invite_email
-                (invited)
+                (已邀请)
             %span.pull-right.light
               = member.human_access
               - if can?(current_user, :destroy_group_member, member)
-                = link_to group_group_member_path(@group, member), data: { confirm: remove_user_from_group_message(@group, member) }, method: :delete, remote: true, class: "btn-xs btn btn-remove", title: 'Remove user from group' do
+                = link_to group_group_member_path(@group, member), data: { confirm: remove_user_from_group_message(@group, member) }, method: :delete, remote: true, class: "btn-xs btn btn-remove", title: '从群组中删除用户' do
                   %i.fa.fa-minus.fa-inverse
       .panel-footer
         = paginate @members, param_name: 'members_page', theme: 'gitlab'

@@ -4,11 +4,11 @@
       %strong= commit[:author][:name]
       = link_to "(##{truncate_sha(commit[:id])})", namespace_project_commit_path(event.project.namespace, event.project, id: commit[:id])
       %i
-        at
+        在
         = commit[:timestamp].to_time.to_s(:short)
     %blockquote= markdown(escape_once(commit[:message]), pipeline: :atom, project: event.project)
   - if event.commits_count > 15
     %p
       %i
-        \... and
-        = pluralize(event.commits_count - 15, "more commit")
+        \... 和
+        = pluralize(event.commits_count - 15, "次更多提交", "次更多提交")

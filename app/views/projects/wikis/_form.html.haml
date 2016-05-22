@@ -3,32 +3,32 @@
 
   = f.hidden_field :title, value: @page.title
   .form-group
-    = f.label :format, class: 'control-label'
+    = f.label :format, '格式', class: 'control-label'
     .col-sm-10
       = f.select :format, options_for_select(ProjectWiki::MARKUPS, {selected: @page.format}), {}, class: "form-control"
 
   .form-group
-    = f.label :content, class: 'control-label'
+    = f.label :content, '内容', class: 'control-label'
     .col-sm-10
       = render layout: 'projects/md_preview', locals: { preview_class: "md-preview" } do
-        = render 'projects/zen', f: f, attr: :content, classes: 'note-textarea', placeholder: 'Write your content or drag files here...'
+        = render 'projects/zen', f: f, attr: :content, classes: 'note-textarea', placeholder: '撰写内容或拖放文件到此处...'
         = render 'projects/notes/hints'
 
       .clearfix
       .error-alert
 
       .help-block
-        To link to a (new) page, simply type
-        %code [Link Title](page-slug)
+        链接到（新）页面只需要输入
+        %code [链接标题](page-slug)
         \.
   .form-group
-    = f.label :commit_message, class: 'control-label'
+    = f.label :commit_message, '提交信息', class: 'control-label'
     .col-sm-10= f.text_field :message, class: 'form-control', rows: 18
 
   .form-actions
     - if @page && @page.persisted?
-      = f.submit 'Save changes', class: "btn-save btn"
-      = link_to "Cancel", namespace_project_wiki_path(@project.namespace, @project, @page), class: "btn btn-cancel"
+      = f.submit '保存修改', class: "btn-save btn"
+      = link_to "取消", namespace_project_wiki_path(@project.namespace, @project, @page), class: "btn btn-cancel"
     - else
-      = f.submit 'Create page', class: "btn-create btn"
-      = link_to "Cancel", namespace_project_wiki_path(@project.namespace, @project, :home), class: "btn btn-cancel"
+      = f.submit '创建页面', class: "btn-create btn"
+      = link_to "取消", namespace_project_wiki_path(@project.namespace, @project, :home), class: "btn btn-cancel"

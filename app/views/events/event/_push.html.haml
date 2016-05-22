@@ -1,13 +1,22 @@
 .event-title
   %span.author_name= link_to_author event
-  %span.event_label.pushed #{event.action_name} #{event.ref_type}
-  - if event.rm_ref?
-    %strong= event.ref_name
-  - else
-    %strong
-      = link_to event.ref_name, namespace_project_commits_path(event.project.namespace, event.project, event.ref_name), title: h(event.target_title)
-  at
-  = link_to_project event.project
+  %span.event_label.pushed #{event.action_name}
+  - if event.new_ref?
+    = event.ref_type
+    - if event.rm_ref?
+      %strong= event.ref_name
+    - else
+      %strong= link_to event.ref_name, namespace_project_commits_path(event.project.namespace, event.project, event.ref_name), title: h(event.target_title)
+    到了
+    = link_to_project event.project
+  -else
+    = link_to_project event.project
+    的
+    = event.ref_type
+    - if event.rm_ref?
+      %strong= event.ref_name
+    - else
+      %strong= link_to event.ref_name, namespace_project_commits_path(event.project.namespace, event.project, event.ref_name), title: h(event.target_title)
 
 - if event.push_with_commits?
   - project = event.project
@@ -21,7 +30,7 @@
       - if event.commits_count > 1
         %li.commits-stat
           - if event.commits_count > 2
-            %span ... and #{event.commits_count - 2} more commits.
+            %span ... 和 #{event.commits_count - 2} 次更多提交。
 
           - if event.md_ref?
             - from = event.commit_from
@@ -31,14 +40,14 @@
             - from_label = from
 
           = link_to namespace_project_compare_path(event.project.namespace, event.project, from: from, to: event.commit_to) do
-            Compare #{from_label}...#{truncate_sha(event.commit_to)}
+            比较 #{from_label}...#{truncate_sha(event.commit_to)}
 
           - if create_mr
             %span{"data-user-is" => event.author_id, "data-display" => "inline"}
-              or
+              或
               = link_to create_mr_path(event.project.default_branch, event.ref_name, event.project) do
-                create a merge request
+                创建合并请求
       - elsif create_mr
         %li.commits-stat{"data-user-is" => event.author_id}
           = link_to create_mr_path(event.project.default_branch, event.ref_name, event.project) do
-            Create Merge Request
+            创建合并请求

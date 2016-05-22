@@ -8,7 +8,7 @@ class Dashboard::TodosController < Dashboard::ApplicationController
   def destroy
     todo.done
 
-    todo_notice = 'Todo was successfully marked as done.'
+    todo_notice = '待办事项已完成。'
 
     respond_to do |format|
       format.html { redirect_to dashboard_todos_path, notice: todo_notice }

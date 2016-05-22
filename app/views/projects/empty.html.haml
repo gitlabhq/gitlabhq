@@ -46,7 +46,7 @@
               git push -u origin master
 
         %fieldset
-          %h5 Existing folder or Git repository
+          %h5 已存在的文件夹或 Git 仓库
           %pre.light-well
             :preserve
               cd existing_folder
@@ -58,4 +58,4 @@
 
           - if can? current_user, :remove_project, @project
             .prepend-top-20
-              = link_to 'Remove project', [@project.namespace.becomes(Namespace), @project], data: { confirm: remove_project_message(@project)}, method: :delete, class: "btn btn-remove pull-right"
+              = link_to '删除项目', [@project.namespace.becomes(Namespace), @project], data: { confirm: remove_project_message(@project)}, method: :delete, class: "btn btn-remove pull-right"

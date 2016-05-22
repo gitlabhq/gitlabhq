@@ -1,16 +1,16 @@
-- page_title "Applications"
+- page_title "应用"
 %h3.page-title
-  System OAuth applications
+  系统 OAuth 应用
 %p.light
-  System OAuth applications don't belong to any user and can only be managed by admins
+  系统 OAuth 应用不属于特定的用户，只由管理员管理
 %hr
-%p= link_to 'New Application', new_admin_application_path, class: 'btn btn-success'
+%p= link_to '新应用', new_admin_application_path, class: 'btn btn-success'
 %table.table.table-striped
   %thead
     %tr
-      %th Name
-      %th Callback URL
-      %th Clients
+      %th 名称
+      %th 回调链接
+      %th 客户端
       %th
       %th
   %tbody.oauth-applications
@@ -19,5 +19,5 @@
         %td= link_to application.name, admin_application_path(application)
         %td= application.redirect_uri
         %td= application.access_tokens.map(&:resource_owner_id).uniq.count
-        %td= link_to 'Edit', edit_admin_application_path(application), class: 'btn btn-link'
+        %td= link_to '编辑', edit_admin_application_path(application), class: 'btn btn-link'
         %td= render 'delete_form', application: application

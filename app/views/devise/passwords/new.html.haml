@@ -1,14 +1,14 @@
 .login-box
   .login-heading
-    %h3 Reset password
+    %h3 重置密码
   .login-body
     = form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f|
       .devise-errors
         = devise_error_messages!
       .clearfix.append-bottom-20
-        = f.email_field :email, placeholder: "Email",  class: "form-control", required: true, value: params[:user_email], autofocus: true
+        = f.email_field :email, placeholder: "邮箱",  class: "form-control", required: true, value: params[:user_email], autofocus: true
       .clearfix
-        = f.submit "Reset password", class: "btn-primary btn"
+        = f.submit "重置密码", class: "btn-primary btn"
 
 .clearfix.prepend-top-20
   = render 'devise/shared/sign_in_link'

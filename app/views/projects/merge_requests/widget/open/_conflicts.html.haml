@@ -1,10 +1,10 @@
 %h4
   = icon("exclamation-triangle")
-  This merge request contains merge conflicts
+  此合并请求包含有合并冲突
 
 %p
-  Please resolve these conflicts or 
+  请解决这些冲突或
   - if @merge_request.can_be_merged_by?(current_user)
-    #{link_to "merge this request manually", "#modal_merge_info", class: "how_to_merge_link vlink", "data-toggle" => "modal"}.
+    #{link_to "手工合并此请求", "#modal_merge_info", class: "how_to_merge_link vlink", "data-toggle" => "modal"}.
   - else
-    ask someone with write access to this repository to merge this request manually.
+    询问具有此仓库写权限的成员来手工合并此请求。

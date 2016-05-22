@@ -37,7 +37,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
         sign_in_and_redirect(@user)
       end
     else
-      flash[:alert] = "Access denied for your LDAP account."
+      flash[:alert] = "您的 LDAP 账号被禁止访问。"
       redirect_to new_user_session_path
     end
   end
@@ -49,7 +49,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       identity = current_user.identities.find_by(extern_uid: oauth['uid'], provider: :saml)
       if identity.nil?
         current_user.identities.create(extern_uid: oauth['uid'], provider: :saml)
-        redirect_to profile_account_path, notice: 'Authentication method updated'
+        redirect_to profile_account_path, notice: '认证方法已更新'
       else
         redirect_to after_sign_in_path_for(current_user)
       end
@@ -85,7 +85,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       # Add new authentication method
       current_user.identities.find_or_create_by(extern_uid: oauth['uid'], provider: oauth['provider'])
       log_audit_event(current_user, with: oauth['provider'])
-      redirect_to profile_account_path, notice: 'Authentication method updated'
+      redirect_to profile_account_path, notice: '认证方法已更新'
     else
       oauth_user = Gitlab::OAuth::User.new(oauth)
       oauth_user.save
@@ -117,10 +117,10 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   def handle_signup_error
     label = Gitlab::OAuth::Provider.label_for(oauth['provider'])
-    message = "Signing in using your #{label} account without a pre-existing GitLab account is not allowed."
+    message = "没有绑定 GitLab 账号前是无法使用 #{label} 账号登陆系统。"
 
     if current_application_settings.signup_enabled?
-      message << " Create a GitLab account first, and then connect it to your #{label} account."
+      message << "请先创建一个 GitLab 账号，然后再绑定 #{label} 账号。"
     end
 
     flash[:notice] = message

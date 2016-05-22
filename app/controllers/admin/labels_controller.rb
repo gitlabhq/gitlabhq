@@ -20,7 +20,7 @@ class Admin::LabelsController < Admin::ApplicationController
     @label.template = true
 
     if @label.save
-      redirect_to admin_labels_url, notice: "Label was created"
+      redirect_to admin_labels_url, notice: "标记已创建"
     else
       render :new
     end
@@ -28,7 +28,7 @@ class Admin::LabelsController < Admin::ApplicationController
 
   def update
     if @label.update(label_params)
-      redirect_to admin_labels_path, notice: 'label was successfully updated.'
+      redirect_to admin_labels_path, notice: '标记更新成功。'
     else
       render :edit
     end
@@ -40,7 +40,7 @@ class Admin::LabelsController < Admin::ApplicationController
 
     respond_to do |format|
       format.html do
-        redirect_to(admin_labels_path, notice: 'Label was removed')
+        redirect_to(admin_labels_path, notice: '标记已删除')
       end
       format.js
     end

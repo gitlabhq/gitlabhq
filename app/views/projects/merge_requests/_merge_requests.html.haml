@@ -2,7 +2,7 @@
   = render @merge_requests
   - if @merge_requests.blank?
     %li
-      .nothing-here-block No merge requests to show
+      .nothing-here-block 没有合并请求
 
 - if @merge_requests.present?
   = paginate @merge_requests, theme: "gitlab"

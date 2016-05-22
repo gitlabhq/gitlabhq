@@ -3,11 +3,11 @@
     = form_errors(@key)
 
     .form-group
-      = f.label :key, class: 'label-light'
+      = f.label :key, "公钥", class: 'label-light'
       = f.text_area :key, class: "form-control", rows: 8, required: true
     .form-group
-      = f.label :title, class: 'label-light'
+      = f.label :title, "标题", class: 'label-light'
       = f.text_field :title, class: "form-control", required: true
 
     .prepend-top-default
-      = f.submit 'Add key', class: "btn btn-create"
+      = f.submit '增加密钥', class: "btn btn-create"

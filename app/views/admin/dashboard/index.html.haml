@@ -1,46 +1,46 @@
 .admin-dashboard.prepend-top-default
   .row
     .col-md-4
-      %h4 Statistics
+      %h4 统计
       %hr
       %p
-        Forks
+        派生
         %span.light.pull-right
           = number_with_delimiter(ForkedProjectLink.count)
       %p
-        Issues
+        问题
         %span.light.pull-right
           = number_with_delimiter(Issue.count)
       %p
-        Merge Requests
+        合并请求
         %span.light.pull-right
           = number_with_delimiter(MergeRequest.count)
       %p
-        Notes
+        笔记
         %span.light.pull-right
           = number_with_delimiter(Note.count)
       %p
-        Snippets
+        代码片段
         %span.light.pull-right
           = number_with_delimiter(Snippet.count)
       %p
-        SSH Keys
+        SSH 密钥
         %span.light.pull-right
           = number_with_delimiter(Key.count)
       %p
-        Milestones
+        里程碑
         %span.light.pull-right
           = number_with_delimiter(Milestone.count)
       %p
-        Active Users
+        活跃用户
         %span.light.pull-right
           = number_with_delimiter(User.active.count)
     .col-md-4
       %h4
-        Features
+        功能
       %hr
       %p
-        Sign up
+        注册
         %span.light.pull-right
           = boolean_to_icon signup_enabled?
       %p
@@ -48,7 +48,7 @@
         %span.light.pull-right
           = boolean_to_icon Gitlab.config.ldap.enabled
       %p
-        Gravatar
+        头像
         %span.light.pull-right
           = boolean_to_icon gravatar_enabled?
       %p
@@ -56,12 +56,12 @@
         %span.light.pull-right
           = boolean_to_icon Gitlab.config.omniauth.enabled
       %p
-        Reply by email
+        邮件回复
         %span.light.pull-right
           = boolean_to_icon Gitlab::IncomingEmail.enabled?
     .col-md-4
       %h4
-        Components
+        组件
         - if current_application_settings.version_check_enabled
           .pull-right
             = version_status_badge
@@ -101,32 +101,32 @@
   .row
     .col-sm-4
       .light-well
-        %h4 Projects
+        %h4 项目
         .data
           = link_to admin_namespaces_projects_path do
             %h1= number_with_delimiter(Project.count)
           %hr
-          = link_to('New Project', new_project_path, class: "btn btn-new")
+          = link_to('新项目', new_project_path, class: "btn btn-new")
     .col-sm-4
       .light-well
-        %h4 Users
+        %h4 用户
         .data
           = link_to admin_users_path do
             %h1= number_with_delimiter(User.count)
           %hr
-          = link_to 'New User', new_admin_user_path, class: "btn btn-new"
+          = link_to '新用户', new_admin_user_path, class: "btn btn-new"
     .col-sm-4
       .light-well
-        %h4 Groups
+        %h4 群组
         .data
           = link_to admin_groups_path do
             %h1= number_with_delimiter(Group.count)
           %hr
-          = link_to 'New Group', new_admin_group_path, class: "btn btn-new"
+          = link_to '新群组', new_admin_group_path, class: "btn btn-new"
 
   .row.prepend-top-10
     .col-md-4
-      %h4 Latest projects
+      %h4 最近项目
       %hr
       - @projects.each do |project|
         %p
@@ -135,7 +135,7 @@
             #{time_ago_with_tooltip(project.created_at)}
 
     .col-md-4
-      %h4 Latest users
+      %h4 最近用户
       %hr
       - @users.each do |user|
         %p
@@ -145,7 +145,7 @@
             #{time_ago_with_tooltip(user.created_at)}
 
     .col-md-4
-      %h4 Latest groups
+      %h4 最近群组
       %hr
       - @groups.each do |group|
         %p

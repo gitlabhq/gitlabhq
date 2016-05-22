@@ -1,17 +1,17 @@
-- page_title "Abuse Reports"
-%h3.page-title Abuse Reports
+- page_title "滥用举报"
+%h3.page-title 滥用举报
 %hr
 - if @abuse_reports.present?
   .table-holder
     %table.table
       %thead
         %tr
-          %th User
-          %th Reported by
-          %th Message
-          %th Primary action
+          %th 被举报用户
+          %th 举报人
+          %th 信息
+          %th 操作
           %th
       = render @abuse_reports
   = paginate @abuse_reports
 - else
-  %h4 There are no abuse reports
+  %h4 没有滥用举报

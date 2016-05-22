@@ -30,7 +30,7 @@ class ProjectsController < Projects::ApplicationController
     if @project.saved?
       redirect_to(
         project_path(@project),
-        notice: "Project '#{@project.name}' was successfully created."
+        notice: "项目 '#{@project.name}' 创建成功。"
       )
     else
       render 'new'
@@ -45,11 +45,11 @@ class ProjectsController < Projects::ApplicationController
 
     respond_to do |format|
       if status
-        flash[:notice] = "Project '#{@project.name}' was successfully updated."
+        flash[:notice] = "项目 '#{@project.name}' 更新成功。"
         format.html do
           redirect_to(
             edit_project_path(@project),
-            notice: "Project '#{@project.name}' was successfully updated."
+            notice: "项目 '#{@project.name}' 更新成功。"
           )
         end
         format.js
@@ -75,7 +75,7 @@ class ProjectsController < Projects::ApplicationController
     return access_denied! unless can?(current_user, :remove_fork_project, @project)
 
     if ::Projects::UnlinkForkService.new(@project, current_user).execute
-      flash[:notice] = 'The fork relationship has been removed.'
+      flash[:notice] = '派生关系被删除。'
     end
   end
 
@@ -96,7 +96,7 @@ class ProjectsController < Projects::ApplicationController
     end
 
     if @project.pending_delete?
-      flash[:alert] = "Project queued for delete."
+      flash[:alert] = "项目正在排队删除。"
     end
 
     respond_to do |format|
@@ -125,7 +125,7 @@ class ProjectsController < Projects::ApplicationController
     return access_denied! unless can?(current_user, :remove_project, @project)
 
     ::Projects::DestroyService.new(@project, current_user, {}).pending_delete!
-    flash[:alert] = "Project '#{@project.name}' will be deleted."
+    flash[:alert] = "项目 '#{@project.name}' 已被删除。"
 
     redirect_to dashboard_projects_path
   rescue Projects::DestroyService::DestroyError => ex
@@ -176,7 +176,7 @@ class ProjectsController < Projects::ApplicationController
 
     redirect_to(
       project_path(@project),
-      notice: "Housekeeping successfully started"
+      notice: "维护已开启成功"
     )
   rescue ::Projects::HousekeepingService::LeaseTaken => ex
     redirect_to(

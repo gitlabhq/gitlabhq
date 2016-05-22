@@ -240,13 +240,13 @@
           results in fewer but larger UDP packets being sent.
 
   %fieldset
-    %legend Spam and Anti-bot Protection
+    %legend Spam 与防机器人保护
     .form-group
       .col-sm-offset-2.col-sm-10
         .checkbox
           = f.label :recaptcha_enabled do
             = f.check_box :recaptcha_enabled
-            Enable reCAPTCHA
+            开启 reCAPTCHA
           %span.help-block#recaptcha_help_block Helps prevent bots from creating accounts
 
     .form-group
@@ -254,7 +254,7 @@
       .col-sm-10
         = f.text_field :recaptcha_site_key, class: 'form-control'
         .help-block
-          Generate site and private keys at
+          在后面的网址生成网站密钥 (Site Key) 和私钥 (Private Key)：
           %a{ href: 'http://www.google.com/recaptcha', target: 'blank'} http://www.google.com/recaptcha
 
     .form-group
@@ -267,29 +267,29 @@
         .checkbox
           = f.label :akismet_enabled do
             = f.check_box :akismet_enabled
-            Enable Akismet
-          %span.help-block#akismet_help_block Helps prevent bots from creating issues
+            开启 Akismet
+          %span.help-block#akismet_help_block 用户阻止机器人创建问题
 
     .form-group
       = f.label :akismet_api_key, 'Akismet API Key', class: 'control-label col-sm-2'
       .col-sm-10
         = f.text_field :akismet_api_key, class: 'form-control'
         .help-block
-          Generate API key at
+          在后面的网址生成 API 密钥（API Key）：
           %a{ href: 'http://www.akismet.com', target: 'blank'} http://www.akismet.com
 
   %fieldset
-    %legend Error Reporting and Logging
+    %legend 错误报告和日志
     %p
-      These settings require a restart to take effect.
+      这些设置需要重启才能生效。
     .form-group
       .col-sm-offset-2.col-sm-10
         .checkbox
           = f.label :sentry_enabled do
             = f.check_box :sentry_enabled
-            Enable Sentry
+            开启 Sentry
           .help-block
-            Sentry is an error reporting and logging tool which is currently not shipped with GitLab, get it here:
+            Sentry 是一个错误报告和日志记录工具。GitLab 当前并未自带此工具，需要在后面的网址下载并安装：
             %a{ href: 'https://getsentry.com', target: '_blank' } https://getsentry.com
 
     .form-group
@@ -298,23 +298,23 @@
         = f.text_field :sentry_dsn, class: 'form-control'
 
   %fieldset
-    %legend Repository Checks
+    %legend 版本仓库检查
     .form-group
       .col-sm-offset-2.col-sm-10
         .checkbox
           = f.label :repository_checks_enabled do
             = f.check_box :repository_checks_enabled
-            Enable Repository Checks
+            开启版本仓库检查
           .help-block
-            GitLab will periodically run
+            GitLab 将定期给所有项目和维基版本仓库运行
             %a{ href: 'https://www.kernel.org/pub/software/scm/git/docs/git-fsck.html', target: 'blank' } 'git fsck'
-            in all project and wiki repositories to look for silent disk corruption issues.
+            命令来寻找无记载磁盘损坏问题。
     .form-group
       .col-sm-offset-2.col-sm-10
-        = link_to 'Clear all repository checks', clear_repository_check_states_admin_application_settings_path, data: { confirm: 'This will clear repository check states for ALL projects in the database. This cannot be undone. Are you sure?' }, method: :put, class: "btn btn-sm btn-remove"
+        = link_to '清除所有版本仓库检查', clear_repository_check_states_admin_application_settings_path, data: { confirm: '将清除数据库内所有项目的版本仓库检查状态。此操作无法被撤销。确定要继续么？' }, method: :put, class: "btn btn-sm btn-remove"
         .help-block
-          If you got a lot of false alarms from repository checks you can choose to clear all repository check information from the database.
+          如果在版本仓库检查中得到很多假警报，你可以选择清除数据库中的所有版本仓库检查信息。
 
 
   .form-actions
-    = f.submit 'Save', class: 'btn btn-save'
+    = f.submit '保存', class: 'btn btn-save'

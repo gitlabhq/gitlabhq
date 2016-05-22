@@ -51,26 +51,26 @@
       .bs-callout.bs-callout-warning
         %p
           - if no_runners_for_project?(@build.project)
-            This build is stuck, because the project doesn't have any runners online assigned to it.
+            此构建被卡住，因为没有 runner 指定给该项目。
           - elsif @build.tags.any?
-            This build is stuck, because you don't have any active runners online with any of these tags assigned to them:
+            此构建被卡住，因为没有指定标签的 runner 指定给该项目。指定的标签如下：
             - @build.tags.each do |tag|
               %span.label.label-primary
                 = tag
           - else
-            This build is stuck, because you don't have any active runners that can run this build.
+            此构建被卡住，因为没有可用的 runner 来运行此构建。
 
           %br
-          Go to
+          转到
           = link_to namespace_project_runners_path(@build.project.namespace, @build.project) do
-            Runners page
+            Runners 页面
 
   .row.prepend-top-default
     .col-md-9
       .clearfix
         - if @build.active?
           .autoscroll-container
-            %button.btn.btn-success.btn-sm#autoscroll-button{:type => "button", :data => {:state => 'disabled'}} enable autoscroll
+            %button.btn.btn-success.btn-sm#autoscroll-button{:type => "button", :data => {:state => 'disabled'}} 开启自动滚动
           .clearfix
       #js-build-scroll.scroll-controls
         = link_to '#up-build-trace', class: 'btn' do
@@ -81,7 +81,7 @@
       - if @build.erased?
         .erased.alert.alert-warning
           - erased_by = "by #{link_to @build.erased_by.name, user_path(@build.erased_by)}" if @build.erased_by
-          Build has been erased #{erased_by.html_safe} #{time_ago_with_tooltip(@build.erased_at)}
+          构建被 #{erased_by.html_safe} 在 #{time_ago_with_tooltip(@build.erased_at)}删除
       - else
         %pre.trace#build-trace
           %code.bash
@@ -96,62 +96,62 @@
       - if @build.coverage
         .build-widget
           %h4.title
-            Test coverage
+            测试覆盖
           %h1 #{@build.coverage}%
 
       - if can?(current_user, :read_build, @project) && @build.artifacts?
         .build-widget.artifacts
-          %h4.title Build artifacts
+          %h4.title 构建附件
           .center
             .btn-group{ role: :group }
               = link_to download_namespace_project_build_artifacts_path(@project.namespace, @project, @build), class: 'btn btn-sm btn-primary' do
                 = icon('download')
-                Download
+                下载
 
               - if @build.artifacts_metadata?
                 = link_to browse_namespace_project_build_artifacts_path(@project.namespace, @project, @build), class: 'btn btn-sm btn-primary' do
                   = icon('folder-open')
-                  Browse
+                  浏览
 
       .build-widget.build-controls
         %h4.title
-          Build ##{@build.id}
+          构建 ##{@build.id}
           - if can?(current_user, :update_build, @project)
             .center
               .btn-group{ role: :group }
                 - if @build.active?
-                  = link_to "Cancel", cancel_namespace_project_build_path(@project.namespace, @project, @build), class: 'btn btn-sm btn-danger', method: :post
+                  = link_to "取消", cancel_namespace_project_build_path(@project.namespace, @project, @build), class: 'btn btn-sm btn-danger', method: :post
                 - elsif @build.retryable?
-                  = link_to "Retry", retry_namespace_project_build_path(@project.namespace, @project, @build), class: 'btn btn-sm btn-primary', method: :post
+                  = link_to "重试", retry_namespace_project_build_path(@project.namespace, @project, @build), class: 'btn btn-sm btn-primary', method: :post
 
                 - if @build.erasable?
                   = link_to erase_namespace_project_build_path(@project.namespace, @project, @build),
                             class: 'btn btn-sm btn-warning', method: :post,
-                            data: { confirm: 'Are you sure you want to erase this build?' } do
+                            data: { confirm: '确定要删除此构建么？' } do
                     = icon('eraser')
-                    Erase
+                    删除
                 - if @build.has_trace?
-                  = link_to 'Raw', raw_namespace_project_build_path(@project.namespace, @project, @build),
+                  = link_to '原文件', raw_namespace_project_build_path(@project.namespace, @project, @build),
                             class: 'btn btn-sm btn-success', target: '_blank'
 
         .clearfix
           - if @build.duration
             %p
-              %span.attr-name Duration:
+              %span.attr-name 运行时间：
               #{duration_in_words(@build.finished_at, @build.started_at)}
           %p
-            %span.attr-name Created:
+            %span.attr-name 创建时间：
             #{time_ago_with_tooltip(@build.created_at)}
           - if @build.finished_at
             %p
-              %span.attr-name Finished:
+              %span.attr-name 结束时间：
               #{time_ago_with_tooltip(@build.finished_at)}
           - if @build.erased_at
             %p
-              %span.attr-name Erased:
+              %span.attr-name 删除时间：
               #{time_ago_with_tooltip(@build.erased_at)}
           %p
-            %span.attr-name Runner:
+            %span.attr-name Runner：
             - if @build.runner && current_user && current_user.admin
               = link_to "##{@build.runner.id}", admin_runner_path(@build.runner.id)
             - elsif @build.runner
@@ -160,15 +160,15 @@
       - if @build.trigger_request
         .build-widget
           %h4.title
-            Trigger
+            触发
 
           %p
-            %span.attr-name Token:
+            %span.attr-name 授权码：
             #{@build.trigger_request.trigger.short_token}
 
           - if @build.trigger_request.variables
             %p
-              %span.attr-name Variables:
+              %span.attr-name 变量：
 
             %code
               - @build.trigger_request.variables.each do |key, value|
@@ -176,32 +176,32 @@
 
       .build-widget
         %h4.title
-          Commit
+          提交
           .pull-right
             %small
               = link_to @build.commit.short_sha, ci_status_path(@build.commit), class: "monospace"
         %p
-          %span.attr-name Branch:
+          %span.attr-name 分支：
           = link_to @build.ref, namespace_project_commits_path(@project.namespace, @project, @build.ref)
         %p
-          %span.attr-name Author:
+          %span.attr-name 作者：
           #{@build.commit.git_author_name}
         %p
-          %span.attr-name Message:
+          %span.attr-name 信息：
           #{@build.commit.git_commit_message}
 
       - if @build.tags.any?
         .build-widget
           %h4.title
-            Tags
+            标签
           - @build.tag_list.each do |tag|
             %span.label.label-primary
               = tag
 
       - if @builds.present?
         .build-widget
-          %h4.title #{pluralize(@builds.count(:id), "other build")} for
-          = succeed ":" do
+          %h4.title 此提交还有 #{pluralize(@builds.count(:id), "次其他构建", "次其他构建")}
+          = succeed "：" do
             = link_to @build.commit.short_sha, ci_status_path(@build.commit), class: "monospace"
           %table.table.builds
             - @builds.each_with_index do |build, i|
@@ -215,7 +215,7 @@
                     - else
                       %span ##{build.id}
 
-                %td.status= build.status
+                %td.status= ci_status_zh(build.status)
 
 
   :javascript

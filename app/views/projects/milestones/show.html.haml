@@ -1,4 +1,4 @@
-- page_title       @milestone.title, "Milestones"
+- page_title       @milestone.title, "里程碑"
 - page_description @milestone.description
 
 = render "header_title"
@@ -6,13 +6,13 @@
 .detail-page-header
   .status-box{ class: status_box_class(@milestone) }
     - if @milestone.closed?
-      Closed
+      已关闭
     - elsif @milestone.expired?
-      Expired
+      已过期
     - else
-      Open
+      未关闭
   %span.identifier
-    Milestone ##{@milestone.iid}
+    里程碑 ##{@milestone.iid}
   - if @milestone.expires_at
     %span.creator
       &middot;

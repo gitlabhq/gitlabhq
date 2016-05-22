@@ -1,27 +1,27 @@
-- page_title "Projects", @user.name, "Users"
+- page_title "项目", @user.name, "用户"
 = render 'admin/users/head'
 
 - if @user.groups.any?
   .panel.panel-default
-    .panel-heading Group projects
+    .panel-heading 群组项目
     %ul.well-list
       - @user.groups.each do |group|
         %li
           %strong= group.name
-          &ndash; access to
-          #{pluralize(group.projects.count, 'project')}
+          &ndash; 访问
+          #{pluralize(group.projects.count, '个项目', '个项目')}
 
 .row
   .col-md-6
     - if @personal_projects.present?
       = render 'admin/users/projects', projects: @personal_projects
     - else
-      .nothing-here-block This user has no personal projects.
+      .nothing-here-block 此用户没有个人项目。
 
 
   .col-md-6
     .panel.panel-default
-      .panel-heading Joined projects (#{@joined_projects.count})
+      .panel-heading 加入的项目 (#{@joined_projects.count})
       %ul.well-list
         - @joined_projects.sort_by(&:name_with_namespace).each do |project|
           - member = project.team.find_member(@user.id)
@@ -33,11 +33,11 @@
             - if member
               .pull-right
                 - if member.owner?
-                  %span.light Owner
+                  %span.light 拥有者
                 - else
                   %span.light= member.human_access
 
                   - if member.respond_to? :project
-                    = link_to namespace_project_project_member_path(project.namespace, project, member), data: { confirm: remove_from_project_team_message(project, member) }, remote: true, method: :delete, class: "btn-xs btn btn-remove", title: 'Remove user from project' do
+                    = link_to namespace_project_project_member_path(project.namespace, project, member), data: { confirm: remove_from_project_team_message(project, member) }, remote: true, method: :delete, class: "btn-xs btn btn-remove", title: '从项目中删除用户' do
                       %i.fa.fa-times
 

@@ -1,6 +1,6 @@
 .form-group.project-visibility-level-holder
   = f.label :visibility_level, class: 'control-label' do
-    Visibility Level
+    可见等级
     = link_to "(?)", help_page_path("public_access", "public_access")
   .col-sm-10
     - if can_change_visibility_level

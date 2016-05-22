@@ -2,23 +2,23 @@
   = form_errors(@label)
 
   .form-group
-    = f.label :title, class: 'control-label'
+    = f.label :title, "标题", class: 'control-label'
     .col-sm-10
       = f.text_field :title, class: "form-control", required: true, autofocus: true
   .form-group
-    = f.label :description, class: 'control-label'
+    = f.label :description, "描述", class: 'control-label'
     .col-sm-10
       = f.text_field :description, class: "form-control js-quick-submit"
   .form-group
-    = f.label :color, "Background color", class: 'control-label'
+    = f.label :color, "背景色", class: 'control-label'
     .col-sm-10
       .input-group
         .input-group-addon.label-color-preview &nbsp;
         = f.color_field :color, class: "form-control"
       .help-block
-        Choose any color.
+        选择任意颜色。
         %br
-        Or you can choose one of suggested colors below
+        或者在下面选择一个推荐的颜色
 
       .suggest-colors
         - suggested_colors.each do |color|
@@ -27,7 +27,7 @@
 
   .form-actions
     - if @label.persisted?
-      = f.submit 'Save changes', class: 'btn btn-save js-save-button'
+      = f.submit '保存修改', class: 'btn btn-save js-save-button'
     - else
-      = f.submit 'Create Label', class: 'btn btn-create js-save-button'
-    = link_to "Cancel", namespace_project_labels_path(@project.namespace, @project), class: 'btn btn-cancel'
+      = f.submit '创建标记', class: 'btn btn-create js-save-button'
+    = link_to "取消", namespace_project_labels_path(@project.namespace, @project), class: 'btn btn-cancel'

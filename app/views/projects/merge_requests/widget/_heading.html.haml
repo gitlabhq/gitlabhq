@@ -4,14 +4,14 @@
       .ci_widget{ class: "ci-#{status}", style: ("display:none" unless @ci_commit.status == status) }
         = ci_icon_for_status(status)
         %span
-          CI build
+          CI 构建
           = ci_label_for_status(status)
-        for
+        ：
         - commit = @merge_request.last_commit
-        = succeed "." do
+        = succeed "。" do
           = link_to @ci_commit.short_sha, namespace_project_commit_path(@merge_request.source_project.namespace, @merge_request.source_project, @ci_commit.sha), class: "monospace"
         %span.ci-coverage
-        = link_to "View details", builds_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), class: "js-show-tab", data: {action: 'builds'}
+        = link_to "查看明细", builds_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), class: "js-show-tab", data: {action: 'builds'}
 
 - elsif @merge_request.has_ci?
   - # Compatibility with old CI integrations (ex jenkins) when you request status from CI server via AJAX
@@ -21,24 +21,24 @@
       .ci_widget{class: "ci-#{status}", style: "display:none"}
         = ci_icon_for_status(status)
         %span
-          CI build
+          CI 构建
           = ci_label_for_status(status)
-        for
+        ：
         - commit = @merge_request.last_commit
-        = succeed "." do
+        = succeed "。" do
           = link_to commit.short_id, namespace_project_commit_path(@merge_request.source_project.namespace, @merge_request.source_project, commit), class: "monospace"
         %span.ci-coverage
         - if details_path = ci_build_details_path(@merge_request)
-          = link_to "View details", details_path, :"data-no-turbolink" => "data-no-turbolink"
+          = link_to "查看明细", details_path, :"data-no-turbolink" => "data-no-turbolink"
 
     .ci_widget
       = icon("spinner spin")
-      Checking CI status for #{@merge_request.last_commit_short_sha}&hellip;
+      正在检查 #{@merge_request.last_commit_short_sha} 的构建状态&hellip;
 
     .ci_widget.ci-not_found{style: "display:none"}
       = icon("times-circle")
-      Could not find CI status for #{@merge_request.last_commit_short_sha}.
+      在 CI 服务器上无法找到 #{@merge_request.last_commit_short_sha} 的提交。
 
     .ci_widget.ci-error{style: "display:none"}
       = icon("times-circle")
-      Could not connect to the CI server. Please check your settings and try again.
+      无法连接到 CI 服务器。请检查相关设置并重试。

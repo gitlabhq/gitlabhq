@@ -1,10 +1,10 @@
 .login-box
   - if signup_enabled?
     .login-heading
-      %h3 Existing user? Sign in
+      %h3 已有账号？登录
   - else
     .login-heading
-      %h3 Sign in
+      %h3 登录
   .login-body
     - if form_based_providers.any?
       %ul.nav-links
@@ -16,7 +16,7 @@
             = link_to server['label'], "#tab-#{server['provider_name']}", 'data-toggle' => 'tab'
         - if signin_enabled?
           %li
-            = link_to 'Standard', '#tab-signin', 'data-toggle' => 'tab'
+            = link_to '基本', '#tab-signin', 'data-toggle' => 'tab'
       .tab-content
         - if crowd_enabled?
           %div.tab-pane.active{id: "tab-crowd"}

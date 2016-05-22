@@ -1,3 +1,4 @@
+#encoding: utf-8
 module MergeRequests
   class BuildService < MergeRequests::BaseService
     def execute
@@ -16,7 +17,7 @@ module MergeRequests
       if merge_request.target_branch.blank? || merge_request.source_branch.blank?
         message =
           if params[:source_branch] || params[:target_branch]
-            "You must select source and target branch"
+            "必须选择来源和目标分支"
           end
 
         return build_failed(merge_request, message)

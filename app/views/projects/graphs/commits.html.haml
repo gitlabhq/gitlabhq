@@ -1,4 +1,4 @@
-- page_title "Commits", "Graphs"
+- page_title "提交", "图表"
 = render "header_title"
 = render 'head'
 
@@ -9,9 +9,9 @@
     = commits_breadcrumbs
 
 %p.lead
-  Commit statistics for
+  提交统计
   %strong #{@ref}
-  #{@commits_graph.start_date.strftime('%b %d')} - #{@commits_graph.end_date.strftime('%b %d')}
+  #{@commits_graph.start_date.strftime('%m-%d')} - #{@commits_graph.end_date.strftime('%m-%d')}
 
 .row
   .col-md-6
@@ -19,34 +19,34 @@
       %li
         %p.lead
           %strong #{@commits_graph.commits.size}
-          commits during
+          次提交花费
           %strong #{@commits_graph.duration}
-          days
+          天
       %li
         %p.lead
-          Average
+          平均每天
           %strong #{@commits_graph.commit_per_day}
-          commits per day
+          次提交
       %li
         %p.lead
-          Contributed by
+          贡献者
           %strong #{@commits_graph.authors}
-          authors
+          人
   .col-md-6
     %div
       %p.slead
-        Commits per day of month
+        每月按天提交数
       %canvas#month-chart
 .row
   .col-md-6
     %div
       %p.slead
-        Commits per day hour (UTC)
+        每天按小时提交数 (UTC)
       %canvas#hour-chart
   .col-md-6
     %div
       %p.slead
-        Commits per weekday
+        每周按天提交数
       %canvas#weekday-chart
 
 :javascript
