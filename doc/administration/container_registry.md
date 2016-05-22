@@ -34,14 +34,17 @@ You can read more about Docker Registry at https://docs.docker.com/registry/intr
 If you are using Omnibus, you have to bare in mind the following:
 
 - The container Registry will be enabled by default if GitLab is configured
-  with HTTPS and it will listen on port `5005`. If you want the Registry to
-  listen on a port other than `5005`, read [#Container Registry under existing GitLab domain](#container-registry-under-existing-gitlab-domain)
+  with HTTPS in new and existing installations (no action is required from the
+  administrator), and it will listen on port `5005`. If you wish to change it,
+  read [#Container Registry under existing GitLab domain](#container-registry-under-existing-gitlab-domain)
   on how to achieve that. You will also have to configure your firewall to allow
-  connections to that port.
-- The container Registry works under HTTPS by default. Using HTTP is possible
-  but not recommended and out of the scope of this document.
-  [See the insecure Registry documentation][docker-insecure] if you want to
-  implement this.
+  incoming connections to that port.
+
+>**Note:**
+The container Registry works under HTTPS by default. Using HTTP is possible
+but not recommended and out of the scope of this document.
+Read the [insecure Registry documentation][docker-insecure] if you want to
+implement this.
 
 ---
 
