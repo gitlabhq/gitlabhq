@@ -1,5 +1,6 @@
 # Health Check
-_**Note:** This feature was [introduced][ce-3888] in GitLab 8.8_
+
+>**Note:** This feature was [introduced][ce-3888] in GitLab 8.8.
 
 GitLab provides a health check endpoint for uptime monitoring on the `health_check` web
 endpoint. The health check reports on the overall system status based on the status of
@@ -14,11 +15,13 @@ accepted token can be found on the `admin/heath_check` page of your GitLab insta
 
 ![access token](img/health_check_token.png)
 
-The access token can be passed as a url parameter:
+The access token can be passed as a URL parameter:
 
-`https://gitlab.example.com/health_check.json?token=ACCESS_TOKEN`
+```
+https://gitlab.example.com/health_check.json?token=ACCESS_TOKEN
+```
 
-or as a http header:
+or as an HTTP header:
 
 ```bash
 curl -H "TOKEN: ACCESS_TOKEN" https://gitlab.example.com/health_check.json
@@ -39,16 +42,22 @@ You can also ask for the status of specific services:
 - `https://gitlab.example.com/health_check/database.json?token=ACCESS_TOKEN`
 - `https://gitlab.example.com/health_check/migrations.json?token=ACCESS_TOKEN`
 
-Example output:
+For example, the JSON output of the following health check:
+
 ```bash
 curl -H "TOKEN: ACCESS_TOKEN" https://gitlab.example.com/health_check.json
+```
+
+would be like:
+
+```
 {"healthy":true,"message":"success"}
 ```
 
 ## Status
 
-On failure the endpoint will return a `500` http status code. On success the endpoint
-will return a valid successful http status code, and a `success` message. Ideally your
+On failure, the endpoint will return a `500` HTTP status code. On success, the endpoint
+will return a valid successful HTTP status code, and a `success` message. Ideally your
 uptime monitoring should look for the success message.
 
 [ce-3888]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/3888
