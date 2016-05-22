@@ -41,6 +41,7 @@
 - [Git LFS configuration](workflow/lfs/lfs_administration.md)
 - [Housekeeping](administration/housekeeping.md) Keep your Git repository tidy and fast.
 - [GitLab Performance Monitoring](monitoring/performance/introduction.md) Configure GitLab and InfluxDB for measuring performance metrics
+- [Monitoring uptime](monitoring/health_check.md) Check the server status using the health check endpoint
 - [Sidekiq Troubleshooting](administration/troubleshooting/sidekiq.md) Debug when Sidekiq appears hung and is not processing jobs
 - [High Availability](administration/high_availability/README.md) Configure multiple servers for scaling or high availability
 
