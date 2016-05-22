@@ -14,7 +14,7 @@ You can read more about Docker Registry at https://docs.docker.com/registry/intr
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
-- [How to enable the Container Registry](#how-to-enable-the-container-registry)
+- [Enable the Container Registry](#enable-the-container-registry)
 - [Container Registry domain configuration](#container-registry-domain-configuration)
     - [Configure Container Registry under an existing GitLab domain](#configure-container-registry-under-an-existing-gitlab-domain)
     - [Configure Container Registry under its own domain](#configure-container-registry-under-its-own-domain)
@@ -27,18 +27,19 @@ You can read more about Docker Registry at https://docs.docker.com/registry/intr
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-## How to enable the Container Registry
+## Enable the Container Registry
 
 **Omnibus GitLab installations**
 
-If you are using Omnibus, you have to bare in mind the following:
+1. Open `/etc/gitlab/gitlab.rb` and edit or add the following line:
 
-- The container Registry will be enabled by default if GitLab is configured
-  with HTTPS in new and existing installations (no action is required from the
-  administrator), and it will listen on port `5005`. If you wish to change it,
-  read [#Container Registry under existing GitLab domain](#container-registry-under-existing-gitlab-domain)
-  on how to achieve that. You will also have to configure your firewall to allow
-  incoming connections to that port.
+    ```ruby
+    gitlab_rails['registry_enabled'] = true
+    ```
+
+1. The next step is to configure the domain name under which the Container
+   Registry will listen to. Read [#container-registry-domain-configuration](#container-registry-domain-configuration)
+   and pick one of the two options that fits your case.
 
 >**Note:**
 The container Registry works under HTTPS by default. Using HTTP is possible
@@ -54,9 +55,10 @@ If you have installed GitLab from source:
 
 1. You will have to [install Docker Registry][registry-deploy] by yourself.
 1. After the installation is complete, you will have to configure the Registry's
-   settings `gitlab.yml` in order to enable it.
+   settings in `gitlab.yml` in order to enable it.
 1. Use the sample NGINX configuration file that is found under
-   [`lib/support/nginx/registry-ssl`][registry-ssl].
+   [`lib/support/nginx/registry-ssl`][registry-ssl] and edit it to match the
+   `host`, `port` and TLS certs paths.
 
 The contents of `gitlab.yml` are:
 
@@ -90,11 +92,15 @@ documentation on how to achieve that.
 
 ## Container Registry domain configuration
 
-There are two ways you can configure the Registry's external domain. Either use
-the existing GitLab domain where in that case the Registry will listen on a port,
-or use a completely separate domain. Since the container Registry requires a
-TLS certificate, in the end it all boils down to how easy or pricey is to get a
-new TLS certificate.
+There are two ways you can configure the Registry's external domain.
+
+- Either [use the existing GitLab domain][existing-domain] where in that case
+  the Registry will have to listen on a port and reuse GitLab's TLS certificate,
+- or [use a completely separate domain][new-domain] with a new TLS certificate
+  for that domain.
+
+Since the container Registry requires a TLS certificate, in the end it all boils
+down to how easy or pricey is to get a new one.
 
 Please take this into consideration before configuring the Container Registry
 for the first time.
@@ -193,6 +199,9 @@ Let's assume that you want the container Registry to be accessible at
 1. Once the TLS certificate is in place, edit `/etc/gitlab/gitlab.rb` with:
 
     ```ruby
+    gitlab_rails['registry_host'] = "registry.gitlab.example.com"
+
+    # The following setting is needed for NGINX
     registry_external_url 'https://registry.gitlab.example.com'
     ```
 
@@ -365,3 +374,5 @@ configurable in future releases.
 [token-config]: https://docs.docker.com/registry/configuration/#token
 [8-8-docs]: https://gitlab.com/gitlab-org/gitlab-ce/blob/8-8-stable/doc/administration/container_registry.md
 [registry-ssl]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/lib/support/nginx/registry-ssl
+[existing-domain]: #configure-container-registry-under-an-existing-gitlab-domain
+[new-domain]: #configure-container-registry-under-its-own-domain
