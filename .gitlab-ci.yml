@@ -31,6 +31,7 @@ before_script:
     RAILS_ENV: "test"
     SIMPLECOV: "true"
   script:
+    - touch knapsack_rspec_report.json
     - JOB_NAME=( $CI_BUILD_NAME )
     - export CI_NODE_INDEX=${JOB_NAME[1]}
     - export CI_NODE_TOTAL=${JOB_NAME[2]}
@@ -43,6 +44,7 @@ before_script:
     RAILS_ENV: "test"
     SIMPLECOV: "true"
   script:
+    - touch knapsack_cucumber_report.json
     - JOB_NAME=( $CI_BUILD_NAME )
     - export CI_NODE_INDEX=${JOB_NAME[1]}
     - export CI_NODE_TOTAL=${JOB_NAME[2]}
