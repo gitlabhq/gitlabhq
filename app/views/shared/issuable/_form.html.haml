@@ -41,79 +41,79 @@
       .checkbox
         = f.label :confidential do
           = f.check_box :confidential
-          This issue is confidential and should only be visible to team members
+          此问题是保密的，只对团队成员可见
 
 - if can?(current_user, :"admin_#{issuable.to_ability_name}", issuable.project)
   %hr
   .form-group
     .issue-assignee
-      = f.label :assignee_id, "Assignee", class: 'control-label'
+      = f.label :assignee_id, "指派给", class: 'control-label'
       .col-sm-10
         .issuable-form-select-holder
           = users_select_tag("#{issuable.class.model_name.param_key}[assignee_id]",
-              placeholder: 'Select assignee', class: 'custom-form-control', null_user: true,
+              placeholder: '选择指派', class: 'custom-form-control', null_user: true,
               selected: issuable.assignee_id, project: @target_project || @project,
               first_user: true, current_user: true, include_blank: true)
         &nbsp;
-        = link_to 'Assign to me', '#', class: 'btn assign-to-me-link'
+        = link_to '指派给自己', '#', class: 'btn assign-to-me-link'
   .form-group
     .issue-milestone
-      = f.label :milestone_id, "Milestone", class: 'control-label'
+      = f.label :milestone_id, "里程碑", class: 'control-label'
       .col-sm-10
         - if milestone_options(issuable).present?
           .issuable-form-select-holder
             = f.select(:milestone_id, milestone_options(issuable),
-              { include_blank: true }, { class: 'select2', data: { placeholder: 'Select milestone' } })
+              { include_blank: true }, { class: 'select2', data: { placeholder: '选择里程碑' } })
         - else
           .prepend-top-10
-          %span.light No open milestones available.
+          %span.light 没有可用的未关闭里程碑。
         &nbsp;
         - if can? current_user, :admin_milestone, issuable.project
-          = link_to 'Create new milestone', new_namespace_project_milestone_path(issuable.project.namespace, issuable.project), target: :blank
+          = link_to '创建新的里程碑', new_namespace_project_milestone_path(issuable.project.namespace, issuable.project), target: :blank
   .form-group
     - has_labels = issuable.project.labels.any?
-    = f.label :label_ids, "Labels", class: 'control-label'
+    = f.label :label_ids, "标记", class: 'control-label'
     .col-sm-10{ class: ('issuable-form-padding-top' if !has_labels) }
       - if has_labels
         .issuable-form-select-holder
           = f.collection_select :label_ids, issuable.project.labels.all, :id, :name,
-            { selected: issuable.label_ids }, multiple: true, class: 'select2', data: { placeholder: "Select labels" }
+            { selected: issuable.label_ids }, multiple: true, class: 'select2', data: { placeholder: "选择标记" }
       - else
-        %span.light No labels yet.
+        %span.light 没有标记。
       &nbsp;
       - if can? current_user, :admin_label, issuable.project
-        = link_to 'Create new label', new_namespace_project_label_path(issuable.project.namespace, issuable.project), target: :blank
+        = link_to '创建新的标记', new_namespace_project_label_path(issuable.project.namespace, issuable.project), target: :blank
 
 - if issuable.can_move?(current_user)
   %hr
   .form-group
-    = label_tag :move_to_project_id, 'Move', class: 'control-label'
+    = label_tag :move_to_project_id, '移动', class: 'control-label'
     .col-sm-10
       .issuable-form-select-holder
         - projects = project_options(issuable, current_user, ability: :admin_issue)
         = select_tag(:move_to_project_id, projects, include_blank: true,
-                     class: 'select2', data: { placeholder: 'Select project' })
+                     class: 'select2', data: { placeholder: '选择项目' })
       &nbsp;
       %span{ data: { toggle: 'tooltip', placement: 'auto top' }, style: 'cursor: default',
-      title: 'Moving an issue will copy the discussion to a different project and close it here. All participants will be notified of the new location.' }
+      title: '移动问题将复制讨论到不同的项目并关闭此问题。所有参与者都会收到新位置的通知。' }
         = icon('question-circle')
 
 - if issuable.is_a?(MergeRequest)
   %hr
   - if @merge_request.new_record?
     .form-group
-      = f.label :source_branch, class: 'control-label'
+      = f.label :source_branch, '来源分支', class: 'control-label'
       .col-sm-10
         .issuable-form-select-holder
           = f.select(:source_branch, [@merge_request.source_branch], { }, { class: 'source_branch select2 span2', disabled: true })
   .form-group
-    = f.label :target_branch, class: 'control-label'
+    = f.label :target_branch, '目标分支', class: 'control-label'
     .col-sm-10
       .issuable-form-select-holder
-        = f.select(:target_branch, @merge_request.target_branches, { include_blank: true }, { class: 'target_branch select2 span2', disabled: @merge_request.new_record?, data: {placeholder: "Select branch"} })
+        = f.select(:target_branch, @merge_request.target_branches, { include_blank: true }, { class: 'target_branch select2 span2', disabled: @merge_request.new_record?, data: {placeholder: "选择分支"} })
       - if @merge_request.new_record?
         &nbsp;
-        = link_to 'Change branches', mr_change_branches_path(@merge_request)
+        = link_to '修改分支', mr_change_branches_path(@merge_request)
   - if @merge_request.can_remove_source_branch?(current_user)
     .form-group
       .col-sm-10.col-sm-offset-2
@@ -125,21 +125,21 @@
 - is_footer = !(issuable.is_a?(MergeRequest) && issuable.new_record?)
 .row-content-block{class: (is_footer ? "footer-block" : "middle-block")}
   - if issuable.new_record?
-    = f.submit "Submit #{issuable.class.model_name.human.downcase}", class: 'btn btn-create'
+    = f.submit "提交新的#{issuable.zh_name}", class: 'btn btn-create'
   - else
-    = f.submit 'Save changes', class: 'btn btn-save'
+    = f.submit '保存修改', class: 'btn btn-save'
 
   - if !issuable.persisted? && !issuable.project.empty_repo? && (guide_url = contribution_guide_path(issuable.project))
     .inline.prepend-left-10
-      Please review the
-      %strong #{link_to 'contribution guidelines', guide_url}
-      for this project.
+      请先阅读此项目的
+      %strong #{link_to '贡献指导原则', guide_url}
+      。
 
   - if issuable.new_record?
-    = link_to 'Cancel', polymorphic_path([@project.namespace.becomes(Namespace), @project, issuable.class]), class: 'btn btn-cancel'
+    = link_to '取消', polymorphic_path([@project.namespace.becomes(Namespace), @project, issuable.class]), class: 'btn btn-cancel'
   - else
     .pull-right
       - if current_user.can?(:"destroy_#{issuable.to_ability_name}", @project)
-        = link_to 'Delete', polymorphic_path([@project.namespace.becomes(Namespace), @project, issuable]), data: { confirm: "#{issuable.class.name.titleize} will be removed! Are you sure?" },
+        = link_to '删除', polymorphic_path([@project.namespace.becomes(Namespace), @project, issuable]), data: { confirm: "#{issuable.class.name.titleize} 将被删除！你确定吗？" },
                                                                                                   method: :delete, class: 'btn btn-danger btn-grouped'
-      = link_to 'Cancel', polymorphic_path([@project.namespace.becomes(Namespace), @project, issuable]), class: 'btn btn-grouped btn-cancel'
+      = link_to '取消', polymorphic_path([@project.namespace.becomes(Namespace), @project, issuable]), class: 'btn btn-grouped btn-cancel'

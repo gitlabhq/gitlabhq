@@ -71,19 +71,19 @@
     %ul.nav-links.center.user-profile-nav
       %li.js-activity-tab
         = link_to user_calendar_activities_path, data: {target: 'div#activity', action: 'activity', toggle: 'tab'} do
-          Activity
+          活动
       %li.js-groups-tab
         = link_to user_groups_path, data: {target: 'div#groups', action: 'groups', toggle: 'tab'} do
-          Groups
+          群组
       %li.js-contributed-tab
         = link_to user_contributed_projects_path, data: {target: 'div#contributed', action: 'contributed', toggle: 'tab'} do
-          Contributed projects
+          贡献项目
       %li.projects-tab
         = link_to user_projects_path, data: {target: 'div#projects', action: 'projects', toggle: 'tab'} do
-          Personal projects
+          个人项目
       %li.snippets-tab
         = link_to user_snippets_path, data: {target: 'div#snippets', action: 'snippets', toggle: 'tab'} do
-          Snippets
+          代码片段
 
   %div{ class: container_class }
     .tab-content

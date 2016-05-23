@@ -1,18 +1,18 @@
-- page_title "Merge Requests"
+- page_title "合并请求"
 
 .top-area
   = render 'shared/issuable/nav', type: :merge_requests
   .nav-controls
-    = render 'shared/new_project_item_select', path: 'merge_requests/new', label: "New Merge Request"
+    = render 'shared/new_project_item_select', path: 'merge_requests/new', label: "新合并请求"
 
 = render 'shared/issuable/filter', type: :merge_requests
 
 .row-content-block.second-block
-  Only merge requests from
+  仅
   %strong #{@group.name}
-  group are listed here.
+  群组的合并请求显示在此处。
   - if current_user
-    To see all merge requests you should visit #{link_to 'dashboard', merge_requests_dashboard_path} page.
+    请到#{link_to '仪表盘', merge_requests_dashboard_path}页面访问全部合并请求。
 
 .prepend-top-default
   = render 'shared/merge_requests'

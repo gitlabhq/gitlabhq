@@ -2,45 +2,45 @@
   %ul.nav-links
     %li{class: ('active' if @scope.nil?)}
       = link_to admin_builds_path do
-        All
+        全部
         %span.badge.js-totalbuilds-count= @all_builds.count(:id)
 
     %li{class: ('active' if @scope == 'running')}
       = link_to admin_builds_path(scope: :running) do
-        Running
+        正在运行
         %span.badge.js-running-count= number_with_delimiter(@all_builds.running_or_pending.count(:id))
 
     %li{class: ('active' if @scope == 'finished')}
       = link_to admin_builds_path(scope: :finished) do
-        Finished
+        已结束
         %span.badge.js-running-count= number_with_delimiter(@all_builds.finished.count(:id))
 
   .nav-controls
     - if @all_builds.running_or_pending.any?
-      = link_to 'Cancel all', cancel_all_admin_builds_path, data: { confirm: 'Are you sure?' }, class: 'btn btn-danger', method: :post
+      = link_to '取消所有', cancel_all_admin_builds_path, data: { confirm: '确定要继续么？' }, class: 'btn btn-danger', method: :post
 
 .row-content-block.second-block
-  #{(@scope || 'all').capitalize} builds
+  #{(@scope || '所有').capitalize} 的构建
 
 %ul.content-list
   - if @builds.blank?
     %li
-      .nothing-here-block No builds to show
+      .nothing-here-block 没有构建显示
   - else
     .table-holder
       %table.table.builds
         %thead
           %tr
-            %th Status
-            %th Build ID
-            %th Project
-            %th Commit
-            %th Ref
+            %th 状态
+            %th 构建 ID
+            %th 项目
+            %th 提交
+            %th 参考
             %th Runner
-            %th Name
-            %th Tags
-            %th Duration
-            %th Finished at
+            %th 名称
+            %th 标签
+            %th 运行时间
+            %th 结束时间
             %th
 
         - @builds.each do |build|

@@ -1,33 +1,33 @@
-- page_title "Protected branches"
+- page_title "保护分支"
 
 .row.prepend-top-default.append-bottom-default
   .col-lg-3
     %h4.prepend-top-0
       = page_title
-    %p Keep stable branches secure and force developers to use Merge Requests
+    %p 保护稳定分支的安全并强制开发者使用合并请求功能
   .col-lg-9
     %h5.prepend-top-0
-      Protect a branch
+      保护分支
     .account-well.append-bottom-default
-      %p.light-header.append-bottom-0 Protected branches are designed to
+      %p.light-header.append-bottom-0 保护分支设计为：
       %ul
-        %li prevent pushes from everybody except #{link_to "masters", help_page_path("permissions", "permissions"), class: "vlink"}
-        %li prevent anyone from force pushing to the branch
-        %li prevent anyone from deleting the branch
-      %p.append-bottom-0 Read more about #{link_to "project permissions", help_page_path("permissions", "permissions"), class: "underlined-link"}
+        %li 禁止除了#{link_to "主开发人员", help_page_path("permissions", "permissions"), class: "vlink"}外所有人推送
+        %li 禁止任何强制推送此分支
+        %li 禁止任何人删除此分支
+      %p.append-bottom-0 点击#{link_to "项目权限", help_page_path("permissions", "permissions"), class: "underlined-link"}了解更多
     - if can? current_user, :admin_project, @project
       = form_for [@project.namespace.becomes(Namespace), @project, @protected_branch] do |f|
         = form_errors(@protected_branch)
 
         .form-group
-          = f.label :name, "Branch", class: "label-light"
-          = f.select(:name, @project.open_branches.map { |br| [br.name, br.name] } , {include_blank: true}, {class: "select2", data: {placeholder: "Select branch"}})
+          = f.label :name, "分支", class: "label-light"
+          = f.select(:name, @project.open_branches.map { |br| [br.name, br.name] } , {include_blank: true}, {class: "select2", data: {placeholder: "选择分支"}})
         .form-group
           = f.check_box :developers_can_push, class: "pull-left"
           .prepend-left-20
-            = f.label :developers_can_push, "Developers can push", class: "label-light append-bottom-0"
+            = f.label :developers_can_push, "开发者可以推送", class: "label-light append-bottom-0"
             %p.light.append-bottom-0
-              Allow developers to push to this branch
-        = f.submit "Protect", class: "btn-create btn"
+              允许开发者推送到此分支
+        = f.submit "保护", class: "btn-create btn"
     %hr
     = render "branches_list"

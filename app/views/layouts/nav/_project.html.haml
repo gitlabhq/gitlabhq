@@ -1,56 +1,56 @@
 %ul.nav.nav-sidebar
   - if @project.group
     = nav_link do
-      = link_to group_path(@project.group), title: 'Go to group', class: 'back-link' do
+      = link_to group_path(@project.group), title: '转到群组', class: 'back-link' do
         = icon('caret-square-o-left fw')
         %span
-          Go to group
+          转到群组
   - else
     = nav_link do
-      = link_to root_path, title: 'Go to dashboard', class: 'back-link' do
+      = link_to root_path, title: '转到仪表盘', class: 'back-link' do
         = icon('caret-square-o-left fw')
         %span
-          Go to dashboard
+          转到仪表盘
 
   %li.separate-item
 
   = nav_link(path: 'projects#show', html_options: {class: 'home'}) do
-    = link_to project_path(@project), title: 'Project', class: 'shortcuts-project' do
+    = link_to project_path(@project), title: '项目', class: 'shortcuts-project' do
       = icon('bookmark fw')
       %span
-        Project
+        项目
   = nav_link(path: 'projects#activity') do
-    = link_to activity_project_path(@project), title: 'Activity', class: 'shortcuts-project-activity' do
+    = link_to activity_project_path(@project), title: '活动', class: 'shortcuts-project-activity' do
       = icon('dashboard fw')
       %span
-        Activity
+        活动
   - if project_nav_tab? :files
     = nav_link(controller: %w(tree blob blame edit_tree new_tree find_file)) do
-      = link_to project_files_path(@project), title: 'Files',  class: 'shortcuts-tree' do
+      = link_to project_files_path(@project), title: '文件',  class: 'shortcuts-tree' do
         = icon('files-o fw')
         %span
-          Files
+          文件
 
   - if project_nav_tab? :commits
     = nav_link(controller: %w(commit commits compare repositories tags branches releases network)) do
-      = link_to project_commits_path(@project), title: 'Commits', class: 'shortcuts-commits' do
+      = link_to project_commits_path(@project), title: '提交', class: 'shortcuts-commits' do
         = icon('history fw')
         %span
-          Commits
+          提交
 
   - if project_nav_tab? :builds
     = nav_link(controller: :pipelines) do
       = link_to project_pipelines_path(@project), title: 'Pipelines', class: 'shortcuts-pipelines' do
         = icon('ship fw')
         %span
-          Pipelines
+          管道
           %span.count.ci_counter= number_with_delimiter(@project.ci_commits.running_or_pending.count)
 
     = nav_link(controller: %w(builds)) do
-      = link_to project_builds_path(@project), title: 'Builds', class: 'shortcuts-builds' do
+      = link_to project_builds_path(@project), title: '构建', class: 'shortcuts-builds' do
         = icon('cubes fw')
         %span
-          Builds
+          构建
           %span.count.builds_counter= number_with_delimiter(@project.builds.running_or_pending.count(:all))
 
   - if project_nav_tab? :container_registry
@@ -62,84 +62,84 @@
 
   - if project_nav_tab? :graphs
     = nav_link(controller: %w(graphs)) do
-      = link_to namespace_project_graph_path(@project.namespace, @project, current_ref), title: 'Graphs',  class: 'shortcuts-graphs' do
+      = link_to namespace_project_graph_path(@project.namespace, @project, current_ref), title: '图表',  class: 'shortcuts-graphs' do
         = icon('area-chart fw')
         %span
-          Graphs
+          图表
 
   - if project_nav_tab? :milestones
     = nav_link(controller: :milestones) do
-      = link_to namespace_project_milestones_path(@project.namespace, @project), title: 'Milestones' do
+      = link_to namespace_project_milestones_path(@project.namespace, @project), title: '里程碑' do
         = icon('clock-o fw')
         %span
-          Milestones
+          里程碑
 
   - if project_nav_tab? :issues
     = nav_link(controller: :issues) do
-      = link_to url_for_project_issues(@project, only_path: true), title: 'Issues', class: 'shortcuts-issues' do
+      = link_to url_for_project_issues(@project, only_path: true), title: '问题', class: 'shortcuts-issues' do
         = icon('exclamation-circle fw')
         %span
-          Issues
+          问题
           - if @project.default_issues_tracker?
             %span.count.issue_counter= number_with_delimiter(@project.issues.visible_to_user(current_user).opened.count)
 
   - if project_nav_tab? :merge_requests
     = nav_link(controller: :merge_requests) do
-      = link_to namespace_project_merge_requests_path(@project.namespace, @project), title: 'Merge Requests', class: 'shortcuts-merge_requests' do
+      = link_to namespace_project_merge_requests_path(@project.namespace, @project), title: '合并请求', class: 'shortcuts-merge_requests' do
         = icon('tasks fw')
         %span
-          Merge Requests
+          合并请求
           %span.count.merge_counter= number_with_delimiter(@project.merge_requests.opened.count)
 
   - if project_nav_tab? :team
     = nav_link(controller: [:project_members, :teams]) do
-      = link_to namespace_project_project_members_path(@project.namespace, @project), title: 'Members', class: 'team-tab tab' do
+      = link_to namespace_project_project_members_path(@project.namespace, @project), title: '成员', class: 'team-tab tab' do
         = icon('users fw')
         %span
-          Members
+          成员
 
   - if project_nav_tab? :labels
     = nav_link(controller: :labels) do
-      = link_to namespace_project_labels_path(@project.namespace, @project), title: 'Labels' do
+      = link_to namespace_project_labels_path(@project.namespace, @project), title: '标记' do
         = icon('tags fw')
         %span
-          Labels
+          标记
 
   - if project_nav_tab? :wiki
     = nav_link(controller: :wikis) do
-      = link_to get_project_wiki_path(@project), title: 'Wiki', class: 'shortcuts-wiki' do
+      = link_to get_project_wiki_path(@project), title: '维基', class: 'shortcuts-wiki' do
         = icon('book fw')
         %span
-          Wiki
+          维基
 
   - if project_nav_tab? :forks
     = nav_link(controller: :forks, action: :index) do
-      = link_to namespace_project_forks_path(@project.namespace, @project), title: 'Forks' do
+      = link_to namespace_project_forks_path(@project.namespace, @project), title: '派生' do
         = icon('code-fork fw')
         %span
-          Forks
+          派生
 
   - if project_nav_tab? :snippets
     = nav_link(controller: :snippets) do
-      = link_to namespace_project_snippets_path(@project.namespace, @project), title: 'Snippets', class: 'shortcuts-snippets' do
+      = link_to namespace_project_snippets_path(@project.namespace, @project), title: '代码片段', class: 'shortcuts-snippets' do
         = icon('clipboard fw')
         %span
-          Snippets
+          代码片段
 
   - if project_nav_tab? :settings
     = nav_link(html_options: {class: "#{project_tab_class} separate-item"}) do
-      = link_to edit_project_path(@project), title: 'Settings' do
+      = link_to edit_project_path(@project), title: '设置' do
         = icon('cogs fw')
         %span
-          Settings
+          设置
 
   -# Global shortcut to network page for compatibility
   - if project_nav_tab? :network
     %li.hidden
-      = link_to namespace_project_network_path(@project.namespace, @project, current_ref), title: 'Network', class: 'shortcuts-network' do
-        Network
+      = link_to namespace_project_network_path(@project.namespace, @project, current_ref), title: '网络', class: 'shortcuts-network' do
+        网络
 
   -# Shortcut to create a new issue
   %li.hidden
     = link_to new_namespace_project_issue_path(@project.namespace, @project), class: 'shortcuts-new-issue' do
-      Create a new issue
+      创建新的问题

@@ -1,116 +1,116 @@
-- page_title "Account"
+- page_title "账号"
 
 - if current_user.ldap_user?
   .alert.alert-info
-    Some options are unavailable for LDAP accounts
+    部分设置对于 LDAP 账号无效
 
 .row.prepend-top-default
   .col-lg-3.profile-settings-sidebar
     %h4.prepend-top-0
-      Private Token
+      私有授权
     %p
-      Your private token is used to access application resources without authentication.
+      私有授权可以免登录访问应用资源。
   .col-lg-9
     = form_for @user, url: reset_private_token_profile_path, method: :put, html: {class: "private-token"} do |f|
       %p.cgray
         - if current_user.private_token
-          = label_tag "token", "Private token", class: "label-light"
+          = label_tag "token", "私有授权", class: "label-light"
           = text_field_tag "token", current_user.private_token, class: "form-control"
         - else
-          %span You don`t have one yet. Click generate to fix it.
+          %span 没有私有授权，点生成按钮可修复。
       %p.help-block
-        It can be used for atom feeds or the API. Keep it secret!
+        通常在 RSS 和 API 中使用。注意保密！
       .prepend-top-default
         - if current_user.private_token
-          = f.submit 'Reset private token', data: { confirm: "Are you sure?" }, class: "btn btn-default"
+          = f.submit '重置私有授权', data: { confirm: "确定要继续么？" }, class: "btn btn-default"
         - else
-          = f.submit 'Generate', class: "btn btn-default"
+          = f.submit '生成', class: "btn btn-default"
 %hr
 .row.prepend-top-default
   .col-lg-3.profile-settings-sidebar
     %h4.prepend-top-0
-      Two-factor Authentication
+      两步验证
     %p
-      Increase your account's security by enabling two-factor authentication (2FA).
+      开启两步验证 (2FA) 增加账户安全性。
   .col-lg-9
     %p
-      Status: #{current_user.two_factor_enabled? ? 'enabled' : 'disabled'}
+      Status: #{current_user.two_factor_enabled? ? '已启用' : '已禁用'}
     - if !current_user.two_factor_enabled?
       %p
-        Download the Google Authenticator application from App Store for iOS or Google Play for Android and scan this code.
-        More information is available in the #{link_to('documentation', help_page_path('profile', 'two_factor_authentication'))}.
+        请从 iOS 的 App Store 或 Android 的 Google Play 下载谷歌身份验证器 (Google Authenticator) 应用，然后扫描下面的二维码。
+        更多可用的信息请参阅此#{link_to('文档', help_page_path('profile', 'two_factor_authentication'))}。
       .append-bottom-10
-        = link_to 'Enable two-factor authentication', new_profile_two_factor_auth_path, class: 'btn btn-success'
+        = link_to '开启两步验证', new_profile_two_factor_auth_path, class: 'btn btn-success'
     - else
-      = link_to 'Disable Two-factor Authentication', profile_two_factor_auth_path, method: :delete, class: 'btn btn-danger',
-              data: { confirm: 'Are you sure?' }
+      = link_to '禁用两步验证', profile_two_factor_auth_path, method: :delete, class: 'btn btn-danger',
+              data: { confirm: '确定要继续么？' }
 %hr
 - if button_based_providers.any?
   .row.prepend-top-default
     .col-lg-3.profile-settings-sidebar
       %h4.prepend-top-0
-        Social sign-in
+        社会化登录
       %p
-        Activate signin with one of the following services
+        激活下列登录服务
     .col-lg-9
       %label.label-light
-        Connected Accounts
-      %p Click on icon to activate signin with one of the following services
+        连接到的账户
+      %p 点击下列服务的图标激活第三方登录
       - button_based_providers.each do |provider|
         .provider-btn-group
           .provider-btn-image
             = provider_image_tag(provider)
           - if auth_active?(provider)
             = link_to unlink_profile_account_path(provider: provider), method: :delete, class: 'provider-btn' do
-              Disconnect
+              断开
           - else
             = link_to user_omniauth_authorize_path(provider), method: :post, class: "provider-btn #{'not-active' if !auth_active?(provider)}", "data-no-turbolink" => "true" do
-              Connect
+              连接
   %hr
 - if current_user.can_change_username?
   .row.prepend-top-default
     .col-lg-3.profile-settings-sidebar
       %h4.prepend-top-0.change-username-title
-        Change username
+        修改用户名
       %p
-        Changing your username will change path to all personal projects!
+        修改用户名会同时修改全部个人项目的路径！
     .col-lg-9
       = form_for @user, url: update_username_profile_path, method: :put, remote: true, html: {class: "update-username"} do |f|
         .form-group
-          = f.label :username, "Path", class: "label-light"
+          = f.label :username, "路径", class: "label-light"
           .input-group
             .input-group-addon
               = "#{root_url}u/"
             = f.text_field :username, required: true, class: 'form-control'
         .help-block
-          Current path:
+          当前路径：
           = "#{root_url}u/#{current_user.username}"
         .prepend-top-default
           = f.button class: "btn btn-warning", type: "submit" do
             = icon "spinner spin", class: "hidden loading-username"
-            Update username
+            更新用户名
   %hr
 
 - if signup_enabled?
   .row.prepend-top-default
     .col-lg-3.profile-settings-sidebar
       %h4.prepend-top-0.remove-account-title
-        Remove account
+        删除账号
     .col-lg-9
       - if @user.can_be_removed?
         %p
-          Deleting an account has the following effects:
+          删除账号会有以下影响：
         %ul
-          %li All user content like authored issues, snippets, comments will be removed
+          %li 全部用户内容，比如：问题、代码片段、注释将被删除
           - rp = current_user.personal_projects.count
           - unless rp.zero?
-            %li #{pluralize rp, 'personal project'} will be removed and cannot be restored
-        = link_to 'Delete account', user_registration_path, data: { confirm: "REMOVE #{current_user.name}? Are you sure?" }, method: :delete, class: "btn btn-remove"
+            %li #{pluralize rp, '个个人项目', '个个人项目'}将被删除且无法恢复
+        = link_to '删除账号', user_registration_path, data: { confirm: "确定要删除 #{current_user.name} 么？" }, method: :delete, class: "btn btn-remove"
       - else
         - if @user.solo_owned_groups.present?
           %p
-            Your account is currently an owner in these groups:
-            %strong #{@user.solo_owned_groups.map(&:name).join(', ')}
+            你的账号当前是下列群组的拥有者：
+            %strong #{@user.solo_owned_groups.map(&:name).join('、')}
           %p
-            You must transfer ownership or delete these groups before you can delete your account.
+            请在删除账号前转移群组所有权或删除之。
 .append-bottom-default

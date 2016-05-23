@@ -1,36 +1,36 @@
-- page_title "Deploy Keys"
+- page_title "部署密钥"
 
 .row.prepend-top-default
   .col-lg-3.profile-settings-sidebar
     %h4.prepend-top-0
       = page_title
     %p
-      Deploy keys allow read-only access to your repository. Deploy keys can be used for CI, staging or production servers. You can create a deploy key or add an existing one.
+      使用部署密钥只读访问存储库。部署密钥用于 CI 集成、预发布和产品服务器获取版本仓库的代码。请创建一个新的或增加已存在的 SSH 密钥。
   .col-lg-9
     %h5.prepend-top-0
-      Create a new deploy key for this project
+      给此项目创建一个新的部署密钥
     = render "form"
   .col-lg-9.col-lg-offset-3
     %hr
   .col-lg-9.col-lg-offset-3.append-bottom-default.deploy-keys
     %h5.prepend-top-0
-      Enabled deploy keys for this project (#{@enabled_keys.size})
+      本项目已启用的部署密钥 (#{@enabled_keys.size})
     - if @enabled_keys.any?
       %ul.well-list
         = render @enabled_keys
     - else
       .settings-message.text-center
-        No deploy keys found. Create one with the form above or add existing one below.
+        没有部署密钥。请使用上面的表单创建一个或增加一个已存在的。
     %h5.prepend-top-default
-      Deploy keys from projects you have access to (#{@available_project_keys.size})
+      其他项目的部署密钥 (#{@available_project_keys.size})
     - if @available_project_keys.any?
       %ul.well-list
         = render @available_project_keys
     - else
       .settings-message.text-center
-        No deploy keys from your projects could be found. Create one with the form above or add existing one below.
+        没有其他项目的部署密钥。请使用上面的表单创建一个或增加一个已存在的。
     - if @available_public_keys.any?
       %h5.prepend-top-default
-        Public deploy keys available to any project (#{@available_public_keys.size})
+        全部项目可用的公开部署密钥 (#{@available_public_keys.size})
       %ul.well-list
         = render @available_public_keys

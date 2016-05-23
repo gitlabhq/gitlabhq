@@ -5,51 +5,51 @@
   .pull-right
     - if @runner.shared?
       %span.runner-state.runner-state-shared
-        Shared
+        共享的
     - else
       %span.runner-state.runner-state-specific
-        Specific
+        特定的
 
 .table-holder
   %table.table
     %thead
       %tr
-        %th Property Name
-        %th Value
+        %th 属性名称
+        %th 值
     %tr
-      %td Active
-      %td= @runner.active? ? 'Yes' : 'No'
+      %td 有效
+      %td= @runner.active? ? '是' : '否'
     %tr
-      %td Can run untagged jobs
-      %td= @runner.run_untagged? ? 'Yes' : 'No'
+      %td 可以运行没有标签的作业
+      %td= @runner.run_untagged? ? '是' : '否'
     %tr
-      %td Tags
+      %td 标签
       %td
         - @runner.tag_list.each do |tag|
           %span.label.label-primary
             = tag
     %tr
-      %td Name
+      %td 名称
       %td= @runner.name
     %tr
-      %td Version
+      %td 版本
       %td= @runner.version
     %tr
-      %td Revision
+      %td 修订版本
       %td= @runner.revision
     %tr
-      %td Platform
+      %td 平台
       %td= @runner.platform
     %tr
-      %td Architecture
+      %td 架构
       %td= @runner.architecture
     %tr
-      %td Description
+      %td 描述
       %td= @runner.description
     %tr
-      %td Last contact
+      %td 最后联系时间
       %td
         - if @runner.contacted_at
-          #{time_ago_in_words(@runner.contacted_at)} ago
+          #{time_ago_in_words(@runner.contacted_at)}之前
         - else
-          Never
+          从未

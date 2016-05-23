@@ -149,6 +149,6 @@ module DiffHelper
     options[:class] ||= ''
     options[:class] << ' btn btn-default'
 
-    link_to "#{hide_whitespace? ? 'Show' : 'Hide'} whitespace changes", url, class: options[:class]
+    link_to "#{hide_whitespace? ? '显示' : '隐藏'}空白字符变更", url, class: options[:class]
   end
 end

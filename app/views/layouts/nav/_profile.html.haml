@@ -1,49 +1,49 @@
 %ul.nav-links
   = nav_link(path: 'profiles#show', html_options: {class: 'home'}) do
-    = link_to profile_path, title: 'Profile Settings' do
+    = link_to profile_path, title: '个人资料设置' do
       = icon('user fw')
       %span
-        Profile
+        个人资料
   = nav_link(controller: [:accounts, :two_factor_auths]) do
-    = link_to profile_account_path, title: 'Account' do
+    = link_to profile_account_path, title: '账号' do
       = icon('gear fw')
       %span
-        Account
+        账号
   = nav_link(controller: 'oauth/applications') do
-    = link_to applications_profile_path, title: 'Applications' do
+    = link_to applications_profile_path, title: '应用' do
       = icon('cloud fw')
       %span
-        Applications
+        应用
   = nav_link(controller: :emails) do
-    = link_to profile_emails_path, title: 'Emails' do
+    = link_to profile_emails_path, title: '邮箱' do
       = icon('envelope-o fw')
       %span
-        Emails
+        邮箱
   - unless current_user.ldap_user?
     = nav_link(controller: :passwords) do
-      = link_to edit_profile_password_path, title: 'Password' do
+      = link_to edit_profile_password_path, title: '密码' do
         = icon('lock fw')
         %span
-          Password
+          密码
   = nav_link(controller: :notifications) do
-    = link_to profile_notifications_path, title: 'Notifications' do
+    = link_to profile_notifications_path, title: '通知' do
       = icon('inbox fw')
       %span
-        Notifications
+        通知
 
   = nav_link(controller: :keys) do
-    = link_to profile_keys_path, title: 'SSH Keys' do
+    = link_to profile_keys_path, title: 'SSH 密钥' do
       = icon('key fw')
       %span
-        SSH Keys
+        SSH 密钥
   = nav_link(controller: :preferences) do
-    = link_to profile_preferences_path, title: 'Preferences' do
+    = link_to profile_preferences_path, title: '偏好设置' do
       -# TODO (rspeicher): Better icon?
       = icon('image fw')
       %span
-        Preferences
+        偏好设置
   = nav_link(path: 'profiles#audit_log') do
-    = link_to audit_log_profile_path, title: 'Audit Log' do
+    = link_to audit_log_profile_path, title: '审核日志' do
       = icon('history fw')
       %span
-        Audit Log
+        审核日志

@@ -13,7 +13,7 @@
       %strong ##{generic_commit_status.id}
 
     - if defined?(retried) && retried
-      = icon('warning', class: 'text-warning has-tooltip', title: 'Status was retried.')
+      = icon('warning', class: 'text-warning has-tooltip', title: '状态被重试。')
 
   - if defined?(commit_sha) && commit_sha
     %td
@@ -24,14 +24,14 @@
       - if generic_commit_status.ref
         = link_to generic_commit_status.ref, namespace_project_commits_path(generic_commit_status.project.namespace, generic_commit_status.project, generic_commit_status.ref)
       - else
-        .light none
+        .light 无
 
   - if defined?(runner) && runner
     %td
       - if generic_commit_status.try(:runner)
         = runner_link(generic_commit_status.runner)
       - else
-        .light none
+        .light 无
 
   - if defined?(stage) && stage
     %td
@@ -46,7 +46,7 @@
           %span.label.label-primary
             = tag
       - if defined?(retried) && retried
-        %span.label.label-warning retried
+        %span.label.label-warning 重试的
 
   %td.duration
     - if generic_commit_status.duration

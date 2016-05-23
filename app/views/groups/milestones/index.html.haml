@@ -1,4 +1,4 @@
-- page_title "Milestones"
+- page_title "里程碑"
 
 .top-area
   = render 'shared/milestones_filter'
@@ -7,18 +7,18 @@
     - if can?(current_user, :admin_milestones, @group)
       = link_to new_group_milestone_path(@group), class: "btn btn-new" do
         = icon('plus')
-        New Milestone
+        新里程碑
 
 .row-content-block
-  Only milestones from
+  只有来自
   %strong #{@group.name}
-  group are listed here.
+  群组的里程碑显示在这里。
 
 .milestones
   %ul.content-list
     - if @milestones.blank?
       %li
-        .nothing-here-block No milestones to show
+        .nothing-here-block 没有里程碑
     - else
       - @milestones.each do |milestone|
         = render 'milestone', milestone: milestone

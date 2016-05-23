@@ -1,8 +1,8 @@
 %h5.prepend-top-0
-  Already Protected (#{@branches.size})
+  已经保护的 (#{@branches.size})
 - if @branches.empty?
   %p.settings-message.text-center
-    No branches are protected, protect a branch with the form above.
+    没有保存分支，请在上面选择一个分支保护。
 - else
   - can_admin_project = can?(current_user, :admin_project, @project)
   .table-responsive
@@ -15,9 +15,9 @@
           %col
       %thead
         %tr
-          %th Branch
-          %th Last commit
-          %th Developers can push
+          %th 分支
+          %th 上次提交
+          %th 开发者可以推送
           - if can_admin_project
             %th
       %tbody
@@ -27,15 +27,15 @@
             %td
               = link_to(branch.name, namespace_project_commits_path(@project.namespace, @project, branch.name))
               - if @project.root_ref?(branch.name)
-                %span.label.label-info.prepend-left-5 default
+                %span.label.label-info.prepend-left-5 默认
             %td
               - if commit = branch.commit
                 = link_to(commit.short_id, namespace_project_commit_path(@project.namespace, @project, commit.id), class: 'commit_short_id')
                 #{time_ago_with_tooltip(commit.committed_date)}
               - else
-                (branch was removed from repository)
+                (分支已从仓库中删除)
             %td
               = check_box_tag("developers_can_push", branch.id, branch.developers_can_push, data: { url: @url })
             - if can_admin_project
               %td
-                = link_to 'Unprotect', [@project.namespace.becomes(Namespace), @project, branch], data: { confirm: 'Branch will be writable for developers. Are you sure?' }, method: :delete, class: "btn btn-warning btn-sm"
+                = link_to '取消保护', [@project.namespace.becomes(Namespace), @project, branch], data: { confirm: '该分支将允许开发者修改。确定要继续么？' }, method: :delete, class: "btn btn-warning btn-sm"

@@ -20,17 +20,17 @@
   .pull-right
     - if can?(current_user, :admin_milestone, @project)
       - if @milestone.active?
-        = link_to 'Close Milestone', namespace_project_milestone_path(@project.namespace, @project, @milestone, milestone: {state_event: :close }), method: :put, class: "btn btn-close btn-nr btn-grouped"
+        = link_to '关闭里程碑', namespace_project_milestone_path(@project.namespace, @project, @milestone, milestone: {state_event: :close }), method: :put, class: "btn btn-close btn-nr btn-grouped"
       - else
-        = link_to 'Reopen Milestone', namespace_project_milestone_path(@project.namespace, @project, @milestone, milestone: {state_event: :activate }), method: :put, class: "btn btn-reopen btn-nr btn-grouped"
+        = link_to '重新打开里程碑', namespace_project_milestone_path(@project.namespace, @project, @milestone, milestone: {state_event: :activate }), method: :put, class: "btn btn-reopen btn-nr btn-grouped"
 
       = link_to edit_namespace_project_milestone_path(@project.namespace, @project, @milestone), class: "btn btn-grouped btn-nr" do
         = icon('pencil-square-o')
-        Edit
+        编辑
 
-      = link_to namespace_project_milestone_path(@project.namespace, @project, @milestone), data: { confirm: 'Are you sure?' }, method: :delete, class: "btn btn-grouped btn-danger" do
+      = link_to namespace_project_milestone_path(@project.namespace, @project, @milestone), data: { confirm: '确定要继续么？' }, method: :delete, class: "btn btn-grouped btn-danger" do
         = icon('trash-o')
-        Delete
+        删除
 
 .detail-page-description.milestone-detail
   %h2.title
@@ -44,10 +44,10 @@
 
 - if @milestone.total_items_count(current_user).zero?
   .alert.alert-success.prepend-top-default
-    %span Assign some issues to this milestone.
+    %span 指派一些问题到此里程碑。
 - elsif @milestone.complete?(current_user) && @milestone.active?
   .alert.alert-success.prepend-top-default
-    %span All issues for this milestone are closed. You may close this milestone now.
+    %span 本里程碑的全部问题和合并请求都已关闭，可以选择关闭本里程碑。
 
 = render 'shared/milestones/summary', milestone: @milestone, project: @project
 = render 'shared/milestones/tabs', milestone: @milestone

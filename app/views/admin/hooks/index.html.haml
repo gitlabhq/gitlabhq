@@ -12,61 +12,61 @@
   = form_errors(@hook)
 
   .form-group
-    = f.label :url, 'URL', class: 'control-label'
+    = f.label :url, '链接', class: 'control-label'
     .col-sm-10
       = f.text_field :url, class: 'form-control'
   .form-group
-    = f.label :token, 'Secret Token', class: 'control-label'
+    = f.label :token, '私密授权码', class: 'control-label'
     .col-sm-10
       = f.text_field :token, class: 'form-control'
       %p.help-block
-        Use this token to validate received payloads
+        使用此授权码来验证接收信息的有效性
   .form-group
-    = f.label :url, "Trigger", class: 'control-label'
+    = f.label :url, "触发", class: 'control-label'
     .col-sm-10.prepend-top-10
       %div
-        System hook will be triggered on set of events like creating project
-        or adding ssh key. But you can also enable extra triggers like Push events.
+        系统钩子将在创建项目和增加 SSH 密钥等事件发生时触发。
+        你可以额外开启推送等事件的触发。
 
       %div.prepend-top-default
         = f.check_box :push_events, class: 'pull-left'
         .prepend-left-20
           = f.label :push_events, class: 'list-label' do
-            %strong Push events
+            %strong 推送事件
           %p.light
-            This url will be triggered by a push to the repository
+            此链接将在推送到版本仓库时触发
       %div
         = f.check_box :tag_push_events, class: 'pull-left'
         .prepend-left-20
           = f.label :tag_push_events, class: 'list-label' do
-            %strong Tag push events
+            %strong 标签推送事件
           %p.light
-            This url will be triggered when a new tag is pushed to the repository
+            此链接将在推送新标签到版本仓库时触发
   .form-group
-    = f.label :enable_ssl_verification, "SSL verification", class: 'control-label checkbox'
+    = f.label :enable_ssl_verification, "SSL 验证证书", class: 'control-label checkbox'
     .col-sm-10
       .checkbox
         = f.label :enable_ssl_verification do
           = f.check_box :enable_ssl_verification
-          %strong Enable SSL verification
+          %strong 启用 SSL 验证证书
   .form-actions
-    = f.submit "Add System Hook", class: "btn btn-create"
+    = f.submit "增加系统钩子", class: "btn btn-create"
 %hr
 
 -if @hooks.any?
   .panel.panel-default
     .panel-heading
-      System hooks (#{@hooks.count})
+      系统钩子 (#{@hooks.count})
     %ul.content-list
       - @hooks.each do |hook|
         %li
           .controls
-            = link_to 'Test Hook', admin_hook_test_path(hook), class: "btn btn-sm"
-            = link_to 'Remove', admin_hook_path(hook), data: { confirm: 'Are you sure?' }, method: :delete, class: "btn btn-remove btn-sm"
+            = link_to '测试钩子', admin_hook_test_path(hook), class: "btn btn-sm"
+            = link_to '删除', admin_hook_path(hook), data: { confirm: '确定要继续么？' }, method: :delete, class: "btn btn-remove btn-sm"
           .monospace= hook.url
           %div
             - %w(push_events tag_push_events issues_events note_events merge_requests_events build_events).each do |trigger|
               - if hook.send(trigger)
                 %span.label.label-gray= trigger.titleize
-            %span.label.label-gray SSL Verification: #{hook.enable_ssl_verification ? "enabled" : "disabled"}
+            %span.label.label-gray SSL 验证证书: #{hook.enable_ssl_verification ? "已启用" : "已禁用"}
 

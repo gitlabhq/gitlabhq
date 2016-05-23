@@ -2,36 +2,36 @@
 
 %ul.nav-links
   = nav_link(path: 'groups#show', html_options: {class: 'home'}) do
-    = link_to group_path(@group), title: 'Home' do
+    = link_to group_path(@group), title: '主页' do
       = icon('group fw')
       %span
-        Group
+        群组
   = nav_link(path: 'groups#activity') do
-    = link_to activity_group_path(@group), title: 'Activity' do
+    = link_to activity_group_path(@group), title: '活动' do
       = icon('dashboard fw')
       %span
-        Activity
+        活动
   = nav_link(controller: [:group, :milestones]) do
-    = link_to group_milestones_path(@group), title: 'Milestones' do
+    = link_to group_milestones_path(@group), title: '里程碑' do
       = icon('clock-o fw')
       %span
-        Milestones
+        里程碑
   = nav_link(path: 'groups#issues') do
-    = link_to issues_group_path(@group), title: 'Issues' do
+    = link_to issues_group_path(@group), title: '问题' do
       = icon('exclamation-circle fw')
       %span
-        Issues
+        问题
         - issues = IssuesFinder.new(current_user, group_id: @group.id, state: 'opened').execute
         %span.badge.count= number_with_delimiter(issues.count)
   = nav_link(path: 'groups#merge_requests') do
-    = link_to merge_requests_group_path(@group), title: 'Merge Requests' do
+    = link_to merge_requests_group_path(@group), title: '合并请求' do
       = icon('tasks fw')
       %span
-        Merge Requests
+        合并请求
         - merge_requests = MergeRequestsFinder.new(current_user, group_id: @group.id, state: 'opened').execute
         %span.badge.count= number_with_delimiter(merge_requests.count)
   = nav_link(controller: [:group_members]) do
-    = link_to group_group_members_path(@group), title: 'Members' do
+    = link_to group_group_members_path(@group), title: '成员' do
       = icon('users fw')
       %span
-        Members
+        成员

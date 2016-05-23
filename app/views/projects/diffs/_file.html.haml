@@ -41,7 +41,7 @@
     - # Skip all non non-supported blobs
     - return unless blob.respond_to?(:text?)
     - if diff_file.too_large?
-      .nothing-here-block This diff could not be displayed because it is too large.
+      .nothing-here-block 此 diff 太大无法显示。
     - elsif blob_text_viewable?(blob) && !project.repository.diffable?(blob)
       .nothing-here-block This diff was suppressed by a .gitattributes entry.
     - elsif blob_text_viewable?(blob)
@@ -53,4 +53,4 @@
       - old_file = project.repository.prev_blob_for_diff(diff_commit, diff_file)
       = render "projects/diffs/image", diff_file: diff_file, old_file: old_file, file: blob, index: i, diff_refs: diff_refs
     - else
-      .nothing-here-block No preview for this file type
+      .nothing-here-block 不能预览此文件类型

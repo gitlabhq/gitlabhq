@@ -1,9 +1,9 @@
 - if blob.only_display_raw?
   .file-content.code
     .nothing-here-block
-      File too large, you can
+      文件太大，你可以
       = succeed '.' do
-        = link_to 'view the raw file', namespace_project_raw_path(@project.namespace, @project, @id), target: '_blank'
+        = link_to '查看原始文件', namespace_project_raw_path(@project.namespace, @project, @id), target: '_blank'
 
 - else
   - blob.load_all_data!(@repository)
@@ -14,6 +14,6 @@
   - else
     - if blob.empty?
       .file-content.code
-        .nothing-here-block Empty file
+        .nothing-here-block 空文件
     - else
       = render 'shared/file_highlight', blob: blob

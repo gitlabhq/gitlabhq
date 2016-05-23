@@ -4,20 +4,20 @@
       .modal-header
         %a.close{href: "#", "data-dismiss" => "modal"} ×
         %h3.page-title
-          Confirmation required
+          需要确认
 
       .modal-body
         %p.text-danger.js-confirm-text
 
         %p
-          This action can lead to data loss.
-          To prevent accidental actions we ask you to confirm your intention.
+          此动作会导致数据丢失。
+          为防止有意外操作，所以要求额外的操作来确认你的实际意图。
           %br
-          Please type
+          请输入
           %code.js-confirm-danger-match #{phrase}
-          to proceed or close this modal to cancel.
+          继续操作或关闭本对话框取消操作。
 
         .form-group
           = text_field_tag 'confirm_name_input', '', class: 'form-control js-confirm-danger-input'
         .form-actions
-          = submit_tag 'Confirm', class: "btn btn-danger js-confirm-danger-submit"
+          = submit_tag '确认', class: "btn btn-danger js-confirm-danger-submit"

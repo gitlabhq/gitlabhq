@@ -8,7 +8,7 @@
       = link_to klass::file_name, "##{klass::file_name_noext}",
           'data-toggle' => 'tab'
 .row-content-block
-  To prevent performance issues admin logs output the last 2000 lines
+  为了防止性能问题管理日志只输出最后的 2000 行
 .tab-content
   - loggers.each do |klass|
     .tab-pane{ class: (klass == Gitlab::GitLogger ? 'active' : ''),

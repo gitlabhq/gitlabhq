@@ -5,8 +5,8 @@
       %col
       %col{ width: 100 }
     %thead
-      %th Key
-      %th Value
+      %th 键
+      %th 值
       %th
     %tbody
       - @project.variables.each do |variable|
@@ -17,9 +17,9 @@
             %td
               = link_to namespace_project_variable_path(@project.namespace, @project, variable), class: "btn btn-transparent btn-variable-edit" do
                 %span.sr-only
-                  Update
+                  更新
                 = icon("pencil")
-              = link_to namespace_project_variable_path(@project.namespace, @project, variable), class: "btn btn-transparent btn-variable-delete", method: :delete, data: { confirm: "Are you sure?" } do
+              = link_to namespace_project_variable_path(@project.namespace, @project, variable), class: "btn btn-transparent btn-variable-delete", method: :delete, data: { confirm: "确定要继续么？" } do
                 %span.sr-only
-                  Remove
+                  删除
                 = icon("trash")

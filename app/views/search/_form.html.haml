@@ -4,12 +4,12 @@
 
   .search-holder
     .search-field-holder
-      = search_field_tag :search, params[:search], placeholder: "Search for projects, issues etc", class: "form-control search-text-input js-search-input", id: "dashboard_search", autofocus: true, spellcheck: false
+      = search_field_tag :search, params[:search], placeholder: "搜索项目、问题等", class: "form-control search-text-input js-search-input", id: "dashboard_search", autofocus: true, spellcheck: false
       = icon("search", class: "search-icon")
       %button.search-clear.js-search-clear{ class: ("hidden" if !params[:search].present?), type: "button", tabindex: "-1" }
         = icon("times-circle")
         %span.sr-only
-          Clear search
+          清除搜索
     - unless params[:snippets].eql? 'true'
       = render 'filter' if current_user
-    = button_tag "Search", class: "btn btn-success btn-search"
+    = button_tag "搜索", class: "btn btn-success btn-search"

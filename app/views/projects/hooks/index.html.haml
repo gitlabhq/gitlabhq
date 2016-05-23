@@ -1,84 +1,83 @@
-- page_title "Webhooks"
+- page_title "Web 钩子"
 .row.prepend-top-default
   .col-lg-3.profile-settings-sidebar
     %h4.prepend-top-0
       = page_title
     %p
-      #{link_to "Webhooks", help_page_path("web_hooks", "web_hooks")} can be
-      used for binding events when something is happening within the project.
+      #{link_to "Web 钩子", help_page_path("web_hooks", "web_hooks")}用于在项目发生相关事件时通知外部服务器。
   .col-lg-9.append-bottom-default
     %h5.prepend-top-0
-      Add new webhook
+      增加新的 Web 钩子
     = form_for [@project.namespace.becomes(Namespace), @project, @hook], as: :hook, url: namespace_project_hooks_path(@project.namespace, @project) do |f|
       = form_errors(@hook)
 
       .form-group
-        = f.label :url, "URL", class: "label-light"
+        = f.label :url, "链接", class: "label-light"
         = f.text_field :url, class: "form-control", placeholder: "http://example.com/trigger-ci.json"
       .form-group
-        = f.label :token, "Secret Token", class: 'label-light'
+        = f.label :token, "私密授权码", class: 'label-light'
         = f.text_field :token, class: "form-control", placeholder: ''
         %p.help-block
-          Use this token to validate received payloads
+          使用此授权码来验证接收信息的有效性
       .form-group
-        = f.label :url, "Trigger", class: "label-light"
+        = f.label :url, "触发", class: "label-light"
         %div
           = f.check_box :push_events, class: "pull-left"
           .prepend-left-20
             = f.label :push_events, class: "label-light append-bottom-0" do
-              Push events
+              推送事件
             %p.light
-              This url will be triggered by a push to the repository
+              推送仓库时将触发此链接
         %div
           = f.check_box :tag_push_events, class: "pull-left"
           .prepend-left-20
             = f.label :tag_push_events, class: "label-light append-bottom-0" do
-              Tag push events
+              标签推送事件
             %p.light
-              This url will be triggered when a new tag is pushed to the repository
+              新标签推送仓库时将触发此链接
         %div
           = f.check_box :note_events, class: "pull-left"
           .prepend-left-20
             = f.label :note_events, class: "label-light append-bottom-0" do
-              Comments
+              评论
             %p.light
-              This url will be triggered when someone adds a comment
+              增加新评论时将触发此链接
         %div
           = f.check_box :issues_events, class: "pull-left"
           .prepend-left-20
             = f.label :issues_events, class: "label-light append-bottom-0" do
-              Issues events
+              问题事件
             %p.light
-              This url will be triggered when an issue is created/updated/merged
+              问题创建、更新、合并时将触发此链接
         %div
           = f.check_box :merge_requests_events, class: "pull-left"
           .prepend-left-20
             = f.label :merge_requests_events, class: "label-light append-bottom-0" do
-              Merge Request events
+              合并请求事件
             %p.light
-              This url will be triggered when a merge request is created/updated/merged
+              合并请求创建、更新、合并时将触发此链接
         %div
           = f.check_box :build_events, class: "pull-left"
           .prepend-left-20
             = f.label :build_events, class: "label-light append-bottom-0" do
-              Build events
+              构建事件
             %p.light
-              This url will be triggered when the build status changes
+              构建状态改变时将触发此链接
       .form-group
-        = f.label :enable_ssl_verification, "SSL verification", class: "label-light"
+        = f.label :enable_ssl_verification, "SSL 证书验证", class: "label-light"
         %div
           = f.check_box :enable_ssl_verification, class: "pull-left"
           .prepend-left-20
             = f.label :enable_ssl_verification, class: "label-light append-bottom-0" do
-              Enable SSL verification
-      = f.submit "Add Webhook", class: "btn btn-create"
+              开启 SSL 证书验证
+      = f.submit "增加 Web 钩子", class: "btn btn-create"
     %hr
     %h5.prepend-top-default
-      Webhooks (#{@hooks.count})
+      Web 钩子 (#{@hooks.count})
     - if @hooks.any?
       %ul.well-list
         - @hooks.each do |hook|
           = render "project_hook", hook: hook
     - else
       %p.settings-message.text-center.append-bottom-0
-        No webhooks found, add one in the form above.
+        没有 Web 钩子，请使用上面的表单增加。

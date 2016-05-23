@@ -2,12 +2,12 @@
   = render partial: "search/results/empty"
 - else
   .row-content-block
-    = search_entries_info(@search_objects, @scope, @search_term)
     - unless @show_snippets
       - if @project
-        in project #{link_to @project.name_with_namespace, [@project.namespace.becomes(Namespace), @project]}
+        在项目 #{link_to @project.name_with_namespace, [@project.namespace.becomes(Namespace), @project]}
       - elsif @group
-        in group #{link_to @group.name, @group}
+        在群组 #{link_to @group.name, @group}
+    = search_entries_info(@search_objects, @scope, @search_term)
 
   .results.prepend-top-10
     .search-results

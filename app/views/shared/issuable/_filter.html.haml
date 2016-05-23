@@ -31,21 +31,21 @@
       .issues_bulk_update.hide
         = form_tag bulk_update_namespace_project_issues_path(@project.namespace, @project), method: :post  do
           .filter-item.inline
-            = dropdown_tag("Status", options: { toggle_class: "js-issue-status", title: "Change status", dropdown_class: "dropdown-menu-status dropdown-menu-selectable", data: { field_name: "update[state_event]" } } ) do
+            = dropdown_tag("状态", options: { toggle_class: "js-issue-status", title: "更改状态", dropdown_class: "dropdown-menu-status dropdown-menu-selectable", data: { field_name: "update[state_event]" } } ) do
               %ul
                 %li
-                  %a{href: "#", data: {id: "reopen"}} Open
+                  %a{href: "#", data: {id: "reopen"}} 未关闭
                 %li
-                  %a{href: "#", data: {id: "close"}} Closed
+                  %a{href: "#", data: {id: "close"}} 已关闭
           .filter-item.inline
-            = dropdown_tag("Assignee", options: { toggle_class: "js-user-search js-update-assignee js-filter-submit js-filter-bulk-update", title: "Assign to", filter: true, dropdown_class: "dropdown-menu-user dropdown-menu-selectable",
-              placeholder: "Search authors", data: { first_user: (current_user.username if current_user), null_user: true, current_user: true, project_id: @project.id, field_name: "update[assignee_id]" } })
+            = dropdown_tag("指派", options: { toggle_class: "js-user-search js-update-assignee js-filter-submit js-filter-bulk-update", title: "指派给", filter: true, dropdown_class: "dropdown-menu-user dropdown-menu-selectable",
+              placeholder: "搜索作者", data: { first_user: (current_user.username if current_user), null_user: true, current_user: true, project_id: @project.id, field_name: "update[assignee_id]" } })
           .filter-item.inline
-            = dropdown_tag("Milestone", options: { title: "Assign milestone", toggle_class: 'js-milestone-select js-extra-options js-filter-submit js-filter-bulk-update', filter: true, dropdown_class: "dropdown-menu-selectable dropdown-menu-milestone", placeholder: "Search milestones", data: { show_no: true, field_name: "update[milestone_id]", project_id: @project.id, milestones: namespace_project_milestones_path(@project.namespace, @project, :json), use_id: true } })
+            = dropdown_tag("里程碑", options: { title: "指派到里程碑", toggle_class: 'js-milestone-select js-extra-options js-filter-submit js-filter-bulk-update', filter: true, dropdown_class: "dropdown-menu-selectable dropdown-menu-milestone", placeholder: "搜索里程碑", data: { show_no: true, field_name: "update[milestone_id]", project_id: @project.id, milestones: namespace_project_milestones_path(@project.namespace, @project, :json), use_id: true } })
           = hidden_field_tag 'update[issues_ids]', []
           = hidden_field_tag :state_event, params[:state_event]
           .filter-item.inline
-            = button_tag "Update issues", class: "btn update_selected_issues btn-save"
+            = button_tag "更新问题", class: "btn update_selected_issues btn-save"
 
   - if !@labels.nil?
     .row-content-block.second-block.filtered-labels{ class: ("hidden" if !@labels.any?) }

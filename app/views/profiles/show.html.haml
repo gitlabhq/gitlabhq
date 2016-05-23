@@ -4,52 +4,52 @@
   .row
     .col-lg-3.profile-settings-sidebar
       %h4.prepend-top-0
-        Public Avatar
+        公开头像
       %p
         - if @user.avatar?
-          You can change your avatar here
+          在这里修改头像
           - if gravatar_enabled?
-            or remove the current avatar to revert to #{link_to Gitlab.config.gravatar.host, "http://" + Gitlab.config.gravatar.host}
+            或者删除当前头像使用 #{link_to Gitlab.config.gravatar.host, "http://" + Gitlab.config.gravatar.host} 头像
         - else
-          You can upload an avatar here
+          在这里上传头像
           - if gravatar_enabled?
-            or change it at #{link_to Gitlab.config.gravatar.host, "http://" + Gitlab.config.gravatar.host}
+            或者在 #{link_to Gitlab.config.gravatar.host, "http://" + Gitlab.config.gravatar.host} 修改头像
     .col-lg-9
       .clearfix.avatar-image.append-bottom-default
         = image_tag avatar_icon(@user, 160), alt: '', class: 'avatar s160'
       %h5.prepend-top-0
-        Upload new avatar
+        上传新的头像
       .prepend-top-5.append-bottom-10
         %a.btn.js-choose-user-avatar-button
-          Browse file...
-        %span.avatar-file-name.prepend-left-default.js-avatar-filename No file chosen
+          浏览文件...
+        %span.avatar-file-name.prepend-left-default.js-avatar-filename 没有选择文件
         = f.file_field :avatar, class: "js-user-avatar-input hidden", accept: "image/*"
       .help-block
-        The maximum file size allowed is 200KB.
+        允许的最大文件大小 200KB。
       - if @user.avatar?
         %hr
-        = link_to 'Remove avatar', profile_avatar_path, data: { confirm: "Avatar will be removed. Are you sure?"}, method: :delete, class: "btn btn-gray"
+        = link_to '删除头像', profile_avatar_path, data: { confirm: "确定要删除头像么？"}, method: :delete, class: "btn btn-gray"
   %hr
   .row
     .col-lg-3.profile-settings-sidebar
       %h4.prepend-top-0
-        Main settings
+        主要设置
       %p
-        This information will appear on your profile.
+        此信息会显示在个人资料页面上。
         - if current_user.ldap_user?
-          Some options are unavailable for LDAP accounts
+          部分设置对于 LDAP 账号无效
     .col-lg-9
       .form-group
-        = f.label :name, class: "label-light"
+        = f.label :name, "姓名", class: "label-light"
         = f.text_field :name, class: "form-control", required: true
-        %span.help-block Enter your name, so people you know can recognize you.
+        %span.help-block 输入你的名字，让其他人认识你。
 
       .form-group
-        = f.label :email, class: "label-light"
+        = f.label :email, "邮箱", class: "label-light"
         - if @user.ldap_user? && @user.ldap_email?
           = f.text_field :email, class: "form-control", required: true, readonly: true
           %span.help-block.light
-            Your email address was automatically set based on the LDAP server.
+            LDAP 用户的邮箱自动设置。
         - else
           - if @user.temp_oauth_email?
             = f.text_field :email, class: "form-control", required: true, value: nil

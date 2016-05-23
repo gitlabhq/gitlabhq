@@ -1,14 +1,14 @@
 %p
 .commit-info-row
-  Pipeline
+  管道
   = link_to "##{@pipeline.id}", namespace_project_pipeline_path(@project.namespace, @project, @pipeline.id), class: "monospace"
-  with
-  = pluralize @pipeline.statuses.count(:id), "build"
+  ：
   - if @pipeline.ref
-    for
     = link_to @pipeline.ref, namespace_project_commits_path(@project.namespace, @project, @pipeline.ref), class: "monospace"
+    的
+  = pluralize @pipeline.statuses.count(:id), "次构建", "次构建"
   - if @pipeline.duration
-    in
+    耗费
     = time_interval_in_words @pipeline.duration
 
   .pull-right
@@ -18,13 +18,13 @@
 
 - if @commit
   .commit-info-row
-    %span.light Authored by
+    %span.light 作者：
     %strong
       = commit_author_link(@commit, avatar: true, size: 24)
     #{time_ago_with_tooltip(@commit.authored_date)}
 
 .commit-info-row
-  %span.light Commit
+  %span.light 提交：
   = link_to @pipeline.sha, namespace_project_commit_path(@project.namespace, @project, @pipeline.sha), class: "monospace"
   = clipboard_button(clipboard_text: @pipeline.sha)
 

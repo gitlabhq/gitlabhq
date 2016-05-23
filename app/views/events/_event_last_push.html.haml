@@ -2,13 +2,14 @@
   .row-content-block.clear-block.last-push-widget
     .event-last-push
       .event-last-push-text
-        %span You pushed to
+        %span 你在
+        #{time_ago_with_tooltip(event.created_at)}
+        %span 推送
         = link_to namespace_project_commits_path(event.project.namespace, event.project, event.ref_name), title: h(event.project.name) do
           %strong= event.ref_name
-        %span at
+        %span 到
         %strong= link_to_project event.project
-        #{time_ago_with_tooltip(event.created_at)}
 
       .pull-right
-        = link_to new_mr_path_from_push_event(event), title: "New Merge Request", class: "btn btn-info btn-sm" do
-          Create Merge Request
+        = link_to new_mr_path_from_push_event(event), title: "新合并请求", class: "btn btn-info btn-sm" do
+          创建合并请求

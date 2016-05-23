@@ -1,13 +1,14 @@
 = form_for [@project.namespace.becomes(Namespace), @project, @key], url: namespace_project_deploy_keys_path, html: { class: "js-requires-input" } do |f|
   = form_errors(@key)
   .form-group
-    = f.label :title, class: "label-light"
+    = f.label :title, '标题', class: "label-light"
     = f.text_field :title, class: 'form-control', autofocus: true, required: true
   .form-group
-    = f.label :key, class: "label-light"
+    = f.label :key, '公钥', class: "label-light"
     = f.text_area :key, class: "form-control", rows: 5, required: true
   .form-group
     %p.light.append-bottom-0
-      Paste a machine public key here. Read more about how to generate it
-      = link_to "here", help_page_path("ssh", "README")
-  = f.submit "Add key", class: "btn-create btn"
+      在这里粘贴机器 SSH 公钥。如何生成请点击
+      = link_to "这里", help_page_path("ssh", "README")
+      了解更多
+  = f.submit "增加密钥", class: "btn-create btn"

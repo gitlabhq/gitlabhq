@@ -2,70 +2,70 @@
   - if @project
     %li{class: ("active" if @scope == 'blobs')}
       = link_to search_filter_path(scope: 'blobs') do
-        Code
+        代码
         %span.badge
           = @search_results.blobs_count
     %li{class: ("active" if @scope == 'issues')}
       = link_to search_filter_path(scope: 'issues') do
-        Issues
+        问题
         %span.badge
           = @search_results.issues_count
     %li{class: ("active" if @scope == 'merge_requests')}
       = link_to search_filter_path(scope: 'merge_requests') do
-        Merge requests
+        合并请求
         %span.badge
           = @search_results.merge_requests_count
     %li{class: ("active" if @scope == 'milestones')}
       = link_to search_filter_path(scope: 'milestones') do
-        Milestones
+        里程碑
         %span.badge
           = @search_results.milestones_count
     %li{class: ("active" if @scope == 'notes')}
       = link_to search_filter_path(scope: 'notes') do
-        Comments
+        评论
         %span.badge
           = @search_results.notes_count
     %li{class: ("active" if @scope == 'wiki_blobs')}
       = link_to search_filter_path(scope: 'wiki_blobs') do
-        Wiki
+        维基
         %span.badge
           = @search_results.wiki_blobs_count
     %li{class: ("active" if @scope == 'commits')}
       = link_to search_filter_path(scope: 'commits') do
-        Commits
+        提交
         %span.badge
           = @search_results.commits_count
 
   - elsif @show_snippets
     %li{class: ("active" if @scope == 'snippet_blobs')}
       = link_to search_filter_path(scope: 'snippet_blobs', snippets: true, group_id: nil, project_id: nil) do
-        Snippet Contents
+        代码片段内容
         %span.badge
           = @search_results.snippet_blobs_count
     %li{class: ("active" if @scope == 'snippet_titles')}
       = link_to search_filter_path(scope: 'snippet_titles', snippets: true, group_id: nil, project_id: nil) do
-        Titles and Filenames
+        标题和文件名
         %span.badge
           = @search_results.snippet_titles_count
 
   - else
     %li{class: ("active" if @scope == 'projects')}
       = link_to search_filter_path(scope: 'projects') do
-        Projects
+        项目
         %span.badge
           = @search_results.projects_count
     %li{class: ("active" if @scope == 'issues')}
       = link_to search_filter_path(scope: 'issues') do
-        Issues
+        问题
         %span.badge
           = @search_results.issues_count
     %li{class: ("active" if @scope == 'merge_requests')}
       = link_to search_filter_path(scope: 'merge_requests') do
-        Merge requests
+        合并请求
         %span.badge
           = @search_results.merge_requests_count
     %li{class: ("active" if @scope == 'milestones')}
       = link_to search_filter_path(scope: 'milestones') do
-        Milestones
+        里程碑
         %span.badge
           = @search_results.milestones_count

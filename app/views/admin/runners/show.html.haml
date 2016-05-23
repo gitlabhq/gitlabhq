@@ -4,21 +4,21 @@
     .pull-right
       - if @runner.shared?
         %span.runner-state.runner-state-shared
-          Shared
+          共享的
       - else
         %span.runner-state.runner-state-specific
-          Specific
+          特定的
 
 - if @runner.shared?
   .bs-callout.bs-callout-success
-    %h4 This runner will process builds from ALL UNASSIGNED projects
+    %h4 将会处理全部<b>未指派</b>项目的构建
     %p
-      If you want runners to build only specific projects, enable them in the table below.
-      Keep in mind that this is a one way transition.
+      如果你想让此 runner 只会处理指派项目的构建，请在下面的表格中启用相关项目的指派。
+      需要注意的是，此操作只能一次。一旦指定，此 runner 将不能再转为共享的。
 - else
   .bs-callout.bs-callout-info
-    %h4 This runner will process builds only from ASSIGNED projects
-    %p You can't make this a shared runner.
+    %h4 此 runner 将只会处理<b>指派</b>项目的构建
+    %p 你不能再将此 runner 转为共享的。
 %hr
 
 .append-bottom-20
@@ -26,12 +26,12 @@
 
 .row
   .col-md-6
-    %h4 Restrict projects for this runner
+    %h4 此 runner 指派的项目
     - if @runner.projects.any?
       %table.table
         %thead
           %tr
-            %th Assigned projects
+            %th 指派的项目
             %th
         - @runner.runner_projects.each do |runner_project|
           - project = runner_project.project

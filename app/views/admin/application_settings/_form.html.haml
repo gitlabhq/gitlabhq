@@ -2,237 +2,235 @@
   = form_errors(@application_setting)
 
   %fieldset
-    %legend Visibility and Access Controls
+    %legend 可见性与访问控制
     .form-group
-      = f.label :default_branch_protection, class: 'control-label col-sm-2'
+      = f.label :default_branch_protection, '默认保护分支', class: 'control-label col-sm-2'
       .col-sm-10
         = f.select :default_branch_protection, options_for_select(Gitlab::Access.protection_options, @application_setting.default_branch_protection), {}, class: 'form-control'
     .form-group.project-visibility-level-holder
-      = f.label :default_project_visibility, class: 'control-label col-sm-2'
+      = f.label :default_project_visibility, '默认项目可见度', class: 'control-label col-sm-2'
       .col-sm-10
         = render('shared/visibility_radios', model_method: :default_project_visibility, form: f, selected_level: @application_setting.default_project_visibility, form_model: Project.new)
     .form-group.project-visibility-level-holder
-      = f.label :default_snippet_visibility, class: 'control-label col-sm-2'
+      = f.label :default_snippet_visibility, '默认代码片段可见度', class: 'control-label col-sm-2'
       .col-sm-10
         = render('shared/visibility_radios', model_method: :default_snippet_visibility, form: f, selected_level: @application_setting.default_snippet_visibility, form_model: ProjectSnippet.new)
     .form-group.group-visibility-level-holder
-      = f.label :default_group_visibility, class: 'control-label col-sm-2'
+      = f.label :default_group_visibility, '默认群组可见度', class: 'control-label col-sm-2'
       .col-sm-10
         = render('shared/visibility_radios', model_method: :default_group_visibility, form: f, selected_level: @application_setting.default_group_visibility, form_model: Group.new)
     .form-group
-      = f.label :restricted_visibility_levels, class: 'control-label col-sm-2'
+      = f.label :restricted_visibility_levels, '限制的可见等级', class: 'control-label col-sm-2'
       .col-sm-10
         - data_attrs = { toggle: 'buttons' }
         .btn-group{ data: data_attrs }
           - restricted_level_checkboxes('restricted-visibility-help').each do |level|
             = level
         %span.help-block#restricted-visibility-help
-          Selected levels cannot be used by non-admin users for projects or snippets.
-          If the public level is restricted, user profiles are only visible to logged in users.
+          选择的等级将无法用于非管理用户的项目和代码片段。
+          如果公开等级被限制，用户个人资料只对已登录用户可见。
     .form-group
-      = f.label :import_sources, class: 'control-label col-sm-2'
+      = f.label :import_sources, '导入来源', class: 'control-label col-sm-2'
       .col-sm-10
         - data_attrs = { toggle: 'buttons' }
         .btn-group{ data: data_attrs }
           - import_sources_checkboxes('import-sources-help').each do |source|
             = source
         %span.help-block#import-sources-help
-          Enabled sources for code import during project creation. OmniAuth must be configured for GitHub
+          项目创建时可用的代码导入来源。GitHub
           = link_to "(?)", help_page_path("integration", "github")
-          , Bitbucket
+          、Bitbucket
           = link_to "(?)", help_page_path("integration", "bitbucket")
-          and GitLab.com
+          和 GitLab.com
           = link_to "(?)", help_page_path("integration", "gitlab")
+          必须先配置好 OmniAuth。
     .form-group
       .col-sm-offset-2.col-sm-10
         .checkbox
           = f.label :version_check_enabled do
             = f.check_box :version_check_enabled
-            Version check enabled
+            开启版本检查
     .form-group
       .col-sm-offset-2.col-sm-10
         .checkbox
           = f.label :email_author_in_body do
             = f.check_box :email_author_in_body
-            Include author name in notification email body
+            在通知邮件正文包含作者名称
           .help-block
-            Some email servers do not support overriding the email sender name.
-            Enable this option to include the name of the author of the issue,
-            merge request or comment in the email body instead.
+            有些邮件服务器不支持重写邮件发送人名称功能。
+            开启此选项将在邮件正文中提供问题、合并请求和评论作者的名称，
+            否则只试图重写邮件发送人为作者。
     .form-group
-      = f.label :admin_notification_email, class: 'control-label col-sm-2'
+      = f.label :admin_notification_email, '管理员通知邮箱', class: 'control-label col-sm-2'
       .col-sm-10
         = f.text_field :admin_notification_email, class: 'form-control'
         .help-block
-          Abuse reports will be sent to this address if it is set. Abuse reports are always available in the admin area.
+          滥用举报会使用此邮箱发送邮件。滥用举报总是在管理区域可用。
 
   %fieldset
-    %legend Account and Limit Settings
+    %legend 账户与限制设置
     .form-group
       .col-sm-offset-2.col-sm-10
         .checkbox
           = f.label :gravatar_enabled do
             = f.check_box :gravatar_enabled
-            Gravatar enabled
+            开启 Gravatar 头像
     .form-group
-      = f.label :default_projects_limit, class: 'control-label col-sm-2'
+      = f.label :default_projects_limit, '默认项目限制', class: 'control-label col-sm-2'
       .col-sm-10
         = f.number_field :default_projects_limit, class: 'form-control'
     .form-group
-      = f.label :max_attachment_size, 'Maximum attachment size (MB)', class: 'control-label col-sm-2'
+      = f.label :max_attachment_size, '最大附件大小 (MB)', class: 'control-label col-sm-2'
       .col-sm-10
         = f.number_field :max_attachment_size, class: 'form-control'
     .form-group
-      = f.label :session_expire_delay, 'Session duration (minutes)', class: 'control-label col-sm-2'
+      = f.label :session_expire_delay, '会话保留时间 (分钟)', class: 'control-label col-sm-2'
       .col-sm-10
         = f.number_field :session_expire_delay, class: 'form-control'
-        %span.help-block#session_expire_delay_help_block GitLab restart is required to apply changes
+        %span.help-block#session_expire_delay_help_block 要应用此变更需要重启 GitLab
     .form-group
-      = f.label :user_oauth_applications, 'User OAuth applications', class: 'control-label col-sm-2'
+      = f.label :user_oauth_applications, '用户 OAuth 应用', class: 'control-label col-sm-2'
       .col-sm-10
         .checkbox
           = f.label :user_oauth_applications do
             = f.check_box :user_oauth_applications
-            Allow users to register any application to use GitLab as an OAuth provider
+            允许用户注册使用 GitLab 为 OAuth 提供者的应用
 
   %fieldset
-    %legend Sign-in Restrictions
+    %legend 登录限制
     .form-group
       .col-sm-offset-2.col-sm-10
         .checkbox
           = f.label :signup_enabled do
             = f.check_box :signup_enabled
-            Sign-up enabled
+            开启注册
     .form-group
       .col-sm-offset-2.col-sm-10
         .checkbox
           = f.label :send_user_confirmation_email do
             = f.check_box :send_user_confirmation_email
-            Send confirmation email on sign-up
+            注册时发送确认邮件
     .form-group
       .col-sm-offset-2.col-sm-10
         .checkbox
           = f.label :signin_enabled do
             = f.check_box :signin_enabled
-            Sign-in enabled
+            开启登录
     - if omniauth_enabled? && button_based_providers.any?
       .form-group
-        = f.label :enabled_oauth_sign_in_sources, 'Enabled OAuth Sign-In sources', class: 'control-label col-sm-2'
+        = f.label :enabled_oauth_sign_in_sources, '开启 OAuth 登录来源', class: 'control-label col-sm-2'
         .col-sm-10
           .btn-group{ data: { toggle: 'buttons' } }
             - oauth_providers_checkboxes.each do |source|
               = source
     .form-group
-      = f.label :two_factor_authentication, 'Two-factor authentication', class: 'control-label col-sm-2'
+      = f.label :two_factor_authentication, '两步验证', class: 'control-label col-sm-2'
       .col-sm-10
         .checkbox
           = f.label :require_two_factor_authentication do
             = f.check_box :require_two_factor_authentication
-            Require all users to setup Two-factor authentication
+            强制全部用户设置两步验证
     .form-group
-      = f.label :two_factor_authentication, 'Two-factor grace period (hours)', class: 'control-label col-sm-2'
+      = f.label :two_factor_authentication, '两步验证宽限期 (小时)', class: 'control-label col-sm-2'
       .col-sm-10
         = f.number_field :two_factor_grace_period, min: 0, class: 'form-control', placeholder: '0'
-        .help-block Amount of time (in hours) that users are allowed to skip forced configuration of two-factor authentication
+        .help-block 允许用户跳过强制两步验证配置的时间范围（小时）
     .form-group
-      = f.label :restricted_signup_domains, 'Restricted domains for sign-ups', class: 'control-label col-sm-2'
+      = f.label :restricted_signup_domains, '注册限制域名', class: 'control-label col-sm-2'
       .col-sm-10
         = f.text_area :restricted_signup_domains_raw, placeholder: 'domain.com', class: 'form-control'
-        .help-block Only users with e-mail addresses that match these domain(s) will be able to sign-up. Wildcards allowed. Use separate lines for multiple entries. Ex: domain.com, *.domain.com
+        .help-block 用户使用的邮箱地址后缀必须匹配这些域名才能注册。泛域名可用。使用英文逗号分隔多个域名。比如：domain.com, *.domain.com
     .form-group
-      = f.label :home_page_url, 'Home page URL', class: 'control-label col-sm-2'
+      = f.label :home_page_url, '主页链接', class: 'control-label col-sm-2'
       .col-sm-10
         = f.text_field :home_page_url, class: 'form-control', placeholder: 'http://company.example.com', :'aria-describedby' => 'home_help_block'
-        %span.help-block#home_help_block We will redirect non-logged in users to this page
+        %span.help-block#home_help_block 未登录用户将会重定向到此页面
     .form-group
-      = f.label :after_sign_out_path, class: 'control-label col-sm-2'
+      = f.label :after_sign_out_path, '退出后路径', class: 'control-label col-sm-2'
       .col-sm-10
         = f.text_field :after_sign_out_path, class: 'form-control', placeholder: 'http://company.example.com', :'aria-describedby' => 'after_sign_out_path_help_block'
-        %span.help-block#after_sign_out_path_help_block We will redirect users to this page after they sign out
+        %span.help-block#after_sign_out_path_help_block 用户退出后将会重定向到此页面
     .form-group
-      = f.label :sign_in_text, class: 'control-label col-sm-2'
+      = f.label :sign_in_text, '登录文字', class: 'control-label col-sm-2'
       .col-sm-10
         = f.text_area :sign_in_text, class: 'form-control', rows: 4
-        .help-block Markdown enabled
+        .help-block Markdown 可用
     .form-group
-      = f.label :help_page_text, class: 'control-label col-sm-2'
+      = f.label :help_page_text, '帮助页面文字', class: 'control-label col-sm-2'
       .col-sm-10
         = f.text_area :help_page_text, class: 'form-control', rows: 4
-        .help-block Markdown enabled
+        .help-block Markdown 可用
 
   %fieldset
-    %legend Continuous Integration
+    %legend 持续集成
     .form-group
       .col-sm-offset-2.col-sm-10
         .checkbox
           = f.label :shared_runners_enabled do
             = f.check_box :shared_runners_enabled
-            Enable shared runners for new projects
+            为新项目默认开启共享 runner
     .form-group
-      = f.label :shared_runners_text, class: 'control-label col-sm-2'
+      = f.label :shared_runners_text, '共享 runner 文本', class: 'control-label col-sm-2'
       .col-sm-10
         = f.text_area :shared_runners_text, class: 'form-control', rows: 4
-        .help-block Markdown enabled
+        .help-block Markdown 可用
     .form-group
-      = f.label :max_artifacts_size, 'Maximum artifacts size (MB)', class: 'control-label col-sm-2'
+      = f.label :max_artifacts_size, '最大附件大小 (MB)', class: 'control-label col-sm-2'
       .col-sm-10
         = f.number_field :max_artifacts_size, class: 'form-control'
 
   %fieldset
-    %legend Metrics
+    %legend 度量
     %p
-      These settings require a restart to take effect.
+      这些设置需要重启才能生效。
     .form-group
       .col-sm-offset-2.col-sm-10
         .checkbox
           = f.label :metrics_enabled do
             = f.check_box :metrics_enabled
-            Enable InfluxDB Metrics
+            开启 InfluxDB 度量
     .form-group
-      = f.label :metrics_host, 'InfluxDB host', class: 'control-label col-sm-2'
+      = f.label :metrics_host, 'InfluxDB 主机', class: 'control-label col-sm-2'
       .col-sm-10
         = f.text_field :metrics_host, class: 'form-control', placeholder: 'influxdb.example.com'
     .form-group
-      = f.label :metrics_port, 'InfluxDB port', class: 'control-label col-sm-2'
+      = f.label :metrics_port, 'InfluxDB 端口', class: 'control-label col-sm-2'
       .col-sm-10
         = f.text_field :metrics_port, class: 'form-control', placeholder: '8089'
         .help-block
-          The UDP port to use for connecting to InfluxDB. InfluxDB requires that
-          your server configuration specifies a database to store data in when
-          sending messages to this port, without it metrics data will not be
-          saved.
+          用于连接到 InfluxDB 的 UDP 端口。
+          InfluxDB 需要您的服务器配置数据库用于存储发送到此端口的消息，
+          如果没有配置，度量数据将不会保存。
     .form-group
-      = f.label :metrics_pool_size, 'Connection pool size', class: 'control-label col-sm-2'
+      = f.label :metrics_pool_size, '连接池大小', class: 'control-label col-sm-2'
       .col-sm-10
         = f.number_field :metrics_pool_size, class: 'form-control'
         .help-block
-          The amount of InfluxDB connections to open. Connections are opened
-          lazily. Users using multi-threaded application servers should ensure
-          enough connections are available (at minimum the amount of application
-          server threads).
+          可用的 InfluxDB 连接数。
+          连接是延迟加载的，即只有需要的时候才会打开。
+          使用多线程应用服务器的用户应确保有足够的连接可用
+          （可用数至少是应用服务器线程的数量）。
     .form-group
-      = f.label :metrics_timeout, 'Connection timeout', class: 'control-label col-sm-2'
+      = f.label :metrics_timeout, '连接超时', class: 'control-label col-sm-2'
       .col-sm-10
         = f.number_field :metrics_timeout, class: 'form-control'
         .help-block
-          The amount of seconds after which an InfluxDB connection will time
-          out.
+          InfluxDB 连接超时时间，单位秒。
     .form-group
-      = f.label :metrics_method_call_threshold, 'Method Call Threshold (ms)', class: 'control-label col-sm-2'
+      = f.label :metrics_method_call_threshold, '方法调用阈值 (毫秒)', class: 'control-label col-sm-2'
       .col-sm-10
         = f.number_field :metrics_method_call_threshold, class: 'form-control'
         .help-block
-          A method call is only tracked when it takes longer to complete than
-          the given amount of milliseconds.
+          只有超过此给定的毫秒阀值后完成的方法调用才会被跟踪。
     .form-group
-      = f.label :metrics_sample_interval, 'Sampler Interval (sec)', class: 'control-label col-sm-2'
+      = f.label :metrics_sample_interval, '采样间隔 (秒)', class: 'control-label col-sm-2'
       .col-sm-10
         = f.number_field :metrics_sample_interval, class: 'form-control'
         .help-block
-          The sampling interval in seconds. Sampled data includes memory usage,
-          retained Ruby objects, file descriptors and so on.
+          以秒为单位的采样间隔。
+          采样数据包括内存使用、保留的 Ruby 对象、文件描述符等。
     .form-group
-      = f.label :metrics_packet_size, 'Metrics per packet', class: 'control-label col-sm-2'
+      = f.label :metrics_packet_size, '度量包大小', class: 'control-label col-sm-2'
       .col-sm-10
         = f.number_field :metrics_packet_size, class: 'form-control'
         .help-block

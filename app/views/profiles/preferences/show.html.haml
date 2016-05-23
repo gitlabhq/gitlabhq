@@ -1,11 +1,11 @@
-- page_title 'Preferences'
+- page_title '偏好设置'
 
 = form_for @user, url: profile_preferences_path, remote: true, method: :put, html: {class: 'row prepend-top-default js-preferences-form'} do |f|
   .col-lg-3.profile-settings-sidebar
     %h4.prepend-top-0
-      Application theme
+      程序主题
     %p
-      This setting allows you to customize the appearance of the site, ex. sidebar.
+      此设置允许自定义本站点的外观和行为，比如边栏。
   .col-lg-9.application-theme
     - Gitlab::Themes.each do |theme|
       = label_tag do

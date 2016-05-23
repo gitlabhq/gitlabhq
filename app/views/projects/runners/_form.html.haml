@@ -1,32 +1,32 @@
 = form_for runner, url: runner_form_url, html: { class: 'form-horizontal' } do |f|
   = form_errors(runner)
   .form-group
-    = label :active, "Active", class: 'control-label'
+    = label :active, "有效的", class: 'control-label'
     .col-sm-10
       .checkbox
         = f.check_box :active
-        %span.light Paused runners don't accept new builds
+        %span.light 暂停的 runner 不接受新构建
   .form-group
-    = label :run_untagged, 'Run untagged jobs', class: 'control-label'
+    = label :run_untagged, '运行没有标签的作业', class: 'control-label'
     .col-sm-10
       .checkbox
         = f.check_box :run_untagged
-        %span.light Indicates whether this runner can pick jobs without tags
+        %span.light 确定此 runner 可以运行没有任何标签的作业
   .form-group
     = label_tag :token, class: 'control-label' do
-      Token
+      授权码
     .col-sm-10
       = f.text_field :token, class: 'form-control', readonly: true
   .form-group
     = label_tag :description, class: 'control-label' do
-      Description
+      描述
     .col-sm-10
       = f.text_field :description, class: 'form-control'
   .form-group
     = label_tag :tag_list, class: 'control-label' do
-      Tags
+      标签
     .col-sm-10
       = f.text_field :tag_list, value: runner.tag_list.to_s, class: 'form-control'
-      .help-block You can setup jobs to only use runners with specific tags
+      .help-block 你可以设置构建只使用指定标签的 runner
   .form-actions
-    = f.submit 'Save changes', class: 'btn btn-save'
+    = f.submit '保存修改', class: 'btn btn-save'

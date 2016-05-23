@@ -1,4 +1,4 @@
-- page_title "Applications"
+- page_title "应用"
 
 .row.prepend-top-default
   .col-lg-3.profile-settings-sidebar
@@ -40,25 +40,25 @@
                     %td
                       = link_to edit_oauth_application_path(application), class: "btn btn-transparent append-right-5" do
                         %span.sr-only
-                          Edit
+                          编辑
                         = icon('pencil')
                       = render 'delete_form', application: application, small: true
         - else
           .settings-message.text-center
-            You don't have any applications
+            没有任何应用
     .oauth-authorized-applications.prepend-top-20.append-bottom-default
       - if user_oauth_applications?
         %h5
-          Authorized applications (#{@authorized_tokens.size})
+          已认证的应用 (#{@authorized_tokens.size})
 
       - if @authorized_tokens.any?
         .table-responsive
           %table.table.table-striped
             %thead
               %tr
-                %th Name
-                %th Authorized At
-                %th Scope
+                %th 名称
+                %th 认证时间
+                %th 范围
                 %th
             %tbody
               - @authorized_apps.each do |app|
@@ -71,12 +71,12 @@
               - @authorized_anonymous_tokens.each do |token|
                 %tr
                   %td
-                    Anonymous
+                    匿名
                     %div.help-block
-                      %em Authorization was granted by entering your username and password in the application.
+                      %em 通过在应用中输入你的账号和密码认证授权。
                   %td= token.created_at
                   %td= token.scopes
                   %td= render 'doorkeeper/authorized_applications/delete_form', token: token
       - else
         .settings-message.text-center
-          You don't have any authorized applications
+          没有任何已认证的应用

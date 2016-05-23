@@ -7,35 +7,35 @@
     = @error
 
 %h3.page-title
-  New Tag
+  新标签
 %hr
 
 = form_tag namespace_project_tags_path, method: :post, id: "new-tag-form", class: "form-horizontal common-note-form tag-form js-quick-submit js-requires-input" do
   .form-group
-    = label_tag :tag_name, nil, class: 'control-label'
+    = label_tag :tag_name, '标签名称', class: 'control-label'
     .col-sm-10
       = text_field_tag :tag_name, params[:tag_name], required: true, tabindex: 1, autofocus: true, class: 'form-control'
   .form-group
-    = label_tag :ref, 'Create from', class: 'control-label'
+    = label_tag :ref, '创建自', class: 'control-label'
     .col-sm-10
       = text_field_tag :ref, params[:ref] || @project.default_branch, required: true, tabindex: 2, class: 'form-control'
-      .help-block  Branch name or commit SHA
+      .help-block  分支名称或提交 SHA
   .form-group
-    = label_tag :message, nil, class: 'control-label'
+    = label_tag :message, '信息', class: 'control-label'
     .col-sm-10
       = text_area_tag :message, nil, required: false, tabindex: 3, class: 'form-control', rows: 5
-      .help-block Optionally, enter a message to create an annotated tag.
+      .help-block 可选，输入创建标签的信息。
   %hr
   .form-group
-    = label_tag :release_description, 'Release notes', class: 'control-label'
+    = label_tag :release_description, '发布备注', class: 'control-label'
     .col-sm-10
       = render layout: 'projects/md_preview', locals: { preview_class: "md-preview", referenced_users: true } do
-        = render 'projects/zen', attr: :release_description, classes: 'note-textarea', placeholder: "Write your release notes or drag files here..."
+        = render 'projects/zen', attr: :release_description, classes: 'note-textarea', placeholder: "撰写发布备注或拖放文件到此处..."
         = render 'projects/notes/hints'
-      .help-block Optionally, add release notes to the tag. They will be stored in the GitLab database and displayed on the tags page.
+      .help-block 可选，可以给标签增加发布备注。备注会储存在 GitLab 数据库并显示在标签页。
   .form-actions
-    = button_tag 'Create tag', class: 'btn btn-create', tabindex: 3
-    = link_to 'Cancel', namespace_project_tags_path(@project.namespace, @project), class: 'btn btn-cancel'
+    = button_tag '创建标签', class: 'btn btn-create', tabindex: 3
+    = link_to '取消', namespace_project_tags_path(@project.namespace, @project), class: 'btn btn-cancel'
 
 :javascript
   var availableRefs = #{@project.repository.ref_names.to_json};

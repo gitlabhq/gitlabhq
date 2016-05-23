@@ -32,22 +32,22 @@
     - else
       \
       \
-      Changes:
+      变更：
       - @message.diffs.each do |diff_file|
         \
         \=====================================
         - if diff_file.deleted_file
-          #{diff_file.old_path} deleted
+          #{diff_file.old_path} 已删除
         - elsif diff_file.renamed_file
           #{diff_file.old_path} → #{diff_file.new_path}
         - else
           = diff_file.new_path
         \=====================================
         - if diff_file.too_large?
-          The diff for this file was not included because it is too large.
+          因为差异过大所以此文件差异不显示。
         - else
           != diff_file.diff.diff
   - if @message.target_url
     \
     \
-    View it on GitLab: #{@message.target_url}
+    在 GitLab 上查看: #{@message.target_url}

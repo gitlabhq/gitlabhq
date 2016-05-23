@@ -1,13 +1,13 @@
-- page_title "Snippets"
+- page_title "代码片段"
 = render "header_title"
 
 .row-content-block.top-block
   .pull-right
-    = link_to new_namespace_project_snippet_path(@project.namespace, @project), class: "btn btn-new", title: "New Snippet" do
+    = link_to new_namespace_project_snippet_path(@project.namespace, @project), class: "btn btn-new", title: "新代码片段" do
       = icon('plus')
-      New Snippet
+      新代码片段
 
   .oneline
-    Share code pastes with others out of git repository
+    在 git 版本仓库外共享代码
 
 = render 'snippets/snippets'

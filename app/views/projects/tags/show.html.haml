@@ -1,28 +1,28 @@
-- page_title @tag.name, "Tags"
+- page_title @tag.name, "标签"
 = render "projects/commits/header_title"
 = render "projects/commits/head"
 
 .row-content-block
   .pull-right
     - if can?(current_user, :push_code, @project)
-      = link_to edit_namespace_project_tag_release_path(@project.namespace, @project, @tag.name), class: 'btn-grouped btn has-tooltip', title: 'Edit release notes' do
+      = link_to edit_namespace_project_tag_release_path(@project.namespace, @project, @tag.name), class: 'btn-grouped btn has-tooltip', title: '编辑发布备注' do
         = icon("pencil")
-    = link_to namespace_project_tree_path(@project.namespace, @project, @tag.name), class: 'btn btn-grouped has-tooltip', title: 'Browse files' do
+    = link_to namespace_project_tree_path(@project.namespace, @project, @tag.name), class: 'btn btn-grouped has-tooltip', title: '浏览文件' do
       = icon('files-o')
-    = link_to namespace_project_commits_path(@project.namespace, @project, @tag.name), class: 'btn btn-grouped has-tooltip', title: 'Browse commits' do
+    = link_to namespace_project_commits_path(@project.namespace, @project, @tag.name), class: 'btn btn-grouped has-tooltip', title: '浏览提交' do
       = icon('history')
     - if can? current_user, :download_code, @project
       = render 'projects/tags/download', ref: @tag.name, project: @project
     - if can?(current_user, :admin_project, @project)
       .pull-right
-        = link_to namespace_project_tag_path(@project.namespace, @project, @tag.name), class: 'btn btn-remove remove-row grouped has-tooltip', title: "Delete tag", method: :delete, data: { confirm: "Deleting the '#{@tag.name}' tag cannot be undone. Are you sure?" } do
+        = link_to namespace_project_tag_path(@project.namespace, @project, @tag.name), class: 'btn btn-remove remove-row grouped has-tooltip', title: "删除标签", method: :delete, data: { confirm: "删除标签 '#{@tag.name}' 无法恢复，确定要继续么？" } do
           %i.fa.fa-trash-o
   .title
     %span.item-title= @tag.name
   - if @commit
     = render 'projects/branches/commit', commit: @commit, project: @project
   - else
-    Cant find HEAD commit for this tag
+    无法找到该标签的 HEAD 提交
   - if @tag.message.present?
     %pre.body
       = strip_gpg_signature(@tag.message)

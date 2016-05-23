@@ -4,8 +4,8 @@
       = ci_icon_for_status(commit.status)
       = ci_label_for_status(commit.status)
 
+  = commit_author_link(commit, avatar: true, size: 24)
+  在 #{time_ago_with_tooltip(commit.committed_date, skip_js: true)}提交了
+  &middot;
   = link_to commit.short_id, namespace_project_commit_path(project.namespace, project, commit), class: "commit_short_id"
   = link_to_gfm commit.title, namespace_project_commit_path(project.namespace, project, commit), class: "commit-row-message"
-  &middot;
-  #{time_ago_with_tooltip(commit.committed_date, skip_js: true)} by
-  = commit_author_link(commit, avatar: true, size: 24)

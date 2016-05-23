@@ -26,7 +26,7 @@ module SearchHelper
     to = collection.offset_value + collection.length
     count = collection.total_count
 
-    "Showing #{from} - #{to} of #{count} #{scope.humanize(capitalize: false)} for \"#{term}\""
+    "显示 \"#{term}\" 的 #{from} - #{to} / #{count} #{scope.humanize(capitalize: false)}"
   end
 
   private

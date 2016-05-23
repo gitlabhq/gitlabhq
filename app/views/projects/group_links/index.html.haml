@@ -1,28 +1,28 @@
-- page_title "Groups"
+- page_title "群组"
 .row.prepend-top-default
   .col-lg-3.settings-sidebar
     %h4.prepend-top-0
-      Share project with other groups
+      分享项目给其他群组
     %p
-      Projects can be stored in only one group at once. However you can share a project with other groups here.
+      项目只在一个群组内保存。但可以在这里分享项目到其他群组。
   .col-lg-9
     %h5.prepend-top-0
-      Set a group to share
+      设置分享到的群组
     = form_tag namespace_project_group_links_path(@project.namespace, @project), method: :post do
       .form-group
-        = label_tag :link_group_id, "Group", class: "label-light"
+        = label_tag :link_group_id, "群组", class: "label-light"
         = groups_select_tag(:link_group_id, skip_group: @project.group.try(:path))
       .form-group
-        = label_tag :link_group_access, "Max access level", class: "label-light"
+        = label_tag :link_group_access, "最大访问等级", class: "label-light"
         .select-wrapper
           = select_tag :link_group_access, options_for_select(ProjectGroupLink.access_options, ProjectGroupLink.default_access), class: "form-control select-control"
           %span.caret
-      = submit_tag "Share", class: "btn btn-create"
+      = submit_tag "分享", class: "btn btn-create"
   .col-lg-9.col-lg-offset-3
     %hr
   .col-lg-9.col-lg-offset-3.append-bottom-default.enabled-groups
     %h5.prepend-top-0
-      Groups you share with (#{@group_links.size})
+      已分享给 (#{@group_links.size})
     - if @group_links.present?
       %ul.well-list
         - @group_links.each do |group_link|
@@ -34,11 +34,11 @@
               = link_to group do
                 = group.name
               %br
-              up to #{group_link.human_access}
+              权限：#{group_link.human_access}
             .pull-right
               = link_to namespace_project_group_link_path(@project.namespace, @project, group_link), method: :delete, class: "btn btn-transparent" do
-                %span.sr-only disable sharing
+                %span.sr-only 禁止分享
                 = icon("trash")
     - else
       .settings-message.text-center
-        There are no groups with access to your project, add one in the form above
+        没有共享的群组可以访问此项目，请使用上面的表单增加。

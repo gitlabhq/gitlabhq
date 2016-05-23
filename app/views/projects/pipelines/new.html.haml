@@ -1,20 +1,20 @@
-- page_title "New Pipeline"
+- page_title "新管道"
 = render "header_title"
 
 %h3.page-title
-  New Pipeline
+  新管道
 %hr
 
 = form_for @pipeline, as: :pipeline, url: namespace_project_pipelines_path(@project.namespace, @project), html: { id: "new-pipeline-form", class: "form-horizontal js-new-pipeline-form js-requires-input" } do |f|
   = form_errors(@pipeline)
   .form-group
-    = f.label :ref, 'Create for', class: 'control-label'
+    = f.label :ref, '创建自', class: 'control-label'
     .col-sm-10
       = f.text_field :ref, required: true, tabindex: 2, class: 'form-control'
-      .help-block Existing branch name, tag
+      .help-block 已存在的分支或标签
   .form-actions
-    = f.submit 'Create pipeline', class: 'btn btn-create', tabindex: 3
-    = link_to 'Cancel', namespace_project_pipelines_path(@project.namespace, @project), class: 'btn btn-cancel'
+    = f.submit '创建管道', class: 'btn btn-create', tabindex: 3
+    = link_to '取消', namespace_project_pipelines_path(@project.namespace, @project), class: 'btn btn-cancel'
 
 :javascript
   var availableRefs = #{@project.repository.ref_names.to_json};

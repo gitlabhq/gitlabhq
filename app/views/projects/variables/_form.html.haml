@@ -2,9 +2,9 @@
   = form_errors(@variable)
 
   .form-group
-    = f.label :key, "Key", class: "label-light"
+    = f.label :key, "键", class: "label-light"
     = f.text_field :key, class: "form-control", placeholder: "PROJECT_VARIABLE", required: true
   .form-group
-    = f.label :value, "Value", class: "label-light"
+    = f.label :value, "值", class: "label-light"
     = f.text_area :value, class: "form-control", placeholder: "PROJECT_VARIABLE", required: true
   = f.submit btn_text, class: "btn btn-save"

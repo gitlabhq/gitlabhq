@@ -13,9 +13,9 @@
       %strong ##{build.id}
 
     - if build.stuck?
-      = icon('warning', class: 'text-warning has-tooltip', title: 'Build is stuck. Check runners.')
+      = icon('warning', class: 'text-warning has-tooltip', title: '构建被卡住。请检查 runner。')
     - if defined?(retried) && retried
-      = icon('warning', class: 'text-warning has-tooltip', title: 'Build was retried.')
+      = icon('warning', class: 'text-warning has-tooltip', title: '构建被重试。')
 
   - if defined?(commit_sha) && commit_sha
     %td
@@ -26,14 +26,14 @@
       - if build.ref
         = link_to build.ref, namespace_project_commits_path(build.project.namespace, build.project, build.ref)
       - else
-        .light none
+        .light 无
 
   - if defined?(runner) && runner
     %td
       - if build.try(:runner)
         = runner_link(build.runner)
       - else
-        .light none
+        .light 无
 
   - if defined?(stage) && stage
     %td
@@ -49,11 +49,11 @@
             %span.label.label-primary
               = tag
         - if build.try(:trigger_request)
-          %span.label.label-info triggered
+          %span.label.label-info 被触发
         - if build.try(:allow_failure)
-          %span.label.label-danger allowed to fail
+          %span.label.label-danger 运行失败
         - if defined?(retried) && retried
-          %span.label.label-warning retried
+          %span.label.label-warning 重试的
 
   %td.duration
     - if build.duration
@@ -75,12 +75,12 @@
   %td
     .pull-right
       - if can?(current_user, :read_build, build) && build.artifacts?
-        = link_to download_namespace_project_build_artifacts_path(build.project.namespace, build.project, build), title: 'Download artifacts', class: 'btn btn-build' do
+        = link_to download_namespace_project_build_artifacts_path(build.project.namespace, build.project, build), title: '下载附件', class: 'btn btn-build' do
           = icon('download')
       - if can?(current_user, :update_build, build)
         - if build.active?
-          = link_to cancel_namespace_project_build_path(build.project.namespace, build.project, build, return_to: request.original_url), method: :post, title: 'Cancel', class: 'btn btn-build' do
+          = link_to cancel_namespace_project_build_path(build.project.namespace, build.project, build, return_to: request.original_url), method: :post, title: '取消', class: 'btn btn-build' do
             = icon('remove', class: 'cred')
         - elsif defined?(allow_retry) && allow_retry && build.retryable?
-          = link_to retry_namespace_project_build_path(build.project.namespace, build.project, build, return_to: request.original_url), method: :post, title: 'Retry', class: 'btn btn-build' do
+          = link_to retry_namespace_project_build_path(build.project.namespace, build.project, build, return_to: request.original_url), method: :post, title: '重试', class: 'btn btn-build' do
             = icon('refresh')

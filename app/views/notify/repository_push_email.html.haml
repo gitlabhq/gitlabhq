@@ -3,28 +3,28 @@
 
 %h3
   #{@message.author_name} #{@message.action_name} #{@message.ref_type} #{@message.ref_name}
-  at #{link_to(@message.project_name_with_namespace, namespace_project_url(@message.project_namespace, @message.project))}
+  在 #{link_to(@message.project_name_with_namespace, namespace_project_url(@message.project_namespace, @message.project))}
 
 - if @message.compare
   - if @message.reverse_compare?
     %p
-      %strong WARNING:
-      The push did not contain any new commits, but force pushed to delete the commits and changes below.
+      %strong 警告：
+      此推送不包含任何提交，但强制推送会删除下面的提交和变更。
 
   %h4
-    = @message.reverse_compare? ? "Deleted commits:" : "Commits:"
+    = @message.reverse_compare? ? "删除的提交：" : "提交："
 
   %ul
     - @message.commits.each do |commit|
       %li
         %strong #{link_to(commit.short_id, namespace_project_commit_url(@message.project_namespace, @message.project, commit))}
         %div
-          %span by #{commit.author_name}
-          %i at #{commit.committed_date.to_s(:iso8601)}
+          %span 由 #{commit.author_name}
+          %i 在 #{commit.committed_date.to_s(:iso8601)}
         %pre.commit-message
           = commit.safe_message
 
-  %h4 #{pluralize @message.diffs_count, "changed file"}:
+  %h4 #{pluralize @message.diffs_count, "个修改的文件", "个修改的文件"}:
 
   %ul
     - @message.diffs.each_with_index do |diff, i|
@@ -51,14 +51,14 @@
     - if @message.compare_timeout
       %h5 The diff was not included because it is too large.
     - else
-      %h4 Changes:
+      %h4 变更：
       - diff_files.each_with_index do |diff_file, i|
         %li{id: "diff-#{i}"}
           %a{href: @message.target_url + "#diff-#{i}"}<
             - if diff_file.deleted_file
               %strong<
                 = diff_file.old_path
-              deleted
+              已删除
             - elsif diff_file.renamed_file
               %strong<
                 = diff_file.old_path
@@ -69,7 +69,7 @@
               %strong<
                 = diff_file.new_path
           - if diff_file.too_large?
-            The diff for this file was not included because it is too large.
+            因为差异过大所以此文件差异不显示。
           - else
             %hr
             - diff_commit = diff_file.deleted_file ? @message.diff_refs.first : @message.diff_refs.last
@@ -79,5 +79,5 @@
                 - diff_file.highlighted_diff_lines.each do |line|
                   = render "projects/diffs/line", {line: line, diff_file: diff_file, line_code: nil, plain: true}
             - else
-              No preview for this file type
+              此文件类型无预览
           %br

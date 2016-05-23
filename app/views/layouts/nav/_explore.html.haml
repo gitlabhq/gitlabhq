@@ -1,21 +1,21 @@
 %ul.nav.nav-sidebar
   = nav_link(path: ['dashboard#show', 'root#show', 'projects#trending', 'projects#starred', 'projects#index'], html_options: {class: 'home'}) do
-    = link_to explore_root_path, title: 'Projects' do
+    = link_to explore_root_path, title: '项目' do
       = icon('bookmark fw')
       %span
-        Projects
+        项目
   = nav_link(controller: [:groups, 'groups/milestones', 'groups/group_members']) do
-    = link_to explore_groups_path, title: 'Groups' do
+    = link_to explore_groups_path, title: '群组' do
       = icon('group fw')
       %span
-        Groups
+        群组
   = nav_link(controller: :snippets) do
-    = link_to explore_snippets_path, title: 'Snippets' do
+    = link_to explore_snippets_path, title: '代码片段' do
       = icon('clipboard fw')
       %span
-        Snippets
+        代码片段
   = nav_link(controller: :help) do
-    = link_to help_path, title: 'Help' do
+    = link_to help_path, title: '帮助' do
       = icon('question-circle fw')
       %span
-        Help
+        帮助

@@ -8,8 +8,8 @@
             %span.label.label-gray.deploy-project-label= trigger.titleize
     .col-md-4.col-lg-5.text-right-lg.prepend-top-5
       %span.append-right-10.inline
-        SSL Verification: #{hook.enable_ssl_verification ? "enabled" : "disabled"}
-      = link_to "Test", test_namespace_project_hook_path(@project.namespace, @project, hook), class: "btn btn-sm"
-      = link_to namespace_project_hook_path(@project.namespace, @project, hook), data: { confirm: 'Are you sure?'}, method: :delete, class: "btn btn-transparent" do
-        %span.sr-only Remove
+        SSL 证书验证：#{hook.enable_ssl_verification ? "已启用" : "已禁用"}
+      = link_to "测试", test_namespace_project_hook_path(@project.namespace, @project, hook), class: "btn btn-sm"
+      = link_to namespace_project_hook_path(@project.namespace, @project, hook), data: { confirm: '确定要删除么？'}, method: :delete, class: "btn btn-transparent" do
+        %span.sr-only 删除
         = icon('trash')

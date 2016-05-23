@@ -3,86 +3,86 @@
   .project-edit-content
     .panel.panel-default
       .panel-heading
-        Project settings
+        项目设置
       .panel-body
         = form_for [@project.namespace.becomes(Namespace), @project], remote: true, html: { multipart: true, class: "edit_project form-horizontal fieldset-form" }, authenticity_token: true do |f|
 
           %fieldset
             .form-group.project_name_holder
               = f.label :name, class: 'control-label' do
-                Project name
+                项目名称
               .col-sm-10
                 = f.text_field :name, class: "form-control", id: "project_name_edit"
 
 
             .form-group
               = f.label :description, class: 'control-label' do
-                Project description
-                %span.light (optional)
+                项目描述
+                %span.light (可选)
               .col-sm-10
                 = f.text_area :description, class: "form-control", rows: 3, maxlength: 250
 
             - unless @project.empty_repo?
               .form-group
-                = f.label :default_branch, "Default Branch", class: 'control-label'
+                = f.label :default_branch, "默认分支", class: 'control-label'
                 .col-sm-10= f.select(:default_branch, @project.repository.branch_names, {}, {class: 'select2 select-wide'})
 
 
           = render 'shared/visibility_level', f: f, visibility_level: @project.visibility_level, can_change_visibility_level: can_change_visibility_level?(@project, current_user), form_model: @project
 
           .form-group
-            = f.label :tag_list, "Tags", class: 'control-label'
+            = f.label :tag_list, "标签", class: 'control-label'
             .col-sm-10
               = f.text_field :tag_list, value: @project.tag_list.to_s, maxlength: 2000, class: "form-control"
-              %p.help-block Separate tags with commas.
+              %p.help-block 使用英文逗号分割。
 
           %fieldset.features
             %legend
-              Features:
+              功能：
             .form-group
               .col-sm-offset-2.col-sm-10
                 .checkbox
                   = f.label :issues_enabled do
                     = f.check_box :issues_enabled
-                    %strong Issues
+                    %strong 问题
                     %br
-                    %span.descr Lightweight issue tracking system for this project
+                    %span.descr 轻量级问题跟踪系统
 
             .form-group
               .col-sm-offset-2.col-sm-10
                 .checkbox
                   = f.label :merge_requests_enabled do
                     = f.check_box :merge_requests_enabled
-                    %strong Merge Requests
+                    %strong 合并请求
                     %br
-                    %span.descr Submit changes to be merged upstream
+                    %span.descr 合并上游修改
 
             .form-group
               .col-sm-offset-2.col-sm-10
                 .checkbox
                   = f.label :builds_enabled do
                     = f.check_box :builds_enabled
-                    %strong Builds
+                    %strong 构建
                     %br
-                    %span.descr Test and deploy your changes before merge
+                    %span.descr 合并前测试和部署变更
 
             .form-group
               .col-sm-offset-2.col-sm-10
                 .checkbox
                   = f.label :wiki_enabled do
                     = f.check_box :wiki_enabled
-                    %strong Wiki
+                    %strong 维基
                     %br
-                    %span.descr Pages for project documentation
+                    %span.descr 项目文档页面
 
             .form-group
               .col-sm-offset-2.col-sm-10
                 .checkbox
                   = f.label :snippets_enabled do
                     = f.check_box :snippets_enabled
-                    %strong Snippets
+                    %strong 代码片段
                     %br
-                    %span.descr Share code pastes with others out of git repository
+                    %span.descr 共享 git 版本仓库外的代码
 
             - if Gitlab.config.registry.enabled
               .form-group
@@ -98,100 +98,99 @@
 
           %fieldset.features
             %legend
-              Project avatar:
+              项目头像：
             .form-group
               .col-sm-offset-2.col-sm-10
                 - if @project.avatar?
                   = project_icon("#{@project.namespace.to_param}/#{@project.to_param}", alt: '', class: 'avatar project-avatar s160')
                 %p.light
                   - if @project.avatar_in_git
-                    Project avatar in repository: #{ @project.avatar_in_git }
+                    项目头像保存在版本仓库：#{ @project.avatar_in_git }
                 %p.light
                   - if @project.avatar?
-                    You can change your project avatar here
+                    在这里可以修改项目头像
                   - else
-                    You can upload a project avatar here
+                    在这里可以上传项目头像
                 %a.choose-btn.btn.btn-sm.js-choose-project-avatar-button
                   %i.icon-paper-clip
-                  %span Choose File ...
+                  %span 选择文件...
                 &nbsp;
-                %span.file_name.js-avatar-filename File name...
+                %span.file_name.js-avatar-filename 文件名...
                 = f.file_field :avatar, class: "js-project-avatar-input hidden"
-                .light The maximum file size allowed is 200KB.
+                .light 文件大小限制为 200KB。
                 - if @project.avatar?
                   %hr
-                  = link_to 'Remove avatar', namespace_project_avatar_path(@project.namespace, @project), data: { confirm: "Project avatar will be removed. Are you sure?"}, method: :delete, class: "btn btn-remove btn-sm remove-avatar"
+                  = link_to '删除头像', namespace_project_avatar_path(@project.namespace, @project), data: { confirm: "确定要删除项目头像么？"}, method: :delete, class: "btn btn-remove btn-sm remove-avatar"
 
 
           .form-actions
-            = f.submit 'Save changes', class: "btn btn-save"
+            = f.submit '保存修改', class: "btn btn-save"
 
 
 
     .danger-settings
       .panel.panel-default
-        .panel-heading Housekeeping
+        .panel-heading 维护
         .errors-holder
         .panel-body
           %p
-            Runs a number of housekeeping tasks within the current repository,
-            such as compressing file revisions and removing unreachable objects.
+            执行当前仓库的一些维护任务，诸如压缩文件修订版本和删除无用对象等。
             %br
 
           .form-actions
-            = link_to 'Housekeeping', housekeeping_namespace_project_path(@project.namespace, @project),
+            = link_to '维护', housekeeping_namespace_project_path(@project.namespace, @project),
                 method: :post, class: "btn btn-default"
 
       - if can? current_user, :archive_project, @project
         - if @project.archived?
           .panel.panel-success
             .panel-heading
-              Unarchive project
+              解档项目
             .panel-body
               %p
-                Unarchiving the project will mark its repository as active.
+                解档项目将恢复项目版本仓库可修改。
                 %br
-                The project can be committed to.
+                项目可以被提交。
                 %br
-                %strong Once active this project shows up in the search and on the dashboard.
+                %strong 解档后该项目可以被搜索到并显示在仪表盘中。
 
               .form-actions
-                = link_to 'Unarchive project', unarchive_namespace_project_path(@project.namespace, @project),
-                    data: { confirm: "Are you sure that you want to unarchive this project?\nWhen this project is unarchived it is active and can be committed to again." },
+                = link_to '解档项目', unarchive_namespace_project_path(@project.namespace, @project),
+                    data: { confirm: "确定要解档本项目么？\n解档项目后可以重新提交版本仓库修改。" },
                     method: :post, class: "btn btn-success"
         - else
           .panel.panel-warning
             .panel-heading
-              Archive project
+              归档项目
             .panel-body
               %p
-                Archiving the project will mark its repository as read-only.
+                归档项目将标识其版本仓库为只读。
                 %br
-                It is hidden from the dashboard and doesn't show up in searches.
+                同时将在仪表盘隐藏并且不能搜索到。
                 %br
-                %strong Archived projects cannot be committed to!
+                %strong 已归档的项目不能被提交！
 
               .form-actions
-                = link_to 'Archive project', archive_namespace_project_path(@project.namespace, @project),
-                    data: { confirm: "Are you sure that you want to archive this project?\nAn archived project cannot be committed to." },
+                = link_to '归档项目', archive_namespace_project_path(@project.namespace, @project),
+                    data: { confirm: "确定要归档本项目么？\n已归档的项目不能被提交。" },
                     method: :post, class: "btn btn-warning"
       - else
-        .nothing-here-block Only the project owner can archive a project
+        .nothing-here-block 只有项目所有者才能归档项目
 
       .panel.panel-default.panel.panel-warning
-        .panel-heading Rename repository
+        .panel-heading 重命名仓库
         .errors-holder
         .panel-body
           = form_for([@project.namespace.becomes(Namespace), @project], html: { class: 'form-horizontal' }) do |f|
             .form-group.project_name_holder
               = f.label :name, class: 'control-label' do
-                Project name
+                项目名称
               .col-sm-9
                 .form-group
                   = f.text_field :name, class: "form-control"
             .form-group
               = f.label :path, class: 'control-label' do
-                %span Path
+                %span 路径
               .col-sm-9
                 .form-group
                   .input-group

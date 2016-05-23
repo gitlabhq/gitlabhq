@@ -31,77 +31,77 @@
         Runners
         %span.count= number_with_delimiter(Ci::Runner.count(:all))
   = nav_link path: 'builds#index' do
-    = link_to admin_builds_path, title: 'Builds' do
+    = link_to admin_builds_path, title: '构建' do
       = icon('link fw')
       %span
-        Builds
+        构建
         %span.count= number_with_delimiter(Ci::Build.count(:all))
   = nav_link(controller: :logs) do
-    = link_to admin_logs_path, title: 'Logs' do
+    = link_to admin_logs_path, title: '日志' do
       = icon('file-text fw')
       %span
-        Logs
+        日志
   = nav_link(controller: :health_check) do
-    = link_to admin_health_check_path, title: 'Health Check' do
+    = link_to admin_health_check_path, title: '健康检查' do
       = icon('medkit fw')
       %span
-        Health Check
+        健康检查
   = nav_link(controller: :broadcast_messages) do
-    = link_to admin_broadcast_messages_path, title: 'Messages' do
+    = link_to admin_broadcast_messages_path, title: '信息' do
       = icon('bullhorn fw')
       %span
-        Messages
+        信息
   = nav_link(controller: :hooks) do
-    = link_to admin_hooks_path, title: 'Hooks' do
+    = link_to admin_hooks_path, title: '钩子' do
       = icon('external-link fw')
       %span
-        Hooks
+        钩子
   = nav_link(controller: :background_jobs) do
-    = link_to admin_background_jobs_path, title: 'Background Jobs' do
+    = link_to admin_background_jobs_path, title: '后台作业' do
       = icon('cog fw')
       %span
-        Background Jobs
+        后台作业
   = nav_link(controller: :appearances) do
-    = link_to admin_appearances_path, title: 'Appearances' do
+    = link_to admin_appearances_path, title: '外观' do
       = icon('image')
       %span
-        Appearance
+        外观
 
   = nav_link(controller: :applications) do
-    = link_to admin_applications_path, title: 'Applications' do
+    = link_to admin_applications_path, title: '应用' do
       = icon('cloud fw')
       %span
-        Applications
+        应用
 
   = nav_link(controller: :services) do
-    = link_to admin_application_settings_services_path, title: 'Service Templates' do
+    = link_to admin_application_settings_services_path, title: '服务模板' do
       = icon('copy fw')
       %span
-        Service Templates
+        服务模板
 
   = nav_link(controller: :labels) do
-    = link_to admin_labels_path, title: 'Labels' do
+    = link_to admin_labels_path, title: '标记' do
       = icon('tags fw')
       %span
-        Labels
+        标记
 
   = nav_link(controller: :abuse_reports) do
-    = link_to admin_abuse_reports_path, title: "Abuse Reports" do
+    = link_to admin_abuse_reports_path, title: "滥用举报" do
       = icon('exclamation-circle fw')
       %span
-        Abuse Reports
+        滥用举报
         %span.count= number_with_delimiter(AbuseReport.count(:all))
 
   - if askimet_enabled?
     = nav_link(controller: :spam_logs) do
-      = link_to admin_spam_logs_path, title: "Spam Logs" do
+      = link_to admin_spam_logs_path, title: "Spam 日志" do
         = icon('exclamation-triangle fw')
         %span
-          Spam Logs
+          Spam 日志
           %span.count= number_with_delimiter(SpamLog.count(:all))
 
   = nav_link(controller: :application_settings, html_options: { class: 'separate-item'}) do
-    = link_to admin_application_settings_path, title: 'Settings' do
+    = link_to admin_application_settings_path, title: '设置' do
       = icon('cogs fw')
       %span
-        Settings
+        设置

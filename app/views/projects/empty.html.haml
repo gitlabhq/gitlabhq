@@ -9,33 +9,33 @@
 
 .row-content-block.second-block.center
   %h3.page-title
-    The repository for this project is empty
+    此项目的版本仓库是空的
   - if can?(current_user, :push_code, @project)
     %p
-      If you already have files you can push them using command line instructions below.
+      如有已有文件请按照下面的命令行指令推送它们。
     %p
-      Otherwise you can start with adding a
+      或者可以从增加
       = link_to "README", new_readme_path, class: 'underlined-link'
-      or a
-      = link_to "LICENSE", add_special_file_path(@project, file_name: 'LICENSE'), class: 'underlined-link'
-      file to this project.
+      或一个
+      = link_to "许可证", add_special_file_path(@project, file_name: 'LICENSE'), class: 'underlined-link'
+      文件开始本项目。
 
 - if can?(current_user, :push_code, @project)
   %div{ class: container_class }
     .prepend-top-20
     .empty_wrapper
       %h3.page-title-empty
-        Command line instructions
+        命令行指令
       %div.git-empty
         %fieldset
-          %h5 Git global setup
+          %h5 Git 全局设置
           %pre.light-well
             :preserve
               git config --global user.name "#{h git_user_name}"
               git config --global user.email "#{h git_user_email}"
 
         %fieldset
-          %h5 Create a new repository
+          %h5 创建新版本库
           %pre.light-well
             :preserve
               git clone #{ content_tag(:span, default_url_to_repo, class: 'clone')}

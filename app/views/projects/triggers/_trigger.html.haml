@@ -4,9 +4,9 @@
 
   %td
     - if trigger.last_trigger_request
-      #{time_ago_in_words(trigger.last_trigger_request.created_at)} ago
+      #{time_ago_in_words(trigger.last_trigger_request.created_at)}之前
     - else
-      Never
+      从未
 
   %td.text-right
-    = link_to 'Revoke', namespace_project_trigger_path(@project.namespace, @project, trigger), data: { confirm: 'Are you sure?'}, method: :delete, class: "btn btn-warning btn-sm"
+    = link_to '撤销', namespace_project_trigger_path(@project.namespace, @project, trigger), data: { confirm: '确定要继续么？'}, method: :delete, class: "btn btn-warning btn-sm"

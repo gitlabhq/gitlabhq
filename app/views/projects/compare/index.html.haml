@@ -1,17 +1,17 @@
-- page_title "Compare"
+- page_title "比较"
 = render "projects/commits/header_title"
 = render "projects/commits/head"
 
 .row-content-block
-  Compare branches, tags or commit ranges.
+  比较分支、标签或提交范围。
   %br
-  Fill input field with commit id like
+  填写诸如
   %code.label-branch 4eedf23
-  or branch/tag name like
+  这样的提交 ID 或
   %code.label-branch master
-  and press compare button for the commits list and a code diff.
+  这种分支/标签名，然后点击比较按钮获取提交列表和代码差异。
   %br
-  Changes are shown <b>from</b> the version in the first field <b>to</b> the version in the second field.
+  显示<b>从</b>第一个版本<b>到</b>第二个版本的差异。
 
 .prepend-top-20
   = render "form"

@@ -1,10 +1,10 @@
 %div
   .login-box
     .login-heading
-      %h3 Two-factor Authentication
+      %h3 两步验证
     .login-body
       = form_for(resource, as: resource_name, url: session_path(resource_name), method: :post) do |f|
-        = f.text_field :otp_attempt, class: 'form-control', placeholder: 'Two-factor Authentication code', required: true, autofocus: true
-        %p.help-block.hint Enter the code from the two-factor app on your mobile device. If you've lost your device, you may enter one of your recovery codes.
+        = f.text_field :otp_attempt, class: 'form-control', placeholder: '两步验证代码', required: true, autofocus: true
+        %p.help-block.hint 如果丢失了手机，可以输入恢复代码。
         .prepend-top-20
-          = f.submit "Verify code", class: "btn btn-save"
+          = f.submit "验证代码", class: "btn btn-save"

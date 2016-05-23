@@ -1,67 +1,66 @@
-- page_title "UI Development Kit", "Help"
-- lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed fermentum nisi sapien, non consequat lectus aliquam ultrices. Suspendisse sodales est euismod nunc condimentum, a consectetur diam ornare."
+- page_title "UI 开发包", "帮助"
+- lorem = "《大教堂与市集》（The Cathedral and the Bazaar）是埃里克·斯蒂芬·雷蒙 Eric Steven Raymond 所撰写的软件工程方法论。以 Linux 的核心开发过程以及作者自己主持开发的开放源代码软件──Fetchmail 为讨论案例。文章在 1997 年 5 月 27 日发表，并在 1999 年出版成书。"
 
 .gitlab-ui-dev-kit
-  %h1 GitLab UI development kit
+  %h1 GitLab UI 开发包
   %p.light
-    Use page inspector in your browser to check element classes and structure
-    of examples below.
+    在浏览器中使用页面检查器查看下面例子中的元素样式和结构。
   %hr
   %ul
     %li
-      = link_to 'Blocks', '#blocks'
+      = link_to '区块', '#blocks'
     %li
-      = link_to 'Lists', '#lists'
+      = link_to '列表', '#lists'
     %li
-      = link_to 'Tables', '#tables'
+      = link_to '表格', '#tables'
     %li
-      = link_to 'Nav', '#nav'
+      = link_to '导航', '#nav'
     %li
-      = link_to 'Buttons', '#buttons'
+      = link_to '按钮', '#buttons'
     %li
-      = link_to 'Dropdowns', '#dropdowns'
+      = link_to '下拉', '#dropdowns'
     %li
-      = link_to 'Panels', '#panels'
+      = link_to '面板', '#panels'
     %li
-      = link_to 'Alerts', '#alerts'
+      = link_to '警告', '#alerts'
     %li
-      = link_to 'Forms', '#forms'
+      = link_to '表单', '#forms'
     %li
-      = link_to 'Files', '#file'
+      = link_to '文件', '#file'
     %li
       = link_to 'Markdown', '#markdown'
 
-  %h2#blocks Blocks
+  %h2#blocks 区块
 
   .lead
-    Content block separated with botton border
+    使用底边框分隔的内容区块
     %code .content-block
 
   .example
     .content-block
-      %h4 Normal block inside content
+      %h4 包含内容的普通区块
       = lorem
 
     .content-block
-      %h4 Second block
+      %h4 第二个区块
       = lorem
 
   .lead
-    Gray content block with side padding using
+    使用边填充的灰底内容区块
     %code .row-content-block
 
   .example
     .row-content-block
-      %h4 Normal block inside content
+      %h4 包含内容的普通区块
       = lorem
 
     .row-content-block.second-block
-      %h4 Second block
+      %h4 第二个区块
       = lorem
 
 
   .lead
-    Cover block for profile page with avatar, name and description
+    带有头像、名称和描述的资料页封面区块
     %code .cover-block
   .example
     .cover-block

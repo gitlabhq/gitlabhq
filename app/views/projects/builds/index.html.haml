@@ -1,63 +1,63 @@
-- page_title "Builds"
+- page_title "构建"
 = render "header_title"
 
 .top-area
   %ul.nav-links
     %li{class: ('active' if @scope.nil?)}
       = link_to project_builds_path(@project) do
-        All
+        全部
         %span.badge.js-totalbuilds-count
           = number_with_delimiter(@all_builds.count(:id))
 
 
     %li{class: ('active' if @scope == 'running')}
       = link_to project_builds_path(@project, scope: :running) do
-        Running
+        正在运行
         %span.badge.js-running-count
           = number_with_delimiter(@all_builds.running_or_pending.count(:id))
 
     %li{class: ('active' if @scope == 'finished')}
       = link_to project_builds_path(@project, scope: :finished) do
-        Finished
+        已结束
         %span.badge.js-running-count
           = number_with_delimiter(@all_builds.finished.count(:id))
 
   .nav-controls
     - if can?(current_user, :update_build, @project)
       - if @all_builds.running_or_pending.any?
-        = link_to 'Cancel running', cancel_all_namespace_project_builds_path(@project.namespace, @project),
-          data: { confirm: 'Are you sure?' }, class: 'btn btn-danger', method: :post
+        = link_to '取消运行', cancel_all_namespace_project_builds_path(@project.namespace, @project),
+          data: { confirm: '确定要继续么？' }, class: 'btn btn-danger', method: :post
 
       - unless @repository.gitlab_ci_yml
-        = link_to 'Get started with Builds', help_page_path('ci/quick_start', 'README'), class: 'btn btn-info'
+        = link_to '开始使用构建', help_page_path('ci/quick_start', 'README'), class: 'btn btn-info'
 
       = link_to ci_lint_path, class: 'btn btn-default' do
         = icon('wrench')
         %span CI Lint
 
 .row-content-block
-  #{(@scope || 'all').capitalize} builds from this project
+  列出本项目 #{(@scope || '全部').capitalize} 的构建
 
 %ul.content-list
   - if @builds.blank?
     %li
-      .nothing-here-block No builds to show
+      .nothing-here-block 没有构建
   - else
     .table-holder
       %table.table.builds
         %thead
           %tr
-            %th Status
-            %th Build ID
-            %th Commit
-            %th Ref
-            %th Stage
-            %th Name
-            %th Tags
-            %th Duration
-            %th Finished at
+            %th 状态
+            %th 构建 ID
+            %th 提交
+            %th 参考
+            %th 阶段
+            %th 名称
+            %th 标签
+            %th 运行时间
+            %th 结束时间
             - if @project.build_coverage_enabled?
-              %th Coverage
+              %th 覆盖率
             %th
 
         = render @builds, commit_sha: true, ref: true, stage: true, allow_retry: true, coverage: @project.build_coverage_enabled?

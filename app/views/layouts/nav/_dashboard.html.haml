@@ -1,55 +1,55 @@
 %ul.nav.nav-sidebar
   = nav_link(path: ['root#index', 'projects#trending', 'projects#starred', 'dashboard/projects#index'], html_options: {class: 'home'}) do
-    = link_to dashboard_projects_path, title: 'Projects' do
+    = link_to dashboard_projects_path, title: '项目' do
       = icon('bookmark fw')
       %span
-        Projects
+        项目
   = nav_link(controller: :todos) do
-    = link_to dashboard_todos_path, title: 'Todos' do
+    = link_to dashboard_todos_path, title: '待办事项' do
       = icon('bell fw')
       %span
-        Todos
+        待办事项
         %span.count.todos-pending-count= number_with_delimiter(todos_pending_count)
   = nav_link(path: 'dashboard#activity') do
-    = link_to activity_dashboard_path, class: 'shortcuts-activity', title: 'Activity' do
+    = link_to activity_dashboard_path, class: 'shortcuts-activity', title: '活动' do
       = icon('dashboard fw')
       %span
-        Activity
+        活动
   = nav_link(controller: [:groups, 'groups/milestones', 'groups/group_members']) do
-    = link_to dashboard_groups_path, title: 'Groups' do
+    = link_to dashboard_groups_path, title: '群组' do
       = icon('group fw')
       %span
-        Groups
+        群组
   = nav_link(controller: 'dashboard/milestones') do
-    = link_to dashboard_milestones_path, title: 'Milestones' do
+    = link_to dashboard_milestones_path, title: '里程碑' do
       = icon('clock-o fw')
       %span
-        Milestones
+        里程碑
   = nav_link(path: 'dashboard#issues') do
-    = link_to assigned_issues_dashboard_path, title: 'Issues', class: 'shortcuts-issues' do
+    = link_to assigned_issues_dashboard_path, title: '问题', class: 'shortcuts-issues' do
       = icon('exclamation-circle fw')
       %span
-        Issues
+        问题
         %span.count= number_with_delimiter(current_user.assigned_issues.opened.count)
   = nav_link(path: 'dashboard#merge_requests') do
-    = link_to assigned_mrs_dashboard_path, title: 'Merge Requests', class: 'shortcuts-merge_requests' do
+    = link_to assigned_mrs_dashboard_path, title: '合并请求', class: 'shortcuts-merge_requests' do
       = icon('tasks fw')
       %span
-        Merge Requests
+        合并请求
         %span.count= number_with_delimiter(current_user.assigned_merge_requests.opened.count)
   = nav_link(controller: :snippets) do
-    = link_to dashboard_snippets_path, title: 'Snippets' do
+    = link_to dashboard_snippets_path, title: '代码片段' do
       = icon('clipboard fw')
       %span
-        Snippets
+        代码片段
   = nav_link(controller: :help) do
-    = link_to help_path, title: 'Help' do
+    = link_to help_path, title: '帮助' do
       = icon('question-circle fw')
       %span
-        Help
+        帮助
 
   = nav_link(html_options: {class: profile_tab_class}) do
-    = link_to profile_path, title: 'Profile Settings', data: {placement: 'bottom'} do
+    = link_to profile_path, title: '个人资料设置', data: {placement: 'bottom'} do
       = icon('user fw')
       %span
-        Profile Settings
+        个人资料设置
