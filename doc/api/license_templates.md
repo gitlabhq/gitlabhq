@@ -1,4 +1,4 @@
-# Licenses
+# License Templates
 
 ## List license templates
 
