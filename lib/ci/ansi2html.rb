@@ -98,7 +98,7 @@ module Ci
         open_new_tag
 
         s = StringScanner.new(ansi)
-        while(!s.eos?)
+        until s.eos?
           if s.scan(/\e([@-_])(.*?)([@-~])/)
             handle_sequence(s)
           elsif s.scan(/\e(([@-_])(.*?)?)?$/)
