@@ -1,5 +1,11 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+v 8.8.1
+  - Add documentation for the "Health Check" feature
+  - Allow anonymous users to access a public project's pipelines
+  - Fix MySQL compatibility in zero downtime migrations helpers
+  - Fix the CI login to Container Registry (the gitlab-ci-token user)
+
 v 8.8.0
   - Implement GFM references for milestones (Alejandro Rodríguez)
   - Snippets tab under user profile. !4001 (Long Nguyen)
