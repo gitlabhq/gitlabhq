@@ -24,6 +24,12 @@ describe "Pipelines" do
       end
     end
 
+    context 'anonymous access' do
+      before { visit namespace_project_pipelines_path(project.namespace, project) }
+
+      it { expect(page).to have_http_status(:success) }
+    end
+
     context 'cancelable pipeline' do
       let!(:running) { create(:ci_build, :running, commit: pipeline, stage: 'test', commands: 'test') }
 
