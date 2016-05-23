@@ -293,9 +293,9 @@ group :development, :test do
   gem 'spring-commands-spinach',  '~> 1.1.0'
   gem 'spring-commands-teaspoon', '~> 0.0.2'
 
-  gem 'rubocop', '~> 0.38.0', require: false
+  gem 'rubocop', '~> 0.40.0', require: false
   gem 'scss_lint', '~> 0.47.0', require: false
-  gem 'coveralls',  '~> 0.8.2', require: false
+  gem 'coveralls', '~> 0.8.2', require: false
   gem 'simplecov', '~> 0.11.0', require: false
   gem 'flog', require: false
   gem 'flay', require: false
