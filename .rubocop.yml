@@ -957,10 +957,9 @@ Performance/EndWith:
 Performance/LstripRstrip:
   Enabled: true
 
-# TODO: Enable RangeInclude Cop.
 # Use `Range#cover?` instead of `Range#include?`.
 Performance/RangeInclude:
-  Enabled: false
+  Enabled: true
 
 # TODO: Enable RedundantBlockCall Cop.
 # Use `yield` instead of `block.call`.
