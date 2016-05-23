@@ -41,9 +41,7 @@ module SharedProjectTab
   end
 
   step 'the active main tab should be Settings' do
-    page.within '.nav-sidebar' do
-      expect(page).to have_content('Go to project')
-    end
+    expect(page).to have_selector('.layout-nav .nav-links > li.active', count: 0)
   end
 
   step 'the active main tab should be Activity' do

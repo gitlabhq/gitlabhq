@@ -24,8 +24,8 @@
   background-color: $background-color;
   padding: $gl-padding;
   margin-bottom: 0;
-  border-top: 1px solid $border-color;
-  border-bottom: 1px solid $border-color;
+  border-top: 1px solid $white-dark;
+  border-bottom: 1px solid $white-dark;
   color: $gl-gray;
 
   &.oneline-block {
@@ -110,9 +110,9 @@
   .cover-title {
     color: $gl-header-color;
     margin: 0;
-    font-size: 23px;
+    font-size: 24px;
     font-weight: normal;
-    margin: 16px 0 5px;
+    margin-bottom: 5px;
     color: #4c4e54;
     font-size: 23px;
     line-height: 1.1;
@@ -137,7 +137,6 @@
   }
 
   .cover-desc {
-    padding: 0 $gl-padding 3px;
     color: $gl-text-color;
 
     &.username:last-child {
@@ -205,7 +204,7 @@
 
 .content-block {
   padding: $gl-padding 0;
-  border-bottom: 1px solid $border-color;
+  border-bottom: 1px solid $white-dark;
 
   &.oneline-block {
     line-height: 36px;

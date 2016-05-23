@@ -12,7 +12,7 @@ feature 'Master updates tag', feature: true do
 
   context 'from the tags list page' do
     scenario 'updates the release notes' do
-      page.within(first('.controls')) do
+      page.within(first('.content-list .controls')) do
         click_link 'Edit release notes'
       end
 
