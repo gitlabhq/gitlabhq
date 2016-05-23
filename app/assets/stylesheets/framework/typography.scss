@@ -269,3 +269,11 @@ h1, h2, h3, h4 {
     text-align: right;
   }
 }
+
+.idiff.deletion {
+  background: $line-removed-dark;
+}
+
+.idiff.addition {
+  background: $line-added-dark;
+}

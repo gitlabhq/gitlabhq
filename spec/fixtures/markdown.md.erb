@@ -216,10 +216,14 @@ References should be parseable even inside _<%= merge_request.to_reference %>_ e
 
 #### MilestoneReferenceFilter
 
-- Milestone: <%= milestone.to_reference %>
+- Milestone by ID: <%= simple_milestone.to_reference %>
+- Milestone by name: <%= Milestone.reference_prefix %><%= simple_milestone.name %>
+- Milestone by name in quotes: <%= milestone.to_reference(format: :name) %>
 - Milestone in another project: <%= xmilestone.to_reference(project) %>
-- Ignored in code: `<%= milestone.to_reference %>`
-- Link to milestone by URL: [Milestone](<%= urls.namespace_project_milestone_url(milestone.project.namespace, milestone.project, milestone) %>)
+- Ignored in code: `<%= simple_milestone.to_reference %>`
+- Ignored in links: [Link to <%= simple_milestone.to_reference %>](#milestone-link)
+- Milestone by URL: <%= urls.namespace_project_milestone_url(milestone.project.namespace, milestone.project, milestone) %>
+- Link to milestone by URL: [Milestone](<%= milestone.to_reference %>)
 
 ### Task Lists
 
@@ -239,3 +243,16 @@ References should be parseable even inside _<%= merge_request.to_reference %>_ e
 - [[link-text|http://example.com/pdfs/gollum.pdf]]
 - [[images/example.jpg]]
 - [[http://example.com/images/example.jpg]]
+
+### Inline Diffs
+
+With inline diffs tags you can display {+ additions +} or [- deletions -].
+
+The wrapping tags can be either curly braces or square brackets [+ additions +] or {- deletions -}.
+
+However the wrapping tags can not be mixed as such -
+
+- {+ additions +]
+- [+ additions +}
+- {- delletions -]
+- [- delletions -}

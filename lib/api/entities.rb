@@ -66,7 +66,8 @@ module API
       expose :owner, using: Entities::UserBasic, unless: ->(project, options) { project.group }
       expose :name, :name_with_namespace
       expose :path, :path_with_namespace
-      expose :issues_enabled, :merge_requests_enabled, :wiki_enabled, :builds_enabled, :snippets_enabled, :created_at, :last_activity_at
+      expose :issues_enabled, :merge_requests_enabled, :wiki_enabled, :builds_enabled, :snippets_enabled, :container_registry_enabled
+      expose :created_at, :last_activity_at
       expose :shared_runners_enabled
       expose :creator_id
       expose :namespace
@@ -407,6 +408,7 @@ module API
 
     class RunnerDetails < Runner
       expose :tag_list
+      expose :run_untagged
       expose :version, :revision, :platform, :architecture
       expose :contacted_at
       expose :token, if: lambda { |runner, options| options[:current_user].is_admin? || !runner.is_shared? }
@@ -454,6 +456,14 @@ module API
       expose(:permissions) { |license| license.meta['permissions'] }
       expose(:limitations) { |license| license.meta['limitations'] }
       expose :content
+    end
+
+    class GitignoresList < Grape::Entity
+      expose :name
+    end
+
+    class Gitignore < Grape::Entity
+      expose :name, :content
     end
   end
 end

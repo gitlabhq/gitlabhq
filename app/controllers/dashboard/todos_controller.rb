@@ -12,7 +12,7 @@ class Dashboard::TodosController < Dashboard::ApplicationController
 
     respond_to do |format|
       format.html { redirect_to dashboard_todos_path, notice: todo_notice }
-      format.js { render nothing: true }
+      format.js { head :ok }
       format.json do
         render json: { count: @todos.size, done_count: current_user.todos.done.count }
       end
@@ -24,7 +24,7 @@ class Dashboard::TodosController < Dashboard::ApplicationController
 
     respond_to do |format|
       format.html { redirect_to dashboard_todos_path, notice: 'All todos were marked as done.' }
-      format.js { render nothing: true }
+      format.js { head :ok }
       format.json do
         find_todos
         render json: { count: @todos.size, done_count: current_user.todos.done.count }

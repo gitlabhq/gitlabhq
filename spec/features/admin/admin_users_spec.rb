@@ -210,6 +210,8 @@ describe "Admin::Users", feature: true  do
       before do
         fill_in "user_name", with: "Big Bang"
         fill_in "user_email", with: "bigbang@mail.com"
+        fill_in "user_password", with: "AValidPassword1"
+        fill_in "user_password_confirmation", with: "AValidPassword1"
         check "user_admin"
         click_button "Save changes"
       end
@@ -223,6 +225,7 @@ describe "Admin::Users", feature: true  do
         @simple_user.reload
         expect(@simple_user.name).to eq('Big Bang')
         expect(@simple_user.is_admin?).to be_truthy
+        expect(@simple_user.password_expires_at).to be <= Time.now
       end
     end
   end

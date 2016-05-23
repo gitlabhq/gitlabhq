@@ -80,6 +80,30 @@ class TodoService
     mark_pending_todos_as_done(merge_request, current_user)
   end
 
+  # When a build fails on the HEAD of a merge request we should:
+  #
+  #  * create a todo for that user to fix it
+  #
+  def merge_request_build_failed(merge_request)
+    create_build_failed_todo(merge_request)
+  end
+
+  # When a new commit is pushed to a merge request we should:
+  #
+  #  * mark all pending todos related to the merge request for that user as done
+  #
+  def merge_request_push(merge_request, current_user)
+    mark_pending_todos_as_done(merge_request, current_user)
+  end
+
+  # When a build is retried to a merge request we should:
+  #
+  #  * mark all pending todos related to the merge request for the author as done
+  #
+  def merge_request_build_retried(merge_request)
+    mark_pending_todos_as_done(merge_request, merge_request.author)
+  end
+
   # When create a note we should:
   #
   #  * mark all pending todos related to the noteable for the note author as done
@@ -143,6 +167,12 @@ class TodoService
     mentioned_users = filter_mentioned_users(project, note || target, author)
     attributes = attributes_for_todo(project, target, author, Todo::MENTIONED, note)
     create_todos(mentioned_users, attributes)
+  end
+
+  def create_build_failed_todo(merge_request)
+    author = merge_request.author
+    attributes = attributes_for_todo(merge_request.project, merge_request, author, Todo::BUILD_FAILED)
+    create_todos(author, attributes)
   end
 
   def attributes_for_target(target)

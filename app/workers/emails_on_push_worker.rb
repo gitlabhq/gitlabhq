@@ -27,15 +27,18 @@ class EmailsOnPushWorker
         :push
       end
 
+    diff_refs = nil
     compare = nil
     reverse_compare = false
     if action == :push
       compare = Gitlab::Git::Compare.new(project.repository.raw_repository, before_sha, after_sha)
+      diff_refs = [project.merge_base_commit(before_sha, after_sha), project.commit(after_sha)]
 
       return false if compare.same
 
       if compare.commits.empty?
         compare = Gitlab::Git::Compare.new(project.repository.raw_repository, after_sha, before_sha)
+        diff_refs = [project.merge_base_commit(after_sha, before_sha), project.commit(before_sha)]
 
         reverse_compare = true
 
@@ -48,13 +51,14 @@ class EmailsOnPushWorker
         send_email(
           recipient,
           project_id,
-          author_id:                  author_id,
-          ref:                        ref,
-          action:                     action,
-          compare:                    compare,
-          reverse_compare:            reverse_compare,
-          send_from_committer_email:  send_from_committer_email,
-          disable_diffs:              disable_diffs
+          author_id:                 author_id,
+          ref:                       ref,
+          action:                    action,
+          compare:                   compare,
+          reverse_compare:           reverse_compare,
+          diff_refs:                 diff_refs,
+          send_from_committer_email: send_from_committer_email,
+          disable_diffs:             disable_diffs
         )
 
       # These are input errors and won't be corrected even if Sidekiq retries

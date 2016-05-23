@@ -7,7 +7,7 @@ class ApplicationSetting < ActiveRecord::Base
 
   serialize :restricted_visibility_levels
   serialize :import_sources
-  serialize :disabled_oauth_sign_in_sources
+  serialize :disabled_oauth_sign_in_sources, Array
   serialize :restricted_signup_domains, Array
   attr_accessor :restricted_signup_domains_raw
 
@@ -120,7 +120,8 @@ class ApplicationSetting < ActiveRecord::Base
       recaptcha_enabled: false,
       akismet_enabled: false,
       repository_checks_enabled: true,
-      disabled_oauth_sign_in_sources: []
+      disabled_oauth_sign_in_sources: [],
+      send_user_confirmation_email: false
     )
   end
 

@@ -87,10 +87,16 @@
             - if can?(current_user, :"admin_#{issuable.to_ability_name}", @project)
               = link_to 'Edit', '#', class: 'edit-link pull-right'
           .value.bold.hide-collapsed
-            - if issuable.due_date
-              = issuable.due_date.to_s(:medium)
-            - else
-              .light None
+            %span.value-content
+              - if issuable.due_date
+                = issuable.due_date.to_s(:medium)
+              - else
+                None
+            - if can?(current_user, :"admin_#{issuable.to_ability_name}", @project)
+              %span.light.js-remove-due-date-holder{ class: ("hidden" if issuable.due_date.nil?) }
+                \-
+                %a.js-remove-due-date{ href: "#", role: "button" }
+                  remove due date
           - if can?(current_user, :"admin_#{issuable.to_ability_name}", @project)
             .selectbox.hide-collapsed
               = f.hidden_field :due_date, value: issuable.due_date

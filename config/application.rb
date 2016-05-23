@@ -26,6 +26,8 @@ module Gitlab
                                      #{config.root}/app/models/members
                                      #{config.root}/app/models/project_services))
 
+    config.generators.templates.push("#{config.root}/generator_templates")
+
     # Only load the plugins named here, in the order given (default is alphabetical).
     # :all can be used as a placeholder for all plugins not explicitly named.
     # config.plugins = [ :exception_notification, :ssl_requirement, :all ]
@@ -39,7 +41,7 @@ module Gitlab
     config.encoding = "utf-8"
 
     # Configure sensitive parameters which will be filtered from the log file.
-    # 
+    #
     # Parameters filtered:
     # - Password (:password, :password_confirmation)
     # - Private tokens (:private_token)
@@ -78,6 +80,7 @@ module Gitlab
     config.assets.precompile << "*.png"
     config.assets.precompile << "print.css"
     config.assets.precompile << "notify.css"
+    config.assets.precompile << "mailers/repository_push_email.css"
 
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
