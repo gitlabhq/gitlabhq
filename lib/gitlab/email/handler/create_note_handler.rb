@@ -6,7 +6,8 @@ module Gitlab
     module Handler
       class CreateNoteHandler < BaseHandler
         def can_handle?
-          !!(mail_key && sent_notification)
+          # We want to raise SentNotificationNotFoundError for missing key
+          !!(mail_key.nil? || mail_key =~ /\A\w+\z/)
         end
 
         def execute

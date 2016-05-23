@@ -30,6 +30,14 @@ describe Gitlab::Email::Receiver, lib: true do
     )
   end
 
+  context "when we cannot find a capable handler" do
+    let(:email_raw) { fixture_file('emails/valid_reply.eml').gsub(mail_key, "!!!") }
+
+    it "raises a UnknownIncomingEmail" do
+      expect { receiver.execute }.to raise_error(Gitlab::Email::UnknownIncomingEmail)
+    end
+  end
+
   context "when the recipient address doesn't include a mail key" do
     let(:email_raw) { fixture_file('emails/valid_reply.eml').gsub(mail_key, "") }
 

@@ -14,10 +14,11 @@ module Gitlab
         end
 
         def can_handle?
-          !!(project_namespace && project)
+          !!authentication_token
         end
 
         def execute
+          raise ProjectNotFound unless project
           validate_permission!(:create_issue)
 
           verify_record!(

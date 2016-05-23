@@ -24,6 +24,8 @@ class EmailReceiverWorker
     reason = nil
 
     case e
+    when Gitlab::Email::UnknownIncomingEmail
+      reason = "We couldn't figure out what the email is for."
     when Gitlab::Email::SentNotificationNotFoundError
       reason = "We couldn't figure out what the email is in reply to. Please create your comment through the web interface."
     when Gitlab::Email::ProjectNotFound

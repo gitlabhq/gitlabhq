@@ -16,6 +16,7 @@ module Gitlab
     class NoteableNotFoundError < ProcessingError; end
     class InvalidNoteError < ProcessingError; end
     class InvalidIssueError < ProcessingError; end
+    class UnknownIncomingEmail < ProcessingError; end
 
     class Receiver
       def initialize(raw)
@@ -30,11 +31,8 @@ module Gitlab
 
         if handler = Handler.for(mail, mail_key)
           handler.execute
-        elsif mail_key =~ %r{/|\+}
-          # Sent Notification mail_key would not have / or +
-          raise ProjectNotFound
         else
-          raise SentNotificationNotFoundError
+          raise UnknownIncomingEmail
         end
       end
 
