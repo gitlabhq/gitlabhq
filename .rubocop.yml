@@ -152,7 +152,7 @@ Style/ConstantName:
 
 # Use def with parentheses when there are arguments.
 Style/DefWithParentheses:
-  Enabled: false
+  Enabled: true
 
 # Checks for use of deprecated Hash methods.
 Style/DeprecatedHashMethods:
