@@ -985,11 +985,10 @@ Performance/RedundantMerge:
 Performance/RedundantSortBy:
   Enabled: false
 
-# TODO: Enable StartWith Cop.
 # Use `start_with?` instead of a regex match anchored to the beginning of a
 # string.
 Performance/StartWith:
-  Enabled: false
+  Enabled: true
 
 # Use `tr` instead of `gsub` when you are replacing the same number of
 # characters. Use `delete` instead of `gsub` when you are deleting
