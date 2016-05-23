@@ -20,7 +20,9 @@ class @AwardsHandler
       .off "click", ".js-emoji-btn"
       .on "click", ".js-emoji-btn", @handleClick
 
+
   handleClick: (e) =>
+
     e.preventDefault()
     $emojiBtn = $(e.currentTarget)
     $addAwardBtn = $('.js-add-award.is-active')
@@ -31,14 +33,14 @@ class @AwardsHandler
     else if $votesBlock.length is 0
       $votesBlock = $addAwardBtn.closest('.js-awards-block')
 
-    $votesBlock.addClass 'js-awards-block-current'
+    $votesBlock.addClass 'js-awards-block'
     awardUrl = $votesBlock.data 'award-url'
-    emoji = $emojiBtn
-      .find(".icon")
-      .data "emoji"
+    emoji = $emojiBtn.find('.icon').data('emoji')
     @addAward awardUrl, emoji
 
+
   showEmojiMenu: ($addBtn) ->
+
     $menu = $('.emoji-menu')
 
     if $menu.length
@@ -55,22 +57,28 @@ class @AwardsHandler
         $menu.addClass "is-visible"
         $("#emoji_search").focus()
     else
-      $addBtn.addClass "is-loading is-active"
-      $.get $addBtn.data('award-menu-url'), (response) =>
-        $addBtn.removeClass "is-loading"
-        $('body').append response
+      $addBtn.addClass 'is-loading is-active'
+      url = $addBtn.data 'award-menu-url'
 
-        $menu = $(".emoji-menu")
-
+      @createEmojiMenu url, =>
+        $addBtn.removeClass 'is-loading'
+        $menu = $('.emoji-menu')
         @positionMenu($menu, $addBtn)
-
         @renderFrequentlyUsedBlock()
 
         setTimeout =>
-          $menu.addClass "is-visible"
-          $("#emoji_search").focus()
+          $menu.addClass 'is-visible'
+          $('#emoji_search').focus()
           @setupSearch()
         , 200
+
+
+  createEmojiMenu: (awardMenuUrl, callback) ->
+
+    $.get awardMenuUrl, (response) =>
+      $('body').append response
+      callback()
+
 
   positionMenu: ($menu, $addBtn) ->
     position = $addBtn.data('position')
@@ -170,8 +178,9 @@ class @AwardsHandler
     ), 200
 
 
-  createEmoji: (emoji) ->
-    emojiCssClass = @resolveNameToCssClass(emoji)
+  createEmoji_: (emoji) ->
+
+    emojiCssClass = @resolveNameToCssClass emoji
 
     buttonHtml = "<button class='btn award-control js-emoji-btn has-tooltip active' title='me' data-placement='bottom'>
       <div class='icon emoji-icon #{emojiCssClass}' data-emoji='#{emoji}'></div>
@@ -179,16 +188,28 @@ class @AwardsHandler
     </button>"
 
     emoji_node = $(buttonHtml)
-      .insertBefore(".js-awards-block-current .js-award-holder:not(.js-award-action-btn)")
-      .find(".emoji-icon")
-      .data("emoji", emoji)
+      .insertBefore '.js-awards-block .js-award-holder:not(.js-award-action-btn)'
+      .find '.emoji-icon'
+      .data 'emoji', emoji
+
     $('.award-control').tooltip()
 
-    $currentBlock = $('.js-awards-block-current')
-    if $currentBlock.is('.hidden')
+    $currentBlock = $ '.js-awards-block'
+
+    if $currentBlock.is '.hidden'
       $currentBlock.removeClass 'hidden'
 
+
+  createEmoji: (emoji) ->
+
+    return @createEmoji_ emoji if $('.emoji-menu').length
+
+    awardMenuUrl = $('[data-award-menu-url]').data 'award-menu-url'
+    @createEmojiMenu awardMenuUrl, => @createEmoji emoji
+
+
   resolveNameToCssClass: (emoji) ->
+
     emoji_icon = $(".emoji-menu-content [data-emoji='#{emoji}']")
 
     if emoji_icon.length > 0
@@ -197,7 +218,8 @@ class @AwardsHandler
       # Find by alias
       unicodeName = $(".emoji-menu-content [data-aliases*=':#{emoji}:']").data("unicode-name")
 
-    "emoji-#{unicodeName}"
+    return "emoji-#{unicodeName}"
+
 
   postEmoji: (awardUrl, emoji, callback) ->
     $.post awardUrl, { name: emoji }, (data) ->
@@ -205,7 +227,7 @@ class @AwardsHandler
         callback.call()
 
   findEmojiIcon: (emoji) ->
-    $(".js-awards-block-current.awards > .js-emoji-btn [data-emoji='#{emoji}']")
+    $(".js-awards-block.awards > .js-emoji-btn [data-emoji='#{emoji}']")
 
   scrollToAwards: ->
     $('body, html').animate({
