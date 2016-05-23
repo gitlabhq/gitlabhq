@@ -1,3 +1,5 @@
+require: rubocop-rspec
+
 AllCops:
   TargetRubyVersion: 2.1
   # Cop names are not displayed in offense messages by default. Change behavior
@@ -1070,4 +1072,66 @@ Rails/TimeZone:
 
 # Use validates :attribute, hash of validations.
 Rails/Validation:
+  Enabled: false
+
+##################### RSpec ##################################
+
+# Check that instances are not being stubbed globally.
+RSpec/AnyInstance:
+  Enabled: false
+
+# Check that the first argument to the top level describe is the tested class or
+# module.
+RSpec/DescribeClass:
+  Enabled: false
+
+# Use `described_class` for tested class / module.
+RSpec/DescribeMethod:
+  Enabled: false
+
+# Checks that the second argument to top level describe is the tested method
+# name.
+RSpec/DescribedClass:
+  Enabled: false
+
+# Checks for long example.
+RSpec/ExampleLength:
+  Enabled: false
+  Max: 5
+
+# Do not use should when describing your tests.
+RSpec/ExampleWording:
+  Enabled: false
+  CustomTransform:
+    be: is
+    have: has
+    not: does not
+  IgnoredWords: []
+
+# Checks the file and folder naming of the spec file.
+RSpec/FilePath:
+  Enabled: false
+  CustomTransform:
+    RuboCop: rubocop
+    RSpec: rspec
+
+# Checks if there are focused specs.
+RSpec/Focus:
+  Enabled: true
+
+# Checks for the usage of instance variables.
+RSpec/InstanceVariable:
+  Enabled: false
+
+# Checks for multiple top-level describes.
+RSpec/MultipleDescribes:
+  Enabled: false
+
+# Enforces the usage of the same method on all negative message expectations.
+RSpec/NotToNot:
+  EnforcedStyle: not_to
+  Enabled: false
+
+# Prefer using verifying doubles over normal doubles.
+RSpec/VerifiedDoubles:
   Enabled: false
