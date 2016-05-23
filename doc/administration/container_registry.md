@@ -31,15 +31,9 @@ You can read more about Docker Registry at https://docs.docker.com/registry/intr
 
 **Omnibus GitLab installations**
 
-1. Open `/etc/gitlab/gitlab.rb` and edit or add the following line:
-
-    ```ruby
-    gitlab_rails['registry_enabled'] = true
-    ```
-
-1. The next step is to configure the domain name under which the Container
-   Registry will listen to. Read [#container-registry-domain-configuration](#container-registry-domain-configuration)
-   and pick one of the two options that fits your case.
+All you have to do is configure the domain name under which the Container
+Registry will listen to. Read [#container-registry-domain-configuration](#container-registry-domain-configuration)
+and pick one of the two options that fits your case.
 
 >**Note:**
 The container Registry works under HTTPS by default. Using HTTP is possible
@@ -124,15 +118,11 @@ GitLab from source respectively.
    path to the existing TLS certificate and key used by GitLab:
 
     ```ruby
-    gitlab_rails['registry_host'] = "gitlab.example.com"
-    gitlab_rails['registry_port'] = "4567"
-
-    # The following setting is needed for NGINX
     registry_external_url 'https://gitlab.example.com:4567'
     ```
 
-    Note how the `registry_external_url` is listening on HTTPS and is a
-    conjunction of `registry_host` and `registry_port`.
+    Note how the `registry_external_url` is listening on HTTPS under the
+    existing GitLab URL, but on a different port.
 
     If your TLS certificate is not in `/etc/gitlab/ssl/gitlab.example.com.crt`
     and key not in `/etc/gitlab/ssl/gitlab.example.com.key` uncomment the lines
@@ -197,11 +187,10 @@ Let's assume that you want the container Registry to be accessible at
 1. Once the TLS certificate is in place, edit `/etc/gitlab/gitlab.rb` with:
 
     ```ruby
-    gitlab_rails['registry_host'] = "registry.gitlab.example.com"
-
-    # The following setting is needed for NGINX
     registry_external_url 'https://registry.gitlab.example.com'
     ```
+
+    Note how the `registry_external_url` is listening on HTTPS.
 
 1. Save the file and [reconfigure GitLab][] for the changes to take effect.
 
@@ -249,12 +238,10 @@ Registry application itself.
 
 **Omnibus GitLab**
 
-1. Open `/etc/gitlab/gitlab.rb` and set `gitlab_rails['registry_enabled']` to
-   `false` and comment out the `registry_external_url`:
+1. Open `/etc/gitlab/gitlab.rb` and set `registry['enable']` to `false`:
 
     ```ruby
-    gitlab_rails['registry_enabled'] = false
-    # registry_external_url 'https://registry.gitlab.example.com'
+    registry['enable'] = false
     ```
 
 1. Save the file and [reconfigure GitLab][] for the changes to take effect.
@@ -326,7 +313,6 @@ This path is accessible to:
 
 - the user running the Container Registry daemon,
 - the user running GitLab
-- and to the user running the Nginx web server.
 
 > **Warning** You should confirm that all GitLab, Registry and web server users
 have access to this directory.
