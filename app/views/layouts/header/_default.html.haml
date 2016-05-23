@@ -1,11 +1,8 @@
 %header.navbar.navbar-fixed-top.navbar-gitlab{ class: nav_header_class }
   %div{ class: fluid_layout ? "container-fluid" : "container-fluid" }
     .header-content
-      %button.side-nav-toggle{type: 'button'}
-        %span.sr-only 切换导航条
-        = icon('bars')
       %button.navbar-toggle{type: 'button'}
-        %span.sr-only Toggle navigation
+        %span.sr-only 切换导航条
         = icon('angle-left')
 
       .navbar-collapse.collapse
