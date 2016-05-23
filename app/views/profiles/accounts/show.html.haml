@@ -34,7 +34,7 @@
       开启两步验证 (2FA) 增加账户安全性。
   .col-lg-9
     %p
-      Status: #{current_user.two_factor_enabled? ? '已启用' : '已禁用'}
+      状态：#{current_user.two_factor_enabled? ? '已启用' : '已禁用'}
     - if !current_user.two_factor_enabled?
       %p
         请从 iOS 的 App Store 或 Android 的 Google Play 下载谷歌身份验证器 (Google Authenticator) 应用，然后扫描下面的二维码。

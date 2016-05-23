@@ -10,4 +10,4 @@
 
   .pull-right
     = form_for [project.namespace.becomes(Namespace), project, setting], remote: true, html: { class: 'update-notifications' } do |f|
-      = f.select :level, NotificationSetting.levels.keys, {}, class: 'form-control trigger-submit'
+      = f.select :level, notification_levels, {}, class: 'form-control trigger-submit'

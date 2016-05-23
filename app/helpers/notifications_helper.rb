@@ -20,6 +20,16 @@ module NotificationsHelper
     icon("#{notification_icon_class(level)} fw", text: text)
   end
 
+  def notification_levels
+    [
+        ['关闭', :disabled],
+        ['参与', :participating],
+        ['关注', :watch],
+        ['全局', :global],
+        ['被提及', :mention]
+    ]
+  end
+
   def notification_title(level)
     case level.to_sym
     when :disabled
