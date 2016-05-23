@@ -543,10 +543,9 @@ Style/SpaceAfterSemicolon:
 Style/SpaceAroundEqualsInParameterDefault:
   Enabled: false
 
-# TODO: Enable SpaceAroundKeyword Cop.
 # Use a space around keywords if appropriate.
 Style/SpaceAroundKeyword:
-  Enabled: false
+  Enabled: true
 
 # Use a single space around operators.
 Style/SpaceAroundOperators:

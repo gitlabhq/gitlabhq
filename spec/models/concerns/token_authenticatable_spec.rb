@@ -49,7 +49,7 @@ describe ApplicationSetting, 'TokenAuthenticatable' do
 
     context 'token is generated' do
       before { subject.send("reset_#{token_field}!") }
-      it 'persists a new token 'do
+      it 'persists a new token' do
         expect(subject.send(:read_attribute, token_field)).to be_a String
       end
     end
