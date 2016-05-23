@@ -57,16 +57,26 @@ prepare:
   script:
     - bundle exec $CI_BUILD_NAME
 
-rspec 0 10: *knapsack
-rspec 1 10: *knapsack
-rspec 2 10: *knapsack
-rspec 3 10: *knapsack
-rspec 4 10: *knapsack
-rspec 5 10: *knapsack
-rspec 6 10: *knapsack
-rspec 7 10: *knapsack
-rspec 8 10: *knapsack
-rspec 9 10: *knapsack
+rspec 0 20: *knapsack
+rspec 1 20: *knapsack
+rspec 2 20: *knapsack
+rspec 3 20: *knapsack
+rspec 4 20: *knapsack
+rspec 5 20: *knapsack
+rspec 6 20: *knapsack
+rspec 7 20: *knapsack
+rspec 8 20: *knapsack
+rspec 9 20: *knapsack
+rspec 10 20: *knapsack
+rspec 11 20: *knapsack
+rspec 12 20: *knapsack
+rspec 13 20: *knapsack
+rspec 14 20: *knapsack
+rspec 15 20: *knapsack
+rspec 16 20: *knapsack
+rspec 17 20: *knapsack
+rspec 18 20: *knapsack
+rspec 19 20: *knapsack
 
 spinach 0 10: *knapsack
 spinach 1 10: *knapsack
