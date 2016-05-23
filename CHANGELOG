@@ -1,13 +1,11 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
-v 8.8.0
-v 8.8.1 (unreleased)
+v 8.8.1
+  - Add documentation for the "Health Check" feature
   - Fix MySQL compatibility in zero downtime migrations helpers
   - Fix the CI login to Container Registry (the gitlab-ci-token user)
-v 8.8.1 (unreleased)
-  - Fix MySQL compatibility in zero downtime migrations helpers
 
-v 8.8.0 (unreleased)
+v 8.8.0
   - Implement GFM references for milestones (Alejandro Rodríguez)
   - Snippets tab under user profile. !4001 (Long Nguyen)
   - Fix error when using link to uploads in global snippets
