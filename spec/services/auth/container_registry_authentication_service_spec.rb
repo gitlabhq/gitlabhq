@@ -127,12 +127,12 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
   context 'project authorization' do
     let(:current_project) { create(:empty_project) }
 
-    context 'disallow to use offline_token' do
+    context 'allow to use offline_token' do
       let(:current_params) do
         { offline_token: true }
       end
 
-      it_behaves_like 'an unauthorized'
+      it_behaves_like 'an authenticated'
     end
 
     context 'allow to pull and push images' do
