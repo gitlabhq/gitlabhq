@@ -1,4 +1,3 @@
-#encoding: utf-8
 module GroupsHelper
   def remove_user_from_group_message(group, member)
     if member.user
