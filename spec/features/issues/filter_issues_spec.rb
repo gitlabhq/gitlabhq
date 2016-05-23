@@ -159,7 +159,7 @@ describe 'Filter issues', feature: true do
     before do
       create(:issue, title: "Bug", project: project)
 
-      create(:label, project: project, title: 'bug')
+      bug_label = create(:label, project: project, title: 'bug')
       milestone = create(:milestone, title: "8", project: project)
 
       issue = create(:issue,
@@ -168,7 +168,7 @@ describe 'Filter issues', feature: true do
         milestone: milestone,
         author: user,
         assignee: user)
-      issue.labels << project.labels.find_by(title: 'bug')
+      issue.labels << bug_label
 
       visit namespace_project_issues_path(project.namespace, project)
     end
@@ -264,12 +264,12 @@ describe 'Filter issues', feature: true do
 
   describe 'filter issues and sort', js: true do
     before do
-      create(:label, project: project, title: 'bug')
+      bug_label = create(:label, project: project, title: 'bug')
       bug_one = create(:issue, title: "Frontend", project: project)
       bug_two = create(:issue, title: "Bug 2", project: project)
 
-      bug_one.labels << project.labels.find_by(title: 'bug')
-      bug_two.labels << project.labels.find_by(title: 'bug')
+      bug_one.labels << bug_label
+      bug_two.labels << bug_label
 
       visit namespace_project_issues_path(project.namespace, project)
     end

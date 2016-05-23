@@ -263,7 +263,8 @@ module ApplicationHelper
       assignee_id: params[:assignee_id],
       author_id: params[:author_id],
       sort: params[:sort],
-      issue_search: params[:issue_search]
+      issue_search: params[:issue_search],
+      label_name: params[:label_name]
     }
 
     options = exist_opts.merge(options)
@@ -276,19 +277,9 @@ module ApplicationHelper
 
     params = options.compact
 
-    path = request.path
+    params.delete(:label_name) unless add_label
 
-    if !params.nil?
-      path << "?#{params.to_param}"
-      if add_label
-        if params[:label_name].present? and params[:label_name].respond_to?('any?')
-          params[:label_name].each do |label|
-            path << "&label_name[]=#{label}"
-          end
-        end
-      end
-    end
-    path
+    "#{request.path}?#{params.to_param}"
   end
 
   def outdated_browser?

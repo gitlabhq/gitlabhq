@@ -1,7 +1,7 @@
 issuable_created = false
 @Issuable =
   init: ->
-    if not issuable_created
+    unless issuable_created
       issuable_created = true
       Issuable.initTemplates()
       Issuable.initSearch()
@@ -28,7 +28,7 @@ issuable_created = false
           $input = $("input[name='#{$search.attr('name')}']", $form)
 
           if $input.length is 0
-            $form.append "<input type='hidden' name='#{$search.attr('name')}' value='#{$search.val()}'/>"
+            $form.append "<input type='hidden' name='#{$search.attr('name')}' value='#{_.escape($search.val())}'/>"
           else
             $input.val $search.val()
 
