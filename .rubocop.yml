@@ -333,6 +333,12 @@ Style/MethodName:
 Style/ModuleFunction:
   Enabled: false
 
+# Checks that the closing brace in an array literal is either on the same line
+# as the last array element, or a new line.
+Style/MultilineArrayBraceLayout:
+  Enabled: false
+  EnforcedStyle: symmetrical
+
 # Avoid multi-line chains of blocks.
 Style/MultilineBlockChain:
   Enabled: false
@@ -341,9 +347,21 @@ Style/MultilineBlockChain:
 Style/MultilineBlockLayout:
   Enabled: true
 
+# Checks that the closing brace in a hash literal is either on the same line as
+# the last hash element, or a new line.
+Style/MultilineHashBraceLayout:
+  Enabled: false
+  EnforcedStyle: symmetrical
+
 # Do not use then for multi-line if/unless.
 Style/MultilineIfThen:
   Enabled: false
+
+# Checks that the closing brace in a method call is either on the same line as
+# the last method argument, or a new line.
+Style/MultilineMethodCallBraceLayout:
+  Enabled: false
+  EnforcedStyle: symmetrical
 
 # Checks indentation of method calls with the dot operator that span more than
 # one line.
