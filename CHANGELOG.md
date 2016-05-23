@@ -10,6 +10,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 
   - Use MergeRequestsClosingIssues cache data on Issue#closed_by_merge_requests method
   - Fix documents and comments on Build API `scope`
+  - Refactor email, use setter method instead AR callbacks for email attribute (Semyon Pupkov)
 
 ## 8.13.1 (unreleased)
   - Fix error in generating labels
