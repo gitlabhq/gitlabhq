@@ -19,6 +19,7 @@ v 8.8.0 (unreleased)
   - Project#open_branches has been cleaned up and no longer loads entire records into memory.
   - Escape HTML in commit titles in system note messages
   - Fix scope used when accessing container registry
+  - Remove extra column from builds
   - Fix creation of Ci::Commit object which can lead to pending, failed in some scenarios
   - Improve multiple branch push performance by memoizing permission checking
   - Log to application.log when an admin starts and stops impersonating a user
