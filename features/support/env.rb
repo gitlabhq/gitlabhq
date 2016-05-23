@@ -21,8 +21,6 @@ require_relative 'rerun'
   require Rails.root.join('spec', 'support', f)
 end
 
-Knapsack::Adapters::CucumberAdapter.bind
-
 Dir["#{Rails.root}/features/steps/shared/*.rb"].each { |file| require file }
 
 WebMock.allow_net_connect!

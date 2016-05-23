@@ -34,7 +34,7 @@ prepare:
   variables:
     USE_DB: "false"
   script:
-    #- bundle exec rake assets:precompile
+    - bundle exec rake assets:precompile
     - echo "{}" > knapsack_rspec_report.json
     - echo "{}" > knapsack_cucumber_report.json
   artifacts:
