@@ -79,7 +79,7 @@ describe Issues::BulkUpdateService, services: true do
       end
     end
 
-    context 'when the new assignee ID is not present', focus: true do
+    context 'when the new assignee ID is not present' do
       let(:assignee_id) { nil }
 
       it 'does not unassign' do

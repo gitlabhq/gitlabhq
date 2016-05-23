@@ -74,6 +74,7 @@ v 8.8.2
   - Fixed issue with enter key selecting wrong option in dropdown. !4210
   - When creating a .gitignore file a dropdown with templates will be provided. !4075
   - Fix concurrent request when updating build log in browser. !4183
+  - Bulk assign/unassign labels to issues.
 
 v 8.8.1
   - Add documentation for the "Health Check" feature
