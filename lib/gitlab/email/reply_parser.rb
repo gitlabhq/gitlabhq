@@ -65,7 +65,7 @@ module Gitlab
                    (l =~ /On \w+ \d+,? \d+,?.*wrote:/)
 
           # Headers on subsequent lines
-          break if (0..2).all? { |off| lines[idx+off] =~ REPLYING_HEADER_REGEX }
+          break if (0..2).all? { |off| lines[idx + off] =~ REPLYING_HEADER_REGEX }
           # Headers on the same line
           break if REPLYING_HEADER_LABELS.count { |label| l.include?(label) } >= 3
 

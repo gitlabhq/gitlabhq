@@ -23,7 +23,8 @@ module Banzai
           Filter::LabelReferenceFilter,
           Filter::MilestoneReferenceFilter,
 
-          Filter::TaskListFilter
+          Filter::TaskListFilter,
+          Filter::InlineDiffFilter
         ]
       end
 

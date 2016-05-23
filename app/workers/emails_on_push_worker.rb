@@ -1,6 +1,8 @@
 class EmailsOnPushWorker
   include Sidekiq::Worker
 
+  attr_reader :email, :skip_premailer
+
   def perform(project_id, recipients, push_data, options = {})
     options.symbolize_keys!
     options.reverse_merge!(
@@ -25,15 +27,18 @@ class EmailsOnPushWorker
         :push
       end
 
+    diff_refs = nil
     compare = nil
     reverse_compare = false
     if action == :push
       compare = Gitlab::Git::Compare.new(project.repository.raw_repository, before_sha, after_sha)
+      diff_refs = [project.merge_base_commit(before_sha, after_sha), project.commit(after_sha)]
 
       return false if compare.same
 
       if compare.commits.empty?
         compare = Gitlab::Git::Compare.new(project.repository.raw_repository, after_sha, before_sha)
+        diff_refs = [project.merge_base_commit(after_sha, before_sha), project.commit(before_sha)]
 
         reverse_compare = true
 
@@ -41,26 +46,42 @@ class EmailsOnPushWorker
       end
     end
 
-    recipients.split(" ").each do |recipient|
+    recipients.split.each do |recipient|
       begin
-        Notify.repository_push_email(
-          project_id,
+        send_email(
           recipient,
-          author_id:                  author_id,
-          ref:                        ref,
-          action:                     action,
-          compare:                    compare,
-          reverse_compare:            reverse_compare,
-          send_from_committer_email:  send_from_committer_email,
-          disable_diffs:              disable_diffs
-        ).deliver_now
+          project_id,
+          author_id:                 author_id,
+          ref:                       ref,
+          action:                    action,
+          compare:                   compare,
+          reverse_compare:           reverse_compare,
+          diff_refs:                 diff_refs,
+          send_from_committer_email: send_from_committer_email,
+          disable_diffs:             disable_diffs
+        )
+
       # These are input errors and won't be corrected even if Sidekiq retries
       rescue Net::SMTPFatalError, Net::SMTPSyntaxError => e
         logger.info("Failed to send e-mail for project '#{project.name_with_namespace}' to #{recipient}: #{e}")
       end
     end
   ensure
+    @email = nil
     compare = nil
     GC.start
+  end
+
+  private
+
+  def send_email(recipient, project_id, options)
+    # Generating the body of this email can be expensive, so only do it once
+    @skip_premailer ||= email.present?
+    @email ||= Notify.repository_push_email(project_id, options)
+
+    email.to = recipient
+    email.add_message_id
+    email.header[:skip_premailer] = true if skip_premailer
+    email.deliver_now
   end
 end

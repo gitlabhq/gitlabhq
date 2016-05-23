@@ -4,9 +4,9 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
   let(:project) { create(:project) }
   let(:repository) { double(id: 1, fork: false) }
   let(:source_repo) { repository }
-  let(:source_branch) { double(ref: 'feature', repo: source_repo) }
+  let(:source_branch) { double(ref: 'feature', repo: source_repo, sha: '2e5d3239642f9161dcbbc4b70a211a68e5e45e2b') }
   let(:target_repo) { repository }
-  let(:target_branch) { double(ref: 'master', repo: target_repo) }
+  let(:target_branch) { double(ref: 'master', repo: target_repo, sha: '8ffb3c15a5475e59ae909384297fede4badcb4c7') }
   let(:octocat) { double(id: 123456, login: 'octocat') }
   let(:created_at) { DateTime.strptime('2011-01-26T19:01:12Z') }
   let(:updated_at) { DateTime.strptime('2011-01-27T19:01:12Z') }
@@ -41,8 +41,10 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
           description: "*Created by: octocat*\n\nPlease pull these awesome changes",
           source_project: project,
           source_branch: 'feature',
+          head_source_sha: '2e5d3239642f9161dcbbc4b70a211a68e5e45e2b',
           target_project: project,
           target_branch: 'master',
+          base_target_sha: '8ffb3c15a5475e59ae909384297fede4badcb4c7',
           state: 'opened',
           milestone: nil,
           author_id: project.creator_id,
@@ -66,8 +68,10 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
           description: "*Created by: octocat*\n\nPlease pull these awesome changes",
           source_project: project,
           source_branch: 'feature',
+          head_source_sha: '2e5d3239642f9161dcbbc4b70a211a68e5e45e2b',
           target_project: project,
           target_branch: 'master',
+          base_target_sha: '8ffb3c15a5475e59ae909384297fede4badcb4c7',
           state: 'closed',
           milestone: nil,
           author_id: project.creator_id,
@@ -91,8 +95,10 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
           description: "*Created by: octocat*\n\nPlease pull these awesome changes",
           source_project: project,
           source_branch: 'feature',
+          head_source_sha: '2e5d3239642f9161dcbbc4b70a211a68e5e45e2b',
           target_project: project,
           target_branch: 'master',
+          base_target_sha: '8ffb3c15a5475e59ae909384297fede4badcb4c7',
           state: 'merged',
           milestone: nil,
           author_id: project.creator_id,
@@ -137,11 +143,11 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
       let(:milestone) { double(number: 45) }
       let(:raw_data) { double(base_data.merge(milestone: milestone)) }
 
-      it 'returns nil when milestone does not exists' do
+      it 'returns nil when milestone does not exist' do
         expect(pull_request.attributes.fetch(:milestone)).to be_nil
       end
 
-      it 'returns milestone when is exists' do
+      it 'returns milestone when it exists' do
         milestone = create(:milestone, project: project, iid: 45)
 
         expect(pull_request.attributes.fetch(:milestone)).to eq milestone
@@ -158,36 +164,16 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
   end
 
   describe '#valid?' do
-    let(:invalid_branch) { double(ref: 'invalid-branch').as_null_object }
+    context 'when source, and target repos are not a fork' do
+      let(:raw_data) { double(base_data) }
 
-    context 'when source, and target repositories are the same' do
-      context 'and source and target branches exists' do
-        let(:raw_data) { double(base_data.merge(head: source_branch, base: target_branch)) }
-
-        it 'returns true' do
-          expect(pull_request.valid?).to eq true
-        end
-      end
-
-      context 'and source branch doesn not exists' do
-        let(:raw_data) { double(base_data.merge(head: invalid_branch, base: target_branch)) }
-
-        it 'returns false' do
-          expect(pull_request.valid?).to eq false
-        end
-      end
-
-      context 'and target branch doesn not exists' do
-        let(:raw_data) { double(base_data.merge(head: source_branch, base: invalid_branch)) }
-
-        it 'returns false' do
-          expect(pull_request.valid?).to eq false
-        end
+      it 'returns true' do
+        expect(pull_request.valid?).to eq true
       end
     end
 
     context 'when source repo is a fork' do
-      let(:source_repo) { double(id: 2, fork: true) }
+      let(:source_repo) { double(id: 2) }
       let(:raw_data) { double(base_data) }
 
       it 'returns false' do
@@ -196,7 +182,7 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
     end
 
     context 'when target repo is a fork' do
-      let(:target_repo) { double(id: 2, fork: true) }
+      let(:target_repo) { double(id: 2) }
       let(:raw_data) { double(base_data) }
 
       it 'returns false' do

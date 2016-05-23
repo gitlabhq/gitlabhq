@@ -59,20 +59,20 @@ module Emails
            subject: subject("Project was moved"))
     end
 
-    def repository_push_email(project_id, recipient, opts = {})
+    def repository_push_email(project_id, opts = {})
       @message =
-        Gitlab::Email::Message::RepositoryPush.new(self, project_id, recipient, opts)
+        Gitlab::Email::Message::RepositoryPush.new(self, project_id, opts)
 
       # used in notify layout
       @target_url = @message.target_url
-      @project = Project.find project_id
+      @project = Project.find(project_id)
+      @diff_notes_disabled = true
 
       add_project_headers
       headers['X-GitLab-Author'] = @message.author_username
 
       mail(from:      sender(@message.author_id, @message.send_from_committer_email?),
            reply_to:  @message.reply_to,
-           to:        @message.recipient,
            subject:   @message.subject)
     end
   end

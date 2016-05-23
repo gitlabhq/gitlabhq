@@ -13,7 +13,7 @@ module GitlabMarkdownHelper
   def link_to_gfm(body, url, html_options = {})
     return "" if body.blank?
 
-    escaped_body = if body =~ /\A\<img/
+    escaped_body = if body.start_with?('<img')
                      body
                    else
                      escape_once(body)

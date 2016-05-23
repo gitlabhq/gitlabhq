@@ -12,6 +12,7 @@ module MergeRequests
       close_merge_requests
       reload_merge_requests
       reset_merge_when_build_succeeds
+      mark_pending_todos_done
 
       # Leave a system note if a branch was deleted/added
       if branch_added? || branch_removed?
@@ -78,6 +79,12 @@ module MergeRequests
 
     def reset_merge_when_build_succeeds
       merge_requests_for_source_branch.each(&:reset_merge_when_build_succeeds)
+    end
+
+    def mark_pending_todos_done
+      merge_requests_for_source_branch.each do |merge_request|
+        todo_service.merge_request_push(merge_request, @current_user)
+      end
     end
 
     def find_new_commits

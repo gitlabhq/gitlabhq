@@ -141,6 +141,7 @@ describe User, models: true do
   end
 
   describe '#confirm' do
+    before { allow(current_application_settings).to receive(:send_user_confirmation_email).and_return(true) }
     let(:user) { create(:user, confirmed_at: nil, unconfirmed_email: 'test@gitlab.com') }
 
     it 'returns unconfirmed' do
@@ -781,5 +782,24 @@ describe User, models: true do
     subject { user.authorized_projects }
 
     it { is_expected.to eq([private_project]) }
+  end
+
+  describe '#viewable_starred_projects' do
+    let(:user) { create(:user) }
+    let(:public_project) { create(:empty_project, :public) }
+    let(:private_project) { create(:empty_project, :private) }
+    let(:private_viewable_project) { create(:empty_project, :private) }
+
+    before do
+      private_viewable_project.team << [user, Gitlab::Access::MASTER]
+
+      [public_project, private_project, private_viewable_project].each do |project|
+        user.toggle_star(project)
+      end
+    end
+
+    it 'returns only starred projects the user can view' do
+      expect(user.viewable_starred_projects).not_to include(private_project)
+    end
   end
 end

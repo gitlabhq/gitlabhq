@@ -13,6 +13,19 @@ You can configure webhooks to listen for specific events like pushes, issues or 
 
 Webhooks can be used to update an external issue tracker, trigger CI builds, update a backup mirror, or even deploy to your production server.
 
+## Webhook endpoint tips
+
+If you are writing your own endpoint (web server) that will receive
+GitLab webhooks keep in mind the following things:
+
+-   Your endpoint should send its HTTP response as fast as possible. If
+    you wait too long, GitLab may decide the hook failed and retry it.
+-   Your endpoint should ALWAYS return a valid HTTP response. If you do
+    not do this then GitLab will think the hook failed and retry it.
+    Most HTTP libraries take care of this for you automatically but if
+    you are writing a low-level hook this is important to remember.
+-   GitLab ignores the HTTP status code returned by your endpoint.
+
 ## SSL Verification
 
 By default, the SSL certificate of the webhook endpoint is verified based on

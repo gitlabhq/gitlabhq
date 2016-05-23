@@ -184,4 +184,14 @@ module BlobHelper
       Other: licenses.reject(&:featured).map { |license| [license.name, license.key] }
     }
   end
+
+  def gitignore_names
+    return @gitignore_names if defined?(@gitignore_names)
+
+    @gitignore_names = {
+      Global: Gitlab::Gitignore.global.map { |gitignore| { name: gitignore.name } },
+      # Note that the key here doesn't cover it really
+      Languages: Gitlab::Gitignore.languages_frameworks.map{ |gitignore| { name: gitignore.name } }
+    }
+  end
 end

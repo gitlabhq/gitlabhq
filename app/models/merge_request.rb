@@ -26,6 +26,10 @@ class MergeRequest < ActiveRecord::Base
   # when creating new merge request
   attr_accessor :can_be_created, :compare_commits, :compare
 
+  # Temporary fields to store target_sha, and base_sha to
+  # compare when importing pull requests from GitHub
+  attr_accessor :base_target_sha, :head_source_sha
+
   state_machine :state, initial: :opened do
     event :close do
       transition [:reopened, :opened] => :closed
@@ -282,6 +286,18 @@ class MergeRequest < ActiveRecord::Base
       last_commit == source_project.commit(source_branch)
   end
 
+  def should_remove_source_branch?
+    merge_params['should_remove_source_branch'].present?
+  end
+
+  def force_remove_source_branch?
+    merge_params['force_remove_source_branch'].present?
+  end
+
+  def remove_source_branch?
+    should_remove_source_branch? || force_remove_source_branch?
+  end
+
   def mr_and_commit_notes
     # Fetch comments only from last 100 commits
     commits_for_notes_limit = 100
@@ -422,7 +438,10 @@ class MergeRequest < ActiveRecord::Base
 
     self.merge_when_build_succeeds = false
     self.merge_user = nil
-    self.merge_params = nil
+    if merge_params
+      merge_params.delete('should_remove_source_branch')
+      merge_params.delete('commit_message')
+    end
 
     self.save
   end
@@ -490,10 +509,14 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def target_sha
-    @target_sha ||= target_project.repository.commit(target_branch).try(:sha)
+    return @base_target_sha if defined?(@base_target_sha)
+
+    target_project.repository.commit(target_branch).try(:sha)
   end
 
   def source_sha
+    return @head_source_sha if defined?(@head_source_sha)
+
     last_commit.try(:sha) || source_tip.try(:sha)
   end
 
@@ -514,7 +537,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def ref_is_fetched?
-    File.exists?(File.join(project.repository.path_to_repo, ref_path))
+    File.exist?(File.join(project.repository.path_to_repo, ref_path))
   end
 
   def ensure_ref_fetched

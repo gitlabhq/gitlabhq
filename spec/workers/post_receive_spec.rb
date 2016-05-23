@@ -48,6 +48,22 @@ describe PostReceive do
         PostReceive.new.perform(pwd(project), key_id, base64_changes)
       end
     end
+
+    context "gitlab-ci.yml" do
+      subject { PostReceive.new.perform(pwd(project), key_id, base64_changes) }
+
+      context "creates a Ci::Commit for every change" do
+        before { stub_ci_commit_to_return_yaml_file }
+
+        it { expect{ subject }.to change{ Ci::Commit.count }.by(2) }
+      end
+
+      context "does not create a Ci::Commit" do
+        before { stub_ci_commit_yaml_file(nil) }
+
+        it { expect{ subject }.to_not change{ Ci::Commit.count } }
+      end
+    end
   end
 
   context "webhook" do

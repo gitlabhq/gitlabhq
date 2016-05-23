@@ -112,7 +112,7 @@ module TabHelper
   end
 
   def profile_tab_class
-    if controller.controller_path =~ /\Aprofiles/
+    if controller.controller_path.start_with?('profiles')
       return 'active'
     end
 

@@ -112,6 +112,7 @@ class User < ActiveRecord::Base
   before_save :ensure_external_user_rights
   after_save :ensure_namespace_correct
   after_initialize :set_projects_limit
+  before_create :check_confirmation_email
   after_create :post_create_hook
   after_destroy :post_destroy_hook
 
@@ -307,6 +308,10 @@ class User < ActiveRecord::Base
     @reset_token
   end
 
+  def check_confirmation_email
+    skip_confirmation! unless current_application_settings.send_user_confirmation_email
+  end
+
   def recently_sent_password_reset?
     reset_password_sent_at.present? && reset_password_sent_at >= 1.minute.ago
   end
@@ -381,15 +386,15 @@ class User < ActiveRecord::Base
     Project.where("projects.id IN (#{projects_union.to_sql})")
   end
 
+  def viewable_starred_projects
+    starred_projects.where("projects.visibility_level IN (?) OR projects.id IN (#{projects_union.to_sql})",
+                           [Project::PUBLIC, Project::INTERNAL])
+  end
+
   def owned_projects
     @owned_projects ||=
       Project.where('namespace_id IN (?) OR namespace_id = ?',
                     owned_groups.select(:id), namespace.id).joins(:namespace)
-  end
-
-  # Team membership in authorized projects
-  def tm_in_authorized_projects
-    ProjectMember.where(source_id: authorized_projects.map(&:id), user_id: self.id)
   end
 
   def is_admin?
@@ -479,10 +484,6 @@ class User < ActiveRecord::Base
 
   def name_with_username
     "#{name} (#{username})"
-  end
-
-  def tm_of(project)
-    project.project_member_by_id(self.id)
   end
 
   def already_forked?(project)

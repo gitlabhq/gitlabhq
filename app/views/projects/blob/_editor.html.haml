@@ -16,6 +16,9 @@
       .license-selector.js-license-selector.hide
         = select_tag :license_type, grouped_options_for_select(licenses_for_select, @project.repository.license_key), include_blank: true, class: 'select2 license-select', data: {placeholder: 'Choose a license template', project: @project.name, fullname: @project.namespace.human_name}
 
+      .gitignore-selector.hidden
+        = dropdown_tag("Choose a .gitignore template", options: { toggle_class: 'js-gitignore-selector', title: "Choose a template", filter: true, placeholder: "Filter", data: { filenames: gitignore_names } } )
+
       .encoding-selector
         = select_tag :encoding, options_for_select([ "base64", "text" ], "text"), class: 'select2'
 

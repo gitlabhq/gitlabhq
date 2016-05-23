@@ -20,7 +20,7 @@ class Projects::RunnersController < Projects::ApplicationController
     if @runner.update_attributes(runner_params)
       redirect_to runner_path(@runner), notice: 'Runner was successfully updated.'
     else
-      redirect_to runner_path(@runner), alert: 'Runner was not updated.'
+      render 'edit'
     end
   end
 
@@ -64,6 +64,6 @@ class Projects::RunnersController < Projects::ApplicationController
   end
 
   def runner_params
-    params.require(:runner).permit(:description, :tag_list, :active)
+    params.require(:runner).permit(Ci::Runner::FORM_EDITABLE)
   end
 end

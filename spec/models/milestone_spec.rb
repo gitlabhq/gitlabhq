@@ -204,4 +204,37 @@ describe Milestone, models: true do
         to eq([milestone])
     end
   end
+
+  describe '.upcoming_ids_by_projects' do
+    let(:project_1) { create(:empty_project) }
+    let(:project_2) { create(:empty_project) }
+    let(:project_3) { create(:empty_project) }
+    let(:projects) { [project_1, project_2, project_3] }
+
+    let!(:past_milestone_project_1) { create(:milestone, project: project_1, due_date: Time.now - 1.day) }
+    let!(:current_milestone_project_1) { create(:milestone, project: project_1, due_date: Time.now + 1.day) }
+    let!(:future_milestone_project_1) { create(:milestone, project: project_1, due_date: Time.now + 2.days) }
+
+    let!(:past_milestone_project_2) { create(:milestone, project: project_2, due_date: Time.now - 1.day) }
+    let!(:closed_milestone_project_2) { create(:milestone, :closed, project: project_2, due_date: Time.now + 1.day) }
+    let!(:current_milestone_project_2) { create(:milestone, project: project_2, due_date: Time.now + 2.days) }
+
+    let!(:past_milestone_project_3) { create(:milestone, project: project_3, due_date: Time.now - 1.day) }
+
+    # The call to `#try` is because this returns a relation with a Postgres DB,
+    # and an array of IDs with a MySQL DB.
+    let(:milestone_ids) { Milestone.upcoming_ids_by_projects(projects).map { |id| id.try(:id) || id } }
+
+    it 'returns the next upcoming open milestone ID for each project' do
+      expect(milestone_ids).to contain_exactly(current_milestone_project_1.id, current_milestone_project_2.id)
+    end
+
+    context 'when the projects have no open upcoming milestones' do
+      let(:projects) { [project_3] }
+
+      it 'returns no results' do
+        expect(milestone_ids).to be_empty
+      end
+    end
+  end
 end

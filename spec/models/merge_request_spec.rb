@@ -64,7 +64,13 @@ describe MergeRequest, models: true do
 
   describe '#target_sha' do
     context 'when the target branch does not exist anymore' do
-      subject { create(:merge_request).tap { |mr| mr.update_attribute(:target_branch, 'deleted') } }
+      let(:project) { create(:project) }
+
+      subject { create(:merge_request, source_project: project, target_project: project) }
+
+      before do
+        project.repository.raw_repository.delete_branch(subject.target_branch)
+      end
 
       it 'returns nil' do
         expect(subject.target_sha).to be_nil
@@ -254,13 +260,18 @@ describe MergeRequest, models: true do
   end
 
   describe "#reset_merge_when_build_succeeds" do
-    let(:merge_if_green) { create :merge_request, merge_when_build_succeeds: true, merge_user: create(:user) }
+    let(:merge_if_green) do
+      create :merge_request, merge_when_build_succeeds: true, merge_user: create(:user),
+                             merge_params: { "should_remove_source_branch" => "1", "commit_message" => "msg" }
+    end
 
     it "sets the item to false" do
       merge_if_green.reset_merge_when_build_succeeds
       merge_if_green.reload
 
       expect(merge_if_green.merge_when_build_succeeds).to be_falsey
+      expect(merge_if_green.merge_params["should_remove_source_branch"]).to be_nil
+      expect(merge_if_green.merge_params["commit_message"]).to be_nil
     end
   end
 
@@ -289,7 +300,12 @@ describe MergeRequest, models: true do
     let(:fork_project) { create(:project, forked_from_project: project) }
 
     context 'when the target branch does not exist anymore' do
-      subject { create(:merge_request).tap { |mr| mr.update_attribute(:target_branch, 'deleted') } }
+      subject { create(:merge_request, source_project: project, target_project: project) }
+
+      before do
+        project.repository.raw_repository.delete_branch(subject.target_branch)
+        subject.reload
+      end
 
       it 'does not crash' do
         expect{ subject.diverged_commits_count }.not_to raise_error

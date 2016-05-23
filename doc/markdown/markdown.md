@@ -8,6 +8,7 @@
 * [Multiple underscores in words](#multiple-underscores-in-words)
 * [URL auto-linking](#url-auto-linking)
 * [Code and Syntax Highlighting](#code-and-syntax-highlighting)
+* [Inline Diff](#inline-diff)
 * [Emoji](#emoji)
 * [Special GitLab references](#special-gitlab-references)
 * [Task lists](#task-lists)
@@ -153,6 +154,19 @@ s = "There is no highlighting for this."
 But let's throw in a <b>tag</b>.
 ```
 
+## Inline Diff
+
+With inline diffs tags you can display {+ additions +} or [- deletions -].
+
+The wrapping tags can be either curly braces or square brackets [+ additions +] or {- deletions -}.
+
+However the wrapping tags cannot be mixed as such:
+
+- {+ additions +]
+- [+ additions +}
+- {- deletions -]
+- [- deletions -}
+
 ## Emoji
 
 	Sometimes you want to :monkey: around a bit and add some :star2: to your :speech_balloon:. Well we have a gift for you:
@@ -185,20 +199,23 @@ GFM will turn that reference into a link so you can navigate between them easily
 
 GFM will recognize the following:
 
-| input                  | references                 |
-|:-----------------------|:---------------------------|
-| `@user_name`           | specific user              |
-| `@group_name`          | specific group             |
-| `@all`                 | entire team                |
-| `#123`                 | issue                      |
-| `!123`                 | merge request              |
-| `$123`                 | snippet                    |
-| `~123`                 | label by ID                |
-| `~bug`                 | one-word label by name     |
-| `~"feature request"`   | multi-word label by name   |
-| `9ba12248`             | specific commit            |
-| `9ba12248...b19a04f5`  | commit range comparison    |
-| `[README](doc/README)` | repository file references |
+| input                  | references                   |
+|:-----------------------|:---------------------------  |
+| `@user_name`           | specific user                |
+| `@group_name`          | specific group               |
+| `@all`                 | entire team                  |
+| `#123`                 | issue                        |
+| `!123`                 | merge request                |
+| `$123`                 | snippet                      |
+| `~123`                 | label by ID                  |
+| `~bug`                 | one-word label by name       |
+| `~"feature request"`   | multi-word label by name     |
+| `%123`                 | milestone by ID              |
+| `%v1.23`               | one-word milestone by name   |
+| `%"release candidate"` | multi-word milestone by name |
+| `9ba12248`             | specific commit              |
+| `9ba12248...b19a04f5`  | commit range comparison      |
+| `[README](doc/README)` | repository file references   |
 
 GFM also recognizes certain cross-project references:
 
@@ -206,6 +223,7 @@ GFM also recognizes certain cross-project references:
 |:----------------------------------------|:------------------------|
 | `namespace/project#123`                 | issue                   |
 | `namespace/project!123`                 | merge request           |
+| `namespace/project%123`                 | milestone               |
 | `namespace/project$123`                 | snippet                 |
 | `namespace/project@9ba12248`            | specific commit         |
 | `namespace/project@9ba12248...b19a04f5` | commit range comparison |
@@ -402,7 +420,7 @@ There are two ways to create links, inline-style and reference-style.
 
 [I'm a reference-style link][Arbitrary case-insensitive reference text]
 
-[I'm a relative reference to a repository file](LICENSE)
+[I'm a relative reference to a repository file](LICENSE)[^1]
 
 [You can use numbers for reference-style link definitions][1]
 
@@ -594,3 +612,4 @@ By including colons in the header row, you can align the text within that column
 
 [rouge]: http://rouge.jneen.net/ "Rouge website"
 [redcarpet]: https://github.com/vmg/redcarpet "Redcarpet website"
+[^1]: This link will be broken if you see this document from the Help page or docs.gitlab.com

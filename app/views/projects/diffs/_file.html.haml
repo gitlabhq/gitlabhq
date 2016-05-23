@@ -11,11 +11,9 @@
       = link_to "#diff-#{i}" do
         - if diff_file.renamed_file
           - old_path, new_path = mark_inline_diffs(diff_file.old_path, diff_file.new_path)
-          .filename.old
-            = old_path
+          = old_path
           &rarr;
-          .filename.new
-            = new_path
+          = new_path
         - else
           %span
             = diff_file.new_path
@@ -41,7 +39,7 @@
 
   .diff-content.diff-wrap-lines
     - # Skip all non non-supported blobs
-    - return unless blob.respond_to?('text?')
+    - return unless blob.respond_to?(:text?)
     - if diff_file.too_large?
       .nothing-here-block This diff could not be displayed because it is too large.
     - elsif blob_text_viewable?(blob) && !project.repository.diffable?(blob)

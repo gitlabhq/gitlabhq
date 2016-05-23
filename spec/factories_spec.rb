@@ -5,7 +5,7 @@ describe 'factories' do
     describe "#{factory.name} factory" do
       let(:entity) { build(factory.name) }
 
-      it 'does not raise error when created 'do
+      it 'does not raise error when created' do
         expect { entity }.to_not raise_error
       end
 
