@@ -11,11 +11,13 @@ ENV['RAILS_ENV'] = 'test'
 require './config/environment'
 require 'rspec/expectations'
 require 'sidekiq/testing/inline'
-require 'knapsack'
+require 'knapsack-gitlab'
 
 require_relative 'capybara'
 require_relative 'db_cleaner'
 require_relative 'rerun'
+
+Knapsack::Adapters::SpinachAdapter.bind
 
 %w(select2_helper test_env repo_helpers).each do |f|
   require Rails.root.join('spec', 'support', f)

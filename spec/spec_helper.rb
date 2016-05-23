@@ -15,7 +15,7 @@ require 'rspec/rails'
 require 'shoulda/matchers'
 require 'sidekiq/testing/inline'
 require 'rspec/retry'
-require 'knapsack'
+require 'knapsack-gitlab'
 require_relative 'knapsack_merger'
 
 Knapsack::Adapters::RSpecAdapter.bind
