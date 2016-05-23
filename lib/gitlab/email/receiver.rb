@@ -28,8 +28,6 @@ module Gitlab
         mail = build_mail
         mail_key = extract_mail_key(mail)
 
-        raise SentNotificationNotFoundError unless mail_key
-
         if handler = Handler.for(mail, mail_key)
           handler.execute
         elsif mail_key =~ %r{/|\+}

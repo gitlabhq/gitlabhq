@@ -6,7 +6,7 @@ module Gitlab
     module Handler
       class CreateNoteHandler < BaseHandler
         def can_handle?
-          !!sent_notification
+          !!(mail_key && sent_notification)
         end
 
         def execute

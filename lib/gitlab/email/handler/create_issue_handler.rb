@@ -5,8 +5,16 @@ module Gitlab
   module Email
     module Handler
       class CreateIssueHandler < BaseHandler
+        attr_reader :project_namespace, :authentication_token
+
+        def initialize(mail, mail_key)
+          super(mail, mail_key)
+          @project_namespace, @authentication_token =
+            mail_key && mail_key.split('+', 2)
+        end
+
         def can_handle?
-          !!project
+          !!(project_namespace && project)
         end
 
         def execute
@@ -28,14 +36,6 @@ module Gitlab
         end
 
         private
-        def authentication_token
-          mail_key[/[^\+]+$/]
-        end
-
-        def project_namespace
-          mail_key[/^[^\+]+/]
-        end
-
         def create_issue
           Issues::CreateService.new(
             project,
