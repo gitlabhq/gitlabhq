@@ -319,39 +319,49 @@ the Container Registry by themselves, follow the steps below.
 
 ## Container Registry storage path
 
-It is possible to change path where containers will be stored by the Container
-Registry.
+To change the storage path where Docker images will be stored, follow the
+steps below.
 
-**Omnibus GitLab packages**
+This path is accessible to:
+
+- the user running the Container Registry daemon,
+- the user running GitLab
+- and to the user running the Nginx web server.
+
+> **Warning** You should confirm that all GitLab, Registry and web server users
+have access to this directory.
 
 ---
 
-By default, the path Container Registry is using to store the containers is in
-`/var/opt/gitlab/gitlab-rails/shared/registry`.
-This path is accessible to the user running the Container Registry daemon,
-user running GitLab and to the user running Nginx web server.
+**Omnibus GitLab installations**
 
-In `/etc/gitlab/gitlab.rb`:
+The default location where images are stored in Omnibus, is
+`/var/opt/gitlab/gitlab-rails/shared/registry`. To change it:
 
-```ruby
-gitlab_rails['registry_path'] = "/path/to/registry/storage"
-```
+1. Edit `/etc/gitlab/gitlab.rb`:
 
-```
-registry:
-  enabled: true
-  host: registry.gitlab.example.com
-  port: 5005
-  api_url: http://localhost:5000/
-  key_path: config/registry.key
-  path: shared/registry
-  issuer: gitlab-issuer
-```
+    ```ruby
+    gitlab_rails['registry_path'] = "/path/to/registry/storage"
+    ```
 
-Save the file and [reconfigure GitLab][] for the changes to take effect.
+1. Save the file and [reconfigure GitLab][] for the changes to take effect.
 
-**NOTE** You should confirm that the GitLab, registry and the web server user
-have access to this directory.
+---
+
+**Installations from source**
+
+The default location where images are stored in source installations, is
+`/home/git/gitlab/shared/registry`. To change it:
+
+1. Open `/home/git/gitlab/config/gitlab.yml`, find the `registry` entry and
+   change the `path` setting:
+
+    ```
+    registry:
+      path: shared/registry
+    ```
+
+1. Save the file and [restart GitLab][] for the changes to take effect.
 
 ## Storage limitations
 
