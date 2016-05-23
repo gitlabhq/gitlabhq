@@ -24,7 +24,7 @@ class @DueDateSelect
           $value.removeAttr('style')
       )
 
-      addDueDate = ->
+      addDueDate = (isDropdown) ->
         # Create the post date
         value = $("input[name='#{fieldName}']").val()
 
@@ -44,8 +44,9 @@ class @DueDateSelect
           data: data
           beforeSend: ->
             $loading.fadeIn()
-            $dropdown.trigger('loading.gl.dropdown')
-            $selectbox.hide()
+            if isDropdown
+              $dropdown.trigger('loading.gl.dropdown')
+              $selectbox.hide()
             $value.removeAttr('style')
 
             $valueContent.html(mediumDate)
@@ -56,21 +57,22 @@ class @DueDateSelect
             else
               $('.js-remove-due-date-holder').addClass 'hidden'
         ).done (data) ->
-          $dropdown.trigger('loaded.gl.dropdown')
-          $dropdown.dropdown('toggle')
+          if isDropdown
+            $dropdown.trigger('loaded.gl.dropdown')
+            $dropdown.dropdown('toggle')
           $loading.fadeOut()
 
       $block.on 'click', '.js-remove-due-date', (e) ->
         e.preventDefault()
         $("input[name='#{fieldName}']").val ''
-        addDueDate()
+        addDueDate(false)
 
       $datePicker.datepicker(
         dateFormat: 'yy-mm-dd',
         defaultDate: $("input[name='#{fieldName}']").val()
         altField: "input[name='#{fieldName}']"
         onSelect: ->
-          addDueDate()
+          addDueDate(true)
       )
 
     $(document)
