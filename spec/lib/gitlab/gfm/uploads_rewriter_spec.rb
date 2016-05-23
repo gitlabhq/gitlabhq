@@ -32,13 +32,13 @@ describe Gitlab::Gfm::UploadsRewriter do
       let(:new_paths) { new_files.map(&:path) }
 
       it 'rewrites content' do
-        expect(new_text).to_not eq text
+        expect(new_text).not_to eq text
         expect(new_text.length).to eq text.length
       end
 
       it 'copies files' do
         expect(new_files).to all(exist)
-        expect(old_paths).to_not match_array new_paths
+        expect(old_paths).not_to match_array new_paths
         expect(old_paths).to all(include(old_project.path_with_namespace))
         expect(new_paths).to all(include(new_project.path_with_namespace))
       end
@@ -48,8 +48,8 @@ describe Gitlab::Gfm::UploadsRewriter do
       end
 
       it 'generates a new secret for each file' do
-        expect(new_paths).to_not include image_uploader.secret
-        expect(new_paths).to_not include zip_uploader.secret
+        expect(new_paths).not_to include image_uploader.secret
+        expect(new_paths).not_to include zip_uploader.secret
       end
     end
 

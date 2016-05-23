@@ -47,7 +47,7 @@ describe SessionsController do
               authenticate_2fa(login: another_user.username,
                                otp_attempt: another_user.current_otp)
 
-              expect(subject.current_user).to_not eq another_user
+              expect(subject.current_user).not_to eq another_user
             end
           end
 
@@ -56,7 +56,7 @@ describe SessionsController do
               authenticate_2fa(login: another_user.username,
                                otp_attempt: 'invalid')
 
-              expect(subject.current_user).to_not eq another_user
+              expect(subject.current_user).not_to eq another_user
             end
           end
 
@@ -73,7 +73,7 @@ describe SessionsController do
               before { authenticate_2fa(otp_attempt: 'invalid') }
 
               it 'does not authenticate' do
-                expect(subject.current_user).to_not eq user
+                expect(subject.current_user).not_to eq user
               end
 
               it 'warns about invalid OTP code' do

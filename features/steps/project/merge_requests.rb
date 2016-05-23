@@ -203,7 +203,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
       page.within 'li.merge-request:nth-child(3)' do
         expect(page).to have_content 'Bug NS-05'
-        expect(page).to_not have_content '0 0'
+        expect(page).not_to have_content '0 0'
       end
     end
   end
@@ -222,7 +222,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
       page.within 'li.merge-request:nth-child(3)' do
         expect(page).to have_content 'Bug NS-05'
-        expect(page).to_not have_content '0 0'
+        expect(page).not_to have_content '0 0'
       end
     end
   end

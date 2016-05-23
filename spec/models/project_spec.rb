@@ -791,7 +791,7 @@ describe Project, models: true do
 
     subject { project.container_registry_repository }
 
-    it { is_expected.to_not be_nil }
+    it { is_expected.not_to be_nil }
   end
 
   describe '#container_registry_repository_url' do
@@ -809,7 +809,7 @@ describe Project, models: true do
         }
       end
 
-      it { is_expected.to_not be_nil }
+      it { is_expected.not_to be_nil }
     end
 
     context 'for disabled registry' do

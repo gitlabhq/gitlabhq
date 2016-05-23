@@ -165,7 +165,7 @@ describe Issue, "Issuable" do
       expect(data[:object_kind]).to eq("issue")
       expect(data[:user]).to eq(user.hook_attrs)
       expect(data[:object_attributes]).to eq(issue.hook_attrs)
-      expect(data).to_not have_key(:assignee)
+      expect(data).not_to have_key(:assignee)
     end
 
     context "issue is assigned" do
