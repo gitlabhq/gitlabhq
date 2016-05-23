@@ -299,7 +299,7 @@ Style/IndentHash:
 
 # Use Kernel#loop for infinite loops.
 Style/InfiniteLoop:
-  Enabled: false
+  Enabled: true
 
 # Use the new lambda literal syntax for single-line blocks.
 Style/Lambda:
