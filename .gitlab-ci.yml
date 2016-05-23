@@ -37,12 +37,12 @@ prepare:
   script:
     - bundle exec rake assets:precompile
     - echo "{}" > knapsack_rspec_report.json
-    - echo "{}" > knapsack_cucumber_report.json
+    - echo "{}" > knapsack_spinach_report.json
   artifacts:
     paths:
     - public/assets/
     - knapsack_rspec_report.json
-    - knapsack_cucumber_report.json
+    - knapsack_spinach_report.json
 
 .knapsack: &knapsack
   stage: test
