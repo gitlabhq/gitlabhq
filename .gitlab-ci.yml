@@ -50,7 +50,7 @@ prepare:
     - JOB_NAME=( $CI_BUILD_NAME )
     - export CI_NODE_INDEX=${JOB_NAME[1]}
     - export CI_NODE_TOTAL=${JOB_NAME[2]}
-    - knapsack ${JOB_NAME[0]}
+    - knapsack-gitlab ${JOB_NAME[0]}
 
 .exec: &exec
   stage: test
