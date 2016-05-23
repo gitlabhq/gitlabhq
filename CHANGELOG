@@ -8,6 +8,7 @@ v 8.8.1
   - Allow anonymous users to access a public project's pipelines
   - Fix MySQL compatibility in zero downtime migrations helpers
   - Fix the CI login to Container Registry (the gitlab-ci-token user)
+  - Fix access to Pipelines by Anonymous user
 
 v 8.8.0
   - Implement GFM references for milestones (Alejandro Rodríguez)
