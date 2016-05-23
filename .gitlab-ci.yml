@@ -22,6 +22,7 @@ before_script:
   - cp config/gitlab.yml.example config/gitlab.yml
   - bundle --version
   - retry bundle install --without postgres production --jobs $(nproc) "${FLAGS[@]}"
+  - retry gem install knapsack-gitlab
   - '[ "$USE_DB" != "true" ] || bundle exec rake db:drop db:create db:schema:load db:migrate'
 
 stages:
@@ -49,7 +50,6 @@ prepare:
     - JOB_NAME=( $CI_BUILD_NAME )
     - export CI_NODE_INDEX=${JOB_NAME[1]}
     - export CI_NODE_TOTAL=${JOB_NAME[2]}
-    - gem install knapsack
     - knapsack ${JOB_NAME[0]}
 
 .exec: &exec
