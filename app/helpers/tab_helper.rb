@@ -95,7 +95,7 @@ module TabHelper
   end
 
   def project_tab_class
-    if controller.controller_path =~ /\Aprojects/
+    if controller.controller_path.start_with?('projects')
       return 'active'
     end
 
