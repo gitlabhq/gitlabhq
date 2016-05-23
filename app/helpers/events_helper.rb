@@ -1,4 +1,3 @@
-#encoding: utf-8
 module EventsHelper
   def link_to_author(event)
     author = event.author

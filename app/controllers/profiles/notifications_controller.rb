@@ -1,4 +1,3 @@
-#encoding: utf-8
 class Profiles::NotificationsController < Profiles::ApplicationController
   def show
     @user = current_user

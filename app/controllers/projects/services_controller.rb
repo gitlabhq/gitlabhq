@@ -1,4 +1,3 @@
-#encoding: utf-8
 class Projects::ServicesController < Projects::ApplicationController
   ALLOWED_PARAMS = [:title, :token, :type, :active, :api_key, :api_url, :api_version, :subdomain,
                     :room, :recipients, :project_url, :webhook,

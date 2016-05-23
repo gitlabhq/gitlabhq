@@ -1,4 +1,3 @@
-#encoding: utf-8
 # Gitlab::VisibilityLevel module
 #
 # Define allowed public modes that can be used for

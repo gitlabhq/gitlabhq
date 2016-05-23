@@ -1,4 +1,3 @@
-#encoding: utf-8
 # Gitlab::Access module
 #
 # Define allowed roles that can be used

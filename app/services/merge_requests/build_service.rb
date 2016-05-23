@@ -1,4 +1,3 @@
-#encoding: utf-8
 module MergeRequests
   class BuildService < MergeRequests::BaseService
     def execute

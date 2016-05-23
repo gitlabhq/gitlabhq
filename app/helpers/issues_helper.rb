@@ -1,4 +1,3 @@
-#encoding: utf-8
 module IssuesHelper
   def issue_css_classes(issue)
     classes = "issue"

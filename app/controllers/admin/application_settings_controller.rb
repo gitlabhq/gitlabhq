@@ -1,4 +1,3 @@
-#encoding: utf-8
 class Admin::ApplicationSettingsController < Admin::ApplicationController
   before_action :set_application_setting
 

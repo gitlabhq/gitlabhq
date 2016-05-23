@@ -1,4 +1,3 @@
-#encoding: utf-8
 class Admin::GroupsController < Admin::ApplicationController
   before_action :group, only: [:edit, :show, :update, :destroy, :project_update, :members_update]
 

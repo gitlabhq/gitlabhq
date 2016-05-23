@@ -1,4 +1,3 @@
-#encoding: utf-8
 module NotesHelper
   # Helps to distinguish e.g. commit notes in mr notes list
   def note_for_main_target?(note)

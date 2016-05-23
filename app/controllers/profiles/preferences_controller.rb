@@ -1,4 +1,3 @@
-#encoding: utf-8
 class Profiles::PreferencesController < Profiles::ApplicationController
   before_action :user
 

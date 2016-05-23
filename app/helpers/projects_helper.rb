@@ -1,4 +1,3 @@
-#encoding: utf-8
 module ProjectsHelper
   def remove_from_project_team_message(project, member)
     if member.user

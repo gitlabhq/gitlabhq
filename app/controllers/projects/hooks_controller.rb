@@ -1,4 +1,3 @@
-#encoding: utf-8
 class Projects::HooksController < Projects::ApplicationController
   # Authorize
   before_action :authorize_admin_project!

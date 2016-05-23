@@ -1,4 +1,3 @@
-#encoding: utf-8
 class Profiles::PasswordsController < Profiles::ApplicationController
   skip_before_action :check_password_expiration, only: [:new, :create]
 

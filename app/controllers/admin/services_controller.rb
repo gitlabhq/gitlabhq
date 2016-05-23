@@ -1,4 +1,3 @@
-#encoding: utf-8
 class Admin::ServicesController < Admin::ApplicationController
   before_action :service, only: [:edit, :update]
 

@@ -1,4 +1,3 @@
-#encoding: utf-8
 class Admin::ApplicationsController < Admin::ApplicationController
   before_action :set_application, only: [:show, :edit, :update, :destroy]
 

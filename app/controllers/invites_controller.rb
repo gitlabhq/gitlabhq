@@ -1,4 +1,3 @@
-#encoding: utf-8
 class InvitesController < ApplicationController
   before_action :member
   skip_before_action :authenticate_user!, only: :decline

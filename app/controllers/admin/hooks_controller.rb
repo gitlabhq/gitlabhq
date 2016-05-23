@@ -1,4 +1,3 @@
-#encoding: utf-8
 class Admin::HooksController < Admin::ApplicationController
   def index
     @hooks = SystemHook.all

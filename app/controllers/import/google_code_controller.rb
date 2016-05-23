@@ -1,4 +1,3 @@
-#encoding: utf-8
 class Import::GoogleCodeController < Import::BaseController
   before_action :verify_google_code_import_enabled
   before_action :user_map, only: [:new_user_map, :create_user_map]

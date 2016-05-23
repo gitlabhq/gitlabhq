@@ -1,4 +1,3 @@
-#encoding: utf-8
 module Gitlab
   # Module containing GitLab's application theme definitions and helper methods
   # for accessing them.

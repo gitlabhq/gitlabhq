@@ -1,4 +1,3 @@
-#encoding: utf-8
 module VisibilityLevelHelper
   def visibility_level_color(level)
     case level
