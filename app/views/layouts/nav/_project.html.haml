@@ -38,6 +38,14 @@
         %span
           Commits
 
+  - if project_nav_tab? :pipelines
+    = nav_link(controller: :pipelines) do
+      = link_to project_pipelines_path(@project), title: 'Pipelines', class: 'shortcuts-pipelines' do
+        = icon('ship fw')
+        %span
+          Pipelines
+          %span.count.ci_counter= number_with_delimiter(@project.ci_commits.running_or_pending.count)
+
   - if project_nav_tab? :builds
     = nav_link(controller: %w(builds)) do
       = link_to project_builds_path(@project), title: 'Builds', class: 'shortcuts-builds' do
@@ -45,6 +53,13 @@
         %span
           Builds
           %span.count.builds_counter= number_with_delimiter(@project.builds.running_or_pending.count(:all))
+
+  - if project_nav_tab? :container_registry
+    = nav_link(controller: %w(container_registry)) do
+      = link_to project_container_registry_path(@project), title: 'Container Registry', class: 'shortcuts-container-registry' do
+        = icon('hdd-o fw')
+        %span
+          Container Registry
 
   - if project_nav_tab? :graphs
     = nav_link(controller: %w(graphs)) do

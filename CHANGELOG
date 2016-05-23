@@ -1,15 +1,32 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
-v 8.8.0 (unreleased)
+v 8.8.2 (unreleased)
+  - Fix Error 500 when accessing application settings due to nil disabled OAuth sign-in sources
+
+v 8.8.1
+  - Add documentation for the "Health Check" feature
+  - Allow anonymous users to access a public project's pipelines
+  - Fix MySQL compatibility in zero downtime migrations helpers
+  - Fix the CI login to Container Registry (the gitlab-ci-token user)
+
+v 8.8.0
+  - Implement GFM references for milestones (Alejandro Rodríguez)
   - Snippets tab under user profile. !4001 (Long Nguyen)
   - Fix error when using link to uploads in global snippets
+  - Fix Error 500 when attempting to retrieve project license when HEAD points to non-existent ref
   - Assign labels and milestone to target project when moving issue. !3934 (Long Nguyen)
   - Use a case-insensitive comparison in sanitizing URI schemes
   - Toggle sign-up confirmation emails in application settings
+  - Make it possible to prevent tagged runner from picking untagged jobs
+  - Added `InlineDiffFilter` to the markdown parser. (Adam Butler)
+  - Added inline diff styling for `change_title` system notes. (Adam Butler)
   - Project#open_branches has been cleaned up and no longer loads entire records into memory.
   - Escape HTML in commit titles in system note messages
+  - Fix scope used when accessing container registry
+  - Fix creation of Ci::Commit object which can lead to pending, failed in some scenarios
   - Improve multiple branch push performance by memoizing permission checking
   - Log to application.log when an admin starts and stops impersonating a user
+  - Changing the confidentiality of an issue now creates a new system note (Alex Moore-Niemi)
   - Updated gitlab_git to 10.1.0
   - GitAccess#protected_tag? no longer loads all tags just to check if a single one exists
   - Reduce delay in destroying a project from 1-minute to immediately
@@ -21,6 +38,7 @@ v 8.8.0 (unreleased)
   - Bump mail_room to 0.7.0 to fix stuck IDLE connections
   - Remove future dates from contribution calendar graph.
   - Support e-mail notifications for comments on project snippets
+  - Fix API leak of notes of unauthorized issues, snippets and merge requests
   - Use ActionDispatch Remote IP for Akismet checking
   - Fix error when visiting commit builds page before build was updated
   - Add 'l' shortcut to open Label dropdown on issuables and 'i' to create new issue on a project
@@ -36,13 +54,15 @@ v 8.8.0 (unreleased)
   - Added button to toggle whitespaces changes on diff view
   - Backport GitHub Enterprise import support from EE
   - Create tags using Rugged for performance reasons. !3745
+  - Allow guests to set notification level in projects
   - API: Expose Issue#user_notes_count. !3126 (Anton Popov)
   - Don't show forks button when user can't view forks
+  - Fix atom feed links and rendering
   - Files over 5MB can only be viewed in their raw form, files over 1MB without highlighting !3718
   - Add support for supressing text diffs using .gitattributes on the default branch (Matt Oakes)
   - Add eager load paths to help prevent dependency load issues in Sidekiq workers. !3724
   - Added multiple colors for labels in dropdowns when dups happen.
-  - Always group commits by server timezone, not commit timestamp
+  - Show commits in the same order as `git log`
   - Improve description for the Two-factor Authentication sign-in screen. (Connor Shea)
   - API support for the 'since' and 'until' operators on commit requests (Paco Guzman)
   - Fix Gravatar hint in user profile when Gravatar is disabled. !3988 (Artem Sidorenko)
@@ -58,10 +78,16 @@ v 8.8.0 (unreleased)
   - Add counter metrics for rails cache
   - Import pull requests from GitHub where the source or target branches were removed
   - All Grape API helpers are now instrumented
+  - Improve Issue formatting for the Slack Service (Jeroen van Baarsen)
+  - Fixed advice on invalid permissions on upload path !2948 (Ludovic Perrine)
+  - Allows MR authors to have the source branch removed when merging the MR. !2801 (Jeroen Jacobs)
+  - When creating a .gitignore file a dropdown with templates will be provided
 
 v 8.7.6
   - Fix links on wiki pages for relative url setups. !4131 (Artem Sidorenko)
   - Fix import by `Any Git URL` broken if the URL contains a space
+  - Fix import from GitLab.com to a private instance failure. !4181
+  - Fix external imports not finding the import data. !4106
 
 v 8.7.5
   - Fix relative links in wiki pages. !4050
@@ -83,6 +109,7 @@ v 8.7.3
   - Merge request widget displays TeamCity build state and code coverage correctly again.
   - Fix the line code when importing PR review comments from GitHub. !4010
   - Wikis are now initialized on legacy projects when checking repositories
+  - Remove animate.css in favor of a smaller subset of animations. !3937 (Connor Shea)
 
 v 8.7.2
   - The "New Branch" button is now loaded asynchronously
@@ -891,7 +918,7 @@ v 8.1.3
   - Use issue editor as cross reference comment author when issue is edited with a new mention
   - Add Facebook authentication
 
-v 8.1.2
+v 8.1.1
   - Fix cloning Wiki repositories via HTTP (Stan Hu)
   - Add migration to remove satellites directory
   - Fix specific runners visibility
@@ -1516,19 +1543,16 @@ v 7.10.0
   - Fix stuck Merge Request merging events from old installations (Ben Bodenmiller)
   - Fix merge request comments on files with multiple commits
   - Fix Resource Owner Password Authentication Flow
-
-v 7.9.4
-  - Security: Fix project import URL regex to prevent arbitary local repos from being imported
-  - Fixed issue where only 25 commits would load in file listings
-  - Fix LDAP identities  after config update
-
-v 7.9.3
-  - Contains no changes
   - Add icons to Add dropdown items.
   - Allow admin to create public deploy keys that are accessible to any project.
   - Warn when gitlab-shell version doesn't match requirement.
   - Skip email confirmation when set by admin or via LDAP.
   - Only allow users to reference groups, projects, issues, MRs, commits they have access to.
+
+v 7.9.4
+  - Security: Fix project import URL regex to prevent arbitary local repos from being imported
+  - Fixed issue where only 25 commits would load in file listings
+  - Fix LDAP identities  after config update
 
 v 7.9.3
   - Contains no changes

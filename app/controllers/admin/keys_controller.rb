@@ -6,7 +6,7 @@ class Admin::KeysController < Admin::ApplicationController
 
     respond_to do |format|
       format.html
-      format.js { render nothing: true }
+      format.js { head :ok }
     end
   end
 

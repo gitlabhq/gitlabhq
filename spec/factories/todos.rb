@@ -18,5 +18,9 @@ FactoryGirl.define do
       commit_id RepoHelpers.sample_commit.id
       target_type "Commit"
     end
+
+    trait :build_failed do
+      action { Todo::BUILD_FAILED }
+    end
   end
 end

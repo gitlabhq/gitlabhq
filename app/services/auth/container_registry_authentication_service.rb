@@ -6,12 +6,23 @@ module Auth
       return error('not found', 404) unless registry.enabled
 
       if params[:offline_token]
-        return error('forbidden', 403) unless current_user
+        return error('unauthorized', 401) unless current_user || project
       else
         return error('forbidden', 403) unless scope
       end
 
       { token: authorized_token(scope).encoded }
+    end
+
+    def self.full_access_token(*names)
+      registry = Gitlab.config.registry
+      token = JSONWebToken::RSAToken.new(registry.key)
+      token.issuer = registry.issuer
+      token.audience = AUDIENCE
+      token[:access] = names.map do |name|
+        { type: 'repository', name: name, actions: %w(*) }
+      end
+      token.encoded
     end
 
     private

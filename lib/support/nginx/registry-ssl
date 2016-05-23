@@ -1,0 +1,53 @@
+## Lines starting with two hashes (##) are comments with information.
+## Lines starting with one hash (#) are configuration parameters that can be uncommented.
+##
+###################################
+##         configuration         ##
+###################################
+
+## Redirects all HTTP traffic to the HTTPS host
+server {
+  listen *:80;
+  server_name  registry.gitlab.example.com;
+  server_tokens off; ## Don't show the nginx version number, a security best practice
+  return 301 https://$http_host:$request_uri;
+  access_log  /var/log/nginx/gitlab_registry_access.log gitlab_access;
+  error_log   /var/log/nginx/gitlab_registry_error.log;
+}
+
+server {
+  # If a different port is specified in https://gitlab.com/gitlab-org/gitlab-ce/blob/8-8-stable/config/gitlab.yml.example#L182,
+  # it should be declared here as well
+  listen *:443 ssl http2;
+  server_name  registry.gitlab.example.com;
+  server_tokens off; ## Don't show the nginx version number, a security best practice
+
+  client_max_body_size 0;
+  chunked_transfer_encoding on;
+
+  ## Strong SSL Security
+  ## https://raymii.org/s/tutorials/Strong_SSL_Security_On_nginx.html & https://cipherli.st/
+  ssl on;
+  ssl_certificate /etc/gitlab/ssl/registry.gitlab.example.com.crt
+  ssl_certificate_key /etc/gitlab/ssl/registry.gitlab.example.com.key
+
+  ssl_ciphers 'ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA:ECDHE-RSA-AES128-SHA:ECDHE-RSA-DES-CBC3-SHA:AES256-GCM-SHA384:AES128-GCM-SHA256:AES256-SHA256:AES128-SHA256:AES256-SHA:AES128-SHA:DES-CBC3-SHA:!aNULL:!eNULL:!EXPORT:!DES:!MD5:!PSK:!RC4';
+  ssl_protocols  TLSv1 TLSv1.1 TLSv1.2;
+  ssl_prefer_server_ciphers on;
+  ssl_session_cache  builtin:1000  shared:SSL:10m;
+  ssl_session_timeout  5m;
+
+  access_log  /var/log/gitlab/nginx/gitlab_registry_access.log gitlab_access;
+  error_log   /var/log/gitlab/nginx/gitlab_registry_error.log;
+
+  location / {
+    proxy_set_header  Host              $http_host;   # required for docker client's sake
+    proxy_set_header  X-Real-IP         $remote_addr; # pass on real client's IP
+    proxy_set_header  X-Forwarded-For   $proxy_add_x_forwarded_for;
+    proxy_set_header  X-Forwarded-Proto $scheme;
+    proxy_read_timeout                  900;
+
+    proxy_pass          http://localhost:5000;
+  }
+
+}

@@ -128,7 +128,7 @@ builds, including deploy builds. This can be an array or a multi-line string.
 ### after_script
 
 >**Note:**
-Introduced in GitLab 8.7 and GitLab Runner v1.2.
+Introduced in GitLab 8.7 and requires Gitlab Runner v1.2 (not yet released)
 
 `after_script` is used to define the command that will be run after for all
 builds. This has to be an array or a multi-line string.

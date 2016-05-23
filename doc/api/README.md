@@ -33,7 +33,7 @@ following locations:
 - [Build triggers](build_triggers.md)
 - [Build Variables](build_variables.md)
 - [Runners](runners.md)
-- [Licenses](licenses.md)
+- [Open source license templates](licenses.md)
 
 ## Authentication
 

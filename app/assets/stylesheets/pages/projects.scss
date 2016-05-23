@@ -7,7 +7,7 @@
 }
 .no-ssh-key-message, .project-limit-message {
   background-color: #f28d35;
-  margin-bottom: 16px;
+  margin-bottom: 0;
 }
 .new_project,
 .edit_project {
@@ -149,6 +149,10 @@
         white-space: nowrap;
         margin: 0 11px 0 4px;
 
+        a {
+          color: inherit;
+        }
+
         &:hover {
           background: #fff;
         }
@@ -161,7 +165,7 @@
   display: inline-table;
   margin-right: 12px;
 
-  a {
+  > a {
     margin: -1px;
   }
 }

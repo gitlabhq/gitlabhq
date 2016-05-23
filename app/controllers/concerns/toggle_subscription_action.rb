@@ -6,7 +6,7 @@ module ToggleSubscriptionAction
 
     subscribable_resource.toggle_subscription(current_user)
 
-    render nothing: true
+    head :ok
   end
 
   private
