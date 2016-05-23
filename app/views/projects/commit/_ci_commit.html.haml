@@ -12,16 +12,16 @@
       Pipeline
       = link_to "##{ci_commit.id}", namespace_project_pipeline_path(@project.namespace, @project, ci_commit.id), class: "monospace"
       with
-    = pluralize ci_commit.statuses.count(:id), "build"
-    - if ci_commit.ref
-      for
-      = link_to ci_commit.ref, namespace_project_commits_path(@project.namespace, @project, ci_commit.ref), class: "monospace label label-info"
-    - if defined?(link_to_commit) && link_to_commit
-      for commit
-      = link_to ci_commit.short_sha, namespace_project_commit_path(@project.namespace, @project, ci_commit.sha), class: "monospace"
-    - if ci_commit.duration
-      in
-      = time_interval_in_words ci_commit.duration
+      = pluralize ci_commit.statuses.count(:id), "build"
+      - if ci_commit.ref
+        for
+        = link_to ci_commit.ref, namespace_project_commits_path(@project.namespace, @project, ci_commit.ref), class: "monospace"
+      - if defined?(link_to_commit) && link_to_commit
+        for commit
+        = link_to ci_commit.short_sha, namespace_project_commit_path(@project.namespace, @project, ci_commit.sha), class: "monospace"
+      - if ci_commit.duration
+        in
+        = time_interval_in_words ci_commit.duration
 
 - if ci_commit.yaml_errors.present?
   .bs-callout.bs-callout-danger
