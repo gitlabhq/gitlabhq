@@ -21,7 +21,6 @@ before_script:
   - source ./scripts/prepare_build.sh
   - cp config/gitlab.yml.example config/gitlab.yml
   - bundle --version
-  #- retry gem install bundler
   - retry bundle install --without postgres production --jobs $(nproc) "${FLAGS[@]}"
   - '[ "$USE_DB" != "true" ] || bundle exec rake db:drop db:create db:schema:load db:migrate'
 
@@ -30,20 +29,12 @@ stages:
 - test
 - notifications
 
-test-bundler:
-  stage: build
-  variables:
-    USE_DB: "false"
-  script:
-    - retry gem install bundler
-    - bundle exec bundle --version
-
 prepare:
   stage: build
   variables:
     USE_DB: "false"
   script:
-    - bundle exec rake assets:precompile
+    #- bundle exec rake assets:precompile
     - echo "{}" > knapsack_rspec_report.json
     - echo "{}" > knapsack_cucumber_report.json
   artifacts:
@@ -58,7 +49,8 @@ prepare:
     - JOB_NAME=( $CI_BUILD_NAME )
     - export CI_NODE_INDEX=${JOB_NAME[1]}
     - export CI_NODE_TOTAL=${JOB_NAME[2]}
-    - bundle exec rake knapsack:${JOB_NAME[0]}
+    - gem install knapsack
+    - knapsack ${JOB_NAME[0]}
 
 .exec: &exec
   stage: test
