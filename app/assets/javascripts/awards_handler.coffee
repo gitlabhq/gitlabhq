@@ -108,7 +108,7 @@ class @AwardsHandler
       if @isActive($emojiBtn)
         @decrementCounter($emojiBtn, emoji)
       else
-        counter = $emojiBtn.siblings(".js-counter")
+        counter = $emojiBtn.find('.js-counter')
         counter.text(parseInt(counter.text()) + 1)
         $emojiBtn.addClass("active")
         @addMeToUserList(emoji)
