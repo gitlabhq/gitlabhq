@@ -501,6 +501,7 @@ class Project < ActiveRecord::Base
     else
       import_start
     end
+
     RepositoryUpdateMirrorWorker.perform_async(self.id)
   end
 
