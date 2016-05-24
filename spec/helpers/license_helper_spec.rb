@@ -8,13 +8,14 @@ describe LicenseHelper do
       end
 
       it 'admin user' do
-        admin_msg = 'No GitLab Enterprise Edition license has been provided yet. Pushing code and creation of issues and merge requests has been disabled. Upload a license in the admin area to activate this functionality.'
+        admin_msg = '<p>No GitLab Enterprise Edition license has been provided yet. Pushing code and creation of issues and merge requests has been disabled. <a href="/admin/license/new">Upload a license</a> in the admin area to activate this functionality.</p>'
 
         expect(license_message(signed_in: true, is_admin: true)).to eq(admin_msg)
       end
 
       it 'normal user' do
-        user_msg = 'No GitLab Enterprise Edition license has been provided yet. Pushing code and creation of issues and merge requests has been disabled. Ask an admin to upload a license to activate this functionality.'
+        user_msg = '<p>No GitLab Enterprise Edition license has been provided yet. Pushing code and creation of issues and merge requests has been disabled. Ask an admin to upload a license to activate this functionality.</p>'
+
         expect(license_message(signed_in: true, is_admin: false)).to eq(user_msg)
       end
     end

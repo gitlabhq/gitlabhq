@@ -22,14 +22,14 @@ module LicenseHelper
 
     message <<
       if is_admin
-        "Upload a license in the admin area"
+        "#{link_to('Upload a license', new_admin_license_path)} in the admin area"
       else
         "Ask an admin to upload a license"
       end
 
     message << "to activate this functionality."
 
-    message.join(" ")
+    content_tag(:p, message.join(" ").html_safe)
   end
 
   def yes_license_message(signed_in, is_admin)
