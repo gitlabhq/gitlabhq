@@ -24,6 +24,7 @@ class @AwardsHandler
   handleClick: (e) =>
 
     e.preventDefault()
+
     $emojiBtn = $(e.currentTarget)
     $addAwardBtn = $('.js-add-award.is-active')
     $votesBlock = $($addAwardBtn.closest('.js-award-holder').data('target'))
@@ -36,6 +37,13 @@ class @AwardsHandler
     $votesBlock.addClass 'js-awards-block'
     awardUrl = $votesBlock.data 'award-url'
     emoji = $emojiBtn.find('.icon').data('emoji')
+
+    if emoji in [ 'thumbsup', 'thumbsdown' ]
+      mutualVote = if emoji is 'thumbsup' then 'thumbsdown' else 'thumbsup'
+
+      isAlreadyVoted = $("[data-emoji=#{mutualVote}]").parent().hasClass 'active'
+      @addAward awardUrl, mutualVote if isAlreadyVoted
+
     @addAward awardUrl, emoji
 
 
