@@ -33,6 +33,10 @@ module GitlabRoutingHelper
     namespace_project_builds_path(project.namespace, project, *args)
   end
 
+  def project_container_registry_path(project, *args)
+    namespace_project_container_registry_index_path(project.namespace, project, *args)
+  end
+
   def activity_project_path(project, *args)
     activity_namespace_project_path(project.namespace, project, *args)
   end

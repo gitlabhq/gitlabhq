@@ -49,7 +49,7 @@ module API
         runner = get_runner(params[:id])
         authenticate_update_runner!(runner)
 
-        attrs = attributes_for_keys [:description, :active, :tag_list]
+        attrs = attributes_for_keys [:description, :active, :tag_list, :run_untagged]
         if runner.update(attrs)
           present runner, with: Entities::RunnerDetails, current_user: current_user
         else

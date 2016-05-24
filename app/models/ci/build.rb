@@ -53,6 +53,7 @@ module Ci
         new_build.stage_idx = build.stage_idx
         new_build.trigger_request = build.trigger_request
         new_build.save
+        MergeRequests::AddTodoWhenBuildFailsService.new(build.project, nil).close(new_build)
         new_build
       end
     end
@@ -290,7 +291,13 @@ module Ci
     end
 
     def can_be_served?(runner)
+      return false unless has_tags? || runner.run_untagged?
+
       (tag_list - runner.tag_list).empty?
+    end
+
+    def has_tags?
+      tag_list.any?
     end
 
     def any_runners_online?

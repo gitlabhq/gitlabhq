@@ -1,0 +1,25 @@
+.table-responsive.variables-table
+  %table.table
+    %colgroup
+      %col
+      %col
+      %col{ width: 100 }
+    %thead
+      %th Key
+      %th Value
+      %th
+    %tbody
+      - @project.variables.each do |variable|
+        - if variable.id?
+          %tr
+            %td= variable.key
+            %td= variable.value
+            %td
+              = link_to namespace_project_variable_path(@project.namespace, @project, variable), class: "btn btn-transparent btn-variable-edit" do
+                %span.sr-only
+                  Update
+                = icon("pencil")
+              = link_to namespace_project_variable_path(@project.namespace, @project, variable), class: "btn btn-transparent btn-variable-delete", method: :delete, data: { confirm: "Are you sure?" } do
+                %span.sr-only
+                  Remove
+                = icon("trash")

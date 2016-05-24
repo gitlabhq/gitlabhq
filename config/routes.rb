@@ -710,14 +710,21 @@ Rails.application.routes.draw do
         end
 
         resources :protected_branches, only: [:index, :create, :update, :destroy], constraints: { id: Gitlab::Regex.git_reference_regex }
+        resources :variables, only: [:index, :show, :update, :create, :destroy]
+        resources :triggers, only: [:index, :create, :destroy]
         resource :mirror, only: [:show, :update] do
           member do
             post :update_now
           end
         end
         resources :git_hooks, constraints: { id: /\d+/ }
-        resource :variables, only: [:show, :update]
-        resources :triggers, only: [:index, :create, :destroy]
+
+        resources :pipelines, only: [:index, :new, :create, :show] do
+          member do
+            post :cancel
+            post :retry
+          end
+        end
 
         resources :builds, only: [:index, :show], constraints: { id: /\d+/ } do
           collection do
@@ -745,6 +752,8 @@ Rails.application.routes.draw do
             get :test
           end
         end
+
+        resources :container_registry, only: [:index, :destroy], constraints: { id: Gitlab::Regex.container_registry_reference_regex }
 
         resources :milestones, constraints: { id: /\d+/ } do
           member do

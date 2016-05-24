@@ -232,6 +232,7 @@ production: &base
     # api_url: http://localhost:5000/
     # key: config/registry.key
     # issuer: omnibus-certificate
+    # path: shared/registry
 
   #
   # 2. GitLab CI settings

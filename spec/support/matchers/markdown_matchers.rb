@@ -154,7 +154,7 @@ module MarkdownMatchers
     set_default_markdown_messages
 
     match do |actual|
-      expect(actual).to have_selector('a.gfm.gfm-milestone', count: 3)
+      expect(actual).to have_selector('a.gfm.gfm-milestone', count: 6)
     end
   end
 
@@ -166,6 +166,16 @@ module MarkdownMatchers
       expect(actual).to have_selector('ul.task-list', count: 2)
       expect(actual).to have_selector('li.task-list-item', count: 7)
       expect(actual).to have_selector('input[checked]', count: 3)
+    end
+  end
+
+  # InlineDiffFilter
+  matcher :parse_inline_diffs do
+    set_default_markdown_messages
+
+    match do |actual|
+      expect(actual).to have_selector('span.idiff.addition', count: 2)
+      expect(actual).to have_selector('span.idiff.deletion', count: 2)
     end
   end
 end

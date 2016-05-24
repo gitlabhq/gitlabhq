@@ -34,7 +34,7 @@ following locations:
 - [Build Variables](build_variables.md)
 - [Runners](runners.md)
 - [Open source license templates](licenses.md)
-- [EE License](license.md)
+- [License](license.md)
 
 ## Authentication
 
