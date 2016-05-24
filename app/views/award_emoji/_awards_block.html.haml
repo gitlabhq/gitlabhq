@@ -7,6 +7,9 @@
         = awards.count
 
   - if current_user
+    :javascript
+      gl.awardMenuUrl = "#{emojis_path}"
+
     .award-menu-holder.js-award-holder
       %button.btn.award-control.js-add-award{ type: "button", data: { award_menu_url: emojis_path } }
         = icon('smile-o', {class: "award-control-icon award-control-icon-normal"})

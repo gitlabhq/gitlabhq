@@ -232,7 +232,7 @@ class @AwardsHandler
 
     return @createEmoji_ emoji if $('.emoji-menu').length
 
-    awardMenuUrl = $('[data-award-menu-url]').data 'award-menu-url'
+    awardMenuUrl = gl.awardMenuUrl or '/emojis'
     @createEmojiMenu awardMenuUrl, => @createEmoji emoji
 
 
