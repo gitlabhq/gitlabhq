@@ -1,9 +1,9 @@
 require 'rails_helper'
 
 feature 'Todo target states', feature: true do
-  let(:user)          { create(:user) }
-  let(:author)        { create(:user) }
-  let(:project)       { create(:project) }
+  let(:user)    { create(:user) }
+  let(:author)  { create(:user) }
+  let(:project) { create(:project) }
 
   before do
     login_as user
