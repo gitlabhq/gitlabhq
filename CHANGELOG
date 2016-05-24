@@ -1,6 +1,19 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
-v 8.8.0 (unreleased)
+v 8.9.0 (unreleased)
+  - Redesign navigation for project pages
+
+v 8.8.2 (unreleased)
+  - Fix Error 500 when accessing application settings due to nil disabled OAuth sign-in sources
+  - Fix Error 500 in CI charts by gracefully handling commits with no durations
+
+v 8.8.1
+  - Add documentation for the "Health Check" feature
+  - Allow anonymous users to access a public project's pipelines
+  - Fix MySQL compatibility in zero downtime migrations helpers
+  - Fix the CI login to Container Registry (the gitlab-ci-token user)
+
+v 8.8.0
   - Implement GFM references for milestones (Alejandro Rodríguez)
   - Snippets tab under user profile. !4001 (Long Nguyen)
   - Fix error when using link to uploads in global snippets
@@ -14,6 +27,7 @@ v 8.8.0 (unreleased)
   - Project#open_branches has been cleaned up and no longer loads entire records into memory.
   - Escape HTML in commit titles in system note messages
   - Improve design of Pipeline View
+  - Fix scope used when accessing container registry
   - Fix creation of Ci::Commit object which can lead to pending, failed in some scenarios
   - Improve multiple branch push performance by memoizing permission checking
   - Log to application.log when an admin starts and stops impersonating a user

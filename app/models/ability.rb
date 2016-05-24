@@ -60,6 +60,7 @@ class Ability
           :read_project_member,
           :read_merge_request,
           :read_note,
+          :read_pipeline,
           :read_commit_status,
           :read_container_image,
           :download_code

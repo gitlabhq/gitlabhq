@@ -3,6 +3,7 @@ class Spinach::Features::ProjectShortcuts < Spinach::FeatureSteps
   include SharedPaths
   include SharedProject
   include SharedProjectTab
+  include SharedShortcuts
 
   step 'I press "g" and "f"' do
     find('body').native.send_key('g')

@@ -22,8 +22,4 @@ class Spinach::Features::ProfileActiveTab < Spinach::FeatureSteps
   step 'the active main tab should be Audit Log' do
     ensure_active_main_tab('Audit Log')
   end
-
-  def ensure_active_main_tab(content)
-    expect(find('.layout-nav li.active')).to have_content(content)
-  end
 end
