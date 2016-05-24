@@ -41,13 +41,17 @@
   }
 
   .text-expander {
-    background: #eee;
-    color: #555;
+    background: $gray-light;
+    color: $gl-gray-dark;
     padding: 0 5px;
     cursor: pointer;
-    margin-left: 4px;
+    border: 1px solid $border-gray-dark;
+    border-radius: $border-radius-default;
+    margin-left: 5px;
+
     &:hover {
-      background-color: #ddd;
+      background-color: darken($gray-light, 10%);
+      text-decoration: none;
     }
   }
 }
@@ -55,6 +59,7 @@
 .commit-actions {
   @media (min-width: $screen-md-min) {
     float: right;
+    margin-left: $gl-padding;
   }
 }
 
@@ -70,15 +75,9 @@
     border-bottom: 1px solid #eee;
   }
 
-  a {
+  a,
+  button {
     color: $gl-dark-link-color;
-  }
-
-  .commit-link {
-    &:hover {
-      color: $gl-link-color;
-      text-decoration: none;
-    }
   }
 
   .avatar {
@@ -94,7 +93,7 @@
     font-size: 14px;
     border-left: 1px solid #eee;
     padding: 10px 15px;
-    margin: 10px 0 10px 0;
+    margin: 10px 0;
     background: #f9f9f9;
     display: none;
 
