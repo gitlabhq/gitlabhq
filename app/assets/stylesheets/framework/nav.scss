@@ -1,3 +1,24 @@
+@mixin fade($gradient-direction) {
+  visibility: visible;
+  opacity: 1;
+  position: absolute;
+  bottom: 16px;
+  width: 43px;
+  height: 30px;
+  transition-duration: .3s;
+  -webkit-transform: translateZ(0);
+  background: -webkit-linear-gradient($gradient-direction, rgba(250, 250, 250, 0.4), $background-color 45%);
+  background: -o-linear-gradient($gradient-direction, rgba(250, 250, 250, 0.4), $background-color 45%);
+  background: -moz-linear-gradient($gradient-direction, rgba(250, 250, 250, 0.4), $background-color 45%);
+  background: linear-gradient($gradient-direction, rgba(250, 250, 250, 0.4), $background-color 45%);
+
+  &.end-scroll {
+    visibility: hidden;
+    opacity: 0;
+    transition-duration: .3s;
+  }
+}
+
 .nav-links {
   padding: 0;
   margin: 0;
@@ -210,12 +231,7 @@
     padding: 7px 0 0;
 
     @media (max-width: $screen-xs-min) {
-      float: none;
-      padding: 0 9px;
-
-      .dropdown-new {
-        width: 100%;
-      }
+      display: none;
     }
 
     i {
@@ -256,31 +272,14 @@
       display: none;
     }
 
-    .fade-out {
-      visibility: visible;
-      opacity: 1;
-      position: absolute;
-      bottom: 16px;
+    .fade-right {
+      @include fade(left);
       right: 0;
-      width: 43px;
-      height: 30px;
-      -webkit-transform: translateZ(0);
-      background: -webkit-linear-gradient(left, rgba(250, 250, 250, 0.4), $background-color 45%);
-      background: -o-linear-gradient(left, rgba(250, 250, 250, 0.4), $background-color 45%);
-      background: -moz-linear-gradient(left, rgba(250, 250, 250, 0.4), $background-color 45%);
-      background: linear-gradient(left, rgba(250, 250, 250, 0.4), $background-color 45%);
-
-      &.end-scroll {
-        visibility: hidden;
-        opacity: 0;
-        transition-duration: .3s;
-      }
     }
 
-    @media (max-width: 790px) {
-      .fade-out {
-        transition-duration: .3s;
-      }
+    .fade-left {
+      @include fade(right);
+      left: 0;
     }
 
     li {
@@ -306,7 +305,8 @@
   }
 
   .nav-control {
-    .fade-out {
+
+    .fade-right {
       right: 58px;
 
       @media (min-width: $screen-xs-max) {
@@ -321,12 +321,6 @@
 
 .page-with-layout-nav {
   margin-top: $header-height + 2;
-
-  &.controls-dropdown-visible {
-    @media (max-width: $screen-xs-min) {
-      margin-top: 96px;
-    }
-  }
 
   .right-sidebar {
     top: ($header-height * 2) + 2;

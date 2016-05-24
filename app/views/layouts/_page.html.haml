@@ -25,7 +25,7 @@
     .layout-nav
       .container-fluid
         = render "layouts/nav/#{nav}"
-  .content-wrapper{ class: "#{layout_nav_class} #{layout_dropdown_class}" }
+  .content-wrapper{ class: "#{layout_nav_class}" }
     = render "layouts/broadcast"
     = render "layouts/flash"
     = yield :flash_message

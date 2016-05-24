@@ -2,6 +2,7 @@
   = render 'layouts/nav/group_settings'
 
   %ul.nav-links#scrolling-tabs
+    .fade-left
     = nav_link(path: 'groups#show', html_options: {class: 'home'}) do
       = link_to group_path(@group), title: 'Home' do
         = icon('group fw')
@@ -36,4 +37,4 @@
         = icon('users fw')
         %span
           Members
-    .fade-out
+    .fade-right
