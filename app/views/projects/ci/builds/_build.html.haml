@@ -57,14 +57,10 @@
 
   %td.duration
     - if build.duration
-      = icon("clock-o")
-      &nbsp;
       #{duration_in_words(build.finished_at, build.started_at)}
 
   %td.timestamp
     - if build.finished_at
-      = icon("calendar")
-      &nbsp;
       %span #{time_ago_with_tooltip(build.finished_at)}
 
   - if defined?(coverage) && coverage

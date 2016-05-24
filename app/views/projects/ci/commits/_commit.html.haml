@@ -45,14 +45,7 @@
   %td
     - if commit.started_at && commit.finished_at
       %p.duration
-        = icon("clock-o")
-        &nbsp;
         #{duration_in_words(commit.finished_at, commit.started_at)}
-    - if commit.finished_at
-      %p.finished_at
-        = icon("calendar")
-        &nbsp;
-        #{time_ago_with_tooltip(commit.finished_at)}
 
   %td
     .controls.hidden-xs.pull-right
