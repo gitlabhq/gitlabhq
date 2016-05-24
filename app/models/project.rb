@@ -500,8 +500,8 @@ class Project < ActiveRecord::Base
       import_retry
     else
       import_start
-      RepositoryUpdateMirrorWorker.perform_async(self.id)
     end
+    RepositoryUpdateMirrorWorker.perform_async(self.id)
   end
 
   def mark_import_as_failed(error_message)
