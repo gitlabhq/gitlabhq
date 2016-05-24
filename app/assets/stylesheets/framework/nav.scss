@@ -274,7 +274,14 @@
 
     .fade-right {
       @include fade(left);
-      right: 0;
+      right: 58px;
+
+      @media (min-width: $screen-xs-max) {
+        right: 67px;
+      }
+      @media (max-width: $screen-xs-min) {
+        right: 0;
+      }
     }
 
     .fade-left {
@@ -300,20 +307,6 @@
 
       .badge {
         color: $gl-icon-color;
-      }
-    }
-  }
-
-  .nav-control {
-
-    .fade-right {
-      right: 58px;
-
-      @media (min-width: $screen-xs-max) {
-        right: 67px;
-      }
-      @media (max-width: $screen-xs-min) {
-        right: 0;
       }
     }
   }
