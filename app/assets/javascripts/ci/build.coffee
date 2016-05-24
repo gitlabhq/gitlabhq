@@ -33,8 +33,10 @@ class CiBuild
             url: build_url + "/trace.json?state=" + encodeURIComponent(@state)
             dataType: "json"
             success: (log) =>
-              if last_state is @state and log.status is "running"
-                @state = if log.state then log.state else ""
+              return unless last_state is @state
+
+              if log.state and log.status is "running"
+                @state = log.state
                 if log.append
                   $('.fa-refresh').before log.html
                 else

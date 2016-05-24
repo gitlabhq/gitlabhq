@@ -175,5 +175,14 @@ describe Ci::Ansi2html, lib: true do
 
       it_behaves_like 'stateable converter'
     end
+
+    context 'with new line' do
+      let(:pre_text) { "Hello\r" }
+      let(:pre_html) { "Hello\r" }
+      let(:text) { "\nWorld" }
+      let(:html) { "<br>World" }
+
+      it_behaves_like 'stateable converter'
+    end
   end
 end
