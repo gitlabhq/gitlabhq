@@ -35,9 +35,6 @@
         = icon('wrench')
         %span CI Lint
 
-.row-content-block
-  #{(@scope || 'all').capitalize} builds from this project
-
 %ul.content-list
   - if @builds.blank?
     %li
