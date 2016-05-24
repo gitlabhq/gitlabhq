@@ -9,26 +9,25 @@
 
 = cache(cache_key) do
   %li.commit.js-toggle-container{ id: "commit-#{commit.short_id}" }
+    = commit_author_avatar(commit)
     .commit-row-title
       %span.item-title
-        = link_to_gfm commit.title, namespace_project_commit_path(project.namespace, project, commit.id), class: "commit-row-message"
+        = link_to_gfm commit.title, namespace_project_commit_path(project.namespace, project, commit.id), class: "commit-row-message commit-link"
         - if commit.description?
           %a.text-expander.js-toggle-button ...
 
-      .pull-right
+      .commit-actions
         - if commit.status
-          = render_commit_status(commit)
+          = render_commit_status(commit, cssclass: 'btn btn-transparent')
         = clipboard_button(clipboard_text: commit.id)
-        = link_to commit.short_id, namespace_project_commit_path(project.namespace, project, commit), class: "commit_short_id"
+        = link_to commit.short_id, namespace_project_commit_path(project.namespace, project, commit), class: "commit-short-id btn btn-transparent commit-link"
+        = link_to_browse_code(project, commit)
 
     - if commit.description?
-      .commit-row-description.js-toggle-content
-        %pre
-          = preserve(markdown(escape_once(commit.description), pipeline: :single_line, author: commit.author))
+      %pre.commit-row-description.js-toggle-content
+        = preserve(markdown(escape_once(commit.description), pipeline: :single_line, author: commit.author))
 
     .commit-row-info
-      by
       = commit_author_link(commit, avatar: true, size: 24)
-      .committed_ago
-        #{time_ago_with_tooltip(commit.committed_date)} &nbsp;
-      = link_to_browse_code(project, commit)
+      authored
+      #{time_ago_with_tooltip(commit.committed_date)} &nbsp;

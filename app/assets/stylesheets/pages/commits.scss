@@ -7,72 +7,82 @@
   margin-right: 9px;
 }
 
-.lists-separator {
-  margin: 10px 0;
-  border-color: #ddd;
-}
+.commit-header {
+  padding: 5px 10px;
+  background-color: $background-color;
+  border-top: 1px solid $border-color;
+  border-bottom: 1px solid $border-color;
+  font-size: 14px;
 
-.commits-row {
-  ul {
-    margin: 0;
-
-    li.commit {
-      padding: 8px 0;
-    }
-  }
-
-  .commits-row-date {
-    font-size: 15px;
-    line-height: 20px;
-    margin-bottom: 5px;
+  &:first-child {
+    border-top-width: 0;
   }
 }
 
-li.commit {
-  list-style: none;
+.commit-row-title {
+  line-height: 20px;
+  margin-bottom: 2px;
 
-  .commit-row-title {
-    font-size: $list-font-size;
-    line-height: 20px;
-    margin-bottom: 2px;
+  .notes_count {
+    float: right;
+    margin-right: 10px;
+  }
 
-    .btn-clipboard {
-      margin-top: -1px;
+  .str-truncated {
+    max-width: 70%;
+  }
+
+  .commit-row-message {
+    color: $gl-dark-link-color;
+
+    &:hover {
+      text-decoration: underline;
     }
+  }
 
-    .notes_count {
-      float: right;
-      margin-right: 10px;
+  .text-expander {
+    background: #eee;
+    color: #555;
+    padding: 0 5px;
+    cursor: pointer;
+    margin-left: 4px;
+    &:hover {
+      background-color: #ddd;
     }
+  }
+}
 
-    .commit_short_id {
-      min-width: 65px;
-      color: $gl-dark-link-color;
-      font-family: $monospace_font;
+.commit-actions {
+  @media (min-width: $screen-md-min) {
+    float: right;
+  }
+}
+
+.commit-short-id {
+  font-family: $monospace_font;
+  font-weight: 600;
+}
+
+.commit {
+  padding: 10px 0 10px 55px;
+
+  &:not(:last-child) {
+    border-bottom: 1px solid #eee;
+  }
+
+  a {
+    color: $gl-dark-link-color;
+  }
+
+  .commit-link {
+    &:hover {
+      color: $gl-link-color;
+      text-decoration: none;
     }
+  }
 
-    .str-truncated {
-      max-width: 70%;
-    }
-
-    .commit-row-message {
-      color: $gl-dark-link-color;
-
-      &:hover {
-        text-decoration: underline;
-      }
-    }
-
-    .text-expander {
-      background: #eee;
-      color: #555;
-      padding: 0 5px;
-      cursor: pointer;
-      margin-left: 4px;
-      &:hover {
-        background-color: #ddd;
-      }
-    }
+  .avatar {
+    margin-left: -55px;
   }
 
   .item-title {
@@ -84,7 +94,7 @@ li.commit {
     font-size: 14px;
     border-left: 1px solid #eee;
     padding: 10px 15px;
-    margin: 5px 0 10px 5px;
+    margin: 10px 0 10px 0;
     background: #f9f9f9;
     display: none;
 
@@ -110,10 +120,6 @@ li.commit {
 
     .avatar {
       margin-right: 8px;
-    }
-
-    .committed_ago {
-      display: inline-block;
     }
   }
 
