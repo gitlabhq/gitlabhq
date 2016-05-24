@@ -45,8 +45,8 @@ module EventsHelper
 
   def event_feed_title(event)
     words = []
-    words << event_action_name(event)
     words << event.author_name
+    words << event_action_name(event)
 
     if event.push?
       words << "的"
