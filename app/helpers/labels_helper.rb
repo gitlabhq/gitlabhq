@@ -32,7 +32,7 @@ module LabelsHelper
   #   link_to_label(label) { "My Custom Label Text" }
   #
   # Returns a String
-  def link_to_label(label, project: nil, type: :issue, tooltip: true, css_class: '', &block)
+  def link_to_label(label, project: nil, type: :issue, tooltip: true, css_class: nil, &block)
     project ||= @project || label.project
     link = send("namespace_project_#{type.to_s.pluralize}_path",
                 project.namespace,
