@@ -156,26 +156,46 @@ class @AwardsHandler
 
     $emojiBtn.removeClass("active")
 
+
+  getAwardTooltip: ($awardBlock) ->
+
+    return $awardBlock.attr('data-original-title') or $awardBlock.attr('data-title')
+
+
   removeMeFromUserList: ($emojiBtn, emoji) ->
-    award_block = $emojiBtn
-    authors = award_block
-      .attr("data-original-title")
-      .split(", ")
-    authors.splice(authors.indexOf("me"),1)
-    award_block
-      .closest(".js-emoji-btn")
-      .attr("data-original-title", authors.join(", "))
-    @resetTooltip(award_block)
+
+    awardBlock    = $emojiBtn
+    originalTitle = @getAwardTooltip awardBlock
+
+    authors = originalTitle.split ', '
+    authors.splice authors.indexOf('me'), 1
+
+    newAuthors = authors.join ', '
+
+    awardBlock
+      .closest '.js-emoji-btn'
+      .removeData 'original-title'
+      .removeData 'title'
+      .attr 'data-original-title', newAuthors
+      .attr 'data-title', newAuthors
+
+    @resetTooltip(awardBlock)
+
 
   addMeToUserList: (emoji) ->
-    award_block = @findEmojiIcon(emoji).parent()
-    origTitle = award_block.attr("data-original-title").trim()
-    users = []
+
+    awardBlock = @findEmojiIcon(emoji).parent()
+    origTitle  = @getAwardTooltip awardBlock
+    users      = []
+
     if origTitle
-      users = origTitle.split(', ')
-    users.push("me")
-    award_block.attr("title", users.join(", "))
-    @resetTooltip(award_block)
+      users = origTitle.trim().split(', ')
+
+    users.push('me')
+    awardBlock.attr('title', users.join(", "))
+
+    @resetTooltip(awardBlock)
+
 
   resetTooltip: (award) ->
     award.tooltip("destroy")
