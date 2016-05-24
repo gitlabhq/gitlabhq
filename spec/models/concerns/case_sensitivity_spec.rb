@@ -3,7 +3,15 @@ require 'spec_helper'
 describe CaseSensitivity, models: true do
   describe '.iwhere' do
     let(:connection) { ActiveRecord::Base.connection }
-    let(:model)      { Class.new { include CaseSensitivity } }
+    let(:model) do
+      Class.new do
+        include CaseSensitivity
+
+        # This method needs to exist for verified doubles
+        def self.where(*_)
+        end
+      end
+    end
 
     describe 'using PostgreSQL' do
       before do
