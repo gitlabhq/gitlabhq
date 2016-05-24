@@ -6,6 +6,7 @@ v 8.9.0 (unreleased)
 v 8.8.2 (unreleased)
   - Fix Error 500 when accessing application settings due to nil disabled OAuth sign-in sources
   - Fix Error 500 in CI charts by gracefully handling commits with no durations
+  - Fix concurrent request when updating build log in browser
 
 v 8.8.1
   - Add documentation for the "Health Check" feature
@@ -38,7 +39,6 @@ v 8.8.0
   - Upgrade Sidekiq to 4.1.2
   - Added /health_check endpoint for checking service status
   - Make 'upcoming' filter for milestones work better across projects
-  - Fix concurrent request when updating build log in browser
   - Sanitize repo paths in new project error message
   - Bump mail_room to 0.7.0 to fix stuck IDLE connections
   - Remove future dates from contribution calendar graph.
