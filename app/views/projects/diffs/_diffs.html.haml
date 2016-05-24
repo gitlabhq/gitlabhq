@@ -24,6 +24,7 @@
     - diff_commit = commit_for_diff(diff_file)
     - blob = project.repository.blob_for_diff(diff_commit, diff_file)
     - next unless blob
+    - blob.load_all_data!(project.repository) unless blob.only_display_raw?
 
     = render 'projects/diffs/file', i: index, project: project,
       diff_file: diff_file, diff_commit: diff_commit, blob: blob, diff_refs: diff_refs

@@ -49,6 +49,8 @@
         = render "projects/diffs/parallel_view", diff_file: diff_file, project: project, blob: blob, index: i
       - else
         = render "projects/diffs/text_file", diff_file: diff_file, index: i
+    - elsif blob.only_display_raw?
+      .nothing-here-block This file is too large to display.
     - elsif blob.image?
       - old_file = project.repository.prev_blob_for_diff(diff_commit, diff_file)
       = render "projects/diffs/image", diff_file: diff_file, old_file: old_file, file: blob, index: i, diff_refs: diff_refs
