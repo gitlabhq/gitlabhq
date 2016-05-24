@@ -14,6 +14,7 @@ v 8.8.0
   - [Elastic] Improve code search
   - [Elastic] Fix encoding issues during indexing
   - Warn admin if current active count exceeds license
+  - [Elastic] Search through the filenames
   - Set KRB5 as default clone protocol when Kerberos is enabled and user is logged in (Borja Aparicio)
   - Add support for Admin Groups to SAML
   - Reduce emails-on-push HTML size by using a simple monospace font
