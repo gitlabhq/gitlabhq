@@ -24,7 +24,7 @@ module API
           @users = @users.non_ldap if skip_ldap
           @users = @users.search(params[:search]) if params[:search].present?
           @users = paginate @users
-       end
+        end
 
         if current_user.is_admin?
           present @users, with: Entities::UserFull

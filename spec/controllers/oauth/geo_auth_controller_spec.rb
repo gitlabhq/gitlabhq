@@ -106,7 +106,7 @@ describe Oauth::GeoAuthController do
         allow_any_instance_of(Oauth2::LogoutTokenValidationService).to receive(:execute) { { status: :error, message: :expired } }
         get :logout, state: logout_state
 
-        expect(response.body).to include("There is a problem with the OAuth access_token: #{:expired}")
+        expect(response.body).to include("There is a problem with the OAuth access_token: expired")
       end
     end
   end
