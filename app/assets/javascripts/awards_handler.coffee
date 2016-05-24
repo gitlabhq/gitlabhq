@@ -25,26 +25,9 @@ class @AwardsHandler
 
     e.preventDefault()
 
-    $emojiBtn = $(e.currentTarget)
-    $addAwardBtn = $('.js-add-award.is-active')
-    $votesBlock = $($addAwardBtn.closest('.js-award-holder').data('target'))
-
-    if $addAwardBtn.length is 0
-      $votesBlock = $emojiBtn.closest('.js-awards-block')
-    else if $votesBlock.length is 0
-      $votesBlock = $addAwardBtn.closest('.js-awards-block')
-
-    $votesBlock.addClass 'js-awards-block'
-    awardUrl = $votesBlock.data 'award-url'
-    emoji = $emojiBtn.find('.icon').data('emoji')
-
-    if emoji in [ 'thumbsup', 'thumbsdown' ]
-      mutualVote = if emoji is 'thumbsup' then 'thumbsdown' else 'thumbsup'
-
-      isAlreadyVoted = $("[data-emoji=#{mutualVote}]").parent().hasClass 'active'
-      @addAward awardUrl, mutualVote if isAlreadyVoted
-
-    @addAward awardUrl, emoji
+    emoji = $(e.currentTarget).find('.icon').data 'emoji'
+    @getVotesBlock().addClass 'js-awards-block'
+    @addAward @getAwardUrl(), emoji
 
 
   showEmojiMenu: ($addBtn) ->
@@ -105,16 +88,21 @@ class @AwardsHandler
 
     $menu.css(css)
 
-  addAward: (awardUrl, emoji) ->
+
+  addAward: (awardUrl, emoji, checkMutuality = yes) ->
+
     emoji = @normilizeEmojiName(emoji)
     @postEmoji awardUrl, emoji, =>
-      @addAwardToEmojiBar(emoji)
+      @addAwardToEmojiBar(emoji, checkMutuality)
 
       $('.js-awards-block-current').removeClass 'js-awards-block-current'
 
-    $(".emoji-menu").removeClass "is-visible"
+    $('.emoji-menu').removeClass 'is-visible'
 
-  addAwardToEmojiBar: (emoji) ->
+
+  addAwardToEmojiBar: (emoji, checkForMutuality = yes) ->
+
+    @checkMutuality emoji  if checkForMutuality
     @addEmojiToFrequentlyUsedList(emoji)
 
     emoji = @normilizeEmojiName(emoji)
@@ -130,6 +118,24 @@ class @AwardsHandler
         @addMeToUserList(emoji)
     else
       @createEmoji(emoji)
+
+
+  getVotesBlock: -> return $ '.awards.js-awards-block'
+
+
+  getAwardUrl: -> @getVotesBlock().data 'award-url'
+
+
+  checkMutuality: (emoji) ->
+
+    awardUrl = @getAwardUrl()
+
+    if emoji in [ 'thumbsup', 'thumbsdown' ]
+      mutualVote = if emoji is 'thumbsup' then 'thumbsdown' else 'thumbsup'
+
+      isAlreadyVoted = $("[data-emoji=#{mutualVote}]").parent().hasClass 'active'
+      @addAward awardUrl, mutualVote, no if isAlreadyVoted
+
 
   isActive: ($emojiBtn) ->
     $emojiBtn.hasClass("active")
