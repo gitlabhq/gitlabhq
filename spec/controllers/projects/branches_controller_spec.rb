@@ -9,8 +9,6 @@ describe Projects::BranchesController do
 
     project.team << [user, :master]
 
-    allow(project).to receive(:branches).and_return(['master', 'foo/bar/baz'])
-    allow(project).to receive(:tags).and_return(['v1.0.0', 'v2.0.0'])
     controller.instance_variable_set(:@project, project)
   end
 
