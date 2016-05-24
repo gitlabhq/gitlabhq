@@ -200,7 +200,6 @@ module CommitsHelper
     source_email = clean(commit.send "#{options[:source]}_email".to_sym)
 
     person_name = user.try(:name) || source_name
-    person_email = user.try(:email) || source_email
 
     text =
       if options[:avatar]

@@ -22,6 +22,14 @@ module ButtonHelper
       type: :button
   end
 
+  def clipboard_button_with_class(data = {}, css_class: 'btn-clipboard')
+    content_tag :button,
+      icon('clipboard'),
+      class: "btn #{css_class}",
+      data: data,
+      type: :button
+  end
+
   def http_clone_button(project)
     klass = 'http-selector'
     klass << ' has-tooltip' if current_user.try(:require_password?)
