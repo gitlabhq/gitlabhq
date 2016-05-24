@@ -5,7 +5,7 @@
     %h4.prepend-top-0
       Application theme
     %p
-      Customize the appearance of the interface.
+      This setting allows you to customize the appearance of the site, e.g. the sidebar.
   .col-lg-9.application-theme
     - Gitlab::Themes.each do |theme|
       = label_tag do
@@ -18,7 +18,7 @@
     %h4.prepend-top-0
       Syntax highlighting theme
     %p
-      Customize the syntax highlighting.
+      This setting allow you to customize the appearance of the syntax.
   .col-lg-9.syntax-theme
     - Gitlab::ColorSchemes.each do |scheme|
       = label_tag do
@@ -31,7 +31,7 @@
     %h4.prepend-top-0
       Behavior
     %p
-      Customize the behavior of the system layout and default views.
+      This setting allows you to customize the behavior of the system layout and default views.
   .col-lg-9
     .form-group
       = f.label :layout, class: 'label-light' do
