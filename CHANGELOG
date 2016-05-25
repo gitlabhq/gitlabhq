@@ -9,6 +9,7 @@ v 8.8.2
   - Fix backups if registry is disabled. !4263
   - Fixed issue with merge button color. !4211
   - Fixed issue with enter key selecting wrong option in dropdown. !4210
+  - When creating a .gitignore file a dropdown with templates will be provided. !4075
 
 v 8.8.1
   - Add documentation for the "Health Check" feature
@@ -88,7 +89,6 @@ v 8.8.0
   - Improve Issue formatting for the Slack Service (Jeroen van Baarsen)
   - Fixed advice on invalid permissions on upload path !2948 (Ludovic Perrine)
   - Allows MR authors to have the source branch removed when merging the MR. !2801 (Jeroen Jacobs)
-  - When creating a .gitignore file a dropdown with templates will be provided
 
 v 8.7.6
   - Fix links on wiki pages for relative url setups. !4131 (Artem Sidorenko)
