@@ -955,4 +955,37 @@ describe Project, models: true do
       it { is_expected.to be_falsey }
     end
   end
+
+  describe 'Project import job' do
+
+    let(:project) { create(:empty_project) }
+    let(:mirror) { false }
+
+    before do
+      allow_any_instance_of(Gitlab::Shell).to receive(:import_repository).with(project.path_with_namespace, project.import_url).and_return(true)
+      allow(project).to receive(:repository_exists?).and_return(true)
+    end
+
+    it 'imports a project' do
+      expect_any_instance_of(RepositoryImportWorker).to receive(:perform).and_call_original
+
+      project.import_start
+      project.add_import_job
+
+      expect(project.reload.import_status).to eq('finished')
+    end
+
+    it 'imports a mirrored project' do
+      allow_any_instance_of(RepositoryUpdateMirrorWorker).to receive(:perform)
+      expect_any_instance_of(RepositoryImportWorker).to receive(:perform).and_call_original
+
+      project.import_start
+
+      project.mirror = true
+
+      project.add_import_job
+
+      expect(project.reload.import_status).to eq('finished')
+    end
+  end
 end
