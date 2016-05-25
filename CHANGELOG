@@ -3,9 +3,9 @@ Please view this file on the master branch, on stable branches it's out of date.
 v 8.8.2
   - Added remove due date button. !4209
   - Fix access to Pipelines by Anonymous user. !4233
-v 8.8.2 (unreleased)
-  - Fix Error 500 when accessing application settings due to nil disabled OAuth sign-in sources
-  - Fix Error 500 in CI charts by gracefully handling commits with no durations
+  - Fix Error 500 when accessing application settings due to nil disabled OAuth sign-in sources. !4242
+  - Fix Error 500 in CI charts by gracefully handling commits with no durations.  !4245
+  - Fix table UI on CI builds page. !4249
 
 v 8.8.1
   - Add documentation for the "Health Check" feature
