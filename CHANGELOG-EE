@@ -2,6 +2,8 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.8.2
   - Fix repository mirror updates for new imports stuck in started
+  - [Elastic] Search through the filenames. !409
+  - Fix repository mirror updates for new imports stuck in "started" state. !416
 
 v 8.8.1
   - No EE-specific changes
