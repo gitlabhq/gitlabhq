@@ -10,11 +10,13 @@ module Gitlab
       end
       
       def call(env)
-        proxy_start = env['HTTP_GITLAB_WORHORSE_PROXY_START'].to_f / 1_000_000_000
-        if proxy_start > 0
-          # send measurement
-          puts "\n\n\n#{(Time.now - proxy_start).to_f}\n\n\n"
+        trans = Gitlab::Metrics.current_transaction
+        proxy_start = env['HTTP_GITLAB_WORHORSE_PROXY_START'].presence
+        if trans && proxy_start
+          # Time in milliseconds since gitlab-workhorse started the request
+          trans.set(:proxy_flight_time, Time.now.to_f * 1_000 - proxy_start.to_f / 1_000_000)
         end
+
         @app.call(env)
       end
     end
