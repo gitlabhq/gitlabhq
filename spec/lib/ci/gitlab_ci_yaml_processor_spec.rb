@@ -619,19 +619,19 @@ module Ci
       context 'no dependencies' do
         let(:dependencies) { }
 
-        it { expect { subject }.to_not raise_error }
+        it { expect { subject }.not_to raise_error }
       end
 
       context 'dependencies to builds' do
         let(:dependencies) { ['build1', 'build2'] }
 
-        it { expect { subject }.to_not raise_error }
+        it { expect { subject }.not_to raise_error }
       end
 
       context 'dependencies to builds defined as symbols' do
         let(:dependencies) { [:build1, :build2] }
 
-        it { expect { subject }.to_not raise_error }
+        it { expect { subject }.not_to raise_error }
       end
 
       context 'undefined dependency' do

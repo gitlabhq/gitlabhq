@@ -1130,7 +1130,7 @@ RSpec/MultipleDescribes:
 # Enforces the usage of the same method on all negative message expectations.
 RSpec/NotToNot:
   EnforcedStyle: not_to
-  Enabled: false
+  Enabled: true
 
 # Prefer using verifying doubles over normal doubles.
 RSpec/VerifiedDoubles:

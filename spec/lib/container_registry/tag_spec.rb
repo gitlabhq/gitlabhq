@@ -50,13 +50,13 @@ describe ContainerRegistry::Tag do
       context '#config' do
         subject { tag.config }
 
-        it { is_expected.to_not be_nil }
+        it { is_expected.not_to be_nil }
       end
 
       context '#created_at' do
         subject { tag.created_at }
 
-        it { is_expected.to_not be_nil }
+        it { is_expected.not_to be_nil }
       end
     end
   end

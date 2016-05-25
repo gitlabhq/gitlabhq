@@ -52,12 +52,12 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
 
   shared_examples 'an unauthorized' do
     it { is_expected.to include(http_status: 401) }
-    it { is_expected.to_not include(:token) }
+    it { is_expected.not_to include(:token) }
   end
 
   shared_examples 'a forbidden' do
     it { is_expected.to include(http_status: 403) }
-    it { is_expected.to_not include(:token) }
+    it { is_expected.not_to include(:token) }
   end
 
   describe '#full_access_token' do
