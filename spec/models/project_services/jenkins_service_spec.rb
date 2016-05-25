@@ -74,6 +74,30 @@ describe JenkinsService do
     end
   end
 
+  describe '#execute' do
+    it 'adds default web hook headers to the request' do
+      user = create(:user, username: 'username')
+      project = create(:project, name: 'project')
+      push_sample_data = Gitlab::PushDataBuilder.build_sample(project, user)
+      jenkins_service = described_class.create(
+        active: true,
+        project: project,
+        properties: {
+          jenkins_url: 'http://jenkins.example.com/',
+          project_name: 'my_project'
+        }
+      )
+      stub_request(:post, jenkins_service.hook_url)
+
+      jenkins_service.execute(push_sample_data)
+
+      expect(
+        a_request(:post, jenkins_service.hook_url)
+          .with(headers: { 'X-Gitlab-Event' => 'Push Hook' })
+      ).to have_been_made.once
+    end
+  end
+
   describe 'Stored password invalidation' do
     let(:project) { create(:project) }
 
