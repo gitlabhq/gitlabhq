@@ -2,13 +2,13 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.8.2
   - Added remove due date button. !4209
+  - Fix access to Pipelines by Anonymous user. !4233
 
 v 8.8.1
   - Add documentation for the "Health Check" feature
   - Allow anonymous users to access a public project's pipelines
   - Fix MySQL compatibility in zero downtime migrations helpers
   - Fix the CI login to Container Registry (the gitlab-ci-token user)
-  - Fix access to Pipelines by Anonymous user
 
 v 8.8.0
   - Implement GFM references for milestones (Alejandro Rodríguez)
