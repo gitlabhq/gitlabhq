@@ -14,7 +14,8 @@ class CommitStatus < ActiveRecord::Base
   alias_attribute :author, :user
 
   scope :latest, -> { where(id: unscope(:select).select('max(id)').group(:name, :commit_id)) }
-  scope :ordered, -> { order(:ref, :stage_idx, :name) }
+  scope :retried, -> { where.not(id: latest) }
+  scope :ordered, -> { order(:name) }
   scope :ignored, -> { where(allow_failure: true, status: [:failed, :canceled]) }
 
   state_machine :status, initial: :pending do
@@ -45,6 +46,10 @@ class CommitStatus < ActiveRecord::Base
     after_transition [:pending, :running] => :success do |commit_status|
       MergeRequests::MergeWhenBuildSucceedsService.new(commit_status.commit.project, nil).trigger(commit_status)
     end
+
+    after_transition any => :failed do |commit_status|
+      MergeRequests::AddTodoWhenBuildFailsService.new(commit_status.commit.project, nil).execute(commit_status)
+    end
   end
 
   delegate :sha, :short_sha, to: :commit
@@ -54,13 +59,15 @@ class CommitStatus < ActiveRecord::Base
   end
 
   def self.stages
-    order_by = 'max(stage_idx)'
-    group('stage').order(order_by).pluck(:stage, order_by).map(&:first).compact
+    # We group by stage name, but order stages by theirs' index
+    unscoped.from(all, :sg).group('stage').order('max(stage_idx)', 'stage').pluck('sg.stage')
   end
 
   def self.stages_status
-    all.stages.inject({}) do |h, stage|
-      h[stage] = all.where(stage: stage).status
+    # We execute subquery for each stage to calculate a stage status
+    statuses = unscoped.from(all, :sg).group('stage').pluck('sg.stage', all.where('stage=sg.stage').status_sql)
+    statuses.inject({}) do |h, k|
+      h[k.first] = k.last
       h
     end
   end

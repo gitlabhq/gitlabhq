@@ -1,0 +1,66 @@
+- page_title "Pipelines"
+= render "header_title"
+
+.top-area
+  %ul.nav-links
+    %li{class: ('active' if @scope.nil?)}
+      = link_to project_pipelines_path(@project) do
+        All
+        %span.badge.js-totalbuilds-count
+          = number_with_delimiter(@pipelines_count)
+
+    %li{class: ('active' if @scope == 'running')}
+      = link_to project_pipelines_path(@project, scope: :running) do
+        Running
+        %span.badge.js-running-count
+          = number_with_delimiter(@running_or_pending_count)
+
+    %li{class: ('active' if @scope == 'branches')}
+      = link_to project_pipelines_path(@project, scope: :branches) do
+        Branches
+
+    %li{class: ('active' if @scope == 'tags')}
+      = link_to project_pipelines_path(@project, scope: :tags) do
+        Tags
+
+  .nav-controls
+    - if can? current_user, :create_pipeline, @project
+      = link_to new_namespace_project_pipeline_path(@project.namespace, @project), class: 'btn btn-create' do
+        = icon('plus')
+        New pipeline
+
+      - unless @repository.gitlab_ci_yml
+        = link_to 'Get started with Pipelines', help_page_path('ci/quick_start', 'README'), class: 'btn btn-info'
+
+      = link_to ci_lint_path, class: 'btn btn-default' do
+        = icon('wrench')
+        %span CI Lint
+
+.row-content-block
+  - if @scope == 'running'
+    Running pipelines for this project
+  - elsif @scope.nil?
+    Pipelines for this project
+  - else
+    #{@scope.titleize} for this project
+
+%ul.content-list
+  - stages = @pipelines.stages
+  - if @pipelines.blank?
+    %li
+      .nothing-here-block No pipelines to show
+  - else
+    .table-holder
+      %table.table.builds
+        %tbody
+          %th ID
+          %th Commit
+          - stages.each do |stage|
+            %th
+              %span.pipeline-stage.has-tooltip{ title: "#{stage.titleize}" }
+                = stage.titleize.pluralize
+          %th
+          %th
+        = render @pipelines, commit_sha: true, stage: true, allow_retry: true, stages: stages
+
+    = paginate @pipelines, theme: 'gitlab'

@@ -10,7 +10,6 @@ describe Ci::Commit, models: true do
   it { is_expected.to have_many(:builds) }
   it { is_expected.to validate_presence_of :sha }
   it { is_expected.to validate_presence_of :status }
-  it { is_expected.to delegate_method(:stages).to(:statuses) }
 
   it { is_expected.to respond_to :git_author_name }
   it { is_expected.to respond_to :git_author_email }

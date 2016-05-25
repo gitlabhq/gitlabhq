@@ -28,7 +28,7 @@ describe Projects::GroupLinksController do
         expect(group.shared_projects).to include project
       end
 
-      it 'redirects to project group links page'do
+      it 'redirects to project group links page' do
         expect(response).to redirect_to(
           namespace_project_group_links_path(project.namespace, project)
         )

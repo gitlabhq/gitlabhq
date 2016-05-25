@@ -54,7 +54,7 @@ describe Issues::CreateService, services: true do
             label_ids: [label.id] }
         end
 
-        it 'does not assign label'do
+        it 'does not assign label' do
           expect(issue.labels).to_not include label
         end
       end

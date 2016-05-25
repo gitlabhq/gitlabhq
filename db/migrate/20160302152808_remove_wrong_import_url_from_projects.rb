@@ -24,7 +24,7 @@ class RemoveWrongImportUrlFromProjects < ActiveRecord::Migration
   def process_projects_with_wrong_url
     projects_with_wrong_import_url.each do |project|
       begin
-        import_url = Gitlab::ImportUrl.new(project["import_url"])
+        import_url = Gitlab::UrlSanitizer.new(project["import_url"])
 
         update_import_url(import_url, project)
         update_import_data(import_url, project)

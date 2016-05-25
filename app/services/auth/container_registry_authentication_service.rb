@@ -6,7 +6,7 @@ module Auth
       return error('not found', 404) unless registry.enabled
 
       if params[:offline_token]
-        return error('unauthorized', 401) unless current_user
+        return error('unauthorized', 401) unless current_user || project
       else
         return error('forbidden', 403) unless scope
       end
@@ -20,7 +20,7 @@ module Auth
       token.issuer = registry.issuer
       token.audience = AUDIENCE
       token[:access] = names.map do |name|
-        { type: 'repository', name: name, actions: %w(pull push) }
+        { type: 'repository', name: name, actions: %w(*) }
       end
       token.encoded
     end

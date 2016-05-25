@@ -173,7 +173,7 @@ class Spinach::Features::ProjectCommits < Spinach::FeatureSteps
   end
 
   step 'I see commit ci info' do
-    expect(page).to have_content "build: pending"
+    expect(page).to have_content "Builds for 1 pipeline pending"
   end
 
   step 'I click status link' do
@@ -181,7 +181,7 @@ class Spinach::Features::ProjectCommits < Spinach::FeatureSteps
   end
 
   step 'I see builds list' do
-    expect(page).to have_content "build: pending"
+    expect(page).to have_content "Builds for 1 pipeline pending"
     expect(page).to have_content "1 build"
   end
 

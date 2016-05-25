@@ -12,3 +12,11 @@
   border: 1px solid $warning-message-border;
   border-radius: $border-radius-base;
 }
+
+.warning-title {
+  color: $gl-warning;
+}
+
+.danger-title {
+  color: $gl-danger;
+}

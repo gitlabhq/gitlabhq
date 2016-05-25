@@ -10,7 +10,7 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
   subject { described_class.new(current_project, current_user, current_params).execute }
 
   before do
-    stub_container_registry_config(enabled: true, issuer: 'rspec', key: nil)
+    allow(Gitlab.config.registry).to receive_messages(enabled: true, issuer: 'rspec', key: nil)
     allow_any_instance_of(JSONWebToken::RSAToken).to receive(:key).and_return(rsa_key)
   end
 
@@ -58,6 +58,17 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
   shared_examples 'a forbidden' do
     it { is_expected.to include(http_status: 403) }
     it { is_expected.to_not include(:token) }
+  end
+
+  describe '#full_access_token' do
+    let(:project) { create(:empty_project) }
+    let(:token) { described_class.full_access_token(project.path_with_namespace) }
+
+    subject { { token: token } }
+
+    it_behaves_like 'a accessible' do
+      let(:actions) { ['*'] }
+    end
   end
 
   context 'user authorization' do
@@ -116,12 +127,12 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
   context 'project authorization' do
     let(:current_project) { create(:empty_project) }
 
-    context 'disallow to use offline_token' do
+    context 'allow to use offline_token' do
       let(:current_params) do
         { offline_token: true }
       end
 
-      it_behaves_like 'an unauthorized'
+      it_behaves_like 'an authenticated'
     end
 
     context 'allow to pull and push images' do

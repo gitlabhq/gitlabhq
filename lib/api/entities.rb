@@ -408,6 +408,7 @@ module API
 
     class RunnerDetails < Runner
       expose :tag_list
+      expose :run_untagged
       expose :version, :revision, :platform, :architecture
       expose :contacted_at
       expose :token, if: lambda { |runner, options| options[:current_user].is_admin? || !runner.is_shared? }
@@ -455,6 +456,14 @@ module API
       expose(:permissions) { |license| license.meta['permissions'] }
       expose(:limitations) { |license| license.meta['limitations'] }
       expose :content
+    end
+
+    class GitignoresList < Grape::Entity
+      expose :name
+    end
+
+    class Gitignore < Grape::Entity
+      expose :name, :content
     end
   end
 end

@@ -100,6 +100,12 @@ describe Repository, models: true do
       expect(results.first).not_to start_with('fatal:')
     end
 
+    it 'properly handles an unmatched parenthesis' do
+      results = repository.search_files("test(", 'master')
+
+      expect(results.first).not_to start_with('fatal:')
+    end
+
     describe 'result' do
       subject { results.first }
 
@@ -176,6 +182,15 @@ describe Repository, models: true do
       repository.remove_file(user, 'LICENSE', 'Remove LICENSE', 'master')
     end
 
+    it 'handles when HEAD points to non-existent ref' do
+      repository.commit_file(user, 'LICENSE', 'Copyright!', 'Add LICENSE', 'master', false)
+      rugged = double('rugged')
+      expect(rugged).to receive(:head_unborn?).and_return(true)
+      expect(repository).to receive(:rugged).and_return(rugged)
+
+      expect(repository.license_blob).to be_nil
+    end
+
     it 'looks in the root_ref only' do
       repository.remove_file(user, 'LICENSE', 'Remove LICENSE', 'markdown')
       repository.commit_file(user, 'LICENSE', Licensee::License.new('mit').content, 'Add LICENSE', 'markdown', false)
@@ -202,6 +217,15 @@ describe Repository, models: true do
     before do
       repository.send(:cache).expire(:license_key)
       repository.remove_file(user, 'LICENSE', 'Remove LICENSE', 'master')
+    end
+
+    it 'handles when HEAD points to non-existent ref' do
+      repository.commit_file(user, 'LICENSE', 'Copyright!', 'Add LICENSE', 'master', false)
+      rugged = double('rugged')
+      expect(rugged).to receive(:head_unborn?).and_return(true)
+      expect(repository).to receive(:rugged).and_return(rugged)
+
+      expect(repository.license_key).to be_nil
     end
 
     it 'returns nil when no license is detected' do
