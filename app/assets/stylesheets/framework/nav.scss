@@ -1,4 +1,4 @@
-@mixin fade($gradient-direction) {
+@mixin fade($gradient-direction, $rgba, $gradient-color) {
   visibility: visible;
   opacity: 1;
   position: absolute;
@@ -7,15 +7,25 @@
   height: 30px;
   transition-duration: .3s;
   -webkit-transform: translateZ(0);
-  background: -webkit-linear-gradient($gradient-direction, rgba(250, 250, 250, 0.4), $background-color 45%);
-  background: -o-linear-gradient($gradient-direction, rgba(250, 250, 250, 0.4), $background-color 45%);
-  background: -moz-linear-gradient($gradient-direction, rgba(250, 250, 250, 0.4), $background-color 45%);
-  background: linear-gradient($gradient-direction, rgba(250, 250, 250, 0.4), $background-color 45%);
+  background: -webkit-linear-gradient($gradient-direction, $rgba, $gradient-color 45%);
+  background: -o-linear-gradient($gradient-direction, $rgba, $gradient-color 45%);
+  background: -moz-linear-gradient($gradient-direction, $rgba, $gradient-color 45%);
+  background: linear-gradient($gradient-direction, $rgba, $gradient-color 45%);
 
   &.end-scroll {
     visibility: hidden;
     opacity: 0;
     transition-duration: .3s;
+  }
+}
+
+@mixin scrolling-links() {
+  white-space: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  &::-webkit-scrollbar {
+    display: none;
   }
 }
 
@@ -262,23 +272,17 @@
   }
 
   .nav-links {
+    @include scrolling-links();
     border-bottom: none;
     height: 51px;
-    white-space: nowrap;
-    overflow-x: auto;
-    overflow-y: hidden;
-    -webkit-overflow-scrolling: touch;
-    &::-webkit-scrollbar {
-      display: none;
-    }
 
     .fade-right {
-      @include fade(left);
+      @include fade(left, rgba(250, 250, 250, 0.4), $background-color);
       right: 0;
     }
 
     .fade-left {
-      @include fade(right);
+      @include fade(right, rgba(250, 250, 250, 0.4), $background-color);
       left: 0;
     }
 
@@ -314,6 +318,24 @@
       @media (max-width: $screen-xs-min) {
         right: 0;
       }
+    }
+  }
+}
+
+.nav-block {
+  position: relative;
+
+  .nav-links {
+    @include scrolling-links();
+
+    .fade-right {
+      @include fade(left, rgba(255, 255, 255, 0.4), $white-light);
+      right: 0;
+    }
+
+    .fade-left {
+      @include fade(right, rgba(255, 255, 255, 0.4), $white-light);
+      left: 0;
     }
   }
 }

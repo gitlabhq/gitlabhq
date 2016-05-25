@@ -20,7 +20,7 @@
               Leave Project
 
 %div{ class: nav_control_class }
-  %ul.nav-links#scrolling-tabs
+  %ul.nav-links.scrolling-tabs
     .fade-left
     = nav_link(path: 'projects#show', html_options: {class: 'home'}) do
       = link_to project_path(@project), title: 'Project', class: 'shortcuts-project' do
