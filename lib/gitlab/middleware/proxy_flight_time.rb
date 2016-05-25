@@ -4,7 +4,7 @@
 
 module Gitlab
   module Middleware
-    class ProxyTiming
+    class ProxyFlightTime
       def initialize(app)
         @app = app
       end
