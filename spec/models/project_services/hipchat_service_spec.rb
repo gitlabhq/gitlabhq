@@ -303,7 +303,7 @@ describe HipchatService, models: true do
         it "should notify only broken" do
           hipchat.notify_only_broken_builds = true
           hipchat.execute(data)
-          expect(WebMock).to_not have_requested(:post, api_url).once
+          expect(WebMock).not_to have_requested(:post, api_url).once
         end
       end
     end

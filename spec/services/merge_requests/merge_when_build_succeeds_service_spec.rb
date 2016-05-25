@@ -75,7 +75,7 @@ describe MergeRequests::MergeWhenBuildSucceedsService do
         allow(ci_commit).to receive(:success?).and_return(true)
         allow(old_build).to receive(:sha).and_return('1234abcdef')
 
-        expect(MergeWorker).to_not receive(:perform_async)
+        expect(MergeWorker).not_to receive(:perform_async)
         service.trigger(old_build)
       end
     end
@@ -88,7 +88,7 @@ describe MergeRequests::MergeWhenBuildSucceedsService do
       it "doesn't merge a requests for status on other branch" do
         allow(project.repository).to receive(:branch_names_contains).with(commit_status.sha).and_return([])
 
-        expect(MergeWorker).to_not receive(:perform_async)
+        expect(MergeWorker).not_to receive(:perform_async)
         service.trigger(commit_status)
       end
 
@@ -122,7 +122,7 @@ describe MergeRequests::MergeWhenBuildSucceedsService do
       end
 
       it "doesn't merge if some stages failed" do
-        expect(MergeWorker).to_not receive(:perform_async)
+        expect(MergeWorker).not_to receive(:perform_async)
         build.success
         test.drop
       end

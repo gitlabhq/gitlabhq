@@ -106,7 +106,7 @@ class Spinach::Features::DashboardTodos < Spinach::FeatureSteps
       if pending
         expect(page).to have_link 'Done'
       else
-        expect(page).to_not have_link 'Done'
+        expect(page).not_to have_link 'Done'
       end
     end
   end

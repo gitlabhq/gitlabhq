@@ -6,7 +6,7 @@ describe ContainerRegistry::Repository do
 
   it { expect(repository).to respond_to(:registry) }
   it { expect(repository).to delegate_method(:client).to(:registry) }
-  it { expect(repository.tag('test')).to_not be_nil }
+  it { expect(repository.tag('test')).not_to be_nil }
 
   context '#path' do
     subject { repository.path }
@@ -27,7 +27,7 @@ describe ContainerRegistry::Repository do
     context '#manifest' do
       subject { repository.manifest }
 
-      it { is_expected.to_not be_nil }
+      it { is_expected.not_to be_nil }
     end
 
     context '#valid?' do
@@ -39,7 +39,7 @@ describe ContainerRegistry::Repository do
     context '#tags' do
       subject { repository.tags }
 
-      it { is_expected.to_not be_empty }
+      it { is_expected.not_to be_empty }
     end
   end
 

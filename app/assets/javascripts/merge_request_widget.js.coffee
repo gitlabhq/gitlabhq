@@ -106,6 +106,7 @@ class @MergeRequestWidget
         @firstCICheck = false
 
   showCIStatus: (state) ->
+    return if not state?
     $('.ci_widget').hide()
     allowed_states = ["failed", "canceled", "running", "pending", "success", "skipped", "not_found"]
     if state in allowed_states
@@ -126,6 +127,6 @@ class @MergeRequestWidget
     $('.ci_widget:visible .ci-coverage').text(text)
 
   setMergeButtonClass: (css_class) ->
-    $('.js-merge-button')
+    $('.js-merge-button,.accept-action .dropdown-toggle')
       .removeClass('btn-danger btn-warning btn-create')
       .addClass(css_class)

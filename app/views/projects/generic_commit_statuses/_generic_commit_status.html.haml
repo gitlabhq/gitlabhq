@@ -40,13 +40,13 @@
   %td
     = generic_commit_status.name
 
-    .pull-right
-      - if generic_commit_status.tags.any?
-        - generic_commit_status.tags.each do |tag|
-          %span.label.label-primary
-            = tag
-      - if defined?(retried) && retried
-        %span.label.label-warning retried
+  %td
+    - if generic_commit_status.tags.any?
+      - generic_commit_status.tags.each do |tag|
+        %span.label.label-primary
+          = tag
+    - if defined?(retried) && retried
+      %span.label.label-warning retried
 
   %td.duration
     - if generic_commit_status.duration

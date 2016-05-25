@@ -119,7 +119,7 @@
     }
 
     input {
-      height: 34px;
+      height: 35px;
       display: inline-block;
       position: relative;
       top: 2px;
@@ -196,7 +196,7 @@
   position: fixed;
   top: $header-height;
   width: 100%;
-  z-index: 1;
+  z-index: 11;
   background: $background-color;
   border-bottom: 1px solid $border-color;
   transition-duration: .3s;
@@ -238,6 +238,10 @@
       @media (max-width: $screen-xs-min) {
         margin-left: 0;
       }
+
+      li.active {
+        font-weight: bold;
+      }
     }
   }
 
@@ -246,6 +250,11 @@
     height: 51px;
     white-space: nowrap;
     overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    &::-webkit-scrollbar {
+      display: none;
+    }
 
     li {
 
@@ -278,5 +287,9 @@
     @media (max-width: $screen-xs-min) {
       margin-top: 96px;
     }
+  }
+
+  .right-sidebar {
+    top: ($header-height * 2) + 2;
   }
 }

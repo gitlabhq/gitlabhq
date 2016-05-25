@@ -43,7 +43,7 @@ describe Projects::GroupLinksController do
       end
 
       it 'does not share project with that group' do
-        expect(group.shared_projects).to_not include project
+        expect(group.shared_projects).not_to include project
       end
     end
   end

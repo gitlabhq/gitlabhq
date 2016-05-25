@@ -140,7 +140,7 @@ describe Ci::Runner, models: true do
 
     context 'when runner does not have tags' do
       subject { create(:ci_runner, tag_list: []) }
-      it { is_expected.to_not have_tags }
+      it { is_expected.not_to have_tags }
     end
   end
 
