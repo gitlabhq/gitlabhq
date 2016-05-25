@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160516174813) do
+ActiveRecord::Schema.define(version: 20160525205328) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -760,7 +760,6 @@ ActiveRecord::Schema.define(version: 20160516174813) do
     t.integer  "build_timeout",                default: 3600,     null: false
     t.boolean  "pending_delete",               default: false
     t.boolean  "public_builds",                default: true,     null: false
-    t.string   "main_language"
     t.integer  "pushes_since_gc",              default: 0
     t.boolean  "last_repository_check_failed"
     t.datetime "last_repository_check_at"

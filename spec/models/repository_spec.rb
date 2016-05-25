@@ -829,18 +829,6 @@ describe Repository, models: true do
     end
   end
 
-  describe "#main_language" do
-    it 'shows the main language of the project' do
-      expect(repository.main_language).to eq("Ruby")
-    end
-
-    it 'returns nil when the repository is empty' do
-      allow(repository).to receive(:empty?).and_return(true)
-
-      expect(repository.main_language).to be_nil
-    end
-  end
-
   describe '#before_remove_tag' do
     it 'flushes the tag cache' do
       expect(repository).to receive(:expire_tag_count_cache)
