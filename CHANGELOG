@@ -8,6 +8,7 @@ v 8.9.0 (unreleased)
 v 8.8.2 (unreleased)
   - Fix Error 500 when accessing application settings due to nil disabled OAuth sign-in sources
   - Fix Error 500 in CI charts by gracefully handling commits with no durations
+  - Fix concurrent request when updating build log in browser
 
 v 8.8.1
   - Add documentation for the "Health Check" feature
