@@ -12,6 +12,7 @@ if Gitlab::Metrics.enabled?
 
   Gitlab::Application.configure do |config|
     config.middleware.use(Gitlab::Metrics::RackMiddleware)
+    config.middleware.use(Gitlab::Middleware::ProxyTiming)
   end
 
   Sidekiq.configure_server do |config|
