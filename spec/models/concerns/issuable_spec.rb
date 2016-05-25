@@ -114,6 +114,35 @@ describe Issue, "Issuable" do
     end
   end
 
+  describe "#sort" do
+    let(:project) { build_stubbed(:empty_project) }
+
+    context "by milestone due date" do
+      #Correct order is:
+      #Issues/MRs with milestones ordered by date
+      #Issues/MRs with milestones without dates
+      #Issues/MRs without milestones
+
+      let!(:issue) { create(:issue, project: project) }
+      let!(:early_milestone) { create(:milestone, project: project, due_date: 10.days.from_now) }
+      let!(:late_milestone) { create(:milestone, project: project, due_date: 30.days.from_now) }
+      let!(:issue1) { create(:issue, project: project, milestone: early_milestone) }
+      let!(:issue2) { create(:issue, project: project, milestone: late_milestone) }
+      let!(:issue3) { create(:issue, project: project) }
+
+      it "sorts desc" do
+        issues = project.issues.sort('milestone_due_desc')
+        expect(issues).to match_array([issue2, issue1, issue, issue3])
+      end
+
+      it "sorts asc" do
+        issues = project.issues.sort('milestone_due_asc')
+        expect(issues).to match_array([issue1, issue2, issue, issue3])
+      end
+    end
+  end
+
+
   describe '#subscribed?' do
     context 'user is not a participant in the issue' do
       before { allow(issue).to receive(:participants).with(user).and_return([]) }
