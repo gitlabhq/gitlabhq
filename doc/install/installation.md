@@ -271,7 +271,7 @@ sudo usermod -aG redis git
     # Clone GitLab repository
     sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 8-8-stable gitlab
 
-**Note:** You can change `8-7-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
+**Note:** You can change `8-8-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
 
 ### Configure It
 

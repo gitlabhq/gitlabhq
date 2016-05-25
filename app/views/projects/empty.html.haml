@@ -15,9 +15,13 @@
       如有已有文件请按照下面的命令行指令推送它们。
     %p
       或者可以从增加
-      = link_to "README", new_readme_path, class: 'underlined-link'
+      = succeed '，' do
+        = link_to "README", new_readme_path, class: 'underlined-link'
       或一个
-      = link_to "许可证", add_special_file_path(@project, file_name: 'LICENSE'), class: 'underlined-link'
+      = succeed '，' do
+        = link_to "许可证", add_special_file_path(@project, file_name: 'LICENSE'), class: 'underlined-link'
+      或一个
+      = link_to '.gitignore', add_special_file_path(@project, file_name: '.gitignore'), class: 'underlined-link'
       文件开始本项目。
 
 - if can?(current_user, :push_code, @project)

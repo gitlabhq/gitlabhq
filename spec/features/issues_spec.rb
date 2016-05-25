@@ -431,6 +431,43 @@ describe 'Issues', feature: true do
     end
   end
 
+  describe 'due date' do
+    context 'update due on issue#show', js: true do
+      let(:issue) { create(:issue, project: project, author: @user, assignee: @user) }
+
+      before do
+        visit namespace_project_issue_path(project.namespace, project, issue)
+      end
+
+      it 'should add due date to issue' do
+        page.within '.due_date' do
+          click_link 'Edit'
+
+          page.within '.ui-datepicker-calendar' do
+            first('.ui-state-default').click
+          end
+
+          expect(page).to have_no_content 'None'
+        end
+      end
+
+      it 'should remove due date from issue' do
+        page.within '.due_date' do
+          click_link 'Edit'
+
+          page.within '.ui-datepicker-calendar' do
+            first('.ui-state-default').click
+          end
+
+          expect(page).to have_no_content 'None'
+
+          click_link 'remove due date'
+          expect(page).to have_content 'None'
+        end
+      end
+    end
+  end
+
   def first_issue
     page.all('ul.issues-list > li').first.text
   end

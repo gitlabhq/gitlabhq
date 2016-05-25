@@ -37,5 +37,16 @@
 
 .table-holder
   %table.table.builds
+    %thead
+      %tr
+        %th 状态
+        %th 构建 ID
+        %th 名称
+        %th 标签
+        %th 运行时间
+        %th 结束时间
+        - if @project.build_coverage_enabled?
+          %th 覆盖率
+        %th
     - ci_commit.statuses.stages.each do |stage|
       = render 'projects/commit/ci_stage', stage: stage, statuses: ci_commit.statuses.where(stage: stage)
