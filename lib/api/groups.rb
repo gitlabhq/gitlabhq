@@ -95,8 +95,7 @@ module API
       #   GET /groups/:id/projects
       get ":id/projects" do
         group = find_group(params[:id])
-        projects = group.projects
-        projects = filter_projects(projects)
+        projects = GroupProjectsFinder.new(group).execute(current_user)
         projects = paginate projects
         present projects, with: Entities::Project
       end
