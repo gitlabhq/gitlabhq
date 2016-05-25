@@ -20,10 +20,7 @@ module CommitsHelper
     options = options.merge(source: :author)
     user = commit.send(options[:source])
 
-    source_name = clean(commit.send "#{options[:source]}_name".to_sym)
     source_email = clean(commit.send "#{options[:source]}_email".to_sym)
-
-    person_name = user.try(:name) || source_name
     person_email = user.try(:email) || source_email
 
     image_tag(avatar_icon(person_email, options[:size]), class: "avatar #{"s#{options[:size]}" if options[:size]}", width: options[:size], alt: "")

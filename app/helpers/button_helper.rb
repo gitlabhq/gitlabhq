@@ -14,10 +14,10 @@ module ButtonHelper
   #   # => "<button class='...' data-clipboard-target='div#foo'>...</button>"
   #
   # See http://clipboardjs.com/#usage
-  def clipboard_button(data = {}, css_class: 'btn-clipboard')
+  def clipboard_button(data = {})
     content_tag :button,
       icon('clipboard'),
-      class: "btn #{css_class}",
+      class: "btn",
       data: data,
       type: :button
   end
