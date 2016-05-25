@@ -24,78 +24,11 @@ feature 'Issue awards', js: true, feature: true do
       expect(first('.js-emoji-btn')).to have_content '0'
     end
 
-    it 'should show award menu button in notes' do
-      page.within('.note') do
-        expect(page).to have_selector('.js-award-action-btn')
-      end
-    end
-
-    it 'should not show award bar on note if no awards given' do
-      page.within('.note') do
-        expect(find('.js-awards-block', visible: false)).not_to be_visible
-      end
-    end
-
-    it 'should be able to show award menu when clicking add award button in note' do
-      show_note_award_menu
-    end
-
     it 'should only have one menu on the page' do
       first('.js-add-award').click
       expect(page).to have_selector('.emoji-menu')
 
-      page.within('.note') do
-        find('.js-add-award').click
-      end
-
       expect(page).to have_selector('.emoji-menu', count: 1)
-    end
-
-    it 'should add award to note' do
-      show_note_award_menu
-      award_on_note
-
-      page.within('.note') do
-        expect(find('.js-awards-block')).to be_visible
-        expect(find('.js-awards-block')).to have_selector('.active')
-      end
-    end
-
-    it 'should remove award from note' do
-      show_note_award_menu
-      award_on_note
-
-      page.within('.note') do
-        expect(find('.js-awards-block')).to be_visible
-        expect(find('.js-awards-block')).to have_selector('.active')
-      end
-
-      remove_award_on_note
-      sleep 0.5
-
-      page.within('.note') do
-        expect(find('.js-awards-block', visible: false)).not_to be_visible
-        expect(find('.js-awards-block', visible: false)).not_to have_selector('.active')
-      end
-    end
-
-    it 'should not hide award bar on notes with more than 1 award' do
-      show_note_award_menu
-      award_on_note
-
-      show_note_award_menu
-      award_on_note(2)
-
-      page.within('.note') do
-        expect(find('.js-awards-block')).to be_visible
-        expect(find('.js-awards-block')).to have_selector('.active')
-      end
-
-      remove_award_on_note
-
-      page.within('.note') do
-        expect(find('.js-awards-block')).to be_visible
-      end
     end
   end
 
