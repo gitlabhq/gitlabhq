@@ -121,7 +121,7 @@ group :unicorn do
 end
 
 # State machine
-gem "state_machines-activerecord", '~> 0.3.0'
+gem "state_machines-activerecord", '~> 0.4.0'
 # Run events after state machine commits
 gem 'after_commit_queue'
 
