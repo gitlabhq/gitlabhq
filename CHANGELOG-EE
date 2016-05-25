@@ -1,5 +1,8 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+v 8.8.3
+  - Reduce load on DB for license upgrade check
+
 v 8.8.2
   - Fix repository mirror updates for new imports stuck in started
 
