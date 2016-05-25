@@ -37,7 +37,7 @@ module LicenseHelper
 
     return unless signed_in
 
-    return unless ((license.notify_admins? || license.warn_upgrade_license_message?) && is_admin) || license.notify_users?
+    return unless (is_admin && (license.notify_admins? || license.warn_upgrade_license_message?)) || license.notify_users?
 
     message = []
 
