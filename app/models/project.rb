@@ -434,9 +434,9 @@ class Project < ActiveRecord::Base
       projects_limit = creator.projects_limit
 
       if projects_limit == 0
-        self.errors.add(:base, "Personal project creation is not allowed. Please contact your administrator with questions")
+        self.errors.add(:limit_reached, "Personal project creation is not allowed. Please contact your administrator with questions")
       else
-        self.errors.add(:base, "Your project limit is #{projects_limit} projects! Please contact your administrator to increase it")
+        self.errors.add(:limit_reached, "Your project limit is #{projects_limit} projects! Please contact your administrator to increase it")
       end
     end
   rescue
