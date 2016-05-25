@@ -20,7 +20,14 @@
       = link_to '取消所有', cancel_all_admin_builds_path, data: { confirm: '确定要继续么？' }, class: 'btn btn-danger', method: :post
 
 .row-content-block.second-block
-  #{(@scope || '所有').capitalize} 的构建
+  - if @scope.nil?
+    所有的构建
+  - elsif @scope.capitalize == 'Running'
+    正在运行的构建
+  - elsif @scope.capitalize == 'Finished'
+    已结束的构建
+  - else
+    #{@scope.capitalize} 的构建
 
 %ul.content-list
   - if @builds.blank?
