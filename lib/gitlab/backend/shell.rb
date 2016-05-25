@@ -52,8 +52,11 @@ module Gitlab
       output.lines.each do |line|
         target, path = line.strip!.split("\t")
 
-        # When the remote repo is empty we don't have tags.
-        break if target.nil?
+        # When the remote repo does not have tags.
+        if target.nil? || path.nil?
+          Rails.logger.info "Empty or invalid list of tags for remote: #{remote}. Output: #{output}"
+          break
+        end
 
         name = path.split('/', 3).last
         # We're only interested in tag references
