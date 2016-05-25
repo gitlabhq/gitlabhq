@@ -237,7 +237,7 @@ Style/FileName:
   Enabled: true
 
 # Checks for a line break before the first parameter in a multi-line method
-#   parameter definition.
+# parameter definition.
 Style/FirstMethodParameterLineBreak:
   Enabled: true
 
