@@ -100,6 +100,9 @@ v 8.8.0
   - Allows MR authors to have the source branch removed when merging the MR. !2801 (Jeroen Jacobs)
   - When creating a .gitignore file a dropdown with templates will be provided
 
+v 8.7.7
+  - Fix import by `Any Git URL` broken if the URL contains a space
+
 v 8.7.6
   - Fix links on wiki pages for relative url setups. !4131 (Artem Sidorenko)
   - Fix import from GitLab.com to a private instance failure. !4181

@@ -7,7 +7,7 @@ module Gitlab
     end
 
     def initialize(url, credentials: nil)
-      @url = Addressable::URI.parse(URI.encode(url))
+      @url = Addressable::URI.parse(url)
       @credentials = credentials
     end
 
