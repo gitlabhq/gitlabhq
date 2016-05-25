@@ -186,7 +186,7 @@ describe 'Filter issues', feature: true do
         fill_in 'issue_search', with: 'testing'
 
         page.within '.issues-list' do
-          expect(page).to_not have_selector('.issue')
+          expect(page).not_to have_selector('.issue')
         end
       end
     end
