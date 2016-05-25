@@ -39,6 +39,7 @@ v 8.8.0
   - Added inline diff styling for `change_title` system notes. (Adam Butler)
   - Project#open_branches has been cleaned up and no longer loads entire records into memory.
   - Escape HTML in commit titles in system note messages
+  - Improve design of Pipeline View
   - Fix scope used when accessing container registry
   - Fix creation of Ci::Commit object which can lead to pending, failed in some scenarios
   - Improve multiple branch push performance by memoizing permission checking
