@@ -197,7 +197,6 @@ class @AwardsHandler
     users      = []
 
     if origTitle
-    if origTitle
       users = origTitle.trim().split(', ')
 
     users.push('me')
