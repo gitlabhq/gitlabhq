@@ -32,16 +32,18 @@
 
     - if current_user
       .label-subscription.inline{ data: { url: toggle_subscription_namespace_project_label_path(@project.namespace, @project, label) } }
-        %button.js-subscribe-button.label-subscribe-button.btn.btn-transparent.btn-action.subscription-status{ type: "button", data: { toggle: "tooltip", status: label_subscription_status(label) } }
-          %span= label_subscription_toggle_button_text(label)
+        %button.js-subscribe-button.label-subscribe-button.btn.btn-transparent.btn-action.subscription-status{ type: "button", title: label_subscription_toggle_button_text(label), data: { toggle: "tooltip", status: label_subscription_status(label) } }
+          %span.sr-only= label_subscription_toggle_button_text(label)
+          = icon('eye', class: 'label-subscribe-button-icon')
+          = icon('spinner spin', class: 'label-subscribe-button-loading')
 
     - if can? current_user, :admin_label, @project
       = link_to edit_namespace_project_label_path(@project.namespace, @project, label), title: "Edit", class: 'btn btn-transparent btn-action', data: {toggle: "tooltip"} do
         %span.sr-only Edit
-        %i.fa.fa-pencil-square-o
+        = icon('pencil-square-o')
       = link_to namespace_project_label_path(@project.namespace, @project, label), title: "Delete", class: 'btn btn-transparent btn-action remove-row', method: :delete, remote: true, data: {confirm: "Remove this label? Are you sure?", toggle: "tooltip"} do
         %span.sr-only Delete
-        %i.fa.fa-trash-o
+        = icon('trash-o')
 
   - if current_user
     :javascript

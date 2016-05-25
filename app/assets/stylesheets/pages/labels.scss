@@ -166,3 +166,19 @@
 .label-options-toggle {
   width: 100%;
 }
+
+.label-subscribe-button {
+  .label-subscribe-button-loading {
+    display: none;
+  }
+
+  &.disabled {
+    .label-subscribe-button-icon {
+      display: none;
+    }
+
+    .label-subscribe-button-loading {
+      display: block;
+    }
+  }
+}
