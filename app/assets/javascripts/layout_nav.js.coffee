@@ -1,13 +1,14 @@
 class @LayoutNav
   $ ->
     $('.fade-left').addClass('end-scroll')
-    $('.scrolling-tabs').scroll (event) ->
-      el = $(event.target)
-      currentPosition = $(this).scrollLeft()
-      mobileScreenWidth = 480
+    $('.scrolling-tabs').on 'scroll', (event) ->
+      $this = $(this)
+      $el = $(event.target)
+      currentPosition = $this.scrollLeft()
+      size = bp.getBreakpointSize()
       controlBtnWidth = $('.controls').width()
-      maxPosition = $(this)[0].scrollWidth - $(this).parent().width()
-      maxPosition += controlBtnWidth if $('.nav-control').length and $(window).width() > mobileScreenWidth
+      maxPosition = $this.get(0).scrollWidth - $this.parent().width()
+      maxPosition += controlBtnWidth if size isnt 'xs' and $('.nav-control').length
 
-      el.find('.fade-left').toggleClass('end-scroll', currentPosition is 0)
-      el.find('.fade-right').toggleClass('end-scroll', currentPosition is maxPosition)
+      $el.find('.fade-left').toggleClass('end-scroll', currentPosition is 0)
+      $el.find('.fade-right').toggleClass('end-scroll', currentPosition is maxPosition)

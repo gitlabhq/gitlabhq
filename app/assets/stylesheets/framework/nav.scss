@@ -2,7 +2,7 @@
   visibility: visible;
   opacity: 1;
   position: absolute;
-  bottom: 16px;
+  bottom: 12px;
   width: 43px;
   height: 30px;
   transition-duration: .3s;
@@ -240,7 +240,7 @@
     float: right;
     padding: 7px 0 0;
 
-    @media (max-width: $screen-xs-min) {
+    @media (max-width: $screen-xs-max) {
       display: none;
     }
 
@@ -310,7 +310,6 @@
 
   .nav-control {
     .fade-right {
-      right: 58px;
 
       @media (min-width: $screen-xs-max) {
         right: 67px;
