@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160509201028) do
+ActiveRecord::Schema.define(version: 20160516174813) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -82,6 +82,7 @@ ActiveRecord::Schema.define(version: 20160509201028) do
     t.integer  "metrics_packet_size",               default: 1
     t.text     "disabled_oauth_sign_in_sources"
     t.string   "health_check_access_token"
+    t.boolean  "send_user_confirmation_email",      default: false
   end
 
   create_table "audit_events", force: :cascade do |t|
@@ -282,6 +283,7 @@ ActiveRecord::Schema.define(version: 20160509201028) do
     t.string   "revision"
     t.string   "platform"
     t.string   "architecture"
+    t.boolean  "run_untagged", default: true,  null: false
   end
 
   add_index "ci_runners", ["description"], name: "index_ci_runners_on_description_trigram", using: :gin, opclasses: {"description"=>"gin_trgm_ops"}
@@ -645,7 +647,7 @@ ActiveRecord::Schema.define(version: 20160509201028) do
     t.string   "line_code"
     t.string   "commit_id"
     t.integer  "noteable_id"
-    t.boolean  "system",            default: false, null: false
+    t.boolean  "system",        default: false, null: false
     t.text     "st_diff"
     t.integer  "updated_by_id"
     t.string   "type"

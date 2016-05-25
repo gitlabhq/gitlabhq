@@ -121,7 +121,7 @@ class Dispatcher
             new UsersSelect()
           when 'projects'
             new NamespaceSelect()
-      when 'dashboard'
+      when 'dashboard', 'root'
         shortcut_handler = new ShortcutsDashboardNavigation()
       when 'profiles'
         new Profile()

@@ -13,7 +13,7 @@ class RepositoryImportWorker
     result = Projects::ImportService.new(project, current_user).execute
 
     if result[:status] == :error
-      project.update(import_error: result[:message])
+      project.update(import_error: Gitlab::UrlSanitizer.sanitize(result[:message]))
       project.import_fail
       return
     end

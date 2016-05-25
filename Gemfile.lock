@@ -33,10 +33,12 @@ GEM
       activemodel (= 4.2.6)
       activesupport (= 4.2.6)
       arel (~> 6.0)
-    activerecord-session_store (0.1.2)
-      actionpack (>= 4.0.0, < 5)
-      activerecord (>= 4.0.0, < 5)
-      railties (>= 4.0.0, < 5)
+    activerecord-session_store (1.0.0)
+      actionpack (>= 4.0, < 5.1)
+      activerecord (>= 4.0, < 5.1)
+      multi_json (~> 1.11, >= 1.11.2)
+      rack (>= 1.5.2, < 3)
+      railties (>= 4.0, < 5.1)
     activesupport (4.2.6)
       i18n (~> 0.7)
       json (~> 1.7, >= 1.7.7)
@@ -549,7 +551,7 @@ GEM
     orm_adapter (0.5.0)
     paranoia (2.1.4)
       activerecord (~> 4.0)
-    parser (2.3.0.6)
+    parser (2.3.1.0)
       ast (~> 2.2)
     pg (0.18.4)
     poltergeist (1.9.0)
@@ -684,15 +686,17 @@ GEM
     rspec-retry (0.4.5)
       rspec-core
     rspec-support (3.4.1)
-    rubocop (0.38.0)
-      parser (>= 2.3.0.6, < 3.0)
+    rubocop (0.40.0)
+      parser (>= 2.3.1.0, < 3.0)
       powerpack (~> 0.1)
       rainbow (>= 1.99.1, < 3.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (~> 1.0, >= 1.0.1)
+    rubocop-rspec (1.5.0)
+      rubocop (>= 0.40.0)
     ruby-fogbugz (0.2.1)
       crack (~> 0.4)
-    ruby-progressbar (1.7.5)
+    ruby-progressbar (1.8.1)
     ruby-saml (1.1.2)
       nokogiri (>= 1.5.10)
       uuid (~> 2.3)
@@ -839,7 +843,7 @@ GEM
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.7.2)
-    unicode-display_width (1.0.2)
+    unicode-display_width (1.0.5)
     unicorn (4.9.0)
       kgio (~> 2.6)
       rack
@@ -883,7 +887,7 @@ PLATFORMS
 DEPENDENCIES
   RedCloth (~> 4.2.9)
   ace-rails-ap (~> 4.0.2)
-  activerecord-session_store (~> 0.1.0)
+  activerecord-session_store (~> 1.0.0)
   acts-as-taggable-on (~> 3.4)
   addressable (~> 2.3.8)
   after_commit_queue
@@ -1013,7 +1017,8 @@ DEPENDENCIES
   rqrcode-rails3 (~> 0.1.7)
   rspec-rails (~> 3.4.0)
   rspec-retry
-  rubocop (~> 0.38.0)
+  rubocop (~> 0.40.0)
+  rubocop-rspec (~> 1.5.0)
   ruby-fogbugz (~> 0.2.1)
   sanitize (~> 2.0)
   sass-rails (~> 5.0.0)
@@ -1058,4 +1063,4 @@ DEPENDENCIES
   wikicloth (= 0.8.1)
 
 BUNDLED WITH
-   1.12.3
+   1.12.4

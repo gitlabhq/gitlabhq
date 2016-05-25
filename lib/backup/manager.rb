@@ -1,5 +1,8 @@
 module Backup
   class Manager
+    ARCHIVES_TO_BACKUP = %w[uploads builds artifacts lfs registry]
+    FOLDERS_TO_BACKUP = %w[repositories db]
+
     def pack
       # Make sure there is a connection
       ActiveRecord::Base.connection.reconnect!
@@ -147,7 +150,7 @@ module Backup
     end
 
     def skipped?(item)
-      settings[:skipped] && settings[:skipped].include?(item)
+      settings[:skipped] && settings[:skipped].include?(item) || disabled_features.include?(item)
     end
 
     private
@@ -157,11 +160,17 @@ module Backup
     end
 
     def archives_to_backup
-      %w{uploads builds artifacts lfs registry}.map{ |name| (name + ".tar.gz") unless skipped?(name) }.compact
+      ARCHIVES_TO_BACKUP.map{ |name| (name + ".tar.gz") unless skipped?(name) }.compact
     end
 
     def folders_to_backup
-      %w{repositories db}.reject{ |name| skipped?(name) }
+      FOLDERS_TO_BACKUP.reject{ |name| skipped?(name) }
+    end
+
+    def disabled_features
+      features = []
+      features << 'registry' unless Gitlab.config.registry.enabled
+      features
     end
 
     def settings

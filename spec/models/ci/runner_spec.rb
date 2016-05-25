@@ -1,6 +1,24 @@
 require 'spec_helper'
 
 describe Ci::Runner, models: true do
+  describe 'validation' do
+    context 'when runner is not allowed to pick untagged jobs' do
+      context 'when runner does not have tags' do
+        it 'is not valid' do
+          runner = build(:ci_runner, tag_list: [], run_untagged: false)
+          expect(runner).to be_invalid
+        end
+      end
+
+      context 'when runner has tags' do
+        it 'is valid' do
+          runner = build(:ci_runner, tag_list: ['tag'], run_untagged: false)
+          expect(runner).to be_valid
+        end
+      end
+    end
+  end
+
   describe '#display_name' do
     it 'should return the description if it has a value' do
       runner = FactoryGirl.build(:ci_runner, description: 'Linux/Ruby-1.9.3-p448')
@@ -114,7 +132,19 @@ describe Ci::Runner, models: true do
     end
   end
 
-  describe '#search' do
+  describe '#has_tags?' do
+    context 'when runner has tags' do
+      subject { create(:ci_runner, tag_list: ['tag']) }
+      it { is_expected.to have_tags }
+    end
+
+    context 'when runner does not have tags' do
+      subject { create(:ci_runner, tag_list: []) }
+      it { is_expected.to_not have_tags }
+    end
+  end
+
+  describe '.search' do
     let(:runner) { create(:ci_runner, token: '123abc') }
 
     it 'returns runners with a matching token' do

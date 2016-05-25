@@ -11,6 +11,7 @@ module TodosHelper
     case todo.action
     when Todo::ASSIGNED then 'assigned you'
     when Todo::MENTIONED then 'mentioned you on'
+    when Todo::BUILD_FAILED then 'The build failed for your'
     end
   end
 
@@ -28,8 +29,11 @@ module TodosHelper
       namespace_project_commit_path(todo.project.namespace.becomes(Namespace), todo.project,
                                     todo.target, anchor: anchor)
     else
-      polymorphic_path([todo.project.namespace.becomes(Namespace),
-                        todo.project, todo.target], anchor: anchor)
+      path = [todo.project.namespace.becomes(Namespace), todo.project, todo.target]
+
+      path.unshift(:builds) if todo.build_failed?
+
+      polymorphic_path(path, anchor: anchor)
     end
   end
 

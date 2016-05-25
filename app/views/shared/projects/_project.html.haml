@@ -17,7 +17,7 @@
           = project.main_language
       - if project.commit.try(:status)
         %span
-          = render_ci_status(project.commit)
+          = render_commit_status(project.commit)
       - if forks
         %span
           = icon('code-fork')

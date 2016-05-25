@@ -124,11 +124,7 @@ module ProjectsHelper
   end
 
   def license_short_name(project)
-    no_license_key = project.repository.license_key.nil? ||
-      # Back-compat if cache contains 'no-license', can be removed in a few weeks
-      project.repository.license_key == 'no-license'
-
-    return 'LICENSE' if no_license_key
+    return 'LICENSE' if project.repository.license_key.nil?
 
     license = Licensee::License.new(project.repository.license_key)
 
@@ -146,6 +142,10 @@ module ProjectsHelper
 
     if project.repo_exists? && can?(current_user, :read_merge_request, project)
       nav_tabs << :merge_requests
+    end
+
+    if can?(current_user, :read_pipeline, project)
+      nav_tabs << :pipelines
     end
 
     if can?(current_user, :read_build, project)

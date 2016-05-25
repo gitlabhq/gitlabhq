@@ -1,3 +1,5 @@
+require: rubocop-rspec
+
 AllCops:
   TargetRubyVersion: 2.1
   # Cop names are not displayed in offense messages by default. Change behavior
@@ -21,6 +23,7 @@ AllCops:
     - 'lib/email_validator.rb'
     - 'lib/gitlab/upgrader.rb'
     - 'lib/gitlab/seeder.rb'
+    - 'generator_templates/**/*'
 
 
 ##################### Style ##################################
@@ -151,7 +154,7 @@ Style/ConstantName:
 
 # Use def with parentheses when there are arguments.
 Style/DefWithParentheses:
-  Enabled: false
+  Enabled: true
 
 # Checks for use of deprecated Hash methods.
 Style/DeprecatedHashMethods:
@@ -298,7 +301,7 @@ Style/IndentHash:
 
 # Use Kernel#loop for infinite loops.
 Style/InfiniteLoop:
-  Enabled: false
+  Enabled: true
 
 # Use the new lambda literal syntax for single-line blocks.
 Style/Lambda:
@@ -332,6 +335,12 @@ Style/MethodName:
 Style/ModuleFunction:
   Enabled: false
 
+# Checks that the closing brace in an array literal is either on the same line
+# as the last array element, or a new line.
+Style/MultilineArrayBraceLayout:
+  Enabled: false
+  EnforcedStyle: symmetrical
+
 # Avoid multi-line chains of blocks.
 Style/MultilineBlockChain:
   Enabled: false
@@ -340,9 +349,21 @@ Style/MultilineBlockChain:
 Style/MultilineBlockLayout:
   Enabled: true
 
+# Checks that the closing brace in a hash literal is either on the same line as
+# the last hash element, or a new line.
+Style/MultilineHashBraceLayout:
+  Enabled: false
+  EnforcedStyle: symmetrical
+
 # Do not use then for multi-line if/unless.
 Style/MultilineIfThen:
   Enabled: false
+
+# Checks that the closing brace in a method call is either on the same line as
+# the last method argument, or a new line.
+Style/MultilineMethodCallBraceLayout:
+  Enabled: false
+  EnforcedStyle: symmetrical
 
 # Checks indentation of method calls with the dot operator that span more than
 # one line.
@@ -524,10 +545,9 @@ Style/SpaceAfterSemicolon:
 Style/SpaceAroundEqualsInParameterDefault:
   Enabled: false
 
-# TODO: Enable SpaceAroundKeyword Cop.
 # Use a space around keywords if appropriate.
 Style/SpaceAroundKeyword:
-  Enabled: false
+  Enabled: true
 
 # Use a single space around operators.
 Style/SpaceAroundOperators:
@@ -754,19 +774,19 @@ Lint/BlockAlignment:
 # Default values in optional keyword arguments and optional ordinal arguments
 # should not refer back to the name of the argument.
 Lint/CircularArgumentReference:
-  Enabled: false
+  Enabled: true
 
 # Checks for condition placed in a confusing position relative to the keyword.
 Lint/ConditionPosition:
-  Enabled: false
+  Enabled: true
 
 # Check for debugger calls.
 Lint/Debugger:
-  Enabled: false
+  Enabled: true
 
 # Align ends corresponding to defs correctly.
 Lint/DefEndAlignment:
-  Enabled: false
+  Enabled: true
 
 # Check for deprecated class method calls.
 Lint/DeprecatedClassMethods:
@@ -782,15 +802,15 @@ Lint/DuplicatedKey:
 
 # Check for immutable argument given to each_with_object.
 Lint/EachWithObjectArgument:
-  Enabled: false
+  Enabled: true
 
 # Check for odd code arrangement in an else block.
 Lint/ElseLayout:
-  Enabled: false
+  Enabled: true
 
 # Checks for empty ensure block.
 Lint/EmptyEnsure:
-  Enabled: false
+  Enabled: true
 
 # Checks for empty string interpolation.
 Lint/EmptyInterpolation:
@@ -798,37 +818,36 @@ Lint/EmptyInterpolation:
 
 # Align ends correctly.
 Lint/EndAlignment:
-  Enabled: false
+  Enabled: true
 
 # END blocks should not be placed inside method definitions.
 Lint/EndInMethod:
-  Enabled: false
+  Enabled: true
 
 # Do not use return in an ensure block.
 Lint/EnsureReturn:
-  Enabled: false
+  Enabled: true
 
 # The use of eval represents a serious security risk.
 Lint/Eval:
-  Enabled: false
+  Enabled: true
 
 # Catches floating-point literals too large or small for Ruby to represent.
 Lint/FloatOutOfRange:
-  Enabled: false
+  Enabled: true
 
 # The number of parameters to format/sprint must match the fields.
 Lint/FormatParameterMismatch:
-  Enabled: false
+  Enabled: true
 
 # Don't suppress exception.
 Lint/HandleExceptions:
   Enabled: false
 
-# TODO: Enable ImplicitStringConcatenation Cop.
 # Checks for adjacent string literals on the same line, which could better be
 # represented as a single string literal.
 Lint/ImplicitStringConcatenation:
-  Enabled: false
+  Enabled: true
 
 # TODO: Enable IneffectiveAccessModifier Cop.
 # Checks for attempts to use `private` or `protected` to set the visibility
@@ -839,7 +858,7 @@ Lint/IneffectiveAccessModifier:
 # Checks for invalid character literals with a non-escaped whitespace
 # character.
 Lint/InvalidCharacterLiteral:
-  Enabled: false
+  Enabled: true
 
 # Checks of literals used in conditions.
 Lint/LiteralInCondition:
@@ -847,7 +866,7 @@ Lint/LiteralInCondition:
 
 # Checks for literals used in interpolation.
 Lint/LiteralInInterpolation:
-  Enabled: false
+  Enabled: true
 
 # Use Kernel#loop with break rather than begin/end/until or begin/end/while
 # for post-loop tests.
@@ -856,11 +875,11 @@ Lint/Loop:
 
 # Do not use nested method definitions.
 Lint/NestedMethodDefinition:
-  Enabled: false
+  Enabled: true
 
 # Do not omit the accumulator when calling `next` in a `reduce`/`inject` block.
 Lint/NextWithoutAccumulator:
-  Enabled: false
+  Enabled: true
 
 # Checks for method calls with a space before the opening parenthesis.
 Lint/ParenthesesAsGroupedExpression:
@@ -869,11 +888,11 @@ Lint/ParenthesesAsGroupedExpression:
 # Checks for `rand(1)` calls. Such calls always return `0` and most likely
 # a mistake.
 Lint/RandOne:
-  Enabled: false
+  Enabled: true
 
 # Use parentheses in the method call to avoid confusion about precedence.
 Lint/RequireParentheses:
-  Enabled: false
+  Enabled: true
 
 # Avoid rescuing the Exception class.
 Lint/RescueException:
@@ -908,7 +927,7 @@ Lint/UnusedMethodArgument:
 
 # Unreachable code.
 Lint/UnreachableCode:
-  Enabled: false
+  Enabled: true
 
 # Checks for useless access modifiers.
 Lint/UselessAccessModifier:
@@ -920,19 +939,19 @@ Lint/UselessAssignment:
 
 # Checks for comparison of something with itself.
 Lint/UselessComparison:
-  Enabled: false
+  Enabled: true
 
 # Checks for useless `else` in `begin..end` without `rescue`.
 Lint/UselessElseWithoutRescue:
-  Enabled: false
+  Enabled: true
 
 # Checks for useless setter call to a local variable.
 Lint/UselessSetterCall:
-  Enabled: false
+  Enabled: true
 
 # Possible use of operator/literal/variable in void context.
 Lint/Void:
-  Enabled: false
+  Enabled: true
 
 
 ##################### Performance ############################
@@ -941,11 +960,10 @@ Lint/Void:
 Performance/Casecmp:
   Enabled: true
 
-# TODO: Enable DoubleStartEndWith Cop.
 # Use `str.{start,end}_with?(x, ..., y, ...)` instead of
 # `str.{start,end}_with?(x, ...) || str.{start,end}_with?(y, ...)`.
 Performance/DoubleStartEndWith:
-  Enabled: false
+  Enabled: true
 
 # TODO: Enable EndWith Cop.
 # Use `end_with?` instead of a regex match anchored to the end of a string.
@@ -956,10 +974,9 @@ Performance/EndWith:
 Performance/LstripRstrip:
   Enabled: true
 
-# TODO: Enable RangeInclude Cop.
 # Use `Range#cover?` instead of `Range#include?`.
 Performance/RangeInclude:
-  Enabled: false
+  Enabled: true
 
 # TODO: Enable RedundantBlockCall Cop.
 # Use `yield` instead of `block.call`.
@@ -979,16 +996,14 @@ Performance/RedundantMerge:
   MaxKeyValuePairs: 2
   Enabled: false
 
-# TODO: Enable RedundantSortBy Cop.
 # Use `sort` instead of `sort_by { |x| x }`.
 Performance/RedundantSortBy:
-  Enabled: false
+  Enabled: true
 
-# TODO: Enable StartWith Cop.
 # Use `start_with?` instead of a regex match anchored to the beginning of a
 # string.
 Performance/StartWith:
-  Enabled: false
+  Enabled: true
 
 # Use `tr` instead of `gsub` when you are replacing the same number of
 # characters. Use `delete` instead of `gsub` when you are deleting
@@ -1024,11 +1039,11 @@ Rails/Delegate:
 
 # Prefer `find_by` over `where.first`.
 Rails/FindBy:
-  Enabled: false
+  Enabled: true
 
 # Prefer `all.find_each` over `all.find`.
 Rails/FindEach:
-  Enabled: false
+  Enabled: true
 
 # Prefer has_many :through to has_and_belongs_to_many.
 Rails/HasAndBelongsToMany:
@@ -1040,7 +1055,7 @@ Rails/Output:
 
 # Checks for incorrect grammar when using methods like `3.day.ago`.
 Rails/PluralizationGrammar:
-  Enabled: false
+  Enabled: true
 
 # Checks for `read_attribute(:attr)` and `write_attribute(:attr, val)`.
 Rails/ReadWriteAttribute:
@@ -1048,7 +1063,7 @@ Rails/ReadWriteAttribute:
 
 # Checks the arguments of ActiveRecord scopes.
 Rails/ScopeArgs:
-  Enabled: false
+  Enabled: true
 
 # Checks the correct usage of time zone aware methods.
 # http://danilenko.org/2012/7/6/rails_timezones
@@ -1057,4 +1072,66 @@ Rails/TimeZone:
 
 # Use validates :attribute, hash of validations.
 Rails/Validation:
+  Enabled: false
+
+##################### RSpec ##################################
+
+# Check that instances are not being stubbed globally.
+RSpec/AnyInstance:
+  Enabled: false
+
+# Check that the first argument to the top level describe is the tested class or
+# module.
+RSpec/DescribeClass:
+  Enabled: false
+
+# Use `described_class` for tested class / module.
+RSpec/DescribeMethod:
+  Enabled: false
+
+# Checks that the second argument to top level describe is the tested method
+# name.
+RSpec/DescribedClass:
+  Enabled: false
+
+# Checks for long example.
+RSpec/ExampleLength:
+  Enabled: false
+  Max: 5
+
+# Do not use should when describing your tests.
+RSpec/ExampleWording:
+  Enabled: false
+  CustomTransform:
+    be: is
+    have: has
+    not: does not
+  IgnoredWords: []
+
+# Checks the file and folder naming of the spec file.
+RSpec/FilePath:
+  Enabled: false
+  CustomTransform:
+    RuboCop: rubocop
+    RSpec: rspec
+
+# Checks if there are focused specs.
+RSpec/Focus:
+  Enabled: true
+
+# Checks for the usage of instance variables.
+RSpec/InstanceVariable:
+  Enabled: false
+
+# Checks for multiple top-level describes.
+RSpec/MultipleDescribes:
+  Enabled: false
+
+# Enforces the usage of the same method on all negative message expectations.
+RSpec/NotToNot:
+  EnforcedStyle: not_to
+  Enabled: false
+
+# Prefer using verifying doubles over normal doubles.
+RSpec/VerifiedDoubles:
   Enabled: false

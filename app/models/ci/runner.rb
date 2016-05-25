@@ -4,7 +4,7 @@ module Ci
 
     LAST_CONTACT_TIME = 5.minutes.ago
     AVAILABLE_SCOPES = %w[specific shared active paused online]
-    FORM_EDITABLE = %i[description tag_list active]
+    FORM_EDITABLE = %i[description tag_list active run_untagged]
 
     has_many :builds, class_name: 'Ci::Build'
     has_many :runner_projects, dependent: :destroy, class_name: 'Ci::RunnerProject'
@@ -25,6 +25,8 @@ module Ci
       joins('LEFT JOIN ci_runner_projects ON ci_runner_projects.runner_id = ci_runners.id')
         .where("ci_runner_projects.gl_project_id = :project_id OR ci_runners.is_shared = true", project_id: project_id)
     end
+
+    validate :tag_constraints
 
     acts_as_taggable
 
@@ -95,6 +97,19 @@ module Ci
 
     def short_sha
       token[0...8] if token
+    end
+
+    def has_tags?
+      tag_list.any?
+    end
+
+    private
+
+    def tag_constraints
+      unless has_tags? || run_untagged?
+        errors.add(:tags_list,
+          'can not be empty when runner is not allowed to pick untagged jobs')
+      end
     end
   end
 end

@@ -17,7 +17,7 @@
 
       .pull-right
         - if commit.status
-          = render_ci_status(commit)
+          = render_commit_status(commit)
         = clipboard_button(clipboard_text: commit.id)
         = link_to commit.short_id, namespace_project_commit_path(project.namespace, project, commit), class: "commit_short_id"
 

@@ -128,6 +128,38 @@ describe Ci::API::API do
           end
         end
       end
+
+      context 'when build has no tags' do
+        before do
+          commit = create(:ci_commit, project: project)
+          create(:ci_build, commit: commit, tags: [])
+        end
+
+        context 'when runner is allowed to pick untagged builds' do
+          before { runner.update_column(:run_untagged, true) }
+
+          it 'picks build' do
+            register_builds
+
+            expect(response).to have_http_status 201
+          end
+        end
+
+        context 'when runner is not allowed to pick untagged builds' do
+          before { runner.update_column(:run_untagged, false) }
+
+          it 'does not pick build' do
+            register_builds
+
+            expect(response).to have_http_status 404
+          end
+        end
+
+        def register_builds
+          post ci_api("/builds/register"), token: runner.token,
+                                           info: { platform: :darwin }
+        end
+      end
     end
 
     describe "PUT /builds/:id" do

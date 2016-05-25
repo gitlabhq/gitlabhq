@@ -1,6 +1,6 @@
 .pull-right.commit-action-buttons
   %div
-    - if @notes_count > 0
+    - if defined?(@notes_count) && @notes_count > 0
       %span.btn.disabled.btn-grouped
         %i.fa.fa-comment
         = @notes_count
@@ -23,11 +23,6 @@
 
 %p
 .commit-info-row
-  - if @commit.status
-    = link_to builds_namespace_project_commit_path(@project.namespace, @project, @commit.id), class: "ci-status ci-#{@commit.status}" do
-      = ci_icon_for_status(@commit.status)
-      build:
-      = ci_label_for_status(@commit.status)
   %span.light Authored by
   %strong
     = commit_author_link(@commit, avatar: true, size: 24)
@@ -50,6 +45,17 @@
 
   %span.commit-info.branches
     %i.fa.fa-spinner.fa-spin
+
+- if @commit.status
+  .commit-info-row
+    Builds for
+    = pluralize(@commit.ci_commits.count, 'pipeline')
+    = link_to builds_namespace_project_commit_path(@project.namespace, @project, @commit.id), class: "ci-status-link ci-status-icon-#{@commit.status}" do
+      = ci_icon_for_status(@commit.status)
+      = ci_label_for_status(@commit.status)
+    - if @commit.ci_commits.duration
+      in
+      = time_interval_in_words @commit.ci_commits.duration
 
 .commit-box.content-block
   %h3.commit-title

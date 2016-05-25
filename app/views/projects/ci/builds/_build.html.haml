@@ -13,7 +13,9 @@
       %strong ##{build.id}
 
     - if build.stuck?
-      %i.fa.fa-warning.text-warning
+      = icon('warning', class: 'text-warning has-tooltip', title: 'Build is stuck. Check runners.')
+    - if defined?(retried) && retried
+      = icon('warning', class: 'text-warning has-tooltip', title: 'Build was retried.')
 
   - if defined?(commit_sha) && commit_sha
     %td
@@ -55,10 +57,14 @@
 
   %td.duration
     - if build.duration
+      = icon("clock-o")
+      &nbsp;
       #{duration_in_words(build.finished_at, build.started_at)}
 
   %td.timestamp
     - if build.finished_at
+      = icon("calendar")
+      &nbsp;
       %span #{time_ago_with_tooltip(build.finished_at)}
 
   - if defined?(coverage) && coverage
@@ -70,11 +76,11 @@
     .pull-right
       - if can?(current_user, :read_build, build) && build.artifacts?
         = link_to download_namespace_project_build_artifacts_path(build.project.namespace, build.project, build), title: 'Download artifacts', class: 'btn btn-build' do
-          %i.fa.fa-download
+          = icon('download')
       - if can?(current_user, :update_build, build)
         - if build.active?
           = link_to cancel_namespace_project_build_path(build.project.namespace, build.project, build, return_to: request.original_url), method: :post, title: 'Cancel', class: 'btn btn-build' do
-            %i.fa.fa-remove.cred
+            = icon('remove', class: 'cred')
         - elsif defined?(allow_retry) && allow_retry && build.retryable?
           = link_to retry_namespace_project_build_path(build.project.namespace, build.project, build, return_to: request.original_url), method: :post, title: 'Retry', class: 'btn btn-build' do
-            %i.fa.fa-refresh
+            = icon('refresh')

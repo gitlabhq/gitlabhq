@@ -286,6 +286,18 @@ class MergeRequest < ActiveRecord::Base
       last_commit == source_project.commit(source_branch)
   end
 
+  def should_remove_source_branch?
+    merge_params['should_remove_source_branch'].present?
+  end
+
+  def force_remove_source_branch?
+    merge_params['force_remove_source_branch'].present?
+  end
+
+  def remove_source_branch?
+    should_remove_source_branch? || force_remove_source_branch?
+  end
+
   def mr_and_commit_notes
     # Fetch comments only from last 100 commits
     commits_for_notes_limit = 100
@@ -426,7 +438,10 @@ class MergeRequest < ActiveRecord::Base
 
     self.merge_when_build_succeeds = false
     self.merge_user = nil
-    self.merge_params = nil
+    if merge_params
+      merge_params.delete('should_remove_source_branch')
+      merge_params.delete('commit_message')
+    end
 
     self.save
   end

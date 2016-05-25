@@ -1,6 +1,11 @@
 module Gitlab
   module Diff
     class InlineDiffMarker
+      MARKDOWN_SYMBOLS = {
+        addition: "+",
+        deletion: "-"
+      }
+
       attr_accessor :raw_line, :rich_line
 
       def initialize(raw_line, rich_line = raw_line)
@@ -8,7 +13,7 @@ module Gitlab
         @rich_line = ERB::Util.html_escape(rich_line)
       end
 
-      def mark(line_inline_diffs)
+      def mark(line_inline_diffs, mode: nil, markdown: false)
         return rich_line unless line_inline_diffs
 
         marker_ranges = []
@@ -20,19 +25,36 @@ module Gitlab
         end
 
         offset = 0
-        # Mark each range
-        marker_ranges.each_with_index do |range, i|
-          class_names = ["idiff"]
-          class_names << "left"   if i == 0
-          class_names << "right"  if i == marker_ranges.length - 1
 
-          offset = insert_around_range(rich_line, range, "<span class='#{class_names.join(" ")}'>", "</span>", offset)
+        # Mark each range
+        marker_ranges.each_with_index do |range, index|
+          before_content =
+            if markdown
+              "{#{MARKDOWN_SYMBOLS[mode]}"
+            else
+              "<span class='#{html_class_names(marker_ranges, mode, index)}'>"
+            end
+          after_content =
+            if markdown
+              "#{MARKDOWN_SYMBOLS[mode]}}"
+            else
+              "</span>"
+            end
+          offset = insert_around_range(rich_line, range, before_content, after_content, offset)
         end
 
         rich_line.html_safe
       end
 
       private
+
+      def html_class_names(marker_ranges, mode, index)
+        class_names = ["idiff"]
+        class_names << "left"  if index == 0
+        class_names << "right" if index == marker_ranges.length - 1
+        class_names << mode if mode
+        class_names.join(" ")
+      end
 
       # Mapping of character positions in the raw line, to the rich (highlighted) line
       def position_mapping
