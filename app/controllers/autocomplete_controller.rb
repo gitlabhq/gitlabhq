@@ -39,8 +39,11 @@ class AutocompleteController < ApplicationController
       current_user.can?(:admin_issue, project)
     end
 
-    no_project = OpenStruct.new(id: 0, name_with_namespace: 'No project')
-    projects.unshift(no_project.to_h)
+    no_project = {
+      id: 0,
+      name_with_namespace: 'No project',
+    }
+    projects.unshift(no_project)
     projects.delete(project)
 
     render json: projects.to_json(only: [:id, :name_with_namespace], methods: :name_with_namespace)
