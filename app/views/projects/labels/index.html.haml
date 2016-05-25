@@ -18,6 +18,6 @@
   - else
     .nothing-here-block
       - if can? current_user, :admin_label, @project
-        Create first label or #{link_to 'generate', generate_namespace_project_labels_path(@project.namespace, @project), method: :post} default set of labels
+        Create a label or #{link_to 'generate a default set of labels', generate_namespace_project_labels_path(@project.namespace, @project), method: :post}.
       - else
         No labels created
