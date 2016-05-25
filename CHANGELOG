@@ -8,6 +8,7 @@ v 8.10.0 (unreleased)
   - Fix pagination when sorting by columns with lots of ties (like priority)
   - Exclude email check from the standard health check
   - Implement Subresource Integrity for CSS and JavaScript assets. This prevents malicious assets from loading in the case of a CDN compromise.
+  - Fix changing issue state columns in milestone view
   - Fix user creation with stronger minimum password requirements !4054 (nathan-pmt)
   - Add API endpoint for a group issues !4520 (mahcsig)
 
@@ -92,7 +93,6 @@ v 8.9.0
   - Links from a wiki page to other wiki pages should be rewritten as expected
   - Add option to project to only allow merge requests to be merged if the build succeeds (Rui Santos)
   - Added navigation shortcuts to the project pipelines, milestones, builds and forks page. !4393
-  - Fix changing issue state columns in milestone view
   - Fix issues filter when ordering by milestone
   - Disable SAML account unlink feature
   - Added artifacts:when to .gitlab-ci.yml - this requires GitLab Runner 1.3

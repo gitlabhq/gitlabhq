@@ -190,8 +190,4 @@ class Issue < ActiveRecord::Base
   def overdue?
     due_date.try(:past?) || false
   end
-
-  def saved
-    valid?
-  end
 end
