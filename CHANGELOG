@@ -6,6 +6,9 @@ v 8.8.2
   - Fix Error 500 when accessing application settings due to nil disabled OAuth sign-in sources. !4242
   - Fix Error 500 in CI charts by gracefully handling commits with no durations.  !4245
   - Fix table UI on CI builds page. !4249
+  - Fix backups if registry is disabled. !4263
+  - Fixed issue with merge button color. !4211
+  - Fixed issue with enter key selecting wrong option in dropdown. !4210
 
 v 8.8.1
   - Add documentation for the "Health Check" feature
