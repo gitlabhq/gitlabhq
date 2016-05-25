@@ -1,24 +1,26 @@
 class @AwardsHandler
+
   constructor: ->
+
     @aliases = emojiAliases()
 
     $(document)
-      .off "click", ".js-add-award"
-      .on "click", ".js-add-award", (event) =>
+      .off 'click', '.js-add-award'
+      .on  'click', '.js-add-award', (event) =>
         event.stopPropagation()
         event.preventDefault()
 
         @showEmojiMenu $(event.currentTarget)
 
-    $("html").on 'click', (event) ->
-      if !$(event.target).closest(".emoji-menu").length
-        if $(".emoji-menu").is(":visible")
+    $('html').on 'click', (event) ->
+      unless $(event.target).closest('.emoji-menu').length
+        if $('.emoji-menu').is(':visible')
           $('.js-add-award.is-active').removeClass 'is-active'
-          $(".emoji-menu").removeClass "is-visible"
+          $('.emoji-menu').removeClass 'is-visible'
 
     $(document)
-      .off "click", ".js-emoji-btn"
-      .on "click", ".js-emoji-btn", @handleClick
+      .off 'click', '.js-emoji-btn'
+      .on  'click', '.js-emoji-btn', @handleClick
 
 
   handleClick: (e) =>
@@ -37,16 +39,16 @@ class @AwardsHandler
     if $menu.length
       $holder = $addBtn.closest('.js-award-holder')
 
-      if $menu.is ".is-visible"
-        $addBtn.removeClass "is-active"
-        $menu.removeClass "is-visible"
-        $("#emoji_search").blur()
+      if $menu.is '.is-visible'
+        $addBtn.removeClass 'is-active'
+        $menu.removeClass 'is-visible'
+        $('#emoji_search').blur()
       else
-        $addBtn.addClass "is-active"
+        $addBtn.addClass 'is-active'
         @positionMenu($menu, $addBtn)
 
-        $menu.addClass "is-visible"
-        $("#emoji_search").focus()
+        $menu.addClass 'is-visible'
+        $('#emoji_search').focus()
     else
       $addBtn.addClass 'is-loading is-active'
       url = $addBtn.data 'award-menu-url'
@@ -81,10 +83,10 @@ class @AwardsHandler
 
     if position? and position is 'right'
       css.left = "#{($addBtn.offset().left - $menu.outerWidth()) + 20}px"
-      $menu.addClass "is-aligned-right"
+      $menu.addClass 'is-aligned-right'
     else
       css.left = "#{$addBtn.offset().left}px"
-      $menu.removeClass "is-aligned-right"
+      $menu.removeClass 'is-aligned-right'
 
     $menu.css(css)
 
@@ -114,7 +116,7 @@ class @AwardsHandler
       else
         counter = $emojiBtn.find('.js-counter')
         counter.text(parseInt(counter.text()) + 1)
-        $emojiBtn.addClass("active")
+        $emojiBtn.addClass('active')
         @addMeToUserList(emoji)
     else
       @createEmoji(emoji)
@@ -137,8 +139,8 @@ class @AwardsHandler
       @addAward awardUrl, mutualVote, no if isAlreadyVoted
 
 
-  isActive: ($emojiBtn) ->
-    $emojiBtn.hasClass("active")
+  isActive: ($emojiBtn) -> $emojiBtn.hasClass 'active'
+
 
   decrementCounter: ($emojiBtn, emoji) ->
     isntNoteBody = $emojiBtn.closest('.note-body').length is 0
@@ -152,15 +154,15 @@ class @AwardsHandler
     if counterNumber > 1
       counter.text(counterNumber - 1)
       @removeMeFromUserList($emojiBtn, emoji)
-    else if (emoji == "thumbsup" || emoji == "thumbsdown") && isntNoteBody
-      $emojiBtn.tooltip("destroy")
+    else if (emoji == 'thumbsup' || emoji == 'thumbsdown') && isntNoteBody
+      $emojiBtn.tooltip('destroy')
       counter.text('0')
       @removeMeFromUserList($emojiBtn, emoji)
     else
-      $emojiBtn.tooltip("destroy")
+      $emojiBtn.tooltip('destroy')
       $emojiBtn.remove()
 
-    $emojiBtn.removeClass("active")
+    $emojiBtn.removeClass('active')
 
 
   getAwardTooltip: ($awardBlock) ->
@@ -195,18 +197,19 @@ class @AwardsHandler
     users      = []
 
     if origTitle
+    if origTitle
       users = origTitle.trim().split(', ')
 
     users.push('me')
-    awardBlock.attr('title', users.join(", "))
+    awardBlock.attr('title', users.join(', '))
 
     @resetTooltip(awardBlock)
 
 
   resetTooltip: (award) ->
-    award.tooltip("destroy")
+    award.tooltip('destroy')
 
-    # "destroy" call is asynchronous and there is no appropriate callback on it, this is why we need to set timeout.
+    # 'destroy' call is asynchronous and there is no appropriate callback on it, this is why we need to set timeout.
     setTimeout (->
       award.tooltip()
     ), 200
@@ -247,10 +250,10 @@ class @AwardsHandler
     emoji_icon = $(".emoji-menu-content [data-emoji='#{emoji}']")
 
     if emoji_icon.length > 0
-      unicodeName = emoji_icon.data("unicode-name")
+      unicodeName = emoji_icon.data('unicode-name')
     else
       # Find by alias
-      unicodeName = $(".emoji-menu-content [data-aliases*=':#{emoji}:']").data("unicode-name")
+      unicodeName = $(".emoji-menu-content [data-aliases*=':#{emoji}:']").data('unicode-name')
 
     return "emoji-#{unicodeName}"
 
@@ -274,10 +277,10 @@ class @AwardsHandler
   addEmojiToFrequentlyUsedList: (emoji) ->
     frequently_used_emojis = @getFrequentlyUsedEmojis()
     frequently_used_emojis.push(emoji)
-    $.cookie('frequently_used_emojis', frequently_used_emojis.join(","), { expires: 365 })
+    $.cookie('frequently_used_emojis', frequently_used_emojis.join(','), { expires: 365 })
 
   getFrequentlyUsedEmojis: ->
-    frequently_used_emojis = ($.cookie('frequently_used_emojis') || "").split(",")
+    frequently_used_emojis = ($.cookie('frequently_used_emojis') || '').split(',')
     _.compact(_.uniq(frequently_used_emojis))
 
   renderFrequentlyUsedBlock: ->
@@ -287,26 +290,26 @@ class @AwardsHandler
       ul = $("<ul class='clearfix emoji-menu-list'>")
 
       for emoji in frequently_used_emojis
-        $(".emoji-menu-content [data-emoji='#{emoji}']").closest("li").clone().appendTo(ul)
+        $(".emoji-menu-content [data-emoji='#{emoji}']").closest('li').clone().appendTo(ul)
 
-      $("input.emoji-search").after(ul).after($("<h5>").text("Frequently used"))
+      $('input.emoji-search').after(ul).after($('<h5>').text('Frequently used'))
 
   setupSearch: ->
-    $("input.emoji-search").on 'keyup', (ev) =>
+    $('input.emoji-search').on 'keyup', (ev) =>
       term = $(ev.target).val()
 
       # Clean previous search results
-      $("ul.emoji-menu-search, h5.emoji-search").remove()
+      $('ul.emoji-menu-search, h5.emoji-search').remove()
 
       if term
         # Generate a search result block
-        h5 = $("<h5>").text("Search results").addClass("emoji-search")
+        h5 = $('<h5>').text('Search results').addClass('emoji-search')
         found_emojis = @searchEmojis(term).show()
-        ul = $("<ul>").addClass("emoji-menu-list emoji-menu-search").append(found_emojis)
-        $(".emoji-menu-content ul, .emoji-menu-content h5").hide()
-        $(".emoji-menu-content").append(h5).append(ul)
+        ul = $('<ul>').addClass('emoji-menu-list emoji-menu-search').append(found_emojis)
+        $('.emoji-menu-content ul, .emoji-menu-content h5').hide()
+        $('.emoji-menu-content').append(h5).append(ul)
       else
-        $(".emoji-menu-content").children().show()
+        $('.emoji-menu-content').children().show()
 
   searchEmojis: (term)->
-    $(".emoji-menu-content [data-emoji*='#{term}']").closest("li").clone()
+    $(".emoji-menu-content [data-emoji*='#{term}']").closest('li').clone()
