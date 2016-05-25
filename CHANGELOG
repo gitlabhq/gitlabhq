@@ -92,6 +92,7 @@ v 8.9.0
   - Links from a wiki page to other wiki pages should be rewritten as expected
   - Add option to project to only allow merge requests to be merged if the build succeeds (Rui Santos)
   - Added navigation shortcuts to the project pipelines, milestones, builds and forks page. !4393
+  - Fix changing issue state columns in milestone view
   - Fix issues filter when ordering by milestone
   - Disable SAML account unlink feature
   - Added artifacts:when to .gitlab-ci.yml - this requires GitLab Runner 1.3

@@ -81,8 +81,9 @@ class @Milestone
       stop: (event, ui) ->
         $(".issues-sortable-list").css "min-height", "0px"
       update: (event, ui) ->
-        data = $(this).sortable("serialize")
-        Milestone.sortIssues(data)
+        if this == ui.item.parent()[0]
+          data = $(this).sortable("serialize")
+          Milestone.sortIssues(data)
 
       receive: (event, ui) ->
         new_state = $(this).data('state')
