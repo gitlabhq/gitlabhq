@@ -41,8 +41,12 @@
     此项目正在运行的管道
   - elsif @scope.nil?
     此项目的管道
+  - elsif @scope.titleize == 'Branches'
+    此项目的分支
+  - elsif @scope.titleize == 'Tags'
+    此项目的标签
   - else
-    此项目 #{@scope.titleize}
+    此项目的 #{@scope.titleize}
 
 %ul.content-list
   - stages = @pipelines.stages
