@@ -23,7 +23,7 @@ class TodosFinder
   end
 
   def execute
-    items = current_user.todos
+    items = current_user.todos.joins(:project).where(projects: { pending_delete: false })
     items = by_action_id(items)
     items = by_author(items)
     items = by_project(items)

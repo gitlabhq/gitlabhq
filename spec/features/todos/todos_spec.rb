@@ -98,5 +98,18 @@ describe 'Dashboard Todos', feature: true do
         end
       end
     end
+
+    context 'User has a Todo in a project pending deletion' do
+      before do
+        deleted_project = create(:project, pending_delete: true)
+        create(:todo, :mentioned, user: user, project: deleted_project, target: issue, author: author)
+        login_as(user)
+        visit dashboard_todos_path
+      end
+
+      it 'shows "All done" message' do
+        expect(page).to have_content "You're all done!"
+      end
+    end
   end
 end
