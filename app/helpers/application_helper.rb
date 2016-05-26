@@ -243,6 +243,10 @@ module ApplicationHelper
     Gitlab::MarkupHelper.asciidoc?(filename)
   end
 
+  def contains_math?(file_name, file_content)
+    asciidoc?(file_name) && Gitlab::Asciidoc.contains_stem?(file_content)
+  end
+
   def promo_host
     'about.gitlab.com'
   end

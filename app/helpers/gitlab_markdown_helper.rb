@@ -67,6 +67,8 @@ module GitlabMarkdownHelper
   end
 
   def asciidoc(text)
+    load_mathjax! if Gitlab::Asciidoc.contains_stem?(text)
+
     Gitlab::Asciidoc.render(
       text,
       project:      @project,

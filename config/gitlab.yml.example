@@ -489,6 +489,17 @@ production: &base
     # piwik_url: '_your_piwik_url'
     # piwik_site_id: '_your_piwik_site_id'
 
+    ## MathJax
+    # Load MathJax library for typesetting math?
+    #   never  - this is default
+    #   auto   - when document declares that it contains math (depends on markup)
+    #   always -
+    # mathjax_load: auto
+    #
+    # Name of pre-defined MathJax configuration available on CDN.
+    # See http://docs.mathjax.org/en/latest/config-files.html for options.
+    # mathjax_config: TeX-MML-AM_CHTML
+
   rack_attack:
     git_basic_auth:
       # Rack Attack IP banning enabled

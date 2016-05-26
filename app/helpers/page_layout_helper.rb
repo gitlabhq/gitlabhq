@@ -121,4 +121,19 @@ module PageLayoutHelper
 
     css_class
   end
+
+  def load_mathjax!
+    @load_mathjax = true
+  end
+
+  def load_mathjax?
+    case extra_config.fetch('mathjax_load', 'never')
+    when 'auto'
+      @load_mathjax
+    when 'always'
+      true
+    else
+      false
+    end
+  end
 end

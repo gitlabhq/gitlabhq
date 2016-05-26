@@ -340,6 +340,7 @@ Settings.satellites['path'] = File.expand_path(Settings.satellites['path'] || "t
 # Extra customization
 #
 Settings['extra'] ||= Settingslogic.new({})
+Settings.extra['mathjax_config'] ||= 'TeX-MML-AM_CHTML'
 
 #
 # Rack::Attack settings

@@ -30,6 +30,6 @@
     = render "layouts/flash"
     = yield :flash_message
     %div{ class: (container_class unless @no_container) }
-      .content
+      %div{ class: 'content', 'data-mathjax' => ('enabled' if load_mathjax?) }
         .clearfix
           = yield
