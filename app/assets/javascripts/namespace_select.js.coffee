@@ -1,25 +1,53 @@
 class @NamespaceSelect
-  constructor: ->
-    namespaceFormatResult = (namespace) ->
-      markup = "<div class='namespace-result'>"
-      markup += "<span class='namespace-kind'>" + namespace.kind + "</span>"
-      markup += "<span class='namespace-path'>" + namespace.path + "</span>"
-      markup += "</div>"
-      markup
+  constructor: (opts) ->
+    {
+      @dropdown
+    } = opts
 
-    formatSelection = (namespace) ->
-      namespace.kind + ": " + namespace.path
+    showAny = true
 
-    $('.ajax-namespace-select').each (i, select) ->
-      $(select).select2
-        placeholder: "Search for namespace"
-        multiple: $(select).hasClass('multiselect')
-        minimumInputLength: 0
-        query: (query) ->
-          Api.namespaces query.term, (namespaces) ->
-            data = { results: namespaces }
-            query.callback(data)
+    fieldName = 'namespace_id'
 
-        dropdownCssClass: "ajax-namespace-dropdown"
-        formatResult: namespaceFormatResult
-        formatSelection: formatSelection
+    if @dropdown.data 'fieldName'
+     fieldName = @dropdown.data 'fieldName'
+
+    @dropdown.glDropdown(
+      filterable: true
+      selectable: true
+      search:
+        fields: ['path']
+      fieldName: fieldName
+      toggleLabel: (selected) ->
+        return if not selected.id? then selected.text else "#{selected.kind}: #{selected.path}"
+      data: (term, dataCallback) ->
+        Api.namespaces term, (namespaces) ->
+          if showAny
+            anyNamespace =
+              text: 'Any namespace'
+              id: null
+
+            namespaces.unshift(anyNamespace)
+            namespaces.splice 1, 0, 'divider'
+
+          dataCallback(namespaces)
+      text: (namespace) ->
+        return if not namespace.id? then namespace.text else "#{namespace.kind}: #{namespace.path}"
+      renderRow: @renderRow
+      clicked: @onSelectItem
+    )
+
+  onSelectItem: (item, el, e) =>
+    e.preventDefault()
+
+class @NamespaceSelects
+  constructor: (opts = {}) ->
+    {
+      @$dropdowns = $('.js-namespace-select')
+    } = opts
+
+    @$dropdowns.each (i, dropdown) ->
+      $dropdown = $(dropdown)
+
+      new NamespaceSelect(
+        dropdown: $dropdown
+      )
