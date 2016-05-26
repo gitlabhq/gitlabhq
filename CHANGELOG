@@ -11,6 +11,9 @@ v 8.9.0 (unreleased)
   - Fix issues filter when ordering by milestone
   - Todos will display target state if issuable target is 'Closed' or 'Merged'
 
+v 8.8.3
+  - Fix gitlab importer failing to import new projects due to missing credentials
+
 v 8.8.2
   - Added remove due date button. !4209
   - Fix Error 500 when accessing application settings due to nil disabled OAuth sign-in sources. !4242
