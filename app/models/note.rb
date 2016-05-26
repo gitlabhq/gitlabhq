@@ -80,11 +80,26 @@ class Note < ActiveRecord::Base
     # query - The search query as a String.
     #
     # Returns an ActiveRecord::Relation.
-    def search(query)
+    def search(query, user = nil)
       table   = arel_table
       pattern = "%#{query}%"
 
-      where(table[:note].matches(pattern))
+      found_notes = joins('LEFT JOIN issues ON issues.id = noteable_id').
+        where(table[:note].matches(pattern))
+
+      if user
+        found_notes.where('
+          issues.confidential IS NOT TRUE
+          OR (issues.confidential IS TRUE
+            AND (issues.author_id = :user_id
+            OR issues.assignee_id = :user_id
+            OR issues.project_id IN(:project_ids)))',
+          user_id: user.id,
+          project_ids: user.authorized_projects.select(:id)
+        )
+      else
+        found_notes.where('issues.confidential IS NOT TRUE')
+      end
     end
 
     def grouped_awards
