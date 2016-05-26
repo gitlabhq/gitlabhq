@@ -1,0 +1,24 @@
+= form_for @issue, html: { class: 'detail-page-description content-block common-note-form js-issuable-inline-form' } do |f|
+  %h2.title
+    %span.js-issuable-title= markdown escape_once(@issue.title), pipeline: :single_line, author: @issue.author
+    = icon('spinner spin', class: 'js-issuable-title-loading hidden')
+    .input-group.js-issuable-edit-title.hidden
+      = f.text_field :title, class: 'form-control js-issuable-title-field'
+      %span.input-group-btn
+        %button.btn.btn-success.js-issuable-title-save{ type: "submit" }
+          Save
+  - if @issue.description.present?
+    .description{ class: can?(current_user, :update_issue, @issue) ? 'js-task-list-container' : '' }
+      .wiki.js-issuable-description
+        = preserve do
+          = markdown(@issue.description, cache_key: [@issue, "description"], author: @issue.author)
+      .js-issuable-description-field.hidden
+        = render layout: 'projects/md_preview', locals: { preview_class: "md-preview", referenced_users: true } do
+          = render 'projects/zen', f: f, attr: :description,
+                                   classes: 'note-textarea js-task-list-field',
+                                   placeholder: "Write a comment or drag your files here..."
+          = render 'projects/notes/hints'
+  = edited_time_ago_with_tooltip(@issue, placement: 'bottom', html_class: 'issue_edited_ago')
+
+  = render "merge_requests_placeholder"
+  = render "branch_placeholder"

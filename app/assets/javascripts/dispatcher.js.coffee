@@ -21,6 +21,7 @@ class Dispatcher
         shortcut_handler = new ShortcutsNavigation()
       when 'projects:issues:show'
         new Issue()
+        new IssuableEdit()
         shortcut_handler = new ShortcutsIssuable()
         new ZenMode()
       when 'projects:milestones:show', 'groups:milestones:show', 'dashboard:milestones:show'
