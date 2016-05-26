@@ -51,7 +51,7 @@ class @AwardsHandler
         $('#emoji_search').focus()
     else
       $addBtn.addClass 'is-loading is-active'
-      url = $addBtn.data 'award-menu-url'
+      url = @getAwardMenuUrl()
 
       @createEmojiMenu url, =>
         $addBtn.removeClass 'is-loading'
@@ -74,6 +74,7 @@ class @AwardsHandler
 
 
   positionMenu: ($menu, $addBtn) ->
+
     position = $addBtn.data('position')
 
     # The menu could potentially be off-screen or in a hidden overflow element
@@ -240,8 +241,10 @@ class @AwardsHandler
 
     return @createEmoji_ emoji if $('.emoji-menu').length
 
-    awardMenuUrl = gl.awardMenuUrl or '/emojis'
-    @createEmojiMenu awardMenuUrl, => @createEmoji emoji
+    @createEmojiMenu @getAwardMenuUrl(), => @createEmoji emoji
+
+
+  getAwardMenuUrl: -> return gl.awardMenuUrl or '/emojis'
 
 
   resolveNameToCssClass: (emoji) ->

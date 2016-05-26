@@ -22,6 +22,9 @@
             %span.note-role
               = access
           - if note_editable
+            = link_to '#', title: 'Add Reaction', class: 'note-emoji-button js-add-award js-note-emoji', data: { position: 'right' } do
+              = icon('spinner spin')
+              = icon('smile-o')
             = link_to '#', title: 'Edit comment', class: 'note-action-button js-note-edit' do
               = icon('pencil')
             = link_to namespace_project_note_path(note.project.namespace, note.project, note), title: 'Remove comment', method: :delete, data: { confirm: 'Are you sure you want to remove this comment?' }, remote: true, class: 'note-action-button js-note-delete danger' do

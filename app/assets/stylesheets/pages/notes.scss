@@ -120,6 +120,22 @@ ul.notes {
       padding-bottom: 3px;
     }
 
+    .note-emoji-button {
+      .fa-spinner {
+        display: none;
+      }
+
+      &.is-loading {
+        .fa-smile-o {
+          display: none;
+        }
+
+        .fa-spinner {
+          display: inline-block;
+        }
+      }
+    }
+
   }
 }
 
