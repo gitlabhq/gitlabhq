@@ -4,7 +4,7 @@
 
 module Gitlab
   module Middleware
-    class ProxyFlightTime
+    class RailsQueueDuration
       def initialize(app)
         @app = app
       end
@@ -14,7 +14,7 @@ module Gitlab
         proxy_start = env['HTTP_GITLAB_WORHORSE_PROXY_START'].presence
         if trans && proxy_start
           # Time in milliseconds since gitlab-workhorse started the request
-          trans.set(:proxy_flight_time, Time.now.to_f * 1_000 - proxy_start.to_f / 1_000_000)
+          trans.set(:rails_queue_duration, Time.now.to_f * 1_000 - proxy_start.to_f / 1_000_000)
         end
 
         @app.call(env)

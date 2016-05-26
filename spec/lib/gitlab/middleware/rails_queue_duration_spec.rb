@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Middleware::ProxyFlightTime do
+describe Gitlab::Middleware::RailsQueueDuration do
   let(:app) { double(:app) }
   let(:middleware) { described_class.new(app) }
   let(:env) { {} }
@@ -23,7 +23,7 @@ describe Gitlab::Middleware::ProxyFlightTime do
 
       it 'sets proxy_flight_time and calls the app when the header is present' do
         env['HTTP_GITLAB_WORHORSE_PROXY_START'] = '123'
-        expect(transaction).to receive(:set).with(:proxy_flight_time, an_instance_of(Float))
+        expect(transaction).to receive(:set).with(:rails_queue_duration, an_instance_of(Float))
         expect(middleware.call(env)).to eq('yay')
       end
     end
