@@ -23,7 +23,13 @@ class TodosFinder
   end
 
   def execute
-    items = current_user.todos.joins(:project).where(projects: { pending_delete: false })
+    items = current_user.todos
+
+    # Filter out todos linked to project pending deletion
+    items = items.joins(
+      'INNER JOIN projects ON projects.id = todos.project_id AND projects.pending_delete = false'
+    )
+
     items = by_action_id(items)
     items = by_author(items)
     items = by_project(items)
