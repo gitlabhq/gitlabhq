@@ -411,4 +411,28 @@ describe MergeRequest, models: true do
       end
     end
   end
+
+  describe '#participants' do
+    let(:project) { create(:project, :public) }
+
+    let(:mr) do
+      create(:merge_request, source_project: project, target_project: project)
+    end
+
+    let!(:note1) do
+      create(:note_on_merge_request, noteable: mr, project: project, note: 'a')
+    end
+
+    let!(:note2) do
+      create(:note_on_merge_request, noteable: mr, project: project, note: 'b')
+    end
+
+    it 'includes the merge request author' do
+      expect(mr.participants).to include(mr.author)
+    end
+
+    it 'includes the authors of the notes' do
+      expect(mr.participants).to include(note1.author, note2.author)
+    end
+  end
 end
