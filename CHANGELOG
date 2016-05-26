@@ -5,6 +5,9 @@ v 8.8.3
   - Fixed potential issue with 2 ci status polling events happening. !3869
   - Improve design of Pipeline View. !4230
 
+v 8.8.3
+  - Fix gitlab importer failing to import new projects due to missing credentials
+
 v 8.8.2
   - Added remove due date button. !4209
   - Fix Error 500 when accessing application settings due to nil disabled OAuth sign-in sources. !4242
