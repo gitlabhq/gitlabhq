@@ -245,38 +245,6 @@ $ ->
         if $navIcon.hasClass('fa-angle-left')
           $navIconToggle.trigger('click')
 
-  $(document)
-    .off 'click', '.js-sidebar-toggle'
-    .on 'click', '.js-sidebar-toggle', (e, triggered) ->
-      e.preventDefault()
-      $this = $(this)
-      $thisIcon = $this.find 'i'
-      $allGutterToggleIcons = $('.js-sidebar-toggle i')
-      if $thisIcon.hasClass('fa-angle-double-right')
-        $allGutterToggleIcons
-          .removeClass('fa-angle-double-right')
-          .addClass('fa-angle-double-left')
-        $('aside.right-sidebar')
-          .removeClass('right-sidebar-expanded')
-          .addClass('right-sidebar-collapsed')
-        $('.page-with-sidebar')
-          .removeClass('right-sidebar-expanded')
-          .addClass('right-sidebar-collapsed')
-      else
-        $allGutterToggleIcons
-          .removeClass('fa-angle-double-left')
-          .addClass('fa-angle-double-right')
-        $('aside.right-sidebar')
-          .removeClass('right-sidebar-collapsed')
-          .addClass('right-sidebar-expanded')
-        $('.page-with-sidebar')
-          .removeClass('right-sidebar-collapsed')
-          .addClass('right-sidebar-expanded')
-      if not triggered
-        $.cookie("collapsed_gutter",
-          $('.right-sidebar')
-            .hasClass('right-sidebar-collapsed'), { path: '/' })
-
   fitSidebarForSize = ->
     oldBootstrapBreakpoint = bootstrapBreakpoint
     bootstrapBreakpoint = bp.getBreakpointSize()
