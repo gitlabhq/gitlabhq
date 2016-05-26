@@ -1,8 +1,10 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.9.0 (unreleased)
+  - Allow forking projects with restricted visibility level
   - Redesign navigation for project pages
   - Fix groups API to list only user's accessible projects
+  - Redesign account and email confirmation emails
   - Use gitlab-shell v3.0.0
   - Add rake task 'gitlab:db:configure' for conditionally seeding or migrating the database
   - Changed the Slack build message to use the singular duration if necessary (Aran Koning)
@@ -39,6 +41,7 @@ v 8.8.0
   - Added inline diff styling for `change_title` system notes. (Adam Butler)
   - Project#open_branches has been cleaned up and no longer loads entire records into memory.
   - Escape HTML in commit titles in system note messages
+  - Improve design of Pipeline View
   - Fix scope used when accessing container registry
   - Fix creation of Ci::Commit object which can lead to pending, failed in some scenarios
   - Improve multiple branch push performance by memoizing permission checking
@@ -99,6 +102,9 @@ v 8.8.0
   - Fixed advice on invalid permissions on upload path !2948 (Ludovic Perrine)
   - Allows MR authors to have the source branch removed when merging the MR. !2801 (Jeroen Jacobs)
   - When creating a .gitignore file a dropdown with templates will be provided
+
+v 8.7.7
+  - Fix import by `Any Git URL` broken if the URL contains a space
 
 v 8.7.6
   - Fix links on wiki pages for relative url setups. !4131 (Artem Sidorenko)
