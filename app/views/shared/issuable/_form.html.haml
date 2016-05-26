@@ -98,9 +98,7 @@
     = label_tag :move_to_project_id, 'Move', class: 'control-label'
     .col-sm-10
       .issuable-form-select-holder
-        - projects = project_options(issuable, current_user, ability: :admin_issue)
-        = select_tag(:move_to_project_id, projects, include_blank: true,
-                     class: 'select2', data: { placeholder: 'Select project' })
+        = hidden_field_tag :move_to_project_id, nil, class: 'js-move-dropdown', data: { placeholder: 'Select project', projects_url: autocomplete_projects_path(project_id: @project.id) }
       &nbsp;
       %span{ data: { toggle: 'tooltip', placement: 'auto top' }, style: 'cursor: default',
       title: 'Moving an issue will copy the discussion to a different project and close it here. All participants will be notified of the new location.' }

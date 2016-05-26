@@ -19,6 +19,7 @@ class @IssuableForm
     @form.on "click", ".btn-cancel", @resetAutosave
 
     @initWip()
+    @initMoveDropdown()
 
     $issuableDueDate = $('#issuable-due-date')
 
@@ -89,3 +90,19 @@ class @IssuableForm
 
   addWip: ->
     @titleField.val "WIP: #{@titleField.val()}"
+
+  initMoveDropdown: ->
+    $moveDropdown = $('.js-move-dropdown')
+
+    if $moveDropdown.length
+      $('.js-move-dropdown').select2
+        ajax:
+          url: $moveDropdown.data('projects-url')
+          results: (data) ->
+            return {
+              results: data
+            }
+        formatResult: (project) ->
+          project.name_with_namespace
+        formatSelection: (project) ->
+          project.name_with_namespace
