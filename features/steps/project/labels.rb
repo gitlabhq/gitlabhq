@@ -29,6 +29,6 @@ class Spinach::Features::Labels < Spinach::FeatureSteps
   private
 
   def subscribe_button
-    first('.js-subscribe-button span', visible: true)
+    first('.js-subscribe-button', visible: true)
   end
 end
