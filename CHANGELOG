@@ -10,6 +10,7 @@ v 8.9.0 (unreleased)
   - Changed the Slack build message to use the singular duration if necessary (Aran Koning)
   - Fix issues filter when ordering by milestone
   - Todos will display target state if issuable target is 'Closed' or 'Merged'
+  - Remove 'main language' feature
 
 v 8.8.2
   - Added remove due date button. !4209

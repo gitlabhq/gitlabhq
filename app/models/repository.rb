@@ -972,12 +972,6 @@ class Repository
     end
   end
 
-  def main_language
-    return unless head_exists?
-
-    Linguist::Repository.new(rugged, rugged.head.target_id).language
-  end
-
   def avatar
     return nil unless exists?
 
