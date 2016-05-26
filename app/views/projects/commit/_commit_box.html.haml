@@ -1,16 +1,24 @@
-.pull-right.commit-action-buttons
-  %div
+.commit-info-row.commit-info-row-header
+  %span.hidden-xs Authored by
+  %strong
+    = commit_author_link(@commit, avatar: true, size: 24)
+  #{time_ago_with_tooltip(@commit.authored_date)}
+
+  .pull-right.commit-action-buttons
     - if defined?(@notes_count) && @notes_count > 0
-      %span.btn.disabled.btn-grouped
+      %span.btn.disabled.btn-grouped.hidden-xs
         = icon('comment')
         = @notes_count
-    = link_to namespace_project_tree_path(@project.namespace, @project, @commit), class: "btn btn-grouped" do
+    = link_to namespace_project_tree_path(@project.namespace, @project, @commit), class: "btn btn-grouped hidden-xs hidden-sm" do
       Browse Files
     .dropdown.inline
       %a.btn.btn-default.dropdown-toggle{ data: { toggle: "dropdown" } }
-        Options
-        %span.caret
+        %span.hidden-xs Options
+        %span.caret.commit-options-dropdown-caret
       %ul.dropdown-menu.dropdown-menu-align-right
+        %li.visible-xs-block.visible-sm-block
+          = link_to namespace_project_tree_path(@project.namespace, @project, @commit) do
+            Browse Files
         - unless @commit.has_been_reverted?(current_user)
           %li.clearfix
             = revert_commit_link(@commit, namespace_project_commit_path(@project.namespace, @project, @commit.id), has_tooltip: false)
@@ -23,12 +31,6 @@
           %li= link_to "Email Patches", namespace_project_commit_path(@project.namespace, @project, @commit, format: :patch)
         %li= link_to "Plain Diff",    namespace_project_commit_path(@project.namespace, @project, @commit, format: :diff)
 
-.commit-info-row
-  %span.light Authored by
-  %strong
-    = commit_author_link(@commit, avatar: true, size: 24)
-  #{time_ago_with_tooltip(@commit.authored_date)}
-
 - if @commit.different_committer?
   .commit-info-row
     %span.light Committed by
@@ -37,8 +39,9 @@
     #{time_ago_with_tooltip(@commit.committed_date)}
 
 .commit-info-row
-  %span.light Commit
-  = link_to @commit.id, namespace_project_commit_path(@project.namespace, @project, @commit), class: "monospace"
+  %span.hidden-xs.hidden-sm Commit
+  = link_to @commit.id, namespace_project_commit_path(@project.namespace, @project, @commit), class: "monospace hidden-xs hidden-sm"
+  = link_to @commit.short_id, namespace_project_commit_path(@project.namespace, @project, @commit), class: "monospace visible-xs-inline visible-sm-inline"
   = clipboard_button(clipboard_text: @commit.id)
   %span.cgray= pluralize(@commit.parents.count, "parent")
   - @commit.parents.each do |parent|
