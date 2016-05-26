@@ -221,7 +221,7 @@ class @UsersSelect
         multiple: $(select).hasClass('multiselect')
         minimumInputLength: 0
         query: (query) =>
-          @users query.term, false, (users) =>
+          @users query.term, @projectId?, (users) =>
             data = { results: users }
 
             if query.term.length == 0
