@@ -17,6 +17,7 @@ v 8.9.0 (unreleased)
 v 8.8.3
   - Fix gitlab importer failing to import new projects due to missing credentials
   - Fix import URL migration not rescuing with the correct Error
+  - In search results, only show notes on confidential issues that the user has access to
 
 v 8.8.2
   - Added remove due date button. !4209
