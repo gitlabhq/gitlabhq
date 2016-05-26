@@ -169,3 +169,20 @@
     }
   }
 }
+
+.filtered-labels {
+  .label-row {
+    &:not(:last-child) {
+      margin-right: 5px;
+    }
+  }
+
+  .label-remove {
+    border-left: 1px solid;
+    z-index: 3;
+  }
+
+  .btn {
+    color: inherit;
+  }
+}

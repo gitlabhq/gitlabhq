@@ -11,13 +11,11 @@ issuable_created = false
   initTemplates: ->
     Issuable.labelRow = _.template(
       '<% _.each(labels, function(label){ %>
-        <span class="label-row">
-          <a href="#">
-            <span class="label color-label has-tooltip" style="background-color: <%= label.color %>; color: <%= label.text_color %>" title="<%= _.escape(label.description) %>" data-container="body">
-              <%= _.escape(label.title) %>
-            </span>
+        <span class="label-row btn-group" role="group" aria-label="<%= _.escape(label.title) %>" style="color: <%= label.text_color %>;">
+          <a href="#" class="btn btn-transparent has-tooltip" style="background-color: <%= label.color %>;" title="<%= _.escape(label.description) %>" data-container="body">
+            <%= _.escape(label.title) %>
           </a>
-          <button type="button" class="btn btn-sm btn-transparent append-right-5 js-label-filter-remove" data-label="<%= _.escape(label.title) %>">
+          <button type="button" class="btn btn-transparent label-remove js-label-filter-remove" style="background-color: <%= label.color %>;" data-label="<%= _.escape(label.title) %>">
             <i class="fa fa-times"></i>
           </button>
         </span>
