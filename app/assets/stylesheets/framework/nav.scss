@@ -336,6 +336,16 @@
       @include fade(right, rgba(255, 255, 255, 0.4), $white-light);
       left: 0;
     }
+
+    &.event-filter {
+      .fade-right {
+        visibility: hidden;
+
+        @media (max-width: $screen-xs-max) {
+          visibility: visible;
+        }
+      }
+    }
   }
 }
 
@@ -344,5 +354,16 @@
 
   .right-sidebar {
     top: ($header-height * 2) + 2;
+  }
+}
+
+.activities {
+
+  .nav-block {
+    border-bottom: 1px solid $border-color;
+
+    .nav-links {
+      border-bottom: none;
+    }
   }
 }
