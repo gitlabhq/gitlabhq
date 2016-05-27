@@ -126,12 +126,29 @@ module Issuable
       joins(join_clause).group(issuable_table[:id]).reorder("COUNT(notes.id) DESC")
     end
 
-    def with_label(title)
+    def with_label(title, sort = nil)
       if title.is_a?(Array) && title.size > 1
-        joins(:labels).where(labels: { title: title }).group(arel_table[:id]).having("COUNT(DISTINCT labels.title) = #{title.size}")
+        joins(:labels).where(labels: { title: title }).group(*get_grouping_columns(sort)).having("COUNT(DISTINCT labels.title) = #{title.size}")
       else
         joins(:labels).where(labels: { title: title })
       end
+    end
+
+    # Includes table keys in group by clause when sorting
+    # preventing errors in postgres
+    #
+    # Returns an array of arel columns
+
+    def get_grouping_columns(sort)
+      default_columns = [arel_table[:id]]
+
+      if ["milestone_due_desc", "milestone_due_asc"].include?(sort)
+        milestone_table = Milestone.arel_table
+        default_columns << milestone_table[:id]
+        default_columns << milestone_table[:due_date]
+      end
+
+      default_columns
     end
   end
 

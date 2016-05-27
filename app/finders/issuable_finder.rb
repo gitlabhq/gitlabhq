@@ -271,7 +271,7 @@ class IssuableFinder
       if filter_by_no_label?
         items = items.without_label
       else
-        items = items.with_label(label_names)
+        items = items.with_label(label_names, params[:sort])
         if projects
           items = items.where(labels: { project_id: projects })
         end

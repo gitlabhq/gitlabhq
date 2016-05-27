@@ -10,6 +10,7 @@ v 8.9.0 (unreleased)
   - Changed the Slack build message to use the singular duration if necessary (Aran Koning)
   - Fix issues filter when ordering by milestone
   - Todos will display target state if issuable target is 'Closed' or 'Merged'
+  - Fix bug when sorting issues by milestone due date and filtering by two or more labels
   - Remove 'main language' feature
   - Measure queue duration between gitlab-workhorse and Rails
 
