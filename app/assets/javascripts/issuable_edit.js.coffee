@@ -30,13 +30,12 @@ class @IssuableEdit
       .focus()
 
   hideTitleEdit: (e) ->
-    if $(e.currentTarget).is ':not(.js-issuable-edit-title)'
+    unless e.relatedTarget?
       $('.js-issuable-edit-title').addClass 'hidden'
       $('.js-issuable-title').removeClass 'hidden'
 
   saveTitle: (e) =>
     e.preventDefault()
-    title = $('.js-issuable-title-field').val()
 
     # Hide the edit form
     @hideTitleEdit(e)
@@ -44,7 +43,7 @@ class @IssuableEdit
     $('.js-issuable-title-loading').removeClass 'hidden'
     @postData(
       issue:
-        title: title
+        title: $('.js-issuable-title-field').val()
     ).done (data) ->
       $('.js-issuable-title').text data.title
       $('.js-issuable-title-loading').addClass 'hidden'
