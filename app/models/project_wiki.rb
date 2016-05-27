@@ -145,14 +145,14 @@ class ProjectWiki
 
     wiki
   end
-  
+
   def hook_attrs
     {
       web_url: web_url,
       git_ssh_url: ssh_url_to_repo,
       git_http_url: http_url_to_repo,
       path_with_namespace: path_with_namespace,
-      default_branch: default_branch,
+      default_branch: default_branch
     }
   end
 
