@@ -11,6 +11,7 @@ v 8.9.0 (unreleased)
   - Fix issues filter when ordering by milestone
   - Todos will display target state if issuable target is 'Closed' or 'Merged'
   - Remove 'main language' feature
+  - Measure queue duration between gitlab-workhorse and Rails
 
 v 8.8.3
   - Fix gitlab importer failing to import new projects due to missing credentials
