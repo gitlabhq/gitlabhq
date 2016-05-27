@@ -6,13 +6,18 @@ class @IssuableEdit
     new GLForm $('.js-issuable-inline-form')
 
   removeEventListeners: ->
+    $(document).off 'ajax:success', '.js-issuable-inline-form'
     $(document).off 'click', '.js-issuable-title'
     $(document).off 'blur', '.js-issuable-edit-title'
     $(document).off 'click', '.js-issuable-description'
     $(document).off 'blur', '.js-task-list-field'
     $(document).off 'click', '.js-issuable-title-save'
+    $(document).off 'click', '.js-issuable-description-cancel'
+    $(document).off 'click', '.js-issuable-description-save'
 
   initEventListeners: ->
+    $(document).on 'ajax:success', '.js-issuable-inline-form', @afterSave
+
     # Title field
     $(document).on 'click', '.js-issuable-title', @showTitleEdit
     $(document).on 'blur', '.js-issuable-edit-title', @hideTitleEdit
@@ -20,7 +25,8 @@ class @IssuableEdit
 
     # Description field
     $(document).on 'click', '.js-issuable-description', @showDescriptionEdit
-    $(document).on 'blur', '.js-task-list-field', @hideDescriptionEdit
+    $(document).on 'click', '.js-issuable-description-cancel', @hideDescriptionEdit
+    $(document).on 'click', '.js-issuable-description-save', @saveDescription
 
   showTitleEdit: ->
     $(this).addClass 'hidden'
@@ -35,18 +41,11 @@ class @IssuableEdit
       $('.js-issuable-title').removeClass 'hidden'
 
   saveTitle: (e) =>
-    e.preventDefault()
-
-    # Hide the edit form
     @hideTitleEdit(e)
-
     $('.js-issuable-title-loading').removeClass 'hidden'
-    @postData(
-      issue:
-        title: $('.js-issuable-title-field').val()
-    ).done (data) ->
-      $('.js-issuable-title').text data.title
-      $('.js-issuable-title-loading').addClass 'hidden'
+
+  saveDescription: (e) =>
+    @hideDescriptionEdit(e)
 
   showDescriptionEdit: ->
     $(this).addClass 'hidden'
@@ -55,14 +54,14 @@ class @IssuableEdit
     $('.js-task-list-field')
       .focus()
 
-  hideDescriptionEdit: ->
+  hideDescriptionEdit: (e) ->
     $('.js-issuable-description-field').addClass 'hidden'
     $('.js-issuable-description').removeClass 'hidden'
 
-  postData: (data) ->
-    $.ajax(
-      url: $('.js-issuable-inline-form').attr('action')
-      type: 'PATCH'
-      dataType: 'json'
-      data: data
-    )
+  afterSave: (e, data) ->
+    $('.js-issuable-title-loading').addClass 'hidden'
+
+    # Update the HTML
+    # We need HTML returned so that the markdown can be correctly created on server side
+    $('.js-issuable-title').html data.title
+    $('.js-issuable-description').html data.description

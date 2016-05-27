@@ -1,12 +1,12 @@
-= form_for @issue, html: { class: 'detail-page-description content-block common-note-form js-issuable-inline-form' } do |f|
+= form_for @issue, remote: true, html: { class: 'detail-page-description content-block common-note-form js-issuable-inline-form', data: { type: "json" } } do |f|
+  = hidden_field_tag :inline, true
   %h2.title
     %span.js-issuable-title= markdown escape_once(@issue.title), pipeline: :single_line, author: @issue.author
     = icon('spinner spin', class: 'js-issuable-title-loading hidden')
-    .input-group.js-issuable-edit-title.hidden
+    .js-issuable-edit-title.hidden
       = f.text_field :title, class: 'form-control js-issuable-title-field'
-      %span.input-group-btn
-        %button.btn.btn-success.js-issuable-title-save{ type: "submit" }
-          Save
+      %button.btn.btn-success.js-issuable-title-save{ type: "submit" }
+        Save
   - if @issue.description.present?
     .description{ class: can?(current_user, :update_issue, @issue) ? 'js-task-list-container' : '' }
       .wiki.js-issuable-description
@@ -18,6 +18,11 @@
                                    classes: 'note-textarea js-task-list-field',
                                    placeholder: "Write a comment or drag your files here..."
           = render 'projects/notes/hints'
+        .prepend-top-10.append-bottom-10
+          %button.btn.btn-success.js-issuable-description-save{ type: "submit" }
+            Save
+          %button.btn.btn-default.pull-right.js-issuable-description-cancel{ type: "button" }
+            Cancel
   = edited_time_ago_with_tooltip(@issue, placement: 'bottom', html_class: 'issue_edited_ago')
 
   = render "merge_requests_placeholder"

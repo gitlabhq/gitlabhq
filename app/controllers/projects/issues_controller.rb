@@ -116,7 +116,19 @@ class Projects::IssuesController < Projects::ApplicationController
       end
 
       format.json do
-        render json: @issue.to_json(include: { milestone: {}, assignee: { methods: :avatar_url }, labels: { methods: :text_color } })
+        if params[:inline].nil?
+          render json: @issue.to_json(include: { milestone: {}, assignee: { methods: :avatar_url }, labels: { methods: :text_color } })
+        else
+          ext = Gitlab::ReferenceExtractor.new(@project, current_user, current_user)
+          ext.analyze(@issue.title)
+          ext.analyze(@issue.description)
+
+          render json: {
+            title: view_context.markdown(@issue.title, pipeline: :single_line),
+            description: view_context.markdown(@issue.description),
+            updated_at: @issue.updated_at,
+          }.to_json
+        end
       end
     end
 
