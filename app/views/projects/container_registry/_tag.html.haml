@@ -17,5 +17,5 @@
   - if can?(current_user, :update_container_image, @project)
     %td.content
       .controls.hidden-xs.pull-right
-        = link_to namespace_project_container_registry_path(@project.namespace, @project, tag.name), class: 'btn btn-remove has-tooltip', title: "Remove", data: { confirm: "Are you sure?" }, method: :delete do
+        = link_to namespace_project_container_registry_path(@project.namespace, @project, tag.name), class: 'btn btn-remove has-tooltip', title: "删除", data: { confirm: "确定要继续么？" }, method: :delete do
           = icon("trash cred")

@@ -14,7 +14,7 @@ class Projects::ContainerRegistryController < Projects::ApplicationController
     if tag.delete
       redirect_to url
     else
-      redirect_to url, alert: 'Failed to remove tag'
+      redirect_to url, alert: '删除标签失败'
     end
   end
 
