@@ -61,8 +61,8 @@
           %th 提交
           - stages.each do |stage|
             %th
-              %span.pipeline-stage.has-tooltip{ title: "#{stage.titleize}" }
-                = stage.titleize.pluralize
+              %span.pipeline-stage.has-tooltip{ title: "#{ci_stage_zh(stage)}" }
+                = ci_stage_zh(stage)
           %th
           %th
         = render @pipelines, commit_sha: true, stage: true, allow_retry: true, stages: stages

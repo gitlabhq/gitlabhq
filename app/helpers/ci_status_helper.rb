@@ -55,6 +55,19 @@ module CiStatusHelper
     end
   end
 
+  def ci_stage_zh(stage)
+    case stage
+      when 'build'
+        '构建'
+      when 'deploy'
+        '部署'
+      when 'test'
+        '测试'
+      else
+        stage.titleize
+    end
+  end
+
   def render_commit_status(commit, tooltip_placement: 'auto left')
     project = commit.project
     path = builds_namespace_project_commit_path(project.namespace, project, commit)
