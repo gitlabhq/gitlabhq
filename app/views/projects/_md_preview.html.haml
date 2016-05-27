@@ -14,8 +14,29 @@
           %span This is a confidential issue. Your comment will not be visible to the public.
           
       %li.pull-right
-        %button.zen-control.zen-control-full.js-zen-enter{ type: 'button', tabindex: -1 }
-          Go full screen
+
+        %a.btn.btn-xs.js-md{ 'data-md-tag' => '**' }
+          =icon('bold fw')
+        %a.btn.btn-xs.js-md{ 'data-md-tag' => '*' }
+          =icon('italic fw')
+        %a.btn.btn-xs.js-md{ 'data-md-tag' => '`' }
+          =icon('code fw')
+        %a.btn.btn-xs.js-md.js-list{ 'data-md-tag' => '* ', 'data-md-prepend' => true }
+          =icon('list-ul fw')
+        %a.btn.btn-xs.js-md.js-list.hidden-xs{ 'data-md-tag' => '1. ', 'data-md-prepend' => true }
+          =icon('list-ol fw')
+        %a.btn.btn-xs.js-md.js-list.hidden-xs{ 'data-md-tag' => '* [ ] ', 'data-md-prepend' => true }
+          =icon('check-square-o fw')
+        %a.btn.btn-xs.js-md.js-list.hidden-xs{ 'data-md-tag' => '> ', 'data-md-prepend' => true }
+          =icon('quote-right fw')
+
+        %a.btn.btn-xs.js-md.js-list.hidden-xs{ 'data-md-tag' => '!', 'data-md-prepend' => true }
+          =icon('tasks fw')
+        %a.btn.btn-xs.js-md.js-list.hidden-xs{ 'data-md-tag' => '#', 'data-md-prepend' => true }
+          =icon('exclamation-circle fw')
+
+        %a.btn.btn-xs.js-zen-enter.hidden-xs
+          =icon('arrows-alt fw')
 
   .md-write-holder
     = yield

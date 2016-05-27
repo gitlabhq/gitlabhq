@@ -6,12 +6,3 @@
   %button.toolbar-button.markdown-selector{ type: 'button', tabindex: '-1' }
     = icon('file-image-o', class: 'toolbar-button-icon')
     Attach a file
-.md-helper
-  %a.btn.btn-xs.js-md{ 'data-md-tag' => '**' }
-    =icon('bold fw')
-  %a.btn.btn-xs.js-md{ 'data-md-tag' => '*' }
-    =icon('italic fw')
-  %a.btn.btn-xs.js-md.js-list{ 'data-md-tag' => '*', 'data-md-prepend' => true }
-    =icon('list-ul fw')
-  %a.btn.btn-xs.js-md.js-list{ 'data-md-tag' => '1.', 'data-md-prepend' => true }
-    =icon('list-ol fw')

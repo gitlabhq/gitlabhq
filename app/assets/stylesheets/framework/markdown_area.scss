@@ -65,6 +65,11 @@
     a {
       padding-top: 0;
       line-height: 1;
+      border-bottom: 1px solid $border-color;
+
+      &.btn.btn-xs {
+        padding: 2px 5px;
+      }
     }
   }
 }

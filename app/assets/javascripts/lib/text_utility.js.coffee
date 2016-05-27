@@ -41,7 +41,7 @@
       text,
       textArea.selectionStart,
       textArea.selectionEnd,
-      ("#{lineBreak}#{tag} #{selObj.toString()} \n")
+      ("#{lineBreak}#{tag}#{selObj.toString()} \n")
     )
     $textArea.data('old-val', text).val(replaceWith);
     gl.text.undoManager.addUndo(oldVal, $textArea.val())
