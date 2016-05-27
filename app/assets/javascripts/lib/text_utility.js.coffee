@@ -124,6 +124,6 @@
       gl.text._previousState = $thisTextarea.val()
 
   gl.text.removeListeners = () ->
-    $('js-md.btn-bold').off()
+    $('js-md').off()
 
 ) window
