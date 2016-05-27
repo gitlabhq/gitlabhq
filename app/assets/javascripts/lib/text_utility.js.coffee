@@ -1,4 +1,4 @@
-((w) -> 
+((w) ->
   w.gl ?= {}
   w.gl.text ?= {}
   w.gl.text.undoManager ?= {}
@@ -102,7 +102,10 @@
           $this.data('md-tag')
         )
 
+    gl.text._previousState = null
+
     $(window).on 'keydown', (e) =>
+      $thisTextarea = $('textarea:focus')
       if e.ctrlKey or e.metaKey
         if String.fromCharCode(e.which).toLowerCase() is 'z' and !e.shiftKey
           e.preventDefault()
@@ -110,6 +113,14 @@
         else if ((String.fromCharCode(e.which).toLowerCase() is 'z' and e.shiftKey) or (String.fromCharCode(e.which).toLowerCase() is 'y'))
           e.preventDefault()
           self.undoManager.redo()
+      else if e.which is 13 or e.which is 8 # enter key or backspace key has been pressed
+        if gl.text._previousState?
+          gl.text.undoManager.addUndo(
+            gl.text._previousState,
+            $thisTextarea.val()
+          )
+          
+      gl.text._previousState = $thisTextarea.val()
 
   gl.text.removeListeners = () ->
     $('js-md.btn-bold').off()
