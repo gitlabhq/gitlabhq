@@ -188,10 +188,8 @@ module BlobHelper
   def gitignore_names
     return @gitignore_names if defined?(@gitignore_names)
 
-    @gitignore_names = {
-      Global: Gitlab::Gitignore.global.map { |gitignore| { name: gitignore.name } },
-      # Note that the key here doesn't cover it really
-      Languages: Gitlab::Gitignore.languages_frameworks.map{ |gitignore| { name: gitignore.name } }
-    }
+    @gitignore_names = Gitlab::Template::Gitignore.categories.map do |k, _|
+      [k, Gitlab::Template::Gitignore.by_category(k)]
+    end.to_h
   end
 end

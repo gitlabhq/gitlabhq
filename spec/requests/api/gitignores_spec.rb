@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe API::Gitignores, api: true  do
+describe API::Templates, api: true  do
   include ApiHelpers
 
   describe 'Entity Gitignore' do
