@@ -59,18 +59,11 @@
         %strong Public builds
       .help-block Allow everyone to access builds for Public and Internal projects
 
-<<<<<<< HEAD
   - if @project.mirror?
     = render 'shared/mirror_trigger_builds_setting', f: f
 
-  .form-group
-    = f.label :runners_token, "Runners token", class: 'control-label'
-    .col-sm-10
-      = f.text_field :runners_token, class: "form-control", placeholder: 'xEeFCaDAB89'
-      %p.help-block The secure token used to checkout project.
-=======
   .form-group.append-bottom-0
     = f.label :runners_token, "Runners token", class: 'label-light'
     = f.text_field :runners_token, class: "form-control", placeholder: 'xEeFCaDAB89'
     %p.help-block The secure token used to checkout project.
->>>>>>> e6389dfee621090706d43d3107339934ca42f0ff
+
