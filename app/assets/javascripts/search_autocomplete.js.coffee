@@ -156,11 +156,14 @@ class @SearchAutocomplete
     # No need to enable anything if user is not logged in
     return if !gon.current_user_id
 
-    _this = @
-    @loadingSuggestions = false
+    unless @dropdown.hasClass('open')
+      _this = @
+      @loadingSuggestions = false
 
-    @dropdown.addClass('open')
-    @searchInput.removeClass('disabled')
+      @dropdown
+        .addClass('open')
+        .trigger('shown.bs.dropdown')
+      @searchInput.removeClass('disabled')
 
   onSearchInputKeyDown: =>
     # Saves last length of the entered text
@@ -191,7 +194,7 @@ class @SearchAutocomplete
           @disableAutocomplete()
         else
           # We should display the menu only when input is not empty
-          @enableAutocomplete()
+          @enableAutocomplete() if e.keyCode isnt KEYCODE.ENTER
 
     @wrap.toggleClass 'has-value', !!e.target.value
 
