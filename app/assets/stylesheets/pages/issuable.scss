@@ -394,3 +394,14 @@
   display: inline-block;
   line-height: 18px;
 }
+
+.issuable-title-edit {
+  position: relative;
+  padding-right: 127px;
+}
+
+.issuable-title-edit-buttons {
+  position: absolute;
+  right: 0;
+  top: 0;
+}

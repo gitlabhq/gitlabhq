@@ -1,9 +1,24 @@
 class @IssuableEdit
   constructor: ->
+    @getElements()
     @removeEventListeners()
     @initEventListeners()
 
-    new GLForm $('.js-issuable-inline-form')
+    new GLForm(@elements.form)
+
+  getElements: ->
+    @elements =
+      form: $('.js-issuable-inline-form')
+      title:
+        element: $('.js-issuable-title')
+        field: $('.js-issuable-title-field')
+        fieldset: $('.js-issuable-edit-title')
+        loading: $('.js-issuable-title-loading')
+      description:
+        element: $('.js-issuable-description')
+        field: $('.js-task-list-field')
+        fieldset: $('.js-issuable-description-field')
+        loading: $('.js-issuable-title-loading')
 
   removeEventListeners: ->
     $(document).off 'ajax:success', '.js-issuable-inline-form'
@@ -12,56 +27,54 @@ class @IssuableEdit
     $(document).off 'click', '.js-issuable-description'
     $(document).off 'blur', '.js-task-list-field'
     $(document).off 'click', '.js-issuable-title-save'
-    $(document).off 'click', '.js-issuable-description-cancel'
+    $(document).off 'click', '.js-issuable-edit-cancel'
     $(document).off 'click', '.js-issuable-description-save'
 
   initEventListeners: ->
     $(document).on 'ajax:success', '.js-issuable-inline-form', @afterSave
+    $(document).on 'click', '.js-issuable-edit-cancel', @hideFields
 
     # Title field
     $(document).on 'click', '.js-issuable-title', @showTitleEdit
-    $(document).on 'blur', '.js-issuable-edit-title', @hideTitleEdit
     $(document).on 'click', '.js-issuable-title-save', @saveTitle
 
     # Description field
     $(document).on 'click', '.js-issuable-description', @showDescriptionEdit
-    $(document).on 'click', '.js-issuable-description-cancel', @hideDescriptionEdit
     $(document).on 'click', '.js-issuable-description-save', @saveDescription
 
-  showTitleEdit: ->
-    $(this).addClass 'hidden'
-    $('.js-issuable-edit-title')
-      .removeClass 'hidden'
-    $('.js-issuable-title-field')
-      .focus()
+  hideFields: (e) =>
+    @hideTitleEdit(e)
+    @hideDescriptionEdit(e)
+
+  showTitleEdit: =>
+    @elements.title.element.addClass 'hidden'
+    @elements.title.fieldset.removeClass 'hidden'
+    @elements.title.field.focus()
 
   hideTitleEdit: (e) ->
-    unless e.relatedTarget?
-      $('.js-issuable-edit-title').addClass 'hidden'
-      $('.js-issuable-title').removeClass 'hidden'
+    @elements.title.fieldset.addClass 'hidden'
+    @elements.title.element.removeClass 'hidden'
 
   saveTitle: (e) =>
-    @hideTitleEdit(e)
-    $('.js-issuable-title-loading').removeClass 'hidden'
+    @hideTitleEdit()
+    @elements.title.loading.removeClass 'hidden'
 
   saveDescription: (e) =>
     @hideDescriptionEdit(e)
 
   showDescriptionEdit: ->
-    $(this).addClass 'hidden'
-    $('.js-issuable-description-field')
-      .removeClass 'hidden'
-    $('.js-task-list-field')
-      .focus()
+    @elements.description.element.addClass 'hidden'
+    @elements.description.fieldset.removeClass 'hidden'
+    @elements.description.field.focus()
 
   hideDescriptionEdit: (e) ->
-    $('.js-issuable-description-field').addClass 'hidden'
-    $('.js-issuable-description').removeClass 'hidden'
+    @elements.description.fieldset.addClass 'hidden'
+    @elements.description.element.removeClass 'hidden'
 
-  afterSave: (e, data) ->
-    $('.js-issuable-title-loading').addClass 'hidden'
+  afterSave: (e, data) =>
+    @elements.title.loading.addClass 'hidden'
 
     # Update the HTML
     # We need HTML returned so that the markdown can be correctly created on server side
-    $('.js-issuable-title').html data.title
-    $('.js-issuable-description').html data.description
+    @elements.title.element.html data.title
+    @elements.description.element.html data.description

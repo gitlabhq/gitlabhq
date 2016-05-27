@@ -3,10 +3,13 @@
   %h2.title
     %span.js-issuable-title= markdown escape_once(@issue.title), pipeline: :single_line, author: @issue.author
     = icon('spinner spin', class: 'js-issuable-title-loading hidden')
-    .js-issuable-edit-title.hidden
+    .issuable-title-edit.js-issuable-edit-title.hidden
       = f.text_field :title, class: 'form-control js-issuable-title-field'
-      %button.btn.btn-success.js-issuable-title-save{ type: "submit" }
-        Save
+      .issuable-title-edit-buttons
+        %button.btn.btn-success.js-issuable-title-save{ type: "submit" }
+          Save
+        %button.btn.btn-default.js-issuable-edit-cancel{ type: "button" }
+          Cancel
   - if @issue.description.present?
     .description{ class: can?(current_user, :update_issue, @issue) ? 'js-task-list-container' : '' }
       .wiki.js-issuable-description
@@ -21,7 +24,7 @@
         .prepend-top-10.append-bottom-10
           %button.btn.btn-success.js-issuable-description-save{ type: "submit" }
             Save
-          %button.btn.btn-default.pull-right.js-issuable-description-cancel{ type: "button" }
+          %button.btn.btn-default.pull-right.js-issuable-edit-cancel{ type: "button" }
             Cancel
   = edited_time_ago_with_tooltip(@issue, placement: 'bottom', html_class: 'issue_edited_ago')
 
