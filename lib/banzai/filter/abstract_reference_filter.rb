@@ -236,7 +236,9 @@ module Banzai
         if cache.key?(key)
           cache[key]
         else
-          cache[key] = yield
+          value = yield
+          cache[key] = value if key.present?
+          value
         end
       end
     end
