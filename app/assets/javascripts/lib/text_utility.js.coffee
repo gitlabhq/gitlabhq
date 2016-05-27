@@ -77,6 +77,9 @@
     unique = gl.text.undoManager.addUniqueIfNotExists($thisTextarea)
     if not gl.text.undoManager.undoHistory[unique].length
       return
+    latestUndo = gl.text.undoManager.undoHistory[unique].pop()
+    gl.text.undoManager.history[unique].push(latestUndo)
+    $thisTextarea.val(latestUndo.newVal)
 
   gl.text.addListeners = () ->
     console.log('addListeners')
