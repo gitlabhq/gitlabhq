@@ -10,6 +10,7 @@ class @MergeRequestWidget
     $('#modal_merge_info').modal(show: false)
     @firstCICheck = true
     @readyForCICheck = false
+    @cancel = false
     clearInterval @fetchBuildStatusInterval
 
     @clearEventListeners()
@@ -21,10 +22,16 @@ class @MergeRequestWidget
   clearEventListeners: ->
     $(document).off 'page:change.merge_request'
 
+  cancelPolling: ->
+    @cancel = true
+
   addEventListeners: ->
+    allowedPages = ['show', 'commits', 'builds', 'changes']
     $(document).on 'page:change.merge_request', =>
-      if $('body').data('page') isnt 'projects:merge_requests:show'
+      page = $('body').data('page').split(':').last()
+      if allowedPages.indexOf(page) < 0
         clearInterval @fetchBuildStatusInterval
+        @cancelPolling()
         @clearEventListeners()
 
   mergeInProgress: (deleteSourceBranch = false)->
@@ -67,6 +74,7 @@ class @MergeRequestWidget
     $('.ci-widget-fetching').show()
 
     $.getJSON @opts.ci_status_url, (data) =>
+      return if @cancel
       @readyForCICheck = true
 
       if data.status is ''
