@@ -32,8 +32,11 @@
     selObj = window.getSelection()
     selRange = selObj.getRangeAt(0)
     text = $textArea.val()
-    lineBreak = '\n' if textArea.selectionStart > 0
-    console.log(textArea.selectionStart,lineBreak)
+    if textArea.selectionStart > 0 
+      lineBreak = '\n'
+    else
+      lineBreak = ''
+
     replaceWith = @replaceRange(
       text,
       textArea.selectionStart,
@@ -82,7 +85,6 @@
     $thisTextarea.val(latestUndo.newVal)
 
   gl.text.addListeners = () ->
-    console.log('addListeners')
     self = @
     $('.js-md').on 'click', ->
       $this = $(@)
@@ -119,7 +121,6 @@
             gl.text._previousState,
             $thisTextarea.val()
           )
-          
       gl.text._previousState = $thisTextarea.val()
 
   gl.text.removeListeners = () ->
