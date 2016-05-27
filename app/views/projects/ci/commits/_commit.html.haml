@@ -35,7 +35,7 @@
     - stages.each do |stage|
       %td
         - if status = stages_status[stage]
-          - tooltip = "#{ci_stage_zh(stage)}: #{ci_status_zh(status)}"
+          - tooltip = "#{ci_stage_zh(stage)}：#{ci_status_zh(status)}"
           %span.has-tooltip{ title: "#{tooltip}", class: "ci-status-icon-#{status}" }
             = ci_icon_for_status(status)
 
