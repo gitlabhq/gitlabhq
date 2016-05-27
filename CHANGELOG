@@ -42,6 +42,7 @@ v 8.8.4
 
 v 8.8.4 (unreleased)
   - Ensure branch cleanup regardless of whether the GitHub import process succeeds
+  - Fix issue with arrow keys not working in search autocomplete dropdown
 
 v 8.8.3
   - Fix 404 page when viewing TODOs that contain milestones or labels in different projects. !4312
