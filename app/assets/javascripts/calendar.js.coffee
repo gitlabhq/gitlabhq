@@ -175,7 +175,7 @@ class @Calendar
       .range(['#acd5f2', '#254e77'])
       .domain([0, 3])
 
-  clickDay: (stamp) ->
+  clickDay: (stamp) =>
     if @currentSelectedDate isnt stamp.date
       @currentSelectedDate = stamp.date
       formatted_date = @currentSelectedDate.getFullYear() + "-" + (@currentSelectedDate.getMonth()+1) + "-" + @currentSelectedDate.getDate()
