@@ -186,8 +186,8 @@ zh:
         format: ! '%n %u'
         units:
           byte:
-            one: Byte
-            other: Bytes
+            one: 字节
+            other: 字节
           gb: GB
           kb: KB
           mb: MB
