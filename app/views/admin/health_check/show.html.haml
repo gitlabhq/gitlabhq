@@ -5,15 +5,15 @@
 .bs-callout.clearfix
   .pull-left
     %p
-  Access token is
+  访问授权码：
   %code#health-check-token= current_application_settings.health_check_access_token
   = button_to reset_health_check_token_admin_application_settings_path,
     method: :put, class: 'btn btn-default',
-    data: { confirm: 'Are you sure you want to reset the health check token?' } do
+    data: { confirm: '确定要重置健康检查访问授权码？' } do
     = icon('refresh')
-    Reset health check access token
+    重置健康检查访问授权码
 %p.light
-  Health information can be retrieved as plain text, JSON, or XML using:
+  健康信息可以使用下面的方法检索为纯文本、JSON 或 XML 格式：
   %ul
     %li
       %code= health_check_url(token: current_application_settings.health_check_access_token)
@@ -23,7 +23,7 @@
       %code= health_check_url(token: current_application_settings.health_check_access_token, format: :xml)
 
 %p.light
-  You can also ask for the status of specific services:
+  你也可以直接查询指定服务的状态：
   %ul
     %li
       %code= health_check_url(token: current_application_settings.health_check_access_token, checks: :cache)
@@ -35,15 +35,15 @@
 %hr
 .panel.panel-default
   .panel-heading
-    Current Status:
+    当前状态：
     - if @errors.blank?
       = icon('circle', class: 'cgreen')
-      Healthy
+      健康
     - else
       = icon('warning', class: 'cred')
-      Unhealthy
+      不健康
   .panel-body
     - if @errors.blank?
-      No Health Problems Detected
+      没有探测到健康问题
     - else
       = @errors
