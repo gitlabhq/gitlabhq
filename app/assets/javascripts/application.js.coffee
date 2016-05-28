@@ -263,3 +263,17 @@ $ ->
 
   checkInitialSidebarSize()
   new Aside()
+
+  if not window.socket?
+    window.socket = new WebSocket "ws://localhost:8080/user/#{gon.current_user_id}"
+    window.socket.onmessage = (event) ->
+      data = JSON.parse(event.data)
+
+      if data.channel is 'todos'
+        $('.todos-pending-count')
+          .text data.data.count
+
+        if data.data.count is 0
+          $('.todos-pending-count').addClass 'hidden'
+        else
+          $('.todos-pending-count').removeClass 'hidden'

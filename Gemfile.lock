@@ -177,6 +177,12 @@ GEM
       railties (>= 3.2)
     dropzonejs-rails (0.7.2)
       rails (> 3.1)
+    em-hiredis (0.3.1)
+      eventmachine (~> 1.0)
+      hiredis (~> 0.6.0)
+    em-websocket (0.5.0)
+      eventmachine (>= 0.12.9)
+      http_parser.rb (~> 0.5.3)
     email_reply_parser (0.5.8)
     email_spec (1.6.0)
       launchy (~> 2.1)
@@ -409,6 +415,7 @@ GEM
     hipchat (1.5.2)
       httparty
       mimemagic
+    hiredis (0.6.1)
     html-pipeline (1.11.0)
       activesupport (>= 2)
       nokogiri (~> 1.4)
@@ -925,6 +932,8 @@ DEPENDENCIES
   diffy (~> 3.0.3)
   doorkeeper (~> 3.1)
   dropzonejs-rails (~> 0.7.1)
+  em-hiredis
+  em-websocket
   email_reply_parser (~> 0.5.8)
   email_spec (~> 1.6.0)
   factory_girl_rails (~> 4.6.0)

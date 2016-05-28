@@ -334,3 +334,6 @@ gem "paranoia", "~> 2.0"
 
 # Health check
 gem 'health_check', '~> 1.5.1'
+
+gem 'em-websocket'
+gem 'em-hiredis'

@@ -15,6 +15,8 @@ class Todo < ActiveRecord::Base
   validates :target_id, presence: true, unless: :for_commit?
   validates :commit_id, presence: true, if: :for_commit?
 
+  after_create :publish_event
+
   default_scope { reorder(id: :desc) }
 
   scope :pending, -> { with_state(:pending) }
@@ -59,6 +61,16 @@ class Todo < ActiveRecord::Base
       target.short_id
     else
       target.to_reference
+    end
+  end
+
+  private
+  def publish_event
+    Gitlab::Redis.with do |redis|
+      data = {
+        count: self.user.todos.pending.count
+      }
+      redis.publish("todos.#{self.user_id}", {count: self.user.todos.pending.count}.to_json)
     end
   end
 end
