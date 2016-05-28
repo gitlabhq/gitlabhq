@@ -1,4 +1,4 @@
-- page_title "Container Registry"
+- page_title "容器注册表"
 = render "header_title"
 
 %hr
@@ -6,15 +6,15 @@
 %ul.content-list
   %li.light.prepend-top-default
     %p
-      A 'container image' is a snapshot of a container.
-      You can host your container images with GitLab.
+      “容器镜像”是容器的快照。
+      你现在可以将容器镜像存放在 GitLab。
       %br
-      To start using container images hosted on GitLab you first need to login:
+      要使用 GitLab 存放的容器镜像需要你先登录：
       %pre
         %code
           docker login #{Gitlab.config.registry.host_port}
       %br
-      Then you are free to create and upload a container image with build and push commands:
+      然后你就可以自由的使用 build 和 push 命令创建和上传容器镜像：
       %pre
         docker build -t #{escape_once(@project.container_registry_repository_url)} .
         %br
@@ -22,17 +22,17 @@
 
   - if @tags.blank?
     %li
-      .nothing-here-block No images in Container Registry for this project.
+      .nothing-here-block 此项目的容器注册表没有任何镜像。
 
   - else
     .table-holder
       %table.table.tags
         %thead
           %tr
-            %th Name
-            %th Image ID
-            %th Size
-            %th Created
+            %th 名称
+            %th 镜像 ID
+            %th 大小
+            %th 创建时间
             - if can?(current_user, :update_container_image, @project)
               %th
 
