@@ -22,7 +22,7 @@ describe 'Issues', feature: true do
 
     before do
       visit edit_namespace_project_issue_path(project.namespace, project, issue)
-      first('.js-zen-enter:first').click
+      find('.js-zen-enter').click
     end
 
     it 'should open new issue popup' do
