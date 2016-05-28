@@ -46,4 +46,4 @@ rails_best_practices_output.html
 tmp/
 vendor/bundle/*
 builds/*
-shared/*
+/shared/*
