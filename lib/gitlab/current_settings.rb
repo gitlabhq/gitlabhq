@@ -9,9 +9,9 @@ module Gitlab
     end
 
     def ensure_application_settings!
-      settings = nil
+      settings = ::ApplicationSetting.cached
 
-      if connect_to_db?
+      if !settings && connect_to_db?
         settings = ::ApplicationSetting.current
         settings ||= ::ApplicationSetting.create_from_defaults unless ActiveRecord::Migrator.needs_migration?
       end
