@@ -100,11 +100,11 @@ class HipchatService < Service
     if Gitlab::Git.blank_ref?(before)
       message << "推送了新的 #{ref_type} <a href=\""\
                  "#{project_url}/commits/#{CGI.escape(ref)}\">#{ref}</a>"\
-                 " 到了 #{project_link}\n"
+                 " 到 #{project_link}\n"
     elsif Gitlab::Git.blank_ref?(after)
       message << "删除了 <a href=\"#{project.web_url}\">#{project_name}</a> 的 #{ref_type} <b>#{ref}</b>\n"
     else
-      message << "推送到了 <a href=\"#{project.web_url}\">#{project.name_with_namespace.gsub!(/\s/,'')}</a> 的 #{ref_type} <a href=\""\
+      message << "推送了 <a href=\"#{project.web_url}\">#{project.name_with_namespace.gsub!(/\s/,'')}</a> 的 #{ref_type} <a href=\""\
                   "#{project.web_url}/commits/#{CGI.escape(ref)}\">#{ref}</a>"
       message << "(<a href=\"#{project.web_url}/compare/#{before}...#{after}\">比较</a>)"
 

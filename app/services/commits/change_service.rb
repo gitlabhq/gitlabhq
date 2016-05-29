@@ -26,7 +26,7 @@ module Commits
       allowed = ::Gitlab::GitAccess.new(current_user, project).can_push_to_branch?(@target_branch)
 
       unless allowed
-        raise ValidationError.new('你不允许推送到这个分支')
+        raise ValidationError.new('你不允许推送到此分支')
       end
 
       true

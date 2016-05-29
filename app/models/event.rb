@@ -170,7 +170,7 @@ class Event < ActiveRecord::Base
       elsif rm_ref?
         "删除了"
       else
-        "推送到了"
+        "推送了"
       end
     elsif closed?
       "关闭了"

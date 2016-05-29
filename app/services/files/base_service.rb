@@ -46,7 +46,7 @@ module Files
       allowed = ::Gitlab::GitAccess.new(current_user, project).can_push_to_branch?(@target_branch)
 
       unless allowed
-        raise_error("你不允许推送到这个分支")
+        raise_error("你不允许推送到此分支")
       end
 
       unless project.empty_repo?
