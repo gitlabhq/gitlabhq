@@ -66,11 +66,6 @@ class Todo < ActiveRecord::Base
 
   private
   def publish_event
-    Gitlab::Redis.with do |redis|
-      data = {
-        count: self.user.todos.pending.count
-      }
-      redis.publish("todos.#{self.user_id}", {count: self.user.todos.pending.count}.to_json)
-    end
+    Sidekiq::Client.enqueue(TodoWorker, self.id)
   end
 end
