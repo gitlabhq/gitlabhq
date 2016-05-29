@@ -16,6 +16,7 @@ class Todo < ActiveRecord::Base
   validates :commit_id, presence: true, if: :for_commit?
 
   after_create :publish_event
+  after_save :publish_event
 
   default_scope { reorder(id: :desc) }
 

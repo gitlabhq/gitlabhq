@@ -34,7 +34,6 @@ class @Todos
       success: (data) =>
         @redirectIfNeeded data.count
         @clearDone $this.closest('li')
-        @updateBadges data
 
   allDoneClicked: (e) =>
     e.preventDefault()
@@ -51,7 +50,6 @@ class @Todos
       success: (data) =>
         $this.remove()
         $('.js-todos-list').remove()
-        @updateBadges data
 
   clearDone: ($row) ->
     $ul = $row.closest('ul')
@@ -59,10 +57,6 @@ class @Todos
 
     if not $ul.find('li').length
       $ul.parents('.panel').remove()
-
-  updateBadges: (data) ->
-    $('.todos-pending .badge, .todos-pending-count').text data.count
-    $('.todos-done .badge').text data.done_count
 
   getTotalPages: ->
     @el.data('totalPages')
