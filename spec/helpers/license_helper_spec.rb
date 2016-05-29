@@ -35,7 +35,7 @@ describe LicenseHelper do
         allow(license).to receive(:restrictions).and_return({ active_user_count: 50 })
         allow(User).to receive(:active).and_return(Array.new(100))
 
-        warn_msg = 'Your GitLab license currently covers 50 users, but it looks like your site has grown to 100 users. Please contact sales@gitlab.com to increase the seats on your license. Note: This message is only visible to you as an admin.'
+        warn_msg = 'Your GitLab license currently covers 50 users, but it looks like your site has grown to 100 users. Please contact sales@gitlab.com to increase the number of licensed users. Note: This message is only visible to you as an admin.'
         expect(license_message(signed_in: true, is_admin: true)).to eq(warn_msg)
       end
     end
