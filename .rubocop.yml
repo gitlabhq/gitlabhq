@@ -541,7 +541,7 @@ Style/SpaceAfterComma:
 # Do not put a space between a method name and the opening parenthesis in a
 # method definition.
 Style/SpaceAfterMethodName:
-  Enabled: false
+  Enabled: true
 
 # Tracks redundant space after the ! operator.
 Style/SpaceAfterNot:
