@@ -71,8 +71,8 @@ module LicenseHelper
       message << "Your GitLab license currently covers #{license.user_count}"
       message << "users, but it looks like your site has grown to"
       message << "#{current_active_user_count} users. Please contact"
-      message << "sales@gitlab.com to increase the seats on your license."
-      message << "Thank you for choosing GitLab."
+      message << "sales@gitlab.com to increase the number of licensed users."
+      message << "Note: This message is only visible to you as an admin."
     end
 
     message.join(" ")
