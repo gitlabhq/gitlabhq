@@ -115,18 +115,18 @@ class @AwardsHandler
     @checkMutuality votesBlock, emoji  if checkForMutuality
     @addEmojiToFrequentlyUsedList emoji
 
-    emoji     = @normilizeEmojiName emoji
-    $emojiBtn = @findEmojiIcon(votesBlock, emoji).parent()
+    emoji        = @normilizeEmojiName emoji
+    $emojiButton = @findEmojiIcon(votesBlock, emoji).parent()
 
-    if $emojiBtn.length > 0
-      if @isActive $emojiBtn
-        @decrementCounter $emojiBtn, emoji
+    if $emojiButton.length > 0
+      if @isActive $emojiButton
+        @decrementCounter $emojiButton, emoji
       else
-        counter = $emojiBtn.find '.js-counter'
+        counter = $emojiButton.find '.js-counter'
         counter.text parseInt(counter.text()) + 1
-        $emojiBtn.addClass 'active'
+        $emojiButton.addClass 'active'
         @addMeToUserList votesBlock, emoji
-        @animateEmoji $emojiBtn
+        @animateEmoji $emojiButton
     else
       votesBlock.removeClass 'hidden'
       @createEmoji votesBlock, emoji
@@ -153,32 +153,32 @@ class @AwardsHandler
       @addAward votesBlock, awardUrl, mutualVote, no if isAlreadyVoted
 
 
-  isActive: ($emojiBtn) -> $emojiBtn.hasClass 'active'
+  isActive: ($emojiButton) -> $emojiButton.hasClass 'active'
 
 
-  decrementCounter: ($emojiBtn, emoji) ->
+  decrementCounter: ($emojiButton, emoji) ->
 
-    counter       = $('.js-counter', $emojiBtn)
+    counter       = $('.js-counter', $emojiButton)
     counterNumber = parseInt counter.text(), 10
 
     if counterNumber > 1
       counter.text counterNumber - 1
-      @removeMeFromUserList $emojiBtn, emoji
+      @removeMeFromUserList $emojiButton, emoji
     else if emoji is 'thumbsup' or emoji is 'thumbsdown'
-      $emojiBtn.tooltip 'destroy'
+      $emojiButton.tooltip 'destroy'
       counter.text '0'
-      @removeMeFromUserList $emojiBtn, emoji
-      @removeEmoji $emojiBtn if $emojiBtn.parents('.note').length
+      @removeMeFromUserList $emojiButton, emoji
+      @removeEmoji $emojiButton if $emojiButton.parents('.note').length
     else
-      @removeEmoji $emojiBtn
+      @removeEmoji $emojiButton
 
-    $emojiBtn.removeClass 'active'
+    $emojiButton.removeClass 'active'
 
 
-  removeEmoji: ($emojiBtn) ->
+  removeEmoji: ($emojiButton) ->
 
-    $emojiBtn.tooltip('destroy')
-    $emojiBtn.remove()
+    $emojiButton.tooltip('destroy')
+    $emojiButton.remove()
 
     $votesBlock = @getVotesBlock()
 
@@ -191,9 +191,9 @@ class @AwardsHandler
     return $awardBlock.attr('data-original-title') or $awardBlock.attr('data-title')
 
 
-  removeMeFromUserList: ($emojiBtn, emoji) ->
+  removeMeFromUserList: ($emojiButton, emoji) ->
 
-    awardBlock    = $emojiBtn
+    awardBlock    = $emojiButton
     originalTitle = @getAwardTooltip awardBlock
 
     authors = originalTitle.split ', '
