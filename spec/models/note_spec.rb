@@ -17,13 +17,13 @@ describe Note, models: true do
       before { allow(subject).to receive(:for_commit?).and_return(true) }
 
       it { is_expected.to validate_presence_of(:commit_id) }
-      it { is_expected.to_not validate_presence_of(:noteable_id) }
+      it { is_expected.not_to validate_presence_of(:noteable_id) }
     end
 
     context 'when note is not on commit' do
       before { allow(subject).to receive(:for_commit?).and_return(false) }
 
-      it { is_expected.to_not validate_presence_of(:commit_id) }
+      it { is_expected.not_to validate_presence_of(:commit_id) }
       it { is_expected.to validate_presence_of(:noteable_id) }
     end
 
