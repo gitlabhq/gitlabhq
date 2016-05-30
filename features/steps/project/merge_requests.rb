@@ -567,7 +567,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     click_diff_line(sample_compare.changes[1][:line_code])
   end
 
-  def have_visible_content (text)
+  def have_visible_content(text)
     have_css("*", text: text, visible: true)
   end
 
