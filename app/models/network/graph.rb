@@ -231,7 +231,7 @@ module Network
       reserved.uniq!
 
       space = space_default
-      while reserved.include?(space) do
+      while reserved.include?(space)
         space += space_step
         if space < space_base then
           space_step *= -1

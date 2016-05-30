@@ -704,7 +704,7 @@ Style/WhenThen:
 
 # Checks for redundant do after while or until.
 Style/WhileUntilDo:
-  Enabled: false
+  Enabled: true
 
 # Favor modifier while/until usage when you have a single-line body.
 Style/WhileUntilModifier:
