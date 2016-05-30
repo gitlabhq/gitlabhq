@@ -25,18 +25,17 @@ class Ability
 
     # List of possible abilities for anonymous user
     def anonymous_abilities(user, subject)
-      case true
-      when subject.is_a?(PersonalSnippet)
+      if subject.is_a?(PersonalSnippet)
         anonymous_personal_snippet_abilities(subject)
-      when subject.is_a?(ProjectSnippet)
+      elsif subject.is_a?(ProjectSnippet)
         anonymous_project_snippet_abilities(subject)
-      when subject.is_a?(CommitStatus)
+      elsif subject.is_a?(CommitStatus)
         anonymous_commit_status_abilities(subject)
-      when subject.is_a?(Project) || subject.respond_to?(:project)
+      elsif subject.is_a?(Project) || subject.respond_to?(:project)
         anonymous_project_abilities(subject)
-      when subject.is_a?(Group) || subject.respond_to?(:group)
+      elsif subject.is_a?(Group) || subject.respond_to?(:group)
         anonymous_group_abilities(subject)
-      when subject.is_a?(User)
+      elsif subject.is_a?(User)
         anonymous_user_abilities
       else
         []
