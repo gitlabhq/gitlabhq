@@ -1,5 +1,7 @@
 module Auth
   class ContainerRegistryAuthenticationService < BaseService
+    include CurrentSettings
+
     AUDIENCE = 'container_registry'
 
     def execute
@@ -17,6 +19,7 @@ module Auth
       token = JSONWebToken::RSAToken.new(registry.key)
       token.issuer = registry.issuer
       token.audience = AUDIENCE
+      token.expire_time = token.issued_at + current_application_settings.container_registry_token_expire_delay.minutes
       token[:access] = names.map do |name|
         { type: 'repository', name: name, actions: %w(*) }
       end
