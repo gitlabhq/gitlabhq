@@ -29,7 +29,7 @@ module Banzai
         ref_pattern = User.reference_pattern
         ref_pattern_start = /\A#{ref_pattern}\z/
 
-        each_node do |node|
+        nodes.each do |node|
           if text_node?(node)
             replace_text_when_pattern_matches(node, ref_pattern) do |content|
               user_link_filter(content)
@@ -59,12 +59,37 @@ module Banzai
         self.class.references_in(text) do |match, username|
           if username == 'all'
             link_to_all(link_text: link_text)
-          elsif namespace = Namespace.find_by(path: username)
+          elsif namespace = namespaces[username]
             link_to_namespace(namespace, link_text: link_text) || match
           else
             match
           end
         end
+      end
+
+      # Returns a Hash containing all Namespace objects for the username
+      # references in the current document.
+      #
+      # The keys of this Hash are the namespace paths, the values the
+      # corresponding Namespace objects.
+      def namespaces
+        @namespaces ||=
+          Namespace.where(path: usernames).each_with_object({}) do |row, hash|
+            hash[row.path] = row
+          end
+      end
+
+      # Returns all usernames referenced in the current document.
+      def usernames
+        refs = Set.new
+
+        nodes.each do |node|
+          node.to_html.scan(User.reference_pattern) do
+            refs << $~[:user]
+          end
+        end
+
+        refs.to_a
       end
 
       private
