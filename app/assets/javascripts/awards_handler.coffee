@@ -131,7 +131,10 @@ class @AwardsHandler
       @createEmoji votesBlock, emoji
 
 
-  getVotesBlock: -> return $ '.js-awards-block.current'
+  getVotesBlock: ->
+
+    currentBlock = $ '.js-awards-block.current'
+    return if currentBlock.length then currentBlock else $('.js-awards-block').eq 0
 
 
   getAwardUrl: -> return @getVotesBlock().data 'award-url'
