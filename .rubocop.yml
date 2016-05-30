@@ -784,7 +784,7 @@ Lint/AssignmentInCondition:
 
 # Align block ends correctly.
 Lint/BlockAlignment:
-  Enabled: false
+  Enabled: true
 
 # Default values in optional keyword arguments and optional ordinal arguments
 # should not refer back to the name of the argument.
