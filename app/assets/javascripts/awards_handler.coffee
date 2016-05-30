@@ -100,12 +100,13 @@ class @AwardsHandler
     $menu.css(css)
 
 
-  addAward: (votesBlock, awardUrl, emoji, checkMutuality = yes) ->
+  addAward: (votesBlock, awardUrl, emoji, checkMutuality = yes, callback) ->
 
     emoji = @normilizeEmojiName emoji
 
     @postEmoji awardUrl, emoji, =>
       @addAwardToEmojiBar votesBlock, emoji, checkMutuality
+      callback?()
 
     $('.emoji-menu').removeClass 'is-visible'
 
@@ -146,11 +147,24 @@ class @AwardsHandler
     awardUrl = @getAwardUrl()
 
     if emoji in [ 'thumbsup', 'thumbsdown' ]
-      mutualVote = if emoji is 'thumbsup' then 'thumbsdown' else 'thumbsup'
-      selector   = "[data-emoji=#{mutualVote}]"
+      mutualVote     = if emoji is 'thumbsup' then 'thumbsdown' else 'thumbsup'
+      $emojiButton   = votesBlock.find("[data-emoji=#{mutualVote}]").parent()
+      isAlreadyVoted = $emojiButton.hasClass 'active'
 
-      isAlreadyVoted = votesBlock.find(selector).parent().hasClass 'active'
-      @addAward votesBlock, awardUrl, mutualVote, no if isAlreadyVoted
+      if isAlreadyVoted
+        @showEmojiLoader $emojiButton
+        @addAward votesBlock, awardUrl, mutualVote, no, ->
+          $emojiButton.removeClass 'is-loading'
+
+
+  showEmojiLoader: ($emojiButton) ->
+
+    $loader = $emojiButton.find '.fa-spinner'
+
+    unless $loader.length
+      $emojiButton.append '<i class="fa fa-spinner fa-spin award-control-icon award-control-icon-loading"></i>'
+
+    $emojiButton.addClass 'is-loading'
 
 
   isActive: ($emojiButton) -> $emojiButton.hasClass 'active'
