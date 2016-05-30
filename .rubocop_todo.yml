@@ -226,10 +226,6 @@ Style/LineEndConcatenation:
 Style/MethodCallParentheses:
   Enabled: false
 
-# Offense count: 3
-Style/MultilineTernaryOperator:
-  Enabled: false
-
 # Offense count: 62
 # Cop supports --auto-correct.
 Style/MutableConstant:
