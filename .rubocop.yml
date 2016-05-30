@@ -486,10 +486,9 @@ Style/RedundantException:
 Style/RedundantFreeze:
   Enabled: false
 
-# TODO: Enable RedundantParentheses Cop.
 # Checks for parentheses that seem not to serve any purpose.
 Style/RedundantParentheses:
-  Enabled: false
+  Enabled: true
 
 # Don't use return where it's not required.
 Style/RedundantReturn:
