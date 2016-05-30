@@ -878,7 +878,7 @@ Lint/InvalidCharacterLiteral:
 
 # Checks of literals used in conditions.
 Lint/LiteralInCondition:
-  Enabled: false
+  Enabled: true
 
 # Checks for literals used in interpolation.
 Lint/LiteralInInterpolation:
