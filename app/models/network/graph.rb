@@ -164,7 +164,7 @@ module Network
           i != range.last &&
           @commits[i].spaces.include?(overlap_space)
 
-          return true;
+          return true
         end
       end
 
