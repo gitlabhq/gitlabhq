@@ -330,7 +330,7 @@ Style/MethodCallParentheses:
 
 # Checks if the method definitions have or don't have parentheses.
 Style/MethodDefParentheses:
-  Enabled: false
+  Enabled: true
 
 # Use the configured style when naming methods.
 Style/MethodName:
