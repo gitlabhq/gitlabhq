@@ -18,7 +18,7 @@ class GeoKeyRefreshWorker
       key = Key.new(id: key_id, key: key)
       key.remove_from_shell
     else
-      fail "Invalid action: #{action}"
+      raise "Invalid action: #{action}"
     end
   end
 end

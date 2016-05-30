@@ -16,7 +16,7 @@ describe API::API, api: true  do
       expect(Date.parse(json_response['starts_at'])).to eq Date.today - 1.month
       expect(Date.parse(json_response['expires_at'])).to eq Date.today + 11.months
       expect(json_response['active_users']).to eq 1
-      expect(json_response['licensee']).to_not be_empty
+      expect(json_response['licensee']).not_to be_empty
     end
 
     it 'should deny access if not admin' do
@@ -34,7 +34,7 @@ describe API::API, api: true  do
       expect(Date.parse(json_response['starts_at'])).to eq Date.today - 1.month
       expect(Date.parse(json_response['expires_at'])).to eq Date.today + 11.months
       expect(json_response['active_users']).to eq 1
-      expect(json_response['licensee']).to_not be_empty
+      expect(json_response['licensee']).not_to be_empty
     end
 
     it 'denies access if not admin' do

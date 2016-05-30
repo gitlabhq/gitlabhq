@@ -44,7 +44,7 @@ describe "Note", elastic: true do
 
   it "does not create ElasticIndexerWorker job for award or system messages" do
     project = create :empty_project
-    expect(ElasticIndexerWorker).to_not receive(:perform_async)
+    expect(ElasticIndexerWorker).not_to receive(:perform_async)
     create :note, :system, project: project
     create :note, :award, project: project
   end

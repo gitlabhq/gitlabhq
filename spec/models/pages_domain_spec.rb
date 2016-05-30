@@ -23,13 +23,13 @@ describe PagesDomain, models: true do
     context 'no domain' do
       let(:domain) { nil }
 
-      it { is_expected.to_not be_valid }
+      it { is_expected.not_to be_valid }
     end
 
     context 'invalid domain' do
       let(:domain) { '0123123' }
 
-      it { is_expected.to_not be_valid }
+      it { is_expected.not_to be_valid }
     end
 
     context 'domain from .example.com' do
@@ -37,7 +37,7 @@ describe PagesDomain, models: true do
 
       before { allow(Settings.pages).to receive(:host).and_return('domain.com') }
 
-      it { is_expected.to_not be_valid }
+      it { is_expected.not_to be_valid }
     end
   end
 
@@ -47,13 +47,13 @@ describe PagesDomain, models: true do
     context 'when only certificate is specified' do
       let(:domain) { build(:pages_domain, :with_certificate) }
 
-      it { is_expected.to_not be_valid }
+      it { is_expected.not_to be_valid }
     end
 
     context 'when only key is specified' do
       let(:domain) { build(:pages_domain, :with_key) }
 
-      it { is_expected.to_not be_valid }
+      it { is_expected.not_to be_valid }
     end
 
     context 'with matching key' do
@@ -65,7 +65,7 @@ describe PagesDomain, models: true do
     context 'for not matching key' do
       let(:domain) { build(:pages_domain, :with_missing_chain, :with_key) }
 
-      it { is_expected.to_not be_valid }
+      it { is_expected.not_to be_valid }
     end
   end
 
@@ -157,6 +157,6 @@ describe PagesDomain, models: true do
     subject { domain.certificate_text }
 
     # We test only existence of output, since the output is long
-    it { is_expected.to_not be_empty }
+    it { is_expected.not_to be_empty }
   end
 end
