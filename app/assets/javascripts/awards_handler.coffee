@@ -126,6 +126,7 @@ class @AwardsHandler
         counter.text parseInt(counter.text()) + 1
         $emojiBtn.addClass 'active'
         @addMeToUserList votesBlock, emoji
+        @animateEmoji $emojiBtn
     else
       votesBlock.removeClass 'hidden'
       @createEmoji votesBlock, emoji
@@ -242,13 +243,23 @@ class @AwardsHandler
       <span class='award-control-text js-counter'>1</span>
     </button>"
 
-    emoji_node = $(buttonHtml)
+    $emojiButton = $ buttonHtml
+    emoji_node   = $emojiButton
       .insertBefore votesBlock.find '.js-award-holder:not(.js-award-action-btn)'
       .find '.emoji-icon'
       .data 'emoji', emoji
 
+    @animateEmoji $emojiButton
     $('.award-control').tooltip()
     votesBlock.removeClass 'current'
+
+
+  animateEmoji: ($emoji) ->
+
+    className = 'pulse animated'
+
+    $emoji.addClass className
+    setTimeout (-> $emoji.removeClass className), 321
 
 
   createEmoji: (votesBlock, emoji) ->
