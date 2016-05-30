@@ -26,7 +26,7 @@ describe PagesService, services: true do
         before { build.status = status }
 
         it 'should not execute worker' do
-          expect(PagesWorker).to_not receive(:perform_async)
+          expect(PagesWorker).not_to receive(:perform_async)
           service.execute
         end
       end
@@ -40,7 +40,7 @@ describe PagesService, services: true do
     end
 
     it 'should not execute worker' do
-      expect(PagesWorker).to_not receive(:perform_async)
+      expect(PagesWorker).not_to receive(:perform_async)
       service.execute
     end
   end

@@ -34,7 +34,7 @@ describe Projects::UpdatePagesService do
 
       it 'limits pages size' do
         stub_application_setting(max_pages_size: 1)
-        expect(execute).to_not eq(:success)
+        expect(execute).not_to eq(:success)
       end
 
       it 'removes pages after destroy' do
@@ -49,29 +49,29 @@ describe Projects::UpdatePagesService do
       it 'fails if sha on branch is not latest' do
         pipeline.update_attributes(sha: 'old_sha')
         build.update_attributes(artifacts_file: file)
-        expect(execute).to_not eq(:success)
+        expect(execute).not_to eq(:success)
       end
 
       it 'fails for empty file fails' do
         build.update_attributes(artifacts_file: empty_file)
-        expect(execute).to_not eq(:success)
+        expect(execute).not_to eq(:success)
       end
     end
   end
 
   it 'fails to remove project pages when no pages is deployed' do
-    expect(PagesWorker).to_not receive(:perform_in)
+    expect(PagesWorker).not_to receive(:perform_in)
     expect(project.pages_deployed?).to be_falsey
     project.destroy
   end
 
   it 'fails if no artifacts' do
-    expect(execute).to_not eq(:success)
+    expect(execute).not_to eq(:success)
   end
 
   it 'fails for invalid archive' do
     build.update_attributes(artifacts_file: invalid_file)
-    expect(execute).to_not eq(:success)
+    expect(execute).not_to eq(:success)
   end
   
   def execute
