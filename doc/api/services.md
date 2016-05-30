@@ -16,8 +16,8 @@ PUT /projects/:id/services/asana
 
 Parameters:
 
-- `api_key` (**required**) - User API token. User must have access to task,all comments will be attributed to this user.
-- `restrict_to_branch` (optional) - Comma-separated list of branches which will beautomatically inspected. Leave blank to include all branches.
+- `api_key` (**required**) - User API token. User must have access to task, all comments will be attributed to this user.
+- `restrict_to_branch` (optional) - Comma-separated list of branches which will be automatically inspected. Leave blank to include all branches.
 
 ### Delete Asana service
 
