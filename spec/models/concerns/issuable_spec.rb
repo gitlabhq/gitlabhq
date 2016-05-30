@@ -189,7 +189,6 @@ describe Issue, "Issuable" do
     let(:data) { issue.to_hook_data(user) }
     let(:project) { issue.project }
 
-
     it "returns correct hook data" do
       expect(data[:object_kind]).to eq("issue")
       expect(data[:user]).to eq(user.hook_attrs)
@@ -229,11 +228,11 @@ describe Issue, "Issuable" do
   end
 
   describe "votes" do
+    let(:project) { issue.project }
+
     before do
-      author = create :user
-      project = create :empty_project
-      issue.notes.awards.create!(note: "thumbsup", author: author, project: project)
-      issue.notes.awards.create!(note: "thumbsdown", author: author, project: project)
+      issue.notes.awards.create!(note: "thumbsup", author: user, project: project)
+      issue.notes.awards.create!(note: "thumbsdown", author: user, project: project)
     end
 
     it "returns correct values" do

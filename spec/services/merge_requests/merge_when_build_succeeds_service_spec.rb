@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 describe MergeRequests::MergeWhenBuildSucceedsService do
-  let(:user)          { create(:user) }
-  let(:merge_request) { create(:merge_request) }
+  let(:user) { create(:user) }
+  let(:project) { create(:project) }
 
   let(:mr_merge_if_green_enabled) do
     create(:merge_request, merge_when_build_succeeds: true, merge_user: user,
@@ -10,11 +10,15 @@ describe MergeRequests::MergeWhenBuildSucceedsService do
                            source_project: project, target_project: project, state: "opened")
   end
 
-  let(:project) { create(:project) }
   let(:ci_commit) { create(:ci_commit_with_one_job, ref: mr_merge_if_green_enabled.source_branch, project: project) }
   let(:service) { MergeRequests::MergeWhenBuildSucceedsService.new(project, user, commit_message: 'Awesome message') }
 
   describe "#execute" do
+    let(:merge_request) do
+      create(:merge_request, target_project: project, source_project: project,
+                             source_branch: "feature", target_branch: 'master')
+    end
+
     context 'first time enabling' do
       before do
         allow(merge_request).to receive(:ci_commit).and_return(ci_commit)
