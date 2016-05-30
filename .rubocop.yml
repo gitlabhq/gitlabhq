@@ -1026,10 +1026,9 @@ Performance/StartWith:
 Performance/StringReplacement:
   Enabled: true
 
-# TODO: Enable TimesMap Cop.
 # Checks for `.times.map` calls.
 Performance/TimesMap:
-  Enabled: false
+  Enabled: true
 
 
 ##################### Rails ##################################
