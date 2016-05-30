@@ -19,6 +19,7 @@ class Todo < ActiveRecord::Base
 
   scope :pending, -> { with_state(:pending) }
   scope :done, -> { with_state(:done) }
+  scope :not_pending_delete, -> { joins('INNER JOIN projects ON projects.id = todos.project_id AND projects.pending_delete = false') }
 
   state_machine :state, initial: :pending do
     event :done do
