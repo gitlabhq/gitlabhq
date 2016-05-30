@@ -59,7 +59,7 @@ class BambooService < CiService
   end
 
   def build_info(sha)
-    url = URI.join(bamboo_url, "/rest/api/latest/result?label=#{sha}").to_s
+    url = URI.join("#{bamboo_url}/", "rest/api/latest/result?label=#{sha}").to_s
 
     if username.blank? && password.blank?
       @response = HTTParty.get(url, verify: false)
@@ -78,11 +78,11 @@ class BambooService < CiService
 
     if @response.code != 200 || @response['results']['results']['size'] == '0'
       # If actual build link can't be determined, send user to build summary page.
-      URI.join(bamboo_url, "/browse/#{build_key}").to_s
+      URI.join("#{bamboo_url}/", "browse/#{build_key}").to_s
     else
       # If actual build link is available, go to build result page.
       result_key = @response['results']['results']['result']['planResultKey']['key']
-      URI.join(bamboo_url, "/browse/#{result_key}").to_s
+      URI.join("#{bamboo_url}/", "browse/#{result_key}").to_s
     end
   end
 
@@ -111,7 +111,7 @@ class BambooService < CiService
     return unless supported_events.include?(data[:object_kind])
 
     # Bamboo requires a GET and does take authentification
-    url = URI.join(bamboo_url, "/updateAndBuild.action?buildKey=#{build_key}").to_s
+    url = URI.join("#{bamboo_url}/", "updateAndBuild.action?buildKey=#{build_key}").to_s
 
     if username.blank? && password.blank?
       HTTParty.get(url, verify: false)
