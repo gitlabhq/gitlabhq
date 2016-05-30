@@ -15,8 +15,7 @@ class Todo < ActiveRecord::Base
   validates :target_id, presence: true, unless: :for_commit?
   validates :commit_id, presence: true, if: :for_commit?
 
-  after_create :publish_event
-  after_save :publish_event
+  after_commit :publish_event
 
   default_scope { reorder(id: :desc) }
 
@@ -65,8 +64,13 @@ class Todo < ActiveRecord::Base
     end
   end
 
-  private
   def publish_event
-    Sidekiq::Client.enqueue(TodoWorker, self.id)
+    Gitlab::Redis.with do |redis|
+      data = {
+        user_id: self.user_id,
+        count: self.user.todos.pending.count,
+      }
+      redis.publish("todos", data.to_json)
+    end
   end
 end

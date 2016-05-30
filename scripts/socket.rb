@@ -4,28 +4,36 @@ require "json"
 
 EM.run do
   @channels = Hash.new
+  @redis = EM::Hiredis.connect("unix:///Users/phil/Projects/gdk-ce/redis/redis.socket")
+  pubsub = @redis.pubsub
+  pubsub.subscribe "todos"
+  pubsub.on(:message) do |redis_channel, message|
+    message = JSON.parse(message)
+    data = {
+      channel: redis_channel,
+      data: message
+    }
+
+    if redis_channel == "todos"
+      @channels.each do |key, channel|
+        if channel[:user_id].to_i == message["user_id"]
+          channel[:channel].push data.to_json
+        end
+      end
+    end
+  end
+
   EM::WebSocket.start(host: "0.0.0.0", port: "8080", debug: false) do |socket|
     socket.onopen do |handshake|
       channel = channel_for_socket(handshake)
 
-      @redis = EM::Hiredis.connect("unix:///Users/phil/Projects/gdk-ce/redis/redis.socket")
-      pubsub = @redis.pubsub
-      pubsub.subscribe "todos.#{path(handshake)}"
-      pubsub.on(:message) do |redis_channel, message|
-        data = {
-          channel: redis_channel.split(".").first,
-          data: JSON.parse(message)
-        }
-        channel.push data.to_json
-      end
-
-      sid = channel.subscribe do |msg|
+      sid = channel[:channel].subscribe do |msg|
         socket.send msg
       end
 
       socket.onclose do
-        pubsub.unsubscribe "todos.#{path(handshake)}"
-        channel.unsubscribe(sid)
+        channel[:channel].unsubscribe(sid)
+        @channels.delete(path(handshake))
       end
     end
   end
@@ -36,6 +44,10 @@ EM.run do
 
   def channel_for_socket(handshake)
     channel_path = path(handshake)
-    @channels[channel_path] ||= EM::Channel.new
+    @channels[channel_path] ||= {
+      channel: EM::Channel.new,
+      user_id: channel_path,
+      subscribed: ['todos']
+    }
   end
 end
