@@ -19,7 +19,7 @@ describe Projects::CompareController do
         to: ref_to)
 
     expect(response).to be_success
-    expect(assigns(:diffs).first).to_not be_nil
+    expect(assigns(:diffs).first).not_to be_nil
     expect(assigns(:commits).length).to be >= 1
   end
 
@@ -32,7 +32,7 @@ describe Projects::CompareController do
         w: 1)
 
     expect(response).to be_success
-    expect(assigns(:diffs).first).to_not be_nil
+    expect(assigns(:diffs).first).not_to be_nil
     expect(assigns(:commits).length).to be >= 1
     # without whitespace option, there are more than 2 diff_splits
     diff_splits = assigns(:diffs).first.diff.split("\n")

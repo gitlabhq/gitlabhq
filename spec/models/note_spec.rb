@@ -12,6 +12,34 @@ describe Note, models: true do
   describe 'validation' do
     it { is_expected.to validate_presence_of(:note) }
     it { is_expected.to validate_presence_of(:project) }
+
+    context 'when note is on commit' do
+      before { allow(subject).to receive(:for_commit?).and_return(true) }
+
+      it { is_expected.to validate_presence_of(:commit_id) }
+      it { is_expected.not_to validate_presence_of(:noteable_id) }
+    end
+
+    context 'when note is not on commit' do
+      before { allow(subject).to receive(:for_commit?).and_return(false) }
+
+      it { is_expected.not_to validate_presence_of(:commit_id) }
+      it { is_expected.to validate_presence_of(:noteable_id) }
+    end
+
+    context 'when noteable and note project differ' do
+      subject do
+        build(:note, noteable: build_stubbed(:issue),
+                     project: build_stubbed(:project))
+      end
+
+      it { is_expected.to be_invalid }
+    end
+
+    context 'when noteable and note project are the same' do
+      subject { create(:note) }
+      it { is_expected.to be_valid }
+    end
   end
 
   describe "Commit notes" do
@@ -89,8 +117,8 @@ describe Note, models: true do
   end
 
   describe "#all_references" do
-    let!(:note1) { create(:note) }
-    let!(:note2) { create(:note) }
+    let!(:note1) { create(:note_on_issue) }
+    let!(:note2) { create(:note_on_issue) }
 
     it "reads the rendered note body from the cache" do
       expect(Banzai::Renderer).to receive(:render).with(note1.note, pipeline: :note, cache_key: [note1, "note"], project: note1.project)
@@ -102,7 +130,7 @@ describe Note, models: true do
   end
 
   describe '.search' do
-    let(:note) { create(:note, note: 'WoW') }
+    let(:note) { create(:note_on_issue, note: 'WoW') }
 
     it 'returns notes with matching content' do
       expect(described_class.search(note.note)).to eq([note])

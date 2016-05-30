@@ -50,14 +50,10 @@ module IssuablesHelper
   end
 
   def user_dropdown_label(user_id, default_label)
+    return default_label if user_id.nil?
     return "Unassigned" if user_id == "0"
 
-    if @project
-      member = @project.team.find_member(user_id)
-      user = member.user if member
-    else
-      user = User.find_by(id: user_id)
-    end
+    user = User.find_by(id: user_id)
 
     if user
       user.name
@@ -76,7 +72,7 @@ module IssuablesHelper
 
   def issuable_meta(issuable, project, text)
     output = content_tag :strong, "#{text} #{issuable.to_reference}", class: "identifier"
-    output << " opened #{time_ago_with_tooltip(issuable.created_at)} by".html_safe
+    output << " opened #{time_ago_with_tooltip(issuable.created_at)} by ".html_safe
     output << content_tag(:strong) do
       author_output = link_to_member(project, issuable.author, size: 24, mobile_classes: "hidden-xs")
       author_output << link_to_member(project, issuable.author, size: 24, by_username: true, avatar: false, mobile_classes: "hidden-sm hidden-md hidden-lg")

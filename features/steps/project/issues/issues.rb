@@ -216,7 +216,7 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
 
       page.within 'li.issue:nth-child(3)' do
         expect(page).to have_content 'Bugfix'
-        expect(page).to_not have_content '0 0'
+        expect(page).not_to have_content '0 0'
       end
     end
   end
@@ -235,7 +235,7 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
 
       page.within 'li.issue:nth-child(3)' do
         expect(page).to have_content 'Bugfix'
-        expect(page).to_not have_content '0 0'
+        expect(page).not_to have_content '0 0'
       end
     end
   end
@@ -348,7 +348,7 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
 
   step 'another user adds a comment with text "Yay!" to issue "Release 0.4"' do
     issue = Issue.find_by!(title: 'Release 0.4')
-    create(:note_on_issue, noteable: issue,  note: 'Yay!')
+    create(:note_on_issue, noteable: issue, project: project, note: 'Yay!')
   end
 
   step 'I should see a new comment with text "Yay!"' do

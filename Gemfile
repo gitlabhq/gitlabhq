@@ -121,7 +121,7 @@ group :unicorn do
 end
 
 # State machine
-gem "state_machines-activerecord", '~> 0.3.0'
+gem "state_machines-activerecord", '~> 0.4.0'
 # Run events after state machine commits
 gem 'after_commit_queue'
 
@@ -177,9 +177,6 @@ gem 'ruby-fogbugz', '~> 0.2.1'
 
 # d3
 gem 'd3_rails', '~> 3.5.0'
-
-#cal-heatmap
-gem 'cal-heatmap-rails', '~> 3.6.0'
 
 # underscore-rails
 gem "underscore-rails", "~> 1.8.0"

@@ -12,8 +12,6 @@ module Notes
         return noteable.create_award_emoji(note.award_emoji_name, current_user)
       end
 
-      return unless valid_project?(note)
-
       if note.save
         # Finish the harder work in the background
         NewNoteWorker.perform_in(2.seconds, note.id, params)
@@ -21,15 +19,6 @@ module Notes
       end
 
       note
-    end
-
-    private
-
-    def valid_project?(note)
-      return false unless project
-      return true if note.for_commit?
-
-      note.noteable.try(:project) == project
     end
   end
 end

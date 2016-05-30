@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160516174813) do
+ActiveRecord::Schema.define(version: 20160528043124) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -771,7 +771,6 @@ ActiveRecord::Schema.define(version: 20160516174813) do
     t.integer  "build_timeout",                default: 3600,     null: false
     t.boolean  "pending_delete",               default: false
     t.boolean  "public_builds",                default: true,     null: false
-    t.string   "main_language"
     t.integer  "pushes_since_gc",              default: 0
     t.boolean  "last_repository_check_failed"
     t.datetime "last_repository_check_at"
@@ -1012,6 +1011,7 @@ ActiveRecord::Schema.define(version: 20160516174813) do
   add_index "users", ["name"], name: "index_users_on_name", using: :btree
   add_index "users", ["name"], name: "index_users_on_name_trigram", using: :gin, opclasses: {"name"=>"gin_trgm_ops"}
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
+  add_index "users", ["state"], name: "index_users_on_state", using: :btree
   add_index "users", ["username"], name: "index_users_on_username", using: :btree
   add_index "users", ["username"], name: "index_users_on_username_trigram", using: :gin, opclasses: {"username"=>"gin_trgm_ops"}
 

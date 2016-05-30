@@ -176,86 +176,117 @@ describe HipchatService, models: true do
     context "Note events" do
       let(:user) { create(:user) }
       let(:project) { create(:project, creator_id: user.id) }
-      let(:issue)         { create(:issue, project: project) }
-      let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
-      let(:snippet)       { create(:project_snippet, project: project) }
-      let(:commit_note) { create(:note_on_commit, author: user, project: project, commit_id: project.repository.commit.id, note: 'a comment on a commit') }
-      let(:merge_request_note) { create(:note_on_merge_request, noteable_id: merge_request.id, note: "merge request note") }
-      let(:issue_note) { create(:note_on_issue, noteable_id: issue.id, note: "issue note")}
-      let(:snippet_note) { create(:note_on_project_snippet, noteable_id: snippet.id, note: "snippet note") }
 
-      it "should call Hipchat API for commit comment events" do
-        data = Gitlab::NoteDataBuilder.build(commit_note, user)
-        hipchat.execute(data)
+      context 'when commit comment event triggered' do
+        let(:commit_note) do
+          create(:note_on_commit, author: user, project: project,
+                                  commit_id: project.repository.commit.id,
+                                  note: 'a comment on a commit')
+        end
 
-        expect(WebMock).to have_requested(:post, api_url).once
+        it "should call Hipchat API for commit comment events" do
+          data = Gitlab::NoteDataBuilder.build(commit_note, user)
+          hipchat.execute(data)
 
-        message = hipchat.send(:create_message, data)
+          expect(WebMock).to have_requested(:post, api_url).once
 
-        obj_attr = data[:object_attributes]
-        commit_id = Commit.truncate_sha(data[:commit][:id])
-        title = hipchat.send(:format_title, data[:commit][:message])
+          message = hipchat.send(:create_message, data)
 
-        expect(message).to eq("#{user.name} commented on " \
-            "<a href=\"#{obj_attr[:url]}\">commit #{commit_id}</a> in " \
-            "<a href=\"#{project.web_url}\">#{project_name}</a>: " \
-            "#{title}" \
-            "<pre>a comment on a commit</pre>")
+          obj_attr = data[:object_attributes]
+          commit_id = Commit.truncate_sha(data[:commit][:id])
+          title = hipchat.send(:format_title, data[:commit][:message])
+
+          expect(message).to eq("#{user.name} commented on " \
+              "<a href=\"#{obj_attr[:url]}\">commit #{commit_id}</a> in " \
+              "<a href=\"#{project.web_url}\">#{project_name}</a>: " \
+              "#{title}" \
+              "<pre>a comment on a commit</pre>")
+        end
       end
 
-      it "should call Hipchat API for merge request comment events" do
-        data = Gitlab::NoteDataBuilder.build(merge_request_note, user)
-        hipchat.execute(data)
+      context 'when merge request comment event triggered' do
+        let(:merge_request) do
+          create(:merge_request, source_project: project,
+                                 target_project: project)
+        end
 
-        expect(WebMock).to have_requested(:post, api_url).once
+        let(:merge_request_note) do
+          create(:note_on_merge_request, noteable: merge_request,
+                                         project: project,
+                                         note: "merge request note")
+        end
 
-        message = hipchat.send(:create_message, data)
+        it "should call Hipchat API for merge request comment events" do
+          data = Gitlab::NoteDataBuilder.build(merge_request_note, user)
+          hipchat.execute(data)
 
-        obj_attr = data[:object_attributes]
-        merge_id = data[:merge_request]['iid']
-        title = data[:merge_request]['title']
+          expect(WebMock).to have_requested(:post, api_url).once
 
-        expect(message).to eq("#{user.name} commented on " \
-            "<a href=\"#{obj_attr[:url]}\">merge request !#{merge_id}</a> in " \
-            "<a href=\"#{project.web_url}\">#{project_name}</a>: " \
-            "<b>#{title}</b>" \
-            "<pre>merge request note</pre>")
+          message = hipchat.send(:create_message, data)
+
+          obj_attr = data[:object_attributes]
+          merge_id = data[:merge_request]['iid']
+          title = data[:merge_request]['title']
+
+          expect(message).to eq("#{user.name} commented on " \
+              "<a href=\"#{obj_attr[:url]}\">merge request !#{merge_id}</a> in " \
+              "<a href=\"#{project.web_url}\">#{project_name}</a>: " \
+              "<b>#{title}</b>" \
+              "<pre>merge request note</pre>")
+        end
       end
 
-      it "should call Hipchat API for issue comment events" do
-        data = Gitlab::NoteDataBuilder.build(issue_note, user)
-        hipchat.execute(data)
+      context 'when issue comment event triggered' do
+        let(:issue) { create(:issue, project: project) }
+        let(:issue_note) do
+          create(:note_on_issue, noteable: issue, project: project,
+                                 note: "issue note")
+        end
 
-        message = hipchat.send(:create_message, data)
+        it "should call Hipchat API for issue comment events" do
+          data = Gitlab::NoteDataBuilder.build(issue_note, user)
+          hipchat.execute(data)
 
-        obj_attr = data[:object_attributes]
-        issue_id = data[:issue]['iid']
-        title = data[:issue]['title']
+          message = hipchat.send(:create_message, data)
 
-        expect(message).to eq("#{user.name} commented on " \
-            "<a href=\"#{obj_attr[:url]}\">issue ##{issue_id}</a> in " \
-            "<a href=\"#{project.web_url}\">#{project_name}</a>: " \
-            "<b>#{title}</b>" \
-            "<pre>issue note</pre>")
+          obj_attr = data[:object_attributes]
+          issue_id = data[:issue]['iid']
+          title = data[:issue]['title']
+
+          expect(message).to eq("#{user.name} commented on " \
+              "<a href=\"#{obj_attr[:url]}\">issue ##{issue_id}</a> in " \
+              "<a href=\"#{project.web_url}\">#{project_name}</a>: " \
+              "<b>#{title}</b>" \
+              "<pre>issue note</pre>")
+        end
       end
 
-      it "should call Hipchat API for snippet comment events" do
-        data = Gitlab::NoteDataBuilder.build(snippet_note, user)
-        hipchat.execute(data)
+      context 'when snippet comment event triggered' do
+        let(:snippet) { create(:project_snippet, project: project) }
+        let(:snippet_note) do
+          create(:note_on_project_snippet, noteable: snippet,
+                                           project: project,
+                                           note: "snippet note")
+        end
 
-        expect(WebMock).to have_requested(:post, api_url).once
+        it "should call Hipchat API for snippet comment events" do
+          data = Gitlab::NoteDataBuilder.build(snippet_note, user)
+          hipchat.execute(data)
 
-        message = hipchat.send(:create_message, data)
+          expect(WebMock).to have_requested(:post, api_url).once
 
-        obj_attr = data[:object_attributes]
-        snippet_id = data[:snippet]['id']
-        title = data[:snippet]['title']
+          message = hipchat.send(:create_message, data)
 
-        expect(message).to eq("#{user.name} commented on " \
-            "<a href=\"#{obj_attr[:url]}\">snippet ##{snippet_id}</a> in " \
-            "<a href=\"#{project.web_url}\">#{project_name}</a>: " \
-            "<b>#{title}</b>" \
-            "<pre>snippet note</pre>")
+          obj_attr = data[:object_attributes]
+          snippet_id = data[:snippet]['id']
+          title = data[:snippet]['title']
+
+          expect(message).to eq("#{user.name} commented on " \
+              "<a href=\"#{obj_attr[:url]}\">snippet ##{snippet_id}</a> in " \
+              "<a href=\"#{project.web_url}\">#{project_name}</a>: " \
+              "<b>#{title}</b>" \
+              "<pre>snippet note</pre>")
+        end
       end
     end
 
@@ -303,7 +334,7 @@ describe HipchatService, models: true do
         it "should notify only broken" do
           hipchat.notify_only_broken_builds = true
           hipchat.execute(data)
-          expect(WebMock).to_not have_requested(:post, api_url).once
+          expect(WebMock).not_to have_requested(:post, api_url).once
         end
       end
     end

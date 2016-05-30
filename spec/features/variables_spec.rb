@@ -34,7 +34,7 @@ describe 'Project variables', js: true do
       find('.btn-variable-delete').click
     end
 
-    expect(page).to_not have_selector('variables-table')
+    expect(page).not_to have_selector('variables-table')
   end
 
   it 'should edit variable' do
