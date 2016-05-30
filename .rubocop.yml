@@ -574,7 +574,7 @@ Style/SpaceBeforeComma:
 
 # Checks for missing space between code and a comment on the same line.
 Style/SpaceBeforeComment:
-  Enabled: false
+  Enabled: true
 
 # Checks that exactly one space is used between a method name and the first
 # argument for method calls without parentheses.
