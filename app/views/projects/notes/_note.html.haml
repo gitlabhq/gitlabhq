@@ -22,7 +22,7 @@
             %span.note-role
               = access
           - if note_editable
-            = link_to '#', title: 'Award Emoji', class: 'note-emoji-button js-add-award js-note-emoji', data: { position: 'right' } do
+            = link_to '#', title: 'Award Emoji', class: 'note-action-button note-emoji-button js-add-award js-note-emoji', data: { position: 'right' } do
               = icon('spinner spin')
               = icon('smile-o')
             = link_to '#', title: 'Edit comment', class: 'note-action-button js-note-edit' do
@@ -33,11 +33,11 @@
         .note-text
           = preserve do
             = markdown(note.note, pipeline: :note, cache_key: [note, "note"], author: note.author)
+          = edited_time_ago_with_tooltip(note, placement: 'bottom', html_class: 'note_edited_ago', include_author: true)
         - if note_editable
           = render 'projects/notes/edit_form', note: note
         .note-awards
           = render 'award_emoji/awards_block', awardable: note, inline: false
-      = edited_time_ago_with_tooltip(note, placement: 'bottom', html_class: 'note_edited_ago', include_author: true)
 
       - if note.attachment.url
         .note-attachment

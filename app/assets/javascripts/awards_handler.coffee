@@ -39,7 +39,7 @@ class @AwardsHandler
 
     $menu = $ '.emoji-menu'
 
-    if $addBtn.hasClass 'note-emoji-button'
+    if $addBtn.hasClass 'js-note-emoji'
       $addBtn.parents('.note').find('.js-awards-block').addClass 'current'
     else
       $addBtn.closest('.js-awards-block').addClass 'current'
