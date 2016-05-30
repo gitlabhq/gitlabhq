@@ -394,7 +394,7 @@ Style/MutableConstant:
 
 # Favor unless over if for negative conditions (or control flow or).
 Style/NegatedIf:
-  Enabled: false
+  Enabled: true
 
 # Favor until over while for negative conditions.
 Style/NegatedWhile:

@@ -265,7 +265,7 @@ module Ci
     end
 
     def validate_job_dependencies!(name, job)
-      if !validate_array_of_strings(job[:dependencies])
+      unless validate_array_of_strings(job[:dependencies])
         raise ValidationError, "#{name} job: dependencies parameter should be an array of strings"
       end
 

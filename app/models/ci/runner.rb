@@ -60,7 +60,7 @@ module Ci
     end
 
     def display_name
-      return short_sha unless !description.blank?
+      return short_sha if description.blank?
 
       description
     end
