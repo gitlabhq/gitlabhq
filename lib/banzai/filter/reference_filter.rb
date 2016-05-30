@@ -68,6 +68,8 @@ module Banzai
       # by `ignore_ancestor_query`. Link tags are not processed if they have a
       # "gfm" class or the "href" attribute is empty.
       def each_node
+        return to_enum(__method__) unless block_given?
+
         query = %Q{descendant-or-self::text()[not(#{ignore_ancestor_query})]
         | descendant-or-self::a[
           not(contains(concat(" ", @class, " "), " gfm ")) and not(@href = "")
