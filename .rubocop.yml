@@ -569,7 +569,7 @@ Style/SpaceBeforeBlockBraces:
 
 # No spaces before commas.
 Style/SpaceBeforeComma:
-  Enabled: false
+  Enabled: true
 
 # Checks for missing space between code and a comment on the same line.
 Style/SpaceBeforeComment:
