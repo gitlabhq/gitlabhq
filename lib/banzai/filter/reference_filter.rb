@@ -80,6 +80,11 @@ module Banzai
         end
       end
 
+      # Returns an Array containing all HTML nodes.
+      def nodes
+        @nodes ||= each_node.to_a
+      end
+
       # Yields the link's URL and text whenever the node is a valid <a> tag.
       def yield_valid_link(node)
         link = CGI.unescape(node.attr('href').to_s)

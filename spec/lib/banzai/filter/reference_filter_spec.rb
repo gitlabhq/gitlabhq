@@ -33,4 +33,13 @@ describe Banzai::Filter::ReferenceFilter, lib: true do
       expect { |b| filter.each_node(&b) }.not_to yield_control
     end
   end
+
+  describe '#nodes' do
+    it 'returns an Array of the HTML nodes' do
+      document = Nokogiri::HTML.fragment('<a href="foo">foo</a>')
+      filter = described_class.new(document, project: project)
+
+      expect(filter.nodes).to eq([document.children[0]])
+    end
+  end
 end
