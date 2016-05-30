@@ -14,7 +14,7 @@ class ProjectMember < Member
   scope :in_projects, ->(projects) { where(source_id: projects.pluck(:id)) }
   scope :with_user, ->(user) { where(user_id: user.id) }
 
-  before_destroy { user.todos.where(project_id: source_id).each(&:destroy) if user }
+  before_destroy :delete_member_todos
 
   class << self
 
@@ -102,6 +102,10 @@ class ProjectMember < Member
   end
 
   private
+
+  def delete_member_todos
+    user.todos.where(project_id: source_id).destroy_all if user
+  end
 
   def send_invite
     notification_service.invite_project_member(self, @raw_invite_token)
