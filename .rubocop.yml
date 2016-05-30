@@ -362,7 +362,7 @@ Style/MultilineHashBraceLayout:
 
 # Do not use then for multi-line if/unless.
 Style/MultilineIfThen:
-  Enabled: false
+  Enabled: true
 
 # Checks that the closing brace in a method call is either on the same line as
 # the last method argument, or a new line.
