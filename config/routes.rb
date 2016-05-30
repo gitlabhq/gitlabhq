@@ -421,7 +421,11 @@ Rails.application.routes.draw do
 
   resources :projects, constraints: { id: /[^\/]+/ }, only: [:index, :new, :create]
 
-  devise_for :users, controllers: { omniauth_callbacks: :omniauth_callbacks, registrations: :registrations , passwords: :passwords, sessions: :sessions, confirmations: :confirmations }
+  devise_for :users, controllers: { omniauth_callbacks: :omniauth_callbacks,
+                                    registrations: :registrations,
+                                    passwords: :passwords,
+                                    sessions: :sessions,
+                                    confirmations: :confirmations }
 
   devise_scope :user do
     get '/users/auth/:provider/omniauth_error' => 'omniauth_callbacks#omniauth_error', as: :omniauth_error
@@ -789,7 +793,7 @@ Rails.application.routes.draw do
   end
 
   # Get all keys of user
-  get ':username.keys' => 'profiles/keys#get_keys' , constraints: { username: /.*/ }
+  get ':username.keys' => 'profiles/keys#get_keys', constraints: { username: /.*/ }
 
   get ':id' => 'namespaces#show', constraints: { id: /(?:[^.]|\.(?!atom$))+/, format: /atom/ }
 end
