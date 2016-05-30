@@ -71,7 +71,7 @@ Doorkeeper.configure do
   # The value can be any string. Use nil to disable this feature. When disabled, clients must provide a valid URL
   # (Similar behaviour: https://developers.google.com/accounts/docs/OAuth2InstalledApp#choosingredirecturi)
   #
-  native_redirect_uri nil#'urn:ietf:wg:oauth:2.0:oob'
+  native_redirect_uri nil # 'urn:ietf:wg:oauth:2.0:oob'
 
   # Specify what grant flows are enabled in array of Strings. The valid
   # strings and the flows they enable are:
