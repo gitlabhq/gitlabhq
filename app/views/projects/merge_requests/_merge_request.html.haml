@@ -1,7 +1,7 @@
 %li{ class: mr_css_classes(merge_request) }
   .merge-request-title.title
     %span.merge-request-title-text
-      = link_to_gfm merge_request.title, merge_request_path(merge_request)
+      = link_to merge_request.title, merge_request_path(merge_request)
     %ul.controls
       - if merge_request.merged?
         %li

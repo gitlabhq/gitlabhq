@@ -1,6 +1,6 @@
 %ul.nav.nav-sidebar
-  = nav_link(path: ['root#index', 'projects#trending', 'projects#starred', 'dashboard/projects#index'], html_options: {class: 'home'}) do
-    = link_to dashboard_projects_path, title: 'Projects' do
+  = nav_link(path: ['root#index', 'projects#trending', 'projects#starred', 'dashboard/projects#index'], html_options: {class: "#{project_tab_class} home"}) do
+    = link_to dashboard_projects_path, title: 'Projects', class: 'dashboard-shortcuts-projects' do
       = icon('bookmark fw')
       %span
         Projects
@@ -11,7 +11,7 @@
         Todos
         %span.count.todos-pending-count= number_with_delimiter(todos_pending_count)
   = nav_link(path: 'dashboard#activity') do
-    = link_to activity_dashboard_path, class: 'shortcuts-activity', title: 'Activity' do
+    = link_to activity_dashboard_path, class: 'dashboard-shortcuts-activity', title: 'Activity' do
       = icon('dashboard fw')
       %span
         Activity
@@ -26,13 +26,13 @@
       %span
         Milestones
   = nav_link(path: 'dashboard#issues') do
-    = link_to assigned_issues_dashboard_path, title: 'Issues', class: 'shortcuts-issues' do
+    = link_to assigned_issues_dashboard_path, title: 'Issues', class: 'dashboard-shortcuts-issues' do
       = icon('exclamation-circle fw')
       %span
         Issues
         %span.count= number_with_delimiter(current_user.assigned_issues.opened.count)
   = nav_link(path: 'dashboard#merge_requests') do
-    = link_to assigned_mrs_dashboard_path, title: 'Merge Requests', class: 'shortcuts-merge_requests' do
+    = link_to assigned_mrs_dashboard_path, title: 'Merge Requests', class: 'dashboard-shortcuts-merge_requests' do
       = icon('tasks fw')
       %span
         Merge Requests

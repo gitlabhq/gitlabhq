@@ -37,5 +37,16 @@
 
 .table-holder
   %table.table.builds
+    %thead
+      %tr
+        %th Status
+        %th Build ID
+        %th Name
+        %th Tags
+        %th Duration
+        %th Finished at
+        - if @project.build_coverage_enabled?
+          %th Coverage
+        %th
     - ci_commit.statuses.stages.each do |stage|
       = render 'projects/commit/ci_stage', stage: stage, statuses: ci_commit.statuses.where(stage: stage)

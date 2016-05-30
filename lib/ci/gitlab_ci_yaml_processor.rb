@@ -1,6 +1,6 @@
 module Ci
   class GitlabCiYamlProcessor
-    class ValidationError < StandardError;end
+    class ValidationError < StandardError; end
 
     DEFAULT_STAGES = %w(build test deploy)
     DEFAULT_STAGE = 'test'

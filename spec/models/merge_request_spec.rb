@@ -119,7 +119,8 @@ describe MergeRequest, models: true do
 
     before do
       allow(merge_request).to receive(:commits) { [merge_request.source_project.repository.commit] }
-      create(:note, commit_id: merge_request.commits.first.id, noteable_type: 'Commit', project: merge_request.project)
+      create(:note_on_commit, commit_id: merge_request.commits.first.id,
+                              project: merge_request.project)
       create(:note, noteable: merge_request, project: merge_request.project)
     end
 
@@ -129,7 +130,9 @@ describe MergeRequest, models: true do
     end
 
     it "should include notes for commits from target project as well" do
-      create(:note, commit_id: merge_request.commits.first.id, noteable_type: 'Commit', project: merge_request.target_project)
+      create(:note_on_commit, commit_id: merge_request.commits.first.id,
+                              project: merge_request.target_project)
+
       expect(merge_request.commits).not_to be_empty
       expect(merge_request.mr_and_commit_notes.count).to eq(3)
     end

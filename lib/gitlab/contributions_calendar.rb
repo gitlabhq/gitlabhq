@@ -19,7 +19,7 @@ module Gitlab
         select('date(created_at) as date, count(id) as total_amount').
         map(&:attributes)
 
-      dates = (1.year.ago.to_date..(Date.today + 1.day)).to_a
+      dates = (1.year.ago.to_date..Date.today).to_a
 
       dates.each do |date|
         date_id = date.to_time.to_i.to_s

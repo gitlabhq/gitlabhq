@@ -203,7 +203,7 @@ describe Gitlab::Sherlock::Transaction, lib: true do
     end
 
     it 'only tracks queries triggered from the transaction thread' do
-      expect(transaction).to_not receive(:track_query)
+      expect(transaction).not_to receive(:track_query)
 
       Thread.new { subscription.publish('test', time, time, nil, query_data) }.
         join
@@ -226,7 +226,7 @@ describe Gitlab::Sherlock::Transaction, lib: true do
     end
 
     it 'only tracks views rendered from the transaction thread' do
-      expect(transaction).to_not receive(:track_view)
+      expect(transaction).not_to receive(:track_view)
 
       Thread.new { subscription.publish('test', time, time, nil, view_data) }.
         join

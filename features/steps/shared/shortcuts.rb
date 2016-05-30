@@ -1,4 +1,4 @@
-module SharedActiveTab
+module SharedShortcuts
   include Spinach::DSL
 
   step 'I press "g" and "p"' do

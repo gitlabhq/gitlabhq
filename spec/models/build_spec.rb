@@ -90,7 +90,7 @@ describe Ci::Build, models: true do
         build.update_attributes(trace: token)
       end
 
-      it { is_expected.to_not include(token) }
+      it { is_expected.not_to include(token) }
     end
   end
 
@@ -317,7 +317,7 @@ describe Ci::Build, models: true do
 
     context 'when build does not have tags' do
       subject { create(:ci_build, tag_list: []) }
-      it { is_expected.to_not have_tags }
+      it { is_expected.not_to have_tags }
     end
   end
 
@@ -534,7 +534,7 @@ describe Ci::Build, models: true do
       end
 
       it 'should set erase date' do
-        expect(build.erased_at).to_not be_falsy
+        expect(build.erased_at).not_to be_falsy
       end
     end
 
@@ -606,7 +606,7 @@ describe Ci::Build, models: true do
 
         describe '#erase' do
           it 'should not raise error' do
-            expect { build.erase }.to_not raise_error
+            expect { build.erase }.not_to raise_error
           end
         end
       end

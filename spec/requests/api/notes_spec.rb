@@ -258,8 +258,8 @@ describe API::API, api: true  do
              body: 'Hi!'
       end
 
-      it 'responds with 500' do
-        expect(response.status).to eq 500
+      it 'responds with resource not found error' do
+        expect(response.status).to eq 404
       end
 
       it 'does not create new note' do

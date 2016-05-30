@@ -6,7 +6,7 @@ module Auth
       return error('not found', 404) unless registry.enabled
 
       if params[:offline_token]
-        return error('unauthorized', 401) unless current_user
+        return error('unauthorized', 401) unless current_user || project
       else
         return error('forbidden', 403) unless scope
       end

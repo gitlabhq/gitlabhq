@@ -23,7 +23,7 @@ describe JwtController do
   context 'when using authorized request' do
     context 'using CI token' do
       let(:project) { create(:empty_project, runners_token: 'token', builds_enabled: builds_enabled) }
-      let(:headers) { { authorization: credentials('gitlab_ci_token', project.runners_token) } }
+      let(:headers) { { authorization: credentials('gitlab-ci-token', project.runners_token) } }
 
       subject! { get '/jwt/auth', parameters, headers }
 

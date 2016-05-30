@@ -60,7 +60,7 @@ describe Project, models: true do
       project2 = build(:project)
       allow(project2).to receive(:creator).and_return(double(can_create_project?: false, projects_limit: 0).as_null_object)
       expect(project2).not_to be_valid
-      expect(project2.errors[:limit_reached].first).to match(/Your project limit is 0/)
+      expect(project2.errors[:limit_reached].first).to match(/Personal project creation is not allowed/)
     end
   end
 
@@ -791,7 +791,7 @@ describe Project, models: true do
 
     subject { project.container_registry_repository }
 
-    it { is_expected.to_not be_nil }
+    it { is_expected.not_to be_nil }
   end
 
   describe '#container_registry_repository_url' do
@@ -809,7 +809,7 @@ describe Project, models: true do
         }
       end
 
-      it { is_expected.to_not be_nil }
+      it { is_expected.not_to be_nil }
     end
 
     context 'for disabled registry' do

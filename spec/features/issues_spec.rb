@@ -125,7 +125,7 @@ describe 'Issues', feature: true do
   describe 'Issue info' do
     it 'excludes award_emoji from comment count' do
       issue = create(:issue, author: @user, assignee: @user, project: project, title: 'foobar')
-      create(:upvote_note, noteable: issue)
+      create(:upvote_note, noteable: issue, project: project)
 
       visit namespace_project_issues_path(project.namespace, project, assignee_id: @user.id)
 
@@ -485,6 +485,43 @@ describe 'Issues', feature: true do
         sleep 1
 
         expect(page.find_field("issue_description").value).to have_content 'banana_sample'
+      end
+    end
+  end
+
+  describe 'due date' do
+    context 'update due on issue#show', js: true do
+      let(:issue) { create(:issue, project: project, author: @user, assignee: @user) }
+
+      before do
+        visit namespace_project_issue_path(project.namespace, project, issue)
+      end
+
+      it 'should add due date to issue' do
+        page.within '.due_date' do
+          click_link 'Edit'
+
+          page.within '.ui-datepicker-calendar' do
+            first('.ui-state-default').click
+          end
+
+          expect(page).to have_no_content 'None'
+        end
+      end
+
+      it 'should remove due date from issue' do
+        page.within '.due_date' do
+          click_link 'Edit'
+
+          page.within '.ui-datepicker-calendar' do
+            first('.ui-state-default').click
+          end
+
+          expect(page).to have_no_content 'None'
+
+          click_link 'remove due date'
+          expect(page).to have_content 'None'
+        end
       end
     end
   end

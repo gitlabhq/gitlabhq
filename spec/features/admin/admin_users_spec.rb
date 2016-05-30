@@ -152,7 +152,7 @@ describe "Admin::Users", feature: true  do
         it 'sees impersonation log out icon' do
           icon = first('.fa.fa-user-secret')
 
-          expect(icon).to_not eql nil
+          expect(icon).not_to eql nil
         end
 
         it 'can log out of impersonated user back to original user' do

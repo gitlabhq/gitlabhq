@@ -24,6 +24,12 @@ describe "Pipelines" do
       end
     end
 
+    context 'anonymous access' do
+      before { visit namespace_project_pipelines_path(project.namespace, project) }
+
+      it { expect(page).to have_http_status(:success) }
+    end
+
     context 'cancelable pipeline' do
       let!(:running) { create(:ci_build, :running, commit: pipeline, stage: 'test', commands: 'test') }
 
@@ -35,7 +41,7 @@ describe "Pipelines" do
       context 'when canceling' do
         before { click_link('Cancel') }
 
-        it { expect(page).to_not have_link('Cancel') }
+        it { expect(page).not_to have_link('Cancel') }
         it { expect(page).to have_selector('.ci-canceled') }
       end
     end
@@ -51,7 +57,7 @@ describe "Pipelines" do
       context 'when retrying' do
         before { click_link('Retry') }
 
-        it { expect(page).to_not have_link('Retry') }
+        it { expect(page).not_to have_link('Retry') }
         it { expect(page).to have_selector('.ci-pending') }
       end
     end
@@ -69,7 +75,7 @@ describe "Pipelines" do
       context 'without artifacts' do
         let!(:without_artifacts) { create(:ci_build, :success, commit: pipeline, name: 'rspec', stage: 'test') }
 
-        it { expect(page).to_not have_selector('.build-artifacts') }
+        it { expect(page).not_to have_selector('.build-artifacts') }
       end
     end
   end
@@ -98,23 +104,23 @@ describe "Pipelines" do
     end
 
     context 'retrying builds' do
-      it { expect(page).to_not have_content('retried') }
+      it { expect(page).not_to have_content('retried') }
 
       context 'when retrying' do
         before { click_on 'Retry failed' }
 
-        it { expect(page).to_not have_content('Retry failed') }
+        it { expect(page).not_to have_content('Retry failed') }
         it { expect(page).to have_content('retried') }
       end
     end
 
     context 'canceling builds' do
-      it { expect(page).to_not have_selector('.ci-canceled') }
+      it { expect(page).not_to have_selector('.ci-canceled') }
 
       context 'when canceling' do
         before { click_on 'Cancel running' }
 
-        it { expect(page).to_not have_content('Cancel running') }
+        it { expect(page).not_to have_content('Cancel running') }
         it { expect(page).to have_selector('.ci-canceled') }
       end
     end

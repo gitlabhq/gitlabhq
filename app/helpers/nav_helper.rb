@@ -48,7 +48,7 @@ module NavHelper
     "page-with-layout-nav" if defined?(nav) && nav
   end
 
-  def layout_dropdown_class
-    "controls-dropdown-visible" if current_user
+  def nav_control_class
+    "nav-control" if current_user
   end
 end

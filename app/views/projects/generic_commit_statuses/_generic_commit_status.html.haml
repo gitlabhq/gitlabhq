@@ -40,24 +40,20 @@
   %td
     = generic_commit_status.name
 
-    .pull-right
-      - if generic_commit_status.tags.any?
-        - generic_commit_status.tags.each do |tag|
-          %span.label.label-primary
-            = tag
-      - if defined?(retried) && retried
-        %span.label.label-warning retried
+  %td
+    - if generic_commit_status.tags.any?
+      - generic_commit_status.tags.each do |tag|
+        %span.label.label-primary
+          = tag
+    - if defined?(retried) && retried
+      %span.label.label-warning retried
 
   %td.duration
     - if generic_commit_status.duration
-      = icon("clock-o")
-      &nbsp;
       #{duration_in_words(generic_commit_status.finished_at, generic_commit_status.started_at)}
 
   %td.timestamp
     - if generic_commit_status.finished_at
-      = icon("calendar")
-      &nbsp;
       %span #{time_ago_with_tooltip(generic_commit_status.finished_at)}
 
   - if defined?(coverage) && coverage

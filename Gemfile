@@ -121,7 +121,7 @@ group :unicorn do
 end
 
 # State machine
-gem "state_machines-activerecord", '~> 0.3.0'
+gem "state_machines-activerecord", '~> 0.4.0'
 # Run events after state machine commits
 gem 'after_commit_queue'
 
@@ -177,9 +177,6 @@ gem 'ruby-fogbugz', '~> 0.2.1'
 
 # d3
 gem 'd3_rails', '~> 3.5.0'
-
-#cal-heatmap
-gem 'cal-heatmap-rails', '~> 3.6.0'
 
 # underscore-rails
 gem "underscore-rails", "~> 1.8.0"
@@ -293,9 +290,10 @@ group :development, :test do
   gem 'spring-commands-spinach',  '~> 1.1.0'
   gem 'spring-commands-teaspoon', '~> 0.0.2'
 
-  gem 'rubocop', '~> 0.38.0', require: false
+  gem 'rubocop', '~> 0.40.0', require: false
+  gem 'rubocop-rspec', '~> 1.5.0', require: false
   gem 'scss_lint', '~> 0.47.0', require: false
-  gem 'coveralls',  '~> 0.8.2', require: false
+  gem 'coveralls', '~> 0.8.2', require: false
   gem 'simplecov', '~> 0.11.0', require: false
   gem 'flog', require: false
   gem 'flay', require: false
@@ -325,7 +323,7 @@ gem "mail_room", "~> 0.7"
 gem 'email_reply_parser', '~> 0.5.8'
 
 ## CI
-gem 'activerecord-session_store', '~> 0.1.0'
+gem 'activerecord-session_store', '~> 1.0.0'
 gem "nested_form", '~> 0.3.2'
 
 # OAuth
