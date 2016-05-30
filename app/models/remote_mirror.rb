@@ -2,16 +2,19 @@
 #
 # Table name: remote_mirrors
 #
-#  id                        :integer          not null, primary key
-#  project_id                :integer
-#  url                       :string
-#  last_update_at            :datetime
-#  last_error                :string
-#  created_at                :datetime         not null
-#  updated_at                :datetime         not null
-#  last_successful_update_at :datetime
-#  update_status             :string
-#  enabled                   :boolean          default(TRUE)
+#  id                         :integer          not null, primary key
+#  project_id                 :integer
+#  url                        :string
+#  enabled                    :boolean          default(TRUE)
+#  update_status              :string
+#  last_update_at             :datetime
+#  last_successful_update_at  :datetime
+#  last_error                 :string
+#  encrypted_credentials      :text
+#  encrypted_credentials_iv   :string
+#  encrypted_credentials_salt :string
+#  created_at                 :datetime         not null
+#  updated_at                 :datetime         not null
 #
 
 class RemoteMirror < ActiveRecord::Base
@@ -28,8 +31,8 @@ class RemoteMirror < ActiveRecord::Base
   validates :url, presence: true, url: { protocols: %w(ssh git http https), allow_blank: true }
   validate  :url_availability, if: :url_changed?
 
-  after_save :refresh_remote, if: :url_changed?
-  after_update :reset_fields, if: :url_changed?
+  after_save :refresh_remote, if: :mirror_url_changed?
+  after_update :reset_fields, if: :mirror_url_changed?
   after_destroy :remove_remote
 
   scope :enabled, -> { where(enabled: true) }
@@ -154,5 +157,9 @@ class RemoteMirror < ActiveRecord::Base
 
   def remove_remote
     project.repository.remove_remote(ref_name)
+  end
+
+  def mirror_url_changed?
+    url_changed? || encrypted_credentials_changed?
   end
 end
