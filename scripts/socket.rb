@@ -4,7 +4,7 @@ require "json"
 
 EM.run do
   @channels = Hash.new
-  @redis = EM::Hiredis.connect("unix:///Users/phil/Projects/gdk-ce/redis/redis.socket")
+  @redis = EM::Hiredis.connect("unix://#{File.expand_path('..')}/redis/redis.socket")
   pubsub = @redis.pubsub
   pubsub.subscribe "todos"
   pubsub.on(:message) do |redis_channel, message|
@@ -15,11 +15,8 @@ EM.run do
     }
 
     if redis_channel == "todos"
-      @channels.each do |key, channel|
-        if channel[:user_id].to_i == message["user_id"]
-          channel[:channel].push data.to_json
-        end
-      end
+      channel = @channels[message["user_id"].to_s]
+      channel[:channel].push data.to_json
     end
   end
 
