@@ -222,7 +222,7 @@ Style/EndBlock:
 
 # Use Unix-style line endings.
 Style/EndOfLine:
-  Enabled: false
+  Enabled: true
 
 # Favor the use of Fixnum#even? && Fixnum#odd?
 Style/EvenOdd:
