@@ -156,13 +156,11 @@
 .search-holder {
   @media (min-width: $screen-sm-min) {
     display: -webkit-flex;
-    display: -ms-flexbox;
     display: flex;
   }
 
   .search-field-holder {
     -webkit-flex: 1 0 auto;
-    -ms-flex: 1 0 auto;
     flex: 1 0 auto;
     position: relative;
     margin-right: 0;
