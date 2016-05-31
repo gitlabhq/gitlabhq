@@ -32,6 +32,7 @@ v 8.9.0 (unreleased)
   - Changed the Slack build message to use the singular duration if necessary (Aran Koning)
   - Links from a wiki page to other wiki pages should be rewritten as expected
   - Add option to project to only allow merge requests to be merged if the build succeeds (Rui Santos)
+  - Added navigation shortcuts to the project pipelines, milestones, builds and forks page. !4393
   - Fix issues filter when ordering by milestone
   - Todos will display target state if issuable target is 'Closed' or 'Merged'
   - Fix bug when sorting issues by milestone due date and filtering by two or more labels
