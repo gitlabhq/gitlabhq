@@ -59,7 +59,7 @@ module Projects
       if @project.errors.empty?
         @project.add_import_job if @project.import?
       else
-        fail(error: @project.errors.join(', '))
+        fail(error: @project.errors.full_messages.join(', '))
       end
       @project
     rescue => e
