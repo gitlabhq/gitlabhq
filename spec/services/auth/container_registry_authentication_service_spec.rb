@@ -23,7 +23,7 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
       let(:expire_delay) { 10 }
 
       context 'for default configuration' do
-        it { expect(expires_at).to_not be_within(2.seconds).of(Time.now + expire_delay.minutes) }
+        it { expect(expires_at).not_to be_within(2.seconds).of(Time.now + expire_delay.minutes) }
       end
 
       context 'for changed configuration' do
