@@ -4,6 +4,7 @@ v 8.9.0 (unreleased)
   - Allow enabling wiki page events from Webhook management UI
   - Allow forking projects with restricted visibility level
   - Improve note validation to prevent errors when creating invalid note via API
+  - Remove project notification settings associated with deleted projects
   - Redesign navigation for project pages
   - Fix groups API to list only user's accessible projects
   - Redesign account and email confirmation emails
