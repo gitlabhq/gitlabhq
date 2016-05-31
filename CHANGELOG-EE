@@ -5,6 +5,7 @@ v 8.9.0 (unreleased)
 v 8.8.3
   - Make it clear the license overusage is visible only to admins
   - Reduce load on DB for license upgrade check
+  - [Elastic] In search results, only show notes on confidential issues that the user has access to
 
 v 8.8.2
   - Fix repository mirror updates for new imports stuck in started
