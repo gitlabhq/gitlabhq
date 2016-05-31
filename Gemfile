@@ -73,7 +73,7 @@ gem 'grape-entity', '~> 0.4.2'
 gem 'rack-cors',    '~> 0.4.0', require: 'rack/cors'
 
 # Pagination
-gem "kaminari", "~> 0.16.3"
+gem "kaminari", "~> 0.17.0"
 
 # HAML
 gem "haml-rails", '~> 0.9.0'
