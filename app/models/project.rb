@@ -1013,8 +1013,12 @@ class Project < ActiveRecord::Base
   end
 
   def running_or_pending_build_count
-    Rails.cache.fetch(['projects', id, 'running_or_pending_build_count'], expires_in: 60) do
+    Rails.cache.fetch(['projects', id, 'running_or_pending_build_count']) do
       builds.running_or_pending.count(:all)
     end
+  end
+
+  def expire_running_or_pending_build_count
+    Rails.cache.delete(['projects', id, 'running_or_pending_build_count'])
   end
 end
