@@ -5,9 +5,7 @@ module Auth
     def execute
       return error('not found', 404) unless registry.enabled
 
-      if params[:offline_token]
-        return error('unauthorized', 401) unless current_user || project
-      else
+      unless current_user || project
         return error('forbidden', 403) unless scope
       end
 
