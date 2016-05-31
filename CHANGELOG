@@ -10,6 +10,7 @@ v 8.8.3
   - Fix import URL migration not rescuing with the correct Error. !4321
   - Fix health check access token changing due to old application settings being used. !4332
   - Make authentication service for Container Registry to be compatible with < Docker 1.11. !4363
+  - Add Application Setting to configure Container Registry token expire delay (default 5min). !4364
 
 v 8.8.2
   - Added remove due date button. !4209

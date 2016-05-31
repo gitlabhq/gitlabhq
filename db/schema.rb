@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160509201028) do
+ActiveRecord::Schema.define(version: 20160530150109) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -43,45 +43,47 @@ ActiveRecord::Schema.define(version: 20160509201028) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "home_page_url"
-    t.integer  "default_branch_protection",         default: 2
+    t.integer  "default_branch_protection",             default: 2
     t.text     "restricted_visibility_levels"
-    t.boolean  "version_check_enabled",             default: true
-    t.integer  "max_attachment_size",               default: 10,          null: false
+    t.boolean  "version_check_enabled",                 default: true
+    t.integer  "max_attachment_size",                   default: 10,          null: false
     t.integer  "default_project_visibility"
     t.integer  "default_snippet_visibility"
     t.text     "restricted_signup_domains"
-    t.boolean  "user_oauth_applications",           default: true
+    t.boolean  "user_oauth_applications",               default: true
     t.string   "after_sign_out_path"
-    t.integer  "session_expire_delay",              default: 10080,       null: false
+    t.integer  "session_expire_delay",                  default: 10080,       null: false
     t.text     "import_sources"
     t.text     "help_page_text"
     t.string   "admin_notification_email"
-    t.boolean  "shared_runners_enabled",            default: true,        null: false
-    t.integer  "max_artifacts_size",                default: 100,         null: false
+    t.boolean  "shared_runners_enabled",                default: true,        null: false
+    t.integer  "max_artifacts_size",                    default: 100,         null: false
     t.string   "runners_registration_token"
-    t.boolean  "require_two_factor_authentication", default: false
-    t.integer  "two_factor_grace_period",           default: 48
-    t.boolean  "metrics_enabled",                   default: false
-    t.string   "metrics_host",                      default: "localhost"
-    t.integer  "metrics_pool_size",                 default: 16
-    t.integer  "metrics_timeout",                   default: 10
-    t.integer  "metrics_method_call_threshold",     default: 10
-    t.boolean  "recaptcha_enabled",                 default: false
+    t.boolean  "require_two_factor_authentication",     default: false
+    t.integer  "two_factor_grace_period",               default: 48
+    t.boolean  "metrics_enabled",                       default: false
+    t.string   "metrics_host",                          default: "localhost"
+    t.integer  "metrics_pool_size",                     default: 16
+    t.integer  "metrics_timeout",                       default: 10
+    t.integer  "metrics_method_call_threshold",         default: 10
+    t.boolean  "recaptcha_enabled",                     default: false
     t.string   "recaptcha_site_key"
     t.string   "recaptcha_private_key"
-    t.integer  "metrics_port",                      default: 8089
-    t.boolean  "akismet_enabled",                   default: false
+    t.integer  "metrics_port",                          default: 8089
+    t.boolean  "akismet_enabled",                       default: false
     t.string   "akismet_api_key"
-    t.integer  "metrics_sample_interval",           default: 15
-    t.boolean  "sentry_enabled",                    default: false
+    t.integer  "metrics_sample_interval",               default: 15
+    t.boolean  "sentry_enabled",                        default: false
     t.string   "sentry_dsn"
-    t.boolean  "email_author_in_body",              default: false
+    t.boolean  "email_author_in_body",                  default: false
     t.integer  "default_group_visibility"
-    t.boolean  "repository_checks_enabled",         default: false
+    t.boolean  "repository_checks_enabled",             default: false
     t.text     "shared_runners_text"
-    t.integer  "metrics_packet_size",               default: 1
+    t.integer  "metrics_packet_size",                   default: 1
     t.text     "disabled_oauth_sign_in_sources"
     t.string   "health_check_access_token"
+    t.boolean  "send_user_confirmation_email",          default: false
+    t.integer  "container_registry_token_expire_delay", default: 5
   end
 
   create_table "audit_events", force: :cascade do |t|
