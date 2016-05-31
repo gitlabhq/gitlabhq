@@ -37,7 +37,8 @@ Example response:
    "created_at" : "2016-01-04T15:44:55.176Z",
    "default_project_visibility" : 0,
    "gravatar_enabled" : true,
-   "sign_in_text" : null
+   "sign_in_text" : null,
+   "container_registry_token_expire_delay": 5
 }
 ```
 
@@ -64,6 +65,7 @@ PUT /application/settings
 | `restricted_signup_domains` | array of strings | no | Force people to use only corporate emails for sign-up. Default is null, meaning there is no restriction. |
 | `user_oauth_applications` | boolean | no | Allow users to register any application to use GitLab as an OAuth provider |
 | `after_sign_out_path` | string | no | Where to redirect users after logout |
+| `container_registry_token_expire_delay` | integer | no | Container Registry token duration in minutes |
 
 ```bash
 curl -X PUT -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/application/settings?signup_enabled=false&default_project_visibility=1
@@ -90,6 +92,7 @@ Example response:
   "default_snippet_visibility": 0,
   "restricted_signup_domains": [],
   "user_oauth_applications": true,
-  "after_sign_out_path": ""
+  "after_sign_out_path": "",
+  "container_registry_token_expire_delay": 5
 }
 ```

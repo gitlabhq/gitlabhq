@@ -17,6 +17,7 @@ v 8.9.0 (unreleased)
   - Projects pending deletion will render a 404 page
   - Measure queue duration between gitlab-workhorse and Rails
   - Make authentication service for Container Registry to be compatible with < Docker 1.11
+  - Add Application Setting to configure Container Registry token expire delay (default 5min)
 
 v 8.8.3
   - Fix gitlab importer failing to import new projects due to missing credentials
