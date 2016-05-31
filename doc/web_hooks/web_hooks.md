@@ -720,7 +720,7 @@ X-Gitlab-Event: Wiki Page Hook
     "description": "This is awesome",
     "web_url": "http://example.com/root/awesome-project",
     "avatar_url": null,
-    "git_ssh_url": "git@example.com:root/test-project.git",
+    "git_ssh_url": "git@example.com:root/awesome-project.git",
     "git_http_url": "http://example.com/root/awesome-project.git",
     "namespace": "root",
     "visibility_level": 0,
@@ -731,6 +731,13 @@ X-Gitlab-Event: Wiki Page Hook
     "ssh_url": "git@example.com:root/awesome-project.git",
     "http_url": "http://example.com/root/awesome-project.git"
   },
+  "wiki": {
+    "web_url": "http://example.com/root/awesome-project/wikis/home",
+    "git_ssh_url": "git@example.com:root/awesome-project.wiki.git", 
+    "git_http_url": "http://example.com/root/awesome-project.wiki.git", 
+    "path_with_namespace": "root/awesome-project.wiki", 
+    "default_branch": "master"
+  },
   "object_attributes": {
     "title": "Awesome",
     "content": "awesome content goes here",
@@ -739,12 +746,6 @@ X-Gitlab-Event: Wiki Page Hook
     "slug": "awesome",
     "url": "http://example.com/root/awesome-project/wikis/awesome",
     "action": "create"
-  },
-  "repository": {
-    "name": "awesome-project",
-    "url": "git@example.com:root/awesome-project.git",
-    "description": "test",
-    "homepage": "http://example.com/root/awesome-project"
   }
 }
 ```
