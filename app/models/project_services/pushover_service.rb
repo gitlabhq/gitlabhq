@@ -77,7 +77,7 @@ class PushoverService < Service
     elsif Gitlab::Git.blank_ref?(after)
       message = "#{data[:user_name]} 删除了分支 \"#{ref}\"。"
     else
-      message = "#{data[:user_name]} 推送到了分支 \"#{ref}\"。"
+      message = "#{data[:user_name]} 推送了分支 \"#{ref}\"。"
     end
 
     if data[:total_commits_count] > 0

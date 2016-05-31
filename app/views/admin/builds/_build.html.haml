@@ -33,7 +33,7 @@
       .light 无
 
   %td
-    #{build.stage} / #{build.name}
+    #{ci_stage_zh(build.stage)} / #{build.name}
 
   %td
     - if build.tags.any?

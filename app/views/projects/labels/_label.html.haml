@@ -20,7 +20,7 @@
     - if can? current_user, :admin_label, @project
       = link_to edit_namespace_project_label_path(@project.namespace, @project, label), title: "编辑", class: 'btn action-buttons', data: {toggle: "tooltip"} do
         %i.fa.fa-pencil-square-o
-      = link_to namespace_project_label_path(@project.namespace, @project, label), title: "删除", class: 'btn action-buttons remove-row', method: :delete, remote: true, data: {confirm: "确定要删除这个标记么？", toggle: "tooltip"} do
+      = link_to namespace_project_label_path(@project.namespace, @project, label), title: "删除", class: 'btn action-buttons remove-row', method: :delete, remote: true, data: {confirm: "确定要删除此标记么？", toggle: "tooltip"} do
         %i.fa.fa-trash-o
 
 - if current_user
