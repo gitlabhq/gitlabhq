@@ -70,7 +70,7 @@ http://app.asana.com/-/account_api'
     project_name = project.name_with_namespace
 
     data[:commits].each do |commit|
-      push_msg = "#{user} 推送到了 #{project_name} 的 分支 #{branch} ( #{commit[:url]} )："
+      push_msg = "#{user} 推送了 #{project_name} 的 #{branch} 分支 ( #{commit[:url]} )："
       check_commit(commit[:message], push_msg)
     end
   end

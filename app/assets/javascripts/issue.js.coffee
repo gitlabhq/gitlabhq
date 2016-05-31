@@ -20,7 +20,7 @@ class @Issue
 
   initIssueBtnEventListeners: ->
     _this = @
-    issueFailMessage = '此时无法更新这个问题。'
+    issueFailMessage = '无法更新此问题。'
     $('a.btn-close, a.btn-reopen').on 'click', (e) ->
       e.preventDefault()
       e.stopImmediatePropagation()

@@ -55,7 +55,7 @@ class SlackService
     end
 
     def push_message
-      "#{user_name} 推送到了 #{project_link} 的 #{ref_type} #{branch_link} (#{compare_link})"
+      "#{user_name} 推送了 #{project_link} 的 #{ref_type} #{branch_link} (#{compare_link})"
     end
 
     def commit_messages

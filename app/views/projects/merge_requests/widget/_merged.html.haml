@@ -9,14 +9,14 @@
     %div
       - if !@merge_request.source_branch_exists? || (params[:delete_source] == 'true')
         %p
-          变更已合并到
+          此变更已合并到
           #{link_to @merge_request.target_branch, namespace_project_commits_path(@project.namespace, @project, @merge_request.target_branch), class: "label-branch"}，
           来源分支已被删除。
         = render 'projects/merge_requests/widget/merged_buttons'
       - elsif @merge_request.can_remove_source_branch?(current_user)
         .remove_source_branch_widget
           %p
-            变更已合并到
+            此变更已合并到
             #{link_to @merge_request.target_branch, namespace_project_commits_path(@project.namespace, @project, @merge_request.target_branch), class: "label-branch"}，
             你现在可以删除来源分支。
           = render 'projects/merge_requests/widget/merged_buttons', source_branch_exists: true
@@ -46,6 +46,6 @@
           });
       - else
         %p
-          The changes were merged into
-          #{link_to @merge_request.target_branch, namespace_project_commits_path(@project.namespace, @project, @merge_request.target_branch), class: "label-branch"}.
+          此变更已合并到
+          #{link_to @merge_request.target_branch, namespace_project_commits_path(@project.namespace, @project, @merge_request.target_branch), class: "label-branch"}。
         = render 'projects/merge_requests/widget/merged_buttons'

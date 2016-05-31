@@ -80,8 +80,8 @@
 
       - if @build.erased?
         .erased.alert.alert-warning
-          - erased_by = "by #{link_to @build.erased_by.name, user_path(@build.erased_by)}" if @build.erased_by
-          构建被 #{erased_by.html_safe} 在 #{time_ago_with_tooltip(@build.erased_at)}删除
+          - erased_by = "被 #{link_to @build.erased_by.name, user_path(@build.erased_by)}" if @build.erased_by
+          构建#{erased_by.html_safe} 在 #{time_ago_with_tooltip(@build.erased_at)}删除
       - else
         %pre.trace#build-trace
           %code.bash

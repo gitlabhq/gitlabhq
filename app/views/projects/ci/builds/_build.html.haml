@@ -37,7 +37,7 @@
 
   - if defined?(stage) && stage
     %td
-      = build.stage
+      = ci_stage_zh(build.stage)
 
   %td
     = build.name
@@ -51,7 +51,7 @@
       - if build.try(:trigger_request)
         %span.label.label-info 被触发
       - if build.try(:allow_failure)
-        %span.label.label-danger 运行失败
+        %span.label.label-danger 允许失败
       - if defined?(retried) && retried
         %span.label.label-warning 重试的
 
