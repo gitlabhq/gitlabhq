@@ -36,7 +36,7 @@
       = icon('tasks fw')
       %span
         Merge Requests
-        %span.count= number_with_delimiter(current_user.assigned_merge_requests.opened.count)
+        %span.count= number_with_delimiter(current_user.assigned_open_merge_request_count)
   = nav_link(controller: :snippets) do
     = link_to dashboard_snippets_path, title: 'Snippets' do
       = icon('clipboard fw')

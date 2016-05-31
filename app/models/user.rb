@@ -776,6 +776,12 @@ class User < ActiveRecord::Base
     notification_settings.find_or_initialize_by(source: source)
   end
 
+  def assigned_open_merge_request_count
+    Rails.cache.fetch(['users', id, 'assigned_open_merge_request_count'], expires_in: 60) do
+       assigned_merge_requests.opened.count
+     end
+  end
+
   private
 
   def projects_union
