@@ -1017,4 +1017,9 @@ class Project < ActiveRecord::Base
       builds.running_or_pending.count(:all)
     end
   end
+
+  def mark_import_as_failed(error_message)
+    import_fail
+    update_column(:import_error, Gitlab::UrlSanitizer.sanitize(error_message))
+  end
 end
