@@ -1,3 +1,4 @@
+# coding: utf-8
 require 'spec_helper'
 
 describe Issues::UpdateService, services: true do
@@ -270,6 +271,51 @@ describe Issues::UpdateService, services: true do
           expect do
             update_issue({ description: "- [ ] One\n- [ ] Two\n- [ ] Three" })
           end.not_to change { Note.count }
+        end
+      end
+    end
+
+    context 'updating labels' do
+      let(:label3) { create(:label, project: project) }
+      let(:result) { Issues::UpdateService.new(project, user, params).execute(issue).reload }
+
+      context 'when add_label_ids and label_ids are passed' do
+        let(:params) { { label_ids: [label.id], add_label_ids: [label3.id] } }
+
+        it 'ignores the label_ids parameter' do
+          expect(result.label_ids).not_to include(label.id)
+        end
+
+        it 'adds the passed labels' do
+          expect(result.label_ids).to include(label3.id)
+        end
+      end
+
+      context 'when remove_label_ids and label_ids are passed' do
+        let(:params) { { label_ids: [], remove_label_ids: [label.id] } }
+
+        before { issue.update_attributes(labels: [label, label3]) }
+
+        it 'ignores the label_ids parameter' do
+          expect(result.label_ids).not_to be_empty
+        end
+
+        it 'removes the passed labels' do
+          expect(result.label_ids).not_to include(label.id)
+        end
+      end
+
+      context 'when add_label_ids and remove_label_ids are passed' do
+        let(:params) { { add_label_ids: [label3.id], remove_label_ids: [label.id] } }
+
+        before { issue.update_attributes(labels: [label]) }
+
+        it 'adds the passed labels' do
+          expect(result.label_ids).to include(label3.id)
+        end
+
+        it 'removes the passed labels' do
+          expect(result.label_ids).not_to include(label.id)
         end
       end
     end

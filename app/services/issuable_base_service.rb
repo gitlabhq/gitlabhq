@@ -72,18 +72,17 @@ class IssuableBaseService < BaseService
     if params[:add_label_ids].present? || params[:remove_label_ids].present?
       params.delete(:label_ids)
 
-      filter_labels_by_name([:add_label_ids, :remove_label_ids])
+      filter_labels_in_param(:add_label_ids)
+      filter_labels_in_param(:remove_label_ids)
     else
-      filter_labels_by_name([:label_ids])
+      filter_labels_in_param(:label_ids)
     end
   end
 
-  def filter_labels_by_name(keys)
-    keys.each do |key|
-      next if params[key].to_a.empty?
+  def filter_labels_in_param(key)
+    return if params[key].to_a.empty?
 
-      params[key] = project.labels.where(id: params[key]).pluck(:id)
-    end
+    params[key] = project.labels.where(id: params[key]).pluck(:id)
   end
 
   def update_issuable(issuable, attributes)
@@ -94,7 +93,7 @@ class IssuableBaseService < BaseService
       issuable.label_ids |= add_label_ids if add_label_ids
       issuable.label_ids -= remove_label_ids if remove_label_ids
 
-      issuable.assign_attributes(attributes)
+      issuable.assign_attributes(attributes.merge(updated_by: current_user))
 
       issuable.save
     end
@@ -105,7 +104,7 @@ class IssuableBaseService < BaseService
     filter_params
     old_labels = issuable.labels.to_a
 
-    if params.present? && update_issuable(issuable, params.merge(updated_by: current_user))
+    if params.present? && update_issuable(issuable, params)
       issuable.reset_events_cache
       handle_common_system_notes(issuable, old_labels: old_labels)
       handle_changes(issuable, old_labels: old_labels)
