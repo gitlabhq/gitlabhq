@@ -75,6 +75,7 @@ class Dispatcher
       when 'projects:show'
         shortcut_handler = new ShortcutsNavigation()
 
+        new NotificationsForm()
         new TreeView() if $('#tree-slider').length
       when 'groups:activity'
         new Activities()

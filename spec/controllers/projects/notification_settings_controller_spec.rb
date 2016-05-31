@@ -33,6 +33,25 @@ describe Projects::NotificationSettingsController do
 
         expect(response.status).to eq 200
       end
+
+      context 'and setting custom notification setting' do
+        let(:custom_events) do
+          events = {}
+
+          NotificationSetting::EMAIL_EVENTS.each do |event|
+            events[event] = "true"
+          end
+        end
+
+        it 'returns success' do
+          put :update,
+              namespace_id: project.namespace.to_param,
+              project_id: project.to_param,
+              notification_setting: { level: :participating, events: custom_events }
+
+          expect(response.status).to eq 200
+        end
+      end
     end
 
     context 'not authorized' do

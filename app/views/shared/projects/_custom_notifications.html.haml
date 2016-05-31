@@ -1,0 +1,26 @@
+#custom-notifications-modal.modal.fade{ tabindex: "-1", role: "dialog", aria: { labelledby: "custom-notifications-title" } }
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %button.close{ type: "button", data: { dismiss: "modal" }, aria: { label: "close" } }
+          %span{ aria: { hidden: "true" } } ×
+        %h4#custom-notifications-title.modal-title
+          Custom notification events
+      .modal-body
+        .container-fluid
+          = form_for @notification_setting, url: namespace_project_notification_setting_path(@project.namespace.becomes(Namespace), @project), method: :patch, html: { class: "custom-notifications-form" } do |f|
+            .row
+              .col-lg-3
+                %h4.prepend-top-0
+                  Notification events
+              .col-lg-9
+                - NotificationSetting::EMAIL_EVENTS.each do |event, index|
+                  = index
+                  .form-group
+                    .checkbox{ class: ("prepend-top-0" if index == 0) }
+                      %label{ for: "events_#{event}" }
+                        = check_box("notification_setting", event, {id: "events_#{event}", class: "js-custom-notification-event"})
+
+                        %strong
+                          = event.to_s.humanize
+                          = icon("spinner spin", class: "custom-notification-event-loading")
