@@ -105,7 +105,7 @@ class Spinach::Features::ProjectCommits < Spinach::FeatureSteps
   end
 
   step 'I should not see button to create a new merge request' do
-    expect(page).to_not have_link 'Create Merge Request'
+    expect(page).not_to have_link 'Create Merge Request'
   end
 
   step 'I should see button to the merge request' do

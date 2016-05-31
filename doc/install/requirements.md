@@ -81,7 +81,7 @@ errors during usage.
 - More users? Run it on [multiple application servers](https://about.gitlab.com/high-availability/)
 
 We recommend having at least 1GB of swap on your server, even if you currently have
-enough available RAM. Having swap will help reduce the chance of errors occuring
+enough available RAM. Having swap will help reduce the chance of errors occurring
 if your available memory changes.
 
 Notice: The 25 workers of Sidekiq will show up as separate processes in your process overview (such as top or htop) but they share the same RAM allocation since Sidekiq is a multithreaded application. Please see the section below about Unicorn workers for information about many you need of those.

@@ -28,7 +28,7 @@ describe Projects::GroupLinksController do
         expect(group.shared_projects).to include project
       end
 
-      it 'redirects to project group links page'do
+      it 'redirects to project group links page' do
         expect(response).to redirect_to(
           namespace_project_group_links_path(project.namespace, project)
         )
@@ -43,7 +43,7 @@ describe Projects::GroupLinksController do
       end
 
       it 'does not share project with that group' do
-        expect(group.shared_projects).to_not include project
+        expect(group.shared_projects).not_to include project
       end
     end
   end

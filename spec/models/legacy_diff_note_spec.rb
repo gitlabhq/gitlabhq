@@ -63,7 +63,9 @@ describe LegacyDiffNote, models: true do
         code = Gitlab::Diff::LineCode.generate(diff.new_path, line.new_pos, line.old_pos)
 
         # We're persisting in order to trigger the set_diff callback
-        note = create(:note_on_merge_request_diff, noteable: merge, line_code: code)
+        note = create(:note_on_merge_request_diff, noteable: merge,
+                                                   line_code: code,
+                                                   project: merge.source_project)
 
         # Make sure we don't get a false positive from a guard clause
         expect(note).to receive(:find_noteable_diff).and_call_original

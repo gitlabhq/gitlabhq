@@ -54,8 +54,8 @@ describe Issues::CreateService, services: true do
             label_ids: [label.id] }
         end
 
-        it 'does not assign label'do
-          expect(issue.labels).to_not include label
+        it 'does not assign label' do
+          expect(issue.labels).not_to include label
         end
       end
 
@@ -69,7 +69,7 @@ describe Issues::CreateService, services: true do
         end
 
         it 'does not assign milestone' do
-          expect(issue.milestone).to_not eq milestone
+          expect(issue.milestone).not_to eq milestone
         end
       end
     end

@@ -229,6 +229,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     if ci_commit
       status = ci_commit.status
       coverage = ci_commit.try(:coverage)
+
+      status ||= "preparing"
     else
       ci_service = @merge_request.source_project.ci_service
       status = ci_service.commit_status(merge_request.last_commit.sha, merge_request.source_branch) if ci_service
@@ -237,8 +239,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
         coverage = ci_service.commit_coverage(merge_request.last_commit.sha, merge_request.source_branch)
       end
     end
-
-    status = "preparing" if status.nil?
 
     response = {
       title: merge_request.title,
@@ -334,7 +334,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     params.require(:merge_request).permit(
       :title, :assignee_id, :source_project_id, :source_branch,
       :target_project_id, :target_branch, :milestone_id,
-      :state_event, :description, :task_num, label_ids: []
+      :state_event, :description, :task_num, :force_remove_source_branch,
+      label_ids: []
     )
   end
 

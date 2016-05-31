@@ -1,14 +1,62 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
-v 8.8.0 (unreleased)
+v 8.9.0 (unreleased)
+  - Allow enabling wiki page events from Webhook management UI
+  - Fix wiki page events' webhook to point to the wiki repository
+  - Allow forking projects with restricted visibility level
+  - Improve note validation to prevent errors when creating invalid note via API
+  - Remove project notification settings associated with deleted projects
+  - Redesign navigation for project pages
+  - Fix groups API to list only user's accessible projects
+  - Redesign account and email confirmation emails
+  - Use gitlab-shell v3.0.0
+  - Add DB index on users.state
+  - Add rake task 'gitlab:db:configure' for conditionally seeding or migrating the database
+  - Changed the Slack build message to use the singular duration if necessary (Aran Koning)
+  - Fix issues filter when ordering by milestone
+  - Todos will display target state if issuable target is 'Closed' or 'Merged'
+  - Remove 'main language' feature
+  - Projects pending deletion will render a 404 page
+  - Measure queue duration between gitlab-workhorse and Rails
+  - Make authentication service for Container Registry to be compatible with < Docker 1.11
+  - Add Application Setting to configure Container Registry token expire delay (default 5min)
+
+v 8.8.3
+  - Fix gitlab importer failing to import new projects due to missing credentials
+  - Fix import URL migration not rescuing with the correct Error
+
+v 8.8.2
+  - Added remove due date button. !4209
+  - Fix Error 500 when accessing application settings due to nil disabled OAuth sign-in sources. !4242
+  - Fix Error 500 in CI charts by gracefully handling commits with no durations. !4245
+  - Fix table UI on CI builds page. !4249
+  - Fix backups if registry is disabled. !4263
+  - Fixed issue with merge button color. !4211
+  - Fixed issue with enter key selecting wrong option in dropdown. !4210
+  - When creating a .gitignore file a dropdown with templates will be provided. !4075
+  - Fix concurrent request when updating build log in browser. !4183
+
+v 8.8.1
+  - Add documentation for the "Health Check" feature
+  - Allow anonymous users to access a public project's pipelines !4233
+  - Fix MySQL compatibility in zero downtime migrations helpers
+  - Fix the CI login to Container Registry (the gitlab-ci-token user)
+
+v 8.8.0
+  - Implement GFM references for milestones (Alejandro Rodríguez)
   - Snippets tab under user profile. !4001 (Long Nguyen)
   - Fix error when using link to uploads in global snippets
+  - Fix Error 500 when attempting to retrieve project license when HEAD points to non-existent ref
   - Assign labels and milestone to target project when moving issue. !3934 (Long Nguyen)
   - Use a case-insensitive comparison in sanitizing URI schemes
   - Toggle sign-up confirmation emails in application settings
   - Make it possible to prevent tagged runner from picking untagged jobs
+  - Added `InlineDiffFilter` to the markdown parser. (Adam Butler)
+  - Added inline diff styling for `change_title` system notes. (Adam Butler)
   - Project#open_branches has been cleaned up and no longer loads entire records into memory.
   - Escape HTML in commit titles in system note messages
+  - Improve design of Pipeline View
+  - Fix scope used when accessing container registry
   - Fix creation of Ci::Commit object which can lead to pending, failed in some scenarios
   - Improve multiple branch push performance by memoizing permission checking
   - Log to application.log when an admin starts and stops impersonating a user
@@ -41,6 +89,7 @@ v 8.8.0 (unreleased)
   - Added button to toggle whitespaces changes on diff view
   - Backport GitHub Enterprise import support from EE
   - Create tags using Rugged for performance reasons. !3745
+  - Allow guests to set notification level in projects
   - API: Expose Issue#user_notes_count. !3126 (Anton Popov)
   - Don't show forks button when user can't view forks
   - Fix atom feed links and rendering
@@ -66,11 +115,17 @@ v 8.8.0 (unreleased)
   - All Grape API helpers are now instrumented
   - Improve Issue formatting for the Slack Service (Jeroen van Baarsen)
   - Fixed advice on invalid permissions on upload path !2948 (Ludovic Perrine)
+  - Allows MR authors to have the source branch removed when merging the MR. !2801 (Jeroen Jacobs)
+  - When creating a .gitignore file a dropdown with templates will be provided
+
+v 8.7.7
+  - Fix import by `Any Git URL` broken if the URL contains a space
 
 v 8.7.6
   - Fix links on wiki pages for relative url setups. !4131 (Artem Sidorenko)
   - Fix import from GitLab.com to a private instance failure. !4181
   - Fix external imports not finding the import data. !4106
+  - Fix notification delay when changing status of an issue
 
 v 8.7.5
   - Fix relative links in wiki pages. !4050

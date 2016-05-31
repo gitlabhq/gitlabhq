@@ -11,11 +11,9 @@
       = link_to "#diff-#{i}" do
         - if diff_file.renamed_file
           - old_path, new_path = mark_inline_diffs(diff_file.old_path, diff_file.new_path)
-          .filename.old
-            = old_path
+          = old_path
           &rarr;
-          .filename.new
-            = new_path
+          = new_path
         - else
           %span
             = diff_file.new_path

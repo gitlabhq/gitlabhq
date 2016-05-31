@@ -63,7 +63,8 @@ class Projects::HooksController < Projects::ApplicationController
       :push_events,
       :tag_push_events,
       :token,
-      :url
+      :url,
+      :wiki_page_events
     )
   end
 end

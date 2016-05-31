@@ -192,7 +192,7 @@ describe Issue, models: true do
                                                source_project: subject.project,
                                                source_branch: "#{subject.iid}-branch" })
       merge_request.create_cross_references!(user)
-      expect(subject.referenced_merge_requests).to_not be_empty
+      expect(subject.referenced_merge_requests).not_to be_empty
       expect(subject.related_branches(user)).to eq([subject.to_branch_name])
     end
 

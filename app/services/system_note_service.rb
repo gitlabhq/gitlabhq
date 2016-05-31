@@ -169,7 +169,14 @@ class SystemNoteService
   #
   # Returns the created Note object
   def self.change_title(noteable, project, author, old_title)
-    body = "Title changed from **#{old_title}** to **#{noteable.title}**"
+    new_title = noteable.title.dup
+
+    old_diffs, new_diffs = Gitlab::Diff::InlineDiff.new(old_title, new_title).inline_diffs
+
+    marked_old_title = Gitlab::Diff::InlineDiffMarker.new(old_title).mark(old_diffs, mode: :deletion, markdown: true)
+    marked_new_title = Gitlab::Diff::InlineDiffMarker.new(new_title).mark(new_diffs, mode: :addition, markdown: true)
+
+    body = "Changed title: **#{marked_old_title}** → **#{marked_new_title}**"
     create_note(noteable: noteable, project: project, author: author, note: body)
   end
 

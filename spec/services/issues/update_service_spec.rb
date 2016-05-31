@@ -75,10 +75,10 @@ describe Issues::UpdateService, services: true do
       end
 
       it 'creates system note about title change' do
-        note = find_note('Title changed')
+        note = find_note('Changed title:')
 
         expect(note).not_to be_nil
-        expect(note.note).to eq 'Title changed from **Old title** to **New title**'
+        expect(note.note).to eq 'Changed title: **{-Old-} title** → **{+New+} title**'
       end
 
       it 'creates system note about confidentiality change' do

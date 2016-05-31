@@ -59,8 +59,27 @@ class Milestone < ActiveRecord::Base
     end
   end
 
+  def self.reference_prefix
+    '%'
+  end
+
   def self.reference_pattern
-    nil
+    # NOTE: The iid pattern only matches when all characters on the expression
+    # are digits, so it will match %2 but not %2.1 because that's probably a
+    # milestone name and we want it to be matched as such.
+    @reference_pattern ||= %r{
+      (#{Project.reference_pattern})?
+      #{Regexp.escape(reference_prefix)}
+      (?:
+        (?<milestone_iid>
+          \d+(?!\S\w)\b # Integer-based milestone iid, or
+        ) |
+        (?<milestone_name>
+          [^"\s]+\b |  # String-based single-word milestone title, or
+          "[^"]+"      # String-based multi-word milestone surrounded in quotes
+        )
+      )
+    }x
   end
 
   def self.link_reference_pattern
@@ -81,13 +100,26 @@ class Milestone < ActiveRecord::Base
     end
   end
 
-  def to_reference(from_project = nil)
-    escaped_title = self.title.gsub("]", "\\]")
+  ##
+  # Returns the String necessary to reference this Milestone in Markdown
+  #
+  # format - Symbol format to use (default: :iid, optional: :name)
+  #
+  # Examples:
+  #
+  #   Milestone.first.to_reference                # => "%1"
+  #   Milestone.first.to_reference(format: :name) # => "%\"goal\""
+  #   Milestone.first.to_reference(project)       # => "gitlab-org/gitlab-ce%1"
+  #
+  def to_reference(from_project = nil, format: :iid)
+    format_reference = milestone_format_reference(format)
+    reference = "#{self.class.reference_prefix}#{format_reference}"
 
-    h = Gitlab::Routing.url_helpers
-    url = h.namespace_project_milestone_url(self.project.namespace, self.project, self)
-
-    "[#{escaped_title}](#{url})"
+    if cross_project_reference?(from_project)
+      project.to_reference + reference
+    else
+      reference
+    end
   end
 
   def reference_link_text(from_project = nil)
@@ -158,5 +190,17 @@ class Milestone < ActiveRecord::Base
 
     issues.where(id: ids).
       update_all(["position = CASE #{conditions} ELSE position END", *pairs])
+  end
+
+  private
+
+  def milestone_format_reference(format = :iid)
+    raise ArgumentError, 'Unknown format' unless [:iid, :name].include?(format)
+
+    if format == :name && !name.include?('"')
+      %("#{name}")
+    else
+      iid
+    end
   end
 end

@@ -12,5 +12,12 @@ describe Ci::Charts, lib: true do
       chart = Ci::Charts::BuildTime.new(@commit.project)
       expect(chart.build_times).to eq([2])
     end
+
+    it 'should handle nil build times' do
+      create(:ci_commit, duration: nil, project: @commit.project)
+
+      chart = Ci::Charts::BuildTime.new(@commit.project)
+      expect(chart.build_times).to eq([2, 0])
+    end
   end
 end

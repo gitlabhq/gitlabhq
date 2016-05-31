@@ -70,7 +70,7 @@ class IrkerService < Service
   private
 
   def get_channels
-    return true unless :activated?
+    return true unless activated?
     return true if recipients.nil? || recipients.empty?
 
     map_recipients

@@ -42,29 +42,25 @@
   %td
     = build.name
 
-    .pull-right
-      .label-container
-        - if build.tags.any?
-          - build.tags.each do |tag|
-            %span.label.label-primary
-              = tag
-        - if build.try(:trigger_request)
-          %span.label.label-info triggered
-        - if build.try(:allow_failure)
-          %span.label.label-danger allowed to fail
-        - if defined?(retried) && retried
-          %span.label.label-warning retried
+  %td
+    .label-container
+      - if build.tags.any?
+        - build.tags.each do |tag|
+          %span.label.label-primary
+            = tag
+      - if build.try(:trigger_request)
+        %span.label.label-info triggered
+      - if build.try(:allow_failure)
+        %span.label.label-danger allowed to fail
+      - if defined?(retried) && retried
+        %span.label.label-warning retried
 
   %td.duration
     - if build.duration
-      = icon("clock-o")
-      &nbsp;
       #{duration_in_words(build.finished_at, build.started_at)}
 
   %td.timestamp
     - if build.finished_at
-      = icon("calendar")
-      &nbsp;
       %span #{time_ago_with_tooltip(build.finished_at)}
 
   - if defined?(coverage) && coverage

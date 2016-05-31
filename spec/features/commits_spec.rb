@@ -137,8 +137,8 @@ describe 'Commits' do
           expect(page).to have_content commit.git_commit_message
           expect(page).to have_content commit.git_author_name
           expect(page).to have_link('Download artifacts')
-          expect(page).to_not have_link('Cancel running')
-          expect(page).to_not have_link('Retry failed')
+          expect(page).not_to have_link('Cancel running')
+          expect(page).not_to have_link('Retry failed')
         end
       end
 
@@ -155,9 +155,9 @@ describe 'Commits' do
           expect(page).to have_content commit.sha[0..7]
           expect(page).to have_content commit.git_commit_message
           expect(page).to have_content commit.git_author_name
-          expect(page).to_not have_link('Download artifacts')
-          expect(page).to_not have_link('Cancel running')
-          expect(page).to_not have_link('Retry failed')
+          expect(page).not_to have_link('Download artifacts')
+          expect(page).not_to have_link('Cancel running')
+          expect(page).not_to have_link('Retry failed')
         end
       end
     end

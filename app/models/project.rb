@@ -204,7 +204,7 @@ class Project < ActiveRecord::Base
     state :finished
     state :failed
 
-    after_transition any => :finished, do: :clear_import_data
+    after_transition any => :finished, do: :reset_cache_and_import_attrs
   end
 
   class << self
@@ -360,7 +360,7 @@ class Project < ActiveRecord::Base
     end
   end
 
-  def clear_import_data
+  def reset_cache_and_import_attrs
     update(import_error: nil)
 
     ProjectCacheWorker.perform_async(self.id)
@@ -426,17 +426,18 @@ class Project < ActiveRecord::Base
   end
 
   def safe_import_url
-    result = URI.parse(self.import_url)
-    result.password = '*****' unless result.password.nil?
-    result.user = '*****' unless result.user.nil? || result.user == "git" #tokens or other data may be saved as user
-    result.to_s
-  rescue
-    self.import_url
+    Gitlab::UrlSanitizer.new(import_url).masked_url
   end
 
   def check_limit
     unless creator.can_create_project? or namespace.kind == 'group'
-      self.errors.add(:limit_reached, "Your project limit is #{creator.projects_limit} projects! Please contact your administrator to increase it")
+      projects_limit = creator.projects_limit
+
+      if projects_limit == 0
+        self.errors.add(:limit_reached, "Personal project creation is not allowed. Please contact your administrator with questions")
+      else
+        self.errors.add(:limit_reached, "Your project limit is #{projects_limit} projects! Please contact your administrator to increase it")
+      end
     end
   rescue
     self.errors.add(:base, "Can't check your ability to create project")
@@ -945,13 +946,13 @@ class Project < ActiveRecord::Base
     shared_runners_enabled? && Ci::Runner.shared.active.any?(&block)
   end
 
-  def valid_runners_token? token
+  def valid_runners_token?(token)
     self.runners_token && ActiveSupport::SecurityUtils.variable_size_secure_compare(token, self.runners_token)
   end
 
   # TODO (ayufan): For now we use runners_token (backward compatibility)
   # In 8.4 every build will have its own individual token valid for time of build
-  def valid_build_token? token
+  def valid_build_token?(token)
     self.builds_enabled? && self.runners_token && ActiveSupport::SecurityUtils.variable_size_secure_compare(token, self.runners_token)
   end
 

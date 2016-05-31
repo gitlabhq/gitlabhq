@@ -101,13 +101,7 @@ class ProjectsController < Projects::ApplicationController
 
     respond_to do |format|
       format.html do
-        if current_user
-          @membership = @project.team.find_member(current_user.id)
-
-          if @membership
-            @notification_setting = current_user.notification_settings_for(@project)
-          end
-        end
+        @notification_setting = current_user.notification_settings_for(@project) if current_user
 
         if @project.repository_exists?
           if @project.empty_repo?
@@ -147,6 +141,7 @@ class ProjectsController < Projects::ApplicationController
     @suggestions = {
       emojis: AwardEmoji.urls,
       issues: autocomplete.issues,
+      milestones: autocomplete.milestones,
       mergerequests: autocomplete.merge_requests,
       members: participants
     }
