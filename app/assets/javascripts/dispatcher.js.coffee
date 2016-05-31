@@ -56,6 +56,7 @@ class Dispatcher
         shortcut_handler = new ShortcutsIssuable(true)
         new ZenMode()
         new MergedButtons()
+        new IssuableEdit()
       when 'projects:merge_requests:commits', 'projects:merge_requests:builds'
         new MergedButtons()
       when "projects:merge_requests:diffs"

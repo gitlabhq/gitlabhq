@@ -190,7 +190,19 @@ class Projects::MergeRequestsController < Projects::ApplicationController
                        @merge_request.target_project, @merge_request])
         end
         format.json do
-          render json: @merge_request.to_json(include: { milestone: {}, assignee: { methods: :avatar_url }, labels: { methods: :text_color } })
+          if params[:inline].nil?
+            render json: @merge_request.to_json(include: { milestone: {}, assignee: { methods: :avatar_url }, labels: { methods: :text_color } })
+          else
+            ext = Gitlab::ReferenceExtractor.new(@project, current_user, current_user)
+            ext.analyze(@merge_request.title)
+            ext.analyze(@merge_request.description)
+
+            render json: {
+              title: view_context.markdown(@merge_request.title, pipeline: :single_line),
+              description: view_context.markdown(@merge_request.description),
+              updated_at: @merge_request.updated_at,
+            }.to_json
+          end
         end
       end
     else

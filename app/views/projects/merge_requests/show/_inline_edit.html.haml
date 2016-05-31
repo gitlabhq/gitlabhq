@@ -1,0 +1,29 @@
+= form_for @merge_request, remote: true, html: { class: 'detail-page-description content-block common-note-form js-issuable-inline-form', data: { type: "json" } } do |f|
+  = hidden_field_tag :inline, true
+  %h2.title
+    %span.js-issuable-title= markdown escape_once(@merge_request.title), pipeline: :single_line, author: @merge_request.author
+    = icon('spinner spin', class: 'js-issuable-title-loading hidden')
+    .issuable-title-edit.js-issuable-edit-title.hidden
+      = f.text_field :title, class: 'form-control js-issuable-title-field'
+      .issuable-title-edit-buttons
+        %button.btn.btn-success.js-issuable-title-save{ type: "submit" }
+          Save
+        %button.btn.btn-default.js-issuable-edit-cancel{ type: "button" }
+          Cancel
+  - if @merge_request.description.present?
+    .description{class: can?(current_user, :update_merge_request, @merge_request) ? 'js-task-list-container' : ''}
+      .wiki.js-issuable-description
+        = preserve do
+          = markdown(@merge_request.description, cache_key: [@merge_request, "description"], author: @merge_request.author)
+      .js-issuable-description-field.hidden
+        = render layout: 'projects/md_preview', locals: { preview_class: "md-preview", referenced_users: true } do
+          = render 'projects/zen', f: f, attr: :description,
+                                   classes: 'note-textarea js-task-list-field',
+                                   placeholder: "Write a comment or drag your files here..."
+          = render 'projects/notes/hints'
+        .prepend-top-10.append-bottom-10
+          %button.btn.btn-success.js-issuable-description-save{ type: "submit" }
+            Save
+          %button.btn.btn-default.pull-right.js-issuable-edit-cancel{ type: "button" }
+            Cancel
+  = edited_time_ago_with_tooltip(@merge_request, placement: 'bottom')
