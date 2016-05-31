@@ -118,10 +118,10 @@ describe Issue, "Issuable" do
     let(:project) { build_stubbed(:empty_project) }
 
     context "by milestone due date" do
-      #Correct order is:
-      #Issues/MRs with milestones ordered by date
-      #Issues/MRs with milestones without dates
-      #Issues/MRs without milestones
+      # Correct order is:
+      # Issues/MRs with milestones ordered by date
+      # Issues/MRs with milestones without dates
+      # Issues/MRs without milestones
 
       let!(:issue) { create(:issue, project: project) }
       let!(:early_milestone) { create(:milestone, project: project, due_date: 10.days.from_now) }

@@ -128,7 +128,7 @@ module Issuable
 
     def with_label(title, sort = nil)
       if title.is_a?(Array) && title.size > 1
-        joins(:labels).where(labels: { title: title }).group(*get_grouping_columns(sort)).having("COUNT(DISTINCT labels.title) = #{title.size}")
+        joins(:labels).where(labels: { title: title }).group(*grouping_columns(sort)).having("COUNT(DISTINCT labels.title) = #{title.size}")
       else
         joins(:labels).where(labels: { title: title })
       end
@@ -138,17 +138,16 @@ module Issuable
     # preventing errors in postgres
     #
     # Returns an array of arel columns
-
-    def get_grouping_columns(sort)
-      default_columns = [arel_table[:id]]
+    def grouping_columns(sort)
+      grouping_columns = [arel_table[:id]]
 
       if ["milestone_due_desc", "milestone_due_asc"].include?(sort)
         milestone_table = Milestone.arel_table
-        default_columns << milestone_table[:id]
-        default_columns << milestone_table[:due_date]
+        grouping_columns << milestone_table[:id]
+        grouping_columns << milestone_table[:due_date]
       end
 
-      default_columns
+      grouping_columns
     end
   end
 
