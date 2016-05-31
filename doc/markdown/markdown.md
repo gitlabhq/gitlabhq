@@ -28,6 +28,10 @@
 * [Line Breaks](#line-breaks)
 * [Tables](#tables)
 
+**[Wiki-Specific Markdown](wiki.md)**
+
+* [Links](wiki.md#links-to-other-wiki-pages)
+
 **[References](#references)**
 
 ## GitLab Flavored Markdown (GFM)
