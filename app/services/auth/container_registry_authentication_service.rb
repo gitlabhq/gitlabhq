@@ -1,6 +1,6 @@
 module Auth
   class ContainerRegistryAuthenticationService < BaseService
-    include CurrentSettings
+    include Gitlab::CurrentSettings
 
     AUDIENCE = 'container_registry'
 
@@ -19,7 +19,7 @@ module Auth
       token = JSONWebToken::RSAToken.new(registry.key)
       token.issuer = registry.issuer
       token.audience = AUDIENCE
-      token.expire_time = token.issued_at + current_application_settings.container_registry_token_expire_delay.minutes
+      token.expire_time = token_expire_at
       token[:access] = names.map do |name|
         { type: 'repository', name: name, actions: %w(*) }
       end
@@ -33,6 +33,7 @@ module Auth
       token.issuer = registry.issuer
       token.audience = params[:service]
       token.subject = current_user.try(:username)
+      token.expire_time = ContainerRegistryAuthenticationService.token_expire_at
       token[:access] = accesses.compact
       token
     end
@@ -77,6 +78,10 @@ module Auth
 
     def registry
       Gitlab.config.registry
+    end
+
+    def self.token_expire_at
+      Time.now + current_application_settings.container_registry_token_expire_delay.minutes
     end
   end
 end
