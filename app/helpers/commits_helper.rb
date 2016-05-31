@@ -23,7 +23,7 @@ module CommitsHelper
     source_email = clean(commit.send "#{options[:source]}_email".to_sym)
     person_email = user.try(:email) || source_email
 
-    image_tag(avatar_icon(person_email, options[:size]), class: "avatar #{"s#{options[:size]}" if options[:size]}", width: options[:size], alt: "")
+    image_tag(avatar_icon(person_email, options[:size]), class: "avatar #{"s#{options[:size]}" if options[:size]} hidden-xs", width: options[:size], alt: "")
   end
 
   def image_diff_class(diff)

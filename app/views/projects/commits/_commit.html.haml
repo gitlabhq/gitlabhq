@@ -13,10 +13,12 @@
     .commit-row-title
       %span.item-title
         = link_to_gfm commit.title, namespace_project_commit_path(project.namespace, project, commit.id), class: "commit-row-message"
+        - if commit.status
+          = render_commit_status(commit, cssclass: 'visible-xs-inline')
         - if commit.description?
-          %a.text-expander.js-toggle-button ...
+          %a.text-expander.hidden-xs.js-toggle-button ...
 
-      .commit-actions
+      .commit-actions.hidden-xs
         - if commit.status
           = render_commit_status(commit, cssclass: 'btn btn-transparent')
         = clipboard_button_with_class({ clipboard_text: commit.id }, css_class: 'btn-transparent')

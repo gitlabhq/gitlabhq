@@ -57,7 +57,7 @@
 }
 
 .commit-actions {
-  @media (min-width: $screen-md-min) {
+  @media (min-width: $screen-sm-min) {
     float: right;
     margin-left: $gl-padding;
   }
@@ -69,7 +69,11 @@
 }
 
 .commit {
-  padding: 10px 0 10px 55px;
+  padding: 10px 0 10px;
+
+  @media (min-width: $screen-sm-min) {
+    padding-left: 55px;
+  }
 
   &:not(:last-child) {
     border-bottom: 1px solid #eee;
@@ -78,6 +82,7 @@
   a,
   button {
     color: $gl-dark-link-color;
+    vertical-align: baseline;
   }
 
   .avatar {
@@ -86,7 +91,10 @@
 
   .item-title {
     display: inline-block;
-    max-width: 70%;
+
+    @media (min-width: $screen-sm-min) {
+      max-width: 70%;
+    }
   }
 
   .commit-row-description {
