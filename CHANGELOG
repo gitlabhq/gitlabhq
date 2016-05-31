@@ -52,6 +52,7 @@ v 8.8.4 (unreleased)
   - Import GitHub repositories respecting the API rate limit
   - Fix importer for GitHub comments on diff
   - Disable Webhooks before proceeding with the GitHub import
+  - Added descriptions to notification settings dropdown
 
 v 8.8.3
   - Fix 404 page when viewing TODOs that contain milestones or labels in different projects. !4312
