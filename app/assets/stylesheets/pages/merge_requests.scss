@@ -41,7 +41,7 @@
       margin: 0;
       margin-left: 20px;
       padding: 5px;
-      padding-top: 12px;
+      padding-top: 8px;
       line-height: 20px;
 
       &.right {
@@ -109,6 +109,29 @@
 
     p:last-child {
       margin-bottom: 0;
+    }
+
+    @media (max-width: $screen-sm-max) {
+      h4 {
+        font-size: 15px;
+      }
+
+      p {
+        font-size: 13px;
+      }
+
+      .btn,
+      .btn-group,
+      .accept-action {
+        width: 100%;
+        margin-bottom: 4px;
+      }
+
+      .accept-control {
+        width: 100%;
+        text-align: center;
+        margin: 0;
+      }
     }
   }
 
