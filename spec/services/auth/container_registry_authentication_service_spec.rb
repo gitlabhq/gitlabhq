@@ -17,6 +17,21 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
   shared_examples 'a valid token' do
     it { is_expected.to include(:token) }
     it { expect(payload).to include('access') }
+
+    context 'a expirable' do
+      let(:expires_at) { Time.at(payload['exp']) }
+      let(:expire_delay) { 10 }
+
+      context 'for default configuration' do
+        it { expect(expires_at).to_not be_within(2.seconds).of(Time.now + expire_delay.minutes) }
+      end
+
+      context 'for changed configuration' do
+        before { stub_application_setting(container_registry_token_expire_delay: expire_delay) }
+
+        it { expect(expires_at).to be_within(2.seconds).of(Time.now + expire_delay.minutes) }
+      end
+    end
   end
 
   shared_examples 'a accessible' do
