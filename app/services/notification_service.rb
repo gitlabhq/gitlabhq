@@ -31,7 +31,7 @@ class NotificationService
   #  * watchers of the issue's labels
   #
   def new_issue(issue, current_user)
-    new_resource_email(issue, issue.project, 'new_issue_email')
+    new_resource_email(issue, issue.project, :new_issue_email)
   end
 
   # When we close an issue we should send an email to:
@@ -41,7 +41,7 @@ class NotificationService
   #  * project team members with notification level higher then Participating
   #
   def close_issue(issue, current_user)
-    close_resource_email(issue, issue.project, current_user, 'closed_issue_email')
+    close_resource_email(issue, issue.project, current_user, :closed_issue_email)
   end
 
   # When we reassign an issue we should send an email to:
@@ -50,7 +50,7 @@ class NotificationService
   #  * issue new assignee if their notification level is not Disabled
   #
   def reassigned_issue(issue, current_user)
-    reassign_resource_email(issue, issue.project, current_user, 'reassigned_issue_email')
+    reassign_resource_email(issue, issue.project, current_user, :reassigned_issue_email)
   end
 
   # When we add labels to an issue we should send an email to:
@@ -58,7 +58,7 @@ class NotificationService
   #  * watchers of the issue's labels
   #
   def relabeled_issue(issue, added_labels, current_user)
-    relabeled_resource_email(issue, added_labels, current_user, 'relabeled_issue_email')
+    relabeled_resource_email(issue, added_labels, current_user, :relabeled_issue_email)
   end
 
   # When create a merge request we should send an email to:
@@ -68,7 +68,7 @@ class NotificationService
   #  * watchers of the mr's labels
   #
   def new_merge_request(merge_request, current_user)
-    new_resource_email(merge_request, merge_request.target_project, 'new_merge_request_email')
+    new_resource_email(merge_request, merge_request.target_project, :new_merge_request_email)
   end
 
   # When we reassign a merge_request we should send an email to:
@@ -77,7 +77,7 @@ class NotificationService
   #  * merge_request assignee if their notification level is not Disabled
   #
   def reassigned_merge_request(merge_request, current_user)
-    reassign_resource_email(merge_request, merge_request.target_project, current_user, 'reassigned_merge_request_email')
+    reassign_resource_email(merge_request, merge_request.target_project, current_user, :reassigned_merge_request_email)
   end
 
   # When we add labels to a merge request we should send an email to:
@@ -85,15 +85,15 @@ class NotificationService
   #  * watchers of the mr's labels
   #
   def relabeled_merge_request(merge_request, added_labels, current_user)
-    relabeled_resource_email(merge_request, added_labels, current_user, 'relabeled_merge_request_email')
+    relabeled_resource_email(merge_request, added_labels, current_user, :relabeled_merge_request_email)
   end
 
   def close_mr(merge_request, current_user)
-    close_resource_email(merge_request, merge_request.target_project, current_user, 'closed_merge_request_email')
+    close_resource_email(merge_request, merge_request.target_project, current_user, :closed_merge_request_email)
   end
 
   def reopen_issue(issue, current_user)
-    reopen_resource_email(issue, issue.project, current_user, 'issue_status_changed_email', 'reopened')
+    reopen_resource_email(issue, issue.project, current_user, :issue_status_changed_email, 'reopened')
   end
 
   def merge_mr(merge_request, current_user)
@@ -101,7 +101,7 @@ class NotificationService
       merge_request,
       merge_request.target_project,
       current_user,
-      'merged_merge_request_email'
+      :merged_merge_request_email
     )
   end
 
@@ -110,7 +110,7 @@ class NotificationService
       merge_request,
       merge_request.target_project,
       current_user,
-      'merge_request_status_email',
+      :merge_request_status_email,
       'reopened'
     )
   end
@@ -248,6 +248,15 @@ class NotificationService
 
   protected
 
+  def add_project_custom_notifications(recipients, project, action)
+    user_ids = []
+
+    user_ids += project_member_notification(project, :custom, action)
+    user_ids += group_member_notification(project, :custom, action)
+
+    recipients.concat(User.find(user_ids))
+  end
+
   # Get project users with WATCH notification level
   def project_watchers(project)
     project_members = project_member_notification(project)
@@ -262,17 +271,21 @@ class NotificationService
     User.where(id: users_with_project_setting.concat(users_with_group_setting).uniq).to_a
   end
 
-  def project_member_notification(project, notification_level=nil)
+  def project_member_notification(project, notification_level=nil, action=nil)
     if notification_level
-      project.notification_settings.where(level: NotificationSetting.levels[notification_level]).pluck(:user_id)
+      settings = project.notification_settings.where(level: NotificationSetting.levels[notification_level])
+      settings = settings.where(events: action.to_yaml) if action.present?
+      settings.pluck(:user_id)
     else
       project.notification_settings.pluck(:user_id)
     end
   end
 
-  def group_member_notification(project, notification_level)
+  def group_member_notification(project, notification_level, action=nil)
     if project.group
-      project.group.notification_settings.where(level: NotificationSetting.levels[notification_level]).pluck(:user_id)
+      settings = project.group.notification_settings.where(level: NotificationSetting.levels[notification_level])
+      settings = settings.where(events: action.to_yaml) if action.present?
+      settings.pluck(:user_id)
     else
       []
     end
@@ -323,7 +336,7 @@ class NotificationService
   end
 
   def add_project_watchers(recipients, project)
-    recipients.concat(project_watchers(project)).compact.uniq
+    recipients.concat(project_watchers(project)).compact
   end
 
   # Remove users with disabled notifications from array
@@ -408,7 +421,7 @@ class NotificationService
   end
 
   def new_resource_email(target, project, method)
-    recipients = build_recipients(target, project, target.author, action: :new)
+    recipients = build_recipients(target, project, target.author, action: method)
 
     recipients.each do |recipient|
       mailer.send(method, recipient.id, target.id).deliver_later
@@ -416,7 +429,7 @@ class NotificationService
   end
 
   def close_resource_email(target, project, current_user, method)
-    recipients = build_recipients(target, project, current_user)
+    recipients = build_recipients(target, project, current_user, action: method)
 
     recipients.each do |recipient|
       mailer.send(method, recipient.id, target.id, current_user.id).deliver_later
@@ -427,7 +440,7 @@ class NotificationService
     previous_assignee_id = previous_record(target, 'assignee_id')
     previous_assignee = User.find_by(id: previous_assignee_id) if previous_assignee_id
 
-    recipients = build_recipients(target, project, current_user, action: :reassign, previous_assignee: previous_assignee)
+    recipients = build_recipients(target, project, current_user, action: method, previous_assignee: previous_assignee)
 
     recipients.each do |recipient|
       mailer.send(
@@ -450,7 +463,7 @@ class NotificationService
   end
 
   def reopen_resource_email(target, project, current_user, method, status)
-    recipients = build_recipients(target, project, current_user)
+    recipients = build_recipients(target, project, current_user, action: method)
 
     recipients.each do |recipient|
       mailer.send(method, recipient.id, target.id, status, current_user.id).deliver_later
@@ -460,12 +473,15 @@ class NotificationService
   def build_recipients(target, project, current_user, action: nil, previous_assignee: nil)
     recipients = target.participants(current_user)
     recipients = add_project_watchers(recipients, project)
+    recipients = add_project_custom_notifications(recipients, project, action)
     recipients = reject_mention_users(recipients, project)
+
+    recipients = recipients.uniq
 
     # Re-assign is considered as a mention of the new assignee so we add the
     # new assignee to the list of recipients after we rejected users with
     # the "on mention" notification level
-    if action == :reassign
+   if [:reassigned_merge_request_email, :reassigned_issue_email].include?(action)
       recipients << previous_assignee if previous_assignee
       recipients << target.assignee
     end
@@ -473,7 +489,7 @@ class NotificationService
     recipients = reject_muted_users(recipients, project)
     recipients = add_subscribed_users(recipients, target)
 
-    if action == :new
+    if [:new_issue_email, :new_merge_request_email].include?(action)
       recipients = add_labels_subscribers(recipients, target)
     end
 
