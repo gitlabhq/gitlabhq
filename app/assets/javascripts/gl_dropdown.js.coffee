@@ -491,7 +491,9 @@ class GitLabDropdown
 
   addInput: (fieldName, value)->
     # Create hidden input for form
-    $input = $("<input type='hidden' name='#{fieldName}' value='#{value}' />")
+    $input = $('<input>').attr('type', 'hidden')
+                         .attr('name', fieldName)
+                        .val(value)
 
     if @options.inputId?
       $input.attr('id', @options.inputId)

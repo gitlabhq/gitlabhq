@@ -96,10 +96,4 @@ module IssuablesHelper
       issuable.open? ? :opened : :closed
     end
   end
-
-  def label_ids(issuable)
-    return nil if !issuable.labels.any?
-    issuable.labels.pluck :id
-  end
-
 end

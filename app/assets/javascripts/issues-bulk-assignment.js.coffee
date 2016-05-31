@@ -13,7 +13,7 @@ class @IssuableBulkActions
     @container.find selector
 
   bindEvents: ->
-    @form.on 'submit', @onFormSubmit.bind(@)
+    @form.off('submit').on('submit', @onFormSubmit.bind(@))
 
   onFormSubmit: (e) ->
     e.preventDefault()

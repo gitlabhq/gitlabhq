@@ -199,6 +199,9 @@ class @LabelsSelect
             callback data
 
         renderRow: (label, instance) ->
+          $li = $('<li>')
+          $a  = $('<a href="#">')
+
           selectedClass = []
           removesAll = label.id is 0 or not label.id?
 
@@ -238,21 +241,15 @@ class @LabelsSelect
             colorEl = ''
 
           # We need to identify which items are actually labels
-          labelIdHtml = labelClass = ''
-
           if label.id
-            # Add label id only for labels
-            labelIdHtml = "data-label-id='#{label.id}'"
+            selectedClass.push('label-item')
+            $a.attr('data-label-id', label.id)
 
-            # Add class only for labels
-            labelClass = 'label-item'
+          $a.addClass(selectedClass.join(' '))
+            .html("#{colorEl} #{_.escape(label.title)}")
 
-          "<li>
-            <a href='#' #{labelIdHtml} class='#{labelClass} #{selectedClass.join(' ')}'>
-              #{colorEl}
-              #{_.escape(label.title)}
-            </a>
-          </li>"
+          # Return generated html
+          $li.html($a).prop('outerHTML')
         persistWhenHide: $dropdown.data('persistWhenHide')
         search:
           fields: ['title']
