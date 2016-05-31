@@ -18,11 +18,14 @@
       .error-alert
 
       .help-block
-        To link to a (new) page, simply type
-        %code [Link Title](page-slug)
-        \. More examples are in the
-        = link_to 'documentation', help_page_path(category: 'markdown', file: 'wiki', format: 'md')
-        \.
+        = succeed '.' do
+          To link to a (new) page, simply type
+          %code [Link Title](page-slug)
+
+        = succeed '.' do
+          More examples are in the
+          = link_to 'documentation', help_page_path(category: 'markdown', file: 'wiki', format: 'md')
+
   .form-group
     = f.label :commit_message, class: 'control-label'
     .col-sm-10= f.text_field :message, class: 'form-control', rows: 18
