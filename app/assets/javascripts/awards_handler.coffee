@@ -202,7 +202,7 @@ class @AwardsHandler
 
   getAwardTooltip: ($awardBlock) ->
 
-    return $awardBlock.attr('data-original-title') or $awardBlock.attr('data-title')
+    return $awardBlock.attr('data-original-title') or $awardBlock.attr('data-title') or ''
 
 
   removeMeFromUserList: ($emojiButton, emoji) ->
@@ -222,7 +222,7 @@ class @AwardsHandler
       .attr 'data-original-title', newAuthors
       .attr 'data-title', newAuthors
 
-    @resetTooltip(awardBlock)
+    @resetTooltip awardBlock
 
 
   addMeToUserList: (votesBlock, emoji) ->
@@ -232,21 +232,21 @@ class @AwardsHandler
     users      = []
 
     if origTitle
-      users = origTitle.trim().split(', ')
+      users = origTitle.trim().split ', '
 
-    users.push('me')
-    awardBlock.attr('title', users.join(', '))
+    users.push 'me'
+    awardBlock.attr 'title', users.join ', '
 
-    @resetTooltip(awardBlock)
+    @resetTooltip awardBlock
 
 
   resetTooltip: (award) ->
-    award.tooltip('destroy')
+
+    award.tooltip 'destroy'
 
     # 'destroy' call is asynchronous and there is no appropriate callback on it, this is why we need to set timeout.
-    setTimeout (->
-      award.tooltip()
-    ), 200
+    cb = -> award.tooltip()
+    setTimeout cb, 200
 
 
   createEmoji_: (votesBlock, emoji) ->
