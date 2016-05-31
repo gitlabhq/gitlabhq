@@ -4,7 +4,7 @@ module Issues
       issues_ids   = params.delete(:issues_ids).split(",")
       issue_params = params
 
-      [:state_event, :milestone_id, :assignee_id, :label_ids, :add_label_ids, :remove_label_ids].each do |key|
+      %i(state_event milestone_id assignee_id add_label_ids remove_label_ids).each do |key|
         issue_params.delete(key) unless issue_params[key].present?
       end
 

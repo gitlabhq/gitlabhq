@@ -148,6 +148,14 @@ describe Issues::BulkUpdateService, services: true do
       it 'does not update issues not passed in' do
         expect(issue_bug_and_regression.label_ids).to contain_exactly(bug.id, regression.id)
       end
+
+      context 'when those label IDs are empty' do
+        let(:labels) { [] }
+
+        it 'updates the issues passed to have no labels' do
+          expect(issues.map(&:reload).map(&:label_ids)).to all(be_empty)
+        end
+      end
     end
 
     context 'when add_label_ids are passed' do
