@@ -32,7 +32,7 @@ class JwtController < ApplicationController
   end
 
   def auth_params
-    params.permit(:service, :scope, :offline_token, :account, :client_id)
+    params.permit(:service, :scope, :account, :client_id)
   end
 
   def authenticate_project(login, password)
