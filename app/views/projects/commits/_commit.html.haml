@@ -30,6 +30,6 @@
         = preserve(markdown(escape_once(commit.description), pipeline: :single_line, author: commit.author))
 
     .commit-row-info
-      = commit_author_link(commit, avatar: true, size: 24)
+      = commit_author_link(commit, avatar: false, size: 24)
       authored
       #{time_ago_with_tooltip(commit.committed_date)}
