@@ -62,6 +62,36 @@ describe "Pipelines" do
       end
     end
 
+    context 'for generic statuses' do
+      context 'when running' do
+        let!(:running) { create(:generic_commit_status, status: 'running', commit: pipeline, stage: 'test') }
+
+        before { visit namespace_project_pipelines_path(project.namespace, project) }
+
+        it 'not be cancelable' do
+          expect(page).to_not have_link('Cancel')
+        end
+
+        it 'pipeline is running' do
+          expect(page).to have_selector('.ci-running')
+        end
+      end
+
+      context 'when failed' do
+        let!(:running) { create(:generic_commit_status, status: 'failed', commit: pipeline, stage: 'test') }
+
+        before { visit namespace_project_pipelines_path(project.namespace, project) }
+
+        it 'not be retryable' do
+          expect(page).to_not have_link('Retry')
+        end
+
+        it 'pipeline is failed' do
+          expect(page).to have_selector('.ci-failed')
+        end
+      end
+    end
+
     context 'downloadable pipelines' do
       context 'with artifacts' do
         let!(:with_artifacts) { create(:ci_build, :artifacts, :success, commit: pipeline, name: 'rspec tests', stage: 'test') }
