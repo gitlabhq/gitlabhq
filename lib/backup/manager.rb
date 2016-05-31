@@ -48,7 +48,7 @@ module Backup
       end
 
       connection = ::Fog::Storage.new(connection_settings)
-      directory = connection.directories.get(remote_directory)
+      directory = connection.directories.create(key: remote_directory)
 
       if directory.files.create(key: tar_file, body: File.open(tar_file), public: false,
           multipart_chunk_size: Gitlab.config.backup.upload.multipart_chunk_size,
