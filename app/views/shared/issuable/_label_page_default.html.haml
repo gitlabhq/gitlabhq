@@ -6,7 +6,7 @@
   = dropdown_title(title)
   = dropdown_filter(filter_placeholder)
   = dropdown_content
-  - if @project and show_footer
+  - if @project && show_footer
     = dropdown_footer do
       %ul.dropdown-footer-list
         - if can?(current_user, :admin_label, @project)

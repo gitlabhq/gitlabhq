@@ -6,9 +6,10 @@ describe Issues::BulkUpdateService, services: true do
 
   let!(:result) { Issues::BulkUpdateService.new(project, user, params).execute }
 
-    before do
-      @issues = create_list(:issue, 5, project: @project)
-      @params = {
+  describe :close_issue do
+    let(:issues) { create_list(:issue, 5, project: project) }
+    let(:params) do
+      {
         state_event: 'close',
         issues_ids: issues.map(&:id).join(',')
       }
@@ -26,9 +27,9 @@ describe Issues::BulkUpdateService, services: true do
   end
 
   describe :reopen_issues do
-    before do
-      @issues = create_list(:closed_issue, 5, project: @project)
-      @params = {
+    let(:issues) { create_list(:closed_issue, 5, project: project) }
+    let(:params) do
+      {
         state_event: 'reopen',
         issues_ids: issues.map(&:id).join(',')
       }
