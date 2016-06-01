@@ -62,6 +62,21 @@ describe 'Issues', feature: true do
 
       expect(issue.reload.assignee).to be_nil
     end
+
+    it 'updates assigned cache count on change', js: true do
+      visit edit_namespace_project_issue_path(project.namespace, project, issue)
+
+      expect(page).to have_content "Assignee #{@user.name}"
+      expect(@user.assigned_open_issues_count).to eq @user.assigned_issues.opened.count
+
+      first('#s2id_issue_assignee_id').click
+      sleep 2 # wait for ajax stuff to complete
+      first('.user-result').click
+
+      click_button 'Save changes'
+
+      expect(@user.assigned_open_issues_count).to eq @user.assigned_issues.opened.count
+    end
   end
 
   describe 'due date', js: true do

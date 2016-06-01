@@ -68,6 +68,14 @@ module Issuable
     strip_attributes :title
 
     acts_as_paranoid
+
+    after_save :update_assignee_cache_counts, if: :assignee_id_changed?
+
+    def update_assignee_cache_counts
+      # make sure we flush the cache for both the old *and* new assignee
+      User.find(assignee_id_was).update_cache_counts if assignee_id_was
+      assignee.update_cache_counts if assignee_id
+    end
   end
 
   module ClassMethods

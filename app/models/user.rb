@@ -776,16 +776,21 @@ class User < ActiveRecord::Base
     notification_settings.find_or_initialize_by(source: source)
   end
 
-  def assigned_open_merge_request_count
-    Rails.cache.fetch(['users', id, 'assigned_open_merge_request_count'], expires_in: 60) do
+  def assigned_open_merge_request_count(force: false)
+    Rails.cache.fetch(['users', id, 'assigned_open_merge_request_count'], force: force) do
       assigned_merge_requests.opened.count
     end
   end
 
-  def assigned_open_issues_count
-    Rails.cache.fetch(['users', id, 'assigned_open_issues_count'], expires_in: 60) do
+  def assigned_open_issues_count(force: false)
+    Rails.cache.fetch(['users', id, 'assigned_open_issues_count'], force: force) do
       assigned_issues.opened.count
     end
+  end
+
+  def update_cache_counts
+    assigned_open_merge_request_count(force: true)
+    assigned_open_issues_count(force: true)
   end
 
   private
