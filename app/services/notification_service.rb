@@ -153,6 +153,9 @@ class NotificationService
     # Merge project watchers
     recipients = add_project_watchers(recipients, note.project)
 
+    # Merge project with custom notification
+    recipients = add_project_custom_notifications(recipients, note.project, :new_note)
+
     # Reject users with Mention notification level, except those mentioned in _this_ note.
     recipients = reject_mention_users(recipients - mentioned_users, note.project)
     recipients = recipients + mentioned_users
@@ -248,21 +251,22 @@ class NotificationService
 
   protected
 
+  # Get project/group users with CUSTOM notification level
   def add_project_custom_notifications(recipients, project, action)
     user_ids = []
 
-    user_ids += project_member_notification(project, :custom, action)
-    user_ids += group_member_notification(project, :custom, action)
+    user_ids += notification_settings_for(project, :custom, action)
+    user_ids += notification_settings_for(project.group, :custom, action)
 
     recipients.concat(User.find(user_ids))
   end
 
   # Get project users with WATCH notification level
   def project_watchers(project)
-    project_members = project_member_notification(project)
+    project_members = notification_settings_for(project)
 
-    users_with_project_level_global = project_member_notification(project, :global)
-    users_with_group_level_global = group_member_notification(project, :global)
+    users_with_project_level_global = notification_settings_for(project, :global)
+    users_with_group_level_global = notification_settings_for(project, :global)
     users = users_with_global_level_watch([users_with_project_level_global, users_with_group_level_global].flatten.uniq)
 
     users_with_project_setting = select_project_member_setting(project, users_with_project_level_global, users)
@@ -271,23 +275,15 @@ class NotificationService
     User.where(id: users_with_project_setting.concat(users_with_group_setting).uniq).to_a
   end
 
-  def project_member_notification(project, notification_level=nil, action=nil)
-    if notification_level
-      settings = project.notification_settings.where(level: NotificationSetting.levels[notification_level])
-      settings = settings.where(events: action.to_yaml) if action.present?
-      settings.pluck(:user_id)
-    else
-      project.notification_settings.pluck(:user_id)
-    end
-  end
+  def notification_settings_for(resource, notification_level = nil, action = nil)
+    return [] unless resource
 
-  def group_member_notification(project, notification_level, action=nil)
-    if project.group
-      settings = project.group.notification_settings.where(level: NotificationSetting.levels[notification_level])
-      settings = settings.where(events: action.to_yaml) if action.present?
-      settings.pluck(:user_id)
+    if notification_level
+      settings = resource.notification_settings.where(level: NotificationSetting.levels[notification_level])
+      settings = settings.select { |setting| setting.events[action] } if action.present?
+      settings.map(&:user_id)
     else
-      []
+      resource.notification_settings.pluck(:user_id)
     end
   end
 
@@ -301,7 +297,7 @@ class NotificationService
 
   # Build a list of users based on project notifcation settings
   def select_project_member_setting(project, global_setting, users_global_level_watch)
-    users = project_member_notification(project, :watch)
+    users = notification_settings_for(project, :watch)
 
     # If project setting is global, add to watch list if global setting is watch
     global_setting.each do |user_id|
@@ -315,7 +311,7 @@ class NotificationService
 
   # Build a list of users based on group notification settings
   def select_group_member_setting(project, project_members, global_setting, users_global_level_watch)
-    uids = group_member_notification(project, :watch)
+    uids = notification_settings_for(project, :watch)
 
     # Group setting is watch, add to users list if user is not project member
     users = []
@@ -421,7 +417,7 @@ class NotificationService
   end
 
   def new_resource_email(target, project, method)
-    recipients = build_recipients(target, project, target.author, action: method)
+    recipients = build_recipients(target, project, target.author, action: "new")
 
     recipients.each do |recipient|
       mailer.send(method, recipient.id, target.id).deliver_later
@@ -429,7 +425,8 @@ class NotificationService
   end
 
   def close_resource_email(target, project, current_user, method)
-    recipients = build_recipients(target, project, current_user, action: method)
+    action = method == :merged_merge_request_email ? "merge" : "close"
+    recipients = build_recipients(target, project, current_user, action: action)
 
     recipients.each do |recipient|
       mailer.send(method, recipient.id, target.id, current_user.id).deliver_later
@@ -440,7 +437,7 @@ class NotificationService
     previous_assignee_id = previous_record(target, 'assignee_id')
     previous_assignee = User.find_by(id: previous_assignee_id) if previous_assignee_id
 
-    recipients = build_recipients(target, project, current_user, action: method, previous_assignee: previous_assignee)
+    recipients = build_recipients(target, project, current_user, action: "reassign", previous_assignee: previous_assignee)
 
     recipients.each do |recipient|
       mailer.send(
@@ -463,7 +460,7 @@ class NotificationService
   end
 
   def reopen_resource_email(target, project, current_user, method, status)
-    recipients = build_recipients(target, project, current_user, action: method)
+    recipients = build_recipients(target, project, current_user, action: "reopen")
 
     recipients.each do |recipient|
       mailer.send(method, recipient.id, target.id, status, current_user.id).deliver_later
@@ -471,9 +468,11 @@ class NotificationService
   end
 
   def build_recipients(target, project, current_user, action: nil, previous_assignee: nil)
+    custom_action = build_custom_key(action, target)
+
     recipients = target.participants(current_user)
     recipients = add_project_watchers(recipients, project)
-    recipients = add_project_custom_notifications(recipients, project, action)
+    recipients = add_project_custom_notifications(recipients, project, custom_action)
     recipients = reject_mention_users(recipients, project)
 
     recipients = recipients.uniq
@@ -481,7 +480,7 @@ class NotificationService
     # Re-assign is considered as a mention of the new assignee so we add the
     # new assignee to the list of recipients after we rejected users with
     # the "on mention" notification level
-   if [:reassigned_merge_request_email, :reassigned_issue_email].include?(action)
+    if [:reassign_merge_request, :reassign_issue].include?(custom_action)
       recipients << previous_assignee if previous_assignee
       recipients << target.assignee
     end
@@ -489,7 +488,7 @@ class NotificationService
     recipients = reject_muted_users(recipients, project)
     recipients = add_subscribed_users(recipients, target)
 
-    if [:new_issue_email, :new_merge_request_email].include?(action)
+    if [:new_issue, :new_merge_request].include?(custom_action)
       recipients = add_labels_subscribers(recipients, target)
     end
 
@@ -518,5 +517,10 @@ class NotificationService
         object.previous_changes[attribute].first
       end
     end
+  end
+
+  # Builds key to be used if user has custom notification setting
+  def build_custom_key(action, object)
+    "#{action}_#{object.class.name.underscore}".to_sym
   end
 end

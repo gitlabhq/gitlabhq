@@ -15,22 +15,20 @@ class NotificationSetting < ActiveRecord::Base
   scope :for_groups, -> { where(source_type: 'Namespace') }
   scope :for_projects, -> { where(source_type: 'Project') }
 
-  serialize :events
-
   EMAIL_EVENTS = [
-    :new_issue_email,
-    :new_note_email,
-    :closed_issue_email,
-    :reassigned_issue_email,
-    :relabeled_issue_email,
-    :new_merge_request_email,
-    :reassigned_merge_request_email,
-    :relabeled_merge_request_email,
-    :closed_merge_request_email,
-    :issue_status_changed_email,
-    :merged_merge_request_email,
-    :merge_request_status_email
+    :new_note,
+    :new_issue,
+    :reopen_issue,
+    :closed_issue,
+    :reassign_issue,
+    :new_merge_request,
+    :reopen_merge_request,
+    :close_merge_request,
+    :reassign_merge_request,
+    :merge_merge_request
   ]
+
+  store :events, accessors: EMAIL_EVENTS, coder: JSON
 
   before_save :set_events
 
@@ -44,7 +42,13 @@ class NotificationSetting < ActiveRecord::Base
     setting
   end
 
+  # Set all event attributes as true when level is not custom
   def set_events
-    self.events = EMAIL_EVENTS if level == "watch"
+    # Level is a ENUM cannot compare to symbol
+    return if level == "custom"
+
+    EMAIL_EVENTS.each do |event|
+      self.send("#{event}=", true)
+    end
   end
 end
