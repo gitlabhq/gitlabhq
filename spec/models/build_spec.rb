@@ -296,14 +296,65 @@ describe Ci::Build, models: true do
         it_behaves_like 'tagged build picker'
       end
 
-      context 'when runner can not pick untagged jobs' do
+      context 'when runner cannot pick untagged jobs' do
         before { runner.run_untagged = false }
 
-        it 'can not handle builds without tags' do
+        it 'cannot handle builds without tags' do
           expect(build.can_be_served?(runner)).to be_falsey
         end
 
         it_behaves_like 'tagged build picker'
+      end
+    end
+
+    context 'when runner is locked' do
+      before { runner.locked = true }
+
+      shared_examples 'locked build picker' do |serve_matching_tags|
+        context 'when runner cannot pick untagged jobs' do
+          before { runner.run_untagged = false }
+
+          it 'cannot handle builds without tags' do
+            expect(build.can_be_served?(runner)).to be_falsey
+          end
+        end
+
+        context 'when having runner tags' do
+          before { runner.tag_list = ['bb', 'cc'] }
+
+          it "#{serve_matching_tags} handle it for matching tags" do
+            build.tag_list = ['bb']
+            expected = if serve_matching_tags
+                         be_truthy
+                       else
+                         be_falsey
+                       end
+            expect(build.can_be_served?(runner)).to expected
+          end
+
+          it 'cannot handle it for builds without matching tags' do
+            build.tag_list = ['aa']
+            expect(build.can_be_served?(runner)).to be_falsey
+          end
+        end
+      end
+
+      context 'when serving the same project' do
+        it 'can handle it' do
+          expect(build.can_be_served?(runner)).to be_truthy
+        end
+
+        it_behaves_like 'locked build picker', true
+      end
+
+      context 'serving a different project' do
+        before { runner.runner_projects.destroy_all }
+
+        it 'cannot handle it' do
+          expect(build.can_be_served?(runner)).to be_falsey
+        end
+
+        it_behaves_like 'locked build picker', false
       end
     end
   end

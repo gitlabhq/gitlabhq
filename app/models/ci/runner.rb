@@ -91,6 +91,12 @@ module Ci
       !shared?
     end
 
+    def can_serve?(build)
+      not_locked_or_locked_to?(build.project) &&
+        run_untagged_or_has_tags?(build) &&
+        accepting_tags?(build.tag_list)
+    end
+
     def only_for?(project)
       projects == [project]
     end
@@ -110,6 +116,18 @@ module Ci
         errors.add(:tags_list,
           'can not be empty when runner is not allowed to pick untagged jobs')
       end
+    end
+
+    def not_locked_or_locked_to?(project)
+      !locked? || projects.exists?(id: project.id)
+    end
+
+    def run_untagged_or_has_tags?(build)
+      run_untagged? || build.has_tags?
+    end
+
+    def accepting_tags?(target_tags)
+      (target_tags - tag_list).empty?
     end
   end
 end
