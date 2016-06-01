@@ -1,3 +1,4 @@
+# coding: utf-8
 require 'spec_helper'
 
 feature 'Issue prioritization', feature: true do
@@ -72,7 +73,7 @@ feature 'Issue prioritization', feature: true do
       issue_7.labels << label_2 # 5
       issue_2.labels << label_3 # 6
       issue_4.labels << label_4 # 7
-      issue_6.labels << label_5 # 8  – No priority
+      issue_6.labels << label_5 # 8 - No priority
 
       login_as user
       visit namespace_project_issues_path(project.namespace, project, sort: 'priority')
