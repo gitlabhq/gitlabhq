@@ -13,6 +13,7 @@ v 8.8.3
   - Add Application Setting to configure Container Registry token expire delay (default 5min). !4364
   - Pass the "Remember me" value to the 2FA token form. !4369
   - Fix incorrect links on pipeline page when merge request created from fork.  !4376
+  - Use downcased path to container repository as this is expected path by Docker. !4420
 
 v 8.8.2
   - Added remove due date button. !4209
