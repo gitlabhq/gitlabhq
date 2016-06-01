@@ -1,4 +1,4 @@
-//= require stat_graph_contributors_graph
+//= require graphs/stat_graph_contributors_graph
 
 describe("ContributorsGraph", function () {
   describe("#set_x_domain", function () {
