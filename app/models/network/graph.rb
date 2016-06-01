@@ -164,7 +164,7 @@ module Network
           i != range.last &&
           @commits[i].spaces.include?(overlap_space)
 
-          return true;
+          return true
         end
       end
 
@@ -205,7 +205,7 @@ module Network
       # Visit branching chains
       leaves.each do |l|
         parents = l.parents(@map).select{|p| p.space.zero?}
-        for p in parents
+        parents.each do |p|
           place_chain(p, l.time)
         end
       end
@@ -223,7 +223,7 @@ module Network
     end
 
     def mark_reserved(time_range, space)
-      for day in time_range
+      time_range.each do |day|
         @reserved[day].push(space)
       end
     end
@@ -232,7 +232,7 @@ module Network
       space_default ||= space_base
 
       reserved = []
-      for day in time_range
+      time_range.each do |day|
         reserved.push(*@reserved[day])
       end
       reserved.uniq!

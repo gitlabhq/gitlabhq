@@ -247,7 +247,7 @@ Style/FlipFlop:
 
 # Checks use of for or each in multiline loops.
 Style/For:
-  Enabled: false
+  Enabled: true
 
 # Enforce the use of Kernel#sprintf, Kernel#format or String#%.
 Style/FormatString:
@@ -514,7 +514,7 @@ Style/SelfAssignment:
 
 # Don't use semicolons to terminate expressions.
 Style/Semicolon:
-  Enabled: false
+  Enabled: true
 
 # Checks for proper usage of fail and raise.
 Style/SignalException:
