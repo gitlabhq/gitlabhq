@@ -20,6 +20,48 @@
 require 'spec_helper'
 
 describe ProjectMember, models: true do
+  describe 'associations' do
+    it { is_expected.to belong_to(:project).class_name('Project').with_foreign_key(:source_id) }
+  end
+
+  describe 'validations' do
+    it { is_expected.to allow_value('Project').for(:source_type) }
+    it { is_expected.not_to allow_value('project').for(:source_type) }
+  end
+
+  describe 'modules' do
+    it { is_expected.to include_module(Gitlab::ShellAdapter) }
+  end
+
+  describe "#destroy" do
+    let(:owner)   { create(:project_member, access_level: ProjectMember::OWNER) }
+    let(:project) { owner.project }
+    let(:master)  { create(:project_member, project: project) }
+
+    let(:owner_todos)  { (0...2).map { create(:todo, user: owner.user, project: project) } }
+    let(:master_todos) { (0...3).map { create(:todo, user: master.user, project: project) } }
+
+    before do
+      owner_todos
+      master_todos
+    end
+
+    it "destroy itself and delete associated todos" do
+      expect(owner.user.todos.size).to eq(2)
+      expect(master.user.todos.size).to eq(3)
+      expect(Todo.count).to eq(5)
+
+      master_todo_ids = master_todos.map(&:id)
+      master.destroy
+
+      expect(owner.user.todos.size).to eq(2)
+      expect(Todo.count).to eq(2)
+      master_todo_ids.each do |id|
+        expect(Todo.exists?(id)).to eq(false)
+      end
+    end
+  end
+
   describe :import_team do
     before do
       @abilities = Six.new
