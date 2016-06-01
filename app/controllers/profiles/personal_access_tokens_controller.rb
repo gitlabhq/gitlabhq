@@ -2,7 +2,7 @@ class Profiles::PersonalAccessTokensController < Profiles::ApplicationController
   def index
     @active_personal_access_tokens = current_user.personal_access_tokens.active.order(:expires_at)
     @inactive_personal_access_tokens = current_user.personal_access_tokens.inactive
-    @personal_access_token = PersonalAccessToken.new(user: @user)
+    @personal_access_token = current_user.personal_access_tokens.build
   end
 
   def create
@@ -28,8 +28,6 @@ class Profiles::PersonalAccessTokensController < Profiles::ApplicationController
   private
 
   def personal_access_token_params
-    # We aren't using `personal_access_token` as the root param because the authentication
-    # system expects to find a token string there - it's off-limits to us.
-    params.require(:personal_access_token_params).permit(:name, :expires_at)
+    params.require(:personal_access_token).permit(:name, :expires_at)
   end
 end

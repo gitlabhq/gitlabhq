@@ -12,7 +12,7 @@
       Add a Personal Access Token
     %p.profile-settings-content
       Pick a name for the application, and we'll give you a unique token.
-    = form_for [:profile, @personal_access_token], as: "personal_access_token_params",
+    = form_for [:profile, @personal_access_token],
                 method: :post, html: { class: 'js-requires-input' } do |f|
 
       .form-group
@@ -29,7 +29,7 @@
 
     %hr
 
-    %h5= "Active Personal Access Tokens (#{@active_personal_access_tokens.length})"
+    %h5 Active Personal Access Tokens (#{@active_personal_access_tokens.length})
 
     - if @active_personal_access_tokens.present?
       .table-responsive
@@ -50,9 +50,9 @@
                   %div.input-group-btn
                     %button.btn.btn-default{ type: "button", data: { clipboard_text: token.token } }
                       %i.fa.fa-clipboard
-                %td= token.created_at.to_date
+                %td= token.created_at.to_date.to_s(:medium)
                 - if token.expires_at.present?
-                  %td= token.expires_at.to_date
+                  %td= token.expires_at.to_date.to_s(:medium)
                 - else
                   %td
                     %span.personal-access-tokens-never-expires-label Never
@@ -63,7 +63,7 @@
 
     %hr
 
-    %h5= "Inactive Personal Access Tokens (#{@inactive_personal_access_tokens.length})"
+    %h5 Inactive Personal Access Tokens (#{@inactive_personal_access_tokens.length})
 
     - if @inactive_personal_access_tokens.present?
       .table-responsive
@@ -82,7 +82,7 @@
                   %div.input-group-btn
                     %button.btn.btn-default{ type: "button", data: { clipboard_text: token.token } }
                       %i.fa.fa-clipboard
-                %td= token.created_at.to_date
+                %td= token.created_at.to_date.to_s(:medium)
 
     - else
       %span No inactive tokens.
