@@ -79,9 +79,12 @@
     }
 
     &.ci-failed,
-    &.ci-canceled,
     &.ci-error {
       color: $gl-danger;
+    }
+
+    &.ci-canceled {
+      color: $gl-gray;
     }
 
     a.monospace {
