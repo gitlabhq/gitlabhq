@@ -7,8 +7,7 @@ class ApplicationController < ActionController::Base
   include GitlabRoutingHelper
   include PageLayoutHelper
 
-  before_action :authenticate_user_from_private_token!
-  before_action :authenticate_user_from_personal_access_token!
+  before_action :authenticate_user_from_token!
   before_action :authenticate_user!
   before_action :validate_user_service_ticket!
   before_action :reject_blocked!
@@ -64,26 +63,8 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  # From https://github.com/plataformatec/devise/wiki/How-To:-Simple-Token-Authentication-Example
-  # https://gist.github.com/josevalim/fb706b1e933ef01e4fb6
-  def authenticate_user_from_private_token!
-    user_token = params[:private_token].presence  || request.headers['PRIVATE-TOKEN'].presence
-    user = user_token && User.find_by_authentication_token(user_token.to_s)
-
-    if user
-      # Notice we are passing store false, so the user is not
-      # actually stored in the session and a token is needed
-      # for every request. If you want the token to work as a
-      # sign in token, you can simply remove store: false.
-      sign_in user, store: false
-    end
-  end
-
-  def authenticate_user_from_personal_access_token!
-    token_string = params[:private_token].presence || request.headers['PRIVATE-TOKEN'].presence
-    personal_access_token = PersonalAccessToken.active.find_by_token(token_string)
-    user = personal_access_token && personal_access_token.user
-
+  def authenticate_user_from_token!
+    user = get_user_from_private_token || get_user_from_personal_access_token
     if user
       # Notice we are passing store false, so the user is not
       # actually stored in the session and a token is needed
@@ -382,5 +363,18 @@ class ApplicationController < ActionController::Base
     (controller_name == "projects/#{page_type}" && action_name == 'index') ||
     (controller_name == 'groups' && action_name == page_type) ||
     (controller_name == 'dashboard' && action_name == page_type)
+  end
+
+  # From https://github.com/plataformatec/devise/wiki/How-To:-Simple-Token-Authentication-Example
+  # https://gist.github.com/josevalim/fb706b1e933ef01e4fb6
+  def get_user_from_private_token
+    user_token = params[:private_token].presence  || request.headers['PRIVATE-TOKEN'].presence
+    User.find_by_authentication_token(user_token.to_s) if user_token
+  end
+
+  def get_user_from_personal_access_token
+    token_string = params[:private_token].presence || request.headers['PRIVATE-TOKEN'].presence
+    personal_access_token = PersonalAccessToken.active.find_by_token(token_string)
+    personal_access_token.user if personal_access_token
   end
 end
