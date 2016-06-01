@@ -318,7 +318,7 @@ Style/LambdaCall:
 
 # Comments should start with a space.
 Style/LeadingCommentSpace:
-  Enabled: false
+  Enabled: true
 
 # Use \ instead of + or << to concatenate two string literals at line end.
 Style/LineEndConcatenation:

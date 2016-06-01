@@ -263,7 +263,7 @@ class ApplicationController < ActionController::Base
       # internal repos where you are not a member. Enable this filter
       # or improve current implementation to filter only issues you
       # created or assigned or mentioned
-      #@filter_params[:authorized_only] = true
+      # @filter_params[:authorized_only] = true
     end
 
     @filter_params
