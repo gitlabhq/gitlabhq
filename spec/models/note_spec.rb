@@ -154,7 +154,7 @@ describe Note, models: true do
     context "confidential issues" do
       let(:user) { create :user }
       let(:confidential_issue) { create(:issue, :confidential, author: user) }
-      let(:confidential_note) { create :note, note: "Random", noteable: confidential_issue }
+      let(:confidential_note) { create :note, note: "Random", noteable: confidential_issue, project: confidential_issue.project }
 
       it "returns notes with matching content if user can see the issue" do
         expect(described_class.search(confidential_note.note, as_user: user)).to eq([confidential_note])
