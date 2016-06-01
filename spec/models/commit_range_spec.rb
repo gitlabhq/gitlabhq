@@ -151,9 +151,10 @@ describe CommitRange, models: true do
       issue = create(:issue)
 
       create(:note_on_issue,
-             noteable_id: issue.id,
+             noteable: issue,
              system: true,
-             note: commit1.revert_description)
+             note: commit1.revert_description,
+             project: issue.project)
 
       expect_any_instance_of(Commit).to receive(:reverts_commit?).
         with(commit1).
