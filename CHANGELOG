@@ -6,6 +6,7 @@ v 8.9.0 (unreleased)
   - Allow forking projects with restricted visibility level
   - Improve note validation to prevent errors when creating invalid note via API
   - Remove project notification settings associated with deleted projects
+  - Fix 404 page when viewing TODOs that contain milestones or labels in different projects
   - Redesign navigation for project pages
   - Fix groups API to list only user's accessible projects
   - Redesign account and email confirmation emails
