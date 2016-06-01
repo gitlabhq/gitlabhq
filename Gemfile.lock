@@ -823,7 +823,6 @@ DEPENDENCIES
   carrierwave (~> 0.10.0)
   charlock_holmes (~> 0.7.3)
   coffee-rails (~> 4.1.0)
-  colorize (~> 0.7.0)
   connection_pool (~> 2.0)
   coveralls (~> 0.8.2)
   creole (~> 0.5.0)
@@ -914,6 +913,7 @@ DEPENDENCIES
   rack-oauth2 (~> 1.2.1)
   rails (= 4.2.6)
   rails-deprecated_sanitizer (~> 1.0.3)
+  rainbow (~> 2.1.0)
   raphael-rails (~> 2.1.2)
   rblineprof
   rdoc (~> 3.6)
