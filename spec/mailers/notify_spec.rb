@@ -51,7 +51,7 @@ describe Notify do
 
           context 'when enabled email_author_in_body' do
             before do
-              allow(current_application_settings).to receive(:email_author_in_body).and_return(true)
+              allow_any_instance_of(ApplicationSetting).to receive(:email_author_in_body).and_return(true)
             end
 
             it 'contains a link to note author' do
@@ -230,7 +230,7 @@ describe Notify do
 
           context 'when enabled email_author_in_body' do
             before do
-              allow(current_application_settings).to receive(:email_author_in_body).and_return(true)
+              allow_any_instance_of(ApplicationSetting).to receive(:email_author_in_body).and_return(true)
             end
 
             it 'contains a link to note author' do
@@ -454,7 +454,7 @@ describe Notify do
 
         context 'when enabled email_author_in_body' do
           before do
-            allow(current_application_settings).to receive(:email_author_in_body).and_return(true)
+            allow_any_instance_of(ApplicationSetting).to receive(:email_author_in_body).and_return(true)
           end
 
           it 'contains a link to note author' do

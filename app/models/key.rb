@@ -26,7 +26,7 @@ class Key < ActiveRecord::Base
   end
 
   def publishable_key
-    #Removes anything beyond the keytype and key itself
+    # Removes anything beyond the keytype and key itself
     self.key.split[0..1].join(' ')
   end
 

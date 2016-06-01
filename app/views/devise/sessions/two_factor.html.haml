@@ -4,6 +4,7 @@
       %h3 Two-factor Authentication
     .login-body
       = form_for(resource, as: resource_name, url: session_path(resource_name), method: :post) do |f|
+        = f.hidden_field :remember_me, value: params[resource_name][:remember_me]
         = f.text_field :otp_attempt, class: 'form-control', placeholder: 'Two-factor Authentication code', required: true, autofocus: true
         %p.help-block.hint Enter the code from the two-factor app on your mobile device. If you've lost your device, you may enter one of your recovery codes.
         .prepend-top-20

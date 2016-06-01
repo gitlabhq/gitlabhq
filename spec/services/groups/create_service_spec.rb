@@ -13,7 +13,7 @@ describe Groups::CreateService, services: true do
     end
 
     context "cannot create group with restricted visibility level" do
-      before { allow(current_application_settings).to receive(:restricted_visibility_levels).and_return([Gitlab::VisibilityLevel::PUBLIC]) }
+      before { allow_any_instance_of(ApplicationSetting).to receive(:restricted_visibility_levels).and_return([Gitlab::VisibilityLevel::PUBLIC]) }
       it { is_expected.not_to be_persisted }
     end
   end

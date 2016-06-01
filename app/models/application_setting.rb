@@ -102,6 +102,10 @@ class ApplicationSetting < ActiveRecord::Base
     Rails.cache.delete(CACHE_KEY)
   end
 
+  def self.cached
+    Rails.cache.fetch(CACHE_KEY)
+  end
+
   def self.create_from_defaults
     create(
       default_projects_limit: Settings.gitlab['default_projects_limit'],

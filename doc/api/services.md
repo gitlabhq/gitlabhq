@@ -503,6 +503,8 @@ Parameters:
 - `project_url` (**required**) - Project url
 - `issues_url` (**required**) - Issue url
 - `description` (optional) - Jira issue tracker
+- `username` (optional) - Jira username
+- `password` (optional) - Jira password
 
 ### Delete JIRA service
 

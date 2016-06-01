@@ -231,4 +231,42 @@ describe Issue, models: true do
       expect(issue.to_branch_name).to match /confidential-issue\z/
     end
   end
+
+  describe '#participants' do
+    context 'using a public project' do
+      let(:project) { create(:project, :public) }
+      let(:issue) { create(:issue, project: project) }
+
+      let!(:note1) do
+        create(:note_on_issue, noteable: issue, project: project, note: 'a')
+      end
+
+      let!(:note2) do
+        create(:note_on_issue, noteable: issue, project: project, note: 'b')
+      end
+
+      it 'includes the issue author' do
+        expect(issue.participants).to include(issue.author)
+      end
+
+      it 'includes the authors of the notes' do
+        expect(issue.participants).to include(note1.author, note2.author)
+      end
+    end
+
+    context 'using a private project' do
+      it 'does not include mentioned users that do not have access to the project' do
+        project = create(:project)
+        user = create(:user)
+        issue = create(:issue, project: project)
+
+        create(:note_on_issue,
+               noteable: issue,
+               project: project,
+               note: user.to_reference)
+
+        expect(issue.participants).not_to include(user)
+      end
+    end
+  end
 end

@@ -2,10 +2,13 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.9.0 (unreleased)
   - Allow enabling wiki page events from Webhook management UI
+  - Make EmailsOnPushWorker use Sidekiq mailers queue
   - Fix wiki page events' webhook to point to the wiki repository
+  - Fix issue todo not remove when leave project !4150 (Long Nguyen)
   - Allow forking projects with restricted visibility level
   - Improve note validation to prevent errors when creating invalid note via API
   - Remove project notification settings associated with deleted projects
+  - Fix 404 page when viewing TODOs that contain milestones or labels in different projects
   - Redesign navigation for project pages
   - Fix groups API to list only user's accessible projects
   - Redesign account and email confirmation emails
@@ -15,15 +18,20 @@ v 8.9.0 (unreleased)
   - Changed the Slack build message to use the singular duration if necessary (Aran Koning)
   - Fix issues filter when ordering by milestone
   - Todos will display target state if issuable target is 'Closed' or 'Merged'
+  - Fix bug when sorting issues by milestone due date and filtering by two or more labels
   - Remove 'main language' feature
+  - Pipelines can be canceled only when there are running builds
   - Projects pending deletion will render a 404 page
   - Measure queue duration between gitlab-workhorse and Rails
   - Make authentication service for Container Registry to be compatible with < Docker 1.11
   - Add Application Setting to configure Container Registry token expire delay (default 5min)
 
 v 8.8.3
+  - Fix incorrect links on pipeline page when merge request created from fork
   - Fix gitlab importer failing to import new projects due to missing credentials
   - Fix import URL migration not rescuing with the correct Error
+  - In search results, only show notes on confidential issues that the user has access to
+  - Fix health check access token changing due to old application settings being used
 
 v 8.8.2
   - Added remove due date button. !4209
