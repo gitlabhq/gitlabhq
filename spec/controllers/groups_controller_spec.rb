@@ -33,7 +33,7 @@ describe GroupsController do
     before do
       create_list(:award_emoji, 3, awardable: issue_2)
       create_list(:award_emoji, 2, awardable: issue_1)
-      create_list(:award_emoji, 2, awardable: issue_2, name: "thumbsdown")
+      create_list(:award_emoji, 2, :downvote, awardable: issue_2,)
 
       sign_in(user)
     end
@@ -58,7 +58,7 @@ describe GroupsController do
     before do
       create_list(:award_emoji, 3, awardable: merge_request_2)
       create_list(:award_emoji, 2, awardable: merge_request_1)
-      create_list(:award_emoji, 2, awardable: merge_request_2, name: "thumbsdown")
+      create_list(:award_emoji, 2, :downvote, awardable: merge_request_2)
 
       sign_in(user)
     end

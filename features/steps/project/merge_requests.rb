@@ -186,7 +186,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   step 'merge request "Bug NS-06" have 1 upvote and 2 downvotes' do
     awardable = MergeRequest.find_by(title: 'Bug NS-06')
     create(:award_emoji, awardable: awardable)
-    create_list(:award_emoji, 2, awardable: awardable, name: "thumbsdown")
+    create_list(:award_emoji, 2, :downvote, awardable: awardable)
   end
 
   step 'The list should be sorted by "Least popular"' do

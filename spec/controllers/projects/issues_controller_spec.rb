@@ -258,10 +258,10 @@ describe Projects::IssuesController do
     end
 
     it "toggles the award emoji" do
-      expect do 
+      expect do
         post(:toggle_award_emoji, namespace_id: project.namespace.path,
-                                  project_id: project.path, id: issue.iid, name: "thumbsup") 
-      end.to change { AwardEmoji.count }.by(1)
+                                  project_id: project.path, id: issue.iid, name: "thumbsup")
+      end.to change { issue.award_emoji.count }.by(1)
 
       expect(response.status).to eq(200)
     end

@@ -754,7 +754,6 @@ Rails.application.routes.draw do
         resources :notes, only: [:index, :create, :destroy, :update], constraints: { id: /\d+/ } do
           member do
             delete :delete_attachment
-            post :toggle_award_emoji
           end
         end
 

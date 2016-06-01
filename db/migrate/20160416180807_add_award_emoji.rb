@@ -9,7 +9,6 @@ class AddAwardEmoji < ActiveRecord::Migration
     end
 
     add_index :award_emoji, :user_id
-    add_index :award_emoji, :awardable_type
-    add_index :award_emoji, :awardable_id
+    add_index :award_emoji, [:awardable_type, :awardable_id]
   end
 end

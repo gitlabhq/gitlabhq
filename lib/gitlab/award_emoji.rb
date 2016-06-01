@@ -47,17 +47,19 @@ module Gitlab
     end
 
     def self.emojis
-      @emojis ||= begin
-                    json_path = File.join(Rails.root, 'fixtures', 'emojis', 'index.json' )
-                    JSON.parse(File.read(json_path))
-                  end
+      @emojis ||=
+        begin
+          json_path = File.join(Rails.root, 'fixtures', 'emojis', 'index.json' )
+          JSON.parse(File.read(json_path))
+        end
     end
 
     def self.aliases
-      @aliases ||= begin
-                     json_path = File.join(Rails.root, 'fixtures', 'emojis', 'aliases.json' )
-                     JSON.parse(File.read(json_path))
-                   end
+      @aliases ||=
+        begin
+         json_path = File.join(Rails.root, 'fixtures', 'emojis', 'aliases.json' )
+         JSON.parse(File.read(json_path))
+       end
     end
 
     # Returns an Array of Emoji names and their asset URLs.

@@ -130,7 +130,7 @@ class NotificationService
 
     # ignore gitlab service messages
     return true if note.note.start_with?('Status changed to closed')
-    return true if note.cross_reference? && note.system == true
+    return true if note.cross_reference? && note.system?
 
     target = note.noteable
 

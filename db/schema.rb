@@ -108,8 +108,7 @@ ActiveRecord::Schema.define(version: 20160528043124) do
     t.datetime "updated_at"
   end
 
-  add_index "award_emoji", ["awardable_id"], name: "index_award_emoji_on_awardable_id", using: :btree
-  add_index "award_emoji", ["awardable_type"], name: "index_award_emoji_on_awardable_type", using: :btree
+  add_index "award_emoji", ["awardable_type", "awardable_id"], name: "index_award_emoji_on_awardable_type_and_awardable_id", using: :btree
   add_index "award_emoji", ["user_id"], name: "index_award_emoji_on_user_id", using: :btree
 
   create_table "broadcast_messages", force: :cascade do |t|

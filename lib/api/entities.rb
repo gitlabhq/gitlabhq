@@ -175,6 +175,7 @@ module API
       expose :subscribed do |issue, options|
         issue.subscribed?(options[:current_user])
       end
+      expose :user_notes_count
       expose :upvotes, :downvotes
     end
 
@@ -192,6 +193,7 @@ module API
       expose :subscribed do |merge_request, options|
         merge_request.subscribed?(options[:current_user])
       end
+      expose :user_notes_count
     end
 
     class MergeRequestChanges < MergeRequest

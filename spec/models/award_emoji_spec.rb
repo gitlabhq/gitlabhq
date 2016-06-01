@@ -14,7 +14,6 @@ describe AwardEmoji, models: true do
     it { is_expected.to validate_presence_of(:awardable) }
     it { is_expected.to validate_presence_of(:user) }
     it { is_expected.to validate_presence_of(:name) }
-    it { is_expected.to validate_presence_of(:awardable) }
 
     # To circumvent a bug in the shoulda matchers
     describe "scoped uniqueness validation" do
@@ -22,7 +21,7 @@ describe AwardEmoji, models: true do
         user  = create(:user)
         issue = create(:issue)
         create(:award_emoji, user: user, awardable: issue)
-        new_award = AwardEmoji.new(user: user, awardable: issue, name: "thumbsup")
+        new_award = build(:award_emoji, user: user, awardable: issue)
 
         expect(new_award).not_to be_valid
       end

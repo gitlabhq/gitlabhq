@@ -21,10 +21,8 @@ class Note < ActiveRecord::Base
   delegate :name, :email, to: :author, prefix: true
   delegate :title, to: :noteable, allow_nil: true
 
-  before_validation :clear_blank_line_code!
-
   validates :note, :project, presence: true
-  validates :line_code, line_code: true, allow_blank: true
+
   # Attachments are deprecated and are handled by Markdown uploader
   validates :attachment, file_size: { maximum: :max_attachment_size }
 
@@ -173,10 +171,6 @@ class Note < ActiveRecord::Base
     Event.reset_event_cache_for(self)
   end
 
-  def system?
-    read_attribute(:system)
-  end
-
   def editable?
     !system?
   end
@@ -193,14 +187,8 @@ class Note < ActiveRecord::Base
     self.line_code = nil if self.line_code.blank?
   end
 
-  # Find the diff on noteable that matches our own
-  def find_noteable_diff
-    diffs = noteable.diffs(Commit.max_diff_options)
-    diffs.find { |d| d.new_path == self.diff.new_path }
-  end
-
   def award_emoji_supported?
-    noteable.is_a?(Awardable) && !line_code.present?
+    noteable.is_a?(Awardable)
   end
 
   def contains_emoji_only?
