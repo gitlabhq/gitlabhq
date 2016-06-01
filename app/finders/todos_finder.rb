@@ -23,7 +23,7 @@ class TodosFinder
   end
 
   def execute
-    items = current_user.todos.not_pending_delete
+    items = current_user.todos
     items = by_action_id(items)
     items = by_author(items)
     items = by_project(items)
@@ -78,6 +78,16 @@ class TodosFinder
     @project
   end
 
+  def projects
+    return @projects if defined?(@projects)
+
+    if project?
+      @projects = project
+    else
+      @projects = ProjectsFinder.new.execute(current_user).reorder(nil)
+    end
+  end
+
   def type?
     type.present? && ['Issue', 'MergeRequest'].include?(type)
   end
@@ -105,6 +115,8 @@ class TodosFinder
   def by_project(items)
     if project?
       items = items.where(project: project)
+    elsif projects
+      items = items.merge(projects).joins(:project)
     end
 
     items

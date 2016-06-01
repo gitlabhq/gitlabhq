@@ -3,7 +3,7 @@ require 'spec_helper'
 describe 'Dashboard Todos', feature: true do
   let(:user)    { create(:user) }
   let(:author)  { create(:user) }
-  let(:project) { create(:project) }
+  let(:project) { create(:project, visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
   let(:issue)   { create(:issue) }
 
   describe 'GET /dashboard/todos' do
