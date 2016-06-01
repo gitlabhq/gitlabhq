@@ -59,18 +59,7 @@ class BambooService < CiService
   end
 
   def build_info(sha)
-    url = URI.join("#{bamboo_url}/", "rest/api/latest/result?label=#{sha}").to_s
-
-    if username.blank? && password.blank?
-      @response = HTTParty.get(url, verify: false)
-    else
-      url << '&os_authType=basic'
-      auth = {
-        username: username,
-        password: password
-      }
-      @response = HTTParty.get(url, verify: false, basic_auth: auth)
-    end
+    @response = get_path("rest/api/latest/result?label=#{sha}")
   end
 
   def build_page(sha, ref)
@@ -110,19 +99,27 @@ class BambooService < CiService
   def execute(data)
     return unless supported_events.include?(data[:object_kind])
 
-    # Bamboo requires a GET and does take authentification
-    url = URI.join("#{bamboo_url}/", "updateAndBuild.action?buildKey=#{build_key}").to_s
+    get_path("updateAndBuild.action?buildKey=#{build_key}")
+  end
+
+  private
+
+  def build_url(path)
+    URI.join("#{bamboo_url}/", path).to_s
+  end
+
+  def get_path(path)
+    url = build_url(path)
 
     if username.blank? && password.blank?
       HTTParty.get(url, verify: false)
     else
       url << '&os_authType=basic'
-      auth = {
-        username: username,
-        password: password
-      }
-      HTTParty.get(url, verify: false, basic_auth: auth)
+      HTTParty.get(url, verify: false,
+                        basic_auth: {
+                          username: username,
+                          password: password
+                        })
     end
-
   end
 end
