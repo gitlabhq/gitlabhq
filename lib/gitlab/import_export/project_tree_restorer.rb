@@ -32,14 +32,15 @@ module Gitlab
                                                                     project: project)
       end
 
-      def create_relations(relation_list = default_relation_list, tree_hash = @tree_hash)
+      def create_relations
         saved = []
-        relation_list.each do |relation|
-          next if !relation.is_a?(Hash) && tree_hash[relation.to_s].blank?
-          create_sub_relations(relation, tree_hash) if relation.is_a?(Hash)
+        default_relation_list.each do |relation|
+          next unless relation.is_a?(Hash) || @tree_hash[relation.to_s].present?
+
+          create_sub_relations(relation, @tree_hash) if relation.is_a?(Hash)
 
           relation_key = relation.is_a?(Hash) ? relation.keys.first : relation
-          relation_hash = create_relation(relation_key, tree_hash[relation_key.to_s])
+          relation_hash = create_relation(relation_key, @tree_hash[relation_key.to_s])
           saved << project.update_attribute(relation_key, relation_hash)
         end
         saved.all?
@@ -73,31 +74,18 @@ module Gitlab
               relation_hash = relation_item[sub_relation.to_s]
             end
 
-            process_sub_relation(relation_hash, relation_item, sub_relation) unless relation_hash.blank?
+            relation_item[sub_relation.to_s] = create_relation(sub_relation, relation_hash) unless relation_hash.blank?
           end
         end
       end
 
-      def process_sub_relation(relation_hash, relation_item, sub_relation)
-        if relation_hash.is_a?(Array)
-          sub_relation_object = create_relation(sub_relation, relation_hash)
-        else
-          sub_relation_object = relation_from_factory(sub_relation, relation_hash)
-        end
-        relation_item[sub_relation.to_s] = sub_relation_object
-      end
-
       def create_relation(relation, relation_hash_list)
         [relation_hash_list].flatten.map do |relation_hash|
-          relation_from_factory(relation, relation_hash)
+          Gitlab::ImportExport::RelationFactory.create(relation_sym: relation.to_sym,
+                                                       relation_hash: relation_hash.merge('project_id' => project.id),
+                                                       members_mapper: members_mapper,
+                                                       user_admin: @user.is_admin?)
         end
-      end
-
-      def relation_from_factory(relation, relation_hash)
-        Gitlab::ImportExport::RelationFactory.create(relation_sym: relation.to_sym,
-                                                     relation_hash: relation_hash.merge('project_id' => project.id),
-                                                     members_mapper: members_mapper,
-                                                     user_admin: @user.is_admin?)
       end
     end
   end

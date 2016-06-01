@@ -11,11 +11,14 @@ module Gitlab
                     builds: 'Ci::Build',
                     hooks: 'ProjectHook' }.freeze
 
-      USER_REFERENCES = %w(author_id assignee_id updated_by_id user_id).freeze
+      USER_REFERENCES = %w[author_id assignee_id updated_by_id user_id].freeze
 
+      # Guesses a model and saves it to the DB given its name `relation_sym`
       def create(relation_sym:, relation_hash:, members_mapper:, user_admin:)
         relation_sym = parse_relation_sym(relation_sym)
-        klass = parse_relation(relation_hash, relation_sym)
+
+        klass = relation_class(relation_sym)
+        relation_hash.delete('id')
 
         update_missing_author(relation_hash, members_mapper, user_admin) if relation_sym == :notes
         update_user_references(relation_hash, members_mapper.map)
@@ -49,8 +52,8 @@ module Gitlab
 
         return unless user_admin && members_map.note_member_list.include?(old_author_id)
 
-        relation_hash['note'] = ('*Blank note*') if relation_hash['note'].blank?
-        relation_hash['note'] += (missing_author_note(relation_hash['updated_at'], author['name']))
+        relation_hash['note'] = '*Blank note*' if relation_hash['note'].blank?
+        relation_hash['note'] += missing_author_note(relation_hash['updated_at'], author['name'])
       end
 
       def missing_author_note(updated_at, author_name)
@@ -108,12 +111,6 @@ module Gitlab
         yield(imported_object) if block_given?
         imported_object.importing = true if imported_object.respond_to?(:importing)
         imported_object
-      end
-
-      def parse_relation(relation_hash, relation_sym)
-        klass = relation_class(relation_sym)
-        relation_hash.delete('id')
-        klass
       end
     end
   end

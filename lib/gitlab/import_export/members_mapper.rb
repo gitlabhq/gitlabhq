@@ -2,7 +2,7 @@ module Gitlab
   module ImportExport
     class MembersMapper
 
-      attr_reader :map, :note_member_list
+      attr_reader :note_member_list
 
       def initialize(exported_members:, user:, project:)
         @exported_members = exported_members
@@ -19,33 +19,37 @@ module Gitlab
           default_project_member
         end
 
-        @map = generate_map
       end
 
       def default_project_member
         @default_project_member ||=
           begin
             default_member = ProjectMember.new(default_project_member_hash)
-            default_member.save!
+            default_member.create!
             default_member.user.id
+          end
+      end
+
+      def map
+        @map ||=
+          begin
+            @exported_members.inject(@project_member_map) do |hash, member|
+              existing_user = User.where(find_project_user_query(member)).first
+              if existing_user
+                old_user_id = member['user']['id']
+                add_user_as_team_member(existing_user, member)
+                hash[old_user_id] = existing_user.id
+              end
+              hash
+            end
           end
       end
 
       private
 
-      def generate_map
-        @exported_members.each do |member|
-          existing_user = User.where(find_project_user_query(member)).first
-          assign_member(existing_user, member) if existing_user
-        end
-        @project_member_map
-      end
-
-      def assign_member(existing_user, member)
-        old_user_id = member['user']['id']
+      def add_user_as_team_member(existing_user, member)
         member['user'] = existing_user
-        project_member = ProjectMember.new(member_hash(member))
-        @project_member_map[old_user_id] = project_member.user.id if project_member.save
+        ProjectMember.create!(member_hash(member))
       end
 
       def member_hash(member)

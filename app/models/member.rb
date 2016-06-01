@@ -19,10 +19,10 @@
 
 class Member < ActiveRecord::Base
   include Sortable
+  include Importable
   include Gitlab::Access
 
   attr_accessor :raw_invite_token
-  attr_accessor :importing
 
   belongs_to :created_by, class_name: "User"
   belongs_to :user
@@ -55,10 +55,10 @@ class Member < ActiveRecord::Base
   scope :owners,  -> { where(access_level: OWNER) }
 
   before_validation :generate_invite_token, on: :create, if: -> (member) { member.invite_email.present? }
-  after_create :send_invite, if: :invite?, unless: :importing
-  after_create :create_notification_setting, unless: [:invite?, :importing]
-  after_create :post_create_hook, unless: [:invite?, :importing]
-  after_update :post_update_hook, unless: [:invite?, :importing]
+  after_create :send_invite, if: :invite?, unless: :importing?
+  after_create :create_notification_setting, unless: [:invite?, :importing?]
+  after_create :post_create_hook, unless: [:invite?, :importing?]
+  after_update :post_update_hook, unless: [:invite?, :importing?]
   after_destroy :post_destroy_hook, unless: :invite?
 
   delegate :name, :username, :email, to: :user, prefix: true
