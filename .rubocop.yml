@@ -247,7 +247,7 @@ Style/FlipFlop:
 
 # Checks use of for or each in multiline loops.
 Style/For:
-  Enabled: false
+  Enabled: true
 
 # Enforce the use of Kernel#sprintf, Kernel#format or String#%.
 Style/FormatString:
