@@ -784,6 +784,15 @@ describe Project, models: true do
     end
   end
 
+  describe '#container_registry_path_with_namespace' do
+    let(:project) { create(:empty_project, path: 'PROJECT') }
+
+    subject { project.container_registry_path_with_namespace }
+
+    it { is_expected.not_to eq(project.path_with_namespace) }
+    it { is_expected.to eq(project.path_with_namespace.downcase) }
+  end
+
   describe '#container_registry_repository' do
     let(:project) { create(:empty_project) }
 
@@ -792,13 +801,6 @@ describe Project, models: true do
     subject { project.container_registry_repository }
 
     it { is_expected.not_to be_nil }
-
-    context 'for uppercase project path' do
-      let(:project) { create(:empty_project, path: 'PROJECT') }
-
-      it { expect(subject.path).not_to end_with(project.path) }
-      it { expect(subject.path).to end_with(project.path.downcase) }
-    end
   end
 
   describe '#container_registry_repository_url' do
@@ -817,13 +819,6 @@ describe Project, models: true do
       end
 
       it { is_expected.not_to be_nil }
-
-      context 'for uppercase project path' do
-        let(:project) { create(:empty_project, path: 'PROJECT') }
-
-        it { is_expected.not_to end_with(project.path) }
-        it { is_expected.to end_with(project.path.downcase) }
-      end
     end
 
     context 'for disabled registry' do
