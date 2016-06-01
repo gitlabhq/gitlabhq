@@ -7,6 +7,7 @@ v 8.9.0 (unreleased)
   - Fix issue todo not remove when leave project !4150 (Long Nguyen)
   - Allow forking projects with restricted visibility level
   - Improve note validation to prevent errors when creating invalid note via API
+  - Reduce number of fog gem dependencies
   - Remove project notification settings associated with deleted projects
   - Fix 404 page when viewing TODOs that contain milestones or labels in different projects
   - Redesign navigation for project pages
