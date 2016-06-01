@@ -11,7 +11,7 @@ describe RegistrationsController do
     let(:user_params) { { user: { name: "new_user", username: "new_username", email: "new@user.com", password: "Any_password" } } }
 
     context 'when sending email confirmation' do
-      before { allow(current_application_settings).to receive(:send_user_confirmation_email).and_return(false) }
+      before { allow_any_instance_of(ApplicationSetting).to receive(:send_user_confirmation_email).and_return(false) }
 
       it 'logs user in directly' do
         post(:create, user_params)
@@ -21,7 +21,7 @@ describe RegistrationsController do
     end
 
     context 'when not sending email confirmation' do
-      before { allow(current_application_settings).to receive(:send_user_confirmation_email).and_return(true) }
+      before { allow_any_instance_of(ApplicationSetting).to receive(:send_user_confirmation_email).and_return(true) }
 
       it 'does not authenticate user and sends confirmation email' do
         post(:create, user_params)
