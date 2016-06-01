@@ -36,6 +36,7 @@ module Gitlab
         two_factor_grace_period: 48,
         akismet_enabled: false,
         repository_checks_enabled: true,
+        container_registry_token_expire_delay: 5,
       )
     end
 
