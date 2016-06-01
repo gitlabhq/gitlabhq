@@ -25,13 +25,12 @@ class CreateCommitBuildsService
       return false
     end
 
-    # Create a new ci_commit
-    commit.save!
-
     # Skip creating builds for commits that have [ci skip]
     unless commit.skip_ci?
       # Create builds for commit
-      commit.create_builds(user)
+      unless commit.create_builds(user)
+        return false
+      end
     end
 
     commit.touch

@@ -1,6 +1,9 @@
 module Ci
   class ImageForBuildService
     def execute(project, opts)
+      # sha - commit sha
+      # ref - commit reference
+
       sha = opts[:sha] || ref_sha(project, opts[:ref])
 
       ci_commits = project.ci_commits.where(sha: sha)

@@ -18,22 +18,19 @@ module Ci
         return pipeline
       end
 
-      begin
-        Ci::Commit.transaction do
-          pipeline.sha = commit.id
-
-          unless pipeline.config_processor
-            pipeline.errors.add(:base, pipeline.yaml_errors || 'Missing .gitlab-ci.yml file')
-            raise ActiveRecord::Rollback
-          end
-
-          pipeline.save!
-          pipeline.create_builds(current_user)
-        end
-      rescue
-        pipeline.errors.add(:base, 'The pipeline could not be created. Please try again.')
+      unless pipeline.config_processor
+        pipeline.errors.add(:base, pipeline.yaml_errors || 'Missing .gitlab-ci.yml file')
+        return pipeline
       end
 
+      pipeline.sha = commit.id
+
+      unless pipeline.create_builds(current_user)
+        pipeline.errors.add(:base, 'No builds created')
+        return pipeline
+      end
+
+      pipeline.touch
       pipeline
     end
 
