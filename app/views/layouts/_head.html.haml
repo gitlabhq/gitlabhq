@@ -30,6 +30,9 @@
 
   = javascript_include_tag "application"
 
+  - if page_specific_javascripts
+    = javascript_include_tag page_specific_javascripts, {"data-turbolinks-track" => true}
+
   = csrf_meta_tags
 
   = include_gon
