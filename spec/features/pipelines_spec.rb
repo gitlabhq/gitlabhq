@@ -69,7 +69,7 @@ describe "Pipelines" do
         before { visit namespace_project_pipelines_path(project.namespace, project) }
 
         it 'not be cancelable' do
-          expect(page).to_not have_link('Cancel')
+          expect(page).not_to have_link('Cancel')
         end
 
         it 'pipeline is running' do
@@ -83,7 +83,7 @@ describe "Pipelines" do
         before { visit namespace_project_pipelines_path(project.namespace, project) }
 
         it 'not be retryable' do
-          expect(page).to_not have_link('Retry')
+          expect(page).not_to have_link('Retry')
         end
 
         it 'pipeline is failed' do
