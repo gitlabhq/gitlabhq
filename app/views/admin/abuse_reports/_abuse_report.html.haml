@@ -16,7 +16,7 @@
     .light.small
       = time_ago_with_tooltip(abuse_report.created_at)
   %td
-    = markdown(abuse_report.message.squish!, pipeline: :single_line)
+    = markdown(abuse_report.message.squish!, pipeline: :single_line, author: reporter)
   %td
     - if user
       = link_to 'Remove user & report', admin_abuse_report_path(abuse_report, remove_user: true),

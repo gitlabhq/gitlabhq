@@ -95,14 +95,13 @@ class Issue < ActiveRecord::Base
   end
 
   def referenced_merge_requests(current_user = nil)
-    @referenced_merge_requests ||= {}
-    @referenced_merge_requests[current_user] ||= begin
-      Gitlab::ReferenceExtractor.lazily do
-        [self, *notes].flat_map do |note|
-          note.all_references(current_user).merge_requests
-        end
-      end.sort_by(&:iid).uniq
+    ext = all_references(current_user)
+
+    notes_with_associations.each do |object|
+      object.all_references(current_user, extractor: ext)
     end
+
+    ext.merge_requests.sort_by(&:iid)
   end
 
   # All branches containing the current issue's ID, except for
@@ -139,9 +138,13 @@ class Issue < ActiveRecord::Base
   def closed_by_merge_requests(current_user = nil)
     return [] unless open?
 
-    notes.system.flat_map do |note|
-      note.all_references(current_user).merge_requests
-    end.uniq.select { |mr| mr.open? && mr.closes_issue?(self) }
+    ext = all_references(current_user)
+
+    notes.system.each do |note|
+      note.all_references(current_user, extractor: ext)
+    end
+
+    ext.merge_requests.select { |mr| mr.open? && mr.closes_issue?(self) }
   end
 
   def moved?

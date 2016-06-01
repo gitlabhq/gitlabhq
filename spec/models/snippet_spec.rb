@@ -87,4 +87,31 @@ describe Snippet, models: true do
       expect(described_class.search_code('FOO')).to eq([snippet])
     end
   end
+
+  describe '#participants' do
+    let(:project) { create(:project, :public) }
+    let(:snippet) { create(:snippet, content: 'foo', project: project) }
+
+    let!(:note1) do
+      create(:note_on_project_snippet,
+             noteable: snippet,
+             project: project,
+             note: 'a')
+    end
+
+    let!(:note2) do
+      create(:note_on_project_snippet,
+             noteable: snippet,
+             project: project,
+             note: 'b')
+    end
+
+    it 'includes the snippet author' do
+      expect(snippet.participants).to include(snippet.author)
+    end
+
+    it 'includes the note authors' do
+      expect(snippet.participants).to include(note1.author, note2.author)
+    end
+  end
 end

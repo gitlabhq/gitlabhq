@@ -26,4 +26,4 @@
         %i.fa.fa-check
         Accepting this merge request will close #{"issue".pluralize(@closes_issues.size)}
         = succeed '.' do
-          != markdown issues_sentence(@closes_issues), pipeline: :gfm
+          != markdown issues_sentence(@closes_issues), pipeline: :gfm, author: @merge_request.author
