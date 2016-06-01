@@ -63,10 +63,11 @@ class @IssuableEdit
     @hideDescriptionEdit(e)
     @elements.description.element.addClass 'is-loading'
 
-  showDescriptionEdit: =>
-    @elements.description.element.addClass 'hidden'
-    @elements.description.fieldset.removeClass 'hidden'
-    @elements.description.field.focus()
+  showDescriptionEdit: (e) =>
+    if $(e.target).is(':not(input,a)')
+      @elements.description.element.addClass 'hidden'
+      @elements.description.fieldset.removeClass 'hidden'
+      @elements.description.field.focus()
 
   hideDescriptionEdit: (e) ->
     @elements.description.fieldset.addClass 'hidden'
@@ -75,6 +76,9 @@ class @IssuableEdit
   afterSave: (e, data) =>
     $('.js-issuable-inline-form [type="submit"]').enable()
 
+    @hideTitleEdit()
+    @hideDescriptionEdit(e)
+    
     @elements.title.loading.addClass 'hidden'
     @elements.description.element.removeClass 'is-loading'
 
@@ -82,3 +86,5 @@ class @IssuableEdit
     # We need HTML returned so that the markdown can be correctly created on server side
     @elements.title.element.html data.title
     @elements.description.element.html data.description
+
+    $('.detail-page-description .js-task-list-container').taskList('enable')

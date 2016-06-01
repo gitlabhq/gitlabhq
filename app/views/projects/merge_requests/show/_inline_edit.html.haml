@@ -1,4 +1,4 @@
-= form_for @merge_request, remote: true, html: { class: 'detail-page-description content-block common-note-form js-issuable-inline-form', data: { type: "json" } } do |f|
+= form_for @merge_request, remote: true, html: { class: 'detail-page-description content-block common-note-form js-quick-submit js-issuable-inline-form', data: { type: "json" } } do |f|
   = hidden_field_tag :inline, true
   %h2.title
     %span.js-issuable-title= markdown escape_once(@merge_request.title), pipeline: :single_line, author: @merge_request.author
