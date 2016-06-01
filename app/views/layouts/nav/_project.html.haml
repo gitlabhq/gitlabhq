@@ -52,15 +52,6 @@
           = icon('ship fw')
           %span
             Pipelines
-            %span.badge.count.ci_counter= number_with_delimiter(@project.ci_commits.running_or_pending.count)
-
-    - if project_nav_tab? :builds
-      = nav_link(controller: %w(builds)) do
-        = link_to project_builds_path(@project), title: 'Builds', class: 'shortcuts-builds' do
-          = icon('cubes fw')
-          %span
-            Builds
-            %span.badge.count.builds_counter= number_with_delimiter(@project.running_or_pending_build_count)
 
     - if project_nav_tab? :container_registry
       = nav_link(controller: %w(container_registry)) do

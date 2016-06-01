@@ -28,6 +28,7 @@ v 8.9.0 (unreleased)
   - Make authentication service for Container Registry to be compatible with < Docker 1.11
   - Add Application Setting to configure Container Registry token expire delay (default 5min)
   - Cache assigned issue and merge request counts in sidebar nav
+  - Cache project build count in sidebar nav
 
 v 8.8.3
   - Fix incorrect links on pipeline page when merge request created from fork

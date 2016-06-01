@@ -1012,13 +1012,9 @@ class Project < ActiveRecord::Base
     update_attribute(:pending_delete, true)
   end
 
-  def running_or_pending_build_count
-    Rails.cache.fetch(['projects', id, 'running_or_pending_build_count']) do
+  def running_or_pending_build_count(force: false)
+    Rails.cache.fetch(['projects', id, 'running_or_pending_build_count'], force: force) do
       builds.running_or_pending.count(:all)
     end
-  end
-
-  def expire_running_or_pending_build_count
-    Rails.cache.delete(['projects', id, 'running_or_pending_build_count'])
   end
 end
