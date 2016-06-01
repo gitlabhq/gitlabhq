@@ -84,7 +84,7 @@ class @UsersSelect
           <% } else { %>
         <span class="assign-yourself">
           No assignee -
-          <a href="#" class="js-assign-yourself">
+          <a href="#" class="light js-assign-yourself">
             assign yourself
           </a>
         </span>
