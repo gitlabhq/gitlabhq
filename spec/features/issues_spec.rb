@@ -365,13 +365,9 @@ describe 'Issues', feature: true do
 
         page.within('.assignee') do
           expect(page).to have_content "#{@user.name}"
-        end
 
-        find('.block.assignee .edit-link').click
-        sleep 2 # wait for ajax stuff to complete
-        first('.dropdown-menu-user-link').click
-        sleep 2
-        page.within('.assignee') do
+          click_link 'Edit'
+          click_link 'Unassigned'
           expect(page).to have_content 'No assignee'
         end
 
