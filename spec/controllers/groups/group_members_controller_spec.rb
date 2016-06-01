@@ -165,7 +165,7 @@ describe Groups::GroupMembersController do
 
     context 'when member is not found' do
       it 'returns 403' do
-        post :approve, group_id: group,
+        post :approve_access_request, group_id: group,
                        id: 42
 
         expect(response.status).to eq(403)
@@ -187,7 +187,7 @@ describe Groups::GroupMembersController do
         end
 
         it 'returns 403' do
-          post :approve, group_id: group,
+          post :approve_access_request, group_id: group,
                          id: member
 
           expect(response.status).to eq(403)
@@ -202,7 +202,7 @@ describe Groups::GroupMembersController do
         end
 
         it 'adds user to members' do
-          post :approve, group_id: group,
+          post :approve_access_request, group_id: group,
                          id: member
 
           expect(response).to redirect_to(group_group_members_path(group))

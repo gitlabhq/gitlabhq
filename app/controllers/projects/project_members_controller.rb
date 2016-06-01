@@ -1,4 +1,6 @@
 class Projects::ProjectMembersController < Projects::ApplicationController
+  include AccessRequestActions
+
   # Authorize
   before_action :authorize_admin_project_member!, except: [:index, :leave, :request_access]
 
@@ -99,23 +101,6 @@ class Projects::ProjectMembersController < Projects::ApplicationController
     end
   end
 
-  def request_access
-    @project.request_access(current_user)
-
-    redirect_to namespace_project_path(@project.namespace, @project),
-                notice: 'Your request for access has been queued for review.'
-  end
-
-  def approve
-    @project_member = @project.project_members.request.find(params[:id])
-
-    return render_403 unless can?(current_user, :update_project_member, @project_member)
-
-    @project_member.accept_request
-
-    redirect_to namespace_project_project_members_path(@project.namespace, @project)
-  end
-
   def apply_import
     source_project = Project.find(params[:source_project_id])
 
@@ -134,5 +119,18 @@ class Projects::ProjectMembersController < Projects::ApplicationController
 
   def member_params
     params.require(:project_member).permit(:user_id, :access_level)
+  end
+
+  # AccessRequestActions concern
+  def access_requestable_resource
+    @project
+  end
+
+  def access_requestable_resource_path
+    namespace_project_path(@project.namespace, @project)
+  end
+
+  def access_requestable_resource_members_path
+    namespace_project_project_members_path(@project.namespace, @project)
   end
 end

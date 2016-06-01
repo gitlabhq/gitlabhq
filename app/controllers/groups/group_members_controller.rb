@@ -1,4 +1,6 @@
 class Groups::GroupMembersController < Groups::ApplicationController
+  include AccessRequestActions
+
   # Authorize
   before_action :authorize_admin_group_member!, except: [:index, :leave, :request_access]
 
@@ -82,25 +84,22 @@ class Groups::GroupMembersController < Groups::ApplicationController
     end
   end
 
-  def request_access
-    @group.request_access(current_user)
-
-    redirect_to group_path(@group), notice: 'Your request for access has been queued for review.'
-  end
-
-  def approve
-    @group_member = @group.group_members.request.find(params[:id])
-
-    return render_403 unless can?(current_user, :update_group_member, @group_member)
-
-    @group_member.accept_request
-
-    redirect_to group_group_members_path(@group)
-  end
-
   protected
 
   def member_params
     params.require(:group_member).permit(:access_level, :user_id)
+  end
+
+  # AccessRequestActions concern
+  def access_requestable_resource
+    @group
+  end
+
+  def access_requestable_resource_path
+    group_path(@group)
+  end
+
+  def access_requestable_resource_members_path
+    group_group_members_path(@group)
   end
 end

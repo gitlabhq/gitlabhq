@@ -30,6 +30,11 @@ Rails.application.routes.draw do
     mount LetterOpenerWeb::Engine, at: '/rails/letter_opener'
   end
 
+  concern :access_requestable do
+    post :request_access, on: :collection
+    post :approve_access_request_access_request, on: :member
+  end
+
   namespace :ci do
     # CI API
     Ci::API::API.logger Rails.logger

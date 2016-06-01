@@ -224,7 +224,7 @@ describe Projects::ProjectMembersController do
 
     context 'when member is not found' do
       it 'returns 404' do
-        post :approve, namespace_id: project.namespace,
+        post :approve_access_request, namespace_id: project.namespace,
                        project_id: project,
                        id: 42
 
@@ -247,7 +247,7 @@ describe Projects::ProjectMembersController do
         end
 
         it 'returns 404' do
-          post :approve, namespace_id: project.namespace,
+          post :approve_access_request, namespace_id: project.namespace,
                          project_id: project,
                          id: member
 
@@ -263,7 +263,7 @@ describe Projects::ProjectMembersController do
         end
 
         it 'adds user to members' do
-          post :approve, namespace_id: project.namespace,
+          post :approve_access_request, namespace_id: project.namespace,
                          project_id: project,
                          id: member
 
