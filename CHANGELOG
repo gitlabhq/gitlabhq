@@ -14,6 +14,7 @@ v 8.9.0 (unreleased)
   - Redesign account and email confirmation emails
   - Use gitlab-shell v3.0.0
   - Add `sha` parameter to MR merge API, to ensure only reviewed changes are merged
+  - Don't allow MRs to be merged when commits were added since the last review / page load
   - Add DB index on users.state
   - Add rake task 'gitlab:db:configure' for conditionally seeding or migrating the database
   - Changed the Slack build message to use the singular duration if necessary (Aran Koning)
