@@ -13,6 +13,9 @@
     .commit-row-title
       %span.item-title
         = link_to_gfm commit.title, namespace_project_commit_path(project.namespace, project, commit.id), class: "commit-row-message"
+        %span.commit-row-message.visible-xs-inline
+          &middot;
+          = commit.short_id
         - if commit.status
           = render_commit_status(commit, cssclass: 'visible-xs-inline')
         - if commit.description?
