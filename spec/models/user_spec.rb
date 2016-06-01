@@ -845,6 +845,63 @@ describe User, models: true do
     it { is_expected.to eq([private_project]) }
   end
 
+  describe '#ci_authorized_runners' do
+    let(:user) { create(:user) }
+    let(:runner) { create(:ci_runner) }
+
+    before { project.runners << runner }
+
+    context 'without any projects' do
+      let(:project) { create(:project) }
+
+      it 'does not load' do
+        expect(user.ci_authorized_runners).to eq([])
+      end
+    end
+
+    context 'with personal projects runners' do
+      let(:namespace) { create(:namespace, owner: user) }
+      let(:project) { create(:project, namespace: namespace) }
+
+      it 'loads' do
+        expect(user.ci_authorized_runners).to eq([runner])
+      end
+    end
+
+    shared_examples :member do
+      it 'loads when the user is a master' do
+        add_user(Gitlab::Access::MASTER)
+        expect(user.ci_authorized_runners).to eq([runner])
+      end
+
+      it 'does not load when the user is a developer' do
+        add_user(Gitlab::Access::DEVELOPER)
+        expect(user.ci_authorized_runners).to eq([])
+      end
+    end
+
+    context 'with groups projects runners' do
+      let(:group) { create(:group) }
+      let(:project) { create(:project, group: group) }
+
+      def add_user access
+        group.add_user(user, access)
+      end
+
+      it_behaves_like :member
+    end
+
+    context 'with other projects runners' do
+      let(:project) { create(:project) }
+
+      def add_user access
+        Member.add_user(project.project_members, user, access)
+      end
+
+      it_behaves_like :member
+    end
+  end
+
   describe '#viewable_starred_projects' do
     let(:user) { create(:user) }
     let(:public_project) { create(:empty_project, :public) }
