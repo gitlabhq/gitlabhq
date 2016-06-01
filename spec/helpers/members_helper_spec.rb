@@ -72,8 +72,8 @@ describe MembersHelper do
     let(:project_member) { create(:project_member) }
     let(:group_member) { create(:group_member) }
 
-    it { expect(approve_request_member_path(project_member)).to eq approve_namespace_project_project_member_path(project_member.source.namespace, project_member.source, project_member) }
-    it { expect(approve_request_member_path(group_member)).to eq approve_group_group_member_path(group_member.source, group_member) }
+    it { expect(approve_request_member_path(project_member)).to eq approve_access_request_namespace_project_project_member_path(project_member.source.namespace, project_member.source, project_member) }
+    it { expect(approve_request_member_path(group_member)).to eq approve_access_request_group_group_member_path(group_member.source, group_member) }
     it { expect { approve_request_member_path(double(:member, source: 'foo')) }.to raise_error ArgumentError, 'Unknown object class' }
   end
 

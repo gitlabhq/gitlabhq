@@ -8,7 +8,7 @@ module AccessRequestActions
                 notice: 'Your request for access has been queued for review.'
   end
 
-  def approve
+  def approve_access_request
     @member = access_requestable_resource.public_send(member_entity_name.pluralize).request.find(params[:id])
 
     return render_403 unless can?(current_user, :"update_#{member_entity_name}", @member)

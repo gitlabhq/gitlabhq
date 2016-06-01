@@ -53,9 +53,9 @@ module MembersHelper
   def approve_request_member_path(member)
     case member.source
     when Project
-      approve_namespace_project_project_member_path(member.source.namespace, member.source, member)
+      approve_access_request_namespace_project_project_member_path(member.source.namespace, member.source, member)
     when Group
-      approve_group_group_member_path(member.source, member)
+      approve_access_request_group_group_member_path(member.source, member)
     else
       raise ArgumentError.new('Unknown object class')
     end

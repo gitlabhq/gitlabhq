@@ -32,7 +32,7 @@ Rails.application.routes.draw do
 
   concern :access_requestable do
     post :request_access, on: :collection
-    post :approve_access_request_access_request, on: :member
+    post :approve_access_request, on: :member
   end
 
   namespace :ci do
@@ -414,16 +414,9 @@ Rails.application.routes.draw do
     end
 
     scope module: :groups do
-      resources :group_members, only: [:index, :create, :update, :destroy] do
-        collection do
-          delete :leave
-          post :request_access
-        end
-
-        member do
-          post :resend_invite
-          post :approve
-        end
+      resources :group_members, only: [:index, :create, :update, :destroy], concerns: :access_requestable do
+        post :resend_invite, on: :member
+        delete :leave, on: :collection
       end
 
       resource :avatar, only: [:destroy]
@@ -777,10 +770,9 @@ Rails.application.routes.draw do
           end
         end
 
-        resources :project_members, except: [:new, :edit], constraints: { id: /[a-zA-Z.\/0-9_\-#%+]+/ } do
+        resources :project_members, except: [:new, :edit], constraints: { id: /[a-zA-Z.\/0-9_\-#%+]+/ }, concerns: :access_requestable do
           collection do
             delete :leave
-            post :request_access
 
             # Used for import team
             # from another project
@@ -790,7 +782,6 @@ Rails.application.routes.draw do
 
           member do
             post :resend_invite
-            post :approve
           end
         end
 
