@@ -309,21 +309,25 @@ class Project < ActiveRecord::Base
     @repository ||= Repository.new(path_with_namespace, self)
   end
 
+  def container_registry_path_with_namespace
+    path_with_namespace.downcase
+  end
+
   def container_registry_repository
     return unless Gitlab.config.registry.enabled
 
     @container_registry_repository ||= begin
-      token = Auth::ContainerRegistryAuthenticationService.full_access_token(path_with_namespace)
+      token = Auth::ContainerRegistryAuthenticationService.full_access_token(container_registry_path_with_namespace)
       url = Gitlab.config.registry.api_url
       host_port = Gitlab.config.registry.host_port
       registry = ContainerRegistry::Registry.new(url, token: token, path: host_port)
-      registry.repository(path_with_namespace)
+      registry.repository(container_registry_path_with_namespace)
     end
   end
 
   def container_registry_repository_url
     if Gitlab.config.registry.enabled
-      "#{Gitlab.config.registry.host_port}/#{path_with_namespace}"
+      "#{Gitlab.config.registry.host_port}/#{container_registry_path_with_namespace}"
     end
   end
 

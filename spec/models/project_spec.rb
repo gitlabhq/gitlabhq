@@ -784,6 +784,15 @@ describe Project, models: true do
     end
   end
 
+  describe '#container_registry_path_with_namespace' do
+    let(:project) { create(:empty_project, path: 'PROJECT') }
+
+    subject { project.container_registry_path_with_namespace }
+
+    it { is_expected.not_to eq(project.path_with_namespace) }
+    it { is_expected.to eq(project.path_with_namespace.downcase) }
+  end
+
   describe '#container_registry_repository' do
     let(:project) { create(:empty_project) }
 
