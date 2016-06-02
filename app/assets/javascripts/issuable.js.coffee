@@ -54,6 +54,7 @@ issuable_created = false
 
         # Submit the form to get new data
         Issuable.filterResults $('.filter-form')
+        $('.js-label-select').trigger('update.label')
 
   toggleLabelFilters: ->
     $filteredLabels = $('.filtered-labels')

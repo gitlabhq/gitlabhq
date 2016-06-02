@@ -174,4 +174,29 @@ feature 'Issue filtering by Labels', feature: true do
       expect(find('.filtered-labels')).not_to have_content "feature"
     end
   end
+
+  context 'remove filtered labels', js: true do
+    before do
+      page.within '.labels-filter' do
+        click_button 'Label'
+        click_link 'bug'
+        find('.dropdown-menu-close').click
+      end
+
+      page.within '.filtered-labels' do
+        expect(page).to have_content 'bug'
+      end
+    end
+
+    it 'should allow user to remove filtered labels' do
+      page.within '.filtered-labels' do
+        first('.js-label-filter-remove').click
+        expect(page).not_to have_content 'bug'
+      end
+
+      page.within '.labels-filter' do
+        expect(page).not_to have_content 'bug'
+      end
+    end
+  end
 end
