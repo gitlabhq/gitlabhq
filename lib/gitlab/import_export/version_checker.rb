@@ -1,16 +1,16 @@
 module Gitlab
   module ImportExport
-    class VersionRestorer
+    class VersionChecker
 
       def self.restore(*args)
-        new(*args).restore
+        new(*args).check
       end
 
       def initialize(shared:)
         @shared = shared
       end
 
-      def restore
+      def check!
         version = File.open(version_file, &:readline)
         verify_version!(version)
       rescue => e

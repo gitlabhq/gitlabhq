@@ -45,7 +45,7 @@ module Gitlab
         if user_admin
           relation_hash['author_id'] = members_map.map[old_author_id]
         else
-          relation_hash['author_id'] = members_map.default_project_member
+          relation_hash['author_id'] = members_map.default_user_id
         end
 
         author = relation_hash.delete('author')
