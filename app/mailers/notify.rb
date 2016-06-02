@@ -13,6 +13,8 @@ class Notify < BaseMailer
   add_template_helper DiffHelper
   add_template_helper BlobHelper
   add_template_helper EmailsHelper
+  add_template_helper MembersHelper
+  add_template_helper GitlabRoutingHelper
 
   def test_email(recipient_email, subject, body)
     mail(to: recipient_email,

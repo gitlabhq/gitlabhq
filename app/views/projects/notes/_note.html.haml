@@ -17,7 +17,7 @@
           %a{ href: "##{dom_id(note)}" }
             = time_ago_with_tooltip(note.created_at, placement: 'bottom', html_class: 'note-created-ago')
         .note-actions
-          - access = max_access_level(note.project, note.author)
+          - access = note.project.team.human_max_access(note.author.id)
           - if access
             %span.note-role.hidden-xs= access
           - if current_user

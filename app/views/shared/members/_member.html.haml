@@ -1,6 +1,6 @@
 - show_roles = local_assigns.fetch(:show_roles, true)
 - show_controls = local_assigns.fetch(:show_controls, true)
-- user = member.request? ? member.created_by : member.user
+- user = member.user
 
 %li.js-toggle-container{ class: dom_class(member), id: dom_id(member) }
   %span{ class: ("list-item-name" if show_controls) }
@@ -18,25 +18,25 @@
           %strong Blocked
 
       - if member.request?
-        %small
+        %span.cgray
           – Requested
           = time_ago_with_tooltip(member.requested_at)
     - else
       = image_tag avatar_icon(member.invite_email, 24), class: "avatar s24", alt: ''
       %strong= member.invite_email
       %span.cgray
-        invited
+        – Invited
         - if member.created_by
           by
           = link_to member.created_by.name, user_path(member.created_by)
         = time_ago_with_tooltip(member.created_at)
 
       - if show_controls && can?(current_user, action_member_permission(:admin, member), member.source)
-        = link_to 'Resend invite', resend_invite_member_path(member),
+        = link_to 'Resend invite', polymorphic_path([:resend_invite, member]),
                   method: :post,
                   class: 'btn-xs btn'
 
-  - if show_roles && can_see_entity_roles?(current_user, member.source)
+  - if show_roles && can_see_member_roles?(source: member.source, user: current_user)
     %span.pull-right
       %strong= member.human_access
       - if show_controls
@@ -48,30 +48,30 @@
 
           - if member.request?
             &nbsp;
-            = link_to icon('check inverse'), approve_request_member_path(member),
+            = link_to icon('check inverse'), polymorphic_path([:approve_access_request, member]),
                       method: :post,
-                      type: 'button',
                       class: 'btn-xs btn btn-success',
                       title: 'Grant access'
 
         - if can?(current_user, action_member_permission(:destroy, member), member)
           &nbsp;
           - if current_user == user
-            = link_to leave_path(member.source), data: { confirm: leave_confirmation_message(member.source)}, method: :delete, class: "btn-xs btn btn-remove", title: 'Remove user from group' do
-              = icon("sign-out")
-              Leave
-          - else
-            = link_to icon('trash'), member_path(member),
+            = link_to icon('sign-out', text: 'Leave'), polymorphic_path([:leave, member.source, :members]),
                       method: :delete,
+                      data: { confirm: leave_confirmation_message(member.source) },
+                      class: 'btn-xs btn btn-remove'
+          - else
+            = link_to icon('trash'), member,
                       remote: true,
+                      method: :delete,
                       data: { confirm: remove_member_message(member) },
                       class: 'btn-xs btn btn-remove',
                       title: remove_member_title(member)
 
     .edit-member.hide.js-toggle-content
       %br
-      = form_for member_path(member), as: "#{member.source.class.to_s.underscore}_member".to_sym, remote: true do |f|
+      = form_for member, remote: true do |f|
         .prepend-top-10
-          = f.select :access_level, options_for_select(member_class(member).access_level_roles, member.access_level), {}, class: 'form-control'
+          = f.select :access_level, options_for_select(member.class.access_level_roles, member.access_level), {}, class: 'form-control'
         .prepend-top-10
           = f.submit 'Save', class: 'btn btn-save btn-sm'

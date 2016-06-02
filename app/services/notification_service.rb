@@ -175,24 +175,24 @@ class NotificationService
 
   # Project access request
   def new_project_access_request(project_member)
-    mailer.member_access_requested_email('project', project_member.id).deliver_later
+    mailer.member_access_requested_email(project_member.real_source_type, project_member.id).deliver_later
   end
 
-  def decline_project_access_request(project, user)
-    mailer.member_access_denied_email('project', project.id, user.id).deliver_later
+  def decline_project_access_request(project_member)
+    mailer.member_access_denied_email(project_member.real_source_type, project_member.project.id, project_member.user.id).deliver_later
   end
 
   def invite_project_member(project_member, token)
-    mailer.member_invited_email('project', project_member.id, token).deliver_later
+    mailer.member_invited_email(project_member.real_source_type, project_member.id, token).deliver_later
   end
 
   def accept_project_invite(project_member)
-    mailer.member_invite_accepted_email('project', project_member.id).deliver_later
+    mailer.member_invite_accepted_email(project_member.real_source_type, project_member.id).deliver_later
   end
 
   def decline_project_invite(project_member)
     mailer.member_invite_declined_email(
-      'project',
+      project_member.real_source_type,
       project_member.project.id,
       project_member.invite_email,
       project_member.access_level,
@@ -201,24 +201,24 @@ class NotificationService
   end
 
   def new_project_member(project_member)
-    mailer.member_access_granted_email('project', project_member.id).deliver_later
+    mailer.member_access_granted_email(project_member.real_source_type, project_member.id).deliver_later
   end
 
   def update_project_member(project_member)
-    mailer.member_access_granted_email('project', project_member.id).deliver_later
+    mailer.member_access_granted_email(project_member.real_source_type, project_member.id).deliver_later
   end
 
   # Group access request
   def new_group_access_request(group_member)
-    mailer.member_access_requested_email('group', group_member.id).deliver_later
+    mailer.member_access_requested_email(group_member.real_source_type, group_member.id).deliver_later
   end
 
-  def decline_group_access_request(group, user)
-    mailer.member_access_denied_email('group', group.id, user.id).deliver_later
+  def decline_group_access_request(group_member)
+    mailer.member_access_denied_email(group_member.real_source_type, group_member.group.id, group_member.user.id).deliver_later
   end
 
   def invite_group_member(group_member, token)
-    mailer.member_invited_email('group', group_member.id, token).deliver_later
+    mailer.member_invited_email(group_member.real_source_type, group_member.id, token).deliver_later
   end
 
   def accept_group_invite(group_member)
@@ -227,7 +227,7 @@ class NotificationService
 
   def decline_group_invite(group_member)
     mailer.member_invite_declined_email(
-      'group',
+      group_member.real_source_type,
       group_member.group.id,
       group_member.invite_email,
       group_member.access_level,
@@ -236,11 +236,11 @@ class NotificationService
   end
 
   def new_group_member(group_member)
-    mailer.member_access_granted_email('group', group_member.id).deliver_later
+    mailer.member_access_granted_email(group_member.real_source_type, group_member.id).deliver_later
   end
 
   def update_group_member(group_member)
-    mailer.member_access_granted_email('group', group_member.id).deliver_later
+    mailer.member_access_granted_email(group_member.real_source_type, group_member.id).deliver_later
   end
 
   def project_was_moved(project, old_path_with_namespace)

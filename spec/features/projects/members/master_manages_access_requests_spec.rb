@@ -22,12 +22,10 @@ feature 'Projects > Members > Master manages access requests', feature: true do
 
     expect_visible_access_request(project, user)
 
-    perform_enqueued_jobs do
-      click_on 'Grant access'
-    end
+    perform_enqueued_jobs { click_on 'Grant access' }
 
     expect(ActionMailer::Base.deliveries.last.to).to eq [user.notification_email]
-    expect(ActionMailer::Base.deliveries.last.subject).to match /Access to #{project.name_with_namespace} project was granted/
+    expect(ActionMailer::Base.deliveries.last.subject).to match "Access to the #{project.name_with_namespace} project was granted"
   end
 
   scenario 'master can deny access' do
@@ -35,16 +33,14 @@ feature 'Projects > Members > Master manages access requests', feature: true do
 
     expect_visible_access_request(project, user)
 
-    perform_enqueued_jobs do
-      click_on 'Deny access'
-    end
+    perform_enqueued_jobs { click_on 'Deny access' }
 
     expect(ActionMailer::Base.deliveries.last.to).to eq [user.notification_email]
-    expect(ActionMailer::Base.deliveries.last.subject).to match /Access to #{project.name_with_namespace} project was denied/
+    expect(ActionMailer::Base.deliveries.last.subject).to match "Access to the #{project.name_with_namespace} project was denied"
   end
 
   def expect_visible_access_request(project, user)
-    expect(project.access_requested?(user)).to be_truthy
+    expect(project.members.request.exists?(user_id: user)).to be_truthy
     expect(page).to have_content "#{project.name} access requests (1)"
     expect(page).to have_content user.name
   end

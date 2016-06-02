@@ -33,6 +33,12 @@ describe ProjectMember, models: true do
     it { is_expected.to include_module(Gitlab::ShellAdapter) }
   end
 
+  describe '#real_source_type' do
+    subject { create(:project_member).real_source_type }
+
+    it { is_expected.to eq 'Project' }
+  end
+
   describe "#destroy" do
     let(:owner)   { create(:project_member, access_level: ProjectMember::OWNER) }
     let(:project) { owner.project }
@@ -137,23 +143,23 @@ describe ProjectMember, models: true do
   end
 
   describe 'notifications' do
-    describe 'after accept_request' do
-      let(:member) { create(:project_member, user: nil, created_by: build_stubbed(:user), requested_at: Time.now) }
+    describe '#after_accept_request' do
+      it 'calls NotificationService.new_project_member' do
+        member = create(:project_member, user: build_stubbed(:user), requested_at: Time.now)
 
-      it 'calls #accept_project_access_request' do
         expect_any_instance_of(NotificationService).to receive(:new_project_member)
 
-        member.accept_request
+        member.__send__(:after_accept_request)
       end
     end
 
-    describe 'after decline_request' do
-      let(:member) { create(:project_member, user: nil, created_by: build_stubbed(:user), requested_at: Time.now) }
+    describe '#post_decline_request' do
+      it 'calls NotificationService.decline_project_access_request' do
+        member = create(:project_member, user: build_stubbed(:user), requested_at: Time.now)
 
-      it 'calls #decline_project_access_request' do
         expect_any_instance_of(NotificationService).to receive(:decline_project_access_request)
 
-        member.decline_request
+        member.__send__(:post_decline_request)
       end
     end
   end

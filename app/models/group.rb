@@ -8,7 +8,7 @@ class Group < Namespace
 
   has_many :group_members, dependent: :destroy, as: :source, class_name: 'GroupMember'
   alias_method :members, :group_members
-  has_many :users, through: :group_members
+  has_many :users, -> { where(members: { requested_at: nil }) }, through: :group_members
   has_many :project_group_links, dependent: :destroy
   has_many :shared_projects, through: :project_group_links, source: :project
   has_many :notification_settings, dependent: :destroy, as: :source

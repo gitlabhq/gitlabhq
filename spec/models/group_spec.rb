@@ -10,17 +10,6 @@ describe Group, models: true do
     it { is_expected.to have_many(:project_group_links).dependent(:destroy) }
     it { is_expected.to have_many(:shared_projects).through(:project_group_links) }
     it { is_expected.to have_many(:notification_settings).dependent(:destroy) }
-
-    describe '#group_members' do
-      let(:user) { create(:user) }
-      let(:group) { create(:group) }
-
-      before { group.request_access(user) }
-
-      it 'does not includes membership requests' do
-        expect(user.group_members).to be_empty
-      end
-    end
   end
 
   describe 'modules' do

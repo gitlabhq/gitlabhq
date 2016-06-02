@@ -405,7 +405,7 @@ describe Notify do
       let(:user) { create(:user) }
       let(:project_member) do
         project.request_access(user)
-        project.project_members.find_by(created_by_id: user.id)
+        project.members.request.find_by(user_id: user.id)
       end
       subject { Notify.member_access_requested_email('project', project_member.id) }
 
@@ -413,10 +413,12 @@ describe Notify do
       it_behaves_like 'it should not have Gmail Actions links'
       it_behaves_like "a user cannot unsubscribe through footer link"
 
-      it { is_expected.to have_subject "Request to join the #{project.name_with_namespace} project" }
-      it { is_expected.to have_body_text /#{project.name_with_namespace}/ }
-      it { is_expected.to have_body_text /#{project.web_url}/ }
-      it { is_expected.to have_body_text /#{project_member.human_access}/ }
+      it 'contains all the useful information' do
+        is_expected.to have_subject "Request to join the #{project.name_with_namespace} project"
+        is_expected.to have_body_text /#{project.name_with_namespace}/
+        is_expected.to have_body_text /#{namespace_project_project_members_url(project.namespace, project)}/
+        is_expected.to have_body_text /#{project_member.human_access}/
+      end
     end
 
     describe 'project access denied' do
@@ -424,7 +426,7 @@ describe Notify do
       let(:user) { create(:user) }
       let(:project_member) do
         project.request_access(user)
-        project.project_members.find_by(created_by_id: user.id)
+        project.members.request.find_by(user_id: user.id)
       end
       subject { Notify.member_access_denied_email('project', project.id, user.id) }
 
@@ -432,9 +434,11 @@ describe Notify do
       it_behaves_like 'it should not have Gmail Actions links'
       it_behaves_like "a user cannot unsubscribe through footer link"
 
-      it { is_expected.to have_subject "Access to the #{project.name_with_namespace} project was denied" }
-      it { is_expected.to have_body_text /#{project.name_with_namespace}/ }
-      it { is_expected.to have_body_text /#{project.web_url}/ }
+      it 'contains all the useful information' do
+        is_expected.to have_subject "Access to the #{project.name_with_namespace} project was denied"
+        is_expected.to have_body_text /#{project.name_with_namespace}/
+        is_expected.to have_body_text /#{project.web_url}/
+      end
     end
 
     describe 'project access changed' do
@@ -447,10 +451,12 @@ describe Notify do
       it_behaves_like 'it should not have Gmail Actions links'
       it_behaves_like "a user cannot unsubscribe through footer link"
 
-      it { is_expected.to have_subject "Access to the #{project.name_with_namespace} project was granted" }
-      it { is_expected.to have_body_text /#{project.name_with_namespace}/ }
-      it { is_expected.to have_body_text /#{project.web_url}/ }
-      it { is_expected.to have_body_text /#{project_member.human_access}/ }
+      it 'contains all the useful information' do
+        is_expected.to have_subject "Access to the #{project.name_with_namespace} project was granted"
+        is_expected.to have_body_text /#{project.name_with_namespace}/
+        is_expected.to have_body_text /#{project.web_url}/
+        is_expected.to have_body_text /#{project_member.human_access}/
+      end
     end
 
     def invite_to_project(project:, email:, inviter:)
@@ -470,11 +476,13 @@ describe Notify do
       it_behaves_like 'it should not have Gmail Actions links'
       it_behaves_like "a user cannot unsubscribe through footer link"
 
-      it { is_expected.to have_subject "Invitation to join the #{project.name_with_namespace} project" }
-      it { is_expected.to have_body_text /#{project.name_with_namespace}/ }
-      it { is_expected.to have_body_text /#{project.web_url}/ }
-      it { is_expected.to have_body_text /#{project_member.human_access}/ }
-      it { is_expected.to have_body_text /#{project_member.invite_token}/ }
+      it 'contains all the useful information' do
+        is_expected.to have_subject "Invitation to join the #{project.name_with_namespace} project"
+        is_expected.to have_body_text /#{project.name_with_namespace}/
+        is_expected.to have_body_text /#{project.web_url}/
+        is_expected.to have_body_text /#{project_member.human_access}/
+        is_expected.to have_body_text /#{project_member.invite_token}/
+      end
     end
 
     describe 'project invitation accepted' do
@@ -493,11 +501,13 @@ describe Notify do
       it_behaves_like 'it should not have Gmail Actions links'
       it_behaves_like "a user cannot unsubscribe through footer link"
 
-      it { is_expected.to have_subject 'Invitation accepted' }
-      it { is_expected.to have_body_text /#{project.name_with_namespace}/ }
-      it { is_expected.to have_body_text /#{project.web_url}/ }
-      it { is_expected.to have_body_text /#{project_member.invite_email}/ }
-      it { is_expected.to have_body_text /#{invited_user.name}/ }
+      it 'contains all the useful information' do
+        is_expected.to have_subject 'Invitation accepted'
+        is_expected.to have_body_text /#{project.name_with_namespace}/
+        is_expected.to have_body_text /#{project.web_url}/
+        is_expected.to have_body_text /#{project_member.invite_email}/
+        is_expected.to have_body_text /#{invited_user.name}/
+      end
     end
 
     describe 'project invitation declined' do
@@ -515,10 +525,12 @@ describe Notify do
       it_behaves_like 'it should not have Gmail Actions links'
       it_behaves_like "a user cannot unsubscribe through footer link"
 
-      it { is_expected.to have_subject 'Invitation declined' }
-      it { is_expected.to have_body_text /#{project.name_with_namespace}/ }
-      it { is_expected.to have_body_text /#{project.web_url}/ }
-      it { is_expected.to have_body_text /#{project_member.invite_email}/ }
+      it 'contains all the useful information' do
+        is_expected.to have_subject 'Invitation declined'
+        is_expected.to have_body_text /#{project.name_with_namespace}/
+        is_expected.to have_body_text /#{project.web_url}/
+        is_expected.to have_body_text /#{project_member.invite_email}/
+      end
     end
 
     context 'items that are noteable, the email for a note' do
@@ -639,7 +651,7 @@ describe Notify do
       let(:user) { create(:user) }
       let(:group_member) do
         group.request_access(user)
-        group.group_members.find_by(created_by_id: user.id)
+        group.members.request.find_by(user_id: user.id)
       end
       subject { Notify.member_access_requested_email('group', group_member.id) }
 
@@ -647,10 +659,12 @@ describe Notify do
       it_behaves_like 'it should not have Gmail Actions links'
       it_behaves_like "a user cannot unsubscribe through footer link"
 
-      it { is_expected.to have_subject "Request to join the #{group.name} group" }
-      it { is_expected.to have_body_text /#{group.name}/ }
-      it { is_expected.to have_body_text /#{group.web_url}/ }
-      it { is_expected.to have_body_text /#{group_member.human_access}/ }
+      it 'contains all the useful information' do
+        is_expected.to have_subject "Request to join the #{group.name} group"
+        is_expected.to have_body_text /#{group.name}/
+        is_expected.to have_body_text /#{group_group_members_url(group)}/
+        is_expected.to have_body_text /#{group_member.human_access}/
+      end
     end
 
     describe 'group access denied' do
@@ -658,7 +672,7 @@ describe Notify do
       let(:user) { create(:user) }
       let(:group_member) do
         group.request_access(user)
-        group.group_members.find_by(created_by_id: user.id)
+        group.members.request.find_by(user_id: user.id)
       end
       subject { Notify.member_access_denied_email('group', group.id, user.id) }
 
@@ -666,9 +680,11 @@ describe Notify do
       it_behaves_like 'it should not have Gmail Actions links'
       it_behaves_like "a user cannot unsubscribe through footer link"
 
-      it { is_expected.to have_subject "Access to the #{group.name} group was denied" }
-      it { is_expected.to have_body_text /#{group.name}/ }
-      it { is_expected.to have_body_text /#{group.web_url}/ }
+      it 'contains all the useful information' do
+        is_expected.to have_subject "Access to the #{group.name} group was denied"
+        is_expected.to have_body_text /#{group.name}/
+        is_expected.to have_body_text /#{group.web_url}/
+      end
     end
 
     describe 'group access changed' do
@@ -682,10 +698,12 @@ describe Notify do
       it_behaves_like 'it should not have Gmail Actions links'
       it_behaves_like "a user cannot unsubscribe through footer link"
 
-      it { is_expected.to have_subject "Access to the #{group.name} group was granted" }
-      it { is_expected.to have_body_text /#{group.name}/ }
-      it { is_expected.to have_body_text /#{group.web_url}/ }
-      it { is_expected.to have_body_text /#{group_member.human_access}/ }
+      it 'contains all the useful information' do
+        is_expected.to have_subject "Access to the #{group.name} group was granted"
+        is_expected.to have_body_text /#{group.name}/
+        is_expected.to have_body_text /#{group.web_url}/
+        is_expected.to have_body_text /#{group_member.human_access}/
+      end
     end
 
     def invite_to_group(group:, email:, inviter:)
@@ -705,11 +723,13 @@ describe Notify do
       it_behaves_like 'it should not have Gmail Actions links'
       it_behaves_like "a user cannot unsubscribe through footer link"
 
-      it { is_expected.to have_subject "Invitation to join the #{group.name} group" }
-      it { is_expected.to have_body_text /#{group.name}/ }
-      it { is_expected.to have_body_text /#{group.web_url}/ }
-      it { is_expected.to have_body_text /#{group_member.human_access}/ }
-      it { is_expected.to have_body_text /#{group_member.invite_token}/ }
+      it 'contains all the useful information' do
+        is_expected.to have_subject "Invitation to join the #{group.name} group"
+        is_expected.to have_body_text /#{group.name}/
+        is_expected.to have_body_text /#{group.web_url}/
+        is_expected.to have_body_text /#{group_member.human_access}/
+        is_expected.to have_body_text /#{group_member.invite_token}/
+      end
     end
 
     describe 'group invitation accepted' do
@@ -728,11 +748,13 @@ describe Notify do
       it_behaves_like 'it should not have Gmail Actions links'
       it_behaves_like "a user cannot unsubscribe through footer link"
 
-      it { is_expected.to have_subject 'Invitation accepted' }
-      it { is_expected.to have_body_text /#{group.name}/ }
-      it { is_expected.to have_body_text /#{group.web_url}/ }
-      it { is_expected.to have_body_text /#{group_member.invite_email}/ }
-      it { is_expected.to have_body_text /#{invited_user.name}/ }
+      it 'contains all the useful information' do
+        is_expected.to have_subject 'Invitation accepted'
+        is_expected.to have_body_text /#{group.name}/
+        is_expected.to have_body_text /#{group.web_url}/
+        is_expected.to have_body_text /#{group_member.invite_email}/
+        is_expected.to have_body_text /#{invited_user.name}/
+      end
     end
 
     describe 'group invitation declined' do
@@ -750,10 +772,12 @@ describe Notify do
       it_behaves_like 'it should not have Gmail Actions links'
       it_behaves_like "a user cannot unsubscribe through footer link"
 
-      it { is_expected.to have_subject 'Invitation declined' }
-      it { is_expected.to have_body_text /#{group.name}/ }
-      it { is_expected.to have_body_text /#{group.web_url}/ }
-      it { is_expected.to have_body_text /#{group_member.invite_email}/ }
+      it 'contains all the useful information' do
+        is_expected.to have_subject 'Invitation declined'
+        is_expected.to have_body_text /#{group.name}/
+        is_expected.to have_body_text /#{group.web_url}/
+        is_expected.to have_body_text /#{group_member.invite_email}/
+      end
     end
   end
 

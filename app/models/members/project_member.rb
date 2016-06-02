@@ -152,8 +152,8 @@ class ProjectMember < Member
     super
   end
 
-  def after_decline_request
-    notification_service.decline_project_access_request(project, created_by)
+  def post_decline_request
+    notification_service.decline_project_access_request(self)
 
     super
   end

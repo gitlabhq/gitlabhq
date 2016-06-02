@@ -35,7 +35,7 @@ describe Groups::GroupMembersController do
       let(:group_user) { create(:user) }
       let(:member) do
         group.add_developer(group_user)
-        group.group_members.find_by(user_id: group_user.id)
+        group.members.find_by(user_id: group_user)
       end
 
       context 'when user does not have enough rights' do
@@ -103,7 +103,7 @@ describe Groups::GroupMembersController do
         it 'removes user from members' do
           delete :leave, group_id: group
 
-          expect(response).to set_flash.to "You left #{group.name} group."
+          expect(response).to set_flash.to "You left the \"#{group.name}\" group."
           expect(response).to redirect_to(dashboard_groups_path)
           expect(group.users).not_to include user
         end
@@ -118,8 +118,8 @@ describe Groups::GroupMembersController do
         it 'cannot removes himself from the group' do
           delete :leave, group_id: group
 
-          expect(response).to redirect_to(dashboard_groups_path)
-          expect(response).to set_flash[:alert].to "You can not leave #{group.name} group because you're the last owner. Transfer or delete the group."
+          expect(response).to redirect_to(group_path(group))
+          expect(response).to set_flash[:alert].to "You can not leave the \"#{group.name}\" group. Transfer or delete the group."
           expect(group.users).to include user
         end
       end
@@ -133,9 +133,9 @@ describe Groups::GroupMembersController do
         it 'removes user from members' do
           delete :leave, group_id: group
 
-          expect(response).to set_flash.to 'You withdrawn your access request to the group.'
+          expect(response).to set_flash.to 'Your access request to the group has been withdrawn.'
           expect(response).to redirect_to(dashboard_groups_path)
-          expect(group.group_members.request).to be_empty
+          expect(group.members.request).to be_empty
           expect(group.users).not_to include user
         end
       end
@@ -155,18 +155,18 @@ describe Groups::GroupMembersController do
 
       expect(response).to set_flash.to 'Your request for access has been queued for review.'
       expect(response).to redirect_to(group_path(group))
-      expect(group.group_members.request.find_by(created_by_id: user.id).created_by).to eq user
+      expect(group.members.request.exists?(user_id: user)).to be_truthy
       expect(group.users).not_to include user
     end
   end
 
-  describe '#approve' do
+  describe '#approve_access_request' do
     let(:group) { create(:group, :public) }
 
     context 'when member is not found' do
       it 'returns 403' do
         post :approve_access_request, group_id: group,
-                       id: 42
+                                      id: 42
 
         expect(response.status).to eq(403)
       end
@@ -177,7 +177,7 @@ describe Groups::GroupMembersController do
       let(:group_requester) { create(:user) }
       let(:member) do
         group.request_access(group_requester)
-        group.group_members.request.find_by(created_by_id: group_requester.id)
+        group.members.request.find_by(user_id: group_requester)
       end
 
       context 'when user does not have enough rights' do
@@ -188,7 +188,7 @@ describe Groups::GroupMembersController do
 
         it 'returns 403' do
           post :approve_access_request, group_id: group,
-                         id: member
+                                        id: member
 
           expect(response.status).to eq(403)
           expect(group.users).not_to include group_requester
@@ -203,7 +203,7 @@ describe Groups::GroupMembersController do
 
         it 'adds user to members' do
           post :approve_access_request, group_id: group,
-                         id: member
+                                        id: member
 
           expect(response).to redirect_to(group_group_members_path(group))
           expect(group.users).to include group_requester

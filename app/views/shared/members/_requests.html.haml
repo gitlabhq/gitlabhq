@@ -1,10 +1,8 @@
-- requesters = members.request
-
-- if requesters.any?
+- if members.any?
   .panel.panel-default
     .panel-heading
-      %strong= entity.name
+      %strong= membership_source.name
       access requests
-      %small= "(#{requesters.size})"
+      %small= "(#{members.size})"
     %ul.content-list
-      = render partial: 'shared/members/member', collection: requesters, as: :member
+      = render partial: 'shared/members/member', collection: members, as: :member

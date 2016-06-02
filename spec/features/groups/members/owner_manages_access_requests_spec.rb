@@ -22,12 +22,10 @@ feature 'Groups > Members > Owner manages access requests', feature: true do
 
     expect_visible_access_request(group, user)
 
-    perform_enqueued_jobs do
-      click_on 'Grant access'
-    end
+    perform_enqueued_jobs { click_on 'Grant access' }
 
     expect(ActionMailer::Base.deliveries.last.to).to eq [user.notification_email]
-    expect(ActionMailer::Base.deliveries.last.subject).to match /Access to #{group.name} group was granted/
+    expect(ActionMailer::Base.deliveries.last.subject).to match "Access to the #{group.name} group was granted"
   end
 
   scenario 'master can deny access' do
@@ -35,17 +33,15 @@ feature 'Groups > Members > Owner manages access requests', feature: true do
 
     expect_visible_access_request(group, user)
 
-    perform_enqueued_jobs do
-      click_on 'Deny access'
-    end
+    perform_enqueued_jobs { click_on 'Deny access' }
 
     expect(ActionMailer::Base.deliveries.last.to).to eq [user.notification_email]
-    expect(ActionMailer::Base.deliveries.last.subject).to match /Access to #{group.name} group was denied/
+    expect(ActionMailer::Base.deliveries.last.subject).to match "Access to the #{group.name} group was denied"
   end
 
 
   def expect_visible_access_request(group, user)
-    expect(group.access_requested?(user)).to be_truthy
+    expect(group.members.request.exists?(user_id: user)).to be_truthy
     expect(page).to have_content "#{group.name} access requests (1)"
     expect(page).to have_content user.name
   end

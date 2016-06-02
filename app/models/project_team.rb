@@ -22,12 +22,12 @@ class ProjectTeam
   end
 
   def find_member(user_id)
-    member = project.project_members.find_by(user_id: user_id)
+    member = project.members.non_request.find_by(user_id: user_id)
 
     # If user is not in project members
     # we should check for group membership
     if group && !member
-      member = group.group_members.find_by(user_id: user_id)
+      member = group.members.non_request.find_by(user_id: user_id)
     end
 
     member
@@ -128,12 +128,16 @@ class ProjectTeam
     end
   end
 
+  def human_max_access(user_id)
+    Gitlab::Access.options_with_owner.key(max_member_access(user_id))
+  end
+
   # This method assumes project and group members are eager loaded for optimal
   # performance.
   def max_member_access(user_id)
     access = []
 
-    project.project_members.each do |member|
+    project.members.non_request.each do |member|
       if member.user_id == user_id
         access << member.access_field if member.access_field
         break
@@ -141,7 +145,7 @@ class ProjectTeam
     end
 
     if group
-      group.group_members.each do |member|
+      group.members.non_request.each do |member|
         if member.user_id == user_id
           access << member.access_field if member.access_field
           break
@@ -174,14 +178,14 @@ class ProjectTeam
   end
 
   def fetch_members(level = nil)
-    project_members = project.project_members
-    group_members = group ? group.group_members : []
+    project_members = project.members.non_request
+    group_members = group ? group.members.non_request : []
     invited_members = []
 
     if project.invited_groups.any? && project.allowed_to_share_with_group?
       project.project_group_links.each do |group_link|
         invited_group = group_link.group
-        im = invited_group.group_members
+        im = invited_group.members.non_request
 
         if level
           int_level = GroupMember.access_level_roles[level.to_s.singularize.titleize]

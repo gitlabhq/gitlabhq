@@ -1,4 +1,0 @@
-You have been invited <%= "by #{@group_member.created_by.name} " if @group_member.created_by %>to join group <%= @group.name %> as <%= @group_member.human_access %>.
-
-Accept invitation: <%= invite_url(@token) %>
-Decline invitation: <%= decline_invite_url(@token) %>

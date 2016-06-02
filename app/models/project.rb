@@ -104,7 +104,8 @@ class Project < ActiveRecord::Base
   has_many :hooks,              dependent: :destroy, class_name: 'ProjectHook'
   has_many :protected_branches, dependent: :destroy
   has_many :project_members,    dependent: :destroy, as: :source, class_name: 'ProjectMember'
-  has_many :users, through: :project_members
+  alias_method :members, :project_members
+  has_many :users, -> { where(members: { requested_at: nil }) }, through: :project_members
   has_many :deploy_keys_projects, dependent: :destroy
   has_many :deploy_keys, through: :deploy_keys_projects
   has_many :users_star_projects, dependent: :destroy
@@ -690,6 +691,7 @@ class Project < ActiveRecord::Base
                                end
                              end
   end
+  alias_method :human_name, :name_with_namespace
 
   def path_with_namespace
     if namespace

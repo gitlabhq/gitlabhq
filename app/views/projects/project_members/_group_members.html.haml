@@ -6,8 +6,9 @@
       (#{members.count})
     - if can?(current_user, :admin_group_member, @group)
       .controls
-        = link_to group_group_members_path(@group), class: 'btn' do
-          Manage group members
+        = link_to 'Manage group members',
+                  group_group_members_path(@group),
+                  class: 'btn'
   %ul.content-list
     = render partial: 'shared/members/member',
              collection: members.limit(20),
@@ -15,7 +16,4 @@
              locals: { show_controls: false }
     - if members.size > 20
       %li
-        and
-        = members.size - 20
-        more. For full list visit
-        = link_to 'group members page', group_group_members_path(@group)
+        and #{members.count - 20} more. For full list visit #{link_to 'group members page', group_group_members_path(@group)}

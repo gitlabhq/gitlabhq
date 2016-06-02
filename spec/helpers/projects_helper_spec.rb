@@ -1,25 +1,6 @@
 require 'spec_helper'
 
 describe ProjectsHelper do
-  describe '#max_access_level' do
-    let(:master) { create(:user) }
-    let(:owner) { create(:user) }
-    let(:reporter) { create(:user) }
-    let(:group) { create(:group) }
-    let(:project) { build_stubbed(:empty_project, namespace: group) }
-
-    before do
-      group.add_master(master)
-      group.add_owner(owner)
-      group.add_reporter(reporter)
-    end
-
-    it { expect(max_access_level(project, master)).to eq 'Master' }
-    it { expect(max_access_level(project, owner)).to eq 'Owner' }
-    it { expect(max_access_level(project, reporter)).to eq 'Reporter' }
-    it { expect(max_access_level(project, build_stubbed(:user))).to be_nil }
-  end
-
   describe "#project_status_css_class" do
     it "returns appropriate class" do
       expect(project_status_css_class("started")).to eq("active")

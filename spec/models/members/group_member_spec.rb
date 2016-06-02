@@ -51,24 +51,30 @@ describe GroupMember, models: true do
       end
     end
 
-    describe 'after accept_request' do
-      let(:member) { create(:group_member, user: nil, created_by: build_stubbed(:user), requested_at: Time.now) }
+    describe '#after_accept_request' do
+      it 'calls NotificationService.accept_group_access_request' do
+        member = create(:group_member, user: build_stubbed(:user), requested_at: Time.now)
 
-      it "calls #accept_group_access_request" do
         expect_any_instance_of(NotificationService).to receive(:new_group_member)
 
-        member.accept_request
+        member.__send__(:after_accept_request)
       end
     end
 
-    describe 'after decline_request' do
-      let(:member) { create(:group_member, user: nil, created_by: build_stubbed(:user), requested_at: Time.now) }
+    describe '#post_decline_request' do
+      it 'calls NotificationService.decline_group_access_request' do
+        member = create(:group_member, user: build_stubbed(:user), requested_at: Time.now)
 
-      it "calls #decline_group_access_request" do
         expect_any_instance_of(NotificationService).to receive(:decline_group_access_request)
 
-        member.decline_request
+        member.__send__(:post_decline_request)
       end
+    end
+
+    describe '#real_source_type' do
+      subject { create(:group_member).real_source_type }
+
+      it { is_expected.to eq 'Group' }
     end
   end
 end

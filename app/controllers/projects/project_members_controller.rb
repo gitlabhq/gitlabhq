@@ -1,5 +1,5 @@
 class Projects::ProjectMembersController < Projects::ApplicationController
-  include AccessRequestActions
+  include MembershipActions
 
   # Authorize
   before_action :authorize_admin_project_member!, except: [:index, :leave, :request_access]
@@ -52,7 +52,7 @@ class Projects::ProjectMembersController < Projects::ApplicationController
 
     return render_403 unless can?(current_user, :destroy_project_member, @project_member)
 
-    @project_member.request? ? @project_member.decline_request : @project_member.destroy
+    @project_member.destroy
 
     respond_to do |format|
       format.html do
@@ -76,31 +76,6 @@ class Projects::ProjectMembersController < Projects::ApplicationController
     end
   end
 
-  def leave
-    @project_member =
-      @project.project_members.find_by(user_id: current_user.id) ||
-      @project.project_members.find_by(created_by_id: current_user.id)
-
-    if can?(current_user, :destroy_project_member, @project_member)
-      notice =
-        if @project_member.request?
-          'You withdrawn your access request to the project.'
-        else
-          'You left the project.'
-        end
-      @project_member.destroy
-
-      redirect_to dashboard_projects_path, notice: notice
-    else
-      if current_user == @project.owner
-        message = 'You can not leave your own project. Transfer or delete the project.'
-        redirect_back_or_default(default: { action: 'index' }, options: { alert: message })
-      else
-        render_403
-      end
-    end
-  end
-
   def apply_import
     source_project = Project.find(params[:source_project_id])
 
@@ -121,16 +96,10 @@ class Projects::ProjectMembersController < Projects::ApplicationController
     params.require(:project_member).permit(:user_id, :access_level)
   end
 
-  # AccessRequestActions concern
-  def access_requestable_resource
-    @project
-  end
+  # MembershipActions concern
+  alias_method :membershipable, :project
 
-  def access_requestable_resource_path
-    namespace_project_path(@project.namespace, @project)
-  end
-
-  def access_requestable_resource_members_path
-    namespace_project_project_members_path(@project.namespace, @project)
+  def cannot_leave?
+    current_user == @project.owner
   end
 end

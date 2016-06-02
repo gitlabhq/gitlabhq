@@ -20,6 +20,11 @@ class GroupMember < Member
     access_level
   end
 
+  # Because source_type is `Namespace`...
+  def real_source_type
+    'Group'
+  end
+
   private
 
   def send_invite
@@ -60,8 +65,8 @@ class GroupMember < Member
     super
   end
 
-  def after_decline_request
-    notification_service.decline_group_access_request(group, created_by)
+  def post_decline_request
+    notification_service.decline_group_access_request(self)
 
     super
   end

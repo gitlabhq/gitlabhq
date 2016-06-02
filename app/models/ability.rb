@@ -460,8 +460,6 @@ class Ability
           rules << :destroy_group_member
         elsif user == target_user
           rules << :destroy_group_member
-        elsif subject.request? && user == subject.created_by
-          rules << :destroy_group_member
         end
       end
 
@@ -480,8 +478,6 @@ class Ability
           rules << :update_project_member
           rules << :destroy_project_member
         elsif user == target_user
-          rules << :destroy_project_member
-        elsif subject.request? && user == subject.created_by
           rules << :destroy_project_member
         end
       end

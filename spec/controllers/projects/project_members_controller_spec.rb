@@ -80,7 +80,7 @@ describe Projects::ProjectMembersController do
       let(:team_user) { create(:user) }
       let(:member) do
         project.team << [team_user, :developer]
-        project.project_members.find_by(user_id: team_user.id)
+        project.members.find_by(user_id: team_user.id)
       end
 
       context 'when user does not have enough rights' do
@@ -154,7 +154,7 @@ describe Projects::ProjectMembersController do
           delete :leave, namespace_id: project.namespace,
                          project_id: project
 
-          expect(response).to set_flash.to 'You left the project.'
+          expect(response).to set_flash.to "You left the \"#{project.human_name}\" project."
           expect(response).to redirect_to(dashboard_projects_path)
           expect(project.users).not_to include user
         end
@@ -167,14 +167,14 @@ describe Projects::ProjectMembersController do
           sign_in(user)
         end
 
-        it 'cannot removes himself from the project' do
+        it 'cannot remove himself from the project' do
           delete :leave, namespace_id: project.namespace,
                          project_id: project
 
           expect(response).to redirect_to(
-            namespace_project_project_members_path(project.namespace, project)
+            namespace_project_path(project.namespace, project)
           )
-          expect(response).to set_flash[:alert].to 'You can not leave your own project. Transfer or delete the project.'
+          expect(response).to set_flash[:alert].to "You can not leave the \"#{project.human_name}\" project. Transfer or delete the project."
           expect(project.users).to include user
         end
       end
@@ -189,9 +189,9 @@ describe Projects::ProjectMembersController do
           delete :leave, namespace_id: project.namespace,
                          project_id: project
 
-          expect(response).to set_flash.to 'You withdrawn your access request to the project.'
+          expect(response).to set_flash.to 'Your access request to the project has been withdrawn.'
           expect(response).to redirect_to(dashboard_projects_path)
-          expect(project.project_members.request).to be_empty
+          expect(project.members.request).to be_empty
           expect(project.users).not_to include user
         end
       end
@@ -214,7 +214,7 @@ describe Projects::ProjectMembersController do
       expect(response).to redirect_to(
         namespace_project_path(project.namespace, project)
       )
-      expect(project.project_members.request.find_by(created_by_id: user.id).created_by).to eq user
+      expect(project.members.request.exists?(user_id: user)).to be_truthy
       expect(project.users).not_to include user
     end
   end
@@ -225,8 +225,8 @@ describe Projects::ProjectMembersController do
     context 'when member is not found' do
       it 'returns 404' do
         post :approve_access_request, namespace_id: project.namespace,
-                       project_id: project,
-                       id: 42
+                                      project_id: project,
+                                      id: 42
 
         expect(response.status).to eq(404)
       end
@@ -237,7 +237,7 @@ describe Projects::ProjectMembersController do
       let(:team_requester) { create(:user) }
       let(:member) do
         project.request_access(team_requester)
-        project.project_members.request.find_by(created_by_id: team_requester.id)
+        project.members.request.find_by(user_id: team_requester.id)
       end
 
       context 'when user does not have enough rights' do
@@ -248,8 +248,8 @@ describe Projects::ProjectMembersController do
 
         it 'returns 404' do
           post :approve_access_request, namespace_id: project.namespace,
-                         project_id: project,
-                         id: member
+                                        project_id: project,
+                                        id: member
 
           expect(response.status).to eq(404)
           expect(project.users).not_to include team_requester
@@ -264,8 +264,8 @@ describe Projects::ProjectMembersController do
 
         it 'adds user to members' do
           post :approve_access_request, namespace_id: project.namespace,
-                         project_id: project,
-                         id: member
+                                        project_id: project,
+                                        id: member
 
           expect(response).to redirect_to(
             namespace_project_project_members_path(project.namespace, project)

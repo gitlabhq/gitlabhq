@@ -8,7 +8,7 @@ class Member < ActiveRecord::Base
   belongs_to :user
   belongs_to :source, polymorphic: true
 
-  validates :user, presence: true, unless: :pending?
+  validates :user, presence: true, unless: :invite?
   validates :source, presence: true
   validates :user_id, uniqueness: { scope: [:source_type, :source_id],
                                     message: "already exists in source",
@@ -27,16 +27,17 @@ class Member < ActiveRecord::Base
     }
 
   scope :invite, -> { where.not(invite_token: nil) }
+  scope :non_invite, -> { where(invite_token: nil) }
   scope :request, -> { where.not(requested_at: nil) }
   scope :non_request, -> { where(requested_at: nil) }
-  scope :non_pending, -> { where.not(user_id: nil) }
+  scope :non_pending, -> { non_request.non_invite }
 
   scope :guests, -> { where(access_level: GUEST) }
   scope :reporters, -> { where(access_level: REPORTER) }
   scope :developers, -> { where(access_level: DEVELOPER) }
   scope :masters,  -> { where(access_level: MASTER) }
   scope :owners,  -> { where(access_level: OWNER) }
-  scope :admins,  -> { where(access_level: [OWNER, MASTER]) }
+  scope :owners_and_masters,  -> { where(access_level: [OWNER, MASTER]) }
 
   before_validation :generate_invite_token, on: :create, if: -> (member) { member.invite_email.present? }
 
@@ -46,6 +47,7 @@ class Member < ActiveRecord::Base
   after_create :post_create_hook, unless: :pending?
   after_update :post_update_hook, unless: :pending?
   after_destroy :post_destroy_hook, unless: :pending?
+  after_destroy :post_decline_request, if: :request?
 
   delegate :name, :username, :email, to: :user, prefix: true
 
@@ -102,34 +104,29 @@ class Member < ActiveRecord::Base
     end
   end
 
-  def pending?
-    request? || invite?
-  end
-
-  def request?
-    user.nil? && created_by.present? && requested_at.present?
+  def real_source_type
+    source_type
   end
 
   def invite?
     self.invite_token.present?
   end
 
+  def request?
+    requested_at.present?
+  end
+
+  def pending?
+    invite? || request?
+  end
+
   def accept_request
     return false unless request?
 
-    updated = self.update(user: created_by, requested_at: nil)
+    updated = self.update(requested_at: nil)
     after_accept_request if updated
 
     updated
-  end
-
-  def decline_request
-    return false unless request?
-
-    self.destroy
-    after_decline_request if destroyed?
-
-    destroyed?
   end
 
   def accept_invite!(new_user)
@@ -217,7 +214,7 @@ class Member < ActiveRecord::Base
     post_create_hook
   end
 
-  def after_decline_request
+  def post_decline_request
     # override in subclass
   end
 

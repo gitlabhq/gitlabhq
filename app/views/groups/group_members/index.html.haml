@@ -11,7 +11,7 @@
         .new-group-member-holder
           = render "new_group_member"
 
-    = render "shared/members/requests", entity: @group, members: @members
+    = render 'shared/members/requests', membership_source: @group, members: @members.request
 
   .panel.panel-default
     .panel-heading

@@ -1,104 +1,81 @@
 module Emails
   module Members
     extend ActiveSupport::Concern
+    include MembersHelper
 
     included do
-      attr_reader :member_target_type
-      helper_method :member, :access_requester, :member_target_type, :member_target_name, :member_target_url
+      helper_method :member_source, :member
     end
 
-    def member_access_requested_email(member_target_type, member_id)
-      @member_target_type = member_target_type
+    def member_access_requested_email(member_source_type, member_id)
+      @member_source_type = member_source_type
       @member_id = member_id
 
-      admins = User.where(id: target.public_send(members_association).admins.pluck(:user_id)).pluck(:notification_email)
+      admins = member_source.members.owners_and_masters.includes(:user).pluck(:notification_email)
 
       mail(to: admins,
-           subject: subject("Request to join the #{member_target_name} #{member_target_type}"))
+           subject: subject("Request to join the #{member_source.human_name} #{member_source.model_name.singular}"))
     end
 
-    def member_access_granted_email(member_target_type, member_id)
-      @member_target_type = member_target_type
+    def member_access_granted_email(member_source_type, member_id)
+      @member_source_type = member_source_type
       @member_id = member_id
 
       mail(to: member.user.notification_email,
-           subject: subject("Access to the #{member_target_name} #{member_target_type} was granted"))
+           subject: subject("Access to the #{member_source.human_name} #{member_source.model_name.singular} was granted"))
     end
 
-    def member_access_denied_email(member_target_type, target_id, user_id)
-      @member_target_type = member_target_type
-      @target = target_class.find(target_id)
+    def member_access_denied_email(member_source_type, source_id, user_id)
+      @member_source_type = member_source_type
+      @member_source = member_source_class.find(source_id)
+      requester = User.find(user_id)
 
-      mail(to: User.find(user_id).notification_email,
-           subject: subject("Access to the #{member_target_name} #{member_target_type} was denied"))
+      mail(to: requester.notification_email,
+           subject: subject("Access to the #{member_source.human_name} #{member_source.model_name.singular} was denied"))
     end
 
-    def member_invited_email(member_target_type, member_id, token)
-      @member_target_type = member_target_type
+    def member_invited_email(member_source_type, member_id, token)
+      @member_source_type = member_source_type
       @member_id = member_id
       @token = token
 
       mail(to: member.invite_email,
-           subject: "Invitation to join the #{member_target_name} #{member_target_type}")
+           subject: "Invitation to join the #{member_source.human_name} #{member_source.model_name.singular}")
     end
 
-    def member_invite_accepted_email(member_target_type, member_id)
-      @member_target_type = member_target_type
+    def member_invite_accepted_email(member_source_type, member_id)
+      @member_source_type = member_source_type
       @member_id = member_id
-      return if access_requester.nil?
+      return unless member.created_by
 
-      mail(to: access_requester.notification_email,
+      mail(to: member.created_by.notification_email,
            subject: subject('Invitation accepted'))
     end
 
-    def member_invite_declined_email(member_target_type, target_id, invite_email, created_by_id)
-      return if created_by_id.nil?
+    def member_invite_declined_email(member_source_type, source_id, invite_email, created_by_id)
+      return unless created_by_id
 
-      @member_target_type = member_target_type
-      @target = target_class.find(target_id)
+      @member_source_type = member_source_type
+      @member_source = member_source_class.find(source_id)
       @invite_email = invite_email
+      inviter = User.find(created_by_id)
 
-      mail(to: User.find(created_by_id).notification_email,
+      mail(to: inviter.notification_email,
            subject: subject('Invitation declined'))
     end
 
     def member
-      @member ||= member_class.find(@member_id)
+      @member ||= Member.find(@member_id)
     end
 
-    def access_requester
-      @access_requester ||= member.created_by
-    end
-
-    def member_target_name
-      case member_target_type
-      when 'project'
-        target.name_with_namespace
-      else
-        target.name
-      end
-    end
-
-    def member_target_url
-      @member_target_url ||= target.web_url
+    def member_source
+      @member_source ||= member.source
     end
 
     private
 
-    def target
-      @target ||= member.public_send(member_target_type)
-    end
-
-    def target_class
-      @target_class ||= member_target_type.classify.constantize
-    end
-
-    def member_class
-      @member_class ||= "#{member_target_type.classify}Member".constantize
-    end
-
-    def members_association
-      @members_association ||= member_class.to_s.tableize
+    def member_source_class
+      @member_source_type.classify.constantize
     end
   end
 end

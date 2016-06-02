@@ -1,5 +1,5 @@
 class Groups::GroupMembersController < Groups::ApplicationController
-  include AccessRequestActions
+  include MembershipActions
 
   # Authorize
   before_action :authorize_admin_group_member!, except: [:index, :leave, :request_access]
@@ -38,7 +38,7 @@ class Groups::GroupMembersController < Groups::ApplicationController
 
     return render_403 unless can?(current_user, :destroy_group_member, @group_member)
 
-    @group_member.request? ? @group_member.decline_request : @group_member.destroy
+    @group_member.destroy
 
     respond_to do |format|
       format.html { redirect_to group_group_members_path(@group), notice: 'User was successfully removed from group.' }
@@ -60,46 +60,16 @@ class Groups::GroupMembersController < Groups::ApplicationController
     end
   end
 
-  def leave
-    @group_member =
-      @group.group_members.find_by(user_id: current_user.id) ||
-      @group.group_members.find_by(created_by_id: current_user.id)
-
-    if can?(current_user, :destroy_group_member, @group_member)
-      notice =
-        if @group_member.request?
-          'You withdrawn your access request to the group.'
-        else
-          "You left #{@group.name} group."
-        end
-      @group_member.destroy
-
-      redirect_to dashboard_groups_path, notice: notice
-    else
-      if @group.last_owner?(current_user)
-        redirect_to(dashboard_groups_path, alert: "You can not leave #{group.name} group because you're the last owner. Transfer or delete the group.")
-      else
-        return render_403
-      end
-    end
-  end
-
   protected
 
   def member_params
     params.require(:group_member).permit(:access_level, :user_id)
   end
 
-  # AccessRequestActions concern
-  def access_requestable_resource
-    @group
-  end
+  # MembershipActions concern
+  alias_method :membershipable, :group
 
-  def access_requestable_resource_path
-    group_path(@group)
-  end
-
-  def access_requestable_resource_members_path
-    group_group_members_path(@group)
+  def cannot_leave?
+    @group.last_owner?(current_user)
   end
 end

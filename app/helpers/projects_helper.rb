@@ -1,8 +1,4 @@
 module ProjectsHelper
-  def max_access_level(project, user)
-    Gitlab::Access.options_with_owner.key(project.team.max_member_access(user.id))
-  end
-
   def link_to_project(project)
     link_to [project.namespace.becomes(Namespace), project], title: h(project.name) do
       title = content_tag(:span, project.name, class: 'project-name')
