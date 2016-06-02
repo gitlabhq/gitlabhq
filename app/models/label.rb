@@ -26,7 +26,7 @@ class Label < ActiveRecord::Base
             format: { with: /\A[^&\?,]+\z/ },
             uniqueness: { scope: :project_id }
 
-  before_save :nillify_priority
+  before_save :nullify_priority
 
   default_scope { order(title: :asc) }
 
@@ -129,7 +129,7 @@ class Label < ActiveRecord::Base
     end
   end
 
-  def nillify_priority
+  def nullify_priority
     self.priority = nil if priority.blank?
   end
 end
