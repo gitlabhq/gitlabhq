@@ -213,6 +213,10 @@ module Issuable
     hook_data
   end
 
+  def labels_array
+    labels.to_a
+  end
+
   def label_names
     labels.order('title ASC').pluck(:title)
   end
