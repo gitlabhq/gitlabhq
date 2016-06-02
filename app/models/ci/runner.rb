@@ -26,6 +26,10 @@ module Ci
         .where("ci_runner_projects.gl_project_id = :project_id OR ci_runners.is_shared = true", project_id: project_id)
     end
 
+    scope :specific_for, ->(project) do
+      where(locked: false).where.not(id: project.runners).specific
+    end
+
     validate :tag_constraints
 
     acts_as_taggable

@@ -112,6 +112,60 @@ describe Ci::Runner, models: true do
     end
   end
 
+  describe :specific_for do
+    let(:runner) { create(:ci_runner) }
+    let(:project) { create(:project) }
+    let(:another_project) { create(:project) }
+
+    before { project.runners << runner }
+
+    context 'with shared runners' do
+      before { runner.update(is_shared: true) }
+
+      context 'should not give owned runner' do
+        subject { Ci::Runner.specific_for(project) }
+
+        it { is_expected.to be_empty }
+      end
+
+      context 'should not give shared runner' do
+        subject { Ci::Runner.specific_for(another_project) }
+
+        it { is_expected.to be_empty }
+      end
+    end
+
+    context 'with unlocked runner' do
+      context 'should not give owned runner' do
+        subject { Ci::Runner.specific_for(project) }
+
+        it { is_expected.to be_empty }
+      end
+
+      context 'should give a specific runner' do
+        subject { Ci::Runner.specific_for(another_project) }
+
+        it { is_expected.to contain_exactly(runner) }
+      end
+    end
+
+    context 'with locked runner' do
+      before { runner.update(locked: true) }
+
+      context 'should not give owned runner' do
+        subject { Ci::Runner.specific_for(project) }
+
+        it { is_expected.to be_empty }
+      end
+
+      context 'should not give a locked runner' do
+        subject { Ci::Runner.specific_for(another_project) }
+
+        it { is_expected.to be_empty }
+      end
+    end
+  end
+
   describe "belongs_to_one_project?" do
     it "returns false if there are two projects runner assigned to" do
       runner = FactoryGirl.create(:ci_runner)
