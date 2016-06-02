@@ -56,7 +56,8 @@
           = icon('clock-o')
           %span
             - if issuable.milestone
-              = issuable.milestone.title
+              %span.has-tooltip{"data-container" => "body", "data-placement" => "left", "data-original-title" => milestone_remaining_days(issuable.milestone, false)}
+                = issuable.milestone.title
             - else
               None
         .title.hide-collapsed
@@ -67,7 +68,8 @@
         .value.bold.hide-collapsed
           - if issuable.milestone
             = link_to namespace_project_milestone_path(@project.namespace, @project, issuable.milestone) do
-              = issuable.milestone.title
+              %span.has-tooltip{"data-container" => "body", "data-original-title" => milestone_remaining_days(issuable.milestone, false)}
+                = issuable.milestone.title
           - else
             .light None
 
