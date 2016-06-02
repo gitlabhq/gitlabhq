@@ -32,6 +32,11 @@ module Gitlab
                                                                     project: project)
       end
 
+      # Loops through the tree of models defined in import_export.yml and
+      # finds them in the imported JSON so they can be instantiated and saved
+      # in the DB. The structure and relationships between models are guessed from
+      # the configuration yaml file too.
+      # Finally, it updates each attribute in the newly imported project.
       def create_relations
         saved = []
         default_relation_list.each do |relation|
