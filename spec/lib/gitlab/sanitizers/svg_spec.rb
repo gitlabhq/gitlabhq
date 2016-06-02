@@ -2,12 +2,12 @@ require 'spec_helper'
 
 describe Gitlab::Sanitizers::SVG do
   let(:scrubber) { Gitlab::Sanitizers::SVG::Scrubber.new }
-  let(:namespace) { double(Nokogiri::XML::Namespace, prefix: 'xlink') }
-  let(:namespaced_attr) { double(Nokogiri::XML::Attr, name: 'href', namespace: namespace) }
+  let(:namespace) { double(Nokogiri::XML::Namespace, prefix: 'xlink', href: 'http://www.w3.org/1999/xlink') }
+  let(:namespaced_attr) { double(Nokogiri::XML::Attr, name: 'href', namespace: namespace, value: '#awesome_id') }
 
   context 'scrubber' do
     describe '#scrub' do
-      let(:invalid_element) { double(Nokogiri::XML::Node, name: 'invalid') }
+      let(:invalid_element) { double(Nokogiri::XML::Node, name: 'invalid', value: 'invalid') }
       let(:invalid_attribute) { double(Nokogiri::XML::Attr, name: 'invalid', namespace: nil) }
       let(:valid_element) { double(Nokogiri::XML::Node, name: 'use') }
 
@@ -42,6 +42,18 @@ describe Gitlab::Sanitizers::SVG do
     describe '#attribute_name_with_namespace' do
       it 'returns name with prefix when attribute is namespaced' do
         expect(scrubber.attribute_name_with_namespace(namespaced_attr)).to eq('xlink:href')
+      end
+    end
+
+    describe '#unsafe_href?' do
+      let(:unsafe_attr) { double(Nokogiri::XML::Attr, name: 'href', namespace: namespace, value: 'http://evilsite.example.com/random.svg') }
+
+      it 'returns true if href attribute is an external url' do
+        expect(scrubber.unsafe_href?(unsafe_attr)).to be_truthy
+      end
+
+      it 'returns false if href atttribute is an internal reference' do
+        expect(scrubber.unsafe_href?(namespaced_attr)).to be_falsey
       end
     end
   end
