@@ -126,4 +126,8 @@ if Gitlab::Metrics.enabled?
   GC::Profiler.enable
 
   Gitlab::Metrics::Sampler.new.start
+
+  Gitlab::Metrics::Instrumentation.configure do |config|
+    config.instrument_instance_methods(Gitlab::InsecureKeyFingerprint)
+  end
 end
