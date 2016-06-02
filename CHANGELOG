@@ -30,6 +30,7 @@ v 8.9.0 (unreleased)
   - Add Application Setting to configure Container Registry token expire delay (default 5min)
   - Cache assigned issue and merge request counts in sidebar nav
   - Cache project build count in sidebar nav
+  - Add milestone expire date to the right sidebar
 
 v 8.8.3
   - Fix 404 page when viewing TODOs that contain milestones or labels in different projects. !4312
