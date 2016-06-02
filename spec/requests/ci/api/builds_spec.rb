@@ -22,6 +22,7 @@ describe Ci::API::API do
       it "should start a build" do
         commit = FactoryGirl.create(:ci_commit, project: project, ref: 'master')
         commit.create_builds(nil)
+        commit.save
         build = commit.builds.first
 
         post ci_api("/builds/register"), token: runner.token, info: { platform: :darwin }
@@ -58,6 +59,7 @@ describe Ci::API::API do
       it "returns options" do
         commit = FactoryGirl.create(:ci_commit, project: project, ref: 'master')
         commit.create_builds(nil)
+        commit.save
 
         post ci_api("/builds/register"), token: runner.token, info: { platform: :darwin }
 
@@ -68,6 +70,7 @@ describe Ci::API::API do
       it "returns variables" do
         commit = FactoryGirl.create(:ci_commit, project: project, ref: 'master')
         commit.create_builds(nil)
+        commit.save
         project.variables << Ci::Variable.new(key: "SECRET_KEY", value: "secret_value")
 
         post ci_api("/builds/register"), token: runner.token, info: { platform: :darwin }
@@ -87,6 +90,7 @@ describe Ci::API::API do
 
         trigger_request = FactoryGirl.create(:ci_trigger_request_with_variables, commit: commit, trigger: trigger)
         commit.create_builds(nil, trigger_request)
+        commit.save
         project.variables << Ci::Variable.new(key: "SECRET_KEY", value: "secret_value")
 
         post ci_api("/builds/register"), token: runner.token, info: { platform: :darwin }
@@ -105,6 +109,7 @@ describe Ci::API::API do
       it "returns dependent builds" do
         commit = FactoryGirl.create(:ci_commit, project: project, ref: 'master')
         commit.create_builds(nil, nil)
+        commit.save
         commit.builds.where(stage: 'test').each(&:success)
 
         post ci_api("/builds/register"), token: runner.token, info: { platform: :darwin }

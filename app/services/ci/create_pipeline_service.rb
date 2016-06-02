@@ -31,7 +31,7 @@ module Ci
         pipeline.errors.add(:base, 'No builds for this pipeline.')
       end
 
-      pipeline.update_state!
+      pipeline.save
       pipeline
     end
 

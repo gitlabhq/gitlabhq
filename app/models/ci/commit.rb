@@ -13,7 +13,7 @@ module Ci
     validate :valid_commit_sha
 
     # Invalidate object and save if when touched
-    after_touch :update_state!
+    after_touch :update_state
 
     def self.truncate_sha(sha)
       sha[0...8]
@@ -159,7 +159,9 @@ module Ci
       git_commit_message =~ /(\[ci skip\])/ if git_commit_message
     end
 
-    def update_state!
+    private
+
+    def update_state
       statuses.reload
       self.status = if yaml_errors.blank?
                       statuses.latest.status || 'skipped'

@@ -15,6 +15,7 @@ module Ci
       )
 
       if ci_commit.create_builds(nil, trigger_request)
+        ci_commit.save
         trigger_request
       end
     end

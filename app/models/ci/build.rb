@@ -66,7 +66,10 @@ module Ci
       # We use around_transition to create builds for next stage as soon as possible, before the `after_*` is executed
       around_transition any => [:success, :failed, :canceled] do |build, block|
         block.call
-        build.commit.create_next_builds(build) if build.commit
+        if build.commit
+          build.commit.create_next_builds(build)
+          build.commit.save
+        end
       end
 
       after_transition any => [:success, :failed, :canceled] do |build|
