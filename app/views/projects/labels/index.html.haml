@@ -12,8 +12,8 @@
 .labels
   - hide_class = 'hide' if ((params[:page].present? and params[:page] != '1') or @labels.blank?)
   .prioritized-labels{ class: hide_class }
-    %h5 Prioritized Label
-    %ul.content-list.manage-labels-list.js-prioritized-labels{ "data-url" => set_sorting_namespace_project_labels_path(@project.namespace, @project) }
+    %h5 Prioritized Labels
+    %ul.content-list.manage-labels-list.js-prioritized-labels{ "data-url" => set_priorities_namespace_project_labels_path(@project.namespace, @project) }
       - if @prioritized_labels.present?
         = render @prioritized_labels
       - else
