@@ -34,3 +34,23 @@ We want GitLab to work well on small mobile screens as well. Size limitations ma
 part of the UI for smaller resolutions in favor of a better user experience. 
 However core functionality like browsing files, creating issues, writing comments, should
 be available on all resolutions.
+
+## Icons
+
+* `trash` icon for button or link that does destructive action like removing 
+information from database or file system
+* `x` icon for closing/hiding UI element. For example close modal window
+* `pencil` icon for edit button or link
+* `eye` icon for subscribe action
+* `rss` for rss/atom feed
+* `plus` for link or dropdown that lead to page wher eyou create new object (For example new issue page)
+
+
+## Buttons
+
+* Button should contain icon or text. Exceptions should be approved by UX designer.
+* Use gray button on white background or white button on gray background.
+* Use red button for destructive actions (not revertable). For example removing issue.
+* Use green or blue button for primary action. Primary button should be only one. 
+Do not use both green and blue button in one form. 
+
