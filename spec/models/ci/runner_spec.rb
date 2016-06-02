@@ -40,7 +40,9 @@ describe Ci::Runner, models: true do
     let!(:project) { FactoryGirl.create :empty_project }
     let!(:shared_runner) { FactoryGirl.create(:ci_runner, :shared) }
 
-    before { shared_runner.assign_to(project) }
+    before do
+      shared_runner.assign_to(project)
+    end
 
     it { expect(shared_runner).to be_specific }
     it { expect(shared_runner.projects).to eq([project]) }
@@ -64,19 +66,25 @@ describe Ci::Runner, models: true do
     subject { runner.online? }
 
     context 'never contacted' do
-      before { runner.contacted_at = nil }
+      before do
+        runner.contacted_at = nil
+      end
 
       it { is_expected.to be_falsey }
     end
 
     context 'contacted long time ago time' do
-      before { runner.contacted_at = 1.year.ago }
+      before do
+        runner.contacted_at = 1.year.ago
+      end
 
       it { is_expected.to be_falsey }
     end
 
     context 'contacted 1s ago' do
-      before { runner.contacted_at = 1.second.ago }
+      before do
+        runner.contacted_at = 1.second.ago
+      end
 
       it { is_expected.to be_truthy }
     end
@@ -88,25 +96,33 @@ describe Ci::Runner, models: true do
     subject { runner.status }
 
     context 'never connected' do
-      before { runner.contacted_at = nil }
+      before do
+        runner.contacted_at = nil
+      end
 
       it { is_expected.to eq(:not_connected) }
     end
 
     context 'contacted 1s ago' do
-      before { runner.contacted_at = 1.second.ago }
+      before do
+        runner.contacted_at = 1.second.ago
+      end
 
       it { is_expected.to eq(:online) }
     end
 
     context 'contacted long time ago' do
-      before { runner.contacted_at = 1.year.ago }
+      before do
+        runner.contacted_at = 1.year.ago
+      end
 
       it { is_expected.to eq(:offline) }
     end
 
     context 'inactive' do
-      before { runner.active = false }
+      before do
+        runner.active = false
+      end
 
       it { is_expected.to eq(:paused) }
     end
@@ -117,10 +133,14 @@ describe Ci::Runner, models: true do
     let(:project) { create(:project) }
     let(:another_project) { create(:project) }
 
-    before { project.runners << runner }
+    before do
+      project.runners << runner
+    end
 
     context 'with shared runners' do
-      before { runner.update(is_shared: true) }
+      before do
+        runner.update(is_shared: true)
+      end
 
       context 'should not give owned runner' do
         subject { Ci::Runner.specific_for(project) }
@@ -150,7 +170,9 @@ describe Ci::Runner, models: true do
     end
 
     context 'with locked runner' do
-      before { runner.update(locked: true) }
+      before do
+        runner.update(locked: true)
+      end
 
       context 'should not give owned runner' do
         subject { Ci::Runner.specific_for(project) }
