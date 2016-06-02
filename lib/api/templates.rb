@@ -1,7 +1,8 @@
 module API
   class Templates < Grape::API
     TEMPLATE_TYPES = {
-      gitignores:     Gitlab::Template::Gitignore
+      gitignores:     Gitlab::Template::Gitignore,
+      gitlab_ci_ymls: Gitlab::Template::GitlabCIYml
     }.freeze
 
     TEMPLATE_TYPES.each do |template, klass|

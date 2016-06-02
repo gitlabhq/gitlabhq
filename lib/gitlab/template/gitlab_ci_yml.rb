@@ -1,20 +1,20 @@
 module Gitlab
   module Template
-    class Gitignore < BaseTemplate
+    class GitlabCIYml < BaseTemplate
       class << self
         def extension
-          '.gitignore'
+          '.gitlab-ci.yml'
         end
 
         def categories
           {
-            "Languages" => '',
-            "Global"    => 'Global'
+            "General" => '',
+            "Pages"   =>'Pages'
           }
         end
 
         def base_dir
-          Rails.root.join('vendor/gitignore')
+          Rails.root.join('vendor/gitlab-ci-yml')
         end
       end
     end

@@ -13,40 +13,53 @@ module Gitlab
         File.read(@path)
       end
 
+      def categories
+        raise NotImplementedError
+      end
+
+      def extension
+        raise NotImplementedError
+      end
+
+      def base_dir
+        raise NotImplementedError
+      end
+
       class << self
         def all
-          self.category_directories.flat_map do |dir|
-            templates_for_folder(dir)
-          end
+          self.categories.keys.flat_map { |cat| by_category(cat) }
         end
 
         def find(key)
           file_name = "#{key}#{self.extension}"
 
           directory = select_directory(file_name)
-          directory ? new(File.join(directory, file_name)) : nil
+          directory ? new(File.join(category_directory(directory), file_name)) : nil
         end
 
         def by_category(category)
-          templates_for_folder(categories[category])
+          templates_for_directory(category_directory(category))
         end
 
-        def category_directories
-          self.categories.values.map { |subdir| File.join(base_dir, subdir)}
+        def category_directory(category)
+          File.join(base_dir, categories[category])
         end
 
         private
 
         def select_directory(file_name)
-          category_directories.find { |dir| File.exist?(File.join(dir, file_name)) }
+          categories.keys.find do |category|
+            File.exist?(File.join(category_directory(category), file_name))
+          end
         end
 
-        def templates_for_folder(dir)
-          Dir.glob("#{dir.to_s}/*#{self.extension}").select { |f| f =~ filter_regex }.map { |f| new(f) }
+        def templates_for_directory(dir)
+          dir << '/' unless dir.end_with?('/')
+          Dir.glob(File.join(dir, "*#{self.extension}")).select { |f| f =~ filter_regex }.map { |f| new(f) }
         end
 
         def filter_regex
-          /#{Regexp.escape(extension)}\z/
+          @filter_reges ||= /#{Regexp.escape(extension)}\z/
         end
       end
     end
