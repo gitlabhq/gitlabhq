@@ -29,6 +29,7 @@ class Dispatcher
         new Todos()
       when 'projects:milestones:new', 'projects:milestones:edit'
         new ZenMode()
+        new DueDateSelect()
         new GLForm($('.milestone-form'))
       when 'groups:milestones:new'
         new ZenMode()

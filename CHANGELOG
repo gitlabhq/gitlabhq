@@ -73,6 +73,8 @@ v 8.8.5 (unreleased)
 
 v 8.8.4
   - Fix LDAP-based login for users with 2FA enabled. !4493
+  - Added descriptions to notification settings dropdown
+  - Due date can be removed from milestones
 
 v 8.8.3
   - Fix 404 page when viewing TODOs that contain milestones or labels in different projects. !4312
