@@ -15,6 +15,7 @@ v 8.8.3
   - Fix incorrect links on pipeline page when merge request created from fork.  !4376
   - Use downcased path to container repository as this is expected path by Docker. !4420
   - Fix wiki project clone address error (chujinjin). !4429
+  - Fix serious performance bug with rendering Markdown with InlineDiffFilter.  !4392
   - In search results, only show notes on confidential issues that the user has access to
 
 v 8.8.2

@@ -8,14 +8,18 @@ module Banzai
           next if has_ancestor?(node, IGNORED_ANCESTOR_TAGS)
 
           content = node.to_html
-          content = content.gsub(/(?:\[\-(.*?)\-\]|\{\-(.*?)\-\})/, '<span class="idiff left right deletion">\1\2</span>')
-          content = content.gsub(/(?:\[\+(.*?)\+\]|\{\+(.*?)\+\})/, '<span class="idiff left right addition">\1\2</span>')
+          html_content = inline_diff_filter(content)
 
-          next if html == content
+          next if content == html_content
 
-          node.replace(content)
+          node.replace(html_content)
         end
         doc
+      end
+
+      def inline_diff_filter(text)
+        html_content = text.gsub(/(?:\[\-(.*?)\-\]|\{\-(.*?)\-\})/, '<span class="idiff left right deletion">\1\2</span>')
+        html_content.gsub(/(?:\[\+(.*?)\+\]|\{\+(.*?)\+\})/, '<span class="idiff left right addition">\1\2</span>')
       end
     end
   end
