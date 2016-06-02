@@ -74,7 +74,7 @@ module Issuable
     def update_assignee_cache_counts
       # make sure we flush the cache for both the old *and* new assignee
       User.find(assignee_id_was).update_cache_counts if assignee_id_was
-      assignee.update_cache_counts if assignee_id
+      assignee.update_cache_counts if assignee
     end
   end
 

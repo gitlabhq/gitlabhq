@@ -269,4 +269,21 @@ describe Issue, models: true do
       end
     end
   end
+
+  describe 'cached counts' do
+    it 'updates when assignees change' do
+      user1 = create(:user)
+      user2 = create(:user)
+      issue = create(:issue, assignee: user1)
+
+      expect(user1.assigned_open_issues_count).to eq(1)
+      expect(user2.assigned_open_issues_count).to eq(0)
+
+      issue.assignee = user2
+      issue.save
+
+      expect(user1.assigned_open_issues_count).to eq(0)
+      expect(user2.assigned_open_issues_count).to eq(1)
+    end
+  end
 end
