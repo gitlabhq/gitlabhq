@@ -29,7 +29,8 @@ module Ci
           required_attributes! [:token]
 
           attributes = { description: params[:description],
-                         tag_list: params[:tag_list] }
+                         tag_list: params[:tag_list],
+                         locked: !!params[:locked] }
 
           unless params[:run_untagged].nil?
             attributes[:run_untagged] = params[:run_untagged]

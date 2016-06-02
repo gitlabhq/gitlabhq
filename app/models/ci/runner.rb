@@ -4,7 +4,7 @@ module Ci
 
     LAST_CONTACT_TIME = 5.minutes.ago
     AVAILABLE_SCOPES = %w[specific shared active paused online]
-    FORM_EDITABLE = %i[description tag_list active run_untagged]
+    FORM_EDITABLE = %i[description tag_list active run_untagged locked]
 
     has_many :builds, class_name: 'Ci::Build'
     has_many :runner_projects, dependent: :destroy, class_name: 'Ci::RunnerProject'
