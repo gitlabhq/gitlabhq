@@ -154,7 +154,7 @@
     }
 
     .no-value {
-      color: #8c8c8c;
+      color: $gl-placeholder-color;
     }
 
     .sidebar-collapsed-icon {
@@ -321,7 +321,7 @@
   margin-left: 5px;
 
   a {
-    color: #8c8c8c;
+    color: $gl-placeholder-color;
   }
 }
 
