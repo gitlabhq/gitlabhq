@@ -10,7 +10,10 @@
         New label
 
 .labels
-  - hide_class = 'hide' if ((params[:page].present? and params[:page] != '1') or @labels.blank?)
+  - hide_class = ''
+  -# Only show it in the first page
+  - if (params[:page].present? and params[:page] != '1') or @project.labels.blank? or (params[:page] == nil and @project.labels.blank?)
+    - hide_class = 'hide'
   .prioritized-labels{ class: hide_class }
     %h5 Prioritized Labels
     %ul.content-list.manage-labels-list.js-prioritized-labels{ "data-url" => set_priorities_namespace_project_labels_path(@project.namespace, @project) }
