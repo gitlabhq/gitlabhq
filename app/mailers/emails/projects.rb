@@ -1,68 +1,5 @@
 module Emails
   module Projects
-    def project_access_requested_email(project_member_id)
-      setup_project_member_mail(project_member_id)
-
-      @requester = @project_member.created_by
-
-      project_admins = User.where(id: @project.project_members.admins.pluck(:user_id)).pluck(:notification_email)
-
-      mail(to: project_admins,
-           subject: subject("Request to join #{@project.name_with_namespace} project"))
-    end
-
-    def project_access_granted_email(project_member_id)
-      setup_project_member_mail(project_member_id)
-
-      @current_user = @project_member.user
-
-      mail(to: @current_user.notification_email,
-           subject: subject("Access to #{@project.name_with_namespace} project was granted"))
-    end
-
-    def project_access_denied_email(project_id, user_id)
-      @project = Project.find(project_id)
-      @current_user = User.find(user_id)
-      @target_url = namespace_project_url(@project.namespace, @project)
-
-      mail(to: @current_user.notification_email,
-           subject: subject("Access to #{@project.name_with_namespace} project was denied"))
-    end
-
-    def project_member_invited_email(project_member_id, token)
-      setup_project_member_mail(project_member_id)
-
-      @token = token
-      @current_user = @project_member.user
-
-      mail(to: @project_member.invite_email,
-           subject: "Invitation to join project #{@project.name_with_namespace}")
-    end
-
-    def project_invite_accepted_email(project_member_id)
-      setup_project_member_mail(project_member_id)
-      return if @project_member.created_by.nil?
-
-      @current_user = @project_member.created_by
-
-      mail(to: @project_member.created_by.notification_email,
-           subject: subject("Invitation accepted"))
-    end
-
-    def project_invite_declined_email(project_id, invite_email, access_level, created_by_id)
-      return if created_by_id.nil?
-
-      @project = Project.find(project_id)
-      @current_user = @created_by = User.find(created_by_id)
-      @access_level = access_level
-      @invite_email = invite_email
-
-      @target_url = namespace_project_url(@project.namespace, @project)
-
-      mail(to: @created_by.notification_email,
-           subject: subject("Invitation declined"))
-    end
-
     def project_was_moved_email(project_id, user_id, old_path_with_namespace)
       @current_user = @user = User.find user_id
       @project = Project.find project_id
@@ -87,14 +24,6 @@ module Emails
       mail(from:      sender(@message.author_id, @message.send_from_committer_email?),
            reply_to:  @message.reply_to,
            subject:   @message.subject)
-    end
-
-    private
-
-    def setup_project_member_mail(project_member_id)
-      @project_member = ProjectMember.find(project_member_id)
-      @project = @project_member.project
-      @target_url = namespace_project_url(@project.namespace, @project)
     end
   end
 end

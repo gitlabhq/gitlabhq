@@ -59,6 +59,10 @@ class Group < Namespace
     "#{self.class.reference_prefix}#{name}"
   end
 
+  def web_url
+    Gitlab::Routing.url_helpers.group_url(self)
+  end
+
   def human_name
     name
   end

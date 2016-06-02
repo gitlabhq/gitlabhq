@@ -1,0 +1,13 @@
+%p
+  You have been invited
+  - if access_requester
+    by
+    = link_to access_requester.name, user_url(access_requester)
+  to join the
+  = link_to member_target_name, member_target_url
+  #{member_target_type} as #{member.human_access}.
+
+%p
+  = link_to 'Accept invitation', invite_url(@token)
+  or
+  = link_to 'decline', decline_invite_url(@token)
