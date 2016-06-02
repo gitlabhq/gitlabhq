@@ -60,7 +60,7 @@ describe CreateCommitBuildsService, services: true do
                                after: '31das312',
                                commits: [{ message: 'Message' }]
                               )
-      expect(result).to be_falsey
+      expect(result).not_to be_persisted
       expect(Ci::Commit.count).to eq(0)
     end
 
@@ -174,7 +174,7 @@ describe CreateCommitBuildsService, services: true do
 
     context 'when there are no jobs for this pipeline' do
       before do
-        config = YAML.dump({ test: { deploy: 'ls', only: ['feature'] } })
+        config = YAML.dump({ test: { script: 'ls', only: ['feature'] } })
         stub_ci_commit_yaml_file(config)
       end
 
@@ -184,9 +184,9 @@ describe CreateCommitBuildsService, services: true do
                                  before: '00000000',
                                  after: '31das312',
                                  commits: [{ message: 'some msg' }])
-
-        expect(result).to be false
+        expect(result).not_to be_persisted
         expect(Ci::Build.all).to be_empty
+        expect(Ci::Commit.count).to eq(0)
       end
     end
   end

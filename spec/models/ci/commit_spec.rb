@@ -351,8 +351,8 @@ describe Ci::Commit, models: true do
   end
 
   describe '#update_state!' do
-    it 'execute update_state! after touching object' do
-      expect(commit).to receive(:update_state!).and_return(true)
+    it 'execute update_state after touching object' do
+      expect(commit).to receive(:update_state).and_return(true)
       commit.touch
     end
 
@@ -360,7 +360,7 @@ describe Ci::Commit, models: true do
       let(:commit_status) { build :commit_status, commit: commit }
 
       it 'execute update_state after saving dependent object' do
-        expect(commit).to receive(:update_state!).and_return(true)
+        expect(commit).to receive(:update_state).and_return(true)
         commit_status.save
       end
     end

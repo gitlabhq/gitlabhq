@@ -36,7 +36,8 @@ module Ci
                            :stage,
                            :stage_idx)
 
-        build_attrs.merge!(ref: @commit.ref,
+        build_attrs.merge!(commit: @commit,
+                           ref: @commit.ref,
                            tag: @commit.tag,
                            trigger_request: trigger_request,
                            user: user,
