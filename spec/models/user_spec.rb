@@ -68,7 +68,9 @@ describe User, models: true do
 
     describe 'email' do
       context 'when no signup domains listed' do
-        before { allow_any_instance_of(ApplicationSetting).to receive(:restricted_signup_domains).and_return([]) }
+        before do
+          allow_any_instance_of(ApplicationSetting).to receive(:restricted_signup_domains).and_return([])
+        end
         it 'accepts any email' do
           user = build(:user, email: "info@example.com")
           expect(user).to be_valid
@@ -76,7 +78,9 @@ describe User, models: true do
       end
 
       context 'when a signup domain is listed and subdomains are allowed' do
-        before { allow_any_instance_of(ApplicationSetting).to receive(:restricted_signup_domains).and_return(['example.com', '*.example.com']) }
+        before do
+          allow_any_instance_of(ApplicationSetting).to receive(:restricted_signup_domains).and_return(['example.com', '*.example.com'])
+        end
         it 'accepts info@example.com' do
           user = build(:user, email: "info@example.com")
           expect(user).to be_valid
@@ -94,7 +98,9 @@ describe User, models: true do
       end
 
       context 'when a signup domain is listed and subdomains are not allowed' do
-        before { allow_any_instance_of(ApplicationSetting).to receive(:restricted_signup_domains).and_return(['example.com']) }
+        before do
+          allow_any_instance_of(ApplicationSetting).to receive(:restricted_signup_domains).and_return(['example.com'])
+        end
 
         it 'accepts info@example.com' do
           user = build(:user, email: "info@example.com")
@@ -202,7 +208,9 @@ describe User, models: true do
   end
 
   describe '#confirm' do
-    before { allow_any_instance_of(ApplicationSetting).to receive(:send_user_confirmation_email).and_return(true) }
+    before do
+      allow_any_instance_of(ApplicationSetting).to receive(:send_user_confirmation_email).and_return(true)
+    end
     let(:user) { create(:user, confirmed_at: nil, unconfirmed_email: 'test@gitlab.com') }
 
     it 'returns unconfirmed' do
@@ -850,7 +858,9 @@ describe User, models: true do
     let(:runner) { create(:ci_runner) }
     subject { user.ci_authorized_runners }
 
-    before { project.runners << runner }
+    before do
+      project.runners << runner
+    end
 
     context 'without any projects' do
       let(:project) { create(:project) }
@@ -871,13 +881,17 @@ describe User, models: true do
 
     shared_examples :member do
       context 'when the user is a master' do
-        before { add_user(Gitlab::Access::MASTER) }
+        before do
+          add_user(Gitlab::Access::MASTER)
+        end
 
         it { is_expected.to contain_exactly(runner) }
       end
 
       context 'when the user is a developer' do
-        before { add_user(Gitlab::Access::DEVELOPER) }
+        before do
+          add_user(Gitlab::Access::DEVELOPER)
+        end
 
         it { is_expected.to be_empty }
       end
