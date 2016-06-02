@@ -887,7 +887,7 @@ describe User, models: true do
       let(:group) { create(:group) }
       let(:project) { create(:project, group: group) }
 
-      def add_user access
+      def add_user(access)
         group.add_user(user, access)
       end
 
@@ -897,7 +897,7 @@ describe User, models: true do
     context 'with other projects runners' do
       let(:project) { create(:project) }
 
-      def add_user access
+      def add_user(access)
         project.team << [user, access]
       end
 
