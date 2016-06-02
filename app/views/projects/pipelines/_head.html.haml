@@ -11,4 +11,4 @@
       = link_to project_builds_path(@project), title: 'Builds', class: 'shortcuts-builds' do
         %span
           Builds
-          %span.badge.count.builds_counter= number_with_delimiter(@project.builds.running_or_pending.count(:all))
+          %span.badge.count.builds_counter= number_with_delimiter(@project.running_or_pending_build_count)
