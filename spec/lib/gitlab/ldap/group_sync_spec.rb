@@ -646,4 +646,97 @@ describe Gitlab::LDAP::GroupSync, lib: true do
         .not_to change { User.admins.where(id: user3.id).any? }
     end
   end
+
+  describe '#sync_external_users' do
+    let(:user1) { create(:user) }
+    let(:user2) { create(:user) }
+    let(:user3) { create(:user) }
+    let(:user4) { create(:user) }
+
+    let(:external_group1) do
+      Net::LDAP::Entry.from_single_ldif_string(
+        <<-EOS.strip_heredoc
+          dn: cn=external_group1,ou=groups,dc=example,dc=com
+          cn: external_group1
+          description: External Group 1
+          gidnumber: 42
+          uniqueMember: uid=#{user1.username},ou=users,dc=example,dc=com
+          objectclass: top
+          objectclass: groupOfNames
+      EOS
+      )
+    end
+
+    let(:external_group2) do
+      Net::LDAP::Entry.from_single_ldif_string(
+        <<-EOS.strip_heredoc
+        dn: cn=external_group2,ou=groups,dc=example,dc=com
+        cn: external_group2
+        description: External Group 2
+        gidnumber: 42
+        uniqueMember: uid=#{user2.username},ou=users,dc=example,dc=com
+        objectclass: top
+        objectclass: groupOfNames
+      EOS
+      )
+    end
+
+    before do
+      user3.external = true
+      user3.save
+      user4.external = true
+      user4.save
+
+      allow_any_instance_of(Gitlab::LDAP::Group)
+        .to receive(:adapter).and_return(adapter)
+      allow(Gitlab::LDAP::Group)
+        .to receive(:find_by_cn).with(external_group1.cn, any_args)
+      allow(Gitlab::LDAP::Group)
+        .to receive(:find_by_cn).with(external_group2.cn, any_args)
+      allow(Gitlab::LDAP::Group)
+        .to receive(:find_by_cn)
+              .with('external_group1', kind_of(Gitlab::LDAP::Adapter))
+              .and_return(Gitlab::LDAP::Group.new(external_group1))
+      allow(Gitlab::LDAP::Group)
+        .to receive(:find_by_cn)
+              .with('external_group2', kind_of(Gitlab::LDAP::Adapter))
+              .and_return(Gitlab::LDAP::Group.new(external_group2))
+
+      user1.identities.create(
+        provider: 'ldapmain',
+        extern_uid: "uid=#{user1.username},ou=users,dc=example,dc=com"
+      )
+      user2.identities.create(
+        provider: 'ldapmain',
+        extern_uid: "uid=#{user2.username},ou=users,dc=example,dc=com"
+      )
+      user4.identities.create(
+        provider: 'ldapmain',
+        extern_uid: "uid=#{user4.username},ou=users,dc=example,dc=com"
+      )
+
+      allow(group_sync).to receive_messages(external_groups: %w(external_group1 external_group2))
+    end
+
+    it 'adds user1 as external user' do
+      expect { group_sync.sync_external_users }
+        .to change { User.external.where(id: user1.id).any? }.from(false).to(true)
+    end
+
+    it 'adds user2 as external user' do
+      expect { group_sync.sync_external_users }
+        .to change { User.external.where(id: user2.id).any? }.from(false).to(true)
+    end
+
+    it 'removes users that are not in the LDAP group' do
+      expect { group_sync.sync_external_users }
+        .to change { User.external.where(id: user4.id).any? }.from(true).to(false)
+    end
+
+    it 'leaves as external users that do not have the LDAP provider' do
+      expect { group_sync.sync_external_users }
+        .not_to change { User.external.where(id: user3.id).any? }
+    end
+  end
 end
+
