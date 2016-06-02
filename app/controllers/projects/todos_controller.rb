@@ -4,7 +4,7 @@ class Projects::TodosController < Projects::ApplicationController
 
     render json: {
       todo: todos,
-      count: current_user.todos.pending.count,
+      count: current_user.todos_pending_count,
     }
   end
 
@@ -12,7 +12,7 @@ class Projects::TodosController < Projects::ApplicationController
     current_user.todos.find_by_id(params[:id]).update(state: :done)
 
     render json: {
-      count: current_user.todos.pending.count,
+      count: current_user.todos_pending_count,
     }
   end
 

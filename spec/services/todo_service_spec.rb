@@ -173,6 +173,48 @@ describe TodoService, services: true do
         expect(first_todo.reload).to be_done
         expect(second_todo.reload).to be_done
       end
+
+      describe 'cached counts' do
+        it 'updates when todos change' do
+          create(:todo, :assigned, user: john_doe, project: project, target: issue, author: author)
+
+          expect(john_doe.todos_done_count).to eq(0)
+          expect(john_doe.todos_pending_count).to eq(1)
+          expect(john_doe).to receive(:update_todos_count_cache).and_call_original
+
+          service.mark_pending_todos_as_done(issue, john_doe)
+
+          expect(john_doe.todos_done_count).to eq(1)
+          expect(john_doe.todos_pending_count).to eq(0)
+        end
+      end
+    end
+
+    describe '#mark_todos_as_done' do
+      it 'marks related todos for the user as done' do
+        first_todo = create(:todo, :assigned, user: john_doe, project: project, target: issue, author: author)
+        second_todo = create(:todo, :assigned, user: john_doe, project: project, target: issue, author: author)
+
+        service.mark_todos_as_done([first_todo, second_todo], john_doe)
+
+        expect(first_todo.reload).to be_done
+        expect(second_todo.reload).to be_done
+      end
+
+      describe 'cached counts' do
+        it 'updates when todos change' do
+          todo = create(:todo, :assigned, user: john_doe, project: project, target: issue, author: author)
+
+          expect(john_doe.todos_done_count).to eq(0)
+          expect(john_doe.todos_pending_count).to eq(1)
+          expect(john_doe).to receive(:update_todos_count_cache).and_call_original
+
+          service.mark_todos_as_done([todo], john_doe)
+
+          expect(john_doe.todos_done_count).to eq(1)
+          expect(john_doe.todos_pending_count).to eq(0)
+        end
+      end
     end
 
     describe '#new_note' do
@@ -393,6 +435,18 @@ describe TodoService, services: true do
         should_create_todo(user: author, target: mr_unassigned, action: Todo::MARKED)
       end
     end
+  end
+
+  it 'updates cached counts when a todo is created' do
+    issue = create(:issue, project: project, assignee: john_doe, author: author, description: mentions)
+
+    expect(john_doe.todos_pending_count).to eq(0)
+    expect(john_doe).to receive(:update_todos_count_cache)
+
+    service.new_issue(issue, author)
+
+    expect(Todo.where(user_id: john_doe.id, state: :pending).count).to eq 1
+    expect(john_doe.todos_pending_count).to eq(1)
   end
 
   def should_create_todo(attributes = {})

@@ -123,6 +123,7 @@ v 8.9.0 (unreleased)
   - Update tanuki logo highlight/loading colors
   - Use Git cached counters for branches and tags on project page
   - Filter parameters for request_uri value on instrumented transactions.
+  - Cache user todo counts from TodoService
 
 v 8.8.5
   - Import GitHub repositories respecting the API rate limit !4166
