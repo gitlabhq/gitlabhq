@@ -848,6 +848,7 @@ describe User, models: true do
   describe '#ci_authorized_runners' do
     let(:user) { create(:user) }
     let(:runner) { create(:ci_runner) }
+    subject { user.ci_authorized_runners }
 
     before { project.runners << runner }
 
@@ -855,7 +856,7 @@ describe User, models: true do
       let(:project) { create(:project) }
 
       it 'does not load' do
-        expect(user.ci_authorized_runners).to eq([])
+        is_expected.to eq([])
       end
     end
 
@@ -864,19 +865,19 @@ describe User, models: true do
       let(:project) { create(:project, namespace: namespace) }
 
       it 'loads' do
-        expect(user.ci_authorized_runners).to eq([runner])
+        is_expected.to eq([runner])
       end
     end
 
     shared_examples :member do
       it 'loads when the user is a master' do
         add_user(Gitlab::Access::MASTER)
-        expect(user.ci_authorized_runners).to eq([runner])
+        is_expected.to eq([runner])
       end
 
       it 'does not load when the user is a developer' do
         add_user(Gitlab::Access::DEVELOPER)
-        expect(user.ci_authorized_runners).to eq([])
+        is_expected.to eq([])
       end
     end
 
