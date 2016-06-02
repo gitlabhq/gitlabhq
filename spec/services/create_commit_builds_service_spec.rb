@@ -81,7 +81,7 @@ describe CreateCommitBuildsService, services: true do
       expect(commit.yaml_errors).not_to be_nil
     end
 
-    describe :ci_skip? do
+    context 'when commit contains a [ci skip] directive' do
       let(:message) { "some message[ci skip]" }
 
       before do

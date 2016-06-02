@@ -34,7 +34,7 @@ class CreateCommitBuildsService
       commit.create_builds(user)
     end
 
-    commit.touch
+    commit.update_state!
     commit
   end
 end

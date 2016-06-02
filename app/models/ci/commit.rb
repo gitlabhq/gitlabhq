@@ -13,7 +13,7 @@ module Ci
     validate :valid_commit_sha
 
     # Invalidate object and save if when touched
-    after_touch :update_state
+    after_touch :update_state!
 
     def self.truncate_sha(sha)
       sha[0...8]
@@ -135,10 +135,10 @@ module Ci
       @config_processor ||= begin
         Ci::GitlabCiYamlProcessor.new(ci_yaml_file, project.path_with_namespace)
       rescue Ci::GitlabCiYamlProcessor::ValidationError, Psych::SyntaxError => e
-        save_yaml_error(e.message)
+        self.yaml_errors = (e.message)
         nil
       rescue
-        save_yaml_error("Undefined error")
+        self.yaml_errors = 'Undefined error'
         nil
       end
     end
@@ -159,9 +159,7 @@ module Ci
       git_commit_message =~ /(\[ci skip\])/ if git_commit_message
     end
 
-    private
-
-    def update_state
+    def update_state!
       statuses.reload
       self.status = if yaml_errors.blank?
                       statuses.latest.status || 'skipped'
@@ -172,12 +170,6 @@ module Ci
       self.finished_at = statuses.finished_at
       self.duration = statuses.latest.duration
       save
-    end
-
-    def save_yaml_error(error)
-      return if self.yaml_errors?
-      self.yaml_errors = error
-      update_state
     end
   end
 end
