@@ -1,5 +1,5 @@
 - label_css_id = dom_id(label)
-%li{id: label_css_id, :"data-id" => label.id}
+%li{id: label_css_id, data: {id: label.id } }
   = render "shared/label_row", label: label
   .pull-info-right
     %span.append-right-20
