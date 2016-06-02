@@ -33,7 +33,7 @@ class Label < ActiveRecord::Base
   scope :templates, ->  { where(template: true) }
 
   def self.prioritized
-     where.not(priority: nil).reorder(Gitlab::Database.nulls_last_order(:priority), :title)
+    where.not(priority: nil).reorder(Gitlab::Database.nulls_last_order(:priority), :title)
   end
 
   def self.unprioritized
