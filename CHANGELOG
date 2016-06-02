@@ -14,6 +14,7 @@ v 8.8.3
   - Pass the "Remember me" value to the 2FA token form. !4369
   - Fix incorrect links on pipeline page when merge request created from fork.  !4376
   - Use downcased path to container repository as this is expected path by Docker. !4420
+  - Fix wiki project clone address error (chujinjin). !4429
 
 v 8.8.2
   - Added remove due date button. !4209
