@@ -16,12 +16,12 @@ describe Projects::NotesController do
       expect do
         post(:toggle_award_emoji, namespace_id: project.namespace.path,
                                   project_id: project.path, id: note.id, name: "thumbsup")
-      end.to change { AwardEmoji.count }.by(1)
+      end.to change { note.award_emoji.count }.by(1)
 
       expect(response.status).to eq(200)
     end
 
-    it "removes the already let award emoji" do
+    it "removes the already awarded emoji" do
       post(:toggle_award_emoji, namespace_id: project.namespace.path,
                                 project_id: project.path, id: note.id, name: "thumbsup")
 
