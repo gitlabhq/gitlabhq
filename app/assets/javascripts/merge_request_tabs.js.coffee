@@ -75,6 +75,9 @@ class @MergeRequestTabs
       @loadDiff($target.attr('href'))
       if bp? and bp.getBreakpointSize() isnt 'lg'
         @shrinkView()
+
+      navBarHeight = $('.navbar-gitlab').outerHeight()
+      $.scrollTo(".merge-request-details .merge-request-tabs", offset: -navBarHeight)
     else if action == 'builds'
       @loadBuilds($target.attr('href'))
       @expandView()
@@ -87,8 +90,8 @@ class @MergeRequestTabs
     if window.location.hash
       navBarHeight = $('.navbar-gitlab').outerHeight()
 
-      $el = $("#{container} #{window.location.hash}")
-      $.scrollTo("#{container} #{window.location.hash}", offset: -navBarHeight) if $el.length
+      $el = $("#{container} #{window.location.hash}:not(.match)")
+      $.scrollTo("#{container} #{window.location.hash}:not(.match)", offset: -navBarHeight) if $el.length
 
   # Activate a tab based on the current action
   activateTab: (action) ->
@@ -176,16 +179,17 @@ class @MergeRequestTabs
 
     if locationHash isnt ''
       hashClassString = ".#{locationHash.replace('#', '')}"
-      $diffLine = $(locationHash)
+      $diffLine = $("#{locationHash}:not(.match)", $('#diffs'))
 
-      if $diffLine.is ':not(tr)'
-        $diffLine = $("td#{locationHash}, td#{hashClassString}")
+      if not $diffLine.is 'tr'
+        $diffLine = $('#diffs').find("td#{locationHash}, td#{hashClassString}")
       else
-        $diffLine = $('td', $diffLine)
+        $diffLine = $diffLine.find('td')
 
-      $diffLine.addClass 'hll'
-      diffLineTop = $diffLine.offset().top
-      navBarHeight = $('.navbar-gitlab').outerHeight()
+      if $diffLine.length
+        $diffLine.addClass 'hll'
+        diffLineTop = $diffLine.offset().top
+        navBarHeight = $('.navbar-gitlab').outerHeight()
 
   loadBuilds: (source) ->
     return if @buildsLoaded

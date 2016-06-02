@@ -24,6 +24,10 @@ module Issues
         todo_service.reassigned_issue(issue, current_user)
       end
 
+      if issue.previous_changes.include?('confidential')
+        create_confidentiality_note(issue)
+      end
+
       added_labels = issue.labels - old_labels
       if added_labels.present?
         notification_service.relabeled_issue(issue, added_labels, current_user)
@@ -36,6 +40,12 @@ module Issues
 
     def close_service
       Issues::CloseService
+    end
+
+    private
+
+    def create_confidentiality_note(issue)
+      SystemNoteService.change_issue_confidentiality(issue, issue.project, current_user)
     end
   end
 end

@@ -10,17 +10,17 @@
         = sidebar_gutter_toggle_icon
       .issuable-nav.hide-collapsed.pull-right.btn-group{role: 'group', "aria-label" => '...'}
         - if prev_issuable = prev_issuable_for(issuable)
-          = link_to 'Prev', [@project.namespace.becomes(Namespace), @project, prev_issuable], class: 'btn btn-default prev-btn'
+          = link_to 'Prev', [@project.namespace.becomes(Namespace), @project, prev_issuable], class: 'btn btn-default prev-btn issuable-pager'
         - else
-          %a.btn.btn-default.disabled{href: '#'}
+          %a.btn.btn-default.issuable-pager.disabled{href: '#'}
             Prev
         - if next_issuable = next_issuable_for(issuable)
-          = link_to 'Next', [@project.namespace.becomes(Namespace), @project, next_issuable], class: 'btn btn-default next-btn'
+          = link_to 'Next', [@project.namespace.becomes(Namespace), @project, next_issuable], class: 'btn btn-default next-btn issuable-pager'
         - else
-          %a.btn.btn-default.disabled{href: '#'}
+          %a.btn.btn-default.issuable-pager.disabled{href: '#'}
             Next
 
-    = form_for [@project.namespace.becomes(Namespace), @project, issuable], remote: true, html: {class: 'issuable-context-form inline-update js-issuable-update'} do |f|
+    = form_for [@project.namespace.becomes(Namespace), @project, issuable], remote: true, format: :json, html: {class: 'issuable-context-form inline-update js-issuable-update'} do |f|
       .block.assignee
         .sidebar-collapsed-icon.sidebar-collapsed-user{data: {toggle: "tooltip", placement: "left", container: "body"}, title: (issuable.assignee.to_reference if issuable.assignee)}
           - if issuable.assignee
@@ -49,7 +49,7 @@
 
         .selectbox.hide-collapsed
           = f.hidden_field 'assignee_id', value: issuable.assignee_id, id: 'issue_assignee_id'
-          = dropdown_tag('Select assignee', options: { toggle_class: 'js-user-search js-author-search', title: 'Assign to', filter: true, dropdown_class: 'dropdown-menu-user dropdown-menu-selectable dropdown-menu-author', placeholder: 'Search users', data: { first_user: (current_user.username if current_user), current_user: true, project_id: (@project.id if @project), field_name: "#{issuable.to_ability_name}[assignee_id]", issue_update: issuable_json_path(issuable), ability_name: issuable.to_ability_name, null_user: true } })
+          = dropdown_tag('Select assignee', options: { toggle_class: 'js-user-search js-author-search', title: 'Assign to', filter: true, dropdown_class: 'dropdown-menu-user dropdown-menu-selectable dropdown-menu-author', placeholder: 'Search users', data: { first_user: (current_user.username if current_user), current_user: true, project_id: (@project.id if @project), author_id: issuable.author_id, field_name: "#{issuable.to_ability_name}[assignee_id]", issue_update: issuable_json_path(issuable), ability_name: issuable.to_ability_name, null_user: true } })
 
       .block.milestone
         .sidebar-collapsed-icon
@@ -58,7 +58,7 @@
             - if issuable.milestone
               = issuable.milestone.title
             - else
-              No
+              None
         .title.hide-collapsed
           Milestone
           = icon('spinner spin', class: 'block-loading')
@@ -74,6 +74,40 @@
         .selectbox.hide-collapsed
           = f.hidden_field 'milestone_id', value: issuable.milestone_id, id: nil
           = dropdown_tag('Milestone', options: { title: 'Assign milestone', toggle_class: 'js-milestone-select js-extra-options', filter: true, dropdown_class: 'dropdown-menu-selectable', placeholder: 'Search milestones', data: { show_no: true, field_name: "#{issuable.to_ability_name}[milestone_id]", project_id: @project.id, issuable_id: issuable.id, milestones: namespace_project_milestones_path(@project.namespace, @project, :json), ability_name: issuable.to_ability_name, issue_update: issuable_json_path(issuable), use_id: true }})
+
+      - if issuable.has_attribute?(:due_date)
+        .block.due_date
+          .sidebar-collapsed-icon
+            = icon('calendar')
+            %span.js-due-date-sidebar-value
+              = issuable.due_date.try(:to_s, :medium) || 'None'
+          .title.hide-collapsed
+            Due date
+            = icon('spinner spin', class: 'block-loading')
+            - if can?(current_user, :"admin_#{issuable.to_ability_name}", @project)
+              = link_to 'Edit', '#', class: 'edit-link pull-right'
+          .value.bold.hide-collapsed
+            %span.value-content
+              - if issuable.due_date
+                = issuable.due_date.to_s(:medium)
+              - else
+                None
+            - if can?(current_user, :"admin_#{issuable.to_ability_name}", @project)
+              %span.light.js-remove-due-date-holder{ class: ("hidden" if issuable.due_date.nil?) }
+                \-
+                %a.js-remove-due-date{ href: "#", role: "button" }
+                  remove due date
+          - if can?(current_user, :"admin_#{issuable.to_ability_name}", @project)
+            .selectbox.hide-collapsed
+              = f.hidden_field :due_date, value: issuable.due_date
+              .dropdown
+                %button.dropdown-menu-toggle.js-due-date-select{ type: 'button', data: { toggle: 'dropdown', field_name: "#{issuable.to_ability_name}[due_date]", ability_name: issuable.to_ability_name, issue_update: issuable_json_path(issuable) } }
+                  %span.dropdown-toggle-text Due date
+                  = icon('chevron-down')
+                .dropdown-menu.dropdown-menu-due-date
+                  = dropdown_title('Due date')
+                  = dropdown_content do
+                    .js-due-date-calendar
 
       - if issuable.project.labels.any?
         .block.labels
@@ -101,23 +135,9 @@
                   Label
                 = icon('chevron-down')
               .dropdown-menu.dropdown-select.dropdown-menu-paging.dropdown-menu-labels.dropdown-menu-selectable
-                .dropdown-page-one
-                  = dropdown_title("Assign labels")
-                  = dropdown_filter("Search labels")
-                  = dropdown_content
-                  - if @project
-                    = dropdown_footer do
-                      %ul.dropdown-footer-list
-                        - if can? current_user, :admin_label, @project
-                          %li
-                            %a.dropdown-toggle-page{href: "#"}
-                              Create new
-                        %li
-                          = link_to namespace_project_labels_path(@project.namespace, @project) do
-                            - if can? current_user, :admin_label, @project
-                              Manage labels
-                            - else
-                              View labels
+                = render partial: "shared/issuable/label_page_default"
+                - if can? current_user, :admin_label, @project and @project
+                  = render partial: "shared/issuable/label_page_create"
 
       = render "shared/issuable/participants", participants: issuable.participants(current_user)
       - if current_user
@@ -150,6 +170,7 @@
     :javascript
       new MilestoneSelect('{"namespace":"#{@project.namespace.path}","path":"#{@project.path}"}');
       new LabelsSelect();
-      new IssuableContext('#{current_user.to_json(only: [:username, :id, :name])}');
+      new IssuableContext('#{escape_javascript(current_user.to_json(only: [:username, :id, :name]))}');
       new Subscription('.subscription')
-      new Sidebar();
+      new DueDateSelect();
+      sidebar = new Sidebar();

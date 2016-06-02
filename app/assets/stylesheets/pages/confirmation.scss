@@ -1,0 +1,18 @@
+.well-confirmation {
+  margin-bottom: 20px;
+  border-bottom: 1px solid #eee;
+
+  > h1 {
+    font-weight: 400;
+  }
+
+  .lead {
+    margin-bottom: 20px;
+  }
+}
+
+.confirmation-content {
+  a {
+    color: $md-link-color;
+  }
+}

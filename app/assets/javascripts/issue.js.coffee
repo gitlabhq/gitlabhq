@@ -12,6 +12,7 @@ class @Issue
 
     @initMergeRequests()
     @initRelatedBranches()
+    @initCanCreateBranch()
 
   initTaskList: ->
     $('.detail-page-description .js-task-list-container').taskList('enable')
@@ -92,3 +93,25 @@ class @Issue
       .success (data) ->
         if 'html' of data
           $container.html(data.html)
+
+  initCanCreateBranch: ->
+    $container = $('div#new-branch')
+
+    # If the user doesn't have the required permissions the container isn't
+    # rendered at all.
+    return unless $container
+
+    $.getJSON($container.data('path'))
+      .error ->
+        $container.find('.checking').hide()
+        $container.find('.unavailable').show()
+
+        new Flash('Failed to check if a new branch can be created.', 'alert')
+      .success (data) ->
+        if data.can_create_branch
+          $container.find('.checking').hide()
+          $container.find('.available').show()
+          $container.find('a').attr('disabled', false)
+        else
+          $container.find('.checking').hide()
+          $container.find('.unavailable').show()

@@ -29,8 +29,8 @@ describe "Runners" do
     end
 
     before do
-      expect(page).to_not have_content(@specific_runner3.display_name)
-      expect(page).to_not have_content(@specific_runner3.display_name)
+      expect(page).not_to have_content(@specific_runner3.display_name)
+      expect(page).not_to have_content(@specific_runner3.display_name)
     end
 
     it "places runners in right places" do
@@ -80,6 +80,22 @@ describe "Runners" do
     end
   end
 
+  describe "shared runners description" do
+    let(:shared_runners_text) { 'custom **shared** runners description' }
+    let(:shared_runners_html) { 'custom shared runners description' }
+
+    before do
+      stub_application_setting(shared_runners_text: shared_runners_text)
+      project = FactoryGirl.create :empty_project, shared_runners_enabled: false
+      project.team << [user, :master]
+      visit runners_path(project)
+    end
+
+    it "sees shared runners description" do
+      expect(page.find(".shared-runners-description")).to have_content(shared_runners_html)
+    end
+  end
+
   describe "show page" do
     before do
       @project = FactoryGirl.create :empty_project
@@ -92,6 +108,39 @@ describe "Runners" do
       visit runners_path(@project)
       click_on @specific_runner.short_sha
       expect(page).to have_content(@specific_runner.platform)
+    end
+  end
+
+  feature 'configuring runners ability to picking untagged jobs' do
+    given(:project) { create(:empty_project) }
+    given(:runner) { create(:ci_runner) }
+
+    background do
+      project.team << [user, :master]
+      project.runners << runner
+    end
+
+    scenario 'user checks default configuration' do
+      visit namespace_project_runner_path(project.namespace, project, runner)
+
+      expect(page).to have_content 'Can run untagged jobs Yes'
+    end
+
+    context 'when runner has tags' do
+      before { runner.update_attribute(:tag_list, ['tag']) }
+
+      scenario 'user wants to prevent runner from running untagged job' do
+        visit runners_path(project)
+        page.within('.activated-specific-runners') do
+          first('small > a').click
+        end
+
+        uncheck 'runner_run_untagged'
+        click_button 'Save changes'
+
+        expect(page).to have_content 'Can run untagged jobs No'
+        expect(runner.reload.run_untagged?).to eq false
+      end
     end
   end
 end

@@ -13,17 +13,20 @@
       %strong ##{build.id}
 
     - if build.stuck?
-      %i.fa.fa-warning.text-warning
+      = icon('warning', class: 'text-warning has-tooltip', title: 'Build is stuck. Check runners.')
+    - if defined?(retried) && retried
+      = icon('warning', class: 'text-warning has-tooltip', title: 'Build was retried.')
 
   - if defined?(commit_sha) && commit_sha
     %td
       = link_to build.short_sha, namespace_project_commit_path(build.project.namespace, build.project, build.sha), class: "monospace"
 
-  %td
-    - if build.ref
-      = link_to build.ref, namespace_project_commits_path(build.project.namespace, build.project, build.ref)
-    - else
-      .light none
+  - if defined?(ref) && ref
+    %td
+      - if build.ref
+        = link_to build.ref, namespace_project_commits_path(build.project.namespace, build.project, build.ref)
+      - else
+        .light none
 
   - if defined?(runner) && runner
     %td
@@ -39,6 +42,7 @@
   %td
     = build.name
 
+  %td
     .label-container
       - if build.tags.any?
         - build.tags.each do |tag|
@@ -48,6 +52,8 @@
         %span.label.label-info triggered
       - if build.try(:allow_failure)
         %span.label.label-danger allowed to fail
+      - if defined?(retried) && retried
+        %span.label.label-warning retried
 
   %td.duration
     - if build.duration
@@ -65,12 +71,12 @@
   %td
     .pull-right
       - if can?(current_user, :read_build, build) && build.artifacts?
-        = link_to download_namespace_project_build_artifacts_path(build.project.namespace, build.project, build), title: 'Download artifacts' do
-          %i.fa.fa-download
+        = link_to download_namespace_project_build_artifacts_path(build.project.namespace, build.project, build), title: 'Download artifacts', class: 'btn btn-build' do
+          = icon('download')
       - if can?(current_user, :update_build, build)
         - if build.active?
-          = link_to cancel_namespace_project_build_path(build.project.namespace, build.project, build, return_to: request.original_url), method: :post, title: 'Cancel' do
-            %i.fa.fa-remove.cred
+          = link_to cancel_namespace_project_build_path(build.project.namespace, build.project, build, return_to: request.original_url), method: :post, title: 'Cancel', class: 'btn btn-build' do
+            = icon('remove', class: 'cred')
         - elsif defined?(allow_retry) && allow_retry && build.retryable?
-          = link_to retry_namespace_project_build_path(build.project.namespace, build.project, build, return_to: request.original_url), method: :post, title: 'Retry' do
-            %i.fa.fa-repeat
+          = link_to retry_namespace_project_build_path(build.project.namespace, build.project, build, return_to: request.original_url), method: :post, title: 'Retry', class: 'btn btn-build' do
+            = icon('refresh')

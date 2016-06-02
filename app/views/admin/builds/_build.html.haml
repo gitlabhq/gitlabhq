@@ -35,15 +35,15 @@
   %td
     #{build.stage} / #{build.name}
 
-    .pull-right
-      - if build.tags.any?
-        - build.tags.each do |tag|
-          %span.label.label-primary
-            = tag
-      - if build.try(:trigger_request)
-        %span.label.label-info triggered
-      - if build.try(:allow_failure)
-        %span.label.label-danger allowed to fail
+  %td
+    - if build.tags.any?
+      - build.tags.each do |tag|
+        %span.label.label-primary
+          = tag
+    - if build.try(:trigger_request)
+      %span.label.label-info triggered
+    - if build.try(:allow_failure)
+      %span.label.label-danger allowed to fail
 
   %td.duration
     - if build.duration
@@ -61,12 +61,12 @@
   %td
     .pull-right
       - if can?(current_user, :read_build, project) && build.artifacts?
-        = link_to download_namespace_project_build_artifacts_path(build.project.namespace, build.project, build), title: 'Download artifacts' do
+        = link_to download_namespace_project_build_artifacts_path(build.project.namespace, build.project, build), title: 'Download artifacts', class: 'btn btn-build' do
           %i.fa.fa-download
       - if can?(current_user, :update_build, build.project)
         - if build.active?
-          = link_to cancel_namespace_project_build_path(build.project.namespace, build.project, build, return_to: request.original_url), method: :post, title: 'Cancel' do
+          = link_to cancel_namespace_project_build_path(build.project.namespace, build.project, build, return_to: request.original_url), method: :post, title: 'Cancel', class: 'btn btn-build' do
             %i.fa.fa-remove.cred
         - elsif defined?(allow_retry) && allow_retry && build.retryable?
-          = link_to retry_namespace_project_build_path(build.project.namespace, build.project, build, return_to: request.original_url), method: :post, title: 'Retry' do
-            %i.fa.fa-repeat
+          = link_to retry_namespace_project_build_path(build.project.namespace, build.project, build, return_to: request.original_url), method: :post, title: 'Retry', class: 'btn btn-build' do
+            %i.fa.fa-refresh

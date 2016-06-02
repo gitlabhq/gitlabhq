@@ -16,16 +16,18 @@ Rails.application.routes.draw do
     end
   end
 
-  # Make the built-in Rails routes available in development, otherwise they'd
-  # get swallowed by the `namespace/project` route matcher below.
-  #
-  # See https://git.io/va79N
   if Rails.env.development?
+    # Make the built-in Rails routes available in development, otherwise they'd
+    # get swallowed by the `namespace/project` route matcher below.
+    #
+    # See https://git.io/va79N
     get '/rails/mailers'         => 'rails/mailers#index'
     get '/rails/mailers/:path'   => 'rails/mailers#preview'
     get '/rails/info/properties' => 'rails/info#properties'
     get '/rails/info/routes'     => 'rails/info#routes'
     get '/rails/info'            => 'rails/info#index'
+
+    mount LetterOpenerWeb::Engine, at: '/rails/letter_opener'
   end
 
   namespace :ci do
@@ -54,6 +56,7 @@ Rails.application.routes.draw do
   # Autocomplete
   get '/autocomplete/users' => 'autocomplete#users'
   get '/autocomplete/users/:id' => 'autocomplete#user'
+  get '/autocomplete/projects' => 'autocomplete#projects'
 
   # Emojis
   resources :emojis, only: :index
@@ -61,6 +64,9 @@ Rails.application.routes.draw do
   # Search
   get 'search' => 'search#show'
   get 'search/autocomplete' => 'search#autocomplete', as: :search_autocomplete
+
+  # JSON Web Token
+  get 'jwt/auth' => 'jwt#auth'
 
   # API
   API::API.logger Rails.logger
@@ -71,6 +77,9 @@ Rails.application.routes.draw do
     mount Sidekiq::Web, at: '/admin/sidekiq', as: :sidekiq
   end
 
+  # Health check
+  get 'health_check(/:checks)' => 'health_check#index', as: :health_check
+
   # Enable Grack support (for LFS only)
   mount Grack::AuthSpawner, at: '/', constraints: lambda { |request| /[-\/\w\.]+\.git\/(info\/lfs|gitlab-lfs)/.match(request.path_info) }, via: [:get, :post, :put]
 
@@ -78,7 +87,7 @@ Rails.application.routes.draw do
   get 'help'                  => 'help#index'
   get 'help/:category/:file'  => 'help#show', as: :help_page, constraints: { category: /.*/, file: /[^\/\.]+/ }
   get 'help/shortcuts'
-  get 'help/ui'               => 'help#ui'
+  get 'help/ui' => 'help#ui'
 
   #
   # Global snippets
@@ -89,7 +98,8 @@ Rails.application.routes.draw do
     end
   end
 
-  get '/s/:username' => 'snippets#index', as: :user_snippets, constraints: { username: /.*/ }
+  get '/s/:username', to: redirect('/u/%{username}/snippets'),
+                      constraints: { username: /[a-zA-Z.0-9_\-]+(?<!\.atom)/ }
 
   #
   # Invites
@@ -212,8 +222,6 @@ Rails.application.routes.draw do
       resources :keys, only: [:show, :destroy]
       resources :identities, except: [:show]
 
-      delete 'stop_impersonation' => 'impersonation#destroy', on: :collection
-
       member do
         get :projects
         get :keys
@@ -223,11 +231,13 @@ Rails.application.routes.draw do
         put :unblock
         put :unlock
         put :confirm
-        post 'impersonate' => 'impersonation#create'
+        post :impersonate
         patch :disable_two_factor
         delete 'remove/:email_id', action: 'remove_email', as: 'remove_email'
       end
     end
+
+    resource :impersonation, only: :destroy
 
     resources :abuse_reports, only: [:index, :destroy]
     resources :spam_logs, only: [:index, :destroy]
@@ -251,6 +261,7 @@ Rails.application.routes.draw do
     end
 
     resource :logs, only: [:show]
+    resource :health_check, controller: 'health_check', only: [:show]
     resource :background_jobs, controller: 'background_jobs', only: [:show]
 
     resources :namespaces, path: '/projects', constraints: { id: /[a-zA-Z.0-9_\-]+/ }, only: [] do
@@ -282,6 +293,7 @@ Rails.application.routes.draw do
     resource :application_settings, only: [:show, :update] do
       resources :services
       put :reset_runners_token
+      put :reset_health_check_token
       put :clear_repository_check_states
     end
 
@@ -340,23 +352,18 @@ Rails.application.routes.draw do
     end
   end
 
-  get 'u/:username/calendar' => 'users#calendar', as: :user_calendar,
-      constraints: { username: /.*/ }
-
-  get 'u/:username/calendar_activities' => 'users#calendar_activities', as: :user_calendar_activities,
-      constraints: { username: /.*/ }
-
-  get 'u/:username/groups' => 'users#groups', as: :user_groups,
-      constraints: { username: /.*/ }
-
-  get 'u/:username/projects' => 'users#projects', as: :user_projects,
-      constraints: { username: /.*/ }
-
-  get 'u/:username/contributed' => 'users#contributed', as: :user_contributed_projects,
-      constraints: { username: /.*/ }
-
-  get '/u/:username' => 'users#show', as: :user,
-      constraints: { username: /[a-zA-Z.0-9_\-]+(?<!\.atom)/ }
+  scope(path: 'u/:username',
+        as: :user,
+        constraints: { username: /[a-zA-Z.0-9_\-]+(?<!\.atom)/ },
+        controller: :users) do
+    get :calendar
+    get :calendar_activities
+    get :groups
+    get :projects
+    get :contributed, as: :contributed_projects
+    get :snippets
+    get '/', action: :show
+  end
 
   #
   # Dashboard Area
@@ -414,10 +421,15 @@ Rails.application.routes.draw do
 
   resources :projects, constraints: { id: /[^\/]+/ }, only: [:index, :new, :create]
 
-  devise_for :users, controllers: { omniauth_callbacks: :omniauth_callbacks, registrations: :registrations , passwords: :passwords, sessions: :sessions, confirmations: :confirmations }
+  devise_for :users, controllers: { omniauth_callbacks: :omniauth_callbacks,
+                                    registrations: :registrations,
+                                    passwords: :passwords,
+                                    sessions: :sessions,
+                                    confirmations: :confirmations }
 
   devise_scope :user do
     get '/users/auth/:provider/omniauth_error' => 'omniauth_callbacks#omniauth_error', as: :omniauth_error
+    get '/users/almost_there' => 'confirmations#almost_there'
   end
 
   root to: "root#index"
@@ -556,6 +568,7 @@ Rails.application.routes.draw do
             post :cancel_builds
             post :retry_builds
             post :revert
+            post :cherry_pick
           end
         end
 
@@ -662,8 +675,15 @@ Rails.application.routes.draw do
         end
 
         resources :protected_branches, only: [:index, :create, :update, :destroy], constraints: { id: Gitlab::Regex.git_reference_regex }
-        resource :variables, only: [:show, :update]
+        resources :variables, only: [:index, :show, :update, :create, :destroy]
         resources :triggers, only: [:index, :create, :destroy]
+
+        resources :pipelines, only: [:index, :new, :create, :show] do
+          member do
+            post :cancel
+            post :retry
+          end
+        end
 
         resources :builds, only: [:index, :show], constraints: { id: /\d+/ } do
           collection do
@@ -675,6 +695,8 @@ Rails.application.routes.draw do
             post :cancel
             post :retry
             post :erase
+            get :trace
+            get :raw
           end
 
           resource :artifacts, only: [] do
@@ -689,6 +711,8 @@ Rails.application.routes.draw do
             get :test
           end
         end
+
+        resources :container_registry, only: [:index, :destroy], constraints: { id: Gitlab::Regex.container_registry_reference_regex }
 
         resources :milestones, constraints: { id: /\d+/ } do
           member do
@@ -712,6 +736,7 @@ Rails.application.routes.draw do
             post :toggle_subscription
             get :referenced_merge_requests
             get :related_branches
+            get :can_create_branch
           end
           collection do
             post  :bulk_update
@@ -775,7 +800,7 @@ Rails.application.routes.draw do
   end
 
   # Get all keys of user
-  get ':username.keys' => 'profiles/keys#get_keys' , constraints: { username: /.*/ }
+  get ':username.keys' => 'profiles/keys#get_keys', constraints: { username: /.*/ }
 
   get ':id' => 'namespaces#show', constraints: { id: /(?:[^.]|\.(?!atom$))+/, format: /atom/ }
 end

@@ -11,6 +11,10 @@ module API
       #  GET /users?search=Admin
       #  GET /users?username=root
       get do
+        unless can?(current_user, :read_users_list, nil)
+          render_api_error!("Not authorized.", 403)
+        end
+
         if params[:username].present?
           @users = User.where(username: params[:username])
         else
@@ -36,10 +40,12 @@ module API
       get ":id" do
         @user = User.find(params[:id])
 
-        if current_user.is_admin?
+        if current_user && current_user.is_admin?
           present @user, with: Entities::UserFull
-        else
+        elsif can?(current_user, :read_user, @user)
           present @user, with: Entities::User
+        else
+          render_api_error!("User not found.", 404)
         end
       end
 
@@ -70,7 +76,7 @@ module API
         required_attributes! [:email, :password, :name, :username]
         attrs = attributes_for_keys [:email, :name, :password, :skype, :linkedin, :twitter, :projects_limit, :username, :bio, :location, :can_create_group, :admin, :confirm, :external]
         admin = attrs.delete(:admin)
-        confirm = !(attrs.delete(:confirm) =~ (/(false|f|no|0)$/i))
+        confirm = !(attrs.delete(:confirm) =~ /(false|f|no|0)$/i)
         user = User.build_user(attrs)
         user.admin = admin unless admin.nil?
         user.skip_confirmation! unless confirm

@@ -12,9 +12,9 @@ Locate the section for your GitLab remote in the `.git/config` file. It looks li
   fetch = +refs/heads/*:refs/remotes/origin/*
 ```
 
-Now add the line `fetch = +refs/merge-requests/*/head:refs/remotes/origin/merge-requests/*` to this section. 
+Now add the line `fetch = +refs/merge-requests/*/head:refs/remotes/origin/merge-requests/*` to this section.
 
-It should looks like this: 
+It should look like this:
 
 ```
 [remote "origin"]
@@ -43,7 +43,7 @@ $ git checkout origin/merge-requests/1
 
 ![MR diff](merge_requests/merge_request_diff.png)
 
-It you add `w=1` option to URL, you can see diff without whitespace changes.
+If you click the "Hide whitespace changes" button, you can see the diff without whitespace changes.
 
 ![MR diff without whitespace](merge_requests/merge_request_diff_without_whitespace.png)
 

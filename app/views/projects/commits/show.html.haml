@@ -1,12 +1,11 @@
 - page_title "Commits", @ref
-= render "header_title"
 = content_for :meta_tags do
   - if current_user
     = auto_discovery_link_tag(:atom, namespace_project_commits_url(@project.namespace, @project, @ref, format: :atom, private_token: current_user.private_token), title: "#{@project.name}:#{@ref} commits")
 
 = render "head"
 
-.gray-content-block.second-block
+.row-content-block.second-block
   .tree-ref-holder
     = render 'shared/ref_switcher', destination: 'commits'
 
@@ -39,4 +38,4 @@
 = spinner
 
 :javascript
-  CommitsList.init("#{@ref}", #{@limit});
+  CommitsList.init(#{@limit});

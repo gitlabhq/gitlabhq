@@ -1,5 +1,5 @@
 ## Test and Deploy a ruby application
-This example will guide you how to run tests in your Ruby application and deploy it automatically as Heroku application.
+This example will guide you how to run tests in your Ruby on Rails application and deploy it automatically as Heroku application.
 
 You can checkout the example [source](https://gitlab.com/ayufan/ruby-getting-started) and check [CI status](https://gitlab.com/ayufan/ruby-getting-started/builds?scope=all).
 
@@ -32,7 +32,7 @@ production:
 ```
 
 This project has three jobs:
-1. `test` - used to test rails application,
+1. `test` - used to test Rails application,
 2. `staging` - used to automatically deploy staging environment every push to `master` branch
 3. `production` - used to automatically deploy production environmnet for every created tag
 
@@ -62,6 +62,6 @@ gitlab-ci-multi-runner register \
   --docker-postgres latest
 ```
 
-With the command above, you create a runner that uses [ruby:2.2](https://registry.hub.docker.com/u/library/ruby/) image and uses [postgres](https://registry.hub.docker.com/u/library/postgres/) database.
+With the command above, you create a runner that uses [ruby:2.2](https://hub.docker.com/r/_/ruby/) image and uses [postgres](https://hub.docker.com/r/_/postgres/) database.
 
 To access PostgreSQL database you need to connect to `host: postgres` as user `postgres` without password.

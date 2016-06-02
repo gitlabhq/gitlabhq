@@ -24,6 +24,14 @@ describe Banzai::Filter::ExternalLinkFilter, lib: true do
     doc = filter(act)
 
     expect(doc.at_css('a')).to have_attribute('rel')
-    expect(doc.at_css('a')['rel']).to eq 'nofollow'
+    expect(doc.at_css('a')['rel']).to include 'nofollow'
+  end
+
+  it 'adds rel="noreferrer" to external links' do
+    act = %q(<a href="https://google.com/">Google</a>)
+    doc = filter(act)
+
+    expect(doc.at_css('a')).to have_attribute('rel')
+    expect(doc.at_css('a')['rel']).to include 'noreferrer'
   end
 end

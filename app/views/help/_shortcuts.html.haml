@@ -21,7 +21,7 @@
               %tr
                 %td.shortcut
                   .key ?
-                %td Show this dialog
+                %td Show/hide this dialog
               %tr
                 %td.shortcut
                   - if browser.mac?
@@ -169,6 +169,10 @@
                 %td.shortcut
                   .key t
                 %td Go to finding file
+              %tr
+                %td.shortcut
+                  .key i
+                %td New issue
         .col-lg-4
           %table.shortcut-mappings
             %tbody{ class: 'hidden-shortcut network', style: 'display:none' }
@@ -241,6 +245,10 @@
                 %td.shortcut
                   .key e
                 %td Edit issue
+              %tr
+                %td.shortcut
+                  .key l
+                %td Change Label
             %tbody{ class: 'hidden-shortcut merge_requests', style: 'display:none' }
               %tr
                 %th
@@ -261,3 +269,7 @@
                 %td.shortcut
                   .key e
                 %td Edit merge request
+              %tr
+                %td.shortcut
+                  .key l
+                %td Change Label

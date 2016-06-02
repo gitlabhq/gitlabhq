@@ -114,7 +114,7 @@ class Spinach::Features::ProjectForkedMergeRequests < Spinach::FeatureSteps
 
   step 'I see the edit page prefilled for "Merge Request On Forked Project"' do
     expect(current_path).to eq edit_namespace_project_merge_request_path(@project.namespace, @project, @merge_request)
-    expect(page).to have_content "Edit merge request ##{@merge_request.id}"
+    expect(page).to have_content "Edit merge request #{@merge_request.to_reference}"
     expect(find("#merge_request_title").value).to eq "Merge Request On Forked Project"
   end
 

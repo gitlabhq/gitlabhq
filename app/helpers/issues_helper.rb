@@ -16,31 +16,49 @@ module IssuesHelper
   def url_for_project_issues(project = @project, options = {})
     return '' if project.nil?
 
-    if options[:only_path]
-      project.issues_tracker.project_path
-    else
-      project.issues_tracker.project_url
-    end
+    url =
+      if options[:only_path]
+        project.issues_tracker.project_path
+      else
+        project.issues_tracker.project_url
+      end
+
+    # Ensure we return a valid URL to prevent possible XSS.
+    URI.parse(url).to_s
+  rescue URI::InvalidURIError
+    ''
   end
 
   def url_for_new_issue(project = @project, options = {})
     return '' if project.nil?
 
-    if options[:only_path]
-      project.issues_tracker.new_issue_path
-    else
-      project.issues_tracker.new_issue_url
-    end
+    url =
+      if options[:only_path]
+        project.issues_tracker.new_issue_path
+      else
+        project.issues_tracker.new_issue_url
+      end
+
+    # Ensure we return a valid URL to prevent possible XSS.
+    URI.parse(url).to_s
+  rescue URI::InvalidURIError
+    ''
   end
 
   def url_for_issue(issue_iid, project = @project, options = {})
     return '' if project.nil?
 
-    if options[:only_path]
-      project.issues_tracker.issue_path(issue_iid)
-    else
-      project.issues_tracker.issue_url(issue_iid)
-    end
+    url =
+      if options[:only_path]
+        project.issues_tracker.issue_path(issue_iid)
+      else
+        project.issues_tracker.issue_url(issue_iid)
+      end
+
+    # Ensure we return a valid URL to prevent possible XSS.
+    URI.parse(url).to_s
+  rescue URI::InvalidURIError
+    ''
   end
 
   def bulk_update_milestone_options
@@ -87,23 +105,6 @@ module IssuesHelper
     return 'hidden' if issue.closed? == closed
   end
 
-  def issue_to_atom(xml, issue)
-    xml.entry do
-      xml.id      namespace_project_issue_url(issue.project.namespace,
-                                              issue.project, issue)
-      xml.link    href: namespace_project_issue_url(issue.project.namespace,
-                                                    issue.project, issue)
-      xml.title   truncate(issue.title, length: 80)
-      xml.updated issue.created_at.xmlschema
-      xml.media   :thumbnail, width: "40", height: "40", url: image_url(avatar_icon(issue.author_email))
-      xml.author do |author|
-        xml.name issue.author_name
-        xml.email issue.author_email
-      end
-      xml.summary issue.title
-    end
-  end
-
   def merge_requests_sentence(merge_requests)
     # Sorting based on the `!123` or `group/project!123` reference will sort
     # local merge requests first.
@@ -131,7 +132,7 @@ module IssuesHelper
         class: "icon emoji-icon emoji-#{unicode}",
         title: name,
         data: data
-    else 
+    else
       # Emoji icons displayed separately, used for the awards already given
       # to an issue or merge request.
       content_tag :img, "",
@@ -146,8 +147,8 @@ module IssuesHelper
 
   def emoji_author_list(notes, current_user)
     list = notes.map do |note|
-             note.author == current_user ? "me" : note.author.name
-           end
+      note.author == current_user ? "me" : note.author.name
+    end
 
     list.join(", ")
   end
@@ -170,6 +171,18 @@ module IssuesHelper
         2
       end
     end.to_h
+  end
+
+  def due_date_options
+    options = [
+      Issue::AnyDueDate,
+      Issue::NoDueDate,
+      Issue::DueThisWeek,
+      Issue::DueThisMonth,
+      Issue::Overdue
+    ]
+
+    options_from_collection_for_select(options, 'name', 'title', params[:due_date])
   end
 
   # Required for Banzai::Filter::IssueReferenceFilter

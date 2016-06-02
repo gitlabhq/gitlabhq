@@ -153,8 +153,8 @@ $nav-link-padding: 13px $gl-padding;
 //== Code
 //
 //##
-$pre-bg:           #f8fafc !default;
+$pre-bg:           $background-color !default;
 $pre-color:        $gl-gray !default;
-$pre-border-color: #e7e9ed;
+$pre-border-color: $border-color;
 
 $table-bg-accent: $background-color;

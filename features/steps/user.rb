@@ -12,7 +12,7 @@ class Spinach::Features::User < Spinach::FeatureSteps
     user = User.find_by(name: 'John Doe')
     project = contributed_project
 
-    # Issue controbution
+    # Issue contribution
     issue_params = { title: 'Bug in old browser' }
     Issues::CreateService.new(project, user, issue_params).execute
 
@@ -28,13 +28,13 @@ class Spinach::Features::User < Spinach::FeatureSteps
   end
 
   step 'I should see contributed projects' do
-    page.within '.contributed-projects' do
+    page.within '#contributed' do
       expect(page).to have_content(@contributed_project.name)
     end
   end
 
   step 'I should see contributions calendar' do
-    expect(page).to have_css('.cal-heatmap-container')
+    expect(page).to have_css('.js-contrib-calendar')
   end
 
   def contributed_project

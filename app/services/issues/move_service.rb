@@ -41,12 +41,23 @@ module Issues
     private
 
     def create_new_issue
-      new_params = { id: nil, iid: nil, label_ids: [], milestone: nil,
+      new_params = { id: nil, iid: nil, label_ids: cloneable_label_ids,
+                     milestone_id: cloneable_milestone_id,
                      project: @new_project, author: @old_issue.author,
                      description: rewrite_content(@old_issue.description) }
 
-      new_params = @old_issue.serializable_hash.merge(new_params)
+      new_params = @old_issue.serializable_hash.symbolize_keys.merge(new_params)
       CreateService.new(@new_project, @current_user, new_params).execute
+    end
+
+    def cloneable_label_ids
+      @new_project.labels
+        .where(title: @old_issue.labels.pluck(:title)).pluck(:id)
+    end
+
+    def cloneable_milestone_id
+      @new_project.milestones
+        .find_by(title: @old_issue.milestone.try(:title)).try(:id)
     end
 
     def rewrite_notes

@@ -32,12 +32,12 @@ feature 'Login', feature: true do
       let(:user) { create(:user, :two_factor) }
 
       before do
-        login_with(user)
+        login_with(user, remember: true)
         expect(page).to have_content('Two-factor Authentication')
       end
 
       def enter_code(code)
-        fill_in 'Two-factor authentication code', with: code
+        fill_in 'Two-factor Authentication code', with: code
         click_button 'Verify code'
       end
 
@@ -50,6 +50,12 @@ feature 'Login', feature: true do
         it 'allows login with valid code' do
           enter_code(user.current_otp)
           expect(current_path).to eq root_path
+        end
+
+        it 'persists remember_me value via hidden field' do
+          field = first('input#user_remember_me', visible: false)
+
+          expect(field.value).to eq '1'
         end
 
         it 'blocks login with invalid code' do
@@ -121,7 +127,7 @@ feature 'Login', feature: true do
       user = create(:user, password: 'not-the-default')
 
       login_with(user)
-      expect(page).to have_content('Invalid login or password.')
+      expect(page).to have_content('Invalid Login or password.')
     end
   end
 

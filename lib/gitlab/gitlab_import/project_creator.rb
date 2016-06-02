@@ -23,7 +23,6 @@ module Gitlab
           import_url: repo["http_url_to_repo"].sub("://", "://oauth2:#{@session_data[:gitlab_access_token]}@")
         ).execute
 
-        project.create_import_data(data: { "gitlab_session" => session_data } )
         project
       end
     end

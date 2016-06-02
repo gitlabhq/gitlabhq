@@ -7,10 +7,12 @@ class Projects::GroupLinksController < Projects::ApplicationController
   end
 
   def create
-    link = project.project_group_links.new
-    link.group_id = params[:link_group_id]
-    link.group_access = params[:link_group_access]
-    link.save
+    group = Group.find(params[:link_group_id])
+    return render_404 unless can?(current_user, :read_group, group)
+
+    project.project_group_links.create(
+      group: group, group_access: params[:link_group_access]
+    )
 
     redirect_to namespace_project_group_links_path(project.namespace, project)
   end

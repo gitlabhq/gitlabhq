@@ -243,7 +243,7 @@ Devise.setup do |config|
     when Hash
       # Add procs for handling SLO
       if provider['name'] == 'cas3'
-        provider['args'][:on_single_sign_out]  = lambda do |request|
+        provider['args'][:on_single_sign_out] = lambda do |request|
           ticket = request.params[:session_index]
           raise "Service Ticket not found." unless Gitlab::OAuth::Session.valid?(:cas3, ticket)
           Gitlab::OAuth::Session.destroy(:cas3, ticket)

@@ -11,6 +11,11 @@ module API
           end
           not_found!
         end
+
+        def snippets_for_current_user
+          finder_params = { filter: :by_project, project: user_project }
+          SnippetsFinder.new.execute(current_user, finder_params)
+        end
       end
 
       # Get a project snippets
@@ -20,7 +25,7 @@ module API
       # Example Request:
       #   GET /projects/:id/snippets
       get ":id/snippets" do
-        present paginate(user_project.snippets), with: Entities::ProjectSnippet
+        present paginate(snippets_for_current_user), with: Entities::ProjectSnippet
       end
 
       # Get a project snippet
@@ -31,7 +36,7 @@ module API
       # Example Request:
       #   GET /projects/:id/snippets/:snippet_id
       get ":id/snippets/:snippet_id" do
-        @snippet = user_project.snippets.find(params[:snippet_id])
+        @snippet = snippets_for_current_user.find(params[:snippet_id])
         present @snippet, with: Entities::ProjectSnippet
       end
 
@@ -73,7 +78,7 @@ module API
       # Example Request:
       #   PUT /projects/:id/snippets/:snippet_id
       put ":id/snippets/:snippet_id" do
-        @snippet = user_project.snippets.find(params[:snippet_id])
+        @snippet = snippets_for_current_user.find(params[:snippet_id])
         authorize! :update_project_snippet, @snippet
 
         attrs = attributes_for_keys [:title, :file_name, :visibility_level]
@@ -97,7 +102,7 @@ module API
       #   DELETE /projects/:id/snippets/:snippet_id
       delete ":id/snippets/:snippet_id" do
         begin
-          @snippet = user_project.snippets.find(params[:snippet_id])
+          @snippet = snippets_for_current_user.find(params[:snippet_id])
           authorize! :update_project_snippet, @snippet
           @snippet.destroy
         rescue
@@ -113,7 +118,7 @@ module API
       # Example Request:
       #   GET /projects/:id/snippets/:snippet_id/raw
       get ":id/snippets/:snippet_id/raw" do
-        @snippet = user_project.snippets.find(params[:snippet_id])
+        @snippet = snippets_for_current_user.find(params[:snippet_id])
 
         env['api.format'] = :txt
         content_type 'text/plain'

@@ -1,8 +1,7 @@
 - page_title "Commits", "Graphs"
-= render "header_title"
 = render 'head'
 
-.gray-content-block.append-bottom-default
+.row-content-block.append-bottom-default
   .tree-ref-holder
     = render 'shared/ref_switcher', destination: 'graphs_commits'
   %ul.breadcrumb.repo-breadcrumb

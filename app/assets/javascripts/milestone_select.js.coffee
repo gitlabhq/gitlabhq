@@ -24,7 +24,7 @@ class @MilestoneSelect
 
       if issueUpdateURL
         milestoneLinkTemplate = _.template(
-          '<a href="/<%= namespace %>/<%= path %>/milestones/<%= iid %>"><%= title %></a>'
+          '<a href="/<%= namespace %>/<%= path %>/milestones/<%= iid %>"><%= _.escape(title) %></a>'
         )
 
         milestoneLinkNoneTemplate = '<div class="light">None</div>'
@@ -71,7 +71,7 @@ class @MilestoneSelect
             defaultLabel
         fieldName: $dropdown.data('field-name')
         text: (milestone) ->
-          milestone.title
+          _.escape(milestone.title)
         id: (milestone) ->
           if !useId
             milestone.name
@@ -97,7 +97,7 @@ class @MilestoneSelect
               selectedMilestone = selected.name
             else
               selectedMilestone = ''
-            Issues.filterResults $dropdown.closest('form')
+            Issuable.filterResults $dropdown.closest('form')
           else if $dropdown.hasClass('js-filter-submit')
             $dropdown.closest('form').submit()
           else

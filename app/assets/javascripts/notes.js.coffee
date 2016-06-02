@@ -75,6 +75,9 @@ class @Notes
     # when issue status changes, we need to refresh data
     $(document).on "issuable:change", @refresh
 
+    # when a key is clicked on the notes
+    $(document).on "keydown", ".js-note-text", @keydownNoteText
+
   cleanBinding: ->
     $(document).off "ajax:success", ".js-main-target-form"
     $(document).off "ajax:success", ".js-discussion-note-form"
@@ -92,9 +95,18 @@ class @Notes
     $(document).off "click", ".js-note-target-reopen"
     $(document).off "click", ".js-note-target-close"
     $(document).off "click", ".js-note-discard"
+    $(document).off "keydown", ".js-note-text"
 
     $('.note .js-task-list-container').taskList('disable')
     $(document).off 'tasklist:changed', '.note .js-task-list-container'
+
+  keydownNoteText: (e) ->
+    $this = $(this)
+    if $this.val() is '' and e.which is 38 #aka the up key
+      myLastNote = $("li.note[data-author-id='#{gon.current_user_id}'][data-editable]:last")
+      if myLastNote.length
+        myLastNoteEditBtn = myLastNote.find('.js-note-edit')
+        myLastNoteEditBtn.trigger('click', [true, myLastNote])
 
   initRefresh: ->
     clearInterval(Notes.interval)
@@ -102,9 +114,9 @@ class @Notes
       @refresh()
     , @pollingInterval
 
-  refresh: ->
+  refresh: =>
     return if @refreshing is true
-    refreshing = true
+    @refreshing = true
     if not document.hidden and document.URL.indexOf(@noteable_url) is 0
       @getContent()
 
@@ -122,8 +134,8 @@ class @Notes
             @renderDiscussionNote(note)
           else
             @renderNote(note)
-      always: =>
-        @refreshing = false
+    .always () =>
+      @refreshing = false
 
   ###
   Increase @pollingInterval up to 120 seconds on every function call,
@@ -155,8 +167,8 @@ class @Notes
       return
 
     if note.award
-      awards_handler.addAwardToEmojiBar(note.note)
-      awards_handler.scrollToAwards()
+      awardsHandler.addAwardToEmojiBar(note.note)
+      awardsHandler.scrollToAwards()
 
     # render note if it not present in loaded list
     # or skip if rendered
@@ -273,6 +285,7 @@ class @Notes
     form.addClass "js-main-target-form"
 
     form.find("#note_line_code").remove()
+    form.find("#note_type").remove()
 
   ###
   General note form setup.
@@ -316,7 +329,7 @@ class @Notes
     @renderDiscussionNote(note)
 
     # cleanup after successfully creating a diff/discussion note
-    @removeDiscussionNoteForm($("#new-discussion-note-form-#{note.discussion_id}"))
+    @removeDiscussionNoteForm($(xhr.target))
 
   ###
   Called in response to the edit note form being submitted
@@ -343,7 +356,7 @@ class @Notes
   Adds a hidden div with the original content of the note to fill the edit note form with
   if the user cancels
   ###
-  showEditForm: (e) ->
+  showEditForm: (e, scrollTo, myLastNote) ->
     e.preventDefault()
     note = $(this).closest(".note")
     note.addClass "is-editting"
@@ -354,9 +367,27 @@ class @Notes
     # Show the attachment delete link
     note.find(".js-note-attachment-delete").show()
 
-    new GLForm form
+    done = ($noteText) ->
+      # Neat little trick to put the cursor at the end
+      noteTextVal = $noteText.val()
+      $noteText.val('').val(noteTextVal);
 
-    form.find(".js-note-text").focus()
+    new GLForm form
+    if scrollTo? and myLastNote?
+      # scroll to the bottom
+      # so the open of the last element doesn't make a jump
+      $('html, body').scrollTop($(document).height());
+      $('html, body').animate({
+        scrollTop: myLastNote.offset().top - 150
+      }, 500, ->
+        $noteText = form.find(".js-note-text")
+        $noteText.focus()
+        done($noteText)
+      );
+    else
+      $noteText = form.find('.js-note-text')
+      $noteText.focus()
+      done($noteText)
 
   ###
   Called in response to clicking the edit note link
@@ -442,6 +473,7 @@ class @Notes
   setupDiscussionNoteForm: (dataHolder, form) =>
     # setup note target
     form.attr 'id', "new-discussion-note-form-#{dataHolder.data("discussionId")}"
+    form.find("#note_type").val dataHolder.data("noteType")
     form.find("#line_type").val dataHolder.data("lineType")
     form.find("#note_commit_id").val dataHolder.data("commitId")
     form.find("#note_line_code").val dataHolder.data("lineCode")

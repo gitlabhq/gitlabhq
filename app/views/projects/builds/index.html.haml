@@ -1,5 +1,5 @@
 - page_title "Builds"
-= render "header_title"
+= render "projects/pipelines/head"
 
 .top-area
   %ul.nav-links
@@ -8,6 +8,7 @@
         All
         %span.badge.js-totalbuilds-count
           = number_with_delimiter(@all_builds.count(:id))
+
 
     %li{class: ('active' if @scope == 'running')}
       = link_to project_builds_path(@project, scope: :running) do
@@ -34,9 +35,6 @@
         = icon('wrench')
         %span CI Lint
 
-.gray-content-block
-  #{(@scope || 'running').capitalize} builds from this project
-
 %ul.content-list
   - if @builds.blank?
     %li
@@ -52,12 +50,13 @@
             %th Ref
             %th Stage
             %th Name
+            %th Tags
             %th Duration
             %th Finished at
             - if @project.build_coverage_enabled?
               %th Coverage
             %th
 
-        = render @builds, commit_sha: true, stage: true, allow_retry: true, coverage: @project.build_coverage_enabled?
+        = render @builds, commit_sha: true, ref: true, stage: true, allow_retry: true, coverage: @project.build_coverage_enabled?
 
     = paginate @builds, theme: 'gitlab'

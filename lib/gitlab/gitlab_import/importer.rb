@@ -5,16 +5,19 @@ module Gitlab
 
       def initialize(project)
         @project = project
-        import_data = project.import_data.try(:data)
-        gitlab_session = import_data["gitlab_session"] if import_data
-        @client = Client.new(gitlab_session["gitlab_access_token"])
-        @formatter = Gitlab::ImportFormatter.new
+        import_data = project.import_data
+        if import_data && import_data.credentials && import_data.credentials[:password]
+          @client = Client.new(import_data.credentials[:password])
+          @formatter = Gitlab::ImportFormatter.new
+        else
+          raise Projects::ImportService::Error, "Unable to find project import data credentials for project ID: #{@project.id}"
+        end
       end
 
       def execute
         project_identifier = CGI.escape(project.import_source)
 
-        #Issues && Comments
+        # Issues && Comments
         issues = client.issues(project_identifier)
 
         issues.each do |issue|

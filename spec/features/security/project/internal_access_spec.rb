@@ -101,12 +101,12 @@ describe "Internal Project Access", feature: true  do
     it { is_expected.to be_allowed_for :admin }
     it { is_expected.to be_allowed_for owner }
     it { is_expected.to be_allowed_for master }
-    it { is_expected.to be_denied_for developer }
-    it { is_expected.to be_denied_for reporter }
-    it { is_expected.to be_denied_for guest }
-    it { is_expected.to be_denied_for :user }
-    it { is_expected.to be_denied_for :external }
+    it { is_expected.to be_allowed_for developer }
+    it { is_expected.to be_allowed_for reporter }
+    it { is_expected.to be_allowed_for guest }
+    it { is_expected.to be_allowed_for :user }
     it { is_expected.to be_denied_for :visitor }
+    it { is_expected.to be_denied_for :external }
   end
 
   describe "GET /:project_path/blob" do

@@ -1,5 +1,4 @@
 - page_title "Applications"
-- header_title page_title, applications_profile_path
 
 .row.prepend-top-default
   .col-lg-3.profile-settings-sidebar
@@ -45,7 +44,7 @@
                         = icon('pencil')
                       = render 'delete_form', application: application, small: true
         - else
-          .profile-settings-message.text-center
+          .settings-message.text-center
             You don't have any applications
     .oauth-authorized-applications.prepend-top-20.append-bottom-default
       - if user_oauth_applications?
@@ -79,5 +78,5 @@
                   %td= token.scopes
                   %td= render 'doorkeeper/authorized_applications/delete_form', token: token
       - else
-        .profile-settings-message.text-center
+        .settings-message.text-center
           You don't have any authorized applications

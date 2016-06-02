@@ -5,6 +5,10 @@
 .file-holder {
   border: 1px solid $border-color;
 
+  &.file-holder-no-border {
+    border: 0;
+  }
+
   &.readme-holder {
     margin: $gl-padding-top 0;
   }
@@ -23,8 +27,17 @@
     word-wrap: break-word;
     border-radius: 3px 3px 0 0;
 
+    &.file-title-clear {
+      padding-left: 0;
+      padding-right: 0;
+      background-color: transparent;
+
+      .file-actions {
+        right: 0;
+      }
+    }
+
     .file-actions {
-      float: right;
       position: absolute;
       top: 5px;
       right: 15px;
@@ -33,20 +46,6 @@
         padding: 0 10px;
         font-size: 13px;
         line-height: 28px;
-      }
-    }
-
-    .filename {
-      &.old {
-        span.idiff {
-          background-color: #f8cbcb;
-        }
-      }
-
-      &.new {
-        span.idiff {
-          background-color: #a6f3a6;
-        }
       }
     }
 
@@ -80,10 +79,6 @@
           margin: 0;
         }
       }
-    }
-
-    &.blob_file {
-
     }
 
     &.blob-no-preview {
@@ -129,6 +124,11 @@
       td.line-numbers {
         float: none;
         border-left: 1px solid #ddd;
+
+        i {
+          float: none;
+          margin-right: 0;
+        }
       }
       td.lines {
         padding: 0;

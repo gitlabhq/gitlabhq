@@ -4,28 +4,20 @@
   - if current_user
     = auto_discovery_link_tag(:atom, group_url(@group, format: :atom, private_token: current_user.private_token), title: "#{@group.name} activity")
 
-.cover-block
-  .cover-controls
-    - if @group && can?(current_user, :admin_group, @group)
-      = link_to icon('pencil'), edit_group_path(@group), class: 'btn'
-    - if current_user
-      = link_to icon('rss'), group_path(@group, { format: :atom, private_token: current_user.private_token }), title: "Feed", class: 'btn rss-btn'
-
-  .avatar-holder
+.cover-block.groups-cover-block
+  .container-fluid.container-limited
     = link_to group_icon(@group), target: '_blank' do
-      = image_tag group_icon(@group), class: "avatar group-avatar s90"
-  .cover-title
-    %h1
-      = @group.name
-      %span.visibility-icon.has-tooltip{ data: { container: 'body' }, title: visibility_icon_description(@group) }
-        = visibility_level_icon(@group.visibility_level, fw: false)
+      = image_tag group_icon(@group), class: "avatar group-avatar s70"
+    .group-info
+      .cover-title
+        %h1
+          @#{@group.path}
+          %span.visibility-icon.has-tooltip{ data: { container: 'body' }, title: visibility_icon_description(@group) }
+            = visibility_level_icon(@group.visibility_level, fw: false)
 
-  .cover-desc.username
-    @#{@group.path}
-
-  - if @group.description.present?
-    .cover-desc.description
-      = markdown(@group.description, pipeline: :description)
+      - if @group.description.present?
+        .cover-desc.description
+          = markdown(@group.description, pipeline: :description)
 
 %div{ class: container_class }
   .top-area

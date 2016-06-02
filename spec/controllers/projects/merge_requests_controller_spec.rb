@@ -63,7 +63,7 @@ describe Projects::MergeRequestsController do
             id: merge_request.iid,
             format: format)
 
-        expect(response.body).to eq((merge_request.send(:"to_#{format}")).to_s)
+        expect(response.body).to eq(merge_request.send(:"to_#{format}").to_s)
       end
 
       it "should not escape Html" do
@@ -299,14 +299,6 @@ describe Projects::MergeRequestsController do
       go view: 'parallel'
 
       expect(response.cookies['diff_view']).to eq('parallel')
-    end
-
-    it 'assigns :view param based on cookie' do
-      request.cookies['diff_view'] = 'parallel'
-
-      go
-
-      expect(controller.params[:view]).to eq 'parallel'
     end
   end
 

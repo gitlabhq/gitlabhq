@@ -2,22 +2,21 @@ module Gitlab
   module Email
     module Message
       class RepositoryPush
-        attr_accessor :recipient
         attr_reader :author_id, :ref, :action
 
         include Gitlab::Routing.url_helpers
+        include DiffHelper
 
         delegate :namespace, :name_with_namespace, to: :project, prefix: :project
         delegate :name, to: :author, prefix: :author
         delegate :username, to: :author, prefix: :author
 
-        def initialize(notify, project_id, recipient, opts = {})
+        def initialize(notify, project_id, opts = {})
           raise ArgumentError, 'Missing options: author_id, ref, action' unless
             opts[:author_id] && opts[:ref] && opts[:action]
 
           @notify = notify
           @project_id = project_id
-          @recipient = recipient
           @opts = opts.dup
 
           @author_id = @opts.delete(:author_id)
@@ -38,7 +37,7 @@ module Gitlab
         end
 
         def diffs
-          @diffs ||= (compare.diffs if compare)
+          @diffs ||= (safe_diff_files(compare.diffs, diff_refs) if compare)
         end
 
         def diffs_count
@@ -47,6 +46,10 @@ module Gitlab
 
         def compare
           @opts[:compare]
+        end
+
+        def diff_refs
+          @opts[:diff_refs]
         end
 
         def compare_timeout

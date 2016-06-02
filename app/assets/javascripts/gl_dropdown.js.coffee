@@ -32,10 +32,8 @@ class GitLabDropdownFilter
       else if @input.val() is "" and $inputContainer.hasClass HAS_VALUE_CLASS
         $inputContainer.removeClass HAS_VALUE_CLASS
 
-      if keyCode is 13 and @input.val() isnt ""
-        if @options.enterCallback
-          @options.enterCallback()
-        return
+      if keyCode is 13
+        return false
 
       clearTimeout timeout
       timeout = setTimeout =>
@@ -62,9 +60,36 @@ class GitLabDropdownFilter
       results = data
 
       if search_text isnt ''
-        results = fuzzaldrinPlus.filter(data, search_text,
-          key: @options.keys
-        )
+        # When data is an array of objects therefore [object Array] e.g.
+        # [
+        #   { prop: 'foo' },
+        #   { prop: 'baz' }
+        # ]
+        if _.isArray(data)
+          results = fuzzaldrinPlus.filter(data, search_text,
+            key: @options.keys
+          )
+        else
+          # If data is grouped therefore an [object Object]. e.g.
+          # {
+          #   groupName1: [
+          #     { prop: 'foo' },
+          #     { prop: 'baz' }
+          #   ],
+          #   groupName2: [
+          #     { prop: 'abc' },
+          #     { prop: 'def' }
+          #   ]
+          # }
+          if gl.utils.isObject data
+            results = {}
+            for key, group of data
+              tmp = fuzzaldrinPlus.filter(group, search_text,
+                key: @options.keys
+              )
+
+              if tmp.length
+                results[key] = tmp.map (item) -> item
 
       @options.callback results
     else
@@ -132,7 +157,6 @@ class GitLabDropdown
       @filterInput = @getElement(FILTER_INPUT)
       @highlight = false
       @filterInputBlur = true
-      @enterCallback = true
     } = @options
 
     self = @
@@ -144,8 +168,9 @@ class GitLabDropdown
     searchFields = if @options.search then @options.search.fields else [];
 
     if @options.data
-      # If data is an array
-      if _.isArray @options.data
+      # If we provided data
+      # data could be an array of objects or a group of arrays
+      if _.isObject(@options.data) and not _.isFunction(@options.data)
         @fullData = @options.data
         @parseData @options.data
       else
@@ -157,6 +182,9 @@ class GitLabDropdown
             @fullData = data
 
             @parseData @fullData
+
+            if @options.filterable
+              @filterInput.trigger 'keyup'
         }
 
     # Init filterable
@@ -178,15 +206,15 @@ class GitLabDropdown
         callback: (data) =>
           currentIndex = -1
           @parseData data
-        enterCallback: =>
-          if @enterCallback
-            @selectRowAtIndex 0
 
     # Event listeners
 
     @dropdown.on "shown.bs.dropdown", @opened
     @dropdown.on "hidden.bs.dropdown", @hidden
     @dropdown.on "click", ".dropdown-menu, .dropdown-menu-close", @shouldPropagate
+    @dropdown.on 'keyup', (e) =>
+      if e.which is 27 # Escape key
+        $('.dropdown-menu-close', @dropdown).trigger 'click'
 
     if @dropdown.find(".dropdown-toggle-page").length
       @dropdown.find(".dropdown-toggle-page, .dropdown-menu-back").on "click", (e) =>
@@ -224,26 +252,44 @@ class GitLabDropdown
 
     menu.toggleClass PAGE_TWO_CLASS
 
+    # Focus first visible input on active page
+    @dropdown.find('[class^="dropdown-page-"]:visible :text:visible:first').focus()
+
   parseData: (data) ->
     @renderedData = data
-
-    # Render each row
-    html = $.map data, (obj) =>
-      return @renderItem(obj)
 
     if @options.filterable and data.length is 0
       # render no matching results
       html = [@noResults()]
+    else
+      # Handle array groups
+      if gl.utils.isObject data
+        html = []
+        for name, groupData of data
+          # Add header for each group
+          html.push(@renderItem(header: name, name))
+
+          @renderData(groupData, name)
+            .map (item) ->
+              html.push item
+      else
+        # Render each row
+        html = @renderData(data)
 
     # Render the full menu
     full_html = @renderMenu(html.join(""))
 
     @appendMenu(full_html)
 
+  renderData: (data, group = false) ->
+    data.map (obj, index) =>
+      return @renderItem(obj, group, index)
+
   shouldPropagate: (e) =>
     if @options.multiSelect
       $target = $(e.target)
-      if not $target.hasClass('dropdown-menu-close') and not $target.hasClass('dropdown-menu-close-icon')
+
+      if not $target.hasClass('dropdown-menu-close') and not $target.hasClass('dropdown-menu-close-icon') and not $target.data('is-link')
         e.stopPropagation()
         return false
       else
@@ -295,11 +341,10 @@ class GitLabDropdown
     selector = '.dropdown-content'
     if @dropdown.find(".dropdown-toggle-page").length
       selector = ".dropdown-page-one .dropdown-content"
-
     $(selector, @dropdown).html html
 
   # Render the row
-  renderItem: (data) ->
+  renderItem: (data, group = false, index = false) ->
     html = ""
 
     # Divider
@@ -342,8 +387,13 @@ class GitLabDropdown
       if @highlight
         text = @highlightTextMatches(text, @filterInput.val())
 
+      if group
+        groupAttrs = "data-group='#{group}' data-index='#{index}'"
+      else
+        groupAttrs = ''
+
       html = "<li>
-        <a href='#{url}' class='#{cssClass}'>
+        <a href='#{url}' #{groupAttrs} class='#{cssClass}'>
           #{text}
         </a>
       </li>"
@@ -373,12 +423,17 @@ class GitLabDropdown
 
   rowClicked: (el) ->
     fieldName = @options.fieldName
-    selectedIndex = el.parent().index()
     if @renderedData
-      selectedObject = @renderedData[selectedIndex]
+      groupName = el.data('group')
+      if groupName
+        selectedIndex = el.data('index')
+        selectedObject = @renderedData[groupName][selectedIndex]
+      else
+        selectedIndex = el.closest('li').index()
+        selectedObject = @renderedData[selectedIndex]
+
     value = if @options.id then @options.id(selectedObject, el) else selectedObject.id
     field = @dropdown.parent().find("input[name='#{fieldName}'][value='#{value}']")
-
     if el.hasClass(ACTIVE_CLASS)
       el.removeClass(ACTIVE_CLASS)
       field.remove()
@@ -389,12 +444,12 @@ class GitLabDropdown
       else
         selectedObject
     else
-      if !value?
-        field.remove()
-
-      if not @options.multiSelect
+      if not @options.multiSelect or el.hasClass('dropdown-clear-active')
         @dropdown.find(".#{ACTIVE_CLASS}").removeClass ACTIVE_CLASS
         @dropdown.parent().find("input[name='#{fieldName}']").remove()
+
+      if !value?
+        field.remove()
 
       # Toggle active class for the tick mark
       el.addClass ACTIVE_CLASS
@@ -457,7 +512,7 @@ class GitLabDropdown
         return false
 
       if currentKeyCode is 13
-        @selectRowAtIndex currentIndex
+        @selectRowAtIndex if currentIndex < 0 then 0 else currentIndex
 
   removeArrayKeyEvent: ->
     $('body').off 'keydown'

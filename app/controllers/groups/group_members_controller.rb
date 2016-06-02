@@ -40,7 +40,7 @@ class Groups::GroupMembersController < Groups::ApplicationController
 
     respond_to do |format|
       format.html { redirect_to group_group_members_path(@group), notice: 'User was successfully removed from group.' }
-      format.js { render nothing: true }
+      format.js { head :ok }
     end
   end
 

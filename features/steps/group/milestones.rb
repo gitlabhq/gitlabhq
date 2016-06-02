@@ -5,7 +5,9 @@ class Spinach::Features::GroupMilestones < Spinach::FeatureSteps
   include SharedUser
 
   step 'I click on group milestones' do
-    click_link 'Milestones'
+    page.within('.layout-nav') do
+      click_link 'Milestones'
+    end
   end
 
   step 'I should see group milestones index page has no milestones' do
@@ -84,7 +86,7 @@ class Spinach::Features::GroupMilestones < Spinach::FeatureSteps
   end
 
   step 'I click on the "Labels" tab' do
-    page.within('.nav-links') do
+    page.within('.content .nav-links') do
       page.find(:xpath, "//a[@href='#tab-labels']").click
     end
   end

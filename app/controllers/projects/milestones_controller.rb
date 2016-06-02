@@ -75,7 +75,7 @@ class Projects::MilestonesController < Projects::ApplicationController
 
     respond_to do |format|
       format.html { redirect_to namespace_project_milestones_path }
-      format.js { render nothing: true }
+      format.js { head :ok }
     end
   end
 

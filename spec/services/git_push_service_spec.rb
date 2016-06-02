@@ -158,44 +158,31 @@ describe GitPushService, services: true do
     end
   end
 
-  describe "Updates main language" do
-    context "before push" do
-      it { expect(project.main_language).to eq(nil) }
+  describe "Updates git attributes" do
+    context "for default branch" do
+      it "calls the copy attributes method for the first push to the default branch" do
+        expect(project.repository).to receive(:copy_gitattributes).with('master')
+
+        execute_service(project, user, @blankrev, 'newrev', 'refs/heads/master')
+      end
+
+      it "calls the copy attributes method for changes to the default branch" do
+        expect(project.repository).to receive(:copy_gitattributes).with('refs/heads/master')
+
+        execute_service(project, user, 'oldrev', 'newrev', 'refs/heads/master')
+      end
     end
 
-    context "after push" do
-      def execute
-        execute_service(project, user, @oldrev, @newrev, ref)
+    context "for non-default branch" do
+      before do
+        # Make sure the "default" branch is different
+        allow(project).to receive(:default_branch).and_return('not-master')
       end
 
-      context "to master" do
-        let(:ref) { @ref }
+      it "does not call copy attributes method" do
+        expect(project.repository).not_to receive(:copy_gitattributes)
 
-        context 'when main_language is nil' do
-          it 'obtains the language from the repository' do
-            expect(project.repository).to receive(:main_language)
-            execute
-          end
-
-          it 'sets the project main language' do
-            execute
-            expect(project.main_language).to eq("Ruby")
-          end
-        end
-
-        context 'when main_language is already set' do
-          it 'does not check the repository' do
-            execute # do an initial run to simulate lang being preset
-            expect(project.repository).not_to receive(:main_language)
-            execute
-          end
-        end
-      end
-
-      context "to other branch" do
-        let(:ref) { 'refs/heads/feature/branch' }
-
-        it { expect(project.main_language).to eq(nil) }
+        execute_service(project, user, @oldrev, @newrev, @ref)
       end
     end
   end

@@ -26,7 +26,7 @@ class Projects::ApplicationController < ApplicationController
       project_path = "#{namespace}/#{id}"
       @project = Project.find_with_namespace(project_path)
 
-      if @project && can?(current_user, :read_project, @project)
+      if can?(current_user, :read_project, @project) && !@project.pending_delete?
         if @project.path_with_namespace != project_path
           redirect_to request.original_url.gsub(project_path, @project.path_with_namespace)
         end
@@ -83,8 +83,7 @@ class Projects::ApplicationController < ApplicationController
   end
 
   def apply_diff_view_cookie!
-    view = params[:view] || cookies[:diff_view]
-    cookies.permanent[:diff_view] = params[:view] = view if view
+    cookies.permanent[:diff_view] = params.delete(:view) if params[:view].present?
   end
 
   def builds_enabled

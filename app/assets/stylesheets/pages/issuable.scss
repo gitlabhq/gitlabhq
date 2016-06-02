@@ -125,9 +125,10 @@
 
 .right-sidebar {
   position: fixed;
-  top: 58px;
+  top: $header-height;
   bottom: 0;
   right: 0;
+  z-index: 10;
   transition: width .3s;
   background: $gray-light;
   padding: 10px 20px;
@@ -147,6 +148,10 @@
 
     .bold {
       font-weight: 600;
+    }
+
+    .light {
+      font-weight: normal;
     }
 
     .sidebar-collapsed-icon {
@@ -241,16 +246,20 @@
     }
   }
 
-  .btn {
+  .issuable-pager {
     background: $gray-normal;
     border: 1px solid $border-gray-normal;
     &:hover {
       background: $gray-dark;
       border: 1px solid $border-gray-dark;
     }
+
+    &.btn-primary {
+      @extend .btn-primary
+    }
   }
 
-  a:not(.btn) {
+  a:not(.issuable-pager) {
     &:hover {
       color: $md-link-color;
       text-decoration: none;
@@ -271,10 +280,6 @@
   .open .dropdown-menu {
     width: 100%;
   }
-}
-
-.btn-default.gutter-toggle {
-  margin-top: 4px;
 }
 
 .detail-page-description {
@@ -321,4 +326,51 @@
   @media (min-width: $screen-sm-min) {
     padding-top: 7px;
   }
+}
+
+.issuable-status-box {
+  float: none;
+  display: inline-block;
+  margin-top: 0;
+
+  @media (max-width: $screen-xs-max) {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+}
+
+.issuable-header {
+  position: relative;
+  padding-left: 45px;
+  padding-right: 45px;
+  line-height: 35px;
+
+  @media (min-width: $screen-sm-min) {
+    float: left;
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
+.issuable-actions {
+  padding-top: 10px;
+
+  @media (min-width: $screen-sm-min) {
+    float: right;
+    padding-top: 0;
+  }
+}
+
+.issuable-gutter-toggle {
+  @media (max-width: $screen-sm-max) {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+}
+
+.issuable-meta {
+  display: inline-block;
+  line-height: 18px;
 }

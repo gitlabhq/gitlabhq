@@ -12,7 +12,7 @@ module API
       # Example Request:
       #   GET /projects/:id/repository/tags
       get ":id/repository/tags" do
-        present user_project.repo.tags.sort_by(&:name).reverse,
+        present user_project.repository.tags.sort_by(&:name).reverse,
                 with: Entities::RepoTag, project: user_project
       end
 

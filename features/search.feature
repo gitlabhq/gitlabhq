@@ -30,11 +30,13 @@ Feature: Search
     Then I should see "Foo" link in the search results
     And I should not see "Bar" link in the search results
 
+  @javascript
   Scenario: I should see project code I am looking for
     When I click project "Shop" link
     And I search for "rspec"
     Then I should see code results for project "Shop"
 
+  @javascript
   Scenario: I should see project issues
     And project has issues
     When I click project "Shop" link
@@ -43,6 +45,7 @@ Feature: Search
     Then I should see "Foo" link in the search results
     And I should not see "Bar" link in the search results
 
+  @javascript
   Scenario: I should see project merge requests
     And project has merge requests
     When I click project "Shop" link
@@ -51,6 +54,7 @@ Feature: Search
     Then I should see "Foo" link in the search results
     And I should not see "Bar" link in the search results
 
+  @javascript
   Scenario: I should see project milestones
     And project has milestones
     When I click project "Shop" link
@@ -59,6 +63,7 @@ Feature: Search
     Then I should see "Foo" link in the search results
     And I should not see "Bar" link in the search results
 
+  @javascript
   Scenario: I should see Wiki blobs
     And project has Wiki content
     When I click project "Shop" link

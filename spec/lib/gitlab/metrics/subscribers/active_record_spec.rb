@@ -13,7 +13,7 @@ describe Gitlab::Metrics::Subscribers::ActiveRecord do
     describe 'without a current transaction' do
       it 'simply returns' do
         expect_any_instance_of(Gitlab::Metrics::Transaction).
-          to_not receive(:increment)
+          not_to receive(:increment)
 
         subscriber.sql(event)
       end
@@ -27,6 +27,9 @@ describe Gitlab::Metrics::Subscribers::ActiveRecord do
 
         expect(transaction).to receive(:increment).
           with(:sql_duration, 0.2)
+
+        expect(transaction).to receive(:increment).
+          with(:sql_count, 1)
 
         subscriber.sql(event)
       end

@@ -58,7 +58,7 @@ class SlackService
 
     def create_merge_note(merge_request)
       commented_on_message(
-        "[merge request ##{merge_request[:iid]}](#{@note_url})",
+        "[merge request !#{merge_request[:iid]}](#{@note_url})",
         format_title(merge_request[:title]))
     end
 

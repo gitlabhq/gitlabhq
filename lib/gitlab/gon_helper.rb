@@ -6,6 +6,7 @@ module Gitlab
       gon.default_issues_tracker = Project.new.default_issue_tracker.to_param
       gon.max_file_size          = current_application_settings.max_attachment_size
       gon.relative_url_root      = Gitlab.config.gitlab.relative_url_root
+      gon.shortcuts_path         = help_shortcuts_path
       gon.user_color_scheme      = Gitlab::ColorSchemes.for_user(current_user).css_class
 
       if current_user

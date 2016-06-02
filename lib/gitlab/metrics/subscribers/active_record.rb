@@ -9,6 +9,7 @@ module Gitlab
           return unless current_transaction
 
           current_transaction.increment(:sql_duration, event.duration)
+          current_transaction.increment(:sql_count, 1)
         end
 
         private

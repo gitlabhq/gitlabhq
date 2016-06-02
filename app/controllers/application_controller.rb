@@ -117,7 +117,7 @@ class ApplicationController < ActionController::Base
   end
 
   def after_sign_out_path_for(resource)
-    current_application_settings.after_sign_out_path || new_user_session_path
+    current_application_settings.after_sign_out_path.presence || new_user_session_path
   end
 
   def abilities
@@ -176,7 +176,7 @@ class ApplicationController < ActionController::Base
   end
 
   def check_password_expiration
-    if current_user && current_user.password_expires_at && current_user.password_expires_at < Time.now  && !current_user.ldap_user?
+    if current_user && current_user.password_expires_at && current_user.password_expires_at < Time.now && !current_user.ldap_user?
       redirect_to new_profile_password_path and return
     end
   end
@@ -232,7 +232,7 @@ class ApplicationController < ActionController::Base
   end
 
   def configure_permitted_parameters
-    devise_parameter_sanitizer.for(:sign_in) { |u| u.permit(:username, :email, :password, :login, :remember_me, :otp_attempt) }
+    devise_parameter_sanitizer.permit(:sign_in, keys: [:username, :email, :password, :login, :remember_me, :otp_attempt])
   end
 
   def hexdigest(string)
@@ -263,7 +263,7 @@ class ApplicationController < ActionController::Base
       # internal repos where you are not a member. Enable this filter
       # or improve current implementation to filter only issues you
       # created or assigned or mentioned
-      #@filter_params[:authorized_only] = true
+      # @filter_params[:authorized_only] = true
     end
 
     @filter_params

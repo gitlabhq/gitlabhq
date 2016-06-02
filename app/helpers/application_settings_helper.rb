@@ -15,6 +15,10 @@ module ApplicationSettingsHelper
     current_application_settings.sign_in_text
   end
 
+  def shared_runners_text
+    current_application_settings.shared_runners_text
+  end
+
   def user_oauth_applications?
     current_application_settings.user_oauth_applications
   end
@@ -53,6 +57,20 @@ module ApplicationSettingsHelper
         check_box_tag(checkbox_name, source, checked,
                       autocomplete: 'off',
                       'aria-describedby' => help_block_id) + name
+      end
+    end
+  end
+
+  def oauth_providers_checkboxes
+    button_based_providers.map do |source|
+      disabled = current_application_settings.disabled_oauth_sign_in_sources.include?(source.to_s)
+      css_class = 'btn'
+      css_class << ' active' unless disabled
+      checkbox_name = 'application_setting[enabled_oauth_sign_in_sources][]'
+
+      label_tag(checkbox_name, class: css_class) do
+        check_box_tag(checkbox_name, source, !disabled,
+                      autocomplete: 'off') + Gitlab::OAuth::Provider.label_for(source)
       end
     end
   end

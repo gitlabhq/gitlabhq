@@ -52,7 +52,7 @@ module ProjectsHelper
       link_to(author_html, user_path(author), class: "author_link #{"#{opts[:mobile_classes]}" if opts[:mobile_classes]}").html_safe
     else
       title = opts[:title].sub(":name", sanitize(author.name))
-      link_to(author_html, user_path(author), class: "author_link has-tooltip", data: { 'original-title'.to_sym => title, container: 'body' } ).html_safe
+      link_to(author_html, user_path(author), class: "author_link has-tooltip", title: title, data: { container: 'body' } ).html_safe
     end
   end
 
@@ -123,25 +123,45 @@ module ProjectsHelper
     end
   end
 
+  def license_short_name(project)
+    return 'LICENSE' if project.repository.license_key.nil?
+
+    license = Licensee::License.new(project.repository.license_key)
+
+    license.nickname || license.name
+  end
+
   private
 
   def get_project_nav_tabs(project, current_user)
-    nav_tabs = [:home, :forks]
+    nav_tabs = [:home]
 
     if !project.empty_repo? && can?(current_user, :download_code, project)
-      nav_tabs << [:files, :commits, :network, :graphs]
+      nav_tabs << [:files, :commits, :network, :graphs, :forks]
     end
 
     if project.repo_exists? && can?(current_user, :read_merge_request, project)
       nav_tabs << :merge_requests
     end
 
+    if can?(current_user, :read_pipeline, project)
+      nav_tabs << :pipelines
+    end
+
     if can?(current_user, :read_build, project)
       nav_tabs << :builds
     end
 
+    if Gitlab.config.registry.enabled && can?(current_user, :read_container_image, project)
+      nav_tabs << :container_registry
+    end
+
     if can?(current_user, :admin_project, project)
       nav_tabs << :settings
+    end
+
+    if can?(current_user, :read_project_member, project)
+      nav_tabs << :team
     end
 
     if can?(current_user, :read_issue, project)
@@ -184,16 +204,13 @@ module ProjectsHelper
   end
 
   def repository_size(project = @project)
-    "#{project.repository_size} MB"
-  rescue
-    # In order to prevent 500 error
-    # when application cannot allocate memory
-    # to calculate repo size - just show 'Unknown'
-    'unknown'
+    size_in_bytes = project.repository_size * 1.megabyte
+    number_to_human_size(size_in_bytes, delimiter: ',', precision: 2)
   end
 
   def default_url_to_repo(project = @project)
-    if default_clone_protocol == "ssh"
+    case default_clone_protocol
+    when 'ssh'
       project.ssh_url_to_repo
     else
       project.http_url_to_repo
@@ -216,40 +233,14 @@ module ProjectsHelper
     end
   end
 
-  def add_contribution_guide_path(project)
-    if project && !project.repository.contribution_guide
-      namespace_project_new_blob_path(
-        project.namespace,
-        project,
-        project.default_branch,
-        file_name:      "CONTRIBUTING.md",
-        commit_message: "Add contribution guide"
-      )
-    end
-  end
-
-  def add_changelog_path(project)
-    if project && !project.repository.changelog
-      namespace_project_new_blob_path(
-        project.namespace,
-        project,
-        project.default_branch,
-        file_name:      "CHANGELOG",
-        commit_message: "Add changelog"
-      )
-    end
-  end
-
-  def add_license_path(project)
-    if project && !project.repository.license
-      namespace_project_new_blob_path(
-        project.namespace,
-        project,
-        project.default_branch,
-        file_name:      "LICENSE",
-        commit_message: "Add license"
-      )
-    end
+  def add_special_file_path(project, file_name:, commit_message: nil)
+    namespace_project_new_blob_path(
+      project.namespace,
+      project,
+      project.default_branch || 'master',
+      file_name:      file_name,
+      commit_message: commit_message || "Add #{file_name.downcase}"
+    )
   end
 
   def contribution_guide_path(project)
@@ -272,7 +263,7 @@ module ProjectsHelper
   end
 
   def license_path(project)
-    filename_path(project, :license)
+    filename_path(project, :license_blob)
   end
 
   def version_path(project)
@@ -306,6 +297,13 @@ module ProjectsHelper
     namespace_project_new_blob_path(@project.namespace, @project, tree_join(ref), file_name: 'README.md')
   end
 
+  def new_license_path
+    ref = @repository.root_ref if @repository
+    ref ||= 'master'
+
+    namespace_project_new_blob_path(@project.namespace, @project, tree_join(ref), file_name: 'LICENSE')
+  end
+
   def last_push_event
     if current_user
       current_user.recent_push(@project.id)
@@ -335,8 +333,6 @@ module ProjectsHelper
     @ref || @repository.try(:root_ref)
   end
 
-  private
-
   def filename_path(project, filename)
     if project && blob = project.repository.send(filename)
       namespace_project_blob_path(
@@ -345,5 +341,11 @@ module ProjectsHelper
         tree_join(project.default_branch, blob.name)
       )
     end
+  end
+
+  def sanitize_repo_path(message)
+    return '' unless message.present?
+
+    message.strip.gsub(Gitlab.config.gitlab_shell.repos_path.chomp('/'), "[REPOS PATH]")
   end
 end

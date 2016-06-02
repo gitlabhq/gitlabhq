@@ -50,7 +50,7 @@ class SlackService
     end
 
     def merge_request_link
-      "[merge request ##{merge_request_id}](#{merge_request_url})"
+      "[merge request !#{merge_request_id}](#{merge_request_url})"
     end
 
     def merge_request_url

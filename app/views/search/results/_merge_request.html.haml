@@ -2,11 +2,11 @@
   %h4
     = link_to [merge_request.target_project.namespace.becomes(Namespace), merge_request.target_project, merge_request] do
       %span.term.str-truncated= merge_request.title
-    .pull-right ##{merge_request.iid}
+    .pull-right #{merge_request.to_reference}
   - if merge_request.description.present?
     .description.term
       = preserve do
-        = search_md_sanitize(markdown(merge_request.description, { project: merge_request.project }))
+        = search_md_sanitize(markdown(merge_request.description, { project: merge_request.project, author: merge_request.author }))
   %span.light
     #{merge_request.project.name_with_namespace}
   .pull-right

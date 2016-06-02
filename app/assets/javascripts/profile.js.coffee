@@ -45,9 +45,10 @@ class @Profile
 
   saveForm: ->
     self = @
-
     formData = new FormData(@form[0])
-    formData.append('user[avatar]', @avatarGlCrop.getBlob(), 'avatar.png')
+
+    avatarBlob = @avatarGlCrop.getBlob()
+    formData.append('user[avatar]', avatarBlob, 'avatar.png') if avatarBlob?
 
     $.ajax
       url: @form.attr('action')

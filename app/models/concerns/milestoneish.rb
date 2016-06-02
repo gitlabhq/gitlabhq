@@ -8,7 +8,7 @@ module Milestoneish
   end
 
   def complete?(user = nil)
-    total_items_count(user) == closed_items_count(user)
+    total_items_count(user) > 0 && total_items_count(user) == closed_items_count(user)
   end
 
   def percent_complete(user = nil)

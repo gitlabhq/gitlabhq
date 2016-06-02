@@ -19,6 +19,16 @@ module SearchHelper
     end
   end
 
+  def search_entries_info(collection, scope, term)
+    return unless collection.count > 0
+
+    from = collection.offset_value + 1
+    to = collection.offset_value + collection.length
+    count = collection.total_count
+
+    "Showing #{from} - #{to} of #{count} #{scope.humanize(capitalize: false)} for \"#{term}\""
+  end
+
   private
 
   # Autocomplete results for various settings pages
@@ -49,7 +59,7 @@ module SearchHelper
   # Autocomplete results for the current project, if it's defined
   def project_autocomplete
     if @project && @project.repository.exists? && @project.repository.root_ref
-      ref    = @ref || @project.repository.root_ref
+      ref = @ref || @project.repository.root_ref
 
       [
         { category: "Current Project", label: "Files",          url: namespace_project_tree_path(@project.namespace, @project, ref) },

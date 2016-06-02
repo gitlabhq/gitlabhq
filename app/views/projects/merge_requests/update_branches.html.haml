@@ -1,5 +1,3 @@
-%ul
-  - @target_branches.each do |branch|
-    %li
-      %a{ href: "#", class: "#{("is-active" if "a" == branch)}", data: { id: branch } }
-        = branch
+= render 'projects/merge_requests/dropdowns/branch',
+branches: @target_branches,
+selected: nil

@@ -1,23 +1,3 @@
-# == Schema Information
-#
-# Table name: issues
-#
-#  id            :integer          not null, primary key
-#  title         :string(255)
-#  assignee_id   :integer
-#  author_id     :integer
-#  project_id    :integer
-#  created_at    :datetime
-#  updated_at    :datetime
-#  position      :integer          default(0)
-#  branch_name   :string(255)
-#  description   :text
-#  milestone_id  :integer
-#  state         :string(255)
-#  iid           :integer
-#  updated_by_id :integer
-#
-
 require 'spec_helper'
 
 describe Issue, models: true do
@@ -191,18 +171,36 @@ describe Issue, models: true do
   end
 
   describe '#related_branches' do
-    it 'selects the right branches' do
-      allow(subject.project.repository).to receive(:branch_names).
-        and_return(['mpempe', "#{subject.iid}mepmep", subject.to_branch_name])
+    let(:user) { build(:admin) }
 
-      expect(subject.related_branches).to eq([subject.to_branch_name])
+    before do
+      allow(subject.project.repository).to receive(:branch_names).
+                                            and_return(["mpempe", "#{subject.iid}mepmep", subject.to_branch_name, "#{subject.iid}-branch"])
+
+      # Without this stub, the `create(:merge_request)` above fails because it can't find
+      # the source branch. This seems like a reasonable compromise, in comparison with
+      # setting up a full repo here.
+      allow_any_instance_of(MergeRequest).to receive(:create_merge_request_diff)
+    end
+
+    it "selects the right branches when there are no referenced merge requests" do
+      expect(subject.related_branches(user)).to eq([subject.to_branch_name, "#{subject.iid}-branch"])
+    end
+
+    it "selects the right branches when there is a referenced merge request" do
+      merge_request = create(:merge_request, { description: "Closes ##{subject.iid}",
+                                               source_project: subject.project,
+                                               source_branch: "#{subject.iid}-branch" })
+      merge_request.create_cross_references!(user)
+      expect(subject.referenced_merge_requests).not_to be_empty
+      expect(subject.related_branches(user)).to eq([subject.to_branch_name])
     end
 
     it 'excludes stable branches from the related branches' do
       allow(subject.project.repository).to receive(:branch_names).
         and_return(["#{subject.iid}-0-stable"])
 
-      expect(subject.related_branches).to eq []
+      expect(subject.related_branches(user)).to eq []
     end
   end
 
@@ -217,11 +215,58 @@ describe Issue, models: true do
     let(:subject) { create :issue }
   end
 
-  describe '#to_branch_name' do
-    let(:issue) { create(:issue, title: 'a' * 30) }
+  describe "#to_branch_name" do
+    let(:issue) { create(:issue, title: 'testing-issue') }
 
     it 'starts with the issue iid' do
-      expect(issue.to_branch_name).to match /\A#{issue.iid}-a+\z/
+      expect(issue.to_branch_name).to match /\A#{issue.iid}-[A-Za-z\-]+\z/
+    end
+
+    it "contains the issue title if not confidential" do
+      expect(issue.to_branch_name).to match /testing-issue\z/
+    end
+
+    it "does not contain the issue title if confidential" do
+      issue = create(:issue, title: 'testing-issue', confidential: true)
+      expect(issue.to_branch_name).to match /confidential-issue\z/
+    end
+  end
+
+  describe '#participants' do
+    context 'using a public project' do
+      let(:project) { create(:project, :public) }
+      let(:issue) { create(:issue, project: project) }
+
+      let!(:note1) do
+        create(:note_on_issue, noteable: issue, project: project, note: 'a')
+      end
+
+      let!(:note2) do
+        create(:note_on_issue, noteable: issue, project: project, note: 'b')
+      end
+
+      it 'includes the issue author' do
+        expect(issue.participants).to include(issue.author)
+      end
+
+      it 'includes the authors of the notes' do
+        expect(issue.participants).to include(note1.author, note2.author)
+      end
+    end
+
+    context 'using a private project' do
+      it 'does not include mentioned users that do not have access to the project' do
+        project = create(:project)
+        user = create(:user)
+        issue = create(:issue, project: project)
+
+        create(:note_on_issue,
+               noteable: issue,
+               project: project,
+               note: user.to_reference)
+
+        expect(issue.participants).not_to include(user)
+      end
     end
   end
 end

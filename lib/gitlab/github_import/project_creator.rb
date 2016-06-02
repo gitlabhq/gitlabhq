@@ -11,7 +11,7 @@ module Gitlab
       end
 
       def execute
-        project = ::Projects::CreateService.new(
+        ::Projects::CreateService.new(
           current_user,
           name: repo.name,
           path: repo.name,
@@ -23,9 +23,6 @@ module Gitlab
           import_url: repo.clone_url.sub("https://", "https://#{@session_data[:github_access_token]}@"),
           wiki_enabled: !repo.has_wiki? # If repo has wiki we'll import it later
         ).execute
-
-        project.create_import_data(data: { "github_session" => session_data } )
-        project
       end
     end
   end

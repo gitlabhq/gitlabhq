@@ -11,6 +11,26 @@ describe DiffHelper do
   let(:diff_refs) { [commit.parent, commit] }
   let(:diff_file) { Gitlab::Diff::File.new(diff, diff_refs) }
 
+  describe 'diff_view' do
+    it 'returns a valid value when cookie is set' do
+      helper.request.cookies[:diff_view] = 'parallel'
+
+      expect(helper.diff_view).to eq 'parallel'
+    end
+
+    it 'returns a default value when cookie is invalid' do
+      helper.request.cookies[:diff_view] = 'invalid'
+
+      expect(helper.diff_view).to eq 'inline'
+    end
+
+    it 'returns a default value when cookie is nil' do
+      expect(helper.request.cookies).to be_empty
+
+      expect(helper.diff_view).to eq 'inline'
+    end
+  end
+
   describe 'diff_hard_limit_enabled?' do
     it 'should return true if param is provided' do
       allow(controller).to receive(:params) { { force_show_diff: true } }
@@ -73,9 +93,9 @@ describe DiffHelper do
     it "returns strings with marked inline diffs" do
       marked_old_line, marked_new_line = mark_inline_diffs(old_line, new_line)
 
-      expect(marked_old_line).to eq("abc <span class='idiff left right'>&#39;def&#39;</span>")
+      expect(marked_old_line).to eq("abc <span class='idiff left right deletion'>&#39;def&#39;</span>")
       expect(marked_old_line).to be_html_safe
-      expect(marked_new_line).to eq("abc <span class='idiff left right'>&quot;def&quot;</span>")
+      expect(marked_new_line).to eq("abc <span class='idiff left right addition'>&quot;def&quot;</span>")
       expect(marked_new_line).to be_html_safe
     end
   end

@@ -4,7 +4,7 @@ Managing large files such as audio, video and graphics files has always been one
 of the shortcomings of Git. The general recommendation is to not have Git repositories
 larger than 1GB to preserve performance.
 
-GitLab already supports [managing large files with git annex](http://doc.gitlab.com/ee/workflow/git_annex.html)
+GitLab already supports [managing large files with git annex](http://docs.gitlab.com/ee/workflow/git_annex.html)
 (EE only), however in certain environments it is not always convenient to use
 different commands to differentiate between the large files and regular ones.
 
@@ -44,7 +44,7 @@ check it into your Git repository:
 
 ```bash
 git clone git@gitlab.example.com:group/project.git
-git lfs init                          # initialize the Git LFS project project
+git lfs install                       # initialize the Git LFS project project
 git lfs track "*.iso"                 # select the file extensions that you want to treat as large files
 ```
 
@@ -127,7 +127,7 @@ To prevent this from happening, set the lfs url in project Git config:
 
 ```bash
 
-git config --add lfs.url "http://gitlab.example.com/group/project.git/info/lfs/objects/batch"
+git config --add lfs.url "http://gitlab.example.com/group/project.git/info/lfs"
 ```
 
 ### Credentials are always required when pushing an object

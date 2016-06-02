@@ -41,7 +41,7 @@
       margin: 0;
       margin-left: 20px;
       padding: 5px;
-      padding-top: 12px;
+      padding-top: 8px;
       line-height: 20px;
 
       &.right {
@@ -104,11 +104,34 @@
       font-weight: 600;
       font-size: 17px;
       margin: 5px 0;
-      color: #313236;
+      color: $gl-gray-dark;
     }
 
     p:last-child {
       margin-bottom: 0;
+    }
+
+    @media (max-width: $screen-sm-max) {
+      h4 {
+        font-size: 15px;
+      }
+
+      p {
+        font-size: 13px;
+      }
+
+      .btn,
+      .btn-group,
+      .accept-action {
+        width: 100%;
+        margin-bottom: 4px;
+      }
+
+      .accept-control {
+        width: 100%;
+        text-align: center;
+        margin: 0;
+      }
     }
   }
 
@@ -136,7 +159,7 @@
 }
 
 .label-branch {
-  color: #313236;
+  color: $gl-gray-dark;
   font-family: $monospace_font;
   font-weight: bold;
   overflow: hidden;
@@ -271,4 +294,14 @@
 .issuable-form-select-holder {
   display: inline-block;
   width: 250px;
+}
+
+.table-holder {
+  .builds {
+
+    th {
+      background-color: $white-light;
+      color: $gl-placeholder-color;
+    }
+  }
 }

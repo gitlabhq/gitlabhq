@@ -7,6 +7,10 @@ through the coordinator API of GitLab CI.
 A runner can be specific to a certain project or serve any project
 in GitLab CI. A runner that serves all projects is called a shared runner.
 
+Ideally, GitLab Runner should not be installed on the same machine as GitLab.
+Read the [requirements documentation](../../install/requirements.md#gitlab-runner)
+for more information.
+
 ## Shared vs. Specific Runners
 
 A runner that is specific only runs for the specified project. A shared runner
@@ -121,7 +125,13 @@ shared runners will only run the jobs they are equipped to run.
 For instance, at GitLab we have runners tagged with "rails" if they contain
 the appropriate dependencies to run Rails test suites.
 
-### Be Careful with Sensitive Information
+### Prevent runner with tags from picking jobs without tags
+
+You can configure a runner to prevent it from picking jobs with tags when
+the runnner does not have tags assigned. This setting is available on each
+runner in *Project Settings* > *Runners*.
+
+### Be careful with sensitive information
 
 If you can run a build on a runner, you can get access to any code it runs
 and get the token of the runner. With shared runners, this means that anyone
@@ -140,7 +150,7 @@ to it. This means that if you have shared runners setup for a project and
 someone forks that project, the shared runners will also serve jobs of this
 project.
 
-# Attack vectors in runners
+## Attack vectors in Runners
 
 Mentioned briefly earlier, but the following things of runners can be exploited.
 We're always looking for contributions that can mitigate these [Security Considerations](https://gitlab.com/gitlab-org/gitlab-ci-multi-runner/blob/master/docs/security/index.md).

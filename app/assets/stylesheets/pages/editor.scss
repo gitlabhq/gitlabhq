@@ -23,9 +23,13 @@
   .file-title {
     @extend .monospace;
 
-    line-height: 42px;
+    line-height: 35px;
     padding-top: 7px;
     padding-bottom: 7px;
+
+    .pull-right {
+      height: 20px;
+    }
   }
 
   .editor-ref {
@@ -39,7 +43,7 @@
 
   .editor-file-name {
     @extend .monospace;
-    
+
     float: left;
     margin-right: 10px;
   }
@@ -52,5 +56,25 @@
 
   .select2 {
     float: right;
+  }
+
+  .encoding-selector,
+  .license-selector,
+  .gitignore-selector {
+    display: inline-block;
+    vertical-align: top;
+    font-family: $regular_font;
+  }
+
+  .gitignore-selector {
+
+    .dropdown {
+      line-height: 21px;
+    }
+
+    .dropdown-menu-toggle {
+      vertical-align: top;
+      width: 220px;
+    }
   }
 }

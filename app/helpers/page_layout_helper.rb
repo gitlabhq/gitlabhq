@@ -84,6 +84,14 @@ module PageLayoutHelper
     end
   end
 
+  def nav(name = nil)
+    if name
+      @nav = name
+    else
+      @nav
+    end
+  end
+
   def fluid_layout(enabled = false)
     if @fluid_layout.nil?
       @fluid_layout = (current_user && current_user.layout == "fluid") || enabled

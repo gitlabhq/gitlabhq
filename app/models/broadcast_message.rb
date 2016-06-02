@@ -1,17 +1,3 @@
-# == Schema Information
-#
-# Table name: broadcast_messages
-#
-#  id         :integer          not null, primary key
-#  message    :text             not null
-#  starts_at  :datetime
-#  ends_at    :datetime
-#  created_at :datetime
-#  updated_at :datetime
-#  color      :string(255)
-#  font       :string(255)
-#
-
 class BroadcastMessage < ActiveRecord::Base
   include Sortable
 

@@ -38,13 +38,14 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @merge_requests = @merge_requests.page(params[:page])
     @merge_requests = @merge_requests.preload(:target_project)
 
-    @label = @project.labels.find_by(title: params[:label_name])
+    @labels = @project.labels.where(title: params[:label_name])
 
     respond_to do |format|
       format.html
       format.json do
         render json: {
-          html: view_to_html_string("projects/merge_requests/_merge_requests")
+          html: view_to_html_string("projects/merge_requests/_merge_requests"),
+          labels: @labels.as_json(methods: :text_color)
         }
       end
     end
@@ -72,12 +73,12 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     # but we need it for the "View file @ ..." link by deleted files
     @base_commit ||= @merge_request.first_commit.parent || @merge_request.first_commit
 
-    @comments_allowed = @reply_allowed = true
     @comments_target = {
       noteable_type: 'MergeRequest',
       noteable_id: @merge_request.id
     }
-    @line_notes = @merge_request.notes.where("line_code is not null")
+
+    @grouped_diff_notes = @merge_request.notes.grouped_diff_notes
 
     respond_to do |format|
       format.html
@@ -116,6 +117,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @commit = @merge_request.last_commit
     @base_commit = @merge_request.diff_base_commit
     @diffs = @merge_request.compare.diffs(diff_options) if @merge_request.compare
+    @diff_notes_disabled = true
 
     @ci_commit = @merge_request.ci_commit
     @statuses = @ci_commit.statuses if @ci_commit
@@ -148,13 +150,12 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
     if @merge_request.valid?
       respond_to do |format|
-        format.js
         format.html do
           redirect_to([@merge_request.target_project.namespace.becomes(Namespace),
                        @merge_request.target_project, @merge_request])
         end
         format.json do
-          render json: @merge_request.to_json(include: [:milestone, :labels, assignee: { methods: :avatar_url }])
+          render json: @merge_request.to_json(include: { milestone: {}, assignee: { methods: :avatar_url }, labels: { methods: :text_color } })
         end
       end
     else
@@ -204,7 +205,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def branch_from
-    #This is always source
+    # This is always source
     @source_project = @merge_request.nil? ? @project : @merge_request.source_project
     @commit = @repository.commit(params[:ref]) if params[:ref].present?
     render layout: false
@@ -228,6 +229,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     if ci_commit
       status = ci_commit.status
       coverage = ci_commit.try(:coverage)
+
+      status ||= "preparing"
     else
       ci_service = @merge_request.source_project.ci_service
       status = ci_service.commit_status(merge_request.last_commit.sha, merge_request.source_branch) if ci_service
@@ -236,8 +239,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
         coverage = ci_service.commit_coverage(merge_request.last_commit.sha, merge_request.source_branch)
       end
     end
-
-    status = "preparing" if status.nil?
 
     response = {
       title: merge_request.title,
@@ -300,7 +301,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     # Build a note object for comment form
     @note = @project.notes.new(noteable: @merge_request)
     @notes = @merge_request.mr_and_commit_notes.nonawards.inc_author.fresh
-    @discussions = Note.discussions_from_notes(@notes)
+    @discussions = @notes.discussions
     @noteable = @merge_request
 
     # Get commits from repository
@@ -320,6 +321,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
   def define_widget_vars
     @ci_commit = @merge_request.ci_commit
+    @ci_commits = [@ci_commit].compact
     closes_issues
   end
 
@@ -332,7 +334,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     params.require(:merge_request).permit(
       :title, :assignee_id, :source_project_id, :source_branch,
       :target_project_id, :target_branch, :milestone_id,
-      :state_event, :description, :task_num, label_ids: []
+      :state_event, :description, :task_num, :force_remove_source_branch,
+      label_ids: []
     )
   end
 

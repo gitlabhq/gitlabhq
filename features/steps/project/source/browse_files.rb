@@ -282,8 +282,8 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
     click_link 'Create empty bare repository'
   end
 
-  step 'I click on "add a file" link' do
-    click_link 'adding README'
+  step 'I click on "README" link' do
+    click_link 'README'
 
     # Remove pre-receive hook so we can push without auth
     FileUtils.rm_f(File.join(@project.repository.path, 'hooks', 'pre-receive'))
@@ -337,13 +337,15 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I should see buttons for allowed commands' do
-    expect(page).to have_content 'Raw'
-    expect(page).to have_content 'History'
-    expect(page).to have_content 'Permalink'
-    expect(page).not_to have_content 'Edit'
-    expect(page).not_to have_content 'Blame'
-    expect(page).to have_content 'Delete'
-    expect(page).to have_content 'Replace'
+    page.within '.content' do
+      expect(page).to have_content 'Raw'
+      expect(page).to have_content 'History'
+      expect(page).to have_content 'Permalink'
+      expect(page).not_to have_content 'Edit'
+      expect(page).not_to have_content 'Blame'
+      expect(page).to have_content 'Delete'
+      expect(page).to have_content 'Replace'
+    end
   end
 
   step 'I should see a notice about a new fork having been created' do

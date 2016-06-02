@@ -4,10 +4,15 @@ describe Issues::UpdateService, services: true do
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let(:user3) { create(:user) }
-  let(:issue) { create(:issue, title: 'Old title', assignee_id: user3.id) }
-  let(:label) { create(:label) }
+  let(:project) { create(:empty_project) }
+  let(:label) { create(:label, project: project) }
   let(:label2) { create(:label) }
-  let(:project) { issue.project }
+
+  let(:issue) do
+    create(:issue, title: 'Old title',
+                   assignee_id: user3.id,
+                   project: project)
+  end
 
   before do
     project.team << [user, :master]
@@ -22,11 +27,6 @@ describe Issues::UpdateService, services: true do
       end
     end
 
-    def update_issue(opts)
-      @issue = Issues::UpdateService.new(project, user, opts).execute(issue)
-      @issue.reload
-    end
-
     context "valid params" do
       before do
         opts = {
@@ -34,7 +34,8 @@ describe Issues::UpdateService, services: true do
           description: 'Also please fix',
           assignee_id: user2.id,
           state_event: 'close',
-          label_ids: [label.id]
+          label_ids: [label.id],
+          confidential: true
         }
 
         perform_enqueued_jobs do
@@ -74,11 +75,23 @@ describe Issues::UpdateService, services: true do
       end
 
       it 'creates system note about title change' do
-        note = find_note('Title changed')
+        note = find_note('Changed title:')
 
         expect(note).not_to be_nil
-        expect(note.note).to eq 'Title changed from **Old title** to **New title**'
+        expect(note.note).to eq 'Changed title: **{-Old-} title** → **{+New+} title**'
       end
+
+      it 'creates system note about confidentiality change' do
+        note = find_note('Made the issue confidential')
+
+        expect(note).not_to be_nil
+        expect(note.note).to eq 'Made the issue confidential'
+      end
+    end
+
+    def update_issue(opts)
+      @issue = Issues::UpdateService.new(project, user, opts).execute(issue)
+      @issue.reload
     end
 
     context 'todos' do

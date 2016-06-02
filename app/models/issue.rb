@@ -1,26 +1,4 @@
-# == Schema Information
-#
-# Table name: issues
-#
-#  id            :integer          not null, primary key
-#  title         :string(255)
-#  assignee_id   :integer
-#  author_id     :integer
-#  project_id    :integer
-#  created_at    :datetime
-#  updated_at    :datetime
-#  position      :integer          default(0)
-#  branch_name   :string(255)
-#  description   :text
-#  milestone_id  :integer
-#  state         :string(255)
-#  iid           :integer
-#  updated_by_id :integer
-#  moved_to_id   :integer
-#
-
 require 'carrierwave/orm/activerecord'
-require 'file_size_validator'
 
 class Issue < ActiveRecord::Base
   include InternalId
@@ -28,6 +6,13 @@ class Issue < ActiveRecord::Base
   include Referable
   include Sortable
   include Taskable
+
+  DueDateStruct = Struct.new(:title, :name).freeze
+  NoDueDate     = DueDateStruct.new('No Due Date', '0').freeze
+  AnyDueDate    = DueDateStruct.new('Any Due Date', '').freeze
+  Overdue       = DueDateStruct.new('Overdue', 'overdue').freeze
+  DueThisWeek   = DueDateStruct.new('Due This Week', 'week').freeze
+  DueThisMonth  = DueDateStruct.new('Due This Month', 'month').freeze
 
   ActsAsTaggableOn.strict_case_match = true
 
@@ -39,6 +24,13 @@ class Issue < ActiveRecord::Base
   scope :cared, ->(user) { where(assignee_id: user) }
   scope :open_for, ->(user) { opened.assigned_to(user) }
   scope :in_projects, ->(project_ids) { where(project_id: project_ids) }
+
+  scope :without_due_date, -> { where(due_date: nil) }
+  scope :due_before, ->(date) { where('issues.due_date < ?', date) }
+  scope :due_between, ->(from_date, to_date) { where('issues.due_date >= ?', from_date).where('issues.due_date <= ?', to_date) }
+
+  scope :order_due_date_asc, -> { reorder('issues.due_date IS NULL, issues.due_date ASC') }
+  scope :order_due_date_desc, -> { reorder('issues.due_date IS NULL, issues.due_date DESC') }
 
   state_machine :state, initial: :opened do
     event :close do
@@ -83,6 +75,15 @@ class Issue < ActiveRecord::Base
     @link_reference_pattern ||= super("issues", /(?<issue>\d+)/)
   end
 
+  def self.sort(method)
+    case method.to_s
+    when 'due_date_asc' then order_due_date_asc
+    when 'due_date_desc'  then order_due_date_desc
+    else
+      super
+    end
+  end
+
   def to_reference(from_project = nil)
     reference = "#{self.class.reference_prefix}#{iid}"
 
@@ -94,20 +95,25 @@ class Issue < ActiveRecord::Base
   end
 
   def referenced_merge_requests(current_user = nil)
-    @referenced_merge_requests ||= {}
-    @referenced_merge_requests[current_user] ||= begin
-      Gitlab::ReferenceExtractor.lazily do
-        [self, *notes].flat_map do |note|
-          note.all_references(current_user).merge_requests
-        end
-      end.sort_by(&:iid).uniq
+    ext = all_references(current_user)
+
+    notes_with_associations.each do |object|
+      object.all_references(current_user, extractor: ext)
     end
+
+    ext.merge_requests.sort_by(&:iid)
   end
 
-  def related_branches
-    project.repository.branch_names.select do |branch|
+  # All branches containing the current issue's ID, except for
+  # those with a merge request open referencing the current issue.
+  def related_branches(current_user)
+    branches_with_iid = project.repository.branch_names.select do |branch|
       branch =~ /\A#{iid}-(?!\d+-stable)/i
     end
+
+    branches_with_merge_request = self.referenced_merge_requests(current_user).map(&:source_branch)
+
+    branches_with_iid - branches_with_merge_request
   end
 
   # Reset issue events cache
@@ -132,9 +138,13 @@ class Issue < ActiveRecord::Base
   def closed_by_merge_requests(current_user = nil)
     return [] unless open?
 
-    notes.system.flat_map do |note|
-      note.all_references(current_user).merge_requests
-    end.uniq.select { |mr| mr.open? && mr.closes_issue?(self) }
+    ext = all_references(current_user)
+
+    notes.system.each do |note|
+      note.all_references(current_user, extractor: ext)
+    end
+
+    ext.merge_requests.select { |mr| mr.open? && mr.closes_issue?(self) }
   end
 
   def moved?
@@ -151,13 +161,21 @@ class Issue < ActiveRecord::Base
   end
 
   def to_branch_name
-    "#{iid}-#{title.parameterize}"
+    if self.confidential?
+      "#{iid}-confidential-issue"
+    else
+      "#{iid}-#{title.parameterize}"
+    end
   end
 
   def can_be_worked_on?(current_user)
     !self.closed? &&
       !self.project.forked? &&
-      self.related_branches.empty? &&
+      self.related_branches(current_user).empty? &&
       self.closed_by_merge_requests(current_user).empty?
+  end
+
+  def overdue?
+    due_date.try(:past?) || false
   end
 end

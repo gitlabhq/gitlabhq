@@ -12,8 +12,15 @@ class AutocompleteController < ApplicationController
     if params[:search].blank?
       # Include current user if available to filter by "Me"
       if params[:current_user] && current_user
-        @users = [*@users, current_user].uniq
+        @users = [*@users, current_user]
       end
+
+      if params[:author_id].present?
+        author = User.find_by_id(params[:author_id])
+        @users = [author, *@users] if author
+      end
+
+      @users.uniq!
     end
 
     render json: @users, only: [:name, :username, :id], methods: [:avatar_url]
@@ -22,6 +29,24 @@ class AutocompleteController < ApplicationController
   def user
     @user = User.find(params[:id])
     render json: @user, only: [:name, :username, :id], methods: [:avatar_url]
+  end
+
+  def projects
+    project = Project.find_by_id(params[:project_id])
+
+    projects = current_user.authorized_projects
+    projects = projects.select do |project|
+      current_user.can?(:admin_issue, project)
+    end
+
+    no_project = {
+      id: 0,
+      name_with_namespace: 'No project',
+    }
+    projects.unshift(no_project)
+    projects.delete(project)
+
+    render json: projects.to_json(only: [:id, :name_with_namespace], methods: :name_with_namespace)
   end
 
   private

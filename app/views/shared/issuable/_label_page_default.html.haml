@@ -1,0 +1,20 @@
+- title = local_assigns.fetch(:title, 'Assign labels')
+- filter_placeholder = local_assigns.fetch(:filter_placeholder, 'Search labels')
+.dropdown-page-one
+  = dropdown_title(title)
+  = dropdown_filter(filter_placeholder)
+  = dropdown_content
+  - if @project
+    = dropdown_footer do
+      %ul.dropdown-footer-list
+        - if can? current_user, :admin_label, @project
+          %li
+            %a.dropdown-toggle-page{href: "#"}
+              Create new
+        %li
+          = link_to namespace_project_labels_path(@project.namespace, @project), :"data-is-link" => true do
+            - if can? current_user, :admin_label, @project
+              Manage labels
+            - else
+              View labels
+  = dropdown_loading

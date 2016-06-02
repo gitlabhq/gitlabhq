@@ -2,7 +2,13 @@ require 'rails_helper'
 
 feature 'Merge Request filtering by Milestone', feature: true do
   let(:project)   { create(:project, :public) }
+  let!(:user)     { create(:user)}
   let(:milestone) { create(:milestone, project: project) }
+
+  before do
+    project.team << [user, :master]
+    login_as(user)
+  end
 
   scenario 'filters by no Milestone', js: true do
     create(:merge_request, :with_diffs, source_project: project)

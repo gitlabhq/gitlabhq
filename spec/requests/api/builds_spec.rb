@@ -59,7 +59,7 @@ describe API::API, api: true  do
 
   describe 'GET /projects/:id/repository/commits/:sha/builds' do
     before do
-      project.ensure_ci_commit(commit.sha)
+      project.ensure_ci_commit(commit.sha, 'master')
       get api("/projects/#{project.id}/repository/commits/#{commit.sha}/builds", api_user)
     end
 
@@ -106,8 +106,8 @@ describe API::API, api: true  do
 
       context 'authorized user' do
         let(:download_headers) do
-          { 'Content-Transfer-Encoding'=>'binary',
-            'Content-Disposition'=>'attachment; filename=ci_build_artifacts.zip' }
+          { 'Content-Transfer-Encoding' => 'binary',
+            'Content-Disposition' => 'attachment; filename=ci_build_artifacts.zip' }
         end
 
         it 'should return specific build artifacts' do

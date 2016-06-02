@@ -13,7 +13,7 @@ GitLab offers a [continuous integration][ci] service. If you
 and configure your GitLab project to use a [Runner], then each merge request or
 push triggers a build.
 
-The `.gitlab-ci.yml` file tells the GitLab runner what do to. By default it
+The `.gitlab-ci.yml` file tells the GitLab runner what to do. By default it
 runs three [stages]: `build`, `test`, and `deploy`.
 
 If everything runs OK (no non-zero return values), you'll get a nice green
@@ -212,8 +212,8 @@ If you want to receive e-mail notifications about the result status of the
 builds, you should explicitly enable the **Builds Emails** service under your
 project's settings.
 
-For more information read the [Builds emails service documentation]
-(../../project_services/builds_emails.md).
+For more information read the
+[Builds emails service documentation](../../project_services/builds_emails.md).
 
 ## Builds badge
 

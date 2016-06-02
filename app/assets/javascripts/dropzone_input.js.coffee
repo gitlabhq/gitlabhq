@@ -61,6 +61,7 @@ class @DropzoneInput
         return
 
       drop: ->
+        $mdArea.removeClass 'is-dropzone-hover'
         form.find(".div-dropzone-hover").css "opacity", 0
         form_textarea.focus()
         return

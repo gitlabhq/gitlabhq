@@ -36,9 +36,10 @@ Rails.application.configure do
   # For having correct urls in mails
   config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
   # Open sent mails in browser
-  config.action_mailer.delivery_method = :letter_opener
+  config.action_mailer.delivery_method = :letter_opener_web
   # Don't make a mess when bootstrapping a development environment
   config.action_mailer.perform_deliveries = (ENV['BOOTSTRAP'] != '1')
+  config.action_mailer.preview_path = 'spec/mailers/previews'
 
   config.eager_load = false
 end

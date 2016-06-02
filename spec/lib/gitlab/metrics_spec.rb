@@ -123,4 +123,28 @@ describe Gitlab::Metrics do
       end
     end
   end
+
+  describe '.action=' do
+    context 'without a transaction' do
+      it 'does nothing' do
+        expect_any_instance_of(Gitlab::Metrics::Transaction).
+          not_to receive(:action=)
+
+        Gitlab::Metrics.action = 'foo'
+      end
+    end
+
+    context 'with a transaction' do
+      it 'sets the action of a transaction' do
+        trans = Gitlab::Metrics::Transaction.new
+
+        expect(Gitlab::Metrics).to receive(:current_transaction).
+          and_return(trans)
+
+        expect(trans).to receive(:action=).with('foo')
+
+        Gitlab::Metrics.action = 'foo'
+      end
+    end
+  end
 end

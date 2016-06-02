@@ -38,5 +38,30 @@ module MergeRequests
     def filter_params
       super(:merge_request)
     end
+
+    def merge_request_from(commit_status)
+      branches = commit_status.ref
+
+      # This is for ref-less builds
+      branches ||= @project.repository.branch_names_contains(commit_status.sha)
+
+      return [] if branches.blank?
+
+      merge_requests = @project.origin_merge_requests.opened.where(source_branch: branches).to_a
+      merge_requests += @project.fork_merge_requests.opened.where(source_branch: branches).to_a
+
+      merge_requests.uniq.select(&:source_project)
+    end
+
+    def each_merge_request(commit_status)
+      merge_request_from(commit_status).each do |merge_request|
+        ci_commit = merge_request.ci_commit
+
+        next unless ci_commit
+        next unless ci_commit.sha == commit_status.sha
+
+        yield merge_request, ci_commit
+      end
+    end
   end
 end

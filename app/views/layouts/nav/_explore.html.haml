@@ -4,7 +4,7 @@
       = icon('bookmark fw')
       %span
         Projects
-  = nav_link(controller: :groups) do
+  = nav_link(controller: [:groups, 'groups/milestones', 'groups/group_members']) do
     = link_to explore_groups_path, title: 'Groups' do
       = icon('group fw')
       %span

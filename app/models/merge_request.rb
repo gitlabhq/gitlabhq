@@ -1,35 +1,3 @@
-# == Schema Information
-#
-# Table name: merge_requests
-#
-#  id                        :integer          not null, primary key
-#  target_branch             :string(255)      not null
-#  source_branch             :string(255)      not null
-#  source_project_id         :integer          not null
-#  author_id                 :integer
-#  assignee_id               :integer
-#  title                     :string(255)
-#  created_at                :datetime
-#  updated_at                :datetime
-#  milestone_id              :integer
-#  state                     :string(255)
-#  merge_status              :string(255)
-#  target_project_id         :integer          not null
-#  iid                       :integer
-#  description               :text
-#  position                  :integer          default(0)
-#  locked_at                 :datetime
-#  updated_by_id             :integer
-#  merge_error               :string(255)
-#  merge_params              :text
-#  merge_when_build_succeeds :boolean          default(FALSE), not null
-#  merge_user_id             :integer
-#  merge_commit_sha          :string
-#
-
-require Rails.root.join("app/models/commit")
-require Rails.root.join("lib/static_model")
-
 class MergeRequest < ActiveRecord::Base
   include InternalId
   include Issuable
@@ -57,6 +25,10 @@ class MergeRequest < ActiveRecord::Base
   # Temporary fields to store compare vars
   # when creating new merge request
   attr_accessor :can_be_created, :compare_commits, :compare
+
+  # Temporary fields to store target_sha, and base_sha to
+  # compare when importing pull requests from GitHub
+  attr_accessor :base_target_sha, :head_source_sha
 
   state_machine :state, initial: :opened do
     event :close do
@@ -314,6 +286,18 @@ class MergeRequest < ActiveRecord::Base
       last_commit == source_project.commit(source_branch)
   end
 
+  def should_remove_source_branch?
+    merge_params['should_remove_source_branch'].present?
+  end
+
+  def force_remove_source_branch?
+    merge_params['force_remove_source_branch'].present?
+  end
+
+  def remove_source_branch?
+    should_remove_source_branch? || force_remove_source_branch?
+  end
+
   def mr_and_commit_notes
     # Fetch comments only from last 100 commits
     commits_for_notes_limit = 100
@@ -454,7 +438,10 @@ class MergeRequest < ActiveRecord::Base
 
     self.merge_when_build_succeeds = false
     self.merge_user = nil
-    self.merge_params = nil
+    if merge_params
+      merge_params.delete('should_remove_source_branch')
+      merge_params.delete('commit_message')
+    end
 
     self.save
   end
@@ -522,10 +509,14 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def target_sha
-    @target_sha ||= target_project.repository.commit(target_branch).try(:sha)
+    return @base_target_sha if defined?(@base_target_sha)
+
+    target_project.repository.commit(target_branch).try(:sha)
   end
 
   def source_sha
+    return @head_source_sha if defined?(@head_source_sha)
+
     last_commit.try(:sha) || source_tip.try(:sha)
   end
 
@@ -546,7 +537,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def ref_is_fetched?
-    File.exists?(File.join(project.repository.path_to_repo, ref_path))
+    File.exist?(File.join(project.repository.path_to_repo, ref_path))
   end
 
   def ensure_ref_fetched
@@ -589,7 +580,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def ci_commit
-    @ci_commit ||= source_project.ci_commit(last_commit.id) if last_commit && source_project
+    @ci_commit ||= source_project.ci_commit(last_commit.id, source_branch) if last_commit && source_project
   end
 
   def diff_refs
@@ -604,5 +595,9 @@ class MergeRequest < ActiveRecord::Base
 
   def can_be_reverted?(current_user = nil)
     merge_commit && !merge_commit.has_been_reverted?(current_user, self)
+  end
+
+  def can_be_cherry_picked?
+    merge_commit
   end
 end

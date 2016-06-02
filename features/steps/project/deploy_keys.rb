@@ -8,19 +8,19 @@ class Spinach::Features::ProjectDeployKeys < Spinach::FeatureSteps
   end
 
   step 'I should see project deploy key' do
-    page.within '.enabled-keys' do
+    page.within '.deploy-keys' do
       expect(page).to have_content deploy_key.title
     end
   end
 
   step 'I should see other project deploy key' do
-    page.within '.available-keys' do
+    page.within '.deploy-keys' do
       expect(page).to have_content other_deploy_key.title
     end
   end
 
   step 'I should see public deploy key' do
-    page.within '.available-keys' do
+    page.within '.deploy-keys' do
       expect(page).to have_content public_deploy_key.title
     end
   end
@@ -32,7 +32,7 @@ class Spinach::Features::ProjectDeployKeys < Spinach::FeatureSteps
   step 'I submit new deploy key' do
     fill_in "deploy_key_title", with: "laptop"
     fill_in "deploy_key_key", with: "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAzrEJUIR6Y03TCE9rIJ+GqTBvgb8t1jI9h5UBzCLuK4VawOmkLornPqLDrGbm6tcwM/wBrrLvVOqi2HwmkKEIecVO0a64A4rIYScVsXIniHRS6w5twyn1MD3sIbN+socBDcaldECQa2u1dI3tnNVcs8wi77fiRe7RSxePsJceGoheRQgC8AZ510UdIlO+9rjIHUdVN7LLyz512auAfYsgx1OfablkQ/XJcdEwDNgi9imI6nAXhmoKUm1IPLT2yKajTIC64AjLOnE0YyCh6+7RFMpiMyu1qiOCpdjYwTgBRiciNRZCH8xIedyCoAmiUgkUT40XYHwLuwiPJICpkAzp7Q== user@laptop"
-    click_button "Create"
+    click_button "Add key"
   end
 
   step 'I should be on deploy keys page' do
@@ -40,7 +40,7 @@ class Spinach::Features::ProjectDeployKeys < Spinach::FeatureSteps
   end
 
   step 'I should see newly created deploy key' do
-    page.within '.enabled-keys' do
+    page.within '.deploy-keys' do
       expect(page).to have_content(deploy_key.title)
     end
   end
@@ -56,7 +56,7 @@ class Spinach::Features::ProjectDeployKeys < Spinach::FeatureSteps
   end
 
   step 'I should only see the same deploy key once' do
-    page.within '.available-keys' do
+    page.within '.deploy-keys' do
       expect(page).to have_selector('ul li', count: 1)
     end
   end
@@ -66,7 +66,7 @@ class Spinach::Features::ProjectDeployKeys < Spinach::FeatureSteps
   end
 
   step 'I click attach deploy key' do
-    page.within '.available-keys' do
+    page.within '.deploy-keys' do
       click_link 'Enable'
     end
   end

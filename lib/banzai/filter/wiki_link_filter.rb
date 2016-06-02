@@ -25,7 +25,7 @@ module Banzai
       end
 
       def process_link_attr(html_attr)
-        return if html_attr.blank? || file_reference?(html_attr)
+        return if html_attr.blank? || file_reference?(html_attr) || hierarchical_link?(html_attr)
 
         uri = URI(html_attr.value)
         if uri.relative? && uri.path.present?
@@ -40,12 +40,17 @@ module Banzai
         uri
       end
 
+      def project_wiki
+        context[:project_wiki]
+      end
+
       def file_reference?(html_attr)
         !File.extname(html_attr.value).blank?
       end
 
-      def project_wiki
-        context[:project_wiki]
+      # Of the form `./link`, `../link`, or similar
+      def hierarchical_link?(html_attr)
+        html_attr.value[0] == '.'
       end
 
       def project_wiki_base_path

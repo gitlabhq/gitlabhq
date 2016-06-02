@@ -4,32 +4,31 @@
   - notes = commit.notes
   - note_count = notes.user.count
 
-- ci_commit = project.ci_commit(commit.sha)
 - cache_key = [project.path_with_namespace, commit.id, current_application_settings, note_count]
-- cache_key.push(ci_commit.status) if ci_commit
+- cache_key.push(commit.status) if commit.status
 
 = cache(cache_key) do
   %li.commit.js-toggle-container{ id: "commit-#{commit.short_id}" }
     .commit-row-title
-      %span.item-title.str-truncated
+      %span.item-title
         = link_to_gfm commit.title, namespace_project_commit_path(project.namespace, project, commit.id), class: "commit-row-message"
         - if commit.description?
           %a.text-expander.js-toggle-button ...
 
       .pull-right
-        - if ci_commit
-          = render_ci_status(ci_commit)
+        - if commit.status
+          = render_commit_status(commit)
         = clipboard_button(clipboard_text: commit.id)
         = link_to commit.short_id, namespace_project_commit_path(project.namespace, project, commit), class: "commit_short_id"
 
     - if commit.description?
       .commit-row-description.js-toggle-content
         %pre
-          = preserve(markdown(escape_once(commit.description), pipeline: :single_line))
+          = preserve(markdown(escape_once(commit.description), pipeline: :single_line, author: commit.author))
 
     .commit-row-info
       by
       = commit_author_link(commit, avatar: true, size: 24)
       .committed_ago
-        #{time_ago_with_tooltip(commit.committed_date, skip_js: true)} &nbsp;
+        #{time_ago_with_tooltip(commit.committed_date)} &nbsp;
       = link_to_browse_code(project, commit)

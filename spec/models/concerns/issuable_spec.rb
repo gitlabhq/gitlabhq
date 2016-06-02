@@ -114,6 +114,35 @@ describe Issue, "Issuable" do
     end
   end
 
+  describe "#sort" do
+    let(:project) { build_stubbed(:empty_project) }
+
+    context "by milestone due date" do
+      # Correct order is:
+      # Issues/MRs with milestones ordered by date
+      # Issues/MRs with milestones without dates
+      # Issues/MRs without milestones
+
+      let!(:issue) { create(:issue, project: project) }
+      let!(:early_milestone) { create(:milestone, project: project, due_date: 10.days.from_now) }
+      let!(:late_milestone) { create(:milestone, project: project, due_date: 30.days.from_now) }
+      let!(:issue1) { create(:issue, project: project, milestone: early_milestone) }
+      let!(:issue2) { create(:issue, project: project, milestone: late_milestone) }
+      let!(:issue3) { create(:issue, project: project) }
+
+      it "sorts desc" do
+        issues = project.issues.sort('milestone_due_desc')
+        expect(issues).to match_array([issue2, issue1, issue, issue3])
+      end
+
+      it "sorts asc" do
+        issues = project.issues.sort('milestone_due_asc')
+        expect(issues).to match_array([issue1, issue2, issue, issue3])
+      end
+    end
+  end
+
+
   describe '#subscribed?' do
     context 'user is not a participant in the issue' do
       before { allow(issue).to receive(:participants).with(user).and_return([]) }
@@ -160,12 +189,11 @@ describe Issue, "Issuable" do
     let(:data) { issue.to_hook_data(user) }
     let(:project) { issue.project }
 
-
     it "returns correct hook data" do
       expect(data[:object_kind]).to eq("issue")
       expect(data[:user]).to eq(user.hook_attrs)
       expect(data[:object_attributes]).to eq(issue.hook_attrs)
-      expect(data).to_not have_key(:assignee)
+      expect(data).not_to have_key(:assignee)
     end
 
     context "issue is assigned" do
@@ -200,16 +228,46 @@ describe Issue, "Issuable" do
   end
 
   describe "votes" do
+    let(:project) { issue.project }
+
     before do
-      author = create :user
-      project = create :empty_project
-      issue.notes.awards.create!(note: "thumbsup", author: author, project: project)
-      issue.notes.awards.create!(note: "thumbsdown", author: author, project: project)
+      issue.notes.awards.create!(note: "thumbsup", author: user, project: project)
+      issue.notes.awards.create!(note: "thumbsdown", author: user, project: project)
     end
 
     it "returns correct values" do
       expect(issue.upvotes).to eq(1)
       expect(issue.downvotes).to eq(1)
+    end
+  end
+
+  describe ".with_label" do
+    let(:project) { create(:project, :public) }
+    let(:bug) { create(:label, project: project, title: 'bug') }
+    let(:feature) { create(:label, project: project, title: 'feature') }
+    let(:enhancement) { create(:label, project: project, title: 'enhancement') }
+    let(:issue1) { create(:issue, title: "Bugfix1", project: project) }
+    let(:issue2) { create(:issue, title: "Bugfix2", project: project) }
+    let(:issue3) { create(:issue, title: "Feature1", project: project) }
+
+    before(:each) do
+      issue1.labels << bug
+      issue1.labels << feature
+      issue2.labels << bug
+      issue2.labels << enhancement
+      issue3.labels << feature
+    end
+
+    it 'finds the correct issue containing just enhancement label' do
+      expect(Issue.with_label(enhancement.title)).to match_array([issue2])
+    end
+
+    it 'finds the correct issues containing the same label' do
+      expect(Issue.with_label(bug.title)).to match_array([issue1, issue2])
+    end
+
+    it 'finds the correct issues containing only both labels' do
+      expect(Issue.with_label([bug.title, enhancement.title])).to match_array([issue2])
     end
   end
 end

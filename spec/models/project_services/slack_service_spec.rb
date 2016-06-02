@@ -26,13 +26,18 @@ describe SlackService, models: true do
     it { is_expected.to have_one :service_hook }
   end
 
-  describe "Validations" do
-    context "active" do
-      before do
-        subject.active = true
-      end
+  describe 'Validations' do
+    context 'when service is active' do
+      before { subject.active = true }
 
-      it { is_expected.to validate_presence_of :webhook }
+      it { is_expected.to validate_presence_of(:webhook) }
+      it_behaves_like 'issue tracker service URL attribute', :webhook
+    end
+
+    context 'when service is inactive' do
+      before { subject.active = false }
+
+      it { is_expected.not_to validate_presence_of(:webhook) }
     end
   end
 
@@ -75,6 +80,17 @@ describe SlackService, models: true do
       @merge_request = merge_service.execute
       @merge_sample_data = merge_service.hook_data(@merge_request,
                                                    'open')
+
+      opts = {
+        title: "Awesome wiki_page",
+        content: "Some text describing some thing or another",
+        format: "md",
+        message: "user created page: Awesome wiki_page"
+      }
+
+      wiki_page_service = WikiPages::CreateService.new(project, user, opts)
+      @wiki_page = wiki_page_service.execute
+      @wiki_page_sample_data = wiki_page_service.hook_data(@wiki_page, 'create')
     end
 
     it "should call Slack API for push events" do
@@ -91,6 +107,12 @@ describe SlackService, models: true do
 
     it "should call Slack API for merge requests events" do
       slack.execute(@merge_sample_data)
+
+      expect(WebMock).to have_requested(:post, webhook_url).once
+    end
+
+    it "should call Slack API for wiki page events" do
+      slack.execute(@wiki_page_sample_data)
 
       expect(WebMock).to have_requested(:post, webhook_url).once
     end
@@ -120,13 +142,6 @@ describe SlackService, models: true do
     let(:slack)   { SlackService.new }
     let(:user) { create(:user) }
     let(:project) { create(:project, creator_id: user.id) }
-    let(:issue)         { create(:issue, project: project) }
-    let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
-    let(:snippet)       { create(:project_snippet, project: project) }
-    let(:commit_note) { create(:note_on_commit, author: user, project: project, commit_id: project.repository.commit.id, note: 'a comment on a commit') }
-    let(:merge_request_note) { create(:note_on_merge_request, noteable_id: merge_request.id, note: "merge request note") }
-    let(:issue_note) { create(:note_on_issue, noteable_id: issue.id, note: "issue note")}
-    let(:snippet_note) { create(:note_on_project_snippet, noteable_id: snippet.id, note: "snippet note") }
     let(:webhook_url) { 'https://hooks.slack.com/services/SVRWFV0VVAR97N/B02R25XN3/ZBqu7xMupaEEICInN685' }
 
     before do
@@ -140,32 +155,61 @@ describe SlackService, models: true do
       WebMock.stub_request(:post, webhook_url)
     end
 
-    it "should call Slack API for commit comment events" do
-      data = Gitlab::NoteDataBuilder.build(commit_note, user)
-      slack.execute(data)
+    context 'when commit comment event executed' do
+      let(:commit_note) do
+        create(:note_on_commit, author: user,
+                                project: project,
+                                commit_id: project.repository.commit.id,
+                                note: 'a comment on a commit')
+      end
 
-      expect(WebMock).to have_requested(:post, webhook_url).once
+      it "should call Slack API for commit comment events" do
+        data = Gitlab::NoteDataBuilder.build(commit_note, user)
+        slack.execute(data)
+
+        expect(WebMock).to have_requested(:post, webhook_url).once
+      end
     end
 
-    it "should call Slack API for merge request comment events" do
-      data = Gitlab::NoteDataBuilder.build(merge_request_note, user)
-      slack.execute(data)
+    context 'when merge request comment event executed' do
+      let(:merge_request_note) do
+        create(:note_on_merge_request, project: project,
+                                       note: "merge request note")
+      end
 
-      expect(WebMock).to have_requested(:post, webhook_url).once
+      it "should call Slack API for merge request comment events" do
+        data = Gitlab::NoteDataBuilder.build(merge_request_note, user)
+        slack.execute(data)
+
+        expect(WebMock).to have_requested(:post, webhook_url).once
+      end
     end
 
-    it "should call Slack API for issue comment events" do
-      data = Gitlab::NoteDataBuilder.build(issue_note, user)
-      slack.execute(data)
+    context 'when issue comment event executed' do
+      let(:issue_note) do
+        create(:note_on_issue, project: project, note: "issue note")
+      end
 
-      expect(WebMock).to have_requested(:post, webhook_url).once
+      it "should call Slack API for issue comment events" do
+        data = Gitlab::NoteDataBuilder.build(issue_note, user)
+        slack.execute(data)
+
+        expect(WebMock).to have_requested(:post, webhook_url).once
+      end
     end
 
-    it "should call Slack API for snippet comment events" do
-      data = Gitlab::NoteDataBuilder.build(snippet_note, user)
-      slack.execute(data)
+    context 'when snippet comment event executed' do
+      let(:snippet_note) do
+        create(:note_on_project_snippet, project: project,
+                                         note: "snippet note")
+      end
 
-      expect(WebMock).to have_requested(:post, webhook_url).once
+      it "should call Slack API for snippet comment events" do
+        data = Gitlab::NoteDataBuilder.build(snippet_note, user)
+        slack.execute(data)
+
+        expect(WebMock).to have_requested(:post, webhook_url).once
+      end
     end
   end
 end

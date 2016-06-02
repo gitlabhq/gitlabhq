@@ -11,7 +11,7 @@ class Admin::SpamLogsController < Admin::ApplicationController
       redirect_to admin_spam_logs_path, notice: "User #{spam_log.user.username} was successfully removed."
     else
       spam_log.destroy
-      render nothing: true
+      head :ok
     end
   end
 end

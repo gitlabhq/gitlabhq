@@ -8,17 +8,17 @@ module Gitlab
 
         import_data = project.import_data.try(:data)
         repo_data = import_data['repo'] if import_data
-        @repo = FogbugzImport::Repository.new(repo_data)
-
-        @known_labels = Set.new
+        if repo_data
+          @repo = FogbugzImport::Repository.new(repo_data)
+          @known_labels = Set.new
+        else
+          raise Projects::ImportService::Error, "Unable to find project import data credentials for project ID: #{@project.id}"
+        end
       end
 
       def execute
         return true unless repo.valid?
-
-        data = project.import_data.try(:data)
-
-        client = Gitlab::FogbugzImport::Client.new(token: data['fb_session']['token'], uri: data['fb_session']['uri'])
+        client = Gitlab::FogbugzImport::Client.new(token: fb_session[:token], uri: fb_session[:uri])
 
         @cases = client.cases(@repo.id.to_i)
         @categories = client.categories
@@ -29,6 +29,10 @@ module Gitlab
       end
 
       private
+
+      def fb_session
+        @import_data_credentials ||= project.import_data.credentials[:fb_session] if project.import_data && project.import_data.credentials
+      end
 
       def user_map
         @user_map ||= begin
@@ -236,9 +240,8 @@ module Gitlab
       end
 
       def build_attachment_url(rel_url)
-        data = project.import_data.try(:data)
-        uri = data['fb_session']['uri']
-        token = data['fb_session']['token']
+        uri = fb_session[:uri]
+        token = fb_session[:token]
         "#{uri}/#{rel_url}&token=#{token}"
       end
 

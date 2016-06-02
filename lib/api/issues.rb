@@ -24,8 +24,8 @@ module API
 
       def create_spam_log(project, current_user, attrs)
         params = attrs.merge({
-          source_ip: env['REMOTE_ADDR'],
-          user_agent: env['HTTP_USER_AGENT'],
+          source_ip: client_ip(env),
+          user_agent: user_agent(env),
           noteable_type: 'Issue',
           via_api: true
         })
@@ -103,8 +103,7 @@ module API
       # Example Request:
       #   GET /projects/:id/issues/:issue_id
       get ":id/issues/:issue_id" do
-        @issue = user_project.issues.find(params[:issue_id])
-        not_found! unless can?(current_user, :read_issue, @issue)
+        @issue = find_project_issue(params[:issue_id])
         present @issue, with: Entities::Issue, current_user: current_user
       end
 
@@ -233,42 +232,6 @@ module API
 
         authorize!(:destroy_issue, issue)
         issue.destroy
-      end
-
-      # Subscribes to a project issue
-      #
-      # Parameters:
-      #  id (required)       - The ID of a project
-      #  issue_id (required) - The ID of a project issue
-      # Example Request:
-      #   POST /projects/:id/issues/:issue_id/subscription
-      post ':id/issues/:issue_id/subscription' do
-        issue = user_project.issues.find(params[:issue_id])
-
-        if issue.subscribed?(current_user)
-          not_modified!
-        else
-          issue.toggle_subscription(current_user)
-          present issue, with: Entities::Issue, current_user: current_user
-        end
-      end
-
-      # Unsubscribes from a project issue
-      #
-      # Parameters:
-      #  id (required)       - The ID of a project
-      #  issue_id (required) - The ID of a project issue
-      # Example Request:
-      #   DELETE /projects/:id/issues/:issue_id/subscription
-      delete ':id/issues/:issue_id/subscription' do
-        issue = user_project.issues.find(params[:issue_id])
-
-        if issue.subscribed?(current_user)
-          issue.unsubscribe(current_user)
-          present issue, with: Entities::Issue, current_user: current_user
-        else
-          not_modified!
-        end
       end
     end
   end

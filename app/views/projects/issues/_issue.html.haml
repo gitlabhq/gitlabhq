@@ -6,7 +6,7 @@
   .issue-title.title
     %span.issue-title-text
       = confidential_icon(issue)
-      = link_to_gfm issue.title, issue_path(issue)
+      = link_to issue.title, issue_path(issue)
     %ul.controls
       - if issue.closed?
         %li
@@ -28,16 +28,10 @@
           = downvotes
 
       - note_count = issue.notes.user.nonawards.count
-      - if note_count > 0
-        %li
-          = link_to issue_path(issue) + "#notes" do
-            = icon('comments')
-            = note_count
-      - else
-        %li
-          = link_to issue_path(issue) + "#notes", class: "issue-no-comments" do
-            = icon('comments')
-            = note_count
+      %li
+        = link_to issue_path(issue, anchor: 'notes'), class: ('issue-no-comments' if note_count.zero?) do
+          = icon('comments')
+          = note_count
 
   .issue-info
     #{issue.to_reference} &middot;
@@ -48,6 +42,11 @@
       = link_to namespace_project_issues_path(issue.project.namespace, issue.project, milestone_title: issue.milestone.title) do
         = icon('clock-o')
         = issue.milestone.title
+    - if issue.due_date
+      %span{class: "#{'cred' if issue.overdue?}"}
+        &nbsp;
+        = icon('calendar')
+        = issue.due_date.to_s(:medium)
     - if issue.labels.any?
       &nbsp;
       - issue.labels.each do |label|

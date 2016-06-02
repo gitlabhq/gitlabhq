@@ -10,7 +10,7 @@ class NotesFinder
     notes =
       case target_type
       when "commit"
-        project.notes.for_commit_id(target_id).not_inline
+        project.notes.for_commit_id(target_id).non_diff_notes
       when "issue"
         project.issues.find(target_id).notes.nonawards.inc_author
       when "merge_request"

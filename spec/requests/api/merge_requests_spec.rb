@@ -113,6 +113,34 @@ describe API::API, api: true  do
   end
 
   describe "GET /projects/:id/merge_requests/:merge_request_id" do
+    it 'exposes known attributes' do
+      get api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user)
+
+      expect(response.status).to eq(200)
+      expect(json_response['id']).to eq(merge_request.id)
+      expect(json_response['iid']).to eq(merge_request.iid)
+      expect(json_response['project_id']).to eq(merge_request.project.id)
+      expect(json_response['title']).to eq(merge_request.title)
+      expect(json_response['description']).to eq(merge_request.description)
+      expect(json_response['state']).to eq(merge_request.state)
+      expect(json_response['created_at']).to be_present
+      expect(json_response['updated_at']).to be_present
+      expect(json_response['labels']).to eq(merge_request.label_names)
+      expect(json_response['milestone']).to be_nil
+      expect(json_response['assignee']).to be_a Hash
+      expect(json_response['author']).to be_a Hash
+      expect(json_response['target_branch']).to eq(merge_request.target_branch)
+      expect(json_response['source_branch']).to eq(merge_request.source_branch)
+      expect(json_response['upvotes']).to eq(0)
+      expect(json_response['downvotes']).to eq(0)
+      expect(json_response['source_project_id']).to eq(merge_request.source_project.id)
+      expect(json_response['target_project_id']).to eq(merge_request.target_project.id)
+      expect(json_response['work_in_progress']).to be_falsy
+      expect(json_response['merge_when_build_succeeds']).to be_falsy
+      expect(json_response['merge_status']).to eq('can_be_merged')
+      expect(json_response['user_notes_count']).to be(2)
+    end
+
     it "should return merge_request" do
       get api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user)
       expect(response.status).to eq(200)

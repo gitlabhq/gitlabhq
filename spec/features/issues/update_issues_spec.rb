@@ -48,7 +48,7 @@ feature 'Multiple issue updating from issues#index', feature: true do
       click_update_issues_button
 
       page.within('.issue .controls') do
-        expect(find('.author_link')["data-original-title"]).to have_content(user.name)
+        expect(find('.author_link')["title"]).to have_content(user.name)
       end
     end
 
@@ -95,7 +95,7 @@ feature 'Multiple issue updating from issues#index', feature: true do
       find('.dropdown-menu-milestone a', text: "No Milestone").click
       click_update_issues_button
 
-      expect(first('.issue')).to_not have_content milestone.title
+      expect(first('.issue')).not_to have_content milestone.title
     end
   end
 

@@ -17,7 +17,7 @@ describe Admin::ProjectsController do
 
     it 'does not retrieve the project' do
       get :index, visibility_levels: [Gitlab::VisibilityLevel::INTERNAL]
-      expect(response.body).to_not match(project.name)
+      expect(response.body).not_to match(project.name)
     end
   end
 end

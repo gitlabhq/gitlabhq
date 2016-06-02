@@ -38,12 +38,28 @@ describe Projects::ProjectMembersController do
       include_context 'import applied'
 
       it 'does not import team members' do
-        expect(project.team_members).to_not include member
+        expect(project.team_members).not_to include member
       end
 
       it 'responds with not found' do
         expect(response.status).to eq 404
       end
+    end
+  end
+
+  describe '#index' do
+    let(:project) { create(:project, :private) }
+
+    context 'when user is member' do
+      let(:member) { create(:user) }
+
+      before do
+        project.team << [member, :guest]
+        sign_in(member)
+        get :index, namespace_id: project.namespace.to_param, project_id: project.to_param
+      end
+
+      it { expect(response.status).to eq(200) }
     end
   end
 end

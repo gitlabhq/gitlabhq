@@ -31,18 +31,21 @@ module Issuable
     scope :unassigned, -> { where("assignee_id IS NULL") }
     scope :of_projects, ->(ids) { where(project_id: ids) }
     scope :of_milestones, ->(ids) { where(milestone_id: ids) }
+    scope :with_milestone, ->(title) { left_joins_milestones.where(milestones: { title: title }) }
     scope :opened, -> { with_state(:opened, :reopened) }
     scope :only_opened, -> { with_state(:opened) }
     scope :only_reopened, -> { with_state(:reopened) }
     scope :closed, -> { with_state(:closed) }
-    scope :order_milestone_due_desc, -> { joins(:milestone).reorder('milestones.due_date DESC, milestones.id DESC') }
-    scope :order_milestone_due_asc, -> { joins(:milestone).reorder('milestones.due_date ASC, milestones.id ASC') }
-    scope :with_label, ->(title) { joins(:labels).where(labels: { title: title }) }
-    scope :without_label, -> { joins("LEFT OUTER JOIN label_links ON label_links.target_type = '#{name}' AND label_links.target_id = #{table_name}.id").where(label_links: { id: nil }) }
 
+    scope :left_joins_milestones,    -> { joins("LEFT OUTER JOIN milestones ON #{table_name}.milestone_id = milestones.id") }
+    scope :order_milestone_due_desc, -> { left_joins_milestones.reorder('milestones.due_date IS NULL, milestones.id IS NULL, milestones.due_date DESC') }
+    scope :order_milestone_due_asc,  -> { left_joins_milestones.reorder('milestones.due_date IS NULL, milestones.id IS NULL, milestones.due_date ASC') }
+
+    scope :without_label, -> { joins("LEFT OUTER JOIN label_links ON label_links.target_type = '#{name}' AND label_links.target_id = #{table_name}.id").where(label_links: { id: nil }) }
     scope :join_project, -> { joins(:project) }
     scope :references_project, -> { references(:project) }
     scope :non_archived, -> { join_project.where(projects: { archived: false }) }
+
 
     delegate :name,
              :email,
@@ -56,8 +59,12 @@ module Issuable
              prefix: true
 
     attr_mentionable :title, pipeline: :single_line
-    attr_mentionable :description, cache: true
-    participant :author, :assignee, :notes_with_associations
+    attr_mentionable :description
+
+    participant :author
+    participant :assignee
+    participant :notes_with_associations
+
     strip_attributes :title
 
     acts_as_paranoid
@@ -122,6 +129,30 @@ module Issuable
 
       joins(join_clause).group(issuable_table[:id]).reorder("COUNT(notes.id) DESC")
     end
+
+    def with_label(title, sort = nil)
+      if title.is_a?(Array) && title.size > 1
+        joins(:labels).where(labels: { title: title }).group(*grouping_columns(sort)).having("COUNT(DISTINCT labels.title) = #{title.size}")
+      else
+        joins(:labels).where(labels: { title: title })
+      end
+    end
+
+    # Includes table keys in group by clause when sorting
+    # preventing errors in postgres
+    #
+    # Returns an array of arel columns
+    def grouping_columns(sort)
+      grouping_columns = [arel_table[:id]]
+
+      if ["milestone_due_desc", "milestone_due_asc"].include?(sort)
+        milestone_table = Milestone.arel_table
+        grouping_columns << milestone_table[:id]
+        grouping_columns << milestone_table[:due_date]
+      end
+
+      grouping_columns
+    end
   end
 
   def today?
@@ -150,6 +181,10 @@ module Issuable
 
   def upvotes
     notes.awards.where(note: "thumbsup").count
+  end
+
+  def user_notes_count
+    notes.user.count
   end
 
   def subscribed_without_subscriptions?(user)

@@ -31,7 +31,7 @@ describe SlackService::MergeMessage, models: true do
   context 'open' do
     it 'returns a message regarding opening of merge requests' do
       expect(subject.pretext).to eq(
-        'Test User opened <somewhere.com/merge_requests/100|merge request #100> '\
+        'Test User opened <somewhere.com/merge_requests/100|merge request !100> '\
         'in <somewhere.com|project_name>: *Issue title*')
       expect(subject.attachments).to be_empty
     end
@@ -43,7 +43,7 @@ describe SlackService::MergeMessage, models: true do
     end
     it 'returns a message regarding closing of merge requests' do
       expect(subject.pretext).to eq(
-        'Test User closed <somewhere.com/merge_requests/100|merge request #100> '\
+        'Test User closed <somewhere.com/merge_requests/100|merge request !100> '\
         'in <somewhere.com|project_name>: *Issue title*')
       expect(subject.attachments).to be_empty
     end

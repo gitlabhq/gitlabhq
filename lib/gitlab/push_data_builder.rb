@@ -36,11 +36,12 @@ module Gitlab
           commit.hook_attrs(with_changed_files: true)
         end
 
-        type = Gitlab::Git.tag_ref?(ref) ? "tag_push" : "push"
+        type = Gitlab::Git.tag_ref?(ref) ? 'tag_push' : 'push'
 
         # Hash to be passed as post_receive_data
         data = {
           object_kind: type,
+          event_name: type,
           before: oldrev,
           after: newrev,
           ref: ref,
@@ -65,7 +66,7 @@ module Gitlab
       # This method provide a sample data generated with
       # existing project and commits to test webhooks
       def build_sample(project, user)
-        commits = project.repository.commits(project.default_branch, nil, 3)
+        commits = project.repository.commits(project.default_branch, limit: 3)
         ref = "#{Gitlab::Git::BRANCH_REF_PREFIX}#{project.default_branch}"
         build(project, user, commits.last.id, commits.first.id, ref, commits)
       end

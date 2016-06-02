@@ -26,6 +26,17 @@ describe Projects::TransferService, services: true do
     it { expect(project.namespace).to eq(user.namespace) }
   end
 
+  context 'disallow transfering of project with tags' do
+    before do
+      stub_container_registry_config(enabled: true)
+      stub_container_registry_tags('tag')
+    end
+
+    subject { transfer_project(project, user, group) }
+
+    it { is_expected.to be_falsey }
+  end
+
   context 'namespace -> not allowed namespace' do
     before do
       @result = transfer_project(project, user, group)

@@ -25,6 +25,7 @@ Create merge requests and review code.
 - [Automatically close issues from merge requests](../customization/issue_closing.md)
 - [Automatically merge when your builds succeed](../workflow/merge_when_build_succeeds.md)
 - [Revert any commit](../workflow/revert_changes.md)
+- [Cherry-pick any commit](../workflow/cherry_pick_changes.md)
 
 ## Test and Deploy
 
@@ -38,4 +39,4 @@ Install and update your GitLab installation.
 
 - [Install GitLab](https://about.gitlab.com/installation/)
 - [Update GitLab](https://about.gitlab.com/update/)
-- [Explore Omnibus GitLab configuration options](http://doc.gitlab.com/omnibus/settings/configuration.html)
+- [Explore Omnibus GitLab configuration options](http://docs.gitlab.com/omnibus/settings/configuration.html)

@@ -30,7 +30,7 @@
   }
 
   .rss-btn {
-    display: none !important;
+    display: none;
   }
 
   .project-home-links {
@@ -46,10 +46,6 @@
 
     .project-avatar {
       display: block;
-    }
-
-    .project-home-desc {
-      font-size: 21px;
     }
 
     .project-repo-buttons,
@@ -68,13 +64,6 @@
 
   .issue-info, .merge-request-info {
     display: none;
-  }
-
-  .issue-details {
-    .creator,
-    .page-title .btn-close {
-      display: none;
-    }
   }
 
   %ul.notes .note-role, .note-actions {

@@ -29,7 +29,22 @@ namespace :gitlab do
       tables.delete 'schema_migrations'
       # Truncate schema_migrations to ensure migrations re-run
       connection.execute('TRUNCATE schema_migrations')
-      tables.each { |t| connection.execute("DROP TABLE #{t}") }
+
+      # Drop tables with cascade to avoid dependent table errors
+      # PG: http://www.postgresql.org/docs/current/static/ddl-depend.html
+      # MySQL: http://dev.mysql.com/doc/refman/5.7/en/drop-table.html
+      # Add `IF EXISTS` because cascade could have already deleted a table.
+      tables.each { |t| connection.execute("DROP TABLE IF EXISTS #{t} CASCADE") }
+    end
+
+    desc 'Configures the database by running migrate, or by loading the schema and seeding if needed'
+    task configure: :environment do
+      if ActiveRecord::Base.connection.tables.any?
+        Rake::Task['db:migrate'].invoke
+      else
+        Rake::Task['db:schema:load'].invoke
+        Rake::Task['db:seed_fu'].invoke
+      end
     end
   end
 end

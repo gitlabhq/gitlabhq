@@ -37,8 +37,9 @@ class IssuableBaseService < BaseService
   end
 
   def filter_params(issuable_ability_name = :issue)
-    params[:assignee_id]  = "" if params[:assignee_id] == IssuableFinder::NONE
-    params[:milestone_id] = "" if params[:milestone_id] == IssuableFinder::NONE
+    filter_assignee
+    filter_milestone
+    filter_labels
 
     ability = :"admin_#{issuable_ability_name}"
 
@@ -47,6 +48,29 @@ class IssuableBaseService < BaseService
       params.delete(:label_ids)
       params.delete(:assignee_id)
     end
+  end
+
+  def filter_assignee
+    if params[:assignee_id] == IssuableFinder::NONE
+      params[:assignee_id] = ''
+    end
+  end
+
+  def filter_milestone
+    milestone_id = params[:milestone_id]
+    return unless milestone_id
+
+    if milestone_id == IssuableFinder::NONE ||
+        project.milestones.find_by(id: milestone_id).nil?
+      params[:milestone_id] = ''
+    end
+  end
+
+  def filter_labels
+    return if params[:label_ids].to_a.empty?
+
+    params[:label_ids] =
+      project.labels.where(id: params[:label_ids]).pluck(:id)
   end
 
   def update(issuable)

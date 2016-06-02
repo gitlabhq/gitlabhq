@@ -12,7 +12,7 @@ toggleSidebar = ->
     niceScrollBars.updateScrollBar();
   ), 300
 
-$(document).on("click", '.toggle-nav-collapse', (e) ->
+$(document).on("click", '.toggle-nav-collapse, .side-nav-toggle', (e) ->
   e.preventDefault()
 
   toggleSidebar()

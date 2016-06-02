@@ -58,6 +58,9 @@ you are logged in or not.
 When visiting the public page of a user, you can only see the projects which
 you are privileged to.
 
+If the public level is restricted, user profiles are only visible to logged in users.
+
+
 ## Restricting the use of public or internal projects
 
 In the Admin area under **Settings** (`/admin/application_settings`), you can

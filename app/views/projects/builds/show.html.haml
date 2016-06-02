@@ -1,8 +1,8 @@
 - page_title "#{@build.name} (##{@build.id})", "Builds"
-= render "header_title"
+- trace_with_state = @build.trace_with_state
 
 .build-page
-  .gray-content-block.top-block
+  .row-content-block.top-block
     Build ##{@build.id} for commit
     %strong.monospace= link_to @build.commit.short_sha, ci_status_path(@build.commit)
     from
@@ -10,10 +10,10 @@
     - merge_request = @build.merge_request
     - if merge_request
       via
-      = link_to "merge request ##{merge_request.iid}", merge_request_path(merge_request)
+      = link_to "merge request #{merge_request.to_reference}", merge_request_path(merge_request)
 
   #up-build-trace
-  - builds = @build.commit.matrix_builds(@build)
+  - builds = @build.commit.builds.latest.to_a
   - if builds.size > 1
     %ul.nav-links.no-top.no-bottom
       - builds.each do |build|
@@ -34,7 +34,7 @@
             %i.fa.fa-warning
             This build was retried.
 
-  .gray-content-block.middle-block
+  .row-content-block.middle-block
     .build-head
       .clearfix
         = ci_status_with_icon(@build.status)
@@ -85,7 +85,9 @@
         %pre.trace#build-trace
           %code.bash
             = preserve do
-              = raw @build.trace_html
+              = raw trace_with_state[:html]
+              - if @build.active?
+                %i{:class => "fa fa-refresh fa-spin"}
 
       %div#down-build-trace
 
@@ -110,7 +112,7 @@
                   = icon('folder-open')
                   Browse
 
-      .build-widget
+      .build-widget.build-controls
         %h4.title
           Build ##{@build.id}
           - if can?(current_user, :update_build, @project)
@@ -127,6 +129,9 @@
                             data: { confirm: 'Are you sure you want to erase this build?' } do
                     = icon('eraser')
                     Erase
+                - if @build.has_trace?
+                  = link_to 'Raw', raw_namespace_project_build_path(@project.namespace, @project, @build),
+                            class: 'btn btn-sm btn-success', target: '_blank'
 
         .clearfix
           - if @build.duration
@@ -213,4 +218,4 @@
 
 
   :javascript
-    new CiBuild("#{namespace_project_build_url(@project.namespace, @project, @build)}", "#{@build.status}")
+    new CiBuild("#{namespace_project_build_url(@project.namespace, @project, @build)}", "#{@build.status}", "#{trace_with_state[:state]}")

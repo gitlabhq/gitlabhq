@@ -28,10 +28,6 @@ input[type='text'].danger {
 }
 
 label {
-  &.control-label {
-    @extend .col-sm-2;
-  }
-
   &.inline-label {
     margin: 0;
   }
@@ -39,6 +35,10 @@ label {
   &.label-light {
     font-weight: 600;
   }
+}
+
+.control-label {
+  @extend .col-sm-2;
 }
 
 .inline-input-group {
@@ -76,6 +76,24 @@ label {
 .form-control {
   @include box-shadow(none);
   border-radius: 3px;
+}
+
+.select-wrapper {
+  position: relative;
+
+  .caret {
+    position: absolute;
+    right: 10px;
+    top: $gl-padding;
+    color: $gray-darkest;
+    pointer-events: none;
+  }
+}
+
+.select-control {
+  padding-left: 10px;
+  padding-right: 10px;
+  -webkit-appearance: none;
 }
 
 .form-control-inline {

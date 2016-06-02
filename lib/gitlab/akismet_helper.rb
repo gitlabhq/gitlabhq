@@ -9,14 +9,22 @@ module Gitlab
         Gitlab.config.gitlab.url)
     end
 
+    def client_ip(env)
+      env['action_dispatch.remote_ip'].to_s
+    end
+
+    def user_agent(env)
+      env['HTTP_USER_AGENT']
+    end
+
     def check_for_spam?(project, user)
       akismet_enabled? && !project.team.member?(user)
     end
 
     def is_spam?(environment, user, text)
       client = akismet_client
-      ip_address = environment['REMOTE_ADDR']
-      user_agent = environment['HTTP_USER_AGENT']
+      ip_address = client_ip(environment)
+      user_agent = user_agent(environment)
 
       params = {
         type: 'comment',

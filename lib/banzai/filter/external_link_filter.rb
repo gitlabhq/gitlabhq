@@ -1,7 +1,6 @@
 module Banzai
   module Filter
-    # HTML Filter to add a `rel="nofollow"` attribute to external links
-    #
+    # HTML Filter to modify the attributes of external links
     class ExternalLinkFilter < HTML::Pipeline::Filter
       def call
         doc.search('a').each do |node|
@@ -15,7 +14,7 @@ module Banzai
           # Skip internal links
           next if link.start_with?(internal_url)
 
-          node.set_attribute('rel', 'nofollow')
+          node.set_attribute('rel', 'nofollow noreferrer')
         end
 
         doc

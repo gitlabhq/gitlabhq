@@ -27,14 +27,20 @@ describe PushoverService, models: true do
   end
 
   describe 'Validations' do
-    context 'active' do
-      before do
-        subject.active = true
-      end
+    context 'when service is active' do
+      before { subject.active = true }
 
-      it { is_expected.to validate_presence_of :api_key }
-      it { is_expected.to validate_presence_of :user_key }
-      it { is_expected.to validate_presence_of :priority }
+      it { is_expected.to validate_presence_of(:api_key) }
+      it { is_expected.to validate_presence_of(:user_key) }
+      it { is_expected.to validate_presence_of(:priority) }
+    end
+
+    context 'when service is inactive' do
+      before { subject.active = false }
+
+      it { is_expected.not_to validate_presence_of(:api_key) }
+      it { is_expected.not_to validate_presence_of(:user_key) }
+      it { is_expected.not_to validate_presence_of(:priority) }
     end
   end
 
