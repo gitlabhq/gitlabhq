@@ -31,6 +31,9 @@ v 8.9.0 (unreleased)
   - Cache assigned issue and merge request counts in sidebar nav
   - Cache project build count in sidebar nav
 
+v 8.8.4
+  - Fix todos page throwing errors when you have a project pending deletion
+
 v 8.8.3
   - Fix 404 page when viewing TODOs that contain milestones or labels in different projects. !4312
   - Fixed JS error when trying to remove discussion form. !4303
