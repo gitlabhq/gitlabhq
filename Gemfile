@@ -18,9 +18,8 @@ gem "mysql2", '~> 0.3.16', group: :mysql
 gem "pg", '~> 0.18.2', group: :postgres
 
 # Authentication libraries
-gem 'devise',                 '~> 3.5.4'
+gem 'devise',                 '~> 4.0'
 gem 'doorkeeper',             '~> 3.1'
-gem 'devise-async',           '~> 0.9.0'
 gem 'omniauth',               '~> 1.3.1'
 gem 'omniauth-auth0',         '~> 1.4.1'
 gem 'omniauth-azure-oauth2',  '~> 0.0.6'
@@ -43,9 +42,9 @@ gem 'recaptcha', require: 'recaptcha/rails'
 gem 'akismet', '~> 2.0'
 
 # Two-factor authentication
-gem 'devise-two-factor', '~> 2.0.0'
+gem 'devise-two-factor', '~> 3.0.0'
 gem 'rqrcode-rails3', '~> 0.1.7'
-gem 'attr_encrypted', '~> 1.3.4'
+gem 'attr_encrypted', '~> 3.0.0'
 
 # Browser detection
 gem "browser", '~> 1.0.0'
