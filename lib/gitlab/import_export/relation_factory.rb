@@ -30,7 +30,7 @@ module Gitlab
         set_note_author if @relation_name == :notes
         update_user_references
         update_project_references
-        reset_tokens if @relation_name == 'Ci::Trigger'
+        reset_ci_tokens if @relation_name == 'Ci::Trigger'
 
         generate_imported_object
       end
@@ -95,10 +95,10 @@ module Gitlab
         end
       end
 
-      def reset_tokens
+      def reset_ci_tokens
         return unless Gitlab::ImportExport.reset_tokens?
 
-        # If we import/export a project to the same instance, tokens will have to be reseated.
+        # If we import/export a project to the same instance, tokens will have to be reset.
         @relation_hash['token'] = nil
       end
 

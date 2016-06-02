@@ -3,14 +3,15 @@ module Gitlab
     class RepoRestorer
       include Gitlab::ImportExport::CommandLineUtil
 
-      def initialize(project:, shared:, path_to_bundle:)
+      def initialize(project:, shared:, path_to_bundle:, wiki: false)
         @project = project
         @path_to_bundle = path_to_bundle
         @shared = shared
+        @wiki = wiki
       end
 
       def restore
-        return true unless File.exists?(@path_to_bundle)
+        return false unless File.exists?(@path_to_bundle) || wiki?
 
         FileUtils.mkdir_p(path_to_repo)
 
@@ -28,6 +29,10 @@ module Gitlab
 
       def path_to_repo
         @project.repository.path_to_repo
+      end
+
+      def wiki?
+        @wiki
       end
     end
   end

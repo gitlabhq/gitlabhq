@@ -10,7 +10,7 @@ module Gitlab
       end
 
       def export_path
-        @export_path ||= Gitlab::ImportExport.export_path(relative_path: @opts[:relative_path])
+        @export_path ||= Gitlab::ImportExport.export_path(relative_path: opts[:relative_path])
       end
 
       def error(error)
