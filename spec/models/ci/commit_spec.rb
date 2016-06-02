@@ -346,9 +346,9 @@ describe Ci::Commit, models: true do
     end
   end
 
-  describe '#update_state' do
-    it 'execute update_state after touching object' do
-      expect(commit).to receive(:update_state).and_return(true)
+  describe '#update_state!' do
+    it 'execute update_state! after touching object' do
+      expect(commit).to receive(:update_state!).and_return(true)
       commit.touch
     end
 
@@ -356,17 +356,17 @@ describe Ci::Commit, models: true do
       let(:commit_status) { build :commit_status, commit: commit }
 
       it 'execute update_state after saving dependent object' do
-        expect(commit).to receive(:update_state).and_return(true)
+        expect(commit).to receive(:update_state!).and_return(true)
         commit_status.save
       end
     end
 
     context 'update state' do
       let(:current) { Time.now.change(usec: 0) }
-      let(:build) { FactoryGirl.create :ci_build, :success, commit: commit, started_at: current - 120, finished_at: current - 60 }
-
-      before do
-        build
+      let!(:build) do
+        create :ci_build, :success, commit: commit,
+                                    started_at: current - 120,
+                                    finished_at: current - 60
       end
 
       [:status, :started_at, :finished_at, :duration].each do |param|
