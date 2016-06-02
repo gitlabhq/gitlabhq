@@ -12,7 +12,7 @@ describe SessionsController do
           post(:create, user: { login: 'invalid', password: 'invalid' })
 
           expect(response)
-            .to set_flash.now[:alert].to /Invalid login or password/
+            .to set_flash.now[:alert].to /Invalid Login or password/
         end
       end
 

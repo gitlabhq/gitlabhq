@@ -18,7 +18,6 @@
 #= require jquery.atwho
 #= require jquery.scrollTo
 #= require jquery.turbolinks
-#= require d3
 #= require turbolinks
 #= require autosave
 #= require bootstrap/affix
@@ -51,7 +50,13 @@
 #= require shortcuts_network
 #= require jquery.nicescroll
 #= require date.format
-#= require_tree .
+#= require_directory ./behaviors
+#= require_directory ./blob
+#= require_directory ./ci
+#= require_directory ./commit
+#= require_directory ./extensions
+#= require_directory ./lib
+#= require_directory .
 #= require fuzzaldrin-plus
 #= require cropper
 
