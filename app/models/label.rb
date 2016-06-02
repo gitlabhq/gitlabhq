@@ -32,10 +32,12 @@ class Label < ActiveRecord::Base
 
   scope :templates, ->  { where(template: true) }
 
-  def self.prioritized(bool = true)
-    query = bool ? where.not(priority: nil) : where(priority: nil)
+  def self.prioritized
+     where.not(priority: nil).reorder(Gitlab::Database.nulls_last_order(:priority), :title)
+  end
 
-    query.reorder(Gitlab::Database.nulls_last_order(:priority), :title)
+  def self.unprioritized
+    where(priority: nil).reorder(Gitlab::Database.nulls_last_order(:priority), :title)
   end
 
   alias_attribute :name, :title
