@@ -14,6 +14,7 @@
 - [Project Services](project_services/project_services.md) Integrate a project with external services, such as CI and chat.
 - [Public access](public_access/public_access.md) Learn how you can allow public and internal access to projects.
 - [Analytics](analytics/README.md)
+- [Container Registry](container_registry/README.md) Learn how to use GitLab Container Registry.
 - [SSH](ssh/README.md) Setup your ssh keys and deploy keys for secure access to your projects.
 - [Webhooks](web_hooks/web_hooks.md) Let GitLab notify you when new code has been pushed to your project.
 - [Workflow](workflow/README.md) Using GitLab functionality and importing projects from GitHub and SVN.
@@ -59,6 +60,7 @@
 - [High Availability](administration/high_availability/README.md) Configure multiple servers for scaling or high availability
 - [GitLab GEO](gitlab-geo/README.md) Configure GitLab GEO, a
   secondary read-only GitLab instance
+- [Container Registry](administration/container_registry.md) Configure Docker Registry with GitLab
 
 ## Contributor documentation
 

@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 describe MergeRequests::MergeWhenBuildSucceedsService do
-  let(:user)          { create(:user) }
-  let(:merge_request) { create(:merge_request) }
+  let(:user) { create(:user) }
+  let(:project) { create(:project) }
 
   let(:mr_merge_if_green_enabled) do
     create(:merge_request, merge_when_build_succeeds: true, merge_user: user,
@@ -10,11 +10,15 @@ describe MergeRequests::MergeWhenBuildSucceedsService do
                            source_project: project, target_project: project, state: "opened")
   end
 
-  let(:project) { create(:project) }
   let(:ci_commit) { create(:ci_commit_with_one_job, ref: mr_merge_if_green_enabled.source_branch, project: project) }
   let(:service) { MergeRequests::MergeWhenBuildSucceedsService.new(project, user, commit_message: 'Awesome message') }
 
   describe "#execute" do
+    let(:merge_request) do
+      create(:merge_request, target_project: project, source_project: project,
+                             source_branch: "feature", target_branch: 'master')
+    end
+
     context 'first time enabling' do
       before do
         allow(merge_request).to receive(:ci_commit).and_return(ci_commit)
@@ -75,7 +79,7 @@ describe MergeRequests::MergeWhenBuildSucceedsService do
         allow(ci_commit).to receive(:success?).and_return(true)
         allow(old_build).to receive(:sha).and_return('1234abcdef')
 
-        expect(MergeWorker).to_not receive(:perform_async)
+        expect(MergeWorker).not_to receive(:perform_async)
         service.trigger(old_build)
       end
     end
@@ -88,7 +92,7 @@ describe MergeRequests::MergeWhenBuildSucceedsService do
       it "doesn't merge a requests for status on other branch" do
         allow(project.repository).to receive(:branch_names_contains).with(commit_status.sha).and_return([])
 
-        expect(MergeWorker).to_not receive(:perform_async)
+        expect(MergeWorker).not_to receive(:perform_async)
         service.trigger(commit_status)
       end
 
@@ -122,7 +126,7 @@ describe MergeRequests::MergeWhenBuildSucceedsService do
       end
 
       it "doesn't merge if some stages failed" do
-        expect(MergeWorker).to_not receive(:perform_async)
+        expect(MergeWorker).not_to receive(:perform_async)
         build.success
         test.drop
       end

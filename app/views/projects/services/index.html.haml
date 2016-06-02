@@ -1,24 +1,32 @@
 - page_title "Services"
-%h3.page-title Project services
-%p.light Project services allow you to integrate GitLab with other applications
 
-.table-holder
-  %table.table
-    %thead
-      %tr
-        %th
-        %th Service
-        %th Description
-        %th Last edit
-    - @services.sort_by(&:title).each do |service|
-      %tr
-        %td
-          = boolean_to_icon service.activated?
-        %td
-          = link_to edit_namespace_project_service_path(@project.namespace, @project, service.to_param) do
-            %strong= service.title
-        %td
-          = service.description
-        %td.light
-          = time_ago_in_words service.updated_at
-          ago
+.row.prepend-top-default.append-bottom-default
+  .col-lg-3
+    %h4.prepend-top-0
+      Project services
+    %p Project services allow you to integrate GitLab with other applications
+  .col-lg-9
+    %table.table
+      %colgroup
+        %col
+        %col
+        %col.hidden-xs
+        %col{ width: "120" }
+      %thead
+        %tr
+          %th
+          %th Service
+          %th.hidden-xs Description
+          %th Last edit
+      - @services.sort_by(&:title).each do |service|
+        %tr
+          %td
+            = boolean_to_icon service.activated?
+          %td
+            = link_to edit_namespace_project_service_path(@project.namespace, @project, service.to_param) do
+              %strong= service.title
+          %td.hidden-xs
+            = service.description
+          %td.light
+            = time_ago_in_words service.updated_at
+            ago

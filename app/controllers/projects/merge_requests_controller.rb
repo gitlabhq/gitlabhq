@@ -226,7 +226,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def branch_from
-    #This is always source
+    # This is always source
     @source_project = @merge_request.nil? ? @project : @merge_request.source_project
     @commit = @repository.commit(params[:ref]) if params[:ref].present?
     render layout: false
@@ -250,6 +250,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     if ci_commit
       status = ci_commit.status
       coverage = ci_commit.try(:coverage)
+
+      status ||= "preparing"
     else
       ci_service = @merge_request.source_project.ci_service
       status = ci_service.commit_status(merge_request.last_commit.sha, merge_request.source_branch) if ci_service
@@ -258,8 +260,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
         coverage = ci_service.commit_coverage(merge_request.last_commit.sha, merge_request.source_branch)
       end
     end
-
-    status = "preparing" if status.nil?
 
     response = {
       title: merge_request.title,
@@ -376,6 +376,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     params.require(:merge_request).permit(
       :title, :assignee_id, :source_project_id, :source_branch,
       :target_project_id, :target_branch, :milestone_id, :approver_ids,
+      :target_project_id, :target_branch, :milestone_id,
       :state_event, :description, :task_num, :force_remove_source_branch,
       label_ids: []
     )

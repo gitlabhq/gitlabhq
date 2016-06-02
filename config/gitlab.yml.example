@@ -228,11 +228,11 @@ production: &base
   registry:
     # enabled: true
     # host: registry.example.com
-    # port: 5000
-    # api_url: http://localhost:5000/
-    # key: config/registry.key
-    # issuer: omnibus-certificate
+    # port: 5005
+    # api_url: http://localhost:5000/ # internal address to the registry, will be used by GitLab to directly communicate with API
+    # key_path: config/registry.key
     # path: shared/registry
+    # issuer: gitlab-issuer
 
   #
   # 2. GitLab CI settings

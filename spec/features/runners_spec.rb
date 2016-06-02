@@ -29,8 +29,8 @@ describe "Runners" do
     end
 
     before do
-      expect(page).to_not have_content(@specific_runner3.display_name)
-      expect(page).to_not have_content(@specific_runner3.display_name)
+      expect(page).not_to have_content(@specific_runner3.display_name)
+      expect(page).not_to have_content(@specific_runner3.display_name)
     end
 
     it "places runners in right places" do

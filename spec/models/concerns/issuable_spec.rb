@@ -133,6 +133,30 @@ describe Issue, "Issuable" do
         expect(issues).to match_array([issue2, issue3, issue4, issue])
       end
     end
+
+    context "by milestone due date" do
+      # Correct order is:
+      # Issues/MRs with milestones ordered by date
+      # Issues/MRs with milestones without dates
+      # Issues/MRs without milestones
+
+      let!(:issue) { create(:issue, project: project) }
+      let!(:early_milestone) { create(:milestone, project: project, due_date: 10.days.from_now) }
+      let!(:late_milestone) { create(:milestone, project: project, due_date: 30.days.from_now) }
+      let!(:issue1) { create(:issue, project: project, milestone: early_milestone) }
+      let!(:issue2) { create(:issue, project: project, milestone: late_milestone) }
+      let!(:issue3) { create(:issue, project: project) }
+
+      it "sorts desc" do
+        issues = project.issues.sort('milestone_due_desc')
+        expect(issues).to match_array([issue2, issue1, issue, issue3])
+      end
+
+      it "sorts asc" do
+        issues = project.issues.sort('milestone_due_asc')
+        expect(issues).to match_array([issue1, issue2, issue, issue3])
+      end
+    end
   end
 
   describe '#subscribed?' do
@@ -181,12 +205,11 @@ describe Issue, "Issuable" do
     let(:data) { issue.to_hook_data(user) }
     let(:project) { issue.project }
 
-
     it "returns correct hook data" do
       expect(data[:object_kind]).to eq("issue")
       expect(data[:user]).to eq(user.hook_attrs)
       expect(data[:object_attributes]).to eq(issue.hook_attrs)
-      expect(data).to_not have_key(:assignee)
+      expect(data).not_to have_key(:assignee)
     end
 
     context "issue is assigned" do
@@ -221,11 +244,11 @@ describe Issue, "Issuable" do
   end
 
   describe "votes" do
+    let(:project) { issue.project }
+
     before do
-      author = create :user
-      project = create :empty_project
-      issue.notes.awards.create!(note: "thumbsup", author: author, project: project)
-      issue.notes.awards.create!(note: "thumbsdown", author: author, project: project)
+      issue.notes.awards.create!(note: "thumbsup", author: user, project: project)
+      issue.notes.awards.create!(note: "thumbsdown", author: user, project: project)
     end
 
     it "returns correct values" do

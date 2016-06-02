@@ -1,18 +1,17 @@
 require 'spec_helper'
 
 describe Ci::Build, models: true do
-  let(:project) { FactoryGirl.create :project }
-  let(:commit) { FactoryGirl.create :ci_commit, project: project }
-  let(:build) { FactoryGirl.create :ci_build, commit: commit }
+  let(:project) { create(:project) }
+  let(:commit) { create(:ci_commit, project: project) }
+  let(:build) { create(:ci_build, commit: commit) }
 
   it { is_expected.to validate_presence_of :ref }
 
   it { is_expected.to respond_to :trace_html }
 
   describe '#first_pending' do
-    let(:first) { FactoryGirl.create :ci_build, commit: commit, status: 'pending', created_at: Date.yesterday }
-    let(:second) { FactoryGirl.create :ci_build, commit: commit, status: 'pending' }
-    before { first; second }
+    let!(:first) { create(:ci_build, commit: commit, status: 'pending', created_at: Date.yesterday) }
+    let!(:second) { create(:ci_build, commit: commit, status: 'pending') }
     subject { Ci::Build.first_pending }
 
     it { is_expected.to be_a(Ci::Build) }
@@ -90,7 +89,7 @@ describe Ci::Build, models: true do
         build.update_attributes(trace: token)
       end
 
-      it { is_expected.to_not include(token) }
+      it { is_expected.not_to include(token) }
     end
   end
 
@@ -219,8 +218,8 @@ describe Ci::Build, models: true do
         it { is_expected.to eq(predefined_variables + yaml_variables + secure_variables) }
 
         context 'and trigger variables' do
-          let(:trigger) { FactoryGirl.create :ci_trigger, project: project }
-          let(:trigger_request) { FactoryGirl.create :ci_trigger_request_with_variables, commit: commit, trigger: trigger }
+          let(:trigger) { create(:ci_trigger, project: project) }
+          let(:trigger_request) { create(:ci_trigger_request_with_variables, commit: commit, trigger: trigger) }
           let(:trigger_variables) do
             [
               { key: :TRIGGER_KEY, value: 'TRIGGER_VALUE', public: false }
@@ -317,7 +316,7 @@ describe Ci::Build, models: true do
 
     context 'when build does not have tags' do
       subject { create(:ci_build, tag_list: []) }
-      it { is_expected.to_not have_tags }
+      it { is_expected.not_to have_tags }
     end
   end
 
@@ -329,7 +328,7 @@ describe Ci::Build, models: true do
     end
 
     context 'if there are runner' do
-      let(:runner) { FactoryGirl.create :ci_runner }
+      let(:runner) { create(:ci_runner) }
 
       before do
         build.project.runners << runner
@@ -366,7 +365,7 @@ describe Ci::Build, models: true do
         it { is_expected.to be_truthy }
 
         context "and there are specific runner" do
-          let(:runner) { FactoryGirl.create :ci_runner, contacted_at: 1.second.ago }
+          let(:runner) { create(:ci_runner, contacted_at: 1.second.ago) }
 
           before do
             build.project.runners << runner
@@ -415,7 +414,7 @@ describe Ci::Build, models: true do
   end
 
   describe '#repo_url' do
-    let(:build) { FactoryGirl.create :ci_build }
+    let(:build) { create(:ci_build) }
     let(:project) { build.project }
 
     subject { build.repo_url }
@@ -429,10 +428,10 @@ describe Ci::Build, models: true do
   end
 
   describe '#depends_on_builds' do
-    let!(:build) { FactoryGirl.create :ci_build, commit: commit, name: 'build', stage_idx: 0, stage: 'build' }
-    let!(:rspec_test) { FactoryGirl.create :ci_build, commit: commit, name: 'rspec', stage_idx: 1, stage: 'test' }
-    let!(:rubocop_test) { FactoryGirl.create :ci_build, commit: commit, name: 'rubocop', stage_idx: 1, stage: 'test' }
-    let!(:staging) { FactoryGirl.create :ci_build, commit: commit, name: 'staging', stage_idx: 2, stage: 'deploy' }
+    let!(:build) { create(:ci_build, commit: commit, name: 'build', stage_idx: 0, stage: 'build') }
+    let!(:rspec_test) { create(:ci_build, commit: commit, name: 'rspec', stage_idx: 1, stage: 'test') }
+    let!(:rubocop_test) { create(:ci_build, commit: commit, name: 'rubocop', stage_idx: 1, stage: 'test') }
+    let!(:staging) { create(:ci_build, commit: commit, name: 'staging', stage_idx: 2, stage: 'deploy') }
 
     it 'to have no dependents if this is first build' do
       expect(build.depends_on_builds).to be_empty
@@ -453,11 +452,10 @@ describe Ci::Build, models: true do
   end
 
   def create_mr(build, commit, factory: :merge_request, created_at: Time.now)
-    FactoryGirl.create(factory,
-                       source_project_id: commit.gl_project_id,
-                       target_project_id: commit.gl_project_id,
-                       source_branch: build.ref,
-                       created_at: created_at)
+    create(factory, source_project_id: commit.gl_project_id,
+                    target_project_id: commit.gl_project_id,
+                    source_branch: build.ref,
+                    created_at: created_at)
   end
 
   describe '#merge_request' do
@@ -501,8 +499,8 @@ describe Ci::Build, models: true do
     context 'when a Build is created after the MR' do
       before do
         @merge_request = create_mr(build, commit, factory: :merge_request_with_diffs)
-        commit2 = FactoryGirl.create :ci_commit, project: project
-        @build2 = FactoryGirl.create :ci_build, commit: commit2
+        commit2 = create(:ci_commit, project: project)
+        @build2 = create(:ci_build, commit: commit2)
 
         commits = [double(id: commit.sha), double(id: commit2.sha)]
         allow(@merge_request).to receive(:commits).and_return(commits)
@@ -534,7 +532,7 @@ describe Ci::Build, models: true do
       end
 
       it 'should set erase date' do
-        expect(build.erased_at).to_not be_falsy
+        expect(build.erased_at).not_to be_falsy
       end
     end
 
@@ -606,7 +604,7 @@ describe Ci::Build, models: true do
 
         describe '#erase' do
           it 'should not raise error' do
-            expect { build.erase }.to_not raise_error
+            expect { build.erase }.not_to raise_error
           end
         end
       end

@@ -29,7 +29,7 @@ module API
       @current_user
     end
 
-    def sudo_identifier()
+    def sudo_identifier
       identifier ||= params[SUDO_PARAM] || env[SUDO_HEADER]
 
       # Regex for integers

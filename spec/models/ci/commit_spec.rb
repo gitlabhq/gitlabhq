@@ -247,7 +247,7 @@ describe Ci::Commit, models: true do
           expect(commit.builds.pluck(:status)).to contain_exactly('pending')
           commit.builds.running_or_pending.each(&:success)
 
-          expect(commit.builds.running_or_pending).to_not be_empty
+          expect(commit.builds.running_or_pending).not_to be_empty
 
           expect(commit.builds.pluck(:name)).to contain_exactly('build', 'test')
           expect(commit.builds.pluck(:status)).to contain_exactly('success', 'pending')

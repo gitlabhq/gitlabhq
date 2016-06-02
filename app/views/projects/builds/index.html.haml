@@ -1,5 +1,5 @@
 - page_title "Builds"
-= render "header_title"
+= render "projects/pipelines/head"
 
 .top-area
   %ul.nav-links
@@ -34,9 +34,6 @@
       = link_to ci_lint_path, class: 'btn btn-default' do
         = icon('wrench')
         %span CI Lint
-
-.row-content-block
-  #{(@scope || 'all').capitalize} builds from this project
 
 %ul.content-list
   - if @builds.blank?

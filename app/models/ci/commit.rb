@@ -66,6 +66,10 @@ module Ci
       end
     end
 
+    def cancelable?
+      builds.running_or_pending.any?
+    end
+
     def cancel_running
       builds.running_or_pending.each(&:cancel)
     end

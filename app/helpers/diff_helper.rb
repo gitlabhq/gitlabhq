@@ -39,11 +39,11 @@ module DiffHelper
   end
 
   def unfold_bottom_class(bottom)
-    (bottom) ? 'js-unfold-bottom' : ''
+    bottom ? 'js-unfold-bottom' : ''
   end
 
   def unfold_class(unfold)
-    (unfold) ? 'unfold js-unfold' : ''
+    unfold ? 'unfold js-unfold' : ''
   end
 
   def diff_line_content(line, line_type = nil)

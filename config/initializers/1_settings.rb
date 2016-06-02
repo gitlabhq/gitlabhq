@@ -80,7 +80,7 @@ class Settings < Settingslogic
     # check that values in `current` (string or integer) is a contant in `modul`.
     def verify_constant_array(modul, current, default)
       values = default || []
-      if !current.nil?
+      unless current.nil?
         values = []
         current.each do |constant|
           values.push(verify_constant(modul, constant, nil))

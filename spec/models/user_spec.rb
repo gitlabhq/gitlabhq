@@ -67,7 +67,7 @@ describe User, models: true do
 
     describe 'email' do
       context 'when no signup domains listed' do
-        before { allow(current_application_settings).to receive(:restricted_signup_domains).and_return([]) }
+        before { allow_any_instance_of(ApplicationSetting).to receive(:restricted_signup_domains).and_return([]) }
         it 'accepts any email' do
           user = build(:user, email: "info@example.com")
           expect(user).to be_valid
@@ -75,7 +75,7 @@ describe User, models: true do
       end
 
       context 'when a signup domain is listed and subdomains are allowed' do
-        before { allow(current_application_settings).to receive(:restricted_signup_domains).and_return(['example.com', '*.example.com']) }
+        before { allow_any_instance_of(ApplicationSetting).to receive(:restricted_signup_domains).and_return(['example.com', '*.example.com']) }
         it 'accepts info@example.com' do
           user = build(:user, email: "info@example.com")
           expect(user).to be_valid
@@ -93,7 +93,7 @@ describe User, models: true do
       end
 
       context 'when a signup domain is listed and subdomains are not allowed' do
-        before { allow(current_application_settings).to receive(:restricted_signup_domains).and_return(['example.com']) }
+        before { allow_any_instance_of(ApplicationSetting).to receive(:restricted_signup_domains).and_return(['example.com']) }
 
         it 'accepts info@example.com' do
           user = build(:user, email: "info@example.com")
@@ -154,7 +154,7 @@ describe User, models: true do
   end
 
   describe '#confirm' do
-    before { allow(current_application_settings).to receive(:send_user_confirmation_email).and_return(true) }
+    before { allow_any_instance_of(ApplicationSetting).to receive(:send_user_confirmation_email).and_return(true) }
     let(:user) { create(:user, confirmed_at: nil, unconfirmed_email: 'test@gitlab.com') }
 
     it 'returns unconfirmed' do

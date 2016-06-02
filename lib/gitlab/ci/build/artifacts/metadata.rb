@@ -56,7 +56,7 @@ module Gitlab
             child_pattern = '[^/]*/?$' unless @opts[:recursive]
             match_pattern = /^#{Regexp.escape(@path)}#{child_pattern}/
 
-            until gz.eof? do
+            until gz.eof?
               begin
                 path = read_string(gz).force_encoding('UTF-8')
                 meta = read_string(gz).force_encoding('UTF-8')

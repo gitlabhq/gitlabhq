@@ -19,8 +19,6 @@
 #= require jquery.scrollTo
 #= require jquery.turbolinks
 #= require jquery.tablesorter
-#= require d3
-#= require cal-heatmap
 #= require turbolinks
 #= require autosave
 #= require bootstrap/affix
@@ -53,7 +51,13 @@
 #= require shortcuts_network
 #= require jquery.nicescroll
 #= require date.format
-#= require_tree .
+#= require_directory ./behaviors
+#= require_directory ./blob
+#= require_directory ./ci
+#= require_directory ./commit
+#= require_directory ./extensions
+#= require_directory ./lib
+#= require_directory .
 #= require fuzzaldrin-plus
 #= require cropper
 
@@ -249,38 +253,6 @@ $ ->
         $navIcon = $navIconToggle.find('.fa')
         if $navIcon.hasClass('fa-angle-left')
           $navIconToggle.trigger('click')
-
-  $(document)
-    .off 'click', '.js-sidebar-toggle'
-    .on 'click', '.js-sidebar-toggle', (e, triggered) ->
-      e.preventDefault()
-      $this = $(this)
-      $thisIcon = $this.find 'i'
-      $allGutterToggleIcons = $('.js-sidebar-toggle i')
-      if $thisIcon.hasClass('fa-angle-double-right')
-        $allGutterToggleIcons
-          .removeClass('fa-angle-double-right')
-          .addClass('fa-angle-double-left')
-        $('aside.right-sidebar')
-          .removeClass('right-sidebar-expanded')
-          .addClass('right-sidebar-collapsed')
-        $('.page-with-sidebar')
-          .removeClass('right-sidebar-expanded')
-          .addClass('right-sidebar-collapsed')
-      else
-        $allGutterToggleIcons
-          .removeClass('fa-angle-double-left')
-          .addClass('fa-angle-double-right')
-        $('aside.right-sidebar')
-          .removeClass('right-sidebar-collapsed')
-          .addClass('right-sidebar-expanded')
-        $('.page-with-sidebar')
-          .removeClass('right-sidebar-collapsed')
-          .addClass('right-sidebar-expanded')
-      if not triggered
-        $.cookie("collapsed_gutter",
-          $('.right-sidebar')
-            .hasClass('right-sidebar-collapsed'), { path: '/' })
 
   fitSidebarForSize = ->
     oldBootstrapBreakpoint = bootstrapBreakpoint

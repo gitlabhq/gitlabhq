@@ -251,12 +251,12 @@ class IssuableFinder
   def by_milestone(items)
     if milestones?
       if filter_by_no_milestone?
-        items = items.where(milestone_id: [-1, nil])
+        items = items.left_joins_milestones.where(milestone_id: [-1, nil])
       elsif filter_by_upcoming_milestone?
         upcoming_ids = Milestone.upcoming_ids_by_projects(projects)
-        items = items.joins(:milestone).where(milestone_id: upcoming_ids)
+        items = items.left_joins_milestones.where(milestone_id: upcoming_ids)
       else
-        items = items.joins(:milestone).where(milestones: { title: params[:milestone_title] })
+        items = items.with_milestone(params[:milestone_title])
 
         if projects
           items = items.where(milestones: { project_id: projects })
@@ -272,7 +272,7 @@ class IssuableFinder
       if filter_by_no_label?
         items = items.without_label
       else
-        items = items.with_label(label_names)
+        items = items.with_label(label_names, params[:sort])
         if projects
           items = items.where(labels: { project_id: projects })
         end

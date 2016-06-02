@@ -28,14 +28,14 @@ describe ApplicationSetting, 'TokenAuthenticatable' do
     context 'token is not generated yet' do
       describe 'token field accessor' do
         subject { described_class.new.send(token_field) }
-        it { is_expected.to_not be_blank }
+        it { is_expected.not_to be_blank }
       end
 
       describe 'ensured token' do
         subject { described_class.new.send("ensure_#{token_field}") }
 
         it { is_expected.to be_a String }
-        it { is_expected.to_not be_blank }
+        it { is_expected.not_to be_blank }
       end
 
       describe 'ensured! token' do
@@ -49,7 +49,7 @@ describe ApplicationSetting, 'TokenAuthenticatable' do
 
     context 'token is generated' do
       before { subject.send("reset_#{token_field}!") }
-      it 'persists a new token 'do
+      it 'persists a new token' do
         expect(subject.send(:read_attribute, token_field)).to be_a String
       end
     end

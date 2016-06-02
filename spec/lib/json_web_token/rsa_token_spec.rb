@@ -23,7 +23,7 @@ describe JSONWebToken::RSAToken do
 
       subject { JWT.decode(rsa_encoded, rsa_key) }
 
-      it { expect{subject}.to_not raise_error }
+      it { expect{subject}.not_to raise_error }
       it { expect(subject.first).to include('key' => 'value') }
       it do
         expect(subject.second).to eq(

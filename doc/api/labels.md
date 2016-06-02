@@ -39,7 +39,7 @@ Example response:
    {
       "name" : "critical",
       "color" : "#d9534f",
-      "description": "Criticalissue. Need fix ASAP",
+      "description": "Critical issue. Need fix ASAP",
       "open_issues_count": 1,
       "closed_issues_count": 3,
       "open_merge_requests_count": 1

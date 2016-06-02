@@ -12,6 +12,7 @@ describe API::API, api: true  do
   let!(:group2) { create(:group, :private) }
   let!(:project1) { create(:project, namespace: group1) }
   let!(:project2) { create(:project, namespace: group2) }
+  let!(:project3) { create(:project, namespace: group1, path: 'test', visibility_level: Gitlab::VisibilityLevel::PRIVATE) }
 
   before do
     group1.add_owner(user1)
@@ -157,9 +158,11 @@ describe API::API, api: true  do
     context "when authenticated as user" do
       it "should return the group's projects" do
         get api("/groups/#{group1.id}/projects", user1)
+
         expect(response.status).to eq(200)
-        expect(json_response.length).to eq(1)
-        expect(json_response.first['name']).to eq(project1.name)
+        expect(json_response.length).to eq(2)
+        project_names = json_response.map { |proj| proj['name' ] }
+        expect(project_names).to match_array([project1.name, project3.name])
       end
 
       it "should not return a non existing group" do
@@ -171,6 +174,16 @@ describe API::API, api: true  do
         get api("/groups/#{group2.id}/projects", user1)
 
         expect(response.status).to eq(404)
+      end
+
+      it "should only return projects to which user has access" do
+        project3.team << [user3, :developer]
+
+        get api("/groups/#{group1.id}/projects", user3)
+
+        expect(response.status).to eq(200)
+        expect(json_response.length).to eq(1)
+        expect(json_response.first['name']).to eq(project3.name)
       end
     end
 
@@ -191,8 +204,10 @@ describe API::API, api: true  do
     context 'when using group path in URL' do
       it 'should return any existing group' do
         get api("/groups/#{group1.path}/projects", admin)
+
         expect(response.status).to eq(200)
-        expect(json_response.first['name']).to eq(project1.name)
+        project_names = json_response.map { |proj| proj['name' ] }
+        expect(project_names).to match_array([project1.name, project3.name])
       end
 
       it 'should not return a non existing group' do

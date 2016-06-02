@@ -203,7 +203,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
       page.within 'li.merge-request:nth-child(3)' do
         expect(page).to have_content 'Bug NS-05'
-        expect(page).to_not have_content '0 0'
+        expect(page).not_to have_content '0 0'
       end
     end
   end
@@ -222,7 +222,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
       page.within 'li.merge-request:nth-child(3)' do
         expect(page).to have_content 'Bug NS-05'
-        expect(page).to_not have_content '0 0'
+        expect(page).not_to have_content '0 0'
       end
     end
   end
@@ -273,7 +273,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   step 'user "John Doe" leaves a comment like "Line is wrong" on diff' do
     mr = MergeRequest.find_by(title: "Bug NS-05")
     create(:note_on_merge_request_diff, project: project,
-                                        noteable_id: mr.id,
+                                        noteable: mr,
                                         author: user_exists("John Doe"),
                                         line_code: sample_commit.line_code,
                                         note: 'Line is wrong')
@@ -702,7 +702,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     click_diff_line(sample_compare.changes[1][:line_code])
   end
 
-  def have_visible_content (text)
+  def have_visible_content(text)
     have_css("*", text: text, visible: true)
   end
 

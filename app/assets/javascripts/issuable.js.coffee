@@ -1,7 +1,11 @@
+issuable_created = false
 @Issuable =
   init: ->
-    Issuable.initTemplates()
-    Issuable.initSearch()
+    unless issuable_created
+      issuable_created = true
+      Issuable.initTemplates()
+      Issuable.initSearch()
+      Issuable.initChecks()
 
   initTemplates: ->
     Issuable.labelRow = _.template(
@@ -19,7 +23,16 @@
       .on 'keyup', ->
         clearTimeout(@timer)
         @timer = setTimeout( ->
-          Issuable.filterResults $('#issue_search_form')
+          $search = $('#issue_search')
+          $form = $('.js-filter-form')
+          $input = $("input[name='#{$search.attr('name')}']", $form)
+
+          if $input.length is 0
+            $form.append "<input type='hidden' name='#{$search.attr('name')}' value='#{_.escape($search.val())}'/>"
+          else
+            $input.val $search.val()
+
+          Issuable.filterResults $form
         , 500)
 
   toggleLabelFilters: ->
@@ -59,15 +72,22 @@
       dataType: "json"
 
   reload: ->
-    if Issues.created
-      Issues.initChecks()
+    if Issuable.created
+      Issuable.initChecks()
 
     $('#filter_issue_search').val($('#issue_search').val())
 
+  initChecks: ->
+    $('.check_all_issues').on 'click', ->
+      $('.selected_issue').prop('checked', @checked)
+      Issuable.checkChanged()
+
+    $('.selected_issue').on 'change', Issuable.checkChanged
+
   updateStateFilters: ->
-    stateFilters =  $('.issues-state-filters')
+    stateFilters =  $('.issues-state-filters, .dropdown-menu-sort')
     newParams = {}
-    paramKeys = ['author_id', 'milestone_title', 'assignee_id', 'issue_search']
+    paramKeys = ['author_id', 'milestone_title', 'assignee_id', 'issue_search', 'issue_search']
 
     for paramKey in paramKeys
       newParams[paramKey] = gl.utils.getParameterValues(paramKey)[0] or ''
@@ -82,3 +102,17 @@
         else
           newUrl = gl.utils.mergeUrlParams(newParams, initialUrl)
         $(this).attr 'href', newUrl
+
+  checkChanged: ->
+    checked_issues = $('.selected_issue:checked')
+    if checked_issues.length > 0
+      ids = $.map checked_issues, (value) ->
+        $(value).data('id')
+
+      $('#update_issues_ids').val ids
+      $('.issues-other-filters').hide()
+      $('.issues_bulk_update').show()
+    else
+      $('#update_issues_ids').val []
+      $('.issues_bulk_update').hide()
+      $('.issues-other-filters').show()

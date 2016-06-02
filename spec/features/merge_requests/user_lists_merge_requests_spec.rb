@@ -131,6 +131,15 @@ describe 'Projects > Merge requests > User lists merge requests', feature: true 
         expect(first_merge_request).to include('fix')
         expect(count_merge_requests).to eq(1)
       end
+
+      it 'sorts by recently due milestone' do
+        visit namespace_project_merge_requests_path(project.namespace, project,
+          label_name: [label.name, label2.name],
+          assignee_id: user.id,
+          sort: sort_value_milestone_soon)
+
+        expect(first_merge_request).to include('fix')
+      end
     end
   end
 
