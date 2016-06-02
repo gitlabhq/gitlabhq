@@ -43,7 +43,7 @@ information from database or file system
 * `pencil` icon for edit button or link
 * `eye` icon for subscribe action
 * `rss` for rss/atom feed
-* `plus` for link or dropdown that lead to page wher eyou create new object (For example new issue page)
+* `plus` for link or dropdown that lead to page where you create new object (For example new issue page)
 
 
 ## Buttons
