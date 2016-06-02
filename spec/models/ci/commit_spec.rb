@@ -350,7 +350,7 @@ describe Ci::Commit, models: true do
     end
   end
 
-  describe '#update_state!' do
+  describe '#update_state' do
     it 'execute update_state after touching object' do
       expect(commit).to receive(:update_state).and_return(true)
       commit.touch
