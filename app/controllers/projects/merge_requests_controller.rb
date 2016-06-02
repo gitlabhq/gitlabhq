@@ -193,7 +193,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
           if params[:inline].nil?
             render json: @merge_request.to_json(include: { milestone: {}, assignee: { methods: :avatar_url }, labels: { methods: :text_color } })
           else
-            ext = Gitlab::ReferenceExtractor.new(@project, current_user, current_user)
+            ext = Gitlab::ReferenceExtractor.new(@project, current_user)
             ext.analyze(@merge_request.title)
             ext.analyze(@merge_request.description)
 
