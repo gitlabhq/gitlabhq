@@ -1,22 +1,5 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
-v 8.9.0 (unreleased)
-  - Allow forking projects with restricted visibility level
-  - Improve note validation to prevent errors when creating invalid note via API
-  - Redesign navigation for project pages
-  - Fix groups API to list only user's accessible projects
-  - Redesign account and email confirmation emails
-  - Use gitlab-shell v3.0.0
-  - Add DB index on users.state
-  - Add rake task 'gitlab:db:configure' for conditionally seeding or migrating the database
-  - Changed the Slack build message to use the singular duration if necessary (Aran Koning)
-  - Fix issues filter when ordering by milestone
-  - Todos will display target state if issuable target is 'Closed' or 'Merged'
-  - Remove 'main language' feature
-  - Projects pending deletion will render a 404 page
-  - Measure queue duration between gitlab-workhorse and Rails
-  - Make authentication service for Container Registry to be compatible with < Docker 1.11
-
 v 8.8.3
   - Fix 404 page when viewing TODOs that contain milestones or labels in different projects. !4312
   - Fixed JS error when trying to remove discussion form. !4303
@@ -26,6 +9,7 @@ v 8.8.3
   - Fix gitlab importer failing to import new projects due to missing credentials. !4301
   - Fix import URL migration not rescuing with the correct Error. !4321
   - Fix health check access token changing due to old application settings being used. !4332
+  - Make authentication service for Container Registry to be compatible with < Docker 1.11. !4363
 
 v 8.8.2
   - Added remove due date button. !4209
