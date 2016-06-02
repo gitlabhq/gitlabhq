@@ -171,5 +171,23 @@ describe CreateCommitBuildsService, services: true do
       expect(commit.status).to eq("failed")
       expect(commit.builds.any?).to be false
     end
+
+    context 'when there are no jobs for this pipeline' do
+      before do
+        config = YAML.dump({ test: { deploy: 'ls', only: ['feature'] } })
+        stub_ci_commit_yaml_file(config)
+      end
+
+      it 'does not create a new pipeline' do
+        result = service.execute(project, user,
+                                 ref: 'refs/heads/master',
+                                 before: '00000000',
+                                 after: '31das312',
+                                 commits: [{ message: 'some msg'}])
+
+        expect(result).to be false
+        expect(Ci::Build.all).to be_empty
+      end
+    end
   end
 end
