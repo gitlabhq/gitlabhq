@@ -856,7 +856,7 @@ describe User, models: true do
       let(:project) { create(:project) }
 
       it 'does not load' do
-        is_expected.to eq([])
+        is_expected.to be_empty
       end
     end
 
@@ -865,19 +865,21 @@ describe User, models: true do
       let(:project) { create(:project, namespace: namespace) }
 
       it 'loads' do
-        is_expected.to eq([runner])
+        is_expected.to contain_exactly(runner)
       end
     end
 
     shared_examples :member do
-      it 'loads when the user is a master' do
-        add_user(Gitlab::Access::MASTER)
-        is_expected.to eq([runner])
+      context 'when the user is a master' do
+        before { add_user(Gitlab::Access::MASTER) }
+
+        it { is_expected.to contain_exactly(runner) }
       end
 
-      it 'does not load when the user is a developer' do
-        add_user(Gitlab::Access::DEVELOPER)
-        is_expected.to eq([])
+      context 'when the user is a developer' do
+        before { add_user(Gitlab::Access::DEVELOPER) }
+
+        it { is_expected.to be_empty }
       end
     end
 
