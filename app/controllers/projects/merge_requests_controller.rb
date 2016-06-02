@@ -205,9 +205,18 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @merge_request.update(merge_error: nil)
 
     if params[:merge_when_build_succeeds].present? && @merge_request.pipeline && @merge_request.pipeline.active?
-      MergeRequests::MergeWhenBuildSucceedsService.new(@project, current_user, merge_params)
-        .execute(@merge_request)
-      @status = :merge_when_build_succeeds
+      if @merge_request.ci_commit.active?
+        MergeRequests::MergeWhenBuildSucceedsService.new(@project, current_user, merge_params)
+                                                        .execute(@merge_request)
+        @status = :merge_when_build_succeeds
+      # This can be triggered when a user clicks the auto merge button while
+      # the tests finish at about the same time
+      elsif @merge_request.ci_commit.success?
+        MergeWorker.perform_async(@merge_request.id, current_user.id, params)
+        @status = :success
+      else
+        @status = :failed
+      end
     else
       MergeWorker.perform_async(@merge_request.id, current_user.id, params)
       @status = :success
