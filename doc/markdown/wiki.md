@@ -62,7 +62,7 @@ A link can be constructed relative to the current wiki page using `./<page>`, `.
 
 ### Root Link
 
-A link starting with a `/` is relative to the wiki root, for non-file links.
+A link starting with a `/` is relative to the wiki root.
 
 1. This snippet links to `<wiki_root>/documentation`
 
