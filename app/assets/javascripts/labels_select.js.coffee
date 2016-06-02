@@ -39,7 +39,7 @@ class @LabelsSelect
             </a>
             <% }); %>'
         )
-        labelNoneHTMLTemplate = _.template('<div class="light">None</div>')
+        labelNoneHTMLTemplate = _.template('<span class="no-value">None</span>')
 
       if newLabelField.length
 

@@ -32,7 +32,7 @@ class @DueDateSelect
           date = new Date value.replace(new RegExp('-', 'g'), ',')
           mediumDate = $.datepicker.formatDate 'M d, yy', date
         else
-          mediumDate = 'None'
+          mediumDate = 'No due date'
 
         data = {}
         data[abilityName] = {}
@@ -50,7 +50,8 @@ class @DueDateSelect
               $selectbox.hide()
             $value.css('display', '')
 
-            $valueContent.html(mediumDate)
+            cssClass = if mediumDate is "No due date" then 'no-value' else 'bold'
+            $valueContent.html("<span class='#{cssClass}'>#{mediumDate}</span>")
             $sidebarValue.html(mediumDate)
 
             if value isnt ''
