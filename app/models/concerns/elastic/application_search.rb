@@ -38,7 +38,12 @@ module Elastic
 
       after_commit on: :update do
         if Gitlab.config.elasticsearch.enabled && self.searchable?
-          ElasticIndexerWorker.perform_async(:update, self.class.to_s, self.id)
+          ElasticIndexerWorker.perform_async(
+            :update,
+            self.class.to_s,
+            self.id,
+            changed_fields: self.previous_changes.keys
+          )
         end
       end
 

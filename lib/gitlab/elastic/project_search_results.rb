@@ -86,7 +86,8 @@ module Gitlab
 
       def notes
         opt = {
-          project_ids: limit_project_ids
+          project_ids: limit_project_ids,
+          current_user: @current_user
         }
 
         Note.elastic_search(query, options: opt)
