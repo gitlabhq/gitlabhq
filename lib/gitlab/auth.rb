@@ -9,7 +9,7 @@ module Gitlab
 
         if valid_ci_request?(login, password, project)
           type = :ci
-        elsif user = find_by_master_or_ldap(login, password)
+        elsif user = find_in_gitlab_or_ldap(login, password)
           type = :master_or_ldap
         elsif user = oauth_access_token_check(login, password)
           type = :oauth
@@ -19,7 +19,7 @@ module Gitlab
         [user, type]
       end
 
-      def find_by_master_or_ldap(login, password)
+      def find_in_gitlab_or_ldap(login, password)
         user = User.by_login(login)
 
         # If no user is found, or it's an LDAP server, try LDAP.

@@ -41,7 +41,7 @@ describe Gitlab::Auth, lib: true do
     end
   end
 
-  describe 'find_by_master_or_ldap' do
+  describe 'find_in_gitlab_or_ldap' do
     let!(:user) do
       create(:user,
         username: username,
@@ -52,25 +52,25 @@ describe Gitlab::Auth, lib: true do
     let(:password) { 'my-secret' }
 
     it "should find user by valid login/password" do
-      expect( gl_auth.find_by_master_or_ldap(username, password) ).to eql user
+      expect( gl_auth.find_in_gitlab_or_ldap(username, password) ).to eql user
     end
 
     it 'should find user by valid email/password with case-insensitive email' do
-      expect(gl_auth.find_by_master_or_ldap(user.email.upcase, password)).to eql user
+      expect(gl_auth.find_in_gitlab_or_ldap(user.email.upcase, password)).to eql user
     end
 
     it 'should find user by valid username/password with case-insensitive username' do
-      expect(gl_auth.find_by_master_or_ldap(username.upcase, password)).to eql user
+      expect(gl_auth.find_in_gitlab_or_ldap(username.upcase, password)).to eql user
     end
 
     it "should not find user with invalid password" do
       password = 'wrong'
-      expect( gl_auth.find_by_master_or_ldap(username, password) ).not_to eql user
+      expect( gl_auth.find_in_gitlab_or_ldap(username, password) ).not_to eql user
     end
 
     it "should not find user with invalid login" do
       user = 'wrong'
-      expect( gl_auth.find_by_master_or_ldap(username, password) ).not_to eql user
+      expect( gl_auth.find_in_gitlab_or_ldap(username, password) ).not_to eql user
     end
 
     context "with ldap enabled" do
@@ -81,13 +81,13 @@ describe Gitlab::Auth, lib: true do
       it "tries to autheticate with db before ldap" do
         expect(Gitlab::LDAP::Authentication).not_to receive(:login)
 
-        gl_auth.find_by_master_or_ldap(username, password)
+        gl_auth.find_in_gitlab_or_ldap(username, password)
       end
 
       it "uses ldap as fallback to for authentication" do
         expect(Gitlab::LDAP::Authentication).to receive(:login)
 
-        gl_auth.find_by_master_or_ldap('ldap_user', 'password')
+        gl_auth.find_in_gitlab_or_ldap('ldap_user', 'password')
       end
     end
   end
