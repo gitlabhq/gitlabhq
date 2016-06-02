@@ -4,20 +4,20 @@ v 8.8.3
   - Fix 404 page when viewing TODOs that contain milestones or labels in different projects. !4312
   - Fixed JS error when trying to remove discussion form. !4303
   - Fixed issue with button color when no CI enabled. !4287
-  - Fixed potential issue with 2 ci status polling events happening. !3869
-  - Improve design of Pipeline View. !4230
+  - Fixed potential issue with 2 CI status polling events happening. !3869
+  - Improve design of Pipeline view. !4230
   - Fix gitlab importer failing to import new projects due to missing credentials. !4301
   - Fix import URL migration not rescuing with the correct Error. !4321
   - Fix health check access token changing due to old application settings being used. !4332
-  - Make authentication service for Container Registry to be compatible with < Docker 1.11. !4363
-  - Add Application Setting to configure Container Registry token expire delay (default 5min). !4364
+  - Make authentication service for Container Registry to be compatible with Docker versions before 1.11. !4363
+  - Add Application Setting to configure Container Registry token expire delay (default 5 min). !4364
   - Pass the "Remember me" value to the 2FA token form. !4369
   - Fix incorrect links on pipeline page when merge request created from fork.  !4376
   - Use downcased path to container repository as this is expected path by Docker. !4420
   - Fix wiki project clone address error (chujinjin). !4429
   - Fix serious performance bug with rendering Markdown with InlineDiffFilter.  !4392
   - Fix missing number on generated ordered list element. !4437
-  - In search results, only show notes on confidential issues that the user has access to
+  - Prevent disclosure of notes on confidential issues in search results.
 
 v 8.8.2
   - Added remove due date button. !4209
