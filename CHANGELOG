@@ -41,6 +41,7 @@ v 8.9.0 (unreleased)
   - Put project Files and Commits tabs under Code tab
   - Replace Colorize with Rainbow for coloring console output in Rake tasks.
   - An indicator is now displayed at the top of the comment field for confidential issues.
+  - RepositoryCheck::SingleRepositoryWorker public and private methods are now instrumented
 
 v 8.8.4 (unreleased)
   - Ensure branch cleanup regardless of whether the GitHub import process succeeds
