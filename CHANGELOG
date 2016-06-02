@@ -13,6 +13,7 @@ v 8.9.0 (unreleased)
   - Fix issue todo not remove when leave project !4150 (Long Nguyen)
   - Allow customisable text on the 'nearly there' page after a user signs up
   - Bump recaptcha gem to 3.0.0 to remove deprecated stoken support
+  - Fix SVG sanitizer to allow more elements
   - Allow forking projects with restricted visibility level
   - Added descriptions to notification settings dropdown
   - Improve note validation to prevent errors when creating invalid note via API
