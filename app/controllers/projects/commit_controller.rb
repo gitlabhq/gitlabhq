@@ -100,7 +100,7 @@ class Projects::CommitController < Projects::ApplicationController
   end
 
   def ci_commits
-    @ci_commits ||= project.ci_commits.where(sha: commit.sha)
+    @ci_commits ||= project.pipelines.where(sha: commit.sha)
   end
 
   def ci_builds

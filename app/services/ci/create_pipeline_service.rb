@@ -1,7 +1,7 @@
 module Ci
   class CreatePipelineService < BaseService
     def execute
-      pipeline = project.ci_commits.new(params)
+      pipeline = project.pipelines.new(params)
 
       unless ref_names.include?(params[:ref])
         pipeline.errors.add(:base, 'Reference not found')
@@ -19,7 +19,7 @@ module Ci
       end
 
       begin
-        Ci::Commit.transaction do
+        Ci::Pipeline.transaction do
           pipeline.sha = commit.id
 
           unless pipeline.config_processor

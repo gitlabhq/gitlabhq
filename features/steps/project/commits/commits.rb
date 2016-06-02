@@ -169,7 +169,7 @@ class Spinach::Features::ProjectCommits < Spinach::FeatureSteps
   end
 
   step 'repository contains ".gitlab-ci.yml" file' do
-    allow_any_instance_of(Ci::Commit).to receive(:ci_yaml_file).and_return(String.new)
+    allow_any_instance_of(Ci::Pipeline).to receive(:ci_yaml_file).and_return(String.new)
   end
 
   step 'I see commit ci info' do

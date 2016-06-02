@@ -50,7 +50,7 @@ module API
         commit = @project.commit(params[:sha])
         not_found! 'Commit' unless commit
 
-        # Since the CommitStatus is attached to Ci::Commit (in the future Pipeline)
+        # Since the CommitStatus is attached to Ci::Pipeline (in the future Pipeline)
         # We need to always have the pipeline object
         # To have a valid pipeline object that can be attached to specific MR
         # Other CI service needs to send `ref`

@@ -44,7 +44,7 @@ describe API::API do
     end
 
     context 'Have a commit' do
-      let(:commit) { project.ci_commits.last }
+      let(:commit) { project.pipelines.last }
 
       it 'should create builds' do
         post api("/projects/#{project.id}/trigger/builds"), options.merge(ref: 'master')

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Ci::Commit, models: true do
+describe Ci::Pipeline, models: true do
   let(:project) { FactoryGirl.create :empty_project }
   let(:commit) { FactoryGirl.create :ci_commit, project: project }
 

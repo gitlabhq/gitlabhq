@@ -18,7 +18,7 @@ class CreateCommitBuildsService
       return false
     end
 
-    commit = Ci::Commit.new(project: project, sha: sha, ref: ref, before_sha: before_sha, tag: tag)
+    commit = Ci::Pipeline.new(project: project, sha: sha, ref: ref, before_sha: before_sha, tag: tag)
 
     # Skip creating ci_commit when no gitlab-ci.yml is found
     unless commit.ci_yaml_file

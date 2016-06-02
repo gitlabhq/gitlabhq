@@ -402,7 +402,7 @@ describe MergeRequest, models: true do
           with('123abc', 'master').
           and_return(ci_commit)
 
-        expect(subject.ci_commit).to eq(ci_commit)
+        expect(subject.pipeline).to eq(ci_commit)
       end
     end
 
@@ -410,7 +410,7 @@ describe MergeRequest, models: true do
       it 'returns nil' do
         allow(subject).to receive(:source_project).and_return(nil)
 
-        expect(subject.ci_commit).to be_nil
+        expect(subject.pipeline).to be_nil
       end
     end
   end

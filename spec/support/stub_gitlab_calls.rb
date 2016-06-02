@@ -18,7 +18,7 @@ module StubGitlabCalls
   end
 
   def stub_ci_commit_yaml_file(ci_yaml)
-    allow_any_instance_of(Ci::Commit).to receive(:ci_yaml_file) { ci_yaml }
+    allow_any_instance_of(Ci::Pipeline).to receive(:ci_yaml_file) { ci_yaml }
   end
 
   def stub_ci_builds_disabled

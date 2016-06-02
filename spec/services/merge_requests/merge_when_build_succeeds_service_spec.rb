@@ -116,7 +116,7 @@ describe MergeRequests::MergeWhenBuildSucceedsService do
       before do
         # This behavior of MergeRequest: we instantiate a new object
         allow_any_instance_of(MergeRequest).to receive(:ci_commit).and_wrap_original do
-          Ci::Commit.find(ci_commit.id)
+          Ci::Pipeline.find(ci_commit.id)
         end
 
         # We create test after the build

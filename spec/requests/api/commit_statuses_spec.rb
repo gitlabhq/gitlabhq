@@ -16,8 +16,8 @@ describe API::CommitStatuses, api: true do
     let(:get_url) { "/projects/#{project.id}/repository/commits/#{sha}/statuses" }
 
     context 'ci commit exists' do
-      let!(:master) { project.ci_commits.create(sha: commit.id, ref: 'master') }
-      let!(:develop) { project.ci_commits.create(sha: commit.id, ref: 'develop') }
+      let!(:master) { project.pipelines.create(sha: commit.id, ref: 'master') }
+      let!(:develop) { project.pipelines.create(sha: commit.id, ref: 'develop') }
 
       it_behaves_like 'a paginated resources' do
         let(:request) { get api(get_url, reporter) }

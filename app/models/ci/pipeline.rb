@@ -1,5 +1,5 @@
 module Ci
-  class Commit < ActiveRecord::Base
+  class Pipeline < ActiveRecord::Base
     extend Ci::Model
     include Statuseable
 
@@ -47,7 +47,7 @@ module Ci
     end
 
     def short_sha
-      Ci::Commit.truncate_sha(sha)
+      Ci::Pipeline.truncate_sha(sha)
     end
 
     def commit_data

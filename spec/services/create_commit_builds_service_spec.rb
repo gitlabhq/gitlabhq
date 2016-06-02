@@ -20,10 +20,10 @@ describe CreateCommitBuildsService, services: true do
                        )
       end
 
-      it { expect(commit).to be_kind_of(Ci::Commit) }
+      it { expect(commit).to be_kind_of(Ci::Pipeline) }
       it { expect(commit).to be_valid }
       it { expect(commit).to be_persisted }
-      it { expect(commit).to eq(project.ci_commits.last) }
+      it { expect(commit).to eq(project.pipelines.last) }
       it { expect(commit.builds.first).to be_kind_of(Ci::Build) }
     end
 
@@ -61,12 +61,12 @@ describe CreateCommitBuildsService, services: true do
                                commits: [{ message: 'Message' }]
                               )
       expect(result).to be_falsey
-      expect(Ci::Commit.count).to eq(0)
+      expect(Ci::Pipeline.count).to eq(0)
     end
 
     it 'fails commits if yaml is invalid' do
       message = 'message'
-      allow_any_instance_of(Ci::Commit).to receive(:git_commit_message) { message }
+      allow_any_instance_of(Ci::Pipeline).to receive(:git_commit_message) { message }
       stub_ci_commit_yaml_file('invalid: file: file')
       commits = [{ message: message }]
       commit = service.execute(project, user,
@@ -85,7 +85,7 @@ describe CreateCommitBuildsService, services: true do
       let(:message) { "some message[ci skip]" }
 
       before do
-        allow_any_instance_of(Ci::Commit).to receive(:git_commit_message) { message }
+        allow_any_instance_of(Ci::Pipeline).to receive(:git_commit_message) { message }
       end
 
       it "skips builds creation if there is [ci skip] tag in commit message" do
@@ -102,7 +102,7 @@ describe CreateCommitBuildsService, services: true do
       end
 
       it "does not skips builds creation if there is no [ci skip] tag in commit message" do
-        allow_any_instance_of(Ci::Commit).to receive(:git_commit_message) { "some message" }
+        allow_any_instance_of(Ci::Pipeline).to receive(:git_commit_message) { "some message" }
 
         commits = [{ message: "some message" }]
         commit = service.execute(project, user,
@@ -133,7 +133,7 @@ describe CreateCommitBuildsService, services: true do
     end
 
     it "skips build creation if there are already builds" do
-      allow_any_instance_of(Ci::Commit).to receive(:ci_yaml_file) { gitlab_ci_yaml }
+      allow_any_instance_of(Ci::Pipeline).to receive(:ci_yaml_file) { gitlab_ci_yaml }
 
       commits = [{ message: "message" }]
       commit = service.execute(project, user,

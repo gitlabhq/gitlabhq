@@ -403,7 +403,7 @@ describe Project, models: true do
     let(:project) { create :project }
     let(:commit) { create :ci_commit, project: project, ref: 'master' }
 
-    subject { project.ci_commit(commit.sha, 'master') }
+    subject { project.pipeline(commit.sha, 'master') }
 
     it { is_expected.to eq(commit) }
 

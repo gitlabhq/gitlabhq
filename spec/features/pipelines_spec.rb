@@ -167,7 +167,7 @@ describe "Pipelines" do
       context 'with gitlab-ci.yml' do
         before { stub_ci_commit_to_return_yaml_file }
 
-        it { expect{ click_on 'Create pipeline' }.to change{ Ci::Commit.count }.by(1) }
+        it { expect{ click_on 'Create pipeline' }.to change{ Ci::Pipeline.count }.by(1) }
       end
 
       context 'without gitlab-ci.yml' do

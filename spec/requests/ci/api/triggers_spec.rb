@@ -36,7 +36,7 @@ describe Ci::API::API do
     end
 
     context 'Have a commit' do
-      let(:commit) { project.ci_commits.last }
+      let(:commit) { project.pipelines.last }
 
       it 'should create builds' do
         post ci_api("/projects/#{project.ci_id}/refs/master/trigger"), options

@@ -3,7 +3,7 @@ module Ci
     extend Ci::Model
     
     belongs_to :trigger, class_name: 'Ci::Trigger'
-    belongs_to :commit, class_name: 'Ci::Commit'
+    belongs_to :commit, class_name: 'Ci::Pipeline'
     has_many :builds, class_name: 'Ci::Build'
 
     serialize :variables
