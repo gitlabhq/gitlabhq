@@ -183,7 +183,7 @@ describe CreateCommitBuildsService, services: true do
                                  ref: 'refs/heads/master',
                                  before: '00000000',
                                  after: '31das312',
-                                 commits: [{ message: 'some msg'}])
+                                 commits: [{ message: 'some msg'} ])
 
         expect(result).to be false
         expect(Ci::Build.all).to be_empty

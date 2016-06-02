@@ -135,7 +135,7 @@ module Ci
       @config_processor ||= begin
         Ci::GitlabCiYamlProcessor.new(ci_yaml_file, project.path_with_namespace)
       rescue Ci::GitlabCiYamlProcessor::ValidationError, Psych::SyntaxError => e
-        self.yaml_errors = (e.message)
+        self.yaml_errors = e.message
         nil
       rescue
         self.yaml_errors = 'Undefined error'

@@ -2,10 +2,11 @@ module Ci
   class CreateBuildsService
     def initialize(commit)
       @commit = commit
+      @config = commit.config_processor
     end
 
     def execute(stage, user, status, trigger_request = nil)
-      builds_attrs = config_processor.builds_for_stage_and_ref(stage, @commit.ref, @commit.tag, trigger_request)
+      builds_attrs = @config.builds_for_stage_and_ref(stage, @commit.ref, @commit.tag, trigger_request)
 
       # check when to create next build
       builds_attrs = builds_attrs.select do |build_attrs|
@@ -40,12 +41,6 @@ module Ci
           @commit.builds.create!(build_attrs)
         end
       end
-    end
-
-    private
-
-    def config_processor
-      @config_processor ||= @commit.config_processor
     end
   end
 end
