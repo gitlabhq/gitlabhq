@@ -218,6 +218,14 @@
   max-width: 500px
 }
 
+.created-personal-access-token {
+  margin: 15px 15px 0 0;
+  pre {
+    max-width: 400px;
+    display: inline;
+  }
+}
+
 .user-profile {
   @media (max-width: $screen-xs-max) {
     .cover-block {

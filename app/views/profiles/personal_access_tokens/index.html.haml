@@ -8,6 +8,16 @@
     %p
       You can generate a personal access token for each application you use that needs access to GitLab.
   .col-lg-9
+
+    - if flash[:personal_access_token]
+      .panel.panel-success
+        .panel-heading Success!
+        .panel-body
+          Your new personal access token has been created. Make sure to save it - you can't see it again on this page.
+          .created-personal-access-token
+            %pre= flash[:personal_access_token]
+            = clipboard_button(clipboard_text: flash[:personal_access_token])
+
     %h5.prepend-top-0
       Add a Personal Access Token
     %p.profile-settings-content
@@ -37,7 +47,6 @@
           %thead
             %tr
               %th Name
-              %th Token
               %th Created
               %th Expires
               %th Actions
@@ -45,11 +54,6 @@
             - @active_personal_access_tokens.each do |token|
               %tr
                 %td= token.name
-                %td.input-group.personal-access-tokens-token-column
-                  %input.form-control{ type: "text", value: token.token, readonly: true }
-                  %div.input-group-btn
-                    %button.btn.btn-default{ type: "button", data: { clipboard_text: token.token } }
-                      %i.fa.fa-clipboard
                 %td= token.created_at.to_date.to_s(:medium)
                 - if token.expires_at.present?
                   %td= token.expires_at.to_date.to_s(:medium)
@@ -71,17 +75,11 @@
           %thead
             %tr
               %th Name
-              %th Token
               %th Created
           %tbody
             - @inactive_personal_access_tokens.each do |token|
               %tr
                 %td= token.name
-                %td.input-group.personal-access-tokens-token-column
-                  %input.form-control{ type: "text", value: token.token, readonly: true }
-                  %div.input-group-btn
-                    %button.btn.btn-default{ type: "button", data: { clipboard_text: token.token } }
-                      %i.fa.fa-clipboard
                 %td= token.created_at.to_date.to_s(:medium)
 
     - else
@@ -91,5 +89,5 @@
 :javascript
   $(".datepicker").datepicker({
     dateFormat: "yy-mm-dd",
-    onSelect: function(dateText, inst) { $("#personal_access_token_params_expires_at").val(dateText) }
-  }).datepicker("setDate", $.datepicker.parseDate('yy-mm-dd', $('#personal_access_token_params_expires_at').val()));
+    onSelect: function(dateText, inst) { $("#personal_access_token_expires_at").val(dateText) }
+  }).datepicker("setDate", $.datepicker.parseDate('yy-mm-dd', $('#personal_access_token_expires_at').val()));
