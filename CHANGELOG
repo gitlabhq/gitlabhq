@@ -1,5 +1,8 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+v 8.8.3
+  - Fixed potential issue with 2 ci status polling events happening. !3869
+
 v 8.8.2
   - Added remove due date button. !4209
   - Fix Error 500 when accessing application settings due to nil disabled OAuth sign-in sources. !4242
