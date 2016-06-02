@@ -7,12 +7,10 @@ We recommend you use with at least GitLab 8.6 EE.
 GitLab Geo allows you to replicate your GitLab instance to other geographical
 locations as a read-only fully operational version.
 
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-
-
 - [Overview](#overview)
 - [Setup instructions](#setup-instructions)
+    - [Database Replication](./database.md)
+    - [Configuration](./configuration.md)
 - [Current limitations](#current-limitations)
 - [Frequently Asked Questions](#frequently-asked-questions)
     - [Can I use Geo in a disaster recovery situation?](#can-i-use-geo-in-a-disaster-recovery-situation)
@@ -69,6 +67,7 @@ there are a few things to consider:
 - You cannot push code to secondary nodes
 - Git LFS is not supported yet
 - Git Annex is not supported yet
+- Primary node has to be online for OAuth login to happen (existing sessions and git are not affected)
 
 ## Frequently Asked Questions
 
