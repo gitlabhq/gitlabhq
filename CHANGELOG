@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.8.3
+  - Fixed JS error when trying to remove discussion form. !4303
   - Fixed issue with button color when no CI enabled. !4287
   - Fixed potential issue with 2 ci status polling events happening. !3869
   - Improve design of Pipeline View. !4230
