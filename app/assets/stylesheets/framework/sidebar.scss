@@ -1,9 +1,7 @@
 #logo {
   z-index: 2;
-  position: absolute;
-  width: 58px;
+  position: relative;
   cursor: pointer;
-  margin-top: 8px;
 }
 
 .page-with-sidebar {
@@ -19,12 +17,6 @@
     left: 0;
     height: 100%;
     transition-duration: .3s;
-  }
-
-  .gitlab-text-container-link {
-    z-index: 1;
-    position: absolute;
-    left: 0;
   }
 }
 
@@ -50,47 +42,8 @@
 
 .sidebar-wrapper {
   .header-logo {
-    border-bottom: 1px solid transparent;
-    float: left;
     height: $header-height;
-    width: $sidebar_width;
-    position: fixed;
-    z-index: 999;
-    overflow: hidden;
-    transition-duration: .3s;
-
-    a {
-      float: left;
-      height: $header-height;
-      width: 100%;
-      padding-left: 22px;
-      overflow: hidden;
-      outline: none;
-      transition-duration: .3s;
-
-      img {
-        width: 36px;
-        height: 36px;
-      }
-
-      #tanuki-logo, img {
-        float: left;
-      }
-
-      .gitlab-text-container {
-        width: 230px;
-
-        h3 {
-          width: 158px;
-          float: left;
-          margin: 0;
-          margin-left: 50px;
-          font-size: 19px;
-          line-height: 50px;
-          font-weight: normal;
-        }
-      }
-    }
+    padding: 8px 26px;
 
     &:hover {
       background-color: #eee;
@@ -98,7 +51,7 @@
   }
 
   .sidebar-user {
-    padding: 7px 22px;
+    padding: 15px 22px;
     position: fixed;
     bottom: 40px;
     width: $sidebar_width;
@@ -126,8 +79,7 @@
 
 
 .nav-sidebar {
-  margin-top: 14 + $header-height;
-  margin-bottom: 100px;
+  margin: 22px 0;
   transition-duration: .3s;
   list-style: none;
   overflow: hidden;
@@ -145,13 +97,13 @@
     }
 
     a {
-      padding: 7px 15px;
+      text-align: center;
+      padding: 8px 0;
       font-size: $gl-font-size;
       line-height: 24px;
       color: $gray;
       display: block;
       text-decoration: none;
-      padding-left: 23px;
       font-weight: normal;
       outline: none;
 
@@ -166,7 +118,6 @@
       i {
         width: 16px;
         color: $gray-light;
-        margin-right: 13px;
       }
 
       .count {
@@ -217,25 +168,13 @@
 }
 
 .page-sidebar-collapsed {
-  padding-left: $sidebar_collapsed_width;
-
-  @media (max-width: $screen-xs-min) {
-    padding-left: 0;
-  }
+  padding-left: 0;
 
   .sidebar-wrapper {
-    width: $sidebar_collapsed_width;
-
-    @media (max-width: $screen-xs-min) {
-      width: 0;
-    }
+    width: 0;
 
     .header-logo {
-      width: $sidebar_collapsed_width;
-
-      @media (max-width: $screen-xs-min) {
-        width: 0;
-      }
+      width: 0;
 
       a {
         padding-left: ($sidebar_collapsed_width - 36) / 2;
@@ -244,6 +183,10 @@
           display: none;
         }
       }
+    }
+
+    #logo {
+      display: none;
     }
 
     .nav-sidebar {
@@ -261,44 +204,23 @@
     }
 
     .collapse-nav a {
-      width: $sidebar_collapsed_width;
-
-      @media (max-width: $screen-xs-min) {
-        width: 0;
-      }
+      width: 0;
     }
 
     .sidebar-user {
-      padding-left: ($sidebar_collapsed_width - 36) / 2;
-      width: $sidebar_collapsed_width;
-
-      @media (max-width: $screen-xs-min) {
-        width: 0;
-        padding-left: 0;
-        padding-right: 0;
-      }
+      width: 0;
+      padding-left: 0;
+      padding-right: 0;
 
       .username {
         display: none;
       }
     }
   }
-
-  .layout-nav {
-    padding-right: $sidebar_collapsed_width;
-
-    @media (max-width: $screen-xs-min) {
-      padding-right: 0;;
-    }
-  }
 }
 
 .page-sidebar-expanded {
-  padding-left: $sidebar_collapsed_width;
-
-  @media (min-width: $screen-md-min) {
-    padding-left: $sidebar_width;
-  }
+  padding-left: $sidebar_width;
 
   @media (max-width: $screen-xs-min) {
     padding-left: 0;
