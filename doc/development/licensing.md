@@ -12,7 +12,7 @@ Some gems may not include their license information in their `gemspec` file. The
 
 ## Acceptable Licenses
 
-The following are licenses which are acceptable to use:
+Libraries with the following licenses are acceptable for use:
 
 - [The MIT License][MIT] (the MIT Expat License specifically): The MIT License requires that the license itself is included with all copies of the source. It is a permissive (non-copyleft) license as defined by the Open Source Initiative.
 - [LGPL][LGPL] (version 2, version 3): GPL constraints regarding modification and redistribution under the same license are not required of projects using an LGPL library, only upon modification of the LGPL-licensed library itself.
@@ -25,12 +25,14 @@ The following are licenses which are acceptable to use:
 
 ## Unacceptable Licenses
 
-The following are licenses which are *not* acceptable to use:
+Libraries with the following licenses are acceptable for use:
 
 - [GNU GPL][GPL] (version 1, [version 2][GPLv2], [version 3][GPLv3], or any future versions): GPL-licensed libraries cannot be linked to from non-GPL projects.
 - [GNU AGPLv3][AGPLv3]: AGPL-licensed libraries cannot be linked to from non-GPL projects.
 
 ## Notes
+
+Decisions regarding the GNU GPL licenses are based on information provided by [The GNU Project][GNU-GPL-FAQ], as well as [the Open Source Initiative][OSI-GPL], which both state that linking GPL libraries makes the program itself GPL.
 
 If a gem uses a license which is not listed above, open an issue and ask. If a license is not included in the "acceptable" list, operate under the assumption that it is not acceptable.
 
@@ -55,3 +57,5 @@ Gems which are included only in the "development" or "test" groups by Bundler ar
 [GPLv2]: http://www.gnu.org/licenses/gpl-2.0.txt
 [GPLv3]: http://www.gnu.org/licenses/gpl-3.0.txt
 [AGPLv3]: http://choosealicense.com/licenses/agpl-3.0/
+[GNU-GPL-FAQ]: http://www.gnu.org/licenses/gpl-faq.html#IfLibraryIsGPL
+[OSI-GPL]: https://opensource.org/faq#linking-proprietary-code
