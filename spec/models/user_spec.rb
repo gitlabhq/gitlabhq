@@ -895,7 +895,7 @@ describe User, models: true do
       let(:project) { create(:project) }
 
       def add_user access
-        Member.add_user(project.project_members, user, access)
+        project.team << [user, access]
       end
 
       it_behaves_like :member
