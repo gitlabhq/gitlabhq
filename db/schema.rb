@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160509201028) do
+ActiveRecord::Schema.define(version: 20160530214349) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -922,7 +922,7 @@ ActiveRecord::Schema.define(version: 20160509201028) do
   create_table "remote_mirrors", force: :cascade do |t|
     t.integer  "project_id"
     t.string   "url"
-    t.boolean  "enabled",                    default: true
+    t.boolean  "enabled",                    default: false
     t.string   "update_status"
     t.datetime "last_update_at"
     t.datetime "last_successful_update_at"
