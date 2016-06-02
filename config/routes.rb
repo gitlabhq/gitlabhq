@@ -719,7 +719,7 @@ Rails.application.routes.draw do
         resources :labels, constraints: { id: /\d+/ } do
           collection do
             post :generate
-            post :set_sorting
+            post :set_priorities
           end
 
           member do

@@ -5,7 +5,7 @@ class Projects::LabelsController < Projects::ApplicationController
   before_action :label, only: [:edit, :update, :destroy]
   before_action :authorize_read_label!
   before_action :authorize_admin_labels!, only: [
-    :new, :create, :edit, :update, :generate, :destroy
+    :new, :create, :edit, :update, :generate, :destroy, :remove_priority
   ]
 
   respond_to :js, :html
@@ -83,7 +83,7 @@ class Projects::LabelsController < Projects::ApplicationController
     end
   end
 
-  def set_sorting
+  def set_priorities
     Label.transaction do
       params[:label_ids].each_with_index do |label_id, index|
         label = @project.labels.find_by_id(label_id)
