@@ -171,10 +171,6 @@ module Issuable
     today? && created_at == updated_at
   end
 
-  def is_assigned?
-    !!assignee_id
-  end
-
   def is_being_reassigned?
     assignee_id_changed?
   end
