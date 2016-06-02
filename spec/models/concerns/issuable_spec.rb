@@ -227,6 +227,20 @@ describe Issue, "Issuable" do
     end
   end
 
+  describe '#labels_array' do
+    let(:project) { create(:project) }
+    let(:bug) { create(:label, project: project, title: 'bug') }
+    let(:issue) { create(:issue, project: project) }
+
+    before(:each) do
+      issue.labels << bug
+    end
+
+    it 'loads the association and returns it as an array' do
+      expect(issue.reload.labels_array).to eq([bug])
+    end
+  end
+
   describe "votes" do
     let(:project) { issue.project }
 
