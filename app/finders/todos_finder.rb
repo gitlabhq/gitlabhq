@@ -30,7 +30,7 @@ class TodosFinder
     items = by_state(items)
     items = by_type(items)
 
-    items
+    items.reorder(id: :desc)
   end
 
   private
@@ -84,7 +84,7 @@ class TodosFinder
     if project?
       @projects = project
     else
-      @projects = ProjectsFinder.new.execute(current_user).reorder(nil)
+      @projects = ProjectsFinder.new.execute(current_user)
     end
   end
 
