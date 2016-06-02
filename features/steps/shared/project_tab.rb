@@ -47,4 +47,12 @@ module SharedProjectTab
   step 'the active sub tab should be Network' do
     ensure_active_sub_tab('Network')
   end
+
+  step 'the active sub tab should be Files' do
+    ensure_active_sub_tab('Files')
+  end
+
+  step 'the active sub tab should be Commits' do
+    ensure_active_sub_tab('Commits')
+  end
 end
