@@ -16,6 +16,7 @@ v 8.8.3
   - Use downcased path to container repository as this is expected path by Docker. !4420
   - Fix wiki project clone address error (chujinjin). !4429
   - Fix serious performance bug with rendering Markdown with InlineDiffFilter.  !4392
+  - Fix missing number on generated ordered list element. !4437
   - In search results, only show notes on confidential issues that the user has access to
 
 v 8.8.2
