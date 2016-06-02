@@ -31,6 +31,7 @@ v 8.9.0 (unreleased)
 v 8.8.3
   - Fix incorrect links on pipeline page when merge request created from fork
   - Fix gitlab importer failing to import new projects due to missing credentials
+  - Fix serious performance bug with rendering Markdown with InlineDiffFilter
   - Fix import URL migration not rescuing with the correct Error
   - In search results, only show notes on confidential issues that the user has access to
   - Fix health check access token changing due to old application settings being used
