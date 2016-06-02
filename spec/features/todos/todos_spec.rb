@@ -49,7 +49,7 @@ describe 'Dashboard Todos', feature: true do
         note1 = create(:note_on_issue, note: "Hello #{label1.to_reference(format: :name)}", noteable_id: issue.id, noteable_type: 'Issue', project: issue.project)
         create(:todo, :mentioned, project: project, target: issue, user: user, note_id: note1.id)
 
-        project2 = create(:project)
+        project2 = create(:project, visibility_level: Gitlab::VisibilityLevel::PUBLIC)
         label2 = create(:label, project: project2)
         issue2 = create(:issue, project: project2)
         note2 = create(:note_on_issue, note: "Test #{label2.to_reference(format: :name)}", noteable_id: issue2.id, noteable_type: 'Issue', project: project2)
@@ -101,7 +101,7 @@ describe 'Dashboard Todos', feature: true do
 
     context 'User has a Todo in a project pending deletion' do
       before do
-        deleted_project = create(:project, pending_delete: true)
+        deleted_project = create(:project, visibility_level: Gitlab::VisibilityLevel::PUBLIC, pending_delete: true)
         create(:todo, :mentioned, user: user, project: deleted_project, target: issue, author: author)
         login_as(user)
         visit dashboard_todos_path
