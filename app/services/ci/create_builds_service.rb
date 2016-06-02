@@ -20,26 +20,33 @@ module Ci
         end
       end
 
+      # don't create the same build twice
+      builds_attrs.reject! do |build_attrs|
+        @commit.builds.find_by(ref: @commit.ref, tag: @commit.tag,
+                               trigger_request: trigger_request,
+                               name: build_attrs[:name])
+      end
+
       builds_attrs.map do |build_attrs|
-        # don't create the same build twice
-        unless @commit.builds.find_by(ref: @commit.ref, tag: @commit.tag,
-                                      trigger_request: trigger_request, name: build_attrs[:name])
-          build_attrs.slice!(:name,
-                             :commands,
-                             :tag_list,
-                             :options,
-                             :allow_failure,
-                             :stage,
-                             :stage_idx)
+        build_attrs.slice!(:name,
+                           :commands,
+                           :tag_list,
+                           :options,
+                           :allow_failure,
+                           :stage,
+                           :stage_idx)
 
-          build_attrs.merge!(ref: @commit.ref,
-                             tag: @commit.tag,
-                             trigger_request: trigger_request,
-                             user: user,
-                             project: @commit.project)
+        build_attrs.merge!(ref: @commit.ref,
+                           tag: @commit.tag,
+                           trigger_request: trigger_request,
+                           user: user,
+                           project: @commit.project)
 
-          @commit.builds.create!(build_attrs)
-        end
+        ##
+        # We do not persist new builds here.
+        # Those will be persisted when @commit is saved.
+        #
+        @commit.builds.new(build_attrs)
       end
     end
   end

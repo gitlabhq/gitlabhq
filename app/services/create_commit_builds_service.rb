@@ -25,16 +25,16 @@ class CreateCommitBuildsService
       return false
     end
 
-    # Create a new ci_commit
-    commit.save!
 
     # Skip creating builds for commits that have [ci skip]
     unless commit.skip_ci?
-      # Create builds for commit
-      commit.create_builds(user)
+      # Create builds for commit and
+      #   skip saving pipeline when there are no builds
+      return false unless commit.create_builds(user)
     end
 
-    commit.update_state!
+    # Create a new ci_commit
+    commit.save!
     commit
   end
 end
