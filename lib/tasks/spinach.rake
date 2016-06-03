@@ -52,7 +52,7 @@ def run_spinach_tests(tags)
 
     tests = File.foreach('tmp/spinach-rerun.txt').map(&:chomp)
     puts ''
-    puts "Spinach tests for #{tags}: Retrying tests... #{tests}".red
+    puts "Spinach tests for #{tags}: Retrying tests... #{tests}".color(:red)
     puts ''
     sleep(3)
     success = run_spinach_command(tests)
