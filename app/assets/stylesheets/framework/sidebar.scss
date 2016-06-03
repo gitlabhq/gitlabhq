@@ -1,9 +1,3 @@
-#logo {
-  z-index: 2;
-  position: relative;
-  cursor: pointer;
-}
-
 .page-with-sidebar {
   padding-top: $header-height;
   transition-duration: .3s;
@@ -98,9 +92,8 @@
 
     a {
       text-align: center;
-      padding: 8px 0;
+      padding: 8px;
       font-size: $gl-font-size;
-      line-height: 24px;
       color: $gray;
       display: block;
       text-decoration: none;
@@ -120,11 +113,10 @@
         color: $gray-light;
       }
 
-      .count {
-        float: right;
-        background: #eee;
-        padding: 0 8px;
-        @include border-radius(6px);
+      .nav-link-text {
+        margin-top: 3px;
+        font-size: 13px;
+        line-height: 18px;
       }
 
       &.back-link i {
