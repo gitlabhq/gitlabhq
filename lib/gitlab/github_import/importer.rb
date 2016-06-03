@@ -69,6 +69,9 @@ module Gitlab
       end
 
       def import_pull_requests
+        hooks = client.hooks(repo).map { |raw| HookFormatter.new(raw) }.select(&:valid?)
+        disable_webhooks(hooks)
+
         pull_requests = client.pull_requests(repo, state: :all, sort: :created, direction: :asc)
                               .map { |raw| PullRequestFormatter.new(project, raw) }
                               .select(&:valid?)
@@ -77,7 +80,7 @@ module Gitlab
         target_branches_removed = pull_requests.reject(&:target_branch_exists?).map { |pr| [pr.target_branch_name, pr.target_branch_sha] }
         branches_removed = source_branches_removed | target_branches_removed
 
-        create_refs(branches_removed)
+        restore_branches(branches_removed)
 
         pull_requests.each do |pull_request|
           merge_request = MergeRequest.new(pull_request.attributes)
@@ -93,10 +96,25 @@ module Gitlab
       rescue ActiveRecord::RecordInvalid => e
         raise Projects::ImportService::Error, e.message
       ensure
-        delete_refs(branches_removed)
+        clean_up_restored_branches(branches_removed)
+        clean_up_disabled_webhooks(hooks)
       end
 
-      def create_refs(branches)
+      def disable_webhooks(hooks)
+        update_webhooks(hooks, active: false)
+      end
+
+      def clean_up_disabled_webhooks(hooks)
+        update_webhooks(hooks, active: true)
+      end
+
+      def update_webhooks(hooks, options)
+        hooks.each do |hook|
+          client.edit_hook(repo, hook.id, hook.name, hook.config, options)
+        end
+      end
+
+      def restore_branches(branches)
         branches.each do |name, sha|
           client.create_ref(repo, "refs/heads/#{name}", sha)
         end
@@ -104,7 +122,7 @@ module Gitlab
         project.repository.fetch_ref(repo_url, '+refs/heads/*', 'refs/heads/*')
       end
 
-      def delete_refs(branches)
+      def clean_up_restored_branches(branches)
         branches.each do |name, _|
           client.delete_ref(repo, "heads/#{name}")
           project.repository.rm_branch(project.creator, name)
