@@ -1,4 +1,6 @@
 class @LabelManager
+  errorMessage: 'Unable to update label prioritization at this time'
+
   constructor: (opts = {}) ->
     # Defaults
     {
@@ -27,7 +29,7 @@ class @LabelManager
     action = if $btn.parents('.js-prioritized-labels').length then 'remove' else 'add'
     _this.toggleLabelPriority($label, action)
 
-  toggleLabelPriority: ($label, action, persistState = false) ->
+  toggleLabelPriority: ($label, action, persistState = true) ->
     _this = @
     url = $label.find('.js-toggle-priority').data 'url'
 
@@ -48,31 +50,32 @@ class @LabelManager
     $label.detach().appendTo($target)
 
     # Return if we are not persisting state
-    return if persistState
+    return unless persistState
 
     if action is 'remove'
       xhr = $.ajax url: url, type: 'DELETE'
-
-      # If request fails, put label back to Other labels group
-      xhr.fail ->
-        _this.toggleLabelPriority($label, 'remove', true)
-
-        # Show a message
-        new Flash('Unable to update label prioritization at this time' , 'alert')
     else
-      @savePrioritySort()
+      xhr = @savePrioritySort($label, action)
+
+    xhr.fail @rollbackLabelPosition.bind(@, $label, action)
 
   onPrioritySortUpdate: ->
-    @savePrioritySort()
-
-  savePrioritySort: ->
-    xhr = $.post
-            url: @prioritizedLabels.data('url')
-            data:
-              label_ids: @getSortedLabelsIds()
+    xhr = @savePrioritySort()
 
     xhr.fail ->
-      new Flash('Unable to update label prioritization at this time' , 'alert')
+      new Flash(@errorMessage, 'alert')
+
+  savePrioritySort: () ->
+    $.post
+      url: @prioritizedLabels.data('url')
+      data:
+        label_ids: @getSortedLabelsIds()
+
+  rollbackLabelPosition: ($label, originalAction)->
+    action = if originalAction is 'remove' then 'add' else 'remove'
+    @toggleLabelPriority($label, action, false)
+
+    new Flash(@errorMessage, 'alert')
 
   getSortedLabelsIds: ->
     sortedIds = []
