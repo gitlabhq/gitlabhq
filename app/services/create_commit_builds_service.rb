@@ -18,23 +18,23 @@ class CreateCommitBuildsService
       return false
     end
 
-    commit = Ci::Pipeline.new(project: project, sha: sha, ref: ref, before_sha: before_sha, tag: tag)
+    pipeline = Ci::Pipeline.new(project: project, sha: sha, ref: ref, before_sha: before_sha, tag: tag)
 
     # Skip creating ci_commit when no gitlab-ci.yml is found
-    unless commit.ci_yaml_file
+    unless pipeline.ci_yaml_file
       return false
     end
 
     # Create a new ci_commit
-    commit.save!
+    pipeline.save!
 
     # Skip creating builds for commits that have [ci skip]
-    unless commit.skip_ci?
+    unless pipeline.skip_ci?
       # Create builds for commit
-      commit.create_builds(user)
+      pipeline.create_builds(user)
     end
 
-    commit.touch
-    commit
+    pipeline.touch
+    pipeline
   end
 end
