@@ -5,7 +5,7 @@ class Projects::LabelsController < Projects::ApplicationController
   before_action :label, only: [:edit, :update, :destroy]
   before_action :authorize_read_label!
   before_action :authorize_admin_labels!, only: [
-    :new, :create, :edit, :update, :generate, :destroy, :remove_priority
+    :new, :create, :edit, :update, :generate, :destroy, :remove_priority, :set_priorities
   ]
 
   respond_to :js, :html
