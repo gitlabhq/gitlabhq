@@ -74,12 +74,12 @@ module Issues
     end
 
     def rewrite_award_emoji
-       @old_issue.award_emoji.each do |award|
-         new_award = award.dup
-         new_award.awardable = @new_issue
-         new_award.save
-       end
-     end
+      @old_issue.award_emoji.each do |award|
+        new_award = award.dup
+        new_award.awardable = @new_issue
+        new_award.save
+      end
+    end
 
     def rewrite_content(content)
       return unless content
