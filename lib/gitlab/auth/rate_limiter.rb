@@ -20,7 +20,7 @@ module Gitlab
         # Allow2Ban.filter will return false if this IP has not failed too often yet
         @banned = Rack::Attack::Allow2Ban.filter(ip, config) do
           # If we return false here, the failure for this IP is ignored by Allow2Ban
-          ignore_failure?
+          ip_can_be_banned?
         end
       end
       
@@ -34,7 +34,7 @@ module Gitlab
         Gitlab.config.rack_attack.git_basic_auth
       end
       
-      def ignore_failure?
+      def ip_can_be_banned?
         config.ip_whitelist.exclude?(ip)
       end
     end
