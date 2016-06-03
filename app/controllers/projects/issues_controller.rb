@@ -1,6 +1,7 @@
 class Projects::IssuesController < Projects::ApplicationController
   include ToggleSubscriptionAction
   include IssuableActions
+  include ToggleAwardEmoji
 
   before_action :module_enabled
   before_action :issue, only: [:edit, :update, :show, :referenced_merge_requests,
@@ -62,7 +63,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
   def show
     @note     = @project.notes.new(noteable: @issue)
-    @notes    = @issue.notes.nonawards.with_associations.fresh
+    @notes    = @issue.notes.with_associations.fresh
     @noteable = @issue
 
     respond_to do |format|
@@ -169,6 +170,7 @@ class Projects::IssuesController < Projects::ApplicationController
   end
   alias_method :subscribable_resource, :issue
   alias_method :issuable, :issue
+  alias_method :awardable, :issue
 
   def authorize_read_issue!
     return render_404 unless can?(current_user, :read_issue, @issue)
