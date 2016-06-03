@@ -46,7 +46,7 @@ describe "Builds" do
       it { expect(page).to have_content @build.short_sha }
       it { expect(page).to have_content @build.ref }
       it { expect(page).to have_content @build.name }
-      it { expect(page).to_not have_link 'Cancel running' }
+      it { expect(page).not_to have_link 'Cancel running' }
     end
   end
 
@@ -62,7 +62,7 @@ describe "Builds" do
     it { expect(page).to have_content @build.short_sha }
     it { expect(page).to have_content @build.ref }
     it { expect(page).to have_content @build.name }
-    it { expect(page).to_not have_link 'Cancel running' }
+    it { expect(page).not_to have_link 'Cancel running' }
   end
 
   describe "GET /:project/builds/:id" do

@@ -38,6 +38,14 @@ class Projects::BuildsController < Projects::ApplicationController
     end
   end
 
+  def trace
+    respond_to do |format|
+      format.json do
+        render json: @build.trace_with_state(params[:state]).merge!(id: @build.id, status: @build.status)
+      end
+    end
+  end
+
   def retry
     unless @build.retryable?
       return render_404

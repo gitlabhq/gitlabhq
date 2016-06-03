@@ -17,16 +17,16 @@ module Gitlab
         Enumerator.new do |yielder|
           @lines.each do |line|
             next if filename?(line)
-  
-            full_line = line.gsub(/\n/, '')
-  
+
+            full_line = line.delete("\n")
+
             if line.match(/^@@ -/)
               type = "match"
-  
+
               line_old = line.match(/\-[0-9]*/)[0].to_i.abs rescue 0
               line_new = line.match(/\+[0-9]*/)[0].to_i.abs rescue 0
-  
-              next if line_old <= 1 && line_new <= 1 #top of file
+
+              next if line_old <= 1 && line_new <= 1 # top of file
               yielder << Gitlab::Diff::Line.new(full_line, type, line_obj_index, line_old, line_new)
               line_obj_index += 1
               next
@@ -39,8 +39,8 @@ module Gitlab
               yielder << Gitlab::Diff::Line.new(full_line, type, line_obj_index, line_old, line_new)
               line_obj_index += 1
             end
-  
-  
+
+
             case line[0]
             when "+"
               line_new += 1

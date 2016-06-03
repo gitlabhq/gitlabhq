@@ -22,6 +22,12 @@ describe Banzai::Filter::SanitizationFilter, lib: true do
       expect(filter(act).to_html).to eq exp
     end
 
+    it 'sanitizes mixed-cased javascript in attributes' do
+      act = %q(<a href="javaScript:alert('foo')">Text</a>)
+      exp = '<a>Text</a>'
+      expect(filter(act).to_html).to eq exp
+    end
+
     it 'allows whitelisted HTML tags from the user' do
       exp = act = "<dl>\n<dt>Term</dt>\n<dd>Definition</dd>\n</dl>"
       expect(filter(act).to_html).to eq exp

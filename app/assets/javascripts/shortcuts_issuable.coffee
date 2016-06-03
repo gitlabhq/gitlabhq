@@ -6,6 +6,10 @@ class @ShortcutsIssuable extends ShortcutsNavigation
     super()
     Mousetrap.bind('a', @openSidebarDropdown.bind(@, 'assignee'))
     Mousetrap.bind('m', @openSidebarDropdown.bind(@, 'milestone'))
+    Mousetrap.bind('r', =>
+      @replyWithSelectedText()
+      return false
+    )
     Mousetrap.bind('j', =>
       @prevIssue()
       return false

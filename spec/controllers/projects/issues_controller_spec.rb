@@ -56,7 +56,7 @@ describe Projects::IssuesController do
           move_issue
 
           expect(response).to have_http_status :found
-          expect(another_project.issues).to_not be_empty
+          expect(another_project.issues).not_to be_empty
         end
       end
 

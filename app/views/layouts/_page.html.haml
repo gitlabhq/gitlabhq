@@ -1,5 +1,4 @@
 .page-with-sidebar{ class: "#{page_sidebar_class} #{page_gutter_class}" }
-  = render "layouts/broadcast"
   .sidebar-wrapper.nicescroll{ class: nav_sidebar_class }
     .header-logo
       %a#logo
@@ -26,7 +25,8 @@
     .layout-nav
       .container-fluid
         = render "layouts/nav/#{nav}"
-  .content-wrapper{ class: ('page-with-layout-nav' if defined?(nav) && nav) }
+  .content-wrapper{ class: "#{layout_nav_class}" }
+    = render "layouts/broadcast"
     = render "layouts/flash"
     = yield :flash_message
     %div{ class: (container_class unless @no_container) }

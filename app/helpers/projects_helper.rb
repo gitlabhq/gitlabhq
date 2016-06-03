@@ -124,11 +124,7 @@ module ProjectsHelper
   end
 
   def license_short_name(project)
-    no_license_key = project.repository.license_key.nil? ||
-      # Back-compat if cache contains 'no-license', can be removed in a few weeks
-      project.repository.license_key == 'no-license'
-
-    return 'LICENSE' if no_license_key
+    return 'LICENSE' if project.repository.license_key.nil?
 
     license = Licensee::License.new(project.repository.license_key)
 
@@ -138,18 +134,26 @@ module ProjectsHelper
   private
 
   def get_project_nav_tabs(project, current_user)
-    nav_tabs = [:home, :forks]
+    nav_tabs = [:home]
 
     if !project.empty_repo? && can?(current_user, :download_code, project)
-      nav_tabs << [:files, :commits, :network, :graphs]
+      nav_tabs << [:files, :commits, :network, :graphs, :forks]
     end
 
     if project.repo_exists? && can?(current_user, :read_merge_request, project)
       nav_tabs << :merge_requests
     end
 
+    if can?(current_user, :read_pipeline, project)
+      nav_tabs << :pipelines
+    end
+
     if can?(current_user, :read_build, project)
       nav_tabs << :builds
+    end
+
+    if Gitlab.config.registry.enabled && can?(current_user, :read_container_image, project)
+      nav_tabs << :container_registry
     end
 
     if can?(current_user, :admin_project, project)
@@ -205,7 +209,8 @@ module ProjectsHelper
   end
 
   def default_url_to_repo(project = @project)
-    if default_clone_protocol == "ssh"
+    case default_clone_protocol
+    when 'ssh'
       project.ssh_url_to_repo
     else
       project.http_url_to_repo

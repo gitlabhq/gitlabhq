@@ -40,11 +40,6 @@
   }
 }
 
-.issue-search-form {
-  margin: 0;
-  height: 24px;
-}
-
 form.edit-issue {
   margin: 0;
 }
@@ -95,9 +90,4 @@ form.edit-issue {
 
 .issue-form .select2-container {
   width: 250px !important;
-}
-
-.issue-closed-by-widget {
-  color: $gl-text-color;
-  margin-left: 52px;
 }

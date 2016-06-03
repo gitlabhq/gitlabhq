@@ -42,6 +42,33 @@ describe Projects::ForkService, services: true do
         expect(@to_project.builds_enabled?).to be_truthy
       end
     end
+
+    context "when project has restricted visibility level" do
+      context "and only one visibility level is restricted" do
+        before do
+          @from_project.update_attributes(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
+          stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::INTERNAL])
+        end
+
+        it "creates fork with highest allowed level" do
+          forked_project = fork_project(@from_project, @to_user)
+
+          expect(forked_project.visibility_level).to eq(Gitlab::VisibilityLevel::PUBLIC)
+        end
+      end
+
+      context "and all visibility levels are restricted" do
+        before do
+          stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::PUBLIC, Gitlab::VisibilityLevel::INTERNAL, Gitlab::VisibilityLevel::PRIVATE])
+        end
+
+        it "creates fork with private visibility levels" do
+          forked_project = fork_project(@from_project, @to_user)
+
+          expect(forked_project.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE)
+        end
+      end
+    end
   end
 
   describe :fork_to_namespace do

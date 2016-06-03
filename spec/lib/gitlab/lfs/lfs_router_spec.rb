@@ -26,8 +26,8 @@ describe Gitlab::Lfs::Router, lib: true do
 
   let(:sample_oid) { "b68143e6463773b1b6c6fd009a76c32aeec041faff32ba2ed42fd7f708a17f80" }
   let(:sample_size) { 499013 }
-  let(:respond_with_deprecated) {[ 501, { "Content-Type"=>"application/json; charset=utf-8" }, ["{\"message\":\"Server supports batch API only, please update your Git LFS client to version 1.0.1 and up.\",\"documentation_url\":\"#{Gitlab.config.gitlab.url}/help\"}"]]}
-  let(:respond_with_disabled) {[ 501, { "Content-Type"=>"application/json; charset=utf-8" }, ["{\"message\":\"Git LFS is not enabled on this GitLab server, contact your admin.\",\"documentation_url\":\"#{Gitlab.config.gitlab.url}/help\"}"]]}
+  let(:respond_with_deprecated) {[ 501, { "Content-Type" => "application/json; charset=utf-8" }, ["{\"message\":\"Server supports batch API only, please update your Git LFS client to version 1.0.1 and up.\",\"documentation_url\":\"#{Gitlab.config.gitlab.url}/help\"}"]]}
+  let(:respond_with_disabled) {[ 501, { "Content-Type" => "application/json; charset=utf-8" }, ["{\"message\":\"Git LFS is not enabled on this GitLab server, contact your admin.\",\"documentation_url\":\"#{Gitlab.config.gitlab.url}/help\"}"]]}
 
   describe 'when lfs is disabled' do
     before do
@@ -368,7 +368,7 @@ describe Gitlab::Lfs::Router, lib: true do
               expect(response['objects']).to be_kind_of(Array)
               expect(response['objects'].first['oid']).to eq(sample_oid)
               expect(response['objects'].first['size']).to eq(sample_size)
-              expect(lfs_object.projects.pluck(:id)).to_not include(project.id)
+              expect(lfs_object.projects.pluck(:id)).not_to include(project.id)
               expect(lfs_object.projects.pluck(:id)).to include(public_project.id)
               expect(response['objects'].first['actions']['upload']['href']).to eq("#{Gitlab.config.gitlab.url}/#{project.path_with_namespace}.git/gitlab-lfs/objects/#{sample_oid}/#{sample_size}")
               expect(response['objects'].first['actions']['upload']['header']).to eq('Authorization' => @auth)
@@ -430,7 +430,7 @@ describe Gitlab::Lfs::Router, lib: true do
 
               expect(response_body['objects'].last['oid']).to eq(sample_oid)
               expect(response_body['objects'].last['size']).to eq(sample_size)
-              expect(response_body['objects'].last).to_not have_key('actions')
+              expect(response_body['objects'].last).not_to have_key('actions')
             end
           end
         end

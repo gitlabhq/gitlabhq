@@ -1,9 +1,11 @@
 %ul.nav-links
+  = nav_link(controller: %w(tree blob blame edit_tree new_tree find_file)) do
+    = link_to project_files_path(@project) do
+      Files
+
   = nav_link(controller: [:commit, :commits]) do
     = link_to namespace_project_commits_path(@project.namespace, @project, current_ref) do
       Commits
-      %span.badge
-        = number_with_delimiter(@repository.commit_count)
 
   = nav_link(controller: %w(network)) do
     = link_to namespace_project_network_path(@project.namespace, @project, current_ref) do
@@ -16,9 +18,7 @@
   = nav_link(html_options: {class: branches_tab_class}) do
     = link_to namespace_project_branches_path(@project.namespace, @project) do
       Branches
-      %span.badge.js-totalbranch-count= @repository.branch_count
 
   = nav_link(controller: [:tags, :releases]) do
     = link_to namespace_project_tags_path(@project.namespace, @project) do
       Tags
-      %span.badge.js-totaltags-count= @repository.tag_count

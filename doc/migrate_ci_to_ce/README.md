@@ -355,7 +355,7 @@ sudo chown git:git /var/opt/gitlab/gitlab-ci/builds
 ```
 
 #### Problems when importing CI database to GitLab
-If you were migrating CI database from MySQL to PostgreSQL manually you can see errros during import about missing sequences:
+If you were migrating CI database from MySQL to PostgreSQL manually you can see errors during import about missing sequences:
 ```
 ALTER SEQUENCE
 ERROR:  relation "ci_builds_id_seq" does not exist
