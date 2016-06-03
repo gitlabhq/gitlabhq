@@ -15,6 +15,12 @@ describe 'Profile > Personal Access Tokens', feature: true, js: true do
     find(".created-personal-access-token pre")
   end
 
+  def disallow_personal_access_token_saves!
+    allow_any_instance_of(PersonalAccessToken).to receive(:save).and_return(false)
+    errors = ActiveModel::Errors.new(PersonalAccessToken.new).tap { |e| e.add(:name, "cannot be nil") }
+    allow_any_instance_of(PersonalAccessToken).to receive(:errors).and_return(errors)
+  end
+
   before do
     login_as(user)
   end
@@ -43,11 +49,23 @@ describe 'Profile > Personal Access Tokens', feature: true, js: true do
       expect(active_personal_access_tokens).to have_text(PersonalAccessToken.last.name)
       expect(active_personal_access_tokens).to have_text(Date.today.next_month.at_beginning_of_month.to_s(:medium))
     end
+
+    context "when creation fails" do
+      it "displays an error message" do
+        disallow_personal_access_token_saves!
+        visit profile_personal_access_tokens_path
+        fill_in "Name", with: FFaker::Product.brand
+
+        expect { click_on "Add Personal Access Token" }.not_to change { PersonalAccessToken.count }
+        expect(page).to have_content("Name cannot be nil")
+      end
+    end
   end
 
   describe "inactive tokens" do
+    let!(:personal_access_token) { create(:personal_access_token, user: user) }
+
     it "allows revocation of an active token" do
-      personal_access_token = create(:personal_access_token, user: user)
       visit profile_personal_access_tokens_path
       click_on "Revoke"
 
@@ -55,10 +73,21 @@ describe 'Profile > Personal Access Tokens', feature: true, js: true do
     end
 
     it "moves expired tokens to the 'inactive' section" do
-      personal_access_token = create(:personal_access_token, expires_at: 5.days.ago, user: user)
+      personal_access_token.update(expires_at: 5.days.ago)
       visit profile_personal_access_tokens_path
 
       expect(inactive_personal_access_tokens).to have_text(personal_access_token.name)
+    end
+
+    context "when revocation fails" do
+      it "displays an error message" do
+        disallow_personal_access_token_saves!
+        visit profile_personal_access_tokens_path
+
+        expect { click_on "Revoke" }.not_to change { PersonalAccessToken.inactive.count }
+        expect(active_personal_access_tokens).to have_text(personal_access_token.name)
+        expect(page).to have_content("Could not revoke")
+      end
     end
   end
 end
