@@ -16,6 +16,8 @@ project_tree:
     - :merge_request_diff
   - ci_commits:
     - :statuses
+    - notes:
+        :author
   - :variables
   - :triggers
   - :deploy_keys

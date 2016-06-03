@@ -2,10 +2,6 @@ module Gitlab
   module ImportExport
     class UploadsSaver
 
-      def self.save(*args)
-        new(*args).save
-      end
-
       def initialize(project:, shared:)
         @project = project
         @shared = shared

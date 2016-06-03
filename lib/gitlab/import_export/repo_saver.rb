@@ -1,6 +1,6 @@
 module Gitlab
   module ImportExport
-    class RepoBundler
+    class RepoSaver
       include Gitlab::ImportExport::CommandLineUtil
 
       attr_reader :full_path
@@ -10,7 +10,7 @@ module Gitlab
         @shared = shared
       end
 
-      def bundle
+      def save
         return false if @project.empty_repo?
         @full_path = File.join(@shared.export_path, ImportExport.project_bundle_filename)
         bundle_to_disk

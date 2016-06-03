@@ -2,36 +2,39 @@ module Projects
   module ImportExport
     class ExportService < BaseService
 
-      def execute(options = {})
+      def execute(_options = {})
         @shared = Gitlab::ImportExport::Shared.new(relative_path: File.join(project.path_with_namespace, 'work'))
-        save_all if [save_version, save_project_tree, save_uploads, bundle_repo, bundle_wiki_repo].all?
-        cleanup_and_notify_worker if @shared.errors.any?
+        save_all
       end
 
       private
 
-      def save_version
-        Gitlab::ImportExport::VersionSaver.save(shared: @shared)
-      end
-
-      def save_project_tree
-        Gitlab::ImportExport::ProjectTreeSaver.new(project: project, shared: @shared).save
-      end
-
-      def save_uploads
-        Gitlab::ImportExport::UploadsSaver.save(project: project, shared: @shared)
-      end
-
-      def bundle_repo
-        Gitlab::ImportExport::RepoBundler.new(project: project, shared: @shared).bundle
-      end
-
-      def bundle_wiki_repo
-        Gitlab::ImportExport::WikiRepoBundler.new(project: project, shared: @shared).bundle
-      end
-
       def save_all
-        Gitlab::ImportExport::Saver.save(shared: @shared)
+        if [version_saver, project_tree_saver, uploads_saver, repo_saver, wiki_repo_saver].all?(&:save)
+          Gitlab::ImportExport::Saver.save(shared: @shared)
+        else
+          cleanup_and_notify_worker
+        end
+      end
+
+      def version_saver
+        Gitlab::ImportExport::VersionSaver.new(shared: @shared)
+      end
+
+      def project_tree_saver
+        Gitlab::ImportExport::ProjectTreeSaver.new(project: project, shared: @shared)
+      end
+
+      def uploads_saver
+        Gitlab::ImportExport::UploadsSaver.new(project: project, shared: @shared)
+      end
+
+      def repo_saver
+        Gitlab::ImportExport::RepoSaver.new(project: project, shared: @shared)
+      end
+
+      def wiki_repo_saver
+        Gitlab::ImportExport::WikiRepoSaver.new(project: project, shared: @shared)
       end
 
       def cleanup_and_notify_worker
