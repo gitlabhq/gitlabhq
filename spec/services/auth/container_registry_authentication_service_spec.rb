@@ -14,6 +14,11 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
     allow_any_instance_of(JSONWebToken::RSAToken).to receive(:key).and_return(rsa_key)
   end
 
+  shared_examples 'an authenticated' do
+    it { is_expected.to include(:token) }
+    it { expect(payload).to include('access') }
+  end
+
   shared_examples 'a valid token' do
     it { is_expected.to include(:token) }
     it { expect(payload).to include('access') }
