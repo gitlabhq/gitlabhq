@@ -57,5 +57,7 @@ module API
     mount ::API::Variables
     mount ::API::Runners
     mount ::API::Licenses
+    mount ::API::Subscriptions
+    mount ::API::Gitignores
   end
 end

@@ -60,7 +60,7 @@ describe Project, models: true do
       project2 = build(:project)
       allow(project2).to receive(:creator).and_return(double(can_create_project?: false, projects_limit: 0).as_null_object)
       expect(project2).not_to be_valid
-      expect(project2.errors[:limit_reached].first).to match(/Your project limit is 0/)
+      expect(project2.errors[:limit_reached].first).to match(/Personal project creation is not allowed/)
     end
   end
 
@@ -634,11 +634,11 @@ describe Project, models: true do
       # Project#gitlab_shell returns a new instance of Gitlab::Shell on every
       # call. This makes testing a bit easier.
       allow(project).to receive(:gitlab_shell).and_return(gitlab_shell)
+
+      allow(project).to receive(:previous_changes).and_return('path' => ['foo'])
     end
 
     it 'renames a repository' do
-      allow(project).to receive(:previous_changes).and_return('path' => ['foo'])
-
       ns = project.namespace_dir
 
       expect(gitlab_shell).to receive(:mv_repository).
@@ -662,6 +662,17 @@ describe Project, models: true do
       expect(project).to receive(:expire_caches_before_rename)
 
       project.rename_repo
+    end
+
+    context 'container registry with tags' do
+      before do
+        stub_container_registry_config(enabled: true)
+        stub_container_registry_tags('tag')
+      end
+
+      subject { project.rename_repo }
+
+      it { expect{subject}.to raise_error(Exception) }
     end
   end
 
@@ -770,6 +781,82 @@ describe Project, models: true do
 
     it 'returns false when a branch is not a protected branch' do
       expect(project.protected_branch?('foo')).to eq(false)
+    end
+  end
+
+  describe '#container_registry_path_with_namespace' do
+    let(:project) { create(:empty_project, path: 'PROJECT') }
+
+    subject { project.container_registry_path_with_namespace }
+
+    it { is_expected.not_to eq(project.path_with_namespace) }
+    it { is_expected.to eq(project.path_with_namespace.downcase) }
+  end
+
+  describe '#container_registry_repository' do
+    let(:project) { create(:empty_project) }
+
+    before { stub_container_registry_config(enabled: true) }
+
+    subject { project.container_registry_repository }
+
+    it { is_expected.not_to be_nil }
+  end
+
+  describe '#container_registry_repository_url' do
+    let(:project) { create(:empty_project) }
+
+    subject { project.container_registry_repository_url }
+
+    before { stub_container_registry_config(**registry_settings) }
+
+    context 'for enabled registry' do
+      let(:registry_settings) do
+        {
+          enabled: true,
+          host_port: 'example.com',
+        }
+      end
+
+      it { is_expected.not_to be_nil }
+    end
+
+    context 'for disabled registry' do
+      let(:registry_settings) do
+        {
+          enabled: false
+        }
+      end
+
+      it { is_expected.to be_nil }
+    end
+  end
+
+  describe '#has_container_registry_tags?' do
+    let(:project) { create(:empty_project) }
+
+    subject { project.has_container_registry_tags? }
+
+    context 'for enabled registry' do
+      before { stub_container_registry_config(enabled: true) }
+
+      context 'with tags' do
+        before { stub_container_registry_tags('test', 'test2') }
+
+        it { is_expected.to be_truthy }
+      end
+
+      context 'when no tags' do
+        before { stub_container_registry_tags }
+
+        it { is_expected.to be_falsey }
+      end
+    end
+
+    context 'for disabled registry' do
+      before { stub_container_registry_config(enabled: false) }
+
+      it { is_expected.to be_falsey }
     end
   end
 end

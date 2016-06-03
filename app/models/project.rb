@@ -22,6 +22,7 @@ class Project < ActiveRecord::Base
   default_value_for :builds_enabled, gitlab_config_features.builds
   default_value_for :wiki_enabled, gitlab_config_features.wiki
   default_value_for :snippets_enabled, gitlab_config_features.snippets
+  default_value_for :container_registry_enabled, gitlab_config_features.container_registry
   default_value_for(:shared_runners_enabled) { current_application_settings.shared_runners_enabled }
 
   # set last_activity_at to the same as created_at
@@ -48,6 +49,8 @@ class Project < ActiveRecord::Base
 
   attr_accessor :new_default_branch
   attr_accessor :old_path_with_namespace
+
+  alias_attribute :title, :name
 
   # Relations
   belongs_to :creator, foreign_key: 'creator_id', class_name: 'User'
@@ -168,17 +171,17 @@ class Project < ActiveRecord::Base
 
   scope :sorted_by_activity, -> { reorder(last_activity_at: :desc) }
   scope :sorted_by_stars, -> { reorder('projects.star_count DESC') }
-  scope :sorted_by_names, -> { joins(:namespace).reorder('namespaces.name ASC, projects.name ASC') }
 
-  scope :without_user, ->(user)  { where('projects.id NOT IN (:ids)', ids: user.authorized_projects.map(&:id) ) }
-  scope :without_team, ->(team) { team.projects.present? ? where('projects.id NOT IN (:ids)', ids: team.projects.map(&:id)) : scoped  }
-  scope :not_in_group, ->(group) { where('projects.id NOT IN (:ids)', ids: group.project_ids ) }
   scope :in_namespace, ->(namespace_ids) { where(namespace_id: namespace_ids) }
-  scope :in_group_namespace, -> { joins(:group) }
   scope :personal, ->(user) { where(namespace_id: user.namespace_id) }
   scope :joined, ->(user) { where('namespace_id != ?', user.namespace_id) }
+  scope :visible_to_user, ->(user) { where(id: user.authorized_projects.select(:id).reorder(nil)) }
   scope :non_archived, -> { where(archived: false) }
   scope :for_milestones, ->(ids) { joins(:milestones).where('milestones.id' => ids).distinct }
+  scope :with_push, -> { joins(:events).where('events.action = ?', Event::PUSHED) }
+
+  scope :active, -> { joins(:issues, :notes, :merge_requests).order('issues.created_at, notes.created_at, merge_requests.created_at DESC') }
+  scope :abandoned, -> { where('projects.last_activity_at < ?', 6.months.ago) }
 
   state_machine :import_status, initial: :none do
     event :import_start do
@@ -201,23 +204,10 @@ class Project < ActiveRecord::Base
     state :finished
     state :failed
 
-    after_transition any => :started, do: :schedule_add_import_job
-    after_transition any => :finished, do: :clear_import_data
+    after_transition any => :finished, do: :reset_cache_and_import_attrs
   end
 
   class << self
-    def abandoned
-      where('projects.last_activity_at < ?', 6.months.ago)
-    end
-
-    def with_push
-      joins(:events).where('events.action = ?', Event::PUSHED)
-    end
-
-    def active
-      joins(:issues, :notes, :merge_requests).order('issues.created_at, notes.created_at, merge_requests.created_at DESC')
-    end
-
     # Searches for a list of projects based on the query given in `query`.
     #
     # On PostgreSQL this method uses "ILIKE" to perform a case-insensitive
@@ -279,10 +269,6 @@ class Project < ActiveRecord::Base
         projects.iwhere('projects.path' => project_path).take
     end
 
-    def find_by_ci_id(id)
-      find_by(ci_id: id.to_i)
-    end
-
     def visibility_levels
       Gitlab::VisibilityLevel.options
     end
@@ -313,10 +299,6 @@ class Project < ActiveRecord::Base
 
       joins(join_body).reorder('join_note_counts.amount DESC')
     end
-
-    def visible_to_user(user)
-      where(id: user.authorized_projects.select(:id).reorder(nil))
-    end
   end
 
   def team
@@ -325,6 +307,34 @@ class Project < ActiveRecord::Base
 
   def repository
     @repository ||= Repository.new(path_with_namespace, self)
+  end
+
+  def container_registry_path_with_namespace
+    path_with_namespace.downcase
+  end
+
+  def container_registry_repository
+    return unless Gitlab.config.registry.enabled
+
+    @container_registry_repository ||= begin
+      token = Auth::ContainerRegistryAuthenticationService.full_access_token(container_registry_path_with_namespace)
+      url = Gitlab.config.registry.api_url
+      host_port = Gitlab.config.registry.host_port
+      registry = ContainerRegistry::Registry.new(url, token: token, path: host_port)
+      registry.repository(container_registry_path_with_namespace)
+    end
+  end
+
+  def container_registry_repository_url
+    if Gitlab.config.registry.enabled
+      "#{Gitlab.config.registry.host_port}/#{container_registry_path_with_namespace}"
+    end
+  end
+
+  def has_container_registry_tags?
+    return unless container_registry_repository
+
+    container_registry_repository.tags.any?
   end
 
   def commit(id = 'HEAD')
@@ -338,10 +348,6 @@ class Project < ActiveRecord::Base
 
   def saved?
     id && persisted?
-  end
-
-  def schedule_add_import_job
-    run_after_commit(:add_import_job)
   end
 
   def add_import_job
@@ -358,7 +364,7 @@ class Project < ActiveRecord::Base
     end
   end
 
-  def clear_import_data
+  def reset_cache_and_import_attrs
     update(import_error: nil)
 
     ProjectCacheWorker.perform_async(self.id)
@@ -367,14 +373,14 @@ class Project < ActiveRecord::Base
   end
 
   def import_url=(value)
-    import_url = Gitlab::ImportUrl.new(value)
+    import_url = Gitlab::UrlSanitizer.new(value)
     create_or_update_import_data(credentials: import_url.credentials)
     super(import_url.sanitized_url)
   end
 
   def import_url
     if import_data && super
-      import_url = Gitlab::ImportUrl.new(super, credentials: import_data.credentials)
+      import_url = Gitlab::UrlSanitizer.new(super, credentials: import_data.credentials)
       import_url.full_url
     else
       super
@@ -424,17 +430,18 @@ class Project < ActiveRecord::Base
   end
 
   def safe_import_url
-    result = URI.parse(self.import_url)
-    result.password = '*****' unless result.password.nil?
-    result.user = '*****' unless result.user.nil? || result.user == "git" #tokens or other data may be saved as user
-    result.to_s
-  rescue
-    self.import_url
+    Gitlab::UrlSanitizer.new(import_url).masked_url
   end
 
   def check_limit
     unless creator.can_create_project? or namespace.kind == 'group'
-      self.errors.add(:limit_reached, "Your project limit is #{creator.projects_limit} projects! Please contact your administrator to increase it")
+      projects_limit = creator.projects_limit
+
+      if projects_limit == 0
+        self.errors.add(:limit_reached, "Personal project creation is not allowed. Please contact your administrator with questions")
+      else
+        self.errors.add(:limit_reached, "Your project limit is #{projects_limit} projects! Please contact your administrator to increase it")
+      end
     end
   rescue
     self.errors.add(:base, "Can't check your ability to create project")
@@ -742,6 +749,11 @@ class Project < ActiveRecord::Base
 
     expire_caches_before_rename(old_path_with_namespace)
 
+    if has_container_registry_tags?
+      # we currently doesn't support renaming repository if it contains tags in container registry
+      raise Exception.new('Project cannot be renamed, because tags are present in its container registry')
+    end
+
     if gitlab_shell.mv_repository(old_path_with_namespace, new_path_with_namespace)
       # If repository moved successfully we need to send update instructions to users.
       # However we cannot allow rollback since we moved repository
@@ -938,13 +950,13 @@ class Project < ActiveRecord::Base
     shared_runners_enabled? && Ci::Runner.shared.active.any?(&block)
   end
 
-  def valid_runners_token? token
+  def valid_runners_token?(token)
     self.runners_token && ActiveSupport::SecurityUtils.variable_size_secure_compare(token, self.runners_token)
   end
 
   # TODO (ayufan): For now we use runners_token (backward compatibility)
   # In 8.4 every build will have its own individual token valid for time of build
-  def valid_build_token? token
+  def valid_build_token?(token)
     self.builds_enabled? && self.runners_token && ActiveSupport::SecurityUtils.variable_size_secure_compare(token, self.runners_token)
   end
 
@@ -998,5 +1010,23 @@ class Project < ActiveRecord::Base
     run_after_commit { ProjectDestroyWorker.perform_async(id, user_id, params) }
 
     update_attribute(:pending_delete, true)
+  end
+
+  def running_or_pending_build_count(force: false)
+    Rails.cache.fetch(['projects', id, 'running_or_pending_build_count'], force: force) do
+      builds.running_or_pending.count(:all)
+    end
+  end
+
+  def mark_import_as_failed(error_message)
+    original_errors = errors.dup
+    sanitized_message = Gitlab::UrlSanitizer.sanitize(error_message)
+
+    import_fail
+    update_column(:import_error, sanitized_message)
+  rescue ActiveRecord::ActiveRecordError => e
+    Rails.logger.error("Error setting import status to failed: #{e.message}. Original error: #{sanitized_message}")
+  ensure
+    @errors = original_errors
   end
 end

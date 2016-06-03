@@ -1,11 +1,13 @@
 class ApplicationSetting < ActiveRecord::Base
   include TokenAuthenticatable
   add_authentication_token_field :runners_registration_token
+  add_authentication_token_field :health_check_access_token
 
   CACHE_KEY = 'application_setting.last'
 
   serialize :restricted_visibility_levels
   serialize :import_sources
+  serialize :disabled_oauth_sign_in_sources, Array
   serialize :restricted_signup_domains, Array
   attr_accessor :restricted_signup_domains_raw
 
@@ -49,6 +51,10 @@ class ApplicationSetting < ActiveRecord::Base
             presence: true,
             numericality: { only_integer: true, greater_than: 0 }
 
+  validates :container_registry_token_expire_delay,
+            presence: true,
+            numericality: { only_integer: true, greater_than: 0 }
+
   validates_each :restricted_visibility_levels do |record, attr, value|
     unless value.nil?
       value.each do |level|
@@ -69,7 +75,18 @@ class ApplicationSetting < ActiveRecord::Base
     end
   end
 
+  validates_each :disabled_oauth_sign_in_sources do |record, attr, value|
+    unless value.nil?
+      value.each do |source|
+        unless Devise.omniauth_providers.include?(source.to_sym)
+          record.errors.add(attr, "'#{source}' is not an OAuth sign-in source")
+        end
+      end
+    end
+  end
+
   before_save :ensure_runners_registration_token
+  before_save :ensure_health_check_access_token
 
   after_commit do
     Rails.cache.write(CACHE_KEY, self)
@@ -83,6 +100,10 @@ class ApplicationSetting < ActiveRecord::Base
 
   def self.expire
     Rails.cache.delete(CACHE_KEY)
+  end
+
+  def self.cached
+    Rails.cache.fetch(CACHE_KEY)
   end
 
   def self.create_from_defaults
@@ -107,6 +128,9 @@ class ApplicationSetting < ActiveRecord::Base
       recaptcha_enabled: false,
       akismet_enabled: false,
       repository_checks_enabled: true,
+      disabled_oauth_sign_in_sources: [],
+      send_user_confirmation_email: false,
+      container_registry_token_expire_delay: 5,
     )
   end
 
@@ -132,5 +156,9 @@ class ApplicationSetting < ActiveRecord::Base
 
   def runners_registration_token
     ensure_runners_registration_token!
+  end
+
+  def health_check_access_token
+    ensure_health_check_access_token!
   end
 end

@@ -275,7 +275,7 @@ POST /projects/:id/runners
 | `runner_id` | integer | yes      | The ID of a runner  |
 
 ```
-curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/project/9/runners" -F "runner_id=9"
+curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/9/runners" -F "runner_id=9"
 ```
 
 Example response:
@@ -306,7 +306,7 @@ DELETE /projects/:id/runners/:runner_id
 | `runner_id` | integer | yes      | The ID of a runner  |
 
 ```
-curl -X DELETE -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/project/9/runners/9"
+curl -X DELETE -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/9/runners/9"
 ```
 
 Example response:

@@ -85,7 +85,7 @@ FROM users;
       frames = query.application_backtrace
 
       expect(frames).to be_an_instance_of(Array)
-      expect(frames).to_not be_empty
+      expect(frames).not_to be_empty
 
       frames.each do |frame|
         expect(frame.path).to start_with(Rails.root.to_s)

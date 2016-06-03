@@ -78,7 +78,7 @@ describe CreateCommitBuildsService, services: true do
       expect(commit).to be_persisted
       expect(commit.builds.any?).to be false
       expect(commit.status).to eq('failed')
-      expect(commit.yaml_errors).to_not be_nil
+      expect(commit.yaml_errors).not_to be_nil
     end
 
     describe :ci_skip? do

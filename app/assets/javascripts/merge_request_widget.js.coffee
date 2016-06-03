@@ -10,6 +10,7 @@ class @MergeRequestWidget
     $('#modal_merge_info').modal(show: false)
     @firstCICheck = true
     @readyForCICheck = false
+    @cancel = false
     clearInterval @fetchBuildStatusInterval
 
     @clearEventListeners()
@@ -21,10 +22,16 @@ class @MergeRequestWidget
   clearEventListeners: ->
     $(document).off 'page:change.merge_request'
 
+  cancelPolling: ->
+    @cancel = true
+
   addEventListeners: ->
+    allowedPages = ['show', 'commits', 'builds', 'changes']
     $(document).on 'page:change.merge_request', =>
-      if $('body').data('page') isnt 'projects:merge_requests:show'
+      page = $('body').data('page').split(':').last()
+      if allowedPages.indexOf(page) < 0
         clearInterval @fetchBuildStatusInterval
+        @cancelPolling()
         @clearEventListeners()
 
   mergeInProgress: (deleteSourceBranch = false)->
@@ -67,6 +74,7 @@ class @MergeRequestWidget
     $('.ci-widget-fetching').show()
 
     $.getJSON @opts.ci_status_url, (data) =>
+      return if @cancel
       @readyForCICheck = true
 
       if data.status is ''
@@ -106,6 +114,7 @@ class @MergeRequestWidget
         @firstCICheck = false
 
   showCIStatus: (state) ->
+    return if not state?
     $('.ci_widget').hide()
     allowed_states = ["failed", "canceled", "running", "pending", "success", "skipped", "not_found"]
     if state in allowed_states
@@ -113,7 +122,7 @@ class @MergeRequestWidget
       switch state
         when "failed", "canceled", "not_found"
           @setMergeButtonClass('btn-danger')
-        when "running", "pending"
+        when "running"
           @setMergeButtonClass('btn-warning')
         when "success"
           @setMergeButtonClass('btn-create')
@@ -126,6 +135,6 @@ class @MergeRequestWidget
     $('.ci_widget:visible .ci-coverage').text(text)
 
   setMergeButtonClass: (css_class) ->
-    $('.accept_merge_request')
+    $('.js-merge-button,.accept-action .dropdown-toggle')
       .removeClass('btn-danger btn-warning btn-create')
       .addClass(css_class)

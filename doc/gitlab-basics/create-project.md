@@ -14,7 +14,7 @@ Fill out the required information:
 
 1. Select a [visibility level](https://gitlab.com/help/public_access/public_access)
 
-1. You can also [import your existing projects](http://doc.gitlab.com/ce/workflow/importing/README.html)
+1. You can also [import your existing projects](http://docs.gitlab.com/ce/workflow/importing/README.html)
 
 1. Click on "create project"
 

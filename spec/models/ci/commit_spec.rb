@@ -10,7 +10,6 @@ describe Ci::Commit, models: true do
   it { is_expected.to have_many(:builds) }
   it { is_expected.to validate_presence_of :sha }
   it { is_expected.to validate_presence_of :status }
-  it { is_expected.to delegate_method(:stages).to(:statuses) }
 
   it { is_expected.to respond_to :git_author_name }
   it { is_expected.to respond_to :git_author_email }
@@ -248,7 +247,7 @@ describe Ci::Commit, models: true do
           expect(commit.builds.pluck(:status)).to contain_exactly('pending')
           commit.builds.running_or_pending.each(&:success)
 
-          expect(commit.builds.running_or_pending).to_not be_empty
+          expect(commit.builds.running_or_pending).not_to be_empty
 
           expect(commit.builds.pluck(:name)).to contain_exactly('build', 'test')
           expect(commit.builds.pluck(:status)).to contain_exactly('success', 'pending')

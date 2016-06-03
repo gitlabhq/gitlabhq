@@ -20,6 +20,15 @@ describe ApplicationSetting, models: true do
     it { is_expected.to allow_value(https).for(:after_sign_out_path) }
     it { is_expected.not_to allow_value(ftp).for(:after_sign_out_path) }
 
+    describe 'disabled_oauth_sign_in_sources validations' do
+      before do
+        allow(Devise).to receive(:omniauth_providers).and_return([:github])
+      end
+
+      it { is_expected.to allow_value(['github']).for(:disabled_oauth_sign_in_sources) }
+      it { is_expected.not_to allow_value(['test']).for(:disabled_oauth_sign_in_sources) }
+    end
+
     it { is_expected.to validate_presence_of(:max_attachment_size) }
 
     it do

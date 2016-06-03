@@ -27,13 +27,13 @@ describe GenericCommitStatus, models: true do
     describe :context do
       subject { generic_commit_status.context }
 
-      it { is_expected.to_not be_nil }
+      it { is_expected.not_to be_nil }
     end
 
     describe :stage do
       subject { generic_commit_status.stage }
 
-      it { is_expected.to_not be_nil }
+      it { is_expected.not_to be_nil }
     end
   end
 end

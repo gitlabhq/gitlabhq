@@ -312,7 +312,7 @@
     }
 
     .nav-sidebar li a {
-      width: 230px;
+      width: $sidebar_width;
 
       &.back-link {
         i {
@@ -324,7 +324,7 @@
 
   .layout-nav {
     @media (max-width: $screen-xs-min) {
-      padding-right: 0;;
+      padding-right: 0;
     }
 
     @media (min-width: $screen-xs-min) and (max-width: $screen-md-min) {

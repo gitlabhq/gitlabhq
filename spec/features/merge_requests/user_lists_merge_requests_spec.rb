@@ -38,6 +38,7 @@ describe 'Projects > Merge requests > User lists merge requests', feature: true 
     expect(page).to have_content 'lfs'
     expect(page).not_to have_content 'fix'
     expect(page).not_to have_content 'markdown'
+    expect(count_merge_requests).to eq(1)
   end
 
   it 'filters on a specific assignee' do
@@ -46,6 +47,7 @@ describe 'Projects > Merge requests > User lists merge requests', feature: true 
     expect(page).not_to have_content 'lfs'
     expect(page).to have_content 'fix'
     expect(page).to have_content 'markdown'
+    expect(count_merge_requests).to eq(2)
   end
 
   it 'sorts by newest' do
@@ -53,6 +55,7 @@ describe 'Projects > Merge requests > User lists merge requests', feature: true 
 
     expect(first_merge_request).to include('lfs')
     expect(last_merge_request).to include('fix')
+    expect(count_merge_requests).to eq(3)
   end
 
   it 'sorts by oldest' do
@@ -60,30 +63,35 @@ describe 'Projects > Merge requests > User lists merge requests', feature: true 
 
     expect(first_merge_request).to include('fix')
     expect(last_merge_request).to include('lfs')
+    expect(count_merge_requests).to eq(3)
   end
 
   it 'sorts by last updated' do
     visit_merge_requests(project, sort: sort_value_recently_updated)
 
     expect(first_merge_request).to include('lfs')
+    expect(count_merge_requests).to eq(3)
   end
 
   it 'sorts by oldest updated' do
     visit_merge_requests(project, sort: sort_value_oldest_updated)
 
     expect(first_merge_request).to include('markdown')
+    expect(count_merge_requests).to eq(3)
   end
 
   it 'sorts by milestone due soon' do
     visit_merge_requests(project, sort: sort_value_milestone_soon)
 
     expect(first_merge_request).to include('fix')
+    expect(count_merge_requests).to eq(3)
   end
 
   it 'sorts by milestone due later' do
     visit_merge_requests(project, sort: sort_value_milestone_later)
 
     expect(first_merge_request).to include('markdown')
+    expect(count_merge_requests).to eq(3)
   end
 
   it 'filters on one label and sorts by due soon' do
@@ -94,6 +102,7 @@ describe 'Projects > Merge requests > User lists merge requests', feature: true 
                                   sort: sort_value_due_date_soon)
 
     expect(first_merge_request).to include('fix')
+    expect(count_merge_requests).to eq(1)
   end
 
   context 'while filtering on two labels' do
@@ -110,6 +119,7 @@ describe 'Projects > Merge requests > User lists merge requests', feature: true 
                                     sort: sort_value_due_date_soon)
 
       expect(first_merge_request).to include('fix')
+      expect(count_merge_requests).to eq(1)
     end
 
     context 'filter on assignee and' do
@@ -117,6 +127,16 @@ describe 'Projects > Merge requests > User lists merge requests', feature: true 
         visit_merge_requests(project, label_name: [label.name, label2.name],
                                       assignee_id: user.id,
                                       sort: sort_value_due_date_soon)
+
+        expect(first_merge_request).to include('fix')
+        expect(count_merge_requests).to eq(1)
+      end
+
+      it 'sorts by recently due milestone' do
+        visit namespace_project_merge_requests_path(project.namespace, project,
+          label_name: [label.name, label2.name],
+          assignee_id: user.id,
+          sort: sort_value_milestone_soon)
 
         expect(first_merge_request).to include('fix')
       end
@@ -133,5 +153,9 @@ describe 'Projects > Merge requests > User lists merge requests', feature: true 
 
   def last_merge_request
     page.all('ul.mr-list > li').last.text
+  end
+
+  def count_merge_requests
+    page.all('ul.mr-list > li').count
   end
 end

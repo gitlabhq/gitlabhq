@@ -36,5 +36,15 @@ namespace :gitlab do
       # Add `IF EXISTS` because cascade could have already deleted a table.
       tables.each { |t| connection.execute("DROP TABLE IF EXISTS #{t} CASCADE") }
     end
+
+    desc 'Configures the database by running migrate, or by loading the schema and seeding if needed'
+    task configure: :environment do
+      if ActiveRecord::Base.connection.tables.any?
+        Rake::Task['db:migrate'].invoke
+      else
+        Rake::Task['db:schema:load'].invoke
+        Rake::Task['db:seed_fu'].invoke
+      end
+    end
   end
 end

@@ -2,7 +2,7 @@ module API
   module Helpers
     PRIVATE_TOKEN_HEADER = "HTTP_PRIVATE_TOKEN"
     PRIVATE_TOKEN_PARAM = :private_token
-    SUDO_HEADER ="HTTP_SUDO"
+    SUDO_HEADER = "HTTP_SUDO"
     SUDO_PARAM = :sudo
     PERSONAL_ACCESS_TOKEN_PARAM = PRIVATE_TOKEN_PARAM
     PERSONAL_ACCESS_TOKEN_HEADER = PRIVATE_TOKEN_HEADER
@@ -41,7 +41,7 @@ module API
       @current_user
     end
 
-    def sudo_identifier()
+    def sudo_identifier
       identifier ||= params[SUDO_PARAM] || env[SUDO_HEADER]
 
       # Regex for integers
@@ -105,6 +105,17 @@ module API
       else
         not_found!('Group')
       end
+    end
+
+    def find_project_label(id)
+      label = user_project.labels.find_by_id(id) || user_project.labels.find_by_title(id)
+      label || not_found!('Label')
+    end
+
+    def find_project_issue(id)
+      issue = user_project.issues.find(id)
+      not_found! unless can?(current_user, :read_issue, issue)
+      issue
     end
 
     def paginate(relation)

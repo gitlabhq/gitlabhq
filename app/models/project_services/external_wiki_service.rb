@@ -25,7 +25,7 @@ class ExternalWikiService < Service
 
   def execute(_data)
     @response = HTTParty.get(properties['external_wiki_url'], verify: true) rescue nil
-    if @response !=200
+    if @response != 200
       nil
     end
   end

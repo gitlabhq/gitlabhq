@@ -19,12 +19,16 @@ Components/Servers Required:
 
 - 2 servers/virtual machines (one active/one passive)
 
+![Active/Passive HA Diagram](../img/high_availability/active-passive-diagram.png)
+
 ### Active/Active
 
 This architecture scales easily because all application servers handle
 user requests simultaneously. The database, Redis, and GitLab application are
 all deployed on separate servers. The configuration is **only** highly-available
 if the database, Redis and storage are also configured as such.
+
+![Active/Active HA Diagram](../img/high_availability/active-active-diagram.png)
 
 **Steps to configure active/active:**
 

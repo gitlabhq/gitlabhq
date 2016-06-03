@@ -127,7 +127,7 @@ Inside the document:
     ```
   If the document you are editing resides in a place other than the GitLab CE/EE
   `doc/` directory, instead of the relative link, use the full path:
-  `http://doc.gitlab.com/ce/administration/restart_gitlab.html`.
+  `http://docs.gitlab.com/ce/administration/restart_gitlab.html`.
   Replace `reconfigure` with `restart` where appropriate.
 
 ## Installation guide
@@ -266,5 +266,5 @@ curl -X PUT -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" -d "restricted_signup_domai
 
 [cURL]: http://curl.haxx.se/ "cURL website"
 [single spaces]: http://www.slate.com/articles/technology/technology/2011/01/space_invaders.html
-[gfm]: http://doc.gitlab.com/ce/markdown/markdown.html#newlines "GitLab flavored markdown documentation"
+[gfm]: http://docs.gitlab.com/ce/markdown/markdown.html#newlines "GitLab flavored markdown documentation"
 [doc-restart]: ../administration/restart_gitlab.md "GitLab restart documentation"

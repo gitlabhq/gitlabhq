@@ -33,7 +33,7 @@ POST /projects/:id/trigger/builds
 
 The required parameters are the trigger's `token` and the Git `ref` on which
 the trigger will be performed. Valid refs are the branch, the tag or the commit
-SHA. The `:id` of a project can be found by [querying the API](../api/projects.md)
+SHA. The `:id` of a project can be found by [querying the API](../../api/projects.md)
 or by visiting the **Triggers** page which provides self-explanatory examples.
 
 When a rebuild is triggered, the information is exposed in GitLab's UI under

@@ -36,7 +36,7 @@ class TodosFinder
   private
 
   def action_id?
-    action_id.present? && [Todo::ASSIGNED, Todo::MENTIONED].include?(action_id.to_i)
+    action_id.present? && [Todo::ASSIGNED, Todo::MENTIONED, Todo::BUILD_FAILED].include?(action_id.to_i)
   end
 
   def action_id

@@ -128,6 +128,38 @@ describe Ci::API::API do
           end
         end
       end
+
+      context 'when build has no tags' do
+        before do
+          commit = create(:ci_commit, project: project)
+          create(:ci_build, commit: commit, tags: [])
+        end
+
+        context 'when runner is allowed to pick untagged builds' do
+          before { runner.update_column(:run_untagged, true) }
+
+          it 'picks build' do
+            register_builds
+
+            expect(response).to have_http_status 201
+          end
+        end
+
+        context 'when runner is not allowed to pick untagged builds' do
+          before { runner.update_column(:run_untagged, false) }
+
+          it 'does not pick build' do
+            register_builds
+
+            expect(response).to have_http_status 404
+          end
+        end
+
+        def register_builds
+          post ci_api("/builds/register"), token: runner.token,
+                                           info: { platform: :darwin }
+        end
+      end
     end
 
     describe "PUT /builds/:id" do
@@ -221,13 +253,13 @@ describe Ci::API::API do
           it "using token as parameter" do
             post authorize_url, { token: build.token }, headers
             expect(response.status).to eq(200)
-            expect(json_response["TempPath"]).to_not be_nil
+            expect(json_response["TempPath"]).not_to be_nil
           end
 
           it "using token as header" do
             post authorize_url, {}, headers_with_token
             expect(response.status).to eq(200)
-            expect(json_response["TempPath"]).to_not be_nil
+            expect(json_response["TempPath"]).not_to be_nil
           end
         end
 
@@ -402,8 +434,8 @@ describe Ci::API::API do
         context 'build has artifacts' do
           let(:build) { create(:ci_build, :artifacts) }
           let(:download_headers) do
-            { 'Content-Transfer-Encoding'=>'binary',
-              'Content-Disposition'=>'attachment; filename=ci_build_artifacts.zip' }
+            { 'Content-Transfer-Encoding' => 'binary',
+              'Content-Disposition' => 'attachment; filename=ci_build_artifacts.zip' }
           end
 
           it 'should download artifact' do

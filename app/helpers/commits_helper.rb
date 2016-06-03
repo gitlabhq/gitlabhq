@@ -123,13 +123,14 @@ module CommitsHelper
     )
   end
 
-  def revert_commit_link(commit, continue_to_path, btn_class: nil)
+  def revert_commit_link(commit, continue_to_path, btn_class: nil, has_tooltip: true)
     return unless current_user
 
-    tooltip = "Revert this #{commit.change_type_title} in a new merge request"
+    tooltip = "Revert this #{commit.change_type_title} in a new merge request" if has_tooltip
 
     if can_collaborate_with_project?
-      link_to 'Revert', '#modal-revert-commit', 'data-toggle' => 'modal', 'data-container' => 'body', title: tooltip, class: "btn btn-default btn-grouped btn-#{btn_class} has-tooltip"
+      btn_class = "btn btn-grouped btn-close btn-#{btn_class}" unless btn_class.nil?
+      link_to 'Revert', '#modal-revert-commit', 'data-toggle' => 'modal', 'data-container' => 'body', title: (tooltip if has_tooltip), class: "#{btn_class} #{'has-tooltip' if has_tooltip}"
     elsif can?(current_user, :fork_project, @project)
       continue_params = {
         to: continue_to_path,
@@ -140,17 +141,20 @@ module CommitsHelper
         namespace_key: current_user.namespace.id,
         continue: continue_params)
 
-      link_to 'Revert', fork_path, class: 'btn btn-grouped btn-close', method: :post, 'data-toggle' => 'tooltip', 'data-container' => 'body', title: tooltip
+      btn_class = "btn btn-grouped btn-close" unless btn_class.nil?
+
+      link_to 'Revert', fork_path, class: btn_class, method: :post, 'data-toggle' => 'tooltip', 'data-container' => 'body', title: (tooltip if has_tooltip)
     end
   end
 
-  def cherry_pick_commit_link(commit, continue_to_path, btn_class: nil)
+  def cherry_pick_commit_link(commit, continue_to_path, btn_class: nil, has_tooltip: true)
     return unless current_user
 
     tooltip = "Cherry-pick this #{commit.change_type_title} in a new merge request"
 
     if can_collaborate_with_project?
-      link_to 'Cherry-pick', '#modal-cherry-pick-commit', 'data-toggle' => 'modal', 'data-container' => 'body', title: tooltip, class: "btn btn-default btn-grouped btn-#{btn_class} has-tooltip"
+      btn_class = "btn btn-default btn-grouped btn-#{btn_class}" unless btn_class.nil?
+      link_to 'Cherry-pick', '#modal-cherry-pick-commit', 'data-toggle' => 'modal', 'data-container' => 'body', title: (tooltip if has_tooltip), class: "#{btn_class} #{'has-tooltip' if has_tooltip}"
     elsif can?(current_user, :fork_project, @project)
       continue_params = {
         to: continue_to_path,
@@ -161,7 +165,8 @@ module CommitsHelper
         namespace_key: current_user.namespace.id,
         continue: continue_params)
 
-      link_to 'Cherry-pick', fork_path, class: 'btn btn-grouped btn-close', method: :post, 'data-toggle' => 'tooltip', 'data-container' => 'body', title: tooltip
+      btn_class = "btn btn-grouped btn-close" unless btn_class.nil?
+      link_to 'Cherry-pick', fork_path, class: "#{btn_class}", method: :post, 'data-toggle' => 'tooltip', 'data-container' => 'body', title: (tooltip if has_tooltip)
     end
   end
 

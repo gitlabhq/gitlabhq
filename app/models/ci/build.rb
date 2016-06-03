@@ -53,6 +53,7 @@ module Ci
         new_build.stage_idx = build.stage_idx
         new_build.trigger_request = build.trigger_request
         new_build.save
+        MergeRequests::AddTodoWhenBuildFailsService.new(build.project, nil).close(new_build)
         new_build
       end
     end
@@ -95,8 +96,12 @@ module Ci
     end
 
     def trace_html
-      html = Ci::Ansi2html::convert(trace) if trace.present?
-      html || ''
+      trace_with_state[:html] || ''
+    end
+
+    def trace_with_state(state = nil)
+      trace_with_state = Ci::Ansi2html::convert(trace, state) if trace.present?
+      trace_with_state || {}
     end
 
     def timeout
@@ -201,7 +206,7 @@ module Ci
     end
 
     def recreate_trace_dir
-      unless Dir.exists?(dir_to_trace)
+      unless Dir.exist?(dir_to_trace)
         FileUtils.mkdir_p(dir_to_trace)
       end
     end
@@ -281,12 +286,18 @@ module Ci
       project.runners_token
     end
 
-    def valid_token? token
+    def valid_token?(token)
       project.valid_runners_token? token
     end
 
     def can_be_served?(runner)
+      return false unless has_tags? || runner.run_untagged?
+
       (tag_list - runner.tag_list).empty?
+    end
+
+    def has_tags?
+      tag_list.any?
     end
 
     def any_runners_online?
@@ -302,6 +313,7 @@ module Ci
       build_data = Gitlab::BuildDataBuilder.build(self)
       project.execute_hooks(build_data.dup, :build_hooks)
       project.execute_services(build_data.dup, :build_hooks)
+      project.running_or_pending_build_count(force: true)
     end
 
     def artifacts?

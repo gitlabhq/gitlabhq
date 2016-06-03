@@ -18,9 +18,8 @@ gem "mysql2", '~> 0.3.16', group: :mysql
 gem "pg", '~> 0.18.2', group: :postgres
 
 # Authentication libraries
-gem 'devise',                 '~> 3.5.4'
+gem 'devise',                 '~> 4.0'
 gem 'doorkeeper',             '~> 3.1'
-gem 'devise-async',           '~> 0.9.0'
 gem 'omniauth',               '~> 1.3.1'
 gem 'omniauth-auth0',         '~> 1.4.1'
 gem 'omniauth-azure-oauth2',  '~> 0.0.6'
@@ -36,15 +35,16 @@ gem 'omniauth-shibboleth',    '~> 1.2.0'
 gem 'omniauth-twitter',       '~> 1.2.0'
 gem 'omniauth_crowd',         '~> 2.2.0'
 gem 'rack-oauth2',            '~> 1.2.1'
+gem 'jwt'
 
 # Spam and anti-bot protection
 gem 'recaptcha', require: 'recaptcha/rails'
 gem 'akismet', '~> 2.0'
 
 # Two-factor authentication
-gem 'devise-two-factor', '~> 2.0.0'
+gem 'devise-two-factor', '~> 3.0.0'
 gem 'rqrcode-rails3', '~> 0.1.7'
-gem 'attr_encrypted', '~> 1.3.4'
+gem 'attr_encrypted', '~> 3.0.0'
 
 # Browser detection
 gem "browser", '~> 1.0.0'
@@ -72,7 +72,7 @@ gem 'grape-entity', '~> 0.4.2'
 gem 'rack-cors',    '~> 0.4.0', require: 'rack/cors'
 
 # Pagination
-gem "kaminari", "~> 0.16.3"
+gem "kaminari", "~> 0.17.0"
 
 # HAML
 gem "haml-rails", '~> 0.9.0'
@@ -83,8 +83,14 @@ gem "carrierwave", '~> 0.10.0'
 # Drag and Drop UI
 gem 'dropzonejs-rails', '~> 0.7.1'
 
+# for backups
+gem 'fog-aws', '~> 0.9'
+gem 'fog-core', '~> 1.40'
+gem 'fog-local', '~> 0.3'
+gem 'fog-google', '~> 0.3'
+gem 'fog-openstack', '~> 0.1'
+
 # for aws storage
-gem "fog", "~> 1.36.0"
 gem "unf", '~> 0.1.4'
 
 # Authorization
@@ -120,7 +126,7 @@ group :unicorn do
 end
 
 # State machine
-gem "state_machines-activerecord", '~> 0.3.0'
+gem "state_machines-activerecord", '~> 0.4.0'
 # Run events after state machine commits
 gem 'after_commit_queue'
 
@@ -177,9 +183,6 @@ gem 'ruby-fogbugz', '~> 0.2.1'
 # d3
 gem 'd3_rails', '~> 3.5.0'
 
-#cal-heatmap
-gem 'cal-heatmap-rails', '~> 3.6.0'
-
 # underscore-rails
 gem "underscore-rails", "~> 1.8.0"
 
@@ -218,13 +221,13 @@ gem 'gitlab_emoji',       '~> 0.3.0'
 gem 'gon',                '~> 6.0.1'
 gem 'jquery-atwho-rails', '~> 1.3.2'
 gem 'jquery-rails',       '~> 4.1.0'
-gem 'jquery-scrollto-rails', '~> 1.4.3'
 gem 'jquery-ui-rails',    '~> 5.0.0'
 gem 'raphael-rails',      '~> 2.1.2'
 gem 'request_store',      '~> 1.3.0'
 gem 'select2-rails',      '~> 3.5.9'
 gem 'virtus',             '~> 1.0.1'
 gem 'net-ssh',            '~> 3.0.1'
+gem 'base32',             '~> 0.3.0'
 
 # Sentry integration
 gem 'sentry-raven', '~> 0.15'
@@ -292,9 +295,10 @@ group :development, :test do
   gem 'spring-commands-spinach',  '~> 1.1.0'
   gem 'spring-commands-teaspoon', '~> 0.0.2'
 
-  gem 'rubocop', '~> 0.38.0', require: false
+  gem 'rubocop', '~> 0.40.0', require: false
+  gem 'rubocop-rspec', '~> 1.5.0', require: false
   gem 'scss_lint', '~> 0.47.0', require: false
-  gem 'coveralls',  '~> 0.8.2', require: false
+  gem 'coveralls', '~> 0.8.2', require: false
   gem 'simplecov', '~> 0.11.0', require: false
   gem 'flog', require: false
   gem 'flay', require: false
@@ -324,8 +328,7 @@ gem "mail_room", "~> 0.7"
 gem 'email_reply_parser', '~> 0.5.8'
 
 ## CI
-gem 'activerecord-deprecated_finders', '~> 1.0.3'
-gem 'activerecord-session_store', '~> 0.1.0'
+gem 'activerecord-session_store', '~> 1.0.0'
 gem "nested_form", '~> 0.3.2'
 
 # OAuth
@@ -333,3 +336,6 @@ gem 'oauth2', '~> 1.0.0'
 
 # Soft deletion
 gem "paranoia", "~> 2.0"
+
+# Health check
+gem 'health_check', '~> 1.5.1'
