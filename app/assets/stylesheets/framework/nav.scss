@@ -67,6 +67,27 @@
       color: #78a;
     }
   }
+
+  &.sub-nav {
+    background-color: $background-color;
+
+    .container-fluid {
+      background-color: $background-color;
+    }
+
+    li {
+
+      a {
+        margin: 0;
+        padding: 11px 10px 9px;
+      }
+
+      &.active a {
+        border-bottom: none;
+        color: $link-underline-blue;
+      }
+    }
+  }
 }
 
 .top-area {
