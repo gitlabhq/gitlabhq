@@ -52,7 +52,7 @@ class CommitStatus < ActiveRecord::Base
     end
   end
 
-  delegate :sha, :short_sha, to: :commit
+  delegate :sha, :short_sha, to: :pipeline
 
   def before_sha
     pipeline.before_sha || Gitlab::Git::BLANK_SHA
