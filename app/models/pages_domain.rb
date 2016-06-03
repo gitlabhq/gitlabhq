@@ -10,7 +10,10 @@ class PagesDomain < ActiveRecord::Base
   validate :validate_matching_key, if: ->(domain) { domain.certificate.present? || domain.key.present? }
   validate :validate_intermediates, if: ->(domain) { domain.certificate.present? }
 
-  attr_encrypted :key, mode: :per_attribute_iv_and_salt, key: Gitlab::Application.secrets.db_key_base
+  attr_encrypted :key,
+    mode: :per_attribute_iv_and_salt,
+    key: Gitlab::Application.secrets.db_key_base,
+    algorithm: 'aes-256-cbc'
 
   after_create :update
   after_save :update
