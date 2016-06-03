@@ -17,12 +17,15 @@ describe Gitlab::Lfs::Router, lib: true do
     }
   end
 
-  let(:lfs_router_auth) { new_lfs_router(project, user) }
-  let(:lfs_router_noauth) { new_lfs_router(project, nil) }
-  let(:lfs_router_public_auth) { new_lfs_router(public_project, user) }
-  let(:lfs_router_public_noauth) { new_lfs_router(public_project, nil) }
-  let(:lfs_router_forked_noauth) { new_lfs_router(forked_project, nil) }
-  let(:lfs_router_forked_auth) { new_lfs_router(forked_project, user_two) }
+  let(:lfs_router_auth) { new_lfs_router(project, user: user) }
+  let(:lfs_router_ci_auth) { new_lfs_router(project, ci: true) }
+  let(:lfs_router_noauth) { new_lfs_router(project) }
+  let(:lfs_router_public_auth) { new_lfs_router(public_project, user: user) }
+  let(:lfs_router_public_ci_auth) { new_lfs_router(public_project, ci: true) }
+  let(:lfs_router_public_noauth) { new_lfs_router(public_project) }
+  let(:lfs_router_forked_noauth) { new_lfs_router(forked_project) }
+  let(:lfs_router_forked_auth) { new_lfs_router(forked_project, user: user_two) }
+  let(:lfs_router_forked_ci_auth) { new_lfs_router(forked_project, ci: true) }
 
   let(:sample_oid) { "b68143e6463773b1b6c6fd009a76c32aeec041faff32ba2ed42fd7f708a17f80" }
   let(:sample_size) { 499013 }
@@ -102,6 +105,17 @@ describe Gitlab::Lfs::Router, lib: true do
           it "responds with the file location" do
             expect(lfs_router_auth.try_call[1]['Content-Type']).to eq("application/octet-stream")
             expect(lfs_router_auth.try_call[1]['X-Sendfile']).to eq(lfs_object.file.path)
+          end
+        end
+
+        context 'when CI is authorized' do
+          it "responds with status 200" do
+            expect(lfs_router_ci_auth.try_call.first).to eq(200)
+          end
+
+          it "responds with the file location" do
+            expect(lfs_router_ci_auth.try_call[1]['Content-Type']).to eq("application/octet-stream")
+            expect(lfs_router_ci_auth.try_call[1]['X-Sendfile']).to eq(lfs_object.file.path)
           end
         end
       end
@@ -525,7 +539,7 @@ describe Gitlab::Lfs::Router, lib: true do
         end
 
         describe 'when user is unauthenticated' do
-          let(:lfs_router_noauth) { new_lfs_router(project, nil) }
+          let(:lfs_router_noauth) { new_lfs_router(project) }
 
           context 'and request is sent by gitlab-workhorse to authorize the request' do
             before do
@@ -584,7 +598,7 @@ describe Gitlab::Lfs::Router, lib: true do
         end
 
         describe 'when user is unauthenticated' do
-          let(:lfs_router_noauth) { new_lfs_router(project, nil) }
+          let(:lfs_router_noauth) { new_lfs_router(project) }
 
           context 'and request is sent by gitlab-workhorse to authorize the request' do
             before do
@@ -716,7 +730,7 @@ describe Gitlab::Lfs::Router, lib: true do
 
       describe 'and second project not related to fork or a source project' do
         let(:second_project) { create(:project) }
-        let(:lfs_router_second_project) { new_lfs_router(second_project, user) }
+        let(:lfs_router_second_project) { new_lfs_router(second_project, user: user) }
 
         before do
           public_project.lfs_objects << lfs_object
@@ -745,8 +759,8 @@ describe Gitlab::Lfs::Router, lib: true do
     ActionController::HttpAuthentication::Basic.encode_credentials(user.username, user.password)
   end
 
-  def new_lfs_router(project, user)
-    Gitlab::Lfs::Router.new(project, user, request)
+  def new_lfs_router(project, user: nil, ci: false)
+    Gitlab::Lfs::Router.new(project, user, ci, request)
   end
 
   def header_for_upload_authorize(project)

@@ -1,9 +1,10 @@
 module Gitlab
   module Lfs
     class Router
-      def initialize(project, user, request)
+      def initialize(project, user, ci, request)
         @project = project
         @user = user
+        @ci = ci
         @env = request.env
         @request = request
       end
@@ -80,7 +81,7 @@ module Gitlab
       def lfs
         return unless @project
 
-        Gitlab::Lfs::Response.new(@project, @user, @request)
+        Gitlab::Lfs::Response.new(@project, @user, @ci, @request)
       end
 
       def sanitize_tmp_filename(name)

@@ -22,6 +22,7 @@ v 8.9.0 (unreleased)
   - Remove 'main language' feature
   - Pipelines can be canceled only when there are running builds
   - Use downcased path to container repository as this is expected path by Docker
+  - Allow to use CI token to fetch LFS objects
   - Projects pending deletion will render a 404 page
   - Measure queue duration between gitlab-workhorse and Rails
   - Make authentication service for Container Registry to be compatible with < Docker 1.11
