@@ -62,6 +62,7 @@ v 8.9.0 (unreleased)
   - Markdown editor now correctly resets the input value on edit cancellation !4175
   - Toggling a task list item in a issue/mr description does not creates a Todo for mentions
   - Improved UX of date pickers on issue & milestone forms
+  - Cache on the database if a project has an active external issue tracker.
 
 v 8.8.5 (unreleased)
   - Ensure branch cleanup regardless of whether the GitHub import process succeeds
