@@ -12,7 +12,7 @@ describe SessionsController do
           post(:create, user: { login: 'invalid', password: 'invalid' })
 
           expect(response)
-            .to set_flash.now[:alert].to /Invalid login or password/
+            .to set_flash.now[:alert].to /Invalid Login or password/
         end
       end
 
@@ -33,6 +33,27 @@ describe SessionsController do
 
       def authenticate_2fa(user_params)
         post(:create, { user: user_params }, { otp_user_id: user.id })
+      end
+
+      context 'remember_me field' do
+        it 'sets a remember_user_token cookie when enabled' do
+          allow(controller).to receive(:find_user).and_return(user)
+          expect(controller).
+            to receive(:remember_me).with(user).and_call_original
+
+          authenticate_2fa(remember_me: '1', otp_attempt: user.current_otp)
+
+          expect(response.cookies['remember_user_token']).to be_present
+        end
+
+        it 'does nothing when disabled' do
+          allow(controller).to receive(:find_user).and_return(user)
+          expect(controller).not_to receive(:remember_me)
+
+          authenticate_2fa(remember_me: '0', otp_attempt: user.current_otp)
+
+          expect(response.cookies['remember_user_token']).to be_nil
+        end
       end
 
       ##

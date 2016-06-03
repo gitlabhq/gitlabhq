@@ -121,8 +121,19 @@ describe Note, models: true do
     let!(:note2) { create(:note_on_issue) }
 
     it "reads the rendered note body from the cache" do
-      expect(Banzai::Renderer).to receive(:render).with(note1.note, pipeline: :note, cache_key: [note1, "note"], project: note1.project)
-      expect(Banzai::Renderer).to receive(:render).with(note2.note, pipeline: :note, cache_key: [note2, "note"], project: note2.project)
+      expect(Banzai::Renderer).to receive(:render).
+        with(note1.note,
+             pipeline: :note,
+             cache_key: [note1, "note"],
+             project: note1.project,
+             author: note1.author)
+
+      expect(Banzai::Renderer).to receive(:render).
+        with(note2.note,
+             pipeline: :note,
+             cache_key: [note2, "note"],
+             project: note2.project,
+             author: note2.author)
 
       note1.all_references
       note2.all_references
@@ -138,6 +149,25 @@ describe Note, models: true do
 
     it 'returns notes with matching content regardless of the casing' do
       expect(described_class.search('WOW')).to eq([note])
+    end
+
+    context "confidential issues" do
+      let(:user) { create :user }
+      let(:confidential_issue) { create(:issue, :confidential, author: user) }
+      let(:confidential_note) { create :note, note: "Random", noteable: confidential_issue, project: confidential_issue.project }
+
+      it "returns notes with matching content if user can see the issue" do
+        expect(described_class.search(confidential_note.note, as_user: user)).to eq([confidential_note])
+      end
+
+      it "does not return notes with matching content if user can not see the issue" do
+        user = create :user
+        expect(described_class.search(confidential_note.note, as_user: user)).to be_empty
+      end
+
+      it "does not return notes with matching content for unauthenticated users" do
+        expect(described_class.search(confidential_note.note)).to be_empty
+      end
     end
   end
 
@@ -182,6 +212,16 @@ describe Note, models: true do
       note = build(:note, line_code: ' ')
 
       expect { note.valid? }.to change(note, :line_code).to(nil)
+    end
+  end
+
+  describe '#participants' do
+    it 'includes the note author' do
+      project = create(:project, :public)
+      issue = create(:issue, project: project)
+      note = create(:note_on_issue, noteable: issue, project: project)
+
+      expect(note.participants).to include(note.author)
     end
   end
 end

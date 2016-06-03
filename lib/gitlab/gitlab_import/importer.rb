@@ -17,7 +17,7 @@ module Gitlab
       def execute
         project_identifier = CGI.escape(project.import_source)
 
-        #Issues && Comments
+        # Issues && Comments
         issues = client.issues(project_identifier)
 
         issues.each do |issue|

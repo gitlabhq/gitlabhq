@@ -414,4 +414,45 @@ describe MergeRequest, models: true do
       end
     end
   end
+
+  describe '#participants' do
+    let(:project) { create(:project, :public) }
+
+    let(:mr) do
+      create(:merge_request, source_project: project, target_project: project)
+    end
+
+    let!(:note1) do
+      create(:note_on_merge_request, noteable: mr, project: project, note: 'a')
+    end
+
+    let!(:note2) do
+      create(:note_on_merge_request, noteable: mr, project: project, note: 'b')
+    end
+
+    it 'includes the merge request author' do
+      expect(mr.participants).to include(mr.author)
+    end
+
+    it 'includes the authors of the notes' do
+      expect(mr.participants).to include(note1.author, note2.author)
+    end
+  end
+
+  describe 'cached counts' do
+    it 'updates when assignees change' do
+      user1 = create(:user)
+      user2 = create(:user)
+      mr = create(:merge_request, assignee: user1)
+
+      expect(user1.assigned_open_merge_request_count).to eq(1)
+      expect(user2.assigned_open_merge_request_count).to eq(0)
+
+      mr.assignee = user2
+      mr.save
+
+      expect(user1.assigned_open_merge_request_count).to eq(0)
+      expect(user2.assigned_open_merge_request_count).to eq(1)
+    end
+  end
 end

@@ -1,4 +1,4 @@
-//= require stat_graph_contributors_util
+//= require graphs/stat_graph_contributors_util
 
 describe("ContributorsStatGraphUtil", function () {
 

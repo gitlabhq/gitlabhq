@@ -1,4 +1,4 @@
-//= require stat_graph
+//= require graphs/stat_graph
 
 describe("StatGraph", function () {
 

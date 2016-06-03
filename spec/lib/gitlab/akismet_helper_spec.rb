@@ -6,8 +6,8 @@ describe Gitlab::AkismetHelper, type: :helper do
 
   before do
     allow(Gitlab.config.gitlab).to receive(:url).and_return(Settings.send(:build_gitlab_url))
-    current_application_settings.akismet_enabled = true
-    current_application_settings.akismet_api_key = '12345'
+    allow_any_instance_of(ApplicationSetting).to receive(:akismet_enabled).and_return(true)
+    allow_any_instance_of(ApplicationSetting).to receive(:akismet_api_key).and_return('12345')
   end
 
   describe '#check_for_spam?' do

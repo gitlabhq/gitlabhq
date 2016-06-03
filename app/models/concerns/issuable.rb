@@ -60,11 +60,23 @@ module Issuable
              prefix: true
 
     attr_mentionable :title, pipeline: :single_line
-    attr_mentionable :description, cache: true
-    participant :author, :assignee, :notes_with_associations
+    attr_mentionable :description
+
+    participant :author
+    participant :assignee
+    participant :notes_with_associations
+
     strip_attributes :title
 
     acts_as_paranoid
+
+    after_save :update_assignee_cache_counts, if: :assignee_id_changed?
+
+    def update_assignee_cache_counts
+      # make sure we flush the cache for both the old *and* new assignee
+      User.find(assignee_id_was).update_cache_counts if assignee_id_was
+      assignee.update_cache_counts if assignee
+    end
   end
 
   module ClassMethods
@@ -104,12 +116,28 @@ module Issuable
       end
     end
 
-    def with_label(title)
+    def with_label(title, sort = nil)
       if title.is_a?(Array) && title.size > 1
-        joins(:labels).where(labels: { title: title }).group(arel_table[:id]).having("COUNT(DISTINCT labels.title) = #{title.size}")
+        joins(:labels).where(labels: { title: title }).group(*grouping_columns(sort)).having("COUNT(DISTINCT labels.title) = #{title.size}")
       else
         joins(:labels).where(labels: { title: title })
       end
+    end
+
+    # Includes table keys in group by clause when sorting
+    # preventing errors in postgres
+    #
+    # Returns an array of arel columns
+    def grouping_columns(sort)
+      grouping_columns = [arel_table[:id]]
+
+      if ["milestone_due_desc", "milestone_due_asc"].include?(sort)
+        milestone_table = Milestone.arel_table
+        grouping_columns << milestone_table[:id]
+        grouping_columns << milestone_table[:due_date]
+      end
+
+      grouping_columns
     end
   end
 
@@ -119,10 +147,6 @@ module Issuable
 
   def new?
     today? && created_at == updated_at
-  end
-
-  def is_assigned?
-    !!assignee_id
   end
 
   def is_being_reassigned?
@@ -153,6 +177,10 @@ module Issuable
     hook_data.merge!(assignee: assignee.hook_attrs) if assignee
 
     hook_data
+  end
+
+  def labels_array
+    labels.to_a
   end
 
   def label_names

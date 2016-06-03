@@ -1,5 +1,5 @@
 ## Log system
-GitLab has advanced log system so everything is logging and you can analize your instance using various system log files.
+GitLab has an advanced log system where everything is logged so that you can analyze your instance using various system log files.
 In addition to system log files, GitLab Enterprise Edition comes with Audit Events. Find more about them [in Audit Events documentation](http://docs.gitlab.com/ee/administration/audit_events.html)
 
 System log files are typically plain text in a standard log file format. This guide talks about how to read and use these system log files.
@@ -67,13 +67,13 @@ gitlab-shell is using by Gitlab for executing git commands and provide ssh acces
 
 ```
 I, [2015-02-13T06:17:00.671315 #9291]  INFO -- : Adding project root/example.git at </var/opt/gitlab/git-data/repositories/root/dcdcdcdcd.git>.
-I, [2015-02-13T06:17:00.679433 #9291]  INFO -- : Moving existing hooks directory and simlinking global hooks directory for /var/opt/gitlab/git-data/repositories/root/example.git.
+I, [2015-02-13T06:17:00.679433 #9291]  INFO -- : Moving existing hooks directory and symlinking global hooks directory for /var/opt/gitlab/git-data/repositories/root/example.git.
 ```
 
 #### unicorn_stderr.log
 This file lives in `/var/log/gitlab/unicorn/unicorn_stderr.log` for omnibus package or in `/home/git/gitlab/log/unicorn_stderr.log` for installations from the source.
 
-Unicorn is a high-performance forking Web server which is used for serving GitLab application. You can look at this log, for example, if your application does not respond. This log cantains all information about state of unicorn processes at any given time.
+Unicorn is a high-performance forking Web server which is used for serving the GitLab application. You can look at this log if, for example, your application does not respond. This log contains all information about the state of unicorn processes at any given time.
 
 ```
 I, [2015-02-13T06:14:46.680381 #9047]  INFO -- : Refreshing Gem list

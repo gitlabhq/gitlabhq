@@ -222,7 +222,7 @@ Style/EndBlock:
 
 # Use Unix-style line endings.
 Style/EndOfLine:
-  Enabled: false
+  Enabled: true
 
 # Favor the use of Fixnum#even? && Fixnum#odd?
 Style/EvenOdd:
@@ -247,7 +247,7 @@ Style/FlipFlop:
 
 # Checks use of for or each in multiline loops.
 Style/For:
-  Enabled: false
+  Enabled: true
 
 # Enforce the use of Kernel#sprintf, Kernel#format or String#%.
 Style/FormatString:
@@ -286,7 +286,7 @@ Style/IdenticalConditionalBranches:
 # Checks the indentation of the first line of the right-hand-side of a
 # multi-line assignment.
 Style/IndentAssignment:
-  Enabled: false
+  Enabled: true
 
 # Keep indentation straight.
 Style/IndentationConsistency:
@@ -318,7 +318,7 @@ Style/LambdaCall:
 
 # Comments should start with a space.
 Style/LeadingCommentSpace:
-  Enabled: false
+  Enabled: true
 
 # Use \ instead of + or << to concatenate two string literals at line end.
 Style/LineEndConcatenation:
@@ -330,7 +330,7 @@ Style/MethodCallParentheses:
 
 # Checks if the method definitions have or don't have parentheses.
 Style/MethodDefParentheses:
-  Enabled: false
+  Enabled: true
 
 # Use the configured style when naming methods.
 Style/MethodName:
@@ -362,7 +362,7 @@ Style/MultilineHashBraceLayout:
 
 # Do not use then for multi-line if/unless.
 Style/MultilineIfThen:
-  Enabled: false
+  Enabled: true
 
 # Checks that the closing brace in a method call is either on the same line as
 # the last method argument, or a new line.
@@ -394,7 +394,7 @@ Style/MutableConstant:
 
 # Favor unless over if for negative conditions (or control flow or).
 Style/NegatedIf:
-  Enabled: false
+  Enabled: true
 
 # Favor until over while for negative conditions.
 Style/NegatedWhile:
@@ -486,10 +486,9 @@ Style/RedundantException:
 Style/RedundantFreeze:
   Enabled: false
 
-# TODO: Enable RedundantParentheses Cop.
 # Checks for parentheses that seem not to serve any purpose.
 Style/RedundantParentheses:
-  Enabled: false
+  Enabled: true
 
 # Don't use return where it's not required.
 Style/RedundantReturn:
@@ -515,7 +514,7 @@ Style/SelfAssignment:
 
 # Don't use semicolons to terminate expressions.
 Style/Semicolon:
-  Enabled: false
+  Enabled: true
 
 # Checks for proper usage of fail and raise.
 Style/SignalException:
@@ -541,7 +540,7 @@ Style/SpaceAfterComma:
 # Do not put a space between a method name and the opening parenthesis in a
 # method definition.
 Style/SpaceAfterMethodName:
-  Enabled: false
+  Enabled: true
 
 # Tracks redundant space after the ! operator.
 Style/SpaceAfterNot:
@@ -570,11 +569,11 @@ Style/SpaceBeforeBlockBraces:
 
 # No spaces before commas.
 Style/SpaceBeforeComma:
-  Enabled: false
+  Enabled: true
 
 # Checks for missing space between code and a comment on the same line.
 Style/SpaceBeforeComment:
-  Enabled: false
+  Enabled: true
 
 # Checks that exactly one space is used between a method name and the first
 # argument for method calls without parentheses.
@@ -705,7 +704,7 @@ Style/WhenThen:
 
 # Checks for redundant do after while or until.
 Style/WhileUntilDo:
-  Enabled: false
+  Enabled: true
 
 # Favor modifier while/until usage when you have a single-line body.
 Style/WhileUntilModifier:
@@ -785,7 +784,7 @@ Lint/AssignmentInCondition:
 
 # Align block ends correctly.
 Lint/BlockAlignment:
-  Enabled: false
+  Enabled: true
 
 # Default values in optional keyword arguments and optional ordinal arguments
 # should not refer back to the name of the argument.
@@ -878,7 +877,7 @@ Lint/InvalidCharacterLiteral:
 
 # Checks of literals used in conditions.
 Lint/LiteralInCondition:
-  Enabled: false
+  Enabled: true
 
 # Checks for literals used in interpolation.
 Lint/LiteralInInterpolation:
@@ -1027,10 +1026,9 @@ Performance/StartWith:
 Performance/StringReplacement:
   Enabled: true
 
-# TODO: Enable TimesMap Cop.
 # Checks for `.times.map` calls.
 Performance/TimesMap:
-  Enabled: false
+  Enabled: true
 
 
 ##################### Rails ##################################

@@ -1,6 +1,7 @@
 class EmailsOnPushWorker
   include Sidekiq::Worker
 
+  sidekiq_options queue: :mailers
   attr_reader :email, :skip_premailer
 
   def perform(project_id, recipients, push_data, options = {})

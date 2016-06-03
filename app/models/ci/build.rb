@@ -286,7 +286,7 @@ module Ci
       project.runners_token
     end
 
-    def valid_token? token
+    def valid_token?(token)
       project.valid_runners_token? token
     end
 
@@ -313,6 +313,7 @@ module Ci
       build_data = Gitlab::BuildDataBuilder.build(self)
       project.execute_hooks(build_data.dup, :build_hooks)
       project.execute_services(build_data.dup, :build_hooks)
+      project.running_or_pending_build_count(force: true)
     end
 
     def artifacts?

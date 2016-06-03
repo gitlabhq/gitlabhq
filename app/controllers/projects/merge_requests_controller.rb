@@ -191,6 +191,11 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       return
     end
 
+    if params[:sha] != @merge_request.source_sha
+      @status = :sha_mismatch
+      return
+    end
+
     TodoService.new.merge_merge_request(merge_request, current_user)
 
     @merge_request.update(merge_error: nil)
@@ -206,7 +211,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def branch_from
-    #This is always source
+    # This is always source
     @source_project = @merge_request.nil? ? @project : @merge_request.source_project
     @commit = @repository.commit(params[:ref]) if params[:ref].present?
     render layout: false

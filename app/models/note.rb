@@ -6,7 +6,7 @@ class Note < ActiveRecord::Base
 
   default_value_for :system, false
 
-  attr_mentionable :note, cache: true, pipeline: :note
+  attr_mentionable :note, pipeline: :note
   participant :author
 
   belongs_to :project
@@ -79,14 +79,30 @@ class Note < ActiveRecord::Base
     #
     # This method uses ILIKE on PostgreSQL and LIKE on MySQL.
     #
-    # query - The search query as a String.
+    # query   - The search query as a String.
+    # as_user - Limit results to those viewable by a specific user
     #
     # Returns an ActiveRecord::Relation.
-    def search(query)
+    def search(query, as_user: nil)
       table   = arel_table
       pattern = "%#{query}%"
 
-      where(table[:note].matches(pattern))
+      found_notes = joins('LEFT JOIN issues ON issues.id = noteable_id').
+        where(table[:note].matches(pattern))
+
+      if as_user
+        found_notes.where('
+          issues.confidential IS NULL
+          OR issues.confidential IS FALSE
+          OR (issues.confidential IS TRUE
+            AND (issues.author_id = :user_id
+            OR issues.assignee_id = :user_id
+            OR issues.project_id IN(:project_ids)))',
+          user_id: as_user.id,
+          project_ids: as_user.authorized_projects.select(:id))
+      else
+        found_notes.where('issues.confidential IS NULL OR issues.confidential IS FALSE')
+      end
     end
   end
 

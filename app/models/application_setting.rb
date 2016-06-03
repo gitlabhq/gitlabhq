@@ -51,6 +51,10 @@ class ApplicationSetting < ActiveRecord::Base
             presence: true,
             numericality: { only_integer: true, greater_than: 0 }
 
+  validates :container_registry_token_expire_delay,
+            presence: true,
+            numericality: { only_integer: true, greater_than: 0 }
+
   validates_each :restricted_visibility_levels do |record, attr, value|
     unless value.nil?
       value.each do |level|
@@ -98,6 +102,10 @@ class ApplicationSetting < ActiveRecord::Base
     Rails.cache.delete(CACHE_KEY)
   end
 
+  def self.cached
+    Rails.cache.fetch(CACHE_KEY)
+  end
+
   def self.create_from_defaults
     create(
       default_projects_limit: Settings.gitlab['default_projects_limit'],
@@ -121,7 +129,8 @@ class ApplicationSetting < ActiveRecord::Base
       akismet_enabled: false,
       repository_checks_enabled: true,
       disabled_oauth_sign_in_sources: [],
-      send_user_confirmation_email: false
+      send_user_confirmation_email: false,
+      container_registry_token_expire_delay: 5,
     )
   end
 

@@ -1,13 +1,13 @@
 module Auth
   class ContainerRegistryAuthenticationService < BaseService
+    include Gitlab::CurrentSettings
+
     AUDIENCE = 'container_registry'
 
     def execute
       return error('not found', 404) unless registry.enabled
 
-      if params[:offline_token]
-        return error('unauthorized', 401) unless current_user || project
-      else
+      unless current_user || project
         return error('forbidden', 403) unless scope
       end
 
@@ -19,6 +19,7 @@ module Auth
       token = JSONWebToken::RSAToken.new(registry.key)
       token.issuer = registry.issuer
       token.audience = AUDIENCE
+      token.expire_time = token_expire_at
       token[:access] = names.map do |name|
         { type: 'repository', name: name, actions: %w(*) }
       end
@@ -32,6 +33,7 @@ module Auth
       token.issuer = registry.issuer
       token.audience = params[:service]
       token.subject = current_user.try(:username)
+      token.expire_time = ContainerRegistryAuthenticationService.token_expire_at
       token[:access] = accesses.compact
       token
     end
@@ -76,6 +78,10 @@ module Auth
 
     def registry
       Gitlab.config.registry
+    end
+
+    def self.token_expire_at
+      Time.now + current_application_settings.container_registry_token_expire_delay.minutes
     end
   end
 end

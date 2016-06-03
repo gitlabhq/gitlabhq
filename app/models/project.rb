@@ -309,21 +309,25 @@ class Project < ActiveRecord::Base
     @repository ||= Repository.new(path_with_namespace, self)
   end
 
+  def container_registry_path_with_namespace
+    path_with_namespace.downcase
+  end
+
   def container_registry_repository
     return unless Gitlab.config.registry.enabled
 
     @container_registry_repository ||= begin
-      token = Auth::ContainerRegistryAuthenticationService.full_access_token(path_with_namespace)
+      token = Auth::ContainerRegistryAuthenticationService.full_access_token(container_registry_path_with_namespace)
       url = Gitlab.config.registry.api_url
       host_port = Gitlab.config.registry.host_port
       registry = ContainerRegistry::Registry.new(url, token: token, path: host_port)
-      registry.repository(path_with_namespace)
+      registry.repository(container_registry_path_with_namespace)
     end
   end
 
   def container_registry_repository_url
     if Gitlab.config.registry.enabled
-      "#{Gitlab.config.registry.host_port}/#{path_with_namespace}"
+      "#{Gitlab.config.registry.host_port}/#{container_registry_path_with_namespace}"
     end
   end
 
@@ -946,13 +950,13 @@ class Project < ActiveRecord::Base
     shared_runners_enabled? && Ci::Runner.shared.active.any?(&block)
   end
 
-  def valid_runners_token? token
+  def valid_runners_token?(token)
     self.runners_token && ActiveSupport::SecurityUtils.variable_size_secure_compare(token, self.runners_token)
   end
 
   # TODO (ayufan): For now we use runners_token (backward compatibility)
   # In 8.4 every build will have its own individual token valid for time of build
-  def valid_build_token? token
+  def valid_build_token?(token)
     self.builds_enabled? && self.runners_token && ActiveSupport::SecurityUtils.variable_size_secure_compare(token, self.runners_token)
   end
 
@@ -1006,5 +1010,23 @@ class Project < ActiveRecord::Base
     run_after_commit { ProjectDestroyWorker.perform_async(id, user_id, params) }
 
     update_attribute(:pending_delete, true)
+  end
+
+  def running_or_pending_build_count(force: false)
+    Rails.cache.fetch(['projects', id, 'running_or_pending_build_count'], force: force) do
+      builds.running_or_pending.count(:all)
+    end
+  end
+
+  def mark_import_as_failed(error_message)
+    original_errors = errors.dup
+    sanitized_message = Gitlab::UrlSanitizer.sanitize(error_message)
+
+    import_fail
+    update_column(:import_error, sanitized_message)
+  rescue ActiveRecord::ActiveRecordError => e
+    Rails.logger.error("Error setting import status to failed: #{e.message}. Original error: #{sanitized_message}")
+  ensure
+    @errors = original_errors
   end
 end

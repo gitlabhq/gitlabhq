@@ -122,10 +122,10 @@ describe Issue, "Issuable" do
     let(:project) { build_stubbed(:empty_project) }
 
     context "by milestone due date" do
-      #Correct order is:
-      #Issues/MRs with milestones ordered by date
-      #Issues/MRs with milestones without dates
-      #Issues/MRs without milestones
+      # Correct order is:
+      # Issues/MRs with milestones ordered by date
+      # Issues/MRs with milestones without dates
+      # Issues/MRs without milestones
 
       let!(:issue) { create(:issue, project: project) }
       let!(:early_milestone) { create(:milestone, project: project, due_date: 10.days.from_now) }
@@ -228,6 +228,20 @@ describe Issue, "Issuable" do
 
       expect(issue.card_attributes).
         to eq({ 'Author' => 'Robert', 'Assignee' => 'Douwe' })
+    end
+  end
+
+  describe '#labels_array' do
+    let(:project) { create(:project) }
+    let(:bug) { create(:label, project: project, title: 'bug') }
+    let(:issue) { create(:issue, project: project) }
+
+    before(:each) do
+      issue.labels << bug
+    end
+
+    it 'loads the association and returns it as an array' do
+      expect(issue.reload.labels_array).to eq([bug])
     end
   end
 

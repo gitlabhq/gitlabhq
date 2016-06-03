@@ -48,11 +48,6 @@ describe Banzai::Filter::MilestoneReferenceFilter, lib: true do
       namespace_project_milestone_path(project.namespace, project, milestone)
   end
 
-  it 'adds to the results hash' do
-    result = reference_pipeline_result("Milestone #{reference}")
-    expect(result[:references][:milestone]).to eq [milestone]
-  end
-
   context 'Integer-based references' do
     it 'links to a valid reference' do
       doc = reference_filter("See #{reference}")
@@ -150,11 +145,6 @@ describe Banzai::Filter::MilestoneReferenceFilter, lib: true do
 
       expect(link).to have_attribute('data-milestone')
       expect(link.attr('data-milestone')).to eq milestone.id.to_s
-    end
-
-    it 'adds to the results hash' do
-      result = reference_pipeline_result("Milestone #{reference}")
-      expect(result[:references][:milestone]).to eq [milestone]
     end
   end
 

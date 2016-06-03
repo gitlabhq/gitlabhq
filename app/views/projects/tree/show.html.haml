@@ -3,6 +3,7 @@
   - if current_user
     = auto_discovery_link_tag(:atom, namespace_project_commits_url(@project.namespace, @project, @ref, format: :atom, private_token: current_user.private_token), title: "#{@project.name}:#{@ref} commits")
 = render 'projects/last_push'
+= render "projects/commits/head"
 
 .tree-controls
   = render 'projects/find_file_link'

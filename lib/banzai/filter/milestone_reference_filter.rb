@@ -2,6 +2,8 @@ module Banzai
   module Filter
     # HTML filter that replaces milestone references with links.
     class MilestoneReferenceFilter < AbstractReferenceFilter
+      self.reference_type = :milestone
+
       def self.object_class
         Milestone
       end

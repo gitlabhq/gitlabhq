@@ -20,6 +20,11 @@ class User < ActiveRecord::Base
   default_value_for :hide_no_password, false
   default_value_for :theme_id, gitlab_config.default_theme
 
+  attr_encrypted :otp_secret,
+    key:       Gitlab::Application.config.secret_key_base,
+    mode:      :per_attribute_iv_and_salt,
+    algorithm: 'aes-256-cbc'
+
   devise :two_factor_authenticatable,
          otp_secret_encryption_key: Gitlab::Application.config.secret_key_base
   alias_attribute :two_factor_enabled, :otp_required_for_login
@@ -27,7 +32,7 @@ class User < ActiveRecord::Base
   devise :two_factor_backupable, otp_number_of_backup_codes: 10
   serialize :otp_backup_codes, JSON
 
-  devise :lockable, :async, :recoverable, :rememberable, :trackable,
+  devise :lockable, :recoverable, :rememberable, :trackable,
     :validatable, :omniauthable, :confirmable, :registerable
 
   attr_accessor :force_random_password
@@ -770,6 +775,23 @@ class User < ActiveRecord::Base
 
   def notification_settings_for(source)
     notification_settings.find_or_initialize_by(source: source)
+  end
+
+  def assigned_open_merge_request_count(force: false)
+    Rails.cache.fetch(['users', id, 'assigned_open_merge_request_count'], force: force) do
+      assigned_merge_requests.opened.count
+    end
+  end
+
+  def assigned_open_issues_count(force: false)
+    Rails.cache.fetch(['users', id, 'assigned_open_issues_count'], force: force) do
+      assigned_issues.opened.count
+    end
+  end
+
+  def update_cache_counts
+    assigned_open_merge_request_count(force: true)
+    assigned_open_issues_count(force: true)
   end
 
   private
