@@ -41,17 +41,22 @@ describe ApplicationController do
 
       let(:user) { create(:user) }
 
-      it "logs the user in when the 'private_token' param is populated with the private token" do
-        get :index, private_token: user.private_token
-        expect(response.status).to eq(200)
-        expect(response.body).to eq("authenticated")
+      context "when the 'private_token' param is populated with the private token" do
+        it "logs the user in" do
+          get :index, private_token: user.private_token
+          expect(response.status).to eq(200)
+          expect(response.body).to eq("authenticated")
+        end
       end
 
-      it "logs the user in when the 'PRIVATE-TOKEN' header is populated with the private token" do
-        @request.headers['PRIVATE-TOKEN'] = user.private_token
-        get :index
-        expect(response.status).to eq(200)
-        expect(response.body).to eq("authenticated")
+
+      context "when the 'PRIVATE-TOKEN' header is populated with the private token" do
+        it "logs the user in" do
+          @request.headers['PRIVATE-TOKEN'] = user.private_token
+          get :index
+          expect(response.status).to eq(200)
+          expect(response.body).to eq("authenticated")
+        end
       end
 
       it "doesn't log the user in otherwise" do
@@ -72,17 +77,21 @@ describe ApplicationController do
       let(:user) { create(:user) }
       let(:personal_access_token) { create(:personal_access_token, user: user) }
 
-      it "logs the user in when the 'personal_access_token' param is populated with the personal access token" do
-        get :index, private_token: personal_access_token.token
-        expect(response.status).to eq(200)
-        expect(response.body).to eq('authenticated')
+      context "when the 'personal_access_token' param is populated with the personal access token" do
+        it "logs the user in" do
+          get :index, private_token: personal_access_token.token
+          expect(response.status).to eq(200)
+          expect(response.body).to eq('authenticated')
+        end
       end
 
-      it "logs the user in when the 'PERSONAL_ACCESS_TOKEN' header is populated with the personal access token" do
-        @request.headers["PRIVATE-TOKEN"] = personal_access_token.token
-        get :index
-        expect(response.status).to eq(200)
-        expect(response.body).to eq('authenticated')
+      context "when the 'PERSONAL_ACCESS_TOKEN' header is populated with the personal access token" do
+        it "logs the user in" do
+          @request.headers["PRIVATE-TOKEN"] = personal_access_token.token
+          get :index
+          expect(response.status).to eq(200)
+          expect(response.body).to eq('authenticated')
+        end
       end
 
       it "doesn't log the user in otherwise" do
