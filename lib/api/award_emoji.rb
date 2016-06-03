@@ -1,7 +1,7 @@
 module API
   class AwardEmoji < Grape::API
     before { authenticate! }
-    AWARDABLES = [Issue, MergeRequest]
+    AWARDABLES = [Issue, MergeRequest, Snippet]
 
     resource :projects do
       AWARDABLES.each do |awardable_type|
