@@ -2,7 +2,7 @@
  * Layout
  */
 $sidebar_collapsed_width: 62px;
-$sidebar_width: 220px;
+$sidebar_width: 230px;
 $gutter_collapsed_width: 62px;
 $gutter_width: 290px;
 $gutter_inner_width: 258px;
@@ -12,7 +12,7 @@ $gutter_inner_width: 258px;
  */
 $border-color:       #e5e5e5;
 $focus-border-color: #3aabf0;
-$table-border-color: #f0f0f0;
+$table-border-color: #ececec;
 $background-color:   #fafafa;
 
 /*
@@ -63,8 +63,7 @@ $gl-padding-top: 10px;
 /*
  * Misc
  */
-$row-hover: #f7faff;
-$row-hover-border: #b2d7ff;
+$row-hover: #f4f8fe;
 $progress-color: #c0392b;
 $avatar_radius: 50%;
 $header-height: 50px;
@@ -105,7 +104,7 @@ $blue-medium-light: #3498cb;
 $blue-medium: #2f8ebf;
 $blue-medium-dark: #2d86b4;
 
-$orange-light: #fc8a51;
+$orange-light: rgba(252, 109, 38, 0.80);
 $orange-normal: #e75e40;
 $orange-dark: #ce5237;
 
@@ -120,8 +119,8 @@ $border-white-light: #f1f2f4;
 $border-white-normal: #d6dae2;
 $border-white-dark: #c6cacf;
 
-$border-gray-light: #dcdcdc;
-$border-gray-normal: rgba(0, 0, 0, 0.10);
+$border-gray-light: rgba(0, 0, 0, 0.06);
+$border-gray-normal: rgba(0, 0, 0, 0.10);;
 $border-gray-dark: #c6cacf;
 
 $border-green-light: #2faa60;
@@ -179,7 +178,6 @@ $table-border-gray: #f0f0f0;
 $line-target-blue: #eaf3fc;
 $line-select-yellow: #fcf8e7;
 $line-select-yellow-dark: #f0e2bd;
-
 /*
  * Fonts
  */
@@ -217,7 +215,6 @@ $dropdown-toggle-hover-icon-color: $dropdown-toggle-hover-border-color;
 $btn-active-gray: #ececec;
 $btn-placeholder-gray: #c7c7c7;
 $btn-white-active: #848484;
-$btn-gray-hover: #eee;
 
 /*
  *  Award emoji

@@ -1,3 +1,20 @@
+# == Schema Information
+#
+# Table name: namespaces
+#
+#  id                    :integer          not null, primary key
+#  name                  :string           not null
+#  path                  :string           not null
+#  owner_id              :integer
+#  created_at            :datetime
+#  updated_at            :datetime
+#  type                  :string
+#  description           :string           default(""), not null
+#  avatar                :string
+#  share_with_group_lock :boolean          default(FALSE)
+#  visibility_level      :integer          default(20), not null
+#
+
 require 'carrierwave/orm/activerecord'
 
 class Group < Namespace

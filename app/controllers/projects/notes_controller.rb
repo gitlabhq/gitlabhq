@@ -43,7 +43,7 @@ class Projects::NotesController < Projects::ApplicationController
     end
 
     respond_to do |format|
-      format.js { head :ok }
+      format.js { render nothing: true }
     end
   end
 
@@ -52,7 +52,7 @@ class Projects::NotesController < Projects::ApplicationController
     note.update_attribute(:attachment, nil)
 
     respond_to do |format|
-      format.js { head :ok }
+      format.js { render nothing: true }
     end
   end
 
@@ -96,7 +96,7 @@ class Projects::NotesController < Projects::ApplicationController
   end
 
   def note_to_discussion_html(note)
-    return unless note.diff_note?
+    return unless note.for_diff_line?
 
     if params[:view] == 'parallel'
       template = "projects/notes/_diff_notes_with_reply_parallel"
@@ -120,7 +120,7 @@ class Projects::NotesController < Projects::ApplicationController
   end
 
   def note_to_discussion_with_diff_html(note)
-    return unless note.diff_note?
+    return unless note.for_diff_line?
 
     render_to_string(
       "projects/notes/_discussion",
@@ -158,7 +158,7 @@ class Projects::NotesController < Projects::ApplicationController
   def note_params
     params.require(:note).permit(
       :note, :noteable, :noteable_id, :noteable_type, :project_id,
-      :attachment, :line_code, :commit_id, :type
+      :attachment, :line_code, :commit_id
     )
   end
 

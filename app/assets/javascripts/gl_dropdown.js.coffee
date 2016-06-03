@@ -60,36 +60,9 @@ class GitLabDropdownFilter
       results = data
 
       if search_text isnt ''
-        # When data is an array of objects therefore [object Array] e.g.
-        # [
-        #   { prop: 'foo' },
-        #   { prop: 'baz' }
-        # ]
-        if _.isArray(data)
-          results = fuzzaldrinPlus.filter(data, search_text,
-            key: @options.keys
-          )
-        else
-          # If data is grouped therefore an [object Object]. e.g.
-          # {
-          #   groupName1: [
-          #     { prop: 'foo' },
-          #     { prop: 'baz' }
-          #   ],
-          #   groupName2: [
-          #     { prop: 'abc' },
-          #     { prop: 'def' }
-          #   ]
-          # }
-          if gl.utils.isObject data
-            results = {}
-            for key, group of data
-              tmp = fuzzaldrinPlus.filter(group, search_text,
-                key: @options.keys
-              )
-
-              if tmp.length
-                results[key] = tmp.map (item) -> item
+        results = fuzzaldrinPlus.filter(data, search_text,
+          key: @options.keys
+        )
 
       @options.callback results
     else
@@ -168,9 +141,8 @@ class GitLabDropdown
     searchFields = if @options.search then @options.search.fields else [];
 
     if @options.data
-      # If we provided data
-      # data could be an array of objects or a group of arrays
-      if _.isObject(@options.data) and not _.isFunction(@options.data)
+      # If data is an array
+      if _.isArray @options.data
         @fullData = @options.data
         @parseData @options.data
       else
@@ -258,32 +230,18 @@ class GitLabDropdown
   parseData: (data) ->
     @renderedData = data
 
+    # Render each row
+    html = $.map data, (obj) =>
+      return @renderItem(obj)
+
     if @options.filterable and data.length is 0
       # render no matching results
       html = [@noResults()]
-    else
-      # Handle array groups
-      if gl.utils.isObject data
-        html = []
-        for name, groupData of data
-          # Add header for each group
-          html.push(@renderItem(header: name, name))
-
-          @renderData(groupData, name)
-            .map (item) ->
-              html.push item
-      else
-        # Render each row
-        html = @renderData(data)
 
     # Render the full menu
     full_html = @renderMenu(html.join(""))
 
     @appendMenu(full_html)
-
-  renderData: (data, group = false) ->
-    data.map (obj, index) =>
-      return @renderItem(obj, group, index)
 
   shouldPropagate: (e) =>
     if @options.multiSelect
@@ -341,10 +299,11 @@ class GitLabDropdown
     selector = '.dropdown-content'
     if @dropdown.find(".dropdown-toggle-page").length
       selector = ".dropdown-page-one .dropdown-content"
+
     $(selector, @dropdown).html html
 
   # Render the row
-  renderItem: (data, group = false, index = false) ->
+  renderItem: (data) ->
     html = ""
 
     # Divider
@@ -387,13 +346,8 @@ class GitLabDropdown
       if @highlight
         text = @highlightTextMatches(text, @filterInput.val())
 
-      if group
-        groupAttrs = "data-group='#{group}' data-index='#{index}'"
-      else
-        groupAttrs = ''
-
       html = "<li>
-        <a href='#{url}' #{groupAttrs} class='#{cssClass}'>
+        <a href='#{url}' class='#{cssClass}'>
           #{text}
         </a>
       </li>"
@@ -423,15 +377,9 @@ class GitLabDropdown
 
   rowClicked: (el) ->
     fieldName = @options.fieldName
+    selectedIndex = el.parent().index()
     if @renderedData
-      groupName = el.data('group')
-      if groupName
-        selectedIndex = el.data('index')
-        selectedObject = @renderedData[groupName][selectedIndex]
-      else
-        selectedIndex = el.closest('li').index()
-        selectedObject = @renderedData[selectedIndex]
-
+      selectedObject = @renderedData[selectedIndex]
     value = if @options.id then @options.id(selectedObject, el) else selectedObject.id
     field = @dropdown.parent().find("input[name='#{fieldName}'][value='#{value}']")
     if el.hasClass(ACTIVE_CLASS)
@@ -512,7 +460,7 @@ class GitLabDropdown
         return false
 
       if currentKeyCode is 13
-        @selectRowAtIndex if currentIndex < 0 then 0 else currentIndex
+        @selectRowAtIndex currentIndex
 
   removeArrayKeyEvent: ->
     $('body').off 'keydown'

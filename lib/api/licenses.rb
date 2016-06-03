@@ -2,15 +2,15 @@ module API
   # Licenses API
   class Licenses < Grape::API
     PROJECT_TEMPLATE_REGEX =
-      /[\<\{\[]
-        (project|description|
-        one\sline\s.+\swhat\sit\sdoes\.) # matching the start and end is enough here
-      [\>\}\]]/xi.freeze
+    /[\<\{\[]
+      (project|description|
+      one\sline\s.+\swhat\sit\sdoes\.) # matching the start and end is enough here
+    [\>\}\]]/xi.freeze
     YEAR_TEMPLATE_REGEX = /[<{\[](year|yyyy)[>}\]]/i.freeze
     FULLNAME_TEMPLATE_REGEX =
-      /[\<\{\[]
-        (fullname|name\sof\s(author|copyright\sowner))
-      [\>\}\]]/xi.freeze
+    /[\<\{\[]
+      (fullname|name\sof\s(author|copyright\sowner))
+    [\>\}\]]/xi.freeze
 
     # Get the list of the available license templates
     #

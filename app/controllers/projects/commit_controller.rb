@@ -17,12 +17,12 @@ class Projects::CommitController < Projects::ApplicationController
   def show
     apply_diff_view_cookie!
 
-    @grouped_diff_notes = commit.notes.grouped_diff_notes
-
+    @line_notes = commit.notes.inline
     @note = @project.build_commit_note(commit)
-    @notes = commit.notes.non_diff_notes.fresh
+    @notes = commit.notes.not_inline.fresh
     @noteable = @commit
-    @comments_target = {
+    @comments_allowed = @reply_allowed = true
+    @comments_target  = {
       noteable_type: 'Commit',
       commit_id: @commit.id
     }
@@ -67,10 +67,10 @@ class Projects::CommitController < Projects::ApplicationController
     create_commit(Commits::RevertService, success_notice: "The #{@commit.change_type_title} has been successfully reverted.",
                                           success_path: successful_change_path, failure_path: failed_change_path)
   end
-
+  
   def cherry_pick
     assign_change_commit_vars(@commit.cherry_pick_branch_name)
-
+    
     return render_404 if @target_branch.blank?
 
     create_commit(Commits::CherryPickService, success_notice: "The #{@commit.change_type_title} has been successfully cherry-picked.",

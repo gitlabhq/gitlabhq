@@ -12,7 +12,6 @@ if Gitlab::Metrics.enabled?
 
   Gitlab::Application.configure do |config|
     config.middleware.use(Gitlab::Metrics::RackMiddleware)
-    config.middleware.use(Gitlab::Middleware::RailsQueueDuration)
   end
 
   Sidekiq.configure_server do |config|
@@ -119,8 +118,6 @@ if Gitlab::Metrics.enabled?
     # Instrument the classes used for checking if somebody has push access.
     config.instrument_instance_methods(Gitlab::GitAccess)
     config.instrument_instance_methods(Gitlab::GitAccessWiki)
-
-    config.instrument_instance_methods(API::Helpers)
   end
 
   GC::Profiler.enable

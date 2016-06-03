@@ -1,3 +1,25 @@
+# == Schema Information
+#
+# Table name: ci_commits
+#
+#  id            :integer          not null, primary key
+#  project_id    :integer
+#  ref           :string
+#  sha           :string
+#  before_sha    :string
+#  push_data     :text
+#  created_at    :datetime
+#  updated_at    :datetime
+#  tag           :boolean          default(FALSE)
+#  yaml_errors   :text
+#  committed_at  :datetime
+#  gl_project_id :integer
+#  status        :string
+#  started_at    :datetime
+#  finished_at   :datetime
+#  duration      :integer
+#
+
 module Ci
   class Commit < ActiveRecord::Base
     extend Ci::Model
@@ -7,6 +29,8 @@ module Ci
     has_many :statuses, class_name: 'CommitStatus'
     has_many :builds, class_name: 'Ci::Build'
     has_many :trigger_requests, dependent: :destroy, class_name: 'Ci::TriggerRequest'
+
+    delegate :stages, to: :statuses
 
     validates_presence_of :sha
     validates_presence_of :status
@@ -20,8 +44,7 @@ module Ci
     end
 
     def self.stages
-      # We use pluck here due to problems with MySQL which doesn't allow LIMIT/OFFSET in queries
-      CommitStatus.where(commit: pluck(:id)).stages
+      CommitStatus.where(commit: all).stages
     end
 
     def project_id
@@ -64,29 +87,6 @@ module Ci
       builds.latest.any? do |build|
         build.failed? && build.retryable?
       end
-    end
-
-    def cancelable?
-      builds.running_or_pending.any?
-    end
-
-    def cancel_running
-      builds.running_or_pending.each(&:cancel)
-    end
-
-    def retry_failed
-      builds.latest.failed.select(&:retryable?).each(&:retry)
-    end
-
-    def latest?
-      return false unless ref
-      commit = project.commit(ref)
-      return false unless commit
-      commit.sha == sha
-    end
-
-    def triggered?
-      trigger_requests.any?
     end
 
     def create_builds(user, trigger_request = nil)

@@ -79,7 +79,7 @@ describe "Admin Runners" do
       end
 
       it 'changes registration token' do
-        expect(page_token).not_to eq token
+        expect(page_token).to_not eq token
       end
     end
   end

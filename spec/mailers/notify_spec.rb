@@ -51,7 +51,7 @@ describe Notify do
 
           context 'when enabled email_author_in_body' do
             before do
-              allow_any_instance_of(ApplicationSetting).to receive(:email_author_in_body).and_return(true)
+              allow(current_application_settings).to receive(:email_author_in_body).and_return(true)
             end
 
             it 'contains a link to note author' do
@@ -230,7 +230,7 @@ describe Notify do
 
           context 'when enabled email_author_in_body' do
             before do
-              allow_any_instance_of(ApplicationSetting).to receive(:email_author_in_body).and_return(true)
+              allow(current_application_settings).to receive(:email_author_in_body).and_return(true)
             end
 
             it 'contains a link to note author' do
@@ -454,7 +454,7 @@ describe Notify do
 
         context 'when enabled email_author_in_body' do
           before do
-            allow_any_instance_of(ApplicationSetting).to receive(:email_author_in_body).and_return(true)
+            allow(current_application_settings).to receive(:email_author_in_body).and_return(true)
           end
 
           it 'contains a link to note author' do
@@ -593,7 +593,7 @@ describe Notify do
     let(:user) { create(:user) }
     let(:tree_path) { namespace_project_tree_path(project.namespace, project, "master") }
 
-    subject { Notify.repository_push_email(project.id, author_id: user.id, ref: 'refs/heads/master', action: :create) }
+    subject { Notify.repository_push_email(project.id, 'devs@company.name', author_id: user.id, ref: 'refs/heads/master', action: :create) }
 
     it_behaves_like 'it should not have Gmail Actions links'
     it_behaves_like "a user cannot unsubscribe through footer link"
@@ -604,6 +604,10 @@ describe Notify do
       sender = subject.header[:from].addrs[0]
       expect(sender.display_name).to eq(user.name)
       expect(sender.address).to eq(gitlab_sender)
+    end
+
+    it 'is sent to recipient' do
+      is_expected.to deliver_to 'devs@company.name'
     end
 
     it 'has the correct subject' do
@@ -620,7 +624,7 @@ describe Notify do
     let(:user) { create(:user) }
     let(:tree_path) { namespace_project_tree_path(project.namespace, project, "v1.0") }
 
-    subject { Notify.repository_push_email(project.id, author_id: user.id, ref: 'refs/tags/v1.0', action: :create) }
+    subject { Notify.repository_push_email(project.id, 'devs@company.name', author_id: user.id, ref: 'refs/tags/v1.0', action: :create) }
 
     it_behaves_like 'it should not have Gmail Actions links'
     it_behaves_like "a user cannot unsubscribe through footer link"
@@ -631,6 +635,10 @@ describe Notify do
       sender = subject.header[:from].addrs[0]
       expect(sender.display_name).to eq(user.name)
       expect(sender.address).to eq(gitlab_sender)
+    end
+
+    it 'is sent to recipient' do
+      is_expected.to deliver_to 'devs@company.name'
     end
 
     it 'has the correct subject' do
@@ -646,7 +654,7 @@ describe Notify do
     let(:example_site_path) { root_path }
     let(:user) { create(:user) }
 
-    subject { Notify.repository_push_email(project.id, author_id: user.id, ref: 'refs/heads/master', action: :delete) }
+    subject { Notify.repository_push_email(project.id, 'devs@company.name', author_id: user.id, ref: 'refs/heads/master', action: :delete) }
 
     it_behaves_like 'it should not have Gmail Actions links'
     it_behaves_like "a user cannot unsubscribe through footer link"
@@ -657,6 +665,10 @@ describe Notify do
       sender = subject.header[:from].addrs[0]
       expect(sender.display_name).to eq(user.name)
       expect(sender.address).to eq(gitlab_sender)
+    end
+
+    it 'is sent to recipient' do
+      is_expected.to deliver_to 'devs@company.name'
     end
 
     it 'has the correct subject' do
@@ -668,7 +680,7 @@ describe Notify do
     let(:example_site_path) { root_path }
     let(:user) { create(:user) }
 
-    subject { Notify.repository_push_email(project.id, author_id: user.id, ref: 'refs/tags/v1.0', action: :delete) }
+    subject { Notify.repository_push_email(project.id, 'devs@company.name', author_id: user.id, ref: 'refs/tags/v1.0', action: :delete) }
 
     it_behaves_like 'it should not have Gmail Actions links'
     it_behaves_like "a user cannot unsubscribe through footer link"
@@ -679,6 +691,10 @@ describe Notify do
       sender = subject.header[:from].addrs[0]
       expect(sender.display_name).to eq(user.name)
       expect(sender.address).to eq(gitlab_sender)
+    end
+
+    it 'is sent to recipient' do
+      is_expected.to deliver_to 'devs@company.name'
     end
 
     it 'has the correct subject' do
@@ -693,9 +709,8 @@ describe Notify do
     let(:commits) { Commit.decorate(compare.commits, nil) }
     let(:diff_path) { namespace_project_compare_path(project.namespace, project, from: Commit.new(compare.base, project), to: Commit.new(compare.head, project)) }
     let(:send_from_committer_email) { false }
-    let(:diff_refs) { [project.merge_base_commit(sample_image_commit.id, sample_commit.id), project.commit(sample_commit.id)] }
 
-    subject { Notify.repository_push_email(project.id, author_id: user.id, ref: 'refs/heads/master', action: :push, compare: compare, reverse_compare: false, diff_refs: diff_refs, send_from_committer_email: send_from_committer_email) }
+    subject { Notify.repository_push_email(project.id, 'devs@company.name', author_id: user.id, ref: 'refs/heads/master', action: :push, compare: compare, reverse_compare: false, send_from_committer_email: send_from_committer_email) }
 
     it_behaves_like 'it should not have Gmail Actions links'
     it_behaves_like "a user cannot unsubscribe through footer link"
@@ -708,6 +723,10 @@ describe Notify do
       expect(sender.address).to eq(gitlab_sender)
     end
 
+    it 'is sent to recipient' do
+      is_expected.to deliver_to 'devs@company.name'
+    end
+
     it 'has the correct subject' do
       is_expected.to have_subject /\[#{project.path_with_namespace}\]\[master\] #{commits.length} commits:/
     end
@@ -716,15 +735,15 @@ describe Notify do
       is_expected.to have_body_text /Change some files/
     end
 
-    it 'includes diffs with character-level highlighting' do
-      is_expected.to have_body_text /def<\/span> <span class=\"nf\">archive_formats_regex/
+    it 'includes diffs' do
+      is_expected.to have_body_text /def archive_formats_regex/
     end
 
     it 'contains a link to the diff' do
       is_expected.to have_body_text /#{diff_path}/
     end
 
-    it 'does not contain the misleading footer' do
+    it 'doesn not contain the misleading footer' do
       is_expected.not_to have_body_text /you are a member of/
     end
 
@@ -798,9 +817,8 @@ describe Notify do
     let(:compare) { Gitlab::Git::Compare.new(project.repository.raw_repository, sample_commit.parent_id, sample_commit.id) }
     let(:commits) { Commit.decorate(compare.commits, nil) }
     let(:diff_path) { namespace_project_commit_path(project.namespace, project, commits.first) }
-    let(:diff_refs) { [project.merge_base_commit(sample_commit.parent_id, sample_commit.id), project.commit(sample_commit.id)] }
 
-    subject { Notify.repository_push_email(project.id, author_id: user.id, ref: 'refs/heads/master', action: :push, compare: compare, diff_refs: diff_refs) }
+    subject { Notify.repository_push_email(project.id, 'devs@company.name', author_id: user.id, ref: 'refs/heads/master', action: :push, compare: compare) }
 
     it_behaves_like 'it should show Gmail Actions View Commit link'
     it_behaves_like "a user cannot unsubscribe through footer link"
@@ -813,6 +831,10 @@ describe Notify do
       expect(sender.address).to eq(gitlab_sender)
     end
 
+    it 'is sent to recipient' do
+      is_expected.to deliver_to 'devs@company.name'
+    end
+
     it 'has the correct subject' do
       is_expected.to have_subject /#{commits.first.title}/
     end
@@ -821,8 +843,8 @@ describe Notify do
       is_expected.to have_body_text /Change some files/
     end
 
-    it 'includes diffs with character-level highlighting' do
-      is_expected.to have_body_text /def<\/span> <span class=\"nf\">archive_formats_regex/
+    it 'includes diffs' do
+      is_expected.to have_body_text /def archive_formats_regex/
     end
 
     it 'contains a link to the diff' do

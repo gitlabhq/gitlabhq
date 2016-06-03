@@ -32,7 +32,7 @@ class Admin::BroadcastMessagesController < Admin::ApplicationController
 
     respond_to do |format|
       format.html { redirect_back_or_default(default: { action: 'index' }) }
-      format.js { head :ok }
+      format.js { render nothing: true }
     end
   end
 

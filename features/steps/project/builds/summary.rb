@@ -36,8 +36,4 @@ class Spinach::Features::ProjectBuildsSummary < Spinach::FeatureSteps
       expect(page).to have_content 'Build has been erased'
     end
   end
-
-  step 'the build count cache is updated' do
-    expect(@build.project.running_or_pending_build_count).to eq @build.project.builds.running_or_pending.count(:all)
-  end
 end

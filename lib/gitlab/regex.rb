@@ -96,9 +96,5 @@ module Gitlab
         (?<![\/.])                (?# rule #6-7)
       }x.freeze
     end
-
-    def container_registry_reference_regex
-      git_reference_regex
-    end
   end
 end

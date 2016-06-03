@@ -1,4 +1,4 @@
-require_dependency 'gitlab/git'
+require 'gitlab/git'
 
 module Gitlab
   def self.com?

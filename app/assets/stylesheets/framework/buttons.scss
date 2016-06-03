@@ -16,19 +16,6 @@
   @include btn-default;
 }
 
-@mixin btn-outline($background, $text, $border, $hover-background, $hover-text, $hover-border) {
-  background-color: $background;
-  color: $text;
-  border-color: $border;
-
-  &:hover,
-  &:focus {
-    background-color: $hover-background;
-    color: $hover-text;
-    border-color: $hover-border;;
-  }
-}
-
 @mixin btn-color($light, $border-light, $normal, $border-normal, $dark, $border-dark, $color) {
   background-color: $light;
   border-color: $border-light;
@@ -119,12 +106,9 @@
     @include btn-blue;
   }
 
+  &.btn-close,
   &.btn-warning {
     @include btn-orange;
-  }
-
-  &.btn-close {
-    @include btn-outline($white-light, $orange-normal, $orange-normal, $orange-light, $white-light, $orange-light);
   }
 
   &.btn-danger,

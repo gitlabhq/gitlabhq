@@ -18,6 +18,10 @@ module Banzai
         @object_sym ||= object_name.to_sym
       end
 
+      def self.data_reference
+        @data_reference ||= "data-#{object_name.dasherize}"
+      end
+
       def self.object_class_title
         @object_title ||= object_class.name.titleize
       end
@@ -39,6 +43,10 @@ module Banzai
         text.gsub(pattern) do |match|
           yield match, $~[object_sym].to_i, $~[:project], $~
         end
+      end
+
+      def self.referenced_by(node)
+        { object_sym => LazyReference.new(object_class, node.attr(data_reference)) }
       end
 
       def object_class
@@ -228,9 +236,7 @@ module Banzai
         if cache.key?(key)
           cache[key]
         else
-          value = yield
-          cache[key] = value if key.present?
-          value
+          cache[key] = yield
         end
       end
     end

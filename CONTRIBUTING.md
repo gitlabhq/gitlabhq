@@ -311,11 +311,13 @@ request is as follows:
 1. Create a feature branch
 1. Write [tests](https://gitlab.com/gitlab-org/gitlab-development-kit#running-the-tests) and code
 1. Add your changes to the [CHANGELOG](CHANGELOG)
-1. If you are writing documentation, make sure to read the [documentation styleguide][doc-styleguide]
+1. If you are changing the README, some documentation or other things which
+   have no effect on the tests, add `[ci skip]` somewhere in the commit message
+   and make sure to read the [documentation styleguide][doc-styleguide]
 1. If you have multiple commits please combine them into one commit by
    [squashing them][git-squash]
 1. Push the commit(s) to your fork
-1. Submit a merge request (MR) to the `master` branch
+1. Submit a merge request (MR) to the master branch
 1. The MR title should describe the change you want to make
 1. The MR description should give a motive for your change and the method you
    used to achieve it, see the [merge request description format]

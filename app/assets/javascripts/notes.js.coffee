@@ -114,9 +114,9 @@ class @Notes
       @refresh()
     , @pollingInterval
 
-  refresh: =>
+  refresh: ->
     return if @refreshing is true
-    @refreshing = true
+    refreshing = true
     if not document.hidden and document.URL.indexOf(@noteable_url) is 0
       @getContent()
 
@@ -134,8 +134,8 @@ class @Notes
             @renderDiscussionNote(note)
           else
             @renderNote(note)
-    .always () =>
-      @refreshing = false
+      always: =>
+        @refreshing = false
 
   ###
   Increase @pollingInterval up to 120 seconds on every function call,
@@ -285,7 +285,6 @@ class @Notes
     form.addClass "js-main-target-form"
 
     form.find("#note_line_code").remove()
-    form.find("#note_type").remove()
 
   ###
   General note form setup.
@@ -329,7 +328,7 @@ class @Notes
     @renderDiscussionNote(note)
 
     # cleanup after successfully creating a diff/discussion note
-    @removeDiscussionNoteForm($(xhr.target))
+    @removeDiscussionNoteForm($("#new-discussion-note-form-#{note.discussion_id}"))
 
   ###
   Called in response to the edit note form being submitted
@@ -473,7 +472,6 @@ class @Notes
   setupDiscussionNoteForm: (dataHolder, form) =>
     # setup note target
     form.attr 'id', "new-discussion-note-form-#{dataHolder.data("discussionId")}"
-    form.find("#note_type").val dataHolder.data("noteType")
     form.find("#line_type").val dataHolder.data("lineType")
     form.find("#note_commit_id").val dataHolder.data("commitId")
     form.find("#note_line_code").val dataHolder.data("lineCode")

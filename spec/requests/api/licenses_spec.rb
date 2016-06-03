@@ -57,7 +57,7 @@ describe API::Licenses, api: true  do
         end
 
         it 'replaces placeholder values' do
-          expect(json_response['content']).to include("Copyright (c) #{Time.now.year} Anton")
+          expect(json_response['content']).to include('Copyright (c) 2016 Anton')
         end
       end
 
@@ -70,7 +70,7 @@ describe API::Licenses, api: true  do
 
         it 'replaces placeholder values' do
           expect(json_response['content']).to include('My Awesome Project')
-          expect(json_response['content']).to include("Copyright (C) #{Time.now.year}  Anton")
+          expect(json_response['content']).to include('Copyright (C) 2016  Anton')
         end
       end
 
@@ -83,7 +83,7 @@ describe API::Licenses, api: true  do
 
         it 'replaces placeholder values' do
           expect(json_response['content']).to include('My Awesome Project')
-          expect(json_response['content']).to include("Copyright (C) #{Time.now.year}  Anton")
+          expect(json_response['content']).to include('Copyright (C) 2016  Anton')
         end
       end
 
@@ -96,7 +96,7 @@ describe API::Licenses, api: true  do
 
         it 'replaces placeholder values' do
           expect(json_response['content']).to include('My Awesome Project')
-          expect(json_response['content']).to include("Copyright (C) #{Time.now.year}  Anton")
+          expect(json_response['content']).to include('Copyright (C) 2016  Anton')
         end
       end
 
@@ -108,7 +108,7 @@ describe API::Licenses, api: true  do
         end
 
         it 'replaces placeholder values' do
-          expect(json_response['content']).to include("Copyright #{Time.now.year} Anton")
+          expect(json_response['content']).to include('Copyright 2016 Anton')
         end
       end
 
@@ -128,7 +128,7 @@ describe API::Licenses, api: true  do
         it 'replaces the copyright owner placeholder with the name of the current user' do
           get api('/licenses/mit', user)
 
-          expect(json_response['content']).to include("Copyright (c) #{Time.now.year} #{user.name}")
+          expect(json_response['content']).to include("Copyright (c) 2016 #{user.name}")
         end
       end
     end

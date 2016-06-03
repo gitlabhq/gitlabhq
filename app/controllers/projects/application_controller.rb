@@ -26,7 +26,7 @@ class Projects::ApplicationController < ApplicationController
       project_path = "#{namespace}/#{id}"
       @project = Project.find_with_namespace(project_path)
 
-      if can?(current_user, :read_project, @project) && !@project.pending_delete?
+      if @project && can?(current_user, :read_project, @project)
         if @project.path_with_namespace != project_path
           redirect_to request.original_url.gsub(project_path, @project.path_with_namespace)
         end

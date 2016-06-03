@@ -1,6 +1,6 @@
 module Ci
   class GitlabCiYamlProcessor
-    class ValidationError < StandardError; end
+    class ValidationError < StandardError;end
 
     DEFAULT_STAGES = %w(build test deploy)
     DEFAULT_STAGE = 'test'
@@ -265,7 +265,7 @@ module Ci
     end
 
     def validate_job_dependencies!(name, job)
-      unless validate_array_of_strings(job[:dependencies])
+      if !validate_array_of_strings(job[:dependencies])
         raise ValidationError, "#{name} job: dependencies parameter should be an array of strings"
       end
 

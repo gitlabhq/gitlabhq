@@ -18,10 +18,6 @@ GitLab.GfmAutoComplete =
   Issues:
     template: '<li><small>${id}</small> ${title}</li>'
 
-  # Milestones
-  Milestones:
-    template: '<li>${title}</li>'
-
   # Add GFM auto-completion to all input fields, that accept GFM input.
   setup: (wrap) ->
     @input = $('.js-gfm-input')
@@ -86,19 +82,6 @@ GitLab.GfmAutoComplete =
             search: "#{i.iid} #{i.title}"
 
     @input.atwho
-      at: '%'
-      alias: 'milestones'
-      searchKey: 'search'
-      displayTpl: @Milestones.template
-      insertTpl: '${atwho-at}"${title}"'
-      callbacks:
-        beforeSave: (milestones) ->
-          $.map milestones, (m) ->
-            id:     m.iid
-            title:  sanitize(m.title)
-            search: "#{m.title}"
-
-    @input.atwho
       at: '!'
       alias: 'mergerequests'
       searchKey: 'search'
@@ -122,8 +105,6 @@ GitLab.GfmAutoComplete =
     @input.atwho 'load', '@', data.members
     # load issues
     @input.atwho 'load', 'issues', data.issues
-    # load milestones
-    @input.atwho 'load', 'milestones', data.milestones
     # load merge requests
     @input.atwho 'load', 'mergerequests', data.mergerequests
     # load emojis

@@ -20,7 +20,8 @@ class @SearchAutocomplete
     @dropdown = @wrap.find('.dropdown')
     @dropdownContent = @dropdown.find('.dropdown-content')
 
-    @locationBadgeEl = @getElement('.location-badge')
+    @locationBadgeEl = @getElement('.search-location-badge')
+    @locationText = @getElement('.location-text')
     @scopeInputEl = @getElement('#scope')
     @searchInput = @getElement('.search-input')
     @projectInputEl = @getElement('#search_project_id')
@@ -132,7 +133,7 @@ class @SearchAutocomplete
       scope: @scopeInputEl.val()
 
       # Location badge
-      _location: @locationBadgeEl.text()
+      _location: @locationText.text()
     }
 
   bindEvents: ->
@@ -142,14 +143,12 @@ class @SearchAutocomplete
     @searchInput.on 'click', @onSearchInputClick
     @searchInput.on 'focus', @onSearchInputFocus
     @clearInput.on 'click', @onClearInputClick
-    @locationBadgeEl.on 'click', =>
-      @searchInput.focus()
 
   onDocumentClick: (e) =>
     # If clicking outside the search box
     # And search input is not focused
     # And we are not clicking inside a suggestion
-    if not $.contains(@dropdown[0], e.target) and @isFocused and not $(e.target).closest('.search-form').length
+    if not $.contains(@dropdown[0], e.target) and @isFocused and not $(e.target).parents('ul').length
       @onSearchInputBlur()
 
   enableAutocomplete: ->
@@ -222,8 +221,10 @@ class @SearchAutocomplete
     category = if item.category? then "#{item.category}: " else ''
     value = if item.value? then item.value else ''
 
-    badgeText = "#{category}#{value}"
-    @locationBadgeEl.text(badgeText).show()
+    html = "<span class='location-badge'>
+              <i class='location-text'>#{category}#{value}</i>
+            </span>"
+    @locationBadgeEl.html(html)
     @wrap.addClass('has-location-badge')
 
   restoreOriginalState: ->
@@ -232,8 +233,9 @@ class @SearchAutocomplete
     for input in inputs
       @getElement("##{input}").val(@originalState[input])
 
+
     if @originalState._location is ''
-      @locationBadgeEl.hide()
+      @locationBadgeEl.empty()
     else
       @addLocationBadge(
         value: @originalState._location
@@ -242,7 +244,7 @@ class @SearchAutocomplete
     @dropdown.removeClass 'open'
 
   badgePresent: ->
-    @locationBadgeEl.length
+    @locationBadgeEl.children().length
 
   resetSearchState: ->
     inputs = Object.keys @originalState
@@ -255,7 +257,7 @@ class @SearchAutocomplete
       @getElement("##{input}").val('')
 
   removeLocationBadge: ->
-    @locationBadgeEl.hide()
+    @locationBadgeEl.empty()
 
     # Reset state
     @resetSearchState()

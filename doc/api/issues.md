@@ -77,8 +77,7 @@ Example response:
       "created_at" : "2016-01-04T15:31:51.081Z",
       "iid" : 6,
       "labels" : [],
-      "subscribed" : false,
-      "user_notes_count": 1
+      "subscribed" : false
    }
 ]
 ```
@@ -155,8 +154,7 @@ Example response:
       "title" : "Ut commodi ullam eos dolores perferendis nihil sunt.",
       "updated_at" : "2016-01-04T15:31:46.176Z",
       "created_at" : "2016-01-04T15:31:46.176Z",
-      "subscribed" : false,
-      "user_notes_count": 1
+      "subscribed" : false
    }
 ]
 ```
@@ -218,8 +216,7 @@ Example response:
    "title" : "Ut commodi ullam eos dolores perferendis nihil sunt.",
    "updated_at" : "2016-01-04T15:31:46.176Z",
    "created_at" : "2016-01-04T15:31:46.176Z",
-   "subscribed": false,
-   "user_notes_count": 1
+   "subscribed": false
 }
 ```
 
@@ -274,8 +271,7 @@ Example response:
    "description" : null,
    "updated_at" : "2016-01-07T12:44:33.959Z",
    "milestone" : null,
-   "subscribed" : true,
-   "user_notes_count": 0
+   "subscribed" : true
 }
 ```
 
@@ -333,8 +329,7 @@ Example response:
    "id" : 85,
    "assignee" : null,
    "milestone" : null,
-   "subscribed" : true,
-   "user_notes_count": 0
+   "subscribed" : true
 }
 ```
 

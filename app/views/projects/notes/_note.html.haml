@@ -1,8 +1,5 @@
-- return unless note.author
-- return if note.cross_reference_not_visible_for?(current_user)
-
 - note_editable = note_editable?(note)
-%li.timeline-entry{ id: dom_id(note), class: ["note", "note-row-#{note.id}", ('system-note' if note.system)], data: {author_id: note.author.id, editable: note_editable} }
+%li.timeline-entry{ id: dom_id(note), class: [dom_class(note), "note-row-#{note.id}", ('system-note' if note.system)], data: {author_id: note.author.id, editable: note_editable} }
   .timeline-entry-inner
     .timeline-icon
       %a{href: user_path(note.author)}
@@ -11,8 +8,8 @@
       .note-header
         = link_to_member(note.project, note.author, avatar: false)
         .inline.note-headline-light
-          = note.author.to_reference
-          - unless note.system
+          = "#{note.author.to_reference}"
+          - if !note.system
             commented
           %a{ href: "##{dom_id(note)}" }
             = time_ago_with_tooltip(note.created_at, placement: 'bottom', html_class: 'note-created-ago')
@@ -29,7 +26,7 @@
       .note-body{class: note_editable ? 'js-task-list-container' : ''}
         .note-text
           = preserve do
-            = markdown(note.note, pipeline: :note, cache_key: [note, "note"], author: note.author)
+            = markdown(note.note, pipeline: :note, cache_key: [note, "note"])
         - if note_editable
           = render 'projects/notes/edit_form', note: note
       = edited_time_ago_with_tooltip(note, placement: 'bottom', html_class: 'note_edited_ago', include_author: true)

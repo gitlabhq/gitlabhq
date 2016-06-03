@@ -27,10 +27,8 @@ class Projects::HooksController < Projects::ApplicationController
     if !@project.empty_repo?
       status, message = TestHookService.new.execute(hook, current_user)
 
-      if status && status >= 200 && status < 400
-        flash[:notice] = "Hook executed successfully: HTTP #{status}"
-      elsif status
-        flash[:alert] = "Hook executed successfully but returned HTTP #{status} #{message}"
+      if status
+        flash[:notice] = 'Hook successfully executed.'
       else
         flash[:alert] = "Hook execution failed: #{message}"
       end
@@ -63,8 +61,7 @@ class Projects::HooksController < Projects::ApplicationController
       :push_events,
       :tag_push_events,
       :token,
-      :url,
-      :wiki_page_events
+      :url
     )
   end
 end

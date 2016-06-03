@@ -1,3 +1,19 @@
+# == Schema Information
+#
+# Table name: events
+#
+#  id          :integer          not null, primary key
+#  target_type :string
+#  target_id   :integer
+#  title       :string
+#  data        :text
+#  project_id  :integer
+#  created_at  :datetime
+#  updated_at  :datetime
+#  action      :integer
+#  author_id   :integer
+#
+
 class Event < ActiveRecord::Base
   include Sortable
   default_scope { where.not(author_id: nil) }
@@ -80,7 +96,7 @@ class Event < ActiveRecord::Base
   end
 
   def target_title
-    target.try(:title)
+    target.title if target && target.respond_to?(:title)
   end
 
   def created?
@@ -266,20 +282,28 @@ class Event < ActiveRecord::Base
     branch? && project.default_branch != branch_name
   end
 
+  def note_commit_id
+    target.commit_id
+  end
+
   def target_iid
     target.respond_to?(:iid) ? target.iid : target_id
   end
 
-  def commit_note?
-    target.for_commit?
+  def note_short_commit_id
+    Commit.truncate_sha(note_commit_id)
+  end
+
+  def note_commit?
+    target.noteable_type == "Commit"
   end
 
   def issue_note?
-    note? && target && target.for_issue?
+    note? && target && target.noteable_type == "Issue"
   end
 
-  def project_snippet_note?
-    target.for_snippet?
+  def note_project_snippet?
+    target.noteable_type == "Snippet"
   end
 
   def note_target
@@ -287,22 +311,19 @@ class Event < ActiveRecord::Base
   end
 
   def note_target_id
-    if commit_note?
+    if note_commit?
       target.commit_id
     else
       target.noteable_id.to_s
     end
   end
 
-  def note_target_reference
-    return unless note_target
-
-    # Commit#to_reference returns the full SHA, but we want the short one here
-    if commit_note?
-      note_target.short_id
+  def note_target_iid
+    if note_target.respond_to?(:iid)
+      note_target.iid
     else
-      note_target.to_reference
-    end
+      note_target_id
+    end.to_s
   end
 
   def note_target_type

@@ -32,7 +32,7 @@ class Profiles::KeysController < Profiles::ApplicationController
 
     respond_to do |format|
       format.html { redirect_to profile_keys_url }
-      format.js { head :ok }
+      format.js { render nothing: true }
     end
   end
 

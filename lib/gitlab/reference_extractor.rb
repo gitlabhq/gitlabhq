@@ -4,9 +4,10 @@ module Gitlab
     REFERABLES = %i(user issue label milestone merge_request snippet commit commit_range)
     attr_accessor :project, :current_user, :author
 
-    def initialize(project, current_user = nil)
+    def initialize(project, current_user = nil, author = nil)
       @project = project
       @current_user = current_user
+      @author = author
 
       @references = {}
 
@@ -17,21 +18,17 @@ module Gitlab
       super(text, context.merge(project: project))
     end
 
-    def references(type)
-      super(type, project, current_user)
-    end
-
     REFERABLES.each do |type|
       define_method("#{type}s") do
-        @references[type] ||= references(type)
+        @references[type] ||= references(type, reference_context)
       end
     end
 
     def issues
       if project && project.jira_tracker?
-        @references[:external_issue] ||= references(:external_issue)
+        @references[:external_issue] ||= references(:external_issue, reference_context)
       else
-        @references[:issue] ||= references(:issue)
+        @references[:issue] ||= references(:issue, reference_context)
       end
     end
 
@@ -48,6 +45,12 @@ module Gitlab
       end
 
       @pattern = Regexp.union(patterns.compact)
+    end
+
+    private
+
+    def reference_context
+      { project: project, current_user: current_user, author: author }
     end
   end
 end

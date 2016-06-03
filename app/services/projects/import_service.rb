@@ -39,7 +39,7 @@ module Projects
       begin
         gitlab_shell.import_repository(project.path_with_namespace, project.import_url)
       rescue Gitlab::Shell::Error => e
-        raise Error,  "Error importing repository #{project.import_url} into #{project.path_with_namespace} - #{e.message}"
+        raise Error, e.message
       end
     end
 

@@ -8,10 +8,12 @@ feature 'list of badges' do
     project = create(:project)
     project.team << [user, :master]
     login_as(user)
-    visit namespace_project_badges_path(project.namespace, project)
+    visit edit_namespace_project_path(project.namespace, project)
   end
 
   scenario 'user displays list of badges' do
+    click_link 'Badges'
+
     expect(page).to have_content 'build status'
     expect(page).to have_content 'Markdown'
     expect(page).to have_content 'HTML'
@@ -24,6 +26,7 @@ feature 'list of badges' do
   end
 
   scenario 'user changes current ref on badges list page', js: true do
+    click_link 'Badges'
     select2('improve/awesome', from: '#ref')
 
     expect(page).to have_content 'badges/improve/awesome/build.svg'

@@ -8,8 +8,24 @@ module Banzai
     #   :project (required) - Current project, ignored if reference is cross-project.
     #   :only_path          - Generate path-only links.
     class ReferenceFilter < HTML::Pipeline::Filter
-      class << self
-        attr_accessor :reference_type
+      def self.user_can_see_reference?(user, node, context)
+        if node.has_attribute?('data-project')
+          project_id = node.attr('data-project').to_i
+          return true if project_id == context[:project].try(:id)
+
+          project = Project.find(project_id) rescue nil
+          Ability.abilities.allowed?(user, :read_project, project)
+        else
+          true
+        end
+      end
+
+      def self.user_can_reference?(user, node, context)
+        true
+      end
+
+      def self.referenced_by(node)
+        raise NotImplementedError, "#{self} does not implement #{__method__}"
       end
 
       # Returns a data attribute String to attach to a reference link
@@ -27,9 +43,7 @@ module Banzai
       #
       # Returns a String
       def data_attribute(attributes = {})
-        attributes = attributes.reject { |_, v| v.nil? }
-
-        attributes[:reference_type] = self.class.reference_type
+        attributes[:reference_filter] = self.class.name.demodulize
         attributes.delete(:original) if context[:no_original_data]
         attributes.map { |key, value| %Q(data-#{key.to_s.dasherize}="#{escape_once(value)}") }.join(" ")
       end

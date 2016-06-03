@@ -1,3 +1,15 @@
+# == Schema Information
+#
+# Table name: identities
+#
+#  id         :integer          not null, primary key
+#  extern_uid :string
+#  provider   :string
+#  user_id    :integer
+#  created_at :datetime
+#  updated_at :datetime
+#
+
 class Identity < ActiveRecord::Base
   include Sortable
   include CaseSensitivity

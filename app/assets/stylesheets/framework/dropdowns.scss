@@ -154,16 +154,12 @@
     color: $dropdown-header-color;
     font-size: 13px;
     line-height: 22px;
-    padding: 0 10px;
+    padding: 0 10px 10px;
   }
 
   .separator + .dropdown-header {
     padding-top: 2px;
   }
-}
-
-.dropdown-menu-full-width {
-  width: 100%;
 }
 
 .dropdown-menu-paging {

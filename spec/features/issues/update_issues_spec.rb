@@ -95,7 +95,7 @@ feature 'Multiple issue updating from issues#index', feature: true do
       find('.dropdown-menu-milestone a', text: "No Milestone").click
       click_update_issues_button
 
-      expect(first('.issue')).not_to have_content milestone.title
+      expect(first('.issue')).to_not have_content milestone.title
     end
   end
 

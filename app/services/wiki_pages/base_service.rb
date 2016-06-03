@@ -6,8 +6,9 @@ module WikiPages
         object_kind: page.class.name.underscore,
         user: current_user.hook_attrs,
         project: @project.hook_attrs,
-        wiki: @project.wiki.hook_attrs,
-        object_attributes: page.hook_attrs
+        object_attributes: page.hook_attrs,
+        # DEPRECATED
+        repository: @project.hook_attrs.slice(:name, :url, :description, :homepage)
       }
 
       page_url = Gitlab::UrlBuilder.build(page)

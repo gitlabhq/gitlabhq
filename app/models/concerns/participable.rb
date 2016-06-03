@@ -3,6 +3,8 @@
 # Contains functionality related to objects that can have participants, such as
 # an author, an assignee and people mentioned in its description or comments.
 #
+# Used by Issue, Note, MergeRequest, Snippet and Commit.
+#
 # Usage:
 #
 #     class Issue < ActiveRecord::Base
@@ -10,36 +12,22 @@
 #
 #       # ...
 #
-#       participant :author
-#       participant :assignee
-#       participant :notes
-#
-#       participant -> (current_user, ext) do
-#         ext.analyze('...')
-#       end
+#       participant :author, :assignee, :notes, ->(current_user) { mentioned_users(current_user) }
 #     end
 #
 #     issue = Issue.last
 #     users = issue.participants
+#     # `users` will contain the issue's author, its assignee,
+#     # all users returned by its #mentioned_users method,
+#     # as well as all participants to all of the issue's notes,
+#     # since Note implements Participable as well.
+#
 module Participable
   extend ActiveSupport::Concern
 
   module ClassMethods
-    # Adds a list of participant attributes. Attributes can either be symbols or
-    # Procs.
-    #
-    # When using a Proc instead of a Symbol the Proc will be given two
-    # arguments:
-    #
-    # 1. The current user (as an instance of User)
-    # 2. An instance of `Gitlab::ReferenceExtractor`
-    #
-    # It is expected that a Proc populates the given reference extractor
-    # instance with data. The return value of the Proc is ignored.
-    #
-    # attr - The name of the attribute or a Proc
-    def participant(attr)
-      participant_attrs << attr
+    def participant(*attrs)
+      participant_attrs.concat(attrs)
     end
 
     def participant_attrs
@@ -47,42 +35,42 @@ module Participable
     end
   end
 
-  # Returns the users participating in a discussion.
-  #
-  # This method processes attributes of objects in breadth-first order.
-  #
-  # Returns an Array of User instances.
-  def participants(current_user = nil)
-    current_user ||= author
-    ext = Gitlab::ReferenceExtractor.new(project, current_user)
-    participants = Set.new
-    process = [self]
+  # Be aware that this method makes a lot of sql queries.
+  # Save result into variable if you are going to reuse it inside same request
+  def participants(current_user = self.author)
+    participants =
+      Gitlab::ReferenceExtractor.lazily do
+        self.class.participant_attrs.flat_map do |attr|
+          value =
+            if attr.respond_to?(:call)
+              instance_exec(current_user, &attr)
+            else
+              send(attr)
+            end
 
-    until process.empty?
-      source = process.pop
+          participants_for(value, current_user)
+        end.compact.uniq
+      end
 
-      case source
-      when User
-        participants << source
-      when Participable
-        source.class.participant_attrs.each do |attr|
-          if attr.respond_to?(:call)
-            source.instance_exec(current_user, ext, &attr)
-          else
-            process << source.__send__(attr)
-          end
-        end
-      when Enumerable, ActiveRecord::Relation
-        # This uses reverse_each so we can use "pop" to get the next value to
-        # process (in order). Using unshift instead of pop would require
-        # moving all Array values one index to the left (which can be
-        # expensive).
-        source.reverse_each { |obj| process << obj }
+    unless Gitlab::ReferenceExtractor.lazy?
+      participants.select! do |user|
+        user.can?(:read_project, project)
       end
     end
 
-    participants.merge(ext.users)
+    participants
+  end
 
-    Ability.users_that_can_read_project(participants.to_a, project)
+  private
+
+  def participants_for(value, current_user = nil)
+    case value
+    when User, Banzai::LazyReference
+      [value]
+    when Enumerable, ActiveRecord::Relation
+      value.flat_map { |v| participants_for(v, current_user) }
+    when Participable
+      value.participants(current_user)
+    end
   end
 end

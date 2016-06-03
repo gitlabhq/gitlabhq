@@ -11,7 +11,7 @@ module Gitlab
       end
 
       def execute
-        ::Projects::CreateService.new(
+        project = ::Projects::CreateService.new(
           current_user,
           name: repo.name,
           path: repo.name,
@@ -21,9 +21,12 @@ module Gitlab
           visibility_level: Gitlab::VisibilityLevel::PUBLIC,
           import_type: "google_code",
           import_source: repo.name,
-          import_url: repo.import_url,
-          import_data: { data: { 'repo' => repo.raw_data, 'user_map' => user_map } }
+          import_url: repo.import_url
         ).execute
+
+        project.create_or_update_import_data(data: { 'repo' => repo.raw_data, 'user_map' => user_map })
+
+        project
       end
     end
   end

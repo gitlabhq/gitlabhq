@@ -194,10 +194,10 @@ describe Issues::MoveService, services: true do
           include_context 'issue move executed'
 
           it 'rewrites uploads in description' do
-            expect(new_issue.description).not_to eq description
+            expect(new_issue.description).to_not eq description
             expect(new_issue.description)
               .to match(/Text and #{FileUploader::MARKDOWN_PATTERN}/)
-            expect(new_issue.description).not_to include uploader.secret
+            expect(new_issue.description).to_not include uploader.secret
           end
         end
       end
@@ -231,7 +231,7 @@ describe Issues::MoveService, services: true do
 
       context 'user is reporter in both projects' do
         include_context 'user can move issue'
-        it { expect { move }.not_to raise_error }
+        it { expect { move }.to_not raise_error }
       end
 
       context 'user is reporter only in new project' do

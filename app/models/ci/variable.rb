@@ -1,3 +1,17 @@
+# == Schema Information
+#
+# Table name: ci_variables
+#
+#  id                   :integer          not null, primary key
+#  project_id           :integer
+#  key                  :string
+#  value                :text
+#  encrypted_value      :text
+#  encrypted_value_salt :string
+#  encrypted_value_iv   :string
+#  gl_project_id        :integer
+#
+
 module Ci
   class Variable < ActiveRecord::Base
     extend Ci::Model
@@ -11,9 +25,6 @@ module Ci
       format: { with: /\A[a-zA-Z0-9_]+\z/,
                 message: "can contain only letters, digits and '_'." }
 
-    attr_encrypted :value, 
-       mode: :per_attribute_iv_and_salt,
-       key: Gitlab::Application.secrets.db_key_base,
-       algorithm: 'aes-256-cbc'
+    attr_encrypted :value, mode: :per_attribute_iv_and_salt, key: Gitlab::Application.secrets.db_key_base
   end
 end

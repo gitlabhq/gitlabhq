@@ -1,53 +1,24 @@
 require 'spec_helper'
 
-describe 'Project variables', js: true do
-  let(:user)     { create(:user) }
-  let(:project)  { create(:project) }
-  let(:variable) { create(:ci_variable, key: 'test') }
+describe "Variables" do
+  let(:user) { create(:user) }
+  before { login_as(user) }
 
-  before do
-    login_as(user)
-    project.team << [user, :master]
-    project.variables << variable
-
-    visit namespace_project_variables_path(project.namespace, project)
-  end
-
-  it 'should show list of variables' do
-    page.within('.variables-table') do
-      expect(page).to have_content(variable.key)
-    end
-  end
-
-  it 'should add new variable' do
-    fill_in('variable_key', with: 'key')
-    fill_in('variable_value', with: 'key value')
-    click_button('Add new variable')
-
-    page.within('.variables-table') do
-      expect(page).to have_content('key')
-    end
-  end
-
-  it 'should delete variable' do
-    page.within('.variables-table') do
-      find('.btn-variable-delete').click
+  describe "specific runners" do
+    before do
+      @project = FactoryGirl.create :empty_project
+      @project.team << [user, :master]
     end
 
-    expect(page).not_to have_selector('variables-table')
-  end
+    it "creates variable", js: true do
+      visit namespace_project_variables_path(@project.namespace, @project)
+      click_on "Add a variable"
+      fill_in "Key", with: "SECRET_KEY"
+      fill_in "Value", with: "SECRET_VALUE"
+      click_on "Save changes"
 
-  it 'should edit variable' do
-    page.within('.variables-table') do
-      find('.btn-variable-edit').click
-    end
-
-    fill_in('variable_key', with: 'key')
-    fill_in('variable_value', with: 'key value')
-    click_button('Save variable')
-
-    page.within('.variables-table') do
-      expect(page).to have_content('key')
+      expect(page).to have_content("Variables were successfully updated.")
+      expect(@project.variables.count).to eq(1)
     end
   end
 end

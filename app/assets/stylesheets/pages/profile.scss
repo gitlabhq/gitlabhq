@@ -66,6 +66,12 @@
   }
 }
 
+.calendar-hint {
+  margin-top: -12px;
+  float: right;
+  font-size: 12px;
+}
+
 .profile-link-holder {
   display: inline;
 
@@ -126,6 +132,14 @@
   a {
     color: $md-link-color;
   }
+}
+
+.change-username-title {
+  color: $gl-warning;
+}
+
+.remove-account-title {
+  color: $gl-danger;
 }
 
 .provider-btn-group {
@@ -204,7 +218,7 @@
 
       .btn {
         display: inline-block;
-        width: 46%;
+        width: 48%;
       }
     }
   }

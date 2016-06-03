@@ -22,7 +22,7 @@ module Projects
     end
 
     def execute
-      raise LeaseTaken unless try_obtain_lease
+      raise LeaseTaken if !try_obtain_lease
 
       GitlabShellOneShotWorker.perform_async(:gc, @project.path_with_namespace)
     ensure

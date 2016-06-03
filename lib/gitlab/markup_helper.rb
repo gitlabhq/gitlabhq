@@ -40,7 +40,7 @@ module Gitlab
     # Returns boolean
     def plain?(filename)
       filename.downcase.end_with?('.txt') ||
-        filename.casecmp('readme').zero?
+        filename.downcase == 'readme'
     end
 
     def previewable?(filename)

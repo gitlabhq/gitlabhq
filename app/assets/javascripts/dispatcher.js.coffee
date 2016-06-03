@@ -16,6 +16,7 @@ class Dispatcher
     shortcut_handler = null
     switch page
       when 'projects:issues:index'
+        Issues.init()
         Issuable.init()
         shortcut_handler = new ShortcutsNavigation()
       when 'projects:issues:show'
@@ -118,7 +119,7 @@ class Dispatcher
             new UsersSelect()
           when 'projects'
             new NamespaceSelect()
-      when 'dashboard', 'root'
+      when 'dashboard'
         shortcut_handler = new ShortcutsDashboardNavigation()
       when 'profiles'
         new Profile()

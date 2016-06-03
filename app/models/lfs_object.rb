@@ -1,3 +1,15 @@
+# == Schema Information
+#
+# Table name: lfs_objects
+#
+#  id         :integer          not null, primary key
+#  oid        :string           not null
+#  size       :integer          not null
+#  created_at :datetime
+#  updated_at :datetime
+#  file       :string
+#
+
 class LfsObject < ActiveRecord::Base
   has_many :lfs_objects_projects, dependent: :destroy
   has_many :projects, through: :lfs_objects_projects

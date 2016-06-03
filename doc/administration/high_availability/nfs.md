@@ -2,8 +2,8 @@
 
 ## Required NFS Server features
 
-**File locking**: GitLab **requires** advisory file locking, which is only
-supported natively in NFS version 4. NFSv3 also supports locking as long as
+**File locking**: GitLab **requires** file locking which is only supported
+natively in NFS version 4. NFSv3 also supports locking as long as
 Linux Kernel 2.6.5+ is used. We recommend using version 4 and do not
 specifically test NFSv3.
 
@@ -113,4 +113,4 @@ Read more on high-availability configuration:
 1. [Configure the GitLab application servers](gitlab.md)
 1. [Configure the load balancers](load_balancer.md)
 
-[udp-log-shipping]: http://docs.gitlab.com/omnibus/settings/logs.html#udp-log-shipping-gitlab-enterprise-edition-only "UDP log shipping"
+[udp-log-shipping]: http://doc.gitlab.com/omnibus/settings/logs.html#udp-log-shipping-gitlab-enterprise-edition-only "UDP log shipping"

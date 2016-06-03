@@ -1,6 +1,5 @@
 #= require bootstrap
 #= require select2
-#= require lib/type_utility
 #= require gl_dropdown
 #= require api
 #= require project_select

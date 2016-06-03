@@ -5,11 +5,11 @@ module Gitlab
     end
 
     def self.mysql?
-      adapter_name.casecmp('mysql2').zero?
+      adapter_name.downcase == 'mysql2'
     end
 
     def self.postgresql?
-      adapter_name.casecmp('postgresql').zero?
+      adapter_name.downcase == 'postgresql'
     end
 
     def self.version

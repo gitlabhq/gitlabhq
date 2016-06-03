@@ -107,8 +107,6 @@ module API
 
             break if opts[:line_code]
           end
-
-          opts[:type] = LegacyDiffNote.name if opts[:line_code]
         end
 
         note = ::Notes::CreateService.new(user_project, current_user, opts).execute

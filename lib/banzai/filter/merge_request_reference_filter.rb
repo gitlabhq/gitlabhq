@@ -5,8 +5,6 @@ module Banzai
     #
     # This filter supports cross-project references.
     class MergeRequestReferenceFilter < AbstractReferenceFilter
-      self.reference_type = :merge_request
-
       def self.object_class
         MergeRequest
       end

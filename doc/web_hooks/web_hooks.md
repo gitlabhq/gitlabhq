@@ -13,19 +13,6 @@ You can configure webhooks to listen for specific events like pushes, issues or 
 
 Webhooks can be used to update an external issue tracker, trigger CI builds, update a backup mirror, or even deploy to your production server.
 
-## Webhook endpoint tips
-
-If you are writing your own endpoint (web server) that will receive
-GitLab webhooks keep in mind the following things:
-
--   Your endpoint should send its HTTP response as fast as possible. If
-    you wait too long, GitLab may decide the hook failed and retry it.
--   Your endpoint should ALWAYS return a valid HTTP response. If you do
-    not do this then GitLab will think the hook failed and retry it.
-    Most HTTP libraries take care of this for you automatically but if
-    you are writing a low-level hook this is important to remember.
--   GitLab ignores the HTTP status code returned by your endpoint.
-
 ## SSL Verification
 
 By default, the SSL certificate of the webhook endpoint is verified based on
@@ -691,61 +678,6 @@ X-Gitlab-Event: Merge Request Hook
       "username": "user1",
       "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=40\u0026d=identicon"
     }
-  }
-}
-```
-
-## Wiki Page events
-
-Triggered when a wiki page is created or edited.
-
-**Request Header**:
-
-```
-X-Gitlab-Event: Wiki Page Hook
-```
-
-**Request Body**:
-
-```json
-{
-  "object_kind": "wiki_page",
-  "user": {
-    "name": "Administrator",
-    "username": "root",
-    "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80\u0026d=identicon"
-  },
-  "project": {
-    "name": "awesome-project",
-    "description": "This is awesome",
-    "web_url": "http://example.com/root/awesome-project",
-    "avatar_url": null,
-    "git_ssh_url": "git@example.com:root/awesome-project.git",
-    "git_http_url": "http://example.com/root/awesome-project.git",
-    "namespace": "root",
-    "visibility_level": 0,
-    "path_with_namespace": "root/awesome-project",
-    "default_branch": "master",
-    "homepage": "http://example.com/root/awesome-project",
-    "url": "git@example.com:root/awesome-project.git",
-    "ssh_url": "git@example.com:root/awesome-project.git",
-    "http_url": "http://example.com/root/awesome-project.git"
-  },
-  "wiki": {
-    "web_url": "http://example.com/root/awesome-project/wikis/home",
-    "git_ssh_url": "git@example.com:root/awesome-project.wiki.git", 
-    "git_http_url": "http://example.com/root/awesome-project.wiki.git", 
-    "path_with_namespace": "root/awesome-project.wiki", 
-    "default_branch": "master"
-  },
-  "object_attributes": {
-    "title": "Awesome",
-    "content": "awesome content goes here",
-    "format": "markdown",
-    "message": "adding an awesome page to the wiki",
-    "slug": "awesome",
-    "url": "http://example.com/root/awesome-project/wikis/awesome",
-    "action": "create"
   }
 }
 ```

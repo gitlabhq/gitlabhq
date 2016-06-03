@@ -88,18 +88,18 @@ describe ProjectsHelper do
   end
 
   describe 'default_clone_protocol' do
-    context 'when user is not logged in and gitlab protocol is HTTP' do
+    describe 'using HTTP' do
       it 'returns HTTP' do
-        allow(helper).to receive(:current_user).and_return(nil)
+        expect(helper).to receive(:current_user).and_return(nil)
 
         expect(helper.send(:default_clone_protocol)).to eq('http')
       end
     end
 
-    context 'when user is not logged in and gitlab protocol is HTTPS' do
+    describe 'using HTTPS' do
       it 'returns HTTPS' do
-        stub_config_setting(protocol: 'https')
-        allow(helper).to receive(:current_user).and_return(nil)
+        allow(Gitlab.config.gitlab).to receive(:protocol).and_return('https')
+        expect(helper).to receive(:current_user).and_return(nil)
 
         expect(helper.send(:default_clone_protocol)).to eq('https')
       end

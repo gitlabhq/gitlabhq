@@ -337,15 +337,13 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I should see buttons for allowed commands' do
-    page.within '.content' do
-      expect(page).to have_content 'Raw'
-      expect(page).to have_content 'History'
-      expect(page).to have_content 'Permalink'
-      expect(page).not_to have_content 'Edit'
-      expect(page).not_to have_content 'Blame'
-      expect(page).to have_content 'Delete'
-      expect(page).to have_content 'Replace'
-    end
+    expect(page).to have_content 'Raw'
+    expect(page).to have_content 'History'
+    expect(page).to have_content 'Permalink'
+    expect(page).not_to have_content 'Edit'
+    expect(page).not_to have_content 'Blame'
+    expect(page).to have_content 'Delete'
+    expect(page).to have_content 'Replace'
   end
 
   step 'I should see a notice about a new fork having been created' do

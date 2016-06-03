@@ -1,3 +1,19 @@
+# == Schema Information
+#
+# Table name: snippets
+#
+#  id               :integer          not null, primary key
+#  title            :string(255)
+#  content          :text
+#  author_id        :integer          not null
+#  project_id       :integer
+#  created_at       :datetime
+#  updated_at       :datetime
+#  file_name        :string(255)
+#  type             :string(255)
+#  visibility_level :integer          default(0), not null
+#
+
 require 'spec_helper'
 
 describe Snippet, models: true do
@@ -85,33 +101,6 @@ describe Snippet, models: true do
 
     it 'returns snippets with matching content regardless of the casing' do
       expect(described_class.search_code('FOO')).to eq([snippet])
-    end
-  end
-
-  describe '#participants' do
-    let(:project) { create(:project, :public) }
-    let(:snippet) { create(:snippet, content: 'foo', project: project) }
-
-    let!(:note1) do
-      create(:note_on_project_snippet,
-             noteable: snippet,
-             project: project,
-             note: 'a')
-    end
-
-    let!(:note2) do
-      create(:note_on_project_snippet,
-             noteable: snippet,
-             project: project,
-             note: 'b')
-    end
-
-    it 'includes the snippet author' do
-      expect(snippet.participants).to include(snippet.author)
-    end
-
-    it 'includes the note authors' do
-      expect(snippet.participants).to include(note1.author, note2.author)
     end
   end
 end

@@ -3,7 +3,7 @@ module EventsHelper
     author = event.author
 
     if author
-      link_to author.name, user_path(author.username), title: author.name
+      link_to author.name, user_path(author.username), title: h(author.name)
     else
       event.author_name
     end
@@ -39,6 +39,15 @@ module EventsHelper
     end
   end
 
+  def icon_for_event
+    {
+      EventFilter.push     => 'upload',
+      EventFilter.merged   => 'check-square-o',
+      EventFilter.comments => 'comments',
+      EventFilter.team     => 'user',
+    }
+  end
+
   def event_preposition(event)
     if event.push? || event.commented? || event.target
       "at"
@@ -57,7 +66,11 @@ module EventsHelper
       words << event.ref_name
       words << "at"
     elsif event.commented?
-      words << event.note_target_reference
+      if event.note_commit?
+        words << event.note_short_commit_id
+      else
+        words << "##{truncate event.note_target_iid}"
+      end
       words << "at"
     elsif event.milestone?
       words << "##{event.target_iid}" if event.target_iid
@@ -80,12 +93,21 @@ module EventsHelper
     elsif event.merge_request?
       namespace_project_merge_request_url(event.project.namespace,
                                           event.project, event.merge_request)
-    elsif event.note? && event.commit_note?
+    elsif event.note? && event.note_commit?
       namespace_project_commit_url(event.project.namespace, event.project,
                                    event.note_target)
     elsif event.note?
       if event.note_target
-        event_note_target_path(event)
+        if event.note_commit?
+          namespace_project_commit_path(event.project.namespace, event.project,
+                                        event.note_commit_id,
+                                        anchor: dom_id(event.target))
+        elsif event.note_project_snippet?
+          namespace_project_snippet_path(event.project.namespace,
+                                         event.project, event.note_target)
+        else
+          event_note_target_path(event)
+        end
       end
     elsif event.push?
       push_event_feed_url(event)
@@ -121,30 +143,42 @@ module EventsHelper
   end
 
   def event_note_target_path(event)
-    if event.note? && event.commit_note?
-      namespace_project_commit_path(event.project.namespace,
-                                    event.project,
-                                    event.note_target,
-                                    anchor: dom_id(event.target))
-    elsif event.project_snippet_note?
-      namespace_project_snippet_path(event.project.namespace,
-                                     event.project,
-                                     event.note_target,
-                                     anchor: dom_id(event.target))
+    if event.note? && event.note_commit?
+      namespace_project_commit_path(event.project.namespace, event.project,
+                                    event.note_target)
     else
       polymorphic_path([event.project.namespace.becomes(Namespace),
                         event.project, event.note_target],
-                        anchor: dom_id(event.target))
+                       anchor: dom_id(event.target))
     end
   end
 
   def event_note_title_html(event)
     if event.note_target
-      link_to(event_note_target_path(event), title: event.target_title, class: 'has-tooltip') do
-        "#{event.note_target_type} #{event.note_target_reference}"
+      if event.note_commit?
+        link_to(
+          namespace_project_commit_path(event.project.namespace, event.project,
+                                        event.note_commit_id,
+                                        anchor: dom_id(event.target), title: h(event.target_title)),
+          class: "commit_short_id"
+        ) do
+          "#{event.note_target_type} #{event.note_short_commit_id}"
+        end
+      elsif event.note_project_snippet?
+        link_to(namespace_project_snippet_path(event.project.namespace,
+                                               event.project,
+                                               event.note_target), title: h(event.project.name)) do
+          "#{event.note_target_type} #{truncate event.note_target.to_reference}"
+        end
+      else
+        link_to event_note_target_path(event) do
+          "#{event.note_target_type} #{truncate event.note_target.to_reference}"
+        end
       end
     else
-      content_tag(:strong, '(deleted)')
+      content_tag :strong do
+        "(deleted)"
+      end
     end
   end
 
@@ -157,6 +191,28 @@ module EventsHelper
     escape_once(truncate(message.split("\n").first, length: 70))
   rescue
     "--broken encoding"
+  end
+
+  def event_to_atom(xml, event)
+    if event.visible_to_user?(current_user)
+      xml.entry do
+        event_link = event_feed_url(event)
+        event_title = event_feed_title(event)
+        event_summary = event_feed_summary(event)
+
+        xml.id      "tag:#{request.host},#{event.created_at.strftime("%Y-%m-%d")}:#{event.id}"
+        xml.link    href: event_link
+        xml.title   truncate(event_title, length: 80)
+        xml.updated event.created_at.xmlschema
+        xml.media   :thumbnail, width: "40", height: "40", url: image_url(avatar_icon(event.author_email))
+        xml.author do |author|
+          xml.name event.author_name
+          xml.email event.author_email
+        end
+
+        xml.summary(type: "xhtml") { |x| x << event_summary unless event_summary.nil? }
+      end
+    end
   end
 
   def event_row_class(event)

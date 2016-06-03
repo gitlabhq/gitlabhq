@@ -13,7 +13,8 @@ class RepositoryImportWorker
     result = Projects::ImportService.new(project, current_user).execute
 
     if result[:status] == :error
-      project.mark_import_as_failed(result[:message])
+      project.update(import_error: result[:message])
+      project.import_fail
       return
     end
 

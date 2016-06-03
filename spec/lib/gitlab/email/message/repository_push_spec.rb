@@ -8,7 +8,7 @@ describe Gitlab::Email::Message::RepositoryPush do
   let!(:author) { create(:author, name: 'Author') }
 
   let(:message) do
-    described_class.new(Notify, project.id, opts)
+    described_class.new(Notify, project.id, 'recipient@example.com', opts)
   end
 
   context 'new commits have been pushed to repository' do
@@ -57,7 +57,7 @@ describe Gitlab::Email::Message::RepositoryPush do
 
     describe '#diffs' do
       subject { message.diffs }
-      it { is_expected.to all(be_an_instance_of Gitlab::Diff::File) }
+      it { is_expected.to all(be_an_instance_of Gitlab::Git::Diff) }
     end
 
     describe '#diffs_count' do

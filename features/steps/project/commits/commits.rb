@@ -105,7 +105,7 @@ class Spinach::Features::ProjectCommits < Spinach::FeatureSteps
   end
 
   step 'I should not see button to create a new merge request' do
-    expect(page).not_to have_link 'Create Merge Request'
+    expect(page).to_not have_link 'Create Merge Request'
   end
 
   step 'I should see button to the merge request' do
@@ -173,7 +173,7 @@ class Spinach::Features::ProjectCommits < Spinach::FeatureSteps
   end
 
   step 'I see commit ci info' do
-    expect(page).to have_content "Builds for 1 pipeline pending"
+    expect(page).to have_content "build: pending"
   end
 
   step 'I click status link' do
@@ -181,7 +181,7 @@ class Spinach::Features::ProjectCommits < Spinach::FeatureSteps
   end
 
   step 'I see builds list' do
-    expect(page).to have_content "Builds for 1 pipeline pending"
+    expect(page).to have_content "build: pending"
     expect(page).to have_content "1 build"
   end
 

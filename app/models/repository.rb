@@ -81,7 +81,7 @@ class Repository
   def commit(id = 'HEAD')
     return nil unless exists?
     commit = Gitlab::Git::Commit.find(raw_repository, id)
-    commit = ::Commit.new(commit, @project) if commit
+    commit = Commit.new(commit, @project) if commit
     commit
   rescue Rugged::OdbError
     nil
@@ -195,10 +195,6 @@ class Repository
     cache.fetch(:branch_names) { branches.map(&:name) }
   end
 
-  def branch_exists?(branch_name)
-    branch_names.include?(branch_name)
-  end
-
   def tag_names
     cache.fetch(:tag_names) { raw_repository.tag_names }
   end
@@ -245,7 +241,7 @@ class Repository
   def cache_keys
     %i(size branch_names tag_names commit_count
        readme version contribution_guide changelog
-       license_blob license_key gitignore)
+       license_blob license_key)
   end
 
   def build_cache
@@ -254,10 +250,6 @@ class Repository
         send(key)
       end
     end
-  end
-
-  def expire_gitignore
-    cache.expire(:gitignore)
   end
 
   def expire_tags_cache
@@ -461,7 +453,7 @@ class Repository
   def version
     cache.fetch(:version) do
       tree(:head).blobs.find do |file|
-        file.name.casecmp('version').zero?
+        file.name.downcase == 'version'
       end
     end
   end
@@ -476,36 +468,32 @@ class Repository
 
   def changelog
     cache.fetch(:changelog) do
-      file_on_head(/\A(changelog|history|changes|news)/i)
+      tree(:head).blobs.find do |file|
+        file.name =~ /\A(changelog|history|changes|news)/i
+      end
     end
   end
 
   def license_blob
-    return nil unless head_exists?
+    return nil if !exists? || empty?
 
     cache.fetch(:license_blob) do
-      file_on_head(/\A(licen[sc]e|copying)(\..+|\z)/i)
+      tree(:head).blobs.find do |file|
+        file.name =~ /\A(licen[sc]e|copying)(\..+|\z)/i
+      end
     end
   end
 
   def license_key
-    return nil unless head_exists?
+    return nil if !exists? || empty?
 
     cache.fetch(:license_key) do
       Licensee.license(path).try(:key)
     end
   end
 
-  def gitignore
-    return nil if !exists? || empty?
-
-    cache.fetch(:gitignore) do
-      file_on_head(/\A\.gitignore\z/)
-    end
-  end
-
   def gitlab_ci_yml
-    return nil unless head_exists?
+    return nil if !exists? || empty?
 
     @gitlab_ci_yml ||= tree(:head).blobs.find do |file|
       file.name == '.gitlab-ci.yml'
@@ -807,7 +795,7 @@ class Repository
   def check_revert_content(commit, base_branch)
     source_sha = find_branch(base_branch).target
     args       = [commit.id, source_sha]
-    args << { mainline: 1 } if commit.merge_commit?
+    args       << { mainline: 1 } if commit.merge_commit?
 
     revert_index = rugged.revert_commit(*args)
     return false if revert_index.conflicts?
@@ -821,7 +809,7 @@ class Repository
   def check_cherry_pick_content(commit, base_branch)
     source_sha = find_branch(base_branch).target
     args       = [commit.id, source_sha]
-    args << 1 if commit.merge_commit?
+    args       << 1 if commit.merge_commit?
 
     cherry_pick_index = rugged.cherrypick_commit(*args)
     return false if cherry_pick_index.conflicts?
@@ -862,7 +850,7 @@ class Repository
 
   def search_files(query, ref)
     offset = 2
-    args = %W(#{Gitlab.config.git.bin_path} grep -i -I -n --before-context #{offset} --after-context #{offset} -E -e #{Regexp.escape(query)} #{ref || root_ref})
+    args = %W(#{Gitlab.config.git.bin_path} grep -i -I -n --before-context #{offset} --after-context #{offset} -e #{Regexp.escape(query)} #{ref || root_ref})
     Gitlab::Popen.popen(args, path_to_repo).first.scrub.split(/^--$/)
   end
 
@@ -972,6 +960,12 @@ class Repository
     end
   end
 
+  def main_language
+    return if empty? || rugged.head_unborn?
+
+    Linguist::Repository.new(rugged, rugged.head.target_id).language
+  end
+
   def avatar
     return nil unless exists?
 
@@ -986,13 +980,5 @@ class Repository
 
   def cache
     @cache ||= RepositoryCache.new(path_with_namespace)
-  end
-
-  def head_exists?
-    exists? && !empty? && !rugged.head_unborn?
-  end
-
-  def file_on_head(regex)
-    tree(:head).blobs.find { |file| file.name =~ regex }
   end
 end

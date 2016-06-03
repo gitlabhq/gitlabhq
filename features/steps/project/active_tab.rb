@@ -16,14 +16,12 @@ class Spinach::Features::ProjectActiveTab < Spinach::FeatureSteps
   end
 
   step 'I click the "Snippets" tab' do
-    page.within('.layout-nav') do
-      click_link('Snippets')
-    end
+    click_link('Snippets')
   end
 
-  step 'I click the "Edit Project"' do
-    page.within '.layout-nav .controls' do
-      click_link('Edit Project')
+  step 'I click the "Edit" tab' do
+    page.within '.sidebar-subnav' do
+      click_link('Project Settings')
     end
   end
 
@@ -35,8 +33,12 @@ class Spinach::Features::ProjectActiveTab < Spinach::FeatureSteps
     click_link('Deploy Keys')
   end
 
-  step 'the active sub nav should be Members' do
+  step 'the active sub nav should be Team' do
     ensure_active_sub_nav('Members')
+  end
+
+  step 'the active sub nav should be Edit' do
+    ensure_active_sub_nav('Project')
   end
 
   step 'the active sub nav should be Hooks' do
@@ -54,13 +56,15 @@ class Spinach::Features::ProjectActiveTab < Spinach::FeatureSteps
   end
 
   step 'I click the "Branches" tab' do
-    page.within '.content' do
-      click_link('Branches')
-    end
+    click_link('Branches')
   end
 
   step 'I click the "Tags" tab' do
     click_link('Tags')
+  end
+
+  step 'the active sub tab should be Commits' do
+    ensure_active_sub_tab('Commits')
   end
 
   step 'the active sub tab should be Compare' do
@@ -78,15 +82,11 @@ class Spinach::Features::ProjectActiveTab < Spinach::FeatureSteps
   # Sub Tabs: Issues
 
   step 'I click the "Milestones" tab' do
-    page.within('.layout-nav') do
-      click_link('Milestones')
-    end
+    click_link('Milestones')
   end
 
   step 'I click the "Labels" tab' do
-    page.within('.layout-nav') do
-      click_link('Labels')
-    end
+    click_link('Labels')
   end
 
   step 'the active sub tab should be Issues' do

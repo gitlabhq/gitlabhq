@@ -1,221 +1,251 @@
-.project-edit-container
-  .row.prepend-top-default
-    .col-lg-3.profile-settings-sidebar
-      %h4.prepend-top-0
+.project-edit-container.prepend-top-default
+  .project-edit-errors
+  .project-edit-content
+    .panel.panel-default
+      .panel-heading
         Project settings
-    .col-lg-9
-      = form_for [@project.namespace.becomes(Namespace), @project], remote: true, html: { multipart: true, class: "edit-project" }, authenticity_token: true do |f|
-        %fieldset.append-bottom-0
-          .form-group
-            = f.label :name, class: 'label-light' do
-              Project name
-            = f.text_field :name, class: "form-control", id: "project_name_edit"
-          .form-group
-            = f.label :description, class: 'label-light' do
-              Project description
-              %span.light (optional)
-            = f.text_area :description, class: "form-control", rows: 3, maxlength: 250
+      .panel-body
+        = form_for [@project.namespace.becomes(Namespace), @project], remote: true, html: { multipart: true, class: "edit_project form-horizontal fieldset-form" }, authenticity_token: true do |f|
 
-          - unless @project.empty_repo?
+          %fieldset
+            .form-group.project_name_holder
+              = f.label :name, class: 'control-label' do
+                Project name
+              .col-sm-10
+                = f.text_field :name, class: "form-control", id: "project_name_edit"
+
+
             .form-group
-              = f.label :default_branch, "Default Branch", class: 'label-light'
-              = f.select(:default_branch, @project.repository.branch_names, {}, {class: 'select2 select-wide'})
-        .form-group.project-visibility-level-holder
-          = f.label :visibility_level, class: 'label-light' do
-            Visibility Level
-            = link_to "(?)", help_page_path("public_access", "public_access")
-          - if can_change_visibility_level?(@project, current_user)
-            = render('shared/visibility_radios', model_method: :visibility_level, form: f, selected_level: @project.visibility_level, form_model: @project)
-          - else
-            .info
-              = visibility_level_icon(@project.visibility_level)
-              %strong
-                = visibility_level_label(@project.visibility_level)
-              .light= visibility_level_description(@project.visibility_level, @project)
-        .form-group
-          = f.label :tag_list, "Tags", class: 'label-light'
-          = f.text_field :tag_list, value: @project.tag_list.to_s, maxlength: 2000, class: "form-control"
-          %p.help-block Separate tags with commas.
-        %hr
-        %fieldset.features.append-bottom-0
-          %h5.prepend-top-0
-            Features
+              = f.label :description, class: 'control-label' do
+                Project description
+                %span.light (optional)
+              .col-sm-10
+                = f.text_area :description, class: "form-control", rows: 3, maxlength: 250
+
+            - unless @project.empty_repo?
+              .form-group
+                = f.label :default_branch, "Default Branch", class: 'control-label'
+                .col-sm-10= f.select(:default_branch, @project.repository.branch_names, {}, {class: 'select2 select-wide'})
+
+
+          = render 'shared/visibility_level', f: f, visibility_level: @project.visibility_level, can_change_visibility_level: can_change_visibility_level?(@project, current_user), form_model: @project
+
           .form-group
-            .checkbox
-              = f.label :issues_enabled do
-                = f.check_box :issues_enabled
-                %strong Issues
-                %br
-                %span.descr Lightweight issue tracking system for this project
-          .form-group
-            .checkbox
-              = f.label :merge_requests_enabled do
-                = f.check_box :merge_requests_enabled
-                %strong Merge Requests
-                %br
-                %span.descr Submit changes to be merged upstream
-          .form-group
-            .checkbox
-              = f.label :builds_enabled do
-                = f.check_box :builds_enabled
-                %strong Builds
-                %br
-                %span.descr Test and deploy your changes before merge
-          .form-group
-            .checkbox
-              = f.label :wiki_enabled do
-                = f.check_box :wiki_enabled
-                %strong Wiki
-                %br
-                %span.descr Pages for project documentation
-          .form-group
-            .checkbox
-              = f.label :snippets_enabled do
-                = f.check_box :snippets_enabled
-                %strong Snippets
-                %br
-                %span.descr Share code pastes with others out of git repository
-          - if Gitlab.config.registry.enabled
+            = f.label :tag_list, "Tags", class: 'control-label'
+            .col-sm-10
+              = f.text_field :tag_list, value: @project.tag_list.to_s, maxlength: 2000, class: "form-control"
+              %p.help-block Separate tags with commas.
+
+          %fieldset.features
+            %legend
+              Features:
             .form-group
-              .checkbox
-                = f.label :container_registry_enabled do
-                  = f.check_box :container_registry_enabled
-                  %strong Container Registry
-                  %br
-                  %span.descr Enable Container Registry for this repository
-        %hr
-        = render 'builds_settings', f: f
-        %hr
-        %fieldset.features.append-bottom-default
-          %h5.prepend-top-0
-            Project avatar
-          .form-group
-            - if @project.avatar?
-              = project_icon("#{@project.namespace.to_param}/#{@project.to_param}", alt: '', class: 'avatar project-avatar s160')
-            %p.light
-              - if @project.avatar_in_git
-                Project avatar in repository: #{ @project.avatar_in_git }
-            %a.choose-btn.btn.js-choose-project-avatar-button
-              Browse file...
-            %span.file_name.prepend-left-default.js-avatar-filename No file chosen
-            = f.file_field :avatar, class: "js-project-avatar-input hidden"
-            .help-block The maximum file size allowed is 200KB.
-            - if @project.avatar?
-              %hr
-              = link_to 'Remove avatar', namespace_project_avatar_path(@project.namespace, @project), data: { confirm: "Project avatar will be removed. Are you sure?"}, method: :delete, class: "btn btn-remove btn-sm remove-avatar"
-        = f.submit 'Save changes', class: "btn btn-save"
-  .row.prepend-top-default
-  %hr
-  .row.prepend-top-default
-    .col-lg-3
-      %h4.prepend-top-0
-        Housekeeping
-      %p.append-bottom-0
-        %p
-          Runs a number of housekeeping tasks within the current repository,
-          such as compressing file revisions and removing unreachable objects.
-    .col-lg-9
-      = link_to 'Housekeeping', housekeeping_namespace_project_path(@project.namespace, @project),
-          method: :post, class: "btn btn-save"
-  %hr
-  - if can? current_user, :archive_project, @project
-    .row.prepend-top-default
-      .col-lg-3
-        %h4.warning-title.prepend-top-0
-          - if @project.archived?
-            Unarchive project
-          - else
-            Archive project
-        %p.append-bottom-0
-          - if @project.archived?
-            Unarchiving the project will mark its repository as active. The project can be committed to.
-          - else
-            Archiving the project will mark its repository as read-only. It is hidden from the dashboard and doesn't show up in searches.
-      .col-lg-9
+              .col-sm-offset-2.col-sm-10
+                .checkbox
+                  = f.label :issues_enabled do
+                    = f.check_box :issues_enabled
+                    %strong Issues
+                    %br
+                    %span.descr Lightweight issue tracking system for this project
+
+            .form-group
+              .col-sm-offset-2.col-sm-10
+                .checkbox
+                  = f.label :merge_requests_enabled do
+                    = f.check_box :merge_requests_enabled
+                    %strong Merge Requests
+                    %br
+                    %span.descr Submit changes to be merged upstream
+
+            .form-group
+              .col-sm-offset-2.col-sm-10
+                .checkbox
+                  = f.label :builds_enabled do
+                    = f.check_box :builds_enabled
+                    %strong Builds
+                    %br
+                    %span.descr Test and deploy your changes before merge
+
+            .form-group
+              .col-sm-offset-2.col-sm-10
+                .checkbox
+                  = f.label :wiki_enabled do
+                    = f.check_box :wiki_enabled
+                    %strong Wiki
+                    %br
+                    %span.descr Pages for project documentation
+
+            .form-group
+              .col-sm-offset-2.col-sm-10
+                .checkbox
+                  = f.label :snippets_enabled do
+                    = f.check_box :snippets_enabled
+                    %strong Snippets
+                    %br
+                    %span.descr Share code pastes with others out of git repository
+
+          = render 'builds_settings', f: f
+
+          %fieldset.features
+            %legend
+              Project avatar:
+            .form-group
+              .col-sm-offset-2.col-sm-10
+                - if @project.avatar?
+                  = project_icon("#{@project.namespace.to_param}/#{@project.to_param}", alt: '', class: 'avatar project-avatar s160')
+                %p.light
+                  - if @project.avatar_in_git
+                    Project avatar in repository: #{ @project.avatar_in_git }
+                %p.light
+                  - if @project.avatar?
+                    You can change your project avatar here
+                  - else
+                    You can upload a project avatar here
+                %a.choose-btn.btn.btn-sm.js-choose-project-avatar-button
+                  %i.icon-paper-clip
+                  %span Choose File ...
+                &nbsp;
+                %span.file_name.js-avatar-filename File name...
+                = f.file_field :avatar, class: "js-project-avatar-input hidden"
+                .light The maximum file size allowed is 200KB.
+                - if @project.avatar?
+                  %hr
+                  = link_to 'Remove avatar', namespace_project_avatar_path(@project.namespace, @project), data: { confirm: "Project avatar will be removed. Are you sure?"}, method: :delete, class: "btn btn-remove btn-sm remove-avatar"
+
+
+          .form-actions
+            = f.submit 'Save changes', class: "btn btn-save"
+
+
+
+    .danger-settings
+      .panel.panel-default
+        .panel-heading Housekeeping
+        .errors-holder
+        .panel-body
+          %p
+            Runs a number of housekeeping tasks within the current repository,
+            such as compressing file revisions and removing unreachable objects.
+            %br
+
+          .form-actions
+            = link_to 'Housekeeping', housekeeping_namespace_project_path(@project.namespace, @project),
+                method: :post, class: "btn btn-default"
+
+      - if can? current_user, :archive_project, @project
         - if @project.archived?
-          %p
-            %strong Once active this project shows up in the search and on the dashboard.
-          = link_to 'Unarchive project', unarchive_namespace_project_path(@project.namespace, @project),
-              data: { confirm: "Are you sure that you want to unarchive this project?\nWhen this project is unarchived it is active and can be committed to again." },
-              method: :post, class: "btn btn-success"
+          .panel.panel-success
+            .panel-heading
+              Unarchive project
+            .panel-body
+              %p
+                Unarchiving the project will mark its repository as active.
+                %br
+                The project can be committed to.
+                %br
+                %strong Once active this project shows up in the search and on the dashboard.
+
+              .form-actions
+                = link_to 'Unarchive project', unarchive_namespace_project_path(@project.namespace, @project),
+                    data: { confirm: "Are you sure that you want to unarchive this project?\nWhen this project is unarchived it is active and can be committed to again." },
+                    method: :post, class: "btn btn-success"
         - else
-          %p
-            %strong Archived projects cannot be committed to!
-          = link_to 'Archive project', archive_namespace_project_path(@project.namespace, @project),
-              data: { confirm: "Are you sure that you want to archive this project?\nAn archived project cannot be committed to." },
-              method: :post, class: "btn btn-warning"
-  %hr
-  .row.prepend-top-default
-    .col-lg-3
-      %h4.prepend-top-0.warning-title
-        Rename repository
-    .col-lg-9
-      = form_for([@project.namespace.becomes(Namespace), @project]) do |f|
-        .form-group.project_name_holder
-          = f.label :name, class: 'label-light' do
-            Project name
-          .form-group
-            = f.text_field :name, class: "form-control"
-        .form-group
-          = f.label :path, class: 'label-light' do
-            %span Path
-          .form-group
-            .input-group
-              .input-group-addon
-                #{URI.join(root_url, @project.namespace.path)}/
-              = f.text_field :path, class: 'form-control'
-          %ul
-            %li Be careful. Renaming a project's repository can have unintended side effects.
-            %li You will need to update your local repositories to point to the new location.
-        = f.submit 'Rename project', class: "btn btn-warning"
-  - if can?(current_user, :change_namespace, @project)
-    %hr
-    .row.prepend-top-default
-      .col-lg-3
-        %h4.prepend-top-0.danger-title
-          Transfer project
-      .col-lg-9
-        = form_for([@project.namespace.becomes(Namespace), @project], url: transfer_namespace_project_path(@project.namespace, @project), method: :put, remote: true) do |f|
-          .form-group
-            = label_tag :new_namespace_id, nil, class: 'label-light' do
-              %span Namespace
+          .panel.panel-warning
+            .panel-heading
+              Archive project
+            .panel-body
+              %p
+                Archiving the project will mark its repository as read-only.
+                %br
+                It is hidden from the dashboard and doesn't show up in searches.
+                %br
+                %strong Archived projects cannot be committed to!
+
+              .form-actions
+                = link_to 'Archive project', archive_namespace_project_path(@project.namespace, @project),
+                    data: { confirm: "Are you sure that you want to archive this project?\nAn archived project cannot be committed to." },
+                    method: :post, class: "btn btn-warning"
+      - else
+        .nothing-here-block Only the project owner can archive a project
+
+      .panel.panel-default.panel.panel-warning
+        .panel-heading Rename repository
+        .errors-holder
+        .panel-body
+          = form_for([@project.namespace.becomes(Namespace), @project], html: { class: 'form-horizontal' }) do |f|
+            .form-group.project_name_holder
+              = f.label :name, class: 'control-label' do
+                Project name
+              .col-sm-9
+                .form-group
+                  = f.text_field :name, class: "form-control"
             .form-group
-              = select_tag :new_namespace_id, namespaces_options(@project.namespace_id), { prompt: 'Choose a project namespace', class: 'select2' }
-            %ul
-              %li Be careful. Changing the project's namespace can have unintended side effects.
-              %li You can only transfer the project to namespaces you manage.
-              %li You will need to update your local repositories to point to the new location.
-              %li Project visibility level will be changed to match namespace rules when transfering to a group.
-          = f.submit 'Transfer project', class: "btn btn-remove js-confirm-danger", data: { "confirm-danger-message" => transfer_project_message(@project) }
-  - if @project.forked? && can?(current_user, :remove_fork_project, @project)
-    %hr
-    .row.prepend-top-default.append-bottom-default
-      .col-lg-3
-        %h4.prepend-top-0.danger-title
-          Remove fork relationship
-        %p.append-bottom-0
-          %p
-            This will remove the fork relationship to source project
-            = succeed "." do
-              = link_to @project.forked_from_project.name_with_namespace, project_path(@project.forked_from_project)
-      .col-lg-9
-        = form_for([@project.namespace.becomes(Namespace), @project], url: remove_fork_namespace_project_path(@project.namespace, @project), method: :delete, remote: true, html: { class: 'transfer-project' }) do |f|
-          %p
-            %strong Once removed, the fork relationship cannot be restored and you will no longer be able to send merge requests to the source.
-          = button_to 'Remove fork relationship', '#', class: "btn btn-remove js-confirm-danger", data: { "confirm-danger-message" => remove_fork_project_message(@project) }
-  - if can?(current_user, :remove_project, @project)
-    %hr
-    .row.prepend-top-default.append-bottom-default
-      .col-lg-3
-        %h4.prepend-top-0.danger-title
-          Remove project
-        %p.append-bottom-0
-          Removing the project will delete its repository and all related resources including issues, merge requests etc.
-      .col-lg-9
-        = form_tag(namespace_project_path(@project.namespace, @project), method: :delete) do
-          %p
-            %strong Removed projects cannot be restored!
-          = button_to 'Remove project', '#', class: "btn btn-remove js-confirm-danger", data: { "confirm-danger-message" => remove_project_message(@project) }
+              = f.label :path, class: 'control-label' do
+                %span Path
+              .col-sm-9
+                .form-group
+                  .input-group
+                    .input-group-addon
+                      #{URI.join(root_url, @project.namespace.path)}/
+                    = f.text_field :path, class: 'form-control'
+                %ul
+                  %li Be careful. Renaming a project's repository can have unintended side effects.
+                  %li You will need to update your local repositories to point to the new location.
+            .form-actions
+              = f.submit 'Rename project', class: "btn btn-warning"
+
+      - if can?(current_user, :change_namespace, @project)
+        .panel.panel-default.panel.panel-danger
+          .panel-heading Transfer project
+          .errors-holder
+          .panel-body
+            = form_for([@project.namespace.becomes(Namespace), @project], url: transfer_namespace_project_path(@project.namespace, @project), method: :put, remote: true, html: { class: 'transfer-project form-horizontal' }) do |f|
+              .form-group
+                = label_tag :new_namespace_id, nil, class: 'control-label' do
+                  %span Namespace
+                .col-sm-9
+                  .form-group
+                    = select_tag :new_namespace_id, namespaces_options(@project.namespace_id), { prompt: 'Choose a project namespace', class: 'select2' }
+                  %ul
+                    %li Be careful. Changing the project's namespace can have unintended side effects.
+                    %li You can only transfer the project to namespaces you manage.
+                    %li You will need to update your local repositories to point to the new location.
+                    %li Project visibility level will be changed to match namespace rules when transfering to a group.
+              .form-actions
+                = f.submit 'Transfer project', class: "btn btn-remove js-confirm-danger", data: { "confirm-danger-message" => transfer_project_message(@project) }
+      - else
+        .nothing-here-block Only the project owner can transfer a project
+
+      - if @project.forked?
+        - if can?(current_user, :remove_fork_project, @project)
+          = form_for([@project.namespace.becomes(Namespace), @project], url: remove_fork_namespace_project_path(@project.namespace, @project), method: :delete, remote: true, html: { class: 'transfer-project form-horizontal' }) do |f|
+            .panel.panel-default.panel.panel-danger
+              .panel-heading Remove fork relationship
+              .panel-body
+                %p
+                  This will remove the fork relationship to source project
+                  #{link_to @project.forked_from_project.name_with_namespace, project_path(@project.forked_from_project)}.
+                  %br
+                  %strong Once removed, the fork relationship cannot be restored and you will no longer be able to send merge requests to the source.
+                .form-actions
+                  = button_to 'Remove fork relationship', '#', class: "btn btn-remove js-confirm-danger", data: { "confirm-danger-message" => remove_fork_project_message(@project) }
+        - else
+          .nothing-here-block Only the project owner can remove the fork relationship.
+
+      - if can?(current_user, :remove_project, @project)
+        .panel.panel-default.panel.panel-danger
+          .panel-heading Remove project
+          .panel-body
+            = form_tag(namespace_project_path(@project.namespace, @project), method: :delete, class: 'form-horizontal') do
+              %p
+                Removing the project will delete its repository and all related resources including issues, merge requests etc.
+                %br
+                %strong Removed projects cannot be restored!
+              .form-actions
+                = button_to 'Remove project', '#', class: "btn btn-remove js-confirm-danger", data: { "confirm-danger-message" => remove_project_message(@project) }
+      - else
+        .nothing-here-block Only the project owner can remove a project.
+
 
 .save-project-loader.hide
   .center
@@ -223,5 +253,6 @@
       %i.fa.fa-spinner.fa-spin
       Saving project.
     %p Please wait a moment, this page will automatically refresh when ready.
+
 
 = render 'shared/confirm_modal', phrase: @project.path

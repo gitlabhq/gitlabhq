@@ -7,10 +7,10 @@
 }
 .no-ssh-key-message, .project-limit-message {
   background-color: #f28d35;
-  margin-bottom: 0;
+  margin-bottom: 16px;
 }
 .new_project,
-.edit-project {
+.edit_project {
   fieldset.features {
     .control-label {
       font-weight: normal;
@@ -26,13 +26,8 @@
 }
 
 .project-home-panel {
-  background: $white-light;
-  text-align: left;
-  padding: 24px 0;
-
-  .container-fluid {
-    position: relative;
-  }
+  padding-bottom: 40px;
+  border-bottom: 1px solid $border-color;
 
   .cover-controls {
     .project-settings-dropdown {
@@ -48,55 +43,21 @@
     }
   }
 
-  .cover-title {
-    margin-bottom: 0;
-  }
+  .project-identicon-holder {
+    margin-bottom: 16px;
 
-  .project-image-container {
-    @include make-sm-column(1);
-    max-width: 86px;
-    min-width: 86px;
-    padding-right: 0;
-    margin: 11px 0;
-
-    @media (max-width: $screen-md-max) {
-      padding-left: 0;
-      margin: 0 0 10px;
-      max-width: none;
-      min-width: none;
-
-      .avatar.s70 {
-        margin: auto;
-      }
-    }
-  }
-
-  .project-info {
-    @include make-sm-column(10);
-
-    h1 {
-      font-size: 24px;
-      font-weight: normal;
-      margin: 0;
+    .avatar, .identicon {
+      margin: 0 auto;
+      float: none;
     }
 
-    .project-home-desc {
-      p {
-        margin: 0;
-      }
+    .identicon {
+      @include border-radius(50%);
     }
-  }
-
-  .identicon {
-    float: left;
-    @include border-radius(50%);
-  }
-
-  .avatar {
-    float: none;
   }
 
   .notifications-btn {
+    margin-top: -28px;
 
     .fa-bell {
       margin-right: 6px;
@@ -108,45 +69,28 @@
   }
 
   .project-repo-buttons {
-    font-size: 0;
+    margin-top: 20px;
+    margin-bottom: 0;
+
+    .count-buttons {
+      display: block;
+      margin-bottom: 20px;
+    }
+
+    .clone-row {
+      .split-repo-buttons,
+      .project-clone-holder {
+        display: inline-block;
+      }
+
+      .split-repo-buttons {
+        margin: 0 12px;
+      }
+    }
 
     .btn {
       @include btn-gray;
-      padding: 3px 10px;
       text-transform: none;
-      background-color: $background-color;
-
-      .fa {
-        color: $layout-link-gray;
-      }
-
-      .fa-caret-down {
-        margin-left: 3px;
-      }
-    }
-
-    .btn-group:not(:first-child):not(:last-child) > .btn {
-      border-top-right-radius: 3px;
-      border-bottom-right-radius: 3px;
-    }
-
-    form {
-      margin-left: 10px;
-    }
-
-    .count-buttons {
-      display: inline-block;
-      vertical-align: top;
-      margin-top: 16px;
-    }
-
-    .project-clone-holder {
-      display: inline-block;
-      margin-top: 16px;
-
-      input {
-        height: 29px;
-      }
     }
 
     .count-with-arrow {
@@ -196,47 +140,19 @@
         line-height: 13px;
         padding: $gl-vert-padding $gl-padding;
         letter-spacing: .4px;
-        padding: 7px 14px;
+        padding: 10px 14px;
         text-align: center;
         vertical-align: middle;
         touch-action: manipulation;
         cursor: pointer;
         background-image: none;
         white-space: nowrap;
-        margin: 0 10px 0 4px;
-
-        a {
-          color: inherit;
-        }
+        margin: 0 11px 0 4px;
 
         &:hover {
           background: #fff;
         }
       }
-    }
-  }
-
-  .project-right-buttons {
-    position: absolute;
-    right: 16px;
-    bottom: 0;
-
-    .btn {
-      padding: 3px 10px;
-      background-color: $background-color;
-    }
-
-    @media (max-width: 1304px) {
-      top: 0;
-    }
-  }
-
-  @media (max-width: $screen-md-max) {
-    text-align: center;
-
-    .project-info,
-    .project-image-container {
-      width: 100%;
     }
   }
 }
@@ -245,7 +161,7 @@
   display: inline-table;
   margin-right: 12px;
 
-  > a {
+  a {
     margin: -1px;
   }
 }
@@ -369,11 +285,11 @@ a.deploy-project-label {
 }
 
 .project-stats {
+  text-align: center;
   margin-top: $gl-padding;
   margin-bottom: 0;
-  padding: 16px 0;
-  background-color: $white-light;
-  font-size: 0;
+  padding-top: 10px;
+  padding-bottom: 4px;
 
   ul.nav {
     display: inline-block;
@@ -384,11 +300,12 @@ a.deploy-project-label {
   }
 
   .nav > li > a {
+    @include btn-default;
+    @include btn-gray;
+
     background-color: transparent;
-    margin-right: 12px;
-    padding: 0 10px;
-    font-size: 15px;
-    color: $notes-light-color;
+    border: 1px solid #f7f8fa;
+    margin-left: 12px;
   }
 
   li {
@@ -407,10 +324,6 @@ a.deploy-project-label {
     &:hover {
       background-color: #f0f2f5;
     }
-  }
-
-  &.row-content-block.second-block {
-    margin-top: 0;
   }
 }
 
@@ -529,13 +442,8 @@ pre.light-well {
   border-top: 0;
 
   .edit-project-readme {
-    z-index: 2;
+    z-index: 100;
     position: relative;
-  }
-
-  .wiki h1 {
-    border-bottom: none;
-    padding: 0;
   }
 }
 

@@ -75,9 +75,6 @@ class @MergeRequestTabs
       @loadDiff($target.attr('href'))
       if bp? and bp.getBreakpointSize() isnt 'lg'
         @shrinkView()
-
-      navBarHeight = $('.navbar-gitlab').outerHeight()
-      $.scrollTo(".merge-request-details .merge-request-tabs", offset: -navBarHeight)
     else if action == 'builds'
       @loadBuilds($target.attr('href'))
       @expandView()

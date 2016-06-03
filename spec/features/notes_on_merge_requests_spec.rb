@@ -19,14 +19,10 @@ describe 'Comments', feature: true do
   end
 
   describe 'On a merge request', js: true, feature: true do
-    let!(:project) { create(:project) }
-    let!(:merge_request) do
-      create(:merge_request, source_project: project, target_project: project)
-    end
-
+    let!(:merge_request) { create(:merge_request) }
+    let!(:project) { merge_request.source_project }
     let!(:note) do
-      create(:note_on_merge_request, :with_attachment, noteable: merge_request,
-                                                       project: project)
+      create(:note_on_merge_request, :with_attachment, project: project)
     end
 
     before do
@@ -196,7 +192,7 @@ describe 'Comments', feature: true do
         end
 
         it 'should be removed when canceled' do
-          page.within(".diff-file form[id$='#{line_code}-true']") do
+          page.within(".diff-file form[id$='#{line_code}']") do
             find('.js-close-discussion-note-form').trigger('click')
           end
 

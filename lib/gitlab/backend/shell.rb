@@ -180,7 +180,7 @@ module Gitlab
     #   exists?('gitlab/cookies.git')
     #
     def exists?(dir_name)
-      File.exist?(full_path(dir_name))
+      File.exists?(full_path(dir_name))
     end
 
     protected

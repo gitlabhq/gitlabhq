@@ -12,9 +12,6 @@
     - else
       %strong ##{generic_commit_status.id}
 
-    - if defined?(retried) && retried
-      = icon('warning', class: 'text-warning has-tooltip', title: 'Status was retried.')
-
   - if defined?(commit_sha) && commit_sha
     %td
       = link_to generic_commit_status.short_sha, namespace_project_commit_path(generic_commit_status.project.namespace, generic_commit_status.project, generic_commit_status.sha), class: "monospace"
@@ -40,13 +37,11 @@
   %td
     = generic_commit_status.name
 
-  %td
-    - if generic_commit_status.tags.any?
-      - generic_commit_status.tags.each do |tag|
-        %span.label.label-primary
-          = tag
-    - if defined?(retried) && retried
-      %span.label.label-warning retried
+    .pull-right
+      - if generic_commit_status.tags.any?
+        - generic_commit_status.tags.each do |tag|
+          %span.label.label-primary
+            = tag
 
   %td.duration
     - if generic_commit_status.duration

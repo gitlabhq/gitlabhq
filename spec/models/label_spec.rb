@@ -1,3 +1,16 @@
+# == Schema Information
+#
+# Table name: labels
+#
+#  id         :integer          not null, primary key
+#  title      :string(255)
+#  color      :string(255)
+#  project_id :integer
+#  created_at :datetime
+#  updated_at :datetime
+#  template   :boolean          default(FALSE)
+#
+
 require 'spec_helper'
 
 describe Label, models: true do
@@ -39,14 +52,6 @@ describe Label, models: true do
       expect(label).to allow_value('GITLAB').for(:title)
       expect(label).to allow_value('gitlab').for(:title)
       expect(label).to allow_value("customer's request").for(:title)
-    end
-  end
-
-  describe "#title" do
-    let(:label) { create(:label, title: "<b>test</b>") }
-
-    it "sanitizes title" do
-      expect(label.title).to eq("test")
     end
   end
 

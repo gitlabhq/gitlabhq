@@ -52,7 +52,7 @@ Doorkeeper.configure do
   # For more information go to
   # https://github.com/doorkeeper-gem/doorkeeper/wiki/Using-Scopes
   default_scopes  :api
-  # optional_scopes :write, :update
+  #optional_scopes :write, :update
 
   # Change the way client credentials are retrieved from the request object.
   # By default it retrieves first from the `HTTP_AUTHORIZATION` header, then
@@ -71,7 +71,7 @@ Doorkeeper.configure do
   # The value can be any string. Use nil to disable this feature. When disabled, clients must provide a valid URL
   # (Similar behaviour: https://developers.google.com/accounts/docs/OAuth2InstalledApp#choosingredirecturi)
   #
-  native_redirect_uri nil # 'urn:ietf:wg:oauth:2.0:oob'
+  native_redirect_uri nil#'urn:ietf:wg:oauth:2.0:oob'
 
   # Specify what grant flows are enabled in array of Strings. The valid
   # strings and the flows they enable are:

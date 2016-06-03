@@ -19,12 +19,6 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
     redirect_to admin_runners_path
   end
 
-  def reset_health_check_token
-    @application_setting.reset_health_check_access_token!
-    flash[:notice] = 'New health check access token has been generated!'
-    redirect_to :back
-  end
-
   def clear_repository_check_states
     RepositoryCheck::ClearWorker.perform_async
 
@@ -58,12 +52,6 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
         source.to_str
       end
     end
-
-    enabled_oauth_sign_in_sources = params[:application_setting].delete(:enabled_oauth_sign_in_sources)
-
-    params[:application_setting][:disabled_oauth_sign_in_sources] =
-      AuthHelper.button_based_providers.map(&:to_s) -
-      Array(enabled_oauth_sign_in_sources)
 
     params.require(:application_setting).permit(
       :default_projects_limit,
@@ -106,11 +94,8 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :email_author_in_body,
       :repository_checks_enabled,
       :metrics_packet_size,
-      :send_user_confirmation_email,
-      :container_registry_token_expire_delay,
       restricted_visibility_levels: [],
-      import_sources: [],
-      disabled_oauth_sign_in_sources: []
+      import_sources: []
     )
   end
 end

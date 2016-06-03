@@ -1,9 +1,29 @@
+# == Schema Information
+#
+# Table name: members
+#
+#  id                 :integer          not null, primary key
+#  access_level       :integer          not null
+#  source_id          :integer          not null
+#  source_type        :string           not null
+#  user_id            :integer
+#  notification_level :integer          not null
+#  type               :string
+#  created_at         :datetime
+#  updated_at         :datetime
+#  created_by_id      :integer
+#  invite_email       :string
+#  invite_token       :string
+#  invite_accepted_at :datetime
+#
+
 class ProjectMember < Member
   SOURCE_TYPE = 'Project'
 
   include Gitlab::ShellAdapter
 
   belongs_to :project, class_name: 'Project', foreign_key: 'source_id'
+
 
   # Make sure project member points only to project as it source
   default_value_for :source_type, SOURCE_TYPE
@@ -13,8 +33,6 @@ class ProjectMember < Member
   scope :in_project, ->(project) { where(source_id: project.id) }
   scope :in_projects, ->(projects) { where(source_id: projects.pluck(:id)) }
   scope :with_user, ->(user) { where(user_id: user.id) }
-
-  before_destroy :delete_member_todos
 
   class << self
 
@@ -102,10 +120,6 @@ class ProjectMember < Member
   end
 
   private
-
-  def delete_member_todos
-    user.todos.where(project_id: source_id).destroy_all if user
-  end
 
   def send_invite
     notification_service.invite_project_member(self, @raw_invite_token)

@@ -11,8 +11,6 @@ module MergeRequests
       params.except!(:target_project_id)
       params.except!(:source_branch)
 
-      merge_request.merge_params['force_remove_source_branch'] = params.delete(:force_remove_source_branch)
-
       update(merge_request)
     end
 

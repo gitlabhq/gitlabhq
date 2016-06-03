@@ -24,7 +24,7 @@ feature 'project owner sees a link to create a license file in empty project', f
 
     file_content = find('.file-content')
     expect(file_content).to have_content('The MIT License (MIT)')
-    expect(file_content).to have_content("Copyright (c) #{Time.now.year} #{project.namespace.human_name}")
+    expect(file_content).to have_content("Copyright (c) 2016 #{project.namespace.human_name}")
 
     fill_in :commit_message, with: 'Add a LICENSE file', visible: true
     # Remove pre-receive hook so we can push without auth
@@ -34,6 +34,6 @@ feature 'project owner sees a link to create a license file in empty project', f
     expect(current_path).to eq(
       namespace_project_blob_path(project.namespace, project, 'master/LICENSE'))
     expect(page).to have_content('The MIT License (MIT)')
-    expect(page).to have_content("Copyright (c) #{Time.now.year} #{project.namespace.human_name}")
+    expect(page).to have_content("Copyright (c) 2016 #{project.namespace.human_name}")
   end
 end

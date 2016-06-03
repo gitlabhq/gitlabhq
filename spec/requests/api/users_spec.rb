@@ -20,7 +20,7 @@ describe API::API, api: true  do
     end
 
     context "when authenticated" do
-      # These specs are written just in case API authentication is not required anymore
+      #These specs are written just in case API authentication is not required anymore
       context "when public level is restricted" do
         before do
           stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::PUBLIC])

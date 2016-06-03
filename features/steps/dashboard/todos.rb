@@ -20,7 +20,7 @@ class Spinach::Features::DashboardTodos < Spinach::FeatureSteps
   step 'I have todos' do
     create(:todo, user: current_user, project: project, author: mary_jane, target: issue, action: Todo::MENTIONED)
     create(:todo, user: current_user, project: project, author: john_doe, target: issue, action: Todo::ASSIGNED)
-    note = create(:note, author: john_doe, noteable: issue, note: "#{current_user.to_reference} Wdyt?", project: project)
+    note = create(:note, author: john_doe, noteable: issue, note: "#{current_user.to_reference} Wdyt?")
     create(:todo, user: current_user, project: project, author: john_doe, target: issue, action: Todo::MENTIONED, note: note)
     create(:todo, user: current_user, project: project, author: john_doe, target: merge_request, action: Todo::ASSIGNED)
   end
@@ -106,7 +106,7 @@ class Spinach::Features::DashboardTodos < Spinach::FeatureSteps
       if pending
         expect(page).to have_link 'Done'
       else
-        expect(page).not_to have_link 'Done'
+        expect(page).to_not have_link 'Done'
       end
     end
   end

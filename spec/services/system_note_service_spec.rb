@@ -208,10 +208,8 @@ describe SystemNoteService, services: true do
   end
 
   describe '.merge_when_build_succeeds' do
-    let(:ci_commit) { build(:ci_commit_without_jobs )}
-    let(:noteable) do
-      create(:merge_request, source_project: project, target_project: project)
-    end
+    let(:ci_commit) { build :ci_commit_without_jobs }
+    let(:noteable) { create :merge_request }
 
     subject { described_class.merge_when_build_succeeds(noteable, project, author, noteable.last_commit) }
 
@@ -223,10 +221,8 @@ describe SystemNoteService, services: true do
   end
 
   describe '.cancel_merge_when_build_succeeds' do
-    let(:ci_commit) { build(:ci_commit_without_jobs) }
-    let(:noteable) do
-      create(:merge_request, source_project: project, target_project: project)
-    end
+    let(:ci_commit) { build :ci_commit_without_jobs }
+    let(:noteable) { create :merge_request }
 
     subject { described_class.cancel_merge_when_build_succeeds(noteable, project, author) }
 
@@ -245,19 +241,15 @@ describe SystemNoteService, services: true do
 
       it 'sets the note text' do
         expect(subject.note).
-          to eq "Changed title: **{-Old title-}** → **{+#{noteable.title}+}**"
+          to eq "Title changed from **Old title** to **#{noteable.title}**"
       end
     end
-  end
 
-  describe '.change_issue_confidentiality' do
-    subject { described_class.change_issue_confidentiality(noteable, project, author) }
+    context 'when noteable does not respond to `title' do
+      let(:noteable) { double('noteable') }
 
-    context 'when noteable responds to `confidential`' do
-      it_behaves_like 'a system note'
-
-      it 'sets the note text' do
-        expect(subject.note).to eq 'Made the issue visible'
+      it 'returns nil' do
+        expect(subject).to be_nil
       end
     end
   end

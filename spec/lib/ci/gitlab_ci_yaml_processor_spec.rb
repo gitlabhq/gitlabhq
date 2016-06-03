@@ -443,12 +443,12 @@ module Ci
       context 'when job variables are defined' do
         context 'when syntax is correct' do
           it 'returns job variables' do
-            variables = {
+            variables =  {
               KEY1: 'value1',
               SOME_KEY_2: 'value2'
             }
 
-            config = YAML.dump(
+            config =  YAML.dump(
               { before_script: ['pwd'],
                 rspec: {
                   variables: variables,
@@ -619,19 +619,19 @@ module Ci
       context 'no dependencies' do
         let(:dependencies) { }
 
-        it { expect { subject }.not_to raise_error }
+        it { expect { subject }.to_not raise_error }
       end
 
       context 'dependencies to builds' do
         let(:dependencies) { ['build1', 'build2'] }
 
-        it { expect { subject }.not_to raise_error }
+        it { expect { subject }.to_not raise_error }
       end
 
       context 'dependencies to builds defined as symbols' do
         let(:dependencies) { [:build1, :build2] }
 
-        it { expect { subject }.not_to raise_error }
+        it { expect { subject }.to_not raise_error }
       end
 
       context 'undefined dependency' do

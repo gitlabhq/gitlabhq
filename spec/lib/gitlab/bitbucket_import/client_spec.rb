@@ -59,7 +59,7 @@ describe Gitlab::BitbucketImport::Client, lib: true do
                                                              bitbucket_access_token_secret: "test" } })
       project.import_url = "ssh://git@bitbucket.org/test/test.git"
 
-      expect { described_class.from_project(project) }.not_to raise_error
+      expect { described_class.from_project(project) }.to_not raise_error
     end
   end
 end

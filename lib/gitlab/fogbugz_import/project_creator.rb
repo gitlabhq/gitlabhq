@@ -12,7 +12,7 @@ module Gitlab
       end
 
       def execute
-        ::Projects::CreateService.new(
+        project = ::Projects::CreateService.new(
           current_user,
           name: repo.safe_name,
           path: repo.path,
@@ -21,9 +21,12 @@ module Gitlab
           visibility_level: Gitlab::VisibilityLevel::INTERNAL,
           import_type: 'fogbugz',
           import_source: repo.name,
-          import_url: Project::UNKNOWN_IMPORT_URL,
-          import_data: { data: { 'repo' => repo.raw_data, 'user_map' => user_map }, credentials: { fb_session: fb_session } }
+          import_url: Project::UNKNOWN_IMPORT_URL
         ).execute
+
+        project.create_or_update_import_data(data: { 'repo' => repo.raw_data, 'user_map' => user_map }, credentials: { fb_session: fb_session })
+
+        project
       end
     end
   end

@@ -1,15 +1,14 @@
 @Api =
-  groupsPath: "/api/:version/groups.json"
-  groupPath: "/api/:version/groups/:id.json"
-  namespacesPath: "/api/:version/namespaces.json"
-  groupProjectsPath: "/api/:version/groups/:id/projects.json"
-  projectsPath: "/api/:version/projects.json"
-  labelsPath: "/api/:version/projects/:id/labels"
-  licensePath: "/api/:version/licenses/:key"
-  gitignorePath: "/api/:version/gitignores/:key"
+  groups_path: "/api/:version/groups.json"
+  group_path: "/api/:version/groups/:id.json"
+  namespaces_path: "/api/:version/namespaces.json"
+  group_projects_path: "/api/:version/groups/:id/projects.json"
+  projects_path: "/api/:version/projects.json"
+  labels_path: "/api/:version/projects/:id/labels"
+  license_path: "/api/:version/licenses/:key"
 
   group: (group_id, callback) ->
-    url = Api.buildUrl(Api.groupPath)
+    url = Api.buildUrl(Api.group_path)
     url = url.replace(':id', group_id)
 
     $.ajax(
@@ -23,7 +22,7 @@
   # Return groups list. Filtered by query
   # Only active groups retrieved
   groups: (query, skip_ldap, callback) ->
-    url = Api.buildUrl(Api.groupsPath)
+    url = Api.buildUrl(Api.groups_path)
 
     $.ajax(
       url: url
@@ -37,7 +36,7 @@
 
   # Return namespaces list. Filtered by query
   namespaces: (query, callback) ->
-    url = Api.buildUrl(Api.namespacesPath)
+    url = Api.buildUrl(Api.namespaces_path)
 
     $.ajax(
       url: url
@@ -51,7 +50,7 @@
 
   # Return projects list. Filtered by query
   projects: (query, order, callback) ->
-    url = Api.buildUrl(Api.projectsPath)
+    url = Api.buildUrl(Api.projects_path)
 
     $.ajax(
       url: url
@@ -65,7 +64,7 @@
       callback(projects)
 
   newLabel: (project_id, data, callback) ->
-    url = Api.buildUrl(Api.labelsPath)
+    url = Api.buildUrl(Api.labels_path)
     url = url.replace(':id', project_id)
 
     data.private_token = gon.api_token
@@ -81,7 +80,7 @@
 
   # Return group projects list. Filtered by query
   groupProjects: (group_id, query, callback) ->
-    url = Api.buildUrl(Api.groupProjectsPath)
+    url = Api.buildUrl(Api.group_projects_path)
     url = url.replace(':id', group_id)
 
     $.ajax(
@@ -96,19 +95,13 @@
 
   # Return text for a specific license
   licenseText: (key, data, callback) ->
-    url = Api.buildUrl(Api.licensePath).replace(':key', key)
+    url = Api.buildUrl(Api.license_path).replace(':key', key)
 
     $.ajax(
       url: url
       data: data
     ).done (license) ->
       callback(license)
-
-  gitignoreText: (key, callback) ->
-    url = Api.buildUrl(Api.gitignorePath).replace(':key', key)
-
-    $.get url, (gitignore) ->
-      callback(gitignore)
 
   buildUrl: (url) ->
     url = gon.relative_url_root + url if gon.relative_url_root?

@@ -1,3 +1,23 @@
+# == Schema Information
+#
+# Table name: issues
+#
+#  id            :integer          not null, primary key
+#  title         :string(255)
+#  assignee_id   :integer
+#  author_id     :integer
+#  project_id    :integer
+#  created_at    :datetime
+#  updated_at    :datetime
+#  position      :integer          default(0)
+#  branch_name   :string(255)
+#  description   :text
+#  milestone_id  :integer
+#  state         :string(255)
+#  iid           :integer
+#  updated_by_id :integer
+#
+
 require 'spec_helper'
 
 describe Issue, models: true do
@@ -192,7 +212,7 @@ describe Issue, models: true do
                                                source_project: subject.project,
                                                source_branch: "#{subject.iid}-branch" })
       merge_request.create_cross_references!(user)
-      expect(subject.referenced_merge_requests).not_to be_empty
+      expect(subject.referenced_merge_requests).to_not be_empty
       expect(subject.related_branches(user)).to eq([subject.to_branch_name])
     end
 
@@ -229,61 +249,6 @@ describe Issue, models: true do
     it "does not contain the issue title if confidential" do
       issue = create(:issue, title: 'testing-issue', confidential: true)
       expect(issue.to_branch_name).to match /confidential-issue\z/
-    end
-  end
-
-  describe '#participants' do
-    context 'using a public project' do
-      let(:project) { create(:project, :public) }
-      let(:issue) { create(:issue, project: project) }
-
-      let!(:note1) do
-        create(:note_on_issue, noteable: issue, project: project, note: 'a')
-      end
-
-      let!(:note2) do
-        create(:note_on_issue, noteable: issue, project: project, note: 'b')
-      end
-
-      it 'includes the issue author' do
-        expect(issue.participants).to include(issue.author)
-      end
-
-      it 'includes the authors of the notes' do
-        expect(issue.participants).to include(note1.author, note2.author)
-      end
-    end
-
-    context 'using a private project' do
-      it 'does not include mentioned users that do not have access to the project' do
-        project = create(:project)
-        user = create(:user)
-        issue = create(:issue, project: project)
-
-        create(:note_on_issue,
-               noteable: issue,
-               project: project,
-               note: user.to_reference)
-
-        expect(issue.participants).not_to include(user)
-      end
-    end
-  end
-
-  describe 'cached counts' do
-    it 'updates when assignees change' do
-      user1 = create(:user)
-      user2 = create(:user)
-      issue = create(:issue, assignee: user1)
-
-      expect(user1.assigned_open_issues_count).to eq(1)
-      expect(user2.assigned_open_issues_count).to eq(0)
-
-      issue.assignee = user2
-      issue.save
-
-      expect(user1.assigned_open_issues_count).to eq(0)
-      expect(user2.assigned_open_issues_count).to eq(1)
     end
   end
 end

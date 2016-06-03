@@ -91,6 +91,11 @@ describe Banzai::Filter::IssueReferenceFilter, lib: true do
       expect(link).to eq helper.url_for_issue(issue.iid, project, only_path: true)
     end
 
+    it 'adds to the results hash' do
+      result = reference_pipeline_result("Fixed #{reference}")
+      expect(result[:references][:issue]).to eq [issue]
+    end
+
     it 'does not process links containing issue numbers followed by text' do
       href = "#{reference}st"
       doc = reference_filter("<a href='#{href}'></a>")
@@ -131,6 +136,11 @@ describe Banzai::Filter::IssueReferenceFilter, lib: true do
 
       expect(reference_filter(act).to_html).to eq exp
     end
+
+    it 'adds to the results hash' do
+      result = reference_pipeline_result("Fixed #{reference}")
+      expect(result[:references][:issue]).to eq [issue]
+    end
   end
 
   context 'cross-project URL reference' do
@@ -149,6 +159,11 @@ describe Banzai::Filter::IssueReferenceFilter, lib: true do
     it 'links with adjacent text' do
       doc = reference_filter("Fixed (#{reference}.)")
       expect(doc.to_html).to match(/\(<a.+>#{Regexp.escape(issue.to_reference(project))} \(comment 123\)<\/a>\.\)/)
+    end
+
+    it 'adds to the results hash' do
+      result = reference_pipeline_result("Fixed #{reference}")
+      expect(result[:references][:issue]).to eq [issue]
     end
   end
 
@@ -169,6 +184,11 @@ describe Banzai::Filter::IssueReferenceFilter, lib: true do
       doc = reference_filter("Fixed (#{reference}.)")
       expect(doc.to_html).to match(/\(<a.+>Reference<\/a>\.\)/)
     end
+
+    it 'adds to the results hash' do
+      result = reference_pipeline_result("Fixed #{reference}")
+      expect(result[:references][:issue]).to eq [issue]
+    end
   end
 
   context 'cross-project URL in link href' do
@@ -187,6 +207,11 @@ describe Banzai::Filter::IssueReferenceFilter, lib: true do
     it 'links with adjacent text' do
       doc = reference_filter("Fixed (#{reference}.)")
       expect(doc.to_html).to match(/\(<a.+>Reference<\/a>\.\)/)
+    end
+
+    it 'adds to the results hash' do
+      result = reference_pipeline_result("Fixed #{reference}")
+      expect(result[:references][:issue]).to eq [issue]
     end
   end
 end

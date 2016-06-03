@@ -1,4 +1,5 @@
 - page_title "Contributors", "Graphs"
+= render "header_title"
 = render 'head'
 
 .row-content-block.append-bottom-default
@@ -18,7 +19,7 @@
   .header.clearfix
     %h3#date_header.page-title
     %p.light
-      Commits to #{@ref}, excluding merge commits. Limited to 6,000 commits.
+      Commits to #{@ref}, excluding merge commits. Limited by 6,000 commits
     %input#brush_change{:type => "hidden"}
   .graphs
     #contributors-master

@@ -6,8 +6,11 @@
 .search.search-form{class: "#{'has-location-badge' if label.present?}"}
   = form_tag search_path, method: :get, class: 'navbar-form' do |f|
     .search-input-container
-      - if label.present?
-        .location-badge= label
+      .search-location-badge
+        - if label.present?
+          %span.location-badge
+            %i.location-text
+              = label
       .search-input-wrap
         .dropdown{ data: {url: search_autocomplete_path } }
           = search_field_tag "search", nil, placeholder: 'Search', class: "search-input dropdown-menu-toggle", spellcheck: false, tabindex: "1", autocomplete: 'off',  data: { toggle: 'dropdown' }

@@ -7,7 +7,7 @@
       %li
         %span.merge-request-ci-status
           - if merge_request.ci_commit
-            = render_pipeline_status(merge_request.ci_commit)
+            = render_ci_status(merge_request.ci_commit)
           - elsif has_any_ci
             = icon('blank fw')
         %span.merge-request-id
@@ -24,8 +24,5 @@
             MERGED
           - elsif merge_request.closed?
             CLOSED
-    %li
-      = render partial: 'projects/issues/closed_by_box', locals: {merge_request_count: @merge_requests.count}
     - if @closed_by_merge_requests.present?
-      %li
-        = render partial: 'projects/issues/closed_by_box', locals: {merge_request_count: @merge_requests.count}
+      = render partial: 'projects/issues/closed_by_box', locals: {merge_request_count: @merge_requests.count}

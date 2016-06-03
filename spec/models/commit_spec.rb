@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Commit, models: true do
-  let(:project) { create(:project, :public) }
+  let(:project) { create(:project) }
   let(:commit)  { project.commit }
 
   describe 'modules' do
@@ -56,7 +56,7 @@ describe Commit, models: true do
     end
 
     it "does not truncates a message with a newline after 80 but less 100 characters" do
-      message = <<eos
+      message =<<eos
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sodales id felis id blandit.
 Vivamus egestas lacinia lacus, sed rutrum mauris.
 eos
@@ -170,41 +170,5 @@ eos
 
   describe '#status' do
     # TODO: kamil
-  end
-
-  describe '#participants' do
-    let(:user1) { build(:user) }
-    let(:user2) { build(:user) }
-
-    let!(:note1) do
-      create(:note_on_commit,
-             commit_id: commit.id,
-             project: project,
-             note: 'foo')
-    end
-
-    let!(:note2) do
-      create(:note_on_commit,
-             commit_id: commit.id,
-             project: project,
-             note: 'bar')
-    end
-
-    before do
-      allow(commit).to receive(:author).and_return(user1)
-      allow(commit).to receive(:committer).and_return(user2)
-    end
-
-    it 'includes the commit author' do
-      expect(commit.participants).to include(commit.author)
-    end
-
-    it 'includes the committer' do
-      expect(commit.participants).to include(commit.committer)
-    end
-
-    it 'includes the authors of the commit notes' do
-      expect(commit.participants).to include(note1.author, note2.author)
-    end
   end
 end

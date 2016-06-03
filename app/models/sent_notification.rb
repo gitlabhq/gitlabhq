@@ -1,3 +1,17 @@
+# == Schema Information
+#
+# Table name: sent_notifications
+#
+#  id            :integer          not null, primary key
+#  project_id    :integer
+#  noteable_id   :integer
+#  noteable_type :string
+#  recipient_id  :integer
+#  commit_id     :string
+#  reply_key     :string           not null
+#  line_code     :string
+#
+
 class SentNotification < ActiveRecord::Base
   belongs_to :project
   belongs_to :noteable, polymorphic: true

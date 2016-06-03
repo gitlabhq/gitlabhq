@@ -67,8 +67,7 @@ Parameters:
     },
     "merge_when_build_succeeds": true,
     "merge_status": "can_be_merged",
-    "subscribed" : false,
-    "user_notes_count": 1
+    "subscribed" : false
   }
 ]
 ```
@@ -131,8 +130,7 @@ Parameters:
   },
   "merge_when_build_succeeds": true,
   "merge_status": "can_be_merged",
-  "subscribed" : true,
-  "user_notes_count": 1
+  "subscribed" : true
 }
 ```
 
@@ -232,7 +230,6 @@ Parameters:
   "merge_when_build_succeeds": true,
   "merge_status": "can_be_merged",
   "subscribed" : true,
-  "user_notes_count": 1,
   "changes": [
     {
     "old_path": "VERSION",
@@ -311,8 +308,7 @@ Parameters:
   },
   "merge_when_build_succeeds": true,
   "merge_status": "can_be_merged",
-  "subscribed" : true,
-  "user_notes_count": 0
+  "subscribed" : true
 }
 ```
 
@@ -382,8 +378,7 @@ Parameters:
   },
   "merge_when_build_succeeds": true,
   "merge_status": "can_be_merged",
-  "subscribed" : true,
-  "user_notes_count": 1
+  "subscribed" : true
 }
 ```
 
@@ -477,8 +472,7 @@ Parameters:
   },
   "merge_when_build_succeeds": true,
   "merge_status": "can_be_merged",
-  "subscribed" : true,
-  "user_notes_count": 1
+  "subscribed" : true
 }
 ```
 
@@ -543,8 +537,7 @@ Parameters:
   },
   "merge_when_build_succeeds": true,
   "merge_status": "can_be_merged",
-  "subscribed" : true,
-  "user_notes_count": 1
+  "subscribed" : true
 }
 ```
 
@@ -609,8 +602,7 @@ Example response:
       "title" : "Consequatur vero maxime deserunt laboriosam est voluptas dolorem.",
       "created_at" : "2016-01-04T15:31:51.081Z",
       "iid" : 6,
-      "labels" : [],
-      "user_notes_count": 1
+      "labels" : []
    },
 ]
 ```

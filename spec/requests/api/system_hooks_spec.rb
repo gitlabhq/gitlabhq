@@ -49,7 +49,7 @@ describe API::API, api: true  do
     it "should not create new hook without url" do
       expect do
         post api("/hooks", admin)
-      end.not_to change { SystemHook.count }
+      end.to_not change { SystemHook.count }
     end
   end
 

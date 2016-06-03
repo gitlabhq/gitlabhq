@@ -278,10 +278,6 @@ describe 'GitLab Markdown', feature: true do
     it 'includes GollumTagsFilter' do
       expect(doc).to parse_gollum_tags
     end
-
-    it 'includes InlineDiffFilter' do
-      expect(doc).to parse_inline_diffs
-    end
   end
 
   # Fake a `current_user` helper

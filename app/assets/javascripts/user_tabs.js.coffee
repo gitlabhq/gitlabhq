@@ -26,10 +26,6 @@
 #         Personal projects
 #       </a>
 #     </li>
-#    <li class="snippets-tab">
-#       <a data-action="snippets" data-target="#snippets" data-toggle="tab" href="/u/username/snippets">
-#       </a>
-#     </li>
 #   </ul>
 #
 #   <div class="tab-content">
@@ -44,9 +40,6 @@
 #     </div>
 #     <div class="tab-pane" id="projects">
 #       Projects content
-#     </div>
-#     <div class="tab-pane" id="snippets">
-#       Snippets content
 #     </div>
 #   </div>
 #
@@ -107,7 +100,7 @@ class @UserTabs
     if action is 'activity'
       @loadActivities(source)
 
-    if action in ['groups', 'contributed', 'projects', 'snippets']
+    if action in ['groups', 'contributed', 'projects']
       @loadTab(source, action)
 
   loadTab: (source, action) ->

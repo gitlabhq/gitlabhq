@@ -65,4 +65,3 @@ Disallow: /*/*/deploy_keys
 Disallow: /*/*/hooks
 Disallow: /*/*/services
 Disallow: /*/*/protected_branches
-Disallow: /*/*/uploads/

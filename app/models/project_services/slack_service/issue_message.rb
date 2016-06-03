@@ -34,12 +34,7 @@ class SlackService
     private
 
     def message
-      case state
-      when "opened"
-        "[#{project_link}] Issue #{state} by #{user_name}"
-      else
-        "[#{project_link}] Issue #{issue_link} #{state} by #{user_name}"
-      end
+      "#{user_name} #{state} #{issue_link} in #{project_link}: *#{title}*"
     end
 
     def opened_issue?
@@ -47,11 +42,7 @@ class SlackService
     end
 
     def description_message
-      [{
-        title: issue_title,
-        title_link: issue_url,
-        text: format(description),
-        color: "#C95823" }]
+      [{ text: format(description), color: attachment_color }]
     end
 
     def project_link
@@ -59,11 +50,7 @@ class SlackService
     end
 
     def issue_link
-      "[#{issue_title}](#{issue_url})"
-    end
-
-    def issue_title
-      "##{issue_iid} #{title}"
+      "[issue ##{issue_iid}](#{issue_url})"
     end
   end
 end

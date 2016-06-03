@@ -37,8 +37,8 @@ class RegistrationsController < Devise::RegistrationsController
     super
   end
 
-  def after_sign_up_path_for(user)
-    user.confirmed? ? dashboard_projects_path : users_almost_there_path
+  def after_sign_up_path_for(_resource)
+    users_almost_there_path
   end
 
   def after_inactive_sign_up_path_for(_resource)

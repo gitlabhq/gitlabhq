@@ -1,5 +1,4 @@
-%ul.nav-links.scrolling-tabs
-  .fade-left
+%ul.nav-links
   = nav_link(path: 'profiles#show', html_options: {class: 'home'}) do
     = link_to profile_path, title: 'Profile Settings' do
       = icon('user fw')
@@ -48,4 +47,3 @@
       = icon('history fw')
       %span
         Audit Log
-  .fade-right

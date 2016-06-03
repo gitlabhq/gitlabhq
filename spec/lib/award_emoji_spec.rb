@@ -5,7 +5,7 @@ describe AwardEmoji do
     subject { AwardEmoji.urls }
 
     it { is_expected.to be_an_instance_of(Array) }
-    it { is_expected.not_to be_empty }
+    it { is_expected.to_not be_empty }
 
     context 'every Hash in the Array' do
       it 'has the correct keys and values' do

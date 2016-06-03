@@ -1,6 +1,5 @@
 class SessionsController < Devise::SessionsController
   include AuthenticatesWithTwoFactor
-  include Devise::Controllers::Rememberable
   include Recaptcha::ClientHelper
 
   skip_before_action :check_2fa_requirement, only: [:destroy]
@@ -97,7 +96,6 @@ class SessionsController < Devise::SessionsController
         # Remove any lingering user data from login
         session.delete(:otp_user_id)
 
-        remember_me(user) if user_params[:remember_me] == '1'
         sign_in(user) and return
       else
         flash.now[:alert] = 'Invalid two-factor code.'

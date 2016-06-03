@@ -29,17 +29,6 @@
 .todo-item {
   .todo-title {
     @include str-truncated(calc(100% - 174px));
-    overflow: visible;
-  }
-
-  .status-box {
-    margin: 0;
-    float: none;
-    display: inline-block;
-    font-weight: normal;
-    padding: 0 5px;
-    line-height: inherit;
-    font-size: 14px;
   }
 
   .todo-body {
@@ -87,11 +76,12 @@
 
 @media (max-width: $screen-xs-max) {
   .todo-item {
+    padding-left: $gl-padding;
+
     .todo-title {
       white-space: normal;
       overflow: visible;
       max-width: 100%;
-      margin-bottom: 10px;
     }
 
     .avatar {

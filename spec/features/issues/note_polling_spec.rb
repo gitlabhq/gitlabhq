@@ -9,11 +9,8 @@ feature 'Issue notes polling' do
   end
 
   scenario 'Another user adds a comment to an issue', js: true do
-    note = create(:note, noteable: issue, project: project,
-                         note: 'Looks good!')
-
+    note = create(:note_on_issue, noteable: issue, note: 'Looks good!')
     page.execute_script('notes.refresh();')
-
     expect(page).to have_selector("#note_#{note.id}", text: 'Looks good!')
   end
 end

@@ -6,5 +6,7 @@ xml.feed "xmlns" => "http://www.w3.org/2005/Atom", "xmlns:media" => "http://sear
   xml.id      user_url(@user)
   xml.updated @events[0].updated_at.xmlschema if @events[0]
 
-  xml << render(@events) if @events.any?
+  @events.each do |event|
+    event_to_atom(xml, event)
+  end
 end

@@ -133,7 +133,7 @@ describe API::API, api: true  do
       delete api("/projects/#{project.id}/members/#{user3.id}", user)
       expect do
         delete api("/projects/#{project.id}/members/#{user3.id}", user)
-      end.not_to change { ProjectMember.count }
+      end.to_not change { ProjectMember.count }
       expect(response.status).to eq(200)
     end
 

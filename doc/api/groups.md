@@ -265,6 +265,7 @@ GET /groups/:id/members
   {
     "id": 1,
     "username": "raymond_smith",
+    "email": "ray@smith.org",
     "name": "Raymond Smith",
     "state": "active",
     "created_at": "2012-10-22T14:13:35Z",
@@ -273,6 +274,7 @@ GET /groups/:id/members
   {
     "id": 2,
     "username": "john_doe",
+    "email": "joh@doe.org",
     "name": "John Doe",
     "state": "active",
     "created_at": "2012-10-22T14:13:35Z",

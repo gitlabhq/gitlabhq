@@ -95,9 +95,7 @@ module TabHelper
   end
 
   def project_tab_class
-    if controller.controller_path.start_with?('projects')
-      return 'active'
-    end
+    return "active" if current_page?(controller: "/projects", action: :edit, id: @project)
 
     if ['services', 'hooks', 'deploy_keys', 'protected_branches'].include? controller.controller_name
       "active"
@@ -114,7 +112,7 @@ module TabHelper
   end
 
   def profile_tab_class
-    if controller.controller_path.start_with?('profiles')
+    if controller.controller_path =~ /\Aprofiles/
       return 'active'
     end
 

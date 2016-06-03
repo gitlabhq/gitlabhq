@@ -17,7 +17,7 @@ describe MergeRequestsHelper do
     it 'does not include api credentials in a link' do
       allow(ci_service).
         to receive(:build_page).and_return("http://secretuser:secretpass@jenkins.example.com:8888/job/test1/scm/bySHA1/12d65c")
-      expect(helper.ci_build_details_path(merge_request)).not_to match("secret")
+      expect(helper.ci_build_details_path(merge_request)).to_not match("secret")
     end
   end
 

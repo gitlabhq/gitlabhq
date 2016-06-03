@@ -125,7 +125,7 @@
 
 .right-sidebar {
   position: fixed;
-  top: $header-height;
+  top: 58px;
   bottom: 0;
   right: 0;
   z-index: 10;
@@ -148,10 +148,6 @@
 
     .bold {
       font-weight: 600;
-    }
-
-    .light {
-      font-weight: normal;
     }
 
     .sidebar-collapsed-icon {

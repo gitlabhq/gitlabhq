@@ -1,11 +1,11 @@
 # GIT over HTTP
-require_dependency Rails.root.join('lib/gitlab/backend/grack_auth')
+require Rails.root.join("lib", "gitlab", "backend", "grack_auth")
 
 # GIT over SSH
-require_dependency Rails.root.join('lib/gitlab/backend/shell')
+require Rails.root.join("lib", "gitlab", "backend", "shell")
 
 # GitLab shell adapter
-require_dependency Rails.root.join('lib/gitlab/backend/shell_adapter')
+require Rails.root.join("lib", "gitlab", "backend", "shell_adapter")
 
 required_version = Gitlab::VersionInfo.parse(Gitlab::Shell.version_required)
 current_version = Gitlab::VersionInfo.parse(Gitlab::Shell.new.version)

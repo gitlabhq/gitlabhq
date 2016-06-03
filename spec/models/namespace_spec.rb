@@ -1,3 +1,18 @@
+# == Schema Information
+#
+# Table name: namespaces
+#
+#  id          :integer          not null, primary key
+#  name        :string(255)      not null
+#  path        :string(255)      not null
+#  owner_id    :integer
+#  created_at  :datetime
+#  updated_at  :datetime
+#  type        :string(255)
+#  description :string(255)      default(""), not null
+#  avatar      :string(255)
+#
+
 require 'spec_helper'
 
 describe Namespace, models: true do
@@ -69,20 +84,6 @@ describe Namespace, models: true do
       allow(@namespace).to receive(:path_was).and_return(@namespace.path)
       allow(@namespace).to receive(:path).and_return(new_path)
       expect(@namespace.move_dir).to be_truthy
-    end
-
-    context "when any project has container tags" do
-      before do
-        stub_container_registry_config(enabled: true)
-        stub_container_registry_tags('tag')
-
-        create(:empty_project, namespace: @namespace)
-
-        allow(@namespace).to receive(:path_was).and_return(@namespace.path)
-        allow(@namespace).to receive(:path).and_return('new_path')
-      end
-
-      it { expect { @namespace.move_dir }.to raise_error('Namespace cannot be moved, because at least one project has tags in container registry') }
     end
   end
 

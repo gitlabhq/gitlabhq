@@ -14,12 +14,12 @@ class Spinach::Features::Snippets < Spinach::FeatureSteps
 
   step 'I click link "Edit"' do
     page.within ".detail-page-header" do
-      first(:link, "Edit").click
+      click_link "Edit"
     end
   end
 
   step 'I click link "Delete"' do
-    first(:link, "Delete").click
+    click_link "Delete"
   end
 
   step 'I submit new snippet "Personal snippet three"' do

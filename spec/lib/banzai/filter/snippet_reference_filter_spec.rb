@@ -77,6 +77,11 @@ describe Banzai::Filter::SnippetReferenceFilter, lib: true do
       expect(link).not_to match %r(https?://)
       expect(link).to eq urls.namespace_project_snippet_url(project.namespace, project, snippet, only_path: true)
     end
+
+    it 'adds to the results hash' do
+      result = reference_pipeline_result("Snippet #{reference}")
+      expect(result[:references][:snippet]).to eq [snippet]
+    end
   end
 
   context 'cross-project reference' do
@@ -102,6 +107,11 @@ describe Banzai::Filter::SnippetReferenceFilter, lib: true do
 
       expect(reference_filter(act).to_html).to eq exp
     end
+
+    it 'adds to the results hash' do
+      result = reference_pipeline_result("Snippet #{reference}")
+      expect(result[:references][:snippet]).to eq [snippet]
+    end
   end
 
   context 'cross-project URL reference' do
@@ -126,6 +136,11 @@ describe Banzai::Filter::SnippetReferenceFilter, lib: true do
       act = "See #{invalidate_reference(reference)}"
 
       expect(reference_filter(act).to_html).to match(/<a.+>#{Regexp.escape(invalidate_reference(reference))}<\/a>/)
+    end
+
+    it 'adds to the results hash' do
+      result = reference_pipeline_result("Snippet #{reference}")
+      expect(result[:references][:snippet]).to eq [snippet]
     end
   end
 end

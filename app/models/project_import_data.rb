@@ -1,3 +1,15 @@
+# == Schema Information
+#
+# Table name: project_import_data
+#
+#  id                         :integer          not null, primary key
+#  project_id                 :integer
+#  data                       :text
+#  encrypted_credentials      :text
+#  encrypted_credentials_iv   :string
+#  encrypted_credentials_salt :string
+#
+
 require 'carrierwave/orm/activerecord'
 
 class ProjectImportData < ActiveRecord::Base
@@ -6,8 +18,7 @@ class ProjectImportData < ActiveRecord::Base
                  key: Gitlab::Application.secrets.db_key_base,
                  marshal: true,
                  encode: true,
-                 mode: :per_attribute_iv_and_salt,
-                 algorithm: 'aes-256-cbc'
+                 mode: :per_attribute_iv_and_salt
 
   serialize :data, JSON
 

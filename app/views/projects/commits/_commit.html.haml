@@ -17,14 +17,14 @@
 
       .pull-right
         - if commit.status
-          = render_commit_status(commit)
+          = render_ci_status(commit)
         = clipboard_button(clipboard_text: commit.id)
         = link_to commit.short_id, namespace_project_commit_path(project.namespace, project, commit), class: "commit_short_id"
 
     - if commit.description?
       .commit-row-description.js-toggle-content
         %pre
-          = preserve(markdown(escape_once(commit.description), pipeline: :single_line, author: commit.author))
+          = preserve(markdown(escape_once(commit.description), pipeline: :single_line))
 
     .commit-row-info
       by

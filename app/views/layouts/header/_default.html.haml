@@ -1,12 +1,9 @@
 %header.navbar.navbar-fixed-top.navbar-gitlab{ class: nav_header_class }
   %div{ class: fluid_layout ? "container-fluid" : "container-fluid" }
     .header-content
-      %button.side-nav-toggle{type: 'button'}
-        %span.sr-only Toggle navigation
-        = icon('bars')
       %button.navbar-toggle{type: 'button'}
         %span.sr-only Toggle navigation
-        = icon('angle-left')
+        = icon('bars')
 
       .navbar-collapse.collapse
         %ul.nav.navbar-nav
@@ -27,9 +24,8 @@
             %li
               = link_to dashboard_todos_path, title: 'Todos', data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
                 = icon('bell fw')
-                - unless todos_pending_count == 0
-                  %span.badge.todos-pending-count
-                    = todos_pending_count
+                %span.badge.todos-pending-count
+                  = todos_pending_count
             - if current_user.can_create_project?
               %li
                 = link_to new_project_path, title: 'New project', data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do

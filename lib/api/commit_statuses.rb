@@ -2,7 +2,7 @@ require 'mime/types'
 
 module API
   # Project commit statuses API
-  class CommitStatuses < Grape::API
+  class CommitStatus < Grape::API
     resource :projects do
       before { authenticate! }
 

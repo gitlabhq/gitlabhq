@@ -39,7 +39,7 @@ class Projects::ProtectedBranchesController < Projects::ApplicationController
 
     respond_to do |format|
       format.html { redirect_to namespace_project_protected_branches_path }
-      format.js { head :ok }
+      format.js { render nothing: true }
     end
   end
 

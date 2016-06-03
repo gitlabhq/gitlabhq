@@ -64,13 +64,6 @@
               Build events
             %p.light
               This url will be triggered when the build status changes
-        %div
-          = f.check_box :wiki_page_events, class: 'pull-left'
-          .prepend-left-20
-            = f.label :wiki_page_events, class: 'label-light append-bottom-0' do
-              Wiki Page events
-            %p.light
-              This url will be triggered when a wiki page is created/updated
       .form-group
         = f.label :enable_ssl_verification, "SSL verification", class: "label-light"
         %div
@@ -87,5 +80,5 @@
         - @hooks.each do |hook|
           = render "project_hook", hook: hook
     - else
-      %p.settings-message.text-center.append-bottom-0
+      %p.profile-settings-message.text-center.append-bottom-0
         No webhooks found, add one in the form above.

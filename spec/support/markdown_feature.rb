@@ -63,12 +63,8 @@ class MarkdownFeature
     @label ||= create(:label, name: 'awaiting feedback', project: project)
   end
 
-  def simple_milestone
-    @simple_milestone ||= create(:milestone, name: 'gfm-milestone', project: project)
-  end
-
   def milestone
-    @milestone ||= create(:milestone, name: 'next goal', project: project)
+    @milestone ||= create(:milestone, project: project)
   end
 
   # Cross-references -----------------------------------------------------------

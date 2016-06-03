@@ -130,7 +130,7 @@ describe Gitlab::Metrics::Sampler do
       100.times do
         interval = sampler.sleep_interval
 
-        expect(interval).not_to eq(last)
+        expect(interval).to_not eq(last)
 
         last = interval
       end

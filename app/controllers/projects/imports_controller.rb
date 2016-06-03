@@ -20,7 +20,6 @@ class Projects::ImportsController < Projects::ApplicationController
         @project.import_retry
       else
         @project.import_start
-        @project.add_import_job
       end
     end
 

@@ -1,3 +1,14 @@
+# == Schema Information
+#
+# Table name: emails
+#
+#  id         :integer          not null, primary key
+#  user_id    :integer          not null
+#  email      :string           not null
+#  created_at :datetime
+#  updated_at :datetime
+#
+
 class Email < ActiveRecord::Base
   include Sortable
 

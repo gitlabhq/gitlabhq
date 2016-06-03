@@ -1,4 +1,5 @@
 - page_title "Labels"
+= render "header_title"
 
 .top-area
   .nav-text
@@ -17,6 +18,6 @@
   - else
     .nothing-here-block
       - if can? current_user, :admin_label, @project
-        Create a label or #{link_to 'generate a default set of labels', generate_namespace_project_labels_path(@project.namespace, @project), method: :post}.
+        Create first label or #{link_to 'generate', generate_namespace_project_labels_path(@project.namespace, @project), method: :post} default set of labels
       - else
         No labels created

@@ -6,5 +6,7 @@ xml.feed "xmlns" => "http://www.w3.org/2005/Atom", "xmlns:media" => "http://sear
   xml.id      namespace_project_issues_url(@project.namespace, @project)
   xml.updated @issues.first.created_at.xmlschema if @issues.any?
 
-  xml << render(partial: 'issues/issue', collection: @issues) if @issues.any?
+  @issues.each do |issue|
+    issue_to_atom(xml, issue)
+  end
 end

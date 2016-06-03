@@ -16,8 +16,8 @@ PUT /projects/:id/services/asana
 
 Parameters:
 
-- `api_key` (**required**) - User API token. User must have access to task, all comments will be attributed to this user.
-- `restrict_to_branch` (optional) - Comma-separated list of branches which will be automatically inspected. Leave blank to include all branches.
+- `api_key` (**required**) - User API token. User must have access to task,all comments will be attributed to this user.
+- `restrict_to_branch` (optional) - Comma-separated list of branches which will beautomatically inspected. Leave blank to include all branches.
 
 ### Delete Asana service
 
@@ -491,7 +491,7 @@ Jira issue tracker
 
 Set JIRA service for a project.
 
-> Setting `project_url`, `issues_url` and `new_issue_url` will allow a user to easily navigate to the Jira issue tracker. See the [integration doc](http://docs.gitlab.com/ce/integration/external-issue-tracker.html) for details.  Support for referencing commits and automatic closing of Jira issues directly from GitLab is [available in GitLab EE.](http://docs.gitlab.com/ee/integration/jira.html)
+> Setting `project_url`, `issues_url` and `new_issue_url` will allow a user to easily navigate to the Jira issue tracker. See the [integration doc](http://doc.gitlab.com/ce/integration/external-issue-tracker.html) for details.  Support for referencing commits and automatic closing of Jira issues directly from GitLab is [available in GitLab EE.](http://doc.gitlab.com/ee/integration/jira.html)
 
 ```
 PUT /projects/:id/services/jira
@@ -503,8 +503,6 @@ Parameters:
 - `project_url` (**required**) - Project url
 - `issues_url` (**required**) - Issue url
 - `description` (optional) - Jira issue tracker
-- `username` (optional) - Jira username
-- `password` (optional) - Jira password
 
 ### Delete JIRA service
 
