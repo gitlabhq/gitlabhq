@@ -34,6 +34,7 @@ stages:
 
 precompile:
   stage: prepare
+  services: []
   variables:
     USE_DB: "false"
   script:
@@ -43,6 +44,7 @@ precompile:
     - public/assets/
 
 .knapsack_state: &knapsack_state
+  services: []
   variables:
     USE_DB: "false"
     USE_BUNDLE_INSTALL: "false"
