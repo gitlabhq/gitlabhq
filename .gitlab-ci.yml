@@ -22,27 +22,27 @@ before_script:
   - cp config/gitlab.yml.example config/gitlab.yml
   - bundle --version
   - retry bundle install --without postgres production --jobs $(nproc) "${FLAGS[@]}"
-  - retry gem install knapsack-gitlab
+  - retry gem install knapsack
   - '[ "$USE_DB" != "true" ] || bundle exec rake db:drop db:create db:schema:load db:migrate'
 
 stages:
-- build
+- prepare
 - test
 - notifications
 
 prepare:
-  stage: build
+  stage: prepare
   variables:
     USE_DB: "false"
   script:
     - bundle exec rake assets:precompile
-    - echo "{}" > knapsack_rspec_report.json
-    - echo "{}" > knapsack_spinach_report.json
+    - mkdir knapsack/
+    - echo "{}" > knapsack/rspec_report.json
+    - echo "{}" > knapsack/spinach_report.json
   artifacts:
     paths:
     - public/assets/
-    - knapsack_rspec_report.json
-    - knapsack_spinach_report.json
+    - knapsack/
 
 .knapsack: &knapsack
   stage: test
@@ -50,7 +50,12 @@ prepare:
     - JOB_NAME=( $CI_BUILD_NAME )
     - export CI_NODE_INDEX=${JOB_NAME[1]}
     - export CI_NODE_TOTAL=${JOB_NAME[2]}
-    - knapsack-gitlab ${JOB_NAME[0]}
+    - export KNAPSACK_REPORT_PATH=knapsack/${JOB_NAME}_node_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json
+    - cp knapsack/${JOB_NAME}_report.json ${KNAPSACK_REPORT_PATH}
+    - knapsack ${JOB_NAME[0]}
+  artifacts:
+    paths:
+    - knapsack/
 
 .exec: &exec
   stage: test
