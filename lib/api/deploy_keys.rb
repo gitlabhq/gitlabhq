@@ -53,7 +53,7 @@ module API
             key = user_project.deploy_keys.find_by(key: attrs[:key])
             if key
               present key, with: Entities::SSHKey
-              return
+              next
             end
 
             # Check for available deploy keys in other projects
@@ -61,7 +61,7 @@ module API
             if key
               user_project.deploy_keys << key
               present key, with: Entities::SSHKey
-              return
+              next
             end
           end
 
