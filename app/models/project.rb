@@ -1011,4 +1011,22 @@ class Project < ActiveRecord::Base
 
     update_attribute(:pending_delete, true)
   end
+
+  def running_or_pending_build_count(force: false)
+    Rails.cache.fetch(['projects', id, 'running_or_pending_build_count'], force: force) do
+      builds.running_or_pending.count(:all)
+    end
+  end
+
+  def mark_import_as_failed(error_message)
+    original_errors = errors.dup
+    sanitized_message = Gitlab::UrlSanitizer.sanitize(error_message)
+
+    import_fail
+    update_column(:import_error, sanitized_message)
+  rescue ActiveRecord::ActiveRecordError => e
+    Rails.logger.error("Error setting import status to failed: #{e.message}. Original error: #{sanitized_message}")
+  ensure
+    @errors = original_errors
+  end
 end

@@ -68,6 +68,14 @@ module Issuable
     strip_attributes :title
 
     acts_as_paranoid
+
+    after_save :update_assignee_cache_counts, if: :assignee_id_changed?
+
+    def update_assignee_cache_counts
+      # make sure we flush the cache for both the old *and* new assignee
+      User.find(assignee_id_was).update_cache_counts if assignee_id_was
+      assignee.update_cache_counts if assignee
+    end
   end
 
   module ClassMethods
@@ -203,6 +211,10 @@ module Issuable
     hook_data.merge!(assignee: assignee.hook_attrs) if assignee
 
     hook_data
+  end
+
+  def labels_array
+    labels.to_a
   end
 
   def label_names

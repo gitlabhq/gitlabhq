@@ -438,4 +438,21 @@ describe MergeRequest, models: true do
       expect(mr.participants).to include(note1.author, note2.author)
     end
   end
+
+  describe 'cached counts' do
+    it 'updates when assignees change' do
+      user1 = create(:user)
+      user2 = create(:user)
+      mr = create(:merge_request, assignee: user1)
+
+      expect(user1.assigned_open_merge_request_count).to eq(1)
+      expect(user2.assigned_open_merge_request_count).to eq(0)
+
+      mr.assignee = user2
+      mr.save
+
+      expect(user1.assigned_open_merge_request_count).to eq(0)
+      expect(user2.assigned_open_merge_request_count).to eq(1)
+    end
+  end
 end
