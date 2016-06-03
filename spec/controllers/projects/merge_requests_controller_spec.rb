@@ -250,7 +250,7 @@ describe Projects::MergeRequestsController do
         end
 
         before do
-          create(:ci_empty_commit, project: project, sha: merge_request.source_sha, ref: merge_request.source_branch)
+          create(:ci_empty_pipeline, project: project, sha: merge_request.source_sha, ref: merge_request.source_branch)
         end
 
         it 'returns :merge_when_build_succeeds' do

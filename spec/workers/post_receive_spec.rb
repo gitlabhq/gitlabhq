@@ -53,13 +53,13 @@ describe PostReceive do
       subject { PostReceive.new.perform(pwd(project), key_id, base64_changes) }
 
       context "creates a Ci::Pipeline for every change" do
-        before { stub_ci_commit_to_return_yaml_file }
+        before { stub_ci_pipeline_to_return_yaml_file }
 
         it { expect{ subject }.to change{ Ci::Pipeline.count }.by(2) }
       end
 
       context "does not create a Ci::Pipeline" do
-        before { stub_ci_commit_yaml_file(nil) }
+        before { stub_ci_pipeline_yaml_file(nil) }
 
         it { expect{ subject }.not_to change{ Ci::Pipeline.count } }
       end

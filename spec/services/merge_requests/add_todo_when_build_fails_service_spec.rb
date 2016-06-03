@@ -6,7 +6,7 @@ describe MergeRequests::AddTodoWhenBuildFailsService do
   let(:merge_request) { create(:merge_request) }
   let(:project) { create(:project) }
   let(:sha) { '1234567890abcdef1234567890abcdef12345678' }
-  let(:pipeline) { create(:ci_commit_with_one_job, ref: merge_request.source_branch, project: project, sha: sha) }
+  let(:pipeline) { create(:ci_pipeline_with_one_job, ref: merge_request.source_branch, project: project, sha: sha) }
   let(:service) { MergeRequests::AddTodoWhenBuildFailsService.new(project, user, commit_message: 'Awesome message') }
   let(:todo_service) { TodoService.new }
 

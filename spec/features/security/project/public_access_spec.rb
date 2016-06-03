@@ -142,8 +142,8 @@ describe "Public Project Access", feature: true  do
   end
 
   describe "GET /:project_path/builds/:id" do
-    let(:commit) { create(:ci_commit, project: project) }
-    let(:build) { create(:ci_build, pipeline: commit) }
+    let(:pipeline) { create(:ci_pipeline, project: project) }
+    let(:build) { create(:ci_build, pipeline: pipeline) }
     subject { namespace_project_build_path(project.namespace, project, build.id) }
 
     context "when allowed for public" do

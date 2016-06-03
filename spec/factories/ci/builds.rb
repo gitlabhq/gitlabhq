@@ -16,7 +16,7 @@ FactoryGirl.define do
       }
     end
 
-    pipeline factory: :ci_commit
+    pipeline factory: :ci_pipeline
 
     trait :success do
       status 'success'

@@ -399,23 +399,23 @@ describe Project, models: true do
     end
   end
 
-  describe :ci_commit do
+  describe :pipeline do
     let(:project) { create :project }
-    let(:commit) { create :ci_commit, project: project, ref: 'master' }
+    let(:pipeline) { create :pipeline, project: project, ref: 'master' }
 
-    subject { project.pipeline(commit.sha, 'master') }
+    subject { project.pipeline(pipeline.sha, 'master') }
 
-    it { is_expected.to eq(commit) }
+    it { is_expected.to eq(pipeline) }
 
     context 'return latest' do
-      let(:commit2) { create :ci_commit, project: project, ref: 'master' }
+      let(:pipeline2) { create :pipeline, project: project, ref: 'master' }
 
       before do
-        commit
-        commit2
+        pipeline
+        pipeline2
       end
 
-      it { is_expected.to eq(commit2) }
+      it { is_expected.to eq(pipeline2) }
     end
   end
 

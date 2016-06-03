@@ -10,7 +10,7 @@ describe MergeRequests::MergeWhenBuildSucceedsService do
                            source_project: project, target_project: project, state: "opened")
   end
 
-  let(:pipeline) { create(:ci_commit_with_one_job, ref: mr_merge_if_green_enabled.source_branch, project: project) }
+  let(:pipeline) { create(:ci_pipeline_with_one_job, ref: mr_merge_if_green_enabled.source_branch, project: project) }
   let(:service) { MergeRequests::MergeWhenBuildSucceedsService.new(project, user, commit_message: 'Awesome message') }
 
   describe "#execute" do

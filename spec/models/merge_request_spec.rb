@@ -394,7 +394,7 @@ describe MergeRequest, models: true do
     describe 'when the source project exists' do
       it 'returns the latest commit' do
         commit   = double(:commit, id: '123abc')
-        pipeline = double(:ci_commit, ref: 'master')
+        pipeline = double(:ci_pipeline, ref: 'master')
 
         allow(subject).to receive(:last_commit).and_return(commit)
 

@@ -388,7 +388,7 @@ describe API::API, api: true  do
   end
 
   describe "PUT /projects/:id/merge_requests/:merge_request_id/merge" do
-    let(:pipeline) { create(:ci_commit_without_jobs) }
+    let(:pipeline) { create(:ci_pipeline_without_jobs) }
 
     it "should return merge_request in case of success" do
       put api("/projects/#{project.id}/merge_requests/#{merge_request.id}/merge", user)
@@ -443,7 +443,7 @@ describe API::API, api: true  do
 
     it "enables merge when build succeeds if the ci is active" do
       allow_any_instance_of(MergeRequest).to receive(:pipeline).and_return(pipeline)
-      allow(ci_commit).to receive(:active?).and_return(true)
+      allow(pipeline).to receive(:active?).and_return(true)
 
       put api("/projects/#{project.id}/merge_requests/#{merge_request.id}/merge", user), merge_when_build_succeeds: true
 

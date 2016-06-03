@@ -11,7 +11,7 @@ feature 'project commit builds' do
 
   context 'when no builds triggered yet' do
     background do
-      create(:ci_commit, project: project,
+      create(:ci_pipeline, project: project,
                          sha: project.commit.sha,
                          ref: 'master')
     end

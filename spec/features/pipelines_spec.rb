@@ -12,7 +12,7 @@ describe "Pipelines" do
   end
 
   describe 'GET /:project/pipelines' do
-    let!(:pipeline) { create(:ci_commit, project: project, ref: 'master', status: 'running') }
+    let!(:pipeline) { create(:ci_pipeline, project: project, ref: 'master', status: 'running') }
 
     [:all, :running, :branches].each do |scope|
       context "displaying #{scope}" do
@@ -111,7 +111,7 @@ describe "Pipelines" do
   end
 
   describe 'GET /:project/pipelines/:id' do
-    let(:pipeline) { create(:ci_commit, project: project, ref: 'master') }
+    let(:pipeline) { create(:ci_pipeline, project: project, ref: 'master') }
 
     before do
       @success = create(:ci_build, :success, pipeline: pipeline, stage: 'build', name: 'build')
@@ -165,7 +165,7 @@ describe "Pipelines" do
       before { fill_in('Create for', with: 'master') }
 
       context 'with gitlab-ci.yml' do
-        before { stub_ci_commit_to_return_yaml_file }
+        before { stub_ci_pipeline_to_return_yaml_file }
 
         it { expect{ click_on 'Create pipeline' }.to change{ Ci::Pipeline.count }.by(1) }
       end

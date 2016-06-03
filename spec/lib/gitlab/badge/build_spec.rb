@@ -42,9 +42,8 @@ describe Gitlab::Badge::Build do
   end
 
   context 'build exists' do
-    let(:ci_commit) { create(:ci_commit, project: project, sha: sha, ref: branch) }
-    let!(:build) { create(:ci_build, pipeline: ci_commit) }
-
+    let(:pipeline) { create(:ci_pipeline, project: project, sha: sha, ref: branch) }
+    let!(:build) { create(:ci_build, pipeline: pipeline) }
 
     context 'build success' do
       before { build.success! }

@@ -15,7 +15,7 @@ describe Ci::API::API do
     end
 
     before do
-      stub_ci_commit_to_return_yaml_file
+      stub_ci_pipeline_to_return_yaml_file
     end
 
     context 'Handles errors' do
@@ -36,13 +36,13 @@ describe Ci::API::API do
     end
 
     context 'Have a commit' do
-      let(:commit) { project.pipelines.last }
+      let(:pipeline) { project.pipelines.last }
 
       it 'should create builds' do
         post ci_api("/projects/#{project.ci_id}/refs/master/trigger"), options
         expect(response.status).to eq(201)
-        commit.builds.reload
-        expect(commit.builds.size).to eq(2)
+        pipeline.builds.reload
+        expect(pipeline.builds.size).to eq(2)
       end
 
       it 'should return bad request with no builds created if there\'s no commit for that ref' do
@@ -71,8 +71,8 @@ describe Ci::API::API do
         it 'create trigger request with variables' do
           post ci_api("/projects/#{project.ci_id}/refs/master/trigger"), options.merge(variables: variables)
           expect(response.status).to eq(201)
-          commit.builds.reload
-          expect(commit.builds.first.trigger_request.variables).to eq(variables)
+          pipeline.builds.reload
+          expect(pipeline.builds.first.trigger_request.variables).to eq(variables)
         end
       end
     end
