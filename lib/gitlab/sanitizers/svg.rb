@@ -10,30 +10,25 @@ module Gitlab
         DATA_ATTR_PATTERN = /\Adata-(?!xml)[a-z_][\w.\u00E0-\u00F6\u00F8-\u017F\u01DD-\u02AF-]*\z/u
 
         def scrub(node)
-          if Whitelist::ALLOWED_ELEMENTS.include?(node.name)
-            valid_attributes = Whitelist::ALLOWED_ATTRIBUTES[node.name]
-            return unless valid_attributes
+          unless Whitelist::ALLOWED_ELEMENTS.include?(node.name)
+            node.unlink
+            return
+          end
 
-            node.attribute_nodes.each do |attr|
-              attr_name = attribute_name_with_namespace(attr)
+          valid_attributes = Whitelist::ALLOWED_ATTRIBUTES[node.name]
+          return unless valid_attributes
 
-              if valid_attributes.include?(attr_name)
-                # xlink:href is on the whitelist but we should deny any reference other than internal ids
-                if attr_name == 'xlink:href' && unsafe_href?(attr)
-                  attr.unlink
-                end
-              else
-                if Whitelist::ALLOWED_DATA_ATTRIBUTES_IN_ELEMENTS.include?(node.name) && data_attribute?(attr)
-                  # Arbitrary data attributes are allowed. Verify that the attribute
-                  # is a valid data attribute.
-                  attr.unlink unless attr_name =~ DATA_ATTR_PATTERN
-                else
-                  attr.unlink
-                end
+          node.attribute_nodes.each do |attr|
+            attr_name = attribute_name_with_namespace(attr)
+
+            if valid_attributes.include?(attr_name)
+              attr.unlink if unsafe_href?(attr)
+            else
+              # Arbitrary data attributes are allowed.
+              unless allows_data_attribute?(node) && data_attribute?(attr)
+                attr.unlink
               end
             end
-          else
-            node.unlink
           end
         end
 
@@ -45,12 +40,16 @@ module Gitlab
           end
         end
 
+        def allows_data_attribute?(node)
+          Whitelist::ALLOWED_DATA_ATTRIBUTES_IN_ELEMENTS.include?(node.name)
+        end
+
         def unsafe_href?(attr)
-          !attr.value.start_with?('#')
+          attribute_name_with_namespace(attr) == 'xlink:href' && !attr.value.start_with?('#')
         end
 
         def data_attribute?(attr)
-          attr.name.start_with?('data-')
+          attr.name.start_with?('data-') && attr.name =~ DATA_ATTR_PATTERN && attr.namespace.nil?
         end
       end
     end

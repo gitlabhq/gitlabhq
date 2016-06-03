@@ -56,5 +56,23 @@ describe Gitlab::Sanitizers::SVG do
         expect(scrubber.unsafe_href?(namespaced_attr)).to be_falsey
       end
     end
+
+    describe '#data_attribute?' do
+      let(:data_attr) { double(Nokogiri::XML::Attr, name: 'data-gitlab', namespace: nil, value: 'gitlab is awesome') }
+      let(:namespaced_attr) { double(Nokogiri::XML::Attr, name: 'data-gitlab', namespace: namespace, value: 'gitlab is awesome') }
+      let(:other_attr) { double(Nokogiri::XML::Attr, name: 'something', namespace: nil, value: 'content') }
+
+      it 'returns true if is a valid data attribute' do
+        expect(scrubber.data_attribute?(data_attr)).to be_truthy
+      end
+
+      it 'returns false if attribute is namespaced' do
+        expect(scrubber.data_attribute?(namespaced_attr)).to be_falsey
+      end
+
+      it 'returns false if not a data attribute' do
+        expect(scrubber.data_attribute?(other_attr)).to be_falsey
+      end
+    end
   end
 end
