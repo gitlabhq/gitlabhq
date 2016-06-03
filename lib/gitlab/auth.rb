@@ -49,8 +49,7 @@ module Gitlab
         elsif Service.available_services_names.include?(underscored_service)
           # We treat underscored_service as a trusted input because it is included
           # in the Service.available_services_names whitelist.
-          service_method = "#{underscored_service}_service"
-          service = project.send(service_method)
+          service = project.public_send("#{underscored_service}_service")
 
           service && service.activated? && service.valid_token?(password)
         end
