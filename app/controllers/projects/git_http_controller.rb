@@ -128,26 +128,20 @@ class Projects::GitHttpController < Projects::ApplicationController
   end
 
   def upload_pack_allowed?
-    if !Gitlab.config.gitlab_shell.upload_pack
-      false
-    elsif ci?
-      true
-    elsif user
+    return false unless Gitlab.config.gitlab_shell.upload_pack
+
+    if user
       Gitlab::GitAccess.new(user, project).download_access_check.allowed?
     else
-      project.public?
+      ci? || project.public?
     end
   end
 
   def receive_pack_allowed?
-    if !Gitlab.config.gitlab_shell.receive_pack
-      false
-    elsif user
-      # Skip user authorization on upload request.
-      # It will be done by the pre-receive hook in the repository.
-      true
-    else
-      false
-    end
+    return false unless Gitlab.config.gitlab_shell.receive_pack
+
+    # Skip user authorization on upload request.
+    # It will be done by the pre-receive hook in the repository.
+    user.present?
   end
 end
