@@ -1,5 +1,5 @@
 module Gitlab
-  class Auth
+  module Auth
     Result = Struct.new(:user, :type)
 
     class << self
@@ -64,34 +64,20 @@ module Gitlab
       end
 
       def rate_limit!(ip, success:, login:)
-        # If the user authenticated successfully, we reset the auth failure count
-        # from Rack::Attack for that IP. A client may attempt to authenticate
-        # with a username and blank password first, and only after it receives
-        # a 401 error does it present a password. Resetting the count prevents
-        # false positives.
-        #
-        # Otherwise, we let Rack::Attack know there was a failed authentication
-        # attempt from this IP. This information is stored in the Rails cache
-        # (Redis) and will be used by the Rack::Attack middleware to decide
-        # whether to block requests from this IP.
-
-        config = Gitlab.config.rack_attack.git_basic_auth
-        return unless config.enabled
+        rate_limiter = IpRateLimiter.new(ip)
+        return unless rate_limiter.enabled?
 
         if success
-          Rack::Attack::Allow2Ban.reset(ip, config)
+          # Repeated login 'failures' are normal behavior for some Git clients so
+          # it is important to reset the ban counter once the client has proven
+          # they are not a 'bad guy'.
+          rate_limiter.reset!
         else
-          banned = Rack::Attack::Allow2Ban.filter(ip, config) do
-            if config.ip_whitelist.include?(ip)
-              # Don't increment the ban counter for this IP
-              false
-            else
-              # Increment the ban counter for this IP
-              true
-            end
-          end
+          # Register a login failure so that Rack::Attack can block the next
+          # request from this IP if needed.
+          rate_limiter.register_fail!(ip, config)
 
-          if banned
+          if rate_limiter.banned?
             Rails.logger.info "IP #{ip} failed to login " \
               "as #{login} but has been temporarily banned from Git auth"
           end
