@@ -14,6 +14,8 @@ v 8.9.0 (unreleased)
   - Fix groups API to list only user's accessible projects
   - Redesign account and email confirmation emails
   - Use gitlab-shell v3.0.0
+  - Add `sha` parameter to MR merge API, to ensure only reviewed changes are merged
+  - Don't allow MRs to be merged when commits were added since the last review / page load
   - Add DB index on users.state
   - Add rake task 'gitlab:db:configure' for conditionally seeding or migrating the database
   - Changed the Slack build message to use the singular duration if necessary (Aran Koning)
@@ -33,6 +35,13 @@ v 8.9.0 (unreleased)
   - Reduce number of queries needed to render issue labels in the sidebar
   - Improve error handling importing projects
   - Put project Files and Commits tabs under Code tab
+
+v 8.8.4
+  - Fix todos page throwing errors when you have a project pending deletion
+  - Reduce number of SQL queries when rendering user references
+
+v 8.8.4 (unreleased)
+  - Ensure branch cleanup regardless of whether the GitHub import process succeeds
 
 v 8.8.3
   - Fix 404 page when viewing TODOs that contain milestones or labels in different projects. !4312

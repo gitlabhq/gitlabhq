@@ -190,6 +190,11 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       return
     end
 
+    if params[:sha] != @merge_request.source_sha
+      @status = :sha_mismatch
+      return
+    end
+
     TodoService.new.merge_merge_request(merge_request, current_user)
 
     @merge_request.update(merge_error: nil)
