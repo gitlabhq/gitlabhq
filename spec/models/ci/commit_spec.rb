@@ -42,8 +42,8 @@ describe Ci::Pipeline, models: true do
     subject { commit.retried }
 
     before do
-      @commit1 = FactoryGirl.create :ci_build, commit: commit, name: 'deploy'
-      @commit2 = FactoryGirl.create :ci_build, commit: commit, name: 'deploy'
+      @commit1 = FactoryGirl.create :ci_build, pipeline: commit, name: 'deploy'
+      @commit2 = FactoryGirl.create :ci_build, pipeline: commit, name: 'deploy'
     end
 
     it 'returns old builds' do
@@ -264,14 +264,14 @@ describe Ci::Pipeline, models: true do
     let(:commit) { FactoryGirl.create :ci_commit }
 
     it "returns finished_at of latest build" do
-      build = FactoryGirl.create :ci_build, commit: commit, finished_at: Time.now - 60
-      FactoryGirl.create :ci_build, commit: commit, finished_at: Time.now - 120
+      build = FactoryGirl.create :ci_build, pipeline: commit, finished_at: Time.now - 60
+      FactoryGirl.create :ci_build, pipeline: commit, finished_at: Time.now - 120
 
       expect(commit.finished_at.to_i).to eq(build.finished_at.to_i)
     end
 
     it "returns nil if there is no finished build" do
-      FactoryGirl.create :ci_not_started_build, commit: commit
+      FactoryGirl.create :ci_not_started_build, pipeline: commit
 
       expect(commit.finished_at).to be_nil
     end
@@ -282,27 +282,27 @@ describe Ci::Pipeline, models: true do
     let(:commit) { FactoryGirl.create :ci_commit, project: project }
 
     it "calculates average when there are two builds with coverage" do
-      FactoryGirl.create :ci_build, name: "rspec", coverage: 30, commit: commit
-      FactoryGirl.create :ci_build, name: "rubocop", coverage: 40, commit: commit
+      FactoryGirl.create :ci_build, name: "rspec", coverage: 30, pipeline: commit
+      FactoryGirl.create :ci_build, name: "rubocop", coverage: 40, pipeline: commit
       expect(commit.coverage).to eq("35.00")
     end
 
     it "calculates average when there are two builds with coverage and one with nil" do
-      FactoryGirl.create :ci_build, name: "rspec", coverage: 30, commit: commit
-      FactoryGirl.create :ci_build, name: "rubocop", coverage: 40, commit: commit
-      FactoryGirl.create :ci_build, commit: commit
+      FactoryGirl.create :ci_build, name: "rspec", coverage: 30, pipeline: commit
+      FactoryGirl.create :ci_build, name: "rubocop", coverage: 40, pipeline: commit
+      FactoryGirl.create :ci_build, pipeline: commit
       expect(commit.coverage).to eq("35.00")
     end
 
     it "calculates average when there are two builds with coverage and one is retried" do
-      FactoryGirl.create :ci_build, name: "rspec", coverage: 30, commit: commit
-      FactoryGirl.create :ci_build, name: "rubocop", coverage: 30, commit: commit
-      FactoryGirl.create :ci_build, name: "rubocop", coverage: 40, commit: commit
+      FactoryGirl.create :ci_build, name: "rspec", coverage: 30, pipeline: commit
+      FactoryGirl.create :ci_build, name: "rubocop", coverage: 30, pipeline: commit
+      FactoryGirl.create :ci_build, name: "rubocop", coverage: 40, pipeline: commit
       expect(commit.coverage).to eq("35.00")
     end
 
     it "calculates average when there is one build without coverage" do
-      FactoryGirl.create :ci_build, commit: commit
+      FactoryGirl.create :ci_build, pipeline: commit
       expect(commit.coverage).to be_nil
     end
   end
@@ -312,7 +312,7 @@ describe Ci::Pipeline, models: true do
 
     context 'no failed builds' do
       before do
-        FactoryGirl.create :ci_build, name: "rspec", commit: commit, status: 'success'
+        FactoryGirl.create :ci_build, name: "rspec", pipeline: commit, status: 'success'
       end
 
       it 'be not retryable' do
@@ -322,8 +322,8 @@ describe Ci::Pipeline, models: true do
 
     context 'with failed builds' do
       before do
-        FactoryGirl.create :ci_build, name: "rspec", commit: commit, status: 'running'
-        FactoryGirl.create :ci_build, name: "rubocop", commit: commit, status: 'failed'
+        FactoryGirl.create :ci_build, name: "rspec", pipeline: commit, status: 'running'
+        FactoryGirl.create :ci_build, name: "rubocop", pipeline: commit, status: 'failed'
       end
 
       it 'be retryable' do
@@ -337,8 +337,8 @@ describe Ci::Pipeline, models: true do
     subject { CommitStatus.where(commit: [commit, commit2]).stages }
 
     before do
-      FactoryGirl.create :ci_build, commit: commit2, stage: 'test', stage_idx: 1
-      FactoryGirl.create :ci_build, commit: commit, stage: 'build', stage_idx: 0
+      FactoryGirl.create :ci_build, pipeline: commit2, stage: 'test', stage_idx: 1
+      FactoryGirl.create :ci_build, pipeline: commit, stage: 'build', stage_idx: 0
     end
 
     it 'return all stages' do
@@ -353,7 +353,7 @@ describe Ci::Pipeline, models: true do
     end
 
     context 'dependent objects' do
-      let(:commit_status) { build :commit_status, commit: commit }
+      let(:commit_status) { build :commit_status, pipeline: commit }
 
       it 'execute update_state after saving dependent object' do
         expect(commit).to receive(:update_state).and_return(true)
@@ -363,7 +363,7 @@ describe Ci::Pipeline, models: true do
 
     context 'update state' do
       let(:current) { Time.now.change(usec: 0) }
-      let(:build) { FactoryGirl.create :ci_build, :success, commit: commit, started_at: current - 120, finished_at: current - 60 }
+      let(:build) { FactoryGirl.create :ci_build, :success, pipeline: commit, started_at: current - 120, finished_at: current - 60 }
 
       before do
         build

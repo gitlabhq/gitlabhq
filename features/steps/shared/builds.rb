@@ -23,7 +23,7 @@ module SharedBuilds
   end
 
   step 'project has another build that is running' do
-    create(:ci_build, commit: @ci_commit, name: 'second build', status: 'running')
+    create(:ci_build, pipeline: @ci_commit, name: 'second build', status: 'running')
   end
 
   step 'I visit recent build details page' do

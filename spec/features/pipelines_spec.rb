@@ -31,7 +31,7 @@ describe "Pipelines" do
     end
 
     context 'cancelable pipeline' do
-      let!(:running) { create(:ci_build, :running, commit: pipeline, stage: 'test', commands: 'test') }
+      let!(:running) { create(:ci_build, :running, pipeline: pipeline, stage: 'test', commands: 'test') }
 
       before { visit namespace_project_pipelines_path(project.namespace, project) }
 
@@ -47,7 +47,7 @@ describe "Pipelines" do
     end
 
     context 'retryable pipelines' do
-      let!(:failed) { create(:ci_build, :failed, commit: pipeline, stage: 'test', commands: 'test') }
+      let!(:failed) { create(:ci_build, :failed, pipeline: pipeline, stage: 'test', commands: 'test') }
 
       before { visit namespace_project_pipelines_path(project.namespace, project) }
 
@@ -64,7 +64,7 @@ describe "Pipelines" do
 
     context 'for generic statuses' do
       context 'when running' do
-        let!(:running) { create(:generic_commit_status, status: 'running', commit: pipeline, stage: 'test') }
+        let!(:running) { create(:generic_commit_status, status: 'running', pipeline: pipeline, stage: 'test') }
 
         before { visit namespace_project_pipelines_path(project.namespace, project) }
 
@@ -78,7 +78,7 @@ describe "Pipelines" do
       end
 
       context 'when failed' do
-        let!(:running) { create(:generic_commit_status, status: 'failed', commit: pipeline, stage: 'test') }
+        let!(:running) { create(:generic_commit_status, status: 'failed', pipeline: pipeline, stage: 'test') }
 
         before { visit namespace_project_pipelines_path(project.namespace, project) }
 
@@ -94,7 +94,7 @@ describe "Pipelines" do
 
     context 'downloadable pipelines' do
       context 'with artifacts' do
-        let!(:with_artifacts) { create(:ci_build, :artifacts, :success, commit: pipeline, name: 'rspec tests', stage: 'test') }
+        let!(:with_artifacts) { create(:ci_build, :artifacts, :success, pipeline: pipeline, name: 'rspec tests', stage: 'test') }
 
         before { visit namespace_project_pipelines_path(project.namespace, project) }
 
@@ -103,7 +103,7 @@ describe "Pipelines" do
       end
 
       context 'without artifacts' do
-        let!(:without_artifacts) { create(:ci_build, :success, commit: pipeline, name: 'rspec', stage: 'test') }
+        let!(:without_artifacts) { create(:ci_build, :success, pipeline: pipeline, name: 'rspec', stage: 'test') }
 
         it { expect(page).not_to have_selector('.build-artifacts') }
       end
@@ -114,10 +114,10 @@ describe "Pipelines" do
     let(:pipeline) { create(:ci_commit, project: project, ref: 'master') }
 
     before do
-      @success = create(:ci_build, :success, commit: pipeline, stage: 'build', name: 'build')
-      @failed = create(:ci_build, :failed, commit: pipeline, stage: 'test', name: 'test', commands: 'test')
-      @running = create(:ci_build, :running, commit: pipeline, stage: 'deploy', name: 'deploy')
-      @external = create(:generic_commit_status, status: 'success', commit: pipeline, name: 'jenkins', stage: 'external')
+      @success = create(:ci_build, :success, pipeline: pipeline, stage: 'build', name: 'build')
+      @failed = create(:ci_build, :failed, pipeline: pipeline, stage: 'test', name: 'test', commands: 'test')
+      @running = create(:ci_build, :running, pipeline: pipeline, stage: 'deploy', name: 'deploy')
+      @external = create(:generic_commit_status, status: 'success', pipeline: pipeline, name: 'jenkins', stage: 'external')
     end
 
     before { visit namespace_project_pipeline_path(project.namespace, project, pipeline) }

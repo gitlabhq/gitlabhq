@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe CommitStatus, models: true do
   let(:commit) { FactoryGirl.create :ci_commit }
-  let(:commit_status) { FactoryGirl.create :commit_status, commit: commit }
+  let(:commit_status) { FactoryGirl.create :commit_status, pipeline: commit }
 
   it { is_expected.to belong_to(:commit) }
   it { is_expected.to belong_to(:user) }
@@ -121,11 +121,11 @@ describe CommitStatus, models: true do
     subject { CommitStatus.latest.order(:id) }
 
     before do
-      @commit1 = FactoryGirl.create :commit_status, commit: commit, name: 'aa', ref: 'bb', status: 'running'
-      @commit2 = FactoryGirl.create :commit_status, commit: commit, name: 'cc', ref: 'cc', status: 'pending'
-      @commit3 = FactoryGirl.create :commit_status, commit: commit, name: 'aa', ref: 'cc', status: 'success'
-      @commit4 = FactoryGirl.create :commit_status, commit: commit, name: 'cc', ref: 'bb', status: 'success'
-      @commit5 = FactoryGirl.create :commit_status, commit: commit, name: 'aa', ref: 'bb', status: 'success'
+      @commit1 = FactoryGirl.create :commit_status, pipeline: commit, name: 'aa', ref: 'bb', status: 'running'
+      @commit2 = FactoryGirl.create :commit_status, pipeline: commit, name: 'cc', ref: 'cc', status: 'pending'
+      @commit3 = FactoryGirl.create :commit_status, pipeline: commit, name: 'aa', ref: 'cc', status: 'success'
+      @commit4 = FactoryGirl.create :commit_status, pipeline: commit, name: 'cc', ref: 'bb', status: 'success'
+      @commit5 = FactoryGirl.create :commit_status, pipeline: commit, name: 'aa', ref: 'bb', status: 'success'
     end
 
     it 'return unique statuses' do
@@ -137,11 +137,11 @@ describe CommitStatus, models: true do
     subject { CommitStatus.running_or_pending.order(:id) }
 
     before do
-      @commit1 = FactoryGirl.create :commit_status, commit: commit, name: 'aa', ref: 'bb', status: 'running'
-      @commit2 = FactoryGirl.create :commit_status, commit: commit, name: 'cc', ref: 'cc', status: 'pending'
-      @commit3 = FactoryGirl.create :commit_status, commit: commit, name: 'aa', ref: nil, status: 'success'
-      @commit4 = FactoryGirl.create :commit_status, commit: commit, name: 'dd', ref: nil, status: 'failed'
-      @commit5 = FactoryGirl.create :commit_status, commit: commit, name: 'ee', ref: nil, status: 'canceled'
+      @commit1 = FactoryGirl.create :commit_status, pipeline: commit, name: 'aa', ref: 'bb', status: 'running'
+      @commit2 = FactoryGirl.create :commit_status, pipeline: commit, name: 'cc', ref: 'cc', status: 'pending'
+      @commit3 = FactoryGirl.create :commit_status, pipeline: commit, name: 'aa', ref: nil, status: 'success'
+      @commit4 = FactoryGirl.create :commit_status, pipeline: commit, name: 'dd', ref: nil, status: 'failed'
+      @commit5 = FactoryGirl.create :commit_status, pipeline: commit, name: 'ee', ref: nil, status: 'canceled'
     end
 
     it 'return statuses that are running or pending' do
@@ -172,10 +172,10 @@ describe CommitStatus, models: true do
 
   describe '#stages' do
     before do
-      FactoryGirl.create :commit_status, commit: commit, stage: 'build', stage_idx: 0, status: 'success'
-      FactoryGirl.create :commit_status, commit: commit, stage: 'build', stage_idx: 0, status: 'failed'
-      FactoryGirl.create :commit_status, commit: commit, stage: 'deploy', stage_idx: 2, status: 'running'
-      FactoryGirl.create :commit_status, commit: commit, stage: 'test', stage_idx: 1, status: 'success'
+      FactoryGirl.create :commit_status, pipeline: commit, stage: 'build', stage_idx: 0, status: 'success'
+      FactoryGirl.create :commit_status, pipeline: commit, stage: 'build', stage_idx: 0, status: 'failed'
+      FactoryGirl.create :commit_status, pipeline: commit, stage: 'deploy', stage_idx: 2, status: 'running'
+      FactoryGirl.create :commit_status, pipeline: commit, stage: 'test', stage_idx: 1, status: 'success'
     end
 
     context 'stages list' do

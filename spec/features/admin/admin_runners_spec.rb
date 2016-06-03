@@ -9,7 +9,7 @@ describe "Admin Runners" do
     before do
       runner = FactoryGirl.create(:ci_runner)
       commit = FactoryGirl.create(:ci_commit)
-      FactoryGirl.create(:ci_build, commit: commit, runner_id: runner.id)
+      FactoryGirl.create(:ci_build, pipeline: commit, runner_id: runner.id)
       visit admin_runners_path
     end
 

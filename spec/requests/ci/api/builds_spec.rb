@@ -39,7 +39,7 @@ describe Ci::API::API do
 
       it "should return 404 error if no builds for specific runner" do
         commit = FactoryGirl.create(:ci_commit, project: shared_project)
-        FactoryGirl.create(:ci_build, commit: commit, status: 'pending')
+        FactoryGirl.create(:ci_build, pipeline: commit, status: 'pending')
 
         post ci_api("/builds/register"), token: runner.token
 
@@ -48,7 +48,7 @@ describe Ci::API::API do
 
       it "should return 404 error if no builds for shared runner" do
         commit = FactoryGirl.create(:ci_commit, project: project)
-        FactoryGirl.create(:ci_build, commit: commit, status: 'pending')
+        FactoryGirl.create(:ci_build, pipeline: commit, status: 'pending')
 
         post ci_api("/builds/register"), token: shared_runner.token
 
@@ -85,7 +85,7 @@ describe Ci::API::API do
         trigger = FactoryGirl.create(:ci_trigger, project: project)
         commit = FactoryGirl.create(:ci_commit, project: project, ref: 'master')
 
-        trigger_request = FactoryGirl.create(:ci_trigger_request_with_variables, commit: commit, trigger: trigger)
+        trigger_request = FactoryGirl.create(:ci_trigger_request_with_variables, pipeline: commit, trigger: trigger)
         commit.create_builds(nil, trigger_request)
         project.variables << Ci::Variable.new(key: "SECRET_KEY", value: "secret_value")
 
@@ -132,7 +132,7 @@ describe Ci::API::API do
       context 'when build has no tags' do
         before do
           commit = create(:ci_commit, project: project)
-          create(:ci_build, commit: commit, tags: [])
+          create(:ci_build, pipeline: commit, tags: [])
         end
 
         context 'when runner is allowed to pick untagged builds' do
@@ -164,7 +164,7 @@ describe Ci::API::API do
 
     describe "PUT /builds/:id" do
       let(:commit) {create(:ci_commit, project: project)}
-      let(:build) { create(:ci_build, :trace, commit: commit, runner_id: runner.id) }
+      let(:build) { create(:ci_build, :trace, pipeline: commit, runner_id: runner.id) }
 
       before do
         build.run!
@@ -238,7 +238,7 @@ describe Ci::API::API do
       let(:file_upload) { fixture_file_upload(Rails.root + 'spec/fixtures/banana_sample.gif', 'image/gif') }
       let(:file_upload2) { fixture_file_upload(Rails.root + 'spec/fixtures/dk.png', 'image/gif') }
       let(:commit) { create(:ci_commit, project: project) }
-      let(:build) { create(:ci_build, commit: commit, runner_id: runner.id) }
+      let(:build) { create(:ci_build, pipeline: commit, runner_id: runner.id) }
       let(:authorize_url) { ci_api("/builds/#{build.id}/artifacts/authorize") }
       let(:post_url) { ci_api("/builds/#{build.id}/artifacts") }
       let(:delete_url) { ci_api("/builds/#{build.id}/artifacts") }

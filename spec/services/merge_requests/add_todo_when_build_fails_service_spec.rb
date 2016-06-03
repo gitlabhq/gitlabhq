@@ -23,7 +23,7 @@ describe MergeRequests::AddTodoWhenBuildFailsService do
 
   describe '#execute' do
     context 'commit status with ref' do
-      let(:commit_status) { create(:generic_commit_status, ref: merge_request.source_branch, commit: ci_commit) }
+      let(:commit_status) { create(:generic_commit_status, ref: merge_request.source_branch, pipeline: ci_commit) }
 
       it 'notifies the todo service' do
         expect(todo_service).to receive(:merge_request_build_failed).with(merge_request)
@@ -52,7 +52,7 @@ describe MergeRequests::AddTodoWhenBuildFailsService do
 
   describe '#close' do
     context 'commit status with ref' do
-      let(:commit_status) { create(:generic_commit_status, ref: merge_request.source_branch, commit: ci_commit) }
+      let(:commit_status) { create(:generic_commit_status, ref: merge_request.source_branch, pipeline: ci_commit) }
 
       it 'notifies the todo service' do
         expect(todo_service).to receive(:merge_request_build_retried).with(merge_request)

@@ -3,15 +3,15 @@ require 'spec_helper'
 describe Ci::Build, models: true do
   let(:project) { create(:project) }
   let(:commit) { create(:ci_commit, project: project) }
-  let(:build) { create(:ci_build, commit: commit) }
+  let(:build) { create(:ci_build, pipeline: commit) }
 
   it { is_expected.to validate_presence_of :ref }
 
   it { is_expected.to respond_to :trace_html }
 
   describe '#first_pending' do
-    let!(:first) { create(:ci_build, commit: commit, status: 'pending', created_at: Date.yesterday) }
-    let!(:second) { create(:ci_build, commit: commit, status: 'pending') }
+    let!(:first) { create(:ci_build, pipeline: commit, status: 'pending', created_at: Date.yesterday) }
+    let!(:second) { create(:ci_build, pipeline: commit, status: 'pending') }
     subject { Ci::Build.first_pending }
 
     it { is_expected.to be_a(Ci::Build) }
@@ -219,7 +219,7 @@ describe Ci::Build, models: true do
 
         context 'and trigger variables' do
           let(:trigger) { create(:ci_trigger, project: project) }
-          let(:trigger_request) { create(:ci_trigger_request_with_variables, commit: commit, trigger: trigger) }
+          let(:trigger_request) { create(:ci_trigger_request_with_variables, pipeline: commit, trigger: trigger) }
           let(:trigger_variables) do
             [
               { key: :TRIGGER_KEY, value: 'TRIGGER_VALUE', public: false }
@@ -428,10 +428,10 @@ describe Ci::Build, models: true do
   end
 
   describe '#depends_on_builds' do
-    let!(:build) { create(:ci_build, commit: commit, name: 'build', stage_idx: 0, stage: 'build') }
-    let!(:rspec_test) { create(:ci_build, commit: commit, name: 'rspec', stage_idx: 1, stage: 'test') }
-    let!(:rubocop_test) { create(:ci_build, commit: commit, name: 'rubocop', stage_idx: 1, stage: 'test') }
-    let!(:staging) { create(:ci_build, commit: commit, name: 'staging', stage_idx: 2, stage: 'deploy') }
+    let!(:build) { create(:ci_build, pipeline: commit, name: 'build', stage_idx: 0, stage: 'build') }
+    let!(:rspec_test) { create(:ci_build, pipeline: commit, name: 'rspec', stage_idx: 1, stage: 'test') }
+    let!(:rubocop_test) { create(:ci_build, pipeline: commit, name: 'rubocop', stage_idx: 1, stage: 'test') }
+    let!(:staging) { create(:ci_build, pipeline: commit, name: 'staging', stage_idx: 2, stage: 'deploy') }
 
     it 'to have no dependents if this is first build' do
       expect(build.depends_on_builds).to be_empty
@@ -500,7 +500,7 @@ describe Ci::Build, models: true do
       before do
         @merge_request = create_mr(build, commit, factory: :merge_request_with_diffs)
         commit2 = create(:ci_commit, project: project)
-        @build2 = create(:ci_build, commit: commit2)
+        @build2 = create(:ci_build, pipeline: commit2)
 
         commits = [double(id: commit.sha), double(id: commit2.sha)]
         allow(@merge_request).to receive(:commits).and_return(commits)

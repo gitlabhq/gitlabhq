@@ -43,7 +43,7 @@ describe Gitlab::Badge::Build do
 
   context 'build exists' do
     let(:ci_commit) { create(:ci_commit, project: project, sha: sha, ref: branch) }
-    let!(:build) { create(:ci_build, commit: ci_commit) }
+    let!(:build) { create(:ci_build, pipeline: ci_commit) }
 
 
     context 'build success' do

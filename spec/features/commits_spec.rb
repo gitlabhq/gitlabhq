@@ -16,7 +16,7 @@ describe 'Commits' do
     end
 
     context 'commit status is Generic Commit Status' do
-      let!(:status) { FactoryGirl.create :generic_commit_status, commit: commit }
+      let!(:status) { FactoryGirl.create :generic_commit_status, pipeline: commit }
 
       before do
         project.team << [@user, :reporter]
@@ -39,7 +39,7 @@ describe 'Commits' do
     end
 
     context 'commit status is Ci Build' do
-      let!(:build) { FactoryGirl.create :ci_build, commit: commit }
+      let!(:build) { FactoryGirl.create :ci_build, pipeline: commit }
       let(:artifacts_file) { fixture_file_upload(Rails.root + 'spec/fixtures/banana_sample.gif', 'image/gif') }
 
       context 'when logged as developer' do

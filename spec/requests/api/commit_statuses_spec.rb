@@ -5,7 +5,7 @@ describe API::CommitStatuses, api: true do
 
   let!(:project) { create(:project) }
   let(:commit) { project.repository.commit }
-  let(:commit_status) { create(:commit_status, commit: ci_commit) }
+  let(:commit_status) { create(:commit_status, pipeline: ci_commit) }
   let(:guest) { create_user(:guest) }
   let(:reporter) { create_user(:reporter) }
   let(:developer) { create_user(:developer) }
@@ -27,7 +27,7 @@ describe API::CommitStatuses, api: true do
         let(:statuses_id) { json_response.map { |status| status['id'] } }
 
         def create_status(commit, opts = {})
-          create(:commit_status, { commit: commit, ref: commit.ref }.merge(opts))
+          create(:commit_status, { pipeline: commit, ref: commit.ref }.merge(opts))
         end
 
         let!(:status1) { create_status(master, status: 'running') }

@@ -5,7 +5,7 @@ module Ci
     let!(:service) { RegisterBuildService.new }
     let!(:project) { FactoryGirl.create :empty_project, shared_runners_enabled: false }
     let!(:commit) { FactoryGirl.create :ci_commit, project: project }
-    let!(:pending_build) { FactoryGirl.create :ci_build, commit: commit }
+    let!(:pending_build) { FactoryGirl.create :ci_build, pipeline: commit }
     let!(:shared_runner) { FactoryGirl.create(:ci_runner, is_shared: true) }
     let!(:specific_runner) { FactoryGirl.create(:ci_runner, is_shared: false) }
 

@@ -13,7 +13,7 @@ feature 'Merge When Build Succeeds', feature: true, js: true do
 
   context "Active build for Merge Request" do
     let!(:ci_commit) { create(:ci_commit, project: project, sha: merge_request.last_commit.id, ref: merge_request.source_branch) }
-    let!(:ci_build) { create(:ci_build, commit: ci_commit) }
+    let!(:ci_build) { create(:ci_build, pipeline: ci_commit) }
 
     before do
       login_as user
@@ -48,7 +48,7 @@ feature 'Merge When Build Succeeds', feature: true, js: true do
     end
 
     let!(:ci_commit) { create(:ci_commit, project: project, sha: merge_request.last_commit.id, ref: merge_request.source_branch) }
-    let!(:ci_build) { create(:ci_build, commit: ci_commit) }
+    let!(:ci_build) { create(:ci_build, pipeline: ci_commit) }
 
     before do
       login_as user
