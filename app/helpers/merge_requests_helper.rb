@@ -97,7 +97,7 @@ module MergeRequestsHelper
         str << " (from #{render_items_list(approvers_names + ["#{more_approvals} more"])})"
       elsif more_approvals < 0
         str << " (from #{render_items_list(approvers_names, "or")})"
-      elsif
+      else
         str << " (from #{render_items_list(approvers_names)})"
       end
     end
