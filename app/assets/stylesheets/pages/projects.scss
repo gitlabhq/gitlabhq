@@ -489,9 +489,11 @@ pre.light-well {
   margin: 0;
 }
 
-.project-show-activity {
-  .activity-filter-block {
-    margin-top: -1px;
+
+.activity-filter-block {
+  .controls {
+    padding-bottom: 10px;
+    border-bottom: 1px solid $border-color;
   }
 }
 
