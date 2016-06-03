@@ -6,8 +6,8 @@
     - @merge_requests.each do |merge_request|
       %li
         %span.merge-request-ci-status
-          - if merge_request.ci_commit
-            = render_pipeline_status(merge_request.ci_commit)
+          - if merge_request.pipeline
+            = render_pipeline_status(merge_request.pipeline)
           - elsif has_any_ci
             = icon('blank fw')
         %span.merge-request-id
