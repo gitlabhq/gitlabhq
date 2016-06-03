@@ -308,7 +308,7 @@ tests are least likely to receive timely feedback. The workflow to make a merge
 request is as follows:
 
 1. Fork the project into your personal space on GitLab.com
-1. Create a feature branch
+1. Create a feature branch, branch away from `master`.
 1. Write [tests](https://gitlab.com/gitlab-org/gitlab-development-kit#running-the-tests) and code
 1. Add your changes to the [CHANGELOG](CHANGELOG)
 1. If you are writing documentation, make sure to read the [documentation styleguide][doc-styleguide]
