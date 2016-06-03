@@ -11,7 +11,7 @@ ENV['RAILS_ENV'] = 'test'
 require './config/environment'
 require 'rspec/expectations'
 require 'sidekiq/testing/inline'
-require 'knapsack-gitlab'
+require 'knapsack'
 
 require_relative 'capybara'
 require_relative 'db_cleaner'
