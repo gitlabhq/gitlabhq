@@ -298,9 +298,9 @@ describe Gitlab::LDAP::GroupSync, lib: true do
           group_sync.sync_groups
 
           expect(group1.members.pluck(:user_id).sort).to eq([user1.id, user2.id].sort)
-          expect(group1.members.uniq.pluck(:access_level)).to eq([Gitlab::Access::DEVELOPER])
+          expect(group1.members.pluck(:access_level).uniq).to eq([Gitlab::Access::DEVELOPER])
           expect(group2.members.pluck(:user_id)).to eq([user2.id])
-          expect(group2.members.uniq.pluck(:access_level)).to eq([Gitlab::Access::MASTER])
+          expect(group2.members.pluck(:access_level).uniq).to eq([Gitlab::Access::MASTER])
         end
       end
     end
