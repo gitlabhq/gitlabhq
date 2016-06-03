@@ -48,4 +48,33 @@ describe "Note", elastic: true do
     create :note, :system, project: project
     create :note, :award, project: project
   end
+
+  context 'notes to confidential issues' do
+    it "does not find note" do
+      issue = create :issue, :confidential
+
+      create :note, note: 'bla-bla term', project: issue.project, noteable: issue
+      create :note, project: issue.project, noteable: issue
+
+      Note.__elasticsearch__.refresh_index!
+
+      options = { project_ids: [issue.project.id] }
+
+      expect(Note.elastic_search('term', options: options).total_count).to eq(0)
+    end
+
+    it "finds note when user is authorized to see it" do
+      user = create :user
+      issue = create :issue, :confidential, author: user
+
+      create :note, note: 'bla-bla term', project: issue.project, noteable: issue
+      create :note, project: issue.project, noteable: issue
+
+      Note.__elasticsearch__.refresh_index!
+
+      options = { project_ids: [issue.project.id], current_user: user }
+
+      expect(Note.elastic_search('term', options: options).total_count).to eq(1)
+    end
+  end
 end

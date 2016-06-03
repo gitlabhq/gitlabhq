@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160530150109) do
+ActiveRecord::Schema.define(version: 20160601102211) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -44,7 +44,7 @@ ActiveRecord::Schema.define(version: 20160530150109) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "home_page_url"
-    t.integer  "default_branch_protection",         default: 2
+    t.integer  "default_branch_protection",             default: 2
     t.text     "help_text"
     t.text     "restricted_visibility_levels"
     t.boolean  "version_check_enabled",                 default: true
@@ -61,15 +61,7 @@ ActiveRecord::Schema.define(version: 20160530150109) do
     t.boolean  "shared_runners_enabled",                default: true,        null: false
     t.integer  "max_artifacts_size",                    default: 100,         null: false
     t.string   "runners_registration_token"
-    t.integer  "max_pages_size",                    default: 100,         null: false
-    t.boolean  "require_two_factor_authentication", default: false
-    t.integer  "two_factor_grace_period",           default: 48
-    t.boolean  "metrics_enabled",                   default: false
-    t.string   "metrics_host",                      default: "localhost"
-    t.integer  "metrics_pool_size",                 default: 16
-    t.integer  "metrics_timeout",                   default: 10
-    t.integer  "metrics_method_call_threshold",     default: 10
-    t.boolean  "recaptcha_enabled",                 default: false
+    t.integer  "max_pages_size",                        default: 100,         null: false
     t.boolean  "require_two_factor_authentication",     default: false
     t.integer  "two_factor_grace_period",               default: 48
     t.boolean  "metrics_enabled",                       default: false
@@ -94,6 +86,10 @@ ActiveRecord::Schema.define(version: 20160530150109) do
     t.text     "disabled_oauth_sign_in_sources"
     t.string   "health_check_access_token"
     t.boolean  "send_user_confirmation_email",          default: false
+    t.boolean  "es_indexing",                           default: false,       null: false
+    t.boolean  "es_search",                             default: false,       null: false
+    t.string   "es_host",                               default: "localhost"
+    t.string   "es_port",                               default: "9200"
     t.integer  "container_registry_token_expire_delay", default: 5
   end
 
@@ -821,6 +817,18 @@ ActiveRecord::Schema.define(version: 20160530150109) do
 
   add_index "pages_domains", ["domain"], name: "index_pages_domains_on_domain", unique: true, using: :btree
 
+  create_table "path_locks", force: :cascade do |t|
+    t.string   "path",       null: false
+    t.integer  "project_id"
+    t.integer  "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "path_locks", ["path"], name: "index_path_locks_on_path", using: :btree
+  add_index "path_locks", ["project_id"], name: "index_path_locks_on_project_id", using: :btree
+  add_index "path_locks", ["user_id"], name: "index_path_locks_on_user_id", using: :btree
+
   create_table "project_group_links", force: :cascade do |t|
     t.integer  "project_id",                null: false
     t.integer  "group_id",                  null: false
@@ -845,7 +853,6 @@ ActiveRecord::Schema.define(version: 20160530150109) do
     t.datetime "updated_at"
     t.integer  "creator_id"
     t.boolean  "issues_enabled",                   default: true,     null: false
-    t.boolean  "wall_enabled",                     default: true,     null: false
     t.boolean  "merge_requests_enabled",           default: true,     null: false
     t.boolean  "wiki_enabled",                     default: true,     null: false
     t.integer  "namespace_id"
@@ -884,7 +891,6 @@ ActiveRecord::Schema.define(version: 20160530150109) do
     t.boolean  "mirror_trigger_builds",            default: false,    null: false
     t.boolean  "pending_delete",                   default: false
     t.boolean  "public_builds",                    default: true,     null: false
-    t.string   "main_language"
     t.integer  "pushes_since_gc",                  default: 0
     t.boolean  "last_repository_check_failed"
     t.datetime "last_repository_check_at"
@@ -932,7 +938,7 @@ ActiveRecord::Schema.define(version: 20160530150109) do
   create_table "remote_mirrors", force: :cascade do |t|
     t.integer  "project_id"
     t.string   "url"
-    t.boolean  "enabled",                    default: true
+    t.boolean  "enabled",                    default: false
     t.string   "update_status"
     t.datetime "last_update_at"
     t.datetime "last_successful_update_at"
@@ -940,8 +946,8 @@ ActiveRecord::Schema.define(version: 20160530150109) do
     t.text     "encrypted_credentials"
     t.string   "encrypted_credentials_iv"
     t.string   "encrypted_credentials_salt"
-    t.datetime "created_at",                                null: false
-    t.datetime "updated_at",                                null: false
+    t.datetime "created_at",                                 null: false
+    t.datetime "updated_at",                                 null: false
   end
 
   add_index "remote_mirrors", ["project_id"], name: "index_remote_mirrors_on_project_id", using: :btree
@@ -1174,7 +1180,6 @@ ActiveRecord::Schema.define(version: 20160530150109) do
     t.boolean  "note_events",                          default: false,         null: false
     t.boolean  "enable_ssl_verification",              default: true
     t.boolean  "build_events",                         default: false,         null: false
-    t.string   "token"
     t.boolean  "wiki_page_events",                     default: false,         null: false
     t.string   "token"
   end
@@ -1182,5 +1187,7 @@ ActiveRecord::Schema.define(version: 20160530150109) do
   add_index "web_hooks", ["created_at", "id"], name: "index_web_hooks_on_created_at_and_id", using: :btree
   add_index "web_hooks", ["project_id"], name: "index_web_hooks_on_project_id", using: :btree
 
+  add_foreign_key "path_locks", "projects"
+  add_foreign_key "path_locks", "users"
   add_foreign_key "remote_mirrors", "projects"
 end
