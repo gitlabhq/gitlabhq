@@ -25,7 +25,7 @@ class CreateCommitBuildsService
 
     # Create builds for commit and
     #   skip saving pipeline when there are no builds
-    unless commit.create_builds(user)
+    unless commit.build_builds(user)
       # Save object when there are yaml errors
       unless commit.yaml_errors.present?
         commit.errors.add(:base, 'No builds created')

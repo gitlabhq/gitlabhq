@@ -89,11 +89,20 @@ module Ci
       trigger_requests.any?
     end
 
-    def create_builds(user, trigger_request = nil)
+    def build_builds_for_stage(stage, user, status, trigger_request)
+      CreateBuildsService.new(self).execute(stage, user, status, trigger_request)
+    end
+
+    def build_builds(user, status = 'success', trigger_request = nil)
       return unless config_processor
       config_processor.stages.any? do |stage|
-        CreateBuildsService.new(self).execute(stage, user, 'success', trigger_request).present?
+        build_builds_for_stage(stage, user, status, trigger_request).present?
       end
+    end
+
+    def create_builds(user, trigger_request = nil)
+      build_builds(user, 'success', trigger_request)
+      save!
     end
 
     def create_next_builds(build)
@@ -112,9 +121,11 @@ module Ci
       prior_status = prior_builds.status
 
       # create builds for next stages based
-      next_stages.any? do |stage|
-        CreateBuildsService.new(self).execute(stage, build.user, prior_status, build.trigger_request).present?
+      have_builds = next_stages.any? do |stage|
+        build_builds_for_stage(stage, build.user, prior_status, build.trigger_request).present?
       end
+
+      save! if have_builds
     end
 
     def retried

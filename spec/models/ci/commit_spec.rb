@@ -55,15 +55,11 @@ describe Ci::Commit, models: true do
     let!(:commit) { FactoryGirl.create :ci_commit, project: project, ref: 'master', tag: false }
 
     def create_builds(trigger_request = nil)
-      if commit.create_builds(nil, trigger_request)
-        commit.save
-      end
+      commit.create_builds(nil, trigger_request)
     end
 
     def create_next_builds
-      if commit.create_next_builds(commit.builds.order(:id).last)
-        commit.save
-      end
+      commit.create_next_builds(commit.builds.order(:id).last)
     end
 
     it 'creates builds' do
