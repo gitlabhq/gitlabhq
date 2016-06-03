@@ -5,7 +5,7 @@ describe Gitlab::Ci::Config do
     described_class.new(yml)
   end
 
-  context 'when yml config is valid' do
+  context 'when config is valid' do
     let(:yml) do
       <<-EOS
         image: ruby:2.2
@@ -28,6 +28,18 @@ describe Gitlab::Ci::Config do
         }
 
         expect(config.to_hash).to eq hash
+      end
+    end
+
+    context 'when config is invalid' do
+      let(:yml) { '// invalid' }
+
+      describe '.new' do
+        it 'raises error' do
+          expect { config }.to raise_error(
+            Gitlab::Ci::Config::ParserError, /Invalid configuration format/
+          )
+        end
       end
     end
   end

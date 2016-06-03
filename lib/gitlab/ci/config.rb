@@ -4,13 +4,13 @@ module Gitlab
       class ParserError < StandardError; end
 
       def initialize(config)
-        @config = YAML.safe_load(config, [Symbol], [], true)
+        parser = Parser.new(config)
 
-        unless @config.is_a?(Hash)
-          raise ParserError, 'YAML should be a hash'
+        unless parser.valid?
+          raise ParserError, 'Invalid configuration format!'
         end
 
-        @config = @config.deep_symbolize_keys
+        @config = parser.parse
       end
 
       def to_hash
