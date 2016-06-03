@@ -75,7 +75,10 @@ feature 'Task Lists', feature: true do
 
   describe 'for Notes' do
     let!(:issue) { create(:issue, author: user, project: project) }
-    let!(:note)  { create(:note, note: markdown, noteable: issue, author: user) }
+    let!(:note) do
+      create(:note, note: markdown, noteable: issue,
+                    project: project, author: user)
+    end
 
     it 'renders for note body' do
       visit_issue(project, issue)

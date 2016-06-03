@@ -42,7 +42,7 @@ describe Projects::RawController do
         before do
           public_project.lfs_objects << lfs_object
           allow_any_instance_of(LfsObjectUploader).to receive(:exists?).and_return(true)
-          allow(controller).to receive(:send_file) { controller.render nothing: true }
+          allow(controller).to receive(:send_file) { controller.head :ok }
         end
 
         it 'serves the file' do

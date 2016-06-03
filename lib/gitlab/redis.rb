@@ -25,7 +25,7 @@ module Gitlab
       end
       @pool.with { |redis| yield redis }
     end
-    
+
     def self.redis_store_options
       url = new.url
       redis_config_hash = ::Redis::Store::Factory.extract_host_options_from_uri(url)
@@ -40,10 +40,10 @@ module Gitlab
     def initialize(rails_env=nil)
       rails_env ||= Rails.env
       config_file = File.expand_path('../../../config/resque.yml', __FILE__)
-  
+
       @url = "redis://localhost:6379"
-      if File.exists?(config_file)
-        @url =YAML.load_file(config_file)[rails_env]
+      if File.exist?(config_file)
+        @url = YAML.load_file(config_file)[rails_env]
       end
     end
   end

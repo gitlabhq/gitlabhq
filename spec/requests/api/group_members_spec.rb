@@ -34,11 +34,11 @@ describe API::API, api: true  do
           expect(response.status).to eq(200)
           expect(json_response).to be_an Array
           expect(json_response.size).to eq(5)
-          expect(json_response.find { |e| e['id']==owner.id }['access_level']).to eq(GroupMember::OWNER)
-          expect(json_response.find { |e| e['id']==reporter.id }['access_level']).to eq(GroupMember::REPORTER)
-          expect(json_response.find { |e| e['id']==developer.id }['access_level']).to eq(GroupMember::DEVELOPER)
-          expect(json_response.find { |e| e['id']==master.id }['access_level']).to eq(GroupMember::MASTER)
-          expect(json_response.find { |e| e['id']==guest.id }['access_level']).to eq(GroupMember::GUEST)
+          expect(json_response.find { |e| e['id'] == owner.id }['access_level']).to eq(GroupMember::OWNER)
+          expect(json_response.find { |e| e['id'] == reporter.id }['access_level']).to eq(GroupMember::REPORTER)
+          expect(json_response.find { |e| e['id'] == developer.id }['access_level']).to eq(GroupMember::DEVELOPER)
+          expect(json_response.find { |e| e['id'] == master.id }['access_level']).to eq(GroupMember::MASTER)
+          expect(json_response.find { |e| e['id'] == guest.id }['access_level']).to eq(GroupMember::GUEST)
         end
       end
 

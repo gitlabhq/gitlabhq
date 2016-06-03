@@ -64,7 +64,8 @@ module Ci
 
         commits.each do |commit|
           @labels << commit.short_sha
-          @build_times << (commit.duration / 60)
+          duration = commit.duration || 0
+          @build_times << (duration / 60)
         end
       end
     end

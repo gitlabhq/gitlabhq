@@ -5,7 +5,7 @@
       - if @runners.include?(runner)
         = link_to runner.short_sha, runner_path(runner)
         %small
-          =link_to edit_namespace_project_runner_path(@project.namespace, @project, runner) do
+          = link_to edit_namespace_project_runner_path(@project.namespace, @project, runner) do
             %i.fa.fa-edit.btn
       - else
         = runner.short_sha

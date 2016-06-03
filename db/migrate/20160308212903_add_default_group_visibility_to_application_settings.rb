@@ -7,7 +7,9 @@ class AddDefaultGroupVisibilityToApplicationSettings < ActiveRecord::Migration
     add_column :application_settings, :default_group_visibility, :integer
     # Unfortunately, this can't be a `default`, since we don't want the configuration specific
     # `allowed_visibility_level` to end up in schema.rb
-    execute("UPDATE application_settings SET default_group_visibility = #{allowed_visibility_level}")
+
+    visibility_level = allowed_visibility_level || Gitlab::VisibilityLevel::PRIVATE
+    execute("UPDATE application_settings SET default_group_visibility = #{visibility_level}")
   end
 
   def down

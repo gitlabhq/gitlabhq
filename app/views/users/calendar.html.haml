@@ -1,10 +1,9 @@
-#cal-heatmap.calendar
-  :javascript
-    new Calendar(
-      #{@timestamps.to_json},
-      #{@starting_year},
-      #{@starting_month},
-      '#{user_calendar_activities_path}'
-    );
-
-.calendar-hint Summary of issues, merge requests, and push events
+.clearfix.calendar
+  .js-contrib-calendar
+  .calendar-hint
+    Summary of issues, merge requests, and push events
+:javascript
+  new Calendar(
+    #{@timestamps.to_json},
+    '#{user_calendar_activities_path}'
+  );

@@ -32,12 +32,6 @@ module EmailsHelper
     nil
   end
 
-  def color_email_diff(diffcontent)
-    formatter = Rouge::Formatters::HTML.new(css_class: 'highlight', inline_theme: 'github')
-    lexer = Rouge::Lexers::Diff
-    raw formatter.format(lexer.lex(diffcontent))
-  end
-
   def password_reset_token_valid_time
     valid_hours = Devise.reset_password_within / 60 / 60
     if valid_hours >= 24

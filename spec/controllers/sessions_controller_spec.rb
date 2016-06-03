@@ -12,7 +12,7 @@ describe SessionsController do
           post(:create, user: { login: 'invalid', password: 'invalid' })
 
           expect(response)
-            .to set_flash.now[:alert].to /Invalid login or password/
+            .to set_flash.now[:alert].to /Invalid Login or password/
         end
       end
 
@@ -35,6 +35,27 @@ describe SessionsController do
         post(:create, { user: user_params }, { otp_user_id: user.id })
       end
 
+      context 'remember_me field' do
+        it 'sets a remember_user_token cookie when enabled' do
+          allow(controller).to receive(:find_user).and_return(user)
+          expect(controller).
+            to receive(:remember_me).with(user).and_call_original
+
+          authenticate_2fa(remember_me: '1', otp_attempt: user.current_otp)
+
+          expect(response.cookies['remember_user_token']).to be_present
+        end
+
+        it 'does nothing when disabled' do
+          allow(controller).to receive(:find_user).and_return(user)
+          expect(controller).not_to receive(:remember_me)
+
+          authenticate_2fa(remember_me: '0', otp_attempt: user.current_otp)
+
+          expect(response.cookies['remember_user_token']).to be_nil
+        end
+      end
+
       ##
       # See #14900 issue
       #
@@ -47,7 +68,7 @@ describe SessionsController do
               authenticate_2fa(login: another_user.username,
                                otp_attempt: another_user.current_otp)
 
-              expect(subject.current_user).to_not eq another_user
+              expect(subject.current_user).not_to eq another_user
             end
           end
 
@@ -56,7 +77,7 @@ describe SessionsController do
               authenticate_2fa(login: another_user.username,
                                otp_attempt: 'invalid')
 
-              expect(subject.current_user).to_not eq another_user
+              expect(subject.current_user).not_to eq another_user
             end
           end
 
@@ -73,7 +94,7 @@ describe SessionsController do
               before { authenticate_2fa(otp_attempt: 'invalid') }
 
               it 'does not authenticate' do
-                expect(subject.current_user).to_not eq user
+                expect(subject.current_user).not_to eq user
               end
 
               it 'warns about invalid OTP code' do

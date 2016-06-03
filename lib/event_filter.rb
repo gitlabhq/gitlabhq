@@ -27,7 +27,7 @@ class EventFilter
     @params = if params
                 params.dup
               else
-                []#EventFilter.default_filter
+                [] # EventFilter.default_filter
               end
   end
 

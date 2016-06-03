@@ -59,7 +59,7 @@ class Spinach::Features::ProjectHooks < Spinach::FeatureSteps
   step 'hook should be triggered' do
     expect(current_path).to eq namespace_project_hooks_path(current_project.namespace, current_project)
     expect(page).to have_selector '.flash-notice',
-                              text: 'Hook successfully executed.'
+                              text: 'Hook executed successfully: HTTP 200'
   end
 
   step 'I should see hook error message' do

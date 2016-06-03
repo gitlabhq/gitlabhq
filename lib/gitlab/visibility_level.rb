@@ -32,6 +32,13 @@ module Gitlab
         }
       end
 
+      def highest_allowed_level
+        restricted_levels = current_application_settings.restricted_visibility_levels
+
+        allowed_levels = self.values - restricted_levels
+        allowed_levels.max || PRIVATE
+      end
+
       def allowed_for?(user, level)
         user.is_admin? || allowed_level?(level.to_i)
       end

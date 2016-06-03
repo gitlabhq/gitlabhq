@@ -23,20 +23,41 @@ class Ability
       end.concat(global_abilities(user))
     end
 
+    # Given a list of users and a project this method returns the users that can
+    # read the given project.
+    def users_that_can_read_project(users, project)
+      if project.public?
+        users
+      else
+        users.select do |user|
+          if user.admin?
+            true
+          elsif project.internal? && !user.external?
+            true
+          elsif project.owner == user
+            true
+          elsif project.team.members.include?(user)
+            true
+          else
+            false
+          end
+        end
+      end
+    end
+
     # List of possible abilities for anonymous user
     def anonymous_abilities(user, subject)
-      case true
-      when subject.is_a?(PersonalSnippet)
+      if subject.is_a?(PersonalSnippet)
         anonymous_personal_snippet_abilities(subject)
-      when subject.is_a?(ProjectSnippet)
+      elsif subject.is_a?(ProjectSnippet)
         anonymous_project_snippet_abilities(subject)
-      when subject.is_a?(CommitStatus)
+      elsif subject.is_a?(CommitStatus)
         anonymous_commit_status_abilities(subject)
-      when subject.is_a?(Project) || subject.respond_to?(:project)
+      elsif subject.is_a?(Project) || subject.respond_to?(:project)
         anonymous_project_abilities(subject)
-      when subject.is_a?(Group) || subject.respond_to?(:group)
+      elsif subject.is_a?(Group) || subject.respond_to?(:group)
         anonymous_group_abilities(subject)
-      when subject.is_a?(User)
+      elsif subject.is_a?(User)
         anonymous_user_abilities
       else
         []
@@ -60,7 +81,9 @@ class Ability
           :read_project_member,
           :read_merge_request,
           :read_note,
+          :read_pipeline,
           :read_commit_status,
+          :read_container_image,
           :download_code
         ]
 
@@ -203,6 +226,8 @@ class Ability
         :admin_label,
         :read_commit_status,
         :read_build,
+        :read_container_image,
+        :read_pipeline,
       ]
     end
 
@@ -214,9 +239,13 @@ class Ability
         :update_commit_status,
         :create_build,
         :update_build,
+        :create_pipeline,
+        :update_pipeline,
         :create_merge_request,
         :create_wiki,
-        :push_code
+        :push_code,
+        :create_container_image,
+        :update_container_image,
       ]
     end
 
@@ -242,7 +271,9 @@ class Ability
         :admin_wiki,
         :admin_project,
         :admin_commit_status,
-        :admin_build
+        :admin_build,
+        :admin_container_image,
+        :admin_pipeline
       ]
     end
 
@@ -285,6 +316,11 @@ class Ability
 
       unless project.builds_enabled
         rules += named_abilities('build')
+        rules += named_abilities('pipeline')
+      end
+
+      unless project.container_registry_enabled
+        rules += named_abilities('container_image')
       end
 
       rules

@@ -106,8 +106,8 @@ describe API::API, api: true  do
 
       context 'authorized user' do
         let(:download_headers) do
-          { 'Content-Transfer-Encoding'=>'binary',
-            'Content-Disposition'=>'attachment; filename=ci_build_artifacts.zip' }
+          { 'Content-Transfer-Encoding' => 'binary',
+            'Content-Disposition' => 'attachment; filename=ci_build_artifacts.zip' }
         end
 
         it 'should return specific build artifacts' do

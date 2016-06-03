@@ -14,6 +14,7 @@ namespace :gitlab do
       Rake::Task["gitlab:backup:builds:create"].invoke
       Rake::Task["gitlab:backup:artifacts:create"].invoke
       Rake::Task["gitlab:backup:lfs:create"].invoke
+      Rake::Task["gitlab:backup:registry:create"].invoke
 
       backup = Backup::Manager.new
       backup.pack
@@ -54,6 +55,7 @@ namespace :gitlab do
       Rake::Task['gitlab:backup:builds:restore'].invoke unless backup.skipped?('builds')
       Rake::Task['gitlab:backup:artifacts:restore'].invoke unless backup.skipped?('artifacts')
       Rake::Task['gitlab:backup:lfs:restore'].invoke unless backup.skipped?('lfs')
+      Rake::Task['gitlab:backup:registry:restore'].invoke unless backup.skipped?('registry')
       Rake::Task['gitlab:shell:setup'].invoke
 
       backup.cleanup
@@ -170,6 +172,33 @@ namespace :gitlab do
         $progress.puts "Restoring lfs objects ... ".blue
         Backup::Lfs.new.restore
         $progress.puts "done".green
+      end
+    end
+
+    namespace :registry do
+      task create: :environment do
+        $progress.puts "Dumping container registry images ... ".blue
+
+        if Gitlab.config.registry.enabled
+          if ENV["SKIP"] && ENV["SKIP"].include?("registry")
+            $progress.puts "[SKIPPED]".cyan
+          else
+            Backup::Registry.new.dump
+            $progress.puts "done".green
+          end
+        else
+          $progress.puts "[DISABLED]".cyan
+        end
+      end
+
+      task restore: :environment do
+        $progress.puts "Restoring container registry images ... ".blue
+        if Gitlab.config.registry.enabled
+          Backup::Registry.new.restore
+          $progress.puts "done".green
+        else
+          $progress.puts "[DISABLED]".cyan
+        end
       end
     end
 

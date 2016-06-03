@@ -4,6 +4,8 @@ module Banzai
     # References are ignored if the project doesn't use an external issue
     # tracker.
     class ExternalIssueReferenceFilter < ReferenceFilter
+      self.reference_type = :external_issue
+
       # Public: Find `JIRA-123` issue references in text
       #
       #   ExternalIssueReferenceFilter.references_in(text) do |match, issue|
@@ -19,18 +21,6 @@ module Banzai
         text.gsub(ExternalIssue.reference_pattern) do |match|
           yield match, $~[:issue]
         end
-      end
-
-      def self.referenced_by(node)
-        project = Project.find(node.attr("data-project")) rescue nil
-        return unless project
-
-        id = node.attr("data-external-issue")
-        external_issue = ExternalIssue.new(id, project)
-
-        return unless external_issue
-
-        { external_issue: external_issue }
       end
 
       def call

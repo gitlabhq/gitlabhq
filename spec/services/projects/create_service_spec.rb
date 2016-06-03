@@ -64,7 +64,7 @@ describe Projects::CreateService, services: true do
           @path = ProjectWiki.new(@project, @user).send(:path_to_repo)
         end
 
-        it { expect(File.exists?(@path)).to be_truthy }
+        it { expect(File.exist?(@path)).to be_truthy }
       end
 
       context 'wiki_enabled false does not create wiki repository directory' do
@@ -74,7 +74,7 @@ describe Projects::CreateService, services: true do
           @path = ProjectWiki.new(@project, @user).send(:path_to_repo)
         end
 
-        it { expect(File.exists?(@path)).to be_falsey }
+        it { expect(File.exist?(@path)).to be_falsey }
       end
     end
 

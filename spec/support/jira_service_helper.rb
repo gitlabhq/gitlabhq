@@ -2,11 +2,11 @@ module JiraServiceHelper
 
   def jira_service_settings
     properties = {
-      "title"=>"JIRA tracker",
-      "project_url"=>"http://jira.example/issues/?jql=project=A",
-      "issues_url"=>"http://jira.example/browse/JIRA-1",
-      "new_issue_url"=>"http://jira.example/secure/CreateIssue.jspa",
-      "api_url"=>"http://jira.example/rest/api/2"
+      "title" => "JIRA tracker",
+      "project_url" => "http://jira.example/issues/?jql=project=A",
+      "issues_url" => "http://jira.example/browse/JIRA-1",
+      "new_issue_url" => "http://jira.example/secure/CreateIssue.jspa",
+      "api_url" => "http://jira.example/rest/api/2"
     }
 
     jira_tracker.update_attributes(properties: properties, active: true)
