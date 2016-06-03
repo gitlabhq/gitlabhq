@@ -88,17 +88,6 @@ class Projects::GitHttpController < Projects::ApplicationController
     [nil, nil]
   end
 
-  def repository
-    @repository ||= begin
-      _, suffix = project_id_with_suffix
-      if suffix == '.wiki.git'
-        project.wiki.repository
-      else
-        project.repository
-      end
-    end
-  end
-
   def upload_pack?
     git_command == 'git-upload-pack'
   end
@@ -117,6 +106,15 @@ class Projects::GitHttpController < Projects::ApplicationController
 
   def render_ok
     render json: Gitlab::Workhorse.git_http_ok(repository, user)
+  end
+
+  def repository
+    _, suffix = project_id_with_suffix
+    if suffix == '.wiki.git'
+      project.wiki.repository
+    else
+      project.repository
+    end
   end
 
   def render_not_found
