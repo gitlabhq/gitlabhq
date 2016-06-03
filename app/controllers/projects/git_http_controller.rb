@@ -124,7 +124,7 @@ class Projects::GitHttpController < Projects::ApplicationController
   end
 
   def ci?
-    !!@ci
+    @ci.present?
   end
 
   def upload_pack_allowed?
