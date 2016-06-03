@@ -45,7 +45,7 @@ class JwtController < ApplicationController
     # TODO: this is a copy and paste from grack_auth,
     # it should be refactored in the future
 
-    user = Gitlab::Auth.new.find(login, password)
+    user = Gitlab::Auth.find_in_gitlab_or_ldap(login, password)
 
     # If the user authenticated successfully, we reset the auth failure count
     # from Rack::Attack for that IP. A client may attempt to authenticate
