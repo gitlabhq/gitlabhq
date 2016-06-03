@@ -34,6 +34,7 @@ v 8.9.0 (unreleased)
   - Cache project build count in sidebar nav
   - Reduce number of queries needed to render issue labels in the sidebar
   - Improve error handling importing projects
+  - Remove duplicated notification settings
   - Put project Files and Commits tabs under Code tab
 
 v 8.8.4

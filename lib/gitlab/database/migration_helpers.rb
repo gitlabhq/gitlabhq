@@ -19,7 +19,11 @@ module Gitlab
         end
 
         if Database.postgresql?
-          args << { algorithm: :concurrently }
+          if args[2].present?
+            args[2].merge!({ algorithm: :concurrently })
+          else
+            args << { algorithm: :concurrently }
+          end
         end
 
         add_index(*args)
