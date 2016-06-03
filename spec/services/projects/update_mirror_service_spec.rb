@@ -75,6 +75,16 @@ describe Projects::UpdateMirrorService do
         expect(result[:status]).to eq(:error)
       end
     end
+
+    describe "when no user is present" do
+      let(:mirror_user) { }
+
+      it "fails" do
+        result = subject.execute
+
+        expect(result[:status]).to eq(:error)
+      end
+    end
   end
 
   def fetch_mirror(repository)
