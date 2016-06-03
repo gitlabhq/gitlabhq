@@ -90,10 +90,10 @@ describe API::API, api: true  do
       end
 
       it "should return status for CI" do
-        ci_commit = project.ensure_pipeline(project.repository.commit.sha, 'master')
+        pipeline = project.ensure_pipeline(project.repository.commit.sha, 'master')
         get api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}", user)
         expect(response.status).to eq(200)
-        expect(json_response['status']).to eq(ci_commit.status)
+        expect(json_response['status']).to eq(pipeline.status)
       end
     end
 

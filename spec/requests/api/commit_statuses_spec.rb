@@ -5,7 +5,7 @@ describe API::CommitStatuses, api: true do
 
   let!(:project) { create(:project) }
   let(:commit) { project.repository.commit }
-  let(:commit_status) { create(:commit_status, pipeline: ci_commit) }
+  let(:commit_status) { create(:commit_status, pipeline: pipeline) }
   let(:guest) { create_user(:guest) }
   let(:reporter) { create_user(:reporter) }
   let(:developer) { create_user(:developer) }

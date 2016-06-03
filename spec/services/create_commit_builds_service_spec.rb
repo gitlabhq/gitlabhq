@@ -52,7 +52,7 @@ describe CreateCommitBuildsService, services: true do
       end
     end
 
-    it 'skips creating ci_commit for refs without .gitlab-ci.yml' do
+    it 'skips creating pipeline for refs without .gitlab-ci.yml' do
       stub_ci_pipeline_yaml_file(nil)
       result = service.execute(project, user,
                                ref: 'refs/heads/0_1',

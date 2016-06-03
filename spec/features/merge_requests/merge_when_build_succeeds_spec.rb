@@ -13,7 +13,7 @@ feature 'Merge When Build Succeeds', feature: true, js: true do
 
   context "Active build for Merge Request" do
     let!(:pipeline) { create(:ci_pipeline, project: project, sha: merge_request.last_commit.id, ref: merge_request.source_branch) }
-    let!(:ci_build) { create(:ci_build, pipeline: ci_commit) }
+    let!(:ci_build) { create(:ci_build, pipeline: pipeline) }
 
     before do
       login_as user
