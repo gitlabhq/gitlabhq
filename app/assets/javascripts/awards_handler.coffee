@@ -2,7 +2,7 @@ class @AwardsHandler
 
   constructor: ->
 
-    @aliases = emojiAliases()
+    @aliases = gl.emojiAliases()
 
     $(document)
       .off 'click', '.js-add-award'
@@ -172,7 +172,7 @@ class @AwardsHandler
 
   decrementCounter: ($emojiButton, emoji) ->
 
-    counter       = $('.js-counter', $emojiButton)
+    counter       = $ '.js-counter', $emojiButton
     counterNumber = parseInt counter.text(), 10
 
     if counterNumber > 1
@@ -218,9 +218,7 @@ class @AwardsHandler
     awardBlock
       .closest '.js-emoji-btn'
       .removeData 'original-title'
-      .removeData 'title'
       .attr 'data-original-title', newAuthors
-      .attr 'data-title', newAuthors
 
     @resetTooltip awardBlock
 
@@ -258,8 +256,8 @@ class @AwardsHandler
     </button>"
 
     $emojiButton = $ buttonHtml
-    emoji_node   = $emojiButton
-      .insertBefore votesBlock.find '.js-award-holder:not(.js-award-action-btn)'
+    $emojiButton
+      .insertBefore votesBlock.find '.js-award-holder'
       .find '.emoji-icon'
       .data 'emoji', emoji
 
@@ -281,21 +279,21 @@ class @AwardsHandler
     if $('.emoji-menu').length
       return @createEmoji_ votesBlock, emoji
 
-    @createEmojiMenu @getAwardMenuUrl(), => @createEmoji votesBlock, emoji
+    @createEmojiMenu @getAwardMenuUrl(), => @createEmoji_ votesBlock, emoji
 
 
-  getAwardMenuUrl: -> return gl.awardMenuUrl or '/emojis'
+  getAwardMenuUrl: -> return gl.awardMenuUrl
 
 
   resolveNameToCssClass: (emoji) ->
 
-    emoji_icon = $(".emoji-menu-content [data-emoji='#{emoji}']")
+    emojiIcon = $ ".emoji-menu-content [data-emoji='#{emoji}']"
 
-    if emoji_icon.length > 0
-      unicodeName = emoji_icon.data('unicode-name')
+    if emojiIcon.length > 0
+      unicodeName = emojiIcon.data 'unicode-name'
     else
       # Find by alias
-      unicodeName = $(".emoji-menu-content [data-aliases*=':#{emoji}:']").data('unicode-name')
+      unicodeName = $(".emoji-menu-content [data-aliases*=':#{emoji}:']").data 'unicode-name'
 
     return "emoji-#{unicodeName}"
 
@@ -303,7 +301,7 @@ class @AwardsHandler
   postEmoji: (awardUrl, emoji, callback) ->
 
     $.post awardUrl, { name: emoji }, (data) ->
-      callback.call() if data.ok
+      callback() if data.ok
 
 
   findEmojiIcon: (votesBlock, emoji) ->

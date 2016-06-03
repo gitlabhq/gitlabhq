@@ -168,8 +168,8 @@ class @Notes
 
     if note.award
       votesBlock = $('.js-awards-block').eq 0
-      awardsHandler.addAwardToEmojiBar votesBlock, note.name
-      awardsHandler.scrollToAwards()
+      gl.awardsHandler.addAwardToEmojiBar votesBlock, note.name
+      gl.awardsHandler.scrollToAwards()
 
     # render note if it not present in loaded list
     # or skip if rendered

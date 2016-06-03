@@ -3,10 +3,10 @@
 #= require jquery.cookie
 #= require ./fixtures/emoji_menu
 
-awardsHandler = null
-window.gl   or= {}
-window.gl.awardMenuUrl = '/emojis'
-window.emojiAliases = -> return { '+1': 'thumbsup', '-1': 'thumbsdown' }
+awardsHandler   = null
+window.gl     or= {}
+gl.emojiAliases = -> return { '+1': 'thumbsup', '-1': 'thumbsdown' }
+gl.awardMenuUrl = '/emojis'
 
 
 lazyAssert = (done, assertFn) ->
