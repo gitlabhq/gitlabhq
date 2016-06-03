@@ -156,13 +156,7 @@ module Gitlab
           end
         end
 
-        # Restore normal access to users no longer found in the external groups
-        current_external_users.each do |user|
-          unless verified_external_users.include?(user)
-            user.external = false
-            user.save
-          end
-        end
+        update_external_permissions(current_external_users, verified_external_users)
       end
 
       private
@@ -321,6 +315,16 @@ module Gitlab
             warn_cannot_remove_last_owner(user, group)
           else
             group.users.delete(user)
+          end
+        end
+      end
+
+      def update_external_permissions(users, verified)
+        # Restore normal access to users no longer found in the external groups
+        users.each do |user|
+          unless verified.include?(user)
+            user.external = false
+            user.save
           end
         end
       end

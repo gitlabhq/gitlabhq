@@ -45,8 +45,7 @@ describe Gitlab::LDAP::GroupSync, lib: true do
     let(:group1) { create(:group) }
     let(:group2) { create(:group) }
     let(:ldap_group1) do
-      Net::LDAP::Entry.from_single_ldif_string(
-        <<-EOS.strip_heredoc
+      Net::LDAP::Entry.from_single_ldif_string(<<-EOS.strip_heredoc)
           dn: cn=ldap_group1,ou=groups,dc=example,dc=com
           cn: ldap_group1
           description: LDAP Group 1
@@ -56,7 +55,6 @@ describe Gitlab::LDAP::GroupSync, lib: true do
           objectclass: top
           objectclass: groupOfNames
         EOS
-      )
     end
 
     context 'with all functionality against one LDAP group type' do
@@ -183,8 +181,7 @@ describe Gitlab::LDAP::GroupSync, lib: true do
             Gitlab::LDAP::GroupSync.new('ldapsecondary', adapter)
           end
           let(:ldap_secondary_group1) do
-            Net::LDAP::Entry.from_single_ldif_string(
-              <<-EOS.strip_heredoc
+            Net::LDAP::Entry.from_single_ldif_string(<<-EOS.strip_heredoc)
                 dn: cn=ldap_secondary_group1,ou=groups,dc=example,dc=com
                 cn: ldap_secondary_group1
                 description: LDAP Group 1
@@ -194,7 +191,6 @@ describe Gitlab::LDAP::GroupSync, lib: true do
                 objectclass: top
                 objectclass: groupOfNames
               EOS
-            )
           end
           let(:user_w_multiple_ids) { create(:user) }
 
@@ -247,8 +243,7 @@ describe Gitlab::LDAP::GroupSync, lib: true do
 
       context 'when access level spillover could happen' do
         it 'does not erroneously add users' do
-          ldap_group2 = Net::LDAP::Entry.from_single_ldif_string(
-            <<-EOS.strip_heredoc
+          ldap_group2 = Net::LDAP::Entry.from_single_ldif_string(<<-EOS.strip_heredoc)
               dn: cn=ldap_group2,ou=groups,dc=example,dc=com
               cn: ldap_group2
               description: LDAP Group 2
@@ -257,7 +252,6 @@ describe Gitlab::LDAP::GroupSync, lib: true do
               objectclass: top
               objectclass: groupOfNames
             EOS
-          )
 
           allow_any_instance_of(Gitlab::LDAP::Group)
             .to receive(:adapter).and_return(adapter)
@@ -332,8 +326,7 @@ describe Gitlab::LDAP::GroupSync, lib: true do
       context 'with groupOfNames style LDAP group' do
         let(:ldap_group) do
           Gitlab::LDAP::Group.new(
-            Net::LDAP::Entry.from_single_ldif_string(
-              <<-EOS.strip_heredoc
+            Net::LDAP::Entry.from_single_ldif_string(<<-EOS.strip_heredoc)
                 dn: cn=ldap_group1,ou=groups,dc=example,dc=com
                 cn: ldap_group1
                 description: LDAP Group 1
@@ -341,7 +334,6 @@ describe Gitlab::LDAP::GroupSync, lib: true do
                 objectclass: top
                 objectclass: groupOfNames
               EOS
-            )
           )
         end
 
@@ -356,8 +348,7 @@ describe Gitlab::LDAP::GroupSync, lib: true do
       context 'with posixGroup style LDAP group' do
         let(:ldap_group) do
           Gitlab::LDAP::Group.new(
-            Net::LDAP::Entry.from_single_ldif_string(
-              <<-EOS.strip_heredoc
+            Net::LDAP::Entry.from_single_ldif_string(<<-EOS.strip_heredoc)
                 dn: cn=ldap_group1,ou=groups,dc=example,dc=com
                 cn: ldap_group1
                 description: LDAP Group 1
@@ -365,7 +356,6 @@ describe Gitlab::LDAP::GroupSync, lib: true do
                 objectclass: top
                 objectclass: posixGroup
               EOS
-            )
           )
         end
         let(:ldap_user) do
@@ -453,8 +443,7 @@ describe Gitlab::LDAP::GroupSync, lib: true do
       context 'with groupOfUniqueNames style LDAP group' do
         let(:ldap_group) do
           Gitlab::LDAP::Group.new(
-            Net::LDAP::Entry.from_single_ldif_string(
-              <<-EOS.strip_heredoc
+            Net::LDAP::Entry.from_single_ldif_string(<<-EOS.strip_heredoc)
                 dn: cn=ldap_group1,ou=groups,dc=example,dc=com
                 cn: ldap_group1
                 description: LDAP Group 1
@@ -462,7 +451,6 @@ describe Gitlab::LDAP::GroupSync, lib: true do
                 objectclass: top
                 objectclass: groupOfUniqueNames
               EOS
-            )
           )
         end
 
@@ -476,15 +464,13 @@ describe Gitlab::LDAP::GroupSync, lib: true do
       context 'with an empty LDAP group' do
         let(:ldap_group) do
           Gitlab::LDAP::Group.new(
-            Net::LDAP::Entry.from_single_ldif_string(
-              <<-EOS.strip_heredoc
+            Net::LDAP::Entry.from_single_ldif_string(<<-EOS.strip_heredoc)
                 dn: cn=ldap_group1,ou=groups,dc=example,dc=com
                 cn: ldap_group1
                 description: LDAP Group 1
                 objectclass: top
                 objectclass: groupOfUniqueNames
               EOS
-            )
           )
         end
 
@@ -498,8 +484,7 @@ describe Gitlab::LDAP::GroupSync, lib: true do
       context 'with uid=username member format' do
         let(:ldap_group) do
           Gitlab::LDAP::Group.new(
-            Net::LDAP::Entry.from_single_ldif_string(
-              <<-EOS.strip_heredoc
+            Net::LDAP::Entry.from_single_ldif_string(<<-EOS.strip_heredoc)
                 dn: cn=ldap_group1,ou=groups,dc=example,dc=com
                 cn: ldap_group1
                 member: uid=#{user1.username}
@@ -507,7 +492,6 @@ describe Gitlab::LDAP::GroupSync, lib: true do
                 objectclass: top
                 objectclass: groupOfUniqueNames
               EOS
-            )
           )
         end
         let(:ldap_user) do
@@ -552,8 +536,7 @@ describe Gitlab::LDAP::GroupSync, lib: true do
       context 'with invalid DNs in the LDAP group' do
         let(:ldap_group) do
           Gitlab::LDAP::Group.new(
-            Net::LDAP::Entry.from_single_ldif_string(
-              <<-EOS.strip_heredoc
+            Net::LDAP::Entry.from_single_ldif_string(<<-EOS.strip_heredoc)
                 dn: cn=ldap_group1,ou=groups,dc=example,dc=com
                 cn: ldap_group1
                 member:
@@ -563,7 +546,6 @@ describe Gitlab::LDAP::GroupSync, lib: true do
                 objectclass: top
                 objectclass: groupOfUniqueNames
               EOS
-            )
           )
         end
 
@@ -591,8 +573,7 @@ describe Gitlab::LDAP::GroupSync, lib: true do
     let(:user3) { create(:user) }
 
     let(:admin_group) do
-      Net::LDAP::Entry.from_single_ldif_string(
-        <<-EOS.strip_heredoc
+      Net::LDAP::Entry.from_single_ldif_string(<<-EOS.strip_heredoc)
           dn: cn=admin_group,ou=groups,dc=example,dc=com
           cn: admin_group
           description: Admin Group
@@ -601,14 +582,11 @@ describe Gitlab::LDAP::GroupSync, lib: true do
           objectclass: top
           objectclass: groupOfNames
         EOS
-      )
     end
 
     before do
-      user1.admin = true
-      user1.save
-      user3.admin = true
-      user3.save
+      user1.update_attribute(:admin, true)
+      user3.update_attribute(:admin, true)
 
       allow_any_instance_of(Gitlab::LDAP::Group)
         .to receive(:adapter).and_return(adapter)
@@ -654,8 +632,7 @@ describe Gitlab::LDAP::GroupSync, lib: true do
     let(:user4) { create(:user) }
 
     let(:external_group1) do
-      Net::LDAP::Entry.from_single_ldif_string(
-        <<-EOS.strip_heredoc
+      Net::LDAP::Entry.from_single_ldif_string(<<-EOS.strip_heredoc)
           dn: cn=external_group1,ou=groups,dc=example,dc=com
           cn: external_group1
           description: External Group 1
@@ -664,12 +641,10 @@ describe Gitlab::LDAP::GroupSync, lib: true do
           objectclass: top
           objectclass: groupOfNames
       EOS
-      )
     end
 
     let(:external_group2) do
-      Net::LDAP::Entry.from_single_ldif_string(
-        <<-EOS.strip_heredoc
+      Net::LDAP::Entry.from_single_ldif_string(<<-EOS.strip_heredoc)
         dn: cn=external_group2,ou=groups,dc=example,dc=com
         cn: external_group2
         description: External Group 2
@@ -678,14 +653,11 @@ describe Gitlab::LDAP::GroupSync, lib: true do
         objectclass: top
         objectclass: groupOfNames
       EOS
-      )
     end
 
     before do
-      user3.external = true
-      user3.save
-      user4.external = true
-      user4.save
+      user3.update_attribute(:external, true)
+      user4.update_attribute(:external, true)
 
       allow_any_instance_of(Gitlab::LDAP::Group)
         .to receive(:adapter).and_return(adapter)
@@ -739,4 +711,3 @@ describe Gitlab::LDAP::GroupSync, lib: true do
     end
   end
 end
-
