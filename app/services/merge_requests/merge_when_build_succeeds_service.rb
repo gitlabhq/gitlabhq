@@ -20,10 +20,10 @@ module MergeRequests
 
     # Triggers the automatic merge of merge_request once the build succeeds
     def trigger(commit_status)
-      each_merge_request(commit_status) do |merge_request, ci_commit|
+      each_merge_request(commit_status) do |merge_request, pipeline|
         next unless merge_request.merge_when_build_succeeds?
         next unless merge_request.mergeable?
-        next unless ci_commit.success?
+        next unless pipeline.success?
 
         MergeWorker.perform_async(merge_request.id, merge_request.merge_user_id, merge_request.merge_params)
       end

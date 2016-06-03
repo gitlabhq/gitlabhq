@@ -99,12 +99,12 @@ class Projects::CommitController < Projects::ApplicationController
     @commit ||= @project.commit(params[:id])
   end
 
-  def ci_commits
-    @ci_commits ||= project.pipelines.where(sha: commit.sha)
+  def pipelines
+    @pipelines ||= project.pipelines.where(sha: commit.sha)
   end
 
   def ci_builds
-    @ci_builds ||= Ci::Build.where(pipeline: ci_commits)
+    @ci_builds ||= Ci::Build.where(pipeline: pipelines)
   end
 
   def define_show_vars
@@ -117,8 +117,8 @@ class Projects::CommitController < Projects::ApplicationController
     @diff_refs = [commit.parent || commit, commit]
     @notes_count = commit.notes.count
 
-    @statuses = CommitStatus.where(pipeline: ci_commits)
-    @builds = Ci::Build.where(pipeline: ci_commits)
+    @statuses = CommitStatus.where(pipeline: pipelines)
+    @builds = Ci::Build.where(pipeline: pipelines)
   end
 
   def assign_change_commit_vars(mr_source_branch)
