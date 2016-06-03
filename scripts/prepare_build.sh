@@ -12,20 +12,6 @@ retry() {
 }
 
 if [ -f /.dockerenv ] || [ -f ./dockerinit ]; then
-    mkdir -p vendor
-
-    # Install phantomjs package
-    pushd vendor
-    if [ ! -e phantomjs_1.9.8-0jessie_amd64.deb ]; then
-        wget -q https://gitlab.com/axil/phantomjs-debian/raw/master/phantomjs_1.9.8-0jessie_amd64.deb
-    fi
-    dpkg -i phantomjs_1.9.8-0jessie_amd64.deb
-    popd
-
-    # Try to install packages
-    retry 'apt-get update -yqqq; apt-get -o dir::cache::archives="vendor/apt" install -y -qq --force-yes \
-      libicu-dev libkrb5-dev cmake nodejs postgresql-client mysql-client unzip'
-
     cp config/database.yml.mysql config/database.yml
     sed -i 's/username:.*/username: root/g' config/database.yml
     sed -i 's/password:.*/password:/g' config/database.yml

@@ -1,8 +1,8 @@
-image: "ruby:2.1"
+image: registry.gitlab.com/gitlab-org/gitlab-build-images:ruby-2.1
 
 services:
   - mysql:latest
-  - redis:latest
+  - redis:alpine
 
 cache:
   key: "ruby21"
@@ -112,26 +112,16 @@ rspec 17 20: *knapsack
 rspec 18 20: *knapsack
 rspec 19 20: *knapsack
 
-spinach 0 20: *knapsack
-spinach 1 20: *knapsack
-spinach 2 20: *knapsack
-spinach 3 20: *knapsack
-spinach 4 20: *knapsack
-spinach 5 20: *knapsack
-spinach 6 20: *knapsack
-spinach 7 20: *knapsack
-spinach 8 20: *knapsack
-spinach 9 20: *knapsack
-spinach 10 20: *knapsack
-spinach 11 20: *knapsack
-spinach 12 20: *knapsack
-spinach 13 20: *knapsack
-spinach 14 20: *knapsack
-spinach 15 20: *knapsack
-spinach 16 20: *knapsack
-spinach 17 20: *knapsack
-spinach 18 20: *knapsack
-spinach 19 20: *knapsack
+spinach 0 10: *knapsack
+spinach 1 10: *knapsack
+spinach 2 10: *knapsack
+spinach 3 10: *knapsack
+spinach 4 10: *knapsack
+spinach 5 10: *knapsack
+spinach 6 10: *knapsack
+spinach 7 10: *knapsack
+spinach 8 10: *knapsack
+spinach 9 10: *knapsack
 
 teaspoon: *exec
 rubocop: *exec
