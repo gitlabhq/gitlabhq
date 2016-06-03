@@ -34,7 +34,10 @@ feature 'Merge request created from fork' do
                                        ref: merge_request.source_branch)
     end
 
-    background { pipeline.create_builds(user) }
+    background do
+      pipeline.create_builds(user)
+      pipeline.save
+    end
 
     scenario 'user visits a pipelines page', js: true do
       visit_merge_request(merge_request)
