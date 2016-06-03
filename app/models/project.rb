@@ -1216,8 +1216,6 @@ class Project < ActiveRecord::Base
     import_url_changed? && changes['import_url'].first
   end
 
-  private
-
   def update_forks_visibility_level
     return unless visibility_level < visibility_level_was
 
