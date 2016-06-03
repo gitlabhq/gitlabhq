@@ -10,7 +10,7 @@ describe MergeRequests::MergeWhenBuildSucceedsService do
                            source_project: project, target_project: project, state: "opened")
   end
 
-  let(:ci_commit) { create(:ci_commit_with_one_job, ref: mr_merge_if_green_enabled.source_branch, project: project) }
+  let(:pipeline) { create(:ci_commit_with_one_job, ref: mr_merge_if_green_enabled.source_branch, project: project) }
   let(:service) { MergeRequests::MergeWhenBuildSucceedsService.new(project, user, commit_message: 'Awesome message') }
 
   describe "#execute" do
@@ -21,7 +21,7 @@ describe MergeRequests::MergeWhenBuildSucceedsService do
 
     context 'first time enabling' do
       before do
-        allow(merge_request).to receive(:ci_commit).and_return(ci_commit)
+        allow(merge_request).to receive(:pipeline).and_return(pipeline)
         service.execute(merge_request)
       end
 
@@ -43,9 +43,9 @@ describe MergeRequests::MergeWhenBuildSucceedsService do
       let(:build)   { create(:ci_build, ref: mr_merge_if_green_enabled.source_branch) }
 
       before do
-        allow(mr_merge_if_green_enabled).to receive(:ci_commit).and_return(ci_commit)
+        allow(mr_merge_if_green_enabled).to receive(:pipeline).and_return(pipeline)
         allow(mr_merge_if_green_enabled).to receive(:mergeable?).and_return(true)
-        allow(ci_commit).to receive(:success?).and_return(true)
+        allow(pipeline).to receive(:success?).and_return(true)
       end
 
       it 'updates the merge params' do
@@ -62,8 +62,8 @@ describe MergeRequests::MergeWhenBuildSucceedsService do
       let(:build)     { create(:ci_build, ref: mr_merge_if_green_enabled.source_branch, status: "success") }
 
       it "merges all merge requests with merge when build succeeds enabled" do
-        allow_any_instance_of(MergeRequest).to receive(:ci_commit).and_return(ci_commit)
-        allow(ci_commit).to receive(:success?).and_return(true)
+        allow_any_instance_of(MergeRequest).to receive(:pipeline).and_return(pipeline)
+        allow(pipeline).to receive(:success?).and_return(true)
 
         expect(MergeWorker).to receive(:perform_async)
         service.trigger(build)
@@ -75,8 +75,8 @@ describe MergeRequests::MergeWhenBuildSucceedsService do
       let(:build)     { create(:ci_build, ref: mr_merge_if_green_enabled.source_branch, status: "success") }
 
       it "merges all merge requests with merge when build succeeds enabled" do
-        allow_any_instance_of(MergeRequest).to receive(:ci_commit).and_return(ci_commit)
-        allow(ci_commit).to receive(:success?).and_return(true)
+        allow_any_instance_of(MergeRequest).to receive(:pipeline).and_return(pipeline)
+        allow(pipeline).to receive(:success?).and_return(true)
         allow(old_build).to receive(:sha).and_return('1234abcdef')
 
         expect(MergeWorker).not_to receive(:perform_async)
@@ -99,9 +99,9 @@ describe MergeRequests::MergeWhenBuildSucceedsService do
       it 'discovers branches and merges all merge requests when status is success' do
         allow(project.repository).to receive(:branch_names_contains).
           with(commit_status.sha).and_return([mr_merge_if_green_enabled.source_branch])
-        allow(ci_commit).to receive(:success?).and_return(true)
-        allow_any_instance_of(MergeRequest).to receive(:ci_commit).and_return(ci_commit)
-        allow(ci_commit).to receive(:success?).and_return(true)
+        allow(pipeline).to receive(:success?).and_return(true)
+        allow_any_instance_of(MergeRequest).to receive(:pipeline).and_return(pipeline)
+        allow(pipeline).to receive(:success?).and_return(true)
 
         expect(MergeWorker).to receive(:perform_async)
         service.trigger(commit_status)
@@ -110,17 +110,17 @@ describe MergeRequests::MergeWhenBuildSucceedsService do
 
     context 'properly handles multiple stages' do
       let(:ref) { mr_merge_if_green_enabled.source_branch }
-      let(:build) { create(:ci_build, pipeline: ci_commit, ref: ref, name: 'build', stage: 'build') }
-      let(:test) { create(:ci_build, pipeline: ci_commit, ref: ref, name: 'test', stage: 'test') }
+      let(:build) { create(:ci_build, pipeline: pipeline, ref: ref, name: 'build', stage: 'build') }
+      let(:test) { create(:ci_build, pipeline: pipeline, ref: ref, name: 'test', stage: 'test') }
 
       before do
         # This behavior of MergeRequest: we instantiate a new object
-        allow_any_instance_of(MergeRequest).to receive(:ci_commit).and_wrap_original do
-          Ci::Pipeline.find(ci_commit.id)
+        allow_any_instance_of(MergeRequest).to receive(:pipeline).and_wrap_original do
+          Ci::Pipeline.find(pipeline.id)
         end
 
         # We create test after the build
-        allow(ci_commit).to receive(:create_next_builds).and_wrap_original do
+        allow(pipeline).to receive(:create_next_builds).and_wrap_original do
           test
         end
       end

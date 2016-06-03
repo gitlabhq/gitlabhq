@@ -23,7 +23,7 @@ module API
         not_found!('Commit') unless user_project.commit(params[:sha])
 
         ci_commits = user_project.pipelines.where(sha: params[:sha])
-        statuses = ::CommitStatus.where(commit: ci_commits)
+        statuses = ::CommitStatus.where(pipeline: ci_commits)
         statuses = statuses.latest unless parse_boolean(params[:all])
         statuses = statuses.where(ref: params[:ref]) if params[:ref].present?
         statuses = statuses.where(stage: params[:stage]) if params[:stage].present?
@@ -67,8 +67,8 @@ module API
         ci_commit = @project.ensure_pipeline(commit.sha, ref)
 
         name = params[:name] || params[:context]
-        status = GenericCommitStatus.running_or_pending.find_by(commit: ci_commit, name: name, ref: params[:ref])
-        status ||= GenericCommitStatus.new(project: @project, commit: ci_commit, user: current_user)
+        status = GenericCommitStatus.running_or_pending.find_by(pipeline: ci_commit, name: name, ref: params[:ref])
+        status ||= GenericCommitStatus.new(project: @project, pipeline: ci_commit, user: current_user)
         status.update(attrs)
 
         case params[:state].to_s

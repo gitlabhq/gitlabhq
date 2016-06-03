@@ -23,7 +23,7 @@ module Ci
 
     def self.stages
       # We use pluck here due to problems with MySQL which doesn't allow LIMIT/OFFSET in queries
-      CommitStatus.where(commit: pluck(:id)).stages
+      CommitStatus.where(pipeline: pluck(:id)).stages
     end
 
     def project_id
