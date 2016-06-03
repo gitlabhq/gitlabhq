@@ -1,22 +1,23 @@
 module Gitlab
   class Auth
+    Result = Struct.new(:user, :type)
+
     class << self
       def find(login, password, project:, ip:)
         raise "Must provide an IP for rate limiting" if ip.nil?
 
-        user = nil
-        type = nil
+        result = Result.new
 
         if valid_ci_request?(login, password, project)
-          type = :ci
-        elsif user = find_in_gitlab_or_ldap(login, password)
-          type = :master_or_ldap
-        elsif user = oauth_access_token_check(login, password)
-          type = :oauth
+          result.type = :ci
+        elsif result.user = find_in_gitlab_or_ldap(login, password)
+          result.type = :gitlab_or_ldap
+        elsif result.user = oauth_access_token_check(login, password)
+          result.type = :oauth
         end
 
-        rate_limit!(ip, success: !!user || (type == :ci), login: login)
-        [user, type]
+        rate_limit!(ip, success: !!result.user || (result.type == :ci), login: login)
+        result
       end
 
       def find_in_gitlab_or_ldap(login, password)
@@ -67,7 +68,7 @@ module Gitlab
         # from Rack::Attack for that IP. A client may attempt to authenticate
         # with a username and blank password first, and only after it receives
         # a 401 error does it present a password. Resetting the count prevents
-        # false positives from occurring.
+        # false positives.
         #
         # Otherwise, we let Rack::Attack know there was a failed authentication
         # attempt from this IP. This information is stored in the Rails cache
@@ -78,15 +79,14 @@ module Gitlab
         return unless config.enabled
 
         if success
-          # A successful login will reset the auth failure count from this IP
           Rack::Attack::Allow2Ban.reset(ip, config)
         else
           banned = Rack::Attack::Allow2Ban.filter(ip, config) do
-            # Unless the IP is whitelisted, return true so that Allow2Ban
-            # increments the counter (stored in Rails.cache) for the IP
             if config.ip_whitelist.include?(ip)
+              # Don't increment the ban counter for this IP
               false
             else
+              # Increment the ban counter for this IP
               true
             end
           end

@@ -41,15 +41,17 @@ class Projects::GitHttpController < Projects::ApplicationController
     return if project && project.public? && upload_pack?
 
     authenticate_or_request_with_http_basic do |login, password|
-      user, type = Gitlab::Auth.find(login, password, project: project, ip: request.ip)
+      auth_result = Gitlab::Auth.find(login, password, project: project, ip: request.ip)
 
-      if (type == :ci) && upload_pack?
+      if auth_result.type == :ci && upload_pack?
         @ci = true
-      elsif (type == :oauth) && !upload_pack?
-        @user = nil
+      elsif auth_result.type == :oauth && !upload_pack?
+        # Not allowed
       else
-        @user = user
+        @user = auth_result.user
       end
+
+      ci? || user
     end
   end
 
@@ -73,7 +75,7 @@ class Projects::GitHttpController < Projects::ApplicationController
   def project_id_with_suffix
     id = params[:project_id] || ''
 
-    %w{.wiki.git .git}.each do |suffix|
+    %w[.wiki.git .git].each do |suffix|
       if id.end_with?(suffix)
         # Be careful to only remove the suffix from the end of 'id'.
         # Accidentally removing it from the middle is how security
@@ -109,7 +111,7 @@ class Projects::GitHttpController < Projects::ApplicationController
     if action_name == 'info_refs'
       params[:service]
     else
-      action_name.gsub('_', '-')
+      action_name.dasherize
     end
   end
 
