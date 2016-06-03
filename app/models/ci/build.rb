@@ -118,12 +118,12 @@ module Ci
                                    .reorder(iid: :asc)
 
       merge_requests.find do |merge_request|
-        merge_request.commits.any? { |ci| ci.id == commit.sha }
+        merge_request.commits.any? { |ci| ci.id == pipeline.sha }
       end
     end
 
     def project_id
-      commit.project.id
+      pipeline.project_id
     end
 
     def project_name
@@ -359,8 +359,8 @@ module Ci
     end
 
     def global_yaml_variables
-      if commit.config_processor
-        commit.config_processor.global_variables.map do |key, value|
+      if pipeline.config_processor
+        pipeline.config_processor.global_variables.map do |key, value|
           { key: key, value: value, public: true }
         end
       else
@@ -369,8 +369,8 @@ module Ci
     end
 
     def job_yaml_variables
-      if commit.config_processor
-        commit.config_processor.job_variables(name).map do |key, value|
+      if pipeline.config_processor
+        pipeline.config_processor.job_variables(name).map do |key, value|
           { key: key, value: value, public: true }
         end
       else

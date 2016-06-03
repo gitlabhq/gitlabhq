@@ -43,7 +43,7 @@ FactoryGirl.define do
     end
 
     after(:build) do |build, evaluator|
-      build.project = build.commit.project
+      build.project = build.pipeline.project
     end
 
     factory :ci_not_started_build do

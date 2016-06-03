@@ -8,7 +8,7 @@ FactoryGirl.define do
     finished_at 'Tue, 26 Jan 2016 08:23:42 +0100'
 
     after(:build) do |build, evaluator|
-      build.project = build.commit.project
+      build.project = build.pipeline.project
     end
 
     factory :generic_commit_status, class: GenericCommitStatus do
