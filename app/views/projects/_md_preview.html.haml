@@ -14,29 +14,17 @@
           %span This is a confidential issue. Your comment will not be visible to the public.
           
       %li.pull-right
-
-        %a.btn.btn-xs.js-md{ 'data-md-tag' => '**' }
-          =icon('bold fw')
-        %a.btn.btn-xs.js-md{ 'data-md-tag' => '*' }
-          =icon('italic fw')
-        %a.btn.btn-xs.js-md{ 'data-md-tag' => '`' }
-          =icon('code fw')
-        %a.btn.btn-xs.js-md.js-list{ 'data-md-tag' => '* ', 'data-md-prepend' => true }
-          =icon('list-ul fw')
-        %a.btn.btn-xs.js-md.js-list.hidden-xs{ 'data-md-tag' => '1. ', 'data-md-prepend' => true }
-          =icon('list-ol fw')
-        %a.btn.btn-xs.js-md.js-list.hidden-xs{ 'data-md-tag' => '* [ ] ', 'data-md-prepend' => true }
-          =icon('check-square-o fw')
-        %a.btn.btn-xs.js-md.js-list.hidden-xs{ 'data-md-tag' => '> ', 'data-md-prepend' => true }
-          =icon('quote-right fw')
-
-        %a.btn.btn-xs.js-md.js-list.hidden-xs{ 'data-md-tag' => '!', 'data-md-prepend' => true }
-          =icon('tasks fw')
-        %a.btn.btn-xs.js-md.js-list.hidden-xs{ 'data-md-tag' => '#', 'data-md-prepend' => true }
-          =icon('exclamation-circle fw')
-
-        %a.btn.btn-xs.js-zen-enter.hidden-xs
-          =icon('arrows-alt fw')
+        .toolbar-group
+          = markdown_toolbar_button({icon: "bold fw", data: { "md-tag" => "**" }, title: "Add bold text" })
+          = markdown_toolbar_button({icon: "italic fw", data: { "md-tag" => "*" }, title: "Add italic text" })
+          = markdown_toolbar_button({icon: "quote-right fw", data: { "md-tag" => "> ", "md-prepend" => true }, title: "Insert a quote" })
+          = markdown_toolbar_button({icon: "code fw", data: { "md-tag" => "`" }, title: "Insert code" })
+          = markdown_toolbar_button({icon: "list-ul fw", data: { "md-tag" => "* ", "md-prepend" => true }, title: "Add a bullet list" })
+          = markdown_toolbar_button({icon: "list-ol fw", data: { "md-tag" => "1. ", "md-prepend" => true }, title: "Add a numbered list" })
+          = markdown_toolbar_button({icon: "check-square-o fw", data: { "md-tag" => "* [ ] ", "md-prepend" => true }, title: "Add a task list" })
+        .toolbar-group
+          %button.toolbar-btn.js-zen-enter.has-tooltip.hidden-xs{ type: "button", tabindex: -1, aria: { label: "Go full screen" }, title: "Go full screen", data: { container: "body" } }
+            =icon("arrows-alt fw")
 
   .md-write-holder
     = yield
@@ -45,7 +33,7 @@
   - if defined?(referenced_users) && referenced_users
     %div.referenced-users.hide
       %span
-        = icon('exclamation-triangle')
+        = icon("exclamation-triangle")
         You are about to add
         %strong
           %span.js-referenced-users-count 0

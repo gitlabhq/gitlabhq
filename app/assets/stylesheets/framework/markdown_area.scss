@@ -104,3 +104,26 @@
     }
   }
 }
+
+.toolbar-group {
+  float: left;
+  margin-right: -5px;
+  margin-left: $gl-padding;
+
+  &:first-child {
+    margin-left: 0;
+  }
+}
+
+.toolbar-btn {
+  float: left;
+  padding: 0 5px;
+  color: #959494;
+  background: transparent;
+  border: 0;
+  outline: 0;
+
+  &:hover {
+    color: $gl-link-color;
+  }
+}
