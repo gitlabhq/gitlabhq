@@ -1,58 +1,3 @@
-<<<<<<< ours
-%ul.nav.nav-sidebar
-  - if @project.group
-    = nav_link do
-      = link_to group_path(@project.group), title: 'Go to group', class: 'back-link' do
-        = icon('caret-square-o-left fw')
-        %span
-          Go to group
-  - else
-    = nav_link do
-      = link_to root_path, title: 'Go to dashboard', class: 'back-link' do
-        = icon('caret-square-o-left fw')
-        %span
-          Go to dashboard
-
-  %li.separate-item
-
-  = nav_link(path: 'projects#show', html_options: {class: 'home'}) do
-    = link_to project_path(@project), title: 'Project', class: 'shortcuts-project' do
-      = icon('bookmark fw')
-      %span
-        Project
-  = nav_link(path: 'projects#activity') do
-    = link_to activity_project_path(@project), title: 'Activity', class: 'shortcuts-project-activity' do
-      = icon('dashboard fw')
-      %span
-        Activity
-  - if project_nav_tab? :files
-    = nav_link(controller: %w(tree blob blame edit_tree new_tree find_file)) do
-      = link_to project_files_path(@project), title: 'Files',  class: 'shortcuts-tree' do
-        = icon('files-o fw')
-        %span
-          Files
-
-  - if project_nav_tab? :commits
-    = nav_link(controller: %w(commit commits compare repositories tags branches releases network)) do
-      = link_to project_commits_path(@project), title: 'Commits', class: 'shortcuts-commits' do
-        = icon('history fw')
-        %span
-          Commits
-
-  - if project_nav_tab? :pipelines
-    = nav_link(controller: :pipelines) do
-      = link_to project_pipelines_path(@project), title: 'Pipelines', class: 'shortcuts-pipelines' do
-        = icon('ship fw')
-        %span
-          Pipelines
-          %span.count.ci_counter= number_with_delimiter(@project.ci_commits.running_or_pending.count)
-
-  - if project_nav_tab? :builds
-    = nav_link(controller: %w(builds)) do
-      = link_to project_builds_path(@project), title: 'Builds', class: 'shortcuts-builds' do
-        = icon('cubes fw')
-        %span
-=======
 - if current_user
   .controls
     - access = user_max_access_in_project(current_user.id, @project)
@@ -182,7 +127,6 @@
     - if project_nav_tab? :builds
       %li.hidden
         = link_to project_builds_path(@project), title: 'Builds', class: 'shortcuts-builds' do
->>>>>>> theirs
           Builds
 
     .fade-right
