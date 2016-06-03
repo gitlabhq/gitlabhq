@@ -334,7 +334,7 @@ describe Ci::Pipeline, models: true do
 
   describe '#stages' do
     let(:commit2) { FactoryGirl.create :ci_commit, project: project }
-    subject { CommitStatus.where(commit: [commit, commit2]).stages }
+    subject { CommitStatus.where(pipeline: [commit, commit2]).stages }
 
     before do
       FactoryGirl.create :ci_build, pipeline: commit2, stage: 'test', stage_idx: 1

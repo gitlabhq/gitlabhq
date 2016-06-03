@@ -110,8 +110,8 @@ describe MergeRequests::MergeWhenBuildSucceedsService do
 
     context 'properly handles multiple stages' do
       let(:ref) { mr_merge_if_green_enabled.source_branch }
-      let(:build) { create(:ci_build, commit: ci_commit, ref: ref, name: 'build', stage: 'build') }
-      let(:test) { create(:ci_build, commit: ci_commit, ref: ref, name: 'test', stage: 'test') }
+      let(:build) { create(:ci_build, pipeline: ci_commit, ref: ref, name: 'build', stage: 'build') }
+      let(:test) { create(:ci_build, pipeline: ci_commit, ref: ref, name: 'test', stage: 'test') }
 
       before do
         # This behavior of MergeRequest: we instantiate a new object

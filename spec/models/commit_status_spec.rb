@@ -4,15 +4,15 @@ describe CommitStatus, models: true do
   let(:commit) { FactoryGirl.create :ci_commit }
   let(:commit_status) { FactoryGirl.create :commit_status, pipeline: commit }
 
-  it { is_expected.to belong_to(:commit) }
+  it { is_expected.to belong_to(:pipeline) }
   it { is_expected.to belong_to(:user) }
   it { is_expected.to belong_to(:project) }
 
   it { is_expected.to validate_presence_of(:name) }
   it { is_expected.to validate_inclusion_of(:status).in_array(%w(pending running failed success canceled)) }
 
-  it { is_expected.to delegate_method(:sha).to(:commit) }
-  it { is_expected.to delegate_method(:short_sha).to(:commit) }
+  it { is_expected.to delegate_method(:sha).to(:pipeline) }
+  it { is_expected.to delegate_method(:short_sha).to(:pipeline) }
   
   it { is_expected.to respond_to :success? }
   it { is_expected.to respond_to :failed? }
@@ -179,7 +179,7 @@ describe CommitStatus, models: true do
     end
 
     context 'stages list' do
-      subject { CommitStatus.where(commit: commit).stages }
+      subject { CommitStatus.where(pipeline: commit).stages }
 
       it 'return ordered list of stages' do
         is_expected.to eq(%w(build test deploy))
@@ -187,7 +187,7 @@ describe CommitStatus, models: true do
     end
 
     context 'stages with statuses' do
-      subject { CommitStatus.where(commit: commit).stages_status }
+      subject { CommitStatus.where(pipeline: commit).stages_status }
 
       it 'return list of stages with statuses' do
         is_expected.to eq({
