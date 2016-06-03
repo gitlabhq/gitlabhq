@@ -9,7 +9,7 @@ describe PersonalAccessToken, models: true do
 
     it "doesn't save the record" do
       personal_access_token = PersonalAccessToken.generate({})
-      expect(personal_access_token).to_not be_persisted
+      expect(personal_access_token).not_to be_persisted
     end
   end
 end

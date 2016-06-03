@@ -62,8 +62,8 @@ describe ApplicationController do
       it "doesn't log the user in otherwise" do
         @request.headers['PRIVATE-TOKEN'] = "token"
         get :index, private_token: "token", authenticity_token: "token"
-        expect(response.status).to_not eq(200)
-        expect(response.body).to_not eq("authenticated")
+        expect(response.status).not_to eq(200)
+        expect(response.body).not_to eq("authenticated")
       end
     end
 
@@ -96,8 +96,8 @@ describe ApplicationController do
 
       it "doesn't log the user in otherwise" do
         get :index, private_token: "token"
-        expect(response.status).to_not eq(200)
-        expect(response.body).to_not eq('authenticated')
+        expect(response.status).not_to eq(200)
+        expect(response.body).not_to eq('authenticated')
       end
     end
   end
