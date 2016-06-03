@@ -1,12 +1,11 @@
 - page_title "Personal Access Tokens"
-- header_title page_title, profile_personal_access_tokens_path
 
 .row.prepend-top-default
   .col-lg-3.profile-settings-sidebar
     %h4.prepend-top-0
       = page_title
     %p
-      You can generate a personal access token for each application you use that needs access to GitLab.
+      You can generate a personal access token for each application you use that needs access to the GitLab API.
   .col-lg-9
 
     - if flash[:personal_access_token]
@@ -49,21 +48,22 @@
               %th Name
               %th Created
               %th Expires
-              %th Actions
+              %th
           %tbody
             - @active_personal_access_tokens.each do |token|
               %tr
                 %td= token.name
                 %td= token.created_at.to_date.to_s(:medium)
-                - if token.expires_at.present?
-                  %td= token.expires_at.to_date.to_s(:medium)
-                - else
-                  %td
+                %td
+                  - if token.expires_at.present?
+                    = token.expires_at.to_date.to_s(:medium)
+                  - else
                     %span.personal-access-tokens-never-expires-label Never
                 %td= link_to "Revoke", revoke_profile_personal_access_token_path(token), method: :put, class: "btn btn-danger", data: { confirm: "Are you sure? This cannot be undone." }
 
     - else
-      %span You don't have any active tokens yet.
+      .settings-message.text-center
+        You don't have any active tokens yet.
 
     %hr
 
@@ -83,7 +83,8 @@
                 %td= token.created_at.to_date.to_s(:medium)
 
     - else
-      %span No inactive tokens.
+      .settings-message.text-center
+        There are no inactive tokens.
 
 
 :javascript
