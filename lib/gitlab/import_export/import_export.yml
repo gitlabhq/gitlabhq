@@ -5,7 +5,9 @@ project_tree:
         :author
   - :labels
   - :milestones
-  - :snippets
+  - snippets:
+    - notes:
+        :author
   - :releases
   - :events
   - project_members:

@@ -53,6 +53,10 @@ describe Gitlab::ImportExport::ProjectTreeSaver, services: true do
         expect(saved_project_json['snippets']).not_to be_empty
       end
 
+      it 'has snippet notes' do
+        expect(saved_project_json['snippets'].first['notes']).not_to be_empty
+      end
+
       it 'has releases' do
         expect(saved_project_json['releases']).not_to be_empty
       end
@@ -96,6 +100,10 @@ describe Gitlab::ImportExport::ProjectTreeSaver, services: true do
       it 'has ci commits' do
         expect(saved_project_json['ci_commits']).not_to be_empty
       end
+
+      it 'has ci commits notes' do
+        expect(saved_project_json['ci_commits'].first['notes']).not_to be_empty
+      end
     end
   end
 
@@ -115,11 +123,20 @@ describe Gitlab::ImportExport::ProjectTreeSaver, services: true do
                      releases: [release]
                     )
 
-    ci_commit = create(:ci_commit, project: project, sha: merge_request.last_commit.id, ref: merge_request.source_branch)
-    create(:ci_build, commit: ci_commit)
+    commit_status = create(:commit_status, project: project)
+
+    ci_commit = create(:ci_commit,
+                       project: project,
+                       sha: merge_request.last_commit.id,
+                       ref: merge_request.source_branch,
+                       statuses: [commit_status])
+
+    create(:ci_build, commit: ci_commit, project: project)
     create(:milestone, project: project)
-    create(:note, noteable: issue)
-    create(:note, noteable: merge_request)
+    create(:note, noteable: issue, project: project)
+    create(:note, noteable: merge_request, project: project)
+    create(:note, noteable: ci_commit, project: project)
+    create(:note, noteable: snippet, project: project)
     project
   end
 

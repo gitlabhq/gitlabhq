@@ -179,5 +179,9 @@ module Ci
       self.yaml_errors = error
       update_state
     end
+
+    def notes
+      Note.for_commit_id(valid_commit_sha)
+    end
   end
 end
