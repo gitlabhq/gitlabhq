@@ -76,7 +76,9 @@ class Spinach::Features::ProjectWiki < Spinach::FeatureSteps
   end
 
   step 'I click on the "Pages" button' do
-    click_on "Pages"
+    within ".content" do
+      click_on "Pages"
+    end
   end
 
   step 'I should see the existing page in the pages list' do
