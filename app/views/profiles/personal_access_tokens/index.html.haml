@@ -24,6 +24,8 @@
     = form_for [:profile, @personal_access_token],
                 method: :post, html: { class: 'js-requires-input' } do |f|
 
+      = form_errors(@personal_access_token)
+
       .form-group
         = f.label :name, class: 'label-light'
         = f.text_field :name, class: "form-control", required: true
