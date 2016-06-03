@@ -101,7 +101,7 @@ class Dispatcher
       when 'projects:labels:new', 'projects:labels:edit'
         new Labels()
       when 'projects:labels:index'
-        new LabelManager()
+        new LabelManager() if $('.prioritized-labels').length
       when 'projects:network:show'
         # Ensure we don't create a particular shortcut handler here. This is
         # already created, where the network graph is created.
