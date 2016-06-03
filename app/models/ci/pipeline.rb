@@ -3,6 +3,8 @@ module Ci
     extend Ci::Model
     include Statuseable
 
+    self.table_name = 'ci_commits'
+
     belongs_to :project, class_name: '::Project', foreign_key: :gl_project_id
     has_many :statuses, class_name: 'CommitStatus'
     has_many :builds, class_name: 'Ci::Build'
