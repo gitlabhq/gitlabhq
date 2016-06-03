@@ -35,6 +35,7 @@ v 8.9.0 (unreleased)
   - Reduce number of queries needed to render issue labels in the sidebar
   - Improve error handling importing projects
   - Put project Files and Commits tabs under Code tab
+  - Replace Colorize with Rainbow for coloring console output in Rake tasks.
 
 v 8.8.4
   - Fix todos page throwing errors when you have a project pending deletion
