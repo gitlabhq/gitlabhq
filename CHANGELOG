@@ -23,6 +23,7 @@ v 8.9.0 (unreleased)
   - Link to blank group icon doesn't throw a 404 anymore
   - Remove 'main language' feature
   - Pipelines can be canceled only when there are running builds
+  - Allow authentication using personal access tokens
   - Use downcased path to container repository as this is expected path by Docker
   - Projects pending deletion will render a 404 page
   - Measure queue duration between gitlab-workhorse and Rails
@@ -92,7 +93,6 @@ v 8.8.0
   - GitAccess#protected_tag? no longer loads all tags just to check if a single one exists
   - Reduce delay in destroying a project from 1-minute to immediately
   - Make build status canceled if any of the jobs was canceled and none failed
-  - Allow authentication using personal access tokens
   - Upgrade Sidekiq to 4.1.2
   - Added /health_check endpoint for checking service status
   - Make 'upcoming' filter for milestones work better across projects
