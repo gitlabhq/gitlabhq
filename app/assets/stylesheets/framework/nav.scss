@@ -342,6 +342,24 @@
   }
 }
 
+.scrolling-tabs-container {
+  position: relative;
+
+  .nav-links {
+    @include scrolling-links();
+
+    .fade-right {
+      @include fade(left, rgba(255, 255, 255, 0.4), $background-color);
+      right: 0;
+    }
+
+    .fade-left {
+      @include fade(right, rgba(255, 255, 255, 0.4), $background-color);
+      left: 0;
+    }
+  }
+}
+
 .nav-block {
   position: relative;
 
