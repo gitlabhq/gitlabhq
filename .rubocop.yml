@@ -1037,6 +1037,9 @@ Performance/TimesMap:
 Rails:
   Enabled: true
 
+Rails/UniqBeforePluck:
+  Enabled: false
+
 # Enforces consistent use of action filter methods.
 Rails/ActionFilter:
   Enabled: true
