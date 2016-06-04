@@ -96,5 +96,4 @@ module IssuablesHelper
       issuable.open? ? :opened : :closed
     end
   end
-
 end
