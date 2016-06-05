@@ -125,6 +125,18 @@ ActiveRecord::Schema.define(version: 20160601102211) do
   add_index "audit_events", ["entity_id", "entity_type"], name: "index_audit_events_on_entity_id_and_entity_type", using: :btree
   add_index "audit_events", ["type"], name: "index_audit_events_on_type", using: :btree
 
+  create_table "award_emoji", force: :cascade do |t|
+    t.string   "name"
+    t.integer  "user_id"
+    t.integer  "awardable_id"
+    t.string   "awardable_type"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "award_emoji", ["awardable_type", "awardable_id"], name: "index_award_emoji_on_awardable_type_and_awardable_id", using: :btree
+  add_index "award_emoji", ["user_id"], name: "index_award_emoji_on_user_id", using: :btree
+
   create_table "broadcast_messages", force: :cascade do |t|
     t.text     "message",    null: false
     t.datetime "starts_at"
@@ -734,7 +746,6 @@ ActiveRecord::Schema.define(version: 20160601102211) do
     t.boolean  "system",        default: false, null: false
     t.text     "st_diff"
     t.integer  "updated_by_id"
-    t.boolean  "is_award",      default: false, null: false
     t.string   "type"
   end
 
@@ -742,7 +753,6 @@ ActiveRecord::Schema.define(version: 20160601102211) do
   add_index "notes", ["commit_id"], name: "index_notes_on_commit_id", using: :btree
   add_index "notes", ["created_at", "id"], name: "index_notes_on_created_at_and_id", using: :btree
   add_index "notes", ["created_at"], name: "index_notes_on_created_at", using: :btree
-  add_index "notes", ["is_award"], name: "index_notes_on_is_award", using: :btree
   add_index "notes", ["line_code"], name: "index_notes_on_line_code", using: :btree
   add_index "notes", ["note"], name: "index_notes_on_note_trigram", using: :gin, opclasses: {"note"=>"gin_trgm_ops"}
   add_index "notes", ["noteable_id", "noteable_type"], name: "index_notes_on_noteable_id_and_noteable_type", using: :btree

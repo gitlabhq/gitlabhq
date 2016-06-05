@@ -218,6 +218,7 @@ module API
         #   merge_commit_message (optional)         - Custom merge commit message
         #   should_remove_source_branch (optional)  - When true, the source branch will be deleted if possible
         #   merge_when_build_succeeds (optional)    - When true, this MR will be merged when the build succeeds
+        #   sha (optional)                          - When present, must have the HEAD SHA of the source branch
         # Example:
         #   PUT /projects/:id/merge_requests/:merge_request_id/merge
         #
@@ -232,6 +233,10 @@ module API
           merge_request.check_if_can_be_merged
 
           render_api_error!('Branch cannot be merged', 406) unless merge_request.can_be_merged?
+
+          if params[:sha] && merge_request.source_sha != params[:sha]
+            render_api_error!("SHA does not match HEAD of source branch: #{merge_request.source_sha}", 409)
+          end
 
           merge_params = {
             commit_message: params[:merge_commit_message],

@@ -185,6 +185,92 @@ describe Projects::MergeRequestsController do
     end
   end
 
+  describe 'POST #merge' do
+    let(:base_params) do
+      {
+        namespace_id: project.namespace.path,
+        project_id: project.path,
+        id: merge_request.iid,
+        format: 'raw'
+      }
+    end
+
+    context 'when the user does not have access' do
+      before do
+        project.team.truncate
+        project.team << [user, :reporter]
+        post :merge, base_params
+      end
+
+      it 'returns not found' do
+        expect(response).to be_not_found
+      end
+    end
+
+    context 'when the merge request is not mergeable' do
+      before do
+        merge_request.update_attributes(title: "WIP: #{merge_request.title}")
+
+        post :merge, base_params
+      end
+
+      it 'returns :failed' do
+        expect(assigns(:status)).to eq(:failed)
+      end
+    end
+
+    context 'when the sha parameter does not match the source SHA' do
+      before { post :merge, base_params.merge(sha: 'foo') }
+
+      it 'returns :sha_mismatch' do
+        expect(assigns(:status)).to eq(:sha_mismatch)
+      end
+    end
+
+    context 'when the sha parameter matches the source SHA' do
+      def merge_with_sha
+        post :merge, base_params.merge(sha: merge_request.source_sha)
+      end
+
+      it 'returns :success' do
+        merge_with_sha
+
+        expect(assigns(:status)).to eq(:success)
+      end
+
+      it 'starts the merge immediately' do
+        expect(MergeWorker).to receive(:perform_async).with(merge_request.id, anything, anything)
+
+        merge_with_sha
+      end
+
+      context 'when merge_when_build_succeeds is passed' do
+        def merge_when_build_succeeds
+          post :merge, base_params.merge(sha: merge_request.source_sha, merge_when_build_succeeds: '1')
+        end
+
+        before do
+          create(:ci_empty_commit, project: project, sha: merge_request.source_sha, ref: merge_request.source_branch)
+        end
+
+        it 'returns :merge_when_build_succeeds' do
+          merge_when_build_succeeds
+
+          expect(assigns(:status)).to eq(:merge_when_build_succeeds)
+        end
+
+        it 'sets the MR to merge when the build succeeds' do
+          service = double(:merge_when_build_succeeds_service)
+
+          expect(MergeRequests::MergeWhenBuildSucceedsService).to receive(:new).with(project, anything, anything).and_return(service)
+          expect(service).to receive(:execute).with(merge_request)
+
+          merge_when_build_succeeds
+        end
+      end
+    end
+  end
+
   describe "DELETE #destroy" do
     it "denies access to users unless they're admin or project owner" do
       delete :destroy, namespace_id: project.namespace.path, project_id: project.path, id: merge_request.iid

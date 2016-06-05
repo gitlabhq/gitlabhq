@@ -50,7 +50,7 @@ class Projects::BranchesController < Projects::ApplicationController
         redirect_to namespace_project_branches_path(@project.namespace,
                                                     @project), status: 303
       end
-      format.js { render status: status[:return_code] }
+      format.js { render nothing: true, status: status[:return_code] }
     end
   end
 

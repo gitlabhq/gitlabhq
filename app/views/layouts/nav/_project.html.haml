@@ -33,18 +33,11 @@
         %span
           Activity
     - if project_nav_tab? :files
-      = nav_link(controller: %w(tree blob blame edit_tree new_tree find_file)) do
+      = nav_link(controller: %w(tree blob blame edit_tree new_tree find_file commit commits compare repositories tags branches releases network)) do
         = link_to project_files_path(@project), title: 'Files',  class: 'shortcuts-tree' do
-          = icon('files-o fw')
+          = icon('code fw')
           %span
-            Files
-
-    - if project_nav_tab? :commits
-      = nav_link(controller: %w(commit commits compare repositories tags branches releases network)) do
-        = link_to project_commits_path(@project), title: 'Commits', class: 'shortcuts-commits' do
-          = icon('history fw')
-          %span
-            Commits
+            Code
 
     - if project_nav_tab? :pipelines
       = nav_link(controller: :pipelines) do
@@ -58,7 +51,7 @@
         = link_to project_container_registry_path(@project), title: 'Container Registry', class: 'shortcuts-container-registry' do
           = icon('hdd-o fw')
           %span
-            Container Registry
+            Registry
 
     - if project_nav_tab? :graphs
       = nav_link(controller: %w(graphs)) do
@@ -128,5 +121,11 @@
       %li.hidden
         = link_to project_builds_path(@project), title: 'Builds', class: 'shortcuts-builds' do
           Builds
+
+    -# Shortcut to commits page
+    - if project_nav_tab? :commits
+      %li.hidden
+        = link_to project_commits_path(@project), title: 'Commits', class: 'shortcuts-commits' do
+          Commits
 
     .fade-right

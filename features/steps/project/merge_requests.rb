@@ -179,14 +179,14 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
   step 'merge request "Bug NS-04" have 2 upvotes and 1 downvote' do
     merge_request = MergeRequest.find_by(title: 'Bug NS-04')
-    create_list(:upvote_note, 2, project: project, noteable: merge_request)
-    create(:downvote_note, project: project, noteable: merge_request)
+    create_list(:award_emoji, 2, awardable: merge_request)
+    create(:award_emoji, :downvote, awardable: merge_request)
   end
 
   step 'merge request "Bug NS-06" have 1 upvote and 2 downvotes' do
-    merge_request = MergeRequest.find_by(title: 'Bug NS-06')
-    create(:upvote_note, project: project, noteable: merge_request)
-    create_list(:downvote_note, 2, project: project, noteable: merge_request)
+    awardable = MergeRequest.find_by(title: 'Bug NS-06')
+    create(:award_emoji, awardable: awardable)
+    create_list(:award_emoji, 2, :downvote, awardable: awardable)
   end
 
   step 'The list should be sorted by "Least popular"' do

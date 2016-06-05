@@ -698,6 +698,7 @@ Rails.application.routes.draw do
             post :toggle_subscription
             post :approve
             post :rebase
+            post :toggle_award_emoji
             post :remove_wip
           end
 
@@ -780,6 +781,7 @@ Rails.application.routes.draw do
         resources :issues, constraints: { id: /\d+/ } do
           member do
             post :toggle_subscription
+            post :toggle_award_emoji
             get :referenced_merge_requests
             get :related_branches
             get :can_create_branch
@@ -809,10 +811,6 @@ Rails.application.routes.draw do
         resources :notes, only: [:index, :create, :destroy, :update], constraints: { id: /\d+/ } do
           member do
             delete :delete_attachment
-          end
-
-          collection do
-            post :award_toggle
           end
         end
 

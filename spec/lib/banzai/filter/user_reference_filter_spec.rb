@@ -136,4 +136,23 @@ describe Banzai::Filter::UserReferenceFilter, lib: true do
       expect(link.attr('data-user')).to eq user.namespace.owner_id.to_s
     end
   end
+
+  describe '#namespaces' do
+    it 'returns a Hash containing all Namespaces' do
+      document = Nokogiri::HTML.fragment("<p>#{user.to_reference}</p>")
+      filter = described_class.new(document, project: project)
+      ns = user.namespace
+
+      expect(filter.namespaces).to eq({ ns.path => ns })
+    end
+  end
+
+  describe '#usernames' do
+    it 'returns the usernames mentioned in a document' do
+      document = Nokogiri::HTML.fragment("<p>#{user.to_reference}</p>")
+      filter = described_class.new(document, project: project)
+
+      expect(filter.usernames).to eq([user.username])
+    end
+  end
 end
