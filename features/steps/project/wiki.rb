@@ -76,7 +76,8 @@ class Spinach::Features::ProjectWiki < Spinach::FeatureSteps
   end
 
   step 'I click on the "Pages" button' do
-    click_on "Pages"
+    wiki_menu = find('.content .nav-links')
+    wiki_menu.click_on "Pages"
   end
 
   step 'I should see the existing page in the pages list' do

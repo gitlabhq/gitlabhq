@@ -31,7 +31,7 @@ module GroupsHelper
     if group && group.avatar.present?
       group.avatar.url
     else
-      'no_group_avatar.png'
+      image_path('no_group_avatar.png')
     end
   end
 

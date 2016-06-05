@@ -2,8 +2,8 @@
 
 ## Required NFS Server features
 
-**File locking**: GitLab **requires** file locking which is only supported
-natively in NFS version 4. NFSv3 also supports locking as long as
+**File locking**: GitLab **requires** advisory file locking, which is only
+supported natively in NFS version 4. NFSv3 also supports locking as long as
 Linux Kernel 2.6.5+ is used. We recommend using version 4 and do not
 specifically test NFSv3.
 

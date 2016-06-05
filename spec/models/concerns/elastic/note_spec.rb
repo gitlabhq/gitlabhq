@@ -30,23 +30,26 @@ describe "Note", elastic: true do
   it "returns json with all needed elements" do
     note = create :note
 
-    expected_hash = note.attributes.extract!(
+    expected_hash_keys = [
       'id',
       'note',
       'project_id',
-      'created_at'
-    )
+      'created_at',
+      'issue',
+      'updated_at_sort'
+    ]
 
-    expected_hash['updated_at_sort'] = note.updated_at
-
-    expect(note.as_indexed_json).to eq(expected_hash)
+    expect(note.as_indexed_json.keys).to eq(expected_hash_keys)
   end
 
   it "does not create ElasticIndexerWorker job for award or system messages" do
-    project = create :empty_project
-    expect(ElasticIndexerWorker).to_not receive(:perform_async)
-    create :note, :system, project: project
-    create :note, :award, project: project
+    project = create :project
+    issue = create :issue, project: project
+
+    # Only issue should be updated
+    expect(ElasticIndexerWorker).to receive(:perform_async).twice.with(:update, 'Issue', anything, anything)
+    create :note, :system, project: project, noteable: issue
+    create :note, :award, project: project, noteable: issue
   end
 
   context 'notes to confidential issues' do

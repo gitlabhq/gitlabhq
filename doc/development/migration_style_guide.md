@@ -116,7 +116,7 @@ Example with Arel:
 users = Arel::Table.new(:users)
 users.group(users[:user_id]).having(users[:id].count.gt(5))
 
-#updtae other tables with this results
+#update other tables with these results
 ```
 
 Example with plain SQL and `quote_string` helper:

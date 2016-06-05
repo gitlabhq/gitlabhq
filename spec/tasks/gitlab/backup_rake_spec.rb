@@ -2,6 +2,8 @@ require 'spec_helper'
 require 'rake'
 
 describe 'gitlab:app namespace rake task' do
+  let(:enable_registry) { true }
+
   before :all do
     Rake.application.rake_require 'tasks/gitlab/task_helpers'
     Rake.application.rake_require 'tasks/gitlab/backup'
@@ -13,6 +15,10 @@ describe 'gitlab:app namespace rake task' do
 
     # We need this directory to run `gitlab:backup:create` task
     FileUtils.mkdir_p('public/uploads')
+  end
+
+  before do
+    stub_container_registry_config(enabled: enable_registry)
   end
 
   def run_rake_task(task_name)
@@ -144,6 +150,18 @@ describe 'gitlab:app namespace rake task' do
       )
 
       expect(temp_dirs).to be_empty
+    end
+
+    context 'registry disabled' do
+      let(:enable_registry) { false }
+
+      it 'should not create registry.tar.gz' do
+        tar_contents, exit_status = Gitlab::Popen.popen(
+          %W{tar -tvf #{@backup_tar}}
+        )
+        expect(exit_status).to eq(0)
+        expect(tar_contents).not_to match('registry.tar.gz')
+      end
     end
   end # backup_create task
 

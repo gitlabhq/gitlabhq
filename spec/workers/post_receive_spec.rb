@@ -61,7 +61,7 @@ describe PostReceive do
       context "does not create a Ci::Commit" do
         before { stub_ci_commit_yaml_file(nil) }
 
-        it { expect{ subject }.to_not change{ Ci::Commit.count } }
+        it { expect{ subject }.not_to change{ Ci::Commit.count } }
       end
     end
   end

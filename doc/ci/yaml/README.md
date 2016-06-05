@@ -348,7 +348,7 @@ job_name:
 | allow_failure | no | Allow build to fail. Failed build doesn't contribute to commit status |
 | when          | no | Define when to run build. Can be `on_success`, `on_failure` or `always` |
 | dependencies  | no | Define other builds that a build depends on so that you can pass artifacts between them|
-| artifacts     | no | Define list build artifacts |
+| artifacts     | no | Define list of build artifacts |
 | cache         | no | Define list of files that should be cached between subsequent runs |
 | before_script | no | Override a set of commands that are executed before build |
 | after_script  | no | Override a set of commands that are executed after build |

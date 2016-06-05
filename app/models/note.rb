@@ -7,7 +7,7 @@ class Note < ActiveRecord::Base
 
   default_value_for :system, false
 
-  attr_mentionable :note, cache: true, pipeline: :note
+  attr_mentionable :note, pipeline: :note
   participant :author
 
   belongs_to :project
@@ -30,9 +30,16 @@ class Note < ActiveRecord::Base
   # Attachments are deprecated and are handled by Markdown uploader
   validates :attachment, file_size: { maximum: :max_attachment_size }
 
-  validates :noteable_id, presence: true, if: ->(n) { n.noteable_type.present? && n.noteable_type != 'Commit' }
-  validates :commit_id, presence: true, if: ->(n) { n.noteable_type == 'Commit' }
+  validates :noteable_type, presence: true
+  validates :noteable_id, presence: true, unless: :for_commit?
+  validates :commit_id, presence: true, if: :for_commit?
   validates :author, presence: true
+
+  validate unless: :for_commit? do |note|
+    unless note.noteable.try(:project) == note.project
+      errors.add(:invalid_project, 'Note and noteable project mismatch')
+    end
+  end
 
   mount_uploader :attachment, AttachmentUploader
 
@@ -79,14 +86,30 @@ class Note < ActiveRecord::Base
     #
     # This method uses ILIKE on PostgreSQL and LIKE on MySQL.
     #
-    # query - The search query as a String.
+    # query   - The search query as a String.
+    # as_user - Limit results to those viewable by a specific user
     #
     # Returns an ActiveRecord::Relation.
-    def search(query)
+    def search(query, as_user: nil)
       table   = arel_table
       pattern = "%#{query}%"
 
-      where(table[:note].matches(pattern))
+      found_notes = joins('LEFT JOIN issues ON issues.id = noteable_id').
+        where(table[:note].matches(pattern))
+
+      if as_user
+        found_notes.where('
+          issues.confidential IS NULL
+          OR issues.confidential IS FALSE
+          OR (issues.confidential IS TRUE
+            AND (issues.author_id = :user_id
+            OR issues.assignee_id = :user_id
+            OR issues.project_id IN(:project_ids)))',
+          user_id: as_user.id,
+          project_ids: as_user.authorized_projects.select(:id))
+      else
+        found_notes.where('issues.confidential IS NULL OR issues.confidential IS FALSE')
+      end
     end
 
     def grouped_awards

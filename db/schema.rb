@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160530214349) do
+ActiveRecord::Schema.define(version: 20160601102211) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -44,47 +44,53 @@ ActiveRecord::Schema.define(version: 20160530214349) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "home_page_url"
-    t.integer  "default_branch_protection",         default: 2
+    t.integer  "default_branch_protection",             default: 2
     t.text     "help_text"
     t.text     "restricted_visibility_levels"
-    t.boolean  "version_check_enabled",             default: true
-    t.integer  "max_attachment_size",               default: 10,          null: false
+    t.boolean  "version_check_enabled",                 default: true
+    t.integer  "max_attachment_size",                   default: 10,          null: false
     t.integer  "default_project_visibility"
     t.integer  "default_snippet_visibility"
     t.text     "restricted_signup_domains"
-    t.boolean  "user_oauth_applications",           default: true
+    t.boolean  "user_oauth_applications",               default: true
     t.string   "after_sign_out_path"
-    t.integer  "session_expire_delay",              default: 10080,       null: false
+    t.integer  "session_expire_delay",                  default: 10080,       null: false
     t.text     "import_sources"
     t.text     "help_page_text"
     t.string   "admin_notification_email"
-    t.boolean  "shared_runners_enabled",            default: true,        null: false
-    t.integer  "max_artifacts_size",                default: 100,         null: false
+    t.boolean  "shared_runners_enabled",                default: true,        null: false
+    t.integer  "max_artifacts_size",                    default: 100,         null: false
     t.string   "runners_registration_token"
-    t.integer  "max_pages_size",                    default: 100,         null: false
-    t.boolean  "require_two_factor_authentication", default: false
-    t.integer  "two_factor_grace_period",           default: 48
-    t.boolean  "metrics_enabled",                   default: false
-    t.string   "metrics_host",                      default: "localhost"
-    t.integer  "metrics_pool_size",                 default: 16
-    t.integer  "metrics_timeout",                   default: 10
-    t.integer  "metrics_method_call_threshold",     default: 10
-    t.boolean  "recaptcha_enabled",                 default: false
+    t.integer  "max_pages_size",                        default: 100,         null: false
+    t.boolean  "require_two_factor_authentication",     default: false
+    t.integer  "two_factor_grace_period",               default: 48
+    t.boolean  "metrics_enabled",                       default: false
+    t.string   "metrics_host",                          default: "localhost"
+    t.integer  "metrics_pool_size",                     default: 16
+    t.integer  "metrics_timeout",                       default: 10
+    t.integer  "metrics_method_call_threshold",         default: 10
+    t.boolean  "recaptcha_enabled",                     default: false
     t.string   "recaptcha_site_key"
     t.string   "recaptcha_private_key"
-    t.integer  "metrics_port",                      default: 8089
-    t.boolean  "akismet_enabled",                   default: false
+    t.integer  "metrics_port",                          default: 8089
+    t.boolean  "akismet_enabled",                       default: false
     t.string   "akismet_api_key"
-    t.integer  "metrics_sample_interval",           default: 15
-    t.boolean  "sentry_enabled",                    default: false
+    t.integer  "metrics_sample_interval",               default: 15
+    t.boolean  "sentry_enabled",                        default: false
     t.string   "sentry_dsn"
-    t.boolean  "email_author_in_body",              default: false
+    t.boolean  "email_author_in_body",                  default: false
     t.integer  "default_group_visibility"
-    t.boolean  "repository_checks_enabled",         default: false
+    t.boolean  "repository_checks_enabled",             default: false
     t.text     "shared_runners_text"
-    t.integer  "metrics_packet_size",               default: 1
+    t.integer  "metrics_packet_size",                   default: 1
     t.text     "disabled_oauth_sign_in_sources"
     t.string   "health_check_access_token"
+    t.boolean  "send_user_confirmation_email",          default: false
+    t.boolean  "es_indexing",                           default: false,       null: false
+    t.boolean  "es_search",                             default: false,       null: false
+    t.string   "es_host",                               default: "localhost"
+    t.string   "es_port",                               default: "9200"
+    t.integer  "container_registry_token_expire_delay", default: 5
   end
 
   create_table "approvals", force: :cascade do |t|
@@ -725,10 +731,10 @@ ActiveRecord::Schema.define(version: 20160530214349) do
     t.string   "line_code"
     t.string   "commit_id"
     t.integer  "noteable_id"
-    t.boolean  "system",            default: false, null: false
+    t.boolean  "system",        default: false, null: false
     t.text     "st_diff"
     t.integer  "updated_by_id"
-    t.boolean  "is_award",          default: false, null: false
+    t.boolean  "is_award",      default: false, null: false
     t.string   "type"
   end
 
@@ -811,6 +817,18 @@ ActiveRecord::Schema.define(version: 20160530214349) do
 
   add_index "pages_domains", ["domain"], name: "index_pages_domains_on_domain", unique: true, using: :btree
 
+  create_table "path_locks", force: :cascade do |t|
+    t.string   "path",       null: false
+    t.integer  "project_id"
+    t.integer  "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "path_locks", ["path"], name: "index_path_locks_on_path", using: :btree
+  add_index "path_locks", ["project_id"], name: "index_path_locks_on_project_id", using: :btree
+  add_index "path_locks", ["user_id"], name: "index_path_locks_on_user_id", using: :btree
+
   create_table "project_group_links", force: :cascade do |t|
     t.integer  "project_id",                null: false
     t.integer  "group_id",                  null: false
@@ -835,7 +853,6 @@ ActiveRecord::Schema.define(version: 20160530214349) do
     t.datetime "updated_at"
     t.integer  "creator_id"
     t.boolean  "issues_enabled",                   default: true,     null: false
-    t.boolean  "wall_enabled",                     default: true,     null: false
     t.boolean  "merge_requests_enabled",           default: true,     null: false
     t.boolean  "wiki_enabled",                     default: true,     null: false
     t.integer  "namespace_id"
@@ -874,7 +891,6 @@ ActiveRecord::Schema.define(version: 20160530214349) do
     t.boolean  "mirror_trigger_builds",            default: false,    null: false
     t.boolean  "pending_delete",                   default: false
     t.boolean  "public_builds",                    default: true,     null: false
-    t.string   "main_language"
     t.integer  "pushes_since_gc",                  default: 0
     t.boolean  "last_repository_check_failed"
     t.datetime "last_repository_check_at"
@@ -930,8 +946,8 @@ ActiveRecord::Schema.define(version: 20160530214349) do
     t.text     "encrypted_credentials"
     t.string   "encrypted_credentials_iv"
     t.string   "encrypted_credentials_salt"
-    t.datetime "created_at",                                null: false
-    t.datetime "updated_at",                                null: false
+    t.datetime "created_at",                                 null: false
+    t.datetime "updated_at",                                 null: false
   end
 
   add_index "remote_mirrors", ["project_id"], name: "index_remote_mirrors_on_project_id", using: :btree
@@ -1134,6 +1150,7 @@ ActiveRecord::Schema.define(version: 20160530214349) do
   add_index "users", ["name"], name: "index_users_on_name", using: :btree
   add_index "users", ["name"], name: "index_users_on_name_trigram", using: :gin, opclasses: {"name"=>"gin_trgm_ops"}
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
+  add_index "users", ["state"], name: "index_users_on_state", using: :btree
   add_index "users", ["username"], name: "index_users_on_username", using: :btree
   add_index "users", ["username"], name: "index_users_on_username_trigram", using: :gin, opclasses: {"username"=>"gin_trgm_ops"}
 
@@ -1163,7 +1180,6 @@ ActiveRecord::Schema.define(version: 20160530214349) do
     t.boolean  "note_events",                          default: false,         null: false
     t.boolean  "enable_ssl_verification",              default: true
     t.boolean  "build_events",                         default: false,         null: false
-    t.string   "token"
     t.boolean  "wiki_page_events",                     default: false,         null: false
     t.string   "token"
   end
@@ -1171,5 +1187,7 @@ ActiveRecord::Schema.define(version: 20160530214349) do
   add_index "web_hooks", ["created_at", "id"], name: "index_web_hooks_on_created_at_and_id", using: :btree
   add_index "web_hooks", ["project_id"], name: "index_web_hooks_on_project_id", using: :btree
 
+  add_foreign_key "path_locks", "projects"
+  add_foreign_key "path_locks", "users"
   add_foreign_key "remote_mirrors", "projects"
 end

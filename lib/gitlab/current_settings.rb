@@ -1,18 +1,22 @@
 module Gitlab
   module CurrentSettings
     def current_application_settings
-      key = :current_application_settings
-
-      RequestStore.store[key] ||= begin
-        settings = nil
-
-        if connect_to_db?
-          settings = ::ApplicationSetting.current
-          settings ||= ::ApplicationSetting.create_from_defaults unless ActiveRecord::Migrator.needs_migration?
-        end
-
-        settings || fake_application_settings
+      if RequestStore.active?
+        RequestStore.fetch(:current_application_settings) { ensure_application_settings! }
+      else
+        ensure_application_settings!
       end
+    end
+
+    def ensure_application_settings!
+      settings = ::ApplicationSetting.cached
+
+      if !settings && connect_to_db?
+        settings = ::ApplicationSetting.current
+        settings ||= ::ApplicationSetting.create_from_defaults unless ActiveRecord::Migrator.needs_migration?
+      end
+
+      settings || fake_application_settings
     end
 
     def fake_application_settings
@@ -36,6 +40,7 @@ module Gitlab
         two_factor_grace_period: 48,
         akismet_enabled: false,
         repository_checks_enabled: true,
+        container_registry_token_expire_delay: 5,
       )
     end
 

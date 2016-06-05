@@ -200,18 +200,26 @@ namespace :gitlab do
       task create: :environment do
         $progress.puts "Dumping container registry images ... ".blue
 
-        if ENV["SKIP"] && ENV["SKIP"].include?("registry")
-          $progress.puts "[SKIPPED]".cyan
+        if Gitlab.config.registry.enabled
+          if ENV["SKIP"] && ENV["SKIP"].include?("registry")
+            $progress.puts "[SKIPPED]".cyan
+          else
+            Backup::Registry.new.dump
+            $progress.puts "done".green
+          end
         else
-          Backup::Registry.new.dump
-          $progress.puts "done".green
+          $progress.puts "[DISABLED]".cyan
         end
       end
 
       task restore: :environment do
         $progress.puts "Restoring container registry images ... ".blue
-        Backup::Registry.new.restore
-        $progress.puts "done".green
+        if Gitlab.config.registry.enabled
+          Backup::Registry.new.restore
+          $progress.puts "done".green
+        else
+          $progress.puts "[DISABLED]".cyan
+        end
       end
     end
 

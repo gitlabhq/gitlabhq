@@ -41,7 +41,7 @@ describe "Pipelines" do
       context 'when canceling' do
         before { click_link('Cancel') }
 
-        it { expect(page).to_not have_link('Cancel') }
+        it { expect(page).not_to have_link('Cancel') }
         it { expect(page).to have_selector('.ci-canceled') }
       end
     end
@@ -57,8 +57,38 @@ describe "Pipelines" do
       context 'when retrying' do
         before { click_link('Retry') }
 
-        it { expect(page).to_not have_link('Retry') }
+        it { expect(page).not_to have_link('Retry') }
         it { expect(page).to have_selector('.ci-pending') }
+      end
+    end
+
+    context 'for generic statuses' do
+      context 'when running' do
+        let!(:running) { create(:generic_commit_status, status: 'running', commit: pipeline, stage: 'test') }
+
+        before { visit namespace_project_pipelines_path(project.namespace, project) }
+
+        it 'not be cancelable' do
+          expect(page).not_to have_link('Cancel')
+        end
+
+        it 'pipeline is running' do
+          expect(page).to have_selector('.ci-running')
+        end
+      end
+
+      context 'when failed' do
+        let!(:running) { create(:generic_commit_status, status: 'failed', commit: pipeline, stage: 'test') }
+
+        before { visit namespace_project_pipelines_path(project.namespace, project) }
+
+        it 'not be retryable' do
+          expect(page).not_to have_link('Retry')
+        end
+
+        it 'pipeline is failed' do
+          expect(page).to have_selector('.ci-failed')
+        end
       end
     end
 
@@ -75,7 +105,7 @@ describe "Pipelines" do
       context 'without artifacts' do
         let!(:without_artifacts) { create(:ci_build, :success, commit: pipeline, name: 'rspec', stage: 'test') }
 
-        it { expect(page).to_not have_selector('.build-artifacts') }
+        it { expect(page).not_to have_selector('.build-artifacts') }
       end
     end
   end
@@ -104,23 +134,23 @@ describe "Pipelines" do
     end
 
     context 'retrying builds' do
-      it { expect(page).to_not have_content('retried') }
+      it { expect(page).not_to have_content('retried') }
 
       context 'when retrying' do
         before { click_on 'Retry failed' }
 
-        it { expect(page).to_not have_content('Retry failed') }
+        it { expect(page).not_to have_content('Retry failed') }
         it { expect(page).to have_content('retried') }
       end
     end
 
     context 'canceling builds' do
-      it { expect(page).to_not have_selector('.ci-canceled') }
+      it { expect(page).not_to have_selector('.ci-canceled') }
 
       context 'when canceling' do
         before { click_on 'Cancel running' }
 
-        it { expect(page).to_not have_content('Cancel running') }
+        it { expect(page).not_to have_content('Cancel running') }
         it { expect(page).to have_selector('.ci-canceled') }
       end
     end

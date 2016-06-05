@@ -11,7 +11,7 @@ and access the cache. This endpoint can be provided to uptime monitoring service
 ## Access Token
 
 An access token needs to be provided while accessing the health check endpoint. The current
-accepted token can be found on the `admin/heath_check` page of your GitLab instance.
+accepted token can be found on the `admin/health_check` page of your GitLab instance.
 
 ![access token](img/health_check_token.png)
 

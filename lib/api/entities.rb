@@ -380,6 +380,7 @@ module API
       expose :restricted_signup_domains
       expose :user_oauth_applications
       expose :after_sign_out_path
+      expose :container_registry_token_expire_delay
     end
 
     class Release < Grape::Entity
@@ -486,6 +487,14 @@ module API
       expose(:permissions) { |license| license.meta['permissions'] }
       expose(:limitations) { |license| license.meta['limitations'] }
       expose :content
+    end
+
+    class GitignoresList < Grape::Entity
+      expose :name
+    end
+
+    class Gitignore < Grape::Entity
+      expose :name, :content
     end
   end
 end

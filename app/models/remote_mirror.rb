@@ -119,7 +119,7 @@ class RemoteMirror < ActiveRecord::Base
 
     result = URI.parse(url)
     result.password = '*****' if result.password
-    result.user = '*****' if result.user && result.user != "git" #tokens or other data may be saved as user
+    result.user = '*****' if result.user && result.user != "git" # tokens or other data may be saved as user
     result.to_s
   end
 

@@ -191,6 +191,14 @@
       .col-sm-10
         = f.number_field :max_artifacts_size, class: 'form-control'
 
+  - if Gitlab.config.registry.enabled
+    %fieldset
+      %legend Container Registry
+      .form-group
+        = f.label :container_registry_token_expire_delay, 'Authorization token duration (minutes)', class: 'control-label col-sm-2'
+        .col-sm-10
+          = f.number_field :container_registry_token_expire_delay, class: 'form-control'
+
   %fieldset
     %legend Metrics
     %p

@@ -1,5 +1,6 @@
 - page_title       @user.name
 - page_description @user.bio
+- page_specific_javascripts asset_path("users/application.js")
 - header_title     @user.name, user_path(@user)
 - @no_container = true
 
@@ -89,10 +90,9 @@
     .tab-content
       #activity.tab-pane
         .row-content-block.calender-block.white.second-block.hidden-xs
-          %div{ class: container_class }
-            .user-calendar{data: {href: user_calendar_path}}
-              %h4.center.light
-                %i.fa.fa-spinner.fa-spin
+          .user-calendar{data: {href: user_calendar_path}}
+            %h4.center.light
+              %i.fa.fa-spinner.fa-spin
           .user-calendar-activities
 
         .content_list{ data: {href: user_path} }

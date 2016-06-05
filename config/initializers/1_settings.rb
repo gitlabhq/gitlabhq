@@ -80,7 +80,7 @@ class Settings < Settingslogic
     # check that values in `current` (string or integer) is a contant in `modul`.
     def verify_constant_array(modul, current, default)
       values = default || []
-      if !current.nil?
+      unless current.nil?
         values = []
         current.each do |constant|
           values.push(verify_constant(modul, constant, nil))
@@ -419,8 +419,8 @@ Settings.satellites['path'] = File.expand_path(Settings.satellites['path'] || "t
 #
 Settings['kerberos'] ||= Settingslogic.new({})
 Settings.kerberos['enabled'] = false if Settings.kerberos['enabled'].nil?
-Settings.kerberos['keytab'] = nil if Settings.kerberos['keytab'].blank? #nil means use default keytab
-Settings.kerberos['service_principal_name'] = nil if Settings.kerberos['service_principal_name'].blank? #nil means any SPN in keytab
+Settings.kerberos['keytab'] = nil if Settings.kerberos['keytab'].blank? # nil means use default keytab
+Settings.kerberos['service_principal_name'] = nil if Settings.kerberos['service_principal_name'].blank? # nil means any SPN in keytab
 Settings.kerberos['use_dedicated_port'] = false if Settings.kerberos['use_dedicated_port'].nil?
 Settings.kerberos['https'] = Settings.gitlab.https if Settings.kerberos['https'].nil?
 Settings.kerberos['port'] ||= Settings.kerberos.https ? 8443 : 8088
