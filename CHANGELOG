@@ -38,13 +38,11 @@ v 8.9.0 (unreleased)
   - Put project Files and Commits tabs under Code tab
   - Replace Colorize with Rainbow for coloring console output in Rake tasks.
 
-v 8.8.4
-  - Fix todos page throwing errors when you have a project pending deletion
-  - Reduce number of SQL queries when rendering user references
-
 v 8.8.4 (unreleased)
   - Ensure branch cleanup regardless of whether the GitHub import process succeeds
   - Fix issue with arrow keys not working in search autocomplete dropdown
+  - Fix todos page throwing errors when you have a project pending deletion
+  - Reduce number of SQL queries when rendering user references
 
 v 8.8.3
   - Fix 404 page when viewing TODOs that contain milestones or labels in different projects. !4312
