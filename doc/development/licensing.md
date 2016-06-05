@@ -8,7 +8,39 @@ In order to comply with the terms the libraries we use are licensed under, we ha
 
 There are some limitations with the automated testing, however. CSS and JavaScript libraries, as well as any Ruby libraries not included by way of Bundler, must be verified manually and independently. Take care whenever one such library is used, as automated tests won't catch problematic licenses from them.
 
-Some gems may not include their license information in their `gemspec` file. These won't be detected by License Finder, and will have to be verified manually. [License Finder's README][license_finder] includes information and guidance on manually adding a gem's license. Make sure to include a link to the library's license in the "why" section.
+Some gems may not include their license information in their `gemspec` file. These won't be detected by License Finder, and will have to be verified manually.
+
+### License Finder commands
+
+There are a few basic commands License Finder provides that you'll need in order to manage license detection.
+
+To verify that the checks are passing, and/or to see what dependencies are causing the checks to fail:
+
+```
+bundle exec license_finder
+```
+
+To whitelist a new license:
+
+```
+license_finder whitelist add MIT
+```
+
+To blacklist a new license:
+
+```
+license_finder blacklist add GPLv2
+```
+
+To tell License Finder about a dependency's license if it isn't auto-detected:
+
+```
+license_finder licenses add my_unknown_dependency MIT
+```
+
+For all of the above, please include `--why "Reason"` and `--who "My Name"` so the `decisions.yml` file can keep track of when, why, and who approved of a dependency.
+
+More detailed information on how the gem and its commands work is available in the [License Finder README][license_finder].
 
 ## Acceptable Licenses
 
@@ -25,7 +57,7 @@ Libraries with the following licenses are acceptable for use:
 
 ## Unacceptable Licenses
 
-Libraries with the following licenses are acceptable for use:
+Libraries with the following licenses are unacceptable for use:
 
 - [GNU GPL][GPL] (version 1, [version 2][GPLv2], [version 3][GPLv3], or any future versions): GPL-licensed libraries cannot be linked to from non-GPL projects.
 - [GNU AGPLv3][AGPLv3]: AGPL-licensed libraries cannot be linked to from non-GPL projects.

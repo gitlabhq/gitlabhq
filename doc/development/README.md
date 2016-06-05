@@ -11,7 +11,6 @@
 - [Migration Style Guide](migration_style_guide.md) for creating safe migrations
 - [Performance guidelines](performance.md)
 - [Rake tasks](rake_tasks.md) for development
-- [SCSS Style Guide](scss_styleguide.md)
 - [Shell commands](shell_commands.md) in the GitLab codebase
 - [Sidekiq debugging](sidekiq_debugging.md)
 - [SQL guidelines](sql.md) for SQL guidelines
