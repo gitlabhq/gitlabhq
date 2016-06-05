@@ -42,14 +42,13 @@ describe "Note", elastic: true do
     expect(note.as_indexed_json.keys).to eq(expected_hash_keys)
   end
 
-  it "does not create ElasticIndexerWorker job for award or system messages" do
+  it "does not create ElasticIndexerWorker job for system messages" do
     project = create :project
     issue = create :issue, project: project
 
     # Only issue should be updated
-    expect(ElasticIndexerWorker).to receive(:perform_async).twice.with(:update, 'Issue', anything, anything)
+    expect(ElasticIndexerWorker).to receive(:perform_async).with(:update, 'Issue', anything, anything)
     create :note, :system, project: project, noteable: issue
-    create :note, :award, project: project, noteable: issue
   end
 
   context 'notes to confidential issues' do

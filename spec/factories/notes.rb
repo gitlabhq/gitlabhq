@@ -44,11 +44,6 @@ FactoryGirl.define do
       system true
     end
 
-    trait :award do
-      is_award true
-      note Emoji.emojis_names.sample
-    end
-
     trait :downvote do
       note "thumbsdown"
     end

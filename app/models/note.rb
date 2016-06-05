@@ -41,9 +41,7 @@ class Note < ActiveRecord::Base
   mount_uploader :attachment, AttachmentUploader
 
   # Scopes
-  scope :awards, ->{ where(is_award: true) }
-  scope :nonawards, ->{ where(is_award: false) }
-  scope :searchable, ->{ where("is_award IS FALSE AND system IS FALSE") }
+  scope :searchable, ->{ where(system: false) }
   scope :for_commit_id, ->(commit_id) { where(noteable_type: "Commit", commit_id: commit_id) }
   scope :system, ->{ where(system: true) }
   scope :user, ->{ where(system: false) }
@@ -111,7 +109,7 @@ class Note < ActiveRecord::Base
   end
 
   def searchable?
-    !is_award && !system
+    !system
   end
 
   def cross_reference?
