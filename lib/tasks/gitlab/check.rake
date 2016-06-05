@@ -980,17 +980,17 @@ namespace :gitlab do
     version = client.info["version"]["number"]
 
     if version.starts_with?("2")
-      puts "yes (#{version})".green
+      puts "yes (#{version})".color(:green)
     else
-      puts "no".red
+      puts "no".color(:red)
     end
 
     print "Elasticsearch has plugin delete-by-query installed? ... "
 
     if client.cat.plugins.include?("delete-by-query")
-      puts "yes".green
+      puts "yes".color(:green)
     else
-      puts "no".red
+      puts "no".color(:red)
     end
   end
 end
