@@ -167,7 +167,7 @@ class @Notes
       return
 
     if note.award
-      awardsHandler.addAwardToEmojiBar(note.note)
+      awardsHandler.addAwardToEmojiBar(note.name)
       awardsHandler.scrollToAwards()
 
     # render note if it not present in loaded list

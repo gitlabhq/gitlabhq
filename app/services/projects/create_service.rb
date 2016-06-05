@@ -56,14 +56,14 @@ module Projects
 
       after_create_actions if @project.persisted?
 
-      @project.add_import_job if @project.import?
-
+      if @project.errors.empty?
+        @project.add_import_job if @project.import?
+      else
+        fail(error: @project.errors.full_messages.join(', '))
+      end
       @project
     rescue => e
-      message = "Unable to save project: #{e.message}"
-      Rails.logger.error(message)
-      @project.errors.add(:base, message) if @project
-      @project
+      fail(error: e.message)
     end
 
     protected
@@ -109,6 +109,20 @@ module Projects
           raise 'Failed to create repository' unless @project.create_repository
         end
       end
+    end
+
+    def fail(error:)
+      message = "Unable to save project. Error: #{error}"
+      message << "Project ID: #{@project.id}" if @project && @project.id
+
+      Rails.logger.error(message)
+
+      if @project && @project.import?
+        @project.errors.add(:base, message)
+        @project.mark_import_as_failed(message)
+      end
+
+      @project
     end
   end
 end

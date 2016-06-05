@@ -3,22 +3,22 @@ namespace :gitlab do
     desc 'GitLab | Manually insert schema migration version'
     task :mark_migration_complete, [:version] => :environment do |_, args|
       unless args[:version]
-        puts "Must specify a migration version as an argument".red
+        puts "Must specify a migration version as an argument".color(:red)
         exit 1
       end
 
       version = args[:version].to_i
       if version == 0
-        puts "Version '#{args[:version]}' must be a non-zero integer".red
+        puts "Version '#{args[:version]}' must be a non-zero integer".color(:red)
         exit 1
       end
 
       sql = "INSERT INTO schema_migrations (version) VALUES (#{version})"
       begin
         ActiveRecord::Base.connection.execute(sql)
-        puts "Successfully marked '#{version}' as complete".green
+        puts "Successfully marked '#{version}' as complete".color(:green)
       rescue ActiveRecord::RecordNotUnique
-        puts "Migration version '#{version}' is already marked complete".yellow
+        puts "Migration version '#{version}' is already marked complete".color(:yellow)
       end
     end
 

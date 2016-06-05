@@ -4,6 +4,7 @@ v 8.8.1
   - Add documentation for the "Health Check" feature
   - Allow anonymous users to access a public project's pipelines
 v 8.9.0 (unreleased)
+  - Bulk assign/unassign labels to issues.
   - Allow enabling wiki page events from Webhook management UI
   - Make EmailsOnPushWorker use Sidekiq mailers queue
   - Fix wiki page events' webhook to point to the wiki repository
@@ -17,6 +18,8 @@ v 8.9.0 (unreleased)
   - Fix groups API to list only user's accessible projects
   - Redesign account and email confirmation emails
   - Use gitlab-shell v3.0.0
+  - Add `sha` parameter to MR merge API, to ensure only reviewed changes are merged
+  - Don't allow MRs to be merged when commits were added since the last review / page load
   - Add DB index on users.state
   - Add rake task 'gitlab:db:configure' for conditionally seeding or migrating the database
   - Changed the Slack build message to use the singular duration if necessary (Aran Koning)
@@ -33,15 +36,37 @@ v 8.9.0 (unreleased)
   - Add Application Setting to configure Container Registry token expire delay (default 5min)
   - Cache assigned issue and merge request counts in sidebar nav
   - Cache project build count in sidebar nav
+  - Reduce number of queries needed to render issue labels in the sidebar
+  - Improve error handling importing projects
+  - Put project Files and Commits tabs under Code tab
+  - Replace Colorize with Rainbow for coloring console output in Rake tasks.
+
+v 8.8.4
+  - Fix todos page throwing errors when you have a project pending deletion
+  - Reduce number of SQL queries when rendering user references
+
+v 8.8.4 (unreleased)
+  - Ensure branch cleanup regardless of whether the GitHub import process succeeds
+  - Fix issue with arrow keys not working in search autocomplete dropdown
 
 v 8.8.3
-  - Fix incorrect links on pipeline page when merge request created from fork
-  - Fix gitlab importer failing to import new projects due to missing credentials
-  - Fix serious performance bug with rendering Markdown with InlineDiffFilter
-  - Fix import URL migration not rescuing with the correct Error
-  - In search results, only show notes on confidential issues that the user has access to
-  - Fix health check access token changing due to old application settings being used
-  - Fix wiki project clone address error (chujinjin)
+  - Fix 404 page when viewing TODOs that contain milestones or labels in different projects. !4312
+  - Fixed JS error when trying to remove discussion form. !4303
+  - Fixed issue with button color when no CI enabled. !4287
+  - Fixed potential issue with 2 CI status polling events happening. !3869
+  - Improve design of Pipeline view. !4230
+  - Fix gitlab importer failing to import new projects due to missing credentials. !4301
+  - Fix import URL migration not rescuing with the correct Error. !4321
+  - Fix health check access token changing due to old application settings being used. !4332
+  - Make authentication service for Container Registry to be compatible with Docker versions before 1.11. !4363
+  - Add Application Setting to configure Container Registry token expire delay (default 5 min). !4364
+  - Pass the "Remember me" value to the 2FA token form. !4369
+  - Fix incorrect links on pipeline page when merge request created from fork.  !4376
+  - Use downcased path to container repository as this is expected path by Docker. !4420
+  - Fix wiki project clone address error (chujinjin). !4429
+  - Fix serious performance bug with rendering Markdown with InlineDiffFilter.  !4392
+  - Fix missing number on generated ordered list element. !4437
+  - Prevent disclosure of notes on confidential issues in search results.
 
 v 8.8.2
   - Added remove due date button. !4209

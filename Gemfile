@@ -153,7 +153,7 @@ gem 'redis-namespace'
 gem "httparty", '~> 0.13.3'
 
 # Colored output to console
-gem "colorize", '~> 0.7.0'
+gem "rainbow", '~> 2.1.0'
 
 # GitLab settings
 gem 'settingslogic', '~> 2.0.9'
