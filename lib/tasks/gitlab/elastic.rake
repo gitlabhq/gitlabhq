@@ -35,7 +35,7 @@ namespace :gitlab do
             head_commit = repository.commit
 
             if !head_commit || index_status.last_commit == head_commit.sha
-              puts "Skipped".yellow
+              puts "Skipped".color(:yellow)
               next
             end
 
@@ -48,7 +48,7 @@ namespace :gitlab do
             # During indexing the new commits can be pushed,
             # the last_commit parameter only indicates that at least this commit is in index
             index_status.update(last_commit: head_commit.sha, indexed_at: DateTime.now)
-            puts "Done!".green
+            puts "Done!".color(:green)
           rescue StandardError => e
             puts "#{e.message}, trace - #{e.backtrace}"
           end
@@ -67,7 +67,7 @@ namespace :gitlab do
           puts "Indexing wiki of #{project.name_with_namespace}..."
           begin
             project.wiki.index_blobs
-            puts "Done!".green
+            puts "Done!".color(:green)
           rescue StandardError => e
             puts "#{e.message}, trace - #{e.backtrace}"
           end
@@ -88,7 +88,7 @@ namespace :gitlab do
           klass.import
         end
 
-        puts "done".green
+        puts "done".color(:green)
       end
     end
 
@@ -111,7 +111,7 @@ namespace :gitlab do
         klass.import
       end
 
-      puts "done".green
+      puts "done".color(:green)
     end
 
     desc "GitLab | Create empty Elasticsearch indexes"
@@ -130,14 +130,14 @@ namespace :gitlab do
 
         klass.__elasticsearch__.create_index!
 
-        puts "done".green
+        puts "done".color(:green)
       end
     end
 
     desc "GitLab | Clear Elasticsearch indexing status"
     task clear_index_status: :environment do
       IndexStatus.destroy_all
-      puts "Done".green
+      puts "Done".color(:green)
     end
 
     desc "GitLab | Delete Elasticsearch indexes"
@@ -156,7 +156,7 @@ namespace :gitlab do
 
         klass.__elasticsearch__.delete_index!
 
-        puts "done".green
+        puts "done".color(:green)
       end
     end
 
