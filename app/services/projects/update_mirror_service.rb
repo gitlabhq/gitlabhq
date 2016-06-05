@@ -6,7 +6,7 @@ module Projects
     def execute
       return false unless project.mirror?
 
-      unless current_user.can?(:push_code_to_protected_branches, project)
+      unless can?(current_user, :push_code_to_protected_branches, project)
         return error("The mirror user is not allowed to push code to all branches on this project.")
       end
 
