@@ -5,7 +5,7 @@ module Gitlab
         class Entry
           include Config::ValidationHelpers
 
-          attr_reader :value, :config, :parent, :nodes, :errors
+          attr_reader :value, :parent
 
           def initialize(value, config, parent = nil)
             @value = value
@@ -21,8 +21,20 @@ module Gitlab
               @nodes[key] = entry.new(@value[key], config, self)
             end
 
-            @nodes.values.each(&:process!)
-            @nodes.values.each(&:validate!)
+            nodes.each(&:process!)
+            nodes.each(&:validate!)
+          end
+
+          def errors
+            @errors + nodes.map(&:errors).flatten
+          end
+
+          def valid?
+            errors.none?
+          end
+
+          def nodes
+            @nodes.values
           end
 
           def keys
