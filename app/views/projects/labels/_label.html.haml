@@ -1,5 +1,5 @@
 - label_css_id = dom_id(label)
-%li{id: label_css_id, data: {id: label.id } }
+%li{id: label_css_id, data: { id: label.id } }
   = render "shared/label_row", label: label
   .pull-info-right
     %span.append-right-20
@@ -17,7 +17,7 @@
         %button.js-subscribe-button.label-subscribe-button.btn.action-buttons{ type: "button", data: { toggle: "tooltip" } }
           %span= label_subscription_toggle_button_text(label)
 
-    - if can? current_user, :admin_label, @project
+    - if can?(current_user, :admin_label, @project)
       = link_to edit_namespace_project_label_path(@project.namespace, @project, label), title: "Edit", class: 'btn action-buttons', data: { toggle: 'tooltip' } do
         %i.fa.fa-pencil-square-o
       = link_to namespace_project_label_path(@project.namespace, @project, label), title: "Delete", class: 'btn action-buttons remove-row', method: :delete, remote: true, data: { confirm: 'Remove this label? Are you sure?', toggle: 'tooltip' } do
