@@ -38,6 +38,7 @@ v 8.9.0 (unreleased)
   - Improve error handling importing projects
   - Put project Files and Commits tabs under Code tab
   - Replace Colorize with Rainbow for coloring console output in Rake tasks.
+  - Add workhorse controller and API helpers
 
 v 8.8.4 (unreleased)
   - Ensure branch cleanup regardless of whether the GitHub import process succeeds
@@ -63,7 +64,6 @@ v 8.8.3
   - Fix serious performance bug with rendering Markdown with InlineDiffFilter.  !4392
   - Fix missing number on generated ordered list element. !4437
   - Prevent disclosure of notes on confidential issues in search results.
-  - Add workhorse controller and API helpers
 
 v 8.8.2
   - Added remove due date button. !4209
