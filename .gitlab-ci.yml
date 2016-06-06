@@ -32,16 +32,7 @@ stages:
 - post-test
 - notifications
 
-precompile:
-  stage: prepare
-  services: []
-  variables:
-    USE_DB: "false"
-  script:
-    - bundle exec rake assets:precompile
-  artifacts:
-    paths:
-    - public/assets/
+# Prepare and merge knapsack tests
 
 .knapsack_state: &knapsack_state
   services: []
@@ -52,20 +43,6 @@ precompile:
     key: "knapsack"
     paths:
     - knapsack/
-  artifacts:
-    paths:
-    - knapsack/
-
-.knapsack: &knapsack
-  stage: test
-  script:
-    - JOB_NAME=( $CI_BUILD_NAME )
-    - export CI_NODE_INDEX=${JOB_NAME[1]}
-    - export CI_NODE_TOTAL=${JOB_NAME[2]}
-    - export KNAPSACK_REPORT_PATH=knapsack/${JOB_NAME}_node_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json
-    - export KNAPSACK_GENERATE_REPORT=true
-    - cp knapsack/${JOB_NAME}_report.json ${KNAPSACK_REPORT_PATH}
-    - knapsack ${JOB_NAME[0]}
   artifacts:
     paths:
     - knapsack/
@@ -86,10 +63,22 @@ update-knapsack:
     - scripts/merge-reports knapsack/spinach_report.json knapsack/spinach_node_*.json
     - rm -f knapsack/*_node_*.json
 
-.exec: &exec
+# Execute all testing suites
+
+.knapsack: &knapsack
   stage: test
   script:
-    - bundle exec $CI_BUILD_NAME
+    - bundle exec rake assets:precompile 2>/dev/null
+    - JOB_NAME=( $CI_BUILD_NAME )
+    - export CI_NODE_INDEX=${JOB_NAME[1]}
+    - export CI_NODE_TOTAL=${JOB_NAME[2]}
+    - export KNAPSACK_REPORT_PATH=knapsack/${JOB_NAME}_node_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json
+    - export KNAPSACK_GENERATE_REPORT=true
+    - cp knapsack/${JOB_NAME}_report.json ${KNAPSACK_REPORT_PATH}
+    - knapsack ${JOB_NAME[0]}
+  artifacts:
+    paths:
+    - knapsack/
 
 rspec 0 20: *knapsack
 rspec 1 20: *knapsack
@@ -123,6 +112,57 @@ spinach 7 10: *knapsack
 spinach 8 10: *knapsack
 spinach 9 10: *knapsack
 
+# Execute all testing suites against Ruby 2.2
+
+.knapsack-ruby22: &knapsack-ruby22
+  <<: *knapsack
+  image: registry.gitlab.com/gitlab-org/gitlab-build-images:ruby-2.2
+  only:
+    - master
+  cache:
+    key: "ruby22"
+    paths:
+    - vendor
+
+rspec 0 20 ruby22: *knapsack-ruby22
+rspec 1 20 ruby22: *knapsack-ruby22
+rspec 2 20 ruby22: *knapsack-ruby22
+rspec 3 20 ruby22: *knapsack-ruby22
+rspec 4 20 ruby22: *knapsack-ruby22
+rspec 5 20 ruby22: *knapsack-ruby22
+rspec 6 20 ruby22: *knapsack-ruby22
+rspec 7 20 ruby22: *knapsack-ruby22
+rspec 8 20 ruby22: *knapsack-ruby22
+rspec 9 20 ruby22: *knapsack-ruby22
+rspec 10 20 ruby22: *knapsack-ruby22
+rspec 11 20 ruby22: *knapsack-ruby22
+rspec 12 20 ruby22: *knapsack-ruby22
+rspec 13 20 ruby22: *knapsack-ruby22
+rspec 14 20 ruby22: *knapsack-ruby22
+rspec 15 20 ruby22: *knapsack-ruby22
+rspec 16 20 ruby22: *knapsack-ruby22
+rspec 17 20 ruby22: *knapsack-ruby22
+rspec 18 20 ruby22: *knapsack-ruby22
+rspec 19 20 ruby22: *knapsack-ruby22
+
+spinach 0 10 ruby22: *knapsack-ruby22
+spinach 1 10 ruby22: *knapsack-ruby22
+spinach 2 10 ruby22: *knapsack-ruby22
+spinach 3 10 ruby22: *knapsack-ruby22
+spinach 4 10 ruby22: *knapsack-ruby22
+spinach 5 10 ruby22: *knapsack-ruby22
+spinach 6 10 ruby22: *knapsack-ruby22
+spinach 7 10 ruby22: *knapsack-ruby22
+spinach 8 10 ruby22: *knapsack-ruby22
+spinach 9 10 ruby22: *knapsack-ruby22
+
+# Other generic tests
+
+.exec: &exec
+  stage: test
+  script:
+    - bundle exec $CI_BUILD_NAME
+
 teaspoon: *exec
 rubocop: *exec
 rake scss_lint: *exec
@@ -138,122 +178,10 @@ bundler:audit:
   script:
     - "bundle exec bundle-audit check --update --ignore OSVDB-115941"
 
-# Ruby 2.2 jobs
-
-spec:feature:ruby22:
-  stage: test
-  image: ruby:2.2
-  only:
-    - master
-  script:
-    - bundle exec rake assets:precompile 2>/dev/null
-    - bundle exec rake spec:feature
-  cache:
-    key: "ruby22"
-    paths:
-    - vendor
-
-spec:api:ruby22:
-  stage: test
-  image: ruby:2.2
-  only:
-  - master
-  script:
-    - bundle exec rake spec:api
-  cache:
-    key: "ruby22"
-    paths:
-    - vendor
-
-spec:models:ruby22:
-  stage: test
-  image: ruby:2.2
-  only:
-  - master
-  script:
-    - bundle exec rake spec:models
-  cache:
-    key: "ruby22"
-    paths:
-    - vendor
-
-spec:lib:ruby22:
-  stage: test
-  image: ruby:2.2
-  only:
-  - master
-  script:
-    - bundle exec rake spec:lib
-  cache:
-    key: "ruby22"
-    paths:
-    - vendor
-
-spec:services:ruby22:
-  stage: test
-  image: ruby:2.2
-  only:
-  - master
-  script:
-    - bundle exec rake spec:services
-  cache:
-    key: "ruby22"
-    paths:
-    - vendor
-
-spec:other:ruby22:
-  stage: test
-  image: ruby:2.2
-  only:
-  - master
-  script:
-    - bundle exec rake spec:other
-  cache:
-    key: "ruby22"
-    paths:
-    - vendor
-
-spinach:project:half:ruby22:
-  stage: test
-  image: ruby:2.2
-  only:
-  - master
-  script:
-    - bundle exec rake assets:precompile 2>/dev/null
-    - bundle exec rake spinach:project:half
-  cache:
-    key: "ruby22"
-    paths:
-    - vendor
-
-spinach:project:rest:ruby22:
-  stage: test
-  image: ruby:2.2
-  only:
-  - master
-  script:
-    - bundle exec rake assets:precompile 2>/dev/null
-    - bundle exec rake spinach:project:rest
-  cache:
-    key: "ruby22"
-    paths:
-    - vendor
-
-spinach:other:ruby22:
-  stage: test
-  image: ruby:2.2
-  only:
-  - master
-  script:
-    - bundle exec rake assets:precompile 2>/dev/null
-    - bundle exec rake spinach:other
-  cache:
-    key: "ruby22"
-    paths:
-    - vendor
+# Notify slack in the end
 
 notify:slack:
-  stage: notifications
+  stage: post-test
   script:
     - ./scripts/notify_slack.sh "#builds" "Build on \`$CI_BUILD_REF_NAME\` failed! Commit \`$(git log -1 --oneline)\` See <https://gitlab.com/gitlab-org/$(basename "$PWD")/commit/"$CI_BUILD_REF"/builds>"
   when: on_failure
