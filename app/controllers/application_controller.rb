@@ -182,8 +182,8 @@ class ApplicationController < ActionController::Base
   end
 
   def check_2fa_requirement
-    if two_factor_authentication_required? && current_user && !current_user.two_factor_enabled && !skip_two_factor?
-      redirect_to new_profile_two_factor_auth_path
+    if two_factor_authentication_required? && current_user && !current_user.two_factor_enabled? && !skip_two_factor?
+      redirect_to profile_two_factor_auth_path
     end
   end
 

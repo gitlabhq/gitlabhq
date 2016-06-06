@@ -45,6 +45,7 @@ gem 'akismet', '~> 2.0'
 gem 'devise-two-factor', '~> 3.0.0'
 gem 'rqrcode-rails3', '~> 0.1.7'
 gem 'attr_encrypted', '~> 3.0.0'
+gem 'u2f', '~> 0.2.1'
 
 # Browser detection
 gem "browser", '~> 1.0.0'
