@@ -49,14 +49,12 @@ Feature: Project Merge Requests
   Scenario: I visit an open merge request page
     Given I click link "Bug NS-04"
     Then I should see merge request "Bug NS-04"
-    And I should see "1 of 1" in the sidebar
 
   Scenario: I visit a merged merge request page
     Given project "Shop" have "Feature NS-05" merged merge request
     And I click link "Merged"
     And I click link "Feature NS-05"
     Then I should see merge request "Feature NS-05"
-    And I should see "3 of 3" in the sidebar
 
   Scenario: I close merge request page
     Given I click link "Bug NS-04"

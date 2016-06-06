@@ -45,6 +45,7 @@ v 8.8.4 (unreleased)
   - Fix todos page throwing errors when you have a project pending deletion
   - Reduce number of SQL queries when rendering user references
   - Upgrade to jQuery 2
+  - Remove prev/next buttons on issues and merge requests
 
 v 8.8.3
   - Fix 404 page when viewing TODOs that contain milestones or labels in different projects. !4312

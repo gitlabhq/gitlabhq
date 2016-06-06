@@ -8,14 +8,6 @@ module IssuablesHelper
     "right-sidebar-#{sidebar_gutter_collapsed? ? 'collapsed' : 'expanded'}"
   end
 
-  def issuables_count(issuable)
-    base_issuable_scope(issuable).maximum(:iid)
-  end
-
-  def next_issuable_for(issuable)
-    base_issuable_scope(issuable).where('iid > ?', issuable.iid).last
-  end
-
   def multi_label_name(current_labels, default_label)
     # current_labels may be a string from before
     if current_labels.is_a?(Array)
@@ -43,10 +35,6 @@ module IssuablesHelper
     else
       namespace_project_issue_path(project.namespace, project, issuable.iid, :json)
     end
-  end
-
-  def prev_issuable_for(issuable)
-    base_issuable_scope(issuable).where('iid < ?', issuable.iid).first
   end
 
   def user_dropdown_label(user_id, default_label)
