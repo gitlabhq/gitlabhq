@@ -43,7 +43,6 @@ describe "Builds" do
       end
 
       it { expect(page).to have_selector('.nav-links li.active', text: 'All') }
-      it { expect(page).to have_selector('.row-content-block', text: 'All builds from this project') }
       it { expect(page).to have_content @build.short_sha }
       it { expect(page).to have_content @build.ref }
       it { expect(page).to have_content @build.name }

@@ -111,6 +111,25 @@ describe Note, models: true do
     it 'returns notes with matching content regardless of the casing' do
       expect(described_class.search('WOW')).to eq([note])
     end
+
+    context "confidential issues" do
+      let(:user) { create :user }
+      let(:confidential_issue) { create(:issue, :confidential, author: user) }
+      let(:confidential_note) { create :note, note: "Random", noteable: confidential_issue }
+
+      it "returns notes with matching content if user can see the issue" do
+        expect(described_class.search(confidential_note.note, as_user: user)).to eq([confidential_note])
+      end
+
+      it "does not return notes with matching content if user can not see the issue" do
+        user = create :user
+        expect(described_class.search(confidential_note.note, as_user: user)).to be_empty
+      end
+
+      it "does not return notes with matching content for unauthenticated users" do
+        expect(described_class.search(confidential_note.note)).to be_empty
+      end
+    end
   end
 
   describe '.grouped_awards' do

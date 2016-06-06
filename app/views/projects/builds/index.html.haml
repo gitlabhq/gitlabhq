@@ -35,16 +35,6 @@
         = icon('wrench')
         %span CI Lint
 
-.row-content-block
-  - if @scope.nil?
-    列出本项目所有的构建
-  - elsif @scope.capitalize == 'Running'
-    列出本项目正在运行的构建
-  - elsif @scope.capitalize == 'Finished'
-    列出本项目已结束的构建
-  - else
-    列出本项目 #{@scope.capitalize} 的构建
-
 %ul.content-list
   - if @builds.blank?
     %li

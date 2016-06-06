@@ -362,6 +362,7 @@ module API
       expose :restricted_signup_domains
       expose :user_oauth_applications
       expose :after_sign_out_path
+      expose :container_registry_token_expire_delay
     end
 
     class Release < Grape::Entity

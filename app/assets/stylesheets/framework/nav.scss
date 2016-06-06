@@ -272,7 +272,7 @@
 }
 
 .page-with-layout-nav {
-  margin-top: 50px;
+  margin-top: $header-height + 2;
 
   &.controls-dropdown-visible {
     @media (max-width: $screen-xs-min) {

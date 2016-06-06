@@ -329,7 +329,7 @@ class @Notes
     @renderDiscussionNote(note)
 
     # cleanup after successfully creating a diff/discussion note
-    @removeDiscussionNoteForm($("#new-discussion-note-form-#{note.discussion_id}"))
+    @removeDiscussionNoteForm($(xhr.target))
 
   ###
   Called in response to the edit note form being submitted

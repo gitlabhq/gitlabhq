@@ -14,9 +14,24 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
     allow_any_instance_of(JSONWebToken::RSAToken).to receive(:key).and_return(rsa_key)
   end
 
-  shared_examples 'an authenticated' do
+  shared_examples 'a valid token' do
     it { is_expected.to include(:token) }
     it { expect(payload).to include('access') }
+
+    context 'a expirable' do
+      let(:expires_at) { Time.at(payload['exp']) }
+      let(:expire_delay) { 10 }
+
+      context 'for default configuration' do
+        it { expect(expires_at).not_to be_within(2.seconds).of(Time.now + expire_delay.minutes) }
+      end
+
+      context 'for changed configuration' do
+        before { stub_application_setting(container_registry_token_expire_delay: expire_delay) }
+
+        it { expect(expires_at).to be_within(2.seconds).of(Time.now + expire_delay.minutes) }
+      end
+    end
   end
 
   shared_examples 'a accessible' do
@@ -28,8 +43,13 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
        }]
     end
 
-    it_behaves_like 'an authenticated'
+    it_behaves_like 'a valid token'
     it { expect(payload).to include('access' => access) }
+  end
+
+  shared_examples 'an inaccessible' do
+    it_behaves_like 'a valid token'
+    it { expect(payload).to include('access' => []) }
   end
 
   shared_examples 'a pullable' do
@@ -48,11 +68,6 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
     it_behaves_like 'a accessible' do
       let(:actions) { ['pull', 'push'] }
     end
-  end
-
-  shared_examples 'an unauthorized' do
-    it { is_expected.to include(http_status: 401) }
-    it { is_expected.to_not include(:token) }
   end
 
   shared_examples 'a forbidden' do
@@ -75,12 +90,8 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
     let(:project) { create(:project) }
     let(:current_user) { create(:user) }
 
-    context 'allow to use offline_token' do
-      let(:current_params) do
-        { offline_token: true }
-      end
-
-      it_behaves_like 'an authenticated'
+    context 'allow to use scope-less authentication' do
+      it_behaves_like 'a valid token'
     end
 
     context 'allow developer to push images' do
@@ -120,19 +131,15 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
         { scope: "repository:#{project.path_with_namespace}:pull,push" }
       end
 
-      it_behaves_like 'a forbidden'
+      it_behaves_like 'an inaccessible'
     end
   end
 
   context 'project authorization' do
     let(:current_project) { create(:empty_project) }
 
-    context 'allow to use offline_token' do
-      let(:current_params) do
-        { offline_token: true }
-      end
-
-      it_behaves_like 'an authenticated'
+    context 'allow to use scope-less authentication' do
+      it_behaves_like 'a valid token'
     end
 
     context 'allow to pull and push images' do
@@ -158,7 +165,7 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
 
         context 'disallow for private' do
           let(:project) { create(:empty_project, :private) }
-          it_behaves_like 'a forbidden'
+          it_behaves_like 'an inaccessible'
         end
       end
 
@@ -169,7 +176,7 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
 
         context 'disallow for all' do
           let(:project) { create(:empty_project, :public) }
-          it_behaves_like 'a forbidden'
+          it_behaves_like 'an inaccessible'
         end
       end
     end
@@ -184,18 +191,14 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
           { scope: "repository:#{project.path_with_namespace}:pull" }
         end
 
-        it_behaves_like 'a forbidden'
+        it_behaves_like 'an inaccessible'
       end
     end
   end
 
   context 'unauthorized' do
-    context 'disallow to use offline_token' do
-      let(:current_params) do
-        { offline_token: true }
-      end
-
-      it_behaves_like 'an unauthorized'
+    context 'disallow to use scope-less authentication' do
+      it_behaves_like 'a forbidden'
     end
 
     context 'for invalid scope' do
