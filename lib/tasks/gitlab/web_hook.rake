@@ -12,9 +12,9 @@ namespace :gitlab do
         print "- #{project.name} ... "
         web_hook = project.hooks.new(url: web_hook_url)
         if web_hook.save
-          puts "added".green
+          puts "added".color(:green)
         else
-          print "failed".red
+          print "failed".color(:red)
           puts "  [#{web_hook.errors.full_messages.to_sentence}]"
         end
       end
@@ -57,7 +57,7 @@ namespace :gitlab do
       if namespace
         Project.in_namespace(namespace.id)
       else
-        puts "Namespace not found: #{namespace_path}".red
+        puts "Namespace not found: #{namespace_path}".color(:red)
         exit 2
       end
     end
