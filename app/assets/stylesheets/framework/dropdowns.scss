@@ -542,9 +542,11 @@
 
 .dropdown-menu-inner-title {
   display: block;
+  color: $gl-title-color;
   font-weight: 600;
 }
 
 .dropdown-menu-inner-content {
   display: block;
+  color: $gl-placeholder-color;
 }
