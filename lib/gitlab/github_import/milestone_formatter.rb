@@ -14,8 +14,8 @@ module Gitlab
         }
       end
 
-      def create!
-        Milestone.create!(self.attributes)
+      def klass
+        Milestone
       end
 
       private

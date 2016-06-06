@@ -24,8 +24,8 @@ module Gitlab
         }
       end
 
-      def create!
-        MergeRequest.create!(self.attributes)
+      def klass
+        MergeRequest
       end
 
       def number

@@ -9,8 +9,8 @@ module Gitlab
         }
       end
 
-      def create!
-        Label.create!(self.attributes)
+      def klass
+        Label
       end
 
       private

@@ -16,12 +16,12 @@ module Gitlab
         }
       end
 
-      def create!
-        Issue.create!(self.attributes)
-      end
-
       def has_comments?
         raw_data.comments > 0
+      end
+
+      def klass
+        Issue
       end
 
       def number
