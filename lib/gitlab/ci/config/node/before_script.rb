@@ -1,8 +1,8 @@
 module Gitlab
   module Ci
     class Config
-      module Entry
-        class BeforeScript < BaseEntry
+      module Node
+        class BeforeScript < Entry
           def leaf?
             true
           end

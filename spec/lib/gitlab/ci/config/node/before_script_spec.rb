@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Ci::Config::Entry::BeforeScript do
+describe Gitlab::Ci::Config::Node::BeforeScript do
   let(:entry) { described_class.new(hash, config) }
 
   describe '#leaf?' do
