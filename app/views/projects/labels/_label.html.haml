@@ -1,6 +1,5 @@
-%li{id: dom_id(label)}
+%li{ id: dom_id(label), data: { id: label.id } }
   = render "shared/label_row", label: label
-
   .pull-info-right
     %span.append-right-20
       = link_to_label(label, type: :merge_request) do
