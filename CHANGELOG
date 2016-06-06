@@ -18,6 +18,7 @@ v 8.9.0 (unreleased)
   - Remove project notification settings associated with deleted projects
   - Fix 404 page when viewing TODOs that contain milestones or labels in different projects
   - Redesign navigation for project pages
+  - Added shortcut 'y' for copying a files content hash URL #14470
   - Fix groups API to list only user's accessible projects
   - Redesign account and email confirmation emails
   - `git clone https://host/namespace/project` now works, in addition to using the `.git` suffix
