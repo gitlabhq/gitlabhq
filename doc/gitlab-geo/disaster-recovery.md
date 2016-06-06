@@ -8,7 +8,7 @@ GitLab Geo replicates your database and your Git repositories. We will
 support and replicate more data in the future, that will enable you to
 fail-over with minimal effort, in a disaster situation. 
 
-See [current limitations](./README.md#current-limitations) 
+See [current limitations](README.md#current-limitations) 
 for more information.
 
 

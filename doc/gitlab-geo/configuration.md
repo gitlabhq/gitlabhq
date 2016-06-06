@@ -1,7 +1,7 @@
 # GitLab Geo configuration
 
 By now, you should have an [idea of GitLab Geo](README.md) and already set up
-the [database replication](./database.md). There are a few more steps needed to
+the [database replication](database.md). There are a few more steps needed to
 complete the process.
 
 ---
@@ -84,7 +84,7 @@ Host example.com                    # The FQDN of the primary Geo node
 >**Note:**
 You will need to setup your database into a **Primary <-> Secondary (read-only)** replication
 topology, and your Primary node should always point to a database's Primary
-instance. If you haven't done that already, read [database replication](./database.md).
+instance. If you haven't done that already, read [database replication](database.md).
 
 Go to the server that you chose to be your primary, and visit
 **Admin Area > Geo Nodes** (`/admin/geo_nodes`) in order to add the Geo nodes.
@@ -116,7 +116,7 @@ up the secondary servers. This is handled by the primary server setup.
 To install a secondary node, you must follow the normal GitLab Enterprise
 Edition installation, with some extra requirements:
 
-- You should point your database connection to a [replicated instance](./database.md).
+- You should point your database connection to a [replicated instance](database.md).
 - Your secondary node should be allowed to communicate via HTTP/HTTPS and
   SSH with your primary node (make sure your firewall is not blocking that).
 
@@ -137,7 +137,7 @@ For Source installations it is stored at `/home/git/gitlab/config/secrets.yml`.
 The final step will be to regenerate the keys for `.ssh/authorized_keys` using
 the following command (HTTPS clone will still work without this extra step).
 
-On the secondary node where the database is [already replicated](./database.md),
+On the secondary node where the database is [already replicated](database.md),
 run the following:
 
 ```
