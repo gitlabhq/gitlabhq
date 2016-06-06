@@ -13,8 +13,8 @@
       .label-subscription{data: {url: toggle_subscription_namespace_project_label_path(@project.namespace, @project, label)}}
         .subscription-status{data: {status: label_subscription_status(label)}}
 
-        %button.js-subscribe-button.label-subscribe-button.btn.action-buttons{ type: "button", data: { toggle: "tooltip" } }
-          %span= label_subscription_toggle_button_text(label)
+        %button.js-subscribe-button.label-subscribe-button.btn.action-buttons{ type: "button", data: { toggle: "tooltip", subscribed: label.subscribed?(current_user), subscribe_text: "Subscribe", unsubscribe_text: "Unsubscribe" } }
+          %span.subscribe-text= label_subscription_toggle_button_text(label)
 
     - if can? current_user, :admin_label, @project
       = link_to edit_namespace_project_label_path(@project.namespace, @project, label), title: "Edit", class: 'btn action-buttons', data: {toggle: "tooltip"} do

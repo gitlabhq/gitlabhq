@@ -3,30 +3,37 @@ class @Subscription
     $container = $(container)
     @url = $container.attr('data-url')
     @subscribeButton = $container.find('.js-subscribe-button')
-    @subscribeButton.off('click').click(@toggleSubscription)
-    @subscribedHTML = '<i class="fa fa-volume-up"></i> Unsubscribe'
-    @unsubscribedHTML = '<i class="fa fa-volume-off"></i> Subscribe'
+    @subscribeButton
+      .off('click')
+      .on('click', @toggleSubscription)
 
-  toggleSubscription: (e) =>
-    btn = $(e.currentTarget)
+  toggleSubscription: =>
     subscribed = @subscribeButton.attr('data-subscribed')?
-    btn
+    @subscribeButton
       .addClass('disabled')
-      .prop('disabled','disabled')
+      .prop('disabled', 'disabled')
 
     $.post @url, =>
       subscribed = not subscribed
-      btn
+      @subscribeButton
         .removeClass('disabled')
-        .prop('disabled', false);
+        .prop('disabled', false)
+        .find('.fa')
+        .toggleClass 'fa-volume-up fa-volume-off'
+
       if subscribed
-        @subscribeButton.attr('data-subscribed',true)
-        btn.html(@subscribedHTML)
-        btn.closest('div').find('.negation').hide()
-        return
+        @subscribeButton
+          .attr('data-subscribed', true)
+          .find('.subscribe-text')
+          .text(@subscribeButton.data("unsubscribe-text"))
+          .closest('.subscription')
+          .find('.negation')
+          .hide()
       else
-        @subscribeButton.removeAttr('data-subscribed', subscribed)
-        btn.html(@unsubscribedHTML)
-        btn.closest('div').find('.negation').show()
-        return
-    return
+        @subscribeButton
+          .removeAttr('data-subscribed', subscribed)
+          .find('.subscribe-text')
+          .text(@subscribeButton.data("subscribe-text"))
+          .closest('.subscription')
+          .find('.negation')
+          .show()
