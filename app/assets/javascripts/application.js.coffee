@@ -4,7 +4,7 @@
 # It's not advisable to add code directly here, but if you do, it'll appear at the bottom of the
 # the compiled file.
 #
-#= require jquery
+#= require jquery2
 #= require jquery-ui/autocomplete
 #= require jquery-ui/datepicker
 #= require jquery-ui/draggable
@@ -57,9 +57,11 @@
 #= require_directory ./commit
 #= require_directory ./extensions
 #= require_directory ./lib
+#= require_directory ./u2f
 #= require_directory .
 #= require fuzzaldrin-plus
 #= require cropper
+#= require u2f
 
 window.slugify = (text) ->
   text.replace(/[^-a-zA-Z0-9]+/g, '_').toLowerCase()

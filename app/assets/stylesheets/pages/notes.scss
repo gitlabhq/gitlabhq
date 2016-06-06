@@ -69,6 +69,10 @@ ul.notes {
 
       .note-edit-form {
         display: block;
+
+        &.current-note-edit-form + .note-awards {
+          display: none;
+        }
       }
     }
 
@@ -116,8 +120,36 @@ ul.notes {
       }
     }
 
+    .note-awards {
+      .js-awards-block {
+        padding: 2px;
+        margin-top: 10px;
+      }
+
+      .award-control {
+        font-size: 13px;
+        padding: 2px 5px;
+      }
+    }
+
     .note-header {
       padding-bottom: 3px;
+    }
+
+    .note-emoji-button {
+      .fa-spinner {
+        display: none;
+      }
+
+      &.is-loading {
+        .fa-smile-o {
+          display: none;
+        }
+
+        .fa-spinner {
+          display: inline-block;
+        }
+      }
     }
 
   }

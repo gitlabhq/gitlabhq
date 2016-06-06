@@ -149,7 +149,7 @@ class @UsersSelect
         hidden: (e) ->
           $selectbox.hide()
           # display:block overrides the hide-collapse rule
-          $value.removeAttr('style')
+          $value.css('display', '')
 
         clicked: (user) ->
           page = $('body').data 'page'

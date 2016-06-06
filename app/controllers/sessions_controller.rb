@@ -31,8 +31,7 @@ class SessionsController < Devise::SessionsController
         resource.update_attributes(reset_password_token: nil,
                                    reset_password_sent_at: nil)
       end
-      authenticated_with = user_params[:otp_attempt] ? "two-factor" : "standard"
-      log_audit_event(current_user, with: authenticated_with)
+      log_audit_event(current_user, with: authentication_method)
     end
   end
 
@@ -55,7 +54,7 @@ class SessionsController < Devise::SessionsController
   end
 
   def user_params
-    params.require(:user).permit(:login, :password, :remember_me, :otp_attempt)
+    params.require(:user).permit(:login, :password, :remember_me, :otp_attempt, :device_response)
   end
 
   def find_user
@@ -160,5 +159,15 @@ class SessionsController < Devise::SessionsController
 
   def load_recaptcha
     Gitlab::Recaptcha.load_configurations!
+  end
+
+  def authentication_method
+    if user_params[:otp_attempt]
+      "two-factor"
+    elsif user_params[:device_response]
+      "two-factor-via-u2f-device"
+    else
+      "standard"
+    end
   end
 end

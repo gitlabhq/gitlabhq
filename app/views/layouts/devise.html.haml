@@ -2,6 +2,7 @@
 %html{ lang: "en"}
   = render "layouts/head"
   %body.ui_charcoal.login-page.application.navless
+    = Gon::Base.render_data
     = render "layouts/header/empty"
     = render "layouts/broadcast"
     .container.navless-container
