@@ -3,10 +3,12 @@ module Gitlab
     class Config
       module Node
         class Entry
-          attr_reader :hash, :config, :parent, :nodes, :errors
+          include Config::ValidationHelpers
 
-          def initialize(hash, config, parent = nil)
-            @hash = hash
+          attr_reader :value, :config, :parent, :nodes, :errors
+
+          def initialize(value, config, parent = nil)
+            @value = value
             @config = config
             @parent = parent
             @nodes = {}
@@ -15,8 +17,8 @@ module Gitlab
 
           def process!
             keys.each_pair do |key, entry|
-              next unless hash.include?(key)
-              @nodes[key] = entry.new(hash[key], config, self)
+              next unless @value.include?(key)
+              @nodes[key] = entry.new(@value[key], config, self)
             end
 
             @nodes.values.each(&:process!)
