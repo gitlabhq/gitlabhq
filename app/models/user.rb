@@ -181,6 +181,7 @@ class User < ActiveRecord::Base
   scope :ldap, -> { joins(:identities).where('identities.provider LIKE ?', 'ldap%') }
   scope :with_provider, ->(provider) do
     joins(:identities).where(identities: { provider: provider })
+  end
 
   def self.with_two_factor
     joins("LEFT OUTER JOIN u2f_registrations AS u2f ON u2f.user_id = users.id").
