@@ -2,6 +2,8 @@ module Ci
   class GitlabCiYamlProcessor
     class ValidationError < StandardError; end
 
+    include Gitlab::Ci::Config::ValidationHelpers
+
     DEFAULT_STAGES = %w(build test deploy)
     DEFAULT_STAGE = 'test'
     ALLOWED_YAML_KEYS = [:before_script, :after_script, :image, :services, :types, :stages, :variables, :cache]
@@ -274,22 +276,6 @@ module Ci
           raise ValidationError, "#{name} job: dependency #{dependency} is not defined in prior stages"
         end
       end
-    end
-
-    def validate_array_of_strings(values)
-      values.is_a?(Array) && values.all? { |value| validate_string(value) }
-    end
-
-    def validate_variables(variables)
-      variables.is_a?(Hash) && variables.all? { |key, value| validate_string(key) && validate_string(value) }
-    end
-
-    def validate_string(value)
-      value.is_a?(String) || value.is_a?(Symbol)
-    end
-
-    def validate_boolean(value)
-      value.in?([true, false])
     end
 
     def process?(only_params, except_params, ref, tag, trigger_request)
