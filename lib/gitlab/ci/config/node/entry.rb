@@ -18,7 +18,7 @@ module Gitlab
           def process!
             keys.each_pair do |key, entry|
               next unless @value.include?(key)
-              @nodes[key] = entry.new(@value[key], config, self)
+              @nodes[key] = entry.new(@value[key], @config, self)
             end
 
             nodes.each(&:process!)

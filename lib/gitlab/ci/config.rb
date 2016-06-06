@@ -3,6 +3,8 @@ module Gitlab
     class Config
       class LoaderError < StandardError; end
 
+      delegate :valid?, :errors, to: :@global
+
       def initialize(config)
         loader = Loader.new(config)
 
@@ -11,6 +13,8 @@ module Gitlab
         end
 
         @config = loader.load
+        @global = Node::Global.new(@config, self)
+        @global.process!
       end
 
       def to_hash

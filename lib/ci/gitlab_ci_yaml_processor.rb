@@ -14,7 +14,9 @@ module Ci
     attr_reader :before_script, :after_script, :image, :services, :path, :cache
 
     def initialize(config, path = nil)
-      @config = Gitlab::Ci::Config.new(config).to_hash
+      @ci_config = Gitlab::Ci::Config.new(config)
+      @config = @ci_config.to_hash
+
       @path = path
 
       initial_parsing
@@ -99,6 +101,10 @@ module Ci
     end
 
     def validate!
+      unless @ci_config.valid?
+        raise ValidationError, @ci_config.errors.first
+      end
+
       validate_global!
 
       @jobs.each do |name, job|
@@ -109,10 +115,6 @@ module Ci
     end
 
     def validate_global!
-      unless validate_array_of_strings(@before_script)
-        raise ValidationError, "before_script should be an array of strings"
-      end
-
       unless @after_script.nil? || validate_array_of_strings(@after_script)
         raise ValidationError, "after_script should be an array of strings"
       end
