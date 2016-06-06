@@ -37,13 +37,9 @@ feature 'Issue prioritization', feature: true do
       expect(page).to have_selector('.dropdown-toggle', text: 'Priority')
 
       page.within('.issues-holder') do
-        expect(page).to have_selector('.issues-list > li:nth-of-type(1)', text: 'issue_4')
-        expect(page).to have_selector('.issues-list > li:nth-of-type(2)', text: 'issue_3')
-        expect(page).to have_selector('.issues-list > li:nth-of-type(3)', text: 'issue_5')
-        expect(page).to have_selector('.issues-list > li:nth-of-type(4)', text: 'issue_2')
+        issue_titles = all('.issues-list .issue-title-text').map(&:text)
 
-        # the rest should be at the bottom
-        expect(page).to have_selector('.issues-list > li:nth-of-type(5)', text: 'issue_1')
+        expect(issue_titles).to eq(['issue_4', 'issue_3', 'issue_5', 'issue_2', 'issue_1'])
       end
     end
   end
@@ -80,14 +76,11 @@ feature 'Issue prioritization', feature: true do
       expect(page).to have_selector('.dropdown-toggle', text: 'Priority')
 
       page.within('.issues-holder') do
-        expect(page).to have_selector('.issues-list > li:nth-of-type(1)', text: 'issue_5')
-        expect(page).to have_selector('.issues-list > li:nth-of-type(2)', text: 'issue_8')
-        expect(page).to have_selector('.issues-list > li:nth-of-type(3)', text: 'issue_1')
-        expect(page).to have_selector('.issues-list > li:nth-of-type(4)', text: 'issue_3')
-        expect(page).to have_selector('.issues-list > li:nth-of-type(5)', text: 'issue_7')
-        expect(page).to have_selector('.issues-list > li:nth-of-type(6)', text: 'issue_2')
-        expect(page).to have_selector('.issues-list > li:nth-of-type(7)', text: 'issue_4')
-        expect(page).to have_selector('.issues-list > li:nth-of-type(8)', text: 'issue_6')
+        issue_titles = all('.issues-list .issue-title-text').map(&:text)
+
+        expect(issue_titles[0..1]).to contain_exactly('issue_5', 'issue_8')
+        expect(issue_titles[2..4]).to contain_exactly('issue_1', 'issue_3', 'issue_7')
+        expect(issue_titles[5..-1]).to eq(['issue_2', 'issue_4', 'issue_6'])
       end
     end
   end
