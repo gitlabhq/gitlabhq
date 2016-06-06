@@ -6,9 +6,3 @@
       = link_to 'Reopen merge request', merge_request_path(@merge_request, merge_request: {state_event: :reopen }), method: :put, class: "btn btn-nr btn-comment btn-grouped btn-reopen reopen-mr-link js-note-target-reopen", title: "Reopen merge request", data: {original_text: "Reopen merge request", alternative_text: "Comment & reopen merge request"}
 
 #notes= render "projects/notes/notes_with_form"
-
-:javascript
-  $(function(){
-    gl.text.removeListeners();
-    gl.text.addListeners();
-  })

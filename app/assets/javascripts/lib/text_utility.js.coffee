@@ -11,8 +11,18 @@
     text.substring(textarea.selectionStart, textarea.selectionEnd)
 
   gl.text.insertText = (textArea, text, tag, selected, wrap) ->
+    selectedSplit = selected.split('\n')
     startChar = if not wrap and textArea.selectionStart > 0 then '\n' else ''
-    insertText = "#{startChar}#{tag}#{selected}#{if wrap then tag else ' '}"
+
+    if selectedSplit.length > 1 and not wrap
+      insertText = selectedSplit.map((val) ->
+        if val.indexOf(tag) is 0
+          "#{val.replace(tag, '')}"
+        else
+          "#{tag}#{val}"
+      ).join('\n')
+    else
+      insertText = "#{startChar}#{tag}#{selected}#{if wrap then tag else ' '}"
 
     if document.queryCommandSupported('insertText')
       document.execCommand 'insertText', false, insertText
@@ -51,17 +61,19 @@
 
     @insertText(textArea, text, tag, selected, wrap)
 
-  gl.text.addListeners = ->
+  gl.text.init = (form) ->
     self = @
-    $('.js-md').on 'click', ->
-      $this = $(@)
-      self.updateText(
-        $this.closest('.md-area').find('textarea'),
-        $this.data('md-tag'),
-        not $this.data('md-prepend')
-      )
+    $('.js-md', form)
+      .off 'click'
+      .on 'click', ->
+        $this = $(@)
+        self.updateText(
+          $this.closest('.md-area').find('textarea'),
+          $this.data('md-tag'),
+          not $this.data('md-prepend')
+        )
 
-  gl.text.removeListeners = ->
-    $('.js-md').off()
+  gl.text.removeListeners = (form) ->
+    $('.js-md', form).off()
 
 ) window
