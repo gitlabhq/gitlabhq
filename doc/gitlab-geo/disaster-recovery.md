@@ -25,11 +25,13 @@ You must make the changes in the exact specific order:
 3. Promote the Postgres in your secondary node as primary
 4. Log-in to your secondary node with a user with `sudo` permission
 5. Open the interactive rails console: `sudo gitlab-rails console` and execute:
-    1. `Gitlab::Geo.primary_node.update(primary: false)`
-    2. List your secondary nodes and note down the id of the one you want to 
+    1. `Gitlab::Geo.primary_node.oauth_application.destroy!`
+    2. `Gitlab::Geo.primary_node.system_hook.destroy!`
+    3. `Gitlab::Geo.primary_node.update(primary: false)`
+    4. List your secondary nodes and note down the id of the one you want to 
        promote: `Gitlab::Geo.secondary_nodes`
-    3. To promote a node with id `2` execute: 
-       `GeoNode.find(2).update(primary: true)`
-    4. To exit the interactive console, type: `exit`
+    5. To promote a node with id `2` execute: 
+       `GeoNode.find(2).update!(primary: true)`
+    6. To exit the interactive console, type: `exit`
 6. Rsync everything in `/var/opt/gitlab/gitlab-rails/uploads` and 
    `/var/opt/gitlab/gitlab-rails/shared` from your old node to the new one.
