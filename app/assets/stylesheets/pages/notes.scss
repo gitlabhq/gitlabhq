@@ -134,6 +134,11 @@ ul.notes {
 
     .note-header {
       padding-bottom: 3px;
+      padding-right: 20px;
+
+      @media (min-width: $screen-sm-min) {
+        padding-right: 0;
+      }
     }
 
     .note-emoji-button {
@@ -211,6 +216,8 @@ ul.notes {
 
 .discussion-header,
 .note-header {
+  position: relative;
+
   a {
     color: inherit;
 
@@ -247,6 +254,16 @@ ul.notes {
   color: $notes-action-color;
 }
 
+.note-actions {
+  position: absolute;
+  right: 0;
+  top: 0;
+  
+  @media (min-width: $screen-sm-min) {
+    position: relative;
+  }
+}
+
 .discussion-actions {
   @media (max-width: $screen-md-max) {
     float: none;
@@ -260,8 +277,13 @@ ul.notes {
 
 .note-action-button {
   display: inline-block;
-  margin-left: 10px;
-  line-height: 24px;
+  margin-left: 0;
+  line-height: 20px;
+
+  @media (min-width: $screen-sm-min) {
+    margin-left: 10px;
+    line-height: 24px;
+  }
 
   .fa {
     color: $notes-action-color;
