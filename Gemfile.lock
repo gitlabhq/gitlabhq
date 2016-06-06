@@ -569,7 +569,7 @@ GEM
       railties (>= 4.2.0, < 5.1)
     rinku (1.7.3)
     rotp (2.1.2)
-    rouge (1.10.1)
+    rouge (1.11.0)
     rqrcode (0.7.0)
       chunky_png
     rqrcode-rails3 (0.1.7)
@@ -926,7 +926,7 @@ DEPENDENCIES
   request_store (~> 1.3.0)
   rerun (~> 0.11.0)
   responders (~> 2.0)
-  rouge (~> 1.10.1)
+  rouge (~> 1.11)
   rqrcode-rails3 (~> 0.1.7)
   rspec-rails (~> 3.4.0)
   rspec-retry
