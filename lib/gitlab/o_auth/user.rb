@@ -96,7 +96,7 @@ module Gitlab
         # Look for a corresponding person with same uid in any of the configured LDAP providers
         Gitlab::LDAP::Config.providers.each do |provider|
           adapter = Gitlab::LDAP::Adapter.new(provider)
-          @ldap_person = Gitlab::LDAP::Person.find_by_uid(auth_hash.uid, adapter)
+          @ldap_person = Gitlab::LDAP::Person.find_by_dn(auth_hash.uid, adapter)
           break if @ldap_person
         end
         @ldap_person

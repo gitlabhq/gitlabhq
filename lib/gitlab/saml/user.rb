@@ -12,11 +12,11 @@ module Gitlab
       end
 
       def gl_user
-        @user ||= find_by_uid_and_provider
-
         if auto_link_ldap_user?
           @user ||= find_or_create_ldap_user
         end
+
+        @user ||= find_by_uid_and_provider
 
         if auto_link_saml_user?
           @user ||= find_by_email
@@ -60,6 +60,30 @@ module Gitlab
 
       def external_users_enabled?
         !Gitlab::Saml::Config.external_groups.nil?
+      end
+
+      def find_or_create_ldap_user
+        return unless ldap_person
+
+        # If a corresponding person exists with same uid in a LDAP server,
+        # check if the user already has a GitLab account
+        user = Gitlab::LDAP::User.find_by_uid_and_provider(ldap_person.dn, ldap_person.provider)
+        if user
+          # Case when a LDAP user already exists in Gitlab. Add the SAML identity to existing account.
+          user.identities.build(extern_uid: auth_hash.uid, provider: auth_hash.provider)
+        else
+          # No account found using LDAP in Gitlab yet: check if there is a SAML account with
+          # the passed uid and provider
+          user = find_by_uid_and_provider
+          if user.nil?
+            # No SAML account found, build a new user.
+            user = build_new_user
+          end
+          # Correct account is present, add the LDAP Identity to the user.
+          user.identities.new(provider: ldap_person.provider, extern_uid: ldap_person.dn)
+        end
+
+        user
       end
 
       def auth_hash=(auth_hash)
