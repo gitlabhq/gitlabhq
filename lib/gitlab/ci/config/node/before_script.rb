@@ -3,8 +3,11 @@ module Gitlab
     class Config
       module Node
         class BeforeScript < Entry
-          def leaf?
-            true
+          def keys
+            {}
+          end
+
+          def validate!
           end
         end
       end
