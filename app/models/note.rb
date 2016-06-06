@@ -100,7 +100,7 @@ class Note < ActiveRecord::Base
             OR issues.assignee_id = :user_id
             OR issues.project_id IN(:project_ids)))',
           user_id: as_user.id,
-          project_ids: as_user.authorized_projects.select(:id))
+          project_ids: as_user.authorized_projects(Gitlab::Access::REPORTER).select(:id))
       else
         found_notes.where('issues.confidential IS NULL OR issues.confidential IS FALSE')
       end
