@@ -1,5 +1,5 @@
 class @Flash
-  constructor: (message, type)->
+  constructor: (message, type = 'alert')->
     @flash = $(".flash-container")
     @flash.html("")
 

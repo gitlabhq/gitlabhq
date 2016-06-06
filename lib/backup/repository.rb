@@ -14,14 +14,14 @@ module Backup
         FileUtils.mkdir_p(File.join(backup_repos_path, project.namespace.path)) if project.namespace
 
         if project.empty_repo?
-          $progress.puts "[SKIPPED]".cyan
+          $progress.puts "[SKIPPED]".color(:cyan)
         else
           cmd = %W(tar -cf #{path_to_bundle(project)} -C #{path_to_repo(project)} .)
           output, status = Gitlab::Popen.popen(cmd)
           if status.zero?
-            $progress.puts "[DONE]".green
+            $progress.puts "[DONE]".color(:green)
           else
-            puts "[FAILED]".red
+            puts "[FAILED]".color(:red)
             puts "failed: #{cmd.join(' ')}"
             puts output
             abort 'Backup failed'
@@ -33,14 +33,14 @@ module Backup
         if File.exists?(path_to_repo(wiki))
           $progress.print " * #{wiki.path_with_namespace} ... "
           if wiki.repository.empty?
-            $progress.puts " [SKIPPED]".cyan
+            $progress.puts " [SKIPPED]".color(:cyan)
           else
             cmd = %W(#{Gitlab.config.git.bin_path} --git-dir=#{path_to_repo(wiki)} bundle create #{path_to_bundle(wiki)} --all)
             output, status = Gitlab::Popen.popen(cmd)
             if status.zero?
-              $progress.puts " [DONE]".green
+              $progress.puts " [DONE]".color(:green)
             else
-              puts " [FAILED]".red
+              puts " [FAILED]".color(:red)
               puts "failed: #{cmd.join(' ')}"
               abort 'Backup failed'
             end
@@ -71,9 +71,9 @@ module Backup
         end
 
         if system(*cmd, silent)
-          $progress.puts "[DONE]".green
+          $progress.puts "[DONE]".color(:green)
         else
-          puts "[FAILED]".red
+          puts "[FAILED]".color(:red)
           puts "failed: #{cmd.join(' ')}"
           abort 'Restore failed'
         end
@@ -90,21 +90,21 @@ module Backup
           cmd = %W(#{Gitlab.config.git.bin_path} clone --bare #{path_to_bundle(wiki)} #{path_to_repo(wiki)})
 
           if system(*cmd, silent)
-            $progress.puts " [DONE]".green
+            $progress.puts " [DONE]".color(:green)
           else
-            puts " [FAILED]".red
+            puts " [FAILED]".color(:red)
             puts "failed: #{cmd.join(' ')}"
             abort 'Restore failed'
           end
         end
       end
 
-      $progress.print 'Put GitLab hooks in repositories dirs'.yellow
+      $progress.print 'Put GitLab hooks in repositories dirs'.color(:yellow)
       cmd = "#{Gitlab.config.gitlab_shell.path}/bin/create-hooks"
       if system(cmd)
-        $progress.puts " [DONE]".green
+        $progress.puts " [DONE]".color(:green)
       else
-        puts " [FAILED]".red
+        puts " [FAILED]".color(:red)
         puts "failed: #{cmd}"
       end
 

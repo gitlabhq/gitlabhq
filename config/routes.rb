@@ -343,8 +343,9 @@ Rails.application.routes.draw do
       resources :keys
       resources :emails, only: [:index, :create, :destroy]
       resource :avatar, only: [:destroy]
-      resource :two_factor_auth, only: [:new, :create, :destroy] do
+      resource :two_factor_auth, only: [:show, :create, :destroy] do
         member do
+          post :create_u2f
           post :codes
           patch :skip
         end
@@ -652,6 +653,7 @@ Rails.application.routes.draw do
             post :cancel_merge_when_build_succeeds
             get :ci_status
             post :toggle_subscription
+            post :toggle_award_emoji
             post :remove_wip
           end
 
@@ -727,6 +729,7 @@ Rails.application.routes.draw do
         resources :issues, constraints: { id: /\d+/ } do
           member do
             post :toggle_subscription
+            post :toggle_award_emoji
             get :referenced_merge_requests
             get :related_branches
             get :can_create_branch
@@ -756,10 +759,6 @@ Rails.application.routes.draw do
         resources :notes, only: [:index, :create, :destroy, :update], constraints: { id: /\d+/ } do
           member do
             delete :delete_attachment
-          end
-
-          collection do
-            post :award_toggle
           end
         end
 

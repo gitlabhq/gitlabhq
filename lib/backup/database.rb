@@ -86,9 +86,9 @@ module Backup
 
     def report_success(success)
       if success
-        $progress.puts '[DONE]'.green
+        $progress.puts '[DONE]'.color(:green)
       else
-        $progress.puts '[FAILED]'.red
+        $progress.puts '[FAILED]'.color(:red)
       end
     end
   end

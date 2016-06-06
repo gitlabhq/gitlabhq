@@ -45,9 +45,10 @@ gem 'akismet', '~> 2.0'
 gem 'devise-two-factor', '~> 3.0.0'
 gem 'rqrcode-rails3', '~> 0.1.7'
 gem 'attr_encrypted', '~> 3.0.0'
+gem 'u2f', '~> 0.2.1'
 
 # Browser detection
-gem "browser", '~> 1.0.0'
+gem "browser", '~> 2.0.3'
 
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library
@@ -143,7 +144,7 @@ gem 'redis-namespace'
 gem "httparty", '~> 0.13.3'
 
 # Colored output to console
-gem "colorize", '~> 0.7.0'
+gem "rainbow", '~> 2.1.0'
 
 # GitLab settings
 gem 'settingslogic', '~> 2.0.9'
