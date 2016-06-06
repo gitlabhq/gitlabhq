@@ -74,6 +74,7 @@ update-knapsack:
     - export KNAPSACK_REPORT_PATH=knapsack/${JOB_NAME}_node_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json
     - export KNAPSACK_GENERATE_REPORT=true
     - cp knapsack/${JOB_NAME}_report.json ${KNAPSACK_REPORT_PATH}
+    - bundle exec gem install bundler
     - knapsack ${JOB_NAME[0]}
   artifacts:
     paths:
