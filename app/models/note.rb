@@ -3,6 +3,7 @@ class Note < ActiveRecord::Base
   include Gitlab::CurrentSettings
   include Participable
   include Mentionable
+  include Awardable
 
   default_value_for :system, false
 
