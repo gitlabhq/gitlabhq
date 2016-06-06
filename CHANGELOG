@@ -63,6 +63,7 @@ v 8.8.3
   - Fix serious performance bug with rendering Markdown with InlineDiffFilter.  !4392
   - Fix missing number on generated ordered list element. !4437
   - Prevent disclosure of notes on confidential issues in search results.
+  - Add workhorse controller and API helpers
 
 v 8.8.2
   - Added remove due date button. !4209
