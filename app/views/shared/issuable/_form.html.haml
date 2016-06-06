@@ -120,7 +120,7 @@
         .checkbox
           = label_tag 'merge_request[force_remove_source_branch]' do
             = check_box_tag 'merge_request[force_remove_source_branch]', '1', @merge_request.force_remove_source_branch?
-            Remove source branch when merge request is accepted.
+            接受合并请求后删除来源分支。
 
 - is_footer = !(issuable.is_a?(MergeRequest) && issuable.new_record?)
 .row-content-block{class: (is_footer ? "footer-block" : "middle-block")}
