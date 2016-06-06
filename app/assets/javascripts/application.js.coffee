@@ -56,9 +56,11 @@
 #= require_directory ./commit
 #= require_directory ./extensions
 #= require_directory ./lib
+#= require_directory ./u2f
 #= require_directory .
 #= require fuzzaldrin-plus
 #= require cropper
+#= require u2f
 
 window.slugify = (text) ->
   text.replace(/[^-a-zA-Z0-9]+/g, '_').toLowerCase()

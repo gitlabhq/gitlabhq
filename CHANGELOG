@@ -23,6 +23,7 @@ v 8.9.0 (unreleased)
   - Fix issues filter when ordering by milestone
   - Todos will display target state if issuable target is 'Closed' or 'Merged'
   - Fix bug when sorting issues by milestone due date and filtering by two or more labels
+  - Add support for using Yubikeys (U2F) for two-factor authentication
   - Link to blank group icon doesn't throw a 404 anymore
   - Remove 'main language' feature
   - Pipelines can be canceled only when there are running builds

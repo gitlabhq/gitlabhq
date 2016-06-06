@@ -12,7 +12,6 @@
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema.define(version: 20160530150109) do
-
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "pg_trgm"
@@ -940,6 +939,19 @@ ActiveRecord::Schema.define(version: 20160530150109) do
   add_index "todos", ["target_type", "target_id"], name: "index_todos_on_target_type_and_target_id", using: :btree
   add_index "todos", ["user_id"], name: "index_todos_on_user_id", using: :btree
 
+  create_table "u2f_registrations", force: :cascade do |t|
+    t.text     "certificate"
+    t.string   "key_handle"
+    t.string   "public_key"
+    t.integer  "counter"
+    t.integer  "user_id"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+  end
+
+  add_index "u2f_registrations", ["key_handle"], name: "index_u2f_registrations_on_key_handle", using: :btree
+  add_index "u2f_registrations", ["user_id"], name: "index_u2f_registrations_on_user_id", using: :btree
+
   create_table "users", force: :cascade do |t|
     t.string   "email",                       default: "",    null: false
     t.string   "encrypted_password",          default: "",    null: false
@@ -1047,4 +1059,5 @@ ActiveRecord::Schema.define(version: 20160530150109) do
   add_index "web_hooks", ["created_at", "id"], name: "index_web_hooks_on_created_at_and_id", using: :btree
   add_index "web_hooks", ["project_id"], name: "index_web_hooks_on_project_id", using: :btree
 
+  add_foreign_key "u2f_registrations", "users"
 end
