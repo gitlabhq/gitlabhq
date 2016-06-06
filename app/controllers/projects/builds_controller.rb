@@ -73,7 +73,7 @@ class Projects::BuildsController < Projects::ApplicationController
   private
 
   def build
-    @build ||= project.builds.unscoped.find_by!(id: params[:id])
+    @build ||= project.builds.find_by!(id: params[:id])
   end
 
   def build_path(build)
