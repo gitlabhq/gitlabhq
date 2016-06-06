@@ -61,4 +61,36 @@ module NotificationsHelper
       end
     end
   end
+
+  def notification_level_radio_buttons
+    html = ""
+
+    NotificationSetting.levels.each_key do |level|
+      level = level.to_sym
+      next if level == :global
+
+      html << content_tag(:div, class: "radio") do
+        content_tag(:label, { value: level }) do
+          radio_button_tag(:notification_level, level, @global_notification_setting.level.to_sym == level) +
+          content_tag(:div, level.to_s.capitalize, class: "level-title") +
+          content_tag(:p, notification_level_description(level))
+        end
+      end
+    end
+
+    html.html_safe
+  end
+
+  def notification_level_description(level)
+    case level
+    when :disabled
+      "You will not get any notifications via email"
+    when :mention
+      "You will receive notifications only for comments in which you were @mentioned"
+    when :participating
+      "You will only receive notifications from related resources (e.g. from your commits or assigned issues)"
+    when :watch
+      "You will receive notifications for any activity"
+    end
+  end
 end

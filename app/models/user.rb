@@ -10,6 +10,8 @@ class User < ActiveRecord::Base
   include CaseSensitivity
   include TokenAuthenticatable
 
+  DEFAULT_NOTIFICATION_LEVEL = :participating
+
   add_authentication_token_field :authentication_token
 
   default_value_for :admin, false
@@ -99,7 +101,6 @@ class User < ActiveRecord::Base
     presence: true,
     uniqueness: { case_sensitive: false }
 
-  validates :notification_level, presence: true
   validate :namespace_uniq, if: ->(user) { user.username_changed? }
   validate :avatar_type, if: ->(user) { user.avatar.present? && user.avatar_changed? }
   validate :unique_email, if: ->(user) { user.email_changed? }
@@ -132,13 +133,6 @@ class User < ActiveRecord::Base
   # User's Project preference
   # Note: When adding an option, it MUST go on the end of the array.
   enum project_view: [:readme, :activity, :files]
-
-  # Notification level
-  # Note: When adding an option, it MUST go on the end of the array.
-  #
-  # TODO: Add '_prefix: :notification' to enum when update to Rails 5. https://github.com/rails/rails/pull/19813
-  # Because user.notification_disabled? is much better than user.disabled?
-  enum notification_level: [:disabled, :participating, :watch, :global, :mention]
 
   alias_attribute :private_token, :authentication_token
 
@@ -798,6 +792,14 @@ class User < ActiveRecord::Base
 
   def notification_settings_for(source)
     notification_settings.find_or_initialize_by(source: source)
+  end
+
+  # Lazy load global notification setting
+  # Initializes User setting with Participating level if setting not persisted
+  def global_notification_setting
+    setting = notification_settings.find_or_initialize_by(source: nil)
+    setting.level = NotificationSetting.levels[DEFAULT_NOTIFICATION_LEVEL] unless setting.persisted?
+    setting
   end
 
   def assigned_open_merge_request_count(force: false)
