@@ -48,32 +48,44 @@ describe GitPushService, services: true do
         end
 
         context 'when protected branch pattern is disabled' do
+          before { project.auto_protected_branch_pattern = '' }
+
           it 'does not create a new protected branch' do
-            project.protected_branch_pattern = ''
 
             expect { subject }.not_to change { project.protected_branches.size }
           end
         end
 
-        context 'when branch name does not match protected branch pattern' do
-          it 'does not create a new protected branch' do
-            project.protected_branch_pattern = '^[0-9]+-[0-9]+-stable$'
+        context 'when protected branch pattern is enabled' do
+          before { project.auto_protected_branch_pattern = '^[0-9]+-[0-9]+-stable$' }
 
-            expect { subject }.not_to change { project.protected_branches.size }
+          context 'when branch name does not match protected branch pattern' do
+            it 'does not create a new protected branch' do
+              expect { subject }.not_to change { project.protected_branches.size }
+            end
+          end
+
+          context 'when branch name matches protected branch pattern' do
+            let(:ref) { 'refs/heads/9-8-stable' }
+
+            it 'creates a new protected branch to which developers cannot push' do
+              expect { subject }.to change { project.protected_branches.size }.by(1)
+              expect(project.protected_branches.last.name).to eq '9-8-stable'
+              expect(project.protected_branches.last.developers_can_push).to be false
+            end
+
+            context 'when developers can push to auto-protected branches' do
+              before { project.developers_can_push_to_auto_protected_branch = true }
+
+              it 'creates a new protected branch to which developers can push' do
+                expect { subject }.to change { project.protected_branches.size }.by(1)
+                expect(project.protected_branches.last.name).to eq '9-8-stable'
+                expect(project.protected_branches.last.developers_can_push).to be true
+              end
+            end
           end
         end
 
-        context 'when branch name matches protected branch pattern' do
-          let(:ref) { 'refs/heads/9-8-stable' }
-
-          it 'creates a new protected branch' do
-            project.protected_branch_pattern = '^[0-9]+-[0-9]+-stable$'
-
-            expect{ subject }.to change { project.protected_branches.size }.by(1)
-            expect(project.protected_branches.last.name).to eq '9-8-stable'
-            expect(project.protected_branches.last.developers_can_push).to be_false
-          end
-        end
       end
     end
 

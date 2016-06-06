@@ -174,7 +174,9 @@ class GitPushService < BaseService
     return unless pattern.present? && branch_name =~ Regexp.new(pattern)
     return if @project.protected_branches.exists?(name: branch_name)
 
-    @project.protected_branches.create!(name: branch_name)
+    @project.protected_branches.create!(
+      name: branch_name,
+      developers_can_push: @project.developers_can_push_to_auto_protected_branch)
   end
 
 end

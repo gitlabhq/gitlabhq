@@ -11,7 +11,8 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160530150109) do
+ActiveRecord::Schema.define(version: 20160606163246) do
+
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "pg_trgm"
@@ -742,39 +743,40 @@ ActiveRecord::Schema.define(version: 20160530150109) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "creator_id"
-    t.boolean  "issues_enabled",               default: true,     null: false
-    t.boolean  "merge_requests_enabled",       default: true,     null: false
-    t.boolean  "wiki_enabled",                 default: true,     null: false
+    t.boolean  "issues_enabled",                               default: true,     null: false
+    t.boolean  "merge_requests_enabled",                       default: true,     null: false
+    t.boolean  "wiki_enabled",                                 default: true,     null: false
     t.integer  "namespace_id"
-    t.string   "issues_tracker",               default: "gitlab", null: false
+    t.string   "issues_tracker",                               default: "gitlab", null: false
     t.string   "issues_tracker_id"
-    t.boolean  "snippets_enabled",             default: true,     null: false
+    t.boolean  "snippets_enabled",                             default: true,     null: false
     t.datetime "last_activity_at"
     t.string   "import_url"
-    t.integer  "visibility_level",             default: 0,        null: false
-    t.boolean  "archived",                     default: false,    null: false
+    t.integer  "visibility_level",                             default: 0,        null: false
+    t.boolean  "archived",                                     default: false,    null: false
     t.string   "avatar"
     t.string   "import_status"
-    t.float    "repository_size",              default: 0.0
-    t.integer  "star_count",                   default: 0,        null: false
+    t.float    "repository_size",                              default: 0.0
+    t.integer  "star_count",                                   default: 0,        null: false
     t.string   "import_type"
     t.string   "import_source"
-    t.integer  "commit_count",                 default: 0
+    t.integer  "commit_count",                                 default: 0
     t.text     "import_error"
     t.integer  "ci_id"
-    t.boolean  "builds_enabled",               default: true,     null: false
-    t.boolean  "shared_runners_enabled",       default: true,     null: false
+    t.boolean  "builds_enabled",                               default: true,     null: false
+    t.boolean  "shared_runners_enabled",                       default: true,     null: false
     t.string   "runners_token"
     t.string   "build_coverage_regex"
-    t.boolean  "build_allow_git_fetch",        default: true,     null: false
-    t.integer  "build_timeout",                default: 3600,     null: false
-    t.boolean  "pending_delete",               default: false
-    t.boolean  "public_builds",                default: true,     null: false
-    t.integer  "pushes_since_gc",              default: 0
+    t.boolean  "build_allow_git_fetch",                        default: true,     null: false
+    t.integer  "build_timeout",                                default: 3600,     null: false
+    t.boolean  "pending_delete",                               default: false
+    t.boolean  "public_builds",                                default: true,     null: false
+    t.integer  "pushes_since_gc",                              default: 0
     t.boolean  "last_repository_check_failed"
     t.datetime "last_repository_check_at"
     t.boolean  "container_registry_enabled"
-    t.string   "protected_branch_pattern"
+    t.string   "auto_protected_branch_pattern"
+    t.boolean  "developers_can_push_to_auto_protected_branch", default: false,    null: false
   end
 
   add_index "projects", ["builds_enabled", "shared_runners_enabled"], name: "index_projects_on_builds_enabled_and_shared_runners_enabled", using: :btree

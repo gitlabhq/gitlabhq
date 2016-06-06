@@ -131,21 +131,6 @@
               %hr
               = link_to 'Remove avatar', namespace_project_avatar_path(@project.namespace, @project), data: { confirm: "Project avatar will be removed. Are you sure?"}, method: :delete, class: "btn btn-remove btn-sm remove-avatar"
 
-          %fieldset.features
-            %legend
-              Miscellaneous:
-
-            .form-group
-              = f.label :protected_branch_pattern, "Protected branch pattern", class: 'control-label'
-              .col-sm-10
-                .input-group
-                  %span.input-group-addon /
-                  = f.text_field :protected_branch_pattern, value: @project.protected_branch_pattern, maxlength: 2000, class: "form-control", placeholder: '^[1-9]-[1-9]-stable$'
-                  %span.input-group-addon /
-                %p.help-block
-                  We will use this regular expression to automatically #{ link_to "protect branches", namespace_project_protected_branches_path(@project.namespace, @project)  } on creation.
-                  Leave blank if you want to disable this feature
-
         = f.submit 'Save changes', class: "btn btn-save"
   .row.prepend-top-default
   %hr
