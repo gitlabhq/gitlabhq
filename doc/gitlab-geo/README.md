@@ -12,6 +12,7 @@ locations as a read-only fully operational version.
     - [Database Replication](./database.md)
     - [Configuration](./configuration.md)
 - [Current limitations](#current-limitations)
+- [Disaster Recovery](./disaster-recovery.md)
 - [Frequently Asked Questions](#frequently-asked-questions)
     - [Can I use Geo in a disaster recovery situation?](#can-i-use-geo-in-a-disaster-recovery-situation)
     - [What data is replicated to a secondary node?](#what-data-is-replicated-to-a-secondary-node)
@@ -76,6 +77,9 @@ there are a few things to consider:
 There are limitations to what we replicate (see Current limitations).
 In an extreme data-loss situation you can make a secondary Geo into your
 primary, but this is not officially supported yet.
+
+If you still want to proceed, see our step-by-step instructions on how to 
+manually [promote a secondary node](./disaster-recovery.md) into primary. 
 
 ### What data is replicated to a secondary node?
 
