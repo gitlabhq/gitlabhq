@@ -105,6 +105,11 @@
       font-size: 17px;
       margin: 5px 0;
       color: $gl-gray-dark;
+
+      &.has-conflicts .fa-exclamation-triangle {
+        color: $gl-warning;
+      }
+
     }
 
     p:last-child {
