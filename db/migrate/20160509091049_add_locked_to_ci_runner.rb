@@ -1,7 +1,7 @@
 class AddLockedToCiRunner < ActiveRecord::Migration
-  ##
-  # Downtime expected due to exclusive lock when setting default value.
-  #
+  include Gitlab::Database::MigrationHelpers
+  disable_ddl_transaction!
+
   def up
     add_column_with_default(:ci_runners, :locked, :boolean,
                             default: false, allow_null: false)
