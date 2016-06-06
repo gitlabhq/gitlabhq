@@ -856,7 +856,6 @@ describe User, models: true do
   describe '#ci_authorized_runners' do
     let(:user) { create(:user) }
     let(:runner) { create(:ci_runner) }
-    subject { user.ci_authorized_runners }
 
     before do
       project.runners << runner
@@ -866,7 +865,7 @@ describe User, models: true do
       let(:project) { create(:project) }
 
       it 'does not load' do
-        is_expected.to be_empty
+        expect(user.ci_authorized_runners).to be_empty
       end
     end
 
@@ -875,7 +874,7 @@ describe User, models: true do
       let(:project) { create(:project, namespace: namespace) }
 
       it 'loads' do
-        is_expected.to contain_exactly(runner)
+        expect(user.ci_authorized_runners).to contain_exactly(runner)
       end
     end
 
@@ -885,7 +884,9 @@ describe User, models: true do
           add_user(Gitlab::Access::MASTER)
         end
 
-        it { is_expected.to contain_exactly(runner) }
+        it 'loads' do
+          expect(user.ci_authorized_runners).to contain_exactly(runner)
+        end
       end
 
       context 'when the user is a developer' do
@@ -893,7 +894,9 @@ describe User, models: true do
           add_user(Gitlab::Access::DEVELOPER)
         end
 
-        it { is_expected.to be_empty }
+        it 'does not load' do
+          expect(user.ci_authorized_runners).to be_empty
+        end
       end
     end
 
