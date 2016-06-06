@@ -38,12 +38,11 @@ describe Issue, "Awardable" do
 
   describe "#toggle_award_emoji" do
     it "adds an emoji if it isn't awarded yet" do
-      expect { issue.toggle_award_emoji("thumbsup", award_emoji.user) }.to change { AwardEmoji.count }.by 1
+      expect { issue.toggle_award_emoji("thumbsup", award_emoji.user) }.to change { AwardEmoji.count }.by(1)
     end
 
     it "toggles already awarded emoji" do
-
-      expect { issue.toggle_award_emoji("thumbsdown", award_emoji.user) }.to change { AwardEmoji.count }.by -1
+      expect { issue.toggle_award_emoji("thumbsdown", award_emoji.user) }.to change { AwardEmoji.count }.by(-1)
     end
   end
 end
