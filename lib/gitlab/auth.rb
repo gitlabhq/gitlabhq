@@ -35,6 +35,27 @@ module Gitlab
         end
       end
 
+      def rate_limit!(ip, success:, login:)
+        rate_limiter = Gitlab::Auth::IpRateLimiter.new(ip)
+        return unless rate_limiter.enabled?
+
+        if success
+          # Repeated login 'failures' are normal behavior for some Git clients so
+          # it is important to reset the ban counter once the client has proven
+          # they are not a 'bad guy'.
+          rate_limiter.reset!
+        else
+          # Register a login failure so that Rack::Attack can block the next
+          # request from this IP if needed.
+          rate_limiter.register_fail!
+
+          if rate_limiter.banned?
+            Rails.logger.info "IP #{ip} failed to login " \
+              "as #{login} but has been temporarily banned from Git auth"
+          end
+        end
+      end
+
       private
 
       def valid_ci_request?(login, password, project)
@@ -59,27 +80,6 @@ module Gitlab
         if login == "oauth2" && password.present?
           token = Doorkeeper::AccessToken.by_token(password)
           token && token.accessible? && User.find_by(id: token.resource_owner_id)
-        end
-      end
-
-      def rate_limit!(ip, success:, login:)
-        rate_limiter = IpRateLimiter.new(ip)
-        return unless rate_limiter.enabled?
-
-        if success
-          # Repeated login 'failures' are normal behavior for some Git clients so
-          # it is important to reset the ban counter once the client has proven
-          # they are not a 'bad guy'.
-          rate_limiter.reset!
-        else
-          # Register a login failure so that Rack::Attack can block the next
-          # request from this IP if needed.
-          rate_limiter.register_fail!(ip, config)
-
-          if rate_limiter.banned?
-            Rails.logger.info "IP #{ip} failed to login " \
-              "as #{login} but has been temporarily banned from Git auth"
-          end
         end
       end
     end
