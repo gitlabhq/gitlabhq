@@ -1,2 +1,2 @@
 ---
-decisions_file: './config/.decisions.yml'
+decisions_file: './config/dependency_decisions.yml'

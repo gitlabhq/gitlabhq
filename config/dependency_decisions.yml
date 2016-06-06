@@ -35,7 +35,7 @@
 - - :whitelist
   - ruby
   - :who: Connor Shea
-    :why: https://github.com/ruby/ruby/blob/ruby_1_8_6/COPYING
+    :why: https://github.com/ruby/ruby/blob/ruby_2_1/COPYING
     :versions: []
     :when: 2016-05-02 05:31:54.498490000 Z
 - - :whitelist
