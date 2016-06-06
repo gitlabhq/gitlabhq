@@ -11,7 +11,7 @@ module Gitlab
       #     add_concurrent_index :users, :some_column
       #
       # See Rails' `add_index` for more info on the available arguments.
-      def add_concurrent_index(*args)
+      def add_concurrent_index(table_name, column_name, options = {})
         if transaction_open?
           raise 'add_concurrent_index can not be run inside a transaction, ' \
             'you can disable transactions by calling disable_ddl_transaction! ' \
@@ -19,14 +19,10 @@ module Gitlab
         end
 
         if Database.postgresql?
-          if args[2].present?
-            args[2].merge!({ algorithm: :concurrently })
-          else
-            args << { algorithm: :concurrently }
-          end
+          options = options.merge({ algorithm: :concurrently })
         end
 
-        add_index(*args)
+        add_index(table_name, column_name, options)
       end
 
       # Updates the value of a column in batches.
