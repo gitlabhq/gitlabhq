@@ -35,8 +35,6 @@
 
   = csrf_meta_tags
 
-  = include_gon
-
   - unless browser.safari?
     %meta{name: 'referrer', content: 'origin-when-cross-origin'}
   %meta{name: 'viewport', content: 'width=device-width, initial-scale=1, maximum-scale=1'}
