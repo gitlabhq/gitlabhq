@@ -41,8 +41,7 @@
 
     a {
       display: inline-block;
-      padding: 14px;
-      padding-top: $gl-padding;
+      padding: $gl-btn-padding;
       padding-bottom: 11px;
       margin-bottom: -1px;
       font-size: 15px;
@@ -124,6 +123,10 @@
     width: 50%;
     margin-bottom: 0;
     border-bottom: none;
+
+    li a {
+      padding: 16px 10px 11px;
+    }
 
     /* Small devices (phones, tablets, 768px and lower) */
     @media (max-width: $screen-sm-max) {
@@ -330,8 +333,8 @@
   }
 
   .nav-control {
-    .fade-right {
 
+    .fade-right {
       @media (min-width: $screen-xs-max) {
         right: 67px;
       }
