@@ -24,7 +24,64 @@ module AuthenticatesWithTwoFactor
   # Returns nil
   def prompt_for_two_factor(user)
     session[:otp_user_id] = user.id
+    setup_u2f_authentication(user)
+    render 'devise/sessions/two_factor'
+  end
 
-    render 'devise/sessions/two_factor' and return
+  def authenticate_with_two_factor
+    user = self.resource = find_user
+
+    if user_params[:otp_attempt].present? && session[:otp_user_id]
+      authenticate_with_two_factor_via_otp(user)
+    elsif user_params[:device_response].present? && session[:otp_user_id]
+      authenticate_with_two_factor_via_u2f(user)
+    elsif user && user.valid_password?(user_params[:password])
+      prompt_for_two_factor(user)
+    end
+  end
+
+  private
+
+  def authenticate_with_two_factor_via_otp(user)
+    if valid_otp_attempt?(user)
+      # Remove any lingering user data from login
+      session.delete(:otp_user_id)
+
+      remember_me(user) if user_params[:remember_me] == '1'
+      sign_in(user)
+    else
+      flash.now[:alert] = 'Invalid two-factor code.'
+      render :two_factor
+    end
+  end
+
+  # Authenticate using the response from a U2F (universal 2nd factor) device
+  def authenticate_with_two_factor_via_u2f(user)
+    if U2fRegistration.authenticate(user, u2f_app_id, user_params[:device_response], session[:challenges])
+      # Remove any lingering user data from login
+      session.delete(:otp_user_id)
+      session.delete(:challenges)
+
+      sign_in(user)
+    else
+      flash.now[:alert] = 'Authentication via U2F device failed.'
+      prompt_for_two_factor(user)
+    end
+  end
+
+  # Setup in preparation of communication with a U2F (universal 2nd factor) device
+  # Actual communication is performed using a Javascript API
+  def setup_u2f_authentication(user)
+    key_handles = user.u2f_registrations.pluck(:key_handle)
+    u2f = U2F::U2F.new(u2f_app_id)
+
+    if key_handles.present?
+      sign_requests = u2f.authentication_requests(key_handles)
+      challenges = sign_requests.map(&:challenge)
+      session[:challenges] = challenges
+      gon.push(u2f: { challenges: challenges, app_id: u2f_app_id,
+                      sign_requests: sign_requests,
+                      browser_supports_u2f: browser_supports_u2f? })
+    end
   end
 end
