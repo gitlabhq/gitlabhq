@@ -138,7 +138,6 @@ describe API::API, api: true  do
       expect(json_response['work_in_progress']).to be_falsy
       expect(json_response['merge_when_build_succeeds']).to be_falsy
       expect(json_response['merge_status']).to eq('can_be_merged')
-      expect(json_response['user_notes_count']).to be(2)
     end
 
     it "should return merge_request" do
@@ -426,6 +425,19 @@ describe API::API, api: true  do
       put api("/projects/#{project.id}/merge_requests/#{merge_request.id}/merge", user2)
       expect(response.status).to eq(401)
       expect(json_response['message']).to eq('401 Unauthorized')
+    end
+
+    it "returns 409 if the SHA parameter doesn't match" do
+      put api("/projects/#{project.id}/merge_requests/#{merge_request.id}/merge", user), sha: merge_request.source_sha.succ
+
+      expect(response.status).to eq(409)
+      expect(json_response['message']).to start_with('SHA does not match HEAD of source branch')
+    end
+
+    it "succeeds if the SHA parameter matches" do
+      put api("/projects/#{project.id}/merge_requests/#{merge_request.id}/merge", user), sha: merge_request.source_sha
+
+      expect(response.status).to eq(200)
     end
 
     it "enables merge when build succeeds if the ci is active" do

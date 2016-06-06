@@ -27,9 +27,9 @@ module Backup
         # Set file permissions on open to prevent chmod races.
         tar_system_options = {out: [tar_file, 'w', Gitlab.config.backup.archive_permissions]}
         if Kernel.system('tar', '-cf', '-', *backup_contents, tar_system_options)
-          $progress.puts "done".green
+          $progress.puts "done".color(:green)
         else
-          puts "creating archive #{tar_file} failed".red
+          puts "creating archive #{tar_file} failed".color(:red)
           abort 'Backup failed'
         end
 
@@ -43,7 +43,7 @@ module Backup
 
       connection_settings = Gitlab.config.backup.upload.connection
       if connection_settings.blank?
-        $progress.puts "skipped".yellow
+        $progress.puts "skipped".color(:yellow)
         return
       end
 
@@ -53,9 +53,9 @@ module Backup
       if directory.files.create(key: tar_file, body: File.open(tar_file), public: false,
           multipart_chunk_size: Gitlab.config.backup.upload.multipart_chunk_size,
           encryption: Gitlab.config.backup.upload.encryption)
-        $progress.puts "done".green
+        $progress.puts "done".color(:green)
       else
-        puts "uploading backup to #{remote_directory} failed".red
+        puts "uploading backup to #{remote_directory} failed".color(:red)
         abort 'Backup failed'
       end
     end
@@ -67,9 +67,9 @@ module Backup
         next unless File.exist?(File.join(Gitlab.config.backup.path, dir))
 
         if FileUtils.rm_rf(File.join(Gitlab.config.backup.path, dir))
-          $progress.puts "done".green
+          $progress.puts "done".color(:green)
         else
-          puts "deleting tmp directory '#{dir}' failed".red
+          puts "deleting tmp directory '#{dir}' failed".color(:red)
           abort 'Backup failed'
         end
       end
@@ -95,9 +95,9 @@ module Backup
           end
         end
 
-        $progress.puts "done. (#{removed} removed)".green
+        $progress.puts "done. (#{removed} removed)".color(:green)
       else
-        $progress.puts "skipping".yellow
+        $progress.puts "skipping".color(:yellow)
       end
     end
 
@@ -124,20 +124,20 @@ module Backup
       $progress.print "Unpacking backup ... "
 
       unless Kernel.system(*%W(tar -xf #{tar_file}))
-        puts "unpacking backup failed".red
+        puts "unpacking backup failed".color(:red)
         exit 1
       else
-        $progress.puts "done".green
+        $progress.puts "done".color(:green)
       end
 
       ENV["VERSION"] = "#{settings[:db_version]}" if settings[:db_version].to_i > 0
 
       # restoring mismatching backups can lead to unexpected problems
       if settings[:gitlab_version] != Gitlab::VERSION
-        puts "GitLab version mismatch:".red
-        puts "  Your current GitLab version (#{Gitlab::VERSION}) differs from the GitLab version in the backup!".red
-        puts "  Please switch to the following version and try again:".red
-        puts "  version: #{settings[:gitlab_version]}".red
+        puts "GitLab version mismatch:".color(:red)
+        puts "  Your current GitLab version (#{Gitlab::VERSION}) differs from the GitLab version in the backup!".color(:red)
+        puts "  Please switch to the following version and try again:".color(:red)
+        puts "  version: #{settings[:gitlab_version]}".color(:red)
         puts
         puts "Hint: git checkout v#{settings[:gitlab_version]}"
         exit 1

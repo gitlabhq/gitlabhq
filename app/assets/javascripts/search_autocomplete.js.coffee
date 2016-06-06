@@ -20,8 +20,7 @@ class @SearchAutocomplete
     @dropdown = @wrap.find('.dropdown')
     @dropdownContent = @dropdown.find('.dropdown-content')
 
-    @locationBadgeEl = @getElement('.search-location-badge')
-    @locationText = @getElement('.location-text')
+    @locationBadgeEl = @getElement('.location-badge')
     @scopeInputEl = @getElement('#scope')
     @searchInput = @getElement('.search-input')
     @projectInputEl = @getElement('#search_project_id')
@@ -133,7 +132,7 @@ class @SearchAutocomplete
       scope: @scopeInputEl.val()
 
       # Location badge
-      _location: @locationText.text()
+      _location: @locationBadgeEl.text()
     }
 
   bindEvents: ->
@@ -143,23 +142,28 @@ class @SearchAutocomplete
     @searchInput.on 'click', @onSearchInputClick
     @searchInput.on 'focus', @onSearchInputFocus
     @clearInput.on 'click', @onClearInputClick
+    @locationBadgeEl.on 'click', =>
+      @searchInput.focus()
 
   onDocumentClick: (e) =>
     # If clicking outside the search box
     # And search input is not focused
     # And we are not clicking inside a suggestion
-    if not $.contains(@dropdown[0], e.target) and @isFocused and not $(e.target).parents('ul').length
+    if not $.contains(@dropdown[0], e.target) and @isFocused and not $(e.target).closest('.search-form').length
       @onSearchInputBlur()
 
   enableAutocomplete: ->
     # No need to enable anything if user is not logged in
     return if !gon.current_user_id
 
-    _this = @
-    @loadingSuggestions = false
+    unless @dropdown.hasClass('open')
+      _this = @
+      @loadingSuggestions = false
 
-    @dropdown.addClass('open')
-    @searchInput.removeClass('disabled')
+      @dropdown
+        .addClass('open')
+        .trigger('shown.bs.dropdown')
+      @searchInput.removeClass('disabled')
 
   onSearchInputKeyDown: =>
     # Saves last length of the entered text
@@ -190,7 +194,7 @@ class @SearchAutocomplete
           @disableAutocomplete()
         else
           # We should display the menu only when input is not empty
-          @enableAutocomplete()
+          @enableAutocomplete() if e.keyCode isnt KEYCODE.ENTER
 
     @wrap.toggleClass 'has-value', !!e.target.value
 
@@ -221,10 +225,8 @@ class @SearchAutocomplete
     category = if item.category? then "#{item.category}: " else ''
     value = if item.value? then item.value else ''
 
-    html = "<span class='location-badge'>
-              <i class='location-text'>#{category}#{value}</i>
-            </span>"
-    @locationBadgeEl.html(html)
+    badgeText = "#{category}#{value}"
+    @locationBadgeEl.text(badgeText).show()
     @wrap.addClass('has-location-badge')
 
   restoreOriginalState: ->
@@ -233,9 +235,8 @@ class @SearchAutocomplete
     for input in inputs
       @getElement("##{input}").val(@originalState[input])
 
-
     if @originalState._location is ''
-      @locationBadgeEl.empty()
+      @locationBadgeEl.hide()
     else
       @addLocationBadge(
         value: @originalState._location
@@ -244,7 +245,7 @@ class @SearchAutocomplete
     @dropdown.removeClass 'open'
 
   badgePresent: ->
-    @locationBadgeEl.children().length
+    @locationBadgeEl.length
 
   resetSearchState: ->
     inputs = Object.keys @originalState
@@ -257,7 +258,7 @@ class @SearchAutocomplete
       @getElement("##{input}").val('')
 
   removeLocationBadge: ->
-    @locationBadgeEl.empty()
+    @locationBadgeEl.hide()
 
     # Reset state
     @resetSearchState()

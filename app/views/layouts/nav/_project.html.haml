@@ -33,18 +33,11 @@
         %span
           Activity
     - if project_nav_tab? :files
-      = nav_link(controller: %w(tree blob blame edit_tree new_tree find_file)) do
+      = nav_link(controller: %w(tree blob blame edit_tree new_tree find_file commit commits compare repositories tags branches releases network)) do
         = link_to project_files_path(@project), title: 'Files',  class: 'shortcuts-tree' do
-          = icon('files-o fw')
+          = icon('code fw')
           %span
-            Files
-
-    - if project_nav_tab? :commits
-      = nav_link(controller: %w(commit commits compare repositories tags branches releases network)) do
-        = link_to project_commits_path(@project), title: 'Commits', class: 'shortcuts-commits' do
-          = icon('history fw')
-          %span
-            Commits
+            Code
 
     - if project_nav_tab? :pipelines
       = nav_link(controller: :pipelines) do
@@ -52,22 +45,13 @@
           = icon('ship fw')
           %span
             Pipelines
-            %span.badge.count.ci_counter= number_with_delimiter(@project.ci_commits.running_or_pending.count)
-
-    - if project_nav_tab? :builds
-      = nav_link(controller: %w(builds)) do
-        = link_to project_builds_path(@project), title: 'Builds', class: 'shortcuts-builds' do
-          = icon('cubes fw')
-          %span
-            Builds
-            %span.badge.count.builds_counter= number_with_delimiter(@project.builds.running_or_pending.count(:all))
 
     - if project_nav_tab? :container_registry
       = nav_link(controller: %w(container_registry)) do
         = link_to project_container_registry_path(@project), title: 'Container Registry', class: 'shortcuts-container-registry' do
           = icon('hdd-o fw')
           %span
-            Container Registry
+            Registry
 
     - if project_nav_tab? :graphs
       = nav_link(controller: %w(graphs)) do
@@ -131,5 +115,17 @@
     %li.hidden
       = link_to new_namespace_project_issue_path(@project.namespace, @project), class: 'shortcuts-new-issue' do
         Create a new issue
+
+    -# Shortcut to builds page
+    - if project_nav_tab? :builds
+      %li.hidden
+        = link_to project_builds_path(@project), title: 'Builds', class: 'shortcuts-builds' do
+          Builds
+
+    -# Shortcut to commits page
+    - if project_nav_tab? :commits
+      %li.hidden
+        = link_to project_commits_path(@project), title: 'Commits', class: 'shortcuts-commits' do
+          Commits
 
     .fade-right

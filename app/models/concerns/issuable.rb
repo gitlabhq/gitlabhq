@@ -10,6 +10,7 @@ module Issuable
   include Mentionable
   include Subscribable
   include StripAttribute
+  include Awardable
 
   included do
     belongs_to :author, class_name: "User"
@@ -68,6 +69,14 @@ module Issuable
     strip_attributes :title
 
     acts_as_paranoid
+
+    after_save :update_assignee_cache_counts, if: :assignee_id_changed?
+
+    def update_assignee_cache_counts
+      # make sure we flush the cache for both the old *and* new assignee
+      User.find(assignee_id_was).update_cache_counts if assignee_id_was
+      assignee.update_cache_counts if assignee
+    end
   end
 
   module ClassMethods
@@ -107,29 +116,6 @@ module Issuable
       end
     end
 
-    def order_downvotes_desc
-      order_votes_desc('thumbsdown')
-    end
-
-    def order_upvotes_desc
-      order_votes_desc('thumbsup')
-    end
-
-    def order_votes_desc(award_emoji_name)
-      issuable_table = self.arel_table
-      note_table = Note.arel_table
-
-      join_clause = issuable_table.join(note_table, Arel::Nodes::OuterJoin).on(
-        note_table[:noteable_id].eq(issuable_table[:id]).and(
-          note_table[:noteable_type].eq(self.name).and(
-            note_table[:is_award].eq(true).and(note_table[:note].eq(award_emoji_name))
-          )
-        )
-      ).join_sources
-
-      joins(join_clause).group(issuable_table[:id]).reorder("COUNT(notes.id) DESC")
-    end
-
     def with_label(title, sort = nil)
       if title.is_a?(Array) && title.size > 1
         joins(:labels).where(labels: { title: title }).group(*grouping_columns(sort)).having("COUNT(DISTINCT labels.title) = #{title.size}")
@@ -163,24 +149,12 @@ module Issuable
     today? && created_at == updated_at
   end
 
-  def is_assigned?
-    !!assignee_id
-  end
-
   def is_being_reassigned?
     assignee_id_changed?
   end
 
   def open?
     opened? || reopened?
-  end
-
-  def downvotes
-    notes.awards.where(note: "thumbsdown").count
-  end
-
-  def upvotes
-    notes.awards.where(note: "thumbsup").count
   end
 
   def user_notes_count
@@ -203,6 +177,10 @@ module Issuable
     hook_data.merge!(assignee: assignee.hook_attrs) if assignee
 
     hook_data
+  end
+
+  def labels_array
+    labels.to_a
   end
 
   def label_names

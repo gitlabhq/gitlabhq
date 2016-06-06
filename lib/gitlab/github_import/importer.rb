@@ -89,11 +89,11 @@ module Gitlab
           end
         end
 
-        delete_refs(branches_removed)
-
         true
       rescue ActiveRecord::RecordInvalid => e
         raise Projects::ImportService::Error, e.message
+      ensure
+        delete_refs(branches_removed)
       end
 
       def create_refs(branches)

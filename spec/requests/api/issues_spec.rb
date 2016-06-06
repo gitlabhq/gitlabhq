@@ -249,7 +249,6 @@ describe API::API, api: true  do
       expect(json_response['milestone']).to be_a Hash
       expect(json_response['assignee']).to be_a Hash
       expect(json_response['author']).to be_a Hash
-      expect(json_response['user_notes_count']).to be(1)
     end
 
     it "should return a project issue by id" do

@@ -194,7 +194,7 @@ Style/EmptyLines:
 
 # Keep blank lines around access modifiers.
 Style/EmptyLinesAroundAccessModifier:
-  Enabled: false
+  Enabled: true
 
 # Keeps track of empty lines around block bodies.
 Style/EmptyLinesAroundBlockBody:
@@ -247,7 +247,7 @@ Style/FlipFlop:
 
 # Checks use of for or each in multiline loops.
 Style/For:
-  Enabled: false
+  Enabled: true
 
 # Enforce the use of Kernel#sprintf, Kernel#format or String#%.
 Style/FormatString:
@@ -514,7 +514,7 @@ Style/SelfAssignment:
 
 # Don't use semicolons to terminate expressions.
 Style/Semicolon:
-  Enabled: false
+  Enabled: true
 
 # Checks for proper usage of fail and raise.
 Style/SignalException:
@@ -771,7 +771,7 @@ Metrics/PerceivedComplexity:
 # Checks for ambiguous operators in the first argument of a method invocation
 # without parentheses.
 Lint/AmbiguousOperator:
-  Enabled: false
+  Enabled: true
 
 # Checks for ambiguous regexp literals in the first argument of a method
 # invocation without parentheses.

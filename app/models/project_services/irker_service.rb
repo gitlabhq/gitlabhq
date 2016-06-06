@@ -83,7 +83,7 @@ class IrkerService < Service
     self.channels = recipients.split(/\s+/).map do |recipient|
       format_channel(recipient)
     end
-    channels.reject! &:nil?
+    channels.reject!(&:nil?)
   end
 
   def format_channel(recipient)

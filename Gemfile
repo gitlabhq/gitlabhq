@@ -18,9 +18,8 @@ gem "mysql2", '~> 0.3.16', group: :mysql
 gem "pg", '~> 0.18.2', group: :postgres
 
 # Authentication libraries
-gem 'devise',                 '~> 3.5.4'
+gem 'devise',                 '~> 4.0'
 gem 'doorkeeper',             '~> 3.1'
-gem 'devise-async',           '~> 0.9.0'
 gem 'omniauth',               '~> 1.3.1'
 gem 'omniauth-auth0',         '~> 1.4.1'
 gem 'omniauth-azure-oauth2',  '~> 0.0.6'
@@ -43,12 +42,13 @@ gem 'recaptcha', require: 'recaptcha/rails'
 gem 'akismet', '~> 2.0'
 
 # Two-factor authentication
-gem 'devise-two-factor', '~> 2.0.0'
+gem 'devise-two-factor', '~> 3.0.0'
 gem 'rqrcode-rails3', '~> 0.1.7'
-gem 'attr_encrypted', '~> 1.3.4'
+gem 'attr_encrypted', '~> 3.0.0'
+gem 'u2f', '~> 0.2.1'
 
 # Browser detection
-gem "browser", '~> 1.0.0'
+gem "browser", '~> 2.0.3'
 
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library
@@ -84,8 +84,14 @@ gem "carrierwave", '~> 0.10.0'
 # Drag and Drop UI
 gem 'dropzonejs-rails', '~> 0.7.1'
 
+# for backups
+gem 'fog-aws', '~> 0.9'
+gem 'fog-core', '~> 1.40'
+gem 'fog-local', '~> 0.3'
+gem 'fog-google', '~> 0.3'
+gem 'fog-openstack', '~> 0.1'
+
 # for aws storage
-gem "fog", "~> 1.36.0"
 gem "unf", '~> 0.1.4'
 
 # Authorization
@@ -138,7 +144,7 @@ gem 'redis-namespace'
 gem "httparty", '~> 0.13.3'
 
 # Colored output to console
-gem "colorize", '~> 0.7.0'
+gem "rainbow", '~> 2.1.0'
 
 # GitLab settings
 gem 'settingslogic', '~> 2.0.9'

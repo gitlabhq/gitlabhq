@@ -1,4 +1,4 @@
-//= require stat_graph_contributors_util
+//= require graphs/stat_graph_contributors_util
 
 describe("ContributorsStatGraphUtil", function () {
 
@@ -9,14 +9,14 @@ describe("ContributorsStatGraphUtil", function () {
             {author_email: "dzaporozhets@email.com", author_name: "Dmitriy Zaporozhets", date: "2013-05-08", additions: 6, deletions: 1},
             {author_email: "dzaporozhets@email.com", author_name: "Dmitriy Zaporozhets", date: "2013-05-08", additions: 19, deletions: 3},
             {author_email: "dzaporozhets@email.com", author_name: "Dmitriy Zaporozhets", date: "2013-05-08", additions: 29, deletions: 3}]
-      
+
       var correct_parsed_log = {
         total: [
         {date: "2013-05-09", additions: 471, deletions: 0, commits: 1},
         {date: "2013-05-08", additions: 54, deletions: 7, commits: 3}],
         by_author:
         [
-        { 
+        {
           author_name: "Karlo Soriano", author_email: "karlo@email.com",
           "2013-05-09": {date: "2013-05-09", additions: 471, deletions: 0, commits: 1}
         },
@@ -132,8 +132,8 @@ describe("ContributorsStatGraphUtil", function () {
       total: [{date: "2013-05-09", additions: 471, deletions: 0, commits: 1},
       {date: "2013-05-08", additions: 54, deletions: 7, commits: 3}],
       by_author:[
-      { 
-        author: "Karlo Soriano", 
+      {
+        author: "Karlo Soriano",
         "2013-05-09": {date: "2013-05-09", additions: 471, deletions: 0, commits: 1}
       },
       {
@@ -161,11 +161,11 @@ describe("ContributorsStatGraphUtil", function () {
     it("returns the log by author sorted by specified field", function () {
       var fake_parsed_log = {
         total: [
-          {date: "2013-05-09", additions: 471, deletions: 0, commits: 1}, 
+          {date: "2013-05-09", additions: 471, deletions: 0, commits: 1},
           {date: "2013-05-08", additions: 54, deletions: 7, commits: 3}
         ],
         by_author: [
-          { 
+          {
             author_name: "Karlo Soriano", author_email: "karlo@email.com",
             "2013-05-09": {date: "2013-05-09", additions: 471, deletions: 0, commits: 1}
           },

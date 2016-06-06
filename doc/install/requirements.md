@@ -150,3 +150,4 @@ On a very active server (10,000 active users) the Sidekiq process can use 1GB+ o
 - Safari 7+ (known problem: required fields in html5 do not work)
 - Opera (Latest released version)
 - Internet Explorer (IE) 11+ but please make sure that you have the `Compatibility View` mode disabled.
+- Edge (Latest stable version)
