@@ -11,7 +11,7 @@ module SharedBuilds
 
   step 'project has a recent build' do
     @ci_commit = create(:ci_commit, project: @project, sha: @project.commit.sha, ref: 'master')
-    @build = create(:ci_build_with_coverage, commit: @ci_commit)
+    @build = create(:ci_build_with_coverage, pipeline: @ci_commit)
   end
 
   step 'recent build is successful' do

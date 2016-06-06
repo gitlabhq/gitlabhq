@@ -316,7 +316,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @merge_request_diff = @merge_request.merge_request_diff
 
     @pipeline = @merge_request.pipeline
-    @statuses = @ci_commit.statuses if @pipeline
+    @statuses = @pipeline.statuses if @pipeline
 
     if @merge_request.locked_long_ago?
       @merge_request.unlock_mr
