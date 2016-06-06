@@ -1,7 +1,7 @@
 module Gitlab
   module Ci
     class Config
-      class Parser
+      class Loader
         class FormatError < StandardError; end
 
         def initialize(config)
@@ -12,7 +12,7 @@ module Gitlab
           @config.is_a?(Hash)
         end
 
-        def parse
+        def load
           unless valid?
             raise FormatError, 'Invalid configuration format'
           end

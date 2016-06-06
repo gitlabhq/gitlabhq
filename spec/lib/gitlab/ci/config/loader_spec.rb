@@ -1,24 +1,20 @@
 require 'spec_helper'
 
-describe Gitlab::Ci::Config::Parser do
-  let(:parser) { described_class.new(yml) }
+describe Gitlab::Ci::Config::Loader do
+  let(:loader) { described_class.new(yml) }
 
   context 'when yaml syntax is correct' do
     let(:yml) { 'image: ruby:2.2' }
 
     describe '#valid?' do
       it 'returns true' do
-        expect(parser.valid?).to be true
+        expect(loader.valid?).to be true
       end
     end
 
-    describe '#parse' do
-      it 'returns a hash' do
-        expect(parser.parse).to be_a Hash
-      end
-
+    describe '#load' do
       it 'returns a valid hash' do
-        expect(parser.parse).to eq(image: 'ruby:2.2')
+        expect(loader.load).to eq(image: 'ruby:2.2')
       end
     end
   end
@@ -28,14 +24,14 @@ describe Gitlab::Ci::Config::Parser do
 
     describe '#valid?' do
       it 'returns false' do
-        expect(parser.valid?).to be false
+        expect(loader.valid?).to be false
       end
     end
 
-    describe '#parse' do
+    describe '#load' do
       it 'raises error' do
-        expect { parser.parse }.to raise_error(
-          Gitlab::Ci::Config::Parser::FormatError,
+        expect { loader.load }.to raise_error(
+          Gitlab::Ci::Config::Loader::FormatError,
           'Invalid configuration format'
         )
       end
@@ -47,7 +43,7 @@ describe Gitlab::Ci::Config::Parser do
 
     describe '#valid?' do
       it 'returns false' do
-        expect(parser.valid?).to be false
+        expect(loader.valid?).to be false
       end
     end
   end

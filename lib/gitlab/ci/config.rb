@@ -1,16 +1,16 @@
 module Gitlab
   module Ci
     class Config
-      class ParserError < StandardError; end
+      class LoaderError < StandardError; end
 
       def initialize(config)
-        parser = Parser.new(config)
+        loader = Loader.new(config)
 
-        unless parser.valid?
-          raise ParserError, 'Invalid configuration format!'
+        unless loader.valid?
+          raise LoaderError, 'Invalid configuration format!'
         end
 
-        @config = parser.parse
+        @config = loader.load
       end
 
       def to_hash
