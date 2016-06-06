@@ -17,7 +17,7 @@ describe GitPushService, services: true do
 
     let(:oldrev) { @oldrev }
     let(:newrev) { @newrev }
-    let(:ref) { @ref}
+    let(:ref) { @ref }
 
     subject do
       execute_service(project, user, oldrev, newrev, ref)
@@ -49,26 +49,29 @@ describe GitPushService, services: true do
 
         context 'when protected branch pattern is disabled' do
           it 'does not create a new protected branch' do
-            project.protected_branch_pattern = ""
-            expect { subject }.not_to change { project.protected_branches.count }
+            project.protected_branch_pattern = ''
+
+            expect { subject }.not_to change { project.protected_branches.size }
           end
         end
 
         context 'when branch name does not match protected branch pattern' do
           it 'does not create a new protected branch' do
-            project.protected_branch_pattern = '^[1-9]-[1-9]-stable$'
-            expect { subject }.not_to change { project.protected_branches.count }
+            project.protected_branch_pattern = '^[0-9]+-[0-9]+-stable$'
+
+            expect { subject }.not_to change { project.protected_branches.size }
           end
         end
 
         context 'when branch name matches protected branch pattern' do
-          let(:ref) { 'refs/heads/1-1-stable' }
+          let(:ref) { 'refs/heads/9-8-stable' }
 
           it 'creates a new protected branch' do
-            project.protected_branch_pattern = '^[1-9]-[1-9]-stable$'
-            expect{ subject }.to change { project.protected_branches.count }.by(1)
-            expect(project.protected_branches.last.name).to eq "1-1-stable"
-            expect(project.protected_branches.last.developers_can_push).to eq false
+            project.protected_branch_pattern = '^[0-9]+-[0-9]+-stable$'
+
+            expect{ subject }.to change { project.protected_branches.size }.by(1)
+            expect(project.protected_branches.last.name).to eq '9-8-stable'
+            expect(project.protected_branches.last.developers_can_push).to be_false
           end
         end
       end

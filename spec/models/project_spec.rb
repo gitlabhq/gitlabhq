@@ -63,16 +63,22 @@ describe Project, models: true do
       expect(project2.errors[:limit_reached].first).to match(/Personal project creation is not allowed/)
     end
 
-    it 'should not allow protected branch pattern if it is not a valid regex' do
-      project.protected_branch_pattern = "((("
+    it 'does not allow protected branch pattern if it is not a valid regex' do
+      project.protected_branch_pattern = "[0-9"
+
       expect(project).not_to be_valid
-      expect(project.errors[:protected_branch_pattern].first).to match("((( is not a valid regular expression.")
+      expect(project.errors[:protected_branch_pattern].first).to match(/'\[0-9' is not a valid regular expression: .+/)
     end
 
-    it 'should allow empty protected branch pattern' do
+    it 'allows nil protected_branch_pattern' do
       project.protected_branch_pattern = nil
+
       expect(project).to be_valid
-      project.protected_branch_pattern = ""
+    end
+
+    it 'allows "" protected_branch_pattern' do
+      project.protected_branch_pattern = ''
+
       expect(project).to be_valid
     end
   end
