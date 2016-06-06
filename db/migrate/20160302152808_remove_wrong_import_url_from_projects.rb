@@ -28,7 +28,7 @@ class RemoveWrongImportUrlFromProjects < ActiveRecord::Migration
 
         update_import_url(import_url, project)
         update_import_data(import_url, project)
-      rescue URI::InvalidURIError
+      rescue Addressable::URI::InvalidURIError
         nullify_import_url(project)
       end
     end

@@ -36,19 +36,7 @@
         = icon('wrench')
         %span CI Lint
 
-.row-content-block
-  - if @scope == 'running'
-    此项目正在运行的管道
-  - elsif @scope.nil?
-    此项目的管道
-  - elsif @scope.titleize == 'Branches'
-    此项目的分支
-  - elsif @scope.titleize == 'Tags'
-    此项目的标签
-  - else
-    此项目的 #{@scope.titleize}
-
-%ul.content-list
+%ul.content-list.pipelines
   - stages = @pipelines.stages
   - if @pipelines.blank?
     %li
@@ -60,10 +48,10 @@
           %th ID
           %th 提交
           - stages.each do |stage|
-            %th
-              %span.pipeline-stage.has-tooltip{ title: "#{ci_stage_zh(stage)}" }
+            %th.stage
+              %span.has-tooltip{ title: "#{ci_stage_zh(stage)}" }
                 = ci_stage_zh(stage)
-          %th
+          %th 运行时间
           %th
         = render @pipelines, commit_sha: true, stage: true, allow_retry: true, stages: stages
 
