@@ -18,10 +18,10 @@ module Gitlab
         ]
       end
 
-      def send_git_archive(project, ref, format)
+      def send_git_archive(repository, ref:, format:)
         format ||= 'tar.gz'
         format.downcase!
-        params = project.repository.archive_metadata(ref, Gitlab.config.gitlab.repository_downloads_path, format)
+        params = repository.archive_metadata(ref, Gitlab.config.gitlab.repository_downloads_path, format)
         raise "Repository or ref not found" if params.empty?
 
         [
@@ -29,9 +29,9 @@ module Gitlab
           "git-archive:#{encode(params)}",
         ]
       end
-      
+
       protected
-      
+
       def encode(hash)
         Base64.urlsafe_encode64(JSON.dump(hash))
       end
