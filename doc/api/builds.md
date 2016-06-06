@@ -278,6 +278,30 @@ Response:
 
 [ce-2893]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/2893
 
+## Get a trace file
+
+Get a trace of a specific build of a project
+
+```
+GET /projects/:id/builds/:build_id/trace
+```
+
+| Attribute  | Type    | Required | Description         |
+|------------|---------|----------|---------------------|
+| id         | integer | yes      | The ID of a project |
+| build_id   | integer | yes      | The ID of a build   |
+
+```
+curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/builds/8/trace"
+```
+
+Response:
+
+| Status    | Description                       |
+|-----------|-----------------------------------|
+| 200       | Serves the trace file             |
+| 404       | Build not found or no trace file  |
+
 ## Cancel a build
 
 Cancel a single build of a project

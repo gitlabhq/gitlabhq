@@ -12,6 +12,10 @@ describe Issue, "Issuable" do
     it { is_expected.to have_many(:todos).dependent(:destroy) }
   end
 
+  describe 'Included modules' do
+    it { is_expected.to include_module(Awardable) }
+  end
+
   describe "Validation" do
     before do
       allow(subject).to receive(:set_iid).and_return(false)
@@ -245,8 +249,8 @@ describe Issue, "Issuable" do
     let(:project) { issue.project }
 
     before do
-      issue.notes.awards.create!(note: "thumbsup", author: user, project: project)
-      issue.notes.awards.create!(note: "thumbsdown", author: user, project: project)
+      create(:award_emoji, :upvote, awardable: issue)
+      create(:award_emoji, :downvote, awardable: issue)
     end
 
     it "returns correct values" do

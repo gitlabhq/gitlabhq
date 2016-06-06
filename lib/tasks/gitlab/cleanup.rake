@@ -10,7 +10,7 @@ namespace :gitlab do
       git_base_path = Gitlab.config.gitlab_shell.repos_path
       all_dirs = Dir.glob(git_base_path + '/*')
 
-      puts git_base_path.yellow
+      puts git_base_path.color(:yellow)
       puts "Looking for directories to remove... "
 
       all_dirs.reject! do |dir|
@@ -29,17 +29,17 @@ namespace :gitlab do
 
         if remove_flag
           if FileUtils.rm_rf dir_path
-            puts "Removed...#{dir_path}".red
+            puts "Removed...#{dir_path}".color(:red)
           else
-            puts "Cannot remove #{dir_path}".red
+            puts "Cannot remove #{dir_path}".color(:red)
           end
         else
-          puts "Can be removed: #{dir_path}".red
+          puts "Can be removed: #{dir_path}".color(:red)
         end
       end
 
       unless remove_flag
-        puts "To cleanup this directories run this command with REMOVE=true".yellow
+        puts "To cleanup this directories run this command with REMOVE=true".color(:yellow)
       end
     end
 
@@ -75,19 +75,19 @@ namespace :gitlab do
         next unless user.ldap_user?
         print "#{user.name} (#{user.ldap_identity.extern_uid}) ..."
         if Gitlab::LDAP::Access.allowed?(user)
-          puts " [OK]".green
+          puts " [OK]".color(:green)
         else
           if block_flag
             user.block! unless user.blocked?
-            puts " [BLOCKED]".red
+            puts " [BLOCKED]".color(:red)
           else
-            puts " [NOT IN LDAP]".yellow
+            puts " [NOT IN LDAP]".color(:yellow)
           end
         end
       end
 
       unless block_flag
-        puts "To block these users run this command with BLOCK=true".yellow
+        puts "To block these users run this command with BLOCK=true".color(:yellow)
       end
     end
   end

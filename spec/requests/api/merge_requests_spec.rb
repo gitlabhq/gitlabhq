@@ -138,7 +138,6 @@ describe API::API, api: true  do
       expect(json_response['work_in_progress']).to be_falsy
       expect(json_response['merge_when_build_succeeds']).to be_falsy
       expect(json_response['merge_status']).to eq('can_be_merged')
-      expect(json_response['user_notes_count']).to be(2)
     end
 
     it "should return merge_request" do

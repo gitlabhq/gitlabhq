@@ -93,6 +93,7 @@ module Gitlab
       end
 
       protected
+
       def base_config
         Gitlab.config.ldap
       end
