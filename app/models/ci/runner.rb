@@ -27,7 +27,9 @@ module Ci
     end
 
     scope :specific_for, ->(project) do
-      where(locked: false).where.not(id: project.runners).specific
+      # TODO: That `to_sql` is needed to workaround a weird Rails bug.
+      #       Without that, placeholders would miss one and couldn't match.
+      where(locked: false).where.not(id: project.runners.to_sql).specific
     end
 
     validate :tag_constraints
