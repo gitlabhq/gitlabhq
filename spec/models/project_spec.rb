@@ -64,20 +64,20 @@ describe Project, models: true do
     end
 
     it 'does not allow protected branch pattern if it is not a valid regex' do
-      project.protected_branch_pattern = "[0-9"
+      project.auto_protected_branch_pattern = "[0-9"
 
       expect(project).not_to be_valid
-      expect(project.errors[:protected_branch_pattern].first).to match(/'\[0-9' is not a valid regular expression: .+/)
+      expect(project.errors[:auto_protected_branch_pattern].first).to match(/'\[0-9' is not a valid regular expression: .+/)
     end
 
-    it 'allows nil protected_branch_pattern' do
-      project.protected_branch_pattern = nil
+    it 'allows nil auto_protected_branch_pattern' do
+      project.auto_protected_branch_pattern = nil
 
       expect(project).to be_valid
     end
 
-    it 'allows "" protected_branch_pattern' do
-      project.protected_branch_pattern = ''
+    it 'allows "" auto_protected_branch_pattern' do
+      project.auto_protected_branch_pattern = ''
 
       expect(project).to be_valid
     end

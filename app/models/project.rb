@@ -160,7 +160,7 @@ class Project < ActiveRecord::Base
   validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
   validate :visibility_level_allowed_by_group
   validate :visibility_level_allowed_as_fork
-  validates :protected_branch_pattern, regexp: true, allow_blank: true
+  validates :auto_protected_branch_pattern, regexp: true, allow_blank: true
   validates :build_coverage_regex, regexp: true, allow_blank: true
 
   add_authentication_token_field :runners_token

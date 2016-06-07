@@ -169,7 +169,7 @@ class GitPushService < BaseService
   end
 
   def create_protected_branch!
-    pattern = @project.protected_branch_pattern
+    pattern = @project.auto_protected_branch_pattern
 
     return unless pattern.present? && branch_name =~ Regexp.new(pattern)
     return if @project.protected_branches.exists?(name: branch_name)
