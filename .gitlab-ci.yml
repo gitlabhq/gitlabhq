@@ -144,7 +144,7 @@ spinach 9 10: *spinach-knapsack
   <<: *ruby-22
 
 .spinach-knapsack-ruby22: &spinach-knapsack-ruby22
-  <<: *rspec-knapsack
+  <<: *spinach-knapsack
   <<: *ruby-22
   
 rspec 0 20 ruby22: *rspec-knapsack-ruby22
