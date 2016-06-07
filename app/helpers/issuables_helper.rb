@@ -67,6 +67,20 @@ module IssuablesHelper
     end
   end
 
+  def issuable_todo_path(issuable)
+    project = issuable.project
+
+    if issuable.kind_of?(MergeRequest)
+      todo_namespace_project_merge_request_path(project.namespace, project, issuable.iid, :json)
+    else
+      todo_namespace_project_issue_path(project.namespace, project, issuable.iid, :json)
+    end
+  end
+
+  def has_todo(issuable)
+    current_user.todos.find_by(target_id: issuable.id, state: :pending)
+  end
+
   private
 
   def sidebar_gutter_collapsed?

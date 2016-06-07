@@ -43,6 +43,45 @@ class @Sidebar
             $('.right-sidebar')
               .hasClass('right-sidebar-collapsed'), { path: '/' })
 
+    $(document)
+      .off 'click', '.js-issuable-todo'
+      .on 'click', '.js-issuable-todo', @toggleTodo
+
+  toggleTodo: (e) ->
+    $this = $(@)
+    $btnText = $this.find('span')
+    data = {
+      todo_id: $this.attr('data-id')
+    }
+
+    $.ajax(
+      url: $this.data('url')
+      type: 'POST'
+      dataType: 'json'
+      data: data
+      beforeSend: ->
+        $this.disable()
+        $('.js-issuable-todo-loading').removeClass 'hidden'
+    ).done (data) ->
+      $todoPendingCount = $('.todos-pending-count')
+      $todoPendingCount.text data.count
+
+      $this.enable()
+      $('.js-issuable-todo-loading').addClass 'hidden'
+
+      if data.count is 0
+        $this.removeAttr 'data-id'
+        $btnText.text $this.data('todo-text')
+
+        $todoPendingCount
+          .addClass 'hidden'
+      else
+        $btnText.text $this.data('mark-text')
+        $todoPendingCount
+          .removeClass 'hidden'
+
+      if data.todo?
+        $this.attr 'data-id', data.todo.id
 
   sidebarDropdownLoading: (e) ->
     $sidebarCollapsedIcon = $(@).closest('.block').find('.sidebar-collapsed-icon')
@@ -117,5 +156,3 @@ class @Sidebar
 
   getBlock: (name) ->
     @sidebar.find(".block.#{name}")
-
-
