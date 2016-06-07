@@ -7,14 +7,14 @@ module Gitlab
 
           attr_reader :value, :nodes, :parent
 
-          def initialize(value, config, parent = nil)
+          def initialize(value, root = nil, parent = nil)
             @value = value
-            @config = config
+            @root = root
             @parent = parent
             @nodes, @errors = [], []
 
             keys.each_key do |key|
-              instance_variable_set("@#{key}", Null.new(nil, config, self))
+              instance_variable_set("@#{key}", Null.new(nil, root, self))
             end
           end
 
@@ -24,7 +24,7 @@ module Gitlab
             keys.each do |key, entry_class|
               next unless @value.has_key?(key)
 
-              entry = entry_class.new(@value[key], @config, self)
+              entry = entry_class.new(@value[key], @root, self)
               instance_variable_set("@#{key}", entry)
               @nodes.append(entry)
             end
@@ -42,7 +42,7 @@ module Gitlab
           end
 
           def leaf?
-            keys.none?
+            keys.none? # TODO || !@value.is_a?(Hash)
           end
 
           def keys

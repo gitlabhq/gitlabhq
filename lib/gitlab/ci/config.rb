@@ -13,7 +13,7 @@ module Gitlab
         end
 
         @config = loader.load
-        @global = Node::Global.new(@config, self)
+        @global = Node::Global.new(@config)
         @global.process!
       end
 

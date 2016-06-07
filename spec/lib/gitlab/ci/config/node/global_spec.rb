@@ -1,8 +1,7 @@
 require 'spec_helper'
 
 describe Gitlab::Ci::Config::Node::Global do
-  let(:global) { described_class.new(hash, config) }
-  let(:config) { double('Config') }
+  let(:global) { described_class.new(hash) }
 
   describe '#keys' do
     it 'can contain global config keys' do
