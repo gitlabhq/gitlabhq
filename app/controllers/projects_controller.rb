@@ -251,6 +251,22 @@ class ProjectsController < Projects::ApplicationController
     }
   end
 
+  def refs
+    repository = @project.repository
+
+    options = {
+      'Branches' => repository.branch_names,
+      'Tags' => VersionSorter.rsort(repository.tag_names)
+    }
+
+    # If reference is commit id - we should add it to branch/tag selectbox
+    if @ref && !options.flatten.include?(@ref) && @ref =~ /\A[0-9a-zA-Z]{6,52}\z/
+      options << {'Commits' => @ref}
+    end
+
+    render json: options.to_json
+  end
+
   private
 
   def determine_layout
