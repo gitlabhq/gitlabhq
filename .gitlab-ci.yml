@@ -96,6 +96,11 @@ scss-lint:
   script:
     - bundle exec rake scss_lint
 
+license-finder:
+  stage: test
+  script:
+    - bundle exec license_finder
+
 brakeman:
   stage: test
   script:

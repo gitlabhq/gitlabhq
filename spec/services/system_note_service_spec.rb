@@ -208,7 +208,7 @@ describe SystemNoteService, services: true do
   end
 
   describe '.merge_when_build_succeeds' do
-    let(:ci_commit) { build(:ci_commit_without_jobs )}
+    let(:pipeline) { build(:ci_pipeline_without_jobs )}
     let(:noteable) do
       create(:merge_request, source_project: project, target_project: project)
     end
@@ -223,7 +223,6 @@ describe SystemNoteService, services: true do
   end
 
   describe '.cancel_merge_when_build_succeeds' do
-    let(:ci_commit) { build(:ci_commit_without_jobs) }
     let(:noteable) do
       create(:merge_request, source_project: project, target_project: project)
     end

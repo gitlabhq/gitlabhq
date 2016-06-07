@@ -8,8 +8,8 @@ describe "Admin Runners" do
   describe "Runners page" do
     before do
       runner = FactoryGirl.create(:ci_runner)
-      commit = FactoryGirl.create(:ci_commit)
-      FactoryGirl.create(:ci_build, commit: commit, runner_id: runner.id)
+      pipeline = FactoryGirl.create(:ci_pipeline)
+      FactoryGirl.create(:ci_build, pipeline: pipeline, runner_id: runner.id)
       visit admin_runners_path
     end
 

@@ -6,6 +6,7 @@ v 8.8.1
 v 8.9.0 (unreleased)
   - Bulk assign/unassign labels to issues.
   - Allow enabling wiki page events from Webhook management UI
+  - Bump rouge to 1.11.0
   - Make EmailsOnPushWorker use Sidekiq mailers queue
   - Fix wiki page events' webhook to point to the wiki repository
   - Fix issue todo not remove when leave project !4150 (Long Nguyen)
@@ -39,8 +40,10 @@ v 8.9.0 (unreleased)
   - Cache project build count in sidebar nav
   - Reduce number of queries needed to render issue labels in the sidebar
   - Improve error handling importing projects
+  - Remove duplicated notification settings
   - Put project Files and Commits tabs under Code tab
   - Replace Colorize with Rainbow for coloring console output in Rake tasks.
+  - An indicator is now displayed at the top of the comment field for confidential issues.
 
 v 8.8.4 (unreleased)
   - Ensure branch cleanup regardless of whether the GitHub import process succeeds
@@ -48,6 +51,10 @@ v 8.8.4 (unreleased)
   - Fix todos page throwing errors when you have a project pending deletion
   - Reduce number of SQL queries when rendering user references
   - Upgrade to jQuery 2
+  - Remove prev/next buttons on issues and merge requests
+  - Import GitHub repositories respecting the API rate limit
+  - Fix importer for GitHub comments on diff
+  - Disable Webhooks before proceeding with the GitHub import
 
 v 8.8.3
   - Fix 404 page when viewing TODOs that contain milestones or labels in different projects. !4312
@@ -168,6 +175,7 @@ v 8.7.6
   - Fix import from GitLab.com to a private instance failure. !4181
   - Fix external imports not finding the import data. !4106
   - Fix notification delay when changing status of an issue
+  - Bump Workhorse to 0.7.5 so it can serve raw diffs
 
 v 8.7.5
   - Fix relative links in wiki pages. !4050
