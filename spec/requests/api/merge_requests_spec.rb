@@ -419,10 +419,11 @@ describe API::API, api: true  do
       expect(json_response['message']).to eq('405 Method Not Allowed')
     end
 
-    it "should return 405 if merge_request build is failed it's restrict to merge only when susccess" do
-      allow_any_instance_of(MergeRequest).to receive(:cannot_be_merged_because_build_failed?).and_return(true)
+    it 'returns 405 if the build failed for a merge request that requires success' do
+      allow_any_instance_of(MergeRequest).to receive(:cannot_be_merged_because_build_is_not_success?).and_return(true)
 
       put api("/projects/#{project.id}/merge_requests/#{merge_request.id}/merge", user)
+
       expect(response.status).to eq(405)
       expect(json_response['message']).to eq('405 Method Not Allowed')
     end

@@ -491,12 +491,39 @@ describe MergeRequest, models: true do
   end
 
   describe '#mergeable?' do
-    let(:project) { create(:project, only_allow_merge_if_build_succeeds: true) }
+    let(:project) { create(:project) }
 
     subject { create(:merge_request, source_project: project) }
 
-    it "checks if merge request can be merged" do
-      allow(subject).to receive(:cannot_be_merged_because_build_failed?) { false }
+    it 'calls mergeable_state?' do
+      expect(subject).to receive(:mergeable_state?)
+
+      expect(subject.mergeable?).to be_truthy
+    end
+
+    it 'calls check_if_can_be_merged' do
+      allow(subject).to receive(:mergeable_state?) { true }
+      expect(subject).to receive(:check_if_can_be_merged)
+
+      expect(subject.mergeable?).to be_truthy
+    end
+
+    it 'calls can_be_merged?' do
+      allow(subject).to receive(:mergeable_state?) { true }
+      allow(subject).to receive(:can_be_merged?) { true }
+      expect(subject).to receive(:check_if_can_be_merged)
+
+      expect(subject.mergeable?).to be_truthy
+    end
+  end
+
+  describe '#mergeable_state?' do
+    let(:project) { create(:project) }
+
+    subject { create(:merge_request, source_project: project) }
+
+    it 'checks if merge request can be merged' do
+      allow(subject).to receive(:cannot_be_merged_because_build_is_not_success?) { false }
       expect(subject).to receive(:check_if_can_be_merged)
 
       subject.mergeable?
@@ -506,7 +533,7 @@ describe MergeRequest, models: true do
       before { subject.close }
 
       it 'returns false' do
-        expect(subject.mergeable?).to be_falsey
+        expect(subject.mergeable_state?).to be_falsey
       end
     end
 
@@ -514,7 +541,7 @@ describe MergeRequest, models: true do
       before { subject.title = 'WIP MR' }
 
       it 'returns false' do
-        expect(subject.mergeable?).to be_falsey
+        expect(subject.mergeable_state?).to be_falsey
       end
     end
 
@@ -522,23 +549,27 @@ describe MergeRequest, models: true do
       before { allow(subject).to receive(:broken?) { true } }
 
       it 'returns false' do
-        expect(subject.mergeable?).to be_falsey
+        expect(subject.mergeable_state?).to be_falsey
       end
     end
 
     context 'when failed' do
       before { allow(subject).to receive(:broken?) { false } }
 
-      context "when project settings restrict to merge only if build succeeds" do
-        before { allow(subject).to receive(:cannot_be_merged_because_build_failed?) { true } }
-        it 'returns false if project settings restrict to merge only if build succeeds' do
-          expect(subject.mergeable?).to be_falsey
+      context 'when project settings restrict to merge only if build succeeds and build failed' do
+        before do
+          project.only_allow_merge_if_build_succeeds = true
+          allow(subject).to receive(:cannot_be_merged_because_build_is_not_success?) { true }
+        end
+
+        it 'returns false' do
+          expect(subject.mergeable_state?).to be_falsey
         end
       end
     end
   end
 
-  describe '#cannot_be_merged_because_build_failed?' do
+  describe '#cannot_be_merged_because_build_is_not_success?' do
     let(:project) { create(:empty_project, only_allow_merge_if_build_succeeds: true) }
     let(:commit_status) { create(:commit_status, status: 'failed', project: project) }
     let(:ci_commit) { create(:ci_empty_pipeline) }
@@ -550,8 +581,8 @@ describe MergeRequest, models: true do
       allow(subject).to receive(:ci_commit) { ci_commit }
     end
 
-    it "returns true if it's only allowed to merge green build and build has been failed" do
-      expect(subject.cannot_be_merged_because_build_failed?).to be_truthy
+    it 'returns true if it is only allowed to merge green build and build has been failed' do
+      expect(subject.cannot_be_merged_because_build_is_not_success?).to be_truthy
     end
 
     context 'when no ci_commit is associated' do
@@ -560,15 +591,15 @@ describe MergeRequest, models: true do
       end
 
       it 'returns false' do
-        expect(subject.cannot_be_merged_because_build_failed?).to be_falsey
+        expect(subject.cannot_be_merged_because_build_is_not_success?).to be_falsey
       end
     end
 
-    context "when isn't only allowed to merge green build at project settings" do
+    context 'when is not only allowed to merge green build at project settings' do
       subject { build(:merge_request, target_project: build(:empty_project, only_allow_merge_if_build_succeeds: false)) }
 
       it 'returns false' do
-        expect(subject.cannot_be_merged_because_build_failed?).to be_falsey
+        expect(subject.cannot_be_merged_because_build_is_not_success?).to be_falsey
       end
     end
   end
