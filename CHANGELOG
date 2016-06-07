@@ -50,6 +50,7 @@ v 8.8.4 (unreleased)
   - Upgrade to jQuery 2
   - Remove prev/next buttons on issues and merge requests
   - Import GitHub repositories respecting the API rate limit
+  - Fix importer for GitHub comments on diff
 
 v 8.8.3
   - Fix 404 page when viewing TODOs that contain milestones or labels in different projects. !4312
