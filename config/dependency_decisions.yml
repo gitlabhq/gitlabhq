@@ -1,0 +1,177 @@
+---
+# IGNORED GROUPS AND GEMS
+- - :ignore_group
+  - development
+  - :who: Connor Shea
+    :why: Development gems are not distributed with the final product and are therefore exempt.
+    :versions: []
+    :when: 2016-04-17 21:27:01.054140000 Z
+- - :ignore_group
+  - test
+  - :who: Connor Shea
+    :why: Test gems are not distributed with the final product and are therefore exempt.
+    :versions: []
+    :when: 2016-04-17 21:27:06.250326000 Z
+- - :ignore
+  - bundler
+  - :who: Connor Shea
+    :why: Bundler is MIT licensed but will sometimes fail in CI.
+    :versions: []
+    :when: 2016-05-02 06:42:08.045090000 Z
+
+# LICENSE WHITELIST
+- - :whitelist
+  - MIT
+  - :who: Connor Shea
+    :why: http://choosealicense.com/licenses/mit/
+    :versions: []
+    :when: 2016-04-17 21:12:24.558441000 Z
+- - :whitelist
+  - Apache 2.0
+  - :who: Connor Shea
+    :why: http://choosealicense.com/licenses/apache-2.0/
+    :versions: []
+    :when: 2016-05-02 05:27:43.762702000 Z
+- - :whitelist
+  - ruby
+  - :who: Connor Shea
+    :why: https://github.com/ruby/ruby/blob/ruby_2_1/COPYING
+    :versions: []
+    :when: 2016-05-02 05:31:54.498490000 Z
+- - :whitelist
+  - LGPL
+  - :who: Connor Shea
+    :why: http://www.gnu.org/licenses/license-list.html#LGPLv2.1
+    :versions: []
+    :when: 2016-05-02 05:32:48.645841000 Z
+- - :whitelist
+  - ISC
+  - :who: Connor Shea
+    :why: http://www.gnu.org/licenses/license-list.html#ISC
+    :versions: []
+    :when: 2016-05-02 05:42:01.894452000 Z
+- - :whitelist
+  - New BSD
+  - :who: Connor Shea
+    :why: https://opensource.org/licenses/BSD-3-Clause
+    :versions: []
+    :when: 2016-05-02 05:44:38.246021000 Z
+- - :whitelist
+  - LGPL-2.1+
+  - :who: Connor Shea
+    :why: Equivalent to LGPL.
+    :versions: []
+    :when: 2016-05-02 05:52:56.303239000 Z
+- - :whitelist
+  - BSD
+  - :who: Connor Shea
+    :why: https://opensource.org/licenses/BSD-2-Clause
+    :versions: []
+    :when: 2016-05-02 05:55:09.796363000 Z
+
+# LICENSE BLACKLIST
+- - :blacklist
+  - GPLv2
+  - :who: Connor Shea
+    :why: GPL-licensed libraries cannot be linked to from non-GPL projects.
+    :versions: []
+    :when: 2016-05-02 05:29:27.637336000 Z
+- - :blacklist
+  - GPLv3
+  - :who: Connor Shea
+    :why: GPL-licensed libraries cannot be linked to from non-GPL projects.
+    :versions: []
+    :when: 2016-05-02 05:29:43.904715000 Z
+
+# GEM LICENSES
+- - :license
+  - raphael-rails
+  - MIT
+  - :who: Connor Shea
+    :why: https://github.com/mockdeep/raphael-rails/blob/master/license.txt
+    :versions: []
+    :when: 2016-04-17 21:30:07.575392000 Z
+- - :license
+  - rouge
+  - MIT
+  - :who: Connor Shea
+    :why: https://github.com/jneen/rouge/blob/master/LICENSE
+    :versions: []
+    :when: 2016-04-17 21:31:29.490394000 Z
+- - :license
+  - pyu-ruby-sasl
+  - MIT
+  - :who: Connor Shea
+    :why: https://github.com/pyu10055/ruby-sasl/blob/master/MIT-LICENSE
+    :versions: []
+    :when: 2016-04-17 21:41:55.266420000 Z
+- - :license
+  - six
+  - MIT
+  - :who: Connor Shea
+    :why: https://github.com/randx/six/blob/master/LICENSE
+    :versions: []
+    :when: 2016-04-17 21:42:31.420186000 Z
+- - :license
+  - rdoc
+  - ruby
+  - :who: Connor Shea
+    :why: https://github.com/rdoc/rdoc/blob/master/LICENSE.rdoc
+    :versions: []
+    :when: 2016-04-17 21:43:30.480413000 Z
+- - :license
+  - expression_parser
+  - MIT
+  - :who: Connor Shea
+    :why: https://github.com/nricciar/expression_parser/blob/master/MIT-LICENSE
+    :versions: []
+    :when: 2016-04-17 21:45:41.829912000 Z
+- - :license
+  - creole
+  - ruby
+  - :who: Connor Shea
+    :why: https://github.com/minad/creole#license
+    :versions: []
+    :when: 2016-04-17 21:49:10.329759000 Z
+- - :license
+  - eventmachine
+  - ruby
+  - :who: Connor Shea
+    :why: https://github.com/eventmachine/eventmachine/blob/master/LICENSE
+    :versions: []
+    :when: 2016-04-17 21:49:10.329759001 Z
+- - :license
+  - unicorn
+  - ruby
+  - :who: Connor Shea
+    :why: http://unicorn.bogomips.org/LICENSE.html
+    :versions: []
+    :when: 2016-05-02 05:45:28.817510000 Z
+- - :license
+  - unicorn-worker-killer
+  - ruby
+  - :who: Connor Shea
+    :why: https://github.com/kzk/unicorn-worker-killer/blob/master/LICENSE
+    :versions: []
+    :when: 2016-05-02 05:45:38.323867000 Z
+- - :license
+  - json
+  - ruby
+  - :who: Connor Shea
+    :why: https://github.com/flori/json/tree/master#license
+    :versions: []
+    :when: 2016-05-02 05:50:07.826564000 Z
+- - :license
+  - unf
+  - BSD
+  - :who: Connor Shea
+    :why: https://github.com/knu/ruby-unf/blob/master/LICENSE
+    :versions: []
+    :when: 2016-05-02 05:51:46.886872000 Z
+- - :license
+  - rubypants
+  - BSD
+  - :who: Connor Shea
+    :why: https://github.com/jmcnevin/rubypants/blob/master/LICENSE.rdoc
+    :versions: []
+    :when: 2016-05-02 05:56:50.696858000 Z
