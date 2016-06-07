@@ -30,7 +30,6 @@ stages:
 - prepare
 - test
 - post-test
-- notifications
 
 # Prepare and merge knapsack tests
 
