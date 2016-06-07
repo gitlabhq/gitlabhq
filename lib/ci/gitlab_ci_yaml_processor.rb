@@ -18,7 +18,7 @@ module Ci
       initial_parsing
 
       validate!
-    rescue Gitlab::Ci::Config::LoaderError => e
+    rescue Gitlab::Ci::Config::Loader::FormatError => e
       raise ValidationError, e.message
     end
 

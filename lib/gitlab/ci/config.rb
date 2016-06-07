@@ -5,11 +5,6 @@ module Gitlab
 
       def initialize(config)
         loader = Loader.new(config)
-
-        unless loader.valid?
-          raise LoaderError, 'Invalid configuration format!'
-        end
-
         @config = loader.load
       end
 
