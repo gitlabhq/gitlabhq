@@ -15,14 +15,14 @@ module Ci
           update_runner_last_contact
           update_runner_info
           required_attributes! [:token]
-          not_found! unless current_runner.active?
+          no_content! unless current_runner.active?
 
           build = Ci::RegisterBuildService.new.execute(current_runner)
 
           if build
             present build, with: Entities::BuildDetails
           else
-            not_found!
+            no_content!
           end
         end
 
