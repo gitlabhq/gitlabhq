@@ -49,6 +49,14 @@ module Gitlab
           logger.debug { "No `admin_group` configured for '#{provider}' provider. Skipping" }
         end
 
+        if external_groups.empty?
+          logger.debug { "No `external_groups` configured for '#{provider}' provider. Skipping" }
+        else
+          logger.debug { "Syncing external users for '#{provider}' provider" }
+          sync_external_users
+          logger.debug { "Finished syncing external users for '#{provider}' provider" }
+        end
+
         nil
       end
 
@@ -121,6 +129,36 @@ module Gitlab
         end
       end
 
+      # Update external users based on the specified external groups CN
+      def sync_external_users
+        current_external_users = ::User.external.with_provider(provider)
+        verified_external_users = []
+
+        external_groups.each do |group|
+          group_dns = dns_for_group_cn(group)
+
+          group_dns.each do |member_dn|
+            user = Gitlab::LDAP::User.find_by_uid_and_provider(member_dn, provider)
+
+            if user.present?
+              user.external = true
+              user.save
+              verified_external_users << user
+            else
+              logger.debug do
+                <<-MSG.strip_heredoc.tr("\n", ' ')
+                  #{self.class.name}: User with DN `#{member_dn}` should be marked as
+                  external but there is no user in GitLab with that identity.
+                  Membership will be updated once the user signs in for the first time.
+                MSG
+              end
+            end
+          end
+        end
+
+        update_external_permissions(current_external_users, verified_external_users)
+      end
+
       private
 
       # Cache LDAP group member DNs so we don't query LDAP groups more than once.
@@ -149,6 +187,10 @@ module Gitlab
 
       def admin_group
         config.admin_group
+      end
+
+      def external_groups
+        config.external_groups
       end
 
       def ldap_group_member_dns(ldap_group_cn)
@@ -273,6 +315,16 @@ module Gitlab
             warn_cannot_remove_last_owner(user, group)
           else
             group.users.delete(user)
+          end
+        end
+      end
+
+      def update_external_permissions(users, verified)
+        # Restore normal access to users no longer found in the external groups
+        users.each do |user|
+          unless verified.include?(user)
+            user.external = false
+            user.save
           end
         end
       end

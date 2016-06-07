@@ -146,6 +146,14 @@ main: # 'main' is the GitLab 'provider ID' of this LDAP server
     #
     admin_group: ''
 
+    # An array of CNs of groups containing users that should be considered external
+    #
+    #   Ex. ['interns', 'contractors']
+    #
+    #   Note: Not `cn=interns` or the full DN
+    #
+    external_groups: []
+
     # The LDAP attribute containing a user's public SSH key
     #
     #   Ex. ssh_public_key
@@ -183,6 +191,28 @@ production:
         label: 'LDAP'
         # snip...
 ```
+
+### External Groups
+
+>**Note:** External Groups configuration is only available in GitLab EE Version
+8.9 and above.
+
+Using the `external_groups` setting will allow you to mark all users belonging
+to these groups as [external users](../../permissions/). Group membership is
+checked periodically through the `LdapGroupSync` background task.
+
+**Configuration**
+
+```yaml
+# An array of CNs of groups containing users that should be considered external
+#
+#   Ex. ['interns', 'contractors']
+#
+#   Note: Not `cn=interns` or the full DN
+#
+external_groups: []
+```
+
 
 ## Using an LDAP filter to limit access to your GitLab server
 

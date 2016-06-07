@@ -101,6 +101,10 @@ module Gitlab
         options['timeout'].to_i
       end
 
+      def external_groups
+        options['external_groups']
+      end
+
       protected
 
       def base_config

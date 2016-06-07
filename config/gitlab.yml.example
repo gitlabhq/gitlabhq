@@ -351,6 +351,12 @@ production: &base
         #
         admin_group: ''
 
+        # LDAP group of users who should be marked as external users in GitLab
+        #
+        #   Ex. ['Contractors', 'Interns']
+        #
+        external_groups: []
+
         # Name of attribute which holds a ssh public key of the user object.
         # If false or nil, SSH key syncronisation will be disabled.
         #
