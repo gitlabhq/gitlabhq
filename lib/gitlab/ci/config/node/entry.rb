@@ -16,6 +16,8 @@ module Gitlab
           end
 
           def process!
+            return if leaf?
+
             keys.each_pair do |key, entry|
               next unless @value.include?(key)
               @nodes[key] = entry.new(@value[key], @config, self)
@@ -29,12 +31,16 @@ module Gitlab
             @errors + nodes.map(&:errors).flatten
           end
 
+          def nodes
+            @nodes.values
+          end
+
           def valid?
             errors.none?
           end
 
-          def nodes
-            @nodes.values
+          def leaf?
+            keys.none?
           end
 
           def keys

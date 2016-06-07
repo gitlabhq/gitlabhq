@@ -31,6 +31,12 @@ describe Gitlab::Ci::Config::Node::Global do
           .to be_an_instance_of Gitlab::Ci::Config::Node::BeforeScript
       end
     end
+
+    describe '#leaf?' do
+      it 'is not leaf' do
+        expect(global).not_to be_leaf
+      end
+    end
   end
 
   context 'when hash is not valid' do
