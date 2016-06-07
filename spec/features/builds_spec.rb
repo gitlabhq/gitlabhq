@@ -237,8 +237,10 @@ describe "Builds" do
       it { expect(page.status_code).to eq(200) }
     end
 
-    it 'sends the right headers' do
-      click_link 'Raw'
+    context "Build from other project" do
+      before do
+        visit status_namespace_project_build_path(@project.namespace, @project, @build2)
+      end
 
       it { expect(page.status_code).to eq(404) }
     end
