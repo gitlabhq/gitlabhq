@@ -1,6 +1,9 @@
-.row-content-block.append-bottom-default
-  .tree-ref-holder
-    = render partial: 'shared/ref_switcher', locals: {destination: 'graph'}
+- @no_container = true
 
-  .oneline
-    You can move around the graph by using the arrow keys.
+%div{ class: (container_class) }
+  .row-content-block.second-block.content-component-block
+    .tree-ref-holder
+      = render partial: 'shared/ref_switcher', locals: {destination: 'graph'}
+
+    .oneline
+      You can move around the graph by using the arrow keys.
