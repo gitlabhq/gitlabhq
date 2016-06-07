@@ -180,7 +180,7 @@ describe 'GitLab Markdown', feature: true do
     end
   end
 
-  before(:all) do
+  before do
     @feat = MarkdownFeature.new
 
     # `markdown` helper expects a `@project` variable
@@ -188,7 +188,7 @@ describe 'GitLab Markdown', feature: true do
   end
 
   context 'default pipeline' do
-    before(:all) do
+    before do
       @html = markdown(@feat.raw_markdown)
     end
 
