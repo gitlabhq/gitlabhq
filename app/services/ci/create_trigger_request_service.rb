@@ -11,7 +11,7 @@ module Ci
 
       trigger_request = trigger.trigger_requests.create!(
         variables: variables,
-        commit: pipeline,
+        pipeline: pipeline,
       )
 
       if pipeline.create_builds(nil, trigger_request)
