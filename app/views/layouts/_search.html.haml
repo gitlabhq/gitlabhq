@@ -36,6 +36,21 @@
       - else
         = hidden_field_tag :search_code, true
 
+      :javascript
+        gl.projectOptions = gl.projectOptions || {};
+        gl.projectOptions["#{@project.path}"] = {
+          issuesPath: "#{namespace_project_issues_path(@project.namespace, @project)}",
+          mrPath: "#{namespace_project_merge_requests_path(@project.namespace, @project)}",
+          projectName: "#{@project.name}"
+        };
+
+    :javascript
+      gl.dashboardOptions = {
+        issuesPath: "#{issues_dashboard_url}",
+        mrPath: "#{merge_requests_dashboard_url}"
+      };
+
+
     - if @snippet || @snippets
       = hidden_field_tag :snippets, true
     = hidden_field_tag :repository_ref, @ref
