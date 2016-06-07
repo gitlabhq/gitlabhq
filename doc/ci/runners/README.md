@@ -66,7 +66,7 @@ Now simply register the runner as any runner:
 sudo gitlab-runner register
 ```
 
-Shared runners are enabled by default as of GitLab 8.2, but can be disabled with the 
+Shared runners are enabled by default as of GitLab 8.2, but can be disabled with the
 `DISABLE SHARED RUNNERS` button. Previous versions of GitLab defaulted shared runners to
 disabled.
 
@@ -128,7 +128,7 @@ the appropriate dependencies to run Rails test suites.
 ### Prevent runner with tags from picking jobs without tags
 
 You can configure a runner to prevent it from picking jobs with tags when
-the runnner does not have tags assigned. This setting is available on each
+the runner does not have tags assigned. This setting is available on each
 runner in *Project Settings* > *Runners*.
 
 ### Be careful with sensitive information
