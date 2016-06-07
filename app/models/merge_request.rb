@@ -313,13 +313,6 @@ class MergeRequest < ActiveRecord::Base
     )
   end
 
-  # Returns the raw diff for this merge request
-  #
-  # see "git diff"
-  def to_diff
-    target_project.repository.diff_text(diff_base_commit.sha, source_sha)
-  end
-
   # Returns the commit as a series of email patches.
   #
   # see "git format-patch"

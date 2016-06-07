@@ -84,17 +84,14 @@ describe Projects::MergeRequestsController do
     end
 
     describe "as diff" do
-      include_examples "export merge as", :diff
-      let(:format) { :diff }
-
-      it "should really only be a git diff" do
+      it "triggers workhorse to serve the request" do
         get(:show,
             namespace_id: project.namespace.to_param,
             project_id: project.to_param,
             id: merge_request.iid,
-            format: format)
+            format: :diff)
 
-        expect(response.body).to start_with("diff --git")
+        expect(response.headers['Gitlab-Workhorse-Send-Data']).to start_with("git-diff:")
       end
     end
 

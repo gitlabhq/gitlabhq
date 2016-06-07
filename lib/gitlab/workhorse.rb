@@ -29,9 +29,22 @@ module Gitlab
           "git-archive:#{encode(params)}",
         ]
       end
-      
+
+      def send_git_diff(repository, from, to)
+        params = {
+            'RepoPath'  => repository.path_to_repo,
+            'ShaFrom'   => from,
+            'ShaTo'     => to
+        }
+
+        [
+          SEND_DATA_HEADER,
+          "git-diff:#{encode(params)}"
+        ]
+      end
+
       protected
-      
+
       def encode(hash)
         Base64.urlsafe_encode64(JSON.dump(hash))
       end
