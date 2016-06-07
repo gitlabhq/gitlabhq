@@ -110,8 +110,8 @@ describe Gitlab::Badge::Build do
 
   def create_build(project, sha, branch)
     pipeline = create(:ci_pipeline, project: project,
-                                        sha: sha,
-                                        ref: branch)
+                                    sha: sha,
+                                    ref: branch)
 
     create(:ci_build, pipeline: pipeline)
   end

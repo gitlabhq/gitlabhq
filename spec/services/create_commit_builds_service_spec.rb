@@ -70,11 +70,11 @@ describe CreateCommitBuildsService, services: true do
       stub_ci_pipeline_yaml_file('invalid: file: file')
       commits = [{ message: message }]
       pipeline = service.execute(project, user,
-                               ref: 'refs/tags/0_1',
-                               before: '00000000',
-                               after: '31das312',
-                               commits: commits
-                              )
+                                 ref: 'refs/tags/0_1',
+                                 before: '00000000',
+                                 after: '31das312',
+                                 commits: commits
+                                 )
       expect(pipeline).to be_persisted
       expect(pipeline.builds.any?).to be false
       expect(pipeline.status).to eq('failed')
@@ -91,11 +91,11 @@ describe CreateCommitBuildsService, services: true do
       it "skips builds creation if there is [ci skip] tag in commit message" do
         commits = [{ message: message }]
         pipeline = service.execute(project, user,
-                                 ref: 'refs/tags/0_1',
-                                 before: '00000000',
-                                 after: '31das312',
-                                 commits: commits
-                                )
+                                   ref: 'refs/tags/0_1',
+                                   before: '00000000',
+                                   after: '31das312',
+                                   commits: commits
+                                   )
         expect(pipeline).to be_persisted
         expect(pipeline.builds.any?).to be false
         expect(pipeline.status).to eq("skipped")
@@ -106,11 +106,11 @@ describe CreateCommitBuildsService, services: true do
 
         commits = [{ message: "some message" }]
         pipeline = service.execute(project, user,
-                                 ref: 'refs/tags/0_1',
-                                 before: '00000000',
-                                 after: '31das312',
-                                 commits: commits
-                                )
+                                   ref: 'refs/tags/0_1',
+                                   before: '00000000',
+                                   after: '31das312',
+                                   commits: commits
+                                   )
 
         expect(pipeline).to be_persisted
         expect(pipeline.builds.first.name).to eq("staging")
@@ -120,11 +120,11 @@ describe CreateCommitBuildsService, services: true do
         stub_ci_pipeline_yaml_file('invalid: file: fiile')
         commits = [{ message: message }]
         pipeline = service.execute(project, user,
-                                 ref: 'refs/tags/0_1',
-                                 before: '00000000',
-                                 after: '31das312',
-                                 commits: commits
-                                )
+                                   ref: 'refs/tags/0_1',
+                                   before: '00000000',
+                                   after: '31das312',
+                                   commits: commits
+                                   )
         expect(pipeline).to be_persisted
         expect(pipeline.builds.any?).to be false
         expect(pipeline.status).to eq("skipped")
@@ -137,20 +137,20 @@ describe CreateCommitBuildsService, services: true do
 
       commits = [{ message: "message" }]
       pipeline = service.execute(project, user,
-                               ref: 'refs/heads/master',
-                               before: '00000000',
-                               after: '31das312',
-                               commits: commits
-                              )
+                                 ref: 'refs/heads/master',
+                                 before: '00000000',
+                                 after: '31das312',
+                                 commits: commits
+                                 )
       expect(pipeline).to be_persisted
       expect(pipeline.builds.count(:all)).to eq(2)
 
       pipeline = service.execute(project, user,
-                               ref: 'refs/heads/master',
-                               before: '00000000',
-                               after: '31das312',
-                               commits: commits
-                              )
+                                 ref: 'refs/heads/master',
+                                 before: '00000000',
+                                 after: '31das312',
+                                 commits: commits
+                                 )
       expect(pipeline).to be_persisted
       expect(pipeline.builds.count(:all)).to eq(2)
     end
@@ -161,11 +161,11 @@ describe CreateCommitBuildsService, services: true do
       commits = [{ message: "some message" }]
 
       pipeline = service.execute(project, user,
-                               ref: 'refs/tags/0_1',
-                               before: '00000000',
-                               after: '31das312',
-                               commits: commits
-                              )
+                                 ref: 'refs/tags/0_1',
+                                 before: '00000000',
+                                 after: '31das312',
+                                 commits: commits
+                                 )
 
       expect(pipeline).to be_persisted
       expect(pipeline.status).to eq("failed")
