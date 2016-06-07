@@ -48,11 +48,21 @@ module Gitlab
           end
 
           def keys
-            raise NotImplementedError
+            self.class.nodes || {}
           end
 
           def validate!
             raise NotImplementedError
+          end
+
+          class << self
+            attr_reader :nodes
+
+            private
+
+            def add_node(symbol, entry_class)
+              (@nodes ||= {}).merge!(symbol.to_sym => entry_class)
+            end
           end
         end
       end

@@ -3,10 +3,6 @@ module Gitlab
     class Config
       module Node
         class Null < Entry
-          def keys
-            {}
-          end
-
           def method_missing(*)
             nil
           end

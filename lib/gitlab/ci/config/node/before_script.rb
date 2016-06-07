@@ -5,10 +5,6 @@ module Gitlab
         class BeforeScript < Entry
           include ValidationHelpers
 
-          def keys
-            {}
-          end
-
           def validate!
             unless validate_array_of_strings(@value)
               @errors << 'before_script should be an array of strings'

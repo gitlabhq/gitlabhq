@@ -7,6 +7,10 @@ describe Gitlab::Ci::Config::Node::Global do
     it 'can contain global config keys' do
       expect(global.keys).to include :before_script
     end
+
+    it 'returns a hash' do
+      expect(global.keys).to be_a Hash
+    end
   end
 
   context 'when hash is valid' do

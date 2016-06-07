@@ -3,9 +3,7 @@ module Gitlab
     class Config
       module Node
         class Global < Entry
-          def keys
-            { before_script: BeforeScript }
-          end
+          add_node :before_script, BeforeScript
         end
       end
     end
