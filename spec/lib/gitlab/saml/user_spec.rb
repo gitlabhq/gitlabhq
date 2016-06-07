@@ -182,7 +182,7 @@ describe Gitlab::Saml::User, lib: true do
             context 'user has SAML user, and wants to add their LDAP identity' do
               it 'adds the LDAP identity to the existing SAML user' do
                 create(:omniauth_user, email: 'john@mail.com', extern_uid: 'uid=user1,ou=People,dc=example', provider: 'saml', username: 'john')
-                local_hash = OmniAuth::AuthHash.new(uid: 'uid=user1,ou=People,dc=example', provider: provider, info: info_hash, extra: { raw_info: OneLogin::RubySaml::Attributes.new({ 'groups' => %w(Developers Freelancers Designers) }) })
+                local_hash = OmniAuth::AuthHash.new(uid: 'uid=user1,ou=People,dc=example', provider: provider, info: info_hash)
                 local_saml_user = described_class.new(local_hash)
 
                 local_saml_user.save

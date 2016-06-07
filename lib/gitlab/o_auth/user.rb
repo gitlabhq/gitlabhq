@@ -69,13 +69,19 @@ module Gitlab
         return unless ldap_person
 
         # If a corresponding person exists with same uid in a LDAP server,
-        # set up a Gitlab user with dual LDAP and Omniauth identities.
-        if user = Gitlab::LDAP::User.find_by_uid_and_provider(ldap_person.dn, ldap_person.provider)
-          # Case when a LDAP user already exists in Gitlab. Add the Omniauth identity to existing account.
+        # check if the user already has a GitLab account.
+        if (user = Gitlab::LDAP::User.find_by_uid_and_provider(ldap_person.dn, ldap_person.provider))
+          # Case when a LDAP user already exists in Gitlab. Add the OAuth identity to existing account.
+          log.info "LDAP account found for user #{user.username}. Building new identity."
           user.identities.build(extern_uid: auth_hash.uid, provider: auth_hash.provider)
         else
-          # No account in Gitlab yet: create it and add the LDAP identity
-          user = build_new_user
+          log.info 'No existing LDAP account was found in GitLab. Checking for OAuth account.'
+          user = find_by_uid_and_provider
+          if user.nil?
+            log.info 'No user found with the specified OAuth provider. Creating a new one.'
+            user = build_new_user
+          end
+          log.info "Correct account has been found. Adding LDAP identity to user: #{user.username}."
           user.identities.new(provider: ldap_person.provider, extern_uid: ldap_person.dn)
         end
 
@@ -96,7 +102,7 @@ module Gitlab
         # Look for a corresponding person with same uid in any of the configured LDAP providers
         Gitlab::LDAP::Config.providers.each do |provider|
           adapter = Gitlab::LDAP::Adapter.new(provider)
-          @ldap_person = Gitlab::LDAP::Person.find_by_dn(auth_hash.uid, adapter)
+          @ldap_person = Gitlab::LDAP::Person.find_by_uid(auth_hash.uid, adapter)
           break if @ldap_person
         end
         @ldap_person
