@@ -36,32 +36,44 @@ describe Ci::Build, models: true do
     subject { build.ignored? }
 
     context 'if build is not allowed to fail' do
-      before { build.allow_failure = false }
+      before do
+        build.allow_failure = false
+      end
 
       context 'and build.status is success' do
-        before { build.status = 'success' }
+        before do
+          build.status = 'success'
+        end
 
         it { is_expected.to be_falsey }
       end
 
       context 'and build.status is failed' do
-        before { build.status = 'failed' }
+        before do
+          build.status = 'failed'
+        end
 
         it { is_expected.to be_falsey }
       end
     end
 
     context 'if build is allowed to fail' do
-      before { build.allow_failure = true }
+      before do
+        build.allow_failure = true
+      end
 
       context 'and build.status is success' do
-        before { build.status = 'success' }
+        before do
+          build.status = 'success'
+        end
 
         it { is_expected.to be_falsey }
       end
 
       context 'and build.status is failed' do
-        before { build.status = 'failed' }
+        before do
+          build.status = 'failed'
+        end
 
         it { is_expected.to be_truthy }
       end
@@ -75,7 +87,9 @@ describe Ci::Build, models: true do
 
     context 'if build.trace contains text' do
       let(:text) { 'example output' }
-      before { build.trace = text }
+      before do
+        build.trace = text
+      end
 
       it { is_expected.to include(text) }
       it { expect(subject.length).to be >= text.length }
@@ -188,7 +202,9 @@ describe Ci::Build, models: true do
         ]
       end
 
-      before { build.update_attributes(stage: 'stage') }
+      before do
+        build.update_attributes(stage: 'stage')
+      end
 
       it { is_expected.to eq(predefined_variables + yaml_variables) }
 
@@ -199,7 +215,9 @@ describe Ci::Build, models: true do
           ]
         end
 
-        before { build.update_attributes(tag: true) }
+        before do
+          build.update_attributes(tag: true)
+        end
 
         it { is_expected.to eq(tag_variable + predefined_variables + yaml_variables) }
       end
@@ -260,7 +278,9 @@ describe Ci::Build, models: true do
   describe '#can_be_served?' do
     let(:runner) { create(:ci_runner) }
 
-    before { build.project.runners << runner }
+    before do
+      build.project.runners << runner
+    end
 
     context 'when runner does not have tags' do
       it 'can handle builds without tags' do
@@ -274,7 +294,9 @@ describe Ci::Build, models: true do
     end
 
     context 'when runner has tags' do
-      before { runner.tag_list = ['bb', 'cc'] }
+      before do
+        runner.tag_list = ['bb', 'cc']
+      end
 
       shared_examples 'tagged build picker' do
         it 'can handle build with matching tags' do
@@ -297,7 +319,9 @@ describe Ci::Build, models: true do
       end
 
       context 'when runner cannot pick untagged jobs' do
-        before { runner.run_untagged = false }
+        before do
+          runner.run_untagged = false
+        end
 
         it 'cannot handle builds without tags' do
           expect(build.can_be_served?(runner)).to be_falsey
@@ -308,11 +332,15 @@ describe Ci::Build, models: true do
     end
 
     context 'when runner is locked' do
-      before { runner.locked = true }
+      before do
+        runner.locked = true
+      end
 
       shared_examples 'locked build picker' do |serve_matching_tags|
         context 'when runner cannot pick untagged jobs' do
-          before { runner.run_untagged = false }
+          before do
+            runner.run_untagged = false
+          end
 
           it 'cannot handle builds without tags' do
             expect(build.can_be_served?(runner)).to be_falsey
@@ -320,7 +348,9 @@ describe Ci::Build, models: true do
         end
 
         context 'when having runner tags' do
-          before { runner.tag_list = ['bb', 'cc'] }
+          before do
+            runner.tag_list = ['bb', 'cc']
+          end
 
           it "#{serve_matching_tags} handle it for matching tags" do
             build.tag_list = ['bb']
@@ -348,7 +378,9 @@ describe Ci::Build, models: true do
       end
 
       context 'serving a different project' do
-        before { runner.runner_projects.destroy_all }
+        before do
+          runner.runner_projects.destroy_all
+        end
 
         it 'cannot handle it' do
           expect(build.can_be_served?(runner)).to be_falsey
@@ -411,7 +443,9 @@ describe Ci::Build, models: true do
 
     %w(pending).each do |state|
       context "if commit_status.status is #{state}" do
-        before { build.status = state }
+        before do
+          build.status = state
+        end
 
         it { is_expected.to be_truthy }
 
@@ -430,7 +464,9 @@ describe Ci::Build, models: true do
 
     %w(success failed canceled running).each do |state|
       context "if commit_status.status is #{state}" do
-        before { build.status = state }
+        before do
+          build.status = state
+        end
 
         it { is_expected.to be_falsey }
       end
@@ -441,7 +477,10 @@ describe Ci::Build, models: true do
     subject { build.artifacts? }
 
     context 'artifacts archive does not exist' do
-      before { build.update_attributes(artifacts_file: nil) }
+      before do
+        build.update_attributes(artifacts_file: nil)
+      end
+
       it { is_expected.to be_falsy }
     end
 
@@ -606,7 +645,9 @@ describe Ci::Build, models: true do
       let!(:build) { create(:ci_build, :trace, :success, :artifacts) }
 
       describe '#erase' do
-        before { build.erase(erased_by: user) }
+        before do
+          build.erase(erased_by: user)
+        end
 
         context 'erased by user' do
           let!(:user) { create(:user, username: 'eraser') }
@@ -643,7 +684,9 @@ describe Ci::Build, models: true do
         end
 
         context 'build has been erased' do
-          before { build.erase }
+          before do
+            build.erase
+          end
 
           it { is_expected.to be true }
         end
@@ -651,7 +694,9 @@ describe Ci::Build, models: true do
 
       context 'metadata and build trace are not available' do
         let!(:build) { create(:ci_build, :success, :artifacts) }
-        before { build.remove_artifacts_metadata! }
+        before do
+          build.remove_artifacts_metadata!
+        end
 
         describe '#erase' do
           it 'should not raise error' do
