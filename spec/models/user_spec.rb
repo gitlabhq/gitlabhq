@@ -71,6 +71,7 @@ describe User, models: true do
         before do
           allow_any_instance_of(ApplicationSetting).to receive(:restricted_signup_domains).and_return([])
         end
+
         it 'accepts any email' do
           user = build(:user, email: "info@example.com")
           expect(user).to be_valid
@@ -81,6 +82,7 @@ describe User, models: true do
         before do
           allow_any_instance_of(ApplicationSetting).to receive(:restricted_signup_domains).and_return(['example.com', '*.example.com'])
         end
+
         it 'accepts info@example.com' do
           user = build(:user, email: "info@example.com")
           expect(user).to be_valid
@@ -211,6 +213,7 @@ describe User, models: true do
     before do
       allow_any_instance_of(ApplicationSetting).to receive(:send_user_confirmation_email).and_return(true)
     end
+
     let(:user) { create(:user, confirmed_at: nil, unconfirmed_email: 'test@gitlab.com') }
 
     it 'returns unconfirmed' do
