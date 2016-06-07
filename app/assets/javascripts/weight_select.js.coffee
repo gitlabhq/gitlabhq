@@ -36,7 +36,7 @@ class @WeightSelect
         hidden: (e) ->
           $selectbox.hide()
           # display:block overrides the hide-collapse rule
-          $value.removeAttr('style')
+          $value.css('display', '')
         id: (obj, el) ->
           $(el).data "id"
         clicked: (selected) ->
