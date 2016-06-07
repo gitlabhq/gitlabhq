@@ -134,7 +134,7 @@ class @SearchAutocomplete
     userId         = gon.current_user_id
     projectName    = 'Dashboard'
     projectSlug    = gl.utils.getProjectSlug()
-    projectOptions = gl.projectOptions[projectSlug]
+    projectOptions = gl.projectOptions?[projectSlug]
 
     if projectSlug and projectOptions
       { issuesPath, mrPath, projectName } = projectOptions
