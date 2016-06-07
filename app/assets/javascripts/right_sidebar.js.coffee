@@ -47,40 +47,41 @@ class @Sidebar
       .off 'click', '.js-issuable-todo'
       .on 'click', '.js-issuable-todo', @toggleTodo
 
-  toggleTodo: (e) ->
+  toggleTodo: ->
     $this = $(@)
-    $btnText = $this.find('span')
-    data = {
-      todo_id: $this.attr('data-id')
-    }
+    $todoLoading = $('.js-issuable-todo-loading')
+    $btnText = $('.js-issuable-todo-text', $this)
 
     $.ajax(
       url: $this.data('url')
       type: 'POST'
       dataType: 'json'
-      data: data
+      data:
+        todo_id: $this.attr('data-id')
       beforeSend: ->
         $this.disable()
-        $('.js-issuable-todo-loading').removeClass 'hidden'
+        $todoLoading.removeClass 'hidden'
     ).done (data) ->
       $todoPendingCount = $('.todos-pending-count')
       $todoPendingCount.text data.count
 
       $this.enable()
-      $('.js-issuable-todo-loading').addClass 'hidden'
+      $todoLoading.addClass 'hidden'
 
       if data.count is 0
-        $todoPendingCount
-          .addClass 'hidden'
+        $todoPendingCount.addClass 'hidden'
       else
-        $todoPendingCount
-          .removeClass 'hidden'
+        $todoPendingCount.removeClass 'hidden'
 
       if data.todo?
+        $this
+          .attr 'aria-label', $this.data('mark-text')
+          .attr 'data-id', data.todo.id
         $btnText.text $this.data('mark-text')
-        $this.attr 'data-id', data.todo.id
       else
-        $this.removeAttr 'data-id'
+        $this
+          .attr 'aria-label', $this.data('todo-text')
+          .removeAttr 'data-id'
         $btnText.text $this.data('todo-text')
 
   sidebarDropdownLoading: (e) ->
