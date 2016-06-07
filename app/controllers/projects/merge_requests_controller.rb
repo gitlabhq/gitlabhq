@@ -317,8 +317,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
     @merge_request_diff = @merge_request.merge_request_diff
 
-    @ci_commit = @merge_request.pipeline
-    @statuses = @ci_commit.statuses if @ci_commit
+    @pipeline = @merge_request.pipeline
+    @statuses = @pipeline.statuses if @pipeline
 
     if @merge_request.locked_long_ago?
       @merge_request.unlock_mr
@@ -327,8 +327,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def define_widget_vars
-    @ci_commit = @merge_request.pipeline
-    @ci_commits = [@ci_commit].compact
+    @pipeline = @merge_request.pipeline
+    @pipelines = [@pipeline].compact
     closes_issues
   end
 
