@@ -408,7 +408,7 @@ describe Project, models: true do
     it { is_expected.to eq(pipeline) }
 
     context 'return latest' do
-      let(:pipeline2) { create :pipeline, project: project, ref: 'master' }
+      let(:pipeline2) { create :ci_pipeline, project: project, ref: 'master' }
 
       before do
         pipeline
