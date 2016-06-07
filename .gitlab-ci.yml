@@ -23,6 +23,7 @@ before_script:
   - cp config/gitlab.yml.example config/gitlab.yml
   - bundle --version
   - '[ "$USE_BUNDLE_INSTALL" != "true" ] || retry bundle install --without postgres production --jobs $(nproc) "${FLAGS[@]}"'
+  - retry gem install knapsack
   - '[ "$USE_DB" != "true" ] || bundle exec rake db:drop db:create db:schema:load db:migrate'
 
 stages:
@@ -74,7 +75,6 @@ update-knapsack:
     - export KNAPSACK_REPORT_PATH=knapsack/${JOB_NAME}_node_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json
     - export KNAPSACK_GENERATE_REPORT=true
     - cp knapsack/${JOB_NAME}_report.json ${KNAPSACK_REPORT_PATH}
-    - bundle exec gem install bundler
     - knapsack ${JOB_NAME[0]}
   artifacts:
     paths:
