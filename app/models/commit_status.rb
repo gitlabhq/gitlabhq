@@ -4,10 +4,10 @@ class CommitStatus < ActiveRecord::Base
   self.table_name = 'ci_builds'
 
   belongs_to :project, class_name: '::Project', foreign_key: :gl_project_id
-  belongs_to :commit, class_name: 'Ci::Commit', touch: true
+  belongs_to :pipeline, class_name: 'Ci::Pipeline', foreign_key: :commit_id, touch: true
   belongs_to :user
 
-  validates :commit, presence: true
+  validates :pipeline, presence: true
 
   validates_presence_of :name
 
@@ -44,18 +44,18 @@ class CommitStatus < ActiveRecord::Base
     end
 
     after_transition [:pending, :running] => :success do |commit_status|
-      MergeRequests::MergeWhenBuildSucceedsService.new(commit_status.commit.project, nil).trigger(commit_status)
+      MergeRequests::MergeWhenBuildSucceedsService.new(commit_status.pipeline.project, nil).trigger(commit_status)
     end
 
     after_transition any => :failed do |commit_status|
-      MergeRequests::AddTodoWhenBuildFailsService.new(commit_status.commit.project, nil).execute(commit_status)
+      MergeRequests::AddTodoWhenBuildFailsService.new(commit_status.pipeline.project, nil).execute(commit_status)
     end
   end
 
-  delegate :sha, :short_sha, to: :commit
+  delegate :sha, :short_sha, to: :pipeline
 
   def before_sha
-    commit.before_sha || Gitlab::Git::BLANK_SHA
+    pipeline.before_sha || Gitlab::Git::BLANK_SHA
   end
 
   def self.stages

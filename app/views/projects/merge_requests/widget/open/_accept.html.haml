@@ -1,4 +1,4 @@
-- status_class = @ci_commit ? " ci-#{@ci_commit.status}" : nil
+- status_class = @pipeline ? " ci-#{@pipeline.status}" : nil
 
 = form_for [:merge, @project.namespace.becomes(Namespace), @project, @merge_request], remote: true, method: :post, html: { class: 'accept-mr-form js-quick-submit js-requires-input' } do |f|
   = hidden_field_tag :authenticity_token, form_authenticity_token
@@ -6,7 +6,7 @@
   .accept-merge-holder.clearfix.js-toggle-container
     .clearfix
       .accept-action
-        - if @ci_commit && @ci_commit.active?
+        - if @pipeline && @pipeline.active?
           %span.btn-group
             = button_tag class: "btn btn-create js-merge-button merge_when_build_succeeds" do
               Merge When Build Succeeds

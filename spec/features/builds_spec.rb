@@ -5,8 +5,8 @@ describe "Builds" do
 
   before do
     login_as(:user)
-    @commit = FactoryGirl.create :ci_commit
-    @build = FactoryGirl.create :ci_build, commit: @commit
+    @commit = FactoryGirl.create :ci_pipeline
+    @build = FactoryGirl.create :ci_build, pipeline: @commit
     @build2 = FactoryGirl.create :ci_build
     @project = @commit.project
     @project.team << [@user, :developer]

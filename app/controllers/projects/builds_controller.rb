@@ -26,9 +26,9 @@ class Projects::BuildsController < Projects::ApplicationController
   end
 
   def show
-    @builds = @project.ci_commits.find_by_sha(@build.sha).builds.order('id DESC')
+    @builds = @project.pipelines.find_by_sha(@build.sha).builds.order('id DESC')
     @builds = @builds.where("id not in (?)", @build.id)
-    @commit = @build.commit
+    @pipeline = @build.pipeline
 
     respond_to do |format|
       format.html

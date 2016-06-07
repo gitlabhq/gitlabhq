@@ -27,13 +27,13 @@ class Spinach::Features::ProjectPages < Spinach::FeatureSteps
   end
 
   step 'pages are deployed' do
-    commit = @project.ensure_ci_commit(@project.commit('HEAD').sha, 'HEAD')
+    pipeline = @project.ensure_pipeline(@project.commit('HEAD').sha, 'HEAD')
     build = build(:ci_build,
-                   project: @project,
-                   commit: commit,
-                   ref: 'HEAD',
-                   artifacts_file: fixture_file_upload(Rails.root + 'spec/fixtures/pages.zip'),
-                   artifacts_metadata: fixture_file_upload(Rails.root + 'spec/fixtures/pages.zip.meta')
+                  project: @project,
+                  pipeline: pipeline,
+                  ref: 'HEAD',
+                  artifacts_file: fixture_file_upload(Rails.root + 'spec/fixtures/pages.zip'),
+                  artifacts_metadata: fixture_file_upload(Rails.root + 'spec/fixtures/pages.zip.meta')
                  )
     result = ::Projects::UpdatePagesService.new(@project, build).execute
     expect(result[:status]).to eq(:success)

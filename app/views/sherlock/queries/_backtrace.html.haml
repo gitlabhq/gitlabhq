@@ -6,7 +6,11 @@
     %ul.well-list
       - @query.application_backtrace.each do |location|
         %li
-          = location.path
+          %strong
+            - if defined?(BetterErrors)
+              = link_to(location.path, BetterErrors.editor[location.path, location.line])
+            - else
+              = location.path
           %small.light
             = t('sherlock.line')
             = location.line

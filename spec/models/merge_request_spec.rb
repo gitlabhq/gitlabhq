@@ -420,19 +420,19 @@ describe MergeRequest, models: true do
     subject { create :merge_request, :simple }
   end
 
-  describe '#ci_commit' do
+  describe '#pipeline' do
     describe 'when the source project exists' do
       it 'returns the latest commit' do
-        commit    = double(:commit, id: '123abc')
-        ci_commit = double(:ci_commit, ref: 'master')
+        commit   = double(:commit, id: '123abc')
+        pipeline = double(:ci_pipeline, ref: 'master')
 
         allow(subject).to receive(:last_commit).and_return(commit)
 
-        expect(subject.source_project).to receive(:ci_commit).
+        expect(subject.source_project).to receive(:pipeline).
           with('123abc', 'master').
-          and_return(ci_commit)
+          and_return(pipeline)
 
-        expect(subject.ci_commit).to eq(ci_commit)
+        expect(subject.pipeline).to eq(pipeline)
       end
     end
 
@@ -440,7 +440,7 @@ describe MergeRequest, models: true do
       it 'returns nil' do
         allow(subject).to receive(:source_project).and_return(nil)
 
-        expect(subject.ci_commit).to be_nil
+        expect(subject.pipeline).to be_nil
       end
     end
   end
