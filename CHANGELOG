@@ -1,7 +1,9 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.9.0 (unreleased)
+  - Bulk assign/unassign labels to issues.
   - Allow enabling wiki page events from Webhook management UI
+  - Bump rouge to 1.11.0
   - Make EmailsOnPushWorker use Sidekiq mailers queue
   - Fix wiki page events' webhook to point to the wiki repository
   - Fix issue todo not remove when leave project !4150 (Long Nguyen)
@@ -22,6 +24,7 @@ v 8.9.0 (unreleased)
   - Fix issues filter when ordering by milestone
   - Todos will display target state if issuable target is 'Closed' or 'Merged'
   - Fix bug when sorting issues by milestone due date and filtering by two or more labels
+  - Add support for using Yubikeys (U2F) for two-factor authentication
   - Link to blank group icon doesn't throw a 404 anymore
   - Remove 'main language' feature
   - Pipelines can be canceled only when there are running builds
@@ -34,14 +37,18 @@ v 8.9.0 (unreleased)
   - Cache project build count in sidebar nav
   - Reduce number of queries needed to render issue labels in the sidebar
   - Improve error handling importing projects
+  - Remove duplicated notification settings
   - Put project Files and Commits tabs under Code tab
-
-v 8.8.4
-  - Fix todos page throwing errors when you have a project pending deletion
-  - Reduce number of SQL queries when rendering user references
+  - Replace Colorize with Rainbow for coloring console output in Rake tasks.
+  - An indicator is now displayed at the top of the comment field for confidential issues.
 
 v 8.8.4 (unreleased)
   - Ensure branch cleanup regardless of whether the GitHub import process succeeds
+  - Fix issue with arrow keys not working in search autocomplete dropdown
+  - Fix todos page throwing errors when you have a project pending deletion
+  - Reduce number of SQL queries when rendering user references
+  - Upgrade to jQuery 2
+  - Remove prev/next buttons on issues and merge requests
 
 v 8.8.3
   - Fix 404 page when viewing TODOs that contain milestones or labels in different projects. !4312

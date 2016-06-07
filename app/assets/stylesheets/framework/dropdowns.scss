@@ -232,9 +232,8 @@
   a {
     padding-left: 25px;
 
-    &.is-active {
+    &.is-indeterminate, &.is-active {
       &::before {
-        content: "\f00c";
         position: absolute;
         left: 5px;
         top: 50%;
@@ -245,6 +244,14 @@
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
       }
+    }
+
+    &.is-indeterminate::before {
+      content: "\f068";
+    }
+
+    &.is-active::before {
+      content: "\f00c";
     }
   }
 }

@@ -96,7 +96,7 @@ The designs are made using Antetype (`.atype` files). You can use the
 [free Antetype viewer (Mac OSX only)] or grab an exported PNG from the design
 (the PNG is 1:1).
 
-The current designs can be found in the [`gitlab1.atype` file].
+The current designs can be found in the [`gitlab8.atype` file].
 
 ### UI development kit
 
@@ -530,4 +530,4 @@ available at [http://contributor-covenant.org/version/1/1/0/](http://contributor
 [scss-styleguide]: doc/development/scss_styleguide.md "SCSS styleguide"
 [gitlab-design]: https://gitlab.com/gitlab-org/gitlab-design
 [free Antetype viewer (Mac OSX only)]: https://itunes.apple.com/us/app/antetype-viewer/id824152298?mt=12
-[`gitlab1.atype` file]: https://gitlab.com/gitlab-org/gitlab-design/tree/master/gitlab1.atype/
+[`gitlab8.atype` file]: https://gitlab.com/gitlab-org/gitlab-design/tree/master/current/

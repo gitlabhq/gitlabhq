@@ -2,14 +2,14 @@ namespace :gitlab do
   desc "GitLab | Update gitignore"
   task :update_gitignore do
     unless clone_gitignores
-      puts "Cloning the gitignores failed".red
+      puts "Cloning the gitignores failed".color(:red)
       return
     end
 
     remove_unneeded_files(gitignore_directory)
     remove_unneeded_files(global_directory)
 
-    puts "Done".green
+    puts "Done".color(:green)
   end
 
   def clone_gitignores

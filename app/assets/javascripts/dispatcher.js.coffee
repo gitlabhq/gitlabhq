@@ -17,11 +17,13 @@ class Dispatcher
     switch page
       when 'projects:issues:index'
         Issuable.init()
+        new IssuableBulkActions()
         shortcut_handler = new ShortcutsNavigation()
       when 'projects:issues:show'
         new Issue()
         shortcut_handler = new ShortcutsIssuable()
         new ZenMode()
+        gl.awardsHandler = new AwardsHandler()
       when 'projects:milestones:show', 'groups:milestones:show', 'dashboard:milestones:show'
         new Milestone()
       when 'dashboard:todos:index'
@@ -52,6 +54,7 @@ class Dispatcher
         new Diff()
         shortcut_handler = new ShortcutsIssuable(true)
         new ZenMode()
+        gl.awardsHandler = new AwardsHandler()
       when "projects:merge_requests:diffs"
         new Diff()
         new ZenMode()

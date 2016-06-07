@@ -170,6 +170,7 @@ rake brakeman: *exec
 rake flog: *exec
 rake flay: *exec
 rake db:migrate:reset: *exec
+license-finder: *exec
 
 bundler:audit:
   stage: test

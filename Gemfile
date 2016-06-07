@@ -45,9 +45,10 @@ gem 'akismet', '~> 2.0'
 gem 'devise-two-factor', '~> 3.0.0'
 gem 'rqrcode-rails3', '~> 0.1.7'
 gem 'attr_encrypted', '~> 3.0.0'
+gem 'u2f', '~> 0.2.1'
 
 # Browser detection
-gem "browser", '~> 1.0.0'
+gem "browser", '~> 2.0.3'
 
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library
@@ -110,7 +111,7 @@ gem 'org-ruby',      '~> 0.9.12'
 gem 'creole',        '~> 0.5.0'
 gem 'wikicloth',     '0.8.1'
 gem 'asciidoctor',   '~> 1.5.2'
-gem 'rouge',         '~> 1.10.1'
+gem 'rouge',         '~> 1.11'
 
 # See https://groups.google.com/forum/#!topic/ruby-security-ann/aSbgDiwb24s
 # and https://groups.google.com/forum/#!topic/ruby-security-ann/Dy7YiKb_pMM
@@ -143,7 +144,7 @@ gem 'redis-namespace'
 gem "httparty", '~> 0.13.3'
 
 # Colored output to console
-gem "colorize", '~> 0.7.0'
+gem "rainbow", '~> 2.1.0'
 
 # GitLab settings
 gem 'settingslogic', '~> 2.0.9'
@@ -305,6 +306,8 @@ group :development, :test do
   gem 'bundler-audit', require: false
 
   gem 'benchmark-ips', require: false
+
+  gem "license_finder", require: false
 end
 
 group :test do
