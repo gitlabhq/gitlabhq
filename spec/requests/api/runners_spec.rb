@@ -187,14 +187,16 @@ describe API::Runners, api: true  do
           update_runner(shared_runner.id, admin, description: "#{description}_updated",
                                                  active: !active,
                                                  tag_list: ['ruby2.1', 'pgsql', 'mysql'],
-                                                 run_untagged: 'false')
+                                                 run_untagged: 'false',
+                                                 locked: 'true')
           shared_runner.reload
 
           expect(response.status).to eq(200)
           expect(shared_runner.description).to eq("#{description}_updated")
           expect(shared_runner.active).to eq(!active)
           expect(shared_runner.tag_list).to include('ruby2.1', 'pgsql', 'mysql')
-          expect(shared_runner.run_untagged?).to be false
+          expect(shared_runner.run_untagged?).to be(false)
+          expect(shared_runner.locked?).to be(true)
         end
       end
 
