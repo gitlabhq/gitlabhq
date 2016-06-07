@@ -5,7 +5,7 @@ module Gitlab
 
       def initialize(config)
         loader = Loader.new(config)
-        @config = loader.load
+        @config = loader.load!
       end
 
       def to_hash
