@@ -48,7 +48,7 @@ stages:
     - knapsack/
 
 knapsack:
-  <<: *knapsack_state
+  <<: *rspec-knapsack_state
   stage: prepare
   script:
     - mkdir -p knapsack/
@@ -56,7 +56,7 @@ knapsack:
     - '[[ -f knapsack/spinach_report.json ]] || echo "{}" > knapsack/spinach_report.json'
 
 update-knapsack:
-  <<: *knapsack_state
+  <<: *rspec-knapsack_state
   stage: post-test
   script:
     - scripts/merge-reports knapsack/rspec_report.json knapsack/rspec_node_*.json
@@ -65,57 +65,73 @@ update-knapsack:
 
 # Execute all testing suites
 
-.knapsack: &knapsack
+.rspec-knapsack: &knapsack
   stage: test
   script:
     - bundle exec rake assets:precompile 2>/dev/null
     - JOB_NAME=( $CI_BUILD_NAME )
     - export CI_NODE_INDEX=${JOB_NAME[1]}
     - export CI_NODE_TOTAL=${JOB_NAME[2]}
-    - export KNAPSACK_REPORT_PATH=knapsack/${JOB_NAME}_node_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json
+    - export KNAPSACK_REPORT_PATH=knapsack/rspec_node_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json
     - export KNAPSACK_GENERATE_REPORT=true
-    - cp knapsack/${JOB_NAME}_report.json ${KNAPSACK_REPORT_PATH}
-    - knapsack ${JOB_NAME[0]}
+    - cp knapsack/rspec_report.json ${KNAPSACK_REPORT_PATH}
+    - knapsack rspec
   artifacts:
     paths:
     - knapsack/
 
-rspec 0 20: *knapsack
-rspec 1 20: *knapsack
-rspec 2 20: *knapsack
-rspec 3 20: *knapsack
-rspec 4 20: *knapsack
-rspec 5 20: *knapsack
-rspec 6 20: *knapsack
-rspec 7 20: *knapsack
-rspec 8 20: *knapsack
-rspec 9 20: *knapsack
-rspec 10 20: *knapsack
-rspec 11 20: *knapsack
-rspec 12 20: *knapsack
-rspec 13 20: *knapsack
-rspec 14 20: *knapsack
-rspec 15 20: *knapsack
-rspec 16 20: *knapsack
-rspec 17 20: *knapsack
-rspec 18 20: *knapsack
-rspec 19 20: *knapsack
+.spinach-knapsack: &knapsack
+  stage: test
+  script:
+    - bundle exec rake assets:precompile 2>/dev/null
+    - JOB_NAME=( $CI_BUILD_NAME )
+    - export CI_NODE_INDEX=${JOB_NAME[1]}
+    - export CI_NODE_TOTAL=${JOB_NAME[2]}
+    - export KNAPSACK_REPORT_PATH=knapsack/spinach_node_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json
+    - export KNAPSACK_GENERATE_REPORT=true
+    - cp knapsack/spinach_report.json ${KNAPSACK_REPORT_PATH}
+    - knapsack spinach[-r rerun]
+    # retry failed tests 3 times
+    - retry '[ ! -e tmp/spinach-rerun.txt ] || bin/spinach -r rerun $(cat tmp/spinach-rerun.txt)'
+  artifacts:
+    paths:
+    - knapsack/
 
-spinach 0 10: *knapsack
-spinach 1 10: *knapsack
-spinach 2 10: *knapsack
-spinach 3 10: *knapsack
-spinach 4 10: *knapsack
-spinach 5 10: *knapsack
-spinach 6 10: *knapsack
-spinach 7 10: *knapsack
-spinach 8 10: *knapsack
-spinach 9 10: *knapsack
+rspec 0 20: *rspec-knapsack
+rspec 1 20: *rspec-knapsack
+rspec 2 20: *rspec-knapsack
+rspec 3 20: *rspec-knapsack
+rspec 4 20: *rspec-knapsack
+rspec 5 20: *rspec-knapsack
+rspec 6 20: *rspec-knapsack
+rspec 7 20: *rspec-knapsack
+rspec 8 20: *rspec-knapsack
+rspec 9 20: *rspec-knapsack
+rspec 10 20: *rspec-knapsack
+rspec 11 20: *rspec-knapsack
+rspec 12 20: *rspec-knapsack
+rspec 13 20: *rspec-knapsack
+rspec 14 20: *rspec-knapsack
+rspec 15 20: *rspec-knapsack
+rspec 16 20: *rspec-knapsack
+rspec 17 20: *rspec-knapsack
+rspec 18 20: *rspec-knapsack
+rspec 19 20: *rspec-knapsack
+
+spinach 0 10: *spinach-knapsack
+spinach 1 10: *spinach-knapsack
+spinach 2 10: *spinach-knapsack
+spinach 3 10: *spinach-knapsack
+spinach 4 10: *spinach-knapsack
+spinach 5 10: *spinach-knapsack
+spinach 6 10: *spinach-knapsack
+spinach 7 10: *spinach-knapsack
+spinach 8 10: *spinach-knapsack
+spinach 9 10: *spinach-knapsack
 
 # Execute all testing suites against Ruby 2.2
 
-.knapsack-ruby22: &knapsack-ruby22
-  <<: *knapsack
+.ruby-22: &ruby22
   image: "ruby:2.2"
   only:
     - master
@@ -124,37 +140,45 @@ spinach 9 10: *knapsack
     paths:
     - vendor
 
-rspec 0 20 ruby22: *knapsack-ruby22
-rspec 1 20 ruby22: *knapsack-ruby22
-rspec 2 20 ruby22: *knapsack-ruby22
-rspec 3 20 ruby22: *knapsack-ruby22
-rspec 4 20 ruby22: *knapsack-ruby22
-rspec 5 20 ruby22: *knapsack-ruby22
-rspec 6 20 ruby22: *knapsack-ruby22
-rspec 7 20 ruby22: *knapsack-ruby22
-rspec 8 20 ruby22: *knapsack-ruby22
-rspec 9 20 ruby22: *knapsack-ruby22
-rspec 10 20 ruby22: *knapsack-ruby22
-rspec 11 20 ruby22: *knapsack-ruby22
-rspec 12 20 ruby22: *knapsack-ruby22
-rspec 13 20 ruby22: *knapsack-ruby22
-rspec 14 20 ruby22: *knapsack-ruby22
-rspec 15 20 ruby22: *knapsack-ruby22
-rspec 16 20 ruby22: *knapsack-ruby22
-rspec 17 20 ruby22: *knapsack-ruby22
-rspec 18 20 ruby22: *knapsack-ruby22
-rspec 19 20 ruby22: *knapsack-ruby22
+.rspec-knapsack-ruby22: &rspec-knapsack-ruby22
+  <<: *rspec-knapsack
+  <<: *ruby-22
 
-spinach 0 10 ruby22: *knapsack-ruby22
-spinach 1 10 ruby22: *knapsack-ruby22
-spinach 2 10 ruby22: *knapsack-ruby22
-spinach 3 10 ruby22: *knapsack-ruby22
-spinach 4 10 ruby22: *knapsack-ruby22
-spinach 5 10 ruby22: *knapsack-ruby22
-spinach 6 10 ruby22: *knapsack-ruby22
-spinach 7 10 ruby22: *knapsack-ruby22
-spinach 8 10 ruby22: *knapsack-ruby22
-spinach 9 10 ruby22: *knapsack-ruby22
+.spinach-knapsack-ruby22: &spinach-knapsack-ruby22
+  <<: *rspec-knapsack
+  <<: *ruby-22
+  
+rspec 0 20 ruby22: *rspec-knapsack-ruby22
+rspec 1 20 ruby22: *rspec-knapsack-ruby22
+rspec 2 20 ruby22: *rspec-knapsack-ruby22
+rspec 3 20 ruby22: *rspec-knapsack-ruby22
+rspec 4 20 ruby22: *rspec-knapsack-ruby22
+rspec 5 20 ruby22: *rspec-knapsack-ruby22
+rspec 6 20 ruby22: *rspec-knapsack-ruby22
+rspec 7 20 ruby22: *rspec-knapsack-ruby22
+rspec 8 20 ruby22: *rspec-knapsack-ruby22
+rspec 9 20 ruby22: *rspec-knapsack-ruby22
+rspec 10 20 ruby22: *rspec-knapsack-ruby22
+rspec 11 20 ruby22: *rspec-knapsack-ruby22
+rspec 12 20 ruby22: *rspec-knapsack-ruby22
+rspec 13 20 ruby22: *rspec-knapsack-ruby22
+rspec 14 20 ruby22: *rspec-knapsack-ruby22
+rspec 15 20 ruby22: *rspec-knapsack-ruby22
+rspec 16 20 ruby22: *rspec-knapsack-ruby22
+rspec 17 20 ruby22: *rspec-knapsack-ruby22
+rspec 18 20 ruby22: *rspec-knapsack-ruby22
+rspec 19 20 ruby22: *rspec-knapsack-ruby22
+
+spinach 0 10 ruby22: *spinach-knapsack-ruby22
+spinach 1 10 ruby22: *spinach-knapsack-ruby22
+spinach 2 10 ruby22: *spinach-knapsack-ruby22
+spinach 3 10 ruby22: *spinach-knapsack-ruby22
+spinach 4 10 ruby22: *spinach-knapsack-ruby22
+spinach 5 10 ruby22: *spinach-knapsack-ruby22
+spinach 6 10 ruby22: *spinach-knapsack-ruby22
+spinach 7 10 ruby22: *spinach-knapsack-ruby22
+spinach 8 10 ruby22: *spinach-knapsack-ruby22
+spinach 9 10 ruby22: *spinach-knapsack-ruby22
 
 # Other generic tests
 
