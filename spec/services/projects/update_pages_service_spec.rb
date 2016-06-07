@@ -2,8 +2,8 @@ require "spec_helper"
 
 describe Projects::UpdatePagesService do
   let(:project) { create :project }
-  let(:commit) { create :ci_commit, project: project, sha: project.commit('HEAD').sha }
-  let(:build) { create :ci_build, commit: commit, ref: 'HEAD' }
+  let(:pipeline) { create :ci_pipeline, project: project, sha: project.commit('HEAD').sha }
+  let(:build) { create :ci_build, pipeline: pipeline, ref: 'HEAD' }
   let(:invalid_file) { fixture_file_upload(Rails.root + 'spec/fixtures/dk.png') }
 
   subject { described_class.new(project, build) }
@@ -47,7 +47,7 @@ describe Projects::UpdatePagesService do
       end
 
       it 'fails if sha on branch is not latest' do
-        commit.update_attributes(sha: 'old_sha')
+        pipeline.update_attributes(sha: 'old_sha')
         build.update_attributes(artifacts_file: file)
         expect(execute).not_to eq(:success)
       end
