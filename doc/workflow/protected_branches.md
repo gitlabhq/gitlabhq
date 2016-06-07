@@ -29,3 +29,19 @@ For those workflows, you can allow everyone with write access to push to a prote
 On already protected branches you can also allow developers to push to the repository by selecting the `Developers can push` check box.
 
 ![Developers can push](protected_branches/protected_branches2.png)
+
+## Automatically-protect new branches that match a regex pattern
+
+Some workflows, like [GitLab workflow](gitlab_flow.md#release-branches-with-gitlab-flow),
+requires that new branches (e.g. "release" branches) are created on a regular
+basis. Most of the time, these branches are created by automated scripts.
+Since these branches must be protected and follow a known pattern, they can be
+automatically protected as soon as they are pushed to GitLab.
+
+To enable the auto-protection of branches, navigate to the project settings pages,
+and enter the regex pattern that branches should match in the `Auto-protected
+branch pattern` text field. You can also allow everyone with write access to push
+to a new auto-protected branch by selecting the `Developers can push to
+auto-protected branches` check box.
+
+![Auto-protected branches](protected_branches/protected_branches3.png)
