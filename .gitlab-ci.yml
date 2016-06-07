@@ -34,7 +34,7 @@ stages:
 
 # Prepare and merge knapsack tests
 
-.knapsack_state: &knapsack_state
+.knapsack-state: &knapsack-state
   services: []
   variables:
     USE_DB: "false"
@@ -48,7 +48,7 @@ stages:
     - knapsack/
 
 knapsack:
-  <<: *rspec-knapsack_state
+  <<: *knapsack-state
   stage: prepare
   script:
     - mkdir -p knapsack/
@@ -56,7 +56,7 @@ knapsack:
     - '[[ -f knapsack/spinach_report.json ]] || echo "{}" > knapsack/spinach_report.json'
 
 update-knapsack:
-  <<: *rspec-knapsack_state
+  <<: *knapsack-state
   stage: post-test
   script:
     - scripts/merge-reports knapsack/rspec_report.json knapsack/rspec_node_*.json
@@ -65,7 +65,7 @@ update-knapsack:
 
 # Execute all testing suites
 
-.rspec-knapsack: &knapsack
+.rspec-knapsack: &rspec-knapsack
   stage: test
   script:
     - bundle exec rake assets:precompile 2>/dev/null
@@ -80,7 +80,7 @@ update-knapsack:
     paths:
     - knapsack/
 
-.spinach-knapsack: &knapsack
+.spinach-knapsack: &spinach-knapsack
   stage: test
   script:
     - bundle exec rake assets:precompile 2>/dev/null
@@ -131,7 +131,7 @@ spinach 9 10: *spinach-knapsack
 
 # Execute all testing suites against Ruby 2.2
 
-.ruby-22: &ruby22
+.ruby-22: &ruby-22
   image: "ruby:2.2"
   only:
     - master
