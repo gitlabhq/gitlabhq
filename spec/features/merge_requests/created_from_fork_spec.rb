@@ -29,9 +29,9 @@ feature 'Merge request created from fork' do
     include WaitForAjax
 
     given(:pipeline) do
-      create(:ci_commit_with_two_jobs, project: fork_project,
-                                       sha: merge_request.last_commit.id,
-                                       ref: merge_request.source_branch)
+      create(:ci_pipeline_with_two_job, project: fork_project,
+                                        sha: merge_request.last_commit.id,
+                                        ref: merge_request.source_branch)
     end
 
     background { pipeline.create_builds(user) }

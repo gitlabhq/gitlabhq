@@ -6,7 +6,7 @@ describe Ci::CreateTriggerRequestService, services: true do
   let(:trigger) { create(:ci_trigger, project: project) }
 
   before do
-    stub_ci_commit_to_return_yaml_file
+    stub_ci_pipeline_to_return_yaml_file
   end
 
   describe :execute do
@@ -27,8 +27,8 @@ describe Ci::CreateTriggerRequestService, services: true do
       subject { service.execute(project, trigger, 'master') }
 
       before do
-        stub_ci_commit_yaml_file('{}')
-        FactoryGirl.create :ci_commit, project: project
+        stub_ci_pipeline_yaml_file('{}')
+        FactoryGirl.create :ci_pipeline, project: project
       end
 
       it { expect(subject).to be_nil }

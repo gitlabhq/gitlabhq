@@ -109,11 +109,11 @@ describe Gitlab::Badge::Build do
   end
 
   def create_build(project, sha, branch)
-    ci_commit = create(:ci_commit, project: project,
-                                   sha: sha,
-                                   ref: branch)
+    pipeline = create(:ci_pipeline, project: project,
+                                    sha: sha,
+                                    ref: branch)
 
-    create(:ci_build, commit: ci_commit)
+    create(:ci_build, pipeline: pipeline)
   end
 
   def status_node(data, status)

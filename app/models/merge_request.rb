@@ -579,8 +579,8 @@ class MergeRequest < ActiveRecord::Base
     diverged_commits_count > 0
   end
 
-  def ci_commit
-    @ci_commit ||= source_project.ci_commit(last_commit.id, source_branch) if last_commit && source_project
+  def pipeline
+    @pipeline ||= source_project.pipeline(last_commit.id, source_branch) if last_commit && source_project
   end
 
   def diff_refs

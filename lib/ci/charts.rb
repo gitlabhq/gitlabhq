@@ -60,7 +60,7 @@ module Ci
 
     class BuildTime < Chart
       def collect
-        commits = project.ci_commits.last(30)
+        commits = project.pipelines.last(30)
 
         commits.each do |commit|
           @labels << commit.short_sha

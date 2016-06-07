@@ -6,7 +6,7 @@ describe MergeRequests::AddTodoWhenBuildFailsService do
   let(:merge_request) { create(:merge_request) }
   let(:project) { create(:project) }
   let(:sha) { '1234567890abcdef1234567890abcdef12345678' }
-  let(:ci_commit) { create(:ci_commit_with_one_job, ref: merge_request.source_branch, project: project, sha: sha) }
+  let(:pipeline) { create(:ci_pipeline_with_one_job, ref: merge_request.source_branch, project: project, sha: sha) }
   let(:service) { MergeRequests::AddTodoWhenBuildFailsService.new(project, user, commit_message: 'Awesome message') }
   let(:todo_service) { TodoService.new }
 
@@ -17,13 +17,13 @@ describe MergeRequests::AddTodoWhenBuildFailsService do
   end
 
   before do
-    allow_any_instance_of(MergeRequest).to receive(:ci_commit).and_return(ci_commit)
+    allow_any_instance_of(MergeRequest).to receive(:pipeline).and_return(pipeline)
     allow(service).to receive(:todo_service).and_return(todo_service)
   end
 
   describe '#execute' do
     context 'commit status with ref' do
-      let(:commit_status) { create(:generic_commit_status, ref: merge_request.source_branch, commit: ci_commit) }
+      let(:commit_status) { create(:generic_commit_status, ref: merge_request.source_branch, pipeline: pipeline) }
 
       it 'notifies the todo service' do
         expect(todo_service).to receive(:merge_request_build_failed).with(merge_request)
@@ -52,7 +52,7 @@ describe MergeRequests::AddTodoWhenBuildFailsService do
 
   describe '#close' do
     context 'commit status with ref' do
-      let(:commit_status) { create(:generic_commit_status, ref: merge_request.source_branch, commit: ci_commit) }
+      let(:commit_status) { create(:generic_commit_status, ref: merge_request.source_branch, pipeline: pipeline) }
 
       it 'notifies the todo service' do
         expect(todo_service).to receive(:merge_request_build_retried).with(merge_request)

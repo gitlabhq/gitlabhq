@@ -1,12 +1,14 @@
 module Ci
-  class Commit < ActiveRecord::Base
+  class Pipeline < ActiveRecord::Base
     extend Ci::Model
     include Statuseable
 
+    self.table_name = 'ci_commits'
+
     belongs_to :project, class_name: '::Project', foreign_key: :gl_project_id
-    has_many :statuses, class_name: 'CommitStatus'
-    has_many :builds, class_name: 'Ci::Build'
-    has_many :trigger_requests, dependent: :destroy, class_name: 'Ci::TriggerRequest'
+    has_many :statuses, class_name: 'CommitStatus', foreign_key: :commit_id
+    has_many :builds, class_name: 'Ci::Build', foreign_key: :commit_id
+    has_many :trigger_requests, dependent: :destroy, class_name: 'Ci::TriggerRequest', foreign_key: :commit_id
 
     validates_presence_of :sha
     validates_presence_of :status
@@ -21,7 +23,7 @@ module Ci
 
     def self.stages
       # We use pluck here due to problems with MySQL which doesn't allow LIMIT/OFFSET in queries
-      CommitStatus.where(commit: pluck(:id)).stages
+      CommitStatus.where(pipeline: pluck(:id)).stages
     end
 
     def project_id
@@ -47,7 +49,7 @@ module Ci
     end
 
     def short_sha
-      Ci::Commit.truncate_sha(sha)
+      Ci::Pipeline.truncate_sha(sha)
     end
 
     def commit_data
