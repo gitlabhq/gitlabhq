@@ -5,6 +5,11 @@ module Gitlab
 
       delegate :valid?, :errors, to: :@global
 
+      ##
+      # Temporary delegations that should be removed after refactoring
+      #
+      delegate :before_script, to: :@global
+
       def initialize(config)
         loader = Loader.new(config)
 

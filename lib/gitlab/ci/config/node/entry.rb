@@ -55,6 +55,10 @@ module Gitlab
             raise NotImplementedError
           end
 
+          def description
+            raise NotImplementedError
+          end
+
           class << self
             attr_reader :nodes
 

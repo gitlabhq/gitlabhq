@@ -82,7 +82,7 @@ module Ci
       {
         stage_idx: stages.index(job[:stage]),
         stage: job[:stage],
-        commands: [job[:before_script] || @before_script, job[:script]].flatten.join("\n"),
+        commands: [job[:before_script] || [@ci_config.before_script], job[:script]].flatten.compact.join("\n"),
         tag_list: job[:tags] || [],
         name: name,
         only: job[:only],
