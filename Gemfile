@@ -111,7 +111,7 @@ gem 'org-ruby',      '~> 0.9.12'
 gem 'creole',        '~> 0.5.0'
 gem 'wikicloth',     '0.8.1'
 gem 'asciidoctor',   '~> 1.5.2'
-gem 'rouge',         '~> 1.10.1'
+gem 'rouge',         '~> 1.11'
 
 # See https://groups.google.com/forum/#!topic/ruby-security-ann/aSbgDiwb24s
 # and https://groups.google.com/forum/#!topic/ruby-security-ann/Dy7YiKb_pMM
