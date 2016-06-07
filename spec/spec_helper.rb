@@ -15,6 +15,9 @@ require 'rspec/rails'
 require 'shoulda/matchers'
 require 'sidekiq/testing/inline'
 require 'rspec/retry'
+require 'knapsack'
+
+Knapsack::Adapters::RSpecAdapter.bind
 
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.
