@@ -33,11 +33,11 @@ class Label < ActiveRecord::Base
   scope :templates, ->  { where(template: true) }
 
   def self.prioritized
-    where.not(priority: nil).reorder(:title)
+    where.not(priority: nil).reorder(:priority, :title)
   end
 
   def self.unprioritized
-    where(priority: nil).reorder(:title)
+    where(priority: nil)
   end
 
   alias_attribute :name, :title

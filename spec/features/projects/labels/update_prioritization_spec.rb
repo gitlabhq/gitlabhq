@@ -55,7 +55,7 @@ feature 'Prioritize labels', feature: true do
       end
     end
 
-    scenario 'user can sort prioritized labels', js: true do
+    scenario 'user can sort prioritized labels and persist across reloads', js: true do
       bug     = create(:label, title: 'bug', priority: 1)
       wontfix = create(:label, title: 'wontfix', priority: 2)
 
@@ -70,6 +70,13 @@ feature 'Prioritize labels', feature: true do
 
       # Sort labels
       find("#label_#{bug.id}").drag_to find("#label_#{wontfix.id}")
+
+      page.within('.prioritized-labels') do
+        expect(first('li')).to have_content('wontfix')
+        expect(page.all('li').last).to have_content('bug')
+      end
+
+      visit current_url
 
       page.within('.prioritized-labels') do
         expect(first('li')).to have_content('wontfix')
