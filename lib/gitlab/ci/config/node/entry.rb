@@ -16,10 +16,14 @@ module Gitlab
             keys.each_key do |key|
               instance_variable_set("@#{key}", Null.new(nil, root, self))
             end
+
+            unless leaf? || value.is_a?(Hash)
+              @errors << 'should be a configuration entry with hash value'
+            end
           end
 
           def process!
-            return if leaf?
+            return if leaf? || !valid?
 
             keys.each do |key, entry_class|
               next unless @value.has_key?(key)
@@ -42,7 +46,7 @@ module Gitlab
           end
 
           def leaf?
-            keys.none? # TODO || !@value.is_a?(Hash)
+            keys.none?
           end
 
           def keys

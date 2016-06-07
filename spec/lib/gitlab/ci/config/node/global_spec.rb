@@ -58,4 +58,16 @@ describe Gitlab::Ci::Config::Node::Global do
       end
     end
   end
+
+  context 'when value is not a hash' do
+    let(:hash) { [] }
+
+    before { global.process! }
+
+    describe '#valid?' do
+      it 'is not valid' do
+        expect(global).not_to be_valid
+      end
+    end
+  end
 end
