@@ -3,6 +3,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 v 8.8.5
   - Import GitHub repositories respecting the API rate limit
   - Fix todos page throwing errors when you have a project pending deletion
+  - Disable Webhooks before proceeding with the GitHub import
 
 v 8.8.4
   - Fix LDAP-based login for users with 2FA enabled. !4493
