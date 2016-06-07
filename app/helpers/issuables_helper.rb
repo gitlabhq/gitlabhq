@@ -78,7 +78,9 @@ module IssuablesHelper
   end
 
   def has_todo(issuable)
-    current_user.todos.find_by(target_id: issuable.id, state: :pending)
+    unless current_user.nil?
+      current_user.todos.find_by(target_id: issuable.id, state: :pending)
+    end
   end
 
   private
