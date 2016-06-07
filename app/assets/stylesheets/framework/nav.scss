@@ -345,6 +345,12 @@
       .badge {
         color: $gl-icon-color;
       }
+
+      &:hover {
+        a, i {
+          color: $black;
+        }
+      }
     }
   }
 
