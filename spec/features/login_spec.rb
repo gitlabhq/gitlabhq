@@ -33,11 +33,11 @@ feature 'Login', feature: true do
 
       before do
         login_with(user, remember: true)
-        expect(page).to have_content('Two-factor Authentication')
+        expect(page).to have_content('Two-Factor Authentication')
       end
 
       def enter_code(code)
-        fill_in 'Two-factor Authentication code', with: code
+        fill_in 'Two-Factor Authentication code', with: code
         click_button 'Verify code'
       end
 
@@ -143,12 +143,12 @@ feature 'Login', feature: true do
 
       context 'within the grace period' do
         it 'redirects to two-factor configuration page' do
-          expect(current_path).to eq new_profile_two_factor_auth_path
-          expect(page).to have_content('You must enable Two-factor Authentication for your account before')
+          expect(current_path).to eq profile_two_factor_auth_path
+          expect(page).to have_content('You must enable Two-Factor Authentication for your account before')
         end
 
-        it 'disallows skipping two-factor configuration' do
-          expect(current_path).to eq new_profile_two_factor_auth_path
+        it 'allows skipping two-factor configuration', js: true do
+          expect(current_path).to eq profile_two_factor_auth_path
 
           click_link 'Configure it later'
           expect(current_path).to eq root_path
@@ -159,26 +159,26 @@ feature 'Login', feature: true do
         let(:user) { create(:user, otp_grace_period_started_at: 9999.hours.ago) }
 
         it 'redirects to two-factor configuration page' do
-          expect(current_path).to eq new_profile_two_factor_auth_path
-          expect(page).to have_content('You must enable Two-factor Authentication for your account.')
+          expect(current_path).to eq profile_two_factor_auth_path
+          expect(page).to have_content('You must enable Two-Factor Authentication for your account.')
         end
 
-        it 'disallows skipping two-factor configuration' do
-          expect(current_path).to eq new_profile_two_factor_auth_path
+        it 'disallows skipping two-factor configuration', js: true do
+          expect(current_path).to eq profile_two_factor_auth_path
           expect(page).not_to have_link('Configure it later')
         end
       end
     end
 
-    context 'without grace pariod defined' do
+    context 'without grace period defined' do
       before(:each) do
         stub_application_setting(two_factor_grace_period: 0)
         login_with(user)
       end
 
       it 'redirects to two-factor configuration page' do
-        expect(current_path).to eq new_profile_two_factor_auth_path
-        expect(page).to have_content('You must enable Two-factor Authentication for your account.')
+        expect(current_path).to eq profile_two_factor_auth_path
+        expect(page).to have_content('You must enable Two-Factor Authentication for your account.')
       end
     end
   end

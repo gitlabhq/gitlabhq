@@ -8,21 +8,21 @@ describe Profiles::TwoFactorAuthsController do
     allow(subject).to receive(:current_user).and_return(user)
   end
 
-  describe 'GET new' do
+  describe 'GET show' do
     let(:user) { create(:user) }
 
     it 'generates otp_secret for user' do
       expect(User).to receive(:generate_otp_secret).with(32).and_return('secret').once
 
-      get :new
-      get :new # Second hit shouldn't re-generate it
+      get :show
+      get :show # Second hit shouldn't re-generate it
     end
 
     it 'assigns qr_code' do
       code = double('qr code')
       expect(subject).to receive(:build_qr_code).and_return(code)
 
-      get :new
+      get :show
       expect(assigns[:qr_code]).to eq code
     end
   end
@@ -40,7 +40,7 @@ describe Profiles::TwoFactorAuthsController do
         expect(user).to receive(:validate_and_consume_otp!).with(pin).and_return(true)
       end
 
-      it 'sets two_factor_enabled' do
+      it 'enables 2fa for the user' do
         go
 
         user.reload
@@ -79,9 +79,9 @@ describe Profiles::TwoFactorAuthsController do
         expect(assigns[:qr_code]).to eq code
       end
 
-      it 'renders new' do
+      it 'renders show' do
         go
-        expect(response).to render_template(:new)
+        expect(response).to render_template(:show)
       end
     end
   end

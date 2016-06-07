@@ -4,6 +4,7 @@ class Note < ActiveRecord::Base
   include Participable
   include Mentionable
   include Elastic::NotesSearch
+  include Awardable
 
   default_value_for :system, false
 

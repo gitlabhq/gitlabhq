@@ -8,11 +8,26 @@ your phone.
 By enabling 2FA, the only way someone other than you can log into your account
 is to know your username and password *and* have access to your phone.
 
-#### Note
+> **Note:**
 When you enable 2FA, don't forget to back up your recovery codes. For your safety, if you
 lose your codes for GitLab.com, we can't disable or recover them.  
 
+In addition to a phone application, GitLab supports U2F (universal 2nd factor) devices as
+the second factor of authentication. Once enabled, in addition to supplying your username and
+password to login, you'll be prompted to activate your U2F device (usually by pressing
+a button on it), and it will perform secure authentication on your behalf.
+
+> **Note:** Support for U2F devices was added in version 8.8
+
+The U2F workflow is only supported by Google Chrome at this point, so we _strongly_ recommend 
+that you set up both methods of two-factor authentication, so you can still access your account 
+from other browsers.
+
+> **Note:** GitLab officially only supports [Yubikey] U2F devices.
+
 ## Enabling 2FA
+
+### Enable 2FA via mobile application
 
 **In GitLab:**
 
@@ -38,8 +53,25 @@ lose your codes for GitLab.com, we can't disable or recover them.
 1. Click **Submit**.
 
 If the pin you entered was correct, you'll see a message indicating that
-Two-factor Authentication has been enabled, and you'll be presented with a list
+Two-Factor Authentication has been enabled, and you'll be presented with a list
 of recovery codes.
+
+### Enable 2FA via U2F device
+
+**In GitLab:**
+
+1. Log in to your GitLab account.
+1. Go to your **Profile Settings**.
+1. Go to **Account**.
+1. Click **Enable Two-Factor Authentication**.
+1. Plug in your U2F device.
+1. Click on **Setup New U2F Device**.
+1. A light will start blinking on your device. Activate it by pressing its button.
+
+You will see a message indicating that your device was successfully set up. 
+Click on **Register U2F Device** to complete the process.
+
+![Two-Factor U2F Setup](2fa_u2f_register.png)
 
 ## Recovery Codes
 
@@ -51,21 +83,39 @@ account.
 If you lose the recovery codes or just want to generate new ones, you can do so
 from the **Profile Settings** > **Account** page where you first enabled 2FA.
 
+> **Note:** Recovery codes are not generated for U2F devices.
+
 ## Logging in with 2FA Enabled
 
 Logging in with 2FA enabled is only slightly different than a normal login.
 Enter your username and password credentials as you normally would, and you'll
-be presented with a second prompt for an authentication code. Enter the pin from
-your phone's application or a recovery code to log in.
+be presented with a second prompt, depending on which type of 2FA you've enabled.
 
-![Two-factor authentication on sign in](2fa_auth.png)
+### Log in via mobile application
+
+Enter the pin from your phone's application or a recovery code to log in.
+
+![Two-Factor Authentication on sign in via OTP](2fa_auth.png)
+
+### Log in via U2F device
+
+1. Click **Login via U2F Device**
+1. A light will start blinking on your device. Activate it by pressing its button.
+
+You will see a message indicating that your device responded to the authentication request.
+Click on **Authenticate via U2F Device** to complete the process.
+
+![Two-Factor Authentication on sign in via U2F device](2fa_u2f_authenticate.png)
 
 ## Disabling 2FA
 
 1. Log in to your GitLab account.
 1. Go to your **Profile Settings**.
 1. Go to **Account**.
-1. Click **Disable Two-factor Authentication**.
+1. Click **Disable**, under **Two-Factor Authentication**.
+
+This will clear all your two-factor authentication registrations, including mobile
+applications and U2F devices.
 
 ## Note to GitLab administrators
 
@@ -74,3 +124,4 @@ You need to take special care to that 2FA keeps working after
 
 [Google Authenticator]: https://support.google.com/accounts/answer/1066447?hl=en
 [FreeOTP]: https://fedorahosted.org/freeotp/
+[YubiKey]: https://www.yubico.com/products/yubikey-hardware/

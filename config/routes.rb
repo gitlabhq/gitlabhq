@@ -362,8 +362,9 @@ Rails.application.routes.draw do
       resources :keys
       resources :emails, only: [:index, :create, :destroy]
       resource :avatar, only: [:destroy]
-      resource :two_factor_auth, only: [:new, :create, :destroy] do
+      resource :two_factor_auth, only: [:show, :create, :destroy] do
         member do
+          post :create_u2f
           post :codes
           patch :skip
         end
@@ -810,6 +811,7 @@ Rails.application.routes.draw do
 
         resources :notes, only: [:index, :create, :destroy, :update], constraints: { id: /\d+/ } do
           member do
+            post :toggle_award_emoji
             delete :delete_attachment
           end
         end

@@ -26,6 +26,7 @@ v 8.9.0 (unreleased)
   - Fix issues filter when ordering by milestone
   - Todos will display target state if issuable target is 'Closed' or 'Merged'
   - Fix bug when sorting issues by milestone due date and filtering by two or more labels
+  - Add support for using Yubikeys (U2F) for two-factor authentication
   - Link to blank group icon doesn't throw a 404 anymore
   - Remove 'main language' feature
   - Pipelines can be canceled only when there are running builds
@@ -41,13 +42,12 @@ v 8.9.0 (unreleased)
   - Put project Files and Commits tabs under Code tab
   - Replace Colorize with Rainbow for coloring console output in Rake tasks.
 
-v 8.8.4
-  - Fix todos page throwing errors when you have a project pending deletion
-  - Reduce number of SQL queries when rendering user references
-
 v 8.8.4 (unreleased)
   - Ensure branch cleanup regardless of whether the GitHub import process succeeds
   - Fix issue with arrow keys not working in search autocomplete dropdown
+  - Fix todos page throwing errors when you have a project pending deletion
+  - Reduce number of SQL queries when rendering user references
+  - Upgrade to jQuery 2
 
 v 8.8.3
   - Fix 404 page when viewing TODOs that contain milestones or labels in different projects. !4312

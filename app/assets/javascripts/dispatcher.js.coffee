@@ -23,7 +23,7 @@ class Dispatcher
         new Issue()
         shortcut_handler = new ShortcutsIssuable()
         new ZenMode()
-        window.awardsHandler = new AwardsHandler()
+        gl.awardsHandler = new AwardsHandler()
       when 'projects:milestones:show', 'groups:milestones:show', 'dashboard:milestones:show'
         new Milestone()
       when 'dashboard:todos:index'
@@ -54,7 +54,7 @@ class Dispatcher
         new Diff()
         shortcut_handler = new ShortcutsIssuable(true)
         new ZenMode()
-        window.awardsHandler = new AwardsHandler()
+        gl.awardsHandler = new AwardsHandler()
       when "projects:merge_requests:diffs"
         new Diff()
         new ZenMode()
