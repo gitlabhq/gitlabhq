@@ -401,7 +401,7 @@ describe Project, models: true do
 
   describe :pipeline do
     let(:project) { create :project }
-    let(:pipeline) { create :pipeline, project: project, ref: 'master' }
+    let(:pipeline) { create :ci_pipeline, project: project, ref: 'master' }
 
     subject { project.pipeline(pipeline.sha, 'master') }
 
