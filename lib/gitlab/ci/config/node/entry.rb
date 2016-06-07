@@ -3,8 +3,6 @@ module Gitlab
     class Config
       module Node
         class Entry
-          include Config::ValidationHelpers
-
           attr_reader :value, :nodes, :parent
 
           def initialize(value, root = nil, parent = nil)

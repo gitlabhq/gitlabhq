@@ -2,7 +2,7 @@ module Ci
   class GitlabCiYamlProcessor
     class ValidationError < StandardError; end
 
-    include Gitlab::Ci::Config::ValidationHelpers
+    include Gitlab::Ci::Config::Node::ValidationHelpers
 
     DEFAULT_STAGES = %w(build test deploy)
     DEFAULT_STAGE = 'test'

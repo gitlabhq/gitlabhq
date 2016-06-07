@@ -3,6 +3,8 @@ module Gitlab
     class Config
       module Node
         class BeforeScript < Entry
+          include ValidationHelpers
+
           def keys
             {}
           end
