@@ -74,7 +74,7 @@ describe CreateCommitBuildsService, services: true do
                                  before: '00000000',
                                  after: '31das312',
                                  commits: commits
-                                 )
+                                )
       expect(pipeline).to be_persisted
       expect(pipeline.builds.any?).to be false
       expect(pipeline.status).to eq('failed')
@@ -95,7 +95,7 @@ describe CreateCommitBuildsService, services: true do
                                    before: '00000000',
                                    after: '31das312',
                                    commits: commits
-                                   )
+                                  )
         expect(pipeline).to be_persisted
         expect(pipeline.builds.any?).to be false
         expect(pipeline.status).to eq("skipped")
@@ -110,7 +110,7 @@ describe CreateCommitBuildsService, services: true do
                                    before: '00000000',
                                    after: '31das312',
                                    commits: commits
-                                   )
+                                  )
 
         expect(pipeline).to be_persisted
         expect(pipeline.builds.first.name).to eq("staging")
@@ -124,7 +124,7 @@ describe CreateCommitBuildsService, services: true do
                                    before: '00000000',
                                    after: '31das312',
                                    commits: commits
-                                   )
+                                  )
         expect(pipeline).to be_persisted
         expect(pipeline.builds.any?).to be false
         expect(pipeline.status).to eq("skipped")
@@ -141,7 +141,7 @@ describe CreateCommitBuildsService, services: true do
                                  before: '00000000',
                                  after: '31das312',
                                  commits: commits
-                                 )
+                                )
       expect(pipeline).to be_persisted
       expect(pipeline.builds.count(:all)).to eq(2)
 
@@ -150,7 +150,7 @@ describe CreateCommitBuildsService, services: true do
                                  before: '00000000',
                                  after: '31das312',
                                  commits: commits
-                                 )
+                                )
       expect(pipeline).to be_persisted
       expect(pipeline.builds.count(:all)).to eq(2)
     end
@@ -165,7 +165,7 @@ describe CreateCommitBuildsService, services: true do
                                  before: '00000000',
                                  after: '31das312',
                                  commits: commits
-                                 )
+                                )
 
       expect(pipeline).to be_persisted
       expect(pipeline.status).to eq("failed")
