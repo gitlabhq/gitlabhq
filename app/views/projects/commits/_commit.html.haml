@@ -9,7 +9,7 @@
 
 = cache(cache_key) do
   %li.commit.js-toggle-container{ id: "commit-#{commit.short_id}" }
-    = commit_author_avatar(commit)
+    = commit_author_avatar(commit, size: 36)
     .commit-row-title
       %span.item-title
         = link_to_gfm commit.title, namespace_project_commit_path(project.namespace, project, commit.id), class: "commit-row-message"

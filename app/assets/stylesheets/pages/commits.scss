@@ -20,8 +20,8 @@
 }
 
 .commit-row-title {
-  line-height: 20px;
-  margin-bottom: 2px;
+  line-height: 1;
+  margin-bottom: 6px;
 
   .notes_count {
     float: right;
@@ -115,7 +115,7 @@
 
   .commit-row-info {
     color: $gl-gray;
-    line-height: 24px;
+    line-height: 1;
 
     a {
       color: $gl-gray;
