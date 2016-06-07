@@ -132,12 +132,14 @@ class @SearchAutocomplete
   getCategoryContents: ->
 
     userId         = gon.current_user_id
+    projectName    = 'Dashboard'
     projectSlug    = gl.utils.getProjectSlug()
     projectOptions = gl.projectOptions[projectSlug]
 
-    return null if not projectSlug or not projectOptions
-
-    { issuesPath, mrPath, projectName } = projectOptions
+    if projectSlug and projectOptions
+      { issuesPath, mrPath, projectName } = projectOptions
+    else
+      { issuesPath, mrPath } = gl.dashboardOptions
 
     return [
       { header: "Go to in #{projectName}" }
