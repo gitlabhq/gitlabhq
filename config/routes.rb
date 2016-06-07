@@ -746,6 +746,11 @@ Rails.application.routes.draw do
         resources :tags, only: [:index, :show, :new, :create, :destroy], constraints: { id: Gitlab::Regex.git_reference_regex } do
           resource :release, only: [:edit, :update]
         end
+        resources :path_locks, only: [:index, :destroy] do
+          collection do
+            post :toggle
+          end
+        end
 
         resources :protected_branches, only: [:index, :create, :update, :destroy], constraints: { id: Gitlab::Regex.git_reference_regex }
         resources :variables, only: [:index, :show, :update, :create, :destroy]

@@ -16,6 +16,14 @@
 
 - if current_user
   .btn-group{ role: "group" }
+    = lock_file_link(html_options: {class: 'btn btn-sm path-lock'})
     = edit_blob_link
     = replace_blob_link
     = delete_blob_link
+
+- if license_allows_file_locks?
+  :javascript
+    PathLocks.init(
+      '#{toggle_namespace_project_path_locks_path(@project.namespace, @project)}',
+      '#{@path}'
+    );

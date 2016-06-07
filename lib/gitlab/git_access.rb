@@ -1,5 +1,7 @@
 module Gitlab
   class GitAccess
+    include PathLocksHelper
+
     DOWNLOAD_COMMANDS = %w{ git-upload-pack git-upload-archive }
     PUSH_COMMANDS = %w{ git-receive-pack }
     GIT_ANNEX_COMMANDS = %w{ git-annex-shell }
@@ -97,7 +99,6 @@ module Gitlab
     end
 
     def push_access_check(changes)
-
       if Gitlab::Geo.secondary?
         return build_status_object(false, "You can't push code on a secondary GitLab Geo node.")
       end
@@ -186,11 +187,45 @@ module Gitlab
 
       # Return build_status_object(true) if all git hook checks passed successfully
       # or build_status_object(false) if any hook fails
-      git_hook_check(user, project, ref, oldrev, newrev)
+      result = git_hook_check(user, project, ref, oldrev, newrev)
+
+      if result.status && license_allows_file_locks?
+        result = path_locks_check(user, project, ref, oldrev, newrev)
+      end
+
+      result
     end
 
     def forced_push?(oldrev, newrev)
       Gitlab::ForcePushCheck.force_push?(project, oldrev, newrev)
+    end
+
+    def path_locks_check(user, project, ref, oldrev, newrev)
+      unless project.path_locks.any? && newrev && oldrev
+        return build_status_object(true)
+      end
+
+      # locks protect default branch only
+      if project.default_branch != branch_name(ref)
+        return build_status_object(true)
+      end
+
+      commits(newrev, oldrev, project).each do |commit|
+        next if commit_from_annex_sync?(commit.safe_message)
+
+        commit.diffs.each do |diff|
+          path = diff.new_path || diff.old_path
+
+          lock_info = project.path_lock_info(path)
+
+          if lock_info && lock_info.user != user
+            return build_status_object(false, "The path '#{lock_info.path}' is locked by #{lock_info.user.name}")
+          end
+        end
+      end
+
+
+      build_status_object(true)
     end
 
     def git_hook_check(user, project, ref, oldrev, newrev)
