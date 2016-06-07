@@ -70,18 +70,18 @@ class @Sidebar
       $('.js-issuable-todo-loading').addClass 'hidden'
 
       if data.count is 0
-        $this.removeAttr 'data-id'
-        $btnText.text $this.data('todo-text')
-
         $todoPendingCount
           .addClass 'hidden'
       else
-        $btnText.text $this.data('mark-text')
         $todoPendingCount
           .removeClass 'hidden'
 
       if data.todo?
+        $btnText.text $this.data('mark-text')
         $this.attr 'data-id', data.todo.id
+      else
+        $this.removeAttr 'data-id'
+        $btnText.text $this.data('todo-text')
 
   sidebarDropdownLoading: (e) ->
     $sidebarCollapsedIcon = $(@).closest('.block').find('.sidebar-collapsed-icon')

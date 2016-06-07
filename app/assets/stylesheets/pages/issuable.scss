@@ -263,7 +263,7 @@
     }
   }
 
-  a:not(.issuable-header-btn) {
+  a {
     &:hover {
       color: $md-link-color;
       text-decoration: none;
