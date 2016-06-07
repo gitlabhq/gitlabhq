@@ -308,6 +308,7 @@ group :development, :test do
   gem 'benchmark-ips', require: false
 
   gem "license_finder", require: false
+  gem 'knapsack'
 end
 
 group :test do
@@ -316,7 +317,6 @@ group :test do
   gem 'webmock', '~> 1.21.0'
   gem 'test_after_commit', '~> 0.4.2'
   gem 'sham_rack'
-  gem 'knapsack'
 end
 
 group :production do
