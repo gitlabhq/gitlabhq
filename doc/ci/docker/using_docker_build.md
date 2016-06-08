@@ -84,9 +84,9 @@ In order to do that, follow the steps:
    mode:
 
     ```bash
-    sudo gitlab-runner register -n \
+    sudo gitlab-ci-multi-runner register -n \
       --url https://gitlab.com/ci \
-      --token RUNNER_TOKEN \
+      --registration-token REGISTRATION_TOKEN \
       --executor docker \
       --description "My Docker Runner" \
       --docker-image "docker:latest" \
@@ -158,9 +158,9 @@ In order to do that, follow the steps:
 1. Register GitLab Runner from the command line to use `docker` and share `/var/run/docker.sock`:
 
     ```bash
-    sudo gitlab-runner register -n \
+    sudo gitlab-ci-multi-runner register -n \
       --url https://gitlab.com/ci \
-      --token RUNNER_TOKEN \
+      --registration-token REGISTRATION_TOKEN \
       --executor docker \
       --description "My Docker Runner" \
       --docker-image "docker:latest" \
