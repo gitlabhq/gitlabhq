@@ -73,7 +73,8 @@ For more information please checkout [On Docker security: `docker` group conside
 
 ## 2. Use docker-in-docker executor
 
-The second approach is to use the special Docker image with all tools installed
+The second approach is to use the special docker-in-docker (dind)
+[Docker image](https://hub.docker.com/_/docker/) with all tools installed
 (`docker` and `docker-compose`) and run the build script in context of that
 image in privileged mode.
 
@@ -222,10 +223,18 @@ e.g. `docker run --rm -t -i -v $(pwd)/src:/home/app/src test-image:latest run_ap
 
 ## Using the GitLab Container Registry
 
-Once you've built a Docker image, you can push it up to the built-in [GitLab Container Registry](../../container_registry/README.md).
+> **Note:**
+This feature requires GitLab 8.8 and GitLab Runner 1.2.
 
-```
+Once you've built a Docker image, you can push it up to the built-in [GitLab Container Registry](../../container_registry/README.md). For example, if you're using
+docker-in-docker on your runners, this is how your `.gitlab-ci.yml` could look:
+
+
+```yaml
  build:
+   image: docker:git
+   services:
+   - docker:dind
    stage: build
    script:
      - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN registry.example.com
@@ -233,7 +242,12 @@ Once you've built a Docker image, you can push it up to the built-in [GitLab Con
      - docker push registry.example.com/group/project:latest
 ```
 
-Here's a more elaborate example that splits up the tasks into 4 stages,
+You have to use the credentials of the special `gitlab-ci-token` user with its
+password stored in `$CI_BUILD_TOKEN` in order to push to the Registry connected
+to your project. This allows you to automate building and deployment of your
+Docker images.
+
+Here's a more elaborate example that splits up the tasks into 4 pipeline stages,
 including two tests that run in parallel. The build is stored in the container
 registry and used by subsequent stages, downloading the image
 when needed. Changes to `master` also get tagged as `latest` and deployed using
