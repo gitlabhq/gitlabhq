@@ -99,7 +99,7 @@ module Ci
     end
 
     def can_pick?(build)
-      not_locked_or_locked_to?(build.project) &&
+      available_for?(build.project) &&
         run_untagged_or_has_tags?(build) &&
         accepting_tags?(build.tag_list)
     end
@@ -125,7 +125,7 @@ module Ci
       end
     end
 
-    def not_locked_or_locked_to?(project)
+    def available_for?(project)
       !locked? || projects.exists?(id: project.id)
     end
 
