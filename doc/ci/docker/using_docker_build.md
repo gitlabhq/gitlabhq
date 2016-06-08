@@ -19,7 +19,7 @@ $ docker tag my-image my-registry:5000/my-image
 $ docker push my-registry:5000/my-image
 ```
 
-However, this requires special configuration of GitLab Runner to enable `docker` support during builds. There are three methods to enable the use of `docker build` and `docker run` during builds.
+However, this requires special configuration of GitLab Runner to enable `docker` support during builds. There are three methods to enable the use of `docker build` and `docker run` during builds; each with their own tradeoffs.
 
 ## 1. Use shell executor
 
@@ -67,7 +67,7 @@ GitLab Runner then executes build scripts as the `gitlab-runner` user.
 
 5. You can now use `docker` command and install `docker-compose` if needed.
 
-6. However, by adding `gitlab-runner` to `docker` group you are effectively granting `gitlab-runner` full root permissions.
+However, by adding `gitlab-runner` to `docker` group you are effectively granting `gitlab-runner` full root permissions.
 For more information please checkout [On Docker security: `docker` group considered harmful](https://www.andreas-jung.com/contents/on-docker-security-docker-group-considered-harmful).
 
 ## 2. Use docker-in-docker executor
@@ -138,12 +138,16 @@ In order to do that, follow the steps:
       - docker run my-docker-image /script/to/run/tests
     ```
 
-1. However, by enabling `--docker-privileged` you are effectively disabling all
-   the security mechanisms of containers and exposing your host to privilege
-   escalation which can lead to container breakout.
+However, by enabling `--docker-privileged` you are effectively disabling all
+the security mechanisms of containers and exposing your host to privilege
+escalation which can lead to container breakout. For more information, check out the official Docker documentation on
+[Runtime privilege and Linux capabilities][docker-cap].
 
-   For more information, check out the official Docker documentation on
-   [Runtime privilege and Linux capabilities][docker-cap].
+Using docker-in-docker, each build is in a clean environment without the past
+history. Concurrent builds work fine because every build get it's own instance of docker engine so they won't conflict with each other. But this also means builds can be slower because there's no caching of layers.
+
+By default `docker:dind` uses ``--storage-driver vfs` which is the slowest form
+offered.
 
 An example project using this approach can be found here: https://gitlab.com/gitlab-examples/docker.
 
@@ -203,9 +207,14 @@ In order to do that, follow the steps:
       - docker run my-docker-image /script/to/run/tests
     ```
 
-1. However, by sharing the docker daemon, you are effectively disabling all
-   the security mechanisms of containers and exposing your host to privilege
-   escalation which can lead to container breakout.
+However, by sharing the docker daemon, you are effectively disabling all
+the security mechanisms of containers and exposing your host to privilege
+escalation which can lead to container breakout. For example, if a project
+ran `docker rm -f $(docker ps -a -q)` it would remove the GitLab Runner
+containers.
+
+Also, concurrent builds may not work; if your tests
+create containers with specific names, they may conflict with each other.
 
 ## Using the GitLab Container Registry
 
