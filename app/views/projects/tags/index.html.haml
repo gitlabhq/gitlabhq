@@ -1,28 +1,30 @@
+- @no_container = true
 - page_title "Tags"
 = render "projects/commits/head"
 
-.row-content-block
-  - if can? current_user, :push_code, @project
-    .pull-right
-      = link_to new_namespace_project_tag_path(@project.namespace, @project), class: 'btn btn-create new-tag-btn' do
-        = icon('plus')
-        New tag
-  .oneline
-    Tags give the ability to mark specific points in history as being important
+%div{ class: (container_class) }
+  .row-content-block.second-block.content-component-block
+    - if can? current_user, :push_code, @project
+      .pull-right
+        = link_to new_namespace_project_tag_path(@project.namespace, @project), class: 'btn btn-create new-tag-btn' do
+          = icon('plus')
+          New tag
+    .oneline
+      Tags give the ability to mark specific points in history as being important
 
-.tags
-  - unless @tags.empty?
-    %ul.content-list
-      - @tags.each do |tag|
-        = render 'tag', tag: @repository.find_tag(tag)
+  .tags
+    - unless @tags.empty?
+      %ul.content-list
+        - @tags.each do |tag|
+          = render 'tag', tag: @repository.find_tag(tag)
 
-    = paginate @tags, theme: 'gitlab'
+      = paginate @tags, theme: 'gitlab'
 
-  - else
-    .nothing-here-block
-      Repository has no tags yet.
-      %br
-      %small
-        Use git tag command to add a new one:
+    - else
+      .nothing-here-block
+        Repository has no tags yet.
         %br
-        %span.monospace git tag -a v1.4 -m 'version 1.4'
+        %small
+          Use git tag command to add a new one:
+          %br
+          %span.monospace git tag -a v1.4 -m 'version 1.4'

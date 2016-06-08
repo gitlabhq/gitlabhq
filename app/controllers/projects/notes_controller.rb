@@ -1,4 +1,6 @@
 class Projects::NotesController < Projects::ApplicationController
+  include ToggleAwardEmoji
+
   # Authorize
   before_action :authorize_read_note!
   before_action :authorize_create_note!, only: [:create]
@@ -61,6 +63,7 @@ class Projects::NotesController < Projects::ApplicationController
   def note
     @note ||= @project.notes.find(params[:id])
   end
+  alias_method :awardable, :note
 
   def note_to_html(note)
     render_to_string(

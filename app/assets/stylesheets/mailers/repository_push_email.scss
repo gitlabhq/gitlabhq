@@ -1,5 +1,15 @@
 @import "framework/variables";
 
+// This file is largely copied from `highlight/white.scss`, but modified to
+// avoid all descendant selectors (`table td`). This is because the CSS inlining
+// we use performs dramatically worse on descendant selectors than the
+// alternatives.
+// <https://gitlab.com/gitlab-org/gitlab-ee/issues/490#note_12283632>
+//
+// DO NOT ADD ANY DESCENDANT SELECTORS TO THIS FILE. Instead, use (in order of
+// preference): plain class selectors, type (element name) selectors, or
+// explicit child selectors.
+
 table.code {
   width: 100%;
   font-family: monospace;
@@ -11,33 +21,162 @@ table.code {
   -premailer-cellspacing: 0;
   -premailer-width: 100%;
 
-  td {
+  > tr > td {
     line-height: $code_line_height;
     font-family: monospace;
     font-size: $code_font_size;
-  }
 
-  td.diff-line-num {
-    margin: 0;
-    padding: 0;
-    border: none;
-    background: $background-color;
-    color: rgba(0, 0, 0, 0.3);
-    padding: 0 5px;
-    border-right: 1px solid $border-color;
-    text-align: right;
-    min-width: 35px;
-    max-width: 50px;
-    width: 35px;
-  }
+    &.diff-line-num {
+      margin: 0;
+      padding: 0;
+      border: none;
+      padding: 0 5px;
+      border-right: 1px solid;
+      text-align: right;
+      min-width: 35px;
+      max-width: 50px;
+      width: 35px;
+    }
 
-  td.line_content {
-    display: block;
-    margin: 0;
-    padding: 0 0.5em;
-    border: none;
-    white-space: pre;
+    &.line_content {
+      display: block;
+      margin: 0;
+      padding: 0 0.5em;
+      border: none;
+      white-space: pre;
+    }
   }
 }
 
-@import "highlight/white";
+.line-numbers, .diff-line-num {
+  background-color: $background-color;
+}
+
+.diff-line-num, .diff-line-num a {
+  color: $black-transparent;
+}
+
+pre.code, .diff-line-num {
+  border-color: $table-border-gray;
+}
+
+.code.white, pre.code, .line_content {
+  background-color: #fff;
+  color: #333;
+}
+
+.diff-line-num {
+  &.old {
+    background-color: $line-number-old;
+    border-color: $line-removed-dark;
+  }
+
+  &.new {
+    background-color: $line-number-new;
+    border-color: $line-added-dark;
+  }
+
+  &.hll:not(.empty-cell) {
+    background-color: $line-number-select;
+    border-color: $line-select-yellow-dark;
+  }
+}
+
+.line_content {
+  &.old {
+    background-color: $line-removed;
+
+    > .line > span.idiff, > .line > span > span.idiff {
+      background-color: $line-removed-dark;
+    }
+  }
+
+  &.new {
+    background-color: $line-added;
+
+    > .line > span.idiff, > .line > span > span.idiff {
+      background-color: $line-added-dark;
+    }
+  }
+
+  &.match {
+    color: $black-transparent;
+    background-color: $match-line;
+  }
+
+  &.hll:not(.empty-cell) {
+    background-color: $line-select-yellow;
+  }
+}
+
+pre > .hll {
+  background-color: #f8eec7 !important;
+}
+
+span.highlight_word {
+  background-color: #fafe3d !important;
+}
+
+.hll { background-color: #f8f8f8 }
+.c { color: #998; font-style: italic; }
+.err { color: #a61717; background-color: #e3d2d2; }
+.k { font-weight: bold; }
+.o { font-weight: bold; }
+.cm { color: #998; font-style: italic; }
+.cp { color: #999; font-weight: bold; }
+.c1 { color: #998; font-style: italic; }
+.cs { color: #999; font-weight: bold; font-style: italic; }
+.gd { color: #000; background-color: #fdd; }
+.gd .x { color: #000; background-color: #faa; }
+.ge { font-style: italic; }
+.gr { color: #a00; }
+.gh { color: #999; }
+.gi { color: #000; background-color: #dfd; }
+.gi .x { color: #000; background-color: #afa; }
+.go { color: #888; }
+.gp { color: #555; }
+.gs { font-weight: bold; }
+.gu { color: #800080; font-weight: bold; }
+.gt { color: #a00; }
+.kc { font-weight: bold; }
+.kd { font-weight: bold; }
+.kn { font-weight: bold; }
+.kp { font-weight: bold; }
+.kr { font-weight: bold; }
+.kt { color: #458; font-weight: bold; }
+.m { color: #099; }
+.s { color: #d14; }
+.n { color: #333; }
+.na { color: teal; }
+.nb { color: #0086b3; }
+.nc { color: #458; font-weight: bold; }
+.no { color: teal; }
+.ni { color: purple; }
+.ne { color: #900; font-weight: bold; }
+.nf { color: #900; font-weight: bold; }
+.nn { color: #555; }
+.nt { color: navy; }
+.nv { color: teal; }
+.ow { font-weight: bold; }
+.w { color: #bbb; }
+.mf { color: #099; }
+.mh { color: #099; }
+.mi { color: #099; }
+.mo { color: #099; }
+.sb { color: #d14; }
+.sc { color: #d14; }
+.sd { color: #d14; }
+.s2 { color: #d14; }
+.se { color: #d14; }
+.sh { color: #d14; }
+.si { color: #d14; }
+.sx { color: #d14; }
+.sr { color: #009926; }
+.s1 { color: #d14; }
+.ss { color: #990073; }
+.bp { color: #999; }
+.vc { color: teal; }
+.vg { color: teal; }
+.vi { color: teal; }
+.il { color: #099; }
+.gc { color: #999; background-color: #eaf2f5; }

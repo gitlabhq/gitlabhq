@@ -2,10 +2,14 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.9.0 (unreleased)
   - Bulk assign/unassign labels to issues.
+  - Ability to prioritize labels !4009 / !3205 (Thijs Wouters)
+  - Fix endless redirections when accessing user OAuth applications when they are disabled
   - Allow enabling wiki page events from Webhook management UI
+  - Bump rouge to 1.11.0
   - Make EmailsOnPushWorker use Sidekiq mailers queue
   - Fix wiki page events' webhook to point to the wiki repository
   - Fix issue todo not remove when leave project !4150 (Long Nguyen)
+  - Bump recaptcha gem to 3.0.0 to remove deprecated stoken support
   - Allow forking projects with restricted visibility level
   - Improve note validation to prevent errors when creating invalid note via API
   - Reduce number of fog gem dependencies
@@ -14,7 +18,9 @@ v 8.9.0 (unreleased)
   - Redesign navigation for project pages
   - Fix groups API to list only user's accessible projects
   - Redesign account and email confirmation emails
+  - Bump nokogiri to 1.6.8
   - Use gitlab-shell v3.0.0
+  - Use Knapsack to evenly distribute tests across multiple nodes
   - Add `sha` parameter to MR merge API, to ensure only reviewed changes are merged
   - Don't allow MRs to be merged when commits were added since the last review / page load
   - Add DB index on users.state
@@ -33,12 +39,17 @@ v 8.9.0 (unreleased)
   - Make authentication service for Container Registry to be compatible with < Docker 1.11
   - Add Application Setting to configure Container Registry token expire delay (default 5min)
   - Cache assigned issue and merge request counts in sidebar nav
+  - Use Knapsack only in CI environment
   - Cache project build count in sidebar nav
   - Add milestone expire date to the right sidebar
+  - Fix markdown_spec to use before instead of before(:all) to properly cleanup database after testing
   - Reduce number of queries needed to render issue labels in the sidebar
   - Improve error handling importing projects
+  - Remove duplicated notification settings
   - Put project Files and Commits tabs under Code tab
   - Replace Colorize with Rainbow for coloring console output in Rake tasks.
+  - An indicator is now displayed at the top of the comment field for confidential issues.
+  - RepositoryCheck::SingleRepositoryWorker public and private methods are now instrumented
 
 v 8.8.4 (unreleased)
   - Ensure branch cleanup regardless of whether the GitHub import process succeeds
@@ -46,6 +57,11 @@ v 8.8.4 (unreleased)
   - Fix todos page throwing errors when you have a project pending deletion
   - Reduce number of SQL queries when rendering user references
   - Upgrade to jQuery 2
+  - Remove prev/next buttons on issues and merge requests
+  - Import GitHub repositories respecting the API rate limit
+  - Fix importer for GitHub comments on diff
+  - Disable Webhooks before proceeding with the GitHub import
+  - Added descriptions to notification settings dropdown
 
 v 8.8.3
   - Fix 404 page when viewing TODOs that contain milestones or labels in different projects. !4312
@@ -166,6 +182,7 @@ v 8.7.6
   - Fix import from GitLab.com to a private instance failure. !4181
   - Fix external imports not finding the import data. !4106
   - Fix notification delay when changing status of an issue
+  - Bump Workhorse to 0.7.5 so it can serve raw diffs
 
 v 8.7.5
   - Fix relative links in wiki pages. !4050
