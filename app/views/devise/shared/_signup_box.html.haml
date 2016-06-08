@@ -1,30 +1,31 @@
-.login-box
-  - if signin_enabled?
-    .login-heading
-      %h3 New user? Create an account
-  - else
-    .login-heading
-      %h3 Create an account
-  .login-body
-    = form_for(resource, as: "new_#{resource_name}", url: registration_path(resource_name)) do |f|
-      .devise-errors
-        = devise_error_messages!
-      %div
-        = f.text_field :name, class: "form-control top", placeholder: "Name", required: true
-      %div
-        = f.text_field :username, class: "form-control middle", placeholder: "Username", required: true
-      %div
-        = f.email_field :email, class: "form-control middle", placeholder: "Email", required: true
-      .form-group.append-bottom-20#password-strength
-        = f.password_field :password, class: "form-control bottom", placeholder: "Password - minimum length #{@minimum_password_length} characters", required: true, pattern: ".{#{@minimum_password_length},}", title: "Minimum length is #{@minimum_password_length} characters"
-      %div
-      - if current_application_settings.recaptcha_enabled
-        = recaptcha_tags
-      %div
-        = f.submit "Sign up", class: "btn-create btn"
+%body{ data: { page: 'signup' } }
+  .login-box
+    - if signin_enabled?
+      .login-heading
+        %h3 New user? Create an account
+    - else
+      .login-heading
+        %h3 Create an account
+    .login-body
+      = form_for(resource, as: "new_#{resource_name}", url: registration_path(resource_name)) do |f|
+        .devise-errors
+          = devise_error_messages!
+        %div
+          = f.text_field :name, class: "form-control top", placeholder: "Name", required: true
+        %div.username
+          = f.text_field :username, class: "form-control middle", placeholder: "Username", required: true
+        %div
+          = f.email_field :email, class: "form-control middle", placeholder: "Email", required: true
+        .form-group.append-bottom-20#password-strength
+          = f.password_field :password, class: "form-control bottom", placeholder: "Password - minimum length #{@minimum_password_length} characters", required: true, pattern: ".{#{@minimum_password_length},}", title: "Minimum length is #{@minimum_password_length} characters"
+        %div
+        - if current_application_settings.recaptcha_enabled
+          = recaptcha_tags
+        %div
+          = f.submit "Sign up", class: "btn-create btn"
 
-.clearfix.prepend-top-20
-  %p
-    %span.light Didn't receive a confirmation email?
-    = succeed '.' do
-      = link_to "Request a new one", new_confirmation_path(resource_name)
+  .clearfix.prepend-top-20
+    %p
+      %span.light Didn't receive a confirmation email?
+      = succeed '.' do
+        = link_to "Request a new one", new_confirmation_path(resource_name)

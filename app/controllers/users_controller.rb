@@ -85,6 +85,10 @@ class UsersController < ApplicationController
     render 'calendar_activities', layout: false
   end
 
+  def exists
+    render json: user.id
+  end
+
   private
 
   def authorize_read_user!

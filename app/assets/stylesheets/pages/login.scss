@@ -64,6 +64,21 @@
     .nav .active a {
       background: transparent;
     }
+
+    .login-body .new_new_user .username {
+      position: relative;
+      i {
+        position: absolute;
+        right: 8px;
+        top: 12px;
+        &.success {
+          color: $green-normal;
+        }
+        &.error {
+          color: $red-normal;
+        }
+      }
+    }
   }
 
   .form-control {

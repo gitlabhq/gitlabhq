@@ -395,6 +395,7 @@ Rails.application.routes.draw do
     get :projects
     get :contributed, as: :contributed_projects
     get :snippets
+    get :exists
     get '/', action: :show
   end
 

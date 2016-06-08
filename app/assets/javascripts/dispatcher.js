@@ -22,6 +22,8 @@
       switch (page) {
         case 'projects:boards:show':
           shortcut_handler = new ShortcutsNavigation();
+        case 'signup':
+          new UsernameValidator();
           break;
         case 'projects:issues:index':
           Issuable.init();
