@@ -1,7 +1,7 @@
 module CiStatusHelper
-  def ci_status_path(ci_commit)
-    project = ci_commit.project
-    builds_namespace_project_commit_path(project.namespace, project, ci_commit.sha)
+  def ci_status_path(pipeline)
+    project = pipeline.project
+    builds_namespace_project_commit_path(project.namespace, project, pipeline.sha)
   end
 
   def ci_status_with_icon(status, target = nil)

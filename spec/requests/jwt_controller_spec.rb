@@ -44,7 +44,7 @@ describe JwtController do
       let(:user) { create(:user) }
       let(:headers) { { authorization: credentials('user', 'password') } }
 
-      before { expect_any_instance_of(Gitlab::Auth).to receive(:find).with('user', 'password').and_return(user) }
+      before { expect(Gitlab::Auth).to receive(:find_in_gitlab_or_ldap).with('user', 'password').and_return(user) }
 
       subject! { get '/jwt/auth', parameters, headers }
 
