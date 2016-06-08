@@ -15,6 +15,9 @@ module Banzai
           next if link.start_with?(internal_url)
 
           node.set_attribute('rel', 'nofollow noreferrer')
+
+          # Open external links on a new tab
+          node.set_attribute('target', '_blank')
         end
 
         doc
