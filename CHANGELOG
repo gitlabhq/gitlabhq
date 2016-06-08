@@ -81,6 +81,11 @@ v 8.9.0 (unreleased)
   - Instrument private methods and private instance methods by default instead just public methods
   - Updated the allocations Gem to version 1.0.5
   - The background sampler now ignores classes without names
+  - Update design for `Close` buttons
+  - New custom icons for navigation
+  - Horizontally scrolling navigation on project, group, and profile settings pages
+  - Hide global side navigation by default
+  - Remove tanuki logo from side navigation; center on top nav
 
 v 8.8.5 (unreleased)
   - Ensure branch cleanup regardless of whether the GitHub import process succeeds
