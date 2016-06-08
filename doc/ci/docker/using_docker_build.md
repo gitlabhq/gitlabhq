@@ -155,8 +155,7 @@ In order to do that, follow the steps:
 
 1. Install [GitLab Runner](https://gitlab.com/gitlab-org/gitlab-ci-multi-runner/#installation).
 
-1. Register GitLab Runner from the command line to use `docker` and `privileged`
-   mode:
+1. Register GitLab Runner from the command line to use `docker` and share `/var/run/docker.sock`:
 
     ```bash
     sudo gitlab-runner register -n \
