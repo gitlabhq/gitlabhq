@@ -6,7 +6,7 @@
     - if @milestone.closed?
       Closed
     - elsif @milestone.expired?
-      Expired
+      Past Due
     - else
       Open
   %span.identifier

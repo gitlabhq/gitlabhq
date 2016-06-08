@@ -5,7 +5,7 @@
     return '' unless time
 
     suffix       or= 'remaining'
-    expiredLabel or= 'expired'
+    expiredLabel or= 'Past due'
 
     jQuery.timeago.settings.allowFuture = yes
 
