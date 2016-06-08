@@ -165,26 +165,26 @@ describe 'GitLab Markdown', feature: true do
     describe 'ExternalLinkFilter' do
       it 'adds nofollow to external link' do
         link = doc.at_css('a:contains("Google")')
+
         expect(link.attr('rel')).to include('nofollow')
       end
 
       it 'adds noreferrer to external link' do
         link = doc.at_css('a:contains("Google")')
+
         expect(link.attr('rel')).to include('noreferrer')
       end
 
       it 'adds _blank to target attribute for external links' do
         link = doc.at_css('a:contains("Google")')
+
         expect(link.attr('target')).to match('_blank')
       end
 
       it 'ignores internal link' do
         link = doc.at_css('a:contains("GitLab Root")')
-        expect(link.attr('rel')).not_to match 'nofollow'
-      end
 
-      it 'does not set _blank to target attribute for internal links' do
-        link = doc.at_css('a:contains("GitLab Root")')
+        expect(link.attr('rel')).not_to match 'nofollow'
         expect(link.attr('target')).not_to match '_blank'
       end
     end
