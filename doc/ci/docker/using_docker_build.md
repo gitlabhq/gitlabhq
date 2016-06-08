@@ -19,7 +19,7 @@ $ docker tag my-image my-registry:5000/my-image
 $ docker push my-registry:5000/my-image
 ```
 
-However, this requires special configuration of GitLab Runner to enable `docker` support during builds. There are three methods to enable the use of `docker build` and `docker run` during builds; each with their own tradeoffs.
+This requires special configuration of GitLab Runner to enable `docker` support during builds. There are three methods to enable the use of `docker build` and `docker run` during builds; each with their own tradeoffs.
 
 ## 1. Use shell executor
 
@@ -67,7 +67,7 @@ GitLab Runner then executes build scripts as the `gitlab-runner` user.
 
 5. You can now use `docker` command and install `docker-compose` if needed.
 
-However, by adding `gitlab-runner` to `docker` group you are effectively granting `gitlab-runner` full root permissions.
+By adding `gitlab-runner` to `docker` group you are effectively granting `gitlab-runner` full root permissions.
 For more information please checkout [On Docker security: `docker` group considered harmful](https://www.andreas-jung.com/contents/on-docker-security-docker-group-considered-harmful).
 
 ## 2. Use docker-in-docker executor
@@ -138,7 +138,7 @@ In order to do that, follow the steps:
       - docker run my-docker-image /script/to/run/tests
     ```
 
-However, by enabling `--docker-privileged` you are effectively disabling all
+By enabling `--docker-privileged` you are effectively disabling all
 the security mechanisms of containers and exposing your host to privilege
 escalation which can lead to container breakout. For more information, check out the official Docker documentation on
 [Runtime privilege and Linux capabilities][docker-cap].
@@ -207,7 +207,7 @@ In order to do that, follow the steps:
       - docker run my-docker-image /script/to/run/tests
     ```
 
-However, by sharing the docker daemon, you are effectively disabling all
+By sharing the docker daemon, you are effectively disabling all
 the security mechanisms of containers and exposing your host to privilege
 escalation which can lead to container breakout. For example, if a project
 ran `docker rm -f $(docker ps -a -q)` it would remove the GitLab Runner
