@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 feature 'list of badges' do
-  include Select2Helper
-
   background do
     user = create(:user)
     project = create(:project)
@@ -24,7 +22,11 @@ feature 'list of badges' do
   end
 
   scenario 'user changes current ref on badges list page', js: true do
-    select2('improve/awesome', from: '#ref')
+    first('.js-project-refs-dropdown').click
+
+    page.within '.project-refs-form' do
+      click_link 'improve/awesome'
+    end
 
     expect(page).to have_content 'badges/improve/awesome/build.svg'
   end
