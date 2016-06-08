@@ -679,7 +679,6 @@ Rails.application.routes.draw do
             post :toggle_subscription
             post :toggle_award_emoji
             post :remove_wip
-            post :todo
           end
 
           collection do
@@ -760,7 +759,6 @@ Rails.application.routes.draw do
             get :referenced_merge_requests
             get :related_branches
             get :can_create_branch
-            post :todo
           end
           collection do
             post  :bulk_update
@@ -790,6 +788,8 @@ Rails.application.routes.draw do
             delete :delete_attachment
           end
         end
+
+        resources :todos, only: [:create], constraints: { id: /\d+/ }
 
         resources :uploads, only: [:create] do
           collection do

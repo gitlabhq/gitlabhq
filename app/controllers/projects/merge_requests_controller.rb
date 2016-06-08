@@ -260,20 +260,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     render json: response
   end
 
-  def todo
-    json_data = Hash.new
-
-    if params[:todo_id].nil?
-      TodoService.new.mark_todo(merge_request, current_user)
-
-      json_data[:todo] = current_user.todos.find_by(state: :pending, action: Todo::MARKED, target_id: merge_request.id)
-    else
-      current_user.todos.find_by_id(params[:todo_id]).update(state: :done)
-    end
-
-    render json: json_data.merge({ count: current_user.todos.pending.count })
-  end
-
   protected
 
   def selected_target_project

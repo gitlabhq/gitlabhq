@@ -58,6 +58,8 @@ class @Sidebar
       dataType: 'json'
       data:
         todo_id: $this.attr('data-id')
+        issuable_id: $this.data('issuable')
+        issuable_type: $this.data('issuable-type')
       beforeSend: ->
         $this.disable()
         $todoLoading.removeClass 'hidden'
