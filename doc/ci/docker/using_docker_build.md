@@ -232,7 +232,7 @@ docker-in-docker on your runners, this is how your `.gitlab-ci.yml` could look:
 
 ```yaml
  build:
-   image: docker:git
+   image: docker:latest
    services:
    - docker:dind
    stage: build
@@ -254,7 +254,7 @@ when needed. Changes to `master` also get tagged as `latest` and deployed using
 an application-specific deploy script:
 
 ```yaml
-image: docker:git
+image: docker:latest
 services:
 - docker:dind
 
