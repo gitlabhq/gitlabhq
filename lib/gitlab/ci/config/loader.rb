@@ -12,7 +12,7 @@ module Gitlab
           @config.is_a?(Hash)
         end
 
-        def load
+        def load!
           unless valid?
             raise FormatError, 'Invalid configuration format'
           end

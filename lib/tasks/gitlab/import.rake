@@ -23,7 +23,7 @@ namespace :gitlab do
         group_name, name = File.split(path)
         group_name = nil if group_name == '.'
 
-        puts "Processing #{repo_path}".yellow
+        puts "Processing #{repo_path}".color(:yellow)
 
         if path.end_with?('.wiki')
           puts " * Skipping wiki repo"
@@ -51,9 +51,9 @@ namespace :gitlab do
               group.path = group_name
               group.owner = user
               if group.save
-                puts " * Created Group #{group.name} (#{group.id})".green
+                puts " * Created Group #{group.name} (#{group.id})".color(:green)
               else
-                puts " * Failed trying to create group #{group.name}".red
+                puts " * Failed trying to create group #{group.name}".color(:red)
               end
             end
             # set project group
@@ -63,17 +63,17 @@ namespace :gitlab do
           project = Projects::CreateService.new(user, project_params).execute
 
           if project.persisted?
-            puts " * Created #{project.name} (#{repo_path})".green
+            puts " * Created #{project.name} (#{repo_path})".color(:green)
             project.update_repository_size
             project.update_commit_count
           else
-            puts " * Failed trying to create #{project.name} (#{repo_path})".red
-            puts "   Errors: #{project.errors.messages}".red
+            puts " * Failed trying to create #{project.name} (#{repo_path})".color(:red)
+            puts "   Errors: #{project.errors.messages}".color(:red)
           end
         end
       end
 
-      puts "Done!".green
+      puts "Done!".color(:green)
     end
   end
 end

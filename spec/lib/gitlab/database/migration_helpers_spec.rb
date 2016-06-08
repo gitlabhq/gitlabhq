@@ -16,13 +16,20 @@ describe Gitlab::Database::MigrationHelpers, lib: true do
       end
 
       context 'using PostgreSQL' do
-        it 'creates the index concurrently' do
-          expect(Gitlab::Database).to receive(:postgresql?).and_return(true)
+        before { expect(Gitlab::Database).to receive(:postgresql?).and_return(true) }
 
+        it 'creates the index concurrently' do
           expect(model).to receive(:add_index).
             with(:users, :foo, algorithm: :concurrently)
 
           model.add_concurrent_index(:users, :foo)
+        end
+
+        it 'creates unique index concurrently' do
+          expect(model).to receive(:add_index).
+            with(:users, :foo, { algorithm: :concurrently, unique: true })
+
+          model.add_concurrent_index(:users, :foo, unique: true)
         end
       end
 
@@ -31,7 +38,7 @@ describe Gitlab::Database::MigrationHelpers, lib: true do
           expect(Gitlab::Database).to receive(:postgresql?).and_return(false)
 
           expect(model).to receive(:add_index).
-            with(:users, :foo)
+            with(:users, :foo, {})
 
           model.add_concurrent_index(:users, :foo)
         end

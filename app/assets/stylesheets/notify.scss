@@ -6,19 +6,19 @@ p.details {
   font-style: italic;
   color: #777
 }
-.footer p {
+.footer > p {
   font-size: small;
   color: #777
 }
 pre.commit-message {
   white-space: pre-wrap;
 }
-.file-stats a {
+.file-stats > a {
   text-decoration: none;
-}
-.file-stats .new-file {
-  color: #090;
-}
-.file-stats .deleted-file {
-  color: #b00;
+  > .new-file {
+    color: #090;
+  }
+  > .deleted-file {
+    color: #b00;
+  }
 }

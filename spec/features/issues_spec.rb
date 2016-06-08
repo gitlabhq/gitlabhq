@@ -125,7 +125,7 @@ describe 'Issues', feature: true do
   describe 'Issue info' do
     it 'excludes award_emoji from comment count' do
       issue = create(:issue, author: @user, assignee: @user, project: project, title: 'foobar')
-      create(:upvote_note, noteable: issue, project: project)
+      create(:award_emoji, awardable: issue)
 
       visit namespace_project_issues_path(project.namespace, project, assignee_id: @user.id)
 
@@ -365,13 +365,9 @@ describe 'Issues', feature: true do
 
         page.within('.assignee') do
           expect(page).to have_content "#{@user.name}"
-        end
 
-        find('.block.assignee .edit-link').click
-        sleep 2 # wait for ajax stuff to complete
-        first('.dropdown-menu-user-link').click
-        sleep 2
-        page.within('.assignee') do
+          click_link 'Edit'
+          click_link 'Unassigned'
           expect(page).to have_content 'No assignee'
         end
 

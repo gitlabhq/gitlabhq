@@ -12,9 +12,9 @@ describe Gitlab::Ci::Config::Loader do
       end
     end
 
-    describe '#load' do
+    describe '#load!' do
       it 'returns a valid hash' do
-        expect(loader.load).to eq(image: 'ruby:2.2')
+        expect(loader.load!).to eq(image: 'ruby:2.2')
       end
     end
   end
@@ -28,9 +28,9 @@ describe Gitlab::Ci::Config::Loader do
       end
     end
 
-    describe '#load' do
+    describe '#load!' do
       it 'raises error' do
-        expect { loader.load }.to raise_error(
+        expect { loader.load! }.to raise_error(
           Gitlab::Ci::Config::Loader::FormatError,
           'Invalid configuration format'
         )

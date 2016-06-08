@@ -16,21 +16,21 @@ user = User.new(user_args)
 user.skip_confirmation!
 
 if user.save
-  puts "Administrator account created:".green
+  puts "Administrator account created:".color(:green)
   puts
-  puts "login:    root".green
+  puts "login:    root".color(:green)
 
   if user_args.key?(:password)
-    puts "password: #{user_args[:password]}".green
+    puts "password: #{user_args[:password]}".color(:green)
   else
-    puts "password: You'll be prompted to create one on your first visit.".green
+    puts "password: You'll be prompted to create one on your first visit.".color(:green)
   end
   puts
 else
-  puts "Could not create the default administrator account:".red
+  puts "Could not create the default administrator account:".color(:red)
   puts
   user.errors.full_messages.map do |message|
-    puts "--> #{message}".red
+    puts "--> #{message}".color(:red)
   end
   puts
 

@@ -48,7 +48,7 @@ describe Gitlab::Ci::Config do
         describe '.new' do
           it 'raises error' do
             expect { config }.to raise_error(
-              Gitlab::Ci::Config::LoaderError,
+              Gitlab::Ci::Config::Loader::FormatError,
               /Invalid configuration format/
             )
           end

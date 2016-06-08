@@ -25,10 +25,15 @@ describe SessionsController do
           expect(response).to set_flash.to /Signed in successfully/
           expect(subject.current_user). to eq user
         end
+
+        it "creates an audit log record" do
+          expect { post(:create, user: { login: user.username, password: user.password }) }.to change { SecurityEvent.count }.by(1)
+          expect(SecurityEvent.last.details[:with]).to eq("standard")
+        end
       end
     end
 
-    context 'when using two-factor authentication' do
+    context 'when using two-factor authentication via OTP' do
       let(:user) { create(:user, :two_factor) }
 
       def authenticate_2fa(user_params)
@@ -116,6 +121,25 @@ describe SessionsController do
             end
           end
         end
+      end
+
+      it "creates an audit log record" do
+        expect { authenticate_2fa(login: user.username, otp_attempt: user.current_otp) }.to change { SecurityEvent.count }.by(1)
+        expect(SecurityEvent.last.details[:with]).to eq("two-factor")
+      end
+    end
+
+    context 'when using two-factor authentication via U2F device' do
+      let(:user) { create(:user, :two_factor) }
+
+      def authenticate_2fa_u2f(user_params)
+        post(:create, { user: user_params }, { otp_user_id: user.id })
+      end
+
+      it "creates an audit log record" do
+        allow(U2fRegistration).to receive(:authenticate).and_return(true)
+        expect { authenticate_2fa_u2f(login: user.username, device_response: "{}") }.to change { SecurityEvent.count }.by(1)
+        expect(SecurityEvent.last.details[:with]).to eq("two-factor-via-u2f-device")
       end
     end
   end

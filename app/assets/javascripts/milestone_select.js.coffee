@@ -83,7 +83,7 @@ class @MilestoneSelect
           $selectbox.hide()
 
           # display:block overrides the hide-collapse rule
-          $value.removeAttr('style')
+          $value.css('display', '')
         clicked: (selected) ->
           page = $('body').data 'page'
           isIssueIndex = page is 'projects:issues:index'
@@ -118,7 +118,7 @@ class @MilestoneSelect
               $dropdown.trigger('loaded.gl.dropdown')
               $loading.fadeOut()
               $selectbox.hide()
-              $value.removeAttr('style')
+              $value.css('display', '')
               if data.milestone?
                 data.milestone.namespace = _this.currentProject.namespace
                 data.milestone.path = _this.currentProject.path

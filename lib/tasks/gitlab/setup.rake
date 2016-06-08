@@ -19,7 +19,7 @@ namespace :gitlab do
     Rake::Task["setup_postgresql"].invoke
     Rake::Task["db:seed_fu"].invoke
   rescue Gitlab::TaskAbortedByUserError
-    puts "Quitting...".red
+    puts "Quitting...".color(:red)
     exit 1
   end
 end

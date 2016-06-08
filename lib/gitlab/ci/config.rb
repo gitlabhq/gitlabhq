@@ -11,13 +11,8 @@ module Gitlab
       delegate :before_script, to: :@global
 
       def initialize(config)
-        loader = Loader.new(config)
+        @config = Loader.new(config).load!
 
-        unless loader.valid?
-          raise LoaderError, 'Invalid configuration format!'
-        end
-
-        @config = loader.load
         @global = Node::Global.new(@config)
         @global.process!
       end

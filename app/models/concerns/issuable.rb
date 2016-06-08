@@ -10,6 +10,7 @@ module Issuable
   include Mentionable
   include Subscribable
   include StripAttribute
+  include Awardable
 
   included do
     belongs_to :author, class_name: "User"
@@ -104,38 +105,22 @@ module Issuable
       where(t[:title].matches(pattern).or(t[:description].matches(pattern)))
     end
 
-    def sort(method)
+    def sort(method, excluded_labels: [])
       case method.to_s
       when 'milestone_due_asc' then order_milestone_due_asc
       when 'milestone_due_desc' then order_milestone_due_desc
       when 'downvotes_desc' then order_downvotes_desc
       when 'upvotes_desc' then order_upvotes_desc
+      when 'priority' then order_labels_priority(excluded_labels: excluded_labels)
       else
         order_by(method)
       end
     end
 
-    def order_downvotes_desc
-      order_votes_desc('thumbsdown')
-    end
-
-    def order_upvotes_desc
-      order_votes_desc('thumbsup')
-    end
-
-    def order_votes_desc(award_emoji_name)
-      issuable_table = self.arel_table
-      note_table = Note.arel_table
-
-      join_clause = issuable_table.join(note_table, Arel::Nodes::OuterJoin).on(
-        note_table[:noteable_id].eq(issuable_table[:id]).and(
-          note_table[:noteable_type].eq(self.name).and(
-            note_table[:is_award].eq(true).and(note_table[:note].eq(award_emoji_name))
-          )
-        )
-      ).join_sources
-
-      joins(join_clause).group(issuable_table[:id]).reorder("COUNT(notes.id) DESC")
+    def order_labels_priority(excluded_labels: [])
+      select("#{table_name}.*, (#{highest_label_priority(excluded_labels).to_sql}) AS highest_priority").
+        group(arel_table[:id]).
+        reorder(Gitlab::Database.nulls_last_order('highest_priority', 'ASC'))
     end
 
     def with_label(title, sort = nil)
@@ -161,6 +146,20 @@ module Issuable
 
       grouping_columns
     end
+
+    private
+
+    def highest_label_priority(excluded_labels)
+      query = Label.select(Label.arel_table[:priority].minimum).
+        joins(:label_links).
+        where(label_links: { target_type: name }).
+        where("label_links.target_id = #{table_name}.id").
+        reorder(nil)
+
+      query.where.not(title: excluded_labels) if excluded_labels.present?
+
+      query
+    end
   end
 
   def today?
@@ -171,24 +170,12 @@ module Issuable
     today? && created_at == updated_at
   end
 
-  def is_assigned?
-    !!assignee_id
-  end
-
   def is_being_reassigned?
     assignee_id_changed?
   end
 
   def open?
     opened? || reopened?
-  end
-
-  def downvotes
-    notes.awards.where(note: "thumbsdown").count
-  end
-
-  def upvotes
-    notes.awards.where(note: "thumbsup").count
   end
 
   def user_notes_count

@@ -11,13 +11,17 @@
           = @query.duration.round(4)
           = t('sherlock.milliseconds')
       %li
+        - frame = @query.last_application_frame
         %span.light
           #{t('sherlock.origin')}:
         %strong
-          = @query.last_application_frame.path
+          - if defined?(BetterErrors)
+            = link_to(frame.path, BetterErrors.editor[frame.path, frame.line])
+          - else
+            = frame.path
         %small.light
           = t('sherlock.line')
-          = @query.last_application_frame.line
+          = frame.line
 
   .panel.panel-default
     .panel-heading
