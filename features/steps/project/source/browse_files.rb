@@ -306,7 +306,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step "I see the ref 'test' has been selected" do
-    expect(page).to have_selector '.dropdown-toggle', text: "'test'"
+    expect(page).to have_selector '.dropdown-toggle-text', text: "'test'"
   end
 
   step "I visit the 'test' tree" do

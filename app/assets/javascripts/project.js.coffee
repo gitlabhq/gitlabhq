@@ -74,7 +74,7 @@ class @Project
             isActiveClass = if ref is selected then 'is-active' else ''
 
             "<li>
-              <a href='#' data-ref='#{ref}' class='#{isActiveClass}'>
+              <a href='#' data-ref='#{escape(ref)}' class='#{isActiveClass}'>
                 #{ref}
               </a>
             </li>"
