@@ -24,16 +24,16 @@ However, this requires special configuration of GitLab Runner to enable `docker`
 ## 1. Use shell executor
 
 The simplest approach is to install GitLab Runner in `shell` execution mode.
-GitLab Runner then executes build scripts as `gitlab-runner` user.
+GitLab Runner then executes build scripts as the `gitlab-runner` user.
 
 1. Install [GitLab Runner](https://gitlab.com/gitlab-org/gitlab-ci-multi-runner/#installation).
 
 1. During GitLab Runner installation select `shell` as method of executing build scripts or use command:
 
     ```bash
-    $ sudo gitlab-runner register -n \
+    $ sudo gitlab-ci-multi-runner register -n \
       --url https://gitlab.com/ci \
-      --token RUNNER_TOKEN \
+      --registration-token REGISTRATION_TOKEN \
       --executor shell
       --description "My Runner"
     ```
