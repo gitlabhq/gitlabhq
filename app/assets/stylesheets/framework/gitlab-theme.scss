@@ -22,17 +22,17 @@
       &:hover {
         background-color: $color-dark;
         a {
-          color: #fff;
+          color: $white-light;
 
           h3 {
-            color: #fff;
+            color: $white-light;
           }
         }
       }
     }
 
     .collapse-nav a {
-      color: #fff;
+      color: $white-light;
       background: $color;
     }
 
@@ -45,7 +45,7 @@
 
         &:hover {
           background-color: $color-dark;
-          color: #fff;
+          color: $white-light;
           text-decoration: none;
         }
       }
@@ -63,9 +63,19 @@
           color: $color-light;
         }
 
+        path,
+        polygon {
+          fill: $color-light;
+        }
+
         .count {
           color: $color-light;
           background: $color-dark;
+        }
+
+        svg {
+          position: relative;
+          top: 3px;
         }
       }
 
@@ -74,7 +84,7 @@
       }
 
       &.active a {
-        color: #fff;
+        color: $white-light;
         background: $color-dark;
 
         &.no-highlight {
@@ -82,7 +92,12 @@
         }
 
         i {
-          color: #fff
+          color: $white-light
+        }
+
+        path,
+        polygon {
+          fill: $white-light;
         }
       }
     }
