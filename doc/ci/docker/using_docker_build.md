@@ -117,10 +117,6 @@ In order to do that, follow the steps:
         Insecure = false
     ```
 
-    If you want to use the Shared Runners available on your GitLab CE/EE
-    installation in order to build Docker images, then make sure that your
-    Shared Runners configuration has the `privileged` mode set to `true`.
-
 1. You can now use `docker` from build script:
 
     ```yaml
