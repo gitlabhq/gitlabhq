@@ -10,7 +10,7 @@
 .commit-header {
   padding: 5px 10px;
   background-color: $background-color;
-  border-bottom: 1px solid #eee;
+  border-top: 1px solid #eee;
   border-bottom: 1px solid #eee;
   font-size: 14px;
 
@@ -21,7 +21,7 @@
 
 .commit-row-title {
   line-height: 1;
-  margin-bottom: 5px;
+  margin-bottom: 7px;
 
   .notes_count {
     float: right;
@@ -37,6 +37,7 @@
   }
 
   .text-expander {
+    display: inline-block;
     background: $gray-light;
     color: $gl-gray-dark;
     padding: 0 5px;
@@ -56,6 +57,19 @@
   @media (min-width: $screen-sm-min) {
     float: right;
     margin-left: $gl-padding;
+    margin-top: 2px;
+    font-size: 0;
+  }
+
+  .btn-transparent {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .btn {
+    &:not(:first-child) {
+      margin-left: $gl-padding;
+    }
   }
 }
 
@@ -68,7 +82,7 @@
   padding: 10px 0;
 
   @media (min-width: $screen-sm-min) {
-    padding-left: 55px;
+    padding-left: 46px;
   }
 
   &:not(:last-child) {
@@ -82,7 +96,7 @@
   }
 
   .avatar {
-    margin-left: -55px;
+    margin-left: -46px;
   }
 
   .item-title {
