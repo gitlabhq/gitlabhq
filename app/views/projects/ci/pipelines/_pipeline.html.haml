@@ -1,16 +1,24 @@
 - status = pipeline.status
+- project = pipeline.project_id == @project.id ? @project : pipeline.project
 %tr.commit
+  - if merge_requests
+    %td.merge-request
+      - mr = pipeline.merge_request
+      - if mr
+        = link_to namespace_project_merge_request_path(project.namespace, project, mr) do
+          %strong !#{mr.iid}
+
   %td.commit-link
-    = link_to namespace_project_pipeline_path(@project.namespace, @project, pipeline.id), class: "ci-status ci-#{status}" do
+    = link_to namespace_project_pipeline_path(project.namespace, project, pipeline.id), class: "ci-status ci-#{status}" do
       = ci_icon_for_status(status)
       %strong ##{pipeline.id}
 
   %td
     %div.branch-commit
       - if pipeline.ref
-        = link_to pipeline.ref, namespace_project_commits_path(@project.namespace, @project, pipeline.ref), class: "monospace"
+        = link_to pipeline.ref, namespace_project_commits_path(project.namespace, project, pipeline.ref), class: "monospace"
         &middot;
-      = link_to pipeline.short_sha, namespace_project_commit_path(@project.namespace, @project, pipeline.sha), class: "commit-id monospace"
+      = link_to pipeline.short_sha, namespace_project_commit_path(project.namespace, project, pipeline.sha), class: "commit-id monospace"
       &nbsp;
       - if pipeline.tag?
         %span.label.label-primary tag
@@ -25,7 +33,7 @@
 
       %p.commit-title
         - if commit_data = pipeline.commit_data
-          = link_to_gfm truncate(commit_data.title, length: 60), namespace_project_commit_path(@project.namespace, @project, commit_data.id), class: "commit-row-message"
+          = link_to_gfm truncate(commit_data.title, length: 60), namespace_project_commit_path(project.namespace, project, commit_data.id), class: "commit-row-message"
         - else
           Cant find HEAD commit for this branch
 
@@ -36,7 +44,7 @@
         - status = stages_status[stage]
         - tooltip = "#{stage.titleize}: #{status || 'not found'}"
         - if status
-          = link_to namespace_project_pipeline_path(@project.namespace, @project, pipeline.id, anchor: stage), class: "has-tooltip ci-status-icon-#{status}", title: tooltip do
+          = link_to namespace_project_pipeline_path(project.namespace, project, pipeline.id, anchor: stage), class: "has-tooltip ci-status-icon-#{status}", title: tooltip do
             = ci_icon_for_status(status)
         - else
           .light.has-tooltip{ title: tooltip }
@@ -58,14 +66,14 @@
           %ul.dropdown-menu.dropdown-menu-align-right
             - artifacts.each do |build|
               %li
-                = link_to download_namespace_project_build_artifacts_path(@project.namespace, @project, build), rel: 'nofollow' do
+                = link_to download_namespace_project_build_artifacts_path(project.namespace, project, build), rel: 'nofollow' do
                   = icon("download")
                   %span #{build.name}
 
-      - if can?(current_user, :update_pipeline, @project)
+      - if can?(current_user, :update_pipeline, project)
         - if pipeline.retryable?
-          = link_to retry_namespace_project_pipeline_path(@project.namespace, @project, pipeline.id), class: 'btn has-tooltip', title: "Retry", method: :post do
+          = link_to retry_namespace_project_pipeline_path(project.namespace, project, pipeline.id), class: 'btn has-tooltip', title: "Retry", method: :post do
             = icon("repeat")
         - if pipeline.cancelable?
-          = link_to cancel_namespace_project_pipeline_path(@project.namespace, @project, pipeline.id), class: 'btn btn-remove has-tooltip', title: "Cancel", method: :post do
+          = link_to cancel_namespace_project_pipeline_path(project.namespace, project, pipeline.id), class: 'btn btn-remove has-tooltip', title: "Cancel", method: :post do
             = icon("remove")

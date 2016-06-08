@@ -25,6 +25,10 @@
         = link_to project_pipelines_path(@project, scope: :tags) do
           Tags
 
+      %li{class: ('active' if @scope == 'merge_requests')}
+        = link_to project_pipelines_path(@project, scope: :merge_requests) do
+          Merge Requests
+
     .nav-controls
       - if can? current_user, :create_pipeline, @project
         = link_to new_namespace_project_pipeline_path(@project.namespace, @project), class: 'btn btn-create' do
@@ -47,6 +51,8 @@
       .table-holder
         %table.table.builds
           %tbody
+            - if @scope == 'merge_requests'
+              %th MR
             %th ID
             %th Commit
             - stages.each do |stage|
@@ -55,6 +61,6 @@
                   = stage.titleize.pluralize
             %th Duration
             %th
-          = render @pipelines, commit_sha: true, stage: true, allow_retry: true, stages: stages
+          = render @pipelines, commit_sha: true, stage: true, allow_retry: true, stages: stages, merge_requests: @scope == 'merge_requests'
 
       = paginate @pipelines, theme: 'gitlab'

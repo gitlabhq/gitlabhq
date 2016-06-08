@@ -27,7 +27,7 @@ module Ci
     end
 
     def project_id
-      project.id
+      gl_project_id
     end
 
     def valid_commit_sha
@@ -159,6 +159,12 @@ module Ci
 
     def skip_ci?
       git_commit_message =~ /(\[ci skip\])/ if git_commit_message
+    end
+
+    def merge_request
+      MergeRequest.includes(:merge_request_diff)
+                         .where(source_branch: ref, source_project_id: gl_project_id)
+                         .reorder(iid: :asc).last
     end
 
     private
