@@ -122,10 +122,8 @@
   a {
     display: block;
     position: relative;
-    padding-left: 10px;
-    padding-right: 10px;
+    padding: 5px 10px;
     color: $dropdown-link-color;
-    line-height: 34px;
     text-overflow: ellipsis;
     border-radius: 2px;
     white-space: nowrap;
@@ -159,6 +157,16 @@
 
   .separator + .dropdown-header {
     padding-top: 2px;
+  }
+}
+
+.dropdown-menu-large {
+  width: 340px;
+}
+
+.dropdown-menu-no-wrap {
+  a {
+    white-space: normal;
   }
 }
 
@@ -232,19 +240,25 @@
   a {
     padding-left: 25px;
 
-    &.is-active {
+    &.is-indeterminate, &.is-active {
       &::before {
-        content: "\f00c";
         position: absolute;
         left: 5px;
-        top: 50%;
-        margin-top: -7px;
+        top: 8px;
         font: normal normal normal 14px/1 FontAwesome;
         font-size: inherit;
         text-rendering: auto;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
       }
+    }
+
+    &.is-indeterminate::before {
+      content: "\f068";
+    }
+
+    &.is-active::before {
+      content: "\f00c";
     }
   }
 }
@@ -524,4 +538,15 @@
   .ui-datepicker-unselectable {
     background-color: $calendar-unselectable-bg;
   }
+}
+
+.dropdown-menu-inner-title {
+  display: block;
+  color: $gl-title-color;
+  font-weight: 600;
+}
+
+.dropdown-menu-inner-content {
+  display: block;
+  color: $gl-placeholder-color;
 }

@@ -2,16 +2,16 @@ require 'spec_helper'
 
 describe Ci::Build, models: true do
   let(:project) { create(:project) }
-  let(:commit) { create(:ci_commit, project: project) }
-  let(:build) { create(:ci_build, commit: commit) }
+  let(:pipeline) { create(:ci_pipeline, project: project) }
+  let(:build) { create(:ci_build, pipeline: pipeline) }
 
   it { is_expected.to validate_presence_of :ref }
 
   it { is_expected.to respond_to :trace_html }
 
   describe '#first_pending' do
-    let!(:first) { create(:ci_build, commit: commit, status: 'pending', created_at: Date.yesterday) }
-    let!(:second) { create(:ci_build, commit: commit, status: 'pending') }
+    let!(:first) { create(:ci_build, pipeline: pipeline, status: 'pending', created_at: Date.yesterday) }
+    let!(:second) { create(:ci_build, pipeline: pipeline, status: 'pending') }
     subject { Ci::Build.first_pending }
 
     it { is_expected.to be_a(Ci::Build) }
@@ -97,7 +97,7 @@ describe Ci::Build, models: true do
   # describe :timeout do
   #   subject { build.timeout }
   #
-  #   it { is_expected.to eq(commit.project.timeout) }
+  #   it { is_expected.to eq(pipeline.project.timeout) }
   # end
 
   describe '#options' do
@@ -124,13 +124,13 @@ describe Ci::Build, models: true do
   describe '#project' do
     subject { build.project }
 
-    it { is_expected.to eq(commit.project) }
+    it { is_expected.to eq(pipeline.project) }
   end
 
   describe '#project_id' do
     subject { build.project_id }
 
-    it { is_expected.to eq(commit.project_id) }
+    it { is_expected.to eq(pipeline.project_id) }
   end
 
   describe '#project_name' do
@@ -219,7 +219,7 @@ describe Ci::Build, models: true do
 
         context 'and trigger variables' do
           let(:trigger) { create(:ci_trigger, project: project) }
-          let(:trigger_request) { create(:ci_trigger_request_with_variables, commit: commit, trigger: trigger) }
+          let(:trigger_request) { create(:ci_trigger_request_with_variables, commit: pipeline, trigger: trigger) }
           let(:trigger_variables) do
             [
               { key: :TRIGGER_KEY, value: 'TRIGGER_VALUE', public: false }
@@ -428,10 +428,10 @@ describe Ci::Build, models: true do
   end
 
   describe '#depends_on_builds' do
-    let!(:build) { create(:ci_build, commit: commit, name: 'build', stage_idx: 0, stage: 'build') }
-    let!(:rspec_test) { create(:ci_build, commit: commit, name: 'rspec', stage_idx: 1, stage: 'test') }
-    let!(:rubocop_test) { create(:ci_build, commit: commit, name: 'rubocop', stage_idx: 1, stage: 'test') }
-    let!(:staging) { create(:ci_build, commit: commit, name: 'staging', stage_idx: 2, stage: 'deploy') }
+    let!(:build) { create(:ci_build, pipeline: pipeline, name: 'build', stage_idx: 0, stage: 'build') }
+    let!(:rspec_test) { create(:ci_build, pipeline: pipeline, name: 'rspec', stage_idx: 1, stage: 'test') }
+    let!(:rubocop_test) { create(:ci_build, pipeline: pipeline, name: 'rubocop', stage_idx: 1, stage: 'test') }
+    let!(:staging) { create(:ci_build, pipeline: pipeline, name: 'staging', stage_idx: 2, stage: 'deploy') }
 
     it 'to have no dependents if this is first build' do
       expect(build.depends_on_builds).to be_empty
@@ -451,19 +451,19 @@ describe Ci::Build, models: true do
     end
   end
 
-  def create_mr(build, commit, factory: :merge_request, created_at: Time.now)
-    create(factory, source_project_id: commit.gl_project_id,
-                    target_project_id: commit.gl_project_id,
+  def create_mr(build, pipeline, factory: :merge_request, created_at: Time.now)
+    create(factory, source_project_id: pipeline.gl_project_id,
+                    target_project_id: pipeline.gl_project_id,
                     source_branch: build.ref,
                     created_at: created_at)
   end
 
   describe '#merge_request' do
-    context 'when a MR has a reference to the commit' do
+    context 'when a MR has a reference to the pipeline' do
       before do
-        @merge_request = create_mr(build, commit, factory: :merge_request)
+        @merge_request = create_mr(build, pipeline, factory: :merge_request)
 
-        commits = [double(id: commit.sha)]
+        commits = [double(id: pipeline.sha)]
         allow(@merge_request).to receive(:commits).and_return(commits)
         allow(MergeRequest).to receive_message_chain(:includes, :where, :reorder).and_return([@merge_request])
       end
@@ -473,19 +473,19 @@ describe Ci::Build, models: true do
       end
     end
 
-    context 'when there is not a MR referencing the commit' do
+    context 'when there is not a MR referencing the pipeline' do
       it 'returns nil' do
         expect(build.merge_request).to be_nil
       end
     end
 
-    context 'when more than one MR have a reference to the commit' do
+    context 'when more than one MR have a reference to the pipeline' do
       before do
-        @merge_request = create_mr(build, commit, factory: :merge_request)
+        @merge_request = create_mr(build, pipeline, factory: :merge_request)
         @merge_request.close!
-        @merge_request2 = create_mr(build, commit, factory: :merge_request)
+        @merge_request2 = create_mr(build, pipeline, factory: :merge_request)
 
-        commits = [double(id: commit.sha)]
+        commits = [double(id: pipeline.sha)]
         allow(@merge_request).to receive(:commits).and_return(commits)
         allow(@merge_request2).to receive(:commits).and_return(commits)
         allow(MergeRequest).to receive_message_chain(:includes, :where, :reorder).and_return([@merge_request, @merge_request2])
@@ -498,11 +498,11 @@ describe Ci::Build, models: true do
 
     context 'when a Build is created after the MR' do
       before do
-        @merge_request = create_mr(build, commit, factory: :merge_request_with_diffs)
-        commit2 = create(:ci_commit, project: project)
-        @build2 = create(:ci_build, commit: commit2)
+        @merge_request = create_mr(build, pipeline, factory: :merge_request_with_diffs)
+        pipeline2 = create(:ci_pipeline, project: project)
+        @build2 = create(:ci_build, pipeline: pipeline2)
 
-        commits = [double(id: commit.sha), double(id: commit2.sha)]
+        commits = [double(id: pipeline.sha), double(id: pipeline2.sha)]
         allow(@merge_request).to receive(:commits).and_return(commits)
         allow(MergeRequest).to receive_message_chain(:includes, :where, :reorder).and_return([@merge_request])
       end

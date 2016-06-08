@@ -79,6 +79,10 @@ header {
 
     &.header-collapsed {
       padding: 0 16px;
+
+      .side-nav-toggle {
+        display: block;
+      }
     }
 
     .side-nav-toggle {
@@ -86,6 +90,7 @@ header {
       position: absolute;
       left: -10px;
       margin: 6px 0;
+      font-size: 18px;
       padding: 6px 10px;
       border: none;
       background-color: $background-color;
@@ -96,10 +101,6 @@ header {
 
       &:focus {
         outline: none;
-      }
-
-      @media (max-width: $screen-xs-min) {
-        display: block;
       }
     }
   }
@@ -171,31 +172,21 @@ header {
   }
 }
 
-@mixin collapsed-header {
-  margin-left: $sidebar_collapsed_width;
-}
-
 .header-collapsed {
-  margin-left: $sidebar_collapsed_width;
+  margin-left: 0;
 
-  @media (min-width: $screen-md-min) {
-    @include collapsed-header;
-  }
-
-  @media (max-width: $screen-xs-min) {
-    margin-left: 0;
+  .header-content {
+    padding-left: 30px;
+    transition-duration: .3s;
   }
 }
 
 .header-expanded {
-  margin-left: $sidebar_collapsed_width;
+  margin-left: 0;
 
-  @media (min-width: $screen-md-min) {
-    margin-left: $sidebar_width;
-  }
-
-  @media (max-width: $screen-xs-min) {
-    margin-left: 0;
+  .header-content {
+    padding-left: $sidebar_width;
+    transition-duration: .3s;
   }
 }
 

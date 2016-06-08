@@ -162,13 +162,14 @@ class @Notes
   renderNote: (note) ->
     unless note.valid
       if note.award
-        flash = new Flash('You have already used this award emoji!', 'alert')
+        flash = new Flash('You have already awarded this emoji!', 'alert')
         flash.pinTo('.header-content')
       return
 
     if note.award
-      awardsHandler.addAwardToEmojiBar(note.note)
-      awardsHandler.scrollToAwards()
+      votesBlock = $('.js-awards-block').eq 0
+      gl.awardsHandler.addAwardToEmojiBar votesBlock, note.name
+      gl.awardsHandler.scrollToAwards()
 
     # render note if it not present in loaded list
     # or skip if rendered

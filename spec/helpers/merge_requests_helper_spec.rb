@@ -5,7 +5,7 @@ describe MergeRequestsHelper do
     let(:project) { create :project }
     let(:merge_request) { MergeRequest.new }
     let(:ci_service) { CiService.new }
-    let(:last_commit) { Ci::Commit.new({}) }
+    let(:last_commit) { Ci::Pipeline.new({}) }
 
     before do
       allow(merge_request).to receive(:source_project).and_return(project)

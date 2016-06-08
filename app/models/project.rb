@@ -119,7 +119,7 @@ class Project < ActiveRecord::Base
   has_one :import_data, dependent: :destroy, class_name: "ProjectImportData"
 
   has_many :commit_statuses, dependent: :destroy, class_name: 'CommitStatus', foreign_key: :gl_project_id
-  has_many :ci_commits, dependent: :destroy, class_name: 'Ci::Commit', foreign_key: :gl_project_id
+  has_many :pipelines, dependent: :destroy, class_name: 'Ci::Pipeline', foreign_key: :gl_project_id
   has_many :builds, class_name: 'Ci::Build', foreign_key: :gl_project_id # the builds are created from the commit_statuses
   has_many :runner_projects, dependent: :destroy, class_name: 'Ci::RunnerProject', foreign_key: :gl_project_id
   has_many :runners, through: :runner_projects, source: :runner, class_name: 'Ci::Runner'
@@ -930,12 +930,12 @@ class Project < ActiveRecord::Base
     !namespace.share_with_group_lock
   end
 
-  def ci_commit(sha, ref)
-    ci_commits.order(id: :desc).find_by(sha: sha, ref: ref)
+  def pipeline(sha, ref)
+    pipelines.order(id: :desc).find_by(sha: sha, ref: ref)
   end
 
-  def ensure_ci_commit(sha, ref)
-    ci_commit(sha, ref) || ci_commits.create(sha: sha, ref: ref)
+  def ensure_pipeline(sha, ref)
+    pipeline(sha, ref) || pipelines.create(sha: sha, ref: ref)
   end
 
   def enable_ci
@@ -1010,5 +1010,23 @@ class Project < ActiveRecord::Base
     run_after_commit { ProjectDestroyWorker.perform_async(id, user_id, params) }
 
     update_attribute(:pending_delete, true)
+  end
+
+  def running_or_pending_build_count(force: false)
+    Rails.cache.fetch(['projects', id, 'running_or_pending_build_count'], force: force) do
+      builds.running_or_pending.count(:all)
+    end
+  end
+
+  def mark_import_as_failed(error_message)
+    original_errors = errors.dup
+    sanitized_message = Gitlab::UrlSanitizer.sanitize(error_message)
+
+    import_fail
+    update_column(:import_error, sanitized_message)
+  rescue ActiveRecord::ActiveRecordError => e
+    Rails.logger.error("Error setting import status to failed: #{e.message}. Original error: #{sanitized_message}")
+  ensure
+    @errors = original_errors
   end
 end

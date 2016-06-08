@@ -214,13 +214,13 @@ class Commit
     @raw.short_id(7)
   end
 
-  def ci_commits
-    @ci_commits ||= project.ci_commits.where(sha: sha)
+  def pipelines
+    @pipeline ||= project.pipelines.where(sha: sha)
   end
 
   def status
     return @status if defined?(@status)
-    @status ||= ci_commits.status
+    @status ||= pipelines.status
   end
 
   def revert_branch_name
