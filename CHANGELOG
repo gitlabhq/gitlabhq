@@ -159,6 +159,7 @@ v 8.9.0
   - Add Application Setting to configure Container Registry token expire delay (default 5min)
   - Cache assigned issue and merge request counts in sidebar nav
   - Use Knapsack only in CI environment
+  - Updated project creation page to match new UI #2542
   - Cache project build count in sidebar nav
   - Add milestone expire date to the right sidebar
   - Manually mark a issue or merge request as a todo
