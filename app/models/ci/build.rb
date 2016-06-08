@@ -12,7 +12,7 @@ module Ci
     scope :unstarted, ->() { where(runner_id: nil) }
     scope :ignore_failures, ->() { where(allow_failure: false) }
     scope :with_artifacts, ->() { where.not(artifacts_file: nil) }
-    scope :with_artifacts_expired, ->() { with_artifacts.where('artifacts_expire_at < ?', Time.now) }
+    scope :with_expired_artifacts, ->() { with_artifacts.where('artifacts_expire_at < ?', Time.now) }
 
     mount_uploader :artifacts_file, ArtifactUploader
     mount_uploader :artifacts_metadata, ArtifactUploader
@@ -352,10 +352,10 @@ module Ci
     end
 
     def artifacts_expired?
-      self.artifacts_expire_at < Time.now && !artifacts?
+      !artifacts? && artifacts_expire_at && artifacts_expire_at < Time.now
     end
 
-    def keep_artifacts
+    def keep_artifacts!
       self.update(artifacts_expire_at: nil)
     end
 
@@ -366,7 +366,7 @@ module Ci
     end
 
     def update_erased!(user = nil)
-      self.update(erased_by: user, erased_at: Time.now)
+      self.update(erased_by: user, erased_at: Time.now, artifacts_expire_at: nil)
     end
 
     def yaml_variables

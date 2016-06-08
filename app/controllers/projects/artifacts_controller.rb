@@ -34,6 +34,11 @@ class Projects::ArtifactsController < Projects::ApplicationController
     end
   end
 
+  def keep
+    build.keep_artifacts!
+    redirect_to namespace_project_build_path(project.namespace, project, build)
+  end
+
   private
 
   def build

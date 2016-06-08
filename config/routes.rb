@@ -714,7 +714,6 @@ Rails.application.routes.draw do
             post :cancel
             post :retry
             post :erase
-            post :keep_artifacts
             get :trace
             get :raw
           end
@@ -723,6 +722,7 @@ Rails.application.routes.draw do
             get :download
             get :browse, path: 'browse(/*path)', format: false
             get :file, path: 'file/*path', format: false
+            post :keep
           end
         end
 
