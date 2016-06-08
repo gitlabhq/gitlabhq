@@ -2,10 +2,10 @@
   = form_for @notification_setting, url: namespace_project_notification_setting_path(@project.namespace.becomes(Namespace), @project), method: :patch, remote: true, html: { class: 'inline', id: 'notification-form' } do |f|
     = f.hidden_field :level
     .dropdown
-      %a.dropdown-new.btn.notifications-btn#notifications-button{href: '#', "data-toggle" => "dropdown"}
+      %button.btn.btn-default.notifications-btn#notifications-button{ data: { toggle: "dropdown" }, aria: { haspopup: "true", expanded: "false" } }
         = icon('bell')
         = notification_title(@notification_setting.level)
         = icon('caret-down')
-      %ul.dropdown-menu.dropdown-menu-align-right.project-home-dropdown
+      %ul.dropdown-menu.dropdown-menu-no-wrap.dropdown-menu-align-right.dropdown-menu-selectable.dropdown-menu-large{ role: "menu" }
         - NotificationSetting.levels.each do |level|
           = notification_list_item(level.first, @notification_setting)

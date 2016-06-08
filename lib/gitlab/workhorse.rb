@@ -14,7 +14,7 @@ module Gitlab
 
         [
           SEND_DATA_HEADER,
-          "git-blob:#{encode(params)}",
+          "git-blob:#{encode(params)}"
         ]
       end
 
@@ -26,7 +26,22 @@ module Gitlab
 
         [
           SEND_DATA_HEADER,
-          "git-archive:#{encode(params)}",
+          "git-archive:#{encode(params)}"
+        ]
+      end
+
+      def send_git_diff(repository, diff_refs)
+        from, to = diff_refs
+
+        params = {
+          'RepoPath'  => repository.path_to_repo,
+          'ShaFrom'   => from.sha,
+          'ShaTo'     => to.sha
+        }
+
+        [
+          SEND_DATA_HEADER,
+          "git-diff:#{encode(params)}"
         ]
       end
 

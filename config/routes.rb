@@ -719,10 +719,12 @@ Rails.application.routes.draw do
         resources :labels, constraints: { id: /\d+/ } do
           collection do
             post :generate
+            post :set_priorities
           end
 
           member do
             post :toggle_subscription
+            delete :remove_priority
           end
         end
 
@@ -758,6 +760,7 @@ Rails.application.routes.draw do
 
         resources :notes, only: [:index, :create, :destroy, :update], constraints: { id: /\d+/ } do
           member do
+            post :toggle_award_emoji
             delete :delete_attachment
           end
         end

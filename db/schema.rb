@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160530150109) do
+ActiveRecord::Schema.define(version: 20160603182247) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -497,8 +497,10 @@ ActiveRecord::Schema.define(version: 20160530150109) do
     t.datetime "updated_at"
     t.boolean  "template",    default: false
     t.string   "description"
+    t.integer  "priority"
   end
 
+  add_index "labels", ["priority"], name: "index_labels_on_priority", using: :btree
   add_index "labels", ["project_id"], name: "index_labels_on_project_id", using: :btree
 
   create_table "lfs_objects", force: :cascade do |t|
@@ -675,6 +677,7 @@ ActiveRecord::Schema.define(version: 20160530150109) do
   end
 
   add_index "notification_settings", ["source_id", "source_type"], name: "index_notification_settings_on_source_id_and_source_type", using: :btree
+  add_index "notification_settings", ["user_id", "source_id", "source_type"], name: "index_notifications_on_user_id_and_source_id_and_source_type", unique: true, using: :btree
   add_index "notification_settings", ["user_id"], name: "index_notification_settings_on_user_id", using: :btree
 
   create_table "oauth_access_grants", force: :cascade do |t|

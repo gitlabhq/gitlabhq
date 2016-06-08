@@ -58,9 +58,13 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
     respond_to do |format|
       format.html
-      format.json { render json: @merge_request }
-      format.diff { render text: @merge_request.to_diff }
-      format.patch { render text: @merge_request.to_patch }
+      format.json   { render json: @merge_request }
+      format.patch  { render text: @merge_request.to_patch }
+      format.diff do
+        return render_404 unless @merge_request.diff_refs
+
+        send_git_diff @project.repository, @merge_request.diff_refs
+      end
     end
   end
 
@@ -120,8 +124,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @diffs = @merge_request.compare.diffs(diff_options) if @merge_request.compare
     @diff_notes_disabled = true
 
-    @ci_commit = @merge_request.ci_commit
-    @statuses = @ci_commit.statuses if @ci_commit
+    @pipeline = @merge_request.pipeline
+    @statuses = @pipeline.statuses if @pipeline
 
     @note_counts = Note.where(commit_id: @commits.map(&:id)).
       group(:commit_id).count
@@ -200,7 +204,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
     @merge_request.update(merge_error: nil)
 
-    if params[:merge_when_build_succeeds].present? && @merge_request.ci_commit && @merge_request.ci_commit.active?
+    if params[:merge_when_build_succeeds].present? && @merge_request.pipeline && @merge_request.pipeline.active?
       MergeRequests::MergeWhenBuildSucceedsService.new(@project, current_user, merge_params)
         .execute(@merge_request)
       @status = :merge_when_build_succeeds
@@ -231,10 +235,10 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def ci_status
-    ci_commit = @merge_request.ci_commit
-    if ci_commit
-      status = ci_commit.status
-      coverage = ci_commit.try(:coverage)
+    pipeline = @merge_request.pipeline
+    if pipeline
+      status = pipeline.status
+      coverage = pipeline.try(:coverage)
 
       status ||= "preparing"
     else
@@ -317,8 +321,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
     @merge_request_diff = @merge_request.merge_request_diff
 
-    @ci_commit = @merge_request.ci_commit
-    @statuses = @ci_commit.statuses if @ci_commit
+    @pipeline = @merge_request.pipeline
+    @statuses = @pipeline.statuses if @pipeline
 
     if @merge_request.locked_long_ago?
       @merge_request.unlock_mr
@@ -327,8 +331,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def define_widget_vars
-    @ci_commit = @merge_request.ci_commit
-    @ci_commits = [@ci_commit].compact
+    @pipeline = @merge_request.pipeline
+    @pipelines = [@pipeline].compact
     closes_issues
   end
 

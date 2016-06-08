@@ -1,4 +1,4 @@
-# Helpers to send Git blobs or archives through Workhorse.
+# Helpers to send Git blobs, diffs or archives through Workhorse.
 # Workhorse will also serve files when using `send_file`.
 module WorkhorseHelper
   # Send a Git blob through Workhorse
@@ -7,6 +7,13 @@ module WorkhorseHelper
     headers['Content-Disposition'] = 'inline'
     headers['Content-Type'] = safe_content_type(blob)
     head :ok # 'render nothing: true' messes up the Content-Type
+  end
+
+  # Send a Git diff through Workhorse
+  def send_git_diff(repository, diff_refs)
+    headers.store(*Gitlab::Workhorse.send_git_diff(repository, diff_refs))
+    headers['Content-Disposition'] = 'inline'
+    head :ok
   end
 
   # Archive a Git repository and send it through Workhorse

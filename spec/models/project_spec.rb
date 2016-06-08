@@ -22,7 +22,7 @@ describe Project, models: true do
     it { is_expected.to have_one(:pushover_service).dependent(:destroy) }
     it { is_expected.to have_one(:asana_service).dependent(:destroy) }
     it { is_expected.to have_many(:commit_statuses) }
-    it { is_expected.to have_many(:ci_commits) }
+    it { is_expected.to have_many(:pipelines) }
     it { is_expected.to have_many(:builds) }
     it { is_expected.to have_many(:runner_projects) }
     it { is_expected.to have_many(:runners) }
@@ -399,23 +399,23 @@ describe Project, models: true do
     end
   end
 
-  describe :ci_commit do
+  describe :pipeline do
     let(:project) { create :project }
-    let(:commit) { create :ci_commit, project: project, ref: 'master' }
+    let(:pipeline) { create :ci_pipeline, project: project, ref: 'master' }
 
-    subject { project.ci_commit(commit.sha, 'master') }
+    subject { project.pipeline(pipeline.sha, 'master') }
 
-    it { is_expected.to eq(commit) }
+    it { is_expected.to eq(pipeline) }
 
     context 'return latest' do
-      let(:commit2) { create :ci_commit, project: project, ref: 'master' }
+      let(:pipeline2) { create :ci_pipeline, project: project, ref: 'master' }
 
       before do
-        commit
-        commit2
+        pipeline
+        pipeline2
       end
 
-      it { is_expected.to eq(commit2) }
+      it { is_expected.to eq(pipeline2) }
     end
   end
 

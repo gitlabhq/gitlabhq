@@ -95,6 +95,7 @@
 
 .award-control {
   margin-right: 5px;
+  margin-bottom: 5px;
   padding-left: 5px;
   padding-right: 5px;
   line-height: 20px;
@@ -108,7 +109,8 @@
   }
 
   &.is-loading {
-    .award-control-icon-normal {
+    .award-control-icon-normal,
+    .emoji-icon {
       display: none;
     }
 

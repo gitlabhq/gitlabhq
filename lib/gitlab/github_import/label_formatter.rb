@@ -9,6 +9,10 @@ module Gitlab
         }
       end
 
+      def klass
+        Label
+      end
+
       private
 
       def color

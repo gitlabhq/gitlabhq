@@ -9,6 +9,16 @@ describe Note, models: true do
     it { is_expected.to have_many(:todos).dependent(:destroy) }
   end
 
+  describe 'modules' do
+    subject { described_class }
+
+    it { is_expected.to include_module(Participable) }
+    it { is_expected.to include_module(Mentionable) }
+    it { is_expected.to include_module(Awardable) }
+
+    it { is_expected.to include_module(Gitlab::CurrentSettings) }
+  end
+
   describe 'validation' do
     it { is_expected.to validate_presence_of(:note) }
     it { is_expected.to validate_presence_of(:project) }

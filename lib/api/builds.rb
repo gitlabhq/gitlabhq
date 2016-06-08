@@ -33,7 +33,7 @@ module API
       get ':id/repository/commits/:sha/builds' do
         authorize_read_builds!
 
-        commit = user_project.ci_commits.find_by_sha(params[:sha])
+        commit = user_project.pipelines.find_by_sha(params[:sha])
         return not_found! unless commit
 
         builds = commit.builds.order('id DESC')
