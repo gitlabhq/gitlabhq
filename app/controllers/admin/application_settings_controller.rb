@@ -74,6 +74,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :two_factor_grace_period,
       :gravatar_enabled,
       :sign_in_text,
+      :after_sign_up_text,
       :help_page_text,
       :home_page_url,
       :after_sign_out_path,
