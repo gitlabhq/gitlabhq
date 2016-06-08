@@ -183,7 +183,7 @@ In order to do that, follow the steps:
         image = "docker:latest"
         privileged = false
         disable_cache = false
-        volumes = ["/usr/local/bin/docker:/usr/bin/docker", "/cache"]
+        volumes = ["/var/run/docker.sock", "/cache"]
       [runners.cache]
         Insecure = false
     ```
