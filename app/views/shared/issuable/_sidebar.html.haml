@@ -53,7 +53,7 @@
         .value.bold.hide-collapsed
           - if issuable.milestone
             = link_to namespace_project_milestone_path(@project.namespace, @project, issuable.milestone) do
-              %span.has-tooltip{ "title" => milestone_remaining_days(issuable.milestone), data: {container: 'body', html: 1 } }
+              %span.has-tooltip{title: milestone_remaining_days(issuable.milestone), data: {container: 'body', html: 1}}
                 = issuable.milestone.title
           - else
             .light None
