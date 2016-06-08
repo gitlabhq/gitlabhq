@@ -9,6 +9,7 @@ v 8.9.0 (unreleased)
   - Make EmailsOnPushWorker use Sidekiq mailers queue
   - Fix wiki page events' webhook to point to the wiki repository
   - Fix issue todo not remove when leave project !4150 (Long Nguyen)
+  - Allow customisable text on the 'nearly there' page after a user signs up
   - Bump recaptcha gem to 3.0.0 to remove deprecated stoken support
   - Allow forking projects with restricted visibility level
   - Improve note validation to prevent errors when creating invalid note via API
@@ -18,6 +19,7 @@ v 8.9.0 (unreleased)
   - Redesign navigation for project pages
   - Fix groups API to list only user's accessible projects
   - Redesign account and email confirmation emails
+  - `git clone https://host/namespace/project` now works, in addition to using the `.git` suffix
   - Bump nokogiri to 1.6.8
   - Use gitlab-shell v3.0.0
   - Use Knapsack to evenly distribute tests across multiple nodes
@@ -50,6 +52,8 @@ v 8.9.0 (unreleased)
   - Replace Colorize with Rainbow for coloring console output in Rake tasks.
   - An indicator is now displayed at the top of the comment field for confidential issues.
   - RepositoryCheck::SingleRepositoryWorker public and private methods are now instrumented
+  - Improve issuables APIs performance when accessing notes !4471
+  - External links now open in a new tab
 
 v 8.8.4 (unreleased)
   - Ensure branch cleanup regardless of whether the GitHub import process succeeds
