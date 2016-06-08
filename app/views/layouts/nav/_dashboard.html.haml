@@ -11,37 +11,23 @@
         Todos
   = nav_link(path: 'dashboard#activity') do
     = link_to activity_dashboard_path, class: 'dashboard-shortcuts-activity', title: 'Activity' do
-      = icon('dashboard fw')
-      .nav-link-text
-        Activity
-  = nav_link(controller: [:groups, 'groups/milestones', 'groups/group_members']) do
-    = link_to dashboard_groups_path, title: 'Groups' do
-      = icon('group fw')
-      .nav-link-text
-        Groups
-  = nav_link(controller: 'dashboard/milestones') do
-    = link_to dashboard_milestones_path, title: 'Milestones' do
-      = icon('clock-o fw')
-      .nav-link-text
-        Milestones
-  = nav_link(path: 'dashboard#issues') do
-    = link_to assigned_issues_dashboard_path, title: 'Issues', class: 'dashboard-shortcuts-issues' do
       = navbar_icon('activity')
       .nav-link-text
         Activity
   = nav_link(controller: [:groups, 'groups/milestones', 'groups/group_members']) do
     = link_to dashboard_groups_path, title: 'Groups' do
       = navbar_icon('group')
-      %span
+      .nav-link-text
         Groups
   = nav_link(controller: 'dashboard/milestones') do
     = link_to dashboard_milestones_path, title: 'Milestones' do
       = navbar_icon('milestones')
-      %span
+      .nav-link-text
         Milestones
   = nav_link(path: 'dashboard#issues') do
     = link_to assigned_issues_dashboard_path, title: 'Issues', class: 'dashboard-shortcuts-issues' do
       = navbar_icon('issues')
+      .nav-link-text
         Issues
   = nav_link(path: 'dashboard#merge_requests') do
     = link_to assigned_mrs_dashboard_path, title: 'Merge Requests', class: 'dashboard-shortcuts-merge_requests' do
