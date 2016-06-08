@@ -2,7 +2,7 @@ module Gitlab
   module Ci
     class Config
       module Node
-        class BeforeScript < Entry
+        class Script < Entry
           include ValidationHelpers
 
           def description

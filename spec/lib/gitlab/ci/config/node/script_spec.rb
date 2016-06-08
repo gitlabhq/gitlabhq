@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Ci::Config::Node::BeforeScript do
+describe Gitlab::Ci::Config::Node::Script do
   let(:entry) { described_class.new(value, double)}
   before { entry.validate! }
 
