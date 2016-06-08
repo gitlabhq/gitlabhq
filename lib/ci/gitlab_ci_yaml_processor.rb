@@ -11,7 +11,7 @@ module Ci
                         :allow_failure, :type, :stage, :when, :artifacts, :cache,
                         :dependencies, :before_script, :after_script, :variables]
 
-    attr_reader :before_script, :after_script, :image, :services, :path, :cache
+    attr_reader :after_script, :image, :services, :path, :cache
 
     def initialize(config, path = nil)
       @ci_config = Gitlab::Ci::Config.new(config)
@@ -54,7 +54,6 @@ module Ci
     private
 
     def initial_parsing
-      @before_script = @config[:before_script] || []
       @after_script = @config[:after_script]
       @image = @config[:image]
       @services = @config[:services]
