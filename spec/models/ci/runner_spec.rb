@@ -36,7 +36,7 @@ describe Ci::Runner, models: true do
     end
   end
 
-  describe :assign_to do
+  describe '#assign_to' do
     let!(:project) { FactoryGirl.create :empty_project }
     let!(:shared_runner) { FactoryGirl.create(:ci_runner, :shared) }
 
@@ -49,7 +49,7 @@ describe Ci::Runner, models: true do
     it { expect(shared_runner.only_for?(project)).to be_truthy }
   end
 
-  describe :online do
+  describe '.online' do
     subject { Ci::Runner.online }
 
     before do
@@ -60,7 +60,7 @@ describe Ci::Runner, models: true do
     it { is_expected.to eq([@runner2])}
   end
 
-  describe :online? do
+  describe '#online?' do
     let(:runner) { FactoryGirl.create(:ci_runner, :shared) }
 
     subject { runner.online? }
@@ -90,7 +90,7 @@ describe Ci::Runner, models: true do
     end
   end
 
-  describe :status do
+  describe '#status' do
     let(:runner) { FactoryGirl.create(:ci_runner, :shared, contacted_at: 1.second.ago) }
 
     subject { runner.status }
@@ -128,7 +128,7 @@ describe Ci::Runner, models: true do
     end
   end
 
-  describe :specific_for do
+  describe '.specific_for' do
     let(:runner) { create(:ci_runner) }
     let(:project) { create(:project) }
     let(:another_project) { create(:project) }
