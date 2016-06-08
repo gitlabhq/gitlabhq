@@ -89,9 +89,7 @@ update-knapsack:
     - export KNAPSACK_REPORT_PATH=knapsack/spinach_node_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json
     - export KNAPSACK_GENERATE_REPORT=true
     - cp knapsack/spinach_report.json ${KNAPSACK_REPORT_PATH}
-    - knapsack spinach "-r rerun"
-    # retry failed tests 3 times
-    - retry '[ ! -e tmp/spinach-rerun.txt ] || bin/spinach -r rerun $(cat tmp/spinach-rerun.txt)'
+    - knapsack spinach "-r rerun" || retry '[ ! -e tmp/spinach-rerun.txt ] || bin/spinach -r rerun $(cat tmp/spinach-rerun.txt)'
   artifacts:
     paths:
     - knapsack/
