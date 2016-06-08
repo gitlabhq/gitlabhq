@@ -18,6 +18,12 @@ describe Gitlab::Ci::Config::Node::BeforeScript do
         expect(entry.errors).to be_empty
       end
     end
+
+    describe '#has_config?' do
+      it 'does not have config' do
+        expect(entry).not_to have_config
+      end
+    end
   end
 
   context 'when entry value is not correct' do
@@ -27,6 +33,12 @@ describe Gitlab::Ci::Config::Node::BeforeScript do
       it 'saves errors' do
         expect(entry.errors)
           .to include /should be an array of strings/
+      end
+    end
+
+    describe '#invalid?' do
+      it 'is not valid' do
+        expect(entry).to be_invalid
       end
     end
   end

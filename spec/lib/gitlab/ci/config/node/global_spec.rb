@@ -35,6 +35,12 @@ describe Gitlab::Ci::Config::Node::Global do
       end
     end
 
+    describe '#has_config?' do
+      it 'has config' do
+        expect(global).to have_config
+      end
+    end
+
     describe '#leaf?' do
       it 'is not leaf' do
         expect(global).not_to be_leaf
@@ -56,6 +62,12 @@ describe Gitlab::Ci::Config::Node::Global do
     describe '#valid?' do
       it 'is not valid' do
         expect(global).not_to be_valid
+      end
+    end
+
+    describe '#invalid?' do
+      it 'is not valid' do
+        expect(global).to be_invalid
       end
     end
 

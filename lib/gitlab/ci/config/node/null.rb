@@ -8,6 +8,7 @@ module Gitlab
           end
 
           def validate!
+            nil
           end
 
           def method_missing(*)

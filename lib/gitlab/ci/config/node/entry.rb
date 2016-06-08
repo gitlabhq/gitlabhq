@@ -12,22 +12,16 @@ module Gitlab
             @nodes = {}
             @errors = []
 
-            unless leaf? || value.is_a?(Hash)
+            unless leaf? || has_config?
               @errors << 'should be a configuration entry with hash value'
             end
           end
 
           def process!
-            return if leaf? || !valid?
+            return if leaf? || invalid?
 
             keys.each do |key, entry_class|
-              if @value.has_key?(key)
-                entry = entry_class.new(@value[key], @root, self)
-              else
-                entry = Node::Null.new(nil, @root, self)
-              end
-
-              @nodes[key] = entry
+              add_node(key, entry_class)
             end
 
             nodes.each(&:process!)
@@ -38,20 +32,28 @@ module Gitlab
             @nodes.values
           end
 
-          def errors
-            @errors + nodes.map(&:errors).flatten
-          end
-
           def valid?
             errors.none?
+          end
+
+          def invalid?
+            !valid?
           end
 
           def leaf?
             keys.none?
           end
 
+          def has_config?
+            @value.is_a?(Hash)
+          end
+
           def keys
             self.class.nodes || {}
+          end
+
+          def errors
+            @errors + nodes.map(&:errors).flatten
           end
 
           def method_missing(name, *args)
@@ -71,6 +73,18 @@ module Gitlab
 
           def description
             raise NotImplementedError
+          end
+
+          private
+
+          def add_node(key, entry_class)
+            if @value.has_key?(key)
+              entry = entry_class.new(@value[key], @root, self)
+            else
+              entry = Node::Null.new(nil, @root, self)
+            end
+
+            @nodes[key] = entry
           end
 
           class << self
