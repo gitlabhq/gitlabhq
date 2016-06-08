@@ -154,7 +154,7 @@ describe Ci::Runner, models: true do
         runner.locked = true
       end
 
-      shared_examples 'locked build picker' do |serve_matching_tags|
+      shared_examples 'locked build picker' do
         context 'when runner cannot pick untagged jobs' do
           before do
             runner.run_untagged = false
@@ -170,16 +170,6 @@ describe Ci::Runner, models: true do
             runner.tag_list = ['bb', 'cc']
           end
 
-          it "#{serve_matching_tags} handle it for matching tags" do
-            build.tag_list = ['bb']
-            expected = if serve_matching_tags
-                         be_truthy
-                       else
-                         be_falsey
-                       end
-            expect(runner.can_pick?(build)).to expected
-          end
-
           it 'cannot handle it for builds without matching tags' do
             build.tag_list = ['aa']
             expect(runner.can_pick?(build)).to be_falsey
@@ -192,7 +182,18 @@ describe Ci::Runner, models: true do
           expect(runner.can_pick?(build)).to be_truthy
         end
 
-        it_behaves_like 'locked build picker', true
+        it_behaves_like 'locked build picker'
+
+        context 'when having runner tags' do
+          before do
+            runner.tag_list = ['bb', 'cc']
+            build.tag_list = ['bb']
+          end
+
+          it 'can handle it for matching tags' do
+            expect(runner.can_pick?(build)).to be_truthy
+          end
+        end
       end
 
       context 'serving a different project' do
@@ -204,7 +205,18 @@ describe Ci::Runner, models: true do
           expect(runner.can_pick?(build)).to be_falsey
         end
 
-        it_behaves_like 'locked build picker', false
+        it_behaves_like 'locked build picker'
+
+        context 'when having runner tags' do
+          before do
+            runner.tag_list = ['bb', 'cc']
+            build.tag_list = ['bb']
+          end
+
+          it 'cannot handle it for matching tags' do
+            expect(runner.can_pick?(build)).to be_falsey
+          end
+        end
       end
     end
   end
