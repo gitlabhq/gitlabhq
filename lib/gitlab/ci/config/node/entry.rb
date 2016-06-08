@@ -3,17 +3,14 @@ module Gitlab
     class Config
       module Node
         class Entry
-          attr_reader :value, :nodes, :parent
+          class InvalidError < StandardError; end
 
           def initialize(value, root = nil, parent = nil)
             @value = value
             @root = root
             @parent = parent
-            @nodes, @errors = [], []
-
-            keys.each_key do |key|
-              instance_variable_set("@#{key}", Null.new(nil, root, self))
-            end
+            @nodes = {}
+            @errors = []
 
             unless leaf? || value.is_a?(Hash)
               @errors << 'should be a configuration entry with hash value'
@@ -24,15 +21,21 @@ module Gitlab
             return if leaf? || !valid?
 
             keys.each do |key, entry_class|
-              next unless @value.has_key?(key)
+              if @value.has_key?(key)
+                entry = entry_class.new(@value[key], @root, self)
+              else
+                entry = Node::Null.new(nil, @root, self)
+              end
 
-              entry = entry_class.new(@value[key], @root, self)
-              instance_variable_set("@#{key}", entry)
-              @nodes.append(entry)
+              @nodes[key] = entry
             end
 
             nodes.each(&:process!)
             nodes.each(&:validate!)
+          end
+
+          def nodes
+            @nodes.values
           end
 
           def errors
@@ -49,6 +52,17 @@ module Gitlab
 
           def keys
             self.class.nodes || {}
+          end
+
+          def method_missing(name, *args)
+            super unless keys.has_key?(name)
+            raise InvalidError unless valid?
+
+            @nodes[name].value
+          end
+
+          def value
+            raise NotImplementedError
           end
 
           def validate!

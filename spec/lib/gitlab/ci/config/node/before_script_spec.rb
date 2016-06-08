@@ -7,9 +7,9 @@ describe Gitlab::Ci::Config::Node::BeforeScript do
   context 'when entry value is correct' do
     let(:value) { ['ls', 'pwd'] }
 
-    describe '#script' do
+    describe '#value' do
       it 'returns concatenated command' do
-        expect(entry.script).to eq "ls\npwd"
+        expect(entry.value).to eq "ls\npwd"
       end
     end
 
@@ -27,12 +27,6 @@ describe Gitlab::Ci::Config::Node::BeforeScript do
       it 'saves errors' do
         expect(entry.errors)
           .to include /should be an array of strings/
-      end
-    end
-
-    describe '#script' do
-      it 'raises error' do
-        expect { entry.script }.to raise_error
       end
     end
   end

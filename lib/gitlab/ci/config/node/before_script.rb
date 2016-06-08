@@ -9,9 +9,7 @@ module Gitlab
             'Script that is executed before the one defined in a job.'
           end
 
-          def script
-            raise unless valid?
-
+          def value
             @value.join("\n")
           end
 
