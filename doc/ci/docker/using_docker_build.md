@@ -76,7 +76,7 @@ The second approach is to use the special Docker image with all tools installed
 (`docker` and `docker-compose`) and run the build script in context of that
 image in privileged mode.
 
-In order to do that follow the steps:
+In order to do that, follow the steps:
 
 1. Install [GitLab Runner](https://gitlab.com/gitlab-org/gitlab-ci-multi-runner/#installation).
 
@@ -151,7 +151,7 @@ An example project using this approach can be found here: https://gitlab.com/git
 
 The third approach is to bind-mount `/var/run/docker.sock` into the container so that docker is available in the context of that image.
 
-In order to do that follow the steps:
+In order to do that, follow the steps:
 
 1. Install [GitLab Runner](https://gitlab.com/gitlab-org/gitlab-ci-multi-runner/#installation).
 
