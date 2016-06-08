@@ -1,6 +1,6 @@
 module API
   # Issues API
-  class Issues < Grape::API
+  class Issues < Grape::API    
     before { authenticate! }
 
     helpers ::Gitlab::AkismetHelper

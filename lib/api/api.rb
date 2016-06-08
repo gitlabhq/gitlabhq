@@ -36,6 +36,7 @@ module API
     mount ::API::Session
     mount ::API::MergeRequests
     mount ::API::Notes
+    mount ::API::AwardEmoji
     mount ::API::Internal
     mount ::API::SystemHooks
     mount ::API::ProjectSnippets
