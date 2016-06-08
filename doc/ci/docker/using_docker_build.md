@@ -208,5 +208,77 @@ In order to do that follow the steps:
    the security mechanisms of containers and exposing your host to privilege
    escalation which can lead to container breakout.
 
+## Using the GitLab Container Registry
+
+Once you've built a Docker image, you can push it up to the built-in [GitLab Container Registry](../../container_registry/README.md).
+
+```
+ build:
+   stage: build
+   script:
+     - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN registry.example.com
+     - docker build -t registry.example.com/group/project:latest .
+     - docker push registry.example.com/group/project:latest
+```
+
+Here's a more elaborate example that splits up the tasks into 4 stages,
+including two tests that run in parallel. The build is stored in the container
+registry and used by subsequent stages, downloading the image
+when needed. Changes to `master` also get tagged as `latest` and deployed using
+an application-specific deploy script:
+
+```yaml
+image: docker:git
+services:
+- docker:dind
+
+stages:
+- build
+- test
+- release
+- deploy
+
+variables:
+  CONTAINER_TEST_IMAGE: registry.example.com/my-group/my-project:$CI_BUILD_REF_NAME
+  CONTAINER_RELEASE_IMAGE: registry.example.com/my-group/my-project:latest
+
+before_script:
+  - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN registry.example.com
+
+build:
+  stage: build
+  script:
+    - docker build --pull -t $CONTAINER_TEST_IMAGE .
+    - docker push $CONTAINER_TEST_IMAGE
+
+test1:
+  stage: test
+  script:
+    - docker pull $CONTAINER_TEST_IMAGE
+    - docker run $CONTAINER_TEST_IMAGE /script/to/run/tests
+
+test2:
+  stage: test
+  script:
+    - docker pull $CONTAINER_TEST_IMAGE
+    - docker run $CONTAINER_TEST_IMAGE /script/to/run/another/test
+
+release-image:
+  stage: release
+  script:
+    - docker pull $CONTAINER_TEST_IMAGE
+    - docker tag $CONTAINER_TEST_IMAGE $CONTAINER_RELEASE_IMAGE
+    - docker push $CONTAINER_RELEASE_IMAGE
+  only:
+    - master
+
+deploy:
+  stage: deploy
+  script:
+    - ./deploy.sh
+  only:
+    - master
+```
+
 [docker-in-docker]: https://blog.docker.com/2013/09/docker-can-now-run-within-docker/
 [docker-cap]: https://docs.docker.com/engine/reference/run/#runtime-privilege-and-linux-capabilities
