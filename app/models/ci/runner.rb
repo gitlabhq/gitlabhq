@@ -99,9 +99,7 @@ module Ci
     end
 
     def can_pick?(build)
-      available_for?(build.project) &&
-        run_untagged_or_has_tags?(build) &&
-        accepting_tags?(build.tag_list)
+      available_for?(build.project) && accepting_tags?(build)
     end
 
     def only_for?(project)
@@ -129,12 +127,8 @@ module Ci
       !locked? || projects.exists?(id: project.id)
     end
 
-    def run_untagged_or_has_tags?(build)
-      run_untagged? || build.has_tags?
-    end
-
-    def accepting_tags?(target_tags)
-      (target_tags - tag_list).empty?
+    def accepting_tags?(build)
+      (run_untagged? || build.has_tags?) && (build.tag_list - tag_list).empty?
     end
   end
 end
