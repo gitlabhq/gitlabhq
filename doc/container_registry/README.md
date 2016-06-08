@@ -82,7 +82,7 @@ Make sure that your GitLab Runner is configured to allow building docker images.
 You have to check the [Using Docker Build documentation](../../ci/docker/using_docker_build.md).
 
 You can use [docker:dind](https://hub.docker.com/_/docker/) to build your images,
-and this is how `.gitlab-ci.yml` should look like:
+and this is how your `.gitlab-ci.yml` should look:
 
 ```
  build_image:
@@ -98,7 +98,7 @@ and this is how `.gitlab-ci.yml` should look like:
 
 You have to use the credentials of the special `gitlab-ci-token` user with its
 password stored in `$CI_BUILD_TOKEN` in order to push to the Registry connected
-to your project. This allows you to automated building and deployment of your
+to your project. This allows you to automate building and deployment of your
 Docker images.
 
 ## Limitations
