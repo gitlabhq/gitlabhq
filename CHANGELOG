@@ -40,6 +40,7 @@ v 8.9.0 (unreleased)
   - Cache assigned issue and merge request counts in sidebar nav
   - Use Knapsack only in CI environment
   - Cache project build count in sidebar nav
+  - Fix markdown_spec to use before instead of before(:all) to properly cleanup database after testing
   - Reduce number of queries needed to render issue labels in the sidebar
   - Improve error handling importing projects
   - Remove duplicated notification settings
