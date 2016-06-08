@@ -5,6 +5,9 @@ v 8.9.0 (unreleased)
   - Allow LDAP to mark users as external based on their group membership. !432
   - Instrument instance methods of Gitlab::InsecureKeyFingerprint class
 
+v 8.8.4
+  - Remove license overusage message
+
 v 8.8.3
   - Add standard web hook headers to Jenkins CI post. !374
   - Gracefully handle malformed DNs in LDAP group sync. !392
