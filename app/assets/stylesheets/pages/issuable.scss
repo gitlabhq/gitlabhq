@@ -405,3 +405,26 @@
   right: 0;
   top: 0;
 }
+
+.inline-edit-box {
+  position: relative;
+
+  &::before {
+    content: '';
+    display: none;
+    position: absolute;
+    top: -3px;
+    right: -8px;
+    bottom: -3px;
+    left: -8px;
+    border: 1px solid $gray-dark;
+    border-radius: $border-radius-default;
+    pointer-events: none;
+  }
+
+  &:hover {
+    &::before {
+      display: block;
+    }
+  }
+}

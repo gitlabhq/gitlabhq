@@ -22,12 +22,12 @@ class @IssuableEdit
 
   removeEventListeners: ->
     $(document).off 'ajax:success', '.js-issuable-inline-form'
-    $(document).off 'click', '.js-issuable-title'
-    $(document).off 'blur', '.js-issuable-edit-title'
-    $(document).off 'click', '.js-issuable-description'
-    $(document).off 'blur', '.js-task-list-field'
-    $(document).off 'click', '.js-issuable-title-save'
     $(document).off 'click', '.js-issuable-edit-cancel'
+
+    $(document).off 'click', '.js-issuable-title'
+    $(document).off 'click', '.js-issuable-title-save'
+
+    $(document).off 'click', '.js-issuable-description'
     $(document).off 'click', '.js-issuable-description-save'
 
   initEventListeners: ->
@@ -78,7 +78,7 @@ class @IssuableEdit
 
     @hideTitleEdit()
     @hideDescriptionEdit(e)
-    
+
     @elements.title.loading.addClass 'hidden'
     @elements.description.element.removeClass 'is-loading'
 
