@@ -138,7 +138,9 @@ ul.content-list {
       float: right;
 
       .btn {
-        padding: 10px 14px;
+        padding: $gl-vert-padding $gl-btn-padding;
+        margin-top: 4px;
+        margin-bottom: 4px;
       }
     }
 
