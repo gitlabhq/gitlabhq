@@ -67,7 +67,7 @@ GitLab Runner then executes build scripts as the `gitlab-runner` user.
 
 5. You can now use `docker` command and install `docker-compose` if needed.
 
-Notes:
+### Notes
 * By adding `gitlab-runner` to `docker` group you are effectively granting `gitlab-runner` full root permissions.
 For more information please checkout [On Docker security: `docker` group considered harmful](https://www.andreas-jung.com/contents/on-docker-security-docker-group-considered-harmful).
 
@@ -135,7 +135,7 @@ In order to do that, follow the steps:
       - docker run my-docker-image /script/to/run/tests
     ```
 
-Notes:
+### Notes
 * By enabling `--docker-privileged` you are effectively disabling all
 the security mechanisms of containers and exposing your host to privilege
 escalation which can lead to container breakout. For more information, check out the official Docker documentation on
@@ -205,7 +205,7 @@ In order to do that, follow the steps:
       - docker run my-docker-image /script/to/run/tests
     ```
 
-Notes:
+### Notes
 * By sharing the docker daemon, you are effectively disabling all
 the security mechanisms of containers and exposing your host to privilege
 escalation which can lead to container breakout. For example, if a project
@@ -292,7 +292,7 @@ deploy:
     - master
 ```
 
-Notes:
+### Notes
 1. You must log in to the container registry before running commands. Putting this in `before_script` will run it before each build job.
 1. Using `docker build --pull` makes sure that Docker fetches any changes to base images before building just in case your cache is stale. It takes slightly longer, but means you don’t get stuck without security patches to base images.
 1. Doing an explicit `docker pull` before each `docker run` makes sure to fetch the latest image that was just built. This is especially important if you are using multiple runners that cache images locally. Using the git SHA in your image tag makes this less necessary since each build will be unique and you shouldn't ever have a stale image, but it's still possible if you re-build a given commit after a dependency has changed.
