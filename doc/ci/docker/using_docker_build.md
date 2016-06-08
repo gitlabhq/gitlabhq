@@ -4,14 +4,14 @@ GitLab CI allows you to use Docker Engine to build and test docker-based project
 
 **This also allows to you to use `docker-compose` and other docker-enabled tools.**
 
-This is one of new trends in Continuous Integration/Deployment to:
+This is one of the new trends in Continuous Integration/Deployment to:
 
-1. create application image,
-1. run test against created image,
-1. push image to remote registry,
-1. deploy server from pushed image
+1. create an application image,
+1. run tests against the created image,
+1. push image to a remote registry,
+1. deploy server from the pushed image
 
-It's also useful in case when your application already has the `Dockerfile` that can be used to create and test image:
+It's also useful when your application already has the `Dockerfile` that can be used to create and test an image:
 ```bash
 $ docker build -t my-image dockerfiles/
 $ docker run my-docker-image /script/to/run/tests
@@ -19,10 +19,7 @@ $ docker tag my-image my-registry:5000/my-image
 $ docker push my-registry:5000/my-image
 ```
 
-However, this requires special configuration of GitLab Runner to enable `docker` support during build.
-**This requires running GitLab Runner in privileged mode which can be harmful when untrusted code is run.**
-
-There are two methods to enable the use of `docker build` and `docker run` during build.
+However, this requires special configuration of GitLab Runner to enable `docker` support during builds. There are three methods to enable the use of `docker build` and `docker run` during builds.
 
 ## 1. Use shell executor
 
@@ -149,6 +146,67 @@ In order to do that follow the steps:
    [Runtime privilege and Linux capabilities][docker-cap].
 
 An example project using this approach can be found here: https://gitlab.com/gitlab-examples/docker.
+
+## 3. Bind Docker socket
+
+The third approach is to bind-mount `/var/run/docker.sock` into the container so that docker is available in the context of that image.
+
+In order to do that follow the steps:
+
+1. Install [GitLab Runner](https://gitlab.com/gitlab-org/gitlab-ci-multi-runner/#installation).
+
+1. Register GitLab Runner from the command line to use `docker` and `privileged`
+   mode:
+
+    ```bash
+    sudo gitlab-runner register -n \
+      --url https://gitlab.com/ci \
+      --token RUNNER_TOKEN \
+      --executor docker \
+      --description "My Docker Runner" \
+      --docker-image "docker:latest" \
+      --docker-volumes /var/run/docker.sock:/var/run/docker.sock
+    ```
+
+    The above command will register a new Runner to use the special
+    `docker:latest` image which is provided by Docker. **Notice that it's using
+    the Docker daemon of the runner itself, and any containers spawned by docker commands will be siblings of the runner rather than children of the runner.** This may have complications and limitations that are unsuitable for your workflow.
+
+    The above command will create a `config.toml` entry similar to this:
+
+    ```
+    [[runners]]
+      url = "https://gitlab.com/ci"
+      token = TOKEN
+      executor = "docker"
+      [runners.docker]
+        tls_verify = false
+        image = "docker:latest"
+        privileged = false
+        disable_cache = false
+        volumes = ["/usr/local/bin/docker:/usr/bin/docker", "/cache"]
+      [runners.cache]
+        Insecure = false
+    ```
+
+1. You can now use `docker` from build script (note that you don't need to include the `docker:dind` service as in the option above):
+
+    ```yaml
+    image: docker:latest
+
+    before_script:
+    - docker info
+
+    build:
+      stage: build
+      script:
+      - docker build -t my-docker-image .
+      - docker run my-docker-image /script/to/run/tests
+    ```
+
+1. However, by sharing the docker daemon, you are effectively disabling all
+   the security mechanisms of containers and exposing your host to privilege
+   escalation which can lead to container breakout.
 
 [docker-in-docker]: https://blog.docker.com/2013/09/docker-can-now-run-within-docker/
 [docker-cap]: https://docs.docker.com/engine/reference/run/#runtime-privilege-and-linux-capabilities
