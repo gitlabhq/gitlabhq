@@ -98,7 +98,7 @@ module Ci
       !shared?
     end
 
-    def can_serve?(build)
+    def can_pick?(build)
       not_locked_or_locked_to?(build.project) &&
         run_untagged_or_has_tags?(build) &&
         accepting_tags?(build.tag_list)

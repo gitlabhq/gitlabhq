@@ -90,6 +90,125 @@ describe Ci::Runner, models: true do
     end
   end
 
+  describe '#can_pick?' do
+    let(:project) { create(:project) }
+    let(:commit) { create(:ci_commit, project: project) }
+    let(:build) { create(:ci_build, commit: commit) }
+    let(:runner) { create(:ci_runner) }
+
+    before do
+      build.project.runners << runner
+    end
+
+    context 'when runner does not have tags' do
+      it 'can handle builds without tags' do
+        expect(runner.can_pick?(build)).to be_truthy
+      end
+
+      it 'cannot handle build with tags' do
+        build.tag_list = ['aa']
+        expect(runner.can_pick?(build)).to be_falsey
+      end
+    end
+
+    context 'when runner has tags' do
+      before do
+        runner.tag_list = ['bb', 'cc']
+      end
+
+      shared_examples 'tagged build picker' do
+        it 'can handle build with matching tags' do
+          build.tag_list = ['bb']
+          expect(runner.can_pick?(build)).to be_truthy
+        end
+
+        it 'cannot handle build without matching tags' do
+          build.tag_list = ['aa']
+          expect(runner.can_pick?(build)).to be_falsey
+        end
+      end
+
+      context 'when runner can pick untagged jobs' do
+        it 'can handle builds without tags' do
+          expect(runner.can_pick?(build)).to be_truthy
+        end
+
+        it_behaves_like 'tagged build picker'
+      end
+
+      context 'when runner cannot pick untagged jobs' do
+        before do
+          runner.run_untagged = false
+        end
+
+        it 'cannot handle builds without tags' do
+          expect(runner.can_pick?(build)).to be_falsey
+        end
+
+        it_behaves_like 'tagged build picker'
+      end
+    end
+
+    context 'when runner is locked' do
+      before do
+        runner.locked = true
+      end
+
+      shared_examples 'locked build picker' do |serve_matching_tags|
+        context 'when runner cannot pick untagged jobs' do
+          before do
+            runner.run_untagged = false
+          end
+
+          it 'cannot handle builds without tags' do
+            expect(runner.can_pick?(build)).to be_falsey
+          end
+        end
+
+        context 'when having runner tags' do
+          before do
+            runner.tag_list = ['bb', 'cc']
+          end
+
+          it "#{serve_matching_tags} handle it for matching tags" do
+            build.tag_list = ['bb']
+            expected = if serve_matching_tags
+                         be_truthy
+                       else
+                         be_falsey
+                       end
+            expect(runner.can_pick?(build)).to expected
+          end
+
+          it 'cannot handle it for builds without matching tags' do
+            build.tag_list = ['aa']
+            expect(runner.can_pick?(build)).to be_falsey
+          end
+        end
+      end
+
+      context 'when serving the same project' do
+        it 'can handle it' do
+          expect(runner.can_pick?(build)).to be_truthy
+        end
+
+        it_behaves_like 'locked build picker', true
+      end
+
+      context 'serving a different project' do
+        before do
+          runner.runner_projects.destroy_all
+        end
+
+        it 'cannot handle it' do
+          expect(runner.can_pick?(build)).to be_falsey
+        end
+
+        it_behaves_like 'locked build picker', false
+      end
+    end
+  end
+
   describe '#status' do
     let(:runner) { FactoryGirl.create(:ci_runner, :shared, contacted_at: 1.second.ago) }
 

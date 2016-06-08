@@ -290,16 +290,12 @@ module Ci
       project.valid_runners_token? token
     end
 
-    def can_be_served?(runner)
-      runner.can_serve?(self)
-    end
-
     def has_tags?
       tag_list.any?
     end
 
     def any_runners_online?
-      project.any_runners? { |runner| runner.active? && runner.online? && can_be_served?(runner) }
+      project.any_runners? { |runner| runner.active? && runner.online? && runner.can_pick?(self) }
     end
 
     def stuck?
