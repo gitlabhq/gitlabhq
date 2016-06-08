@@ -54,6 +54,11 @@ feature 'Issue filtering by Labels', feature: true do
       expect(find('.filtered-labels')).not_to have_content "feature"
       expect(find('.filtered-labels')).not_to have_content "enhancement"
     end
+
+    it 'should remove label "bug"' do
+      first('.js-label-filter-remove').click
+      expect(find('.filtered-labels')).to have_no_content "bug"
+    end
   end
 
   context 'filter by label feature', js: true do
@@ -135,6 +140,11 @@ feature 'Issue filtering by Labels', feature: true do
     it 'should not show label "bug" in filtered-labels' do
       expect(find('.filtered-labels')).not_to have_content "bug"
     end
+
+    it 'should remove label "enhancement"' do
+      first('.js-label-filter-remove').click
+      expect(find('.filtered-labels')).to have_no_content "enhancement"
+    end
   end
 
   context 'filter by label enhancement and bug in issues list', js: true do
@@ -162,6 +172,31 @@ feature 'Issue filtering by Labels', feature: true do
 
     it 'should not show label "feature" in filtered-labels' do
       expect(find('.filtered-labels')).not_to have_content "feature"
+    end
+  end
+
+  context 'remove filtered labels', js: true do
+    before do
+      page.within '.labels-filter' do
+        click_button 'Label'
+        click_link 'bug'
+        find('.dropdown-menu-close').click
+      end
+
+      page.within '.filtered-labels' do
+        expect(page).to have_content 'bug'
+      end
+    end
+
+    it 'should allow user to remove filtered labels' do
+      page.within '.filtered-labels' do
+        first('.js-label-filter-remove').click
+        expect(page).not_to have_content 'bug'
+      end
+
+      page.within '.labels-filter' do
+        expect(page).not_to have_content 'bug'
+      end
     end
   end
 end
