@@ -142,15 +142,26 @@
   }
 
   &.btn-grouped {
-    margin-right: 7px;
+    margin-right: $btn-side-margin;
     float: left;
+
+    &.inline {
+      float: none;
+    }
+
     &:last-child {
       margin-right: 0;
     }
+
+    &.btn-sm {
+      margin-right: $btn-sm-side-margin;
+    }
+
     &.btn-xs {
-      margin-right: 3px;
+      margin-right: $btn-xs-side-margin;
     }
   }
+
   &.disabled {
     pointer-events: auto !important;
   }

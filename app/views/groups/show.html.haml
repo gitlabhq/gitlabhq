@@ -35,7 +35,6 @@
       = render 'shared/projects/dropdown'
       - if can? current_user, :create_projects, @group
         = link_to new_project_path(namespace_id: @group.id), class: 'btn btn-new pull-right' do
-          = icon('plus')
           New Project
 
   .tab-content
