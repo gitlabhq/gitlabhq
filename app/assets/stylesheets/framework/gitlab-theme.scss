@@ -22,17 +22,17 @@
       &:hover {
         background-color: $color-dark;
         a {
-          color: #fff;
+          color: $white-light;
 
           h3 {
-            color: #fff;
+            color: $white-light;
           }
         }
       }
     }
 
     .collapse-nav a {
-      color: #fff;
+      color: $white-light;
       background: $color;
     }
 
@@ -45,7 +45,7 @@
 
         &:hover {
           background-color: $color-dark;
-          color: #fff;
+          color: $white-light;
           text-decoration: none;
         }
       }
@@ -63,9 +63,19 @@
           color: $color-light;
         }
 
+        path,
+        polygon {
+          fill: $color-light;
+        }
+
         .count {
           color: $color-light;
           background: $color-dark;
+        }
+
+        svg {
+          position: relative;
+          top: 3px;
         }
       }
 
@@ -74,7 +84,7 @@
       }
 
       &.active a {
-        color: #fff;
+        color: $white-light;
         background: $color-dark;
 
         &.no-highlight {
@@ -82,15 +92,23 @@
         }
 
         i {
-          color: #fff
+          color: $white-light
+        }
+
+        path,
+        polygon {
+          fill: $white-light;
         }
       }
     }
   }
 }
 
-$theme-blue: #2980b9;
 $theme-charcoal: #3d454d;
+$theme-charcoal-dark: #383f45;
+$theme-charcoal-text: #b9bbbe;
+
+$theme-blue: #2980b9;
 $theme-graphite: #666;
 $theme-gray: #373737;
 $theme-green: #019875;
@@ -102,7 +120,7 @@ body {
   }
 
   &.ui_charcoal {
-    @include gitlab-theme(#d6d7d9, #485157, $theme-charcoal, #353b41);
+    @include gitlab-theme($theme-charcoal-text, #485157, $theme-charcoal, $theme-charcoal-dark);
   }
 
   &.ui_graphite {

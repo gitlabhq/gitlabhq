@@ -7,6 +7,7 @@
 - [Gotchas](gotchas.md) to avoid
 - [How to dump production data to staging](db_dump.md)
 - [Instrumentation](instrumentation.md)
+- [Licensing](licensing.md) for ensuring license compliance
 - [Migration Style Guide](migration_style_guide.md) for creating safe migrations
 - [Performance guidelines](performance.md)
 - [Rake tasks](rake_tasks.md) for development

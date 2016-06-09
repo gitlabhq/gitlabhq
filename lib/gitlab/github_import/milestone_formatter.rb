@@ -14,6 +14,10 @@ module Gitlab
         }
       end
 
+      def klass
+        Milestone
+      end
+
       private
 
       def number

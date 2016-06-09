@@ -4,7 +4,7 @@
 .build-page
   .row-content-block.top-block
     Build ##{@build.id} for commit
-    %strong.monospace= link_to @build.commit.short_sha, ci_status_path(@build.commit)
+    %strong.monospace= link_to @build.pipeline.short_sha, ci_status_path(@build.pipeline)
     from
     = link_to @build.ref, namespace_project_commits_path(@project.namespace, @project, @build.ref)
     - merge_request = @build.merge_request
@@ -13,7 +13,7 @@
       = link_to "merge request #{merge_request.to_reference}", merge_request_path(merge_request)
 
   #up-build-trace
-  - builds = @build.commit.builds.latest.to_a
+  - builds = @build.pipeline.builds.latest.to_a
   - if builds.size > 1
     %ul.nav-links.no-top.no-bottom
       - builds.each do |build|
@@ -178,16 +178,16 @@
           Commit
           .pull-right
             %small
-              = link_to @build.commit.short_sha, ci_status_path(@build.commit), class: "monospace"
+              = link_to @build.pipeline.short_sha, ci_status_path(@build.pipeline), class: "monospace"
         %p
           %span.attr-name Branch:
           = link_to @build.ref, namespace_project_commits_path(@project.namespace, @project, @build.ref)
         %p
           %span.attr-name Author:
-          #{@build.commit.git_author_name}
+          #{@build.pipeline.git_author_name}
         %p
           %span.attr-name Message:
-          #{@build.commit.git_commit_message}
+          #{@build.pipeline.git_commit_message}
 
       - if @build.tags.any?
         .build-widget
@@ -201,7 +201,7 @@
         .build-widget
           %h4.title #{pluralize(@builds.count(:id), "other build")} for
           = succeed ":" do
-            = link_to @build.commit.short_sha, ci_status_path(@build.commit), class: "monospace"
+            = link_to @build.pipeline.short_sha, ci_status_path(@build.pipeline), class: "monospace"
           %table.table.builds
             - @builds.each_with_index do |build, i|
               %tr.build

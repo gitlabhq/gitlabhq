@@ -194,7 +194,7 @@ Style/EmptyLines:
 
 # Keep blank lines around access modifiers.
 Style/EmptyLinesAroundAccessModifier:
-  Enabled: false
+  Enabled: true
 
 # Keeps track of empty lines around block bodies.
 Style/EmptyLinesAroundBlockBody:
@@ -771,7 +771,7 @@ Metrics/PerceivedComplexity:
 # Checks for ambiguous operators in the first argument of a method invocation
 # without parentheses.
 Lint/AmbiguousOperator:
-  Enabled: false
+  Enabled: true
 
 # Checks for ambiguous regexp literals in the first argument of a method
 # invocation without parentheses.
@@ -1086,6 +1086,9 @@ Rails/TimeZone:
 
 # Use validates :attribute, hash of validations.
 Rails/Validation:
+  Enabled: false
+
+Rails/UniqBeforePluck:
   Enabled: false
 
 ##################### RSpec ##################################

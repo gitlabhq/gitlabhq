@@ -136,7 +136,7 @@ But it shouldn't autolink text inside certain tags:
 
 ### ExternalLinkFilter
 
-External links get a `rel="nofollow"` attribute:
+External links get a `rel="nofollow noreferrer"` and `target="_blank"` attributes:
 
 - [Google](https://google.com/)
 - [GitLab Root](<%= Gitlab.config.gitlab.url %>)

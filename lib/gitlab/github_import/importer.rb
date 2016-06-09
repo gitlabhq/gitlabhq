@@ -3,6 +3,9 @@ module Gitlab
     class Importer
       include Gitlab::ShellAdapter
 
+      GITHUB_SAFE_REMAINING_REQUESTS = 100
+      GITHUB_SAFE_SLEEP_TIME = 500
+
       attr_reader :client, :project, :repo, :repo_url
 
       def initialize(project)
@@ -25,14 +28,53 @@ module Gitlab
 
       private
 
+      def turn_auto_pagination_off!
+        client.auto_paginate = false
+      end
+
+      def turn_auto_pagination_on!
+        client.auto_paginate = true
+      end
+
+      def rate_limit
+        client.rate_limit!
+      end
+
+      def rate_limit_exceed?
+        rate_limit.remaining <= GITHUB_SAFE_REMAINING_REQUESTS
+      end
+
+      def rate_limit_sleep_time
+        rate_limit.resets_in + GITHUB_SAFE_SLEEP_TIME
+      end
+
+      def paginate
+        turn_auto_pagination_off!
+
+        sleep rate_limit_sleep_time if rate_limit_exceed?
+
+        data = yield
+
+        last_response = client.last_response
+
+        while last_response.rels[:next]
+          sleep rate_limit_sleep_time if rate_limit_exceed?
+          last_response = last_response.rels[:next].get
+          data.concat(last_response.data) if last_response.data.is_a?(Array)
+        end
+
+        turn_auto_pagination_on!
+
+        data
+      end
+
       def credentials
         @credentials ||= project.import_data.credentials if project.import_data
       end
 
       def import_labels
-        client.labels(repo).each do |raw_data|
-          Label.create!(LabelFormatter.new(project, raw_data).attributes)
-        end
+        labels = paginate { client.labels(repo, per_page: 100) }
+        labels.each { |raw| LabelFormatter.new(project, raw).create! }
 
         true
       rescue ActiveRecord::RecordInvalid => e
@@ -40,9 +82,8 @@ module Gitlab
       end
 
       def import_milestones
-        client.list_milestones(repo, state: :all).each do |raw_data|
-          Milestone.create!(MilestoneFormatter.new(project, raw_data).attributes)
-        end
+        milestones = paginate { client.milestones(repo, state: :all, per_page: 100) }
+        milestones.each { |raw| MilestoneFormatter.new(project, raw).create! }
 
         true
       rescue ActiveRecord::RecordInvalid => e
@@ -50,16 +91,15 @@ module Gitlab
       end
 
       def import_issues
-        client.list_issues(repo, state: :all, sort: :created, direction: :asc).each do |raw_data|
-          gh_issue = IssueFormatter.new(project, raw_data)
+        data = paginate { client.issues(repo, state: :all, sort: :created, direction: :asc, per_page: 100) }
+
+        data.each do |raw|
+          gh_issue = IssueFormatter.new(project, raw)
 
           if gh_issue.valid?
-            issue = Issue.create!(gh_issue.attributes)
-            apply_labels(gh_issue.number, issue)
-
-            if gh_issue.has_comments?
-              import_comments(gh_issue.number, issue)
-            end
+            issue = gh_issue.create!
+            apply_labels(issue)
+            import_comments(issue) if gh_issue.has_comments?
           end
         end
 
@@ -69,50 +109,69 @@ module Gitlab
       end
 
       def import_pull_requests
-        pull_requests = client.pull_requests(repo, state: :all, sort: :created, direction: :asc)
-                              .map { |raw| PullRequestFormatter.new(project, raw) }
-                              .select(&:valid?)
+        hooks = client.hooks(repo).map { |raw| HookFormatter.new(raw) }.select(&:valid?)
+        disable_webhooks(hooks)
+
+        pull_requests = paginate { client.pull_requests(repo, state: :all, sort: :created, direction: :asc, per_page: 100) }
+        pull_requests = pull_requests.map { |raw| PullRequestFormatter.new(project, raw) }.select(&:valid?)
 
         source_branches_removed = pull_requests.reject(&:source_branch_exists?).map { |pr| [pr.source_branch_name, pr.source_branch_sha] }
         target_branches_removed = pull_requests.reject(&:target_branch_exists?).map { |pr| [pr.target_branch_name, pr.target_branch_sha] }
         branches_removed = source_branches_removed | target_branches_removed
 
-        create_refs(branches_removed)
+        restore_branches(branches_removed)
 
         pull_requests.each do |pull_request|
-          merge_request = MergeRequest.new(pull_request.attributes)
-
-          if merge_request.save
-            apply_labels(pull_request.number, merge_request)
-            import_comments(pull_request.number, merge_request)
-            import_comments_on_diff(pull_request.number, merge_request)
-          end
+          merge_request = pull_request.create!
+          apply_labels(merge_request)
+          import_comments(merge_request)
+          import_comments_on_diff(merge_request)
         end
-
-        delete_refs(branches_removed)
 
         true
       rescue ActiveRecord::RecordInvalid => e
         raise Projects::ImportService::Error, e.message
+      ensure
+        clean_up_restored_branches(branches_removed)
+        clean_up_disabled_webhooks(hooks)
       end
 
-      def create_refs(branches)
+      def disable_webhooks(hooks)
+        update_webhooks(hooks, active: false)
+      end
+
+      def clean_up_disabled_webhooks(hooks)
+        update_webhooks(hooks, active: true)
+      end
+
+      def update_webhooks(hooks, options)
+        hooks.each do |hook|
+          sleep rate_limit_sleep_time if rate_limit_exceed?
+          client.edit_hook(repo, hook.id, hook.name, hook.config, options)
+        end
+      end
+
+      def restore_branches(branches)
         branches.each do |name, sha|
+          sleep rate_limit_sleep_time if rate_limit_exceed?
           client.create_ref(repo, "refs/heads/#{name}", sha)
         end
 
         project.repository.fetch_ref(repo_url, '+refs/heads/*', 'refs/heads/*')
       end
 
-      def delete_refs(branches)
+      def clean_up_restored_branches(branches)
         branches.each do |name, _|
+          sleep rate_limit_sleep_time if rate_limit_exceed?
           client.delete_ref(repo, "heads/#{name}")
           project.repository.rm_branch(project.creator, name)
         end
       end
 
-      def apply_labels(number, issuable)
-        issue = client.issue(repo, number)
+      def apply_labels(issuable)
+        sleep rate_limit_sleep_time if rate_limit_exceed?
+
+        issue = client.issue(repo, issuable.iid)
 
         if issue.labels.count > 0
           label_ids = issue.labels.map do |raw|
@@ -123,20 +182,20 @@ module Gitlab
         end
       end
 
-      def import_comments(issue_number, noteable)
-        comments = client.issue_comments(repo, issue_number)
-        create_comments(comments, noteable)
+      def import_comments(issuable)
+        comments = paginate { client.issue_comments(repo, issuable.iid, per_page: 100) }
+        create_comments(issuable, comments)
       end
 
-      def import_comments_on_diff(pull_request_number, merge_request)
-        comments = client.pull_request_comments(repo, pull_request_number)
-        create_comments(comments, merge_request)
+      def import_comments_on_diff(merge_request)
+        comments = paginate { client.pull_request_comments(repo, merge_request.iid, per_page: 100) }
+        create_comments(merge_request, comments)
       end
 
-      def create_comments(comments, noteable)
-        comments.each do |raw_data|
-          comment = CommentFormatter.new(project, raw_data)
-          noteable.notes.create!(comment.attributes)
+      def create_comments(issuable, comments)
+        comments.each do |raw|
+          comment = CommentFormatter.new(project, raw)
+          issuable.notes.create!(comment.attributes)
         end
       end
 

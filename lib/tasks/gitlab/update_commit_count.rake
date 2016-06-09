@@ -6,15 +6,15 @@ namespace :gitlab do
     ask_to_continue unless ENV['force'] == 'yes'
 
     projects.find_each(batch_size: 100) do |project|
-      print "#{project.name_with_namespace.yellow} ... "
+      print "#{project.name_with_namespace.color(:yellow)} ... "
 
       unless project.repo_exists?
-        puts "skipping, because the repo is empty".magenta
+        puts "skipping, because the repo is empty".color(:magenta)
         next
       end
 
       project.update_commit_count
-      puts project.commit_count.to_s.green
+      puts project.commit_count.to_s.color(:green)
     end
   end
 end
