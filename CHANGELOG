@@ -5,6 +5,7 @@ v 8.8.5
   - Fix todos page throwing errors when you have a project pending deletion
   - Disable Webhooks before proceeding with the GitHub import
   - Fix importer for GitHub comments on diff
+  - Adjust the SAML control flow to allow LDAP identities to be added to an existing SAML user
 
 v 8.8.4
   - Fix LDAP-based login for users with 2FA enabled. !4493
