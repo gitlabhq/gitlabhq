@@ -35,7 +35,7 @@ GitLab.GfmAutoComplete =
 
       $.fn.atwho.default.callbacks.filter(query, data, searchKey)
     beforeInsert: (value) ->
-      if value.indexOf('undefined')
+      if value.indexOf('undefined') is 1
         @at
       else
         value
