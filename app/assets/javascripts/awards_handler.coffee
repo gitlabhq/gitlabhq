@@ -336,7 +336,7 @@ class @AwardsHandler
     if $.cookie 'frequently_used_emojis'
       frequentlyUsedEmojis = @getFrequentlyUsedEmojis()
 
-      ul = $("<ul class='clearfix emoji-menu-list'>")
+      ul = $("<ul class='clearfix emoji-menu-list frequent'>")
 
       for emoji in frequentlyUsedEmojis
         $(".emoji-menu-content [data-emoji='#{emoji}']").closest('li').clone().appendTo(ul)
@@ -367,4 +367,4 @@ class @AwardsHandler
 
   searchEmojis: (term) ->
 
-    $(".emoji-menu-content [data-emoji*='#{term}']").closest('li').clone()
+    $(".emoji-menu-list:not(.frequent) [data-emoji*='#{term}']").closest('li').clone()
