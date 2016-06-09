@@ -96,12 +96,11 @@ To register the runner, run the command below and follow instructions:
 sudo gitlab-runner register
 ```
 
-###  Lock a specific runner from being enabled from other projects
+###  Lock a specific runner from being enabled for other projects
 
-You can configure a runner to assign it exclusively to the one project.
-When a runner is locked on project this way, it can no longer be enabled
-for other projects. This setting is available on each runner in
-*Project Settings* > *Runners*.
+You can configure a runner to assign it exclusively to a project. When a
+runner is locked this way, it can no longer be enabled for other projects.
+This setting is available on each runner in *Project Settings* > *Runners*.
 
 ###  Making an existing Shared Runner Specific
 
