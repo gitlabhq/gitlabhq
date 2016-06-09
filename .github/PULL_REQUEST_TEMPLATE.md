@@ -1,3 +1,3 @@
-Thank you for taking the time to contribute back to GitLab! Due to the high number of contributions we get, we’re unable to review requests on GitHub right now.
+Thank you for taking the time to contribute back to GitLab!
 
-We encourage you to open a merge request [on GitLab.com](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests). You can login on GitLab.com using your GitHub account.
+Please open a merge request [on GitLab.com](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests), we look forward to reviewing your contribution! You can log into GitLab.com using your GitHub account.
