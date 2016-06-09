@@ -72,6 +72,7 @@ v 8.9.0 (unreleased)
   - Projects pending deletion will render a 404 page
   - Measure queue duration between gitlab-workhorse and Rails
   - Added Gfm autocomplete for labels
+  - Added edit note 'up' shortcut documentation to the help panel and docs screenshot #18114
   - Make Omniauth providers specs to not modify global configuration
   - Remove unused JiraIssue class and replace references with ExternalIssue. !4659 (Ilan Shamir)
   - Make authentication service for Container Registry to be compatible with < Docker 1.11
