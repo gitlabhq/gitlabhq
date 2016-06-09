@@ -56,6 +56,7 @@ v 8.9.0 (unreleased)
   - Improve issuables APIs performance when accessing notes !4471
   - External links now open in a new tab
   - Markdown editor now correctly resets the input value on edit cancellation !4175
+  - Toggling a task list item in a issue/mr description does not creates a Todo for mentions
 
 v 8.8.4 (unreleased)
   - Ensure branch cleanup regardless of whether the GitHub import process succeeds
