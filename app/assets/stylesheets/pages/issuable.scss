@@ -409,22 +409,14 @@
 .inline-edit-box {
   position: relative;
 
-  &::before {
-    content: '';
-    display: none;
-    position: absolute;
-    top: -3px;
-    right: -8px;
-    bottom: -3px;
-    left: -8px;
-    border: 1px solid $gray-dark;
-    border-radius: $border-radius-default;
-    pointer-events: none;
-  }
-
   &:hover {
-    &::before {
-      display: block;
+    &::after {
+      content: '';
+      position: absolute;
+      right: 0;
+      bottom: -2px;
+      left: 0;
+      border-top: 2px dashed $focus-border-color;
     }
   }
 }

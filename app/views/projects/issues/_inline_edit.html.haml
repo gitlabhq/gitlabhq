@@ -1,7 +1,7 @@
 = form_for @issue, remote: true, html: { class: 'detail-page-description content-block common-note-form js-quick-submit js-issuable-inline-form', data: { type: "json" } } do |f|
   = hidden_field_tag :inline, true
   %h2.title
-    %span.inline-edit-box.has-tooltip.js-issuable-title{ title: "Edit title" }= markdown escape_once(@issue.title), pipeline: :single_line, author: @issue.author
+    %span.inline-edit-box.js-issuable-title= markdown escape_once(@issue.title), pipeline: :single_line, author: @issue.author
     = icon('spinner spin', class: 'js-issuable-title-loading hidden')
     .issuable-title-edit.js-issuable-edit-title.hidden
       = f.text_field :title, class: 'form-control js-issuable-title-field'
@@ -12,7 +12,7 @@
           Cancel
   - if @issue.description.present?
     .description{ class: can?(current_user, :update_issue, @issue) ? 'js-task-list-container' : '' }
-      .wiki.inline-edit-box.has-tooltip.js-issuable-description{ title: "Edit description" }
+      .wiki.inline-edit-box.js-issuable-description
         = preserve do
           = markdown(@issue.description, cache_key: [@issue, "description"], author: @issue.author)
       .js-issuable-description-field.hidden
