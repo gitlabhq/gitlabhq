@@ -3,6 +3,7 @@
 window.GitLab ?= {}
 GitLab.GfmAutoComplete =
   dataLoading: false
+  dataLoaded: false
 
   dataSource: ''
 
@@ -35,7 +36,7 @@ GitLab.GfmAutoComplete =
 
       $.fn.atwho.default.callbacks.filter(query, data, searchKey)
     beforeInsert: (value) ->
-      if value.indexOf('undefined') is 1
+      if not GitLab.GfmAutoComplete.dataLoaded
         @at
       else
         value
@@ -182,6 +183,8 @@ GitLab.GfmAutoComplete =
     $.getJSON(dataSource)
 
   loadData: (data) ->
+    @dataLoaded = true
+
     # load members
     @input.atwho 'load', '@', data.members
     # load issues
