@@ -353,7 +353,9 @@ class NotificationService
     users = users.reject(&:blocked?)
 
     users.reject do |user|
-      next user.global_notification_setting.level == level unless project
+      global_notification_setting = user.global_notification_setting
+
+      next global_notification_setting.level == level unless project
 
       setting = user.notification_settings_for(project)
 
@@ -362,13 +364,13 @@ class NotificationService
       end
 
       # reject users who globally set mention notification and has no setting per project/group
-      next user.global_notification_setting.level == level unless setting
+      next global_notification_setting.level == level unless setting
 
       # reject users who set mention notification in project
       next true if setting.level == level
 
       # reject users who have mention level in project and disabled in global settings
-      setting.global? && user.global_notification_setting.level == level
+      setting.global? && global_notification_setting.level == level
     end
   end
 

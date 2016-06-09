@@ -17,21 +17,18 @@ class Profiles::NotificationsController < Profiles::ApplicationController
   end
 
   def user_params
-    params.require(:user).permit(:notification_email, :notification_level)
+    params.require(:user).permit(:notification_email)
   end
 
-  def notification_params
-    params.require(:notification_level)
+  def global_notification_setting_params
+    params.require(:global_notification_setting).permit(:level)
   end
 
   private
 
   def update_notification_settings
-    return true unless notification_params
+    return true unless global_notification_setting_params
 
-    notification_setting = current_user.global_notification_setting
-    notification_setting.level = notification_params
-
-    notification_setting.save
+    current_user.global_notification_setting.update_attributes(global_notification_setting_params)
   end
 end

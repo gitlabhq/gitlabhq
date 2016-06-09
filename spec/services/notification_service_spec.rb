@@ -85,13 +85,14 @@ describe NotificationService, services: true do
         context 'participating' do
           context 'by note' do
             before do
+              ActionMailer::Base.deliveries.clear
               note.author = @u_lazy_participant
               note.save
               notification.new_note(note)
             end
 
 
-            it { should_email(@u_lazy_participant) }
+            it { should_not_email(@u_lazy_participant) }
           end
         end
       end
@@ -953,8 +954,8 @@ describe NotificationService, services: true do
   def add_users_with_subscription(project, issuable)
     @subscriber = create :user
     @unsubscriber = create :user
-    @subscribed_participant = create(:user, username: 'subscribed_participant', notification_level: :participating)
-    @watcher_and_subscriber = create(:user, notification_level: :watch)
+    @subscribed_participant = create_global_setting_for(create(:user, username: 'subscribed_participant'), :participating)
+    @watcher_and_subscriber = create_global_setting_for(create(:user), :watch)
 
     project.team << [@subscribed_participant, :master]
     project.team << [@subscriber, :master]
