@@ -328,6 +328,23 @@
         .help-block
           If you got a lot of false alarms from repository checks you can choose to clear all repository check information from the database.
 
+  %fieldset
+    %legend Enabled Features
+    %p
+      Enabling or disabling these features can be useful to those wanting more
+      fine grained control over the behaviour of their GitLab instance.
+      Disabling certain features can also be useful when doing a deploy. For
+      example, should a deploy modify the data used for displaying/creating
+      comments it can be useful to disable the feature
+      <code>creating_notes</code> to prevent users from creating new notes while
+      the deploy is running.
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        - Gitlab::Feature.features_with_columns.each do |feature, column|
+          .checkbox
+            = f.label(column) do
+              = f.check_box(column)
+              <code>#{feature}</code>
 
   .form-actions
     = f.submit 'Save', class: 'btn btn-save'

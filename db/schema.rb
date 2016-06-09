@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160608155312) do
+ActiveRecord::Schema.define(version: 20160609133359) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -85,6 +85,11 @@ ActiveRecord::Schema.define(version: 20160608155312) do
     t.boolean  "send_user_confirmation_email",          default: false
     t.integer  "container_registry_token_expire_delay", default: 5
     t.text     "after_sign_up_text"
+    t.boolean  "enable_toggling_award_emoji",           default: true
+    t.boolean  "enable_creating_notes",                 default: true
+    t.boolean  "enable_updating_notes",                 default: true
+    t.boolean  "enable_removing_notes",                 default: true
+    t.boolean  "enable_removing_note_attachments",      default: true
   end
 
   create_table "audit_events", force: :cascade do |t|
