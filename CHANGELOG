@@ -12,6 +12,7 @@ v 8.9.0 (unreleased)
   - Allow customisable text on the 'nearly there' page after a user signs up
   - Bump recaptcha gem to 3.0.0 to remove deprecated stoken support
   - Allow forking projects with restricted visibility level
+  - Added descriptions to notification settings dropdown
   - Improve note validation to prevent errors when creating invalid note via API
   - Reduce number of fog gem dependencies
   - Remove project notification settings associated with deleted projects
@@ -22,6 +23,7 @@ v 8.9.0 (unreleased)
   - `git clone https://host/namespace/project` now works, in addition to using the `.git` suffix
   - Bump nokogiri to 1.6.8
   - Use gitlab-shell v3.0.0
+  - Upgrade to jQuery 2
   - Use Knapsack to evenly distribute tests across multiple nodes
   - Add `sha` parameter to MR merge API, to ensure only reviewed changes are merged
   - Don't allow MRs to be merged when commits were added since the last review / page load
@@ -61,17 +63,17 @@ v 8.9.0 (unreleased)
   - Toggling a task list item in a issue/mr description does not creates a Todo for mentions
   - Improved UX of date pickers on issue & milestone forms
 
-v 8.8.4 (unreleased)
+v 8.8.5 (unreleased)
   - Ensure branch cleanup regardless of whether the GitHub import process succeeds
   - Fix issue with arrow keys not working in search autocomplete dropdown
   - Fix todos page throwing errors when you have a project pending deletion
   - Reduce number of SQL queries when rendering user references
-  - Upgrade to jQuery 2
-  - Remove prev/next buttons on issues and merge requests
   - Import GitHub repositories respecting the API rate limit
   - Fix importer for GitHub comments on diff
   - Disable Webhooks before proceeding with the GitHub import
-  - Added descriptions to notification settings dropdown
+
+v 8.8.4
+  - Fix LDAP-based login for users with 2FA enabled. !4493
 
 v 8.8.3
   - Fix 404 page when viewing TODOs that contain milestones or labels in different projects. !4312
