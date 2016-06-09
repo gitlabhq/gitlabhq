@@ -13,7 +13,6 @@
   .nav-controls
     - if can?(current_user, :create_wiki, @project)
       = link_to '#modal-new-wiki', class: "add-new-wiki btn btn-new", "data-toggle" => "modal" do
-        = icon('plus')
         New Page
 
 = render 'projects/wikis/new'

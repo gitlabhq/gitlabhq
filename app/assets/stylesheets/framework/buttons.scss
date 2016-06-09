@@ -79,6 +79,23 @@
   @include btn-color($white-light, $border-color, $white-normal, $border-white-normal, $white-dark, $border-white-dark, $btn-white-active);
 }
 
+@mixin btn-with-margin {
+  margin-left: $btn-side-margin;
+  float: left;
+
+  &.inline {
+    float: none;
+  }
+
+  &.btn-sm {
+    margin-left: $btn-sm-side-margin;
+  }
+
+  &.btn-xs {
+    margin-left: $btn-xs-side-margin;
+  }
+}
+
 .btn {
   @include btn-default;
   @include btn-white;
@@ -142,24 +159,7 @@
   }
 
   &.btn-grouped {
-    margin-right: $btn-side-margin;
-    float: left;
-
-    &.inline {
-      float: none;
-    }
-
-    &:last-child {
-      margin-right: 0;
-    }
-
-    &.btn-sm {
-      margin-right: $btn-sm-side-margin;
-    }
-
-    &.btn-xs {
-      margin-right: $btn-xs-side-margin;
-    }
+    @include btn-with-margin;
   }
 
   &.disabled {
@@ -203,11 +203,7 @@
 
 .btn-group {
   &.btn-grouped {
-    margin-right: 7px;
-    float: left;
-    &:last-child {
-      margin-right: 0;
-    }
+    @include btn-with-margin;
   }
 }
 
