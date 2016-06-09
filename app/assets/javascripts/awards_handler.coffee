@@ -100,7 +100,7 @@ class @AwardsHandler
     $menu.css(css)
 
 
-  addAward: (votesBlock, awardUrl, emoji, checkMutuality = yes, callback) ->
+  addAward: (votesBlock, awardUrl, emoji, checkMutuality = true, callback) ->
 
     emoji = @normilizeEmojiName emoji
 
@@ -111,7 +111,7 @@ class @AwardsHandler
     $('.emoji-menu').removeClass 'is-visible'
 
 
-  addAwardToEmojiBar: (votesBlock, emoji, checkForMutuality = yes) ->
+  addAwardToEmojiBar: (votesBlock, emoji, checkForMutuality = true) ->
 
     @checkMutuality votesBlock, emoji  if checkForMutuality
     @addEmojiToFrequentlyUsedList emoji
@@ -153,7 +153,7 @@ class @AwardsHandler
 
       if isAlreadyVoted
         @showEmojiLoader $emojiButton
-        @addAward votesBlock, awardUrl, mutualVote, no, ->
+        @addAward votesBlock, awardUrl, mutualVote, false, ->
           $emojiButton.removeClass 'is-loading'
 
 
@@ -336,14 +336,14 @@ class @AwardsHandler
     if $.cookie 'frequently_used_emojis'
       frequentlyUsedEmojis = @getFrequentlyUsedEmojis()
 
-      ul = $("<ul class='clearfix emoji-menu-list frequent'>")
+      ul = $("<ul class='clearfix emoji-menu-list frequent-emojis'>")
 
       for emoji in frequentlyUsedEmojis
         $(".emoji-menu-content [data-emoji='#{emoji}']").closest('li').clone().appendTo(ul)
 
       $('input.emoji-search').after(ul).after($('<h5>').text('Frequently used'))
 
-    @frequentEmojiBlockRendered = yes
+    @frequentEmojiBlockRendered = true
 
 
   setupSearch: ->
@@ -367,4 +367,4 @@ class @AwardsHandler
 
   searchEmojis: (term) ->
 
-    $(".emoji-menu-list:not(.frequent) [data-emoji*='#{term}']").closest('li').clone()
+    $(".emoji-menu-list:not(.frequent-emojis) [data-emoji*='#{term}']").closest('li').clone()
