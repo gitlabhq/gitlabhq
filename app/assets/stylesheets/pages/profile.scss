@@ -192,24 +192,12 @@
   }
 }
 
-.personal-access-tokens-revoked-label {
-  color: #bbb;
-}
-
 .personal-access-tokens-never-expires-label {
-  color: #bbb;
+  color: $personal-access-tokens-disabled-label-color;
 }
 
-.personal-access-tokens-token-column {
-  max-width: 500px
-}
-
-.created-personal-access-token {
-  margin: 15px 15px 0 0;
-  pre {
-    max-width: 400px;
-    display: inline;
-  }
+.datepicker.personal-access-tokens-expires-at .ui-state-disabled span {
+  text-align: center;
 }
 
 .user-profile {

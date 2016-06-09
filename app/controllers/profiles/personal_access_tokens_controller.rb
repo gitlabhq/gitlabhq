@@ -10,7 +10,7 @@ class Profiles::PersonalAccessTokensController < Profiles::ApplicationController
 
     if @personal_access_token.save
       flash[:personal_access_token] = @personal_access_token.token
-      redirect_to profile_personal_access_tokens_path
+      redirect_to profile_personal_access_tokens_path, notice: "Your new personal access token has been created."
     else
       load_personal_access_tokens
       render :index

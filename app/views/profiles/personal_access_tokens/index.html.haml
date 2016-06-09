@@ -9,13 +9,16 @@
   .col-lg-9
 
     - if flash[:personal_access_token]
-      .panel.panel-success
-        .panel-heading Success!
-        .panel-body
-          Your new personal access token has been created. Make sure to save it - you can't see it again on this page.
-          .created-personal-access-token
-            %pre= flash[:personal_access_token]
-            = clipboard_button(clipboard_text: flash[:personal_access_token])
+      .created-personal-access-token
+        %h5.prepend-top-0
+          Your New Personal Access Token
+        .form-group
+          .input-group
+            = text_field_tag 'created-personal-access-token', flash[:personal_access_token], readonly: true, class: "form-control", 'aria-describedby' => "created-personal-access-token-help-block"
+            .input-group-addon= clipboard_button(clipboard_text: flash[:personal_access_token])
+          %span#created-personal-access-token-help-block.help-block Make sure you save it - you won't be able to access it again.
+
+      %hr
 
     %h5.prepend-top-0
       Add a Personal Access Token
@@ -33,10 +36,10 @@
       .form-group
         = f.label :expires_at, class: 'label-light'
         = f.hidden_field :expires_at, class: "form-control", required: false
-        .datepicker
+        .datepicker.personal-access-tokens-expires-at
 
       .prepend-top-default
-        = f.submit 'Add Personal Access Token', class: "btn btn-create"
+        = f.submit 'Create Personal Access Token', class: "btn btn-create"
 
     %hr
 
@@ -44,7 +47,7 @@
 
     - if @active_personal_access_tokens.present?
       .table-responsive
-        %table.table.table-striped.table-hover.active-personal-access-tokens
+        %table.table.active-personal-access-tokens
           %thead
             %tr
               %th Name
@@ -61,7 +64,7 @@
                     = token.expires_at.to_date.to_s(:medium)
                   - else
                     %span.personal-access-tokens-never-expires-label Never
-                %td= link_to "Revoke", revoke_profile_personal_access_token_path(token), method: :put, class: "btn btn-danger", data: { confirm: "Are you sure? This cannot be undone." }
+                %td= link_to "Revoke", revoke_profile_personal_access_token_path(token), method: :put, class: "btn btn-danger pull-right", data: { confirm: "Are you sure you want to revoke this certificate? This action cannot be undone." }
 
     - else
       .settings-message.text-center
@@ -73,7 +76,7 @@
 
     - if @inactive_personal_access_tokens.present?
       .table-responsive
-        %table.table.table-striped.table-hover.inactive-personal-access-tokens
+        %table.table.inactive-personal-access-tokens
           %thead
             %tr
               %th Name
@@ -90,7 +93,21 @@
 
 
 :javascript
-  $(".datepicker").datepicker({
-    dateFormat: "yy-mm-dd",
-    onSelect: function(dateText, inst) { $("#personal_access_token_expires_at").val(dateText) }
-  }).datepicker("setDate", $.datepicker.parseDate('yy-mm-dd', $('#personal_access_token_expires_at').val()));
+  var date = $('#personal_access_token_expires_at').val();
+
+  var datepicker = $(".datepicker").datepicker({
+    altFormat: "yy-mm-dd",
+    altField: "#personal_access_token_expires_at",
+    minDate: 0
+  });
+
+  if (date) {
+    datepicker.datepicker("setDate", $.datepicker.parseDate('yy-mm-dd', date));
+  }
+  else {
+    datepicker.datepicker("setDate", null);
+  }
+
+  $("#created-personal-access-token").click(function() {
+    this.select();
+  });

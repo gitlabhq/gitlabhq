@@ -12,7 +12,7 @@ describe 'Profile > Personal Access Tokens', feature: true, js: true do
   end
 
   def created_personal_access_token
-    find(".created-personal-access-token pre")
+    find(".created-personal-access-token input").value
   end
 
   def disallow_personal_access_token_saves!
@@ -30,8 +30,8 @@ describe 'Profile > Personal Access Tokens', feature: true, js: true do
       visit profile_personal_access_tokens_path
       fill_in "Name", with: FFaker::Product.brand
 
-      expect {click_on "Add Personal Access Token"}.to change { PersonalAccessToken.count }.by(1)
-      expect(created_personal_access_token).to have_text(PersonalAccessToken.last.token)
+      expect {click_on "Create Personal Access Token"}.to change { PersonalAccessToken.count }.by(1)
+      expect(created_personal_access_token).to eq(PersonalAccessToken.last.token)
       expect(active_personal_access_tokens).to have_text(PersonalAccessToken.last.name)
       expect(active_personal_access_tokens).to have_text("Never")
     end
@@ -44,8 +44,8 @@ describe 'Profile > Personal Access Tokens', feature: true, js: true do
       find("a[title='Next']").click
       click_on "1"
 
-      expect {click_on "Add Personal Access Token"}.to change { PersonalAccessToken.count }.by(1)
-      expect(created_personal_access_token).to have_text(PersonalAccessToken.last.token)
+      expect {click_on "Create Personal Access Token"}.to change { PersonalAccessToken.count }.by(1)
+      expect(created_personal_access_token).to eq(PersonalAccessToken.last.token)
       expect(active_personal_access_tokens).to have_text(PersonalAccessToken.last.name)
       expect(active_personal_access_tokens).to have_text(Date.today.next_month.at_beginning_of_month.to_s(:medium))
     end
@@ -56,7 +56,7 @@ describe 'Profile > Personal Access Tokens', feature: true, js: true do
         visit profile_personal_access_tokens_path
         fill_in "Name", with: FFaker::Product.brand
 
-        expect { click_on "Add Personal Access Token" }.not_to change { PersonalAccessToken.count }
+        expect { click_on "Create Personal Access Token" }.not_to change { PersonalAccessToken.count }
         expect(page).to have_content("Name cannot be nil")
       end
     end
