@@ -122,9 +122,18 @@ header {
       margin-top: -5px;
     }
 
+    .header-logo {
+      position: absolute;
+      left: 50%;
+      margin-left: -18px;
+      top: 7px;
+    }
+
     .title {
       margin: 0;
       font-size: 19px;
+      max-width: 250px;
+      display: inline-block;
       line-height: $header-height;
       font-weight: normal;
       color: $gl-text-color;
@@ -187,6 +196,15 @@ header {
   .header-content {
     margin-left: $sidebar_width;
     transition-duration: .3s;
+  }
+}
+
+.tanuki-shape {
+  transition: all 0.8s;
+
+  &:hover, &.highlight {
+    fill: rgb(255, 255, 255);
+    transition: all 0.1s;
   }
 }
 

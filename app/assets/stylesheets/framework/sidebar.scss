@@ -66,19 +66,8 @@
   }
 }
 
-
-.tanuki-shape {
-  transition: all 0.8s;
-
-  &:hover, &.highlight {
-    fill: rgb(255, 255, 255);
-    transition: all 0.1s;
-  }
-}
-
-
 .nav-sidebar {
-  margin-top: 22 + $header-height;
+  margin-top: 22px;
   margin-bottom: 116px;
   transition-duration: .3s;
   list-style: none;
@@ -214,6 +203,20 @@
         display: none;
       }
     }
+  }
+}
+
+.gitlab-text-container {
+  height: 50px;
+  padding: 5px;
+  text-align: center;
+
+  h3 {
+    color: white;
+    margin: 0;
+    font-size: 19px;
+    line-height: 41px;
+    font-weight: normal;
   }
 }
 

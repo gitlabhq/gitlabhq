@@ -241,7 +241,6 @@ $ ->
       $this.attr 'value', $this.val()
 
   $sidebarGutterToggle = $('.js-sidebar-toggle')
-  $navIconToggle = $('.toggle-nav-collapse')
 
   $(document)
     .off 'breakpoint:change'
@@ -251,10 +250,6 @@ $ ->
         if $gutterIcon.hasClass('fa-angle-double-right')
           $sidebarGutterToggle.trigger('click')
 
-        $navIcon = $navIconToggle.find('.fa')
-        if $navIcon.hasClass('fa-angle-left')
-          $navIconToggle.trigger('click')
-
   fitSidebarForSize = ->
     oldBootstrapBreakpoint = bootstrapBreakpoint
     bootstrapBreakpoint = bp.getBreakpointSize()
@@ -263,7 +258,7 @@ $ ->
 
   checkInitialSidebarSize = ->
     bootstrapBreakpoint = bp.getBreakpointSize()
-    if bootstrapBreakpoint is "xs" or "sm"
+    if bootstrapBreakpoint is "xs"
       $(document).trigger('breakpoint:change', [bootstrapBreakpoint])
 
   $(window)

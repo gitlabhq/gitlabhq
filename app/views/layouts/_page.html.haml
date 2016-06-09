@@ -1,9 +1,8 @@
-.page-with-sidebar{ class: "#{page_sidebar_class} #{page_gutter_class}" }
+.page-with-sidebar.page-sidebar-collapsed{ class: "#{page_gutter_class}" }
   .sidebar-wrapper.nicescroll{ class: nav_sidebar_class }
     = link_to root_path, class: 'gitlab-text-container-link', title: 'Dashboard', id: 'js-shortcuts-home' do
-      .header-logo
-        #logo
-          = brand_header_logo
+      .gitlab-text-container
+        %h3 GitLab
 
     - if defined?(sidebar) && sidebar
       = render "layouts/nav/#{sidebar}"

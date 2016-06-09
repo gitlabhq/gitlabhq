@@ -1,6 +1,7 @@
 @mixin fade($gradient-direction, $rgba, $gradient-color) {
   visibility: visible;
   opacity: 1;
+  z-index: 2;
   position: absolute;
   bottom: 12px;
   width: 43px;
