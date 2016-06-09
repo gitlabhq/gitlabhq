@@ -1,6 +1,12 @@
 module Gitlab
   module Ci
     class Config
+      ##
+      # This class represents a configuration entry that is not being used
+      # in configuration file.
+      #
+      # This implements Null Object pattern.
+      #
       module Node
         class Null < Entry
           def value

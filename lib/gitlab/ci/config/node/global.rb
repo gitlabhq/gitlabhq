@@ -2,6 +2,10 @@ module Gitlab
   module Ci
     class Config
       module Node
+        ##
+        # This class represents a global entry - root node for entire
+        # GitLab CI Configuration file.
+        #
         class Global < Entry
           include Configurable
 

@@ -2,6 +2,9 @@ module Gitlab
   module Ci
     class Config
       module Node
+        ##
+        # Base abstract class for each configuration entry node.
+        #
         class Entry
           class InvalidError < StandardError; end
 

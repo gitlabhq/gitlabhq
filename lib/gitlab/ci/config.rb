@@ -1,8 +1,9 @@
 module Gitlab
   module Ci
+    ##
+    # Base GitLab CI Configuration facade
+    #
     class Config
-      class LoaderError < StandardError; end
-
       delegate :valid?, :errors, to: :@global
 
       ##

@@ -2,6 +2,14 @@ module Gitlab
   module Ci
     class Config
       module Node
+        ##
+        # Entry that represents a script.
+        #
+        # Each element in the value array is a command that will be executed
+        # by GitLab Runner. Currently we concatenate this commands with
+        # new line character as a separator what is compatbile with
+        # implementation in Runner.
+        #
         class Script < Entry
           include ValidationHelpers
 
