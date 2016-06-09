@@ -20,12 +20,16 @@ module Gitlab
           def process!
             return if leaf? || invalid?
 
-            keys.each do |key, entry|
-              add_node(key, entry)
-            end
+            compose!
 
             nodes.each(&:process!)
             nodes.each(&:validate!)
+          end
+
+          def compose!
+            keys.each do |key, entry|
+              add_node(key, entry)
+            end
           end
 
           def nodes

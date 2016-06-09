@@ -3,8 +3,6 @@ require 'spec_helper'
 describe Gitlab::Ci::Config::Node::Global do
   let(:global) { described_class.new(hash) }
 
-  before { global.process! }
-
   describe '#keys' do
     it 'can contain global config keys' do
       expect(global.keys).to include :before_script
@@ -20,7 +18,18 @@ describe Gitlab::Ci::Config::Node::Global do
       { before_script: ['ls', 'pwd'] }
     end
 
+    describe '#compose!' do
+      before { global.compose! }
+
+      it 'instantiates entry nodes' do
+        expect(global.nodes.first)
+          .to be_an_instance_of Gitlab::Ci::Config::Node::Script
+      end
+    end
+
     describe '#process!' do
+      before { global.process! }
+
       it 'creates nodes hash' do
         expect(global.nodes).to be_an Array
       end
@@ -48,13 +57,25 @@ describe Gitlab::Ci::Config::Node::Global do
     end
 
     describe '#before_script' do
-      it 'returns correct script' do
-        expect(global.before_script).to eq "ls\npwd"
+      context 'when processed' do
+        before { global.process! }
+
+        it 'returns correct script' do
+          expect(global.before_script).to eq "ls\npwd"
+        end
+      end
+
+      context 'when not processed' do
+        it 'returns nil' do
+          expect(global.before_script).to be nil
+        end
       end
     end
   end
 
   context 'when hash is not valid' do
+    before { global.process! }
+
     let(:hash) do
       { before_script: 'ls' }
     end
