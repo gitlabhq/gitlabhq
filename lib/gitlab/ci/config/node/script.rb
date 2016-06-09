@@ -5,10 +5,6 @@ module Gitlab
         class Script < Entry
           include ValidationHelpers
 
-          def description
-            'Script that is executed before the one defined in a job.'
-          end
-
           def value
             @value.join("\n")
           end

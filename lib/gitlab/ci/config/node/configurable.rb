@@ -11,14 +11,19 @@ module Gitlab
 
           private
 
-          def add_node(key, entry_class)
-            if @value.has_key?(key)
-              entry = entry_class.new(@value[key], @root, self)
-            else
-              entry = Node::Null.new(nil, @root, self)
-            end
+          def add_node(key, metadata)
+            entry = create_entry(key, metadata[:class])
+            entry.description = metadata[:description]
 
             @nodes[key] = entry
+          end
+
+          def create_entry(key, entry_class)
+            if @value.has_key?(key)
+              entry_class.new(@value[key], @root, self)
+            else
+              Node::Null.new(nil, @root, self)
+            end
           end
 
           class_methods do
@@ -26,8 +31,10 @@ module Gitlab
 
             private
 
-            def add_node(symbol, entry_class)
-              node = { symbol.to_sym => entry_class }
+            def add_node(symbol, entry_class, metadata)
+              node = { symbol.to_sym =>
+                       { class: entry_class,
+                         description: metadata[:description] } }
 
               (@nodes ||= {}).merge!(node)
             end

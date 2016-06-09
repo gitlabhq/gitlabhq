@@ -5,7 +5,8 @@ module Gitlab
         class Global < Entry
           include Configurable
 
-          add_node :before_script, Script
+          add_node :before_script, Script,
+            description: 'Script that will be executed before each job.'
         end
       end
     end

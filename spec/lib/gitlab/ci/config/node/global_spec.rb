@@ -42,6 +42,11 @@ describe Gitlab::Ci::Config::Node::Global do
         expect(global.nodes.first)
           .to be_an_instance_of Gitlab::Ci::Config::Node::Script
       end
+
+      it 'sets correct description for nodes' do
+        expect(global.nodes.first.description)
+          .to eq 'Script that will be executed before each job.'
+      end
     end
 
     describe '#has_config?' do

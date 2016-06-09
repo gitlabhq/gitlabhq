@@ -5,6 +5,8 @@ module Gitlab
         class Entry
           class InvalidError < StandardError; end
 
+          attr_accessor :description
+
           def initialize(value, root = nil, parent = nil)
             @value = value
             @root = root
@@ -76,10 +78,6 @@ module Gitlab
           end
 
           def validate!
-            raise NotImplementedError
-          end
-
-          def description
             raise NotImplementedError
           end
         end
