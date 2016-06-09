@@ -65,7 +65,7 @@ class @AwardsHandler
         $addBtn.removeClass 'is-loading'
         $menu = $('.emoji-menu')
         @positionMenu($menu, $addBtn)
-        @renderFrequentlyUsedBlock()
+        @renderFrequentlyUsedBlock() unless @frequentEmojiBlockRendered
 
         setTimeout =>
           $menu.addClass 'is-visible'
@@ -342,6 +342,8 @@ class @AwardsHandler
         $(".emoji-menu-content [data-emoji='#{emoji}']").closest('li').clone().appendTo(ul)
 
       $('input.emoji-search').after(ul).after($('<h5>').text('Frequently used'))
+
+    @frequentEmojiBlockRendered = yes
 
 
   setupSearch: ->
