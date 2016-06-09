@@ -1,3 +1,4 @@
+# rubocop:disable all
 class AddCiBuildsAndProjectsIndexes < ActiveRecord::Migration
   def change
     add_index :ci_projects, :gitlab_id

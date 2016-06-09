@@ -13,7 +13,8 @@ AllCops:
   # Exclude some GitLab files
   Exclude:
     - 'vendor/**/*'
-    - 'db/**/*'
+    - 'db/*'
+    - 'db/fixtures/**/*'
     - 'tmp/**/*'
     - 'bin/**/*'
     - 'lib/backup/**/*'

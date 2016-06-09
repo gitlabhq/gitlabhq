@@ -1,3 +1,4 @@
+# rubocop:disable all
 class AddIsAwardToNotes < ActiveRecord::Migration
   def change
     add_column :notes, :is_award, :boolean, default: false, null: false

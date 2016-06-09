@@ -1,3 +1,4 @@
+# rubocop:disable all
 class AddNotesIndexUpdatedAt < ActiveRecord::Migration
   def change
     add_index :notes, :updated_at

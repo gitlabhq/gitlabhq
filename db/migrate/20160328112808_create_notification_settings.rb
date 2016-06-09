@@ -1,3 +1,4 @@
+# rubocop:disable all
 class CreateNotificationSettings < ActiveRecord::Migration
   def change
     create_table :notification_settings do |t|

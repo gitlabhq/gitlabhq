@@ -1,3 +1,4 @@
+# rubocop:disable all
 class AddPriorityToLabel < ActiveRecord::Migration
   def change
     add_column :labels, :priority, :integer

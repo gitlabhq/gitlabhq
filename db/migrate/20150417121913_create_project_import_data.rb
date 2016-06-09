@@ -1,3 +1,4 @@
+# rubocop:disable all
 class CreateProjectImportData < ActiveRecord::Migration
   def change
     create_table :project_import_data do |t|

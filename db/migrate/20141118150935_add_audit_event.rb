@@ -1,3 +1,4 @@
+# rubocop:disable all
 class AddAuditEvent < ActiveRecord::Migration
   def change
     create_table :audit_events do |t|
