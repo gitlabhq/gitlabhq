@@ -35,7 +35,6 @@
 #= require raphael
 #= require g.raphael
 #= require g.bar
-#= require Chart
 #= require branch-graph
 #= require ace/ace
 #= require ace/ext-searchbox
