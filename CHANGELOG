@@ -179,6 +179,7 @@ v 8.8.0
   - Fixed advice on invalid permissions on upload path !2948 (Ludovic Perrine)
   - Allows MR authors to have the source branch removed when merging the MR. !2801 (Jeroen Jacobs)
   - When creating a .gitignore file a dropdown with templates will be provided
+  - Shows the issue/MR list search/filter form and corrects the mobile styling for guest users. #17562
 
 v 8.7.7
   - Fix import by `Any Git URL` broken if the URL contains a space
