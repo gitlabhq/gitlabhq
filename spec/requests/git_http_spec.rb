@@ -2,7 +2,7 @@ require "spec_helper"
 
 describe 'Git HTTP requests', lib: true do
   let(:user)    { create(:user) }
-  let(:project) { create(:project) }
+  let(:project) { create(:project, path: 'project.git-project') }
 
   it "gives WWW-Authenticate hints" do
     clone_get('doesnt/exist.git')
@@ -264,6 +264,59 @@ describe 'Git HTTP requests', lib: true do
 
           expect(response.status).to eq(401)
         end
+      end
+    end
+  end
+
+  context "when the project path doesn't end in .git" do
+    context "GET info/refs" do
+      let(:path) { "/#{project.path_with_namespace}/info/refs" }
+
+      context "when no params are added" do
+        before { get path }
+
+        it "redirects to the .git suffix version" do
+          expect(response).to redirect_to("/#{project.path_with_namespace}.git/info/refs")
+        end
+      end
+
+      context "when the upload-pack service is requested" do
+        let(:params) { { service: 'git-upload-pack' } }
+        before { get path, params }
+
+        it "redirects to the .git suffix version" do
+          expect(response).to redirect_to("/#{project.path_with_namespace}.git/info/refs?service=#{params[:service]}")
+        end
+      end
+
+      context "when the receive-pack service is requested" do
+        let(:params) { { service: 'git-receive-pack' } }
+        before { get path, params }
+
+        it "redirects to the .git suffix version" do
+          expect(response).to redirect_to("/#{project.path_with_namespace}.git/info/refs?service=#{params[:service]}")
+        end
+      end
+
+      context "when the params are anything else" do
+        let(:params) { { service: 'git-implode-pack' } }
+        before { get path, params }
+
+        it "redirects to the sign-in page" do
+          expect(response).to redirect_to(new_user_session_path)
+        end
+      end
+    end
+
+    context "POST git-upload-pack" do
+      it "fails to find a route" do
+        expect { clone_post(project.path_with_namespace) }.to raise_error(ActionController::RoutingError)
+      end
+    end
+
+    context "POST git-receive-pack" do
+      it "failes to find a route" do
+        expect { push_post(project.path_with_namespace) }.to raise_error(ActionController::RoutingError)
       end
     end
   end
