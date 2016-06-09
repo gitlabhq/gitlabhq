@@ -1,6 +1,8 @@
 class Projects::GitHttpController < Projects::ApplicationController
   attr_reader :user
 
+  # Git clients will not know what authenticity token to send along
+  skip_before_action :verify_authenticity_token
   skip_before_action :repository
   before_action :authenticate_user
   before_action :ensure_project_found!

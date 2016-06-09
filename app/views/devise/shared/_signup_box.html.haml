@@ -16,7 +16,7 @@
       %div
         = f.email_field :email, class: "form-control middle", placeholder: "Email", required: true
       .form-group.append-bottom-20#password-strength
-        = f.password_field :password, class: "form-control bottom", placeholder: "Password", required: true
+        = f.password_field :password, class: "form-control bottom", placeholder: "Password - minimum length #{@minimum_password_length} characters", required: true, pattern: ".{#{@minimum_password_length},}", title: "Minimum length is #{@minimum_password_length} characters"
       %div
       - if current_application_settings.recaptcha_enabled
         = recaptcha_tags

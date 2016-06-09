@@ -354,8 +354,7 @@ class @Notes
   Called in response to clicking the edit note link
 
   Replaces the note text with the note edit form
-  Adds a hidden div with the original content of the note to fill the edit note form with
-  if the user cancels
+  Adds a data attribute to the form with the original content of the note for cancellations
   ###
   showEditForm: (e, scrollTo, myLastNote) ->
     e.preventDefault()
@@ -371,6 +370,8 @@ class @Notes
     done = ($noteText) ->
       # Neat little trick to put the cursor at the end
       noteTextVal = $noteText.val()
+      # Store the original note text in a data attribute to retrieve if a user cancels edit.
+      form.find('form.edit-note').data 'original-note', noteTextVal
       $noteText.val('').val(noteTextVal);
 
     new GLForm form
@@ -393,14 +394,16 @@ class @Notes
   ###
   Called in response to clicking the edit note link
 
-  Hides edit form
+  Hides edit form and restores the original note text to the editor textarea.
   ###
   cancelEdit: (e) ->
     e.preventDefault()
     note = $(this).closest(".note")
+    form = note.find(".current-note-edit-form")
     note.removeClass "is-editting"
-    note.find(".current-note-edit-form")
-      .removeClass("current-note-edit-form")
+    form.removeClass("current-note-edit-form")
+    # Replace markdown textarea text with original note text.
+    form.find(".js-note-text").val(form.find('form.edit-note').data('original-note'))
 
   ###
   Called in response to deleting a note of any kind.

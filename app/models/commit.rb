@@ -198,7 +198,7 @@ class Commit
   end
 
   def notes_with_associations
-    notes.includes(:author, :project)
+    notes.includes(:author)
   end
 
   def method_missing(m, *args, &block)

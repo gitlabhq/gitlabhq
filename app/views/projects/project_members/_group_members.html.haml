@@ -7,7 +7,6 @@
     - if can?(current_user, :admin_group_member, @group)
       .controls
         = link_to group_group_members_path(@group), class: 'btn' do
-          = icon('pencil-square-o')
           Manage group members
   %ul.content-list
     - members.limit(20).each do |member|
