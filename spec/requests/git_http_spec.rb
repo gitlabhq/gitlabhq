@@ -321,6 +321,34 @@ describe 'Git HTTP requests', lib: true do
     end
   end
 
+  context "retrieving an info/refs file" do
+    before { project.update_attribute(:visibility_level, Project::PUBLIC) }
+
+    context "when the file exists" do
+      before do
+        # Provide a dummy file in its place
+        allow_any_instance_of(Repository).to receive(:blob_at).and_call_original
+        allow_any_instance_of(Repository).to receive(:blob_at).with('5937ac0a7beb003549fc5fd26fc247adbce4a52e', 'info/refs') do
+          Gitlab::Git::Blob.find(project.repository, 'master', '.gitignore')
+        end
+
+        get "/#{project.path_with_namespace}/blob/master/info/refs"
+      end
+
+      it "returns the file" do
+        expect(response.status).to eq(200)
+      end
+    end
+
+    context "when the file exists" do
+      before { get "/#{project.path_with_namespace}/blob/master/info/refs" }
+
+      it "returns not found" do
+        expect(response.status).to eq(404)
+      end
+    end
+  end
+
   def clone_get(project, options={})
     get "/#{project}/info/refs", { service: 'git-upload-pack' }, auth_env(*options.values_at(:user, :password))
   end
