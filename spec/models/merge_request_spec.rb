@@ -495,23 +495,16 @@ describe MergeRequest, models: true do
 
     subject { create(:merge_request, source_project: project) }
 
-    it 'calls mergeable_state?' do
-      expect(subject).to receive(:mergeable_state?)
+    it 'returns false if #mergeable_state? is false' do
+      expect(subject).to receive(:mergeable_state?) { false }
 
-      expect(subject.mergeable?).to be_truthy
+      expect(subject.mergeable?).to be_falsey
     end
 
-    it 'calls check_if_can_be_merged' do
+    it 'return true if #mergeable_state? is true and the MR #can_be_merged? is true' do
       allow(subject).to receive(:mergeable_state?) { true }
       expect(subject).to receive(:check_if_can_be_merged)
-
-      expect(subject.mergeable?).to be_truthy
-    end
-
-    it 'calls can_be_merged?' do
-      allow(subject).to receive(:mergeable_state?) { true }
-      allow(subject).to receive(:can_be_merged?) { true }
-      expect(subject).to receive(:check_if_can_be_merged)
+      expect(subject).to receive(:can_be_merged?) { true }
 
       expect(subject.mergeable?).to be_truthy
     end
@@ -523,7 +516,7 @@ describe MergeRequest, models: true do
     subject { create(:merge_request, source_project: project) }
 
     it 'checks if merge request can be merged' do
-      allow(subject).to receive(:cannot_be_merged_because_build_is_not_success?) { false }
+      allow(subject).to receive(:mergeable_ci_state?) { true }
       expect(subject).to receive(:check_if_can_be_merged)
 
       subject.mergeable?
@@ -559,7 +552,7 @@ describe MergeRequest, models: true do
       context 'when project settings restrict to merge only if build succeeds and build failed' do
         before do
           project.only_allow_merge_if_build_succeeds = true
-          allow(subject).to receive(:cannot_be_merged_because_build_is_not_success?) { true }
+          allow(subject).to receive(:mergeable_ci_state?) { false }
         end
 
         it 'returns false' do
@@ -569,37 +562,49 @@ describe MergeRequest, models: true do
     end
   end
 
-  describe '#cannot_be_merged_because_build_is_not_success?' do
+  describe '#mergeable_ci_state?' do
     let(:project) { create(:empty_project, only_allow_merge_if_build_succeeds: true) }
-    let(:commit_status) { create(:commit_status, status: 'failed', project: project) }
     let(:ci_commit) { create(:ci_empty_pipeline) }
 
     subject { build(:merge_request, target_project: project) }
 
-    before do
-      ci_commit.statuses << commit_status
-      allow(subject).to receive(:ci_commit) { ci_commit }
-    end
+    context 'when it is only allowed to merge when build is green' do
+      context 'and a failed ci_commit is associated' do
+        before do
+          ci_commit.statuses << create(:commit_status, status: 'failed', project: project)
+          allow(subject).to receive(:ci_commit) { ci_commit }
+        end
 
-    it 'returns true if it is only allowed to merge green build and build has been failed' do
-      expect(subject.cannot_be_merged_because_build_is_not_success?).to be_truthy
-    end
-
-    context 'when no ci_commit is associated' do
-      before do
-        allow(subject).to receive(:ci_commit) { nil }
+        it { expect(subject.mergeable_ci_state?).to be_falsey }
       end
 
-      it 'returns false' do
-        expect(subject.cannot_be_merged_because_build_is_not_success?).to be_falsey
+      context 'when no ci_commit is associated' do
+        before do
+          allow(subject).to receive(:ci_commit) { nil }
+        end
+
+        it { expect(subject.mergeable_ci_state?).to be_truthy }
       end
     end
 
-    context 'when is not only allowed to merge green build at project settings' do
+    context 'when merges are not restricted to green builds' do
       subject { build(:merge_request, target_project: build(:empty_project, only_allow_merge_if_build_succeeds: false)) }
 
-      it 'returns false' do
-        expect(subject.cannot_be_merged_because_build_is_not_success?).to be_falsey
+      context 'and a failed ci_commit is associated' do
+        before do
+          ci_commit.statuses << create(:commit_status, status: 'failed', project: project)
+          allow(subject).to receive(:ci_commit) { ci_commit }
+        end
+
+        it { expect(subject.mergeable_ci_state?).to be_truthy }
+      end
+
+      context 'when no ci_commit is associated' do
+        before do
+          allow(subject).to receive(:ci_commit) { nil }
+        end
+
+        it { expect(subject.mergeable_ci_state?).to be_truthy }
       end
     end
   end

@@ -420,7 +420,7 @@ describe API::API, api: true  do
     end
 
     it 'returns 405 if the build failed for a merge request that requires success' do
-      allow_any_instance_of(MergeRequest).to receive(:cannot_be_merged_because_build_is_not_success?).and_return(true)
+      allow_any_instance_of(MergeRequest).to receive(:mergeable_ci_state?).and_return(false)
 
       put api("/projects/#{project.id}/merge_requests/#{merge_request.id}/merge", user)
 
