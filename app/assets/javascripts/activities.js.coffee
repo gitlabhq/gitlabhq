@@ -1,12 +1,12 @@
 class @Activities
   constructor: ->
-    Pager.init 20, true, false, @fixTooltips
+    Pager.init 20, true, false, @updateTooltips
     $(".event-filter-link").on "click", (event) =>
       event.preventDefault()
       @toggleFilter($(event.currentTarget))
       @reloadActivities()
 
-  fixTooltips: ->
+  updateTooltips: ->
     gl.utils.localTimeAgo($('.js-timeago', '#activity'))
 
   reloadActivities: ->
