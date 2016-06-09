@@ -5,6 +5,22 @@ describe Gitlab::Sanitizers::SVG do
   let(:namespace) { double(Nokogiri::XML::Namespace, prefix: 'xlink', href: 'http://www.w3.org/1999/xlink') }
   let(:namespaced_attr) { double(Nokogiri::XML::Attr, name: 'href', namespace: namespace, value: '#awesome_id') }
 
+  describe '.clean' do
+    let(:input_svg_path) { File.join(Rails.root, 'spec', 'fixtures', 'unsanitized.svg') }
+    let(:data) { open(input_svg_path).read }
+    let(:sanitized_svg_path) { File.join(Rails.root, 'spec', 'fixtures', 'sanitized.svg') }
+    let(:sanitized) { open(sanitized_svg_path).read }
+
+    it 'delegates sanitization to scrubber' do
+      expect_any_instance_of(Gitlab::Sanitizers::SVG::Scrubber).to receive(:scrub).at_least(:once)
+      described_class.clean(data)
+    end
+
+    it 'returns sanitized data' do
+      expect(described_class.clean(data)).to eq(sanitized)
+    end
+  end
+
   context 'scrubber' do
     describe '#scrub' do
       let(:invalid_element) { double(Nokogiri::XML::Node, name: 'invalid', value: 'invalid') }
