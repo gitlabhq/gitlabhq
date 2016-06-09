@@ -598,6 +598,28 @@ describe API::API, api: true  do
     end
   end
 
+  describe 'GET :id/merge_requests/:merge_request_id/approvals' do
+    it 'retrieves the approval status' do
+      project.update_attribute(:approvals_before_merge, 2)
+
+      get api("/projects/#{project.id}/merge_requests/#{merge_request.id}/approvals", user)
+
+      expect(response.status).to eq(200)
+      expect(json_response['approvals_required']).to eq 2
+    end
+  end
+
+  describe 'POST :id/merge_requests/:merge_request_id/approve' do
+    it 'approves the merge request' do
+      project.update_attribute(:approvals_before_merge, 2)
+
+      post api("/projects/#{project.id}/merge_requests/#{merge_request.id}/approve", user)
+
+      expect(response.status).to eq(201)
+      expect(json_response['approvals_required']).to eq 1
+    end
+  end
+
   def mr_with_later_created_and_updated_at_time
     merge_request
     merge_request.created_at += 1.hour
