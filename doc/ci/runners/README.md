@@ -98,9 +98,10 @@ sudo gitlab-runner register
 
 ###  Lock a specific runner from being enabled from other projects
 
-You can configure a runner to prevent it from being enabled for the other
-projects, so it's exclusive to current projects. This setting is available
-on each runner in *Project Settings* > *Runners*.
+You can configure a runner to assign it exclusively to the one project.
+When a runner is locked on project this way, it can no longer be enabled
+for other projects. This setting is available on each runner in
+*Project Settings* > *Runners*.
 
 ###  Making an existing Shared Runner Specific
 
