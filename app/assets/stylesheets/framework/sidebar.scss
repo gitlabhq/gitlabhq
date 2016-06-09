@@ -35,9 +35,9 @@
 }
 
 .sidebar-wrapper {
-  .header-logo {
+  .gitlab-text-container {
     height: $header-height;
-    padding: 8px 26px;
+    padding: 0 19px;
     width: $sidebar_width;
     position: fixed;
     z-index: 999;
@@ -46,6 +46,13 @@
 
     &:hover {
       background-color: #eee;
+    }
+
+    h3 {
+      font-size: 19px;
+      line-height: 50px;
+      font-weight: normal;
+      margin: 0;
     }
   }
 
@@ -66,8 +73,19 @@
   }
 }
 
+
+.tanuki-shape {
+  transition: all 0.8s;
+
+  &:hover, &.highlight {
+    fill: rgb(255, 255, 255);
+    transition: all 0.1s;
+  }
+}
+
+
 .nav-sidebar {
-  margin-top: 22px;
+  margin-top: 22 + $header-height;
   margin-bottom: 116px;
   transition-duration: .3s;
   list-style: none;
@@ -159,21 +177,13 @@
   .sidebar-wrapper {
     width: 0;
 
-    .header-logo {
+    .gitlab-text-container {
       width: 0;
-      padding: 8px 0;
+      padding: 0;
 
-      a {
-        padding-left: ($sidebar_collapsed_width - 36) / 2;
-
-        .gitlab-text-container {
-          display: none;
-        }
+      h3 {
+        display: none;
       }
-    }
-
-    #logo {
-      display: none;
     }
 
     .nav-sidebar {
@@ -206,24 +216,10 @@
   }
 }
 
-.gitlab-text-container {
-  height: 50px;
-  padding: 5px;
-  text-align: center;
-
-  h3 {
-    color: white;
-    margin: 0;
-    font-size: 19px;
-    line-height: 41px;
-    font-weight: normal;
-  }
-}
-
 .page-sidebar-expanded {
   padding-left: $sidebar_width;
 
-  @media (max-width: $screen-xs-min) {
+  @media (max-width: $screen-sm-max) {
     padding-left: 0;
   }
 
@@ -246,13 +242,7 @@
   }
 
   .layout-nav {
-    @media (max-width: $screen-xs-min) {
-      padding-right: 0;
-    }
-
-    @media (min-width: $screen-xs-min) and (max-width: $screen-md-min) {
-      padding-right: 90px;
-    }
+    padding-right: 0;
 
     @media (min-width: $screen-md-min) {
       padding-right: $sidebar_width;

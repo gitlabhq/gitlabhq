@@ -207,6 +207,7 @@ $ ->
 
   $('.navbar-toggle').on 'click', ->
     $('.header-content .title').toggle()
+    $('.header-content .header-logo').toggle()
     $('.header-content .navbar-collapse').toggle()
     $('.navbar-toggle').toggleClass('active')
     $('.navbar-toggle i').toggleClass("fa-angle-right fa-angle-left")
@@ -258,7 +259,7 @@ $ ->
 
   checkInitialSidebarSize = ->
     bootstrapBreakpoint = bp.getBreakpointSize()
-    if bootstrapBreakpoint is "xs"
+    if bootstrapBreakpoint is "xs" or "sm"
       $(document).trigger('breakpoint:change', [bootstrapBreakpoint])
 
   $(window)

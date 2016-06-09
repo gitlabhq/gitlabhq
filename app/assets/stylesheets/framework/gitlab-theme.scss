@@ -8,7 +8,7 @@
  */
 @mixin gitlab-theme($color-light, $color, $color-darker, $color-dark) {
   .page-with-sidebar {
-    .header-logo {
+    .gitlab-text-container {
       background: $color-darker;
 
       a {
@@ -23,6 +23,7 @@
         background-color: $color-dark;
         a {
           color: $white-light;
+          text-decoration: none;
 
           h3 {
             color: $white-light;

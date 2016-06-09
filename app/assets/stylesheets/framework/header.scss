@@ -109,13 +109,15 @@ header {
     position: relative;
     height: $header-height;
     padding-right: 40px;
-
-    @media (max-width: $screen-xs-min) {
-      padding-left: 40px;
-    }
+    padding-left: 30px;
+    transition-duration: .3s;
 
     @media (min-width: $screen-sm-min) {
       padding-right: 0;
+    }
+
+    @media (max-width: $screen-sm-max) {
+      padding-right: 30px;
     }
 
     .dropdown-menu {
@@ -127,6 +129,13 @@ header {
       left: 50%;
       margin-left: -18px;
       top: 7px;
+      transition-duration: .3s;
+      z-index: 999;
+
+      @media (max-width: $screen-sm-min) {
+        right: 25px;
+        left: auto;
+      }
     }
 
     .title {
@@ -141,6 +150,10 @@ header {
       text-overflow: ellipsis;
       vertical-align: top;
       white-space: nowrap;
+
+      @media (max-width: $screen-sm-min) {
+        max-width: 220px;
+      }
 
       a {
         color: $gl-text-color;
@@ -169,6 +182,10 @@ header {
     .navbar-collapse {
       float: right;
       border-top: none;
+
+      @media (max-width: $screen-sm-min) {
+        float: none;
+      }
     }
   }
 
@@ -185,17 +202,11 @@ header {
   margin-left: 0;
 
   .header-content {
-    padding-left: 30px;
-    transition-duration: .3s;
-  }
-}
 
-.header-expanded {
-  margin-left: 0;
-
-  .header-content {
-    margin-left: $sidebar_width;
-    transition-duration: .3s;
+    @media (min-width: $screen-sm-max) {
+      padding-left: 30px;
+      transition-duration: .3s;
+    }
   }
 }
 
