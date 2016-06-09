@@ -27,7 +27,7 @@
             %li
               = link_to dashboard_todos_path, title: 'Todos', data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
                 = icon('bell fw')
-                %span.badge.todos-pending-count{ class: ("hidden" if todos_pending_count == 0)}
+                %span.badge.todos-pending-count{ class: ("hidden" if todos_pending_count == 0) }
                   = todos_pending_count
             - if current_user.can_create_project?
               %li

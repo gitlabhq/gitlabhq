@@ -148,7 +148,7 @@ class TodoService
   private
 
   def create_todos(users, attributes)
-    Array(users).each do |user|
+    Array(users).map do |user|
       next if pending_todos(user, attributes).exists?
       Todo.create(attributes.merge(user_id: user.id))
     end

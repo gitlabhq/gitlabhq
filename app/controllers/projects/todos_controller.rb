@@ -1,9 +1,9 @@
 class Projects::TodosController < Projects::ApplicationController
   def create
-    TodoService.new.mark_todo(issuable, current_user)
+    todos = TodoService.new.mark_todo(issuable, current_user)
 
     render json: {
-      todo: current_user.todos.find_by(state: :pending, action: Todo::MARKED, target_id: issuable.id),
+      todo: todos,
       count: current_user.todos.pending.count,
     }
   end
