@@ -28,6 +28,7 @@ v 8.9.0 (unreleased)
   - Add DB index on users.state
   - Add rake task 'gitlab:db:configure' for conditionally seeding or migrating the database
   - Changed the Slack build message to use the singular duration if necessary (Aran Koning)
+  - Links from a wiki page to other wiki pages should be rewritten as expected
   - Fix issues filter when ordering by milestone
   - Todos will display target state if issuable target is 'Closed' or 'Merged'
   - Fix bug when sorting issues by milestone due date and filtering by two or more labels
@@ -38,6 +39,7 @@ v 8.9.0 (unreleased)
   - Use downcased path to container repository as this is expected path by Docker
   - Projects pending deletion will render a 404 page
   - Measure queue duration between gitlab-workhorse and Rails
+  - Make Omniauth providers specs to not modify global configuration
   - Make authentication service for Container Registry to be compatible with < Docker 1.11
   - Add Application Setting to configure Container Registry token expire delay (default 5min)
   - Cache assigned issue and merge request counts in sidebar nav
@@ -65,6 +67,7 @@ v 8.8.4 (unreleased)
   - Fix importer for GitHub comments on diff
   - Disable Webhooks before proceeding with the GitHub import
   - Added descriptions to notification settings dropdown
+  - Markdown editor now correctly resets the input value on edit cancellation !4175
 
 v 8.8.3
   - Fix 404 page when viewing TODOs that contain milestones or labels in different projects. !4312
