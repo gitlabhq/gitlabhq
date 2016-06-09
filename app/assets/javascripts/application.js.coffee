@@ -226,6 +226,10 @@ $ ->
     form = btn.closest("form")
     new ConfirmDangerModal(form, text)
 
+
+  $(document).on 'click', 'button', ->
+    $(this).blur()
+
   $('input[type="search"]').each ->
     $this = $(this)
     $this.attr 'value', $this.val()
