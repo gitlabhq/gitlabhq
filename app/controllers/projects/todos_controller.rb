@@ -1,20 +1,23 @@
 class Projects::TodosController < Projects::ApplicationController
   def create
-    json_data = Hash.new
+    TodoService.new.mark_todo(issuable, current_user)
 
-    if params[:todo_id].nil?
-      TodoService.new.mark_todo(issuable, current_user)
+    render json: {
+      todo: current_user.todos.find_by(state: :pending, action: Todo::MARKED, target_id: issuable.id),
+      count: current_user.todos.pending.count,
+    }
+  end
 
-      json_data[:todo] = current_user.todos.find_by(state: :pending, action: Todo::MARKED, target_id: issuable.id)
-    else
-      current_user.todos.find_by_id(params[:todo_id]).update(state: :done)
-    end
+  def update
+    current_user.todos.find_by_id(params[:id]).update(state: :done)
 
-    render json: json_data.merge({ count: current_user.todos.pending.count })
+    render json: {
+      count: current_user.todos.pending.count,
+    }
   end
 
   private
-  
+
   def issuable
     @issuable ||= begin
       case params[:issuable_type]

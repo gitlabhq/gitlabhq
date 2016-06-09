@@ -47,44 +47,51 @@ class @Sidebar
       .off 'click', '.js-issuable-todo'
       .on 'click', '.js-issuable-todo', @toggleTodo
 
-  toggleTodo: ->
-    $this = $(@)
+  toggleTodo: (e) =>
+    $this = $(e.currentTarget)
     $todoLoading = $('.js-issuable-todo-loading')
     $btnText = $('.js-issuable-todo-text', $this)
+    ajaxType = if $this.attr('data-id') then 'PATCH' else 'POST'
+    ajaxUrlExtra = if $this.attr('data-id') then "/#{$this.attr('data-id')}" else ''
 
     $.ajax(
-      url: $this.data('url')
-      type: 'POST'
+      url: "#{$this.data('url')}#{ajaxUrlExtra}"
+      type: ajaxType
       dataType: 'json'
       data:
-        todo_id: $this.attr('data-id')
         issuable_id: $this.data('issuable')
         issuable_type: $this.data('issuable-type')
-      beforeSend: ->
-        $this.disable()
-        $todoLoading.removeClass 'hidden'
-    ).done (data) ->
-      $todoPendingCount = $('.todos-pending-count')
-      $todoPendingCount.text data.count
+      beforeSend: =>
+        @beforeTodoSend($this, $todoLoading)
+    ).done (data) =>
+      @todoUpdateDone(data, $this, $btnText, $todoLoading)
 
-      $this.enable()
-      $todoLoading.addClass 'hidden'
+  beforeTodoSend: ($btn, $todoLoading) ->
+    $btn.disable()
+    $todoLoading.removeClass 'hidden'
 
-      if data.count is 0
-        $todoPendingCount.addClass 'hidden'
-      else
-        $todoPendingCount.removeClass 'hidden'
+  todoUpdateDone: (data, $btn, $btnText, $todoLoading) ->
+    $todoPendingCount = $('.todos-pending-count')
+    $todoPendingCount.text data.count
 
-      if data.todo?
-        $this
-          .attr 'aria-label', $this.data('mark-text')
-          .attr 'data-id', data.todo.id
-        $btnText.text $this.data('mark-text')
-      else
-        $this
-          .attr 'aria-label', $this.data('todo-text')
-          .removeAttr 'data-id'
-        $btnText.text $this.data('todo-text')
+    $btn.enable()
+    $todoLoading.addClass 'hidden'
+
+    if data.count is 0
+      $todoPendingCount.addClass 'hidden'
+    else
+      $todoPendingCount.removeClass 'hidden'
+
+    if data.todo?
+      $btn
+        .attr 'aria-label', $btn.data('mark-text')
+        .attr 'data-id', data.todo.id
+      $btnText.text $btn.data('mark-text')
+    else
+      $btn
+        .attr 'aria-label', $btn.data('todo-text')
+        .removeAttr 'data-id'
+      $btnText.text $btn.data('todo-text')
 
   sidebarDropdownLoading: (e) ->
     $sidebarCollapsedIcon = $(@).closest('.block').find('.sidebar-collapsed-icon')
