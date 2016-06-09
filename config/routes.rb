@@ -616,7 +616,6 @@ Rails.application.routes.draw do
           # Order matters to give priority to these matches
           get '/wikis/git_access', to: 'wikis#git_access'
           get '/wikis/pages', to: 'wikis#pages', as: 'wiki_pages'
-          post '/wikis/markdown_preview', to:'wikis#markdown_preview'
           post '/wikis', to: 'wikis#create'
 
           get '/wikis/*id/history', to: 'wikis#history', as: 'wiki_history', constraints: WIKI_SLUG_ID
@@ -625,6 +624,7 @@ Rails.application.routes.draw do
           get '/wikis/*id', to: 'wikis#show', as: 'wiki', constraints: WIKI_SLUG_ID
           delete '/wikis/*id', to: 'wikis#destroy', constraints: WIKI_SLUG_ID
           put '/wikis/*id', to: 'wikis#update', constraints: WIKI_SLUG_ID
+          post '/wikis/*id/markdown_preview', to:'wikis#markdown_preview', constraints: WIKI_SLUG_ID, as: 'wiki_markdown_preview'
         end
 
         resource :repository, only: [:show, :create] do
