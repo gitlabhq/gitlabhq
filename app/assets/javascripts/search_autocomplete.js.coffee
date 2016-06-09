@@ -68,8 +68,6 @@ class @SearchAutocomplete
     _this = @
 
     unless term
-      return unless @hasLocationBadge()
-
       if contents = @getCategoryContents()
         @searchInput.data('glDropdown').filter.options.callback contents
         @enableAutocomplete()
@@ -131,24 +129,32 @@ class @SearchAutocomplete
 
   getCategoryContents: ->
 
-    userId         = gon.current_user_id
-    projectName    = 'Dashboard'
-    projectSlug    = gl.utils.getProjectSlug()
-    projectOptions = gl.projectOptions?[projectSlug]
+    userId = gon.current_user_id
+    { utils, projectOptions, groupOptions, dashboardOptions } = gl
 
-    if projectSlug and projectOptions
-      { issuesPath, mrPath, projectName } = projectOptions
-    else
-      { issuesPath, mrPath } = gl.dashboardOptions
+    if utils.isInGroupsPage() and groupOptions
+      options = groupOptions[utils.getGroupSlug()]
 
-    return [
-      { header: "Go to in #{projectName}" }
+    else if utils.isInProjectPage() and projectOptions
+      options = projectOptions[utils.getProjectSlug()]
+
+    else if dashboardOptions
+      options = dashboardOptions
+
+    { issuesPath, mrPath, name } = options
+
+    items = [
+      { header: "#{name}" }
       { text: 'Issues assigned to me', url: "#{issuesPath}/?assignee_id=#{userId}" }
       { text: "Issues I've created",   url: "#{issuesPath}/?author_id=#{userId}"   }
       'separator'
       { text: 'Merge requests assigned to me', url: "#{mrPath}/?assignee_id=#{userId}" }
       { text: "Merge requests I've created",   url: "#{mrPath}/?author_id=#{userId}"   }
     ]
+
+    items.splice 0, 1 unless name
+
+    return items
 
 
   serializeState: ->
@@ -238,8 +244,7 @@ class @SearchAutocomplete
     @isFocused = true
     @wrap.addClass('search-active')
 
-    if @hasLocationBadge() and @getValue() is ''
-      @getData()
+    @getData()  if @getValue() is ''
 
 
   getValue: -> return @searchInput.val()
