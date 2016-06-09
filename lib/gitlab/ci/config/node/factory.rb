@@ -30,6 +30,7 @@ module Gitlab
 
             @entry_class.new(@attributes[:value]).tap do |entry|
               entry.description = @attributes[:description]
+              entry.key = @attributes[:key]
             end
           end
         end

@@ -13,6 +13,12 @@ describe Gitlab::Ci::Config::Node::Global do
     end
   end
 
+  describe '#key' do
+    it 'returns underscored class name' do
+      expect(global.key).to eq 'global'
+    end
+  end
+
   context 'when hash is valid' do
     let(:hash) do
       { before_script: ['ls', 'pwd'] }
@@ -79,7 +85,7 @@ describe Gitlab::Ci::Config::Node::Global do
     describe '#errors' do
       it 'reports errors from child nodes' do
         expect(global.errors)
-          .to include 'before_script should be an array of strings'
+          .to include 'before_script: should be an array of strings'
       end
     end
 

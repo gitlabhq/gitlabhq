@@ -8,6 +8,7 @@ module Gitlab
         class Entry
           class InvalidError < StandardError; end
 
+          attr_writer :key
           attr_accessor :description
 
           def initialize(value)
@@ -40,8 +41,16 @@ module Gitlab
             allowed_nodes.none?
           end
 
+          def key
+            @key || self.class.name.demodulize.underscore
+          end
+
           def errors
             @errors + nodes.map(&:errors).flatten
+          end
+
+          def add_error(message)
+            @errors << Error.new(message, self)
           end
 
           def allowed_nodes

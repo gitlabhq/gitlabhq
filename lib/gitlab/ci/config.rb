@@ -4,8 +4,6 @@ module Gitlab
     # Base GitLab CI Configuration facade
     #
     class Config
-      delegate :valid?, :errors, to: :@global
-
       ##
       # Temporary delegations that should be removed after refactoring
       #
@@ -16,6 +14,14 @@ module Gitlab
 
         @global = Node::Global.new(@config)
         @global.process!
+      end
+
+      def valid?
+        errors.none?
+      end
+
+      def errors
+        @global.errors.map(&:to_s)
       end
 
       def to_hash

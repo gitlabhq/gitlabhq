@@ -24,12 +24,12 @@ module Gitlab
 
           def prevalidate!
             unless @value.is_a?(Hash)
-              @errors << 'should be a configuration entry with hash value'
+              add_error('should be a configuration entry with hash value')
             end
           end
 
           def create_node(key, factory)
-            factory.with(value: @value[key])
+            factory.with(value: @value[key], key: key)
             factory.nullify! unless @value.has_key?(key)
             factory.create!
           end
