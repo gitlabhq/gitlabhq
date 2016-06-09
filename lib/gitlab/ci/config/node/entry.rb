@@ -20,8 +20,8 @@ module Gitlab
           def process!
             return if leaf? || invalid?
 
-            keys.each do |key, entry_class|
-              add_node(key, entry_class)
+            keys.each do |key, entry|
+              add_node(key, entry)
             end
 
             nodes.each(&:process!)
@@ -49,7 +49,7 @@ module Gitlab
           end
 
           def keys
-            self.class.nodes || {}
+            {}
           end
 
           def errors
@@ -60,7 +60,11 @@ module Gitlab
             super unless keys.has_key?(name)
             raise InvalidError unless valid?
 
-            @nodes[name].value
+            @nodes[name].try(:value)
+          end
+
+          def add_node(key, entry)
+            raise NotImplementedError
           end
 
           def value
@@ -73,28 +77,6 @@ module Gitlab
 
           def description
             raise NotImplementedError
-          end
-
-          private
-
-          def add_node(key, entry_class)
-            if @value.has_key?(key)
-              entry = entry_class.new(@value[key], @root, self)
-            else
-              entry = Node::Null.new(nil, @root, self)
-            end
-
-            @nodes[key] = entry
-          end
-
-          class << self
-            attr_reader :nodes
-
-            private
-
-            def add_node(symbol, entry_class)
-              (@nodes ||= {}).merge!(symbol.to_sym => entry_class)
-            end
           end
         end
       end
