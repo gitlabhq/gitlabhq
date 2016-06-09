@@ -271,5 +271,6 @@ $ ->
     .on "resize", (e) ->
       fitSidebarForSize()
 
+  gl.awardsHandler = new AwardsHandler()
   checkInitialSidebarSize()
   new Aside()
