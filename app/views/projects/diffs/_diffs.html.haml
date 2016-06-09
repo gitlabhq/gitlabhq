@@ -11,6 +11,8 @@
         = commit_diff_whitespace_link(@project, @commit, class: 'hidden-xs')
       - elsif current_controller?(:merge_requests)
         = diff_merge_request_whitespace_link(@project, @merge_request, class: 'hidden-xs')
+      - elsif current_controller?(:compare)
+        = diff_compare_whitespace_link(@project, params[:from], params[:to], class: 'hidden-xs')
     .btn-group
       = inline_diff_btn
       = parallel_diff_btn
