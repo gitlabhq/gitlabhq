@@ -13,10 +13,6 @@ module Gitlab
             @parent = parent
             @nodes = {}
             @errors = []
-
-            unless leaf? || has_config?
-              @errors << 'should be a configuration entry with hash value'
-            end
           end
 
           def process!

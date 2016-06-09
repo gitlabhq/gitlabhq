@@ -5,6 +5,14 @@ module Gitlab
         module Configurable
           extend ActiveSupport::Concern
 
+          def initialize(*)
+            super
+
+            unless leaf? || has_config?
+              @errors << 'should be a configuration entry with hash value'
+            end
+          end
+
           def keys
             self.class.nodes || {}
           end
