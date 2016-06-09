@@ -2,7 +2,7 @@ require "spec_helper"
 
 describe 'Git HTTP requests', lib: true do
   let(:user)    { create(:user) }
-  let(:project) { create(:project) }
+  let(:project) { create(:project, path: 'project.git-project') }
 
   it "gives WWW-Authenticate hints" do
     clone_get('doesnt/exist.git')
@@ -264,6 +264,87 @@ describe 'Git HTTP requests', lib: true do
 
           expect(response.status).to eq(401)
         end
+      end
+    end
+  end
+
+  context "when the project path doesn't end in .git" do
+    context "GET info/refs" do
+      let(:path) { "/#{project.path_with_namespace}/info/refs" }
+
+      context "when no params are added" do
+        before { get path }
+
+        it "redirects to the .git suffix version" do
+          expect(response).to redirect_to("/#{project.path_with_namespace}.git/info/refs")
+        end
+      end
+
+      context "when the upload-pack service is requested" do
+        let(:params) { { service: 'git-upload-pack' } }
+        before { get path, params }
+
+        it "redirects to the .git suffix version" do
+          expect(response).to redirect_to("/#{project.path_with_namespace}.git/info/refs?service=#{params[:service]}")
+        end
+      end
+
+      context "when the receive-pack service is requested" do
+        let(:params) { { service: 'git-receive-pack' } }
+        before { get path, params }
+
+        it "redirects to the .git suffix version" do
+          expect(response).to redirect_to("/#{project.path_with_namespace}.git/info/refs?service=#{params[:service]}")
+        end
+      end
+
+      context "when the params are anything else" do
+        let(:params) { { service: 'git-implode-pack' } }
+        before { get path, params }
+
+        it "redirects to the sign-in page" do
+          expect(response).to redirect_to(new_user_session_path)
+        end
+      end
+    end
+
+    context "POST git-upload-pack" do
+      it "fails to find a route" do
+        expect { clone_post(project.path_with_namespace) }.to raise_error(ActionController::RoutingError)
+      end
+    end
+
+    context "POST git-receive-pack" do
+      it "failes to find a route" do
+        expect { push_post(project.path_with_namespace) }.to raise_error(ActionController::RoutingError)
+      end
+    end
+  end
+
+  context "retrieving an info/refs file" do
+    before { project.update_attribute(:visibility_level, Project::PUBLIC) }
+
+    context "when the file exists" do
+      before do
+        # Provide a dummy file in its place
+        allow_any_instance_of(Repository).to receive(:blob_at).and_call_original
+        allow_any_instance_of(Repository).to receive(:blob_at).with('5937ac0a7beb003549fc5fd26fc247adbce4a52e', 'info/refs') do
+          Gitlab::Git::Blob.find(project.repository, 'master', '.gitignore')
+        end
+
+        get "/#{project.path_with_namespace}/blob/master/info/refs"
+      end
+
+      it "returns the file" do
+        expect(response.status).to eq(200)
+      end
+    end
+
+    context "when the file exists" do
+      before { get "/#{project.path_with_namespace}/blob/master/info/refs" }
+
+      it "returns not found" do
+        expect(response.status).to eq(404)
       end
     end
   end
