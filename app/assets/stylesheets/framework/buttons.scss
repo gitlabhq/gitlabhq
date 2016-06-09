@@ -4,7 +4,6 @@
   font-weight: 500;
   padding: $gl-vert-padding $gl-btn-padding;
 
-  &:focus,
   &:active {
     outline: none;
     background-color: $btn-active-gray;
@@ -21,8 +20,7 @@
   color: $text;
   border-color: $border;
 
-  &:hover,
-  &:focus {
+  &:hover {
     background-color: $hover-background;
     color: $hover-text;
     border-color: $hover-border;;
@@ -34,8 +32,7 @@
   border-color: $border-light;
   color: $color;
 
-  &:hover,
-  &:focus {
+  &:hover {
     background-color: $normal;
     border-color: $border-normal;
     color: $color;
