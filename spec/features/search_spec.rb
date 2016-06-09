@@ -68,7 +68,7 @@ describe "Search", feature: true  do
         it 'should show category search dropdown' do
           page.find('#search').click
 
-          expect(page).to have_selector('.dropdown-header', text: /go to in #{project.name}/i)
+          expect(page).to have_selector('.dropdown-header', text: /#{project.name}/i)
         end
       end
 
@@ -119,7 +119,7 @@ describe "Search", feature: true  do
         end
 
         it 'should not display the category search dropdown' do
-          expect(page).not_to have_selector('.dropdown-header', text: /go to in #{project.name}/i)
+          expect(page).not_to have_selector('.dropdown-header', text: /#{project.name}/i)
         end
       end
     end

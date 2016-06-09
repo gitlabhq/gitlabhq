@@ -13,18 +13,33 @@ window.gon.current_user_id = userId
 
 dashboardIssuesPath = '/dashboard/issues'
 dashboardMRsPath    = '/dashboard/merge_requests'
-projectIssuesPath   = "/gitlab-org/gitlab-ce/issues"
-projectMRsPath      = "/gitlab-org/gitlab-ce/merge_requests"
+projectIssuesPath   = '/gitlab-org/gitlab-ce/issues'
+projectMRsPath      = '/gitlab-org/gitlab-ce/merge_requests'
+groupIssuesPath     = '/groups/gitlab-org/issues'
+groupMRsPath        = '/groups/gitlab-org/merge_requests'
 projectName         = 'GitLab Community Edition'
+groupName           = 'Gitlab Org'
+
 
 # Add required attributes to body before starting the test.
-addBodyAttributes = (page = 'groups') ->
+# section would be dashboard|group|project
+addBodyAttributes = (section = 'dashboard') ->
 
-  $('body').removeAttr 'data-page'
-  $('body').removeAttr 'data-project'
+  $body = $ 'body'
 
-  $('body').data 'page', "#{page}:show"
-  $('body').data 'project', 'gitlab-ce'
+  $body.removeAttr 'data-page'
+  $body.removeAttr 'data-project'
+  $body.removeAttr 'data-group'
+
+  switch section
+    when 'dashboard'
+      $body.data 'page', 'root:index'
+    when 'group'
+      $body.data 'page', 'groups:show'
+      $body.data 'group', 'gitlab-org'
+    when 'project'
+      $body.data 'page', 'projects:show'
+      $body.data 'project', 'gitlab-ce'
 
 
 # Mock `gl` object in window for dashboard specific page. App code will need it.
@@ -47,7 +62,27 @@ mockProjectOptions = ->
       projectName : projectName
 
 
-assertLinks = (list, a1, a2, a3, a4) ->
+mockGroupOptions = ->
+
+  window.gl or= {}
+  window.gl.groupOptions =
+    'gitlab-org'  :
+      issuesPath  : groupIssuesPath
+      mrPath      : groupMRsPath
+      projectName : groupName
+
+
+assertLinks = (list, issuesPath, mrsPath) ->
+
+  issuesAssignedToMeLink = "#{issuesPath}/?assignee_id=#{userId}"
+  issuesIHaveCreatedLink = "#{issuesPath}/?author_id=#{userId}"
+  mrsAssignedToMeLink    = "#{mrsPath}/?assignee_id=#{userId}"
+  mrsIHaveCreatedLink    = "#{mrsPath}/?author_id=#{userId}"
+
+  a1 = "a[href='#{issuesAssignedToMeLink}']"
+  a2 = "a[href='#{issuesIHaveCreatedLink}']"
+  a3 = "a[href='#{mrsAssignedToMeLink}']"
+  a4 = "a[href='#{mrsIHaveCreatedLink}']"
 
   expect(list.find(a1).length).toBe 1
   expect(list.find(a1).text()).toBe ' Issues assigned to me '
@@ -60,7 +95,6 @@ assertLinks = (list, a1, a2, a3, a4) ->
 
   expect(list.find(a4).length).toBe 1
   expect(list.find(a4).text()).toBe " Merge requests I've created "
-
 
 
 describe 'Search autocomplete dropdown', ->
@@ -77,53 +111,39 @@ describe 'Search autocomplete dropdown', ->
 
     addBodyAttributes()
     mockDashboardOptions()
-
-    # Focus input to show dropdown list.
     widget.searchInput.focus()
 
-    w = widget.wrap.find '.dropdown-menu'
-    l = w.find 'ul'
+    list = widget.wrap.find('.dropdown-menu').find 'ul'
+    assertLinks list, dashboardIssuesPath, dashboardMRsPath
 
-    # # Expect dropdown and dropdown header
-    expect(w.find('.dropdown-header').text()).toBe 'Go to in Dashboard'
 
-    # Create links then assert link urls and inner texts
-    issuesAssignedToMeLink = "#{dashboardIssuesPath}/?assignee_id=#{userId}"
-    issuesIHaveCreatedLink = "#{dashboardIssuesPath}/?author_id=#{userId}"
-    mrsAssignedToMeLink    = "#{dashboardMRsPath}/?assignee_id=#{userId}"
-    mrsIHaveCreatedLink    = "#{dashboardMRsPath}/?author_id=#{userId}"
+  it 'should show Group specific dropdown menu', ->
 
-    a1 = "a[href='#{issuesAssignedToMeLink}']"
-    a2 = "a[href='#{issuesIHaveCreatedLink}']"
-    a3 = "a[href='#{mrsAssignedToMeLink}']"
-    a4 = "a[href='#{mrsIHaveCreatedLink}']"
+    addBodyAttributes 'group'
+    mockGroupOptions()
+    widget.searchInput.focus()
 
-    assertLinks l, a1, a2, a3, a4
+    list = widget.wrap.find('.dropdown-menu').find 'ul'
+    assertLinks list, groupIssuesPath, groupMRsPath
 
 
   it 'should show Project specific dropdown menu', ->
 
-    addBodyAttributes 'projects'
+    addBodyAttributes 'project'
     mockProjectOptions()
-
-    # Focus input to show dropdown list.
     widget.searchInput.focus()
 
-    w = widget.wrap.find '.dropdown-menu'
-    l = w.find 'ul'
+    list = widget.wrap.find('.dropdown-menu').find 'ul'
+    assertLinks list, projectIssuesPath, projectMRsPath
 
-    # Expect dropdown and dropdown header
-    expect(w.find('.dropdown-header').text()).toBe "Go to in #{projectName}"
 
-    # Create links then verify link urls and inner texts
-    issuesAssignedToMeLink = "#{projectIssuesPath}/?assignee_id=#{userId}"
-    issuesIHaveCreatedLink = "#{projectIssuesPath}/?author_id=#{userId}"
-    mrsAssignedToMeLink    = "#{projectMRsPath}/?assignee_id=#{userId}"
-    mrsIHaveCreatedLink    = "#{projectMRsPath}/?author_id=#{userId}"
+  it 'should not show category related menu if there is text in the input', ->
 
-    a1 = "a[href='#{issuesAssignedToMeLink}']"
-    a2 = "a[href='#{issuesIHaveCreatedLink}']"
-    a3 = "a[href='#{mrsAssignedToMeLink}']"
-    a4 = "a[href='#{mrsIHaveCreatedLink}']"
+    addBodyAttributes 'project'
+    mockProjectOptions()
+    widget.searchInput.val 'help'
+    widget.searchInput.focus()
 
-    assertLinks l, a1, a2, a3, a4
+    list = widget.wrap.find('.dropdown-menu').find 'ul'
+    link = "a[href='#{projectIssuesPath}/?assignee_id=#{userId}']"
+    expect(list.find(link).length).toBe 0
