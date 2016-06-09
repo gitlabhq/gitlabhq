@@ -282,7 +282,7 @@ class @AwardsHandler
     @createEmojiMenu @getAwardMenuUrl(), => @createEmoji_ votesBlock, emoji
 
 
-  getAwardMenuUrl: -> return gl.awardMenuUrl
+  getAwardMenuUrl: -> return gon.award_menu_url
 
 
   resolveNameToCssClass: (emoji) ->
