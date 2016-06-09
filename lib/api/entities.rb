@@ -217,7 +217,7 @@ module API
     end
 
     class Approvals < Grape::Entity
-      expose :user, as: :user, using: Entities::UserBasic
+      expose :user, using: Entities::UserBasic
     end
 
     class MergeRequestApprovals < ProjectEntity

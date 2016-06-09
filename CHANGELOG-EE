@@ -4,6 +4,7 @@ v 8.9.0 (unreleased)
   - Fix nil user handling in UpdateMirrorService
   - Allow LDAP to mark users as external based on their group membership. !432
   - Instrument instance methods of Gitlab::InsecureKeyFingerprint class
+  - Add API endpoint for Merge Request Approvals !449
 
 v 8.8.4
   - Remove license overusage message
