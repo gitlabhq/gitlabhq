@@ -8,6 +8,7 @@ describe GeoNode, type: :model do
   subject(:node) { FactoryGirl.create(:geo_node) }
 
   let(:dummy_url) { 'https://localhost:3000/gitlab' }
+  let(:url_helpers) { Gitlab::Application.routes.url_helpers }
 
   context 'associations' do
     it { is_expected.to belong_to(:geo_node_key).dependent(:destroy) }
@@ -185,6 +186,25 @@ describe GeoNode, type: :model do
 
     it 'returns oauth callback url based on node uri' do
       expect(new_node.oauth_callback_url).to eq(oauth_callback_url)
+    end
+
+    it 'returns url that matches rails url_helpers generated one' do
+      route = url_helpers.oauth_geo_callback_url(protocol: 'https:', host: 'localhost', port: 3000, script_name: '/gitlab')
+      expect(new_node.oauth_callback_url).to eq(route)
+    end
+  end
+
+  describe '#oauth_logout_url' do
+    let(:fake_state) { URI.encode('fakestate') }
+    let(:oauth_logout_url) { "https://localhost:3000/gitlab/oauth/geo/logout?state=#{fake_state}" }
+
+    it 'returns oauth logout url based on node uri' do
+      expect(new_node.oauth_logout_url(fake_state)).to eq(oauth_logout_url)
+    end
+
+    it 'returns url that matches rails url_helpers generated one' do
+      route = url_helpers.oauth_geo_logout_url(protocol: 'https:', host: 'localhost', port: 3000, script_name: '/gitlab', state: fake_state)
+      expect(new_node.oauth_logout_url(fake_state)).to eq(route)
     end
   end
 
