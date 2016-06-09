@@ -4,6 +4,7 @@ class @Shortcuts
     Mousetrap.reset() if not skipResetBindings
     Mousetrap.bind('?', @onToggleHelp)
     Mousetrap.bind('s', Shortcuts.focusSearch)
+    Mousetrap.bind 'f', @focusFilter
     Mousetrap.bind(['ctrl+shift+p', 'command+shift+p'], @toggleMarkdownPreview)
     Mousetrap.bind('t', -> Turbolinks.visit(findFileURL)) if findFileURL?
 
@@ -32,9 +33,14 @@ class @Shortcuts
           $('.js-more-help-button').remove()
     )
 
+  focusFilter: (e) ->
+    $('input[type=search]', '.nav-controls .block-controls').focus()
+    e.preventDefault()
+
   @focusSearch: (e) ->
     $('#search').focus()
     e.preventDefault()
+
 
 $(document).on 'click.more_help', '.js-more-help-button', (e) ->
   $(@).remove()
