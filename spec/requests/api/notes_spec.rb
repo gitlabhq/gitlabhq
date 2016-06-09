@@ -266,6 +266,18 @@ describe API::API, api: true  do
         expect(private_issue.notes.reload).to be_empty
       end
     end
+
+    context 'when creating notes is disabled' do
+      it 'responds with a service unavailable error' do
+        expect(Gitlab::Feature).to receive(:feature_enabled?).
+          with(:creating_notes).
+          and_return(false)
+
+        post api("/projects/#{project.id}/issues/#{issue.id}/notes", user), body: 'hi!'
+
+        expect(response.status).to eq(503)
+      end
+    end
   end
 
   describe "POST /projects/:id/noteable/:noteable_id/notes to test observer on create" do
@@ -334,6 +346,19 @@ describe API::API, api: true  do
         expect(response.status).to eq(404)
       end
     end
+
+    context 'when updating notes is disabled' do
+      it 'responds with a service unavailable error' do
+        expect(Gitlab::Feature).to receive(:feature_enabled?).
+          with(:updating_notes).
+          and_return(false)
+
+        put api("/projects/#{project.id}/issues/#{issue.id}/notes/"\
+                "#{issue_note.id}", user), body: 'hi!'
+
+        expect(response.status).to eq(503)
+      end
+    end
   end
 
   describe 'DELETE /projects/:id/noteable/:noteable_id/notes/:note_id' do
@@ -393,6 +418,19 @@ describe API::API, api: true  do
                    "#{merge_request.id}/notes/12345", user)
 
         expect(response.status).to eq(404)
+      end
+    end
+
+    context 'when deleting notes is disabled' do
+      it 'responds with a service unavailable error' do
+        expect(Gitlab::Feature).to receive(:feature_enabled?).
+          with(:removing_notes).
+          and_return(false)
+
+        delete api("/projects/#{project.id}/issues/#{issue.id}/notes/"\
+                "#{issue_note.id}", user)
+
+        expect(response.status).to eq(503)
       end
     end
   end

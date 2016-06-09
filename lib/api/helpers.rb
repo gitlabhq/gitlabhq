@@ -281,6 +281,12 @@ module API
       error!({ 'message' => message }, status)
     end
 
+    def require_feature!(feature)
+      unless Gitlab::Feature.feature_enabled?(feature)
+        render_api_error!('503 Service Unavailable', 503)
+      end
+    end
+
     # Projects helpers
 
     def filter_projects(projects)

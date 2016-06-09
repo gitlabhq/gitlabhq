@@ -71,6 +71,7 @@ module API
         #   POST /projects/:id/issues/:noteable_id/notes
         #   POST /projects/:id/snippets/:noteable_id/notes
         post ":id/#{noteables_str}/:#{noteable_id_str}/notes" do
+          require_feature! :creating_notes
           required_attributes! [:body]
 
           opts = {
@@ -103,6 +104,7 @@ module API
         #   PUT /projects/:id/issues/:noteable_id/notes/:note_id
         #   PUT /projects/:id/snippets/:noteable_id/notes/:node_id
         put ":id/#{noteables_str}/:#{noteable_id_str}/notes/:note_id" do
+          require_feature! :updating_notes
           required_attributes! [:body]
 
           note = user_project.notes.find(params[:note_id])
@@ -132,6 +134,7 @@ module API
         #   DELETE /projects/:id/issues/:noteable_id/notes/:note_id
         #   DELETE /projects/:id/snippets/:noteable_id/notes/:node_id
         delete ":id/#{noteables_str}/:#{noteable_id_str}/notes/:note_id" do
+          require_feature! :removing_notes
           note = user_project.notes.find(params[:note_id])
           authorize! :admin_note, note
 

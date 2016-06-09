@@ -22,39 +22,47 @@ class Projects::NotesController < Projects::ApplicationController
   end
 
   def create
-    @note = Notes::CreateService.new(project, current_user, note_params).execute
+    require_feature!(:creating_notes) do
+      @note = Notes::CreateService.new(project, current_user, note_params).execute
 
-    respond_to do |format|
-      format.json { render json: note_json(@note) }
-      format.html { redirect_back_or_default }
+      respond_to do |format|
+        format.json { render json: note_json(@note) }
+        format.html { redirect_back_or_default }
+      end
     end
   end
 
   def update
-    @note = Notes::UpdateService.new(project, current_user, note_params).execute(note)
+    require_feature!(:updating_notes) do
+      @note = Notes::UpdateService.new(project, current_user, note_params).execute(note)
 
-    respond_to do |format|
-      format.json { render json: note_json(@note) }
-      format.html { redirect_back_or_default }
+      respond_to do |format|
+        format.json { render json: note_json(@note) }
+        format.html { redirect_back_or_default }
+      end
     end
   end
 
   def destroy
-    if note.editable?
-      Notes::DeleteService.new(project, current_user).execute(note)
-    end
+    require_feature!(:removing_notes) do
+      if note.editable?
+        Notes::DeleteService.new(project, current_user).execute(note)
+      end
 
-    respond_to do |format|
-      format.js { head :ok }
+      respond_to do |format|
+        format.js { head :ok }
+      end
     end
   end
 
   def delete_attachment
-    note.remove_attachment!
-    note.update_attribute(:attachment, nil)
+    require_feature!(:removing_note_attachments) do
+      note.remove_attachment!
+      note.update_attribute(:attachment, nil)
 
-    respond_to do |format|
-      format.js { head :ok }
+      respond_to do |format|
+        format.js { head :ok }
+      end
     end
   end
 

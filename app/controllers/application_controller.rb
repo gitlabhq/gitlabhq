@@ -366,6 +366,14 @@ class ApplicationController < ActionController::Base
     request.base_url
   end
 
+  def require_feature!(feature)
+    if Gitlab::Feature.feature_enabled?(feature)
+      yield
+    else
+      head(:service_unavailable)
+    end
+  end
+
   private
 
   def set_default_sort
