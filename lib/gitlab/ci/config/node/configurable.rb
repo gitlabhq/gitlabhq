@@ -24,7 +24,7 @@ module Gitlab
             end
           end
 
-          def keys
+          def allowed_nodes
             self.class.nodes || {}
           end
 

@@ -3,13 +3,13 @@ require 'spec_helper'
 describe Gitlab::Ci::Config::Node::Global do
   let(:global) { described_class.new(hash) }
 
-  describe '#keys' do
+  describe '#allowed_nodes' do
     it 'can contain global config keys' do
-      expect(global.keys).to include :before_script
+      expect(global.allowed_nodes).to include :before_script
     end
 
     it 'returns a hash' do
-      expect(global.keys).to be_a Hash
+      expect(global.allowed_nodes).to be_a Hash
     end
   end
 

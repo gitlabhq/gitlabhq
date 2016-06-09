@@ -28,7 +28,7 @@ module Gitlab
           end
 
           def compose!
-            keys.each do |key, entry|
+            allowed_nodes.each do |key, entry|
               add_node(key, entry)
             end
           end
@@ -46,23 +46,23 @@ module Gitlab
           end
 
           def leaf?
-            keys.none?
+            allowed_nodes.none?
           end
 
           def has_config?
             @value.is_a?(Hash)
           end
 
-          def keys
-            {}
-          end
-
           def errors
             @errors + nodes.map(&:errors).flatten
           end
 
+          def allowed_nodes
+            {}
+          end
+
           def method_missing(name, *args)
-            super unless keys.has_key?(name)
+            super unless allowed_nodes.has_key?(name)
             raise InvalidError unless valid?
 
             @nodes[name].try(:value)
