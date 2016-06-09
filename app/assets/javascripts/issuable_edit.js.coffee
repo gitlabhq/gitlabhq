@@ -47,6 +47,7 @@ class @IssuableEdit
     @hideDescriptionEdit(e)
 
   showTitleEdit: =>
+    @hideDescriptionEdit()
     @elements.title.element.addClass 'hidden'
     @elements.title.fieldset.removeClass 'hidden'
     @elements.title.field.focus()
@@ -65,11 +66,12 @@ class @IssuableEdit
 
   showDescriptionEdit: (e) =>
     if $(e.target).is(':not(input,a)')
+      @hideTitleEdit(e)
       @elements.description.element.addClass 'hidden'
       @elements.description.fieldset.removeClass 'hidden'
       @elements.description.field.focus()
 
-  hideDescriptionEdit: (e) ->
+  hideDescriptionEdit: ->
     @elements.description.fieldset.addClass 'hidden'
     @elements.description.element.removeClass 'hidden'
 
