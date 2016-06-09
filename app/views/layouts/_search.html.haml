@@ -41,8 +41,18 @@
         gl.projectOptions["#{@project.path}"] = {
           issuesPath: "#{namespace_project_issues_path(@project.namespace, @project)}",
           mrPath: "#{namespace_project_merge_requests_path(@project.namespace, @project)}",
-          projectName: "#{@project.name}"
+          name: "#{@project.name}"
         };
+
+    - if @group
+      :javascript
+        gl.groupOptions = gl.groupOptions || {};
+        gl.groupOptions["#{@group.path}"] = {
+          name: "#{@group.name}",
+          issuesPath: "#{issues_group_path(@group.path)}",
+          mrPath: "#{merge_requests_group_path(@group.path)}"
+        };
+
 
     :javascript
       gl.dashboardOptions = {
