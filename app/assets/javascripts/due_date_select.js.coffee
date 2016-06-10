@@ -13,8 +13,7 @@ class @DueDateSelect
 
     $('.js-clear-due-date').on 'click', (e) ->
       e.preventDefault()
-      $dueDate.val('')
-      $datePicker.datepicker('setDate', '')
+      $.datepicker._clearDate($datePicker)
 
     # Issuable sidebar
     $loading = $('.js-issuable-update .due_date')
