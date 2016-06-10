@@ -78,12 +78,6 @@ class Projects::BuildsController < Projects::ApplicationController
     end
   end
 
-  def keep_artifacts
-    @build.keep_artifacts
-    redirect_to namespace_project_build_path(project.namespace, project, @build),
-                notice: "Artifacts will not be removed!"
-  end
-
   private
 
   def build
