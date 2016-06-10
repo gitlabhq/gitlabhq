@@ -71,6 +71,7 @@ v 8.8.5 (unreleased)
   - Import GitHub repositories respecting the API rate limit
   - Fix importer for GitHub comments on diff
   - Disable Webhooks before proceeding with the GitHub import
+  - Fix incremental trace upload API when using multi-byte UTF-8 chars in trace
 
 v 8.8.4
   - Fix LDAP-based login for users with 2FA enabled. !4493
