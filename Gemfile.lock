@@ -308,7 +308,7 @@ GEM
       json
       multi_json
       request_store (>= 1.0)
-    grape (0.13.0)
+    grape (0.15.0)
       activesupport
       builder
       hashie (>= 2.1.0)
@@ -876,7 +876,7 @@ DEPENDENCIES
   gollum-lib (~> 4.2)
   gollum-rugged_adapter (~> 0.4.2)
   gon (~> 6.1.0)
-  grape (~> 0.13.0)
+  grape (~> 0.15.0)
   grape-entity (~> 0.4.2)
   hamlit (~> 2.5)
   health_check (~> 2.1.0)
