@@ -20,20 +20,21 @@ class ConvertAwardNoteToEmojiAward < ActiveRecord::Migration
   def migrate_postgresql
     connection.transaction do
       execute 'LOCK notes IN EXCLUSIVE'
-      migrate_notes
+      execute "INSERT INTO award_emoji (awardable_type, awardable_id, user_id, name, created_at, updated_at) (SELECT noteable_type, noteable_id, author_id, note, created_at, updated_at FROM notes WHERE is_award = true)"
+      execute "DELETE FROM notes WHERE is_award = true"
+      remove_column :notes, :is_award, :boolean
     end
   end
 
   def migrate_mysql
-    execute 'LOCK TABLES notes WRITE'
-    migrate_notes
-  ensure
-    execute 'UNLOCK TABLES'
-  end
+    execute <<-EOF
+    lock tables notes WRITE, award_emoji WRITE; 
+    INSERT INTO award_emoji (awardable_type, awardable_id, user_id, name, created_at, updated_at) (SELECT noteable_type, noteable_id, author_id, note, created_at, updated_at FROM notes WHERE is_award = true);
+    EOF
 
-  def migrate_notes
-    execute "INSERT INTO award_emoji (awardable_type, awardable_id, user_id, name, created_at, updated_at) (SELECT noteable_type, noteable_id, author_id, note, created_at, updated_at FROM notes WHERE is_award = true)"
     execute "DELETE FROM notes WHERE is_award = true"
     remove_column :notes, :is_award, :boolean
+  ensure
+    execute 'UNLOCK TABLES'
   end
 end
