@@ -30,19 +30,10 @@ module Gitlab
 
           private
 
-          def add_node(key, metadata)
-            entry = create_entry(key, metadata[:class])
-            entry.description = metadata[:description]
-
-            @nodes[key] = entry
-          end
-
-          def create_entry(key, entry_class)
-            if @value.has_key?(key)
-              entry_class.new(@value[key])
-            else
-              Node::Null.new(nil)
-            end
+          def create_node(key, factory)
+            factory.with_value(@value[key])
+            factory.null_node unless @value.has_key?(key)
+            factory.create!
           end
 
           class_methods do
@@ -51,9 +42,8 @@ module Gitlab
             private
 
             def allow_node(symbol, entry_class, metadata)
-              node = { symbol.to_sym =>
-                       { class: entry_class,
-                         description: metadata[:description] } }
+              factory = Node::Factory.new(entry_class)
+                .with_description(metadata[:description])
 
               define_method(symbol) do
                 raise Entry::InvalidError unless valid?
@@ -61,7 +51,7 @@ module Gitlab
                 @nodes[symbol].try(:value)
               end
 
-              (@allowed_nodes ||= {}).merge!(node)
+              (@allowed_nodes ||= {}).merge!(symbol => factory)
             end
           end
         end
