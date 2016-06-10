@@ -38,7 +38,7 @@ module Ci
         new_build.save
       end
 
-      def retry(build)
+      def retry(build, user = nil)
         new_build = Ci::Build.new(status: 'pending')
         new_build.ref = build.ref
         new_build.tag = build.tag
@@ -52,6 +52,7 @@ module Ci
         new_build.stage = build.stage
         new_build.stage_idx = build.stage_idx
         new_build.trigger_request = build.trigger_request
+        new_build.user = user
         new_build.save
         MergeRequests::AddTodoWhenBuildFailsService.new(build.project, nil).close(new_build)
         new_build
@@ -73,6 +74,12 @@ module Ci
         build.update_coverage
         build.execute_hooks
       end
+
+      after_transition any: :success do |build|
+        if build.environment.present?
+          CreateDeploymentService.new(build.project, build.user, environment: build.environment).execute(build)
+        end
+      end
     end
 
     def retryable?
@@ -81,10 +88,6 @@ module Ci
 
     def retried?
       !self.pipeline.statuses.latest.include?(self)
-    end
-
-    def retry
-      Ci::Build.retry(self)
     end
 
     def depends_on_builds

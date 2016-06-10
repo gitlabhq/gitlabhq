@@ -228,6 +228,8 @@ class Ability
         :read_build,
         :read_container_image,
         :read_pipeline,
+        :read_environment,
+        :read_deployment
       ]
     end
 
@@ -246,6 +248,10 @@ class Ability
         :push_code,
         :create_container_image,
         :update_container_image,
+        :create_environment,
+        :update_environment,
+        :create_deployment,
+        :update_deployment,
       ]
     end
 
@@ -273,7 +279,9 @@ class Ability
         :admin_commit_status,
         :admin_build,
         :admin_container_image,
-        :admin_pipeline
+        :admin_pipeline,
+        :admin_environment,
+        :admin_deployment
       ]
     end
 
@@ -317,6 +325,8 @@ class Ability
       unless project.builds_enabled
         rules += named_abilities('build')
         rules += named_abilities('pipeline')
+        rules += named_abilities('environment')
+        rules += named_abilities('deployment')
       end
 
       unless project.container_registry_enabled

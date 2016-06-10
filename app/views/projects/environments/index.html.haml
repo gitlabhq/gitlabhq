@@ -1,22 +1,22 @@
+- @no_container = true
 - page_title "Environments"
-= render "header_title"
+= render "projects/pipelines/head"
 
-.gray-content-block
-  Environments for this project
+%div{ class: (container_class) }
+  .gray-content-block
+    Environments for this project
 
-%ul.content-list
-  - if @environments.blank?
-    %li
-      .nothing-here-block No environments to show
-  - else
-    .table-holder
-      %table.table.builds
-        %tbody
-          %th Environment
-          %th Pipeline ID
-          %th Build ID
-          %th Changes
-          %th
-          %th
-        - @environments.each do |build|
-          = render "environment", build: build
+  %ul.content-list
+    - if @environments.blank?
+      %li
+        .nothing-here-block No environments to show
+    - else
+      .table-holder
+        %table.table.builds
+          %tbody
+            %th Environment
+            %th Last deployment
+            %th Date
+            %th
+          - @environments.each do |environment|
+            = render 'environment', environment: environment

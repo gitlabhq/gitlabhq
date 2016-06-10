@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160608155312) do
+ActiveRecord::Schema.define(version: 20160610211845) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -144,9 +144,9 @@ ActiveRecord::Schema.define(version: 20160608155312) do
     t.text     "commands"
     t.integer  "job_id"
     t.string   "name"
-    t.boolean  "deploy",             default: false
+    t.boolean  "deploy",              default: false
     t.text     "options"
-    t.boolean  "allow_failure",      default: false, null: false
+    t.boolean  "allow_failure",       default: false, null: false
     t.string   "stage"
     t.integer  "trigger_request_id"
     t.integer  "stage_idx"
@@ -161,6 +161,7 @@ ActiveRecord::Schema.define(version: 20160608155312) do
     t.text     "artifacts_metadata"
     t.integer  "erased_by_id"
     t.datetime "erased_at"
+    t.string   "environment"
   end
 
   add_index "ci_builds", ["commit_id", "stage_idx", "created_at"], name: "index_ci_builds_on_commit_id_and_stage_idx_and_created_at", using: :btree
@@ -381,6 +382,25 @@ ActiveRecord::Schema.define(version: 20160608155312) do
 
   add_index "deploy_keys_projects", ["project_id"], name: "index_deploy_keys_projects_on_project_id", using: :btree
 
+  create_table "deployments", force: :cascade do |t|
+    t.integer  "iid"
+    t.integer  "project_id"
+    t.integer  "environment_id"
+    t.string   "ref"
+    t.boolean  "tag"
+    t.string   "sha"
+    t.integer  "user_id"
+    t.integer  "deployable_id",   null: false
+    t.string   "deployable_type", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "deployments", ["project_id", "environment_id", "iid"], name: "index_deployments_on_project_id_and_environment_id_and_iid", using: :btree
+  add_index "deployments", ["project_id", "environment_id"], name: "index_deployments_on_project_id_and_environment_id", using: :btree
+  add_index "deployments", ["project_id", "iid"], name: "index_deployments_on_project_id_and_iid", using: :btree
+  add_index "deployments", ["project_id"], name: "index_deployments_on_project_id", using: :btree
+
   create_table "emails", force: :cascade do |t|
     t.integer  "user_id",    null: false
     t.string   "email",      null: false
@@ -390,6 +410,15 @@ ActiveRecord::Schema.define(version: 20160608155312) do
 
   add_index "emails", ["email"], name: "index_emails_on_email", unique: true, using: :btree
   add_index "emails", ["user_id"], name: "index_emails_on_user_id", using: :btree
+
+  create_table "environments", force: :cascade do |t|
+    t.integer  "project_id"
+    t.string   "name",       null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "environments", ["project_id", "name"], name: "index_environments_on_project_id_and_name", using: :btree
 
   create_table "events", force: :cascade do |t|
     t.string   "target_type"

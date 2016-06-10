@@ -1,30 +1,26 @@
+- @no_container = true
 - page_title "Environments"
+= render "projects/pipelines/head"
 
-= render "header_title"
+%div{ class: (container_class) }
+  .gray-content-block
+    Latest deployments for
+    %strong= @environment.name
 
-.gray-content-block
-  Latest deployments for
-  %strong
-    = @environment
+  %ul.content-list
+    - if @deployments.blank?
+      %li
+        .nothing-here-block No deployment for specific environment
+    - else
+      .table-holder
+        %table.table.builds
+          %thead
+            %tr
+              %th Commit
+              %th Context
+              %th Date
+              %th
 
-%ul.content-list
-  - if @builds.blank?
-    %li
-      .nothing-here-block No builds to show for specific environment
-  - else
-    .table-holder
-      %table.table.builds
-        %thead
-          %tr
-            %th Status
-            %th Build ID
-            %th Commit
-            %th Ref
-            %th Name
-            %th Duration
-            %th Finished at
-            %th
+          = render @deployments
 
-        = render @builds, commit_sha: true, ref: true, allow_retry: true
-
-    = paginate @builds, theme: 'gitlab'
+      = paginate @deployments, theme: 'gitlab'
