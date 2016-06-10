@@ -1,10 +1,11 @@
 - access = user_max_access_in_project(current_user.id, @project)
+- can_edit = can?(current_user, :admin_project, @project)
 - if project_nav_tab? :team
   = nav_link(controller: [:project_members, :teams]) do
     = link_to namespace_project_project_members_path(@project.namespace, @project), title: 'Members', class: 'team-tab tab' do
       %span
         Members
-- if access
+- if access && can_edit
   - if @project.allowed_to_share_with_group?
     = nav_link(controller: :group_links) do
       = link_to namespace_project_group_links_path(@project.namespace, @project), title: "Groups" do
