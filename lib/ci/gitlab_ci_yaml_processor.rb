@@ -282,6 +282,10 @@ module Ci
       if job[:artifacts][:when] && !job[:artifacts][:when].in?(%w(on_success on_failure always))
         raise ValidationError, "#{name} job: artifacts:when parameter should be on_success, on_failure or always"
       end
+
+      if job[:artifacts][:expire_in] && !validate_duration(job[:artifacts][:expire_in])
+        raise ValidationError, "#{name} job: artifacts:expire_in parameter should be a duration"
+      end
     end
 
     def validate_job_dependencies!(name, job)
@@ -298,6 +302,12 @@ module Ci
           raise ValidationError, "#{name} job: dependency #{dependency} is not defined in prior stages"
         end
       end
+    end
+
+    def validate_duration(value)
+      value.is_a?(String) && ChronicDuration.parse(value)
+    rescue ChronicDuration::DurationParseError
+      false
     end
 
     def validate_array_of_strings(values)
