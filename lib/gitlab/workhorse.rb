@@ -21,27 +21,29 @@ module Gitlab
 
         [
           SEND_DATA_HEADER,
-          "git-blob:#{encode(params)}",
+          "git-blob:#{encode(params)}"
         ]
       end
 
-      def send_git_archive(project, ref, format)
+      def send_git_archive(repository, ref:, format:)
         format ||= 'tar.gz'
         format.downcase!
-        params = project.repository.archive_metadata(ref, Gitlab.config.gitlab.repository_downloads_path, format)
+        params = repository.archive_metadata(ref, Gitlab.config.gitlab.repository_downloads_path, format)
         raise "Repository or ref not found" if params.empty?
 
         [
           SEND_DATA_HEADER,
-          "git-archive:#{encode(params)}",
+          "git-archive:#{encode(params)}"
         ]
       end
 
-      def send_git_diff(repository, from, to)
+      def send_git_diff(repository, diff_refs)
+        from, to = diff_refs
+
         params = {
-            'RepoPath'  => repository.path_to_repo,
-            'ShaFrom'   => from,
-            'ShaTo'     => to
+          'RepoPath'  => repository.path_to_repo,
+          'ShaFrom'   => from.sha,
+          'ShaTo'     => to.sha
         }
 
         [

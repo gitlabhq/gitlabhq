@@ -17,6 +17,7 @@ describe Projects::RawController do
         expect(response.header['Content-Type']).to eq('text/plain; charset=utf-8')
         expect(response.header['Content-Disposition']).
             to eq("inline")
+        expect(response.header[Gitlab::Workhorse::SEND_DATA_HEADER]).to start_with("git-blob:")
       end
     end
 
@@ -31,6 +32,7 @@ describe Projects::RawController do
 
         expect(response.status).to eq(200)
         expect(response.header['Content-Type']).to eq('image/jpeg')
+        expect(response.header[Gitlab::Workhorse::SEND_DATA_HEADER]).to start_with("git-blob:")
       end
     end
 
