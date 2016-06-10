@@ -50,7 +50,7 @@ class @DueDateSelect
               $selectbox.hide()
             $value.css('display', '')
 
-            cssClass = if mediumDate is "No due date" then 'no-value' else 'bold'
+            cssClass = if Date.parse(mediumDate) then 'bold' else 'no-value'
             $valueContent.html("<span class='#{cssClass}'>#{mediumDate}</span>")
             $sidebarValue.html(mediumDate)
 

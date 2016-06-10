@@ -39,7 +39,7 @@ class @LabelsSelect
             </a>
             <% }); %>'
         )
-        labelNoneHTMLTemplate = _.template('<span class="no-value">None</span>')
+        labelNoneHTMLTemplate = '<span class="no-value">None</span>'
 
       if newLabelField.length
 
@@ -142,7 +142,7 @@ class @LabelsSelect
             template = labelHTMLTemplate(data)
             labelCount = data.labels.length
           else
-            template = labelNoneHTMLTemplate()
+            template = labelNoneHTMLTemplate
           $value
             .removeAttr('style')
             .html(template)
