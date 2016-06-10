@@ -6,7 +6,7 @@ module SharedActiveTab
   end
 
   def ensure_active_sub_tab(content)
-    expect(find('div.content ul.nav-links li.active')).to have_content(content)
+    expect(find('.sub-nav li.active')).to have_content(content)
   end
 
   def ensure_active_sub_nav(content)
@@ -18,7 +18,7 @@ module SharedActiveTab
   end
 
   step 'no other sub tabs should be active' do
-    expect(page).to have_selector('div.content ul.nav-links li.active', count: 1)
+    expect(page).to have_selector('.sub-nav li.active', count: 1)
   end
 
   step 'no other sub navs should be active' do

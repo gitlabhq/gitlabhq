@@ -1,12 +1,12 @@
 %ul.nav-links.sub-nav
   %div{ class: (container_class) }
-    - if project_nav_tab?(:issues)
+    - if project_nav_tab?(:issues) && current_controller?(:issues)
       = nav_link(controller: :issues) do
         = link_to url_for_project_issues(@project, only_path: true), title: 'Issues' do
           %span
             Issues
 
-    - if project_nav_tab?(:merge_requests)
+    - if project_nav_tab?(:merge_requests) && current_controller?(:merge_requests)
       = nav_link(controller: :merge_requests) do
         = link_to namespace_project_merge_requests_path(@project.namespace, @project), title: 'Merge Requests' do
           %span
