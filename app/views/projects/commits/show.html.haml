@@ -35,19 +35,12 @@
     %ul.breadcrumb.repo-breadcrumb
       = commits_breadcrumbs
 
-<<<<<<< HEAD
-= render 'projects/commits/mirror_status'
+  = render 'projects/commits/mirror_status'
 
-%div{id: dom_id(@project)}
-  #commits-list.content_list= render "commits", project: @project
-.clear
-= spinner
-=======
   %div{id: dom_id(@project)}
     #commits-list.content_list= render "commits", project: @project
   .clear
   = spinner
->>>>>>> cea3cf177c68bb1fa9326d4e88631b7737ae8a98
 
 :javascript
   CommitsList.init(#{@limit});

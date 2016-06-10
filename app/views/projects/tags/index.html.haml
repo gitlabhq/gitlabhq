@@ -7,20 +7,12 @@
     .nav-text
       Tags give the ability to mark specific points in history as being important
 
-<<<<<<< HEAD
-= render 'projects/commits/mirror_status'
-
-.tags
-  - unless @tags.empty?
-    %ul.content-list
-      - @tags.each do |tag|
-        = render 'tag', tag: @repository.find_tag(tag)
-=======
     - if can? current_user, :push_code, @project
       .nav-controls
         = link_to new_namespace_project_tag_path(@project.namespace, @project), class: 'btn btn-create new-tag-btn' do
           New tag
->>>>>>> cea3cf177c68bb1fa9326d4e88631b7737ae8a98
+
+  = render 'projects/commits/mirror_status'
 
   .tags
     - unless @tags.empty?
