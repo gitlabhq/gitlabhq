@@ -162,13 +162,6 @@ $ ->
       $el.data('placement') || 'bottom'
   )
 
-  $('.header-logo .home').tooltip(
-    placement: (_, el) ->
-      $el = $(el)
-      if $('.page-with-sidebar').hasClass('page-sidebar-collapsed') then 'right' else 'bottom'
-    container: 'body'
-  )
-
   # Form submitter
   $('.trigger-submit').on 'change', ->
     $(@).parents('form').submit()
