@@ -523,9 +523,21 @@ class Project < ActiveRecord::Base
   end
 
   def external_issue_tracker
-    return @external_issue_tracker if defined?(@external_issue_tracker)
-    @external_issue_tracker ||=
-      services.issue_trackers.active.without_defaults.first
+    if has_external_issue_tracker.nil? # To populate existing projects
+      cache_has_external_issue_tracker
+    end
+
+    if has_external_issue_tracker?
+      return @external_issue_tracker if defined?(@external_issue_tracker)
+
+      @external_issue_tracker = services.external_issue_trackers.first
+    else
+      nil
+    end
+  end
+
+  def cache_has_external_issue_tracker
+    update_column(:has_external_issue_tracker, services.external_issue_trackers.any?)
   end
 
   def can_have_issues_tracker_id?
