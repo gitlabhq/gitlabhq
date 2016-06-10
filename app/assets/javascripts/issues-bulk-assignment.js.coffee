@@ -97,13 +97,22 @@ class @IssuableBulkActions
     $labels = @form.find('.labels-filter input[name="update[label_ids][]"]')
 
     $labels.each (k, label) ->
-      labelIds.push $(label).val() if label
+      labelIds.push parseInt($(label).val()) if label
 
     labelIds
 
   ###*
-   * Just an alias of @getUnmarkedIndeterminedLabels
-   * @return {Array} Array of labels
+   * Returns Label IDs that will be removed from issue selection
+   * @return {Array} Array of labels IDs
   ###
   getLabelsToRemove: ->
-    @getUnmarkedIndeterminedLabels()
+    result = []
+    indeterminatedLabels = @getUnmarkedIndeterminedLabels()
+    labelsToApply = @getLabelsToApply()
+
+    indeterminatedLabels.map (id) ->
+      # We need to exclude label IDs that will be applied
+      # By not doing this will cause issues from selection to not add labels at all
+      result.push(id) if labelsToApply.indexOf(id) is -1
+
+    result
