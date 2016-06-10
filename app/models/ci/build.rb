@@ -355,6 +355,18 @@ module Ci
       !artifacts? && artifacts_expire_at && artifacts_expire_at < Time.now
     end
 
+    def artifacts_expire_in
+      artifacts_expire_at - Time.now if artifacts_expire_at
+    end
+
+    def artifacts_expire_in=(value)
+      if value
+        self.artifacts_expire_at = Time.now + ChronicDuration.parse(value)
+      else
+        self.artifacts_expire_at = nil
+      end
+    end
+
     def keep_artifacts!
       self.update(artifacts_expire_at: nil)
     end
