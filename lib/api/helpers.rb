@@ -412,11 +412,11 @@ module API
     def send_git_blob(repository, blob)
       env['api.format'] = :txt
       content_type 'text/plain'
-      header *Gitlab::Workhorse.send_git_blob(repository, blob)
+      header(*Gitlab::Workhorse.send_git_blob(repository, blob))
     end
 
     def send_git_archive(repository, ref:, format:)
-      header *Gitlab::Workhorse.send_git_archive(repository, ref: ref, format: format)
+      header(*Gitlab::Workhorse.send_git_archive(repository, ref: ref, format: format))
     end
   end
 end
