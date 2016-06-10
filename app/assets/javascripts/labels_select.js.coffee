@@ -95,8 +95,11 @@ class @LabelsSelect
             $newLabelCreateButton.enable()
 
             if label.message?
+              errors = _.map label.message, (value, key) ->
+                "#{key} #{value[0]}"
+
               $newLabelError
-                .text label.message
+                .html errors.join("<br/>")
                 .show()
             else
               $('.dropdown-menu-back', $dropdown.parent()).trigger 'click'
