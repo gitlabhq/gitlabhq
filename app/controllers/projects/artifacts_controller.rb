@@ -1,6 +1,7 @@
 class Projects::ArtifactsController < Projects::ApplicationController
   layout 'project'
   before_action :authorize_read_build!
+  before_action :authorize_update_build!, only: [:keep]
   before_action :validate_artifacts!
 
   def download

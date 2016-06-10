@@ -97,6 +97,48 @@ describe "Builds" do
       end
     end
 
+    context 'Artifacts expire date' do
+      before do
+        @build.update_attributes(artifacts_file: artifacts_file, artifacts_expire_at: expire_at)
+        visit namespace_project_build_path(@project.namespace, @project, @build)
+      end
+
+      context 'no expire date defined' do
+        let(:expire_at) { nil }
+
+        it 'should not have the Keep button' do
+          page.within('.artifacts') do
+            expect(page).not_to have_content 'Keep'
+          end
+        end
+      end
+
+      context 'when expire date is defined' do
+        let(:expire_at) { Time.now + 7.days }
+
+        it 'should keep artifacts when Keep button is clicked' do
+          page.within('.artifacts') do
+            expect(page).to have_content 'The artifacts will be removed'
+            click_link 'Keep'
+          end
+
+          expect(page).not_to have_link 'Keep'
+          expect(page).not_to have_content 'The artifacts will be removed'
+        end
+      end
+
+      context 'when artifacts expired' do
+        let(:expire_at) { Time.now - 7.days }
+
+        it 'should not have the Keep button' do
+          page.within('.artifacts') do
+            expect(page).to have_content 'The artifacts were removed'
+            expect(page).not_to have_link 'Keep'
+          end
+        end
+      end
+    end
+
     context 'Build raw trace' do
       before do
         @build.run!
@@ -108,6 +150,8 @@ describe "Builds" do
         expect(page).to have_link 'Raw'
       end
     end
+
+    context ''
   end
 
   describe "POST /:project/builds/:id/cancel" do
