@@ -32,7 +32,7 @@
     .pull-right
       %strong= member.human_access
       - if can?(current_user, :update_project_member, member)
-        = button_tag class: "btn-xs btn js-toggle-button",
+        = button_tag class: "btn-xs btn-grouped inline btn js-toggle-button",
                      title: 'Edit access level', type: 'button' do
           = icon('pencil')
 
