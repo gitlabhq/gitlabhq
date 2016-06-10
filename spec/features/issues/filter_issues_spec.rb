@@ -294,40 +294,4 @@ describe 'Filter issues', feature: true do
       end
     end
   end
-
-  describe 'filter by any author', js: true do
-    before do
-      user2 = create(:user, name: "tester")
-      create(:issue, project: project, author: user)
-      create(:issue, project: project, author: user2)
-
-      visit namespace_project_issues_path(project.namespace, project)
-    end
-
-    it 'should show filter by any author link' do
-      click_button "Author"
-      fill_in "Search authors", with: "tester"
-
-      page.within ".dropdown-menu-author" do
-        expect(page).to have_content "tester"
-      end
-    end
-
-    it 'should show filter issues by any author' do
-      page.within '.issues-list' do
-        expect(page).to have_selector ".issue", count: 2
-      end
-
-      click_button "Author"
-      fill_in "Search authors", with: "tester"
-
-      page.within ".dropdown-menu-author" do
-        click_link "tester"
-      end
-
-      page.within '.issues-list' do
-        expect(page).to have_selector ".issue", count: 1
-      end
-    end
-  end
 end

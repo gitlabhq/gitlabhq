@@ -1,3 +1,4 @@
+# rubocop:disable all
 class RemoveIpBlockingSettingsFromApplicationSettings < ActiveRecord::Migration
   def change
     remove_column :application_settings, :ip_blocking_enabled, :boolean, default: false

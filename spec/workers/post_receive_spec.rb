@@ -52,16 +52,16 @@ describe PostReceive do
     context "gitlab-ci.yml" do
       subject { PostReceive.new.perform(pwd(project), key_id, base64_changes) }
 
-      context "creates a Ci::Commit for every change" do
-        before { stub_ci_commit_to_return_yaml_file }
+      context "creates a Ci::Pipeline for every change" do
+        before { stub_ci_pipeline_to_return_yaml_file }
 
-        it { expect{ subject }.to change{ Ci::Commit.count }.by(2) }
+        it { expect{ subject }.to change{ Ci::Pipeline.count }.by(2) }
       end
 
-      context "does not create a Ci::Commit" do
-        before { stub_ci_commit_yaml_file(nil) }
+      context "does not create a Ci::Pipeline" do
+        before { stub_ci_pipeline_yaml_file(nil) }
 
-        it { expect{ subject }.not_to change{ Ci::Commit.count } }
+        it { expect{ subject }.not_to change{ Ci::Pipeline.count } }
       end
     end
   end

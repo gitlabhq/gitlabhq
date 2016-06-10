@@ -1,3 +1,4 @@
+# rubocop:disable all
 class AddEventsToServices < ActiveRecord::Migration
   def change
     add_column :services, :push_events, :boolean, :default => true

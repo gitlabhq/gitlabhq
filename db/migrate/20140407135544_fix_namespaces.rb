@@ -1,3 +1,4 @@
+# rubocop:disable all
 class FixNamespaces < ActiveRecord::Migration
   def up
     Namespace.where('name <> path and type is null').each do |namespace|

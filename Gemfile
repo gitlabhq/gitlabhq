@@ -38,16 +38,17 @@ gem 'rack-oauth2',            '~> 1.2.1'
 gem 'jwt'
 
 # Spam and anti-bot protection
-gem 'recaptcha', require: 'recaptcha/rails'
+gem 'recaptcha', '~> 3.0', require: 'recaptcha/rails'
 gem 'akismet', '~> 2.0'
 
 # Two-factor authentication
 gem 'devise-two-factor', '~> 3.0.0'
 gem 'rqrcode-rails3', '~> 0.1.7'
 gem 'attr_encrypted', '~> 3.0.0'
+gem 'u2f', '~> 0.2.1'
 
 # Browser detection
-gem "browser", '~> 1.0.0'
+gem "browser", '~> 2.0.3'
 
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library
@@ -83,8 +84,15 @@ gem "carrierwave", '~> 0.10.0'
 # Drag and Drop UI
 gem 'dropzonejs-rails', '~> 0.7.1'
 
+# for backups
+gem 'fog-aws', '~> 0.9'
+gem 'fog-azure', '~> 0.0'
+gem 'fog-core', '~> 1.40'
+gem 'fog-local', '~> 0.3'
+gem 'fog-google', '~> 0.3'
+gem 'fog-openstack', '~> 0.1'
+
 # for aws storage
-gem "fog", "~> 1.36.0"
 gem "unf", '~> 0.1.4'
 
 # Authorization
@@ -104,7 +112,7 @@ gem 'org-ruby',      '~> 0.9.12'
 gem 'creole',        '~> 0.5.0'
 gem 'wikicloth',     '0.8.1'
 gem 'asciidoctor',   '~> 1.5.2'
-gem 'rouge',         '~> 1.10.1'
+gem 'rouge',         '~> 1.11'
 
 # See https://groups.google.com/forum/#!topic/ruby-security-ann/aSbgDiwb24s
 # and https://groups.google.com/forum/#!topic/ruby-security-ann/Dy7YiKb_pMM
@@ -137,7 +145,7 @@ gem 'redis-namespace'
 gem "httparty", '~> 0.13.3'
 
 # Colored output to console
-gem "colorize", '~> 0.7.0'
+gem "rainbow", '~> 2.1.0'
 
 # GitLab settings
 gem 'settingslogic', '~> 2.0.9'
@@ -299,6 +307,9 @@ group :development, :test do
   gem 'bundler-audit', require: false
 
   gem 'benchmark-ips', require: false
+
+  gem "license_finder", require: false
+  gem 'knapsack'
 end
 
 group :test do

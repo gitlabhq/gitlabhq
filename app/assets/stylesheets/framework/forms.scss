@@ -76,6 +76,7 @@ label {
 .form-control {
   @include box-shadow(none);
   border-radius: 3px;
+  padding: $gl-vert-padding $gl-input-padding;
 }
 
 .select-wrapper {

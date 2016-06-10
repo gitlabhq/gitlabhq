@@ -8,6 +8,7 @@ module Gitlab
       gon.relative_url_root      = Gitlab.config.gitlab.relative_url_root
       gon.shortcuts_path         = help_shortcuts_path
       gon.user_color_scheme      = Gitlab::ColorSchemes.for_user(current_user).css_class
+      gon.award_menu_url         = emojis_path
 
       if current_user
         gon.current_user_id = current_user.id

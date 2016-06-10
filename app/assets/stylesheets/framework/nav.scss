@@ -41,8 +41,7 @@
 
     a {
       display: inline-block;
-      padding: 14px;
-      padding-top: $gl-padding;
+      padding: $gl-btn-padding;
       padding-bottom: 11px;
       margin-bottom: -1px;
       font-size: 15px;
@@ -67,6 +66,27 @@
       color: #78a;
     }
   }
+
+  &.sub-nav {
+    background-color: $background-color;
+
+    .container-fluid {
+      background-color: $background-color;
+    }
+
+    li {
+
+      a {
+        margin: 0;
+        padding: 11px 10px 9px;
+      }
+
+      &.active a {
+        border-bottom: none;
+        color: $link-underline-blue;
+      }
+    }
+  }
 }
 
 .top-area {
@@ -80,6 +100,10 @@
     display: inline-block;
     width: 50%;
     line-height: 28px;
+
+    &.wiki-page {
+      padding: 16px 10px 11px;
+    }
 
     /* Small devices (phones, tablets, 768px and lower) */
     @media (max-width: $screen-sm-min) {
@@ -103,6 +127,10 @@
     width: 50%;
     margin-bottom: 0;
     border-bottom: none;
+
+    li a {
+      padding: 16px 10px 11px;
+    }
 
     /* Small devices (phones, tablets, 768px and lower) */
     @media (max-width: $screen-sm-max) {
@@ -143,6 +171,7 @@
     > form {
       display: inline-block;
       margin-top: -1px;
+      margin-bottom: 12px;
     }
 
     .icon-label {
@@ -179,7 +208,7 @@
 
     @media (max-width: $screen-xs-max) {
       padding-bottom: 0;
-
+      width: 100%;
       .btn, form, .dropdown, .dropdown-menu-toggle, .form-control {
         margin: 0 0 10px;
         display: block;
@@ -208,16 +237,6 @@
       .project-item-select-holder {
         display: block;
         margin: 0;
-      }
-    }
-
-    /* Small devices (tablets, 768px and lower) */
-    @media (max-width: $screen-sm-max) {
-      width: 100%;
-      text-align: left;
-
-      input {
-        width: 300px;
       }
     }
   }
@@ -276,6 +295,19 @@
     border-bottom: none;
     height: 51px;
 
+    svg {
+      position: relative;
+      top: 2px;
+      margin-right: 2px;
+      height: 15px;
+      width: auto;
+
+      path,
+      polygon {
+        fill: $layout-link-gray;
+      }
+    }
+
     .fade-right {
       @include fade(left, rgba(250, 250, 250, 0.4), $background-color);
       right: 0;
@@ -297,8 +329,16 @@
       }
 
       &.active {
+
         a, i {
           color: $black;
+        }
+
+        svg {
+          path,
+          polygon {
+            fill: $black;
+          }
         }
       }
 
@@ -309,14 +349,32 @@
   }
 
   .nav-control {
-    .fade-right {
 
+    .fade-right {
       @media (min-width: $screen-xs-max) {
         right: 67px;
       }
       @media (max-width: $screen-xs-min) {
         right: 0;
       }
+    }
+  }
+}
+
+.scrolling-tabs-container {
+  position: relative;
+
+  .nav-links {
+    @include scrolling-links();
+
+    .fade-right {
+      @include fade(left, rgba(255, 255, 255, 0.4), $background-color);
+      right: 0;
+    }
+
+    .fade-left {
+      @include fade(right, rgba(255, 255, 255, 0.4), $background-color);
+      left: 0;
     }
   }
 }

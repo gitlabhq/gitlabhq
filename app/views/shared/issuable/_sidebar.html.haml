@@ -2,23 +2,8 @@
   .issuable-sidebar
     - can_edit_issuable = can?(current_user, :"admin_#{issuable.to_ability_name}", @project)
     .block.issuable-sidebar-header
-      %span.issuable-count.hide-collapsed.pull-left
-        = issuable.iid
-        of
-        = issuables_count(issuable)
       %a.gutter-toggle.pull-right.js-sidebar-toggle{href: '#'}
         = sidebar_gutter_toggle_icon
-      .issuable-nav.hide-collapsed.pull-right.btn-group{role: 'group', "aria-label" => '...'}
-        - if prev_issuable = prev_issuable_for(issuable)
-          = link_to 'Prev', [@project.namespace.becomes(Namespace), @project, prev_issuable], class: 'btn btn-default prev-btn issuable-pager'
-        - else
-          %a.btn.btn-default.issuable-pager.disabled{href: '#'}
-            Prev
-        - if next_issuable = next_issuable_for(issuable)
-          = link_to 'Next', [@project.namespace.becomes(Namespace), @project, next_issuable], class: 'btn btn-default next-btn issuable-pager'
-        - else
-          %a.btn.btn-default.issuable-pager.disabled{href: '#'}
-            Next
 
     = form_for [@project.namespace.becomes(Namespace), @project, issuable], remote: true, format: :json, html: {class: 'issuable-context-form inline-update js-issuable-update'} do |f|
       .block.assignee
@@ -56,7 +41,8 @@
           = icon('clock-o')
           %span
             - if issuable.milestone
-              = issuable.milestone.title
+              %span.has-tooltip{title: milestone_remaining_days(issuable.milestone), data: {container: 'body', html: 1, placement: 'left'}}
+                = issuable.milestone.title
             - else
               None
         .title.hide-collapsed
@@ -67,7 +53,8 @@
         .value.bold.hide-collapsed
           - if issuable.milestone
             = link_to namespace_project_milestone_path(@project.namespace, @project, issuable.milestone) do
-              = issuable.milestone.title
+              %span.has-tooltip{title: milestone_remaining_days(issuable.milestone), data: {container: 'body', html: 1}}
+                = issuable.milestone.title
           - else
             .light None
 
@@ -114,20 +101,20 @@
           .sidebar-collapsed-icon
             = icon('tags')
             %span
-              = issuable.labels.count
+              = issuable.labels_array.size
           .title.hide-collapsed
             Labels
             = icon('spinner spin', class: 'block-loading')
             - if can_edit_issuable
               = link_to 'Edit', '#', class: 'edit-link pull-right'
-          .value.bold.issuable-show-labels.hide-collapsed{ class: ("has-labels" if issuable.labels.any?) }
-            - if issuable.labels.any?
-              - issuable.labels.each do |label|
+          .value.bold.issuable-show-labels.hide-collapsed{ class: ("has-labels" if issuable.labels_array.any?) }
+            - if issuable.labels_array.any?
+              - issuable.labels_array.each do |label|
                 = link_to_label(label, type: issuable.to_ability_name)
             - else
               .light None
           .selectbox.hide-collapsed
-            - issuable.labels.each do |label|
+            - issuable.labels_array.each do |label|
               = hidden_field_tag "#{issuable.to_ability_name}[label_names][]", label.id, id: nil
             .dropdown
               %button.dropdown-menu-toggle.js-label-select.js-multiselect{type: "button", data: {toggle: "dropdown", field_name: "#{issuable.to_ability_name}[label_names][]", ability_name: issuable.to_ability_name, show_no: "true", show_any: "true", project_id: (@project.id if @project), issue_update: issuable_json_path(issuable), labels: (namespace_project_labels_path(@project.namespace, @project, :json) if @project)}}
@@ -148,7 +135,7 @@
           .title.hide-collapsed
             Notifications
           - subscribtion_status = subscribed ? 'subscribed' : 'unsubscribed'
-          %button.btn.btn-block.btn-gray.js-subscribe-button.issuable-subscribe-button.hide-collapsed{ type: "button" }
+          %button.btn.btn-block.btn-default.js-subscribe-button.issuable-subscribe-button.hide-collapsed{ type: "button" }
             %span= subscribed ? 'Unsubscribe' : 'Subscribe'
           .subscription-status.hide-collapsed{data: {status: subscribtion_status}}
             .unsubscribed{class: ( 'hidden' if subscribed )}

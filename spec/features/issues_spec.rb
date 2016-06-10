@@ -75,12 +75,13 @@ describe 'Issues', feature: true do
 
         fill_in 'issue_title', with: 'bug 345'
         fill_in 'issue_description', with: 'bug description'
+        find('#issuable-due-date').click
 
-        page.within '.datepicker' do
+        page.within '.ui-datepicker' do
           click_link date.day
         end
 
-        expect(find('#issuable-due-date', visible: false).value).to eq date.to_s
+        expect(find('#issuable-due-date').value).to eq date.to_s
 
         click_button 'Submit issue'
 
@@ -100,18 +101,19 @@ describe 'Issues', feature: true do
       it 'should save with due date' do
         date = Date.today.at_beginning_of_month
 
-        expect(find('#issuable-due-date', visible: false).value).to eq date.to_s
+        expect(find('#issuable-due-date').value).to eq date.to_s
 
         date = date.tomorrow
 
         fill_in 'issue_title', with: 'bug 345'
         fill_in 'issue_description', with: 'bug description'
+        find('#issuable-due-date').click
 
-        page.within '.datepicker' do
+        page.within '.ui-datepicker' do
           click_link date.day
         end
 
-        expect(find('#issuable-due-date', visible: false).value).to eq date.to_s
+        expect(find('#issuable-due-date').value).to eq date.to_s
 
         click_button 'Save changes'
 
@@ -125,7 +127,7 @@ describe 'Issues', feature: true do
   describe 'Issue info' do
     it 'excludes award_emoji from comment count' do
       issue = create(:issue, author: @user, assignee: @user, project: project, title: 'foobar')
-      create(:upvote_note, noteable: issue, project: project)
+      create(:award_emoji, awardable: issue)
 
       visit namespace_project_issues_path(project.namespace, project, assignee_id: @user.id)
 
@@ -365,13 +367,9 @@ describe 'Issues', feature: true do
 
         page.within('.assignee') do
           expect(page).to have_content "#{@user.name}"
-        end
 
-        find('.block.assignee .edit-link').click
-        sleep 2 # wait for ajax stuff to complete
-        first('.dropdown-menu-user-link').click
-        sleep 2
-        page.within('.assignee') do
+          click_link 'Edit'
+          click_link 'Unassigned'
           expect(page).to have_content 'No assignee'
         end
 

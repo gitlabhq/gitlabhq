@@ -1,3 +1,4 @@
+# rubocop:disable all
 # Migration type: online without errors (works on previous version and new one)
 class RenameEmojis < ActiveRecord::Migration
   def up

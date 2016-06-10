@@ -66,7 +66,7 @@ module AuthHelper
 
   def two_factor_skippable?
     current_application_settings.require_two_factor_authentication &&
-      !current_user.two_factor_enabled &&
+      !current_user.two_factor_enabled? &&
       current_application_settings.two_factor_grace_period &&
       !two_factor_grace_period_expired?
   end

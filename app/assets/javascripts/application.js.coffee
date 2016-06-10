@@ -4,7 +4,7 @@
 # It's not advisable to add code directly here, but if you do, it'll appear at the bottom of the
 # the compiled file.
 #
-#= require jquery
+#= require jquery2
 #= require jquery-ui/autocomplete
 #= require jquery-ui/datepicker
 #= require jquery-ui/draggable
@@ -35,7 +35,6 @@
 #= require raphael
 #= require g.raphael
 #= require g.bar
-#= require Chart
 #= require branch-graph
 #= require ace/ace
 #= require ace/ext-searchbox
@@ -56,9 +55,11 @@
 #= require_directory ./commit
 #= require_directory ./extensions
 #= require_directory ./lib
+#= require_directory ./u2f
 #= require_directory .
 #= require fuzzaldrin-plus
 #= require cropper
+#= require u2f
 
 window.slugify = (text) ->
   text.replace(/[^-a-zA-Z0-9]+/g, '_').toLowerCase()
@@ -224,6 +225,10 @@ $ ->
     form = btn.closest("form")
     new ConfirmDangerModal(form, text)
 
+
+  $(document).on 'click', 'button', ->
+    $(this).blur()
+
   $('input[type="search"]').each ->
     $this = $(this)
     $this.attr 'value', $this.val()
@@ -262,9 +267,10 @@ $ ->
       $(document).trigger('breakpoint:change', [bootstrapBreakpoint])
 
   $(window)
-    .off "resize"
-    .on "resize", (e) ->
+    .off "resize.app"
+    .on "resize.app", (e) ->
       fitSidebarForSize()
 
+  gl.awardsHandler = new AwardsHandler()
   checkInitialSidebarSize()
   new Aside()

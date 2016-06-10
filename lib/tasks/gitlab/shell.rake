@@ -118,12 +118,12 @@ namespace :gitlab do
     puts ""
 
     unless $?.success?
-      puts "Failed to add keys...".red
+      puts "Failed to add keys...".color(:red)
       exit 1
     end
 
   rescue Gitlab::TaskAbortedByUserError
-    puts "Quitting...".red
+    puts "Quitting...".color(:red)
     exit 1
   end
 

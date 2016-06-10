@@ -10,14 +10,9 @@ Feature: Project Active Tab
     Then the active main tab should be Home
     And no other main tabs should be active
 
-  Scenario: On Project Files
+  Scenario: On Project Code
     Given I visit my project's files page
-    Then the active main tab should be Files
-    And no other main tabs should be active
-
-  Scenario: On Project Commits
-    Given I visit my project's commits page
-    Then the active main tab should be Commits
+    Then the active main tab should be Code
     And no other main tabs should be active
 
   Scenario: On Project Issues
@@ -64,40 +59,46 @@ Feature: Project Active Tab
     And no other sub navs should be active
     And the active main tab should be Settings
 
-  # Sub Tabs: Commits
+  # Sub Tabs: Code
 
-  Scenario: On Project Commits/Commits
+  Scenario: On Project Code/Files
+    Given I visit my project's files page
+    Then the active sub tab should be Files
+    And no other sub tabs should be active
+    And the active main tab should be Code
+
+  Scenario: On Project Code/Commits
     Given I visit my project's commits page
     Then the active sub tab should be Commits
     And no other sub tabs should be active
-    And the active main tab should be Commits
+    And the active main tab should be Code
 
-  Scenario: On Project Commits/Network
+  Scenario: On Project Code/Network
     Given I visit my project's network page
     Then the active sub tab should be Network
     And no other sub tabs should be active
-    And the active main tab should be Commits
+    And the active main tab should be Code
 
-  Scenario: On Project Commits/Compare
+  Scenario: On Project Code/Compare
     Given I visit my project's commits page
     And I click the "Compare" tab
     Then the active sub tab should be Compare
     And no other sub tabs should be active
-    And the active main tab should be Commits
+    And the active main tab should be Code
 
-  Scenario: On Project Commits/Branches
+  Scenario: On Project Code/Branches
     Given I visit my project's commits page
     And I click the "Branches" tab
     Then the active sub tab should be Branches
     And no other sub tabs should be active
-    And the active main tab should be Commits
+    And the active main tab should be Code
 
-  Scenario: On Project Commits/Tags
+  Scenario: On Project Code/Tags
     Given I visit my project's commits page
     And I click the "Tags" tab
     Then the active sub tab should be Tags
     And no other sub tabs should be active
-    And the active main tab should be Commits
+    And the active main tab should be Code
 
   Scenario: On Project Issues/Browse
     Given I visit my project's issues page
@@ -106,12 +107,16 @@ Feature: Project Active Tab
 
   Scenario: On Project Issues/Milestones
     Given I visit my project's issues page
-    And I click the "Milestones" tab
-    Then the active main tab should be Milestones
+    And I click the "Milestones" sub tab
+    Then the active main tab should be Issues
+    Then the active sub tab should be Milestones
     And no other main tabs should be active
+    And no other sub tabs should be active
 
   Scenario: On Project Issues/Labels
     Given I visit my project's issues page
-    And I click the "Labels" tab
-    Then the active main tab should be Labels
+    And I click the "Labels" sub tab
+    Then the active main tab should be Issues
+    Then the active sub tab should be Labels
     And no other main tabs should be active
+    And no other sub tabs should be active

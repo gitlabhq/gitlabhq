@@ -138,7 +138,6 @@ describe API::API, api: true  do
       expect(json_response['work_in_progress']).to be_falsy
       expect(json_response['merge_when_build_succeeds']).to be_falsy
       expect(json_response['merge_status']).to eq('can_be_merged')
-      expect(json_response['user_notes_count']).to be(2)
     end
 
     it "should return merge_request" do
@@ -388,7 +387,7 @@ describe API::API, api: true  do
   end
 
   describe "PUT /projects/:id/merge_requests/:merge_request_id/merge" do
-    let(:ci_commit) { create(:ci_commit_without_jobs) }
+    let(:pipeline) { create(:ci_pipeline_without_jobs) }
 
     it "should return merge_request in case of success" do
       put api("/projects/#{project.id}/merge_requests/#{merge_request.id}/merge", user)
@@ -420,6 +419,15 @@ describe API::API, api: true  do
       expect(json_response['message']).to eq('405 Method Not Allowed')
     end
 
+    it 'returns 405 if the build failed for a merge request that requires success' do
+      allow_any_instance_of(MergeRequest).to receive(:mergeable_ci_state?).and_return(false)
+
+      put api("/projects/#{project.id}/merge_requests/#{merge_request.id}/merge", user)
+
+      expect(response.status).to eq(405)
+      expect(json_response['message']).to eq('405 Method Not Allowed')
+    end
+
     it "should return 401 if user has no permissions to merge" do
       user2 = create(:user)
       project.team << [user2, :reporter]
@@ -428,9 +436,22 @@ describe API::API, api: true  do
       expect(json_response['message']).to eq('401 Unauthorized')
     end
 
+    it "returns 409 if the SHA parameter doesn't match" do
+      put api("/projects/#{project.id}/merge_requests/#{merge_request.id}/merge", user), sha: merge_request.source_sha.succ
+
+      expect(response.status).to eq(409)
+      expect(json_response['message']).to start_with('SHA does not match HEAD of source branch')
+    end
+
+    it "succeeds if the SHA parameter matches" do
+      put api("/projects/#{project.id}/merge_requests/#{merge_request.id}/merge", user), sha: merge_request.source_sha
+
+      expect(response.status).to eq(200)
+    end
+
     it "enables merge when build succeeds if the ci is active" do
-      allow_any_instance_of(MergeRequest).to receive(:ci_commit).and_return(ci_commit)
-      allow(ci_commit).to receive(:active?).and_return(true)
+      allow_any_instance_of(MergeRequest).to receive(:pipeline).and_return(pipeline)
+      allow(pipeline).to receive(:active?).and_return(true)
 
       put api("/projects/#{project.id}/merge_requests/#{merge_request.id}/merge", user), merge_when_build_succeeds: true
 

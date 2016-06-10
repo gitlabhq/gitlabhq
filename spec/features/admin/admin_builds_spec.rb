@@ -6,15 +6,15 @@ describe 'Admin Builds' do
   end
 
   describe 'GET /admin/builds' do
-    let(:commit) { create(:ci_commit) }
+    let(:pipeline) { create(:ci_pipeline) }
 
     context 'All tab' do
       context 'when have builds' do
         it 'shows all builds' do
-          create(:ci_build, commit: commit, status: :pending)
-          create(:ci_build, commit: commit, status: :running)
-          create(:ci_build, commit: commit, status: :success)
-          create(:ci_build, commit: commit, status: :failed)
+          create(:ci_build, pipeline: pipeline, status: :pending)
+          create(:ci_build, pipeline: pipeline, status: :running)
+          create(:ci_build, pipeline: pipeline, status: :success)
+          create(:ci_build, pipeline: pipeline, status: :failed)
 
           visit admin_builds_path
 
@@ -39,9 +39,9 @@ describe 'Admin Builds' do
     context 'Running tab' do
       context 'when have running builds' do
         it 'shows running builds' do
-          build1 = create(:ci_build, commit: commit, status: :pending)
-          build2 = create(:ci_build, commit: commit, status: :success)
-          build3 = create(:ci_build, commit: commit, status: :failed)
+          build1 = create(:ci_build, pipeline: pipeline, status: :pending)
+          build2 = create(:ci_build, pipeline: pipeline, status: :success)
+          build3 = create(:ci_build, pipeline: pipeline, status: :failed)
 
           visit admin_builds_path(scope: :running)
 
@@ -55,7 +55,7 @@ describe 'Admin Builds' do
 
       context 'when have no builds running' do
         it 'shows a message' do
-          create(:ci_build, commit: commit, status: :success)
+          create(:ci_build, pipeline: pipeline, status: :success)
 
           visit admin_builds_path(scope: :running)
 
@@ -69,9 +69,9 @@ describe 'Admin Builds' do
     context 'Finished tab' do
       context 'when have finished builds' do
         it 'shows finished builds' do
-          build1 = create(:ci_build, commit: commit, status: :pending)
-          build2 = create(:ci_build, commit: commit, status: :running)
-          build3 = create(:ci_build, commit: commit, status: :success)
+          build1 = create(:ci_build, pipeline: pipeline, status: :pending)
+          build2 = create(:ci_build, pipeline: pipeline, status: :running)
+          build3 = create(:ci_build, pipeline: pipeline, status: :success)
 
           visit admin_builds_path(scope: :finished)
 
@@ -85,7 +85,7 @@ describe 'Admin Builds' do
 
       context 'when have no builds finished' do
         it 'shows a message' do
-          create(:ci_build, commit: commit, status: :running)
+          create(:ci_build, pipeline: pipeline, status: :running)
 
           visit admin_builds_path(scope: :finished)
 

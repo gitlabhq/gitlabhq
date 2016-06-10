@@ -31,9 +31,9 @@ describe GroupsController do
     let(:issue_2) { create(:issue, project: project) }
 
     before do
-      create_list(:upvote_note, 3, project: project, noteable: issue_2)
-      create_list(:upvote_note, 2, project: project, noteable: issue_1)
-      create_list(:downvote_note, 2, project: project, noteable: issue_2)
+      create_list(:award_emoji, 3, awardable: issue_2)
+      create_list(:award_emoji, 2, awardable: issue_1)
+      create_list(:award_emoji, 2, :downvote, awardable: issue_2,)
 
       sign_in(user)
     end
@@ -56,9 +56,9 @@ describe GroupsController do
     let(:merge_request_2) { create(:merge_request, :simple, source_project: project) }
 
     before do
-      create_list(:upvote_note, 3, project: project, noteable: merge_request_2)
-      create_list(:upvote_note, 2, project: project, noteable: merge_request_1)
-      create_list(:downvote_note, 2, project: project, noteable: merge_request_2)
+      create_list(:award_emoji, 3, awardable: merge_request_2)
+      create_list(:award_emoji, 2, awardable: merge_request_1)
+      create_list(:award_emoji, 2, :downvote, awardable: merge_request_2)
 
       sign_in(user)
     end

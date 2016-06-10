@@ -5,7 +5,7 @@ describe API::CommitStatuses, api: true do
 
   let!(:project) { create(:project) }
   let(:commit) { project.repository.commit }
-  let(:commit_status) { create(:commit_status, commit: ci_commit) }
+  let(:commit_status) { create(:commit_status, pipeline: pipeline) }
   let(:guest) { create_user(:guest) }
   let(:reporter) { create_user(:reporter) }
   let(:developer) { create_user(:developer) }
@@ -16,8 +16,8 @@ describe API::CommitStatuses, api: true do
     let(:get_url) { "/projects/#{project.id}/repository/commits/#{sha}/statuses" }
 
     context 'ci commit exists' do
-      let!(:master) { project.ci_commits.create(sha: commit.id, ref: 'master') }
-      let!(:develop) { project.ci_commits.create(sha: commit.id, ref: 'develop') }
+      let!(:master) { project.pipelines.create(sha: commit.id, ref: 'master') }
+      let!(:develop) { project.pipelines.create(sha: commit.id, ref: 'develop') }
 
       it_behaves_like 'a paginated resources' do
         let(:request) { get api(get_url, reporter) }
@@ -27,7 +27,7 @@ describe API::CommitStatuses, api: true do
         let(:statuses_id) { json_response.map { |status| status['id'] } }
 
         def create_status(commit, opts = {})
-          create(:commit_status, { commit: commit, ref: commit.ref }.merge(opts))
+          create(:commit_status, { pipeline: commit, ref: commit.ref }.merge(opts))
         end
 
         let!(:status1) { create_status(master, status: 'running') }
