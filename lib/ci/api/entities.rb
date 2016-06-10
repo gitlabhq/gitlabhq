@@ -56,7 +56,7 @@ module Ci
 
       class TriggerRequest < Grape::Entity
         expose :id, :variables
-        expose :trigger, using: Commit, as: :commit
+        expose :pipeline, using: Commit, as: :commit
       end
     end
   end
