@@ -146,7 +146,7 @@ module Ci
 
           build.artifacts_file = artifacts
           build.artifacts_metadata = metadata
-          build.artifacts_expire_at = Time.now + ChronicDuration.parse(params['expire_in'])
+          build.artifacts_expire_in = params['expire_in']
 
           if build.save
             present(build, with: Entities::BuildDetails)

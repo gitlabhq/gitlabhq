@@ -29,6 +29,7 @@ module Ci
         expose :before_sha
         expose :allow_git_fetch
         expose :token
+        expose :artifacts_expire_at, if: lambda { |build, opts| build.artifacts? }
 
         expose :options do |model|
           model.options
