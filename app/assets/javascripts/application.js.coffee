@@ -254,8 +254,6 @@ $ ->
     .on "resize.app", (e) ->
       fitSidebarForSize()
 
-  jQuery.timeago.settings.allowFuture = true;
-
   gl.awardsHandler = new AwardsHandler()
   checkInitialSidebarSize()
   new Aside()
