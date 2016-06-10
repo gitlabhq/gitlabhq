@@ -42,6 +42,7 @@ describe ExpireBuildArtifactsWorker do
 
       before do
         build.erase_artifacts!
+        build.save
       end
 
       it do
