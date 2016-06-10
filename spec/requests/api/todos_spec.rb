@@ -14,6 +14,11 @@ describe API::Todos, api: true do
   let!(:pending_3) { create(:todo, project: project_1, author: author_2, user: john_doe, target: merge_request) }
   let!(:done) { create(:todo, :done, project: project_1, author: author_1, user: john_doe) }
 
+  before do
+    project_1.team << [john_doe, :developer]
+    project_2.team << [john_doe, :developer]
+  end
+
   describe 'GET /todos' do
     context 'when unauthenticated' do
       it 'returns authentication error' do
