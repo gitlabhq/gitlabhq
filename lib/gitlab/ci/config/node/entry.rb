@@ -10,16 +10,15 @@ module Gitlab
 
           attr_accessor :description
 
-          def initialize(value, root = nil, parent = nil)
+          def initialize(value)
             @value = value
-            @root = root
-            @parent = parent
             @nodes = {}
             @errors = []
           end
 
           def process!
-            return if leaf? || invalid?
+            return if leaf?
+            return unless valid?
 
             compose!
 
@@ -41,16 +40,8 @@ module Gitlab
             errors.none?
           end
 
-          def invalid?
-            !valid?
-          end
-
           def leaf?
             allowed_nodes.none?
-          end
-
-          def has_config?
-            @value.is_a?(Hash)
           end
 
           def errors

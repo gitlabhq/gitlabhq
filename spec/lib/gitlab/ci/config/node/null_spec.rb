@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Gitlab::Ci::Config::Node::Null do
-  let(:entry) { described_class.new(double, double) }
+  let(:entry) { described_class.new(nil) }
 
   describe '#leaf?' do
     it 'is leaf node' do

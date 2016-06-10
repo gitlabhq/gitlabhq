@@ -19,7 +19,7 @@ module Gitlab
           def initialize(*)
             super
 
-            unless leaf? || has_config?
+            unless @value.is_a?(Hash)
               @errors << 'should be a configuration entry with hash value'
             end
           end
@@ -39,9 +39,9 @@ module Gitlab
 
           def create_entry(key, entry_class)
             if @value.has_key?(key)
-              entry_class.new(@value[key], @root, self)
+              entry_class.new(@value[key])
             else
-              Node::Null.new(nil, @root, self)
+              Node::Null.new(nil)
             end
           end
 
