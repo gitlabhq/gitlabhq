@@ -1,4 +1,4 @@
-class ExpireBuildArtifacts
+class ExpireBuildArtifactsWorker
   include Sidekiq::Worker
 
   def perform
