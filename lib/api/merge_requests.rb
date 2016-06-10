@@ -41,7 +41,7 @@ module API
       #
       get ":id/merge_requests" do
         authorize! :read_merge_request, user_project
-        merge_requests = user_project.merge_requests
+        merge_requests = user_project.merge_requests.inc_notes_with_associations
 
         unless params[:iid].nil?
           merge_requests = filter_by_iid(merge_requests, params[:iid])

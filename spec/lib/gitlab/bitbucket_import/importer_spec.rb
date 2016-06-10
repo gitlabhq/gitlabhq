@@ -1,8 +1,10 @@
 require 'spec_helper'
 
 describe Gitlab::BitbucketImport::Importer, lib: true do
+  include ImportSpecHelper
+
   before do
-    Gitlab.config.omniauth.providers << OpenStruct.new(app_id: "asd123", app_secret: "asd123", name: "bitbucket")
+    stub_omniauth_provider('bitbucket')
   end
 
   let(:statuses) do

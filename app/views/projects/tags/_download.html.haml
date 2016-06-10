@@ -1,7 +1,6 @@
-%span.btn-group.btn-grouped
+%span.btn-group
   = link_to archive_namespace_project_repository_path(project.namespace, project, ref: ref, format: 'zip'), class: 'btn btn-default', rel: 'nofollow' do
-    %i.fa.fa-download
-    %span source code
+    %span Source code
   %a.btn.btn-default.dropdown-toggle{ 'data-toggle' => 'dropdown' }
     %span.caret
     %span.sr-only
@@ -9,9 +8,7 @@
   %ul.dropdown-menu.dropdown-menu-align-right{ role: 'menu' }
     %li
       = link_to archive_namespace_project_repository_path(project.namespace, project, ref: ref, format: 'zip'), rel: 'nofollow' do
-        %i.fa.fa-download
         %span Download zip
     %li
       = link_to archive_namespace_project_repository_path(project.namespace, project, ref: ref, format: 'tar.gz'), rel: 'nofollow' do
-        %i.fa.fa-download
         %span Download tar.gz

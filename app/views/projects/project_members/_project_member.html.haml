@@ -32,9 +32,9 @@
     .pull-right
       %strong= member.human_access
       - if can?(current_user, :update_project_member, member)
-        = button_tag class: "btn-xs btn js-toggle-button",
+        = button_tag class: "btn-xs btn-grouped inline btn js-toggle-button",
                      title: 'Edit access level', type: 'button' do
-          %i.fa.fa-pencil-square-o
+          = icon('pencil')
 
       - if can?(current_user, :destroy_project_member, member)
         &nbsp;
@@ -44,7 +44,7 @@
             Leave
         - else
           = link_to namespace_project_project_member_path(@project.namespace, @project, member), data: { confirm: remove_from_project_team_message(@project, member) }, method: :delete, remote: true, class: "btn-xs btn btn-remove", title: 'Remove user from team' do
-            %i.fa.fa-minus.fa-inverse
+            = icon('trash')
 
     .edit-member.hide.js-toggle-content
       %br

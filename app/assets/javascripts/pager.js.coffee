@@ -1,5 +1,5 @@
 @Pager =
-  init: (@limit = 0, preload, @disable = false) ->
+  init: (@limit = 0, preload, @disable = false, @callback = $.noop) ->
     @loading = $('.loading').first()
 
     if preload
@@ -19,6 +19,7 @@
         @loading.hide()
       success: (data) ->
         Pager.append(data.count, data.html)
+        Pager.callback()
       dataType: "json"
 
   append: (count, html) ->

@@ -38,6 +38,11 @@
   .header-logo {
     height: $header-height;
     padding: 8px 26px;
+    width: $sidebar_width;
+    position: fixed;
+    z-index: 999;
+    overflow: hidden;
+    transition-duration: .3s;
 
     &:hover {
       background-color: #eee;
@@ -73,7 +78,8 @@
 
 
 .nav-sidebar {
-  margin: 22px 0;
+  margin-top: 22 + $header-height;
+  margin-bottom: 116px;
   transition-duration: .3s;
   list-style: none;
   overflow: hidden;
@@ -109,8 +115,7 @@
       }
 
       i {
-        width: 16px;
-        color: $gray-light;
+        font-size: 16px;
       }
 
       .nav-link-text {
@@ -167,6 +172,7 @@
 
     .header-logo {
       width: 0;
+      padding: 8px 0;
 
       a {
         padding-left: ($sidebar_collapsed_width - 36) / 2;

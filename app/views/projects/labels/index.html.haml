@@ -7,7 +7,6 @@
   .nav-controls
     - if can?(current_user, :admin_label, @project)
       = link_to new_namespace_project_label_path(@project.namespace, @project), class: "btn btn-new" do
-        = icon('plus')
         New label
 
 .labels

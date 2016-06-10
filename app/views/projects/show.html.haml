@@ -13,7 +13,7 @@
 = render "home_panel"
 
 .project-stats.row-content-block.second-block
-  .container-fluid.container-limited
+  %div{ class: (container_class) }
     %ul.nav
       %li
         = link_to project_files_path(@project) do
