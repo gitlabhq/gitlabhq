@@ -3,7 +3,7 @@ require 'spec_helper'
 describe ExpireBuildArtifactsWorker do
   include RepoHelpers
 
-  let(:worker) { ExpireBuildArtifactsWorker.new }
+  let(:worker) { described_class.new }
 
   describe '#perform' do
     context 'with expired artifacts' do
@@ -11,9 +11,10 @@ describe ExpireBuildArtifactsWorker do
 
       it do
         expect_any_instance_of(Ci::Build).to receive(:erase_artifacts!)
+
         worker.perform
-        build.reload
-        expect(build.artifacts_expired?).to be_truthy
+
+        expect(build.reload.artifacts_expired?).to be_truthy
       end
     end
 
@@ -22,9 +23,10 @@ describe ExpireBuildArtifactsWorker do
 
       it do
         expect_any_instance_of(Ci::Build).not_to receive(:erase_artifacts!)
+
         worker.perform
-        build.reload
-        expect(build.artifacts_expired?).to be_falsey
+
+        expect(build.reload.artifacts_expired?).to be_falsey
       end
     end
 
@@ -33,6 +35,7 @@ describe ExpireBuildArtifactsWorker do
 
       it do
         expect_any_instance_of(Ci::Build).not_to receive(:erase_artifacts!)
+
         worker.perform
       end
     end
@@ -47,9 +50,10 @@ describe ExpireBuildArtifactsWorker do
 
       it do
         expect_any_instance_of(Ci::Build).not_to receive(:erase_artifacts!)
+
         worker.perform
-        build.reload
-        expect(build.artifacts_expired?).to be_truthy
+
+        expect(build.reload.artifacts_expired?).to be_truthy
       end
     end
   end

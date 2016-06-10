@@ -253,17 +253,16 @@ describe API::API, api: true  do
                project: project, pipeline: pipeline, artifacts_expire_at: Time.now + 7.days)
       end
 
-      it 'should keep artifacts' do
+      it 'keeps artifacts' do
         expect(response.status).to eq 200
-        build.reload
-        expect(build.artifacts_expire_at).to be_nil
+        expect(build.reload.artifacts_expire_at).to be_nil
       end
     end
 
     context 'no artifacts' do
       let(:build) { create(:ci_build, project: project, pipeline: pipeline) }
 
-      it 'should respond with not found' do
+      it 'responds with not found' do
         expect(response.status).to eq 404
       end
     end

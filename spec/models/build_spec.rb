@@ -467,6 +467,7 @@ describe Ci::Build, models: true do
 
     it 'when assigning valid duration' do
       build.artifacts_expire_in = '7 days'
+
       is_expected.to be_within(10).of(7.days.to_i)
     end
 
@@ -477,6 +478,7 @@ describe Ci::Build, models: true do
 
     it 'when resseting value' do
       build.artifacts_expire_in = nil
+
       is_expected.to be_nil
     end
   end
@@ -486,6 +488,7 @@ describe Ci::Build, models: true do
 
     it 'to reset expire_at' do
       build.keep_artifacts!
+
       expect(build.artifacts_expire_at).to be_nil
     end
   end

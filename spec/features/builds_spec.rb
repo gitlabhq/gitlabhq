@@ -106,7 +106,7 @@ describe "Builds" do
       context 'no expire date defined' do
         let(:expire_at) { nil }
 
-        it 'should not have the Keep button' do
+        it 'does not have the Keep button' do
           page.within('.artifacts') do
             expect(page).not_to have_content 'Keep'
           end
@@ -116,7 +116,7 @@ describe "Builds" do
       context 'when expire date is defined' do
         let(:expire_at) { Time.now + 7.days }
 
-        it 'should keep artifacts when Keep button is clicked' do
+        it 'keeps artifacts when Keep button is clicked' do
           page.within('.artifacts') do
             expect(page).to have_content 'The artifacts will be removed'
             click_link 'Keep'
@@ -130,7 +130,7 @@ describe "Builds" do
       context 'when artifacts expired' do
         let(:expire_at) { Time.now - 7.days }
 
-        it 'should not have the Keep button' do
+        it 'does not have the Keep button' do
           page.within('.artifacts') do
             expect(page).to have_content 'The artifacts were removed'
             expect(page).not_to have_link 'Keep'
@@ -150,8 +150,6 @@ describe "Builds" do
         expect(page).to have_link 'Raw'
       end
     end
-
-    context ''
   end
 
   describe "POST /:project/builds/:id/cancel" do

@@ -167,10 +167,11 @@ module API
                        user_can_download_artifacts: can?(current_user, :download_build_artifacts, user_project)
       end
 
-      # Keep the artifacts to prevent them to be deleted
+      # Keep the artifacts to prevent them from being deleted
       #
       # Parameters:
-      #   id (required) - The ID of a build
+      #   id (required) - the id of a project
+      #   build_id (required) - The ID of a build
       # Example Request:
       #   POST /projects/:id/builds/:build_id/artifacts/keep
       post ':id/builds/:build_id/artifacts/keep' do

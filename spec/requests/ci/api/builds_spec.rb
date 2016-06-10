@@ -364,7 +364,7 @@ describe Ci::API::API do
             end
           end
 
-          context 'expire date' do
+          context 'with an expire date' do
             let!(:artifacts) { file_upload }
 
             let(:post_data) do
@@ -377,7 +377,7 @@ describe Ci::API::API do
               post(post_url, post_data, headers_with_token)
             end
 
-            context 'updates when specified' do
+            context 'with an expire_in given' do
               let(:expire_in) { '7 days' }
 
               it do
@@ -388,7 +388,7 @@ describe Ci::API::API do
               end
             end
 
-            context 'ignores if not specified' do
+            context 'with no expire_in given' do
               let(:expire_in) { nil }
 
               it do

@@ -360,11 +360,10 @@ module Ci
     end
 
     def artifacts_expire_in=(value)
-      if value
-        self.artifacts_expire_at = Time.now + ChronicDuration.parse(value)
-      else
-        self.artifacts_expire_at = nil
-      end
+      self.artifacts_expire_at =
+        if value
+          Time.now + ChronicDuration.parse(value)
+        end
     end
 
     def keep_artifacts!
