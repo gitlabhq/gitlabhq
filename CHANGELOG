@@ -72,6 +72,7 @@ v 8.9.0 (unreleased)
   - Cache on the database if a project has an active external issue tracker.
   - Put project Labels and Milestones pages links under Issues and Merge Requests tabs as subnav
   - All classes in the Banzai::ReferenceParser namespace are now instrumented
+  - Remove deprecated issues_tracker and issues_tracker_id from project model
 
 v 8.8.5 (unreleased)
   - Ensure branch cleanup regardless of whether the GitHub import process succeeds
