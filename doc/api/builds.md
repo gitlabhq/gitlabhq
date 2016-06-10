@@ -443,3 +443,53 @@ Example of response
     "user": null
 }
 ```
+
+## Keep artifacts
+
+Prevents artifacts from being deleted when expiration is set
+
+```
+POST /projects/:id/builds/:build_id/artifacts/keep
+```
+
+Parameters
+
+| Attribute   | Type    | required | Description         |
+|-------------|---------|----------|---------------------|
+| `id`        | integer | yes      | The ID of a project |
+| `build_id`  | integer | yes      | The ID of a build   |
+
+Example of request
+
+```
+curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/builds/1/artifacts/keep"
+```
+
+Example of response
+
+```json
+{
+    "commit": {
+        "author_email": "admin@example.com",
+        "author_name": "Administrator",
+        "created_at": "2015-12-24T16:51:14.000+01:00",
+        "id": "0ff3ae198f8601a285adcf5c0fff204ee6fba5fd",
+        "message": "Test the CI integration.",
+        "short_id": "0ff3ae19",
+        "title": "Test the CI integration."
+    },
+    "coverage": null,
+    "download_url": null,
+    "id": 69,
+    "name": "rubocop",
+    "ref": "master",
+    "runner": null,
+    "stage": "test",
+    "created_at": "2016-01-11T10:13:33.506Z",
+    "started_at": "2016-01-11T10:13:33.506Z",
+    "finished_at": "2016-01-11T10:15:10.506Z",
+    "status": "failed",
+    "tag": false,
+    "user": null
+}
+```

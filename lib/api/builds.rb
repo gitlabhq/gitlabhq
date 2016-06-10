@@ -166,6 +166,25 @@ module API
         present build, with: Entities::Build,
                        user_can_download_artifacts: can?(current_user, :download_build_artifacts, user_project)
       end
+
+      # Keep the artifacts to prevent them to be deleted
+      #
+      # Parameters:
+      #   id (required) - The ID of a build
+      # Example Request:
+      #   POST /projects/:id/builds/:build_id/artifacts/keep
+      post ':id/builds/:build_id/artifacts/keep' do
+        authorize_update_builds!
+
+        build = get_build(params[:build_id])
+        return not_found!(build) unless build && build.artifacts?
+
+        build.keep_artifacts!
+
+        status 200
+        present build, with: Entities::Build,
+                user_can_download_artifacts: can?(current_user, :read_build, user_project)
+      end
     end
 
     helpers do
