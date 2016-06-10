@@ -18,4 +18,14 @@ describe Gitlab::Highlight, lib: true do
     end
   end
 
+  describe 'custom highlighting from .gitattributes' do
+    let(:blob) { project.blob_at_branch('master', 'custom-highlighting/test.gitlab-custom') }
+    let(:highlighter) {
+      Gitlab::Highlight.new(blob.path, blob.contents, repository: project.repository)
+    }
+
+    it 'highlights as ruby' do
+      expect(highlighter.lexer).to be_an_instance_of Rouge::Lexers::Ruby
+    end
+  end
 end

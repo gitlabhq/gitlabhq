@@ -978,6 +978,10 @@ class Repository
     raw_repository.ls_files(actual_ref)
   end
 
+  def gitattribute(path, name)
+    raw_repository.attributes(path)[name]
+  end
+
   def copy_gitattributes(ref)
     actual_ref = ref || root_ref
     begin

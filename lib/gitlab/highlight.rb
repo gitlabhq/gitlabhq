@@ -1,7 +1,8 @@
 module Gitlab
   class Highlight
-    def self.highlight(blob_name, blob_content, nowrap: true, plain: false)
-      new(blob_name, blob_content, nowrap: nowrap).
+    def self.highlight(blob_name, blob_content,
+                       repository: nil, nowrap: true, plain: false)
+      new(blob_name, blob_content, nowrap: nowrap, repository: repository).
         highlight(blob_content, continue: false, plain: plain)
     end
 
@@ -10,12 +11,29 @@ module Gitlab
       return [] unless blob
 
       blob.load_all_data!(repository)
-      highlight(file_name, blob.data).lines.map!(&:html_safe)
+      highlight(file_name, blob.data, repository: repository).lines.map!(&:html_safe)
     end
 
-    def initialize(blob_name, blob_content, nowrap: true)
+    attr_reader :lexer
+    def initialize(blob_name, blob_content, repository: nil, nowrap: true)
+      @blob_name = blob_name
+      @blob_content = blob_content
+      @repository = repository
       @formatter = rouge_formatter(nowrap: nowrap)
-      @lexer = Rouge::Lexer.guess(filename: blob_name, source: blob_content).new rescue Rouge::Lexers::PlainText
+
+      @lexer = custom_language || begin
+        Rouge::Lexer.guess(filename: blob_name, source: blob_content).new
+      rescue Rouge::Lexer::AmbiguousGuess => e
+        e.alternatives.sort_by(&:tag).first
+      end
+    end
+
+    def custom_language
+      return nil if @repository.nil?
+
+      language_name = @repository.gitattribute(@blob_name, 'gitlab-language')
+
+      Rouge::Lexer.find(language_name)
     end
 
     def highlight(text, continue: true, plain: false)
