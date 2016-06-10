@@ -132,7 +132,7 @@ header {
       transition-duration: .3s;
       z-index: 999;
 
-      @media (max-width: $screen-sm-min) {
+      @media (max-width: $screen-xs-max) {
         right: 25px;
         left: auto;
       }
@@ -151,7 +151,7 @@ header {
       vertical-align: top;
       white-space: nowrap;
 
-      @media (max-width: $screen-sm-min) {
+      @media (max-width: $screen-xs-max) {
         max-width: 220px;
       }
 
@@ -183,7 +183,7 @@ header {
       float: right;
       border-top: none;
 
-      @media (max-width: $screen-sm-min) {
+      @media (max-width: $screen-xs-max) {
         float: none;
       }
     }
