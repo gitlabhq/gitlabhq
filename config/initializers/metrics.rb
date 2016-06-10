@@ -121,6 +121,13 @@ if Gitlab::Metrics.enabled?
     config.instrument_instance_methods(Gitlab::GitAccessWiki)
 
     config.instrument_instance_methods(API::Helpers)
+
+    config.instrument_instance_methods(RepositoryCheck::SingleRepositoryWorker)
+    # Iterate over each non-super private instance method to keep up to date if
+    # internals change
+    RepositoryCheck::SingleRepositoryWorker.private_instance_methods(false).each do |method|
+      config.instrument_instance_method(RepositoryCheck::SingleRepositoryWorker, method)
+    end
   end
 
   GC::Profiler.enable

@@ -15,6 +15,7 @@ class SessionsController < Devise::SessionsController
   before_action :load_recaptcha
 
   def new
+    set_minimum_password_length
     if Gitlab.config.ldap.enabled
       @ldap_servers = Gitlab::LDAP::Config.servers
     else

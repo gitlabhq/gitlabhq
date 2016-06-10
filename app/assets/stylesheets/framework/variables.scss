@@ -2,7 +2,7 @@
  * Layout
  */
 $sidebar_collapsed_width: 62px;
-$sidebar_width: 220px;
+$sidebar_width: 90px;
 $gutter_collapsed_width: 62px;
 $gutter_width: 290px;
 $gutter_inner_width: 258px;
@@ -57,6 +57,7 @@ $code_line_height: 1.5;
  */
 $gl-padding: 16px;
 $gl-btn-padding: 10px;
+$gl-input-padding: 10px;
 $gl-vert-padding: 6px;
 $gl-padding-top: 10px;
 
@@ -79,6 +80,9 @@ $provider-btn-not-active-color: #4688f1;
 $link-underline-blue: #4a8bee;
 $layout-link-gray: #7e7c7c;
 $todo-alert-blue: #428bca;
+$btn-side-margin: 10px;
+$btn-sm-side-margin: 7px;
+$btn-xs-side-margin: 5px;
 
 /*
  * Color schema
@@ -121,7 +125,7 @@ $border-white-normal: #d6dae2;
 $border-white-dark: #c6cacf;
 
 $border-gray-light: #dcdcdc;
-$border-gray-normal: rgba(0, 0, 0, 0.10);
+$border-gray-normal: #d7d7d7;
 $border-gray-dark: #c6cacf;
 
 $border-green-light: #2faa60;

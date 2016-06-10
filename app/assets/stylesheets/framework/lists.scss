@@ -137,9 +137,29 @@ ul.content-list {
       padding-top: 1px;
       float: right;
 
-      .btn {
-        padding: 10px 14px;
+      > .btn,
+      > .btn-group {
+        margin-right: $gl-padding-top;
+        display: inline-block;
+        margin-top: 4px;
+        margin-bottom: 4px;
+
+        &:last-child {
+          margin-right: 0;
+        }
       }
+    }
+
+    // When dragging a list item
+    &.ui-sortable-helper {
+      border-bottom: none;
+    }
+
+    &.list-placeholder {
+      background-color: $gray-light;
+      border: dotted 1px $gray-dark;
+      margin: 1px 0;
+      min-height: 30px;
     }
   }
 }

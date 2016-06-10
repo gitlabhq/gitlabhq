@@ -81,10 +81,10 @@ class Issue < ActiveRecord::Base
     @link_reference_pattern ||= super("issues", /(?<issue>\d+)/)
   end
 
-  def self.sort(method)
+  def self.sort(method, excluded_labels: [])
     case method.to_s
     when 'due_date_asc' then order_due_date_asc
-    when 'due_date_desc'  then order_due_date_desc
+    when 'due_date_desc' then order_due_date_desc
     else
       super
     end

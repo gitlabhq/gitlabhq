@@ -96,9 +96,9 @@ class Spinach::Features::ProjectWiki < Spinach::FeatureSteps
 
   step 'I click on existing image link' do
     file = Gollum::File.new(wiki.wiki)
-    allow_any_instance_of(Gollum::Wiki).to receive(:file).with("image.jpg", "master", true).and_return(file)
-    allow_any_instance_of(Gollum::File).to receive(:mime_type).and_return("image/jpeg")
-    expect(page).to have_link('image', href: "image.jpg")
+    Gollum::Wiki.any_instance.stub(:file).with("image.jpg", "master", true).and_return(file)
+    Gollum::File.any_instance.stub(:mime_type).and_return("image/jpeg")
+    expect(page).to have_link('image', href: "#{wiki.wiki_base_path}/image.jpg")
     click_on "image"
   end
 
@@ -114,7 +114,7 @@ class Spinach::Features::ProjectWiki < Spinach::FeatureSteps
   end
 
   step 'I click on image link' do
-    expect(page).to have_link('image', href: "image.jpg")
+    expect(page).to have_link('image', href: "#{wiki.wiki_base_path}/image.jpg")
     click_on "image"
   end
 

@@ -104,7 +104,7 @@ class Projects::WikisController < Projects::ApplicationController
     ext.analyze(text, author: current_user)
 
     render json: {
-      body: view_context.markdown(text, pipeline: :wiki, project_wiki: @project_wiki),
+      body: view_context.markdown(text, pipeline: :wiki, project_wiki: @project_wiki, page_slug: params[:id]),
       references: {
         users: ext.users.map(&:username)
       }

@@ -88,8 +88,8 @@ Rails.application.routes.draw do
   # Health check
   get 'health_check(/:checks)' => 'health_check#index', as: :health_check
 
-  # Enable Grack support
-  mount Grack::AuthSpawner, at: '/', constraints: lambda { |request| /[-\/\w\.]+\.git\//.match(request.path_info) }, via: [:get, :post, :put]
+  # Enable Grack support (for LFS only)
+  mount Grack::AuthSpawner, at: '/', constraints: lambda { |request| /[-\/\w\.]+\.git\/(info\/lfs|gitlab-lfs)/.match(request.path_info) }, via: [:get, :post, :put]
 
   # Help
   get 'help'                  => 'help#index'
@@ -483,6 +483,7 @@ Rails.application.routes.draw do
   resources :namespaces, path: '/', constraints: { id: /[a-zA-Z.0-9_\-]+/ }, only: [] do
     resources(:projects, constraints: { id: /[a-zA-Z.0-9_\-]+(?<!\.atom)/ }, except:
               [:new, :create, :index], path: "/") do
+
       member do
         put :transfer
         delete :remove_fork
@@ -496,6 +497,29 @@ Rails.application.routes.draw do
       end
 
       scope module: :projects do
+        # Git HTTP clients ('git clone' etc.)
+        scope constraints: { id: /.+\.git/, format: nil } do
+          get '/info/refs', to: 'git_http#info_refs'
+          post '/git-upload-pack', to: 'git_http#git_upload_pack'
+          post '/git-receive-pack', to: 'git_http#git_receive_pack'
+        end
+
+        # Allow /info/refs, /info/refs?service=git-upload-pack, and
+        # /info/refs?service=git-receive-pack, but nothing else.
+        #
+        git_http_handshake = lambda do |request|
+          request.query_string.blank? ||
+            request.query_string.match(/\Aservice=git-(upload|receive)-pack\z/)
+        end
+
+        ref_redirect = redirect do |params, request|
+          path = "#{params[:namespace_id]}/#{params[:project_id]}.git/info/refs"
+          path << "?#{request.query_string}" unless request.query_string.blank?
+          path
+        end
+
+        get '/info/refs', constraints: git_http_handshake, to: ref_redirect
+
         # Blob routes:
         get '/new/*id', to: 'blob#new', constraints: { id: /.+/ }, as: 'new_blob'
         post '/create/*id', to: 'blob#create', constraints: { id: /.+/ }, as: 'create_blob'
@@ -638,7 +662,6 @@ Rails.application.routes.draw do
           # Order matters to give priority to these matches
           get '/wikis/git_access', to: 'wikis#git_access'
           get '/wikis/pages', to: 'wikis#pages', as: 'wiki_pages'
-          post '/wikis/markdown_preview', to:'wikis#markdown_preview'
           post '/wikis', to: 'wikis#create'
 
           get '/wikis/*id/history', to: 'wikis#history', as: 'wiki_history', constraints: WIKI_SLUG_ID
@@ -647,6 +670,7 @@ Rails.application.routes.draw do
           get '/wikis/*id', to: 'wikis#show', as: 'wiki', constraints: WIKI_SLUG_ID
           delete '/wikis/*id', to: 'wikis#destroy', constraints: WIKI_SLUG_ID
           put '/wikis/*id', to: 'wikis#update', constraints: WIKI_SLUG_ID
+          post '/wikis/*id/markdown_preview', to:'wikis#markdown_preview', constraints: WIKI_SLUG_ID, as: 'wiki_markdown_preview'
         end
 
         resource :repository, only: [:show, :create] do
@@ -774,10 +798,12 @@ Rails.application.routes.draw do
         resources :labels, constraints: { id: /\d+/ } do
           collection do
             post :generate
+            post :set_priorities
           end
 
           member do
             post :toggle_subscription
+            delete :remove_priority
           end
         end
 

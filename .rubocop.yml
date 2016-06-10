@@ -1091,6 +1091,9 @@ Rails/TimeZone:
 Rails/Validation:
   Enabled: false
 
+Rails/UniqBeforePluck:
+  Enabled: false
+
 ##################### RSpec ##################################
 
 # Check that instances are not being stubbed globally.

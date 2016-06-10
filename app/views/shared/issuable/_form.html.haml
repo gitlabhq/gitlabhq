@@ -95,9 +95,9 @@
       .col-lg-6
         .form-group
           = f.label :due_date, "Due date", class: "control-label"
-          = f.hidden_field :due_date, id: "issuable-due-date"
           .col-sm-10
-            .datepicker
+            .issuable-form-select-holder
+              = f.text_field :due_date, id: "issuable-due-date", class: "datepicker form-control", placeholder: "Select due date"
 
 - if issuable.can_move?(current_user)
   %hr

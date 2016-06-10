@@ -6,7 +6,7 @@
     %h4.prepend-top-0
       = page_title
     %p
-      #{link_to "Webhooks ", help_page_path("web_hooks", "web_hooks"), class: "vlink"} can be
+      #{link_to "Webhooks", help_page_path("web_hooks", "web_hooks")} can be
       used for binding events when something is happening within the #{context_title}.
   .col-lg-9.append-bottom-default
     = form_for hook, as: :hook, url: polymorphic_path(url_components + [:hooks]) do |f|
@@ -85,21 +85,7 @@
     - if hooks.any?
       %ul.well-list
         - hooks.each do |hook|
-          %li
-            .row
-              .col-md-8.col-lg-7
-                %strong.light-header= hook.url
-                %div
-                  - %w(push_events tag_push_events issues_events note_events merge_requests_events build_events wiki_page_events).each do |trigger|
-                    - if hook.send(trigger)
-                      %span.label.label-gray.deploy-project-label= trigger.titleize
-              .col-md-4.col-lg-5.text-right-lg.prepend-top-5
-                %span.append-right-10.inline
-                  SSL Verification: #{hook.enable_ssl_verification ? "enabled" : "disabled"}
-                = link_to 'Test', polymorphic_path(url_components + [hook], action: :test), class: "btn btn-sm"
-                = link_to polymorphic_path(url_components + [hook]), data: { confirm: 'Are you sure?'}, method: :delete, class: "btn btn-transparent" do
-                  %span.sr-only Remove
-                  = icon('trash')
+          = render "project_hook", hook: hook
     - else
       %p.settings-message.text-center.append-bottom-0
         No webhooks found, add one in the form above.

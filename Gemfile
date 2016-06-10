@@ -39,7 +39,7 @@ gem 'rack-oauth2',            '~> 1.2.1'
 gem 'jwt'
 
 # Spam and anti-bot protection
-gem 'recaptcha', require: 'recaptcha/rails'
+gem 'recaptcha', '~> 3.0', require: 'recaptcha/rails'
 gem 'akismet', '~> 2.0'
 
 # Two-factor authentication
@@ -91,6 +91,7 @@ gem 'dropzonejs-rails', '~> 0.7.1'
 
 # for backups
 gem 'fog-aws', '~> 0.9'
+gem 'fog-azure', '~> 0.0'
 gem 'fog-core', '~> 1.40'
 gem 'fog-local', '~> 0.3'
 gem 'fog-google', '~> 0.3'
@@ -319,6 +320,7 @@ group :development, :test do
   gem 'benchmark-ips', require: false
 
   gem "license_finder", require: false
+  gem 'knapsack'
 end
 
 group :test do

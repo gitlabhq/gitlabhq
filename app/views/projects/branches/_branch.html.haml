@@ -27,12 +27,10 @@
     .controls.hidden-xs
       - if create_mr_button?(@repository.root_ref, branch.name)
         = link_to create_mr_path(@repository.root_ref, branch.name), class: 'btn btn-grouped btn-xs' do
-          = icon('plus')
           Merge Request
 
       - if branch.name != @repository.root_ref
         = link_to namespace_project_compare_index_path(@project.namespace, @project, from: @repository.root_ref, to: branch.name), class: 'btn btn-grouped btn-xs', method: :post, title: "Compare" do
-          = icon("exchange")
           Compare
 
       - if can_remove_branch?(@project, branch.name)

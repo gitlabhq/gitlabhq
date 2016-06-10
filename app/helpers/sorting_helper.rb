@@ -16,7 +16,8 @@ module SortingHelper
       sort_value_downvotes => sort_title_downvotes,
       sort_value_upvotes => sort_title_upvotes,
       sort_value_more_weight => sort_title_more_weight,
-      sort_value_less_weight => sort_title_less_weight
+      sort_value_less_weight => sort_title_less_weight,
+      sort_value_priority => sort_title_priority
     }
   end
 
@@ -28,6 +29,10 @@ module SortingHelper
       sort_value_recently_created => sort_title_recently_created,
       sort_value_oldest_created => sort_title_oldest_created,
     }
+  end
+
+  def sort_title_priority
+    'Priority'
   end
 
   def sort_title_oldest_updated
@@ -92,6 +97,10 @@ module SortingHelper
 
   def sort_title_less_weight
     'Less weight'
+  end
+
+  def sort_value_priority
+    'priority'
   end
 
   def sort_value_oldest_updated

@@ -68,7 +68,10 @@ describe User, models: true do
 
     describe 'email' do
       context 'when no signup domains listed' do
-        before { allow_any_instance_of(ApplicationSetting).to receive(:restricted_signup_domains).and_return([]) }
+        before do
+          allow_any_instance_of(ApplicationSetting).to receive(:restricted_signup_domains).and_return([])
+        end
+
         it 'accepts any email' do
           user = build(:user, email: "info@example.com")
           expect(user).to be_valid
@@ -76,7 +79,10 @@ describe User, models: true do
       end
 
       context 'when a signup domain is listed and subdomains are allowed' do
-        before { allow_any_instance_of(ApplicationSetting).to receive(:restricted_signup_domains).and_return(['example.com', '*.example.com']) }
+        before do
+          allow_any_instance_of(ApplicationSetting).to receive(:restricted_signup_domains).and_return(['example.com', '*.example.com'])
+        end
+
         it 'accepts info@example.com' do
           user = build(:user, email: "info@example.com")
           expect(user).to be_valid
@@ -94,7 +100,9 @@ describe User, models: true do
       end
 
       context 'when a signup domain is listed and subdomains are not allowed' do
-        before { allow_any_instance_of(ApplicationSetting).to receive(:restricted_signup_domains).and_return(['example.com']) }
+        before do
+          allow_any_instance_of(ApplicationSetting).to receive(:restricted_signup_domains).and_return(['example.com'])
+        end
 
         it 'accepts info@example.com' do
           user = build(:user, email: "info@example.com")
@@ -215,7 +223,10 @@ describe User, models: true do
   end
 
   describe '#confirm' do
-    before { allow_any_instance_of(ApplicationSetting).to receive(:send_user_confirmation_email).and_return(true) }
+    before do
+      allow_any_instance_of(ApplicationSetting).to receive(:send_user_confirmation_email).and_return(true)
+    end
+
     let(:user) { create(:user, confirmed_at: nil, unconfirmed_email: 'test@gitlab.com') }
 
     it 'returns unconfirmed' do
@@ -877,6 +888,75 @@ describe User, models: true do
     subject { user.authorized_projects }
 
     it { is_expected.to eq([private_project]) }
+  end
+
+  describe '#ci_authorized_runners' do
+    let(:user) { create(:user) }
+    let(:runner) { create(:ci_runner) }
+
+    before do
+      project.runners << runner
+    end
+
+    context 'without any projects' do
+      let(:project) { create(:project) }
+
+      it 'does not load' do
+        expect(user.ci_authorized_runners).to be_empty
+      end
+    end
+
+    context 'with personal projects runners' do
+      let(:namespace) { create(:namespace, owner: user) }
+      let(:project) { create(:project, namespace: namespace) }
+
+      it 'loads' do
+        expect(user.ci_authorized_runners).to contain_exactly(runner)
+      end
+    end
+
+    shared_examples :member do
+      context 'when the user is a master' do
+        before do
+          add_user(Gitlab::Access::MASTER)
+        end
+
+        it 'loads' do
+          expect(user.ci_authorized_runners).to contain_exactly(runner)
+        end
+      end
+
+      context 'when the user is a developer' do
+        before do
+          add_user(Gitlab::Access::DEVELOPER)
+        end
+
+        it 'does not load' do
+          expect(user.ci_authorized_runners).to be_empty
+        end
+      end
+    end
+
+    context 'with groups projects runners' do
+      let(:group) { create(:group) }
+      let(:project) { create(:project, group: group) }
+
+      def add_user(access)
+        group.add_user(user, access)
+      end
+
+      it_behaves_like :member
+    end
+
+    context 'with other projects runners' do
+      let(:project) { create(:project) }
+
+      def add_user(access)
+        project.team << [user, access]
+      end
+
+      it_behaves_like :member
+    end
   end
 
   describe '#viewable_starred_projects' do

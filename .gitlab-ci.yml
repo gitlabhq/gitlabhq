@@ -2,8 +2,8 @@ image: "ruby:2.1"
 
 services:
   - mysql:latest
-  - redis:latest
   - elasticsearch:latest
+  - redis:alpine
 
 cache:
   key: "ruby21"
@@ -15,106 +15,189 @@ variables:
   # retry tests only in CI environment
   RSPEC_RETRY_RETRY_COUNT: "3"
   ELASTIC_HOST: "elasticsearch"
-
+  RAILS_ENV: "test"
+  SIMPLECOV: "true"
+  USE_DB: "true"
+  USE_BUNDLE_INSTALL: "true"
 
 before_script:
   - source ./scripts/prepare_build.sh
-  - ruby -v
-  - which ruby
-  - retry gem install bundler --no-ri --no-rdoc
   - cp config/gitlab.yml.example config/gitlab.yml
-  - touch log/application.log
-  - touch log/test.log
-  - retry bundle install --without postgres production --jobs $(nproc) "${FLAGS[@]}"
-  - RAILS_ENV=test bundle exec rake db:drop db:create db:schema:load db:migrate
+  - bundle --version
+  - '[ "$USE_BUNDLE_INSTALL" != "true" ] || retry bundle install --without postgres production --jobs $(nproc) "${FLAGS[@]}"'
+  - retry gem install knapsack
+  - '[ "$USE_DB" != "true" ] || bundle exec rake db:drop db:create db:schema:load db:migrate'
 
 stages:
+- prepare
 - test
-- notifications
+- post-test
 
-spec:feature:
+# Prepare and merge knapsack tests
+
+.knapsack-state: &knapsack-state
+  services: []
+  variables:
+    USE_DB: "false"
+    USE_BUNDLE_INSTALL: "false"
+  cache:
+    key: "knapsack"
+    paths:
+    - knapsack/
+  artifacts:
+    paths:
+    - knapsack/
+
+knapsack:
+  <<: *knapsack-state
+  stage: prepare
+  script:
+    - mkdir -p knapsack/
+    - '[[ -f knapsack/rspec_report.json ]] || echo "{}" > knapsack/rspec_report.json'
+    - '[[ -f knapsack/spinach_report.json ]] || echo "{}" > knapsack/spinach_report.json'
+
+update-knapsack:
+  <<: *knapsack-state
+  stage: post-test
+  script:
+    - scripts/merge-reports knapsack/rspec_report.json knapsack/rspec_node_*.json
+    - scripts/merge-reports knapsack/spinach_report.json knapsack/spinach_node_*.json
+    - rm -f knapsack/*_node_*.json
+  only:
+    - master
+
+# Execute all testing suites
+
+.rspec-knapsack: &rspec-knapsack
   stage: test
   script:
-    - RAILS_ENV=test bundle exec rake assets:precompile 2>/dev/null
-    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:feature
+    - bundle exec rake assets:precompile 2>/dev/null
+    - JOB_NAME=( $CI_BUILD_NAME )
+    - export CI_NODE_INDEX=${JOB_NAME[1]}
+    - export CI_NODE_TOTAL=${JOB_NAME[2]}
+    - export KNAPSACK_REPORT_PATH=knapsack/rspec_node_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json
+    - export KNAPSACK_GENERATE_REPORT=true
+    - cp knapsack/rspec_report.json ${KNAPSACK_REPORT_PATH}
+    - knapsack rspec
+  artifacts:
+    paths:
+    - knapsack/
 
-spec:api:
+.spinach-knapsack: &spinach-knapsack
   stage: test
   script:
-    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:api
+    - bundle exec rake assets:precompile 2>/dev/null
+    - JOB_NAME=( $CI_BUILD_NAME )
+    - export CI_NODE_INDEX=${JOB_NAME[1]}
+    - export CI_NODE_TOTAL=${JOB_NAME[2]}
+    - export KNAPSACK_REPORT_PATH=knapsack/spinach_node_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json
+    - export KNAPSACK_GENERATE_REPORT=true
+    - cp knapsack/spinach_report.json ${KNAPSACK_REPORT_PATH}
+    - knapsack spinach "-r rerun"
+    # retry failed tests 3 times
+    - retry '[ ! -e tmp/spinach-rerun.txt ] || bin/spinach -r rerun $(cat tmp/spinach-rerun.txt)'
+  artifacts:
+    paths:
+    - knapsack/
 
-spec:models:
+rspec 0 20: *rspec-knapsack
+rspec 1 20: *rspec-knapsack
+rspec 2 20: *rspec-knapsack
+rspec 3 20: *rspec-knapsack
+rspec 4 20: *rspec-knapsack
+rspec 5 20: *rspec-knapsack
+rspec 6 20: *rspec-knapsack
+rspec 7 20: *rspec-knapsack
+rspec 8 20: *rspec-knapsack
+rspec 9 20: *rspec-knapsack
+rspec 10 20: *rspec-knapsack
+rspec 11 20: *rspec-knapsack
+rspec 12 20: *rspec-knapsack
+rspec 13 20: *rspec-knapsack
+rspec 14 20: *rspec-knapsack
+rspec 15 20: *rspec-knapsack
+rspec 16 20: *rspec-knapsack
+rspec 17 20: *rspec-knapsack
+rspec 18 20: *rspec-knapsack
+rspec 19 20: *rspec-knapsack
+
+spinach 0 10: *spinach-knapsack
+spinach 1 10: *spinach-knapsack
+spinach 2 10: *spinach-knapsack
+spinach 3 10: *spinach-knapsack
+spinach 4 10: *spinach-knapsack
+spinach 5 10: *spinach-knapsack
+spinach 6 10: *spinach-knapsack
+spinach 7 10: *spinach-knapsack
+spinach 8 10: *spinach-knapsack
+spinach 9 10: *spinach-knapsack
+
+# Execute all testing suites against Ruby 2.2
+
+.ruby-22: &ruby-22
+  image: "ruby:2.2"
+  only:
+    - master
+  cache:
+    key: "ruby22"
+    paths:
+    - vendor
+
+.rspec-knapsack-ruby22: &rspec-knapsack-ruby22
+  <<: *rspec-knapsack
+  <<: *ruby-22
+
+.spinach-knapsack-ruby22: &spinach-knapsack-ruby22
+  <<: *spinach-knapsack
+  <<: *ruby-22
+  
+rspec 0 20 ruby22: *rspec-knapsack-ruby22
+rspec 1 20 ruby22: *rspec-knapsack-ruby22
+rspec 2 20 ruby22: *rspec-knapsack-ruby22
+rspec 3 20 ruby22: *rspec-knapsack-ruby22
+rspec 4 20 ruby22: *rspec-knapsack-ruby22
+rspec 5 20 ruby22: *rspec-knapsack-ruby22
+rspec 6 20 ruby22: *rspec-knapsack-ruby22
+rspec 7 20 ruby22: *rspec-knapsack-ruby22
+rspec 8 20 ruby22: *rspec-knapsack-ruby22
+rspec 9 20 ruby22: *rspec-knapsack-ruby22
+rspec 10 20 ruby22: *rspec-knapsack-ruby22
+rspec 11 20 ruby22: *rspec-knapsack-ruby22
+rspec 12 20 ruby22: *rspec-knapsack-ruby22
+rspec 13 20 ruby22: *rspec-knapsack-ruby22
+rspec 14 20 ruby22: *rspec-knapsack-ruby22
+rspec 15 20 ruby22: *rspec-knapsack-ruby22
+rspec 16 20 ruby22: *rspec-knapsack-ruby22
+rspec 17 20 ruby22: *rspec-knapsack-ruby22
+rspec 18 20 ruby22: *rspec-knapsack-ruby22
+rspec 19 20 ruby22: *rspec-knapsack-ruby22
+
+spinach 0 10 ruby22: *spinach-knapsack-ruby22
+spinach 1 10 ruby22: *spinach-knapsack-ruby22
+spinach 2 10 ruby22: *spinach-knapsack-ruby22
+spinach 3 10 ruby22: *spinach-knapsack-ruby22
+spinach 4 10 ruby22: *spinach-knapsack-ruby22
+spinach 5 10 ruby22: *spinach-knapsack-ruby22
+spinach 6 10 ruby22: *spinach-knapsack-ruby22
+spinach 7 10 ruby22: *spinach-knapsack-ruby22
+spinach 8 10 ruby22: *spinach-knapsack-ruby22
+spinach 9 10 ruby22: *spinach-knapsack-ruby22
+
+# Other generic tests
+
+.exec: &exec
   stage: test
   script:
-    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:models
+    - bundle exec $CI_BUILD_NAME
 
-spec:lib:
-  stage: test
-  script:
-    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:lib
-
-spec:services:
-  stage: test
-  script:
-    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:services
-
-spec:other:
-  stage: test
-  script:
-    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:other
-
-spinach:project:half:
-  stage: test
-  script:
-    - RAILS_ENV=test bundle exec rake assets:precompile 2>/dev/null
-    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spinach:project:half
-
-spinach:project:rest:
-  stage: test
-  script:
-    - RAILS_ENV=test bundle exec rake assets:precompile 2>/dev/null
-    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spinach:project:rest
-
-spinach:other:
-  stage: test
-  script:
-    - RAILS_ENV=test bundle exec rake assets:precompile 2>/dev/null
-    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spinach:other
-
-teaspoon:
-  stage: test
-  script:
-    - RAILS_ENV=test bundle exec teaspoon
-
-rubocop:
-  stage: test
-  script:
-    - bundle exec rubocop
-
-scss-lint:
-  stage: test
-  script:
-    - bundle exec rake scss_lint
-
-license-finder:
-  stage: test
-  script:
-    - bundle exec license_finder
-
-brakeman:
-  stage: test
-  script:
-    - bundle exec rake brakeman
-
-flog:
-  stage: test
-  script:
-    - bundle exec rake flog
-
-flay:
-  stage: test
-  script:
-    - bundle exec rake flay
+teaspoon: *exec
+rubocop: *exec
+rake scss_lint: *exec
+rake brakeman: *exec
+rake flog: *exec
+rake flay: *exec
+rake db:migrate:reset: *exec
+license_finder: *exec
 
 bundler:audit:
   stage: test
@@ -123,127 +206,10 @@ bundler:audit:
   script:
     - "bundle exec bundle-audit check --update --ignore OSVDB-115941"
 
-db-migrate-reset:
-  stage: test
-  script:
-    - RAILS_ENV=test bundle exec rake db:migrate:reset
-
-# Ruby 2.2 jobs
-
-spec:feature:ruby22:
-  stage: test
-  image: ruby:2.2
-  only:
-    - master
-  script:
-    - RAILS_ENV=test bundle exec rake assets:precompile 2>/dev/null
-    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:feature
-  cache:
-    key: "ruby22"
-    paths:
-    - vendor
-
-spec:api:ruby22:
-  stage: test
-  image: ruby:2.2
-  only:
-  - master
-  script:
-    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:api
-  cache:
-    key: "ruby22"
-    paths:
-    - vendor
-
-spec:models:ruby22:
-  stage: test
-  image: ruby:2.2
-  only:
-  - master
-  script:
-    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:models
-  cache:
-    key: "ruby22"
-    paths:
-    - vendor
-
-spec:lib:ruby22:
-  stage: test
-  image: ruby:2.2
-  only:
-  - master
-  script:
-    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:lib
-  cache:
-    key: "ruby22"
-    paths:
-    - vendor
-
-spec:services:ruby22:
-  stage: test
-  image: ruby:2.2
-  only:
-  - master
-  script:
-    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:services
-  cache:
-    key: "ruby22"
-    paths:
-    - vendor
-
-spec:other:ruby22:
-  stage: test
-  image: ruby:2.2
-  only:
-  - master
-  script:
-    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:other
-  cache:
-    key: "ruby22"
-    paths:
-    - vendor
-
-spinach:project:half:ruby22:
-  stage: test
-  image: ruby:2.2
-  only:
-  - master
-  script:
-    - RAILS_ENV=test bundle exec rake assets:precompile 2>/dev/null
-    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spinach:project:half
-  cache:
-    key: "ruby22"
-    paths:
-    - vendor
-
-spinach:project:rest:ruby22:
-  stage: test
-  image: ruby:2.2
-  only:
-  - master
-  script:
-    - RAILS_ENV=test bundle exec rake assets:precompile 2>/dev/null
-    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spinach:project:rest
-  cache:
-    key: "ruby22"
-    paths:
-    - vendor
-
-spinach:other:ruby22:
-  stage: test
-  image: ruby:2.2
-  only:
-  - master
-  script:
-    - RAILS_ENV=test bundle exec rake assets:precompile 2>/dev/null
-    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spinach:other
-  cache:
-    key: "ruby22"
-    paths:
-    - vendor
+# Notify slack in the end
 
 notify:slack:
-  stage: notifications
+  stage: post-test
   script:
     - ./scripts/notify_slack.sh "#builds" "Build on \`$CI_BUILD_REF_NAME\` failed! Commit \`$(git log -1 --oneline)\` See <https://gitlab.com/gitlab-org/$(basename "$PWD")/commit/"$CI_BUILD_REF"/builds>"
   when: on_failure

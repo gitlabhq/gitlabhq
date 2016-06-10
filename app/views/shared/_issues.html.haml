@@ -1,4 +1,4 @@
-- if @issues.any?
+- if @issues.reorder(nil).any?
   - @issues.group_by(&:project).each do |group|
     .panel.panel-default.panel-small
       - project = group[0]

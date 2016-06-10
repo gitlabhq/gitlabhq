@@ -151,7 +151,7 @@ class Spinach::Features::Project < Spinach::FeatureSteps
   end
 
   step 'I click notifications drop down button' do
-    click_link 'notifications-button'
+    find('#notifications-button').click
   end
 
   step 'I choose Mention setting' do
