@@ -19,7 +19,7 @@
         = image_tag avatar_icon(current_user, 60), alt: 'Profile', class: 'avatar avatar s46'
   - if defined?(nav) && nav
     .layout-nav
-      .container-fluid
+      %div{ class: container_class }
         = render "layouts/nav/#{nav}"
   .content-wrapper{ class: "#{layout_nav_class}" }
     = render "layouts/broadcast"
