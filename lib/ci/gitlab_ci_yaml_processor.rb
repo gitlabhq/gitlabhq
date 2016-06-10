@@ -208,7 +208,7 @@ module Ci
         raise ValidationError, "#{name} job: allow_failure parameter should be an boolean"
       end
 
-      if job[:when] && !job[:when].in?(%w(on_success on_failure always))
+      if job[:when] && !job[:when].in?(%w[on_success on_failure always])
         raise ValidationError, "#{name} job: when parameter should be on_success, on_failure or always"
       end
     end
@@ -279,7 +279,7 @@ module Ci
         raise ValidationError, "#{name} job: artifacts:paths parameter should be an array of strings"
       end
 
-      if job[:artifacts][:when] && !job[:artifacts][:when].in?(%w(on_success on_failure always))
+      if job[:artifacts][:when] && !job[:artifacts][:when].in?(%w[on_success on_failure always])
         raise ValidationError, "#{name} job: artifacts:when parameter should be on_success, on_failure or always"
       end
     end

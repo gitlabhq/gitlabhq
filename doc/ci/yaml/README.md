@@ -670,7 +670,7 @@ failure.
 
 **Example configurations**
 
-To upload artifacts only when build fails
+To upload artifacts only when build fails.
 
 ```yaml
 job:
