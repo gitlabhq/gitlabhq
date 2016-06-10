@@ -25,7 +25,7 @@ module Gitlab
           end
 
           def allowed_nodes
-            self.class.nodes || {}
+            self.class.allowed_nodes || {}
           end
 
           private
@@ -46,16 +46,16 @@ module Gitlab
           end
 
           class_methods do
-            attr_reader :nodes
+            attr_reader :allowed_nodes
 
             private
 
-            def add_node(symbol, entry_class, metadata)
+            def allow_node(symbol, entry_class, metadata)
               node = { symbol.to_sym =>
                        { class: entry_class,
                          description: metadata[:description] } }
 
-              (@nodes ||= {}).merge!(node)
+              (@allowed_nodes ||= {}).merge!(node)
             end
           end
         end
