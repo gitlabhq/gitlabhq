@@ -1,3 +1,4 @@
+# rubocop:disable all
 class UserColorScheme < ActiveRecord::Migration
   include Gitlab::Database
 

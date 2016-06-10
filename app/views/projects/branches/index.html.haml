@@ -3,31 +3,30 @@
 = render "projects/commits/head"
 
 %div{ class: (container_class) }
-  .row-content-block.second-block.content-component-block
-    .pull-right
-      - if can? current_user, :push_code, @project
-        = link_to new_namespace_project_branch_path(@project.namespace, @project), class: 'btn btn-create' do
-          = icon('plus')
-          New branch
-        &nbsp;
-      .dropdown.inline
-        %button.dropdown-toggle.btn{type: 'button', 'data-toggle' => 'dropdown'}
-          %span.light
-          - if @sort.present?
-            = @sort.humanize
-          - else
-            Name
-          %b.caret
-        %ul.dropdown-menu.dropdown-menu-align-right
-          %li
-            = link_to namespace_project_branches_path(sort: nil) do
-              Name
-            = link_to namespace_project_branches_path(sort: 'recently_updated') do
-              = sort_title_recently_updated
-            = link_to namespace_project_branches_path(sort: 'last_updated') do
-              = sort_title_oldest_updated
-    .oneline
+  .top-area
+    .nav-text
       Protected branches can be managed in project settings
+
+    - if can? current_user, :push_code, @project
+      .nav-controls
+        = link_to new_namespace_project_branch_path(@project.namespace, @project), class: 'btn btn-create' do
+          New branch
+        .dropdown.inline
+          %button.dropdown-toggle.btn{type: 'button', 'data-toggle' => 'dropdown'}
+            %span.light
+            - if @sort.present?
+              = @sort.humanize
+            - else
+              Name
+            %b.caret
+          %ul.dropdown-menu.dropdown-menu-align-right
+            %li
+              = link_to namespace_project_branches_path(sort: nil) do
+                Name
+              = link_to namespace_project_branches_path(sort: 'recently_updated') do
+                = sort_title_recently_updated
+              = link_to namespace_project_branches_path(sort: 'last_updated') do
+                = sort_title_oldest_updated
   - unless @branches.empty?
     %ul.content-list.all-branches
       - @branches.each do |branch|

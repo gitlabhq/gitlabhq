@@ -1,3 +1,4 @@
+# rubocop:disable all
 class CreateLfsObjects < ActiveRecord::Migration
   def change
     create_table :lfs_objects do |t|

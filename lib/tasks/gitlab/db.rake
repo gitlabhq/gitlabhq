@@ -34,7 +34,7 @@ namespace :gitlab do
       # PG: http://www.postgresql.org/docs/current/static/ddl-depend.html
       # MySQL: http://dev.mysql.com/doc/refman/5.7/en/drop-table.html
       # Add `IF EXISTS` because cascade could have already deleted a table.
-      tables.each { |t| connection.execute("DROP TABLE IF EXISTS #{t} CASCADE") }
+      tables.each { |t| connection.execute("DROP TABLE IF EXISTS #{connection.quote_table_name(t)} CASCADE") }
     end
 
     desc 'Configures the database by running migrate, or by loading the schema and seeding if needed'

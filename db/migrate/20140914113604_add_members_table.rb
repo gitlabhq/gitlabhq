@@ -1,3 +1,4 @@
+# rubocop:disable all
 class AddMembersTable < ActiveRecord::Migration
   def change
     create_table :members do |t|

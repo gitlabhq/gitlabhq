@@ -1,3 +1,4 @@
+# rubocop:disable all
 class RemoveImportDataFromProject < ActiveRecord::Migration
   def up
     remove_column :projects, :import_data

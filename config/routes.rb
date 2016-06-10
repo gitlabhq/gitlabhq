@@ -442,22 +442,6 @@ Rails.application.routes.draw do
     resources(:projects, constraints: { id: /[a-zA-Z.0-9_\-]+(?<!\.atom)/ }, except:
               [:new, :create, :index], path: "/") do
 
-      # Allow /info/refs, /info/refs?service=git-upload-pack, and
-      # /info/refs?service=git-receive-pack, but nothing else.
-      #
-      git_http_handshake = lambda do |request|
-        request.query_string.blank? ||
-          request.query_string.match(/\Aservice=git-(upload|receive)-pack\z/)
-      end
-
-      ref_redirect = redirect do |params, request|
-        path = "#{params[:namespace_id]}/#{params[:project_id]}.git/info/refs"
-        path << "?#{request.query_string}" unless request.query_string.blank?
-        path
-      end
-
-      get '/info/refs', constraints: git_http_handshake, to: ref_redirect
-
       member do
         put :transfer
         delete :remove_fork
@@ -472,11 +456,27 @@ Rails.application.routes.draw do
 
       scope module: :projects do
         # Git HTTP clients ('git clone' etc.)
-        scope constraints: { format: /(git|wiki\.git)/ } do
+        scope constraints: { id: /.+\.git/, format: nil } do
           get '/info/refs', to: 'git_http#info_refs'
           post '/git-upload-pack', to: 'git_http#git_upload_pack'
           post '/git-receive-pack', to: 'git_http#git_receive_pack'
         end
+
+        # Allow /info/refs, /info/refs?service=git-upload-pack, and
+        # /info/refs?service=git-receive-pack, but nothing else.
+        #
+        git_http_handshake = lambda do |request|
+          request.query_string.blank? ||
+            request.query_string.match(/\Aservice=git-(upload|receive)-pack\z/)
+        end
+
+        ref_redirect = redirect do |params, request|
+          path = "#{params[:namespace_id]}/#{params[:project_id]}.git/info/refs"
+          path << "?#{request.query_string}" unless request.query_string.blank?
+          path
+        end
+
+        get '/info/refs', constraints: git_http_handshake, to: ref_redirect
 
         # Blob routes:
         get '/new/*id', to: 'blob#new', constraints: { id: /.+/ }, as: 'new_blob'

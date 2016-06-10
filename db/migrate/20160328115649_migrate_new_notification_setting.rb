@@ -1,3 +1,4 @@
+# rubocop:disable all
 # This migration will create one row of NotificationSetting for each Member row
 # It can take long time on big instances.
 #

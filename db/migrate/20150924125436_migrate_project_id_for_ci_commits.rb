@@ -1,3 +1,4 @@
+# rubocop:disable all
 class MigrateProjectIdForCiCommits < ActiveRecord::Migration
   def up
     subquery = 'SELECT gitlab_id FROM ci_projects WHERE ci_projects.id = ci_commits.project_id'

@@ -1,3 +1,4 @@
+# rubocop:disable all
 class AddVisibilityLevelToGroups < ActiveRecord::Migration
   def up
     add_column :namespaces, :visibility_level, :integer, null: false, default: Gitlab::VisibilityLevel::PUBLIC
