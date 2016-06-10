@@ -10,19 +10,20 @@
           %span.btn-group
             = button_tag class: "btn btn-create js-merge-button merge_when_build_succeeds" do
               Merge When Build Succeeds
-            = button_tag class: "btn btn-success dropdown-toggle", 'data-toggle' => 'dropdown' do
-              %span.caret
-              %span.sr-only
-                Select Merge Moment
-            %ul.js-merge-dropdown.dropdown-menu.dropdown-menu-right{ role: 'menu' }
-              %li
-                = link_to "#", class: "merge_when_build_succeeds" do
-                  = icon('check fw')
-                  Merge When Build Succeeds
-              %li
-                = link_to "#", class: "accept_merge_request" do
-                  = icon('warning fw')
-                  Merge Immediately
+            - unless @project.only_allow_merge_if_build_succeeds?
+              = button_tag class: "btn btn-success dropdown-toggle", 'data-toggle' => 'dropdown' do
+                %span.caret
+                %span.sr-only
+                  Select Merge Moment
+              %ul.js-merge-dropdown.dropdown-menu.dropdown-menu-right{ role: 'menu' }
+                %li
+                  = link_to "#", class: "merge_when_build_succeeds" do
+                    = icon('check fw')
+                    Merge When Build Succeeds
+                %li
+                  = link_to "#", class: "accept_merge_request" do
+                    = icon('warning fw')
+                    Merge Immediately
         - else
           = f.button class: "btn btn-create btn-grouped js-merge-button accept_merge_request #{status_class}" do
             Accept Merge Request

@@ -185,7 +185,7 @@ header {
   margin-left: 0;
 
   .header-content {
-    padding-left: $sidebar_width;
+    margin-left: $sidebar_width;
     transition-duration: .3s;
   }
 }

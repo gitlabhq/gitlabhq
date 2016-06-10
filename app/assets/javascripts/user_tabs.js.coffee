@@ -122,6 +122,9 @@ class @UserTabs
         @parentEl.find(tabSelector).html(data.html)
         @loaded[action] = true
 
+        # Fix tooltips
+        gl.utils.localTimeAgo($('.js-timeago', tabSelector))
+
   loadActivities: (source) ->
     return if @loaded['activity'] is true
 

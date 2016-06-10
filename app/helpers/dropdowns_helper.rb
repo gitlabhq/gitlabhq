@@ -67,9 +67,9 @@ module DropdownsHelper
     end
   end
 
-  def dropdown_filter(placeholder)
+  def dropdown_filter(placeholder, search_id: nil)
     content_tag :div, class: "dropdown-input" do
-      filter_output = search_field_tag nil, nil, class: "dropdown-input-field", placeholder: placeholder
+      filter_output = search_field_tag search_id, nil, class: "dropdown-input-field", placeholder: placeholder
       filter_output << icon('search', class: "dropdown-input-search")
       filter_output << icon('times', class: "dropdown-input-clear js-dropdown-input-clear", role: "button")
 

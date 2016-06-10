@@ -35,7 +35,6 @@
 #= require raphael
 #= require g.raphael
 #= require g.bar
-#= require Chart
 #= require branch-graph
 #= require ace/ace
 #= require ace/ext-searchbox
@@ -226,6 +225,10 @@ $ ->
     form = btn.closest("form")
     new ConfirmDangerModal(form, text)
 
+
+  $(document).on 'click', 'button', ->
+    $(this).blur()
+
   $('input[type="search"]').each ->
     $this = $(this)
     $this.attr 'value', $this.val()
@@ -264,9 +267,10 @@ $ ->
       $(document).trigger('breakpoint:change', [bootstrapBreakpoint])
 
   $(window)
-    .off "resize"
-    .on "resize", (e) ->
+    .off "resize.app"
+    .on "resize.app", (e) ->
       fitSidebarForSize()
 
+  gl.awardsHandler = new AwardsHandler()
   checkInitialSidebarSize()
   new Aside()

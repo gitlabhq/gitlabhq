@@ -1,3 +1,4 @@
+# rubocop:disable all
 class RemoveClosedFromIssue < ActiveRecord::Migration
   def up
     remove_column :issues, :closed

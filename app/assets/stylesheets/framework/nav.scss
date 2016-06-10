@@ -171,6 +171,7 @@
     > form {
       display: inline-block;
       margin-top: -1px;
+      margin-bottom: 12px;
     }
 
     .icon-label {
@@ -207,7 +208,7 @@
 
     @media (max-width: $screen-xs-max) {
       padding-bottom: 0;
-
+      width: 100%;
       .btn, form, .dropdown, .dropdown-menu-toggle, .form-control {
         margin: 0 0 10px;
         display: block;
@@ -236,16 +237,6 @@
       .project-item-select-holder {
         display: block;
         margin: 0;
-      }
-    }
-
-    /* Small devices (tablets, 768px and lower) */
-    @media (max-width: $screen-sm-max) {
-      width: 100%;
-      text-align: left;
-
-      input {
-        width: 300px;
       }
     }
   }
@@ -304,6 +295,19 @@
     border-bottom: none;
     height: 51px;
 
+    svg {
+      position: relative;
+      top: 2px;
+      margin-right: 2px;
+      height: 15px;
+      width: auto;
+
+      path,
+      polygon {
+        fill: $layout-link-gray;
+      }
+    }
+
     .fade-right {
       @include fade(left, rgba(250, 250, 250, 0.4), $background-color);
       right: 0;
@@ -325,8 +329,16 @@
       }
 
       &.active {
+
         a, i {
           color: $black;
+        }
+
+        svg {
+          path,
+          polygon {
+            fill: $black;
+          }
         }
       }
 

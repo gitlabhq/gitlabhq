@@ -61,6 +61,8 @@ update-knapsack:
     - scripts/merge-reports knapsack/rspec_report.json knapsack/rspec_node_*.json
     - scripts/merge-reports knapsack/spinach_report.json knapsack/spinach_node_*.json
     - rm -f knapsack/*_node_*.json
+  only:
+    - master
 
 # Execute all testing suites
 

@@ -7,12 +7,17 @@ class @ProjectNew
     @toggleSettingsOnclick()
 
 
-  toggleSettings: ->
-    checked = $("#project_builds_enabled").prop("checked")
-    if checked
-      $('.builds-feature').show()
-    else
-      $('.builds-feature').hide()
+  toggleSettings: =>
+    @_showOrHide('#project_builds_enabled', '.builds-feature')
+    @_showOrHide('#project_merge_requests_enabled', '.merge-requests-feature')
 
   toggleSettingsOnclick: ->
-    $("#project_builds_enabled").on 'click', @toggleSettings
+    $('#project_builds_enabled, #project_merge_requests_enabled').on 'click', @toggleSettings
+
+  _showOrHide: (checkElement, container) ->
+    $container = $(container)
+
+    if $(checkElement).prop('checked')
+      $container.show()
+    else
+      $container.hide()
