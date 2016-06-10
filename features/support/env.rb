@@ -16,6 +16,11 @@ require_relative 'capybara'
 require_relative 'db_cleaner'
 require_relative 'rerun'
 
+if ENV['CI']
+  require 'knapsack'
+  Knapsack::Adapters::RSpecAdapter.bind
+end
+
 %w(select2_helper test_env repo_helpers license).each do |f|
   require Rails.root.join('spec', 'support', f)
 end

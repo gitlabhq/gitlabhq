@@ -56,7 +56,7 @@ module MilestonesHelper
 
   def milestone_remaining_days(milestone)
     if milestone.expired?
-      content_tag(:strong, 'expired')
+      content_tag(:strong, 'Past due')
     elsif milestone.due_date
       days    = milestone.remaining_days
       content = content_tag(:strong, days)

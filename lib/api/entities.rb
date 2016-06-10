@@ -369,6 +369,7 @@ module API
       expose :signin_enabled
       expose :gravatar_enabled
       expose :sign_in_text
+      expose :after_sign_up_text
       expose :created_at
       expose :updated_at
       expose :home_page_url

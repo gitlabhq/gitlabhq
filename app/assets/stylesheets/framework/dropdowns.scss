@@ -122,10 +122,9 @@
   a {
     display: block;
     position: relative;
-    padding-left: 10px;
-    padding-right: 10px;
+    padding: 5px 10px;
     color: $dropdown-link-color;
-    line-height: 34px;
+    line-height: initial;
     text-overflow: ellipsis;
     border-radius: 2px;
     white-space: nowrap;
@@ -159,6 +158,16 @@
 
   .separator + .dropdown-header {
     padding-top: 2px;
+  }
+}
+
+.dropdown-menu-large {
+  width: 340px;
+}
+
+.dropdown-menu-no-wrap {
+  a {
+    white-space: normal;
   }
 }
 
@@ -236,8 +245,7 @@
       &::before {
         position: absolute;
         left: 5px;
-        top: 50%;
-        margin-top: -7px;
+        top: 8px;
         font: normal normal normal 14px/1 FontAwesome;
         font-size: inherit;
         text-rendering: auto;
@@ -531,4 +539,15 @@
   .ui-datepicker-unselectable {
     background-color: $calendar-unselectable-bg;
   }
+}
+
+.dropdown-menu-inner-title {
+  display: block;
+  color: $gl-title-color;
+  font-weight: 600;
+}
+
+.dropdown-menu-inner-content {
+  display: block;
+  color: $gl-placeholder-color;
 }

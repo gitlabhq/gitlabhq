@@ -175,3 +175,9 @@
     :why: https://github.com/jmcnevin/rubypants/blob/master/LICENSE.rdoc
     :versions: []
     :when: 2016-05-02 05:56:50.696858000 Z
+- - :whitelist
+  - LGPLv2+
+  - :who: Stan Hu
+    :why: Equivalent to LGPLv2
+    :versions: []
+    :when: 2016-06-07 17:14:10.907682000 Z

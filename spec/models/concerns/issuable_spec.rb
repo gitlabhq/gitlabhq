@@ -10,6 +10,16 @@ describe Issue, "Issuable" do
     it { is_expected.to belong_to(:assignee) }
     it { is_expected.to have_many(:notes).dependent(:destroy) }
     it { is_expected.to have_many(:todos).dependent(:destroy) }
+
+    context 'Notes' do
+      let!(:note) { create(:note, noteable: issue, project: issue.project) }
+      let(:scoped_issue) { Issue.includes(notes: :author).find(issue.id) }
+
+      it 'indicates if the notes have their authors loaded' do
+        expect(issue.notes).not_to be_authors_loaded
+        expect(scoped_issue.notes).to be_authors_loaded
+      end
+    end
   end
 
   describe 'Included modules' do
@@ -258,6 +268,22 @@ describe Issue, "Issuable" do
 
     it 'loads the association and returns it as an array' do
       expect(issue.reload.labels_array).to eq([bug])
+    end
+  end
+
+  describe '#user_notes_count' do
+    let(:project) { create(:project) }
+    let(:issue1) { create(:issue, project: project) }
+    let(:issue2) { create(:issue, project: project) }
+
+    before do
+      create_list(:note, 3, noteable: issue1, project: project)
+      create_list(:note, 6, noteable: issue2, project: project)
+    end
+
+    it 'counts the user notes' do
+      expect(issue1.user_notes_count).to be(3)
+      expect(issue2.user_notes_count).to be(6)
     end
   end
 

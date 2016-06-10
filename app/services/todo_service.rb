@@ -20,7 +20,7 @@ class TodoService
   #  * mark all pending todos related to the issue for the current user as done
   #
   def update_issue(issue, current_user)
-    create_mention_todos(issue.project, issue, current_user)
+    update_issuable(issue, current_user)
   end
 
   # When close an issue we should:
@@ -53,7 +53,7 @@ class TodoService
   #  * create a todo for each mentioned user on merge request
   #
   def update_merge_request(merge_request, current_user)
-    create_mention_todos(merge_request.project, merge_request, current_user)
+    update_issuable(merge_request, current_user)
   end
 
   # When close a merge request we should:
@@ -150,6 +150,13 @@ class TodoService
 
   def new_issuable(issuable, author)
     create_assignment_todo(issuable, author)
+    create_mention_todos(issuable.project, issuable, author)
+  end
+
+  def update_issuable(issuable, author)
+    # Skip toggling a task list item in a description
+    return if issuable.tasks? && issuable.updated_tasks.any?
+
     create_mention_todos(issuable.project, issuable, author)
   end
 

@@ -146,6 +146,7 @@ module Gitlab
 
       def update_webhooks(hooks, options)
         hooks.each do |hook|
+          sleep rate_limit_sleep_time if rate_limit_exceed?
           client.edit_hook(repo, hook.id, hook.name, hook.config, options)
         end
       end

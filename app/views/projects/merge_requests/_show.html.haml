@@ -14,13 +14,11 @@
       - if @merge_request.open?
         .pull-right
           - if @merge_request.source_branch_exists?
-            = link_to "#modal_merge_info", class: "btn btn-sm", "data-toggle" => "modal" do
-              = icon('cloud-download fw')
+            = link_to "#modal_merge_info", class: "btn inline btn-grouped btn-sm", "data-toggle" => "modal" do
               Check out branch
 
           %span.dropdown
             %a.btn.btn-sm.dropdown-toggle{ data: {toggle: :dropdown} }
-              = icon('download')
               Download as
               %span.caret
             %ul.dropdown-menu

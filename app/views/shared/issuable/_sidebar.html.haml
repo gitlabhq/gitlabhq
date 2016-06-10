@@ -41,7 +41,8 @@
           = icon('clock-o')
           %span
             - if issuable.milestone
-              = issuable.milestone.title
+              %span.has-tooltip{title: milestone_remaining_days(issuable.milestone), data: {container: 'body', html: 1, placement: 'left'}}
+                = issuable.milestone.title
             - else
               None
         .title.hide-collapsed
@@ -52,7 +53,8 @@
         .value.bold.hide-collapsed
           - if issuable.milestone
             = link_to namespace_project_milestone_path(@project.namespace, @project, issuable.milestone) do
-              = issuable.milestone.title
+              %span.has-tooltip{title: milestone_remaining_days(issuable.milestone), data: {container: 'body', html: 1}}
+                = issuable.milestone.title
           - else
             .light None
 
@@ -161,7 +163,7 @@
           .title.hide-collapsed
             Notifications
           - subscribtion_status = subscribed ? 'subscribed' : 'unsubscribed'
-          %button.btn.btn-block.btn-gray.js-subscribe-button.issuable-subscribe-button.hide-collapsed{ type: "button" }
+          %button.btn.btn-block.btn-default.js-subscribe-button.issuable-subscribe-button.hide-collapsed{ type: "button" }
             %span= subscribed ? 'Unsubscribe' : 'Subscribe'
           .subscription-status.hide-collapsed{data: {status: subscribtion_status}}
             .unsubscribed{class: ( 'hidden' if subscribed )}

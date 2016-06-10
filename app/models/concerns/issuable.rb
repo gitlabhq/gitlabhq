@@ -17,7 +17,12 @@ module Issuable
     belongs_to :assignee, class_name: "User"
     belongs_to :updated_by, class_name: "User"
     belongs_to :milestone
-    has_many :notes, as: :noteable, dependent: :destroy
+    has_many :notes, as: :noteable, dependent: :destroy do
+      def authors_loaded?
+        # We check first if we're loaded to not load unnecesarily.
+        loaded? && to_a.all? { |note| note.association(:author).loaded? }
+      end
+    end
     has_many :label_links, as: :target, dependent: :destroy
     has_many :labels, through: :label_links
     has_many :todos, as: :target, dependent: :destroy
@@ -49,6 +54,7 @@ module Issuable
 
     scope :without_label, -> { joins("LEFT OUTER JOIN label_links ON label_links.target_type = '#{name}' AND label_links.target_id = #{table_name}.id").where(label_links: { id: nil }) }
     scope :join_project, -> { joins(:project) }
+    scope :inc_notes_with_associations, -> { includes(notes: :author) }
     scope :references_project, -> { references(:project) }
     scope :non_archived, -> { join_project.where(projects: { archived: false }) }
 
@@ -110,7 +116,7 @@ module Issuable
       where(t[:title].matches(pattern).or(t[:description].matches(pattern)))
     end
 
-    def sort(method)
+    def sort(method, excluded_labels: [])
       case method.to_s
       when 'milestone_due_asc' then order_milestone_due_asc
       when 'milestone_due_desc' then order_milestone_due_desc
@@ -118,9 +124,16 @@ module Issuable
       when 'upvotes_desc' then order_upvotes_desc
       when 'weight_desc' then order_weight_desc
       when 'weight_asc' then order_weight_asc
+      when 'priority' then order_labels_priority(excluded_labels: excluded_labels)
       else
         order_by(method)
       end
+    end
+
+    def order_labels_priority(excluded_labels: [])
+      select("#{table_name}.*, (#{highest_label_priority(excluded_labels).to_sql}) AS highest_priority").
+        group(arel_table[:id]).
+        reorder(Gitlab::Database.nulls_last_order('highest_priority', 'ASC'))
     end
 
     def with_label(title, sort = nil)
@@ -146,6 +159,20 @@ module Issuable
 
       grouping_columns
     end
+
+    private
+
+    def highest_label_priority(excluded_labels)
+      query = Label.select(Label.arel_table[:priority].minimum).
+        joins(:label_links).
+        where(label_links: { target_type: name }).
+        where("label_links.target_id = #{table_name}.id").
+        reorder(nil)
+
+      query.where.not(title: excluded_labels) if excluded_labels.present?
+
+      query
+    end
   end
 
   def today?
@@ -165,7 +192,13 @@ module Issuable
   end
 
   def user_notes_count
-    notes.user.count
+    if notes.loaded?
+      # Use the in-memory association to select and count to avoid hitting the db
+      notes.to_a.count { |note| !note.system? }
+    else
+      # do the count query
+      notes.user.count
+    end
   end
 
   def subscribed_without_subscriptions?(user)
@@ -225,7 +258,13 @@ module Issuable
   end
 
   def notes_with_associations
-    notes.includes(:author, :project)
+    # If A has_many Bs, and B has_many Cs, and you do
+    # `A.includes(b: :c).each { |a| a.b.includes(:c) }`, sadly ActiveRecord
+    # will do the inclusion again. So, we check if all notes in the relation
+    # already have their authors loaded (possibly because the scope
+    # `inc_notes_with_associations` was used) and skip the inclusion if that's
+    # the case.
+    notes.authors_loaded? ? notes : notes.includes(:author)
   end
 
   def updated_tasks

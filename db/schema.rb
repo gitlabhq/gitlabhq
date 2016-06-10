@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160603182247) do
+ActiveRecord::Schema.define(version: 20160608155312) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -87,6 +87,7 @@ ActiveRecord::Schema.define(version: 20160603182247) do
     t.string   "health_check_access_token"
     t.boolean  "send_user_confirmation_email",          default: false
     t.integer  "container_registry_token_expire_delay", default: 5
+    t.text     "after_sign_up_text"
   end
 
   create_table "approvals", force: :cascade do |t|
@@ -571,8 +572,10 @@ ActiveRecord::Schema.define(version: 20160603182247) do
     t.datetime "updated_at"
     t.boolean  "template",    default: false
     t.string   "description"
+    t.integer  "priority"
   end
 
+  add_index "labels", ["priority"], name: "index_labels_on_priority", using: :btree
   add_index "labels", ["project_id"], name: "index_labels_on_project_id", using: :btree
 
   create_table "ldap_group_links", force: :cascade do |t|
