@@ -1,18 +1,10 @@
 - page_title "#{@build.name} (##{@build.id})", "Builds"
 - trace_with_state = @build.trace_with_state
+- header_title project_title(@project, "Builds", project_builds_path(@project))
 
 .build-page
-  .row-content-block.top-block
-    Build ##{@build.id} for commit
-    %strong.monospace= link_to @build.pipeline.short_sha, ci_status_path(@build.pipeline)
-    from
-    = link_to @build.ref, namespace_project_commits_path(@project.namespace, @project, @build.ref)
-    - merge_request = @build.merge_request
-    - if merge_request
-      via
-      = link_to "merge request #{merge_request.to_reference}", merge_request_path(merge_request)
+  = render "header"
 
-  #up-build-trace
   - builds = @build.pipeline.builds.latest.to_a
   - if builds.size > 1
     %ul.nav-links.no-top.no-bottom
@@ -33,18 +25,6 @@
             &middot;
             %i.fa.fa-warning
             This build was retried.
-
-  .row-content-block.middle-block
-    .build-head
-      .clearfix
-        = ci_status_with_icon(@build.status)
-        - if @build.duration
-          %span
-            %i.fa.fa-time
-            #{duration_in_words(@build.finished_at, @build.started_at)}
-        .pull-right
-          #{time_ago_with_tooltip(@build.finished_at) if @build.finished_at}
-
   - if @build.stuck?
     - unless @build.any_runners_online?
       .bs-callout.bs-callout-warning
@@ -64,158 +44,27 @@
           = link_to namespace_project_runners_path(@build.project.namespace, @build.project) do
             Runners page
 
-  .row.prepend-top-default
-    .col-md-9
-      .clearfix
-        - if @build.active?
-          .autoscroll-container
-            %button.btn.btn-success.btn-sm#autoscroll-button{:type => "button", :data => {:state => 'disabled'}} enable autoscroll
-          .clearfix
+  .prepend-top-default
+    - if @build.active?
+      .autoscroll-container
+        %button.btn.btn-success.btn-sm#autoscroll-button{:type => "button", :data => {:state => 'disabled'}} enable autoscroll
       #js-build-scroll.scroll-controls
-        = link_to '#up-build-trace', class: 'btn' do
+        = link_to '#build-trace', class: 'btn' do
           %i.fa.fa-angle-up
         = link_to '#down-build-trace', class: 'btn' do
           %i.fa.fa-angle-down
+    - if @build.erased?
+      .erased.alert.alert-warning
+        - erased_by = "by #{link_to @build.erased_by.name, user_path(@build.erased_by)}" if @build.erased_by
+        Build has been erased #{erased_by.html_safe} #{time_ago_with_tooltip(@build.erased_at)}
+    - else
+      %pre.build-trace#build-trace
+        %code.bash.js-build-output
+        = icon("refresh spin", class: "js-build-refresh")
 
-      - if @build.erased?
-        .erased.alert.alert-warning
-          - erased_by = "by #{link_to @build.erased_by.name, user_path(@build.erased_by)}" if @build.erased_by
-          Build has been erased #{erased_by.html_safe} #{time_ago_with_tooltip(@build.erased_at)}
-      - else
-        %pre.trace#build-trace
-          %code.bash
-            = preserve do
-              = raw trace_with_state[:html]
-              - if @build.active?
-                %i{:class => "fa fa-refresh fa-spin"}
+    #down-build-trace
 
-      %div#down-build-trace
+= render "sidebar"
 
-    .col-md-3
-      - if @build.coverage
-        .build-widget
-          %h4.title
-            Test coverage
-          %h1 #{@build.coverage}%
-
-      - if can?(current_user, :read_build, @project) && @build.artifacts?
-        .build-widget.artifacts
-          %h4.title Build artifacts
-          .center
-            .btn-group{ role: :group }
-              = link_to download_namespace_project_build_artifacts_path(@project.namespace, @project, @build), class: 'btn btn-sm btn-primary' do
-                = icon('download')
-                Download
-
-              - if @build.artifacts_metadata?
-                = link_to browse_namespace_project_build_artifacts_path(@project.namespace, @project, @build), class: 'btn btn-sm btn-primary' do
-                  = icon('folder-open')
-                  Browse
-
-      .build-widget.build-controls
-        %h4.title
-          Build ##{@build.id}
-          - if can?(current_user, :update_build, @project)
-            .center
-              .btn-group{ role: :group }
-                - if @build.active?
-                  = link_to "Cancel", cancel_namespace_project_build_path(@project.namespace, @project, @build), class: 'btn btn-sm btn-danger', method: :post
-                - elsif @build.retryable?
-                  = link_to "Retry", retry_namespace_project_build_path(@project.namespace, @project, @build), class: 'btn btn-sm btn-primary', method: :post
-
-                - if @build.erasable?
-                  = link_to erase_namespace_project_build_path(@project.namespace, @project, @build),
-                            class: 'btn btn-sm btn-warning', method: :post,
-                            data: { confirm: 'Are you sure you want to erase this build?' } do
-                    = icon('eraser')
-                    Erase
-                - if @build.has_trace?
-                  = link_to 'Raw', raw_namespace_project_build_path(@project.namespace, @project, @build),
-                            class: 'btn btn-sm btn-success', target: '_blank'
-
-        .clearfix
-          - if @build.duration
-            %p
-              %span.attr-name Duration:
-              #{duration_in_words(@build.finished_at, @build.started_at)}
-          %p
-            %span.attr-name Created:
-            #{time_ago_with_tooltip(@build.created_at)}
-          - if @build.finished_at
-            %p
-              %span.attr-name Finished:
-              #{time_ago_with_tooltip(@build.finished_at)}
-          - if @build.erased_at
-            %p
-              %span.attr-name Erased:
-              #{time_ago_with_tooltip(@build.erased_at)}
-          %p
-            %span.attr-name Runner:
-            - if @build.runner && current_user && current_user.admin
-              = link_to "##{@build.runner.id}", admin_runner_path(@build.runner.id)
-            - elsif @build.runner
-              \##{@build.runner.id}
-
-      - if @build.trigger_request
-        .build-widget
-          %h4.title
-            Trigger
-
-          %p
-            %span.attr-name Token:
-            #{@build.trigger_request.trigger.short_token}
-
-          - if @build.trigger_request.variables
-            %p
-              %span.attr-name Variables:
-
-            %code
-              - @build.trigger_request.variables.each do |key, value|
-                #{key}=#{value}
-
-      .build-widget
-        %h4.title
-          Commit
-          .pull-right
-            %small
-              = link_to @build.pipeline.short_sha, ci_status_path(@build.pipeline), class: "monospace"
-        %p
-          %span.attr-name Branch:
-          = link_to @build.ref, namespace_project_commits_path(@project.namespace, @project, @build.ref)
-        %p
-          %span.attr-name Author:
-          #{@build.pipeline.git_author_name}
-        %p
-          %span.attr-name Message:
-          #{@build.pipeline.git_commit_message}
-
-      - if @build.tags.any?
-        .build-widget
-          %h4.title
-            Tags
-          - @build.tag_list.each do |tag|
-            %span.label.label-primary
-              = tag
-
-      - if @builds.present?
-        .build-widget
-          %h4.title #{pluralize(@builds.count(:id), "other build")} for
-          = succeed ":" do
-            = link_to @build.pipeline.short_sha, ci_status_path(@build.pipeline), class: "monospace"
-          %table.table.builds
-            - @builds.each_with_index do |build, i|
-              %tr.build
-                %td
-                  = ci_icon_for_status(build.status)
-                %td
-                  = link_to namespace_project_build_path(@project.namespace, @project, build) do
-                    - if build.name
-                      = build.name
-                    - else
-                      %span ##{build.id}
-
-                %td.status= build.status
-
-
-  :javascript
-    new CiBuild("#{namespace_project_build_url(@project.namespace, @project, @build)}", "#{@build.status}", "#{trace_with_state[:state]}")
+:javascript
+  new CiBuild("#{namespace_project_build_url(@project.namespace, @project, @build)}", "#{@build.status}", "#{trace_with_state[:state]}")

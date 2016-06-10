@@ -30,6 +30,8 @@ module NavHelper
       else
         "page-gutter right-sidebar-expanded"
       end
+    elsif current_path?('builds#show')
+      "page-gutter build-sidebar right-sidebar-expanded"
     end
   end
 
