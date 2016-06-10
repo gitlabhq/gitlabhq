@@ -276,14 +276,6 @@ class MergeRequest < ActiveRecord::Base
     true
   end
 
-  def gitlab_merge_status
-    if work_in_progress?
-      "work_in_progress"
-    else
-      merge_status_name
-    end
-  end
-
   def can_cancel_merge_when_build_succeeds?(current_user)
     can_be_merged_by?(current_user) || self.author == current_user
   end
