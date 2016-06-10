@@ -12,7 +12,7 @@ describe 'Profile > Personal Access Tokens', feature: true, js: true do
   end
 
   def created_personal_access_token
-    find(".created-personal-access-token input").value
+    find("#created-personal-access-token").value
   end
 
   def disallow_personal_access_token_saves!
