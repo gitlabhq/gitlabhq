@@ -12,7 +12,7 @@
           Cancel
   - if @issue.description.present?
     .description{ class: can?(current_user, :update_issue, @issue) ? 'js-task-list-container' : '' }
-      .wiki.inline-edit-box.js-issuable-description
+      .wiki.inline-edit-box.inline-edit-description-box.js-issuable-description
         = preserve do
           = markdown(@issue.description, cache_key: [@issue, "description"], author: @issue.author)
       .js-issuable-description-field.hidden

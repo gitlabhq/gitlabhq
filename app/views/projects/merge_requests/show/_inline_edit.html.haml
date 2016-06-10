@@ -1,7 +1,7 @@
 = form_for @merge_request, remote: true, html: { class: 'detail-page-description content-block common-note-form js-quick-submit js-issuable-inline-form', data: { type: "json" } } do |f|
   = hidden_field_tag :inline, true
   %h2.title
-    %span.js-issuable-title= markdown escape_once(@merge_request.title), pipeline: :single_line, author: @merge_request.author
+    %span.inline-edit-box.js-issuable-title= markdown escape_once(@merge_request.title), pipeline: :single_line, author: @merge_request.author
     = icon('spinner spin', class: 'js-issuable-title-loading hidden')
     .issuable-title-edit.js-issuable-edit-title.hidden
       = f.text_field :title, class: 'form-control js-issuable-title-field'
@@ -12,7 +12,7 @@
           Cancel
   - if @merge_request.description.present?
     .description{class: can?(current_user, :update_merge_request, @merge_request) ? 'js-task-list-container' : ''}
-      .wiki.js-issuable-description
+      .wiki.inline-edit-box.inline-edit-description-box.js-issuable-description
         = preserve do
           = markdown(@merge_request.description, cache_key: [@merge_request, "description"], author: @merge_request.author)
       .js-issuable-description-field.hidden
