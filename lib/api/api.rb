@@ -26,40 +26,41 @@ module API
     # Ensure the namespace is right, otherwise we might load Grape::API::Helpers
     helpers ::API::Helpers
 
-    mount ::API::Groups
+    # Sort these alphabetically
+    mount ::API::AwardEmoji
+    mount ::API::Branches
+    mount ::API::Builds
+    mount ::API::CommitStatuses
+    mount ::API::Commits
+    mount ::API::DeployKeys
+    mount ::API::Files
+    mount ::API::Gitignores
     mount ::API::GroupMembers
-    mount ::API::Users
+    mount ::API::Groups
+    mount ::API::Internal
+    mount ::API::Issues
+    mount ::API::Keys
+    mount ::API::Labels
+    mount ::API::Licenses
+    mount ::API::MergeRequests
+    mount ::API::Milestones
+    mount ::API::Namespaces
+    mount ::API::Notes
+    mount ::API::ProjectHooks
+    mount ::API::ProjectMembers
+    mount ::API::ProjectSnippets
     mount ::API::Projects
     mount ::API::Repositories
-    mount ::API::Issues
-    mount ::API::Milestones
-    mount ::API::Session
-    mount ::API::MergeRequests
-    mount ::API::Notes
-    mount ::API::AwardEmoji
-    mount ::API::Internal
-    mount ::API::SystemHooks
-    mount ::API::ProjectSnippets
-    mount ::API::ProjectMembers
-    mount ::API::DeployKeys
-    mount ::API::ProjectHooks
+    mount ::API::Runners
     mount ::API::Services
-    mount ::API::Files
-    mount ::API::Commits
-    mount ::API::CommitStatuses
-    mount ::API::Namespaces
-    mount ::API::Branches
-    mount ::API::Labels
+    mount ::API::Session
     mount ::API::Settings
-    mount ::API::Keys
+    mount ::API::SidekiqMetrics
+    mount ::API::Subscriptions
+    mount ::API::SystemHooks
     mount ::API::Tags
     mount ::API::Triggers
-    mount ::API::Builds
+    mount ::API::Users
     mount ::API::Variables
-    mount ::API::Runners
-    mount ::API::Licenses
-    mount ::API::Subscriptions
-    mount ::API::Gitignores
-    mount ::API::SidekiqMetrics
   end
 end

@@ -17,9 +17,9 @@ module API
         # Example Request:
         #   GET /projects/:id/issues/:awardable_id/award_emoji
         get ":id/#{awardable_string}/:#{awardable_id_string}/award_emoji" do
-          awardable = user_project.send(awardable_string.to_sym).find(params[awardable_id_string.to_sym])
+          awardable = user_project.send(awardable_string.to_sym).find(params[awardable_id_string])
 
-          if can?(current_user, awardable_read_ability_name(awardable), awardable)
+          if can_read_awardable?(awardable)
             awards = paginate(awardable.award_emoji)
             present awards, with: Entities::AwardEmoji
           else
@@ -38,7 +38,7 @@ module API
         get ":id/#{awardable_string}/:#{awardable_id_string}/award_emoji/:award_id" do
           awardable = user_project.send(awardable_string.to_sym).find(params[awardable_id_string.to_sym])
 
-          if can?(current_user, awardable_read_ability_name(awardable), awardable)
+          if can_read_awardable?(awardable)
             present awardable.award_emoji.find(params[:award_id]), with: Entities::AwardEmoji
           else
             not_found!("Award Emoji")
@@ -49,16 +49,15 @@ module API
         #
         # Parameters:
         #   id (required) - The ID of a project
-        #   noteable_id (required) - The ID of an issue or snippet
+        #   awardable_id (required) - The ID of an issue or mr
         #   name (required) - The name of a award_emoji (without colons)
         # Example Request:
-        #   POST /projects/:id/issues/:noteable_id/notes
-        #   POST /projects/:id/snippets/:noteable_id/notes
+        #   POST /projects/:id/issues/:awardable_id/notes
         post ":id/#{awardable_string}/:#{awardable_id_string}/award_emoji" do
           required_attributes! [:name]
 
           awardable = user_project.send(awardable_string.to_sym).find(params[awardable_id_string.to_sym])
-          not_found!('Award Emoji') unless can?(current_user, awardable_read_ability_name(awardable), awardable)
+          not_found!('Award Emoji') unless can_read_awardable?(awardable)
 
           award = awardable.award_emoji.new(name: params[:name], user: current_user)
 
@@ -90,7 +89,12 @@ module API
     end
     helpers do
       def awardable_read_ability_name(awardable)
-        "read_#{awardable.class.to_s.underscore.downcase}".to_sym
+      end
+
+      def can_read_awardable?(awardable)
+        ability = "read_#{awardable.class.to_s.underscore}".to_sym
+
+        can?(current_user, ability, awardable)
       end
     end
   end
