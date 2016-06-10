@@ -55,6 +55,12 @@ module Gitlab
                        { class: entry_class,
                          description: metadata[:description] } }
 
+              define_method(symbol) do
+                raise Entry::InvalidError unless valid?
+
+                @nodes[symbol].try(:value)
+              end
+
               (@allowed_nodes ||= {}).merge!(node)
             end
           end

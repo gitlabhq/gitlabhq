@@ -52,13 +52,6 @@ module Gitlab
             {}
           end
 
-          def method_missing(name, *args)
-            super unless allowed_nodes.has_key?(name)
-            raise InvalidError unless valid?
-
-            @nodes[name].try(:value)
-          end
-
           def add_node(key, entry)
             raise NotImplementedError
           end
