@@ -1,3 +1,4 @@
+# rubocop:disable all
 # This is ONLINE migration
 
 class AddContainerRegistryTokenExpireDelayToApplicationSettings < ActiveRecord::Migration

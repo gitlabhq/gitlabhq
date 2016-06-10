@@ -24,10 +24,20 @@ class @MilestoneSelect
 
       if issueUpdateURL
         milestoneLinkTemplate = _.template(
-          '<a href="/<%= namespace %>/<%= path %>/milestones/<%= iid %>"><%= _.escape(title) %></a>'
+          '<a href="/<%= namespace %>/<%= path %>/milestones/<%= iid %>">
+            <span class="has-tooltip" data-container="body" title="<%= remaining %>">
+              <%= _.escape(title) %>
+            </span>
+          </a>'
         )
 
         milestoneLinkNoneTemplate = '<div class="light">None</div>'
+
+        collapsedSidebarLabelTemplate = _.template(
+          '<span class="has-tooltip" data-container="body" title="<%= remaining %>" data-placement="left">
+            <%= _.escape(title) %>
+          </span>'
+        )
 
       $dropdown.glDropdown(
         data: (term, callback) ->
@@ -122,8 +132,9 @@ class @MilestoneSelect
               if data.milestone?
                 data.milestone.namespace = _this.currentProject.namespace
                 data.milestone.path = _this.currentProject.path
+                data.milestone.remaining = $.timefor data.milestone.due_date
                 $value.html(milestoneLinkTemplate(data.milestone))
-                $sidebarCollapsedValue.find('span').text(data.milestone.title)
+                $sidebarCollapsedValue.find('span').html(collapsedSidebarLabelTemplate(data.milestone))
               else
                 $value.html(milestoneLinkNoneTemplate)
                 $sidebarCollapsedValue.find('span').text('No')

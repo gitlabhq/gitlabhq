@@ -41,7 +41,7 @@ module API
       #
       get ":id/merge_requests" do
         authorize! :read_merge_request, user_project
-        merge_requests = user_project.merge_requests
+        merge_requests = user_project.merge_requests.inc_notes_with_associations
 
         unless params[:iid].nil?
           merge_requests = filter_by_iid(merge_requests, params[:iid])
@@ -228,11 +228,10 @@ module API
           # Merge request can not be merged
           # because user dont have permissions to push into target branch
           unauthorized! unless merge_request.can_be_merged_by?(current_user)
-          not_allowed! if !merge_request.open? || merge_request.work_in_progress?
 
-          merge_request.check_if_can_be_merged
+          not_allowed! unless merge_request.mergeable_state?
 
-          render_api_error!('Branch cannot be merged', 406) unless merge_request.can_be_merged?
+          render_api_error!('Branch cannot be merged', 406) unless merge_request.mergeable?
 
           if params[:sha] && merge_request.source_sha != params[:sha]
             render_api_error!("SHA does not match HEAD of source branch: #{merge_request.source_sha}", 409)

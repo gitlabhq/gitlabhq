@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 3.8.3 (29802) - http://www.bohemiancoding.com/sketch -->
+    <title>path-1</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="_activity" fill="#7E7D7D">
+            <g id="Page-1">
+                <g id="path-1">
+                    <path d="M5,0 C4.448,0 4,0.448 4,1 L4,3 L1,3 C0.448,3 0,3.448 0,4 L0,9 C0,9.552 0.448,10 1,10 L5,10 L5,8 L11,8 L11,10 L15,10 C15.552,10 16,9.552 16,9 L16,4 C16,3.448 15.552,3 15,3 L12,3 L12,1 C12,0.448 11.552,0 11,0 L5,0 L5,0 L5,0 L5,0 Z M6,2.5 C6,2.224 6.224,2 6.5,2 L9.5,2 C9.776,2 10,2.224 10,2.5 C10,2.776 9.776,3 9.5,3 L6.5,3 C6.224,3 6,2.776 6,2.5 L6,2.5 L6,2.5 L6,2.5 Z M6,11 L10.001,11 L10.001,9 L6,9 L6,11 L6,11 L6,11 L6,11 Z M11,11 L11,12 L5,12 L5,11 L1,11 C0.448,11 0,11.448 0,12 L0,15 C0,15.552 0.448,16 1,16 L15,16 C15.552,16 16,15.552 16,15 L16,12 C16,11.448 15.552,11 15,11 L11,11 L11,11 L11,11 L11,11 Z"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

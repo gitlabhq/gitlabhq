@@ -1,16 +1,18 @@
+- @no_container = true
 - page_title "Compare"
 = render "projects/commits/head"
 
-.row-content-block
-  Compare branches, tags or commit ranges.
-  %br
-  Fill input field with commit id like
-  %code.label-branch 4eedf23
-  or branch/tag name like
-  %code.label-branch master
-  and press compare button for the commits list and a code diff.
-  %br
-  Changes are shown <b>from</b> the version in the first field <b>to</b> the version in the second field.
+%div{ class: (container_class) }
+  .row-content-block.second-block.content-component-block
+    Compare branches, tags or commit ranges.
+    %br
+    Fill input field with commit id like
+    %code.label-branch 4eedf23
+    or branch/tag name like
+    %code.label-branch master
+    and press compare button for the commits list and a code diff.
+    %br
+    Changes are shown <b>from</b> the version in the first field <b>to</b> the version in the second field.
 
-.prepend-top-20
-  = render "form"
+  .prepend-top-20
+    = render "form"

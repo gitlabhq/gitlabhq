@@ -1,12 +1,16 @@
 #!/bin/bash
 
 retry() {
-    for i in $(seq 1 3); do
+    if eval "$@"; then
+        return 0
+    fi
+
+    for i in 2 1; do
+        sleep 3s
+        echo "Retrying $i..."
         if eval "$@"; then
             return 0
         fi
-        sleep 3s
-        echo "Retrying..."
     done
     return 1
 }

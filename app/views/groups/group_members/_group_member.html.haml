@@ -34,9 +34,9 @@
       %strong.member-access-level= member.human_access
       - if show_controls
         - if can?(current_user, :update_group_member, member)
-          = button_tag class: "btn-xs btn js-toggle-button",
+          = button_tag class: "btn-xs btn btn-grouped inline js-toggle-button",
                        title: 'Edit access level', type: 'button' do
-            %i.fa.fa-pencil-square-o
+            = icon('pencil')
 
         - if can?(current_user, :destroy_group_member, member)
           &nbsp;
@@ -46,7 +46,7 @@
               Leave
           - else
             = link_to group_group_member_path(@group, member), data: { confirm: remove_user_from_group_message(@group, member) }, method: :delete, remote: true, class: "btn-xs btn btn-remove", title: 'Remove user from group' do
-              %i.fa.fa-minus.fa-inverse
+              = icon('trash')
 
     .edit-member.hide.js-toggle-content
       %br

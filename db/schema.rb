@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160603182247) do
+ActiveRecord::Schema.define(version: 20160608155312) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -84,6 +84,7 @@ ActiveRecord::Schema.define(version: 20160603182247) do
     t.string   "health_check_access_token"
     t.boolean  "send_user_confirmation_email",          default: false
     t.integer  "container_registry_token_expire_delay", default: 5
+    t.text     "after_sign_up_text"
   end
 
   create_table "audit_events", force: :cascade do |t|
@@ -497,8 +498,10 @@ ActiveRecord::Schema.define(version: 20160603182247) do
     t.datetime "updated_at"
     t.boolean  "template",    default: false
     t.string   "description"
+    t.integer  "priority"
   end
 
+  add_index "labels", ["priority"], name: "index_labels_on_priority", using: :btree
   add_index "labels", ["project_id"], name: "index_labels_on_project_id", using: :btree
 
   create_table "lfs_objects", force: :cascade do |t|
@@ -744,38 +747,40 @@ ActiveRecord::Schema.define(version: 20160603182247) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "creator_id"
-    t.boolean  "issues_enabled",               default: true,     null: false
-    t.boolean  "merge_requests_enabled",       default: true,     null: false
-    t.boolean  "wiki_enabled",                 default: true,     null: false
+    t.boolean  "issues_enabled",                     default: true,     null: false
+    t.boolean  "merge_requests_enabled",             default: true,     null: false
+    t.boolean  "wiki_enabled",                       default: true,     null: false
     t.integer  "namespace_id"
-    t.string   "issues_tracker",               default: "gitlab", null: false
+    t.string   "issues_tracker",                     default: "gitlab", null: false
     t.string   "issues_tracker_id"
-    t.boolean  "snippets_enabled",             default: true,     null: false
+    t.boolean  "snippets_enabled",                   default: true,     null: false
     t.datetime "last_activity_at"
     t.string   "import_url"
-    t.integer  "visibility_level",             default: 0,        null: false
-    t.boolean  "archived",                     default: false,    null: false
+    t.integer  "visibility_level",                   default: 0,        null: false
+    t.boolean  "archived",                           default: false,    null: false
     t.string   "avatar"
     t.string   "import_status"
-    t.float    "repository_size",              default: 0.0
-    t.integer  "star_count",                   default: 0,        null: false
+    t.float    "repository_size",                    default: 0.0
+    t.integer  "star_count",                         default: 0,        null: false
     t.string   "import_type"
     t.string   "import_source"
-    t.integer  "commit_count",                 default: 0
+    t.integer  "commit_count",                       default: 0
     t.text     "import_error"
     t.integer  "ci_id"
-    t.boolean  "builds_enabled",               default: true,     null: false
-    t.boolean  "shared_runners_enabled",       default: true,     null: false
+    t.boolean  "builds_enabled",                     default: true,     null: false
+    t.boolean  "shared_runners_enabled",             default: true,     null: false
     t.string   "runners_token"
     t.string   "build_coverage_regex"
-    t.boolean  "build_allow_git_fetch",        default: true,     null: false
-    t.integer  "build_timeout",                default: 3600,     null: false
-    t.boolean  "pending_delete",               default: false
-    t.boolean  "public_builds",                default: true,     null: false
-    t.integer  "pushes_since_gc",              default: 0
+    t.boolean  "build_allow_git_fetch",              default: true,     null: false
+    t.integer  "build_timeout",                      default: 3600,     null: false
+    t.boolean  "pending_delete",                     default: false
+    t.boolean  "public_builds",                      default: true,     null: false
+    t.integer  "pushes_since_gc",                    default: 0
     t.boolean  "last_repository_check_failed"
     t.datetime "last_repository_check_at"
     t.boolean  "container_registry_enabled"
+    t.boolean  "only_allow_merge_if_build_succeeds", default: false,    null: false
+    t.boolean  "has_external_issue_tracker"
   end
 
   add_index "projects", ["builds_enabled", "shared_runners_enabled"], name: "index_projects_on_builds_enabled_and_shared_runners_enabled", using: :btree

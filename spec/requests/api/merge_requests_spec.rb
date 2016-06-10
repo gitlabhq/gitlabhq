@@ -419,6 +419,15 @@ describe API::API, api: true  do
       expect(json_response['message']).to eq('405 Method Not Allowed')
     end
 
+    it 'returns 405 if the build failed for a merge request that requires success' do
+      allow_any_instance_of(MergeRequest).to receive(:mergeable_ci_state?).and_return(false)
+
+      put api("/projects/#{project.id}/merge_requests/#{merge_request.id}/merge", user)
+
+      expect(response.status).to eq(405)
+      expect(json_response['message']).to eq('405 Method Not Allowed')
+    end
+
     it "should return 401 if user has no permissions to merge" do
       user2 = create(:user)
       project.team << [user2, :reporter]

@@ -23,7 +23,6 @@ class Dispatcher
         new Issue()
         shortcut_handler = new ShortcutsIssuable()
         new ZenMode()
-        gl.awardsHandler = new AwardsHandler()
       when 'projects:milestones:show', 'groups:milestones:show', 'dashboard:milestones:show'
         new Milestone()
       when 'dashboard:todos:index'
@@ -54,7 +53,6 @@ class Dispatcher
         new Diff()
         shortcut_handler = new ShortcutsIssuable(true)
         new ZenMode()
-        gl.awardsHandler = new AwardsHandler()
       when "projects:merge_requests:diffs"
         new Diff()
         new ZenMode()
@@ -100,6 +98,8 @@ class Dispatcher
         shortcut_handler = new ShortcutsNavigation()
       when 'projects:labels:new', 'projects:labels:edit'
         new Labels()
+      when 'projects:labels:index'
+        new LabelManager() if $('.prioritized-labels').length
       when 'projects:network:show'
         # Ensure we don't create a particular shortcut handler here. This is
         # already created, where the network graph is created.

@@ -1,3 +1,4 @@
+# rubocop:disable all
 class AddColorAndFontToBroadcastMessages < ActiveRecord::Migration
   def change
     add_column :broadcast_messages, :color, :string

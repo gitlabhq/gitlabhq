@@ -405,6 +405,7 @@ description area. Copy-paste it to retain the markdown format.
       entire line to follow it. This prevents linting tools from generating warnings.
     - Don't touch neighbouring lines. As an exception, automatic mass
       refactoring modifications may leave style non-compliant.
+1. If the merge request adds any new libraries (gems, JavaScript libraries, etc.), they should conform to our [Licensing guidelines][license-finder-doc]. See the instructions in that document for help if your MR fails the "license-finder" test with a "Dependencies that need approval" error.
 
 ## Changes for Stable Releases
 
@@ -531,3 +532,4 @@ available at [http://contributor-covenant.org/version/1/1/0/](http://contributor
 [gitlab-design]: https://gitlab.com/gitlab-org/gitlab-design
 [free Antetype viewer (Mac OSX only)]: https://itunes.apple.com/us/app/antetype-viewer/id824152298?mt=12
 [`gitlab8.atype` file]: https://gitlab.com/gitlab-org/gitlab-design/tree/master/current/
+[license-finder-doc]: doc/development/licensing.md

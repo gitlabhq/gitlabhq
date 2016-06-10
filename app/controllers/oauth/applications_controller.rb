@@ -32,7 +32,7 @@ class Oauth::ApplicationsController < Doorkeeper::ApplicationsController
   def verify_user_oauth_applications_enabled
     return if current_application_settings.user_oauth_applications?
 
-    redirect_to applications_profile_url
+    redirect_to profile_path
   end
 
   def set_index_vars

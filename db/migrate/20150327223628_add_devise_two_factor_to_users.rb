@@ -1,3 +1,4 @@
+# rubocop:disable all
 class AddDeviseTwoFactorToUsers < ActiveRecord::Migration
   def change
     add_column :users, :encrypted_otp_secret, :string

@@ -1,3 +1,4 @@
+# rubocop:disable all
 class AddInternalIdsToIssuesAndMr < ActiveRecord::Migration
   def change
     add_column :issues, :iid, :integer

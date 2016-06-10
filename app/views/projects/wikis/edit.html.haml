@@ -2,7 +2,7 @@
 = render 'nav'
 
 .top-area
-  .nav-text
+  .nav-text.wiki-page
     %strong
       - if @page.persisted?
         = link_to @page.title.capitalize, namespace_project_wiki_path(@project.namespace, @project, @page)

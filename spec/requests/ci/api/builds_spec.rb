@@ -85,7 +85,7 @@ describe Ci::API::API do
         trigger = FactoryGirl.create(:ci_trigger, project: project)
         pipeline = FactoryGirl.create(:ci_pipeline, project: project, ref: 'master')
 
-        trigger_request = FactoryGirl.create(:ci_trigger_request_with_variables, commit: pipeline, trigger: trigger)
+        trigger_request = FactoryGirl.create(:ci_trigger_request_with_variables, pipeline: pipeline, trigger: trigger)
         pipeline.create_builds(nil, trigger_request)
         project.variables << Ci::Variable.new(key: "SECRET_KEY", value: "secret_value")
 

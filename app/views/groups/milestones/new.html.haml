@@ -39,9 +39,8 @@
     .col-md-6
       .form-group
         = f.label :due_date, "Due Date", class: "control-label"
-        .col-sm-10= f.hidden_field :due_date
         .col-sm-10
-          .datepicker
+          = f.text_field :due_date, class: "datepicker form-control", placeholder: "Select due date"
 
   .form-actions
     = f.submit 'Create Milestone', class: "btn-create btn"

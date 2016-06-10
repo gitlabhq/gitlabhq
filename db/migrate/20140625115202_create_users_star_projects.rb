@@ -1,3 +1,4 @@
+# rubocop:disable all
 class CreateUsersStarProjects < ActiveRecord::Migration
   def change
     create_table :users_star_projects do |t|

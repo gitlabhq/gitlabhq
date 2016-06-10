@@ -1,3 +1,4 @@
+# rubocop:disable all
 class UpdateCiCommit < ActiveRecord::Migration
   # This migration can be run online, but needs to be executed for the second time after restarting Unicorn workers
   # Otherwise Offline migration should be used.

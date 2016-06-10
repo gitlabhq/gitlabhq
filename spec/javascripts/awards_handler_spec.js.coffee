@@ -3,10 +3,11 @@
 #= require jquery.cookie
 #= require ./fixtures/emoji_menu
 
-awardsHandler   = null
-window.gl     or= {}
-gl.emojiAliases = -> return { '+1': 'thumbsup', '-1': 'thumbsdown' }
-gl.awardMenuUrl = '/emojis'
+awardsHandler      = null
+window.gl        or= {}
+window.gon       or= {}
+gl.emojiAliases    = -> return { '+1': 'thumbsup', '-1': 'thumbsdown' }
+gon.award_menu_url = '/emojis'
 
 
 lazyAssert = (done, assertFn) ->
@@ -25,9 +26,7 @@ describe 'AwardsHandler', ->
     fixture.load 'awards_handler.html'
     awardsHandler = new AwardsHandler
     spyOn(awardsHandler, 'postEmoji').and.callFake (url, emoji, cb) => cb()
-    spyOn(jQuery, 'get').and.callFake (req, cb) ->
-      expect(req).toBe '/emojis'
-      cb window.emojiMenu
+    spyOn(jQuery, 'get').and.callFake (req, cb) -> cb window.emojiMenu
 
 
   describe '::showEmojiMenu', ->

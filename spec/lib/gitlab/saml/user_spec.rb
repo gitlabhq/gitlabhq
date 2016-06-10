@@ -145,6 +145,7 @@ describe Gitlab::Saml::User, lib: true do
               allow(ldap_user).to receive(:email) { %w(john@mail.com john2@example.com) }
               allow(ldap_user).to receive(:dn) { 'uid=user1,ou=People,dc=example' }
               allow(Gitlab::LDAP::Person).to receive(:find_by_uid).and_return(ldap_user)
+              allow(Gitlab::LDAP::Person).to receive(:find_by_dn).and_return(ldap_user)
             end
 
             context 'and no account for the LDAP user' do
@@ -174,6 +175,23 @@ describe Gitlab::Saml::User, lib: true do
                 identities_as_hash = gl_user.identities.map { |id| { provider: id.provider, extern_uid: id.extern_uid } }
                 expect(identities_as_hash).to match_array([ { provider: 'ldapmain', extern_uid: 'uid=user1,ou=People,dc=example' },
                                                             { provider: 'saml', extern_uid: uid }
+                                                          ])
+              end
+            end
+
+            context 'user has SAML user, and wants to add their LDAP identity' do
+              it 'adds the LDAP identity to the existing SAML user' do
+                create(:omniauth_user, email: 'john@mail.com', extern_uid: 'uid=user1,ou=People,dc=example', provider: 'saml', username: 'john')
+                local_hash = OmniAuth::AuthHash.new(uid: 'uid=user1,ou=People,dc=example', provider: provider, info: info_hash)
+                local_saml_user = described_class.new(local_hash)
+                local_saml_user.save
+                local_gl_user = local_saml_user.gl_user
+
+                expect(local_gl_user).to be_valid
+                expect(local_gl_user.identities.length).to eql 2
+                identities_as_hash = local_gl_user.identities.map { |id| { provider: id.provider, extern_uid: id.extern_uid } }
+                expect(identities_as_hash).to match_array([ { provider: 'ldapmain', extern_uid: 'uid=user1,ou=People,dc=example' },
+                                                            { provider: 'saml', extern_uid: 'uid=user1,ou=People,dc=example' }
                                                           ])
               end
             end

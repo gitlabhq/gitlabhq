@@ -1,3 +1,4 @@
+# rubocop:disable all
 class SetJiraServiceApiUrl < ActiveRecord::Migration
   # This migration can be performed online without errors, but some Jira API calls may be missed
   # when doing so because api_url is not yet available.
