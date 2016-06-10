@@ -115,6 +115,12 @@
       }
     }
   }
+
+  .count {
+    float: right;
+    padding: 0 8px;
+    @include border-radius(6px);
+  }
 }
 
 .sidebar-subnav {
@@ -131,9 +137,10 @@
   position: fixed;
   top: 0;
   left: 0;
-  font-size: 13px;
+  padding: 5px 0;
+  font-size: 18px;
   background: transparent;
-  height: 40px;
+  height: 50px;
   text-align: center;
   line-height: 40px;
   transition-duration: .3s;
@@ -157,7 +164,7 @@
     width: 0;
 
     .nav-sidebar {
-      width: $sidebar_collapsed_width;
+      width: 0;
 
       li {
         width: auto;
@@ -172,6 +179,10 @@
 
     .collapse-nav a {
       width: 0;
+
+      i {
+        display: none;
+      }
     }
 
     .sidebar-user {

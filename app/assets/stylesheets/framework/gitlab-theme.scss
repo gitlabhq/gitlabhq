@@ -10,8 +10,12 @@
   .page-with-sidebar {
 
     .collapse-nav a {
-      color: $white-light;
+      color: $color-light;
       background: $color;
+
+      &:hover {
+        color: $white-light;
+      }
     }
 
     .sidebar-wrapper {

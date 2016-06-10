@@ -28,6 +28,7 @@ header {
     height: $header-height;
     background-color: $background-color;
     border: none;
+    border-bottom: 1px solid $border-color;
 
     @media (max-width: $screen-xs-min) {
       padding: 0 16px;
