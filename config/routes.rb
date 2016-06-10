@@ -704,7 +704,7 @@ Rails.application.routes.draw do
           end
         end
 
-        resources :environments, only: [:index, :show]
+        resources :environments, only: [:index, :show, :new, :create, :destroy]
 
         resources :builds, only: [:index, :show], constraints: { id: /\d+/ } do
           collection do

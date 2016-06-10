@@ -9,7 +9,7 @@
     - if last_deployment
       %div.branch-commit
         - if last_deployment.ref
-          = link_to last.ref, namespace_project_commits_path(@project.namespace, @project, last_deployment.ref), class: "monospace"
+          = link_to last_deployment.ref, namespace_project_commits_path(@project.namespace, @project, last_deployment.ref), class: "monospace"
           &middot;
         = link_to last_deployment.short_sha, namespace_project_commit_path(@project.namespace, @project, last_deployment.sha), class: "commit-id monospace"
 
@@ -24,9 +24,8 @@
         No deployments yet
 
   %td
-    %p
-      %i.fa.fa-calendar
-      &nbsp;
-      #{time_ago_with_tooltip(last_deployment.created_at)}
+    - if last_deployment
+      %p
+        #{time_ago_with_tooltip(last_deployment.created_at)}
 
   %td

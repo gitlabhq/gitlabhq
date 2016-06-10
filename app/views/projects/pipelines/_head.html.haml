@@ -19,3 +19,4 @@
         = link_to project_environments_path(@project), title: 'Environments', class: 'shortcuts-environments' do
           %span
             Environments
+            %span.badge.count.environments_counter= number_with_delimiter(@project.environments.count)

@@ -2,7 +2,8 @@ require_relative 'base_service'
 
 class CreateDeploymentService < BaseService
   def execute(deployable)
-    environment = find_or_create_environment(params[:environment])
+    environment = find_environment(params[:environment])
+    return error('no environment') unless environmnet
 
     deployment = create_deployment(environment, deployable)
     if deployment.persisted?
@@ -13,14 +14,6 @@ class CreateDeploymentService < BaseService
   end
 
   private
-
-  def find_or_create_environment(environment)
-    find_environment(environment) || create_environment(environment)
-  end
-
-  def create_environment(environment)
-    project.environments.create(name: environment)
-  end
 
   def find_environment(environment)
     project.environments.find_by(name: environment)

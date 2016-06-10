@@ -3,16 +3,19 @@
 = render "projects/pipelines/head"
 
 %div{ class: (container_class) }
-  .gray-content-block
-    Environments for this project
+  - if can?(current_user, :create_environment, @project)
+    .top-area
+      .nav-controls
+        = link_to new_namespace_project_environment_path(@project.namespace, @project), class: 'btn btn-create' do
+          New environment
 
-  %ul.content-list
+  %ul.content-list.environments
     - if @environments.blank?
       %li
         .nothing-here-block No environments to show
     - else
       .table-holder
-        %table.table.builds
+        %table.table
           %tbody
             %th Environment
             %th Last deployment

@@ -1,11 +1,11 @@
 %tr.deployment
   %td
-    %strong= "##{environment.id}"
+    %strong= "##{deployment.iid}"
 
   %td
     %div.branch-commit
       - if deployment.ref
-        = link_to last.ref, namespace_project_commits_path(@project.namespace, @project, deployment.ref), class: "monospace"
+        = link_to deployment.ref, namespace_project_commits_path(@project.namespace, @project, deployment.ref), class: "monospace"
         &middot;
       = link_to deployment.short_sha, namespace_project_commit_path(@project.namespace, @project, deployment.sha), class: "commit-id monospace"
 
@@ -18,15 +18,13 @@
 
   %td
     - if deployment.deployable
-      = link_to [@project.namespace.becomes(Namespace), @project, deployment.deployable], class: "monospace" do
+      = link_to namespace_project_build_path(@project.namespace, @project, deployment.deployable), class: "monospace" do
         = "#{deployment.deployable.name} (##{deployment.deployable.id})"
 
   %td
-    %p
-      %i.fa.fa-calendar
-      &nbsp;
-      #{time_ago_with_tooltip(deployment.created_at)}
+    #{time_ago_with_tooltip(deployment.created_at)}
 
   %td
     - if can?(current_user, :update_deployment, @project) && deployment.deployable
-      = link_to [@project.namespace.becomes(Namespace), @project, deployment.deployable, :retry], method: :post, title: 'Retry', class: 'btn btn-build'
+      .pull-right
+        = link_to 'Retry', retry_namespace_project_build_path(@project.namespace, @project, deployment.deployable), method: :post, class: 'btn btn-build'

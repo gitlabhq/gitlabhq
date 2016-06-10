@@ -3,21 +3,26 @@
 = render "projects/pipelines/head"
 
 %div{ class: (container_class) }
-  .gray-content-block
-    Latest deployments for
-    %strong= @environment.name
+  .top-area
+    .col-md-9
+      %h3= @environment.name.titleize
+
+    .col-md-3
+      .nav-controls
+        = link_to 'Destroy', namespace_project_environment_path(@project.namespace, @project, @environment), data: { confirm: 'Are you sure?' }, class: 'btn btn-danger', method: :post
 
   %ul.content-list
     - if @deployments.blank?
       %li
-        .nothing-here-block No deployment for specific environment
+        .nothing-here-block No deployments for #{@environment.name}
     - else
       .table-holder
         %table.table.builds
           %thead
             %tr
+              %th ID
               %th Commit
-              %th Context
+              %th Build
               %th Date
               %th
 
