@@ -7,8 +7,11 @@ Gitlab::Seeder.quiet do
     project.team.users.sample(2) do |user|
       issue.create_award_emoji(emoji.sample, user)
 
-      note = issue.notes.sample
-      note.create_award_emoji(emoji.sample, user)
+      issue.notes.sample(2).each do |note|
+        next if note.system?
+        note.create_award_emoji(emoji.sample, user)
+      end
+
       print '.'
     end
   end
@@ -19,8 +22,11 @@ Gitlab::Seeder.quiet do
     project.team.users.sample(2).each do |user|
       mr.create_award_emoji(emoji.sample, user)
 
-      note = mr.notes.sample
-      note.create_award_emoji(emoji.sample, user)
+      mr.notes.sample(2).each do |note|
+        next if note.system?
+        note.create_award_emoji(emoji.sample, user)
+      end
+
       print '.'
     end
   end
