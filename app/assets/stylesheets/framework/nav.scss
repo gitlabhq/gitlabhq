@@ -350,33 +350,14 @@
   }
 
   .nav-control {
-    padding-left: 0;
-    transition-duration: .3s;
 
     .fade-right {
       @media (min-width: $screen-xs-max) {
-        right: 67px;
+        right: 68px;
       }
       @media (max-width: $screen-xs-min) {
         right: 0;
       }
-    }
-  }
-}
-
-.page-sidebar-collapsed {
-
-  .nav-control {
-    @media (min-width: $screen-md-min) {
-      padding-left: 32px;
-      transition-duration: .3s;
-    }
-  }
-
-  .layout-nav {
-
-    @media (max-width: $screen-sm-min) {
-      padding-left: 0;
     }
   }
 }

@@ -1,8 +1,5 @@
 .page-with-sidebar.page-sidebar-collapsed{ class: "#{page_gutter_class}" }
   .sidebar-wrapper.nicescroll{ class: nav_sidebar_class }
-    .gitlab-text-container
-      = link_to root_path, class: 'gitlab-text-container-link', title: 'Dashboard', id: 'js-shortcuts-home' do
-        %h3 GitLab
 
     - if defined?(sidebar) && sidebar
       = render "layouts/nav/#{sidebar}"
@@ -18,7 +15,7 @@
         = image_tag avatar_icon(current_user, 60), alt: 'Profile', class: 'avatar avatar s46'
   - if defined?(nav) && nav
     .layout-nav
-      .container-fluid
+      %div{ class: (container_class) }
         = render "layouts/nav/#{nav}"
   .content-wrapper{ class: "#{layout_nav_class}" }
     = render "layouts/broadcast"

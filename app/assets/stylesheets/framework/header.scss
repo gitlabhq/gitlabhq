@@ -28,7 +28,6 @@ header {
     height: $header-height;
     background-color: $background-color;
     border: none;
-    border-bottom: 1px solid $border-color;
 
     @media (max-width: $screen-xs-min) {
       padding: 0 16px;
@@ -132,6 +131,10 @@ header {
       transition-duration: .3s;
       z-index: 999;
 
+      &:hover {
+        cursor: pointer;
+      }
+
       @media (max-width: $screen-xs-max) {
         right: 25px;
         left: auto;
@@ -141,7 +144,7 @@ header {
     .title {
       margin: 0;
       font-size: 19px;
-      max-width: 250px;
+      max-width: 400px;
       display: inline-block;
       line-height: $header-height;
       font-weight: normal;
@@ -151,8 +154,8 @@ header {
       vertical-align: top;
       white-space: nowrap;
 
-      @media (max-width: $screen-xs-max) {
-        max-width: 220px;
+      @media (max-width: $screen-sm-max) {
+        max-width: 190px;
       }
 
       a {

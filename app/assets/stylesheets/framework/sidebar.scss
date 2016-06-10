@@ -35,31 +35,11 @@
 }
 
 .sidebar-wrapper {
-  .gitlab-text-container {
-    height: $header-height;
-    padding: 0 19px;
-    width: $sidebar_width;
-    position: fixed;
-    z-index: 999;
-    overflow: hidden;
-    transition-duration: .3s;
-
-    &:hover {
-      background-color: #eee;
-    }
-
-    h3 {
-      font-size: 19px;
-      line-height: 50px;
-      font-weight: normal;
-      margin: 0;
-    }
-  }
 
   .sidebar-user {
     padding: 15px 22px;
     position: fixed;
-    bottom: 40px;
+    bottom: 0;
     width: $sidebar_width;
     overflow: hidden;
     transition-duration: .3s;
@@ -104,10 +84,10 @@
     }
 
     a {
-      text-align: center;
-      padding: 8px;
+      width: $sidebar_width;
+      padding: 7px 15px 7px 23px;
       font-size: $gl-font-size;
-      color: $gray;
+      line-height: 24px;
       display: block;
       text-decoration: none;
       font-weight: normal;
@@ -125,10 +105,9 @@
         font-size: 16px;
       }
 
-      .nav-link-text {
-        margin-top: 3px;
-        font-size: 13px;
-        line-height: 18px;
+      i,
+      svg {
+        margin-right: 13px;
       }
 
       &.back-link i {
@@ -150,7 +129,7 @@
 .collapse-nav a {
   width: $sidebar_width;
   position: fixed;
-  bottom: 0;
+  top: 0;
   left: 0;
   font-size: 13px;
   background: transparent;
@@ -176,15 +155,6 @@
 
   .sidebar-wrapper {
     width: 0;
-
-    .gitlab-text-container {
-      width: 0;
-      padding: 0;
-
-      h3 {
-        display: none;
-      }
-    }
 
     .nav-sidebar {
       width: $sidebar_collapsed_width;
@@ -217,7 +187,6 @@
 }
 
 .page-sidebar-expanded {
-  padding-left: $sidebar_width;
 
   @media (max-width: $screen-sm-max) {
     padding-left: 0;
@@ -238,14 +207,6 @@
           opacity: 0;
         }
       }
-    }
-  }
-
-  .layout-nav {
-    padding-right: 0;
-
-    @media (min-width: $screen-md-min) {
-      padding-right: $sidebar_width;
     }
   }
 }

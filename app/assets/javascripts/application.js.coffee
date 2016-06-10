@@ -169,12 +169,6 @@ $ ->
     container: 'body'
   )
 
-  $('.page-with-sidebar').tooltip(
-    selector: '.sidebar-collapsed .nav-sidebar a, .sidebar-collapsed a.sidebar-user'
-    placement: 'right'
-    container: 'body'
-  )
-
   # Form submitter
   $('.trigger-submit').on 'change', ->
     $(@).parents('form').submit()
