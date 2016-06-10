@@ -1,7 +1,7 @@
 %ul.nav.nav-sidebar
   = nav_link(path: ['root#index', 'projects#trending', 'projects#starred', 'dashboard/projects#index'], html_options: {class: "#{project_tab_class} home"}) do
     = link_to dashboard_projects_path, title: 'Projects', class: 'dashboard-shortcuts-projects' do
-      = icon('bookmark fw')
+      = navbar_icon('project')
       .nav-link-text
         Projects
   = nav_link(controller: :todos) do
@@ -11,27 +11,27 @@
         Todos
   = nav_link(path: 'dashboard#activity') do
     = link_to activity_dashboard_path, class: 'dashboard-shortcuts-activity', title: 'Activity' do
-      = icon('dashboard fw')
+      = navbar_icon('activity')
       .nav-link-text
         Activity
   = nav_link(controller: [:groups, 'groups/milestones', 'groups/group_members']) do
     = link_to dashboard_groups_path, title: 'Groups' do
-      = icon('group fw')
+      = navbar_icon('group')
       .nav-link-text
         Groups
   = nav_link(controller: 'dashboard/milestones') do
     = link_to dashboard_milestones_path, title: 'Milestones' do
-      = icon('clock-o fw')
+      = navbar_icon('milestones')
       .nav-link-text
         Milestones
   = nav_link(path: 'dashboard#issues') do
     = link_to assigned_issues_dashboard_path, title: 'Issues', class: 'dashboard-shortcuts-issues' do
-      = icon('exclamation-circle fw')
+      = navbar_icon('issues')
       .nav-link-text
         Issues
   = nav_link(path: 'dashboard#merge_requests') do
     = link_to assigned_mrs_dashboard_path, title: 'Merge Requests', class: 'dashboard-shortcuts-merge_requests' do
-      = icon('tasks fw')
+      = navbar_icon('mr')
       .nav-link-text
         Merge Requests
   = nav_link(controller: :snippets) do

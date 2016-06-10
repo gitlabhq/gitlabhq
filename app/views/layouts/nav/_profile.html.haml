@@ -10,11 +10,12 @@
       = icon('gear fw')
       %span
         Account
-  = nav_link(controller: 'oauth/applications') do
-    = link_to applications_profile_path, title: 'Applications' do
-      = icon('cloud fw')
-      %span
-        Applications
+  - if current_application_settings.user_oauth_applications?
+    = nav_link(controller: 'oauth/applications') do
+      = link_to applications_profile_path, title: 'Applications' do
+        = icon('cloud fw')
+        %span
+          Applications
   = nav_link(controller: :emails) do
     = link_to profile_emails_path, title: 'Emails' do
       = icon('envelope-o fw')

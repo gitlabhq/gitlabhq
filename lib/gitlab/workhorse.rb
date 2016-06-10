@@ -6,6 +6,13 @@ module Gitlab
     SEND_DATA_HEADER = 'Gitlab-Workhorse-Send-Data'
 
     class << self
+      def git_http_ok(repository, user)
+        {
+          'GL_ID' => Gitlab::ShellEnv.gl_id(user),
+          'RepoPath' => repository.path_to_repo,
+        }
+      end
+
       def send_git_blob(repository, blob)
         params = {
           'RepoPath' => repository.path_to_repo,

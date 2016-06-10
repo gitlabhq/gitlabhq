@@ -124,7 +124,7 @@ describe Projects::ImportService, services: true do
         }
       )
 
-      Gitlab.config.omniauth.providers << provider
+      allow(Gitlab.config.omniauth).to receive(:providers).and_return([provider])
     end
   end
 end
