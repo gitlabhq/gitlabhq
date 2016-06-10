@@ -1,3 +1,4 @@
+# rubocop:disable all
 class RemoveTodosForDeletedMergeRequests < ActiveRecord::Migration
   def up
     execute <<-SQL

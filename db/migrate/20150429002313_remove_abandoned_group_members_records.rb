@@ -1,3 +1,4 @@
+# rubocop:disable all
 class RemoveAbandonedGroupMembersRecords < ActiveRecord::Migration
   def up
     execute("DELETE FROM members WHERE type = 'GroupMember' AND source_id NOT IN(\

@@ -1,3 +1,4 @@
+# rubocop:disable all
 class RemoveMRdiffFields < ActiveRecord::Migration
   def up
     remove_column :merge_requests, :st_commits

@@ -1,3 +1,4 @@
+# rubocop:disable all
 class AddDashboardToUsers < ActiveRecord::Migration
   def up
     add_column :users, :dashboard, :integer, default: 0
