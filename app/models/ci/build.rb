@@ -319,7 +319,7 @@ module Ci
     end
 
     def artifacts?
-      artifacts_file.exists?
+      !artifacts_expired? && artifacts_file.exists?
     end
 
     def artifacts_metadata?
@@ -352,7 +352,7 @@ module Ci
     end
 
     def artifacts_expired?
-      !artifacts? && artifacts_expire_at && artifacts_expire_at < Time.now
+      artifacts_expire_at && artifacts_expire_at < Time.now
     end
 
     def artifacts_expire_in
