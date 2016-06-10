@@ -1,4 +1,5 @@
 class Oauth::GeoAuthController < ActionController::Base
+  include ActionView::Helpers::UrlHelper
   rescue_from Gitlab::Geo::OauthApplicationUndefinedError, with: :undefined_oauth_application
   rescue_from OAuth2::Error, with: :auth
 
@@ -25,9 +26,7 @@ class Oauth::GeoAuthController < ActionController::Base
     user = User.find_by(id: remote_user['id'])
 
     if user && sign_in(user, bypass: true)
-      session[:access_token] = token
-      return_to = oauth.get_oauth_state_return_to
-      redirect_to(return_to || root_path)
+      after_sign_in_with_gitlab(token, oauth.get_oauth_state_return_to)
     else
       invalid_credentials
     end
@@ -45,6 +44,14 @@ class Oauth::GeoAuthController < ActionController::Base
   end
 
   private
+
+  def after_sign_in_with_gitlab(token, return_to)
+    primary_node = link_to('primary node', Gitlab::Geo.primary_node.url)
+    flash[:notice] = "You are in a Geo secondary node (read-only). To make any change you must visit the #{primary_node}.".html_safe
+
+    session[:access_token] = token
+    redirect_to(return_to || root_path)
+  end
 
   def invalid_credentials
     @error = 'Cannot find user to login. Your account may have been deleted.'
