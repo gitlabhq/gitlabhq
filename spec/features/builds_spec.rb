@@ -184,7 +184,7 @@ describe "Builds" do
         @build.run!
         @build.trace = 'BUILD TRACE'
         visit namespace_project_build_path(@project.namespace, @project, @build)
-        page.within('.build-controls') { click_link 'Raw' }
+        page.within('.js-build-sidebar') { click_link 'Raw' }
       end
 
       it 'sends the right headers' do
