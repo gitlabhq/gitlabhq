@@ -254,7 +254,7 @@ class @LabelsSelect
         search:
           fields: ['title']
         selectable: true
-
+        filterable: true
         toggleLabel: (selected, el) ->
           selected_labels = $('.js-label-select').siblings('.dropdown-menu-labels').find('.is-active')
 
