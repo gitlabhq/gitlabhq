@@ -608,7 +608,7 @@ module Ci
         })
       end
 
-      %w(on_success on_failure always).each do |when_state|
+      %w[on_success on_failure always].each do |when_state|
         it "returns artifacts for when #{when_state}  defined" do
           config = YAML.dump({
                                rspec: {
@@ -618,6 +618,7 @@ module Ci
                              })
 
           config_processor = GitlabCiYamlProcessor.new(config, path)
+
           builds = config_processor.builds_for_stage_and_ref("test", "master")
           expect(builds.size).to eq(1)
           expect(builds.first[:options][:artifacts][:when]).to eq(when_state)
