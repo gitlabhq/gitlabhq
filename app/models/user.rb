@@ -825,19 +825,16 @@ class User < ActiveRecord::Base
   private
 
   def projects_union(min_access_level = nil)
-    relations = if min_access_level
-                  scope = { access_level: Gitlab::Access.values.select { |access| access >= min_access_level } }
+    relations = [personal_projects.select(:id),
+                 groups_projects.select(:id),
+                 projects.select(:id),
+                 groups.joins(:shared_projects).select(:project_id)]
 
-                  [personal_projects.select(:id),
-                   groups_projects.where(members: scope).select(:id),
-                   projects.where(members: scope).select(:id),
-                   groups.joins(:shared_projects).where(members: scope).select(:project_id)]
-                else
-                  [personal_projects.select(:id),
-                   groups_projects.select(:id),
-                   projects.select(:id),
-                   groups.joins(:shared_projects).select(:project_id)]
-                end
+
+    if min_access_level
+      scope = { access_level: Gitlab::Access.values.select { |access| access >= min_access_level } }
+      relations = [relations.shift] + relations.map { |relation| relation.where(members: scope) }
+    end
 
     Gitlab::SQL::Union.new(relations)
   end

@@ -51,7 +51,7 @@ class Issue < ActiveRecord::Base
   end
 
   def self.visible_to_user(user)
-    return where(confidential: false) if user.blank?
+    return where('issues.confidential IS NULL OR issues.confidential IS FALSE') if user.blank?
     return all if user.admin?
 
     where('
