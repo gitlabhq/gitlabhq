@@ -4,6 +4,7 @@ v 8.10.0 (unreleased)
   - Replace Haml with Hamlit to make view rendering faster. !3666
   - Wrap code blocks on Activies and Todos page. !4783 (winniehell)
   - Add Sidekiq queue duration to transaction metrics.
+  - Let Workhorse serve format-patch diffs
   - Make images fit to the size of the viewport !4810
   - Fix check for New Branch button on Issue page !4630 (winniehell)
   - Fix MR-auto-close text added to description. !4836

@@ -96,26 +96,14 @@ describe Projects::MergeRequestsController do
     end
 
     describe "as patch" do
-      include_examples "export merge as", :patch
-      let(:format) { :patch }
-
-      it "should really be a git email patch with commit" do
-        get(:show,
-            namespace_id: project.namespace.to_param,
-            project_id: project.to_param,
-            id: merge_request.iid, format: format)
-
-        expect(response.body[0..100]).to start_with("From #{merge_request.commits.last.id}")
-      end
-
-      it "should contain git diffs" do
+      it 'triggers workhorse to serve the request' do
         get(:show,
             namespace_id: project.namespace.to_param,
             project_id: project.to_param,
             id: merge_request.iid,
-            format: format)
+            format: :patch)
 
-        expect(response.body).to match(/^diff --git/)
+        expect(response.headers['Gitlab-Workhorse-Send-Data']).to start_with("git-format-patch:")
       end
     end
   end
