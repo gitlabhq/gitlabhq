@@ -564,23 +564,23 @@ describe MergeRequest, models: true do
 
   describe '#mergeable_ci_state?' do
     let(:project) { create(:empty_project, only_allow_merge_if_build_succeeds: true) }
-    let(:ci_commit) { create(:ci_empty_pipeline) }
+    let(:pipeline) { create(:ci_empty_pipeline) }
 
     subject { build(:merge_request, target_project: project) }
 
     context 'when it is only allowed to merge when build is green' do
-      context 'and a failed ci_commit is associated' do
+      context 'and a failed pipeline is associated' do
         before do
-          ci_commit.statuses << create(:commit_status, status: 'failed', project: project)
-          allow(subject).to receive(:ci_commit) { ci_commit }
+          pipeline.statuses << create(:commit_status, status: 'failed', project: project)
+          allow(subject).to receive(:pipeline) { pipeline }
         end
 
         it { expect(subject.mergeable_ci_state?).to be_falsey }
       end
 
-      context 'when no ci_commit is associated' do
+      context 'when no pipeline is associated' do
         before do
-          allow(subject).to receive(:ci_commit) { nil }
+          allow(subject).to receive(:pipeline) { nil }
         end
 
         it { expect(subject.mergeable_ci_state?).to be_truthy }
@@ -590,18 +590,18 @@ describe MergeRequest, models: true do
     context 'when merges are not restricted to green builds' do
       subject { build(:merge_request, target_project: build(:empty_project, only_allow_merge_if_build_succeeds: false)) }
 
-      context 'and a failed ci_commit is associated' do
+      context 'and a failed pipeline is associated' do
         before do
-          ci_commit.statuses << create(:commit_status, status: 'failed', project: project)
-          allow(subject).to receive(:ci_commit) { ci_commit }
+          pipeline.statuses << create(:commit_status, status: 'failed', project: project)
+          allow(subject).to receive(:pipeline) { pipeline }
         end
 
         it { expect(subject.mergeable_ci_state?).to be_truthy }
       end
 
-      context 'when no ci_commit is associated' do
+      context 'when no pipeline is associated' do
         before do
-          allow(subject).to receive(:ci_commit) { nil }
+          allow(subject).to receive(:pipeline) { nil }
         end
 
         it { expect(subject.mergeable_ci_state?).to be_truthy }

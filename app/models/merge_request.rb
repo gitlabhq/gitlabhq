@@ -493,7 +493,7 @@ class MergeRequest < ActiveRecord::Base
   def mergeable_ci_state?
     return true unless project.only_allow_merge_if_build_succeeds?
 
-    !ci_commit || ci_commit.success?
+    !pipeline || pipeline.success?
   end
 
   def state_human_name

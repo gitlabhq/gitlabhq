@@ -19,7 +19,7 @@ feature 'Only allow merge requests to be merged if the build succeeds', feature:
   end
 
   context 'when project has CI enabled' do
-    let(:ci_commit) { create(:ci_empty_pipeline, project: project, sha: merge_request.last_commit.id, ref: merge_request.source_branch) }
+    let(:pipeline) { create(:ci_empty_pipeline, project: project, sha: merge_request.last_commit.id, ref: merge_request.source_branch) }
 
     context 'when merge requests can only be merged if the build succeeds' do
       before do
@@ -27,7 +27,7 @@ feature 'Only allow merge requests to be merged if the build succeeds', feature:
       end
 
       context 'when CI is running' do
-        before { ci_commit.update_column(:status, :running) }
+        before { pipeline.update_column(:status, :running) }
 
         it 'does not allow to merge immediately' do
           visit_merge_request(merge_request)
@@ -38,7 +38,7 @@ feature 'Only allow merge requests to be merged if the build succeeds', feature:
       end
 
       context 'when CI failed' do
-        before { ci_commit.update_column(:status, :failed) }
+        before { pipeline.update_column(:status, :failed) }
 
         it 'does not allow MR to be merged' do
           visit_merge_request(merge_request)
@@ -49,7 +49,7 @@ feature 'Only allow merge requests to be merged if the build succeeds', feature:
       end
 
       context 'when CI succeeded' do
-        before { ci_commit.update_column(:status, :success) }
+        before { pipeline.update_column(:status, :success) }
 
         it 'allows MR to be merged' do
           visit_merge_request(merge_request)
@@ -65,7 +65,7 @@ feature 'Only allow merge requests to be merged if the build succeeds', feature:
       end
 
       context 'when CI is running' do
-        before { ci_commit.update_column(:status, :running) }
+        before { pipeline.update_column(:status, :running) }
 
         it 'allows MR to be merged immediately', js: true do
           visit_merge_request(merge_request)
@@ -78,7 +78,7 @@ feature 'Only allow merge requests to be merged if the build succeeds', feature:
       end
 
       context 'when CI failed' do
-        before { ci_commit.update_column(:status, :failed) }
+        before { pipeline.update_column(:status, :failed) }
 
         it 'allows MR to be merged' do
           visit_merge_request(merge_request)
@@ -88,7 +88,7 @@ feature 'Only allow merge requests to be merged if the build succeeds', feature:
       end
 
       context 'when CI succeeded' do
-        before { ci_commit.update_column(:status, :success) }
+        before { pipeline.update_column(:status, :success) }
 
         it 'allows MR to be merged' do
           visit_merge_request(merge_request)
