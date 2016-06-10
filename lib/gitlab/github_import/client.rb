@@ -1,6 +1,9 @@
 module Gitlab
   module GithubImport
     class Client
+      GITHUB_SAFE_REMAINING_REQUESTS = 100
+      GITHUB_SAFE_SLEEP_TIME = 500
+
       attr_reader :client, :api
 
       def initialize(access_token)
@@ -11,7 +14,7 @@ module Gitlab
         )
 
         if access_token
-          ::Octokit.auto_paginate = true
+          ::Octokit.auto_paginate = false
 
           @api = ::Octokit::Client.new(
             access_token: access_token,
@@ -36,7 +39,7 @@ module Gitlab
 
       def method_missing(method, *args, &block)
         if api.respond_to?(method)
-          api.send(method, *args, &block)
+          request { api.send(method, *args, &block) }
         else
           super(method, *args, &block)
         end
@@ -54,6 +57,34 @@ module Gitlab
 
       def github_options
         config["args"]["client_options"].deep_symbolize_keys
+      end
+
+      def rate_limit
+        api.rate_limit!
+      end
+
+      def rate_limit_exceed?
+        rate_limit.remaining <= GITHUB_SAFE_REMAINING_REQUESTS
+      end
+
+      def rate_limit_sleep_time
+        rate_limit.resets_in + GITHUB_SAFE_SLEEP_TIME
+      end
+
+      def request
+        sleep rate_limit_sleep_time if rate_limit_exceed?
+
+        data = yield
+
+        last_response = api.last_response
+
+        while last_response.rels[:next]
+          sleep rate_limit_sleep_time if rate_limit_exceed?
+          last_response = last_response.rels[:next].get
+          data.concat(last_response.data) if last_response.data.is_a?(Array)
+        end
+
+        data
       end
     end
   end
