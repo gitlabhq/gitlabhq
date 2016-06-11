@@ -563,6 +563,21 @@ describe API::API, api: true  do
       expect(json_response).to be_an Array
       expect(json_response.length).to eq(0)
     end
+
+    it 'handles external issues' do
+      jira_project = create(:jira_project, :public, name: 'JIR_EXT1')
+      issue = ExternalIssue.new("#{jira_project.name}-123", jira_project)
+      merge_request = create(:merge_request, :simple, author: user, assignee: user, source_project: jira_project)
+      merge_request.update_attribute(:description, "Closes #{issue.to_reference(jira_project)}")
+
+      get api("/projects/#{jira_project.id}/merge_requests/#{merge_request.id}/closes_issues", user)
+
+      expect(response.status).to eq(200)
+      expect(json_response).to be_an Array
+      expect(json_response.length).to eq(1)
+      expect(json_response.first['title']).to eq(issue.title)
+      expect(json_response.first['id']).to eq(issue.id)
+    end
   end
 
   describe 'POST :id/merge_requests/:merge_request_id/subscription' do
