@@ -13,7 +13,7 @@ module TestEnv
     'improve/awesome'  => '5937ac0',
     'markdown'         => '0ed8c6c',
     'lfs'              => 'be93687',
-    'master'           => '5937ac0',
+    'master'           => '281d3a76',
     "'test'"           => 'e56497b',
     'orphaned-branch'  => '45127a9',
     'binary-encoding'  => '7b1cf43',
