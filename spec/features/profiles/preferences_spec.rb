@@ -54,7 +54,7 @@ describe 'Profile > Preferences', feature: true do
     end
   end
 
-  describe 'User changes their default dashboard' do
+  describe 'User changes their default dashboard', js: true do
     it 'creates a flash message' do
       select 'Starred Projects', from: 'user_dashboard'
       click_button 'Save'
@@ -66,8 +66,10 @@ describe 'Profile > Preferences', feature: true do
       select 'Starred Projects', from: 'user_dashboard'
       click_button 'Save'
 
-      click_link 'Dashboard'
-      expect(page.current_path).to eq starred_dashboard_projects_path
+      allowing_for_delay do
+        find('#logo').click
+        expect(page.current_path).to eq starred_dashboard_projects_path
+      end
 
       click_link 'Your Projects'
       expect(page.current_path).to eq dashboard_projects_path

@@ -36,13 +36,7 @@ module NavHelper
   end
 
   def nav_header_class
-    class_name =
-      if nav_menu_collapsed?
-        "header-collapsed"
-      else
-        "header-expanded"
-      end
-    class_name += " with-horizontal-nav" if defined?(nav) && nav
+    class_name = " with-horizontal-nav" if defined?(nav) && nav
     class_name
   end
 

@@ -35,24 +35,11 @@
 }
 
 .sidebar-wrapper {
-  .header-logo {
-    height: $header-height;
-    padding: 8px 26px;
-    width: $sidebar_width;
-    position: fixed;
-    z-index: 999;
-    overflow: hidden;
-    transition-duration: .3s;
-
-    &:hover {
-      background-color: #eee;
-    }
-  }
 
   .sidebar-user {
     padding: 15px 22px;
     position: fixed;
-    bottom: 40px;
+    bottom: 0;
     width: $sidebar_width;
     overflow: hidden;
     transition-duration: .3s;
@@ -97,10 +84,10 @@
     }
 
     a {
-      text-align: center;
-      padding: 8px;
+      width: $sidebar_width;
+      padding: 7px 15px 7px 23px;
       font-size: $gl-font-size;
-      color: $gray;
+      line-height: 24px;
       display: block;
       text-decoration: none;
       font-weight: normal;
@@ -118,16 +105,21 @@
         font-size: 16px;
       }
 
-      .nav-link-text {
-        margin-top: 3px;
-        font-size: 13px;
-        line-height: 18px;
+      i,
+      svg {
+        margin-right: 13px;
       }
 
       &.back-link i {
         transition-duration: .3s;
       }
     }
+  }
+
+  .count {
+    float: right;
+    padding: 0 8px;
+    @include border-radius(6px);
   }
 }
 
@@ -143,11 +135,12 @@
 .collapse-nav a {
   width: $sidebar_width;
   position: fixed;
-  bottom: 0;
+  top: 0;
   left: 0;
-  font-size: 13px;
+  padding: 5px 0;
+  font-size: 18px;
   background: transparent;
-  height: 40px;
+  height: 50px;
   text-align: center;
   line-height: 40px;
   transition-duration: .3s;
@@ -170,25 +163,8 @@
   .sidebar-wrapper {
     width: 0;
 
-    .header-logo {
-      width: 0;
-      padding: 8px 0;
-
-      a {
-        padding-left: ($sidebar_collapsed_width - 36) / 2;
-
-        .gitlab-text-container {
-          display: none;
-        }
-      }
-    }
-
-    #logo {
-      display: none;
-    }
-
     .nav-sidebar {
-      width: $sidebar_collapsed_width;
+      width: 0;
 
       li {
         width: auto;
@@ -203,6 +179,10 @@
 
     .collapse-nav a {
       width: 0;
+
+      i {
+        display: none;
+      }
     }
 
     .sidebar-user {
@@ -218,9 +198,8 @@
 }
 
 .page-sidebar-expanded {
-  padding-left: $sidebar_width;
 
-  @media (max-width: $screen-xs-min) {
+  @media (max-width: $screen-sm-max) {
     padding-left: 0;
   }
 
@@ -239,20 +218,6 @@
           opacity: 0;
         }
       }
-    }
-  }
-
-  .layout-nav {
-    @media (max-width: $screen-xs-min) {
-      padding-right: 0;
-    }
-
-    @media (min-width: $screen-xs-min) and (max-width: $screen-md-min) {
-      padding-right: 90px;
-    }
-
-    @media (min-width: $screen-md-min) {
-      padding-right: $sidebar_width;
     }
   }
 }
