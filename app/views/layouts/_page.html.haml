@@ -17,7 +17,7 @@
           = current_user.username
   - if defined?(nav) && nav
     .layout-nav
-      %div{ class: (container_class) }
+      .container-fluid
         = render "layouts/nav/#{nav}"
   .content-wrapper{ class: "#{layout_nav_class}" }
     = render "layouts/broadcast"
