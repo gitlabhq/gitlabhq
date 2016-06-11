@@ -222,12 +222,8 @@ module API
 
     class MergeRequestApprovals < ProjectEntity
       expose :merge_status
-      expose :approvals_required do |merge_request, _|
-        merge_request.approvals_required
-      end
-      expose :approvals_missing do |merge_request, _|
-        merge_request.approvals_left
-      end
+      expose :approvals_required
+      expose :approvals_left
       expose :approvals, as: :approved_by, using: Entities::Approvals
     end
 

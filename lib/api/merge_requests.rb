@@ -334,9 +334,10 @@ module API
         end
 
         # Get the status of the merge request's approvals
+        #
         # Parameters:
-        #   id (required)                         - The ID of a project
-        #   merge_request_id (required)           - ID of MR
+        #   id (required)                 - The ID of a project
+        #   merge_request_id (required)   - ID of MR
         # Examples:
         #   GET /projects/:id/merge_requests/:merge_request_id/approvals
         #
@@ -348,9 +349,10 @@ module API
         end
 
         # Approve a merge request
+        #
         # Parameters:
-        #   id (required)                         - The ID of a project
-        #   merge_request_id (required)           - ID of MR
+        #   id (required)                 - The ID of a project
+        #   merge_request_id (required)   - ID of MR
         # Examples:
         #   POST /projects/:id/merge_requests/:merge_request_id/approvals
         #
@@ -359,9 +361,9 @@ module API
 
           unauthorized! unless merge_request.can_approve?(current_user)
 
-          ::MergeRequests::ApprovalService.
-            new(user_project, current_user).
-            execute(merge_request)
+          ::MergeRequests::ApprovalService
+            .new(user_project, current_user)
+            .execute(merge_request)
 
           present merge_request, with: Entities::MergeRequestApprovals, current_user: current_user
         end

@@ -498,8 +498,10 @@ GET /projects/:id/merge_requests/:merge_request_id/approvals
 
 **Parameters:**
 
-- id (required)                         - The ID of a project
-- merge_request_id (required)           - ID of MR
+| Attribute          | Type    | Required | Description         |
+|--------------------|---------|----------|---------------------|
+| `id`               | integer | yes      | The ID of a project |
+| `merge_request_id` | integer | yes      | The ID of MR        |
 
 ```json
 {
@@ -542,8 +544,10 @@ POST /projects/:id/merge_requests/:merge_request_id/approvals
 
 **Parameters:**
 
-- id (required)                         - The ID of a project
-- merge_request_id (required)           - ID of MR
+| Attribute          | Type    | Required | Description         |
+|--------------------|---------|----------|---------------------|
+| `id`               | integer | yes      | The ID of a project |
+| `merge_request_id` | integer | yes      | The ID of MR        |
 
 ```json
 {

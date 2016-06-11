@@ -616,7 +616,8 @@ describe API::API, api: true  do
       post api("/projects/#{project.id}/merge_requests/#{merge_request.id}/approve", user)
 
       expect(response.status).to eq(201)
-      expect(json_response['approvals_required']).to eq 1
+      expect(json_response['approvals_left']).to eq(1)
+      expect(json_response['approved_by'][0]['user']['username']).to eq(user.username)
     end
   end
 
