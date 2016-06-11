@@ -69,6 +69,7 @@
   }
 
   &.sub-nav {
+    text-align: center;
     background-color: $background-color;
 
     .container-fluid {
@@ -250,6 +251,7 @@
   background: $background-color;
   border-bottom: 1px solid $border-color;
   transition-duration: .3s;
+  text-align: center;
 
   .container-fluid {
     position: relative;
