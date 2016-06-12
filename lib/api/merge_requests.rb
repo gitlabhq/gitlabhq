@@ -332,6 +332,41 @@ module API
           issues = ::Kaminari.paginate_array(merge_request.closes_issues(current_user))
           present paginate(issues), with: Entities::Issue, current_user: current_user
         end
+
+        # Get the status of the merge request's approvals
+        #
+        # Parameters:
+        #   id (required)                 - The ID of a project
+        #   merge_request_id (required)   - ID of MR
+        # Examples:
+        #   GET /projects/:id/merge_requests/:merge_request_id/approvals
+        #
+        get "#{path}/approvals" do
+          merge_request = user_project.merge_requests.find(params[:merge_request_id])
+
+          authorize! :read_merge_request, merge_request
+          present merge_request, with: Entities::MergeRequestApprovals, current_user: current_user
+        end
+
+        # Approve a merge request
+        #
+        # Parameters:
+        #   id (required)                 - The ID of a project
+        #   merge_request_id (required)   - ID of MR
+        # Examples:
+        #   POST /projects/:id/merge_requests/:merge_request_id/approvals
+        #
+        post "#{path}/approve" do
+          merge_request = user_project.merge_requests.find(params[:merge_request_id])
+
+          unauthorized! unless merge_request.can_approve?(current_user)
+
+          ::MergeRequests::ApprovalService
+            .new(user_project, current_user)
+            .execute(merge_request)
+
+          present merge_request, with: Entities::MergeRequestApprovals, current_user: current_user
+        end
       end
     end
   end

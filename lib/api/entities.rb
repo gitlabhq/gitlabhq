@@ -216,6 +216,17 @@ module API
       end
     end
 
+    class Approvals < Grape::Entity
+      expose :user, using: Entities::UserBasic
+    end
+
+    class MergeRequestApprovals < ProjectEntity
+      expose :merge_status
+      expose :approvals_required
+      expose :approvals_left
+      expose :approvals, as: :approved_by, using: Entities::Approvals
+    end
+
     class SSHKey < Grape::Entity
       expose :id, :title, :key, :created_at
     end

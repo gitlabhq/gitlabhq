@@ -485,6 +485,108 @@ Parameters:
 }
 ```
 
+## Merge Request Approvals
+
+>**Note:** This API endpoint is only available on 8.9 EE and above.
+
+You can request information about a merge request's approval status using the
+following endpoint:
+
+```
+GET /projects/:id/merge_requests/:merge_request_id/approvals
+```
+
+**Parameters:**
+
+| Attribute          | Type    | Required | Description         |
+|--------------------|---------|----------|---------------------|
+| `id`               | integer | yes      | The ID of a project |
+| `merge_request_id` | integer | yes      | The ID of MR        |
+
+```json
+{
+  "id": 5,
+  "iid": 5,
+  "project_id": 1,
+  "title": "Approvals API",
+  "description": "Test",
+  "state": "opened",
+  "created_at": "2016-06-08T00:19:52.638Z",
+  "updated_at": "2016-06-08T21:20:42.470Z",
+  "merge_status": "can_be_merged",
+  "approvals_required": 2,
+  "approvals_missing": 1,
+  "approved_by": [
+    {
+      "user": {
+        "name": "Administrator",
+        "username": "root",
+        "id": 1,
+        "state": "active",
+        "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80\u0026d=identicon",
+        "web_url": "http://localhost:3000/u/root"
+      }
+    }
+  ]
+}
+```
+
+## Approve Merge Request
+
+>**Note:** This API endpoint is only available on 8.9 EE and above.
+
+If you are allowed to, you can approve a merge request using the following 
+endpoint:
+
+```
+POST /projects/:id/merge_requests/:merge_request_id/approvals
+```
+
+**Parameters:**
+
+| Attribute          | Type    | Required | Description         |
+|--------------------|---------|----------|---------------------|
+| `id`               | integer | yes      | The ID of a project |
+| `merge_request_id` | integer | yes      | The ID of MR        |
+
+```json
+{
+  "id": 5,
+  "iid": 5,
+  "project_id": 1,
+  "title": "Approvals API",
+  "description": "Test",
+  "state": "opened",
+  "created_at": "2016-06-08T00:19:52.638Z",
+  "updated_at": "2016-06-09T21:32:14.105Z",
+  "merge_status": "can_be_merged",
+  "approvals_required": 2,
+  "approvals_missing": 0,
+  "approved_by": [
+    {
+      "user": {
+        "name": "Administrator",
+        "username": "root",
+        "id": 1,
+        "state": "active",
+        "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80\u0026d=identicon",
+        "web_url": "http://localhost:3000/u/root"
+      }
+    },
+    {
+      "user": {
+        "name": "Nico Cartwright",
+        "username": "ryley",
+        "id": 2,
+        "state": "active",
+        "avatar_url": "http://www.gravatar.com/avatar/cf7ad14b34162a76d593e3affca2adca?s=80\u0026d=identicon",
+        "web_url": "http://localhost:3000/u/ryley"
+      }
+    }
+  ]
+}
+```
+
 ## Cancel Merge When Build Succeeds
 
 If successful you'll get `200 OK`.
