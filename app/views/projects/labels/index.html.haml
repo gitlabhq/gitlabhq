@@ -1,35 +1,38 @@
+- @no_container = true
 - page_title "Labels"
 - hide_class = ''
+= render "projects/issues/head"
 
-.top-area
-  .nav-text
-    Labels can be applied to issues and merge requests.
-  .nav-controls
-    - if can?(current_user, :admin_label, @project)
-      = link_to new_namespace_project_label_path(@project.namespace, @project), class: "btn btn-new" do
-        New label
+%div{ class: (container_class) }
+  .top-area
+    .nav-text
+      Labels can be applied to issues and merge requests.
+    .nav-controls
+      - if can?(current_user, :admin_label, @project)
+        = link_to new_namespace_project_label_path(@project.namespace, @project), class: "btn btn-new" do
+          New label
 
-.labels
-  - if can?(current_user, :admin_label, @project)
-    -# Only show it in the first page
-    - hide = @project.labels.empty? || (params[:page].present? && params[:page] != '1')
-    .prioritized-labels{ class: ('hide' if hide) }
-      %h5 Prioritized Labels
-      %ul.content-list.manage-labels-list.js-prioritized-labels{ "data-url" => set_priorities_namespace_project_labels_path(@project.namespace, @project) }
-        - if @prioritized_labels.present?
-          = render @prioritized_labels
-        - else
-          %p.empty-message No prioritized labels yet
-  .other-labels
+  .labels
     - if can?(current_user, :admin_label, @project)
-      %h5{ class: ('hide' if hide) } Other Labels
-    - if @labels.present?
-      %ul.content-list.manage-labels-list.js-other-labels
-        = render @labels
-      = paginate @labels, theme: 'gitlab'
-    - else
-      .nothing-here-block
-        - if can?(current_user, :admin_label, @project)
-          Create a label or #{link_to 'generate a default set of labels', generate_namespace_project_labels_path(@project.namespace, @project), method: :post}.
-        - else
-          No labels created
+      -# Only show it in the first page
+      - hide = @project.labels.empty? || (params[:page].present? && params[:page] != '1')
+      .prioritized-labels{ class: ('hide' if hide) }
+        %h5 Prioritized Labels
+        %ul.content-list.manage-labels-list.js-prioritized-labels{ "data-url" => set_priorities_namespace_project_labels_path(@project.namespace, @project) }
+          - if @prioritized_labels.present?
+            = render @prioritized_labels
+          - else
+            %p.empty-message No prioritized labels yet
+    .other-labels
+      - if can?(current_user, :admin_label, @project)
+        %h5{ class: ('hide' if hide) } Other Labels
+      - if @labels.present?
+        %ul.content-list.manage-labels-list.js-other-labels
+          = render @labels
+        = paginate @labels, theme: 'gitlab'
+      - else
+        .nothing-here-block
+          - if can?(current_user, :admin_label, @project)
+            Create a label or #{link_to 'generate a default set of labels', generate_namespace_project_labels_path(@project.namespace, @project), method: :post}.
+          - else
+            No labels created
