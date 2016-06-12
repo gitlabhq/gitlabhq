@@ -418,5 +418,13 @@ module API
     def send_git_archive(repository, ref:, format:)
       header(*Gitlab::Workhorse.send_git_archive(repository, ref: ref, format: format))
     end
+
+    def issue_entity(project)
+      if project.has_external_issue_tracker?
+        Entities::ExternalIssue
+      else
+        Entities::Issue
+      end
+    end
   end
 end
