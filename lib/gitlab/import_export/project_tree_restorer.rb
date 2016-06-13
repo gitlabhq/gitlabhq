@@ -73,7 +73,7 @@ module Gitlab
           relation.values.flatten.each do |sub_relation|
 
             if sub_relation.is_a?(Hash)
-              relation_hash =  relation_item[sub_relation.keys.first.to_s]
+              relation_hash = relation_item[sub_relation.keys.first.to_s]
               sub_relation = sub_relation.keys.first
             else
               relation_hash = relation_item[sub_relation.to_s]

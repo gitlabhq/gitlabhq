@@ -11,7 +11,7 @@ module Gitlab
       end
 
       def restore
-        return false unless File.exists?(@path_to_bundle) || wiki?
+        return false unless File.exist?(@path_to_bundle) || wiki?
 
         FileUtils.mkdir_p(path_to_repo)
 
