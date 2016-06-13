@@ -2,13 +2,13 @@ module Gitlab
   module ImportExport
     class MembersMapper
 
-      attr_reader :note_member_list
+      attr_reader :missing_author_ids
 
       def initialize(exported_members:, user:, project:)
         @exported_members = exported_members
         @user = user
         @project = project
-        @note_member_list = []
+        @missing_author_ids = []
 
         # This needs to run first, as second call would be from #map
         # which means project members already exist.
@@ -37,7 +37,7 @@ module Gitlab
 
       def missing_keys_tracking_hash
         Hash.new do |_, key|
-          @note_member_list << key
+          @missing_author_ids << key
           default_user_id
         end
       end

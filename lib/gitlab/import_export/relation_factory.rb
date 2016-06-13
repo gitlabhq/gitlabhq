@@ -16,11 +16,11 @@ module Gitlab
         new(*args).create
       end
 
-      def initialize(relation_sym:, relation_hash:, members_mapper:, user_admin:)
+      def initialize(relation_sym:, relation_hash:, members_mapper:, user:)
         @relation_name = OVERRIDES[relation_sym] || relation_sym
         @relation_hash = relation_hash.except('id', 'noteable_id')
         @members_mapper = members_mapper
-        @user_admin = user_admin
+        @user = user
       end
 
       # Creates an object from an actual model with name "relation_sym" with params from
@@ -57,7 +57,7 @@ module Gitlab
 
         author = @relation_hash.delete('author')
 
-        if admin_user? && @members_mapper.note_member_list.include?(old_author_id)
+        if admin_user? && @members_mapper.missing_author_ids.include?(old_author_id)
           update_note_for_missing_author(author['name'])
         end
       end
@@ -119,7 +119,7 @@ module Gitlab
       end
 
       def admin_user?
-        @user_admin
+        @user.is_admin?
       end
     end
   end
