@@ -607,7 +607,9 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def ff_merge_possible?
-    target_sha == source_sha_parent
+    target_project.repository.count_commits_between(
+      target_sha,
+      last_commit.sha) > 0
   end
 
   def must_be_rebased?
