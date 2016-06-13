@@ -119,6 +119,7 @@ class Admin::UsersController < Admin::ApplicationController
       user_params_with_pass.merge!(
         password: params[:user][:password],
         password_confirmation: params[:user][:password_confirmation],
+        password_expires_at: Time.now
       )
     end
 
@@ -153,7 +154,7 @@ class Admin::UsersController < Admin::ApplicationController
 
     respond_to do |format|
       format.html { redirect_back_or_admin_user(notice: "Successfully removed email.") }
-      format.js { render nothing: true }
+      format.js { head :ok }
     end
   end
 

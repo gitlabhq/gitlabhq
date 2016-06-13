@@ -6,7 +6,7 @@ Since an installation from source is a lot of work and error prone we strongly r
 
 One reason the Omnibus package is more reliable is its use of Runit to restart any of the GitLab processes in case one crashes.
 On heavily used GitLab instances the memory usage of the Sidekiq background worker will grow over time.
-Omnibus packages solve this by [letting the Sidekiq terminate gracefully](http://doc.gitlab.com/ce/operations/sidekiq_memory_killer.html) if it uses too much memory.
+Omnibus packages solve this by [letting the Sidekiq terminate gracefully](http://docs.gitlab.com/ce/operations/sidekiq_memory_killer.html) if it uses too much memory.
 After this termination Runit will detect Sidekiq is not running and will start it.
 Since installations from source don't have Runit, Sidekiq can't be terminated and its memory usage will grow over time.
 
@@ -269,9 +269,9 @@ sudo usermod -aG redis git
 ### Clone the Source
 
     # Clone GitLab repository
-    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 8-7-stable gitlab
+    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 8-9-stable gitlab
 
-**Note:** You can change `8-7-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
+**Note:** You can change `8-9-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
 
 ### Configure It
 
@@ -394,7 +394,7 @@ GitLab Shell is an SSH access and repository management software developed speci
     cd /home/git
     sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-workhorse.git
     cd gitlab-workhorse
-    sudo -u git -H git checkout v0.7.1
+    sudo -u git -H git checkout v0.7.5
     sudo -u git -H make
 
 ### Initialize Database and Activate Advanced Features

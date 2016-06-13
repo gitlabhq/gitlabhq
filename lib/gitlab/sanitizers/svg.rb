@@ -1,5 +1,3 @@
-require_relative "svg/whitelist"
-
 module Gitlab
   module Sanitizers
     module SVG
@@ -12,24 +10,46 @@ module Gitlab
         DATA_ATTR_PATTERN = /\Adata-(?!xml)[a-z_][\w.\u00E0-\u00F6\u00F8-\u017F\u01DD-\u02AF-]*\z/u
 
         def scrub(node)
-          unless ALLOWED_ELEMENTS.include?(node.name)
+          unless Whitelist::ALLOWED_ELEMENTS.include?(node.name)
             node.unlink
-          else
-            node.attributes.each do |attr_name, attr|
-              valid_attributes = ALLOWED_ATTRIBUTES[node.name]
+            return
+          end
 
-              unless valid_attributes && valid_attributes.include?(attr_name)
-                if ALLOWED_DATA_ATTRIBUTES_IN_ELEMENTS.include?(node.name) &&
-                    attr_name.start_with?('data-')
-                  # Arbitrary data attributes are allowed. Verify that the attribute
-                  # is a valid data attribute.
-                  attr.unlink unless attr_name =~ DATA_ATTR_PATTERN
-                else
-                  attr.unlink
-                end
+          valid_attributes = Whitelist::ALLOWED_ATTRIBUTES[node.name]
+          return unless valid_attributes
+
+          node.attribute_nodes.each do |attr|
+            attr_name = attribute_name_with_namespace(attr)
+
+            if valid_attributes.include?(attr_name)
+              attr.unlink if unsafe_href?(attr)
+            else
+              # Arbitrary data attributes are allowed.
+              unless allows_data_attribute?(node) && data_attribute?(attr)
+                attr.unlink
               end
             end
           end
+        end
+
+        def attribute_name_with_namespace(attr)
+          if attr.namespace
+            "#{attr.namespace.prefix}:#{attr.name}"
+          else
+            attr.name
+          end
+        end
+
+        def allows_data_attribute?(node)
+          Whitelist::ALLOWED_DATA_ATTRIBUTES_IN_ELEMENTS.include?(node.name)
+        end
+
+        def unsafe_href?(attr)
+          attribute_name_with_namespace(attr) == 'xlink:href' && !attr.value.start_with?('#')
+        end
+
+        def data_attribute?(attr)
+          attr.name.start_with?('data-') && attr.name =~ DATA_ATTR_PATTERN && attr.namespace.nil?
         end
       end
     end

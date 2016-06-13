@@ -1,42 +1,3 @@
-# == Schema Information
-#
-# Table name: projects
-#
-#  id                     :integer          not null, primary key
-#  name                   :string(255)
-#  path                   :string(255)
-#  description            :text
-#  created_at             :datetime
-#  updated_at             :datetime
-#  creator_id             :integer
-#  issues_enabled         :boolean          default(TRUE), not null
-#  merge_requests_enabled :boolean          default(TRUE), not null
-#  wiki_enabled           :boolean          default(TRUE), not null
-#  namespace_id           :integer
-#  issues_tracker         :string(255)      default("gitlab"), not null
-#  issues_tracker_id      :string(255)
-#  snippets_enabled       :boolean          default(TRUE), not null
-#  last_activity_at       :datetime
-#  import_url             :string(255)
-#  visibility_level       :integer          default(0), not null
-#  archived               :boolean          default(FALSE), not null
-#  avatar                 :string(255)
-#  import_status          :string(255)
-#  repository_size        :float            default(0.0)
-#  star_count             :integer          default(0), not null
-#  import_type            :string(255)
-#  import_source          :string(255)
-#  commit_count           :integer          default(0)
-#  import_error           :text
-#  ci_id                  :integer
-#  builds_enabled         :boolean          default(TRUE), not null
-#  shared_runners_enabled :boolean          default(TRUE), not null
-#  runners_token          :string
-#  build_coverage_regex   :string
-#  build_allow_git_fetch  :boolean          default(TRUE), not null
-#  build_timeout          :integer          default(3600), not null
-#
-
 require 'spec_helper'
 
 describe Project, models: true do
@@ -61,7 +22,7 @@ describe Project, models: true do
     it { is_expected.to have_one(:pushover_service).dependent(:destroy) }
     it { is_expected.to have_one(:asana_service).dependent(:destroy) }
     it { is_expected.to have_many(:commit_statuses) }
-    it { is_expected.to have_many(:ci_commits) }
+    it { is_expected.to have_many(:pipelines) }
     it { is_expected.to have_many(:builds) }
     it { is_expected.to have_many(:runner_projects) }
     it { is_expected.to have_many(:runners) }
@@ -99,7 +60,7 @@ describe Project, models: true do
       project2 = build(:project)
       allow(project2).to receive(:creator).and_return(double(can_create_project?: false, projects_limit: 0).as_null_object)
       expect(project2).not_to be_valid
-      expect(project2.errors[:limit_reached].first).to match(/Your project limit is 0/)
+      expect(project2.errors[:limit_reached].first).to match(/Personal project creation is not allowed/)
     end
   end
 
@@ -297,6 +258,69 @@ describe Project, models: true do
     end
   end
 
+  describe :external_issue_tracker do
+    let(:project) { create(:project) }
+    let(:ext_project) { create(:redmine_project) }
+
+    context 'on existing projects with no value for has_external_issue_tracker' do
+      before(:each) do
+        project.update_column(:has_external_issue_tracker, nil)
+        ext_project.update_column(:has_external_issue_tracker, nil)
+      end
+
+      it 'updates the has_external_issue_tracker boolean' do
+        expect do
+          project.external_issue_tracker
+        end.to change { project.reload.has_external_issue_tracker }.to(false)
+
+        expect do
+          ext_project.external_issue_tracker
+        end.to change { ext_project.reload.has_external_issue_tracker }.to(true)
+      end
+    end
+
+    it 'returns nil and does not query services when there is no external issue tracker' do
+      project.build_missing_services
+      project.reload
+
+      expect(project).not_to receive(:services)
+
+      expect(project.external_issue_tracker).to eq(nil)
+    end
+
+    it 'retrieves external_issue_tracker querying services and cache it when there is external issue tracker' do
+      ext_project.reload # Factory returns a project with changed attributes
+      ext_project.build_missing_services
+      ext_project.reload
+
+      expect(ext_project).to receive(:services).once.and_call_original
+
+      2.times { expect(ext_project.external_issue_tracker).to be_a_kind_of(RedmineService) }
+    end
+  end
+
+  describe :cache_has_external_issue_tracker do
+    let(:project) { create(:project) }
+
+    it 'stores true if there is any external_issue_tracker' do
+      services = double(:service, external_issue_trackers: [RedmineService.new])
+      expect(project).to receive(:services).and_return(services)
+
+      expect do
+        project.cache_has_external_issue_tracker
+      end.to change { project.has_external_issue_tracker}.to(true)
+    end
+
+    it 'stores false if there is no external_issue_tracker' do
+      services = double(:service, external_issue_trackers: [])
+      expect(project).to receive(:services).and_return(services)
+
+      expect do
+        project.cache_has_external_issue_tracker
+      end.to change { project.has_external_issue_tracker}.to(false)
+    end
+  end
+
   describe :can_have_issues_tracker_id? do
     let(:project) { create(:project) }
     let(:ext_project) { create(:redmine_project) }
@@ -438,23 +462,23 @@ describe Project, models: true do
     end
   end
 
-  describe :ci_commit do
+  describe :pipeline do
     let(:project) { create :project }
-    let(:commit) { create :ci_commit, project: project, ref: 'master' }
+    let(:pipeline) { create :ci_pipeline, project: project, ref: 'master' }
 
-    subject { project.ci_commit(commit.sha, 'master') }
+    subject { project.pipeline(pipeline.sha, 'master') }
 
-    it { is_expected.to eq(commit) }
+    it { is_expected.to eq(pipeline) }
 
     context 'return latest' do
-      let(:commit2) { create :ci_commit, project: project, ref: 'master' }
+      let(:pipeline2) { create :ci_pipeline, project: project, ref: 'master' }
 
       before do
-        commit
-        commit2
+        pipeline
+        pipeline2
       end
 
-      it { is_expected.to eq(commit2) }
+      it { is_expected.to eq(pipeline2) }
     end
   end
 
@@ -673,11 +697,11 @@ describe Project, models: true do
       # Project#gitlab_shell returns a new instance of Gitlab::Shell on every
       # call. This makes testing a bit easier.
       allow(project).to receive(:gitlab_shell).and_return(gitlab_shell)
+
+      allow(project).to receive(:previous_changes).and_return('path' => ['foo'])
     end
 
     it 'renames a repository' do
-      allow(project).to receive(:previous_changes).and_return('path' => ['foo'])
-
       ns = project.namespace_dir
 
       expect(gitlab_shell).to receive(:mv_repository).
@@ -701,6 +725,17 @@ describe Project, models: true do
       expect(project).to receive(:expire_caches_before_rename)
 
       project.rename_repo
+    end
+
+    context 'container registry with tags' do
+      before do
+        stub_container_registry_config(enabled: true)
+        stub_container_registry_tags('tag')
+      end
+
+      subject { project.rename_repo }
+
+      it { expect{subject}.to raise_error(Exception) }
     end
   end
 
@@ -809,6 +844,115 @@ describe Project, models: true do
 
     it 'returns false when a branch is not a protected branch' do
       expect(project.protected_branch?('foo')).to eq(false)
+    end
+  end
+
+  describe '#container_registry_path_with_namespace' do
+    let(:project) { create(:empty_project, path: 'PROJECT') }
+
+    subject { project.container_registry_path_with_namespace }
+
+    it { is_expected.not_to eq(project.path_with_namespace) }
+    it { is_expected.to eq(project.path_with_namespace.downcase) }
+  end
+
+  describe '#container_registry_repository' do
+    let(:project) { create(:empty_project) }
+
+    before { stub_container_registry_config(enabled: true) }
+
+    subject { project.container_registry_repository }
+
+    it { is_expected.not_to be_nil }
+  end
+
+  describe '#container_registry_repository_url' do
+    let(:project) { create(:empty_project) }
+
+    subject { project.container_registry_repository_url }
+
+    before { stub_container_registry_config(**registry_settings) }
+
+    context 'for enabled registry' do
+      let(:registry_settings) do
+        {
+          enabled: true,
+          host_port: 'example.com',
+        }
+      end
+
+      it { is_expected.not_to be_nil }
+    end
+
+    context 'for disabled registry' do
+      let(:registry_settings) do
+        {
+          enabled: false
+        }
+      end
+
+      it { is_expected.to be_nil }
+    end
+  end
+
+  describe '#has_container_registry_tags?' do
+    let(:project) { create(:empty_project) }
+
+    subject { project.has_container_registry_tags? }
+
+    context 'for enabled registry' do
+      before { stub_container_registry_config(enabled: true) }
+
+      context 'with tags' do
+        before { stub_container_registry_tags('test', 'test2') }
+
+        it { is_expected.to be_truthy }
+      end
+
+      context 'when no tags' do
+        before { stub_container_registry_tags }
+
+        it { is_expected.to be_falsey }
+      end
+    end
+
+    context 'for disabled registry' do
+      before { stub_container_registry_config(enabled: false) }
+
+      it { is_expected.to be_falsey }
+    end
+  end
+
+  describe '.where_paths_in' do
+    context 'without any paths' do
+      it 'returns an empty relation' do
+        expect(Project.where_paths_in([])).to eq([])
+      end
+    end
+
+    context 'without any valid paths' do
+      it 'returns an empty relation' do
+        expect(Project.where_paths_in(%w[foo])).to eq([])
+      end
+    end
+
+    context 'with valid paths' do
+      let!(:project1) { create(:project) }
+      let!(:project2) { create(:project) }
+
+      it 'returns the projects matching the paths' do
+        projects = Project.where_paths_in([project1.path_with_namespace,
+                                           project2.path_with_namespace])
+
+        expect(projects).to contain_exactly(project1, project2)
+      end
+
+      it 'returns projects regardless of the casing of paths' do
+        projects = Project.where_paths_in([project1.path_with_namespace.upcase,
+                                           project2.path_with_namespace.upcase])
+
+        expect(projects).to contain_exactly(project1, project2)
+      end
     end
   end
 end

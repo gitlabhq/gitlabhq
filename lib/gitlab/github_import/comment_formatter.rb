@@ -8,6 +8,7 @@ module Gitlab
           commit_id: raw_data.commit_id,
           line_code: line_code,
           author_id: author_id,
+          type: type,
           created_at: raw_data.created_at,
           updated_at: raw_data.updated_at
         }
@@ -52,6 +53,10 @@ module Gitlab
 
       def note
         formatter.author_line(author) + body
+      end
+
+      def type
+        'LegacyDiffNote' if on_diff?
       end
     end
   end

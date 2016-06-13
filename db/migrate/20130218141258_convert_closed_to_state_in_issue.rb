@@ -1,3 +1,4 @@
+# rubocop:disable all
 class ConvertClosedToStateInIssue < ActiveRecord::Migration
   include Gitlab::Database
 

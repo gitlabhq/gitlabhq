@@ -30,7 +30,7 @@ module ButtonHelper
 
     content_tag :a, protocol,
       class: klass,
-      href: @project.http_url_to_repo,
+      href: project.http_url_to_repo,
       data: {
         html: true,
         placement: 'right',

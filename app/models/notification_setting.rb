@@ -1,18 +1,5 @@
-# == Schema Information
-#
-# Table name: notification_settings
-#
-#  id          :integer          not null, primary key
-#  user_id     :integer          not null
-#  source_id   :integer          not null
-#  source_type :string           not null
-#  level       :integer          default(0), not null
-#  created_at  :datetime         not null
-#  updated_at  :datetime         not null
-#
-
 class NotificationSetting < ActiveRecord::Base
-  enum level: { disabled: 0,  participating: 1,  watch: 2,  global: 3, mention: 4 }
+  enum level: { global: 3, watch: 2, mention: 4, participating: 1, disabled: 0 }
 
   default_value_for :level, NotificationSetting.levels[:global]
 

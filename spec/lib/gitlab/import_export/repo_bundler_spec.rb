@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::ImportExport::RepoBundler, services: true do
+describe Gitlab::ImportExport::RepoSaver, services: true do
   describe 'bundle a project Git repo' do
 
     let(:user) { create(:user) }
@@ -19,7 +19,7 @@ describe Gitlab::ImportExport::RepoBundler, services: true do
     end
 
     it 'bundles the repo successfully' do
-      expect(bundler.bundle).to be true
+      expect(bundler.save).to be true
     end
   end
 end

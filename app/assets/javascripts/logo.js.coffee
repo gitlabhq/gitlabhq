@@ -47,4 +47,4 @@ $ ->
   # Make logo clickable as part of a workaround for Safari visited
   # link behaviour (See !2690).
   $('#logo').on 'click', ->
-    $('#js-shortcuts-home').get(0).click()
+    Turbolinks.visit('/')

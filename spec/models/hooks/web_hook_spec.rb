@@ -95,13 +95,13 @@ describe WebHook, models: true do
     it "handles 200 status code" do
       WebMock.stub_request(:post, project_hook.url).to_return(status: 200, body: "Success")
 
-      expect(project_hook.execute(@data, 'push_hooks')).to eq([true, 'Success'])
+      expect(project_hook.execute(@data, 'push_hooks')).to eq([200, 'Success'])
     end
 
     it "handles 2xx status codes" do
       WebMock.stub_request(:post, project_hook.url).to_return(status: 201, body: "Success")
 
-      expect(project_hook.execute(@data, 'push_hooks')).to eq([true, 'Success'])
+      expect(project_hook.execute(@data, 'push_hooks')).to eq([201, 'Success'])
     end
   end
 end

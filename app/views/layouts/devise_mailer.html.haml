@@ -1,0 +1,34 @@
+!!! 5
+%html
+  %head
+    %meta(content='text/html; charset=UTF-8' http-equiv='Content-Type')
+    = stylesheet_link_tag 'mailers/devise'
+
+  %body
+    %table#wrapper
+      %tr
+        %td
+          %table#header
+            %td{valign: "top"}
+              = image_tag('mailers/gitlab_header_logo.png', id: 'logo', alt: 'GitLab Wordmark')
+
+          %table#body
+            %tr
+              %td#body-container
+                = yield
+
+          - if Gitlab.com?
+            %table#footer
+              %tr
+                %td#tanuki
+                  = image_tag('mailers/gitlab_tanuki_2x.png', alt: 'GitLab Logo')
+              %tr
+                %td#tagline
+                  Everyone can contribute
+              %tr
+                %td#social
+                  = link_to 'Blog',     'https://about.gitlab.com/blog/'
+                  = link_to 'Twitter',  'https://twitter.com/gitlab'
+                  = link_to 'Facebook', 'https://www.facebook.com/gitlab/'
+                  = link_to 'YouTube',  'https://www.youtube.com/channel/UCnMGQ8QHMAnVIsI3xJrihhg'
+                  = link_to 'LinkedIn', 'https://www.linkedin.com/company/gitlab-com'

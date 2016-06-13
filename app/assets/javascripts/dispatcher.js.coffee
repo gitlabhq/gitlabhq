@@ -16,8 +16,8 @@ class Dispatcher
     shortcut_handler = null
     switch page
       when 'projects:issues:index'
-        Issues.init()
         Issuable.init()
+        new IssuableBulkActions()
         shortcut_handler = new ShortcutsNavigation()
       when 'projects:issues:show'
         new Issue()
@@ -98,6 +98,8 @@ class Dispatcher
         shortcut_handler = new ShortcutsNavigation()
       when 'projects:labels:new', 'projects:labels:edit'
         new Labels()
+      when 'projects:labels:index'
+        new LabelManager() if $('.prioritized-labels').length
       when 'projects:network:show'
         # Ensure we don't create a particular shortcut handler here. This is
         # already created, where the network graph is created.
@@ -119,7 +121,7 @@ class Dispatcher
             new UsersSelect()
           when 'projects'
             new NamespaceSelect()
-      when 'dashboard'
+      when 'dashboard', 'root'
         shortcut_handler = new ShortcutsDashboardNavigation()
       when 'profiles'
         new Profile()

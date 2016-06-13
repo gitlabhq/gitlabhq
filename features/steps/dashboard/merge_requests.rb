@@ -100,7 +100,7 @@ class Spinach::Features::DashboardMergeRequests < Spinach::FeatureSteps
 
   def project
     @project ||= begin
-                   project =create :project
+                   project = create :project
                    project.team << [current_user, :master]
                    project
                  end

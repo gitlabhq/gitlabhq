@@ -1,3 +1,4 @@
+# rubocop:disable all
 class AddDefaultProjectVisibililtyToApplicationSettings < ActiveRecord::Migration
   def up
     add_column :application_settings, :default_project_visibility, :integer

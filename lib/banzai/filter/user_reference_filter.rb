@@ -4,6 +4,8 @@ module Banzai
     #
     # A special `@all` reference is also supported.
     class UserReferenceFilter < ReferenceFilter
+      self.reference_type = :user
+
       # Public: Find `@user` user references in text
       #
       #   UserReferenceFilter.references_in(text) do |match, username|
@@ -21,50 +23,13 @@ module Banzai
         end
       end
 
-      def self.referenced_by(node)
-        if node.has_attribute?('data-group')
-          group = Group.find(node.attr('data-group')) rescue nil
-          return unless group
-
-          { user: group.users }
-        elsif node.has_attribute?('data-user')
-          { user: LazyReference.new(User, node.attr('data-user')) }
-        elsif node.has_attribute?('data-project')
-          project = Project.find(node.attr('data-project')) rescue nil
-          return unless project
-
-          { user: project.team.members.flatten }
-        end
-      end
-
-      def self.user_can_see_reference?(user, node, context)
-        if node.has_attribute?('data-group')
-          group = Group.find(node.attr('data-group')) rescue nil
-          Ability.abilities.allowed?(user, :read_group, group)
-        else
-          super
-        end
-      end
-
-      def self.user_can_reference?(user, node, context)
-        # Only team members can reference `@all`
-        if node.has_attribute?('data-project')
-          project = Project.find(node.attr('data-project')) rescue nil
-          return false unless project
-
-          user && project.team.member?(user)
-        else
-          super
-        end
-      end
-
       def call
         return doc if project.nil?
 
         ref_pattern = User.reference_pattern
         ref_pattern_start = /\A#{ref_pattern}\z/
 
-        each_node do |node|
+        nodes.each do |node|
           if text_node?(node)
             replace_text_when_pattern_matches(node, ref_pattern) do |content|
               user_link_filter(content)
@@ -94,12 +59,37 @@ module Banzai
         self.class.references_in(text) do |match, username|
           if username == 'all'
             link_to_all(link_text: link_text)
-          elsif namespace = Namespace.find_by(path: username)
+          elsif namespace = namespaces[username]
             link_to_namespace(namespace, link_text: link_text) || match
           else
             match
           end
         end
+      end
+
+      # Returns a Hash containing all Namespace objects for the username
+      # references in the current document.
+      #
+      # The keys of this Hash are the namespace paths, the values the
+      # corresponding Namespace objects.
+      def namespaces
+        @namespaces ||=
+          Namespace.where(path: usernames).each_with_object({}) do |row, hash|
+            hash[row.path] = row
+          end
+      end
+
+      # Returns all usernames referenced in the current document.
+      def usernames
+        refs = Set.new
+
+        nodes.each do |node|
+          node.to_html.scan(User.reference_pattern) do
+            refs << $~[:user]
+          end
+        end
+
+        refs.to_a
       end
 
       private
@@ -114,9 +104,12 @@ module Banzai
 
       def link_to_all(link_text: nil)
         project = context[:project]
+        author = context[:author]
+
         url = urls.namespace_project_url(project.namespace, project,
                                          only_path: context[:only_path])
-        data = data_attribute(project: project.id)
+
+        data = data_attribute(project: project.id, author: author.try(:id))
         text = link_text || User.reference_prefix + 'all'
 
         link_tag(url, data, text)

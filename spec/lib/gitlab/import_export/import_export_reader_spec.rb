@@ -16,7 +16,11 @@ describe Gitlab::ImportExport::ImportExportReader, lib: true  do
     }
   end
 
+  before do
+    allow_any_instance_of(Gitlab::ImportExport).to receive(:config_file).and_return(test_config)
+  end
+
   it 'generates hash from project tree config' do
-    expect(described_class.new(config: test_config, shared: shared).project_tree).to match(project_tree_hash)
+    expect(described_class.new(shared: shared).project_tree).to match(project_tree_hash)
   end
 end

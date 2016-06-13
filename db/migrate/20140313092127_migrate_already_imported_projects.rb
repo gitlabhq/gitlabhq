@@ -1,3 +1,4 @@
+# rubocop:disable all
 class MigrateAlreadyImportedProjects < ActiveRecord::Migration
   include Gitlab::Database
 

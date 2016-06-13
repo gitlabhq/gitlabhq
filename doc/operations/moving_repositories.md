@@ -134,7 +134,7 @@ sudo -u git sh -c '
 cat /var/opt/gitlab/transfer-logs/* | sort | uniq -u |\
   /usr/bin/env JOBS=10 \
   /opt/gitlab/embedded/service/gitlab-rails/bin/parallel-rsync-repos \
-    /var/opt/gitlab/transfer-logs/succes-$(date +%s).log \
+    /var/opt/gitlab/transfer-logs/success-$(date +%s).log \
     /var/opt/gitlab/git-data/repositories \
     /mnt/gitlab/repositories
 '
@@ -145,7 +145,7 @@ sudo -u git -H sh -c '
 cat /home/git/transfer-logs/* | sort | uniq -u |\
   /usr/bin/env JOBS=10 \
   bin/parallel-rsync-repos \
-    /home/git/transfer-logs/succes-$(date +%s).log \
+    /home/git/transfer-logs/success-$(date +%s).log \
     /home/git/repositories \
     /mnt/gitlab/repositories
 `
@@ -164,7 +164,7 @@ sudo gitlab-rake gitlab:list_repos SINCE='2015-10-1 12:00 UTC' |\
   sudo -u git \
   /usr/bin/env JOBS=10 \
   /opt/gitlab/embedded/service/gitlab-rails/bin/parallel-rsync-repos \
-    succes-$(date +%s).log \
+    success-$(date +%s).log \
     /var/opt/gitlab/git-data/repositories \
     /mnt/gitlab/repositories
 
@@ -174,7 +174,7 @@ sudo -u git -H bundle exec rake gitlab:list_repos SINCE='2015-10-1 12:00 UTC' |\
   sudo -u git -H \
   /usr/bin/env JOBS=10 \
   bin/parallel-rsync-repos \
-    succes-$(date +%s).log \
+    success-$(date +%s).log \
     /home/git/repositories \
     /mnt/gitlab/repositories
 ```

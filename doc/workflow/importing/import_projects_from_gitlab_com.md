@@ -2,7 +2,7 @@
 
 You can import your existing GitLab.com projects to your GitLab instance. But keep in mind that it is possible only if
 GitLab support is enabled on your GitLab instance. 
-You can read more about GitLab support [here](http://doc.gitlab.com/ce/integration/gitlab.html)
+You can read more about GitLab support [here](http://docs.gitlab.com/ce/integration/gitlab.html)
 To get to the importer page you need to go to "New project" page.
 
 ![New project page](gitlab_importer/new_project_page.png)

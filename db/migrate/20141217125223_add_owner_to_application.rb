@@ -1,3 +1,4 @@
+# rubocop:disable all
 class AddOwnerToApplication < ActiveRecord::Migration
   def change
     add_column :oauth_applications, :owner_id, :integer, null: true

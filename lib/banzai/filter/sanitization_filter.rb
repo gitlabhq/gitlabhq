@@ -63,7 +63,7 @@ module Banzai
 
           begin
             uri = Addressable::URI.parse(node['href'])
-            uri.scheme.strip! if uri.scheme
+            uri.scheme = uri.scheme.strip.downcase if uri.scheme
 
             node.remove_attribute('href') if UNSAFE_PROTOCOLS.include?(uri.scheme)
           rescue Addressable::URI::InvalidURIError

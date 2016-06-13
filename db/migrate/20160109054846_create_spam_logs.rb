@@ -1,3 +1,4 @@
+# rubocop:disable all
 class CreateSpamLogs < ActiveRecord::Migration
   def change
     create_table :spam_logs do |t|

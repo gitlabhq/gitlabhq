@@ -11,18 +11,15 @@
   $magenta: #cd00cd;
   $cyan: #00cdcd;
   $white: #e5e5e5;
-  $l-black: #7f7f7f;
-  $l-red: #f00;
-  $l-green: #0f0;
-  $l-yellow: #ff0;
-  $l-blue: #5c5cff;
-  $l-magenta: #f0f;
-  $l-cyan: #0ff;
-  $l-white: #fff;
+  $l-black: #373b41;
+  $l-red: #c66;
+  $l-green: #b5bd68;
+  $l-yellow: #f0c674;
+  $l-blue: #81a2be;
+  $l-magenta: #b294bb;
+  $l-cyan: #8abeb7;
+  $l-white: $ci-text-color;
 
-  .term-bold {
-    font-weight: bold;
-  }
   .term-italic {
     font-style: italic;
   }

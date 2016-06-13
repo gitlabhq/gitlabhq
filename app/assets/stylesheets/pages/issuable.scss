@@ -29,7 +29,7 @@
   }
 }
 
-.issuable-sidebar {
+.right-sidebar {
   a {
     color: inherit;
   }
@@ -72,6 +72,10 @@
         color: $gray-darkest;
       }
     }
+  }
+
+  .block-first {
+    padding-top: 0;
   }
 
   .title {
@@ -125,7 +129,7 @@
 
 .right-sidebar {
   position: fixed;
-  top: 58px;
+  top: $header-height;
   bottom: 0;
   right: 0;
   z-index: 10;
@@ -148,6 +152,10 @@
 
     .bold {
       font-weight: 600;
+    }
+
+    .light {
+      font-weight: normal;
     }
 
     .sidebar-collapsed-icon {

@@ -1,7 +1,7 @@
 class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
   skip_before_action :check_2fa_requirement
 
-  def new
+  def show
     unless current_user.otp_secret
       current_user.otp_secret = User.generate_otp_secret(32)
     end
@@ -12,21 +12,22 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
 
     current_user.save! if current_user.changed?
 
-    if two_factor_authentication_required?
+    if two_factor_authentication_required? && !current_user.two_factor_enabled?
       if two_factor_grace_period_expired?
-        flash.now[:alert] = 'You must enable Two-factor Authentication for your account.'
+        flash.now[:alert] = 'You must enable Two-Factor Authentication for your account.'
       else
         grace_period_deadline = current_user.otp_grace_period_started_at + two_factor_grace_period.hours
-        flash.now[:alert] = "You must enable Two-factor Authentication for your account before #{l(grace_period_deadline)}."
+        flash.now[:alert] = "You must enable Two-Factor Authentication for your account before #{l(grace_period_deadline)}."
       end
     end
 
     @qr_code = build_qr_code
+    setup_u2f_registration
   end
 
   def create
     if current_user.validate_and_consume_otp!(params[:pin_code])
-      current_user.two_factor_enabled = true
+      current_user.otp_required_for_login = true
       @codes = current_user.generate_otp_backup_codes!
       current_user.save!
 
@@ -34,8 +35,23 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
     else
       @error = 'Invalid pin code'
       @qr_code = build_qr_code
+      setup_u2f_registration
+      render 'show'
+    end
+  end
 
-      render 'new'
+  # A U2F (universal 2nd factor) device's information is stored after successful
+  # registration, which is then used while 2FA authentication is taking place.
+  def create_u2f
+    @u2f_registration = U2fRegistration.register(current_user, u2f_app_id, params[:device_response], session[:challenges])
+
+    if @u2f_registration.persisted?
+      session.delete(:challenges)
+      redirect_to profile_account_path, notice: "Your U2F device was registered!"
+    else
+      @qr_code = build_qr_code
+      setup_u2f_registration
+      render :show
     end
   end
 
@@ -69,5 +85,22 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
 
   def issuer_host
     Gitlab.config.gitlab.host
+  end
+
+  # Setup in preparation of communication with a U2F (universal 2nd factor) device
+  # Actual communication is performed using a Javascript API
+  def setup_u2f_registration
+    @u2f_registration ||= U2fRegistration.new
+    @registration_key_handles = current_user.u2f_registrations.pluck(:key_handle)
+    u2f = U2F::U2F.new(u2f_app_id)
+
+    registration_requests = u2f.registration_requests
+    sign_requests = u2f.authentication_requests(@registration_key_handles)
+    session[:challenges] = registration_requests.map(&:challenge)
+
+    gon.push(u2f: { challenges: session[:challenges], app_id: u2f_app_id,
+                    register_requests: registration_requests,
+                    sign_requests: sign_requests,
+                    browser_supports_u2f: browser_supports_u2f? })
   end
 end

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::ImportExport::WikiRepoBundler, services: true do
+describe Gitlab::ImportExport::WikiRepoSaver, services: true do
   describe 'bundle a wiki Git repo' do
 
     let(:user) { create(:user) }
@@ -22,7 +22,7 @@ describe Gitlab::ImportExport::WikiRepoBundler, services: true do
     end
 
     it 'bundles the repo successfully' do
-      expect(wiki_bundler.bundle).to be true
+      expect(wiki_bundler.save).to be true
     end
   end
 end

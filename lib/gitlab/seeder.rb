@@ -5,7 +5,7 @@ module Gitlab
       SeedFu.quiet = true
       yield
       SeedFu.quiet = false
-      puts "\nOK".green
+      puts "\nOK".color(:green)
     end
 
     def self.by_user(user)

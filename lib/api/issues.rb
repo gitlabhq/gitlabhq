@@ -51,7 +51,7 @@ module API
       #   GET /issues?labels=foo,bar
       #   GET /issues?labels=foo,bar&state=opened
       get do
-        issues = current_user.issues
+        issues = current_user.issues.inc_notes_with_associations
         issues = filter_issues_state(issues, params[:state]) unless params[:state].nil?
         issues = filter_issues_labels(issues, params[:labels]) unless params[:labels].nil?
         issues.reorder(issuable_order_by => issuable_sort)
@@ -82,7 +82,7 @@ module API
       #   GET /projects/:id/issues?milestone=1.0.0&state=closed
       #   GET /issues?iid=42
       get ":id/issues" do
-        issues = user_project.issues.visible_to_user(current_user)
+        issues = user_project.issues.inc_notes_with_associations.visible_to_user(current_user)
         issues = filter_issues_state(issues, params[:state]) unless params[:state].nil?
         issues = filter_issues_labels(issues, params[:labels]) unless params[:labels].nil?
         issues = filter_by_iid(issues, params[:iid]) unless params[:iid].nil?
@@ -103,8 +103,7 @@ module API
       # Example Request:
       #   GET /projects/:id/issues/:issue_id
       get ":id/issues/:issue_id" do
-        @issue = user_project.issues.find(params[:issue_id])
-        not_found! unless can?(current_user, :read_issue, @issue)
+        @issue = find_project_issue(params[:issue_id])
         present @issue, with: Entities::Issue, current_user: current_user
       end
 
@@ -233,42 +232,6 @@ module API
 
         authorize!(:destroy_issue, issue)
         issue.destroy
-      end
-
-      # Subscribes to a project issue
-      #
-      # Parameters:
-      #  id (required)       - The ID of a project
-      #  issue_id (required) - The ID of a project issue
-      # Example Request:
-      #   POST /projects/:id/issues/:issue_id/subscription
-      post ':id/issues/:issue_id/subscription' do
-        issue = user_project.issues.find(params[:issue_id])
-
-        if issue.subscribed?(current_user)
-          not_modified!
-        else
-          issue.toggle_subscription(current_user)
-          present issue, with: Entities::Issue, current_user: current_user
-        end
-      end
-
-      # Unsubscribes from a project issue
-      #
-      # Parameters:
-      #  id (required)       - The ID of a project
-      #  issue_id (required) - The ID of a project issue
-      # Example Request:
-      #   DELETE /projects/:id/issues/:issue_id/subscription
-      delete ':id/issues/:issue_id/subscription' do
-        issue = user_project.issues.find(params[:issue_id])
-
-        if issue.subscribed?(current_user)
-          issue.unsubscribe(current_user)
-          present issue, with: Entities::Issue, current_user: current_user
-        else
-          not_modified!
-        end
       end
     end
   end

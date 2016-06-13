@@ -1,3 +1,4 @@
+# rubocop:disable all
 class AddIssuesStateIndex < ActiveRecord::Migration
   def change
     add_index :issues, :state

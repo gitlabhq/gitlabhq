@@ -105,23 +105,6 @@ module IssuesHelper
     return 'hidden' if issue.closed? == closed
   end
 
-  def issue_to_atom(xml, issue)
-    xml.entry do
-      xml.id      namespace_project_issue_url(issue.project.namespace,
-                                              issue.project, issue)
-      xml.link    href: namespace_project_issue_url(issue.project.namespace,
-                                                    issue.project, issue)
-      xml.title   truncate(issue.title, length: 80)
-      xml.updated issue.created_at.xmlschema
-      xml.media   :thumbnail, width: "40", height: "40", url: image_url(avatar_icon(issue.author_email))
-      xml.author do |author|
-        xml.name issue.author_name
-        xml.email issue.author_email
-      end
-      xml.summary issue.title
-    end
-  end
-
   def merge_requests_sentence(merge_requests)
     # Sorting based on the `!123` or `group/project!123` reference will sort
     # local merge requests first.
@@ -162,16 +145,14 @@ module IssuesHelper
     end
   end
 
-  def emoji_author_list(notes, current_user)
-    list = notes.map do |note|
-             note.author == current_user ? "me" : note.author.name
-           end
-
-    list.join(", ")
+  def award_user_list(awards, current_user)
+    awards.map do |award|
+      award.user == current_user ? 'me' : award.user.name
+    end.join(', ')
   end
 
-  def note_active_class(notes, current_user)
-    if current_user && notes.pluck(:author_id).include?(current_user.id)
+  def award_active_class(awards, current_user)
+    if current_user && awards.find { |a| a.user_id == current_user.id }
       "active"
     else
       ""

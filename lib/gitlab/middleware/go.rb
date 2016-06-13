@@ -39,7 +39,7 @@ module Gitlab
         request_url = URI.join(base_url, project_path)
         domain_path = strip_url(request_url.to_s)
 
-        "<!DOCTYPE html><html><head><meta content='#{domain_path} git #{request_url}.git' name='go-import'></head></html>\n";
+        "<!DOCTYPE html><html><head><meta content='#{domain_path} git #{request_url}.git' name='go-import'></head></html>\n"
       end
 
       def strip_url(url)

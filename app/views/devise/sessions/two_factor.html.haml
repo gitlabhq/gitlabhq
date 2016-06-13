@@ -1,10 +1,19 @@
 %div
   .login-box
     .login-heading
-      %h3 Two-factor Authentication
+      %h3 Two-Factor Authentication
     .login-body
-      = form_for(resource, as: resource_name, url: session_path(resource_name), method: :post) do |f|
-        = f.text_field :otp_attempt, class: 'form-control', placeholder: 'Two-factor Authentication code', required: true, autofocus: true
-        %p.help-block.hint Enter the code from the two-factor app on your mobile device. If you've lost your device, you may enter one of your recovery codes.
-        .prepend-top-20
-          = f.submit "Verify code", class: "btn btn-save"
+      - if @user.two_factor_otp_enabled?
+        %h5 Authenticate via Two-Factor App
+        = form_for(resource, as: resource_name, url: session_path(resource_name), method: :post) do |f|
+          - resource_params = params[resource_name].presence || params
+          = f.hidden_field :remember_me, value: resource_params.fetch(:remember_me, 0)
+          = f.text_field :otp_attempt, class: 'form-control', placeholder: 'Two-Factor Authentication code', required: true, autofocus: true, autocomplete: 'off'
+          %p.help-block.hint Enter the code from the two-factor app on your mobile device. If you've lost your device, you may enter one of your recovery codes.
+          .prepend-top-20
+            = f.submit "Verify code", class: "btn btn-save"
+
+      - if @user.two_factor_u2f_enabled?
+
+        %hr
+        = render "u2f/authenticate"

@@ -41,7 +41,7 @@ module API
       #
       get ":id/merge_requests" do
         authorize! :read_merge_request, user_project
-        merge_requests = user_project.merge_requests
+        merge_requests = user_project.merge_requests.inc_notes_with_associations
 
         unless params[:iid].nil?
           merge_requests = filter_by_iid(merge_requests, params[:iid])
@@ -218,6 +218,7 @@ module API
         #   merge_commit_message (optional)         - Custom merge commit message
         #   should_remove_source_branch (optional)  - When true, the source branch will be deleted if possible
         #   merge_when_build_succeeds (optional)    - When true, this MR will be merged when the build succeeds
+        #   sha (optional)                          - When present, must have the HEAD SHA of the source branch
         # Example:
         #   PUT /projects/:id/merge_requests/:merge_request_id/merge
         #
@@ -227,18 +228,21 @@ module API
           # Merge request can not be merged
           # because user dont have permissions to push into target branch
           unauthorized! unless merge_request.can_be_merged_by?(current_user)
-          not_allowed! if !merge_request.open? || merge_request.work_in_progress?
 
-          merge_request.check_if_can_be_merged
+          not_allowed! unless merge_request.mergeable_state?
 
-          render_api_error!('Branch cannot be merged', 406) unless merge_request.can_be_merged?
+          render_api_error!('Branch cannot be merged', 406) unless merge_request.mergeable?
+
+          if params[:sha] && merge_request.source_sha != params[:sha]
+            render_api_error!("SHA does not match HEAD of source branch: #{merge_request.source_sha}", 409)
+          end
 
           merge_params = {
             commit_message: params[:merge_commit_message],
             should_remove_source_branch: params[:should_remove_source_branch]
           }
 
-          if parse_boolean(params[:merge_when_build_succeeds]) && merge_request.ci_commit && merge_request.ci_commit.active?
+          if parse_boolean(params[:merge_when_build_succeeds]) && merge_request.pipeline && merge_request.pipeline.active?
             ::MergeRequests::MergeWhenBuildSucceedsService.new(merge_request.target_project, current_user, merge_params).
               execute(merge_request)
           else
@@ -325,43 +329,7 @@ module API
         get "#{path}/closes_issues" do
           merge_request = user_project.merge_requests.find(params[:merge_request_id])
           issues = ::Kaminari.paginate_array(merge_request.closes_issues(current_user))
-          present paginate(issues), with: Entities::Issue, current_user: current_user
-        end
-
-        # Subscribes to a merge request
-        #
-        # Parameters:
-        #  id (required)               - The ID of a project
-        #  merge_request_id (required) - The ID of a merge request
-        # Example Request:
-        #   POST /projects/:id/issues/:merge_request_id/subscription
-        post "#{path}/subscription" do
-          merge_request = user_project.merge_requests.find(params[:merge_request_id])
-
-          if merge_request.subscribed?(current_user)
-            not_modified!
-          else
-            merge_request.toggle_subscription(current_user)
-            present merge_request, with: Entities::MergeRequest, current_user: current_user
-          end
-        end
-
-        # Unsubscribes from a merge request
-        #
-        # Parameters:
-        #  id (required)               - The ID of a project
-        #  merge_request_id (required) - The ID of a merge request
-        # Example Request:
-        #   DELETE /projects/:id/merge_requests/:merge_request_id/subscription
-        delete "#{path}/subscription" do
-          merge_request = user_project.merge_requests.find(params[:merge_request_id])
-
-          if merge_request.subscribed?(current_user)
-            merge_request.unsubscribe(current_user)
-            present merge_request, with: Entities::MergeRequest, current_user: current_user
-          else
-            not_modified!
-          end
+          present paginate(issues), with: issue_entity(user_project), current_user: current_user
         end
       end
     end

@@ -38,6 +38,16 @@ module AuthHelper
     auth_providers.reject { |provider| form_based_provider?(provider) }
   end
 
+  def enabled_button_based_providers
+    disabled_providers = current_application_settings.disabled_oauth_sign_in_sources || []
+
+    button_based_providers.map(&:to_s) - disabled_providers
+  end
+
+  def button_based_providers_enabled?
+    enabled_button_based_providers.any?
+  end
+
   def provider_image_tag(provider, size = 64)
     label = label_for_provider(provider)
 
@@ -56,7 +66,7 @@ module AuthHelper
 
   def two_factor_skippable?
     current_application_settings.require_two_factor_authentication &&
-      !current_user.two_factor_enabled &&
+      !current_user.two_factor_enabled? &&
       current_application_settings.two_factor_grace_period &&
       !two_factor_grace_period_expired?
   end

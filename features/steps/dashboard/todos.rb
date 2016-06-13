@@ -20,13 +20,12 @@ class Spinach::Features::DashboardTodos < Spinach::FeatureSteps
   step 'I have todos' do
     create(:todo, user: current_user, project: project, author: mary_jane, target: issue, action: Todo::MENTIONED)
     create(:todo, user: current_user, project: project, author: john_doe, target: issue, action: Todo::ASSIGNED)
-    note = create(:note, author: john_doe, noteable: issue, note: "#{current_user.to_reference} Wdyt?")
+    note = create(:note, author: john_doe, noteable: issue, note: "#{current_user.to_reference} Wdyt?", project: project)
     create(:todo, user: current_user, project: project, author: john_doe, target: issue, action: Todo::MENTIONED, note: note)
     create(:todo, user: current_user, project: project, author: john_doe, target: merge_request, action: Todo::ASSIGNED)
   end
 
   step 'I should see todos assigned to me' do
-    page.within('.nav-sidebar') { expect(page).to have_content 'Todos 4' }
     expect(page).to have_content 'To do 4'
     expect(page).to have_content 'Done 0'
 
@@ -42,7 +41,6 @@ class Spinach::Features::DashboardTodos < Spinach::FeatureSteps
       click_link 'Done'
     end
 
-    page.within('.nav-sidebar') { expect(page).to have_content 'Todos 3' }
     expect(page).to have_content 'To do 3'
     expect(page).to have_content 'Done 1'
     should_not_see_todo "John Doe assigned you merge request #{merge_request.to_reference}"
@@ -106,7 +104,7 @@ class Spinach::Features::DashboardTodos < Spinach::FeatureSteps
       if pending
         expect(page).to have_link 'Done'
       else
-        expect(page).to_not have_link 'Done'
+        expect(page).not_to have_link 'Done'
       end
     end
   end

@@ -26,14 +26,22 @@ class Projects::BuildsController < Projects::ApplicationController
   end
 
   def show
-    @builds = @project.ci_commits.find_by_sha(@build.sha).builds.order('id DESC')
+    @builds = @project.pipelines.find_by_sha(@build.sha).builds.order('id DESC')
     @builds = @builds.where("id not in (?)", @build.id)
-    @commit = @build.commit
+    @pipeline = @build.pipeline
 
     respond_to do |format|
       format.html
       format.json do
         render json: @build.to_json(methods: :trace_html)
+      end
+    end
+  end
+
+  def trace
+    respond_to do |format|
+      format.json do
+        render json: @build.trace_with_state(params[:state].presence).merge!(id: @build.id, status: @build.status)
       end
     end
   end
@@ -73,7 +81,7 @@ class Projects::BuildsController < Projects::ApplicationController
   private
 
   def build
-    @build ||= project.builds.unscoped.find_by!(id: params[:id])
+    @build ||= project.builds.find_by!(id: params[:id])
   end
 
   def build_path(build)

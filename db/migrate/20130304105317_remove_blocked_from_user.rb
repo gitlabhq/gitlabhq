@@ -1,3 +1,4 @@
+# rubocop:disable all
 class RemoveBlockedFromUser < ActiveRecord::Migration
   def up
     remove_column :users, :blocked

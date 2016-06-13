@@ -1,14 +1,25 @@
+- show_create = local_assigns.fetch(:show_create, true)
+- extra_options = local_assigns.fetch(:extra_options, true)
+- filter_submit = local_assigns.fetch(:filter_submit, true)
+- show_footer = local_assigns.fetch(:show_footer, true)
+- data_options = local_assigns.fetch(:data_options, {})
+- classes = local_assigns.fetch(:classes, [])
+- dropdown_data = {toggle: 'dropdown', field_name: 'label_name[]', show_no: "true", show_any: "true", selected: params[:label_name], project_id: @project.try(:id), labels: labels_filter_path, default_label: "Label"}
+- dropdown_data.merge!(data_options)
+- classes << 'js-extra-options' if extra_options
+- classes << 'js-filter-submit' if filter_submit
+
 - if params[:label_name].present?
   - if params[:label_name].respond_to?('any?')
     - params[:label_name].each do |label|
       = hidden_field_tag "label_name[]", label, id: nil
 .dropdown
-  %button.dropdown-menu-toggle.js-label-select.js-filter-submit.js-multiselect.js-extra-options{type: "button", data: {toggle: "dropdown", field_name: "label_name[]", show_no: "true", show_any: "true", selected: params[:label_name], project_id: @project.try(:id), labels: labels_filter_path, default_label: "Label"}}
+  %button.dropdown-menu-toggle.js-label-select.js-multiselect{class: classes.join(' '), type: "button", data: dropdown_data}
     %span.dropdown-toggle-text
       = h(multi_label_name(params[:label_name], "Label"))
     = icon('chevron-down')
   .dropdown-menu.dropdown-select.dropdown-menu-paging.dropdown-menu-labels.dropdown-menu-selectable
-    = render partial: "shared/issuable/label_page_default", locals: { title: "Filter by label" }
-    - if can? current_user, :admin_label, @project and @project
+    = render partial: "shared/issuable/label_page_default", locals: { title: "Filter by label", show_footer: show_footer, show_create: show_create }
+    - if show_create and @project and can?(current_user, :admin_label, @project)
       = render partial: "shared/issuable/label_page_create"
     = dropdown_loading

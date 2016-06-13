@@ -20,6 +20,10 @@ module Gitlab
       "project.bundle"
     end
 
+    def config_file
+      'lib/gitlab/import_export/import_export.yml'
+    end
+
     def version_filename
       'VERSION'
     end

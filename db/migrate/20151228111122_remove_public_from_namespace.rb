@@ -1,3 +1,4 @@
+# rubocop:disable all
 # Migration type: online
 class RemovePublicFromNamespace < ActiveRecord::Migration
   def change

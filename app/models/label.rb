@@ -1,17 +1,3 @@
-# == Schema Information
-#
-# Table name: labels
-#
-#  id          :integer          not null, primary key
-#  title       :string
-#  color       :string
-#  project_id  :integer
-#  created_at  :datetime
-#  updated_at  :datetime
-#  template    :boolean          default(FALSE)
-#  description :string
-#
-
 class Label < ActiveRecord::Base
   include Referable
   include Subscribable
@@ -40,9 +26,19 @@ class Label < ActiveRecord::Base
             format: { with: /\A[^&\?,]+\z/ },
             uniqueness: { scope: :project_id }
 
+  before_save :nullify_priority
+
   default_scope { order(title: :asc) }
 
   scope :templates, ->  { where(template: true) }
+
+  def self.prioritized
+    where.not(priority: nil).reorder(:priority, :title)
+  end
+
+  def self.unprioritized
+    where(priority: nil)
+  end
 
   alias_attribute :name, :title
 
@@ -117,6 +113,10 @@ class Label < ActiveRecord::Base
     LabelsHelper::text_color_for_bg(self.color)
   end
 
+  def title=(value)
+    write_attribute(:title, Sanitize.clean(value.to_s)) if value.present?
+  end
+
   private
 
   def label_format_reference(format = :id)
@@ -127,5 +127,9 @@ class Label < ActiveRecord::Base
     else
       id
     end
+  end
+
+  def nullify_priority
+    self.priority = nil if priority.blank?
   end
 end

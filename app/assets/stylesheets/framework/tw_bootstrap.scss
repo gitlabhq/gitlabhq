@@ -192,3 +192,8 @@
 .text-info:hover {
   color: $brand-info;
 }
+
+// Prevent datetimes on tooltips to break into two lines
+.local-timeago {
+  white-space: nowrap;
+}
