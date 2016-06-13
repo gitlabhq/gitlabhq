@@ -14,6 +14,6 @@ class Admin::ApplicationController < ApplicationController
   def display_geo_information
     return unless Gitlab::Geo.secondary?
     primary_node = link_to('primary node', Gitlab::Geo.primary_node.url)
-    flash.now[:notice] = "You are in a Geo secondary node (read-only). To make any change you must visit the #{primary_node}.".html_safe
+    flash.now[:notice] = "You are on a secondary (read-only) Geo node. If you want to make any changes, you must visit the #{primary_node}.".html_safe
   end
 end
