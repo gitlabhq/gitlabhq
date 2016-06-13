@@ -610,7 +610,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def source_sha_parent
-    source_project.repository.commit(commits.last.sha).parents.first.sha
+    source_project.repository.commit(first_commit.sha).parents.first.sha
   end
 
   def ff_merge_possible?
