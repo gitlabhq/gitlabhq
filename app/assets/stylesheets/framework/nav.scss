@@ -136,7 +136,7 @@
     }
 
     /* Small devices (phones, tablets, 768px and lower) */
-    @media (max-width: $screen-sm-max) {
+    @media (max-width: $screen-xs-max) {
       width: 100%;
     }
   }
@@ -220,6 +220,7 @@
       form {
         display: block;
         height: auto;
+        margin-bottom: 14px;
 
         input {
           width: 100%;
