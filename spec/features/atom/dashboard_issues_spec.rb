@@ -2,9 +2,9 @@ require 'spec_helper'
 
 describe "Dashboard Issues Feed", feature: true  do
   describe "GET /issues" do
-    let!(:user)         { create(:user) }
-    let!(:project1)     { create(:project) }
-    let!(:project2)     { create(:project) }
+    let!(:user)     { create(:user) }
+    let!(:project1) { create(:project) }
+    let!(:project2) { create(:project) }
 
     before do
       project1.team << [user, :master]
@@ -12,7 +12,7 @@ describe "Dashboard Issues Feed", feature: true  do
     end
 
     describe "atom feed" do
-      it "should render atom feed via private token" do
+      it "renders atom feed via private token" do
         visit issues_dashboard_path(:atom, private_token: user.private_token)
 
         expect(response_headers['Content-Type']).to have_content('application/atom+xml')
@@ -22,7 +22,7 @@ describe "Dashboard Issues Feed", feature: true  do
       context "issue with basic fields" do
         let!(:issue2) { create(:issue, author: user, assignee: user, project: project2, description: 'test desc') }
 
-        it "should render issue fields" do
+        it "renders issue fields" do
           visit issues_dashboard_path(:atom, private_token: user.private_token)
 
           entry = find(:xpath, "//feed/entry[contains(summary/text(),'#{issue2.title}')]")
@@ -45,7 +45,7 @@ describe "Dashboard Issues Feed", feature: true  do
           issue1.labels << label1
         end
 
-        it "should render issue label and milestone info" do
+        it "renders issue label and milestone info" do
           visit issues_dashboard_path(:atom, private_token: user.private_token)
 
           entry = find(:xpath, "//feed/entry[contains(summary/text(),'#{issue1.title}')]")

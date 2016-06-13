@@ -2,7 +2,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.9.0 (unreleased)
   - Fix Error 500 when using closes_issues API with an external issue tracker
-  - Add more information into RSS feed for issues.
+  - Add more information into RSS feed for issues (Alexander Matyushentsev)
   - Bulk assign/unassign labels to issues.
   - Ability to prioritize labels !4009 / !3205 (Thijs Wouters)
   - Fix endless redirections when accessing user OAuth applications when they are disabled
@@ -124,7 +124,6 @@ v 8.8.1
 
 v 8.8.0
   - Implement GFM references for milestones (Alejandro Rodríguez)
-v 8.8.0 (unreleased)
   - Snippets tab under user profile. !4001 (Long Nguyen)
   - Fix error when using link to uploads in global snippets
   - Fix Error 500 when attempting to retrieve project license when HEAD points to non-existent ref
