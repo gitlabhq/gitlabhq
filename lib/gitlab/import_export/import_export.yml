@@ -5,7 +5,9 @@ project_tree:
         :author
   - :labels
   - :milestones
-  - :snippets
+  - snippets:
+    - notes:
+        :author
   - :releases
   - :events
   - project_members:
@@ -14,7 +16,9 @@ project_tree:
     - notes:
         :author
     - :merge_request_diff
-  - ci_commits:
+  - pipelines:
+    - notes:
+        :author
     - :statuses
   - :variables
   - :triggers

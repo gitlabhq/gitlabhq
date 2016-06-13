@@ -28,6 +28,7 @@
   }
 
   .search-input {
+    padding-right: 20px;
     border: none;
     font-size: 14px;
     outline: none;
@@ -47,6 +48,7 @@
     display: inline-block;
     background-color: $location-badge-bg;
     vertical-align: top;
+    cursor: default;
   }
 
   .search-input-container {
@@ -55,7 +57,7 @@
     position: relative;
   }
 
-  .search-location-badge, .search-input-wrap {
+  .search-input-wrap {
     // Fallback if flexbox is not supported
     display: inline-block;
   }
@@ -156,13 +158,11 @@
 .search-holder {
   @media (min-width: $screen-sm-min) {
     display: -webkit-flex;
-    display: -ms-flexbox;
     display: flex;
   }
 
   .search-field-holder {
     -webkit-flex: 1 0 auto;
-    -ms-flex: 1 0 auto;
     flex: 1 0 auto;
     position: relative;
     margin-right: 0;

@@ -9,6 +9,6 @@ class Admin::AbuseReportsController < Admin::ApplicationController
     abuse_report.remove_user(deleted_by: current_user) if params[:remove_user]
     abuse_report.destroy
 
-    render nothing: true
+    head :ok
   end
 end

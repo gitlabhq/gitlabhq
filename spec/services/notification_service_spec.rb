@@ -66,6 +66,7 @@ describe NotificationService, services: true do
           should_email(@subscriber)
           should_email(@watcher_and_subscriber)
           should_email(@subscribed_participant)
+          should_not_email(@u_guest_watcher)
           should_not_email(note.author)
           should_not_email(@u_participating)
           should_not_email(@u_disabled)
@@ -100,6 +101,7 @@ describe NotificationService, services: true do
           should_email(note.noteable.author)
           should_email(note.noteable.assignee)
           should_email(@u_mentioned)
+          should_not_email(@u_guest_watcher)
           should_not_email(@u_watcher)
           should_not_email(note.author)
           should_not_email(@u_participating)
@@ -160,6 +162,7 @@ describe NotificationService, services: true do
             should_email(member)
           end
 
+          should_email(@u_guest_watcher)
           should_email(note.noteable.author)
           should_email(note.noteable.assignee)
           should_not_email(note.author)
@@ -201,6 +204,7 @@ describe NotificationService, services: true do
             should_email(member)
           end
 
+          should_email(@u_guest_watcher)
           should_email(note.noteable.author)
           should_not_email(note.author)
           should_email(@u_mentioned)
@@ -224,6 +228,7 @@ describe NotificationService, services: true do
         it do
           notification.new_note(note)
 
+          should_email(@u_guest_watcher)
           should_email(@u_committer)
           should_email(@u_watcher)
           should_not_email(@u_mentioned)
@@ -236,6 +241,7 @@ describe NotificationService, services: true do
           note.update_attribute(:note, '@mention referenced')
           notification.new_note(note)
 
+          should_email(@u_guest_watcher)
           should_email(@u_committer)
           should_email(@u_watcher)
           should_email(@u_mentioned)
@@ -269,6 +275,7 @@ describe NotificationService, services: true do
 
         should_email(issue.assignee)
         should_email(@u_watcher)
+        should_email(@u_guest_watcher)
         should_email(@u_participant_mentioned)
         should_not_email(@u_mentioned)
         should_not_email(@u_participating)
@@ -328,6 +335,7 @@ describe NotificationService, services: true do
 
         should_email(issue.assignee)
         should_email(@u_watcher)
+        should_email(@u_guest_watcher)
         should_email(@u_participant_mentioned)
         should_email(@subscriber)
         should_not_email(@unsubscriber)
@@ -342,6 +350,7 @@ describe NotificationService, services: true do
 
         should_email(@u_mentioned)
         should_email(@u_watcher)
+        should_email(@u_guest_watcher)
         should_email(@u_participant_mentioned)
         should_email(@subscriber)
         should_not_email(@unsubscriber)
@@ -356,6 +365,7 @@ describe NotificationService, services: true do
         expect(issue.assignee).to be @u_mentioned
         should_email(issue.assignee)
         should_email(@u_watcher)
+        should_email(@u_guest_watcher)
         should_email(@u_participant_mentioned)
         should_email(@subscriber)
         should_not_email(@unsubscriber)
@@ -370,6 +380,7 @@ describe NotificationService, services: true do
         expect(issue.assignee).to be @u_mentioned
         should_email(issue.assignee)
         should_email(@u_watcher)
+        should_email(@u_guest_watcher)
         should_email(@u_participant_mentioned)
         should_email(@subscriber)
         should_not_email(@unsubscriber)
@@ -383,6 +394,7 @@ describe NotificationService, services: true do
 
         expect(issue.assignee).to be @u_mentioned
         should_email(@u_watcher)
+        should_email(@u_guest_watcher)
         should_email(@u_participant_mentioned)
         should_email(@subscriber)
         should_not_email(issue.assignee)
@@ -411,6 +423,7 @@ describe NotificationService, services: true do
         should_not_email(issue.assignee)
         should_not_email(issue.author)
         should_not_email(@u_watcher)
+        should_not_email(@u_guest_watcher)
         should_not_email(@u_participant_mentioned)
         should_not_email(@subscriber)
         should_not_email(@watcher_and_subscriber)
@@ -459,6 +472,7 @@ describe NotificationService, services: true do
         should_email(issue.assignee)
         should_email(issue.author)
         should_email(@u_watcher)
+        should_email(@u_guest_watcher)
         should_email(@u_participant_mentioned)
         should_email(@subscriber)
         should_email(@watcher_and_subscriber)
@@ -475,6 +489,7 @@ describe NotificationService, services: true do
         should_email(issue.assignee)
         should_email(issue.author)
         should_email(@u_watcher)
+        should_email(@u_guest_watcher)
         should_email(@u_participant_mentioned)
         should_email(@subscriber)
         should_email(@watcher_and_subscriber)
@@ -502,6 +517,7 @@ describe NotificationService, services: true do
         should_email(@u_watcher)
         should_email(@watcher_and_subscriber)
         should_email(@u_participant_mentioned)
+        should_email(@u_guest_watcher)
         should_not_email(@u_participating)
         should_not_email(@u_disabled)
       end
@@ -525,6 +541,7 @@ describe NotificationService, services: true do
         should_email(@u_participant_mentioned)
         should_email(@subscriber)
         should_email(@watcher_and_subscriber)
+        should_email(@u_guest_watcher)
         should_not_email(@unsubscriber)
         should_not_email(@u_participating)
         should_not_email(@u_disabled)
@@ -566,6 +583,7 @@ describe NotificationService, services: true do
 
         should_email(merge_request.assignee)
         should_email(@u_watcher)
+        should_email(@u_guest_watcher)
         should_email(@u_participant_mentioned)
         should_email(@subscriber)
         should_email(@watcher_and_subscriber)
@@ -584,6 +602,7 @@ describe NotificationService, services: true do
         should_email(@u_participant_mentioned)
         should_email(@subscriber)
         should_email(@watcher_and_subscriber)
+        should_email(@u_guest_watcher)
         should_not_email(@unsubscriber)
         should_not_email(@u_participating)
         should_not_email(@u_disabled)
@@ -599,6 +618,7 @@ describe NotificationService, services: true do
         should_email(@u_participant_mentioned)
         should_email(@subscriber)
         should_email(@watcher_and_subscriber)
+        should_email(@u_guest_watcher)
         should_not_email(@unsubscriber)
         should_not_email(@u_participating)
         should_not_email(@u_disabled)
@@ -620,6 +640,7 @@ describe NotificationService, services: true do
 
         should_email(@u_watcher)
         should_email(@u_participating)
+        should_not_email(@u_guest_watcher)
         should_not_email(@u_disabled)
       end
     end
@@ -635,6 +656,8 @@ describe NotificationService, services: true do
     @u_not_mentioned = create(:user, username: 'regular', notification_level: :participating)
     @u_outsider_mentioned = create(:user, username: 'outsider')
 
+    create_guest_watcher
+
     project.team << [@u_watcher, :master]
     project.team << [@u_participating, :master]
     project.team << [@u_participant_mentioned, :master]
@@ -642,6 +665,13 @@ describe NotificationService, services: true do
     project.team << [@u_mentioned, :master]
     project.team << [@u_committer, :master]
     project.team << [@u_not_mentioned, :master]
+  end
+
+  def create_guest_watcher
+    @u_guest_watcher = create(:user, username: 'guest_watching')
+    setting = @u_guest_watcher.notification_settings_for(project)
+    setting.level = :watch
+    setting.save
   end
 
   def add_users_with_subscription(project, issuable)

@@ -1,2 +1,2 @@
-- @ci_commits.each do |ci_commit|
-  = render "ci_commit", ci_commit: ci_commit
+- @pipelines.each do |pipeline|
+  = render "pipeline", pipeline: pipeline, pipeline_details: true

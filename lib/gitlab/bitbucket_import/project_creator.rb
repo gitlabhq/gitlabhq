@@ -11,7 +11,7 @@ module Gitlab
       end
 
       def execute
-        project = ::Projects::CreateService.new(
+        ::Projects::CreateService.new(
           current_user,
           name: repo["name"],
           path: repo["slug"],
@@ -21,11 +21,8 @@ module Gitlab
           import_type: "bitbucket",
           import_source: "#{repo["owner"]}/#{repo["slug"]}",
           import_url: "ssh://git@bitbucket.org/#{repo["owner"]}/#{repo["slug"]}.git",
+          import_data: { credentials: { bb_session: session_data } }
         ).execute
-
-        project.create_or_update_import_data(credentials: { bb_session: session_data })
-
-        project
       end
     end
   end

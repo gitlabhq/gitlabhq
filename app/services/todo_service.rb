@@ -20,7 +20,7 @@ class TodoService
   #  * mark all pending todos related to the issue for the current user as done
   #
   def update_issue(issue, current_user)
-    create_mention_todos(issue.project, issue, current_user)
+    update_issuable(issue, current_user)
   end
 
   # When close an issue we should:
@@ -53,7 +53,7 @@ class TodoService
   #  * create a todo for each mentioned user on merge request
   #
   def update_merge_request(merge_request, current_user)
-    create_mention_todos(merge_request.project, merge_request, current_user)
+    update_issuable(merge_request, current_user)
   end
 
   # When close a merge request we should:
@@ -80,6 +80,30 @@ class TodoService
     mark_pending_todos_as_done(merge_request, current_user)
   end
 
+  # When a build fails on the HEAD of a merge request we should:
+  #
+  #  * create a todo for that user to fix it
+  #
+  def merge_request_build_failed(merge_request)
+    create_build_failed_todo(merge_request)
+  end
+
+  # When a new commit is pushed to a merge request we should:
+  #
+  #  * mark all pending todos related to the merge request for that user as done
+  #
+  def merge_request_push(merge_request, current_user)
+    mark_pending_todos_as_done(merge_request, current_user)
+  end
+
+  # When a build is retried to a merge request we should:
+  #
+  #  * mark all pending todos related to the merge request for the author as done
+  #
+  def merge_request_build_retried(merge_request)
+    mark_pending_todos_as_done(merge_request, merge_request.author)
+  end
+
   # When create a note we should:
   #
   #  * mark all pending todos related to the noteable for the note author as done
@@ -96,6 +120,14 @@ class TodoService
   #
   def update_note(note, current_user)
     handle_note(note, current_user)
+  end
+
+  # When an emoji is awarded we should:
+  #
+  #  * mark all pending todos related to the awardable for the current user as done
+  #
+  def new_award_emoji(awardable, current_user)
+    mark_pending_todos_as_done(awardable, current_user)
   end
 
   # When marking pending todos as done we should:
@@ -121,6 +153,13 @@ class TodoService
     create_mention_todos(issuable.project, issuable, author)
   end
 
+  def update_issuable(issuable, author)
+    # Skip toggling a task list item in a description
+    return if issuable.tasks? && issuable.updated_tasks.any?
+
+    create_mention_todos(issuable.project, issuable, author)
+  end
+
   def handle_note(note, author)
     # Skip system notes, and notes on project snippet
     return if note.system? || note.for_snippet?
@@ -143,6 +182,12 @@ class TodoService
     mentioned_users = filter_mentioned_users(project, note || target, author)
     attributes = attributes_for_todo(project, target, author, Todo::MENTIONED, note)
     create_todos(mentioned_users, attributes)
+  end
+
+  def create_build_failed_todo(merge_request)
+    author = merge_request.author
+    attributes = attributes_for_todo(merge_request.project, merge_request, author, Todo::BUILD_FAILED)
+    create_todos(author, attributes)
   end
 
   def attributes_for_target(target)

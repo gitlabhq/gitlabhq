@@ -5,7 +5,7 @@ This feature was [introduced][ce-3232] in GitLab 8.7. It is OFF by
 default because it still causes too many false alarms.
 
 Git has a built-in mechanism, [git fsck][git-fsck], to verify the
-integrity of all data commited to a repository. GitLab administrators
+integrity of all data committed to a repository. GitLab administrators
 can trigger such a check for a project via the project page under the
 admin panel. The checks run asynchronously so it may take a few minutes
 before the check result is visible on the project admin page. If the

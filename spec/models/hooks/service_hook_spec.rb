@@ -34,14 +34,14 @@ describe ServiceHook, models: true do
     it "POSTs to the webhook URL" do
       @service_hook.execute(@data)
       expect(WebMock).to have_requested(:post, @service_hook.url).with(
-        headers: { 'Content-Type'=>'application/json', 'X-Gitlab-Event'=>'Service Hook' }
+        headers: { 'Content-Type' => 'application/json', 'X-Gitlab-Event' => 'Service Hook' }
       ).once
     end
 
     it "POSTs the data as JSON" do
       @service_hook.execute(@data)
       expect(WebMock).to have_requested(:post, @service_hook.url).with(
-        headers: { 'Content-Type'=>'application/json', 'X-Gitlab-Event'=>'Service Hook' }
+        headers: { 'Content-Type' => 'application/json', 'X-Gitlab-Event' => 'Service Hook' }
       ).once
     end
 

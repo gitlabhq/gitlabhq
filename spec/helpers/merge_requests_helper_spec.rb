@@ -5,7 +5,7 @@ describe MergeRequestsHelper do
     let(:project) { create :project }
     let(:merge_request) { MergeRequest.new }
     let(:ci_service) { CiService.new }
-    let(:last_commit) { Ci::Commit.new({}) }
+    let(:last_commit) { Ci::Pipeline.new({}) }
 
     before do
       allow(merge_request).to receive(:source_project).and_return(project)
@@ -17,7 +17,7 @@ describe MergeRequestsHelper do
     it 'does not include api credentials in a link' do
       allow(ci_service).
         to receive(:build_page).and_return("http://secretuser:secretpass@jenkins.example.com:8888/job/test1/scm/bySHA1/12d65c")
-      expect(helper.ci_build_details_path(merge_request)).to_not match("secret")
+      expect(helper.ci_build_details_path(merge_request)).not_to match("secret")
     end
   end
 

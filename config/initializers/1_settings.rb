@@ -1,4 +1,4 @@
-require 'gitlab' # Load lib/gitlab.rb as soon as possible
+require_dependency Rails.root.join('lib/gitlab') # Load Gitlab as soon as possible
 
 class Settings < Settingslogic
   source ENV.fetch('GITLAB_CONFIG') { "#{Rails.root}/config/gitlab.yml" }
@@ -52,7 +52,7 @@ class Settings < Settingslogic
     # check that values in `current` (string or integer) is a contant in `modul`.
     def verify_constant_array(modul, current, default)
       values = default || []
-      if !current.nil?
+      unless current.nil?
         values = []
         current.each do |constant|
           values.push(verify_constant(modul, constant, nil))
@@ -126,7 +126,7 @@ end
 
 
 Settings['omniauth'] ||= Settingslogic.new({})
-Settings.omniauth['enabled']      = false if Settings.omniauth['enabled'].nil?
+Settings.omniauth['enabled'] = false if Settings.omniauth['enabled'].nil?
 Settings.omniauth['auto_sign_in_with_provider'] = false if Settings.omniauth['auto_sign_in_with_provider'].nil?
 Settings.omniauth['allow_single_sign_on'] = false if Settings.omniauth['allow_single_sign_on'].nil?
 Settings.omniauth['external_providers'] = [] if Settings.omniauth['external_providers'].nil?
@@ -134,7 +134,7 @@ Settings.omniauth['block_auto_created_users'] = true if Settings.omniauth['block
 Settings.omniauth['auto_link_ldap_user'] = false if Settings.omniauth['auto_link_ldap_user'].nil?
 Settings.omniauth['auto_link_saml_user'] = false if Settings.omniauth['auto_link_saml_user'].nil?
 
-Settings.omniauth['providers']  ||= []
+Settings.omniauth['providers'] ||= []
 Settings.omniauth['cas3'] ||= Settingslogic.new({})
 Settings.omniauth.cas3['session_duration'] ||= 8.hours
 Settings.omniauth['session_tickets'] ||= Settingslogic.new({})
@@ -168,7 +168,7 @@ end
 Settings['shared'] ||= Settingslogic.new({})
 Settings.shared['path'] = File.expand_path(Settings.shared['path'] || "shared", Rails.root)
 
-Settings['issues_tracker']  ||= {}
+Settings['issues_tracker'] ||= {}
 
 #
 # GitLab
@@ -183,7 +183,7 @@ Settings.gitlab['ssh_host']   ||= Settings.gitlab.host
 Settings.gitlab['https']        = false if Settings.gitlab['https'].nil?
 Settings.gitlab['port']       ||= Settings.gitlab.https ? 443 : 80
 Settings.gitlab['relative_url_root'] ||= ENV['RAILS_RELATIVE_URL_ROOT'] || ''
-Settings.gitlab['protocol']   ||= Settings.gitlab.https ? "https" : "http"
+Settings.gitlab['protocol'] ||= Settings.gitlab.https ? "https" : "http"
 Settings.gitlab['email_enabled'] ||= true if Settings.gitlab['email_enabled'].nil?
 Settings.gitlab['email_from'] ||= ENV['GITLAB_EMAIL_FROM'] || "gitlab@#{Settings.gitlab.host}"
 Settings.gitlab['email_display_name'] ||= ENV['GITLAB_EMAIL_DISPLAY_NAME'] || 'GitLab'
@@ -196,7 +196,7 @@ Settings.gitlab['user_home']  ||= begin
 rescue ArgumentError # no user configured
   '/home/' + Settings.gitlab['user']
 end
-Settings.gitlab['time_zone']  ||= nil
+Settings.gitlab['time_zone'] ||= nil
 Settings.gitlab['signup_enabled'] ||= true if Settings.gitlab['signup_enabled'].nil?
 Settings.gitlab['signin_enabled'] ||= true if Settings.gitlab['signin_enabled'].nil?
 Settings.gitlab['restricted_visibility_levels'] = Settings.send(:verify_constant_array, Gitlab::VisibilityLevel, Settings.gitlab['restricted_visibility_levels'], [])
@@ -206,12 +206,13 @@ Settings.gitlab['default_projects_features'] ||= {}
 Settings.gitlab['webhook_timeout'] ||= 10
 Settings.gitlab['max_attachment_size'] ||= 10
 Settings.gitlab['session_expire_delay'] ||= 10080
-Settings.gitlab.default_projects_features['issues']         = true if Settings.gitlab.default_projects_features['issues'].nil?
-Settings.gitlab.default_projects_features['merge_requests'] = true if Settings.gitlab.default_projects_features['merge_requests'].nil?
-Settings.gitlab.default_projects_features['wiki']           = true if Settings.gitlab.default_projects_features['wiki'].nil?
-Settings.gitlab.default_projects_features['snippets']       = false if Settings.gitlab.default_projects_features['snippets'].nil?
-Settings.gitlab.default_projects_features['builds']         = true if Settings.gitlab.default_projects_features['builds'].nil?
-Settings.gitlab.default_projects_features['visibility_level']    = Settings.send(:verify_constant, Gitlab::VisibilityLevel, Settings.gitlab.default_projects_features['visibility_level'], Gitlab::VisibilityLevel::PRIVATE)
+Settings.gitlab.default_projects_features['issues']             = true if Settings.gitlab.default_projects_features['issues'].nil?
+Settings.gitlab.default_projects_features['merge_requests']     = true if Settings.gitlab.default_projects_features['merge_requests'].nil?
+Settings.gitlab.default_projects_features['wiki']               = true if Settings.gitlab.default_projects_features['wiki'].nil?
+Settings.gitlab.default_projects_features['snippets']           = false if Settings.gitlab.default_projects_features['snippets'].nil?
+Settings.gitlab.default_projects_features['builds']             = true if Settings.gitlab.default_projects_features['builds'].nil?
+Settings.gitlab.default_projects_features['container_registry'] = true if Settings.gitlab.default_projects_features['container_registry'].nil?
+Settings.gitlab.default_projects_features['visibility_level']   = Settings.send(:verify_constant, Gitlab::VisibilityLevel, Settings.gitlab.default_projects_features['visibility_level'], Gitlab::VisibilityLevel::PRIVATE)
 Settings.gitlab['repository_downloads_path'] = File.join(Settings.shared['path'], 'cache/archive') if Settings.gitlab['repository_downloads_path'].nil?
 Settings.gitlab['restricted_signup_domains'] ||= []
 Settings.gitlab['import_sources'] ||= ['github','bitbucket','gitlab','gitorious','google_code','fogbugz','git']
@@ -225,8 +226,8 @@ Settings['gitlab_ci'] ||= Settingslogic.new({})
 Settings.gitlab_ci['shared_runners_enabled'] = true if Settings.gitlab_ci['shared_runners_enabled'].nil?
 Settings.gitlab_ci['all_broken_builds']     = true if Settings.gitlab_ci['all_broken_builds'].nil?
 Settings.gitlab_ci['add_pusher']            = false if Settings.gitlab_ci['add_pusher'].nil?
-Settings.gitlab_ci['url']                   ||= Settings.send(:build_gitlab_ci_url)
 Settings.gitlab_ci['builds_path']           = File.expand_path(Settings.gitlab_ci['builds_path'] || "builds/", Rails.root)
+Settings.gitlab_ci['url']                 ||= Settings.send(:build_gitlab_ci_url)
 
 #
 # Reply by email
@@ -240,7 +241,20 @@ Settings.incoming_email['enabled'] = false if Settings.incoming_email['enabled']
 Settings['artifacts'] ||= Settingslogic.new({})
 Settings.artifacts['enabled']      = true if Settings.artifacts['enabled'].nil?
 Settings.artifacts['path']         = File.expand_path(Settings.artifacts['path'] || File.join(Settings.shared['path'], "artifacts"), Rails.root)
-Settings.artifacts['max_size']    ||= 100 # in megabytes
+Settings.artifacts['max_size']   ||= 100 # in megabytes
+
+#
+# Registry
+#
+Settings['registry'] ||= Settingslogic.new({})
+Settings.registry['enabled']       ||= false
+Settings.registry['host']          ||= "example.com"
+Settings.registry['port']          ||= nil
+Settings.registry['api_url']       ||= "http://localhost:5000/"
+Settings.registry['key']           ||= nil
+Settings.registry['issuer']        ||= nil
+Settings.registry['host_port']     ||= [Settings.registry['host'], Settings.registry['port']].compact.join(':')
+Settings.registry['path']            = File.expand_path(Settings.registry['path'] || File.join(Settings.shared['path'], 'registry'), Rails.root)
 
 #
 # Git LFS
@@ -298,7 +312,7 @@ Settings['backup'] ||= Settingslogic.new({})
 Settings.backup['keep_time']  ||= 0
 Settings.backup['pg_schema']    = nil
 Settings.backup['path']         = File.expand_path(Settings.backup['path'] || "tmp/backups/", Rails.root)
-Settings.backup['archive_permissions']          ||= 0600
+Settings.backup['archive_permissions'] ||= 0600
 Settings.backup['upload'] ||= Settingslogic.new({ 'remote_directory' => nil, 'connection' => nil })
 # Convert upload connection settings to use symbol keys, to make Fog happy
 if Settings.backup['upload']['connection']

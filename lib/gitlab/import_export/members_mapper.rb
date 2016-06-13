@@ -2,7 +2,7 @@ module Gitlab
   module ImportExport
     class MembersMapper
 
-      attr_reader :map, :note_member_list
+      attr_reader :note_member_list
 
       def initialize(exported_members:, user:, project:)
         @exported_members = exported_members
@@ -12,48 +12,53 @@ module Gitlab
 
         # This needs to run first, as second call would be from generate_map
         # which means project members already exist.
-        default_project_member
-
-        @project_member_map = Hash.new do |_, key|
-          @note_member_list << key
-          default_project_member
-        end
-
-        @map = generate_map
+        ensure_default_member!
       end
 
-      def default_project_member
-        @default_project_member ||=
-          begin
-            default_member = ProjectMember.new(default_project_member_hash)
-            default_member.save!
-            default_member.user.id
-          end
+      def map
+        @map ||= generate_map
+      end
+
+      def default_user_id
+        @user.id
       end
 
       private
 
+
       def generate_map
-        @exported_members.each do |member|
-          existing_user = User.where(find_project_user_query(member)).first
-          assign_member(existing_user, member) if existing_user
-        end
-        @project_member_map
+        @map ||=
+          begin
+            @exported_members.inject(missing_keys_tracking_hash) do |hash, member|
+              existing_user = User.where(find_project_user_query(member)).first
+              old_user_id = member['user']['id']
+              if existing_user && add_user_as_team_member(existing_user, member).persisted?
+                hash[old_user_id] = existing_user.id
+              end
+              hash
+            end
+          end
       end
 
-      def assign_member(existing_user, member)
-        old_user_id = member['user']['id']
+      def missing_keys_tracking_hash
+        Hash.new do |_, key|
+          @note_member_list << key
+          @user.id
+        end
+      end
+
+      def ensure_default_member!
+        ProjectMember.create!(user: @user, access_level: ProjectMember::MASTER, source_id: @project.id, importing: true)
+      end
+
+      def add_user_as_team_member(existing_user, member)
         member['user'] = existing_user
-        project_member = ProjectMember.new(member_hash(member))
-        @project_member_map[old_user_id] = project_member.user.id if project_member.save
+
+        ProjectMember.create(member_hash(member))
       end
 
       def member_hash(member)
         member.except('id').merge(source_id: @project.id, importing: true)
-      end
-
-      def default_project_member_hash
-        { user: @user, access_level: ProjectMember::MASTER, source_id: @project.id, importing: true }
       end
 
       def find_project_user_query(member)

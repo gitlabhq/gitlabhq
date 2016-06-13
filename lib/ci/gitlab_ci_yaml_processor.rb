@@ -1,6 +1,6 @@
 module Ci
   class GitlabCiYamlProcessor
-    class ValidationError < StandardError;end
+    class ValidationError < StandardError; end
 
     DEFAULT_STAGES = %w(build test deploy)
     DEFAULT_STAGE = 'test'
@@ -12,18 +12,14 @@ module Ci
     attr_reader :before_script, :after_script, :image, :services, :path, :cache
 
     def initialize(config, path = nil)
-      @config = YAML.safe_load(config, [Symbol], [], true)
+      @config = Gitlab::Ci::Config.new(config).to_hash
       @path = path
-
-      unless @config.is_a? Hash
-        raise ValidationError, "YAML should be a hash"
-      end
-
-      @config = @config.deep_symbolize_keys
 
       initial_parsing
 
       validate!
+    rescue Gitlab::Ci::Config::Loader::FormatError => e
+      raise ValidationError, e.message
     end
 
     def builds_for_stage_and_ref(stage, ref, tag = false, trigger_request = nil)
@@ -265,7 +261,7 @@ module Ci
     end
 
     def validate_job_dependencies!(name, job)
-      if !validate_array_of_strings(job[:dependencies])
+      unless validate_array_of_strings(job[:dependencies])
         raise ValidationError, "#{name} job: dependencies parameter should be an array of strings"
       end
 

@@ -1,28 +1,9 @@
-# == Schema Information
-#
-# Table name: members
-#
-#  id                 :integer          not null, primary key
-#  access_level       :integer          not null
-#  source_id          :integer          not null
-#  source_type        :string           not null
-#  user_id            :integer
-#  notification_level :integer          not null
-#  type               :string
-#  created_at         :datetime
-#  updated_at         :datetime
-#  created_by_id      :integer
-#  invite_email       :string
-#  invite_token       :string
-#  invite_accepted_at :datetime
-#
-
 class Member < ActiveRecord::Base
   include Sortable
+  include Importable
   include Gitlab::Access
 
   attr_accessor :raw_invite_token
-  attr_accessor :importing
 
   belongs_to :created_by, class_name: "User"
   belongs_to :user
@@ -55,10 +36,10 @@ class Member < ActiveRecord::Base
   scope :owners,  -> { where(access_level: OWNER) }
 
   before_validation :generate_invite_token, on: :create, if: -> (member) { member.invite_email.present? }
-  after_create :send_invite, if: :invite?, unless: :importing
-  after_create :create_notification_setting, unless: [:invite?, :importing]
-  after_create :post_create_hook, unless: [:invite?, :importing]
-  after_update :post_update_hook, unless: [:invite?, :importing]
+  after_create :send_invite, if: :invite?, unless: :importing?
+  after_create :create_notification_setting, unless: [:invite?, :importing?]
+  after_create :post_create_hook, unless: [:invite?, :importing?]
+  after_update :post_update_hook, unless: [:invite?, :importing?]
   after_destroy :post_destroy_hook, unless: :invite?
 
   delegate :name, :username, :email, to: :user, prefix: true

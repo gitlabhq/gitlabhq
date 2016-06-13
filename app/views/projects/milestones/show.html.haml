@@ -1,14 +1,12 @@
 - page_title       @milestone.title, "Milestones"
 - page_description @milestone.description
 
-= render "header_title"
-
 .detail-page-header
   .status-box{ class: status_box_class(@milestone) }
     - if @milestone.closed?
       Closed
     - elsif @milestone.expired?
-      Expired
+      Past due
     - else
       Open
   %span.identifier
@@ -25,11 +23,9 @@
         = link_to 'Reopen Milestone', namespace_project_milestone_path(@project.namespace, @project, @milestone, milestone: {state_event: :activate }), method: :put, class: "btn btn-reopen btn-nr btn-grouped"
 
       = link_to edit_namespace_project_milestone_path(@project.namespace, @project, @milestone), class: "btn btn-grouped btn-nr" do
-        = icon('pencil-square-o')
         Edit
 
       = link_to namespace_project_milestone_path(@project.namespace, @project, @milestone), data: { confirm: 'Are you sure?' }, method: :delete, class: "btn btn-grouped btn-danger" do
-        = icon('trash-o')
         Delete
 
 .detail-page-description.milestone-detail

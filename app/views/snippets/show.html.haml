@@ -3,11 +3,10 @@
 .snippet-holder
   = render 'shared/snippets/header'
 
-  %article.file-holder
-    .file-title
+  %article.file-holder.file-holder-no-border.snippet-file-content
+    .file-title.file-title-clear
       = blob_icon 0, @snippet.file_name
-      %strong
-        = @snippet.file_name
+      = @snippet.file_name
       .file-actions.hidden-xs
         = clipboard_button(clipboard_target: ".blob-content[data-blob-id='#{@snippet.id}']")
         = link_to 'Raw', raw_snippet_path(@snippet), class: "btn btn-sm", target: "_blank"

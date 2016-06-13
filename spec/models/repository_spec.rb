@@ -100,6 +100,12 @@ describe Repository, models: true do
       expect(results.first).not_to start_with('fatal:')
     end
 
+    it 'properly handles an unmatched parenthesis' do
+      results = repository.search_files("test(", 'master')
+
+      expect(results.first).not_to start_with('fatal:')
+    end
+
     describe 'result' do
       subject { results.first }
 
@@ -176,6 +182,15 @@ describe Repository, models: true do
       repository.remove_file(user, 'LICENSE', 'Remove LICENSE', 'master')
     end
 
+    it 'handles when HEAD points to non-existent ref' do
+      repository.commit_file(user, 'LICENSE', 'Copyright!', 'Add LICENSE', 'master', false)
+      rugged = double('rugged')
+      expect(rugged).to receive(:head_unborn?).and_return(true)
+      expect(repository).to receive(:rugged).and_return(rugged)
+
+      expect(repository.license_blob).to be_nil
+    end
+
     it 'looks in the root_ref only' do
       repository.remove_file(user, 'LICENSE', 'Remove LICENSE', 'markdown')
       repository.commit_file(user, 'LICENSE', Licensee::License.new('mit').content, 'Add LICENSE', 'markdown', false)
@@ -202,6 +217,15 @@ describe Repository, models: true do
     before do
       repository.send(:cache).expire(:license_key)
       repository.remove_file(user, 'LICENSE', 'Remove LICENSE', 'master')
+    end
+
+    it 'handles when HEAD points to non-existent ref' do
+      repository.commit_file(user, 'LICENSE', 'Copyright!', 'Add LICENSE', 'master', false)
+      rugged = double('rugged')
+      expect(rugged).to receive(:head_unborn?).and_return(true)
+      expect(repository).to receive(:rugged).and_return(rugged)
+
+      expect(repository.license_key).to be_nil
     end
 
     it 'returns nil when no license is detected' do
@@ -419,7 +443,7 @@ describe Repository, models: true do
       end
 
       it 'does nothing' do
-        expect(repository.raw_repository).to_not receive(:autocrlf=).
+        expect(repository.raw_repository).not_to receive(:autocrlf=).
           with(:input)
 
         repository.update_autocrlf_option
@@ -487,7 +511,7 @@ describe Repository, models: true do
 
     it 'does not expire the emptiness caches for a non-empty repository' do
       expect(repository).to receive(:empty?).and_return(false)
-      expect(repository).to_not receive(:expire_emptiness_caches)
+      expect(repository).not_to receive(:expire_emptiness_caches)
 
       repository.expire_cache
     end
@@ -650,7 +674,7 @@ describe Repository, models: true do
       end
 
       it 'does not flush caches that depend on repository data' do
-        expect(repository).to_not receive(:expire_cache)
+        expect(repository).not_to receive(:expire_cache)
 
         repository.before_delete
       end
@@ -805,18 +829,6 @@ describe Repository, models: true do
     end
   end
 
-  describe "#main_language" do
-    it 'shows the main language of the project' do
-      expect(repository.main_language).to eq("Ruby")
-    end
-
-    it 'returns nil when the repository is empty' do
-      allow(repository).to receive(:empty?).and_return(true)
-
-      expect(repository.main_language).to be_nil
-    end
-  end
-
   describe '#before_remove_tag' do
     it 'flushes the tag cache' do
       expect(repository).to receive(:expire_tag_count_cache)
@@ -927,7 +939,7 @@ describe Repository, models: true do
 
       expect(repository.avatar).to eq('logo.png')
 
-      expect(repository).to_not receive(:blob_at_branch)
+      expect(repository).not_to receive(:blob_at_branch)
       expect(repository.avatar).to eq('logo.png')
     end
   end
@@ -1021,7 +1033,7 @@ describe Repository, models: true do
         and_return(true)
 
       repository.cache_keys.each do |key|
-        expect(repository).to_not receive(key)
+        expect(repository).not_to receive(key)
       end
 
       repository.build_cache

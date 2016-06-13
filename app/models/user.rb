@@ -1,68 +1,3 @@
-# == Schema Information
-#
-# Table name: users
-#
-#  id                          :integer          not null, primary key
-#  email                       :string           default(""), not null
-#  encrypted_password          :string           default(""), not null
-#  reset_password_token        :string
-#  reset_password_sent_at      :datetime
-#  remember_created_at         :datetime
-#  sign_in_count               :integer          default(0)
-#  current_sign_in_at          :datetime
-#  last_sign_in_at             :datetime
-#  current_sign_in_ip          :string
-#  last_sign_in_ip             :string
-#  created_at                  :datetime
-#  updated_at                  :datetime
-#  name                        :string
-#  admin                       :boolean          default(FALSE), not null
-#  projects_limit              :integer          default(10)
-#  skype                       :string           default(""), not null
-#  linkedin                    :string           default(""), not null
-#  twitter                     :string           default(""), not null
-#  authentication_token        :string
-#  theme_id                    :integer          default(1), not null
-#  bio                         :string
-#  failed_attempts             :integer          default(0)
-#  locked_at                   :datetime
-#  username                    :string
-#  can_create_group            :boolean          default(TRUE), not null
-#  can_create_team             :boolean          default(TRUE), not null
-#  state                       :string
-#  color_scheme_id             :integer          default(1), not null
-#  notification_level          :integer          default(1), not null
-#  password_expires_at         :datetime
-#  created_by_id               :integer
-#  last_credential_check_at    :datetime
-#  avatar                      :string
-#  confirmation_token          :string
-#  confirmed_at                :datetime
-#  confirmation_sent_at        :datetime
-#  unconfirmed_email           :string
-#  hide_no_ssh_key             :boolean          default(FALSE)
-#  website_url                 :string           default(""), not null
-#  notification_email          :string
-#  hide_no_password            :boolean          default(FALSE)
-#  password_automatically_set  :boolean          default(FALSE)
-#  location                    :string
-#  encrypted_otp_secret        :string
-#  encrypted_otp_secret_iv     :string
-#  encrypted_otp_secret_salt   :string
-#  otp_required_for_login      :boolean          default(FALSE), not null
-#  otp_backup_codes            :text
-#  public_email                :string           default(""), not null
-#  dashboard                   :integer          default(0)
-#  project_view                :integer          default(0)
-#  consumed_timestep           :integer
-#  layout                      :integer          default(0)
-#  hide_project_limit          :boolean          default(FALSE)
-#  unlock_token                :string
-#  otp_grace_period_started_at :datetime
-#  ldap_email                  :boolean          default(FALSE), not null
-#  external                    :boolean          default(FALSE)
-#
-
 require 'carrierwave/orm/activerecord'
 
 class User < ActiveRecord::Base
@@ -85,14 +20,18 @@ class User < ActiveRecord::Base
   default_value_for :hide_no_password, false
   default_value_for :theme_id, gitlab_config.default_theme
 
+  attr_encrypted :otp_secret,
+    key:       Gitlab::Application.config.secret_key_base,
+    mode:      :per_attribute_iv_and_salt,
+    algorithm: 'aes-256-cbc'
+
   devise :two_factor_authenticatable,
-         otp_secret_encryption_key: File.read(Rails.root.join('.secret')).chomp
-  alias_attribute :two_factor_enabled, :otp_required_for_login
+         otp_secret_encryption_key: Gitlab::Application.config.secret_key_base
 
   devise :two_factor_backupable, otp_number_of_backup_codes: 10
   serialize :otp_backup_codes, JSON
 
-  devise :lockable, :async, :recoverable, :rememberable, :trackable,
+  devise :lockable, :recoverable, :rememberable, :trackable,
     :validatable, :omniauthable, :confirmable, :registerable
 
   attr_accessor :force_random_password
@@ -111,6 +50,7 @@ class User < ActiveRecord::Base
   has_many :keys, dependent: :destroy
   has_many :emails, dependent: :destroy
   has_many :identities, dependent: :destroy, autosave: true
+  has_many :u2f_registrations, dependent: :destroy
 
   # Groups
   has_many :members, dependent: :destroy
@@ -144,6 +84,7 @@ class User < ActiveRecord::Base
   has_many :builds,                   dependent: :nullify, class_name: 'Ci::Build'
   has_many :todos,                    dependent: :destroy
   has_many :notification_settings,    dependent: :destroy
+  has_many :award_emoji,              as: :awardable, dependent: :destroy
 
   #
   # Validations
@@ -177,6 +118,7 @@ class User < ActiveRecord::Base
   before_save :ensure_external_user_rights
   after_save :ensure_namespace_correct
   after_initialize :set_projects_limit
+  before_create :check_confirmation_email
   after_create :post_create_hook
   after_destroy :post_destroy_hook
 
@@ -233,8 +175,16 @@ class User < ActiveRecord::Base
   scope :active, -> { with_state(:active) }
   scope :not_in_project, ->(project) { project.users.present? ? where("id not in (:ids)", ids: project.users.map(&:id) ) : all }
   scope :without_projects, -> { where('id NOT IN (SELECT DISTINCT(user_id) FROM members)') }
-  scope :with_two_factor,    -> { where(two_factor_enabled: true) }
-  scope :without_two_factor, -> { where(two_factor_enabled: false) }
+
+  def self.with_two_factor
+    joins("LEFT OUTER JOIN u2f_registrations AS u2f ON u2f.user_id = users.id").
+      where("u2f.id IS NOT NULL OR otp_required_for_login = ?", true).distinct(arel_table[:id])
+  end
+
+  def self.without_two_factor
+    joins("LEFT OUTER JOIN u2f_registrations AS u2f ON u2f.user_id = users.id").
+      where("u2f.id IS NULL AND otp_required_for_login = ?", false)
+  end
 
   #
   # Class methods
@@ -372,19 +322,38 @@ class User < ActiveRecord::Base
     @reset_token
   end
 
+  def check_confirmation_email
+    skip_confirmation! unless current_application_settings.send_user_confirmation_email
+  end
+
   def recently_sent_password_reset?
     reset_password_sent_at.present? && reset_password_sent_at >= 1.minute.ago
   end
 
   def disable_two_factor!
-    update_attributes(
-      two_factor_enabled:          false,
-      encrypted_otp_secret:        nil,
-      encrypted_otp_secret_iv:     nil,
-      encrypted_otp_secret_salt:   nil,
-      otp_grace_period_started_at: nil,
-      otp_backup_codes:            nil
-    )
+    transaction do
+      update_attributes(
+        otp_required_for_login:      false,
+        encrypted_otp_secret:        nil,
+        encrypted_otp_secret_iv:     nil,
+        encrypted_otp_secret_salt:   nil,
+        otp_grace_period_started_at: nil,
+        otp_backup_codes:            nil
+      )
+      self.u2f_registrations.destroy_all
+    end
+  end
+
+  def two_factor_enabled?
+    two_factor_otp_enabled? || two_factor_u2f_enabled?
+  end
+
+  def two_factor_otp_enabled?
+    self.otp_required_for_login?
+  end
+
+  def two_factor_u2f_enabled?
+    self.u2f_registrations.exists?
   end
 
   def namespace_uniq
@@ -446,15 +415,15 @@ class User < ActiveRecord::Base
     Project.where("projects.id IN (#{projects_union.to_sql})")
   end
 
+  def viewable_starred_projects
+    starred_projects.where("projects.visibility_level IN (?) OR projects.id IN (#{projects_union.to_sql})",
+                           [Project::PUBLIC, Project::INTERNAL])
+  end
+
   def owned_projects
     @owned_projects ||=
       Project.where('namespace_id IN (?) OR namespace_id = ?',
                     owned_groups.select(:id), namespace.id).joins(:namespace)
-  end
-
-  # Team membership in authorized projects
-  def tm_in_authorized_projects
-    ProjectMember.where(source_id: authorized_projects.map(&:id), user_id: self.id)
   end
 
   def is_admin?
@@ -544,10 +513,6 @@ class User < ActiveRecord::Base
 
   def name_with_username
     "#{name} (#{username})"
-  end
-
-  def tm_of(project)
-    project.project_member_by_id(self.id)
   end
 
   def already_forked?(project)
@@ -833,6 +798,23 @@ class User < ActiveRecord::Base
 
   def notification_settings_for(source)
     notification_settings.find_or_initialize_by(source: source)
+  end
+
+  def assigned_open_merge_request_count(force: false)
+    Rails.cache.fetch(['users', id, 'assigned_open_merge_request_count'], force: force) do
+      assigned_merge_requests.opened.count
+    end
+  end
+
+  def assigned_open_issues_count(force: false)
+    Rails.cache.fetch(['users', id, 'assigned_open_issues_count'], force: force) do
+      assigned_issues.opened.count
+    end
+  end
+
+  def update_cache_counts
+    assigned_open_merge_request_count(force: true)
+    assigned_open_issues_count(force: true)
   end
 
   private

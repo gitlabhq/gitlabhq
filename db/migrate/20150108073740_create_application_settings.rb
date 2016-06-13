@@ -1,3 +1,4 @@
+# rubocop:disable all
 class CreateApplicationSettings < ActiveRecord::Migration
   def change
     create_table :application_settings do |t|

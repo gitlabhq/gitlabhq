@@ -48,10 +48,6 @@
       display: block;
     }
 
-    .project-home-desc {
-      font-size: 21px;
-    }
-
     .project-repo-buttons,
     .git-clone-holder {
       display: none;
@@ -67,10 +63,6 @@
   }
 
   .issue-info, .merge-request-info {
-    display: none;
-  }
-
-  %ul.notes .note-role, .note-actions {
     display: none;
   }
 

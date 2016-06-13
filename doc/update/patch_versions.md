@@ -57,10 +57,10 @@ sudo -u git -H make
 cd /home/git/gitlab
 
 # PostgreSQL
-sudo -u git -H bundle install --without development test mysql --with postgres --deployment
+sudo -u git -H bundle install --without development test mysql --deployment
 
 # MySQL
-sudo -u git -H bundle install --without development test postgres --with mysql --deployment
+sudo -u git -H bundle install --without development test postgres --deployment
 
 # Optional: clean up old gems
 sudo -u git -H bundle clean

@@ -55,7 +55,7 @@ class Projects::ProjectMembersController < Projects::ApplicationController
       format.html do
         redirect_to namespace_project_project_members_path(@project.namespace, @project)
       end
-      format.js { render nothing: true }
+      format.js { head :ok }
     end
   end
 
@@ -81,7 +81,7 @@ class Projects::ProjectMembersController < Projects::ApplicationController
 
       respond_to do |format|
         format.html { redirect_to dashboard_projects_path, notice: "You left the project." }
-        format.js { render nothing: true }
+        format.js { head :ok }
       end
     else
       if current_user == @project.owner

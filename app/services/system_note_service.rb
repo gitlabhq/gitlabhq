@@ -169,10 +169,31 @@ class SystemNoteService
   #
   # Returns the created Note object
   def self.change_title(noteable, project, author, old_title)
-    return unless noteable.respond_to?(:title)
+    new_title = noteable.title.dup
 
-    body = "Title changed from **#{old_title}** to **#{noteable.title}**"
+    old_diffs, new_diffs = Gitlab::Diff::InlineDiff.new(old_title, new_title).inline_diffs
+
+    marked_old_title = Gitlab::Diff::InlineDiffMarker.new(old_title).mark(old_diffs, mode: :deletion, markdown: true)
+    marked_new_title = Gitlab::Diff::InlineDiffMarker.new(new_title).mark(new_diffs, mode: :addition, markdown: true)
+
+    body = "Changed title: **#{marked_old_title}** → **#{marked_new_title}**"
     create_note(noteable: noteable, project: project, author: author, note: body)
+  end
+
+  # Called when the confidentiality changes
+  #
+  # issue   - Issue object
+  # project - Project owning the issue
+  # author  - User performing the change
+  #
+  # Example Note text:
+  #
+  # "Made the issue confidential"
+  #
+  # Returns the created Note object
+  def self.change_issue_confidentiality(issue, project, author)
+    body = issue.confidential ? 'Made the issue confidential' : 'Made the issue visible'
+    create_note(noteable: issue, project: project, author: author, note: body)
   end
 
   # Called when a branch in Noteable is changed

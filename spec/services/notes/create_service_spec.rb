@@ -14,7 +14,7 @@ describe Notes::CreateService, services: true do
           noteable_type: 'Issue',
           noteable_id: issue.id
         }
-        
+
         @note = Notes::CreateService.new(project, user, opts).execute
       end
 
@@ -28,18 +28,16 @@ describe Notes::CreateService, services: true do
       project.team << [user, :master]
     end
 
-    it "creates emoji note" do
+    it "creates an award emoji" do
       opts = {
         note: ':smile: ',
         noteable_type: 'Issue',
         noteable_id: issue.id
       }
+      note = Notes::CreateService.new(project, user, opts).execute
 
-      @note = Notes::CreateService.new(project, user, opts).execute
-
-      expect(@note).to be_valid
-      expect(@note.note).to eq('smile')
-      expect(@note.is_award).to be_truthy
+      expect(note).to be_valid
+      expect(note.name).to eq('smile')
     end
 
     it "creates regular note if emoji name is invalid" do
@@ -48,12 +46,22 @@ describe Notes::CreateService, services: true do
         noteable_type: 'Issue',
         noteable_id: issue.id
       }
+      note = Notes::CreateService.new(project, user, opts).execute
 
-      @note = Notes::CreateService.new(project, user, opts).execute
+      expect(note).to be_valid
+      expect(note.note).to eq(opts[:note])
+    end
 
-      expect(@note).to be_valid
-      expect(@note.note).to eq(opts[:note])
-      expect(@note.is_award).to be_falsy
+    it "normalizes the emoji name" do
+      opts = {
+        note: ':+1:',
+        noteable_type: 'Issue',
+        noteable_id: issue.id
+      }
+
+      expect_any_instance_of(TodoService).to receive(:new_award_emoji).with(issue, user)
+
+      Notes::CreateService.new(project, user, opts).execute
     end
   end
 end

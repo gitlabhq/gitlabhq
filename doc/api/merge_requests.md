@@ -67,7 +67,8 @@ Parameters:
     },
     "merge_when_build_succeeds": true,
     "merge_status": "can_be_merged",
-    "subscribed" : false
+    "subscribed" : false,
+    "user_notes_count": 1
   }
 ]
 ```
@@ -130,7 +131,8 @@ Parameters:
   },
   "merge_when_build_succeeds": true,
   "merge_status": "can_be_merged",
-  "subscribed" : true
+  "subscribed" : true,
+  "user_notes_count": 1
 }
 ```
 
@@ -230,6 +232,7 @@ Parameters:
   "merge_when_build_succeeds": true,
   "merge_status": "can_be_merged",
   "subscribed" : true,
+  "user_notes_count": 1,
   "changes": [
     {
     "old_path": "VERSION",
@@ -308,7 +311,8 @@ Parameters:
   },
   "merge_when_build_succeeds": true,
   "merge_status": "can_be_merged",
-  "subscribed" : true
+  "subscribed" : true,
+  "user_notes_count": 0
 }
 ```
 
@@ -378,7 +382,8 @@ Parameters:
   },
   "merge_when_build_succeeds": true,
   "merge_status": "can_be_merged",
-  "subscribed" : true
+  "subscribed" : true,
+  "user_notes_count": 1
 }
 ```
 
@@ -408,11 +413,13 @@ curl -X DELETE -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.c
 
 Merge changes submitted with MR using this API.
 
-If merge success you get `200 OK`.
+If the merge succeeds you'll get a `200 OK`.
 
-If it has some conflicts and can not be merged - you get 405 and error message 'Branch cannot be merged'
+If it has some conflicts and can not be merged - you'll get a 405 and the error message 'Branch cannot be merged'
 
-If merge request is already merged or closed - you get 405 and error message 'Method Not Allowed'
+If merge request is already merged or closed - you'll get a 406 and the error message 'Method Not Allowed'
+
+If the `sha` parameter is passed and does not match the HEAD of the source - you'll get a 409 and the error message 'SHA does not match HEAD of source branch'
 
 If you don't have permissions to accept this merge request - you'll get a 401
 
@@ -426,7 +433,8 @@ Parameters:
 - `merge_request_id` (required)             - ID of MR
 - `merge_commit_message` (optional)         - Custom merge commit message
 - `should_remove_source_branch` (optional)  - if `true` removes the source branch
-- `merged_when_build_succeeds` (optional)    - if `true` the MR is merge when the build succeeds
+- `merged_when_build_succeeds` (optional)   - if `true` the MR is merged when the build succeeds
+- `sha` (optional)                          - if present, then this SHA must match the HEAD of the source branch, otherwise the merge will fail
 
 ```json
 {
@@ -472,7 +480,8 @@ Parameters:
   },
   "merge_when_build_succeeds": true,
   "merge_status": "can_be_merged",
-  "subscribed" : true
+  "subscribed" : true,
+  "user_notes_count": 1
 }
 ```
 
@@ -537,7 +546,8 @@ Parameters:
   },
   "merge_when_build_succeeds": true,
   "merge_status": "can_be_merged",
-  "subscribed" : true
+  "subscribed" : true,
+  "user_notes_count": 1
 }
 ```
 
@@ -562,7 +572,7 @@ GET /projects/:id/merge_requests/:merge_request_id/closes_issues
 curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/76/merge_requests/1/closes_issues
 ```
 
-Example response:
+Example response when the GitLab issue tracker is used:
 
 ```json
 [
@@ -602,8 +612,20 @@ Example response:
       "title" : "Consequatur vero maxime deserunt laboriosam est voluptas dolorem.",
       "created_at" : "2016-01-04T15:31:51.081Z",
       "iid" : 6,
-      "labels" : []
+      "labels" : [],
+      "user_notes_count": 1
    },
+]
+```
+
+Example response when an external issue tracker (e.g. JIRA) is used:
+
+```json
+[
+   {
+       "id" : "PROJECT-123",
+       "title" : "Title of this issue"
+   }
 ]
 ```
 

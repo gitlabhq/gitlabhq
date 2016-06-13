@@ -1,5 +1,5 @@
 - page_title 'Artifacts', "#{@build.name} (##{@build.id})", 'Builds'
-= render 'projects/builds/header_title'
+- header_title project_title(@project, "Builds", project_builds_path(@project))
 
 .top-block.row-content-block.clearfix
   .pull-right

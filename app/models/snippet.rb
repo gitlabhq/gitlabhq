@@ -1,19 +1,3 @@
-# == Schema Information
-#
-# Table name: snippets
-#
-#  id               :integer          not null, primary key
-#  title            :string
-#  content          :text
-#  author_id        :integer          not null
-#  project_id       :integer
-#  created_at       :datetime
-#  updated_at       :datetime
-#  file_name        :string
-#  type             :string
-#  visibility_level :integer          default(0), not null
-#
-
 class Snippet < ActiveRecord::Base
   include Gitlab::VisibilityLevel
   include Linguist::BlobHelper
@@ -46,7 +30,8 @@ class Snippet < ActiveRecord::Base
   scope :public_and_internal, -> { where(visibility_level: [Snippet::PUBLIC, Snippet::INTERNAL]) }
   scope :fresh,   -> { order("created_at DESC") }
 
-  participant :author, :notes
+  participant :author
+  participant :notes_with_associations
 
   def self.reference_prefix
     '$'
@@ -114,6 +99,10 @@ class Snippet < ActiveRecord::Base
 
   def no_highlighting?
     content.lines.count > 1000
+  end
+
+  def notes_with_associations
+    notes.includes(:author)
   end
 
   class << self
