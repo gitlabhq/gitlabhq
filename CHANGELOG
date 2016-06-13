@@ -70,6 +70,7 @@ v 8.9.0 (unreleased)
   - Improved UX of date pickers on issue & milestone forms
   - Cache on the database if a project has an active external issue tracker.
   - Put project Labels and Milestones pages links under Issues and Merge Requests tabs as subnav
+  - All classes in the Banzai::ReferenceParser namespace are now instrumented
 
 v 8.8.5 (unreleased)
   - Ensure branch cleanup regardless of whether the GitHub import process succeeds
