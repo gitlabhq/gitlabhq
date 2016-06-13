@@ -27,17 +27,18 @@ To enable the CAS OmniAuth provider you must register your application with your
     ```ruby
       gitlab_rails['omniauth_providers'] = [
         {
-          name: "cas3",
-          label: "cas",
-          args: {
-                  url: 'CAS_SERVER',
-                  login_url: '/CAS_PATH/login',
-                  service_validate_url: '/CAS_PATH/p3/serviceValidate',
-                  logout_url: '/CAS_PATH/logout'} }
-          }
+            "name"=> "cas3",
+            "label"=> "cas",
+            "args"=> {
+                "url"=> 'CAS_SERVER',
+                "login_url"=> '/CAS_PATH/login',
+                "service_validate_url"=> '/CAS_PATH/p3/serviceValidate',
+                "logout_url"=> '/CAS_PATH/logout'
+            }
         }
       ]
     ```
+    
 
     For installations from source:
 
@@ -56,6 +57,8 @@ To enable the CAS OmniAuth provider you must register your application with your
 1.  If your CAS instance does not use default TGC lifetimes, update the `cas3.session_duration` to at least the current TGC maximum lifetime. To explicitly disable SLO, regardless of CAS settings, set this to 0.
 
 1.  Save the configuration file.
+
+1.  Run `gitlab-ctl reconfigure` for the omnibus package.
 
 1.  Restart GitLab for the changes to take effect.
 

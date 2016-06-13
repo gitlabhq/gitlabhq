@@ -17,6 +17,7 @@ class GitPushService < BaseService
   #  6. Checks if the project's main language has changed
   #
   def execute
+    @project.repository.after_create if @project.empty_repo?
     @project.repository.after_push_commit(branch_name, params[:newrev])
 
     if push_remove_branch?
@@ -52,28 +53,11 @@ class GitPushService < BaseService
     # could cause the last commit of a merge request to change.
     update_merge_requests
 
-    # Checks if the main language has changed in the project and if so
-    # it updates it accordingly
-    update_main_language
-
     perform_housekeeping
   end
 
   def update_gitattributes
     @project.repository.copy_gitattributes(params[:ref])
-  end
-
-  def update_main_language
-    # Performance can be bad so for now only check main_language once
-    # See https://gitlab.com/gitlab-org/gitlab-ce/issues/14937
-    return if @project.main_language.present?
-
-    return unless is_default_branch?
-    return unless push_to_new_branch? || push_to_existing_branch?
-
-    current_language = @project.repository.main_language
-    @project.update_attributes(main_language: current_language)
-    true
   end
 
   protected

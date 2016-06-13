@@ -16,6 +16,11 @@ require 'shoulda/matchers'
 require 'sidekiq/testing/inline'
 require 'rspec/retry'
 
+if ENV['CI']
+  require 'knapsack'
+  Knapsack::Adapters::RSpecAdapter.bind
+end
+
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.
 Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
@@ -49,12 +54,6 @@ end
 
 FactoryGirl::SyntaxRunner.class_eval do
   include RSpec::Mocks::ExampleMethods
-end
-
-# Work around a Rails 4.2.5.1 issue
-# See https://github.com/rspec/rspec-rails/issues/1532
-RSpec::Rails::ViewRendering::EmptyTemplatePathSetDecorator.class_eval do
-  alias_method :find_all_anywhere, :find_all
 end
 
 ActiveRecord::Migration.maintain_test_schema!

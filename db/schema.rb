@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160421130527) do
+ActiveRecord::Schema.define(version: 20160610301627) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -43,43 +43,48 @@ ActiveRecord::Schema.define(version: 20160421130527) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "home_page_url"
-    t.integer  "default_branch_protection",         default: 2
+    t.integer  "default_branch_protection",             default: 2
     t.text     "restricted_visibility_levels"
-    t.boolean  "version_check_enabled",             default: true
-    t.integer  "max_attachment_size",               default: 10,          null: false
+    t.boolean  "version_check_enabled",                 default: true
+    t.integer  "max_attachment_size",                   default: 10,          null: false
     t.integer  "default_project_visibility"
     t.integer  "default_snippet_visibility"
     t.text     "restricted_signup_domains"
-    t.boolean  "user_oauth_applications",           default: true
+    t.boolean  "user_oauth_applications",               default: true
     t.string   "after_sign_out_path"
-    t.integer  "session_expire_delay",              default: 10080,       null: false
+    t.integer  "session_expire_delay",                  default: 10080,       null: false
     t.text     "import_sources"
     t.text     "help_page_text"
     t.string   "admin_notification_email"
-    t.boolean  "shared_runners_enabled",            default: true,        null: false
-    t.integer  "max_artifacts_size",                default: 100,         null: false
+    t.boolean  "shared_runners_enabled",                default: true,        null: false
+    t.integer  "max_artifacts_size",                    default: 100,         null: false
     t.string   "runners_registration_token"
-    t.boolean  "require_two_factor_authentication", default: false
-    t.integer  "two_factor_grace_period",           default: 48
-    t.boolean  "metrics_enabled",                   default: false
-    t.string   "metrics_host",                      default: "localhost"
-    t.integer  "metrics_pool_size",                 default: 16
-    t.integer  "metrics_timeout",                   default: 10
-    t.integer  "metrics_method_call_threshold",     default: 10
-    t.boolean  "recaptcha_enabled",                 default: false
+    t.boolean  "require_two_factor_authentication",     default: false
+    t.integer  "two_factor_grace_period",               default: 48
+    t.boolean  "metrics_enabled",                       default: false
+    t.string   "metrics_host",                          default: "localhost"
+    t.integer  "metrics_pool_size",                     default: 16
+    t.integer  "metrics_timeout",                       default: 10
+    t.integer  "metrics_method_call_threshold",         default: 10
+    t.boolean  "recaptcha_enabled",                     default: false
     t.string   "recaptcha_site_key"
     t.string   "recaptcha_private_key"
-    t.integer  "metrics_port",                      default: 8089
-    t.integer  "metrics_sample_interval",           default: 15
-    t.boolean  "sentry_enabled",                    default: false
-    t.string   "sentry_dsn"
-    t.boolean  "akismet_enabled",                   default: false
+    t.integer  "metrics_port",                          default: 8089
+    t.boolean  "akismet_enabled",                       default: false
     t.string   "akismet_api_key"
-    t.boolean  "email_author_in_body",              default: false
+    t.integer  "metrics_sample_interval",               default: 15
+    t.boolean  "sentry_enabled",                        default: false
+    t.string   "sentry_dsn"
+    t.boolean  "email_author_in_body",                  default: false
     t.integer  "default_group_visibility"
-    t.boolean  "repository_checks_enabled",         default: false
-    t.integer  "metrics_packet_size",               default: 1
+    t.boolean  "repository_checks_enabled",             default: false
     t.text     "shared_runners_text"
+    t.integer  "metrics_packet_size",                   default: 1
+    t.text     "disabled_oauth_sign_in_sources"
+    t.string   "health_check_access_token"
+    t.boolean  "send_user_confirmation_email",          default: false
+    t.integer  "container_registry_token_expire_delay", default: 5
+    t.text     "after_sign_up_text"
   end
 
   create_table "audit_events", force: :cascade do |t|
@@ -95,6 +100,18 @@ ActiveRecord::Schema.define(version: 20160421130527) do
   add_index "audit_events", ["author_id"], name: "index_audit_events_on_author_id", using: :btree
   add_index "audit_events", ["entity_id", "entity_type"], name: "index_audit_events_on_entity_id_and_entity_type", using: :btree
   add_index "audit_events", ["type"], name: "index_audit_events_on_type", using: :btree
+
+  create_table "award_emoji", force: :cascade do |t|
+    t.string   "name"
+    t.integer  "user_id"
+    t.integer  "awardable_id"
+    t.string   "awardable_type"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "award_emoji", ["awardable_type", "awardable_id"], name: "index_award_emoji_on_awardable_type_and_awardable_id", using: :btree
+  add_index "award_emoji", ["user_id"], name: "index_award_emoji_on_user_id", using: :btree
 
   create_table "broadcast_messages", force: :cascade do |t|
     t.text     "message",    null: false
@@ -267,6 +284,7 @@ ActiveRecord::Schema.define(version: 20160421130527) do
     t.string   "revision"
     t.string   "platform"
     t.string   "architecture"
+    t.boolean  "run_untagged", default: true,  null: false
   end
 
   add_index "ci_runners", ["description"], name: "index_ci_runners_on_description_trigram", using: :gin, opclasses: {"description"=>"gin_trgm_ops"}
@@ -426,10 +444,10 @@ ActiveRecord::Schema.define(version: 20160421130527) do
     t.string   "state"
     t.integer  "iid"
     t.integer  "updated_by_id"
-    t.integer  "moved_to_id"
     t.boolean  "confidential",  default: false
     t.datetime "deleted_at"
     t.date     "due_date"
+    t.integer  "moved_to_id"
   end
 
   add_index "issues", ["assignee_id"], name: "index_issues_on_assignee_id", using: :btree
@@ -480,8 +498,10 @@ ActiveRecord::Schema.define(version: 20160421130527) do
     t.datetime "updated_at"
     t.boolean  "template",    default: false
     t.string   "description"
+    t.integer  "priority"
   end
 
+  add_index "labels", ["priority"], name: "index_labels_on_priority", using: :btree
   add_index "labels", ["project_id"], name: "index_labels_on_project_id", using: :btree
 
   create_table "lfs_objects", force: :cascade do |t|
@@ -633,14 +653,13 @@ ActiveRecord::Schema.define(version: 20160421130527) do
     t.boolean  "system",        default: false, null: false
     t.text     "st_diff"
     t.integer  "updated_by_id"
-    t.boolean  "is_award",      default: false, null: false
+    t.string   "type"
   end
 
   add_index "notes", ["author_id"], name: "index_notes_on_author_id", using: :btree
   add_index "notes", ["commit_id"], name: "index_notes_on_commit_id", using: :btree
   add_index "notes", ["created_at", "id"], name: "index_notes_on_created_at_and_id", using: :btree
   add_index "notes", ["created_at"], name: "index_notes_on_created_at", using: :btree
-  add_index "notes", ["is_award"], name: "index_notes_on_is_award", using: :btree
   add_index "notes", ["line_code"], name: "index_notes_on_line_code", using: :btree
   add_index "notes", ["note"], name: "index_notes_on_note_trigram", using: :gin, opclasses: {"note"=>"gin_trgm_ops"}
   add_index "notes", ["noteable_id", "noteable_type"], name: "index_notes_on_noteable_id_and_noteable_type", using: :btree
@@ -651,14 +670,15 @@ ActiveRecord::Schema.define(version: 20160421130527) do
 
   create_table "notification_settings", force: :cascade do |t|
     t.integer  "user_id",                 null: false
-    t.integer  "source_id",               null: false
-    t.string   "source_type",             null: false
+    t.integer  "source_id"
+    t.string   "source_type"
     t.integer  "level",       default: 0, null: false
     t.datetime "created_at",              null: false
     t.datetime "updated_at",              null: false
   end
 
   add_index "notification_settings", ["source_id", "source_type"], name: "index_notification_settings_on_source_id_and_source_type", using: :btree
+  add_index "notification_settings", ["user_id", "source_id", "source_type"], name: "index_notifications_on_user_id_and_source_id_and_source_type", unique: true, using: :btree
   add_index "notification_settings", ["user_id"], name: "index_notification_settings_on_user_id", using: :btree
 
   create_table "oauth_access_grants", force: :cascade do |t|
@@ -716,8 +736,8 @@ ActiveRecord::Schema.define(version: 20160421130527) do
     t.integer "project_id"
     t.text    "data"
     t.text    "encrypted_credentials"
-    t.text    "encrypted_credentials_iv"
-    t.text    "encrypted_credentials_salt"
+    t.string  "encrypted_credentials_iv"
+    t.string  "encrypted_credentials_salt"
   end
 
   create_table "projects", force: :cascade do |t|
@@ -727,39 +747,40 @@ ActiveRecord::Schema.define(version: 20160421130527) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "creator_id"
-    t.boolean  "issues_enabled",               default: true,     null: false
-    t.boolean  "wall_enabled",                 default: true,     null: false
-    t.boolean  "merge_requests_enabled",       default: true,     null: false
-    t.boolean  "wiki_enabled",                 default: true,     null: false
+    t.boolean  "issues_enabled",                     default: true,     null: false
+    t.boolean  "merge_requests_enabled",             default: true,     null: false
+    t.boolean  "wiki_enabled",                       default: true,     null: false
     t.integer  "namespace_id"
-    t.string   "issues_tracker",               default: "gitlab", null: false
+    t.string   "issues_tracker",                     default: "gitlab", null: false
     t.string   "issues_tracker_id"
-    t.boolean  "snippets_enabled",             default: true,     null: false
+    t.boolean  "snippets_enabled",                   default: true,     null: false
     t.datetime "last_activity_at"
     t.string   "import_url"
-    t.integer  "visibility_level",             default: 0,        null: false
-    t.boolean  "archived",                     default: false,    null: false
+    t.integer  "visibility_level",                   default: 0,        null: false
+    t.boolean  "archived",                           default: false,    null: false
     t.string   "avatar"
     t.string   "import_status"
-    t.float    "repository_size",              default: 0.0
-    t.integer  "star_count",                   default: 0,        null: false
+    t.float    "repository_size",                    default: 0.0
+    t.integer  "star_count",                         default: 0,        null: false
     t.string   "import_type"
     t.string   "import_source"
-    t.integer  "commit_count",                 default: 0
+    t.integer  "commit_count",                       default: 0
     t.text     "import_error"
     t.integer  "ci_id"
-    t.boolean  "builds_enabled",               default: true,     null: false
-    t.boolean  "shared_runners_enabled",       default: true,     null: false
+    t.boolean  "builds_enabled",                     default: true,     null: false
+    t.boolean  "shared_runners_enabled",             default: true,     null: false
     t.string   "runners_token"
     t.string   "build_coverage_regex"
-    t.boolean  "build_allow_git_fetch",        default: true,     null: false
-    t.integer  "build_timeout",                default: 3600,     null: false
-    t.boolean  "pending_delete",               default: false
-    t.boolean  "public_builds",                default: true,     null: false
-    t.string   "main_language"
-    t.integer  "pushes_since_gc",              default: 0
+    t.boolean  "build_allow_git_fetch",              default: true,     null: false
+    t.integer  "build_timeout",                      default: 3600,     null: false
+    t.boolean  "pending_delete",                     default: false
+    t.boolean  "public_builds",                      default: true,     null: false
+    t.integer  "pushes_since_gc",                    default: 0
     t.boolean  "last_repository_check_failed"
     t.datetime "last_repository_check_at"
+    t.boolean  "container_registry_enabled"
+    t.boolean  "only_allow_merge_if_build_succeeds", default: false,    null: false
+    t.boolean  "has_external_issue_tracker"
   end
 
   add_index "projects", ["builds_enabled", "shared_runners_enabled"], name: "index_projects_on_builds_enabled_and_shared_runners_enabled", using: :btree
@@ -816,9 +837,9 @@ ActiveRecord::Schema.define(version: 20160421130527) do
     t.string   "type"
     t.string   "title"
     t.integer  "project_id"
-    t.datetime "created_at",                               null: false
-    t.datetime "updated_at",                               null: false
-    t.boolean  "active",                                   null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean  "active",                default: false,    null: false
     t.text     "properties"
     t.boolean  "template",              default: false
     t.boolean  "push_events",           default: true
@@ -925,6 +946,19 @@ ActiveRecord::Schema.define(version: 20160421130527) do
   add_index "todos", ["target_type", "target_id"], name: "index_todos_on_target_type_and_target_id", using: :btree
   add_index "todos", ["user_id"], name: "index_todos_on_user_id", using: :btree
 
+  create_table "u2f_registrations", force: :cascade do |t|
+    t.text     "certificate"
+    t.string   "key_handle"
+    t.string   "public_key"
+    t.integer  "counter"
+    t.integer  "user_id"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+  end
+
+  add_index "u2f_registrations", ["key_handle"], name: "index_u2f_registrations_on_key_handle", using: :btree
+  add_index "u2f_registrations", ["user_id"], name: "index_u2f_registrations_on_user_id", using: :btree
+
   create_table "users", force: :cascade do |t|
     t.string   "email",                       default: "",    null: false
     t.string   "encrypted_password",          default: "",    null: false
@@ -954,7 +988,6 @@ ActiveRecord::Schema.define(version: 20160421130527) do
     t.boolean  "can_create_team",             default: true,  null: false
     t.string   "state"
     t.integer  "color_scheme_id",             default: 1,     null: false
-    t.integer  "notification_level",          default: 1,     null: false
     t.datetime "password_expires_at"
     t.integer  "created_by_id"
     t.datetime "last_credential_check_at"
@@ -996,6 +1029,7 @@ ActiveRecord::Schema.define(version: 20160421130527) do
   add_index "users", ["name"], name: "index_users_on_name", using: :btree
   add_index "users", ["name"], name: "index_users_on_name_trigram", using: :gin, opclasses: {"name"=>"gin_trgm_ops"}
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
+  add_index "users", ["state"], name: "index_users_on_state", using: :btree
   add_index "users", ["username"], name: "index_users_on_username", using: :btree
   add_index "users", ["username"], name: "index_users_on_username_trigram", using: :gin, opclasses: {"username"=>"gin_trgm_ops"}
 
@@ -1031,4 +1065,5 @@ ActiveRecord::Schema.define(version: 20160421130527) do
   add_index "web_hooks", ["created_at", "id"], name: "index_web_hooks_on_created_at_and_id", using: :btree
   add_index "web_hooks", ["project_id"], name: "index_web_hooks_on_project_id", using: :btree
 
+  add_foreign_key "u2f_registrations", "users"
 end

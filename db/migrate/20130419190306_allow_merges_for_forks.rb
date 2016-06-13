@@ -1,3 +1,4 @@
+# rubocop:disable all
 class AllowMergesForForks < ActiveRecord::Migration
   def self.up
     add_column :merge_requests, :target_project_id, :integer, :null => true

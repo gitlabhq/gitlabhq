@@ -1,24 +1,3 @@
-# == Schema Information
-#
-# Table name: services
-#
-#  id                    :integer          not null, primary key
-#  type                  :string(255)
-#  title                 :string(255)
-#  project_id            :integer
-#  created_at            :datetime
-#  updated_at            :datetime
-#  active                :boolean          default(FALSE), not null
-#  properties            :text
-#  template              :boolean          default(FALSE)
-#  push_events           :boolean          default(TRUE)
-#  issues_events         :boolean          default(TRUE)
-#  merge_requests_events :boolean          default(TRUE)
-#  tag_push_events       :boolean          default(TRUE)
-#  note_events           :boolean          default(TRUE), not null
-#  build_events          :boolean          default(FALSE), not null
-#
-
 require 'spec_helper'
 
 describe Service, models: true do
@@ -223,6 +202,39 @@ describe Service, models: true do
       service.bamboo_url = 'http://example.com'
       service.save
       expect(service.bamboo_url_was).to be_nil
+    end
+  end
+
+  describe "callbacks" do
+    let(:project) { create(:project) }
+    let!(:service) do
+      RedmineService.new(
+        project: project,
+        active: true,
+        properties: {
+          project_url: 'http://redmine/projects/project_name_in_redmine',
+          issues_url: "http://redmine/#{project.id}/project_name_in_redmine/:id",
+          new_issue_url: 'http://redmine/projects/project_name_in_redmine/issues/new'
+        }
+      )
+    end
+
+    describe "on create" do
+      it "updates the has_external_issue_tracker boolean" do
+        expect do
+          service.save!
+        end.to change { service.project.has_external_issue_tracker }.from(nil).to(true)
+      end
+    end
+
+    describe "on update" do
+      it "updates the has_external_issue_tracker boolean" do
+        service.save!
+
+        expect do
+          service.update_attributes(active: false)
+        end.to change { service.project.has_external_issue_tracker }.from(true).to(false)
+      end
     end
   end
 end

@@ -81,19 +81,21 @@ class Repository
   def commit(id = 'HEAD')
     return nil unless exists?
     commit = Gitlab::Git::Commit.find(raw_repository, id)
-    commit = Commit.new(commit, @project) if commit
+    commit = ::Commit.new(commit, @project) if commit
     commit
   rescue Rugged::OdbError
     nil
   end
 
-  def commits(ref, path = nil, limit = nil, offset = nil, skip_merges = false)
+  def commits(ref, path: nil, limit: nil, offset: nil, skip_merges: false, after: nil, before: nil)
     options = {
       repo: raw_repository,
       ref: ref,
       path: path,
       limit: limit,
       offset: offset,
+      after: after,
+      before: before,
       # --follow doesn't play well with --skip. See:
       # https://gitlab.com/gitlab-org/gitlab-ce/issues/3574#note_3040520
       follow: false,
@@ -146,10 +148,20 @@ class Repository
     find_branch(branch_name)
   end
 
-  def add_tag(tag_name, ref, message = nil)
-    before_push_tag
+  def add_tag(user, tag_name, target, message = nil)
+    oldrev = Gitlab::Git::BLANK_SHA
+    ref    = Gitlab::Git::TAG_REF_PREFIX + tag_name
+    target = commit(target).try(:id)
 
-    gitlab_shell.add_tag(path_with_namespace, tag_name, ref, message)
+    return false unless target
+
+    options = { message: message, tagger: user_to_committer(user) } if message
+
+    GitHooksService.new.execute(user, path_to_repo, oldrev, target, ref) do
+      rugged.tags.create(tag_name, target, options)
+    end
+
+    find_tag(tag_name)
   end
 
   def rm_branch(user, branch_name)
@@ -181,6 +193,10 @@ class Repository
 
   def branch_names
     cache.fetch(:branch_names) { branches.map(&:name) }
+  end
+
+  def branch_exists?(branch_name)
+    branch_names.include?(branch_name)
   end
 
   def tag_names
@@ -229,7 +245,7 @@ class Repository
   def cache_keys
     %i(size branch_names tag_names commit_count
        readme version contribution_guide changelog
-       license_blob license_key)
+       license_blob license_key gitignore)
   end
 
   def build_cache
@@ -238,6 +254,10 @@ class Repository
         send(key)
       end
     end
+  end
+
+  def expire_gitignore
+    cache.expire(:gitignore)
   end
 
   def expire_tags_cache
@@ -441,7 +461,7 @@ class Repository
   def version
     cache.fetch(:version) do
       tree(:head).blobs.find do |file|
-        file.name.downcase == 'version'
+        file.name.casecmp('version').zero?
       end
     end
   end
@@ -456,32 +476,36 @@ class Repository
 
   def changelog
     cache.fetch(:changelog) do
-      tree(:head).blobs.find do |file|
-        file.name =~ /\A(changelog|history|changes|news)/i
-      end
+      file_on_head(/\A(changelog|history|changes|news)/i)
     end
   end
 
   def license_blob
-    return nil if !exists? || empty?
+    return nil unless head_exists?
 
     cache.fetch(:license_blob) do
-      tree(:head).blobs.find do |file|
-        file.name =~ /\A(licen[sc]e|copying)(\..+|\z)/i
-      end
+      file_on_head(/\A(licen[sc]e|copying)(\..+|\z)/i)
     end
   end
 
   def license_key
-    return nil if !exists? || empty?
+    return nil unless head_exists?
 
     cache.fetch(:license_key) do
       Licensee.license(path).try(:key)
     end
   end
 
-  def gitlab_ci_yml
+  def gitignore
     return nil if !exists? || empty?
+
+    cache.fetch(:gitignore) do
+      file_on_head(/\A\.gitignore\z/)
+    end
+  end
+
+  def gitlab_ci_yml
+    return nil unless head_exists?
 
     @gitlab_ci_yml ||= tree(:head).blobs.find do |file|
       file.name == '.gitlab-ci.yml'
@@ -575,7 +599,7 @@ class Repository
   end
 
   def contributors
-    commits = self.commits(nil, nil, 2000, 0, true)
+    commits = self.commits(nil, limit: 2000, offset: 0, skip_merges: true)
 
     commits.group_by(&:author_email).map do |email, commits|
       contributor = Gitlab::Contributor.new
@@ -783,7 +807,7 @@ class Repository
   def check_revert_content(commit, base_branch)
     source_sha = find_branch(base_branch).target
     args       = [commit.id, source_sha]
-    args       << { mainline: 1 } if commit.merge_commit?
+    args << { mainline: 1 } if commit.merge_commit?
 
     revert_index = rugged.revert_commit(*args)
     return false if revert_index.conflicts?
@@ -797,7 +821,7 @@ class Repository
   def check_cherry_pick_content(commit, base_branch)
     source_sha = find_branch(base_branch).target
     args       = [commit.id, source_sha]
-    args       << 1 if commit.merge_commit?
+    args << 1 if commit.merge_commit?
 
     cherry_pick_index = rugged.cherrypick_commit(*args)
     return false if cherry_pick_index.conflicts?
@@ -838,7 +862,7 @@ class Repository
 
   def search_files(query, ref)
     offset = 2
-    args = %W(#{Gitlab.config.git.bin_path} grep -i -I -n --before-context #{offset} --after-context #{offset} -e #{Regexp.escape(query)} #{ref || root_ref})
+    args = %W(#{Gitlab.config.git.bin_path} grep -i -I -n --before-context #{offset} --after-context #{offset} -E -e #{Regexp.escape(query)} #{ref || root_ref})
     Gitlab::Popen.popen(args, path_to_repo).first.scrub.split(/^--$/)
   end
 
@@ -948,12 +972,6 @@ class Repository
     end
   end
 
-  def main_language
-    return if empty? || rugged.head_unborn?
-
-    Linguist::Repository.new(rugged, rugged.head.target_id).language
-  end
-
   def avatar
     return nil unless exists?
 
@@ -968,5 +986,13 @@ class Repository
 
   def cache
     @cache ||= RepositoryCache.new(path_with_namespace)
+  end
+
+  def head_exists?
+    exists? && !empty? && !rugged.head_unborn?
+  end
+
+  def file_on_head(regex)
+    tree(:head).blobs.find { |file| file.name =~ regex }
   end
 end

@@ -19,3 +19,8 @@ class @Subscription
       action = if status == 'subscribed' then 'Unsubscribe' else 'Subscribe'
       btn.find('span').text(action)
       @subscription_status.find('>div').toggleClass('hidden')
+
+      if btn.attr('data-original-title')
+        btn.tooltip('hide')
+          .attr('data-original-title', action)
+          .tooltip('fixTitle')

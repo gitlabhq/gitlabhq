@@ -1,0 +1,24 @@
+.pipelines {
+  .stage {
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .duration, .finished_at {
+    margin: 4px 0;
+  }
+
+  .commit-title {
+    margin: 0;
+  }
+
+  .controls {
+    white-space: nowrap;
+  }
+
+  .btn {
+    margin: 4px;
+  }
+}

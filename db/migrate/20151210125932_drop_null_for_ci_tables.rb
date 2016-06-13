@@ -1,3 +1,4 @@
+# rubocop:disable all
 class DropNullForCiTables < ActiveRecord::Migration
   def change
     remove_index :ci_variables, :project_id

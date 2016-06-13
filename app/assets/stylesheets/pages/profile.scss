@@ -66,12 +66,6 @@
   }
 }
 
-.calendar-hint {
-  margin-top: -12px;
-  float: right;
-  font-size: 12px;
-}
-
 .profile-link-holder {
   display: inline;
 
@@ -132,14 +126,6 @@
   a {
     color: $md-link-color;
   }
-}
-
-.change-username-title {
-  color: $gl-warning;
-}
-
-.remove-account-title {
-  color: $gl-danger;
 }
 
 .provider-btn-group {
@@ -203,5 +189,23 @@
   .crop-controls {
     padding: 10px 0 0;
     text-align: center;
+  }
+}
+
+.user-profile {
+  @media (max-width: $screen-xs-max) {
+    .cover-block {
+      padding-top: 20px;
+    }
+
+    .cover-controls {
+      position: static;
+      margin-bottom: 20px;
+
+      .btn {
+        display: inline-block;
+        width: 46%;
+      }
+    }
   }
 }

@@ -56,7 +56,7 @@ describe Projects::IssuesController do
           move_issue
 
           expect(response).to have_http_status :found
-          expect(another_project.issues).to_not be_empty
+          expect(another_project.issues).not_to be_empty
         end
       end
 
@@ -248,6 +248,22 @@ describe Projects::IssuesController do
         expect(response.status).to eq(302)
         expect(controller).to set_flash[:notice].to(/The issue was successfully deleted\./).now
       end
+    end
+  end
+
+  describe 'POST #toggle_award_emoji' do
+    before do
+      sign_in(user)
+      project.team << [user, :developer]
+    end
+
+    it "toggles the award emoji" do
+      expect do
+        post(:toggle_award_emoji, namespace_id: project.namespace.path,
+                                  project_id: project.path, id: issue.iid, name: "thumbsup")
+      end.to change { issue.award_emoji.count }.by(1)
+
+      expect(response.status).to eq(200)
     end
   end
 end

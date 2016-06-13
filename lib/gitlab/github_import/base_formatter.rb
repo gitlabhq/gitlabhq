@@ -9,6 +9,10 @@ module Gitlab
         @formatter = Gitlab::ImportFormatter.new
       end
 
+      def create!
+        self.klass.create!(self.attributes)
+      end
+
       private
 
       def gl_user_id(github_id)

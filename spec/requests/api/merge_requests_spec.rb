@@ -113,6 +113,33 @@ describe API::API, api: true  do
   end
 
   describe "GET /projects/:id/merge_requests/:merge_request_id" do
+    it 'exposes known attributes' do
+      get api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user)
+
+      expect(response.status).to eq(200)
+      expect(json_response['id']).to eq(merge_request.id)
+      expect(json_response['iid']).to eq(merge_request.iid)
+      expect(json_response['project_id']).to eq(merge_request.project.id)
+      expect(json_response['title']).to eq(merge_request.title)
+      expect(json_response['description']).to eq(merge_request.description)
+      expect(json_response['state']).to eq(merge_request.state)
+      expect(json_response['created_at']).to be_present
+      expect(json_response['updated_at']).to be_present
+      expect(json_response['labels']).to eq(merge_request.label_names)
+      expect(json_response['milestone']).to be_nil
+      expect(json_response['assignee']).to be_a Hash
+      expect(json_response['author']).to be_a Hash
+      expect(json_response['target_branch']).to eq(merge_request.target_branch)
+      expect(json_response['source_branch']).to eq(merge_request.source_branch)
+      expect(json_response['upvotes']).to eq(0)
+      expect(json_response['downvotes']).to eq(0)
+      expect(json_response['source_project_id']).to eq(merge_request.source_project.id)
+      expect(json_response['target_project_id']).to eq(merge_request.target_project.id)
+      expect(json_response['work_in_progress']).to be_falsy
+      expect(json_response['merge_when_build_succeeds']).to be_falsy
+      expect(json_response['merge_status']).to eq('can_be_merged')
+    end
+
     it "should return merge_request" do
       get api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user)
       expect(response.status).to eq(200)
@@ -360,7 +387,7 @@ describe API::API, api: true  do
   end
 
   describe "PUT /projects/:id/merge_requests/:merge_request_id/merge" do
-    let(:ci_commit) { create(:ci_commit_without_jobs) }
+    let(:pipeline) { create(:ci_pipeline_without_jobs) }
 
     it "should return merge_request in case of success" do
       put api("/projects/#{project.id}/merge_requests/#{merge_request.id}/merge", user)
@@ -392,6 +419,15 @@ describe API::API, api: true  do
       expect(json_response['message']).to eq('405 Method Not Allowed')
     end
 
+    it 'returns 405 if the build failed for a merge request that requires success' do
+      allow_any_instance_of(MergeRequest).to receive(:mergeable_ci_state?).and_return(false)
+
+      put api("/projects/#{project.id}/merge_requests/#{merge_request.id}/merge", user)
+
+      expect(response.status).to eq(405)
+      expect(json_response['message']).to eq('405 Method Not Allowed')
+    end
+
     it "should return 401 if user has no permissions to merge" do
       user2 = create(:user)
       project.team << [user2, :reporter]
@@ -400,9 +436,22 @@ describe API::API, api: true  do
       expect(json_response['message']).to eq('401 Unauthorized')
     end
 
+    it "returns 409 if the SHA parameter doesn't match" do
+      put api("/projects/#{project.id}/merge_requests/#{merge_request.id}/merge", user), sha: merge_request.source_sha.succ
+
+      expect(response.status).to eq(409)
+      expect(json_response['message']).to start_with('SHA does not match HEAD of source branch')
+    end
+
+    it "succeeds if the SHA parameter matches" do
+      put api("/projects/#{project.id}/merge_requests/#{merge_request.id}/merge", user), sha: merge_request.source_sha
+
+      expect(response.status).to eq(200)
+    end
+
     it "enables merge when build succeeds if the ci is active" do
-      allow_any_instance_of(MergeRequest).to receive(:ci_commit).and_return(ci_commit)
-      allow(ci_commit).to receive(:active?).and_return(true)
+      allow_any_instance_of(MergeRequest).to receive(:pipeline).and_return(pipeline)
+      allow(pipeline).to receive(:active?).and_return(true)
 
       put api("/projects/#{project.id}/merge_requests/#{merge_request.id}/merge", user), merge_when_build_succeeds: true
 
@@ -513,6 +562,21 @@ describe API::API, api: true  do
       expect(response.status).to eq(200)
       expect(json_response).to be_an Array
       expect(json_response.length).to eq(0)
+    end
+
+    it 'handles external issues' do
+      jira_project = create(:jira_project, :public, name: 'JIR_EXT1')
+      issue = ExternalIssue.new("#{jira_project.name}-123", jira_project)
+      merge_request = create(:merge_request, :simple, author: user, assignee: user, source_project: jira_project)
+      merge_request.update_attribute(:description, "Closes #{issue.to_reference(jira_project)}")
+
+      get api("/projects/#{jira_project.id}/merge_requests/#{merge_request.id}/closes_issues", user)
+
+      expect(response.status).to eq(200)
+      expect(json_response).to be_an Array
+      expect(json_response.length).to eq(1)
+      expect(json_response.first['title']).to eq(issue.title)
+      expect(json_response.first['id']).to eq(issue.id)
     end
   end
 

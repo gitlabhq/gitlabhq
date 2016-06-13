@@ -147,7 +147,7 @@ describe API::API, api: true  do
            tag_name: 'v8.0.0',
            ref: 'master'
       expect(response.status).to eq(400)
-      expect(json_response['message']).to eq('Tag already exists')
+      expect(json_response['message']).to eq('Tag v8.0.0 already exists')
     end
 
     it 'should return 400 if ref name is invalid' do
@@ -155,7 +155,7 @@ describe API::API, api: true  do
            tag_name: 'mytag',
            ref: 'foo'
       expect(response.status).to eq(400)
-      expect(json_response['message']).to eq('Invalid reference name')
+      expect(json_response['message']).to eq('Target foo is invalid')
     end
   end
 

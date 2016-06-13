@@ -1,3 +1,4 @@
+# rubocop:disable all
 class AddVisibilityLevelToSnippet < ActiveRecord::Migration
   include Gitlab::Database
 

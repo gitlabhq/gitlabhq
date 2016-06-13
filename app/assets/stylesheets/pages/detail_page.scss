@@ -22,15 +22,13 @@
   .title {
     margin: 0;
     font-size: 23px;
-    color: #313236;
+    color: $gl-gray-dark;
   }
 
   .description {
     margin-top: 6px;
 
     p {
-      overflow-x: auto;
-
       &:last-child {
         margin-bottom: 0;
       }

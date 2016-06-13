@@ -7,10 +7,11 @@ describe Issues::MoveService, services: true do
   let(:description) { 'Some issue description' }
   let(:old_project) { create(:project) }
   let(:new_project) { create(:project) }
+  let(:milestone1) { create(:milestone, project_id: old_project.id, title: 'v9.0') }
 
   let(:old_issue) do
     create(:issue, title: title, description: description,
-                   project: old_project, author: author)
+                   project: old_project, author: author, milestone: milestone1)
   end
 
   let(:move_service) do
@@ -21,11 +22,25 @@ describe Issues::MoveService, services: true do
     before do
       old_project.team << [user, :reporter]
       new_project.team << [user, :reporter]
+
+      ['label1', 'label2'].each do |label|
+        old_issue.labels << create(:label,
+          project_id: old_project.id,
+          title: label)
+      end
+
+      new_project.labels << create(:label, title: 'label1')
+      new_project.labels << create(:label, title: 'label2')
     end
   end
 
   describe '#execute' do
     shared_context 'issue move executed' do
+      let!(:milestone2) do
+        create(:milestone, project_id: new_project.id, title: 'v9.0')
+      end
+      let!(:award_emoji) { create(:award_emoji, awardable: old_issue) }
+
       let!(:new_issue) { move_service.execute(old_issue, new_project) }
     end
 
@@ -37,6 +52,23 @@ describe Issues::MoveService, services: true do
 
         it 'creates a new issue in a new project' do
           expect(new_issue.project).to eq new_project
+        end
+
+        it 'assigns milestone to new issue' do
+          expect(new_issue.reload.milestone.title).to eq 'v9.0'
+          expect(new_issue.reload.milestone).to eq(milestone2)
+        end
+
+        it 'assign labels to new issue' do
+          expected_label_titles = new_issue.reload.labels.map(&:title)
+          expect(expected_label_titles).to include 'label1'
+          expect(expected_label_titles).to include 'label2'
+          expect(expected_label_titles.size).to eq 2
+
+          new_issue.labels.each do |label|
+            expect(new_project.labels).to include(label)
+            expect(old_project.labels).not_to include(label)
+          end
         end
 
         it 'rewrites issue title' do
@@ -72,11 +104,6 @@ describe Issues::MoveService, services: true do
           expect(new_issue.author).to eq author
         end
 
-        it 'removes data that is invalid in new context' do
-          expect(new_issue.milestone).to be_nil
-          expect(new_issue.labels).to be_empty
-        end
-
         it 'creates a new internal id for issue' do
           expect(new_issue.iid).to be 1
         end
@@ -88,6 +115,10 @@ describe Issues::MoveService, services: true do
 
         it 'preserves create time' do
           expect(old_issue.created_at).to eq new_issue.created_at
+        end
+
+        it 'moves the award emoji' do
+          expect(old_issue.award_emoji.first.name).to eq new_issue.reload.award_emoji.first.name
         end
       end
 
@@ -168,10 +199,10 @@ describe Issues::MoveService, services: true do
           include_context 'issue move executed'
 
           it 'rewrites uploads in description' do
-            expect(new_issue.description).to_not eq description
+            expect(new_issue.description).not_to eq description
             expect(new_issue.description)
               .to match(/Text and #{FileUploader::MARKDOWN_PATTERN}/)
-            expect(new_issue.description).to_not include uploader.secret
+            expect(new_issue.description).not_to include uploader.secret
           end
         end
       end
@@ -205,7 +236,7 @@ describe Issues::MoveService, services: true do
 
       context 'user is reporter in both projects' do
         include_context 'user can move issue'
-        it { expect { move }.to_not raise_error }
+        it { expect { move }.not_to raise_error }
       end
 
       context 'user is reporter only in new project' do

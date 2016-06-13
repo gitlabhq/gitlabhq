@@ -1,8 +1,7 @@
 - page_title "Contributors", "Graphs"
-= render "header_title"
 = render 'head'
 
-.gray-content-block.append-bottom-default
+.row-content-block.append-bottom-default
   .tree-ref-holder
     = render 'shared/ref_switcher', destination: 'graphs'
   %ul.breadcrumb.repo-breadcrumb
@@ -19,7 +18,7 @@
   .header.clearfix
     %h3#date_header.page-title
     %p.light
-      Commits to #{@ref}, excluding merge commits. Limited by 6,000 commits
+      Commits to #{@ref}, excluding merge commits. Limited to 6,000 commits.
     %input#brush_change{:type => "hidden"}
   .graphs
     #contributors-master

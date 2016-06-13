@@ -28,7 +28,7 @@ li.milestone {
 
     // Issue title
     span a {
-      color: rgba(0,0,0,0.64);
+      color: $gl-text-color;
     }
   }
 }
@@ -51,7 +51,7 @@ li.milestone {
     margin-top: 7px;
 
     .issuable-number {
-      color: rgba(0,0,0,0.44);
+      color: $gl-placeholder-color;
       margin-right: 5px;
     }
     .avatar {

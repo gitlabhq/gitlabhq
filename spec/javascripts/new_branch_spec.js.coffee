@@ -1,4 +1,4 @@
-#= require jquery-ui
+#= require jquery-ui/autocomplete
 #= require new_branch_form
 
 describe 'Branch', ->

@@ -150,6 +150,14 @@ To output a backtrace from all threads at once:
 apply all thread bt
 ```
 
+Once you're done debugging with `gdb`, be sure to detach from the process and
+exit:
+
+```
+detach
+exit
+```
+
 ## Check for blocking queries
 
 Sometimes the speed at which Sidekiq processes jobs can be so fast that it can

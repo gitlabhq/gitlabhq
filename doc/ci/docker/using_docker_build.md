@@ -41,9 +41,9 @@ GitLab Runner then executes build scripts as `gitlab-runner` user.
       --description "My Runner"
     ```
 
-2. Install Docker on server.
+2. Install Docker Engine on server.
 
-    For more information how to install Docker on different systems checkout the [Supported installations](https://docs.docker.com/installation/).
+    For more information how to install Docker Engine on different systems checkout the [Supported installations](https://docs.docker.com/engine/installation/).
 
 3. Add `gitlab-runner` user to `docker` group:
 
@@ -151,4 +151,4 @@ In order to do that follow the steps:
 An example project using this approach can be found here: https://gitlab.com/gitlab-examples/docker.
 
 [docker-in-docker]: https://blog.docker.com/2013/09/docker-can-now-run-within-docker/
-[docker-cap]: https://docs.docker.com/reference/run/#runtime-privilege-and-linux-capabilities
+[docker-cap]: https://docs.docker.com/engine/reference/run/#runtime-privilege-and-linux-capabilities

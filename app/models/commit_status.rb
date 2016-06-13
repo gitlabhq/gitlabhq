@@ -1,54 +1,21 @@
-# == Schema Information
-#
-# Table name: ci_builds
-#
-#  id                 :integer          not null, primary key
-#  project_id         :integer
-#  status             :string(255)
-#  finished_at        :datetime
-#  trace              :text
-#  created_at         :datetime
-#  updated_at         :datetime
-#  started_at         :datetime
-#  runner_id          :integer
-#  coverage           :float
-#  commit_id          :integer
-#  commands           :text
-#  job_id             :integer
-#  name               :string(255)
-#  deploy             :boolean          default(FALSE)
-#  options            :text
-#  allow_failure      :boolean          default(FALSE), not null
-#  stage              :string(255)
-#  trigger_request_id :integer
-#  stage_idx          :integer
-#  tag                :boolean
-#  ref                :string(255)
-#  user_id            :integer
-#  type               :string(255)
-#  target_url         :string(255)
-#  description        :string(255)
-#  artifacts_file     :text
-#  gl_project_id      :integer
-#
-
 class CommitStatus < ActiveRecord::Base
   include Statuseable
 
   self.table_name = 'ci_builds'
 
   belongs_to :project, class_name: '::Project', foreign_key: :gl_project_id
-  belongs_to :commit, class_name: 'Ci::Commit', touch: true
+  belongs_to :pipeline, class_name: 'Ci::Pipeline', foreign_key: :commit_id, touch: true
   belongs_to :user
 
-  validates :commit, presence: true
+  validates :pipeline, presence: true
 
   validates_presence_of :name
 
   alias_attribute :author, :user
 
   scope :latest, -> { where(id: unscope(:select).select('max(id)').group(:name, :commit_id)) }
-  scope :ordered, -> { order(:ref, :stage_idx, :name) }
+  scope :retried, -> { where.not(id: latest) }
+  scope :ordered, -> { order(:name) }
   scope :ignored, -> { where(allow_failure: true, status: [:failed, :canceled]) }
 
   state_machine :status, initial: :pending do
@@ -77,24 +44,30 @@ class CommitStatus < ActiveRecord::Base
     end
 
     after_transition [:pending, :running] => :success do |commit_status|
-      MergeRequests::MergeWhenBuildSucceedsService.new(commit_status.commit.project, nil).trigger(commit_status)
+      MergeRequests::MergeWhenBuildSucceedsService.new(commit_status.pipeline.project, nil).trigger(commit_status)
+    end
+
+    after_transition any => :failed do |commit_status|
+      MergeRequests::AddTodoWhenBuildFailsService.new(commit_status.pipeline.project, nil).execute(commit_status)
     end
   end
 
-  delegate :sha, :short_sha, to: :commit
+  delegate :sha, :short_sha, to: :pipeline
 
   def before_sha
-    commit.before_sha || Gitlab::Git::BLANK_SHA
+    pipeline.before_sha || Gitlab::Git::BLANK_SHA
   end
 
   def self.stages
-    order_by = 'max(stage_idx)'
-    group('stage').order(order_by).pluck(:stage, order_by).map(&:first).compact
+    # We group by stage name, but order stages by theirs' index
+    unscoped.from(all, :sg).group('stage').order('max(stage_idx)', 'stage').pluck('sg.stage')
   end
 
   def self.stages_status
-    all.stages.inject({}) do |h, stage|
-      h[stage] = all.where(stage: stage).status
+    # We execute subquery for each stage to calculate a stage status
+    statuses = unscoped.from(all, :sg).group('stage').pluck('sg.stage', all.where('stage=sg.stage').status_sql)
+    statuses.inject({}) do |h, k|
+      h[k.first] = k.last
       h
     end
   end

@@ -12,14 +12,20 @@ module API
       # Parameters:
       #   id (required) - The ID of a project
       #   ref_name (optional) - The name of a repository branch or tag, if not given the default branch is used
+      #   since (optional) - Only commits after or in this date will be returned
+      #   until (optional) - Only commits before or in this date will be returned
       # Example Request:
       #   GET /projects/:id/repository/commits
       get ":id/repository/commits" do
+        datetime_attributes! :since, :until
+
         page = (params[:page] || 0).to_i
         per_page = (params[:per_page] || 20).to_i
         ref = params[:ref_name] || user_project.try(:default_branch) || 'master'
+        after = params[:since]
+        before = params[:until]
 
-        commits = user_project.repository.commits(ref, nil, per_page, page * per_page)
+        commits = user_project.repository.commits(ref, limit: per_page, offset: page * per_page, after: after, before: before)
         present commits, with: Entities::RepoCommit
       end
 
@@ -101,6 +107,8 @@ module API
 
             break if opts[:line_code]
           end
+
+          opts[:type] = LegacyDiffNote.name if opts[:line_code]
         end
 
         note = ::Notes::CreateService.new(user_project, current_user, opts).execute

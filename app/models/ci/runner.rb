@@ -1,28 +1,10 @@
-# == Schema Information
-#
-# Table name: ci_runners
-#
-#  id           :integer          not null, primary key
-#  token        :string(255)
-#  created_at   :datetime
-#  updated_at   :datetime
-#  description  :string(255)
-#  contacted_at :datetime
-#  active       :boolean          default(TRUE), not null
-#  is_shared    :boolean          default(FALSE)
-#  name         :string(255)
-#  version      :string(255)
-#  revision     :string(255)
-#  platform     :string(255)
-#  architecture :string(255)
-#
-
 module Ci
   class Runner < ActiveRecord::Base
     extend Ci::Model
 
     LAST_CONTACT_TIME = 5.minutes.ago
-    AVAILABLE_SCOPES = ['specific', 'shared', 'active', 'paused', 'online']
+    AVAILABLE_SCOPES = %w[specific shared active paused online]
+    FORM_EDITABLE = %i[description tag_list active run_untagged]
 
     has_many :builds, class_name: 'Ci::Build'
     has_many :runner_projects, dependent: :destroy, class_name: 'Ci::RunnerProject'
@@ -43,6 +25,8 @@ module Ci
       joins('LEFT JOIN ci_runner_projects ON ci_runner_projects.runner_id = ci_runners.id')
         .where("ci_runner_projects.gl_project_id = :project_id OR ci_runners.is_shared = true", project_id: project_id)
     end
+
+    validate :tag_constraints
 
     acts_as_taggable
 
@@ -76,7 +60,7 @@ module Ci
     end
 
     def display_name
-      return short_sha unless !description.blank?
+      return short_sha if description.blank?
 
       description
     end
@@ -113,6 +97,19 @@ module Ci
 
     def short_sha
       token[0...8] if token
+    end
+
+    def has_tags?
+      tag_list.any?
+    end
+
+    private
+
+    def tag_constraints
+      unless has_tags? || run_untagged?
+        errors.add(:tags_list,
+          'can not be empty when runner is not allowed to pick untagged jobs')
+      end
     end
   end
 end

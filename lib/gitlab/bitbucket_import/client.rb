@@ -12,7 +12,7 @@ module Gitlab
           token_secret = import_data_credentials[:bb_session][:bitbucket_access_token_secret]
           new(token, token_secret)
         else
-          raise Projects::ImportService::Error, "Unable to find project import data credentials for project ID: #{@project.id}"
+          raise Projects::ImportService::Error, "Unable to find project import data credentials for project ID: #{project.id}"
         end
       end
 
@@ -121,7 +121,7 @@ module Gitlab
 
       def get(url)
         response = api.get(url)
-        raise Unauthorized if (400..499).include?(response.code.to_i)
+        raise Unauthorized if (400..499).cover?(response.code.to_i)
 
         response
       end

@@ -1,66 +1,3 @@
-# == Schema Information
-#
-# Table name: users
-#
-#  id                          :integer          not null, primary key
-#  email                       :string(255)      default(""), not null
-#  encrypted_password          :string(255)      default(""), not null
-#  reset_password_token        :string(255)
-#  reset_password_sent_at      :datetime
-#  remember_created_at         :datetime
-#  sign_in_count               :integer          default(0)
-#  current_sign_in_at          :datetime
-#  last_sign_in_at             :datetime
-#  current_sign_in_ip          :string(255)
-#  last_sign_in_ip             :string(255)
-#  created_at                  :datetime
-#  updated_at                  :datetime
-#  name                        :string(255)
-#  admin                       :boolean          default(FALSE), not null
-#  projects_limit              :integer          default(10)
-#  skype                       :string(255)      default(""), not null
-#  linkedin                    :string(255)      default(""), not null
-#  twitter                     :string(255)      default(""), not null
-#  authentication_token        :string(255)
-#  theme_id                    :integer          default(1), not null
-#  bio                         :string(255)
-#  failed_attempts             :integer          default(0)
-#  locked_at                   :datetime
-#  username                    :string(255)
-#  can_create_group            :boolean          default(TRUE), not null
-#  can_create_team             :boolean          default(TRUE), not null
-#  state                       :string(255)
-#  color_scheme_id             :integer          default(1), not null
-#  notification_level          :integer          default(1), not null
-#  password_expires_at         :datetime
-#  created_by_id               :integer
-#  last_credential_check_at    :datetime
-#  avatar                      :string(255)
-#  confirmation_token          :string(255)
-#  confirmed_at                :datetime
-#  confirmation_sent_at        :datetime
-#  unconfirmed_email           :string(255)
-#  hide_no_ssh_key             :boolean          default(FALSE)
-#  website_url                 :string(255)      default(""), not null
-#  notification_email          :string(255)
-#  hide_no_password            :boolean          default(FALSE)
-#  password_automatically_set  :boolean          default(FALSE)
-#  location                    :string(255)
-#  encrypted_otp_secret        :string(255)
-#  encrypted_otp_secret_iv     :string(255)
-#  encrypted_otp_secret_salt   :string(255)
-#  otp_required_for_login      :boolean          default(FALSE), not null
-#  otp_backup_codes            :text
-#  public_email                :string(255)      default(""), not null
-#  dashboard                   :integer          default(0)
-#  project_view                :integer          default(0)
-#  consumed_timestep           :integer
-#  layout                      :integer          default(0)
-#  hide_project_limit          :boolean          default(FALSE)
-#  unlock_token                :string
-#  otp_grace_period_started_at :datetime
-#
-
 require 'spec_helper'
 
 describe User, models: true do
@@ -93,6 +30,7 @@ describe User, models: true do
     it { is_expected.to have_one(:abuse_report) }
     it { is_expected.to have_many(:spam_logs).dependent(:destroy) }
     it { is_expected.to have_many(:todos).dependent(:destroy) }
+    it { is_expected.to have_many(:award_emoji).dependent(:destroy) }
   end
 
   describe 'validations' do
@@ -130,7 +68,10 @@ describe User, models: true do
 
     describe 'email' do
       context 'when no signup domains listed' do
-        before { allow(current_application_settings).to receive(:restricted_signup_domains).and_return([]) }
+        before do
+          allow_any_instance_of(ApplicationSetting).to receive(:restricted_signup_domains).and_return([])
+        end
+
         it 'accepts any email' do
           user = build(:user, email: "info@example.com")
           expect(user).to be_valid
@@ -138,7 +79,10 @@ describe User, models: true do
       end
 
       context 'when a signup domain is listed and subdomains are allowed' do
-        before { allow(current_application_settings).to receive(:restricted_signup_domains).and_return(['example.com', '*.example.com']) }
+        before do
+          allow_any_instance_of(ApplicationSetting).to receive(:restricted_signup_domains).and_return(['example.com', '*.example.com'])
+        end
+
         it 'accepts info@example.com' do
           user = build(:user, email: "info@example.com")
           expect(user).to be_valid
@@ -156,7 +100,9 @@ describe User, models: true do
       end
 
       context 'when a signup domain is listed and subdomains are not allowed' do
-        before { allow(current_application_settings).to receive(:restricted_signup_domains).and_return(['example.com']) }
+        before do
+          allow_any_instance_of(ApplicationSetting).to receive(:restricted_signup_domains).and_return(['example.com'])
+        end
 
         it 'accepts info@example.com' do
           user = build(:user, email: "info@example.com")
@@ -183,6 +129,66 @@ describe User, models: true do
     end
   end
 
+  describe "scopes" do
+    describe ".with_two_factor" do
+      it "returns users with 2fa enabled via OTP" do
+        user_with_2fa = create(:user, :two_factor_via_otp)
+        user_without_2fa = create(:user)
+        users_with_two_factor = User.with_two_factor.pluck(:id)
+
+        expect(users_with_two_factor).to include(user_with_2fa.id)
+        expect(users_with_two_factor).not_to include(user_without_2fa.id)
+      end
+
+      it "returns users with 2fa enabled via U2F" do
+        user_with_2fa = create(:user, :two_factor_via_u2f)
+        user_without_2fa = create(:user)
+        users_with_two_factor = User.with_two_factor.pluck(:id)
+
+        expect(users_with_two_factor).to include(user_with_2fa.id)
+        expect(users_with_two_factor).not_to include(user_without_2fa.id)
+      end
+
+      it "returns users with 2fa enabled via OTP and U2F" do
+        user_with_2fa = create(:user, :two_factor_via_otp, :two_factor_via_u2f)
+        user_without_2fa = create(:user)
+        users_with_two_factor = User.with_two_factor.pluck(:id)
+
+        expect(users_with_two_factor).to eq([user_with_2fa.id])
+        expect(users_with_two_factor).not_to include(user_without_2fa.id)
+      end
+    end
+
+    describe ".without_two_factor" do
+      it "excludes users with 2fa enabled via OTP" do
+        user_with_2fa = create(:user, :two_factor_via_otp)
+        user_without_2fa = create(:user)
+        users_without_two_factor = User.without_two_factor.pluck(:id)
+
+        expect(users_without_two_factor).to include(user_without_2fa.id)
+        expect(users_without_two_factor).not_to include(user_with_2fa.id)
+      end
+
+      it "excludes users with 2fa enabled via U2F" do
+        user_with_2fa = create(:user, :two_factor_via_u2f)
+        user_without_2fa = create(:user)
+        users_without_two_factor = User.without_two_factor.pluck(:id)
+
+        expect(users_without_two_factor).to include(user_without_2fa.id)
+        expect(users_without_two_factor).not_to include(user_with_2fa.id)
+      end
+
+      it "excludes users with 2fa enabled via OTP and U2F" do
+        user_with_2fa = create(:user, :two_factor_via_otp, :two_factor_via_u2f)
+        user_without_2fa = create(:user)
+        users_without_two_factor = User.without_two_factor.pluck(:id)
+
+        expect(users_without_two_factor).to include(user_without_2fa.id)
+        expect(users_without_two_factor).not_to include(user_with_2fa.id)
+      end
+    end
+  end
+
   describe "Respond to" do
     it { is_expected.to respond_to(:is_admin?) }
     it { is_expected.to respond_to(:name) }
@@ -204,6 +210,10 @@ describe User, models: true do
   end
 
   describe '#confirm' do
+    before do
+      allow_any_instance_of(ApplicationSetting).to receive(:send_user_confirmation_email).and_return(true)
+    end
+
     let(:user) { create(:user, confirmed_at: nil, unconfirmed_email: 'test@gitlab.com') }
 
     it 'returns unconfirmed' do
@@ -844,5 +854,93 @@ describe User, models: true do
     subject { user.authorized_projects }
 
     it { is_expected.to eq([private_project]) }
+  end
+
+  describe '#ci_authorized_runners' do
+    let(:user) { create(:user) }
+    let(:runner) { create(:ci_runner) }
+
+    before do
+      project.runners << runner
+    end
+
+    context 'without any projects' do
+      let(:project) { create(:project) }
+
+      it 'does not load' do
+        expect(user.ci_authorized_runners).to be_empty
+      end
+    end
+
+    context 'with personal projects runners' do
+      let(:namespace) { create(:namespace, owner: user) }
+      let(:project) { create(:project, namespace: namespace) }
+
+      it 'loads' do
+        expect(user.ci_authorized_runners).to contain_exactly(runner)
+      end
+    end
+
+    shared_examples :member do
+      context 'when the user is a master' do
+        before do
+          add_user(Gitlab::Access::MASTER)
+        end
+
+        it 'loads' do
+          expect(user.ci_authorized_runners).to contain_exactly(runner)
+        end
+      end
+
+      context 'when the user is a developer' do
+        before do
+          add_user(Gitlab::Access::DEVELOPER)
+        end
+
+        it 'does not load' do
+          expect(user.ci_authorized_runners).to be_empty
+        end
+      end
+    end
+
+    context 'with groups projects runners' do
+      let(:group) { create(:group) }
+      let(:project) { create(:project, group: group) }
+
+      def add_user(access)
+        group.add_user(user, access)
+      end
+
+      it_behaves_like :member
+    end
+
+    context 'with other projects runners' do
+      let(:project) { create(:project) }
+
+      def add_user(access)
+        project.team << [user, access]
+      end
+
+      it_behaves_like :member
+    end
+  end
+
+  describe '#viewable_starred_projects' do
+    let(:user) { create(:user) }
+    let(:public_project) { create(:empty_project, :public) }
+    let(:private_project) { create(:empty_project, :private) }
+    let(:private_viewable_project) { create(:empty_project, :private) }
+
+    before do
+      private_viewable_project.team << [user, Gitlab::Access::MASTER]
+
+      [public_project, private_project, private_viewable_project].each do |project|
+        user.toggle_star(project)
+      end
+    end
+
+    it 'returns only starred projects the user can view' do
+      expect(user.viewable_starred_projects).not_to include(private_project)
+    end
   end
 end

@@ -10,6 +10,20 @@ describe Issue, "Issuable" do
     it { is_expected.to belong_to(:assignee) }
     it { is_expected.to have_many(:notes).dependent(:destroy) }
     it { is_expected.to have_many(:todos).dependent(:destroy) }
+
+    context 'Notes' do
+      let!(:note) { create(:note, noteable: issue, project: issue.project) }
+      let(:scoped_issue) { Issue.includes(notes: :author).find(issue.id) }
+
+      it 'indicates if the notes have their authors loaded' do
+        expect(issue.notes).not_to be_authors_loaded
+        expect(scoped_issue.notes).to be_authors_loaded
+      end
+    end
+  end
+
+  describe 'Included modules' do
+    it { is_expected.to include_module(Awardable) }
   end
 
   describe "Validation" do
@@ -114,6 +128,35 @@ describe Issue, "Issuable" do
     end
   end
 
+  describe "#sort" do
+    let(:project) { build_stubbed(:empty_project) }
+
+    context "by milestone due date" do
+      # Correct order is:
+      # Issues/MRs with milestones ordered by date
+      # Issues/MRs with milestones without dates
+      # Issues/MRs without milestones
+
+      let!(:issue) { create(:issue, project: project) }
+      let!(:early_milestone) { create(:milestone, project: project, due_date: 10.days.from_now) }
+      let!(:late_milestone) { create(:milestone, project: project, due_date: 30.days.from_now) }
+      let!(:issue1) { create(:issue, project: project, milestone: early_milestone) }
+      let!(:issue2) { create(:issue, project: project, milestone: late_milestone) }
+      let!(:issue3) { create(:issue, project: project) }
+
+      it "sorts desc" do
+        issues = project.issues.sort('milestone_due_desc')
+        expect(issues).to match_array([issue2, issue1, issue, issue3])
+      end
+
+      it "sorts asc" do
+        issues = project.issues.sort('milestone_due_asc')
+        expect(issues).to match_array([issue1, issue2, issue, issue3])
+      end
+    end
+  end
+
+
   describe '#subscribed?' do
     context 'user is not a participant in the issue' do
       before { allow(issue).to receive(:participants).with(user).and_return([]) }
@@ -160,12 +203,11 @@ describe Issue, "Issuable" do
     let(:data) { issue.to_hook_data(user) }
     let(:project) { issue.project }
 
-
     it "returns correct hook data" do
       expect(data[:object_kind]).to eq("issue")
       expect(data[:user]).to eq(user.hook_attrs)
       expect(data[:object_attributes]).to eq(issue.hook_attrs)
-      expect(data).to_not have_key(:assignee)
+      expect(data).not_to have_key(:assignee)
     end
 
     context "issue is assigned" do
@@ -199,12 +241,42 @@ describe Issue, "Issuable" do
     end
   end
 
-  describe "votes" do
+  describe '#labels_array' do
+    let(:project) { create(:project) }
+    let(:bug) { create(:label, project: project, title: 'bug') }
+    let(:issue) { create(:issue, project: project) }
+
+    before(:each) do
+      issue.labels << bug
+    end
+
+    it 'loads the association and returns it as an array' do
+      expect(issue.reload.labels_array).to eq([bug])
+    end
+  end
+
+  describe '#user_notes_count' do
+    let(:project) { create(:project) }
+    let(:issue1) { create(:issue, project: project) }
+    let(:issue2) { create(:issue, project: project) }
+
     before do
-      author = create :user
-      project = create :empty_project
-      issue.notes.awards.create!(note: "thumbsup", author: author, project: project)
-      issue.notes.awards.create!(note: "thumbsdown", author: author, project: project)
+      create_list(:note, 3, noteable: issue1, project: project)
+      create_list(:note, 6, noteable: issue2, project: project)
+    end
+
+    it 'counts the user notes' do
+      expect(issue1.user_notes_count).to be(3)
+      expect(issue2.user_notes_count).to be(6)
+    end
+  end
+
+  describe "votes" do
+    let(:project) { issue.project }
+
+    before do
+      create(:award_emoji, :upvote, awardable: issue)
+      create(:award_emoji, :downvote, awardable: issue)
     end
 
     it "returns correct values" do

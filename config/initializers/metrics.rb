@@ -12,6 +12,7 @@ if Gitlab::Metrics.enabled?
 
   Gitlab::Application.configure do |config|
     config.middleware.use(Gitlab::Metrics::RackMiddleware)
+    config.middleware.use(Gitlab::Middleware::RailsQueueDuration)
   end
 
   Sidekiq.configure_server do |config|
@@ -61,11 +62,29 @@ if Gitlab::Metrics.enabled?
       config.instrument_instance_methods(const)
     end
 
-    Dir[Rails.root.join('app', 'finders', '*.rb')].each do |path|
-      const = File.basename(path, '.rb').camelize.constantize
+    # Path to search => prefix to strip from constant
+    paths_to_instrument = {
+      ['app', 'finders']                    => ['app', 'finders'],
+      ['app', 'mailers', 'emails']          => ['app', 'mailers'],
+      ['app', 'services', '**']             => ['app', 'services'],
+      ['lib', 'gitlab', 'diff']             => ['lib'],
+      ['lib', 'gitlab', 'email', 'message'] => ['lib']
+    }
 
-      config.instrument_instance_methods(const)
+    paths_to_instrument.each do |(path, prefix)|
+      prefix = Rails.root.join(*prefix)
+
+      Dir[Rails.root.join(*path + ['*.rb'])].each do |file_path|
+        path = Pathname.new(file_path).relative_path_from(prefix)
+        const = path.to_s.sub('.rb', '').camelize.constantize
+
+        config.instrument_methods(const)
+        config.instrument_instance_methods(const)
+      end
     end
+
+    config.instrument_methods(Premailer::Adapter::Nokogiri)
+    config.instrument_instance_methods(Premailer::Adapter::Nokogiri)
 
     [
       :Blame, :Branch, :BranchCollection, :Blob, :Commit, :Diff, :Repository,
@@ -77,13 +96,18 @@ if Gitlab::Metrics.enabled?
       config.instrument_instance_methods(const)
     end
 
-    # Instruments all Banzai filters
-    Dir[Rails.root.join('lib', 'banzai', 'filter', '*.rb')].each do |file|
-      klass = File.basename(file, File.extname(file)).camelize
-      const = Banzai::Filter.const_get(klass)
+    # Instruments all Banzai filters and reference parsers
+    {
+      Filter: Rails.root.join('lib', 'banzai', 'filter', '*.rb'),
+      ReferenceParser: Rails.root.join('lib', 'banzai', 'reference_parser', '*.rb')
+    }.each do |const_name, path|
+      Dir[path].each do |file|
+        klass = File.basename(file, File.extname(file)).camelize
+        const = Banzai.const_get(const_name).const_get(klass)
 
-      config.instrument_methods(const)
-      config.instrument_instance_methods(const)
+        config.instrument_methods(const)
+        config.instrument_instance_methods(const)
+      end
     end
 
     config.instrument_methods(Banzai::Renderer)
@@ -97,20 +121,18 @@ if Gitlab::Metrics.enabled?
     config.instrument_methods(Gitlab::ReferenceExtractor)
     config.instrument_instance_methods(Gitlab::ReferenceExtractor)
 
-    # Instrument all service classes
-    services = Rails.root.join('app', 'services')
-
-    Dir[services.join('**', '*.rb')].each do |file_path|
-      path = Pathname.new(file_path).relative_path_from(services)
-      const = path.to_s.sub('.rb', '').camelize.constantize
-
-      config.instrument_methods(const)
-      config.instrument_instance_methods(const)
-    end
-
     # Instrument the classes used for checking if somebody has push access.
     config.instrument_instance_methods(Gitlab::GitAccess)
     config.instrument_instance_methods(Gitlab::GitAccessWiki)
+
+    config.instrument_instance_methods(API::Helpers)
+
+    config.instrument_instance_methods(RepositoryCheck::SingleRepositoryWorker)
+    # Iterate over each non-super private instance method to keep up to date if
+    # internals change
+    RepositoryCheck::SingleRepositoryWorker.private_instance_methods(false).each do |method|
+      config.instrument_instance_method(RepositoryCheck::SingleRepositoryWorker, method)
+    end
   end
 
   GC::Profiler.enable

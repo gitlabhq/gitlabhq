@@ -1,9 +1,12 @@
-%header.navbar.navbar-fixed-top.navbar-gitlab{ class: nav_header_class }
+%header.navbar.navbar-fixed-top.navbar-gitlab.header-collapsed{ class: nav_header_class }
   %div{ class: fluid_layout ? "container-fluid" : "container-fluid" }
     .header-content
-      %button.navbar-toggle{type: 'button'}
+      %button.side-nav-toggle{type: 'button'}
         %span.sr-only Toggle navigation
         = icon('bars')
+      %button.navbar-toggle{type: 'button'}
+        %span.sr-only Toggle navigation
+        = icon('angle-left')
 
       .navbar-collapse.collapse
         %ul.nav.navbar-nav
@@ -23,8 +26,10 @@
                   = icon('wrench fw')
             %li
               = link_to dashboard_todos_path, title: 'Todos', data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
-                %span.badge.todos-pending-count
-                  = todos_pending_count
+                = icon('bell fw')
+                - unless todos_pending_count == 0
+                  %span.badge.todos-pending-count
+                    = todos_pending_count
             - if current_user.can_create_project?
               %li
                 = link_to new_project_path, title: 'New project', data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
@@ -44,6 +49,10 @@
 
 
       %h1.title= title
+
+      .header-logo
+        #logo
+          = brand_header_logo
 
       = yield :header_content
 

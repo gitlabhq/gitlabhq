@@ -98,6 +98,7 @@ production: &base
       wiki: true
       snippets: false
       builds: true
+      container_registry: true
 
     ## Webhook settings
     # Number of seconds to wait for HTTP response after sending webhook HTTP POST request (default: 10)
@@ -152,7 +153,6 @@ production: &base
   ## Gravatar
   ## For Libravatar see: http://doc.gitlab.com/ce/customization/libravatar.html
   gravatar:
-    enabled: true                 # Use user avatar image from Gravatar.com (default: true)
     # gravatar urls: possible placeholders: %{hash} %{size} %{email}
     # plain_url: "http://..."     # default: http://www.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon
     # ssl_url:   "https://..."    # default: https://secure.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon
@@ -175,6 +175,15 @@ production: &base
     # Remove outdated repository archives
     repository_archive_cache_worker:
       cron: "0 * * * *"
+
+  registry:
+    # enabled: true
+    # host: registry.example.com
+    # port: 5005
+    # api_url: http://localhost:5000/ # internal address to the registry, will be used by GitLab to directly communicate with API
+    # key: config/registry.key
+    # path: shared/registry
+    # issuer: gitlab-issuer
 
   #
   # 2. GitLab CI settings

@@ -1,24 +1,3 @@
-# == Schema Information
-#
-# Table name: issues
-#
-#  id            :integer          not null, primary key
-#  title         :string(255)
-#  assignee_id   :integer
-#  author_id     :integer
-#  project_id    :integer
-#  created_at    :datetime
-#  updated_at    :datetime
-#  position      :integer          default(0)
-#  branch_name   :string(255)
-#  description   :text
-#  milestone_id  :integer
-#  state         :string(255)
-#  iid           :integer
-#  updated_by_id :integer
-#  moved_to_id   :integer
-#
-
 require 'carrierwave/orm/activerecord'
 
 class Issue < ActiveRecord::Base
@@ -96,10 +75,10 @@ class Issue < ActiveRecord::Base
     @link_reference_pattern ||= super("issues", /(?<issue>\d+)/)
   end
 
-  def self.sort(method)
+  def self.sort(method, excluded_labels: [])
     case method.to_s
     when 'due_date_asc' then order_due_date_asc
-    when 'due_date_desc'  then order_due_date_desc
+    when 'due_date_desc' then order_due_date_desc
     else
       super
     end
@@ -116,14 +95,13 @@ class Issue < ActiveRecord::Base
   end
 
   def referenced_merge_requests(current_user = nil)
-    @referenced_merge_requests ||= {}
-    @referenced_merge_requests[current_user] ||= begin
-      Gitlab::ReferenceExtractor.lazily do
-        [self, *notes].flat_map do |note|
-          note.all_references(current_user).merge_requests
-        end
-      end.sort_by(&:iid).uniq
+    ext = all_references(current_user)
+
+    notes_with_associations.each do |object|
+      object.all_references(current_user, extractor: ext)
     end
+
+    ext.merge_requests.sort_by(&:iid)
   end
 
   # All branches containing the current issue's ID, except for
@@ -160,9 +138,13 @@ class Issue < ActiveRecord::Base
   def closed_by_merge_requests(current_user = nil)
     return [] unless open?
 
-    notes.system.flat_map do |note|
-      note.all_references(current_user).merge_requests
-    end.uniq.select { |mr| mr.open? && mr.closes_issue?(self) }
+    ext = all_references(current_user)
+
+    notes.system.each do |note|
+      note.all_references(current_user, extractor: ext)
+    end
+
+    ext.merge_requests.select { |mr| mr.open? && mr.closes_issue?(self) }
   end
 
   def moved?

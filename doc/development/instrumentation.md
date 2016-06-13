@@ -1,18 +1,135 @@
 # Instrumenting Ruby Code
 
-GitLab Performance Monitoring allows instrumenting of custom blocks of Ruby
-code. This can be used to measure the time spent in a specific part of a larger
-chunk of code. The resulting data is stored as a field in the transaction that
-executed the block.
+GitLab Performance Monitoring allows instrumenting of both methods and custom
+blocks of Ruby code. Method instrumentation is the primary form of
+instrumentation with block-based instrumentation only being used when we want to
+drill down to specific regions of code within a method.
 
-To start measuring a block of Ruby code you should use `Gitlab::Metrics.measure`
-and give it a name:
+## Instrumenting Methods
+
+Instrumenting methods is done by using the `Gitlab::Metrics::Instrumentation`
+module. This module offers a few different methods that can be used to
+instrument code:
+
+* `instrument_method`: instruments a single class method.
+* `instrument_instance_method`: instruments a single instance method.
+* `instrument_class_hierarchy`: given a Class this method will recursively
+  instrument all sub-classes (both class and instance methods).
+* `instrument_methods`: instruments all public class methods of a Module.
+* `instrument_instance_methods`: instruments all public instance methods of a
+  Module.
+
+To remove the need for typing the full `Gitlab::Metrics::Instrumentation`
+namespace you can use the `configure` class method. This method simply yields
+the supplied block while passing `Gitlab::Metrics::Instrumentation` as its
+argument. An example:
+
+```
+Gitlab::Metrics::Instrumentation.configure do |conf|
+  conf.instrument_method(Foo, :bar)
+  conf.instrument_method(Foo, :baz)
+end
+```
+
+Using this method is in general preferred over directly calling the various
+instrumentation methods.
+
+Method instrumentation should be added in the initializer
+`config/initializers/metrics.rb`.
+
+### Examples
+
+Instrumenting a single method:
+
+```
+Gitlab::Metrics::Instrumentation.configure do |conf|
+  conf.instrument_method(User, :find_by)
+end
+```
+
+Instrumenting an entire class hierarchy:
+
+```
+Gitlab::Metrics::Instrumentation.configure do |conf|
+  conf.instrument_class_hierarchy(ActiveRecord::Base)
+end
+```
+
+Instrumenting all public class methods:
+
+```
+Gitlab::Metrics::Instrumentation.configure do |conf|
+  conf.instrument_methods(User)
+end
+```
+
+### Checking Instrumented Methods
+
+The easiest way to check if a method has been instrumented is to check its
+source location. For example:
+
+```
+method = Rugged::TagCollection.instance_method(:[])
+
+method.source_location
+```
+
+If the source location points to `lib/gitlab/metrics/instrumentation.rb` you
+know the method has been instrumented.
+
+If you're using Pry you can use the `$` command to display the source code of a
+method (along with its source location), this is easier than running the above
+Ruby code. In case of the above snippet you'd run the following:
+
+```
+$ Rugged::TagCollection#[]
+```
+
+This will print out something along the lines of:
+
+```
+From: /path/to/your/gitlab/lib/gitlab/metrics/instrumentation.rb @ line 148:
+Owner: #<Module:0x0055f0865c6d50>
+Visibility: public
+Number of lines: 21
+
+def #{name}(#{args_signature})
+  trans = Gitlab::Metrics::Instrumentation.transaction
+
+  if trans
+    start    = Time.now
+    retval   = super
+    duration = (Time.now - start) * 1000.0
+
+    if duration >= Gitlab::Metrics.method_call_threshold
+      trans.increment(:method_duration, duration)
+
+      trans.add_metric(Gitlab::Metrics::Instrumentation::SERIES,
+                       { duration: duration },
+                       method: #{label.inspect})
+    end
+
+    retval
+  else
+    super
+  end
+end
+```
+
+## Instrumenting Ruby Blocks
+
+Measuring blocks of Ruby code is done by calling `Gitlab::Metrics.measure` and
+passing it a block. For example:
 
 ```ruby
 Gitlab::Metrics.measure(:foo) do
   ...
 end
 ```
+
+The block is executed and the execution time is stored as a set of fields in the
+currently running transaction. If no transaction is present the block is yielded
+without measuring anything.
 
 3 values are measured for a block:
 

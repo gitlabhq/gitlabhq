@@ -12,7 +12,7 @@ describe RepositoryCheck::SingleRepositoryWorker do
     subject.perform(project.id)
     expect(project.reload.last_repository_check_failed).to eq(false)
 
-    destroy_wiki(project)
+    break_wiki(project)
     subject.perform(project.id)
 
     expect(project.reload.last_repository_check_failed).to eq(true)
@@ -20,15 +20,38 @@ describe RepositoryCheck::SingleRepositoryWorker do
 
   it 'skips wikis when disabled' do
     project = create(:project_empty_repo, wiki_enabled: false)
-    # Make sure the test would fail if it checked the wiki repo
-    destroy_wiki(project)
+    # Make sure the test would fail if the wiki repo was checked
+    break_wiki(project)
 
     subject.perform(project.id)
 
     expect(project.reload.last_repository_check_failed).to eq(false)
   end
 
-  def destroy_wiki(project)
-    FileUtils.rm_rf(project.wiki.repository.path_to_repo)
+  it 'creates missing wikis' do
+    project = create(:project_empty_repo, wiki_enabled: true)
+    FileUtils.rm_rf(wiki_path(project))
+
+    subject.perform(project.id)
+
+    expect(project.reload.last_repository_check_failed).to eq(false)
+  end
+
+  it 'does not create a wiki if the main repo does not exist at all' do
+    project = create(:project_empty_repo)
+    FileUtils.rm_rf(project.repository.path_to_repo)
+    FileUtils.rm_rf(wiki_path(project))
+
+    subject.perform(project.id)
+
+    expect(File.exist?(wiki_path(project))).to eq(false)
+  end
+
+  def break_wiki(project)
+    FileUtils.rm_rf(wiki_path(project) + '/objects')
+  end
+
+  def wiki_path(project)
+    project.wiki.repository.path_to_repo
   end
 end

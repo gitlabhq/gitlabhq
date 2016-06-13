@@ -11,9 +11,9 @@ To enable the Google OAuth2 OmniAuth provider you must register your application
     - Project ID: Must be unique to all Google Developer registered applications. Google provides a randomly generated Project ID by default. You can use the randomly generated ID or choose a new one.
 1. Refresh the page. You should now see your new project in the list. Click on the project.
 
-1. Select "APIs & auth" in the left menu.
+1. Select the "Google APIs" tab in the Overview.
 
-1. Select "APIs" in the submenu.
+1. Select and enable the following Google APIs - listed under "Popular APIs"
     - Enable `Contacts API`
     - Enable `Google+ API`
 

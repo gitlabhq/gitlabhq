@@ -48,11 +48,6 @@ describe Banzai::Filter::LabelReferenceFilter, lib: true do
     expect(link).to eq urls.namespace_project_issues_path(project.namespace, project, label_name: label.name)
   end
 
-  it 'adds to the results hash' do
-    result = reference_pipeline_result("Label #{reference}")
-    expect(result[:references][:label]).to eq [label]
-  end
-
   describe 'label span element' do
     it 'includes default classes' do
       doc = reference_filter("Label #{reference}")
@@ -169,11 +164,6 @@ describe Banzai::Filter::LabelReferenceFilter, lib: true do
 
       expect(link).to have_attribute('data-label')
       expect(link.attr('data-label')).to eq label.id.to_s
-    end
-
-    it 'adds to the results hash' do
-      result = reference_pipeline_result("Label #{reference}")
-      expect(result[:references][:label]).to eq [label]
     end
   end
 

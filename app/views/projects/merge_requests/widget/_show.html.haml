@@ -13,7 +13,7 @@
     check_enable: #{@merge_request.unchecked? ? "true" : "false"},
     ci_status_url: "#{ci_status_namespace_project_merge_request_path(@project.namespace, @project, @merge_request)}",
     gitlab_icon: "#{asset_path 'gitlab_logo.png'}",
-    ci_status: "",
+    ci_status: "#{@merge_request.pipeline ? @merge_request.pipeline.status : ''}",
     ci_message: {
       normal: "Build {{status}} for \"{{title}}\"",
       preparing: "{{status}} build for \"{{title}}\""
@@ -25,5 +25,11 @@
     },
     builds_path: "#{builds_namespace_project_merge_request_path(@project.namespace, @project, @merge_request)}"
   };
+
+  if (typeof merge_request_widget !== 'undefined') {
+    clearInterval(merge_request_widget.fetchBuildStatusInterval);
+    merge_request_widget.cancelPolling();
+    merge_request_widget.clearEventListeners();
+  }
 
   merge_request_widget = new MergeRequestWidget(opts);

@@ -11,13 +11,13 @@ describe Gitlab::Sherlock::Collection, lib: true do
     it 'adds a new transaction' do
       collection.add(transaction)
 
-      expect(collection).to_not be_empty
+      expect(collection).not_to be_empty
     end
 
     it 'is aliased as <<' do
       collection << transaction
 
-      expect(collection).to_not be_empty
+      expect(collection).not_to be_empty
     end
   end
 
@@ -47,7 +47,7 @@ describe Gitlab::Sherlock::Collection, lib: true do
     it 'returns false for a collection with a transaction' do
       collection.add(transaction)
 
-      expect(collection).to_not be_empty
+      expect(collection).not_to be_empty
     end
   end
 
