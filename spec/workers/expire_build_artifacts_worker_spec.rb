@@ -35,18 +35,13 @@ describe ExpireBuildArtifactsWorker do
     end
 
     context 'for expired artifacts' do
-      let!(:build) { create(:ci_build, :artifacts, artifacts_expire_at: Time.now - 7.days) }
+      let!(:build) { create(:ci_build, artifacts_expire_at: Time.now - 7.days) }
 
-      before do
-        build.erase_artifacts!
-        build.save
+      it 'does not erase artifacts' do
+        expect_any_instance_of(Ci::Build).not_to have_received(:erase_artifacts!)
       end
 
-      it do
-        expect_any_instance_of(Ci::Build).not_to receive(:erase_artifacts!)
-
-        worker.perform
-
+      it 'does expire' do
         expect(build.reload.artifacts_expired?).to be_truthy
       end
     end
