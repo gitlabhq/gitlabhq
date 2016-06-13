@@ -38,19 +38,19 @@
 
       :javascript
         gl.projectOptions = gl.projectOptions || {};
-        gl.projectOptions["#{@project.path}"] = {
+        gl.projectOptions["#{j(@project.path)}"] = {
           issuesPath: "#{namespace_project_issues_path(@project.namespace, @project)}",
           mrPath: "#{namespace_project_merge_requests_path(@project.namespace, @project)}",
-          name: "#{@project.name}"
+          name: "#{j(@project.name)}"
         };
 
     - if @group and @group.path
       :javascript
         gl.groupOptions = gl.groupOptions || {};
-        gl.groupOptions["#{@group.path}"] = {
-          name: "#{@group.name}",
-          issuesPath: "#{issues_group_path(@group.path)}",
-          mrPath: "#{merge_requests_group_path(@group.path)}"
+        gl.groupOptions["#{j(@group.path)}"] = {
+          name: "#{j(@group.name)}",
+          issuesPath: "#{issues_group_path(j(@group.path))}",
+          mrPath: "#{merge_requests_group_path(j(@group.path))}"
         };
 
 
