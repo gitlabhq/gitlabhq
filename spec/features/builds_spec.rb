@@ -93,9 +93,7 @@ describe "Builds" do
       end
 
       it 'has button to download artifacts' do
-        page.within('.artifacts') do
-          expect(page).to have_content 'Download'
-        end
+        expect(page).to have_content 'Download'
       end
     end
 
@@ -107,9 +105,7 @@ describe "Builds" do
       end
 
       it do
-        page.within('.build-controls') do
-          expect(page).to have_link 'Raw'
-        end
+        expect(page).to have_link 'Raw'
       end
     end
   end
@@ -165,15 +161,10 @@ describe "Builds" do
   end
 
   describe "GET /:project/builds/:id/download" do
-    context "Build from project" do
-      before do
-        @build.update_attributes(artifacts_file: artifacts_file)
-        visit namespace_project_build_path(@project.namespace, @project, @build)
-        page.within('.artifacts') { click_link 'Download' }
-      end
-
-      it { expect(page.status_code).to eq(200) }
-      it { expect(page.response_headers['Content-Type']).to eq(artifacts_file.content_type) }
+    before do
+      @build.update_attributes(artifacts_file: artifacts_file)
+      visit namespace_project_build_path(@project.namespace, @project, @build)
+      click_link 'Download'
     end
 
     context "Build from other project" do
@@ -193,7 +184,7 @@ describe "Builds" do
         @build.run!
         @build.trace = 'BUILD TRACE'
         visit namespace_project_build_path(@project.namespace, @project, @build)
-        page.within('.build-controls') { click_link 'Raw' }
+        page.within('.js-build-sidebar') { click_link 'Raw' }
       end
 
       it 'sends the right headers' do

@@ -1,3 +1,4 @@
+# rubocop:disable all
 class AddCiTags < ActiveRecord::Migration
   def change
     create_table "ci_taggings", force: true do |t|

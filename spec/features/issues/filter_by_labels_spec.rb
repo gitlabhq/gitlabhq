@@ -199,4 +199,19 @@ feature 'Issue filtering by Labels', feature: true do
       end
     end
   end
+
+  context 'dropdown filtering', js: true do
+    it 'should filter by label name' do
+      page.within '.labels-filter' do
+        click_button 'Label'
+        wait_for_ajax
+        fill_in 'label-name', with: 'bug'
+
+        page.within '.dropdown-content' do
+          expect(page).not_to have_content 'enhancement'
+          expect(page).to have_content 'bug'
+        end
+      end
+    end
+  end
 end

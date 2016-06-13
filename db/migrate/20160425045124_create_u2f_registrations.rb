@@ -1,3 +1,4 @@
+# rubocop:disable all
 class CreateU2fRegistrations < ActiveRecord::Migration
   def change
     create_table :u2f_registrations do |t|

@@ -485,4 +485,157 @@ describe MergeRequest, models: true do
       expect(user2.assigned_open_merge_request_count).to eq(1)
     end
   end
+
+  describe '#check_if_can_be_merged' do
+    let(:project) { create(:project, only_allow_merge_if_build_succeeds: true) }
+
+    subject { create(:merge_request, source_project: project, merge_status: :unchecked) }
+
+    context 'when it is not broken and has no conflicts' do
+      it 'is marked as mergeable' do
+        allow(subject).to receive(:broken?) { false }
+        allow(project).to receive_message_chain(:repository, :can_be_merged?) { true }
+
+        expect { subject.check_if_can_be_merged }.to change { subject.merge_status }.to('can_be_merged')
+      end
+    end
+
+    context 'when broken' do
+      before { allow(subject).to receive(:broken?) { true } }
+
+      it 'becomes unmergeable' do
+        expect { subject.check_if_can_be_merged }.to change { subject.merge_status }.to('cannot_be_merged')
+      end
+    end
+
+    context 'when it has conflicts' do
+      before do
+        allow(subject).to receive(:broken?) { false }
+        allow(project).to receive_message_chain(:repository, :can_be_merged?) { false }
+      end
+
+      it 'becomes unmergeable' do
+        expect { subject.check_if_can_be_merged }.to change { subject.merge_status }.to('cannot_be_merged')
+      end
+    end
+  end
+
+  describe '#mergeable?' do
+    let(:project) { create(:project) }
+
+    subject { create(:merge_request, source_project: project) }
+
+    it 'returns false if #mergeable_state? is false' do
+      expect(subject).to receive(:mergeable_state?) { false }
+
+      expect(subject.mergeable?).to be_falsey
+    end
+
+    it 'return true if #mergeable_state? is true and the MR #can_be_merged? is true' do
+      allow(subject).to receive(:mergeable_state?) { true }
+      expect(subject).to receive(:check_if_can_be_merged)
+      expect(subject).to receive(:can_be_merged?) { true }
+
+      expect(subject.mergeable?).to be_truthy
+    end
+  end
+
+  describe '#mergeable_state?' do
+    let(:project) { create(:project) }
+
+    subject { create(:merge_request, source_project: project) }
+
+    it 'checks if merge request can be merged' do
+      allow(subject).to receive(:mergeable_ci_state?) { true }
+      expect(subject).to receive(:check_if_can_be_merged)
+
+      subject.mergeable?
+    end
+
+    context 'when not open' do
+      before { subject.close }
+
+      it 'returns false' do
+        expect(subject.mergeable_state?).to be_falsey
+      end
+    end
+
+    context 'when working in progress' do
+      before { subject.title = 'WIP MR' }
+
+      it 'returns false' do
+        expect(subject.mergeable_state?).to be_falsey
+      end
+    end
+
+    context 'when broken' do
+      before { allow(subject).to receive(:broken?) { true } }
+
+      it 'returns false' do
+        expect(subject.mergeable_state?).to be_falsey
+      end
+    end
+
+    context 'when failed' do
+      before { allow(subject).to receive(:broken?) { false } }
+
+      context 'when project settings restrict to merge only if build succeeds and build failed' do
+        before do
+          project.only_allow_merge_if_build_succeeds = true
+          allow(subject).to receive(:mergeable_ci_state?) { false }
+        end
+
+        it 'returns false' do
+          expect(subject.mergeable_state?).to be_falsey
+        end
+      end
+    end
+  end
+
+  describe '#mergeable_ci_state?' do
+    let(:project) { create(:empty_project, only_allow_merge_if_build_succeeds: true) }
+    let(:pipeline) { create(:ci_empty_pipeline) }
+
+    subject { build(:merge_request, target_project: project) }
+
+    context 'when it is only allowed to merge when build is green' do
+      context 'and a failed pipeline is associated' do
+        before do
+          pipeline.statuses << create(:commit_status, status: 'failed', project: project)
+          allow(subject).to receive(:pipeline) { pipeline }
+        end
+
+        it { expect(subject.mergeable_ci_state?).to be_falsey }
+      end
+
+      context 'when no pipeline is associated' do
+        before do
+          allow(subject).to receive(:pipeline) { nil }
+        end
+
+        it { expect(subject.mergeable_ci_state?).to be_truthy }
+      end
+    end
+
+    context 'when merges are not restricted to green builds' do
+      subject { build(:merge_request, target_project: build(:empty_project, only_allow_merge_if_build_succeeds: false)) }
+
+      context 'and a failed pipeline is associated' do
+        before do
+          pipeline.statuses << create(:commit_status, status: 'failed', project: project)
+          allow(subject).to receive(:pipeline) { pipeline }
+        end
+
+        it { expect(subject.mergeable_ci_state?).to be_truthy }
+      end
+
+      context 'when no pipeline is associated' do
+        before do
+          allow(subject).to receive(:pipeline) { nil }
+        end
+
+        it { expect(subject.mergeable_ci_state?).to be_truthy }
+      end
+    end
+  end
 end

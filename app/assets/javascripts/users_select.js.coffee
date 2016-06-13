@@ -95,7 +95,7 @@ class @UsersSelect
         data: (term, callback) =>
           isAuthorFilter = $('.js-author-search')
 
-          @users term, term is '' and isAuthorFilter, (users) =>
+          @users term, (users) =>
             if term.length is 0
               showDivider = 0
 
@@ -223,7 +223,7 @@ class @UsersSelect
         multiple: $(select).hasClass('multiselect')
         minimumInputLength: 0
         query: (query) =>
-          @users query.term, @projectId?, (users) =>
+          @users query.term, (users) =>
             data = { results: users }
 
             if query.term.length == 0
@@ -306,7 +306,7 @@ class @UsersSelect
 
   # Return users list. Filtered by query
   # Only active users retrieved
-  users: (query, fromProject, callback) =>
+  users: (query, callback) =>
     url = @buildUrl(@usersPath)
 
     $.ajax(
@@ -315,7 +315,7 @@ class @UsersSelect
         search: query
         per_page: 20
         active: true
-        project_id: @projectId if fromProject
+        project_id: @projectId
         group_id: @groupId
         skip_ldap: @skipLdap
         current_user: @showCurrentUser

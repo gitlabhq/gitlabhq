@@ -1,3 +1,4 @@
+# rubocop:disable all
 class ConvertBlockedToState < ActiveRecord::Migration
   def up
     User.transaction do

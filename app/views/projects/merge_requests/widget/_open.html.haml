@@ -21,9 +21,15 @@
       = render 'projects/merge_requests/widget/open/merge_when_build_succeeds'
     - elsif !@merge_request.can_be_merged_by?(current_user)
       = render 'projects/merge_requests/widget/open/not_allowed'
+<<<<<<< HEAD
     - elsif @merge_request.must_be_rebased?
       = render 'projects/merge_requests/widget/open/rebase'
     - else
+=======
+    - elsif !@merge_request.mergeable_ci_state? && @pipeline && @pipeline.failed?
+      = render 'projects/merge_requests/widget/open/build_failed'
+    - elsif @merge_request.can_be_merged?
+>>>>>>> 65df6bcb898e067e380658431136b5ef9aaba3b0
       = render 'projects/merge_requests/widget/open/accept'
 
   - if @closes_issues.present?

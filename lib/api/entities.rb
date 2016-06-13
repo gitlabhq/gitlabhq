@@ -193,6 +193,11 @@ module API
       expose :upvotes, :downvotes
     end
 
+    class ExternalIssue < Grape::Entity
+      expose :title
+      expose :id
+    end
+
     class MergeRequest < ProjectEntity
       expose :target_branch, :source_branch
       expose :upvotes, :downvotes

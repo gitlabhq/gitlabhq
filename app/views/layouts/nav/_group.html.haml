@@ -5,36 +5,30 @@
     .fade-left
     = nav_link(path: 'groups#show', html_options: {class: 'home'}) do
       = link_to group_path(@group), title: 'Home' do
-        = navbar_icon('group')
         %span
           Group
     = nav_link(path: 'groups#activity') do
       = link_to activity_group_path(@group), title: 'Activity' do
-        = navbar_icon('activity')
         %span
           Activity
     = nav_link(controller: [:group, :milestones]) do
       = link_to group_milestones_path(@group), title: 'Milestones' do
-        = navbar_icon('milestones')
         %span
           Milestones
     = nav_link(path: 'groups#issues') do
       = link_to issues_group_path(@group), title: 'Issues' do
-        = navbar_icon('issues')
         %span
           Issues
           - issues = IssuesFinder.new(current_user, group_id: @group.id, state: 'opened').execute
           %span.badge.count= number_with_delimiter(issues.count)
     = nav_link(path: 'groups#merge_requests') do
       = link_to merge_requests_group_path(@group), title: 'Merge Requests' do
-        = navbar_icon('mr')
         %span
           Merge Requests
           - merge_requests = MergeRequestsFinder.new(current_user, group_id: @group.id, state: 'opened').execute
           %span.badge.count= number_with_delimiter(merge_requests.count)
     = nav_link(controller: [:group_members]) do
       = link_to group_group_members_path(@group), title: 'Members' do
-        = navbar_icon('members')
         %span
           Members
     = nav_link(controller: [:stats]) do

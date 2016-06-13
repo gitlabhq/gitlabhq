@@ -1,3 +1,4 @@
+# rubocop:disable all
 class AddIndexToCreatedAt < ActiveRecord::Migration
   def change
     add_index "users", [:created_at, :id]

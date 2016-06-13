@@ -230,7 +230,7 @@ production: &base
     # host: registry.example.com
     # port: 5005
     # api_url: http://localhost:5000/ # internal address to the registry, will be used by GitLab to directly communicate with API
-    # key_path: config/registry.key
+    # key: config/registry.key
     # path: shared/registry
     # issuer: gitlab-issuer
 

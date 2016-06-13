@@ -1,12 +1,6 @@
 .page-with-sidebar{ class: page_sidebar_class }
   = render "layouts/broadcast"
   .sidebar-wrapper.nicescroll{ class: nav_sidebar_class }
-    .header-logo
-      %a#logo
-        = brand_header_logo
-      = link_to root_path, class: 'gitlab-text-container-link', title: 'Dashboard', id: 'js-shortcuts-home' do
-        .gitlab-text-container
-          %h3 GitLab
 
     - if defined?(sidebar) && sidebar
       = render "layouts/ci/#{sidebar}"
