@@ -3,7 +3,7 @@
 %tr.environment
   %td
     %strong
-      = link_to environment.name, namespace_project_environment_path(@project.namespace, @project, environment), class: "monospace"
+      = link_to environment.name, namespace_project_environment_path(@project.namespace, @project, environment)
 
   %td
     - if last_deployment
@@ -27,5 +27,3 @@
     - if last_deployment
       %p
         #{time_ago_with_tooltip(last_deployment.created_at)}
-
-  %td

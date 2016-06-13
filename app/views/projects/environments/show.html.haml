@@ -9,23 +9,24 @@
 
     .col-md-3
       .nav-controls
-        = link_to 'Destroy', namespace_project_environment_path(@project.namespace, @project, @environment), data: { confirm: 'Are you sure?' }, class: 'btn btn-danger', method: :post
+        = link_to 'Destroy', namespace_project_environment_path(@project.namespace, @project, @environment), data: { confirm: 'Are you sure?' }, class: 'btn btn-danger', method: :delete
 
-  %ul.content-list
-    - if @deployments.blank?
-      %li
-        .nothing-here-block No deployments for #{@environment.name}
-    - else
-      .table-holder
-        %table.table.builds
-          %thead
-            %tr
-              %th ID
-              %th Commit
-              %th Build
-              %th Date
-              %th
+  - if @deployments.blank?
+    %ul.content-list
+      %li.nothing-here-block
+        No deployments for
+        %strong= @environment.name
+  - else
+    .table-holder
+      %table.table.builds
+        %thead
+          %tr
+            %th ID
+            %th Commit
+            %th Build
+            %th Date
+            %th
 
-          = render @deployments
+        = render @deployments
 
-      = paginate @deployments, theme: 'gitlab'
+    = paginate @deployments, theme: 'gitlab'

@@ -1,15 +1,15 @@
 - page_title "New Environment"
+= render "projects/pipelines/head"
 
-%h3.page-title
-  New Environment
-%hr
+.row.prepend-top-default.append-bottom-default
+  .col-lg-3
+    %h4.prepend-top-0
+      New Environment
 
-= form_for @environment, url: namespace_project_environments_path(@project.namespace, @project), html: { id: "new-environment-form", class: "form-horizontal js-new-environment-form js-requires-input" } do |f|
-  = form_errors(@environment)
-  .form-group
-    = f.label :ref, 'Name', class: 'control-label'
-    .col-sm-10
-      = f.text_field :name, required: true, tabindex: 2, class: 'form-control'
-  .form-actions
-    = f.submit 'Create', class: 'btn btn-create', tabindex: 3
-    = link_to 'Cancel', namespace_project_environments_path(@project.namespace, @project), class: 'btn btn-cancel'
+  = form_for @environment, url: namespace_project_environments_path(@project.namespace, @project), html: { id: "new-environment-form", class: "col-lg-9 js-new-environment-form js-requires-input" } do |f|
+    = form_errors(@environment)
+    .form-group
+      = f.label :ref, 'Environment name', class: 'label-light'
+      = f.text_field :name, required: true, class: 'form-control'
+    = f.submit 'Create environment', class: 'btn btn-create'
+    = link_to "Cancel", namespace_project_environments_path(@project.namespace, @project), class: "btn btn-cancel"
