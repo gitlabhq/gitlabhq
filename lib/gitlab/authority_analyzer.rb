@@ -2,9 +2,8 @@ module Gitlab
   class AuthorityAnalyzer
     COMMITS_TO_CONSIDER = 5
 
-    def initialize(merge_request, current_user)
+    def initialize(merge_request)
       @merge_request = merge_request
-      @current_user = current_user
       @users = Hash.new(0)
     end
 
@@ -12,7 +11,7 @@ module Gitlab
       involved_users
 
       # Picks most active users from hash like: {user1: 2, user2: 6}
-      @users.sort_by { |user, count| count }.map(&:first).take(number_of_approvers)
+      @users.sort_by { |user, count| -count }.map(&:first).take(number_of_approvers)
     end
 
     private
