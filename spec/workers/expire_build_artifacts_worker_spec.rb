@@ -6,14 +6,14 @@ describe ExpireBuildArtifactsWorker do
   let(:worker) { described_class.new }
 
   describe '#perform' do
+    before { build }
+
+    subject! { worker.perform }
+
     context 'with expired artifacts' do
       let!(:build) { create(:ci_build, :artifacts, artifacts_expire_at: Time.now - 7.days) }
 
-      it do
-        expect_any_instance_of(Ci::Build).to receive(:erase_artifacts!)
-
-        worker.perform
-
+      it 'does expire' do
         expect(build.reload.artifacts_expired?).to be_truthy
       end
     end
@@ -21,22 +21,16 @@ describe ExpireBuildArtifactsWorker do
     context 'with not yet expired artifacts' do
       let!(:build) { create(:ci_build, :artifacts, artifacts_expire_at: Time.now + 7.days) }
 
-      it do
-        expect_any_instance_of(Ci::Build).not_to receive(:erase_artifacts!)
-
-        worker.perform
-
-        expect(build.reload.artifacts_expired?).to be_falsey
+      it 'does not expire' do
+        expect(build.reload.artifacts_expired?).to be_truthy
       end
     end
 
     context 'without expire date' do
       let!(:build) { create(:ci_build, :artifacts) }
 
-      it do
-        expect_any_instance_of(Ci::Build).not_to receive(:erase_artifacts!)
-
-        worker.perform
+      it 'does not expire' do
+        expect(build.reload.artifacts_expired?).to be_falsey
       end
     end
 

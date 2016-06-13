@@ -472,7 +472,7 @@ describe Ci::Build, models: true do
     end
 
     it 'when assigning invalid duration' do
-      expect{ build.artifacts_expire_in = '7 elephants' }.not_to raise_error
+      expect { build.artifacts_expire_in = '7 elephants' }.not_to raise_error
       is_expected.to be_nil
     end
 

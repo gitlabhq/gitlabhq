@@ -380,7 +380,7 @@ describe Ci::API::API do
             context 'with an expire_in given' do
               let(:expire_in) { '7 days' }
 
-              it do
+              it 'updates when specified' do
                 build.reload
                 expect(response.status).to eq(201)
                 expect(json_response['artifacts_expire_at']).not_to be_empty
@@ -391,7 +391,7 @@ describe Ci::API::API do
             context 'with no expire_in given' do
               let(:expire_in) { nil }
 
-              it do
+              it 'ignores if not specified' do
                 build.reload
                 expect(response.status).to eq(201)
                 expect(json_response['artifacts_expire_at']).to be_nil
