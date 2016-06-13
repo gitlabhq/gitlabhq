@@ -47,6 +47,7 @@ v 8.9.0 (unreleased)
   - Use downcased path to container repository as this is expected path by Docker
   - Projects pending deletion will render a 404 page
   - Measure queue duration between gitlab-workhorse and Rails
+  - Added Gfm autocomplete for labels
   - Make Omniauth providers specs to not modify global configuration
   - Make authentication service for Container Registry to be compatible with < Docker 1.11
   - Add Application Setting to configure Container Registry token expire delay (default 5min)
@@ -164,7 +165,6 @@ v 8.8.0
   - Support multi-line tag messages. !3833 (Calin Seciu)
   - Force users to reset their password after an admin changes it
   - Allow "NEWS" and "CHANGES" as alternative names for CHANGELOG. !3768 (Connor Shea)
-  - Added Gfm autocomplete for labels
   - Added button to toggle whitespaces changes on diff view
   - Backport GitHub Enterprise import support from EE
   - Create tags using Rugged for performance reasons. !3745

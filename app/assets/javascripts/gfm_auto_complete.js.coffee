@@ -16,8 +16,7 @@ GitLab.GfmAutoComplete =
     template: '<li>${username} <small>${title}</small></li>'
 
   Labels:
-    template: '<li>${title} <div style="background-color:${color};height:15px;width:15px;display:inline-block;float:right">
-              </div></li>'
+    template: '<li><span class="dropdown-label-box" style="background: ${color}"></span> ${title}</li>'
 
   # Issues and MergeRequests
   Issues:
