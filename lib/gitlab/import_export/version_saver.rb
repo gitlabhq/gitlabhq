@@ -9,9 +9,7 @@ module Gitlab
       def save
         FileUtils.mkdir_p(@shared.export_path)
 
-        File.open(version_file, 'w') do |file|
-          file.write(Gitlab::ImportExport.version)
-        end
+        File.write(version_file, Gitlab::ImportExport.version, mode: 'w')
       rescue => e
         @shared.error(e.message)
         false
