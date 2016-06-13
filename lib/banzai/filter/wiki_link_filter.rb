@@ -2,7 +2,8 @@ require 'uri'
 
 module Banzai
   module Filter
-    # HTML filter that "fixes" relative links to files in a repository.
+    # HTML filter that "fixes" links to pages/files in a wiki.
+    # Rewrite rules are documented in the `WikiPipeline` spec.
     #
     # Context options:
     #   :project_wiki
@@ -25,36 +26,15 @@ module Banzai
       end
 
       def process_link_attr(html_attr)
-        return if html_attr.blank? || file_reference?(html_attr) || hierarchical_link?(html_attr)
+        return if html_attr.blank?
 
-        uri = URI(html_attr.value)
-        if uri.relative? && uri.path.present?
-          html_attr.value = rebuild_wiki_uri(uri).to_s
-        end
+        html_attr.value = apply_rewrite_rules(html_attr.value)
       rescue URI::Error
         # noop
       end
 
-      def rebuild_wiki_uri(uri)
-        uri.path = ::File.join(project_wiki_base_path, uri.path)
-        uri
-      end
-
-      def project_wiki
-        context[:project_wiki]
-      end
-
-      def file_reference?(html_attr)
-        !File.extname(html_attr.value).blank?
-      end
-
-      # Of the form `./link`, `../link`, or similar
-      def hierarchical_link?(html_attr)
-        html_attr.value[0] == '.'
-      end
-
-      def project_wiki_base_path
-        project_wiki && project_wiki.wiki_base_path
+      def apply_rewrite_rules(link_string)
+        Rewriter.new(link_string, wiki: context[:project_wiki], slug: context[:page_slug]).apply_rules
       end
     end
   end

@@ -1,20 +1,21 @@
 - page_title "Network", @ref
 = render "projects/commits/head"
 = render "head"
-.project-network
-  .controls
-    = form_tag namespace_project_network_path(@project.namespace, @project, @id), method: :get, class: 'form-inline network-form' do |f|
-      = text_field_tag :extended_sha1, @options[:extended_sha1], placeholder: "Input an extended SHA1 syntax", class: 'search-input form-control input-mx-250 search-sha'
-      = button_tag class: 'btn btn-success' do
-        = icon('search')
-      .inline.prepend-left-20
-        .checkbox.light
-          = label_tag :filter_ref do
-            = check_box_tag :filter_ref, 1, @options[:filter_ref]
-            %span Begin with the selected commit
+%div{ class: (container_class) }
+  .project-network
+    .controls
+      = form_tag namespace_project_network_path(@project.namespace, @project, @id), method: :get, class: 'form-inline network-form' do |f|
+        = text_field_tag :extended_sha1, @options[:extended_sha1], placeholder: "Input an extended SHA1 syntax", class: 'search-input form-control input-mx-250 search-sha'
+        = button_tag class: 'btn btn-success' do
+          = icon('search')
+        .inline.prepend-left-20
+          .checkbox.light
+            = label_tag :filter_ref do
+              = check_box_tag :filter_ref, 1, @options[:filter_ref]
+              %span Begin with the selected commit
 
-  .network-graph
-    = spinner nil, true
+    .network-graph
+      = spinner nil, true
 
 :javascript
   network_graph = new Network({

@@ -1,3 +1,4 @@
+# rubocop:disable all
 class RemoveProjectIdFromKey < ActiveRecord::Migration
   def up
     puts 'Migrate deploy keys: '

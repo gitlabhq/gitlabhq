@@ -1,3 +1,4 @@
+# rubocop:disable all
 # Create visibility level field on DB
 # Sets default_visibility_level to value on settings if not restricted
 # If value is restricted takes higher visibility level allowed

@@ -79,9 +79,12 @@
     }
 
     &.ci-failed,
-    &.ci-canceled,
     &.ci-error {
       color: $gl-danger;
+    }
+
+    &.ci-canceled {
+      color: $gl-gray;
     }
 
     a.monospace {
@@ -105,6 +108,11 @@
       font-size: 17px;
       margin: 5px 0;
       color: $gl-gray-dark;
+
+      &.has-conflicts .fa-exclamation-triangle {
+        color: $gl-warning;
+      }
+
     }
 
     p:last-child {

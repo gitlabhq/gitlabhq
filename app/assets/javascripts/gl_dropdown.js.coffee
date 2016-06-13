@@ -11,6 +11,8 @@ class GitLabDropdownFilter
     $inputContainer = @input.parent()
     $clearButton = $inputContainer.find('.js-dropdown-input-clear')
 
+    @indeterminateIds = []
+
     # Clear click
     $clearButton.on 'click', (e) =>
       e.preventDefault()
@@ -35,20 +37,20 @@ class GitLabDropdownFilter
       if keyCode is 13
         return false
 
-      clearTimeout timeout
-      timeout = setTimeout =>
-        blur_field = @shouldBlur keyCode
-        search_text = @input.val()
+      # Only filter asynchronously only if option remote is set
+      if @options.remote
+        clearTimeout timeout
+        timeout = setTimeout =>
+          blur_field = @shouldBlur keyCode
 
-        if blur_field and @filterInputBlur
-          @input.blur()
+          if blur_field and @filterInputBlur
+            @input.blur()
 
-        if @options.remote
-          @options.query search_text, (data) =>
+          @options.query @input.val(), (data) =>
             @options.callback(data)
-        else
-          @filter search_text
-      , 250
+        , 250
+      else
+        @filter @input.val()
 
   shouldBlur: (keyCode) ->
     return BLUR_KEYCODES.indexOf(keyCode) >= 0
@@ -142,6 +144,7 @@ class GitLabDropdown
   LOADING_CLASS = "is-loading"
   PAGE_TWO_CLASS = "is-page-two"
   ACTIVE_CLASS = "is-active"
+  INDETERMINATE_CLASS = "is-indeterminate"
   currentIndex = -1
 
   FILTER_INPUT = '.dropdown-input .dropdown-input-field'
@@ -182,9 +185,6 @@ class GitLabDropdown
             @fullData = data
 
             @parseData @fullData
-
-            if @options.filterable
-              @filterInput.trigger 'keyup'
         }
 
     # Init filterable
@@ -211,6 +211,7 @@ class GitLabDropdown
 
     @dropdown.on "shown.bs.dropdown", @opened
     @dropdown.on "hidden.bs.dropdown", @hidden
+    $(@el).on "update.label", @updateLabel
     @dropdown.on "click", ".dropdown-menu, .dropdown-menu-close", @shouldPropagate
     @dropdown.on 'keyup', (e) =>
       if e.which is 27 # Escape key
@@ -298,6 +299,13 @@ class GitLabDropdown
   opened: =>
     @addArrowKeyEvent()
 
+    if @options.setIndeterminateIds
+      @options.setIndeterminateIds.call(@)
+
+    # Makes indeterminate items effective
+    if @fullData and @dropdown.find('.dropdown-menu-toggle').hasClass('js-filter-bulk-update')
+      @parseData @fullData
+
     contentHtml = $('.dropdown-content', @dropdown).html()
     if @remote && contentHtml is ""
       @remote.execute()
@@ -309,12 +317,18 @@ class GitLabDropdown
 
   hidden: (e) =>
     @removeArrayKeyEvent()
+
+    $input = @dropdown.find(".dropdown-input-field")
+
     if @options.filterable
-      @dropdown
-        .find(".dropdown-input-field")
+      $input
         .blur()
         .val("")
-        .trigger("keyup")
+
+    # Triggering 'keyup' will re-render the dropdown which is not always required
+    # specially if we want to keep the state of the dropdown needed for bulk-assignment
+    if not @options.persistWhenHide
+      $input.trigger("keyup")
 
     if @dropdown.find(".dropdown-toggle-page").length
       $('.dropdown-menu', @dropdown).removeClass PAGE_TWO_CLASS
@@ -358,7 +372,7 @@ class GitLabDropdown
 
     if @options.renderRow
       # Call the render function
-      html = @options.renderRow(data)
+      html = @options.renderRow.call(@options, data, @)
     else
       if not selected
         value = if @options.id then @options.id(data) else data.id
@@ -440,9 +454,20 @@ class GitLabDropdown
 
       # Toggle the dropdown label
       if @options.toggleLabel
-        $(@el).find(".dropdown-toggle-text").text @options.toggleLabel
+        @updateLabel()
       else
         selectedObject
+    else if el.hasClass(INDETERMINATE_CLASS)
+      el.addClass ACTIVE_CLASS
+      el.removeClass INDETERMINATE_CLASS
+
+      if not value?
+        field.remove()
+
+      if not field.length and fieldName
+        @addInput(fieldName, value)
+
+      return selectedObject
     else
       if not @options.multiSelect or el.hasClass('dropdown-clear-active')
         @dropdown.find(".#{ACTIVE_CLASS}").removeClass ACTIVE_CLASS
@@ -456,34 +481,45 @@ class GitLabDropdown
 
       # Toggle the dropdown label
       if @options.toggleLabel
-        $(@el).find(".dropdown-toggle-text").text @options.toggleLabel(selectedObject, el)
+        @updateLabel(selectedObject, el)
       if value?
         if !field.length and fieldName
-          # Create hidden input for form
-          input = "<input type='hidden' name='#{fieldName}' value='#{value}' />"
-          if @options.inputId?
-            input = $(input)
-                      .attr('id', @options.inputId)
-          @dropdown.before input
+          @addInput(fieldName, value)
         else
           field.val value
 
       return selectedObject
 
-  selectRowAtIndex: (index) ->
-    selector = ".dropdown-content li:not(.divider):eq(#{index}) a"
+  addInput: (fieldName, value)->
+    # Create hidden input for form
+    $input = $('<input>').attr('type', 'hidden')
+                         .attr('name', fieldName)
+                        .val(value)
+
+    if @options.inputId?
+      $input.attr('id', @options.inputId)
+
+    @dropdown.before $input
+
+  selectRowAtIndex: (e, index) ->
+    selector = ".dropdown-content li:not(.divider,.dropdown-header,.separator):eq(#{index}) a"
 
     if @dropdown.find(".dropdown-toggle-page").length
       selector = ".dropdown-page-one #{selector}"
 
     # simulate a click on the first link
-    $(selector, @dropdown).trigger "click"
+    $el = $(selector, @dropdown)
+
+    if $el.length
+      e.preventDefault()
+      e.stopImmediatePropagation()
+      $(selector, @dropdown)[0].click()
 
   addArrowKeyEvent: ->
     ARROW_KEY_CODES = [38, 40]
     $input = @dropdown.find(".dropdown-input-field")
 
-    selector = '.dropdown-content li:not(.divider)'
+    selector = '.dropdown-content li:not(.divider,.dropdown-header,.separator)'
     if @dropdown.find(".dropdown-toggle-page").length
       selector = ".dropdown-page-one #{selector}"
 
@@ -511,8 +547,8 @@ class GitLabDropdown
 
         return false
 
-      if currentKeyCode is 13
-        @selectRowAtIndex if currentIndex < 0 then 0 else currentIndex
+      if currentKeyCode is 13 and currentIndex isnt -1
+        @selectRowAtIndex e, currentIndex
 
   removeArrayKeyEvent: ->
     $('body').off 'keydown'
@@ -543,6 +579,9 @@ class GitLabDropdown
     else if listItemTop < dropdownContentTop + dropdownScrollTop
       # Scroll the dropdown content up
       $dropdownContent.scrollTop(listItemTop - dropdownContentTop)
+
+  updateLabel: (selected = null, el = null) =>
+    $(@el).find(".dropdown-toggle-text").text @options.toggleLabel(selected, el)
 
 $.fn.glDropdown = (opts) ->
   return @.each ->

@@ -1,3 +1,4 @@
+# rubocop:disable all
 class MigrateTaggableLabels < ActiveRecord::Migration
   def up
     taggings = ActsAsTaggableOn::Tagging.where(taggable_type: ['Issue', 'MergeRequest'], context: 'labels')

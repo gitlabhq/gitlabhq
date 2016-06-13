@@ -11,8 +11,7 @@ class Projects::RepositoriesController < Projects::ApplicationController
   end
 
   def archive
-    headers.store(*Gitlab::Workhorse.send_git_archive(@project, params[:ref], params[:format]))
-    head :ok
+    send_git_archive @repository, ref: params[:ref], format: params[:format]
   rescue => ex
     logger.error("#{self.class.name}: #{ex}")
     return git_not_found!

@@ -3,9 +3,9 @@ module Ci
     def execute(project, opts)
       sha = opts[:sha] || ref_sha(project, opts[:ref])
 
-      ci_commits = project.ci_commits.where(sha: sha)
-      ci_commits = ci_commits.where(ref: opts[:ref]) if opts[:ref]
-      image_name = image_for_status(ci_commits.status)
+      pipelines = project.pipelines.where(sha: sha)
+      pipelines = pipelines.where(ref: opts[:ref]) if opts[:ref]
+      image_name = image_for_status(pipelines.status)
 
       image_path = Rails.root.join('public/ci', image_name)
       OpenStruct.new(path: image_path, name: image_name)

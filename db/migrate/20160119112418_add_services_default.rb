@@ -1,3 +1,4 @@
+# rubocop:disable all
 class AddServicesDefault < ActiveRecord::Migration
   def up
     add_column :services, :default, :boolean, default: false

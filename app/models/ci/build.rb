@@ -45,8 +45,8 @@ module Ci
         new_build.options = build.options
         new_build.commands = build.commands
         new_build.tag_list = build.tag_list
-        new_build.gl_project_id = build.gl_project_id
-        new_build.commit_id = build.commit_id
+        new_build.project = build.project
+        new_build.pipeline = build.pipeline
         new_build.name = build.name
         new_build.allow_failure = build.allow_failure
         new_build.stage = build.stage
@@ -66,7 +66,7 @@ module Ci
       # We use around_transition to create builds for next stage as soon as possible, before the `after_*` is executed
       around_transition any => [:success, :failed, :canceled] do |build, block|
         block.call
-        build.commit.create_next_builds(build) if build.commit
+        build.pipeline.create_next_builds(build) if build.pipeline
       end
 
       after_transition any => [:success, :failed, :canceled] do |build|
@@ -80,7 +80,7 @@ module Ci
     end
 
     def retried?
-      !self.commit.statuses.latest.include?(self)
+      !self.pipeline.statuses.latest.include?(self)
     end
 
     def retry
@@ -89,7 +89,7 @@ module Ci
 
     def depends_on_builds
       # Get builds of the same type
-      latest_builds = self.commit.builds.latest
+      latest_builds = self.pipeline.builds.latest
 
       # Return builds from previous stages
       latest_builds.where('stage_idx < ?', stage_idx)
@@ -114,16 +114,16 @@ module Ci
 
     def merge_request
       merge_requests = MergeRequest.includes(:merge_request_diff)
-                                   .where(source_branch: ref, source_project_id: commit.gl_project_id)
+                                   .where(source_branch: ref, source_project_id: pipeline.gl_project_id)
                                    .reorder(iid: :asc)
 
       merge_requests.find do |merge_request|
-        merge_request.commits.any? { |ci| ci.id == commit.sha }
+        merge_request.commits.any? { |ci| ci.id == pipeline.sha }
       end
     end
 
     def project_id
-      commit.project.id
+      pipeline.project_id
     end
 
     def project_name
@@ -194,7 +194,7 @@ module Ci
 
     def trace_length
       if raw_trace
-        raw_trace.length
+        raw_trace.bytesize
       else
         0
       end
@@ -216,7 +216,7 @@ module Ci
       recreate_trace_dir
 
       File.truncate(path_to_trace, offset) if File.exist?(path_to_trace)
-      File.open(path_to_trace, 'a') do |f|
+      File.open(path_to_trace, 'ab') do |f|
         f.write(trace_part)
       end
     end
@@ -360,8 +360,8 @@ module Ci
     end
 
     def global_yaml_variables
-      if commit.config_processor
-        commit.config_processor.global_variables.map do |key, value|
+      if pipeline.config_processor
+        pipeline.config_processor.global_variables.map do |key, value|
           { key: key, value: value, public: true }
         end
       else
@@ -370,8 +370,8 @@ module Ci
     end
 
     def job_yaml_variables
-      if commit.config_processor
-        commit.config_processor.job_variables(name).map do |key, value|
+      if pipeline.config_processor
+        pipeline.config_processor.job_variables(name).map do |key, value|
           { key: key, value: value, public: true }
         end
       else

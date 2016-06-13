@@ -68,6 +68,8 @@ module Banzai
       # by `ignore_ancestor_query`. Link tags are not processed if they have a
       # "gfm" class or the "href" attribute is empty.
       def each_node
+        return to_enum(__method__) unless block_given?
+
         query = %Q{descendant-or-self::text()[not(#{ignore_ancestor_query})]
         | descendant-or-self::a[
           not(contains(concat(" ", @class, " "), " gfm ")) and not(@href = "")
@@ -76,6 +78,11 @@ module Banzai
         doc.xpath(query).each do |node|
           yield node
         end
+      end
+
+      # Returns an Array containing all HTML nodes.
+      def nodes
+        @nodes ||= each_node.to_a
       end
 
       # Yields the link's URL and text whenever the node is a valid <a> tag.

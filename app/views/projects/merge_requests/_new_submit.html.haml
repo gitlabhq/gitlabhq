@@ -23,7 +23,7 @@
       = link_to url_for(params), data: {target: 'div#commits', action: 'commits', toggle: 'tab'} do
         Commits
         %span.badge= @commits.size
-    - if @ci_commit
+    - if @pipeline
       %li.builds-tab.active
         = link_to url_for(params), data: {target: 'div#builds', action: 'builds', toggle: 'tab'} do
           Builds
@@ -43,7 +43,7 @@
           %p To preserve performance the line changes are not shown.
       - else
         = render "projects/diffs/diffs", diffs: @diffs, project: @project, diff_refs: @merge_request.diff_refs, show_whitespace_toggle: false
-    - if @ci_commit
+    - if @pipeline
       #builds.builds.tab-pane
         = render "projects/merge_requests/show/builds"
 

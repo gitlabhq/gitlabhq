@@ -1,3 +1,4 @@
+# rubocop:disable all
 class CreateDeployKeysProjects < ActiveRecord::Migration
   def change
     create_table :deploy_keys_projects do |t|

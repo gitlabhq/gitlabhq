@@ -1,3 +1,4 @@
+# rubocop:disable all
 class AddIndexOnIid < ActiveRecord::Migration
   def change
     RemoveDuplicateIid.clean(Issue)

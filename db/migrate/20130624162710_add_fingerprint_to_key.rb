@@ -1,3 +1,4 @@
+# rubocop:disable all
 class AddFingerprintToKey < ActiveRecord::Migration
   def change
     add_column :keys, :fingerprint, :string

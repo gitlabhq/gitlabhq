@@ -37,7 +37,7 @@ class Projects::ArtifactsController < Projects::ApplicationController
   private
 
   def build
-    @build ||= project.builds.unscoped.find_by!(id: params[:build_id])
+    @build ||= project.builds.find_by!(id: params[:build_id])
   end
 
   def artifacts_file

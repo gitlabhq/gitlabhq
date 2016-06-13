@@ -1,3 +1,4 @@
+# rubocop:disable all
 class InitSchema < ActiveRecord::Migration
   def up
 
