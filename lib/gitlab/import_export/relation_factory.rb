@@ -57,9 +57,11 @@ module Gitlab
 
         author = @relation_hash.delete('author')
 
-        if admin_user? && @members_mapper.missing_author_ids.include?(old_author_id)
-          update_note_for_missing_author(author['name'])
-        end
+        update_note_for_missing_author(author['name']) if can_update_notes?
+      end
+
+      def can_update_notes?
+        (admin_user? && @members_mapper.missing_author_ids.include?(old_author_id)) || !admin_user?
       end
 
       def missing_author_note(updated_at, author_name)
