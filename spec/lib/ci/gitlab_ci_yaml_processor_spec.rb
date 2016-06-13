@@ -501,6 +501,7 @@ module Ci
                              })
 
           config_processor = GitlabCiYamlProcessor.new(config, path)
+
           builds = config_processor.builds_for_stage_and_ref("test", "master")
           expect(builds.size).to eq(1)
           expect(builds.first[:when]).to eq(when_state)
