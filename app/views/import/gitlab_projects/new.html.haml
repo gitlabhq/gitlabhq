@@ -1,11 +1,14 @@
 - page_title "GitLab Import"
 - header_title "Projects", root_path
 %h3.page-title
-  %i.fa.fa-gitlab
+  = icon('gitlab')
   Import projects from GitLab
 %hr
 
 = form_tag import_gitlab_project_path, class: 'form-horizontal', multipart: true do
+  %p
+    Project will be imported to path #{@path}
+
   %p
     To get started add your exported project file below:
   .form-group
