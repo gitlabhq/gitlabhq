@@ -67,21 +67,30 @@ module Gitlab
         project
       end
 
+      # Given a relation hash containing one or more models and its relationships,
+      # loops through each model and each object from a model type and
+      # and assigns its correspondent attributes hash from +tree_hash+
+      # Example:
+      # +relation_key+ issues, loops through the list of *issues* and for each individual
+      # issue, finds any subrelations such as notes, creates them and assign them back to the hash
       def create_sub_relations(relation, tree_hash)
         relation_key = relation.keys.first.to_s
         tree_hash[relation_key].each do |relation_item|
           relation.values.flatten.each do |sub_relation|
-
-            if sub_relation.is_a?(Hash)
-              relation_hash = relation_item[sub_relation.keys.first.to_s]
-              sub_relation = sub_relation.keys.first
-            else
-              relation_hash = relation_item[sub_relation.to_s]
-            end
-
+            relation_hash, sub_relation = assign_relation_hash(relation_item, sub_relation)
             relation_item[sub_relation.to_s] = create_relation(sub_relation, relation_hash) unless relation_hash.blank?
           end
         end
+      end
+
+      def assign_relation_hash(relation_item, sub_relation)
+        if sub_relation.is_a?(Hash)
+          relation_hash = relation_item[sub_relation.keys.first.to_s]
+          sub_relation = sub_relation.keys.first
+        else
+          relation_hash = relation_item[sub_relation.to_s]
+        end
+        return relation_hash, sub_relation
       end
 
       def create_relation(relation, relation_hash_list)
@@ -89,7 +98,7 @@ module Gitlab
           Gitlab::ImportExport::RelationFactory.create(relation_sym: relation.to_sym,
                                                        relation_hash: relation_hash.merge('project_id' => project.id),
                                                        members_mapper: members_mapper,
-                                                       user_admin: @user.is_admin?)
+                                                       user: @user)
         end
 
         relation_hash_list.is_a?(Array) ? relation_array : relation_array.first

@@ -46,7 +46,7 @@ describe Gitlab::ImportExport::MembersMapper, services: true do
     it 'updates missing author IDs on missing project member' do
       members_mapper.map[-1]
 
-      expect(members_mapper.note_member_list.first).to eq(-1)
+      expect(members_mapper.missing_author_ids.first).to eq(-1)
     end
   end
 end
