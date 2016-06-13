@@ -220,6 +220,14 @@ describe TodoService, services: true do
         should_not_create_any_todo { service.new_note(note_on_project_snippet, john_doe) }
       end
     end
+
+    describe '#mark_todo' do
+      it 'creates a todo from a issue' do
+        service.mark_todo(unassigned_issue, author)
+
+        should_create_todo(user: author, target: unassigned_issue, action: Todo::MARKED)
+      end
+    end
   end
 
   describe 'Merge Requests' do
@@ -349,6 +357,14 @@ describe TodoService, services: true do
 
         expect(first_todo.reload).to be_done
         expect(second_todo.reload).not_to be_done
+      end
+    end
+
+    describe '#mark_todo' do
+      it 'creates a todo from a merge request' do
+        service.mark_todo(mr_unassigned, author)
+
+        should_create_todo(user: author, target: mr_unassigned, action: Todo::MARKED)
       end
     end
   end
