@@ -31,8 +31,8 @@ module Gitlab
           private
 
           def create_node(key, factory)
-            factory.with_value(@value[key])
-            factory.null_node unless @value.has_key?(key)
+            factory.with(value: @value[key])
+            factory.nullify! unless @value.has_key?(key)
             factory.create!
           end
 
@@ -45,7 +45,7 @@ module Gitlab
 
             def allow_node(symbol, entry_class, metadata)
               factory = Node::Factory.new(entry_class)
-                .with_description(metadata[:description])
+                .with(description: metadata[:description])
 
               define_method(symbol) do
                 raise Entry::InvalidError unless valid?

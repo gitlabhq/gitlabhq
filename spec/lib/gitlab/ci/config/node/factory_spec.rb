@@ -8,7 +8,7 @@ describe Gitlab::Ci::Config::Node::Factory do
     context 'when value setting value' do
       it 'creates entry with valid value' do
         entry = factory
-          .with_value(['ls', 'pwd'])
+          .with(value: ['ls', 'pwd'])
           .create!
 
         expect(entry.value).to eq "ls\npwd"
@@ -17,8 +17,8 @@ describe Gitlab::Ci::Config::Node::Factory do
       context 'when setting description' do
         it 'creates entry with description' do
           entry = factory
-            .with_value(['ls', 'pwd'])
-            .with_description('test description')
+            .with(value: ['ls', 'pwd'])
+            .with(description: 'test description')
             .create!
 
           expect(entry.value).to eq "ls\npwd"
@@ -38,8 +38,8 @@ describe Gitlab::Ci::Config::Node::Factory do
     context 'when creating a null entry' do
       it 'creates a null entry' do
         entry = factory
-          .with_value(nil)
-          .null_node
+          .with(value: nil)
+          .nullify!
           .create!
 
         expect(entry).to be_an_instance_of Gitlab::Ci::Config::Node::Null

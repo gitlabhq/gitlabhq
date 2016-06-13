@@ -15,17 +15,12 @@ module Gitlab
             @attributes = {}
           end
 
-          def with_value(value)
-            @attributes[:value] = value
+          def with(attributes)
+            @attributes.merge!(attributes)
             self
           end
 
-          def with_description(description)
-            @attributes[:description] = description
-            self
-          end
-
-          def null_node
+          def nullify!
             @entry_class = Node::Null
             self
           end
