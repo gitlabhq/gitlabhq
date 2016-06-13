@@ -1,3 +1,4 @@
+# rubocop:disable all
 class AddUsersStateIndex < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 

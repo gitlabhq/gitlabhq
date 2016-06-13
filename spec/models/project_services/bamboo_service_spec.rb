@@ -194,7 +194,7 @@ describe BambooService, models: true do
 
   def service(bamboo_url: 'http://gitlab.com')
     described_class.create(
-      project: build_stubbed(:empty_project),
+      project: create(:empty_project),
       properties: {
         bamboo_url: bamboo_url,
         username: 'mic',

@@ -1,3 +1,4 @@
+# rubocop:disable all
 class AddUniqueIndexToNamespace < ActiveRecord::Migration
   def change
     remove_index :namespaces, column: :name if index_exists?(:namespaces, :name)

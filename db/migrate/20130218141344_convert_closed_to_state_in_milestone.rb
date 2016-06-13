@@ -1,3 +1,4 @@
+# rubocop:disable all
 class ConvertClosedToStateInMilestone < ActiveRecord::Migration
   include Gitlab::Database
 

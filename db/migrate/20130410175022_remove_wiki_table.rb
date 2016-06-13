@@ -1,3 +1,4 @@
+# rubocop:disable all
 class RemoveWikiTable < ActiveRecord::Migration
   def up
     drop_table :wikis

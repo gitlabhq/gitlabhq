@@ -1,3 +1,4 @@
+# rubocop:disable all
 class FixIdentities < ActiveRecord::Migration
   def up
     # Up until now, legacy 'ldap' references in the database were charitably

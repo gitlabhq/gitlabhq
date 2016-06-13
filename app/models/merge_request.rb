@@ -260,19 +260,20 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def mergeable?
-    return false unless open? && !work_in_progress? && !broken?
+    return false unless mergeable_state?
 
     check_if_can_be_merged
 
     can_be_merged?
   end
 
-  def gitlab_merge_status
-    if work_in_progress?
-      "work_in_progress"
-    else
-      merge_status_name
-    end
+  def mergeable_state?
+    return false unless open?
+    return false if work_in_progress?
+    return false if broken?
+    return false unless mergeable_ci_state?
+
+    true
   end
 
   def can_cancel_merge_when_build_succeeds?(current_user)
@@ -479,6 +480,12 @@ class MergeRequest < ActiveRecord::Base
 
   def can_be_merged_by?(user)
     ::Gitlab::GitAccess.new(user, project).can_push_to_branch?(target_branch)
+  end
+
+  def mergeable_ci_state?
+    return true unless project.only_allow_merge_if_build_succeeds?
+
+    !pipeline || pipeline.success?
   end
 
   def state_human_name

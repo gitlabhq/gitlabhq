@@ -1,3 +1,4 @@
+# rubocop:disable all
 class IncreaseSnippetTextColumnSize < ActiveRecord::Migration
   def up
     # MYSQL LARGETEXT for snippet

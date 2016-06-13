@@ -1,3 +1,4 @@
+# rubocop:disable all
 class AddServicesCategory < ActiveRecord::Migration
   def up
     add_column :services, :category, :string, default: 'common', null: false
