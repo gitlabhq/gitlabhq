@@ -55,16 +55,19 @@ module Gitlab
           first['count'].
           to_i
 
-        # Update in batches of 5%
+        # Update in batches of 5% until we run out of any rows to update.
         batch_size = ((total / 100.0) * 5.0).ceil
 
-        while processed < total
+        loop do
           start_row = exec_query(%Q{
             SELECT id
             FROM #{quoted_table}
             ORDER BY id ASC
             LIMIT 1 OFFSET #{processed}
           }).to_hash.first
+
+          # There are no more rows to process
+          break unless start_row
 
           stop_row = exec_query(%Q{
             SELECT id
