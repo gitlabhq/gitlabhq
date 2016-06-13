@@ -7,7 +7,6 @@ class NotificationSetting < ActiveRecord::Base
   belongs_to :source, polymorphic: true
 
   validates :user, presence: true
-  validates :source, presence: true
   validates :level, presence: true
   validates :user_id, uniqueness: { scope: [:source_type, :source_id],
                                     message: "already exists in source",

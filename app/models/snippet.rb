@@ -102,7 +102,7 @@ class Snippet < ActiveRecord::Base
   end
 
   def notes_with_associations
-    notes.includes(:author, :project)
+    notes.includes(:author)
   end
 
   class << self

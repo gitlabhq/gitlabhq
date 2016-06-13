@@ -49,8 +49,8 @@ information from database or file system
 ## Buttons
 
 * Button should contain icon or text. Exceptions should be approved by UX designer.
-* Use gray button on white background or white button on gray background.
 * Use red button for destructive actions (not revertable). For example removing issue.
 * Use green or blue button for primary action. Primary button should be only one. 
 Do not use both green and blue button in one form. 
+* For all other cases use default white button 
 

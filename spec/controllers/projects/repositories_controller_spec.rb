@@ -20,10 +20,11 @@ describe Projects::RepositoriesController do
         project.team << [user, :developer]
         sign_in(user)
       end
-      it "uses Gitlab::Workhorse" do
-        expect(Gitlab::Workhorse).to receive(:send_git_archive).with(project, "master", "zip")
 
+      it "uses Gitlab::Workhorse" do
         get :archive, namespace_id: project.namespace.path, project_id: project.path, ref: "master", format: "zip"
+
+        expect(response.header[Gitlab::Workhorse::SEND_DATA_HEADER]).to start_with("git-archive:")
       end
 
       context "when the service raises an error" do

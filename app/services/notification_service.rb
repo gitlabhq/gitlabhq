@@ -279,10 +279,11 @@ class NotificationService
   end
 
   def users_with_global_level_watch(ids)
-    User.where(
-      id: ids,
-      notification_level: NotificationSetting.levels[:watch]
-    ).pluck(:id)
+    NotificationSetting.where(
+      user_id: ids,
+      source_type: nil,
+      level: NotificationSetting.levels[:watch]
+    ).pluck(:user_id)
   end
 
   # Build a list of users based on project notifcation settings
@@ -352,7 +353,9 @@ class NotificationService
     users = users.reject(&:blocked?)
 
     users.reject do |user|
-      next user.notification_level == level unless project
+      global_notification_setting = user.global_notification_setting
+
+      next global_notification_setting.level == level unless project
 
       setting = user.notification_settings_for(project)
 
@@ -361,13 +364,13 @@ class NotificationService
       end
 
       # reject users who globally set mention notification and has no setting per project/group
-      next user.notification_level == level unless setting
+      next global_notification_setting.level == level unless setting
 
       # reject users who set mention notification in project
       next true if setting.level == level
 
       # reject users who have mention level in project and disabled in global settings
-      setting.global? && user.notification_level == level
+      setting.global? && global_notification_setting.level == level
     end
   end
 
@@ -456,7 +459,6 @@ class NotificationService
 
   def build_recipients(target, project, current_user, action: nil, previous_assignee: nil)
     recipients = target.participants(current_user)
-
     recipients = add_project_watchers(recipients, project)
     recipients = reject_mention_users(recipients, project)
 

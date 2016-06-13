@@ -38,7 +38,6 @@ module Backup
     end
 
     def upload(tar_file)
-      remote_directory = Gitlab.config.backup.upload.remote_directory
       $progress.print "Uploading backup archive to remote storage #{remote_directory} ... "
 
       connection_settings = Gitlab.config.backup.upload.connection
@@ -47,8 +46,7 @@ module Backup
         return
       end
 
-      connection = ::Fog::Storage.new(connection_settings)
-      directory = connection.directories.create(key: remote_directory)
+      directory = connect_to_remote_directory(connection_settings)
 
       if directory.files.create(key: tar_file, body: File.open(tar_file), public: false,
           multipart_chunk_size: Gitlab.config.backup.upload.multipart_chunk_size,
@@ -154,6 +152,23 @@ module Backup
     end
 
     private
+
+    def connect_to_remote_directory(connection_settings)
+      connection = ::Fog::Storage.new(connection_settings)
+
+      # We only attempt to create the directory for local backups. For AWS
+      # and other cloud providers, we cannot guarantee the user will have
+      # permission to create the bucket.
+      if connection.service == ::Fog::Storage::Local
+        connection.directories.create(key: remote_directory)
+      else
+        connection.directories.get(remote_directory)
+      end
+    end
+
+    def remote_directory
+      Gitlab.config.backup.upload.remote_directory
+    end
 
     def backup_contents
       folders_to_backup + archives_to_backup + ["backup_information.yml"]

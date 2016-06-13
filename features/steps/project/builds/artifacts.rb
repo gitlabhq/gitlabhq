@@ -5,11 +5,11 @@ class Spinach::Features::ProjectBuildsArtifacts < Spinach::FeatureSteps
   include RepoHelpers
 
   step 'I click artifacts download button' do
-    page.within('.artifacts') { click_link 'Download' }
+    click_link 'Download'
   end
 
   step 'I click artifacts browse button' do
-    page.within('.artifacts') { click_link 'Browse' }
+    click_link 'Browse'
   end
 
   step 'I should see content of artifacts archive' do

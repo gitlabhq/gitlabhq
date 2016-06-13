@@ -1,16 +1,22 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.9.0 (unreleased)
+  - Fix Error 500 when using closes_issues API with an external issue tracker
   - Bulk assign/unassign labels to issues.
   - Ability to prioritize labels !4009 / !3205 (Thijs Wouters)
   - Fix endless redirections when accessing user OAuth applications when they are disabled
   - Allow enabling wiki page events from Webhook management UI
   - Bump rouge to 1.11.0
+  - Fix issue with arrow keys not working in search autocomplete dropdown
   - Make EmailsOnPushWorker use Sidekiq mailers queue
   - Fix wiki page events' webhook to point to the wiki repository
+  - Don't show tags for revert and cherry-pick operations
   - Fix issue todo not remove when leave project !4150 (Long Nguyen)
+  - Allow customisable text on the 'nearly there' page after a user signs up
   - Bump recaptcha gem to 3.0.0 to remove deprecated stoken support
+  - Fix SVG sanitizer to allow more elements
   - Allow forking projects with restricted visibility level
+  - Added descriptions to notification settings dropdown
   - Improve note validation to prevent errors when creating invalid note via API
   - Reduce number of fog gem dependencies
   - Remove project notification settings associated with deleted projects
@@ -18,14 +24,18 @@ v 8.9.0 (unreleased)
   - Redesign navigation for project pages
   - Fix groups API to list only user's accessible projects
   - Redesign account and email confirmation emails
+  - `git clone https://host/namespace/project` now works, in addition to using the `.git` suffix
   - Bump nokogiri to 1.6.8
   - Use gitlab-shell v3.0.0
+  - Upgrade to jQuery 2
   - Use Knapsack to evenly distribute tests across multiple nodes
   - Add `sha` parameter to MR merge API, to ensure only reviewed changes are merged
   - Don't allow MRs to be merged when commits were added since the last review / page load
   - Add DB index on users.state
   - Add rake task 'gitlab:db:configure' for conditionally seeding or migrating the database
   - Changed the Slack build message to use the singular duration if necessary (Aran Koning)
+  - Links from a wiki page to other wiki pages should be rewritten as expected
+  - Add option to project to only allow merge requests to be merged if the build succeeds (Rui Santos)
   - Fix issues filter when ordering by milestone
   - Added artifacts:when to .gitlab-ci.yml - this requires GitLab Runner 1.3
   - Todos will display target state if issuable target is 'Closed' or 'Merged'
@@ -37,31 +47,43 @@ v 8.9.0 (unreleased)
   - Use downcased path to container repository as this is expected path by Docker
   - Projects pending deletion will render a 404 page
   - Measure queue duration between gitlab-workhorse and Rails
+  - Make Omniauth providers specs to not modify global configuration
   - Make authentication service for Container Registry to be compatible with < Docker 1.11
   - Add Application Setting to configure Container Registry token expire delay (default 5min)
   - Cache assigned issue and merge request counts in sidebar nav
   - Use Knapsack only in CI environment
   - Cache project build count in sidebar nav
+  - Add milestone expire date to the right sidebar
   - Fix markdown_spec to use before instead of before(:all) to properly cleanup database after testing
   - Reduce number of queries needed to render issue labels in the sidebar
   - Improve error handling importing projects
   - Remove duplicated notification settings
   - Put project Files and Commits tabs under Code tab
+  - Decouple global notification level from user model
   - Replace Colorize with Rainbow for coloring console output in Rake tasks.
+  - Add workhorse controller and API helpers
   - An indicator is now displayed at the top of the comment field for confidential issues.
   - RepositoryCheck::SingleRepositoryWorker public and private methods are now instrumented
+  - Improve issuables APIs performance when accessing notes !4471
+  - External links now open in a new tab
+  - Markdown editor now correctly resets the input value on edit cancellation !4175
+  - Toggling a task list item in a issue/mr description does not creates a Todo for mentions
+  - Improved UX of date pickers on issue & milestone forms
+  - Cache on the database if a project has an active external issue tracker.
+  - Put project Labels and Milestones pages links under Issues and Merge Requests tabs as subnav
+  - All classes in the Banzai::ReferenceParser namespace are now instrumented
 
-v 8.8.4 (unreleased)
+v 8.8.5 (unreleased)
   - Ensure branch cleanup regardless of whether the GitHub import process succeeds
-  - Fix issue with arrow keys not working in search autocomplete dropdown
   - Fix todos page throwing errors when you have a project pending deletion
   - Reduce number of SQL queries when rendering user references
-  - Upgrade to jQuery 2
-  - Remove prev/next buttons on issues and merge requests
   - Import GitHub repositories respecting the API rate limit
   - Fix importer for GitHub comments on diff
   - Disable Webhooks before proceeding with the GitHub import
-  - Added descriptions to notification settings dropdown
+  - Fix incremental trace upload API when using multi-byte UTF-8 chars in trace
+
+v 8.8.4
+  - Fix LDAP-based login for users with 2FA enabled. !4493
 
 v 8.8.3
   - Fix 404 page when viewing TODOs that contain milestones or labels in different projects. !4312
@@ -173,6 +195,7 @@ v 8.8.0
   - Fixed advice on invalid permissions on upload path !2948 (Ludovic Perrine)
   - Allows MR authors to have the source branch removed when merging the MR. !2801 (Jeroen Jacobs)
   - When creating a .gitignore file a dropdown with templates will be provided
+  - Shows the issue/MR list search/filter form and corrects the mobile styling for guest users. #17562
 
 v 8.7.7
   - Fix import by `Any Git URL` broken if the URL contains a space

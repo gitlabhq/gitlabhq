@@ -1,3 +1,4 @@
+# rubocop:disable all
 class AddEventFieldsForWebHook < ActiveRecord::Migration
   def change
     add_column :web_hooks, :push_events, :boolean, default: true, null: false
