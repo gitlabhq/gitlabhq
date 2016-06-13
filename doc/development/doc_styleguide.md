@@ -103,14 +103,14 @@ Inside the document:
 
 - Every piece of documentation that comes with a new feature should declare the
   GitLab version that feature got introduced. Right below the heading add a
-  note: `_**Note:** This feature was introduced in GitLab 8.3_`
+  note: `>**Note:** This feature was introduced in GitLab 8.3`
 - If possible every feature should have a link to the MR that introduced it.
   The above note would be then transformed to:
-  `_**Note:** This feature was [introduced][ce-1242] in GitLab 8.3_`, where
+  `>**Note:** This feature was [introduced][ce-1242] in GitLab 8.3`, where
   the [link identifier](#links) is named after the repository (CE) and the MR
   number
 - If the feature is only in GitLab EE, don't forget to mention it, like:
-  `_**Note:** This feature was introduced in GitLab EE 8.3_`. Otherwise, leave
+  `>**Note:** This feature was introduced in GitLab EE 8.3`. Otherwise, leave
   this mention out
 
 ## References
@@ -222,8 +222,8 @@ curl --data "name=foo" -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.
 
 #### Post data using JSON content
 
-_**Note:** In this example we create a new group. Watch carefully the single
-and double quotes._
+> **Note:** In this example we create a new group. Watch carefully the single
+and double quotes.
 
 ```bash
 curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" -H "Content-Type: application/json" --data '{"path": "my-group", "name": "My group"}' https://gitlab.example.com/api/v3/groups
