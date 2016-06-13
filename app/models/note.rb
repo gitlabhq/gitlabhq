@@ -54,7 +54,7 @@ class Note < ActiveRecord::Base
   scope :non_diff_notes, ->{ where(type: ['Note', nil]) }
 
   scope :with_associations, -> do
-    includes(:author, :noteable, :updated_by,
+    includes(:author, :noteable, :updated_by, :award_emoji,
              project: [:project_members, { group: [:group_members] }])
   end
 
