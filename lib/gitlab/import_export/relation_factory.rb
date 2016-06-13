@@ -3,7 +3,7 @@ module Gitlab
     class RelationFactory
 
       OVERRIDES = { snippets: :project_snippets,
-                    ci_commits: 'Ci::Commit',
+                    pipelines: 'Ci::Pipeline',
                     statuses: 'commit_status',
                     variables: 'Ci::Variable',
                     triggers: 'Ci::Trigger',
@@ -18,7 +18,7 @@ module Gitlab
 
       def initialize(relation_sym:, relation_hash:, members_mapper:, user_admin:)
         @relation_name = OVERRIDES[relation_sym] || relation_sym
-        @relation_hash = relation_hash.except('id')
+        @relation_hash = relation_hash.except('id', 'noteable_id')
         @members_mapper = members_mapper
         @user_admin = user_admin
       end
