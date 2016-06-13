@@ -16,7 +16,7 @@ describe Gitlab::Ci::Config::Node::Null do
   end
 
   describe '#value' do
-    it 'returns nill' do
+    it 'returns nil' do
       expect(entry.value).to be nil
     end
   end

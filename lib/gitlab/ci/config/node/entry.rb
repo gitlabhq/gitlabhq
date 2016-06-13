@@ -26,12 +26,6 @@ module Gitlab
             nodes.each(&:validate!)
           end
 
-          def compose!
-            allowed_nodes.each do |key, essence|
-              @nodes[key] = create_node(key, essence)
-            end
-          end
-
           def nodes
             @nodes.values
           end
@@ -61,6 +55,12 @@ module Gitlab
           end
 
           private
+
+          def compose!
+            allowed_nodes.each do |key, essence|
+              @nodes[key] = create_node(key, essence)
+            end
+          end
 
           def create_node(key, essence)
             raise NotImplementedError

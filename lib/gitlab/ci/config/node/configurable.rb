@@ -38,7 +38,7 @@ module Gitlab
 
           class_methods do
             def allowed_nodes
-              Hash[@allowed_nodes.map { |key, factory| [key, factory.dup] } ]
+              Hash[@allowed_nodes.map { |key, factory| [key, factory.dup] }]
             end
 
             private

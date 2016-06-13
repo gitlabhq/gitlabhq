@@ -18,15 +18,6 @@ describe Gitlab::Ci::Config::Node::Global do
       { before_script: ['ls', 'pwd'] }
     end
 
-    describe '#compose!' do
-      before { global.compose! }
-
-      it 'instantiates entry nodes' do
-        expect(global.nodes.first)
-          .to be_an_instance_of Gitlab::Ci::Config::Node::Script
-      end
-    end
-
     describe '#process!' do
       before { global.process! }
 
