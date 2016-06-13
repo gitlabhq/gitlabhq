@@ -83,6 +83,23 @@ feature 'Issues > Labels bulk assignment', feature: true do
       end
     end
 
+    context 'can assign a label to all issues when label is present' do
+      before do
+        issue2.labels << bug
+        issue2.labels << feature
+        visit namespace_project_issues_path(project.namespace, project)
+
+        check 'check_all_issues'
+        open_labels_dropdown ['bug']
+        update_issues
+      end
+
+      it do
+        expect(find("#issue_#{issue1.id}")).to have_content 'bug'
+        expect(find("#issue_#{issue2.id}")).to have_content 'bug'
+      end
+    end
+
     context 'can bulk un-assign' do
       context 'all labels to all issues' do
         before do
