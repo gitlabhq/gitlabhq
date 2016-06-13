@@ -10,13 +10,23 @@ module Gitlab
         @project = project
         @note_member_list = []
 
-        # This needs to run first, as second call would be from generate_map
+        # This needs to run first, as second call would be from #map
         # which means project members already exist.
         ensure_default_member!
       end
 
       def map
-        @map ||= generate_map
+        @map ||=
+          begin
+            @exported_members.inject(missing_keys_tracking_hash) do |hash, member|
+              existing_user = User.where(find_project_user_query(member)).first
+              old_user_id = member['user']['id']
+              if existing_user && add_user_as_team_member(existing_user, member)
+                hash[old_user_id] = existing_user.id
+              end
+              hash
+            end
+          end
       end
 
       def default_user_id
@@ -25,25 +35,10 @@ module Gitlab
 
       private
 
-
-      def generate_map
-        @map ||=
-          begin
-            @exported_members.inject(missing_keys_tracking_hash) do |hash, member|
-              existing_user = User.where(find_project_user_query(member)).first
-              old_user_id = member['user']['id']
-              if existing_user && add_user_as_team_member(existing_user, member).persisted?
-                hash[old_user_id] = existing_user.id
-              end
-              hash
-            end
-          end
-      end
-
       def missing_keys_tracking_hash
         Hash.new do |_, key|
           @note_member_list << key
-          @user.id
+          default_user_id
         end
       end
 
@@ -54,7 +49,7 @@ module Gitlab
       def add_user_as_team_member(existing_user, member)
         member['user'] = existing_user
 
-        ProjectMember.create(member_hash(member))
+        ProjectMember.create(member_hash(member)).persisted?
       end
 
       def member_hash(member)
