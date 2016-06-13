@@ -21,7 +21,9 @@ module Gitlab
 
       list_of_involved_files.each do |path|
         @repo.commits(@merge_request.target_branch, path: path, limit: COMMITS_TO_CONSIDER).each do |commit|
-          @users[commit.author] += 1 if commit.author
+          if commit.author && commit.author != @merge_request.author
+            @users[commit.author] += 1
+          end
         end
       end
     end

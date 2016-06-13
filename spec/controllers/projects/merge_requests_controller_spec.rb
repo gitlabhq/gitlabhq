@@ -268,6 +268,49 @@ describe Projects::MergeRequestsController do
     end
   end
 
+  describe 'POST #approve' do
+    def approve(user)
+      post :approve, namespace_id: project.namespace.path, project_id: project.path, id: merge_request.iid, user: user
+    end
+
+    context 'when the user is the author of the MR' do
+      before { merge_request.approvers.create(user: merge_request.author) }
+
+      it "returns a 404" do
+        approve(merge_request.author)
+
+        expect(response).to have_http_status(404)
+      end
+    end
+
+    context 'when the user is not allowed to approve the MR' do
+      it "returns a 404" do
+        approve(user)
+
+        expect(response).to have_http_status(404)
+      end
+    end
+
+    context 'when the user is allowed to approve the MR' do
+      before { merge_request.approvers.create(user: user) }
+
+      it 'creates an approval' do
+        service = double(:approval_service)
+
+        expect(MergeRequests::ApprovalService).to receive(:new).with(project, anything).and_return(service)
+        expect(service).to receive(:execute).with(merge_request)
+
+        approve(user)
+      end
+
+      it 'redirects to the MR' do
+        approve(user)
+
+        expect(response).to redirect_to(namespace_project_merge_request_path)
+      end
+    end
+  end
+
   describe "DELETE #destroy" do
     it "denies access to users unless they're admin or project owner" do
       delete :destroy, namespace_id: project.namespace.path, project_id: project.path, id: merge_request.iid
