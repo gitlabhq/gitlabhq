@@ -1,5 +1,4 @@
 class Oauth::GeoAuthController < ActionController::Base
-  include ActionView::Helpers::UrlHelper
   rescue_from Gitlab::Geo::OauthApplicationUndefinedError, with: :undefined_oauth_application
   rescue_from OAuth2::Error, with: :auth
 
@@ -47,8 +46,8 @@ class Oauth::GeoAuthController < ActionController::Base
 
   def after_sign_in_with_gitlab(token, return_to)
     if Gitlab::Geo.primary_node
-      primary_node = link_to('primary node', Gitlab::Geo.primary_node.url)
-      flash.now[:notice] = "You are on a secondary (read-only) Geo node. If you want to make any changes, you must visit the #{primary_node}.".html_safe
+      primary_node = view_context.link_to('primary node', Gitlab::Geo.primary_node.url)
+      flash[:notice] = "You are on a secondary (read-only) Geo node. If you want to make any changes, you must visit the #{primary_node}.".html_safe
     end
 
     session[:access_token] = token

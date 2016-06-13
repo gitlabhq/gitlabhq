@@ -2,7 +2,6 @@
 #
 # Automatically sets the layout and ensures an administrator is logged in
 class Admin::ApplicationController < ApplicationController
-  include ActionView::Helpers::UrlHelper
   before_action :authenticate_admin!
   before_action :display_geo_information
   layout 'admin'
@@ -13,7 +12,8 @@ class Admin::ApplicationController < ApplicationController
 
   def display_geo_information
     return unless Gitlab::Geo.secondary?
-    primary_node = link_to('primary node', Gitlab::Geo.primary_node.url)
+
+    primary_node = view_context.link_to('primary node', Gitlab::Geo.primary_node.url)
     flash.now[:notice] = "You are on a secondary (read-only) Geo node. If you want to make any changes, you must visit the #{primary_node}.".html_safe
   end
 end
