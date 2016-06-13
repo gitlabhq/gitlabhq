@@ -141,6 +141,48 @@ Inside the document:
 
 [ruby-dl]: https://www.ruby-lang.org/en/downloads/ "Ruby download website"
 
+## Changing document location
+
+Changing a document's location is not to be taken lightly. Remember that the
+documentation is available to all installations under `help/` and not only to
+GitLab.com or http://docs.gitlab.com. Make sure this is discussed with the
+Documentation team beforehand.
+
+If you indeed need to change a document's location, do NOT remove the old
+document, but rather put a text in it that points to the new location, like:
+
+```
+This document was moved to [path/to/new_doc.md](path/to/new_doc.md).
+```
+
+where `path/to/new_doc.md` is the relative path to the root directory `doc/`.
+
+---
+
+For example, if you were to move `doc/workflow/lfs/lfs_administration.md` to
+`doc/administration/lfs.md`, then the steps would be:
+
+1. Copy `doc/workflow/lfs/lfs_administration.md` to `doc/administration/lfs.md`
+1. Replace the contents of `doc/workflow/lfs/lfs_administration.md` with:
+
+    ```
+    This document was moved to [administration/lfs.md](../../administration/lfs.md).
+    ```
+
+1. Find and replace any occurrences of the old location with the new one.
+   A quick way to find them is to use `grep`:
+
+    ```
+    grep -nR "lfs_administration.md" doc/
+    ```
+
+    The above command will search in the `doc/` directory for
+    `lfs_administration.md` recursively and will print the file and the line
+    where this file is mentioned. Note that we used just the filename
+    (`lfs_administration.md`) and not the whole the relative path
+    (`workflow/lfs/lfs_administration.md`).
+
+
 ## API
 
 Here is a list of must-have items. Use them in the exact order that appears
