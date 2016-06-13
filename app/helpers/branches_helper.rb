@@ -14,4 +14,8 @@ module BranchesHelper
 
     ::Gitlab::GitAccess.new(current_user, project).can_push_to_branch?(branch_name)
   end
+
+  def project_branches
+    options_for_select(@project.repository.branch_names, @project.default_branch)
+  end
 end

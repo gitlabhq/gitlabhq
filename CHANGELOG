@@ -10,9 +10,11 @@ v 8.9.0 (unreleased)
   - Fix issue with arrow keys not working in search autocomplete dropdown
   - Make EmailsOnPushWorker use Sidekiq mailers queue
   - Fix wiki page events' webhook to point to the wiki repository
+  - Don't show tags for revert and cherry-pick operations
   - Fix issue todo not remove when leave project !4150 (Long Nguyen)
   - Allow customisable text on the 'nearly there' page after a user signs up
   - Bump recaptcha gem to 3.0.0 to remove deprecated stoken support
+  - Fix SVG sanitizer to allow more elements
   - Allow forking projects with restricted visibility level
   - Added descriptions to notification settings dropdown
   - Improve note validation to prevent errors when creating invalid note via API
@@ -35,6 +37,7 @@ v 8.9.0 (unreleased)
   - Links from a wiki page to other wiki pages should be rewritten as expected
   - Add option to project to only allow merge requests to be merged if the build succeeds (Rui Santos)
   - Fix issues filter when ordering by milestone
+  - Added artifacts:when to .gitlab-ci.yml - this requires GitLab Runner 1.3
   - Todos will display target state if issuable target is 'Closed' or 'Merged'
   - Fix bug when sorting issues by milestone due date and filtering by two or more labels
   - Add support for using Yubikeys (U2F) for two-factor authentication
@@ -56,6 +59,7 @@ v 8.9.0 (unreleased)
   - Improve error handling importing projects
   - Remove duplicated notification settings
   - Put project Files and Commits tabs under Code tab
+  - Decouple global notification level from user model
   - Replace Colorize with Rainbow for coloring console output in Rake tasks.
   - Add workhorse controller and API helpers
   - An indicator is now displayed at the top of the comment field for confidential issues.
@@ -67,6 +71,7 @@ v 8.9.0 (unreleased)
   - Improved UX of date pickers on issue & milestone forms
   - Cache on the database if a project has an active external issue tracker.
   - Put project Labels and Milestones pages links under Issues and Merge Requests tabs as subnav
+  - All classes in the Banzai::ReferenceParser namespace are now instrumented
 
 v 8.8.5 (unreleased)
   - Ensure branch cleanup regardless of whether the GitHub import process succeeds
