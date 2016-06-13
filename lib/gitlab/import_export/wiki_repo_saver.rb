@@ -26,7 +26,7 @@ module Gitlab
       end
 
       def wiki_repository_exists?
-        File.exists?(@wiki.repository.path_to_repo) && !@wiki.repository.empty?
+        File.exist?(@wiki.repository.path_to_repo) && !@wiki.repository.empty?
       end
     end
   end
