@@ -10,6 +10,7 @@ v 8.9.0 (unreleased)
   - Fix issue with arrow keys not working in search autocomplete dropdown
   - Make EmailsOnPushWorker use Sidekiq mailers queue
   - Fix wiki page events' webhook to point to the wiki repository
+  - Don't show tags for revert and cherry-pick operations
   - Fix issue todo not remove when leave project !4150 (Long Nguyen)
   - Allow customisable text on the 'nearly there' page after a user signs up
   - Bump recaptcha gem to 3.0.0 to remove deprecated stoken support
@@ -58,6 +59,7 @@ v 8.9.0 (unreleased)
   - Improve error handling importing projects
   - Remove duplicated notification settings
   - Put project Files and Commits tabs under Code tab
+  - Decouple global notification level from user model
   - Replace Colorize with Rainbow for coloring console output in Rake tasks.
   - Add workhorse controller and API helpers
   - An indicator is now displayed at the top of the comment field for confidential issues.
@@ -69,6 +71,7 @@ v 8.9.0 (unreleased)
   - Improved UX of date pickers on issue & milestone forms
   - Cache on the database if a project has an active external issue tracker.
   - Put project Labels and Milestones pages links under Issues and Merge Requests tabs as subnav
+  - All classes in the Banzai::ReferenceParser namespace are now instrumented
 
 v 8.8.5 (unreleased)
   - Ensure branch cleanup regardless of whether the GitHub import process succeeds

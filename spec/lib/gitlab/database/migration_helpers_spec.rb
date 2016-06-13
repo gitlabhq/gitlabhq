@@ -120,6 +120,19 @@ describe Gitlab::Database::MigrationHelpers, lib: true do
           model.add_column_with_default(:projects, :foo, :integer, default: 10)
         end.to raise_error(RuntimeError)
       end
+
+      it 'removes the added column whenever changing a column NULL constraint fails' do
+        expect(model).to receive(:change_column_null).
+          with(:projects, :foo, false).
+          and_raise(RuntimeError)
+
+        expect(model).to receive(:remove_column).
+          with(:projects, :foo)
+
+        expect do
+          model.add_column_with_default(:projects, :foo, :integer, default: 10)
+        end.to raise_error(RuntimeError)
+      end
     end
 
     context 'inside a transaction' do
