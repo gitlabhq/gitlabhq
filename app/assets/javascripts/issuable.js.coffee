@@ -99,11 +99,12 @@ issuable_created = false
     $('#filter_issue_search').val($('#issue_search').val())
 
   initChecks: ->
-    $('.check_all_issues').off('click').on 'click', ->
+    $('.check_all_issues').off('click').on('click', ->
       $('.selected_issue').prop('checked', @checked)
       Issuable.checkChanged()
+    )
 
-    $('.selected_issue').off('change').on 'change', Issuable.checkChanged
+    $('.selected_issue').off('change').on('change', Issuable.checkChanged)
 
   updateStateFilters: ->
     stateFilters =  $('.issues-state-filters, .dropdown-menu-sort')
