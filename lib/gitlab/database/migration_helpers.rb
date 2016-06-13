@@ -126,6 +126,8 @@ module Gitlab
         begin
           transaction do
             update_column_in_batches(table, column, default)
+
+            change_column_null(table, column, false) unless allow_null
           end
         # We want to rescue _all_ exceptions here, even those that don't inherit
         # from StandardError.
@@ -134,8 +136,6 @@ module Gitlab
 
           raise error
         end
-
-        change_column_null(table, column, false) unless allow_null
       end
     end
   end
