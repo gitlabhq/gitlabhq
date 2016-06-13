@@ -31,8 +31,6 @@ module Gitlab
       # Any data inserted while running this method (or after it has finished
       # running) is _not_ updated automatically.
       #
-      # This method _only_ updates rows where the column's value is set to NULL.
-      #
       # table - The name of the table.
       # column - The name of the column to update.
       # value - The value for the column.
