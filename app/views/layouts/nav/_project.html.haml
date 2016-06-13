@@ -7,7 +7,7 @@
         = icon('cog')
         = icon('caret-down')
       %ul.dropdown-menu.dropdown-menu-align-right
-        = render 'layouts/nav/project_settings'
+        = render 'layouts/nav/project_settings', access: access, can_edit: can_edit
         - if can_edit || access
           %li.divider
           - if can_edit
