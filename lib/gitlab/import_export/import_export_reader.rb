@@ -3,9 +3,8 @@ module Gitlab
     class ImportExportReader
 
       def initialize(shared:)
-        config = ImportExport.config_file
         @shared = shared
-        config_hash = YAML.load_file(config).deep_symbolize_keys
+        config_hash = YAML.load_file(Gitlab::ImportExport.config_file).deep_symbolize_keys
         @tree = config_hash[:project_tree]
         @attributes_finder = Gitlab::ImportExport::AttributesFinder.new(included_attributes: config_hash[:included_attributes],
                                                                         excluded_attributes: config_hash[:excluded_attributes],

@@ -16,10 +16,10 @@ project_tree:
     - notes:
         :author
     - :merge_request_diff
-  - ci_commits:
-    - :statuses
+  - pipelines:
     - notes:
         :author
+    - :statuses
   - :variables
   - :triggers
   - :deploy_keys

@@ -161,6 +161,10 @@ module Ci
       git_commit_message =~ /(\[ci skip\])/ if git_commit_message
     end
 
+    def notes
+      Note.for_commit_id(sha)
+    end
+
     private
 
     def update_state
@@ -180,10 +184,6 @@ module Ci
       return if self.yaml_errors?
       self.yaml_errors = error
       update_state
-    end
-
-    def notes
-      Note.for_commit_id(valid_commit_sha)
     end
   end
 end

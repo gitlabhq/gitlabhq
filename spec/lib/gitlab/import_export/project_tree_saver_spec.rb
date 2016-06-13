@@ -89,20 +89,20 @@ describe Gitlab::ImportExport::ProjectTreeSaver, services: true do
         expect(saved_project_json['merge_requests'].first['notes'].first['author']).not_to be_empty
       end
 
-      it 'has commit statuses' do
-        expect(saved_project_json['ci_commits'].first['statuses']).not_to be_empty
+      it 'has pipeline statuses' do
+        expect(saved_project_json['pipelines'].first['statuses']).not_to be_empty
       end
 
-      it 'has CI builds' do
-        expect(saved_project_json['ci_commits'].first['statuses'].first['type']).to eq('Ci::Build')
+      it 'has pipeline builds' do
+        expect(saved_project_json['pipelines'].first['statuses'].first['type']).to eq('Ci::Build')
       end
 
-      it 'has ci commits' do
-        expect(saved_project_json['ci_commits']).not_to be_empty
+      it 'has pipeline commits' do
+        expect(saved_project_json['pipelines']).not_to be_empty
       end
 
-      it 'has ci commits notes' do
-        expect(saved_project_json['ci_commits'].first['notes']).not_to be_empty
+      it 'has ci pipeline notes' do
+        expect(saved_project_json['pipelines'].first['notes']).not_to be_empty
       end
     end
   end
@@ -125,18 +125,21 @@ describe Gitlab::ImportExport::ProjectTreeSaver, services: true do
 
     commit_status = create(:commit_status, project: project)
 
-    ci_commit = create(:ci_commit,
+    ci_pipeline = create(:ci_pipeline,
                        project: project,
                        sha: merge_request.last_commit.id,
                        ref: merge_request.source_branch,
                        statuses: [commit_status])
 
-    create(:ci_build, commit: ci_commit, project: project)
+    create(:ci_build, pipeline: ci_pipeline, project: project)
     create(:milestone, project: project)
     create(:note, noteable: issue, project: project)
     create(:note, noteable: merge_request, project: project)
-    create(:note, noteable: ci_commit, project: project)
     create(:note, noteable: snippet, project: project)
+    create(:note_on_commit,
+           author: user,
+           project: project,
+           commit_id: ci_pipeline.sha)
     project
   end
 
