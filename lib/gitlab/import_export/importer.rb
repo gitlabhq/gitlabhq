@@ -7,7 +7,7 @@ module Gitlab
         new(*args).import
       end
 
-      def initialize(archive_file: , shared:)
+      def initialize(archive_file:, shared:)
         @archive_file = archive_file
         @shared = shared
       end
