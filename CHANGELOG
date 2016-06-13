@@ -66,6 +66,7 @@ v 8.9.0 (unreleased)
   - Make Omniauth providers specs to not modify global configuration
   - Make authentication service for Container Registry to be compatible with < Docker 1.11
   - Add Application Setting to configure Container Registry token expire delay (default 5min)
+  - Adds selected branch name to the dropdown toggle
   - Cache assigned issue and merge request counts in sidebar nav
   - Use Knapsack only in CI environment
   - Cache project build count in sidebar nav
