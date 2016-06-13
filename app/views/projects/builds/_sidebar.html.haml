@@ -37,7 +37,7 @@
             = link_to browse_namespace_project_build_artifacts_path(@project.namespace, @project, @build), class: 'btn btn-sm btn-default' do
               Browse
 
-  .block{ class: ("block-first" if !@build.coverage && !(can?(current_user, :read_build, @project) && @build.artifacts?)) }
+  .block{ class: ("block-first" if !@build.coverage && !(can?(current_user, :read_build, @project) && (@build.artifacts? || @build.artifacts_expired?))) }
     .title
       Build details
       - if @build.retryable?
