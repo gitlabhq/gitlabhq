@@ -179,14 +179,14 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
   step 'merge request "Bug NS-04" have 2 upvotes and 1 downvote' do
     merge_request = MergeRequest.find_by(title: 'Bug NS-04')
-    create_list(:upvote_note, 2, project: project, noteable: merge_request)
-    create(:downvote_note, project: project, noteable: merge_request)
+    create_list(:award_emoji, 2, awardable: merge_request)
+    create(:award_emoji, :downvote, awardable: merge_request)
   end
 
   step 'merge request "Bug NS-06" have 1 upvote and 2 downvotes' do
-    merge_request = MergeRequest.find_by(title: 'Bug NS-06')
-    create(:upvote_note, project: project, noteable: merge_request)
-    create_list(:downvote_note, 2, project: project, noteable: merge_request)
+    awardable = MergeRequest.find_by(title: 'Bug NS-06')
+    create(:award_emoji, awardable: awardable)
+    create_list(:award_emoji, 2, :downvote, awardable: awardable)
   end
 
   step 'The list should be sorted by "Least popular"' do
@@ -203,7 +203,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
       page.within 'li.merge-request:nth-child(3)' do
         expect(page).to have_content 'Bug NS-05'
-        expect(page).to_not have_content '0 0'
+        expect(page).not_to have_content '0 0'
       end
     end
   end
@@ -222,7 +222,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
       page.within 'li.merge-request:nth-child(3)' do
         expect(page).to have_content 'Bug NS-05'
-        expect(page).to_not have_content '0 0'
+        expect(page).not_to have_content '0 0'
       end
     end
   end
@@ -273,7 +273,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   step 'user "John Doe" leaves a comment like "Line is wrong" on diff' do
     mr = MergeRequest.find_by(title: "Bug NS-05")
     create(:note_on_merge_request_diff, project: project,
-                                        noteable_id: mr.id,
+                                        noteable: mr,
                                         author: user_exists("John Doe"),
                                         line_code: sample_commit.line_code,
                                         note: 'Line is wrong')
@@ -507,13 +507,13 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   step '"Bug NS-05" has CI status' do
     project = merge_request.source_project
     project.enable_ci
-    ci_commit = create :ci_commit, project: project, sha: merge_request.last_commit.id, ref: merge_request.source_branch
-    create :ci_build, commit: ci_commit
+    pipeline = create :ci_pipeline, project: project, sha: merge_request.last_commit.id, ref: merge_request.source_branch
+    create :ci_build, pipeline: pipeline
   end
 
   step 'I should see merge request "Bug NS-05" with CI status' do
     page.within ".mr-list" do
-      expect(page).to have_link "Build pending"
+      expect(page).to have_link "Pipeline: pending"
     end
   end
 
@@ -555,7 +555,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     click_diff_line(sample_compare.changes[1][:line_code])
   end
 
-  def have_visible_content (text)
+  def have_visible_content(text)
     have_css("*", text: text, visible: true)
   end
 

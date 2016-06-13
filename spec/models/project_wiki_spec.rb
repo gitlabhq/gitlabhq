@@ -16,6 +16,12 @@ describe ProjectWiki, models: true do
     end
   end
 
+  describe '#web_url' do
+    it 'returns the full web URL to the wiki' do
+      expect(subject.web_url).to eq("#{Gitlab.config.gitlab.url}/#{project.path_with_namespace}/wikis/home")
+    end
+  end
+
   describe "#url_to_repo" do
     it "returns the correct ssh url to the repo" do
       expect(subject.url_to_repo).to eq(gitlab_shell.url_to_repo(subject.path_with_namespace))
@@ -38,7 +44,8 @@ describe ProjectWiki, models: true do
 
   describe "#wiki_base_path" do
     it "returns the wiki base path" do
-      wiki_base_path = "/#{project.path_with_namespace}/wikis"
+      wiki_base_path = "#{Gitlab.config.gitlab.relative_url_root}/#{project.path_with_namespace}/wikis"
+
       expect(subject.wiki_base_path).to eq(wiki_base_path)
     end
   end
@@ -253,6 +260,13 @@ describe ProjectWiki, models: true do
       expect(subject.repository).to receive(:after_create)
 
       expect(subject.create_repo!).to be_an_instance_of(Gollum::Wiki)
+    end
+  end
+
+  describe '#hook_attrs' do
+    it 'returns a hash with values' do
+      expect(subject.hook_attrs).to be_a Hash
+      expect(subject.hook_attrs.keys).to contain_exactly(:web_url, :git_ssh_url, :git_http_url, :path_with_namespace, :default_branch)
     end
   end
 

@@ -35,8 +35,8 @@ class SlackService
     private
 
     def message
-      "#{project_link}: Commit #{commit_link} of #{branch_link} #{ref_type} by #{user_name} #{humanized_status} in #{duration} second(s)"
-    end
+      "#{project_link}: Commit #{commit_link} of #{branch_link} #{ref_type} by #{user_name} #{humanized_status} in #{duration} #{'second'.pluralize(duration)}"
+    end   
 
     def format(string)
       Slack::Notifier::LinkFormatter.format(string)

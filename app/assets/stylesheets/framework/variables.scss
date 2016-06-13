@@ -2,7 +2,7 @@
  * Layout
  */
 $sidebar_collapsed_width: 62px;
-$sidebar_width: 230px;
+$sidebar_width: 220px;
 $gutter_collapsed_width: 62px;
 $gutter_width: 290px;
 $gutter_inner_width: 258px;
@@ -12,7 +12,7 @@ $gutter_inner_width: 258px;
  */
 $border-color:       #e5e5e5;
 $focus-border-color: #3aabf0;
-$table-border-color: #ececec;
+$table-border-color: #f0f0f0;
 $background-color:   #fafafa;
 
 /*
@@ -57,13 +57,15 @@ $code_line_height: 1.5;
  */
 $gl-padding: 16px;
 $gl-btn-padding: 10px;
+$gl-input-padding: 10px;
 $gl-vert-padding: 6px;
 $gl-padding-top: 10px;
 
 /*
  * Misc
  */
-$row-hover: #f4f8fe;
+$row-hover: #f7faff;
+$row-hover-border: #b2d7ff;
 $progress-color: #c0392b;
 $avatar_radius: 50%;
 $header-height: 50px;
@@ -78,6 +80,9 @@ $provider-btn-not-active-color: #4688f1;
 $link-underline-blue: #4a8bee;
 $layout-link-gray: #7e7c7c;
 $todo-alert-blue: #428bca;
+$btn-side-margin: 10px;
+$btn-sm-side-margin: 7px;
+$btn-xs-side-margin: 5px;
 
 /*
  * Color schema
@@ -104,7 +109,7 @@ $blue-medium-light: #3498cb;
 $blue-medium: #2f8ebf;
 $blue-medium-dark: #2d86b4;
 
-$orange-light: rgba(252, 109, 38, 0.80);
+$orange-light: #fc8a51;
 $orange-normal: #e75e40;
 $orange-dark: #ce5237;
 
@@ -119,8 +124,8 @@ $border-white-light: #f1f2f4;
 $border-white-normal: #d6dae2;
 $border-white-dark: #c6cacf;
 
-$border-gray-light: rgba(0, 0, 0, 0.06);
-$border-gray-normal: rgba(0, 0, 0, 0.10);;
+$border-gray-light: #dcdcdc;
+$border-gray-normal: #d7d7d7;
 $border-gray-dark: #c6cacf;
 
 $border-green-light: #2faa60;
@@ -178,6 +183,7 @@ $table-border-gray: #f0f0f0;
 $line-target-blue: #eaf3fc;
 $line-select-yellow: #fcf8e7;
 $line-select-yellow-dark: #f0e2bd;
+
 /*
  * Fonts
  */
@@ -215,6 +221,7 @@ $dropdown-toggle-hover-icon-color: $dropdown-toggle-hover-border-color;
 $btn-active-gray: #ececec;
 $btn-placeholder-gray: #c7c7c7;
 $btn-white-active: #848484;
+$btn-gray-hover: #eee;
 
 /*
  *  Award emoji
@@ -253,3 +260,6 @@ $calendar-header-color: #b8b8b8;
 $calendar-hover-bg: #ecf3fe;
 $calendar-border-color: rgba(#000, .1);
 $calendar-unselectable-bg: #faf9f9;
+
+$ci-output-bg: #1d1f21;
+$ci-text-color: #c5c8c6;

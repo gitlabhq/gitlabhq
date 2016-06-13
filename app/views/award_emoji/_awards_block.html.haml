@@ -1,0 +1,15 @@
+- grouped_emojis = awardable.grouped_awards(with_thumbs: inline)
+.awards.js-awards-block{ class: ("hidden" if !inline && grouped_emojis.empty?), data: { award_url: url_for([:toggle_award_emoji, @project.namespace.becomes(Namespace), @project, awardable]) } }
+  - awards_sort(grouped_emojis).each do |emoji, awards|
+    %button.btn.award-control.js-emoji-btn.has-tooltip{ type: "button", class: (award_active_class(awards, current_user)), data: { placement: "bottom", title: award_user_list(awards, current_user) } }
+      = emoji_icon(emoji, sprite: false)
+      %span.award-control-text.js-counter
+        = awards.count
+
+  - if current_user
+    .award-menu-holder.js-award-holder
+      %button.btn.award-control.js-add-award{ type: "button" }
+        = icon('smile-o', class: "award-control-icon award-control-icon-normal")
+        = icon('spinner spin', class: "award-control-icon award-control-icon-loading")
+        %span.award-control-text
+          Add

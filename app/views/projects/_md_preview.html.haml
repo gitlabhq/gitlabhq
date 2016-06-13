@@ -7,8 +7,14 @@
       %li
         %a.js-md-preview-button{ href: "#md-preview-holder", tabindex: -1 }
           Preview
+
+      - if defined?(@issue) && @issue.confidential?
+        %li.confidential-issue-warning
+          = icon('warning')
+          %span This is a confidential issue. Your comment will not be visible to the public.
+          
       %li.pull-right
-        %button.zen-cotrol.zen-control-full.js-zen-enter{ type: 'button', tabindex: -1 }
+        %button.zen-control.zen-control-full.js-zen-enter{ type: 'button', tabindex: -1 }
           Go full screen
 
   .md-write-holder

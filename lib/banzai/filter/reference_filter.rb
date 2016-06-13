@@ -8,24 +8,8 @@ module Banzai
     #   :project (required) - Current project, ignored if reference is cross-project.
     #   :only_path          - Generate path-only links.
     class ReferenceFilter < HTML::Pipeline::Filter
-      def self.user_can_see_reference?(user, node, context)
-        if node.has_attribute?('data-project')
-          project_id = node.attr('data-project').to_i
-          return true if project_id == context[:project].try(:id)
-
-          project = Project.find(project_id) rescue nil
-          Ability.abilities.allowed?(user, :read_project, project)
-        else
-          true
-        end
-      end
-
-      def self.user_can_reference?(user, node, context)
-        true
-      end
-
-      def self.referenced_by(node)
-        raise NotImplementedError, "#{self} does not implement #{__method__}"
+      class << self
+        attr_accessor :reference_type
       end
 
       # Returns a data attribute String to attach to a reference link
@@ -43,7 +27,9 @@ module Banzai
       #
       # Returns a String
       def data_attribute(attributes = {})
-        attributes[:reference_filter] = self.class.name.demodulize
+        attributes = attributes.reject { |_, v| v.nil? }
+
+        attributes[:reference_type] = self.class.reference_type
         attributes.delete(:original) if context[:no_original_data]
         attributes.map { |key, value| %Q(data-#{key.to_s.dasherize}="#{escape_once(value)}") }.join(" ")
       end
@@ -82,6 +68,8 @@ module Banzai
       # by `ignore_ancestor_query`. Link tags are not processed if they have a
       # "gfm" class or the "href" attribute is empty.
       def each_node
+        return to_enum(__method__) unless block_given?
+
         query = %Q{descendant-or-self::text()[not(#{ignore_ancestor_query})]
         | descendant-or-self::a[
           not(contains(concat(" ", @class, " "), " gfm ")) and not(@href = "")
@@ -90,6 +78,11 @@ module Banzai
         doc.xpath(query).each do |node|
           yield node
         end
+      end
+
+      # Returns an Array containing all HTML nodes.
+      def nodes
+        @nodes ||= each_node.to_a
       end
 
       # Yields the link's URL and text whenever the node is a valid <a> tag.

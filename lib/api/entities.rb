@@ -30,7 +30,7 @@ module API
       expose :identities, using: Entities::Identity
       expose :can_create_group?, as: :can_create_group
       expose :can_create_project?, as: :can_create_project
-      expose :two_factor_enabled
+      expose :two_factor_enabled?, as: :two_factor_enabled
       expose :external
     end
 
@@ -66,7 +66,8 @@ module API
       expose :owner, using: Entities::UserBasic, unless: ->(project, options) { project.group }
       expose :name, :name_with_namespace
       expose :path, :path_with_namespace
-      expose :issues_enabled, :merge_requests_enabled, :wiki_enabled, :builds_enabled, :snippets_enabled, :created_at, :last_activity_at
+      expose :issues_enabled, :merge_requests_enabled, :wiki_enabled, :builds_enabled, :snippets_enabled, :container_registry_enabled
+      expose :created_at, :last_activity_at
       expose :shared_runners_enabled
       expose :creator_id
       expose :namespace
@@ -174,11 +175,18 @@ module API
       expose :subscribed do |issue, options|
         issue.subscribed?(options[:current_user])
       end
+      expose :user_notes_count
+      expose :upvotes, :downvotes
+    end
+
+    class ExternalIssue < Grape::Entity
+      expose :title
+      expose :id
     end
 
     class MergeRequest < ProjectEntity
       expose :target_branch, :source_branch
-      expose :upvotes,  :downvotes
+      expose :upvotes, :downvotes
       expose :author, :assignee, using: Entities::UserBasic
       expose :source_project_id, :target_project_id
       expose :label_names, as: :labels
@@ -187,10 +195,10 @@ module API
       expose :milestone, using: Entities::Milestone
       expose :merge_when_build_succeeds
       expose :merge_status
-
       expose :subscribed do |merge_request, options|
         merge_request.subscribed?(options[:current_user])
       end
+      expose :user_notes_count
     end
 
     class MergeRequestChanges < MergeRequest
@@ -216,8 +224,8 @@ module API
       expose :system?, as: :system
       expose :noteable_id, :noteable_type
       # upvote? and downvote? are deprecated, always return false
-      expose :upvote?, as: :upvote
-      expose :downvote?, as: :downvote
+      expose(:upvote?)    { |note| false }
+      expose(:downvote?)  { |note| false }
     end
 
     class MRNote < Grape::Entity
@@ -227,9 +235,9 @@ module API
 
     class CommitNote < Grape::Entity
       expose :note
-      expose(:path) { |note| note.diff_file_name }
-      expose(:line) { |note| note.diff_new_line }
-      expose(:line_type) { |note| note.diff_line_type }
+      expose(:path) { |note| note.diff_file_path if note.legacy_diff_note? }
+      expose(:line) { |note| note.diff_new_line if note.legacy_diff_note? }
+      expose(:line_type) { |note| note.diff_line_type if note.legacy_diff_note? }
       expose :author, using: Entities::UserBasic
       expose :created_at
     end
@@ -307,6 +315,10 @@ module API
     class Label < Grape::Entity
       expose :name, :color, :description
       expose :open_issues_count, :closed_issues_count, :open_merge_requests_count
+
+      expose :subscribed do |label, options|
+        label.subscribed?(options[:current_user])
+      end
     end
 
     class Compare < Grape::Entity
@@ -344,6 +356,7 @@ module API
       expose :signin_enabled
       expose :gravatar_enabled
       expose :sign_in_text
+      expose :after_sign_up_text
       expose :created_at
       expose :updated_at
       expose :home_page_url
@@ -357,6 +370,7 @@ module API
       expose :restricted_signup_domains
       expose :user_oauth_applications
       expose :after_sign_out_path
+      expose :container_registry_token_expire_delay
     end
 
     class Release < Grape::Entity
@@ -403,6 +417,7 @@ module API
 
     class RunnerDetails < Runner
       expose :tag_list
+      expose :run_untagged
       expose :version, :revision, :platform, :architecture
       expose :contacted_at
       expose :token, if: lambda { |runner, options| options[:current_user].is_admin? || !runner.is_shared? }
@@ -450,6 +465,14 @@ module API
       expose(:permissions) { |license| license.meta['permissions'] }
       expose(:limitations) { |license| license.meta['limitations'] }
       expose :content
+    end
+
+    class GitignoresList < Grape::Entity
+      expose :name
+    end
+
+    class Gitignore < Grape::Entity
+      expose :name, :content
     end
   end
 end

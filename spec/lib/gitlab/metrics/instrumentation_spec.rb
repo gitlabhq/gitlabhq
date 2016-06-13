@@ -56,9 +56,6 @@ describe Gitlab::Metrics::Instrumentation do
         allow(described_class).to receive(:transaction).
           and_return(transaction)
 
-        expect(transaction).to receive(:increment).
-          with(:method_duration, a_kind_of(Numeric))
-
         expect(transaction).to receive(:add_metric).
           with(described_class::SERIES, an_instance_of(Hash),
                method: 'Dummy.foo')
@@ -70,7 +67,7 @@ describe Gitlab::Metrics::Instrumentation do
         allow(Gitlab::Metrics).to receive(:method_call_threshold).
           and_return(100)
 
-        expect(transaction).to_not receive(:add_metric)
+        expect(transaction).not_to receive(:add_metric)
 
         @dummy.foo
       end
@@ -139,9 +136,6 @@ describe Gitlab::Metrics::Instrumentation do
         allow(described_class).to receive(:transaction).
           and_return(transaction)
 
-        expect(transaction).to receive(:increment).
-          with(:method_duration, a_kind_of(Numeric))
-
         expect(transaction).to receive(:add_metric).
           with(described_class::SERIES, an_instance_of(Hash),
                method: 'Dummy#bar')
@@ -153,7 +147,7 @@ describe Gitlab::Metrics::Instrumentation do
         allow(Gitlab::Metrics).to receive(:method_call_threshold).
           and_return(100)
 
-        expect(transaction).to_not receive(:add_metric)
+        expect(transaction).not_to receive(:add_metric)
 
         @dummy.new.bar
       end
@@ -226,7 +220,7 @@ describe Gitlab::Metrics::Instrumentation do
 
       described_class.instrument_methods(@dummy)
 
-      expect(@dummy).to_not respond_to(:_original_kittens)
+      expect(@dummy).not_to respond_to(:_original_kittens)
     end
 
     it 'can take a block to determine if a method should be instrumented' do
@@ -234,7 +228,7 @@ describe Gitlab::Metrics::Instrumentation do
         false
       end
 
-      expect(@dummy).to_not respond_to(:_original_foo)
+      expect(@dummy).not_to respond_to(:_original_foo)
     end
   end
 

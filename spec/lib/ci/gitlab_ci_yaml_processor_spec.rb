@@ -443,12 +443,12 @@ module Ci
       context 'when job variables are defined' do
         context 'when syntax is correct' do
           it 'returns job variables' do
-            variables =  {
+            variables = {
               KEY1: 'value1',
               SOME_KEY_2: 'value2'
             }
 
-            config =  YAML.dump(
+            config = YAML.dump(
               { before_script: ['pwd'],
                 rspec: {
                   variables: variables,
@@ -501,6 +501,7 @@ module Ci
                              })
 
           config_processor = GitlabCiYamlProcessor.new(config, path)
+
           builds = config_processor.builds_for_stage_and_ref("test", "master")
           expect(builds.size).to eq(1)
           expect(builds.first[:when]).to eq(when_state)
@@ -601,6 +602,23 @@ module Ci
           allow_failure: false
         })
       end
+
+      %w[on_success on_failure always].each do |when_state|
+        it "returns artifacts for when #{when_state}  defined" do
+          config = YAML.dump({
+                               rspec: {
+                                 script: "rspec",
+                                 artifacts: { paths: ["logs/", "binaries/"], when: when_state }
+                               }
+                             })
+
+          config_processor = GitlabCiYamlProcessor.new(config, path)
+
+          builds = config_processor.builds_for_stage_and_ref("test", "master")
+          expect(builds.size).to eq(1)
+          expect(builds.first[:options][:artifacts][:when]).to eq(when_state)
+        end
+      end
     end
 
     describe "Dependencies" do
@@ -619,19 +637,19 @@ module Ci
       context 'no dependencies' do
         let(:dependencies) { }
 
-        it { expect { subject }.to_not raise_error }
+        it { expect { subject }.not_to raise_error }
       end
 
       context 'dependencies to builds' do
         let(:dependencies) { ['build1', 'build2'] }
 
-        it { expect { subject }.to_not raise_error }
+        it { expect { subject }.not_to raise_error }
       end
 
       context 'dependencies to builds defined as symbols' do
         let(:dependencies) { [:build1, :build2] }
 
-        it { expect { subject }.to_not raise_error }
+        it { expect { subject }.not_to raise_error }
       end
 
       context 'undefined dependency' do
@@ -965,6 +983,13 @@ EOT
         expect do
           GitlabCiYamlProcessor.new(config)
         end.to raise_error(GitlabCiYamlProcessor::ValidationError, "rspec job: artifacts:name parameter should be a string")
+      end
+
+      it "returns errors if job artifacts:when is not an a predefined value" do
+        config = YAML.dump({ types: ["build", "test"], rspec: { script: "test", artifacts: { when: 1 } } })
+        expect do
+          GitlabCiYamlProcessor.new(config)
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "rspec job: artifacts:when parameter should be on_success, on_failure or always")
       end
 
       it "returns errors if job artifacts:untracked is not an array of strings" do

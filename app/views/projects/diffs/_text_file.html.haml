@@ -6,16 +6,15 @@
 %table.text-file.code.js-syntax-highlight{ class: too_big ? 'hide' : '' }
 
   - last_line = 0
-  - raw_diff_lines = diff_file.diff_lines.to_a
   - diff_file.highlighted_diff_lines.each_with_index do |line, index|
     - line_code = generate_line_code(diff_file.file_path, line)
     - last_line = line.new_pos
     = render "projects/diffs/line", {line: line, diff_file: diff_file, line_code: line_code}
 
-    - if @reply_allowed
-      - comments = @line_notes.select { |n| n.line_code == line_code && n.active? }.sort_by(&:created_at)
-      - unless comments.empty?
-        = render "projects/notes/diff_notes_with_reply", notes: comments, line: raw_diff_lines[index].text
+    - unless @diff_notes_disabled
+      - diff_notes = @grouped_diff_notes[line_code]
+      - if diff_notes
+        = render "projects/notes/diff_notes_with_reply", notes: diff_notes
 
   - if last_line > 0
     = render "projects/diffs/match_line", { line: "",

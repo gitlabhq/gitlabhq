@@ -2,6 +2,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   include ToggleSubscriptionAction
   include DiffHelper
   include IssuableActions
+  include ToggleAwardEmoji
 
   before_action :module_enabled
   before_action :merge_request, only: [
@@ -57,9 +58,13 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
     respond_to do |format|
       format.html
-      format.json { render json: @merge_request }
-      format.diff { render text: @merge_request.to_diff }
-      format.patch { render text: @merge_request.to_patch }
+      format.json   { render json: @merge_request }
+      format.patch  { render text: @merge_request.to_patch }
+      format.diff do
+        return render_404 unless @merge_request.diff_refs
+
+        send_git_diff @project.repository, @merge_request.diff_refs
+      end
     end
   end
 
@@ -73,12 +78,12 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     # but we need it for the "View file @ ..." link by deleted files
     @base_commit ||= @merge_request.first_commit.parent || @merge_request.first_commit
 
-    @comments_allowed = @reply_allowed = true
     @comments_target = {
       noteable_type: 'MergeRequest',
       noteable_id: @merge_request.id
     }
-    @line_notes = @merge_request.notes.where("line_code is not null")
+
+    @grouped_diff_notes = @merge_request.notes.grouped_diff_notes
 
     respond_to do |format|
       format.html
@@ -117,9 +122,10 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @commit = @merge_request.last_commit
     @base_commit = @merge_request.diff_base_commit
     @diffs = @merge_request.compare.diffs(diff_options) if @merge_request.compare
+    @diff_notes_disabled = true
 
-    @ci_commit = @merge_request.ci_commit
-    @statuses = @ci_commit.statuses if @ci_commit
+    @pipeline = @merge_request.pipeline
+    @statuses = @pipeline.statuses if @pipeline
 
     @note_counts = Note.where(commit_id: @commits.map(&:id)).
       group(:commit_id).count
@@ -189,13 +195,18 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       return
     end
 
+    if params[:sha] != @merge_request.source_sha
+      @status = :sha_mismatch
+      return
+    end
+
     TodoService.new.merge_merge_request(merge_request, current_user)
 
     @merge_request.update(merge_error: nil)
 
-    if params[:merge_when_build_succeeds].present? && @merge_request.ci_commit && @merge_request.ci_commit.active?
+    if params[:merge_when_build_succeeds].present? && @merge_request.pipeline && @merge_request.pipeline.active?
       MergeRequests::MergeWhenBuildSucceedsService.new(@project, current_user, merge_params)
-                                                      .execute(@merge_request)
+        .execute(@merge_request)
       @status = :merge_when_build_succeeds
     else
       MergeWorker.perform_async(@merge_request.id, current_user.id, params)
@@ -204,7 +215,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def branch_from
-    #This is always source
+    # This is always source
     @source_project = @merge_request.nil? ? @project : @merge_request.source_project
     @commit = @repository.commit(params[:ref]) if params[:ref].present?
     render layout: false
@@ -224,10 +235,12 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def ci_status
-    ci_commit = @merge_request.ci_commit
-    if ci_commit
-      status = ci_commit.status
-      coverage = ci_commit.try(:coverage)
+    pipeline = @merge_request.pipeline
+    if pipeline
+      status = pipeline.status
+      coverage = pipeline.try(:coverage)
+
+      status ||= "preparing"
     else
       ci_service = @merge_request.source_project.ci_service
       status = ci_service.commit_status(merge_request.last_commit.sha, merge_request.source_branch) if ci_service
@@ -236,8 +249,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
         coverage = ci_service.commit_coverage(merge_request.last_commit.sha, merge_request.source_branch)
       end
     end
-
-    status = "preparing" if status.nil?
 
     response = {
       title: merge_request.title,
@@ -264,6 +275,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
   alias_method :subscribable_resource, :merge_request
   alias_method :issuable, :merge_request
+  alias_method :awardable, :merge_request
 
   def closes_issues
     @closes_issues ||= @merge_request.closes_issues
@@ -299,8 +311,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   def define_show_vars
     # Build a note object for comment form
     @note = @project.notes.new(noteable: @merge_request)
-    @notes = @merge_request.mr_and_commit_notes.nonawards.inc_author.fresh
-    @discussions = Note.discussions_from_notes(@notes)
+    @notes = @merge_request.mr_and_commit_notes.inc_author.fresh
+    @discussions = @notes.discussions
     @noteable = @merge_request
 
     # Get commits from repository
@@ -309,8 +321,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
     @merge_request_diff = @merge_request.merge_request_diff
 
-    @ci_commit = @merge_request.ci_commit
-    @statuses = @ci_commit.statuses if @ci_commit
+    @pipeline = @merge_request.pipeline
+    @statuses = @pipeline.statuses if @pipeline
 
     if @merge_request.locked_long_ago?
       @merge_request.unlock_mr
@@ -319,8 +331,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def define_widget_vars
-    @ci_commit = @merge_request.ci_commit
-    @ci_commits = [@ci_commit].compact
+    @pipeline = @merge_request.pipeline
+    @pipelines = [@pipeline].compact
     closes_issues
   end
 
@@ -333,7 +345,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     params.require(:merge_request).permit(
       :title, :assignee_id, :source_project_id, :source_branch,
       :target_project_id, :target_branch, :milestone_id,
-      :state_event, :description, :task_num, label_ids: []
+      :state_event, :description, :task_num, :force_remove_source_branch,
+      label_ids: []
     )
   end
 

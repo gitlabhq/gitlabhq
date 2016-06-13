@@ -1,3 +1,4 @@
+# rubocop:disable all
 class MoveSlackServiceToWebhook < ActiveRecord::Migration
   def change
     SlackService.all.each do |slack_service|

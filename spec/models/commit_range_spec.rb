@@ -24,6 +24,16 @@ describe CommitRange, models: true do
     expect { described_class.new("Foo", project) }.to raise_error(ArgumentError)
   end
 
+  describe '#initialize' do
+    it 'does not modify strings in-place' do
+      input = "#{sha_from}...#{sha_to}   "
+
+      described_class.new(input, project)
+
+      expect(input).to eq("#{sha_from}...#{sha_to}   ")
+    end
+  end
+
   describe '#to_s' do
     it 'is correct for three-dot syntax' do
       expect(range.to_s).to eq "#{full_sha_from}...#{full_sha_to}"
@@ -133,6 +143,30 @@ describe CommitRange, models: true do
       it 'returns false' do
         expect(range).not_to be_valid_commits
       end
+    end
+  end
+
+  describe '#has_been_reverted?' do
+    it 'returns true if the commit has been reverted' do
+      issue = create(:issue)
+
+      create(:note_on_issue,
+             noteable: issue,
+             system: true,
+             note: commit1.revert_description,
+             project: issue.project)
+
+      expect_any_instance_of(Commit).to receive(:reverts_commit?).
+        with(commit1).
+        and_return(true)
+
+      expect(commit1.has_been_reverted?(nil, issue)).to eq(true)
+    end
+
+    it 'returns false a commit has not been reverted' do
+      issue = create(:issue)
+
+      expect(commit1.has_been_reverted?(nil, issue)).to eq(false)
     end
   end
 end

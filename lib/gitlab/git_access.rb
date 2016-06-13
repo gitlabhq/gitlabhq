@@ -122,6 +122,11 @@ module Gitlab
       build_status_object(true)
     end
 
+    def can_user_do_action?(action)
+      @permission_cache ||= {}
+      @permission_cache[action] ||= user.can?(action, project)
+    end
+
     def change_access_check(change)
       oldrev, newrev, ref = change.split(' ')
 
@@ -135,7 +140,7 @@ module Gitlab
           :push_code
         end
 
-      unless user.can?(action, project)
+      unless can_user_do_action?(action)
         status =
           case action
           when :force_push_code_to_protected_branches

@@ -93,6 +93,8 @@ class @UsersSelect
 
       $dropdown.glDropdown(
         data: (term, callback) =>
+          isAuthorFilter = $('.js-author-search')
+
           @users term, (users) =>
             if term.length is 0
               showDivider = 0
@@ -138,7 +140,7 @@ class @UsersSelect
 
         toggleLabel: (selected) ->
           if selected && 'id' of selected
-            selected.name
+            if selected.text then selected.text else selected.name
           else
             defaultLabel
 
@@ -147,7 +149,7 @@ class @UsersSelect
         hidden: (e) ->
           $selectbox.hide()
           # display:block overrides the hide-collapse rule
-          $value.removeAttr('style')
+          $value.css('display', '')
 
         clicked: (user) ->
           page = $('body').data 'page'

@@ -22,9 +22,16 @@ module Network
 
     def collect_notes
       h = Hash.new(0)
-      @project.notes.where('noteable_type = ?' ,"Commit").group('notes.commit_id').select('notes.commit_id, count(notes.id) as note_count').each do |item|
-        h[item.commit_id] = item.note_count.to_i
-      end
+
+      @project
+        .notes
+        .where('noteable_type = ?', 'Commit')
+        .group('notes.commit_id')
+        .select('notes.commit_id, count(notes.id) as note_count')
+        .each do |item|
+          h[item.commit_id] = item.note_count.to_i
+        end
+
       h
     end
 
@@ -89,7 +96,7 @@ module Network
         end
       end
 
-      if self.class.max_count / 2 < offset then
+      if self.class.max_count / 2 < offset
         # get max index that commit is displayed in the center.
         offset - self.class.max_count / 2
       else
@@ -130,7 +137,7 @@ module Network
       commit.parents(@map).each do |parent|
         range = commit.time..parent.time
 
-        space = if commit.space >= parent.space then
+        space = if commit.space >= parent.space
                   find_free_parent_space(range, parent.space, -1, commit.space)
                 else
                   find_free_parent_space(range, commit.space, -1, parent.space)
@@ -144,7 +151,7 @@ module Network
     end
 
     def find_free_parent_space(range, space_base, space_step, space_default)
-      if is_overlap?(range, space_default) then
+      if is_overlap?(range, space_default)
         find_free_space(range, space_step, space_base, space_default)
       else
         space_default
@@ -155,9 +162,9 @@ module Network
       range.each do |i|
         if i != range.first &&
           i != range.last &&
-          @commits[i].spaces.include?(overlap_space) then
+          @commits[i].spaces.include?(overlap_space)
 
-          return true;
+          return true
         end
       end
 
@@ -198,7 +205,7 @@ module Network
       # Visit branching chains
       leaves.each do |l|
         parents = l.parents(@map).select{|p| p.space.zero?}
-        for p in parents
+        parents.each do |p|
           place_chain(p, l.time)
         end
       end
@@ -216,7 +223,7 @@ module Network
     end
 
     def mark_reserved(time_range, space)
-      for day in time_range
+      time_range.each do |day|
         @reserved[day].push(space)
       end
     end
@@ -225,15 +232,15 @@ module Network
       space_default ||= space_base
 
       reserved = []
-      for day in time_range
+      time_range.each do |day|
         reserved.push(*@reserved[day])
       end
       reserved.uniq!
 
       space = space_default
-      while reserved.include?(space) do
+      while reserved.include?(space)
         space += space_step
-        if space < space_base then
+        if space < space_base
           space_step *= -1
           space = space_base + space_step
         end
@@ -253,7 +260,7 @@ module Network
       leaves = []
       leaves.push(commit) if commit.space.zero?
 
-      while true
+      loop do
         return leaves if commit.parents(@map).count.zero?
 
         commit = commit.parents(@map).first

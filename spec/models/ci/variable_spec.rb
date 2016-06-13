@@ -1,17 +1,3 @@
-# == Schema Information
-#
-# Table name: ci_variables
-#
-#  id                   :integer          not null, primary key
-#  project_id           :integer
-#  key                  :string(255)
-#  value                :text
-#  encrypted_value      :text
-#  encrypted_value_salt :string(255)
-#  encrypted_value_iv   :string(255)
-#  gl_project_id        :integer
-#
-
 require 'spec_helper'
 
 describe Ci::Variable, models: true do
@@ -37,7 +23,7 @@ describe Ci::Variable, models: true do
     end
 
     it 'fails to decrypt if iv is incorrect' do
-      subject.encrypted_value_iv = nil
+      subject.encrypted_value_iv = SecureRandom.hex
       subject.instance_variable_set(:@value, nil)
       expect { subject.value }.
         to raise_error(OpenSSL::Cipher::CipherError, 'bad decrypt')

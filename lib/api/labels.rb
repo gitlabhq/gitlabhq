@@ -11,7 +11,7 @@ module API
       # Example Request:
       #   GET /projects/:id/labels
       get ':id/labels' do
-        present user_project.labels, with: Entities::Label
+        present user_project.labels, with: Entities::Label, current_user: current_user
       end
 
       # Creates a new label
@@ -36,7 +36,7 @@ module API
         label = user_project.labels.create(attrs)
 
         if label.valid?
-          present label, with: Entities::Label
+          present label, with: Entities::Label, current_user: current_user
         else
           render_validation_error!(label)
         end
@@ -90,7 +90,7 @@ module API
         attrs[:name] = attrs.delete(:new_name) if attrs.key?(:new_name)
 
         if label.update(attrs)
-          present label, with: Entities::Label
+          present label, with: Entities::Label, current_user: current_user
         else
           render_validation_error!(label)
         end

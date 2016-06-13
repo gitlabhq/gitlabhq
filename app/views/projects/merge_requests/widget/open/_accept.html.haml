@@ -1,31 +1,36 @@
-- status_class = @ci_commit ? " ci-#{@ci_commit.status}" : nil
+- status_class = @pipeline ? " ci-#{@pipeline.status}" : nil
 
 = form_for [:merge, @project.namespace.becomes(Namespace), @project, @merge_request], remote: true, method: :post, html: { class: 'accept-mr-form js-quick-submit js-requires-input' } do |f|
   = hidden_field_tag :authenticity_token, form_authenticity_token
+  = hidden_field_tag :sha, @merge_request.source_sha
   .accept-merge-holder.clearfix.js-toggle-container
     .clearfix
       .accept-action
-        - if @ci_commit && @ci_commit.active?
+        - if @pipeline && @pipeline.active?
           %span.btn-group
             = button_tag class: "btn btn-create js-merge-button merge_when_build_succeeds" do
               Merge When Build Succeeds
-            = button_tag class: "btn btn-success dropdown-toggle", 'data-toggle' => 'dropdown' do
-              %span.caret
-              %span.sr-only
-                Select Merge Moment
-            %ul.js-merge-dropdown.dropdown-menu.dropdown-menu-right{ role: 'menu' }
-              %li
-                = link_to "#", class: "merge_when_build_succeeds" do
-                  = icon('check fw')
-                  Merge When Build Succeeds
-              %li
-                = link_to "#", class: "accept_merge_request" do
-                  = icon('warning fw')
-                  Merge Immediately
+            - unless @project.only_allow_merge_if_build_succeeds?
+              = button_tag class: "btn btn-success dropdown-toggle", 'data-toggle' => 'dropdown' do
+                %span.caret
+                %span.sr-only
+                  Select Merge Moment
+              %ul.js-merge-dropdown.dropdown-menu.dropdown-menu-right{ role: 'menu' }
+                %li
+                  = link_to "#", class: "merge_when_build_succeeds" do
+                    = icon('check fw')
+                    Merge When Build Succeeds
+                %li
+                  = link_to "#", class: "accept_merge_request" do
+                    = icon('warning fw')
+                    Merge Immediately
         - else
           = f.button class: "btn btn-create btn-grouped js-merge-button accept_merge_request #{status_class}" do
             Accept Merge Request
-      - if @merge_request.can_remove_source_branch?(current_user)
+      - if @merge_request.force_remove_source_branch?
+        .accept-control
+          The source branch will be removed.
+      - elsif @merge_request.can_remove_source_branch?(current_user)
         .accept-control.checkbox
           = label_tag :should_remove_source_branch, class: "remove_source_checkbox" do
             = check_box_tag :should_remove_source_branch

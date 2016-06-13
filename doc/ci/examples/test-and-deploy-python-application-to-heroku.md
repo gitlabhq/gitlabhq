@@ -8,7 +8,7 @@ This is what the `.gitlab-ci.yml` file looks like for this project:
 ```yaml
 test:
   script:
-  # this configures django application to use attached postgres database that is run on `postgres` host
+  # this configures Django application to use attached postgres database that is run on `postgres` host
   - export DATABASE_URL=postgres://postgres:@postgres:5432/python-test-app
   - apt-get update -qy
   - apt-get install -y python-dev python-pip
@@ -37,7 +37,7 @@ production:
 ```
 
 This project has three jobs:
-1. `test` - used to test rails application,
+1. `test` - used to test Django application,
 2. `staging` - used to automatically deploy staging environment every push to `master` branch
 3. `production` - used to automatically deploy production environmnet for every created tag
 
@@ -61,12 +61,12 @@ gitlab-ci-multi-runner register \
   --non-interactive \
   --url "https://gitlab.com/ci/" \
   --registration-token "PROJECT_REGISTRATION_TOKEN" \
-  --description "python-3.2" \
+  --description "python-3.5" \
   --executor "docker" \
-  --docker-image python:3.2 \
+  --docker-image python:3.5 \
   --docker-postgres latest
 ```
 
-With the command above, you create a runner that uses [python:3.2](https://registry.hub.docker.com/u/library/python/) image and uses [postgres](https://registry.hub.docker.com/u/library/postgres/) database.
+With the command above, you create a runner that uses [python:3.5](https://hub.docker.com/r/_/python/) image and uses [postgres](https://hub.docker.com/r/_/postgres/) database.
 
 To access PostgreSQL database you need to connect to `host: postgres` as user `postgres` without password.

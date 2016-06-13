@@ -3,7 +3,7 @@ module Gitlab
     class << self
       def build(build)
         project = build.project
-        commit = build.commit
+        commit = build.pipeline
         user = build.user
 
         data = {

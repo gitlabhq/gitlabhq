@@ -1,27 +1,3 @@
-# == Schema Information
-#
-# Table name: services
-#
-#  id                    :integer          not null, primary key
-#  type                  :string
-#  title                 :string
-#  project_id            :integer
-#  created_at            :datetime         not null
-#  updated_at            :datetime         not null
-#  active                :boolean          not null
-#  properties            :text
-#  template              :boolean          default(FALSE)
-#  push_events           :boolean          default(TRUE)
-#  issues_events         :boolean          default(TRUE)
-#  merge_requests_events :boolean          default(TRUE)
-#  tag_push_events       :boolean          default(TRUE)
-#  note_events           :boolean          default(TRUE), not null
-#  build_events          :boolean          default(FALSE), not null
-#  category              :string           default("common"), not null
-#  default               :boolean          default(FALSE)
-#  wiki_page_events      :boolean          default(TRUE)
-#
-
 # To add new service you should build a class inherited from Service
 # and implement a set of methods
 class Service < ActiveRecord::Base
@@ -40,6 +16,7 @@ class Service < ActiveRecord::Base
   after_initialize :initialize_properties
 
   after_commit :reset_updated_properties
+  after_commit :cache_project_has_external_issue_tracker
 
   belongs_to :project
   has_one :service_hook
@@ -58,6 +35,7 @@ class Service < ActiveRecord::Base
   scope :note_hooks, -> { where(note_events: true, active: true) }
   scope :build_hooks, -> { where(build_events: true, active: true) }
   scope :wiki_page_hooks, -> { where(wiki_page_events: true, active: true) }
+  scope :external_issue_trackers, -> { issue_trackers.active.without_defaults }
 
   default_value_for :category, 'common'
 
@@ -215,5 +193,13 @@ class Service < ActiveRecord::Base
     service.template = false
     service.project_id = project_id
     service if service.save
+  end
+
+  private
+
+  def cache_project_has_external_issue_tracker
+    if project && !project.destroyed?
+      project.cache_has_external_issue_tracker
+    end
   end
 end

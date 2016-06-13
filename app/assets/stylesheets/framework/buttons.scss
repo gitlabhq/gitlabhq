@@ -16,6 +16,19 @@
   @include btn-default;
 }
 
+@mixin btn-outline($background, $text, $border, $hover-background, $hover-text, $hover-border) {
+  background-color: $background;
+  color: $text;
+  border-color: $border;
+
+  &:hover,
+  &:focus {
+    background-color: $hover-background;
+    color: $hover-text;
+    border-color: $hover-border;;
+  }
+}
+
 @mixin btn-color($light, $border-light, $normal, $border-normal, $dark, $border-dark, $color) {
   background-color: $light;
   border-color: $border-light;
@@ -66,6 +79,23 @@
   @include btn-color($white-light, $border-color, $white-normal, $border-white-normal, $white-dark, $border-white-dark, $btn-white-active);
 }
 
+@mixin btn-with-margin {
+  margin-left: $btn-side-margin;
+  float: left;
+
+  &.inline {
+    float: none;
+  }
+
+  &.btn-sm {
+    margin-left: $btn-sm-side-margin;
+  }
+
+  &.btn-xs {
+    margin-left: $btn-xs-side-margin;
+  }
+}
+
 .btn {
   @include btn-default;
   @include btn-white;
@@ -106,9 +136,12 @@
     @include btn-blue;
   }
 
-  &.btn-close,
   &.btn-warning {
     @include btn-orange;
+  }
+
+  &.btn-close {
+    @include btn-outline($white-light, $orange-normal, $orange-normal, $orange-light, $white-light, $orange-light);
   }
 
   &.btn-danger,
@@ -126,15 +159,9 @@
   }
 
   &.btn-grouped {
-    margin-right: 7px;
-    float: left;
-    &:last-child {
-      margin-right: 0;
-    }
-    &.btn-xs {
-      margin-right: 3px;
-    }
+    @include btn-with-margin;
   }
+
   &.disabled {
     pointer-events: auto !important;
   }
@@ -176,11 +203,7 @@
 
 .btn-group {
   &.btn-grouped {
-    margin-right: 7px;
-    float: left;
-    &:last-child {
-      margin-right: 0;
-    }
+    @include btn-with-margin;
   }
 }
 

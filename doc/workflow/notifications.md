@@ -69,7 +69,7 @@ In all of the below cases, the notification will be sent to:
 
     ...with notification level "Participating" or higher
 
-- Watchers: project members with notification level "Watch"
+- Watchers: users with notification level "Watch"
 - Subscribers: anyone who manually subscribed to the issue/merge request
 
 | Event                  | Sent to |

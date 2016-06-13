@@ -38,7 +38,7 @@ describe Projects::ProjectMembersController do
       include_context 'import applied'
 
       it 'does not import team members' do
-        expect(project.team_members).to_not include member
+        expect(project.team_members).not_to include member
       end
 
       it 'responds with not found' do

@@ -182,7 +182,7 @@ describe TeamcityService, models: true do
 
   def service(teamcity_url: 'http://gitlab.com')
     described_class.create(
-      project: build_stubbed(:empty_project),
+      project: create(:empty_project),
       properties: {
         teamcity_url: teamcity_url,
         username: 'mic',

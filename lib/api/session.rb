@@ -11,8 +11,7 @@ module API
     # Example Request:
     #  POST /session
     post "/session" do
-      auth = Gitlab::Auth.new
-      user = auth.find(params[:email] || params[:login], params[:password])
+      user = Gitlab::Auth.find_with_user_password(params[:email] || params[:login], params[:password])
 
       return unauthorized! unless user
       present user, with: Entities::UserLogin
