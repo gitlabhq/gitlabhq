@@ -57,6 +57,7 @@ v 8.9.0 (unreleased)
   - Improve error handling importing projects
   - Remove duplicated notification settings
   - Put project Files and Commits tabs under Code tab
+  - Decouple global notification level from user model
   - Replace Colorize with Rainbow for coloring console output in Rake tasks.
   - Add workhorse controller and API helpers
   - An indicator is now displayed at the top of the comment field for confidential issues.
