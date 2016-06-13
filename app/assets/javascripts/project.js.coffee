@@ -34,21 +34,26 @@ class @Project
       $(@).parents('.no-password-message').remove()
       e.preventDefault()
 
-    $('.update-notification').on 'click', (e) ->
-      e.preventDefault()
-      notification_level = $(@).data 'notification-level'
-      label = $(@).data 'notification-title'
-      $('#notification_setting_level').val(notification_level)
-      $('#notification-form').submit()
-      $('#notifications-button').empty().append("<i class='fa fa-bell'></i>" + label + "<i class='fa fa-angle-down'></i>")
-      $(@).parents('ul').find('li.active').removeClass 'active'
-      $(@).parent().addClass 'active'
+    $(document)
+      .off 'click', '.update-notification'
+      .on 'click', '.update-notification', (e) ->
+        e.preventDefault()
+        notificationLevel = $(@).data 'notification-level'
+        label = $(@).data 'notification-title'
+        $('.js-notification-loading').toggleClass 'fa-bell fa-spin fa-spinner'
+        $('#notification_setting_level').val(notificationLevel)
+        $('#notification-form').submit()
 
-    $('#notification-form').on 'ajax:success', (e, data) ->
-      if data.saved
-        new Flash("Notification settings saved", "notice")
-      else
-        new Flash("Failed to save new settings", "alert")
+    $(document)
+      .off 'ajax:success', '#notification-form'
+      .on 'ajax:success', '#notification-form', (e, data) ->
+        if data.saved
+          new Flash('Notification settings saved', 'notice')
+          $('.js-notification-toggle-btns')
+            .closest('.notification-dropdown')
+            .replaceWith(data.html)
+        else
+          new Flash('Failed to save new settings', 'alert')
 
 
     @projectSelectDropdown()

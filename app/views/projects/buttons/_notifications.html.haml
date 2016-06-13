@@ -1,11 +1,21 @@
 - if @notification_setting
-  = form_for @notification_setting, url: namespace_project_notification_setting_path(@project.namespace.becomes(Namespace), @project), method: :patch, remote: true, html: { class: 'inline', id: 'notification-form' } do |f|
-    = f.hidden_field :level
-    .dropdown
-      %button.btn.btn-default.notifications-btn#notifications-button{ data: { toggle: "dropdown" }, aria: { haspopup: "true", expanded: "false" } }
-        = icon('bell')
-        = notification_title(@notification_setting.level)
-        = icon('caret-down')
-      %ul.dropdown-menu.dropdown-menu-no-wrap.dropdown-menu-align-right.dropdown-menu-selectable.dropdown-menu-large{ role: "menu" }
-        - NotificationSetting.levels.each do |level|
-          = notification_list_item(level.first, @notification_setting)
+  .dropdown.notification-dropdown.pull-right
+    = form_for @notification_setting, url: namespace_project_notification_setting_path(@project.namespace.becomes(Namespace), @project), method: :patch, remote: true, html: { class: "inline", id: "notification-form" } do |f|
+      = f.hidden_field :level
+      .js-notification-toggle-btns
+        - if @notification_setting.level != "custom"
+          %button.dropdown-new.btn.btn-default.notifications-btn#notifications-button{ type: "button", data: { toggle: "dropdown", target: ".notification-dropdown" } }
+            = icon("bell", class: "js-notification-loading")
+            = notification_title(@notification_setting.level)
+            = icon("caret-down")
+        - else
+          .btn-group
+            %button.dropdown-new.btn.btn-default.notifications-btn#notifications-button{ type: "button", data: { toggle: "modal", target: "#custom-notifications-modal" } }
+              = icon("bell", class: "js-notification-loading")
+              = notification_title(@notification_setting.level)
+            %button.btn.btn-danger.dropdown-toggle{ data: { toggle: "dropdown", target: ".notification-dropdown" } }
+              %span.caret
+              .sr-only Toggle dropdown
+      = render "shared/projects/notification_dropdown"
+  = content_for :scripts_body do
+    = render "shared/projects/custom_notifications"

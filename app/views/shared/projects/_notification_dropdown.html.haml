@@ -1,0 +1,9 @@
+%ul.dropdown-menu.dropdown-menu-no-wrap.dropdown-menu-align-right.dropdown-menu-selectable.dropdown-menu-large{ role: "menu" }
+  - NotificationSetting.levels.each do |level|
+    - if level.first != "custom"
+      = notification_list_item(level.first, @notification_setting)
+  - if @notification_setting.level != "custom"
+    %li.divider
+    %li
+      %a.update-notification{ href: "#", role: "button", data: { toggle: "modal", target: "#custom-notifications-modal", notification_level: "custom", notification_title: "Custom" } }
+        Custom

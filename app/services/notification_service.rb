@@ -29,6 +29,7 @@ class NotificationService
   #  * issue assignee if their notification level is not Disabled
   #  * project team members with notification level higher then Participating
   #  * watchers of the issue's labels
+  #  * users with custom level checked with "new issue"
   #
   def new_issue(issue, current_user)
     new_resource_email(issue, issue.project, :new_issue_email)
@@ -39,6 +40,7 @@ class NotificationService
   #  * issue author if their notification level is not Disabled
   #  * issue assignee if their notification level is not Disabled
   #  * project team members with notification level higher then Participating
+  #  * users with custom level checked with "close issue"
   #
   def close_issue(issue, current_user)
     close_resource_email(issue, issue.project, current_user, :closed_issue_email)
@@ -48,6 +50,7 @@ class NotificationService
   #
   #  * issue old assignee if their notification level is not Disabled
   #  * issue new assignee if their notification level is not Disabled
+  #  * users with custom level checked with "reassign issue"
   #
   def reassigned_issue(issue, current_user)
     reassign_resource_email(issue, issue.project, current_user, :reassigned_issue_email)
@@ -66,6 +69,7 @@ class NotificationService
   #  * mr assignee if their notification level is not Disabled
   #  * project team members with notification level higher then Participating
   #  * watchers of the mr's labels
+  #  * users with custom level checked with "new merge request"
   #
   def new_merge_request(merge_request, current_user)
     new_resource_email(merge_request, merge_request.target_project, :new_merge_request_email)
@@ -75,6 +79,7 @@ class NotificationService
   #
   #  * merge_request old assignee if their notification level is not Disabled
   #  * merge_request assignee if their notification level is not Disabled
+  #  * users with custom level checked with "reassign merge request"
   #
   def reassigned_merge_request(merge_request, current_user)
     reassign_resource_email(merge_request, merge_request.target_project, current_user, :reassigned_merge_request_email)

@@ -19,7 +19,7 @@ class NotificationSetting < ActiveRecord::Base
     :new_note,
     :new_issue,
     :reopen_issue,
-    :closed_issue,
+    :close_issue,
     :reassign_issue,
     :new_merge_request,
     :reopen_merge_request,
@@ -42,13 +42,12 @@ class NotificationSetting < ActiveRecord::Base
     setting
   end
 
-  # Set all event attributes as true when level is not custom
+  # Set all event attributes to false when level is not custom or being initialized
   def set_events
-    # Level is a ENUM cannot compare to symbol
-    return if level == "custom"
+    return if self.custom? || self.persisted?
 
     EMAIL_EVENTS.each do |event|
-      self.send("#{event}=", true)
+      events[event] = false
     end
   end
 end
