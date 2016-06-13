@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe DisableEmailInterceptor, lib: true do
   before do
-    ActionMailer::Base.register_interceptor(DisableEmailInterceptor)
+    Mail.register_interceptor(DisableEmailInterceptor)
   end
 
   it 'should not send emails' do
@@ -14,7 +14,7 @@ describe DisableEmailInterceptor, lib: true do
     # Removing interceptor from the list because unregister_interceptor is
     # implemented in later version of mail gem
     # See: https://github.com/mikel/mail/pull/705
-    Mail.class_variable_set(:@@delivery_interceptors, [])
+    Mail.unregister_interceptor(DisableEmailInterceptor)
   end
 
   def deliver_mail

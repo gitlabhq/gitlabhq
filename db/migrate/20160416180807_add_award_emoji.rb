@@ -1,3 +1,4 @@
+# rubocop:disable all
 class AddAwardEmoji < ActiveRecord::Migration
   def change
     create_table :award_emoji do |t|

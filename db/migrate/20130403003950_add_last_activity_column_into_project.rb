@@ -1,3 +1,4 @@
+# rubocop:disable all
 class AddLastActivityColumnIntoProject < ActiveRecord::Migration
   def up
     add_column :projects, :last_activity_at, :datetime

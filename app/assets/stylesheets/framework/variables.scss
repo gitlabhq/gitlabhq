@@ -2,7 +2,7 @@
  * Layout
  */
 $sidebar_collapsed_width: 62px;
-$sidebar_width: 90px;
+$sidebar_width: 220px;
 $gutter_collapsed_width: 62px;
 $gutter_width: 290px;
 $gutter_inner_width: 258px;
@@ -260,3 +260,6 @@ $calendar-header-color: #b8b8b8;
 $calendar-hover-bg: #ecf3fe;
 $calendar-border-color: rgba(#000, .1);
 $calendar-unselectable-bg: #faf9f9;
+
+$ci-output-bg: #1d1f21;
+$ci-text-color: #c5c8c6;

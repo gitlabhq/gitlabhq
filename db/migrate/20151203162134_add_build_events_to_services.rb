@@ -1,3 +1,4 @@
+# rubocop:disable all
 class AddBuildEventsToServices < ActiveRecord::Migration
   def change
     add_column :services, :build_events, :boolean, default: false, null: false

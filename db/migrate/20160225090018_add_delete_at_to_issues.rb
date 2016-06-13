@@ -1,3 +1,4 @@
+# rubocop:disable all
 class AddDeleteAtToIssues < ActiveRecord::Migration
   def change
     add_column :issues, :deleted_at, :datetime

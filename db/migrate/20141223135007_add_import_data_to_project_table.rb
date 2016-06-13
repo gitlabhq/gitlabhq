@@ -1,3 +1,4 @@
+# rubocop:disable all
 class AddImportDataToProjectTable < ActiveRecord::Migration
   def change
     add_column :projects, :import_type, :string

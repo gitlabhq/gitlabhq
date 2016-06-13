@@ -62,7 +62,7 @@ registry:
   host: registry.gitlab.example.com
   port: 5005
   api_url: http://localhost:5000/
-  key_path: config/registry.key
+  key: config/registry.key
   path: shared/registry
   issuer: gitlab-issuer
 ```
@@ -75,7 +75,7 @@ where:
 | `host`    | The host URL under which the Registry will run and the users will be able to use. |
 | `port`    | The port under which the external Registry domain will listen on. |
 | `api_url` | The internal API URL under which the Registry is exposed to. It defaults to `http://localhost:5000`. |
-| `key_path`| The private key location that is a pair of Registry's `rootcertbundle`. Read the [token auth configuration documentation][token-config]. |
+| `key`     | The private key location that is a pair of Registry's `rootcertbundle`. Read the [token auth configuration documentation][token-config]. |
 | `path`    | This should be the same directory like specified in Registry's `rootdirectory`. Read the [storage configuration documentation][storage-config]. This path needs to be readable by the GitLab user, the web-server user and the Registry user. Read more in [#container-registry-storage-path](#container-registry-storage-path). |
 | `issuer`  | This should be the same value as configured in Registry's `issuer`. Read the [token auth configuration documentation][token-config]. |
 

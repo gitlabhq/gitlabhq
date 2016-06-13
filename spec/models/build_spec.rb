@@ -219,7 +219,7 @@ describe Ci::Build, models: true do
 
         context 'and trigger variables' do
           let(:trigger) { create(:ci_trigger, project: project) }
-          let(:trigger_request) { create(:ci_trigger_request_with_variables, commit: pipeline, trigger: trigger) }
+          let(:trigger_request) { create(:ci_trigger_request_with_variables, pipeline: pipeline, trigger: trigger) }
           let(:trigger_variables) do
             [
               { key: :TRIGGER_KEY, value: 'TRIGGER_VALUE', public: false }
