@@ -27,8 +27,8 @@ module Gitlab
           end
 
           def compose!
-            allowed_nodes.each do |key, factory|
-              @nodes[key] = create_node(key, factory.dup)
+            allowed_nodes.each do |key, essence|
+              @nodes[key] = create_node(key, essence)
             end
           end
 
@@ -62,7 +62,7 @@ module Gitlab
 
           private
 
-          def create_node(key, factory)
+          def create_node(key, essence)
             raise NotImplementedError
           end
         end

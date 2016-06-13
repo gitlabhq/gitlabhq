@@ -37,7 +37,9 @@ module Gitlab
           end
 
           class_methods do
-            attr_reader :allowed_nodes
+            def allowed_nodes
+              Hash[@allowed_nodes.map { |key, factory| [key, factory.dup] } ]
+            end
 
             private
 
