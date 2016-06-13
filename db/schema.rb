@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160608155312) do
+ActiveRecord::Schema.define(version: 20160610301627) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -144,9 +144,9 @@ ActiveRecord::Schema.define(version: 20160608155312) do
     t.text     "commands"
     t.integer  "job_id"
     t.string   "name"
-    t.boolean  "deploy",             default: false
+    t.boolean  "deploy",              default: false
     t.text     "options"
-    t.boolean  "allow_failure",      default: false, null: false
+    t.boolean  "allow_failure",       default: false, null: false
     t.string   "stage"
     t.integer  "trigger_request_id"
     t.integer  "stage_idx"
@@ -161,6 +161,7 @@ ActiveRecord::Schema.define(version: 20160608155312) do
     t.text     "artifacts_metadata"
     t.integer  "erased_by_id"
     t.datetime "erased_at"
+    t.datetime "artifacts_expire_at"
   end
 
   add_index "ci_builds", ["commit_id", "stage_idx", "created_at"], name: "index_ci_builds_on_commit_id_and_stage_idx_and_created_at", using: :btree
@@ -670,8 +671,8 @@ ActiveRecord::Schema.define(version: 20160608155312) do
 
   create_table "notification_settings", force: :cascade do |t|
     t.integer  "user_id",                 null: false
-    t.integer  "source_id",               null: false
-    t.string   "source_type",             null: false
+    t.integer  "source_id"
+    t.string   "source_type"
     t.integer  "level",       default: 0, null: false
     t.datetime "created_at",              null: false
     t.datetime "updated_at",              null: false
@@ -988,7 +989,6 @@ ActiveRecord::Schema.define(version: 20160608155312) do
     t.boolean  "can_create_team",             default: true,  null: false
     t.string   "state"
     t.integer  "color_scheme_id",             default: 1,     null: false
-    t.integer  "notification_level",          default: 1,     null: false
     t.datetime "password_expires_at"
     t.integer  "created_by_id"
     t.datetime "last_credential_check_at"
