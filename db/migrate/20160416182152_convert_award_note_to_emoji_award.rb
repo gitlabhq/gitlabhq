@@ -27,11 +27,8 @@ class ConvertAwardNoteToEmojiAward < ActiveRecord::Migration
   end
 
   def migrate_mysql
-    execute <<-EOF
-    lock tables notes WRITE, award_emoji WRITE; 
-    INSERT INTO award_emoji (awardable_type, awardable_id, user_id, name, created_at, updated_at) (SELECT noteable_type, noteable_id, author_id, note, created_at, updated_at FROM notes WHERE is_award = true);
-    EOF
-
+    execute 'LOCK TABLES notes WRITE, award_emoji WRITE;'
+    execute 'INSERT INTO award_emoji (awardable_type, awardable_id, user_id, name, created_at, updated_at) (SELECT noteable_type, noteable_id, author_id, note, created_at, updated_at FROM notes WHERE is_award = true);'
     execute "DELETE FROM notes WHERE is_award = true"
     remove_column :notes, :is_award, :boolean
   ensure
