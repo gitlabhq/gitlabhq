@@ -751,8 +751,6 @@ ActiveRecord::Schema.define(version: 20160610301627) do
     t.boolean  "merge_requests_enabled",             default: true,     null: false
     t.boolean  "wiki_enabled",                       default: true,     null: false
     t.integer  "namespace_id"
-    t.string   "issues_tracker",                     default: "gitlab", null: false
-    t.string   "issues_tracker_id"
     t.boolean  "snippets_enabled",                   default: true,     null: false
     t.datetime "last_activity_at"
     t.string   "import_url"
