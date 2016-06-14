@@ -362,11 +362,13 @@ describe API::Runners, api: true  do
 
   describe 'POST /projects/:id/runners' do
     context 'authorized user' do
-      it 'should enable specific runner' do
-        specific_runner2 = create(:ci_runner).tap do |runner|
+      let(:specific_runner2) do
+        create(:ci_runner).tap do |runner|
           create(:ci_runner_project, runner: runner, project: project2)
         end
+      end
 
+      it 'should enable specific runner' do
         expect do
           post api("/projects/#{project.id}/runners", user), runner_id: specific_runner2.id
         end.to change{ project.runners.count }.by(+1)
@@ -378,6 +380,16 @@ describe API::Runners, api: true  do
           post api("/projects/#{project.id}/runners", user), runner_id: specific_runner.id
         end.to change{ project.runners.count }.by(0)
         expect(response.status).to eq(201)
+      end
+
+      it 'should not enable locked runner' do
+        specific_runner2.update(locked: true)
+
+        expect do
+          post api("/projects/#{project.id}/runners", user), runner_id: specific_runner2.id
+        end.to change{ project.runners.count }.by(0)
+
+        expect(response.status).to eq(403)
       end
 
       it 'should not enable shared runner' do

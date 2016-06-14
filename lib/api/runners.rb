@@ -163,6 +163,7 @@ module API
 
       def authenticate_enable_runner!(runner)
         forbidden!("Runner is shared") if runner.is_shared?
+        forbidden!("Runner is locked") if runner.locked?
         return if current_user.is_admin?
         forbidden!("No access granted") unless user_can_access_runner?(runner)
       end
