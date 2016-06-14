@@ -241,4 +241,30 @@ describe API::API, api: true  do
       end
     end
   end
+
+  describe 'POST /projects/:id/builds/:build_id/artifacts/keep' do
+    before do
+      post api("/projects/#{project.id}/builds/#{build.id}/artifacts/keep", user)
+    end
+
+    context 'artifacts did not expire' do
+      let(:build) do
+        create(:ci_build, :trace, :artifacts, :success,
+               project: project, pipeline: pipeline, artifacts_expire_at: Time.now + 7.days)
+      end
+
+      it 'keeps artifacts' do
+        expect(response.status).to eq 200
+        expect(build.reload.artifacts_expire_at).to be_nil
+      end
+    end
+
+    context 'no artifacts' do
+      let(:build) { create(:ci_build, project: project, pipeline: pipeline) }
+
+      it 'responds with not found' do
+        expect(response.status).to eq 404
+      end
+    end
+  end
 end

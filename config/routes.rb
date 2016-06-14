@@ -727,6 +727,7 @@ Rails.application.routes.draw do
             get :download
             get :browse, path: 'browse(/*path)', format: false
             get :file, path: 'file/*path', format: false
+            post :keep
           end
         end
 
