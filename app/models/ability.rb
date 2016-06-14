@@ -533,7 +533,7 @@ class Ability
     def filter_confidential_issues_abilities(user, issue, rules)
       return rules if user.admin? || !issue.confidential?
 
-      unless issue.author == user || issue.assignee == user || issue.project.team.member?(user.id)
+      unless issue.author == user || issue.assignee == user || issue.project.team.member?(user, Gitlab::Access::REPORTER)
         rules.delete(:admin_issue)
         rules.delete(:read_issue)
         rules.delete(:update_issue)

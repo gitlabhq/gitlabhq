@@ -42,9 +42,7 @@ describe Gitlab::Badge::Build do
   end
 
   context 'build exists' do
-    let(:ci_commit) { create(:ci_commit, project: project, sha: sha, ref: branch) }
-    let!(:build) { create(:ci_build, commit: ci_commit) }
-
+    let!(:build) { create_build(project, sha, branch) }
 
     context 'build success' do
       before { build.success! }
@@ -94,6 +92,28 @@ describe Gitlab::Badge::Build do
         expect(status_node(data, 'unknown')).to be_truthy
       end
     end
+  end
+
+  context 'when outdated pipeline for given ref exists' do
+    before do
+      build = create_build(project, sha, branch)
+      build.success!
+
+      old_build = create_build(project, '11eeffdd', branch)
+      old_build.drop!
+    end
+
+    it 'does not take outdated pipeline into account' do
+      expect(badge.to_s).to eq 'build-success'
+    end
+  end
+
+  def create_build(project, sha, branch)
+    pipeline = create(:ci_pipeline, project: project,
+                                    sha: sha,
+                                    ref: branch)
+
+    create(:ci_build, pipeline: pipeline)
   end
 
   def status_node(data, status)

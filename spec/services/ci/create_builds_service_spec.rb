@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Ci::CreateBuildsService, services: true do
-  let(:commit) { create(:ci_commit, ref: 'master') }
+  let(:pipeline) { create(:ci_pipeline, ref: 'master') }
   let(:user) { create(:user) }
 
   describe '#execute' do
@@ -9,7 +9,7 @@ describe Ci::CreateBuildsService, services: true do
     #
 
     subject do
-      described_class.new(commit).execute('test', user, status, nil)
+      described_class.new(pipeline).execute('test', user, status, nil)
     end
 
     context 'next builds available' do

@@ -12,8 +12,8 @@ feature 'Merge When Build Succeeds', feature: true, js: true do
   end
 
   context "Active build for Merge Request" do
-    let!(:ci_commit) { create(:ci_commit, project: project, sha: merge_request.last_commit.id, ref: merge_request.source_branch) }
-    let!(:ci_build) { create(:ci_build, commit: ci_commit) }
+    let!(:pipeline) { create(:ci_pipeline, project: project, sha: merge_request.last_commit.id, ref: merge_request.source_branch) }
+    let!(:ci_build) { create(:ci_build, pipeline: pipeline) }
 
     before do
       login_as user
@@ -47,8 +47,8 @@ feature 'Merge When Build Succeeds', feature: true, js: true do
                                                   merge_user: user, title: "MepMep", merge_when_build_succeeds: true)
     end
 
-    let!(:ci_commit) { create(:ci_commit, project: project, sha: merge_request.last_commit.id, ref: merge_request.source_branch) }
-    let!(:ci_build) { create(:ci_build, commit: ci_commit) }
+    let!(:pipeline) { create(:ci_pipeline, project: project, sha: merge_request.last_commit.id, ref: merge_request.source_branch) }
+    let!(:ci_build) { create(:ci_build, pipeline: pipeline) }
 
     before do
       login_as user

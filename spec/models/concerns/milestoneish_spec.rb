@@ -5,6 +5,7 @@ describe Milestone, 'Milestoneish' do
   let(:assignee) { create(:user) }
   let(:non_member) { create(:user) }
   let(:member) { create(:user) }
+  let(:guest) { create(:user) }
   let(:admin) { create(:admin) }
   let(:project) { create(:project, :public) }
   let(:milestone) { create(:milestone, project: project) }
@@ -21,11 +22,16 @@ describe Milestone, 'Milestoneish' do
 
   before do
     project.team << [member, :developer]
+    project.team << [guest, :guest]
   end
 
   describe '#closed_items_count' do
     it 'should not count confidential issues for non project members' do
       expect(milestone.closed_items_count(non_member)).to eq 2
+    end
+
+    it 'should not count confidential issues for project members with guest role' do
+      expect(milestone.closed_items_count(guest)).to eq 2
     end
 
     it 'should count confidential issues for author' do
@@ -48,6 +54,10 @@ describe Milestone, 'Milestoneish' do
   describe '#total_items_count' do
     it 'should not count confidential issues for non project members' do
       expect(milestone.total_items_count(non_member)).to eq 4
+    end
+
+    it 'should not count confidential issues for project members with guest role' do
+      expect(milestone.total_items_count(guest)).to eq 4
     end
 
     it 'should count confidential issues for author' do
@@ -83,6 +93,10 @@ describe Milestone, 'Milestoneish' do
   describe '#percent_complete' do
     it 'should not count confidential issues for non project members' do
       expect(milestone.percent_complete(non_member)).to eq 50
+    end
+
+    it 'should not count confidential issues for project members with guest role' do
+      expect(milestone.percent_complete(guest)).to eq 50
     end
 
     it 'should count confidential issues for author' do

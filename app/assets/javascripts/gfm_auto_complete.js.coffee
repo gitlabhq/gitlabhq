@@ -3,6 +3,7 @@
 window.GitLab ?= {}
 GitLab.GfmAutoComplete =
   dataLoading: false
+  dataLoaded: false
 
   dataSource: ''
 
@@ -21,6 +22,24 @@ GitLab.GfmAutoComplete =
   # Milestones
   Milestones:
     template: '<li>${title}</li>'
+
+  Loading:
+    template: '<li><i class="fa fa-refresh fa-spin"></i> Loading...</li>'
+
+  DefaultOptions:
+    sorter: (query, items, searchKey) ->
+      return items if items[0].name? and items[0].name is 'loading'
+
+      $.fn.atwho.default.callbacks.sorter(query, items, searchKey)
+    filter: (query, data, searchKey) ->
+      return data if data[0] is 'loading'
+
+      $.fn.atwho.default.callbacks.filter(query, data, searchKey)
+    beforeInsert: (value) ->
+      if not GitLab.GfmAutoComplete.dataLoaded
+        @at
+      else
+        value
 
   # Add GFM auto-completion to all input fields, that accept GFM input.
   setup: (wrap) ->
@@ -53,18 +72,37 @@ GitLab.GfmAutoComplete =
     # Emoji
     @input.atwho
       at: ':'
-      displayTpl: @Emoji.template
+      displayTpl: (value) =>
+        if value.path?
+          @Emoji.template
+        else
+          @Loading.template
       insertTpl: ':${name}:'
+      data: ['loading']
+      callbacks:
+        sorter: @DefaultOptions.sorter
+        filter: @DefaultOptions.filter
+        beforeInsert: @DefaultOptions.beforeInsert
 
     # Team Members
     @input.atwho
       at: '@'
-      displayTpl: @Members.template
+      displayTpl: (value) =>
+        if value.username?
+          @Members.template
+        else
+          @Loading.template
       insertTpl: '${atwho-at}${username}'
       searchKey: 'search'
+      data: ['loading']
       callbacks:
+        sorter: @DefaultOptions.sorter
+        filter: @DefaultOptions.filter
+        beforeInsert: @DefaultOptions.beforeInsert
         beforeSave: (members) ->
           $.map members, (m) ->
+            return m if not m.username?
+
             title = m.name
             title += " (#{m.count})" if m.count
 
@@ -76,11 +114,21 @@ GitLab.GfmAutoComplete =
       at: '#'
       alias: 'issues'
       searchKey: 'search'
-      displayTpl: @Issues.template
+      displayTpl:  (value) =>
+        if value.title?
+          @Issues.template
+        else
+          @Loading.template
+      data: ['loading']
       insertTpl: '${atwho-at}${id}'
       callbacks:
+        sorter: @DefaultOptions.sorter
+        filter: @DefaultOptions.filter
+        beforeInsert: @DefaultOptions.beforeInsert
         beforeSave: (issues) ->
           $.map issues, (i) ->
+            return i if not i.title?
+
             id:     i.iid
             title:  sanitize(i.title)
             search: "#{i.iid} #{i.title}"
@@ -89,11 +137,18 @@ GitLab.GfmAutoComplete =
       at: '%'
       alias: 'milestones'
       searchKey: 'search'
-      displayTpl: @Milestones.template
+      displayTpl:  (value) =>
+        if value.title?
+          @Milestones.template
+        else
+          @Loading.template
       insertTpl: '${atwho-at}"${title}"'
+      data: ['loading']
       callbacks:
         beforeSave: (milestones) ->
           $.map milestones, (m) ->
+            return m if not m.title?
+
             id:     m.iid
             title:  sanitize(m.title)
             search: "#{m.title}"
@@ -102,11 +157,21 @@ GitLab.GfmAutoComplete =
       at: '!'
       alias: 'mergerequests'
       searchKey: 'search'
-      displayTpl: @Issues.template
+      displayTpl:  (value) =>
+        if value.title?
+          @Issues.template
+        else
+          @Loading.template
+      data: ['loading']
       insertTpl: '${atwho-at}${id}'
       callbacks:
+        sorter: @DefaultOptions.sorter
+        filter: @DefaultOptions.filter
+        beforeInsert: @DefaultOptions.beforeInsert
         beforeSave: (merges) ->
           $.map merges, (m) ->
+            return m if not m.title?
+
             id:     m.iid
             title:  sanitize(m.title)
             search: "#{m.iid} #{m.title}"
@@ -118,6 +183,8 @@ GitLab.GfmAutoComplete =
     $.getJSON(dataSource)
 
   loadData: (data) ->
+    @dataLoaded = true
+
     # load members
     @input.atwho 'load', '@', data.members
     # load issues
@@ -128,3 +195,7 @@ GitLab.GfmAutoComplete =
     @input.atwho 'load', 'mergerequests', data.mergerequests
     # load emojis
     @input.atwho 'load', ':', data.emojis
+
+    # This trigger at.js again
+    # otherwise we would be stuck with loading until the user types
+    $(':focus').trigger('keyup')

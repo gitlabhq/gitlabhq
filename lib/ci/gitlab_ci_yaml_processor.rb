@@ -8,22 +8,20 @@ module Ci
     ALLOWED_JOB_KEYS = [:tags, :script, :only, :except, :type, :image, :services,
                         :allow_failure, :type, :stage, :when, :artifacts, :cache,
                         :dependencies, :before_script, :after_script, :variables]
+    ALLOWED_CACHE_KEYS = [:key, :untracked, :paths]
+    ALLOWED_ARTIFACTS_KEYS = [:name, :untracked, :paths, :when]
 
     attr_reader :before_script, :after_script, :image, :services, :path, :cache
 
     def initialize(config, path = nil)
-      @config = YAML.safe_load(config, [Symbol], [], true)
+      @config = Gitlab::Ci::Config.new(config).to_hash
       @path = path
-
-      unless @config.is_a? Hash
-        raise ValidationError, "YAML should be a hash"
-      end
-
-      @config = @config.deep_symbolize_keys
 
       initial_parsing
 
       validate!
+    rescue Gitlab::Ci::Config::Loader::FormatError => e
+      raise ValidationError, e.message
     end
 
     def builds_for_stage_and_ref(stage, ref, tag = false, trigger_request = nil)
@@ -142,6 +140,12 @@ module Ci
     end
 
     def validate_global_cache!
+      @cache.keys.each do |key|
+        unless ALLOWED_CACHE_KEYS.include? key
+          raise ValidationError, "#{name} cache unknown parameter #{key}"
+        end
+      end
+
       if @cache[:key] && !validate_string(@cache[:key])
         raise ValidationError, "cache:key parameter should be a string"
       end
@@ -207,7 +211,7 @@ module Ci
         raise ValidationError, "#{name} job: allow_failure parameter should be an boolean"
       end
 
-      if job[:when] && !job[:when].in?(%w(on_success on_failure always))
+      if job[:when] && !job[:when].in?(%w[on_success on_failure always])
         raise ValidationError, "#{name} job: when parameter should be on_success, on_failure or always"
       end
     end
@@ -240,6 +244,12 @@ module Ci
     end
 
     def validate_job_cache!(name, job)
+      job[:cache].keys.each do |key|
+        unless ALLOWED_CACHE_KEYS.include? key
+          raise ValidationError, "#{name} job: cache unknown parameter #{key}"
+        end
+      end
+
       if job[:cache][:key] && !validate_string(job[:cache][:key])
         raise ValidationError, "#{name} job: cache:key parameter should be a string"
       end
@@ -254,6 +264,12 @@ module Ci
     end
 
     def validate_job_artifacts!(name, job)
+      job[:artifacts].keys.each do |key|
+        unless ALLOWED_ARTIFACTS_KEYS.include? key
+          raise ValidationError, "#{name} job: artifacts unknown parameter #{key}"
+        end
+      end
+
       if job[:artifacts][:name] && !validate_string(job[:artifacts][:name])
         raise ValidationError, "#{name} job: artifacts:name parameter should be a string"
       end
@@ -264,6 +280,10 @@ module Ci
 
       if job[:artifacts][:paths] && !validate_array_of_strings(job[:artifacts][:paths])
         raise ValidationError, "#{name} job: artifacts:paths parameter should be an array of strings"
+      end
+
+      if job[:artifacts][:when] && !job[:artifacts][:when].in?(%w[on_success on_failure always])
+        raise ValidationError, "#{name} job: artifacts:when parameter should be on_success, on_failure or always"
       end
     end
 

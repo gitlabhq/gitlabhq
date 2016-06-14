@@ -1,12 +1,12 @@
 module Ci
   class CreateBuildsService
-    def initialize(commit)
-      @commit = commit
-      @config = commit.config_processor
+    def initialize(pipeline)
+      @pipeline = pipeline
+      @config = pipeline.config_processor
     end
 
     def execute(stage, user, status, trigger_request = nil)
-      builds_attrs = @config.builds_for_stage_and_ref(stage, @commit.ref, @commit.tag, trigger_request)
+      builds_attrs = @config.builds_for_stage_and_ref(stage, @pipeline.ref, @pipeline.tag, trigger_request)
 
       # check when to create next build
       builds_attrs = builds_attrs.select do |build_attrs|
@@ -22,9 +22,9 @@ module Ci
 
       # don't create the same build twice
       builds_attrs.reject! do |build_attrs|
-        @commit.builds.find_by(ref: @commit.ref, tag: @commit.tag,
-                               trigger_request: trigger_request,
-                               name: build_attrs[:name])
+        @pipeline.builds.find_by(ref: @pipeline.ref, tag: @pipeline.tag,
+                                 trigger_request: trigger_request,
+                                 name: build_attrs[:name])
       end
 
       builds_attrs.map do |build_attrs|
@@ -36,18 +36,18 @@ module Ci
                            :stage,
                            :stage_idx)
 
-        build_attrs.merge!(commit: @commit,
-                           ref: @commit.ref,
-                           tag: @commit.tag,
+        build_attrs.merge!(pipeline: @pipeline,
+                           ref: @pipeline.ref,
+                           tag: @pipeline.tag,
                            trigger_request: trigger_request,
                            user: user,
-                           project: @commit.project)
+                           project: @pipeline.project)
 
         ##
         # We do not persist new builds here.
-        # Those will be persisted when @commit is saved.
+        # Those will be persisted when @pipeline is saved.
         #
-        @commit.builds.new(build_attrs)
+        @pipeline.builds.new(build_attrs)
       end
     end
   end

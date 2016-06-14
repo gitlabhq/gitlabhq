@@ -1,21 +1,25 @@
 #!/bin/bash
 
 retry() {
-    for i in $(seq 1 3); do
+    if eval "$@"; then
+        return 0
+    fi
+
+    for i in 2 1; do
+        sleep 3s
+        echo "Retrying $i..."
         if eval "$@"; then
             return 0
         fi
-        sleep 3s
-        echo "Retrying..."
     done
     return 1
 }
 
 if [ -f /.dockerenv ] || [ -f ./dockerinit ]; then
-    mkdir -p vendor
+    mkdir -p vendor/apt
 
     # Install phantomjs package
-    pushd vendor
+    pushd vendor/apt
     if [ ! -e phantomjs_1.9.8-0jessie_amd64.deb ]; then
         wget -q https://gitlab.com/axil/phantomjs-debian/raw/master/phantomjs_1.9.8-0jessie_amd64.deb
     fi

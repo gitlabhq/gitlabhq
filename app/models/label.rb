@@ -26,9 +26,19 @@ class Label < ActiveRecord::Base
             format: { with: /\A[^&\?,]+\z/ },
             uniqueness: { scope: :project_id }
 
+  before_save :nullify_priority
+
   default_scope { order(title: :asc) }
 
   scope :templates, ->  { where(template: true) }
+
+  def self.prioritized
+    where.not(priority: nil).reorder(:priority, :title)
+  end
+
+  def self.unprioritized
+    where(priority: nil)
+  end
 
   alias_attribute :name, :title
 
@@ -117,5 +127,9 @@ class Label < ActiveRecord::Base
     else
       id
     end
+  end
+
+  def nullify_priority
+    self.priority = nil if priority.blank?
   end
 end

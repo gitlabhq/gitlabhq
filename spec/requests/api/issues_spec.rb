@@ -5,6 +5,7 @@ describe API::API, api: true  do
   let(:user)        { create(:user) }
   let(:user2)       { create(:user) }
   let(:non_member)  { create(:user) }
+  let(:guest)       { create(:user) }
   let(:author)      { create(:author) }
   let(:assignee)    { create(:assignee) }
   let(:admin)       { create(:user, :admin) }
@@ -41,7 +42,10 @@ describe API::API, api: true  do
   end
   let!(:note) { create(:note_on_issue, author: user, project: project, noteable: issue) }
 
-  before { project.team << [user, :reporter] }
+  before do
+    project.team << [user, :reporter]
+    project.team << [guest, :guest]
+  end
 
   describe "GET /issues" do
     context "when unauthenticated" do
@@ -138,6 +142,14 @@ describe API::API, api: true  do
 
     it 'should return project issues without confidential issues for non project members' do
       get api("#{base_url}/issues", non_member)
+      expect(response.status).to eq(200)
+      expect(json_response).to be_an Array
+      expect(json_response.length).to eq(2)
+      expect(json_response.first['title']).to eq(issue.title)
+    end
+
+    it 'should return project issues without confidential issues for project members with guest role' do
+      get api("#{base_url}/issues", guest)
       expect(response.status).to eq(200)
       expect(json_response).to be_an Array
       expect(json_response.length).to eq(2)
@@ -249,7 +261,6 @@ describe API::API, api: true  do
       expect(json_response['milestone']).to be_a Hash
       expect(json_response['assignee']).to be_a Hash
       expect(json_response['author']).to be_a Hash
-      expect(json_response['user_notes_count']).to be(1)
     end
 
     it "should return a project issue by id" do
@@ -276,6 +287,11 @@ describe API::API, api: true  do
     context 'confidential issues' do
       it "should return 404 for non project members" do
         get api("/projects/#{project.id}/issues/#{confidential_issue.id}", non_member)
+        expect(response.status).to eq(404)
+      end
+
+      it "should return 404 for project members with guest role" do
+        get api("/projects/#{project.id}/issues/#{confidential_issue.id}", guest)
         expect(response.status).to eq(404)
       end
 
@@ -410,6 +426,12 @@ describe API::API, api: true  do
     context 'confidential issues' do
       it "should return 403 for non project members" do
         put api("/projects/#{project.id}/issues/#{confidential_issue.id}", non_member),
+          title: 'updated title'
+        expect(response.status).to eq(403)
+      end
+
+      it "should return 403 for project members with guest role" do
+        put api("/projects/#{project.id}/issues/#{confidential_issue.id}", guest),
           title: 'updated title'
         expect(response.status).to eq(403)
       end

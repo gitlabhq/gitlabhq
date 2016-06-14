@@ -9,6 +9,16 @@ describe Note, models: true do
     it { is_expected.to have_many(:todos).dependent(:destroy) }
   end
 
+  describe 'modules' do
+    subject { described_class }
+
+    it { is_expected.to include_module(Participable) }
+    it { is_expected.to include_module(Mentionable) }
+    it { is_expected.to include_module(Awardable) }
+
+    it { is_expected.to include_module(Gitlab::CurrentSettings) }
+  end
+
   describe 'validation' do
     it { is_expected.to validate_presence_of(:note) }
     it { is_expected.to validate_presence_of(:project) }
@@ -152,39 +162,29 @@ describe Note, models: true do
     end
 
     context "confidential issues" do
-      let(:user) { create :user }
-      let(:confidential_issue) { create(:issue, :confidential, author: user) }
-      let(:confidential_note) { create :note, note: "Random", noteable: confidential_issue, project: confidential_issue.project }
+      let(:user) { create(:user) }
+      let(:project) { create(:project) }
+      let(:confidential_issue) { create(:issue, :confidential, project: project, author: user) }
+      let(:confidential_note) { create(:note, note: "Random", noteable: confidential_issue, project: confidential_issue.project) }
 
       it "returns notes with matching content if user can see the issue" do
         expect(described_class.search(confidential_note.note, as_user: user)).to eq([confidential_note])
       end
 
       it "does not return notes with matching content if user can not see the issue" do
-        user = create :user
+        user = create(:user)
+        expect(described_class.search(confidential_note.note, as_user: user)).to be_empty
+      end
+
+      it "does not return notes with matching content for project members with guest role" do
+        user = create(:user)
+        project.team << [user, :guest]
         expect(described_class.search(confidential_note.note, as_user: user)).to be_empty
       end
 
       it "does not return notes with matching content for unauthenticated users" do
         expect(described_class.search(confidential_note.note)).to be_empty
       end
-    end
-  end
-
-  describe '.grouped_awards' do
-    before do
-      create :note, note: "smile", is_award: true
-      create :note, note: "smile", is_award: true
-    end
-
-    it "returns grouped hash of notes" do
-      expect(Note.grouped_awards.keys.size).to eq(3)
-      expect(Note.grouped_awards["smile"]).to match_array(Note.all)
-    end
-
-    it "returns thumbsup and thumbsdown always" do
-      expect(Note.grouped_awards["thumbsup"]).to match_array(Note.none)
-      expect(Note.grouped_awards["thumbsdown"]).to match_array(Note.none)
     end
   end
 
@@ -196,11 +196,6 @@ describe Note, models: true do
 
     it "returns false" do
       note = build(:note, system: true)
-      expect(note.editable?).to be_falsy
-    end
-
-    it "returns false" do
-      note = build(:note, is_award: true, note: "smiley")
       expect(note.editable?).to be_falsy
     end
   end
@@ -226,29 +221,6 @@ describe Note, models: true do
 
     it "returns false" do
       expect(note.cross_reference_not_visible_for?(private_user)).to be_falsy
-    end
-  end
-
-  describe "set_award!" do
-    let(:merge_request) { create :merge_request }
-
-    it "converts aliases to actual name" do
-      note = create(:note, note: ":+1:",
-                           noteable: merge_request,
-                           project: merge_request.project)
-
-      expect(note.reload.note).to eq("thumbsup")
-    end
-
-    it "is not an award emoji when comment is on a diff" do
-      note = create(:note_on_merge_request_diff, note: ":blowfish:",
-                                                 noteable: merge_request,
-                                                 project: merge_request.project,
-                                                 line_code: "11d5d2e667e9da4f7f610f81d86c974b146b13bd_0_2")
-      note = note.reload
-
-      expect(note.note).to eq(":blowfish:")
-      expect(note.is_award?).to be_falsy
     end
   end
 

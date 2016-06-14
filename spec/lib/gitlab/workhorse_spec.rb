@@ -11,7 +11,7 @@ describe Gitlab::Workhorse, lib: true do
       end
 
       it "raises an error" do
-        expect { subject.send_git_archive(project, "master", "zip") }.to raise_error(RuntimeError)
+        expect { subject.send_git_archive(project.repository, ref: "master", format: "zip") }.to raise_error(RuntimeError)
       end
     end
   end

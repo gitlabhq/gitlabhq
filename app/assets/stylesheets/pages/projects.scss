@@ -32,6 +32,15 @@
 
   .container-fluid {
     position: relative;
+
+    @media (min-width: $screen-md-max) {
+      .row {
+        display: flex;
+        -ms-flex-align: center;
+        -webkit-align-items: center;
+        -webkit-box-align: center;
+      }
+    }
   }
 
   .cover-controls {
@@ -57,7 +66,6 @@
     max-width: 86px;
     min-width: 86px;
     padding-right: 0;
-    margin: 11px 0;
 
     @media (max-width: $screen-md-max) {
       padding-left: 0;
@@ -489,9 +497,11 @@ pre.light-well {
   margin: 0;
 }
 
-.project-show-activity {
-  .activity-filter-block {
-    margin-top: -1px;
+
+.activity-filter-block {
+  .controls {
+    padding-bottom: 10px;
+    border-bottom: 1px solid $border-color;
   }
 }
 

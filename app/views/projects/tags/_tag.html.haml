@@ -15,11 +15,11 @@
         = render 'projects/tags/download', ref: tag.name, project: @project
 
       - if can?(current_user, :push_code, @project)
-        = link_to edit_namespace_project_tag_release_path(@project.namespace, @project, tag.name), class: 'btn-grouped btn has-tooltip', title: "Edit release notes" do
+        = link_to edit_namespace_project_tag_release_path(@project.namespace, @project, tag.name), class: 'btn has-tooltip', title: "Edit release notes" do
           = icon("pencil")
 
       - if can?(current_user, :admin_project, @project)
-        = link_to namespace_project_tag_path(@project.namespace, @project, tag.name), class: 'btn btn-grouped btn-xs btn-remove remove-row has-tooltip', title: "Delete tag", method: :delete, data: { confirm: "Deleting the '#{tag.name}' tag cannot be undone. Are you sure?", container: 'body' }, remote: true do
+        = link_to namespace_project_tag_path(@project.namespace, @project, tag.name), class: 'btn btn-remove remove-row has-tooltip', title: "Delete tag", method: :delete, data: { confirm: "Deleting the '#{tag.name}' tag cannot be undone. Are you sure?", container: 'body' }, remote: true do
           = icon("trash-o")
 
   - if commit

@@ -9,33 +9,31 @@ class CreateCommitBuildsService
     ref = Gitlab::Git.ref_name(origin_ref)
     tag = Gitlab::Git.tag_ref?(origin_ref)
 
-    commit = Ci::Commit.new(project: project, sha: sha, ref: ref, before_sha: before_sha, tag: tag)
-
-    unless commit.ci_yaml_file
-      commit.errors.add(:base, 'No .gitlab-ci.yml file found')
-      return commit
+    # Skip branch removal
+    if sha == Gitlab::Git::BLANK_SHA
+      return false
     end
 
-    # Make object as skipped
-    if commit.skip_ci?
-      commit.status = 'skipped'
-      commit.save
-      return commit
+    pipeline = Ci::Pipeline.new(project: project, sha: sha, ref: ref, before_sha: before_sha, tag: tag)
+
+    # Skip creating pipeline when no gitlab-ci.yml is found
+    unless pipeline.ci_yaml_file
+      return pipeline
     end
 
-    # Create builds for commit and
-    #   skip saving pipeline when there are no builds
-    unless commit.build_builds(user)
-      # Save object when there are yaml errors
-      unless commit.yaml_errors.present?
-        commit.errors.add(:base, 'No builds created')
-        return commit
+    # Skip creating builds for commits that have [ci skip]
+   if !pipeline.skip_ci? && pipeline.config_processor
+      # Create builds for commit
+      unless pipeline.build_builds(user)
+        pipeline.errors.add(:base, 'No builds created')
+        return pipeline
       end
     end
 
-    # Create a new ci_commit
-    commit.save!
-    commit.touch
-    commit
+    # Create a new pipeline
+    pipeline.save!
+
+    pipeline.touch
+    pipeline
   end
 end

@@ -1,3 +1,4 @@
+# rubocop:disable all
 class AddIndexForLfsOidAndSize < ActiveRecord::Migration
   def change
     add_index :lfs_objects, :oid

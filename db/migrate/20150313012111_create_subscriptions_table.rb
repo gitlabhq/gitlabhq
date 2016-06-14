@@ -1,3 +1,4 @@
+# rubocop:disable all
 class CreateSubscriptionsTable < ActiveRecord::Migration
   def change
     create_table :subscriptions do |t|

@@ -21,7 +21,7 @@ class @DueDateSelect
       $dropdown.glDropdown(
         hidden: ->
           $selectbox.hide()
-          $value.removeAttr('style')
+          $value.css('display', '')
       )
 
       addDueDate = (isDropdown) ->
@@ -42,12 +42,13 @@ class @DueDateSelect
           type: 'PUT'
           url: issueUpdateURL
           data: data
+          dataType: 'json'
           beforeSend: ->
             $loading.fadeIn()
             if isDropdown
               $dropdown.trigger('loading.gl.dropdown')
               $selectbox.hide()
-            $value.removeAttr('style')
+            $value.css('display', '')
 
             $valueContent.html(mediumDate)
             $sidebarValue.html(mediumDate)

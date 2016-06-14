@@ -20,6 +20,10 @@ module Gitlab
         raw_data.comments > 0
       end
 
+      def klass
+        Issue
+      end
+
       def number
         raw_data.number
       end

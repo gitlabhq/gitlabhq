@@ -1,3 +1,4 @@
+# rubocop:disable all
 class MigrateToNewShell < ActiveRecord::Migration
   def change
     return if Rails.env.test?

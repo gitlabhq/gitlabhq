@@ -39,6 +39,22 @@ describe Gitlab::Database, lib: true do
     end
   end
 
+  describe '.nulls_last_order' do
+    context 'when using PostgreSQL' do
+      before { expect(described_class).to receive(:postgresql?).and_return(true) }
+
+      it { expect(described_class.nulls_last_order('column', 'ASC')).to eq 'column ASC NULLS LAST'}
+      it { expect(described_class.nulls_last_order('column', 'DESC')).to eq 'column DESC NULLS LAST'}
+    end
+
+    context 'when using MySQL' do
+      before { expect(described_class).to receive(:postgresql?).and_return(false) }
+
+      it { expect(described_class.nulls_last_order('column', 'ASC')).to eq 'column IS NULL, column ASC'}
+      it { expect(described_class.nulls_last_order('column', 'DESC')).to eq 'column DESC'}
+    end
+  end
+
   describe '#true_value' do
     it 'returns correct value for PostgreSQL' do
       expect(described_class).to receive(:postgresql?).and_return(true)

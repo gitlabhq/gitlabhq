@@ -79,6 +79,23 @@
   @include btn-color($white-light, $border-color, $white-normal, $border-white-normal, $white-dark, $border-white-dark, $btn-white-active);
 }
 
+@mixin btn-with-margin {
+  margin-left: $btn-side-margin;
+  float: left;
+
+  &.inline {
+    float: none;
+  }
+
+  &.btn-sm {
+    margin-left: $btn-sm-side-margin;
+  }
+
+  &.btn-xs {
+    margin-left: $btn-xs-side-margin;
+  }
+}
+
 .btn {
   @include btn-default;
   @include btn-white;
@@ -142,15 +159,9 @@
   }
 
   &.btn-grouped {
-    margin-right: 7px;
-    float: left;
-    &:last-child {
-      margin-right: 0;
-    }
-    &.btn-xs {
-      margin-right: 3px;
-    }
+    @include btn-with-margin;
   }
+
   &.disabled {
     pointer-events: auto !important;
   }
@@ -192,11 +203,7 @@
 
 .btn-group {
   &.btn-grouped {
-    margin-right: 7px;
-    float: left;
-    &:last-child {
-      margin-right: 0;
-    }
+    @include btn-with-margin;
   }
 }
 
