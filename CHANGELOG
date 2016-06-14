@@ -1,5 +1,8 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+v 8.2.6
+  - Prevent unauthorized access to other projects build traces
+
 v 8.2.5
   - Prevent privilege escalation via "impersonate" feature
   - Prevent privilege escalation via notes API
