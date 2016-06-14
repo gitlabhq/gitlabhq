@@ -23,6 +23,14 @@ Admin Area.
 
 ![details.png](img/details.png)
 
+## Notification before the license expires
+
+One month before the license expires, a message informing when the expiration
+is due to will be shown to GitLab admins. Make sure that you update your license
+beforehand otherwise you will miss important features if it expires.
+
+![License expiration](img/expire_message.png)
+
 ## What happens when my license expires?
 
 In case your license expires, you will not be able to push any commits to
