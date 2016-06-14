@@ -109,10 +109,8 @@ header {
     position: relative;
     height: $header-height;
     padding-right: 40px;
-
-    @media (max-width: $screen-xs-min) {
-      padding-left: 40px;
-    }
+    padding-left: 30px;
+    transition-duration: .3s;
 
     @media (min-width: $screen-sm-min) {
       padding-right: 0;
@@ -122,9 +120,29 @@ header {
       margin-top: -5px;
     }
 
+    .header-logo {
+      position: absolute;
+      left: 50%;
+      margin-left: -18px;
+      top: 7px;
+      transition-duration: .3s;
+      z-index: 999;
+
+      &:hover {
+        cursor: pointer;
+      }
+
+      @media (max-width: $screen-xs-max) {
+        right: 25px;
+        left: auto;
+      }
+    }
+
     .title {
       margin: 0;
       font-size: 19px;
+      max-width: 400px;
+      display: inline-block;
       line-height: $header-height;
       font-weight: normal;
       color: $gl-text-color;
@@ -132,6 +150,10 @@ header {
       text-overflow: ellipsis;
       vertical-align: top;
       white-space: nowrap;
+
+      @media (max-width: $screen-sm-max) {
+        max-width: 190px;
+      }
 
       a {
         color: $gl-text-color;
@@ -160,6 +182,10 @@ header {
     .navbar-collapse {
       float: right;
       border-top: none;
+
+      @media (max-width: $screen-xs-max) {
+        float: none;
+      }
     }
   }
 
@@ -176,17 +202,20 @@ header {
   margin-left: 0;
 
   .header-content {
-    padding-left: 30px;
-    transition-duration: .3s;
+
+    @media (min-width: $screen-sm-max) {
+      padding-left: 30px;
+      transition-duration: .3s;
+    }
   }
 }
 
-.header-expanded {
-  margin-left: 0;
+.tanuki-shape {
+  transition: all 0.8s;
 
-  .header-content {
-    margin-left: $sidebar_width;
-    transition-duration: .3s;
+  &:hover, &.highlight {
+    fill: rgb(255, 255, 255);
+    transition: all 0.1s;
   }
 }
 

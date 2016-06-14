@@ -1,6 +1,7 @@
 @mixin fade($gradient-direction, $rgba, $gradient-color) {
   visibility: visible;
   opacity: 1;
+  z-index: 2;
   position: absolute;
   bottom: 12px;
   width: 43px;
@@ -68,6 +69,7 @@
   }
 
   &.sub-nav {
+    text-align: center;
     background-color: $background-color;
 
     .container-fluid {
@@ -171,7 +173,6 @@
     > form {
       display: inline-block;
       margin-top: -1px;
-      margin-bottom: 12px;
     }
 
     .icon-label {
@@ -250,6 +251,7 @@
   background: $background-color;
   border-bottom: 1px solid $border-color;
   transition-duration: .3s;
+  text-align: center;
 
   .container-fluid {
     position: relative;
@@ -352,7 +354,7 @@
 
     .fade-right {
       @media (min-width: $screen-xs-max) {
-        right: 67px;
+        right: 68px;
       }
       @media (max-width: $screen-xs-min) {
         right: 0;

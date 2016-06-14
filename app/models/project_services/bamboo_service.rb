@@ -1,6 +1,4 @@
 class BambooService < CiService
-  include HTTParty
-
   prop_accessor :bamboo_url, :build_key, :username, :password
 
   validates :bamboo_url, presence: true, url: true, if: :activated?
@@ -61,18 +59,7 @@ class BambooService < CiService
   end
 
   def build_info(sha)
-    url = URI.join(bamboo_url, "/rest/api/latest/result?label=#{sha}").to_s
-
-    if username.blank? && password.blank?
-      @response = HTTParty.get(url, verify: false)
-    else
-      url << '&os_authType=basic'
-      auth = {
-        username: username,
-        password: password
-      }
-      @response = HTTParty.get(url, verify: false, basic_auth: auth)
-    end
+    @response = get_path("rest/api/latest/result?label=#{sha}")
   end
 
   def build_page(sha, ref)
@@ -80,11 +67,11 @@ class BambooService < CiService
 
     if @response.code != 200 || @response['results']['results']['size'] == '0'
       # If actual build link can't be determined, send user to build summary page.
-      URI.join(bamboo_url, "/browse/#{build_key}").to_s
+      URI.join("#{bamboo_url}/", "browse/#{build_key}").to_s
     else
       # If actual build link is available, go to build result page.
       result_key = @response['results']['results']['result']['planResultKey']['key']
-      URI.join(bamboo_url, "/browse/#{result_key}").to_s
+      URI.join("#{bamboo_url}/", "browse/#{result_key}").to_s
     end
   end
 
@@ -112,8 +99,27 @@ class BambooService < CiService
   def execute(data)
     return unless supported_events.include?(data[:object_kind])
 
-    # Bamboo requires a GET and does not take any data.
-    url = URI.join(bamboo_url, "/updateAndBuild.action?buildKey=#{build_key}").to_s
-    self.class.get(url, verify: false)
+    get_path("updateAndBuild.action?buildKey=#{build_key}")
+  end
+
+  private
+
+  def build_url(path)
+    URI.join("#{bamboo_url}/", path).to_s
+  end
+
+  def get_path(path)
+    url = build_url(path)
+
+    if username.blank? && password.blank?
+      HTTParty.get(url, verify: false)
+    else
+      url << '&os_authType=basic'
+      HTTParty.get(url, verify: false,
+                        basic_auth: {
+                          username: username,
+                          password: password
+                        })
+    end
   end
 end

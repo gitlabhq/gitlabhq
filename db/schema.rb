@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160610211845) do
+ActiveRecord::Schema.define(version: 20160610301627) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -699,8 +699,8 @@ ActiveRecord::Schema.define(version: 20160610211845) do
 
   create_table "notification_settings", force: :cascade do |t|
     t.integer  "user_id",                 null: false
-    t.integer  "source_id",               null: false
-    t.string   "source_type",             null: false
+    t.integer  "source_id"
+    t.string   "source_type"
     t.integer  "level",       default: 0, null: false
     t.datetime "created_at",              null: false
     t.datetime "updated_at",              null: false
@@ -780,8 +780,6 @@ ActiveRecord::Schema.define(version: 20160610211845) do
     t.boolean  "merge_requests_enabled",             default: true,     null: false
     t.boolean  "wiki_enabled",                       default: true,     null: false
     t.integer  "namespace_id"
-    t.string   "issues_tracker",                     default: "gitlab", null: false
-    t.string   "issues_tracker_id"
     t.boolean  "snippets_enabled",                   default: true,     null: false
     t.datetime "last_activity_at"
     t.string   "import_url"
@@ -1017,7 +1015,6 @@ ActiveRecord::Schema.define(version: 20160610211845) do
     t.boolean  "can_create_team",             default: true,  null: false
     t.string   "state"
     t.integer  "color_scheme_id",             default: 1,     null: false
-    t.integer  "notification_level",          default: 1,     null: false
     t.datetime "password_expires_at"
     t.integer  "created_by_id"
     t.datetime "last_credential_check_at"

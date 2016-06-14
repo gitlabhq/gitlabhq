@@ -6,7 +6,7 @@
       %li
         - sha = @project.repository.find_branch(branch).target
         - pipeline = @project.pipeline(sha, branch) if sha
-        - if ci_copipelinemmit
+        - if pipeline
           %span.related-branch-ci-status
             = render_pipeline_status(pipeline)
         %span.related-branch-info
