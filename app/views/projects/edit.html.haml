@@ -129,8 +129,26 @@
           Generates a compressed export file of the project and sends a link to download the export.
     .col-lg-9
 
-      = link_to 'Generate new export', export_namespace_project_path(@project.namespace, @project),
+      = link_to 'Export project', export_namespace_project_path(@project.namespace, @project),
                 method: :post, class: "btn btn-default"
+
+      %p.append-bottom-0
+        %p
+          .row.prepend-top-default
+            Clicking on Export project, will produce a compressed file that will be sent as a link to your registered e-mail address.
+
+      .bs-callout.bs-callout-info
+        %p.append-bottom-0
+          %p
+            The following items will be exported:
+          %ul
+            %li Project and wiki repository
+            %li Project uploads
+            %li DB items, including configuration
+            %ul
+              - db_export_list.each do |export_relation|
+                %li
+                  %code #{export_relation}
 
   %hr
   - if can? current_user, :archive_project, @project

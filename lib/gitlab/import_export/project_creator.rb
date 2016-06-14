@@ -2,7 +2,7 @@ module Gitlab
   module ImportExport
     class ProjectCreator
 
-      def initialize(namespace_id, current_user, )
+      def initialize(namespace_id, current_user)
         @repo = repo
         @namespace = Namespace.find_by_id(namespace_id)
         @current_user = current_user
