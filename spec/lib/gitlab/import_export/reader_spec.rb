@@ -23,4 +23,65 @@ describe Gitlab::ImportExport::Reader, lib: true  do
   it 'generates hash from project tree config' do
     expect(described_class.new(shared: shared).project_tree).to match(project_tree_hash)
   end
+
+  context 'individual scenarios' do
+
+    it 'generates the correct hash for a single project relation' do
+      setup_yaml(project_tree: [:issues])
+
+      expect(described_class.new(shared: shared).project_tree).to match(include: [:issues])
+    end
+
+    it 'generates the correct hash for a multiple project relation' do
+      setup_yaml(project_tree: [:issues, :snippets])
+
+      expect(described_class.new(shared: shared).project_tree).to match(include: [:issues, :snippets])
+    end
+
+    it 'generates the correct hash for a single sub-relation' do
+      setup_yaml(project_tree: [issues: [:notes]])
+
+      expect(described_class.new(shared: shared).project_tree).to match(include: [{ issues: { include: :notes } }])
+    end
+
+    it 'generates the correct hash for a multiple sub-relation' do
+      setup_yaml(project_tree: [merge_requests: [:notes, :merge_request_diff]])
+
+      expect(described_class.new(shared: shared).project_tree).to match(include: [{ merge_requests: { include: [:notes, :merge_request_diff] } }])
+    end
+
+    it 'generates the correct hash for a sub-relation with another sub-relation' do
+      setup_yaml(project_tree: [merge_requests: [notes: :author]])
+
+      expect(described_class.new(shared: shared).project_tree).to match(include: [{ merge_requests: { include: { notes: { include: :author } } } }])
+    end
+
+    it 'generates the correct hash for a relation with included attributes' do
+      setup_yaml(project_tree: [:issues], included_attributes: {issues: [:name, :description]})
+
+      expect(described_class.new(shared: shared).project_tree).to match(include: [{ issues: { only: [:name, :description] } }])
+    end
+
+    it 'generates the correct hash for a relation with excluded attributes' do
+      setup_yaml(project_tree: [:issues], excluded_attributes: {issues: [:name]})
+
+      expect(described_class.new(shared: shared).project_tree).to match(include: [{ issues: { except: [:name] } }])
+    end
+
+    it 'generates the correct hash for a relation with both excluded and included attributes' do
+      setup_yaml(project_tree: [:issues], excluded_attributes: {issues: [:name]}, included_attributes: {issues: [:description]})
+
+      expect(described_class.new(shared: shared).project_tree).to match(include: [{ issues: { except: [:name], only: [:description]} }])
+    end
+
+    it 'generates the correct hash for a relation with custom methods' do
+      setup_yaml(project_tree: [:issues], methods: {issues: [:name]})
+
+      expect(described_class.new(shared: shared).project_tree).to match(include: [{ issues: { methods: [:name] } }])
+    end
+
+    def setup_yaml(hash)
+      allow(YAML).to receive(:load_file).with(test_config).and_return(hash)
+    end
+  end
 end
