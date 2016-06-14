@@ -53,7 +53,6 @@ describe Project, models: true do
     it { is_expected.to validate_length_of(:path).is_within(0..255) }
     it { is_expected.to validate_length_of(:description).is_within(0..2000) }
     it { is_expected.to validate_presence_of(:creator) }
-    it { is_expected.to validate_length_of(:issues_tracker_id).is_within(0..255) }
     it { is_expected.to validate_presence_of(:namespace) }
 
     it 'should not allow new projects beyond user limits' do
@@ -318,27 +317,6 @@ describe Project, models: true do
       expect do
         project.cache_has_external_issue_tracker
       end.to change { project.has_external_issue_tracker}.to(false)
-    end
-  end
-
-  describe :can_have_issues_tracker_id? do
-    let(:project) { create(:project) }
-    let(:ext_project) { create(:redmine_project) }
-
-    it 'should be true for projects with external issues tracker if issues enabled' do
-      expect(ext_project.can_have_issues_tracker_id?).to be_truthy
-    end
-
-    it 'should be false for projects with internal issue tracker if issues enabled' do
-      expect(project.can_have_issues_tracker_id?).to be_falsey
-    end
-
-    it 'should be always false if issues disabled' do
-      project.issues_enabled = false
-      ext_project.issues_enabled = false
-
-      expect(project.can_have_issues_tracker_id?).to be_falsey
-      expect(ext_project.can_have_issues_tracker_id?).to be_falsey
     end
   end
 
