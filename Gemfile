@@ -210,6 +210,9 @@ gem 'mousetrap-rails', '~> 1.4.6'
 # Detect and convert string character encoding
 gem 'charlock_holmes', '~> 0.7.3'
 
+# Parse duration
+gem 'chronic_duration', '~> 0.10.6'
+
 gem "sass-rails", '~> 5.0.0'
 gem "coffee-rails", '~> 4.1.0'
 gem "uglifier", '~> 2.7.2'

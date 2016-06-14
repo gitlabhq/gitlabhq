@@ -144,9 +144,9 @@ ActiveRecord::Schema.define(version: 20160610301627) do
     t.text     "commands"
     t.integer  "job_id"
     t.string   "name"
-    t.boolean  "deploy",             default: false
+    t.boolean  "deploy",              default: false
     t.text     "options"
-    t.boolean  "allow_failure",      default: false, null: false
+    t.boolean  "allow_failure",       default: false, null: false
     t.string   "stage"
     t.integer  "trigger_request_id"
     t.integer  "stage_idx"
@@ -161,6 +161,7 @@ ActiveRecord::Schema.define(version: 20160610301627) do
     t.text     "artifacts_metadata"
     t.integer  "erased_by_id"
     t.datetime "erased_at"
+    t.datetime "artifacts_expire_at"
   end
 
   add_index "ci_builds", ["commit_id", "stage_idx", "created_at"], name: "index_ci_builds_on_commit_id_and_stage_idx_and_created_at", using: :btree

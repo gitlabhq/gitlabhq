@@ -573,7 +573,12 @@ module Ci
                              services:      ["mysql"],
                              before_script: ["pwd"],
                              rspec:         {
-                               artifacts: { paths: ["logs/", "binaries/"], untracked: true, name: "custom_name" },
+                               artifacts: {
+                                 paths: ["logs/", "binaries/"],
+                                 untracked: true,
+                                 name: "custom_name",
+                                 expire_in: "7d"
+                               },
                                script: "rspec"
                              }
                            })
@@ -595,7 +600,8 @@ module Ci
             artifacts: {
               name: "custom_name",
               paths: ["logs/", "binaries/"],
-              untracked: true
+              untracked: true,
+              expire_in: "7d"
             }
           },
           when: "on_success",
@@ -990,6 +996,20 @@ EOT
         expect do
           GitlabCiYamlProcessor.new(config)
         end.to raise_error(GitlabCiYamlProcessor::ValidationError, "rspec job: artifacts:when parameter should be on_success, on_failure or always")
+      end
+
+      it "returns errors if job artifacts:expire_in is not an a string" do
+        config = YAML.dump({ types: ["build", "test"], rspec: { script: "test", artifacts: { expire_in: 1 } } })
+        expect do
+          GitlabCiYamlProcessor.new(config)
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "rspec job: artifacts:expire_in parameter should be a duration")
+      end
+
+      it "returns errors if job artifacts:expire_in is not an a valid duration" do
+        config = YAML.dump({ types: ["build", "test"], rspec: { script: "test", artifacts: { expire_in: "7 elephants" } } })
+        expect do
+          GitlabCiYamlProcessor.new(config)
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "rspec job: artifacts:expire_in parameter should be a duration")
       end
 
       it "returns errors if job artifacts:untracked is not an array of strings" do

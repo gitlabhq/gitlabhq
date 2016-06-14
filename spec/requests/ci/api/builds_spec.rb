@@ -364,6 +364,42 @@ describe Ci::API::API do
             end
           end
 
+          context 'with an expire date' do
+            let!(:artifacts) { file_upload }
+
+            let(:post_data) do
+              { 'file.path' => artifacts.path,
+                'file.name' => artifacts.original_filename,
+                'expire_in' => expire_in }
+            end
+
+            before do
+              post(post_url, post_data, headers_with_token)
+            end
+
+            context 'with an expire_in given' do
+              let(:expire_in) { '7 days' }
+
+              it 'updates when specified' do
+                build.reload
+                expect(response.status).to eq(201)
+                expect(json_response['artifacts_expire_at']).not_to be_empty
+                expect(build.artifacts_expire_at).to be_within(5.minutes).of(Time.now + 7.days)
+              end
+            end
+
+            context 'with no expire_in given' do
+              let(:expire_in) { nil }
+
+              it 'ignores if not specified' do
+                build.reload
+                expect(response.status).to eq(201)
+                expect(json_response['artifacts_expire_at']).to be_nil
+                expect(build.artifacts_expire_at).to be_nil
+              end
+            end
+          end
+
           context "artifacts file is too large" do
             it "should fail to post too large artifact" do
               stub_application_setting(max_artifacts_size: 0)

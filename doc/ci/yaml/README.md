@@ -31,6 +31,7 @@ If you want a quick introduction to GitLab CI, follow our
     - [artifacts](#artifacts)
         - [artifacts:name](#artifacts-name)
         - [artifacts:when](#artifacts-when)
+        - [artifacts:expire_in](#artifacts-expire_in)
     - [dependencies](#dependencies)
     - [before_script and after_script](#before_script-and-after_script)
 - [Hidden jobs](#hidden-jobs)
@@ -676,6 +677,40 @@ To upload artifacts only when build fails.
 job:
   artifacts:
     when: on_failure
+```
+
+#### artifacts:expire_in
+
+>**Note:**
+Introduced in GitLab 8.9 and GitLab Runner v1.3.0.
+
+`artifacts:expire_in` is used to remove uploaded artifacts after specified time.
+By default artifacts are stored on GitLab forver.
+`expire_in` allows to specify after what time the artifacts should be removed.
+The artifacts will expire counting from the moment when they are uploaded and stored on GitLab.
+
+After artifacts uploading you can use the **Keep** button on build page to keep the artifacts forever.
+
+Artifacts are removed every hour, but they are not accessible after expire date.
+
+The value of `expire_in` is a elapsed time. The example of parsable values:
+- '3 mins 4 sec'
+- '2 hrs 20 min'
+- '2h20min'
+- '6 mos 1 day'
+- '47 yrs 6 mos and 4d'
+- '3 weeks and 2 days'
+
+---
+
+**Example configurations**
+
+To expire artifacts after 1 week from the moment that they are uploaded:
+
+```yaml
+job:
+  artifacts:
+    expire_in: 1 week
 ```
 
 ### dependencies
