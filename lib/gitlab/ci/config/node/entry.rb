@@ -14,6 +14,8 @@ module Gitlab
             @value = value
             @nodes = {}
             @errors = []
+
+            prevalidate!
           end
 
           def process!
@@ -55,6 +57,9 @@ module Gitlab
           end
 
           private
+
+          def prevalidate!
+          end
 
           def compose!
             allowed_nodes.each do |key, essence|

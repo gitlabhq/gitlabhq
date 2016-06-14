@@ -16,19 +16,17 @@ module Gitlab
         module Configurable
           extend ActiveSupport::Concern
 
-          def initialize(*)
-            super
-
-            unless @value.is_a?(Hash)
-              @errors << 'should be a configuration entry with hash value'
-            end
-          end
-
           def allowed_nodes
             self.class.allowed_nodes || {}
           end
 
           private
+
+          def prevalidate!
+            unless @value.is_a?(Hash)
+              @errors << 'should be a configuration entry with hash value'
+            end
+          end
 
           def create_node(key, factory)
             factory.with(value: @value[key])
