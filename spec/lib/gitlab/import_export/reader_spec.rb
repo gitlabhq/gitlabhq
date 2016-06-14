@@ -57,25 +57,25 @@ describe Gitlab::ImportExport::Reader, lib: true  do
     end
 
     it 'generates the correct hash for a relation with included attributes' do
-      setup_yaml(project_tree: [:issues], included_attributes: {issues: [:name, :description]})
+      setup_yaml(project_tree: [:issues], included_attributes: { issues: [:name, :description] })
 
       expect(described_class.new(shared: shared).project_tree).to match(include: [{ issues: { only: [:name, :description] } }])
     end
 
     it 'generates the correct hash for a relation with excluded attributes' do
-      setup_yaml(project_tree: [:issues], excluded_attributes: {issues: [:name]})
+      setup_yaml(project_tree: [:issues], excluded_attributes: { issues: [:name] })
 
       expect(described_class.new(shared: shared).project_tree).to match(include: [{ issues: { except: [:name] } }])
     end
 
     it 'generates the correct hash for a relation with both excluded and included attributes' do
-      setup_yaml(project_tree: [:issues], excluded_attributes: {issues: [:name]}, included_attributes: {issues: [:description]})
+      setup_yaml(project_tree: [:issues], excluded_attributes: { issues: [:name] }, included_attributes: { issues: [:description] })
 
-      expect(described_class.new(shared: shared).project_tree).to match(include: [{ issues: { except: [:name], only: [:description]} }])
+      expect(described_class.new(shared: shared).project_tree).to match(include: [{ issues: { except: [:name], only: [:description] } }])
     end
 
     it 'generates the correct hash for a relation with custom methods' do
-      setup_yaml(project_tree: [:issues], methods: {issues: [:name]})
+      setup_yaml(project_tree: [:issues], methods: { issues: [:name] })
 
       expect(described_class.new(shared: shared).project_tree).to match(include: [{ issues: { methods: [:name] } }])
     end
