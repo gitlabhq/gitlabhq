@@ -63,6 +63,10 @@
         Elasticsearch
         %span.light.pull-right
           = boolean_to_icon Gitlab.config.elasticsearch.enabled
+      %p
+        Geo
+        %span.light.pull-right
+          = boolean_to_icon Gitlab::Geo.enabled?
     .col-md-4
       %h4
         Components
@@ -83,6 +87,12 @@
         GitLab API
         %span.pull-right
           = API::API::version
+
+      - if Gitlab::Geo.enabled?
+        %p
+          Geo
+          %span.pull-right
+            = Gitlab::Geo.current_node.primary ? 'Primary node' : 'Secondary node'
       %p
         Git
         %span.pull-right
@@ -101,6 +111,7 @@
         = Gitlab::Database.adapter_name
         %span.pull-right
           = Gitlab::Database.version
+
   %hr
   .row
     .col-sm-4
