@@ -26,6 +26,15 @@ class Project < ActiveRecord::Base
   default_value_for :container_registry_enabled, gitlab_config_features.container_registry
   default_value_for(:shared_runners_enabled) { current_application_settings.shared_runners_enabled }
 
+  # TODO: It used to be a namespace task to ensure the namespace directory
+  # existance, but since now projects might be in different paths (shards) they
+  # must account for that. However, checking the directory exists every time the
+  # project is saved might be inefficient. Consider moving this logic to another
+  # moment, or perhaps not to assume the directory exists and have gitlab-shell
+  # take that into consideration (doing `mkdir` himself before each operation,
+  # for example)
+  after_save :ensure_dir_exist
+
   # set last_activity_at to the same as created_at
   after_create :set_last_activity_at
   def set_last_activity_at
@@ -349,6 +358,14 @@ class Project < ActiveRecord::Base
 
       joins(join_body).reorder('join_note_counts.amount DESC')
     end
+  end
+
+  def repository_storage
+    super || 'default'
+  end
+
+  def repository_storage_path
+    Gitlab.config.repositories.storages[repository_storage]
   end
 
   def team
@@ -803,12 +820,12 @@ class Project < ActiveRecord::Base
       raise Exception.new('Project cannot be renamed, because tags are present in its container registry')
     end
 
-    if gitlab_shell.mv_repository(old_path_with_namespace, new_path_with_namespace)
+    if gitlab_shell.mv_repository(repository_storage_path, old_path_with_namespace, new_path_with_namespace)
       # If repository moved successfully we need to send update instructions to users.
       # However we cannot allow rollback since we moved repository
       # So we basically we mute exceptions in next actions
       begin
-        gitlab_shell.mv_repository("#{old_path_with_namespace}.wiki", "#{new_path_with_namespace}.wiki")
+        gitlab_shell.mv_repository(repository_storage_path, "#{old_path_with_namespace}.wiki", "#{new_path_with_namespace}.wiki")
         send_move_instructions(old_path_with_namespace)
         reset_events_cache
 
@@ -949,7 +966,7 @@ class Project < ActiveRecord::Base
   def create_repository
     # Forked import is handled asynchronously
     unless forked?
-      if gitlab_shell.add_repository(path_with_namespace)
+      if gitlab_shell.add_repository(repository_storage_path, path_with_namespace)
         repository.after_create
         true
       else
@@ -1077,5 +1094,9 @@ class Project < ActiveRecord::Base
     Rails.logger.error("Error setting import status to failed: #{e.message}. Original error: #{sanitized_message}")
   ensure
     @errors = original_errors
+  end
+
+  def ensure_dir_exist
+    gitlab_shell.add_namespace(repository_storage_path, namespace.path)
   end
 end

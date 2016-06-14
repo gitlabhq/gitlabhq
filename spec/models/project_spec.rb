@@ -108,6 +108,28 @@ describe Project, models: true do
     end
   end
 
+  describe '#repository_storage' do
+    let(:project) { create(:project, repository_storage: nil) }
+
+    it 'should return the default repository storage if nil' do
+      expect(project.repository_storage).to eq('default')
+    end
+  end
+
+  describe '#repository_storage_path' do
+    let(:project) { create(:project, repository_storage: 'custom') }
+
+    before do
+      FileUtils.mkdir('tmp/tests/custom_repositories')
+      storages = { 'custom' => 'tmp/tests/custom_repositories' }
+      allow(Gitlab.config.repositories).to receive(:storages).and_return(storages)
+    end
+
+    it 'returns the repository storage path' do
+      expect(project.repository_storage_path).to eq('tmp/tests/custom_repositories')
+    end
+  end
+
   it 'should return valid url to repo' do
     project = Project.new(path: 'somewhere')
     expect(project.url_to_repo).to eq(Gitlab.config.gitlab_shell.ssh_path_prefix + 'somewhere.git')
@@ -690,12 +712,12 @@ describe Project, models: true do
 
       expect(gitlab_shell).to receive(:mv_repository).
         ordered.
-        with("#{ns}/foo", "#{ns}/#{project.path}").
+        with(project.repository_storage_path, "#{ns}/foo", "#{ns}/#{project.path}").
         and_return(true)
 
       expect(gitlab_shell).to receive(:mv_repository).
         ordered.
-        with("#{ns}/foo.wiki", "#{ns}/#{project.path}.wiki").
+        with(project.repository_storage_path, "#{ns}/foo.wiki", "#{ns}/#{project.path}.wiki").
         and_return(true)
 
       expect_any_instance_of(SystemHooksService).
@@ -787,7 +809,7 @@ describe Project, models: true do
     context 'using a regular repository' do
       it 'creates the repository' do
         expect(shell).to receive(:add_repository).
-          with(project.path_with_namespace).
+          with(project.repository_storage_path, project.path_with_namespace).
           and_return(true)
 
         expect(project.repository).to receive(:after_create)
@@ -797,7 +819,7 @@ describe Project, models: true do
 
       it 'adds an error if the repository could not be created' do
         expect(shell).to receive(:add_repository).
-          with(project.path_with_namespace).
+          with(project.repository_storage_path, project.path_with_namespace).
           and_return(false)
 
         expect(project.repository).not_to receive(:after_create)

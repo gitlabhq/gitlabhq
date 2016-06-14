@@ -72,6 +72,7 @@ describe API::API, api: true  do
 
           expect(response.status).to eq(200)
           expect(json_response["status"]).to be_truthy
+          expect(json_response["repository_storage_path"]).to eq(project.repository_storage_path)
         end
       end
 
@@ -81,6 +82,7 @@ describe API::API, api: true  do
 
           expect(response.status).to eq(200)
           expect(json_response["status"]).to be_truthy
+          expect(json_response["repository_storage_path"]).to eq(project.repository_storage_path)
         end
       end
     end

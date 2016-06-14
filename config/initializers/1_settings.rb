@@ -293,6 +293,11 @@ Settings.cron_jobs['repository_archive_cache_worker']['cron'] ||= '0 * * * *'
 Settings.cron_jobs['repository_archive_cache_worker']['job_class'] = 'RepositoryArchiveCacheWorker'
 
 #
+# Repositories
+#
+Settings.repositories.storages['default'] ||= Settings.gitlab['user_home'] + '/repositories/'
+
+#
 # GitLab Shell
 #
 Settings['gitlab_shell'] ||= Settingslogic.new({})
@@ -301,7 +306,6 @@ Settings.gitlab_shell['hooks_path']   ||= Settings.gitlab['user_home'] + '/gitla
 Settings.gitlab_shell['secret_file'] ||= Rails.root.join('.gitlab_shell_secret')
 Settings.gitlab_shell['receive_pack']   = true if Settings.gitlab_shell['receive_pack'].nil?
 Settings.gitlab_shell['upload_pack']    = true if Settings.gitlab_shell['upload_pack'].nil?
-Settings.gitlab_shell['repos_path']   ||= Settings.gitlab['user_home'] + '/repositories/'
 Settings.gitlab_shell['ssh_host']     ||= Settings.gitlab.ssh_host
 Settings.gitlab_shell['ssh_port']     ||= 22
 Settings.gitlab_shell['ssh_user']     ||= Settings.gitlab.user

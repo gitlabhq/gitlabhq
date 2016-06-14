@@ -779,6 +779,7 @@ ActiveRecord::Schema.define(version: 20160610301627) do
     t.boolean  "last_repository_check_failed"
     t.datetime "last_repository_check_at"
     t.boolean  "container_registry_enabled"
+    t.string   "repository_storage"
     t.boolean  "only_allow_merge_if_build_succeeds", default: false,    null: false
     t.boolean  "has_external_issue_tracker"
   end

@@ -79,6 +79,7 @@ v 8.9.0 (unreleased)
   - Allow users to create confidential issues in private projects
   - Measure CPU time for instrumented methods
   - Instrument private methods and private instance methods by default instead just public methods
+  - Refactor repository paths handling to allow multiple git mount points
 
 v 8.8.5 (unreleased)
   - Ensure branch cleanup regardless of whether the GitHub import process succeeds

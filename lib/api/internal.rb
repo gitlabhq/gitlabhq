@@ -20,6 +20,20 @@ module API
           @wiki ||= params[:project].end_with?('.wiki') &&
             !Project.find_with_namespace(params[:project])
         end
+
+        def project
+          @project ||= begin
+            project_path = params[:project]
+
+            # Check for *.wiki repositories.
+            # Strip out the .wiki from the pathname before finding the
+            # project. This applies the correct project permissions to
+            # the wiki repository as well.
+            project_path.chomp!('.wiki') if wiki?
+
+            Project.find_with_namespace(project_path)
+          end
+        end
       end
 
       post "/allowed" do
@@ -34,16 +48,6 @@ module API
             User.find_by(id: params[:user_id])
           end
 
-        project_path = params[:project]
-
-        # Check for *.wiki repositories.
-        # Strip out the .wiki from the pathname before finding the
-        # project. This applies the correct project permissions to
-        # the wiki repository as well.
-        project_path.chomp!('.wiki') if wiki?
-
-        project = Project.find_with_namespace(project_path)
-
         access =
           if wiki?
             Gitlab::GitAccessWiki.new(actor, project)
@@ -51,7 +55,17 @@ module API
             Gitlab::GitAccess.new(actor, project)
           end
 
-        access.check(params[:action], params[:changes])
+        access_status = access.check(params[:action], params[:changes])
+
+        response = { status: access_status.status, message: access_status.message }
+
+        if access_status.status
+          # Return the repository storage path so that gitlab-shell has it when
+          # handling ssh commands
+          response[:repository_storage_path] = project.repository_storage_path
+        end
+
+        response
       end
 
       #
