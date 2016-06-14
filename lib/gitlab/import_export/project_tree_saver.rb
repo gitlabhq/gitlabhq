@@ -22,7 +22,7 @@ module Gitlab
       private
 
       def project_json_tree
-        @project.to_json(Gitlab::ImportExport::ImportExportReader.new(shared: @shared).project_tree)
+        @project.to_json(Gitlab::ImportExport::Reader.new(shared: @shared).project_tree)
       end
     end
   end

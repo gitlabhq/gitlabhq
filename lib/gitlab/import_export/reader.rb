@@ -1,6 +1,6 @@
 module Gitlab
   module ImportExport
-    class ImportExportReader
+    class Reader
 
       attr_reader :tree
 
