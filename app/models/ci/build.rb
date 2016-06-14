@@ -75,9 +75,13 @@ module Ci
         build.execute_hooks
       end
 
-      after_transition any: :success do |build|
+      after_transition any => [:success] do |build|
         if build.environment.present?
-          CreateDeploymentService.new(build.project, build.user, environment: build.environment).execute(build)
+          service = CreateDeploymentService.new(build.project, build.user,
+                                                environment: build.environment,
+                                                sha: build.sha, ref: build.ref,
+                                                tag: build.tag)
+          service.execute(build)
         end
       end
     end
