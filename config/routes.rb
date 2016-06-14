@@ -30,6 +30,11 @@ Rails.application.routes.draw do
     mount LetterOpenerWeb::Engine, at: '/rails/letter_opener'
   end
 
+  concern :access_requestable do
+    post :request_access, on: :collection
+    post :approve_access_request, on: :member
+  end
+
   namespace :ci do
     # CI API
     Ci::API::API.logger Rails.logger
@@ -409,7 +414,7 @@ Rails.application.routes.draw do
     end
 
     scope module: :groups do
-      resources :group_members, only: [:index, :create, :update, :destroy] do
+      resources :group_members, only: [:index, :create, :update, :destroy], concerns: :access_requestable do
         post :resend_invite, on: :member
         delete :leave, on: :collection
       end
@@ -766,7 +771,7 @@ Rails.application.routes.draw do
           end
         end
 
-        resources :project_members, except: [:new, :edit], constraints: { id: /[a-zA-Z.\/0-9_\-#%+]+/ } do
+        resources :project_members, except: [:new, :edit], constraints: { id: /[a-zA-Z.\/0-9_\-#%+]+/ }, concerns: :access_requestable do
           collection do
             delete :leave
 

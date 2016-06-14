@@ -5,7 +5,11 @@ describe Group, models: true do
 
   describe 'associations' do
     it { is_expected.to have_many :projects }
-    it { is_expected.to have_many :group_members }
+    it { is_expected.to have_many(:group_members).dependent(:destroy) }
+    it { is_expected.to have_many(:users).through(:group_members) }
+    it { is_expected.to have_many(:project_group_links).dependent(:destroy) }
+    it { is_expected.to have_many(:shared_projects).through(:project_group_links) }
+    it { is_expected.to have_many(:notification_settings).dependent(:destroy) }
   end
 
   describe 'modules' do
@@ -130,5 +134,47 @@ describe Group, models: true do
     it 'returns groups with a matching path regardless of the casing' do
       expect(described_class.search(group.path.upcase)).to eq([group])
     end
+  end
+
+  describe '#has_owner?' do
+    before { @members = setup_group_members(group) }
+
+    it { expect(group.has_owner?(@members[:owner])).to be_truthy }
+    it { expect(group.has_owner?(@members[:master])).to be_falsey }
+    it { expect(group.has_owner?(@members[:developer])).to be_falsey }
+    it { expect(group.has_owner?(@members[:reporter])).to be_falsey }
+    it { expect(group.has_owner?(@members[:guest])).to be_falsey }
+    it { expect(group.has_owner?(@members[:requester])).to be_falsey }
+  end
+
+  describe '#has_master?' do
+    before { @members = setup_group_members(group) }
+
+    it { expect(group.has_master?(@members[:owner])).to be_falsey }
+    it { expect(group.has_master?(@members[:master])).to be_truthy }
+    it { expect(group.has_master?(@members[:developer])).to be_falsey }
+    it { expect(group.has_master?(@members[:reporter])).to be_falsey }
+    it { expect(group.has_master?(@members[:guest])).to be_falsey }
+    it { expect(group.has_master?(@members[:requester])).to be_falsey }
+  end
+
+  def setup_group_members(group)
+    members = {
+      owner: create(:user),
+      master: create(:user),
+      developer: create(:user),
+      reporter: create(:user),
+      guest: create(:user),
+      requester: create(:user)
+    }
+
+    group.add_user(members[:owner], GroupMember::OWNER)
+    group.add_user(members[:master], GroupMember::MASTER)
+    group.add_user(members[:developer], GroupMember::DEVELOPER)
+    group.add_user(members[:reporter], GroupMember::REPORTER)
+    group.add_user(members[:guest], GroupMember::GUEST)
+    group.request_access(members[:requester])
+
+    members
   end
 end
