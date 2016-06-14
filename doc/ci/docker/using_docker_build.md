@@ -140,7 +140,7 @@ In order to do that, follow the steps:
       - docker run my-docker-image /script/to/run/tests
     ```
 
-Docker-in-Docker works well, and is our recommended configuration, but it is not without its own challenges:
+Docker-in-Docker works well, and is the recommended configuration, but it is not without its own challenges:
 * By enabling `--docker-privileged`, you are effectively disabling all of
 the security mechanisms of containers and exposing your host to privilege
 escalation which can lead to container breakout. For more information, check out the official Docker documentation on
