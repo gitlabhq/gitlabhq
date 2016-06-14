@@ -24,4 +24,8 @@ class Deployment < ActiveRecord::Base
   def short_sha
     Commit::truncate_sha(sha)
   end
+
+  def last?
+    self == environment.last_deployment
+  end
 end
