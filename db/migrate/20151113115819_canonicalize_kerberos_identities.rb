@@ -12,7 +12,7 @@ class CanonicalizeKerberosIdentities < ActiveRecord::Migration
       default_realm = krb5.get_default_realm
       krb5.close # release memory allocated by the krb5 library
       default_realm || ''
-    rescue Exception
+    rescue StandardError
       '' # could not find the system's default realm, maybe there's no Kerberos at all
     end
   end
