@@ -72,8 +72,8 @@ GitLab Runner then executes build scripts as the `gitlab-runner` user.
 5. You can now use `docker` command and install `docker-compose` if needed.
 
 > **Note:**
-* By adding `gitlab-runner` to `docker` group you are effectively granting `gitlab-runner` full root permissions.
-For more information please check out [On Docker security: `docker` group considered harmful](https://www.andreas-jung.com/contents/on-docker-security-docker-group-considered-harmful).
+* By adding `gitlab-runner` to the `docker` group you are effectively granting `gitlab-runner` full root permissions.
+For more information please read [On Docker security: `docker` group considered harmful](https://www.andreas-jung.com/contents/on-docker-security-docker-group-considered-harmful).
 
 ### Use docker-in-docker executor
 
