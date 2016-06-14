@@ -1,3 +1,4 @@
+# rubocop:disable all
 class AddMergeWhenBuildSucceedsToMergeRequest < ActiveRecord::Migration
   def change
     add_column :merge_requests, :merge_params, :text

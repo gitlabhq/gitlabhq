@@ -1,3 +1,4 @@
+# rubocop:disable all
 class AddMainLanguageToRepository < ActiveRecord::Migration
   def change
     add_column :projects, :main_language, :string

@@ -1,4 +1,4 @@
-- if @merge_requests.any?
+- if @merge_requests.reorder(nil).any?
   - @merge_requests.group_by(&:target_project).each do |group|
     .panel.panel-default.panel-small
       - project = group[0]

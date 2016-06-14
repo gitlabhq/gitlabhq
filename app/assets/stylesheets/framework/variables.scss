@@ -2,7 +2,7 @@
  * Layout
  */
 $sidebar_collapsed_width: 62px;
-$sidebar_width: 90px;
+$sidebar_width: 220px;
 $gutter_collapsed_width: 62px;
 $gutter_width: 290px;
 $gutter_inner_width: 258px;
@@ -265,3 +265,6 @@ $calendar-unselectable-bg: #faf9f9;
  * Personal Access Tokens
  */
 $personal-access-tokens-disabled-label-color: #bbb;
+
+$ci-output-bg: #1d1f21;
+$ci-text-color: #c5c8c6;

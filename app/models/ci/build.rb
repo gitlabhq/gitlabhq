@@ -194,7 +194,7 @@ module Ci
 
     def trace_length
       if raw_trace
-        raw_trace.length
+        raw_trace.bytesize
       else
         0
       end
@@ -216,7 +216,7 @@ module Ci
       recreate_trace_dir
 
       File.truncate(path_to_trace, offset) if File.exist?(path_to_trace)
-      File.open(path_to_trace, 'a') do |f|
+      File.open(path_to_trace, 'ab') do |f|
         f.write(trace_part)
       end
     end

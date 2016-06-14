@@ -1,3 +1,4 @@
+# rubocop:disable all
 class ChangeOwnerIdForGroup < ActiveRecord::Migration
   def up
     change_column :namespaces, :owner_id, :integer, null: true

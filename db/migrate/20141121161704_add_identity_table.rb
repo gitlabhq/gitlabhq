@@ -1,3 +1,4 @@
+# rubocop:disable all
 class AddIdentityTable < ActiveRecord::Migration
   def up
     create_table :identities do |t|

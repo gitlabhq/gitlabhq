@@ -91,7 +91,7 @@ describe Projects::MergeRequestsController do
             id: merge_request.iid,
             format: :diff)
 
-        expect(response.headers['Gitlab-Workhorse-Send-Data']).to start_with("git-diff:")
+        expect(response.headers[Gitlab::Workhorse::SEND_DATA_HEADER]).to start_with("git-diff:")
       end
     end
 
