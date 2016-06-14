@@ -5,7 +5,7 @@
 %div{ class: (container_class) }
   .top-area
     .col-md-9
-      %h3= @environment.name.titleize
+      %h3.page-title= @environment.name.titleize
 
     .col-md-3
       .nav-controls
@@ -13,13 +13,13 @@
           = link_to 'Destroy', namespace_project_environment_path(@project.namespace, @project, @environment), data: { confirm: 'Are you sure?' }, class: 'btn btn-danger', method: :delete
 
   - if @deployments.blank?
-    %ul.content-list
+    %ul.content-list.environments
       %li.nothing-here-block
         No deployments for
         %strong= @environment.name
   - else
     .table-holder
-      %table.table.builds
+      %table.table.environments
         %thead
           %tr
             %th ID
