@@ -18,6 +18,7 @@ v 8.9.0 (unreleased)
   - Redesign all Devise emails. !4297
   - Don't show 'Leave Project' to group members
   - Fix wiki page events' webhook to point to the wiki repository
+  - Add a border around images to differentiate them from the background.
   - Don't show tags for revert and cherry-pick operations
   - Fix issue todo not remove when leave project !4150 (Long Nguyen)
   - Allow customisable text on the 'nearly there' page after a user signs up
