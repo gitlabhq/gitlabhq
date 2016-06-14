@@ -2,6 +2,8 @@ module Ci
   class GitlabCiYamlProcessor
     class ValidationError < StandardError; end
 
+    include Gitlab::Ci::Config::Node::ValidationHelpers
+
     DEFAULT_STAGES = %w(build test deploy)
     DEFAULT_STAGE = 'test'
     ALLOWED_YAML_KEYS = [:before_script, :after_script, :image, :services, :types, :stages, :variables, :cache]
@@ -12,10 +14,12 @@ module Ci
     ALLOWED_CACHE_KEYS = [:key, :untracked, :paths]
     ALLOWED_ARTIFACTS_KEYS = [:name, :untracked, :paths, :when]
 
-    attr_reader :before_script, :after_script, :image, :services, :path, :cache
+    attr_reader :after_script, :image, :services, :path, :cache
 
     def initialize(config, path = nil)
-      @config = Gitlab::Ci::Config.new(config).to_hash
+      @ci_config = Gitlab::Ci::Config.new(config)
+      @config = @ci_config.to_hash
+
       @path = path
 
       initial_parsing
@@ -53,7 +57,6 @@ module Ci
     private
 
     def initial_parsing
-      @before_script = @config[:before_script] || []
       @after_script = @config[:after_script]
       @image = @config[:image]
       @services = @config[:services]
@@ -81,7 +84,7 @@ module Ci
       {
         stage_idx: stages.index(job[:stage]),
         stage: job[:stage],
-        commands: [job[:before_script] || @before_script, job[:script]].flatten.join("\n"),
+        commands: [job[:before_script] || [@ci_config.before_script], job[:script]].flatten.compact.join("\n"),
         tag_list: job[:tags] || [],
         name: name,
         only: job[:only],
@@ -101,6 +104,10 @@ module Ci
     end
 
     def validate!
+      unless @ci_config.valid?
+        raise ValidationError, @ci_config.errors.first
+      end
+
       validate_global!
 
       @jobs.each do |name, job|
@@ -111,10 +118,6 @@ module Ci
     end
 
     def validate_global!
-      unless validate_array_of_strings(@before_script)
-        raise ValidationError, "before_script should be an array of strings"
-      end
-
       unless @after_script.nil? || validate_array_of_strings(@after_script)
         raise ValidationError, "after_script should be an array of strings"
       end
@@ -304,26 +307,6 @@ module Ci
           raise ValidationError, "#{name} job: dependency #{dependency} is not defined in prior stages"
         end
       end
-    end
-
-    def validate_array_of_strings(values)
-      values.is_a?(Array) && values.all? { |value| validate_string(value) }
-    end
-
-    def validate_variables(variables)
-      variables.is_a?(Hash) && variables.all? { |key, value| validate_string(key) && validate_string(value) }
-    end
-
-    def validate_string(value)
-      value.is_a?(String) || value.is_a?(Symbol)
-    end
-
-    def validate_boolean(value)
-      value.in?([true, false])
-    end
-
-    def validate_environment(value)
-      value.is_a?(String) && value =~ Gitlab::Regex.environment_name_regex
     end
 
     def process?(only_params, except_params, ref, tag, trigger_request)
