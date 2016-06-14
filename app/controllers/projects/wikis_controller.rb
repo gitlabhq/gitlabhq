@@ -16,6 +16,9 @@ class Projects::WikisController < Projects::ApplicationController
     if @page
       render 'show'
     elsif file = @project_wiki.find_file(params[:id], params[:version_id])
+      response.headers['Content-Security-Policy'] = "default-src 'none'"
+      response.headers['X-Content-Security-Policy'] = "default-src 'none'"
+
       if file.on_disk?
         send_file file.on_disk_path, disposition: 'inline'
       else
