@@ -9,7 +9,7 @@
 
     .col-md-3
       .nav-controls
-        - if can?(current_user, :update_environment, @project)
+        - if can?(current_user, :update_environment, @environment)
           = link_to 'Destroy', namespace_project_environment_path(@project.namespace, @project, @environment), data: { confirm: 'Are you sure?' }, class: 'btn btn-danger', method: :delete
 
   - if @deployments.blank?

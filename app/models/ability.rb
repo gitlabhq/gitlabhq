@@ -18,6 +18,8 @@ class Ability
       when Namespace then namespace_abilities(user, subject)
       when GroupMember then group_member_abilities(user, subject)
       when ProjectMember then project_member_abilities(user, subject)
+      when Deployment then deployment_abilities(user, subject)
+      when Environment then environment_abilities(user, subject)
       when User then user_abilities
       else []
       end.concat(global_abilities(user))
@@ -249,9 +251,7 @@ class Ability
         :create_container_image,
         :update_container_image,
         :create_environment,
-        :update_environment,
-        :create_deployment,
-        :update_deployment,
+        :create_deployment
       ]
     end
 
@@ -269,6 +269,8 @@ class Ability
       @project_master_rules ||= project_dev_rules + [
         :push_code_to_protected_branches,
         :update_project_snippet,
+        :update_environment,
+        :update_deployment,
         :admin_milestone,
         :admin_project_snippet,
         :admin_project_member,
@@ -522,6 +524,14 @@ class Ability
     end
 
     def external_issue_abilities(user, subject)
+      project_abilities(user, subject.project)
+    end
+
+    def deployment_abilities(user, subject)
+      project_abilities(user, subject.project)
+    end
+
+    def environment_abilities(user, subject)
       project_abilities(user, subject.project)
     end
 

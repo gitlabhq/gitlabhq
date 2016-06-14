@@ -20,5 +20,4 @@
           %th Environment
           %th Last deployment
           %th Date
-        - @environments.each do |environment|
-          = render 'environment', environment: environment
+        = render @environments

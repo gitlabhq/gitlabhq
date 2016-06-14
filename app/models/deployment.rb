@@ -6,10 +6,10 @@ class Deployment < ActiveRecord::Base
   belongs_to :user
   belongs_to :deployable, polymorphic: true
 
-  validates_presence_of :sha
-  validates_presence_of :ref
-  validates_associated :project
-  validates_associated :environment
+  validates :sha, presence: true
+  validates :ref, presence: true
+  validates :project, associated: true
+  validates :environment, associated: true
 
   delegate :name, to: :environment, prefix: true
 
@@ -22,7 +22,7 @@ class Deployment < ActiveRecord::Base
   end
 
   def short_sha
-    Commit::truncate_sha(sha)
+    Commit.truncate_sha(sha)
   end
 
   def last?

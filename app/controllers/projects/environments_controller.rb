@@ -19,20 +19,22 @@ class Projects::EnvironmentsController < Projects::ApplicationController
 
   def create
     @environment = project.environments.create(create_params)
-    unless @environment.persisted?
-      render 'new'
-      return
-    end
 
-    redirect_to namespace_project_environment_path(project.namespace, project, @environment)
+    if @environment.persisted?
+      redirect_to namespace_project_environment_path(project.namespace, project, @environment)
+    else
+      render 'new'
+    end
   end
 
   def destroy
     if @environment.destroy
-      redirect_to namespace_project_environments_path(project.namespace, project), notice: 'Environment was successfully removed.'
+      flash[:notice] = 'Environment was successfully removed.'
     else
-      redirect_to namespace_project_environments_path(project.namespace, project), alert: 'Failed to remove environment.'
+      flash[:alert] = 'Failed to remove environment.'
     end
+
+    redirect_to namespace_project_environments_path(project.namespace, project)
   end
 
   private
@@ -42,7 +44,6 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   end
 
   def environment
-    @environment ||= project.environments.find(params[:id].to_s)
-    @environment || render_404
+    @environment ||= project.environments.find_by!(id: params[:id])
   end
 end

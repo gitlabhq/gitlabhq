@@ -81,7 +81,8 @@ module Ci
         if build.environment.present?
           service = CreateDeploymentService.new(build.project, build.user,
                                                 environment: build.environment,
-                                                sha: build.sha, ref: build.ref,
+                                                sha: build.sha,
+                                                ref: build.ref,
                                                 tag: build.tag)
           service.execute(build)
         end
