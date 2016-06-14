@@ -90,7 +90,7 @@ module Gitlab
         else
           relation_hash = relation_item[sub_relation.to_s]
         end
-        return relation_hash, sub_relation
+        [relation_hash, sub_relation]
       end
 
       def create_relation(relation, relation_hash_list)
