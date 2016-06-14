@@ -96,7 +96,7 @@ module API
 
         runner = get_runner(params[:runner_id])
         authenticate_enable_runner!(runner)
-        Ci::RunnerProject.create(runner: runner, project: user_project)
+        runner.assign_to(user_project)
 
         present runner, with: Entities::Runner
       end
