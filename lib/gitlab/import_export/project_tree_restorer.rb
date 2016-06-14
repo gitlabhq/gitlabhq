@@ -51,7 +51,7 @@ module Gitlab
       end
 
       def default_relation_list
-        Gitlab::ImportExport::ImportExportReader.new(shared: @shared).tree.reject do |model|
+        Gitlab::ImportExport::Reader.new(shared: @shared).tree.reject do |model|
           model.is_a?(Hash) && model[:project_members]
         end
       end
