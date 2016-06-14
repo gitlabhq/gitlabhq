@@ -132,12 +132,14 @@ describe NotificationService, services: true do
       let(:assignee) { create(:user) }
       let(:non_member) { create(:user) }
       let(:member) { create(:user) }
+      let(:guest) { create(:user) }
       let(:admin) { create(:admin) }
       let(:confidential_issue) { create(:issue, :confidential, project: project, author: author, assignee: assignee) }
       let(:note) { create(:note_on_issue, noteable: confidential_issue, project: project, note: "#{author.to_reference} #{assignee.to_reference} #{non_member.to_reference} #{member.to_reference} #{admin.to_reference}") }
 
       it 'filters out users that can not read the issue' do
         project.team << [member, :developer]
+        project.team << [guest, :guest]
 
         expect(SentNotification).to receive(:record).with(confidential_issue, any_args).exactly(4).times
 
@@ -146,6 +148,7 @@ describe NotificationService, services: true do
         notification.new_note(note)
 
         should_not_email(non_member)
+        should_not_email(guest)
         should_email(author)
         should_email(assignee)
         should_email(member)
@@ -322,17 +325,20 @@ describe NotificationService, services: true do
         let(:assignee) { create(:user) }
         let(:non_member) { create(:user) }
         let(:member) { create(:user) }
+        let(:guest) { create(:user) }
         let(:admin) { create(:admin) }
         let(:confidential_issue) { create(:issue, :confidential, project: project, title: 'Confidential issue', author: author, assignee: assignee) }
 
         it "emails subscribers of the issue's labels that can read the issue" do
           project.team << [member, :developer]
+          project.team << [guest, :guest]
 
           label = create(:label, issues: [confidential_issue])
           label.toggle_subscription(non_member)
           label.toggle_subscription(author)
           label.toggle_subscription(assignee)
           label.toggle_subscription(member)
+          label.toggle_subscription(guest)
           label.toggle_subscription(admin)
 
           ActionMailer::Base.deliveries.clear
@@ -341,6 +347,7 @@ describe NotificationService, services: true do
 
           should_not_email(non_member)
           should_not_email(author)
+          should_not_email(guest)
           should_email(assignee)
           should_email(member)
           should_email(admin)
@@ -490,6 +497,7 @@ describe NotificationService, services: true do
         let(:assignee) { create(:user) }
         let(:non_member) { create(:user) }
         let(:member) { create(:user) }
+        let(:guest) { create(:user) }
         let(:admin) { create(:admin) }
         let(:confidential_issue) { create(:issue, :confidential, project: project, title: 'Confidential issue', author: author, assignee: assignee) }
         let!(:label_1) { create(:label, issues: [confidential_issue]) }
@@ -497,11 +505,13 @@ describe NotificationService, services: true do
 
         it "emails subscribers of the issue's labels that can read the issue" do
           project.team << [member, :developer]
+          project.team << [guest, :guest]
 
           label_2.toggle_subscription(non_member)
           label_2.toggle_subscription(author)
           label_2.toggle_subscription(assignee)
           label_2.toggle_subscription(member)
+          label_2.toggle_subscription(guest)
           label_2.toggle_subscription(admin)
 
           ActionMailer::Base.deliveries.clear
@@ -509,6 +519,7 @@ describe NotificationService, services: true do
           notification.relabeled_issue(confidential_issue, [label_2], @u_disabled)
 
           should_not_email(non_member)
+          should_not_email(guest)
           should_email(author)
           should_email(assignee)
           should_email(member)

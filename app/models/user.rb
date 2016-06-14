@@ -405,8 +405,8 @@ class User < ActiveRecord::Base
   end
 
   # Returns projects user is authorized to access.
-  def authorized_projects
-    Project.where("projects.id IN (#{projects_union.to_sql})")
+  def authorized_projects(min_access_level = nil)
+    Project.where("projects.id IN (#{projects_union(min_access_level).to_sql})")
   end
 
   def viewable_starred_projects
@@ -824,11 +824,19 @@ class User < ActiveRecord::Base
 
   private
 
-  def projects_union
-    Gitlab::SQL::Union.new([personal_projects.select(:id),
-                            groups_projects.select(:id),
-                            projects.select(:id),
-                            groups.joins(:shared_projects).select(:project_id)])
+  def projects_union(min_access_level = nil)
+    relations = [personal_projects.select(:id),
+                 groups_projects.select(:id),
+                 projects.select(:id),
+                 groups.joins(:shared_projects).select(:project_id)]
+
+
+    if min_access_level
+      scope = { access_level: Gitlab::Access.values.select { |access| access >= min_access_level } }
+      relations = [relations.shift] + relations.map { |relation| relation.where(members: scope) }
+    end
+
+    Gitlab::SQL::Union.new(relations)
   end
 
   def ci_projects_union
