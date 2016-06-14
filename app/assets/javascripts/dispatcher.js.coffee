@@ -126,6 +126,8 @@ class Dispatcher
         shortcut_handler = new ShortcutsDashboardNavigation()
       when 'profiles'
         new Profile()
+        new NotificationsForm()
+        new NotificationsDropdown()
       when 'projects'
         new Project()
         new ProjectAvatar()
@@ -139,6 +141,7 @@ class Dispatcher
             new ProjectNew()
           when 'show'
             new ProjectShow()
+            new NotificationsDropdown()
           when 'wikis'
             new Wikis()
             shortcut_handler = new ShortcutsNavigation()

@@ -159,7 +159,7 @@ class NotificationService
     recipients = add_project_watchers(recipients, note.project)
 
     # Merge project with custom notification
-    recipients = add_project_custom_notifications(recipients, note.project, :new_note)
+    recipients = add_custom_notifications(recipients, note.project, :new_note)
 
     # Reject users with Mention notification level, except those mentioned in _this_ note.
     recipients = reject_mention_users(recipients - mentioned_users, note.project)
@@ -257,11 +257,19 @@ class NotificationService
   protected
 
   # Get project/group users with CUSTOM notification level
-  def add_project_custom_notifications(recipients, project, action)
+  def add_custom_notifications(recipients, project, action)
     user_ids = []
 
+    # Users with a notification setting on group or project
     user_ids += notification_settings_for(project, :custom, action)
     user_ids += notification_settings_for(project.group, :custom, action)
+
+    # Users with global level custom
+    users_with_project_level_global = notification_settings_for(project, :global)
+    users_with_group_level_global   = notification_settings_for(project.group, :global)
+
+    global_users_ids = users_with_project_level_global.concat(users_with_group_level_global)
+    user_ids += users_with_global_level_custom(global_users_ids, action)
 
     recipients.concat(User.find(user_ids))
   end
@@ -271,7 +279,7 @@ class NotificationService
     project_members = notification_settings_for(project)
 
     users_with_project_level_global = notification_settings_for(project, :global)
-    users_with_group_level_global = notification_settings_for(project, :global)
+    users_with_group_level_global   = notification_settings_for(project.group, :global)
     users = users_with_global_level_watch([users_with_project_level_global, users_with_group_level_global].flatten.uniq)
 
     users_with_project_setting = select_project_member_setting(project, users_with_project_level_global, users)
@@ -293,11 +301,21 @@ class NotificationService
   end
 
   def users_with_global_level_watch(ids)
+    settings_with_global_level_of(:watch, ids).pluck(:user_id)
+  end
+
+  def users_with_global_level_custom(ids, action)
+    settings = settings_with_global_level_of(:custom, ids)
+    settings = settings.select { |setting| setting.events[action] }
+    settings.map(&:user_id)
+  end
+
+  def settings_with_global_level_of(level, ids)
     NotificationSetting.where(
       user_id: ids,
       source_type: nil,
-      level: NotificationSetting.levels[:watch]
-    ).pluck(:user_id)
+      level: NotificationSetting.levels[level]
+    )
   end
 
   # Build a list of users based on project notifcation settings
@@ -477,7 +495,7 @@ class NotificationService
 
     recipients = target.participants(current_user)
     recipients = add_project_watchers(recipients, project)
-    recipients = add_project_custom_notifications(recipients, project, custom_action)
+    recipients = add_custom_notifications(recipients, project, custom_action)
     recipients = reject_mention_users(recipients, project)
 
     recipients = recipients.uniq

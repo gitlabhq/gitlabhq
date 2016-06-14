@@ -32,7 +32,7 @@
       .project-repo-buttons.btn-group.project-right-buttons
         = render "projects/buttons/download"
         = render 'projects/buttons/dropdown'
-        = render 'projects/buttons/notifications'
+        = render 'notifications/buttons/notifications', notification_setting: @notification_setting
 
 :javascript
   new Star();

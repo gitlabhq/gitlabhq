@@ -1,7 +1,5 @@
 class @NotificationsForm
   constructor: ->
-    @form = $('.custom-notifications-form')
-
     @removeEventListeners()
     @initEventListeners()
 
@@ -14,7 +12,7 @@ class @NotificationsForm
   toggleCheckbox: (e) =>
     $checkbox = $(e.currentTarget)
     $parent = $checkbox.closest('.checkbox')
-
+    console.log($parent)
     @saveEvent($checkbox, $parent)
 
   showCheckboxLoadingSpinner: ($parent) ->
@@ -26,11 +24,14 @@ class @NotificationsForm
       .removeClass 'is-done'
 
   saveEvent: ($checkbox, $parent) ->
+    form = $parent.parents('form:first')
+    console.log(form)
+
     $.ajax(
-      url: @form.attr('action')
-      method: 'patch'
+      url: form.attr('action')
+      method: form.attr('method')
       dataType: 'json'
-      data: @form.serialize()
+      data: form.serialize()
       beforeSend: =>
         @showCheckboxLoadingSpinner($parent)
     ).done (data) ->

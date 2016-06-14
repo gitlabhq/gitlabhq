@@ -24,12 +24,12 @@
         .form-group
           = f.label :notification_email, class: "label-light"
           = f.select :notification_email, @user.all_emails, { include_blank: false }, class: "select2"
-        .form-group
-          = f.label :notification_level, class: 'label-light'
-          = notification_level_radio_buttons
 
-        .prepend-top-default
-          = f.submit 'Update settings', class: "btn btn-create"
+      .form-group.pull-left
+        = render 'notifications/buttons/notifications', notification_setting: @global_notification_setting
+
+      .clearfix
+
       %hr
       %h5
         Groups (#{@group_notifications.count})
