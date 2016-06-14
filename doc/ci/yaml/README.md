@@ -167,7 +167,7 @@ There are also two edge cases worth mentioning:
 
 1. If no `stages` is defined in `.gitlab-ci.yml`, then by default the `build`,
    `test` and `deploy` are allowed to be used as job's stage by default.
-2. If a job doesn't specify `stage`, the job is assigned the `test` stage.
+2. If a job doesn't specify a `stage`, the job is assigned the `test` stage.
 
 ### types
 
@@ -178,9 +178,9 @@ Alias for [stages](#stages).
 >**Note:**
 Introduced in GitLab Runner v0.5.0.
 
-GitLab CI allows you to add to `.gitlab-ci.yml` variables that are set in build
-environment. The variables are stored in the git repository and are meant to
-store non-sensitive project configuration, for example:
+GitLab CI allows you to add variables to `.gitlab-ci.yml` that are set in the
+build environment. The variables are stored in the git repository and are meant
+to store non-sensitive project configuration, for example:
 
 ```yaml
 variables:
@@ -253,8 +253,8 @@ rspec:
     - binaries/
 ```
 
-The cache is provided on best effort basis, so don't expect that cache will be
-always present. For implementation details please check GitLab Runner.
+The cache is provided on a best-effort basis, so don't expect that the cache
+will be always present. For implementation details, please check GitLab Runner.
 
 #### cache:key
 
