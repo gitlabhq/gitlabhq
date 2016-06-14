@@ -10,8 +10,9 @@ class Projects::RunnerProjectsController < Projects::ApplicationController
     return head(403) unless current_user.ci_authorized_runners.include?(@runner)
 
     path = runners_path(project)
+    runner_project = @runner.assign_to(project, current_user)
 
-    if @runner.assign_to(project, current_user)
+    if runner_project.persisted?
       redirect_to path
     else
       redirect_to path, alert: 'Failed adding runner to project'

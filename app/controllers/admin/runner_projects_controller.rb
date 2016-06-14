@@ -11,7 +11,9 @@ class Admin::RunnerProjectsController < Admin::ApplicationController
 
     return head(403) if runner.is_shared? || runner.is_locked?
 
-    if @runner.assign_to(@project, current_user)
+    runner_project = @runner.assign_to(@project, current_user)
+
+    if runner_project.persisted?
       redirect_to admin_runner_path(@runner)
     else
       redirect_to admin_runner_path(@runner), alert: 'Failed adding runner to project'

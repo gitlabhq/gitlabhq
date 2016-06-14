@@ -97,7 +97,9 @@ module API
         runner = get_runner(params[:runner_id])
         authenticate_enable_runner!(runner)
 
-        if runner.assign_to(user_project)
+        runner_project = runner.assign_to(user_project)
+
+        if runner_project.persisted?
           present runner, with: Entities::Runner
         else
           conflict!("Runner was already enabled for this project")

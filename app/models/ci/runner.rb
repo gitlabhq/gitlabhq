@@ -63,7 +63,7 @@ module Ci
     def assign_to(project, current_user = nil)
       self.is_shared = false if shared?
       self.save
-      project.runner_projects.create(runner_id: self.id).persisted?
+      project.runner_projects.create(runner_id: self.id)
     end
 
     def display_name
