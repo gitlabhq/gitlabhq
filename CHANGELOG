@@ -8,6 +8,7 @@ v 8.8.5
   - Adjust the SAML control flow to allow LDAP identities to be added to an existing SAML user
   - Fix incremental trace upload API when using multi-byte UTF-8 chars in trace
   - Prevent unauthorized access for projects build traces
+  - Forbid scripting for wiki files
 
 v 8.8.4
   - Fix LDAP-based login for users with 2FA enabled. !4493
