@@ -1,6 +1,4 @@
 class TeamcityService < CiService
-  include HTTParty
-
   prop_accessor :teamcity_url, :build_type, :username, :password
 
   validates :teamcity_url, presence: true, url: true, if: :activated?
@@ -64,15 +62,7 @@ class TeamcityService < CiService
   end
 
   def build_info(sha)
-    url = URI.join(
-      teamcity_url,
-      "/httpAuth/app/rest/builds/branch:unspecified:any,number:#{sha}"
-    ).to_s
-    auth = {
-      username: username,
-      password: password
-    }
-    @response = HTTParty.get(url, verify: false, basic_auth: auth)
+    @response = get_path("httpAuth/app/rest/builds/branch:unspecified:any,number:#{sha}")
   end
 
   def build_page(sha, ref)
@@ -81,14 +71,11 @@ class TeamcityService < CiService
     if @response.code != 200
       # If actual build link can't be determined,
       # send user to build summary page.
-      URI.join(teamcity_url, "/viewLog.html?buildTypeId=#{build_type}").to_s
+      build_url("viewLog.html?buildTypeId=#{build_type}")
     else
       # If actual build link is available, go to build result page.
       built_id = @response['build']['id']
-      URI.join(
-        teamcity_url,
-        "/viewLog.html?buildId=#{built_id}&buildTypeId=#{build_type}"
-      ).to_s
+      build_url("viewLog.html?buildId=#{built_id}&buildTypeId=#{build_type}")
     end
   end
 
@@ -123,13 +110,27 @@ class TeamcityService < CiService
 
     branch = Gitlab::Git.ref_name(data[:ref])
 
-    self.class.post(
-      URI.join(teamcity_url, '/httpAuth/app/rest/buildQueue').to_s,
+    HTTParty.post(
+      build_url('httpAuth/app/rest/buildQueue'),
       body: "<build branchName=\"#{branch}\">"\
             "<buildType id=\"#{build_type}\"/>"\
             '</build>',
       headers: { 'Content-type' => 'application/xml' },
       basic_auth: auth
     )
+  end
+
+  private
+
+  def build_url(path)
+    URI.join("#{teamcity_url}/", path).to_s
+  end
+
+  def get_path(path)
+    HTTParty.get(build_url(path), verify: false,
+                                  basic_auth: {
+                                    username: username,
+                                    password: password
+                                  })
   end
 end
