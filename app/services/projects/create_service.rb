@@ -52,8 +52,6 @@ module Projects
 
       save_project_and_import_data(import_data)
 
-      @project.import_url = download_export_namespace_project_path(@project.namespace, @project) if @project.gitlab_project_import?
-
       @project.import_start if @project.import?
 
       after_create_actions if @project.persisted? && !@project.gitlab_project_import?

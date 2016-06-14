@@ -50,6 +50,19 @@ module Emails
            subject: subject("Invitation declined"))
     end
 
+    def project_was_exported_email(current_user, project)
+      @project = project
+      mail(to: current_user.notification_email,
+           subject: subject("Project was exported"))
+    end
+
+    def project_was_not_exported_email(current_user, project, errors)
+      @project = project
+      @errors = errors
+      mail(to: current_user.notification_email,
+           subject: subject("Project export error"))
+    end
+
     def project_was_moved_email(project_id, user_id, old_path_with_namespace)
       @current_user = @user = User.find user_id
       @project = Project.find project_id

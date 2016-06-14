@@ -12,8 +12,9 @@ module Projects
       def save_all
         if [version_saver, project_tree_saver, uploads_saver, repo_saver, wiki_repo_saver].all?(&:save)
           Gitlab::ImportExport::Saver.save(shared: @shared)
+          notify_success
         else
-          cleanup_and_notify_worker
+          cleanup_and_notify
         end
       end
 
@@ -37,9 +38,19 @@ module Projects
         Gitlab::ImportExport::WikiRepoSaver.new(project: project, shared: @shared)
       end
 
-      def cleanup_and_notify_worker
+      def cleanup_and_notify
         FileUtils.rm_rf(@shared.export_path)
+
+        notify_error
         raise Gitlab::ImportExport::Error.new(@shared.errors.join(', '))
+      end
+
+      def notify_success
+        notification_service.project_exported(@project, @current_user)
+      end
+
+      def notify_error
+        notification_service.project_not_exported(@project, @current_user, @shared.errors.join(', '))
       end
     end
   end
