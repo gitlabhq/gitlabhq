@@ -39,6 +39,8 @@ v 8.9.0 (unreleased)
   - Add option to project to only allow merge requests to be merged if the build succeeds (Rui Santos)
   - Fix issues filter when ordering by milestone
   - Added artifacts:when to .gitlab-ci.yml - this requires GitLab Runner 1.3
+  - Bamboo Service: Fix missing credentials & URL handling when base URL contains a path (Benjamin Schmid)
+  - TeamCity Service: Fix URL handling when base URL contains a path
   - Todos will display target state if issuable target is 'Closed' or 'Merged'
   - Fix bug when sorting issues by milestone due date and filtering by two or more labels
   - Add support for using Yubikeys (U2F) for two-factor authentication
