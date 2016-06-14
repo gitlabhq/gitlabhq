@@ -24,12 +24,10 @@
     = link_to admin_runners_path, title: 'Runners' do
       %span
         Runners
-        %span.count= number_with_delimiter(Ci::Runner.count(:all))
   = nav_link path: 'builds#index' do
     = link_to admin_builds_path, title: 'Builds' do
       %span
         Builds
-        %span.count= number_with_delimiter(Ci::Build.count(:all))
   = nav_link(controller: :logs) do
     = link_to admin_logs_path, title: 'Logs' do
       %span
@@ -74,14 +72,12 @@
     = link_to admin_abuse_reports_path, title: "Abuse Reports" do
       %span
         Abuse Reports
-        %span.count= number_with_delimiter(AbuseReport.count(:all))
 
   - if askimet_enabled?
     = nav_link(controller: :spam_logs) do
       = link_to admin_spam_logs_path, title: "Spam Logs" do
         %span
           Spam Logs
-          %span.count= number_with_delimiter(SpamLog.count(:all))
 
   = nav_link(controller: :application_settings, html_options: { class: 'separate-item'}) do
     = link_to admin_application_settings_path, title: 'Settings' do
