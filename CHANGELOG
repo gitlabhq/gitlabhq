@@ -79,6 +79,8 @@ v 8.9.0 (unreleased)
   - Allow users to create confidential issues in private projects
   - Measure CPU time for instrumented methods
   - Instrument private methods and private instance methods by default instead just public methods
+  - Updated the allocations Gem to version 1.0.5
+  - The background sampler now ignores classes without names
 
 v 8.8.5 (unreleased)
   - Ensure branch cleanup regardless of whether the GitHub import process succeeds
