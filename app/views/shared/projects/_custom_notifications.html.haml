@@ -9,7 +9,6 @@
       .modal-body
         .container-fluid
           = form_for @notification_setting, url: namespace_project_notification_setting_path(@project.namespace.becomes(Namespace), @project), method: :patch, html: { class: "custom-notifications-form" } do |f|
-            = hidden_field_tag "custom_events", "true"
             = f.hidden_field :level
             .row
               .col-lg-3
@@ -21,7 +20,8 @@
                   .form-group
                     .checkbox{ class: ("prepend-top-0" if index == 0) }
                       %label{ for: "events_#{event}" }
-                        = check_box_tag "events[#{event}]", true, @notification_setting.events[event], id: "events_#{event}", class: "js-custom-notification-event"
+                        = check_box("notification_setting", event, {id: "events_#{event}", class: "js-custom-notification-event"})
+
                         %strong
                           = event.to_s.humanize
                           = icon("spinner spin", class: "custom-notification-event-loading")

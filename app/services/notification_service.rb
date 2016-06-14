@@ -524,7 +524,8 @@ class NotificationService
     end
   end
 
-  # Builds key to be used if user has custom notification setting
+  # Build event key to search on custom notification level
+  # Check NotificationSetting::EMAIL_EVENTS
   def build_custom_key(action, object)
     "#{action}_#{object.class.name.underscore}".to_sym
   end

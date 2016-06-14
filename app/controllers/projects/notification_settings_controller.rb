@@ -3,28 +3,19 @@ class Projects::NotificationSettingsController < Projects::ApplicationController
 
   def update
     @notification_setting = current_user.notification_settings_for(project)
-
-    if params[:custom_events].nil?
-      saved = @notification_setting.update_attributes(notification_setting_params)
-    else
-      events = params[:events] || {}
-
-      NotificationSetting::EMAIL_EVENTS.each do |event|
-        @notification_setting.events[event] = events[event]
-      end
-
-      saved = @notification_setting.save
-    end
+    saved = @notification_setting.update_attributes(notification_setting_params)
 
     render json: {
       html: view_to_html_string("projects/buttons/_notifications", locals: { project: @project, notification_setting: @notification_setting }),
-      saved: saved,
+      saved: saved
     }
   end
 
   private
 
   def notification_setting_params
-    params.require(:notification_setting).permit(:level)
+    allowed_fields = NotificationSetting::EMAIL_EVENTS.dup
+    allowed_fields << :level
+    params.require(:notification_setting).permit(allowed_fields)
   end
 end
