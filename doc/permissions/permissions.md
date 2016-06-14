@@ -28,6 +28,7 @@ documentation](../workflow/add-user/add-user.md).
 | Manage labels                         |         | ✓          | ✓           | ✓        | ✓      |
 | See a commit status                   |         | ✓          | ✓           | ✓        | ✓      |
 | See a container registry              |         | ✓          | ✓           | ✓        | ✓      |
+| See a environments                    |         | ✓          | ✓           | ✓        | ✓      |
 | Manage merge requests                 |         |            | ✓           | ✓        | ✓      |
 | Create new merge request              |         |            | ✓           | ✓        | ✓      |
 | Create new branches                   |         |            | ✓           | ✓        | ✓      |
@@ -40,6 +41,7 @@ documentation](../workflow/add-user/add-user.md).
 | Create or update commit status        |         |            | ✓           | ✓        | ✓      |
 | Update a container registry           |         |            | ✓           | ✓        | ✓      |
 | Remove a container registry image     |         |            | ✓           | ✓        | ✓      |
+| Manage environments                   |         |            | ✓           | ✓        | ✓      |
 | Create new milestones                 |         |            |             | ✓        | ✓      |
 | Add new team members                  |         |            |             | ✓        | ✓      |
 | Push to protected branches            |         |            |             | ✓        | ✓      |

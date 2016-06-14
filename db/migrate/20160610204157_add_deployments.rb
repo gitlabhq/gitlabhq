@@ -13,8 +13,8 @@ class AddDeployments < ActiveRecord::Migration
       t.boolean  :tag
       t.string   :sha
       t.integer  :user_id
-      t.integer  :deployable_id,   null: false
-      t.string   :deployable_type, null: false
+      t.integer  :deployable_id
+      t.string   :deployable_type
       t.datetime :created_at
       t.datetime :updated_at
     end

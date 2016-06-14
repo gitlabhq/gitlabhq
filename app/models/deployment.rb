@@ -8,6 +8,8 @@ class Deployment < ActiveRecord::Base
 
   validates_presence_of :sha
   validates_presence_of :ref
+  validates_associated :project
+  validates_associated :environment
 
   delegate :name, to: :environment, prefix: true
 
