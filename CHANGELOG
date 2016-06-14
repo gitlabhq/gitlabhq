@@ -54,6 +54,7 @@ v 8.9.0 (unreleased)
   - Use Knapsack only in CI environment
   - Cache project build count in sidebar nav
   - Add milestone expire date to the right sidebar
+  - Manually mark a issue or merge request as a todo
   - Fix markdown_spec to use before instead of before(:all) to properly cleanup database after testing
   - Reduce number of queries needed to render issue labels in the sidebar
   - Improve error handling importing projects
@@ -73,7 +74,6 @@ v 8.9.0 (unreleased)
   - Put project Labels and Milestones pages links under Issues and Merge Requests tabs as subnav
   - All classes in the Banzai::ReferenceParser namespace are now instrumented
   - Remove deprecated issues_tracker and issues_tracker_id from project model
-  - Manually mark a issue or merge request as a todo
 
 v 8.8.5 (unreleased)
   - Ensure branch cleanup regardless of whether the GitHub import process succeeds
