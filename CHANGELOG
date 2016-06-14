@@ -22,6 +22,7 @@ v 8.9.0 (unreleased)
   - Reduce number of fog gem dependencies
   - Remove project notification settings associated with deleted projects
   - Fix 404 page when viewing TODOs that contain milestones or labels in different projects
+  - Add a metric for the number of new Redis connections created by a transaction
   - Redesign navigation for project pages
   - Fix groups API to list only user's accessible projects
   - Redesign account and email confirmation emails
