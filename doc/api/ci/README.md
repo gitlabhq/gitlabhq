@@ -2,19 +2,21 @@
 
 ## Purpose
 
-Main purpose of GitLab CI API is to provide necessary data and context for
-GitLab CI Runners.
+The main purpose of GitLab CI API is to provide the necessary data and context
+for GitLab CI Runners.
 
-For consumer API take a look at this [documentation](../../api/README.md) where
-you will find all relevant information.
+All relevant information about the consumer API can be found in a
+[separate document](../../api/README.md).
 
 ## API Prefix
 
-Current CI API prefix is `/ci/api/v1`.
+The current CI API prefix is `/ci/api/v1`.
 
 You need to prepend this prefix to all examples in this documentation, like:
 
-    GET /ci/api/v1/builds/:id/artifacts
+```bash
+GET /ci/api/v1/builds/:id/artifacts
+```
 
 ## Resources
 
