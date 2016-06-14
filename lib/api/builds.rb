@@ -184,7 +184,7 @@ module API
 
         status 200
         present build, with: Entities::Build,
-                user_can_download_artifacts: can?(current_user, :read_build, user_project)
+                       user_can_download_artifacts: can?(current_user, :read_build, user_project)
       end
     end
 

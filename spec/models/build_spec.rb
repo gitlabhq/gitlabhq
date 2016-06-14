@@ -415,12 +415,14 @@ describe Ci::Build, models: true do
 
     context 'is expired' do
       before { build.update(artifacts_expire_at: Time.now - 7.days)  }
-      it { is_expected.to be_falsy }
+
+      it { is_expected.to be_truthy }
     end
 
     context 'is not expired' do
       before { build.update(artifacts_expire_at: Time.now + 7.days)  }
-      it { is_expected.to be_truthy }
+
+      it { is_expected.to be_falsey }
     end
   end
 

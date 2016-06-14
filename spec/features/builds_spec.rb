@@ -107,9 +107,7 @@ describe "Builds" do
         let(:expire_at) { nil }
 
         it 'does not have the Keep button' do
-          page.within('.artifacts') do
-            expect(page).not_to have_content 'Keep'
-          end
+          expect(page).not_to have_content 'Keep'
         end
       end
 
@@ -117,10 +115,8 @@ describe "Builds" do
         let(:expire_at) { Time.now + 7.days }
 
         it 'keeps artifacts when Keep button is clicked' do
-          page.within('.artifacts') do
-            expect(page).to have_content 'The artifacts will be removed'
-            click_link 'Keep'
-          end
+          expect(page).to have_content 'The artifacts will be removed'
+          click_link 'Keep'
 
           expect(page).not_to have_link 'Keep'
           expect(page).not_to have_content 'The artifacts will be removed'
@@ -131,10 +127,8 @@ describe "Builds" do
         let(:expire_at) { Time.now - 7.days }
 
         it 'does not have the Keep button' do
-          page.within('.artifacts') do
-            expect(page).to have_content 'The artifacts were removed'
-            expect(page).not_to have_link 'Keep'
-          end
+          expect(page).to have_content 'The artifacts were removed'
+          expect(page).not_to have_link 'Keep'
         end
       end
     end
