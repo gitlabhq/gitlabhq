@@ -59,6 +59,5 @@ module API
     mount ::API::Licenses
     mount ::API::Subscriptions
     mount ::API::Gitignores
-    mount ::API::SidekiqMetrics
   end
 end

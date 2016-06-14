@@ -31,7 +31,6 @@ following locations:
 - [Services](services.md)
 - [Session](session.md)
 - [Settings](settings.md)
-- [Sidekiq Metrics](sidekiq_metrics.md)
 - [System Hooks](system_hooks.md)
 - [Tags](tags.md)
 - [Users](users.md)
