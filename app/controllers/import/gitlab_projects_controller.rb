@@ -12,12 +12,10 @@ class Import::GitlabProjectsController < Import::BaseController
       return redirect_back_or_default(options: { alert: "You need to upload a GitLab project export archive." })
     end
 
-    @project = Gitlab::ImportExport::ProjectCreator.new(Namespace.find(project_params[:namespace_id]),
+    @project = Gitlab::ImportExport::ProjectCreator.new(project_params[:namespace_id],
                                                         current_user,
                                                         File.expand_path(params[:file].path),
                                                         project_params[:path]).execute
-
-    flash[:notice] = "The project import has been started."
 
     if @project.saved?
       redirect_to(
@@ -25,7 +23,10 @@ class Import::GitlabProjectsController < Import::BaseController
         notice: "Project '#{@project.name}' is being imported."
       )
     else
-      render 'new'
+      redirect_to(
+        new_project_path,
+        alert: "Project could not be exported: #{@project.errors.full_messages.join(', ')}"
+      )
     end
   end
 

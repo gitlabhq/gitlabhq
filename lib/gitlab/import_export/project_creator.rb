@@ -11,10 +11,10 @@ module Gitlab
 
       def execute
         ::Projects::CreateService.new(
-          current_user,
+          @current_user,
           name: @project_path,
           path: @project_path,
-          namespace_id: namespace_id,
+          namespace_id: @namespace_id,
           import_type: "gitlab_project",
           import_source: @file
         ).execute

@@ -2,8 +2,8 @@ module Gitlab
   module ImportExport
     class VersionChecker
 
-      def self.restore(*args)
-        new(*args).check
+      def self.check!(*args)
+        new(*args).check!
       end
 
       def initialize(shared:)
