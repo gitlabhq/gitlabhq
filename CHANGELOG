@@ -9,6 +9,7 @@ v 8.8.5
   - Fix incremental trace upload API when using multi-byte UTF-8 chars in trace !4541
   - Prevent unauthorized access for projects build traces
   - Forbid scripting for wiki files
+  - Only show notes through JSON on confidential issues that the user has access to
 
 v 8.8.4
   - Fix LDAP-based login for users with 2FA enabled. !4493
