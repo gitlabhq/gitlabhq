@@ -1,3 +1,4 @@
+# rubocop:disable all
 class FixTodos < ActiveRecord::Migration
  def up
     execute <<-SQL

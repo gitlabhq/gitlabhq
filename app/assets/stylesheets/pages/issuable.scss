@@ -29,7 +29,7 @@
   }
 }
 
-.issuable-sidebar {
+.right-sidebar {
   a {
     color: inherit;
   }
@@ -72,6 +72,10 @@
         color: $gray-darkest;
       }
     }
+  }
+
+  .block-first {
+    padding-top: 0;
   }
 
   .title {

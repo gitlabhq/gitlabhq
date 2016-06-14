@@ -1,19 +1,31 @@
-class CiBuild
+class @CiBuild
   @interval: null
   @state: null
 
-  constructor: (build_url, build_status, build_state) ->
+  constructor: (@build_url, @build_status, @state) ->
     clearInterval(CiBuild.interval)
 
-    @state = build_state
+    # Init breakpoint checker
+    @bp = Breakpoints.get()
+    @hideSidebar()
+    $('.js-build-sidebar').niceScroll()
+    $(document)
+      .off 'click', '.js-sidebar-build-toggle'
+      .on 'click', '.js-sidebar-build-toggle', @toggleSidebar
 
-    @initScrollButtonAffix()
+    $(window)
+      .off 'resize.build'
+      .on 'resize.build', @hideSidebar
 
-    if build_status == "running" || build_status == "pending"
+    if $('#build-trace').length
+      @getInitialBuildTrace()
+      @initScrollButtonAffix()
+
+    if @build_status is "running" or @build_status is "pending"
       #
       # Bind autoscroll button to follow build output
       #
-      $("#autoscroll-button").bind "click", ->
+      $('#autoscroll-button').on 'click', ->
         state = $(this).data("state")
         if "enabled" is state
           $(this).data "state", "disabled"
@@ -27,25 +39,36 @@ class CiBuild
       # Only valid for runnig build when output changes during time
       #
       CiBuild.interval = setInterval =>
-        if window.location.href.split("#").first() is build_url
-          last_state = @state
-          $.ajax
-            url: build_url + "/trace.json?state=" + encodeURIComponent(@state)
-            dataType: "json"
-            success: (log) =>
-              return unless last_state is @state
-
-              if log.state and log.status is "running"
-                @state = log.state
-                if log.append
-                  $('.fa-refresh').before log.html
-                else
-                  $('#build-trace code').html log.html
-                  $('#build-trace code').append '<i class="fa fa-refresh fa-spin"/>'
-                @checkAutoscroll()
-              else if log.status isnt build_status
-                Turbolinks.visit build_url
+        if window.location.href.split("#").first() is @build_url
+          @getBuildTrace()
       , 4000
+
+  getInitialBuildTrace: ->
+    $.ajax
+      url: @build_url
+      dataType: 'json'
+      success: (build_data) ->
+        $('.js-build-output').html build_data.trace_html
+
+        if build_data.status is 'success' or build_data.status is 'failed'
+          $('.js-build-refresh').remove()
+
+  getBuildTrace: ->
+    $.ajax
+      url: "#{@build_url}/trace.json?state=#{encodeURIComponent(@state)}"
+      dataType: "json"
+      success: (log) =>
+        if log.state
+          @state = log.state
+
+        if log.status is "running"
+          if log.append
+            $('.js-build-output').append log.html
+          else
+            $('.js-build-output').html log.html
+          @checkAutoscroll()
+        else if log.status isnt @build_status
+          Turbolinks.visit @build_url
 
   checkAutoscroll: ->
     $("html,body").scrollTop $("#build-trace").height()  if "enabled" is $("#autoscroll-button").data("state")
@@ -61,4 +84,22 @@ class CiBuild
           $body.outerHeight() - ($buildTrace.outerHeight() + $buildTrace.offset().top)
     )
 
-@CiBuild = CiBuild
+  shouldHideSidebar: ->
+    bootstrapBreakpoint = @bp.getBreakpointSize()
+
+    bootstrapBreakpoint is 'xs' or bootstrapBreakpoint is 'sm'
+
+  toggleSidebar: =>
+    if @shouldHideSidebar()
+      $('.js-build-sidebar')
+        .toggleClass 'right-sidebar-expanded right-sidebar-collapsed'
+
+  hideSidebar: =>
+    if @shouldHideSidebar()
+      $('.js-build-sidebar')
+        .removeClass 'right-sidebar-expanded'
+        .addClass 'right-sidebar-collapsed'
+    else
+      $('.js-build-sidebar')
+        .removeClass 'right-sidebar-collapsed'
+        .addClass 'right-sidebar-expanded'

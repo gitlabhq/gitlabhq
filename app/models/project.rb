@@ -285,20 +285,69 @@ class Project < ActiveRecord::Base
       non_archived.where(table[:name].matches(pattern))
     end
 
-    def find_with_namespace(id)
-      namespace_path, project_path = id.split('/', 2)
+    # Finds a single project for the given path.
+    #
+    # path - The full project path (including namespace path).
+    #
+    # Returns a Project, or nil if no project could be found.
+    def find_with_namespace(path)
+      where_paths_in([path]).reorder(nil).take
+    end
 
-      return nil if !namespace_path || !project_path
+    # Builds a relation to find multiple projects by their full paths.
+    #
+    # Each path must be in the following format:
+    #
+    #     namespace_path/project_path
+    #
+    # For example:
+    #
+    #     gitlab-org/gitlab-ce
+    #
+    # Usage:
+    #
+    #     Project.where_paths_in(%w{gitlab-org/gitlab-ce gitlab-org/gitlab-ee})
+    #
+    # This would return the projects with the full paths matching the values
+    # given.
+    #
+    # paths - An Array of full paths (namespace path + project path) for which
+    #         to find the projects.
+    #
+    # Returns an ActiveRecord::Relation.
+    def where_paths_in(paths)
+      wheres = []
+      cast_lower = Gitlab::Database.postgresql?
 
-      # Use of unscoped ensures we're not secretly adding any ORDER BYs, which
-      # have a negative impact on performance (and aren't needed for this
-      # query).
-      projects = unscoped.
-        joins(:namespace).
-        iwhere('namespaces.path' => namespace_path)
+      paths.each do |path|
+        namespace_path, project_path = path.split('/', 2)
 
-      projects.find_by('projects.path' => project_path) ||
-        projects.iwhere('projects.path' => project_path).take
+        next unless namespace_path && project_path
+
+        namespace_path = connection.quote(namespace_path)
+        project_path = connection.quote(project_path)
+
+        where = "(namespaces.path = #{namespace_path}
+          AND projects.path = #{project_path})"
+
+        if cast_lower
+          where = "(
+            #{where}
+            OR (
+              LOWER(namespaces.path) = LOWER(#{namespace_path})
+              AND LOWER(projects.path) = LOWER(#{project_path})
+            )
+          )"
+        end
+
+        wheres << where
+      end
+
+      if wheres.empty?
+        none
+      else
+        joins(:namespace).where(wheres.join(' OR '))
+      end
     end
 
     def visibility_levels
@@ -622,9 +671,21 @@ class Project < ActiveRecord::Base
   end
 
   def external_issue_tracker
-    return @external_issue_tracker if defined?(@external_issue_tracker)
-    @external_issue_tracker ||=
-      services.issue_trackers.active.without_defaults.first
+    if has_external_issue_tracker.nil? # To populate existing projects
+      cache_has_external_issue_tracker
+    end
+
+    if has_external_issue_tracker?
+      return @external_issue_tracker if defined?(@external_issue_tracker)
+
+      @external_issue_tracker = services.external_issue_trackers.first
+    else
+      nil
+    end
+  end
+
+  def cache_has_external_issue_tracker
+    update_column(:has_external_issue_tracker, services.external_issue_trackers.any?)
   end
 
   def can_have_issues_tracker_id?

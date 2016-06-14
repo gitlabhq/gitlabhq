@@ -16,6 +16,7 @@ class Service < ActiveRecord::Base
   after_initialize :initialize_properties
 
   after_commit :reset_updated_properties
+  after_commit :cache_project_has_external_issue_tracker
 
   belongs_to :project
   has_one :service_hook
@@ -34,6 +35,7 @@ class Service < ActiveRecord::Base
   scope :note_hooks, -> { where(note_events: true, active: true) }
   scope :build_hooks, -> { where(build_events: true, active: true) }
   scope :wiki_page_hooks, -> { where(wiki_page_events: true, active: true) }
+  scope :external_issue_trackers, -> { issue_trackers.active.without_defaults }
 
   default_value_for :category, 'common'
 
@@ -193,5 +195,13 @@ class Service < ActiveRecord::Base
     service.template = false
     service.project_id = project_id
     service if service.save
+  end
+
+  private
+
+  def cache_project_has_external_issue_tracker
+    if project && !project.destroyed?
+      project.cache_has_external_issue_tracker
+    end
   end
 end

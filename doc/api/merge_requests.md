@@ -674,7 +674,7 @@ GET /projects/:id/merge_requests/:merge_request_id/closes_issues
 curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/76/merge_requests/1/closes_issues
 ```
 
-Example response:
+Example response when the GitLab issue tracker is used:
 
 ```json
 [
@@ -717,6 +717,17 @@ Example response:
       "labels" : [],
       "user_notes_count": 1
    },
+]
+```
+
+Example response when an external issue tracker (e.g. JIRA) is used:
+
+```json
+[
+   {
+       "id" : "PROJECT-123",
+       "title" : "Title of this issue"
+   }
 ]
 ```
 

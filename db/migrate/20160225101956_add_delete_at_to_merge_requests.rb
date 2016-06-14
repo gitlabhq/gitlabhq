@@ -1,3 +1,4 @@
+# rubocop:disable all
 class AddDeleteAtToMergeRequests < ActiveRecord::Migration
   def change
     add_column :merge_requests, :deleted_at, :datetime

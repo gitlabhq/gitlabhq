@@ -10,10 +10,7 @@ class Projects::AvatarsController < Projects::ApplicationController
 
       return if cached_blob?
 
-      headers.store(*Gitlab::Workhorse.send_git_blob(@repository, @blob))
-      headers['Content-Disposition'] = 'inline'
-      headers['Content-Type'] = safe_content_type(@blob)
-      head :ok # 'render nothing: true' messes up the Content-Type
+      send_git_blob @repository, @blob
     else
       render_404
     end
