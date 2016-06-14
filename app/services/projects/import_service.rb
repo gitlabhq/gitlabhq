@@ -9,7 +9,8 @@ module Projects
       'fogbugz',
       'gitlab',
       'github',
-      'google_code'
+      'google_code',
+      'gitlab_project'
     ]
 
     def execute
@@ -37,7 +38,7 @@ module Projects
 
     def import_repository
       begin
-        gitlab_shell.import_repository(project.path_with_namespace, project.import_url)
+        gitlab_shell.import_repository(project.path_with_namespace, project.import_url) unless @project.gitlab_project_import?
       rescue Gitlab::Shell::Error => e
         raise Error,  "Error importing repository #{project.import_url} into #{project.path_with_namespace} - #{e.message}"
       end
@@ -58,6 +59,8 @@ module Projects
     end
 
     def importer
+      return Gitlab::ImportExport::Importer if @project.gitlab_project_import?
+
       class_name = "Gitlab::#{project.import_type.camelize}Import::Importer"
       class_name.constantize.new(project)
     end

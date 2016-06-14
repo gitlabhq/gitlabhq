@@ -45,10 +45,6 @@ class Todo < ActiveRecord::Base
     target_type == "Commit"
   end
 
-  def for_project?
-    target_type == "Project"
-  end
-
   # override to return commits, which are not active record
   def target
     if for_commit?

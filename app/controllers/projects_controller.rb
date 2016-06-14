@@ -190,7 +190,7 @@ class ProjectsController < Projects::ApplicationController
 
     redirect_to(
       edit_project_path(@project),
-      notice: "Project export successfully started"
+      notice: "Project export successfully started."
     )
   end
 

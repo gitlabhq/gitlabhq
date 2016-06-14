@@ -492,6 +492,10 @@ class Project < ActiveRecord::Base
     Gitlab::UrlSanitizer.new(import_url).masked_url
   end
 
+  def gitlab_project_import?
+    import_type == 'gitlab_project'
+  end
+
   def check_limit
     unless creator.can_create_project? or namespace.kind == 'group'
       projects_limit = creator.projects_limit

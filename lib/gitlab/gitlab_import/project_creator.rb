@@ -3,24 +3,21 @@ module Gitlab
     class ProjectCreator
       attr_reader :repo, :namespace, :current_user, :session_data
 
-      def initialize(repo, namespace, current_user, session_data)
-        @repo = repo
-        @namespace = namespace
+      def initialize(namespace_id, current_user, file, project_path)
+        @namespace_id = namespace_id
         @current_user = current_user
-        @session_data = session_data
+        @file = file
+        @project_path = project_path
       end
 
       def execute
         ::Projects::CreateService.new(
           current_user,
-          name: repo["name"],
-          path: repo["path"],
-          description: repo["description"],
-          namespace_id: namespace.id,
-          visibility_level: repo["visibility_level"],
-          import_type: "gitlab",
-          import_source: repo["path_with_namespace"],
-          import_url: repo["http_url_to_repo"].sub("://", "://oauth2:#{@session_data[:gitlab_access_token]}@")
+          name: @project_path,
+          path: @project_path,
+          namespace_id: namespace_id,
+          import_type: "gitlab_project",
+          import_source: @file
         ).execute
       end
     end

@@ -2,12 +2,11 @@ module Gitlab
   module ImportExport
     class ProjectTreeRestorer
 
-      def initialize(user:, shared:, namespace_id:)
+      def initialize(user:, shared:, project:)
         @path = File.join(shared.export_path, 'project.json')
         @user = user
-        @project_path = shared.opts[:project_path]
-        @namespace_id = namespace_id
         @shared = shared
+        @project = project
       end
 
       def restore
@@ -21,7 +20,7 @@ module Gitlab
       end
 
       def project
-        @project ||= create_project
+        @restored_project ||= restore_project
       end
 
       private
@@ -57,14 +56,10 @@ module Gitlab
         end
       end
 
-      def create_project
+      def restore_project
         project_params = @tree_hash.reject { |_key, value| value.is_a?(Array) }
-        project = Gitlab::ImportExport::ProjectFactory.create(
-          project_params: project_params, user: @user, namespace_id: @namespace_id)
-        project.path = @project_path
-        project.name = @project_path
-        project.save!
-        project
+        @project.update(project_params)
+        @project
       end
 
       # Given a relation hash containing one or more models and its relationships,

@@ -12,12 +12,10 @@ class Import::GitlabProjectsController < Import::BaseController
       return redirect_back_or_default(options: { alert: "You need to upload a GitLab project export archive." })
     end
 
-    @project = Project.create_from_import_job(current_user_id: current_user.id,
-                                              tmp_file: File.expand_path(params[:file].path),
-                                              namespace_id: project_params[:namespace_id],
-                                              project_path: project_params[:path])
-
-    @project = Gitlab::GitlabImport::ProjectCreator.new(repo, namespace, current_user, access_params).execute
+    @project = Gitlab::GitlabImport::ProjectCreator.new(Namespace.find(project_params[:namespace_id]),
+                                                        current_user,
+                                                        File.expand_path(params[:file].path),
+                                                        project_params[:path]).execute
 
     flash[:notice] = "The project import has been started."
 

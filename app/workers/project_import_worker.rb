@@ -7,10 +7,10 @@ class ProjectImportWorker
   def perform(current_user_id, tmp_file, namespace_id, path)
     current_user = User.find(current_user_id)
 
-    project = Gitlab::ImportExport::ImportService.execute(archive_file: tmp_file,
-                                                          owner: current_user,
-                                                          namespace_id: namespace_id,
-                                                          project_path: path)
+    project = Gitlab::ImportExport::Importer.execute(archive_file: tmp_file,
+                                                     owner: current_user,
+                                                     namespace_id: namespace_id,
+                                                     project_path: path)
     if project
       project.repository.after_import
     else

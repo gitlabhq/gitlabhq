@@ -1,29 +1,79 @@
 module Gitlab
   module ImportExport
     class Importer
-      include Gitlab::ImportExport::CommandLineUtil
 
-      def self.import(*args)
-        new(*args).import
+      def self.execute(*args)
+        new(*args).execute
       end
 
-      def initialize(archive_file:, shared:)
-        @archive_file = archive_file
-        @shared = shared
+      def initialize(project)
+        @archive_file = project.import_source
+        @current_user = project.creator
+        @shared = Gitlab::ImportExport::Shared.new(relative_path: path_with_namespace(@project.path))
       end
 
-      def import
-        FileUtils.mkdir_p(@shared.export_path)
-        decompress_archive
-      rescue => e
-        @shared.error(e)
-        false
+      def execute
+        Gitlab::ImportExport::FileImporter.import(archive_file: @archive_file,
+                                                  shared: @shared)
+        if check_version! && [project_tree, repo_restorer, wiki_restorer, uploads_restorer].all?(&:restore)
+          project_tree.project
+        else
+          project_tree.project.destroy if project_tree.project
+          nil
+        end
       end
 
       private
 
-      def decompress_archive
-        untar_zxf(archive: @archive_file, dir: @shared.export_path)
+      def check_version!
+        Gitlab::ImportExport::VersionChecker.check!(shared: @shared)
+      end
+
+      def project_tree
+        @project_tree ||= Gitlab::ImportExport::ProjectTreeRestorer.new(user: @current_user,
+                                                                        shared: @shared,
+                                                                        project: @project)
+      end
+
+      def repo_restorer
+        Gitlab::ImportExport::RepoRestorer.new(path_to_bundle: repo_path,
+                                               shared: @shared,
+                                               project: project_tree.project)
+      end
+
+      def wiki_restorer
+        Gitlab::ImportExport::RepoRestorer.new(path_to_bundle: wiki_repo_path,
+                                               shared: @shared,
+                                               project: ProjectWiki.new(project_tree.project),
+                                               wiki: true)
+      end
+
+      def uploads_restorer
+        Gitlab::ImportExport::UploadsRestorer.new(project: project_tree.project, shared: @shared)
+      end
+
+      def path_with_namespace(project_path)
+        File.join(@namespace.path, project_path)
+      end
+
+      def repo_path
+        File.join(@shared.export_path, 'project.bundle')
+      end
+
+      def wiki_repo_path
+        File.join(@shared.export_path, 'project.wiki.bundle')
+      end
+
+      def attributes_for_todo
+        { user_id: @current_user.id,
+          project_id: project_tree.project.id,
+          target_type: 'Project',
+          target: project_tree.project,
+          action: Todo::IMPORTED,
+          author_id: @current_user.id,
+          state: :pending,
+          target_id: project_tree.project.id
+        }
       end
     end
   end
