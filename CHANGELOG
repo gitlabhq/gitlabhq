@@ -57,6 +57,7 @@ v 8.9.0 (unreleased)
   - Use Knapsack only in CI environment
   - Cache project build count in sidebar nav
   - Add milestone expire date to the right sidebar
+  - Manually mark a issue or merge request as a todo
   - Fix markdown_spec to use before instead of before(:all) to properly cleanup database after testing
   - Reduce number of queries needed to render issue labels in the sidebar
   - Improve error handling importing projects

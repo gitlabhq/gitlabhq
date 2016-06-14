@@ -795,6 +795,8 @@ Rails.application.routes.draw do
           end
         end
 
+        resources :todos, only: [:create, :update], constraints: { id: /\d+/ }
+
         resources :uploads, only: [:create] do
           collection do
             get ":secret/:filename", action: :show, as: :show, constraints: { filename: /[^\/]+/ }
