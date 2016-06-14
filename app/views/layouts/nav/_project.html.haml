@@ -1,23 +1,24 @@
 - if current_user
+  - access = user_max_access_in_project(current_user.id, @project)
+  - can_edit = can?(current_user, :admin_project, @project)
   .controls
-    - access = user_max_access_in_project(current_user.id, @project)
-    - can_edit = can?(current_user, :admin_project, @project)
     .dropdown.project-settings-dropdown
       %a.dropdown-new.btn.btn-default#project-settings-button{href: '#', 'data-toggle' => 'dropdown'}
         = icon('cog')
         = icon('caret-down')
       %ul.dropdown-menu.dropdown-menu-align-right
-        = render 'layouts/nav/project_settings'
-        %li.divider
-        - if can_edit
-          %li
-            = link_to edit_project_path(@project) do
-              Edit Project
-        - if access
-          %li
-            = link_to leave_namespace_project_project_members_path(@project.namespace, @project),
-              data: { confirm: leave_project_message(@project) }, method: :delete, title: 'Leave project' do
-              Leave Project
+        = render 'layouts/nav/project_settings', access: access, can_edit: can_edit
+        - if can_edit || access
+          %li.divider
+          - if can_edit
+            %li
+              = link_to edit_project_path(@project) do
+                Edit Project
+          - if access
+            %li
+              = link_to leave_namespace_project_project_members_path(@project.namespace, @project),
+                data: { confirm: leave_project_message(@project) }, method: :delete, title: 'Leave project' do
+                Leave Project
 
 %div{ class: nav_control_class }
   %ul.nav-links.scrolling-tabs

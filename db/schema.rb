@@ -162,6 +162,7 @@ ActiveRecord::Schema.define(version: 20160610301627) do
     t.integer  "erased_by_id"
     t.datetime "erased_at"
     t.string   "environment"
+    t.datetime "artifacts_expire_at"
   end
 
   add_index "ci_builds", ["commit_id", "stage_idx", "created_at"], name: "index_ci_builds_on_commit_id_and_stage_idx_and_created_at", using: :btree

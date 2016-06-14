@@ -12,7 +12,7 @@ module Ci
                         :dependencies, :before_script, :after_script, :variables,
                         :environment]
     ALLOWED_CACHE_KEYS = [:key, :untracked, :paths]
-    ALLOWED_ARTIFACTS_KEYS = [:name, :untracked, :paths, :when]
+    ALLOWED_ARTIFACTS_KEYS = [:name, :untracked, :paths, :when, :expire_in]
 
     attr_reader :after_script, :image, :services, :path, :cache
 
@@ -290,6 +290,10 @@ module Ci
 
       if job[:artifacts][:when] && !job[:artifacts][:when].in?(%w[on_success on_failure always])
         raise ValidationError, "#{name} job: artifacts:when parameter should be on_success, on_failure or always"
+      end
+
+      if job[:artifacts][:expire_in] && !validate_duration(job[:artifacts][:expire_in])
+        raise ValidationError, "#{name} job: artifacts:expire_in parameter should be a duration"
       end
     end
 

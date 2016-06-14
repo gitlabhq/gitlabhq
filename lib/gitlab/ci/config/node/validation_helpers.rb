@@ -5,6 +5,12 @@ module Gitlab
         module ValidationHelpers
           private
 
+          def validate_duration(value)
+            value.is_a?(String) && ChronicDuration.parse(value)
+          rescue ChronicDuration::DurationParseError
+            false
+          end
+
           def validate_array_of_strings(values)
             values.is_a?(Array) && values.all? { |value| validate_string(value) }
           end
