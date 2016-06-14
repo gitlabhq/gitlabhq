@@ -28,7 +28,8 @@ namespace :gitlab do
 
 
       # check database adapter
-      database_adapter = ActiveRecord::Base.connection.adapter_name.downcase
+      database_adapter = Gitlab::Database.adapter_name
+      database_version = Gitlab::Database.version
 
       project = Group.new(path: "some-group").projects.build(path: "some-project")
       # construct clone URLs
@@ -44,6 +45,7 @@ namespace :gitlab do
       puts "Revision:\t#{Gitlab::REVISION}"
       puts "Directory:\t#{Rails.root}"
       puts "DB Adapter:\t#{database_adapter}"
+      puts "DB Version:\t#{database_version}"
       puts "URL:\t\t#{Gitlab.config.gitlab.url}"
       puts "HTTP Clone URL:\t#{http_clone_url}"
       puts "SSH Clone URL:\t#{ssh_clone_url}"
