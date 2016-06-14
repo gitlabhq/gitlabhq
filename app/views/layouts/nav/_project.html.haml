@@ -1,23 +1,26 @@
 - if current_user
   .controls
-    - access = user_max_access_in_project(current_user.id, @project)
-    - can_edit = can?(current_user, :admin_project, @project)
     .dropdown.project-settings-dropdown
       %a.dropdown-new.btn.btn-default#project-settings-button{href: '#', 'data-toggle' => 'dropdown'}
         = icon('cog')
         = icon('caret-down')
       %ul.dropdown-menu.dropdown-menu-align-right
-        = render 'layouts/nav/project_settings'
-        %li.divider
-        - if can_edit
-          %li
-            = link_to edit_project_path(@project) do
-              Edit Project
-        - if access
-          %li
-            = link_to leave_namespace_project_project_members_path(@project.namespace, @project),
-              data: { confirm: leave_project_message(@project) }, method: :delete, title: 'Leave project' do
-              Leave Project
+        - access = @project.team.max_member_access(current_user.id)
+        - can_edit = can?(current_user, :admin_project, @project)
+
+        = render 'layouts/nav/project_settings', access: access, can_edit: can_edit
+
+        - if can_edit || access
+          %li.divider
+          - if can_edit
+            %li
+              = link_to edit_project_path(@project) do
+                Edit Project
+          - if access
+            %li
+              = link_to polymorphic_path([:leave, @project, :members]),
+                data: { confirm: leave_confirmation_message(@project) }, method: :delete, title: 'Leave project' do
+                Leave Project
 
 %div{ class: nav_control_class }
   %ul.nav-links.scrolling-tabs

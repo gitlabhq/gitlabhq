@@ -8,8 +8,6 @@ class GroupMember < Member
   validates_format_of :source_type, with: /\ANamespace\z/
   default_scope { where(source_type: SOURCE_TYPE) }
 
-  scope :with_group, ->(group) { where(source_id: group.id) }
-  scope :with_user, ->(user) { where(user_id: user.id) }
   scope :with_ldap_dn, -> { joins(user: :identities).where("identities.provider LIKE ?", 'ldap%') }
   scope :select_access_level_and_user, -> { select(:access_level, :user_id) }
   scope :with_identity_provider, ->(provider) do
@@ -28,10 +26,21 @@ class GroupMember < Member
     access_level
   end
 
+  # Because source_type is `Namespace`...
+  def real_source_type
+    'Group'
+  end
+
   private
 
   def send_invite
     notification_service.invite_group_member(self, @raw_invite_token) unless @skip_notification
+
+    super
+  end
+
+  def send_request
+    notification_service.new_group_access_request(self)
 
     super
   end
@@ -58,6 +67,12 @@ class GroupMember < Member
 
   def after_decline_invite
     notification_service.decline_group_invite(self) unless @skip_notification
+
+    super
+  end
+
+  def post_decline_request
+    notification_service.decline_group_access_request(self)
 
     super
   end

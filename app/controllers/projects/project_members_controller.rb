@@ -1,10 +1,12 @@
 class Projects::ProjectMembersController < Projects::ApplicationController
+  include MembershipActions
+
   # Authorize
-  before_action :authorize_admin_project_member!, except: [:leave, :index]
+  before_action :authorize_admin_project_member!, except: [:index, :leave, :request_access]
 
   def index
     @project_members = @project.project_members
-    @project_members = @project_members.non_invite unless can?(current_user, :admin_project, @project)
+    @project_members = @project_members.non_pending unless can?(current_user, :admin_project, @project)
 
     if params[:search].present?
       users = @project.users.search(params[:search]).to_a
@@ -14,9 +16,10 @@ class Projects::ProjectMembersController < Projects::ApplicationController
     @project_members = @project_members.order('access_level DESC')
 
     @group = @project.group
+
     if @group
       @group_members = @group.group_members
-      @group_members = @group_members.non_invite unless can?(current_user, :admin_group, @group)
+      @group_members = @group_members.non_pending unless can?(current_user, :admin_group, @group)
 
       if params[:search].present?
         users = @group.users.search(params[:search]).to_a
@@ -84,28 +87,6 @@ class Projects::ProjectMembersController < Projects::ApplicationController
     end
   end
 
-  def leave
-    @project_member = @project.project_members.find_by(user_id: current_user)
-
-    if can?(current_user, :destroy_project_member, @project_member)
-      @project_member.destroy
-
-      log_audit_event(@project_member, action: :destroy)
-
-      respond_to do |format|
-        format.html { redirect_to dashboard_projects_path, notice: "You left the project." }
-        format.js { head :ok }
-      end
-    else
-      if current_user == @project.owner
-        message = 'You can not leave your own project. Transfer or delete the project.'
-        redirect_back_or_default(default: { action: 'index' }, options: { alert: message })
-      else
-        render_403
-      end
-    end
-  end
-
   def apply_import
     source_project = Project.find(params[:source_project_id])
 
@@ -126,8 +107,10 @@ class Projects::ProjectMembersController < Projects::ApplicationController
     params.require(:project_member).permit(:user_id, :access_level)
   end
 
-  def log_audit_event(member, options = {})
-    AuditEventService.new(current_user, @project, options).
-      for_member(member).security_event
+  # MembershipActions concern
+  alias_method :membershipable, :project
+
+  def cannot_leave?
+    current_user == @project.owner
   end
 end

@@ -201,6 +201,8 @@ class Ability
         project_report_rules
       elsif team.guest?(user)
         project_guest_rules
+      else
+        []
       end
     end
 

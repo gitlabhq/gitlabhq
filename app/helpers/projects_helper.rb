@@ -1,12 +1,4 @@
 module ProjectsHelper
-  def remove_from_project_team_message(project, member)
-    if member.user
-      "You are going to remove #{member.user.name} from #{project.name} project team. Are you sure?"
-    else
-      "You are going to revoke the invitation for #{member.invite_email} to join #{project.name} project team. Are you sure?"
-    end
-  end
-
   def link_to_project(project)
     link_to [project.namespace.becomes(Namespace), project], title: h(project.name) do
       title = content_tag(:span, project.name, class: 'project-name')
@@ -112,14 +104,6 @@ module ProjectsHelper
       project.forked_from_project.visibility_level > Gitlab::VisibilityLevel::PRIVATE
     else
       true
-    end
-  end
-
-  def user_max_access_in_project(user_id, project)
-    level = project.team.max_member_access(user_id)
-
-    if level
-      Gitlab::Access.options_with_owner.key(level)
     end
   end
 
@@ -301,10 +285,6 @@ module ProjectsHelper
     else
       false
     end
-  end
-
-  def leave_project_message(project)
-    "Are you sure you want to leave \"#{project.name}\" project?"
   end
 
   def new_readme_path

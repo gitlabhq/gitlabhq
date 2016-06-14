@@ -120,7 +120,7 @@
             %span.pull-right.light
               = member.human_access
               - if can?(current_user, :destroy_group_member, member)
-                = link_to group_group_member_path(@group, member), data: { confirm: remove_user_from_group_message(@group, member) }, method: :delete, remote: true, class: "btn-xs btn btn-remove", title: 'Remove user from group' do
+                = link_to group_group_member_path(@group, member), data: { confirm: remove_member_message(member) }, method: :delete, remote: true, class: "btn-xs btn btn-remove", title: 'Remove user from group' do
                   %i.fa.fa-minus.fa-inverse
       .panel-footer
         = paginate @members, param_name: 'members_page', theme: 'gitlab'
