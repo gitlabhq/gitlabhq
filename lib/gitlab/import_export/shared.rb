@@ -17,13 +17,13 @@ module Gitlab
         error_out(error.message, caller[0].dup)
         @errors << error.message
         # Debug:
-        Rails.logger.error(error.backtrace)
+        logger.error(error.backtrace)
       end
 
       private
 
       def error_out(message, caller)
-        Rails.logger.error("Import/Export error raised on #{caller}: #{message}")
+        logger.error("Import/Export error raised on #{caller}: #{message}")
       end
     end
   end

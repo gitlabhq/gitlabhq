@@ -14,7 +14,7 @@ class Import::GitlabProjectsController < Import::BaseController
 
     @project = Gitlab::ImportExport::ProjectCreator.new(project_params[:namespace_id],
                                                         current_user,
-                                                        File.expand_path(params[:file].path),
+                                                        File.expand_path(project_params[:file].path),
                                                         project_params[:path]).execute
 
     if @project.saved?
@@ -33,7 +33,7 @@ class Import::GitlabProjectsController < Import::BaseController
   private
 
   def file_is_valid?
-    params[:file].respond_to?(:read) && params[:file].content_type == 'application/x-gzip'
+    project_params[:file].respond_to?(:read) && project_params[:file].content_type == 'application/x-gzip'
   end
 
   def verify_project_and_namespace_access
@@ -52,7 +52,7 @@ class Import::GitlabProjectsController < Import::BaseController
 
   def project_params
     params.permit(
-      :path, :namespace_id,
+      :path, :namespace_id, :file
     )
   end
 end

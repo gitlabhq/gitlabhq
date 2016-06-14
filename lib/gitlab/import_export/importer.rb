@@ -15,8 +15,6 @@ module Gitlab
         if check_version! && [project_tree, repo_restorer, wiki_restorer, uploads_restorer].all?(&:restore)
           project_tree.restored_project
         else
-          project_tree.restored_project.destroy if project_tree.restored_project
-
           raise Projects::ImportService::Error.new, @shared.errors.join(', ')
         end
       end
