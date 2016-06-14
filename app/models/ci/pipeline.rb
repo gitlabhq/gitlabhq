@@ -100,7 +100,7 @@ module Ci
 
     def create_builds(user, trigger_request = nil)
       build_builds(user, 'success', trigger_request)
-      save!
+      save
     end
 
     def create_next_builds(build)

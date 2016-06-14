@@ -14,26 +14,50 @@ class CreateCommitBuildsService
       return false
     end
 
-    pipeline = Ci::Pipeline.new(project: project, sha: sha, ref: ref, before_sha: before_sha, tag: tag)
+    @pipeline = Ci::Pipeline.new(project: project, sha: sha, ref: ref, before_sha: before_sha, tag: tag)
 
-    # Skip creating pipeline when no gitlab-ci.yml is found
-    unless pipeline.ci_yaml_file
-      return pipeline
+    ##
+    # Skip creating pipeline if no gitlab-ci.yml is found
+    #
+    unless @pipeline.ci_yaml_file
+      return false
     end
 
+    ##
     # Skip creating builds for commits that have [ci skip]
-   if !pipeline.skip_ci? && pipeline.config_processor
-      # Create builds for commit
-      unless pipeline.build_builds(user)
-        pipeline.errors.add(:base, 'No builds created')
-        return pipeline
-      end
+    # but save pipeline object
+    #
+    if @pipeline.skip_ci?
+      return save_pipeline!
     end
 
-    # Create a new pipeline
-    pipeline.save!
+    ##
+    # Skip creating builds when CI config is invalid
+    # but save pipeline object
+    #
+    unless @pipeline.config_processor
+      return save_pipeline!
+    end
 
-    pipeline.touch
-    pipeline
+    ##
+    # Skip creating pipeline object if there are no builds for it.
+    #
+    unless @pipeline.build_builds(user)
+      @pipeline.errors.add(:base, 'No builds created')
+      return false
+    end
+
+    save_pipeline!
+  end
+
+  private
+
+  ##
+  # Create a new pipeline and touch object to calculate status
+  #
+  def save_pipeline!
+    @pipeline.save!
+    @pipeline.touch
+    @pipeline
   end
 end

@@ -60,7 +60,7 @@ describe CreateCommitBuildsService, services: true do
                                after: '31das312',
                                commits: [{ message: 'Message' }]
                               )
-      expect(result).not_to be_persisted
+      expect(result).to be_falsey
       expect(Ci::Pipeline.count).to eq(0)
     end
 
@@ -184,7 +184,7 @@ describe CreateCommitBuildsService, services: true do
                                  before: '00000000',
                                  after: '31das312',
                                  commits: [{ message: 'some msg' }])
-        expect(result).not_to be_persisted
+        expect(result).to be_falsey
         expect(Ci::Build.all).to be_empty
         expect(Ci::Pipeline.count).to eq(0)
       end
