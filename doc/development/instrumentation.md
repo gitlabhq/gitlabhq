@@ -15,8 +15,8 @@ instrument code:
 * `instrument_instance_method`: instruments a single instance method.
 * `instrument_class_hierarchy`: given a Class this method will recursively
   instrument all sub-classes (both class and instance methods).
-* `instrument_methods`: instruments all public class methods of a Module.
-* `instrument_instance_methods`: instruments all public instance methods of a
+* `instrument_methods`: instruments all public and private class methods of a Module.
+* `instrument_instance_methods`: instruments all public and private instance methods of a
   Module.
 
 To remove the need for typing the full `Gitlab::Metrics::Instrumentation`

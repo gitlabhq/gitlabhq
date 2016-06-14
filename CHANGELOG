@@ -78,6 +78,7 @@ v 8.9.0 (unreleased)
   - Remove deprecated issues_tracker and issues_tracker_id from project model
   - Allow users to create confidential issues in private projects
   - Measure CPU time for instrumented methods
+  - Instrument private methods and private instance methods by default instead just public methods
 
 v 8.8.5 (unreleased)
   - Ensure branch cleanup regardless of whether the GitHub import process succeeds
