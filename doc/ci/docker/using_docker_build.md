@@ -140,14 +140,14 @@ In order to do that, follow the steps:
       - docker run my-docker-image /script/to/run/tests
     ```
 
-> **Notes:**
-> * By enabling `--docker-privileged`, you are effectively disabling all of
+Docker-in-Docker works well, and is our recommended configuration, but it is not without its own challenges:
+* By enabling `--docker-privileged`, you are effectively disabling all of
 the security mechanisms of containers and exposing your host to privilege
 escalation which can lead to container breakout. For more information, check out the official Docker documentation on
 [Runtime privilege and Linux capabilities][docker-cap].
-> * Using docker-in-docker, each build is in a clean environment without the past
+* Using docker-in-docker, each build is in a clean environment without the past
 history. Concurrent builds work fine because every build gets it's own instance of docker engine so they won't conflict with each other. But this also means builds can be slower because there's no caching of layers.
-> * By default, `docker:dind` uses `--storage-driver vfs` which is the slowest form
+* By default, `docker:dind` uses `--storage-driver vfs` which is the slowest form
 offered.
 
 An example project using this approach can be found here: https://gitlab.com/gitlab-examples/docker.
