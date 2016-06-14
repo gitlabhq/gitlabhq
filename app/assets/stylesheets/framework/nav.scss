@@ -242,6 +242,12 @@
       }
     }
   }
+
+  &.adjust {
+    .nav-text, .nav-controls {
+      width: auto;
+    }
+  }
 }
 
 .layout-nav {
