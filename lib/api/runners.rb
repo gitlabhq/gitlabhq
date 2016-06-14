@@ -96,9 +96,12 @@ module API
 
         runner = get_runner(params[:runner_id])
         authenticate_enable_runner!(runner)
-        Ci::RunnerProject.create(runner: runner, project: user_project)
 
-        present runner, with: Entities::Runner
+        if runner.assign_to(user_project)
+          present runner, with: Entities::Runner
+        else
+          conflict!("Runner was already enabled for this project")
+        end
       end
 
       # Disable project's runner

@@ -379,7 +379,7 @@ describe API::Runners, api: true  do
         expect do
           post api("/projects/#{project.id}/runners", user), runner_id: specific_runner.id
         end.to change{ project.runners.count }.by(0)
-        expect(response.status).to eq(201)
+        expect(response.status).to eq(409)
       end
 
       it 'should not enable locked runner' do
