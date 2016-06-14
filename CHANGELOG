@@ -40,6 +40,7 @@ v 8.9.0 (unreleased)
   - Added artifacts:when to .gitlab-ci.yml - this requires GitLab Runner 1.3
   - Todos will display target state if issuable target is 'Closed' or 'Merged'
   - Fix bug when sorting issues by milestone due date and filtering by two or more labels
+  - POST to API /projects/:id/runners/:runner_id would give 409 if the runner was already enabled for this project
   - Add support for using Yubikeys (U2F) for two-factor authentication
   - Link to blank group icon doesn't throw a 404 anymore
   - Remove 'main language' feature
