@@ -122,7 +122,7 @@ In order to do that, follow the steps:
         Insecure = false
     ```
 
-1. You can now use `docker` in the build script:
+1. You can now use `docker` in the build script (note the inclusion of the `docker:dind` service):
 
     ```yaml
     image: docker:latest
@@ -141,7 +141,7 @@ In order to do that, follow the steps:
     ```
 
 > **Notes:**
-> * By enabling `--docker-privileged`, you are effectively disabling all
+> * By enabling `--docker-privileged`, you are effectively disabling all of
 the security mechanisms of containers and exposing your host to privilege
 escalation which can lead to container breakout. For more information, check out the official Docker documentation on
 [Runtime privilege and Linux capabilities][docker-cap].
