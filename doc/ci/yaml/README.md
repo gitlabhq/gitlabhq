@@ -479,10 +479,10 @@ failure.
 `when` can be set to one of the following values:
 
 1. `on_success` - execute build only when all builds from prior stages
-    succeeded. This is the default.
+    succeed. This is the default.
 1. `on_failure` - execute build only when at least one build from prior stages
-    failed.
-1. `always` - execute build despite the status of builds from prior stages.
+    fails.
+1. `always` - execute build regardless of the status of builds from prior stages.
 
 For example:
 
@@ -559,10 +559,10 @@ The `deploy to production` job will be marked as doing deployment to `production
 > - Introduced in GitLab Runner v0.7.0 for non-Windows platforms.
 > - Windows support was added in GitLab Runner v.1.0.0.
 > - Currently not all executors are supported.
-> - Build artifacts are only collected for successful builds.
+> - Build artifacts are only collected for successful builds by default.
 
-`artifacts` is used to specify list of files and directories which should be
-attached to build after success. To pass artifacts between different builds,
+`artifacts` is used to specify a list of files and directories which should be
+attached to the build after success. To pass artifacts between different builds,
 see [dependencies](#dependencies).
 
 Below are some examples.
@@ -690,9 +690,9 @@ failure.
 
 `artifacts:when` can be set to one of the following values:
 
-1. `on_success` - upload artifacts only when build succeeds. This is the default
-1. `on_failure` - upload artifacts only when build fails
-1. `always` - upload artifacts despite the build status
+1. `on_success` - upload artifacts only when the build succeeds. This is the default.
+1. `on_failure` - upload artifacts only when the build fails.
+1. `always` - upload artifacts regardless of the build status.
 
 ---
 
@@ -711,16 +711,18 @@ job:
 >**Note:**
 Introduced in GitLab 8.9 and GitLab Runner v1.3.0.
 
-`artifacts:expire_in` is used to remove uploaded artifacts after specified time.
-By default artifacts are stored on GitLab forver.
-`expire_in` allows to specify after what time the artifacts should be removed.
-The artifacts will expire counting from the moment when they are uploaded and stored on GitLab.
+`artifacts:expire_in` is used to delete uploaded artifacts after the specified
+time. By default, artifacts are stored on GitLab forever. `expire_in` allows you
+to specify how long artifacts should live before they expire, counting from the
+time they are uploaded and stored on GitLab.
 
-After artifacts uploading you can use the **Keep** button on build page to keep the artifacts forever.
+You can use the **Keep** button on the build page to override expiration and
+keep artifacts forever.
 
-Artifacts are removed every hour, but they are not accessible after expire date.
+By default, artifacts are deleted hourly (via a cron job), but they are not
+accessible after expiry.
 
-The value of `expire_in` is a elapsed time. The example of parsable values:
+The value of `expire_in` is an elapsed time. Examples of parseable values:
 - '3 mins 4 sec'
 - '2 hrs 20 min'
 - '2h20min'
@@ -732,7 +734,7 @@ The value of `expire_in` is a elapsed time. The example of parsable values:
 
 **Example configurations**
 
-To expire artifacts after 1 week from the moment that they are uploaded:
+To expire artifacts 1 week after being uploaded:
 
 ```yaml
 job:
