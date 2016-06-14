@@ -26,7 +26,7 @@ module Ci
         .where("ci_runner_projects.gl_project_id = :project_id OR ci_runners.is_shared = true", project_id: project_id)
     end
 
-    scope :specific_for, ->(project) do
+    scope :available_for, ->(project) do
       # TODO: That `to_sql` is needed to workaround a weird Rails bug.
       #       Without that, placeholders would miss one and couldn't match.
       where(locked: false).

@@ -259,7 +259,7 @@ describe Ci::Runner, models: true do
     end
   end
 
-  describe '.specific_for' do
+  describe '.available_for' do
     let(:runner) { create(:ci_runner) }
     let(:project) { create(:project) }
     let(:another_project) { create(:project) }
@@ -274,13 +274,13 @@ describe Ci::Runner, models: true do
       end
 
       context 'should not give owned runner' do
-        subject { Ci::Runner.specific_for(project) }
+        subject { Ci::Runner.available_for(project) }
 
         it { is_expected.to be_empty }
       end
 
       context 'should not give shared runner' do
-        subject { Ci::Runner.specific_for(another_project) }
+        subject { Ci::Runner.available_for(another_project) }
 
         it { is_expected.to be_empty }
       end
@@ -288,13 +288,13 @@ describe Ci::Runner, models: true do
 
     context 'with unlocked runner' do
       context 'should not give owned runner' do
-        subject { Ci::Runner.specific_for(project) }
+        subject { Ci::Runner.available_for(project) }
 
         it { is_expected.to be_empty }
       end
 
       context 'should give a specific runner' do
-        subject { Ci::Runner.specific_for(another_project) }
+        subject { Ci::Runner.available_for(another_project) }
 
         it { is_expected.to contain_exactly(runner) }
       end
@@ -306,13 +306,13 @@ describe Ci::Runner, models: true do
       end
 
       context 'should not give owned runner' do
-        subject { Ci::Runner.specific_for(project) }
+        subject { Ci::Runner.available_for(project) }
 
         it { is_expected.to be_empty }
       end
 
       context 'should not give a locked runner' do
-        subject { Ci::Runner.specific_for(another_project) }
+        subject { Ci::Runner.available_for(another_project) }
 
         it { is_expected.to be_empty }
       end
