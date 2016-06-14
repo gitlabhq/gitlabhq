@@ -21,8 +21,6 @@ describe Profiles::AccountsController do
   it 'does allow to delete other linked accounts' do
     user.identities.create(provider: 'twitter', extern_uid: 'twitter_123')
 
-    expect{
-      delete :unlink, provider: 'twitter'
-    }.to change(Identity.all, :size).by(-1)
+    expect { delete :unlink, provider: 'twitter' }.to change(Identity.all, :size).by(-1)
   end
 end

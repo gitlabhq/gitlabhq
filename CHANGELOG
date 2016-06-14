@@ -40,6 +40,7 @@ v 8.9.0 (unreleased)
   - Links from a wiki page to other wiki pages should be rewritten as expected
   - Add option to project to only allow merge requests to be merged if the build succeeds (Rui Santos)
   - Fix issues filter when ordering by milestone
+  - Disable SAML account unlink feature
   - Added artifacts:when to .gitlab-ci.yml - this requires GitLab Runner 1.3
   - Bamboo Service: Fix missing credentials & URL handling when base URL contains a path (Benjamin Schmid)
   - TeamCity Service: Fix URL handling when base URL contains a path
