@@ -214,8 +214,8 @@ module Ci
         raise ValidationError, "#{name} job: when parameter should be on_success, on_failure or always"
       end
 
-      if job[:environment] && !validate_string(job[:environment])
-        raise ValidationError, "#{name} job: environment should be a string"
+      if job[:environment] && !validate_environment(job[:environment])
+        raise ValidationError, "#{name} job: environment parameter #{Gitlab::Regex.environment_name_regex_message}"
       end
     end
 
@@ -320,6 +320,10 @@ module Ci
 
     def validate_boolean(value)
       value.in?([true, false])
+    end
+
+    def validate_environment(value)
+      value.is_a?(String) && value =~ Gitlab::Regex.environment_name_regex
     end
 
     def process?(only_params, except_params, ref, tag, trigger_request)
