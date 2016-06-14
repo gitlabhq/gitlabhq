@@ -28,6 +28,7 @@ If you want a quick introduction to GitLab CI, follow our
     - [only and except](#only-and-except)
     - [tags](#tags)
     - [when](#when)
+    - [environment](#environment)
     - [artifacts](#artifacts)
         - [artifacts:name](#artifacts-name)
         - [artifacts:when](#artifacts-when)
@@ -353,6 +354,7 @@ job_name:
 | cache         | no | Define list of files that should be cached between subsequent runs |
 | before_script | no | Override a set of commands that are executed before build |
 | after_script  | no | Override a set of commands that are executed after build |
+| environment   | no | Defines a name of environment to which deployment is done by this build |
 
 ### script
 
@@ -523,6 +525,31 @@ The above script will:
 
 1. Execute `cleanup_build_job` only when `build_job` fails
 2. Always execute `cleanup_job` as the last step in pipeline.
+
+### environment
+
+>**Note:**
+Introduced in GitLab v8.9.0.
+
+`environment` is used to define that job does deployment to specific environment.
+This allows to easily track all deployments to your environments straight from GitLab.
+
+If `environment` is specified and no environment under that name does exist a new one will be created automatically.
+
+The `environment` name must contain only letters, digits, '-' and '_'.
+
+---
+
+**Example configurations**
+
+```
+deploy to production:
+  stage: deploy
+  script: git push production HEAD:master
+  environment: production
+```
+
+The `deploy to production` job will be marked as doing deployment to `production` environment.
 
 ### artifacts
 
