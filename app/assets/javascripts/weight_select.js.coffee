@@ -13,7 +13,7 @@ class @WeightSelect
       updateWeight = (selected) ->
         data = {}
         data[abilityName] = {}
-        data[abilityName].weight = selected
+        data[abilityName].weight = if selected? then selected else null
         $loading
           .fadeIn()
         $dropdown.trigger('loading.gl.dropdown')
@@ -27,7 +27,10 @@ class @WeightSelect
           $loading.fadeOut()
           $selectbox.hide()
 
-          $value.html(data.weight)
+          if data.weight?
+            $value.html(data.weight)
+          else
+            $value.html('None')
           $sidebarCollapsedValue.html(data.weight)
 
       $dropdown.glDropdown(
@@ -38,7 +41,8 @@ class @WeightSelect
           # display:block overrides the hide-collapse rule
           $value.css('display', '')
         id: (obj, el) ->
-          $(el).data "id"
+          if not $(el).data("none")?
+            $(el).data "id"
         clicked: (selected) ->
           if $(dropdown).is ".js-filter-submit"
             $(dropdown).parents('form').submit()
