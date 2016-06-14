@@ -348,6 +348,11 @@ class Project < ActiveRecord::Base
 
       joins(join_body).reorder('join_note_counts.amount DESC')
     end
+
+    # Deletes gitlab project export files older than 24 hours
+    def archive_gitlab_exports!
+      Gitlab::Popen.popen(%W(find #{export_path} -not -path #{export_path} -mmin +1440 -delete))
+    end
   end
 
   def team
@@ -1103,5 +1108,9 @@ class Project < ActiveRecord::Base
     else
       Rails.logger.error "Export job failed to start for project ID #{self.id}"
     end
+  end
+
+  def export_path
+    File.join(ImportExport.storage_path, path_with_namespace)
   end
 end
