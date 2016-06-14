@@ -10,9 +10,10 @@ class @ProjectNew
   toggleSettings: =>
     @_showOrHide('#project_builds_enabled', '.builds-feature')
     @_showOrHide('#project_merge_requests_enabled', '.merge-requests-feature')
+    @_showOrHide('#project_issues_enabled', '.issues-feature')
 
   toggleSettingsOnclick: ->
-    $('#project_builds_enabled, #project_merge_requests_enabled').on 'click', @toggleSettings
+    $('#project_builds_enabled, #project_merge_requests_enabled, #project_issues_enabled').on 'click', @toggleSettings
 
   _showOrHide: (checkElement, container) ->
     $container = $(container)
