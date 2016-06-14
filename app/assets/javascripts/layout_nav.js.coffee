@@ -18,13 +18,8 @@ $ ->
 
   $('.scrolling-tabs').on 'scroll', (event) ->
     $this = $(this)
-    $el = $(event.target)
     currentPosition = $this.scrollLeft()
-    size = bp.getBreakpointSize()
-    controlBtnWidth = $('.controls').width()
-    maxPosition = ($this.get(0).scrollWidth - $this.parent().width()) - 1
-    # maxPosition += controlBtnWidth if size isnt 'xs' and $('.nav-control').length
-    console.log maxPosition, currentPosition
+    maxPosition = $this.prop('scrollWidth') - $this.outerWidth()
 
-    $el.find('.fade-left').toggleClass('end-scroll', currentPosition is 0)
-    $el.find('.fade-right').toggleClass('end-scroll', currentPosition is maxPosition)
+    $this.find('.fade-left').toggleClass('end-scroll', currentPosition is 0)
+    $this.find('.fade-right').toggleClass('end-scroll', currentPosition is maxPosition)
