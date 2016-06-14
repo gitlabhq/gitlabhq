@@ -1,3 +1,4 @@
+# rubocop:disable all
 class MigrateCiWebHooks < ActiveRecord::Migration
   include Gitlab::Database
 

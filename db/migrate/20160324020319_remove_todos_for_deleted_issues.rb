@@ -1,3 +1,4 @@
+# rubocop:disable all
 class RemoveTodosForDeletedIssues < ActiveRecord::Migration
   def up
     execute <<-SQL

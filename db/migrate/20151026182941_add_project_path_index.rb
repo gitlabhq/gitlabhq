@@ -1,3 +1,4 @@
+# rubocop:disable all
 class AddProjectPathIndex < ActiveRecord::Migration
   def up
     add_index :projects, :path

@@ -43,7 +43,7 @@ class Projects::GitHttpController < Projects::ApplicationController
     return if project && project.public? && upload_pack?
 
     authenticate_or_request_with_http_basic do |login, password|
-      auth_result = Gitlab::Auth.find(login, password, project: project, ip: request.ip)
+      auth_result = Gitlab::Auth.find_for_git_client(login, password, project: project, ip: request.ip)
 
       if auth_result.type == :ci && upload_pack?
         @ci = true

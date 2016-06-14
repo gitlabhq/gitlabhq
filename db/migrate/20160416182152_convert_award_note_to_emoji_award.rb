@@ -1,3 +1,4 @@
+# rubocop:disable all
 class ConvertAwardNoteToEmojiAward < ActiveRecord::Migration
   def change
     def up

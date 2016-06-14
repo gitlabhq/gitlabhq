@@ -1,3 +1,4 @@
+# rubocop:disable all
 class MigrateCiEmails < ActiveRecord::Migration
   include Gitlab::Database
 

@@ -28,6 +28,6 @@ module ImportSpecHelper
       app_id: 'asd123',
       app_secret: 'asd123'
     )
-    Gitlab.config.omniauth.providers << provider
+    allow(Gitlab.config.omniauth).to receive(:providers).and_return([provider])
   end
 end

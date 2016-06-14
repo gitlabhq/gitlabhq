@@ -101,11 +101,19 @@
   line-height: 20px;
   outline: 0;
 
+  &:hover,
   &.active,
   &:active {
-    background-color: $white-dark;
+    background-color: $row-hover;
+    border-color: $row-hover-border;
     box-shadow: none;
     outline: 0;
+  }
+
+  &.btn {
+    &:focus {
+      outline: 0;
+    }
   }
 
   &.is-loading {

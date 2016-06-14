@@ -95,7 +95,7 @@ module Grack
     end
 
     def authenticate_user(login, password)
-      user = Gitlab::Auth.find_in_gitlab_or_ldap(login, password)
+      user = Gitlab::Auth.find_with_user_password(login, password)
 
       unless user
         user = oauth_access_token_check(login, password)

@@ -501,6 +501,7 @@ module Ci
                              })
 
           config_processor = GitlabCiYamlProcessor.new(config, path)
+
           builds = config_processor.builds_for_stage_and_ref("test", "master")
           expect(builds.size).to eq(1)
           expect(builds.first[:when]).to eq(when_state)
@@ -600,6 +601,23 @@ module Ci
           when: "on_success",
           allow_failure: false
         })
+      end
+
+      %w[on_success on_failure always].each do |when_state|
+        it "returns artifacts for when #{when_state}  defined" do
+          config = YAML.dump({
+                               rspec: {
+                                 script: "rspec",
+                                 artifacts: { paths: ["logs/", "binaries/"], when: when_state }
+                               }
+                             })
+
+          config_processor = GitlabCiYamlProcessor.new(config, path)
+
+          builds = config_processor.builds_for_stage_and_ref("test", "master")
+          expect(builds.size).to eq(1)
+          expect(builds.first[:options][:artifacts][:when]).to eq(when_state)
+        end
       end
     end
 
@@ -965,6 +983,13 @@ EOT
         expect do
           GitlabCiYamlProcessor.new(config)
         end.to raise_error(GitlabCiYamlProcessor::ValidationError, "rspec job: artifacts:name parameter should be a string")
+      end
+
+      it "returns errors if job artifacts:when is not an a predefined value" do
+        config = YAML.dump({ types: ["build", "test"], rspec: { script: "test", artifacts: { when: 1 } } })
+        expect do
+          GitlabCiYamlProcessor.new(config)
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "rspec job: artifacts:when parameter should be on_success, on_failure or always")
       end
 
       it "returns errors if job artifacts:untracked is not an array of strings" do

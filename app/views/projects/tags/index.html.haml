@@ -3,14 +3,14 @@
 = render "projects/commits/head"
 
 %div{ class: (container_class) }
-  .row-content-block.second-block.content-component-block
-    - if can? current_user, :push_code, @project
-      .pull-right
-        = link_to new_namespace_project_tag_path(@project.namespace, @project), class: 'btn btn-create new-tag-btn' do
-          = icon('plus')
-          New tag
-    .oneline
+  .top-area
+    .nav-text
       Tags give the ability to mark specific points in history as being important
+
+    - if can? current_user, :push_code, @project
+      .nav-controls
+        = link_to new_namespace_project_tag_path(@project.namespace, @project), class: 'btn btn-create new-tag-btn' do
+          New tag
 
   .tags
     - unless @tags.empty?

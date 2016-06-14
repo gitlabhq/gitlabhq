@@ -6,7 +6,8 @@
       - if @user.two_factor_otp_enabled?
         %h5 Authenticate via Two-Factor App
         = form_for(resource, as: resource_name, url: session_path(resource_name), method: :post) do |f|
-          = f.hidden_field :remember_me, value: params[resource_name][:remember_me]
+          - resource_params = params[resource_name].presence || params
+          = f.hidden_field :remember_me, value: resource_params.fetch(:remember_me, 0)
           = f.text_field :otp_attempt, class: 'form-control', placeholder: 'Two-Factor Authentication code', required: true, autofocus: true, autocomplete: 'off'
           %p.help-block.hint Enter the code from the two-factor app on your mobile device. If you've lost your device, you may enter one of your recovery codes.
           .prepend-top-20

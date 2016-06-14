@@ -12,6 +12,13 @@
           $el.attr('title', gl.utils.formatDate($el.attr('datetime')))
     )
 
-    $timeagoEls.timeago() if setTimeago
+    if setTimeago
+      $timeagoEls.timeago()
+      $timeagoEls.tooltip('destroy')
+
+      # Recreate with custom template
+      $timeagoEls.tooltip(
+        template: '<div class="tooltip local-timeago" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>'
+      )
 
 ) window

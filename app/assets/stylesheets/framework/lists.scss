@@ -137,8 +137,16 @@ ul.content-list {
       padding-top: 1px;
       float: right;
 
-      .btn {
-        padding: 10px 14px;
+      > .btn,
+      > .btn-group {
+        margin-right: $gl-padding-top;
+        display: inline-block;
+        margin-top: 4px;
+        margin-bottom: 4px;
+
+        &:last-child {
+          margin-right: 0;
+        }
       }
     }
 

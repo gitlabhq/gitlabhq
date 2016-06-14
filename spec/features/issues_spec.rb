@@ -75,12 +75,13 @@ describe 'Issues', feature: true do
 
         fill_in 'issue_title', with: 'bug 345'
         fill_in 'issue_description', with: 'bug description'
+        find('#issuable-due-date').click
 
-        page.within '.datepicker' do
+        page.within '.ui-datepicker' do
           click_link date.day
         end
 
-        expect(find('#issuable-due-date', visible: false).value).to eq date.to_s
+        expect(find('#issuable-due-date').value).to eq date.to_s
 
         click_button 'Submit issue'
 
@@ -100,18 +101,19 @@ describe 'Issues', feature: true do
       it 'should save with due date' do
         date = Date.today.at_beginning_of_month
 
-        expect(find('#issuable-due-date', visible: false).value).to eq date.to_s
+        expect(find('#issuable-due-date').value).to eq date.to_s
 
         date = date.tomorrow
 
         fill_in 'issue_title', with: 'bug 345'
         fill_in 'issue_description', with: 'bug description'
+        find('#issuable-due-date').click
 
-        page.within '.datepicker' do
+        page.within '.ui-datepicker' do
           click_link date.day
         end
 
-        expect(find('#issuable-due-date', visible: false).value).to eq date.to_s
+        expect(find('#issuable-due-date').value).to eq date.to_s
 
         click_button 'Save changes'
 

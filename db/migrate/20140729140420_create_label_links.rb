@@ -1,3 +1,4 @@
+# rubocop:disable all
 class CreateLabelLinks < ActiveRecord::Migration
   def change
     create_table :label_links do |t|
