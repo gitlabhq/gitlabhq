@@ -86,6 +86,22 @@ describe Gitlab::SearchResults do
       expect(results.issues_count).to eq 1
     end
 
+    it 'should not list confidential issues for project members with guest role' do
+      project_1.team << [member, :guest]
+      project_2.team << [member, :guest]
+
+      results = described_class.new(member, limit_projects, query)
+      issues = results.objects('issues')
+
+      expect(issues).to include issue
+      expect(issues).not_to include security_issue_1
+      expect(issues).not_to include security_issue_2
+      expect(issues).not_to include security_issue_3
+      expect(issues).not_to include security_issue_4
+      expect(issues).not_to include security_issue_5
+      expect(results.issues_count).to eq 1
+    end
+
     it 'should list confidential issues for author' do
       results = described_class.new(author, limit_projects, query)
       issues = results.objects('issues')

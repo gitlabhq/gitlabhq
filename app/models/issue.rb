@@ -57,10 +57,18 @@ class Issue < ActiveRecord::Base
   end
 
   def self.visible_to_user(user)
-    return where(confidential: false) if user.blank?
+    return where('issues.confidential IS NULL OR issues.confidential IS FALSE') if user.blank?
     return all if user.admin?
 
-    where('issues.confidential = false OR (issues.confidential = true AND (issues.author_id = :user_id OR issues.assignee_id = :user_id OR issues.project_id IN(:project_ids)))', user_id: user.id, project_ids: user.authorized_projects.select(:id))
+    where('
+      issues.confidential IS NULL
+      OR issues.confidential IS FALSE
+      OR (issues.confidential = TRUE
+        AND (issues.author_id = :user_id
+          OR issues.assignee_id = :user_id
+          OR issues.project_id IN(:project_ids)))',
+      user_id: user.id,
+      project_ids: user.authorized_projects(Gitlab::Access::REPORTER).select(:id))
   end
 
   def self.reference_prefix

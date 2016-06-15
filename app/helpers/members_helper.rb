@@ -6,6 +6,12 @@ module MembersHelper
     "#{action}_#{member.type.underscore}".to_sym
   end
 
+  def can_see_member_roles?(source:, user: nil)
+    return false unless user
+
+    user.is_admin? || source.members.exists?(user_id: user.id)
+  end
+
   def remove_member_message(member, user: nil)
     user = current_user if defined?(current_user)
 

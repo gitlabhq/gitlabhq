@@ -11,19 +11,33 @@
       %p.build-detail-row
         #{@build.coverage}%
 
-  - if can?(current_user, :read_build, @project) && @build.artifacts?
+  - if can?(current_user, :read_build, @project) && (@build.artifacts? || @build.artifacts_expired?)
     .block{ class: ("block-first" if !@build.coverage) }
       .title
         Build artifacts
-      .btn-group.btn-group-justified{ role: :group }
-        = link_to download_namespace_project_build_artifacts_path(@project.namespace, @project, @build), class: 'btn btn-sm btn-default' do
-          Download
+      - if @build.artifacts_expired?
+        %p.build-detail-row
+          The artifacts were removed
+          #{time_ago_with_tooltip(@build.artifacts_expire_at)}
+      - elsif @build.artifacts_expire_at
+        %p.build-detail-row
+          The artifacts will be removed in
+          %span.js-artifacts-remove= @build.artifacts_expire_at
 
-        - if @build.artifacts_metadata?
-          = link_to browse_namespace_project_build_artifacts_path(@project.namespace, @project, @build), class: 'btn btn-sm btn-default' do
-            Browse
+      - if @build.artifacts?
+        .btn-group.btn-group-justified{ role: :group }
+          - if @build.artifacts_expire_at
+            = link_to keep_namespace_project_build_artifacts_path(@project.namespace, @project, @build), class: 'btn btn-sm btn-default', method: :post do
+              Keep
 
-  .block{ class: ("block-first" if !@build.coverage && !(can?(current_user, :read_build, @project) && @build.artifacts?)) }
+          = link_to download_namespace_project_build_artifacts_path(@project.namespace, @project, @build), class: 'btn btn-sm btn-default' do
+            Download
+
+          - if @build.artifacts_metadata?
+            = link_to browse_namespace_project_build_artifacts_path(@project.namespace, @project, @build), class: 'btn btn-sm btn-default' do
+              Browse
+
+  .block{ class: ("block-first" if !@build.coverage && !(can?(current_user, :read_build, @project) && (@build.artifacts? || @build.artifacts_expired?))) }
     .title
       Build details
       - if @build.retryable?

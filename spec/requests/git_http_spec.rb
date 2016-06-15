@@ -340,7 +340,7 @@ describe 'Git HTTP requests', lib: true do
       end
     end
 
-    context "when the file exists" do
+    context "when the file does not exist" do
       before { get "/#{project.path_with_namespace}/blob/master/info/refs" }
 
       it "returns not found" do

@@ -26,33 +26,7 @@
           = f.select :notification_email, @user.all_emails, { include_blank: false }, class: "select2"
         .form-group
           = f.label :notification_level, class: 'label-light'
-          .radio
-            = f.label :notification_level, value: :disabled do
-              = f.radio_button :notification_level, :disabled
-              .level-title
-                Disabled
-              %p You will not get any notifications via email
-
-          .radio
-            = f.label :notification_level, value: :mention do
-              = f.radio_button :notification_level, :mention
-              .level-title
-                On Mention
-              %p You will receive notifications only for comments in which you were @mentioned
-
-          .radio
-            = f.label :notification_level, value: :participating do
-              = f.radio_button :notification_level, :participating
-              .level-title
-                Participating
-              %p You will only receive notifications from related resources (e.g. from your commits or assigned issues)
-
-          .radio
-            = f.label :notification_level, value: :watch do
-              = f.radio_button :notification_level, :watch
-              .level-title
-                Watch
-              %p You will receive notifications for any activity
+          = notification_level_radio_buttons
 
         .prepend-top-default
           = f.submit 'Update settings', class: "btn btn-create"

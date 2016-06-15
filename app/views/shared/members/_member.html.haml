@@ -1,5 +1,9 @@
+<<<<<<< HEAD
 - default_show_roles = can?(current_user, action_member_permission(:update, member), member) || can?(current_user, action_member_permission(:destroy, member), member)
 - show_roles = local_assigns.fetch(:show_roles, default_show_roles)
+=======
+- show_roles = local_assigns.fetch(:show_roles, true)
+>>>>>>> ce/master
 - show_controls = local_assigns.fetch(:show_controls, true)
 - user = member.user
 
@@ -37,7 +41,11 @@
                   method: :post,
                   class: 'btn-xs btn'
 
+<<<<<<< HEAD
   - if show_roles
+=======
+  - if show_roles && can_see_member_roles?(source: member.source, user: current_user)
+>>>>>>> ce/master
     %span.pull-right
       %strong= member.human_access
       - if show_controls

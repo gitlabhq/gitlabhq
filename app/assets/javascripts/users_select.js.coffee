@@ -31,7 +31,7 @@ class @UsersSelect
       assignTo = (selected) ->
         data = {}
         data[abilityName] = {}
-        data[abilityName].assignee_id = selected
+        data[abilityName].assignee_id = if selected? then selected else null
         $loading
           .fadeIn()
         $dropdown.trigger('loading.gl.dropdown')

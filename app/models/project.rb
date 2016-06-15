@@ -79,7 +79,7 @@ class Project < ActiveRecord::Base
   has_one :jira_service, dependent: :destroy
   has_one :redmine_service, dependent: :destroy
   has_one :custom_issue_tracker_service, dependent: :destroy
-  has_one :gitlab_issue_tracker_service, dependent: :destroy
+  has_one :gitlab_issue_tracker_service, dependent: :destroy, inverse_of: :project
   has_one :external_wiki_service, dependent: :destroy
   has_one :index_status, dependent: :destroy
 
@@ -130,6 +130,8 @@ class Project < ActiveRecord::Base
   has_many :variables, dependent: :destroy, class_name: 'Ci::Variable', foreign_key: :gl_project_id
   has_many :triggers, dependent: :destroy, class_name: 'Ci::Trigger', foreign_key: :gl_project_id
   has_many :remote_mirrors, dependent: :destroy
+  has_many :environments, dependent: :destroy
+  has_many :deployments, dependent: :destroy
 
   accepts_nested_attributes_for :variables, allow_destroy: true
   accepts_nested_attributes_for :remote_mirrors,
@@ -153,7 +155,6 @@ class Project < ActiveRecord::Base
               message: Gitlab::Regex.project_path_regex_message }
   validates :issues_enabled, :merge_requests_enabled,
             :wiki_enabled, inclusion: { in: [true, false] }
-  validates :issues_tracker_id, length: { maximum: 255 }, allow_blank: true
   validates :namespace, presence: true
   validates_uniqueness_of :name, scope: :namespace_id
   validates_uniqueness_of :path, scope: :namespace_id
@@ -688,10 +689,6 @@ class Project < ActiveRecord::Base
 
   def cache_has_external_issue_tracker
     update_column(:has_external_issue_tracker, services.external_issue_trackers.any?)
-  end
-
-  def can_have_issues_tracker_id?
-    self.issues_enabled && !self.default_issues_tracker?
   end
 
   def build_missing_services

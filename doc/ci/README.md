@@ -14,5 +14,5 @@
 - [Trigger builds through the API](triggers/README.md)
 - [Build artifacts](build_artifacts/README.md)
 - [User permissions](permissions/README.md)
-- [API](api/README.md)
+- [API](../../api/ci/README.md)
 - [CI services (linked docker containers)](services/README.md)

@@ -17,6 +17,8 @@ class @CiBuild
       .off 'resize.build'
       .on 'resize.build', @hideSidebar
 
+    @updateArtifactRemoveDate()
+
     if $('#build-trace').length
       @getInitialBuildTrace()
       @initScrollButtonAffix()
@@ -103,3 +105,10 @@ class @CiBuild
       $('.js-build-sidebar')
         .removeClass 'right-sidebar-collapsed'
         .addClass 'right-sidebar-expanded'
+
+  updateArtifactRemoveDate: ->
+    $date = $('.js-artifacts-remove')
+
+    if $date.length
+      date = $date.text()
+      $date.text $.timefor(new Date(date), ' ')

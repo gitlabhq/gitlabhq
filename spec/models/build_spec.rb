@@ -397,9 +397,34 @@ describe Ci::Build, models: true do
     context 'artifacts archive exists' do
       let(:build) { create(:ci_build, :artifacts) }
       it { is_expected.to be_truthy }
+
+      context 'is expired' do
+        before { build.update(artifacts_expire_at: Time.now - 7.days)  }
+        it { is_expected.to be_falsy }
+      end
+
+      context 'is not expired' do
+        before { build.update(artifacts_expire_at: Time.now + 7.days)  }
+        it { is_expected.to be_truthy }
+      end
     end
   end
 
+  describe '#artifacts_expired?' do
+    subject { build.artifacts_expired? }
+
+    context 'is expired' do
+      before { build.update(artifacts_expire_at: Time.now - 7.days)  }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'is not expired' do
+      before { build.update(artifacts_expire_at: Time.now + 7.days)  }
+
+      it { is_expected.to be_falsey }
+    end
+  end
 
   describe '#artifacts_metadata?' do
     subject { build.artifacts_metadata? }
@@ -412,7 +437,6 @@ describe Ci::Build, models: true do
       it { is_expected.to be_truthy }
     end
   end
-
   describe '#repo_url' do
     let(:build) { create(:ci_build) }
     let(:project) { build.project }
@@ -425,6 +449,50 @@ describe Ci::Build, models: true do
     it { is_expected.to include(build.token) }
     it { is_expected.to include('gitlab-ci-token') }
     it { is_expected.to include(project.web_url[7..-1]) }
+  end
+
+  describe '#artifacts_expire_in' do
+    subject { build.artifacts_expire_in }
+    it { is_expected.to be_nil }
+
+    context 'when artifacts_expire_at is specified' do
+      let(:expire_at) { Time.now + 7.days }
+
+      before { build.artifacts_expire_at = expire_at }
+
+      it { is_expected.to be_within(5).of(expire_at - Time.now) }
+    end
+  end
+
+  describe '#artifacts_expire_in=' do
+    subject { build.artifacts_expire_in }
+
+    it 'when assigning valid duration' do
+      build.artifacts_expire_in = '7 days'
+
+      is_expected.to be_within(10).of(7.days.to_i)
+    end
+
+    it 'when assigning invalid duration' do
+      expect { build.artifacts_expire_in = '7 elephants' }.to raise_error(ChronicDuration::DurationParseError)
+      is_expected.to be_nil
+    end
+
+    it 'when resseting value' do
+      build.artifacts_expire_in = nil
+
+      is_expected.to be_nil
+    end
+  end
+
+  describe '#keep_artifacts!' do
+    let(:build) { create(:ci_build, artifacts_expire_at: Time.now + 7.days) }
+
+    it 'to reset expire_at' do
+      build.keep_artifacts!
+
+      expect(build.artifacts_expire_at).to be_nil
+    end
   end
 
   describe '#depends_on_builds' do

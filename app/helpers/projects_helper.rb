@@ -140,6 +140,10 @@ module ProjectsHelper
       nav_tabs << :container_registry
     end
 
+    if can?(current_user, :read_environment, project)
+      nav_tabs << :environments
+    end
+
     if can?(current_user, :admin_project, project)
       nav_tabs << :settings
     end

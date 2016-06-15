@@ -2,14 +2,18 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.9.0 (unreleased)
   - Fix Error 500 when using closes_issues API with an external issue tracker
+  - Add more information into RSS feed for issues (Alexander Matyushentsev)
   - Bulk assign/unassign labels to issues.
   - Ability to prioritize labels !4009 / !3205 (Thijs Wouters)
   - Fix endless redirections when accessing user OAuth applications when they are disabled
   - Allow enabling wiki page events from Webhook management UI
   - Bump rouge to 1.11.0
   - Fix issue with arrow keys not working in search autocomplete dropdown
+  - Fix an issue where note polling stopped working if a window was in the
+    background during a refresh.
   - Make EmailsOnPushWorker use Sidekiq mailers queue
   - Fix wiki page events' webhook to point to the wiki repository
+  - Don't show tags for revert and cherry-pick operations
   - Fix issue todo not remove when leave project !4150 (Long Nguyen)
   - Allow customisable text on the 'nearly there' page after a user signs up
   - Bump recaptcha gem to 3.0.0 to remove deprecated stoken support
@@ -20,9 +24,14 @@ v 8.9.0 (unreleased)
   - Reduce number of fog gem dependencies
   - Remove project notification settings associated with deleted projects
   - Fix 404 page when viewing TODOs that contain milestones or labels in different projects
+  - Add a metric for the number of new Redis connections created by a transaction
+  - Fix Error 500 when viewing a blob with binary characters after the 1024-byte mark
   - Redesign navigation for project pages
   - Fix groups API to list only user's accessible projects
+  - Add Environments and Deployments
   - Redesign account and email confirmation emails
+  - Don't fail builds for projects that are deleted
+  - Support Docker Registry manifest v1
   - `git clone https://host/namespace/project` now works, in addition to using the `.git` suffix
   - Bump nokogiri to 1.6.8
   - Use gitlab-shell v3.0.0
@@ -36,6 +45,9 @@ v 8.9.0 (unreleased)
   - Links from a wiki page to other wiki pages should be rewritten as expected
   - Add option to project to only allow merge requests to be merged if the build succeeds (Rui Santos)
   - Fix issues filter when ordering by milestone
+  - Added artifacts:when to .gitlab-ci.yml - this requires GitLab Runner 1.3
+  - Bamboo Service: Fix missing credentials & URL handling when base URL contains a path (Benjamin Schmid)
+  - TeamCity Service: Fix URL handling when base URL contains a path
   - Todos will display target state if issuable target is 'Closed' or 'Merged'
   - Fix bug when sorting issues by milestone due date and filtering by two or more labels
   - Add support for using Yubikeys (U2F) for two-factor authentication
@@ -52,22 +64,42 @@ v 8.9.0 (unreleased)
   - Use Knapsack only in CI environment
   - Cache project build count in sidebar nav
   - Add milestone expire date to the right sidebar
+  - Manually mark a issue or merge request as a todo
   - Fix markdown_spec to use before instead of before(:all) to properly cleanup database after testing
   - Reduce number of queries needed to render issue labels in the sidebar
   - Improve error handling importing projects
   - Remove duplicated notification settings
   - Put project Files and Commits tabs under Code tab
+  - Decouple global notification level from user model
   - Replace Colorize with Rainbow for coloring console output in Rake tasks.
   - Add workhorse controller and API helpers
   - An indicator is now displayed at the top of the comment field for confidential issues.
   - RepositoryCheck::SingleRepositoryWorker public and private methods are now instrumented
   - Improve issuables APIs performance when accessing notes !4471
   - External links now open in a new tab
+  - Prevent default actions of disabled buttons and links
   - Markdown editor now correctly resets the input value on edit cancellation !4175
   - Toggling a task list item in a issue/mr description does not creates a Todo for mentions
   - Improved UX of date pickers on issue & milestone forms
   - Cache on the database if a project has an active external issue tracker.
   - Put project Labels and Milestones pages links under Issues and Merge Requests tabs as subnav
+  - All classes in the Banzai::ReferenceParser namespace are now instrumented
+  - Remove deprecated issues_tracker and issues_tracker_id from project model
+  - Allow users to create confidential issues in private projects
+  - Measure CPU time for instrumented methods
+  - Instrument private methods and private instance methods by default instead just public methods
+  - Only show notes through JSON on confidential issues that the user has access to
+  - Updated the allocations Gem to version 1.0.5
+  - The background sampler now ignores classes without names
+  - Update design for `Close` buttons
+  - New custom icons for navigation
+  - Horizontally scrolling navigation on project, group, and profile settings pages
+  - Hide global side navigation by default
+  - Fix project Star/Unstar project button tooltip
+  - Remove tanuki logo from side navigation; center on top nav
+  - Include user relationships when retrieving award_emoji
+  - Various associations are now eager loaded when parsing issue references to reduce the number of queries executed
+  - Set inverse_of for Project/Service association to reduce the number of queries
 
 v 8.8.5 (unreleased)
   - Ensure branch cleanup regardless of whether the GitHub import process succeeds
