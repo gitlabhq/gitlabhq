@@ -4,6 +4,10 @@
       = link_to admin_root_path, title: 'Overview' do
         %span
           Overview
+    = nav_link path: 'builds#index' do
+      = link_to admin_builds_path, title: 'Builds' do
+        %span
+          Builds
     = nav_link(controller: [:admin, :projects]) do
       = link_to admin_namespaces_projects_path, title: 'Projects' do
         %span
