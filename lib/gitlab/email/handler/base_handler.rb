@@ -42,8 +42,11 @@ module Gitlab
           end.join
         end
 
-        def verify_record!(record, exception, error_title)
+        def verify_record!(record, exception, name)
           return if record.persisted?
+
+          error_title =
+            "The #{name} could not be created for the following reasons:"
 
           msg = error_title + record.errors.full_messages.map do |error|
             "\n\n- #{error}"

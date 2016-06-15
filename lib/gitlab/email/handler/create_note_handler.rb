@@ -19,11 +19,7 @@ module Gitlab
           raise NoteableNotFoundError unless sent_notification.noteable
           raise EmptyEmailError if message.blank?
 
-          verify_record!(
-            create_note,
-            InvalidNoteError,
-            "The comment could not be created for the following reasons:"
-          )
+          verify_record!(create_note, InvalidNoteError, 'comment')
         end
 
         def author
