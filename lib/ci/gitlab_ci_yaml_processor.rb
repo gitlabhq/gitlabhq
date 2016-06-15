@@ -9,7 +9,8 @@ module Ci
     ALLOWED_YAML_KEYS = [:before_script, :after_script, :image, :services, :types, :stages, :variables, :cache]
     ALLOWED_JOB_KEYS = [:tags, :script, :only, :except, :type, :image, :services,
                         :allow_failure, :type, :stage, :when, :artifacts, :cache,
-                        :dependencies, :before_script, :after_script, :variables]
+                        :dependencies, :before_script, :after_script, :variables,
+                        :environment]
     ALLOWED_CACHE_KEYS = [:key, :untracked, :paths]
     ALLOWED_ARTIFACTS_KEYS = [:name, :untracked, :paths, :when, :expire_in]
 
@@ -90,6 +91,7 @@ module Ci
         except: job[:except],
         allow_failure: job[:allow_failure] || false,
         when: job[:when] || 'on_success',
+        environment: job[:environment],
         options: {
           image: job[:image] || @image,
           services: job[:services] || @services,
@@ -213,6 +215,10 @@ module Ci
 
       if job[:when] && !job[:when].in?(%w[on_success on_failure always])
         raise ValidationError, "#{name} job: when parameter should be on_success, on_failure or always"
+      end
+
+      if job[:environment] && !validate_environment(job[:environment])
+        raise ValidationError, "#{name} job: environment parameter #{Gitlab::Regex.environment_name_regex_message}"
       end
     end
 

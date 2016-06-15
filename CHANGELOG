@@ -27,6 +27,7 @@ v 8.9.0 (unreleased)
   - Add a metric for the number of new Redis connections created by a transaction
   - Redesign navigation for project pages
   - Fix groups API to list only user's accessible projects
+  - Add Environments and Deployments
   - Redesign account and email confirmation emails
   - Don't fail builds for projects that are deleted
   - `git clone https://host/namespace/project` now works, in addition to using the `.git` suffix
