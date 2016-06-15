@@ -13,8 +13,8 @@ module Gitlab
       highlight(file_name, blob.data, repository: repository).lines.map!(&:html_safe)
     end
 
-    def initialize(blob_name, blob_content, repository: nil)
-      @formatter = rouge_formatter
+    def initialize(blob_name, blob_content)
+      @formatter = Rouge::Formatters::HTMLGitlab.new
       @repository = repository
       @lexer = custom_language || begin
         Rouge::Lexer.guess(filename: blob_name, source: blob_content).new
@@ -44,10 +44,6 @@ module Gitlab
       return nil unless language_name
 
       Rouge::Lexer.find_fancy(language_name)
-    end
-
-    def rouge_formatter(options = {})
-      Rouge::Formatters::HTMLGitlab.new
     end
   end
 end
