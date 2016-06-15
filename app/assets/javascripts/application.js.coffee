@@ -32,10 +32,6 @@
 #= require bootstrap/tooltip
 #= require bootstrap/popover
 #= require select2
-#= require raphael
-#= require g.raphael
-#= require g.bar
-#= require branch-graph
 #= require ace/ace
 #= require ace/ext-searchbox
 #= require underscore
