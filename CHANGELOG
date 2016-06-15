@@ -397,6 +397,11 @@ v 8.7.0
   - Add RAW build trace output and button on build page
   - Add incremental build trace update into CI API
 
+v 8.6.9
+  - Prevent unauthorized access to other projects build traces
+  - Forbid scripting for wiki files
+  - Only show notes through JSON on confidential issues that the user has access to
+
 v 8.6.8
   - Prevent privilege escalation via "impersonate" feature
   - Prevent privilege escalation via notes API
