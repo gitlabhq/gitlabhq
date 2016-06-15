@@ -272,6 +272,9 @@ v 8.3.0
   - Automatically import Kerberos identities from Active Directory when Kerberos is enabled (Alex Lossent)
   - Canonicalization of Kerberos identities to always include realm (Alex Lossent)
 
+v 8.2.6
+  - No EE-specific changes
+
 v 8.2.5
   - No EE-specific changes
 
