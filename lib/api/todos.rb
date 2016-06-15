@@ -47,7 +47,7 @@ module API
         todos = find_todos
         todos.each(&:done)
 
-        present paginate(todos), with: Entities::Todo
+        present paginate(Kaminari.paginate_array(todos)), with: Entities::Todo
       end
     end
   end
