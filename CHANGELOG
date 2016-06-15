@@ -551,6 +551,10 @@ v 8.6.0
   - Trigger a todo for mentions on commits page
   - Let project owners and admins soft delete issues and merge requests
 
+v 8.5.13
+  - Prevent unauthorized access to other projects build traces
+  - Forbid scripting for wiki files
+
 v 8.5.12
   - Prevent privilege escalation via "impersonate" feature
   - Prevent privilege escalation via notes API
