@@ -91,16 +91,11 @@ module Ci
       trigger_requests.any?
     end
 
-    def build_builds(user, trigger_request = nil, status = 'success')
+    def build_builds(user, trigger_request = nil)
       return unless config_processor
 
-      ##
-      # Note that `Array#any?` implements a short circuit evaluation, so we
-      # build builds only for the first stage that has builds available.
-      #
-      config_processor.stages.any? do |stage|
-        build_builds_for_stage(stage, user, status, trigger_request).present?
-      end
+      build_builds_for_stages(config_processor.stages, user,
+                              'success', trigger_request)
     end
 
     def create_builds(user, trigger_request = nil)
@@ -122,17 +117,11 @@ module Ci
       prior_builds = latest_builds.where.not(stage: next_stages)
       prior_status = prior_builds.status
 
-      ##
-      # Create builds for next stages based.
-      #
-      # Note that there is a short circult evaluation here.
-      #
-      have_builds = next_stages.any? do |stage|
-        build_builds_for_stage(stage, build.user, prior_status,
-                               build.trigger_request).present?
-      end
+      # build builds for next stage that has builds available
+      # and save pipeline if we have builds
+      build_builds_for_stages(next_stages, build.user, prior_status,
+                              build.trigger_request) && save
 
-      save! if have_builds
     end
 
     def retried
@@ -179,8 +168,15 @@ module Ci
 
     private
 
-    def build_builds_for_stage(stage, user, status, trigger_request)
-      CreateBuildsService.new(self).execute(stage, user, status, trigger_request)
+    def build_builds_for_stages(stages, user, status, trigger_request)
+      ##
+      # Note that `Array#any?` implements a short circuit evaluation, so we
+      # build builds only for the first stage that has builds available.
+      #
+      stages.any? do |stage|
+        CreateBuildsService.new(self)
+          .execute(stage, user, status, trigger_request).present?
+      end
     end
 
     def update_state
