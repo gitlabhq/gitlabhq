@@ -15,19 +15,21 @@
           %li{"data-emoji" => "#{emoji}"}= image_tag url_to_emoji(emoji), height: "20px", width: "20px"
 
 - if current_user
-  :coffeescript
-    post_emoji_url = "#{award_toggle_namespace_project_notes_path(@project.namespace, @project)}"
-    noteable_type = "#{votable.class.name.underscore}"
-    noteable_id = "#{votable.id}"
-    aliases = #{AwardEmoji::ALIASES.to_json}
-    window.awards_handler = new AwardsHandler(post_emoji_url, noteable_type, noteable_id, aliases)
+  :javascript
+    var post_emoji_url = "#{award_toggle_namespace_project_notes_path(@project.namespace, @project)}";
+    var noteable_type = "#{votable.class.name.underscore}";
+    var noteable_id = "#{votable.id}";
+    var aliases = #{AwardEmoji::ALIASES.to_json};
+    window.awards_handler = new AwardsHandler(post_emoji_url, noteable_type, noteable_id, aliases);
 
-    $(".awards-menu li").click (e)->
-      emoji = $(this).data("emoji")
-      awards_handler.addAward(emoji)
+    $(".awards-menu li").click(function (e) {
+      var emoji = $(this).data("emoji");
+      awards_handler.addAward(emoji);
+    });
 
-    $(".awards").on "click", ".award", (e)->
-      emoji = $(this).find(".icon").data("emoji")
-      awards_handler.addAward(emoji)
+    $(".awards").on("click", ".award", function (e) {
+      var emoji = $(this).find(".icon").data("emoji");
+      awards_handler.addAward(emoji);
+    });
 
-    $(".award").tooltip()
+    $(".award").tooltip();
