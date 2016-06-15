@@ -275,8 +275,12 @@ $ ->
 
       if $.cookie('pin_nav') is 'true'
         $.cookie 'pin_nav', 'false'
-        $('.page-with-sidebar').removeClass('page-sidebar-pinned')
-        $('.navbar-fixed-top').removeClass('header-pinned-nav')
+        $('.page-with-sidebar')
+          .removeClass('page-sidebar-pinned')
+          .toggleClass('page-sidebar-collapsed page-sidebar-expanded')
+        $('.navbar-fixed-top')
+          .removeClass('header-pinned-nav')
+          .toggleClass('header-collapsed header-expanded')
       else
         $.cookie 'pin_nav', 'true'
         $('.page-with-sidebar').addClass('page-sidebar-pinned')

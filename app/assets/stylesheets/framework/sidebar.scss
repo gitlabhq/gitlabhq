@@ -1,6 +1,6 @@
 .page-with-sidebar {
   padding-top: $header-height;
-  transition-duration: .3s;
+  transition: padding $sidebar-transition-duration;
 
   .sidebar-wrapper {
     position: fixed;
@@ -8,7 +8,8 @@
     bottom: 0;
     left: 0;
     height: 100%;
-    transition-duration: .3s;
+    overflow: hidden;
+    transition: width $sidebar-transition-duration;
   }
 }
 
@@ -24,6 +25,7 @@
 
 .content-wrapper {
   width: 100%;
+  transition: padding $sidebar-transition-duration;
 
   .container-fluid {
     background: #fff;
@@ -44,13 +46,9 @@
   bottom: 0;
   width: $sidebar_width;
   overflow: hidden;
-  transition-duration: .3s;
-
-  .username {
-    margin-left: 10px;
-    font-size: 16px;
-    line-height: 36px;
-  }
+  font-size: 16px;
+  line-height: 36px;
+  transition: width $sidebar-transition-duration, padding $sidebar-transition-duration;
 }
 
 
@@ -68,8 +66,7 @@
   position: absolute;
   top: 50px;
   bottom: 65px;
-  width: 100%;
-  transition-duration: .3s;
+  width: $sidebar_width;
   overflow-y: auto;
   overflow-x: hidden;
 
@@ -99,11 +96,9 @@
       outline: none;
       white-space: nowrap;
 
-      &:hover {
-        text-decoration: none;
-      }
-
-      &:active, &:focus {
+      &:hover,
+      &:active,
+      &:focus {
         text-decoration: none;
       }
 
@@ -115,10 +110,6 @@
       svg {
         margin-right: 13px;
       }
-
-      &.back-link i {
-        transition-duration: .3s;
-      }
     }
   }
 
@@ -129,20 +120,12 @@
   }
 }
 
-.sidebar-subnav {
-  margin-left: 0;
-  padding-left: 0;
-
-  li {
-    list-style: none;
-  }
-}
-
 .collapse-nav {
   width: 100%;
-  position: absolute;;
+  position: absolute;
   top: 0;
   left: 0;
+  min-height: 50px;
   padding: 5px 0;
   font-size: 18px;
   background: transparent;
@@ -187,38 +170,6 @@
 
   .sidebar-wrapper {
     width: 0;
-
-    .nav-sidebar {
-      width: 0;
-
-      li {
-        width: auto;
-
-        a {
-          span {
-            display: none;
-          }
-        }
-      }
-    }
-
-    .collapse-nav a {
-      width: 0;
-
-      i {
-        display: none;
-      }
-    }
-
-    .sidebar-user {
-      width: 0;
-      padding-left: 0;
-      padding-right: 0;
-
-      .username {
-        display: none;
-      }
-    }
   }
 }
 
@@ -240,6 +191,14 @@
 header.header-pinned-nav {
   @media (min-width: $screen-lg-min) {
     padding-left: ($sidebar_width + $gl-padding);
+
+    .side-nav-toggle {
+      display: none;
+    }
+
+    .header-content {
+      padding-left: 0;
+    }
   }
 }
 
