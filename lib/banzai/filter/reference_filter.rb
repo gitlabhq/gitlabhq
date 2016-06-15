@@ -129,7 +129,7 @@ module Banzai
 
           next unless link && text
 
-          link = URI.decode(link)
+          link = CGI.unescape(link)
           # Ignore ending punctionation like periods or commas
           next unless link == text && text =~ /\A#{pattern}/
 
@@ -166,7 +166,7 @@ module Banzai
           text = node.text
 
           next unless link && text
-          link = URI.decode(link)
+          link = CGI.unescape(link)
           next unless link && link =~ /\A#{pattern}\z/
 
           html = yield link, text

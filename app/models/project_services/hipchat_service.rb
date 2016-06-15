@@ -119,13 +119,13 @@ class HipchatService < Service
     message << "#{push[:user_name]} "
     if Gitlab::Git.blank_ref?(before)
       message << "pushed new #{ref_type} <a href=\""\
-                 "#{project_url}/commits/#{URI.escape(ref)}\">#{ref}</a>"\
+                 "#{project_url}/commits/#{CGI.escape(ref)}\">#{ref}</a>"\
                  " to #{project_link}\n"
     elsif Gitlab::Git.blank_ref?(after)
       message << "removed #{ref_type} <b>#{ref}</b> from <a href=\"#{project.web_url}\">#{project_name}</a> \n"
     else
       message << "pushed to #{ref_type} <a href=\""\
-                  "#{project.web_url}/commits/#{URI.escape(ref)}\">#{ref}</a> "
+                  "#{project.web_url}/commits/#{CGI.escape(ref)}\">#{ref}</a> "
       message << "of <a href=\"#{project.web_url}\">#{project.name_with_namespace.gsub!(/\s/,'')}</a> "
       message << "(<a href=\"#{project.web_url}/compare/#{before}...#{after}\">Compare changes</a>)"
 
@@ -254,8 +254,8 @@ class HipchatService < Service
     status = data[:commit][:status]
     duration = data[:commit][:duration]
 
-    branch_link = "<a href=\"#{project_url}/commits/#{URI.escape(ref)}\">#{ref}</a>"
-    commit_link = "<a href=\"#{project_url}/commit/#{URI.escape(sha)}/builds\">#{Commit.truncate_sha(sha)}</a>"
+    branch_link = "<a href=\"#{project_url}/commits/#{CGI.escape(ref)}\">#{ref}</a>"
+    commit_link = "<a href=\"#{project_url}/commit/#{CGI.escape(sha)}/builds\">#{Commit.truncate_sha(sha)}</a>"
 
     "#{project_link}: Commit #{commit_link} of #{branch_link} #{ref_type} by #{user_name} #{humanized_status(status)} in #{duration} second(s)"
   end
