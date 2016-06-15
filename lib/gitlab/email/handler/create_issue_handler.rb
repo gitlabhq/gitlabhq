@@ -5,11 +5,11 @@ module Gitlab
   module Email
     module Handler
       class CreateIssueHandler < BaseHandler
-        attr_reader :project_namespace, :authentication_token
+        attr_reader :project_path, :authentication_token
 
         def initialize(mail, mail_key)
           super(mail, mail_key)
-          @project_namespace, @authentication_token =
+          @project_path, @authentication_token =
             mail_key && mail_key.split('+', 2)
         end
 
@@ -33,7 +33,7 @@ module Gitlab
         end
 
         def project
-          @project ||= Project.find_with_namespace(project_namespace)
+          @project ||= Project.find_with_namespace(project_path)
         end
 
         private
