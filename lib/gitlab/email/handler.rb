@@ -1,4 +1,3 @@
-
 require 'gitlab/email/handler/create_note_handler'
 require 'gitlab/email/handler/create_issue_handler'
 

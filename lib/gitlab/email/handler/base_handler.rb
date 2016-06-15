@@ -1,4 +1,3 @@
-
 module Gitlab
   module Email
     module Handler
