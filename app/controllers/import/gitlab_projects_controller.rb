@@ -1,6 +1,5 @@
 class Import::GitlabProjectsController < Import::BaseController
   before_action :verify_gitlab_project_import_enabled
-  before_action :verify_project_and_namespace_access
 
   def new
     @namespace_id = project_params[:namespace_id]
@@ -34,16 +33,6 @@ class Import::GitlabProjectsController < Import::BaseController
 
   def file_is_valid?
     project_params[:file].respond_to?(:read)
-  end
-
-  def verify_project_and_namespace_access
-    unless namespace_access?
-      render_403
-    end
-  end
-
-  def namespace_access?
-    can?(current_user, :create_projects, Namespace.find(project_params[:namespace_id]))
   end
 
   def verify_gitlab_project_import_enabled
