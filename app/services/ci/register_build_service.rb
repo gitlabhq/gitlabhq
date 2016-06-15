@@ -8,7 +8,7 @@ module Ci
       builds =
         if current_runner.shared?
           builds.
-            # don't run projects which have not enables shared runners
+            # don't run projects which have not enabled shared runners
             joins(:project).where(projects: { builds_enabled: true, shared_runners_enabled: true }).
 
             # this returns builds that are ordered by number of running builds
