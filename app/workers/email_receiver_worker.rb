@@ -24,7 +24,7 @@ class EmailReceiverWorker
     reason =
       case e
       when Gitlab::Email::UnknownIncomingEmail
-        "We couldn't figure out what the email is for."
+        "We couldn't figure out what the email is for. Please create your issue or comment through the web interface."
       when Gitlab::Email::SentNotificationNotFoundError
         "We couldn't figure out what the email is in reply to. Please create your comment through the web interface."
       when Gitlab::Email::ProjectNotFound
