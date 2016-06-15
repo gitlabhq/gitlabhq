@@ -3,6 +3,7 @@
 ### CI User documentation
 
 - [Get started with GitLab CI](quick_start/README.md)
+- [CI/CD Definitions](definitions/README.md)
 - [CI examples for various languages](examples/README.md)
 - [Learn how to enable or disable GitLab CI](enable_or_disable_ci.md)
 - [Environments and deployments](environments.md)

@@ -54,7 +54,7 @@ of your repository and contains definitions of how your project should be built.
 
 The YAML file defines a set of jobs with constraints stating when they should
 be run. The jobs are defined as top-level elements with a name and always have
-to contain the `script` clause:
+to contain at least the `script` clause:
 
 ```yaml
 job1:
@@ -165,7 +165,7 @@ stages:
 
 There are also two edge cases worth mentioning:
 
-1. If no `stages` is defined in `.gitlab-ci.yml`, then by default the `build`,
+1. If no `stages` are defined in `.gitlab-ci.yml`, then by default the `build`,
    `test` and `deploy` are allowed to be used as job's stage by default.
 2. If a job doesn't specify a `stage`, the job is assigned the `test` stage.
 

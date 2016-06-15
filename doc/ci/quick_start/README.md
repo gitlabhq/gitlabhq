@@ -4,41 +4,40 @@
 is fully integrated into GitLab itself and is [enabled] by default on all
 projects.
 
-The TL;DR version of how GitLab CI works is the following.
-
----
-
 GitLab offers a [continuous integration][ci] service. If you
 [add a `.gitlab-ci.yml` file][yaml] to the root directory of your repository,
 and configure your GitLab project to use a [Runner], then each merge request or
-push triggers a build.
+push triggers your CI [pipeline].
 
 The `.gitlab-ci.yml` file tells the GitLab runner what to do. By default it
-runs three [stages]: `build`, `test`, and `deploy`.
+runs a pipeline with three [stages]: `build`, `test`, and `deploy`.
 
 If everything runs OK (no non-zero return values), you'll get a nice green
 checkmark associated with the pushed commit or merge request. This makes it
-easy to see whether a merge request will cause any of the tests to fail before
+easy to see whether a merge request caused any of the tests to fail before
 you even look at the code.
 
-Most projects only use GitLab's CI service to run the test suite so that
+Most projects use GitLab's CI service to run the test suite so that
 developers get immediate feedback if they broke something.
+
+There's a growing trend to use continuous delivery and continuous deployment to
+automatically deploy tested code to staging and production environments.
 
 So in brief, the steps needed to have a working CI can be summed up to:
 
 1. Add `.gitlab-ci.yml` to the root directory of your repository
 1. Configure a Runner
 
-From there on, on every push to your Git repository, the build will be
-automagically started by the Runner and will appear under the project's
-`/builds` page.
+From there on, on every push to your Git repository, the Runner will
+automagically start the pipeline and the pipeline will appear under the
+project's `/pipelines` page.
 
 ---
 
 This guide assumes that you:
 
 - have a working GitLab instance of version 8.0 or higher or are using
-  [GitLab.com](https://gitlab.com/users/sign_in)
+  [GitLab.com](https://gitlab.com)
 - have a project in GitLab that you would like to use CI for
 
 Let's break it down to pieces and work on solving the GitLab CI puzzle.
@@ -238,3 +237,4 @@ CI with various languages.
 [runner]: ../runners/README.md
 [enabled]: ../enable_or_disable_ci.md
 [stages]: ../yaml/README.md#stages
+[pipeline]: ../definitions/README.md#pipelines
