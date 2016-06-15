@@ -249,8 +249,7 @@ class Ability
         :create_container_image,
         :update_container_image,
         :create_environment,
-        :create_deployment,
-        :update_deployment
+        :create_deployment
       ]
     end
 
@@ -269,6 +268,7 @@ class Ability
         :push_code_to_protected_branches,
         :update_project_snippet,
         :update_environment,
+        :update_deployment,
         :admin_milestone,
         :admin_project_snippet,
         :admin_project_member,
