@@ -5,23 +5,18 @@
     font-weight: normal;
   }
 }
+
 .no-ssh-key-message, .project-limit-message {
   background-color: #f28d35;
   margin-bottom: 0;
 }
+
 .new_project,
 .edit-project {
   fieldset.features {
     .control-label {
       font-weight: normal;
     }
-  }
-}
-
-.project-name-holder {
-  .help-inline {
-    vertical-align: top;
-    padding: 7px;
   }
 }
 
@@ -371,6 +366,7 @@ a.deploy-project-label {
 
 .project-import .btn {
   float: left;
+  margin-bottom: 10px;
   margin-right: 10px;
 }
 
