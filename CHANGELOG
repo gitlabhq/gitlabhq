@@ -281,6 +281,7 @@ v 8.9.0
   - TeamCity Service: Fix URL handling when base URL contains a path
   - Todos will display target state if issuable target is 'Closed' or 'Merged'
   - Validate only and except regexp
+  - Make docker registry work with location redirects when external storage is used
   - Fix bug when sorting issues by milestone due date and filtering by two or more labels
   - POST to API /projects/:id/runners/:runner_id would give 409 if the runner was already enabled for this project
   - Add support for using Yubikeys (U2F) for two-factor authentication

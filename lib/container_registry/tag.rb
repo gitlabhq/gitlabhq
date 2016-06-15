@@ -53,7 +53,7 @@ module ContainerRegistry
     def config
       return unless config_blob
 
-      @config ||= ContainerRegistry::Config.new(self, config_blob)
+      @config ||= ContainerRegistry::Config.new(self, config_blob) if config_blob.data
     end
 
     def created_at
