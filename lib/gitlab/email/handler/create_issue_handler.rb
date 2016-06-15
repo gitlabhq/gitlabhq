@@ -14,7 +14,7 @@ module Gitlab
         end
 
         def can_handle?
-          !!authentication_token
+          !authentication_token.nil?
         end
 
         def execute
