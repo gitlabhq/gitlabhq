@@ -20,7 +20,7 @@ NB: for source installations, make sure the `kerberos` gem group [has been insta
 
 You still need to configure your system for Kerberos usage, such as specifying realms. GitLab will make use of the system's Kerberos settings.
 
-The Administrative user can navigate to Admin > Users > Example User > Identities and attach a Kerberos account.
+The Administrative user can navigate to **Admin > Users > Example User > Identities** and attach a Kerberos account.
 Existing GitLab users can go to profile > account and attach a Kerberos account. if you want to allow users without a GitLab account to login you should enable the option `omniauth_allow_single_sign_on` in config file (default: false). Then, the first time a user signs in with Kerberos credentials, GitLab will create a new GitLab user associated with the email, which is built from the kerberos username and realm.
 User accounts will be created automatically when authentication was successful.
 
