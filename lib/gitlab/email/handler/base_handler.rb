@@ -22,6 +22,7 @@ module Gitlab
         end
 
         private
+
         def validate_permission!(permission)
           raise UserNotFoundError unless author
           raise UserBlockedError if author.blocked?
