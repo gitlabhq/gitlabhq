@@ -20,7 +20,7 @@ module Banzai
         code     = node.text
 
         begin
-          highlighted = block_code(code, language)
+          highlighted = %<<pre class="#{css_classes}"><code>#{block_code(code, language)}</code></pre>>
         rescue
           # Gracefully handle syntax highlighter bugs/errors to ensure
           # users can still access an issue/comment/etc.
@@ -29,6 +29,10 @@ module Banzai
 
         # Extracted to a method to measure it
         replace_parent_pre_element(node, highlighted)
+      end
+
+      def css_classes
+        "code highlight js-syntax-highlight #{lexer.tag}"
       end
 
       private
