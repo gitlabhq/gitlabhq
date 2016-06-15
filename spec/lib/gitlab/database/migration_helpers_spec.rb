@@ -90,7 +90,7 @@ describe Gitlab::Database::MigrationHelpers, lib: true do
       before do
         expect(model).to receive(:transaction_open?).and_return(false)
 
-        expect(model).to receive(:transaction).twice.and_yield
+        expect(model).to receive(:transaction).and_yield
 
         expect(model).to receive(:add_column).
           with(:projects, :foo, :integer, default: nil)

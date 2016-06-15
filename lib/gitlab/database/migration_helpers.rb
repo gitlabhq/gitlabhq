@@ -138,11 +138,9 @@ module Gitlab
         end
 
         begin
-          transaction do
-            update_column_in_batches(table, column, default, &block)
+          update_column_in_batches(table, column, default, &block)
 
-            change_column_null(table, column, false) unless allow_null
-          end
+          change_column_null(table, column, false) unless allow_null
         # We want to rescue _all_ exceptions here, even those that don't inherit
         # from StandardError.
         rescue Exception => error # rubocop: disable all
