@@ -30,11 +30,9 @@ module Gitlab
         mail_key = extract_mail_key(mail)
         handler = Handler.for(mail, mail_key)
 
-        if handler
-          handler.execute
-        else
-          raise UnknownIncomingEmail
-        end
+        raise UnknownIncomingEmail unless handler
+
+        handler.execute
       end
 
       def build_mail
