@@ -26,15 +26,13 @@ module Rouge
       # [+lineanchorsid+]   If lineanchors is true the name of the anchors can
       #                     be changed with lineanchorsid to e.g. foo-linenumber
       #                     (default: 'L').
-      # [+inline_theme+]    Inline CSS styles for the <pre> tag (default: false).
       def initialize(
           nowrap: false,
           cssclass: 'highlight',
           linenos: nil,
           linenostart: 1,
           lineanchors: false,
-          lineanchorsid: 'L',
-          inline_theme: nil
+          lineanchorsid: 'L'
       )
         @nowrap = nowrap
         @cssclass = cssclass
@@ -42,7 +40,6 @@ module Rouge
         @linenostart = linenostart
         @lineanchors = lineanchors
         @lineanchorsid = lineanchorsid
-        @inline_theme = Theme.find(inline_theme).new if inline_theme.is_a?(String)
       end
 
       def render(tokens)
@@ -150,12 +147,7 @@ module Rouge
         if tok.shortname.empty?
           val
         else
-          if @inline_theme
-            rules = @inline_theme.style_for(tok).rendered_rules
-            "<span style=\"#{rules.to_a.join(';')}\"#{val}</span>"
-          else
-            "<span class=\"#{tok.shortname}\">#{val}</span>"
-          end
+          "<span class=\"#{tok.shortname}\">#{val}</span>"
         end
       end
     end
