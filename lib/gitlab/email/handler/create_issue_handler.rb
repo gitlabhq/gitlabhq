@@ -19,6 +19,7 @@ module Gitlab
 
         def execute
           raise ProjectNotFound unless project
+
           validate_permission!(:create_issue)
 
           verify_record!(
