@@ -1,5 +1,21 @@
 class @DueDateSelect
   constructor: ->
+    # Milestone edit/new form
+    $datePicker = $('.datepicker')
+
+    if $datePicker.length
+      $dueDate = $('#milestone_due_date')
+      $datePicker.datepicker
+        dateFormat: 'yy-mm-dd'
+        onSelect: (dateText, inst) ->
+          $dueDate.val(dateText)
+      .datepicker('setDate', $.datepicker.parseDate('yy-mm-dd', $dueDate.val()))
+
+    $('.js-clear-due-date').on 'click', (e) ->
+      e.preventDefault()
+      $.datepicker._clearDate($datePicker)
+
+    # Issuable sidebar
     $loading = $('.js-issuable-update .due_date')
       .find('.block-loading')
       .hide()
