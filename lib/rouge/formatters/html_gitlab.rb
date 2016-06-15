@@ -9,14 +9,6 @@ module Rouge
       #
       # [+cssclass+]        CSS class for the wrapping <tt><div></tt> tag
       #                     (default: 'highlight').
-      # [+linenos+]         If set to 'table', output line numbers as a table
-      #                     with two cells, one containing the line numbers,
-      #                     the other the whole code. This is copy paste friendly,
-      #                     but may cause alignment problems with some browsers
-      #                     or fonts. If set to 'inline', the line numbers will
-      #                     be integrated in the <tt><pre></tt> tag that contains
-      #                     the code (default: nil).
-      # [+linenostart+]     The line number for the first line (default: 1).
       # [+lineanchors+]     If set to true the formatter will wrap each output
       #                     line in an anchor tag with a name of L-linenumber.
       #                     This allows easy linking to certain lines
@@ -26,53 +18,23 @@ module Rouge
       #                     (default: 'L').
       def initialize(
           cssclass: 'highlight',
-          linenos: nil,
-          linenostart: 1,
           lineanchors: false,
           lineanchorsid: 'L'
       )
         @cssclass = cssclass
-        @linenos = linenos
-        @linenostart = linenostart
         @lineanchors = lineanchors
         @lineanchorsid = lineanchorsid
       end
 
       def render(tokens)
-        case @linenos
-        when 'table'
-          render_tableized(tokens)
-        when 'inline'
-          render_untableized(tokens)
-        else
-          render_untableized(tokens)
-        end
-      end
-
-      alias_method :format, :render
-
-      private
-
-      def render_untableized(tokens)
         data = process_tokens(tokens)
 
         wrap_lines(data[:code])
       end
 
-      def render_tableized(tokens)
-        data = process_tokens(tokens)
+      alias_method :format, :render
 
-        html = ''
-        html << '<table><tbody>'
-        html << "<td class=\"linenos\"><pre>"
-        html << wrap_linenos(data[:numbers])
-        html << '</pre></td>'
-        html << "<td class=\"lines\"><pre><code>"
-        html << wrap_lines(data[:code])
-        html << '</code></pre></td>'
-        html << '</tbody></table>'
-        html
-      end
+      private
 
       def process_tokens(tokens)
         rendered = []
@@ -99,10 +61,6 @@ module Rouge
         numbers = (@linenostart..num_lines + @linenostart - 1).to_a
 
         { numbers: numbers, code: rendered }
-      end
-
-      def wrap_linenos(numbers)
-        numbers.join("\n")
       end
 
       def wrap_lines(lines)
