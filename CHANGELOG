@@ -46,6 +46,7 @@ v 8.9.0 (unreleased)
   - Fix race condition on merge when build succeeds
   - Links from a wiki page to other wiki pages should be rewritten as expected
   - Add option to project to only allow merge requests to be merged if the build succeeds (Rui Santos)
+  - Added navigation shortcuts to the project pipelines, milestones, builds and forks page. !4393
   - Fix issues filter when ordering by milestone
   - Added artifacts:when to .gitlab-ci.yml - this requires GitLab Runner 1.3
   - Bamboo Service: Fix missing credentials & URL handling when base URL contains a path (Benjamin Schmid)
