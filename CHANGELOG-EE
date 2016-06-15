@@ -6,6 +6,9 @@ v 8.9.0 (unreleased)
   - Instrument instance methods of Gitlab::InsecureKeyFingerprint class
   - Add API endpoint for Merge Request Approvals !449
 
+v 8.8.5
+  - Make sure OAuth routes that we generate for Geo matches with the ones in Rails routes !444
+
 v 8.8.4
   - Remove license overusage message
 
