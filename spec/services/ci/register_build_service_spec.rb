@@ -45,6 +45,28 @@ module Ci
         end
       end
 
+      context 'deleted projects' do
+        before do
+          project.update(pending_delete: true)
+        end
+
+        context 'for shared runners' do
+          before do
+            project.update(shared_runners_enabled: true)
+          end
+
+          it 'does not pick a build' do
+            expect(service.execute(shared_runner)).to be_nil
+          end
+        end
+
+        context 'for specific runner' do
+          it 'does not pick a build' do
+            expect(service.execute(specific_runner)).to be_nil
+          end
+        end
+      end
+
       context 'allow shared runners' do
         before do
           project.update(shared_runners_enabled: true)
