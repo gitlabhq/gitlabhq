@@ -232,6 +232,9 @@ v 8.8.0
 
 v 8.7.7
   - Fix import by `Any Git URL` broken if the URL contains a space
+  - Prevent unauthorized access to other projects build traces
+  - Forbid scripting for wiki files
+  - Only show notes through JSON on confidential issues that the user has access to
 
 v 8.7.6
   - Fix links on wiki pages for relative url setups. !4131 (Artem Sidorenko)
@@ -394,6 +397,11 @@ v 8.7.0
   - Add RAW build trace output and button on build page
   - Add incremental build trace update into CI API
 
+v 8.6.9
+  - Prevent unauthorized access to other projects build traces
+  - Forbid scripting for wiki files
+  - Only show notes through JSON on confidential issues that the user has access to
+
 v 8.6.8
   - Prevent privilege escalation via "impersonate" feature
   - Prevent privilege escalation via notes API
@@ -547,6 +555,10 @@ v 8.6.0
   - Canceled builds are now ignored in compound build status if marked as `allowed to fail`
   - Trigger a todo for mentions on commits page
   - Let project owners and admins soft delete issues and merge requests
+
+v 8.5.13
+  - Prevent unauthorized access to other projects build traces
+  - Forbid scripting for wiki files
 
 v 8.5.12
   - Prevent privilege escalation via "impersonate" feature
@@ -709,6 +721,10 @@ v 8.5.0
   - Show label row when filtering issues or merge requests by label (Nuttanart Pornprasitsakul)
   - Add Todos
 
+v 8.4.11
+  - Prevent unauthorized access to other projects build traces
+  - Forbid scripting for wiki files
+
 v 8.4.10
   - Prevent privilege escalation via "impersonate" feature
   - Prevent privilege escalation via notes API
@@ -845,6 +861,10 @@ v 8.4.0
   - Add IP check against DNSBLs at account sign-up
   - Added cache:key to .gitlab-ci.yml allowing to fine tune the caching
 
+v 8.3.10
+  - Prevent unauthorized access to other projects build traces
+  - Forbid scripting for wiki files
+
 v 8.3.9
   - Prevent privilege escalation via "impersonate" feature
   - Prevent privilege escalation via notes API
@@ -962,6 +982,10 @@ v 8.3.0
   - Fix online editor should not remove newlines at the end of the file
   - Expose Git's version in the admin area
   - Show "New Merge Request" buttons on canonical repos when you have a fork (Josh Frye)
+
+v 8.2.6
+  - Prevent unauthorized access to other projects build traces
+  - Forbid scripting for wiki files
 
 v 8.2.5
   - Prevent privilege escalation via "impersonate" feature
