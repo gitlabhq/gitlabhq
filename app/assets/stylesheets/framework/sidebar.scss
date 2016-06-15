@@ -49,6 +49,10 @@
   font-size: 16px;
   line-height: 36px;
   transition: width $sidebar-transition-duration, padding $sidebar-transition-duration;
+
+  @media (min-width: $sidebar-breakpoint) {
+    bottom: 50px;
+  }
 }
 
 
@@ -69,6 +73,10 @@
   width: $sidebar_width;
   overflow-y: auto;
   overflow-x: hidden;
+
+  @media (min-width: $sidebar-breakpoint) {
+    bottom: 115px;
+  }
 
   &.navbar-collapse {
     padding: 0 !important;
@@ -120,15 +128,15 @@
   }
 }
 
-.collapse-nav {
-  width: 100%;
+.toggle-nav-collapse {
+  width: $sidebar_width;
   position: absolute;
   top: 0;
   left: 0;
   min-height: 50px;
   padding: 5px 0;
   font-size: 18px;
-  background: transparent;
+  line-height: 30px;
 }
 
 .nav-header-btn {
@@ -143,16 +151,18 @@
   }
 }
 
-.toggle-nav-collapse {
-  position: relative;
-  left: 10px;
-  line-height: 40px;
-}
-
 .pin-nav-btn {
+  display: none;
   position: absolute;
-  right: 10px;
-  top: 2px;
+  left: 0;
+  bottom: 0;
+  height: 50px;
+  width: $sidebar_width;
+  line-height: 30px;
+
+  @media (min-width: $sidebar-breakpoint) {
+    display: block;
+  }
 
   .fa {
     transition: transform .15s;
@@ -182,14 +192,14 @@
 .page-sidebar-pinned {
   .content-wrapper,
   .layout-nav {
-    @media (min-width: $screen-lg-min) {
+    @media (min-width: $sidebar-breakpoint) {
       padding-left: $sidebar_width;
     }
   }
 }
 
 header.header-pinned-nav {
-  @media (min-width: $screen-lg-min) {
+  @media (min-width: $sidebar-breakpoint) {
     padding-left: ($sidebar_width + $gl-padding);
 
     .side-nav-toggle {

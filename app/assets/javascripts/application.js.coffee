@@ -259,7 +259,7 @@ $ ->
   new Aside()
 
   # Sidenav pinning
-  if bootstrapBreakpoint isnt 'lg' and $.cookie('pin_nav') is 'true'
+  if $(window).width() < 1440 and $.cookie('pin_nav') is 'true'
     $.cookie('pin_nav', 'false')
     $('.page-with-sidebar')
       .toggleClass('page-sidebar-collapsed page-sidebar-expanded')
