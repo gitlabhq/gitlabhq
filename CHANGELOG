@@ -848,6 +848,10 @@ v 8.4.0
   - Add IP check against DNSBLs at account sign-up
   - Added cache:key to .gitlab-ci.yml allowing to fine tune the caching
 
+v 8.3.10
+  - Prevent unauthorized access to other projects build traces
+  - Forbid scripting for wiki files
+
 v 8.3.9
   - Prevent privilege escalation via "impersonate" feature
   - Prevent privilege escalation via notes API
