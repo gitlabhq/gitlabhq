@@ -163,7 +163,7 @@
               %ul
                 - Issue.weight_options.select{|weight| weight != "Everything" && weight != "Any Weight"}.each do |weight|
                   %li
-                    %a{href: "#", data: { id: weight }, class: ("is-active" if params[:weight] == weight.to_s)}
+                    %a{href: "#", data: { id: weight, none: ("true" if weight == Issue::WEIGHT_NONE) }, class: ("is-active" if params[:weight] == weight.to_s)}
                       = weight
 
       = render "shared/issuable/participants", participants: issuable.participants(current_user)
