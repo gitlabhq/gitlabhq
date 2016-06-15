@@ -251,7 +251,7 @@
   z-index: 11;
   background: $background-color;
   border-bottom: 1px solid $border-color;
-  transition-duration: .3s;
+  transition: padding $sidebar-transition-duration;
   text-align: center;
 
   .container-fluid {
