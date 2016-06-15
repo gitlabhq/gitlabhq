@@ -11,7 +11,6 @@
           Groups
   = nav_link(controller: :deploy_keys) do
     = link_to namespace_project_deploy_keys_path(@project.namespace, @project), title: 'Deploy Keys' do
-<<<<<<< HEAD
       %span
         Deploy Keys
   = nav_link(controller: :hooks) do
@@ -26,7 +25,6 @@
     = link_to namespace_project_protected_branches_path(@project.namespace, @project), title: 'Protected Branches' do
       %span
         Protected Branches
-
 
   - if @project.builds_enabled?
     = nav_link(controller: :runners) do
@@ -45,7 +43,6 @@
       = link_to namespace_project_badges_path(@project.namespace, @project), title: 'Badges' do
         %span
           Badges
-
   = nav_link(controller: :git_hooks) do
     = link_to namespace_project_git_hooks_path(@project.namespace, @project), title: "Git Hooks" do
       %span
@@ -62,37 +59,3 @@
     = link_to namespace_project_audit_events_path(@project.namespace, @project), title: "Audit Events" do
       %span
         Audit Events
-=======
-      %span
-        Deploy Keys
-  = nav_link(controller: :hooks) do
-    = link_to namespace_project_hooks_path(@project.namespace, @project), title: 'Webhooks' do
-      %span
-        Webhooks
-  = nav_link(controller: :services) do
-    = link_to namespace_project_services_path(@project.namespace, @project), title: 'Services' do
-      %span
-        Services
-  = nav_link(controller: :protected_branches) do
-    = link_to namespace_project_protected_branches_path(@project.namespace, @project), title: 'Protected Branches' do
-      %span
-        Protected Branches
-
-  - if @project.builds_enabled?
-    = nav_link(controller: :runners) do
-      = link_to namespace_project_runners_path(@project.namespace, @project), title: 'Runners' do
-        %span
-          Runners
-    = nav_link(controller: :variables) do
-      = link_to namespace_project_variables_path(@project.namespace, @project), title: 'Variables' do
-        %span
-          Variables
-    = nav_link(controller: :triggers) do
-      = link_to namespace_project_triggers_path(@project.namespace, @project), title: 'Triggers' do
-        %span
-          Triggers
-    = nav_link(controller: :badges) do
-      = link_to namespace_project_badges_path(@project.namespace, @project), title: 'Badges' do
-        %span
-          Badges
->>>>>>> ce/master
