@@ -8,7 +8,7 @@ You should have `master` or `owner` permissions to add or import a new user
 to your project.
 
 The first step to add or import a user, go to your project and click on
-**Members** on the left side of your screen.
+**Members** in the drop-down menu on the right side of your screen.
 
 ![Members](img/add_user_members_menu.png)
 
