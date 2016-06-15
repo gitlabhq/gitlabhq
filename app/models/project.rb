@@ -803,17 +803,7 @@ class Project < ActiveRecord::Base
   end
 
   def open_branches
-    # We're using a Set here as checking values in a large Set is faster than
-    # checking values in a large Array.
-    protected_set = Set.new(protected_branch_names)
-
-    repository.branches.reject do |branch|
-      protected_set.include?(branch.name)
-    end
-  end
-
-  def protected_branch_names
-    @protected_branch_names ||= protected_branches.pluck(:name)
+    repository.branches.reject { |branch| self.protected_branch?(branch.name) }
   end
 
   def root_ref?(branch)
@@ -830,11 +820,12 @@ class Project < ActiveRecord::Base
 
   # Check if current branch name is marked as protected in the system
   def protected_branch?(branch_name)
-    protected_branch_names.include?(branch_name)
+    @protected_branches ||= self.protected_branches.to_a
+    ProtectedBranch.matching(branch_name, protected_branches: @protected_branches).present?
   end
 
   def developers_can_push_to_protected_branch?(branch_name)
-    protected_branches.any? { |pb| pb.name == branch_name && pb.developers_can_push }
+    protected_branches.matching(branch_name).any?(&:developers_can_push)
   end
 
   def forked?
