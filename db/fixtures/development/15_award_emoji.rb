@@ -1,7 +1,7 @@
 Gitlab::Seeder.quiet do
   emoji = Gitlab::AwardEmoji.emojis.keys
-  issue_count = Issue.count / 2
-  Issue.order("RANDOM()").limit(Issue.count / 2).each do |issue|
+
+  Issue.order(Gitlab::Database.random).limit(Issue.count / 2).each do |issue|
     project = issue.project
 
     project.team.users.sample(2).each do |user|
@@ -16,7 +16,7 @@ Gitlab::Seeder.quiet do
     end
   end
 
-  MergeRequest.order("RANDOM()").limit(MergeRequest.count / 2).each do |mr|
+  MergeRequest.order(Gitlab::Database.random).limit(MergeRequest.count / 2).each do |mr|
     project = mr.project
 
     project.team.users.sample(2).each do |user|
