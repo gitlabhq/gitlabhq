@@ -16,14 +16,10 @@
     = link_to admin_builds_path, title: 'Builds' do
       %span
         Builds
-  = nav_link(controller: :logs) do
-    = link_to admin_logs_path, title: 'Logs' do
+  = nav_link(controller: %w(background_jobs logs health_check)) do
+    = link_to admin_background_jobs_path, title: 'Monitoring' do
       %span
-        Logs
-  = nav_link(controller: :health_check) do
-    = link_to admin_health_check_path, title: 'Health Check' do
-      %span
-        Health Check
+        Monitoring
   = nav_link(controller: :broadcast_messages) do
     = link_to admin_broadcast_messages_path, title: 'Messages' do
       %span
@@ -32,10 +28,7 @@
     = link_to admin_hooks_path, title: 'Hooks' do
       %span
         Hooks
-  = nav_link(controller: :background_jobs) do
-    = link_to admin_background_jobs_path, title: 'Background Jobs' do
-      %span
-        Background Jobs
+
   = nav_link(controller: :appearances) do
     = link_to admin_appearances_path, title: 'Appearances' do
       %span
