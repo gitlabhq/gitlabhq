@@ -187,6 +187,10 @@ class Note < ActiveRecord::Base
     award_emoji_supported? && contains_emoji_only?
   end
 
+  def emoji_awardable?
+    !system?
+  end
+
   def clear_blank_line_code!
     self.line_code = nil if self.line_code.blank?
   end
