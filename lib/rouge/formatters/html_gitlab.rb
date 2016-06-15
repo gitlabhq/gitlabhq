@@ -26,9 +26,6 @@ module Rouge
       # [+lineanchorsid+]   If lineanchors is true the name of the anchors can
       #                     be changed with lineanchorsid to e.g. foo-linenumber
       #                     (default: 'L').
-      # [+anchorlinenos+]   If set to true, will wrap line numbers in <tt><a></tt>
-      #                     tags. Used in combination with linenos and lineanchors
-      #                     (default: false).
       # [+inline_theme+]    Inline CSS styles for the <pre> tag (default: false).
       def initialize(
           nowrap: false,
@@ -37,7 +34,6 @@ module Rouge
           linenostart: 1,
           lineanchors: false,
           lineanchorsid: 'L',
-          anchorlinenos: false,
           inline_theme: nil
       )
         @nowrap = nowrap
@@ -46,7 +42,6 @@ module Rouge
         @linenostart = linenostart
         @lineanchors = lineanchors
         @lineanchorsid = lineanchorsid
-        @anchorlinenos = anchorlinenos
         @inline_theme = Theme.find(inline_theme).new if inline_theme.is_a?(String)
       end
 
@@ -120,11 +115,6 @@ module Rouge
       end
 
       def wrap_linenos(numbers)
-        if @anchorlinenos
-          numbers.map! do |number|
-            "<a href=\"##{@lineanchorsid}#{number}\">#{number}</a>"
-          end
-        end
         numbers.join("\n")
       end
 
