@@ -712,6 +712,10 @@ v 8.5.0
   - Show label row when filtering issues or merge requests by label (Nuttanart Pornprasitsakul)
   - Add Todos
 
+v 8.4.11
+  - Prevent unauthorized access to other projects build traces
+  - Forbid scripting for wiki files
+
 v 8.4.10
   - Prevent privilege escalation via "impersonate" feature
   - Prevent privilege escalation via notes API
