@@ -82,7 +82,7 @@ describe Gitlab::Auth, lib: true do
         allow(Gitlab::Kerberos::Authentication).to receive_messages(valid?: true)
         allow(Gitlab::Kerberos::Authentication).to receive_messages(email: user.email)
 
-        expect( gl_auth.find_in_gitlab_or_ldap(username, password) ).to eql user
+        expect( gl_auth.find_with_user_password(username, password) ).to eql user
       end
     end
 
