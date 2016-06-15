@@ -94,7 +94,7 @@ describe Gitlab::ImportExport::ProjectTreeSaver, services: true do
       end
 
       it 'has pipeline builds' do
-        expect(saved_project_json['pipelines'].first['statuses'].first['type']).to eq('Ci::Build')
+        expect(saved_project_json['pipelines'].first['statuses'].count { |hash| hash['type'] == 'Ci::Build'}).to eq(1)
       end
 
       it 'has pipeline commits' do
