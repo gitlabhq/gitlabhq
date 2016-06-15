@@ -7,8 +7,6 @@ module Rouge
 
       # Creates a new <tt>Rouge::Formatter::HTMLGitlab</tt> instance.
       #
-      # [+nowrap+]          If set to True, don't wrap the output at all, not
-      #                     even inside a <tt><pre></tt> tag (default: false).
       # [+cssclass+]        CSS class for the wrapping <tt><div></tt> tag
       #                     (default: 'highlight').
       # [+linenos+]         If set to 'table', output line numbers as a table
@@ -27,14 +25,12 @@ module Rouge
       #                     be changed with lineanchorsid to e.g. foo-linenumber
       #                     (default: 'L').
       def initialize(
-          nowrap: false,
           cssclass: 'highlight',
           linenos: nil,
           linenostart: 1,
           lineanchors: false,
           lineanchorsid: 'L'
       )
-        @nowrap = nowrap
         @cssclass = cssclass
         @linenos = linenos
         @linenostart = linenostart
@@ -60,18 +56,13 @@ module Rouge
       def render_untableized(tokens)
         data = process_tokens(tokens)
 
-        html = ''
-        html << "<pre class=\"#{@cssclass}\"><code>" unless @nowrap
-        html << wrap_lines(data[:code])
-        html << "</code></pre>\n" unless @nowrap
-        html
+        wrap_lines(data[:code])
       end
 
       def render_tableized(tokens)
         data = process_tokens(tokens)
 
         html = ''
-        html << "<div class=\"#{@cssclass}\">" unless @nowrap
         html << '<table><tbody>'
         html << "<td class=\"linenos\"><pre>"
         html << wrap_linenos(data[:numbers])
@@ -80,7 +71,6 @@ module Rouge
         html << wrap_lines(data[:code])
         html << '</code></pre></td>'
         html << '</tbody></table>'
-        html << '</div>' unless @nowrap
         html
       end
 
