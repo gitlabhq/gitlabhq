@@ -1,6 +1,7 @@
-.page-with-sidebar.page-sidebar-collapsed{ class: "#{page_gutter_class}" }
+.page-with-sidebar{ class: "#{page_sidebar_class} #{page_gutter_class}" }
   .sidebar-wrapper.nicescroll{ class: nav_sidebar_class }
-
+    %header.collapse-nav
+      = render partial: 'layouts/collapse_button'
     - if defined?(sidebar) && sidebar
       = render "layouts/nav/#{sidebar}"
     - elsif current_user
@@ -8,8 +9,6 @@
     - else
       = render 'layouts/nav/explore'
 
-    .collapse-nav
-      = render partial: 'layouts/collapse_button'
     - if current_user
       = link_to current_user, class: 'sidebar-user', title: "Profile", data: {user: current_user.username} do
         = image_tag avatar_icon(current_user, 60), alt: 'Profile', class: 'avatar avatar s36'

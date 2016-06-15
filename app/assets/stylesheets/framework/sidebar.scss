@@ -6,8 +6,6 @@
     position: fixed;
     top: 0;
     bottom: 0;
-    overflow-y: auto;
-    overflow-x: hidden;
     left: 0;
     height: 100%;
     transition-duration: .3s;
@@ -17,6 +15,11 @@
 .sidebar-wrapper {
   z-index: 1000;
   background: $background-color;
+
+  .nicescroll-rails-hr {
+    // TODO: Figure out why nicescroll doesn't hide horizontal bar
+    display: none!important;
+  }
 }
 
 .content-wrapper {
@@ -34,22 +37,19 @@
   }
 }
 
-.sidebar-wrapper {
+.sidebar-user {
+  padding: 15px;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: $sidebar_width;
+  overflow: hidden;
+  transition-duration: .3s;
 
-  .sidebar-user {
-    padding: 15px 22px;
-    position: fixed;
-    bottom: 0;
-    width: $sidebar_width;
-    overflow: hidden;
-    transition-duration: .3s;
-
-    .username {
-      margin-left: 10px;
-      width: $sidebar_width - 2 * 10px;
-      font-size: 16px;
-      line-height: 34px;
-    }
+  .username {
+    margin-left: 10px;
+    font-size: 16px;
+    line-height: 36px;
   }
 }
 
@@ -65,19 +65,19 @@
 
 
 .nav-sidebar {
-  margin-top: 22 + $header-height;
-  margin-bottom: 116px;
+  position: absolute;
+  top: 50px;
+  bottom: 65px;
+  width: 100%;
   transition-duration: .3s;
-  list-style: none;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
 
   &.navbar-collapse {
     padding: 0 !important;
   }
 
   li {
-    width: $sidebar_width;
-
     &.separate-item {
       padding-top: 10px;
       margin-top: 10px;
@@ -90,14 +90,14 @@
     }
 
     a {
-      width: $sidebar_width;
-      padding: 7px 15px 7px 23px;
+      padding: 7px 15px 7px 12px;
       font-size: $gl-font-size;
       line-height: 24px;
       display: block;
       text-decoration: none;
       font-weight: normal;
       outline: none;
+      white-space: nowrap;
 
       &:hover {
         text-decoration: none;
@@ -138,28 +138,47 @@
   }
 }
 
-.collapse-nav a {
-  width: $sidebar_width;
-  position: fixed;
+.collapse-nav {
+  width: 100%;
+  position: absolute;;
   top: 0;
   left: 0;
   padding: 5px 0;
   font-size: 18px;
   background: transparent;
-  height: 50px;
-  text-align: center;
-  line-height: 40px;
-  transition-duration: .3s;
-  outline: none;
+}
 
-  &:hover {
+.nav-header-btn {
+  padding: 10px 5px;
+  color: inherit;
+  transition-duration: .3s;
+
+  &:hover,
+  &:focus {
+    color: $white-light;
     text-decoration: none;
   }
 }
 
-.sidebar-wrapper {
-  &.hidden-nav {
-    width: 0;
+.toggle-nav-collapse {
+  position: relative;
+  left: 10px;
+  line-height: 40px;
+}
+
+.pin-nav-btn {
+  position: absolute;
+  right: 10px;
+  top: 2px;
+
+  .fa {
+    transition: transform .15s;
+  }
+
+  &.is-active {
+    .fa {
+      transform: rotate(90deg);
+    }
   }
 }
 
@@ -204,27 +223,23 @@
 }
 
 .page-sidebar-expanded {
-
-  @media (max-width: $screen-sm-max) {
-    padding-left: 0;
-  }
-
   .sidebar-wrapper {
     width: $sidebar_width;
+  }
+}
 
-    .nav-sidebar {
-      width: $sidebar_width;
+.page-sidebar-pinned {
+  .content-wrapper,
+  .layout-nav {
+    @media (min-width: $screen-lg-min) {
+      padding-left: $sidebar_width;
     }
+  }
+}
 
-    .nav-sidebar li a {
-      width: $sidebar_width;
-
-      &.back-link {
-        i {
-          opacity: 0;
-        }
-      }
-    }
+header.header-pinned-nav {
+  @media (min-width: $screen-lg-min) {
+    padding-left: ($sidebar_width + $gl-padding);
   }
 }
 

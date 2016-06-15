@@ -79,14 +79,9 @@ header {
 
     &.header-collapsed {
       padding: 0 16px;
-
-      .side-nav-toggle {
-        display: block;
-      }
     }
 
     .side-nav-toggle {
-      display: none;
       position: absolute;
       left: -10px;
       margin: 6px 0;

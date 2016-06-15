@@ -3,10 +3,14 @@ expanded = 'page-sidebar-expanded'
 
 toggleSidebar = ->
   $('.page-with-sidebar').toggleClass("#{collapsed} #{expanded}")
-  $('header').toggleClass("header-collapsed header-expanded")
+  $('.navbar-fixed-top').toggleClass("header-collapsed header-expanded")
+
+  if $.cookie('pin_nav') is 'true'
+    $('.navbar-fixed-top').toggleClass('header-pinned-nav')
+    $('.page-with-sidebar').toggleClass('page-sidebar-pinned')
 
   setTimeout ( ->
-    niceScrollBars = $('.nicescroll').niceScroll();
+    niceScrollBars = $('.nav-sidebar').niceScroll();
     niceScrollBars.updateScrollBar();
   ), 300
 

@@ -1,1 +1,6 @@
-= link_to icon('bars'), '#', class: 'toggle-nav-collapse', title: "Open/Close"
+= link_to '#', class: 'nav-header-btn toggle-nav-collapse', title: "Open/Close" do
+  %span.sr-only Toggle navigation
+  = icon('bars')
+= link_to '#', class: "nav-header-btn pin-nav-btn #{'is-active' if pinned_nav?} visible-lg-block js-nav-pin", title: 'Pin/Unpin navigation' do
+  %span.sr-only Toggle navigation pinning
+  = icon('thumb-tack')

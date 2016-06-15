@@ -8,14 +8,9 @@
  */
 @mixin gitlab-theme($color-light, $color, $color-darker, $color-dark) {
   .page-with-sidebar {
-
-    .collapse-nav a {
+    .collapse-nav {
       color: $color-light;
       background: $color;
-
-      &:hover {
-        color: $white-light;
-      }
     }
 
     .sidebar-wrapper {

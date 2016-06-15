@@ -12,10 +12,10 @@ module NavHelper
   end
 
   def page_sidebar_class
-    if nav_menu_collapsed?
-      "page-sidebar-collapsed"
+    if pinned_nav?
+      "page-sidebar-expanded page-sidebar-pinned"
     else
-      "page-sidebar-expanded"
+      "page-sidebar-collapsed"
     end
   end
 
@@ -37,6 +37,13 @@ module NavHelper
 
   def nav_header_class
     class_name = " with-horizontal-nav" if defined?(nav) && nav
+
+    if pinned_nav?
+      class_name << " header-expanded header-pinned-nav"
+    else
+      class_name << " header-collapsed"
+    end
+
     class_name
   end
 
@@ -46,5 +53,9 @@ module NavHelper
 
   def nav_control_class
     "nav-control" if current_user
+  end
+
+  def pinned_nav?
+    cookies[:pin_nav] == 'true'
   end
 end
