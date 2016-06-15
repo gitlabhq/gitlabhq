@@ -99,6 +99,7 @@ v 8.9.0 (unreleased)
   - Remove tanuki logo from side navigation; center on top nav
   - Include user relationships when retrieving award_emoji
   - Various associations are now eager loaded when parsing issue references to reduce the number of queries executed
+  - Set inverse_of for Project/Service association to reduce the number of queries
 
 v 8.8.5 (unreleased)
   - Ensure branch cleanup regardless of whether the GitHub import process succeeds
