@@ -544,7 +544,7 @@ class Project < ActiveRecord::Base
     mirror_updated? && self.mirror_last_successful_update_at
   end
 
-  def update_mirror
+  def update_mirror(delay: 0)
     return unless mirror? && repository_exists?
 
     return if import_in_progress?
@@ -555,7 +555,7 @@ class Project < ActiveRecord::Base
       import_start
     end
 
-    RepositoryUpdateMirrorWorker.perform_async(self.id)
+    RepositoryUpdateMirrorWorker.perform_in(delay, self.id)
   end
 
   def mark_import_as_failed(error_message)
