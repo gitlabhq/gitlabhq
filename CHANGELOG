@@ -68,6 +68,7 @@ v 8.9.0 (unreleased)
   - Improved UX of date pickers on issue & milestone forms
   - Cache on the database if a project has an active external issue tracker.
   - Put project Labels and Milestones pages links under Issues and Merge Requests tabs as subnav
+  - GitLab project import and export functionality
 
 v 8.8.5 (unreleased)
   - Ensure branch cleanup regardless of whether the GitHub import process succeeds
@@ -176,8 +177,6 @@ v 8.8.0
   - API support for the 'since' and 'until' operators on commit requests (Paco Guzman)
   - Fix Gravatar hint in user profile when Gravatar is disabled. !3988 (Artem Sidorenko)
   - Expire repository exists? and has_visible_content? caches after a push if necessary
-  - Fix unintentional filtering bug in issues sorted by milestone due (Takuya Noguchi)
-  - GitLab project import and export functionality
   - Fix unintentional filtering bug in Issue/MR sorted by milestone due (Takuya Noguchi)
   - Fix adding a todo for private group members (Ahmad Sherif)
   - Bump ace-rails-ap gem version from 2.0.1 to 4.0.2 which upgrades Ace Editor from 1.1.2 to 1.2.3
