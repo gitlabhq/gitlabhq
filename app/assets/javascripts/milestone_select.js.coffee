@@ -116,7 +116,7 @@ class @MilestoneSelect
               .val()
             data = {}
             data[abilityName] = {}
-            data[abilityName].milestone_id = selected
+            data[abilityName].milestone_id = if selected? then selected else null
             $loading
               .fadeIn()
             $dropdown.trigger('loading.gl.dropdown')
