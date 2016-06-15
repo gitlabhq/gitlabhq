@@ -38,6 +38,7 @@ module Gitlab
         end
 
         private
+
         def create_issue
           Issues::CreateService.new(
             project,

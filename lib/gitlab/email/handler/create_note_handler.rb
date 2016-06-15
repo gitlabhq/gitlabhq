@@ -39,6 +39,7 @@ module Gitlab
         end
 
         private
+
         def create_note
           Notes::CreateService.new(
             project,
