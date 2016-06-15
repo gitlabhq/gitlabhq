@@ -1,5 +1,3 @@
-require 'cgi'
-
 module Rouge
   module Formatters
     class HTMLGitlab < Rouge::Formatters::HTML
