@@ -10,6 +10,7 @@ describe CreateDeploymentService, services: true do
     let(:params) do
       { environment: 'production',
         ref: 'master',
+        tag: false,
         sha: '97de212e80737a608d939f648d959671fb0a0142',
       }
     end
@@ -42,6 +43,7 @@ describe CreateDeploymentService, services: true do
       let(:params) do
         { environment: 'name with spaces',
           ref: 'master',
+          tag: false,
           sha: '97de212e80737a608d939f648d959671fb0a0142',
         }
       end

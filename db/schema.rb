@@ -385,8 +385,8 @@ ActiveRecord::Schema.define(version: 20160610301627) do
 
   create_table "deployments", force: :cascade do |t|
     t.integer  "iid",             null: false
-    t.integer  "project_id",      null: false
-    t.integer  "environment_id",  null: false
+    t.integer  "project_id"
+    t.integer  "environment_id"
     t.string   "ref",             null: false
     t.boolean  "tag",             null: false
     t.string   "sha",             null: false
@@ -413,7 +413,7 @@ ActiveRecord::Schema.define(version: 20160610301627) do
   add_index "emails", ["user_id"], name: "index_emails_on_user_id", using: :btree
 
   create_table "environments", force: :cascade do |t|
-    t.integer  "project_id", null: false
+    t.integer  "project_id"
     t.string   "name",       null: false
     t.datetime "created_at"
     t.datetime "updated_at"
