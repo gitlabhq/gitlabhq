@@ -10,7 +10,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   end
 
   def show
-    @deployments = environment.deployments.order(id: :desc).page(params[:page]).per(30)
+    @deployments = environment.deployments.order(id: :desc).page(params[:page])
   end
 
   def new
@@ -44,6 +44,6 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   end
 
   def environment
-    @environment ||= project.environments.find_by!(id: params[:id])
+    @environment ||= project.environments.find(params[:id])
   end
 end

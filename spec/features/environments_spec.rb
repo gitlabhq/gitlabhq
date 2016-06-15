@@ -107,7 +107,7 @@ describe 'Environments' do
 
       context 'for valid name' do
         before do
-          fill_in('Environment name', with: 'production')
+          fill_in('Name', with: 'production')
           click_on 'Create environment'
         end
 
@@ -118,7 +118,7 @@ describe 'Environments' do
 
       context 'for invalid name' do
         before do
-          fill_in('Environment name', with: 'name with spaces')
+          fill_in('Name', with: 'name with spaces')
           click_on 'Create environment'
         end
 
@@ -140,7 +140,9 @@ describe 'Environments' do
 
     before { visit namespace_project_environment_path(project.namespace, project, environment) }
 
-    context 'when logged as developer' do
+    context 'when logged as master' do
+      let(:role) { :master }
+
       before { click_link 'Destroy' }
 
       it 'does not have environment' do
@@ -148,8 +150,8 @@ describe 'Environments' do
       end
     end
 
-    context 'when logged as reporter' do
-      let(:role) { :reporter }
+    context 'when logged as developer' do
+      let(:role) { :developer }
 
       it 'does not have a Destroy link' do
         expect(page).not_to have_link('Destroy')
