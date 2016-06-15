@@ -124,7 +124,7 @@ $ ->
   gl.utils.preventDisabledButtons()
   bootstrapBreakpoint = bp.getBreakpointSize()
 
-  $(".nicescroll").niceScroll(cursoropacitymax: '0.4', cursorcolor: '#FFF', cursorborder: "1px solid #FFF")
+  $(".nav-sidebar").niceScroll(cursoropacitymax: '0.4', cursorcolor: '#FFF', cursorborder: "1px solid #FFF")
 
   # Click a .js-select-on-focus field, select the contents
   $(".js-select-on-focus").on "focusin", ->
@@ -254,3 +254,31 @@ $ ->
   gl.awardsHandler = new AwardsHandler()
   checkInitialSidebarSize()
   new Aside()
+
+  # Sidenav pinning
+  if $(window).width() < 1440 and $.cookie('pin_nav') is 'true'
+    $.cookie('pin_nav', 'false')
+    $('.page-with-sidebar')
+      .toggleClass('page-sidebar-collapsed page-sidebar-expanded')
+      .removeClass('page-sidebar-pinned')
+    $('.navbar-fixed-top').removeClass('header-pinned-nav')
+
+  $(document)
+    .off 'click', '.js-nav-pin'
+    .on 'click', '.js-nav-pin', (e) ->
+      e.preventDefault()
+
+      $(this).toggleClass 'is-active'
+
+      if $.cookie('pin_nav') is 'true'
+        $.cookie 'pin_nav', 'false'
+        $('.page-with-sidebar')
+          .removeClass('page-sidebar-pinned')
+          .toggleClass('page-sidebar-collapsed page-sidebar-expanded')
+        $('.navbar-fixed-top')
+          .removeClass('header-pinned-nav')
+          .toggleClass('header-collapsed header-expanded')
+      else
+        $.cookie 'pin_nav', 'true'
+        $('.page-with-sidebar').addClass('page-sidebar-pinned')
+        $('.navbar-fixed-top').addClass('header-pinned-nav')
