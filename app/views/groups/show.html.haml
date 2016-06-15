@@ -19,6 +19,9 @@
         .cover-desc.description
           = markdown(@group.description, pipeline: :description)
 
+    - if current_user
+      = render 'shared/members/access_request_buttons', source: @group
+
 %div{ class: container_class }
   .top-area
     %ul.nav-links

@@ -135,6 +135,11 @@ module DiffHelper
     toggle_whitespace_link(url, options)
   end
 
+  def diff_compare_whitespace_link(project, from, to, options)
+    url = namespace_project_compare_path(project.namespace, project, from, to, params_with_whitespace)
+    toggle_whitespace_link(url, options)
+  end
+
   private
 
   def hide_whitespace?

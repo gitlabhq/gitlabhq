@@ -1,4 +1,5 @@
 - page_title "Network", @ref
+- page_specific_javascripts asset_path("network/application.js")
 = render "projects/commits/head"
 = render "head"
 %div{ class: (container_class) }
@@ -14,14 +15,5 @@
               = check_box_tag :filter_ref, 1, @options[:filter_ref]
               %span Begin with the selected commit
 
-    .network-graph
+    .network-graph{ data: { url: '#{escape_javascript(@url)}', commit_url: '#{escape_javascript(@commit_url)}', ref: '#{escape_javascript(@ref)}', commit_id: '#{escape_javascript(@commit.id)}' } }
       = spinner nil, true
-
-:javascript
-  network_graph = new Network({
-    url: "#{escape_javascript(@url)}",
-    commit_url: "#{escape_javascript(@commit_url)}",
-    ref: "#{escape_javascript(@ref)}",
-    commit_id: '#{@commit.id}'
-  })
-  new ShortcutsNetwork(network_graph.branch_graph)

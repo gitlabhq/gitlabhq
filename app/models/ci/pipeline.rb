@@ -76,8 +76,10 @@ module Ci
       builds.running_or_pending.each(&:cancel)
     end
 
-    def retry_failed
-      builds.latest.failed.select(&:retryable?).each(&:retry)
+    def retry_failed(user)
+      builds.latest.failed.select(&:retryable?).each do |build|
+        Ci::Build.retry(build, user)
+      end
     end
 
     def latest?
@@ -159,6 +161,10 @@ module Ci
 
     def skip_ci?
       git_commit_message =~ /(\[ci skip\])/ if git_commit_message
+    end
+
+    def environments
+      builds.where.not(environment: nil).success.pluck(:environment).uniq
     end
 
     private
