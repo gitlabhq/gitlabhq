@@ -139,6 +139,12 @@ ul.notes {
       @media (min-width: $screen-sm-min) {
         padding-right: 0;
       }
+
+      @media (max-width: $screen-xs-min) {
+        .inline {
+          display: block;
+        }
+      }
     }
 
     .note-emoji-button {
@@ -258,7 +264,11 @@ ul.notes {
   position: absolute;
   right: 0;
   top: 0;
-  
+
+  .note-action-button {
+    margin-left: 10px;
+  }
+
   @media (min-width: $screen-sm-min) {
     position: relative;
   }
