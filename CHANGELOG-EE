@@ -71,6 +71,9 @@ v 8.7.0
   - Add ability to sync to remote mirrors. !249
   - GitLab Geo: Many replication improvements and fixes !354
 
+v 8.6.9
+  - No EE-specific changes
+
 v 8.6.8
   - No EE-specific changes
 
