@@ -148,6 +148,7 @@ v 8.9.0 (unreleased)
   - Ensure Todos counters doesn't count Todos for projects pending delete
   - Add left/right arrows horizontal navigation
   - Add tooltip to pin/unpin navbar
+  - Add new sub nav style to Wiki and Graphs sub navigation
 
 v 8.8.5
   - Import GitHub repositories respecting the API rate limit !4166
