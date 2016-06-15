@@ -23,6 +23,24 @@
     return if @isInGroupsPage() then $('body').data 'group' else null
 
 
+
+  gl.utils.updateTooltipTitle = ($tooltipEl, newTitle) ->
+
+    $tooltipEl
+      .tooltip 'destroy'
+      .attr    'title', newTitle
+      .tooltip 'fixTitle'
+
+
+  gl.utils.preventDisabledButtons = ->
+
+    $('.btn').click (e) ->
+      if $(this).hasClass 'disabled'
+        e.preventDefault()
+        e.stopImmediatePropagation()
+        return false
+
+
   jQuery.timefor = (time, suffix, expiredLabel) ->
 
     return '' unless time
@@ -43,6 +61,5 @@
     jQuery.timeago.settings.strings.suffixFromNow = suffixFromNow
 
     return timefor
-
 
 ) window

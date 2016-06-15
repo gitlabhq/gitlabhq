@@ -26,6 +26,7 @@ feature 'issue move to another project' do
   context 'user has permission to move issue' do
     let!(:mr) { create(:merge_request, source_project: old_project) }
     let(:new_project) { create(:project) }
+    let(:new_project_search) { create(:project) }
     let(:text) { 'Text with !1' }
     let(:cross_reference) { old_project.to_reference }
 
@@ -45,6 +46,21 @@ feature 'issue move to another project' do
       expect(page).to have_content("Text with #{cross_reference}!1")
       expect(page).to have_content("Moved from #{cross_reference}#1")
       expect(page).to have_content(issue.title)
+    end
+
+    scenario 'searching project dropdown', js: true do
+      new_project_search.team << [user, :reporter]
+
+      page.within '.js-move-dropdown' do
+        first('.select2-choice').click
+      end
+
+      fill_in('s2id_autogen2_search', with: new_project_search.name)
+
+      page.within '.select2-drop' do
+        expect(page).to have_content(new_project_search.name)
+        expect(page).not_to have_content(new_project.name)
+      end
     end
 
     context 'user does not have permission to move the issue to a project', js: true do
