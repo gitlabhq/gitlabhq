@@ -17,11 +17,11 @@
       .light
         \-
   %td
-  - if tag.created_at
-    = time_ago_in_words(tag.created_at)
-  - else
-    .light
-      \-
+    - if tag.created_at
+      = time_ago_in_words(tag.created_at)
+    - else
+      .light
+        \-
   - if can?(current_user, :update_container_image, @project)
     %td.content
       .controls.hidden-xs.pull-right
