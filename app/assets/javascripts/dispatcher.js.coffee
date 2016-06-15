@@ -98,6 +98,7 @@ class Dispatcher
       when 'projects:blob:show', 'projects:blame:show'
         new LineHighlighter()
         shortcut_handler = new ShortcutsNavigation()
+        new ShortcutsBlob true
       when 'projects:labels:new', 'projects:labels:edit'
         new Labels()
       when 'projects:labels:index'
