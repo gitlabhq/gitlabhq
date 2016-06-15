@@ -1,9 +1,9 @@
-class GitlabProjectArchiveWorker
+class GitlabRemoveProjectExportWorker
   include Sidekiq::Worker
 
   sidekiq_options queue: :default
 
   def perform
-    Project.archive_gitlab_exports!
+    Project.remove_gitlab_exports!
   end
 end

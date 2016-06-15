@@ -288,9 +288,9 @@ Settings.cron_jobs['admin_email_worker']['job_class'] = 'AdminEmailWorker'
 Settings.cron_jobs['repository_archive_cache_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['repository_archive_cache_worker']['cron'] ||= '0 * * * *'
 Settings.cron_jobs['repository_archive_cache_worker']['job_class'] = 'RepositoryArchiveCacheWorker'
-Settings.cron_jobs['gitlab_project_archive_worker'] ||= Settingslogic.new({})
-Settings.cron_jobs['gitlab_project_archive_worker']['cron'] ||= '0 * * * *'
-Settings.cron_jobs['gitlab_project_archive_worker']['job_class'] = 'GitlabProjectArchiveWorker'
+Settings.cron_jobs['gitlab_remove_project_export_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['gitlab_remove_project_export_worker']['cron'] ||= '0 * * * *'
+Settings.cron_jobs['gitlab_remove_project_export_worker']['job_class'] = 'GitlabRemoveProjectExportWorker'
 
 #
 # GitLab Shell
