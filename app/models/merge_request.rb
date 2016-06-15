@@ -475,8 +475,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def approvers_left
-    user_ids = overall_approvers.map(&:user_id) - approvals.map(&:user_id)
-    User.where id: user_ids
+    User.where(id: overall_approvers.select(:user_id)).where.not(id: approvals.select(:user_id))
   end
 
   def approvals_required
@@ -508,8 +507,10 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def can_approve?(user)
+    return false if user == self.author
+
     approvers_left.include?(user) ||
-    (any_approver_allowed? && !approved_by?(user))
+      (any_approver_allowed? && !approved_by?(user))
   end
 
   def any_approver_allowed?
