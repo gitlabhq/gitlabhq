@@ -128,6 +128,7 @@ window.onload = ->
     setTimeout shiftWindow, 100
 
 $ ->
+  gl.utils.preventDisabledButtons()
   bootstrapBreakpoint = bp.getBreakpointSize()
 
   $(".nicescroll").niceScroll(cursoropacitymax: '0.4', cursorcolor: '#FFF', cursorborder: "1px solid #FFF")

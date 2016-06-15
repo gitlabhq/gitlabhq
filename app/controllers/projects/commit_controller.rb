@@ -46,7 +46,7 @@ class Projects::CommitController < Projects::ApplicationController
   def retry_builds
     ci_builds.latest.failed.each do |build|
       if build.retryable?
-        Ci::Build.retry(build)
+        Ci::Build.retry(build, current_user)
       end
     end
 

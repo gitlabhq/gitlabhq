@@ -21,8 +21,6 @@ module MergeRequests
     end
 
     def rebase
-      Gitlab::ShellEnv.set_env(current_user)
-
       if merge_request.rebase_in_progress?
         log('Rebase task canceled: Another rebase is already in progress')
         return false
@@ -61,7 +59,6 @@ module MergeRequests
       log(ex.message)
     ensure
       clean_dir
-      Gitlab::ShellEnv.reset_env
     end
 
     def source_project

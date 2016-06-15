@@ -27,9 +27,8 @@
             %li
               = link_to dashboard_todos_path, title: 'Todos', data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
                 = icon('bell fw')
-                - unless todos_pending_count == 0
-                  %span.badge.todos-pending-count
-                    = todos_pending_count
+                %span.badge.todos-pending-count{ class: ("hidden" if todos_pending_count == 0) }
+                  = todos_pending_count
             - if Gitlab::Geo.secondary?
               %li
                 = link_to Gitlab::Geo.primary_node.url, title: 'Go to primary node', data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
@@ -55,7 +54,7 @@
       %h1.title= title
 
       .header-logo
-        #logo
+        = link_to root_path, class: 'home', title: 'Dashboard', id: 'logo' do
           = brand_header_logo
 
       = yield :header_content

@@ -3,7 +3,6 @@
     = link_to namespace_project_project_members_path(@project.namespace, @project), title: 'Members', class: 'team-tab tab' do
       %span
         Members
-
 - if access && can_edit
   - if @project.allowed_to_share_with_group?
     = nav_link(controller: :group_links) do
@@ -27,7 +26,6 @@
       %span
         Protected Branches
 
-
   - if @project.builds_enabled?
     = nav_link(controller: :runners) do
       = link_to namespace_project_runners_path(@project.namespace, @project), title: 'Runners' do
@@ -45,7 +43,6 @@
       = link_to namespace_project_badges_path(@project.namespace, @project), title: 'Badges' do
         %span
           Badges
-
   = nav_link(controller: :git_hooks) do
     = link_to namespace_project_git_hooks_path(@project.namespace, @project), title: "Git Hooks" do
       %span

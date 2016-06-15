@@ -263,10 +263,10 @@ terminal execute:
 
 ```bash
 # Check using docker executor
-gitlab-runner exec docker test:app
+gitlab-ci-multi-runner exec docker test:app
 
 # Check using shell executor
-gitlab-runner exec shell test:app
+gitlab-ci-multi-runner exec shell test:app
 ```
 
 ## Example project

@@ -9,6 +9,22 @@ describe MembersHelper do
     it { expect(action_member_permission(:admin, group_member)).to eq :admin_group_member }
   end
 
+  describe '#can_see_member_roles?' do
+    let(:project) { create(:empty_project) }
+    let(:group) { create(:group) }
+    let(:user) { build(:user) }
+    let(:admin) { build(:user, :admin) }
+    let(:project_member) { create(:project_member, project: project) }
+    let(:group_member) { create(:group_member, group: group) }
+
+    it { expect(can_see_member_roles?(source: project, user: nil)).to be_falsy }
+    it { expect(can_see_member_roles?(source: group, user: nil)).to be_falsy }
+    it { expect(can_see_member_roles?(source: project, user: admin)).to be_truthy }
+    it { expect(can_see_member_roles?(source: group, user: admin)).to be_truthy }
+    it { expect(can_see_member_roles?(source: project, user: project_member.user)).to be_truthy }
+    it { expect(can_see_member_roles?(source: group, user: group_member.user)).to be_truthy }
+  end
+
   describe '#remove_member_message' do
     let(:requester) { build(:user) }
     let(:project) { create(:project) }

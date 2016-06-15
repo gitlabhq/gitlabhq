@@ -764,6 +764,8 @@ Rails.application.routes.draw do
           end
         end
 
+        resources :environments, only: [:index, :show, :new, :create, :destroy]
+
         resources :builds, only: [:index, :show], constraints: { id: /\d+/ } do
           collection do
             post :cancel_all
@@ -782,6 +784,7 @@ Rails.application.routes.draw do
             get :download
             get :browse, path: 'browse(/*path)', format: false
             get :file, path: 'file/*path', format: false
+            post :keep
           end
         end
 
@@ -848,6 +851,8 @@ Rails.application.routes.draw do
             delete :delete_attachment
           end
         end
+
+        resources :todos, only: [:create, :update], constraints: { id: /\d+/ }
 
         resources :uploads, only: [:create] do
           collection do

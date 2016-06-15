@@ -90,22 +90,9 @@ class Note < ActiveRecord::Base
       table   = arel_table
       pattern = "%#{query}%"
 
-      found_notes = joins('LEFT JOIN issues ON issues.id = noteable_id').
-        where(table[:note].matches(pattern))
-
-      if as_user
-        found_notes.where('
-          issues.confidential IS NULL
-          OR issues.confidential IS FALSE
-          OR (issues.confidential IS TRUE
-            AND (issues.author_id = :user_id
-            OR issues.assignee_id = :user_id
-            OR issues.project_id IN(:project_ids)))',
-          user_id: as_user.id,
-          project_ids: as_user.authorized_projects.select(:id))
-      else
-        found_notes.where('issues.confidential IS NULL OR issues.confidential IS FALSE')
-      end
+      Note.joins('LEFT JOIN issues ON issues.id = noteable_id').
+        where(table[:note].matches(pattern)).
+        merge(Issue.visible_to_user(as_user))
     end
   end
 
@@ -204,6 +191,10 @@ class Note < ActiveRecord::Base
 
   def award_emoji?
     award_emoji_supported? && contains_emoji_only?
+  end
+
+  def emoji_awardable?
+    !system?
   end
 
   def clear_blank_line_code!

@@ -29,6 +29,9 @@ describe ProjectTeam, models: true do
       it { expect(project.team.master?(nonmember)).to be_falsey }
       it { expect(project.team.member?(nonmember)).to be_falsey }
       it { expect(project.team.member?(guest)).to be_truthy }
+      it { expect(project.team.member?(reporter, Gitlab::Access::REPORTER)).to be_truthy }
+      it { expect(project.team.member?(guest, Gitlab::Access::REPORTER)).to be_falsey }
+      it { expect(project.team.member?(nonmember, Gitlab::Access::GUEST)).to be_falsey }
     end
   end
 
@@ -64,6 +67,9 @@ describe ProjectTeam, models: true do
       it { expect(project.team.master?(nonmember)).to be_falsey }
       it { expect(project.team.member?(nonmember)).to be_falsey }
       it { expect(project.team.member?(guest)).to be_truthy }
+      it { expect(project.team.member?(guest, Gitlab::Access::MASTER)).to be_truthy }
+      it { expect(project.team.member?(reporter, Gitlab::Access::MASTER)).to be_falsey }
+      it { expect(project.team.member?(nonmember, Gitlab::Access::GUEST)).to be_falsey }
     end
   end
 

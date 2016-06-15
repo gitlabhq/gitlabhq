@@ -41,7 +41,7 @@ class SessionsController < Devise::SessionsController
   # Handle an "initial setup" state, where there's only one user, it's an admin,
   # and they require a password change.
   def check_initial_setup
-    return unless User.count == 1
+    return unless User.limit(2).count == 1 # Count as much 2 to know if we have exactly one
 
     user = User.admins.last
 

@@ -3,14 +3,14 @@ module Gitlab
     Result = Struct.new(:user, :type)
 
     class << self
-      def find(login, password, project:, ip:)
+      def find_for_git_client(login, password, project:, ip:)
         raise "Must provide an IP for rate limiting" if ip.nil?
 
         result = Result.new
 
         if valid_ci_request?(login, password, project)
           result.type = :ci
-        elsif result.user = find_in_gitlab_or_ldap(login, password)
+        elsif result.user = find_with_user_password(login, password)
           result.type = :gitlab_or_ldap
         elsif result.user = oauth_access_token_check(login, password)
           result.type = :oauth
@@ -20,7 +20,7 @@ module Gitlab
         result
       end
 
-      def find_in_gitlab_or_ldap(login, password)
+      def find_with_user_password(login, password)
         user = User.by_login(login)
 
         if Devise.omniauth_providers.include?(:kerberos)

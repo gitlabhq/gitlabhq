@@ -18,7 +18,7 @@ class Service < ActiveRecord::Base
   after_commit :reset_updated_properties
   after_commit :cache_project_has_external_issue_tracker
 
-  belongs_to :project
+  belongs_to :project, inverse_of: :services
   has_one :service_hook
 
   validates :project_id, presence: true, unless: Proc.new { |service| service.template? }

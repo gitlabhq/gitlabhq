@@ -28,6 +28,7 @@ documentation](../workflow/add-user/add-user.md).
 | Manage labels                         |         | ✓          | ✓           | ✓        | ✓      |
 | See a commit status                   |         | ✓          | ✓           | ✓        | ✓      |
 | See a container registry              |         | ✓          | ✓           | ✓        | ✓      |
+| See environments                      |         | ✓          | ✓           | ✓        | ✓      |
 | Manage merge requests                 |         |            | ✓           | ✓        | ✓      |
 | Create new merge request              |         |            | ✓           | ✓        | ✓      |
 | Create new branches                   |         |            | ✓           | ✓        | ✓      |
@@ -40,6 +41,7 @@ documentation](../workflow/add-user/add-user.md).
 | Create or update commit status        |         |            | ✓           | ✓        | ✓      |
 | Update a container registry           |         |            | ✓           | ✓        | ✓      |
 | Remove a container registry image     |         |            | ✓           | ✓        | ✓      |
+| Create new environments               |         |            | ✓           | ✓        | ✓      |
 | Create new milestones                 |         |            |             | ✓        | ✓      |
 | Add new team members                  |         |            |             | ✓        | ✓      |
 | Push to protected branches            |         |            |             | ✓        | ✓      |
@@ -54,6 +56,7 @@ documentation](../workflow/add-user/add-user.md).
 | Manage variables                      |         |            |             | ✓        | ✓      |
 | Manage pages                          |         |            |             | ✓        | ✓      |
 | Manage pages domains and certificates |         |            |             | ✓        | ✓      |
+| Delete environments                   |         |            |             | ✓        | ✓      |
 | Switch visibility level               |         |            |             |          | ✓      |
 | Transfer project to another namespace |         |            |             |          | ✓      |
 | Remove project                        |         |            |             |          | ✓      |

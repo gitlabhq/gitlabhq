@@ -349,7 +349,7 @@ Style/MultilineArrayBraceLayout:
 
 # Avoid multi-line chains of blocks.
 Style/MultilineBlockChain:
-  Enabled: false
+  Enabled: true
 
 # Ensures newlines after multiline block do statements.
 Style/MultilineBlockLayout:
