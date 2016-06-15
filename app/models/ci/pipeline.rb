@@ -91,15 +91,14 @@ module Ci
       trigger_requests.any?
     end
 
-    def build_builds(user, trigger_request = nil)
+    def create_builds(user, trigger_request = nil)
+      ##
+      # We persist pipeline only if there are builds available
+      #
       return unless config_processor
 
       build_builds_for_stages(config_processor.stages, user,
-                              'success', trigger_request)
-    end
-
-    def create_builds(user, trigger_request = nil)
-      build_builds(user, trigger_request) && save
+                              'success', trigger_request) && save
     end
 
     def create_next_builds(build)
@@ -121,7 +120,6 @@ module Ci
       # and save pipeline if we have builds
       build_builds_for_stages(next_stages, build.user, prior_status,
                               build.trigger_request) && save
-
     end
 
     def retried

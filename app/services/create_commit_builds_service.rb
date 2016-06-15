@@ -42,7 +42,7 @@ class CreateCommitBuildsService
     ##
     # Skip creating pipeline object if there are no builds for it.
     #
-    unless @pipeline.build_builds(user)
+    unless @pipeline.create_builds(user)
       @pipeline.errors.add(:base, 'No builds created')
       return false
     end

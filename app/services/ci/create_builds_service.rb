@@ -22,7 +22,8 @@ module Ci
 
       # don't create the same build twice
       builds_attrs.reject! do |build_attrs|
-        @pipeline.builds.find_by(ref: @pipeline.ref, tag: @pipeline.tag,
+        @pipeline.builds.find_by(ref: @pipeline.ref,
+                                 tag: @pipeline.tag,
                                  trigger_request: trigger_request,
                                  name: build_attrs[:name])
       end
