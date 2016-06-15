@@ -235,6 +235,9 @@ v 8.4.0
   - Add option to trigger builds when branches or tags are updated from a mirrored upstream repository
   - Ability to use Elasticsearch as a search engine
 
+v 8.3.10
+  - No EE-specific changes
+
 v 8.3.9
   - No EE-specific changes
 
