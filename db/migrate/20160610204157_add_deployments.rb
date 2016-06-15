@@ -7,8 +7,8 @@ class AddDeployments < ActiveRecord::Migration
   def change
     create_table :deployments, force: true do |t|
       t.integer  :iid,            null: false
-      t.integer  :project_id
-      t.integer  :environment_id
+      t.integer  :project_id,     null: false
+      t.integer  :environment_id, null: false
       t.string   :ref,            null: false
       t.boolean  :tag,            null: false
       t.string   :sha,            null: false
