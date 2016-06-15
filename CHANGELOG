@@ -24,6 +24,7 @@ v 8.9.0 (unreleased)
   - Fix 404 page when viewing TODOs that contain milestones or labels in different projects
   - Redesign navigation for project pages
   - Fix groups API to list only user's accessible projects
+  - Add Environments and Deployments
   - Redesign account and email confirmation emails
   - `git clone https://host/namespace/project` now works, in addition to using the `.git` suffix
   - Bump nokogiri to 1.6.8
