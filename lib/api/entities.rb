@@ -276,7 +276,7 @@ module API
       expose :id
       expose :project, using: Entities::BasicProjectDetails
       expose :author, using: Entities::UserBasic
-      #expose :action_name
+      expose :action_name
       expose :target_id
       expose :target_type
       expose :target_reference do |todo, options|

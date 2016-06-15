@@ -44,6 +44,7 @@ describe API::Todos, api: true do
         expect(json_response[0]['target_url']).to be_present
         expect(json_response[0]['body']).to be_present
         expect(json_response[0]['state']).to eq('pending')
+        expect(json_response[0]['action_name']).to eq('assigned')
         expect(json_response[0]['created_at']).to be_present
       end
 
