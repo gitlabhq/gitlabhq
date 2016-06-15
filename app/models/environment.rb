@@ -1,5 +1,5 @@
 class Environment < ActiveRecord::Base
-  belongs_to :project, required: true
+  belongs_to :project, required: true, validate: true
 
   has_many :deployments
 
