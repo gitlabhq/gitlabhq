@@ -92,8 +92,8 @@ describe Ci::Runner, models: true do
 
   describe '#can_pick?' do
     let(:project) { create(:project) }
-    let(:commit) { create(:ci_commit, project: project) }
-    let(:build) { create(:ci_build, commit: commit) }
+    let(:pipeline) { create(:ci_pipeline, project: project) }
+    let(:build) { create(:ci_build, pipeline: pipeline) }
     let(:runner) { create(:ci_runner) }
 
     before do
