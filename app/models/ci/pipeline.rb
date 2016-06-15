@@ -91,7 +91,7 @@ module Ci
       trigger_requests.any?
     end
 
-    def build_builds(user, status = 'success', trigger_request = nil)
+    def build_builds(user, trigger_request = nil, status = 'success')
       return unless config_processor
       config_processor.stages.any? do |stage|
         build_builds_for_stage(stage, user, status, trigger_request).present?
@@ -99,8 +99,7 @@ module Ci
     end
 
     def create_builds(user, trigger_request = nil)
-      build_builds(user, 'success', trigger_request)
-      save
+      build_builds(user, trigger_request) && save
     end
 
     def create_next_builds(build)
