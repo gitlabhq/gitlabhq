@@ -128,14 +128,25 @@ if Gitlab::Metrics.enabled?
     config.instrument_instance_methods(API::Helpers)
 
     config.instrument_instance_methods(RepositoryCheck::SingleRepositoryWorker)
-    # Iterate over each non-super private instance method to keep up to date if
-    # internals change
-    RepositoryCheck::SingleRepositoryWorker.private_instance_methods(false).each do |method|
-      config.instrument_instance_method(RepositoryCheck::SingleRepositoryWorker, method)
-    end
   end
 
   GC::Profiler.enable
 
   Gitlab::Metrics::Sampler.new.start
+
+  module TrackNewRedisConnections
+    def connect(*args)
+      val = super
+
+      if current_transaction = Gitlab::Metrics::Transaction.current
+        current_transaction.increment(:new_redis_connections, 1)
+      end
+
+      val
+    end
+  end
+
+  class ::Redis::Client
+    prepend TrackNewRedisConnections
+  end
 end

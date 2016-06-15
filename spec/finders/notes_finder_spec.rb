@@ -34,5 +34,21 @@ describe NotesFinder do
       notes = NotesFinder.new.execute(project, user, params)
       expect(notes).to eq([note1])
     end
+
+    context 'confidential issue notes' do
+      let(:confidential_issue) { create(:issue, :confidential, project: project, author: user) }
+      let!(:confidential_note) { create(:note, noteable: confidential_issue, project: confidential_issue.project) }
+
+      let(:params) { { target_id: confidential_issue.id, target_type: 'issue', last_fetched_at: 1.hour.ago.to_i } }
+
+      it 'returns notes if user can see the issue' do
+        expect(NotesFinder.new.execute(project, user, params)).to eq([confidential_note])
+      end
+
+      it 'raises an error if user can not see the issue' do
+        user = create(:user)
+        expect { NotesFinder.new.execute(project, user, params) }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+    end
   end
 end

@@ -56,8 +56,7 @@ class User < ActiveRecord::Base
 
   # Groups
   has_many :members, dependent: :destroy
-  has_many :project_members, source: 'ProjectMember'
-  has_many :group_members, source: 'GroupMember'
+  has_many :group_members, dependent: :destroy, source: 'GroupMember'
   has_many :groups, through: :group_members
   has_many :owned_groups, -> { where members: { access_level: Gitlab::Access::OWNER } }, through: :group_members, source: :group
   has_many :masters_groups, -> { where members: { access_level: Gitlab::Access::MASTER } }, through: :group_members, source: :group
@@ -65,13 +64,13 @@ class User < ActiveRecord::Base
   # Projects
   has_many :groups_projects,          through: :groups, source: :projects
   has_many :personal_projects,        through: :namespace, source: :projects
+  has_many :project_members,          dependent: :destroy, class_name: 'ProjectMember'
   has_many :projects,                 through: :project_members
   has_many :created_projects,         foreign_key: :creator_id, class_name: 'Project'
   has_many :users_star_projects, dependent: :destroy
   has_many :starred_projects, through: :users_star_projects, source: :project
 
   has_many :snippets,                 dependent: :destroy, foreign_key: :author_id, class_name: "Snippet"
-  has_many :project_members,          dependent: :destroy, class_name: 'ProjectMember'
   has_many :issues,                   dependent: :destroy, foreign_key: :author_id
   has_many :notes,                    dependent: :destroy, foreign_key: :author_id
   has_many :merge_requests,           dependent: :destroy, foreign_key: :author_id
@@ -405,8 +404,8 @@ class User < ActiveRecord::Base
   end
 
   # Returns projects user is authorized to access.
-  def authorized_projects
-    Project.where("projects.id IN (#{projects_union.to_sql})")
+  def authorized_projects(min_access_level = nil)
+    Project.where("projects.id IN (#{projects_union(min_access_level).to_sql})")
   end
 
   def viewable_starred_projects
@@ -824,11 +823,19 @@ class User < ActiveRecord::Base
 
   private
 
-  def projects_union
-    Gitlab::SQL::Union.new([personal_projects.select(:id),
-                            groups_projects.select(:id),
-                            projects.select(:id),
-                            groups.joins(:shared_projects).select(:project_id)])
+  def projects_union(min_access_level = nil)
+    relations = [personal_projects.select(:id),
+                 groups_projects.select(:id),
+                 projects.select(:id),
+                 groups.joins(:shared_projects).select(:project_id)]
+
+
+    if min_access_level
+      scope = { access_level: Gitlab::Access.values.select { |access| access >= min_access_level } }
+      relations = [relations.shift] + relations.map { |relation| relation.where(members: scope) }
+    end
+
+    Gitlab::SQL::Union.new(relations)
   end
 
   def ci_projects_union
