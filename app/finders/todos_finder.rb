@@ -123,7 +123,7 @@ class TodosFinder
   end
 
   def by_state(items)
-    case params[:state]
+    case params[:state].to_s
     when 'done'
       items.done
     else

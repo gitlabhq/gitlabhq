@@ -103,11 +103,15 @@ describe 'Dashboard Todos', feature: true do
       before do
         deleted_project = create(:project, visibility_level: Gitlab::VisibilityLevel::PUBLIC, pending_delete: true)
         create(:todo, :mentioned, user: user, project: deleted_project, target: issue, author: author)
+        create(:todo, :mentioned, user: user, project: deleted_project, target: issue, author: author, state: :done)
         login_as(user)
         visit dashboard_todos_path
       end
 
       it 'shows "All done" message' do
+        within('.todos-pending-count') { expect(page).to have_content '0' }
+        expect(page).to have_content 'To do 0'
+        expect(page).to have_content 'Done 0'
         expect(page).to have_content "You're all done!"
       end
     end
