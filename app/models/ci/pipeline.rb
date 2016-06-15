@@ -93,6 +93,11 @@ module Ci
 
     def build_builds(user, trigger_request = nil, status = 'success')
       return unless config_processor
+
+      ##
+      # Note that `Array#any?` implements a short circuit evaluation, so we
+      # build builds only for the first stage that has builds available.
+      #
       config_processor.stages.any? do |stage|
         build_builds_for_stage(stage, user, status, trigger_request).present?
       end
@@ -117,9 +122,14 @@ module Ci
       prior_builds = latest_builds.where.not(stage: next_stages)
       prior_status = prior_builds.status
 
-      # create builds for next stages based
+      ##
+      # Create builds for next stages based.
+      #
+      # Note that there is a short circult evaluation here.
+      #
       have_builds = next_stages.any? do |stage|
-        build_builds_for_stage(stage, build.user, prior_status, build.trigger_request).present?
+        build_builds_for_stage(stage, build.user, prior_status,
+                               build.trigger_request).present?
       end
 
       save! if have_builds
