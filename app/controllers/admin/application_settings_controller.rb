@@ -110,6 +110,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :send_user_confirmation_email,
       :container_registry_token_expire_delay,
       :repository_storage,
+      :enabled_git_access_protocols,
       restricted_visibility_levels: [],
       import_sources: [],
       disabled_oauth_sign_in_sources: []

@@ -44,6 +44,12 @@
           and GitLab.com
           = link_to "(?)", help_page_path("integration", "gitlab")
     .form-group
+      %label.control-label.col-sm-2 Enabled Git access protocols
+      .col-sm-10
+        = select(:application_setting, :enabled_git_access_protocols, [['Both SSH and HTTP', nil], ['Only SSH', 'ssh'], ['Only HTTP(S)', 'http']], {}, class: 'form-control')
+        %span.help-block#clone-protocol-help
+          Allow only the selected protocols to be used for Git access.
+    .form-group
       .col-sm-offset-2.col-sm-10
         .checkbox
           = f.label :version_check_enabled do

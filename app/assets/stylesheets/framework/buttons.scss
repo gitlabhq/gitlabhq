@@ -281,3 +281,10 @@
     color: $gl-icon-color;
   }
 }
+
+.clone-dropdown-btn a {
+  color: #555;
+  &:hover {
+    text-decoration: none;
+  }
+}

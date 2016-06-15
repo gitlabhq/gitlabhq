@@ -206,10 +206,14 @@ module ProjectsHelper
   end
 
   def default_clone_protocol
-    if !current_user || current_user.require_ssh_key?
-      gitlab_config.protocol
+    if allowed_protocols_present?
+      enabled_protocol
     else
-      "ssh"
+      if !current_user || current_user.require_ssh_key?
+        gitlab_config.protocol
+      else
+        'ssh'
+      end
     end
   end
 

@@ -176,6 +176,7 @@ v 8.9.0
   - Fix horizontal scrollbar for long commit message.
   - GitLab Performance Monitoring now tracks the total method execution time and call count per method
   - Add Environments and Deployments
+  - Add "Enabled Git access protocols" to Application Settings
   - Redesign account and email confirmation emails
   - Don't fail builds for projects that are deleted
   - Support Docker Registry manifest v1
