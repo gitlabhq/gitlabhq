@@ -43,6 +43,9 @@ v 8.8.0
   - API requests to /internal/authorized_keys are now tagged properly
   - Geo: Single Sign Out support !380
 
+v 8.7.7
+  - No EE-specific changes
+
 v 8.7.6
   - Bump GitLab Pages to 0.2.4 to fix Content-Type for predefined 404
 
