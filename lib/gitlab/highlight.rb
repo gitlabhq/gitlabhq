@@ -52,7 +52,6 @@ module Gitlab
 
     def rouge_formatter(options = {})
       options = options.reverse_merge(
-        nowrap: true,
         cssclass: 'code highlight',
         lineanchors: true,
         lineanchorsid: 'LC'
