@@ -57,10 +57,7 @@ module Rouge
         # Add leftover text
         rendered << current_line if current_line.present?
 
-        num_lines = rendered.size
-        numbers = (@linenostart..num_lines + @linenostart - 1).to_a
-
-        { numbers: numbers, code: rendered }
+        { code: rendered }
       end
 
       def wrap_lines(lines)
@@ -68,20 +65,8 @@ module Rouge
           lines = lines.each_with_index.map do |line, index|
             number = index + @linenostart
 
-            if @linenos == 'inline'
-              "<a name=\"L#{number}\"></a>" \
-              "<span class=\"linenos\">#{number}</span>" \
-              "<span id=\"#{@lineanchorsid}#{number}\" class=\"line\">#{line}" \
-              '</span>'
-            else
-              "<span id=\"#{@lineanchorsid}#{number}\" class=\"line\">#{line}" \
-              '</span>'
-            end
-          end
-        elsif @linenos == 'inline'
-          lines = lines.each_with_index.map do |line, index|
-            number = index + @linenostart
-            "<span class=\"linenos\">#{number}</span>#{line}"
+            "<span id=\"#{@lineanchorsid}#{number}\" class=\"line\">#{line}" \
+            '</span>'
           end
         end
 
