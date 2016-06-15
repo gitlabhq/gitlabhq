@@ -74,6 +74,7 @@
 
     .container-fluid {
       background-color: $background-color;
+      margin-bottom: 0;
     }
 
     li {
@@ -280,11 +281,10 @@
     }
 
     .dropdown {
-      margin-left: 7px;
-
-      @media (max-width: $screen-xs-min) {
-        margin-left: 0;
-      }
+      position: absolute;
+      top: 7px;
+      right: 15px;
+      z-index: 2;
 
       li.active {
         font-weight: bold;

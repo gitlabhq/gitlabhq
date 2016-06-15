@@ -35,7 +35,8 @@ module Ci
                            :options,
                            :allow_failure,
                            :stage,
-                           :stage_idx)
+                           :stage_idx,
+                           :environment)
 
         build_attrs.merge!(pipeline: @pipeline,
                            ref: @pipeline.ref,

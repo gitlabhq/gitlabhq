@@ -34,6 +34,10 @@
     color: inherit;
   }
 
+  .issuable-header-text {
+    margin-top: 7px;
+  }
+
   .block {
     @include clearfix;
     padding: $gl-padding 0;
@@ -58,10 +62,6 @@
 
     .select2-container span {
       margin-top: 0;
-    }
-
-    .issuable-count {
-      margin-top: 7px;
     }
 
     .gutter-toggle {
@@ -250,7 +250,7 @@
     }
   }
 
-  .issuable-pager {
+  .issuable-header-btn {
     background: $gray-normal;
     border: 1px solid $border-gray-normal;
     &:hover {
@@ -263,7 +263,7 @@
     }
   }
 
-  a:not(.issuable-pager) {
+  a {
     &:hover {
       color: $md-link-color;
       text-decoration: none;

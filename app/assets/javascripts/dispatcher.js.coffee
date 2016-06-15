@@ -53,9 +53,13 @@ class Dispatcher
         new Diff()
         shortcut_handler = new ShortcutsIssuable(true)
         new ZenMode()
+        new MergedButtons()
+      when 'projects:merge_requests:commits', 'projects:merge_requests:builds'
+        new MergedButtons()
       when "projects:merge_requests:diffs"
         new Diff()
         new ZenMode()
+        new MergedButtons()
       when 'projects:merge_requests:index'
         shortcut_handler = new ShortcutsNavigation()
         Issuable.init()

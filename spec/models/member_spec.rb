@@ -55,9 +55,95 @@ describe Member, models: true do
     end
   end
 
+  describe 'Scopes & finders' do
+    before do
+      project = create(:project)
+      group = create(:group)
+      @owner_user = create(:user).tap { |u| group.add_owner(u) }
+      @owner = group.members.find_by(user_id: @owner_user.id)
+
+      @master_user = create(:user).tap { |u| project.team << [u, :master] }
+      @master = project.members.find_by(user_id: @master_user.id)
+
+      ProjectMember.add_user(project.members, 'toto1@example.com', Gitlab::Access::DEVELOPER, @master_user)
+      @invited_member = project.members.invite.find_by_invite_email('toto1@example.com')
+
+      accepted_invite_user = build(:user)
+      ProjectMember.add_user(project.members, 'toto2@example.com', Gitlab::Access::DEVELOPER, @master_user)
+      @accepted_invite_member = project.members.invite.find_by_invite_email('toto2@example.com').tap { |u| u.accept_invite!(accepted_invite_user) }
+
+      requested_user = create(:user).tap { |u| project.request_access(u) }
+      @requested_member = project.members.request.find_by(user_id: requested_user.id)
+
+      accepted_request_user = create(:user).tap { |u| project.request_access(u) }
+      @accepted_request_member = project.members.request.find_by(user_id: accepted_request_user.id).tap { |m| m.accept_request }
+    end
+
+    describe '.invite' do
+      it { expect(described_class.invite).not_to include @master }
+      it { expect(described_class.invite).to include @invited_member }
+      it { expect(described_class.invite).not_to include @accepted_invite_member }
+      it { expect(described_class.invite).not_to include @requested_member }
+      it { expect(described_class.invite).not_to include @accepted_request_member }
+    end
+
+    describe '.non_invite' do
+      it { expect(described_class.non_invite).to include @master }
+      it { expect(described_class.non_invite).not_to include @invited_member }
+      it { expect(described_class.non_invite).to include @accepted_invite_member }
+      it { expect(described_class.non_invite).to include @requested_member }
+      it { expect(described_class.non_invite).to include @accepted_request_member }
+    end
+
+    describe '.request' do
+      it { expect(described_class.request).not_to include @master }
+      it { expect(described_class.request).not_to include @invited_member }
+      it { expect(described_class.request).not_to include @accepted_invite_member }
+      it { expect(described_class.request).to include @requested_member }
+      it { expect(described_class.request).not_to include @accepted_request_member }
+    end
+
+    describe '.non_request' do
+      it { expect(described_class.non_request).to include @master }
+      it { expect(described_class.non_request).to include @invited_member }
+      it { expect(described_class.non_request).to include @accepted_invite_member }
+      it { expect(described_class.non_request).not_to include @requested_member }
+      it { expect(described_class.non_request).to include @accepted_request_member }
+    end
+
+    describe '.non_pending' do
+      it { expect(described_class.non_pending).to include @master }
+      it { expect(described_class.non_pending).not_to include @invited_member }
+      it { expect(described_class.non_pending).to include @accepted_invite_member }
+      it { expect(described_class.non_pending).not_to include @requested_member }
+      it { expect(described_class.non_pending).to include @accepted_request_member }
+    end
+
+    describe '.owners_and_masters' do
+      it { expect(described_class.owners_and_masters).to include @owner }
+      it { expect(described_class.owners_and_masters).to include @master }
+      it { expect(described_class.owners_and_masters).not_to include @invited_member }
+      it { expect(described_class.owners_and_masters).not_to include @accepted_invite_member }
+      it { expect(described_class.owners_and_masters).not_to include @requested_member }
+      it { expect(described_class.owners_and_masters).not_to include @accepted_request_member }
+    end
+  end
+
   describe "Delegate methods" do
     it { is_expected.to respond_to(:user_name) }
     it { is_expected.to respond_to(:user_email) }
+  end
+
+  describe 'Callbacks' do
+    describe 'after_destroy :post_decline_request, if: :request?' do
+      let(:member) { create(:project_member, requested_at: Time.now.utc) }
+
+      it 'calls #post_decline_request' do
+        expect(member).to receive(:post_decline_request)
+
+        member.destroy
+      end
+    end
   end
 
   describe ".add_user" do
@@ -95,6 +181,44 @@ describe Member, models: true do
         expect(project.project_members.invite.pluck(:invite_email)).to include("user@example.com")
       end
     end
+  end
+
+  describe '#accept_request' do
+    let(:member) { create(:project_member, requested_at: Time.now.utc) }
+
+    it { expect(member.accept_request).to be_truthy }
+
+    it 'clears requested_at' do
+      member.accept_request
+
+      expect(member.requested_at).to be_nil
+    end
+
+    it 'calls #after_accept_request' do
+      expect(member).to receive(:after_accept_request)
+
+      member.accept_request
+    end
+  end
+
+  describe '#invite?' do
+    subject { create(:project_member, invite_email: "user@example.com", user: nil) }
+
+    it { is_expected.to be_invite }
+  end
+
+  describe '#request?' do
+    subject { create(:project_member, requested_at: Time.now.utc) }
+
+    it { is_expected.to be_request }
+  end
+
+  describe '#pending?' do
+    let(:invited_member) { create(:project_member, invite_email: "user@example.com", user: nil) }
+    let(:requester) { create(:project_member, requested_at: Time.now.utc) }
+
+    it { expect(invited_member).to be_invite }
+    it { expect(requester).to be_pending }
   end
 
   describe "#accept_invite!" do

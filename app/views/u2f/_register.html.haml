@@ -4,11 +4,18 @@
   %p Your browser doesn't support U2F. Please use Google Chrome desktop (version 41 or newer).
 
 %script#js-register-u2f-setup{ type: "text/template" }
-  .row.append-bottom-10
-    .col-md-3
-      %a#js-setup-u2f-device.btn.btn-info{ href: 'javascript:void(0)' } Setup New U2F Device
-    .col-md-9
-      %p Your U2F device needs to be set up. Plug it in (if not already) and click the button on the left.
+  - if current_user.two_factor_otp_enabled?
+    .row.append-bottom-10
+      .col-md-3
+        %button#js-setup-u2f-device.btn.btn-info Setup New U2F Device
+      .col-md-9
+        %p Your U2F device needs to be set up. Plug it in (if not already) and click the button on the left.
+  - else
+    .row.append-bottom-10
+      .col-md-3
+        %button#js-setup-u2f-device.btn.btn-info{ disabled: true } Setup New U2F Device
+      .col-md-9
+        %p.text-warning You need to register a two-factor authentication app before you can set up a U2F device.
 
 %script#js-register-u2f-in-progress{ type: "text/template" }
   %p Trying to communicate with your device. Plug it in (if you haven't already) and press the button on the device now.
