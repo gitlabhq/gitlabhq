@@ -1,6 +1,11 @@
 require 'rails_helper'
 
 describe UpdateAllMirrorsWorker do
+  before do
+    allow_any_instance_of(Gitlab::ExclusiveLease)
+      .to receive(:try_obtain).and_return(true)
+  end
+
   describe '#perform' do
     it 'fails stuck mirrors' do
       worker = described_class.new
@@ -11,12 +16,27 @@ describe UpdateAllMirrorsWorker do
     end
 
     it 'updates all mirrored Projects' do
+      worker = described_class.new
+
       create(:empty_project, :mirror)
       create(:empty_project)
 
-      expect_any_instance_of(Project).to receive(:update_mirror).once
+      expect(worker).to receive(:rand).with(30.minutes).and_return(10)
+      expect_any_instance_of(Project).to receive(:update_mirror).with(delay: 10).once
 
-      described_class.new.perform
+      worker.perform
+    end
+
+    it 'does not execute if cannot get the lease' do
+      allow_any_instance_of(Gitlab::ExclusiveLease)
+        .to receive(:try_obtain).and_return(false)
+
+      worker = described_class.new
+      create(:empty_project, :mirror)
+
+      expect(worker).not_to receive(:fail_stuck_mirrors!)
+
+      worker.perform
     end
   end
 
