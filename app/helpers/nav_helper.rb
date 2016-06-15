@@ -36,7 +36,8 @@ module NavHelper
   end
 
   def nav_header_class
-    class_name = " with-horizontal-nav" if defined?(nav) && nav
+    class_name = ''
+    class_name << " with-horizontal-nav" if defined?(nav) && nav
 
     if pinned_nav?
       class_name << " header-expanded header-pinned-nav"
