@@ -7,10 +7,14 @@
 
 = form_tag import_gitlab_project_path, class: 'form-horizontal', multipart: true do
   %p
-    Project will be imported to path #{@path}
+    Project will be imported to path
+    %strong
+      #{@path}
 
   %p
-    To get started add your exported project file below:
+    To get started add your exported project file below, then you will be redirected to the new project page and the project will appear once the import is done.
+  %p
+    You can generate a new export file from your project settings.
   .form-group
     = hidden_field_tag :namespace_id, @namespace_id
     = hidden_field_tag :path, @path

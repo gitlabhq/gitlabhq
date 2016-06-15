@@ -39,10 +39,11 @@ feature 'project import', feature: true, js: true do
     expect(project.merge_requests).not_to be_empty
     expect(project.repo_exists?).to be true
     expect(wiki_exists?).to be true
+    expect(project.import_status).to eq('finished')
   end
 
   def wiki_exists?
     wiki = ProjectWiki.new(project)
-    File.exists?(wiki.repository.path_to_repo) && !wiki.repository.empty?
+    File.exist?(wiki.repository.path_to_repo) && !wiki.repository.empty?
   end
 end

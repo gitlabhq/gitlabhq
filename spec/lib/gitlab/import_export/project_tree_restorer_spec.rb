@@ -6,7 +6,8 @@ describe Gitlab::ImportExport::ProjectTreeRestorer, services: true do
     let(:user) { create(:user) }
     let(:namespace) { create(:namespace, owner: user) }
     let(:shared) { Gitlab::ImportExport::Shared.new(relative_path: "", project_path: 'path') }
-    let(:project_tree_restorer) { described_class.new(user: user, shared: shared, namespace_id: namespace.id) }
+    let(:project) { create(:empty_project, name: 'project', path: 'project') }
+    let(:project_tree_restorer) { described_class.new(user: user, shared: shared, project: project) }
     let(:restored_project_json) { project_tree_restorer.restore }
 
     before do

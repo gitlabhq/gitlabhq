@@ -30,7 +30,7 @@ describe Gitlab::ImportExport::ProjectTreeSaver, services: true do
       end
 
       it 'saves the correct json' do
-        expect(saved_project_json).to include({ "name" => project.name })
+        expect(saved_project_json).to include({ "visibility_level" => 20 })
       end
 
       it 'has events' do
