@@ -4,8 +4,10 @@ require 'gitlab/email/handler/create_issue_handler'
 module Gitlab
   module Email
     module Handler
+      HANDLERS = [CreateNoteHandler, CreateIssueHandler]
+
       def self.for(mail, mail_key)
-        [CreateNoteHandler, CreateIssueHandler].find do |klass|
+        HANDLERS.find do |klass|
           handler = klass.new(mail, mail_key)
           break handler if handler.can_handle?
         end
