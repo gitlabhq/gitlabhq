@@ -24,6 +24,10 @@ module Gitlab
         }
       end
 
+      def klass
+        MergeRequest
+      end
+
       def number
         raw_data.number
       end
@@ -79,10 +83,9 @@ module Gitlab
       end
 
       def state
-        @state ||= case true
-                   when raw_data.state == 'closed' && raw_data.merged_at.present?
+        @state ||= if raw_data.state == 'closed' && raw_data.merged_at.present?
                      'merged'
-                   when raw_data.state == 'closed'
+                   elsif raw_data.state == 'closed'
                      'closed'
                    else
                      'opened'

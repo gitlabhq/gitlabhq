@@ -18,9 +18,8 @@ gem "mysql2", '~> 0.3.16', group: :mysql
 gem "pg", '~> 0.18.2', group: :postgres
 
 # Authentication libraries
-gem 'devise',                 '~> 3.5.4'
+gem 'devise',                 '~> 4.0'
 gem 'doorkeeper',             '~> 3.1'
-gem 'devise-async',           '~> 0.9.0'
 gem 'omniauth',               '~> 1.3.1'
 gem 'omniauth-auth0',         '~> 1.4.1'
 gem 'omniauth-azure-oauth2',  '~> 0.0.6'
@@ -39,16 +38,17 @@ gem 'rack-oauth2',            '~> 1.2.1'
 gem 'jwt'
 
 # Spam and anti-bot protection
-gem 'recaptcha', require: 'recaptcha/rails'
+gem 'recaptcha', '~> 3.0', require: 'recaptcha/rails'
 gem 'akismet', '~> 2.0'
 
 # Two-factor authentication
-gem 'devise-two-factor', '~> 2.0.0'
+gem 'devise-two-factor', '~> 3.0.0'
 gem 'rqrcode-rails3', '~> 0.1.7'
-gem 'attr_encrypted', '~> 1.3.4'
+gem 'attr_encrypted', '~> 3.0.0'
+gem 'u2f', '~> 0.2.1'
 
 # Browser detection
-gem "browser", '~> 1.0.0'
+gem "browser", '~> 2.0.3'
 
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library
@@ -73,7 +73,7 @@ gem 'grape-entity', '~> 0.4.2'
 gem 'rack-cors',    '~> 0.4.0', require: 'rack/cors'
 
 # Pagination
-gem "kaminari", "~> 0.16.3"
+gem "kaminari", "~> 0.17.0"
 
 # HAML
 gem "haml-rails", '~> 0.9.0'
@@ -84,8 +84,15 @@ gem "carrierwave", '~> 0.10.0'
 # Drag and Drop UI
 gem 'dropzonejs-rails', '~> 0.7.1'
 
+# for backups
+gem 'fog-aws', '~> 0.9'
+gem 'fog-azure', '~> 0.0'
+gem 'fog-core', '~> 1.40'
+gem 'fog-local', '~> 0.3'
+gem 'fog-google', '~> 0.3'
+gem 'fog-openstack', '~> 0.1'
+
 # for aws storage
-gem "fog", "~> 1.36.0"
 gem "unf", '~> 0.1.4'
 
 # Authorization
@@ -105,7 +112,7 @@ gem 'org-ruby',      '~> 0.9.12'
 gem 'creole',        '~> 0.5.0'
 gem 'wikicloth',     '0.8.1'
 gem 'asciidoctor',   '~> 1.5.2'
-gem 'rouge',         '~> 1.10.1'
+gem 'rouge',         '~> 1.11'
 
 # See https://groups.google.com/forum/#!topic/ruby-security-ann/aSbgDiwb24s
 # and https://groups.google.com/forum/#!topic/ruby-security-ann/Dy7YiKb_pMM
@@ -121,7 +128,7 @@ group :unicorn do
 end
 
 # State machine
-gem "state_machines-activerecord", '~> 0.3.0'
+gem "state_machines-activerecord", '~> 0.4.0'
 # Run events after state machine commits
 gem 'after_commit_queue'
 
@@ -138,7 +145,7 @@ gem 'redis-namespace'
 gem "httparty", '~> 0.13.3'
 
 # Colored output to console
-gem "colorize", '~> 0.7.0'
+gem "rainbow", '~> 2.1.0'
 
 # GitLab settings
 gem 'settingslogic', '~> 2.0.9'
@@ -178,9 +185,6 @@ gem 'ruby-fogbugz', '~> 0.2.1'
 # d3
 gem 'd3_rails', '~> 3.5.0'
 
-#cal-heatmap
-gem 'cal-heatmap-rails', '~> 3.6.0'
-
 # underscore-rails
 gem "underscore-rails", "~> 1.8.0"
 
@@ -205,6 +209,9 @@ gem 'mousetrap-rails', '~> 1.4.6'
 
 # Detect and convert string character encoding
 gem 'charlock_holmes', '~> 0.7.3'
+
+# Parse duration
+gem 'chronic_duration', '~> 0.10.6'
 
 gem "sass-rails", '~> 5.0.0'
 gem "coffee-rails", '~> 4.1.0'
@@ -241,7 +248,7 @@ end
 
 group :development do
   gem "foreman"
-  gem 'brakeman', '~> 3.2.0', require: false
+  gem 'brakeman', '~> 3.3.0', require: false
 
   gem 'letter_opener_web', '~> 1.3.0'
   gem 'quiet_assets', '~> 1.0.2'
@@ -293,15 +300,19 @@ group :development, :test do
   gem 'spring-commands-spinach',  '~> 1.1.0'
   gem 'spring-commands-teaspoon', '~> 0.0.2'
 
-  gem 'rubocop', '~> 0.38.0', require: false
+  gem 'rubocop', '~> 0.40.0', require: false
+  gem 'rubocop-rspec', '~> 1.5.0', require: false
   gem 'scss_lint', '~> 0.47.0', require: false
-  gem 'coveralls',  '~> 0.8.2', require: false
+  gem 'coveralls', '~> 0.8.2', require: false
   gem 'simplecov', '~> 0.11.0', require: false
   gem 'flog', require: false
   gem 'flay', require: false
   gem 'bundler-audit', require: false
 
   gem 'benchmark-ips', require: false
+
+  gem "license_finder", require: false
+  gem 'knapsack'
 end
 
 group :test do
@@ -325,7 +336,7 @@ gem "mail_room", "~> 0.7"
 gem 'email_reply_parser', '~> 0.5.8'
 
 ## CI
-gem 'activerecord-session_store', '~> 0.1.0'
+gem 'activerecord-session_store', '~> 1.0.0'
 gem "nested_form", '~> 0.3.2'
 
 # OAuth

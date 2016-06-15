@@ -6,6 +6,7 @@ module Projects
 
     def execute
       forked_from_project_id = params.delete(:forked_from_project_id)
+      import_data = params.delete(:import_data)
 
       @project = Project.new(params)
 
@@ -49,22 +50,20 @@ module Projects
         @project.build_forked_project_link(forked_from_project_id: forked_from_project_id)
       end
 
-      Project.transaction do
-        @project.save
+      save_project_and_import_data(import_data)
 
-        if @project.persisted? && !@project.import?
-          raise 'Failed to create repository' unless @project.create_repository
-        end
-      end
+      @project.import_start if @project.import?
 
       after_create_actions if @project.persisted?
 
+      if @project.errors.empty?
+        @project.add_import_job if @project.import?
+      else
+        fail(error: @project.errors.full_messages.join(', '))
+      end
       @project
     rescue => e
-      message = "Unable to save project: #{e.message}"
-      Rails.logger.error(message)
-      @project.errors.add(:base, message) if @project
-      @project
+      fail(error: e.message)
     end
 
     protected
@@ -93,8 +92,30 @@ module Projects
       unless @project.group
         @project.team << [current_user, :master, current_user]
       end
+    end
 
-      @project.import_start if @project.import?
+    def save_project_and_import_data(import_data)
+      Project.transaction do
+        @project.create_or_update_import_data(data: import_data[:data], credentials: import_data[:credentials]) if import_data
+
+        if @project.save && !@project.import?
+          raise 'Failed to create repository' unless @project.create_repository
+        end
+      end
+    end
+
+    def fail(error:)
+      message = "Unable to save project. Error: #{error}"
+      message << "Project ID: #{@project.id}" if @project && @project.id
+
+      Rails.logger.error(message)
+
+      if @project && @project.import?
+        @project.errors.add(:base, message)
+        @project.mark_import_as_failed(message)
+      end
+
+      @project
     end
   end
 end

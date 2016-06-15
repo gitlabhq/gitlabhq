@@ -1,3 +1,4 @@
+# rubocop:disable all
 class AddTfaAdditionalFields < ActiveRecord::Migration
   def change
     change_table :users do |t|

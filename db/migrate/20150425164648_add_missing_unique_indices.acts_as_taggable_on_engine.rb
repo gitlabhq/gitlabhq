@@ -1,3 +1,4 @@
+# rubocop:disable all
 # This migration comes from acts_as_taggable_on_engine (originally 2)
 class AddMissingUniqueIndices < ActiveRecord::Migration
   def self.up

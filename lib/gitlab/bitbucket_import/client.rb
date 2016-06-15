@@ -121,7 +121,7 @@ module Gitlab
 
       def get(url)
         response = api.get(url)
-        raise Unauthorized if (400..499).include?(response.code.to_i)
+        raise Unauthorized if (400..499).cover?(response.code.to_i)
 
         response
       end

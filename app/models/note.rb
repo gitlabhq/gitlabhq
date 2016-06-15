@@ -3,10 +3,11 @@ class Note < ActiveRecord::Base
   include Gitlab::CurrentSettings
   include Participable
   include Mentionable
+  include Awardable
 
   default_value_for :system, false
 
-  attr_mentionable :note, cache: true, pipeline: :note
+  attr_mentionable :note, pipeline: :note
   participant :author
 
   belongs_to :project
@@ -21,23 +22,25 @@ class Note < ActiveRecord::Base
   delegate :name, :email, to: :author, prefix: true
   delegate :title, to: :noteable, allow_nil: true
 
-  before_validation :set_award!
-
   validates :note, :project, presence: true
-  validates :note, uniqueness: { scope: [:author, :noteable_type, :noteable_id] }, if: ->(n) { n.is_award }
-  validates :note, inclusion: { in: Emoji.emojis_names }, if: ->(n) { n.is_award }
+
   # Attachments are deprecated and are handled by Markdown uploader
   validates :attachment, file_size: { maximum: :max_attachment_size }
 
-  validates :noteable_id, presence: true, if: ->(n) { n.noteable_type.present? && n.noteable_type != 'Commit' }
-  validates :commit_id, presence: true, if: ->(n) { n.noteable_type == 'Commit' }
+  validates :noteable_type, presence: true
+  validates :noteable_id, presence: true, unless: :for_commit?
+  validates :commit_id, presence: true, if: :for_commit?
   validates :author, presence: true
+
+  validate unless: :for_commit? do |note|
+    unless note.noteable.try(:project) == note.project
+      errors.add(:invalid_project, 'Note and noteable project mismatch')
+    end
+  end
 
   mount_uploader :attachment, AttachmentUploader
 
   # Scopes
-  scope :awards, ->{ where(is_award: true) }
-  scope :nonawards, ->{ where(is_award: false) }
   scope :for_commit_id, ->(commit_id) { where(noteable_type: "Commit", commit_id: commit_id) }
   scope :system, ->{ where(system: true) }
   scope :user, ->{ where(system: false) }
@@ -77,27 +80,17 @@ class Note < ActiveRecord::Base
     #
     # This method uses ILIKE on PostgreSQL and LIKE on MySQL.
     #
-    # query - The search query as a String.
+    # query   - The search query as a String.
+    # as_user - Limit results to those viewable by a specific user
     #
     # Returns an ActiveRecord::Relation.
-    def search(query)
+    def search(query, as_user: nil)
       table   = arel_table
       pattern = "%#{query}%"
 
-      where(table[:note].matches(pattern))
-    end
-
-    def grouped_awards
-      notes = {}
-
-      awards.select(:note).distinct.map do |note|
-        notes[note.note] = where(note: note.note)
-      end
-
-      notes["thumbsup"] ||= Note.none
-      notes["thumbsdown"] ||= Note.none
-
-      notes
+      Note.joins('LEFT JOIN issues ON issues.id = noteable_id').
+        where(table[:note].matches(pattern)).
+        merge(Issue.visible_to_user(as_user))
     end
   end
 
@@ -182,44 +175,24 @@ class Note < ActiveRecord::Base
     Event.reset_event_cache_for(self)
   end
 
-  def downvote?
-    is_award && note == "thumbsdown"
-  end
-
-  def upvote?
-    is_award && note == "thumbsup"
-  end
-
   def editable?
-    !system? && !is_award
+    !system?
   end
 
   def cross_reference_not_visible_for?(user)
     cross_reference? && referenced_mentionables(user).empty?
   end
 
-  # Checks if note is an award added as a comment
-  #
-  # If note is an award, this method sets is_award to true
-  #   and changes content of the note to award name.
-  #
-  # Method is executed as a before_validation callback.
-  #
-  def set_award!
-    return unless awards_supported? && contains_emoji_only?
-
-    self.is_award = true
-    self.note = award_emoji_name
+  def award_emoji?
+    award_emoji_supported? && contains_emoji_only?
   end
-
-  private
 
   def clear_blank_line_code!
     self.line_code = nil if self.line_code.blank?
   end
 
-  def awards_supported?
-    (for_issue? || for_merge_request?) && !diff_note?
+  def award_emoji_supported?
+    noteable.is_a?(Awardable)
   end
 
   def contains_emoji_only?
@@ -228,6 +201,6 @@ class Note < ActiveRecord::Base
 
   def award_emoji_name
     original_name = note.match(Banzai::Filter::EmojiFilter.emoji_pattern)[1]
-    AwardEmoji.normilize_emoji_name(original_name)
+    Gitlab::AwardEmoji.normalize_emoji_name(original_name)
   end
 end

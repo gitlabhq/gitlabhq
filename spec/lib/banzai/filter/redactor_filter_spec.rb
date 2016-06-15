@@ -16,11 +16,23 @@ describe Banzai::Filter::RedactorFilter, lib: true do
   end
 
   context 'with data-project' do
+    let(:parser_class) do
+      Class.new(Banzai::ReferenceParser::BaseParser) do
+        self.reference_type = :test
+      end
+    end
+
+    before do
+      allow(Banzai::ReferenceParser).to receive(:[]).
+        with('test').
+        and_return(parser_class)
+    end
+
     it 'removes unpermitted Project references' do
       user = create(:user)
       project = create(:empty_project)
 
-      link = reference_link(project: project.id, reference_filter: 'ReferenceFilter')
+      link = reference_link(project: project.id, reference_type: 'test')
       doc = filter(link, current_user: user)
 
       expect(doc.css('a').length).to eq 0
@@ -31,14 +43,14 @@ describe Banzai::Filter::RedactorFilter, lib: true do
       project = create(:empty_project)
       project.team << [user, :master]
 
-      link = reference_link(project: project.id, reference_filter: 'ReferenceFilter')
+      link = reference_link(project: project.id, reference_type: 'test')
       doc = filter(link, current_user: user)
 
       expect(doc.css('a').length).to eq 1
     end
 
     it 'handles invalid Project references' do
-      link = reference_link(project: 12345, reference_filter: 'ReferenceFilter')
+      link = reference_link(project: 12345, reference_type: 'test')
 
       expect { filter(link) }.not_to raise_error
     end
@@ -51,8 +63,20 @@ describe Banzai::Filter::RedactorFilter, lib: true do
         project = create(:empty_project, :public)
         issue = create(:issue, :confidential, project: project)
 
-        link = reference_link(project: project.id, issue: issue.id, reference_filter: 'IssueReferenceFilter')
+        link = reference_link(project: project.id, issue: issue.id, reference_type: 'issue')
         doc = filter(link, current_user: non_member)
+
+        expect(doc.css('a').length).to eq 0
+      end
+
+      it 'removes references for project members with guest role' do
+        member = create(:user)
+        project = create(:empty_project, :public)
+        project.team << [member, :guest]
+        issue = create(:issue, :confidential, project: project)
+
+        link = reference_link(project: project.id, issue: issue.id, reference_type: 'issue')
+        doc = filter(link, current_user: member)
 
         expect(doc.css('a').length).to eq 0
       end
@@ -62,7 +86,7 @@ describe Banzai::Filter::RedactorFilter, lib: true do
         project = create(:empty_project, :public)
         issue = create(:issue, :confidential, project: project, author: author)
 
-        link = reference_link(project: project.id, issue: issue.id, reference_filter: 'IssueReferenceFilter')
+        link = reference_link(project: project.id, issue: issue.id, reference_type: 'issue')
         doc = filter(link, current_user: author)
 
         expect(doc.css('a').length).to eq 1
@@ -73,7 +97,7 @@ describe Banzai::Filter::RedactorFilter, lib: true do
         project = create(:empty_project, :public)
         issue = create(:issue, :confidential, project: project, assignee: assignee)
 
-        link = reference_link(project: project.id, issue: issue.id, reference_filter: 'IssueReferenceFilter')
+        link = reference_link(project: project.id, issue: issue.id, reference_type: 'issue')
         doc = filter(link, current_user: assignee)
 
         expect(doc.css('a').length).to eq 1
@@ -85,7 +109,7 @@ describe Banzai::Filter::RedactorFilter, lib: true do
         project.team << [member, :developer]
         issue = create(:issue, :confidential, project: project)
 
-        link = reference_link(project: project.id, issue: issue.id, reference_filter: 'IssueReferenceFilter')
+        link = reference_link(project: project.id, issue: issue.id, reference_type: 'issue')
         doc = filter(link, current_user: member)
 
         expect(doc.css('a').length).to eq 1
@@ -96,7 +120,7 @@ describe Banzai::Filter::RedactorFilter, lib: true do
         project = create(:empty_project, :public)
         issue = create(:issue, :confidential, project: project)
 
-        link = reference_link(project: project.id, issue: issue.id, reference_filter: 'IssueReferenceFilter')
+        link = reference_link(project: project.id, issue: issue.id, reference_type: 'issue')
         doc = filter(link, current_user: admin)
 
         expect(doc.css('a').length).to eq 1
@@ -108,7 +132,7 @@ describe Banzai::Filter::RedactorFilter, lib: true do
       project = create(:empty_project, :public)
       issue = create(:issue, project: project)
 
-      link = reference_link(project: project.id, issue: issue.id, reference_filter: 'IssueReferenceFilter')
+      link = reference_link(project: project.id, issue: issue.id, reference_type: 'issue')
       doc = filter(link, current_user: user)
 
       expect(doc.css('a').length).to eq 1
@@ -121,7 +145,7 @@ describe Banzai::Filter::RedactorFilter, lib: true do
         user = create(:user)
         group = create(:group, :private)
 
-        link = reference_link(group: group.id, reference_filter: 'UserReferenceFilter')
+        link = reference_link(group: group.id, reference_type: 'user')
         doc = filter(link, current_user: user)
 
         expect(doc.css('a').length).to eq 0
@@ -132,14 +156,14 @@ describe Banzai::Filter::RedactorFilter, lib: true do
         group = create(:group, :private)
         group.add_developer(user)
 
-        link = reference_link(group: group.id, reference_filter: 'UserReferenceFilter')
+        link = reference_link(group: group.id, reference_type: 'user')
         doc = filter(link, current_user: user)
 
         expect(doc.css('a').length).to eq 1
       end
 
       it 'handles invalid Group references' do
-        link = reference_link(group: 12345, reference_filter: 'UserReferenceFilter')
+        link = reference_link(group: 12345, reference_type: 'user')
 
         expect { filter(link) }.not_to raise_error
       end
@@ -149,7 +173,7 @@ describe Banzai::Filter::RedactorFilter, lib: true do
       it 'allows any User reference' do
         user = create(:user)
 
-        link = reference_link(user: user.id, reference_filter: 'UserReferenceFilter')
+        link = reference_link(user: user.id, reference_type: 'user')
         doc = filter(link)
 
         expect(doc.css('a').length).to eq 1

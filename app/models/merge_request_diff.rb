@@ -98,9 +98,7 @@ class MergeRequestDiff < ActiveRecord::Base
     commits = compare.commits
 
     if commits.present?
-      commits = Commit.decorate(commits, merge_request.source_project).
-        sort_by(&:created_at).
-        reverse
+      commits = Commit.decorate(commits, merge_request.source_project).reverse
     end
 
     commits

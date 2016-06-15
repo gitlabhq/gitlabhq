@@ -9,9 +9,47 @@ describe Note, models: true do
     it { is_expected.to have_many(:todos).dependent(:destroy) }
   end
 
+  describe 'modules' do
+    subject { described_class }
+
+    it { is_expected.to include_module(Participable) }
+    it { is_expected.to include_module(Mentionable) }
+    it { is_expected.to include_module(Awardable) }
+
+    it { is_expected.to include_module(Gitlab::CurrentSettings) }
+  end
+
   describe 'validation' do
     it { is_expected.to validate_presence_of(:note) }
     it { is_expected.to validate_presence_of(:project) }
+
+    context 'when note is on commit' do
+      before { allow(subject).to receive(:for_commit?).and_return(true) }
+
+      it { is_expected.to validate_presence_of(:commit_id) }
+      it { is_expected.not_to validate_presence_of(:noteable_id) }
+    end
+
+    context 'when note is not on commit' do
+      before { allow(subject).to receive(:for_commit?).and_return(false) }
+
+      it { is_expected.not_to validate_presence_of(:commit_id) }
+      it { is_expected.to validate_presence_of(:noteable_id) }
+    end
+
+    context 'when noteable and note project differ' do
+      subject do
+        build(:note, noteable: build_stubbed(:issue),
+                     project: build_stubbed(:project))
+      end
+
+      it { is_expected.to be_invalid }
+    end
+
+    context 'when noteable and note project are the same' do
+      subject { create(:note) }
+      it { is_expected.to be_valid }
+    end
   end
 
   describe "Commit notes" do
@@ -89,12 +127,23 @@ describe Note, models: true do
   end
 
   describe "#all_references" do
-    let!(:note1) { create(:note) }
-    let!(:note2) { create(:note) }
+    let!(:note1) { create(:note_on_issue) }
+    let!(:note2) { create(:note_on_issue) }
 
     it "reads the rendered note body from the cache" do
-      expect(Banzai::Renderer).to receive(:render).with(note1.note, pipeline: :note, cache_key: [note1, "note"], project: note1.project)
-      expect(Banzai::Renderer).to receive(:render).with(note2.note, pipeline: :note, cache_key: [note2, "note"], project: note2.project)
+      expect(Banzai::Renderer).to receive(:render).
+        with(note1.note,
+             pipeline: :note,
+             cache_key: [note1, "note"],
+             project: note1.project,
+             author: note1.author)
+
+      expect(Banzai::Renderer).to receive(:render).
+        with(note2.note,
+             pipeline: :note,
+             cache_key: [note2, "note"],
+             project: note2.project,
+             author: note2.author)
 
       note1.all_references
       note2.all_references
@@ -102,7 +151,7 @@ describe Note, models: true do
   end
 
   describe '.search' do
-    let(:note) { create(:note, note: 'WoW') }
+    let(:note) { create(:note_on_issue, note: 'WoW') }
 
     it 'returns notes with matching content' do
       expect(described_class.search(note.note)).to eq([note])
@@ -111,22 +160,31 @@ describe Note, models: true do
     it 'returns notes with matching content regardless of the casing' do
       expect(described_class.search('WOW')).to eq([note])
     end
-  end
 
-  describe '.grouped_awards' do
-    before do
-      create :note, note: "smile", is_award: true
-      create :note, note: "smile", is_award: true
-    end
+    context "confidential issues" do
+      let(:user) { create(:user) }
+      let(:project) { create(:project) }
+      let(:confidential_issue) { create(:issue, :confidential, project: project, author: user) }
+      let(:confidential_note) { create(:note, note: "Random", noteable: confidential_issue, project: confidential_issue.project) }
 
-    it "returns grouped hash of notes" do
-      expect(Note.grouped_awards.keys.size).to eq(3)
-      expect(Note.grouped_awards["smile"]).to match_array(Note.all)
-    end
+      it "returns notes with matching content if user can see the issue" do
+        expect(described_class.search(confidential_note.note, as_user: user)).to eq([confidential_note])
+      end
 
-    it "returns thumbsup and thumbsdown always" do
-      expect(Note.grouped_awards["thumbsup"]).to match_array(Note.none)
-      expect(Note.grouped_awards["thumbsdown"]).to match_array(Note.none)
+      it "does not return notes with matching content if user can not see the issue" do
+        user = create(:user)
+        expect(described_class.search(confidential_note.note, as_user: user)).to be_empty
+      end
+
+      it "does not return notes with matching content for project members with guest role" do
+        user = create(:user)
+        project.team << [user, :guest]
+        expect(described_class.search(confidential_note.note, as_user: user)).to be_empty
+      end
+
+      it "does not return notes with matching content for unauthenticated users" do
+        expect(described_class.search(confidential_note.note)).to be_empty
+      end
     end
   end
 
@@ -138,11 +196,6 @@ describe Note, models: true do
 
     it "returns false" do
       note = build(:note, system: true)
-      expect(note.editable?).to be_falsy
-    end
-
-    it "returns false" do
-      note = build(:note, is_award: true, note: "smiley")
       expect(note.editable?).to be_falsy
     end
   end
@@ -171,28 +224,21 @@ describe Note, models: true do
     end
   end
 
-  describe "set_award!" do
-    let(:merge_request) { create :merge_request }
-
-    it "converts aliases to actual name" do
-      note = create(:note, note: ":+1:", noteable: merge_request)
-      expect(note.reload.note).to eq("thumbsup")
-    end
-
-    it "is not an award emoji when comment is on a diff" do
-      note = create(:note_on_merge_request_diff, note: ":blowfish:", noteable: merge_request, line_code: "11d5d2e667e9da4f7f610f81d86c974b146b13bd_0_2")
-      note = note.reload
-
-      expect(note.note).to eq(":blowfish:")
-      expect(note.is_award?).to be_falsy
-    end
-  end
-
   describe 'clear_blank_line_code!' do
     it 'clears a blank line code before validation' do
       note = build(:note, line_code: ' ')
 
       expect { note.valid? }.to change(note, :line_code).to(nil)
+    end
+  end
+
+  describe '#participants' do
+    it 'includes the note author' do
+      project = create(:project, :public)
+      issue = create(:issue, project: project)
+      note = create(:note_on_issue, noteable: issue, project: project)
+
+      expect(note.participants).to include(note.author)
     end
   end
 end

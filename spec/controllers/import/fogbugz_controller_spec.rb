@@ -1,5 +1,4 @@
 require 'spec_helper'
-require_relative 'import_spec_helper'
 
 describe Import::FogbugzController do
   include ImportSpecHelper

@@ -20,6 +20,54 @@
 require 'spec_helper'
 
 describe ProjectMember, models: true do
+  describe 'associations' do
+    it { is_expected.to belong_to(:project).class_name('Project').with_foreign_key(:source_id) }
+  end
+
+  describe 'validations' do
+    it { is_expected.to allow_value('Project').for(:source_type) }
+    it { is_expected.not_to allow_value('project').for(:source_type) }
+  end
+
+  describe 'modules' do
+    it { is_expected.to include_module(Gitlab::ShellAdapter) }
+  end
+
+  describe '#real_source_type' do
+    subject { create(:project_member).real_source_type }
+
+    it { is_expected.to eq 'Project' }
+  end
+
+  describe "#destroy" do
+    let(:owner)   { create(:project_member, access_level: ProjectMember::OWNER) }
+    let(:project) { owner.project }
+    let(:master)  { create(:project_member, project: project) }
+
+    let(:owner_todos)  { (0...2).map { create(:todo, user: owner.user, project: project) } }
+    let(:master_todos) { (0...3).map { create(:todo, user: master.user, project: project) } }
+
+    before do
+      owner_todos
+      master_todos
+    end
+
+    it "destroy itself and delete associated todos" do
+      expect(owner.user.todos.size).to eq(2)
+      expect(master.user.todos.size).to eq(3)
+      expect(Todo.count).to eq(5)
+
+      master_todo_ids = master_todos.map(&:id)
+      master.destroy
+
+      expect(owner.user.todos.size).to eq(2)
+      expect(Todo.count).to eq(2)
+      master_todo_ids.each do |id|
+        expect(Todo.exists?(id)).to eq(false)
+      end
+    end
+  end
+
   describe :import_team do
     before do
       @abilities = Six.new
@@ -92,5 +140,27 @@ describe ProjectMember, models: true do
 
     it { expect(@project_1.users).to be_empty }
     it { expect(@project_2.users).to be_empty }
+  end
+
+  describe 'notifications' do
+    describe '#after_accept_request' do
+      it 'calls NotificationService.new_project_member' do
+        member = create(:project_member, user: build_stubbed(:user), requested_at: Time.now)
+
+        expect_any_instance_of(NotificationService).to receive(:new_project_member)
+
+        member.__send__(:after_accept_request)
+      end
+    end
+
+    describe '#post_decline_request' do
+      it 'calls NotificationService.decline_project_access_request' do
+        member = create(:project_member, user: build_stubbed(:user), requested_at: Time.now)
+
+        expect_any_instance_of(NotificationService).to receive(:decline_project_access_request)
+
+        member.__send__(:post_decline_request)
+      end
+    end
   end
 end

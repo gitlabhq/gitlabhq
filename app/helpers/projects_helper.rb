@@ -1,12 +1,4 @@
 module ProjectsHelper
-  def remove_from_project_team_message(project, member)
-    if member.user
-      "You are going to remove #{member.user.name} from #{project.name} project team. Are you sure?"
-    else
-      "You are going to revoke the invitation for #{member.invite_email} to join #{project.name} project team. Are you sure?"
-    end
-  end
-
   def link_to_project(project)
     link_to [project.namespace.becomes(Namespace), project], title: h(project.name) do
       title = content_tag(:span, project.name, class: 'project-name')
@@ -115,20 +107,8 @@ module ProjectsHelper
     end
   end
 
-  def user_max_access_in_project(user_id, project)
-    level = project.team.max_member_access(user_id)
-
-    if level
-      Gitlab::Access.options_with_owner.key(level)
-    end
-  end
-
   def license_short_name(project)
-    no_license_key = project.repository.license_key.nil? ||
-      # Back-compat if cache contains 'no-license', can be removed in a few weeks
-      project.repository.license_key == 'no-license'
-
-    return 'LICENSE' if no_license_key
+    return 'LICENSE' if project.repository.license_key.nil?
 
     license = Licensee::License.new(project.repository.license_key)
 
@@ -148,8 +128,16 @@ module ProjectsHelper
       nav_tabs << :merge_requests
     end
 
+    if can?(current_user, :read_pipeline, project)
+      nav_tabs << :pipelines
+    end
+
     if can?(current_user, :read_build, project)
       nav_tabs << :builds
+    end
+
+    if Gitlab.config.registry.enabled && can?(current_user, :read_container_image, project)
+      nav_tabs << :container_registry
     end
 
     if can?(current_user, :admin_project, project)
@@ -280,10 +268,6 @@ module ProjectsHelper
     when "finished"
       "success"
     end
-  end
-
-  def leave_project_message(project)
-    "Are you sure you want to leave \"#{project.name}\" project?"
   end
 
   def new_readme_path

@@ -1,3 +1,4 @@
+# rubocop:disable all
 class AddSentryToApplicationSettings < ActiveRecord::Migration
   def change
     change_table :application_settings do |t|

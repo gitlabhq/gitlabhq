@@ -260,19 +260,20 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def mergeable?
-    return false unless open? && !work_in_progress? && !broken?
+    return false unless mergeable_state?
 
     check_if_can_be_merged
 
     can_be_merged?
   end
 
-  def gitlab_merge_status
-    if work_in_progress?
-      "work_in_progress"
-    else
-      merge_status_name
-    end
+  def mergeable_state?
+    return false unless open?
+    return false if work_in_progress?
+    return false if broken?
+    return false unless mergeable_ci_state?
+
+    true
   end
 
   def can_cancel_merge_when_build_succeeds?(current_user)
@@ -284,6 +285,18 @@ class MergeRequest < ActiveRecord::Base
       !source_project.root_ref?(source_branch) &&
       Ability.abilities.allowed?(current_user, :push_code, source_project) &&
       last_commit == source_project.commit(source_branch)
+  end
+
+  def should_remove_source_branch?
+    merge_params['should_remove_source_branch'].present?
+  end
+
+  def force_remove_source_branch?
+    merge_params['force_remove_source_branch'].present?
+  end
+
+  def remove_source_branch?
+    should_remove_source_branch? || force_remove_source_branch?
   end
 
   def mr_and_commit_notes
@@ -299,13 +312,6 @@ class MergeRequest < ActiveRecord::Base
       target_project_id: target_project_id,
       source_project_id: source_project_id
     )
-  end
-
-  # Returns the raw diff for this merge request
-  #
-  # see "git diff"
-  def to_diff
-    target_project.repository.diff_text(diff_base_commit.sha, source_sha)
   end
 
   # Returns the commit as a series of email patches.
@@ -426,7 +432,10 @@ class MergeRequest < ActiveRecord::Base
 
     self.merge_when_build_succeeds = false
     self.merge_user = nil
-    self.merge_params = nil
+    if merge_params
+      merge_params.delete('should_remove_source_branch')
+      merge_params.delete('commit_message')
+    end
 
     self.save
   end
@@ -471,6 +480,12 @@ class MergeRequest < ActiveRecord::Base
 
   def can_be_merged_by?(user)
     ::Gitlab::GitAccess.new(user, project).can_push_to_branch?(target_branch)
+  end
+
+  def mergeable_ci_state?
+    return true unless project.only_allow_merge_if_build_succeeds?
+
+    !pipeline || pipeline.success?
   end
 
   def state_human_name
@@ -564,8 +579,8 @@ class MergeRequest < ActiveRecord::Base
     diverged_commits_count > 0
   end
 
-  def ci_commit
-    @ci_commit ||= source_project.ci_commit(last_commit.id, source_branch) if last_commit && source_project
+  def pipeline
+    @pipeline ||= source_project.pipeline(last_commit.id, source_branch) if last_commit && source_project
   end
 
   def diff_refs

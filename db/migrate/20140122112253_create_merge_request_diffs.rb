@@ -1,3 +1,4 @@
+# rubocop:disable all
 class CreateMergeRequestDiffs < ActiveRecord::Migration
   def up
     create_table :merge_request_diffs do |t|

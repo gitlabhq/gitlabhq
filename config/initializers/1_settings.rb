@@ -52,7 +52,7 @@ class Settings < Settingslogic
     # check that values in `current` (string or integer) is a contant in `modul`.
     def verify_constant_array(modul, current, default)
       values = default || []
-      if !current.nil?
+      unless current.nil?
         values = []
         current.each do |constant|
           values.push(verify_constant(modul, constant, nil))
@@ -249,9 +249,12 @@ Settings.artifacts['max_size']   ||= 100 # in megabytes
 Settings['registry'] ||= Settingslogic.new({})
 Settings.registry['enabled']       ||= false
 Settings.registry['host']          ||= "example.com"
+Settings.registry['port']          ||= nil
 Settings.registry['api_url']       ||= "http://localhost:5000/"
 Settings.registry['key']           ||= nil
 Settings.registry['issuer']        ||= nil
+Settings.registry['host_port']     ||= [Settings.registry['host'], Settings.registry['port']].compact.join(':')
+Settings.registry['path']            = File.expand_path(Settings.registry['path'] || File.join(Settings.shared['path'], 'registry'), Rails.root)
 
 #
 # Git LFS
@@ -276,6 +279,9 @@ Settings['cron_jobs'] ||= Settingslogic.new({})
 Settings.cron_jobs['stuck_ci_builds_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['stuck_ci_builds_worker']['cron'] ||= '0 0 * * *'
 Settings.cron_jobs['stuck_ci_builds_worker']['job_class'] = 'StuckCiBuildsWorker'
+Settings.cron_jobs['expire_build_artifacts_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['expire_build_artifacts_worker']['cron'] ||= '50 * * * *'
+Settings.cron_jobs['expire_build_artifacts_worker']['job_class'] = 'ExpireBuildArtifactsWorker'
 Settings.cron_jobs['repository_check_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['repository_check_worker']['cron'] ||= '20 * * * *'
 Settings.cron_jobs['repository_check_worker']['job_class'] = 'RepositoryCheck::BatchWorker'

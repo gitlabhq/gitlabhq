@@ -5,6 +5,7 @@ class Project < ActiveRecord::Base
   include Gitlab::ShellAdapter
   include Gitlab::VisibilityLevel
   include Gitlab::CurrentSettings
+  include AccessRequestable
   include Referable
   include Sortable
   include AfterCommitQueue
@@ -102,8 +103,9 @@ class Project < ActiveRecord::Base
   has_many :snippets,           dependent: :destroy, class_name: 'ProjectSnippet'
   has_many :hooks,              dependent: :destroy, class_name: 'ProjectHook'
   has_many :protected_branches, dependent: :destroy
-  has_many :project_members, dependent: :destroy, as: :source, class_name: 'ProjectMember'
-  has_many :users, through: :project_members
+  has_many :project_members,    dependent: :destroy, as: :source, class_name: 'ProjectMember'
+  alias_method :members, :project_members
+  has_many :users, -> { where(members: { requested_at: nil }) }, through: :project_members
   has_many :deploy_keys_projects, dependent: :destroy
   has_many :deploy_keys, through: :deploy_keys_projects
   has_many :users_star_projects, dependent: :destroy
@@ -119,7 +121,7 @@ class Project < ActiveRecord::Base
   has_one :import_data, dependent: :destroy, class_name: "ProjectImportData"
 
   has_many :commit_statuses, dependent: :destroy, class_name: 'CommitStatus', foreign_key: :gl_project_id
-  has_many :ci_commits, dependent: :destroy, class_name: 'Ci::Commit', foreign_key: :gl_project_id
+  has_many :pipelines, dependent: :destroy, class_name: 'Ci::Pipeline', foreign_key: :gl_project_id
   has_many :builds, class_name: 'Ci::Build', foreign_key: :gl_project_id # the builds are created from the commit_statuses
   has_many :runner_projects, dependent: :destroy, class_name: 'Ci::RunnerProject', foreign_key: :gl_project_id
   has_many :runners, through: :runner_projects, source: :runner, class_name: 'Ci::Runner'
@@ -146,7 +148,6 @@ class Project < ActiveRecord::Base
               message: Gitlab::Regex.project_path_regex_message }
   validates :issues_enabled, :merge_requests_enabled,
             :wiki_enabled, inclusion: { in: [true, false] }
-  validates :issues_tracker_id, length: { maximum: 255 }, allow_blank: true
   validates :namespace, presence: true
   validates_uniqueness_of :name, scope: :namespace_id
   validates_uniqueness_of :path, scope: :namespace_id
@@ -171,17 +172,17 @@ class Project < ActiveRecord::Base
 
   scope :sorted_by_activity, -> { reorder(last_activity_at: :desc) }
   scope :sorted_by_stars, -> { reorder('projects.star_count DESC') }
-  scope :sorted_by_names, -> { joins(:namespace).reorder('namespaces.name ASC, projects.name ASC') }
 
-  scope :without_user, ->(user)  { where('projects.id NOT IN (:ids)', ids: user.authorized_projects.map(&:id) ) }
-  scope :without_team, ->(team) { team.projects.present? ? where('projects.id NOT IN (:ids)', ids: team.projects.map(&:id)) : scoped  }
-  scope :not_in_group, ->(group) { where('projects.id NOT IN (:ids)', ids: group.project_ids ) }
   scope :in_namespace, ->(namespace_ids) { where(namespace_id: namespace_ids) }
-  scope :in_group_namespace, -> { joins(:group) }
   scope :personal, ->(user) { where(namespace_id: user.namespace_id) }
   scope :joined, ->(user) { where('namespace_id != ?', user.namespace_id) }
+  scope :visible_to_user, ->(user) { where(id: user.authorized_projects.select(:id).reorder(nil)) }
   scope :non_archived, -> { where(archived: false) }
   scope :for_milestones, ->(ids) { joins(:milestones).where('milestones.id' => ids).distinct }
+  scope :with_push, -> { joins(:events).where('events.action = ?', Event::PUSHED) }
+
+  scope :active, -> { joins(:issues, :notes, :merge_requests).order('issues.created_at, notes.created_at, merge_requests.created_at DESC') }
+  scope :abandoned, -> { where('projects.last_activity_at < ?', 6.months.ago) }
 
   state_machine :import_status, initial: :none do
     event :import_start do
@@ -204,23 +205,10 @@ class Project < ActiveRecord::Base
     state :finished
     state :failed
 
-    after_transition any => :started, do: :schedule_add_import_job
-    after_transition any => :finished, do: :clear_import_data
+    after_transition any => :finished, do: :reset_cache_and_import_attrs
   end
 
   class << self
-    def abandoned
-      where('projects.last_activity_at < ?', 6.months.ago)
-    end
-
-    def with_push
-      joins(:events).where('events.action = ?', Event::PUSHED)
-    end
-
-    def active
-      joins(:issues, :notes, :merge_requests).order('issues.created_at, notes.created_at, merge_requests.created_at DESC')
-    end
-
     # Searches for a list of projects based on the query given in `query`.
     #
     # On PostgreSQL this method uses "ILIKE" to perform a case-insensitive
@@ -266,24 +254,69 @@ class Project < ActiveRecord::Base
       non_archived.where(table[:name].matches(pattern))
     end
 
-    def find_with_namespace(id)
-      namespace_path, project_path = id.split('/', 2)
-
-      return nil if !namespace_path || !project_path
-
-      # Use of unscoped ensures we're not secretly adding any ORDER BYs, which
-      # have a negative impact on performance (and aren't needed for this
-      # query).
-      projects = unscoped.
-        joins(:namespace).
-        iwhere('namespaces.path' => namespace_path)
-
-      projects.find_by('projects.path' => project_path) ||
-        projects.iwhere('projects.path' => project_path).take
+    # Finds a single project for the given path.
+    #
+    # path - The full project path (including namespace path).
+    #
+    # Returns a Project, or nil if no project could be found.
+    def find_with_namespace(path)
+      where_paths_in([path]).reorder(nil).take
     end
 
-    def find_by_ci_id(id)
-      find_by(ci_id: id.to_i)
+    # Builds a relation to find multiple projects by their full paths.
+    #
+    # Each path must be in the following format:
+    #
+    #     namespace_path/project_path
+    #
+    # For example:
+    #
+    #     gitlab-org/gitlab-ce
+    #
+    # Usage:
+    #
+    #     Project.where_paths_in(%w{gitlab-org/gitlab-ce gitlab-org/gitlab-ee})
+    #
+    # This would return the projects with the full paths matching the values
+    # given.
+    #
+    # paths - An Array of full paths (namespace path + project path) for which
+    #         to find the projects.
+    #
+    # Returns an ActiveRecord::Relation.
+    def where_paths_in(paths)
+      wheres = []
+      cast_lower = Gitlab::Database.postgresql?
+
+      paths.each do |path|
+        namespace_path, project_path = path.split('/', 2)
+
+        next unless namespace_path && project_path
+
+        namespace_path = connection.quote(namespace_path)
+        project_path = connection.quote(project_path)
+
+        where = "(namespaces.path = #{namespace_path}
+          AND projects.path = #{project_path})"
+
+        if cast_lower
+          where = "(
+            #{where}
+            OR (
+              LOWER(namespaces.path) = LOWER(#{namespace_path})
+              AND LOWER(projects.path) = LOWER(#{project_path})
+            )
+          )"
+        end
+
+        wheres << where
+      end
+
+      if wheres.empty?
+        none
+      else
+        joins(:namespace).where(wheres.join(' OR '))
+      end
     end
 
     def visibility_levels
@@ -316,10 +349,6 @@ class Project < ActiveRecord::Base
 
       joins(join_body).reorder('join_note_counts.amount DESC')
     end
-
-    def visible_to_user(user)
-      where(id: user.authorized_projects.select(:id).reorder(nil))
-    end
   end
 
   def team
@@ -330,10 +359,32 @@ class Project < ActiveRecord::Base
     @repository ||= Repository.new(path_with_namespace, self)
   end
 
-  def container_registry_url
-    if container_registry_enabled? && Gitlab.config.registry.enabled
-      "#{Gitlab.config.registry.host_with_port}/#{path_with_namespace}"
+  def container_registry_path_with_namespace
+    path_with_namespace.downcase
+  end
+
+  def container_registry_repository
+    return unless Gitlab.config.registry.enabled
+
+    @container_registry_repository ||= begin
+      token = Auth::ContainerRegistryAuthenticationService.full_access_token(container_registry_path_with_namespace)
+      url = Gitlab.config.registry.api_url
+      host_port = Gitlab.config.registry.host_port
+      registry = ContainerRegistry::Registry.new(url, token: token, path: host_port)
+      registry.repository(container_registry_path_with_namespace)
     end
+  end
+
+  def container_registry_repository_url
+    if Gitlab.config.registry.enabled
+      "#{Gitlab.config.registry.host_port}/#{container_registry_path_with_namespace}"
+    end
+  end
+
+  def has_container_registry_tags?
+    return unless container_registry_repository
+
+    container_registry_repository.tags.any?
   end
 
   def commit(id = 'HEAD')
@@ -347,10 +398,6 @@ class Project < ActiveRecord::Base
 
   def saved?
     id && persisted?
-  end
-
-  def schedule_add_import_job
-    run_after_commit(:add_import_job)
   end
 
   def add_import_job
@@ -367,7 +414,7 @@ class Project < ActiveRecord::Base
     end
   end
 
-  def clear_import_data
+  def reset_cache_and_import_attrs
     update(import_error: nil)
 
     ProjectCacheWorker.perform_async(self.id)
@@ -376,14 +423,14 @@ class Project < ActiveRecord::Base
   end
 
   def import_url=(value)
-    import_url = Gitlab::ImportUrl.new(value)
+    import_url = Gitlab::UrlSanitizer.new(value)
     create_or_update_import_data(credentials: import_url.credentials)
     super(import_url.sanitized_url)
   end
 
   def import_url
     if import_data && super
-      import_url = Gitlab::ImportUrl.new(super, credentials: import_data.credentials)
+      import_url = Gitlab::UrlSanitizer.new(super, credentials: import_data.credentials)
       import_url.full_url
     else
       super
@@ -433,17 +480,18 @@ class Project < ActiveRecord::Base
   end
 
   def safe_import_url
-    result = URI.parse(self.import_url)
-    result.password = '*****' unless result.password.nil?
-    result.user = '*****' unless result.user.nil? || result.user == "git" #tokens or other data may be saved as user
-    result.to_s
-  rescue
-    self.import_url
+    Gitlab::UrlSanitizer.new(import_url).masked_url
   end
 
   def check_limit
     unless creator.can_create_project? or namespace.kind == 'group'
-      self.errors.add(:limit_reached, "Your project limit is #{creator.projects_limit} projects! Please contact your administrator to increase it")
+      projects_limit = creator.projects_limit
+
+      if projects_limit == 0
+        self.errors.add(:limit_reached, "Personal project creation is not allowed. Please contact your administrator with questions")
+      else
+        self.errors.add(:limit_reached, "Your project limit is #{projects_limit} projects! Please contact your administrator to increase it")
+      end
     end
   rescue
     self.errors.add(:base, "Can't check your ability to create project")
@@ -525,13 +573,21 @@ class Project < ActiveRecord::Base
   end
 
   def external_issue_tracker
-    return @external_issue_tracker if defined?(@external_issue_tracker)
-    @external_issue_tracker ||=
-      services.issue_trackers.active.without_defaults.first
+    if has_external_issue_tracker.nil? # To populate existing projects
+      cache_has_external_issue_tracker
+    end
+
+    if has_external_issue_tracker?
+      return @external_issue_tracker if defined?(@external_issue_tracker)
+
+      @external_issue_tracker = services.external_issue_trackers.first
+    else
+      nil
+    end
   end
 
-  def can_have_issues_tracker_id?
-    self.issues_enabled && !self.default_issues_tracker?
+  def cache_has_external_issue_tracker
+    update_column(:has_external_issue_tracker, services.external_issue_trackers.any?)
   end
 
   def build_missing_services
@@ -626,16 +682,6 @@ class Project < ActiveRecord::Base
     end
   end
 
-  def project_member_by_name_or_email(name = nil, email = nil)
-    user = users.find_by('name like ? or email like ?', name, email)
-    project_members.where(user: user) if user
-  end
-
-  # Get Team Member record by user id
-  def project_member_by_id(user_id)
-    project_members.find_by(user_id: user_id)
-  end
-
   def name_with_namespace
     @name_with_namespace ||= begin
                                if namespace
@@ -645,6 +691,7 @@ class Project < ActiveRecord::Base
                                end
                              end
   end
+  alias_method :human_name, :name_with_namespace
 
   def path_with_namespace
     if namespace
@@ -750,6 +797,11 @@ class Project < ActiveRecord::Base
     new_path_with_namespace = File.join(namespace_dir, path)
 
     expire_caches_before_rename(old_path_with_namespace)
+
+    if has_container_registry_tags?
+      # we currently doesn't support renaming repository if it contains tags in container registry
+      raise Exception.new('Project cannot be renamed, because tags are present in its container registry')
+    end
 
     if gitlab_shell.mv_repository(old_path_with_namespace, new_path_with_namespace)
       # If repository moved successfully we need to send update instructions to users.
@@ -927,12 +979,12 @@ class Project < ActiveRecord::Base
     !namespace.share_with_group_lock
   end
 
-  def ci_commit(sha, ref)
-    ci_commits.order(id: :desc).find_by(sha: sha, ref: ref)
+  def pipeline(sha, ref)
+    pipelines.order(id: :desc).find_by(sha: sha, ref: ref)
   end
 
-  def ensure_ci_commit(sha, ref)
-    ci_commit(sha, ref) || ci_commits.create(sha: sha, ref: ref)
+  def ensure_pipeline(sha, ref)
+    pipeline(sha, ref) || pipelines.create(sha: sha, ref: ref)
   end
 
   def enable_ci
@@ -1007,5 +1059,23 @@ class Project < ActiveRecord::Base
     run_after_commit { ProjectDestroyWorker.perform_async(id, user_id, params) }
 
     update_attribute(:pending_delete, true)
+  end
+
+  def running_or_pending_build_count(force: false)
+    Rails.cache.fetch(['projects', id, 'running_or_pending_build_count'], force: force) do
+      builds.running_or_pending.count(:all)
+    end
+  end
+
+  def mark_import_as_failed(error_message)
+    original_errors = errors.dup
+    sanitized_message = Gitlab::UrlSanitizer.sanitize(error_message)
+
+    import_fail
+    update_column(:import_error, sanitized_message)
+  rescue ActiveRecord::ActiveRecordError => e
+    Rails.logger.error("Error setting import status to failed: #{e.message}. Original error: #{sanitized_message}")
+  ensure
+    @errors = original_errors
   end
 end

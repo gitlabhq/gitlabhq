@@ -6,8 +6,10 @@
     - else
       = sort_title_recently_created
     %b.caret
-  %ul.dropdown-menu.dropdown-menu-align-right
+  %ul.dropdown-menu.dropdown-menu-align-right.dropdown-menu-sort
     %li
+      = link_to page_filter_path(sort: sort_value_priority) do
+        = sort_title_priority
       = link_to page_filter_path(sort: sort_value_recently_created) do
         = sort_title_recently_created
       = link_to page_filter_path(sort: sort_value_oldest_created) do

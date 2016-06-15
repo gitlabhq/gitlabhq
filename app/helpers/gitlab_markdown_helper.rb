@@ -13,7 +13,7 @@ module GitlabMarkdownHelper
   def link_to_gfm(body, url, html_options = {})
     return "" if body.blank?
 
-    escaped_body = if body =~ /\A\<img/
+    escaped_body = if body.start_with?('<img')
                      body
                    else
                      escape_once(body)
@@ -108,7 +108,7 @@ module GitlabMarkdownHelper
   def render_wiki_content(wiki_page)
     case wiki_page.format
     when :markdown
-      markdown(wiki_page.content, pipeline: :wiki, project_wiki: @project_wiki)
+      markdown(wiki_page.content, pipeline: :wiki, project_wiki: @project_wiki, page_slug: wiki_page.slug)
     when :asciidoc
       asciidoc(wiki_page.content)
     else

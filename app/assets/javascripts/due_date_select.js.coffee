@@ -11,6 +11,7 @@ class @DueDateSelect
       $block = $dropdown.closest('.block')
       $selectbox = $dropdown.closest('.selectbox')
       $value = $block.find('.value')
+      $valueContent = $block.find('.value-content')
       $sidebarValue = $('.js-due-date-sidebar-value', $block)
 
       fieldName = $dropdown.data('field-name')
@@ -20,14 +21,18 @@ class @DueDateSelect
       $dropdown.glDropdown(
         hidden: ->
           $selectbox.hide()
-          $value.removeAttr('style')
+          $value.css('display', '')
       )
 
-      addDueDate = ->
+      addDueDate = (isDropdown) ->
         # Create the post date
         value = $("input[name='#{fieldName}']").val()
-        date = new Date value.replace(new RegExp('-', 'g'), ',')
-        mediumDate = $.datepicker.formatDate 'M d, yy', date
+
+        if value isnt ''
+          date = new Date value.replace(new RegExp('-', 'g'), ',')
+          mediumDate = $.datepicker.formatDate 'M d, yy', date
+        else
+          mediumDate = 'None'
 
         data = {}
         data[abilityName] = {}
@@ -37,25 +42,38 @@ class @DueDateSelect
           type: 'PUT'
           url: issueUpdateURL
           data: data
+          dataType: 'json'
           beforeSend: ->
             $loading.fadeIn()
-            $dropdown.trigger('loading.gl.dropdown')
-            $selectbox.hide()
-            $value.removeAttr('style')
+            if isDropdown
+              $dropdown.trigger('loading.gl.dropdown')
+              $selectbox.hide()
+            $value.css('display', '')
 
-            $value.html(mediumDate)
+            $valueContent.html(mediumDate)
             $sidebarValue.html(mediumDate)
+
+            if value isnt ''
+              $('.js-remove-due-date-holder').removeClass 'hidden'
+            else
+              $('.js-remove-due-date-holder').addClass 'hidden'
         ).done (data) ->
-          $dropdown.trigger('loaded.gl.dropdown')
-          $dropdown.dropdown('toggle')
+          if isDropdown
+            $dropdown.trigger('loaded.gl.dropdown')
+            $dropdown.dropdown('toggle')
           $loading.fadeOut()
+
+      $block.on 'click', '.js-remove-due-date', (e) ->
+        e.preventDefault()
+        $("input[name='#{fieldName}']").val ''
+        addDueDate(false)
 
       $datePicker.datepicker(
         dateFormat: 'yy-mm-dd',
         defaultDate: $("input[name='#{fieldName}']").val()
         altField: "input[name='#{fieldName}']"
         onSelect: ->
-          addDueDate()
+          addDueDate(true)
       )
 
     $(document)

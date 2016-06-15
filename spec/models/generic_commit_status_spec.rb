@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 describe GenericCommitStatus, models: true do
-  let(:commit) { FactoryGirl.create :ci_commit }
-  let(:generic_commit_status) { FactoryGirl.create :generic_commit_status, commit: commit }
+  let(:pipeline) { FactoryGirl.create :ci_pipeline }
+  let(:generic_commit_status) { FactoryGirl.create :generic_commit_status, pipeline: pipeline }
 
   describe :context do
     subject { generic_commit_status.context }
@@ -27,13 +27,13 @@ describe GenericCommitStatus, models: true do
     describe :context do
       subject { generic_commit_status.context }
 
-      it { is_expected.to_not be_nil }
+      it { is_expected.not_to be_nil }
     end
 
     describe :stage do
       subject { generic_commit_status.stage }
 
-      it { is_expected.to_not be_nil }
+      it { is_expected.not_to be_nil }
     end
   end
 end

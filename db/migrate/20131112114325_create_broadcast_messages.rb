@@ -1,3 +1,4 @@
+# rubocop:disable all
 class CreateBroadcastMessages < ActiveRecord::Migration
   def change
     create_table :broadcast_messages do |t|

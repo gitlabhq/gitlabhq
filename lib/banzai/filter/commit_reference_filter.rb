@@ -4,6 +4,8 @@ module Banzai
     #
     # This filter supports cross-project references.
     class CommitReferenceFilter < AbstractReferenceFilter
+      self.reference_type = :commit
+
       def self.object_class
         Commit
       end
@@ -14,26 +16,10 @@ module Banzai
         end
       end
 
-      def self.referenced_by(node)
-        project = Project.find(node.attr("data-project")) rescue nil
-        return unless project
-
-        id = node.attr("data-commit")
-        commit = find_object(project, id)
-
-        return unless commit
-
-        { commit: commit }
-      end
-
-      def self.find_object(project, id)
+      def find_object(project, id)
         if project && project.valid_repo?
           project.commit(id)
         end
-      end
-
-      def find_object(*args)
-        self.class.find_object(*args)
       end
 
       def url_for_object(commit, project)

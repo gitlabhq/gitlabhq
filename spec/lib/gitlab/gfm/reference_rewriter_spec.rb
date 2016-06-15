@@ -33,8 +33,8 @@ describe Gitlab::Gfm::ReferenceRewriter do
         end
 
         it { is_expected.to include issue_first.to_reference(new_project) }
-        it { is_expected.to_not include issue_second.to_reference(new_project) }
-        it { is_expected.to_not include merge_request.to_reference(new_project) }
+        it { is_expected.not_to include issue_second.to_reference(new_project) }
+        it { is_expected.not_to include merge_request.to_reference(new_project) }
       end
 
       context 'description ambigous elements' do

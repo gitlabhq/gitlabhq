@@ -28,10 +28,6 @@ input[type='text'].danger {
 }
 
 label {
-  &.control-label {
-    @extend .col-sm-2;
-  }
-
   &.inline-label {
     margin: 0;
   }
@@ -39,6 +35,10 @@ label {
   &.label-light {
     font-weight: 600;
   }
+}
+
+.control-label {
+  @extend .col-sm-2;
 }
 
 .inline-input-group {
@@ -76,6 +76,7 @@ label {
 .form-control {
   @include box-shadow(none);
   border-radius: 3px;
+  padding: $gl-vert-padding $gl-input-padding;
 }
 
 .select-wrapper {

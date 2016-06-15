@@ -5,25 +5,33 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
   let(:current_user) { nil }
   let(:current_params) { {} }
   let(:rsa_key) { OpenSSL::PKey::RSA.generate(512) }
-  let(:registry_settings) do
-    {
-      enabled: true,
-      issuer: 'rspec',
-      key: nil
-    }
-  end
   let(:payload) { JWT.decode(subject[:token], rsa_key).first }
 
   subject { described_class.new(current_project, current_user, current_params).execute }
 
   before do
-    allow(Gitlab.config.registry).to receive_messages(registry_settings)
+    allow(Gitlab.config.registry).to receive_messages(enabled: true, issuer: 'rspec', key: nil)
     allow_any_instance_of(JSONWebToken::RSAToken).to receive(:key).and_return(rsa_key)
   end
 
-  shared_examples 'an authenticated' do
+  shared_examples 'a valid token' do
     it { is_expected.to include(:token) }
     it { expect(payload).to include('access') }
+
+    context 'a expirable' do
+      let(:expires_at) { Time.at(payload['exp']) }
+      let(:expire_delay) { 10 }
+
+      context 'for default configuration' do
+        it { expect(expires_at).not_to be_within(2.seconds).of(Time.now + expire_delay.minutes) }
+      end
+
+      context 'for changed configuration' do
+        before { stub_application_setting(container_registry_token_expire_delay: expire_delay) }
+
+        it { expect(expires_at).to be_within(2.seconds).of(Time.now + expire_delay.minutes) }
+      end
+    end
   end
 
   shared_examples 'a accessible' do
@@ -35,8 +43,13 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
        }]
     end
 
-    it_behaves_like 'an authenticated'
+    it_behaves_like 'a valid token'
     it { expect(payload).to include('access' => access) }
+  end
+
+  shared_examples 'an inaccessible' do
+    it_behaves_like 'a valid token'
+    it { expect(payload).to include('access' => []) }
   end
 
   shared_examples 'a pullable' do
@@ -59,19 +72,26 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
 
   shared_examples 'a forbidden' do
     it { is_expected.to include(http_status: 403) }
-    it { is_expected.to_not include(:token) }
+    it { is_expected.not_to include(:token) }
+  end
+
+  describe '#full_access_token' do
+    let(:project) { create(:empty_project) }
+    let(:token) { described_class.full_access_token(project.path_with_namespace) }
+
+    subject { { token: token } }
+
+    it_behaves_like 'a accessible' do
+      let(:actions) { ['*'] }
+    end
   end
 
   context 'user authorization' do
     let(:project) { create(:project) }
     let(:current_user) { create(:user) }
 
-    context 'allow to use offline_token' do
-      let(:current_params) do
-        { offline_token: true }
-      end
-
-      it_behaves_like 'an authenticated'
+    context 'allow to use scope-less authentication' do
+      it_behaves_like 'a valid token'
     end
 
     context 'allow developer to push images' do
@@ -111,19 +131,15 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
         { scope: "repository:#{project.path_with_namespace}:pull,push" }
       end
 
-      it_behaves_like 'a forbidden'
+      it_behaves_like 'an inaccessible'
     end
   end
 
   context 'project authorization' do
     let(:current_project) { create(:empty_project) }
 
-    context 'disallow to use offline_token' do
-      let(:current_params) do
-        { offline_token: true }
-      end
-
-      it_behaves_like 'a forbidden'
+    context 'allow to use scope-less authentication' do
+      it_behaves_like 'a valid token'
     end
 
     context 'allow to pull and push images' do
@@ -149,7 +165,7 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
 
         context 'disallow for private' do
           let(:project) { create(:empty_project, :private) }
-          it_behaves_like 'a forbidden'
+          it_behaves_like 'an inaccessible'
         end
       end
 
@@ -160,18 +176,28 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
 
         context 'disallow for all' do
           let(:project) { create(:empty_project, :public) }
-          it_behaves_like 'a forbidden'
+          it_behaves_like 'an inaccessible'
         end
+      end
+    end
+
+    context 'for project without container registry' do
+      let(:project) { create(:empty_project, :public, container_registry_enabled: false) }
+
+      before { project.update(container_registry_enabled: false) }
+
+      context 'disallow when pulling' do
+        let(:current_params) do
+          { scope: "repository:#{project.path_with_namespace}:pull" }
+        end
+
+        it_behaves_like 'an inaccessible'
       end
     end
   end
 
   context 'unauthorized' do
-    context 'disallow to use offline_token' do
-      let(:current_params) do
-        { offline_token: true }
-      end
-
+    context 'disallow to use scope-less authentication' do
       it_behaves_like 'a forbidden'
     end
 

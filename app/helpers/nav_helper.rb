@@ -30,17 +30,13 @@ module NavHelper
       else
         "page-gutter right-sidebar-expanded"
       end
+    elsif current_path?('builds#show')
+      "page-gutter build-sidebar right-sidebar-expanded"
     end
   end
 
   def nav_header_class
-    class_name =
-      if nav_menu_collapsed?
-        "header-collapsed"
-      else
-        "header-expanded"
-      end
-    class_name += " with-horizontal-nav" if defined?(nav) && nav
+    class_name = " with-horizontal-nav" if defined?(nav) && nav
     class_name
   end
 
@@ -48,7 +44,7 @@ module NavHelper
     "page-with-layout-nav" if defined?(nav) && nav
   end
 
-  def layout_dropdown_class
-    "controls-dropdown-visible" if current_user
+  def nav_control_class
+    "nav-control" if current_user
   end
 end

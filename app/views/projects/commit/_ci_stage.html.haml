@@ -1,0 +1,15 @@
+%tr
+  %th{colspan: 10}
+    %strong
+      %a{name: stage}
+      - status = statuses.latest.status
+      %span{class: "ci-status-link ci-status-icon-#{status}"}
+        = ci_icon_for_status(status)
+      - if stage
+        &nbsp;
+        = stage.titleize.pluralize
+  = render statuses.latest.ordered, coverage: @project.build_coverage_enabled?, stage: false, ref: false, allow_retry: true
+  = render statuses.retried.ordered, coverage: @project.build_coverage_enabled?, stage: false, ref: false, retried: true
+  %tr
+    %td{colspan: 10}
+      &nbsp;

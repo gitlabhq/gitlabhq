@@ -13,16 +13,33 @@ module StubGitlabCalls
     allow_any_instance_of(Network).to receive(:projects) { project_hash_array }
   end
 
-  def stub_ci_commit_to_return_yaml_file
-    stub_ci_commit_yaml_file(gitlab_ci_yaml)
+  def stub_ci_pipeline_to_return_yaml_file
+    stub_ci_pipeline_yaml_file(gitlab_ci_yaml)
   end
 
-  def stub_ci_commit_yaml_file(ci_yaml)
-    allow_any_instance_of(Ci::Commit).to receive(:ci_yaml_file) { ci_yaml }
+  def stub_ci_pipeline_yaml_file(ci_yaml)
+    allow_any_instance_of(Ci::Pipeline).to receive(:ci_yaml_file) { ci_yaml }
   end
 
   def stub_ci_builds_disabled
     allow_any_instance_of(Project).to receive(:builds_enabled?).and_return(false)
+  end
+
+  def stub_container_registry_config(registry_settings)
+    allow(Gitlab.config.registry).to receive_messages(registry_settings)
+    allow(Auth::ContainerRegistryAuthenticationService).to receive(:full_access_token).and_return('token')
+  end
+
+  def stub_container_registry_tags(*tags)
+    allow_any_instance_of(ContainerRegistry::Client).to receive(:repository_tags).and_return(
+      { "tags" => tags }
+    )
+    allow_any_instance_of(ContainerRegistry::Client).to receive(:repository_manifest).and_return(
+      JSON.load(File.read(Rails.root + 'spec/fixtures/container_registry/tag_manifest.json'))
+    )
+    allow_any_instance_of(ContainerRegistry::Client).to receive(:blob).and_return(
+      File.read(Rails.root + 'spec/fixtures/container_registry/config_blob.json')
+    )
   end
 
   private

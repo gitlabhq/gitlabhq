@@ -30,13 +30,13 @@ class TodosFinder
     items = by_state(items)
     items = by_type(items)
 
-    items
+    items.reorder(id: :desc)
   end
 
   private
 
   def action_id?
-    action_id.present? && [Todo::ASSIGNED, Todo::MENTIONED].include?(action_id.to_i)
+    action_id.present? && [Todo::ASSIGNED, Todo::MENTIONED, Todo::BUILD_FAILED, Todo::MARKED].include?(action_id.to_i)
   end
 
   def action_id
@@ -78,6 +78,16 @@ class TodosFinder
     @project
   end
 
+  def projects
+    return @projects if defined?(@projects)
+
+    if project?
+      @projects = project
+    else
+      @projects = ProjectsFinder.new.execute(current_user)
+    end
+  end
+
   def type?
     type.present? && ['Issue', 'MergeRequest'].include?(type)
   end
@@ -105,6 +115,8 @@ class TodosFinder
   def by_project(items)
     if project?
       items = items.where(project: project)
+    elsif projects
+      items = items.merge(projects).joins(:project)
     end
 
     items

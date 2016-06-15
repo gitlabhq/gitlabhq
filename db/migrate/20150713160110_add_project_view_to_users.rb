@@ -1,3 +1,4 @@
+# rubocop:disable all
 class AddProjectViewToUsers < ActiveRecord::Migration
   def change
     add_column :users, :project_view, :integer, default: 0

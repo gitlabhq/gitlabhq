@@ -1,24 +1,4 @@
 module GroupsHelper
-  def remove_user_from_group_message(group, member)
-    if member.user
-      "Are you sure you want to remove \"#{member.user.name}\" from \"#{group.name}\"?"
-    else
-      "Are you sure you want to revoke the invitation for \"#{member.invite_email}\" to join \"#{group.name}\"?"
-    end
-  end
-
-  def leave_group_message(group)
-    "Are you sure you want to leave \"#{group}\" group?"
-  end
-
-  def should_user_see_group_roles?(user, group)
-    if user
-      user.is_admin? || group.members.exists?(user_id: user.id)
-    else
-      false
-    end
-  end
-
   def can_change_group_visibility_level?(group)
     can?(current_user, :change_visibility_level, group)
   end
@@ -31,7 +11,7 @@ module GroupsHelper
     if group && group.avatar.present?
       group.avatar.url
     else
-      'no_group_avatar.png'
+      image_path('no_group_avatar.png')
     end
   end
 

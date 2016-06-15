@@ -28,6 +28,29 @@ describe Projects::DestroyService, services: true do
     it { expect(Dir.exist?(remove_path)).to be_truthy }
   end
 
+  context 'container registry' do
+    before do
+      stub_container_registry_config(enabled: true)
+      stub_container_registry_tags('tag')
+    end
+
+    context 'tags deletion succeeds' do
+      it do
+        expect_any_instance_of(ContainerRegistry::Tag).to receive(:delete).and_return(true)
+
+        destroy_project(project, user, {})
+      end
+    end
+
+    context 'tags deletion fails' do
+      before { expect_any_instance_of(ContainerRegistry::Tag).to receive(:delete).and_return(false) }
+
+      subject { destroy_project(project, user, {}) }
+
+      it { expect{subject}.to raise_error(Projects::DestroyService::DestroyError) }
+    end
+  end
+
   def destroy_project(project, user, params)
     Projects::DestroyService.new(project, user, params).execute
   end

@@ -29,7 +29,7 @@ module API
       @current_user
     end
 
-    def sudo_identifier()
+    def sudo_identifier
       identifier ||= params[SUDO_PARAM] || env[SUDO_HEADER]
 
       # Regex for integers
@@ -407,6 +407,24 @@ module API
     def handle_member_errors(errors)
       error!(errors[:access_level], 422) if errors[:access_level].any?
       not_found!(errors)
+    end
+
+    def send_git_blob(repository, blob)
+      env['api.format'] = :txt
+      content_type 'text/plain'
+      header(*Gitlab::Workhorse.send_git_blob(repository, blob))
+    end
+
+    def send_git_archive(repository, ref:, format:)
+      header(*Gitlab::Workhorse.send_git_archive(repository, ref: ref, format: format))
+    end
+
+    def issue_entity(project)
+      if project.has_external_issue_tracker?
+        Entities::ExternalIssue
+      else
+        Entities::Issue
+      end
     end
   end
 end

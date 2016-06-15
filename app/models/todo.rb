@@ -1,6 +1,8 @@
 class Todo < ActiveRecord::Base
-  ASSIGNED  = 1
-  MENTIONED = 2
+  ASSIGNED     = 1
+  MENTIONED    = 2
+  BUILD_FAILED = 3
+  MARKED       = 4
 
   belongs_to :author, class_name: "User"
   belongs_to :note
@@ -26,6 +28,10 @@ class Todo < ActiveRecord::Base
 
     state :pending
     state :done
+  end
+
+  def build_failed?
+    action == BUILD_FAILED
   end
 
   def body

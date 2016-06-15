@@ -29,9 +29,13 @@
   }
 }
 
-.issuable-sidebar {
+.right-sidebar {
   a {
     color: inherit;
+  }
+
+  .issuable-header-text {
+    margin-top: 7px;
   }
 
   .block {
@@ -60,10 +64,6 @@
       margin-top: 0;
     }
 
-    .issuable-count {
-      margin-top: 7px;
-    }
-
     .gutter-toggle {
       margin-left: 20px;
       padding-left: 10px;
@@ -72,6 +72,10 @@
         color: $gray-darkest;
       }
     }
+  }
+
+  .block-first {
+    padding-top: 0;
   }
 
   .title {
@@ -148,6 +152,10 @@
 
     .bold {
       font-weight: 600;
+    }
+
+    .light {
+      font-weight: normal;
     }
 
     .sidebar-collapsed-icon {
@@ -242,7 +250,7 @@
     }
   }
 
-  .issuable-pager {
+  .issuable-header-btn {
     background: $gray-normal;
     border: 1px solid $border-gray-normal;
     &:hover {
@@ -255,7 +263,7 @@
     }
   }
 
-  a:not(.issuable-pager) {
+  a {
     &:hover {
       color: $md-link-color;
       text-decoration: none;

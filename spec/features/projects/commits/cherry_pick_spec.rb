@@ -16,6 +16,7 @@ describe 'Cherry-pick Commits' do
     it do
       visit namespace_project_commit_path(project.namespace, project, master_pickable_commit.id)
       find("a[href='#modal-cherry-pick-commit']").click
+      expect(page).not_to have_content('v1.0.0') # Only branches, not tags
       page.within('#modal-cherry-pick-commit') do
         uncheck 'create_merge_request'
         click_button 'Cherry-pick'

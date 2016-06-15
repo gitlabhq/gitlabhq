@@ -15,10 +15,14 @@
       If you already have files you can push them using command line instructions below.
     %p
       Otherwise you can start with adding a
-      = link_to "README", new_readme_path, class: 'underlined-link'
+      = succeed ',' do
+        = link_to "README", new_readme_path, class: 'underlined-link'
+      a
+      = succeed ',' do
+        = link_to "LICENSE", add_special_file_path(@project, file_name: 'LICENSE'), class: 'underlined-link'
       or a
-      = link_to "LICENSE", add_special_file_path(@project, file_name: 'LICENSE'), class: 'underlined-link'
-      file to this project.
+      = link_to '.gitignore', add_special_file_path(@project, file_name: '.gitignore'), class: 'underlined-link'
+      to this project.
 
 - if can?(current_user, :push_code, @project)
   %div{ class: container_class }

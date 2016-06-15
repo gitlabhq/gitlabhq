@@ -9,8 +9,6 @@
         %span.runner-state.runner-state-specific
           Specific
 
-
-
 - if @runner.shared?
   .bs-callout.bs-callout-success
     %h4 This runner will process builds from ALL UNASSIGNED projects
@@ -101,8 +99,8 @@
 
           %td.build-link
             - if project
-              = link_to ci_status_path(build.commit) do
-                %strong #{build.commit.short_sha}
+              = link_to ci_status_path(build.pipeline) do
+                %strong #{build.pipeline.short_sha}
 
           %td.timestamp
             - if build.finished_at

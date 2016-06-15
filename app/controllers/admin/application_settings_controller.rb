@@ -74,6 +74,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :two_factor_grace_period,
       :gravatar_enabled,
       :sign_in_text,
+      :after_sign_up_text,
       :help_page_text,
       :home_page_url,
       :after_sign_out_path,
@@ -107,6 +108,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :repository_checks_enabled,
       :metrics_packet_size,
       :send_user_confirmation_email,
+      :container_registry_token_expire_delay,
       restricted_visibility_levels: [],
       import_sources: [],
       disabled_oauth_sign_in_sources: []

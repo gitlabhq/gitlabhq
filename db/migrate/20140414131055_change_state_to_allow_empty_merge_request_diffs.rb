@@ -1,3 +1,4 @@
+# rubocop:disable all
 class ChangeStateToAllowEmptyMergeRequestDiffs < ActiveRecord::Migration
   def up
     change_column :merge_request_diffs, :state, :string, null: true,

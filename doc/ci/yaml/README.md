@@ -30,6 +30,8 @@ If you want a quick introduction to GitLab CI, follow our
     - [when](#when)
     - [artifacts](#artifacts)
         - [artifacts:name](#artifacts-name)
+        - [artifacts:when](#artifacts-when)
+        - [artifacts:expire_in](#artifacts-expire_in)
     - [dependencies](#dependencies)
     - [before_script and after_script](#before_script-and-after_script)
 - [Hidden jobs](#hidden-jobs)
@@ -128,7 +130,7 @@ builds, including deploy builds. This can be an array or a multi-line string.
 ### after_script
 
 >**Note:**
-Introduced in GitLab 8.7 and GitLab Runner v1.2.
+Introduced in GitLab 8.7 and requires Gitlab Runner v1.2 (not yet released)
 
 `after_script` is used to define the command that will be run after for all
 builds. This has to be an array or a multi-line string.
@@ -348,7 +350,7 @@ job_name:
 | allow_failure | no | Allow build to fail. Failed build doesn't contribute to commit status |
 | when          | no | Define when to run build. Can be `on_success`, `on_failure` or `always` |
 | dependencies  | no | Define other builds that a build depends on so that you can pass artifacts between them|
-| artifacts     | no | Define list build artifacts |
+| artifacts     | no | Define list of build artifacts |
 | cache         | no | Define list of files that should be cached between subsequent runs |
 | before_script | no | Override a set of commands that are executed before build |
 | after_script  | no | Override a set of commands that are executed after build |
@@ -649,6 +651,66 @@ job:
   artifacts:
     name: "%CI_BUILD_STAGE%_%CI_BUILD_REF_NAME%"
     untracked: true
+```
+
+#### artifacts:when
+
+>**Note:**
+Introduced in GitLab 8.9 and GitLab Runner v1.3.0.
+
+`artifacts:when` is used to upload artifacts on build failure or despite the
+failure.
+
+`artifacts:when` can be set to one of the following values:
+
+1. `on_success` - upload artifacts only when build succeeds. This is the default
+1. `on_failure` - upload artifacts only when build fails
+1. `always` - upload artifacts despite the build status
+
+---
+
+**Example configurations**
+
+To upload artifacts only when build fails.
+
+```yaml
+job:
+  artifacts:
+    when: on_failure
+```
+
+#### artifacts:expire_in
+
+>**Note:**
+Introduced in GitLab 8.9 and GitLab Runner v1.3.0.
+
+`artifacts:expire_in` is used to remove uploaded artifacts after specified time.
+By default artifacts are stored on GitLab forver.
+`expire_in` allows to specify after what time the artifacts should be removed.
+The artifacts will expire counting from the moment when they are uploaded and stored on GitLab.
+
+After artifacts uploading you can use the **Keep** button on build page to keep the artifacts forever.
+
+Artifacts are removed every hour, but they are not accessible after expire date.
+
+The value of `expire_in` is a elapsed time. The example of parsable values:
+- '3 mins 4 sec'
+- '2 hrs 20 min'
+- '2h20min'
+- '6 mos 1 day'
+- '47 yrs 6 mos and 4d'
+- '3 weeks and 2 days'
+
+---
+
+**Example configurations**
+
+To expire artifacts after 1 week from the moment that they are uploaded:
+
+```yaml
+job:
+  artifacts:
+    expire_in: 1 week
 ```
 
 ### dependencies

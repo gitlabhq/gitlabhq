@@ -22,8 +22,8 @@ module API
 
         not_found!('Commit') unless user_project.commit(params[:sha])
 
-        ci_commits = user_project.ci_commits.where(sha: params[:sha])
-        statuses = ::CommitStatus.where(commit: ci_commits)
+        pipelines = user_project.pipelines.where(sha: params[:sha])
+        statuses = ::CommitStatus.where(pipeline: pipelines)
         statuses = statuses.latest unless parse_boolean(params[:all])
         statuses = statuses.where(ref: params[:ref]) if params[:ref].present?
         statuses = statuses.where(stage: params[:stage]) if params[:stage].present?
@@ -50,7 +50,7 @@ module API
         commit = @project.commit(params[:sha])
         not_found! 'Commit' unless commit
 
-        # Since the CommitStatus is attached to Ci::Commit (in the future Pipeline)
+        # Since the CommitStatus is attached to Ci::Pipeline (in the future Pipeline)
         # We need to always have the pipeline object
         # To have a valid pipeline object that can be attached to specific MR
         # Other CI service needs to send `ref`
@@ -64,11 +64,11 @@ module API
           ref = branches.first
         end
 
-        ci_commit = @project.ensure_ci_commit(commit.sha, ref)
+        pipeline = @project.ensure_pipeline(commit.sha, ref)
 
         name = params[:name] || params[:context]
-        status = GenericCommitStatus.running_or_pending.find_by(commit: ci_commit, name: name, ref: params[:ref])
-        status ||= GenericCommitStatus.new(project: @project, commit: ci_commit, user: current_user)
+        status = GenericCommitStatus.running_or_pending.find_by(pipeline: pipeline, name: name, ref: params[:ref])
+        status ||= GenericCommitStatus.new(project: @project, pipeline: pipeline, user: current_user)
         status.update(attrs)
 
         case params[:state].to_s

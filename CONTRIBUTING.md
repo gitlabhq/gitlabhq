@@ -96,7 +96,7 @@ The designs are made using Antetype (`.atype` files). You can use the
 [free Antetype viewer (Mac OSX only)] or grab an exported PNG from the design
 (the PNG is 1:1).
 
-The current designs can be found in the [`gitlab1.atype` file].
+The current designs can be found in the [`gitlab8.atype` file].
 
 ### UI development kit
 
@@ -308,16 +308,14 @@ tests are least likely to receive timely feedback. The workflow to make a merge
 request is as follows:
 
 1. Fork the project into your personal space on GitLab.com
-1. Create a feature branch
+1. Create a feature branch, branch away from `master`.
 1. Write [tests](https://gitlab.com/gitlab-org/gitlab-development-kit#running-the-tests) and code
 1. Add your changes to the [CHANGELOG](CHANGELOG)
-1. If you are changing the README, some documentation or other things which
-   have no effect on the tests, add `[ci skip]` somewhere in the commit message
-   and make sure to read the [documentation styleguide][doc-styleguide]
+1. If you are writing documentation, make sure to read the [documentation styleguide][doc-styleguide]
 1. If you have multiple commits please combine them into one commit by
    [squashing them][git-squash]
 1. Push the commit(s) to your fork
-1. Submit a merge request (MR) to the master branch
+1. Submit a merge request (MR) to the `master` branch
 1. The MR title should describe the change you want to make
 1. The MR description should give a motive for your change and the method you
    used to achieve it, see the [merge request description format]
@@ -407,6 +405,7 @@ description area. Copy-paste it to retain the markdown format.
       entire line to follow it. This prevents linting tools from generating warnings.
     - Don't touch neighbouring lines. As an exception, automatic mass
       refactoring modifications may leave style non-compliant.
+1. If the merge request adds any new libraries (gems, JavaScript libraries, etc.), they should conform to our [Licensing guidelines][license-finder-doc]. See the instructions in that document for help if your MR fails the "license-finder" test with a "Dependencies that need approval" error.
 
 ## Changes for Stable Releases
 
@@ -532,4 +531,5 @@ available at [http://contributor-covenant.org/version/1/1/0/](http://contributor
 [scss-styleguide]: doc/development/scss_styleguide.md "SCSS styleguide"
 [gitlab-design]: https://gitlab.com/gitlab-org/gitlab-design
 [free Antetype viewer (Mac OSX only)]: https://itunes.apple.com/us/app/antetype-viewer/id824152298?mt=12
-[`gitlab1.atype` file]: https://gitlab.com/gitlab-org/gitlab-design/tree/master/gitlab1.atype/
+[`gitlab8.atype` file]: https://gitlab.com/gitlab-org/gitlab-design/tree/master/current/
+[license-finder-doc]: doc/development/licensing.md

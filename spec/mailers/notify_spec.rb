@@ -51,7 +51,7 @@ describe Notify do
 
           context 'when enabled email_author_in_body' do
             before do
-              allow(current_application_settings).to receive(:email_author_in_body).and_return(true)
+              allow_any_instance_of(ApplicationSetting).to receive(:email_author_in_body).and_return(true)
             end
 
             it 'contains a link to note author' do
@@ -230,7 +230,7 @@ describe Notify do
 
           context 'when enabled email_author_in_body' do
             before do
-              allow(current_application_settings).to receive(:email_author_in_body).and_return(true)
+              allow_any_instance_of(ApplicationSetting).to receive(:email_author_in_body).and_return(true)
             end
 
             it 'contains a link to note author' do
@@ -400,26 +400,136 @@ describe Notify do
       end
     end
 
-    describe 'project access changed' do
+    describe 'project access requested' do
       let(:project) { create(:project) }
       let(:user) { create(:user) }
-      let(:project_member) { create(:project_member, project: project, user: user) }
-      subject { Notify.project_access_granted_email(project_member.id) }
+      let(:project_member) do
+        project.request_access(user)
+        project.members.request.find_by(user_id: user.id)
+      end
+      subject { Notify.member_access_requested_email('project', project_member.id) }
 
       it_behaves_like 'an email sent from GitLab'
       it_behaves_like 'it should not have Gmail Actions links'
       it_behaves_like "a user cannot unsubscribe through footer link"
 
-      it 'has the correct subject' do
-        is_expected.to have_subject /Access to project was granted/
-      end
-
-      it 'contains name of project' do
-        is_expected.to have_body_text /#{project.name}/
-      end
-
-      it 'contains new user role' do
+      it 'contains all the useful information' do
+        is_expected.to have_subject "Request to join the #{project.name_with_namespace} project"
+        is_expected.to have_body_text /#{project.name_with_namespace}/
+        is_expected.to have_body_text /#{namespace_project_project_members_url(project.namespace, project)}/
         is_expected.to have_body_text /#{project_member.human_access}/
+      end
+    end
+
+    describe 'project access denied' do
+      let(:project) { create(:project) }
+      let(:user) { create(:user) }
+      let(:project_member) do
+        project.request_access(user)
+        project.members.request.find_by(user_id: user.id)
+      end
+      subject { Notify.member_access_denied_email('project', project.id, user.id) }
+
+      it_behaves_like 'an email sent from GitLab'
+      it_behaves_like 'it should not have Gmail Actions links'
+      it_behaves_like "a user cannot unsubscribe through footer link"
+
+      it 'contains all the useful information' do
+        is_expected.to have_subject "Access to the #{project.name_with_namespace} project was denied"
+        is_expected.to have_body_text /#{project.name_with_namespace}/
+        is_expected.to have_body_text /#{project.web_url}/
+      end
+    end
+
+    describe 'project access changed' do
+      let(:project) { create(:project) }
+      let(:user) { create(:user) }
+      let(:project_member) { create(:project_member, project: project, user: user) }
+      subject { Notify.member_access_granted_email('project', project_member.id) }
+
+      it_behaves_like 'an email sent from GitLab'
+      it_behaves_like 'it should not have Gmail Actions links'
+      it_behaves_like "a user cannot unsubscribe through footer link"
+
+      it 'contains all the useful information' do
+        is_expected.to have_subject "Access to the #{project.name_with_namespace} project was granted"
+        is_expected.to have_body_text /#{project.name_with_namespace}/
+        is_expected.to have_body_text /#{project.web_url}/
+        is_expected.to have_body_text /#{project_member.human_access}/
+      end
+    end
+
+    def invite_to_project(project:, email:, inviter:)
+      ProjectMember.add_user(project.project_members, 'toto@example.com', Gitlab::Access::DEVELOPER, inviter)
+
+      project.project_members.invite.last
+    end
+
+    describe 'project invitation' do
+      let(:project) { create(:project) }
+      let(:master) { create(:user).tap { |u| project.team << [u, :master] } }
+      let(:project_member) { invite_to_project(project: project, email: 'toto@example.com', inviter: master) }
+
+      subject { Notify.member_invited_email('project', project_member.id, project_member.invite_token) }
+
+      it_behaves_like 'an email sent from GitLab'
+      it_behaves_like 'it should not have Gmail Actions links'
+      it_behaves_like "a user cannot unsubscribe through footer link"
+
+      it 'contains all the useful information' do
+        is_expected.to have_subject "Invitation to join the #{project.name_with_namespace} project"
+        is_expected.to have_body_text /#{project.name_with_namespace}/
+        is_expected.to have_body_text /#{project.web_url}/
+        is_expected.to have_body_text /#{project_member.human_access}/
+        is_expected.to have_body_text /#{project_member.invite_token}/
+      end
+    end
+
+    describe 'project invitation accepted' do
+      let(:project) { create(:project) }
+      let(:invited_user) { create(:user) }
+      let(:master) { create(:user).tap { |u| project.team << [u, :master] } }
+      let(:project_member) do
+        invitee = invite_to_project(project: project, email: 'toto@example.com', inviter: master)
+        invitee.accept_invite!(invited_user)
+        invitee
+      end
+
+      subject { Notify.member_invite_accepted_email('project', project_member.id) }
+
+      it_behaves_like 'an email sent from GitLab'
+      it_behaves_like 'it should not have Gmail Actions links'
+      it_behaves_like "a user cannot unsubscribe through footer link"
+
+      it 'contains all the useful information' do
+        is_expected.to have_subject 'Invitation accepted'
+        is_expected.to have_body_text /#{project.name_with_namespace}/
+        is_expected.to have_body_text /#{project.web_url}/
+        is_expected.to have_body_text /#{project_member.invite_email}/
+        is_expected.to have_body_text /#{invited_user.name}/
+      end
+    end
+
+    describe 'project invitation declined' do
+      let(:project) { create(:project) }
+      let(:master) { create(:user).tap { |u| project.team << [u, :master] } }
+      let(:project_member) do
+        invitee = invite_to_project(project: project, email: 'toto@example.com', inviter: master)
+        invitee.decline_invite!
+        invitee
+      end
+
+      subject { Notify.member_invite_declined_email('project', project.id, project_member.invite_email, master.id) }
+
+      it_behaves_like 'an email sent from GitLab'
+      it_behaves_like 'it should not have Gmail Actions links'
+      it_behaves_like "a user cannot unsubscribe through footer link"
+
+      it 'contains all the useful information' do
+        is_expected.to have_subject 'Invitation declined'
+        is_expected.to have_body_text /#{project.name_with_namespace}/
+        is_expected.to have_body_text /#{project.web_url}/
+        is_expected.to have_body_text /#{project_member.invite_email}/
       end
     end
 
@@ -454,7 +564,7 @@ describe Notify do
 
         context 'when enabled email_author_in_body' do
           before do
-            allow(current_application_settings).to receive(:email_author_in_body).and_return(true)
+            allow_any_instance_of(ApplicationSetting).to receive(:email_author_in_body).and_return(true)
           end
 
           it 'contains a link to note author' do
@@ -535,27 +645,139 @@ describe Notify do
     end
   end
 
-  describe 'group access changed' do
-    let(:group) { create(:group) }
-    let(:user) { create(:user) }
-    let(:membership) { create(:group_member, group: group, user: user) }
+  context 'for a group' do
+    describe 'group access requested' do
+      let(:group) { create(:group) }
+      let(:user) { create(:user) }
+      let(:group_member) do
+        group.request_access(user)
+        group.members.request.find_by(user_id: user.id)
+      end
+      subject { Notify.member_access_requested_email('group', group_member.id) }
 
-    subject { Notify.group_access_granted_email(membership.id) }
+      it_behaves_like 'an email sent from GitLab'
+      it_behaves_like 'it should not have Gmail Actions links'
+      it_behaves_like "a user cannot unsubscribe through footer link"
 
-    it_behaves_like 'an email sent from GitLab'
-    it_behaves_like 'it should not have Gmail Actions links'
-    it_behaves_like "a user cannot unsubscribe through footer link"
-
-    it 'has the correct subject' do
-      is_expected.to have_subject /Access to group was granted/
+      it 'contains all the useful information' do
+        is_expected.to have_subject "Request to join the #{group.name} group"
+        is_expected.to have_body_text /#{group.name}/
+        is_expected.to have_body_text /#{group_group_members_url(group)}/
+        is_expected.to have_body_text /#{group_member.human_access}/
+      end
     end
 
-    it 'contains name of project' do
-      is_expected.to have_body_text /#{group.name}/
+    describe 'group access denied' do
+      let(:group) { create(:group) }
+      let(:user) { create(:user) }
+      let(:group_member) do
+        group.request_access(user)
+        group.members.request.find_by(user_id: user.id)
+      end
+      subject { Notify.member_access_denied_email('group', group.id, user.id) }
+
+      it_behaves_like 'an email sent from GitLab'
+      it_behaves_like 'it should not have Gmail Actions links'
+      it_behaves_like "a user cannot unsubscribe through footer link"
+
+      it 'contains all the useful information' do
+        is_expected.to have_subject "Access to the #{group.name} group was denied"
+        is_expected.to have_body_text /#{group.name}/
+        is_expected.to have_body_text /#{group.web_url}/
+      end
     end
 
-    it 'contains new user role' do
-      is_expected.to have_body_text /#{membership.human_access}/
+    describe 'group access changed' do
+      let(:group) { create(:group) }
+      let(:user) { create(:user) }
+      let(:group_member) { create(:group_member, group: group, user: user) }
+
+      subject { Notify.member_access_granted_email('group', group_member.id) }
+
+      it_behaves_like 'an email sent from GitLab'
+      it_behaves_like 'it should not have Gmail Actions links'
+      it_behaves_like "a user cannot unsubscribe through footer link"
+
+      it 'contains all the useful information' do
+        is_expected.to have_subject "Access to the #{group.name} group was granted"
+        is_expected.to have_body_text /#{group.name}/
+        is_expected.to have_body_text /#{group.web_url}/
+        is_expected.to have_body_text /#{group_member.human_access}/
+      end
+    end
+
+    def invite_to_group(group:, email:, inviter:)
+      GroupMember.add_user(group.group_members, 'toto@example.com', Gitlab::Access::DEVELOPER, inviter)
+
+      group.group_members.invite.last
+    end
+
+    describe 'group invitation' do
+      let(:group) { create(:group) }
+      let(:owner) { create(:user).tap { |u| group.add_user(u, Gitlab::Access::OWNER) } }
+      let(:group_member) { invite_to_group(group: group, email: 'toto@example.com', inviter: owner) }
+
+      subject { Notify.member_invited_email('group', group_member.id, group_member.invite_token) }
+
+      it_behaves_like 'an email sent from GitLab'
+      it_behaves_like 'it should not have Gmail Actions links'
+      it_behaves_like "a user cannot unsubscribe through footer link"
+
+      it 'contains all the useful information' do
+        is_expected.to have_subject "Invitation to join the #{group.name} group"
+        is_expected.to have_body_text /#{group.name}/
+        is_expected.to have_body_text /#{group.web_url}/
+        is_expected.to have_body_text /#{group_member.human_access}/
+        is_expected.to have_body_text /#{group_member.invite_token}/
+      end
+    end
+
+    describe 'group invitation accepted' do
+      let(:group) { create(:group) }
+      let(:invited_user) { create(:user) }
+      let(:owner) { create(:user).tap { |u| group.add_user(u, Gitlab::Access::OWNER) } }
+      let(:group_member) do
+        invitee = invite_to_group(group: group, email: 'toto@example.com', inviter: owner)
+        invitee.accept_invite!(invited_user)
+        invitee
+      end
+
+      subject { Notify.member_invite_accepted_email('group', group_member.id) }
+
+      it_behaves_like 'an email sent from GitLab'
+      it_behaves_like 'it should not have Gmail Actions links'
+      it_behaves_like "a user cannot unsubscribe through footer link"
+
+      it 'contains all the useful information' do
+        is_expected.to have_subject 'Invitation accepted'
+        is_expected.to have_body_text /#{group.name}/
+        is_expected.to have_body_text /#{group.web_url}/
+        is_expected.to have_body_text /#{group_member.invite_email}/
+        is_expected.to have_body_text /#{invited_user.name}/
+      end
+    end
+
+    describe 'group invitation declined' do
+      let(:group) { create(:group) }
+      let(:owner) { create(:user).tap { |u| group.add_user(u, Gitlab::Access::OWNER) } }
+      let(:group_member) do
+        invitee = invite_to_group(group: group, email: 'toto@example.com', inviter: owner)
+        invitee.decline_invite!
+        invitee
+      end
+
+      subject { Notify.member_invite_declined_email('group', group.id, group_member.invite_email, owner.id) }
+
+      it_behaves_like 'an email sent from GitLab'
+      it_behaves_like 'it should not have Gmail Actions links'
+      it_behaves_like "a user cannot unsubscribe through footer link"
+
+      it 'contains all the useful information' do
+        is_expected.to have_subject 'Invitation declined'
+        is_expected.to have_body_text /#{group.name}/
+        is_expected.to have_body_text /#{group.web_url}/
+        is_expected.to have_body_text /#{group_member.invite_email}/
+      end
     end
   end
 
@@ -693,8 +915,9 @@ describe Notify do
     let(:commits) { Commit.decorate(compare.commits, nil) }
     let(:diff_path) { namespace_project_compare_path(project.namespace, project, from: Commit.new(compare.base, project), to: Commit.new(compare.head, project)) }
     let(:send_from_committer_email) { false }
+    let(:diff_refs) { [project.merge_base_commit(sample_image_commit.id, sample_commit.id), project.commit(sample_commit.id)] }
 
-    subject { Notify.repository_push_email(project.id, author_id: user.id, ref: 'refs/heads/master', action: :push, compare: compare, reverse_compare: false, send_from_committer_email: send_from_committer_email) }
+    subject { Notify.repository_push_email(project.id, author_id: user.id, ref: 'refs/heads/master', action: :push, compare: compare, reverse_compare: false, diff_refs: diff_refs, send_from_committer_email: send_from_committer_email) }
 
     it_behaves_like 'it should not have Gmail Actions links'
     it_behaves_like "a user cannot unsubscribe through footer link"
@@ -715,15 +938,15 @@ describe Notify do
       is_expected.to have_body_text /Change some files/
     end
 
-    it 'includes diffs' do
-      is_expected.to have_body_text /def archive_formats_regex/
+    it 'includes diffs with character-level highlighting' do
+      is_expected.to have_body_text /def<\/span> <span class=\"nf\">archive_formats_regex/
     end
 
     it 'contains a link to the diff' do
       is_expected.to have_body_text /#{diff_path}/
     end
 
-    it 'doesn not contain the misleading footer' do
+    it 'does not contain the misleading footer' do
       is_expected.not_to have_body_text /you are a member of/
     end
 
@@ -797,8 +1020,9 @@ describe Notify do
     let(:compare) { Gitlab::Git::Compare.new(project.repository.raw_repository, sample_commit.parent_id, sample_commit.id) }
     let(:commits) { Commit.decorate(compare.commits, nil) }
     let(:diff_path) { namespace_project_commit_path(project.namespace, project, commits.first) }
+    let(:diff_refs) { [project.merge_base_commit(sample_commit.parent_id, sample_commit.id), project.commit(sample_commit.id)] }
 
-    subject { Notify.repository_push_email(project.id, author_id: user.id, ref: 'refs/heads/master', action: :push, compare: compare) }
+    subject { Notify.repository_push_email(project.id, author_id: user.id, ref: 'refs/heads/master', action: :push, compare: compare, diff_refs: diff_refs) }
 
     it_behaves_like 'it should show Gmail Actions View Commit link'
     it_behaves_like "a user cannot unsubscribe through footer link"
@@ -819,8 +1043,8 @@ describe Notify do
       is_expected.to have_body_text /Change some files/
     end
 
-    it 'includes diffs' do
-      is_expected.to have_body_text /def archive_formats_regex/
+    it 'includes diffs with character-level highlighting' do
+      is_expected.to have_body_text /def<\/span> <span class=\"nf\">archive_formats_regex/
     end
 
     it 'contains a link to the diff' do

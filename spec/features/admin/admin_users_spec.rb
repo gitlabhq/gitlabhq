@@ -19,7 +19,7 @@ describe "Admin::Users", feature: true  do
 
     describe 'Two-factor Authentication filters' do
       it 'counts users who have enabled 2FA' do
-        create(:user, two_factor_enabled: true)
+        create(:user, :two_factor)
 
         visit admin_users_path
 
@@ -29,7 +29,7 @@ describe "Admin::Users", feature: true  do
       end
 
       it 'filters by users who have enabled 2FA' do
-        user = create(:user, two_factor_enabled: true)
+        user = create(:user, :two_factor)
 
         visit admin_users_path
         click_link '2FA Enabled'
@@ -38,7 +38,7 @@ describe "Admin::Users", feature: true  do
       end
 
       it 'counts users who have not enabled 2FA' do
-        create(:user, two_factor_enabled: false)
+        create(:user)
 
         visit admin_users_path
 
@@ -48,7 +48,7 @@ describe "Admin::Users", feature: true  do
       end
 
       it 'filters by users who have not enabled 2FA' do
-        user = create(:user, two_factor_enabled: false)
+        user = create(:user)
 
         visit admin_users_path
         click_link '2FA Disabled'
@@ -144,22 +144,22 @@ describe "Admin::Users", feature: true  do
         before { click_link 'Impersonate' }
 
         it 'logs in as the user when impersonate is clicked' do
-          page.within '.sidebar-user .username' do
-            expect(page).to have_content(another_user.username)
+          page.within '.sidebar-wrapper' do
+            expect(page.find('.sidebar-user')['data-user']).to eql(another_user.username)
           end
         end
 
         it 'sees impersonation log out icon' do
           icon = first('.fa.fa-user-secret')
 
-          expect(icon).to_not eql nil
+          expect(icon).not_to eql nil
         end
 
         it 'can log out of impersonated user back to original user' do
           find(:css, 'li.impersonation a').click
 
-          page.within '.sidebar-user .username' do
-            expect(page).to have_content(@user.username)
+          page.within '.sidebar-wrapper' do
+            expect(page.find('.sidebar-user')['data-user']).to eql(@user.username)
           end
         end
 
@@ -173,7 +173,7 @@ describe "Admin::Users", feature: true  do
 
     describe 'Two-factor Authentication status' do
       it 'shows when enabled' do
-        @user.update_attribute(:two_factor_enabled, true)
+        @user.update_attribute(:otp_required_for_login, true)
 
         visit admin_user_path(@user)
 

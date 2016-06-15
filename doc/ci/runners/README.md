@@ -63,10 +63,10 @@ instance.
 Now simply register the runner as any runner:
 
 ```
-sudo gitlab-runner register
+sudo gitlab-ci-multi-runner register
 ```
 
-Shared runners are enabled by default as of GitLab 8.2, but can be disabled with the 
+Shared runners are enabled by default as of GitLab 8.2, but can be disabled with the
 `DISABLE SHARED RUNNERS` button. Previous versions of GitLab defaulted shared runners to
 disabled.
 
@@ -93,7 +93,7 @@ setup a specific runner for this project.
 To register the runner, run the command below and follow instructions:
 
 ```
-sudo gitlab-runner register
+sudo gitlab-ci-multi-runner register
 ```
 
 ###  Making an existing Shared Runner Specific
@@ -125,7 +125,13 @@ shared runners will only run the jobs they are equipped to run.
 For instance, at GitLab we have runners tagged with "rails" if they contain
 the appropriate dependencies to run Rails test suites.
 
-### Be Careful with Sensitive Information
+### Prevent runner with tags from picking jobs without tags
+
+You can configure a runner to prevent it from picking jobs with tags when
+the runnner does not have tags assigned. This setting is available on each
+runner in *Project Settings* > *Runners*.
+
+### Be careful with sensitive information
 
 If you can run a build on a runner, you can get access to any code it runs
 and get the token of the runner. With shared runners, this means that anyone
