@@ -20,7 +20,7 @@ class AddDeployments < ActiveRecord::Migration
     end
 
     add_index :deployments, :project_id
-    add_index :deployments, [:project_id, :iid]
+    add_index :deployments, [:project_id, :iid], unique: true
     add_index :deployments, [:project_id, :environment_id]
     add_index :deployments, [:project_id, :environment_id, :iid]
   end

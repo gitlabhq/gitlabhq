@@ -399,7 +399,7 @@ ActiveRecord::Schema.define(version: 20160610301627) do
 
   add_index "deployments", ["project_id", "environment_id", "iid"], name: "index_deployments_on_project_id_and_environment_id_and_iid", using: :btree
   add_index "deployments", ["project_id", "environment_id"], name: "index_deployments_on_project_id_and_environment_id", using: :btree
-  add_index "deployments", ["project_id", "iid"], name: "index_deployments_on_project_id_and_iid", using: :btree
+  add_index "deployments", ["project_id", "iid"], name: "index_deployments_on_project_id_and_iid", unique: true, using: :btree
   add_index "deployments", ["project_id"], name: "index_deployments_on_project_id", using: :btree
 
   create_table "emails", force: :cascade do |t|
@@ -628,3 +628,470 @@ ActiveRecord::Schema.define(version: 20160610301627) do
   add_index "merge_requests", ["title"], name: "index_merge_requests_on_title", using: :btree
   add_index "merge_requests", ["title"], name: "index_merge_requests_on_title_trigram", using: :gin, opclasses: {"title"=>"gin_trgm_ops"}
 
+  create_table "milestones", force: :cascade do |t|
+    t.string   "title",       null: false
+    t.integer  "project_id",  null: false
+    t.text     "description"
+    t.date     "due_date"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "state"
+    t.integer  "iid"
+  end
+
+  add_index "milestones", ["created_at", "id"], name: "index_milestones_on_created_at_and_id", using: :btree
+  add_index "milestones", ["description"], name: "index_milestones_on_description_trigram", using: :gin, opclasses: {"description"=>"gin_trgm_ops"}
+  add_index "milestones", ["due_date"], name: "index_milestones_on_due_date", using: :btree
+  add_index "milestones", ["project_id", "iid"], name: "index_milestones_on_project_id_and_iid", unique: true, using: :btree
+  add_index "milestones", ["project_id"], name: "index_milestones_on_project_id", using: :btree
+  add_index "milestones", ["title"], name: "index_milestones_on_title", using: :btree
+  add_index "milestones", ["title"], name: "index_milestones_on_title_trigram", using: :gin, opclasses: {"title"=>"gin_trgm_ops"}
+
+  create_table "namespaces", force: :cascade do |t|
+    t.string   "name",                                  null: false
+    t.string   "path",                                  null: false
+    t.integer  "owner_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "type"
+    t.string   "description",           default: "",    null: false
+    t.string   "avatar"
+    t.boolean  "share_with_group_lock", default: false
+    t.integer  "visibility_level",      default: 20,    null: false
+  end
+
+  add_index "namespaces", ["created_at", "id"], name: "index_namespaces_on_created_at_and_id", using: :btree
+  add_index "namespaces", ["name"], name: "index_namespaces_on_name", unique: true, using: :btree
+  add_index "namespaces", ["name"], name: "index_namespaces_on_name_trigram", using: :gin, opclasses: {"name"=>"gin_trgm_ops"}
+  add_index "namespaces", ["owner_id"], name: "index_namespaces_on_owner_id", using: :btree
+  add_index "namespaces", ["path"], name: "index_namespaces_on_path", unique: true, using: :btree
+  add_index "namespaces", ["path"], name: "index_namespaces_on_path_trigram", using: :gin, opclasses: {"path"=>"gin_trgm_ops"}
+  add_index "namespaces", ["type"], name: "index_namespaces_on_type", using: :btree
+  add_index "namespaces", ["visibility_level"], name: "index_namespaces_on_visibility_level", using: :btree
+
+  create_table "notes", force: :cascade do |t|
+    t.text     "note"
+    t.string   "noteable_type"
+    t.integer  "author_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "project_id"
+    t.string   "attachment"
+    t.string   "line_code"
+    t.string   "commit_id"
+    t.integer  "noteable_id"
+    t.boolean  "system",        default: false, null: false
+    t.text     "st_diff"
+    t.integer  "updated_by_id"
+    t.string   "type"
+  end
+
+  add_index "notes", ["author_id"], name: "index_notes_on_author_id", using: :btree
+  add_index "notes", ["commit_id"], name: "index_notes_on_commit_id", using: :btree
+  add_index "notes", ["created_at", "id"], name: "index_notes_on_created_at_and_id", using: :btree
+  add_index "notes", ["created_at"], name: "index_notes_on_created_at", using: :btree
+  add_index "notes", ["line_code"], name: "index_notes_on_line_code", using: :btree
+  add_index "notes", ["note"], name: "index_notes_on_note_trigram", using: :gin, opclasses: {"note"=>"gin_trgm_ops"}
+  add_index "notes", ["noteable_id", "noteable_type"], name: "index_notes_on_noteable_id_and_noteable_type", using: :btree
+  add_index "notes", ["noteable_type"], name: "index_notes_on_noteable_type", using: :btree
+  add_index "notes", ["project_id", "noteable_type"], name: "index_notes_on_project_id_and_noteable_type", using: :btree
+  add_index "notes", ["project_id"], name: "index_notes_on_project_id", using: :btree
+  add_index "notes", ["updated_at"], name: "index_notes_on_updated_at", using: :btree
+
+  create_table "notification_settings", force: :cascade do |t|
+    t.integer  "user_id",                 null: false
+    t.integer  "source_id"
+    t.string   "source_type"
+    t.integer  "level",       default: 0, null: false
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
+  end
+
+  add_index "notification_settings", ["source_id", "source_type"], name: "index_notification_settings_on_source_id_and_source_type", using: :btree
+  add_index "notification_settings", ["user_id", "source_id", "source_type"], name: "index_notifications_on_user_id_and_source_id_and_source_type", unique: true, using: :btree
+  add_index "notification_settings", ["user_id"], name: "index_notification_settings_on_user_id", using: :btree
+
+  create_table "oauth_access_grants", force: :cascade do |t|
+    t.integer  "resource_owner_id", null: false
+    t.integer  "application_id",    null: false
+    t.string   "token",             null: false
+    t.integer  "expires_in",        null: false
+    t.text     "redirect_uri",      null: false
+    t.datetime "created_at",        null: false
+    t.datetime "revoked_at"
+    t.string   "scopes"
+  end
+
+  add_index "oauth_access_grants", ["token"], name: "index_oauth_access_grants_on_token", unique: true, using: :btree
+
+  create_table "oauth_access_tokens", force: :cascade do |t|
+    t.integer  "resource_owner_id"
+    t.integer  "application_id"
+    t.string   "token",             null: false
+    t.string   "refresh_token"
+    t.integer  "expires_in"
+    t.datetime "revoked_at"
+    t.datetime "created_at",        null: false
+    t.string   "scopes"
+  end
+
+  add_index "oauth_access_tokens", ["refresh_token"], name: "index_oauth_access_tokens_on_refresh_token", unique: true, using: :btree
+  add_index "oauth_access_tokens", ["resource_owner_id"], name: "index_oauth_access_tokens_on_resource_owner_id", using: :btree
+  add_index "oauth_access_tokens", ["token"], name: "index_oauth_access_tokens_on_token", unique: true, using: :btree
+
+  create_table "oauth_applications", force: :cascade do |t|
+    t.string   "name",                      null: false
+    t.string   "uid",                       null: false
+    t.string   "secret",                    null: false
+    t.text     "redirect_uri",              null: false
+    t.string   "scopes",       default: "", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "owner_id"
+    t.string   "owner_type"
+  end
+
+  add_index "oauth_applications", ["owner_id", "owner_type"], name: "index_oauth_applications_on_owner_id_and_owner_type", using: :btree
+  add_index "oauth_applications", ["uid"], name: "index_oauth_applications_on_uid", unique: true, using: :btree
+
+  create_table "project_group_links", force: :cascade do |t|
+    t.integer  "project_id",                null: false
+    t.integer  "group_id",                  null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "group_access", default: 30, null: false
+  end
+
+  create_table "project_import_data", force: :cascade do |t|
+    t.integer "project_id"
+    t.text    "data"
+    t.text    "encrypted_credentials"
+    t.string  "encrypted_credentials_iv"
+    t.string  "encrypted_credentials_salt"
+  end
+
+  create_table "projects", force: :cascade do |t|
+    t.string   "name"
+    t.string   "path"
+    t.text     "description"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "creator_id"
+    t.boolean  "issues_enabled",                     default: true,  null: false
+    t.boolean  "merge_requests_enabled",             default: true,  null: false
+    t.boolean  "wiki_enabled",                       default: true,  null: false
+    t.integer  "namespace_id"
+    t.boolean  "snippets_enabled",                   default: true,  null: false
+    t.datetime "last_activity_at"
+    t.string   "import_url"
+    t.integer  "visibility_level",                   default: 0,     null: false
+    t.boolean  "archived",                           default: false, null: false
+    t.string   "avatar"
+    t.string   "import_status"
+    t.float    "repository_size",                    default: 0.0
+    t.integer  "star_count",                         default: 0,     null: false
+    t.string   "import_type"
+    t.string   "import_source"
+    t.integer  "commit_count",                       default: 0
+    t.text     "import_error"
+    t.integer  "ci_id"
+    t.boolean  "builds_enabled",                     default: true,  null: false
+    t.boolean  "shared_runners_enabled",             default: true,  null: false
+    t.string   "runners_token"
+    t.string   "build_coverage_regex"
+    t.boolean  "build_allow_git_fetch",              default: true,  null: false
+    t.integer  "build_timeout",                      default: 3600,  null: false
+    t.boolean  "pending_delete",                     default: false
+    t.boolean  "public_builds",                      default: true,  null: false
+    t.integer  "pushes_since_gc",                    default: 0
+    t.boolean  "last_repository_check_failed"
+    t.datetime "last_repository_check_at"
+    t.boolean  "container_registry_enabled"
+    t.boolean  "only_allow_merge_if_build_succeeds", default: false, null: false
+    t.boolean  "has_external_issue_tracker"
+  end
+
+  add_index "projects", ["builds_enabled", "shared_runners_enabled"], name: "index_projects_on_builds_enabled_and_shared_runners_enabled", using: :btree
+  add_index "projects", ["builds_enabled"], name: "index_projects_on_builds_enabled", using: :btree
+  add_index "projects", ["ci_id"], name: "index_projects_on_ci_id", using: :btree
+  add_index "projects", ["created_at", "id"], name: "index_projects_on_created_at_and_id", using: :btree
+  add_index "projects", ["creator_id"], name: "index_projects_on_creator_id", using: :btree
+  add_index "projects", ["description"], name: "index_projects_on_description_trigram", using: :gin, opclasses: {"description"=>"gin_trgm_ops"}
+  add_index "projects", ["last_activity_at"], name: "index_projects_on_last_activity_at", using: :btree
+  add_index "projects", ["last_repository_check_failed"], name: "index_projects_on_last_repository_check_failed", using: :btree
+  add_index "projects", ["name"], name: "index_projects_on_name_trigram", using: :gin, opclasses: {"name"=>"gin_trgm_ops"}
+  add_index "projects", ["namespace_id"], name: "index_projects_on_namespace_id", using: :btree
+  add_index "projects", ["path"], name: "index_projects_on_path", using: :btree
+  add_index "projects", ["path"], name: "index_projects_on_path_trigram", using: :gin, opclasses: {"path"=>"gin_trgm_ops"}
+  add_index "projects", ["pending_delete"], name: "index_projects_on_pending_delete", using: :btree
+  add_index "projects", ["runners_token"], name: "index_projects_on_runners_token", using: :btree
+  add_index "projects", ["star_count"], name: "index_projects_on_star_count", using: :btree
+  add_index "projects", ["visibility_level"], name: "index_projects_on_visibility_level", using: :btree
+
+  create_table "protected_branches", force: :cascade do |t|
+    t.integer  "project_id",                          null: false
+    t.string   "name",                                null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean  "developers_can_push", default: false, null: false
+  end
+
+  add_index "protected_branches", ["project_id"], name: "index_protected_branches_on_project_id", using: :btree
+
+  create_table "releases", force: :cascade do |t|
+    t.string   "tag"
+    t.text     "description"
+    t.integer  "project_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "releases", ["project_id", "tag"], name: "index_releases_on_project_id_and_tag", using: :btree
+  add_index "releases", ["project_id"], name: "index_releases_on_project_id", using: :btree
+
+  create_table "sent_notifications", force: :cascade do |t|
+    t.integer "project_id"
+    t.integer "noteable_id"
+    t.string  "noteable_type"
+    t.integer "recipient_id"
+    t.string  "commit_id"
+    t.string  "reply_key",     null: false
+    t.string  "line_code"
+  end
+
+  add_index "sent_notifications", ["reply_key"], name: "index_sent_notifications_on_reply_key", unique: true, using: :btree
+
+  create_table "services", force: :cascade do |t|
+    t.string   "type"
+    t.string   "title"
+    t.integer  "project_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean  "active",                default: false,    null: false
+    t.text     "properties"
+    t.boolean  "template",              default: false
+    t.boolean  "push_events",           default: true
+    t.boolean  "issues_events",         default: true
+    t.boolean  "merge_requests_events", default: true
+    t.boolean  "tag_push_events",       default: true
+    t.boolean  "note_events",           default: true,     null: false
+    t.boolean  "build_events",          default: false,    null: false
+    t.string   "category",              default: "common", null: false
+    t.boolean  "default",               default: false
+    t.boolean  "wiki_page_events",      default: true
+  end
+
+  add_index "services", ["category"], name: "index_services_on_category", using: :btree
+  add_index "services", ["created_at", "id"], name: "index_services_on_created_at_and_id", using: :btree
+  add_index "services", ["default"], name: "index_services_on_default", using: :btree
+  add_index "services", ["project_id"], name: "index_services_on_project_id", using: :btree
+  add_index "services", ["template"], name: "index_services_on_template", using: :btree
+
+  create_table "snippets", force: :cascade do |t|
+    t.string   "title"
+    t.text     "content"
+    t.integer  "author_id",                    null: false
+    t.integer  "project_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "file_name"
+    t.string   "type"
+    t.integer  "visibility_level", default: 0, null: false
+  end
+
+  add_index "snippets", ["author_id"], name: "index_snippets_on_author_id", using: :btree
+  add_index "snippets", ["created_at", "id"], name: "index_snippets_on_created_at_and_id", using: :btree
+  add_index "snippets", ["created_at"], name: "index_snippets_on_created_at", using: :btree
+  add_index "snippets", ["file_name"], name: "index_snippets_on_file_name_trigram", using: :gin, opclasses: {"file_name"=>"gin_trgm_ops"}
+  add_index "snippets", ["project_id"], name: "index_snippets_on_project_id", using: :btree
+  add_index "snippets", ["title"], name: "index_snippets_on_title_trigram", using: :gin, opclasses: {"title"=>"gin_trgm_ops"}
+  add_index "snippets", ["updated_at"], name: "index_snippets_on_updated_at", using: :btree
+  add_index "snippets", ["visibility_level"], name: "index_snippets_on_visibility_level", using: :btree
+
+  create_table "spam_logs", force: :cascade do |t|
+    t.integer  "user_id"
+    t.string   "source_ip"
+    t.string   "user_agent"
+    t.boolean  "via_api"
+    t.integer  "project_id"
+    t.string   "noteable_type"
+    t.string   "title"
+    t.text     "description"
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+  end
+
+  create_table "subscriptions", force: :cascade do |t|
+    t.integer  "user_id"
+    t.integer  "subscribable_id"
+    t.string   "subscribable_type"
+    t.boolean  "subscribed"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "subscriptions", ["subscribable_id", "subscribable_type", "user_id"], name: "subscriptions_user_id_and_ref_fields", unique: true, using: :btree
+
+  create_table "taggings", force: :cascade do |t|
+    t.integer  "tag_id"
+    t.integer  "taggable_id"
+    t.string   "taggable_type"
+    t.integer  "tagger_id"
+    t.string   "tagger_type"
+    t.string   "context"
+    t.datetime "created_at"
+  end
+
+  add_index "taggings", ["tag_id", "taggable_id", "taggable_type", "context", "tagger_id", "tagger_type"], name: "taggings_idx", unique: true, using: :btree
+  add_index "taggings", ["taggable_id", "taggable_type", "context"], name: "index_taggings_on_taggable_id_and_taggable_type_and_context", using: :btree
+
+  create_table "tags", force: :cascade do |t|
+    t.string  "name"
+    t.integer "taggings_count", default: 0
+  end
+
+  add_index "tags", ["name"], name: "index_tags_on_name", unique: true, using: :btree
+
+  create_table "todos", force: :cascade do |t|
+    t.integer  "user_id",     null: false
+    t.integer  "project_id",  null: false
+    t.integer  "target_id"
+    t.string   "target_type", null: false
+    t.integer  "author_id"
+    t.integer  "action",      null: false
+    t.string   "state",       null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "note_id"
+    t.string   "commit_id"
+  end
+
+  add_index "todos", ["author_id"], name: "index_todos_on_author_id", using: :btree
+  add_index "todos", ["commit_id"], name: "index_todos_on_commit_id", using: :btree
+  add_index "todos", ["note_id"], name: "index_todos_on_note_id", using: :btree
+  add_index "todos", ["project_id"], name: "index_todos_on_project_id", using: :btree
+  add_index "todos", ["state"], name: "index_todos_on_state", using: :btree
+  add_index "todos", ["target_type", "target_id"], name: "index_todos_on_target_type_and_target_id", using: :btree
+  add_index "todos", ["user_id"], name: "index_todos_on_user_id", using: :btree
+
+  create_table "u2f_registrations", force: :cascade do |t|
+    t.text     "certificate"
+    t.string   "key_handle"
+    t.string   "public_key"
+    t.integer  "counter"
+    t.integer  "user_id"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+  end
+
+  add_index "u2f_registrations", ["key_handle"], name: "index_u2f_registrations_on_key_handle", using: :btree
+  add_index "u2f_registrations", ["user_id"], name: "index_u2f_registrations_on_user_id", using: :btree
+
+  create_table "users", force: :cascade do |t|
+    t.string   "email",                       default: "",    null: false
+    t.string   "encrypted_password",          default: "",    null: false
+    t.string   "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
+    t.integer  "sign_in_count",               default: 0
+    t.datetime "current_sign_in_at"
+    t.datetime "last_sign_in_at"
+    t.string   "current_sign_in_ip"
+    t.string   "last_sign_in_ip"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "name"
+    t.boolean  "admin",                       default: false, null: false
+    t.integer  "projects_limit",              default: 10
+    t.string   "skype",                       default: "",    null: false
+    t.string   "linkedin",                    default: "",    null: false
+    t.string   "twitter",                     default: "",    null: false
+    t.string   "authentication_token"
+    t.integer  "theme_id",                    default: 1,     null: false
+    t.string   "bio"
+    t.integer  "failed_attempts",             default: 0
+    t.datetime "locked_at"
+    t.string   "username"
+    t.boolean  "can_create_group",            default: true,  null: false
+    t.boolean  "can_create_team",             default: true,  null: false
+    t.string   "state"
+    t.integer  "color_scheme_id",             default: 1,     null: false
+    t.datetime "password_expires_at"
+    t.integer  "created_by_id"
+    t.datetime "last_credential_check_at"
+    t.string   "avatar"
+    t.string   "confirmation_token"
+    t.datetime "confirmed_at"
+    t.datetime "confirmation_sent_at"
+    t.string   "unconfirmed_email"
+    t.boolean  "hide_no_ssh_key",             default: false
+    t.string   "website_url",                 default: "",    null: false
+    t.string   "notification_email"
+    t.boolean  "hide_no_password",            default: false
+    t.boolean  "password_automatically_set",  default: false
+    t.string   "location"
+    t.string   "encrypted_otp_secret"
+    t.string   "encrypted_otp_secret_iv"
+    t.string   "encrypted_otp_secret_salt"
+    t.boolean  "otp_required_for_login",      default: false, null: false
+    t.text     "otp_backup_codes"
+    t.string   "public_email",                default: "",    null: false
+    t.integer  "dashboard",                   default: 0
+    t.integer  "project_view",                default: 0
+    t.integer  "consumed_timestep"
+    t.integer  "layout",                      default: 0
+    t.boolean  "hide_project_limit",          default: false
+    t.string   "unlock_token"
+    t.datetime "otp_grace_period_started_at"
+    t.boolean  "ldap_email",                  default: false, null: false
+    t.boolean  "external",                    default: false
+  end
+
+  add_index "users", ["admin"], name: "index_users_on_admin", using: :btree
+  add_index "users", ["authentication_token"], name: "index_users_on_authentication_token", unique: true, using: :btree
+  add_index "users", ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true, using: :btree
+  add_index "users", ["created_at", "id"], name: "index_users_on_created_at_and_id", using: :btree
+  add_index "users", ["current_sign_in_at"], name: "index_users_on_current_sign_in_at", using: :btree
+  add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
+  add_index "users", ["email"], name: "index_users_on_email_trigram", using: :gin, opclasses: {"email"=>"gin_trgm_ops"}
+  add_index "users", ["name"], name: "index_users_on_name", using: :btree
+  add_index "users", ["name"], name: "index_users_on_name_trigram", using: :gin, opclasses: {"name"=>"gin_trgm_ops"}
+  add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
+  add_index "users", ["state"], name: "index_users_on_state", using: :btree
+  add_index "users", ["username"], name: "index_users_on_username", using: :btree
+  add_index "users", ["username"], name: "index_users_on_username_trigram", using: :gin, opclasses: {"username"=>"gin_trgm_ops"}
+
+  create_table "users_star_projects", force: :cascade do |t|
+    t.integer  "project_id", null: false
+    t.integer  "user_id",    null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "users_star_projects", ["project_id"], name: "index_users_star_projects_on_project_id", using: :btree
+  add_index "users_star_projects", ["user_id", "project_id"], name: "index_users_star_projects_on_user_id_and_project_id", unique: true, using: :btree
+  add_index "users_star_projects", ["user_id"], name: "index_users_star_projects_on_user_id", using: :btree
+
+  create_table "web_hooks", force: :cascade do |t|
+    t.string   "url",                     limit: 2000
+    t.integer  "project_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "type",                                 default: "ProjectHook"
+    t.integer  "service_id"
+    t.boolean  "push_events",                          default: true,          null: false
+    t.boolean  "issues_events",                        default: false,         null: false
+    t.boolean  "merge_requests_events",                default: false,         null: false
+    t.boolean  "tag_push_events",                      default: false
+    t.boolean  "note_events",                          default: false,         null: false
+    t.boolean  "enable_ssl_verification",              default: true
+    t.boolean  "build_events",                         default: false,         null: false
+    t.boolean  "wiki_page_events",                     default: false,         null: false
+    t.string   "token"
+  end
+
+  add_index "web_hooks", ["created_at", "id"], name: "index_web_hooks_on_created_at_and_id", using: :btree
+  add_index "web_hooks", ["project_id"], name: "index_web_hooks_on_project_id", using: :btree
+
+  add_foreign_key "u2f_registrations", "users"
+end
