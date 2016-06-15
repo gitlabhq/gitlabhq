@@ -28,63 +28,73 @@ module Gitlab
       # Updates the value of a column in batches.
       #
       # This method updates the table in batches of 5% of the total row count.
-      # Any data inserted while running this method (or after it has finished
-      # running) is _not_ updated automatically.
+      # This method will continue updating rows until no rows remain.
+      #
+      # When given a block this method will yield to values to the block:
+      #
+      # 1. An instance of `Arel::Table` for the table that is being updated.
+      # 2. The query to run as an Arel object.
+      #
+      # By supplying a block one can add extra conditions to the queries being
+      # executed. Note that the same block is used for _all_ queries.
+      #
+      # Example:
+      #
+      #     update_column_in_batches(:projects, :foo, 10) do |table, query|
+      #       query.where(table[:some_column].eq('hello'))
+      #     end
+      #
+      # This would result in this method updating only rows there
+      # `projects.some_column` equals "hello".
       #
       # table - The name of the table.
       # column - The name of the column to update.
       # value - The value for the column.
       def update_column_in_batches(table, column, value)
-        quoted_table = quote_table_name(table)
-        quoted_column = quote_column_name(column)
-
-        ##
-        # Workaround for #17711
-        #
-        # It looks like for MySQL `ActiveRecord::Base.conntection.quote(true)`
-        # returns correct value (1), but `ActiveRecord::Migration.new.quote`
-        # returns incorrect value ('true'), which causes migrations to fail.
-        #
-        quoted_value = connection.quote(value)
+        table = Arel::Table.new(table)
         processed = 0
 
-        total = exec_query("SELECT COUNT(*) AS count FROM #{quoted_table}").
-          to_hash.
-          first['count'].
-          to_i
+        count_arel = table.project(Arel.star.count.as('count'))
+        count_arel = yield table, count_arel if block_given?
+
+        total = exec_query(count_arel.to_sql).to_hash.first['count'].to_i
 
         # Update in batches of 5% until we run out of any rows to update.
         batch_size = ((total / 100.0) * 5.0).ceil
 
         loop do
-          start_row = exec_query(%Q{
-            SELECT id
-            FROM #{quoted_table}
-            ORDER BY id ASC
-            LIMIT 1 OFFSET #{processed}
-          }).to_hash.first
+          start_arel = table.project(table[:id]).
+            order(table[:id].asc).
+            take(1).
+            skip(processed)
+
+          start_arel = yield table, start_arel if block_given?
+          start_row = exec_query(start_arel.to_sql).to_hash.first
 
           # There are no more rows to process
           break unless start_row
 
-          stop_row = exec_query(%Q{
-            SELECT id
-            FROM #{quoted_table}
-            ORDER BY id ASC
-            LIMIT 1 OFFSET #{processed + batch_size}
-          }).to_hash.first
+          stop_arel = table.project(table[:id]).
+            order(table[:id].asc).
+            take(1).
+            skip(processed + batch_size)
 
-          query = %Q{
-            UPDATE #{quoted_table}
-            SET #{quoted_column} = #{quoted_value}
-            WHERE id >= #{start_row['id']}
-          }
+          stop_arel = yield table, stop_arel if block_given?
+          stop_row = exec_query(stop_arel.to_sql).to_hash.first
+
+          update_manager = Arel::UpdateManager.new(ActiveRecord::Base)
+
+          update_arel = update_manager.table(table).
+            set([[table[column], value]]).
+            where(table[:id].gteq(start_row['id']))
+
+          update_arel = yield table, update_arel if block_given?
 
           if stop_row
-            query += " AND id < #{stop_row['id']}"
+            update_arel = update_arel.where(table[:id].lt(stop_row['id']))
           end
 
-          execute(query)
+          execute(update_arel.to_sql)
 
           processed += batch_size
         end
@@ -95,9 +105,9 @@ module Gitlab
       # This method runs the following steps:
       #
       # 1. Add the column with a default value of NULL.
-      # 2. Update all existing rows in batches.
-      # 3. Change the default value of the column to the specified value.
-      # 4. Update any remaining rows.
+      # 2. Change the default value of the column to the specified value.
+      # 3. Update all existing rows in batches.
+      # 4. Set a `NOT NULL` constraint on the column if desired (the default).
       #
       # These steps ensure a column can be added to a large and commonly used
       # table without locking the entire table for the duration of the table
@@ -109,7 +119,10 @@ module Gitlab
       # default - The default value for the column.
       # allow_null - When set to `true` the column will allow NULL values, the
       #              default is to not allow NULL values.
-      def add_column_with_default(table, column, type, default:, allow_null: false)
+      #
+      # This method can also take a block which is passed directly to the
+      # `update_column_in_batches` method.
+      def add_column_with_default(table, column, type, default:, allow_null: false, &block)
         if transaction_open?
           raise 'add_column_with_default can not be run inside a transaction, ' \
             'you can disable transactions by calling disable_ddl_transaction! ' \
@@ -126,7 +139,7 @@ module Gitlab
 
         begin
           transaction do
-            update_column_in_batches(table, column, default)
+            update_column_in_batches(table, column, default, &block)
 
             change_column_null(table, column, false) unless allow_null
           end
