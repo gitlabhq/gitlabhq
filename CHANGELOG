@@ -77,6 +77,7 @@ v 8.9.0 (unreleased)
   - RepositoryCheck::SingleRepositoryWorker public and private methods are now instrumented
   - Improve issuables APIs performance when accessing notes !4471
   - External links now open in a new tab
+  - Prevent default actions of disabled buttons and links
   - Markdown editor now correctly resets the input value on edit cancellation !4175
   - Toggling a task list item in a issue/mr description does not creates a Todo for mentions
   - Improved UX of date pickers on issue & milestone forms

@@ -32,5 +32,12 @@
       .attr    'title', newTitle
       .tooltip 'fixTitle'
 
+  gl.utils.preventDisabledButtons = ->
+
+    $('.btn').click (e) ->
+      if $(this).hasClass 'disabled'
+        e.preventDefault()
+        e.stopImmediatePropagation()
+        return false
 
 ) window
