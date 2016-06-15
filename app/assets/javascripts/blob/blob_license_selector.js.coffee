@@ -1,30 +1,9 @@
-class @BlobLicenseSelector
-  licenseRegex: /^(.+\/)?(licen[sc]e|copying)($|\.)/i
+#= require blob/template_selector
 
-  constructor: (editor) ->
-    @$licenseSelector = $('.js-license-selector')
-    $fileNameInput = $('#file_name')
+class @BlobLicenseSelector extends TemplateSelector
+  requestFile: (query) ->
+    data =
+      project: @dropdown.data('project')
+      fullname: @dropdown.data('fullname')
 
-    initialFileNameValue = if $fileNameInput.length
-      $fileNameInput.val()
-    else if $('.editor-file-name').length
-      $('.editor-file-name').text().trim()
-
-    @toggleLicenseSelector(initialFileNameValue)
-
-    if $fileNameInput
-      $fileNameInput.on 'keyup blur', (e) =>
-        @toggleLicenseSelector($(e.target).val())
-
-    $('select.license-select').on 'change', (e) ->
-      data =
-        project: $(this).data('project')
-        fullname: $(this).data('fullname')
-      Api.licenseText $(this).val(), data, (license) ->
-        editor.setValue(license.content, -1)
-
-  toggleLicenseSelector: (fileName) =>
-    if @licenseRegex.test(fileName)
-      @$licenseSelector.show()
-    else
-      @$licenseSelector.hide()
+    Api.licenseText query.id, data, @requestFileSuccess.bind(@)
