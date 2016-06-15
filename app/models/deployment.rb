@@ -1,15 +1,13 @@
 class Deployment < ActiveRecord::Base
   include InternalId
 
-  belongs_to :project
-  belongs_to :environment
+  belongs_to :project, required: true
+  belongs_to :environment, required: true
   belongs_to :user
   belongs_to :deployable, polymorphic: true
 
   validates :sha, presence: true
   validates :ref, presence: true
-  validates :project, associated: true
-  validates :environment, associated: true
 
   delegate :name, to: :environment, prefix: true
 

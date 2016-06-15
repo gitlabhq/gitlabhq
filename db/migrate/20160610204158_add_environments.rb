@@ -6,7 +6,7 @@ class AddEnvironments < ActiveRecord::Migration
 
   def change
     create_table :environments, force: true do |t|
-      t.integer  :project_id
+      t.integer  :project_id, null: false
       t.string   :name,       null: false
       t.datetime :created_at
       t.datetime :updated_at

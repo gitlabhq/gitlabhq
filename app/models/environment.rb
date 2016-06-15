@@ -1,5 +1,5 @@
 class Environment < ActiveRecord::Base
-  belongs_to :project
+  belongs_to :project, required: true
 
   has_many :deployments
 
@@ -9,8 +9,6 @@ class Environment < ActiveRecord::Base
             length: { within: 0..255 },
             format: { with: Gitlab::Regex.environment_name_regex,
                       message: Gitlab::Regex.environment_name_regex_message }
-
-  validates :project, associated: true
 
   def last_deployment
     deployments.last

@@ -384,12 +384,12 @@ ActiveRecord::Schema.define(version: 20160610301627) do
   add_index "deploy_keys_projects", ["project_id"], name: "index_deploy_keys_projects_on_project_id", using: :btree
 
   create_table "deployments", force: :cascade do |t|
-    t.integer  "iid"
-    t.integer  "project_id"
-    t.integer  "environment_id"
-    t.string   "ref"
-    t.boolean  "tag"
-    t.string   "sha"
+    t.integer  "iid",             null: false
+    t.integer  "project_id",      null: false
+    t.integer  "environment_id",  null: false
+    t.string   "ref",             null: false
+    t.boolean  "tag",             null: false
+    t.string   "sha",             null: false
     t.integer  "user_id"
     t.integer  "deployable_id"
     t.string   "deployable_type"
@@ -413,7 +413,7 @@ ActiveRecord::Schema.define(version: 20160610301627) do
   add_index "emails", ["user_id"], name: "index_emails_on_user_id", using: :btree
 
   create_table "environments", force: :cascade do |t|
-    t.integer  "project_id"
+    t.integer  "project_id", null: false
     t.string   "name",       null: false
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -777,37 +777,37 @@ ActiveRecord::Schema.define(version: 20160610301627) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "creator_id"
-    t.boolean  "issues_enabled",                     default: true,     null: false
-    t.boolean  "merge_requests_enabled",             default: true,     null: false
-    t.boolean  "wiki_enabled",                       default: true,     null: false
+    t.boolean  "issues_enabled",                     default: true,  null: false
+    t.boolean  "merge_requests_enabled",             default: true,  null: false
+    t.boolean  "wiki_enabled",                       default: true,  null: false
     t.integer  "namespace_id"
-    t.boolean  "snippets_enabled",                   default: true,     null: false
+    t.boolean  "snippets_enabled",                   default: true,  null: false
     t.datetime "last_activity_at"
     t.string   "import_url"
-    t.integer  "visibility_level",                   default: 0,        null: false
-    t.boolean  "archived",                           default: false,    null: false
+    t.integer  "visibility_level",                   default: 0,     null: false
+    t.boolean  "archived",                           default: false, null: false
     t.string   "avatar"
     t.string   "import_status"
     t.float    "repository_size",                    default: 0.0
-    t.integer  "star_count",                         default: 0,        null: false
+    t.integer  "star_count",                         default: 0,     null: false
     t.string   "import_type"
     t.string   "import_source"
     t.integer  "commit_count",                       default: 0
     t.text     "import_error"
     t.integer  "ci_id"
-    t.boolean  "builds_enabled",                     default: true,     null: false
-    t.boolean  "shared_runners_enabled",             default: true,     null: false
+    t.boolean  "builds_enabled",                     default: true,  null: false
+    t.boolean  "shared_runners_enabled",             default: true,  null: false
     t.string   "runners_token"
     t.string   "build_coverage_regex"
-    t.boolean  "build_allow_git_fetch",              default: true,     null: false
-    t.integer  "build_timeout",                      default: 3600,     null: false
+    t.boolean  "build_allow_git_fetch",              default: true,  null: false
+    t.integer  "build_timeout",                      default: 3600,  null: false
     t.boolean  "pending_delete",                     default: false
-    t.boolean  "public_builds",                      default: true,     null: false
+    t.boolean  "public_builds",                      default: true,  null: false
     t.integer  "pushes_since_gc",                    default: 0
     t.boolean  "last_repository_check_failed"
     t.datetime "last_repository_check_at"
     t.boolean  "container_registry_enabled"
-    t.boolean  "only_allow_merge_if_build_succeeds", default: false,    null: false
+    t.boolean  "only_allow_merge_if_build_succeeds", default: false, null: false
     t.boolean  "has_external_issue_tracker"
   end
 
