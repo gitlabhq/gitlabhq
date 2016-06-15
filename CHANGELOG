@@ -9,6 +9,8 @@ v 8.9.0 (unreleased)
   - Allow enabling wiki page events from Webhook management UI
   - Bump rouge to 1.11.0
   - Fix issue with arrow keys not working in search autocomplete dropdown
+  - Fix an issue where note polling stopped working if a window was in the
+    background during a refresh.
   - Make EmailsOnPushWorker use Sidekiq mailers queue
   - Fix wiki page events' webhook to point to the wiki repository
   - Don't show tags for revert and cherry-pick operations
@@ -25,6 +27,7 @@ v 8.9.0 (unreleased)
   - Redesign navigation for project pages
   - Fix groups API to list only user's accessible projects
   - Redesign account and email confirmation emails
+  - Don't fail builds for projects that are deleted
   - `git clone https://host/namespace/project` now works, in addition to using the `.git` suffix
   - Bump nokogiri to 1.6.8
   - Use gitlab-shell v3.0.0
@@ -57,6 +60,7 @@ v 8.9.0 (unreleased)
   - Use Knapsack only in CI environment
   - Cache project build count in sidebar nav
   - Add milestone expire date to the right sidebar
+  - Manually mark a issue or merge request as a todo
   - Fix markdown_spec to use before instead of before(:all) to properly cleanup database after testing
   - Reduce number of queries needed to render issue labels in the sidebar
   - Improve error handling importing projects
@@ -80,6 +84,13 @@ v 8.9.0 (unreleased)
   - Measure CPU time for instrumented methods
   - Instrument private methods and private instance methods by default instead just public methods
   - Only show notes through JSON on confidential issues that the user has access to
+  - Updated the allocations Gem to version 1.0.5
+  - The background sampler now ignores classes without names
+  - Update design for `Close` buttons
+  - New custom icons for navigation
+  - Horizontally scrolling navigation on project, group, and profile settings pages
+  - Hide global side navigation by default
+  - Remove tanuki logo from side navigation; center on top nav
 
 v 8.8.5 (unreleased)
   - Ensure branch cleanup regardless of whether the GitHub import process succeeds

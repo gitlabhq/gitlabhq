@@ -142,7 +142,7 @@
               %i.fa.fa-pencil-square-o
         %ul.well-list
           - @group_members.each do |member|
-            = render 'groups/group_members/group_member', member: member, show_controls: false
+            = render 'shared/members/member', member: member, show_controls: false
         .panel-footer
           = paginate @group_members, param_name: 'group_members_page', theme: 'gitlab'
 
@@ -172,7 +172,7 @@
                 %span.light Owner
               - else
                 %span.light= project_member.human_access
-                = link_to namespace_project_project_member_path(@project.namespace, @project, project_member), data: { confirm: remove_from_project_team_message(@project, project_member)}, method: :delete, remote: true, class: "btn btn-sm btn-remove" do
+                = link_to namespace_project_project_member_path(@project.namespace, @project, project_member), data: { confirm: remove_member_message(project_member)}, method: :delete, remote: true, class: "btn btn-sm btn-remove" do
                   %i.fa.fa-times
       .panel-footer
         = paginate @project_members, param_name: 'project_members_page', theme: 'gitlab'

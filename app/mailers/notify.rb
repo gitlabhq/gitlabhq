@@ -6,13 +6,15 @@ class Notify < BaseMailer
   include Emails::Notes
   include Emails::Projects
   include Emails::Profile
-  include Emails::Groups
   include Emails::Builds
+  include Emails::Members
 
   add_template_helper MergeRequestsHelper
   add_template_helper DiffHelper
   add_template_helper BlobHelper
   add_template_helper EmailsHelper
+  add_template_helper MembersHelper
+  add_template_helper GitlabRoutingHelper
 
   def test_email(recipient_email, subject, body)
     mail(to: recipient_email,

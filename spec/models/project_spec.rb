@@ -89,9 +89,15 @@ describe Project, models: true do
     it { is_expected.to respond_to(:repo_exists?) }
     it { is_expected.to respond_to(:update_merge_requests) }
     it { is_expected.to respond_to(:execute_hooks) }
-    it { is_expected.to respond_to(:name_with_namespace) }
     it { is_expected.to respond_to(:owner) }
     it { is_expected.to respond_to(:path_with_namespace) }
+  end
+
+  describe '#name_with_namespace' do
+    let(:project) { build_stubbed(:empty_project) }
+
+    it { expect(project.name_with_namespace).to eq "#{project.namespace.human_name} / #{project.name}" }
+    it { expect(project.human_name).to eq project.name_with_namespace }
   end
 
   describe '#to_reference' do
