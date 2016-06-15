@@ -5,7 +5,7 @@ module Awardable
     has_many :award_emoji, as: :awardable, dependent: :destroy
 
     if self < Participable
-      participant :award_emoji
+      participant :award_emoji_with_associations
     end
   end
 
@@ -34,8 +34,12 @@ module Awardable
     end
   end
 
+  def award_emoji_with_associations
+    award_emoji.includes(:user)
+  end
+
   def grouped_awards(with_thumbs: true)
-    awards = award_emoji.group_by(&:name)
+    awards = award_emoji_with_associations.group_by(&:name)
 
     if with_thumbs
       awards[AwardEmoji::UPVOTE_NAME]   ||= []
