@@ -1,6 +1,6 @@
 ## GitLab CI Documentation
 
-### CI User documentation
+### CI/CD User documentation
 
 - [Get started with GitLab CI](quick_start/README.md)
 - [CI/CD Definitions](definitions/README.md)
