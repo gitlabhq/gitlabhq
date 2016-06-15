@@ -28,11 +28,14 @@ module Gitlab
     end
 
     def highlight(text, continue: true, plain: false)
+      lexer = @lexer
+
       if plain
-        @formatter.format(Rouge::Lexers::PlainText.lex(text)).html_safe
-      else
-        @formatter.format(@lexer.lex(text, continue: continue)).html_safe
+        lexer = Rouge::Lexers::PlainText
+        continue = false
       end
+
+      @formatter.format(@lexer.lex(text, continue: continue)).html_safe
     rescue
       @formatter.format(Rouge::Lexers::PlainText.lex(text)).html_safe
     end
