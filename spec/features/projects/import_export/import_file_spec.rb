@@ -25,14 +25,14 @@ feature 'project import', feature: true, js: true do
 
     select2('2', from: '#project_namespace_id')
     fill_in :project_path, with:'test-project-path', visible: true
-    click_link 'GitLab project'
+    click_link 'GitLab export'
 
     expect(page).to have_content('GitLab project export')
     expect(URI.parse(current_url).query).to eq('namespace_id=2&path=test-project-path')
 
     attach_file('file', file)
 
-    click_on 'Continue to the next step' # import starts
+    click_on 'Import project' # import starts
 
     expect(project).not_to be_nil
     expect(project.issues).not_to be_empty

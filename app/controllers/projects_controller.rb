@@ -7,7 +7,7 @@ class ProjectsController < Projects::ApplicationController
   before_action :assign_ref_vars, :tree, only: [:show], if: :repo_exists?
 
   # Authorize
-  before_action :authorize_admin_project!, only: [:edit, :update, :housekeeping, :download_export, :export]
+  before_action :authorize_admin_project!, only: [:edit, :update, :housekeeping, :download_export, :export, :remove_export]
   before_action :event_filter, only: [:show, :activity]
 
   layout :determine_layout
@@ -186,19 +186,38 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def export
-    @project.add_export_job(current_user_id: current_user.id)
+    @project.add_export_job(current_user: current_user)
 
     redirect_to(
       edit_project_path(@project),
-      notice: "Project export started."
+      notice: "Project export started. A download link will be sent by e-mail."
     )
   end
 
   def download_export
+    export_project_path = @project.export_project_path
+
     if export_project_path
       send_file export_project_path, disposition: 'attachment'
     else
-      render_404
+      redirect_to(
+        edit_project_path(@project),
+        alert: "Project export link has expired. Please generate a new export from your project settings."
+      )
+    end
+  end
+
+  def remove_export
+    if @project.remove_exports
+      redirect_to(
+        edit_project_path(@project),
+        notice: "Project export has been deleted."
+      )
+    else
+      redirect_to(
+        edit_project_path(@project),
+        alert: "Project export could not be deleted."
+      )
     end
   end
 
@@ -263,9 +282,5 @@ class ProjectsController < Projects::ApplicationController
   # for the blob/tree, which in this case is just the root of the default branch.
   def get_id
     project.repository.root_ref
-  end
-
-  def export_project_path
-    Dir.glob("#{@project.export_path}/*export.tar.gz").max_by {|f| File.ctime(f)}
   end
 end

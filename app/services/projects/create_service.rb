@@ -54,7 +54,7 @@ module Projects
 
       @project.import_start if @project.import?
 
-      after_create_actions if @project.persisted? && !@project.gitlab_project_import?
+      after_create_actions if @project.persisted?
 
       if @project.errors.empty?
         @project.add_import_job if @project.import?
@@ -80,16 +80,18 @@ module Projects
     def after_create_actions
       log_info("#{@project.owner.name} created a new project \"#{@project.name_with_namespace}\"")
 
-      @project.create_wiki if @project.wiki_enabled?
+      unless @project.gitlab_project_import?
+        @project.create_wiki if @project.wiki_enabled?
 
-      @project.build_missing_services
+        @project.build_missing_services
 
-      @project.create_labels
+        @project.create_labels
+      end
 
       event_service.create_project(@project, current_user)
       system_hook_service.execute_hooks_for(@project, :create)
 
-      unless @project.group
+      unless @project.group || @project.gitlab_project_import?
         @project.team << [current_user, :master, current_user]
       end
     end

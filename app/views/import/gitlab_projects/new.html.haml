@@ -2,19 +2,17 @@
 - header_title "Projects", root_path
 %h3.page-title
   = icon('gitlab')
-  Import projects from GitLab
+  Import an exported GitLab project
 %hr
 
 = form_tag import_gitlab_project_path, class: 'form-horizontal', multipart: true do
   %p
-    Project will be imported to path
+    Project will be imported as
     %strong
-      #{@path}
+      #{@namespace_name}/#{@path}
 
   %p
-    To get started add your exported project file below, then you will be redirected to the new project page and the project will appear once the import is done.
-  %p
-    You can generate a new export file from your project settings.
+    To move or copy an entire GitLab project from another GitLab installation to this one, navigate to the original project's settings page, generate an export file, and upload it here.
   .form-group
     = hidden_field_tag :namespace_id, @namespace_id
     = hidden_field_tag :path, @path
@@ -24,4 +22,4 @@
       = file_field_tag :file, class: ''
 
   .form-actions
-    = submit_tag 'Continue to the next step', class: 'btn btn-create'
+    = submit_tag 'Import project', class: 'btn btn-create'

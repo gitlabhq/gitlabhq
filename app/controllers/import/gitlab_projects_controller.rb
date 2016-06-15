@@ -3,6 +3,7 @@ class Import::GitlabProjectsController < Import::BaseController
 
   def new
     @namespace_id = project_params[:namespace_id]
+    @namespace_name = Namespace.find(project_params[:namespace_id]).name
     @path = project_params[:path]
   end
 
@@ -23,8 +24,8 @@ class Import::GitlabProjectsController < Import::BaseController
       )
     else
       redirect_to(
-        new_project_path,
-        alert: "Project could not be exported: #{@project.errors.full_messages.join(', ')}"
+        new_import_gitlab_project_path,
+        alert: "Project could not be imported: #{@project.errors.full_messages.join(', ')}"
       )
     end
   end
@@ -32,7 +33,7 @@ class Import::GitlabProjectsController < Import::BaseController
   private
 
   def file_is_valid?
-    project_params[:file].respond_to?(:read)
+    project_params[:file] && project_params[:file].respond_to?(:read)
   end
 
   def verify_gitlab_project_import_enabled

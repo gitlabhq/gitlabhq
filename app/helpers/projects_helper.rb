@@ -348,10 +348,4 @@ module ProjectsHelper
 
     message.strip.gsub(Gitlab.config.gitlab_shell.repos_path.chomp('/'), "[REPOS PATH]")
   end
-
-  def db_export_list
-    YAML.load_file(Gitlab::ImportExport.config_file)['project_tree'].map do |relation|
-      relation.is_a?(Hash) ? relation.keys.first.to_s : relation.to_s
-    end + ['notes', 'merge_request_diffs']
-  end
 end

@@ -455,6 +455,7 @@ Rails.application.routes.draw do
         post :toggle_star
         post :markdown_preview
         post :export
+        post :remove_export
         get :download_export
         get :autocomplete_sources
         get :activity
