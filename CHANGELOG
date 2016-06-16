@@ -39,6 +39,7 @@ v 8.9.0 (unreleased)
   - Bump nokogiri to 1.6.8
   - Use gitlab-shell v3.0.0
   - Upgrade to jQuery 2
+  - Adds selected branch name to the dropdown toggle
   - Use Knapsack to evenly distribute tests across multiple nodes
   - Add `sha` parameter to MR merge API, to ensure only reviewed changes are merged
   - Don't allow MRs to be merged when commits were added since the last review / page load
@@ -66,7 +67,6 @@ v 8.9.0 (unreleased)
   - Make Omniauth providers specs to not modify global configuration
   - Make authentication service for Container Registry to be compatible with < Docker 1.11
   - Add Application Setting to configure Container Registry token expire delay (default 5min)
-  - Adds selected branch name to the dropdown toggle
   - Cache assigned issue and merge request counts in sidebar nav
   - Use Knapsack only in CI environment
   - Cache project build count in sidebar nav
@@ -119,18 +119,6 @@ v 8.8.5
   - Prevent unauthorized access for projects build traces
   - Forbid scripting for wiki files
   - Only show notes through JSON on confidential issues that the user has access to
-
-v 8.8.5 (unreleased)
-  - Adds selected branch name to the dropdown toggle
-
-v 8.8.4 (unreleased)
-  - Ensure branch cleanup regardless of whether the GitHub import process succeeds
-  - Fix todos page throwing errors when you have a project pending deletion
-  - Reduce number of SQL queries when rendering user references
-  - Import GitHub repositories respecting the API rate limit
-  - Fix importer for GitHub comments on diff
-  - Disable Webhooks before proceeding with the GitHub import
-  - Fix incremental trace upload API when using multi-byte UTF-8 chars in trace
 
 v 8.8.4
   - Fix LDAP-based login for users with 2FA enabled. !4493
