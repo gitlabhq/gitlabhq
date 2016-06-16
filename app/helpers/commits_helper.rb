@@ -16,6 +16,16 @@ module CommitsHelper
     commit_person_link(commit, options.merge(source: :committer))
   end
 
+  def commit_author_avatar(commit, options = {})
+    options = options.merge(source: :author)
+    user = commit.send(options[:source])
+
+    source_email = clean(commit.send "#{options[:source]}_email".to_sym)
+    person_email = user.try(:email) || source_email
+
+    image_tag(avatar_icon(person_email, options[:size]), class: "avatar #{"s#{options[:size]}" if options[:size]} hidden-xs", width: options[:size], alt: "")
+  end
+
   def image_diff_class(diff)
     if diff.deleted_file
       "deleted"
@@ -102,24 +112,24 @@ module CommitsHelper
     if current_controller?(:projects, :commits)
       if @repo.blob_at(commit.id, @path)
         return link_to(
-          "Browse File »",
+          "Browse File",
           namespace_project_blob_path(project.namespace, project,
                                       tree_join(commit.id, @path)),
-          class: "pull-right"
+          class: "btn btn-default"
         )
       elsif @path.present?
         return link_to(
-          "Browse Directory »",
+          "Browse Directory",
           namespace_project_tree_path(project.namespace, project,
                                       tree_join(commit.id, @path)),
-          class: "pull-right"
+          class: "btn btn-default"
         )
       end
     end
     link_to(
       "Browse Files",
       namespace_project_tree_path(project.namespace, project, commit),
-      class: "pull-right"
+      class: "btn btn-default"
     )
   end
 
@@ -187,12 +197,10 @@ module CommitsHelper
     source_email = clean(commit.send "#{options[:source]}_email".to_sym)
 
     person_name = user.try(:name) || source_name
-    person_email = user.try(:email) || source_email
 
     text =
       if options[:avatar]
-        avatar = image_tag(avatar_icon(person_email, options[:size]), class: "avatar #{"s#{options[:size]}" if options[:size]}", width: options[:size], alt: "")
-        %Q{#{avatar} <span class="commit-#{options[:source]}-name">#{person_name}</span>}
+        %Q{<span class="commit-#{options[:source]}-name">#{person_name}</span>}
       else
         person_name
       end

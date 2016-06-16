@@ -17,7 +17,15 @@ module ButtonHelper
   def clipboard_button(data = {})
     content_tag :button,
       icon('clipboard'),
-      class: 'btn btn-clipboard',
+      class: "btn",
+      data: data,
+      type: :button
+  end
+
+  def clipboard_button_with_class(data = {}, css_class: 'btn-clipboard')
+    content_tag :button,
+      icon('clipboard'),
+      class: "btn #{css_class}",
       data: data,
       type: :button
   end

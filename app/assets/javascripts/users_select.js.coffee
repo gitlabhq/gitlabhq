@@ -72,7 +72,7 @@ class @UsersSelect
 
       assigneeTemplate = _.template(
         '<% if (username) { %>
-        <a class="author_link " href="/u/<%= username %>">
+        <a class="author_link bold" href="/u/<%= username %>">
           <% if( avatar ) { %>
           <img width="32" class="avatar avatar-inline s32" alt="" src="<%= avatar %>">
           <% } %>
@@ -82,7 +82,7 @@ class @UsersSelect
           </span>
         </a>
           <% } else { %>
-        <span class="assign-yourself">
+        <span class="no-value assign-yourself">
           No assignee -
           <a href="#" class="js-assign-yourself">
             assign yourself

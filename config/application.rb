@@ -86,6 +86,7 @@ module Gitlab
     config.assets.precompile << "mailers/*.css"
     config.assets.precompile << "graphs/application.js"
     config.assets.precompile << "users/application.js"
+    config.assets.precompile << "network/application.js"
 
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
