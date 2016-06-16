@@ -21,7 +21,7 @@ module Gitlab
           'Google Code'     => 'google_code',
           'FogBugz'         => 'fogbugz',
           'Repo by URL'     => 'git',
-          'GitLab export' => 'gitlab_export'
+          'GitLab export' => 'gitlab_project'
         }
       end
 
