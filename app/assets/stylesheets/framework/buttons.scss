@@ -283,7 +283,7 @@
 }
 
 .clone-dropdown-btn a {
-  color: #555;
+  color: $dropdown-link-color;
   &:hover {
     text-decoration: none;
   }
