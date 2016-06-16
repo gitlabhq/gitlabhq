@@ -814,6 +814,43 @@ job:
   - execute this after my script
 ```
 
+## Git Strategy
+
+>**Note:**
+Introduced in GitLab 8.9 as an experimental feature
+
+You can set the `GIT_STRATEGY` used for getting recent application code. `clone`
+is slower, but makes sure you have a clean directory before every build. `fetch`
+is faster. If specified, it will override the project settings in the web UI.
+
+```
+variables:
+  GIT_STRATEGY: clone
+```
+
+or
+
+```
+variables:
+  GIT_STRATEGY: fetch
+```
+
+## Shallow cloning
+
+>**Note:**
+Introduced in GitLab 8.9 as an experimental feature
+
+You can specify the depth of fetching and cloning using `GIT_DEPTH`. This allows
+shallow cloning of the repository. The value is passed to `git fetch` and `git
+clone`. If set while cloning, it will imply `--shallow-modules`, which means
+submodules will be cloned with a depth of 1 regardless of the value of
+`GIT_DEPTH`.
+
+```
+variables:
+  GIT_DEPTH: "1"
+```
+
 ## Hidden jobs
 
 >**Note:**
