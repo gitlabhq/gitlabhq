@@ -4,6 +4,10 @@
   margin-bottom: $gl-padding;
   border-radius: 3px;
 
+  .commit-short-id {
+    font-weight: 400;
+  }
+
   .diff-header {
     position: relative;
     background: $background-color;
