@@ -333,6 +333,17 @@ describe API::API, api: true  do
       expect(json_response['title']).to eq('new issue')
       expect(json_response['description']).to be_nil
       expect(json_response['labels']).to eq(['label', 'label2'])
+      expect(json_response['confidential']).to be_falsey
+    end
+
+    it "should create a new confidential project issue" do
+      post api("/projects/#{project.id}/issues", user),
+        title: 'new issue', labels: 'label, label2', confidential: true
+      expect(response.status).to eq(201)
+      expect(json_response['title']).to eq('new issue')
+      expect(json_response['description']).to be_nil
+      expect(json_response['labels']).to eq(['label', 'label2'])
+      expect(json_response['confidential']).to be_truthy
     end
 
     it "should return a 400 bad request if title not given" do

@@ -122,7 +122,7 @@ module API
       post ":id/issues" do
         required_attributes! [:title]
 
-        keys = [:title, :description, :assignee_id, :milestone_id]
+        keys = [:title, :description, :assignee_id, :milestone_id, :confidential]
         keys << :created_at if current_user.admin? || user_project.owner == current_user
         attrs = attributes_for_keys(keys)
 
