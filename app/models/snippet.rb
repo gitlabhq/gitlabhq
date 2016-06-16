@@ -20,6 +20,12 @@ class Snippet < ActiveRecord::Base
     length: { within: 0..255 },
     format: { with: Gitlab::Regex.file_name_regex,
               message: Gitlab::Regex.file_name_regex_message }
+
+  # [jneen] alias for compatibility with blobs and highlighting
+  def path
+    file_name
+  end
+
   validates :content, presence: true
   validates :visibility_level, inclusion: { in: Gitlab::VisibilityLevel.values }
 
