@@ -31,7 +31,7 @@ describe Gitlab::Highlight, lib: true do
     before { project.change_head('gitattributes') }
 
     it 'highlights as ruby' do
-      expect(highlighter.lexer).to be Rouge::Lexers::Ruby
+      expect(highlighter.lexer.tag).to eq 'ruby'
     end
   end
 end
