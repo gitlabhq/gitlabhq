@@ -4,6 +4,7 @@ describe Gitlab::Highlight, lib: true do
   include RepoHelpers
 
   let(:project) { create(:project) }
+  let(:repository) { project.repository }
   let(:commit) { project.commit(sample_commit.id) }
 
   describe '.highlight_lines' do
@@ -19,13 +20,18 @@ describe Gitlab::Highlight, lib: true do
   end
 
   describe 'custom highlighting from .gitattributes' do
-    let(:blob) { project.blob_at_branch('master', 'custom-highlighting/test.gitlab-custom') }
+    let(:branch) { 'gitattributes' }
+    let(:path) { 'custom-highlighting/test.gitlab-custom' }
+    let(:blob) { repository.blob_at_branch(branch, path) }
+
     let(:highlighter) {
-      Gitlab::Highlight.new(blob.path, blob.contents, repository: project.repository)
+      Gitlab::Highlight.new(blob.path, blob.data, repository: repository)
     }
 
+    before { project.change_head('gitattributes') }
+
     it 'highlights as ruby' do
-      expect(highlighter.lexer).to be_an_instance_of Rouge::Lexers::Ruby
+      expect(highlighter.lexer).to be Rouge::Lexers::Ruby
     end
   end
 end
