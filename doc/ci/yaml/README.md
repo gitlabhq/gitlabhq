@@ -35,6 +35,8 @@ If you want a quick introduction to GitLab CI, follow our
         - [artifacts:expire_in](#artifacts-expire_in)
     - [dependencies](#dependencies)
     - [before_script and after_script](#before_script-and-after_script)
+- [Git Strategy](#git-strategy)
+- [Shallow cloning](#shallow-cloning)
 - [Hidden jobs](#hidden-jobs)
 - [Special YAML features](#special-yaml-features)
     - [Anchors](#anchors)
