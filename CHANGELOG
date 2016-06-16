@@ -79,6 +79,7 @@ v 8.9.0 (unreleased)
   - Replace Colorize with Rainbow for coloring console output in Rake tasks.
   - Add workhorse controller and API helpers
   - An indicator is now displayed at the top of the comment field for confidential issues.
+  - Show categorised search queries in the search autocomplete
   - RepositoryCheck::SingleRepositoryWorker public and private methods are now instrumented
   - Improve issuables APIs performance when accessing notes !4471
   - External links now open in a new tab
