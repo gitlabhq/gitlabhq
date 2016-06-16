@@ -243,17 +243,19 @@ describe API::API, api: true  do
         expect(response).to have_http_status(400)
       end
 
-      it 'should return 400 on invalid label names' do
+      it 'should allow special label names' do
         post api("/projects/#{project.id}/merge_requests", user),
              title: 'Test merge_request',
              source_branch: 'markdown',
              target_branch: 'master',
              author: user,
-             labels: 'label, ?'
-        expect(response).to have_http_status(400)
-        expect(json_response['message']['labels']['?']['title']).to eq(
-          ['is invalid']
-        )
+             labels: 'label, label?, label&foo, ?, &'
+        expect(response.status).to eq(201)
+        expect(json_response['labels']).to include 'label'
+        expect(json_response['labels']).to include 'label?'
+        expect(json_response['labels']).to include 'label&foo'
+        expect(json_response['labels']).to include '?'
+        expect(json_response['labels']).to include '&'
       end
 
       context 'with existing MR' do
@@ -492,13 +494,17 @@ describe API::API, api: true  do
       expect(json_response['target_branch']).to eq('wiki')
     end
 
-    it 'should return 400 on invalid label names' do
+    it 'should allow special label names' do
       put api("/projects/#{project.id}/merge_requests/#{merge_request.id}",
               user),
           title: 'new issue',
-          labels: 'label, ?'
-      expect(response).to have_http_status(400)
-      expect(json_response['message']['labels']['?']['title']).to eq(['is invalid'])
+          labels: 'label, label?, label&foo, ?, &'
+      expect(response.status).to eq(200)
+      expect(json_response['labels']).to include 'label'
+      expect(json_response['labels']).to include 'label?'
+      expect(json_response['labels']).to include 'label&foo'
+      expect(json_response['labels']).to include '?'
+      expect(json_response['labels']).to include '&'
     end
   end
 
