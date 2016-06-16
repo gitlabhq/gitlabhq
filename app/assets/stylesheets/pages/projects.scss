@@ -33,7 +33,7 @@
   .container-fluid {
     position: relative;
 
-    @media (min-width: $screen-md-max) {
+    @media (min-width: $screen-lg-min) {
       .row {
         display: flex;
         -ms-flex-align: center;
@@ -229,7 +229,7 @@
     right: 16px;
     bottom: 0;
 
-    @media (max-width: $screen-lg-min) {
+    @media (max-width: $screen-md-max) {
       top: 0;
     }
 
@@ -238,7 +238,7 @@
       right: 0;
       bottom: 61px;
 
-      @media (max-width: $screen-lg-min) {
+      @media (max-width: $screen-md-max) {
         position: relative;
         bottom: 0;
         margin-right: 10px;
