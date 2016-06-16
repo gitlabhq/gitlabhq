@@ -313,3 +313,13 @@
     }
   }
 }
+
+.merged-buttons {
+  .btn {
+    float: left;
+
+    &:not(:last-child) {
+      margin-right: 10px;
+    }
+  }
+}

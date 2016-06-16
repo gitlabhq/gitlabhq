@@ -146,6 +146,7 @@ describe API::API, api: true  do
       let(:milestone) { create(:milestone, project: public_project) }
       let(:issue) { create(:issue, project: public_project) }
       let(:confidential_issue) { create(:issue, confidential: true, project: public_project) }
+
       before do
         public_project.team << [user, :developer]
         milestone.issues << issue << confidential_issue
@@ -158,6 +159,18 @@ describe API::API, api: true  do
         expect(json_response).to be_an Array
         expect(json_response.size).to eq(2)
         expect(json_response.map { |issue| issue['id'] }).to include(issue.id, confidential_issue.id)
+      end
+
+      it 'does not return confidential issues to team members with guest role' do
+        member = create(:user)
+        project.team << [member, :guest]
+
+        get api("/projects/#{public_project.id}/milestones/#{milestone.id}/issues", member)
+
+        expect(response.status).to eq(200)
+        expect(json_response).to be_an Array
+        expect(json_response.size).to eq(1)
+        expect(json_response.map { |issue| issue['id'] }).to include(issue.id)
       end
 
       it 'does not return confidential issues to regular users' do

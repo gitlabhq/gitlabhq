@@ -173,16 +173,26 @@ class NotificationService
     end
   end
 
+  # Project access request
+  def new_project_access_request(project_member)
+    mailer.member_access_requested_email(project_member.real_source_type, project_member.id).deliver_later
+  end
+
+  def decline_project_access_request(project_member)
+    mailer.member_access_denied_email(project_member.real_source_type, project_member.project.id, project_member.user.id).deliver_later
+  end
+
   def invite_project_member(project_member, token)
-    mailer.project_member_invited_email(project_member.id, token).deliver_later
+    mailer.member_invited_email(project_member.real_source_type, project_member.id, token).deliver_later
   end
 
   def accept_project_invite(project_member)
-    mailer.project_invite_accepted_email(project_member.id).deliver_later
+    mailer.member_invite_accepted_email(project_member.real_source_type, project_member.id).deliver_later
   end
 
   def decline_project_invite(project_member)
-    mailer.project_invite_declined_email(
+    mailer.member_invite_declined_email(
+      project_member.real_source_type,
       project_member.project.id,
       project_member.invite_email,
       project_member.access_level,
@@ -191,23 +201,33 @@ class NotificationService
   end
 
   def new_project_member(project_member)
-    mailer.project_access_granted_email(project_member.id).deliver_later
+    mailer.member_access_granted_email(project_member.real_source_type, project_member.id).deliver_later
   end
 
   def update_project_member(project_member)
-    mailer.project_access_granted_email(project_member.id).deliver_later
+    mailer.member_access_granted_email(project_member.real_source_type, project_member.id).deliver_later
+  end
+
+  # Group access request
+  def new_group_access_request(group_member)
+    mailer.member_access_requested_email(group_member.real_source_type, group_member.id).deliver_later
+  end
+
+  def decline_group_access_request(group_member)
+    mailer.member_access_denied_email(group_member.real_source_type, group_member.group.id, group_member.user.id).deliver_later
   end
 
   def invite_group_member(group_member, token)
-    mailer.group_member_invited_email(group_member.id, token).deliver_later
+    mailer.member_invited_email(group_member.real_source_type, group_member.id, token).deliver_later
   end
 
   def accept_group_invite(group_member)
-    mailer.group_invite_accepted_email(group_member.id).deliver_later
+    mailer.member_invite_accepted_email(group_member.id).deliver_later
   end
 
   def decline_group_invite(group_member)
-    mailer.group_invite_declined_email(
+    mailer.member_invite_declined_email(
+      group_member.real_source_type,
       group_member.group.id,
       group_member.invite_email,
       group_member.access_level,
@@ -216,11 +236,11 @@ class NotificationService
   end
 
   def new_group_member(group_member)
-    mailer.group_access_granted_email(group_member.id).deliver_later
+    mailer.member_access_granted_email(group_member.real_source_type, group_member.id).deliver_later
   end
 
   def update_group_member(group_member)
-    mailer.group_access_granted_email(group_member.id).deliver_later
+    mailer.member_access_granted_email(group_member.real_source_type, group_member.id).deliver_later
   end
 
   def project_was_moved(project, old_path_with_namespace)
@@ -287,10 +307,11 @@ class NotificationService
   end
 
   def users_with_global_level_watch(ids)
-    User.where(
-      id: ids,
-      notification_level: NotificationSetting.levels[:watch]
-    ).pluck(:id)
+    NotificationSetting.where(
+      user_id: ids,
+      source_type: nil,
+      level: NotificationSetting.levels[:watch]
+    ).pluck(:user_id)
   end
 
   # Build a list of users based on project notifcation settings
@@ -360,7 +381,9 @@ class NotificationService
     users = users.reject(&:blocked?)
 
     users.reject do |user|
-      next user.notification_level == level unless project
+      global_notification_setting = user.global_notification_setting
+
+      next global_notification_setting.level == level unless project
 
       setting = user.notification_settings_for(project)
 
@@ -369,13 +392,13 @@ class NotificationService
       end
 
       # reject users who globally set mention notification and has no setting per project/group
-      next user.notification_level == level unless setting
+      next global_notification_setting.level == level unless setting
 
       # reject users who set mention notification in project
       next true if setting.level == level
 
       # reject users who have mention level in project and disabled in global settings
-      setting.global? && user.notification_level == level
+      setting.global? && global_notification_setting.level == level
     end
   end
 
@@ -464,7 +487,6 @@ class NotificationService
 
   def build_recipients(target, project, current_user, action: nil, previous_assignee: nil)
     recipients = target.participants(current_user)
-
     recipients = add_project_watchers(recipients, project)
     recipients = reject_mention_users(recipients, project)
 

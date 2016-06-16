@@ -24,8 +24,6 @@
             MERGED
           - elsif merge_request.closed?
             CLOSED
-    %li
-      = render partial: 'projects/issues/closed_by_box', locals: {merge_request_count: @merge_requests.count}
     - if @closed_by_merge_requests.present?
       %li
         = render partial: 'projects/issues/closed_by_box', locals: {merge_request_count: @merge_requests.count}

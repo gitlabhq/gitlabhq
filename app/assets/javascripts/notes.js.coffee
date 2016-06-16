@@ -115,12 +115,14 @@ class @Notes
     , @pollingInterval
 
   refresh: =>
-    return if @refreshing is true
-    @refreshing = true
     if not document.hidden and document.URL.indexOf(@noteable_url) is 0
       @getContent()
 
   getContent: ->
+    return if @refreshing
+
+    @refreshing = true
+
     $.ajax
       url: @notes_url
       data: "last_fetched_at=" + @last_fetched_at

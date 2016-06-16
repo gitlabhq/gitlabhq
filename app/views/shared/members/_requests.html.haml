@@ -1,0 +1,8 @@
+- if members.any?
+  .panel.panel-default
+    .panel-heading
+      %strong= membership_source.name
+      access requests
+      %small= "(#{members.size})"
+    %ul.content-list
+      = render partial: 'shared/members/member', collection: members, as: :member

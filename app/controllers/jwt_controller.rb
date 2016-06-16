@@ -42,7 +42,7 @@ class JwtController < ApplicationController
   end
 
   def authenticate_user(login, password)
-    user = Gitlab::Auth.find_in_gitlab_or_ldap(login, password)
+    user = Gitlab::Auth.find_with_user_password(login, password)
     Gitlab::Auth.rate_limit!(request.ip, success: user.present?, login: login)
     user
   end

@@ -210,6 +210,9 @@ gem 'mousetrap-rails', '~> 1.4.6'
 # Detect and convert string character encoding
 gem 'charlock_holmes', '~> 0.7.3'
 
+# Parse duration
+gem 'chronic_duration', '~> 0.10.6'
+
 gem "sass-rails", '~> 5.0.0'
 gem "coffee-rails", '~> 4.1.0'
 gem "uglifier", '~> 2.7.2'
@@ -224,7 +227,6 @@ gem 'gon',                '~> 6.0.1'
 gem 'jquery-atwho-rails', '~> 1.3.2'
 gem 'jquery-rails',       '~> 4.1.0'
 gem 'jquery-ui-rails',    '~> 5.0.0'
-gem 'raphael-rails',      '~> 2.1.2'
 gem 'request_store',      '~> 1.3.0'
 gem 'select2-rails',      '~> 3.5.9'
 gem 'virtus',             '~> 1.0.1'
@@ -245,7 +247,7 @@ end
 
 group :development do
   gem "foreman"
-  gem 'brakeman', '~> 3.2.0', require: false
+  gem 'brakeman', '~> 3.3.0', require: false
 
   gem 'letter_opener_web', '~> 1.3.0'
   gem 'quiet_assets', '~> 1.0.2'

@@ -101,7 +101,7 @@
   margin: 0;
 
   .commit {
-    padding: 0;
+    padding: 0 0 0 55px;
 
     .commit-row-title {
       .commit-row-message {
@@ -129,4 +129,6 @@
 .tree-controls {
   float: right;
   margin-top: 11px;
+  position: relative;
+  z-index: 2;
 }

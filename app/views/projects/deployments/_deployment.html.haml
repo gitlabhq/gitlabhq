@@ -1,0 +1,23 @@
+%tr.deployment
+  %td
+    %strong= "##{deployment.iid}"
+
+  %td
+    = render 'projects/deployments/commit', deployment: deployment
+
+  %td
+    - if deployment.deployable
+      = link_to namespace_project_build_path(@project.namespace, @project, deployment.deployable) do
+        = "#{deployment.deployable.name} (##{deployment.deployable.id})"
+
+  %td
+    #{time_ago_with_tooltip(deployment.created_at)}
+
+  %td
+    - if can?(current_user, :create_deployment, deployment) && deployment.deployable
+      .pull-right
+        = link_to retry_namespace_project_build_path(@project.namespace, @project, deployment.deployable), method: :post, class: 'btn btn-build' do
+          - if deployment.last?
+            Retry
+          - else
+            Rollback
