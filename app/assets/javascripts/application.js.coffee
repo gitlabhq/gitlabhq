@@ -201,12 +201,6 @@ $ ->
     $('.navbar-toggle').toggleClass('active')
     $('.navbar-toggle i').toggleClass("fa-angle-right fa-angle-left")
 
-  # Show/hide comments on diff
-  $body.on "click", ".js-toggle-diff-comments", (e) ->
-    $(@).toggleClass('active')
-    $(@).closest(".diff-file").find(".notes_holder").toggle()
-    e.preventDefault()
-
   $document.off "click", '.js-confirm-danger'
   $document.on "click", '.js-confirm-danger', (e) ->
     e.preventDefault()

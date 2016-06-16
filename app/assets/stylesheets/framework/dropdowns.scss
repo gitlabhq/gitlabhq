@@ -241,6 +241,10 @@
   a {
     padding-left: 25px;
 
+    &.is-unselectable {
+      padding-left: 10px;
+    }
+
     &.is-indeterminate, &.is-active {
       &::before {
         position: absolute;

@@ -5,17 +5,28 @@
 - diff_files = safe_diff_files(diffs, diff_refs)
 
 .content-block.oneline-block.files-changed
-  .inline-parallel-buttons
-    - if show_whitespace_toggle
-      - if current_controller?(:commit)
-        = commit_diff_whitespace_link(@project, @commit, class: 'hidden-xs')
-      - elsif current_controller?(:merge_requests)
-        = diff_merge_request_whitespace_link(@project, @merge_request, class: 'hidden-xs')
-      - elsif current_controller?(:compare)
-        = diff_compare_whitespace_link(@project, params[:from], params[:to], class: 'hidden-xs')
-    .btn-group
-      = inline_diff_btn
-      = parallel_diff_btn
+  .inline-parallel-buttons.dropdown
+    %button.btn.btn-default{ type: "button", data: { toggle: "dropdown" } }
+      Options
+      %span.caret
+    %ul.dropdown-menu.dropdown-menu-align-right.dropdown-menu-selectable
+      %li
+        %a.is-unselectable{ href: "#", data: { hide_text: "Hide all comments", show_text: "Show all comments" } }
+          Hide all comments
+      %li
+        - if show_whitespace_toggle
+          - if current_controller?(:commit)
+            = commit_diff_whitespace_link(@project, @commit, {})
+          - elsif current_controller?(:merge_requests)
+            = diff_merge_request_whitespace_link(@project, @merge_request, {})
+          - elsif current_controller?(:compare)
+            = diff_compare_whitespace_link(@project, params[:from], params[:to])
+      %li.dropdown-header
+        View options
+      %li
+        = inline_diff_btn
+      %li
+        = parallel_diff_btn
   = render 'projects/diffs/stats', diff_files: diff_files
 
 - if diff_files.overflow?
