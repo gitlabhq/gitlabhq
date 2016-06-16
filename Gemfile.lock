@@ -580,7 +580,6 @@ GEM
     rainbow (2.1.0)
     raindrops (0.15.0)
     rake (10.5.0)
-    raphael-rails (2.1.2)
     rb-fsevent (0.9.6)
     rb-inotify (0.9.5)
       ffi (>= 0.5.0)
@@ -971,7 +970,6 @@ DEPENDENCIES
   rails (= 4.2.6)
   rails-deprecated_sanitizer (~> 1.0.3)
   rainbow (~> 2.1.0)
-  raphael-rails (~> 2.1.2)
   rblineprof
   rdoc (~> 3.6)
   recaptcha (~> 3.0)

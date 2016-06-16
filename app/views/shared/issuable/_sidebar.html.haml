@@ -29,20 +29,21 @@
           = icon('spinner spin', class: 'block-loading')
           - if can_edit_issuable
             = link_to 'Edit', '#', class: 'edit-link pull-right'
-        .value.bold.hide-collapsed
+        .value.hide-collapsed
           - if issuable.assignee
-            = link_to_member(@project, issuable.assignee, size: 32) do
+            = link_to_member(@project, issuable.assignee, size: 32, extra_class: 'bold') do
               - if issuable.instance_of?(MergeRequest) && !issuable.can_be_merged_by?(issuable.assignee)
                 %span.pull-right.cannot-be-merged{ data: { toggle: 'tooltip', placement: 'left' }, title: 'Not allowed to merge' }
                   = icon('exclamation-triangle')
               %span.username
                 = issuable.assignee.to_reference
           - else
-            %span.assign-yourself
+            %span.assign-yourself.no-value
               No assignee
               - if can_edit_issuable
+                \-
                 %a.js-assign-yourself{ href: '#' }
-                  \- assign yourself
+                  assign yourself
 
         .selectbox.hide-collapsed
           = f.hidden_field 'assignee_id', value: issuable.assignee_id, id: 'issue_assignee_id'
@@ -62,13 +63,11 @@
           = icon('spinner spin', class: 'block-loading')
           - if can_edit_issuable
             = link_to 'Edit', '#', class: 'edit-link pull-right'
-        .value.bold.hide-collapsed
+        .value.hide-collapsed
           - if issuable.milestone
-            = link_to namespace_project_milestone_path(@project.namespace, @project, issuable.milestone) do
-              %span.has-tooltip{title: milestone_remaining_days(issuable.milestone), data: {container: 'body', html: 1}}
-                = issuable.milestone.title
+            = link_to issuable.milestone.title, namespace_project_milestone_path(@project.namespace, @project, issuable.milestone), class: "bold has-tooltip", title: milestone_remaining_days(issuable.milestone), data: { container: "body", html: 1 }
           - else
-            .light None
+            %span.no-value None
 
         .selectbox.hide-collapsed
           = f.hidden_field 'milestone_id', value: issuable.milestone_id, id: nil
@@ -85,14 +84,14 @@
             = icon('spinner spin', class: 'block-loading')
             - if can?(current_user, :"admin_#{issuable.to_ability_name}", @project)
               = link_to 'Edit', '#', class: 'edit-link pull-right'
-          .value.bold.hide-collapsed
+          .value.hide-collapsed
             %span.value-content
               - if issuable.due_date
-                = issuable.due_date.to_s(:medium)
+                %span.bold= issuable.due_date.to_s(:medium)
               - else
-                None
+                %span.no-value No due date
             - if can?(current_user, :"admin_#{issuable.to_ability_name}", @project)
-              %span.light.js-remove-due-date-holder{ class: ("hidden" if issuable.due_date.nil?) }
+              %span.no-value.js-remove-due-date-holder{ class: ("hidden" if issuable.due_date.nil?) }
                 \-
                 %a.js-remove-due-date{ href: "#", role: "button" }
                   remove due date
@@ -124,7 +123,7 @@
               - issuable.labels_array.each do |label|
                 = link_to_label(label, type: issuable.to_ability_name)
             - else
-              .light None
+              %span.no-value None
           .selectbox.hide-collapsed
             - issuable.labels_array.each do |label|
               = hidden_field_tag "#{issuable.to_ability_name}[label_names][]", label.id, id: nil

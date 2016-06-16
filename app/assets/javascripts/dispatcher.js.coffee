@@ -29,6 +29,7 @@ class Dispatcher
         new Todos()
       when 'projects:milestones:new', 'projects:milestones:edit'
         new ZenMode()
+        new DueDateSelect()
         new GLForm($('.milestone-form'))
       when 'groups:milestones:new'
         new ZenMode()
@@ -72,9 +73,7 @@ class Dispatcher
         new Diff()
         new ZenMode()
         shortcut_handler = new ShortcutsNavigation()
-      when 'projects:commits:show'
-        shortcut_handler = new ShortcutsNavigation()
-      when 'projects:activity'
+      when 'projects:commits:show', 'projects:activity'
         shortcut_handler = new ShortcutsNavigation()
       when 'projects:show'
         shortcut_handler = new ShortcutsNavigation()
@@ -100,6 +99,7 @@ class Dispatcher
       when 'projects:blob:show', 'projects:blame:show'
         new LineHighlighter()
         shortcut_handler = new ShortcutsNavigation()
+        new ShortcutsBlob true
       when 'projects:labels:new', 'projects:labels:edit'
         new Labels()
       when 'projects:labels:index'
@@ -137,15 +137,11 @@ class Dispatcher
         new Project()
         new ProjectAvatar()
         switch path[1]
-          when 'compare'
-            shortcut_handler = new ShortcutsNavigation()
           when 'edit'
             shortcut_handler = new ShortcutsNavigation()
             new ProjectNew()
-          when 'new'
+          when 'new', 'show'
             new ProjectNew()
-          when 'show'
-            new ProjectShow()
           when 'wikis'
             new Wikis()
             shortcut_handler = new ShortcutsNavigation()
@@ -154,9 +150,9 @@ class Dispatcher
           when 'snippets'
             shortcut_handler = new ShortcutsNavigation()
             new ZenMode() if path[2] == 'show'
-          when 'labels', 'graphs'
-            shortcut_handler = new ShortcutsNavigation()
-          when 'project_members', 'deploy_keys', 'hooks', 'services', 'protected_branches'
+          when 'labels', 'graphs', 'compare', 'pipelines', 'forks', \
+          'milestones', 'project_members', 'deploy_keys', 'builds', \
+          'hooks', 'services', 'protected_branches'
             shortcut_handler = new ShortcutsNavigation()
 
     # If we haven't installed a custom shortcut handler, install the default one

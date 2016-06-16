@@ -577,10 +577,10 @@ describe 'Issues', feature: true do
             first('.ui-state-default').click
           end
 
-          expect(page).to have_no_content 'None'
+          expect(page).to have_no_content 'No due date'
 
           click_link 'remove due date'
-          expect(page).to have_content 'None'
+          expect(page).to have_content 'No due date'
         end
       end
     end
