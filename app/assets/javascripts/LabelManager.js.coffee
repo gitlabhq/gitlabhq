@@ -27,6 +27,11 @@ class @LabelManager
     $btn = $(e.currentTarget)
     $label = $("##{$btn.data('domId')}")
     action = if $btn.parents('.js-prioritized-labels').length then 'remove' else 'add'
+
+    # Make sure tooltip will hide
+    $tooltip = $ "##{$btn.find('.has-tooltip:visible').attr('aria-describedby')}"
+    $tooltip.tooltip 'destroy'
+
     _this.toggleLabelPriority($label, action)
 
   toggleLabelPriority: ($label, action, persistState = true) ->
