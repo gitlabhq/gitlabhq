@@ -252,20 +252,18 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def refs
-    repository = @project.repository
-    tags = VersionSorter.rsort(repository.tag_names)
-
     options = {
-      'Branches' => repository.branch_names,
+      'Branches' => @repository.branch_names,
     }
 
-    if tags.any?
-      options['Tags'] = tags
+    unless @repository.tag_count.zero?
+      options['Tags'] = VersionSorter.rsort(@repository.tag_names)
     end
 
     # If reference is commit id - we should add it to branch/tag selectbox
-    if @ref && !options.flatten.include?(@ref) && @ref =~ /\A[0-9a-zA-Z]{6,52}\z/
-      options['Commits'] = @ref
+    ref = params[:ref]
+    if ref && !options.flatten.include?(ref) && ref =~ /\A[0-9a-zA-Z]{6,52}\z/
+      options['Commits'] = [ref]
     end
 
     render json: options.to_json

@@ -61,6 +61,8 @@ class @Project
         data: (term, callback) ->
           $.ajax(
             url: $dropdown.data('refs-url')
+            data:
+              ref: $dropdown.data('ref')
           ).done (refs) ->
             callback(refs)
         selectable: true
