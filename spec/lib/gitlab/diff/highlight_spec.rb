@@ -67,7 +67,7 @@ describe Gitlab::Diff::Highlight, lib: true do
       end
 
       it 'marks added lines' do
-        code = %Q{+      raise <span class='idiff left right'>RuntimeError, </span>"System commands must be given as an array of strings"}
+        code = %Q{+      raise <span class='idiff left right'>RuntimeError, </span>&quot;System commands must be given as an array of strings&quot;}
 
         expect(subject[5].text).to eq(code)
         expect(subject[5].text).to be_html_safe
