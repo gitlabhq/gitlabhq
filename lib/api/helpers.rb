@@ -4,26 +4,18 @@ module API
     PRIVATE_TOKEN_PARAM = :private_token
     SUDO_HEADER = "HTTP_SUDO"
     SUDO_PARAM = :sudo
-    PERSONAL_ACCESS_TOKEN_PARAM = PRIVATE_TOKEN_PARAM
-    PERSONAL_ACCESS_TOKEN_HEADER = PRIVATE_TOKEN_HEADER
 
     def parse_boolean(value)
       [ true, 1, '1', 't', 'T', 'true', 'TRUE', 'on', 'ON' ].include?(value)
     end
 
     def find_user_by_private_token
-      private_token = (params[PRIVATE_TOKEN_PARAM] || env[PRIVATE_TOKEN_HEADER]).to_s
-      User.find_by_authentication_token(private_token)
-    end
-
-    def find_user_by_personal_access_token
-      personal_access_token_string = (params[PERSONAL_ACCESS_TOKEN_PARAM] || env[PERSONAL_ACCESS_TOKEN_HEADER]).to_s
-      personal_access_token = PersonalAccessToken.active.find_by_token(personal_access_token_string)
-      personal_access_token.user if personal_access_token
+      token_string = (params[PRIVATE_TOKEN_PARAM] || env[PRIVATE_TOKEN_HEADER]).to_s
+      User.find_by_authentication_token(token_string) || User.find_by_personal_access_token(token_string)
     end
 
     def current_user
-      @current_user ||= (find_user_by_private_token || find_user_by_personal_access_token || doorkeeper_guard)
+      @current_user ||= (find_user_by_private_token || doorkeeper_guard)
 
       unless @current_user && Gitlab::UserAccess.allowed?(@current_user)
         return nil

@@ -41,6 +41,7 @@ describe 'Profile > Personal Access Tokens', feature: true, js: true do
       fill_in "Name", with: FFaker::Product.brand
 
       # Set date to 1st of next month
+      find_field("Expires at").trigger('focus')
       find("a[title='Next']").click
       click_on "1"
 

@@ -269,6 +269,11 @@ class User < ActiveRecord::Base
       find_by!('lower(username) = ?', username.downcase)
     end
 
+    def find_by_personal_access_token(token_string)
+      personal_access_token = PersonalAccessToken.active.find_by_token(token_string) if token_string
+      personal_access_token.user if personal_access_token
+    end
+
     def by_username_or_id(name_or_id)
       find_by('users.username = ? OR users.id = ?', name_or_id.to_s, name_or_id.to_i)
     end
