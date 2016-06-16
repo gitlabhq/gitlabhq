@@ -9,7 +9,7 @@ module Gitlab
         def categories
           {
             "General" => '',
-            "Pages"   =>'Pages'
+            "Pages" => 'Pages'
           }
         end
 

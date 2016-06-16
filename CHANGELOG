@@ -102,6 +102,7 @@ v 8.9.0 (unreleased)
   - An indicator is now displayed at the top of the comment field for confidential issues.
   - Show categorised search queries in the search autocomplete
   - RepositoryCheck::SingleRepositoryWorker public and private methods are now instrumented
+  - Dropdown for `.gitlab-ci.yml` templates
   - Improve issuables APIs performance when accessing notes !4471
   - Add sorting dropdown to tags page !4423
   - External links now open in a new tab
