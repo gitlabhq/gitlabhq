@@ -19,11 +19,22 @@ class ProtectedBranch < ActiveRecord::Base
     (protected_branches || all).select { |protected_branch| protected_branch.matches?(branch_name) }
   end
 
+  # Returns all branches (among the given list of branches [`Gitlab::Git::Branch`])
+  # that match the current protected branch.
+  def matching(branches)
+    branches.select { |branch| self.matches?(branch.name) }
+  end
+
   # Checks if the protected branch matches the given branch name.
   def matches?(branch_name)
     return false if self.name.blank?
 
     exact_match?(branch_name) || wildcard_match?(branch_name)
+  end
+
+  # Checks if this protected branch contains a wildcard
+  def wildcard?
+    self.name.include?('*')
   end
 
   protected

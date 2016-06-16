@@ -21,7 +21,14 @@
 
         .form-group
           = f.label :name, "Branch", class: "label-light"
-          = f.select(:name, @project.open_branches.map { |br| [br.name, br.name] } , {include_blank: true}, {class: "select2", data: {placeholder: "Select branch"}})
+          = f.text_field(:name)
+          %p.help-block
+            Wildcards such as
+            %code *-stable
+            or
+            %code production/*
+            are supported.
+
         .form-group
           = f.check_box :developers_can_push, class: "pull-left"
           .prepend-left-20
@@ -31,3 +38,10 @@
         = f.submit "Protect", class: "btn-create btn"
     %hr
     = render "branches_list"
+
+:javascript
+  $("#protected_branch_name").select2({
+    placeholder: "Select branch",
+    createSearchChoice: function(term) { return { id: term, text: term }; },
+    data: gon.open_branches
+  })
