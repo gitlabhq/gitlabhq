@@ -3,7 +3,7 @@
  *
  */
 header {
-  transition-duration: .3s;
+  transition: padding $sidebar-transition-duration;
 
   &.navbar-empty {
     height: $header-height;
@@ -79,14 +79,9 @@ header {
 
     &.header-collapsed {
       padding: 0 16px;
-
-      .side-nav-toggle {
-        display: block;
-      }
     }
 
     .side-nav-toggle {
-      display: none;
       position: absolute;
       left: -10px;
       margin: 6px 0;
@@ -108,9 +103,7 @@ header {
   .header-content {
     position: relative;
     height: $header-height;
-    padding-right: 40px;
     padding-left: 30px;
-    transition-duration: .3s;
 
     @media (min-width: $screen-sm-min) {
       padding-right: 0;
@@ -195,18 +188,6 @@ header {
 
   .impersonation i {
     color: $red-normal;
-  }
-}
-
-.header-collapsed {
-  margin-left: 0;
-
-  .header-content {
-
-    @media (min-width: $screen-sm-max) {
-      padding-left: 30px;
-      transition-duration: .3s;
-    }
   }
 }
 

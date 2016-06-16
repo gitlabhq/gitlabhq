@@ -29,6 +29,9 @@ describe ProjectTeam, models: true do
       it { expect(project.team.master?(nonmember)).to be_falsey }
       it { expect(project.team.member?(nonmember)).to be_falsey }
       it { expect(project.team.member?(guest)).to be_truthy }
+      it { expect(project.team.member?(reporter, Gitlab::Access::REPORTER)).to be_truthy }
+      it { expect(project.team.member?(guest, Gitlab::Access::REPORTER)).to be_falsey }
+      it { expect(project.team.member?(nonmember, Gitlab::Access::GUEST)).to be_falsey }
     end
   end
 
@@ -64,50 +67,48 @@ describe ProjectTeam, models: true do
       it { expect(project.team.master?(nonmember)).to be_falsey }
       it { expect(project.team.member?(nonmember)).to be_falsey }
       it { expect(project.team.member?(guest)).to be_truthy }
+      it { expect(project.team.member?(guest, Gitlab::Access::MASTER)).to be_truthy }
+      it { expect(project.team.member?(reporter, Gitlab::Access::MASTER)).to be_falsey }
+      it { expect(project.team.member?(nonmember, Gitlab::Access::GUEST)).to be_falsey }
     end
   end
 
-  describe :max_invited_level do
-    let(:group) { create(:group) }
-    let(:project) { create(:empty_project) }
+  describe '#find_member' do
+    context 'personal project' do
+      let(:project) { create(:empty_project) }
+      let(:requester) { create(:user) }
 
-    before do
-      project.project_group_links.create(
-        group: group,
-        group_access: Gitlab::Access::DEVELOPER
-      )
+      before do
+        project.team << [master, :master]
+        project.team << [reporter, :reporter]
+        project.team << [guest, :guest]
+        project.request_access(requester)
+      end
 
-      group.add_user(master, Gitlab::Access::MASTER)
-      group.add_user(reporter, Gitlab::Access::REPORTER)
+      it { expect(project.team.find_member(master.id)).to be_a(ProjectMember) }
+      it { expect(project.team.find_member(reporter.id)).to be_a(ProjectMember) }
+      it { expect(project.team.find_member(guest.id)).to be_a(ProjectMember) }
+      it { expect(project.team.find_member(nonmember.id)).to be_nil }
+      it { expect(project.team.find_member(requester.id)).to be_nil }
     end
 
-    it { expect(project.team.max_invited_level(master.id)).to eq(Gitlab::Access::DEVELOPER) }
-    it { expect(project.team.max_invited_level(reporter.id)).to eq(Gitlab::Access::REPORTER) }
-    it { expect(project.team.max_invited_level(nonmember.id)).to be_nil }
-  end
+    context 'group project' do
+      let(:group) { create(:group) }
+      let(:project) { create(:empty_project, group: group) }
+      let(:requester) { create(:user) }
 
-  describe :max_member_access do
-    let(:group) { create(:group) }
-    let(:project) { create(:empty_project) }
+      before do
+        group.add_master(master)
+        group.add_reporter(reporter)
+        group.add_guest(guest)
+        group.request_access(requester)
+      end
 
-    before do
-      project.project_group_links.create(
-        group: group,
-        group_access: Gitlab::Access::DEVELOPER
-      )
-
-      group.add_user(master, Gitlab::Access::MASTER)
-      group.add_user(reporter, Gitlab::Access::REPORTER)
-    end
-
-    it { expect(project.team.max_member_access(master.id)).to eq(Gitlab::Access::DEVELOPER) }
-    it { expect(project.team.max_member_access(reporter.id)).to eq(Gitlab::Access::REPORTER) }
-    it { expect(project.team.max_member_access(nonmember.id)).to be_nil }
-
-    it "does not have an access" do
-      project.namespace.update(share_with_group_lock: true)
-      expect(project.team.max_member_access(master.id)).to be_nil
-      expect(project.team.max_member_access(reporter.id)).to be_nil
+      it { expect(project.team.find_member(master.id)).to be_a(GroupMember) }
+      it { expect(project.team.find_member(reporter.id)).to be_a(GroupMember) }
+      it { expect(project.team.find_member(guest.id)).to be_a(GroupMember) }
+      it { expect(project.team.find_member(nonmember.id)).to be_nil }
+      it { expect(project.team.find_member(requester.id)).to be_nil }
     end
   end
 
@@ -130,6 +131,71 @@ describe ProjectTeam, models: true do
       project = build_stubbed(:empty_project, namespace: group)
 
       expect(project.team.human_max_access(user.id)).to eq 'Owner'
+    end
+  end
+
+  describe '#max_member_access' do
+    let(:requester) { create(:user) }
+
+    context 'personal project' do
+      let(:project) { create(:empty_project) }
+
+      context 'when project is not shared with group' do
+        before do
+          project.team << [master, :master]
+          project.team << [reporter, :reporter]
+          project.team << [guest, :guest]
+          project.request_access(requester)
+        end
+
+        it { expect(project.team.max_member_access(master.id)).to eq(Gitlab::Access::MASTER) }
+        it { expect(project.team.max_member_access(reporter.id)).to eq(Gitlab::Access::REPORTER) }
+        it { expect(project.team.max_member_access(guest.id)).to eq(Gitlab::Access::GUEST) }
+        it { expect(project.team.max_member_access(nonmember.id)).to be_nil }
+        it { expect(project.team.max_member_access(requester.id)).to be_nil }
+      end
+
+      context 'when project is shared with group' do
+        before do
+          group = create(:group)
+          project.project_group_links.create(
+            group: group,
+            group_access: Gitlab::Access::DEVELOPER)
+
+          group.add_master(master)
+          group.add_reporter(reporter)
+        end
+
+        it { expect(project.team.max_member_access(master.id)).to eq(Gitlab::Access::DEVELOPER) }
+        it { expect(project.team.max_member_access(reporter.id)).to eq(Gitlab::Access::REPORTER) }
+        it { expect(project.team.max_member_access(nonmember.id)).to be_nil }
+        it { expect(project.team.max_member_access(requester.id)).to be_nil }
+
+        context 'but share_with_group_lock is true' do
+          before { project.namespace.update(share_with_group_lock: true) }
+
+          it { expect(project.team.max_member_access(master.id)).to be_nil }
+          it { expect(project.team.max_member_access(reporter.id)).to be_nil }
+        end
+      end
+    end
+
+    context 'group project' do
+      let(:group) { create(:group) }
+      let(:project) { create(:empty_project, group: group) }
+
+      before do
+        group.add_master(master)
+        group.add_reporter(reporter)
+        group.add_guest(guest)
+        group.request_access(requester)
+      end
+
+      it { expect(project.team.max_member_access(master.id)).to eq(Gitlab::Access::MASTER) }
+      it { expect(project.team.max_member_access(reporter.id)).to eq(Gitlab::Access::REPORTER) }
+      it { expect(project.team.max_member_access(guest.id)).to eq(Gitlab::Access::GUEST) }
+      it { expect(project.team.max_member_access(nonmember.id)).to be_nil }
+      it { expect(project.team.max_member_access(requester.id)).to be_nil }
     end
   end
 end

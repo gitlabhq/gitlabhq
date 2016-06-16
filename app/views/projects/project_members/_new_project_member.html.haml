@@ -9,7 +9,7 @@
   .form-group
     = f.label :access_level, "Project Access", class: 'control-label'
     .col-sm-10
-      = select_tag :access_level, options_for_select(ProjectMember.access_roles, @project_member.access_level), class: "project-access-select select2"
+      = select_tag :access_level, options_for_select(ProjectMember.access_level_roles, @project_member.access_level), class: "project-access-select select2"
       .help-block
         Read more about role permissions
         %strong= link_to "here", help_page_path("permissions", "permissions"), class: "vlink"

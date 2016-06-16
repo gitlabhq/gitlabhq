@@ -35,13 +35,13 @@
       .clearfix
       .error-alert
 
-- if issuable.is_a?(Issue) && !issuable.project.private?
+- if issuable.is_a?(Issue)
   .form-group
     .col-sm-offset-2.col-sm-10
       .checkbox
         = f.label :confidential do
           = f.check_box :confidential
-          This issue is confidential and should only be visible to team members
+          This issue is confidential and should only be visible to team members with at least Reporter access.
 
 - if can?(current_user, :"admin_#{issuable.to_ability_name}", issuable.project)
   - has_due_date = issuable.has_attribute?(:due_date)

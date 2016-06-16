@@ -11,26 +11,22 @@
   .project-edit-content
 
     = form_for @project, html: { class: 'new_project form-horizontal js-requires-input' } do |f|
-      .form-group.project-name-holder
+      .form-group
         = f.label :path, class: 'control-label' do
-          Project path
+          Project owner
         .col-sm-10
-          .input-group
-            - if current_user.can_select_namespace?
-              .input-group-addon
-                = root_url
-              = f.select :namespace_id, namespaces_options(params[:namespace_id] || :current_user, display_path: true), {}, {class: 'select2 js-select-namespace', tabindex: 1}
-              .input-group-addon
-                \/
-            - else
-              .input-group-addon
-                #{root_url}#{current_user.username}/
-            = f.text_field :path, placeholder: "my-awesome-project", class: "form-control", tabindex: 2, autofocus: true, required: true
-
+          = f.select :namespace_id, namespaces_options(:current_user), {}, {class: 'select2 js-select-namespace', tabindex: 1}
+        
           - if current_user.can_create_group?
             .help-block
               Want to house several dependent projects under the same namespace?
               = link_to "Create a group", new_group_path
+              
+      .form-group
+        = f.label :path, class: 'control-label' do
+          Project name
+        .col-sm-10
+          = f.text_field :path, placeholder: "my-awesome-project", class: "form-control", tabindex: 2, autofocus: true, required: true
 
       - if import_sources_enabled?
         .project-import.js-toggle-container
