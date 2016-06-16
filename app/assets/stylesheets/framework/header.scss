@@ -8,8 +8,8 @@
 
   &:hover,
   &.highlight {
-      fill: lighten($path-color, 25%);
-      transition: all 0.1s;
+    fill: lighten($path-color, 25%);
+    transition: all 0.1s;
   }
 }
 
