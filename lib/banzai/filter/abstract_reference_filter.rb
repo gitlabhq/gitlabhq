@@ -103,7 +103,7 @@ module Banzai
         ref_pattern = object_class.reference_pattern
         link_pattern = object_class.link_reference_pattern
 
-        each_node do |node|
+        nodes.each do |node|
           if text_node?(node) && ref_pattern
             replace_text_when_pattern_matches(node, ref_pattern) do |content|
               object_link_filter(content, ref_pattern)
@@ -204,6 +204,55 @@ module Banzai
         text += " (#{extras.join(", ")})" if extras.any?
 
         text
+      end
+
+      # Returns a Hash containing all object references (e.g. issue IDs) per the
+      # project they belong to.
+      def references_per_project
+        @references_per_project ||= begin
+          refs = Hash.new { |hash, key| hash[key] = Set.new }
+
+          regex = Regexp.union(object_class.reference_pattern,
+                               object_class.link_reference_pattern)
+
+          nodes.each do |node|
+            node.to_html.scan(regex) do
+              project = $~[:project] || current_project_path
+
+              refs[project] << $~[object_sym]
+            end
+          end
+
+          refs
+        end
+      end
+
+      # Returns a Hash containing referenced projects grouped per their full
+      # path.
+      def projects_per_reference
+        @projects_per_reference ||= begin
+          hash = {}
+          refs = Set.new
+
+          references_per_project.each do |project_ref, _|
+            refs << project_ref
+          end
+
+          find_projects_for_paths(refs.to_a).each do |project|
+            hash[project.path_with_namespace] = project
+          end
+
+          hash
+        end
+      end
+
+      # Returns the projects for the given paths.
+      def find_projects_for_paths(paths)
+        Project.where_paths_in(paths).includes(:namespace)
+      end
+
+      def current_project_path
+        @current_project_path ||= project.path_with_namespace
       end
 
       private
