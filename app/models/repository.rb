@@ -243,7 +243,7 @@ class Repository
   end
 
   def cache_keys
-    %i(size branch_names tag_names commit_count
+    %i(size branch_names tag_names branch_count tag_count commit_count
        readme version contribution_guide changelog
        license_blob license_key gitignore)
   end

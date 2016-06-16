@@ -110,6 +110,7 @@ v 8.9.0 (unreleased)
   - Various associations are now eager loaded when parsing issue references to reduce the number of queries executed
   - Set inverse_of for Project/Service association to reduce the number of queries
   - Update tanuki logo highlight/loading colors
+  - Use Git cached counters for branches and tags on project page
 
 v 8.8.5
   - Import GitHub repositories respecting the API rate limit !4166
