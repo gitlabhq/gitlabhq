@@ -21,13 +21,12 @@ module API
         present paginate(todos), with: Entities::Todo
       end
 
-      # Mark todo as done
+      # Mark a todo as done
       #
       # Parameters:
       #   id: (required) - The ID of the todo being marked as done
       #
       # Example Request:
-      #
       #  DELETE /todos/:id
       #
       delete ':id' do
@@ -40,7 +39,6 @@ module API
       # Mark all todos as done
       #
       # Example Request:
-      #
       #  DELETE /todos
       #
       delete do
