@@ -24,9 +24,9 @@ describe Gitlab::Highlight, lib: true do
     let(:path) { 'custom-highlighting/test.gitlab-custom' }
     let(:blob) { repository.blob_at_branch(branch, path) }
 
-    let(:highlighter) {
+    let(:highlighter) do
       Gitlab::Highlight.new(blob.path, blob.data, repository: repository)
-    }
+    end
 
     before { project.change_head('gitattributes') }
 
