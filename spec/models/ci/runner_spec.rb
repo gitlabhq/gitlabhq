@@ -107,6 +107,7 @@ describe Ci::Runner, models: true do
 
       it 'cannot handle build with tags' do
         build.tag_list = ['aa']
+
         expect(runner.can_pick?(build)).to be_falsey
       end
     end
@@ -119,11 +120,13 @@ describe Ci::Runner, models: true do
       shared_examples 'tagged build picker' do
         it 'can handle build with matching tags' do
           build.tag_list = ['bb']
+
           expect(runner.can_pick?(build)).to be_truthy
         end
 
         it 'cannot handle build without matching tags' do
           build.tag_list = ['aa']
+
           expect(runner.can_pick?(build)).to be_falsey
         end
       end
@@ -172,6 +175,7 @@ describe Ci::Runner, models: true do
 
           it 'cannot handle it for builds without matching tags' do
             build.tag_list = ['aa']
+
             expect(runner.can_pick?(build)).to be_falsey
           end
         end
