@@ -94,10 +94,13 @@ module Ci
     end
 
     def create_builds(user, trigger_request = nil)
+      ##
+      # We persist pipeline only if there are builds available
+      #
       return unless config_processor
-      config_processor.stages.any? do |stage|
-        CreateBuildsService.new(self).execute(stage, user, 'success', trigger_request).present?
-      end
+
+      build_builds_for_stages(config_processor.stages, user,
+                              'success', trigger_request) && save
     end
 
     def create_next_builds(build)
@@ -115,10 +118,10 @@ module Ci
       prior_builds = latest_builds.where.not(stage: next_stages)
       prior_status = prior_builds.status
 
-      # create builds for next stages based
-      next_stages.any? do |stage|
-        CreateBuildsService.new(self).execute(stage, build.user, prior_status, build.trigger_request).present?
-      end
+      # build builds for next stage that has builds available
+      # and save pipeline if we have builds
+      build_builds_for_stages(next_stages, build.user, prior_status,
+                              build.trigger_request) && save
     end
 
     def retried
@@ -139,10 +142,10 @@ module Ci
       @config_processor ||= begin
         Ci::GitlabCiYamlProcessor.new(ci_yaml_file, project.path_with_namespace)
       rescue Ci::GitlabCiYamlProcessor::ValidationError, Psych::SyntaxError => e
-        save_yaml_error(e.message)
+        self.yaml_errors = e.message
         nil
       rescue
-        save_yaml_error("Undefined error")
+        self.yaml_errors = 'Undefined error'
         nil
       end
     end
@@ -169,6 +172,17 @@ module Ci
 
     private
 
+    def build_builds_for_stages(stages, user, status, trigger_request)
+      ##
+      # Note that `Array#any?` implements a short circuit evaluation, so we
+      # build builds only for the first stage that has builds available.
+      #
+      stages.any? do |stage|
+        CreateBuildsService.new(self)
+          .execute(stage, user, status, trigger_request).present?
+      end
+    end
+
     def update_state
       statuses.reload
       self.status = if yaml_errors.blank?
@@ -180,12 +194,6 @@ module Ci
       self.finished_at = statuses.finished_at
       self.duration = statuses.latest.duration
       save
-    end
-
-    def save_yaml_error(error)
-      return if self.yaml_errors?
-      self.yaml_errors = error
-      update_state
     end
   end
 end

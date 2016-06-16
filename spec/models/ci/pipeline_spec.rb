@@ -258,6 +258,19 @@ describe Ci::Pipeline, models: true do
         end
       end
     end
+
+    context 'when no builds created' do
+      let(:pipeline) { build(:ci_pipeline) }
+
+      before do
+        stub_ci_pipeline_yaml_file(YAML.dump(before_script: ['ls']))
+      end
+
+      it 'returns false' do
+        expect(pipeline.create_builds(nil)).to be_falsey
+        expect(pipeline).not_to be_persisted
+      end
+    end
   end
 
   describe "#finished_at" do

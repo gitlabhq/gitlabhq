@@ -9,7 +9,7 @@ describe Ci::CreateBuildsService, services: true do
     #
 
     subject do
-      described_class.new(pipeline).execute('test', nil, user, status)
+      described_class.new(pipeline).execute('test', user, status, nil)
     end
 
     context 'next builds available' do
@@ -17,6 +17,10 @@ describe Ci::CreateBuildsService, services: true do
 
       it { is_expected.to be_an_instance_of Array }
       it { is_expected.to all(be_an_instance_of Ci::Build) }
+
+      it 'does not persist created builds' do
+        expect(subject.first).not_to be_persisted
+      end
     end
 
     context 'builds skipped' do
