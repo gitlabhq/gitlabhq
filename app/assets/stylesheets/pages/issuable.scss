@@ -251,11 +251,16 @@
       padding-bottom: 0;
       margin-bottom: 10px;
     }
+
+    .issuable-header-btn {
+      display: none;
+    }
   }
 
   .issuable-header-btn {
     background: $gray-normal;
     border: 1px solid $border-gray-normal;
+    
     &:hover {
       background: $gray-dark;
       border: 1px solid $border-gray-dark;
