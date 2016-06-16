@@ -18,6 +18,7 @@ variables:
   SIMPLECOV: "true"
   USE_DB: "true"
   USE_BUNDLE_INSTALL: "true"
+  GIT_DEPTH: "5"
 
 before_script:
   - source ./scripts/prepare_build.sh
@@ -97,37 +98,127 @@ update-knapsack:
     paths:
     - knapsack/
 
-rspec 0 20: *rspec-knapsack
-rspec 1 20: *rspec-knapsack
-rspec 2 20: *rspec-knapsack
-rspec 3 20: *rspec-knapsack
-rspec 4 20: *rspec-knapsack
-rspec 5 20: *rspec-knapsack
-rspec 6 20: *rspec-knapsack
-rspec 7 20: *rspec-knapsack
-rspec 8 20: *rspec-knapsack
-rspec 9 20: *rspec-knapsack
-rspec 10 20: *rspec-knapsack
-rspec 11 20: *rspec-knapsack
-rspec 12 20: *rspec-knapsack
-rspec 13 20: *rspec-knapsack
-rspec 14 20: *rspec-knapsack
-rspec 15 20: *rspec-knapsack
-rspec 16 20: *rspec-knapsack
-rspec 17 20: *rspec-knapsack
-rspec 18 20: *rspec-knapsack
-rspec 19 20: *rspec-knapsack
+rspec 0 60: *rspec-knapsack
+rspec 1 60: *rspec-knapsack
+rspec 2 60: *rspec-knapsack
+rspec 3 60: *rspec-knapsack
+rspec 4 60: *rspec-knapsack
+rspec 5 60: *rspec-knapsack
+rspec 6 60: *rspec-knapsack
+rspec 7 60: *rspec-knapsack
+rspec 8 60: *rspec-knapsack
+rspec 9 60: *rspec-knapsack
+rspec 10 60: *rspec-knapsack
+rspec 11 60: *rspec-knapsack
+rspec 12 60: *rspec-knapsack
+rspec 13 60: *rspec-knapsack
+rspec 14 60: *rspec-knapsack
+rspec 15 60: *rspec-knapsack
+rspec 16 60: *rspec-knapsack
+rspec 17 60: *rspec-knapsack
+rspec 18 60: *rspec-knapsack
+rspec 19 60: *rspec-knapsack
+rspec 20 60: *rspec-knapsack
+rspec 21 60: *rspec-knapsack
+rspec 22 60: *rspec-knapsack
+rspec 23 60: *rspec-knapsack
+rspec 24 60: *rspec-knapsack
+rspec 25 60: *rspec-knapsack
+rspec 26 60: *rspec-knapsack
+rspec 27 60: *rspec-knapsack
+rspec 28 60: *rspec-knapsack
+rspec 29 60: *rspec-knapsack
+rspec 30 60: *rspec-knapsack
+rspec 31 60: *rspec-knapsack
+rspec 32 60: *rspec-knapsack
+rspec 33 60: *rspec-knapsack
+rspec 34 60: *rspec-knapsack
+rspec 35 60: *rspec-knapsack
+rspec 36 60: *rspec-knapsack
+rspec 37 60: *rspec-knapsack
+rspec 38 60: *rspec-knapsack
+rspec 39 60: *rspec-knapsack
+rspec 40 60: *rspec-knapsack
+rspec 41 60: *rspec-knapsack
+rspec 42 60: *rspec-knapsack
+rspec 43 60: *rspec-knapsack
+rspec 44 60: *rspec-knapsack
+rspec 45 60: *rspec-knapsack
+rspec 46 60: *rspec-knapsack
+rspec 47 60: *rspec-knapsack
+rspec 48 60: *rspec-knapsack
+rspec 49 60: *rspec-knapsack
+rspec 50 60: *rspec-knapsack
+rspec 51 60: *rspec-knapsack
+rspec 52 60: *rspec-knapsack
+rspec 53 60: *rspec-knapsack
+rspec 54 60: *rspec-knapsack
+rspec 55 60: *rspec-knapsack
+rspec 56 60: *rspec-knapsack
+rspec 57 60: *rspec-knapsack
+rspec 58 60: *rspec-knapsack
+rspec 59 60: *rspec-knapsack
 
-spinach 0 10: *spinach-knapsack
-spinach 1 10: *spinach-knapsack
-spinach 2 10: *spinach-knapsack
-spinach 3 10: *spinach-knapsack
-spinach 4 10: *spinach-knapsack
-spinach 5 10: *spinach-knapsack
-spinach 6 10: *spinach-knapsack
-spinach 7 10: *spinach-knapsack
-spinach 8 10: *spinach-knapsack
-spinach 9 10: *spinach-knapsack
+spinach 0 60: *spinach-knapsack
+spinach 1 60: *spinach-knapsack
+spinach 2 60: *spinach-knapsack
+spinach 3 60: *spinach-knapsack
+spinach 4 60: *spinach-knapsack
+spinach 5 60: *spinach-knapsack
+spinach 6 60: *spinach-knapsack
+spinach 7 60: *spinach-knapsack
+spinach 8 60: *spinach-knapsack
+spinach 9 60: *spinach-knapsack
+spinach 10 60: *spinach-knapsack
+spinach 11 60: *spinach-knapsack
+spinach 12 60: *spinach-knapsack
+spinach 13 60: *spinach-knapsack
+spinach 14 60: *spinach-knapsack
+spinach 15 60: *spinach-knapsack
+spinach 16 60: *spinach-knapsack
+spinach 17 60: *spinach-knapsack
+spinach 18 60: *spinach-knapsack
+spinach 19 60: *spinach-knapsack
+spinach 20 60: *spinach-knapsack
+spinach 21 60: *spinach-knapsack
+spinach 22 60: *spinach-knapsack
+spinach 23 60: *spinach-knapsack
+spinach 24 60: *spinach-knapsack
+spinach 25 60: *spinach-knapsack
+spinach 26 60: *spinach-knapsack
+spinach 27 60: *spinach-knapsack
+spinach 28 60: *spinach-knapsack
+spinach 29 60: *spinach-knapsack
+spinach 30 60: *spinach-knapsack
+spinach 31 60: *spinach-knapsack
+spinach 32 60: *spinach-knapsack
+spinach 33 60: *spinach-knapsack
+spinach 34 60: *spinach-knapsack
+spinach 35 60: *spinach-knapsack
+spinach 36 60: *spinach-knapsack
+spinach 37 60: *spinach-knapsack
+spinach 38 60: *spinach-knapsack
+spinach 39 60: *spinach-knapsack
+spinach 40 60: *spinach-knapsack
+spinach 41 60: *spinach-knapsack
+spinach 42 60: *spinach-knapsack
+spinach 43 60: *spinach-knapsack
+spinach 44 60: *spinach-knapsack
+spinach 45 60: *spinach-knapsack
+spinach 46 60: *spinach-knapsack
+spinach 47 60: *spinach-knapsack
+spinach 48 60: *spinach-knapsack
+spinach 49 60: *spinach-knapsack
+spinach 50 60: *spinach-knapsack
+spinach 51 60: *spinach-knapsack
+spinach 52 60: *spinach-knapsack
+spinach 53 60: *spinach-knapsack
+spinach 54 60: *spinach-knapsack
+spinach 55 60: *spinach-knapsack
+spinach 56 60: *spinach-knapsack
+spinach 57 60: *spinach-knapsack
+spinach 58 60: *spinach-knapsack
+spinach 59 60: *spinach-knapsack
 
 # Execute all testing suites against Ruby 2.2
 
