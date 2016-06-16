@@ -3,7 +3,7 @@
 
 = render 'nav'
 %div{ class: (container_class) }
-  .row-content-block
+  .sub-header-block
     %span.oneline
       Git access for
       %strong= @project_wiki.path_with_namespace
@@ -11,7 +11,7 @@
     .pull-right
       = render "shared/clone_panel", project: @project_wiki
 
-  .git-empty.prepend-top-default
+  .prepend-top-default
     %fieldset
       %legend Install Gollum:
       %pre.dark

@@ -97,6 +97,17 @@
   }
 }
 
+.sub-header-block {
+  background-color: $white-light;
+  border-bottom: 1px solid $white-dark;
+  margin: 11px 0;
+  padding-bottom: 11px;
+
+  .oneline {
+    line-height: 35px;
+  }
+}
+
 .cover-block {
   text-align: center;
   background: $background-color;

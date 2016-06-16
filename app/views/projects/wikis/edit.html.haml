@@ -4,7 +4,7 @@
 
 %div{ class: (container_class) }
   .top-area
-    .nav-text.wiki-page
+    .nav-text
       %strong
         - if @page.persisted?
           = link_to @page.title.capitalize, namespace_project_wiki_path(@project.namespace, @project, @page)
