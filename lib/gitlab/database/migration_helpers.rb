@@ -30,7 +30,7 @@ module Gitlab
       # This method updates the table in batches of 5% of the total row count.
       # This method will continue updating rows until no rows remain.
       #
-      # When given a block this method will yield to values to the block:
+      # When given a block this method will yield two values to the block:
       #
       # 1. An instance of `Arel::Table` for the table that is being updated.
       # 2. The query to run as an Arel object.
@@ -44,59 +44,63 @@ module Gitlab
       #       query.where(table[:some_column].eq('hello'))
       #     end
       #
-      # This would result in this method updating only rows there
+      # This would result in this method updating only rows where
       # `projects.some_column` equals "hello".
       #
       # table - The name of the table.
       # column - The name of the column to update.
       # value - The value for the column.
+      #
+      # Rubocop's Metrics/AbcSize metric is disabled for this method as Rubocop
+      # determines this method to be too complex while there's no way to make it
+      # less "complex" without introducing extra methods (which actually will
+      # make things _more_ complex).
+      #
+      # rubocop: disable Metrics/AbcSize
       def update_column_in_batches(table, column, value)
         table = Arel::Table.new(table)
-        processed = 0
 
         count_arel = table.project(Arel.star.count.as('count'))
         count_arel = yield table, count_arel if block_given?
 
         total = exec_query(count_arel.to_sql).to_hash.first['count'].to_i
 
+        return if total == 0
+
         # Update in batches of 5% until we run out of any rows to update.
         batch_size = ((total / 100.0) * 5.0).ceil
 
+        start_arel = table.project(table[:id]).order(table[:id].asc).take(1)
+        start_arel = yield table, start_arel if block_given?
+        start_id = exec_query(start_arel.to_sql).to_hash.first['id'].to_i
+
         loop do
-          start_arel = table.project(table[:id]).
-            order(table[:id].asc).
-            take(1).
-            skip(processed)
-
-          start_arel = yield table, start_arel if block_given?
-          start_row = exec_query(start_arel.to_sql).to_hash.first
-
-          # There are no more rows to process
-          break unless start_row
-
           stop_arel = table.project(table[:id]).
+            where(table[:id].gteq(start_id)).
             order(table[:id].asc).
             take(1).
-            skip(processed + batch_size)
+            skip(batch_size)
 
           stop_arel = yield table, stop_arel if block_given?
           stop_row = exec_query(stop_arel.to_sql).to_hash.first
 
-          update_manager = Arel::UpdateManager.new(ActiveRecord::Base)
-
-          update_arel = update_manager.table(table).
+          update_arel = Arel::UpdateManager.new(ActiveRecord::Base).
+            table(table).
             set([[table[column], value]]).
-            where(table[:id].gteq(start_row['id']))
+            where(table[:id].gteq(start_id))
+
+          if stop_row
+            stop_id = stop_row['id'].to_i
+            start_id = stop_id
+            update_arel = update_arel.where(table[:id].lt(stop_id))
+          end
 
           update_arel = yield table, update_arel if block_given?
 
-          if stop_row
-            update_arel = update_arel.where(table[:id].lt(stop_row['id']))
-          end
-
           execute(update_arel.to_sql)
 
-          processed += batch_size
+          # There are no more rows left to update.
+          break unless stop_row
         end
       end
 
