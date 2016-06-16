@@ -340,6 +340,34 @@
         .help-block
           If you got a lot of false alarms from repository checks you can choose to clear all repository check information from the database.
 
+  %fieldset
+    %legend Elasticsearch
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :elasticsearch_indexing do
+            = f.check_box :elasticsearch_indexing
+            Elasticsearch indexing
+
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :elasticsearch_search do
+            = f.check_box :elasticsearch_search
+            Search with Elasticsearch enabled
+
+    .form-group
+      = f.label :elasticsearch_host, 'Host', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.text_field :elasticsearch_host, value: @application_setting.elasticsearch_host.join(', '), class: 'form-control', placeholder: 'localhost'
+        .help-block
+          The TCP/IP host to use for connecting to Elasticsearch. Use a comma-separated list to support clustering (e.g., "host1, host2").
+
+    .form-group
+      = f.label :elasticsearch_port, 'Port', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.text_field :elasticsearch_port, class: 'form-control', placeholder: ApplicationSetting.current.elasticsearch_port
+
 
   .form-actions
     = f.submit 'Save', class: 'btn btn-save'

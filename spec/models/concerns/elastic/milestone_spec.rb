@@ -1,14 +1,14 @@
 require 'spec_helper'
 
-describe "Milestone", elastic: true do
+describe Milestone, elastic: true do
   before do
-    allow(Gitlab.config.elasticsearch).to receive(:enabled).and_return(true)
-    Milestone.__elasticsearch__.create_index!
+    stub_application_setting(elasticsearch_search: true, elasticsearch_indexing: true)
+    described_class.__elasticsearch__.create_index!
   end
 
   after do
-    allow(Gitlab.config.elasticsearch).to receive(:enabled).and_return(false)
-    Milestone.__elasticsearch__.delete_index!
+    described_class.__elasticsearch__.delete_index!
+    stub_application_setting(elasticsearch_search: false, elasticsearch_indexing: false)
   end
 
   it "searches milestones" do
@@ -21,11 +21,11 @@ describe "Milestone", elastic: true do
     # The milestone you have no access to
     create :milestone, title: 'bla-bla term'
 
-    Milestone.__elasticsearch__.refresh_index!
+    described_class.__elasticsearch__.refresh_index!
 
     options = { project_ids: [project.id] }
 
-    expect(Milestone.elastic_search('term', options: options).total_count).to eq(2)
+    expect(described_class.elastic_search('term', options: options).total_count).to eq(2)
   end
 
   it "returns json with all needed elements" do

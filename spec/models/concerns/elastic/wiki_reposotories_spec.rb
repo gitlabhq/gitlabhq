@@ -1,14 +1,14 @@
 require 'spec_helper'
 
-describe "ProjectWiki", elastic: true do
+describe ProjectWiki, elastic: true do
   before do
-    allow(Gitlab.config.elasticsearch).to receive(:enabled).and_return(true)
-    ProjectWiki.__elasticsearch__.create_index!
+    stub_application_setting(elasticsearch_search: true, elasticsearch_indexing: true)
+    described_class.__elasticsearch__.create_index!
   end
 
   after do
-    allow(Gitlab.config.elasticsearch).to receive(:enabled).and_return(false)
-    ProjectWiki.__elasticsearch__.delete_index!
+    described_class.__elasticsearch__.delete_index!
+    stub_application_setting(elasticsearch_search: false, elasticsearch_indexing: false)
   end
 
   it "searches wiki page" do
@@ -17,8 +17,8 @@ describe "ProjectWiki", elastic: true do
     project.wiki.create_page("index_page", "Bla bla")
 
     project.wiki.index_blobs
-    
-    ProjectWiki.__elasticsearch__.refresh_index!
+
+    described_class.__elasticsearch__.refresh_index!
 
     expect(project.wiki.search('bla', type: :blob)[:blobs][:total_count]).to eq(1)
   end

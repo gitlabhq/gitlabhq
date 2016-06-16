@@ -6,13 +6,13 @@ describe Gitlab::Elastic::ProjectSearchResults, lib: true do
   let(:query) { 'hello world' }
 
   before do
-    allow(Gitlab.config.elasticsearch).to receive(:enabled).and_return(true)
+    stub_application_setting(elasticsearch_search: true, elasticsearch_indexing: true)
     Project.__elasticsearch__.create_index!
     Issue.__elasticsearch__.create_index!
   end
 
   after do
-    allow(Gitlab.config.elasticsearch).to receive(:enabled).and_return(false)
+    stub_application_setting(elasticsearch_search: false, elasticsearch_indexing: false)
     Project.__elasticsearch__.delete_index!
     Issue.__elasticsearch__.delete_index!
   end

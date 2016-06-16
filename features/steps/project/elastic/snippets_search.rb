@@ -3,6 +3,7 @@ class Spinach::Features::SnippetsSearch < Spinach::FeatureSteps
   include SharedPaths
   include SharedProject
   include SharedElastic
+  include StubConfiguration
 
   before do
     Snippet.__elasticsearch__.create_index!
@@ -11,7 +12,7 @@ class Spinach::Features::SnippetsSearch < Spinach::FeatureSteps
   after do
     Snippet.__elasticsearch__.delete_index!
 
-    allow(Gitlab.config.elasticsearch).to receive(:enabled).and_return(false)
+    stub_application_setting(elasticsearch_search: false, elasticsearch_indexing: false)
   end
 
   step 'there is a snippet "index" with "php rocks" string' do

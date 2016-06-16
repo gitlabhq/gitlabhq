@@ -25,7 +25,7 @@ module SharedElastic
   end
 
   step 'Elasticsearch is enabled' do
-    allow(Gitlab.config.elasticsearch).to receive(:enabled).and_return(true)
+    stub_application_setting(elasticsearch_search: true, elasticsearch_indexing: true)
   end
 
   def select_filter(name)

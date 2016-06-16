@@ -1,14 +1,14 @@
 require 'spec_helper'
 
-describe "Note", elastic: true do
+describe Note, elastic: true do
   before do
-    allow(Gitlab.config.elasticsearch).to receive(:enabled).and_return(true)
-    Note.__elasticsearch__.create_index!
+    stub_application_setting(elasticsearch_search: true, elasticsearch_indexing: true)
+    described_class.__elasticsearch__.create_index!
   end
 
   after do
-    allow(Gitlab.config.elasticsearch).to receive(:enabled).and_return(false)
-    Note.__elasticsearch__.delete_index!
+    described_class.__elasticsearch__.delete_index!
+    stub_application_setting(elasticsearch_search: false, elasticsearch_indexing: false)
   end
 
   it "searches notes" do
@@ -20,11 +20,11 @@ describe "Note", elastic: true do
     # The note in the project you have no access to
     create :note, note: 'bla-bla term'
 
-    Note.__elasticsearch__.refresh_index!
+    described_class.__elasticsearch__.refresh_index!
 
     options = { project_ids: [issue.project.id] }
 
-    expect(Note.elastic_search('term', options: options).total_count).to eq(1)
+    expect(described_class.elastic_search('term', options: options).total_count).to eq(1)
   end
 
   it "returns json with all needed elements" do

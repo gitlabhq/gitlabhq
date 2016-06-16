@@ -22,7 +22,7 @@ searching in:
 - snippets
 - wiki repositories
 
-Once the data is added to the database, search indexes will be updated
+Once the data is added to the database or repository, search indexes will be updated
 automatically. Elasticsearch can be installed on the same machine that GitLab
 is installed or on a separate server.
 
@@ -45,63 +45,34 @@ use the packages that are available for your OS.
 
 ## Enable Elasticsearch
 
-In order to enable Elasticsearch you need to have access to the server that
-GitLab is hosted on.
+In order to enable Elasticsearch you need to have access to the server that GitLab is hosted on, and an administrator account on your GitLab instance. Go to **Admin > Settings** and find the "Elasticsearch" section.
 
-The following three parameters are needed to enable Elasticsearch:
+The following Elasticsearch settings are available:
 
-| Parameter | Description |
-| --------- | ----------- |
-| `enabled` | Enables/disables the Elasticsearch integration. Can be either `true` or `false` |
-| `host`    | The host where Elasticsearch is installed on. Can be either an IP or a domain name which correctly resolves to an IP. It can be changed in the [Elasticsearch configuration settings][elastic-settings]. The default value is `localhost` |
-| `port`    | The TCP port that Elasticsearch listens to. It can be changed in the [Elasticsearch configuration settings][elastic-settings]. The default value is `9200`  |
+| Parameter                           | Description |
+| ---------                           | ----------- |
+| `Elasticsearch indexing`            | Enables/disables Elasticsearch indexing. You may want to enable indexing but disable search in order to give the index time to be fully completed, for example. |
+| `Search with Elasticsearch enabled` | Enables/disables using Elasticsearch in search. |
+| `Host`                              | The TCP/IP host to use for connecting to Elasticsearch. Use a comma-separated list to support clustering (e.g., "host1, host2"). |
+| `Port`                              | The TCP port that Elasticsearch listens to. The default value is 9200  |
 
-### Enable Elasticsearch in Omnibus installations
-
-If you have used one of the [Omnibus packages][pkg] to install GitLab, all
-you have to do is edit `/etc/gitlab/gitlab.rb` and add the following lines:
-
-```ruby
-gitlab_rails['elasticsearch_enabled'] = true
-gitlab_rails['elasticsearch_host'] = "localhost"
-gitlab_rails['elasticsearch_port'] = 9200
-```
-
-Replace the values as you see fit according to the
-[settings table above](#enable-elasticsearch).
-
-Save the file and reconfigure GitLab for the changes to take effect:
-`sudo gitlab-ctl reconfigure`.
-
-As a last step, move on to
-[add GitLab's data to the Elasticsearch index](#add-gitlabs-data-to-the-elasticsearch-index).
-
-### Enable Elasticsearch in source installations
-
-If you have installed GitLab from source, edit `/home/git/gitlab/config/gitlab.yml`:
-
-```yaml
-elasticsearch:
-  enabled: true
-  host: localhost
-  port: 9200
-```
-
-Replace the values as you see fit according to the
-[settings table above](#enable-elasticsearch).
-
-Save the file and restart GitLab for the changes to take effect:
-`sudo service gitlab restart`.
-
-As a last step, move on to
-[add GitLab's data to the Elasticsearch index](#add-gitlabs-data-to-the-elasticsearch-index).
 
 ## Add GitLab's data to the Elasticsearch index
 
-After [enabling Elasticsearch](#enable-elasticsearch), you must run the
-following rake tasks to add GitLab's data to the Elasticsearch index.
+Configure Elasticsearch's host and port in **Admin > Settings**. Then create empty indexes using one of the following commands:
 
-It might take a while depending on how big your Git repositories are (see
+
+    ```
+    # Omnibus installations
+    sudo gitlab-rake gitlab:elastic:create_empty_indexes
+
+    # Installations from source
+    bundle exec rake gitlab:elastic:create_empty_indexes
+    ```
+
+
+
+Then enable Elasticsearch indexing and run indexing tasks. It might take a while depending on how big your Git repositories are (see
 [Indexing large repositories](#indexing-large-repositories)).
 
 ---
@@ -167,7 +138,8 @@ sudo gitlab-rake gitlab:elastic:index_database
 # Installations from source
 bundle exec rake gitlab:elastic:index_database RAILS_ENV=production
 ```
-To index all available entities:
+
+Or everything at once (database records, repositories, wikis):
 
 ```
 # Omnibus installations
@@ -179,10 +151,7 @@ bundle exec rake gitlab:elastic:index RAILS_ENV=production
 
 ## Disable Elasticsearch
 
-Disabling the Elasticsearch integration is as easy as setting `enabled` to
-`false` in your GitLab settings. See [Enable Elasticsearch](#enable-elasticsearch)
-to find where those settings are and don't forget to reconfigure/restart GitLab
-for the changes to take effect.
+Disabling the Elasticsearch integration is as easy as unchecking `Search with Elasticsearch enabled` and `Elasticsearch indexing` in **Admin > Settings**.
 
 ## Special recommendations
 
@@ -241,8 +210,7 @@ time drop.
 
 To minimize downtime of the search feature we recommend the following:
 
-1. Configure Elasticsearch in `gitlab.yml`, or `gitlab.rb` for Omnibus
-   installations, but do not enable it, just set a host and port.
+1. Configure Elasticsearch in **Admin > Settings**, but do not enable it, just set a host and port.
 
 1. Create empty indexes:
 
@@ -257,7 +225,7 @@ To minimize downtime of the search feature we recommend the following:
 1. Index all repositories using the `gitlab:elastic:index_repositories` Rake
    task (see above). You'll probably want to do this in parallel.
 
-1. Enable Elasticsearch and restart GitLab. Note that once enabled the index will be updated when new data is pushed to the GitLab server.
+1. Enable Elasticsearch indexing.
 
 1. Run indexers for database (with the `UPDATE_INDEX=1` parameter), wikis, and
    repositories. By running  the repository indexer twice you will be sure that
