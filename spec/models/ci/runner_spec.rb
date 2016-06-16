@@ -20,17 +20,17 @@ describe Ci::Runner, models: true do
   end
 
   describe '#display_name' do
-    it 'should return the description if it has a value' do
+    it 'returns the description if it has a value' do
       runner = FactoryGirl.build(:ci_runner, description: 'Linux/Ruby-1.9.3-p448')
       expect(runner.display_name).to eq 'Linux/Ruby-1.9.3-p448'
     end
 
-    it 'should return the token if it does not have a description' do
+    it 'returns the token if it does not have a description' do
       runner = FactoryGirl.create(:ci_runner)
       expect(runner.display_name).to eq runner.description
     end
 
-    it 'should return the token if the description is an empty string' do
+    it 'returns the token if the description is an empty string' do
       runner = FactoryGirl.build(:ci_runner, description: '', token: 'token')
       expect(runner.display_name).to eq runner.token
     end
@@ -277,13 +277,13 @@ describe Ci::Runner, models: true do
         runner.update(is_shared: true)
       end
 
-      context 'should not give owned runner' do
+      context 'does not give owned runner' do
         subject { Ci::Runner.available_for(project) }
 
         it { is_expected.to be_empty }
       end
 
-      context 'should not give shared runner' do
+      context 'does not give shared runner' do
         subject { Ci::Runner.available_for(another_project) }
 
         it { is_expected.to be_empty }
@@ -291,13 +291,13 @@ describe Ci::Runner, models: true do
     end
 
     context 'with unlocked runner' do
-      context 'should not give owned runner' do
+      context 'does not give owned runner' do
         subject { Ci::Runner.available_for(project) }
 
         it { is_expected.to be_empty }
       end
 
-      context 'should give a specific runner' do
+      context 'does give a specific runner' do
         subject { Ci::Runner.available_for(another_project) }
 
         it { is_expected.to contain_exactly(runner) }
@@ -309,13 +309,13 @@ describe Ci::Runner, models: true do
         runner.update(locked: true)
       end
 
-      context 'should not give owned runner' do
+      context 'does not give owned runner' do
         subject { Ci::Runner.available_for(project) }
 
         it { is_expected.to be_empty }
       end
 
-      context 'should not give a locked runner' do
+      context 'does not give a locked runner' do
         subject { Ci::Runner.available_for(another_project) }
 
         it { is_expected.to be_empty }
