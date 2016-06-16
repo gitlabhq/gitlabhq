@@ -434,7 +434,7 @@ ActiveRecord::Schema.define(version: 20160616084004) do
   add_index "emails", ["user_id"], name: "index_emails_on_user_id", using: :btree
 
   create_table "environments", force: :cascade do |t|
-    t.integer  "project_id", null: false
+    t.integer  "project_id"
     t.string   "name",       null: false
     t.datetime "created_at"
     t.datetime "updated_at"
