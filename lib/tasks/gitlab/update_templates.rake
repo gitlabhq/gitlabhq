@@ -37,14 +37,16 @@ namespace :gitlab do
   private
 
   Template = Struct.new(:repo_url, :cleanup_regex)
-  TEMPLATE_DATA = [Template.new(
-        "https://github.com/github/gitignore.git",
-        /(\.{1,2}|LICENSE|Global|\.gitignore)\z/
-      ),
-      Template.new(
-        "https://gitlab.com/gitlab-org/gitlab-ci-yml.git",
-        /(\.{1,2}|LICENSE|Pages|\.gitlab-ci.yml)\z/
-      )]
+  TEMPLATE_DATA = [
+    Template.new(
+      "https://github.com/github/gitignore.git",
+      /(\.{1,2}|LICENSE|Global|\.gitignore)\z/
+    ),
+    Template.new(
+      "https://gitlab.com/gitlab-org/gitlab-ci-yml.git",
+      /(\.{1,2}|LICENSE|Pages|\.gitlab-ci.yml)\z/
+    )
+  ]
 
   def vendor_directory
     Rails.root.join('vendor')

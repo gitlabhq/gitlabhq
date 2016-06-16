@@ -2,7 +2,7 @@ module API
   class Templates < Grape::API
     TEMPLATE_TYPES = {
       gitignores:     Gitlab::Template::Gitignore,
-      gitlab_ci_ymls: Gitlab::Template::GitlabCIYml
+      gitlab_ci_ymls: Gitlab::Template::GitlabCiYml
     }.freeze
 
     TEMPLATE_TYPES.each do |template, klass|
@@ -28,6 +28,10 @@ module API
 
         new_template = klass.find(params[:name])
         not_found!("#{template.to_s.singularize}") unless new_template
+
+        if new_template.class == Gitlab::Template::GitlabCiYml
+          new_template.content = "# This file is a template, and might need editing before it works on your project.\n" + new_template.content
+        end
 
         present new_template, with: Entities::Template
       end

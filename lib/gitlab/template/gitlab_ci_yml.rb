@@ -1,6 +1,6 @@
 module Gitlab
   module Template
-    class GitlabCIYml < BaseTemplate
+    class GitlabCiYml < BaseTemplate
       class << self
         def extension
           '.gitlab-ci.yml'

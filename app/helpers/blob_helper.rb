@@ -194,8 +194,8 @@ module BlobHelper
 
   def gitlab_ci_ymls
     @gitlab_ci_ymls ||=
-      Gitlab::Template::GitlabCIYml.categories.keys.map do |k|
-        [k, Gitlab::Template::GitlabCIYml.by_category(k).map { |t| { name: t.name } }]
+      Gitlab::Template::GitlabCiYml.categories.keys.map do |k|
+        [k, Gitlab::Template::GitlabCiYml.by_category(k).map { |t| { name: t.name } }]
       end.to_h
   end
 end

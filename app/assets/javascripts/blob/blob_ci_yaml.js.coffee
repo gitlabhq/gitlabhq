@@ -2,7 +2,7 @@
 
 class @BlobCiYamlSelector extends TemplateSelector
   requestFile: (query) ->
-    Api.gitlabCIYml query.name, @requestFileSuccess.bind(@)
+    Api.gitlabCiYml query.name, @requestFileSuccess.bind(@)
 
 class @BlobCiYamlSelectors
   constructor: (opts) ->

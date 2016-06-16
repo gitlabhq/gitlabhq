@@ -40,4 +40,13 @@ describe API::Templates, api: true  do
       end
     end
   end
+
+  describe 'GET /gitlab_ci_ymls/Ruby' do
+    it 'adds a disclaimer on the top' do
+      get api('/gitlab_ci_ymls/Ruby')
+
+      expect(response.status).to eq(200)
+      expect(json_response['content']).to start_with("# This file is a template,")
+    end
+  end
 end

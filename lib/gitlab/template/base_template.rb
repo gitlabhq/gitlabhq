@@ -1,6 +1,8 @@
 module Gitlab
   module Template
     class BaseTemplate
+      attr_writer :content
+
       def initialize(path)
         @path = path
       end
@@ -10,7 +12,7 @@ module Gitlab
       end
 
       def content
-        File.read(@path)
+        @content ||= File.read(@path)
       end
 
       def categories

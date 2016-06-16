@@ -7,7 +7,7 @@
   labelsPath: "/api/:version/projects/:id/labels"
   licensePath: "/api/:version/licenses/:key"
   gitignorePath: "/api/:version/gitignores/:key"
-  gitlabCIYmlPath: "/api/:version/gitlab_ci_ymls/:key"
+  gitlabCiYmlPath: "/api/:version/gitlab_ci_ymls/:key"
 
   group: (group_id, callback) ->
     url = Api.buildUrl(Api.groupPath)
@@ -111,8 +111,8 @@
     $.get url, (gitignore) ->
       callback(gitignore)
 
-  gitlabCIYml: (key, callback) ->
-    url = Api.buildUrl(Api.gitlabCIYmlPath).replace(':key', key)
+  gitlabCiYml: (key, callback) ->
+    url = Api.buildUrl(Api.gitlabCiYmlPath).replace(':key', key)
 
     $.get url, (file) ->
       callback(file)
