@@ -136,7 +136,13 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
   def create
     @target_branches ||= []
-    @merge_request = MergeRequests::CreateService.new(project, current_user, merge_request_params).execute
+    create_params = merge_request_params
+
+    if create_params[:approvals_before_merge].to_i <= project.approvals_before_merge
+      create_params.delete(:approvals_before_merge)
+    end
+
+    @merge_request = MergeRequests::CreateService.new(project, current_user, create_params).execute
 
     if @merge_request.valid?
       redirect_to(merge_request_path(@merge_request))
@@ -395,6 +401,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       :title, :assignee_id, :source_project_id, :source_branch,
       :target_project_id, :target_branch, :milestone_id, :approver_ids,
       :state_event, :description, :task_num, :force_remove_source_branch,
+      :approvals_before_merge,
       label_ids: []
     )
   end

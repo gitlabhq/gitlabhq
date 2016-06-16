@@ -113,13 +113,23 @@
 
 - if issuable.is_a?(MergeRequest)
   - if @merge_request.requires_approve?
+    - approvals = issuable.target_project.approvals_before_merge
+    .form-group
+      = f.label :approvals_before_merge, class: 'control-label' do
+        Approvals required
+      .col-sm-10
+        = f.number_field :approvals_before_merge, class: 'form-control', value: approvals
+        .help-block
+          Number of users who need to approve this merge request before it can be accepted.
+          If this isn't greater than the project default (#{pluralize(approvals, 'user')}),
+          then it will be ignored and the project default will be used.
     .form-group
       = f.label :approver_ids, class: 'control-label' do
         Approvers
       .col-sm-10
         = users_select_tag("merge_request[approver_ids]", multiple: true, class: 'input-large', scope: :all, email_user: true)
         .help-block
-          Merge Request should be approved by these users.
+          This merge request must be approved by these users.
           You can override the project settings by setting your own list of approvers.
 
         .panel.panel-default.prepend-top-10

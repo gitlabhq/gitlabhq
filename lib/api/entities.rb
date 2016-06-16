@@ -211,6 +211,7 @@ module API
         merge_request.subscribed?(options[:current_user])
       end
       expose :user_notes_count
+      expose :approvals_before_merge
     end
 
     class MergeRequestChanges < MergeRequest

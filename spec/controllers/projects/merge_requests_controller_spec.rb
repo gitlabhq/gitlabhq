@@ -34,6 +34,73 @@ describe Projects::MergeRequestsController do
     end
   end
 
+  describe 'POST #create' do
+    def create_merge_request(overrides = {})
+      params = {
+        namespace_id: project.namespace.to_param,
+        project_id: project.to_param,
+        merge_request: {
+          title: 'Test',
+          source_branch: 'feature_conflict',
+          target_branch: 'master',
+          author: user
+        }.merge(overrides)
+      }
+
+      post :create, params
+    end
+
+    context 'the approvals_before_merge param' do
+      before { project.update_attributes(approvals_before_merge: 2) }
+      let(:created_merge_request) { assigns(:merge_request) }
+
+      context 'when it is less than the one in the target project' do
+        before { create_merge_request(approvals_before_merge: 1) }
+
+        it 'sets the param to nil' do
+          expect(created_merge_request.approvals_before_merge).to eq(nil)
+        end
+
+        it 'creates the merge request' do
+          expect(created_merge_request).to be_valid
+          expect(response).to redirect_to(namespace_project_merge_request_path(id: created_merge_request.iid, project_id: project.to_param))
+        end
+      end
+
+      context 'when it is equal to the one in the target project' do
+        before { create_merge_request(approvals_before_merge: 2) }
+
+        it 'sets the param to nil' do
+          expect(created_merge_request.approvals_before_merge).to eq(nil)
+        end
+
+        it 'creates the merge request' do
+          expect(created_merge_request).to be_valid
+          expect(response).to redirect_to(namespace_project_merge_request_path(id: created_merge_request.iid, project_id: project.to_param))
+        end
+      end
+
+      context 'when it is greater than the one in the target project' do
+        before { create_merge_request(approvals_before_merge: 3) }
+
+        it 'saves the param in the merge request' do
+          expect(created_merge_request.approvals_before_merge).to eq(3)
+        end
+
+        it 'creates the merge request' do
+          expect(created_merge_request).to be_valid
+          expect(response).to redirect_to(namespace_project_merge_request_path(id: created_merge_request.iid, project_id: project.to_param))
+        end
+      end
+    end
+
+    context 'when the merge request is invalid' do
+      it 'shows the #new form' do
+        expect(create_merge_request(title: nil)).to render_template(:new)
+      end
+    end
+  end
+
   describe "#show" do
     shared_examples "export merge as" do |format|
       it "should generally work" do
