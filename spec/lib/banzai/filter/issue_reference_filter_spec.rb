@@ -25,7 +25,9 @@ describe Banzai::Filter::IssueReferenceFilter, lib: true do
     let(:reference) { issue.to_reference }
 
     it 'ignores valid references when using non-default tracker' do
-      expect(project).to receive(:get_issue).with(issue.iid).and_return(nil)
+      expect_any_instance_of(described_class).to receive(:find_object).
+        with(project, issue.iid).
+        and_return(nil)
 
       exp = act = "Issue #{reference}"
       expect(reference_filter(act).to_html).to eq exp
@@ -107,8 +109,9 @@ describe Banzai::Filter::IssueReferenceFilter, lib: true do
     let(:reference) { issue.to_reference(project) }
 
     it 'ignores valid references when cross-reference project uses external tracker' do
-      expect_any_instance_of(Project).to receive(:get_issue).
-        with(issue.iid).and_return(nil)
+      expect_any_instance_of(described_class).to receive(:find_object).
+        with(project2, issue.iid).
+        and_return(nil)
 
       exp = act = "Issue #{reference}"
       expect(reference_filter(act).to_html).to eq exp
