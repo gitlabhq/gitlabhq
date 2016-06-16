@@ -191,7 +191,7 @@ feature 'Issues > Labels bulk assignment', feature: true do
       if unmark
         items.map do |item|
           # Make sure we are unmarking the item no matter the state it has currently
-          click_link item while find('a', text: item)[:class] == 'label-item'
+          click_link item until find('a', text: item)[:class] == 'label-item'
         end
       end
     end
