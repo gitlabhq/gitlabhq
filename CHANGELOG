@@ -42,6 +42,7 @@ v 8.9.0 (unreleased)
   - Use gitlab-shell v3.0.0
   - Fixed alignment of download dropdown in merge requests
   - Upgrade to jQuery 2
+  - Adds selected branch name to the dropdown toggle
   - Use Knapsack to evenly distribute tests across multiple nodes
   - Add `sha` parameter to MR merge API, to ensure only reviewed changes are merged
   - Don't allow MRs to be merged when commits were added since the last review / page load
