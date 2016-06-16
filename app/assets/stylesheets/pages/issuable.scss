@@ -34,10 +34,6 @@
     color: inherit;
   }
 
-  .issuable-header-text {
-    margin-top: 7px;
-  }
-
   .block {
     @include clearfix;
     padding: $gl-padding 0;
@@ -62,6 +58,10 @@
 
     .select2-container span {
       margin-top: 0;
+    }
+
+    .issuable-count {
+      margin-top: 7px;
     }
 
     .gutter-toggle {
@@ -145,6 +145,7 @@
 
       .assign-yourself {
         margin-top: 10px;
+        font-weight: normal;
         display: block;
       }
     }
@@ -155,10 +156,6 @@
 
     .light {
       font-weight: normal;
-    }
-
-    .no-value {
-      color: $gl-placeholder-color;
     }
 
     .sidebar-collapsed-icon {
@@ -251,16 +248,11 @@
       padding-bottom: 0;
       margin-bottom: 10px;
     }
-
-    .issuable-header-btn {
-      display: none;
-    }
   }
 
-  .issuable-header-btn {
+  .issuable-pager {
     background: $gray-normal;
     border: 1px solid $border-gray-normal;
-    
     &:hover {
       background: $gray-dark;
       border: 1px solid $border-gray-dark;
@@ -271,7 +263,7 @@
     }
   }
 
-  a {
+  a:not(.issuable-pager) {
     &:hover {
       color: $md-link-color;
       text-decoration: none;
@@ -330,7 +322,7 @@
   margin-left: 5px;
 
   a {
-    color: $gl-placeholder-color;
+    color: #8c8c8c;
   }
 }
 

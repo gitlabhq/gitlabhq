@@ -1,21 +1,5 @@
 class @DueDateSelect
   constructor: ->
-    # Milestone edit/new form
-    $datePicker = $('.datepicker')
-
-    if $datePicker.length
-      $dueDate = $('#milestone_due_date')
-      $datePicker.datepicker
-        dateFormat: 'yy-mm-dd'
-        onSelect: (dateText, inst) ->
-          $dueDate.val(dateText)
-      .datepicker('setDate', $.datepicker.parseDate('yy-mm-dd', $dueDate.val()))
-
-    $('.js-clear-due-date').on 'click', (e) ->
-      e.preventDefault()
-      $.datepicker._clearDate($datePicker)
-
-    # Issuable sidebar
     $loading = $('.js-issuable-update .due_date')
       .find('.block-loading')
       .hide()
@@ -48,7 +32,7 @@ class @DueDateSelect
           date = new Date value.replace(new RegExp('-', 'g'), ',')
           mediumDate = $.datepicker.formatDate 'M d, yy', date
         else
-          mediumDate = 'No due date'
+          mediumDate = 'None'
 
         data = {}
         data[abilityName] = {}
@@ -66,8 +50,7 @@ class @DueDateSelect
               $selectbox.hide()
             $value.css('display', '')
 
-            cssClass = if Date.parse(mediumDate) then 'bold' else 'no-value'
-            $valueContent.html("<span class='#{cssClass}'>#{mediumDate}</span>")
+            $valueContent.html(mediumDate)
             $sidebarValue.html(mediumDate)
 
             if value isnt ''

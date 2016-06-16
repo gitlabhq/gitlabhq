@@ -11,6 +11,8 @@ class ProjectMember < Member
   default_scope { where(source_type: SOURCE_TYPE) }
 
   scope :in_project, ->(project) { where(source_id: project.id) }
+  scope :in_projects, ->(projects) { where(source_id: projects.pluck(:id)) }
+  scope :with_user, ->(user) { where(user_id: user.id) }
 
   before_destroy :delete_member_todos
 
@@ -82,7 +84,7 @@ class ProjectMember < Member
       Gitlab::Access.sym_options
     end
 
-    def access_level_roles
+    def access_roles
       Gitlab::Access.options
     end
   end
@@ -107,12 +109,6 @@ class ProjectMember < Member
 
   def send_invite
     notification_service.invite_project_member(self, @raw_invite_token)
-
-    super
-  end
-
-  def send_request
-    notification_service.new_project_access_request(self)
 
     super
   end
@@ -148,12 +144,6 @@ class ProjectMember < Member
 
   def after_decline_invite
     notification_service.decline_project_invite(self)
-
-    super
-  end
-
-  def post_decline_request
-    notification_service.decline_project_access_request(self)
 
     super
   end

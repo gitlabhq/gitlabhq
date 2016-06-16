@@ -2,7 +2,6 @@ class Todo < ActiveRecord::Base
   ASSIGNED     = 1
   MENTIONED    = 2
   BUILD_FAILED = 3
-  MARKED       = 4
 
   belongs_to :author, class_name: "User"
   belongs_to :note

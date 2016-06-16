@@ -446,7 +446,7 @@ class Repository
 
   def blob_at(sha, path)
     unless Gitlab::Git.blank_ref?(sha)
-      Blob.decorate(Gitlab::Git::Blob.find(self, sha, path))
+      Gitlab::Git::Blob.find(self, sha, path)
     end
   end
 

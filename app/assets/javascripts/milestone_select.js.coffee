@@ -24,10 +24,14 @@ class @MilestoneSelect
 
       if issueUpdateURL
         milestoneLinkTemplate = _.template(
-          '<a href="/<%= namespace %>/<%= path %>/milestones/<%= iid %>" class="bold has-tooltip" data-container="body" title="<%= remaining %>"><%= _.escape(title) %></a>'
+          '<a href="/<%= namespace %>/<%= path %>/milestones/<%= iid %>">
+            <span class="has-tooltip" data-container="body" title="<%= remaining %>">
+              <%= _.escape(title) %>
+            </span>
+          </a>'
         )
 
-        milestoneLinkNoneTemplate = '<span class="no-value">None</span>'
+        milestoneLinkNoneTemplate = '<div class="light">None</div>'
 
         collapsedSidebarLabelTemplate = _.template(
           '<span class="has-tooltip" data-container="body" title="<%= remaining %>" data-placement="left">
@@ -112,7 +116,7 @@ class @MilestoneSelect
               .val()
             data = {}
             data[abilityName] = {}
-            data[abilityName].milestone_id = if selected? then selected else null
+            data[abilityName].milestone_id = selected
             $loading
               .fadeIn()
             $dropdown.trigger('loading.gl.dropdown')

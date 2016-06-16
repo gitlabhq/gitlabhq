@@ -67,12 +67,8 @@ class @SearchAutocomplete
   getData: (term, callback) ->
     _this = @
 
-    unless term
-      if contents = @getCategoryContents()
-        @searchInput.data('glDropdown').filter.options.callback contents
-        @enableAutocomplete()
-
-      return
+    # Do not trigger request if input is empty
+    return if @searchInput.val() is ''
 
     # Prevent multiple ajax calls
     return if @loadingSuggestions
@@ -125,37 +121,6 @@ class @SearchAutocomplete
         callback(data)
     ).always ->
       _this.loadingSuggestions = false
-
-
-  getCategoryContents: ->
-
-    userId = gon.current_user_id
-    { utils, projectOptions, groupOptions, dashboardOptions } = gl
-
-    if utils.isInGroupsPage() and groupOptions
-      options = groupOptions[utils.getGroupSlug()]
-
-    else if utils.isInProjectPage() and projectOptions
-      options = projectOptions[utils.getProjectSlug()]
-
-    else if dashboardOptions
-      options = dashboardOptions
-
-    { issuesPath, mrPath, name } = options
-
-    items = [
-      { header: "#{name}" }
-      { text: 'Issues assigned to me', url: "#{issuesPath}/?assignee_id=#{userId}" }
-      { text: "Issues I've created",   url: "#{issuesPath}/?author_id=#{userId}"   }
-      'separator'
-      { text: 'Merge requests assigned to me', url: "#{mrPath}/?assignee_id=#{userId}" }
-      { text: "Merge requests I've created",   url: "#{mrPath}/?author_id=#{userId}"   }
-    ]
-
-    items.splice 0, 1 unless name
-
-    return items
-
 
   serializeState: ->
     {
@@ -244,12 +209,6 @@ class @SearchAutocomplete
     @isFocused = true
     @wrap.addClass('search-active')
 
-    @getData()  if @getValue() is ''
-
-
-  getValue: -> return @searchInput.val()
-
-
   onClearInputClick: (e) =>
     e.preventDefault()
     @searchInput.val('').focus()
@@ -269,10 +228,6 @@ class @SearchAutocomplete
     badgeText = "#{category}#{value}"
     @locationBadgeEl.text(badgeText).show()
     @wrap.addClass('has-location-badge')
-
-
-  hasLocationBadge: -> return @wrap.is '.has-location-badge'
-
 
   restoreOriginalState: ->
     inputs = Object.keys @originalState
@@ -302,14 +257,13 @@ class @SearchAutocomplete
 
       @getElement("##{input}").val('')
 
-
   removeLocationBadge: ->
-
     @locationBadgeEl.hide()
-    @resetSearchState()
-    @wrap.removeClass('has-location-badge')
-    @disableAutocomplete()
 
+    # Reset state
+    @resetSearchState()
+
+    @wrap.removeClass('has-location-badge')
 
   disableAutocomplete: ->
     @searchInput.addClass('disabled')

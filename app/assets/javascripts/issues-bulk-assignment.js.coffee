@@ -9,9 +9,6 @@ class @IssuableBulkActions
 
     @bindEvents()
 
-    # Fixes bulk-assign not working when navigating through pages
-    Issuable.initChecks();
-
   getElement: (selector) ->
     @container.find selector
 
@@ -100,22 +97,13 @@ class @IssuableBulkActions
     $labels = @form.find('.labels-filter input[name="update[label_ids][]"]')
 
     $labels.each (k, label) ->
-      labelIds.push parseInt($(label).val()) if label
+      labelIds.push $(label).val() if label
 
     labelIds
 
   ###*
-   * Returns Label IDs that will be removed from issue selection
-   * @return {Array} Array of labels IDs
+   * Just an alias of @getUnmarkedIndeterminedLabels
+   * @return {Array} Array of labels
   ###
   getLabelsToRemove: ->
-    result = []
-    indeterminatedLabels = @getUnmarkedIndeterminedLabels()
-    labelsToApply = @getLabelsToApply()
-
-    indeterminatedLabels.map (id) ->
-      # We need to exclude label IDs that will be applied
-      # By not doing this will cause issues from selection to not add labels at all
-      result.push(id) if labelsToApply.indexOf(id) is -1
-
-    result
+    @getUnmarkedIndeterminedLabels()

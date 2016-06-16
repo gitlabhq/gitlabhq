@@ -28,7 +28,7 @@
 - [Integration](integration/README.md) How to integrate with systems such as JIRA, Redmine, Twitter.
 - [Issue closing](customization/issue_closing.md) Customize how to close an issue from commit messages.
 - [Libravatar](customization/libravatar.md) Use Libravatar for user avatars.
-- [Log system](administration/logs.md) Log system.
+- [Log system](logs/logs.md) Log system.
 - [Environment Variables](administration/environment_variables.md) to configure GitLab.
 - [Operations](operations/README.md) Keeping GitLab up and running
 - [Raketasks](raketasks/README.md) Backups, maintenance, automatic webhook setup and the importing of projects.

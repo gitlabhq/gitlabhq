@@ -116,7 +116,7 @@ module BlobHelper
   end
 
   def blob_text_viewable?(blob)
-    blob && blob.text? && !blob.lfs_pointer? && !blob.only_display_raw?
+    blob && blob.text? && !blob.lfs_pointer?
   end
 
   def blob_size(blob)

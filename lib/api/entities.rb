@@ -88,7 +88,10 @@ module API
     class Group < Grape::Entity
       expose :id, :name, :path, :description, :visibility_level
       expose :avatar_url
-      expose :web_url
+
+      expose :web_url do |group, options|
+        Gitlab::Routing.url_helpers.group_url(group)
+      end
     end
 
     class GroupDetail < Group

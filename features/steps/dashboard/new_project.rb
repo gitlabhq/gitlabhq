@@ -10,8 +10,7 @@ class Spinach::Features::NewProject < Spinach::FeatureSteps
   end
 
   step 'I see "New Project" page' do
-    expect(page).to have_content('Project owner')
-    expect(page).to have_content('Project name')
+    expect(page).to have_content('Project path')
   end
 
   step 'I see all possible import optios' do

@@ -42,10 +42,10 @@ class @LabelManager
       $from = @prioritizedLabels
 
     if $from.find('li').length is 1
-      $from.find('.empty-message').removeClass('hidden')
+      $from.find('.empty-message').show()
 
     if not $target.find('li').length
-      $target.find('.empty-message').addClass('hidden')
+      $target.find('.empty-message').hide()
 
     $label.detach().appendTo($target)
 
@@ -54,9 +54,6 @@ class @LabelManager
 
     if action is 'remove'
       xhr = $.ajax url: url, type: 'DELETE'
-
-      # Restore empty message
-      $from.find('.empty-message').removeClass('hidden') unless $from.find('li').length
     else
       xhr = @savePrioritySort($label, action)
 

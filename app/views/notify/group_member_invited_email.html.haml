@@ -1,0 +1,14 @@
+%p
+  You have been invited
+  - if inviter = @group_member.created_by
+    by
+    = link_to inviter.name, user_url(inviter)
+  to join group
+  = link_to @group.name, group_url(@group)
+  as #{@group_member.human_access}.
+
+%p
+  = link_to 'Accept invitation', invite_url(@token)
+  or
+  = link_to 'decline', decline_invite_url(@token)
+

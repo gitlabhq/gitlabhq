@@ -32,7 +32,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def retry
-    pipeline.retry_failed(current_user)
+    pipeline.retry_failed
 
     redirect_back_or_default default: namespace_project_pipelines_path(project.namespace, project)
   end

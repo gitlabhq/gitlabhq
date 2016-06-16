@@ -1,0 +1,4 @@
+%p
+  = "You have been granted #{@group_member.human_access} access to group"
+  = link_to group_url(@group) do
+    = @group.name

@@ -53,7 +53,7 @@ class Spinach::Features::GroupMembers < Spinach::FeatureSteps
   step 'I should see "sjobs@apple.com" in team list as invited "Reporter"' do
     page.within '.content-list' do
       expect(page).to have_content('sjobs@apple.com')
-      expect(page).to have_content('Invited')
+      expect(page).to have_content('invited')
       expect(page).to have_content('Reporter')
     end
   end
@@ -116,9 +116,11 @@ class Spinach::Features::GroupMembers < Spinach::FeatureSteps
     member = mary_jane_member
 
     page.within "#group_member_#{member.id}" do
-      click_button "Edit access level"
-      select 'Developer', from: 'group_member_access_level'
-      click_on 'Save'
+      find(".js-toggle-button").click
+      page.within "#edit_group_member_#{member.id}" do
+        select 'Developer', from: 'group_member_access_level'
+        click_on 'Save'
+      end
     end
   end
 
@@ -126,7 +128,9 @@ class Spinach::Features::GroupMembers < Spinach::FeatureSteps
     member = mary_jane_member
 
     page.within "#group_member_#{member.id}" do
-      expect(page).to have_content "Developer"
+      page.within '.member-access-level' do
+        expect(page).to have_content "Developer"
+      end
     end
   end
 

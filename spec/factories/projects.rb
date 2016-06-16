@@ -67,6 +67,9 @@ FactoryGirl.define do
           'new_issue_url' => 'http://redmine/projects/project_name_in_redmine/issues/new'
         }
       )
+
+      project.issues_tracker = 'redmine'
+      project.issues_tracker_id = 'project_name_in_redmine'
     end
   end
 
@@ -81,6 +84,9 @@ FactoryGirl.define do
           'new_issue_url' => 'http://jira.example/secure/CreateIssue.jspa'
         }
       )
+
+      project.issues_tracker = 'jira'
+      project.issues_tracker_id = 'project_name_in_jira'
     end
   end
 end

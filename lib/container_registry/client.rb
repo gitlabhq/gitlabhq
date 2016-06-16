@@ -47,9 +47,7 @@ module ContainerRegistry
       conn.request :json
       conn.headers['Accept'] = MANIFEST_VERSION
 
-      conn.response :json, content_type: 'application/vnd.docker.distribution.manifest.v1+prettyjws'
-      conn.response :json, content_type: 'application/vnd.docker.distribution.manifest.v1+json'
-      conn.response :json, content_type: 'application/vnd.docker.distribution.manifest.v2+json'
+      conn.response :json, content_type: /\bjson$/
 
       if options[:user] && options[:password]
         conn.request(:basic_auth, options[:user].to_s, options[:password].to_s)

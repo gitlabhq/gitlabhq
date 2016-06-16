@@ -74,7 +74,6 @@
 
     .container-fluid {
       background-color: $background-color;
-      margin-bottom: 0;
     }
 
     li {
@@ -242,12 +241,6 @@
       }
     }
   }
-
-  &.adjust {
-    .nav-text, .nav-controls {
-      width: auto;
-    }
-  }
 }
 
 .layout-nav {
@@ -257,7 +250,7 @@
   z-index: 11;
   background: $background-color;
   border-bottom: 1px solid $border-color;
-  transition: padding $sidebar-transition-duration;
+  transition-duration: .3s;
   text-align: center;
 
   .container-fluid {
@@ -287,10 +280,11 @@
     }
 
     .dropdown {
-      position: absolute;
-      top: 7px;
-      right: 15px;
-      z-index: 2;
+      margin-left: 7px;
+
+      @media (max-width: $screen-xs-min) {
+        margin-left: 0;
+      }
 
       li.active {
         font-weight: bold;
@@ -352,12 +346,6 @@
 
       .badge {
         color: $gl-icon-color;
-      }
-
-      &:hover {
-        a, i {
-          color: $black;
-        }
       }
     }
   }

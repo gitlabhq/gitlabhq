@@ -66,11 +66,7 @@ module Gitlab
         def sample_objects
           sample = Allocations.to_hash
           counts = sample.each_with_object({}) do |(klass, count), hash|
-            name = klass.name
-
-            next unless name
-
-            hash[name] = count
+            hash[klass.name] = count
           end
 
           # Symbols aren't allocated so we'll need to add those manually.

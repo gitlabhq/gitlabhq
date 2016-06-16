@@ -139,16 +139,10 @@ class TodoService
     pending_todos(user, attributes).update_all(state: :done)
   end
 
-  # When user marks an issue as todo
-  def mark_todo(issuable, current_user)
-    attributes = attributes_for_todo(issuable.project, issuable, current_user, Todo::MARKED)
-    create_todos(current_user, attributes)
-  end
-
   private
 
   def create_todos(users, attributes)
-    Array(users).map do |user|
+    Array(users).each do |user|
       next if pending_todos(user, attributes).exists?
       Todo.create(attributes.merge(user_id: user.id))
     end

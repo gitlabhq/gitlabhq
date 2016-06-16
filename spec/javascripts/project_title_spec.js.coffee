@@ -6,7 +6,7 @@
 #= require project_select
 #= require project
 
-window.gon or= {}
+window.gon = {}
 window.gon.api_version = 'v3'
 
 describe 'Project Title', ->

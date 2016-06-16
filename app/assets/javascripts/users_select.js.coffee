@@ -31,7 +31,7 @@ class @UsersSelect
       assignTo = (selected) ->
         data = {}
         data[abilityName] = {}
-        data[abilityName].assignee_id = if selected? then selected else null
+        data[abilityName].assignee_id = selected
         $loading
           .fadeIn()
         $dropdown.trigger('loading.gl.dropdown')
@@ -72,7 +72,7 @@ class @UsersSelect
 
       assigneeTemplate = _.template(
         '<% if (username) { %>
-        <a class="author_link bold" href="/u/<%= username %>">
+        <a class="author_link " href="/u/<%= username %>">
           <% if( avatar ) { %>
           <img width="32" class="avatar avatar-inline s32" alt="" src="<%= avatar %>">
           <% } %>
@@ -82,7 +82,7 @@ class @UsersSelect
           </span>
         </a>
           <% } else { %>
-        <span class="no-value assign-yourself">
+        <span class="assign-yourself">
           No assignee -
           <a href="#" class="js-assign-yourself">
             assign yourself

@@ -8,8 +8,8 @@
  */
 @mixin gitlab-theme($color-light, $color, $color-darker, $color-dark) {
   .page-with-sidebar {
-    .toggle-nav-collapse,
-    .pin-nav-btn {
+
+    .collapse-nav a {
       color: $color-light;
       background: $color;
 

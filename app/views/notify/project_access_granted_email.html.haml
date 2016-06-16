@@ -1,0 +1,5 @@
+%p
+  = "You have been granted #{@project_member.human_access} access to project"
+%p
+  = link_to namespace_project_url(@project.namespace, @project) do
+    = @project.name_with_namespace

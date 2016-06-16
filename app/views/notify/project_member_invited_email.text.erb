@@ -1,0 +1,4 @@
+You have been invited <%= "by #{@project_member.created_by.name} " if @project_member.created_by %>to join project <%= @project.name_with_namespace %> as <%= @project_member.human_access %>.
+
+Accept invitation: <%= invite_url(@token) %>
+Decline invitation: <%= decline_invite_url(@token) %>

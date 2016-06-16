@@ -1,7 +1,7 @@
 class @Shortcuts
-  constructor: (skipResetBindings) ->
+  constructor: ->
     @enabledHelp = []
-    Mousetrap.reset() if not skipResetBindings
+    Mousetrap.reset()
     Mousetrap.bind('?', @onToggleHelp)
     Mousetrap.bind('s', Shortcuts.focusSearch)
     Mousetrap.bind(['ctrl+shift+p', 'command+shift+p'], @toggleMarkdownPreview)

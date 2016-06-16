@@ -147,8 +147,7 @@ bt
 To output a backtrace from all threads at once:
 
 ```
-set pagination off
-thread apply all bt
+apply all thread bt
 ```
 
 Once you're done debugging with `gdb`, be sure to detach from the process and

@@ -24,7 +24,7 @@ class Blob < SimpleDelegator
   end
 
   def only_display_raw?
-    size && truncated?
+    size && size > 5.megabytes
   end
 
   def svg?

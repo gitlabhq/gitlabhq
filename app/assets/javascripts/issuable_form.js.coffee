@@ -102,10 +102,6 @@ class @IssuableForm
             return {
               results: data
             }
-          data: (query) ->
-            {
-              search: query
-            }
         formatResult: (project) ->
           project.name_with_namespace
         formatSelection: (project) ->

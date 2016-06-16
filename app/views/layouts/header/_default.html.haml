@@ -1,4 +1,4 @@
-%header.navbar.navbar-fixed-top.navbar-gitlab{ class: nav_header_class }
+%header.navbar.navbar-fixed-top.navbar-gitlab.header-collapsed{ class: nav_header_class }
   %div{ class: fluid_layout ? "container-fluid" : "container-fluid" }
     .header-content
       %button.side-nav-toggle{type: 'button'}
@@ -27,8 +27,9 @@
             %li
               = link_to dashboard_todos_path, title: 'Todos', data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
                 = icon('bell fw')
-                %span.badge.todos-pending-count{ class: ("hidden" if todos_pending_count == 0) }
-                  = todos_pending_count
+                - unless todos_pending_count == 0
+                  %span.badge.todos-pending-count
+                    = todos_pending_count
             - if current_user.can_create_project?
               %li
                 = link_to new_project_path, title: 'New project', data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
@@ -50,7 +51,7 @@
       %h1.title= title
 
       .header-logo
-        = link_to root_path, class: 'home', title: 'Dashboard', id: 'logo' do
+        #logo
           = brand_header_logo
 
       = yield :header_content

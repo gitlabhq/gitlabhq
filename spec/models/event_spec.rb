@@ -50,7 +50,6 @@ describe Event, models: true do
     let(:project) { create(:empty_project, :public) }
     let(:non_member) { create(:user) }
     let(:member)  { create(:user) }
-    let(:guest)  { create(:user) }
     let(:author) { create(:author) }
     let(:assignee) { create(:user) }
     let(:admin) { create(:admin) }
@@ -62,7 +61,6 @@ describe Event, models: true do
 
     before do
       project.team << [member, :developer]
-      project.team << [guest, :guest]
     end
 
     context 'issue event' do
@@ -73,7 +71,6 @@ describe Event, models: true do
         it { expect(event.visible_to_user?(author)).to eq true }
         it { expect(event.visible_to_user?(assignee)).to eq true }
         it { expect(event.visible_to_user?(member)).to eq true }
-        it { expect(event.visible_to_user?(guest)).to eq true }
         it { expect(event.visible_to_user?(admin)).to eq true }
       end
 
@@ -84,7 +81,6 @@ describe Event, models: true do
         it { expect(event.visible_to_user?(author)).to eq true }
         it { expect(event.visible_to_user?(assignee)).to eq true }
         it { expect(event.visible_to_user?(member)).to eq true }
-        it { expect(event.visible_to_user?(guest)).to eq false }
         it { expect(event.visible_to_user?(admin)).to eq true }
       end
     end
@@ -97,7 +93,6 @@ describe Event, models: true do
         it { expect(event.visible_to_user?(author)).to eq true }
         it { expect(event.visible_to_user?(assignee)).to eq true }
         it { expect(event.visible_to_user?(member)).to eq true }
-        it { expect(event.visible_to_user?(guest)).to eq true }
         it { expect(event.visible_to_user?(admin)).to eq true }
       end
 
@@ -108,7 +103,6 @@ describe Event, models: true do
         it { expect(event.visible_to_user?(author)).to eq true }
         it { expect(event.visible_to_user?(assignee)).to eq true }
         it { expect(event.visible_to_user?(member)).to eq true }
-        it { expect(event.visible_to_user?(guest)).to eq false }
         it { expect(event.visible_to_user?(admin)).to eq true }
       end
     end

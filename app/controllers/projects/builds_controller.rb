@@ -51,7 +51,7 @@ class Projects::BuildsController < Projects::ApplicationController
       return render_404
     end
 
-    build = Ci::Build.retry(@build, current_user)
+    build = Ci::Build.retry(@build)
     redirect_to build_path(build)
   end
 

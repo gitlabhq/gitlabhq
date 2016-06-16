@@ -1,21 +1,11 @@
 module Gitlab
   module Ci
-    ##
-    # Base GitLab CI Configuration facade
-    #
     class Config
-      delegate :valid?, :errors, to: :@global
-
-      ##
-      # Temporary delegations that should be removed after refactoring
-      #
-      delegate :before_script, to: :@global
+      class LoaderError < StandardError; end
 
       def initialize(config)
-        @config = Loader.new(config).load!
-
-        @global = Node::Global.new(@config)
-        @global.process!
+        loader = Loader.new(config)
+        @config = loader.load!
       end
 
       def to_hash

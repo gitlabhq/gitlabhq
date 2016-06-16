@@ -11,8 +11,6 @@ module Ci
 
     scope :unstarted, ->() { where(runner_id: nil) }
     scope :ignore_failures, ->() { where(allow_failure: false) }
-    scope :with_artifacts, ->() { where.not(artifacts_file: nil) }
-    scope :with_expired_artifacts, ->() { with_artifacts.where('artifacts_expire_at < ?', Time.now) }
 
     mount_uploader :artifacts_file, ArtifactUploader
     mount_uploader :artifacts_metadata, ArtifactUploader
@@ -40,7 +38,7 @@ module Ci
         new_build.save
       end
 
-      def retry(build, user = nil)
+      def retry(build)
         new_build = Ci::Build.new(status: 'pending')
         new_build.ref = build.ref
         new_build.tag = build.tag
@@ -54,7 +52,6 @@ module Ci
         new_build.stage = build.stage
         new_build.stage_idx = build.stage_idx
         new_build.trigger_request = build.trigger_request
-        new_build.user = user
         new_build.save
         MergeRequests::AddTodoWhenBuildFailsService.new(build.project, nil).close(new_build)
         new_build
@@ -76,17 +73,6 @@ module Ci
         build.update_coverage
         build.execute_hooks
       end
-
-      after_transition any => [:success] do |build|
-        if build.environment.present?
-          service = CreateDeploymentService.new(build.project, build.user,
-                                                environment: build.environment,
-                                                sha: build.sha,
-                                                ref: build.ref,
-                                                tag: build.tag)
-          service.execute(build)
-        end
-      end
     end
 
     def retryable?
@@ -95,6 +81,10 @@ module Ci
 
     def retried?
       !self.pipeline.statuses.latest.include?(self)
+    end
+
+    def retry
+      Ci::Build.retry(self)
     end
 
     def depends_on_builds
@@ -327,7 +317,7 @@ module Ci
     end
 
     def artifacts?
-      !artifacts_expired? && artifacts_file.exists?
+      artifacts_file.exists?
     end
 
     def artifacts_metadata?
@@ -338,15 +328,11 @@ module Ci
       Gitlab::Ci::Build::Artifacts::Metadata.new(artifacts_metadata.path, path, **options).to_entry
     end
 
-    def erase_artifacts!
-      remove_artifacts_file!
-      remove_artifacts_metadata!
-    end
-
     def erase(opts = {})
       return false unless erasable?
 
-      erase_artifacts!
+      remove_artifacts_file!
+      remove_artifacts_metadata!
       erase_trace!
       update_erased!(opts[:erased_by])
     end
@@ -359,25 +345,6 @@ module Ci
       !self.erased_at.nil?
     end
 
-    def artifacts_expired?
-      artifacts_expire_at && artifacts_expire_at < Time.now
-    end
-
-    def artifacts_expire_in
-      artifacts_expire_at - Time.now if artifacts_expire_at
-    end
-
-    def artifacts_expire_in=(value)
-      self.artifacts_expire_at =
-        if value
-          Time.now + ChronicDuration.parse(value)
-        end
-    end
-
-    def keep_artifacts!
-      self.update(artifacts_expire_at: nil)
-    end
-
     private
 
     def erase_trace!
@@ -385,7 +352,7 @@ module Ci
     end
 
     def update_erased!(user = nil)
-      self.update(erased_by: user, erased_at: Time.now, artifacts_expire_at: nil)
+      self.update(erased_by: user, erased_at: Time.now)
     end
 
     def yaml_variables

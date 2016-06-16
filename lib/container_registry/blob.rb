@@ -18,7 +18,7 @@ module ContainerRegistry
     end
 
     def digest
-      config['digest'] || config['blobSum']
+      config['digest']
     end
 
     def type
