@@ -113,6 +113,21 @@ v 8.8.5 (unreleased)
   - Fix importer for GitHub comments on diff
   - Disable Webhooks before proceeding with the GitHub import
   - Fix incremental trace upload API when using multi-byte UTF-8 chars in trace
+  - Set inverse_of for Project/Service association to reduce the number of queries
+  - Update tanuki logo highlight/loading colors
+
+v 8.8.5
+  - Import GitHub repositories respecting the API rate limit !4166
+  - Fix todos page throwing errors when you have a project pending deletion !4300
+  - Disable Webhooks before proceeding with the GitHub import !4470
+  - Fix importer for GitHub comments on diff !4488
+  - Adjust the SAML control flow to allow LDAP identities to be added to an existing SAML user !4498
+  - Fix incremental trace upload API when using multi-byte UTF-8 chars in trace !4541
+  - Prevent unauthorized access for projects build traces
+  - Forbid scripting for wiki files
+  - Only show notes through JSON on confidential issues that the user has access to
+  - Banzai::Filter::UploadLinkFilter use XPath instead CSS expressions
+  - Banzai::Filter::ExternalLinkFilter use XPath instead CSS expressions
 
 v 8.8.4
   - Fix LDAP-based login for users with 2FA enabled. !4493
