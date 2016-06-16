@@ -216,6 +216,12 @@ class GitLabDropdown
     @dropdown.on 'keyup', (e) =>
       if e.which is 27 # Escape key
         $('.dropdown-menu-close', @dropdown).trigger 'click'
+    @dropdown.on 'blur', 'a', (e) =>
+      $relatedTarget = $(e.relatedTarget)
+      $dropdownMenu = $relatedTarget.closest('.dropdown-menu')
+
+      if $dropdownMenu.length is 0
+        @dropdown.removeClass('open')
 
     if @dropdown.find(".dropdown-toggle-page").length
       @dropdown.find(".dropdown-toggle-page, .dropdown-menu-back").on "click", (e) =>
