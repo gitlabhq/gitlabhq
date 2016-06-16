@@ -67,35 +67,35 @@ describe API::Helpers, api: true do
       let(:personal_access_token) { create(:personal_access_token, user: user) }
 
       it "should return nil for an invalid token" do
-        env[API::Helpers::PERSONAL_ACCESS_TOKEN_HEADER] = 'invalid token'
+        env[API::Helpers::PRIVATE_TOKEN_HEADER] = 'invalid token'
         allow_any_instance_of(self.class).to receive(:doorkeeper_guard){ false }
         expect(current_user).to be_nil
       end
 
       it "should return nil for a user without access" do
-        env[API::Helpers::PERSONAL_ACCESS_TOKEN_HEADER] = personal_access_token.token
+        env[API::Helpers::PRIVATE_TOKEN_HEADER] = personal_access_token.token
         allow(Gitlab::UserAccess).to receive(:allowed?).and_return(false)
         expect(current_user).to be_nil
       end
 
       it "should leave user as is when sudo not specified" do
-        env[API::Helpers::PERSONAL_ACCESS_TOKEN_HEADER] = personal_access_token.token
+        env[API::Helpers::PRIVATE_TOKEN_HEADER] = personal_access_token.token
         expect(current_user).to eq(user)
         clear_env
-        params[API::Helpers::PERSONAL_ACCESS_TOKEN_PARAM] = personal_access_token.token
+        params[API::Helpers::PRIVATE_TOKEN_PARAM] = personal_access_token.token
         expect(current_user).to eq(user)
       end
 
       it 'does not allow revoked tokens' do
         personal_access_token.revoke!
-        env[API::Helpers::PERSONAL_ACCESS_TOKEN_HEADER] = personal_access_token.token
+        env[API::Helpers::PRIVATE_TOKEN_HEADER] = personal_access_token.token
         allow_any_instance_of(self.class).to receive(:doorkeeper_guard){ false }
         expect(current_user).to be_nil
       end
 
       it 'does not allow expired tokens' do
         personal_access_token.update_attributes!(expires_at: 1.day.ago)
-        env[API::Helpers::PERSONAL_ACCESS_TOKEN_HEADER] = personal_access_token.token
+        env[API::Helpers::PRIVATE_TOKEN_HEADER] = personal_access_token.token
         allow_any_instance_of(self.class).to receive(:doorkeeper_guard){ false }
         expect(current_user).to be_nil
       end
