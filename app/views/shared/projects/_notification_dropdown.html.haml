@@ -2,8 +2,8 @@
   - NotificationSetting.levels.each do |level|
     - if level.first != "custom"
       = notification_list_item(level.first, @notification_setting)
-  - unless @notification_setting.custom?
-    %li.divider
-    %li
-      %a.update-notification{ href: "#", role: "button", data: { toggle: "modal", target: "#custom-notifications-modal", notification_level: "custom", notification_title: "Custom" } }
-        Custom
+  %li.divider
+  %li
+    %a.update-notification{ href: "#", role: "button", data: { toggle: "modal", target: "#custom-notifications-modal", notification_level: "custom", notification_title: "Custom" } }
+      %strong.dropdown-menu-inner-title Custom
+      %span.dropdown-menu-inner-content= notification_description("custom")

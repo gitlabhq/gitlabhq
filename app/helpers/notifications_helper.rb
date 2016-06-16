@@ -34,7 +34,7 @@ module NotificationsHelper
   def notification_description(level)
     case level.to_sym
     when :participating
-      'You will only receive notifications from related resources'
+      'You will only receive notifications for threads you have participated in'
     when :mention
       'You will receive notifications only for comments in which you were @mentioned'
     when :watch
@@ -43,6 +43,8 @@ module NotificationsHelper
       'You will not get any notifications via email'
     when :global
       'Use your global notification setting'
+    when :custom
+      'You will only receive notifications for the events you choose'
     end
   end
 
