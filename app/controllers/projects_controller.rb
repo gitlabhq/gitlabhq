@@ -262,7 +262,7 @@ class ProjectsController < Projects::ApplicationController
 
     # If reference is commit id - we should add it to branch/tag selectbox
     ref = params[:ref]
-    if ref && !options.flatten.include?(ref) && ref =~ /\A[0-9a-zA-Z]{6,52}\z/
+    if ref && options.flatten.exclude?(ref) && ref =~ /\A[0-9a-zA-Z]{6,52}\z/
       options['Commits'] = [ref]
     end
 
