@@ -30,6 +30,11 @@ Rails.application.routes.draw do
     mount LetterOpenerWeb::Engine, at: '/rails/letter_opener'
   end
 
+  concern :access_requestable do
+    post :request_access, on: :collection
+    post :approve_access_request, on: :member
+  end
+
   namespace :ci do
     # CI API
     Ci::API::API.logger Rails.logger
@@ -416,7 +421,7 @@ Rails.application.routes.draw do
     end
 
     scope module: :groups do
-      resources :group_members, only: [:index, :create, :update, :destroy] do
+      resources :group_members, only: [:index, :create, :update, :destroy], concerns: :access_requestable do
         post :resend_invite, on: :member
         delete :leave, on: :collection
       end
@@ -711,6 +716,8 @@ Rails.application.routes.draw do
           end
         end
 
+        resources :environments, only: [:index, :show, :new, :create, :destroy]
+
         resources :builds, only: [:index, :show], constraints: { id: /\d+/ } do
           collection do
             post :cancel_all
@@ -729,6 +736,7 @@ Rails.application.routes.draw do
             get :download
             get :browse, path: 'browse(/*path)', format: false
             get :file, path: 'file/*path', format: false
+            post :keep
           end
         end
 
@@ -772,7 +780,7 @@ Rails.application.routes.draw do
           end
         end
 
-        resources :project_members, except: [:new, :edit], constraints: { id: /[a-zA-Z.\/0-9_\-#%+]+/ } do
+        resources :project_members, except: [:new, :edit], constraints: { id: /[a-zA-Z.\/0-9_\-#%+]+/ }, concerns: :access_requestable do
           collection do
             delete :leave
 
@@ -795,6 +803,8 @@ Rails.application.routes.draw do
             delete :delete_attachment
           end
         end
+
+        resources :todos, only: [:create, :update], constraints: { id: /\d+/ }
 
         resources :uploads, only: [:create] do
           collection do

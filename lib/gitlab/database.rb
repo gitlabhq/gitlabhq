@@ -30,6 +30,10 @@ module Gitlab
       order
     end
 
+    def self.random
+      Gitlab::Database.postgresql? ? "RANDOM()" : "RAND()"
+    end
+
     def true_value
       if Gitlab::Database.postgresql?
         "'t'"

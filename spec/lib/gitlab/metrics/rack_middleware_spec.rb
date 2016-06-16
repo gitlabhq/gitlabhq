@@ -31,6 +31,20 @@ describe Gitlab::Metrics::RackMiddleware do
 
       middleware.call(env)
     end
+
+    it 'tags a transaction with the method andpath of the route in the grape endpoint' do
+      route    = double(:route, route_method: "GET", route_path: "/:version/projects/:id/archive(.:format)")
+      endpoint = double(:endpoint, route: route)
+
+      env['api.endpoint'] = endpoint
+
+      allow(app).to receive(:call).with(env)
+
+      expect(middleware).to receive(:tag_endpoint).
+        with(an_instance_of(Gitlab::Metrics::Transaction), env)
+
+      middleware.call(env)
+    end
   end
 
   describe '#transaction_from_env' do
@@ -58,6 +72,21 @@ describe Gitlab::Metrics::RackMiddleware do
       middleware.tag_controller(transaction, env)
 
       expect(transaction.action).to eq('TestController#show')
+    end
+  end
+
+  describe '#tag_endpoint' do
+    let(:transaction) { middleware.transaction_from_env(env) }
+
+    it 'tags a transaction with the method and path of the route in the grape endpount' do
+      route    = double(:route, route_method: "GET", route_path: "/:version/projects/:id/archive(.:format)")
+      endpoint = double(:endpoint, route: route)
+
+      env['api.endpoint'] = endpoint
+
+      middleware.tag_endpoint(transaction, env)
+
+      expect(transaction.action).to eq('Grape#GET /projects/:id/archive')
     end
   end
 end

@@ -79,27 +79,8 @@ delete them.
 This feature requires GitLab 8.8 and GitLab Runner 1.2.
 
 Make sure that your GitLab Runner is configured to allow building docker images.
-You have to check the [Using Docker Build documentation](../../ci/docker/using_docker_build.md).
-
-You can use [docker:dind](https://hub.docker.com/_/docker/) to build your images,
-and this is how `.gitlab-ci.yml` should look like:
-
-```
- build_image:
-   image: docker:git
-   services:
-   - docker:dind
-   stage: build
-   script:
-     - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN registry.example.com
-     - docker build -t registry.example.com/group/project:latest .
-     - docker push registry.example.com/group/project:latest
-```
-
-You have to use the credentials of the special `gitlab-ci-token` user with its
-password stored in `$CI_BUILD_TOKEN` in order to push to the Registry connected
-to your project. This allows you to automated building and deployment of your
-Docker images.
+You have to check the [Using Docker Build documentation](../ci/docker/using_docker_build.md).
+Then see the CI documentation on [Using the GitLab Container Registry](../ci/docker/using_docker_build.md#using-the-gitlab-container-registry).
 
 ## Limitations
 
