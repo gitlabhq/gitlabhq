@@ -17,11 +17,11 @@ module Gitlab
       end
 
       def valid?
-        errors.none?
+        @global.valid?
       end
 
       def errors
-        @global.errors.map(&:to_s)
+        @global.errors
       end
 
       def to_hash

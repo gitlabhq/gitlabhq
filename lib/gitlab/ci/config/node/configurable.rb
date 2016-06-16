@@ -16,21 +16,27 @@ module Gitlab
         module Configurable
           extend ActiveSupport::Concern
 
+          included do
+            validations do
+              validate :hash_config_value
+
+              def hash_config_value
+                unless self.config.is_a?(Hash)
+                  errors.add(:config, 'should be a configuration entry hash')
+                end
+              end
+            end
+          end
+
           def allowed_nodes
             self.class.allowed_nodes || {}
           end
 
           private
 
-          def prevalidate!
-            unless @value.is_a?(Hash)
-              add_error('should be a configuration entry with hash value')
-            end
-          end
-
           def create_node(key, factory)
-            factory.with(value: @value[key], key: key)
-            factory.nullify! unless @value.has_key?(key)
+            factory.with(value: @config[key], key: key)
+            factory.nullify! unless @config.has_key?(key)
             factory.create!
           end
 
@@ -47,7 +53,6 @@ module Gitlab
 
               define_method(symbol) do
                 raise Entry::InvalidError unless valid?
-
                 @nodes[symbol].try(:value)
               end
 

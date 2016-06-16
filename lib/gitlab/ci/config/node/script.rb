@@ -11,16 +11,20 @@ module Gitlab
         # implementation in Runner.
         #
         class Script < Entry
-          include ValidationHelpers
+          validations do
+            include ValidationHelpers
 
-          def value
-            @value.join("\n")
+            validate :array_of_strings
+
+            def array_of_strings
+              unless validate_array_of_strings(self.config)
+                errors.add(:config, 'should be an array of strings')
+              end
+            end
           end
 
-          def validate!
-            unless validate_array_of_strings(@value)
-              add_error('should be an array of strings')
-            end
+          def value
+            @config.join("\n")
           end
         end
       end

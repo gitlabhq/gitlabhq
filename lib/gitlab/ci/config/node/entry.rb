@@ -7,16 +7,15 @@ module Gitlab
         #
         class Entry
           class InvalidError < StandardError; end
+          include Validatable
 
-          attr_writer :key
-          attr_accessor :description
+          attr_reader :config
+          attr_accessor :key, :description
 
-          def initialize(value)
-            @value = value
+          def initialize(config)
+            @config = config
             @nodes = {}
-            @errors = []
-
-            prevalidate!
+            @validator = self.class.validator.new(self)
           end
 
           def process!
@@ -24,17 +23,11 @@ module Gitlab
             return unless valid?
 
             compose!
-
-            nodes.each(&:process!)
-            nodes.each(&:validate!)
+            process_nodes!
           end
 
           def nodes
             @nodes.values
-          end
-
-          def valid?
-            errors.none?
           end
 
           def leaf?
@@ -45,20 +38,17 @@ module Gitlab
             @key || self.class.name.demodulize.underscore
           end
 
-          def errors
-            @errors + nodes.map(&:errors).flatten
+          def valid?
+            errors.none?
           end
 
-          def add_error(message)
-            @errors << Error.new(message, self)
+          def errors
+            @validator.full_errors +
+              nodes.map(&:errors).flatten
           end
 
           def allowed_nodes
             {}
-          end
-
-          def validate!
-            raise NotImplementedError
           end
 
           def value
@@ -67,13 +57,14 @@ module Gitlab
 
           private
 
-          def prevalidate!
-          end
-
           def compose!
             allowed_nodes.each do |key, essence|
               @nodes[key] = create_node(key, essence)
             end
+          end
+
+          def process_nodes!
+            nodes.each(&:process!)
           end
 
           def create_node(key, essence)

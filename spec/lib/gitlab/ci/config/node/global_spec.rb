@@ -85,7 +85,7 @@ describe Gitlab::Ci::Config::Node::Global do
     describe '#errors' do
       it 'reports errors from child nodes' do
         expect(global.errors)
-          .to include 'before_script: should be an array of strings'
+          .to include 'Before script config should be an array of strings'
       end
     end
 

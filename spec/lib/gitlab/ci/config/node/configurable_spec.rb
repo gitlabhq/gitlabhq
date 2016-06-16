@@ -4,6 +4,7 @@ describe Gitlab::Ci::Config::Node::Configurable do
   let(:node) { Class.new }
 
   before do
+    node.include(Gitlab::Ci::Config::Node::Validatable)
     node.include(described_class)
   end
 

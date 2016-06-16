@@ -820,7 +820,7 @@ EOT
         config = YAML.dump({ before_script: "bundle update", rspec: { script: "test" } })
         expect do
           GitlabCiYamlProcessor.new(config, path)
-        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "before_script: should be an array of strings")
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "Before script config should be an array of strings")
       end
 
       it "returns errors if job before_script parameter is not an array of strings" do
