@@ -29,6 +29,7 @@ v 8.9.0 (unreleased)
   - Add a metric for the number of new Redis connections created by a transaction
   - Fix Error 500 when viewing a blob with binary characters after the 1024-byte mark
   - Redesign navigation for project pages
+  - Fix images in sign-up confirmation email
   - Added shortcut 'y' for copying a files content hash URL #14470
   - Fix groups API to list only user's accessible projects
   - Fix horizontal scrollbar for long commit message.
