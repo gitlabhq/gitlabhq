@@ -1,5 +1,5 @@
 - if can?(current_user, :update_merge_request, @merge_request)
-  = render "projects/merge_requests/show/inline_edit"
+  = render 'shared/issuable/inline_edit', issuable: @merge_request
 - else
   .detail-page-description.content-block
     %h2.title

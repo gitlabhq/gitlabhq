@@ -328,6 +328,7 @@ v 8.9.0
   - Remove deprecated issues_tracker and issues_tracker_id from project model
   - Allow users to create confidential issues in private projects
   - Measure CPU time for instrumented methods
+  - Inline editing of issue & merge request title and description
   - Instrument private methods and private instance methods by default instead just public methods
   - Only show notes through JSON on confidential issues that the user has access to
   - Updated the allocations Gem to version 1.0.5
@@ -399,12 +400,6 @@ v 8.8.3
   - Fix serious performance bug with rendering Markdown with InlineDiffFilter.  !4392
   - Fix missing number on generated ordered list element. !4437
   - Prevent disclosure of notes on confidential issues in search results.
-  - Fix incorrect links on pipeline page when merge request created from fork
-  - Fix gitlab importer failing to import new projects due to missing credentials
-  - Fix import URL migration not rescuing with the correct Error
-  - In search results, only show notes on confidential issues that the user has access to
-  - Fix health check access token changing due to old application settings being used
-  - Inline editing of issue & merge request title and description
 
 v 8.8.2
   - Added remove due date button. !4209
