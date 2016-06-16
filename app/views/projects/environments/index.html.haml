@@ -1,0 +1,23 @@
+- @no_container = true
+- page_title "Environments"
+= render "projects/pipelines/head"
+
+%div{ class: (container_class) }
+  - if can?(current_user, :create_environment, @project)
+    .top-area
+      .nav-controls
+        = link_to new_namespace_project_environment_path(@project.namespace, @project), class: 'btn btn-create' do
+          New environment
+
+  - if @environments.blank?
+    %ul.content-list.environments
+      %li.nothing-here-block
+        No environments to show
+  - else
+    .table-holder
+      %table.table.environments
+        %tbody
+          %th Environment
+          %th Last deployment
+          %th Date
+        = render @environments

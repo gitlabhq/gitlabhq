@@ -1,12 +1,4 @@
 module ProjectsHelper
-  def remove_from_project_team_message(project, member)
-    if member.user
-      "You are going to remove #{member.user.name} from #{project.name} project team. Are you sure?"
-    else
-      "You are going to revoke the invitation for #{member.invite_email} to join #{project.name} project team. Are you sure?"
-    end
-  end
-
   def link_to_project(project)
     link_to [project.namespace.becomes(Namespace), project], title: h(project.name) do
       title = content_tag(:span, project.name, class: 'project-name')
@@ -49,7 +41,7 @@ module ProjectsHelper
     author_html = author_html.html_safe
 
     if opts[:name]
-      link_to(author_html, user_path(author), class: "author_link #{"#{opts[:mobile_classes]}" if opts[:mobile_classes]}").html_safe
+      link_to(author_html, user_path(author), class: "author_link #{"#{opts[:extra_class]}" if opts[:extra_class]} #{"#{opts[:mobile_classes]}" if opts[:mobile_classes]}").html_safe
     else
       title = opts[:title].sub(":name", sanitize(author.name))
       link_to(author_html, user_path(author), class: "author_link has-tooltip", title: title, data: { container: 'body' } ).html_safe
@@ -115,14 +107,6 @@ module ProjectsHelper
     end
   end
 
-  def user_max_access_in_project(user_id, project)
-    level = project.team.max_member_access(user_id)
-
-    if level
-      Gitlab::Access.options_with_owner.key(level)
-    end
-  end
-
   def license_short_name(project)
     return 'LICENSE' if project.repository.license_key.nil?
 
@@ -154,6 +138,10 @@ module ProjectsHelper
 
     if Gitlab.config.registry.enabled && can?(current_user, :read_container_image, project)
       nav_tabs << :container_registry
+    end
+
+    if can?(current_user, :read_environment, project)
+      nav_tabs << :environments
     end
 
     if can?(current_user, :admin_project, project)
@@ -284,10 +272,6 @@ module ProjectsHelper
     when "finished"
       "success"
     end
-  end
-
-  def leave_project_message(project)
-    "Are you sure you want to leave \"#{project.name}\" project?"
   end
 
   def new_readme_path

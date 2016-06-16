@@ -51,9 +51,9 @@
     %p
       Use a hardware device to add the second factor of authentication.
     %p
-      As U2F devices are only supported by a few browsers, it's recommended that you set up a
-      two-factor authentication app as well as a U2F device so you'll always be able to log in
-      using an unsupported browser.
+      As U2F devices are only supported by a few browsers, we require that you set up a
+      two-factor authentication app before a U2F device. That way you'll always be able to
+      log in - even when you're using an unsupported browser.
   .col-lg-9
     %p
       - if @registration_key_handles.present?

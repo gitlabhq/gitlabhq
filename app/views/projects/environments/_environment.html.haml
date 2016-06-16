@@ -1,0 +1,17 @@
+- last_deployment = environment.last_deployment
+
+%tr.environment
+  %td
+    %strong
+      = link_to environment.name, namespace_project_environment_path(@project.namespace, @project, environment)
+
+  %td
+    - if last_deployment
+      = render 'projects/deployments/commit', deployment: last_deployment
+    - else
+      %p.commit-title
+        No deployments yet
+
+  %td
+    - if last_deployment
+      #{time_ago_with_tooltip(last_deployment.created_at)}

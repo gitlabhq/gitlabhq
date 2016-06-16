@@ -43,6 +43,55 @@ class @Sidebar
             $('.right-sidebar')
               .hasClass('right-sidebar-collapsed'), { path: '/' })
 
+    $(document)
+      .off 'click', '.js-issuable-todo'
+      .on 'click', '.js-issuable-todo', @toggleTodo
+
+  toggleTodo: (e) =>
+    $this = $(e.currentTarget)
+    $todoLoading = $('.js-issuable-todo-loading')
+    $btnText = $('.js-issuable-todo-text', $this)
+    ajaxType = if $this.attr('data-id') then 'PATCH' else 'POST'
+    ajaxUrlExtra = if $this.attr('data-id') then "/#{$this.attr('data-id')}" else ''
+
+    $.ajax(
+      url: "#{$this.data('url')}#{ajaxUrlExtra}"
+      type: ajaxType
+      dataType: 'json'
+      data:
+        issuable_id: $this.data('issuable')
+        issuable_type: $this.data('issuable-type')
+      beforeSend: =>
+        @beforeTodoSend($this, $todoLoading)
+    ).done (data) =>
+      @todoUpdateDone(data, $this, $btnText, $todoLoading)
+
+  beforeTodoSend: ($btn, $todoLoading) ->
+    $btn.disable()
+    $todoLoading.removeClass 'hidden'
+
+  todoUpdateDone: (data, $btn, $btnText, $todoLoading) ->
+    $todoPendingCount = $('.todos-pending-count')
+    $todoPendingCount.text data.count
+
+    $btn.enable()
+    $todoLoading.addClass 'hidden'
+
+    if data.count is 0
+      $todoPendingCount.addClass 'hidden'
+    else
+      $todoPendingCount.removeClass 'hidden'
+
+    if data.todo?
+      $btn
+        .attr 'aria-label', $btn.data('mark-text')
+        .attr 'data-id', data.todo.id
+      $btnText.text $btn.data('mark-text')
+    else
+      $btn
+        .attr 'aria-label', $btn.data('todo-text')
+        .removeAttr 'data-id'
+      $btnText.text $btn.data('todo-text')
 
   sidebarDropdownLoading: (e) ->
     $sidebarCollapsedIcon = $(@).closest('.block').find('.sidebar-collapsed-icon')
@@ -117,5 +166,3 @@ class @Sidebar
 
   getBlock: (name) ->
     @sidebar.find(".block.#{name}")
-
-
