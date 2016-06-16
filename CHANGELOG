@@ -108,6 +108,7 @@ v 8.9.0 (unreleased)
   - Include user relationships when retrieving award_emoji
   - Various associations are now eager loaded when parsing issue references to reduce the number of queries executed
   - Set inverse_of for Project/Service association to reduce the number of queries
+  - Update tanuki logo highlight/loading colors
 
 v 8.8.5
   - Import GitHub repositories respecting the API rate limit !4166
