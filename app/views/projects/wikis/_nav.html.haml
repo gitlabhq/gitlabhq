@@ -10,9 +10,4 @@
       = link_to namespace_project_wikis_git_access_path(@project.namespace, @project) do
         Git Access
 
-    - if can?(current_user, :create_wiki, @project)
-      = nav_link do
-        = link_to '#modal-new-wiki', "data-toggle" => "modal" do
-          New Page
-
   = render 'projects/wikis/new'
