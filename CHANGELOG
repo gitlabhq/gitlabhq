@@ -84,6 +84,7 @@ v 8.9.0 (unreleased)
   - Show categorised search queries in the search autocomplete
   - RepositoryCheck::SingleRepositoryWorker public and private methods are now instrumented
   - Improve issuables APIs performance when accessing notes !4471
+  - Add sorting dropdown to tags page !4423
   - External links now open in a new tab
   - Prevent default actions of disabled buttons and links
   - Markdown editor now correctly resets the input value on edit cancellation !4175
