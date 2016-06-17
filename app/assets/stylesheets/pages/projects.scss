@@ -133,11 +133,6 @@
       }
     }
 
-    .btn-group:not(:first-child):not(:last-child) > .btn {
-      border-top-right-radius: 3px;
-      border-bottom-right-radius: 3px;
-    }
-
     form {
       margin-left: 10px;
     }
@@ -605,5 +600,22 @@ pre.light-well {
     &:hover {
       color: $gl-link-color;
     }
+  }
+}
+
+.custom-notifications-form {
+  .is-loading {
+    .custom-notification-event-loading {
+      display: inline-block;
+    }
+  }
+}
+
+.custom-notification-event-loading {
+  display: none;
+  margin-left: 5px;
+
+  &.is-done {
+    color: $gl-text-green;
   }
 }
