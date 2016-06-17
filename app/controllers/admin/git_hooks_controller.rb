@@ -10,7 +10,7 @@ class Admin::GitHooksController < Admin::ApplicationController
     @git_hook.update_attributes(git_hook_params.merge(is_sample: true))
 
     if @git_hook.valid?
-      redirect_to admin_git_hooks_path
+      redirect_to admin_git_hooks_path, notice: 'Git Hooks updated successfully.'
     else
       render :index
     end
