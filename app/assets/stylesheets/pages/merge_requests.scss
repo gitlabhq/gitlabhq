@@ -244,6 +244,10 @@
 
   .panel-footer {
     padding: 5px 10px;
+
+    .btn {
+      min-width: auto;
+    }
   }
 
   .commit {
@@ -252,9 +256,7 @@
     }
 
     .avatar {
-      width: 20px;
-      height: 20px;
-      margin-right: 5px;
+      margin-left: 0;
     }
 
     .commit-row-info {
