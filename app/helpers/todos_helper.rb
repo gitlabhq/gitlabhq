@@ -1,10 +1,10 @@
 module TodosHelper
   def todos_pending_count
-    current_user.todos.pending.count
+    current_user.todos_pending_count
   end
 
   def todos_done_count
-    current_user.todos.done.count
+    current_user.todos_done_count
   end
 
   def todo_action_name(todo)

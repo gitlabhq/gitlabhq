@@ -6,7 +6,7 @@ class Dashboard::TodosController < Dashboard::ApplicationController
   end
 
   def destroy
-    todo.done
+    TodoService.new.mark_todos_as_done([todo], current_user)
 
     todo_notice = 'Todo was successfully marked as done.'
 
@@ -14,20 +14,20 @@ class Dashboard::TodosController < Dashboard::ApplicationController
       format.html { redirect_to dashboard_todos_path, notice: todo_notice }
       format.js { head :ok }
       format.json do
-        render json: { count: @todos.size, done_count: current_user.todos.done.count }
+        render json: { count: @todos.size, done_count: current_user.todos_done_count }
       end
     end
   end
 
   def destroy_all
-    @todos.each(&:done)
+    TodoService.new.mark_todos_as_done(@todos, current_user)
 
     respond_to do |format|
       format.html { redirect_to dashboard_todos_path, notice: 'All todos were marked as done.' }
       format.js { head :ok }
       format.json do
         find_todos
-        render json: { count: @todos.size, done_count: current_user.todos.done.count }
+        render json: { count: @todos.size, done_count: current_user.todos_done_count }
       end
     end
   end

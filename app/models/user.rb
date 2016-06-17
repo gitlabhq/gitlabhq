@@ -827,6 +827,23 @@ class User < ActiveRecord::Base
     assigned_open_issues_count(force: true)
   end
 
+  def todos_done_count(force: false)
+    Rails.cache.fetch(['users', id, 'todos_done_count'], force: force) do
+      todos.done.count
+    end
+  end
+
+  def todos_pending_count(force: false)
+    Rails.cache.fetch(['users', id, 'todos_pending_count'], force: force) do
+      todos.pending.count
+    end
+  end
+
+  def update_todos_count_cache
+    todos_done_count(force: true)
+    todos_pending_count(force: true)
+  end
+
   private
 
   def projects_union(min_access_level = nil)
