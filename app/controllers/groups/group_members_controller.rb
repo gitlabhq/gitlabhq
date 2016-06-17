@@ -38,7 +38,7 @@ class Groups::GroupMembersController < Groups::ApplicationController
 
     return render_403 unless can?(current_user, :destroy_group_member, @group_member)
 
-    @group_member.destroy
+    Members::DestroyService.new(@group_member, current_user).execute
 
     respond_to do |format|
       format.html { redirect_to group_group_members_path(@group), notice: 'User was successfully removed from group.' }

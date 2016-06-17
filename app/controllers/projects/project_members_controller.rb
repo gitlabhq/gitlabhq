@@ -52,7 +52,7 @@ class Projects::ProjectMembersController < Projects::ApplicationController
 
     return render_403 unless can?(current_user, :destroy_project_member, @project_member)
 
-    @project_member.destroy
+    Members::DestroyService.new(@project_member, current_user).execute
 
     respond_to do |format|
       format.html do
