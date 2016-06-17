@@ -7,7 +7,7 @@ class ProjectsController < Projects::ApplicationController
   before_action :assign_ref_vars, :tree, only: [:show], if: :repo_exists?
 
   # Authorize
-  before_action :authorize_admin_project!, only: [:edit, :update, :housekeeping, :download_export, :export, :remove_export]
+  before_action :authorize_admin_project!, only: [:edit, :update, :housekeeping, :download_export, :export, :remove_export, :generate_new_export]
   before_action :event_filter, only: [:show, :activity]
 
   layout :determine_layout
@@ -190,7 +190,7 @@ class ProjectsController < Projects::ApplicationController
 
     redirect_to(
       edit_project_path(@project),
-      notice: "Project export started. A download link will be sent by e-mail."
+      notice: "Project export started. A download link will be sent by email."
     )
   end
 
@@ -209,10 +209,16 @@ class ProjectsController < Projects::ApplicationController
 
   def remove_export
     if @project.remove_exports
-      redirect_to(
-        edit_project_path(@project),
-        notice: "Project export has been deleted."
-      )
+      flash[:notice] = "Project export has been deleted."
+    else
+      flash[:alert] = "Project export could not be deleted."
+    end
+    redirect_to(edit_project_path(@project))
+  end
+
+  def generate_new_export
+    if @project.remove_exports
+      export
     else
       redirect_to(
         edit_project_path(@project),

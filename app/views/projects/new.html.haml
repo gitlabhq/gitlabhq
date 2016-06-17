@@ -136,7 +136,7 @@
   $('.import_gitlab_project').click(function( event ) {
     if($('.import_gitlab_project').attr('disabled')) {
       event.preventDefault();
-      new Flash("Project path required.", "alert");
+      new Flash("Please enter a path for the project to be imported to.");
     }
   });
 

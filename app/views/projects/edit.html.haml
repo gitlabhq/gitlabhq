@@ -135,7 +135,7 @@
       - if @project.export_project_path
         = link_to 'Download export',  download_export_namespace_project_path(@project.namespace, @project),
                 method: :get, class: "btn btn-default"
-        = link_to 'Delete export',  remove_export_namespace_project_path(@project.namespace, @project),
+        = link_to 'Generate new export',  generate_new_export_namespace_project_path(@project.namespace, @project),
                 method: :post, class: "btn btn-default"
       - else
         = link_to 'Export project', export_namespace_project_path(@project.namespace, @project),
