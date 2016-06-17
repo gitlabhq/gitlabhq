@@ -14,15 +14,7 @@ module Gitlab
           include Validatable
 
           validations do
-            include LegacyValidationHelpers
-
-            validate :array_of_strings
-
-            def array_of_strings
-              unless validate_array_of_strings(self.config)
-                errors.add(:config, 'should be an array of strings')
-              end
-            end
+            validates :config, array_of_strings: true
           end
 
           def value

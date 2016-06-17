@@ -4,6 +4,7 @@ module Gitlab
       module Node
         class Validator < SimpleDelegator
           include ActiveModel::Validations
+          include Node::Validators
 
           def initialize(node)
             super(node)
