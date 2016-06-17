@@ -2,6 +2,17 @@
  *  Application Header
  *
  */
+@mixin tanuki-logo-colors($path-color) {
+  fill: $path-color;
+  transition: all 0.8s;
+
+  &:hover,
+  &.highlight {
+    fill: lighten($path-color, 25%);
+    transition: all 0.1s;
+  }
+}
+
 header {
   transition: padding $sidebar-transition-duration;
 
@@ -191,13 +202,24 @@ header {
   }
 }
 
-.tanuki-shape {
-  transition: all 0.8s;
+#tanuki-logo {
 
-  &:hover, &.highlight {
-    fill: rgb(255, 255, 255);
-    transition: all 0.1s;
+  #tanuki-left-ear,
+  #tanuki-right-ear,
+  #tanuki-nose {
+    @include tanuki-logo-colors($tanuki-red);
   }
+
+  #tanuki-left-eye,
+  #tanuki-right-eye {
+    @include tanuki-logo-colors($tanuki-orange);
+  }
+
+  #tanuki-left-cheek,
+  #tanuki-right-cheek {
+    @include tanuki-logo-colors($tanuki-yellow);
+  }
+
 }
 
 @media (max-width: $screen-xs-max) {

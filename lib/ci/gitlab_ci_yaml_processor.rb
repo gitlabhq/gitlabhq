@@ -30,7 +30,10 @@ module Ci
     end
 
     def builds_for_stage_and_ref(stage, ref, tag = false, trigger_request = nil)
-      builds.select{|build| build[:stage] == stage && process?(build[:only], build[:except], ref, tag, trigger_request)}
+      builds.select do |build|
+        build[:stage] == stage &&
+          process?(build[:only], build[:except], ref, tag, trigger_request)
+      end
     end
 
     def builds

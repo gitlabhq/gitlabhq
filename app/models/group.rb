@@ -9,6 +9,12 @@ class Group < Namespace
   has_many :group_members, dependent: :destroy, as: :source, class_name: 'GroupMember'
   alias_method :members, :group_members
   has_many :users, -> { where(members: { requested_at: nil }) }, through: :group_members
+
+  has_many :owners,
+    -> { where(members: { access_level: Gitlab::Access::OWNER }) },
+    through: :group_members,
+    source: :user
+
   has_many :project_group_links, dependent: :destroy
   has_many :shared_projects, through: :project_group_links, source: :project
   has_many :ldap_group_links, foreign_key: 'group_id', dependent: :destroy

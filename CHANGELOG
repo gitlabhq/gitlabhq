@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.9.0 (unreleased)
+  - Fix pipeline status when there are no builds in pipeline
   - Fix Error 500 when using closes_issues API with an external issue tracker
   - Add more information into RSS feed for issues (Alexander Matyushentsev)
   - Bulk assign/unassign labels to issues.
@@ -12,6 +13,7 @@ v 8.9.0 (unreleased)
   - Fix an issue where note polling stopped working if a window was in the
     background during a refresh.
   - Make EmailsOnPushWorker use Sidekiq mailers queue
+  - Redesign all Devise emails. !4297
   - Fix wiki page events' webhook to point to the wiki repository
   - Don't show tags for revert and cherry-pick operations
   - Fix issue todo not remove when leave project !4150 (Long Nguyen)
@@ -28,6 +30,7 @@ v 8.9.0 (unreleased)
   - Add a metric for the number of new Redis connections created by a transaction
   - Fix Error 500 when viewing a blob with binary characters after the 1024-byte mark
   - Redesign navigation for project pages
+  - Fix images in sign-up confirmation email
   - Added shortcut 'y' for copying a files content hash URL #14470
   - Fix groups API to list only user's accessible projects
   - Fix horizontal scrollbar for long commit message.
@@ -38,7 +41,9 @@ v 8.9.0 (unreleased)
   - `git clone https://host/namespace/project` now works, in addition to using the `.git` suffix
   - Bump nokogiri to 1.6.8
   - Use gitlab-shell v3.0.0
+  - Fixed alignment of download dropdown in merge requests
   - Upgrade to jQuery 2
+  - Adds selected branch name to the dropdown toggle
   - Use Knapsack to evenly distribute tests across multiple nodes
   - Add `sha` parameter to MR merge API, to ensure only reviewed changes are merged
   - Don't allow MRs to be merged when commits were added since the last review / page load
@@ -63,7 +68,9 @@ v 8.9.0 (unreleased)
   - Use downcased path to container repository as this is expected path by Docker
   - Projects pending deletion will render a 404 page
   - Measure queue duration between gitlab-workhorse and Rails
+  - Added Gfm autocomplete for labels
   - Make Omniauth providers specs to not modify global configuration
+  - Remove unused JiraIssue class and replace references with ExternalIssue. !4659 (Ilan Shamir)
   - Make authentication service for Container Registry to be compatible with < Docker 1.11
   - Add Application Setting to configure Container Registry token expire delay (default 5min)
   - Cache assigned issue and merge request counts in sidebar nav
@@ -107,6 +114,8 @@ v 8.9.0 (unreleased)
   - Include user relationships when retrieving award_emoji
   - Various associations are now eager loaded when parsing issue references to reduce the number of queries executed
   - Set inverse_of for Project/Service association to reduce the number of queries
+  - Update tanuki logo highlight/loading colors
+  - Use Git cached counters for branches and tags on project page
 
 v 8.8.5
   - Import GitHub repositories respecting the API rate limit !4166
@@ -118,6 +127,8 @@ v 8.8.5
   - Prevent unauthorized access for projects build traces
   - Forbid scripting for wiki files
   - Only show notes through JSON on confidential issues that the user has access to
+  - Banzai::Filter::UploadLinkFilter use XPath instead CSS expressions
+  - Banzai::Filter::ExternalLinkFilter use XPath instead CSS expressions
 
 v 8.8.4
   - Fix LDAP-based login for users with 2FA enabled. !4493

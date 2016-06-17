@@ -6,7 +6,7 @@ describe 'MergeRequest', ->
 
     beforeEach ->
       fixture.load('merge_requests_show.html')
-      @merge = new MergeRequest({})
+      @merge = new MergeRequest()
 
     it 'modifies the Markdown field', ->
       spyOn(jQuery, 'ajax').and.stub()
