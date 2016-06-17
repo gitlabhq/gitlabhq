@@ -266,6 +266,14 @@ class NotificationService
     end
   end
 
+  def project_exported(project, current_user)
+    mailer.project_was_exported_email(current_user, project).deliver_later
+  end
+
+  def project_not_exported(project, current_user, errors)
+    mailer.project_was_not_exported_email(current_user, project, errors).deliver_later
+  end
+
   protected
 
   # Get project users with WATCH notification level

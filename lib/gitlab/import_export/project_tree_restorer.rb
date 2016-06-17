@@ -2,12 +2,11 @@ module Gitlab
   module ImportExport
     class ProjectTreeRestorer
 
-      def initialize(user:, shared:, namespace_id:)
+      def initialize(user:, shared:, project:)
         @path = File.join(shared.export_path, 'project.json')
         @user = user
-        @project_path = shared.opts[:project_path]
-        @namespace_id = namespace_id
         @shared = shared
+        @project = project
       end
 
       def restore
@@ -20,8 +19,8 @@ module Gitlab
         false
       end
 
-      def project
-        @project ||= create_project
+      def restored_project
+        @restored_project ||= restore_project
       end
 
       private
@@ -29,7 +28,7 @@ module Gitlab
       def members_mapper
         @members_mapper ||= Gitlab::ImportExport::MembersMapper.new(exported_members: @project_members,
                                                                     user: @user,
-                                                                    project: project)
+                                                                    project: restored_project)
       end
 
       # Loops through the tree of models defined in import_export.yml and
@@ -46,7 +45,7 @@ module Gitlab
 
           relation_key = relation.is_a?(Hash) ? relation.keys.first : relation
           relation_hash = create_relation(relation_key, @tree_hash[relation_key.to_s])
-          saved << project.update_attribute(relation_key, relation_hash)
+          saved << restored_project.update_attribute(relation_key, relation_hash)
         end
         saved.all?
       end
@@ -57,14 +56,12 @@ module Gitlab
         end
       end
 
-      def create_project
+      def restore_project
+        return @project unless @tree_hash
+
         project_params = @tree_hash.reject { |_key, value| value.is_a?(Array) }
-        project = Gitlab::ImportExport::ProjectFactory.create(
-          project_params: project_params, user: @user, namespace_id: @namespace_id)
-        project.path = @project_path
-        project.name = @project_path
-        project.save!
-        project
+        @project.update(project_params)
+        @project
       end
 
       # Given a relation hash containing one or more models and its relationships,
@@ -96,7 +93,7 @@ module Gitlab
       def create_relation(relation, relation_hash_list)
         relation_array = [relation_hash_list].flatten.map do |relation_hash|
           Gitlab::ImportExport::RelationFactory.create(relation_sym: relation.to_sym,
-                                                       relation_hash: relation_hash.merge('project_id' => project.id),
+                                                       relation_hash: relation_hash.merge('project_id' => restored_project.id),
                                                        members_mapper: members_mapper,
                                                        user: @user)
         end
