@@ -35,7 +35,7 @@ module Gitlab
       def transaction_from_env(env)
         trans = Transaction.new
 
-        trans.set(:request_uri, env['REQUEST_URI'])
+        trans.set(:request_uri, filtered_path(env))
         trans.set(:request_method, env['REQUEST_METHOD'])
 
         trans
@@ -53,6 +53,10 @@ module Gitlab
       end
 
       private
+
+      def filtered_path(env)
+        ActionDispatch::Request.new(env).filtered_path.presence || env['REQUEST_URI']
+      end
 
       def endpoint_paths_cache
         @endpoint_paths_cache ||= Hash.new do |hash, http_method|
