@@ -78,9 +78,8 @@ describe Gitlab::Metrics::Instrumentation do
         allow(described_class).to receive(:transaction).
           and_return(transaction)
 
-        expect(transaction).to receive(:add_metric).
-          with(described_class::SERIES, hash_including(:duration, :cpu_duration),
-               method: 'Dummy.foo')
+        expect(transaction).to receive(:measure_method).
+          with('Dummy.foo')
 
         @dummy.foo
       end
@@ -158,9 +157,8 @@ describe Gitlab::Metrics::Instrumentation do
         allow(described_class).to receive(:transaction).
           and_return(transaction)
 
-        expect(transaction).to receive(:add_metric).
-          with(described_class::SERIES, hash_including(:duration, :cpu_duration),
-               method: 'Dummy#bar')
+        expect(transaction).to receive(:measure_method).
+          with('Dummy#bar')
 
         @dummy.new.bar
       end
