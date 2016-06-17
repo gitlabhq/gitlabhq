@@ -278,7 +278,9 @@ $ ->
         $('.navbar-fixed-top')
           .removeClass('header-pinned-nav')
           .toggleClass('header-collapsed header-expanded')
+        $('.pin-nav-btn').attr('data-original-title', 'Pin sidebar').tooltip('fixTitle').tooltip('setContent')
       else
         $.cookie 'pin_nav', 'true', { path: '/' }
         $('.page-with-sidebar').addClass('page-sidebar-pinned')
         $('.navbar-fixed-top').addClass('header-pinned-nav')
+        $('.pin-nav-btn').attr('data-original-title', 'Unpin sidebar').tooltip('fixTitle').tooltip('setContent')
