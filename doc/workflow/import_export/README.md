@@ -1,7 +1,7 @@
 # Project import/export
 
 Existing projects running on any GitLab instance or GitLab.com can be exported
-with all its related data and be moved into a new GitLab instance.
+with all their related data and be moved into a new GitLab instance.
 
 >**Note:** 
   - This feature was [introduced][ce-3050] in GitLab 8.9
@@ -53,15 +53,13 @@ can be generated again
 The GitLab Import/Export version can be checked by using:
 
 ```bash
-cd /home/git/gitlab
-sudo -u git -H bundle exec rake gitlab:import_export:version RAILS_ENV=production
+sudo gitlab-rake gitlab:import_export:version
 ```
 
 The current list of DB tables that will get exported can be listed by using:
 
 ```bash
-cd /home/git/gitlab
-sudo -u git -H bundle exec rake gitlab:import_export:data RAILS_ENV=production
+sudo gitlab-rake gitlab:import_export:data
 ```
 
 [ce-3050]: https://gitlab.com/gitlab-org/gitlab-ce/issues/3050
