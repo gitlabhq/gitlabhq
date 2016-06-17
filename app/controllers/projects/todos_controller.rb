@@ -5,7 +5,6 @@ class Projects::TodosController < Projects::ApplicationController
     todo = TodoService.new.mark_todo(issuable, current_user)
 
     render json: {
-      todo: todo,
       count: TodosFinder.new(current_user, state: :pending).execute.count,
       delete_path: dashboard_todo_path(todo)
     }
