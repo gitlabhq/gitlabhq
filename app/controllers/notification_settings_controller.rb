@@ -4,14 +4,12 @@ class NotificationSettingsController < ApplicationController
   def create
     project = Project.find(params[:project][:id])
 
-    if can?(current_user, :read_project, project)
-      @notification_setting = current_user.notification_settings_for(project)
-      @saved = @notification_setting.update_attributes(notification_setting_params)
+    return render_404 unless can?(current_user, :read_project, project)
 
-      render_response
-    else
-      render_404
-    end
+    @notification_setting = current_user.notification_settings_for(project)
+    @saved = @notification_setting.update_attributes(notification_setting_params)
+
+    render_response
   end
 
   def update
@@ -25,7 +23,7 @@ class NotificationSettingsController < ApplicationController
 
   def render_response
     render json: {
-      html: view_to_html_string("shared/notifications/buttons/_button", notification_setting: @notification_setting),
+      html: view_to_html_string("shared/notifications/_button", notification_setting: @notification_setting),
       saved: @saved
     }
   end

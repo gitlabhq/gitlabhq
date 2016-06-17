@@ -143,6 +143,7 @@ class ProjectsController < Projects::ApplicationController
       issues: autocomplete.issues,
       milestones: autocomplete.milestones,
       mergerequests: autocomplete.merge_requests,
+      labels: autocomplete.labels,
       members: participants
     }
 

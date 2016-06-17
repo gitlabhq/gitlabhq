@@ -158,6 +158,18 @@ describe Group, models: true do
     it { expect(group.has_master?(@members[:requester])).to be_falsey }
   end
 
+  describe '#owners' do
+    let(:owner) { create(:user) }
+    let(:developer) { create(:user) }
+
+    it 'returns the owners of a Group' do
+      group.add_owner(owner)
+      group.add_developer(developer)
+
+      expect(group.owners).to eq([owner])
+    end
+  end
+
   def setup_group_members(group)
     members = {
       owner: create(:user),

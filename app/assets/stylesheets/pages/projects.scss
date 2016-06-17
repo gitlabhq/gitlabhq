@@ -5,23 +5,18 @@
     font-weight: normal;
   }
 }
+
 .no-ssh-key-message, .project-limit-message {
   background-color: #f28d35;
   margin-bottom: 0;
 }
+
 .new_project,
 .edit-project {
   fieldset.features {
     .control-label {
       font-weight: normal;
     }
-  }
-}
-
-.project-name-holder {
-  .help-inline {
-    vertical-align: top;
-    padding: 7px;
   }
 }
 
@@ -33,7 +28,7 @@
   .container-fluid {
     position: relative;
 
-    @media (min-width: $screen-md-max) {
+    @media (min-width: $screen-lg-min) {
       .row {
         display: flex;
         -ms-flex-align: center;
@@ -224,7 +219,7 @@
     right: 16px;
     bottom: 0;
 
-    @media (max-width: $screen-lg-min) {
+    @media (max-width: $screen-md-max) {
       top: 0;
     }
 
@@ -233,7 +228,7 @@
       right: 0;
       bottom: 61px;
 
-      @media (max-width: $screen-lg-min) {
+      @media (max-width: $screen-md-max) {
         position: relative;
         bottom: 0;
         margin-right: 10px;
@@ -371,6 +366,7 @@ a.deploy-project-label {
 
 .project-import .btn {
   float: left;
+  margin-bottom: 10px;
   margin-right: 10px;
 }
 

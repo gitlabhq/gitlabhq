@@ -11,5 +11,9 @@ module Projects
     def merge_requests
       @project.merge_requests.opened.select([:iid, :title])
     end
+
+    def labels
+      @project.labels.select([:title, :color])
+    end
   end
 end

@@ -438,14 +438,6 @@ describe API::API, api: true  do
               to eq(Gitlab::Access::MASTER)
           expect(json_response.first['permissions']['group_access']).to be_nil
         end
-
-        it 'contains notification level information' do
-          get api("/projects", user)
-
-          expect(response.status).to eq(200)
-          expect(json_response.first['permissions']['project_access']['notification_level']['level']).to eq(NotificationSetting.levels[:global])
-          expect(json_response.first['permissions']['project_access']['notification_level'].keys).to include('events')
-        end
       end
 
       context 'personal project' do
@@ -472,14 +464,6 @@ describe API::API, api: true  do
           expect(json_response['permissions']['project_access']).to be_nil
           expect(json_response['permissions']['group_access']['access_level']).
             to eq(Gitlab::Access::OWNER)
-        end
-
-        it 'shows notification level information' do
-          get api("/projects/#{project2.id}", user)
-
-          expect(response.status).to eq(200)
-          expect(json_response['permissions']['group_access']['notification_level']['level']).to eq(NotificationSetting.levels[:global])
-          expect(json_response['permissions']['group_access']['notification_level'].keys).to include('events')
         end
       end
     end

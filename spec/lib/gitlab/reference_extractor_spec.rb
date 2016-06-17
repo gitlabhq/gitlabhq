@@ -105,7 +105,8 @@ describe Gitlab::ReferenceExtractor, lib: true do
 
     it 'returns JIRA issues for a JIRA-integrated project' do
       subject.analyze('JIRA-123 and FOOBAR-4567')
-      expect(subject.issues).to eq [JiraIssue.new('JIRA-123', project), JiraIssue.new('FOOBAR-4567', project)]
+      expect(subject.issues).to eq [ExternalIssue.new('JIRA-123', project),
+                                    ExternalIssue.new('FOOBAR-4567', project)]
     end
   end
 

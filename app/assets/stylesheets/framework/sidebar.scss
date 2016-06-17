@@ -1,26 +1,31 @@
 .page-with-sidebar {
   padding-top: $header-height;
-  transition-duration: .3s;
+  transition: padding $sidebar-transition-duration;
 
   .sidebar-wrapper {
     position: fixed;
     top: 0;
     bottom: 0;
-    overflow-y: auto;
-    overflow-x: hidden;
     left: 0;
     height: 100%;
-    transition-duration: .3s;
+    overflow: hidden;
+    transition: width $sidebar-transition-duration;
   }
 }
 
 .sidebar-wrapper {
   z-index: 1000;
   background: $background-color;
+
+  .nicescroll-rails-hr {
+    // TODO: Figure out why nicescroll doesn't hide horizontal bar
+    display: none!important;
+  }
 }
 
 .content-wrapper {
   width: 100%;
+  transition: padding $sidebar-transition-duration;
 
   .container-fluid {
     background: #fff;
@@ -34,50 +39,39 @@
   }
 }
 
-.sidebar-wrapper {
+.sidebar-user {
+  padding: 15px;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: $sidebar_width;
+  overflow: hidden;
+  font-size: 16px;
+  line-height: 36px;
+  transition: width $sidebar-transition-duration, padding $sidebar-transition-duration;
 
-  .sidebar-user {
-    padding: 15px 22px;
-    position: fixed;
-    bottom: 0;
-    width: $sidebar_width;
-    overflow: hidden;
-    transition-duration: .3s;
-
-    .username {
-      margin-left: 10px;
-      width: $sidebar_width - 2 * 10px;
-      font-size: 16px;
-      line-height: 34px;
-    }
+  @media (min-width: $sidebar-breakpoint) {
+    bottom: 50px;
   }
 }
-
-
-.tanuki-shape {
-  transition: all 0.8s;
-
-  &:hover, &.highlight {
-    fill: rgb(255, 255, 255);
-    transition: all 0.1s;
-  }
-}
-
 
 .nav-sidebar {
-  margin-top: 22 + $header-height;
-  margin-bottom: 116px;
-  transition-duration: .3s;
-  list-style: none;
-  overflow: hidden;
+  position: absolute;
+  top: 50px;
+  bottom: 65px;
+  width: $sidebar_width;
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  @media (min-width: $sidebar-breakpoint) {
+    bottom: 115px;
+  }
 
   &.navbar-collapse {
     padding: 0 !important;
   }
 
   li {
-    width: $sidebar_width;
-
     &.separate-item {
       padding-top: 10px;
       margin-top: 10px;
@@ -90,20 +84,18 @@
     }
 
     a {
-      width: $sidebar_width;
-      padding: 7px 15px 7px 23px;
+      padding: 7px 15px 7px 12px;
       font-size: $gl-font-size;
       line-height: 24px;
       display: block;
       text-decoration: none;
       font-weight: normal;
       outline: none;
+      white-space: nowrap;
 
-      &:hover {
-        text-decoration: none;
-      }
-
-      &:active, &:focus {
+      &:hover,
+      &:active,
+      &:focus {
         text-decoration: none;
       }
 
@@ -115,10 +107,6 @@
       svg {
         margin-right: 13px;
       }
-
-      &.back-link i {
-        transition-duration: .3s;
-      }
     }
   }
 
@@ -129,37 +117,50 @@
   }
 }
 
-.sidebar-subnav {
-  margin-left: 0;
-  padding-left: 0;
-
-  li {
-    list-style: none;
-  }
-}
-
-.collapse-nav a {
+.toggle-nav-collapse {
   width: $sidebar_width;
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
+  min-height: 50px;
   padding: 5px 0;
   font-size: 18px;
-  background: transparent;
-  height: 50px;
-  text-align: center;
-  line-height: 40px;
-  transition-duration: .3s;
-  outline: none;
+  line-height: 30px;
+}
 
-  &:hover {
+.nav-header-btn {
+  padding: 10px 5px;
+  color: inherit;
+  transition-duration: .3s;
+
+  &:hover,
+  &:focus {
+    color: $white-light;
     text-decoration: none;
   }
 }
 
-.sidebar-wrapper {
-  &.hidden-nav {
-    width: 0;
+.pin-nav-btn {
+  display: none;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 50px;
+  width: $sidebar_width;
+  line-height: 30px;
+
+  @media (min-width: $sidebar-breakpoint) {
+    display: block;
+  }
+
+  .fa {
+    transition: transform .15s;
+  }
+
+  &.is-active {
+    .fa {
+      transform: rotate(90deg);
+    }
   }
 }
 
@@ -168,62 +169,34 @@
 
   .sidebar-wrapper {
     width: 0;
-
-    .nav-sidebar {
-      width: 0;
-
-      li {
-        width: auto;
-
-        a {
-          span {
-            display: none;
-          }
-        }
-      }
-    }
-
-    .collapse-nav a {
-      width: 0;
-
-      i {
-        display: none;
-      }
-    }
-
-    .sidebar-user {
-      width: 0;
-      padding-left: 0;
-      padding-right: 0;
-
-      .username {
-        display: none;
-      }
-    }
   }
 }
 
 .page-sidebar-expanded {
-
-  @media (max-width: $screen-sm-max) {
-    padding-left: 0;
-  }
-
   .sidebar-wrapper {
     width: $sidebar_width;
+  }
+}
 
-    .nav-sidebar {
-      width: $sidebar_width;
+.page-sidebar-pinned {
+  .content-wrapper,
+  .layout-nav {
+    @media (min-width: $sidebar-breakpoint) {
+      padding-left: $sidebar_width;
+    }
+  }
+}
+
+header.header-pinned-nav {
+  @media (min-width: $sidebar-breakpoint) {
+    padding-left: ($sidebar_width + $gl-padding);
+
+    .side-nav-toggle {
+      display: none;
     }
 
-    .nav-sidebar li a {
-      width: $sidebar_width;
-
-      &.back-link {
-        i {
-          opacity: 0;
-        }
-      }
+    .header-content {
+      padding-left: 0;
     }
   }
 }

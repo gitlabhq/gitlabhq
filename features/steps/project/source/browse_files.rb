@@ -202,8 +202,8 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I see Browse dir link' do
-    expect(page).to have_link 'Browse Directory »'
-    expect(page).not_to have_link 'Browse Code »'
+    expect(page).to have_link 'Browse Directory'
+    expect(page).not_to have_link 'Browse Code'
   end
 
   step 'I click on readme file' do
@@ -219,7 +219,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
 
   step 'I see Browse code link' do
     expect(page).to have_link 'Browse Files'
-    expect(page).not_to have_link 'Browse Directory »'
+    expect(page).not_to have_link 'Browse Directory'
   end
 
   step 'I click on Permalink' do

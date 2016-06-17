@@ -81,7 +81,7 @@ class Project < ActiveRecord::Base
   has_one :jira_service, dependent: :destroy
   has_one :redmine_service, dependent: :destroy
   has_one :custom_issue_tracker_service, dependent: :destroy
-  has_one :gitlab_issue_tracker_service, dependent: :destroy
+  has_one :gitlab_issue_tracker_service, dependent: :destroy, inverse_of: :project
   has_one :external_wiki_service, dependent: :destroy
 
   has_one  :forked_project_link,  dependent: :destroy, foreign_key: "forked_to_project_id"
@@ -262,7 +262,23 @@ class Project < ActiveRecord::Base
     #
     # Returns a Project, or nil if no project could be found.
     def find_with_namespace(path)
-      where_paths_in([path]).reorder(nil).take
+      namespace_path, project_path = path.split('/', 2)
+
+      return unless namespace_path && project_path
+
+      namespace_path = connection.quote(namespace_path)
+      project_path = connection.quote(project_path)
+
+      # On MySQL we want to ensure the ORDER BY uses a case-sensitive match so
+      # any literal matches come first, for this we have to use "BINARY".
+      # Without this there's still no guarantee in what order MySQL will return
+      # rows.
+      binary = Gitlab::Database.mysql? ? 'BINARY' : ''
+
+      order_sql = "(CASE WHEN #{binary} namespaces.path = #{namespace_path} " \
+        "AND #{binary} projects.path = #{project_path} THEN 0 ELSE 1 END)"
+
+      where_paths_in([path]).reorder(order_sql).take
     end
 
     # Builds a relation to find multiple projects by their full paths.
