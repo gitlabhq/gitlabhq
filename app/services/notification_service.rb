@@ -222,7 +222,7 @@ class NotificationService
   end
 
   def accept_group_invite(group_member)
-    mailer.member_invite_accepted_email(group_member.id).deliver_later
+    mailer.member_invite_accepted_email(group_member.real_source_type, group_member.id).deliver_later
   end
 
   def decline_group_invite(group_member)
