@@ -46,6 +46,7 @@ v 8.9.0 (unreleased)
   - Fixed alignment of download dropdown in merge requests
   - Upgrade to jQuery 2
   - Adds selected branch name to the dropdown toggle
+  - Add API endpoint for Sidekiq Metrics !4653
   - Use Knapsack to evenly distribute tests across multiple nodes
   - Add `sha` parameter to MR merge API, to ensure only reviewed changes are merged
   - Don't allow MRs to be merged when commits were added since the last review / page load
