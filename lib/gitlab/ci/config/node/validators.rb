@@ -12,6 +12,14 @@ module Gitlab
               end
             end
           end
+
+          class HashValidator < ActiveModel::EachValidator
+            def validate_each(record, attribute, value)
+              unless value.is_a?(Hash)
+                record.errors.add(attribute, 'should be a configuration entry hash')
+              end
+            end
+          end
         end
       end
     end

@@ -19,13 +19,7 @@ module Gitlab
 
           included do
             validations do
-              validate :hash_config_value
-
-              def hash_config_value
-                unless self.config.is_a?(Hash)
-                  errors.add(:config, 'should be a configuration entry hash')
-                end
-              end
+              validates :config, hash: true
             end
           end
 
