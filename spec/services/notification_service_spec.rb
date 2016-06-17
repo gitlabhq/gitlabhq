@@ -46,7 +46,8 @@ describe NotificationService, services: true do
         project.team << [issue.assignee, :master]
         project.team << [note.author, :master]
         create(:note_on_issue, noteable: issue, project_id: issue.project_id, note: '@subscribed_participant cc this guy')
-        update_custom_notification(:new_note)
+        update_custom_notification(:new_note, @u_guest_custom, project)
+        update_custom_notification(:new_note, @u_custom_global)
       end
 
       describe :new_note do
@@ -54,7 +55,7 @@ describe NotificationService, services: true do
           add_users_with_subscription(note.project, issue)
 
           # Ensure create SentNotification by noteable = issue 6 times, not noteable = note
-          expect(SentNotification).to receive(:record).with(issue, any_args).exactly(7).times
+          expect(SentNotification).to receive(:record).with(issue, any_args).exactly(8).times
 
           ActionMailer::Base.deliveries.clear
 
@@ -63,6 +64,7 @@ describe NotificationService, services: true do
           should_email(@u_watcher)
           should_email(note.noteable.author)
           should_email(note.noteable.assignee)
+          should_email(@u_custom_global)
           should_email(@u_mentioned)
           should_email(@subscriber)
           should_email(@watcher_and_subscriber)
@@ -105,10 +107,12 @@ describe NotificationService, services: true do
         before do
           note.project.namespace_id = group.id
           note.project.group.add_user(@u_watcher, GroupMember::MASTER)
+          note.project.group.add_user(@u_custom_global, GroupMember::MASTER)
           note.project.save
 
           @u_watcher.notification_settings_for(note.project).participating!
           @u_watcher.notification_settings_for(note.project.group).global!
+          update_custom_notification(:new_note, @u_custom_global)
           ActionMailer::Base.deliveries.clear
         end
 
@@ -118,6 +122,7 @@ describe NotificationService, services: true do
           should_email(note.noteable.author)
           should_email(note.noteable.assignee)
           should_email(@u_mentioned)
+          should_email(@u_custom_global)
           should_not_email(@u_guest_custom)
           should_not_email(@u_guest_watcher)
           should_not_email(@u_watcher)
@@ -139,6 +144,10 @@ describe NotificationService, services: true do
       let(:admin) { create(:admin) }
       let(:confidential_issue) { create(:issue, :confidential, project: project, author: author, assignee: assignee) }
       let(:note) { create(:note_on_issue, noteable: confidential_issue, project: project, note: "#{author.to_reference} #{assignee.to_reference} #{non_member.to_reference} #{member.to_reference} #{admin.to_reference}") }
+      let(:guest_watcher) { create_user_with_notification(:watch, "guest-watcher-confidential") }
+
+      before do
+      end
 
       it 'filters out users that can not read the issue' do
         project.team << [member, :developer]
@@ -152,6 +161,7 @@ describe NotificationService, services: true do
 
         should_not_email(non_member)
         should_not_email(guest)
+        should_not_email(guest_watcher)
         should_email(author)
         should_email(assignee)
         should_email(member)
@@ -226,6 +236,9 @@ describe NotificationService, services: true do
             should_email(member)
           end
 
+          # it emails custom global users on mention
+          should_email(@u_custom_global)
+
           should_email(@u_guest_watcher)
           should_email(note.noteable.author)
           should_not_email(note.author)
@@ -244,13 +257,15 @@ describe NotificationService, services: true do
         build_team(note.project)
         ActionMailer::Base.deliveries.clear
         allow_any_instance_of(Commit).to receive(:author).and_return(@u_committer)
-        update_custom_notification(:new_note)
+        update_custom_notification(:new_note, @u_guest_custom, project)
+        update_custom_notification(:new_note, @u_custom_global)
       end
 
       describe '#new_note, #perform_enqueued_jobs' do
         it do
           notification.new_note(note)
           should_email(@u_guest_watcher)
+          should_email(@u_custom_global)
           should_email(@u_guest_custom)
           should_email(@u_committer)
           should_email(@u_watcher)
@@ -292,7 +307,8 @@ describe NotificationService, services: true do
       build_team(issue.project)
       add_users_with_subscription(issue.project, issue)
       ActionMailer::Base.deliveries.clear
-      update_custom_notification(:new_issue)
+      update_custom_notification(:new_issue, @u_guest_custom, project)
+      update_custom_notification(:new_issue, @u_custom_global)
     end
 
     describe '#new_issue' do
@@ -303,6 +319,7 @@ describe NotificationService, services: true do
         should_email(@u_watcher)
         should_email(@u_guest_watcher)
         should_email(@u_guest_custom)
+        should_email(@u_custom_global)
         should_email(@u_participant_mentioned)
         should_not_email(@u_mentioned)
         should_not_email(@u_participating)
@@ -351,6 +368,7 @@ describe NotificationService, services: true do
 
           notification.new_issue(confidential_issue, @u_disabled)
 
+          should_not_email(@u_guest_watcher)
           should_not_email(non_member)
           should_not_email(author)
           should_not_email(guest)
@@ -362,7 +380,11 @@ describe NotificationService, services: true do
     end
 
     describe '#reassigned_issue' do
-      before { update_custom_notification(:reassign_issue) }
+
+      before do
+        update_custom_notification(:reassign_issue, @u_guest_custom, project)
+        update_custom_notification(:reassign_issue, @u_custom_global)
+      end
 
       it 'emails new assignee' do
         notification.reassigned_issue(issue, @u_disabled)
@@ -371,6 +393,7 @@ describe NotificationService, services: true do
         should_email(@u_watcher)
         should_email(@u_guest_watcher)
         should_email(@u_guest_custom)
+        should_email(@u_custom_global)
         should_email(@u_participant_mentioned)
         should_email(@subscriber)
         should_not_email(@unsubscriber)
@@ -390,6 +413,7 @@ describe NotificationService, services: true do
         should_email(@u_guest_custom)
         should_email(@u_participant_mentioned)
         should_email(@subscriber)
+        should_email(@u_custom_global)
         should_not_email(@unsubscriber)
         should_not_email(@u_participating)
         should_not_email(@u_disabled)
@@ -407,6 +431,7 @@ describe NotificationService, services: true do
         should_email(@u_guest_custom)
         should_email(@u_participant_mentioned)
         should_email(@subscriber)
+        should_email(@u_custom_global)
         should_not_email(@unsubscriber)
         should_not_email(@u_participating)
         should_not_email(@u_disabled)
@@ -424,6 +449,7 @@ describe NotificationService, services: true do
         should_email(@u_guest_custom)
         should_email(@u_participant_mentioned)
         should_email(@subscriber)
+        should_email(@u_custom_global)
         should_not_email(@unsubscriber)
         should_not_email(@u_participating)
         should_not_email(@u_disabled)
@@ -440,6 +466,7 @@ describe NotificationService, services: true do
         should_email(@u_guest_custom)
         should_email(@u_participant_mentioned)
         should_email(@subscriber)
+        should_email(@u_custom_global)
         should_not_email(issue.assignee)
         should_not_email(@unsubscriber)
         should_not_email(@u_participating)
@@ -542,7 +569,11 @@ describe NotificationService, services: true do
     end
 
     describe '#close_issue' do
-      before { update_custom_notification(:close_issue) }
+
+      before do
+        update_custom_notification(:close_issue, @u_guest_custom, project)
+        update_custom_notification(:close_issue, @u_custom_global)
+      end
 
       it 'should sent email to issue assignee and issue author' do
         notification.close_issue(issue, @u_disabled)
@@ -552,6 +583,7 @@ describe NotificationService, services: true do
         should_email(@u_watcher)
         should_email(@u_guest_watcher)
         should_email(@u_guest_custom)
+        should_email(@u_custom_global)
         should_email(@u_participant_mentioned)
         should_email(@subscriber)
         should_email(@watcher_and_subscriber)
@@ -591,7 +623,10 @@ describe NotificationService, services: true do
     end
 
     describe '#reopen_issue' do
-      before { update_custom_notification(:reopen_issue) }
+      before do
+        update_custom_notification(:reopen_issue, @u_guest_custom, project)
+        update_custom_notification(:reopen_issue, @u_custom_global)
+      end
 
       it 'should send email to issue assignee and issue author' do
         notification.reopen_issue(issue, @u_disabled)
@@ -601,6 +636,7 @@ describe NotificationService, services: true do
         should_email(@u_watcher)
         should_email(@u_guest_watcher)
         should_email(@u_guest_custom)
+        should_email(@u_custom_global)
         should_email(@u_participant_mentioned)
         should_email(@subscriber)
         should_email(@watcher_and_subscriber)
@@ -650,7 +686,10 @@ describe NotificationService, services: true do
     end
 
     describe '#new_merge_request' do
-      before { update_custom_notification(:new_merge_request) }
+      before do
+        update_custom_notification(:new_merge_request, @u_guest_custom, project)
+        update_custom_notification(:new_merge_request, @u_custom_global)
+      end
 
       it do
         notification.new_merge_request(merge_request, @u_disabled)
@@ -661,6 +700,7 @@ describe NotificationService, services: true do
         should_email(@u_participant_mentioned)
         should_email(@u_guest_watcher)
         should_email(@u_guest_custom)
+        should_email(@u_custom_global)
         should_not_email(@u_participating)
         should_not_email(@u_disabled)
         should_not_email(@u_lazy_participant)
@@ -707,7 +747,10 @@ describe NotificationService, services: true do
     end
 
     describe '#reassigned_merge_request' do
-      before { update_custom_notification(:reassign_merge_request) }
+      before do
+        update_custom_notification(:reassign_merge_request, @u_guest_custom, project)
+        update_custom_notification(:reassign_merge_request, @u_custom_global)
+      end
 
       it do
         notification.reassigned_merge_request(merge_request, merge_request.author)
@@ -719,6 +762,7 @@ describe NotificationService, services: true do
         should_email(@watcher_and_subscriber)
         should_email(@u_guest_watcher)
         should_email(@u_guest_custom)
+        should_email(@u_custom_global)
         should_not_email(@unsubscriber)
         should_not_email(@u_participating)
         should_not_email(@u_disabled)
@@ -786,7 +830,10 @@ describe NotificationService, services: true do
     end
 
     describe '#closed_merge_request' do
-      before { update_custom_notification(:close_merge_request) }
+      before do
+        update_custom_notification(:close_merge_request, @u_guest_custom, project)
+        update_custom_notification(:close_merge_request, @u_custom_global)
+      end
 
       it do
         notification.close_mr(merge_request, @u_disabled)
@@ -795,6 +842,7 @@ describe NotificationService, services: true do
         should_email(@u_watcher)
         should_email(@u_guest_watcher)
         should_email(@u_guest_custom)
+        should_email(@u_custom_global)
         should_email(@u_participant_mentioned)
         should_email(@subscriber)
         should_email(@watcher_and_subscriber)
@@ -835,7 +883,11 @@ describe NotificationService, services: true do
     end
 
     describe '#merged_merge_request' do
-      before { update_custom_notification(:merge_merge_request) }
+
+      before do
+        update_custom_notification(:merge_merge_request, @u_guest_custom, project)
+        update_custom_notification(:merge_merge_request, @u_custom_global)
+      end
 
       it do
         notification.merge_mr(merge_request, @u_disabled)
@@ -846,6 +898,7 @@ describe NotificationService, services: true do
         should_email(@subscriber)
         should_email(@watcher_and_subscriber)
         should_email(@u_guest_watcher)
+        should_email(@u_custom_global)
         should_email(@u_guest_custom)
         should_not_email(@unsubscriber)
         should_not_email(@u_participating)
@@ -884,7 +937,10 @@ describe NotificationService, services: true do
     end
 
     describe '#reopen_merge_request' do
-      before { update_custom_notification(:reopen_merge_request) }
+      before do
+        update_custom_notification(:reopen_merge_request, @u_guest_custom, project)
+        update_custom_notification(:reopen_merge_request, @u_custom_global)
+      end
 
       it do
         notification.reopen_mr(merge_request, @u_disabled)
@@ -896,6 +952,7 @@ describe NotificationService, services: true do
         should_email(@watcher_and_subscriber)
         should_email(@u_guest_watcher)
         should_email(@u_guest_custom)
+        should_email(@u_custom_global)
         should_not_email(@unsubscriber)
         should_not_email(@u_participating)
         should_not_email(@u_disabled)
@@ -948,6 +1005,7 @@ describe NotificationService, services: true do
         should_email(@u_watcher)
         should_email(@u_participating)
         should_email(@u_lazy_participant)
+        should_email(@u_custom_global)
         should_not_email(@u_guest_watcher)
         should_not_email(@u_guest_custom)
         should_not_email(@u_disabled)
@@ -964,6 +1022,7 @@ describe NotificationService, services: true do
     @u_committer             = create(:user, username: 'committer')
     @u_not_mentioned         = create_global_setting_for(create(:user, username: 'regular'), :participating)
     @u_outsider_mentioned    = create(:user, username: 'outsider')
+    @u_custom_global         = create_global_setting_for(create(:user, username: 'custom_global'), :custom)
 
     # User to be participant by default
     # This user does not contain any record in notification settings table
@@ -981,6 +1040,7 @@ describe NotificationService, services: true do
     project.team << [@u_committer, :master]
     project.team << [@u_not_mentioned, :master]
     project.team << [@u_lazy_participant, :master]
+    project.team << [@u_custom_global, :master]
   end
 
   def create_global_setting_for(user, level)
@@ -1000,8 +1060,10 @@ describe NotificationService, services: true do
     user
   end
 
-  def update_custom_notification(event)
-    setting = @u_guest_custom.notification_settings_for(project)
+  # Create custom notifications
+  # When resource is nil it means global notification
+  def update_custom_notification(event, user, resource = nil)
+    setting = user.notification_settings_for(resource)
     setting.events[event] = true
     setting.save
   end

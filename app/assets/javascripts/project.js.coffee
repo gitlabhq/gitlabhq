@@ -34,27 +34,6 @@ class @Project
       $(@).parents('.no-password-message').remove()
       e.preventDefault()
 
-    $(document)
-      .off 'click', '.update-notification'
-      .on 'click', '.update-notification', (e) ->
-        e.preventDefault()
-        notificationLevel = $(@).data 'notification-level'
-        label = $(@).data 'notification-title'
-        $('.js-notification-loading').toggleClass 'fa-bell fa-spin fa-spinner'
-        $('#notification_setting_level').val(notificationLevel)
-        $('#notification-form').submit()
-
-    $(document)
-      .off 'ajax:success', '#notification-form'
-      .on 'ajax:success', '#notification-form', (e, data) ->
-        if data.saved
-          new Flash('Notification settings saved', 'notice')
-          $('.js-notification-toggle-btns')
-            .closest('.notification-dropdown')
-            .replaceWith(data.html)
-        else
-          new Flash('Failed to save new settings', 'alert')
-
 
     @projectSelectDropdown()
 

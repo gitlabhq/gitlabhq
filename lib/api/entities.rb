@@ -272,7 +272,8 @@ module API
       expose :access_level
       expose :notification_level do |member, options|
         if member.notification_setting
-          NotificationSetting.levels[member.notification_setting.level]
+          setting = member.notification_setting
+          { level: NotificationSetting.levels[setting.level], events: setting.events }
         end
       end
     end
