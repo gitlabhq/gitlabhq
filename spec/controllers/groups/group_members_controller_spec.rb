@@ -13,7 +13,7 @@ describe Groups::GroupMembersController do
     it 'renders index with group members' do
       get :index, group_id: group
 
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(200)
       expect(response).to render_template(:index)
     end
   end
@@ -26,7 +26,7 @@ describe Groups::GroupMembersController do
         delete :destroy, group_id: group,
                          id: 42
 
-        expect(response.status).to eq(403)
+        expect(response).to have_http_status(403)
       end
     end
 
@@ -48,7 +48,7 @@ describe Groups::GroupMembersController do
           delete :destroy, group_id: group,
                            id: member
 
-          expect(response.status).to eq(403)
+          expect(response).to have_http_status(403)
           expect(group.users).to include group_user
         end
       end
@@ -89,7 +89,7 @@ describe Groups::GroupMembersController do
       it 'returns 403' do
         delete :leave, group_id: group
 
-        expect(response.status).to eq(403)
+        expect(response).to have_http_status(403)
       end
     end
 
@@ -168,7 +168,7 @@ describe Groups::GroupMembersController do
         post :approve_access_request, group_id: group,
                                       id: 42
 
-        expect(response.status).to eq(403)
+        expect(response).to have_http_status(403)
       end
     end
 
@@ -190,7 +190,7 @@ describe Groups::GroupMembersController do
           post :approve_access_request, group_id: group,
                                         id: member
 
-          expect(response.status).to eq(403)
+          expect(response).to have_http_status(403)
           expect(group.users).not_to include group_requester
         end
       end

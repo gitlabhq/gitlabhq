@@ -39,7 +39,7 @@ describe Projects::GroupLinksController do
       include_context 'link project to group'
 
       it 'renders 404' do
-        expect(response.status).to eq 404
+        expect(response).to have_http_status(404)
       end
 
       it 'does not share project with that group' do

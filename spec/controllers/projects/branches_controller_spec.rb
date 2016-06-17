@@ -121,24 +121,24 @@ describe Projects::BranchesController do
     context "valid branch name, valid source" do
       let(:branch) { "feature" }
 
-      it { expect(response.status).to eq(200) }
+      it { expect(response).to have_http_status(200) }
     end
 
     context "valid branch name with unencoded slashes" do
       let(:branch) { "improve/awesome" }
 
-      it { expect(response.status).to eq(200) }
+      it { expect(response).to have_http_status(200) }
     end
 
     context "valid branch name with encoded slashes" do
       let(:branch) { "improve%2Fawesome" }
 
-      it { expect(response.status).to eq(200) }
+      it { expect(response).to have_http_status(200) }
     end
     context "invalid branch name, valid ref" do
       let(:branch) { "no-branch" }
 
-      it { expect(response.status).to eq(404) }
+      it { expect(response).to have_http_status(404) }
     end
   end
 end

@@ -12,7 +12,7 @@ describe Oauth::ApplicationsController do
       it 'shows list of applications' do
         get :index
 
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(200)
       end
 
       it 'redirects back to profile page if OAuth applications are disabled' do

@@ -32,7 +32,7 @@ describe Ci::ProjectsController do
   describe '#badge' do
     shared_examples 'badge provider' do
       it 'shows badge' do
-        expect(response.status).to eq 200
+        expect(response).to have_http_status(200)
         expect(response.headers)
           .to include('Content-Type' => 'image/svg+xml')
       end
@@ -45,7 +45,7 @@ describe Ci::ProjectsController do
         let(:ci_id) { 123 }
 
         it 'returns 404' do
-          expect(response.status).to eq 404
+          expect(response).to have_http_status(404)
         end
       end
 

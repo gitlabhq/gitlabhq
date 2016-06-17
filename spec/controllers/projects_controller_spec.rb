@@ -77,7 +77,7 @@ describe ProjectsController do
           get :show, namespace_id: public_project.namespace.path, id: public_project.path
 
           expect(assigns(:project)).to eq(public_project)
-          expect(response.status).to eq(200)
+          expect(response).to have_http_status(200)
         end
       end
 
@@ -101,7 +101,7 @@ describe ProjectsController do
               get :show, namespace_id: public_project.namespace.path, id: public_project.path.upcase
 
               expect(assigns(:project)).to eq(other_project)
-              expect(response.status).to eq(200)
+              expect(response).to have_http_status(200)
             end
           end
         end
@@ -123,7 +123,7 @@ describe ProjectsController do
 
         get :show, namespace_id: project.namespace.path, id: project.path
 
-        expect(response.status).to eq 404
+        expect(response).to have_http_status(404)
       end
     end
   end
@@ -146,7 +146,7 @@ describe ProjectsController do
 
       expect(project.repository.path).to include(new_path)
       expect(assigns(:repository).path).to eq(project.repository.path)
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(200)
     end
   end
 
@@ -234,7 +234,7 @@ describe ProjectsController do
       delete(:remove_fork,
           namespace_id: project.namespace.to_param,
           id: project.to_param, format: :js)
-      expect(response.status).to eq(401)
+      expect(response).to have_http_status(401)
     end
   end
 

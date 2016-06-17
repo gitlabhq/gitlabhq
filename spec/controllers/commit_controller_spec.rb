@@ -155,7 +155,7 @@ describe Projects::CommitController do
             id: commit.id)
 
         expect(response).not_to be_success
-        expect(response.status).to eq(404)
+        expect(response).to have_http_status(404)
       end
     end
 
@@ -204,7 +204,7 @@ describe Projects::CommitController do
             id: master_pickable_commit.id)
 
         expect(response).not_to be_success
-        expect(response.status).to eq(404)
+        expect(response).to have_http_status(404)
       end
     end
 

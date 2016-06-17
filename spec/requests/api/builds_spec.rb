@@ -19,7 +19,7 @@ describe API::API, api: true  do
 
     context 'authorized user' do
       it 'should return project builds' do
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
       end
 
@@ -27,7 +27,7 @@ describe API::API, api: true  do
         let(:query) { 'scope=pending' }
 
         it do
-          expect(response.status).to eq(200)
+          expect(response).to have_http_status(200)
           expect(json_response).to be_an Array
         end
       end
@@ -36,7 +36,7 @@ describe API::API, api: true  do
         let(:query) { 'scope[0]=pending&scope[1]=running' }
 
         it do
-          expect(response.status).to eq(200)
+          expect(response).to have_http_status(200)
           expect(json_response).to be_an Array
         end
       end
@@ -44,7 +44,7 @@ describe API::API, api: true  do
       context 'respond 400 when scope contains invalid state' do
         let(:query) { 'scope[0]=pending&scope[1]=unknown_status' }
 
-        it { expect(response.status).to eq(400) }
+        it { expect(response).to have_http_status(400) }
       end
     end
 
@@ -52,7 +52,7 @@ describe API::API, api: true  do
       let(:api_user) { nil }
 
       it 'should not return project builds' do
-        expect(response.status).to eq(401)
+        expect(response).to have_http_status(401)
       end
     end
   end
@@ -65,7 +65,7 @@ describe API::API, api: true  do
 
     context 'authorized user' do
       it 'should return project builds for specific commit' do
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
       end
     end
@@ -74,7 +74,7 @@ describe API::API, api: true  do
       let(:api_user) { nil }
 
       it 'should not return project builds' do
-        expect(response.status).to eq(401)
+        expect(response).to have_http_status(401)
       end
     end
   end
@@ -84,7 +84,7 @@ describe API::API, api: true  do
 
     context 'authorized user' do
       it 'should return specific build data' do
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(200)
         expect(json_response['name']).to eq('test')
       end
     end
@@ -93,7 +93,7 @@ describe API::API, api: true  do
       let(:api_user) { nil }
 
       it 'should not return specific build data' do
-        expect(response.status).to eq(401)
+        expect(response).to have_http_status(401)
       end
     end
   end
@@ -111,7 +111,7 @@ describe API::API, api: true  do
         end
 
         it 'should return specific build artifacts' do
-          expect(response.status).to eq(200)
+          expect(response).to have_http_status(200)
           expect(response.headers).to include(download_headers)
         end
       end
@@ -120,13 +120,13 @@ describe API::API, api: true  do
         let(:api_user) { nil }
 
         it 'should not return specific build artifacts' do
-          expect(response.status).to eq(401)
+          expect(response).to have_http_status(401)
         end
       end
     end
 
     it 'should not return build artifacts if not uploaded' do
-      expect(response.status).to eq(404)
+      expect(response).to have_http_status(404)
     end
   end
 
@@ -137,7 +137,7 @@ describe API::API, api: true  do
 
     context 'authorized user' do
       it 'should return specific build trace' do
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(200)
         expect(response.body).to eq(build.trace)
       end
     end
@@ -146,7 +146,7 @@ describe API::API, api: true  do
       let(:api_user) { nil }
 
       it 'should not return specific build trace' do
-        expect(response.status).to eq(401)
+        expect(response).to have_http_status(401)
       end
     end
   end
@@ -157,7 +157,7 @@ describe API::API, api: true  do
     context 'authorized user' do
       context 'user with :update_build persmission' do
         it 'should cancel running or pending build' do
-          expect(response.status).to eq(201)
+          expect(response).to have_http_status(201)
           expect(project.builds.first.status).to eq('canceled')
         end
       end
@@ -166,7 +166,7 @@ describe API::API, api: true  do
         let(:api_user) { user2 }
 
         it 'should not cancel build' do
-          expect(response.status).to eq(403)
+          expect(response).to have_http_status(403)
         end
       end
     end
@@ -175,7 +175,7 @@ describe API::API, api: true  do
       let(:api_user) { nil }
 
       it 'should not cancel build' do
-        expect(response.status).to eq(401)
+        expect(response).to have_http_status(401)
       end
     end
   end
@@ -188,7 +188,7 @@ describe API::API, api: true  do
     context 'authorized user' do
       context 'user with :update_build permission' do
         it 'should retry non-running build' do
-          expect(response.status).to eq(201)
+          expect(response).to have_http_status(201)
           expect(project.builds.first.status).to eq('canceled')
           expect(json_response['status']).to eq('pending')
         end
@@ -198,7 +198,7 @@ describe API::API, api: true  do
         let(:api_user) { user2 }
 
         it 'should not retry build' do
-          expect(response.status).to eq(403)
+          expect(response).to have_http_status(403)
         end
       end
     end
@@ -207,7 +207,7 @@ describe API::API, api: true  do
       let(:api_user) { nil }
 
       it 'should not retry build' do
-        expect(response.status).to eq(401)
+        expect(response).to have_http_status(401)
       end
     end
   end
@@ -221,7 +221,7 @@ describe API::API, api: true  do
       let(:build) { create(:ci_build, :trace, :artifacts, :success, project: project, pipeline: pipeline) }
 
       it 'should erase build content' do
-        expect(response.status).to eq 201
+        expect(response).to have_http_status(201)
         expect(build.trace).to be_empty
         expect(build.artifacts_file.exists?).to be_falsy
         expect(build.artifacts_metadata.exists?).to be_falsy
@@ -254,7 +254,7 @@ describe API::API, api: true  do
       end
 
       it 'keeps artifacts' do
-        expect(response.status).to eq 200
+        expect(response).to have_http_status(200)
         expect(build.reload.artifacts_expire_at).to be_nil
       end
     end
@@ -263,7 +263,7 @@ describe API::API, api: true  do
       let(:build) { create(:ci_build, project: project, pipeline: pipeline) }
 
       it 'responds with not found' do
-        expect(response.status).to eq 404
+        expect(response).to have_http_status(404)
       end
     end
   end

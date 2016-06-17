@@ -272,7 +272,7 @@ describe Projects::MergeRequestsController do
     it "denies access to users unless they're admin or project owner" do
       delete :destroy, namespace_id: project.namespace.path, project_id: project.path, id: merge_request.iid
 
-      expect(response.status).to eq(404)
+      expect(response).to have_http_status(404)
     end
 
     context "when the user is owner" do

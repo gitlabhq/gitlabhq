@@ -42,7 +42,7 @@ describe Projects::ProjectMembersController do
       end
 
       it 'responds with not found' do
-        expect(response.status).to eq 404
+        expect(response).to have_http_status(404)
       end
     end
   end
@@ -58,7 +58,7 @@ describe Projects::ProjectMembersController do
         get :index, namespace_id: project.namespace, project_id: project
       end
 
-      it { expect(response.status).to eq(200) }
+      it { expect(response).to have_http_status(200) }
     end
   end
 
@@ -71,7 +71,7 @@ describe Projects::ProjectMembersController do
                          project_id: project,
                          id: 42
 
-        expect(response.status).to eq(404)
+        expect(response).to have_http_status(404)
       end
     end
 
@@ -94,7 +94,7 @@ describe Projects::ProjectMembersController do
                            project_id: project,
                            id: member
 
-          expect(response.status).to eq(404)
+          expect(response).to have_http_status(404)
           expect(project.users).to include team_user
         end
       end
@@ -139,7 +139,7 @@ describe Projects::ProjectMembersController do
         delete :leave, namespace_id: project.namespace,
                        project_id: project
 
-        expect(response.status).to eq(403)
+        expect(response).to have_http_status(403)
       end
     end
 
@@ -228,7 +228,7 @@ describe Projects::ProjectMembersController do
                                       project_id: project,
                                       id: 42
 
-        expect(response.status).to eq(404)
+        expect(response).to have_http_status(404)
       end
     end
 
@@ -251,7 +251,7 @@ describe Projects::ProjectMembersController do
                                         project_id: project,
                                         id: member
 
-          expect(response.status).to eq(404)
+          expect(response).to have_http_status(404)
           expect(project.users).not_to include team_requester
         end
       end
