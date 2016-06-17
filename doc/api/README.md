@@ -44,19 +44,50 @@ The following documentation is for the [internal CI API](ci/README.md):
 
 ## Authentication
 
-All API requests require authentication. You need to pass a `private_token`
-parameter via query string or header. If passed as a header, the header name
-must be `PRIVATE-TOKEN` (uppercase and with a dash instead of an underscore).
-You can find or reset your private token in your account page (`/profile/account`).
+All API requests require authentication via a token. There are three types of tokens 
+available: private tokens, OAuth 2 tokens, and personal access tokens.
 
-If `private_token` is invalid or omitted, then an error message will be
-returned with status code `401`:
+If a token is invalid or omitted, an error message will be returned with 
+status code `401`:
 
 ```json
 {
   "message": "401 Unauthorized"
 }
 ```
+
+### Private Tokens
+
+You need to pass a `private_token` parameter via query string or header. If passed as a 
+header, the header name must be `PRIVATE-TOKEN` (uppercase and with a dash instead of 
+an underscore). You can find or reset your private token in your account page
+(`/profile/account`).
+
+### OAuth 2 Tokens
+
+You can use an OAuth 2 token to authenticate with the API by passing it either in the
+`access_token` parameter or in the `Authorization` header.
+
+Example of using the OAuth2 token in the header:
+
+```shell
+curl -H "Authorization: Bearer OAUTH-TOKEN" https://gitlab.example.com/api/v3/projects
+```
+
+Read more about [GitLab as an OAuth2 client](oauth2.md).
+
+### Personal Access Tokens
+
+> **Note:** This feature was [introduced][ce-3749] in GitLab 8.8
+
+You can create as many personal access tokens as you like from your GitLab 
+profile (`/profile/personal_access_tokens`); perhaps one for each application
+that needs access to the GitLab API.
+
+Once you have your token, pass it to the API using either the `private_token`
+parameter or the `PRIVATE-TOKEN` header.
+
+## Basic Usage
 
 API requests should be prefixed with `api` and the API version. The API version
 is defined in [`lib/api.rb`][lib-api-url].
@@ -75,25 +106,6 @@ curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/
 
 The API uses JSON to serialize data. You don't need to specify `.json` at the
 end of an API URL.
-
-## Authentication with OAuth2 token
-
-Instead of the `private_token` you can transmit the OAuth2 access token as a
-header or as a parameter.
-
-Example of OAuth2 token as a parameter:
-
-```shell
-curl https://gitlab.example.com/api/v3/user?access_token=OAUTH-TOKEN
-```
-
-Example of OAuth2 token as a header:
-
-```shell
-curl -H "Authorization: Bearer OAUTH-TOKEN" https://example.com/api/v3/user
-```
-
-Read more about [GitLab as an OAuth2 client](oauth2.md).
 
 ## Status codes
 
@@ -330,3 +342,4 @@ programming languages. Visit the [GitLab website] for a complete list.
 
 [GitLab website]: https://about.gitlab.com/applications/#api-clients "Clients using the GitLab API"
 [lib-api-url]: https://gitlab.com/gitlab-org/gitlab-ce/tree/master/lib/api/api.rb
+[ce-3749]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/3749

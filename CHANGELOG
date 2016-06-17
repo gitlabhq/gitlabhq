@@ -65,6 +65,7 @@ v 8.9.0 (unreleased)
   - Remove 'main language' feature
   - Toggle whitespace button now available for compare branches diffs #17881
   - Pipelines can be canceled only when there are running builds
+  - Allow authentication using personal access tokens
   - Use downcased path to container repository as this is expected path by Docker
   - Projects pending deletion will render a 404 page
   - Measure queue duration between gitlab-workhorse and Rails
