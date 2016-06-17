@@ -10,7 +10,9 @@ module Members
       if can?(current_user, "destroy_#{member.type.underscore}".to_sym, member)
         member.destroy
 
-        notification_service.decline_access_request(member) if member.request?
+        if member.request? && member.user != current_user
+          notification_service.decline_access_request(member)
+        end
       end
 
       member

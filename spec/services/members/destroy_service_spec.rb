@@ -34,6 +34,14 @@ describe Members::DestroyService, services: true do
 
         destroy_member(member, user)
       end
+
+      context 'when current user is the member' do
+        it 'does not call Member#after_decline_request' do
+          expect_any_instance_of(NotificationService).not_to receive(:decline_access_request).with(member)
+
+          destroy_member(member, member.user)
+        end
+      end
     end
   end
 
