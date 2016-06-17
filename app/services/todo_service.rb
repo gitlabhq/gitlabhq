@@ -1,6 +1,6 @@
 # TodoService class
 #
-# Used for creating todos after certain user actions
+# Used for creating/updating todos after certain user actions
 #
 # Ex.
 #   TodoService.new.new_issue(issue, current_user)
@@ -137,6 +137,15 @@ class TodoService
   def mark_pending_todos_as_done(target, user)
     attributes = attributes_for_target(target)
     pending_todos(user, attributes).update_all(state: :done)
+    user.update_todos_count_cache
+  end
+
+  # When user marks some todos as done
+  def mark_todos_as_done(todos, current_user)
+    todos = current_user.todos.where(id: todos.map(&:id)) unless todos.respond_to?(:update_all)
+
+    todos.update_all(state: :done)
+    current_user.update_todos_count_cache
   end
 
   # When user marks an issue as todo
@@ -151,6 +160,7 @@ class TodoService
     Array(users).map do |user|
       next if pending_todos(user, attributes).exists?
       Todo.create(attributes.merge(user_id: user.id))
+      user.update_todos_count_cache
     end
   end
 
