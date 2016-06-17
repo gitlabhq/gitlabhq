@@ -26,7 +26,6 @@ module API
     # Ensure the namespace is right, otherwise we might load Grape::API::Helpers
     helpers ::API::Helpers
 
-    # Sort these alphabetically
     mount ::API::AwardEmoji
     mount ::API::Branches
     mount ::API::Builds
