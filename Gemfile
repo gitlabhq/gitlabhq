@@ -294,6 +294,11 @@ group :development, :test do
   gem 'teaspoon', '~> 1.1.0'
   gem 'teaspoon-jasmine', '~> 2.2.0'
 
+  gem 'spring',                   '~> 1.7.0'
+  gem 'spring-commands-rspec',    '~> 1.0.4'
+  gem 'spring-commands-spinach',  '~> 1.1.0'
+  gem 'spring-commands-teaspoon', '~> 0.0.2'
+
   gem 'rubocop', '~> 0.40.0', require: false
   gem 'rubocop-rspec', '~> 1.5.0', require: false
   gem 'scss_lint', '~> 0.47.0', require: false
@@ -319,13 +324,6 @@ end
 
 group :production do
   gem "gitlab_meta", '7.0'
-end
-
-group :spring, optional: true do
-  gem 'spring',                   '~> 1.7.0'
-  gem 'spring-commands-rspec',    '~> 1.0.4'
-  gem 'spring-commands-spinach',  '~> 1.1.0'
-  gem 'spring-commands-teaspoon', '~> 0.0.2'
 end
 
 gem "newrelic_rpm", '~> 3.14'
