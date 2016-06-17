@@ -48,6 +48,7 @@ v 8.9.0 (unreleased)
   - Add `sha` parameter to MR merge API, to ensure only reviewed changes are merged
   - Don't allow MRs to be merged when commits were added since the last review / page load
   - Add DB index on users.state
+  - Limit email on push diff size to 30 files / 150 KB
   - Add rake task 'gitlab:db:configure' for conditionally seeding or migrating the database
   - Changed the Slack build message to use the singular duration if necessary (Aran Koning)
   - Fix race condition on merge when build succeeds
