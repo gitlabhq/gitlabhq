@@ -1,6 +1,11 @@
 module Gitlab
   module Template
     class GitlabCiYml < BaseTemplate
+      def content
+        explanation = "# This file is a template, and might need editing before it works on your project."
+        [explanation, super].join("\n")
+      end
+
       class << self
         def extension
           '.gitlab-ci.yml'

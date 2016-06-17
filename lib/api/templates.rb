@@ -27,11 +27,7 @@ module API
         required_attributes! [:name]
 
         new_template = klass.find(params[:name])
-        not_found!("#{template.to_s.singularize}") unless new_template
-
-        if new_template.class == Gitlab::Template::GitlabCiYml
-          new_template.content = "# This file is a template, and might need editing before it works on your project.\n" + new_template.content
-        end
+        not_found!(template.to_s.singularize) unless new_template
 
         present new_template, with: Entities::Template
       end

@@ -27,7 +27,7 @@ namespace :gitlab do
   # - The LICENSE, because we have to
   # - The sub dirs so we can organise the file by category
   # - The templates themself
-  # - Dir.entires returns also the entries '.' and '..'
+  # - Dir.entries returns also the entries '.' and '..'
   def remove_unneeded_files(directory, regex)
     Dir.foreach(directory) do |file|
       FileUtils.rm_rf(File.join(directory, file)) unless file =~ regex

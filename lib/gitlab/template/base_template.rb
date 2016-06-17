@@ -1,8 +1,6 @@
 module Gitlab
   module Template
     class BaseTemplate
-      attr_writer :content
-
       def initialize(path)
         @path = path
       end
@@ -12,19 +10,7 @@ module Gitlab
       end
 
       def content
-        @content ||= File.read(@path)
-      end
-
-      def categories
-        raise NotImplementedError
-      end
-
-      def extension
-        raise NotImplementedError
-      end
-
-      def base_dir
-        raise NotImplementedError
+        File.read(@path)
       end
 
       class << self
@@ -37,6 +23,18 @@ module Gitlab
 
           directory = select_directory(file_name)
           directory ? new(File.join(category_directory(directory), file_name)) : nil
+        end
+
+        def categories
+          raise NotImplementedError
+        end
+
+        def extension
+          raise NotImplementedError
+        end
+
+        def base_dir
+          raise NotImplementedError
         end
 
         def by_category(category)
