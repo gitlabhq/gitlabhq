@@ -25,6 +25,16 @@ describe JenkinsService do
     it { is_expected.to have_one :service_hook }
   end
   let(:project) { create(:project) }
+  let(:jenkins_params) do
+    {
+      active: true,
+      project: project,
+      properties: {
+        jenkins_url: 'http://jenkins.example.com/',
+        project_name: 'my_project'
+      }
+    }
+  end
 
   describe 'username validation' do
     before do
@@ -74,19 +84,26 @@ describe JenkinsService do
     end
   end
 
+  describe '#test' do
+    it 'returns the right status' do
+      user = create(:user, username: 'username')
+      project = create(:project, name: 'project')
+      push_sample_data = Gitlab::PushDataBuilder.build_sample(project, user)
+      jenkins_service = described_class.create(jenkins_params)
+      stub_request(:post, jenkins_service.hook_url)
+
+      result = jenkins_service.test(push_sample_data)
+
+      expect(result).to eq({ success: true, result: '' })
+    end
+  end
+
   describe '#execute' do
     it 'adds default web hook headers to the request' do
       user = create(:user, username: 'username')
       project = create(:project, name: 'project')
       push_sample_data = Gitlab::PushDataBuilder.build_sample(project, user)
-      jenkins_service = described_class.create(
-        active: true,
-        project: project,
-        properties: {
-          jenkins_url: 'http://jenkins.example.com/',
-          project_name: 'my_project'
-        }
-      )
+      jenkins_service = described_class.create(jenkins_params)
       stub_request(:post, jenkins_service.hook_url)
 
       jenkins_service.execute(push_sample_data)
