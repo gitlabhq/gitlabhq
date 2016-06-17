@@ -12,7 +12,7 @@ module TodosHelper
     when Todo::ASSIGNED then 'assigned you'
     when Todo::MENTIONED then 'mentioned you on'
     when Todo::BUILD_FAILED then 'The build failed for your'
-    when Todo::MARKED then 'marked this as a Todo for'
+    when Todo::MARKED then 'added a todo for'
     end
   end
 
