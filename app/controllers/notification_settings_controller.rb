@@ -2,12 +2,16 @@ class NotificationSettingsController < ApplicationController
   before_action :authenticate_user!
 
   def create
-    project = current_user.projects.find(params[:project][:id])
+    project = Project.find(params[:project][:id])
 
-    @notification_setting = current_user.notification_settings_for(project)
-    @saved = @notification_setting.update_attributes(notification_setting_params)
+    if can?(current_user, :read_project, project)
+      @notification_setting = current_user.notification_settings_for(project)
+      @saved = @notification_setting.update_attributes(notification_setting_params)
 
-    render_response
+      render_response
+    else
+      render_404
+    end
   end
 
   def update
@@ -21,7 +25,7 @@ class NotificationSettingsController < ApplicationController
 
   def render_response
     render json: {
-      html: view_to_html_string("notifications/buttons/_notifications", notification_setting: @notification_setting),
+      html: view_to_html_string("shared/notifications/buttons/_button", notification_setting: @notification_setting),
       saved: @saved
     }
   end

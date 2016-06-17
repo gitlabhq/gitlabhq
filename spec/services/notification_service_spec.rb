@@ -146,9 +146,6 @@ describe NotificationService, services: true do
       let(:note) { create(:note_on_issue, noteable: confidential_issue, project: project, note: "#{author.to_reference} #{assignee.to_reference} #{non_member.to_reference} #{member.to_reference} #{admin.to_reference}") }
       let(:guest_watcher) { create_user_with_notification(:watch, "guest-watcher-confidential") }
 
-      before do
-      end
-
       it 'filters out users that can not read the issue' do
         project.team << [member, :developer]
         project.team << [guest, :guest]
