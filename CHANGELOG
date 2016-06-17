@@ -130,6 +130,7 @@ v 8.8.5 (unreleased)
   - Set inverse_of for Project/Service association to reduce the number of queries
   - Update tanuki logo highlight/loading colors
   - Use Git cached counters for branches and tags on project page
+  - Filter parameters for request_uri value on instrumented transactions.
 
 v 8.8.5
   - Import GitHub repositories respecting the API rate limit !4166
