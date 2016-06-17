@@ -530,14 +530,18 @@ The above script will:
 ### environment
 
 >**Note:**
-Introduced in GitLab v8.9.0.
+Introduced in GitLab 8.9.
 
-`environment` is used to define that job does deployment to specific environment.
-This allows to easily track all deployments to your environments straight from GitLab.
+`environment` is used to define that a job deploys to a specific environment.
+This allows easy tracking of all deployments to your environments straight from
+GitLab.
 
-If `environment` is specified and no environment under that name does exist a new one will be created automatically.
+If `environment` is specified and no environment under that name exists, a new
+one will be created automatically.
 
-The `environment` name must contain only letters, digits, '-' and '_'.
+The `environment` name must contain only letters, digits, '-' and '_'. Common
+names are `qa`, `staging`, and `production`, but you can use whatever name works
+with your workflow.
 
 ---
 
@@ -550,7 +554,8 @@ deploy to production:
   environment: production
 ```
 
-The `deploy to production` job will be marked as doing deployment to `production` environment.
+The `deploy to production` job will be marked as doing deployment to
+`production` environment.
 
 ### artifacts
 
