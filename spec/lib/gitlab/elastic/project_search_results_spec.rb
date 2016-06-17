@@ -122,6 +122,18 @@ describe Gitlab::Elastic::ProjectSearchResults, lib: true do
       expect(results.issues_count).to eq 3
     end
 
+    it 'should not list project confidential issues for project members with guest role' do
+      project.team << [member, :guest]
+
+      results = described_class.new(member, project.id, query)
+      issues = results.objects('issues')
+
+      expect(issues).to include issue
+      expect(issues).not_to include security_issue_1
+      expect(issues).not_to include security_issue_2
+      expect(results.issues_count).to eq 1
+    end
+
     it 'should list all project issues for admin' do
       results = described_class.new(admin, project.id, query)
       issues = results.objects('issues')

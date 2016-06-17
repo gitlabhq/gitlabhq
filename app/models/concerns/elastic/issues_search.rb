@@ -69,7 +69,7 @@ module Elastic
                                    should: [
                                      { term: { author_id: current_user.id } },
                                      { term: { assignee_id: current_user.id } },
-                                     { terms: { project_id: current_user.authorized_projects.pluck(:id) } }
+                                     { terms: { project_id: current_user.authorized_projects(Gitlab::Access::REPORTER).pluck(:id) } }
                                    ]
                                  }
                                }
