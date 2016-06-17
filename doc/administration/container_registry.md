@@ -84,7 +84,7 @@ GitLab does not ship with a Registry init file. Hence, [restarting GitLab][resta
 will not restart the Registry should you modify its settings. Read the upstream
 documentation on how to achieve that.
 
-The Docker Registry configuration will need `container_service` as the service and `https://gitlab.example.com/jwt/auth` as the realm:
+The Docker Registry configuration will need `container_registry` as the service and `https://gitlab.example.com/jwt/auth` as the realm:
 
 ```
 auth:
