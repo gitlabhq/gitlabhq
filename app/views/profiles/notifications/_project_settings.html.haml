@@ -9,5 +9,4 @@
     = link_to_project(project)
 
   .pull-right
-    = form_for [project.namespace.becomes(Namespace), project, setting], remote: true, html: { class: 'update-notifications' } do |f|
-      = f.select :level, NotificationSetting.levels.keys, {}, class: 'form-control trigger-submit'
+    = render 'shared/notifications/button', notification_setting: setting
