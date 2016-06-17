@@ -1,18 +1,13 @@
 class Projects::TodosController < Projects::ApplicationController
+  before_action :authorize_read_issue!, only: [:create]
+
   def create
-    todos = TodoService.new.mark_todo(issuable, current_user)
+    todo = TodoService.new.mark_todo(issuable, current_user)
 
     render json: {
-      todo: todos,
-      count: current_user.todos.pending.count,
-    }
-  end
-
-  def update
-    current_user.todos.find_by_id(params[:id]).update(state: :done)
-
-    render json: {
-      count: current_user.todos.pending.count,
+      todo: todo,
+      count: TodosFinder.new(current_user, state: :pending).execute.count,
+      delete_path: dashboard_todo_path(todo)
     }
   end
 
@@ -22,7 +17,13 @@ class Projects::TodosController < Projects::ApplicationController
     @issuable ||= begin
       case params[:issuable_type]
       when "issue"
-        @project.issues.find(params[:issuable_id])
+        issue = @project.issues.find(params[:issuable_id])
+
+        if can?(current_user, :read_issue, issue)
+          issue
+        else
+          render_404
+        end
       when "merge_request"
         @project.merge_requests.find(params[:issuable_id])
       end
