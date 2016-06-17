@@ -25,7 +25,7 @@ SecureHeaders::Configuration.default do |config|
     img_src: %w('self' www.gravatar.com secure.gravatar.com),
     media_src: %w('none'),
     object_src: %w('none'),
-    script_src: %w('unsafe-inline' 'unsafe-eval' 'self' maxcdn.bootstrapcdn.com),
+    script_src: %w('unsafe-inline' 'self' maxcdn.bootstrapcdn.com),
     style_src: %w('unsafe-inline' 'self'),
     base_uri: %w('self'),
     child_src: %w('self'),
