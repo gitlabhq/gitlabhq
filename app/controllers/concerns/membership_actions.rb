@@ -34,8 +34,9 @@ module MembershipActions
         else
           "You left the \"#{@member.source.human_name}\" #{source_type}."
         end
+      redirect_path = @member.request? ? @member.source : [:dashboard, @member.real_source_type.tableize]
 
-      redirect_to [:dashboard, @member.real_source_type.tableize], notice: notice
+      redirect_to redirect_path, notice: notice
     else
       if cannot_leave?
         alert = "You can not leave the \"#{@member.source.human_name}\" #{source_type}."

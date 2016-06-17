@@ -190,7 +190,7 @@ describe Projects::ProjectMembersController do
                          project_id: project
 
           expect(response).to set_flash.to 'Your access request to the project has been withdrawn.'
-          expect(response).to redirect_to(dashboard_projects_path)
+          expect(response).to redirect_to(namespace_project_path(project.namespace, project))
           expect(project.members.request).to be_empty
           expect(project.users).not_to include user
         end
