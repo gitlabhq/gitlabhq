@@ -63,6 +63,11 @@ describe Project, models: true do
       expect(project2).not_to be_valid
       expect(project2.errors[:limit_reached].first).to match(/Personal project creation is not allowed/)
     end
+
+    it 'should not allow an invalid URI as import_url' do
+      project2 = build(:project)
+      expect(project2).to be_valid
+    end
   end
 
   describe 'default_scope' do
