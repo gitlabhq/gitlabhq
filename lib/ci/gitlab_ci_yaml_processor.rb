@@ -54,7 +54,7 @@ module Ci
       job = @jobs[name.to_sym]
       return [] unless job
 
-      job.fetch(:variables, [])
+      job[:variables] || []
     end
 
     private
