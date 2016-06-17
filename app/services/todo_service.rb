@@ -161,9 +161,14 @@ class TodoService
 
   def update_issuable(issuable, author)
     # Skip toggling a task list item in a description
-    return if issuable.tasks? && issuable.updated_tasks.any?
+    return if toggling_tasks?(issuable)
 
     create_mention_todos(issuable.project, issuable, author)
+  end
+
+  def toggling_tasks?(issuable)
+    issuable.previous_changes.include?('description') &&
+      issuable.tasks? && issuable.updated_tasks.any?
   end
 
   def handle_note(note, author)
