@@ -23,22 +23,24 @@ module MembershipActions
     @member = membershipable.members.find_by(user_id: current_user)
     return render_403 unless @member
 
+    @member = Members::DestroyService.new(@member, current_user).execute
+
     source_type = @member.real_source_type.humanize(capitalize: false)
 
-    if can?(current_user, action_member_permission(:destroy, @member), @member)
+    if @member.destroyed?
       notice =
         if @member.request?
           "Your access request to the #{source_type} has been withdrawn."
         else
           "You left the \"#{@member.source.human_name}\" #{source_type}."
         end
-      @member.destroy
 
       redirect_to [:dashboard, @member.real_source_type.tableize], notice: notice
     else
       if cannot_leave?
         alert = "You can not leave the \"#{@member.source.human_name}\" #{source_type}."
         alert << " Transfer or delete the #{source_type}."
+
         redirect_to polymorphic_url(membershipable), alert: alert
       else
         render_403
