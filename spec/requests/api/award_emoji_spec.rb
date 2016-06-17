@@ -8,7 +8,7 @@ describe API::API, api: true  do
   let!(:award_emoji)    { create(:award_emoji, awardable: issue, user: user) }
   let!(:merge_request)  { create(:merge_request, source_project: project, target_project: project) }
   let!(:downvote)       { create(:award_emoji, :downvote, awardable: merge_request, user: user) }
-  let!(:note)            { create(:note, project: project, noteable: issue) }
+  let!(:note)           { create(:note, project: project, noteable: issue) }
 
   before { project.team << [user, :master] }
 
