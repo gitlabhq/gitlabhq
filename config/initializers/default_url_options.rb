@@ -9,3 +9,4 @@ unless Gitlab.config.gitlab_on_standard_port?
 end
 
 Rails.application.routes.default_url_options = default_url_options
+ActionMailer::Base.asset_host = Settings.gitlab['base_url']

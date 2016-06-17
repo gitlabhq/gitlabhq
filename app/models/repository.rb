@@ -243,7 +243,7 @@ class Repository
   end
 
   def cache_keys
-    %i(size branch_names tag_names commit_count
+    %i(size branch_names tag_names branch_count tag_count commit_count
        readme version contribution_guide changelog
        license_blob license_key gitignore)
   end
@@ -446,7 +446,7 @@ class Repository
 
   def blob_at(sha, path)
     unless Gitlab::Git.blank_ref?(sha)
-      Gitlab::Git::Blob.find(self, sha, path)
+      Blob.decorate(Gitlab::Git::Blob.find(self, sha, path))
     end
   end
 

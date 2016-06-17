@@ -60,7 +60,7 @@
               %li
                 = link_to download_namespace_project_build_artifacts_path(@project.namespace, @project, build), rel: 'nofollow' do
                   = icon("download")
-                  %span #{build.name}
+                  %span Download '#{build.name}' artifacts
 
       - if can?(current_user, :update_pipeline, @project)
         - if pipeline.retryable?

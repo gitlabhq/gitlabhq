@@ -42,7 +42,7 @@
             Code
 
     - if project_nav_tab? :pipelines
-      = nav_link(controller: :pipelines) do
+      = nav_link(controller: [:pipelines, :builds, :environments]) do
         = link_to project_pipelines_path(@project), title: 'Pipelines', class: 'shortcuts-pipelines' do
           %span
             Pipelines
