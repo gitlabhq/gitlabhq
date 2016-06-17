@@ -11,6 +11,7 @@ v 8.9.0 (unreleased)
   - [Elastic] Move ES settings to application settings
   - Disable mirror flag for projects without import_url
   - Show flash notice when Git Hooks are updated successfully
+  - Remove explicit Gitlab::Metrics.action assignments, are already automatic.
   - [Elastic] Project members with guest role can't access confidential issues
   - Ability to lock file or folder in the repository
 
