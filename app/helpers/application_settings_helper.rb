@@ -47,10 +47,14 @@ module ApplicationSettingsHelper
   def enabled_project_tooltip(project, protocol)
     case protocol
     when 'ssh'
-      sanitize(ssh_clone_button(project), tags: %w(a), attributes: %w(id class title data-html data-container data-placement data-title data-original-title aria-describedby))
+      sanitize_clone_button(ssh_clone_button(project))
     else
-      sanitize(http_clone_button(project), tags: %w(a), attributes: %w(id class title data-html data-container data-placement data-title data-original-title aria-describedby))
+      sanitize_clone_button(http_clone_button(project))
     end
+  end
+
+  def sanitize_clone_button(input)
+    sanitize(input, tags: %w(a), attributes: %w(id class title data-html data-container data-placement data-title data-original-title aria-describedby))
   end
 
   # Return a group of checkboxes that use Bootstrap's button plugin for a
