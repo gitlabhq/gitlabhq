@@ -16,12 +16,11 @@
                 %h4.prepend-top-0
                   Notification events
               .col-lg-9
-                - NotificationSetting::EMAIL_EVENTS.each do |event, index|
-                  = index
+                - NotificationSetting::EMAIL_EVENTS.each_with_index do |event, index|
                   .form-group
                     .checkbox{ class: ("prepend-top-0" if index == 0) }
-                      %label{ for: "events_#{event}" }
-                        = check_box("", event, { name: "notification_setting[#{event}]", class: "js-custom-notification-event", checked: notification_setting.events[event] })
+                      %label{ for: "notification_setting[#{event}]" }
+                        = check_box("", event, { name: "notification_setting[#{event}]", id: "notification_setting[#{event}]", class: "js-custom-notification-event", checked: notification_setting.events[event] })
 
                         %strong
                           = event.to_s.humanize
