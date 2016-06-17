@@ -797,7 +797,7 @@ Rails.application.routes.draw do
           end
         end
 
-        resources :todos, only: [:create, :update]
+        resources :todos, only: [:create]
 
         resources :uploads, only: [:create] do
           collection do

@@ -63,7 +63,7 @@ class @Sidebar
       type: ajaxType
       dataType: 'json'
       data:
-        issuable_id: $this.data('issuable')
+        issuable_id: $this.data('issuable-id')
         issuable_type: $this.data('issuable-type')
       beforeSend: =>
         @beforeTodoSend($this, $todoLoading)
