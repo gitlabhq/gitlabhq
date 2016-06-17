@@ -819,11 +819,14 @@ job:
 ## Git Strategy
 
 >**Note:**
-Introduced in GitLab 8.9 as an experimental feature
+Introduced in GitLab 8.9 as an experimental feature. May change in future
+releases or be removed completely.
 
 You can set the `GIT_STRATEGY` used for getting recent application code. `clone`
 is slower, but makes sure you have a clean directory before every build. `fetch`
-is faster. If specified, it will override the project settings in the web UI.
+is faster. `GIT_STRATEGY` can be specified in the global `variables` section or
+in the `variables` section for individual jobs. If it's not specified, then the
+default from project settings will be used.
 
 ```
 variables:
@@ -840,17 +843,32 @@ variables:
 ## Shallow cloning
 
 >**Note:**
-Introduced in GitLab 8.9 as an experimental feature
+Introduced in GitLab 8.9 as an experimental feature. May change in future
+releases or be removed completely.
 
 You can specify the depth of fetching and cloning using `GIT_DEPTH`. This allows
-shallow cloning of the repository. The value is passed to `git fetch` and `git
-clone`. If set while cloning, it will imply `--shallow-modules`, which means
-submodules will be cloned with a depth of 1 regardless of the value of
-`GIT_DEPTH`.
+shallow cloning of the repository which can significantly speed up cloning for
+repositories with a large number of commits or old, large binaries. The value is
+passed to `git fetch` and `git clone`.
 
+>**Note:**
+If you use a depth of 1 and have a queue of builds or retry
+builds, jobs may fail.
+
+Since Git fetching and cloning is based on a ref, such as a branch name, runners
+can't clone a specific commit SHA. If there are multiple builds in the queue, or
+you are retrying an old build, the commit to be tested needs to be within the
+git history that is cloned. Setting too small a value for `GIT_DEPTH` can make
+it impossible to run these old commits. You will see `unresolved reference` in
+build logs. You should then reconsider changing `GIT_DEPTH` to a higher value.
+
+Builds that rely on `git describe` may not work correctly when `GIT_DEPTH` is
+set since only part of the git history is present.
+
+To fetch or clone only the last 3 commits:
 ```
 variables:
-  GIT_DEPTH: "1"
+  GIT_DEPTH: "3"
 ```
 
 ## Hidden jobs
