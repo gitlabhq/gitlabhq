@@ -16,7 +16,6 @@ Deployments are created when [jobs] deploy versions of code to [environments].
 
 ## Defining environments
 
->**Note:**
 You can create and delete environments manually in the web interface, but we
 recommend that you define your environments in `.gitlab-ci.yml` first, which
 will automatically create environments for you after the first deploy.
