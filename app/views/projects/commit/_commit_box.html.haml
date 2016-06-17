@@ -6,10 +6,10 @@
 
   .pull-right.commit-action-buttons
     - if defined?(@notes_count) && @notes_count > 0
-      %span.btn.disabled.btn-grouped.hidden-xs
+      %span.btn.disabled.btn-grouped.hidden-xs.append-right-10
         = icon('comment')
         = @notes_count
-    = link_to namespace_project_tree_path(@project.namespace, @project, @commit), class: "btn btn-grouped hidden-xs hidden-sm" do
+    = link_to namespace_project_tree_path(@project.namespace, @project, @commit), class: "btn btn-default append-right-10 hidden-xs hidden-sm" do
       Browse Files
     .dropdown.inline
       %a.btn.btn-default.dropdown-toggle{ data: { toggle: "dropdown" } }

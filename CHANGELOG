@@ -14,6 +14,7 @@ v 8.9.1 (unreleased)
   - Fix MR-auto-close text added to description. !4836
   - Add documentation for award emoji now that comments can be awarded with emojis. !4839
   - Fix typo in export failure email. !4847
+  - Fix header vertical centering. !4170
 
 v 8.9.0
   - Fix builds API response not including commit data
