@@ -8,7 +8,6 @@ module Gitlab
           class_methods do
             def validator
               validator = Class.new(Node::Validator)
-              validator.include(ActiveModel::Validations)
 
               if defined?(@validations)
                 @validations.each { |rules| validator.class_eval(&rules) }

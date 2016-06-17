@@ -15,6 +15,7 @@ module Gitlab
         #
         module Configurable
           extend ActiveSupport::Concern
+          include Validatable
 
           included do
             validations do
@@ -28,10 +29,6 @@ module Gitlab
             end
           end
 
-          def allowed_nodes
-            self.class.allowed_nodes || {}
-          end
-
           private
 
           def create_node(key, factory)
@@ -41,7 +38,7 @@ module Gitlab
           end
 
           class_methods do
-            def allowed_nodes
+            def nodes
               Hash[@allowed_nodes.map { |key, factory| [key, factory.dup] }]
             end
 

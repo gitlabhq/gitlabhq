@@ -3,10 +3,11 @@ module Gitlab
     class Config
       module Node
         class Validator < SimpleDelegator
+          include ActiveModel::Validations
+
           def initialize(node)
-            @node = node
             super(node)
-            validate
+            @node = node
           end
 
           def full_errors

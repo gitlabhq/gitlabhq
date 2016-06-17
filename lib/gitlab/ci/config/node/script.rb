@@ -11,6 +11,8 @@ module Gitlab
         # implementation in Runner.
         #
         class Script < Entry
+          include Validatable
+
           validations do
             include ValidationHelpers
 
