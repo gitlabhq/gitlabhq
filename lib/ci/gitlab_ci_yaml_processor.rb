@@ -204,12 +204,12 @@ module Ci
         raise ValidationError, "#{name} job: tags parameter should be an array of strings"
       end
 
-      if job[:only] && !validate_array_of_strings(job[:only])
-        raise ValidationError, "#{name} job: only parameter should be an array of strings"
+      if job[:only] && !validate_array_of_strings_or_regexps(job[:only])
+        raise ValidationError, "#{name} job: only parameter should be an array of strings or regexps"
       end
 
-      if job[:except] && !validate_array_of_strings(job[:except])
-        raise ValidationError, "#{name} job: except parameter should be an array of strings"
+      if job[:except] && !validate_array_of_strings_or_regexps(job[:except])
+        raise ValidationError, "#{name} job: except parameter should be an array of strings or regexps"
       end
 
       if job[:allow_failure] && !validate_boolean(job[:allow_failure])
