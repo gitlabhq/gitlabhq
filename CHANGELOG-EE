@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.9.0 (unreleased)
+  - Fix JenkinsService test button
   - Fix nil user handling in UpdateMirrorService
   - Allow LDAP to mark users as external based on their group membership. !432
   - Forbid MR authors from approving their own MRs
