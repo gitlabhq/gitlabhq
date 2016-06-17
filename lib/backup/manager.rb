@@ -156,14 +156,7 @@ module Backup
     def connect_to_remote_directory(connection_settings)
       connection = ::Fog::Storage.new(connection_settings)
 
-      # We only attempt to create the directory for local backups. For AWS
-      # and other cloud providers, we cannot guarantee the user will have
-      # permission to create the bucket.
-      if connection.service == ::Fog::Storage::Local
-        connection.directories.create(key: remote_directory)
-      else
-        connection.directories.get(remote_directory)
-      end
+      connection.directories.create(key: remote_directory)
     end
 
     def remote_directory
