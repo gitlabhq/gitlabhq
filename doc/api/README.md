@@ -8,6 +8,7 @@ under [`/lib/api`](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/lib/api).
 Documentation for various API resources can be found separately in the
 following locations:
 
+- [Award Emoji](award_emoji.md)
 - [Branches](branches.md)
 - [Builds](builds.md)
 - [Build triggers](build_triggers.md)
@@ -44,10 +45,10 @@ The following documentation is for the [internal CI API](ci/README.md):
 
 ## Authentication
 
-All API requests require authentication via a token. There are three types of tokens 
+All API requests require authentication via a token. There are three types of tokens
 available: private tokens, OAuth 2 tokens, and personal access tokens.
 
-If a token is invalid or omitted, an error message will be returned with 
+If a token is invalid or omitted, an error message will be returned with
 status code `401`:
 
 ```json
@@ -58,8 +59,8 @@ status code `401`:
 
 ### Private Tokens
 
-You need to pass a `private_token` parameter via query string or header. If passed as a 
-header, the header name must be `PRIVATE-TOKEN` (uppercase and with a dash instead of 
+You need to pass a `private_token` parameter via query string or header. If passed as a
+header, the header name must be `PRIVATE-TOKEN` (uppercase and with a dash instead of
 an underscore). You can find or reset your private token in your account page
 (`/profile/account`).
 
@@ -80,7 +81,7 @@ Read more about [GitLab as an OAuth2 client](oauth2.md).
 
 > **Note:** This feature was [introduced][ce-3749] in GitLab 8.8
 
-You can create as many personal access tokens as you like from your GitLab 
+You can create as many personal access tokens as you like from your GitLab
 profile (`/profile/personal_access_tokens`); perhaps one for each application
 that needs access to the GitLab API.
 
