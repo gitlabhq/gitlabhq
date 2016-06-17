@@ -39,4 +39,17 @@ describe Projects::TodosController do
       expect(response.status).to eq(404)
     end
   end
+
+  describe 'POST #create when not logged in' do
+    it 'should create todo for issue' do
+      expect do
+        post(:create, namespace_id: project.namespace.path,
+                      project_id: project.path,
+                      issuable_id: issue.id,
+                      issuable_type: "issue")
+      end.to change { user.todos.count }.by(0)
+
+      expect(response.status).to eq(302)
+    end
+  end
 end

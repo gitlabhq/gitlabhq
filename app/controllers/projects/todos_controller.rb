@@ -1,5 +1,5 @@
 class Projects::TodosController < Projects::ApplicationController
-  before_action :authorize_read_issue!, only: [:create]
+  before_action :authenticate_user!, only: [:create]
 
   def create
     todo = TodoService.new.mark_todo(issuable, current_user)
