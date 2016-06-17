@@ -47,7 +47,6 @@ can be generated again
 
 1. Click on Import to begin importing  and you will see your newly imported project page soon
 
-[ce-3050]: https://gitlab.com/gitlab-org/gitlab-ce/issues/3050
 
 ## Advanced
 
@@ -64,3 +63,5 @@ The current list of DB tables that will get exported can be listed by using:
 cd /home/git/gitlab
 sudo -u git -H bundle exec rake gitlab:import_export:data RAILS_ENV=production
 ```
+
+[ce-3050]: https://gitlab.com/gitlab-org/gitlab-ce/issues/3050
