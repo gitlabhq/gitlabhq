@@ -1,5 +1,5 @@
 - member = source.members.find_by(user_id: current_user.id)
-- group_member = source.group.members.find_by(user_id: current_user.id) if source.try(:group)
+- group_member = source.group.members.find_by(user_id: current_user.id) if source.respond_to?(:group) && source.group
 
 - unless group_member
   - if member
