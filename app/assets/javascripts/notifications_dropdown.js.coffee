@@ -4,6 +4,9 @@ class @NotificationsDropdown
       .off 'click', '.update-notification'
       .on 'click', '.update-notification', (e) ->
         e.preventDefault()
+
+        return if $(this).is('.is-active') and $(this).data('notification-level') is 'custom'
+
         notificationLevel = $(@).data 'notification-level'
         label = $(@).data 'notification-title'
         form = $(this).parents('form:first')
