@@ -1,5 +1,4 @@
-- default_show_roles = can?(current_user, action_member_permission(:update, member), member) || can?(current_user, action_member_permission(:destroy, member), member)
-- show_roles = local_assigns.fetch(:show_roles, default_show_roles)
+- show_roles = local_assigns.fetch(:show_roles, default_show_roles(member))
 - show_controls = local_assigns.fetch(:show_controls, true)
 - user = member.user
 
