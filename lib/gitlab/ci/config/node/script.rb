@@ -14,7 +14,7 @@ module Gitlab
           include Validatable
 
           validations do
-            include ValidationHelpers
+            include LegacyValidationHelpers
 
             validate :array_of_strings
 
