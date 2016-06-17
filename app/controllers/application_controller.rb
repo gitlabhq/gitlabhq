@@ -8,7 +8,7 @@ class ApplicationController < ActionController::Base
   include PageLayoutHelper
   include WorkhorseHelper
 
-  before_action :authenticate_user_from_token!
+  before_action :authenticate_user_from_private_token!
   before_action :authenticate_user!
   before_action :validate_user_service_ticket!
   before_action :reject_blocked!
@@ -64,17 +64,10 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  # From https://github.com/plataformatec/devise/wiki/How-To:-Simple-Token-Authentication-Example
-  # https://gist.github.com/josevalim/fb706b1e933ef01e4fb6
-  def authenticate_user_from_token!
-    user_token = if params[:authenticity_token].presence
-                   params[:authenticity_token].presence
-                 elsif params[:private_token].presence
-                   params[:private_token].presence
-                 elsif request.headers['PRIVATE-TOKEN'].present?
-                   request.headers['PRIVATE-TOKEN']
-                 end
-    user = user_token && User.find_by_authentication_token(user_token.to_s)
+  # This filter handles both private tokens and personal access tokens
+  def authenticate_user_from_private_token!
+    token_string = params[:private_token].presence || request.headers['PRIVATE-TOKEN'].presence
+    user = User.find_by_authentication_token(token_string) || User.find_by_personal_access_token(token_string)
 
     if user
       # Notice we are passing store false, so the user is not
