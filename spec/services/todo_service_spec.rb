@@ -108,17 +108,25 @@ describe TodoService, services: true do
         should_not_create_todo(user: john_doe, target: confidential_issue, author: john_doe, action: Todo::MENTIONED)
       end
 
-      it 'does not create todo when when tasks are marked as completed' do
-        issue.update(description: "- [x] Task 1\n- [X] Task 2 #{mentions}")
+      context 'issues with a task list' do
+        it 'does not create todo when tasks are marked as completed' do
+          issue.update(description: "- [x] Task 1\n- [X] Task 2 #{mentions}")
 
-        service.update_issue(issue, author)
+          service.update_issue(issue, author)
 
-        should_not_create_todo(user: admin, target: issue, action: Todo::MENTIONED)
-        should_not_create_todo(user: assignee, target: issue, action: Todo::MENTIONED)
-        should_not_create_todo(user: author, target: issue, action: Todo::MENTIONED)
-        should_not_create_todo(user: john_doe, target: issue, action: Todo::MENTIONED)
-        should_not_create_todo(user: member, target: issue, action: Todo::MENTIONED)
-        should_not_create_todo(user: non_member, target: issue, action: Todo::MENTIONED)
+          should_not_create_todo(user: admin, target: issue, action: Todo::MENTIONED)
+          should_not_create_todo(user: assignee, target: issue, action: Todo::MENTIONED)
+          should_not_create_todo(user: author, target: issue, action: Todo::MENTIONED)
+          should_not_create_todo(user: john_doe, target: issue, action: Todo::MENTIONED)
+          should_not_create_todo(user: member, target: issue, action: Todo::MENTIONED)
+          should_not_create_todo(user: non_member, target: issue, action: Todo::MENTIONED)
+        end
+
+        it 'does not raise an error when description not change' do
+          issue.update(title: 'Sample')
+
+          expect { service.update_issue(issue, author) }.not_to raise_error
+        end
       end
     end
 
@@ -285,17 +293,25 @@ describe TodoService, services: true do
         expect { service.update_merge_request(mr_assigned, author) }.not_to change(member.todos, :count)
       end
 
-      it 'does not create todo when when tasks are marked as completed' do
-        mr_assigned.update(description: "- [x] Task 1\n- [X] Task 2 #{mentions}")
+      context 'with a task list' do
+        it 'does not create todo when tasks are marked as completed' do
+          mr_assigned.update(description: "- [x] Task 1\n- [X] Task 2 #{mentions}")
 
-        service.update_merge_request(mr_assigned, author)
+          service.update_merge_request(mr_assigned, author)
 
-        should_not_create_todo(user: admin, target: mr_assigned, action: Todo::MENTIONED)
-        should_not_create_todo(user: assignee, target: mr_assigned, action: Todo::MENTIONED)
-        should_not_create_todo(user: author, target: mr_assigned, action: Todo::MENTIONED)
-        should_not_create_todo(user: john_doe, target: mr_assigned, action: Todo::MENTIONED)
-        should_not_create_todo(user: member, target: mr_assigned, action: Todo::MENTIONED)
-        should_not_create_todo(user: non_member, target: mr_assigned, action: Todo::MENTIONED)
+          should_not_create_todo(user: admin, target: mr_assigned, action: Todo::MENTIONED)
+          should_not_create_todo(user: assignee, target: mr_assigned, action: Todo::MENTIONED)
+          should_not_create_todo(user: author, target: mr_assigned, action: Todo::MENTIONED)
+          should_not_create_todo(user: john_doe, target: mr_assigned, action: Todo::MENTIONED)
+          should_not_create_todo(user: member, target: mr_assigned, action: Todo::MENTIONED)
+          should_not_create_todo(user: non_member, target: mr_assigned, action: Todo::MENTIONED)
+        end
+
+        it 'does not raise an error when description not change' do
+          mr_assigned.update(title: 'Sample')
+
+          expect { service.update_merge_request(mr_assigned, author) }.not_to raise_error
+        end
       end
     end
 
