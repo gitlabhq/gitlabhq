@@ -7,7 +7,7 @@ describe Ci::API::API do
   let(:project) { FactoryGirl.create(:empty_project) }
 
   before do
-    stub_ci_commit_to_return_yaml_file
+    stub_ci_pipeline_to_return_yaml_file
   end
 
   describe "Builds API for runners" do
@@ -20,9 +20,9 @@ describe Ci::API::API do
 
     describe "POST /builds/register" do
       it "should start a build" do
-        commit = FactoryGirl.create(:ci_commit, project: project, ref: 'master')
-        commit.create_builds(nil)
-        build = commit.builds.first
+        pipeline = FactoryGirl.create(:ci_pipeline, project: project, ref: 'master')
+        pipeline.create_builds(nil)
+        build = pipeline.builds.first
 
         post ci_api("/builds/register"), token: runner.token, info: { platform: :darwin }
 
@@ -38,8 +38,8 @@ describe Ci::API::API do
       end
 
       it "should return 404 error if no builds for specific runner" do
-        commit = FactoryGirl.create(:ci_commit, project: shared_project)
-        FactoryGirl.create(:ci_build, commit: commit, status: 'pending')
+        pipeline = FactoryGirl.create(:ci_pipeline, project: shared_project)
+        FactoryGirl.create(:ci_build, pipeline: pipeline, status: 'pending')
 
         post ci_api("/builds/register"), token: runner.token
 
@@ -47,8 +47,8 @@ describe Ci::API::API do
       end
 
       it "should return 404 error if no builds for shared runner" do
-        commit = FactoryGirl.create(:ci_commit, project: project)
-        FactoryGirl.create(:ci_build, commit: commit, status: 'pending')
+        pipeline = FactoryGirl.create(:ci_pipeline, project: project)
+        FactoryGirl.create(:ci_build, pipeline: pipeline, status: 'pending')
 
         post ci_api("/builds/register"), token: shared_runner.token
 
@@ -56,8 +56,8 @@ describe Ci::API::API do
       end
 
       it "returns options" do
-        commit = FactoryGirl.create(:ci_commit, project: project, ref: 'master')
-        commit.create_builds(nil)
+        pipeline = FactoryGirl.create(:ci_pipeline, project: project, ref: 'master')
+        pipeline.create_builds(nil)
 
         post ci_api("/builds/register"), token: runner.token, info: { platform: :darwin }
 
@@ -66,8 +66,8 @@ describe Ci::API::API do
       end
 
       it "returns variables" do
-        commit = FactoryGirl.create(:ci_commit, project: project, ref: 'master')
-        commit.create_builds(nil)
+        pipeline = FactoryGirl.create(:ci_pipeline, project: project, ref: 'master')
+        pipeline.create_builds(nil)
         project.variables << Ci::Variable.new(key: "SECRET_KEY", value: "secret_value")
 
         post ci_api("/builds/register"), token: runner.token, info: { platform: :darwin }
@@ -83,10 +83,10 @@ describe Ci::API::API do
 
       it "returns variables for triggers" do
         trigger = FactoryGirl.create(:ci_trigger, project: project)
-        commit = FactoryGirl.create(:ci_commit, project: project, ref: 'master')
+        pipeline = FactoryGirl.create(:ci_pipeline, project: project, ref: 'master')
 
-        trigger_request = FactoryGirl.create(:ci_trigger_request_with_variables, commit: commit, trigger: trigger)
-        commit.create_builds(nil, trigger_request)
+        trigger_request = FactoryGirl.create(:ci_trigger_request_with_variables, pipeline: pipeline, trigger: trigger)
+        pipeline.create_builds(nil, trigger_request)
         project.variables << Ci::Variable.new(key: "SECRET_KEY", value: "secret_value")
 
         post ci_api("/builds/register"), token: runner.token, info: { platform: :darwin }
@@ -103,9 +103,9 @@ describe Ci::API::API do
       end
 
       it "returns dependent builds" do
-        commit = FactoryGirl.create(:ci_commit, project: project, ref: 'master')
-        commit.create_builds(nil, nil)
-        commit.builds.where(stage: 'test').each(&:success)
+        pipeline = FactoryGirl.create(:ci_pipeline, project: project, ref: 'master')
+        pipeline.create_builds(nil, nil)
+        pipeline.builds.where(stage: 'test').each(&:success)
 
         post ci_api("/builds/register"), token: runner.token, info: { platform: :darwin }
 
@@ -131,8 +131,8 @@ describe Ci::API::API do
 
       context 'when build has no tags' do
         before do
-          commit = create(:ci_commit, project: project)
-          create(:ci_build, commit: commit, tags: [])
+          pipeline = create(:ci_pipeline, project: project)
+          create(:ci_build, pipeline: pipeline, tags: [])
         end
 
         context 'when runner is allowed to pick untagged builds' do
@@ -163,8 +163,8 @@ describe Ci::API::API do
     end
 
     describe "PUT /builds/:id" do
-      let(:commit) {create(:ci_commit, project: project)}
-      let(:build) { create(:ci_build, :trace, commit: commit, runner_id: runner.id) }
+      let(:pipeline) {create(:ci_pipeline, project: project)}
+      let(:build) { create(:ci_build, :trace, pipeline: pipeline, runner_id: runner.id) }
 
       before do
         build.run!
@@ -237,8 +237,8 @@ describe Ci::API::API do
     context "Artifacts" do
       let(:file_upload) { fixture_file_upload(Rails.root + 'spec/fixtures/banana_sample.gif', 'image/gif') }
       let(:file_upload2) { fixture_file_upload(Rails.root + 'spec/fixtures/dk.png', 'image/gif') }
-      let(:commit) { create(:ci_commit, project: project) }
-      let(:build) { create(:ci_build, commit: commit, runner_id: runner.id) }
+      let(:pipeline) { create(:ci_pipeline, project: project) }
+      let(:build) { create(:ci_build, pipeline: pipeline, runner_id: runner.id) }
       let(:authorize_url) { ci_api("/builds/#{build.id}/artifacts/authorize") }
       let(:post_url) { ci_api("/builds/#{build.id}/artifacts") }
       let(:delete_url) { ci_api("/builds/#{build.id}/artifacts") }
@@ -360,6 +360,42 @@ describe Ci::API::API do
 
               it 'does not store metadata' do
                 expect(stored_metadata_file).to be_nil
+              end
+            end
+          end
+
+          context 'with an expire date' do
+            let!(:artifacts) { file_upload }
+
+            let(:post_data) do
+              { 'file.path' => artifacts.path,
+                'file.name' => artifacts.original_filename,
+                'expire_in' => expire_in }
+            end
+
+            before do
+              post(post_url, post_data, headers_with_token)
+            end
+
+            context 'with an expire_in given' do
+              let(:expire_in) { '7 days' }
+
+              it 'updates when specified' do
+                build.reload
+                expect(response.status).to eq(201)
+                expect(json_response['artifacts_expire_at']).not_to be_empty
+                expect(build.artifacts_expire_at).to be_within(5.minutes).of(Time.now + 7.days)
+              end
+            end
+
+            context 'with no expire_in given' do
+              let(:expire_in) { nil }
+
+              it 'ignores if not specified' do
+                build.reload
+                expect(response.status).to eq(201)
+                expect(json_response['artifacts_expire_at']).to be_nil
+                expect(build.artifacts_expire_at).to be_nil
               end
             end
           end

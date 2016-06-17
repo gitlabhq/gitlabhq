@@ -1,3 +1,4 @@
+# rubocop:disable all
 class SerializeServiceProperties < ActiveRecord::Migration
   def change
     unless column_exists?(:services, :properties)

@@ -29,6 +29,7 @@ describe Gitlab::GithubImport::CommentFormatter, lib: true do
           commit_id: nil,
           line_code: nil,
           author_id: project.creator_id,
+          type: nil,
           created_at: created_at,
           updated_at: updated_at
         }
@@ -56,6 +57,7 @@ describe Gitlab::GithubImport::CommentFormatter, lib: true do
           commit_id: '6dcb09b5b57875f334f61aebed695e2e4193db5e',
           line_code: 'ce1be0ff4065a6e9415095c95f25f47a633cef2b_4_3',
           author_id: project.creator_id,
+          type: 'LegacyDiffNote',
           created_at: created_at,
           updated_at: updated_at
         }

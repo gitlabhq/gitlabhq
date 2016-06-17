@@ -142,8 +142,8 @@ describe "Public Project Access", feature: true  do
   end
 
   describe "GET /:project_path/builds/:id" do
-    let(:commit) { create(:ci_commit, project: project) }
-    let(:build) { create(:ci_build, commit: commit) }
+    let(:pipeline) { create(:ci_pipeline, project: project) }
+    let(:build) { create(:ci_build, pipeline: pipeline) }
     subject { namespace_project_build_path(project.namespace, project, build.id) }
 
     context "when allowed for public" do
@@ -173,6 +173,49 @@ describe "Public Project Access", feature: true  do
       it { is_expected.to be_denied_for :external }
       it { is_expected.to be_denied_for :visitor }
     end
+  end
+
+  describe "GET /:project_path/environments" do
+    subject { namespace_project_environments_path(project.namespace, project) }
+
+    it { is_expected.to be_allowed_for :admin }
+    it { is_expected.to be_allowed_for owner }
+    it { is_expected.to be_allowed_for master }
+    it { is_expected.to be_allowed_for developer }
+    it { is_expected.to be_allowed_for reporter }
+    it { is_expected.to be_denied_for guest }
+    it { is_expected.to be_denied_for :user }
+    it { is_expected.to be_denied_for :external }
+    it { is_expected.to be_denied_for :visitor }
+  end
+
+  describe "GET /:project_path/environments/:id" do
+    let(:environment) { create(:environment, project: project) }
+    subject { namespace_project_environments_path(project.namespace, project, environment) }
+
+    it { is_expected.to be_allowed_for :admin }
+    it { is_expected.to be_allowed_for owner }
+    it { is_expected.to be_allowed_for master }
+    it { is_expected.to be_allowed_for developer }
+    it { is_expected.to be_allowed_for reporter }
+    it { is_expected.to be_denied_for guest }
+    it { is_expected.to be_denied_for :user }
+    it { is_expected.to be_denied_for :external }
+    it { is_expected.to be_denied_for :visitor }
+  end
+
+  describe "GET /:project_path/environments/new" do
+    subject { new_namespace_project_environment_path(project.namespace, project) }
+
+    it { is_expected.to be_allowed_for :admin }
+    it { is_expected.to be_allowed_for owner }
+    it { is_expected.to be_allowed_for master }
+    it { is_expected.to be_allowed_for developer }
+    it { is_expected.to be_denied_for reporter }
+    it { is_expected.to be_denied_for guest }
+    it { is_expected.to be_denied_for :user }
+    it { is_expected.to be_denied_for :external }
+    it { is_expected.to be_denied_for :visitor }
   end
 
   describe "GET /:project_path/blob" do

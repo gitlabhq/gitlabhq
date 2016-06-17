@@ -5,20 +5,22 @@ describe TodoService, services: true do
   let(:assignee) { create(:user) }
   let(:non_member) { create(:user) }
   let(:member) { create(:user) }
+  let(:guest) { create(:user) }
   let(:admin) { create(:admin) }
   let(:john_doe) { create(:user) }
   let(:project) { create(:project) }
-  let(:mentions) { [author, assignee, john_doe, member, non_member, admin].map(&:to_reference).join(' ') }
+  let(:mentions) { [author, assignee, john_doe, member, guest, non_member, admin].map(&:to_reference).join(' ') }
   let(:service) { described_class.new }
 
   before do
+    project.team << [guest, :guest]
     project.team << [author, :developer]
     project.team << [member, :developer]
     project.team << [john_doe, :developer]
   end
 
   describe 'Issues' do
-    let(:issue) { create(:issue, project: project, assignee: john_doe, author: author, description: mentions) }
+    let(:issue) { create(:issue, project: project, assignee: john_doe, author: author, description: "- [ ] Task 1\n- [ ] Task 2 #{mentions}") }
     let(:unassigned_issue) { create(:issue, project: project, assignee: nil) }
     let(:confidential_issue) { create(:issue, :confidential, project: project, author: author, assignee: assignee, description: mentions) }
 
@@ -41,18 +43,20 @@ describe TodoService, services: true do
         service.new_issue(issue, author)
 
         should_create_todo(user: member, target: issue, action: Todo::MENTIONED)
+        should_create_todo(user: guest, target: issue, action: Todo::MENTIONED)
         should_not_create_todo(user: author, target: issue, action: Todo::MENTIONED)
         should_not_create_todo(user: john_doe, target: issue, action: Todo::MENTIONED)
         should_not_create_todo(user: non_member, target: issue, action: Todo::MENTIONED)
       end
 
-      it 'does not create todo for non project members when issue is confidential' do
+      it 'does not create todo if user can not see the issue when issue is confidential' do
         service.new_issue(confidential_issue, john_doe)
 
         should_create_todo(user: assignee, target: confidential_issue, author: john_doe, action: Todo::ASSIGNED)
         should_create_todo(user: author, target: confidential_issue, author: john_doe, action: Todo::MENTIONED)
         should_create_todo(user: member, target: confidential_issue, author: john_doe, action: Todo::MENTIONED)
         should_create_todo(user: admin, target: confidential_issue, author: john_doe, action: Todo::MENTIONED)
+        should_not_create_todo(user: guest, target: confidential_issue, author: john_doe, action: Todo::MENTIONED)
         should_not_create_todo(user: john_doe, target: confidential_issue, author: john_doe, action: Todo::MENTIONED)
       end
 
@@ -81,6 +85,7 @@ describe TodoService, services: true do
         service.update_issue(issue, author)
 
         should_create_todo(user: member, target: issue, action: Todo::MENTIONED)
+        should_create_todo(user: guest, target: issue, action: Todo::MENTIONED)
         should_create_todo(user: john_doe, target: issue, action: Todo::MENTIONED)
         should_not_create_todo(user: author, target: issue, action: Todo::MENTIONED)
         should_not_create_todo(user: non_member, target: issue, action: Todo::MENTIONED)
@@ -92,14 +97,28 @@ describe TodoService, services: true do
         expect { service.update_issue(issue, author) }.not_to change(member.todos, :count)
       end
 
-      it 'does not create todo for non project members when issue is confidential' do
+      it 'does not create todo if user can not see the issue when issue is confidential' do
         service.update_issue(confidential_issue, john_doe)
 
         should_create_todo(user: author, target: confidential_issue, author: john_doe, action: Todo::MENTIONED)
         should_create_todo(user: assignee, target: confidential_issue, author: john_doe, action: Todo::MENTIONED)
         should_create_todo(user: member, target: confidential_issue, author: john_doe, action: Todo::MENTIONED)
         should_create_todo(user: admin, target: confidential_issue, author: john_doe, action: Todo::MENTIONED)
+        should_not_create_todo(user: guest, target: confidential_issue, author: john_doe, action: Todo::MENTIONED)
         should_not_create_todo(user: john_doe, target: confidential_issue, author: john_doe, action: Todo::MENTIONED)
+      end
+
+      it 'does not create todo when when tasks are marked as completed' do
+        issue.update(description: "- [x] Task 1\n- [X] Task 2 #{mentions}")
+
+        service.update_issue(issue, author)
+
+        should_not_create_todo(user: admin, target: issue, action: Todo::MENTIONED)
+        should_not_create_todo(user: assignee, target: issue, action: Todo::MENTIONED)
+        should_not_create_todo(user: author, target: issue, action: Todo::MENTIONED)
+        should_not_create_todo(user: john_doe, target: issue, action: Todo::MENTIONED)
+        should_not_create_todo(user: member, target: issue, action: Todo::MENTIONED)
+        should_not_create_todo(user: non_member, target: issue, action: Todo::MENTIONED)
       end
     end
 
@@ -179,18 +198,20 @@ describe TodoService, services: true do
         service.new_note(note, john_doe)
 
         should_create_todo(user: member, target: issue, author: john_doe, action: Todo::MENTIONED, note: note)
+        should_create_todo(user: guest, target: issue, author: john_doe, action: Todo::MENTIONED, note: note)
         should_create_todo(user: author, target: issue, author: john_doe, action: Todo::MENTIONED, note: note)
         should_not_create_todo(user: john_doe, target: issue, author: john_doe, action: Todo::MENTIONED, note: note)
         should_not_create_todo(user: non_member, target: issue, author: john_doe, action: Todo::MENTIONED, note: note)
       end
 
-      it 'does not create todo for non project members when leaving a note on a confidential issue' do
+      it 'does not create todo if user can not see the issue when leaving a note on a confidential issue' do
         service.new_note(note_on_confidential_issue, john_doe)
 
         should_create_todo(user: author, target: confidential_issue, author: john_doe, action: Todo::MENTIONED, note: note_on_confidential_issue)
         should_create_todo(user: assignee, target: confidential_issue, author: john_doe, action: Todo::MENTIONED, note: note_on_confidential_issue)
         should_create_todo(user: member, target: confidential_issue, author: john_doe, action: Todo::MENTIONED, note: note_on_confidential_issue)
         should_create_todo(user: admin, target: confidential_issue, author: john_doe, action: Todo::MENTIONED, note: note_on_confidential_issue)
+        should_not_create_todo(user: guest, target: confidential_issue, author: john_doe, action: Todo::MENTIONED, note: note_on_confidential_issue)
         should_not_create_todo(user: john_doe, target: confidential_issue, author: john_doe, action: Todo::MENTIONED, note: note_on_confidential_issue)
       end
 
@@ -207,10 +228,18 @@ describe TodoService, services: true do
         should_not_create_any_todo { service.new_note(note_on_project_snippet, john_doe) }
       end
     end
+
+    describe '#mark_todo' do
+      it 'creates a todo from a issue' do
+        service.mark_todo(unassigned_issue, author)
+
+        should_create_todo(user: author, target: unassigned_issue, action: Todo::MARKED)
+      end
+    end
   end
 
   describe 'Merge Requests' do
-    let(:mr_assigned) { create(:merge_request, source_project: project, author: author, assignee: john_doe, description: mentions) }
+    let(:mr_assigned) { create(:merge_request, source_project: project, author: author, assignee: john_doe, description: "- [ ] Task 1\n- [ ] Task 2 #{mentions}") }
     let(:mr_unassigned) { create(:merge_request, source_project: project, author: author, assignee: nil) }
 
     describe '#new_merge_request' do
@@ -232,6 +261,7 @@ describe TodoService, services: true do
         service.new_merge_request(mr_assigned, author)
 
         should_create_todo(user: member, target: mr_assigned, action: Todo::MENTIONED)
+        should_create_todo(user: guest, target: mr_assigned, action: Todo::MENTIONED)
         should_not_create_todo(user: author, target: mr_assigned, action: Todo::MENTIONED)
         should_not_create_todo(user: john_doe, target: mr_assigned, action: Todo::MENTIONED)
         should_not_create_todo(user: non_member, target: mr_assigned, action: Todo::MENTIONED)
@@ -243,6 +273,7 @@ describe TodoService, services: true do
         service.update_merge_request(mr_assigned, author)
 
         should_create_todo(user: member, target: mr_assigned, action: Todo::MENTIONED)
+        should_create_todo(user: guest, target: mr_assigned, action: Todo::MENTIONED)
         should_create_todo(user: john_doe, target: mr_assigned, action: Todo::MENTIONED)
         should_not_create_todo(user: author, target: mr_assigned, action: Todo::MENTIONED)
         should_not_create_todo(user: non_member, target: mr_assigned, action: Todo::MENTIONED)
@@ -252,6 +283,19 @@ describe TodoService, services: true do
         create(:todo, :mentioned, user: member, project: project, target: mr_assigned, author: author)
 
         expect { service.update_merge_request(mr_assigned, author) }.not_to change(member.todos, :count)
+      end
+
+      it 'does not create todo when when tasks are marked as completed' do
+        mr_assigned.update(description: "- [x] Task 1\n- [X] Task 2 #{mentions}")
+
+        service.update_merge_request(mr_assigned, author)
+
+        should_not_create_todo(user: admin, target: mr_assigned, action: Todo::MENTIONED)
+        should_not_create_todo(user: assignee, target: mr_assigned, action: Todo::MENTIONED)
+        should_not_create_todo(user: author, target: mr_assigned, action: Todo::MENTIONED)
+        should_not_create_todo(user: john_doe, target: mr_assigned, action: Todo::MENTIONED)
+        should_not_create_todo(user: member, target: mr_assigned, action: Todo::MENTIONED)
+        should_not_create_todo(user: non_member, target: mr_assigned, action: Todo::MENTIONED)
       end
     end
 
@@ -323,6 +367,14 @@ describe TodoService, services: true do
 
         expect(first_todo.reload).to be_done
         expect(second_todo.reload).not_to be_done
+      end
+    end
+
+    describe '#mark_todo' do
+      it 'creates a todo from a merge request' do
+        service.mark_todo(mr_unassigned, author)
+
+        should_create_todo(user: author, target: mr_unassigned, action: Todo::MARKED)
       end
     end
   end

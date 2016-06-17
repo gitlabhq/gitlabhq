@@ -1,3 +1,4 @@
+# rubocop:disable all
 class RemovePeriodsAtEndsOfUsernames < ActiveRecord::Migration
   include Gitlab::ShellAdapter
 

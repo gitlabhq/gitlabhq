@@ -38,6 +38,10 @@ table {
     margin: 0 auto;
     text-align: left;
     width: 600px;
+
+    & > td {
+      text-align: center;
+    }
   }
 
   &#body {

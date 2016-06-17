@@ -39,7 +39,7 @@ class @LabelsSelect
             </a>
             <% }); %>'
         )
-        labelNoneHTMLTemplate = _.template('<div class="light">None</div>')
+        labelNoneHTMLTemplate = '<span class="no-value">None</span>'
 
       if newLabelField.length
 
@@ -95,8 +95,11 @@ class @LabelsSelect
             $newLabelCreateButton.enable()
 
             if label.message?
+              errors = _.map label.message, (value, key) ->
+                "#{key} #{value[0]}"
+
               $newLabelError
-                .text label.message
+                .html errors.join("<br/>")
                 .show()
             else
               $('.dropdown-menu-back', $dropdown.parent()).trigger 'click'
@@ -142,7 +145,7 @@ class @LabelsSelect
             template = labelHTMLTemplate(data)
             labelCount = data.labels.length
           else
-            template = labelNoneHTMLTemplate()
+            template = labelNoneHTMLTemplate
           $value
             .removeAttr('style')
             .html(template)
@@ -254,7 +257,7 @@ class @LabelsSelect
         search:
           fields: ['title']
         selectable: true
-
+        filterable: true
         toggleLabel: (selected, el) ->
           selected_labels = $('.js-label-select').siblings('.dropdown-menu-labels').find('.is-active')
 

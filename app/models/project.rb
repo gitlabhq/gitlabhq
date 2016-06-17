@@ -5,6 +5,7 @@ class Project < ActiveRecord::Base
   include Gitlab::ShellAdapter
   include Gitlab::VisibilityLevel
   include Gitlab::CurrentSettings
+  include AccessRequestable
   include Referable
   include Sortable
   include AfterCommitQueue
@@ -80,7 +81,7 @@ class Project < ActiveRecord::Base
   has_one :jira_service, dependent: :destroy
   has_one :redmine_service, dependent: :destroy
   has_one :custom_issue_tracker_service, dependent: :destroy
-  has_one :gitlab_issue_tracker_service, dependent: :destroy
+  has_one :gitlab_issue_tracker_service, dependent: :destroy, inverse_of: :project
   has_one :external_wiki_service, dependent: :destroy
 
   has_one  :forked_project_link,  dependent: :destroy, foreign_key: "forked_to_project_id"
@@ -102,8 +103,9 @@ class Project < ActiveRecord::Base
   has_many :snippets,           dependent: :destroy, class_name: 'ProjectSnippet'
   has_many :hooks,              dependent: :destroy, class_name: 'ProjectHook'
   has_many :protected_branches, dependent: :destroy
-  has_many :project_members, dependent: :destroy, as: :source, class_name: 'ProjectMember'
-  has_many :users, through: :project_members
+  has_many :project_members,    dependent: :destroy, as: :source, class_name: 'ProjectMember'
+  alias_method :members, :project_members
+  has_many :users, -> { where(members: { requested_at: nil }) }, through: :project_members
   has_many :deploy_keys_projects, dependent: :destroy
   has_many :deploy_keys, through: :deploy_keys_projects
   has_many :users_star_projects, dependent: :destroy
@@ -119,12 +121,14 @@ class Project < ActiveRecord::Base
   has_one :import_data, dependent: :destroy, class_name: "ProjectImportData"
 
   has_many :commit_statuses, dependent: :destroy, class_name: 'CommitStatus', foreign_key: :gl_project_id
-  has_many :ci_commits, dependent: :destroy, class_name: 'Ci::Commit', foreign_key: :gl_project_id
+  has_many :pipelines, dependent: :destroy, class_name: 'Ci::Pipeline', foreign_key: :gl_project_id
   has_many :builds, class_name: 'Ci::Build', foreign_key: :gl_project_id # the builds are created from the commit_statuses
   has_many :runner_projects, dependent: :destroy, class_name: 'Ci::RunnerProject', foreign_key: :gl_project_id
   has_many :runners, through: :runner_projects, source: :runner, class_name: 'Ci::Runner'
   has_many :variables, dependent: :destroy, class_name: 'Ci::Variable', foreign_key: :gl_project_id
   has_many :triggers, dependent: :destroy, class_name: 'Ci::Trigger', foreign_key: :gl_project_id
+  has_many :environments, dependent: :destroy
+  has_many :deployments, dependent: :destroy
 
   accepts_nested_attributes_for :variables, allow_destroy: true
 
@@ -146,7 +150,6 @@ class Project < ActiveRecord::Base
               message: Gitlab::Regex.project_path_regex_message }
   validates :issues_enabled, :merge_requests_enabled,
             :wiki_enabled, inclusion: { in: [true, false] }
-  validates :issues_tracker_id, length: { maximum: 255 }, allow_blank: true
   validates :namespace, presence: true
   validates_uniqueness_of :name, scope: :namespace_id
   validates_uniqueness_of :path, scope: :namespace_id
@@ -253,20 +256,85 @@ class Project < ActiveRecord::Base
       non_archived.where(table[:name].matches(pattern))
     end
 
-    def find_with_namespace(id)
-      namespace_path, project_path = id.split('/', 2)
+    # Finds a single project for the given path.
+    #
+    # path - The full project path (including namespace path).
+    #
+    # Returns a Project, or nil if no project could be found.
+    def find_with_namespace(path)
+      namespace_path, project_path = path.split('/', 2)
 
-      return nil if !namespace_path || !project_path
+      return unless namespace_path && project_path
 
-      # Use of unscoped ensures we're not secretly adding any ORDER BYs, which
-      # have a negative impact on performance (and aren't needed for this
-      # query).
-      projects = unscoped.
-        joins(:namespace).
-        iwhere('namespaces.path' => namespace_path)
+      namespace_path = connection.quote(namespace_path)
+      project_path = connection.quote(project_path)
 
-      projects.find_by('projects.path' => project_path) ||
-        projects.iwhere('projects.path' => project_path).take
+      # On MySQL we want to ensure the ORDER BY uses a case-sensitive match so
+      # any literal matches come first, for this we have to use "BINARY".
+      # Without this there's still no guarantee in what order MySQL will return
+      # rows.
+      binary = Gitlab::Database.mysql? ? 'BINARY' : ''
+
+      order_sql = "(CASE WHEN #{binary} namespaces.path = #{namespace_path} " \
+        "AND #{binary} projects.path = #{project_path} THEN 0 ELSE 1 END)"
+
+      where_paths_in([path]).reorder(order_sql).take
+    end
+
+    # Builds a relation to find multiple projects by their full paths.
+    #
+    # Each path must be in the following format:
+    #
+    #     namespace_path/project_path
+    #
+    # For example:
+    #
+    #     gitlab-org/gitlab-ce
+    #
+    # Usage:
+    #
+    #     Project.where_paths_in(%w{gitlab-org/gitlab-ce gitlab-org/gitlab-ee})
+    #
+    # This would return the projects with the full paths matching the values
+    # given.
+    #
+    # paths - An Array of full paths (namespace path + project path) for which
+    #         to find the projects.
+    #
+    # Returns an ActiveRecord::Relation.
+    def where_paths_in(paths)
+      wheres = []
+      cast_lower = Gitlab::Database.postgresql?
+
+      paths.each do |path|
+        namespace_path, project_path = path.split('/', 2)
+
+        next unless namespace_path && project_path
+
+        namespace_path = connection.quote(namespace_path)
+        project_path = connection.quote(project_path)
+
+        where = "(namespaces.path = #{namespace_path}
+          AND projects.path = #{project_path})"
+
+        if cast_lower
+          where = "(
+            #{where}
+            OR (
+              LOWER(namespaces.path) = LOWER(#{namespace_path})
+              AND LOWER(projects.path) = LOWER(#{project_path})
+            )
+          )"
+        end
+
+        wheres << where
+      end
+
+      if wheres.empty?
+        none
+      else
+        joins(:namespace).where(wheres.join(' OR '))
+      end
     end
 
     def visibility_levels
@@ -298,6 +366,11 @@ class Project < ActiveRecord::Base
       ) join_note_counts ON projects.id = join_note_counts.project_id"
 
       joins(join_body).reorder('join_note_counts.amount DESC')
+    end
+
+    # Deletes gitlab project export files older than 24 hours
+    def remove_gitlab_exports!
+      Gitlab::Popen.popen(%W(find #{Gitlab::ImportExport.storage_path} -not -path #{Gitlab::ImportExport.storage_path} -mmin +1440 -delete))
     end
   end
 
@@ -402,7 +475,7 @@ class Project < ActiveRecord::Base
   end
 
   def import?
-    external_import? || forked?
+    external_import? || forked? || gitlab_project_import?
   end
 
   def no_import?
@@ -431,6 +504,10 @@ class Project < ActiveRecord::Base
 
   def safe_import_url
     Gitlab::UrlSanitizer.new(import_url).masked_url
+  end
+
+  def gitlab_project_import?
+    import_type == 'gitlab_project'
   end
 
   def check_limit
@@ -523,13 +600,21 @@ class Project < ActiveRecord::Base
   end
 
   def external_issue_tracker
-    return @external_issue_tracker if defined?(@external_issue_tracker)
-    @external_issue_tracker ||=
-      services.issue_trackers.active.without_defaults.first
+    if has_external_issue_tracker.nil? # To populate existing projects
+      cache_has_external_issue_tracker
+    end
+
+    if has_external_issue_tracker?
+      return @external_issue_tracker if defined?(@external_issue_tracker)
+
+      @external_issue_tracker = services.external_issue_trackers.first
+    else
+      nil
+    end
   end
 
-  def can_have_issues_tracker_id?
-    self.issues_enabled && !self.default_issues_tracker?
+  def cache_has_external_issue_tracker
+    update_column(:has_external_issue_tracker, services.external_issue_trackers.any?)
   end
 
   def build_missing_services
@@ -624,16 +709,6 @@ class Project < ActiveRecord::Base
     end
   end
 
-  def project_member_by_name_or_email(name = nil, email = nil)
-    user = users.find_by('name like ? or email like ?', name, email)
-    project_members.where(user: user) if user
-  end
-
-  # Get Team Member record by user id
-  def project_member_by_id(user_id)
-    project_members.find_by(user_id: user_id)
-  end
-
   def name_with_namespace
     @name_with_namespace ||= begin
                                if namespace
@@ -643,6 +718,7 @@ class Project < ActiveRecord::Base
                                end
                              end
   end
+  alias_method :human_name, :name_with_namespace
 
   def path_with_namespace
     if namespace
@@ -930,12 +1006,12 @@ class Project < ActiveRecord::Base
     !namespace.share_with_group_lock
   end
 
-  def ci_commit(sha, ref)
-    ci_commits.order(id: :desc).find_by(sha: sha, ref: ref)
+  def pipeline(sha, ref)
+    pipelines.order(id: :desc).find_by(sha: sha, ref: ref)
   end
 
-  def ensure_ci_commit(sha, ref)
-    ci_commit(sha, ref) || ci_commits.create(sha: sha, ref: ref)
+  def ensure_pipeline(sha, ref)
+    pipeline(sha, ref) || pipelines.create(sha: sha, ref: ref)
   end
 
   def enable_ci
@@ -1028,5 +1104,28 @@ class Project < ActiveRecord::Base
     Rails.logger.error("Error setting import status to failed: #{e.message}. Original error: #{sanitized_message}")
   ensure
     @errors = original_errors
+  end
+
+  def add_export_job(current_user:)
+    job_id = ProjectExportWorker.perform_async(current_user.id, self.id)
+
+    if job_id
+      Rails.logger.info "Export job started for project ID #{self.id} with job ID #{job_id}"
+    else
+      Rails.logger.error "Export job failed to start for project ID #{self.id}"
+    end
+  end
+
+  def export_path
+    File.join(Gitlab::ImportExport.storage_path, path_with_namespace)
+  end
+
+  def export_project_path
+    Dir.glob("#{export_path}/*export.tar.gz").max_by { |f| File.ctime(f) }
+  end
+
+  def remove_exports
+    _, status = Gitlab::Popen.popen(%W(find #{export_path} -not -path #{export_path} -delete))
+    status.zero?
   end
 end

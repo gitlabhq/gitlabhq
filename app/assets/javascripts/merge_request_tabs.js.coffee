@@ -88,7 +88,7 @@ class @MergeRequestTabs
 
   scrollToElement: (container) ->
     if window.location.hash
-      navBarHeight = $('.navbar-gitlab').outerHeight()
+      navBarHeight = $('.navbar-gitlab').outerHeight() + $('.layout-nav').outerHeight()
 
       $el = $("#{container} #{window.location.hash}:not(.match)")
       $.scrollTo("#{container} #{window.location.hash}:not(.match)", offset: -navBarHeight) if $el.length

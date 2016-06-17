@@ -79,9 +79,12 @@
     }
 
     &.ci-failed,
-    &.ci-canceled,
     &.ci-error {
       color: $gl-danger;
+    }
+
+    &.ci-canceled {
+      color: $gl-gray;
     }
 
     a.monospace {
@@ -105,6 +108,11 @@
       font-size: 17px;
       margin: 5px 0;
       color: $gl-gray-dark;
+
+      &.has-conflicts .fa-exclamation-triangle {
+        color: $gl-warning;
+      }
+
     }
 
     p:last-child {
@@ -236,6 +244,10 @@
 
   .panel-footer {
     padding: 5px 10px;
+
+    .btn {
+      min-width: auto;
+    }
   }
 
   .commit {
@@ -244,9 +256,7 @@
     }
 
     .avatar {
-      width: 20px;
-      height: 20px;
-      margin-right: 5px;
+      margin-left: 0;
     }
 
     .commit-row-info {
@@ -302,6 +312,16 @@
     th {
       background-color: $white-light;
       color: $gl-placeholder-color;
+    }
+  }
+}
+
+.merged-buttons {
+  .btn {
+    float: left;
+
+    &:not(:last-child) {
+      margin-right: 10px;
     }
   }
 }

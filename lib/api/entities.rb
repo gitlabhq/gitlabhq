@@ -30,7 +30,7 @@ module API
       expose :identities, using: Entities::Identity
       expose :can_create_group?, as: :can_create_group
       expose :can_create_project?, as: :can_create_project
-      expose :two_factor_enabled
+      expose :two_factor_enabled?, as: :two_factor_enabled
       expose :external
     end
 
@@ -88,10 +88,7 @@ module API
     class Group < Grape::Entity
       expose :id, :name, :path, :description, :visibility_level
       expose :avatar_url
-
-      expose :web_url do |group, options|
-        Gitlab::Routing.url_helpers.group_url(group)
-      end
+      expose :web_url
     end
 
     class GroupDetail < Group
@@ -177,6 +174,11 @@ module API
       end
       expose :user_notes_count
       expose :upvotes, :downvotes
+    end
+
+    class ExternalIssue < Grape::Entity
+      expose :title
+      expose :id
     end
 
     class MergeRequest < ProjectEntity
@@ -351,6 +353,7 @@ module API
       expose :signin_enabled
       expose :gravatar_enabled
       expose :sign_in_text
+      expose :after_sign_up_text
       expose :created_at
       expose :updated_at
       expose :home_page_url

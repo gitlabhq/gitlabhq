@@ -95,20 +95,30 @@
 
 .award-control {
   margin-right: 5px;
+  margin-bottom: 5px;
   padding-left: 5px;
   padding-right: 5px;
   line-height: 20px;
   outline: 0;
 
+  &:hover,
   &.active,
   &:active {
-    background-color: $white-dark;
+    background-color: $row-hover;
+    border-color: $row-hover-border;
     box-shadow: none;
     outline: 0;
   }
 
+  &.btn {
+    &:focus {
+      outline: 0;
+    }
+  }
+
   &.is-loading {
-    .award-control-icon-normal {
+    .award-control-icon-normal,
+    .emoji-icon {
       display: none;
     }
 

@@ -1,8 +1,9 @@
 module Gitlab
   module Metrics
-    # Rack middleware for tracking Rails requests.
+    # Rack middleware for tracking Rails and Grape requests.
     class RackMiddleware
       CONTROLLER_KEY = 'action_controller.instance'
+      ENDPOINT_KEY   = 'api.endpoint'
 
       def initialize(app)
         @app = app
@@ -21,6 +22,8 @@ module Gitlab
         ensure
           if env[CONTROLLER_KEY]
             tag_controller(trans, env)
+          elsif env[ENDPOINT_KEY]
+            tag_endpoint(trans, env)
           end
 
           trans.finish
@@ -41,6 +44,26 @@ module Gitlab
       def tag_controller(trans, env)
         controller   = env[CONTROLLER_KEY]
         trans.action = "#{controller.class.name}##{controller.action_name}"
+      end
+
+      def tag_endpoint(trans, env)
+        endpoint = env[ENDPOINT_KEY]
+        path = endpoint_paths_cache[endpoint.route.route_method][endpoint.route.route_path]
+        trans.action = "Grape##{endpoint.route.route_method} #{path}"
+      end
+
+      private
+
+      def endpoint_paths_cache
+        @endpoint_paths_cache ||= Hash.new do |hash, http_method|
+          hash[http_method] = Hash.new do |inner_hash, raw_path|
+            inner_hash[raw_path] = endpoint_instrumentable_path(raw_path)
+          end
+        end
+      end
+
+      def endpoint_instrumentable_path(raw_path)
+        raw_path.sub('(.:format)', '').sub('/:version', '')
       end
     end
   end

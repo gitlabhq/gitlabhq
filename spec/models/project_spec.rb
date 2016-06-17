@@ -22,12 +22,14 @@ describe Project, models: true do
     it { is_expected.to have_one(:pushover_service).dependent(:destroy) }
     it { is_expected.to have_one(:asana_service).dependent(:destroy) }
     it { is_expected.to have_many(:commit_statuses) }
-    it { is_expected.to have_many(:ci_commits) }
+    it { is_expected.to have_many(:pipelines) }
     it { is_expected.to have_many(:builds) }
     it { is_expected.to have_many(:runner_projects) }
     it { is_expected.to have_many(:runners) }
     it { is_expected.to have_many(:variables) }
     it { is_expected.to have_many(:triggers) }
+    it { is_expected.to have_many(:environments).dependent(:destroy) }
+    it { is_expected.to have_many(:deployments).dependent(:destroy) }
     it { is_expected.to have_many(:todos).dependent(:destroy) }
   end
 
@@ -53,7 +55,6 @@ describe Project, models: true do
     it { is_expected.to validate_length_of(:path).is_within(0..255) }
     it { is_expected.to validate_length_of(:description).is_within(0..2000) }
     it { is_expected.to validate_presence_of(:creator) }
-    it { is_expected.to validate_length_of(:issues_tracker_id).is_within(0..255) }
     it { is_expected.to validate_presence_of(:namespace) }
 
     it 'should not allow new projects beyond user limits' do
@@ -90,9 +91,15 @@ describe Project, models: true do
     it { is_expected.to respond_to(:repo_exists?) }
     it { is_expected.to respond_to(:update_merge_requests) }
     it { is_expected.to respond_to(:execute_hooks) }
-    it { is_expected.to respond_to(:name_with_namespace) }
     it { is_expected.to respond_to(:owner) }
     it { is_expected.to respond_to(:path_with_namespace) }
+  end
+
+  describe '#name_with_namespace' do
+    let(:project) { build_stubbed(:empty_project) }
+
+    it { expect(project.name_with_namespace).to eq "#{project.namespace.human_name} / #{project.name}" }
+    it { expect(project.human_name).to eq project.name_with_namespace }
   end
 
   describe '#to_reference' do
@@ -213,7 +220,7 @@ describe Project, models: true do
     end
   end
 
-  describe :find_with_namespace do
+  describe '.find_with_namespace' do
     context 'with namespace' do
       before do
         @group = create :group, name: 'gitlab'
@@ -223,6 +230,22 @@ describe Project, models: true do
       it { expect(Project.find_with_namespace('gitlab/gitlabhq')).to eq(@project) }
       it { expect(Project.find_with_namespace('GitLab/GitlabHQ')).to eq(@project) }
       it { expect(Project.find_with_namespace('gitlab-ci')).to be_nil }
+    end
+
+    context 'when multiple projects using a similar name exist' do
+      let(:group) { create(:group, name: 'gitlab') }
+
+      let!(:project1) do
+        create(:empty_project, name: 'gitlab1', path: 'gitlab', namespace: group)
+      end
+
+      let!(:project2) do
+        create(:empty_project, name: 'gitlab2', path: 'GITLAB', namespace: group)
+      end
+
+      it 'returns the row where the path matches literally' do
+        expect(Project.find_with_namespace('gitlab/GITLAB')).to eq(project2)
+      end
     end
   end
 
@@ -258,24 +281,66 @@ describe Project, models: true do
     end
   end
 
-  describe :can_have_issues_tracker_id? do
+  describe :external_issue_tracker do
     let(:project) { create(:project) }
     let(:ext_project) { create(:redmine_project) }
 
-    it 'should be true for projects with external issues tracker if issues enabled' do
-      expect(ext_project.can_have_issues_tracker_id?).to be_truthy
+    context 'on existing projects with no value for has_external_issue_tracker' do
+      before(:each) do
+        project.update_column(:has_external_issue_tracker, nil)
+        ext_project.update_column(:has_external_issue_tracker, nil)
+      end
+
+      it 'updates the has_external_issue_tracker boolean' do
+        expect do
+          project.external_issue_tracker
+        end.to change { project.reload.has_external_issue_tracker }.to(false)
+
+        expect do
+          ext_project.external_issue_tracker
+        end.to change { ext_project.reload.has_external_issue_tracker }.to(true)
+      end
     end
 
-    it 'should be false for projects with internal issue tracker if issues enabled' do
-      expect(project.can_have_issues_tracker_id?).to be_falsey
+    it 'returns nil and does not query services when there is no external issue tracker' do
+      project.build_missing_services
+      project.reload
+
+      expect(project).not_to receive(:services)
+
+      expect(project.external_issue_tracker).to eq(nil)
     end
 
-    it 'should be always false if issues disabled' do
-      project.issues_enabled = false
-      ext_project.issues_enabled = false
+    it 'retrieves external_issue_tracker querying services and cache it when there is external issue tracker' do
+      ext_project.reload # Factory returns a project with changed attributes
+      ext_project.build_missing_services
+      ext_project.reload
 
-      expect(project.can_have_issues_tracker_id?).to be_falsey
-      expect(ext_project.can_have_issues_tracker_id?).to be_falsey
+      expect(ext_project).to receive(:services).once.and_call_original
+
+      2.times { expect(ext_project.external_issue_tracker).to be_a_kind_of(RedmineService) }
+    end
+  end
+
+  describe :cache_has_external_issue_tracker do
+    let(:project) { create(:project) }
+
+    it 'stores true if there is any external_issue_tracker' do
+      services = double(:service, external_issue_trackers: [RedmineService.new])
+      expect(project).to receive(:services).and_return(services)
+
+      expect do
+        project.cache_has_external_issue_tracker
+      end.to change { project.has_external_issue_tracker}.to(true)
+    end
+
+    it 'stores false if there is no external_issue_tracker' do
+      services = double(:service, external_issue_trackers: [])
+      expect(project).to receive(:services).and_return(services)
+
+      expect do
+        project.cache_has_external_issue_tracker
+      end.to change { project.has_external_issue_tracker}.to(false)
     end
   end
 
@@ -399,23 +464,23 @@ describe Project, models: true do
     end
   end
 
-  describe :ci_commit do
+  describe :pipeline do
     let(:project) { create :project }
-    let(:commit) { create :ci_commit, project: project, ref: 'master' }
+    let(:pipeline) { create :ci_pipeline, project: project, ref: 'master' }
 
-    subject { project.ci_commit(commit.sha, 'master') }
+    subject { project.pipeline(pipeline.sha, 'master') }
 
-    it { is_expected.to eq(commit) }
+    it { is_expected.to eq(pipeline) }
 
     context 'return latest' do
-      let(:commit2) { create :ci_commit, project: project, ref: 'master' }
+      let(:pipeline2) { create :ci_pipeline, project: project, ref: 'master' }
 
       before do
-        commit
-        commit2
+        pipeline
+        pipeline2
       end
 
-      it { is_expected.to eq(commit2) }
+      it { is_expected.to eq(pipeline2) }
     end
   end
 
@@ -857,6 +922,39 @@ describe Project, models: true do
       before { stub_container_registry_config(enabled: false) }
 
       it { is_expected.to be_falsey }
+    end
+  end
+
+  describe '.where_paths_in' do
+    context 'without any paths' do
+      it 'returns an empty relation' do
+        expect(Project.where_paths_in([])).to eq([])
+      end
+    end
+
+    context 'without any valid paths' do
+      it 'returns an empty relation' do
+        expect(Project.where_paths_in(%w[foo])).to eq([])
+      end
+    end
+
+    context 'with valid paths' do
+      let!(:project1) { create(:project) }
+      let!(:project2) { create(:project) }
+
+      it 'returns the projects matching the paths' do
+        projects = Project.where_paths_in([project1.path_with_namespace,
+                                           project2.path_with_namespace])
+
+        expect(projects).to contain_exactly(project1, project2)
+      end
+
+      it 'returns projects regardless of the casing of paths' do
+        projects = Project.where_paths_in([project1.path_with_namespace.upcase,
+                                           project2.path_with_namespace.upcase])
+
+        expect(projects).to contain_exactly(project1, project2)
+      end
     end
   end
 end

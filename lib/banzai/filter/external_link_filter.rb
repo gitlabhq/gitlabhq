@@ -3,18 +3,10 @@ module Banzai
     # HTML Filter to modify the attributes of external links
     class ExternalLinkFilter < HTML::Pipeline::Filter
       def call
-        doc.search('a').each do |node|
-          link = node.attr('href')
-
-          next unless link
-
-          # Skip non-HTTP(S) links
-          next unless link.start_with?('http')
-
-          # Skip internal links
-          next if link.start_with?(internal_url)
-
+        # Skip non-HTTP(S) links and internal links
+        doc.xpath("descendant-or-self::a[starts-with(@href, 'http') and not(starts-with(@href, '#{internal_url}'))]").each do |node|
           node.set_attribute('rel', 'nofollow noreferrer')
+          node.set_attribute('target', '_blank')
         end
 
         doc

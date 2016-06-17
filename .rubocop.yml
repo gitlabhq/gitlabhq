@@ -13,7 +13,8 @@ AllCops:
   # Exclude some GitLab files
   Exclude:
     - 'vendor/**/*'
-    - 'db/**/*'
+    - 'db/*'
+    - 'db/fixtures/**/*'
     - 'tmp/**/*'
     - 'bin/**/*'
     - 'lib/backup/**/*'
@@ -348,7 +349,7 @@ Style/MultilineArrayBraceLayout:
 
 # Avoid multi-line chains of blocks.
 Style/MultilineBlockChain:
-  Enabled: false
+  Enabled: true
 
 # Ensures newlines after multiline block do statements.
 Style/MultilineBlockLayout:
@@ -1086,6 +1087,9 @@ Rails/TimeZone:
 
 # Use validates :attribute, hash of validations.
 Rails/Validation:
+  Enabled: false
+
+Rails/UniqBeforePluck:
   Enabled: false
 
 ##################### RSpec ##################################

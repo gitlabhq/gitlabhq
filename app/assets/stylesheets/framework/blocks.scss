@@ -61,6 +61,11 @@
     margin-bottom: -$gl-padding;
   }
 
+  &.content-component-block {
+    padding: 11px 0;
+    background-color: $white-light;
+  }
+
   .title {
     color: $gl-text-color;
   }
@@ -85,6 +90,10 @@
   &.build-content {
     background-color: $white-light;
     border-top: none;
+  }
+
+  &.top-block .container-fluid {
+    background-color: inherit;
   }
 }
 

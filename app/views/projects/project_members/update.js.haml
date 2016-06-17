@@ -1,2 +1,2 @@
 :plain
-  $("##{dom_id(@project_member)}").replaceWith('#{escape_javascript(render("project_member", member: @project_member))}');
+  $("##{dom_id(@project_member)}").replaceWith('#{escape_javascript(render('shared/members/member', member: @project_member))}');

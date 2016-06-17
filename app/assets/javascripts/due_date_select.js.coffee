@@ -1,5 +1,21 @@
 class @DueDateSelect
   constructor: ->
+    # Milestone edit/new form
+    $datePicker = $('.datepicker')
+
+    if $datePicker.length
+      $dueDate = $('#milestone_due_date')
+      $datePicker.datepicker
+        dateFormat: 'yy-mm-dd'
+        onSelect: (dateText, inst) ->
+          $dueDate.val(dateText)
+      .datepicker('setDate', $.datepicker.parseDate('yy-mm-dd', $dueDate.val()))
+
+    $('.js-clear-due-date').on 'click', (e) ->
+      e.preventDefault()
+      $.datepicker._clearDate($datePicker)
+
+    # Issuable sidebar
     $loading = $('.js-issuable-update .due_date')
       .find('.block-loading')
       .hide()
@@ -21,7 +37,7 @@ class @DueDateSelect
       $dropdown.glDropdown(
         hidden: ->
           $selectbox.hide()
-          $value.removeAttr('style')
+          $value.css('display', '')
       )
 
       addDueDate = (isDropdown) ->
@@ -32,7 +48,7 @@ class @DueDateSelect
           date = new Date value.replace(new RegExp('-', 'g'), ',')
           mediumDate = $.datepicker.formatDate 'M d, yy', date
         else
-          mediumDate = 'None'
+          mediumDate = 'No due date'
 
         data = {}
         data[abilityName] = {}
@@ -42,14 +58,16 @@ class @DueDateSelect
           type: 'PUT'
           url: issueUpdateURL
           data: data
+          dataType: 'json'
           beforeSend: ->
             $loading.fadeIn()
             if isDropdown
               $dropdown.trigger('loading.gl.dropdown')
               $selectbox.hide()
-            $value.removeAttr('style')
+            $value.css('display', '')
 
-            $valueContent.html(mediumDate)
+            cssClass = if Date.parse(mediumDate) then 'bold' else 'no-value'
+            $valueContent.html("<span class='#{cssClass}'>#{mediumDate}</span>")
             $sidebarValue.html(mediumDate)
 
             if value isnt ''

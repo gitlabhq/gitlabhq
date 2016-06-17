@@ -5,13 +5,14 @@ class Projects::LabelsController < Projects::ApplicationController
   before_action :label, only: [:edit, :update, :destroy]
   before_action :authorize_read_label!
   before_action :authorize_admin_labels!, only: [
-    :new, :create, :edit, :update, :generate, :destroy
+    :new, :create, :edit, :update, :generate, :destroy, :remove_priority, :set_priorities
   ]
 
   respond_to :js, :html
 
   def index
-    @labels = @project.labels.page(params[:page])
+    @labels = @project.labels.unprioritized.page(params[:page])
+    @prioritized_labels = @project.labels.prioritized
 
     respond_to do |format|
       format.html
@@ -68,6 +69,30 @@ class Projects::LabelsController < Projects::ApplicationController
                     notice: 'Label was removed')
       end
       format.js
+    end
+  end
+
+  def remove_priority
+    respond_to do |format|
+      if label.update_attribute(:priority, nil)
+        format.json { render json: label }
+      else
+        message = label.errors.full_messages.uniq.join('. ')
+        format.json { render json: { message: message }, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  def set_priorities
+    Label.transaction do
+      params[:label_ids].each_with_index do |label_id, index|
+        label = @project.labels.find_by_id(label_id)
+        label.update_attribute(:priority, index) if label
+      end
+    end
+
+    respond_to do |format|
+      format.json { render json: { message: 'success' } }
     end
   end
 

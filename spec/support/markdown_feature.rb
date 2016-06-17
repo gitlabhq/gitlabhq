@@ -32,6 +32,10 @@ class MarkdownFeature
     @project_wiki ||= ProjectWiki.new(project, user)
   end
 
+  def project_wiki_page
+    @project_wiki_page ||= build(:wiki_page, wiki: project_wiki)
+  end
+
   def issue
     @issue ||= create(:issue, project: project)
   end

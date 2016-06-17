@@ -387,7 +387,7 @@ describe API::API, api: true  do
   end
 
   describe "PUT /projects/:id/merge_requests/:merge_request_id/merge" do
-    let(:ci_commit) { create(:ci_commit_without_jobs) }
+    let(:pipeline) { create(:ci_pipeline_without_jobs) }
 
     it "should return merge_request in case of success" do
       put api("/projects/#{project.id}/merge_requests/#{merge_request.id}/merge", user)
@@ -419,6 +419,15 @@ describe API::API, api: true  do
       expect(json_response['message']).to eq('405 Method Not Allowed')
     end
 
+    it 'returns 405 if the build failed for a merge request that requires success' do
+      allow_any_instance_of(MergeRequest).to receive(:mergeable_ci_state?).and_return(false)
+
+      put api("/projects/#{project.id}/merge_requests/#{merge_request.id}/merge", user)
+
+      expect(response.status).to eq(405)
+      expect(json_response['message']).to eq('405 Method Not Allowed')
+    end
+
     it "should return 401 if user has no permissions to merge" do
       user2 = create(:user)
       project.team << [user2, :reporter]
@@ -441,8 +450,8 @@ describe API::API, api: true  do
     end
 
     it "enables merge when build succeeds if the ci is active" do
-      allow_any_instance_of(MergeRequest).to receive(:ci_commit).and_return(ci_commit)
-      allow(ci_commit).to receive(:active?).and_return(true)
+      allow_any_instance_of(MergeRequest).to receive(:pipeline).and_return(pipeline)
+      allow(pipeline).to receive(:active?).and_return(true)
 
       put api("/projects/#{project.id}/merge_requests/#{merge_request.id}/merge", user), merge_when_build_succeeds: true
 
@@ -553,6 +562,21 @@ describe API::API, api: true  do
       expect(response.status).to eq(200)
       expect(json_response).to be_an Array
       expect(json_response.length).to eq(0)
+    end
+
+    it 'handles external issues' do
+      jira_project = create(:jira_project, :public, name: 'JIR_EXT1')
+      issue = ExternalIssue.new("#{jira_project.name}-123", jira_project)
+      merge_request = create(:merge_request, :simple, author: user, assignee: user, source_project: jira_project)
+      merge_request.update_attribute(:description, "Closes #{issue.to_reference(jira_project)}")
+
+      get api("/projects/#{jira_project.id}/merge_requests/#{merge_request.id}/closes_issues", user)
+
+      expect(response.status).to eq(200)
+      expect(json_response).to be_an Array
+      expect(json_response.length).to eq(1)
+      expect(json_response.first['title']).to eq(issue.title)
+      expect(json_response.first['id']).to eq(issue.id)
     end
   end
 

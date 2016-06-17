@@ -1,3 +1,5 @@
+- @no_container = true
+
 - page_title @path.presence || "Files", @ref
 = content_for :meta_tags do
   - if current_user
@@ -5,13 +7,14 @@
 = render 'projects/last_push'
 = render "projects/commits/head"
 
-.tree-controls
-  = render 'projects/find_file_link'
-  - if can? current_user, :download_code, @project
-    = render 'projects/repositories/download_archive', ref: @ref, btn_class: 'hidden-xs hidden-sm btn-grouped', split_button: true
+%div{ class: (container_class) }
+  .tree-controls
+    = render 'projects/find_file_link'
+    - if can? current_user, :download_code, @project
+      = render 'projects/repositories/download_archive', ref: @ref, btn_class: 'hidden-xs hidden-sm btn-grouped', split_button: true
 
-#tree-holder.tree-holder.clearfix
-  .nav-block
-    = render 'projects/tree/tree_header', tree: @tree
+  #tree-holder.tree-holder.clearfix
+    .nav-block
+      = render 'projects/tree/tree_header', tree: @tree
 
-  = render 'projects/tree/tree_content', tree: @tree
+    = render 'projects/tree/tree_content', tree: @tree

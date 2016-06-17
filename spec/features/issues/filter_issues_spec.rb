@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 describe 'Filter issues', feature: true do
+  include WaitForAjax
 
   let!(:project)   { create(:project) }
   let!(:user)      { create(:user)}
@@ -21,7 +22,7 @@ describe 'Filter issues', feature: true do
 
       find('.dropdown-menu-user-link', text: user.username).click
 
-      sleep 2
+      wait_for_ajax
     end
 
     context 'assignee', js: true do
@@ -53,7 +54,7 @@ describe 'Filter issues', feature: true do
 
       find('.milestone-filter .dropdown-content a', text: milestone.title).click
 
-      sleep 2
+      wait_for_ajax
     end
 
     context 'milestone', js: true do
@@ -80,23 +81,21 @@ describe 'Filter issues', feature: true do
     before do
       visit namespace_project_issues_path(project.namespace, project)
       find('.js-label-select').click
+      wait_for_ajax
     end
 
     it 'should filter by any label' do
       find('.dropdown-menu-labels a', text: 'Any Label').click
       page.first('.labels-filter .dropdown-title .dropdown-menu-close-icon').click
-      sleep 2
+      wait_for_ajax
 
-      page.within '.labels-filter' do
-        expect(page).to have_content 'Any Label'
-      end
-      expect(find('.js-label-select .dropdown-toggle-text')).to have_content('Any Label')
+      expect(find('.labels-filter')).to have_content 'Label'
     end
 
     it 'should filter by no label' do
       find('.dropdown-menu-labels a', text: 'No Label').click
       page.first('.labels-filter .dropdown-title .dropdown-menu-close-icon').click
-      sleep 2
+      wait_for_ajax
 
       page.within '.labels-filter' do
         expect(page).to have_content 'No Label'
@@ -122,14 +121,14 @@ describe 'Filter issues', feature: true do
 
       find('.dropdown-menu-user-link', text: user.username).click
 
-      sleep 2
+      wait_for_ajax
 
       find('.js-label-select').click
 
       find('.dropdown-menu-labels .dropdown-content a', text: label.title).click
       page.first('.labels-filter .dropdown-title .dropdown-menu-close-icon').click
 
-      sleep 2
+      wait_for_ajax
     end
 
     context 'assignee and label', js: true do
@@ -276,9 +275,12 @@ describe 'Filter issues', feature: true do
 
     it 'should be able to filter and sort issues' do
       click_button 'Label'
+      wait_for_ajax
       page.within '.labels-filter' do
         click_link 'bug'
       end
+      find('.dropdown-menu-close-icon').click
+      wait_for_ajax
 
       page.within '.issues-list' do
         expect(page).to have_selector('.issue', count: 2)
@@ -288,45 +290,10 @@ describe 'Filter issues', feature: true do
       page.within '.dropdown-menu-sort' do
         click_link 'Oldest created'
       end
+      wait_for_ajax
 
       page.within '.issues-list' do
         expect(first('.issue')).to have_content('Frontend')
-      end
-    end
-  end
-
-  describe 'filter by any author', js: true do
-    before do
-      user2 = create(:user, name: "tester")
-      create(:issue, project: project, author: user)
-      create(:issue, project: project, author: user2)
-
-      visit namespace_project_issues_path(project.namespace, project)
-    end
-
-    it 'should show filter by any author link' do
-      click_button "Author"
-      fill_in "Search authors", with: "tester"
-
-      page.within ".dropdown-menu-author" do
-        expect(page).to have_content "tester"
-      end
-    end
-
-    it 'should show filter issues by any author' do
-      page.within '.issues-list' do
-        expect(page).to have_selector ".issue", count: 2
-      end
-
-      click_button "Author"
-      fill_in "Search authors", with: "tester"
-
-      page.within ".dropdown-menu-author" do
-        click_link "tester"
-      end
-
-      page.within '.issues-list' do
-        expect(page).to have_selector ".issue", count: 1
       end
     end
   end

@@ -24,10 +24,16 @@ class @MilestoneSelect
 
       if issueUpdateURL
         milestoneLinkTemplate = _.template(
-          '<a href="/<%= namespace %>/<%= path %>/milestones/<%= iid %>"><%= _.escape(title) %></a>'
+          '<a href="/<%= namespace %>/<%= path %>/milestones/<%= iid %>" class="bold has-tooltip" data-container="body" title="<%= remaining %>"><%= _.escape(title) %></a>'
         )
 
-        milestoneLinkNoneTemplate = '<div class="light">None</div>'
+        milestoneLinkNoneTemplate = '<span class="no-value">None</span>'
+
+        collapsedSidebarLabelTemplate = _.template(
+          '<span class="has-tooltip" data-container="body" title="<%= remaining %>" data-placement="left">
+            <%= _.escape(title) %>
+          </span>'
+        )
 
       $dropdown.glDropdown(
         data: (term, callback) ->
@@ -83,7 +89,7 @@ class @MilestoneSelect
           $selectbox.hide()
 
           # display:block overrides the hide-collapse rule
-          $value.removeAttr('style')
+          $value.css('display', '')
         clicked: (selected) ->
           page = $('body').data 'page'
           isIssueIndex = page is 'projects:issues:index'
@@ -106,7 +112,7 @@ class @MilestoneSelect
               .val()
             data = {}
             data[abilityName] = {}
-            data[abilityName].milestone_id = selected
+            data[abilityName].milestone_id = if selected? then selected else null
             $loading
               .fadeIn()
             $dropdown.trigger('loading.gl.dropdown')
@@ -118,12 +124,13 @@ class @MilestoneSelect
               $dropdown.trigger('loaded.gl.dropdown')
               $loading.fadeOut()
               $selectbox.hide()
-              $value.removeAttr('style')
+              $value.css('display', '')
               if data.milestone?
                 data.milestone.namespace = _this.currentProject.namespace
                 data.milestone.path = _this.currentProject.path
+                data.milestone.remaining = $.timefor data.milestone.due_date
                 $value.html(milestoneLinkTemplate(data.milestone))
-                $sidebarCollapsedValue.find('span').text(data.milestone.title)
+                $sidebarCollapsedValue.find('span').html(collapsedSidebarLabelTemplate(data.milestone))
               else
                 $value.html(milestoneLinkNoneTemplate)
                 $sidebarCollapsedValue.find('span').text('No')

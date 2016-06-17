@@ -1,11 +1,12 @@
 module Ci
   class CreateBuildsService
-    def initialize(commit)
-      @commit = commit
+    def initialize(pipeline)
+      @pipeline = pipeline
+      @config = pipeline.config_processor
     end
 
     def execute(stage, user, status, trigger_request = nil)
-      builds_attrs = config_processor.builds_for_stage_and_ref(stage, @commit.ref, @commit.tag, trigger_request)
+      builds_attrs = @config.builds_for_stage_and_ref(stage, @pipeline.ref, @pipeline.tag, trigger_request)
 
       # check when to create next build
       builds_attrs = builds_attrs.select do |build_attrs|
@@ -19,33 +20,37 @@ module Ci
         end
       end
 
-      builds_attrs.map do |build_attrs|
-        # don't create the same build twice
-        unless @commit.builds.find_by(ref: @commit.ref, tag: @commit.tag,
-                                      trigger_request: trigger_request, name: build_attrs[:name])
-          build_attrs.slice!(:name,
-                             :commands,
-                             :tag_list,
-                             :options,
-                             :allow_failure,
-                             :stage,
-                             :stage_idx)
-
-          build_attrs.merge!(ref: @commit.ref,
-                             tag: @commit.tag,
-                             trigger_request: trigger_request,
-                             user: user,
-                             project: @commit.project)
-
-          @commit.builds.create!(build_attrs)
-        end
+      # don't create the same build twice
+      builds_attrs.reject! do |build_attrs|
+        @pipeline.builds.find_by(ref: @pipeline.ref,
+                                 tag: @pipeline.tag,
+                                 trigger_request: trigger_request,
+                                 name: build_attrs[:name])
       end
-    end
 
-    private
+      builds_attrs.map do |build_attrs|
+        build_attrs.slice!(:name,
+                           :commands,
+                           :tag_list,
+                           :options,
+                           :allow_failure,
+                           :stage,
+                           :stage_idx,
+                           :environment)
 
-    def config_processor
-      @config_processor ||= @commit.config_processor
+        build_attrs.merge!(pipeline: @pipeline,
+                           ref: @pipeline.ref,
+                           tag: @pipeline.tag,
+                           trigger_request: trigger_request,
+                           user: user,
+                           project: @pipeline.project)
+
+        ##
+        # We do not persist new builds here.
+        # Those will be persisted when @pipeline is saved.
+        #
+        @pipeline.builds.new(build_attrs)
+      end
     end
   end
 end

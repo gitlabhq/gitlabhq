@@ -1,3 +1,4 @@
+# rubocop:disable all
 class DeduplicateUserIdentities < ActiveRecord::Migration
   def change
     execute 'DROP TABLE IF EXISTS tt_migration_DeduplicateUserIdentities;'

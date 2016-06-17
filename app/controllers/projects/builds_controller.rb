@@ -26,9 +26,9 @@ class Projects::BuildsController < Projects::ApplicationController
   end
 
   def show
-    @builds = @project.ci_commits.find_by_sha(@build.sha).builds.order('id DESC')
+    @builds = @project.pipelines.find_by_sha(@build.sha).builds.order('id DESC')
     @builds = @builds.where("id not in (?)", @build.id)
-    @commit = @build.commit
+    @pipeline = @build.pipeline
 
     respond_to do |format|
       format.html
@@ -41,7 +41,7 @@ class Projects::BuildsController < Projects::ApplicationController
   def trace
     respond_to do |format|
       format.json do
-        render json: @build.trace_with_state(params[:state]).merge!(id: @build.id, status: @build.status)
+        render json: @build.trace_with_state(params[:state].presence).merge!(id: @build.id, status: @build.status)
       end
     end
   end
@@ -51,7 +51,7 @@ class Projects::BuildsController < Projects::ApplicationController
       return render_404
     end
 
-    build = Ci::Build.retry(@build)
+    build = Ci::Build.retry(@build, current_user)
     redirect_to build_path(build)
   end
 
@@ -81,7 +81,7 @@ class Projects::BuildsController < Projects::ApplicationController
   private
 
   def build
-    @build ||= project.builds.unscoped.find_by!(id: params[:id])
+    @build ||= project.builds.find_by!(id: params[:id])
   end
 
   def build_path(build)

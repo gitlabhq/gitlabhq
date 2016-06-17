@@ -8,14 +8,6 @@ module IssuablesHelper
     "right-sidebar-#{sidebar_gutter_collapsed? ? 'collapsed' : 'expanded'}"
   end
 
-  def issuables_count(issuable)
-    base_issuable_scope(issuable).maximum(:iid)
-  end
-
-  def next_issuable_for(issuable)
-    base_issuable_scope(issuable).where('iid > ?', issuable.iid).last
-  end
-
   def multi_label_name(current_labels, default_label)
     # current_labels may be a string from before
     if current_labels.is_a?(Array)
@@ -45,10 +37,6 @@ module IssuablesHelper
     end
   end
 
-  def prev_issuable_for(issuable)
-    base_issuable_scope(issuable).where('iid < ?', issuable.iid).first
-  end
-
   def user_dropdown_label(user_id, default_label)
     return default_label if user_id.nil?
     return "Unassigned" if user_id == "0"
@@ -76,6 +64,12 @@ module IssuablesHelper
     output << content_tag(:strong) do
       author_output = link_to_member(project, issuable.author, size: 24, mobile_classes: "hidden-xs")
       author_output << link_to_member(project, issuable.author, size: 24, by_username: true, avatar: false, mobile_classes: "hidden-sm hidden-md hidden-lg")
+    end
+  end
+
+  def has_todo(issuable)
+    unless current_user.nil?
+      current_user.todos.find_by(target_id: issuable.id, state: :pending)
     end
   end
 

@@ -1,7 +1,9 @@
 !!! 5
 %html{ lang: "en"}
   = render "layouts/head"
-  %body{class: "#{user_application_theme}", 'data-page' => body_data_page}
+  %body{class: "#{user_application_theme}", data: {page: body_data_page, project: "#{@project.path if @project}", group: "#{@group.path if @group}"}}
+    = Gon::Base.render_data
+
     -# Ideally this would be inside the head, but turbolinks only evaluates page-specific JS in the body.
     = yield :scripts_body_top
 

@@ -6,10 +6,10 @@
   - if group_member
     .controls.hidden-xs
       - if can?(current_user, :admin_group, group)
-        = link_to edit_group_path(group), class: "btn-sm btn btn-grouped" do
-          %i.fa.fa-cogs
+        = link_to edit_group_path(group), class: "btn" do
+          = icon('cogs')
 
-      = link_to leave_group_group_members_path(group), data: { confirm: leave_group_message(group.name) }, method: :delete, class: "btn-sm btn btn-grouped", title: 'Leave this group' do
+      = link_to leave_group_group_members_path(group), data: { confirm: leave_confirmation_message(group) }, method: :delete, class: "btn", title: 'Leave this group' do
         = icon('sign-out')
 
   .stats

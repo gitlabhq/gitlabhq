@@ -4,6 +4,7 @@ class MergeRequest < ActiveRecord::Base
   include Referable
   include Sortable
   include Taskable
+  include Importable
 
   belongs_to :target_project, foreign_key: :target_project_id, class_name: "Project"
   belongs_to :source_project, foreign_key: :source_project_id, class_name: "Project"
@@ -13,7 +14,7 @@ class MergeRequest < ActiveRecord::Base
 
   serialize :merge_params, Hash
 
-  after_create :create_merge_request_diff
+  after_create :create_merge_request_diff, unless: :importing
   after_update :update_merge_request_diff
 
   delegate :commits, :diffs, :real_size, to: :merge_request_diff, prefix: nil
@@ -95,12 +96,12 @@ class MergeRequest < ActiveRecord::Base
     end
   end
 
-  validates :source_project, presence: true, unless: :allow_broken
+  validates :source_project, presence: true, unless: [:allow_broken, :importing?]
   validates :source_branch, presence: true
   validates :target_project, presence: true
   validates :target_branch, presence: true
   validates :merge_user, presence: true, if: :merge_when_build_succeeds?
-  validate :validate_branches, unless: :allow_broken
+  validate :validate_branches, unless: [:allow_broken, :importing?]
   validate :validate_fork
 
   scope :by_branch, ->(branch_name) { where("(source_branch LIKE :branch) OR (target_branch LIKE :branch)", branch: branch_name) }
@@ -260,19 +261,20 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def mergeable?
-    return false unless open? && !work_in_progress? && !broken?
+    return false unless mergeable_state?
 
     check_if_can_be_merged
 
     can_be_merged?
   end
 
-  def gitlab_merge_status
-    if work_in_progress?
-      "work_in_progress"
-    else
-      merge_status_name
-    end
+  def mergeable_state?
+    return false unless open?
+    return false if work_in_progress?
+    return false if broken?
+    return false unless mergeable_ci_state?
+
+    true
   end
 
   def can_cancel_merge_when_build_succeeds?(current_user)
@@ -311,13 +313,6 @@ class MergeRequest < ActiveRecord::Base
       target_project_id: target_project_id,
       source_project_id: source_project_id
     )
-  end
-
-  # Returns the raw diff for this merge request
-  #
-  # see "git diff"
-  def to_diff
-    target_project.repository.diff_text(diff_base_commit.sha, source_sha)
   end
 
   # Returns the commit as a series of email patches.
@@ -488,6 +483,12 @@ class MergeRequest < ActiveRecord::Base
     ::Gitlab::GitAccess.new(user, project).can_push_to_branch?(target_branch)
   end
 
+  def mergeable_ci_state?
+    return true unless project.only_allow_merge_if_build_succeeds?
+
+    !pipeline || pipeline.success?
+  end
+
   def state_human_name
     if merged?
       "Merged"
@@ -579,8 +580,8 @@ class MergeRequest < ActiveRecord::Base
     diverged_commits_count > 0
   end
 
-  def ci_commit
-    @ci_commit ||= source_project.ci_commit(last_commit.id, source_branch) if last_commit && source_project
+  def pipeline
+    @pipeline ||= source_project.pipeline(last_commit.id, source_branch) if last_commit && source_project
   end
 
   def diff_refs

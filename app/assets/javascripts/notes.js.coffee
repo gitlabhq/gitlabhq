@@ -115,12 +115,14 @@ class @Notes
     , @pollingInterval
 
   refresh: =>
-    return if @refreshing is true
-    @refreshing = true
     if not document.hidden and document.URL.indexOf(@noteable_url) is 0
       @getContent()
 
   getContent: ->
+    return if @refreshing
+
+    @refreshing = true
+
     $.ajax
       url: @notes_url
       data: "last_fetched_at=" + @last_fetched_at
@@ -162,13 +164,14 @@ class @Notes
   renderNote: (note) ->
     unless note.valid
       if note.award
-        flash = new Flash('You have already used this award emoji!', 'alert')
+        flash = new Flash('You have already awarded this emoji!', 'alert')
         flash.pinTo('.header-content')
       return
 
     if note.award
-      awardsHandler.addAwardToEmojiBar(note.name)
-      awardsHandler.scrollToAwards()
+      votesBlock = $('.js-awards-block').eq 0
+      gl.awardsHandler.addAwardToEmojiBar votesBlock, note.name
+      gl.awardsHandler.scrollToAwards()
 
     # render note if it not present in loaded list
     # or skip if rendered
@@ -353,8 +356,7 @@ class @Notes
   Called in response to clicking the edit note link
 
   Replaces the note text with the note edit form
-  Adds a hidden div with the original content of the note to fill the edit note form with
-  if the user cancels
+  Adds a data attribute to the form with the original content of the note for cancellations
   ###
   showEditForm: (e, scrollTo, myLastNote) ->
     e.preventDefault()
@@ -370,6 +372,8 @@ class @Notes
     done = ($noteText) ->
       # Neat little trick to put the cursor at the end
       noteTextVal = $noteText.val()
+      # Store the original note text in a data attribute to retrieve if a user cancels edit.
+      form.find('form.edit-note').data 'original-note', noteTextVal
       $noteText.val('').val(noteTextVal);
 
     new GLForm form
@@ -392,14 +396,16 @@ class @Notes
   ###
   Called in response to clicking the edit note link
 
-  Hides edit form
+  Hides edit form and restores the original note text to the editor textarea.
   ###
   cancelEdit: (e) ->
     e.preventDefault()
     note = $(this).closest(".note")
+    form = note.find(".current-note-edit-form")
     note.removeClass "is-editting"
-    note.find(".current-note-edit-form")
-      .removeClass("current-note-edit-form")
+    form.removeClass("current-note-edit-form")
+    # Replace markdown textarea text with original note text.
+    form.find(".js-note-text").val(form.find('form.edit-note').data('original-note'))
 
   ###
   Called in response to deleting a note of any kind.

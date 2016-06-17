@@ -4,8 +4,8 @@ module Ci
   describe RegisterBuildService, services: true do
     let!(:service) { RegisterBuildService.new }
     let!(:project) { FactoryGirl.create :empty_project, shared_runners_enabled: false }
-    let!(:commit) { FactoryGirl.create :ci_commit, project: project }
-    let!(:pending_build) { FactoryGirl.create :ci_build, commit: commit }
+    let!(:pipeline) { FactoryGirl.create :ci_pipeline, project: project }
+    let!(:pending_build) { FactoryGirl.create :ci_build, pipeline: pipeline }
     let!(:shared_runner) { FactoryGirl.create(:ci_runner, is_shared: true) }
     let!(:specific_runner) { FactoryGirl.create(:ci_runner, is_shared: false) }
 
@@ -45,9 +45,71 @@ module Ci
         end
       end
 
+      context 'deleted projects' do
+        before do
+          project.update(pending_delete: true)
+        end
+
+        context 'for shared runners' do
+          before do
+            project.update(shared_runners_enabled: true)
+          end
+
+          it 'does not pick a build' do
+            expect(service.execute(shared_runner)).to be_nil
+          end
+        end
+
+        context 'for specific runner' do
+          it 'does not pick a build' do
+            expect(service.execute(specific_runner)).to be_nil
+          end
+        end
+      end
+
       context 'allow shared runners' do
         before do
           project.update(shared_runners_enabled: true)
+        end
+
+        context 'for multiple builds' do
+          let!(:project2) { create :empty_project, shared_runners_enabled: true }
+          let!(:pipeline2) { create :ci_pipeline, project: project2 }
+          let!(:project3) { create :empty_project, shared_runners_enabled: true }
+          let!(:pipeline3) { create :ci_pipeline, project: project3 }
+          let!(:build1_project1) { pending_build }
+          let!(:build2_project1) { FactoryGirl.create :ci_build, pipeline: pipeline }
+          let!(:build3_project1) { FactoryGirl.create :ci_build, pipeline: pipeline }
+          let!(:build1_project2) { FactoryGirl.create :ci_build, pipeline: pipeline2 }
+          let!(:build2_project2) { FactoryGirl.create :ci_build, pipeline: pipeline2 }
+          let!(:build1_project3) { FactoryGirl.create :ci_build, pipeline: pipeline3 }
+
+          it 'prefers projects without builds first' do
+            # it gets for one build from each of the projects
+            expect(service.execute(shared_runner)).to eq(build1_project1)
+            expect(service.execute(shared_runner)).to eq(build1_project2)
+            expect(service.execute(shared_runner)).to eq(build1_project3)
+
+            # then it gets a second build from each of the projects
+            expect(service.execute(shared_runner)).to eq(build2_project1)
+            expect(service.execute(shared_runner)).to eq(build2_project2)
+
+            # in the end the third build
+            expect(service.execute(shared_runner)).to eq(build3_project1)
+          end
+
+          it 'equalises number of running builds' do
+            # after finishing the first build for project 1, get a second build from the same project
+            expect(service.execute(shared_runner)).to eq(build1_project1)
+            build1_project1.success
+            expect(service.execute(shared_runner)).to eq(build2_project1)
+
+            expect(service.execute(shared_runner)).to eq(build1_project2)
+            build1_project2.success
+            expect(service.execute(shared_runner)).to eq(build2_project2)
+            expect(service.execute(shared_runner)).to eq(build1_project3)
+            expect(service.execute(shared_runner)).to eq(build3_project1)
+          end
         end
 
         context 'shared runner' do

@@ -10,6 +10,8 @@ class User < ActiveRecord::Base
   include CaseSensitivity
   include TokenAuthenticatable
 
+  DEFAULT_NOTIFICATION_LEVEL = :participating
+
   add_authentication_token_field :authentication_token
 
   default_value_for :admin, false
@@ -27,7 +29,6 @@ class User < ActiveRecord::Base
 
   devise :two_factor_authenticatable,
          otp_secret_encryption_key: Gitlab::Application.config.secret_key_base
-  alias_attribute :two_factor_enabled, :otp_required_for_login
 
   devise :two_factor_backupable, otp_number_of_backup_codes: 10
   serialize :otp_backup_codes, JSON
@@ -50,12 +51,13 @@ class User < ActiveRecord::Base
   # Profile
   has_many :keys, dependent: :destroy
   has_many :emails, dependent: :destroy
+  has_many :personal_access_tokens, dependent: :destroy
   has_many :identities, dependent: :destroy, autosave: true
+  has_many :u2f_registrations, dependent: :destroy
 
   # Groups
   has_many :members, dependent: :destroy
-  has_many :project_members, source: 'ProjectMember'
-  has_many :group_members, source: 'GroupMember'
+  has_many :group_members, dependent: :destroy, source: 'GroupMember'
   has_many :groups, through: :group_members
   has_many :owned_groups, -> { where members: { access_level: Gitlab::Access::OWNER } }, through: :group_members, source: :group
   has_many :masters_groups, -> { where members: { access_level: Gitlab::Access::MASTER } }, through: :group_members, source: :group
@@ -63,13 +65,13 @@ class User < ActiveRecord::Base
   # Projects
   has_many :groups_projects,          through: :groups, source: :projects
   has_many :personal_projects,        through: :namespace, source: :projects
+  has_many :project_members,          dependent: :destroy, class_name: 'ProjectMember'
   has_many :projects,                 through: :project_members
   has_many :created_projects,         foreign_key: :creator_id, class_name: 'Project'
   has_many :users_star_projects, dependent: :destroy
   has_many :starred_projects, through: :users_star_projects, source: :project
 
   has_many :snippets,                 dependent: :destroy, foreign_key: :author_id, class_name: "Snippet"
-  has_many :project_members,          dependent: :destroy, class_name: 'ProjectMember'
   has_many :issues,                   dependent: :destroy, foreign_key: :author_id
   has_many :notes,                    dependent: :destroy, foreign_key: :author_id
   has_many :merge_requests,           dependent: :destroy, foreign_key: :author_id
@@ -99,7 +101,6 @@ class User < ActiveRecord::Base
     presence: true,
     uniqueness: { case_sensitive: false }
 
-  validates :notification_level, presence: true
   validate :namespace_uniq, if: ->(user) { user.username_changed? }
   validate :avatar_type, if: ->(user) { user.avatar.present? && user.avatar_changed? }
   validate :unique_email, if: ->(user) { user.email_changed? }
@@ -132,13 +133,6 @@ class User < ActiveRecord::Base
   # User's Project preference
   # Note: When adding an option, it MUST go on the end of the array.
   enum project_view: [:readme, :activity, :files]
-
-  # Notification level
-  # Note: When adding an option, it MUST go on the end of the array.
-  #
-  # TODO: Add '_prefix: :notification' to enum when update to Rails 5. https://github.com/rails/rails/pull/19813
-  # Because user.notification_disabled? is much better than user.disabled?
-  enum notification_level: [:disabled, :participating, :watch, :global, :mention]
 
   alias_attribute :private_token, :authentication_token
 
@@ -175,8 +169,16 @@ class User < ActiveRecord::Base
   scope :active, -> { with_state(:active) }
   scope :not_in_project, ->(project) { project.users.present? ? where("id not in (:ids)", ids: project.users.map(&:id) ) : all }
   scope :without_projects, -> { where('id NOT IN (SELECT DISTINCT(user_id) FROM members)') }
-  scope :with_two_factor,    -> { where(two_factor_enabled: true) }
-  scope :without_two_factor, -> { where(two_factor_enabled: false) }
+
+  def self.with_two_factor
+    joins("LEFT OUTER JOIN u2f_registrations AS u2f ON u2f.user_id = users.id").
+      where("u2f.id IS NOT NULL OR otp_required_for_login = ?", true).distinct(arel_table[:id])
+  end
+
+  def self.without_two_factor
+    joins("LEFT OUTER JOIN u2f_registrations AS u2f ON u2f.user_id = users.id").
+      where("u2f.id IS NULL AND otp_required_for_login = ?", false)
+  end
 
   #
   # Class methods
@@ -266,6 +268,11 @@ class User < ActiveRecord::Base
       find_by!('lower(username) = ?', username.downcase)
     end
 
+    def find_by_personal_access_token(token_string)
+      personal_access_token = PersonalAccessToken.active.find_by_token(token_string) if token_string
+      personal_access_token.user if personal_access_token
+    end
+
     def by_username_or_id(name_or_id)
       find_by('users.username = ? OR users.id = ?', name_or_id.to_s, name_or_id.to_i)
     end
@@ -323,14 +330,29 @@ class User < ActiveRecord::Base
   end
 
   def disable_two_factor!
-    update_attributes(
-      two_factor_enabled:          false,
-      encrypted_otp_secret:        nil,
-      encrypted_otp_secret_iv:     nil,
-      encrypted_otp_secret_salt:   nil,
-      otp_grace_period_started_at: nil,
-      otp_backup_codes:            nil
-    )
+    transaction do
+      update_attributes(
+        otp_required_for_login:      false,
+        encrypted_otp_secret:        nil,
+        encrypted_otp_secret_iv:     nil,
+        encrypted_otp_secret_salt:   nil,
+        otp_grace_period_started_at: nil,
+        otp_backup_codes:            nil
+      )
+      self.u2f_registrations.destroy_all
+    end
+  end
+
+  def two_factor_enabled?
+    two_factor_otp_enabled? || two_factor_u2f_enabled?
+  end
+
+  def two_factor_otp_enabled?
+    self.otp_required_for_login?
+  end
+
+  def two_factor_u2f_enabled?
+    self.u2f_registrations.exists?
   end
 
   def namespace_uniq
@@ -388,8 +410,8 @@ class User < ActiveRecord::Base
   end
 
   # Returns projects user is authorized to access.
-  def authorized_projects
-    Project.where("projects.id IN (#{projects_union.to_sql})")
+  def authorized_projects(min_access_level = nil)
+    Project.where("projects.id IN (#{projects_union(min_access_level).to_sql})")
   end
 
   def viewable_starred_projects
@@ -777,6 +799,17 @@ class User < ActiveRecord::Base
     notification_settings.find_or_initialize_by(source: source)
   end
 
+  # Lazy load global notification setting
+  # Initializes User setting with Participating level if setting not persisted
+  def global_notification_setting
+    return @global_notification_setting if defined?(@global_notification_setting)
+
+    @global_notification_setting = notification_settings.find_or_initialize_by(source: nil)
+    @global_notification_setting.update_attributes(level: NotificationSetting.levels[DEFAULT_NOTIFICATION_LEVEL]) unless @global_notification_setting.persisted?
+
+    @global_notification_setting
+  end
+
   def assigned_open_merge_request_count(force: false)
     Rails.cache.fetch(['users', id, 'assigned_open_merge_request_count'], force: force) do
       assigned_merge_requests.opened.count
@@ -796,11 +829,19 @@ class User < ActiveRecord::Base
 
   private
 
-  def projects_union
-    Gitlab::SQL::Union.new([personal_projects.select(:id),
-                            groups_projects.select(:id),
-                            projects.select(:id),
-                            groups.joins(:shared_projects).select(:project_id)])
+  def projects_union(min_access_level = nil)
+    relations = [personal_projects.select(:id),
+                 groups_projects.select(:id),
+                 projects.select(:id),
+                 groups.joins(:shared_projects).select(:project_id)]
+
+
+    if min_access_level
+      scope = { access_level: Gitlab::Access.values.select { |access| access >= min_access_level } }
+      relations = [relations.shift] + relations.map { |relation| relation.where(members: scope) }
+    end
+
+    Gitlab::SQL::Union.new(relations)
   end
 
   def ci_projects_union

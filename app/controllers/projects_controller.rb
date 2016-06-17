@@ -7,7 +7,7 @@ class ProjectsController < Projects::ApplicationController
   before_action :assign_ref_vars, :tree, only: [:show], if: :repo_exists?
 
   # Authorize
-  before_action :authorize_admin_project!, only: [:edit, :update, :housekeeping]
+  before_action :authorize_admin_project!, only: [:edit, :update, :housekeeping, :download_export, :export, :remove_export, :generate_new_export]
   before_action :event_filter, only: [:show, :activity]
 
   layout :determine_layout
@@ -143,6 +143,7 @@ class ProjectsController < Projects::ApplicationController
       issues: autocomplete.issues,
       milestones: autocomplete.milestones,
       mergerequests: autocomplete.merge_requests,
+      labels: autocomplete.labels,
       members: participants
     }
 
@@ -183,6 +184,48 @@ class ProjectsController < Projects::ApplicationController
       edit_project_path(@project),
       alert: ex.to_s
     )
+  end
+
+  def export
+    @project.add_export_job(current_user: current_user)
+
+    redirect_to(
+      edit_project_path(@project),
+      notice: "Project export started. A download link will be sent by email."
+    )
+  end
+
+  def download_export
+    export_project_path = @project.export_project_path
+
+    if export_project_path
+      send_file export_project_path, disposition: 'attachment'
+    else
+      redirect_to(
+        edit_project_path(@project),
+        alert: "Project export link has expired. Please generate a new export from your project settings."
+      )
+    end
+  end
+
+  def remove_export
+    if @project.remove_exports
+      flash[:notice] = "Project export has been deleted."
+    else
+      flash[:alert] = "Project export could not be deleted."
+    end
+    redirect_to(edit_project_path(@project))
+  end
+
+  def generate_new_export
+    if @project.remove_exports
+      export
+    else
+      redirect_to(
+        edit_project_path(@project),
+        alert: "Project export could not be deleted."
+      )
+    end
   end
 
   def toggle_star
@@ -234,7 +277,7 @@ class ProjectsController < Projects::ApplicationController
       :issues_tracker_id, :default_branch,
       :wiki_enabled, :visibility_level, :import_url, :last_activity_at, :namespace_id, :avatar,
       :builds_enabled, :build_allow_git_fetch, :build_timeout_in_minutes, :build_coverage_regex,
-      :public_builds,
+      :public_builds, :only_allow_merge_if_build_succeeds
     )
   end
 

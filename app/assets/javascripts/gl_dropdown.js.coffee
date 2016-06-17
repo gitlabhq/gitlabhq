@@ -211,6 +211,7 @@ class GitLabDropdown
 
     @dropdown.on "shown.bs.dropdown", @opened
     @dropdown.on "hidden.bs.dropdown", @hidden
+    $(@el).on "update.label", @updateLabel
     @dropdown.on "click", ".dropdown-menu, .dropdown-menu-close", @shouldPropagate
     @dropdown.on 'keyup', (e) =>
       if e.which is 27 # Escape key
@@ -453,7 +454,7 @@ class GitLabDropdown
 
       # Toggle the dropdown label
       if @options.toggleLabel
-        $(@el).find(".dropdown-toggle-text").text @options.toggleLabel
+        @updateLabel()
       else
         selectedObject
     else if el.hasClass(INDETERMINATE_CLASS)
@@ -480,7 +481,7 @@ class GitLabDropdown
 
       # Toggle the dropdown label
       if @options.toggleLabel
-        $(@el).find(".dropdown-toggle-text").text @options.toggleLabel(selectedObject, el)
+        @updateLabel(selectedObject, el)
       if value?
         if !field.length and fieldName
           @addInput(fieldName, value)
@@ -578,6 +579,9 @@ class GitLabDropdown
     else if listItemTop < dropdownContentTop + dropdownScrollTop
       # Scroll the dropdown content up
       $dropdownContent.scrollTop(listItemTop - dropdownContentTop)
+
+  updateLabel: (selected = null, el = null) =>
+    $(@el).find(".dropdown-toggle-text").text @options.toggleLabel(selected, el)
 
 $.fn.glDropdown = (opts) ->
   return @.each ->

@@ -50,11 +50,26 @@
 
 .label-row {
   .label-name {
-    display: inline-block;
-    width: 200px;
+    display: block;
+    margin-bottom: 10px;
 
-    @media (max-width: $screen-xs-min) {
-      display: block;
+    @media (min-width: $screen-sm-min) {
+      display: inline-block;
+      width: 200px;
+      margin-bottom: 0;
+    }
+  }
+
+  .label-description {
+    display: block;
+    margin-bottom: 10px;
+
+    @media (min-width: $screen-sm-min) {
+      display: inline-block;
+      width: 40%;
+      margin-left: 10px;
+      margin-bottom: 0;
+      vertical-align: middle;
     }
   }
 
@@ -68,10 +83,6 @@
   padding: 3px 4px;
 }
 
-.label-subscription {
-  display: inline-block;
-}
-
 .dropdown-labels-error {
   padding: 5px 10px;
   margin-bottom: 10px;
@@ -79,62 +90,109 @@
   color: $white-light;
 }
 
-@mixin labels-mobile {
-  @media (max-width: $screen-xs-min) {
-    display: block;
-    width: 100%;
-    margin-left: 0;
-    padding: 10px 0;
+.manage-labels-list {
+  .btn-action {
+    color: $gl-dark-link-color;
+
+    .fa {
+      font-size: 18px;
+      vertical-align: middle;
+    }
+
+    &:hover {
+      color: $gl-link-color;
+
+      &.remove-row {
+        color: $gl-danger;
+      }
+    }
+  }
+
+  .dropdown {
+    @media (min-width: $screen-sm-min) {
+      float: right;
+    }
   }
 }
 
+.draggable-handler {
+  display: inline-block;
+  opacity: 0;
+  transition: opacity .3s;
+  color: $gray-darkest;
+}
 
-.manage-labels-list {
+.prioritized-labels {
+  margin-bottom: 30px;
 
-  .prepend-left-10, .prepend-description-left {
-    display: inline-block;
-    width: 40%;
-    vertical-align: middle;
-
-    @include labels-mobile;
+  .add-priority {
+    display: none;
+    color: $gray-light;
   }
 
-  .prepend-description-left {
-    width: 57%;
-
-    @include labels-mobile;
-  }
-
-  .pull-info-right {
-    float: right;
-
-    @media (max-width: $screen-xs-min) {
-      float: none;
+  li:hover {
+    .draggable-handler {
+      display: inline-block;
+      opacity: 1;
     }
+  }
+}
 
-    .action-buttons {
+.other-labels {
+  .remove-priority {
+    display: none;
+  }
+}
+
+.toggle-priority {
+  display: inline-block;
+  vertical-align: middle;
+
+  button {
+    border-color: transparent;
+    padding: 5px 8px;
+    vertical-align: top;
+    font-size: 14px;
+
+    &:hover {
       border-color: transparent;
-      padding: 6px;
-      color: $gl-text-color;
+    }
+  }
+}
 
-      &.label-subscribe-button {
-        padding-left: 0;
-      }
+.filtered-labels {
+  .label-row {
+    &:not(:last-child) {
+      margin-right: 5px;
+    }
+  }
+
+  .label-remove {
+    border-left: 1px solid rgba(0, 0, 0, .1);
+    z-index: 3;
+  }
+
+  .btn {
+    color: inherit;
+  }
+}
+
+.label-options-toggle {
+  width: 100%;
+}
+
+.label-subscribe-button {
+  .label-subscribe-button-loading {
+    display: none;
+  }
+
+  &.disabled {
+    .label-subscribe-button-icon {
+      display: none;
     }
 
-    i {
-      color: $gl-text-color;
-    }
-
-    .append-right-20 {
-      a {
-        color: $gl-text-color;
-      }
-
-      @media (max-width: $screen-xs-min) {
-        display: block;
-        margin-bottom: 10px;
-      }
+    .label-subscribe-button-loading {
+      display: block;
     }
   }
 }

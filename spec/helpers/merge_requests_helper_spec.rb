@@ -5,7 +5,7 @@ describe MergeRequestsHelper do
     let(:project) { create :project }
     let(:merge_request) { MergeRequest.new }
     let(:ci_service) { CiService.new }
-    let(:last_commit) { Ci::Commit.new({}) }
+    let(:last_commit) { Ci::Pipeline.new({}) }
 
     before do
       allow(merge_request).to receive(:source_project).and_return(project)
@@ -33,9 +33,9 @@ describe MergeRequestsHelper do
       let(:project) { create(:project) }
       let(:issues) do
         [
-          JiraIssue.new('JIRA-123', project),
-          JiraIssue.new('JIRA-456', project),
-          JiraIssue.new('FOOBAR-7890', project)
+          ExternalIssue.new('JIRA-123', project),
+          ExternalIssue.new('JIRA-456', project),
+          ExternalIssue.new('FOOBAR-7890', project)
         ]
       end
 

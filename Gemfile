@@ -38,20 +38,21 @@ gem 'rack-oauth2',            '~> 1.2.1'
 gem 'jwt'
 
 # Spam and anti-bot protection
-gem 'recaptcha', require: 'recaptcha/rails'
+gem 'recaptcha', '~> 3.0', require: 'recaptcha/rails'
 gem 'akismet', '~> 2.0'
 
 # Two-factor authentication
 gem 'devise-two-factor', '~> 3.0.0'
 gem 'rqrcode-rails3', '~> 0.1.7'
 gem 'attr_encrypted', '~> 3.0.0'
+gem 'u2f', '~> 0.2.1'
 
 # Browser detection
-gem "browser", '~> 1.0.0'
+gem "browser", '~> 2.0.3'
 
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library
-gem "gitlab_git", '~> 10.0'
+gem "gitlab_git", '~> 10.2'
 
 # LDAP Auth
 # GitLab fork with several improvements to original library. For full list of changes
@@ -85,6 +86,7 @@ gem 'dropzonejs-rails', '~> 0.7.1'
 
 # for backups
 gem 'fog-aws', '~> 0.9'
+gem 'fog-azure', '~> 0.0'
 gem 'fog-core', '~> 1.40'
 gem 'fog-local', '~> 0.3'
 gem 'fog-google', '~> 0.3'
@@ -110,7 +112,7 @@ gem 'org-ruby',      '~> 0.9.12'
 gem 'creole',        '~> 0.5.0'
 gem 'wikicloth',     '0.8.1'
 gem 'asciidoctor',   '~> 1.5.2'
-gem 'rouge',         '~> 1.10.1'
+gem 'rouge',         '~> 1.11'
 
 # See https://groups.google.com/forum/#!topic/ruby-security-ann/aSbgDiwb24s
 # and https://groups.google.com/forum/#!topic/ruby-security-ann/Dy7YiKb_pMM
@@ -208,6 +210,9 @@ gem 'mousetrap-rails', '~> 1.4.6'
 # Detect and convert string character encoding
 gem 'charlock_holmes', '~> 0.7.3'
 
+# Parse duration
+gem 'chronic_duration', '~> 0.10.6'
+
 gem "sass-rails", '~> 5.0.0'
 gem "coffee-rails", '~> 4.1.0'
 gem "uglifier", '~> 2.7.2'
@@ -216,13 +221,12 @@ gem 'jquery-turbolinks', '~> 2.1.0'
 
 gem 'addressable',        '~> 2.3.8'
 gem 'bootstrap-sass',     '~> 3.3.0'
-gem 'font-awesome-rails', '~> 4.2'
+gem 'font-awesome-rails', '~> 4.6.1'
 gem 'gitlab_emoji',       '~> 0.3.0'
 gem 'gon',                '~> 6.0.1'
 gem 'jquery-atwho-rails', '~> 1.3.2'
 gem 'jquery-rails',       '~> 4.1.0'
 gem 'jquery-ui-rails',    '~> 5.0.0'
-gem 'raphael-rails',      '~> 2.1.2'
 gem 'request_store',      '~> 1.3.0'
 gem 'select2-rails',      '~> 3.5.9'
 gem 'virtus',             '~> 1.0.1'
@@ -243,7 +247,7 @@ end
 
 group :development do
   gem "foreman"
-  gem 'brakeman', '~> 3.2.0', require: false
+  gem 'brakeman', '~> 3.3.0', require: false
 
   gem 'letter_opener_web', '~> 1.3.0'
   gem 'quiet_assets', '~> 1.0.2'
@@ -305,6 +309,9 @@ group :development, :test do
   gem 'bundler-audit', require: false
 
   gem 'benchmark-ips', require: false
+
+  gem "license_finder", require: false
+  gem 'knapsack'
 end
 
 group :test do

@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Ci::CreateBuildsService, services: true do
-  let(:commit) { create(:ci_commit, ref: 'master') }
+  let(:pipeline) { create(:ci_pipeline, ref: 'master') }
   let(:user) { create(:user) }
 
   describe '#execute' do
@@ -9,7 +9,7 @@ describe Ci::CreateBuildsService, services: true do
     #
 
     subject do
-      described_class.new(commit).execute(commit, nil, user, status)
+      described_class.new(pipeline).execute('test', user, status, nil)
     end
 
     context 'next builds available' do
@@ -17,6 +17,10 @@ describe Ci::CreateBuildsService, services: true do
 
       it { is_expected.to be_an_instance_of Array }
       it { is_expected.to all(be_an_instance_of Ci::Build) }
+
+      it 'does not persist created builds' do
+        expect(subject.first).not_to be_persisted
+      end
     end
 
     context 'builds skipped' do

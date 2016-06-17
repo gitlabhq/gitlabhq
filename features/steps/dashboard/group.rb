@@ -62,6 +62,6 @@ class Spinach::Features::DashboardGroup < Spinach::FeatureSteps
   end
 
   step 'I should see the "Can not leave message"' do
-    expect(page).to have_content "You can not leave Owned group because you're the last owner"
+    expect(page).to have_content "You can not leave the \"Owned\" group."
   end
 end
