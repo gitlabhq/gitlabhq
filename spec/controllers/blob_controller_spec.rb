@@ -38,6 +38,11 @@ describe Projects::BlobController do
       let(:id) { 'invalid-branch/README.md' }
       it { is_expected.to respond_with(:not_found) }
     end
+
+    context "binary file" do
+      let(:id) { 'binary-encoding/encoding/binary-1.bin' }
+      it { is_expected.to respond_with(:success) }
+    end
   end
 
   describe 'GET show with tree path' do

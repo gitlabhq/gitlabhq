@@ -9,9 +9,31 @@ describe Gitlab::Metrics::Instrumentation do
         text
       end
 
+      class << self
+        def buzz(text = 'buzz')
+          text
+        end
+        private :buzz
+
+        def flaky(text = 'flaky')
+          text
+        end
+        protected :flaky
+      end
+
       def bar(text = 'bar')
         text
       end
+
+      def wadus(text = 'wadus')
+        text
+      end
+      private :wadus
+
+      def chaf(text = 'chaf')
+        text
+      end
+      protected :chaf
     end
 
     allow(@dummy).to receive(:name).and_return('Dummy')
@@ -57,7 +79,7 @@ describe Gitlab::Metrics::Instrumentation do
           and_return(transaction)
 
         expect(transaction).to receive(:add_metric).
-          with(described_class::SERIES, an_instance_of(Hash),
+          with(described_class::SERIES, hash_including(:duration, :cpu_duration),
                method: 'Dummy.foo')
 
         @dummy.foo
@@ -137,7 +159,7 @@ describe Gitlab::Metrics::Instrumentation do
           and_return(transaction)
 
         expect(transaction).to receive(:add_metric).
-          with(described_class::SERIES, an_instance_of(Hash),
+          with(described_class::SERIES, hash_including(:duration, :cpu_duration),
                method: 'Dummy#bar')
 
         @dummy.new.bar
@@ -208,6 +230,21 @@ describe Gitlab::Metrics::Instrumentation do
       described_class.instrument_methods(@dummy)
 
       expect(described_class.instrumented?(@dummy.singleton_class)).to eq(true)
+      expect(@dummy.method(:foo).source_location.first).to match(/instrumentation\.rb/)
+    end
+
+    it 'instruments all protected class methods' do
+      described_class.instrument_methods(@dummy)
+
+      expect(described_class.instrumented?(@dummy.singleton_class)).to eq(true)
+      expect(@dummy.method(:flaky).source_location.first).to match(/instrumentation\.rb/)
+    end
+
+    it 'instruments all private instance methods' do
+      described_class.instrument_methods(@dummy)
+
+      expect(described_class.instrumented?(@dummy.singleton_class)).to eq(true)
+      expect(@dummy.method(:buzz).source_location.first).to match(/instrumentation\.rb/)
     end
 
     it 'only instruments methods directly defined in the module' do
@@ -241,6 +278,21 @@ describe Gitlab::Metrics::Instrumentation do
       described_class.instrument_instance_methods(@dummy)
 
       expect(described_class.instrumented?(@dummy)).to eq(true)
+      expect(@dummy.new.method(:bar).source_location.first).to match(/instrumentation\.rb/)
+    end
+
+    it 'instruments all protected instance methods' do
+      described_class.instrument_instance_methods(@dummy)
+
+      expect(described_class.instrumented?(@dummy)).to eq(true)
+      expect(@dummy.new.method(:chaf).source_location.first).to match(/instrumentation\.rb/)
+    end
+
+    it 'instruments all private instance methods' do
+      described_class.instrument_instance_methods(@dummy)
+
+      expect(described_class.instrumented?(@dummy)).to eq(true)
+      expect(@dummy.new.method(:wadus).source_location.first).to match(/instrumentation\.rb/)
     end
 
     it 'only instruments methods directly defined in the module' do
@@ -253,7 +305,7 @@ describe Gitlab::Metrics::Instrumentation do
 
       described_class.instrument_instance_methods(@dummy)
 
-      expect(@dummy.method_defined?(:_original_kittens)).to eq(false)
+      expect(@dummy.new.method(:kittens).source_location.first).not_to match(/instrumentation\.rb/)
     end
 
     it 'can take a block to determine if a method should be instrumented' do
@@ -261,7 +313,7 @@ describe Gitlab::Metrics::Instrumentation do
         false
       end
 
-      expect(@dummy.method_defined?(:_original_bar)).to eq(false)
+      expect(@dummy.new.method(:bar).source_location.first).not_to match(/instrumentation\.rb/)
     end
   end
 end

@@ -23,10 +23,10 @@
           #{'Commit'.pluralize(@project.commit_count)} (#{number_with_delimiter(@project.commit_count)})
       %li
         = link_to namespace_project_branches_path(@project.namespace, @project) do
-          #{'Branch'.pluralize(@repository.branch_names.count)} (#{number_with_delimiter(@repository.branch_names.count)})
+          #{'Branch'.pluralize(@repository.branch_count)} (#{number_with_delimiter(@repository.branch_count)})
       %li
         = link_to namespace_project_tags_path(@project.namespace, @project) do
-          #{'Tag'.pluralize(@repository.tag_names.count)} (#{number_with_delimiter(@repository.tag_names.count)})
+          #{'Tag'.pluralize(@repository.tag_count)} (#{number_with_delimiter(@repository.tag_count)})
 
       - if default_project_view != 'readme' && @repository.readme
         %li

@@ -63,7 +63,7 @@ instance.
 Now simply register the runner as any runner:
 
 ```
-sudo gitlab-runner register
+sudo gitlab-ci-multi-runner register
 ```
 
 Shared runners are enabled by default as of GitLab 8.2, but can be disabled with the
@@ -93,7 +93,7 @@ setup a specific runner for this project.
 To register the runner, run the command below and follow instructions:
 
 ```
-sudo gitlab-runner register
+sudo gitlab-ci-multi-runner register
 ```
 
 ###  Lock a specific runner from being enabled for other projects

@@ -12,6 +12,14 @@ module ContainerRegistry
       manifest.present?
     end
 
+    def v1?
+      manifest && manifest['schemaVersion'] == 1
+    end
+
+    def v2?
+      manifest && manifest['schemaVersion'] == 2
+    end
+
     def manifest
       return @manifest if defined?(@manifest)
 
@@ -57,7 +65,9 @@ module ContainerRegistry
       return @layers if defined?(@layers)
       return unless manifest
 
-      @layers = manifest['layers'].map do |layer|
+      layers = manifest['layers'] || manifest['fsLayers']
+
+      @layers = layers.map do |layer|
         repository.blob(layer)
       end
     end
@@ -65,7 +75,7 @@ module ContainerRegistry
     def total_size
       return unless layers
 
-      layers.map(&:size).sum
+      layers.map(&:size).sum if v2?
     end
 
     def delete

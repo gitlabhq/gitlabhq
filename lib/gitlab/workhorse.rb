@@ -8,7 +8,7 @@ module Gitlab
     class << self
       def git_http_ok(repository, user)
         {
-          'GL_ID' => Gitlab::ShellEnv.gl_id(user),
+          'GL_ID' => Gitlab::GlId.gl_id(user),
           'RepoPath' => repository.path_to_repo,
         }
       end

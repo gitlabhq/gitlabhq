@@ -6,6 +6,8 @@ $sidebar_width: 220px;
 $gutter_collapsed_width: 62px;
 $gutter_width: 290px;
 $gutter_inner_width: 258px;
+$sidebar-transition-duration: .15s;
+$sidebar-breakpoint: 1440px;
 
 /*
  * UI elements
@@ -153,6 +155,11 @@ $warning-message-border: #f0e2bb;
 
 /* header */
 $light-grey-header: #faf9f9;
+
+/* tanuki logo colors */
+$tanuki-red: #e24329;
+$tanuki-orange: #fc6d26;
+$tanuki-yellow: #fca326;
 
 /*
  * State colors:

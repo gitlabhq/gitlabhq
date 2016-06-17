@@ -9,7 +9,7 @@ class @MergeRequest
   # Options:
   #   action - String, current controller action
   #
-  constructor: (@opts) ->
+  constructor: (@opts = {}) ->
     this.$el = $('.merge-request')
 
     this.$('.show-all-commits').on 'click', =>

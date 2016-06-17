@@ -2,8 +2,19 @@
  *  Application Header
  *
  */
+@mixin tanuki-logo-colors($path-color) {
+  fill: $path-color;
+  transition: all 0.8s;
+
+  &:hover,
+  &.highlight {
+    fill: lighten($path-color, 25%);
+    transition: all 0.1s;
+  }
+}
+
 header {
-  transition-duration: .3s;
+  transition: padding $sidebar-transition-duration;
 
   &.navbar-empty {
     height: $header-height;
@@ -79,14 +90,9 @@ header {
 
     &.header-collapsed {
       padding: 0 16px;
-
-      .side-nav-toggle {
-        display: block;
-      }
     }
 
     .side-nav-toggle {
-      display: none;
       position: absolute;
       left: -10px;
       margin: 6px 0;
@@ -108,9 +114,7 @@ header {
   .header-content {
     position: relative;
     height: $header-height;
-    padding-right: 40px;
     padding-left: 30px;
-    transition-duration: .3s;
 
     @media (min-width: $screen-sm-min) {
       padding-right: 0;
@@ -198,25 +202,24 @@ header {
   }
 }
 
-.header-collapsed {
-  margin-left: 0;
+#tanuki-logo {
 
-  .header-content {
-
-    @media (min-width: $screen-sm-max) {
-      padding-left: 30px;
-      transition-duration: .3s;
-    }
+  #tanuki-left-ear,
+  #tanuki-right-ear,
+  #tanuki-nose {
+    @include tanuki-logo-colors($tanuki-red);
   }
-}
 
-.tanuki-shape {
-  transition: all 0.8s;
-
-  &:hover, &.highlight {
-    fill: rgb(255, 255, 255);
-    transition: all 0.1s;
+  #tanuki-left-eye,
+  #tanuki-right-eye {
+    @include tanuki-logo-colors($tanuki-orange);
   }
+
+  #tanuki-left-cheek,
+  #tanuki-right-cheek {
+    @include tanuki-logo-colors($tanuki-yellow);
+  }
+
 }
 
 @media (max-width: $screen-xs-max) {

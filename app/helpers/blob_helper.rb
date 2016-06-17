@@ -116,7 +116,7 @@ module BlobHelper
   end
 
   def blob_text_viewable?(blob)
-    blob && blob.text? && !blob.lfs_pointer?
+    blob && blob.text? && !blob.lfs_pointer? && !blob.only_display_raw?
   end
 
   def blob_size(blob)
@@ -180,8 +180,8 @@ module BlobHelper
     licenses = Licensee::License.all
 
     @licenses_for_select = {
-      Popular: licenses.select(&:featured).map { |license| [license.name, license.key] },
-      Other: licenses.reject(&:featured).map { |license| [license.name, license.key] }
+      Popular: licenses.select(&:featured).map { |license| { name: license.name, id: license.key } },
+      Other: licenses.reject(&:featured).map { |license| { name: license.name, id: license.key } }
     }
   end
 
