@@ -17,7 +17,7 @@ class Projects::GitHooksController < Projects::ApplicationController
     @git_hook.update_attributes(git_hook_params)
 
     if @git_hook.valid?
-      redirect_to namespace_project_git_hooks_path(@project.namespace, @project)
+      redirect_to namespace_project_git_hooks_path(@project.namespace, @project), notice: 'Git Hooks updated successfully.'
     else
       render :index
     end
