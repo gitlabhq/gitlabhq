@@ -15,13 +15,11 @@ module ContainerRegistry
     end
 
     def repository_tags(name)
-      response = @faraday.get("/v2/#{name}/tags/list")
-      response.body if response.success?
+      response_body @faraday.get("/v2/#{name}/tags/list")
     end
 
     def repository_manifest(name, reference)
-      response = @faraday.get("/v2/#{name}/manifests/#{reference}")
-      response.body if response.success?
+      response_body @faraday.get("/v2/#{name}/manifests/#{reference}")
     end
 
     def repository_tag_digest(name, reference)
@@ -36,8 +34,7 @@ module ContainerRegistry
     def blob(name, digest, type = nil)
       headers = {}
       headers['Accept'] = type if type
-      response = @faraday.get("/v2/#{name}/blobs/#{digest}", nil, headers)
-      response.body if response.success?
+      response_body @faraday.get("/v2/#{name}/blobs/#{digest}", nil, headers)
     end
 
     def delete_blob(name, digest)
@@ -62,6 +59,10 @@ module ContainerRegistry
       end
 
       conn.adapter :net_http
+    end
+
+    def response_body(response)
+      response.body if response.success?
     end
   end
 end
