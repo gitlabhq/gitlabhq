@@ -132,6 +132,7 @@ class Project < ActiveRecord::Base
   has_many :remote_mirrors, dependent: :destroy
   has_many :environments, dependent: :destroy
   has_many :deployments, dependent: :destroy
+  has_many :path_locks, dependent: :destroy
 
   accepts_nested_attributes_for :variables, allow_destroy: true
   accepts_nested_attributes_for :remote_mirrors,
@@ -1190,6 +1191,11 @@ class Project < ActiveRecord::Base
 
   def pages_deployed?
     Dir.exist?(public_pages_path)
+  end
+
+  def path_lock_info(path, exact_match: false)
+    @path_lock_finder ||= Gitlab::PathLocksFinder.new(self)
+    @path_lock_finder.get_lock_info(path, exact_match: exact_match)
   end
 
   def schedule_delete!(user_id, params)

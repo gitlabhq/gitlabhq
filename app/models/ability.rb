@@ -300,7 +300,8 @@ class Ability
         :admin_pages,
         :admin_pipeline,
         :admin_environment,
-        :admin_deployment
+        :admin_deployment,
+        :admin_locks
       ]
     end
 

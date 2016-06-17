@@ -1,0 +1,12 @@
+%li
+  %div
+    %span.item-title
+      = icon('lock')
+      = path_lock.path
+
+    .controls
+      - if can_unlock?(path_lock)
+        = link_to namespace_project_path_lock_path(@project.namespace, @project, path_lock), class: 'btn btn-grouped btn-xs btn-remove remove-row has-tooltip', title: "Unlock", method: :delete, data: { confirm: "Are you sure you want to unlock #{path_lock.path}?", container: 'body' }, remote: true do
+          = icon("trash-o")
+
+  locked by #{path_lock.user.name} #{time_ago_with_tooltip(path_lock.created_at)}

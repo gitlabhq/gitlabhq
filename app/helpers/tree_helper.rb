@@ -123,4 +123,20 @@ module TreeHelper
       return tree.name
     end
   end
+
+  def lock_file_link(project = @project, path = @path, html_options: {})
+    return unless license_allows_file_locks?
+    return if path.blank?
+
+    path_lock = project.path_lock_info(path, exact_match: true)
+
+    # Check permissions to unlock
+    return if path_lock && !can_unlock?(path_lock)
+    # Check permissions to lock
+    return if !path_lock && !can?(current_user, :push_code, project)
+
+    label = path_lock ? 'Unlock' : 'Lock'
+    html_options = html_options.merge(data: { state: label.downcase })
+    link_to label, '#', html_options
+  end
 end
