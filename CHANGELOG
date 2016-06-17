@@ -58,6 +58,7 @@ v 8.9.0 (unreleased)
   - Bamboo Service: Fix missing credentials & URL handling when base URL contains a path (Benjamin Schmid)
   - TeamCity Service: Fix URL handling when base URL contains a path
   - Todos will display target state if issuable target is 'Closed' or 'Merged'
+  - Validate only and except regexp
   - Fix bug when sorting issues by milestone due date and filtering by two or more labels
   - Add support for using Yubikeys (U2F) for two-factor authentication
   - Link to blank group icon doesn't throw a 404 anymore
