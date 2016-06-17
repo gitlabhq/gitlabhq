@@ -65,6 +65,7 @@ v 8.9.0 (unreleased)
   - Use downcased path to container repository as this is expected path by Docker
   - Projects pending deletion will render a 404 page
   - Measure queue duration between gitlab-workhorse and Rails
+  - Added Gfm autocomplete for labels
   - Make Omniauth providers specs to not modify global configuration
   - Make authentication service for Container Registry to be compatible with < Docker 1.11
   - Add Application Setting to configure Container Registry token expire delay (default 5min)
