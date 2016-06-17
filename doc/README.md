@@ -7,6 +7,7 @@
 - [GitLab as OAuth2 authentication service provider](integration/oauth_provider.md). It allows you to login to other applications from GitLab.
 - [GitLab Basics](gitlab-basics/README.md) Find step by step how to start working on your commandline and on GitLab.
 - [Importing to GitLab](workflow/importing/README.md).
+- [Importing and exporting projects between instances](workflow/import_export/README.md).
 - [Markdown](markdown/markdown.md) GitLab's advanced formatting system.
 - [Migrating from SVN](workflow/importing/migrating_from_svn.md) Convert a SVN repository to Git and GitLab
 - [Permissions](permissions/permissions.md) Learn what each role in a project (external/guest/reporter/developer/master/owner) can do.
