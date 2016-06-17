@@ -66,8 +66,7 @@ module Gitlab
       end
 
       def import_pull_requests
-        hooks = client.hooks(repo).map { |raw| HookFormatter.new(raw) }.select(&:valid?)
-        disable_webhooks(hooks)
+        disable_webhooks
 
         pull_requests = client.pull_requests(repo, state: :all, sort: :created, direction: :asc, per_page: 100)
         pull_requests = pull_requests.map { |raw| PullRequestFormatter.new(project, raw) }.select(&:valid?)
@@ -90,14 +89,14 @@ module Gitlab
         raise Projects::ImportService::Error, e.message
       ensure
         clean_up_restored_branches(branches_removed)
-        clean_up_disabled_webhooks(hooks)
+        clean_up_disabled_webhooks
       end
 
-      def disable_webhooks(hooks)
+      def disable_webhooks
         update_webhooks(hooks, active: false)
       end
 
-      def clean_up_disabled_webhooks(hooks)
+      def clean_up_disabled_webhooks
         update_webhooks(hooks, active: true)
       end
 
@@ -105,6 +104,20 @@ module Gitlab
         hooks.each do |hook|
           client.edit_hook(repo, hook.id, hook.name, hook.config, options)
         end
+      end
+
+      def hooks
+        @hooks ||=
+          begin
+            client.hooks(repo).map { |raw| HookFormatter.new(raw) }.select(&:valid?)
+
+          # The GitHub Repository Webhooks API returns 404 for users
+          # without admin access to the repository when listing hooks.
+          # In this case we just want to return gracefully instead of
+          # spitting out an error and stop the import process.
+          rescue Octokit::NotFound
+            []
+          end
       end
 
       def restore_branches(branches)
