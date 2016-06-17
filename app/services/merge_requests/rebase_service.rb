@@ -27,7 +27,11 @@ module MergeRequests
       end
 
       # Clone
-      output, status = popen(%W(git clone -b #{merge_request.source_branch} -- #{source_project.repository.path_to_repo} #{tree_path}))
+      output, status = popen(
+        %W(git clone -b #{merge_request.source_branch} -- #{source_project.repository.path_to_repo} #{tree_path}),
+        nil,
+        git_env
+      )
 
       unless status.zero?
         log('Failed to clone repository for rebase:')
@@ -36,7 +40,11 @@ module MergeRequests
       end
 
       # Rebase
-      output, status = popen(%W(git pull --rebase #{target_project.repository.path_to_repo} #{merge_request.target_branch}), tree_path)
+      output, status = popen(
+        %W(git pull --rebase #{target_project.repository.path_to_repo} #{merge_request.target_branch}),
+        tree_path,
+        git_env
+      )
 
       unless status.zero?
         log('Failed to rebase branch:')
@@ -45,7 +53,11 @@ module MergeRequests
       end
 
       # Push
-      output, status = popen(%W(git push -f origin #{merge_request.source_branch}), tree_path)
+      output, status = popen(
+        %W(git push -f origin #{merge_request.source_branch}),
+        tree_path,
+        git_env
+      )
 
       unless status.zero?
         log('Failed to push rebased branch:')
@@ -79,6 +91,10 @@ module MergeRequests
 
     def clean_dir
       FileUtils.rm_rf(tree_path) if File.exist?(tree_path)
+    end
+
+    def git_env
+      { 'GL_ID' => Gitlab::GlId.gl_id(current_user) }
     end
   end
 end
