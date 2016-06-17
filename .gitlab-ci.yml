@@ -132,8 +132,8 @@ spinach 9 10: *spinach-knapsack
 # Execute all testing suites against Ruby 2.3
 .ruby-23: &ruby-23
   image: "ruby:2.3"
-  # only:
-  #   - master
+  only:
+    - master
 
 .rspec-knapsack-ruby23: &rspec-knapsack-ruby23
   <<: *rspec-knapsack
