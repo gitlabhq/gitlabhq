@@ -20,6 +20,12 @@ feature 'Manually create a todo item from issue', feature: true, js: true do
     page.within '.header-content .todos-pending-count' do
       expect(page).to have_content '1'
     end
+
+    visit namespace_project_issue_path(project.namespace, project, issue)
+
+    page.within '.header-content .todos-pending-count' do
+      expect(page).to have_content '1'
+    end
   end
 
   it 'should mark a todo as done' do
@@ -27,6 +33,10 @@ feature 'Manually create a todo item from issue', feature: true, js: true do
       click_button 'Add Todo'
       click_button 'Mark Done'
     end
+
+    expect(page).to have_selector('.todos-pending-count', visible: false)
+
+    visit namespace_project_issue_path(project.namespace, project, issue)
 
     expect(page).to have_selector('.todos-pending-count', visible: false)
   end
