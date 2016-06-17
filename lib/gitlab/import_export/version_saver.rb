@@ -11,7 +11,7 @@ module Gitlab
 
         File.write(version_file, Gitlab::ImportExport.version, mode: 'w')
       rescue => e
-        @shared.error(e.message)
+        @shared.error(e)
         false
       end
 

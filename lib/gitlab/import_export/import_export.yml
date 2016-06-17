@@ -30,8 +30,6 @@ project_tree:
 # Only include the following attributes for the models specified.
 included_attributes:
   project:
-    - :name
-    - :path
     - :description
     - :issues_enabled
     - :merge_requests_enabled

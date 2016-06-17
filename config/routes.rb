@@ -171,6 +171,10 @@ Rails.application.routes.draw do
       get   :new_user_map,    path: :user_map
       post  :create_user_map, path: :user_map
     end
+
+    resource :gitlab_project, only: [:create, :new] do
+      post :create
+    end
   end
 
   #
@@ -455,6 +459,10 @@ Rails.application.routes.draw do
         post :housekeeping
         post :toggle_star
         post :markdown_preview
+        post :export
+        post :remove_export
+        post :generate_new_export
+        get :download_export
         get :autocomplete_sources
         get :activity
       end

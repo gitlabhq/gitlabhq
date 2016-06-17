@@ -1,5 +1,6 @@
 class CommitStatus < ActiveRecord::Base
   include Statuseable
+  include Importable
 
   self.table_name = 'ci_builds'
 
@@ -7,7 +8,7 @@ class CommitStatus < ActiveRecord::Base
   belongs_to :pipeline, class_name: 'Ci::Pipeline', foreign_key: :commit_id, touch: true
   belongs_to :user
 
-  validates :pipeline, presence: true
+  validates :pipeline, presence: true, unless: :importing?
 
   validates_presence_of :name
 

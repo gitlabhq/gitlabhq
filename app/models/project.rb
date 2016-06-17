@@ -351,6 +351,11 @@ class Project < ActiveRecord::Base
 
       joins(join_body).reorder('join_note_counts.amount DESC')
     end
+
+    # Deletes gitlab project export files older than 24 hours
+    def remove_gitlab_exports!
+      Gitlab::Popen.popen(%W(find #{Gitlab::ImportExport.storage_path} -not -path #{Gitlab::ImportExport.storage_path} -mmin +1440 -delete))
+    end
   end
 
   def team
@@ -454,7 +459,7 @@ class Project < ActiveRecord::Base
   end
 
   def import?
-    external_import? || forked?
+    external_import? || forked? || gitlab_project_import?
   end
 
   def no_import?
@@ -483,6 +488,10 @@ class Project < ActiveRecord::Base
 
   def safe_import_url
     Gitlab::UrlSanitizer.new(import_url).masked_url
+  end
+
+  def gitlab_project_import?
+    import_type == 'gitlab_project'
   end
 
   def check_limit
@@ -1081,13 +1090,26 @@ class Project < ActiveRecord::Base
     @errors = original_errors
   end
 
-  def add_export_job(current_user_id:)
-    job_id = ProjectExportWorker.perform_async(current_user_id, self.id)
+  def add_export_job(current_user:)
+    job_id = ProjectExportWorker.perform_async(current_user.id, self.id)
 
     if job_id
       Rails.logger.info "Export job started for project ID #{self.id} with job ID #{job_id}"
     else
       Rails.logger.error "Export job failed to start for project ID #{self.id}"
     end
+  end
+
+  def export_path
+    File.join(Gitlab::ImportExport.storage_path, path_with_namespace)
+  end
+
+  def export_project_path
+    Dir.glob("#{export_path}/*export.tar.gz").max_by { |f| File.ctime(f) }
+  end
+
+  def remove_exports
+    _, status = Gitlab::Popen.popen(%W(find #{export_path} -not -path #{export_path} -delete))
+    status.zero?
   end
 end

@@ -2,6 +2,8 @@ module Gitlab
   module ImportExport
     class Reader
 
+      attr_reader :tree
+
       def initialize(shared:)
         @shared = shared
         config_hash = YAML.load_file(Gitlab::ImportExport.config_file).deep_symbolize_keys
@@ -16,7 +18,7 @@ module Gitlab
       def project_tree
         @attributes_finder.find_included(:project).merge(include: build_hash(@tree))
       rescue => e
-        @shared.error(e.message)
+        @shared.error(e)
         false
       end
 

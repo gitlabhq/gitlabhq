@@ -20,7 +20,7 @@ module Gitlab
           false
         end
       rescue => e
-        @shared.error(e.message)
+        @shared.error(e)
         false
       end
 
