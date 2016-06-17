@@ -1,5 +1,6 @@
 class MergeRequestDiff < ActiveRecord::Base
   include Sortable
+  include Importable
 
   # Prevent store of diff if commits amount more then 500
   COMMITS_SAFE_SIZE = 100
@@ -22,7 +23,7 @@ class MergeRequestDiff < ActiveRecord::Base
   serialize :st_commits
   serialize :st_diffs
 
-  after_create :reload_content
+  after_create :reload_content, unless: :importing?
 
   def reload_content
     reload_commits

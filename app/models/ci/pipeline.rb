@@ -170,6 +170,10 @@ module Ci
       builds.where.not(environment: nil).success.pluck(:environment).uniq
     end
 
+    def notes
+      Note.for_commit_id(sha)
+    end
+
     private
 
     def build_builds_for_stages(stages, user, status, trigger_request)

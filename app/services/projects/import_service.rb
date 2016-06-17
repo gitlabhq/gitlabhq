@@ -9,25 +9,30 @@ module Projects
       'fogbugz',
       'gitlab',
       'github',
-      'google_code'
+      'google_code',
+      'gitlab_project'
     ]
 
     def execute
+      add_repository_to_project unless project.gitlab_project_import?
+
+      import_data
+
+      success
+    rescue => e
+      error(e.message)
+    end
+
+    private
+
+    def add_repository_to_project
       if unknown_url?
         # In this case, we only want to import issues, not a repository.
         create_repository
       else
         import_repository
       end
-
-      import_data
-
-      success
-    rescue Error => e
-      error(e.message)
     end
-
-    private
 
     def create_repository
       unless project.create_repository
@@ -46,7 +51,7 @@ module Projects
     def import_data
       return unless has_importer?
 
-      project.repository.before_import
+      project.repository.before_import unless project.gitlab_project_import?
 
       unless importer.execute
         raise Error, 'The remote data could not be imported.'
@@ -58,6 +63,8 @@ module Projects
     end
 
     def importer
+      return Gitlab::ImportExport::Importer.new(project) if @project.gitlab_project_import?
+
       class_name = "Gitlab::#{project.import_type.camelize}Import::Importer"
       class_name.constantize.new(project)
     end
