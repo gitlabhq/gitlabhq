@@ -151,6 +151,26 @@ class @MergeRequestTabs
         @commitsLoaded = true
         @scrollToElement("#commits")
 
+
+  bindDiffOptionsEvents: ->
+
+    $('.diff-option-buttons .js-diff-comments-button').on 'click', (e) ->
+      e.preventDefault()
+
+      $this    = $ this
+      state    = $this.data 'state'
+      newState = 'hidden'
+      newLabel = 'Show all comments'
+
+      if state is 'hidden'
+        newLabel = 'Hide all comments'
+        newState = 'visible'
+
+      $("#diffs .notes_holder").toggle()
+      $this.text newLabel
+      $this.data 'state', newState
+
+
   loadDiff: (source) ->
     return if @diffsLoaded
 
@@ -164,6 +184,7 @@ class @MergeRequestTabs
         @diffsLoaded = true
         @scrollToElement("#diffs")
         @highlighSelectedLine()
+        @bindDiffOptionsEvents()
 
         $(document)
           .off 'click', '.diff-line-num a'
@@ -222,7 +243,7 @@ class @MergeRequestTabs
 
   # Returns diff view type
   diffViewType: ->
-    $('.inline-parallel-buttons a.active').data('view-type')
+    $('.js-diff-view-options.is-active').data('view-type')
 
   expandViewContainer: ->
     $('.container-fluid').removeClass('container-limited')

@@ -5,13 +5,13 @@
 - diff_files = safe_diff_files(diffs, diff_refs)
 
 .content-block.oneline-block.files-changed
-  .inline-parallel-buttons.dropdown
+  .diff-option-buttons.dropdown
     %button.btn.btn-default{ type: "button", data: { toggle: "dropdown" } }
       Options
       %span.caret
     %ul.dropdown-menu.dropdown-menu-align-right.dropdown-menu-selectable
       %li
-        %a.is-unselectable{ href: "#", data: { hide_text: "Hide all comments", show_text: "Show all comments" } }
+        %a.is-unselectable.js-diff-comments-button{ href: "#", data: { state: "visible" } }
           Hide all comments
       %li
         - if show_whitespace_toggle
