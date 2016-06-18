@@ -134,6 +134,12 @@ describe Banzai::Filter::IssueReferenceFilter, lib: true do
 
       expect(reference_filter(act).to_html).to eq exp
     end
+
+    it 'ignores out-of-bounds issue IDs on the referenced project' do
+      exp = act = "Fixed ##{Gitlab::Database::MAX_INT_VALUE + 1}"
+
+      expect(reference_filter(act).to_html).to eq exp
+    end
   end
 
   context 'cross-project URL reference' do
