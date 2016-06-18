@@ -1,10 +1,15 @@
-- if event.proper?
-  .event-item{class: "#{event.body? ? "event-block" : "event-inline" }"}
+- if event.visible_to_user?(current_user)
+  .event-item{ class: event_row_class(event) }
     .event-item-timestamp
       #{time_ago_with_tooltip(event.created_at)}
 
     = cache [event, current_application_settings, "v2.2"] do
-      = image_tag avatar_icon(event.author_email, 40), class: "avatar s40", alt:''
+      - if event.author
+        = link_to user_path(event.author) do
+          = image_tag avatar_icon(event.author_email, 40), class: "avatar s40", alt:''
+      - else
+        = image_tag avatar_icon(event.author_email, 40), class: "avatar s40", alt:''
+
       - if event.created_project?
         = render "events/event/created_project", event: event
       - elsif event.push?

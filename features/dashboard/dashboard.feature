@@ -6,6 +6,7 @@ Feature: Dashboard
     And project "Shop" has push event
     And project "Shop" has CI enabled
     And project "Shop" has CI build
+    And project "Shop" has labels: "bug", "feature", "enhancement"
     And I visit dashboard page
 
   Scenario: I should see projects list
@@ -49,6 +50,13 @@ Feature: Dashboard
     And I visit dashboard activity page
     And I visit dashboard issues page
     Then The list should be sorted by "Oldest updated"
+
+  @javascript
+  Scenario: Filtering Issues by label
+    Given project "Shop" has issue "Bugfix1" with label "feature"
+    When I visit dashboard issues page
+    And I filter the list by label "feature"
+    Then I should see "Bugfix1" in issues list
 
   @javascript
   Scenario: Visiting Project's issues after sorting

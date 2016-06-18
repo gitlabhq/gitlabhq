@@ -35,6 +35,7 @@ class Spinach::Features::Search < Spinach::FeatureSteps
   end
 
   step 'I click project "Shop" link' do
+    click_button 'Project'
     page.within '.project-filter' do
       click_link project.name_with_namespace
     end

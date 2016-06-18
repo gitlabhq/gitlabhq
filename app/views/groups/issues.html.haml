@@ -1,5 +1,4 @@
 - page_title "Issues"
-- header_title group_title(@group, "Issues", issues_group_path(@group))
 = content_for :meta_tags do
   - if current_user
     = auto_discovery_link_tag(:atom, issues_group_url(@group, format: :atom, private_token: current_user.private_token), title: "#{@group.name} issues")
@@ -10,11 +9,13 @@
     - if current_user
       = link_to issues_group_url(@group, format: :atom, private_token: current_user.private_token), class: 'btn' do
         = icon('rss')
+        %span.icon-label
+          Subscribe
     = render 'shared/new_project_item_select', path: 'issues/new', label: "New Issue"
 
 = render 'shared/issuable/filter', type: :issues
 
-.gray-content-block.second-block
+.row-content-block.second-block
   Only issues from
   %strong #{@group.name}
   group are listed here.

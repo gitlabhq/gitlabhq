@@ -33,7 +33,7 @@ describe Gitlab::LDAP::Access, lib: true do
 
         it { is_expected.to be_falsey }
 
-        it 'should block user in GitLab' do
+        it 'blocks user in GitLab' do
           access.allowed?
           expect(user).to be_blocked
           expect(user).to be_ldap_blocked
@@ -78,6 +78,31 @@ describe Gitlab::LDAP::Access, lib: true do
         end
 
         it { is_expected.to be_truthy }
+
+        context 'when user cannot be found' do
+          before do
+            allow(Gitlab::LDAP::Person).to receive(:find_by_dn).and_return(nil)
+          end
+
+          it { is_expected.to be_falsey }
+
+          it 'blocks user in GitLab' do
+            access.allowed?
+            expect(user).to be_blocked
+            expect(user).to be_ldap_blocked
+          end
+        end
+
+        context 'when user was previously ldap_blocked' do
+          before do
+            user.ldap_block
+          end
+
+          it 'unblocks the user if it exists' do
+            access.allowed?
+            expect(user).not_to be_blocked
+          end
+        end
       end
     end
   end

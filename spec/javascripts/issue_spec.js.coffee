@@ -29,8 +29,8 @@ describe 'reopen/close issue', ->
     spyOn(jQuery, 'ajax').and.callFake (req) ->
       expect(req.type).toBe('PUT')
       expect(req.url).toBe('http://gitlab.com/issues/6/close')
-      req.success saved: true
-    
+      req.success id: 34
+
     $btnClose = $('a.btn-close')
     $btnReopen = $('a.btn-reopen')
     expect($btnReopen).toBeHidden()
@@ -94,7 +94,7 @@ describe 'reopen/close issue', ->
     spyOn(jQuery, 'ajax').and.callFake (req) ->
       expect(req.type).toBe('PUT')
       expect(req.url).toBe('http://gitlab.com/issues/6/reopen')
-      req.success saved: true
+      req.success id: 34
 
     $btnClose = $('a.btn-close')
     $btnReopen = $('a.btn-reopen')

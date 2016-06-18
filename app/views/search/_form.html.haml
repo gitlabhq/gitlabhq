@@ -1,14 +1,15 @@
-= form_tag search_path, method: :get do |f|
-  = hidden_field_tag :project_id, params[:project_id]
-  = hidden_field_tag :group_id, params[:group_id]
+= form_tag search_path, method: :get, class: 'js-search-form' do |f|
   = hidden_field_tag :snippets, params[:snippets]
   = hidden_field_tag :scope, params[:scope]
 
-  .search-holder.clearfix
-    .input-group
-      = search_field_tag :search, params[:search], placeholder: "Search for projects, issues etc", class: "form-control search-text-input", id: "dashboard_search", autofocus: true, spellcheck: false
-      %span.input-group-btn
-        = button_tag 'Search', class: "btn btn-primary"
+  .search-holder
+    .search-field-holder
+      = search_field_tag :search, params[:search], placeholder: "Search for projects, issues etc", class: "form-control search-text-input js-search-input", id: "dashboard_search", autofocus: true, spellcheck: false
+      = icon("search", class: "search-icon")
+      %button.search-clear.js-search-clear{ class: ("hidden" if !params[:search].present?), type: "button", tabindex: "-1" }
+        = icon("times-circle")
+        %span.sr-only
+          Clear search
     - unless params[:snippets].eql? 'true'
-      %br
       = render 'filter' if current_user
+    = button_tag "Search", class: "btn btn-success btn-search"

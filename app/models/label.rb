@@ -1,17 +1,3 @@
-# == Schema Information
-#
-# Table name: labels
-#
-#  id           :integer          not null, primary key
-#  title        :string(255)
-#  color        :string(255)
-#  project_id   :integer
-#  created_at   :datetime
-#  updated_at   :datetime
-#  template     :boolean          default(FALSE)
-#  description  :string(255)
-#
-
 class Label < ActiveRecord::Base
   include Referable
   include Subscribable
@@ -40,9 +26,19 @@ class Label < ActiveRecord::Base
             format: { with: /\A[^&\?,]+\z/ },
             uniqueness: { scope: :project_id }
 
+  before_save :nullify_priority
+
   default_scope { order(title: :asc) }
 
   scope :templates, ->  { where(template: true) }
+
+  def self.prioritized
+    where.not(priority: nil).reorder(:priority, :title)
+  end
+
+  def self.unprioritized
+    where(priority: nil)
+  end
 
   alias_attribute :name, :title
 
@@ -56,7 +52,7 @@ class Label < ActiveRecord::Base
   # This pattern supports cross-project references.
   #
   def self.reference_pattern
-    %r{
+    @reference_pattern ||= %r{
       (#{Project.reference_pattern})?
       #{Regexp.escape(reference_prefix)}
       (?:
@@ -97,12 +93,12 @@ class Label < ActiveRecord::Base
     end
   end
 
-  def open_issues_count
-    issues.opened.count
+  def open_issues_count(user = nil)
+    issues.visible_to_user(user).opened.count
   end
 
-  def closed_issues_count
-    issues.closed.count
+  def closed_issues_count(user = nil)
+    issues.visible_to_user(user).closed.count
   end
 
   def open_merge_requests_count
@@ -111,6 +107,14 @@ class Label < ActiveRecord::Base
 
   def template?
     template
+  end
+
+  def text_color
+    LabelsHelper::text_color_for_bg(self.color)
+  end
+
+  def title=(value)
+    write_attribute(:title, Sanitize.clean(value.to_s)) if value.present?
   end
 
   private
@@ -123,5 +127,9 @@ class Label < ActiveRecord::Base
     else
       id
     end
+  end
+
+  def nullify_priority
+    self.priority = nil if priority.blank?
   end
 end

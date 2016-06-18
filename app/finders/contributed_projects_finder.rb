@@ -1,4 +1,4 @@
-class ContributedProjectsFinder
+class ContributedProjectsFinder < UnionFinder
   def initialize(user)
     @user = user
   end
@@ -11,27 +11,19 @@ class ContributedProjectsFinder
   #
   # Returns an ActiveRecord::Relation.
   def execute(current_user = nil)
-    if current_user
-      relation = projects_visible_to_user(current_user)
-    else
-      relation = public_projects
-    end
+    segments = all_projects(current_user)
 
-    relation.includes(:namespace).order_id_desc
+    find_union(segments, Project).includes(:namespace).order_id_desc
   end
 
   private
 
-  def projects_visible_to_user(current_user)
-    authorized = @user.contributed_projects.visible_to_user(current_user)
+  def all_projects(current_user)
+    projects = []
 
-    union = Gitlab::SQL::Union.
-      new([authorized.select(:id), public_projects.select(:id)])
+    projects << @user.contributed_projects.visible_to_user(current_user) if current_user
+    projects << @user.contributed_projects.public_to_user(current_user)
 
-    Project.where("projects.id IN (#{union.to_sql})")
-  end
-
-  def public_projects
-    @user.contributed_projects.public_only
+    projects
   end
 end

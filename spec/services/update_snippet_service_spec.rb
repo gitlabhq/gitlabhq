@@ -25,7 +25,7 @@ describe UpdateSnippetService, services: true do
       update_snippet(@project, @user, @snippet, @opts)
       expect(@snippet.errors.messages).to have_key(:visibility_level)
       expect(@snippet.errors.messages[:visibility_level].first).to(
-        match('Public visibility has been restricted')
+        match('has been restricted')
       )
       expect(@snippet.visibility_level).to eq(old_visibility)
     end

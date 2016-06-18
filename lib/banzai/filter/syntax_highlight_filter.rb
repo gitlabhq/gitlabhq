@@ -1,4 +1,3 @@
-require 'html/pipeline/filter'
 require 'rouge/plugins/redcarpet'
 
 module Banzai

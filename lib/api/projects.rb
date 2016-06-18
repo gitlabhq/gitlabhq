@@ -44,7 +44,7 @@ module API
       # Example Request:
       #   GET /projects/starred
       get '/starred' do
-        @projects = current_user.starred_projects
+        @projects = current_user.viewable_starred_projects
         @projects = filter_projects(@projects)
         @projects = paginate @projects
         present @projects, with: Entities::Project
@@ -94,6 +94,7 @@ module API
       #   builds_enabled (optional)
       #   wiki_enabled (optional)
       #   snippets_enabled (optional)
+      #   container_registry_enabled (optional)
       #   shared_runners_enabled (optional)
       #   namespace_id (optional) - defaults to user namespace
       #   public (optional) - if true same as setting visibility_level = 20
@@ -112,6 +113,7 @@ module API
                                      :builds_enabled,
                                      :wiki_enabled,
                                      :snippets_enabled,
+                                     :container_registry_enabled,
                                      :shared_runners_enabled,
                                      :namespace_id,
                                      :public,
@@ -143,6 +145,7 @@ module API
       #   builds_enabled (optional)
       #   wiki_enabled (optional)
       #   snippets_enabled (optional)
+      #   container_registry_enabled (optional)
       #   shared_runners_enabled (optional)
       #   public (optional) - if true same as setting visibility_level = 20
       #   visibility_level (optional)
@@ -206,6 +209,7 @@ module API
       #   builds_enabled (optional)
       #   wiki_enabled (optional)
       #   snippets_enabled (optional)
+      #   container_registry_enabled (optional)
       #   shared_runners_enabled (optional)
       #   public (optional) - if true same as setting visibility_level = 20
       #   visibility_level (optional) - visibility level of a project
@@ -222,6 +226,7 @@ module API
                                      :builds_enabled,
                                      :wiki_enabled,
                                      :snippets_enabled,
+                                     :container_registry_enabled,
                                      :shared_runners_enabled,
                                      :public,
                                      :visibility_level,
@@ -241,6 +246,68 @@ module API
         else
           present user_project, with: Entities::Project,
                                 user_can_admin_project: can?(current_user, :admin_project, user_project)
+        end
+      end
+
+      # Archive project
+      #
+      # Parameters:
+      #   id (required) - The ID of a project
+      # Example Request:
+      #   PUT /projects/:id/archive
+      post ':id/archive' do
+        authorize!(:archive_project, user_project)
+
+        user_project.archive!
+
+        present user_project, with: Entities::Project
+      end
+
+      # Unarchive project
+      #
+      # Parameters:
+      #   id (required) - The ID of a project
+      # Example Request:
+      #   PUT /projects/:id/unarchive
+      post ':id/unarchive' do
+        authorize!(:archive_project, user_project)
+
+        user_project.unarchive!
+
+        present user_project, with: Entities::Project
+      end
+
+      # Star project
+      #
+      # Parameters:
+      #   id (required) - The ID of a project
+      # Example Request:
+      #   POST /projects/:id/star
+      post ':id/star' do
+        if current_user.starred?(user_project)
+          not_modified!
+        else
+          current_user.toggle_star(user_project)
+          user_project.reload
+
+          present user_project, with: Entities::Project
+        end
+      end
+
+      # Unstar project
+      #
+      # Parameters:
+      #   id (required) - The ID of a project
+      # Example Request:
+      #   DELETE /projects/:id/star
+      delete ':id/star' do
+        if current_user.starred?(user_project)
+          current_user.toggle_star(user_project)
+          user_project.reload
+
+          present user_project, with: Entities::Project
+        else
+          not_modified!
         end
       end
 

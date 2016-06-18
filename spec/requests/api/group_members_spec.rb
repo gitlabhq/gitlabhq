@@ -11,7 +11,7 @@ describe API::API, api: true  do
   let(:stranger) { create(:user) }
 
   let!(:group_with_members) do
-    group = create(:group)
+    group = create(:group, :private)
     group.add_users([reporter.id], GroupMember::REPORTER)
     group.add_users([developer.id], GroupMember::DEVELOPER)
     group.add_users([master.id], GroupMember::MASTER)
@@ -34,17 +34,18 @@ describe API::API, api: true  do
           expect(response.status).to eq(200)
           expect(json_response).to be_an Array
           expect(json_response.size).to eq(5)
-          expect(json_response.find { |e| e['id']==owner.id }['access_level']).to eq(GroupMember::OWNER)
-          expect(json_response.find { |e| e['id']==reporter.id }['access_level']).to eq(GroupMember::REPORTER)
-          expect(json_response.find { |e| e['id']==developer.id }['access_level']).to eq(GroupMember::DEVELOPER)
-          expect(json_response.find { |e| e['id']==master.id }['access_level']).to eq(GroupMember::MASTER)
-          expect(json_response.find { |e| e['id']==guest.id }['access_level']).to eq(GroupMember::GUEST)
+          expect(json_response.find { |e| e['id'] == owner.id }['access_level']).to eq(GroupMember::OWNER)
+          expect(json_response.find { |e| e['id'] == reporter.id }['access_level']).to eq(GroupMember::REPORTER)
+          expect(json_response.find { |e| e['id'] == developer.id }['access_level']).to eq(GroupMember::DEVELOPER)
+          expect(json_response.find { |e| e['id'] == master.id }['access_level']).to eq(GroupMember::MASTER)
+          expect(json_response.find { |e| e['id'] == guest.id }['access_level']).to eq(GroupMember::GUEST)
         end
       end
 
-      it "users not part of the group should get access error" do
+      it 'users not part of the group should get access error' do
         get api("/groups/#{group_with_members.id}/members", stranger)
-        expect(response.status).to eq(403)
+
+        expect(response.status).to eq(404)
       end
     end
   end
@@ -165,12 +166,13 @@ describe API::API, api: true  do
     end
   end
 
-  describe "DELETE /groups/:id/members/:user_id" do
-    context "when not a member of the group" do
+  describe 'DELETE /groups/:id/members/:user_id' do
+    context 'when not a member of the group' do
       it "should not delete guest's membership of group_with_members" do
         random_user = create(:user)
         delete api("/groups/#{group_with_members.id}/members/#{owner.id}", random_user)
-        expect(response.status).to eq(403)
+
+        expect(response.status).to eq(404)
       end
     end
 

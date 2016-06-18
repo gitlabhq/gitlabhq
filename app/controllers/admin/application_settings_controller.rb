@@ -19,6 +19,21 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
     redirect_to admin_runners_path
   end
 
+  def reset_health_check_token
+    @application_setting.reset_health_check_access_token!
+    flash[:notice] = 'New health check access token has been generated!'
+    redirect_to :back
+  end
+
+  def clear_repository_check_states
+    RepositoryCheck::ClearWorker.perform_async
+
+    redirect_to(
+      admin_application_settings_path,
+      notice: 'Started asynchronous removal of all repository check states.'
+    )
+  end
+
   private
 
   def set_application_setting
@@ -44,6 +59,12 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       end
     end
 
+    enabled_oauth_sign_in_sources = params[:application_setting].delete(:enabled_oauth_sign_in_sources)
+
+    params[:application_setting][:disabled_oauth_sign_in_sources] =
+      AuthHelper.button_based_providers.map(&:to_s) -
+      Array(enabled_oauth_sign_in_sources)
+
     params.require(:application_setting).permit(
       :default_projects_limit,
       :default_branch_protection,
@@ -52,8 +73,8 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :require_two_factor_authentication,
       :two_factor_grace_period,
       :gravatar_enabled,
-      :twitter_sharing_enabled,
       :sign_in_text,
+      :after_sign_up_text,
       :help_page_text,
       :home_page_url,
       :after_sign_out_path,
@@ -61,11 +82,13 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :session_expire_delay,
       :default_project_visibility,
       :default_snippet_visibility,
+      :default_group_visibility,
       :restricted_signup_domains_raw,
       :version_check_enabled,
       :admin_notification_email,
       :user_oauth_applications,
       :shared_runners_enabled,
+      :shared_runners_text,
       :max_artifacts_size,
       :metrics_enabled,
       :metrics_host,
@@ -82,8 +105,13 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :akismet_enabled,
       :akismet_api_key,
       :email_author_in_body,
+      :repository_checks_enabled,
+      :metrics_packet_size,
+      :send_user_confirmation_email,
+      :container_registry_token_expire_delay,
       restricted_visibility_levels: [],
-      import_sources: []
+      import_sources: [],
+      disabled_oauth_sign_in_sources: []
     )
   end
 end

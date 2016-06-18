@@ -1,0 +1,39 @@
+- page_title "Container Registry"
+
+%hr
+
+%ul.content-list
+  %li.light.prepend-top-default
+    %p
+      A 'container image' is a snapshot of a container.
+      You can host your container images with GitLab.
+      %br
+      To start using container images hosted on GitLab you first need to login:
+      %pre
+        %code
+          docker login #{Gitlab.config.registry.host_port}
+      %br
+      Then you are free to create and upload a container image with build and push commands:
+      %pre
+        docker build -t #{escape_once(@project.container_registry_repository_url)} .
+        %br
+        docker push #{escape_once(@project.container_registry_repository_url)}
+
+  - if @tags.blank?
+    %li
+      .nothing-here-block No images in Container Registry for this project.
+
+  - else
+    .table-holder
+      %table.table.tags
+        %thead
+          %tr
+            %th Name
+            %th Image ID
+            %th Size
+            %th Created
+            - if can?(current_user, :update_container_image, @project)
+              %th
+
+        - @tags.each do |tag|
+          = render 'tag', tag: tag

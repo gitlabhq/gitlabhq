@@ -1,19 +1,50 @@
-# This task will generate a standard and Retina sprite of all of the current
-# Gemojione Emojis, with the accompanying SCSS map.
-#
-# It will not appear in `rake -T` output, and the dependent gems are not
-# included in the Gemfile by default, because this task will only be needed
-# occasionally, such as when new Emojis are added to Gemojione.
-
-begin
-  require 'sprite_factory'
-  require 'rmagick'
-rescue LoadError
-  # noop
-end
-
 namespace :gemojione do
+  desc 'Generates Emoji SHA256 digests'
+  task digests: :environment do
+    require 'digest/sha2'
+    require 'json'
+
+    dir = Gemojione.index.images_path
+    digests = []
+    aliases = Hash.new { |hash, key| hash[key] = [] }
+    aliases_path = File.join(Rails.root, 'fixtures', 'emojis', 'aliases.json')
+
+    JSON.parse(File.read(aliases_path)).each do |alias_name, real_name|
+      aliases[real_name] << alias_name
+    end
+
+    AwardEmoji.emojis.map do |name, emoji_hash|
+      fpath = File.join(dir, "#{emoji_hash['unicode']}.png")
+      digest = Digest::SHA256.file(fpath).hexdigest
+
+      digests << { name: name, unicode: emoji_hash['unicode'], digest: digest }
+
+      aliases[name].each do |alias_name|
+        digests << { name: alias_name, unicode: emoji_hash['unicode'], digest: digest }
+      end
+    end
+
+    out = File.join(Rails.root, 'fixtures', 'emojis', 'digests.json')
+
+    File.open(out, 'w') do |handle|
+      handle.write(JSON.pretty_generate(digests))
+    end
+  end
+
+  # This task will generate a standard and Retina sprite of all of the current
+  # Gemojione Emojis, with the accompanying SCSS map.
+  #
+  # It will not appear in `rake -T` output, and the dependent gems are not
+  # included in the Gemfile by default, because this task will only be needed
+  # occasionally, such as when new Emojis are added to Gemojione.
   task sprite: :environment do
+    begin
+      require 'sprite_factory'
+      require 'rmagick'
+    rescue LoadError
+      # noop
+    end
+
     check_requirements!
 
     SIZE   = 20

@@ -208,8 +208,10 @@ describe SystemNoteService, services: true do
   end
 
   describe '.merge_when_build_succeeds' do
-    let(:ci_commit) { build :ci_commit_without_jobs }
-    let(:noteable) { create :merge_request }
+    let(:pipeline) { build(:ci_pipeline_without_jobs )}
+    let(:noteable) do
+      create(:merge_request, source_project: project, target_project: project)
+    end
 
     subject { described_class.merge_when_build_succeeds(noteable, project, author, noteable.last_commit) }
 
@@ -221,8 +223,9 @@ describe SystemNoteService, services: true do
   end
 
   describe '.cancel_merge_when_build_succeeds' do
-    let(:ci_commit) { build :ci_commit_without_jobs }
-    let(:noteable) { create :merge_request }
+    let(:noteable) do
+      create(:merge_request, source_project: project, target_project: project)
+    end
 
     subject { described_class.cancel_merge_when_build_succeeds(noteable, project, author) }
 
@@ -241,15 +244,19 @@ describe SystemNoteService, services: true do
 
       it 'sets the note text' do
         expect(subject.note).
-          to eq "Title changed from **Old title** to **#{noteable.title}**"
+          to eq "Changed title: **{-Old title-}** → **{+#{noteable.title}+}**"
       end
     end
+  end
 
-    context 'when noteable does not respond to `title' do
-      let(:noteable) { double('noteable') }
+  describe '.change_issue_confidentiality' do
+    subject { described_class.change_issue_confidentiality(noteable, project, author) }
 
-      it 'returns nil' do
-        expect(subject).to be_nil
+    context 'when noteable responds to `confidential`' do
+      it_behaves_like 'a system note'
+
+      it 'sets the note text' do
+        expect(subject.note).to eq 'Made the issue visible'
       end
     end
   end
@@ -453,6 +460,68 @@ describe SystemNoteService, services: true do
     end
   end
 
+  describe '.noteable_moved' do
+    let(:new_project) { create(:project) }
+    let(:new_noteable) { create(:issue, project: new_project) }
+
+    subject do
+      described_class.noteable_moved(noteable, project, new_noteable, author, direction: direction)
+    end
+
+    shared_examples 'cross project mentionable' do
+      include GitlabMarkdownHelper
+
+      it 'should contain cross reference to new noteable' do
+        expect(subject.note).to include cross_project_reference(new_project, new_noteable)
+      end
+
+      it 'should mention referenced noteable' do
+        expect(subject.note).to include new_noteable.to_reference
+      end
+
+      it 'should mention referenced project' do
+        expect(subject.note).to include new_project.to_reference
+      end
+    end
+
+    context 'moved to' do
+      let(:direction) { :to }
+
+      it_behaves_like 'cross project mentionable'
+
+      it 'should notify about noteable being moved to' do
+        expect(subject.note).to match /Moved to/
+      end
+    end
+
+    context 'moved from' do
+      let(:direction) { :from }
+
+      it_behaves_like 'cross project mentionable'
+
+      it 'should notify about noteable being moved from' do
+        expect(subject.note).to match /Moved from/
+      end
+    end
+
+    context 'invalid direction' do
+      let(:direction) { :invalid }
+
+      it 'should raise error' do
+        expect { subject }.to raise_error StandardError, /Invalid direction/
+      end
+    end
+  end
+
+  describe '.new_commit_summary' do
+    it 'escapes HTML titles' do
+      commit = double(title: '<pre>This is a test</pre>', short_id: '12345678')
+      escaped = '* 12345678 - &lt;pre&gt;This is a test&lt;&#x2F;pre&gt;'
+
+      expect(described_class.new_commit_summary([commit])).to eq([escaped])
+    end
+  end
+
   include JiraServiceHelper
 
   describe 'JIRA integration' do
@@ -460,7 +529,7 @@ describe SystemNoteService, services: true do
     let(:author)     { create(:user) }
     let(:issue)      { create(:issue, project: project) }
     let(:mergereq)   { create(:merge_request, :simple, target_project: project, source_project: project) }
-    let(:jira_issue) { JiraIssue.new("JIRA-1", project)}
+    let(:jira_issue) { ExternalIssue.new("JIRA-1", project)}
     let(:jira_tracker) { project.create_jira_service if project.jira_service.nil? }
     let(:commit)     { project.commit }
 

@@ -1,10 +1,14 @@
 module Ci
   class ProjectsController < Ci::ApplicationController
     before_action :project
-    before_action :authorize_read_project!, except: [:badge]
     before_action :no_cache, only: [:badge]
+    before_action :authorize_read_project!, except: [:badge, :index]
     skip_before_action :authenticate_user!, only: [:badge]
     protect_from_forgery
+
+    def index
+      redirect_to root_path
+    end
 
     def show
       # Temporary compatibility with CI badges pointing to CI project page
@@ -34,6 +38,10 @@ module Ci
       response.headers["Cache-Control"] = "no-cache, no-store, max-age=0, must-revalidate"
       response.headers["Pragma"] = "no-cache"
       response.headers["Expires"] = "Fri, 01 Jan 1990 00:00:00 GMT"
+    end
+
+    def authorize_read_project!
+      return access_denied! unless can?(current_user, :read_project, project)
     end
   end
 end

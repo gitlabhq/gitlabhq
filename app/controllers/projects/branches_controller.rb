@@ -8,7 +8,7 @@ class Projects::BranchesController < Projects::ApplicationController
   def index
     @sort = params[:sort] || 'name'
     @branches = @repository.branches_sorted_by(@sort)
-    @branches = Kaminari.paginate_array(@branches).page(params[:page]).per(PER_PAGE)
+    @branches = Kaminari.paginate_array(@branches).page(params[:page])
 
     @max_commits = @branches.reduce(0) do |memo, branch|
       diverging_commit_counts = repository.diverging_commit_counts(branch)
@@ -48,9 +48,9 @@ class Projects::BranchesController < Projects::ApplicationController
     respond_to do |format|
       format.html do
         redirect_to namespace_project_branches_path(@project.namespace,
-                                                    @project)
+                                                    @project), status: 303
       end
-      format.js { render status: status[:return_code] }
+      format.js { render nothing: true, status: status[:return_code] }
     end
   end
 

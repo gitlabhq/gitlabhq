@@ -25,13 +25,6 @@ Feature: Project Issues
   Scenario: I visit issue page
     Given I click link "Release 0.4"
     Then I should see issue "Release 0.4"
-    And I should see "1 of 2" in the sidebar
-
-  Scenario: I navigate between issues
-    Given I click link "Release 0.4"
-    Then I click link "Next" in the sidebar
-    Then I should see issue "Tweet control"
-    And I should see "2 of 2" in the sidebar
 
   @javascript
   Scenario: I filter by author
@@ -160,6 +153,7 @@ Feature: Project Issues
 
   Scenario: Issues on empty project
     Given empty project "Empty Project"
+    And I have an ssh key
     When I visit empty project page
     And I see empty project details with ssh clone info
     When I visit empty project's issues page

@@ -7,24 +7,8 @@ describe Gitlab::IncomingEmail, lib: true do
         stub_incoming_email_setting(enabled: true)
       end
 
-      context "when the address is valid" do
-        before do
-          stub_incoming_email_setting(address: "replies+%{key}@example.com")
-        end
-
-        it "returns true" do
-          expect(described_class.enabled?).to be_truthy
-        end
-      end
-
-      context "when the address is invalid" do
-        before do
-          stub_incoming_email_setting(address: "replies@example.com")
-        end
-
-        it "returns false" do
-          expect(described_class.enabled?).to be_falsey
-        end
+      it 'returns true' do
+        expect(described_class.enabled?).to be_truthy
       end
     end
 
@@ -56,6 +40,12 @@ describe Gitlab::IncomingEmail, lib: true do
 
     it "returns reply key" do
       expect(described_class.key_from_address("replies+key@example.com")).to eq("key")
+    end
+  end
+
+  context 'self.key_from_fallback_reply_message_id' do
+    it 'returns reply key' do
+      expect(described_class.key_from_fallback_reply_message_id('reply-key@localhost')).to eq('key')
     end
   end
 end

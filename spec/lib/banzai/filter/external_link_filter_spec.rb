@@ -19,11 +19,31 @@ describe Banzai::Filter::ExternalLinkFilter, lib: true do
     expect(filter(act).to_html).to eq exp
   end
 
-  it 'adds rel="nofollow" to external links' do
-    act = %q(<a href="https://google.com/">Google</a>)
-    doc = filter(act)
+  context 'for root links on document' do
+    let(:doc) { filter %q(<a href="https://google.com/">Google</a>) }
 
-    expect(doc.at_css('a')).to have_attribute('rel')
-    expect(doc.at_css('a')['rel']).to eq 'nofollow'
+    it 'adds rel="nofollow" to external links' do
+      expect(doc.at_css('a')).to have_attribute('rel')
+      expect(doc.at_css('a')['rel']).to include 'nofollow'
+    end
+
+    it 'adds rel="noreferrer" to external links' do
+      expect(doc.at_css('a')).to have_attribute('rel')
+      expect(doc.at_css('a')['rel']).to include 'noreferrer'
+    end
+  end
+
+  context 'for nested links on document' do
+    let(:doc) { filter %q(<p><a href="https://google.com/">Google</a></p>) }
+
+    it 'adds rel="nofollow" to external links' do
+      expect(doc.at_css('a')).to have_attribute('rel')
+      expect(doc.at_css('a')['rel']).to include 'nofollow'
+    end
+
+    it 'adds rel="noreferrer" to external links' do
+      expect(doc.at_css('a')).to have_attribute('rel')
+      expect(doc.at_css('a')['rel']).to include 'noreferrer'
+    end
   end
 end

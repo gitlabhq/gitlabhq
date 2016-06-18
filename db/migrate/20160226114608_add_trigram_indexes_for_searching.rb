@@ -1,8 +1,11 @@
+# rubocop:disable all
 class AddTrigramIndexesForSearching < ActiveRecord::Migration
   disable_ddl_transaction!
 
   def up
     return unless Gitlab::Database.postgresql?
+
+    create_trigrams_extension
 
     unless trigrams_enabled?
       raise 'You must enable the pg_trgm extension. You can do so by running ' \
@@ -35,6 +38,15 @@ class AddTrigramIndexesForSearching < ActiveRecord::Migration
     row = res.first
 
     row && row['enabled'] == 't' ? true : false
+  end
+
+  def create_trigrams_extension
+    # This may not work if the user doesn't have permission. We attempt in
+    # case we do have permission, particularly for test/dev environments.
+    begin
+      enable_extension 'pg_trgm'
+    rescue
+    end
   end
 
   def to_index

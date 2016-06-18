@@ -4,6 +4,7 @@ describe API::API, api: true  do
   include ApiHelpers
   let(:user) { create(:user) }
   let!(:project) { create(:project, namespace: user.namespace ) }
+  let!(:closed_milestone) { create(:closed_milestone, project: project) }
   let!(:milestone) { create(:milestone, project: project) }
 
   before { project.team << [user, :developer] }
@@ -20,6 +21,24 @@ describe API::API, api: true  do
       get api("/projects/#{project.id}/milestones")
       expect(response.status).to eq(401)
     end
+
+    it 'returns an array of active milestones' do
+      get api("/projects/#{project.id}/milestones?state=active", user)
+
+      expect(response.status).to eq(200)
+      expect(json_response).to be_an Array
+      expect(json_response.length).to eq(1)
+      expect(json_response.first['id']).to eq(milestone.id)
+    end
+
+    it 'returns an array of closed milestones' do
+      get api("/projects/#{project.id}/milestones?state=closed", user)
+
+      expect(response.status).to eq(200)
+      expect(json_response).to be_an Array
+      expect(json_response.length).to eq(1)
+      expect(json_response.first['id']).to eq(closed_milestone.id)
+    end
   end
 
   describe 'GET /projects/:id/milestones/:milestone_id' do
@@ -31,10 +50,12 @@ describe API::API, api: true  do
     end
 
     it 'should return a project milestone by iid' do
-      get api("/projects/#{project.id}/milestones?iid=#{milestone.iid}", user)
+      get api("/projects/#{project.id}/milestones?iid=#{closed_milestone.iid}", user)
+
       expect(response.status).to eq 200
-      expect(json_response.first['title']).to eq milestone.title
-      expect(json_response.first['id']).to eq milestone.id
+      expect(json_response.size).to eq(1)
+      expect(json_response.first['title']).to eq closed_milestone.title
+      expect(json_response.first['id']).to eq closed_milestone.id
     end
 
     it 'should return 401 error if user not authenticated' do
@@ -106,7 +127,7 @@ describe API::API, api: true  do
 
   describe 'GET /projects/:id/milestones/:milestone_id/issues' do
     before do
-      milestone.issues << create(:issue)
+      milestone.issues << create(:issue, project: project)
     end
     it 'should return project issues for a particular milestone' do
       get api("/projects/#{project.id}/milestones/#{milestone.id}/issues", user)
@@ -118,6 +139,48 @@ describe API::API, api: true  do
     it 'should return a 401 error if user not authenticated' do
       get api("/projects/#{project.id}/milestones/#{milestone.id}/issues")
       expect(response.status).to eq(401)
+    end
+
+    describe 'confidential issues' do
+      let(:public_project) { create(:project, :public) }
+      let(:milestone) { create(:milestone, project: public_project) }
+      let(:issue) { create(:issue, project: public_project) }
+      let(:confidential_issue) { create(:issue, confidential: true, project: public_project) }
+
+      before do
+        public_project.team << [user, :developer]
+        milestone.issues << issue << confidential_issue
+      end
+
+      it 'returns confidential issues to team members' do
+        get api("/projects/#{public_project.id}/milestones/#{milestone.id}/issues", user)
+
+        expect(response.status).to eq(200)
+        expect(json_response).to be_an Array
+        expect(json_response.size).to eq(2)
+        expect(json_response.map { |issue| issue['id'] }).to include(issue.id, confidential_issue.id)
+      end
+
+      it 'does not return confidential issues to team members with guest role' do
+        member = create(:user)
+        project.team << [member, :guest]
+
+        get api("/projects/#{public_project.id}/milestones/#{milestone.id}/issues", member)
+
+        expect(response.status).to eq(200)
+        expect(json_response).to be_an Array
+        expect(json_response.size).to eq(1)
+        expect(json_response.map { |issue| issue['id'] }).to include(issue.id)
+      end
+
+      it 'does not return confidential issues to regular users' do
+        get api("/projects/#{public_project.id}/milestones/#{milestone.id}/issues", create(:user))
+
+        expect(response.status).to eq(200)
+        expect(json_response).to be_an Array
+        expect(json_response.size).to eq(1)
+        expect(json_response.map { |issue| issue['id'] }).to include(issue.id)
+      end
     end
   end
 end

@@ -93,6 +93,20 @@ describe Projects::BranchesController do
     end
   end
 
+  describe "POST destroy with HTML format" do
+    render_views
+
+    it 'returns 303' do
+      post :destroy,
+           format: :html,
+           id: 'foo/bar/baz',
+           namespace_id: project.namespace.to_param,
+           project_id: project.to_param
+
+      expect(response.status).to eq(303)
+    end
+  end
+
   describe "POST destroy" do
     render_views
 
@@ -108,27 +122,23 @@ describe Projects::BranchesController do
       let(:branch) { "feature" }
 
       it { expect(response.status).to eq(200) }
-      it { expect(subject).to render_template('destroy') }
     end
 
     context "valid branch name with unencoded slashes" do
       let(:branch) { "improve/awesome" }
 
       it { expect(response.status).to eq(200) }
-      it { expect(subject).to render_template('destroy') }
     end
 
     context "valid branch name with encoded slashes" do
       let(:branch) { "improve%2Fawesome" }
 
       it { expect(response.status).to eq(200) }
-      it { expect(subject).to render_template('destroy') }
     end
     context "invalid branch name, valid ref" do
       let(:branch) { "no-branch" }
 
       it { expect(response.status).to eq(404) }
-      it { expect(subject).to render_template('destroy') }
     end
   end
 end

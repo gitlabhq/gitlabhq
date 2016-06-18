@@ -1,18 +1,3 @@
-# == Schema Information
-#
-# Table name: keys
-#
-#  id          :integer          not null, primary key
-#  user_id     :integer
-#  created_at  :datetime
-#  updated_at  :datetime
-#  key         :text
-#  title       :string(255)
-#  type        :string(255)
-#  fingerprint :string(255)
-#  public      :boolean          default(FALSE), not null
-#
-
 require 'digest/md5'
 
 class Key < ActiveRecord::Base
@@ -41,7 +26,7 @@ class Key < ActiveRecord::Base
   end
 
   def publishable_key
-    #Removes anything beyond the keytype and key itself
+    # Removes anything beyond the keytype and key itself
     self.key.split[0..1].join(' ')
   end
 

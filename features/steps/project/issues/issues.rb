@@ -5,6 +5,7 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
   include SharedNote
   include SharedPaths
   include SharedMarkdown
+  include SharedUser
 
   step 'I should see "Release 0.4" in issues' do
     expect(page).to have_content "Release 0.4"
@@ -19,11 +20,11 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
   end
 
   step 'I should see that I am subscribed' do
-    expect(find('.subscribe-button span')).to have_content 'Unsubscribe'
+    expect(find('.issuable-subscribe-button span')).to have_content 'Unsubscribe'
   end
 
   step 'I should see that I am unsubscribed' do
-    expect(find('.subscribe-button span')).to have_content 'Subscribe'
+    expect(find('.issuable-subscribe-button span')).to have_content 'Subscribe'
   end
 
   step 'I click link "Closed"' do
@@ -190,15 +191,15 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
   end
 
   step 'issue "Release 0.4" have 2 upvotes and 1 downvote' do
-    issue = Issue.find_by(title: 'Release 0.4')
-    create_list(:upvote_note, 2, project: project, noteable: issue)
-    create(:downvote_note, project: project, noteable: issue)
+    awardable = Issue.find_by(title: 'Release 0.4')
+    create_list(:award_emoji, 2, awardable: awardable)
+    create(:award_emoji, :downvote, awardable: awardable)
   end
 
   step 'issue "Tweet control" have 1 upvote and 2 downvotes' do
-    issue = Issue.find_by(title: 'Tweet control')
-    create(:upvote_note, project: project, noteable: issue)
-    create_list(:downvote_note, 2, project: project, noteable: issue)
+    awardable = Issue.find_by(title: 'Tweet control')
+    create(:award_emoji, :upvote, awardable: awardable)
+    create_list(:award_emoji, 2, awardable: awardable, name: 'thumbsdown')
   end
 
   step 'The list should be sorted by "Least popular"' do
@@ -215,7 +216,7 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
 
       page.within 'li.issue:nth-child(3)' do
         expect(page).to have_content 'Bugfix'
-        expect(page).to_not have_content '0 0'
+        expect(page).not_to have_content '0 0'
       end
     end
   end
@@ -234,13 +235,13 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
 
       page.within 'li.issue:nth-child(3)' do
         expect(page).to have_content 'Bugfix'
-        expect(page).to_not have_content '0 0'
+        expect(page).not_to have_content '0 0'
       end
     end
   end
 
   step 'empty project "Empty Project"' do
-    create :empty_project, name: 'Empty Project', namespace: @user.namespace
+    create :project_empty_repo, name: 'Empty Project', namespace: @user.namespace
   end
 
   When 'I visit empty project page' do
@@ -347,7 +348,7 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
 
   step 'another user adds a comment with text "Yay!" to issue "Release 0.4"' do
     issue = Issue.find_by!(title: 'Release 0.4')
-    create(:note_on_issue, noteable: issue,  note: 'Yay!')
+    create(:note_on_issue, noteable: issue, project: project, note: 'Yay!')
   end
 
   step 'I should see a new comment with text "Yay!"' do

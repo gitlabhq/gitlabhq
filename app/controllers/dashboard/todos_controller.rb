@@ -1,35 +1,39 @@
 class Dashboard::TodosController < Dashboard::ApplicationController
+  include TodosHelper
+
   before_action :find_todos, only: [:index, :destroy_all]
 
   def index
-    @todos = @todos.page(params[:page]).per(PER_PAGE)
+    @todos = @todos.page(params[:page])
   end
 
   def destroy
-    todo.done!
+    TodoService.new.mark_todos_as_done([todo], current_user)
 
     respond_to do |format|
       format.html { redirect_to dashboard_todos_path, notice: 'Todo was successfully marked as done.' }
-      format.js { render nothing: true }
+      format.js { head :ok }
+      format.json { render json: { count: todos_pending_count, done_count: todos_done_count } }
     end
   end
 
   def destroy_all
-    @todos.each(&:done!)
+    TodoService.new.mark_todos_as_done(@todos, current_user)
 
     respond_to do |format|
       format.html { redirect_to dashboard_todos_path, notice: 'All todos were marked as done.' }
-      format.js { render nothing: true }
+      format.js { head :ok }
+      format.json { render json: { count: todos_pending_count, done_count: todos_done_count } }
     end
   end
 
   private
 
   def todo
-    @todo ||= current_user.todos.find(params[:id])
+    @todo ||= find_todos.find(params[:id])
   end
 
   def find_todos
-    @todos = TodosFinder.new(current_user, params).execute
+    @todos ||= TodosFinder.new(current_user, params).execute
   end
 end

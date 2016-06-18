@@ -1,0 +1,22 @@
+.settings-list-icon {
+  color: $gl-placeholder-color;
+  font-size: $settings-icon-size;
+  line-height: 42px;
+}
+
+.settings-message {
+  padding: 5px;
+  line-height: 1.3;
+  color: $warning-message-color;
+  background-color: $warning-message-bg;
+  border: 1px solid $warning-message-border;
+  border-radius: $border-radius-base;
+}
+
+.warning-title {
+  color: $gl-warning;
+}
+
+.danger-title {
+  color: $gl-danger;
+}

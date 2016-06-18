@@ -1,9 +1,5 @@
 = form_for @application_setting, url: admin_application_settings_path, html: { class: 'form-horizontal fieldset-form' } do |f|
-  - if @application_setting.errors.any?
-    #error_explanation
-      .alert.alert-danger
-        - @application_setting.errors.full_messages.each do |msg|
-          %p= msg
+  = form_errors(@application_setting)
 
   %fieldset
     %legend Visibility and Access Controls
@@ -19,6 +15,10 @@
       = f.label :default_snippet_visibility, class: 'control-label col-sm-2'
       .col-sm-10
         = render('shared/visibility_radios', model_method: :default_snippet_visibility, form: f, selected_level: @application_setting.default_snippet_visibility, form_model: ProjectSnippet.new)
+    .form-group.group-visibility-level-holder
+      = f.label :default_group_visibility, class: 'control-label col-sm-2'
+      .col-sm-10
+        = render('shared/visibility_radios', model_method: :default_group_visibility, form: f, selected_level: @application_setting.default_group_visibility, form_model: Group.new)
     .form-group
       = f.label :restricted_visibility_levels, class: 'control-label col-sm-2'
       .col-sm-10
@@ -26,7 +26,9 @@
         .btn-group{ data: data_attrs }
           - restricted_level_checkboxes('restricted-visibility-help').each do |level|
             = level
-        %span.help-block#restricted-visibility-help Selected levels cannot be used by non-admin users for projects or snippets
+        %span.help-block#restricted-visibility-help
+          Selected levels cannot be used by non-admin users for projects or snippets.
+          If the public level is restricted, user profiles are only visible to logged in users.
     .form-group
       = f.label :import_sources, class: 'control-label col-sm-2'
       .col-sm-10
@@ -73,13 +75,6 @@
             = f.check_box :gravatar_enabled
             Gravatar enabled
     .form-group
-      .col-sm-offset-2.col-sm-10
-        .checkbox
-          = f.label :twitter_sharing_enabled do
-            = f.check_box :twitter_sharing_enabled, :'aria-describedby' => 'twitter_help_block'
-            Twitter enabled
-          %span.help-block#twitter_help_block Show users a button to share their newly created public or internal projects on twitter
-    .form-group
       = f.label :default_projects_limit, class: 'control-label col-sm-2'
       .col-sm-10
         = f.number_field :default_projects_limit, class: 'form-control'
@@ -111,9 +106,22 @@
     .form-group
       .col-sm-offset-2.col-sm-10
         .checkbox
+          = f.label :send_user_confirmation_email do
+            = f.check_box :send_user_confirmation_email
+            Send confirmation email on sign-up
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
           = f.label :signin_enabled do
             = f.check_box :signin_enabled
             Sign-in enabled
+    - if omniauth_enabled? && button_based_providers.any?
+      .form-group
+        = f.label :enabled_oauth_sign_in_sources, 'Enabled OAuth Sign-In sources', class: 'control-label col-sm-2'
+        .col-sm-10
+          .btn-group{ data: { toggle: 'buttons' } }
+            - oauth_providers_checkboxes.each do |source|
+              = source
     .form-group
       = f.label :two_factor_authentication, 'Two-factor authentication', class: 'control-label col-sm-2'
       .col-sm-10
@@ -147,6 +155,11 @@
         = f.text_area :sign_in_text, class: 'form-control', rows: 4
         .help-block Markdown enabled
     .form-group
+      = f.label :after_sign_up_text, class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.text_area :after_sign_up_text, class: 'form-control', rows: 4
+        .help-block Markdown enabled
+    .form-group
       = f.label :help_page_text, class: 'control-label col-sm-2'
       .col-sm-10
         = f.text_area :help_page_text, class: 'form-control', rows: 4
@@ -160,11 +173,23 @@
           = f.label :shared_runners_enabled do
             = f.check_box :shared_runners_enabled
             Enable shared runners for new projects
-
+    .form-group
+      = f.label :shared_runners_text, class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.text_area :shared_runners_text, class: 'form-control', rows: 4
+        .help-block Markdown enabled
     .form-group
       = f.label :max_artifacts_size, 'Maximum artifacts size (MB)', class: 'control-label col-sm-2'
       .col-sm-10
         = f.number_field :max_artifacts_size, class: 'form-control'
+
+  - if Gitlab.config.registry.enabled
+    %fieldset
+      %legend Container Registry
+      .form-group
+        = f.label :container_registry_token_expire_delay, 'Authorization token duration (minutes)', class: 'control-label col-sm-2'
+        .col-sm-10
+          = f.number_field :container_registry_token_expire_delay, class: 'form-control'
 
   %fieldset
     %legend Metrics
@@ -219,6 +244,13 @@
         .help-block
           The sampling interval in seconds. Sampled data includes memory usage,
           retained Ruby objects, file descriptors and so on.
+    .form-group
+      = f.label :metrics_packet_size, 'Metrics per packet', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :metrics_packet_size, class: 'form-control'
+        .help-block
+          The amount of points to store in a single UDP packet. More points
+          results in fewer but larger UDP packets being sent.
 
   %fieldset
     %legend Spam and Anti-bot Protection
@@ -277,6 +309,25 @@
       = f.label :sentry_dsn, 'Sentry DSN', class: 'control-label col-sm-2'
       .col-sm-10
         = f.text_field :sentry_dsn, class: 'form-control'
+
+  %fieldset
+    %legend Repository Checks
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :repository_checks_enabled do
+            = f.check_box :repository_checks_enabled
+            Enable Repository Checks
+          .help-block
+            GitLab will periodically run
+            %a{ href: 'https://www.kernel.org/pub/software/scm/git/docs/git-fsck.html', target: 'blank' } 'git fsck'
+            in all project and wiki repositories to look for silent disk corruption issues.
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        = link_to 'Clear all repository checks', clear_repository_check_states_admin_application_settings_path, data: { confirm: 'This will clear repository check states for ALL projects in the database. This cannot be undone. Are you sure?' }, method: :put, class: "btn btn-sm btn-remove"
+        .help-block
+          If you got a lot of false alarms from repository checks you can choose to clear all repository check information from the database.
+
 
   .form-actions
     = f.submit 'Save', class: 'btn btn-save'

@@ -1,7 +1,7 @@
 - page_title 'Artifacts', "#{@build.name} (##{@build.id})", 'Builds'
-= render 'projects/builds/header_title'
+- header_title project_title(@project, "Builds", project_builds_path(@project))
 
-.top-block.gray-content-block.clearfix
+.top-block.row-content-block.clearfix
   .pull-right
     = link_to download_namespace_project_build_artifacts_path(@project.namespace, @project, @build),
       class: 'btn btn-default download' do

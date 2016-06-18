@@ -1,8 +1,10 @@
 require 'spec_helper'
 
 describe Gitlab::BitbucketImport::Importer, lib: true do
+  include ImportSpecHelper
+
   before do
-    Gitlab.config.omniauth.providers << OpenStruct.new(app_id: "asd123", app_secret: "asd123", name: "bitbucket")
+    stub_omniauth_provider('bitbucket')
   end
 
   let(:statuses) do
@@ -34,9 +36,9 @@ describe Gitlab::BitbucketImport::Importer, lib: true do
   let(:project_identifier) { 'namespace/repo' }
   let(:data) do
     {
-      bb_session: {
-        bitbucket_access_token: "123456",
-        bitbucket_access_token_secret: "secret"
+      'bb_session' => {
+        'bitbucket_access_token' => "123456",
+        'bitbucket_access_token_secret' => "secret"
       }
     }
   end
@@ -44,7 +46,7 @@ describe Gitlab::BitbucketImport::Importer, lib: true do
     create(
       :project,
       import_source: project_identifier,
-      import_data: ProjectImportData.new(data: data)
+      import_data: ProjectImportData.new(credentials: data)
     )
   end
   let(:importer) { Gitlab::BitbucketImport::Importer.new(project) }

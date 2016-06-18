@@ -12,7 +12,7 @@
           .col-md-2.col-sm-3
             - if fork = namespace.find_fork_of(@project)
               .fork-thumbnail
-                = link_to project_path(fork), title: "Visit project fork", class: 'has_tooltip' do
+                = link_to project_path(fork), title: "Visit project fork", class: 'has-tooltip' do
                   = image_tag namespace_icon(namespace, 100)
                   .caption
                     %strong
@@ -22,7 +22,7 @@
 
             - else
               .fork-thumbnail
-                = link_to namespace_project_forks_path(@project.namespace, @project, namespace_key: namespace.id), title: "Fork here", method: "POST", class: 'has_tooltip' do
+                = link_to namespace_project_forks_path(@project.namespace, @project, namespace_key: namespace.id), title: "Fork here", method: "POST", class: 'has-tooltip' do
                   = image_tag namespace_icon(namespace, 100)
                   .caption
                     %strong

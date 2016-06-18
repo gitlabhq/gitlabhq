@@ -1,5 +1,3 @@
-require 'active_support/core_ext/string/output_safety'
-
 module Banzai
   module Filter
     def self.[](name)

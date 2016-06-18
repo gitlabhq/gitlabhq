@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe Gitlab::ReferenceExtractor, lib: true do
   let(:project) { create(:project) }
+
   subject { Gitlab::ReferenceExtractor.new(project, project.creator) }
 
   it 'accesses valid user objects' do
@@ -41,6 +42,7 @@ describe Gitlab::ReferenceExtractor, lib: true do
   end
 
   it 'accesses valid issue objects' do
+    project.team << [project.creator, :developer]
     @i0 = create(:issue, project: project)
     @i1 = create(:issue, project: project)
 
@@ -103,7 +105,8 @@ describe Gitlab::ReferenceExtractor, lib: true do
 
     it 'returns JIRA issues for a JIRA-integrated project' do
       subject.analyze('JIRA-123 and FOOBAR-4567')
-      expect(subject.issues).to eq [JiraIssue.new('JIRA-123', project), JiraIssue.new('FOOBAR-4567', project)]
+      expect(subject.issues).to eq [ExternalIssue.new('JIRA-123', project),
+                                    ExternalIssue.new('FOOBAR-4567', project)]
     end
   end
 
@@ -121,5 +124,25 @@ describe Gitlab::ReferenceExtractor, lib: true do
       expect(extracted.size).to eq(1)
       expect(extracted).to match_array([issue])
     end
+  end
+
+  describe '#all' do
+    let(:issue) { create(:issue, project: project) }
+    let(:label) { create(:label, project: project) }
+    let(:text) { "Ref. #{issue.to_reference} and #{label.to_reference}" }
+
+    before do
+      project.team << [project.creator, :developer]
+      subject.analyze(text)
+    end
+
+    it 'returns all referables' do
+      expect(subject.all).to match_array([issue, label])
+    end
+  end
+
+  describe '.references_pattern' do
+    subject { described_class.references_pattern }
+    it { is_expected.to be_kind_of Regexp }
   end
 end

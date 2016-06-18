@@ -1,3 +1,4 @@
+# rubocop:disable all
 class AddUniqueForLfsOidIndex < ActiveRecord::Migration
   def change
     remove_index :lfs_objects, :oid

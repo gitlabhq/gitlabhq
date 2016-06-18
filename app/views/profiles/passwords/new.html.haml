@@ -7,11 +7,8 @@
     Please set a new password before proceeding.
     %br
     After a successful password update you will be redirected to login screen.
-  -if @user.errors.any?
-    .alert.alert-danger
-      %ul
-        - @user.errors.full_messages.each do |msg|
-          %li= msg
+
+  = form_errors(@user)
 
   - unless @user.password_automatically_set?
     .form-group

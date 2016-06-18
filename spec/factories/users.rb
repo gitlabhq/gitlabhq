@@ -1,7 +1,7 @@
 FactoryGirl.define do
   sequence(:name) { FFaker::Name.name }
 
-  factory :user, aliases: [:author, :assignee, :recipient, :owner, :creator] do
+  factory :user, aliases: [:author, :assignee, :recipient, :owner, :creator, :resource_owner] do
     email { FFaker::Internet.email }
     name
     sequence(:username) { |n| "#{FFaker::Internet.user_name}#{n}" }
@@ -15,11 +15,23 @@ FactoryGirl.define do
     end
 
     trait :two_factor do
+      two_factor_via_otp
+    end
+
+    trait :two_factor_via_otp do
       before(:create) do |user|
-        user.two_factor_enabled = true
+        user.otp_required_for_login = true
         user.otp_secret = User.generate_otp_secret(32)
         user.otp_grace_period_started_at = Time.now
         user.generate_otp_backup_codes!
+      end
+    end
+
+    trait :two_factor_via_u2f do
+      transient { registrations_count 5 }
+
+      after(:create) do |user, evaluator|
+        create_list(:u2f_registration, evaluator.registrations_count, user: user)
       end
     end
 

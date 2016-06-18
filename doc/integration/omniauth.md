@@ -11,6 +11,7 @@ of the configured mechanisms.
 - [Supported Providers](#supported-providers)
 - [Enable OmniAuth for an Existing User](#enable-omniauth-for-an-existing-user)
 - [OmniAuth configuration sample when using Omnibus GitLab](https://gitlab.com/gitlab-org/omnibus-gitlab/tree/master#omniauth-google-twitter-github-login)
+- [Enable or disable Sign In with an OmniAuth provider without disabling import sources](#enable-or-disable-sign-in-with-an-omniauth-provider-without-disabling-import-sources)
 
 ## Supported Providers
 
@@ -120,6 +121,29 @@ OmniAuth provider for an existing user.
 
 The chosen OmniAuth provider is now active and can be used to sign in to GitLab from then on.
 
+## Configure OmniAuth Providers as External
+
+>**Note:**
+This setting was introduced with version 8.7 of GitLab
+
+You can define which OmniAuth providers you want to be `external` so that all users
+creating accounts via these providers will not be able to have access to internal
+projects. You will need to use the full name of the provider, like `google_oauth2`
+for Google. Refer to the examples for the full names of the supported providers.
+
+**For Omnibus installations**
+
+```ruby
+  gitlab_rails['omniauth_external_providers'] = ['twitter', 'google_oauth2']
+```
+
+**For installations from source**
+
+```yaml
+  omniauth:
+    external_providers: ['twitter', 'google_oauth2']
+```
+
 ## Using Custom Omniauth Providers
 
 >**Note:**
@@ -168,3 +192,17 @@ experience [in the public Wiki](https://github.com/gitlabhq/gitlab-public-wiki/w
 
 While we can't officially support every possible authentication mechanism out there,
 we'd like to at least help those with specific needs.
+
+## Enable or disable Sign In with an OmniAuth provider without disabling import sources
+
+>**Note:**
+This setting was introduced with version 8.8 of GitLab.
+
+Administrators are able to enable or disable Sign In via some OmniAuth providers.
+
+>**Note:**
+By default Sign In is enabled via all the OAuth Providers that have been configured in `config/gitlab.yml`.
+
+In order to enable/disable an OmniAuth provider, go to Admin Area -> Settings -> Sign-in Restrictions section -> Enabled OAuth Sign-In sources and select the providers you want to enable or disable.
+
+![Enabled OAuth Sign-In sources](img/enabled-oauth-sign-in-sources.png)

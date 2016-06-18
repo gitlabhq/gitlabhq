@@ -1,8 +1,7 @@
 - page_title "Find File", @ref
-- header_title project_title(@project, "Files", project_files_path(@project))
 
 .file-finder-holder.tree-holder.clearfix
-  .gray-content-block.top-block
+  .nav-block
     .tree-ref-holder
       = render 'shared/ref_switcher', destination: 'find_file', path: @path
     %ul.breadcrumb.repo-breadcrumb

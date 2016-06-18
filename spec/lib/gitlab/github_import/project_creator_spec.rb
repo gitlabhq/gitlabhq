@@ -12,7 +12,7 @@ describe Gitlab::GithubImport::ProjectCreator, lib: true do
       owner: OpenStruct.new(login: "john")
     )
   end
-  let(:namespace){ create(:group, owner: user) }
+  let(:namespace) { create(:group, owner: user) }
   let(:token) { "asdffg" }
   let(:access_params) { { github_access_token: token } }
 
@@ -27,6 +27,8 @@ describe Gitlab::GithubImport::ProjectCreator, lib: true do
     project = project_creator.execute
 
     expect(project.import_url).to eq("https://asdffg@gitlab.com/asd/vim.git")
+    expect(project.safe_import_url).to eq("https://*****@gitlab.com/asd/vim.git")
+    expect(project.import_data.credentials).to eq(user: "asdffg", password: nil)
     expect(project.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE)
   end
 end

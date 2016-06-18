@@ -11,15 +11,15 @@ module Banzai
       end
 
       def self.object_name
-        object_class.name.underscore
+        @object_name ||= object_class.name.underscore
       end
 
       def self.object_sym
-        object_name.to_sym
+        @object_sym ||= object_name.to_sym
       end
 
-      def self.data_reference
-        "data-#{object_name.dasherize}"
+      def self.object_class_title
+        @object_title ||= object_class.name.titleize
       end
 
       # Public: Find references in text (like `!123` for merge requests)
@@ -41,16 +41,16 @@ module Banzai
         end
       end
 
-      def self.referenced_by(node)
-        { object_sym => LazyReference.new(object_class, node.attr(data_reference)) }
-      end
-
       def object_class
         self.class.object_class
       end
 
       def object_sym
         self.class.object_sym
+      end
+
+      def object_class_title
+        self.class.object_class_title
       end
 
       def references_in(*args, &block)
@@ -62,36 +62,81 @@ module Banzai
         # Example: project.merge_requests.find
       end
 
+      def find_object_cached(project, id)
+        if RequestStore.active?
+          cache = find_objects_cache[object_class][project.id]
+
+          get_or_set_cache(cache, id) { find_object(project, id) }
+        else
+          find_object(project, id)
+        end
+      end
+
+      def project_from_ref_cache(ref)
+        if RequestStore.active?
+          cache = project_refs_cache
+
+          get_or_set_cache(cache, ref) { project_from_ref(ref) }
+        else
+          project_from_ref(ref)
+        end
+      end
+
       def url_for_object(object, project)
         # Implement in child class
         # Example: project_merge_request_url
       end
 
-      def call
-        if object_class.reference_pattern
-          # `#123`
-          replace_text_nodes_matching(object_class.reference_pattern) do |content|
-            object_link_filter(content, object_class.reference_pattern)
-          end
+      def url_for_object_cached(object, project)
+        if RequestStore.active?
+          cache = url_for_object_cache[object_class][project.id]
 
-          # `[Issue](#123)`, which is turned into
-          # `<a href="#123">Issue</a>`
-          replace_link_nodes_with_href(object_class.reference_pattern) do |link, text|
-            object_link_filter(link, object_class.reference_pattern, link_text: text)
-          end
+          get_or_set_cache(cache, object) { url_for_object(object, project) }
+        else
+          url_for_object(object, project)
         end
+      end
 
-        if object_class.link_reference_pattern
-          # `http://gitlab.example.com/namespace/project/issues/123`, which is turned into
-          # `<a href="http://gitlab.example.com/namespace/project/issues/123">http://gitlab.example.com/namespace/project/issues/123</a>`
-          replace_link_nodes_with_text(object_class.link_reference_pattern) do |text|
-            object_link_filter(text, object_class.link_reference_pattern)
-          end
+      def call
+        return doc if project.nil?
 
-          # `[Issue](http://gitlab.example.com/namespace/project/issues/123)`, which is turned into
-          # `<a href="http://gitlab.example.com/namespace/project/issues/123">Issue</a>`
-          replace_link_nodes_with_href(object_class.link_reference_pattern) do |link, text|
-            object_link_filter(link, object_class.link_reference_pattern, link_text: text)
+        ref_pattern = object_class.reference_pattern
+        link_pattern = object_class.link_reference_pattern
+
+        nodes.each do |node|
+          if text_node?(node) && ref_pattern
+            replace_text_when_pattern_matches(node, ref_pattern) do |content|
+              object_link_filter(content, ref_pattern)
+            end
+
+          elsif element_node?(node)
+            yield_valid_link(node) do |link, text|
+              if ref_pattern && link =~ /\A#{ref_pattern}\z/
+                replace_link_node_with_href(node, link) do
+                  object_link_filter(link, ref_pattern, link_text: text)
+                end
+
+                next
+              end
+
+              next unless link_pattern
+
+              if link == text && text =~ /\A#{link_pattern}/
+                replace_link_node_with_text(node, link) do
+                  object_link_filter(text, link_pattern)
+                end
+
+                next
+              end
+
+              if link =~ /\A#{link_pattern}\z/
+                replace_link_node_with_href(node, link) do
+                  object_link_filter(link, link_pattern, link_text: text)
+                end
+
+                next
+              end
+            end
           end
         end
 
@@ -109,9 +154,9 @@ module Banzai
       # have `gfm` and `gfm-OBJECT_NAME` class names attached for styling.
       def object_link_filter(text, pattern, link_text: nil)
         references_in(text, pattern) do |match, id, project_ref, matches|
-          project = project_from_ref(project_ref)
+          project = project_from_ref_cache(project_ref)
 
-          if project && object = find_object(project, id)
+          if project && object = find_object_cached(project, id)
             title = object_link_title(object)
             klass = reference_class(object_sym)
 
@@ -121,8 +166,11 @@ module Banzai
               object_sym => object.id
             )
 
-            url = matches[:url] if matches.names.include?("url")
-            url ||= url_for_object(object, project)
+            if matches.names.include?("url") && matches[:url]
+              url = matches[:url]
+            else
+              url = url_for_object_cached(object, project)
+            end
 
             text = link_text || object_link_text(object, matches)
 
@@ -146,7 +194,7 @@ module Banzai
       end
 
       def object_link_title(object)
-        "#{object_class.name.titleize}: #{object.title}"
+        "#{object_class_title}: #{object.title}"
       end
 
       def object_link_text(object, matches)
@@ -156,6 +204,83 @@ module Banzai
         text += " (#{extras.join(", ")})" if extras.any?
 
         text
+      end
+
+      # Returns a Hash containing all object references (e.g. issue IDs) per the
+      # project they belong to.
+      def references_per_project
+        @references_per_project ||= begin
+          refs = Hash.new { |hash, key| hash[key] = Set.new }
+
+          regex = Regexp.union(object_class.reference_pattern,
+                               object_class.link_reference_pattern)
+
+          nodes.each do |node|
+            node.to_html.scan(regex) do
+              project = $~[:project] || current_project_path
+
+              refs[project] << $~[object_sym]
+            end
+          end
+
+          refs
+        end
+      end
+
+      # Returns a Hash containing referenced projects grouped per their full
+      # path.
+      def projects_per_reference
+        @projects_per_reference ||= begin
+          hash = {}
+          refs = Set.new
+
+          references_per_project.each do |project_ref, _|
+            refs << project_ref
+          end
+
+          find_projects_for_paths(refs.to_a).each do |project|
+            hash[project.path_with_namespace] = project
+          end
+
+          hash
+        end
+      end
+
+      # Returns the projects for the given paths.
+      def find_projects_for_paths(paths)
+        Project.where_paths_in(paths).includes(:namespace)
+      end
+
+      def current_project_path
+        @current_project_path ||= project.path_with_namespace
+      end
+
+      private
+
+      def project_refs_cache
+        RequestStore[:banzai_project_refs] ||= {}
+      end
+
+      def find_objects_cache
+        RequestStore[:banzai_find_objects_cache] ||= Hash.new do |hash, key|
+          hash[key] = Hash.new { |h, k| h[k] = {} }
+        end
+      end
+
+      def url_for_object_cache
+        RequestStore[:banzai_url_for_object] ||= Hash.new do |hash, key|
+          hash[key] = Hash.new { |h, k| h[k] = {} }
+        end
+      end
+
+      def get_or_set_cache(cache, key)
+        if cache.key?(key)
+          cache[key]
+        else
+          value = yield
+          cache[key] = value if key.present?
+          value
+        end
       end
     end
   end

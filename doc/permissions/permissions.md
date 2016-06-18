@@ -27,6 +27,8 @@ documentation](../workflow/add-user/add-user.md).
 | Manage issue tracker                  |         | ✓          | ✓           | ✓        | ✓      |
 | Manage labels                         |         | ✓          | ✓           | ✓        | ✓      |
 | See a commit status                   |         | ✓          | ✓           | ✓        | ✓      |
+| See a container registry              |         | ✓          | ✓           | ✓        | ✓      |
+| See environments                      |         | ✓          | ✓           | ✓        | ✓      |
 | Manage merge requests                 |         |            | ✓           | ✓        | ✓      |
 | Create new merge request              |         |            | ✓           | ✓        | ✓      |
 | Create new branches                   |         |            | ✓           | ✓        | ✓      |
@@ -37,6 +39,9 @@ documentation](../workflow/add-user/add-user.md).
 | Write a wiki                          |         |            | ✓           | ✓        | ✓      |
 | Cancel and retry builds               |         |            | ✓           | ✓        | ✓      |
 | Create or update commit status        |         |            | ✓           | ✓        | ✓      |
+| Update a container registry           |         |            | ✓           | ✓        | ✓      |
+| Remove a container registry image     |         |            | ✓           | ✓        | ✓      |
+| Create new environments               |         |            | ✓           | ✓        | ✓      |
 | Create new milestones                 |         |            |             | ✓        | ✓      |
 | Add new team members                  |         |            |             | ✓        | ✓      |
 | Push to protected branches            |         |            |             | ✓        | ✓      |
@@ -49,13 +54,15 @@ documentation](../workflow/add-user/add-user.md).
 | Manage runners                        |         |            |             | ✓        | ✓      |
 | Manage build triggers                 |         |            |             | ✓        | ✓      |
 | Manage variables                      |         |            |             | ✓        | ✓      |
+| Delete environments                   |         |            |             | ✓        | ✓      |
 | Switch visibility level               |         |            |             |          | ✓      |
 | Transfer project to another namespace |         |            |             |          | ✓      |
 | Remove project                        |         |            |             |          | ✓      |
-| Force push to protected branches      |         |            |             |          |        |
-| Remove protected branches             |         |            |             |          |        |
+| Force push to protected branches [^2] |         |            |             |          |        |
+| Remove protected branches [^2]        |         |            |             |          |        |
 
 [^1]: If **Allow guest to access builds** is enabled in CI settings
+[^2]: Not allowed for Guest, Reporter, Developer, Master, or Owner
 
 ## Group
 

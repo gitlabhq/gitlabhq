@@ -1,24 +1,3 @@
-# == Schema Information
-#
-# Table name: services
-#
-#  id                    :integer          not null, primary key
-#  type                  :string(255)
-#  title                 :string(255)
-#  project_id            :integer
-#  created_at            :datetime
-#  updated_at            :datetime
-#  active                :boolean          default(FALSE), not null
-#  properties            :text
-#  template              :boolean          default(FALSE)
-#  push_events           :boolean          default(TRUE)
-#  issues_events         :boolean          default(TRUE)
-#  merge_requests_events :boolean          default(TRUE)
-#  tag_push_events       :boolean          default(TRUE)
-#  note_events           :boolean          default(TRUE), not null
-#  build_events          :boolean          default(FALSE), not null
-#
-
 # To add new service you should build a class inherited from Service
 # and implement a set of methods
 class Service < ActiveRecord::Base
@@ -32,12 +11,14 @@ class Service < ActiveRecord::Base
   default_value_for :tag_push_events, true
   default_value_for :note_events, true
   default_value_for :build_events, true
+  default_value_for :wiki_page_events, true
 
   after_initialize :initialize_properties
 
   after_commit :reset_updated_properties
+  after_commit :cache_project_has_external_issue_tracker
 
-  belongs_to :project
+  belongs_to :project, inverse_of: :services
   has_one :service_hook
 
   validates :project_id, presence: true, unless: Proc.new { |service| service.template? }
@@ -53,6 +34,8 @@ class Service < ActiveRecord::Base
   scope :merge_request_hooks, -> { where(merge_requests_events: true, active: true) }
   scope :note_hooks, -> { where(note_events: true, active: true) }
   scope :build_hooks, -> { where(build_events: true, active: true) }
+  scope :wiki_page_hooks, -> { where(wiki_page_events: true, active: true) }
+  scope :external_issue_trackers, -> { issue_trackers.active.without_defaults }
 
   default_value_for :category, 'common'
 
@@ -94,7 +77,7 @@ class Service < ActiveRecord::Base
   end
 
   def supported_events
-    %w(push tag_push issue merge_request)
+    %w(push tag_push issue merge_request wiki_page)
   end
 
   def execute(data)
@@ -210,5 +193,13 @@ class Service < ActiveRecord::Base
     service.template = false
     service.project_id = project_id
     service if service.save
+  end
+
+  private
+
+  def cache_project_has_external_issue_tracker
+    if project && !project.destroyed?
+      project.cache_has_external_issue_tracker
+    end
   end
 end

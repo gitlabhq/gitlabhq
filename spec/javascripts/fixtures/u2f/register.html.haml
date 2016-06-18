@@ -1,0 +1,2 @@
+- user = FactoryGirl.build(:user, :two_factor_via_otp)
+= render partial: "u2f/register", locals: { create_u2f_profile_two_factor_auth_path: '/profile/two_factor_auth/create_u2f', current_user: user }

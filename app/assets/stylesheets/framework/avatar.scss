@@ -16,7 +16,7 @@
   }
 
   &.group-avatar, &.project-avatar, &.avatar-tile {
-    @include border-radius(0px);
+    @include border-radius(0);
   }
 
   &.s16 { width: 16px; height: 16px; margin-right: 6px; }
@@ -28,6 +28,7 @@
   &.s46 { width: 46px; height: 46px; margin-right: 15px; }
   &.s48 { width: 48px; height: 48px; margin-right: 10px; }
   &.s60 { width: 60px; height: 60px; margin-right: 12px; }
+  &.s70 { width: 70px; height: 70px; margin-right: 14px; }
   &.s90 { width: 90px; height: 90px; margin-right: 15px; }
   &.s110 { width: 110px; height: 110px; margin-right: 15px; }
   &.s140 { width: 140px; height: 140px; margin-right: 20px; }
@@ -44,6 +45,7 @@
   &.s32 { font-size: 20px; line-height: 32px; }
   &.s40 { font-size: 16px; line-height: 40px; }
   &.s60 { font-size: 32px; line-height: 60px; }
+  &.s70 { font-size: 34px; line-height: 70px; }
   &.s90 { font-size: 36px; line-height: 90px; }
   &.s110 { font-size: 40px; line-height: 112px; font-weight: 300; }
   &.s140 { font-size: 72px; line-height: 140px; }

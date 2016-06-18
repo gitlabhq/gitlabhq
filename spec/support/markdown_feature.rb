@@ -32,6 +32,10 @@ class MarkdownFeature
     @project_wiki ||= ProjectWiki.new(project, user)
   end
 
+  def project_wiki_page
+    @project_wiki_page ||= build(:wiki_page, wiki: project_wiki)
+  end
+
   def issue
     @issue ||= create(:issue, project: project)
   end
@@ -63,8 +67,12 @@ class MarkdownFeature
     @label ||= create(:label, name: 'awaiting feedback', project: project)
   end
 
+  def simple_milestone
+    @simple_milestone ||= create(:milestone, name: 'gfm-milestone', project: project)
+  end
+
   def milestone
-    @milestone ||= create(:milestone, project: project)
+    @milestone ||= create(:milestone, name: 'next goal', project: project)
   end
 
   # Cross-references -----------------------------------------------------------
@@ -106,7 +114,7 @@ class MarkdownFeature
   end
 
   def urls
-    Gitlab::Application.routes.url_helpers
+    Gitlab::Routing.url_helpers
   end
 
   def raw_markdown

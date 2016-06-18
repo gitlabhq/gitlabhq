@@ -26,6 +26,30 @@ describe JiraService, models: true do
     it { is_expected.to have_one :service_hook }
   end
 
+  describe 'Validations' do
+    context 'when service is active' do
+      before { subject.active = true }
+
+      it { is_expected.to validate_presence_of(:api_url) }
+      it { is_expected.to validate_presence_of(:project_url) }
+      it { is_expected.to validate_presence_of(:issues_url) }
+      it { is_expected.to validate_presence_of(:new_issue_url) }
+      it_behaves_like 'issue tracker service URL attribute', :api_url
+      it_behaves_like 'issue tracker service URL attribute', :project_url
+      it_behaves_like 'issue tracker service URL attribute', :issues_url
+      it_behaves_like 'issue tracker service URL attribute', :new_issue_url
+    end
+
+    context 'when service is inactive' do
+      before { subject.active = false }
+
+      it { is_expected.not_to validate_presence_of(:api_url) }
+      it { is_expected.not_to validate_presence_of(:project_url) }
+      it { is_expected.not_to validate_presence_of(:issues_url) }
+      it { is_expected.not_to validate_presence_of(:new_issue_url) }
+    end
+  end
+
   describe "Execute" do
     let(:user)    { create(:user) }
     let(:project) { create(:project) }
@@ -52,7 +76,8 @@ describe JiraService, models: true do
     end
 
     it "should call JIRA API" do
-      @jira_service.execute(merge_request, JiraIssue.new("JIRA-123", project))
+      @jira_service.execute(merge_request,
+                            ExternalIssue.new("JIRA-123", project))
       expect(WebMock).to have_requested(:post, @comment_url).with(
         body: /Issue solved with/
       ).once
@@ -60,7 +85,8 @@ describe JiraService, models: true do
 
     it "calls the api with jira_issue_transition_id" do
       @jira_service.jira_issue_transition_id = 'this-is-a-custom-id'
-      @jira_service.execute(merge_request, JiraIssue.new("JIRA-123", project))
+      @jira_service.execute(merge_request,
+                            ExternalIssue.new("JIRA-123", project))
       expect(WebMock).to have_requested(:post, @api_url).with(
         body: /this-is-a-custom-id/
       ).once
@@ -72,7 +98,7 @@ describe JiraService, models: true do
 
     context "when a password was previously set" do
       before do
-        @jira_service = JiraService.create(
+        @jira_service = JiraService.create!(
           project: create(:project),
           properties: {
             api_url: 'http://jira.example.com/rest/api/2',

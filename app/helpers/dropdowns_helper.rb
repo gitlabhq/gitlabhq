@@ -24,7 +24,7 @@ module DropdownsHelper
           capture(&block) if block && !options.has_key?(:footer_content)
         end
 
-        if block && options.has_key?(:footer_content)
+        if block && options[:footer_content]
           output << content_tag(:div, class: "dropdown-footer") do
             capture(&block)
           end
@@ -60,17 +60,18 @@ module DropdownsHelper
       title_output << content_tag(:span, title)
 
       title_output << content_tag(:button, class: "dropdown-title-button dropdown-menu-close", aria: { label: "Close" }, type: "button") do
-        icon('times')
+        icon('times', class: 'dropdown-menu-close-icon')
       end
 
       title_output.html_safe
     end
   end
 
-  def dropdown_filter(placeholder)
+  def dropdown_filter(placeholder, search_id: nil)
     content_tag :div, class: "dropdown-input" do
-      filter_output = search_field_tag nil, nil, class: "dropdown-input-field", placeholder: placeholder
-      filter_output << icon('search')
+      filter_output = search_field_tag search_id, nil, class: "dropdown-input-field", placeholder: placeholder
+      filter_output << icon('search', class: "dropdown-input-search")
+      filter_output << icon('times', class: "dropdown-input-clear js-dropdown-input-clear", role: "button")
 
       filter_output.html_safe
     end

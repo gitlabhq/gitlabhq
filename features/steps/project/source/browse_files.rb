@@ -202,8 +202,8 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I see Browse dir link' do
-    expect(page).to have_link 'Browse Directory »'
-    expect(page).not_to have_link 'Browse Code »'
+    expect(page).to have_link 'Browse Directory'
+    expect(page).not_to have_link 'Browse Code'
   end
 
   step 'I click on readme file' do
@@ -213,14 +213,13 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I see Browse file link' do
-    expect(page).to have_link 'Browse File »'
-    expect(page).not_to have_link 'Browse Files »'
+    expect(page).to have_link 'Browse File'
+    expect(page).not_to have_link 'Browse Files'
   end
 
   step 'I see Browse code link' do
-    expect(page).to have_link 'Browse Files »'
-    expect(page).not_to have_link 'Browse File »'
-    expect(page).not_to have_link 'Browse Directory »'
+    expect(page).to have_link 'Browse Files'
+    expect(page).not_to have_link 'Browse Directory'
   end
 
   step 'I click on Permalink' do
@@ -283,8 +282,8 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
     click_link 'Create empty bare repository'
   end
 
-  step 'I click on "add a file" link' do
-    click_link 'adding README'
+  step 'I click on "README" link' do
+    click_link 'README'
 
     # Remove pre-receive hook so we can push without auth
     FileUtils.rm_f(File.join(@project.repository.path, 'hooks', 'pre-receive'))
@@ -338,13 +337,15 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I should see buttons for allowed commands' do
-    expect(page).to have_content 'Raw'
-    expect(page).to have_content 'History'
-    expect(page).to have_content 'Permalink'
-    expect(page).not_to have_content 'Edit'
-    expect(page).not_to have_content 'Blame'
-    expect(page).to have_content 'Delete'
-    expect(page).to have_content 'Replace'
+    page.within '.content' do
+      expect(page).to have_content 'Raw'
+      expect(page).to have_content 'History'
+      expect(page).to have_content 'Permalink'
+      expect(page).not_to have_content 'Edit'
+      expect(page).not_to have_content 'Blame'
+      expect(page).to have_content 'Delete'
+      expect(page).to have_content 'Replace'
+    end
   end
 
   step 'I should see a notice about a new fork having been created' do

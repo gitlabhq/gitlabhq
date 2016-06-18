@@ -1,15 +1,3 @@
-# == Schema Information
-#
-# Table name: lfs_objects
-#
-#  id         :integer          not null, primary key
-#  oid        :string(255)      not null
-#  size       :integer          not null
-#  created_at :datetime
-#  updated_at :datetime
-#  file       :string(255)
-#
-
 include ActionDispatch::TestProcess
 
 FactoryGirl.define do

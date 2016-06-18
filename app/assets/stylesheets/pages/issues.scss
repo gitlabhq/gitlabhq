@@ -3,7 +3,7 @@
     padding: 10px $gl-padding;
     position: relative;
 
-    .issue-title {
+    .title {
       margin-bottom: 2px;
     }
 
@@ -38,11 +38,6 @@
   form {
     margin: 0;
   }
-}
-
-.issue-search-form {
-  margin: 0;
-  height: 24px;
 }
 
 form.edit-issue {
@@ -86,58 +81,13 @@ form.edit-issue {
 @media (max-width: $screen-xs-max) {
   .issue-btn-group {
     width: 100%;
-    margin-top: 5px;
-
-    .btn-group {
-      width: 100%;
-
-      ul {
-        width: 100%;
-        text-align: center;
-      }
-    }
 
     .btn {
       width: 100%;
-
-      &:first-child:not(:last-child) {
-
-      }
-
-      &:not(:first-child):not(:last-child) {
-        margin-top: 10px;
-      }
-
-      &:last-child:not(:first-child) {
-        margin-top: 10px;
-      }
-    }
-  }
-
-  .issue {
-    &:hover  .issue-actions {
-      display: none !important;
-    }
-
-    .issue-updated-at {
-      display: none;
     }
   }
 }
 
 .issue-form .select2-container {
   width: 250px !important;
-}
-
-.issue-closed-by-widget {
-  color: $secondary-text;
-  margin-left: 52px;
-}
-
-.editor-details {
-  display: block;
-  
-  @media (min-width: $screen-sm-min) {
-    display: inline-block;
-  }
 }

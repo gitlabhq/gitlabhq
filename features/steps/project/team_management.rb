@@ -26,8 +26,11 @@ class Spinach::Features::ProjectTeamManagement < Spinach::FeatureSteps
   end
 
   step 'I should see "Mike" in team list as "Reporter"' do
-    page.within ".access-reporter" do
+    user = User.find_by(name: 'Mike')
+    project_member = project.project_members.find_by(user_id: user.id)
+    page.within "#project_member_#{project_member.id}" do
       expect(page).to have_content('Mike')
+      expect(page).to have_content('Reporter')
     end
   end
 
@@ -40,16 +43,20 @@ class Spinach::Features::ProjectTeamManagement < Spinach::FeatureSteps
   end
 
   step 'I should see "sjobs@apple.com" in team list as invited "Reporter"' do
-    page.within ".access-reporter" do
+    project_member = project.project_members.find_by(invite_email: 'sjobs@apple.com')
+    page.within "#project_member_#{project_member.id}" do
       expect(page).to have_content('sjobs@apple.com')
-      expect(page).to have_content('invited')
+      expect(page).to have_content('Invited')
       expect(page).to have_content('Reporter')
     end
   end
 
   step 'I should see "Dmitriy" in team list as "Developer"' do
-    page.within ".access-developer" do
+    user = User.find_by(name: 'Dmitriy')
+    project_member = project.project_members.find_by(user_id: user.id)
+    page.within "#project_member_#{project_member.id}" do
       expect(page).to have_content('Dmitriy')
+      expect(page).to have_content('Developer')
     end
   end
 
@@ -65,13 +72,12 @@ class Spinach::Features::ProjectTeamManagement < Spinach::FeatureSteps
   end
 
   step 'I should see "Dmitriy" in team list as "Reporter"' do
-    page.within ".access-reporter" do
+    user = User.find_by(name: 'Dmitriy')
+    project_member = project.project_members.find_by(user_id: user.id)
+    page.within "#project_member_#{project_member.id}" do
       expect(page).to have_content('Dmitriy')
+      expect(page).to have_content('Reporter')
     end
-  end
-
-  step 'I click link "Remove from team"' do
-    click_link "Remove from team"
   end
 
   step 'I should not see "Dmitriy" in team list' do
@@ -120,13 +126,13 @@ class Spinach::Features::ProjectTeamManagement < Spinach::FeatureSteps
     user = User.find_by(name: 'Dmitriy')
     project_member = project.project_members.find_by(user_id: user.id)
     page.within "#project_member_#{project_member.id}" do
-      click_link('Remove user from team')
+      click_link('Remove user from project')
     end
   end
 
   step 'I share project with group "OpenSource"' do
     project = Project.find_by(name: 'Shop')
-    os_group   = create(:group, name: 'OpenSource')
+    os_group = create(:group, name: 'OpenSource')
     create(:project, group: os_group)
     @os_user1 = create(:user)
     @os_user2 = create(:user)

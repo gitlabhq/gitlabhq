@@ -1,3 +1,35 @@
+@mixin fade($gradient-direction, $rgba, $gradient-color) {
+  visibility: visible;
+  opacity: 1;
+  z-index: 2;
+  position: absolute;
+  bottom: 12px;
+  width: 43px;
+  height: 30px;
+  transition-duration: .3s;
+  -webkit-transform: translateZ(0);
+  background: -webkit-linear-gradient($gradient-direction, $rgba, $gradient-color 45%);
+  background: -o-linear-gradient($gradient-direction, $rgba, $gradient-color 45%);
+  background: -moz-linear-gradient($gradient-direction, $rgba, $gradient-color 45%);
+  background: linear-gradient($gradient-direction, $rgba, $gradient-color 45%);
+
+  &.end-scroll {
+    visibility: hidden;
+    opacity: 0;
+    transition-duration: .3s;
+  }
+}
+
+@mixin scrolling-links() {
+  white-space: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 .nav-links {
   padding: 0;
   margin: 0;
@@ -10,8 +42,7 @@
 
     a {
       display: inline-block;
-      padding: 14px;
-      padding-top: $gl-padding;
+      padding: $gl-btn-padding;
       padding-bottom: 11px;
       margin-bottom: -1px;
       font-size: 15px;
@@ -26,14 +57,37 @@
     }
 
     &.active a {
-      color: #000;
-      border-bottom: 2px solid #4688f1;
+      border-bottom: 2px solid $link-underline-blue;
+      color: $black;
     }
 
     .badge {
       font-weight: normal;
       background-color: #eee;
       color: #78a;
+    }
+  }
+
+  &.sub-nav {
+    text-align: center;
+    background-color: $background-color;
+
+    .container-fluid {
+      background-color: $background-color;
+      margin-bottom: 0;
+    }
+
+    li {
+
+      a {
+        margin: 0;
+        padding: 11px 10px 9px;
+      }
+
+      &.active a {
+        border-bottom: none;
+        color: $link-underline-blue;
+      }
     }
   }
 }
@@ -50,9 +104,24 @@
     width: 50%;
     line-height: 28px;
 
+    &.wiki-page {
+      padding: 16px 10px 11px;
+    }
+
     /* Small devices (phones, tablets, 768px and lower) */
     @media (max-width: $screen-sm-min) {
       width: 100%;
+    }
+  }
+
+  .nav-search {
+    display: inline-block;
+    width: 100%;
+    padding: 11px 0;
+
+    /* Small devices (phones, tablets, 768px and lower) */
+    @media (min-width: $screen-sm-min) {
+      width: 50%;
     }
   }
 
@@ -61,6 +130,10 @@
     width: 50%;
     margin-bottom: 0;
     border-bottom: none;
+
+    li a {
+      padding: 16px 10px 11px;
+    }
 
     /* Small devices (phones, tablets, 768px and lower) */
     @media (max-width: $screen-sm-max) {
@@ -100,13 +173,18 @@
 
     > form {
       display: inline-block;
+      margin-top: -1px;
+    }
+
+    .icon-label {
+      display: none;
     }
 
     input {
-      height: 34px;
+      height: 35px;
       display: inline-block;
       position: relative;
-      top: 1px;
+      top: 2px;
       margin-right: $gl-padding-top;
 
       /* Medium devices (desktops, 992px and up) */
@@ -124,19 +202,240 @@
       }
     }
 
-    /* Hide on extra small devices (phones) */
+    .project-filter-form {
+      input {
+        background-color: $background-color;
+      }
+    }
+
+    @media (max-width: $screen-xs-max) {
+      padding-bottom: 0;
+      width: 100%;
+      .btn, form, .dropdown, .dropdown-menu-toggle, .form-control {
+        margin: 0 0 10px;
+        display: block;
+        width: 100%;
+      }
+
+      form {
+        display: block;
+        height: auto;
+
+        input {
+          width: 100%;
+          margin: 0 0 10px;
+        }
+      }
+
+      .input-short {
+        width: 100%;
+      }
+
+      .icon-label {
+        display: inline-block;
+      }
+
+      // Applies on /dashboard/issues
+      .project-item-select-holder {
+        display: block;
+        margin: 0;
+      }
+    }
+  }
+
+  &.adjust {
+    .nav-text, .nav-controls {
+      width: auto;
+    }
+  }
+}
+
+.layout-nav {
+  position: fixed;
+  top: $header-height;
+  width: 100%;
+  z-index: 11;
+  background: $background-color;
+  border-bottom: 1px solid $border-color;
+  transition: padding $sidebar-transition-duration;
+  text-align: center;
+
+  .container-fluid {
+    position: relative;
+  }
+
+  .controls {
+    float: right;
+    padding: 7px 0 0;
+
     @media (max-width: $screen-xs-max) {
       display: none;
     }
 
-    /* Small devices (tablets, 768px and lower) */
-    @media (max-width: $screen-sm-max) {
-      width: 100%;
-      text-align: left;
+    i {
+      color: $layout-link-gray;
+    }
 
-      input {
-        width: 300px;
+    .fa-rss,
+    .fa-cog {
+      font-size: 16px;
+    }
+
+    .fa-caret-down {
+      margin-left: 5px;
+      color: $gl-icon-color;
+    }
+
+    .dropdown {
+      position: absolute;
+      top: 7px;
+      right: 15px;
+      z-index: 2;
+
+      li.active {
+        font-weight: bold;
       }
+    }
+  }
+
+  .nav-links {
+    @include scrolling-links();
+    border-bottom: none;
+    height: 51px;
+
+    svg {
+      position: relative;
+      top: 2px;
+      margin-right: 2px;
+      height: 15px;
+      width: auto;
+
+      path,
+      polygon {
+        fill: $layout-link-gray;
+      }
+    }
+
+    .fade-right {
+      @include fade(left, rgba(250, 250, 250, 0.4), $background-color);
+      right: 0;
+    }
+
+    .fade-left {
+      @include fade(right, rgba(250, 250, 250, 0.4), $background-color);
+      left: 0;
+    }
+
+    li {
+
+      a {
+        padding-top: 10px;
+      }
+
+      a, i {
+        color: $layout-link-gray;
+      }
+
+      &.active {
+
+        a, i {
+          color: $black;
+        }
+
+        svg {
+          path,
+          polygon {
+            fill: $black;
+          }
+        }
+      }
+
+      .badge {
+        color: $gl-icon-color;
+      }
+
+      &:hover {
+        a, i {
+          color: $black;
+        }
+      }
+    }
+  }
+
+  .nav-control {
+
+    .fade-right {
+      @media (min-width: $screen-xs-max) {
+        right: 68px;
+      }
+      @media (max-width: $screen-xs-min) {
+        right: 0;
+      }
+    }
+  }
+}
+
+.scrolling-tabs-container {
+  position: relative;
+
+  .nav-links {
+    @include scrolling-links();
+
+    .fade-right {
+      @include fade(left, rgba(255, 255, 255, 0.4), $background-color);
+      right: 0;
+    }
+
+    .fade-left {
+      @include fade(right, rgba(255, 255, 255, 0.4), $background-color);
+      left: 0;
+    }
+  }
+}
+
+.nav-block {
+  position: relative;
+
+  .nav-links {
+    @include scrolling-links();
+
+    .fade-right {
+      @include fade(left, rgba(255, 255, 255, 0.4), $white-light);
+      right: 0;
+    }
+
+    .fade-left {
+      @include fade(right, rgba(255, 255, 255, 0.4), $white-light);
+      left: 0;
+    }
+
+    &.event-filter {
+      .fade-right {
+        visibility: hidden;
+
+        @media (max-width: $screen-xs-max) {
+          visibility: visible;
+        }
+      }
+    }
+  }
+}
+
+.page-with-layout-nav {
+  margin-top: $header-height + 2;
+
+  .right-sidebar {
+    top: ($header-height * 2) + 2;
+  }
+}
+
+.activities {
+
+  .nav-block {
+    border-bottom: 1px solid $border-color;
+
+    .nav-links {
+      border-bottom: none;
     }
   }
 }

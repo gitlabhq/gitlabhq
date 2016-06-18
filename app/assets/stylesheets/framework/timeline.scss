@@ -5,17 +5,13 @@
   padding: 0;
 
   .timeline-entry {
-    padding: $gl-padding $gl-btn-padding;
+    padding: $gl-padding $gl-btn-padding 11px;
     border-color: $table-border-color;
     color: $gl-gray;
     border-bottom: 1px solid $border-white-light;
 
     &:target {
-      background: $row-hover;
-    }
-
-    &:last-child {
-      border-bottom: none;
+      background: $line-target-blue;
     }
 
     .avatar {
@@ -43,8 +39,7 @@
   .diff-file {
     border: 1px solid $border-color;
     border-bottom: none;
-    margin-left: 0;
-    margin-right: 0;
+    margin: 0;
   }
 }
 

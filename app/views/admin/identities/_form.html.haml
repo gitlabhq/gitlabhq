@@ -1,9 +1,5 @@
 = form_for [:admin, @user, @identity], html: { class: 'form-horizontal fieldset-form' } do |f|
-  - if @identity.errors.any?
-    #error_explanation
-      .alert.alert-danger
-        - @identity.errors.full_messages.each do |msg|
-          %p= msg
+  = form_errors(@identity)
 
   .form-group
     = f.label :provider, class: 'control-label'

@@ -17,7 +17,7 @@ class Projects::GraphsController < Projects::ApplicationController
   end
 
   def commits
-    @commits = @project.repository.commits(@ref, nil, 2000, 0, true)
+    @commits = @project.repository.commits(@ref, limit: 2000, skip_merges: true)
     @commits_graph = Gitlab::Graphs::Commits.new(@commits)
     @commits_per_week_days = @commits_graph.commits_per_week_days
     @commits_per_time = @commits_graph.commits_per_time
@@ -55,7 +55,7 @@ class Projects::GraphsController < Projects::ApplicationController
   private
 
   def fetch_graph
-    @commits = @project.repository.commits(@ref, nil, 6000, 0, true)
+    @commits = @project.repository.commits(@ref, limit: 6000, skip_merges: true)
     @log = []
 
     @commits.each do |commit|

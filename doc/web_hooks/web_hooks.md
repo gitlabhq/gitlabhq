@@ -13,6 +13,19 @@ You can configure webhooks to listen for specific events like pushes, issues or 
 
 Webhooks can be used to update an external issue tracker, trigger CI builds, update a backup mirror, or even deploy to your production server.
 
+## Webhook endpoint tips
+
+If you are writing your own endpoint (web server) that will receive
+GitLab webhooks keep in mind the following things:
+
+-   Your endpoint should send its HTTP response as fast as possible. If
+    you wait too long, GitLab may decide the hook failed and retry it.
+-   Your endpoint should ALWAYS return a valid HTTP response. If you do
+    not do this then GitLab will think the hook failed and retry it.
+    Most HTTP libraries take care of this for you automatically but if
+    you are writing a low-level hook this is important to remember.
+-   GitLab ignores the HTTP status code returned by your endpoint.
+
 ## SSL Verification
 
 By default, the SSL certificate of the webhook endpoint is verified based on
@@ -41,6 +54,7 @@ X-Gitlab-Event: Push Hook
   "before": "95790bf891e76fee5e1747ab589903a6a1f80f22",
   "after": "da1560886d4f094c3e6c9ef40349f7d38b5d27d7",
   "ref": "refs/heads/master",
+  "checkout_sha": "da1560886d4f094c3e6c9ef40349f7d38b5d27d7",
   "user_id": 4,
   "user_name": "John Smith",
   "user_email": "john@example.com",
@@ -58,13 +72,13 @@ X-Gitlab-Event: Push Hook
     "path_with_namespace":"mike/diaspora",
     "default_branch":"master",
     "homepage":"http://example.com/mike/diaspora",
-    "url":"git@example.com:mike/diasporadiaspora.git",
+    "url":"git@example.com:mike/diaspora.git",
     "ssh_url":"git@example.com:mike/diaspora.git",
     "http_url":"http://example.com/mike/diaspora.git"
   },
   "repository":{
     "name": "Diaspora",
-    "url": "git@example.com:mike/diasporadiaspora.git",
+    "url": "git@example.com:mike/diaspora.git",
     "description": "",
     "homepage": "http://example.com/mike/diaspora",
     "git_http_url":"http://example.com/mike/diaspora.git",
@@ -113,15 +127,15 @@ Triggered when you create (or delete) tags to the repository.
 X-Gitlab-Event: Tag Push Hook
 ```
 
-
 **Request body:**
 
 ```json
 {
   "object_kind": "tag_push",
-  "ref": "refs/tags/v1.0.0",
   "before": "0000000000000000000000000000000000000000",
   "after": "82b3d5ae55f7080f1e6022629cdb57bfae7cccc7",
+  "ref": "refs/tags/v1.0.0",
+  "checkout_sha": "82b3d5ae55f7080f1e6022629cdb57bfae7cccc7",
   "user_id": 1,
   "user_name": "John Smith",
   "user_avatar": "https://s.gravatar.com/avatar/d4c74594d841139328695756648b6bd6?s=8://s.gravatar.com/avatar/d4c74594d841139328695756648b6bd6?s=80",
@@ -143,7 +157,7 @@ X-Gitlab-Event: Tag Push Hook
     "http_url":"http://example.com/jsmith/example.git"
   },
   "repository":{
-    "name": "jsmith",
+    "name": "Example",
     "url": "ssh://git@example.com/jsmith/example.git",
     "description": "",
     "homepage": "http://example.com/jsmith/example",
@@ -478,7 +492,7 @@ X-Gitlab-Event: Note Hook
   },
   "repository":{
     "name":"diaspora",
-    "url":"git@example.com:mike/diasporadiaspora.git",
+    "url":"git@example.com:mike/diaspora.git",
     "description":"",
     "homepage":"http://example.com/mike/diaspora"
   },
@@ -677,6 +691,61 @@ X-Gitlab-Event: Merge Request Hook
       "username": "user1",
       "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=40\u0026d=identicon"
     }
+  }
+}
+```
+
+## Wiki Page events
+
+Triggered when a wiki page is created or edited.
+
+**Request Header**:
+
+```
+X-Gitlab-Event: Wiki Page Hook
+```
+
+**Request Body**:
+
+```json
+{
+  "object_kind": "wiki_page",
+  "user": {
+    "name": "Administrator",
+    "username": "root",
+    "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80\u0026d=identicon"
+  },
+  "project": {
+    "name": "awesome-project",
+    "description": "This is awesome",
+    "web_url": "http://example.com/root/awesome-project",
+    "avatar_url": null,
+    "git_ssh_url": "git@example.com:root/awesome-project.git",
+    "git_http_url": "http://example.com/root/awesome-project.git",
+    "namespace": "root",
+    "visibility_level": 0,
+    "path_with_namespace": "root/awesome-project",
+    "default_branch": "master",
+    "homepage": "http://example.com/root/awesome-project",
+    "url": "git@example.com:root/awesome-project.git",
+    "ssh_url": "git@example.com:root/awesome-project.git",
+    "http_url": "http://example.com/root/awesome-project.git"
+  },
+  "wiki": {
+    "web_url": "http://example.com/root/awesome-project/wikis/home",
+    "git_ssh_url": "git@example.com:root/awesome-project.wiki.git", 
+    "git_http_url": "http://example.com/root/awesome-project.wiki.git", 
+    "path_with_namespace": "root/awesome-project.wiki", 
+    "default_branch": "master"
+  },
+  "object_attributes": {
+    "title": "Awesome",
+    "content": "awesome content goes here",
+    "format": "markdown",
+    "message": "adding an awesome page to the wiki",
+    "slug": "awesome",
+    "url": "http://example.com/root/awesome-project/wikis/awesome",
+    "action": "create"
   }
 }
 ```

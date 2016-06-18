@@ -8,6 +8,10 @@ describe Banzai::Filter::UploadLinkFilter, lib: true do
       project: project
     })
 
+    raw_filter(doc, contexts)
+  end
+
+  def raw_filter(doc, contexts = {})
     described_class.call(doc, contexts)
   end
 
@@ -17,6 +21,14 @@ describe Banzai::Filter::UploadLinkFilter, lib: true do
 
   def link(path)
     %(<a href="#{path}">#{path}</a>)
+  end
+
+  def nested_image(path)
+    %(<div><img src="#{path}" /></div>)
+  end
+
+  def nested_link(path)
+    %(<div><a href="#{path}">#{path}</a></div>)
   end
 
   let(:project) { create(:project) }
@@ -43,11 +55,19 @@ describe Banzai::Filter::UploadLinkFilter, lib: true do
       doc = filter(link('/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg'))
       expect(doc.at_css('a')['href']).
         to eq "#{Gitlab.config.gitlab.url}/#{project.path_with_namespace}/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg"
+
+      doc = filter(nested_link('/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg'))
+      expect(doc.at_css('a')['href']).
+        to eq "#{Gitlab.config.gitlab.url}/#{project.path_with_namespace}/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg"
     end
 
     it 'rebuilds relative URL for an image' do
-      doc = filter(link('/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg'))
-      expect(doc.at_css('a')['href']).
+      doc = filter(image('/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg'))
+      expect(doc.at_css('img')['src']).
+        to eq "#{Gitlab.config.gitlab.url}/#{project.path_with_namespace}/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg"
+
+      doc = filter(nested_image('/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg'))
+      expect(doc.at_css('img')['src']).
         to eq "#{Gitlab.config.gitlab.url}/#{project.path_with_namespace}/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg"
     end
 
@@ -68,6 +88,20 @@ describe Banzai::Filter::UploadLinkFilter, lib: true do
 
       doc = filter(image(escaped))
       expect(doc.at_css('img')['src']).to match "#{Gitlab.config.gitlab.url}/#{project.path_with_namespace}/uploads/%ED%95%9C%EA%B8%80.png"
+    end
+  end
+
+  context 'when project context does not exist' do
+    let(:upload_link) { link('/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg') }
+
+    it 'does not raise error' do
+      expect { raw_filter(upload_link, project: nil) }.not_to raise_error
+    end
+
+    it 'does not rewrite link' do
+      doc = raw_filter(upload_link, project: nil)
+
+      expect(doc.to_html).to eq upload_link
     end
   end
 end

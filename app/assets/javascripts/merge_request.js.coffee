@@ -9,13 +9,11 @@ class @MergeRequest
   # Options:
   #   action - String, current controller action
   #
-  constructor: (@opts) ->
+  constructor: (@opts = {}) ->
     this.$el = $('.merge-request')
 
     this.$('.show-all-commits').on 'click', =>
       this.showAllCommits()
-
-    @fixAffixScroll();
 
     @initTabs()
 
@@ -29,20 +27,6 @@ class @MergeRequest
   # Local jQuery finder
   $: (selector) ->
     this.$el.find(selector)
-
-  fixAffixScroll: ->
-    fixAffix = ->
-      $discussion = $('.issuable-discussion')
-      $sidebar = $('.issuable-sidebar')
-      if $sidebar.hasClass('no-affix')
-        $sidebar.removeClass(['affix-top','affix'])
-      discussionHeight = $discussion.height()
-      sidebarHeight = $sidebar.height()
-      if sidebarHeight > discussionHeight
-        $discussion.height(sidebarHeight + 50)
-        $sidebar.addClass('no-affix')
-    $(window).on('resize', fixAffix)
-    fixAffix()
 
   initTabs: ->
     if @opts.action != 'new'

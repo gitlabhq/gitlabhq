@@ -10,6 +10,8 @@
     - if current_user
       = link_to issues_dashboard_url(format: :atom, private_token: current_user.private_token), class: 'btn' do
         = icon('rss')
+        %span.icon-label
+          Subscribe
     = render 'shared/new_project_item_select', path: 'issues/new', label: "New Issue"
 
 = render 'shared/issuable/filter', type: :issues

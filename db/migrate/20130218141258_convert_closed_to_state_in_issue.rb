@@ -1,14 +1,19 @@
+# rubocop:disable all
 class ConvertClosedToStateInIssue < ActiveRecord::Migration
+  include Gitlab::Database
+
   def up
-    Issue.transaction do
-      Issue.where(closed: true).update_all(state: :closed)
-      Issue.where(closed: false).update_all(state: :opened)
-    end
+    execute "UPDATE #{table_name} SET state = 'closed' WHERE closed = #{true_value}"
+    execute "UPDATE #{table_name} SET state = 'opened' WHERE closed = #{false_value}"
   end
 
   def down
-    Issue.transaction do
-      Issue.where(state: :closed).update_all(closed: true)
-    end
+    execute "UPDATE #{table_name} SET closed = #{true_value} WHERE state = 'closed'"
+  end
+
+  private
+
+  def table_name
+    Issue.table_name
   end
 end

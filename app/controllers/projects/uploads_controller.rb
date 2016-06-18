@@ -1,6 +1,8 @@
 class Projects::UploadsController < Projects::ApplicationController
-  skip_before_action :authenticate_user!, :reject_blocked!, :project,
+  skip_before_action :reject_blocked!, :project,
     :repository, if: -> { action_name == 'show' && image? }
+
+  before_action :authorize_upload_file!, only: [:create]
 
   def create
     link_to_file = ::Projects::UploadService.new(project, params[:file]).
@@ -25,6 +27,8 @@ class Projects::UploadsController < Projects::ApplicationController
     disposition = uploader.image? ? 'inline' : 'attachment'
     send_file uploader.file.path, disposition: disposition
   end
+
+  private
 
   def uploader
     return @uploader if defined?(@uploader)

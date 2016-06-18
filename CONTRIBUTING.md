@@ -16,6 +16,7 @@
         - [Issue tracker guidelines](#issue-tracker-guidelines)
         - [Issue weight](#issue-weight)
         - [Regression issues](#regression-issues)
+        - [Technical debt](#technical-debt)
     - [Merge requests](#merge-requests)
         - [Merge request guidelines](#merge-request-guidelines)
         - [Merge request description format](#merge-request-description-format)
@@ -37,7 +38,7 @@ source edition, and GitLab Enterprise Edition (EE) which is our commercial
 edition. Throughout this guide you will see references to CE and EE for
 abbreviation.
 
-If you have read this guide and want to know how the GitLab [core team][core-team]
+If you have read this guide and want to know how the GitLab [core team]
 operates please see [the GitLab contributing process](PROCESS.md).
 
 ## Contributor license agreement
@@ -95,7 +96,7 @@ The designs are made using Antetype (`.atype` files). You can use the
 [free Antetype viewer (Mac OSX only)] or grab an exported PNG from the design
 (the PNG is 1:1).
 
-The current designs can be found in the [`gitlab1.atype` file].
+The current designs can be found in the [`gitlab8.atype` file].
 
 ### UI development kit
 
@@ -134,11 +135,22 @@ For feature proposals for EE, open an issue on the
 
 In order to help track the feature proposals, we have created a
 [`feature proposal`][fpl] label. For the time being, users that are not members
-of the project cannot add labels. You can instead ask one of the [core team][core-team]
-members to add the label `feature proposal` to the issue.
+of the project cannot add labels. You can instead ask one of the [core team]
+members to add the label `feature proposal` to the issue or add the following
+code snippet right after your description in a new line: `~"feature proposal"`.
 
 Please keep feature proposals as small and simple as possible, complex ones
 might be edited to make them small and simple.
+
+You are encouraged to use the template below for feature proposals.
+
+```
+## Description including problem, use cases, benefits, and/or goals
+
+## Proposal
+
+## Links / references
+```
 
 For changes in the interface, it can be helpful to create a mockup first.
 If you want to create something yourself, consider opening an issue first to
@@ -242,6 +254,28 @@ addressed.
 [8.3 Regressions]: https://gitlab.com/gitlab-org/gitlab-ce/issues/4127
 [update the notes]: https://gitlab.com/gitlab-org/release-tools/blob/master/doc/pro-tips.md#update-the-regression-issue
 
+### Technical debt
+
+In order to track things that can be improved in GitLab's codebase, we created
+the ~"technical debt" label in [GitLab's issue tracker][ce-tracker].
+
+This label should be added to issues that describe things that can be improved,
+shortcuts that have been taken, code that needs refactoring, features that need
+additional attention, and all other things that have been left behind due to
+high velocity of development.
+
+Everyone can create an issue, though you may need to ask for adding a specific
+label, if you do not have permissions to do it by yourself. Additional labels
+can be combined with the `technical debt` label, to make it easier to schedule
+the improvements for a release.
+
+Issues tagged with the `technical debt` label have the same priority like issues
+that describe a new feature to be introduced in GitLab, and should be scheduled
+for a release by the appropriate person.
+
+Make sure to mention the merge request that the `technical debt` issue is
+associated with in the description of the issue.
+
 ## Merge requests
 
 We welcome merge requests with fixes and improvements to GitLab code, tests,
@@ -274,16 +308,14 @@ tests are least likely to receive timely feedback. The workflow to make a merge
 request is as follows:
 
 1. Fork the project into your personal space on GitLab.com
-1. Create a feature branch
+1. Create a feature branch, branch away from `master`.
 1. Write [tests](https://gitlab.com/gitlab-org/gitlab-development-kit#running-the-tests) and code
 1. Add your changes to the [CHANGELOG](CHANGELOG)
-1. If you are changing the README, some documentation or other things which
-   have no effect on the tests, add `[ci skip]` somewhere in the commit message
-   and make sure to read the [documentation styleguide][doc-styleguide]
+1. If you are writing documentation, make sure to read the [documentation styleguide][doc-styleguide]
 1. If you have multiple commits please combine them into one commit by
    [squashing them][git-squash]
 1. Push the commit(s) to your fork
-1. Submit a merge request (MR) to the master branch
+1. Submit a merge request (MR) to the `master` branch
 1. The MR title should describe the change you want to make
 1. The MR description should give a motive for your change and the method you
    used to achieve it, see the [merge request description format]
@@ -300,6 +332,7 @@ request is as follows:
    [shell command guidelines](doc/development/shell_commands.md)
 1. If your code creates new files on disk please read the
    [shared files guidelines](doc/development/shared_files.md).
+1. When writing commit messages please follow [these](http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html) [guidelines](http://chris.beams.io/posts/git-commit/).
 
 The **official merge window** is in the beginning of the month from the 1st to
 the 7th day of the month. This is the best time to submit an MR and get
@@ -320,12 +353,11 @@ is it will be merged (quickly). After that you can send more MRs to enhance it.
 For examples of feedback on merge requests please look at already
 [closed merge requests][closed-merge-requests]. If you would like quick feedback
 on your merge request feel free to mention one of the Merge Marshalls in the
-[core team][core-team] or one of the
-[Merge request coaches](https://about.gitlab.com/team/).
+[core team] or one of the [Merge request coaches](https://about.gitlab.com/team/).
 Please ensure that your merge request meets the contribution acceptance criteria.
 
 When having your code reviewed and when reviewing merge requests please take the
-[Thoughtbot code review guide] into account.
+[code review guidelines](doc/development/code_review.md) into account.
 
 ### Merge request description format
 
@@ -373,6 +405,7 @@ description area. Copy-paste it to retain the markdown format.
       entire line to follow it. This prevents linting tools from generating warnings.
     - Don't touch neighbouring lines. As an exception, automatic mass
       refactoring modifications may leave style non-compliant.
+1. If the merge request adds any new libraries (gems, JavaScript libraries, etc.), they should conform to our [Licensing guidelines][license-finder-doc]. See the instructions in that document for help if your MR fails the "license-finder" test with a "Dependencies that need approval" error.
 
 ## Changes for Stable Releases
 
@@ -425,7 +458,7 @@ merge request:
     - multi-line method chaining style **Option B**: dot `.` on previous line
     - string literal quoting style **Option A**: single quoted by default
 1.  [Rails](https://github.com/bbatsov/rails-style-guide)
-1.  [Testing](https://github.com/thoughtbot/guides/tree/master/style/testing)
+1.  [Testing](doc/development/testing.md)
 1.  [CoffeeScript](https://github.com/thoughtbot/guides/tree/master/style/coffeescript)
 1.  [SCSS styleguide][scss-styleguide]
 1.  [Shell commands](doc/development/shell_commands.md) created by GitLab
@@ -473,7 +506,7 @@ reported by emailing `contact@gitlab.com`.
 This Code of Conduct is adapted from the [Contributor Covenant][contributor-covenant], version 1.1.0,
 available at [http://contributor-covenant.org/version/1/1/0/](http://contributor-covenant.org/version/1/1/0/).
 
-[core-team]: https://about.gitlab.com/core-team/
+[core team]: https://about.gitlab.com/core-team/
 [getting-help]: https://about.gitlab.com/getting-help/
 [codetriage]: http://www.codetriage.com/gitlabhq/gitlabhq
 [up-for-grabs]: https://gitlab.com/gitlab-org/gitlab-ce/issues?label_name=up-for-grabs
@@ -498,5 +531,5 @@ available at [http://contributor-covenant.org/version/1/1/0/](http://contributor
 [scss-styleguide]: doc/development/scss_styleguide.md "SCSS styleguide"
 [gitlab-design]: https://gitlab.com/gitlab-org/gitlab-design
 [free Antetype viewer (Mac OSX only)]: https://itunes.apple.com/us/app/antetype-viewer/id824152298?mt=12
-[`gitlab1.atype` file]: https://gitlab.com/gitlab-org/gitlab-design/tree/master/gitlab1.atype/
-[Thoughtbot code review guide]: https://github.com/thoughtbot/guides/tree/master/code-review
+[`gitlab8.atype` file]: https://gitlab.com/gitlab-org/gitlab-design/tree/master/current/
+[license-finder-doc]: doc/development/licensing.md

@@ -15,16 +15,23 @@
     margin-bottom: 0;
 
     tr {
-      > td, > th {
-        line-height: 26px;
+      border-bottom: 1px solid $table-border-gray;
+      border-top: 1px solid $table-border-gray;
+
+      td, th {
+        line-height: 23px;
       }
 
       &:hover {
-        td {
-          background: $row-hover;
-        }
         cursor: pointer;
+
+        td {
+          background-color: $row-hover;
+          border-top: 1px solid $row-hover-border;
+          border-bottom: 1px solid $row-hover-border;
+        }
       }
+
       &.selected {
         td {
           background: $gray-dark;
@@ -41,7 +48,7 @@
       vertical-align: middle;
 
       i, a {
-        color: $gl-link-color;
+        color: $gl-dark-link-color;
       }
 
       img {
@@ -94,7 +101,7 @@
   margin: 0;
 
   .commit {
-    padding: 0;
+    padding: 0 0 0 55px;
 
     .commit-row-title {
       .commit-row-message {
@@ -122,4 +129,6 @@
 .tree-controls {
   float: right;
   margin-top: 11px;
+  position: relative;
+  z-index: 2;
 }

@@ -23,15 +23,17 @@ module API
       # Create group. Available only for users who can create groups.
       #
       # Parameters:
-      #   name (required) - The name of the group
-      #   path (required) - The path of the group
+      #   name (required)             - The name of the group
+      #   path (required)             - The path of the group
+      #   description (optional)      - The description of the group
+      #   visibility_level (optional) - The visibility level of the group
       # Example Request:
       #   POST /groups
       post do
         authorize! :create_group, current_user
         required_attributes! [:name, :path]
 
-        attrs = attributes_for_keys [:name, :path, :description]
+        attrs = attributes_for_keys [:name, :path, :description, :visibility_level]
         @group = Group.new(attrs)
 
         if @group.save
@@ -39,6 +41,28 @@ module API
           present @group, with: Entities::Group
         else
           render_api_error!("Failed to save group #{@group.errors.messages}", 400)
+        end
+      end
+
+      # Update group. Available only for users who can administrate groups.
+      #
+      # Parameters:
+      #   id (required)               - The ID of a group
+      #   path (optional)             - The path of the group
+      #   description (optional)      - The description of the group
+      #   visibility_level (optional) - The visibility level of the group
+      # Example Request:
+      #   PUT /groups/:id
+      put ':id' do
+        group = find_group(params[:id])
+        authorize! :admin_group, group
+
+        attrs = attributes_for_keys [:name, :path, :description, :visibility_level]
+
+        if ::Groups::UpdateService.new(group, current_user, attrs).execute
+          present group, with: Entities::GroupDetail
+        else
+          render_validation_error!(group)
         end
       end
 
@@ -71,8 +95,7 @@ module API
       #   GET /groups/:id/projects
       get ":id/projects" do
         group = find_group(params[:id])
-        projects = group.projects
-        projects = filter_projects(projects)
+        projects = GroupProjectsFinder.new(group).execute(current_user)
         projects = paginate projects
         present projects, with: Entities::Project
       end

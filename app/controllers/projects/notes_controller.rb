@@ -1,9 +1,11 @@
 class Projects::NotesController < Projects::ApplicationController
+  include ToggleAwardEmoji
+
   # Authorize
   before_action :authorize_read_note!
   before_action :authorize_create_note!, only: [:create]
   before_action :authorize_admin_note!, only: [:update, :destroy]
-  before_action :find_current_user_notes, except: [:destroy, :delete_attachment, :award_toggle]
+  before_action :find_current_user_notes, only: [:index]
 
   def index
     current_fetched_at = Time.now.to_i
@@ -39,12 +41,11 @@ class Projects::NotesController < Projects::ApplicationController
 
   def destroy
     if note.editable?
-      note.destroy
-      note.reset_events_cache
+      Notes::DeleteService.new(project, current_user).execute(note)
     end
 
     respond_to do |format|
-      format.js { render nothing: true }
+      format.js { head :ok }
     end
   end
 
@@ -53,32 +54,8 @@ class Projects::NotesController < Projects::ApplicationController
     note.update_attribute(:attachment, nil)
 
     respond_to do |format|
-      format.js { render nothing: true }
+      format.js { head :ok }
     end
-  end
-
-  def award_toggle
-    noteable = if note_params[:noteable_type] == "issue"
-                 project.issues.find(note_params[:noteable_id])
-               else
-                 project.merge_requests.find(note_params[:noteable_id])
-               end
-
-    data = {
-      author: current_user,
-      is_award: true,
-      note: note_params[:note].delete(":")
-    }
-
-    note = noteable.notes.find_by(data)
-
-    if note
-      note.destroy
-    else
-      Notes::CreateService.new(project, current_user, note_params).execute
-    end
-
-    render json: { ok: true }
   end
 
   private
@@ -86,6 +63,7 @@ class Projects::NotesController < Projects::ApplicationController
   def note
     @note ||= @project.notes.find(params[:id])
   end
+  alias_method :awardable, :note
 
   def note_to_html(note)
     render_to_string(
@@ -97,7 +75,7 @@ class Projects::NotesController < Projects::ApplicationController
   end
 
   def note_to_discussion_html(note)
-    return unless note.for_diff_line?
+    return unless note.diff_note?
 
     if params[:view] == 'parallel'
       template = "projects/notes/_diff_notes_with_reply_parallel"
@@ -121,7 +99,7 @@ class Projects::NotesController < Projects::ApplicationController
   end
 
   def note_to_discussion_with_diff_html(note)
-    return unless note.for_diff_line?
+    return unless note.diff_note?
 
     render_to_string(
       "projects/notes/_discussion",
@@ -132,13 +110,20 @@ class Projects::NotesController < Projects::ApplicationController
   end
 
   def note_json(note)
-    if note.valid?
+    if note.is_a?(AwardEmoji)
+      {
+        valid:  note.valid?,
+        award:  true,
+        id:     note.id,
+        name:   note.name
+      }
+    elsif note.valid?
       {
         valid: true,
         id: note.id,
         discussion_id: note.discussion_id,
         html: note_to_html(note),
-        award: note.is_award,
+        award: false,
         note: note.note,
         discussion_html: note_to_discussion_html(note),
         discussion_with_diff_html: note_to_discussion_with_diff_html(note)
@@ -146,7 +131,7 @@ class Projects::NotesController < Projects::ApplicationController
     else
       {
         valid: false,
-        award: note.is_award,
+        award: false,
         errors: note.errors
       }
     end
@@ -159,7 +144,7 @@ class Projects::NotesController < Projects::ApplicationController
   def note_params
     params.require(:note).permit(
       :note, :noteable, :noteable_id, :noteable_type, :project_id,
-      :attachment, :line_code, :commit_id
+      :attachment, :line_code, :commit_id, :type
     )
   end
 

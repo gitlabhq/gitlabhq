@@ -3,17 +3,13 @@ class SystemHooksService
     execute_hooks(build_event_data(model, event))
   end
 
-  private
-
-  def execute_hooks(data)
-    SystemHook.all.each do |sh|
-      async_execute_hook(sh, data, 'system_hooks')
+  def execute_hooks(data, hooks_scope = :all)
+    SystemHook.send(hooks_scope).each do |hook|
+      hook.async_execute(data, 'system_hooks')
     end
   end
 
-  def async_execute_hook(hook, data, hook_name)
-    Sidekiq::Client.enqueue(SystemHookWorker, hook.id, data, hook_name)
-  end
+  private
 
   def build_event_data(model, event)
     data = {
@@ -89,23 +85,25 @@ class SystemHooksService
       path_with_namespace: model.path_with_namespace,
       project_id: model.id,
       owner_name: owner.name,
-      owner_email: owner.respond_to?(:email) ?  owner.email : "",
+      owner_email: owner.respond_to?(:email) ? owner.email : "",
       project_visibility: Project.visibility_levels.key(model.visibility_level_field).downcase
     }
   end
 
   def project_member_data(model)
+    project = model.project || Project.unscoped.find(model.source_id)
+
     {
-      project_name: model.project.name,
-      project_path: model.project.path,
-      project_path_with_namespace: model.project.path_with_namespace,
-      project_id: model.project.id,
-      user_username: model.user.username,
-      user_name: model.user.name,
-      user_email: model.user.email,
-      user_id: model.user.id,
-      access_level: model.human_access,
-      project_visibility: Project.visibility_levels.key(model.project.visibility_level_field).downcase
+      project_name:                 project.name,
+      project_path:                 project.path,
+      project_path_with_namespace:  project.path_with_namespace,
+      project_id:                   project.id,
+      user_username:                model.user.username,
+      user_name:                    model.user.name,
+      user_email:                   model.user.email,
+      user_id:                      model.user.id,
+      access_level:                 model.human_access,
+      project_visibility:           Project.visibility_levels.key(project.visibility_level_field).downcase
     }
   end
 

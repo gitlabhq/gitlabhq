@@ -5,19 +5,17 @@ describe GitTagPushService, services: true do
 
   let(:user) { create :user }
   let(:project) { create :project }
-  let(:service) { GitTagPushService.new }
+  let(:service) { GitTagPushService.new(project, user, oldrev: oldrev, newrev: newrev, ref: ref) }
 
-  before do
-    @oldrev = Gitlab::Git::BLANK_SHA
-    @newrev = "8a2a6eb295bb170b34c24c76c49ed0e9b2eaf34b" # gitlab-test: git rev-parse refs/tags/v1.1.0
-    @ref = 'refs/tags/v1.1.0'
-  end
+  let(:oldrev) { Gitlab::Git::BLANK_SHA }
+  let(:newrev) { "8a2a6eb295bb170b34c24c76c49ed0e9b2eaf34b" } # gitlab-test: git rev-parse refs/tags/v1.1.0
+  let(:ref) { 'refs/tags/v1.1.0' }
 
   describe "Git Tag Push Data" do
     before do
-      service.execute(project, user, @oldrev, @newrev, @ref)
+      service.execute
       @push_data = service.push_data
-      @tag_name = Gitlab::Git.ref_name(@ref)
+      @tag_name = Gitlab::Git.ref_name(ref)
       @tag = project.repository.find_tag(@tag_name)
       @commit = project.commit(@tag.target)
     end
@@ -25,9 +23,9 @@ describe GitTagPushService, services: true do
     subject { @push_data }
 
     it { is_expected.to include(object_kind: 'tag_push') }
-    it { is_expected.to include(ref: @ref) }
-    it { is_expected.to include(before: @oldrev) }
-    it { is_expected.to include(after: @newrev) }
+    it { is_expected.to include(ref: ref) }
+    it { is_expected.to include(before: oldrev) }
+    it { is_expected.to include(after: newrev) }
     it { is_expected.to include(message: @tag.message) }
     it { is_expected.to include(user_id: user.id) }
     it { is_expected.to include(user_name: user.name) }
@@ -80,9 +78,11 @@ describe GitTagPushService, services: true do
 
   describe "Webhooks" do
     context "execute webhooks" do
+      let(:service) { GitTagPushService.new(project, user, oldrev: 'oldrev', newrev: 'newrev', ref: 'refs/tags/v1.0.0') }
+
       it "when pushing tags" do
         expect(project).to receive(:execute_hooks)
-        service.execute(project, user, 'oldrev', 'newrev', 'refs/tags/v1.0.0')
+        service.execute
       end
     end
   end

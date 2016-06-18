@@ -3,12 +3,14 @@
  *
  */
 .file-holder {
-  border: none;
   border: 1px solid $border-color;
 
+  &.file-holder-no-border {
+    border: 0;
+  }
+
   &.readme-holder {
-    margin-top: 10px;
-    border-bottom: 0;
+    margin: $gl-padding-top 0;
   }
 
   table {
@@ -17,14 +19,25 @@
 
   .file-title {
     position: relative;
-    background: $background-color;
+    background-color: $background-color;
     border-bottom: 1px solid $border-color;
     margin: 0;
     text-align: left;
     padding: 10px $gl-padding;
+    word-wrap: break-word;
+    border-radius: 3px 3px 0 0;
+
+    &.file-title-clear {
+      padding-left: 0;
+      padding-right: 0;
+      background-color: transparent;
+
+      .file-actions {
+        right: 0;
+      }
+    }
 
     .file-actions {
-      float: right;
       position: absolute;
       top: 5px;
       right: 15px;
@@ -36,18 +49,8 @@
       }
     }
 
-    .filename {
-      &.old {
-        span.idiff {
-          background-color: #f8cbcb;
-        }
-      }
-
-      &.new {
-        span.idiff {
-          background-color: #a6f3a6;
-        }
-      }
+    a:not(.btn) {
+      color: $gl-dark-link-color;
     }
 
     .left-options {
@@ -76,10 +79,6 @@
           margin: 0;
         }
       }
-    }
-
-    &.blob_file {
-
     }
 
     &.blob-no-preview {
@@ -125,6 +124,11 @@
       td.line-numbers {
         float: none;
         border-left: 1px solid #ddd;
+
+        i {
+          float: none;
+          margin-right: 0;
+        }
       }
       td.lines {
         padding: 0;

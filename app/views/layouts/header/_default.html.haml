@@ -1,22 +1,24 @@
 %header.navbar.navbar-fixed-top.navbar-gitlab{ class: nav_header_class }
   %div{ class: fluid_layout ? "container-fluid" : "container-fluid" }
     .header-content
-      %button.navbar-toggle{type: 'button'}
+      %button.side-nav-toggle{type: 'button'}
         %span.sr-only Toggle navigation
         = icon('bars')
+      %button.navbar-toggle{type: 'button'}
+        %span.sr-only Toggle navigation
+        = icon('angle-left')
 
       .navbar-collapse.collapse
-        %ul.nav.navbar-nav.pull-right
-          - unless @disable_search_panel
-            %li.hidden-sm.hidden-xs
-              = render 'layouts/search'
+        %ul.nav.navbar-nav
+          %li.hidden-sm.hidden-xs
+            = render 'layouts/search' unless current_controller?(:search)
           %li.visible-sm.visible-xs
             = link_to search_path, title: 'Search', data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
               = icon('search')
           - if current_user
             - if session[:impersonator_id]
               %li.impersonation
-                = link_to stop_impersonation_admin_users_path, method: :delete, title: 'Stop Impersonation', data: { toggle: 'tooltip', placement: 'bottom', container: 'body' } do
+                = link_to admin_impersonation_path, method: :delete, title: 'Stop Impersonation', data: { toggle: 'tooltip', placement: 'bottom', container: 'body' } do
                   = icon('user-secret fw')
             - if current_user.is_admin?
               %li
@@ -24,7 +26,8 @@
                   = icon('wrench fw')
             %li
               = link_to dashboard_todos_path, title: 'Todos', data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
-                %span.badge.todos-pending-count
+                = icon('bell fw')
+                %span.badge.todos-pending-count{ class: ("hidden" if todos_pending_count == 0) }
                   = todos_pending_count
             - if current_user.can_create_project?
               %li
@@ -39,13 +42,22 @@
               = link_to destroy_user_session_path, class: 'logout', method: :delete, title: 'Sign out', data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
                 = icon('sign-out')
           - else
-            .pull-right
-              = link_to "Sign in", new_session_path(:user, redirect_to_referer: 'yes'), class: 'btn btn-sign-in btn-success'
+            %li
+              %div
+                = link_to "Sign in", new_session_path(:user, redirect_to_referer: 'yes'), class: 'btn btn-sign-in btn-success'
 
 
       %h1.title= title
 
+      .header-logo
+        = link_to root_path, class: 'home', title: 'Dashboard', id: 'logo' do
+          = brand_header_logo
+
+      = yield :header_content
+
 = render 'shared/outdated_browser'
+
 - if @project && !@project.empty_repo?
-  :javascript
-    var findFileURL = "#{namespace_project_find_file_path(@project.namespace, @project, @ref || @project.repository.root_ref)}";
+  - if ref = @ref || @project.repository.root_ref
+    :javascript
+      var findFileURL = "#{namespace_project_find_file_path(@project.namespace, @project, ref)}";

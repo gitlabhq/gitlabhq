@@ -42,7 +42,7 @@ class @ZenMode
       $(e.currentTarget).trigger('zen_mode:leave')
 
     $(document).on 'zen_mode:enter', (e) =>
-      @enter(e.target.parentNode)
+      @enter($(e.target).closest('.md-area').find('.zen-backdrop'))
     $(document).on 'zen_mode:leave', (e) =>
       @exit()
 

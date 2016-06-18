@@ -173,7 +173,7 @@ check_stale_pids(){
     fi
   fi
   if [ "$hpid" != "0" ] && [ "$gitlab_workhorse_status" != "0" ]; then
-    echo "Removing stale gitlab-workhorse pid. This is most likely caused by gitlab-workhorse crashing the last time it ran."
+    echo "Removing stale GitLab Workhorse pid. This is most likely caused by GitLab Workhorse crashing the last time it ran."
     if ! rm "$gitlab_workhorse_pid_path"; then
       echo "Unable to remove stale pid, exiting"
       exit 1
@@ -208,7 +208,7 @@ start_gitlab() {
     echo "Starting GitLab Sidekiq"
   fi
   if [ "$gitlab_workhorse_status" != "0" ]; then
-    echo "Starting gitlab-workhorse"
+    echo "Starting GitLab Workhorse"
   fi
   if [ "$mail_room_enabled" = true ] && [ "$mail_room_status" != "0" ]; then
     echo "Starting GitLab MailRoom"
@@ -232,7 +232,7 @@ start_gitlab() {
   fi
 
   if [ "$gitlab_workhorse_status" = "0" ]; then
-    echo "The gitlab-workhorse is already running with pid $spid, not restarting"
+    echo "The GitLab Workhorse is already running with pid $spid, not restarting"
   else
     # No need to remove a socket, gitlab-workhorse does this itself.
     # Because gitlab-workhorse has multiple executables we need to fix
@@ -271,7 +271,7 @@ stop_gitlab() {
     RAILS_ENV=$RAILS_ENV bin/background_jobs stop
   fi
   if [ "$gitlab_workhorse_status" = "0" ]; then
-    echo "Shutting down gitlab-workhorse"
+    echo "Shutting down GitLab Workhorse"
     kill -- $(cat $gitlab_workhorse_pid_path)
   fi
   if [ "$mail_room_enabled" = true ] && [ "$mail_room_status" = "0" ]; then
@@ -320,9 +320,9 @@ print_status() {
       printf "The GitLab Sidekiq job dispatcher is \033[31mnot running\033[0m.\n"
   fi
   if [ "$gitlab_workhorse_status" = "0" ]; then
-      echo "The gitlab-workhorse with pid $hpid is running."
+      echo "The GitLab Workhorse with pid $hpid is running."
   else
-      printf "The gitlab-workhorse is \033[31mnot running\033[0m.\n"
+      printf "The GitLab Workhorse is \033[31mnot running\033[0m.\n"
   fi
   if [ "$mail_room_enabled" = true ]; then
     if [ "$mail_room_status" = "0" ]; then

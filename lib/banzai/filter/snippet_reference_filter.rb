@@ -5,6 +5,8 @@ module Banzai
     #
     # This filter supports cross-project references.
     class SnippetReferenceFilter < AbstractReferenceFilter
+      self.reference_type = :snippet
+
       def self.object_class
         Snippet
       end
@@ -14,7 +16,7 @@ module Banzai
       end
 
       def url_for_object(snippet, project)
-        h = Gitlab::Application.routes.url_helpers
+        h = Gitlab::Routing.url_helpers
         h.namespace_project_snippet_url(project.namespace, project, snippet,
                                         only_path: context[:only_path])
       end

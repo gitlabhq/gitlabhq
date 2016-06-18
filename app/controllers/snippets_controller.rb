@@ -10,7 +10,7 @@ class SnippetsController < ApplicationController
   # Allow destroy snippet
   before_action :authorize_admin_snippet!, only: [:destroy]
 
-  skip_before_action :authenticate_user!, only: [:index, :user_index, :show, :raw]
+  skip_before_action :authenticate_user!, only: [:index, :show, :raw]
 
   layout 'snippets'
   respond_to :html
@@ -25,7 +25,7 @@ class SnippetsController < ApplicationController
         filter: :by_user,
         user: @user,
         scope: params[:scope] }).
-      page(params[:page]).per(PER_PAGE)
+      page(params[:page])
 
       render 'index'
     else

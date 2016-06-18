@@ -10,14 +10,223 @@
   }
 }
 
-.search-holder {
-  max-width: 600px;
-  margin: 0 auto;
-  margin-bottom: 20px;
+.search {
+  margin-right: 10px;
+  margin-left: 10px;
+  margin-top: ($header-height - 35) / 2;
 
-  input {
-    border-color: #bbb;
-    font-weight: bold;
+  form {
+    @extend .form-control;
+    margin: 0;
+    padding: 4px;
+    width: $search-input-width;
+    line-height: 24px;
+  }
+
+  .location-text {
+    font-style: normal;
+  }
+
+  .search-input {
+    padding-right: 20px;
+    border: none;
+    font-size: 14px;
+    outline: none;
+    padding: 0;
+    margin-left: 5px;
+    line-height: 25px;
+    width: 98%;
+  }
+
+  .location-badge {
+    line-height: 25px;
+    padding: 0 5px;
+    border-radius: $border-radius-default;
+    font-size: 14px;
+    font-style: normal;
+    color: $location-badge-color;
+    display: inline-block;
+    background-color: $location-badge-bg;
+    vertical-align: top;
+    cursor: default;
+  }
+
+  .search-input-container {
+    display: -webkit-flex;
+    display: flex;
+    position: relative;
+  }
+
+  .search-input-wrap {
+    // Fallback if flexbox is not supported
+    display: inline-block;
+  }
+
+  .search-input-wrap {
+    width: 100%;
+
+    .search-icon, .clear-icon {
+      position: absolute;
+      right: 5px;
+      top: 0;
+      color: $location-icon-color;
+
+      &:before {
+        font-family: FontAwesome;
+        font-weight: normal;
+        font-style: normal;
+      }
+    }
+
+    .search-icon {
+      @extend .fa-search;
+      @include transition(color .15s);
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+    }
+
+    .clear-icon {
+      @extend .fa-times;
+      display: none;
+    }
+
+    // Rewrite position. Dropdown menu should be relative to .search-input-container
+    .dropdown {
+      position: static;
+    }
+
+    .dropdown-header {
+      text-transform: uppercase;
+      font-size: 11px;
+    }
+
+    // Custom dropdown positioning
+    .dropdown-menu {
+      top: 30px;
+      left: -5px;
+      padding: 0;
+
+      ul {
+        padding: 10px 0;
+      }
+    }
+
+    .dropdown-content {
+      max-height: 350px;
+    }
+  }
+
+  &.search-active {
+    form {
+      @extend .form-control:focus;
+      border-color: $dropdown-input-focus-border;
+      box-shadow: 0 0 4px $search-input-focus-shadow-color;
+    }
+
+    .location-badge {
+      @include transition(all .15s);
+      background-color: $location-badge-active-bg;
+      color: $white-light;
+    }
+
+    .search-input-wrap {
+      i {
+        color: $location-icon-active-color;
+      }
+    }
+  }
+
+  &.has-value {
+    .search-icon {
+      display: none;
+    }
+
+    .clear-icon {
+      cursor: pointer;
+      display: block;
+    }
+  }
+
+  &.has-location-badge {
+    .search-input-wrap {
+      width: 68%;
+    }
   }
 }
 
+.search-holder {
+  @media (min-width: $screen-sm-min) {
+    display: -webkit-flex;
+    display: flex;
+  }
+
+  .search-field-holder {
+    -webkit-flex: 1 0 auto;
+    flex: 1 0 auto;
+    position: relative;
+    margin-right: 0;
+
+    @media (min-width: $screen-sm-min) {
+      margin-right: 5px;
+    }
+  }
+
+  .search-icon {
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    color: $gray-darkest;
+    pointer-events: none;
+  }
+
+  .search-text-input {
+    padding-left: $gl-padding + 15px;
+    padding-right: $gl-padding + 15px;
+  }
+
+  .btn-search {
+    width: 100%;
+    margin-top: 5px;
+
+    @media (min-width: $screen-sm-min) {
+      width: auto;
+      margin-top: 0;
+      margin-left: 5px;
+    }
+  }
+
+  .dropdown {
+    @media (min-width: $screen-sm-min) {
+      margin-left: 5px;
+      margin-right: 5px;
+    }
+  }
+
+  .dropdown-menu-toggle {
+    width: 100%;
+    margin-top: 5px;
+
+    @media (min-width: $screen-sm-min) {
+      width: 160px;
+      margin-top: 0;
+    }
+  }
+}
+
+.search-clear {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  padding: 0;
+  color: $gray-darkest;
+  line-height: 0;
+  background: none;
+  border: 0;
+
+  &:hover,
+  &:focus {
+    color: $gl-link-color;
+    outline: none;
+  }
+}

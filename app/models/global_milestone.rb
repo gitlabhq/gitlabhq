@@ -14,6 +14,7 @@ class GlobalMilestone
 
   def initialize(title, milestones)
     @title = title
+    @name = title
     @milestones = milestones
   end
 

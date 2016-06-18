@@ -66,6 +66,35 @@ the target branch. Click **Create directory** to finish.
 
 ## Create a new branch
 
+There are multiple ways to create a branch from GitLab's web interface.
+
+### Create a new branch from an issue
+
+>**Note:**
+This feature was [introduced][ce-2808] in GitLab 8.6.
+
+In case your development workflow dictates to have an issue for every merge
+request, you can quickly create a branch right on the issue page which will be
+tied with the issue itself. You can see a **New Branch** button after the issue
+description, unless there is already a branch with the same name or a referenced
+merge request.
+
+![New Branch Button](img/new_branch_from_issue.png)
+
+Once you click it, a new branch will be created that diverges from the default
+branch of your project, by default `master`. The branch name will be based on
+the title of the issue and as suffix it will have its ID. Thus, the example
+screenshot above will yield a branch named
+`2-et-cum-et-sed-expedita-repellat-consequatur-ut-assumenda-numquam-rerum`.
+
+After the branch is created, you can edit files in the repository to fix
+the issue. When a merge request is created based on the newly created branch,
+the description field will automatically display the [issue closing pattern]
+`Closes #ID`, where `ID` the ID of the issue. This will close the issue once the
+merge request is merged.
+
+### Create a new branch from a project's dashboard
+
 If you want to make changes to several files before creating a new merge
 request, you can create a new branch up front. From a project's files page,
 choose **New branch** from the dropdown.
@@ -118,3 +147,6 @@ appear that is labeled **Start a new merge request with these changes**. After
 you commit the changes you will be taken to a new merge request form.
 
 ![Start a new merge request with these changes](img/web_editor_start_new_merge_request.png)
+
+[ce-2808]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/2808
+[issue closing pattern]: ../customization/issue_closing.md

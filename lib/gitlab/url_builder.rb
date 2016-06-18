@@ -1,56 +1,68 @@
 module Gitlab
   class UrlBuilder
-    include Gitlab::Application.routes.url_helpers
+    include Gitlab::Routing.url_helpers
     include GitlabRoutingHelper
+    include ActionView::RecordIdentifier
 
-    def initialize(type)
-      @type = type
+    attr_reader :object
+
+    def self.build(object)
+      new(object).url
     end
 
-    def build(id)
-      case @type
-      when :issue
-        build_issue_url(id)
-      when :merge_request
-        build_merge_request_url(id)
-      when :note
-        build_note_url(id)
-
+    def url
+      case object
+      when Commit
+        commit_url
+      when Issue
+        issue_url(object)
+      when MergeRequest
+        merge_request_url(object)
+      when Note
+        note_url
+      when WikiPage
+        wiki_page_url
+      else
+        raise NotImplementedError.new("No URL builder defined for #{object.class}")
       end
     end
 
     private
 
-    def build_issue_url(id)
-      issue = Issue.find(id)
-      issue_url(issue)
+    def initialize(object)
+      @object = object
     end
 
-    def build_merge_request_url(id)
-      merge_request = MergeRequest.find(id)
-      merge_request_url(merge_request)
+    def commit_url(opts = {})
+      return '' if object.project.nil?
+
+      namespace_project_commit_url({
+        namespace_id: object.project.namespace,
+        project_id: object.project,
+        id: object.id
+      }.merge!(opts))
     end
 
-    def build_note_url(id)
-      note = Note.find(id)
-      if note.for_commit?
-        namespace_project_commit_url(namespace_id: note.project.namespace,
-                                     id: note.commit_id,
-                                     project_id: note.project,
-                                     anchor: "note_#{note.id}")
-      elsif note.for_issue?
-        issue = Issue.find(note.noteable_id)
-        issue_url(issue,
-                  anchor: "note_#{note.id}")
-      elsif note.for_merge_request?
-        merge_request = MergeRequest.find(note.noteable_id)
-        merge_request_url(merge_request,
-                          anchor: "note_#{note.id}")
-      elsif note.for_project_snippet?
-        snippet = Snippet.find(note.noteable_id)
-        project_snippet_url(snippet,
-                            anchor: "note_#{note.id}")
+    def note_url
+      if object.for_commit?
+        commit_url(id: object.commit_id, anchor: dom_id(object))
+
+      elsif object.for_issue?
+        issue = Issue.find(object.noteable_id)
+        issue_url(issue, anchor: dom_id(object))
+
+      elsif object.for_merge_request?
+        merge_request = MergeRequest.find(object.noteable_id)
+        merge_request_url(merge_request, anchor: dom_id(object))
+
+      elsif object.for_snippet?
+        snippet = Snippet.find(object.noteable_id)
+        project_snippet_url(snippet, anchor: dom_id(object))
       end
+    end
+
+    def wiki_page_url
+      namespace_project_wiki_url(object.wiki.project.namespace, object.wiki.project, object.slug)
     end
   end
 end

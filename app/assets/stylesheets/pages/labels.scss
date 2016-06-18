@@ -9,29 +9,70 @@
   }
 
   &.suggest-colors-dropdown {
-    margin-bottom: 5px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border-radius: $border-radius-base;
+    overflow: hidden;
 
     a {
       @include border-radius(0);
-      width: 36.7px;
+      width: (100% / 7);
       margin-right: 0;
       margin-bottom: -5px;
     }
   }
 }
 
-.dropdown-label-color-preview {
-  display: none;
-  margin-top: 5px;
-  width: 100%;
-  height: 25px;
-
-  &.is-active {
-    display: block;
+.dropdown-new-label {
+  .dropdown-content {
+    max-height: 260px;
   }
 }
 
+.dropdown-label-color-input {
+  position: relative;
+  margin-bottom: 10px;
+
+  &.is-active {
+    padding-left: 32px;
+  }
+}
+
+.dropdown-label-color-preview {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 32px;
+  height: 32px;
+  border-top-left-radius: $border-radius-base;
+  border-bottom-left-radius: $border-radius-base;
+}
+
 .label-row {
+  .label-name {
+    display: block;
+    margin-bottom: 10px;
+
+    @media (min-width: $screen-sm-min) {
+      display: inline-block;
+      width: 200px;
+      margin-bottom: 0;
+    }
+  }
+
+  .label-description {
+    display: block;
+    margin-bottom: 10px;
+
+    @media (min-width: $screen-sm-min) {
+      display: inline-block;
+      width: 40%;
+      margin-left: 10px;
+      margin-bottom: 0;
+      vertical-align: middle;
+    }
+  }
+
   .label {
     padding: 9px;
     font-size: 14px;
@@ -42,6 +83,116 @@
   padding: 3px 4px;
 }
 
-.label-subscription {
+.dropdown-labels-error {
+  padding: 5px 10px;
+  margin-bottom: 10px;
+  background-color: $gl-danger;
+  color: $white-light;
+}
+
+.manage-labels-list {
+  .btn-action {
+    color: $gl-dark-link-color;
+
+    .fa {
+      font-size: 18px;
+      vertical-align: middle;
+    }
+
+    &:hover {
+      color: $gl-link-color;
+
+      &.remove-row {
+        color: $gl-danger;
+      }
+    }
+  }
+
+  .dropdown {
+    @media (min-width: $screen-sm-min) {
+      float: right;
+    }
+  }
+}
+
+.draggable-handler {
   display: inline-block;
+  opacity: 0;
+  transition: opacity .3s;
+  color: $gray-darkest;
+}
+
+.prioritized-labels {
+  margin-bottom: 30px;
+
+  .add-priority {
+    display: none;
+    color: $gray-light;
+  }
+
+  li:hover {
+    .draggable-handler {
+      display: inline-block;
+      opacity: 1;
+    }
+  }
+}
+
+.other-labels {
+  .remove-priority {
+    display: none;
+  }
+}
+
+.toggle-priority {
+  display: inline-block;
+  vertical-align: middle;
+
+  button {
+    border-color: transparent;
+    padding: 5px 8px;
+    vertical-align: top;
+    font-size: 14px;
+
+    &:hover {
+      border-color: transparent;
+    }
+  }
+}
+
+.filtered-labels {
+  .label-row {
+    &:not(:last-child) {
+      margin-right: 5px;
+    }
+  }
+
+  .label-remove {
+    border-left: 1px solid rgba(0, 0, 0, .1);
+    z-index: 3;
+  }
+
+  .btn {
+    color: inherit;
+  }
+}
+
+.label-options-toggle {
+  width: 100%;
+}
+
+.label-subscribe-button {
+  .label-subscribe-button-loading {
+    display: none;
+  }
+
+  &.disabled {
+    .label-subscribe-button-icon {
+      display: none;
+    }
+
+    .label-subscribe-button-loading {
+      display: block;
+    }
+  }
 }

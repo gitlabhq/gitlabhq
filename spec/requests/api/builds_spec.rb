@@ -9,8 +9,8 @@ describe API::API, api: true  do
   let!(:project) { create(:project, creator_id: user.id) }
   let!(:developer) { create(:project_member, :developer, user: user, project: project) }
   let!(:reporter) { create(:project_member, :reporter, user: user2, project: project) }
-  let(:commit) { create(:ci_commit, project: project)}
-  let(:build) { create(:ci_build, commit: commit) }
+  let(:pipeline) { create(:ci_pipeline, project: project)}
+  let(:build) { create(:ci_build, pipeline: pipeline) }
 
   describe 'GET /projects/:id/builds ' do
     let(:query) { '' }
@@ -59,8 +59,8 @@ describe API::API, api: true  do
 
   describe 'GET /projects/:id/repository/commits/:sha/builds' do
     before do
-      project.ensure_ci_commit(commit.sha)
-      get api("/projects/#{project.id}/repository/commits/#{commit.sha}/builds", api_user)
+      project.ensure_pipeline(pipeline.sha, 'master')
+      get api("/projects/#{project.id}/repository/commits/#{pipeline.sha}/builds", api_user)
     end
 
     context 'authorized user' do
@@ -102,12 +102,12 @@ describe API::API, api: true  do
     before { get api("/projects/#{project.id}/builds/#{build.id}/artifacts", api_user) }
 
     context 'build with artifacts' do
-      let(:build) { create(:ci_build, :artifacts, commit: commit) }
+      let(:build) { create(:ci_build, :artifacts, pipeline: pipeline) }
 
       context 'authorized user' do
         let(:download_headers) do
-          { 'Content-Transfer-Encoding'=>'binary',
-            'Content-Disposition'=>'attachment; filename=ci_build_artifacts.zip' }
+          { 'Content-Transfer-Encoding' => 'binary',
+            'Content-Disposition' => 'attachment; filename=ci_build_artifacts.zip' }
         end
 
         it 'should return specific build artifacts' do
@@ -131,7 +131,7 @@ describe API::API, api: true  do
   end
 
   describe 'GET /projects/:id/builds/:build_id/trace' do
-    let(:build) { create(:ci_build, :trace, commit: commit) }
+    let(:build) { create(:ci_build, :trace, pipeline: pipeline) }
     
     before { get api("/projects/#{project.id}/builds/#{build.id}/trace", api_user) }
 
@@ -181,7 +181,7 @@ describe API::API, api: true  do
   end
 
   describe 'POST /projects/:id/builds/:build_id/retry' do
-    let(:build) { create(:ci_build, :canceled, commit: commit) }
+    let(:build) { create(:ci_build, :canceled, pipeline: pipeline) }
 
     before { post api("/projects/#{project.id}/builds/#{build.id}/retry", api_user) }
 
@@ -218,7 +218,7 @@ describe API::API, api: true  do
     end
 
     context 'build is erasable' do
-      let(:build) { create(:ci_build, :trace, :artifacts, :success, project: project, commit: commit) }
+      let(:build) { create(:ci_build, :trace, :artifacts, :success, project: project, pipeline: pipeline) }
 
       it 'should erase build content' do
         expect(response.status).to eq 201
@@ -234,10 +234,36 @@ describe API::API, api: true  do
     end
 
     context 'build is not erasable' do
-      let(:build) { create(:ci_build, :trace, project: project, commit: commit) }
+      let(:build) { create(:ci_build, :trace, project: project, pipeline: pipeline) }
 
       it 'should respond with forbidden' do
         expect(response.status).to eq 403
+      end
+    end
+  end
+
+  describe 'POST /projects/:id/builds/:build_id/artifacts/keep' do
+    before do
+      post api("/projects/#{project.id}/builds/#{build.id}/artifacts/keep", user)
+    end
+
+    context 'artifacts did not expire' do
+      let(:build) do
+        create(:ci_build, :trace, :artifacts, :success,
+               project: project, pipeline: pipeline, artifacts_expire_at: Time.now + 7.days)
+      end
+
+      it 'keeps artifacts' do
+        expect(response.status).to eq 200
+        expect(build.reload.artifacts_expire_at).to be_nil
+      end
+    end
+
+    context 'no artifacts' do
+      let(:build) { create(:ci_build, project: project, pipeline: pipeline) }
+
+      it 'responds with not found' do
+        expect(response.status).to eq 404
       end
     end
   end

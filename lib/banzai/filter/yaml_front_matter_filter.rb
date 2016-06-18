@@ -1,6 +1,3 @@
-require 'html/pipeline/filter'
-require 'yaml'
-
 module Banzai
   module Filter
     class YamlFrontMatterFilter < HTML::Pipeline::Filter

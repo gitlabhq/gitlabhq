@@ -29,14 +29,16 @@ describe IrkerService, models: true do
   end
 
   describe 'Validations' do
-    before do
-      subject.active = true
-      subject.properties['recipients'] = _recipients
+    context 'when service is active' do
+      before { subject.active = true }
+
+      it { is_expected.to validate_presence_of(:recipients) }
     end
 
-    context 'active' do
-      let(:_recipients) { nil }
-      it { should validate_presence_of :recipients }
+    context 'when service is inactive' do
+      before { subject.active = false }
+
+      it { is_expected.not_to validate_presence_of(:recipients) }
     end
   end
 

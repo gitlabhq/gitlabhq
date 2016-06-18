@@ -158,19 +158,32 @@ describe GitPushService, services: true do
     end
   end
 
-  describe "Updates main language" do
+  describe "Updates git attributes" do
+    context "for default branch" do
+      it "calls the copy attributes method for the first push to the default branch" do
+        expect(project.repository).to receive(:copy_gitattributes).with('master')
 
-    context "before push" do
-      it { expect(project.main_language).to eq(nil) }
-    end
-
-    context "after push" do
-      before do
-        @service = execute_service(project, user, @oldrev, @newrev, @ref)
+        execute_service(project, user, @blankrev, 'newrev', 'refs/heads/master')
       end
 
-      it { expect(@service.update_main_language).to eq(true) }
-      it { expect(project.main_language).to eq("Ruby") }
+      it "calls the copy attributes method for changes to the default branch" do
+        expect(project.repository).to receive(:copy_gitattributes).with('refs/heads/master')
+
+        execute_service(project, user, 'oldrev', 'newrev', 'refs/heads/master')
+      end
+    end
+
+    context "for non-default branch" do
+      before do
+        # Make sure the "default" branch is different
+        allow(project).to receive(:default_branch).and_return('not-master')
+      end
+
+      it "does not call copy attributes method" do
+        expect(project.repository).not_to receive(:copy_gitattributes)
+
+        execute_service(project, user, @oldrev, @newrev, @ref)
+      end
     end
   end
 
@@ -215,12 +228,16 @@ describe GitPushService, services: true do
     let(:commit) { project.commit }
 
     before do
+      project.team << [commit_author, :developer]
+      project.team << [user, :developer]
+
       allow(commit).to receive_messages(
         safe_message: "this commit \n mentions #{issue.to_reference}",
         references: [issue],
         author_name: commit_author.name,
         author_email: commit_author.email
       )
+
       allow(project.repository).to receive(:commits_between).and_return([commit])
     end
 
@@ -295,7 +312,8 @@ describe GitPushService, services: true do
       end
 
       it "doesn't close issues when external issue tracker is in use" do
-        allow(project).to receive(:default_issues_tracker?).and_return(false)
+        allow_any_instance_of(Project).to receive(:default_issues_tracker?).
+          and_return(false)
 
         # The push still shouldn't create cross-reference notes.
         expect do

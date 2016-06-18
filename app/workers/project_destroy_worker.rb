@@ -5,7 +5,7 @@ class ProjectDestroyWorker
 
   def perform(project_id, user_id, params)
     begin
-      project = Project.find(project_id)
+      project = Project.unscoped.find(project_id)
     rescue ActiveRecord::RecordNotFound
       return
     end

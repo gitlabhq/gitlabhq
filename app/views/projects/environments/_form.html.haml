@@ -1,0 +1,7 @@
+= form_for @environment, url: namespace_project_environments_path(@project.namespace, @project), html: { class: 'col-lg-9' } do |f|
+  = form_errors(@environment)
+  .form-group
+    = f.label :name, 'Name', class: 'label-light'
+    = f.text_field :name, required: true, class: 'form-control'
+  = f.submit 'Create environment', class: 'btn btn-create'
+  = link_to 'Cancel', namespace_project_environments_path(@project.namespace, @project), class: 'btn btn-cancel'

@@ -7,14 +7,14 @@ module Ci
       # check if ref is tag
       tag = project.repository.find_tag(ref).present?
 
-      ci_commit = project.ensure_ci_commit(commit.sha)
+      pipeline = project.pipelines.create(sha: commit.sha, ref: ref, tag: tag)
 
       trigger_request = trigger.trigger_requests.create!(
         variables: variables,
-        commit: ci_commit,
+        pipeline: pipeline,
       )
 
-      if ci_commit.create_builds(ref, tag, nil, trigger_request)
+      if pipeline.create_builds(nil, trigger_request)
         trigger_request
       end
     end

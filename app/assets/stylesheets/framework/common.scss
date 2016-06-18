@@ -11,6 +11,7 @@
 .prepend-top-10 { margin-top: 10px }
 .prepend-top-default { margin-top: $gl-padding !important; }
 .prepend-top-20 { margin-top: 20px }
+.prepend-left-5 { margin-left: 5px }
 .prepend-left-10 { margin-left: 10px }
 .prepend-left-default { margin-left: $gl-padding; }
 .prepend-left-20 { margin-left: 20px }
@@ -121,15 +122,8 @@ p.time {
   text-shadow: none;
 }
 
-.thin_area{
+.thin_area {
   height: 150px;
-}
-
-// Fixes alignment on notes.
-.new_note {
-  label {
-    text-align: left;
-  }
 }
 
 // Fix issue with notes & lists creating a bunch of bottom borders.
@@ -148,7 +142,7 @@ li.note {
   }
 }
 
-.wiki_content code, .readme code{
+.wiki_content code, .readme code {
   background-color: inherit;
 }
 
@@ -292,8 +286,11 @@ table {
 }
 
 .btn-sign-in {
-  margin-top: 10px;
   text-shadow: none;
+
+  @media (min-width: $screen-sm-min) {
+    margin-top: 8px;
+  }
 }
 
 .side-filters {
@@ -375,7 +372,7 @@ table {
     position: absolute;
     top: 0;
     right: 0;
-    width: 250px !important;
+    min-width: 250px;
     visibility: hidden;
   }
 }

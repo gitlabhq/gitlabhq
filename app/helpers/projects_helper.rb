@@ -1,12 +1,4 @@
 module ProjectsHelper
-  def remove_from_project_team_message(project, member)
-    if member.user
-      "You are going to remove #{member.user.name} from #{project.name} project team. Are you sure?"
-    else
-      "You are going to revoke the invitation for #{member.invite_email} to join #{project.name} project team. Are you sure?"
-    end
-  end
-
   def link_to_project(project)
     link_to [project.namespace.becomes(Namespace), project], title: h(project.name) do
       title = content_tag(:span, project.name, class: 'project-name')
@@ -26,7 +18,7 @@ module ProjectsHelper
     image_tag(avatar_icon(author, opts[:size]), width: opts[:size], class: "avatar avatar-inline #{"s#{opts[:size]}" if opts[:size]}", alt:'') if opts[:avatar]
   end
 
-  def link_to_member(project, author, opts = {})
+  def link_to_member(project, author, opts = {}, &block)
     default_opts = { avatar: true, name: true, size: 16, author_class: 'author', title: ":name" }
     opts = default_opts.merge(opts)
 
@@ -44,13 +36,15 @@ module ProjectsHelper
       author_html << content_tag(:span, sanitize(author.name), class: opts[:author_class]) if opts[:name]
     end
 
+    author_html << capture(&block) if block
+
     author_html = author_html.html_safe
 
     if opts[:name]
-      link_to(author_html, user_path(author), class: "author_link #{"#{opts[:mobile_classes]}" if opts[:mobile_classes]}").html_safe
+      link_to(author_html, user_path(author), class: "author_link #{"#{opts[:extra_class]}" if opts[:extra_class]} #{"#{opts[:mobile_classes]}" if opts[:mobile_classes]}").html_safe
     else
       title = opts[:title].sub(":name", sanitize(author.name))
-      link_to(author_html, user_path(author), class: "author_link has_tooltip", data: { 'original-title'.to_sym => title, container: 'body' } ).html_safe
+      link_to(author_html, user_path(author), class: "author_link has-tooltip", title: title, data: { container: 'body' } ).html_safe
     end
   end
 
@@ -63,21 +57,14 @@ module ProjectsHelper
         link_to(simple_sanitize(owner.name), user_path(owner))
       end
 
-    project_link = link_to project_path(project), { class: "project-item-select-holder" } do
-      link_output = simple_sanitize(project.name)
+    project_link = link_to simple_sanitize(project.name), project_path(project), { class: "project-item-select-holder" }
 
-      if current_user
-        link_output += project_select_tag :project_path,
-          class: "project-item-select js-projects-dropdown",
-          data: { include_groups: false, order_by: 'last_activity_at' }
-      end
-
-      link_output
+    if current_user
+      project_link << icon("chevron-down", class: "dropdown-toggle-caret js-projects-dropdown-toggle", data: { target: ".js-dropdown-menu-projects", toggle: "dropdown" })
     end
-    project_link += icon "chevron-down", class: "dropdown-toggle-caret js-projects-dropdown-toggle" if current_user
 
-    full_title = namespace_link + ' / ' + project_link
-    full_title += ' &middot; '.html_safe + link_to(simple_sanitize(name), url) if name
+    full_title = "#{namespace_link} / #{project_link}".html_safe
+    full_title << ' &middot; '.html_safe << link_to(simple_sanitize(name), url) if name
 
     full_title
   end
@@ -120,33 +107,49 @@ module ProjectsHelper
     end
   end
 
-  def user_max_access_in_project(user_id, project)
-    level = project.team.max_member_access(user_id)
+  def license_short_name(project)
+    return 'LICENSE' if project.repository.license_key.nil?
 
-    if level
-      Gitlab::Access.options_with_owner.key(level)
-    end
+    license = Licensee::License.new(project.repository.license_key)
+
+    license.nickname || license.name
   end
 
   private
 
   def get_project_nav_tabs(project, current_user)
-    nav_tabs = [:home, :forks]
+    nav_tabs = [:home]
 
     if !project.empty_repo? && can?(current_user, :download_code, project)
-      nav_tabs << [:files, :commits, :network, :graphs]
+      nav_tabs << [:files, :commits, :network, :graphs, :forks]
     end
 
     if project.repo_exists? && can?(current_user, :read_merge_request, project)
       nav_tabs << :merge_requests
     end
 
+    if can?(current_user, :read_pipeline, project)
+      nav_tabs << :pipelines
+    end
+
     if can?(current_user, :read_build, project)
       nav_tabs << :builds
     end
 
+    if Gitlab.config.registry.enabled && can?(current_user, :read_container_image, project)
+      nav_tabs << :container_registry
+    end
+
+    if can?(current_user, :read_environment, project)
+      nav_tabs << :environments
+    end
+
     if can?(current_user, :admin_project, project)
       nav_tabs << :settings
+    end
+
+    if can?(current_user, :read_project_member, project)
+      nav_tabs << :team
     end
 
     if can?(current_user, :read_issue, project)
@@ -189,16 +192,13 @@ module ProjectsHelper
   end
 
   def repository_size(project = @project)
-    "#{project.repository_size} MB"
-  rescue
-    # In order to prevent 500 error
-    # when application cannot allocate memory
-    # to calculate repo size - just show 'Unknown'
-    'unknown'
+    size_in_bytes = project.repository_size * 1.megabyte
+    number_to_human_size(size_in_bytes, delimiter: ',', precision: 2)
   end
 
   def default_url_to_repo(project = @project)
-    if default_clone_protocol == "ssh"
+    case default_clone_protocol
+    when 'ssh'
       project.ssh_url_to_repo
     else
       project.http_url_to_repo
@@ -207,7 +207,7 @@ module ProjectsHelper
 
   def default_clone_protocol
     if !current_user || current_user.require_ssh_key?
-      "http"
+      gitlab_config.protocol
     else
       "ssh"
     end
@@ -221,40 +221,14 @@ module ProjectsHelper
     end
   end
 
-  def add_contribution_guide_path(project)
-    if project && !project.repository.contribution_guide
-      namespace_project_new_blob_path(
-        project.namespace,
-        project,
-        project.default_branch,
-        file_name:      "CONTRIBUTING.md",
-        commit_message: "Add contribution guide"
-      )
-    end
-  end
-
-  def add_changelog_path(project)
-    if project && !project.repository.changelog
-      namespace_project_new_blob_path(
-        project.namespace,
-        project,
-        project.default_branch,
-        file_name:      "CHANGELOG",
-        commit_message: "Add changelog"
-      )
-    end
-  end
-
-  def add_license_path(project)
-    if project && !project.repository.license
-      namespace_project_new_blob_path(
-        project.namespace,
-        project,
-        project.default_branch,
-        file_name:      "LICENSE",
-        commit_message: "Add license"
-      )
-    end
+  def add_special_file_path(project, file_name:, commit_message: nil)
+    namespace_project_new_blob_path(
+      project.namespace,
+      project,
+      project.default_branch || 'master',
+      file_name:      file_name,
+      commit_message: commit_message || "Add #{file_name.downcase}"
+    )
   end
 
   def contribution_guide_path(project)
@@ -277,7 +251,7 @@ module ProjectsHelper
   end
 
   def license_path(project)
-    filename_path(project, :license)
+    filename_path(project, :license_blob)
   end
 
   def version_path(project)
@@ -300,15 +274,18 @@ module ProjectsHelper
     end
   end
 
-  def leave_project_message(project)
-    "Are you sure you want to leave \"#{project.name}\" project?"
-  end
-
   def new_readme_path
     ref = @repository.root_ref if @repository
     ref ||= 'master'
 
     namespace_project_new_blob_path(@project.namespace, @project, tree_join(ref), file_name: 'README.md')
+  end
+
+  def new_license_path
+    ref = @repository.root_ref if @repository
+    ref ||= 'master'
+
+    namespace_project_new_blob_path(@project.namespace, @project, tree_join(ref), file_name: 'LICENSE')
   end
 
   def last_push_event
@@ -340,8 +317,6 @@ module ProjectsHelper
     @ref || @repository.try(:root_ref)
   end
 
-  private
-
   def filename_path(project, filename)
     if project && blob = project.repository.send(filename)
       namespace_project_blob_path(
@@ -350,5 +325,11 @@ module ProjectsHelper
         tree_join(project.default_branch, blob.name)
       )
     end
+  end
+
+  def sanitize_repo_path(message)
+    return '' unless message.present?
+
+    message.strip.gsub(Gitlab.config.gitlab_shell.repos_path.chomp('/'), "[REPOS PATH]")
   end
 end

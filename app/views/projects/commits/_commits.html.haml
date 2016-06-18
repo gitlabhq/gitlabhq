@@ -3,19 +3,12 @@
 
 - commits, hidden = limited_commits(@commits)
 
-- commits.group_by { |c| c.committed_date.to_date }.sort.reverse.each do |day, commits|
-  .row.commits-row
-    .col-md-2.hidden-xs.hidden-sm
-      %h5.commits-row-date
-        %i.fa.fa-calendar
-        %span= day.strftime('%d %b, %Y')
-      .light
-        = pluralize(commits.count, 'commit')
-    .col-md-10.col-sm-12
-      %ul.bordered-list
-        = render commits, project: project
-  %hr.lists-separator
+- commits.chunk { |c| c.committed_date.in_time_zone.to_date }.each do |day, commits|
+  %li.commit-header= "#{day.strftime('%d %b, %Y')} #{pluralize(commits.count, 'commit')}"
+  %li.commits-row
+    %ul.list-unstyled.commit-list
+      = render commits, project: project
 
 - if hidden > 0
-  .alert.alert-warning
+  %li.alert.alert-warning
     #{number_with_delimiter(hidden)} additional commits have been omitted to prevent performance issues.

@@ -42,11 +42,10 @@ class Spinach::Features::DashboardIssues < Spinach::FeatureSteps
   end
 
   step 'I click "All" link' do
-    find('.js-author-search').click
-    find('.dropdown-menu-user-full-name', match: :first).click
-
-    find('.js-assignee-search').click
-    find('.dropdown-menu-user-full-name', match: :first).click
+    find(".js-author-search").click
+    find(".dropdown-menu-author li a", match: :first).click
+    find(".js-assignee-search").click
+    find(".dropdown-menu-assignee li a", match: :first).click
   end
 
   def should_see(issue)
@@ -75,7 +74,7 @@ class Spinach::Features::DashboardIssues < Spinach::FeatureSteps
 
   def project
     @project ||= begin
-                   project =create :project
+                   project = create :project
                    project.team << [current_user, :master]
                    project
                  end

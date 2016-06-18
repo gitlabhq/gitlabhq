@@ -3,34 +3,60 @@ module Gitlab
     class Importer
       include Gitlab::ShellAdapter
 
-      attr_reader :project, :client
+      attr_reader :client, :project, :repo, :repo_url
 
       def initialize(project)
-        @project = project
-        import_data = project.import_data.try(:data)
-        github_session = import_data["github_session"] if import_data
-        @client = Client.new(github_session["github_access_token"])
-        @formatter = Gitlab::ImportFormatter.new
+        @project  = project
+        @repo     = project.import_source
+        @repo_url = project.import_url
+
+        if credentials
+          @client = Client.new(credentials[:user])
+          @formatter = Gitlab::ImportFormatter.new
+        else
+          raise Projects::ImportService::Error, "Unable to find project import data credentials for project ID: #{@project.id}"
+        end
       end
 
       def execute
-        import_issues && import_pull_requests && import_wiki
+        import_labels && import_milestones && import_issues &&
+          import_pull_requests && import_wiki
       end
 
       private
 
+      def credentials
+        @credentials ||= project.import_data.credentials if project.import_data
+      end
+
+      def import_labels
+        labels = client.labels(repo, per_page: 100)
+        labels.each { |raw| LabelFormatter.new(project, raw).create! }
+
+        true
+      rescue ActiveRecord::RecordInvalid => e
+        raise Projects::ImportService::Error, e.message
+      end
+
+      def import_milestones
+        milestones = client.milestones(repo, state: :all, per_page: 100)
+        milestones.each { |raw| MilestoneFormatter.new(project, raw).create! }
+
+        true
+      rescue ActiveRecord::RecordInvalid => e
+        raise Projects::ImportService::Error, e.message
+      end
+
       def import_issues
-        client.list_issues(project.import_source, state: :all,
-                                                  sort: :created,
-                                                  direction: :asc).each do |raw_data|
-          gh_issue = IssueFormatter.new(project, raw_data)
+        issues = client.issues(repo, state: :all, sort: :created, direction: :asc, per_page: 100)
+
+        issues.each do |raw|
+          gh_issue = IssueFormatter.new(project, raw)
 
           if gh_issue.valid?
-            issue = Issue.create!(gh_issue.attributes)
-
-            if gh_issue.has_comments?
-              import_comments(gh_issue.number, issue)
-            end
+            issue = gh_issue.create!
+            apply_labels(issue)
+            import_comments(issue) if gh_issue.has_comments?
           end
         end
 
@@ -40,40 +66,101 @@ module Gitlab
       end
 
       def import_pull_requests
-        client.pull_requests(project.import_source, state: :all,
-                                                    sort: :created,
-                                                    direction: :asc).each do |raw_data|
-          pull_request = PullRequestFormatter.new(project, raw_data)
+        disable_webhooks
 
-          if pull_request.valid?
-            merge_request = MergeRequest.new(pull_request.attributes)
+        pull_requests = client.pull_requests(repo, state: :all, sort: :created, direction: :asc, per_page: 100)
+        pull_requests = pull_requests.map { |raw| PullRequestFormatter.new(project, raw) }.select(&:valid?)
 
-            if merge_request.save
-              import_comments(pull_request.number, merge_request)
-              import_comments_on_diff(pull_request.number, merge_request)
-            end
-          end
+        source_branches_removed = pull_requests.reject(&:source_branch_exists?).map { |pr| [pr.source_branch_name, pr.source_branch_sha] }
+        target_branches_removed = pull_requests.reject(&:target_branch_exists?).map { |pr| [pr.target_branch_name, pr.target_branch_sha] }
+        branches_removed = source_branches_removed | target_branches_removed
+
+        restore_branches(branches_removed)
+
+        pull_requests.each do |pull_request|
+          merge_request = pull_request.create!
+          apply_labels(merge_request)
+          import_comments(merge_request)
+          import_comments_on_diff(merge_request)
         end
 
         true
       rescue ActiveRecord::RecordInvalid => e
         raise Projects::ImportService::Error, e.message
+      ensure
+        clean_up_restored_branches(branches_removed)
+        clean_up_disabled_webhooks
       end
 
-      def import_comments(issue_number, noteable)
-        comments = client.issue_comments(project.import_source, issue_number)
-        create_comments(comments, noteable)
+      def disable_webhooks
+        update_webhooks(hooks, active: false)
       end
 
-      def import_comments_on_diff(pull_request_number, merge_request)
-        comments = client.pull_request_comments(project.import_source, pull_request_number)
-        create_comments(comments, merge_request)
+      def clean_up_disabled_webhooks
+        update_webhooks(hooks, active: true)
       end
 
-      def create_comments(comments, noteable)
-        comments.each do |raw_data|
-          comment = CommentFormatter.new(project, raw_data)
-          noteable.notes.create!(comment.attributes)
+      def update_webhooks(hooks, options)
+        hooks.each do |hook|
+          client.edit_hook(repo, hook.id, hook.name, hook.config, options)
+        end
+      end
+
+      def hooks
+        @hooks ||=
+          begin
+            client.hooks(repo).map { |raw| HookFormatter.new(raw) }.select(&:valid?)
+
+          # The GitHub Repository Webhooks API returns 404 for users
+          # without admin access to the repository when listing hooks.
+          # In this case we just want to return gracefully instead of
+          # spitting out an error and stop the import process.
+          rescue Octokit::NotFound
+            []
+          end
+      end
+
+      def restore_branches(branches)
+        branches.each do |name, sha|
+          client.create_ref(repo, "refs/heads/#{name}", sha)
+        end
+
+        project.repository.fetch_ref(repo_url, '+refs/heads/*', 'refs/heads/*')
+      end
+
+      def clean_up_restored_branches(branches)
+        branches.each do |name, _|
+          client.delete_ref(repo, "heads/#{name}")
+          project.repository.rm_branch(project.creator, name)
+        end
+      end
+
+      def apply_labels(issuable)
+        issue = client.issue(repo, issuable.iid)
+
+        if issue.labels.count > 0
+          label_ids = issue.labels.map do |raw|
+            Label.find_by(LabelFormatter.new(project, raw).attributes).try(:id)
+          end
+
+          issuable.update_attribute(:label_ids, label_ids)
+        end
+      end
+
+      def import_comments(issuable)
+        comments = client.issue_comments(repo, issuable.iid, per_page: 100)
+        create_comments(issuable, comments)
+      end
+
+      def import_comments_on_diff(merge_request)
+        comments = client.pull_request_comments(repo, merge_request.iid, per_page: 100)
+        create_comments(merge_request, comments)
+      end
+
+      def create_comments(issuable, comments)
+        comments.each do |raw|
+          comment = CommentFormatter.new(project, raw)
+          issuable.notes.create!(comment.attributes)
         end
       end
 

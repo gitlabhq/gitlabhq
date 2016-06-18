@@ -1,8 +1,8 @@
 %li{ class: mr_css_classes(merge_request) }
-  .merge-request-title
+  .merge-request-title.title
     %span.merge-request-title-text
-      = link_to_gfm merge_request.title, merge_request_path(merge_request), class: "title"
-    %ul.controls.light
+      = link_to merge_request.title, merge_request_path(merge_request)
+    %ul.controls
       - if merge_request.merged?
         %li
           MERGED
@@ -11,13 +11,13 @@
           = icon('ban')
           CLOSED
 
-      - if merge_request.ci_commit
+      - if merge_request.pipeline
         %li
-          = render_ci_status(merge_request.ci_commit)
+          = render_pipeline_status(merge_request.pipeline)
 
       - if merge_request.open? && merge_request.broken?
         %li
-          = link_to merge_request_path(merge_request), class: "has_tooltip", title: "Cannot be merged automatically", data: { container: 'body' } do
+          = link_to merge_request_path(merge_request), class: "has-tooltip", title: "Cannot be merged automatically", data: { container: 'body' } do
             = icon('exclamation-triangle')
 
       - if merge_request.assignee
@@ -36,16 +36,10 @@
           = downvotes
 
       - note_count = merge_request.mr_and_commit_notes.user.count
-      - if note_count > 0
-        %li
-          = link_to merge_request_path(merge_request) + "#notes" do
-            = icon('comments')
-            = note_count
-      - else
-        %li
-          = link_to merge_request_path(merge_request) + "#notes", class: "merge-request-no-comments" do
-            = icon('comments')
-            = note_count
+      %li
+        = link_to merge_request_path(merge_request, anchor: 'notes'), class: ('merge-request-no-comments' if note_count.zero?) do
+          = icon('comments')
+          = note_count
 
   .merge-request-info
     #{merge_request.to_reference} &middot;

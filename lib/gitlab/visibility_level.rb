@@ -6,6 +6,14 @@
 module Gitlab
   module VisibilityLevel
     extend CurrentSettings
+    extend ActiveSupport::Concern
+
+    included do
+      scope :public_only,               -> { where(visibility_level: PUBLIC) }
+      scope :public_and_internal_only,  -> { where(visibility_level: [PUBLIC, INTERNAL] ) }
+
+      scope :public_to_user, -> (user) { user && !user.external ? public_and_internal_only : public_only }
+    end
 
     PRIVATE  = 0 unless const_defined?(:PRIVATE)
     INTERNAL = 10 unless const_defined?(:INTERNAL)
@@ -22,6 +30,13 @@ module Gitlab
           'Internal' => INTERNAL,
           'Public'   => PUBLIC
         }
+      end
+
+      def highest_allowed_level
+        restricted_levels = current_application_settings.restricted_visibility_levels
+
+        allowed_levels = self.values - restricted_levels
+        allowed_levels.max || PRIVATE
       end
 
       def allowed_for?(user, level)
@@ -46,10 +61,6 @@ module Gitlab
 
       def valid_level?(level)
         options.has_value?(level)
-      end
-
-      def allowed_fork_levels(origin_level)
-        [PRIVATE, INTERNAL, PUBLIC].select{ |level| level <= origin_level }
       end
 
       def level_name(level)

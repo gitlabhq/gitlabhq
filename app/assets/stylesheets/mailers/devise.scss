@@ -1,0 +1,138 @@
+// NOTE: This stylesheet is for the exclusive use of the `devise_mailer` layout
+// used for Devise email templates, and _should not_ be included in any
+// application stylesheets.
+//
+// Styles defined here are embedded directly into the resulting email HTML via
+// the `premailer` gem.
+
+$body-background-color:    #363636;
+$message-background-color: #fafafa;
+
+$header-color:             #6b4fbb;
+$body-color:               #444;
+$cta-color:                #e14329;
+$footer-link-color:        #7e7e7e;
+
+$font-family: Helvetica, Arial, sans-serif;
+
+body {
+  background-color: $body-background-color;
+  font-family: $font-family;
+  margin: 0;
+  padding: 0;
+}
+
+table {
+  -premailer-cellpadding: 0;
+  -premailer-cellspacing: 0;
+
+  border: 0;
+  border-collapse: separate;
+
+  &#wrapper {
+    background-color: $body-background-color;
+    width: 100%;
+  }
+
+  &#header {
+    margin: 0 auto;
+    text-align: left;
+    width: 600px;
+
+    & > td {
+      text-align: center;
+    }
+  }
+
+  &#body {
+    background-color: $message-background-color;
+    border: 1px solid #000;
+    border-radius: 4px;
+    margin: 0 auto;
+    width: 600px;
+  }
+
+  &#footer {
+    color: $footer-link-color;
+    font-size: 14px;
+    text-align: center;
+    width: 100%;
+  }
+
+  td {
+    &#body-container {
+      padding: 20px 40px;
+    }
+  }
+}
+
+.center {
+  text-align: center;
+}
+
+#logo {
+  border: none;
+  outline: none;
+  min-height: 88px;
+  width: 134px;
+}
+
+#content {
+  h2 {
+    color: $header-color;
+    font-size: 30px;
+    font-weight: 400;
+    line-height: 34px;
+    margin-top: 0;
+  }
+
+  p {
+    color: $body-color;
+    font-size: 17px;
+    line-height: 24px;
+    margin-bottom: 0;
+  }
+}
+
+#cta {
+  border: 1px solid $cta-color;
+  border-radius: 3px;
+  display: inline-block;
+  margin: 20px 0;
+  padding: 12px 24px;
+
+  a {
+    background-color: $message-background-color;
+    color: $cta-color;
+    display: inline-block;
+    text-decoration: none;
+  }
+}
+
+#tanuki {
+  padding: 40px 0 0;
+
+  img {
+    border: none;
+    outline: none;
+    width: 37px;
+    min-height: 36px;
+  }
+}
+
+#tagline {
+  font-size: 22px;
+  font-weight: 100;
+  padding: 4px 0 40px;
+}
+
+#social {
+  padding: 0 10px 20px;
+  width: 600px;
+  word-spacing: 20px;
+
+  a {
+    color: $footer-link-color;
+    text-decoration: none;
+  }
+}

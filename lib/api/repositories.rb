@@ -56,8 +56,7 @@ module API
         blob = Gitlab::Git::Blob.find(repo, commit.id, params[:filepath])
         not_found! "File" unless blob
 
-        content_type 'text/plain'
-        header *Gitlab::Workhorse.send_git_blob(repo, blob)
+        send_git_blob repo, blob
       end
 
       # Get a raw blob contents by blob sha
@@ -80,10 +79,7 @@ module API
 
         not_found! 'Blob' unless blob
 
-        env['api.format'] = :txt
-
-        content_type blob.mime_type
-        header *Gitlab::Workhorse.send_git_blob(repo, blob)
+        send_git_blob repo, blob
       end
 
       # Get a an archive of the repository
@@ -98,8 +94,7 @@ module API
         authorize! :download_code, user_project
 
         begin
-          RepositoryArchiveCacheWorker.perform_async
-          header *Gitlab::Workhorse.send_git_archive(user_project, params[:sha], params[:format])
+          send_git_archive user_project.repository, ref: params[:sha], format: params[:format]
         rescue
           not_found!('File')
         end

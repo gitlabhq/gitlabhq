@@ -6,33 +6,40 @@
 .navbar-nav {
   li {
     .badge.todos-pending-count {
-      background-color: #7f8fa4;
       margin-top: -5px;
       font-weight: normal;
+      background: $todo-alert-blue;
+      margin-left: -17px;
+      font-size: 11px;
+      color: white;
+      padding: 3px;
+      padding-top: 1px;
+      padding-bottom: 1px;
+      border-radius: 3px;
     }
   }
 }
 
+.todo {
+  &:hover {
+    cursor: pointer;
+  }
+}
+
 .todo-item {
-  font-size: $gl-font-size;
-  padding-left: $gl-avatar-size + $gl-padding-top;
-  color: $secondary-text;
-
-  a {
-    color: #4c4e54;
-  }
-
-  .avatar {
-    margin-left: -($gl-avatar-size + $gl-padding-top);
-  }
-
   .todo-title {
     @include str-truncated(calc(100% - 174px));
-    font-weight: 600;
+    overflow: visible;
+  }
 
-    .author-name {
-      color: #333;
-    }
+  .status-box {
+    margin: 0;
+    float: none;
+    display: inline-block;
+    font-weight: normal;
+    padding: 0 5px;
+    line-height: inherit;
+    font-size: 14px;
   }
 
   .todo-body {
@@ -44,6 +51,11 @@
       .md {
         color: #7f8fa4;
         font-size: $gl-font-size;
+
+        .label {
+          color: $gl-text-color;
+          font-size: inherit;
+        }
 
         p {
           color: #5c5d5e;
@@ -75,12 +87,11 @@
 
 @media (max-width: $screen-xs-max) {
   .todo-item {
-    padding-left: $gl-padding;
-
     .todo-title {
       white-space: normal;
       overflow: visible;
       max-width: 100%;
+      margin-bottom: 10px;
     }
 
     .avatar {

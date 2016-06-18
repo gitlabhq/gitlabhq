@@ -2,7 +2,7 @@ module SharedNote
   include Spinach::DSL
 
   step 'I delete a comment' do
-    page.within('.notes') do
+    page.within('.main-notes-list') do
       find('.note').hover
       find(".js-note-delete").click
     end
@@ -107,7 +107,7 @@ module SharedNote
   end
 
   step 'I should see no notes at all' do
-    expect(page).to_not have_css('.note')
+    expect(page).not_to have_css('.note')
   end
 
   # Markdown
@@ -128,7 +128,7 @@ module SharedNote
   end
 
   step 'I edit the last comment with a +1' do
-    page.within(".notes") do
+    page.within(".main-notes-list") do
       find(".note").hover
       find('.js-note-edit').click
     end

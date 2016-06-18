@@ -24,8 +24,8 @@ module API
 
       def create_spam_log(project, current_user, attrs)
         params = attrs.merge({
-          source_ip: env['REMOTE_ADDR'],
-          user_agent: env['HTTP_USER_AGENT'],
+          source_ip: client_ip(env),
+          user_agent: user_agent(env),
           noteable_type: 'Issue',
           via_api: true
         })
@@ -51,11 +51,11 @@ module API
       #   GET /issues?labels=foo,bar
       #   GET /issues?labels=foo,bar&state=opened
       get do
-        issues = current_user.issues
+        issues = current_user.issues.inc_notes_with_associations
         issues = filter_issues_state(issues, params[:state]) unless params[:state].nil?
         issues = filter_issues_labels(issues, params[:labels]) unless params[:labels].nil?
         issues.reorder(issuable_order_by => issuable_sort)
-        present paginate(issues), with: Entities::Issue
+        present paginate(issues), with: Entities::Issue, current_user: current_user
       end
     end
 
@@ -82,7 +82,7 @@ module API
       #   GET /projects/:id/issues?milestone=1.0.0&state=closed
       #   GET /issues?iid=42
       get ":id/issues" do
-        issues = user_project.issues
+        issues = user_project.issues.inc_notes_with_associations.visible_to_user(current_user)
         issues = filter_issues_state(issues, params[:state]) unless params[:state].nil?
         issues = filter_issues_labels(issues, params[:labels]) unless params[:labels].nil?
         issues = filter_by_iid(issues, params[:iid]) unless params[:iid].nil?
@@ -92,7 +92,7 @@ module API
         end
 
         issues.reorder(issuable_order_by => issuable_sort)
-        present paginate(issues), with: Entities::Issue
+        present paginate(issues), with: Entities::Issue, current_user: current_user
       end
 
       # Get a single project issue
@@ -103,24 +103,28 @@ module API
       # Example Request:
       #   GET /projects/:id/issues/:issue_id
       get ":id/issues/:issue_id" do
-        @issue = user_project.issues.find(params[:issue_id])
-        present @issue, with: Entities::Issue
+        @issue = find_project_issue(params[:issue_id])
+        present @issue, with: Entities::Issue, current_user: current_user
       end
 
       # Create a new project issue
       #
       # Parameters:
-      #   id (required) - The ID of a project
-      #   title (required) - The title of an issue
-      #   description (optional) - The description of an issue
-      #   assignee_id (optional) - The ID of a user to assign issue
+      #   id (required)           - The ID of a project
+      #   title (required)        - The title of an issue
+      #   description (optional)  - The description of an issue
+      #   assignee_id (optional)  - The ID of a user to assign issue
       #   milestone_id (optional) - The ID of a milestone to assign issue
-      #   labels (optional) - The labels of an issue
+      #   labels (optional)       - The labels of an issue
+      #   created_at (optional)   - Date time string, ISO 8601 formatted
       # Example Request:
       #   POST /projects/:id/issues
       post ":id/issues" do
         required_attributes! [:title]
-        attrs = attributes_for_keys [:title, :description, :assignee_id, :milestone_id]
+
+        keys = [:title, :description, :assignee_id, :milestone_id]
+        keys << :created_at if current_user.admin? || user_project.owner == current_user
+        attrs = attributes_for_keys(keys)
 
         # Validate label names in advance
         if (errors = validate_label_params(params)).any?
@@ -144,7 +148,7 @@ module API
             issue.add_labels_by_names(params[:labels].split(','))
           end
 
-          present issue, with: Entities::Issue
+          present issue, with: Entities::Issue, current_user: current_user
         else
           render_validation_error!(issue)
         end
@@ -161,12 +165,15 @@ module API
       #   milestone_id (optional) - The ID of a milestone to assign issue
       #   labels (optional) - The labels of an issue
       #   state_event (optional) - The state event of an issue (close|reopen)
+      #   updated_at (optional) - Date time string, ISO 8601 formatted
       # Example Request:
       #   PUT /projects/:id/issues/:issue_id
       put ":id/issues/:issue_id" do
         issue = user_project.issues.find(params[:issue_id])
         authorize! :update_issue, issue
-        attrs = attributes_for_keys [:title, :description, :assignee_id, :milestone_id, :state_event]
+        keys = [:title, :description, :assignee_id, :milestone_id, :state_event]
+        keys << :updated_at if current_user.admin? || user_project.owner == current_user
+        attrs = attributes_for_keys(keys)
 
         # Validate label names in advance
         if (errors = validate_label_params(params)).any?
@@ -184,13 +191,36 @@ module API
             issue.add_labels_by_names(params[:labels].split(','))
           end
 
-          present issue, with: Entities::Issue
+          present issue, with: Entities::Issue, current_user: current_user
         else
           render_validation_error!(issue)
         end
       end
 
-      # Delete a project issue (deprecated)
+      # Move an existing issue
+      #
+      # Parameters:
+      #  id (required)            - The ID of a project
+      #  issue_id (required)      - The ID of a project issue
+      #  to_project_id (required) - The ID of the new project
+      # Example Request:
+      #   POST /projects/:id/issues/:issue_id/move
+      post ':id/issues/:issue_id/move' do
+        required_attributes! [:to_project_id]
+
+        issue = user_project.issues.find(params[:issue_id])
+        new_project = Project.find(params[:to_project_id])
+
+        begin
+          issue = ::Issues::MoveService.new(user_project, current_user).execute(issue, new_project)
+          present issue, with: Entities::Issue, current_user: current_user
+        rescue ::Issues::MoveService::MoveError => error
+          render_api_error!(error.message, 400)
+        end
+      end
+
+      #
+      # Delete a project issue
       #
       # Parameters:
       #   id (required) - The ID of a project
@@ -198,7 +228,10 @@ module API
       # Example Request:
       #   DELETE /projects/:id/issues/:issue_id
       delete ":id/issues/:issue_id" do
-        not_allowed!
+        issue = user_project.issues.find_by(id: params[:issue_id])
+
+        authorize!(:destroy_issue, issue)
+        issue.destroy
       end
     end
   end

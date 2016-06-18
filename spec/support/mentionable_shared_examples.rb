@@ -52,6 +52,8 @@ shared_context 'mentionable context' do
     end
 
     set_mentionable_text.call(ref_string)
+
+    project.team << [author, :developer]
   end
 end
 

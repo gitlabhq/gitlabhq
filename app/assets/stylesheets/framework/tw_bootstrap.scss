@@ -43,7 +43,6 @@
 @import "bootstrap/modals";
 @import "bootstrap/tooltip";
 @import "bootstrap/popovers";
-@import "bootstrap/carousel";
 
 // Utility classes
 .clearfix {
@@ -82,7 +81,7 @@
 
 // Labels
 .label {
-  padding: 2px 4px;
+  padding: 4px 5px;
   font-size: 13px;
   font-style: normal;
   font-weight: normal;
@@ -192,4 +191,9 @@
 .text-info,
 .text-info:hover {
   color: $brand-info;
+}
+
+// Prevent datetimes on tooltips to break into two lines
+.local-timeago {
+  white-space: nowrap;
 }

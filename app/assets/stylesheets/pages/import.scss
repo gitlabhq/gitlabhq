@@ -16,3 +16,24 @@ i.icon-gitorious-big {
   width: 18px;
   height: 18px;
 }
+
+.import-jobs-from-col,
+.import-jobs-to-col {
+  width: 40%;
+}
+
+.import-jobs-status-col {
+  width: 20%;
+}
+
+.btn-import {
+  .loading-icon {
+    display: none;
+  }
+
+  &.is-loading {
+    .loading-icon {
+      display: inline-block;
+    }
+  }
+}

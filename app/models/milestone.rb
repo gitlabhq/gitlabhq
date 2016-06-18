@@ -1,18 +1,3 @@
-# == Schema Information
-#
-# Table name: milestones
-#
-#  id          :integer          not null, primary key
-#  title       :string(255)      not null
-#  project_id  :integer          not null
-#  description :text
-#  due_date    :date
-#  created_at  :datetime
-#  updated_at  :datetime
-#  state       :string(255)
-#  iid         :integer
-#
-
 class Milestone < ActiveRecord::Base
   # Represents a "No Milestone" state used for filtering Issues and Merge
   # Requests that have no milestone assigned.
@@ -74,25 +59,67 @@ class Milestone < ActiveRecord::Base
     end
   end
 
+  def self.reference_prefix
+    '%'
+  end
+
   def self.reference_pattern
-    nil
+    # NOTE: The iid pattern only matches when all characters on the expression
+    # are digits, so it will match %2 but not %2.1 because that's probably a
+    # milestone name and we want it to be matched as such.
+    @reference_pattern ||= %r{
+      (#{Project.reference_pattern})?
+      #{Regexp.escape(reference_prefix)}
+      (?:
+        (?<milestone_iid>
+          \d+(?!\S\w)\b # Integer-based milestone iid, or
+        ) |
+        (?<milestone_name>
+          [^"\s]+\b |  # String-based single-word milestone title, or
+          "[^"]+"      # String-based multi-word milestone surrounded in quotes
+        )
+      )
+    }x
   end
 
   def self.link_reference_pattern
-    super("milestones", /(?<milestone>\d+)/)
+    @link_reference_pattern ||= super("milestones", /(?<milestone>\d+)/)
   end
 
-  def self.upcoming
-    self.where('due_date > ?', Time.now).order(due_date: :asc).first
+  def self.upcoming_ids_by_projects(projects)
+    rel = unscoped.of_projects(projects).active.where('due_date > ?', Time.now)
+
+    if Gitlab::Database.postgresql?
+      rel.order(:project_id, :due_date).select('DISTINCT ON (project_id) id')
+    else
+      rel.
+        group(:project_id).
+        having('due_date = MIN(due_date)').
+        pluck(:id, :project_id, :due_date).
+        map(&:first)
+    end
   end
 
-  def to_reference(from_project = nil)
-    escaped_title = self.title.gsub("]", "\\]")
+  ##
+  # Returns the String necessary to reference this Milestone in Markdown
+  #
+  # format - Symbol format to use (default: :iid, optional: :name)
+  #
+  # Examples:
+  #
+  #   Milestone.first.to_reference                # => "%1"
+  #   Milestone.first.to_reference(format: :name) # => "%\"goal\""
+  #   Milestone.first.to_reference(project)       # => "gitlab-org/gitlab-ce%1"
+  #
+  def to_reference(from_project = nil, format: :iid)
+    format_reference = milestone_format_reference(format)
+    reference = "#{self.class.reference_prefix}#{format_reference}"
 
-    h = Gitlab::Application.routes.url_helpers
-    url = h.namespace_project_milestone_url(self.project.namespace, self.project, self)
-
-    "[#{escaped_title}](#{url})"
+    if cross_project_reference?(from_project)
+      project.to_reference + reference
+    else
+      reference
+    end
   end
 
   def reference_link_text(from_project = nil)
@@ -121,12 +148,16 @@ class Milestone < ActiveRecord::Base
     active? && issues.opened.count.zero?
   end
 
-  def is_empty?
-    total_items_count.zero?
+  def is_empty?(user = nil)
+    total_items_count(user).zero?
   end
 
   def author_id
     nil
+  end
+
+  def title=(value)
+    write_attribute(:title, Sanitize.clean(value.to_s)) if value.present?
   end
 
   # Sorts the issues for the given IDs.
@@ -159,5 +190,17 @@ class Milestone < ActiveRecord::Base
 
     issues.where(id: ids).
       update_all(["position = CASE #{conditions} ELSE position END", *pairs])
+  end
+
+  private
+
+  def milestone_format_reference(format = :iid)
+    raise ArgumentError, 'Unknown format' unless [:iid, :name].include?(format)
+
+    if format == :name && !name.include?('"')
+      %("#{name}")
+    else
+      iid
+    end
   end
 end

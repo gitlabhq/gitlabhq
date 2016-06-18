@@ -4,6 +4,10 @@ FactoryGirl.define do
     author
     project
 
+    trait :confidential do
+      confidential true
+    end
+
     trait :closed do
       state :closed
     end

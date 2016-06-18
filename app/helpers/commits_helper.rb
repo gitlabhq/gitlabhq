@@ -16,6 +16,16 @@ module CommitsHelper
     commit_person_link(commit, options.merge(source: :committer))
   end
 
+  def commit_author_avatar(commit, options = {})
+    options = options.merge(source: :author)
+    user = commit.send(options[:source])
+
+    source_email = clean(commit.send "#{options[:source]}_email".to_sym)
+    person_email = user.try(:email) || source_email
+
+    image_tag(avatar_icon(person_email, options[:size]), class: "avatar #{"s#{options[:size]}" if options[:size]} hidden-xs", width: options[:size], alt: "")
+  end
+
   def image_diff_class(diff)
     if diff.deleted_file
       "deleted"
@@ -28,7 +38,7 @@ module CommitsHelper
 
   def commit_to_html(commit, project, inline = true)
     template = inline ? "inline_commit" : "commit"
-    escape_javascript(render "projects/commits/#{template}", commit: commit, project: project) unless commit.nil?
+    render "projects/commits/#{template}", commit: commit, project: project unless commit.nil?
   end
 
   # Breadcrumb links for a Project and, if applicable, a tree path
@@ -102,36 +112,35 @@ module CommitsHelper
     if current_controller?(:projects, :commits)
       if @repo.blob_at(commit.id, @path)
         return link_to(
-          "Browse File »",
+          "Browse File",
           namespace_project_blob_path(project.namespace, project,
                                       tree_join(commit.id, @path)),
-          class: "pull-right"
+          class: "btn btn-default"
         )
       elsif @path.present?
         return link_to(
-          "Browse Directory »",
+          "Browse Directory",
           namespace_project_tree_path(project.namespace, project,
                                       tree_join(commit.id, @path)),
-          class: "pull-right"
+          class: "btn btn-default"
         )
       end
     end
     link_to(
-      "Browse Files »",
+      "Browse Files",
       namespace_project_tree_path(project.namespace, project, commit),
-      class: "pull-right"
+      class: "btn btn-default"
     )
   end
 
-  def revert_commit_link(commit, continue_to_path, btn_class: nil)
+  def revert_commit_link(commit, continue_to_path, btn_class: nil, has_tooltip: true)
     return unless current_user
 
-    tooltip = "Revert this #{revert_commit_type(commit)} in a new merge request"
+    tooltip = "Revert this #{commit.change_type_title} in a new merge request" if has_tooltip
 
     if can_collaborate_with_project?
-      content_tag :span, 'data-toggle' => 'modal', 'data-target' => '#modal-revert-commit' do
-        link_to 'Revert', '#modal-revert-commit', 'data-toggle' => 'tooltip', 'data-container' => 'body', title: tooltip, class: "btn btn-default btn-grouped btn-#{btn_class}"
-      end
+      btn_class = "btn btn-warning btn-#{btn_class}" unless btn_class.nil?
+      link_to 'Revert', '#modal-revert-commit', 'data-toggle' => 'modal', 'data-container' => 'body', title: (tooltip if has_tooltip), class: "#{btn_class} #{'has-tooltip' if has_tooltip}"
     elsif can?(current_user, :fork_project, @project)
       continue_params = {
         to: continue_to_path,
@@ -142,15 +151,32 @@ module CommitsHelper
         namespace_key: current_user.namespace.id,
         continue: continue_params)
 
-      link_to 'Revert', fork_path, class: 'btn btn-grouped btn-close', method: :post, 'data-toggle' => 'tooltip', 'data-container' => 'body', title: tooltip
+      btn_class = "btn btn-grouped btn-warning" unless btn_class.nil?
+
+      link_to 'Revert', fork_path, class: btn_class, method: :post, 'data-toggle' => 'tooltip', 'data-container' => 'body', title: (tooltip if has_tooltip)
     end
   end
 
-  def revert_commit_type(commit)
-    if commit.merged_merge_request
-      'merge request'
-    else
-      'commit'
+  def cherry_pick_commit_link(commit, continue_to_path, btn_class: nil, has_tooltip: true)
+    return unless current_user
+
+    tooltip = "Cherry-pick this #{commit.change_type_title} in a new merge request"
+
+    if can_collaborate_with_project?
+      btn_class = "btn btn-default btn-#{btn_class}" unless btn_class.nil?
+      link_to 'Cherry-pick', '#modal-cherry-pick-commit', 'data-toggle' => 'modal', 'data-container' => 'body', title: (tooltip if has_tooltip), class: "#{btn_class} #{'has-tooltip' if has_tooltip}"
+    elsif can?(current_user, :fork_project, @project)
+      continue_params = {
+        to: continue_to_path,
+        notice: edit_in_new_fork_notice + ' Try to cherry-pick this commit again.',
+        notice_now: edit_in_new_fork_notice_now
+      }
+      fork_path = namespace_project_forks_path(@project.namespace, @project,
+        namespace_key: current_user.namespace.id,
+        continue: continue_params)
+
+      btn_class = "btn btn-grouped btn-close" unless btn_class.nil?
+      link_to 'Cherry-pick', fork_path, class: "#{btn_class}", method: :post, 'data-toggle' => 'tooltip', 'data-container' => 'body', title: (tooltip if has_tooltip)
     end
   end
 
@@ -171,19 +197,17 @@ module CommitsHelper
     source_email = clean(commit.send "#{options[:source]}_email".to_sym)
 
     person_name = user.try(:name) || source_name
-    person_email = user.try(:email) || source_email
 
     text =
       if options[:avatar]
-        avatar = image_tag(avatar_icon(person_email, options[:size]), class: "avatar #{"s#{options[:size]}" if options[:size]}", width: options[:size], alt: "")
-        %Q{#{avatar} <span class="commit-#{options[:source]}-name">#{person_name}</span>}
+        %Q{<span class="commit-#{options[:source]}-name">#{person_name}</span>}
       else
         person_name
       end
 
     options = {
-      class: "commit-#{options[:source]}-link has_tooltip",
-      data: { 'original-title'.to_sym => sanitize(source_email) }
+      class: "commit-#{options[:source]}-link has-tooltip",
+      title: source_email
     }
 
     if user.nil?
@@ -197,7 +221,7 @@ module CommitsHelper
     link_to(
       namespace_project_blob_path(project.namespace, project,
                                   tree_join(commit_sha, diff.new_path)),
-      class: 'btn view-file js-view-file'
+      class: 'btn view-file js-view-file btn-file-option'
     ) do
       raw('View file @') + content_tag(:span, commit_sha[0..6],
                                        class: 'commit-short-id')

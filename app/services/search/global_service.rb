@@ -11,7 +11,7 @@ module Search
       projects = ProjectsFinder.new.execute(current_user)
       projects = projects.in_namespace(group.id) if group
 
-      Gitlab::SearchResults.new(projects, params[:search])
+      Gitlab::SearchResults.new(current_user, projects, params[:search])
     end
   end
 end

@@ -25,7 +25,7 @@ class DashboardController < Dashboard::ApplicationController
   def load_events
     projects =
       if params[:filter] == "starred"
-        current_user.starred_projects
+        current_user.viewable_starred_projects
       else
         current_user.authorized_projects
       end
@@ -33,9 +33,5 @@ class DashboardController < Dashboard::ApplicationController
     @events = Event.in_projects(projects)
     @events = @event_filter.apply_filter(@events).with_associations
     @events = @events.limit(20).offset(params[:offset] || 0)
-  end
-
-  def projects
-    @projects ||= current_user.authorized_projects.sorted_by_activity.non_archived
   end
 end

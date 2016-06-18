@@ -1,60 +1,44 @@
-.user-calendar-activities {
-  .calendar_onclick_hr {
-    padding: 0;
-    margin: 10px 0;
-  }
+.calender-block {
+  padding-left: 0;
+  padding-right: 0;
 
+  @media (min-width: $screen-sm-min) and (max-width: $screen-lg-min) {
+    overflow-x: scroll;
+  }
+}
+
+.user-calendar-activities {
   .str-truncated {
     max-width: 70%;
   }
 
-  .text-expander {
-    background: #eee;
-    color: #555;
-    padding: 0 5px;
-    cursor: pointer;
-    margin-left: 4px;
-    &:hover {
-      background-color: #ddd;
-    }
+  .user-calendar-activities-loading {
+    font-size: 24px;
   }
 }
 
-/**
-* This overwrites the default values of the cal-heatmap gem
-*/
-.calendar {
-  .qi {
-    fill: #fff;
-  }
+.user-calendar {
+  text-align: center;
 
-  .q1 {
-    fill: #ededed !important;
+  .calendar {
+    display: inline-block;
   }
+}
 
-  .q2 {
-    fill: #acd5f2 !important;
+.user-contrib-cell {
+  &:hover {
+    cursor: pointer;
+    stroke: #000;
   }
+}
 
-  .q3 {
-    fill: #7fa8d1 !important;
-  }
+.user-contrib-text {
+  font-size: 12px;
+  fill: #959494;
+}
 
-  .q4 {
-    fill: #49729b !important;
-  }
-
-  .q5 {
-    fill: #254e77 !important;
-  }
-
-  .domain-background {
-    fill: none;
-    shape-rendering: crispedges;
-  }
-
-  .ch-tooltip {
-    padding: 3px;
-    font-weight: 550;
-  }
+.calendar-hint {
+  margin-top: -23px;
+  float: right;
+  font-size: 12px;
 }

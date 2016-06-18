@@ -3,11 +3,9 @@
 %p Please use this form to report users who create spam issues, comments or behave inappropriately.
 %hr
 = form_for @abuse_report, html: { class: 'form-horizontal js-quick-submit js-requires-input'} do |f|
+  = form_errors(@abuse_report)
+
   = f.hidden_field :user_id
-  - if @abuse_report.errors.any?
-    .alert.alert-danger
-      - @abuse_report.errors.full_messages.each do |msg|
-        %p= msg
   .form-group
     = f.label :user_id, class: 'control-label'
     .col-sm-10

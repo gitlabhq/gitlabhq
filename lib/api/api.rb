@@ -1,5 +1,3 @@
-Dir["#{Rails.root}/lib/api/*.rb"].each {|file| require file}
-
 module API
   class API < Grape::API
     include APIGuard
@@ -25,37 +23,43 @@ module API
     format :json
     content_type :txt, "text/plain"
 
-    helpers Helpers
+    # Ensure the namespace is right, otherwise we might load Grape::API::Helpers
+    helpers ::API::Helpers
 
-    mount Groups
-    mount GroupMembers
-    mount Users
-    mount Projects
-    mount Repositories
-    mount Issues
-    mount Milestones
-    mount Session
-    mount MergeRequests
-    mount Notes
-    mount Internal
-    mount SystemHooks
-    mount ProjectSnippets
-    mount ProjectMembers
-    mount DeployKeys
-    mount ProjectHooks
-    mount Services
-    mount Files
-    mount Commits
-    mount CommitStatus
-    mount Namespaces
-    mount Branches
-    mount Labels
-    mount Settings
-    mount Keys
-    mount Tags
-    mount Triggers
-    mount Builds
-    mount Variables
-    mount Runners
+    mount ::API::AwardEmoji
+    mount ::API::Branches
+    mount ::API::Builds
+    mount ::API::CommitStatuses
+    mount ::API::Commits
+    mount ::API::DeployKeys
+    mount ::API::Files
+    mount ::API::Gitignores
+    mount ::API::GroupMembers
+    mount ::API::Groups
+    mount ::API::Internal
+    mount ::API::Issues
+    mount ::API::Keys
+    mount ::API::Labels
+    mount ::API::Licenses
+    mount ::API::MergeRequests
+    mount ::API::Milestones
+    mount ::API::Namespaces
+    mount ::API::Notes
+    mount ::API::ProjectHooks
+    mount ::API::ProjectMembers
+    mount ::API::ProjectSnippets
+    mount ::API::Projects
+    mount ::API::Repositories
+    mount ::API::Runners
+    mount ::API::Services
+    mount ::API::Session
+    mount ::API::Settings
+    mount ::API::SidekiqMetrics
+    mount ::API::Subscriptions
+    mount ::API::SystemHooks
+    mount ::API::Tags
+    mount ::API::Triggers
+    mount ::API::Users
+    mount ::API::Variables
   end
 end

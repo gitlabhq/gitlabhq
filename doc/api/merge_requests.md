@@ -66,7 +66,9 @@ Parameters:
       "due_date": null
     },
     "merge_when_build_succeeds": true,
-    "merge_status": "can_be_merged"
+    "merge_status": "can_be_merged",
+    "subscribed" : false,
+    "user_notes_count": 1
   }
 ]
 ```
@@ -128,7 +130,9 @@ Parameters:
     "due_date": null
   },
   "merge_when_build_succeeds": true,
-  "merge_status": "can_be_merged"
+  "merge_status": "can_be_merged",
+  "subscribed" : true,
+  "user_notes_count": 1
 }
 ```
 
@@ -227,6 +231,8 @@ Parameters:
   },
   "merge_when_build_succeeds": true,
   "merge_status": "can_be_merged",
+  "subscribed" : true,
+  "user_notes_count": 1,
   "changes": [
     {
     "old_path": "VERSION",
@@ -304,7 +310,9 @@ Parameters:
     "due_date": null
   },
   "merge_when_build_succeeds": true,
-  "merge_status": "can_be_merged"
+  "merge_status": "can_be_merged",
+  "subscribed" : true,
+  "user_notes_count": 0
 }
 ```
 
@@ -373,22 +381,45 @@ Parameters:
     "due_date": null
   },
   "merge_when_build_succeeds": true,
-  "merge_status": "can_be_merged"
+  "merge_status": "can_be_merged",
+  "subscribed" : true,
+  "user_notes_count": 1
 }
 ```
 
 If the operation is successful, 200 and the updated merge request is returned.
 If an error occurs, an error number and a message explaining the reason is returned.
 
+## Delete a merge request
+
+Only for admins and project owners. Soft deletes the merge request in question.
+If the operation is successful, a status code `200` is returned. In case you cannot
+destroy this merge request, or it is not present, code `404` is given.
+
+```
+DELETE /projects/:id/merge_requests/:merge_request_id
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id`            | integer | yes | The ID of a project |
+| `merge_request_id` | integer | yes | The ID of a project's merge request |
+
+```bash
+curl -X DELETE -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/4/merge_request/85
+```
+
 ## Accept MR
 
 Merge changes submitted with MR using this API.
 
-If merge success you get `200 OK`.
+If the merge succeeds you'll get a `200 OK`.
 
-If it has some conflicts and can not be merged - you get 405 and error message 'Branch cannot be merged'
+If it has some conflicts and can not be merged - you'll get a 405 and the error message 'Branch cannot be merged'
 
-If merge request is already merged or closed - you get 405 and error message 'Method Not Allowed'
+If merge request is already merged or closed - you'll get a 406 and the error message 'Method Not Allowed'
+
+If the `sha` parameter is passed and does not match the HEAD of the source - you'll get a 409 and the error message 'SHA does not match HEAD of source branch'
 
 If you don't have permissions to accept this merge request - you'll get a 401
 
@@ -402,7 +433,8 @@ Parameters:
 - `merge_request_id` (required)             - ID of MR
 - `merge_commit_message` (optional)         - Custom merge commit message
 - `should_remove_source_branch` (optional)  - if `true` removes the source branch
-- `merged_when_build_succeeds` (optional)    - if `true` the MR is merge when the build succeeds
+- `merged_when_build_succeeds` (optional)   - if `true` the MR is merged when the build succeeds
+- `sha` (optional)                          - if present, then this SHA must match the HEAD of the source branch, otherwise the merge will fail
 
 ```json
 {
@@ -447,7 +479,9 @@ Parameters:
     "due_date": null
   },
   "merge_when_build_succeeds": true,
-  "merge_status": "can_be_merged"
+  "merge_status": "can_be_merged",
+  "subscribed" : true,
+  "user_notes_count": 1
 }
 ```
 
@@ -511,7 +545,9 @@ Parameters:
     "due_date": null
   },
   "merge_when_build_succeeds": true,
-  "merge_status": "can_be_merged"
+  "merge_status": "can_be_merged",
+  "subscribed" : true,
+  "user_notes_count": 1
 }
 ```
 
@@ -536,7 +572,7 @@ GET /projects/:id/merge_requests/:merge_request_id/closes_issues
 curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/76/merge_requests/1/closes_issues
 ```
 
-Example response:
+Example response when the GitLab issue tracker is used:
 
 ```json
 [
@@ -576,7 +612,167 @@ Example response:
       "title" : "Consequatur vero maxime deserunt laboriosam est voluptas dolorem.",
       "created_at" : "2016-01-04T15:31:51.081Z",
       "iid" : 6,
-      "labels" : []
+      "labels" : [],
+      "user_notes_count": 1
    },
 ]
+```
+
+Example response when an external issue tracker (e.g. JIRA) is used:
+
+```json
+[
+   {
+       "id" : "PROJECT-123",
+       "title" : "Title of this issue"
+   }
+]
+```
+
+## Subscribe to a merge request
+
+Subscribes the authenticated user to a merge request to receive notification. If
+the operation is successful, status code `201` together with the updated merge
+request is returned. If the user is already subscribed to the merge request, the
+status code `304` is returned. If the project or merge request is not found,
+status code `404` is returned.
+
+```
+POST /projects/:id/merge_requests/:merge_request_id/subscription
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer | yes | The ID of a project |
+| `merge_request_id` | integer | yes   | The ID of the merge request |
+
+```bash
+curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/merge_requests/17/subscription
+```
+
+Example response:
+
+```json
+{
+  "id": 17,
+  "iid": 1,
+  "project_id": 5,
+  "title": "Et et sequi est impedit nulla ut rem et voluptatem.",
+  "description": "Consequatur velit eos rerum optio autem. Quia id officia quaerat dolorum optio. Illo laudantium aut ipsum dolorem.",
+  "state": "opened",
+  "created_at": "2016-04-05T21:42:23.233Z",
+  "updated_at": "2016-04-05T22:11:52.900Z",
+  "target_branch": "ui-dev-kit",
+  "source_branch": "version-1-9",
+  "upvotes": 0,
+  "downvotes": 0,
+  "author": {
+    "name": "Eileen Skiles",
+    "username": "leila",
+    "id": 19,
+    "state": "active",
+    "avatar_url": "http://www.gravatar.com/avatar/39ce4a2822cc896933ffbd68c1470e55?s=80&d=identicon",
+    "web_url": "https://gitlab.example.com/u/leila"
+  },
+  "assignee": {
+    "name": "Celine Wehner",
+    "username": "carli",
+    "id": 16,
+    "state": "active",
+    "avatar_url": "http://www.gravatar.com/avatar/f4cd5605b769dd2ce405a27c6e6f2684?s=80&d=identicon",
+    "web_url": "https://gitlab.example.com/u/carli"
+  },
+  "source_project_id": 5,
+  "target_project_id": 5,
+  "labels": [],
+  "work_in_progress": false,
+  "milestone": {
+    "id": 7,
+    "iid": 1,
+    "project_id": 5,
+    "title": "v2.0",
+    "description": "Corrupti eveniet et velit occaecati dolorem est rerum aut.",
+    "state": "closed",
+    "created_at": "2016-04-05T21:41:40.905Z",
+    "updated_at": "2016-04-05T21:41:40.905Z",
+    "due_date": null
+  },
+  "merge_when_build_succeeds": false,
+  "merge_status": "cannot_be_merged",
+  "subscribed": true
+}
+```
+
+## Unsubscribe from a merge request
+
+Unsubscribes the authenticated user from a merge request to not receive
+notifications from that merge request. If the operation is successful, status
+code `200` together with the updated merge request is returned. If the user is
+not subscribed to the merge request, the status code `304` is returned. If the
+project or merge request is not found, status code `404` is returned.
+
+```
+DELETE /projects/:id/merge_requests/:merge_request_id/subscription
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer | yes | The ID of a project |
+| `merge_request_id` | integer | yes   | The ID of the merge request |
+
+```bash
+curl -X DELETE -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/merge_requests/17/subscription
+```
+
+Example response:
+
+```json
+{
+  "id": 17,
+  "iid": 1,
+  "project_id": 5,
+  "title": "Et et sequi est impedit nulla ut rem et voluptatem.",
+  "description": "Consequatur velit eos rerum optio autem. Quia id officia quaerat dolorum optio. Illo laudantium aut ipsum dolorem.",
+  "state": "opened",
+  "created_at": "2016-04-05T21:42:23.233Z",
+  "updated_at": "2016-04-05T22:11:52.900Z",
+  "target_branch": "ui-dev-kit",
+  "source_branch": "version-1-9",
+  "upvotes": 0,
+  "downvotes": 0,
+  "author": {
+    "name": "Eileen Skiles",
+    "username": "leila",
+    "id": 19,
+    "state": "active",
+    "avatar_url": "http://www.gravatar.com/avatar/39ce4a2822cc896933ffbd68c1470e55?s=80&d=identicon",
+    "web_url": "https://gitlab.example.com/u/leila"
+  },
+  "assignee": {
+    "name": "Celine Wehner",
+    "username": "carli",
+    "id": 16,
+    "state": "active",
+    "avatar_url": "http://www.gravatar.com/avatar/f4cd5605b769dd2ce405a27c6e6f2684?s=80&d=identicon",
+    "web_url": "https://gitlab.example.com/u/carli"
+  },
+  "source_project_id": 5,
+  "target_project_id": 5,
+  "labels": [],
+  "work_in_progress": false,
+  "milestone": {
+    "id": 7,
+    "iid": 1,
+    "project_id": 5,
+    "title": "v2.0",
+    "description": "Corrupti eveniet et velit occaecati dolorem est rerum aut.",
+    "state": "closed",
+    "created_at": "2016-04-05T21:41:40.905Z",
+    "updated_at": "2016-04-05T21:41:40.905Z",
+    "due_date": null
+  },
+  "merge_when_build_succeeds": false,
+  "merge_status": "cannot_be_merged",
+  "subscribed": false
+}
 ```

@@ -1,7 +1,20 @@
-%h1.title
-  %a
-    GitLab Org
-  %a.project-item-select-holder{href: "/gitlab-org/gitlab-test"}
-    GitLab Test
-    %input#project_path.project-item-select.js-projects-dropdown.ajax-project-select{type: "hidden", name: "project_path", "data-include-groups" => "false"}
-  %i.fa.chevron-down.dropdown-toggle-caret.js-projects-dropdown-toggle
+.header-content
+  %h1.title
+    %a
+      GitLab Org
+    %a.project-item-select-holder{href: "/gitlab-org/gitlab-test"}
+      GitLab Test
+    %i.fa.chevron-down.dropdown-toggle-caret.js-projects-dropdown-toggle{ "data-toggle" => "dropdown", "data-target" => ".header-content" }
+  .js-dropdown-menu-projects
+    .dropdown-menu.dropdown-select.dropdown-menu-projects
+      .dropdown-title
+        %span Go to a project
+        %button.dropdown-title-button.dropdown-menu-close{"aria-label" => "Close", type: "button"}
+          %i.fa.fa-times.dropdown-menu-close-icon
+      .dropdown-input
+        %input.dropdown-input-field{id: "", placeholder: "Search your projects", type: "search", value: ""}
+        %i.fa.fa-search.dropdown-input-search
+        %i.fa.fa-times.dropdown-input-clear.js-dropdown-input-clear{role: "button"}
+      .dropdown-content
+      .dropdown-loading
+        %i.fa.fa-spinner.fa-spin

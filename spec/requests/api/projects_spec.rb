@@ -10,20 +10,20 @@ describe API::API, api: true  do
   let(:admin) { create(:admin) }
   let(:project) { create(:project, creator_id: user.id, namespace: user.namespace) }
   let(:project2) { create(:project, path: 'project2', creator_id: user.id, namespace: user.namespace) }
-  let(:project3) { create(:project, path: 'project3', creator_id: user.id, namespace: user.namespace) }
-  let(:snippet) { create(:project_snippet, author: user, project: project, title: 'example') }
+  let(:snippet) { create(:project_snippet, :public, author: user, project: project, title: 'example') }
   let(:project_member) { create(:project_member, :master, user: user, project: project) }
   let(:project_member2) { create(:project_member, :developer, user: user3, project: project) }
   let(:user4) { create(:user) }
   let(:project3) do
     create(:project,
+    :private,
     name: 'second_project',
     path: 'second_project',
     creator_id: user.id,
     namespace: user.namespace,
     merge_requests_enabled: false,
     issues_enabled: false, wiki_enabled: false,
-    snippets_enabled: false, visibility_level: 0)
+    snippets_enabled: false)
   end
   let(:project_member3) do
     create(:project_member,
@@ -164,21 +164,18 @@ describe API::API, api: true  do
   end
 
   describe 'GET /projects/starred' do
+    let(:public_project) { create(:project, :public) }
+
     before do
-      admin.starred_projects << project
-      admin.save!
+      project_member2
+      user3.update_attributes(starred_projects: [project, project2, project3, public_project])
     end
 
-    it 'should return the starred projects' do
-      get api('/projects/all', admin)
+    it 'should return the starred projects viewable by the user' do
+      get api('/projects/starred', user3)
       expect(response.status).to eq(200)
       expect(json_response).to be_an Array
-
-      expect(json_response).to satisfy do |response|
-        response.one? do |entry|
-          entry['name'] == project.name
-        end
-      end
+      expect(json_response.map { |project| project['id'] }).to contain_exactly(project.id, public_project.id)
     end
   end
 
@@ -275,6 +272,7 @@ describe API::API, api: true  do
 
       it 'should not allow a non-admin to use a restricted visibility level' do
         post api('/projects', user), @project
+
         expect(response.status).to eq(400)
         expect(json_response['message']['visibility_level'].first).to(
           match('restricted by your GitLab administrator')
@@ -430,8 +428,9 @@ describe API::API, api: true  do
 
     describe 'permissions' do
       context 'all projects' do
-        it 'Contains permission information' do
-          project.team << [user, :master]
+        before { project.team << [user, :master] }
+
+        it 'contains permission information' do
           get api("/projects", user)
 
           expect(response.status).to eq(200)
@@ -442,7 +441,7 @@ describe API::API, api: true  do
       end
 
       context 'personal project' do
-        it 'Sets project access and returns 200' do
+        it 'sets project access and returns 200' do
           project.team << [user, :master]
           get api("/projects/#{project.id}", user)
 
@@ -454,9 +453,11 @@ describe API::API, api: true  do
       end
 
       context 'group project' do
+        let(:project2) { create(:project, group: create(:group)) }
+
+        before { project2.group.add_owner(user) }
+
         it 'should set the owner and return 200' do
-          project2 = create(:project, group: create(:group))
-          project2.group.add_owner(user)
           get api("/projects/#{project2.id}", user)
 
           expect(response.status).to eq(200)
@@ -943,6 +944,126 @@ describe API::API, api: true  do
                           description: 'new description' }
         put api("/projects/#{project.id}", user3), project_param
         expect(response.status).to eq(403)
+      end
+    end
+  end
+
+  describe 'POST /projects/:id/archive' do
+    context 'on an unarchived project' do
+      it 'archives the project' do
+        post api("/projects/#{project.id}/archive", user)
+
+        expect(response.status).to eq(201)
+        expect(json_response['archived']).to be_truthy
+      end
+    end
+
+    context 'on an archived project' do
+      before do
+        project.archive!
+      end
+
+      it 'remains archived' do
+        post api("/projects/#{project.id}/archive", user)
+
+        expect(response.status).to eq(201)
+        expect(json_response['archived']).to be_truthy
+      end
+    end
+
+    context 'user without archiving rights to the project' do
+      before do
+        project.team << [user3, :developer]
+      end
+
+      it 'rejects the action' do
+        post api("/projects/#{project.id}/archive", user3)
+
+        expect(response.status).to eq(403)
+      end
+    end
+  end
+
+  describe 'POST /projects/:id/unarchive' do
+    context 'on an unarchived project' do
+      it 'remains unarchived' do
+        post api("/projects/#{project.id}/unarchive", user)
+
+        expect(response.status).to eq(201)
+        expect(json_response['archived']).to be_falsey
+      end
+    end
+
+    context 'on an archived project' do
+      before do
+        project.archive!
+      end
+
+      it 'unarchives the project' do
+        post api("/projects/#{project.id}/unarchive", user)
+
+        expect(response.status).to eq(201)
+        expect(json_response['archived']).to be_falsey
+      end
+    end
+
+    context 'user without archiving rights to the project' do
+      before do
+        project.team << [user3, :developer]
+      end
+
+      it 'rejects the action' do
+        post api("/projects/#{project.id}/unarchive", user3)
+
+        expect(response.status).to eq(403)
+      end
+    end
+  end
+
+  describe 'POST /projects/:id/star' do
+    context 'on an unstarred project' do
+      it 'stars the project' do
+        expect { post api("/projects/#{project.id}/star", user) }.to change { project.reload.star_count }.by(1)
+
+        expect(response.status).to eq(201)
+        expect(json_response['star_count']).to eq(1)
+      end
+    end
+
+    context 'on a starred project' do
+      before do
+        user.toggle_star(project)
+        project.reload
+      end
+
+      it 'does not modify the star count' do
+        expect { post api("/projects/#{project.id}/star", user) }.not_to change { project.reload.star_count }
+
+        expect(response.status).to eq(304)
+      end
+    end
+  end
+
+  describe 'DELETE /projects/:id/star' do
+    context 'on a starred project' do
+      before do
+        user.toggle_star(project)
+        project.reload
+      end
+
+      it 'unstars the project' do
+        expect { delete api("/projects/#{project.id}/star", user) }.to change { project.reload.star_count }.by(-1)
+
+        expect(response.status).to eq(200)
+        expect(json_response['star_count']).to eq(0)
+      end
+    end
+
+    context 'on an unstarred project' do
+      it 'does not modify the star count' do
+        expect { delete api("/projects/#{project.id}/star", user) }.not_to change { project.reload.star_count }
+
+        expect(response.status).to eq(304)
       end
     end
   end

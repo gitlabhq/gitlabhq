@@ -18,7 +18,8 @@
 }
 
 .account-btn-link,
-.profile-settings-sidebar a {
+.profile-settings-sidebar a,
+.settings-sidebar a {
   color: $md-link-color;
 }
 
@@ -54,7 +55,7 @@
 }
 
 .account-well {
-  padding: 10px 10px;
+  padding: 10px;
   background-color: $help-well-bg;
   border: 1px solid $help-well-border;
   border-radius: $border-radius-base;
@@ -63,12 +64,6 @@
     padding-left: 20px;
     margin-bottom: 0;
   }
-}
-
-.calendar-hint {
-  margin-top: -12px;
-  float: right;
-  font-size: 12px;
 }
 
 .profile-link-holder {
@@ -123,12 +118,6 @@
   }
 }
 
-.key-icon {
-  color: $ssh-key-icon-color;
-  font-size: $ssh-key-icon-size;
-  line-height: 42px;
-}
-
 .key-created-at {
   line-height: 42px;
 }
@@ -137,14 +126,6 @@
   a {
     color: $md-link-color;
   }
-}
-
-.change-username-title {
-  color: $gl-warning;
-}
-
-.remove-account-title {
-  color: $gl-danger;
 }
 
 .provider-btn-group {
@@ -180,14 +161,6 @@
   }
 }
 
-.profile-settings-message {
-  line-height: 32px;
-  color: $warning-message-color;
-  background-color: $warning-message-bg;
-  border: 1px solid $warning-message-border;
-  border-radius: $border-radius-base;
-}
-
 .oauth-applications {
   form {
     display: inline-block;
@@ -195,5 +168,63 @@
 
   .last-heading {
     width: 105px;
+  }
+}
+
+.modal-profile-crop {
+  .modal-dialog {
+    width: 380px;
+
+    @media (max-width: $screen-sm-min) {
+      width: auto;
+    }
+
+  }
+
+  .profile-crop-image-container {
+    height: 300px;
+    margin: 0 auto;
+  }
+
+  .crop-controls {
+    padding: 10px 0 0;
+    text-align: center;
+  }
+}
+
+.personal-access-tokens-never-expires-label {
+  color: $personal-access-tokens-disabled-label-color;
+}
+
+.datepicker.personal-access-tokens-expires-at .ui-state-disabled span {
+  text-align: center;
+}
+
+.created-personal-access-token-container {
+  #created-personal-access-token {
+    width: 90%;
+    display: inline;
+  }
+
+  .btn-clipboard {
+    margin-left: 5px;
+  }
+}
+
+.user-profile {
+  @media (max-width: $screen-xs-max) {
+    .cover-block {
+      padding-top: 20px;
+    }
+
+    .cover-controls {
+      position: static;
+      margin-bottom: 20px;
+
+      .btn {
+        display: inline-block;
+        width: 46%;
+      }
+    }
   }
 }

@@ -1,52 +1,18 @@
-# == Schema Information
-#
-# Table name: ci_builds
-#
-#  id                 :integer          not null, primary key
-#  project_id         :integer
-#  status             :string(255)
-#  finished_at        :datetime
-#  trace              :text
-#  created_at         :datetime
-#  updated_at         :datetime
-#  started_at         :datetime
-#  runner_id          :integer
-#  coverage           :float
-#  commit_id          :integer
-#  commands           :text
-#  job_id             :integer
-#  name               :string(255)
-#  deploy             :boolean          default(FALSE)
-#  options            :text
-#  allow_failure      :boolean          default(FALSE), not null
-#  stage              :string(255)
-#  trigger_request_id :integer
-#  stage_idx          :integer
-#  tag                :boolean
-#  ref                :string(255)
-#  user_id            :integer
-#  type               :string(255)
-#  target_url         :string(255)
-#  description        :string(255)
-#  artifacts_file     :text
-#  gl_project_id      :integer
-#
-
 require 'spec_helper'
 
 describe CommitStatus, models: true do
-  let(:commit) { FactoryGirl.create :ci_commit }
-  let(:commit_status) { FactoryGirl.create :commit_status, commit: commit }
+  let(:pipeline) { FactoryGirl.create :ci_pipeline }
+  let(:commit_status) { FactoryGirl.create :commit_status, pipeline: pipeline }
 
-  it { is_expected.to belong_to(:commit) }
+  it { is_expected.to belong_to(:pipeline) }
   it { is_expected.to belong_to(:user) }
   it { is_expected.to belong_to(:project) }
 
   it { is_expected.to validate_presence_of(:name) }
   it { is_expected.to validate_inclusion_of(:status).in_array(%w(pending running failed success canceled)) }
 
-  it { is_expected.to delegate_method(:sha).to(:commit) }
-  it { is_expected.to delegate_method(:short_sha).to(:commit) }
+  it { is_expected.to delegate_method(:sha).to(:pipeline) }
+  it { is_expected.to delegate_method(:short_sha).to(:pipeline) }
   
   it { is_expected.to respond_to :success? }
   it { is_expected.to respond_to :failed? }
@@ -155,29 +121,15 @@ describe CommitStatus, models: true do
     subject { CommitStatus.latest.order(:id) }
 
     before do
-      @commit1 = FactoryGirl.create :commit_status, commit: commit, name: 'aa', ref: 'bb', status: 'running'
-      @commit2 = FactoryGirl.create :commit_status, commit: commit, name: 'cc', ref: 'cc', status: 'pending'
-      @commit3 = FactoryGirl.create :commit_status, commit: commit, name: 'aa', ref: 'cc', status: 'success'
-      @commit4 = FactoryGirl.create :commit_status, commit: commit, name: 'cc', ref: 'bb', status: 'success'
-      @commit5 = FactoryGirl.create :commit_status, commit: commit, name: 'aa', ref: 'bb', status: 'success'
+      @commit1 = FactoryGirl.create :commit_status, pipeline: pipeline, name: 'aa', ref: 'bb', status: 'running'
+      @commit2 = FactoryGirl.create :commit_status, pipeline: pipeline, name: 'cc', ref: 'cc', status: 'pending'
+      @commit3 = FactoryGirl.create :commit_status, pipeline: pipeline, name: 'aa', ref: 'cc', status: 'success'
+      @commit4 = FactoryGirl.create :commit_status, pipeline: pipeline, name: 'cc', ref: 'bb', status: 'success'
+      @commit5 = FactoryGirl.create :commit_status, pipeline: pipeline, name: 'aa', ref: 'bb', status: 'success'
     end
 
     it 'return unique statuses' do
-      is_expected.to eq([@commit2, @commit3, @commit4, @commit5])
-    end
-  end
-
-  describe :for_ref do
-    subject { CommitStatus.for_ref('bb').order(:id) }
-
-    before do
-      @commit1 = FactoryGirl.create :commit_status, commit: commit, name: 'aa', ref: 'bb', status: 'running'
-      @commit2 = FactoryGirl.create :commit_status, commit: commit, name: 'cc', ref: 'cc', status: 'pending'
-      @commit3 = FactoryGirl.create :commit_status, commit: commit, name: 'aa', ref: nil, status: 'success'
-    end
-
-    it 'return statuses with equal and nil ref set' do
-      is_expected.to eq([@commit1])
+      is_expected.to eq([@commit4, @commit5])
     end
   end
 
@@ -185,15 +137,65 @@ describe CommitStatus, models: true do
     subject { CommitStatus.running_or_pending.order(:id) }
 
     before do
-      @commit1 = FactoryGirl.create :commit_status, commit: commit, name: 'aa', ref: 'bb', status: 'running'
-      @commit2 = FactoryGirl.create :commit_status, commit: commit, name: 'cc', ref: 'cc', status: 'pending'
-      @commit3 = FactoryGirl.create :commit_status, commit: commit, name: 'aa', ref: nil, status: 'success'
-      @commit4 = FactoryGirl.create :commit_status, commit: commit, name: 'dd', ref: nil, status: 'failed'
-      @commit5 = FactoryGirl.create :commit_status, commit: commit, name: 'ee', ref: nil, status: 'canceled'
+      @commit1 = FactoryGirl.create :commit_status, pipeline: pipeline, name: 'aa', ref: 'bb', status: 'running'
+      @commit2 = FactoryGirl.create :commit_status, pipeline: pipeline, name: 'cc', ref: 'cc', status: 'pending'
+      @commit3 = FactoryGirl.create :commit_status, pipeline: pipeline, name: 'aa', ref: nil, status: 'success'
+      @commit4 = FactoryGirl.create :commit_status, pipeline: pipeline, name: 'dd', ref: nil, status: 'failed'
+      @commit5 = FactoryGirl.create :commit_status, pipeline: pipeline, name: 'ee', ref: nil, status: 'canceled'
     end
 
     it 'return statuses that are running or pending' do
       is_expected.to eq([@commit1, @commit2])
+    end
+  end
+
+  describe '#before_sha' do
+    subject { commit_status.before_sha }
+
+    context 'when no before_sha is set for pipeline' do
+      before { pipeline.before_sha = nil }
+
+      it 'return blank sha' do
+        is_expected.to eq(Gitlab::Git::BLANK_SHA)
+      end
+    end
+
+    context 'for before_sha set for pipeline' do
+      let(:value) { '1234' }
+      before { pipeline.before_sha = value }
+
+      it 'return the set value' do
+        is_expected.to eq(value)
+      end
+    end
+  end
+
+  describe '#stages' do
+    before do
+      FactoryGirl.create :commit_status, pipeline: pipeline, stage: 'build', stage_idx: 0, status: 'success'
+      FactoryGirl.create :commit_status, pipeline: pipeline, stage: 'build', stage_idx: 0, status: 'failed'
+      FactoryGirl.create :commit_status, pipeline: pipeline, stage: 'deploy', stage_idx: 2, status: 'running'
+      FactoryGirl.create :commit_status, pipeline: pipeline, stage: 'test', stage_idx: 1, status: 'success'
+    end
+
+    context 'stages list' do
+      subject { CommitStatus.where(pipeline: pipeline).stages }
+
+      it 'return ordered list of stages' do
+        is_expected.to eq(%w(build test deploy))
+      end
+    end
+
+    context 'stages with statuses' do
+      subject { CommitStatus.where(pipeline: pipeline).stages_status }
+
+      it 'return list of stages with statuses' do
+        is_expected.to eq({
+          'build' => 'failed',
+          'test' => 'success',
+          'deploy' => 'running'
+        })
+      end
     end
   end
 end

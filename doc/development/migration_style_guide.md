@@ -8,7 +8,10 @@ In addition, having to take a server offline for a an upgrade small or big is
 a big burden for most organizations. For this reason it is important that your
 migrations are written carefully, can be applied online and adhere to the style guide below.
 
-It's advised to have offline migrations only in major GitLab releases.
+Migrations should not require GitLab installations to be taken offline unless
+_absolutely_ necessary. If a migration requires downtime this should be
+clearly mentioned during the review process as well as being documented in the
+monthly release post.
 
 When writing your migrations, also consider that databases might have stale data
 or inconsistencies and guard for that. Try to make as little assumptions as possible
@@ -31,6 +34,15 @@ First, you need to provide information on whether the migration can be applied:
 3. online with errors on new instances while migrating
 4. offline (needs to happen without app servers to prevent db corruption)
 
+For example: 
+
+```
+# rubocop:disable all
+# Migration type: online without errors (works on previous version and new one)
+class MyMigration < ActiveRecord::Migration
+...
+```
+
 It is always preferable to have a migration run online. If you expect the migration
 to take particularly long (for instance, if it loops through all notes),
 this is valuable information to add.
@@ -45,7 +57,6 @@ be possible to downgrade in case of a vulnerability or bugs.
 In your migration, add a comment describing how the reversibility of the
 migration was tested.
 
-
 ## Removing indices
 
 If you need to remove index, please add a condition like in following example:
@@ -57,6 +68,49 @@ remove_index :namespaces, column: :name if index_exists?(:namespaces, :name)
 ## Adding indices
 
 If you need to add an unique index please keep in mind there is possibility of existing duplicates. If it is possible write a separate migration for handling this situation. It can be just removing or removing with overwriting all references to these duplicates depend on situation.
+
+When adding an index make sure to use the method `add_concurrent_index` instead
+of the regular `add_index` method. The `add_concurrent_index` method
+automatically creates concurrent indexes when using PostgreSQL, removing the
+need for downtime. To use this method you must disable transactions by calling
+the method `disable_ddl_transaction!` in the body of your migration class like
+so:
+
+```
+class MyMigration < ActiveRecord::Migration
+  include Gitlab::Database::MigrationHelpers
+  disable_ddl_transaction!
+
+  def change
+
+  end
+end
+```
+
+## Adding Columns With Default Values
+
+When adding columns with default values you should use the method
+`add_column_with_default`. This method ensures the table is updated without
+requiring downtime. This method is not reversible so you must manually define
+the `up` and `down` methods in your migration class.
+
+For example, to add the column `foo` to the `projects` table with a default
+value of `10` you'd write the following:
+
+```
+class MyMigration < ActiveRecord::Migration
+  include Gitlab::Database::MigrationHelpers
+  disable_ddl_transaction!
+  
+  def up
+    add_column_with_default(:projects, :foo, :integer, default: 10)
+  end
+
+  def down
+    remove_column(:projects, :foo)
+  end
+end
+```
 
 ## Testing
 
@@ -74,7 +128,7 @@ Example with Arel:
 users = Arel::Table.new(:users)
 users.group(users[:user_id]).having(users[:id].count.gt(5))
 
-#updtae other tables with this results
+#update other tables with these results
 ```
 
 Example with plain SQL and `quote_string` helper:

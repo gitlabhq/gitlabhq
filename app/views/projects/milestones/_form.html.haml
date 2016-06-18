@@ -1,9 +1,5 @@
-= form_for [@project.namespace.becomes(Namespace), @project, @milestone], html: {class: 'form-horizontal milestone-form gfm-form js-quick-submit js-requires-input'}  do |f|
-  -if @milestone.errors.any?
-    .alert.alert-danger
-      %ul
-        - @milestone.errors.full_messages.each do |msg|
-          %li= msg
+= form_for [@project.namespace.becomes(Namespace), @project, @milestone], html: {class: 'form-horizontal milestone-form common-note-form js-quick-submit js-requires-input'}  do |f|
+  = form_errors(@milestone)
   .row
     .col-md-6
       .form-group
@@ -14,16 +10,16 @@
         = f.label :description, "Description", class: "control-label"
         .col-sm-10
           = render layout: 'projects/md_preview', locals: { preview_class: "md-preview" } do
-            = render 'projects/zen', f: f, attr: :description, classes: 'description form-control'
+            = render 'projects/zen', f: f, attr: :description, classes: 'note-textarea', placeholder: 'Write milestone description...'
             = render 'projects/notes/hints'
           .clearfix
           .error-alert
     .col-md-6
       .form-group
         = f.label :due_date, "Due Date", class: "control-label"
-        .col-sm-10= f.hidden_field :due_date
         .col-sm-10
-          .datepicker
+          = f.text_field :due_date, class: "datepicker form-control", placeholder: "Select due date"
+          %a.inline.prepend-top-5.js-clear-due-date{ href: "#" } Clear due date
 
   .form-actions
     - if @milestone.new_record?
@@ -32,10 +28,3 @@
     -else
       = f.submit 'Save changes', class: "btn-save btn"
       = link_to "Cancel", namespace_project_milestone_path(@project.namespace, @project, @milestone), class: "btn btn-cancel"
-
-
-:javascript
-  $(".datepicker").datepicker({
-    dateFormat: "yy-mm-dd",
-    onSelect: function(dateText, inst) { $("#milestone_due_date").val(dateText) }
-  }).datepicker("setDate", $.datepicker.parseDate('yy-mm-dd', $('#milestone_due_date').val()));

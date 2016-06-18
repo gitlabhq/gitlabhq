@@ -40,8 +40,7 @@ module FilterSpecHelper
 
     filters = [
       Banzai::Filter::AutolinkFilter,
-      described_class,
-      Banzai::Filter::ReferenceGathererFilter
+      described_class
     ]
 
     HTML::Pipeline.new(filters, context)
@@ -78,6 +77,6 @@ module FilterSpecHelper
   # Shortcut to Rails' auto-generated routes helpers, to avoid including the
   # module
   def urls
-    Gitlab::Application.routes.url_helpers
+    Gitlab::Routing.url_helpers
   end
 end

@@ -17,6 +17,7 @@ class GitPushService < BaseService
   #  6. Checks if the project's main language has changed
   #
   def execute
+    @project.repository.after_create if @project.empty_repo?
     @project.repository.after_push_commit(branch_name, params[:newrev])
 
     if push_remove_branch?
@@ -42,10 +43,12 @@ class GitPushService < BaseService
       # Collect data for this git push
       @push_commits = @project.repository.commits_between(params[:oldrev], params[:newrev])
       process_commit_messages
+
+      # Update the bare repositories info/attributes file using the contents of the default branches
+      # .gitattributes file
+      update_gitattributes if is_default_branch?
     end
-    # Checks if the main language has changed in the project and if so
-    # it updates it accordingly
-    update_main_language
+
     # Update merge requests that may be affected by this push. A new branch
     # could cause the last commit of a merge request to change.
     update_merge_requests
@@ -53,14 +56,8 @@ class GitPushService < BaseService
     perform_housekeeping
   end
 
-  def update_main_language
-    current_language = @project.repository.main_language
-
-    unless current_language == @project.main_language
-      return @project.update_attributes(main_language: current_language)
-    end
-
-    true
+  def update_gitattributes
+    @project.repository.copy_gitattributes(params[:ref])
   end
 
   protected
@@ -69,6 +66,7 @@ class GitPushService < BaseService
     @project.update_merge_requests(params[:oldrev], params[:newrev], params[:ref], current_user)
 
     EventCreateService.new.push(@project, current_user, build_push_data)
+    SystemHooksService.new.execute_hooks(build_push_data_system_hook.dup, :push_hooks)
     @project.execute_hooks(build_push_data.dup, :push_hooks)
     @project.execute_services(build_push_data.dup, :push_hooks)
     CreateCommitBuildsService.new.execute(@project, current_user, build_push_data)
@@ -120,7 +118,7 @@ class GitPushService < BaseService
         closed_issues = commit.closes_issues(current_user)
         closed_issues.each do |issue|
           if can?(current_user, :update_issue, issue)
-            Issues::CloseService.new(project, authors[commit], {}).execute(issue, commit)
+            Issues::CloseService.new(project, authors[commit], {}).execute(issue, commit: commit)
           end
         end
       end
@@ -132,6 +130,11 @@ class GitPushService < BaseService
   def build_push_data
     @push_data ||= Gitlab::PushDataBuilder.
       build(@project, current_user, params[:oldrev], params[:newrev], params[:ref], push_commits)
+  end
+
+  def build_push_data_system_hook
+    @push_data_system ||= Gitlab::PushDataBuilder.
+      build(@project, current_user, params[:oldrev], params[:newrev], params[:ref], [])
   end
 
   def push_to_existing_branch?

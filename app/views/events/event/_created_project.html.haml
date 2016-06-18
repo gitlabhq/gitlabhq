@@ -7,21 +7,3 @@
     = link_to_project event.project
   - else
     = event.project_name
-
-- if !event.project.private? && twitter_sharing_enabled?
-  .event-body{"data-user-is" => event.author_id}
-    .event-note
-      .md
-        %p
-          Congratulations! Why not share your accomplishment with the world?
-
-          %a.twitter-share-button{ |
-            href: "https://twitter.com/share", |
-            "data-url" => event.project.web_url, |
-            "data-text" => "I just #{event.action_name} a new project on GitLab! GitLab is version control on your server.", |
-            "data-size" => "medium", |
-            "data-related" => "gitlab", |
-            "data-hashtags" => "gitlab", |
-            "data-count" => "none"}
-            Tweet
-          %script{src: "//platform.twitter.com/widgets.js"}

@@ -9,23 +9,18 @@ class Admin::RunnersController < Admin::ApplicationController
   end
 
   def show
-    @builds = @runner.builds.order('id DESC').first(30)
-    @projects =
-      if params[:search].present?
-        ::Project.search(params[:search])
-      else
-        Project.all
-      end
-    @projects = @projects.where.not(id: @runner.projects.select(:id)) if @runner.projects.any?
-    @projects = @projects.page(params[:page]).per(30)
+    assign_builds_and_projects
   end
 
   def update
-    @runner.update_attributes(runner_params)
-
-    respond_to do |format|
-      format.js
-      format.html { redirect_to admin_runner_path(@runner) }
+    if @runner.update_attributes(runner_params)
+      respond_to do |format|
+        format.js
+        format.html { redirect_to admin_runner_path(@runner) }
+      end
+    else
+      assign_builds_and_projects
+      render 'show'
     end
   end
 
@@ -58,6 +53,18 @@ class Admin::RunnersController < Admin::ApplicationController
   end
 
   def runner_params
-    params.require(:runner).permit(:token, :description, :tag_list, :active)
+    params.require(:runner).permit(Ci::Runner::FORM_EDITABLE)
+  end
+
+  def assign_builds_and_projects
+    @builds = runner.builds.order('id DESC').first(30)
+    @projects =
+      if params[:search].present?
+        ::Project.search(params[:search])
+      else
+        Project.all
+      end
+    @projects = @projects.where.not(id: runner.projects.select(:id)) if runner.projects.any?
+    @projects = @projects.page(params[:page]).per(30)
   end
 end

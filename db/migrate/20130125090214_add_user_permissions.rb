@@ -1,3 +1,4 @@
+# rubocop:disable all
 class AddUserPermissions < ActiveRecord::Migration
   def up
     add_column :users, :can_create_group, :boolean, default: true, null: false

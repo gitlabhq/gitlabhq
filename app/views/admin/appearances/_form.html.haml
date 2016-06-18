@@ -1,8 +1,5 @@
 = form_for @appearance, url: admin_appearances_path, html: { class: 'form-horizontal'} do |f|
-  - if @appearance.errors.any?
-    .alert.alert-danger
-      - @appearance.errors.full_messages.each do |msg|
-        %p= msg
+  = form_errors(@appearance)
 
   %fieldset.sign-in
     %legend

@@ -2,12 +2,23 @@ require 'spec_helper'
 require 'rake'
 
 describe 'gitlab:app namespace rake task' do
+  let(:enable_registry) { true }
+
   before :all do
-    Rake.application.rake_require "tasks/gitlab/task_helpers"
-    Rake.application.rake_require "tasks/gitlab/backup"
-    Rake.application.rake_require "tasks/gitlab/shell"
+    Rake.application.rake_require 'tasks/gitlab/task_helpers'
+    Rake.application.rake_require 'tasks/gitlab/backup'
+    Rake.application.rake_require 'tasks/gitlab/shell'
+    Rake.application.rake_require 'tasks/gitlab/db'
+
     # empty task as env is already loaded
     Rake::Task.define_task :environment
+
+    # We need this directory to run `gitlab:backup:create` task
+    FileUtils.mkdir_p('public/uploads')
+  end
+
+  before do
+    stub_container_registry_config(enabled: enable_registry)
   end
 
   def run_rake_task(task_name)
@@ -16,7 +27,7 @@ describe 'gitlab:app namespace rake task' do
   end
 
   def reenable_backup_sub_tasks
-    %w{db repo uploads builds artifacts lfs}.each do |subtask|
+    %w{db repo uploads builds artifacts lfs registry}.each do |subtask|
       Rake::Task["gitlab:backup:#{subtask}:create"].reenable
     end
   end
@@ -37,6 +48,7 @@ describe 'gitlab:app namespace rake task' do
         allow(FileUtils).to receive(:mv).and_return(true)
         allow(Rake::Task["gitlab:shell:setup"]).
           to receive(:invoke).and_return(true)
+        ENV['force'] = 'yes'
       end
 
       let(:gitlab_version) { Gitlab::VERSION }
@@ -52,13 +64,15 @@ describe 'gitlab:app namespace rake task' do
       it 'should invoke restoration on match' do
         allow(YAML).to receive(:load_file).
           and_return({ gitlab_version: gitlab_version })
-        expect(Rake::Task["gitlab:backup:db:restore"]).to receive(:invoke)
-        expect(Rake::Task["gitlab:backup:repo:restore"]).to receive(:invoke)
-        expect(Rake::Task["gitlab:backup:builds:restore"]).to receive(:invoke)
-        expect(Rake::Task["gitlab:backup:uploads:restore"]).to receive(:invoke)
-        expect(Rake::Task["gitlab:backup:artifacts:restore"]).to receive(:invoke)
-        expect(Rake::Task["gitlab:backup:lfs:restore"]).to receive(:invoke)
-        expect(Rake::Task["gitlab:shell:setup"]).to receive(:invoke)
+        expect(Rake::Task['gitlab:db:drop_tables']).to receive(:invoke)
+        expect(Rake::Task['gitlab:backup:db:restore']).to receive(:invoke)
+        expect(Rake::Task['gitlab:backup:repo:restore']).to receive(:invoke)
+        expect(Rake::Task['gitlab:backup:builds:restore']).to receive(:invoke)
+        expect(Rake::Task['gitlab:backup:uploads:restore']).to receive(:invoke)
+        expect(Rake::Task['gitlab:backup:artifacts:restore']).to receive(:invoke)
+        expect(Rake::Task['gitlab:backup:lfs:restore']).to receive(:invoke)
+        expect(Rake::Task['gitlab:backup:registry:restore']).to receive(:invoke)
+        expect(Rake::Task['gitlab:shell:setup']).to receive(:invoke)
         expect { run_rake_task('gitlab:backup:restore') }.not_to raise_error
       end
     end
@@ -115,7 +129,7 @@ describe 'gitlab:app namespace rake task' do
 
     it 'should set correct permissions on the tar contents' do
       tar_contents, exit_status = Gitlab::Popen.popen(
-        %W{tar -tvf #{@backup_tar} db uploads.tar.gz repositories builds.tar.gz artifacts.tar.gz lfs.tar.gz}
+        %W{tar -tvf #{@backup_tar} db uploads.tar.gz repositories builds.tar.gz artifacts.tar.gz lfs.tar.gz registry.tar.gz}
       )
       expect(exit_status).to eq(0)
       expect(tar_contents).to match('db/')
@@ -124,15 +138,28 @@ describe 'gitlab:app namespace rake task' do
       expect(tar_contents).to match('builds.tar.gz')
       expect(tar_contents).to match('artifacts.tar.gz')
       expect(tar_contents).to match('lfs.tar.gz')
-      expect(tar_contents).not_to match(/^.{4,9}[rwx].* (database.sql.gz|uploads.tar.gz|repositories|builds.tar.gz|artifacts.tar.gz)\/$/)
+      expect(tar_contents).to match('registry.tar.gz')
+      expect(tar_contents).not_to match(/^.{4,9}[rwx].* (database.sql.gz|uploads.tar.gz|repositories|builds.tar.gz|artifacts.tar.gz|registry.tar.gz)\/$/)
     end
 
     it 'should delete temp directories' do
       temp_dirs = Dir.glob(
-        File.join(Gitlab.config.backup.path, '{db,repositories,uploads,builds,artifacts,lfs}')
+        File.join(Gitlab.config.backup.path, '{db,repositories,uploads,builds,artifacts,lfs,registry}')
       )
 
       expect(temp_dirs).to be_empty
+    end
+
+    context 'registry disabled' do
+      let(:enable_registry) { false }
+
+      it 'should not create registry.tar.gz' do
+        tar_contents, exit_status = Gitlab::Popen.popen(
+          %W{tar -tvf #{@backup_tar}}
+        )
+        expect(exit_status).to eq(0)
+        expect(tar_contents).not_to match('registry.tar.gz')
+      end
     end
   end # backup_create task
 
@@ -165,7 +192,7 @@ describe 'gitlab:app namespace rake task' do
 
     it "does not contain skipped item" do
       tar_contents, _exit_status = Gitlab::Popen.popen(
-        %W{tar -tvf #{@backup_tar} db uploads.tar.gz repositories builds.tar.gz artifacts.tar.gz lfs.tar.gz}
+        %W{tar -tvf #{@backup_tar} db uploads.tar.gz repositories builds.tar.gz artifacts.tar.gz lfs.tar.gz registry.tar.gz}
       )
 
       expect(tar_contents).to match('db/')
@@ -173,21 +200,24 @@ describe 'gitlab:app namespace rake task' do
       expect(tar_contents).to match('builds.tar.gz')
       expect(tar_contents).to match('artifacts.tar.gz')
       expect(tar_contents).to match('lfs.tar.gz')
+      expect(tar_contents).to match('registry.tar.gz')
       expect(tar_contents).not_to match('repositories/')
     end
 
     it 'does not invoke repositories restore' do
-      allow(Rake::Task["gitlab:shell:setup"]).
+      allow(Rake::Task['gitlab:shell:setup']).
         to receive(:invoke).and_return(true)
       allow($stdout).to receive :write
 
-      expect(Rake::Task["gitlab:backup:db:restore"]).to receive :invoke
-      expect(Rake::Task["gitlab:backup:repo:restore"]).not_to receive :invoke
-      expect(Rake::Task["gitlab:backup:uploads:restore"]).not_to receive :invoke
-      expect(Rake::Task["gitlab:backup:builds:restore"]).to receive :invoke
-      expect(Rake::Task["gitlab:backup:artifacts:restore"]).to receive :invoke
-      expect(Rake::Task["gitlab:backup:lfs:restore"]).to receive :invoke
-      expect(Rake::Task["gitlab:shell:setup"]).to receive :invoke
+      expect(Rake::Task['gitlab:db:drop_tables']).to receive :invoke
+      expect(Rake::Task['gitlab:backup:db:restore']).to receive :invoke
+      expect(Rake::Task['gitlab:backup:repo:restore']).not_to receive :invoke
+      expect(Rake::Task['gitlab:backup:uploads:restore']).not_to receive :invoke
+      expect(Rake::Task['gitlab:backup:builds:restore']).to receive :invoke
+      expect(Rake::Task['gitlab:backup:artifacts:restore']).to receive :invoke
+      expect(Rake::Task['gitlab:backup:lfs:restore']).to receive :invoke
+      expect(Rake::Task['gitlab:backup:registry:restore']).to receive :invoke
+      expect(Rake::Task['gitlab:shell:setup']).to receive :invoke
       expect { run_rake_task('gitlab:backup:restore') }.not_to raise_error
     end
   end

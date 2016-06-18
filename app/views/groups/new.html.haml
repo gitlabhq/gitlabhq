@@ -6,16 +6,15 @@
 %hr
 
 = form_for @group, html: { class: 'group-form form-horizontal' } do |f|
-  - if @group.errors.any?
-    .alert.alert-danger
-      %span= @group.errors.full_messages.first
-
+  = form_errors(@group)
   = render 'shared/group_form', f: f, autofocus: true
 
   .form-group.group-description-holder
     = f.label :avatar, "Group avatar", class: 'control-label'
     .col-sm-10
       = render 'shared/choose_group_avatar_button', f: f
+
+  = render 'shared/visibility_level', f: f, visibility_level: default_group_visibility, can_change_visibility_level: true, form_model: @group
 
   .form-group
     .col-sm-offset-2.col-sm-10

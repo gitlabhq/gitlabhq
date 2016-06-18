@@ -1,5 +1,3 @@
-require 'html/pipeline/filter'
-
 module Banzai
   module Filter
     class MarkdownFilter < HTML::Pipeline::TextFilter

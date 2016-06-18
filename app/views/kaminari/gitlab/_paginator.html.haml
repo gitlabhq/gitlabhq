@@ -1,7 +1,7 @@
 -#  The container tag
 -#  available local variables
 -#    current_page:  a page object for the currently displayed page
--#    num_pages:     total number of pages
+-#    total_pages:   total number of pages
 -#    per_page:      number of items to fetch per page
 -#    remote:        data-remote
 -#    paginator:     the paginator that renders the pagination tags inside
@@ -9,7 +9,7 @@
   %div.gl-pagination
     %ul.pagination.clearfix
       - unless current_page.first?
-        = first_page_tag unless num_pages < 5 # As kaminari will always show the first 5 pages
+        = first_page_tag unless total_pages < 5 # As kaminari will always show the first 5 pages
       = prev_page_tag
       - each_page do |page|
         - if page.left_outer? || page.right_outer? || page.inside_window?
@@ -18,5 +18,5 @@
           = gap_tag
       = next_page_tag
       - unless current_page.last?
-        = last_page_tag unless num_pages < 5
+        = last_page_tag unless total_pages < 5
 

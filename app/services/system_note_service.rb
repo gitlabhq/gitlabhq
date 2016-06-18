@@ -144,6 +144,18 @@ class SystemNoteService
     create_note(noteable: noteable, project: project, author: author, note: body)
   end
 
+  def self.remove_merge_request_wip(noteable, project, author)
+    body = 'Unmarked this merge request as a Work In Progress'
+
+    create_note(noteable: noteable, project: project, author: author, note: body)
+  end
+
+  def self.add_merge_request_wip(noteable, project, author)
+    body = 'Marked this merge request as a **Work In Progress**'
+
+    create_note(noteable: noteable, project: project, author: author, note: body)
+  end
+
   # Called when the title of a Noteable is changed
   #
   # noteable  - Noteable object that responds to `title`
@@ -157,10 +169,31 @@ class SystemNoteService
   #
   # Returns the created Note object
   def self.change_title(noteable, project, author, old_title)
-    return unless noteable.respond_to?(:title)
+    new_title = noteable.title.dup
 
-    body = "Title changed from **#{old_title}** to **#{noteable.title}**"
+    old_diffs, new_diffs = Gitlab::Diff::InlineDiff.new(old_title, new_title).inline_diffs
+
+    marked_old_title = Gitlab::Diff::InlineDiffMarker.new(old_title).mark(old_diffs, mode: :deletion, markdown: true)
+    marked_new_title = Gitlab::Diff::InlineDiffMarker.new(new_title).mark(new_diffs, mode: :addition, markdown: true)
+
+    body = "Changed title: **#{marked_old_title}** → **#{marked_new_title}**"
     create_note(noteable: noteable, project: project, author: author, note: body)
+  end
+
+  # Called when the confidentiality changes
+  #
+  # issue   - Issue object
+  # project - Project owning the issue
+  # author  - User performing the change
+  #
+  # Example Note text:
+  #
+  # "Made the issue confidential"
+  #
+  # Returns the created Note object
+  def self.change_issue_confidentiality(issue, project, author)
+    body = issue.confidential ? 'Made the issue confidential' : 'Made the issue visible'
+    create_note(noteable: issue, project: project, author: author, note: body)
   end
 
   # Called when a branch in Noteable is changed
@@ -212,7 +245,7 @@ class SystemNoteService
   #
   #   "Started branch `201-issue-branch-button`"
   def self.new_issue_branch(issue, project, author, branch)
-    h = Gitlab::Application.routes.url_helpers
+    h = Gitlab::Routing.url_helpers
     link = h.namespace_project_compare_url(project.namespace, project, from: project.default_branch, to: branch)
 
     body = "Started branch [`#{branch}`](#{link})"
@@ -339,7 +372,7 @@ class SystemNoteService
   # Returns an Array of Strings
   def self.new_commit_summary(new_commits)
     new_commits.collect do |commit|
-      "* #{commit.short_id} - #{commit.title}"
+      "* #{commit.short_id} - #{escape_html(commit.title)}"
     end
   end
 
@@ -398,5 +431,31 @@ class SystemNoteService
     status_label = new_task.complete? ? Taskable::COMPLETED : Taskable::INCOMPLETE
     body = "Marked the task **#{new_task.source}** as #{status_label}"
     create_note(noteable: noteable, project: project, author: author, note: body)
+  end
+
+  # Called when noteable has been moved to another project
+  #
+  # direction    - symbol, :to or :from
+  # noteable     - Noteable object
+  # noteable_ref - Referenced noteable
+  # author       - User performing the move
+  #
+  # Example Note text:
+  #
+  #   "Moved to some_namespace/project_new#11"
+  #
+  # Returns the created Note object
+  def self.noteable_moved(noteable, project, noteable_ref, author, direction:)
+    unless [:to, :from].include?(direction)
+      raise ArgumentError, "Invalid direction `#{direction}`"
+    end
+
+    cross_reference = noteable_ref.to_reference(project)
+    body = "Moved #{direction} #{cross_reference}"
+    create_note(noteable: noteable, project: project, author: author, note: body)
+  end
+
+  def self.escape_html(text)
+    Rack::Utils.escape_html(text)
   end
 end

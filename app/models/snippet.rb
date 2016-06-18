@@ -1,19 +1,3 @@
-# == Schema Information
-#
-# Table name: snippets
-#
-#  id               :integer          not null, primary key
-#  title            :string(255)
-#  content          :text
-#  author_id        :integer          not null
-#  project_id       :integer
-#  created_at       :datetime
-#  updated_at       :datetime
-#  file_name        :string(255)
-#  type             :string(255)
-#  visibility_level :integer          default(0), not null
-#
-
 class Snippet < ActiveRecord::Base
   include Gitlab::VisibilityLevel
   include Linguist::BlobHelper
@@ -46,7 +30,8 @@ class Snippet < ActiveRecord::Base
   scope :public_and_internal, -> { where(visibility_level: [Snippet::PUBLIC, Snippet::INTERNAL]) }
   scope :fresh,   -> { order("created_at DESC") }
 
-  participant :author, :notes
+  participant :author
+  participant :notes_with_associations
 
   def self.reference_prefix
     '$'
@@ -56,14 +41,14 @@ class Snippet < ActiveRecord::Base
   #
   # This pattern supports cross-project references.
   def self.reference_pattern
-    %r{
+    @reference_pattern ||= %r{
       (#{Project.reference_pattern})?
       #{Regexp.escape(reference_prefix)}(?<snippet>\d+)
     }x
   end
 
   def self.link_reference_pattern
-    super("snippets", /(?<snippet>\d+)/)
+    @link_reference_pattern ||= super("snippets", /(?<snippet>\d+)/)
   end
 
   def to_reference(from_project = nil)
@@ -110,6 +95,14 @@ class Snippet < ActiveRecord::Base
 
   def visibility_level_field
     visibility_level
+  end
+
+  def no_highlighting?
+    content.lines.count > 1000
+  end
+
+  def notes_with_associations
+    notes.includes(:author)
   end
 
   class << self

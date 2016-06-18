@@ -1,9 +1,5 @@
-= form_for [@project.namespace.becomes(Namespace), @project, @page], method: @page.persisted? ? :put : :post, html: { class: 'form-horizontal wiki-form gfm-form prepend-top-default js-quick-submit' } do |f|
-  -if @page.errors.any?
-    #error_explanation
-      .alert.alert-danger
-        - @page.errors.full_messages.each do |msg|
-          %p= msg
+= form_for [@project.namespace.becomes(Namespace), @project, @page], method: @page.persisted? ? :put : :post, html: { class: 'form-horizontal wiki-form common-note-form prepend-top-default js-quick-submit' } do |f|
+  = form_errors(@page)
 
   = f.hidden_field :title, value: @page.title
   .form-group
@@ -15,7 +11,7 @@
     = f.label :content, class: 'control-label'
     .col-sm-10
       = render layout: 'projects/md_preview', locals: { preview_class: "md-preview" } do
-        = render 'projects/zen', f: f, attr: :content, classes: 'description form-control'
+        = render 'projects/zen', f: f, attr: :content, classes: 'note-textarea', placeholder: 'Write your content or drag files here...'
         = render 'projects/notes/hints'
 
       .clearfix

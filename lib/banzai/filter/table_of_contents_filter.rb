@@ -1,5 +1,3 @@
-require 'html/pipeline/filter'
-
 module Banzai
   module Filter
     # HTML filter that adds an anchor child element to all Headers in a

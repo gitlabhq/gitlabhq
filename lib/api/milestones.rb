@@ -3,17 +3,35 @@ module API
   class Milestones < Grape::API
     before { authenticate! }
 
+    helpers do
+      def filter_milestones_state(milestones, state)
+        case state
+        when 'active' then milestones.active
+        when 'closed' then milestones.closed
+        else milestones
+        end
+      end
+    end
+
     resource :projects do
       # Get a list of project milestones
       #
       # Parameters:
-      #   id (required) - The ID of a project
+      #   id (required)    - The ID of a project
+      #   state (optional) - Return "active" or "closed" milestones
       # Example Request:
       #   GET /projects/:id/milestones
+      #   GET /projects/:id/milestones?iid=42
+      #   GET /projects/:id/milestones?state=active
+      #   GET /projects/:id/milestones?state=closed
       get ":id/milestones" do
         authorize! :read_milestone, user_project
 
-        present paginate(user_project.milestones), with: Entities::Milestone
+        milestones = user_project.milestones
+        milestones = filter_milestones_state(milestones, params[:state])
+        milestones = filter_by_iid(milestones, params[:iid]) if params[:iid].present?
+
+        present paginate(milestones), with: Entities::Milestone
       end
 
       # Get a single project milestone
@@ -87,7 +105,15 @@ module API
         authorize! :read_milestone, user_project
 
         @milestone = user_project.milestones.find(params[:milestone_id])
-        present paginate(@milestone.issues), with: Entities::Issue
+
+        finder_params = {
+          project_id: user_project.id,
+          milestone_title: @milestone.title,
+          state: 'all'
+        }
+
+        issues = IssuesFinder.new(current_user, finder_params).execute
+        present paginate(issues), with: Entities::Issue, current_user: current_user
       end
 
     end

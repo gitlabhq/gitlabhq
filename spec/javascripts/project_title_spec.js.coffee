@@ -1,9 +1,12 @@
+#= require bootstrap
 #= require select2
+#= require lib/type_utility
+#= require gl_dropdown
 #= require api
 #= require project_select
 #= require project
 
-window.gon = {}
+window.gon or= {}
 window.gon.api_version = 'v3'
 
 describe 'Project Title', ->
@@ -13,9 +16,6 @@ describe 'Project Title', ->
   beforeEach ->
     fixture.load('project_title.html')
     @project = new Project()
-
-    spyOn(@project, 'changeProject').and.callFake (url) ->
-      window.current_project_url = url
 
   describe 'project list', ->
     beforeEach =>
@@ -29,18 +29,9 @@ describe 'Project Title', ->
 
     it 'to show on toggle click', =>
       $('.js-projects-dropdown-toggle').click()
-
-      expect($('.title .select2-container').hasClass('select2-dropdown-open')).toBe(true)
-      expect($('.ajax-project-dropdown li').length).toBe(@projects_data.length)
+      expect($('.header-content').hasClass('open')).toBe(true)
 
     it 'hide dropdown', ->
-      $("#select2-drop-mask").click()
+      $(".dropdown-menu-close-icon").click()
 
-      expect($('.title .select2-container').hasClass('select2-dropdown-open')).toBe(false)
-
-    it 'change project when clicking item', ->
-      $('.js-projects-dropdown-toggle').click()
-      $('.ajax-project-dropdown li:nth-child(2)').trigger('mouseup')
-
-      expect($('.title .select2-container').hasClass('select2-dropdown-open')).toBe(false)
-      expect(window.current_project_url).toBe('http://localhost:3000/h5bp/html5-boilerplate')
+      expect($('.header-content').hasClass('open')).toBe(false)

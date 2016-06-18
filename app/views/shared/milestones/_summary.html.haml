@@ -3,15 +3,15 @@
 .context.prepend-top-default
   .milestone-summary
     %h4 Progress
-    %strong= milestone.issues.size
+    %strong= milestone.issues_visible_to_user(current_user).size
     issues:
     %span.milestone-stat
-      %strong= milestone.issues.opened.size
+      %strong= milestone.issues_visible_to_user(current_user).opened.size
       open and
-      %strong= milestone.issues.closed.size
+      %strong= milestone.issues_visible_to_user(current_user).closed.size
       closed
     %span.milestone-stat
-      %strong== #{milestone.percent_complete}%
+      %strong== #{milestone.percent_complete(current_user)}%
       complete
 
     %span.milestone-stat

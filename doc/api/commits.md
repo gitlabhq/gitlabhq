@@ -12,6 +12,8 @@ GET /projects/:id/repository/commits
 | --------- | ---- | -------- | ----------- |
 | `id` | integer | yes | The ID of a project |
 | `ref_name` | string | no | The name of a repository branch or tag or if not given the default branch |
+| `since` | string | no | Only commits after or in this date will be returned in ISO 8601 format YYYY-MM-DDTHH:MM:SSZ |
+| `until` | string | no | Only commits before or in this date will be returned in ISO 8601 format YYYY-MM-DDTHH:MM:SSZ |
 
 ```bash
 curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/repository/commits"

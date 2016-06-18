@@ -11,23 +11,24 @@ module API
       # Example Request:
       #   GET /projects/:id/labels
       get ':id/labels' do
-        present user_project.labels, with: Entities::Label
+        present user_project.labels, with: Entities::Label, current_user: current_user
       end
 
       # Creates a new label
       #
       # Parameters:
-      #   id    (required) - The ID of a project
-      #   name  (required) - The name of the label to be deleted
-      #   color (required) - Color of the label given in 6-digit hex
-      #                      notation with leading '#' sign (e.g. #FFAABB)
+      #   id    (required)       - The ID of a project
+      #   name  (required)       - The name of the label to be created
+      #   color (required)       - Color of the label given in 6-digit hex
+      #                            notation with leading '#' sign (e.g. #FFAABB)
+      #   description (optional) - The description of label to be created
       # Example Request:
       #   POST /projects/:id/labels
       post ':id/labels' do
         authorize! :admin_label, user_project
         required_attributes! [:name, :color]
 
-        attrs = attributes_for_keys [:name, :color]
+        attrs = attributes_for_keys [:name, :color, :description]
         label = user_project.find_label(attrs[:name])
 
         conflict!('Label already exists') if label
@@ -35,7 +36,7 @@ module API
         label = user_project.labels.create(attrs)
 
         if label.valid?
-          present label, with: Entities::Label
+          present label, with: Entities::Label, current_user: current_user
         else
           render_validation_error!(label)
         end
@@ -62,11 +63,12 @@ module API
       # Updates an existing label. At least one optional parameter is required.
       #
       # Parameters:
-      #   id        (required) - The ID of a project
-      #   name      (required) - The name of the label to be deleted
-      #   new_name  (optional) - The new name of the label
-      #   color     (optional) - Color of the label given in 6-digit hex
-      #                          notation with leading '#' sign (e.g. #FFAABB)
+      #   id        (required)   - The ID of a project
+      #   name      (required)   - The name of the label to be deleted
+      #   new_name  (optional)   - The new name of the label
+      #   color     (optional)   - Color of the label given in 6-digit hex
+      #                            notation with leading '#' sign (e.g. #FFAABB)
+      #   description (optional) - The description of label to be created
       # Example Request:
       #   PUT /projects/:id/labels
       put ':id/labels' do
@@ -76,7 +78,7 @@ module API
         label = user_project.find_label(params[:name])
         not_found!('Label not found') unless label
 
-        attrs = attributes_for_keys [:new_name, :color]
+        attrs = attributes_for_keys [:new_name, :color, :description]
 
         if attrs.empty?
           render_api_error!('Required parameters "new_name" or "color" ' \
@@ -88,7 +90,7 @@ module API
         attrs[:name] = attrs.delete(:new_name) if attrs.key?(:new_name)
 
         if label.update(attrs)
-          present label, with: Entities::Label
+          present label, with: Entities::Label, current_user: current_user
         else
           render_validation_error!(label)
         end

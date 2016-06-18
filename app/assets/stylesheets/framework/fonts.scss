@@ -1,3 +1,7 @@
+// Disabling "SpaceAfterPropertyColon" linter because the linter doesn't like
+// the way the `src` property is formatted in this file.
+// scss-lint:disable SpaceAfterPropertyColon
+
 /* latin-ext */
 @font-face {
   font-family: 'Source Sans Pro';

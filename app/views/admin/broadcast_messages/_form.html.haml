@@ -4,10 +4,8 @@
     = render_broadcast_message(@broadcast_message.message.presence || "Your message here")
 
 = form_for [:admin, @broadcast_message], html: { class: 'broadcast-message-form form-horizontal js-quick-submit js-requires-input'} do |f|
-  -if @broadcast_message.errors.any?
-    .alert.alert-danger
-      - @broadcast_message.errors.full_messages.each do |msg|
-        %p= msg
+  = form_errors(@broadcast_message)
+
   .form-group
     = f.label :message, class: 'control-label'
     .col-sm-10

@@ -28,25 +28,18 @@ describe DroneCiService, models: true do
 
   describe 'validations' do
     context 'active' do
-      before { allow(subject).to receive(:activated?).and_return(true) }
+      before { subject.active = true }
 
       it { is_expected.to validate_presence_of(:token) }
       it { is_expected.to validate_presence_of(:drone_url) }
-      it { is_expected.to allow_value('ewf9843kdnfdfs89234n').for(:token) }
-      it { is_expected.to allow_value('http://ci.example.com').for(:drone_url) }
-      it { is_expected.not_to allow_value('this is not url').for(:drone_url) }
-      it { is_expected.not_to allow_value('http//noturl').for(:drone_url) }
-      it { is_expected.not_to allow_value('ftp://ci.example.com').for(:drone_url) }
+      it_behaves_like 'issue tracker service URL attribute', :drone_url
     end
 
     context 'inactive' do
-      before { allow(subject).to receive(:activated?).and_return(false) }
+      before { subject.active = false }
 
       it { is_expected.not_to validate_presence_of(:token) }
       it { is_expected.not_to validate_presence_of(:drone_url) }
-      it { is_expected.to allow_value('ewf9843kdnfdfs89234n').for(:token) }
-      it { is_expected.to allow_value('http://drone.example.com').for(:drone_url) }
-      it { is_expected.to allow_value('ftp://drone.example.com').for(:drone_url) }
     end
   end
 

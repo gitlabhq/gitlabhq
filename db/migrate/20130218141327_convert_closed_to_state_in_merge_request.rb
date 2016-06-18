@@ -1,16 +1,21 @@
+# rubocop:disable all
 class ConvertClosedToStateInMergeRequest < ActiveRecord::Migration
+  include Gitlab::Database
+
   def up
-    MergeRequest.transaction do
-      MergeRequest.where(closed: true, merged: true).update_all(state: :merged)
-      MergeRequest.where(closed: true, merged: false).update_all(state: :closed)
-      MergeRequest.where(closed: false).update_all(state: :opened)
-    end
+    execute "UPDATE #{table_name} SET state = 'merged' WHERE closed = #{true_value} AND merged = #{true_value}"
+    execute "UPDATE #{table_name} SET state = 'closed' WHERE closed = #{true_value} AND merged = #{false_value}"
+    execute "UPDATE #{table_name} SET state = 'opened' WHERE closed = #{false_value}"
   end
 
   def down
-    MergeRequest.transaction do
-      MergeRequest.where(state: :closed).update_all(closed: true)
-      MergeRequest.where(state: :merged).update_all(closed: true, merged: true)
-    end
+    execute "UPDATE #{table_name} SET closed = #{true_value} WHERE state = 'closed'"
+    execute "UPDATE #{table_name} SET closed = #{true_value}, merged = #{true_value} WHERE state = 'merged'"
+  end
+
+  private
+
+  def table_name
+    MergeRequest.table_name
   end
 end

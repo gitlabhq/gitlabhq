@@ -22,7 +22,7 @@ class SlackService
       @issue_url = obj_attr[:url]
       @action = obj_attr[:action]
       @state = obj_attr[:state]
-      @description = obj_attr[:description]
+      @description = obj_attr[:description] || ''
     end
 
     def attachments
@@ -34,7 +34,12 @@ class SlackService
     private
 
     def message
-      "#{user_name} #{state} #{issue_link} in #{project_link}: *#{title}*"
+      case state
+      when "opened"
+        "[#{project_link}] Issue #{state} by #{user_name}"
+      else
+        "[#{project_link}] Issue #{issue_link} #{state} by #{user_name}"
+      end
     end
 
     def opened_issue?
@@ -42,7 +47,11 @@ class SlackService
     end
 
     def description_message
-      [{ text: format(description), color: attachment_color }]
+      [{
+        title: issue_title,
+        title_link: issue_url,
+        text: format(description),
+        color: "#C95823" }]
     end
 
     def project_link
@@ -50,7 +59,11 @@ class SlackService
     end
 
     def issue_link
-      "[issue ##{issue_iid}](#{issue_url})"
+      "[#{issue_title}](#{issue_url})"
+    end
+
+    def issue_title
+      "##{issue_iid} #{title}"
     end
   end
 end

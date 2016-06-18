@@ -2,38 +2,34 @@
 - page_description     @merge_request.description
 - page_card_attributes @merge_request.card_attributes
 
-= render "header_title"
-
-- if params[:view] == 'parallel'
+- if diff_view == 'parallel'
   - fluid_layout true
 
 .merge-request{'data-url' => merge_request_path(@merge_request)}
   = render "projects/merge_requests/show/mr_title"
 
-  .merge-request-details.issuable-details
+  .merge-request-details.issuable-details{data: {id: @merge_request.project.id}}
     = render "projects/merge_requests/show/mr_box"
     .append-bottom-default.mr-source-target.prepend-top-default
       - if @merge_request.open?
         .pull-right
           - if @merge_request.source_branch_exists?
-            = link_to "#modal_merge_info", class: "btn btn-sm", "data-toggle" => "modal" do
-              = icon('cloud-download fw')
+            = link_to "#modal_merge_info", class: "btn inline btn-grouped btn-sm", "data-toggle" => "modal" do
               Check out branch
 
-          %span.dropdown
+          %span.dropdown.inline.prepend-left-5
             %a.btn.btn-sm.dropdown-toggle{ data: {toggle: :dropdown} }
-              = icon('download')
               Download as
               %span.caret
-            %ul.dropdown-menu
+            %ul.dropdown-menu.dropdown-menu-align-right
               %li= link_to "Email Patches", merge_request_path(@merge_request, format: :patch)
               %li= link_to "Plain Diff",    merge_request_path(@merge_request, format: :diff)
       .normal
         %span Request to merge
         %span.label-branch= source_branch_with_namespace(@merge_request)
         %span into
-        = link_to namespace_project_commits_path(@project.namespace, @project, @merge_request.target_branch), class: "label-branch" do
-          = @merge_request.target_branch
+        %span.label-branch
+          = link_to @merge_request.target_branch, namespace_project_commits_path(@project.namespace, @project, @merge_request.target_branch)
         - if @merge_request.open? && @merge_request.diverged_from_target_branch?
           %span (#{pluralize(@merge_request.diverged_commits_count, 'commit')} behind)
 
@@ -41,7 +37,7 @@
     = render "projects/merge_requests/widget/show.html.haml"
 
     - if @merge_request.source_branch_exists? && @merge_request.mergeable? && @merge_request.can_be_merged_by?(current_user)
-      .light.prepend-top-default
+      .light.prepend-top-default.append-bottom-default
         You can also accept this merge request manually using the
         = succeed '.' do
           = link_to "command line", "#modal_merge_info", class: "how_to_merge_link vlink", title: "How To Merge", "data-toggle" => "modal"
@@ -56,7 +52,7 @@
           = link_to commits_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: {target: 'div#commits', action: 'commits', toggle: 'tab'} do
             Commits
             %span.badge= @commits.size
-        - if @ci_commit
+        - if @pipeline
           %li.builds-tab
             = link_to builds_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: {target: '#builds', action: 'builds', toggle: 'tab'} do
               Builds
@@ -69,7 +65,7 @@
       .tab-content
         #notes.notes.tab-pane.voting_notes
           .content-block.content-block-small.oneline-block
-            = render 'votes/votes_block', votable: @merge_request
+            = render 'award_emoji/awards_block', awardable: @merge_request, inline: true
 
           .row
             %section.col-md-12
@@ -87,8 +83,10 @@
         = spinner
 
 = render 'shared/issuable/sidebar', issuable: @merge_request
-- if @merge_request.can_be_reverted?
-  = render "projects/commit/revert", commit: @merge_request.merge_commit, title: @merge_request.title
+- if @merge_request.can_be_reverted?(current_user)
+  = render "projects/commit/change", type: 'revert', commit: @merge_request.merge_commit, title: @merge_request.title
+- if @merge_request.can_be_cherry_picked?
+  = render "projects/commit/change", type: 'cherry-pick', commit: @merge_request.merge_commit, title: @merge_request.title
 
 :javascript
   var merge_request;

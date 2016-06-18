@@ -29,9 +29,10 @@ class NotificationService
   #  * issue assignee if their notification level is not Disabled
   #  * project team members with notification level higher then Participating
   #  * watchers of the issue's labels
+  #  * users with custom level checked with "new issue"
   #
   def new_issue(issue, current_user)
-    new_resource_email(issue, issue.project, 'new_issue_email')
+    new_resource_email(issue, issue.project, :new_issue_email)
   end
 
   # When we close an issue we should send an email to:
@@ -39,18 +40,20 @@ class NotificationService
   #  * issue author if their notification level is not Disabled
   #  * issue assignee if their notification level is not Disabled
   #  * project team members with notification level higher then Participating
+  #  * users with custom level checked with "close issue"
   #
   def close_issue(issue, current_user)
-    close_resource_email(issue, issue.project, current_user, 'closed_issue_email')
+    close_resource_email(issue, issue.project, current_user, :closed_issue_email)
   end
 
   # When we reassign an issue we should send an email to:
   #
   #  * issue old assignee if their notification level is not Disabled
   #  * issue new assignee if their notification level is not Disabled
+  #  * users with custom level checked with "reassign issue"
   #
   def reassigned_issue(issue, current_user)
-    reassign_resource_email(issue, issue.project, current_user, 'reassigned_issue_email')
+    reassign_resource_email(issue, issue.project, current_user, :reassigned_issue_email)
   end
 
   # When we add labels to an issue we should send an email to:
@@ -58,7 +61,7 @@ class NotificationService
   #  * watchers of the issue's labels
   #
   def relabeled_issue(issue, added_labels, current_user)
-    relabeled_resource_email(issue, added_labels, current_user, 'relabeled_issue_email')
+    relabeled_resource_email(issue, added_labels, current_user, :relabeled_issue_email)
   end
 
   # When create a merge request we should send an email to:
@@ -66,18 +69,20 @@ class NotificationService
   #  * mr assignee if their notification level is not Disabled
   #  * project team members with notification level higher then Participating
   #  * watchers of the mr's labels
+  #  * users with custom level checked with "new merge request"
   #
   def new_merge_request(merge_request, current_user)
-    new_resource_email(merge_request, merge_request.target_project, 'new_merge_request_email')
+    new_resource_email(merge_request, merge_request.target_project, :new_merge_request_email)
   end
 
   # When we reassign a merge_request we should send an email to:
   #
   #  * merge_request old assignee if their notification level is not Disabled
   #  * merge_request assignee if their notification level is not Disabled
+  #  * users with custom level checked with "reassign merge request"
   #
   def reassigned_merge_request(merge_request, current_user)
-    reassign_resource_email(merge_request, merge_request.target_project, current_user, 'reassigned_merge_request_email')
+    reassign_resource_email(merge_request, merge_request.target_project, current_user, :reassigned_merge_request_email)
   end
 
   # When we add labels to a merge request we should send an email to:
@@ -85,15 +90,15 @@ class NotificationService
   #  * watchers of the mr's labels
   #
   def relabeled_merge_request(merge_request, added_labels, current_user)
-    relabeled_resource_email(merge_request, added_labels, current_user, 'relabeled_merge_request_email')
+    relabeled_resource_email(merge_request, added_labels, current_user, :relabeled_merge_request_email)
   end
 
   def close_mr(merge_request, current_user)
-    close_resource_email(merge_request, merge_request.target_project, current_user, 'closed_merge_request_email')
+    close_resource_email(merge_request, merge_request.target_project, current_user, :closed_merge_request_email)
   end
 
   def reopen_issue(issue, current_user)
-    reopen_resource_email(issue, issue.project, current_user, 'issue_status_changed_email', 'reopened')
+    reopen_resource_email(issue, issue.project, current_user, :issue_status_changed_email, 'reopened')
   end
 
   def merge_mr(merge_request, current_user)
@@ -101,7 +106,7 @@ class NotificationService
       merge_request,
       merge_request.target_project,
       current_user,
-      'merged_merge_request_email'
+      :merged_merge_request_email
     )
   end
 
@@ -110,7 +115,7 @@ class NotificationService
       merge_request,
       merge_request.target_project,
       current_user,
-      'merge_request_status_email',
+      :merge_request_status_email,
       'reopened'
     )
   end
@@ -130,8 +135,7 @@ class NotificationService
 
     # ignore gitlab service messages
     return true if note.note.start_with?('Status changed to closed')
-    return true if note.cross_reference? && note.system == true
-    return true if note.is_award
+    return true if note.cross_reference? && note.system?
 
     target = note.noteable
 
@@ -154,6 +158,9 @@ class NotificationService
     # Merge project watchers
     recipients = add_project_watchers(recipients, note.project)
 
+    # Merge project with custom notification
+    recipients = add_custom_notifications(recipients, note.project, :new_note)
+
     # Reject users with Mention notification level, except those mentioned in _this_ note.
     recipients = reject_mention_users(recipients - mentioned_users, note.project)
     recipients = recipients + mentioned_users
@@ -162,6 +169,7 @@ class NotificationService
 
     recipients = add_subscribed_users(recipients, note.noteable)
     recipients = reject_unsubscribed_users(recipients, note.noteable)
+    recipients = reject_users_without_access(recipients, note.noteable)
 
     recipients.delete(note.author)
     recipients = recipients.uniq
@@ -173,16 +181,26 @@ class NotificationService
     end
   end
 
+  # Project access request
+  def new_project_access_request(project_member)
+    mailer.member_access_requested_email(project_member.real_source_type, project_member.id).deliver_later
+  end
+
+  def decline_project_access_request(project_member)
+    mailer.member_access_denied_email(project_member.real_source_type, project_member.project.id, project_member.user.id).deliver_later
+  end
+
   def invite_project_member(project_member, token)
-    mailer.project_member_invited_email(project_member.id, token).deliver_later
+    mailer.member_invited_email(project_member.real_source_type, project_member.id, token).deliver_later
   end
 
   def accept_project_invite(project_member)
-    mailer.project_invite_accepted_email(project_member.id).deliver_later
+    mailer.member_invite_accepted_email(project_member.real_source_type, project_member.id).deliver_later
   end
 
   def decline_project_invite(project_member)
-    mailer.project_invite_declined_email(
+    mailer.member_invite_declined_email(
+      project_member.real_source_type,
       project_member.project.id,
       project_member.invite_email,
       project_member.access_level,
@@ -191,23 +209,33 @@ class NotificationService
   end
 
   def new_project_member(project_member)
-    mailer.project_access_granted_email(project_member.id).deliver_later
+    mailer.member_access_granted_email(project_member.real_source_type, project_member.id).deliver_later
   end
 
   def update_project_member(project_member)
-    mailer.project_access_granted_email(project_member.id).deliver_later
+    mailer.member_access_granted_email(project_member.real_source_type, project_member.id).deliver_later
+  end
+
+  # Group access request
+  def new_group_access_request(group_member)
+    mailer.member_access_requested_email(group_member.real_source_type, group_member.id).deliver_later
+  end
+
+  def decline_group_access_request(group_member)
+    mailer.member_access_denied_email(group_member.real_source_type, group_member.group.id, group_member.user.id).deliver_later
   end
 
   def invite_group_member(group_member, token)
-    mailer.group_member_invited_email(group_member.id, token).deliver_later
+    mailer.member_invited_email(group_member.real_source_type, group_member.id, token).deliver_later
   end
 
   def accept_group_invite(group_member)
-    mailer.group_invite_accepted_email(group_member.id).deliver_later
+    mailer.member_invite_accepted_email(group_member.real_source_type, group_member.id).deliver_later
   end
 
   def decline_group_invite(group_member)
-    mailer.group_invite_declined_email(
+    mailer.member_invite_declined_email(
+      group_member.real_source_type,
       group_member.group.id,
       group_member.invite_email,
       group_member.access_level,
@@ -216,11 +244,11 @@ class NotificationService
   end
 
   def new_group_member(group_member)
-    mailer.group_access_granted_email(group_member.id).deliver_later
+    mailer.member_access_granted_email(group_member.real_source_type, group_member.id).deliver_later
   end
 
   def update_group_member(group_member)
-    mailer.group_access_granted_email(group_member.id).deliver_later
+    mailer.member_access_granted_email(group_member.real_source_type, group_member.id).deliver_later
   end
 
   def project_was_moved(project, old_path_with_namespace)
@@ -236,14 +264,51 @@ class NotificationService
     end
   end
 
+  def issue_moved(issue, new_issue, current_user)
+    recipients = build_recipients(issue, issue.project, current_user)
+
+    recipients.map do |recipient|
+      email = mailer.issue_moved_email(recipient, issue, new_issue, current_user)
+      email.deliver_later
+      email
+    end
+  end
+
+  def project_exported(project, current_user)
+    mailer.project_was_exported_email(current_user, project).deliver_later
+  end
+
+  def project_not_exported(project, current_user, errors)
+    mailer.project_was_not_exported_email(current_user, project, errors).deliver_later
+  end
+
   protected
+
+  # Get project/group users with CUSTOM notification level
+  def add_custom_notifications(recipients, project, action)
+    user_ids = []
+
+    # Users with a notification setting on group or project
+    user_ids += notification_settings_for(project, :custom, action)
+    user_ids += notification_settings_for(project.group, :custom, action)
+
+    # Users with global level custom
+    users_with_project_level_global = notification_settings_for(project, :global)
+    users_with_group_level_global   = notification_settings_for(project.group, :global)
+
+    global_users_ids = users_with_project_level_global.concat(users_with_group_level_global)
+    user_ids += users_with_global_level_custom(global_users_ids, action)
+
+    recipients.concat(User.find(user_ids))
+  end
 
   # Get project users with WATCH notification level
   def project_watchers(project)
-    project_members = project_member_notification(project)
+    project_members = notification_settings_for(project)
 
-    users_with_project_level_global = project_member_notification(project, Notification::N_GLOBAL)
-    users_with_group_level_global = group_member_notification(project, Notification::N_GLOBAL)
+    users_with_project_level_global = notification_settings_for(project, :global)
+    users_with_group_level_global   = notification_settings_for(project.group, :global)
+
     users = users_with_global_level_watch([users_with_project_level_global, users_with_group_level_global].flatten.uniq)
 
     users_with_project_setting = select_project_member_setting(project, users_with_project_level_global, users)
@@ -252,34 +317,39 @@ class NotificationService
     User.where(id: users_with_project_setting.concat(users_with_group_setting).uniq).to_a
   end
 
-  def project_member_notification(project, notification_level=nil)
-    project_members = project.project_members
+  def notification_settings_for(resource, notification_level = nil, action = nil)
+    return [] unless resource
 
     if notification_level
-      project_members.where(notification_level: notification_level).pluck(:user_id)
+      settings = resource.notification_settings.where(level: NotificationSetting.levels[notification_level])
+      settings = settings.select { |setting| setting.events[action] } if action.present?
+      settings.map(&:user_id)
     else
-      project_members.pluck(:user_id)
-    end
-  end
-
-  def group_member_notification(project, notification_level)
-    if project.group
-      project.group.group_members.where(notification_level: notification_level).pluck(:user_id)
-    else
-      []
+      resource.notification_settings.pluck(:user_id)
     end
   end
 
   def users_with_global_level_watch(ids)
-    User.where(
-      id: ids,
-      notification_level: Notification::N_WATCH
-    ).pluck(:id)
+    settings_with_global_level_of(:watch, ids).pluck(:user_id)
+  end
+
+  def users_with_global_level_custom(ids, action)
+    settings = settings_with_global_level_of(:custom, ids)
+    settings = settings.select { |setting| setting.events[action] }
+    settings.map(&:user_id)
+  end
+
+  def settings_with_global_level_of(level, ids)
+    NotificationSetting.where(
+      user_id: ids,
+      source_type: nil,
+      level: NotificationSetting.levels[level]
+    )
   end
 
   # Build a list of users based on project notifcation settings
   def select_project_member_setting(project, global_setting, users_global_level_watch)
-    users = project_member_notification(project, Notification::N_WATCH)
+    users = notification_settings_for(project, :watch)
 
     # If project setting is global, add to watch list if global setting is watch
     global_setting.each do |user_id|
@@ -293,7 +363,7 @@ class NotificationService
 
   # Build a list of users based on group notification settings
   def select_group_member_setting(project, project_members, global_setting, users_global_level_watch)
-    uids = group_member_notification(project, Notification::N_WATCH)
+    uids = notification_settings_for(project, :watch)
 
     # Group setting is watch, add to users list if user is not project member
     users = []
@@ -314,46 +384,54 @@ class NotificationService
   end
 
   def add_project_watchers(recipients, project)
-    recipients.concat(project_watchers(project)).compact.uniq
+    recipients.concat(project_watchers(project)).compact
   end
 
   # Remove users with disabled notifications from array
   # Also remove duplications and nil recipients
   def reject_muted_users(users, project = nil)
-    reject_users(users, :disabled?, project)
+    reject_users(users, :disabled, project)
   end
 
   # Remove users with notification level 'Mentioned'
   def reject_mention_users(users, project = nil)
-    reject_users(users, :mention?, project)
+    reject_users(users, :mention, project)
   end
 
-  # Reject users which method_name from notification object returns true.
+  # Reject users which has certain notification level
   #
   # Example:
-  #   reject_users(users, :watch?, project)
+  #   reject_users(users, :watch, project)
   #
-  def reject_users(users, method_name, project = nil)
+  def reject_users(users, level, project = nil)
+    level = level.to_s
+
+    unless NotificationSetting.levels.keys.include?(level)
+      raise 'Invalid notification level'
+    end
+
     users = users.to_a.compact.uniq
     users = users.reject(&:blocked?)
 
     users.reject do |user|
-      next user.notification.send(method_name) unless project
+      global_notification_setting = user.global_notification_setting
 
-      member = project.project_members.find_by(user_id: user.id)
+      next global_notification_setting.level == level unless project
 
-      if !member && project.group
-        member = project.group.group_members.find_by(user_id: user.id)
+      setting = user.notification_settings_for(project)
+
+      if !setting && project.group
+        setting = user.notification_settings_for(project.group)
       end
 
-      # reject users who globally set mention notification and has no membership
-      next user.notification.send(method_name) unless member
+      # reject users who globally set mention notification and has no setting per project/group
+      next global_notification_setting.level == level unless setting
 
       # reject users who set mention notification in project
-      next true if member.notification.send(method_name)
+      next true if setting.level == level
 
-      # reject users who have N_MENTION in project and disabled in global settings
-      member.notification.global? && user.notification.send(method_name)
+      # reject users who have mention level in project and disabled in global settings
+      setting.global? && global_notification_setting.level == level
     end
   end
 
@@ -363,6 +441,14 @@ class NotificationService
     recipients.reject do |user|
       subscription = target.subscriptions.find_by_user_id(user.id)
       subscription && !subscription.subscribed
+    end
+  end
+
+  def reject_users_without_access(recipients, target)
+    return recipients unless target.is_a?(Issue)
+
+    recipients.select do |user|
+      user.can?(:read_issue, target)
     end
   end
 
@@ -383,7 +469,7 @@ class NotificationService
   end
 
   def new_resource_email(target, project, method)
-    recipients = build_recipients(target, project, target.author, action: :new)
+    recipients = build_recipients(target, project, target.author, action: "new")
 
     recipients.each do |recipient|
       mailer.send(method, recipient.id, target.id).deliver_later
@@ -391,7 +477,8 @@ class NotificationService
   end
 
   def close_resource_email(target, project, current_user, method)
-    recipients = build_recipients(target, project, current_user)
+    action = method == :merged_merge_request_email ? "merge" : "close"
+    recipients = build_recipients(target, project, current_user, action: action)
 
     recipients.each do |recipient|
       mailer.send(method, recipient.id, target.id, current_user.id).deliver_later
@@ -402,7 +489,7 @@ class NotificationService
     previous_assignee_id = previous_record(target, 'assignee_id')
     previous_assignee = User.find_by(id: previous_assignee_id) if previous_assignee_id
 
-    recipients = build_recipients(target, project, current_user, action: :reassign, previous_assignee: previous_assignee)
+    recipients = build_recipients(target, project, current_user, action: "reassign", previous_assignee: previous_assignee)
 
     recipients.each do |recipient|
       mailer.send(
@@ -425,7 +512,7 @@ class NotificationService
   end
 
   def reopen_resource_email(target, project, current_user, method, status)
-    recipients = build_recipients(target, project, current_user)
+    recipients = build_recipients(target, project, current_user, action: "reopen")
 
     recipients.each do |recipient|
       mailer.send(method, recipient.id, target.id, status, current_user.id).deliver_later
@@ -433,15 +520,20 @@ class NotificationService
   end
 
   def build_recipients(target, project, current_user, action: nil, previous_assignee: nil)
-    recipients = target.participants(current_user)
+    custom_action = build_custom_key(action, target)
 
+    recipients = target.participants(current_user)
     recipients = add_project_watchers(recipients, project)
+
+    recipients = add_custom_notifications(recipients, project, custom_action)
     recipients = reject_mention_users(recipients, project)
+
+    recipients = recipients.uniq
 
     # Re-assign is considered as a mention of the new assignee so we add the
     # new assignee to the list of recipients after we rejected users with
     # the "on mention" notification level
-    if action == :reassign
+    if [:reassign_merge_request, :reassign_issue].include?(custom_action)
       recipients << previous_assignee if previous_assignee
       recipients << target.assignee
     end
@@ -449,20 +541,21 @@ class NotificationService
     recipients = reject_muted_users(recipients, project)
     recipients = add_subscribed_users(recipients, target)
 
-    if action == :new
+    if [:new_issue, :new_merge_request].include?(custom_action)
       recipients = add_labels_subscribers(recipients, target)
     end
 
     recipients = reject_unsubscribed_users(recipients, target)
+    recipients = reject_users_without_access(recipients, target)
 
     recipients.delete(current_user)
-
     recipients.uniq
   end
 
   def build_relabeled_recipients(target, current_user, labels:)
     recipients = add_labels_subscribers([], target, labels: labels)
     recipients = reject_unsubscribed_users(recipients, target)
+    recipients = reject_users_without_access(recipients, target)
     recipients.delete(current_user)
     recipients.uniq
   end
@@ -477,5 +570,11 @@ class NotificationService
         object.previous_changes[attribute].first
       end
     end
+  end
+
+  # Build event key to search on custom notification level
+  # Check NotificationSetting::EMAIL_EVENTS
+  def build_custom_key(action, object)
+    "#{action}_#{object.class.name.underscore}".to_sym
   end
 end

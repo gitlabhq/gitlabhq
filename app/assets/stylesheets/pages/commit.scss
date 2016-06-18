@@ -1,15 +1,15 @@
-.commit-title{
+.commit-title {
   display: block;
 }
 
-.commit-author, .commit-committer{
+.commit-author, .commit-committer {
   display: block;
   color: #999;
   font-weight: normal;
   font-style: italic;
 }
 
-.commit-author strong, .commit-committer strong{
+.commit-author strong, .commit-committer strong {
   font-weight: bold;
   font-style: normal;
 }
@@ -20,17 +20,51 @@
   margin: 0;
   padding: 0;
   margin-top: 10px;
+  word-break: normal;
+  white-space: pre-wrap;
 }
 
 .commit-info-row {
   margin-bottom: 10px;
+  line-height: 24px;
+  padding-top: 6px;
+
+  &.commit-info-row-header {
+    line-height: 34px;
+
+    @media (min-width: $screen-sm-min) {
+      margin-bottom: 0;
+    }
+
+    .commit-options-dropdown-caret {
+      @media (max-width: $screen-sm) {
+        margin-left: 0;
+      }
+    }
+  }
+
   .avatar {
     @extend .avatar-inline;
+    margin-left: 0;
+
+    @media (min-width: $screen-sm-min) {
+      margin-left: 4px;
+    }
   }
   .commit-committer-link,
   .commit-author-link {
-    color: #444;
+    color: $gl-gray;
     font-weight: bold;
+  }
+
+  .fa-clipboard {
+    color: $dropdown-title-btn-color;
+  }
+
+  .commit-info {
+    &.branches {
+      margin-left: 8px;
+    }
   }
 }
 
@@ -40,7 +74,7 @@
   .commit-title {
     margin: 0;
     font-size: 23px;
-    color: #313236;
+    color: $gl-gray-dark;
   }
 
   .commit-description {
@@ -74,10 +108,18 @@
       color: $gl-text-red;
     }
   }
-  .edit-file{
+  .edit-file {
     a {
       color: $gl-text-color;
     }
+  }
+}
+
+.commit-action-buttons {
+  i {
+    color: $gl-icon-color;
+    font-size: 13px;
+    margin-right: 3px;
   }
 }
 

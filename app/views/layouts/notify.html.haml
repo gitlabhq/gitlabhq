@@ -1,33 +1,10 @@
 %html{lang: "en"}
   %head
     %meta{content: "text/html; charset=utf-8", "http-equiv" => "Content-Type"}
-      %title
-        GitLab
-  :css
-    img {
-      max-width: 100%;
-      height: auto;
-    }
-    p.details {
-      font-style:italic;
-      color:#777
-    }
-    .footer p {
-      font-size:small;
-      color:#777
-    }
-    pre.commit-message {
-      white-space: pre-wrap;
-    }
-    .file-stats a {
-      text-decoration: none;
-    }
-    .file-stats .new-file {
-      color: #090;
-    }
-    .file-stats .deleted-file {
-      color: #B00;
-    }
+    %title
+      GitLab
+    = stylesheet_link_tag 'notify'
+    = yield :head
   %body
     %div.content
       = yield

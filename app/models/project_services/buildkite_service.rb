@@ -1,24 +1,3 @@
-# == Schema Information
-#
-# Table name: services
-#
-#  id                    :integer          not null, primary key
-#  type                  :string(255)
-#  title                 :string(255)
-#  project_id            :integer
-#  created_at            :datetime
-#  updated_at            :datetime
-#  active                :boolean          default(FALSE), not null
-#  properties            :text
-#  template              :boolean          default(FALSE)
-#  push_events           :boolean          default(TRUE)
-#  issues_events         :boolean          default(TRUE)
-#  merge_requests_events :boolean          default(TRUE)
-#  tag_push_events       :boolean          default(TRUE)
-#  note_events           :boolean          default(TRUE), not null
-#  build_events          :boolean          default(FALSE), not null
-#
-
 require "addressable/uri"
 
 class BuildkiteService < CiService
@@ -26,7 +5,7 @@ class BuildkiteService < CiService
 
   prop_accessor :project_url, :token, :enable_ssl_verification
 
-  validates :project_url, presence: true, if: :activated?
+  validates :project_url, presence: true, url: true, if: :activated?
   validates :token, presence: true, if: :activated?
 
   after_save :compose_service_hook, if: :activated?
@@ -91,7 +70,7 @@ class BuildkiteService < CiService
       { type: 'text',
         name: 'project_url',
         placeholder: "#{ENDPOINT}/example/project" },
-      
+
       { type: 'checkbox',
         name: 'enable_ssl_verification',
         title: "Enable SSL verification" }

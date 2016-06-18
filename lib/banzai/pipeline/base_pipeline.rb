@@ -1,5 +1,3 @@
-require 'html/pipeline'
-
 module Banzai
   module Pipeline
     class BasePipeline

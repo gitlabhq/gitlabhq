@@ -1,13 +1,13 @@
-class ProjectsController < ApplicationController
+class ProjectsController < Projects::ApplicationController
   include ExtractsPath
 
-  skip_before_action :authenticate_user!, only: [:show, :activity]
+  before_action :authenticate_user!, except: [:show, :activity]
   before_action :project, except: [:new, :create]
   before_action :repository, except: [:new, :create]
   before_action :assign_ref_vars, :tree, only: [:show], if: :repo_exists?
 
   # Authorize
-  before_action :authorize_admin_project!, only: [:edit, :update, :housekeeping]
+  before_action :authorize_admin_project!, only: [:edit, :update, :housekeeping, :download_export, :export, :remove_export, :generate_new_export]
   before_action :event_filter, only: [:show, :activity]
 
   layout :determine_layout
@@ -40,6 +40,9 @@ class ProjectsController < ApplicationController
   def update
     status = ::Projects::UpdateService.new(@project, current_user, project_params).execute
 
+    # Refresh the repo in case anything changed
+    @repository = project.repository
+
     respond_to do |format|
       if status
         flash[:notice] = "Project '#{@project.name}' was successfully updated."
@@ -71,7 +74,7 @@ class ProjectsController < ApplicationController
   def remove_fork
     return access_denied! unless can?(current_user, :remove_fork_project, @project)
 
-    if @project.unlink_fork
+    if ::Projects::UnlinkForkService.new(@project, current_user).execute
       flash[:notice] = 'The fork relationship has been removed.'
     end
   end
@@ -98,14 +101,12 @@ class ProjectsController < ApplicationController
 
     respond_to do |format|
       format.html do
+        @notification_setting = current_user.notification_settings_for(@project) if current_user
+
         if @project.repository_exists?
           if @project.empty_repo?
             render 'projects/empty'
           else
-            if current_user
-              @membership = @project.team.find_member(current_user.id)
-            end
-
             render :show
           end
         else
@@ -134,13 +135,15 @@ class ProjectsController < ApplicationController
   def autocomplete_sources
     note_type = params['type']
     note_id = params['type_id']
-    autocomplete = ::Projects::AutocompleteService.new(@project)
+    autocomplete = ::Projects::AutocompleteService.new(@project, current_user)
     participants = ::Projects::ParticipantsService.new(@project, current_user).execute(note_type, note_id)
 
     @suggestions = {
-      emojis: autocomplete_emojis,
+      emojis: Gitlab::AwardEmoji.urls,
       issues: autocomplete.issues,
+      milestones: autocomplete.milestones,
       mergerequests: autocomplete.merge_requests,
+      labels: autocomplete.labels,
       members: participants
     }
 
@@ -183,6 +186,48 @@ class ProjectsController < ApplicationController
     )
   end
 
+  def export
+    @project.add_export_job(current_user: current_user)
+
+    redirect_to(
+      edit_project_path(@project),
+      notice: "Project export started. A download link will be sent by email."
+    )
+  end
+
+  def download_export
+    export_project_path = @project.export_project_path
+
+    if export_project_path
+      send_file export_project_path, disposition: 'attachment'
+    else
+      redirect_to(
+        edit_project_path(@project),
+        alert: "Project export link has expired. Please generate a new export from your project settings."
+      )
+    end
+  end
+
+  def remove_export
+    if @project.remove_exports
+      flash[:notice] = "Project export has been deleted."
+    else
+      flash[:alert] = "Project export could not be deleted."
+    end
+    redirect_to(edit_project_path(@project))
+  end
+
+  def generate_new_export
+    if @project.remove_exports
+      export
+    else
+      redirect_to(
+        edit_project_path(@project),
+        alert: "Project export could not be deleted."
+      )
+    end
+  end
+
   def toggle_star
     current_user.toggle_star(@project)
     @project.reload
@@ -195,8 +240,8 @@ class ProjectsController < ApplicationController
   def markdown_preview
     text = params[:text]
 
-    ext = Gitlab::ReferenceExtractor.new(@project, current_user, current_user)
-    ext.analyze(text)
+    ext = Gitlab::ReferenceExtractor.new(@project, current_user)
+    ext.analyze(text, author: current_user)
 
     render json: {
       body:       view_context.markdown(text),
@@ -228,22 +273,12 @@ class ProjectsController < ApplicationController
   def project_params
     params.require(:project).permit(
       :name, :path, :description, :issues_tracker, :tag_list, :runners_token,
-      :issues_enabled, :merge_requests_enabled, :snippets_enabled, :issues_tracker_id, :default_branch,
+      :issues_enabled, :merge_requests_enabled, :snippets_enabled, :container_registry_enabled,
+      :issues_tracker_id, :default_branch,
       :wiki_enabled, :visibility_level, :import_url, :last_activity_at, :namespace_id, :avatar,
       :builds_enabled, :build_allow_git_fetch, :build_timeout_in_minutes, :build_coverage_regex,
-      :public_builds,
+      :public_builds, :only_allow_merge_if_build_succeeds
     )
-  end
-
-  def autocomplete_emojis
-    Rails.cache.fetch("autocomplete-emoji-#{Gemojione::VERSION}") do
-      Emoji.emojis.map do |name, emoji|
-        {
-          name: name,
-          path: view_context.image_url("#{emoji["unicode"]}.png")
-        }
-      end
-    end
   end
 
   def repo_exists?

@@ -1,5 +1,4 @@
 - page_title "Password"
-- header_title page_title, edit_profile_password_path
 
 .row.prepend-top-default
   .col-lg-3.profile-settings-sidebar
@@ -13,23 +12,21 @@
       - unless @user.password_automatically_set?
         or recover your current one
     = form_for @user, url: profile_password_path, method: :put, html: {class: "update-password"} do |f|
-      -if @user.errors.any?
-        .alert.alert-danger
-          %ul
-            - @user.errors.full_messages.each do |msg|
-              %li= msg
+      = form_errors(@user)
+
       - unless @user.password_automatically_set?
         .form-group
           = f.label :current_password, class: 'label-light'
           = f.password_field :current_password, required: true, class: 'form-control'
           %p.help-block
             You must provide your current password in order to change it.
-        .form-group
-          = f.label :password, 'New password', class: 'label-light'
-          = f.password_field :password, required: true, class: 'form-control'
-        .form-group
-          = f.label :password_confirmation, class: 'label-light'
-          = f.password_field :password_confirmation, required: true, class: 'form-control'
-        .prepend-top-default.append-bottom-default
-          = f.submit 'Save password', class: "btn btn-create append-right-10"
+      .form-group
+        = f.label :password, 'New password', class: 'label-light'
+        = f.password_field :password, required: true, class: 'form-control'
+      .form-group
+        = f.label :password_confirmation, class: 'label-light'
+        = f.password_field :password_confirmation, required: true, class: 'form-control'
+      .prepend-top-default.append-bottom-default
+        = f.submit 'Save password', class: "btn btn-create append-right-10"
+        - unless @user.password_automatically_set?
           = link_to "I forgot my password", reset_profile_password_path, method: :put, class: "account-btn-link"

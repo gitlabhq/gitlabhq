@@ -19,6 +19,8 @@ module VisibilityLevelHelper
     case form_model
     when Project
       project_visibility_level_description(level)
+    when Group
+      group_visibility_level_description(level)
     when Snippet
       snippet_visibility_level_description(level, form_model)
     end
@@ -35,6 +37,17 @@ module VisibilityLevelHelper
     end
   end
 
+  def group_visibility_level_description(level)
+    case level
+    when Gitlab::VisibilityLevel::PRIVATE
+      "The group and its projects can only be viewed by members."
+    when Gitlab::VisibilityLevel::INTERNAL
+      "The group and any internal projects can be viewed by any logged in user."
+    when Gitlab::VisibilityLevel::PUBLIC
+      "The group and any public projects can be viewed without any authentication."
+    end
+  end
+
   def snippet_visibility_level_description(level, snippet = nil)
     case level
     when Gitlab::VisibilityLevel::PRIVATE
@@ -48,6 +61,23 @@ module VisibilityLevelHelper
     when Gitlab::VisibilityLevel::PUBLIC
       "The snippet can be accessed without any authentication."
     end
+  end
+
+  def visibility_icon_description(form_model)
+    case form_model
+    when Project
+      project_visibility_icon_description(form_model.visibility_level)
+    when Group
+      group_visibility_icon_description(form_model.visibility_level)
+    end
+  end
+
+  def group_visibility_icon_description(level)
+    "#{visibility_level_label(level)} - #{group_visibility_level_description(level)}"
+  end
+
+  def project_visibility_icon_description(level)
+    "#{visibility_level_label(level)} - #{project_visibility_level_description(level)}"
   end
 
   def visibility_level_label(level)
@@ -67,8 +97,11 @@ module VisibilityLevelHelper
     current_application_settings.default_snippet_visibility
   end
 
+  def default_group_visibility
+    current_application_settings.default_group_visibility
+  end
+
   def skip_level?(form_model, level)
-    form_model.is_a?(Project) &&
-    !form_model.visibility_level_allowed?(level)
+    form_model.is_a?(Project) && !form_model.visibility_level_allowed?(level)
   end
 end

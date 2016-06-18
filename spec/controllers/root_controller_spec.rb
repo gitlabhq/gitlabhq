@@ -43,6 +43,28 @@ describe RootController do
         end
       end
 
+      context 'who has customized their dashboard setting for groups' do
+        before do
+          user.update_attribute(:dashboard, 'groups')
+        end
+
+        it 'redirects to their group list' do
+          get :index
+          expect(response).to redirect_to dashboard_groups_path
+        end
+      end
+
+      context 'who has customized their dashboard setting for todos' do
+        before do
+          user.update_attribute(:dashboard, 'todos')
+        end
+
+        it 'redirects to their todo list' do
+          get :index
+          expect(response).to redirect_to dashboard_todos_path
+        end
+      end
+
       context 'who uses the default dashboard setting' do
         it 'renders the default dashboard' do
           get :index

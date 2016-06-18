@@ -100,8 +100,34 @@ feature 'Project', feature: true do
 
     it 'click toggle and show dropdown', js: true do
       find('.js-projects-dropdown-toggle').click
-      wait_for_ajax
-      expect(page).to have_css('.select2-results li', count: 1)
+      expect(page).to have_css('.dropdown-menu-projects .dropdown-content li', count: 1)
+    end
+  end
+
+  describe 'project title' do
+    let(:user)    { create(:user) }
+    let(:project) { create(:project, namespace: user.namespace) }
+    let(:project2) { create(:project, namespace: user.namespace, path: 'test') }
+    let(:issue) { create(:issue, project: project) }
+
+    context 'on issues page', js: true do
+      before do
+        login_with(user)
+        project.team.add_user(user, Gitlab::Access::MASTER)
+        project2.team.add_user(user, Gitlab::Access::MASTER)
+        visit namespace_project_issue_path(project.namespace, project, issue)
+      end
+
+      it 'click toggle and show dropdown' do
+        find('.js-projects-dropdown-toggle').click
+        expect(page).to have_css('.dropdown-menu-projects .dropdown-content li', count: 2)
+
+        page.within '.dropdown-menu-projects' do
+          click_link project.name_with_namespace
+        end
+
+        expect(page).to have_content project.name
+      end
     end
   end
 

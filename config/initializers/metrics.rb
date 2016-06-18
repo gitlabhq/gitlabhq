@@ -1,4 +1,5 @@
 if Gitlab::Metrics.enabled?
+  require 'pathname'
   require 'influxdb'
   require 'connection_pool'
   require 'method_source'
@@ -7,9 +8,11 @@ if Gitlab::Metrics.enabled?
   # ActiveSupport.
   require 'gitlab/metrics/subscribers/action_view'
   require 'gitlab/metrics/subscribers/active_record'
+  require 'gitlab/metrics/subscribers/rails_cache'
 
   Gitlab::Application.configure do |config|
     config.middleware.use(Gitlab::Metrics::RackMiddleware)
+    config.middleware.use(Gitlab::Middleware::RailsQueueDuration)
   end
 
   Sidekiq.configure_server do |config|
@@ -59,11 +62,29 @@ if Gitlab::Metrics.enabled?
       config.instrument_instance_methods(const)
     end
 
-    Dir[Rails.root.join('app', 'finders', '*.rb')].each do |path|
-      const = File.basename(path, '.rb').camelize.constantize
+    # Path to search => prefix to strip from constant
+    paths_to_instrument = {
+      ['app', 'finders']                    => ['app', 'finders'],
+      ['app', 'mailers', 'emails']          => ['app', 'mailers'],
+      ['app', 'services', '**']             => ['app', 'services'],
+      ['lib', 'gitlab', 'diff']             => ['lib'],
+      ['lib', 'gitlab', 'email', 'message'] => ['lib']
+    }
 
-      config.instrument_instance_methods(const)
+    paths_to_instrument.each do |(path, prefix)|
+      prefix = Rails.root.join(*prefix)
+
+      Dir[Rails.root.join(*path + ['*.rb'])].each do |file_path|
+        path = Pathname.new(file_path).relative_path_from(prefix)
+        const = path.to_s.sub('.rb', '').camelize.constantize
+
+        config.instrument_methods(const)
+        config.instrument_instance_methods(const)
+      end
     end
+
+    config.instrument_methods(Premailer::Adapter::Nokogiri)
+    config.instrument_instance_methods(Premailer::Adapter::Nokogiri)
 
     [
       :Blame, :Branch, :BranchCollection, :Blob, :Commit, :Diff, :Repository,
@@ -74,9 +95,58 @@ if Gitlab::Metrics.enabled?
       config.instrument_methods(const)
       config.instrument_instance_methods(const)
     end
+
+    # Instruments all Banzai filters and reference parsers
+    {
+      Filter: Rails.root.join('lib', 'banzai', 'filter', '*.rb'),
+      ReferenceParser: Rails.root.join('lib', 'banzai', 'reference_parser', '*.rb')
+    }.each do |const_name, path|
+      Dir[path].each do |file|
+        klass = File.basename(file, File.extname(file)).camelize
+        const = Banzai.const_get(const_name).const_get(klass)
+
+        config.instrument_methods(const)
+        config.instrument_instance_methods(const)
+      end
+    end
+
+    config.instrument_methods(Banzai::Renderer)
+    config.instrument_methods(Banzai::Querying)
+
+    [Issuable, Mentionable, Participable].each do |klass|
+      config.instrument_instance_methods(klass)
+      config.instrument_instance_methods(klass::ClassMethods)
+    end
+
+    config.instrument_methods(Gitlab::ReferenceExtractor)
+    config.instrument_instance_methods(Gitlab::ReferenceExtractor)
+
+    # Instrument the classes used for checking if somebody has push access.
+    config.instrument_instance_methods(Gitlab::GitAccess)
+    config.instrument_instance_methods(Gitlab::GitAccessWiki)
+
+    config.instrument_instance_methods(API::Helpers)
+
+    config.instrument_instance_methods(RepositoryCheck::SingleRepositoryWorker)
   end
 
   GC::Profiler.enable
 
   Gitlab::Metrics::Sampler.new.start
+
+  module TrackNewRedisConnections
+    def connect(*args)
+      val = super
+
+      if current_transaction = Gitlab::Metrics::Transaction.current
+        current_transaction.increment(:new_redis_connections, 1)
+      end
+
+      val
+    end
+  end
+
+  class ::Redis::Client
+    prepend TrackNewRedisConnections
+  end
 end

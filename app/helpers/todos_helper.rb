@@ -1,29 +1,53 @@
 module TodosHelper
   def todos_pending_count
-    current_user.todos.pending.count
+    TodosFinder.new(current_user, state: :pending).execute.count
   end
 
   def todos_done_count
-    current_user.todos.done.count
+    TodosFinder.new(current_user, state: :done).execute.count
   end
 
   def todo_action_name(todo)
     case todo.action
     when Todo::ASSIGNED then 'assigned you'
     when Todo::MENTIONED then 'mentioned you on'
+    when Todo::BUILD_FAILED then 'The build failed for your'
+    when Todo::MARKED then 'added a todo for'
     end
   end
 
   def todo_target_link(todo)
     target = todo.target_type.titleize.downcase
-    link_to "#{target} #{todo.target.to_reference}", todo_target_path(todo), { title: h(todo.target.title) }
+    link_to "#{target} #{todo.target_reference}", todo_target_path(todo),
+      class: 'has-tooltip',
+      title: todo.target.title
   end
 
   def todo_target_path(todo)
+    return unless todo.target.present?
+
     anchor = dom_id(todo.note) if todo.note.present?
 
-    polymorphic_path([todo.project.namespace.becomes(Namespace),
-                      todo.project, todo.target], anchor: anchor)
+    if todo.for_commit?
+      namespace_project_commit_path(todo.project.namespace.becomes(Namespace), todo.project,
+                                    todo.target, anchor: anchor)
+    else
+      path = [todo.project.namespace.becomes(Namespace), todo.project, todo.target]
+
+      path.unshift(:builds) if todo.build_failed?
+
+      polymorphic_path(path, anchor: anchor)
+    end
+  end
+
+  def todo_target_state_pill(todo)
+    return unless show_todo_state?(todo)
+
+    content_tag(:span, nil, class: 'target-status') do
+      content_tag(:span, nil, class: "status-box status-box-#{todo.target.state.dasherize}") do
+        todo.target.state.capitalize
+      end
+    end
   end
 
   def todos_filter_params
@@ -83,5 +107,11 @@ module TodosHelper
     ]
 
     options_from_collection_for_select(types, 'name', 'title', params[:type])
+  end
+
+  private
+
+  def show_todo_state?(todo)
+    (todo.target.is_a?(MergeRequest) || todo.target.is_a?(Issue)) && ['closed', 'merged'].include?(todo.target.state)
   end
 end

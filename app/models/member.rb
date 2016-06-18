@@ -1,25 +1,6 @@
-# == Schema Information
-#
-# Table name: members
-#
-#  id                 :integer          not null, primary key
-#  access_level       :integer          not null
-#  source_id          :integer          not null
-#  source_type        :string(255)      not null
-#  user_id            :integer
-#  notification_level :integer          not null
-#  type               :string(255)
-#  created_at         :datetime
-#  updated_at         :datetime
-#  created_by_id      :integer
-#  invite_email       :string(255)
-#  invite_token       :string(255)
-#  invite_accepted_at :datetime
-#
-
 class Member < ActiveRecord::Base
   include Sortable
-  include Notifiable
+  include Importable
   include Gitlab::Access
 
   attr_accessor :raw_invite_token
@@ -46,21 +27,32 @@ class Member < ActiveRecord::Base
       allow_nil: true
     }
 
-  scope :invite, -> { where(user_id: nil) }
-  scope :non_invite, -> { where("user_id IS NOT NULL") }
+  scope :invite, -> { where.not(invite_token: nil) }
+  scope :non_invite, -> { where(invite_token: nil) }
+  scope :request, -> { where.not(requested_at: nil) }
+  scope :non_request, -> { where(requested_at: nil) }
+  scope :non_pending, -> { non_request.non_invite }
+
   scope :guests, -> { where(access_level: GUEST) }
   scope :reporters, -> { where(access_level: REPORTER) }
   scope :developers, -> { where(access_level: DEVELOPER) }
   scope :masters,  -> { where(access_level: MASTER) }
   scope :owners,  -> { where(access_level: OWNER) }
+  scope :owners_and_masters,  -> { where(access_level: [OWNER, MASTER]) }
 
   before_validation :generate_invite_token, on: :create, if: -> (member) { member.invite_email.present? }
-  after_create :send_invite, if: :invite?
-  after_create :post_create_hook, unless: :invite?
-  after_update :post_update_hook, unless: :invite?
-  after_destroy :post_destroy_hook, unless: :invite?
+
+  after_create :send_invite, if: :invite?, unless: :importing?
+  after_create :send_request, if: :request?, unless: :importing?
+  after_create :create_notification_setting, unless: [:pending?, :importing?]
+  after_create :post_create_hook, unless: [:pending?, :importing?]
+  after_update :post_update_hook, unless: [:pending?, :importing?]
+  after_destroy :post_destroy_hook, unless: :pending?
+  after_destroy :post_decline_request, if: :request?
 
   delegate :name, :username, :email, to: :user, prefix: true
+
+  default_value_for :notification_level, NotificationSetting.levels[:global]
 
   class << self
     def find_by_invite_token(invite_token)
@@ -113,8 +105,29 @@ class Member < ActiveRecord::Base
     end
   end
 
+  def real_source_type
+    source_type
+  end
+
   def invite?
     self.invite_token.present?
+  end
+
+  def request?
+    requested_at.present?
+  end
+
+  def pending?
+    invite? || request?
+  end
+
+  def accept_request
+    return false unless request?
+
+    updated = self.update(requested_at: nil)
+    after_accept_request if updated
+
+    updated
   end
 
   def accept_invite!(new_user)
@@ -160,9 +173,21 @@ class Member < ActiveRecord::Base
     send_invite
   end
 
+  def create_notification_setting
+    user.notification_settings.find_or_create_for(source)
+  end
+
+  def notification_setting
+    @notification_setting ||= user.notification_settings_for(source)
+  end
+
   private
 
   def send_invite
+    # override in subclass
+  end
+
+  def send_request
     # override in subclass
   end
 
@@ -183,6 +208,14 @@ class Member < ActiveRecord::Base
   end
 
   def after_decline_invite
+    # override in subclass
+  end
+
+  def after_accept_request
+    post_create_hook
+  end
+
+  def post_decline_request
     # override in subclass
   end
 

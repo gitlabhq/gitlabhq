@@ -2,6 +2,17 @@
 
 Merge requests allow you to exchange changes you made to source code
 
+## Only allow merge requests to be merged if the build succeeds
+
+You can prevent merge requests from being merged if their build did not succeed
+in the project settings page.
+
+![only_allow_merge_if_build_succeeds](merge_requests/only_allow_merge_if_build_succeeds.png)
+
+Navigate to project settings page and select the `Only allow merge requests to be merged if the build succeeds` check box.
+
+Please note that you need to have builds configured to enable this feature.
+
 ## Checkout merge requests locally
 
 Locate the section for your GitLab remote in the `.git/config` file. It looks like this:
@@ -12,9 +23,9 @@ Locate the section for your GitLab remote in the `.git/config` file. It looks li
   fetch = +refs/heads/*:refs/remotes/origin/*
 ```
 
-Now add the line `fetch = +refs/merge-requests/*/head:refs/remotes/origin/merge-requests/*` to this section. 
+Now add the line `fetch = +refs/merge-requests/*/head:refs/remotes/origin/merge-requests/*` to this section.
 
-It should looks like this: 
+It should look like this:
 
 ```
 [remote "origin"]
@@ -43,7 +54,7 @@ $ git checkout origin/merge-requests/1
 
 ![MR diff](merge_requests/merge_request_diff.png)
 
-It you add `w=1` option to URL, you can see diff without whitespace changes.
+If you click the "Hide whitespace changes" button, you can see the diff without whitespace changes.
 
 ![MR diff without whitespace](merge_requests/merge_request_diff_without_whitespace.png)
 

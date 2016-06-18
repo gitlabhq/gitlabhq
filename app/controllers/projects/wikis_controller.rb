@@ -7,7 +7,7 @@ class Projects::WikisController < Projects::ApplicationController
   before_action :load_project_wiki
 
   def pages
-    @wiki_pages = Kaminari.paginate_array(@project_wiki.pages).page(params[:page]).per(PER_PAGE)
+    @wiki_pages = Kaminari.paginate_array(@project_wiki.pages).page(params[:page])
   end
 
   def show
@@ -16,6 +16,9 @@ class Projects::WikisController < Projects::ApplicationController
     if @page
       render 'show'
     elsif file = @project_wiki.find_file(params[:id], params[:version_id])
+      response.headers['Content-Security-Policy'] = "default-src 'none'"
+      response.headers['X-Content-Security-Policy'] = "default-src 'none'"
+
       if file.on_disk?
         send_file file.on_disk_path, disposition: 'inline'
       else
@@ -40,11 +43,11 @@ class Projects::WikisController < Projects::ApplicationController
   end
 
   def update
-    @page = @project_wiki.find_page(params[:id])
-
     return render('empty') unless can?(current_user, :create_wiki, @project)
 
-    if @page.update(content, format, message)
+    @page = @project_wiki.find_page(params[:id])
+
+    if @page = WikiPages::UpdateService.new(@project, current_user, wiki_params).execute(@page)
       redirect_to(
         namespace_project_wiki_path(@project.namespace, @project, @page),
         notice: 'Wiki was successfully updated.'
@@ -55,9 +58,9 @@ class Projects::WikisController < Projects::ApplicationController
   end
 
   def create
-    @page = WikiPage.new(@project_wiki)
+    @page = WikiPages::CreateService.new(@project, current_user, wiki_params).execute
 
-    if @page.create(wiki_params)
+    if @page.persisted?
       redirect_to(
         namespace_project_wiki_path(@project.namespace, @project, @page),
         notice: 'Wiki was successfully updated.'
@@ -88,6 +91,20 @@ class Projects::WikisController < Projects::ApplicationController
     )
   end
 
+  def markdown_preview
+    text = params[:text]
+
+    ext = Gitlab::ReferenceExtractor.new(@project, current_user)
+    ext.analyze(text, author: current_user)
+
+    render json: {
+      body: view_context.markdown(text, pipeline: :wiki, project_wiki: @project_wiki, page_slug: params[:id]),
+      references: {
+        users: ext.users.map(&:username)
+      }
+    }
+  end
+
   def git_access
   end
 
@@ -108,15 +125,4 @@ class Projects::WikisController < Projects::ApplicationController
     params[:wiki].slice(:title, :content, :format, :message)
   end
 
-  def content
-    params[:wiki][:content]
-  end
-
-  def format
-    params[:wiki][:format]
-  end
-
-  def message
-    params[:wiki][:message]
-  end
 end

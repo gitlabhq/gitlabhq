@@ -23,7 +23,7 @@ describe CreateSnippetService, services: true do
       snippet = create_snippet(nil, @user, @opts)
       expect(snippet.errors.messages).to have_key(:visibility_level)
       expect(snippet.errors.messages[:visibility_level].first).to(
-        match('Public visibility has been restricted')
+        match('has been restricted')
       )
     end
 

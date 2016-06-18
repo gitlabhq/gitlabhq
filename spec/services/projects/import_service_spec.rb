@@ -49,7 +49,7 @@ describe Projects::ImportService, services: true do
         result = subject.execute
 
         expect(result[:status]).to eq :error
-        expect(result[:message]).to eq 'Failed to import the repository'
+        expect(result[:message]).to eq "Error importing repository #{project.import_url} into #{project.path_with_namespace} - Failed to import the repository"
       end
     end
 
@@ -70,6 +70,23 @@ describe Projects::ImportService, services: true do
         result = subject.execute
 
         expect(result[:status]).to eq :success
+      end
+
+      it 'flushes various caches' do
+        expect_any_instance_of(Gitlab::Shell).to receive(:import_repository).
+          with(project.path_with_namespace, project.import_url).
+          and_return(true)
+
+        expect_any_instance_of(Gitlab::GithubImport::Importer).to receive(:execute).
+          and_return(true)
+
+        expect_any_instance_of(Repository).to receive(:expire_emptiness_caches).
+          and_call_original
+
+        expect_any_instance_of(Repository).to receive(:expire_exists_cache).
+          and_call_original
+
+        subject.execute
       end
 
       it 'fails if importer fails' do
@@ -95,12 +112,19 @@ describe Projects::ImportService, services: true do
 
     def stub_github_omniauth_provider
       provider = OpenStruct.new(
-        name: 'github',
-        app_id: 'asd123',
-        app_secret: 'asd123'
+        'name' => 'github',
+        'app_id' => 'asd123',
+        'app_secret' => 'asd123',
+        'args' => {
+          'client_options' => {
+            'site' => 'https://github.com/api/v3',
+            'authorize_url' => 'https://github.com/login/oauth/authorize',
+            'token_url' => 'https://github.com/login/oauth/access_token'
+          }
+        }
       )
 
-      Gitlab.config.omniauth.providers << provider
+      allow(Gitlab.config.omniauth).to receive(:providers).and_return([provider])
     end
   end
 end

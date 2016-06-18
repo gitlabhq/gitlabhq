@@ -1,5 +1,5 @@
 .light-well {
-  background-color: #f8fafc;
+  background-color: $background-color;
   padding: 15px;
 }
 
@@ -18,14 +18,14 @@
   line-height: 36px;
 }
 
-.gray-content-block {
+.row-content-block {
   margin-top: 0;
   margin-bottom: -$gl-padding;
   background-color: $background-color;
   padding: $gl-padding;
   margin-bottom: 0;
-  border-top: 1px solid $border-color;
-  border-bottom: 1px solid $border-color;
+  border-top: 1px solid $white-dark;
+  border-bottom: 1px solid $white-dark;
   color: $gl-gray;
 
   &.oneline-block {
@@ -61,6 +61,11 @@
     margin-bottom: -$gl-padding;
   }
 
+  &.content-component-block {
+    padding: 11px 0;
+    background-color: $white-light;
+  }
+
   .title {
     color: $gl-text-color;
   }
@@ -80,6 +85,15 @@
       float: left;
       margin-left: 10px;
     }
+  }
+
+  &.build-content {
+    background-color: $white-light;
+    border-top: none;
+  }
+
+  &.top-block .container-fluid {
+    background-color: inherit;
   }
 }
 
@@ -105,16 +119,33 @@
   .cover-title {
     color: $gl-header-color;
     margin: 0;
-    font-size: 23px;
+    font-size: 24px;
     font-weight: normal;
-    margin: 16px 0 5px 0;
+    margin-bottom: 5px;
     color: #4c4e54;
     font-size: 23px;
     line-height: 1.1;
+
+    h1 {
+      color: $gl-gray-dark;
+      margin-bottom: 6px;
+      font-size: 23px;
+    }
+
+    .visibility-icon {
+      display: inline-block;
+      margin-left: 5px;
+      font-size: 18px;
+      color: $gray;
+    }
+
+    p {
+      padding: 0 $gl-padding;
+      color: #5c5d5e;
+    }
   }
 
   .cover-desc {
-    padding: 0 $gl-padding 3px;
     color: $gl-text-color;
 
     &.username:last-child {
@@ -132,6 +163,41 @@
       right: auto;
     }
   }
+
+  &.groups-cover-block {
+    background: $white-light;
+    border-bottom: 1px solid $border-color;
+    text-align: left;
+    padding: 24px 0;
+
+    .group-info {
+      .cover-title {
+        margin-top: 9px;
+      }
+
+      p {
+        margin-bottom: 0;
+      }
+    }
+
+    @media (max-width: $screen-xs-max) {
+      text-align: center;
+
+      .avatar {
+        float: none;
+      }
+    }
+  }
+
+  .group-info {
+
+    h1 {
+      display: inline;
+      font-weight: normal;
+      font-size: 24px;
+      color: $gl-title-color;
+    }
+  }
 }
 
 .block-connector {
@@ -147,7 +213,7 @@
 
 .content-block {
   padding: $gl-padding 0;
-  border-bottom: 1px solid $border-color;
+  border-bottom: 1px solid $white-dark;
 
   &.oneline-block {
     line-height: 36px;

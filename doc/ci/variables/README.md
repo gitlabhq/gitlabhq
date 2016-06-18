@@ -1,17 +1,20 @@
 ## Variables
+
 When receiving a build from GitLab CI, the runner prepares the build environment.
 It starts by setting a list of **predefined variables** (Environment Variables) and a list of **user-defined variables**
 
 The variables can be overwritten. They take precedence over each other in this order:
+1. Trigger variables
 1. Secure variables
-1. YAML-defined variables
+1. YAML-defined job-level variables
+1. YAML-defined global variables
 1. Predefined variables
 
 For example, if you define:
-1. API_TOKEN=SECURE as Secure Variable
-1. API_TOKEN=YAML as YAML-defined variable
+1. `API_TOKEN=SECURE` as Secure Variable
+1. `API_TOKEN=YAML` as YAML-defined variable
 
-The API_TOKEN will take the Secure Variable value: `SECURE`.
+The `API_TOKEN` will take the Secure Variable value: `SECURE`.
 
 ### Predefined variables (Environment Variables)
 
@@ -31,6 +34,7 @@ The API_TOKEN will take the Secure Variable value: `SECURE`.
 | **CI_BUILD_ID**         | all | The unique id of the current build that GitLab CI uses internally |
 | **CI_BUILD_REPO**       | all | The URL to clone the Git repository |
 | **CI_BUILD_TRIGGERED**  | 0.5 | The flag to indicate that build was [triggered] |
+| **CI_BUILD_TOKEN**      | 1.2 | Token used for authenticating with the GitLab Container Registry |
 | **CI_PROJECT_ID**       | all | The unique id of the current project that GitLab CI uses internally |
 | **CI_PROJECT_DIR**      | all | The full path where the repository is cloned and where the build is ran |
 
@@ -47,6 +51,7 @@ export CI_BUILD_TAG="1.0.0"
 export CI_BUILD_NAME="spec:other"
 export CI_BUILD_STAGE="test"
 export CI_BUILD_TRIGGERED="true"
+export CI_BUILD_TOKEN="abcde-1234ABCD5678ef"
 export CI_PROJECT_DIR="/builds/gitlab-org/gitlab-ce"
 export CI_PROJECT_ID="34"
 export CI_SERVER="yes"
@@ -70,15 +75,20 @@ These variables can be later used in all executed commands and scripts.
 
 The YAML-defined variables are also set to all created service containers, thus allowing to fine tune them.
 
+Variables can be defined at a global level, but also at a job level.
+
 More information about Docker integration can be found in [Using Docker Images](../docker/using_docker_images.md).
 
 ### User-defined variables (Secure Variables)
 **This feature requires GitLab Runner 0.4.0 or higher**
 
-GitLab CI allows you to define per-project **Secure Variables** that are set in build environment. 
+GitLab CI allows you to define per-project **Secure Variables** that are set in
+the build environment.
 The secure variables are stored out of the repository (the `.gitlab-ci.yml`).
-The variables are securely passed to GitLab Runner and are available in build environment.
-It's desired method to use them for storing passwords, secret keys or whatever you want.
+The variables are securely passed to GitLab Runner and are available in the
+build environment.
+It's desired method to use them for storing passwords, secret keys or whatever
+you want.
 
 **The value of the variable can be shown in build log if explicitly asked to do so.**
 If your project is public or internal you can make the builds private.

@@ -11,7 +11,7 @@ module Gitlab
       end
 
       def execute
-        project = ::Projects::CreateService.new(
+        ::Projects::CreateService.new(
           current_user,
           name: repo["name"],
           path: repo["path"],
@@ -22,9 +22,6 @@ module Gitlab
           import_source: repo["path_with_namespace"],
           import_url: repo["http_url_to_repo"].sub("://", "://oauth2:#{@session_data[:gitlab_access_token]}@")
         ).execute
-
-        project.create_import_data(data: { "gitlab_session" => session_data } )
-        project
       end
     end
   end

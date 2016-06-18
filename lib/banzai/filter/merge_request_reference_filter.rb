@@ -5,6 +5,8 @@ module Banzai
     #
     # This filter supports cross-project references.
     class MergeRequestReferenceFilter < AbstractReferenceFilter
+      self.reference_type = :merge_request
+
       def self.object_class
         MergeRequest
       end
@@ -14,7 +16,7 @@ module Banzai
       end
 
       def url_for_object(mr, project)
-        h = Gitlab::Application.routes.url_helpers
+        h = Gitlab::Routing.url_helpers
         h.namespace_project_merge_request_url(project.namespace, project, mr,
                                             only_path: context[:only_path])
       end

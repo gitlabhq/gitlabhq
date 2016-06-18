@@ -3,7 +3,7 @@ require 'spec_helper'
 describe ExtractsPath, lib: true do
   include ExtractsPath
   include RepoHelpers
-  include Gitlab::Application.routes.url_helpers
+  include Gitlab::Routing.url_helpers
 
   let(:project) { double('project') }
 

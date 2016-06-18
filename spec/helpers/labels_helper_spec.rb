@@ -11,13 +11,13 @@ describe LabelsHelper do
       end
 
       it 'uses the instance variable' do
-        expect(link_to_label(label)).to match %r{<a href="/#{@project.to_reference}/issues\?label_name=#{label.name}">.*</a>}
+        expect(link_to_label(label)).to match %r{<a href="/#{@project.to_reference}/issues\?label_name%5B%5D=#{label.name}"><span class="[\w\s\-]*has-tooltip".*</span></a>}
       end
     end
 
     context 'without @project set' do
       it "uses the label's project" do
-        expect(link_to_label(label)).to match %r{<a href="/#{label.project.to_reference}/issues\?label_name=#{label.name}">.*</a>}
+        expect(link_to_label(label)).to match %r{<a href="/#{label.project.to_reference}/issues\?label_name%5B%5D=#{label.name}">.*</a>}
       end
     end
 
@@ -25,7 +25,7 @@ describe LabelsHelper do
       let(:another_project) { double('project', namespace: 'foo3', to_param: 'bar3') }
 
       it 'links to merge requests page' do
-        expect(link_to_label(label, project: another_project)).to match %r{<a href="/foo3/bar3/issues\?label_name=#{label.name}">.*</a>}
+        expect(link_to_label(label, project: another_project)).to match %r{<a href="/foo3/bar3/issues\?label_name%5B%5D=#{label.name}">.*</a>}
       end
     end
 
@@ -33,8 +33,16 @@ describe LabelsHelper do
       ['issue', :issue, 'merge_request', :merge_request].each do |type|
         context "set to #{type}" do
           it 'links to correct page' do
-            expect(link_to_label(label, type: type)).to match %r{<a href="/#{label.project.to_reference}/#{type.to_s.pluralize}\?label_name=#{label.name}">.*</a>}
+            expect(link_to_label(label, type: type)).to match %r{<a href="/#{label.project.to_reference}/#{type.to_s.pluralize}\?label_name%5B%5D=#{label.name}">.*</a>}
           end
+        end
+      end
+    end
+
+    context 'with a tooltip argument' do
+      context 'set to false' do
+        it 'does not include the has-tooltip class' do
+          expect(link_to_label(label, tooltip: false)).not_to match %r{has-tooltip}
         end
       end
     end
@@ -49,7 +57,7 @@ describe LabelsHelper do
     context 'without block' do
       it 'uses render_colored_label as the link content' do
         expect(self).to receive(:render_colored_label).
-          with(label).and_return('Foo')
+          with(label, tooltip: true).and_return('Foo')
         expect(link_to_label(label)).to match('Foo')
       end
     end

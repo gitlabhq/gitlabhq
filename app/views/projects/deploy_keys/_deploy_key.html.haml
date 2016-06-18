@@ -1,32 +1,27 @@
 %li
-  .pull-right
+  .pull-left.append-right-10.hidden-xs
+    = icon "key", class: "key-icon"
+  .deploy-key-content.key-list-item-info
+    %strong.title
+      = deploy_key.title
+    .description
+      = deploy_key.fingerprint
+  .deploy-key-content.prepend-left-default.deploy-key-projects
+    - deploy_key.projects.each do |project|
+      - if can?(current_user, :read_project, project)
+        = link_to namespace_project_path(project.namespace, project), class: "label deploy-project-label" do
+          = project.name_with_namespace
+  .deploy-key-content
+    %span.key-created-at
+      created #{time_ago_with_tooltip(deploy_key.created_at)}
+    .visible-xs-block.visible-sm-block
     - if @available_keys.include?(deploy_key)
-      = link_to enable_namespace_project_deploy_key_path(@project.namespace, @project, deploy_key), class: 'btn btn-sm', method: :put do
-        = icon('plus')
+      = link_to enable_namespace_project_deploy_key_path(@project.namespace, @project, deploy_key), class: "btn btn-sm prepend-left-10", method: :put do
         Enable
     - else
       - if deploy_key.destroyed_when_orphaned? && deploy_key.almost_orphaned?
-        = link_to 'Remove', disable_namespace_project_deploy_key_path(@project.namespace, @project, deploy_key), data: { confirm: 'You are going to remove deploy key. Are you sure?'}, method: :put, class: "btn btn-remove delete-key btn-sm pull-right"
+        = link_to disable_namespace_project_deploy_key_path(@project.namespace, @project, deploy_key), data: { confirm: "You are going to remove deploy key. Are you sure?" }, method: :put, class: "btn btn-warning btn-sm prepend-left-10" do
+          Remove
       - else
-        = link_to disable_namespace_project_deploy_key_path(@project.namespace, @project, deploy_key), class: 'btn btn-sm', method: :put do
-          = icon('power-off')
+        = link_to disable_namespace_project_deploy_key_path(@project.namespace, @project, deploy_key), class: "btn btn-warning btn-sm prepend-left-10", method: :put do
           Disable
-
-  = icon('key')
-  %strong= deploy_key.title
-  %br
-  %code.key-fingerprint= deploy_key.fingerprint
-
-  %p.light.prepend-top-10
-    - if deploy_key.public?
-      %span.label.label-info.deploy-project-label
-        Public deploy key
-
-    - deploy_key.projects.each do |project|
-      - if can?(current_user, :read_project, project)
-        %span.label.label-gray.deploy-project-label
-          = link_to namespace_project_path(project.namespace, project) do
-            = project.name_with_namespace
-
-    %small.pull-right
-      Created #{time_ago_with_tooltip(deploy_key.created_at)}

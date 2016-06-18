@@ -9,4 +9,7 @@
 = spinner
 
 :javascript
-  new Activities();
+  var activity = new Activities();
+  $(document).on('page:restore', function (event) {
+    activity.reloadActivities()
+  })

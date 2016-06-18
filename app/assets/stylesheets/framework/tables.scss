@@ -32,13 +32,11 @@ table {
       th {
         background-color: $background-color;
         font-weight: normal;
-        font-size: 15px;
-        border-bottom: 1px solid $border-color;
+        border-bottom: none;
       }
 
       td {
         border-color: $table-border-color;
-        border-bottom: 1px solid $border-color;
       }
     }
   }

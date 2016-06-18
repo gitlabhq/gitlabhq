@@ -1,10 +1,6 @@
 .snippet-form-holder
   = form_for @snippet, url: url, html: { class: "form-horizontal snippet-form js-requires-input" } do |f|
-    - if @snippet.errors.any?
-      .alert.alert-danger
-        %ul
-          - @snippet.errors.full_messages.each do |msg|
-            %li= msg
+    = form_errors(@snippet)
 
     .form-group
       = f.label :title, class: 'control-label'

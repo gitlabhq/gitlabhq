@@ -4,11 +4,7 @@
 
 %div
   = form_for [:admin, @deploy_key], html: { class: 'deploy-key-form form-horizontal' } do |f|
-    -if @deploy_key.errors.any?
-      .alert.alert-danger
-        %ul
-          - @deploy_key.errors.full_messages.each do |msg|
-            %li= msg
+    = form_errors(@deploy_key)
 
     .form-group
       = f.label :title, class: "control-label"

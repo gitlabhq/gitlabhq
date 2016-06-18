@@ -23,8 +23,8 @@ module Ci
       cross:      0x10,
     }
 
-    def self.convert(ansi)
-      Converter.new().convert(ansi)
+    def self.convert(ansi, state = nil)
+      Converter.new.convert(ansi, state)
     end
 
     class Converter
@@ -84,22 +84,38 @@ module Ci
       def on_107(s) set_bg_color(7, 'l') end
       def on_109(s) set_bg_color(9, 'l') end
 
-      def convert(ansi)
-        @out = ""
-        @n_open_tags = 0
-        reset()
+      attr_accessor :offset, :n_open_tags, :fg_color, :bg_color, :style_mask
 
-        s = StringScanner.new(ansi.gsub("<", "&lt;"))
-        while(!s.eos?)
+      STATE_PARAMS = [:offset, :n_open_tags, :fg_color, :bg_color, :style_mask]
+
+      def convert(raw, new_state)
+        reset_state
+        restore_state(raw, new_state) if new_state.present?
+
+        start = @offset
+        ansi = raw[@offset..-1]
+
+        open_new_tag
+
+        s = StringScanner.new(ansi)
+        until s.eos?
           if s.scan(/\e([@-_])(.*?)([@-~])/)
             handle_sequence(s)
+          elsif s.scan(/\e(([@-_])(.*?)?)?$/)
+            break
+          elsif s.scan(/</)
+            @out << '&lt;'
+          elsif s.scan(/\n/)
+            @out << '<br>'
           else
             @out << s.scan(/./m)
           end
+          @offset += s.matched_size
         end
 
         close_open_tags()
-        @out
+
+        { state: state, html: @out, text: ansi[0, @offset - start], append: start > 0 }
       end
 
       def handle_sequence(s)
@@ -121,6 +137,20 @@ module Ci
 
         evaluate_command_stack(commands)
 
+        open_new_tag
+      end
+
+      def evaluate_command_stack(stack)
+        return unless command = stack.shift()
+
+        if self.respond_to?("on_#{command}", true)
+          self.send("on_#{command}", stack)
+        end
+
+        evaluate_command_stack(stack)
+      end
+
+      def open_new_tag
         css_classes = []
 
         unless @fg_color.nil?
@@ -138,20 +168,8 @@ module Ci
           css_classes << "term-#{css_class}" if @style_mask & flag != 0
         end
 
-        open_new_tag(css_classes) if css_classes.length > 0
-      end
+        return if css_classes.empty?
 
-      def evaluate_command_stack(stack)
-        return unless command = stack.shift()
-
-        if self.respond_to?("on_#{command}", true)
-          self.send("on_#{command}", stack)
-        end
-
-        evaluate_command_stack(stack)
-      end
-
-      def open_new_tag(css_classes)
         @out << %{<span class="#{css_classes.join(' ')}">}
         @n_open_tags += 1
       end
@@ -160,6 +178,31 @@ module Ci
         while @n_open_tags > 0
           @out << %{</span>}
           @n_open_tags -= 1
+        end
+      end
+
+      def reset_state
+        @offset = 0
+        @n_open_tags = 0
+        @out = ''
+        reset
+      end
+
+      def state
+        state = STATE_PARAMS.inject({}) do |h, param|
+          h[param] = send(param)
+          h
+        end
+        Base64.urlsafe_encode64(state.to_json)
+      end
+
+      def restore_state(raw, new_state)
+        state = Base64.urlsafe_decode64(new_state)
+        state = JSON.parse(state, symbolize_names: true)
+        return if state[:offset].to_i > raw.length
+
+        STATE_PARAMS.each do |param|
+          send("#{param}=".to_sym, state[param])
         end
       end
 

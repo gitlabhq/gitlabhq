@@ -2,16 +2,20 @@ module API
   module Helpers
     PRIVATE_TOKEN_HEADER = "HTTP_PRIVATE_TOKEN"
     PRIVATE_TOKEN_PARAM = :private_token
-    SUDO_HEADER ="HTTP_SUDO"
+    SUDO_HEADER = "HTTP_SUDO"
     SUDO_PARAM = :sudo
 
     def parse_boolean(value)
       [ true, 1, '1', 't', 'T', 'true', 'TRUE', 'on', 'ON' ].include?(value)
     end
 
+    def find_user_by_private_token
+      token_string = (params[PRIVATE_TOKEN_PARAM] || env[PRIVATE_TOKEN_HEADER]).to_s
+      User.find_by_authentication_token(token_string) || User.find_by_personal_access_token(token_string)
+    end
+
     def current_user
-      private_token = (params[PRIVATE_TOKEN_PARAM] || env[PRIVATE_TOKEN_HEADER]).to_s
-      @current_user ||= (User.find_by(authentication_token: private_token) || doorkeeper_guard)
+      @current_user ||= (find_user_by_private_token || doorkeeper_guard)
 
       unless @current_user && Gitlab::UserAccess.allowed?(@current_user)
         return nil
@@ -29,11 +33,11 @@ module API
       @current_user
     end
 
-    def sudo_identifier()
+    def sudo_identifier
       identifier ||= params[SUDO_PARAM] || env[SUDO_HEADER]
 
       # Regex for integers
-      if !!(identifier =~ /^[0-9]+$/)
+      if !!(identifier =~ /\A[0-9]+\z/)
         identifier.to_i
       else
         identifier
@@ -91,9 +95,19 @@ module API
       if can?(current_user, :read_group, group)
         group
       else
-        forbidden!("#{current_user.username} lacks sufficient "\
-        "access to #{group.name}")
+        not_found!('Group')
       end
+    end
+
+    def find_project_label(id)
+      label = user_project.labels.find_by_id(id) || user_project.labels.find_by_title(id)
+      label || not_found!('Label')
+    end
+
+    def find_project_issue(id)
+      issue = user_project.issues.find(id)
+      not_found! unless can?(current_user, :read_issue, issue)
+      issue
     end
 
     def paginate(relation)
@@ -118,9 +132,7 @@ module API
     end
 
     def authorize!(action, subject)
-      unless abilities.allowed?(current_user, action, subject)
-        forbidden!
-      end
+      forbidden! unless abilities.allowed?(current_user, action, subject)
     end
 
     def authorize_push_project
@@ -186,6 +198,22 @@ module API
       Gitlab::Access.options_with_owner.values.include? level.to_i
     end
 
+    # Checks the occurrences of datetime attributes, each attribute if present in the params hash must be in ISO 8601
+    # format (YYYY-MM-DDTHH:MM:SSZ) or a Bad Request error is invoked.
+    #
+    # Parameters:
+    #   keys (required) - An array consisting of elements that must be parseable as dates from the params hash
+    def datetime_attributes!(*keys)
+      keys.each do |key|
+        begin
+          params[key] = Time.xmlschema(params[key]) if params[key].present?
+        rescue ArgumentError
+          message = "\"" + key.to_s + "\" must be a timestamp in ISO 8601 format: YYYY-MM-DDTHH:MM:SSZ"
+          render_api_error!(message, 400)
+        end
+      end
+    end
+
     def issuable_order_by
       if params["order_by"] == 'updated_at'
         'updated_at'
@@ -241,6 +269,10 @@ module API
 
     def file_to_large!
       render_api_error!('413 Request Entity Too Large', 413)
+    end
+
+    def not_modified!
+      render_api_error!('304 Not Modified', 304)
     end
 
     def render_validation_error!(model)
@@ -379,6 +411,24 @@ module API
     def handle_member_errors(errors)
       error!(errors[:access_level], 422) if errors[:access_level].any?
       not_found!(errors)
+    end
+
+    def send_git_blob(repository, blob)
+      env['api.format'] = :txt
+      content_type 'text/plain'
+      header(*Gitlab::Workhorse.send_git_blob(repository, blob))
+    end
+
+    def send_git_archive(repository, ref:, format:)
+      header(*Gitlab::Workhorse.send_git_archive(repository, ref: ref, format: format))
+    end
+
+    def issue_entity(project)
+      if project.has_external_issue_tracker?
+        Entities::ExternalIssue
+      else
+        Entities::Issue
+      end
     end
   end
 end

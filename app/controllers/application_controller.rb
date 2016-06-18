@@ -3,19 +3,19 @@ require 'fogbugz'
 
 class ApplicationController < ActionController::Base
   include Gitlab::CurrentSettings
+  include Gitlab::GonHelper
   include GitlabRoutingHelper
   include PageLayoutHelper
+  include WorkhorseHelper
 
-  PER_PAGE = 20
-
-  before_action :authenticate_user_from_token!
+  before_action :authenticate_user_from_private_token!
   before_action :authenticate_user!
   before_action :validate_user_service_ticket!
   before_action :reject_blocked!
   before_action :check_password_expiration
   before_action :check_2fa_requirement
   before_action :ldap_security_check
-  before_action :sentry_user_context
+  before_action :sentry_context
   before_action :default_headers
   before_action :add_gon_variables
   before_action :configure_permitted_parameters, if: :devise_controller?
@@ -24,8 +24,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
   helper_method :abilities, :can?, :current_application_settings
-  helper_method :import_sources_enabled?, :github_import_enabled?, :github_import_configured?, :gitlab_import_enabled?, :gitlab_import_configured?, :bitbucket_import_enabled?, :bitbucket_import_configured?, :gitorious_import_enabled?, :google_code_import_enabled?, :fogbugz_import_enabled?, :git_import_enabled?
-  helper_method :repository, :can_collaborate_with_project?
+  helper_method :import_sources_enabled?, :github_import_enabled?, :github_import_configured?, :gitlab_import_enabled?, :gitlab_import_configured?, :bitbucket_import_enabled?, :bitbucket_import_configured?, :gitorious_import_enabled?, :google_code_import_enabled?, :fogbugz_import_enabled?, :git_import_enabled?, :gitlab_project_import_enabled?
 
   rescue_from Encoding::CompatibilityError do |exception|
     log_exception(exception)
@@ -43,27 +42,32 @@ class ApplicationController < ActionController::Base
 
   protected
 
-  def sentry_user_context
-    if Rails.env.production? && current_application_settings.sentry_enabled && current_user
-      Raven.user_context(
-        id: current_user.id,
-        email: current_user.email,
-        username: current_user.username,
-      )
+  def sentry_context
+    if Rails.env.production? && current_application_settings.sentry_enabled
+      if current_user
+        Raven.user_context(
+          id: current_user.id,
+          email: current_user.email,
+          username: current_user.username,
+        )
+      end
+
+      Raven.tags_context(program: sentry_program_context)
     end
   end
 
-  # From https://github.com/plataformatec/devise/wiki/How-To:-Simple-Token-Authentication-Example
-  # https://gist.github.com/josevalim/fb706b1e933ef01e4fb6
-  def authenticate_user_from_token!
-    user_token = if params[:authenticity_token].presence
-                   params[:authenticity_token].presence
-                 elsif params[:private_token].presence
-                   params[:private_token].presence
-                 elsif request.headers['PRIVATE-TOKEN'].present?
-                   request.headers['PRIVATE-TOKEN']
-                 end
-    user = user_token && User.find_by_authentication_token(user_token.to_s)
+  def sentry_program_context
+    if Sidekiq.server?
+      'sidekiq'
+    else
+      'rails'
+    end
+  end
+
+  # This filter handles both private tokens and personal access tokens
+  def authenticate_user_from_private_token!
+    token_string = params[:private_token].presence || request.headers['PRIVATE-TOKEN'].presence
+    user = User.find_by_authentication_token(token_string) || User.find_by_personal_access_token(token_string)
 
     if user
       # Notice we are passing store false, so the user is not
@@ -107,7 +111,7 @@ class ApplicationController < ActionController::Base
   end
 
   def after_sign_out_path_for(resource)
-    current_application_settings.after_sign_out_path || new_user_session_path
+    current_application_settings.after_sign_out_path.presence || new_user_session_path
   end
 
   def abilities
@@ -118,47 +122,6 @@ class ApplicationController < ActionController::Base
     abilities.allowed?(object, action, subject)
   end
 
-  def project
-    unless @project
-      namespace = params[:namespace_id]
-      id = params[:project_id] || params[:id]
-
-      # Redirect from
-      #   localhost/group/project.git
-      # to
-      #   localhost/group/project
-      #
-      if id =~ /\.git\Z/
-        redirect_to request.original_url.gsub(/\.git\/?\Z/, '') and return
-      end
-
-      project_path = "#{namespace}/#{id}"
-      @project = Project.find_with_namespace(project_path)
-
-      if @project and can?(current_user, :read_project, @project)
-        if @project.path_with_namespace != project_path
-          redirect_to request.original_url.gsub(project_path, @project.path_with_namespace) and return
-        end
-        @project
-      elsif current_user.nil?
-        @project = nil
-        authenticate_user!
-      else
-        @project = nil
-        render_404 and return
-      end
-    end
-    @project
-  end
-
-  def repository
-    @repository ||= project.repository
-  end
-
-  def authorize_project!(action)
-    return access_denied! unless can?(current_user, action, project)
-  end
-
   def access_denied!
     render "errors/access_denied", layout: "errors", status: 404
   end
@@ -167,24 +130,12 @@ class ApplicationController < ActionController::Base
     render "errors/git_not_found.html", layout: "errors", status: 404
   end
 
-  def method_missing(method_sym, *arguments, &block)
-    if method_sym.to_s =~ /\Aauthorize_(.*)!\z/
-      authorize_project!($1.to_sym)
-    else
-      super
-    end
-  end
-
   def render_403
     head :forbidden
   end
 
   def render_404
     render file: Rails.root.join("public", "404"), layout: false, status: "404"
-  end
-
-  def require_non_empty_project
-    redirect_to @project if @project.empty_repo?
   end
 
   def no_cache_headers
@@ -204,20 +155,6 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def add_gon_variables
-    gon.api_version            = API::API.version
-    gon.default_avatar_url     = URI::join(Gitlab.config.gitlab.url, ActionController::Base.helpers.image_path('no_avatar.png')).to_s
-    gon.default_issues_tracker = Project.new.default_issue_tracker.to_param
-    gon.max_file_size          = current_application_settings.max_attachment_size
-    gon.relative_url_root      = Gitlab.config.gitlab.relative_url_root
-    gon.user_color_scheme      = Gitlab::ColorSchemes.for_user(current_user).css_class
-
-    if current_user
-      gon.current_user_id = current_user.id
-      gon.api_token = current_user.private_token
-    end
-  end
-
   def validate_user_service_ticket!
     return unless signed_in? && session[:service_tickets]
 
@@ -233,14 +170,14 @@ class ApplicationController < ActionController::Base
   end
 
   def check_password_expiration
-    if current_user && current_user.password_expires_at && current_user.password_expires_at < Time.now  && !current_user.ldap_user?
+    if current_user && current_user.password_expires_at && current_user.password_expires_at < Time.now && !current_user.ldap_user?
       redirect_to new_profile_password_path and return
     end
   end
 
   def check_2fa_requirement
-    if two_factor_authentication_required? && current_user && !current_user.two_factor_enabled && !skip_two_factor?
-      redirect_to new_profile_two_factor_auth_path
+    if two_factor_authentication_required? && current_user && !current_user.two_factor_enabled? && !skip_two_factor?
+      redirect_to profile_two_factor_auth_path
     end
   end
 
@@ -289,7 +226,7 @@ class ApplicationController < ActionController::Base
   end
 
   def configure_permitted_parameters
-    devise_parameter_sanitizer.for(:sign_in) { |u| u.permit(:username, :email, :password, :login, :remember_me, :otp_attempt) }
+    devise_parameter_sanitizer.permit(:sign_in, keys: [:username, :email, :password, :login, :remember_me, :otp_attempt])
   end
 
   def hexdigest(string)
@@ -320,7 +257,7 @@ class ApplicationController < ActionController::Base
       # internal repos where you are not a member. Enable this filter
       # or improve current implementation to filter only issues you
       # created or assigned or mentioned
-      #@filter_params[:authorized_only] = true
+      # @filter_params[:authorized_only] = true
     end
 
     @filter_params
@@ -382,6 +319,10 @@ class ApplicationController < ActionController::Base
     current_application_settings.import_sources.include?('git')
   end
 
+  def gitlab_project_import_enabled?
+    current_application_settings.import_sources.include?('gitlab_project')
+  end
+
   def two_factor_authentication_required?
     current_application_settings.require_two_factor_authentication
   end
@@ -399,6 +340,10 @@ class ApplicationController < ActionController::Base
     session[:skip_tfa] && session[:skip_tfa] > Time.current
   end
 
+  def browser_supports_u2f?
+    browser.chrome? && browser.version.to_i >= 41 && !browser.device.mobile?
+  end
+
   def redirect_to_home_page_url?
     # If user is not signed-in and tries to access root_path - redirect him to landing page
     # Don't redirect to the default URL to prevent endless redirections
@@ -412,11 +357,11 @@ class ApplicationController < ActionController::Base
     current_user.nil? && root_path == request.path
   end
 
-  def can_collaborate_with_project?(project = nil)
-    project ||= @project
-
-    can?(current_user, :push_code, project) ||
-      (current_user && current_user.already_forked?(project))
+  # U2F (universal 2nd factor) devices need a unique identifier for the application
+  # to perform authentication.
+  # https://developers.yubico.com/U2F/App_ID.html
+  def u2f_app_id
+    request.base_url
   end
 
   private

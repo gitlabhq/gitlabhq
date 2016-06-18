@@ -1,4 +1,3 @@
-require 'html/pipeline/filter'
 require 'uri'
 
 module Banzai
@@ -9,11 +8,13 @@ module Banzai
     #
     class UploadLinkFilter < HTML::Pipeline::Filter
       def call
-        doc.search('a').each do |el|
+        return doc unless project
+
+        doc.xpath('descendant-or-self::a[starts-with(@href, "/uploads/")]').each do |el|
           process_link_attr el.attribute('href')
         end
 
-        doc.search('img').each do |el|
+        doc.xpath('descendant-or-self::img[starts-with(@src, "/uploads/")]').each do |el|
           process_link_attr el.attribute('src')
         end
 
@@ -23,16 +24,15 @@ module Banzai
       protected
 
       def process_link_attr(html_attr)
-        return if html_attr.blank?
-
-        uri = html_attr.value
-        if uri.starts_with?("/uploads/")
-          html_attr.value = build_url(uri).to_s
-        end
+        html_attr.value = build_url(html_attr.value).to_s
       end
 
       def build_url(uri)
-        File.join(Gitlab.config.gitlab.url, context[:project].path_with_namespace, uri)
+        File.join(Gitlab.config.gitlab.url, project.path_with_namespace, uri)
+      end
+
+      def project
+        context[:project]
       end
 
       # Ensure that a :project key exists in context

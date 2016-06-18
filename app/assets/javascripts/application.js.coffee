@@ -4,9 +4,10 @@
 # It's not advisable to add code directly here, but if you do, it'll appear at the bottom of the
 # the compiled file.
 #
-#= require jquery
+#= require jquery2
 #= require jquery-ui/autocomplete
 #= require jquery-ui/datepicker
+#= require jquery-ui/draggable
 #= require jquery-ui/effect-highlight
 #= require jquery-ui/sortable
 #= require jquery_ujs
@@ -17,17 +18,20 @@
 #= require jquery.atwho
 #= require jquery.scrollTo
 #= require jquery.turbolinks
-#= require d3
-#= require cal-heatmap
 #= require turbolinks
 #= require autosave
-#= require bootstrap
+#= require bootstrap/affix
+#= require bootstrap/alert
+#= require bootstrap/button
+#= require bootstrap/collapse
+#= require bootstrap/dropdown
+#= require bootstrap/modal
+#= require bootstrap/scrollspy
+#= require bootstrap/tab
+#= require bootstrap/transition
+#= require bootstrap/tooltip
+#= require bootstrap/popover
 #= require select2
-#= require raphael
-#= require g.raphael
-#= require g.bar
-#= require Chart
-#= require branch-graph
 #= require ace/ace
 #= require ace/ext-searchbox
 #= require underscore
@@ -40,8 +44,18 @@
 #= require shortcuts_issuable
 #= require shortcuts_network
 #= require jquery.nicescroll
-#= require_tree .
+#= require date.format
+#= require_directory ./behaviors
+#= require_directory ./blob
+#= require_directory ./ci
+#= require_directory ./commit
+#= require_directory ./extensions
+#= require_directory ./lib
+#= require_directory ./u2f
+#= require_directory .
 #= require fuzzaldrin-plus
+#= require cropper
+#= require u2f
 
 window.slugify = (text) ->
   text.replace(/[^-a-zA-Z0-9]+/g, '_').toLowerCase()
@@ -107,9 +121,10 @@ window.onload = ->
     setTimeout shiftWindow, 100
 
 $ ->
+  gl.utils.preventDisabledButtons()
   bootstrapBreakpoint = bp.getBreakpointSize()
 
-  $(".nicescroll").niceScroll(cursoropacitymax: '0.4', cursorcolor: '#FFF', cursorborder: "1px solid #FFF")
+  $(".nav-sidebar").niceScroll(cursoropacitymax: '0.4', cursorcolor: '#FFF', cursorborder: "1px solid #FFF")
 
   # Click a .js-select-on-focus field, select the contents
   $(".js-select-on-focus").on "focusin", ->
@@ -138,30 +153,17 @@ $ ->
 
   # Initialize tooltips
   $('body').tooltip(
-    selector: '.has_tooltip, [data-toggle="tooltip"]'
+    selector: '.has-tooltip, [data-toggle="tooltip"]'
     placement: (_, el) ->
       $el = $(el)
       $el.data('placement') || 'bottom'
-  )
-
-  $('.header-logo .home').tooltip(
-    placement: (_, el) ->
-      $el = $(el)
-      if $('.page-with-sidebar').hasClass('page-sidebar-collapsed') then 'right' else 'bottom'
-    container: 'body'
-  )
-
-  $('.page-with-sidebar').tooltip(
-    selector: '.sidebar-collapsed .nav-sidebar a, .sidebar-collapsed a.sidebar-user'
-    placement: 'right'
-    container: 'body'
   )
 
   # Form submitter
   $('.trigger-submit').on 'change', ->
     $(@).parents('form').submit()
 
-  $('abbr.timeago, .js-timeago').timeago()
+  gl.utils.localTimeAgo($('abbr.timeago, .js-timeago'), true)
 
   # Flash
   if (flash = $(".flash-container")).length > 0
@@ -189,8 +191,10 @@ $ ->
 
   $('.navbar-toggle').on 'click', ->
     $('.header-content .title').toggle()
+    $('.header-content .header-logo').toggle()
     $('.header-content .navbar-collapse').toggle()
     $('.navbar-toggle').toggleClass('active')
+    $('.navbar-toggle i').toggleClass("fa-angle-right fa-angle-left")
 
   # Show/hide comments on diff
   $("body").on "click", ".js-toggle-diff-comments", (e) ->
@@ -206,6 +210,10 @@ $ ->
     form = btn.closest("form")
     new ConfirmDangerModal(form, text)
 
+
+  $(document).on 'click', 'button', ->
+    $(this).blur()
+
   $('input[type="search"]').each ->
     $this = $(this)
     $this.attr 'value', $this.val()
@@ -217,45 +225,15 @@ $ ->
       $this = $(this)
       $this.attr 'value', $this.val()
 
+  $sidebarGutterToggle = $('.js-sidebar-toggle')
+
   $(document)
     .off 'breakpoint:change'
     .on 'breakpoint:change', (e, breakpoint) ->
       if breakpoint is 'sm' or breakpoint is 'xs'
-        $gutterIcon = $('.js-sidebar-toggle').find('i')
+        $gutterIcon = $sidebarGutterToggle.find('i')
         if $gutterIcon.hasClass('fa-angle-double-right')
-          $gutterIcon.closest('a').trigger('click')
-
-  $(document)
-    .off 'click', '.js-sidebar-toggle'
-    .on 'click', '.js-sidebar-toggle', (e, triggered) ->
-      e.preventDefault()
-      $this = $(this)
-      $thisIcon = $this.find 'i'
-      $allGutterToggleIcons = $('.js-sidebar-toggle i')
-      if $thisIcon.hasClass('fa-angle-double-right')
-        $allGutterToggleIcons
-          .removeClass('fa-angle-double-right')
-          .addClass('fa-angle-double-left')
-        $('aside.right-sidebar')
-          .removeClass('right-sidebar-expanded')
-          .addClass('right-sidebar-collapsed')
-        $('.page-with-sidebar')
-          .removeClass('right-sidebar-expanded')
-          .addClass('right-sidebar-collapsed')
-      else
-        $allGutterToggleIcons
-          .removeClass('fa-angle-double-left')
-          .addClass('fa-angle-double-right')
-        $('aside.right-sidebar')
-          .removeClass('right-sidebar-collapsed')
-          .addClass('right-sidebar-expanded')
-        $('.page-with-sidebar')
-          .removeClass('right-sidebar-collapsed')
-          .addClass('right-sidebar-expanded')
-      if not triggered
-        $.cookie("collapsed_gutter",
-          $('.right-sidebar')
-            .hasClass('right-sidebar-collapsed'), { path: '/' })
+          $sidebarGutterToggle.trigger('click')
 
   fitSidebarForSize = ->
     oldBootstrapBreakpoint = bootstrapBreakpoint
@@ -269,9 +247,38 @@ $ ->
       $(document).trigger('breakpoint:change', [bootstrapBreakpoint])
 
   $(window)
-    .off "resize"
-    .on "resize", (e) ->
+    .off "resize.app"
+    .on "resize.app", (e) ->
       fitSidebarForSize()
 
+  gl.awardsHandler = new AwardsHandler()
   checkInitialSidebarSize()
   new Aside()
+
+  # Sidenav pinning
+  if $(window).width() < 1440 and $.cookie('pin_nav') is 'true'
+    $.cookie('pin_nav', 'false')
+    $('.page-with-sidebar')
+      .toggleClass('page-sidebar-collapsed page-sidebar-expanded')
+      .removeClass('page-sidebar-pinned')
+    $('.navbar-fixed-top').removeClass('header-pinned-nav')
+
+  $(document)
+    .off 'click', '.js-nav-pin'
+    .on 'click', '.js-nav-pin', (e) ->
+      e.preventDefault()
+
+      $(this).toggleClass 'is-active'
+
+      if $.cookie('pin_nav') is 'true'
+        $.cookie 'pin_nav', 'false'
+        $('.page-with-sidebar')
+          .removeClass('page-sidebar-pinned')
+          .toggleClass('page-sidebar-collapsed page-sidebar-expanded')
+        $('.navbar-fixed-top')
+          .removeClass('header-pinned-nav')
+          .toggleClass('header-collapsed header-expanded')
+      else
+        $.cookie 'pin_nav', 'true'
+        $('.page-with-sidebar').addClass('page-sidebar-pinned')
+        $('.navbar-fixed-top').addClass('header-pinned-nav')

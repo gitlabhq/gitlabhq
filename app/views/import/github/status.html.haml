@@ -4,14 +4,23 @@
   %i.fa.fa-github
   Import projects from GitHub
 
+%p
+  %i.fa.fa-warning
+  To import GitHub pull requests, any pull request source branches that had been deleted are temporarily restored on GitHub. To prevent any connected CI services from being overloaded with dozens of irrelevant branches being created and deleted again, GitHub webhooks are temporarily disabled during the import process, but only if you have admin access to the GitHub repository.
+
 %p.light
   Select projects you want to import.
 %hr
 %p
-  = button_tag 'Import all projects', class: "btn btn-success js-import-all"
+  = button_tag class: "btn btn-import btn-success js-import-all" do
+    Import all projects
+    = icon("spinner spin", class: "loading-icon")
 
-.table-holder
+.table-responsive
   %table.table.import-jobs
+    %colgroup.import-jobs-from-col
+    %colgroup.import-jobs-to-col
+    %colgroup.import-jobs-status-col
     %thead
       %tr
         %th From GitHub
@@ -21,9 +30,9 @@
       - @already_added_projects.each do |project|
         %tr{id: "project_#{project.id}", class: "#{project_status_css_class(project.import_status)}"}
           %td
-            = link_to project.import_source, "https://github.com/#{project.import_source}", target: "_blank"
+            = github_project_link(project.import_source)
           %td
-            %strong= link_to project.path_with_namespace, [project.namespace.becomes(Namespace), project]
+            = link_to project.path_with_namespace, [project.namespace.becomes(Namespace), project]
           %td.job-status
             - if project.import_status == 'finished'
               %span
@@ -38,11 +47,13 @@
       - @repos.each do |repo|
         %tr{id: "repo_#{repo.id}"}
           %td
-            = link_to repo.full_name, "https://github.com/#{repo.full_name}", target: "_blank"
+            = github_project_link(repo.full_name)
           %td.import-target
             = repo.full_name
           %td.import-actions.job-status
-            = button_tag "Import", class: "btn js-add-to-import"
+            = button_tag class: "btn btn-import js-add-to-import" do
+              Import
+              = icon("spinner spin", class: "loading-icon")
 
 :javascript
   new ImporterStatus("#{jobs_import_github_path}", "#{import_github_path}");

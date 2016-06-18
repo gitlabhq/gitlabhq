@@ -131,7 +131,74 @@ On the sign in page there should now be a SAML button below the regular sign in 
 Click the icon to begin the authentication process. If everything goes well the user
 will be returned to GitLab and will be signed in.
 
+## External Groups
+
+>**Note:**
+This setting is only available on GitLab 8.7 and above.
+
+SAML login includes support for external groups. You can define in the SAML
+settings which groups, to which your users belong in your IdP, you wish to be
+marked as [external](../permissions/permissions.md).
+
+### Requirements
+
+First you need to tell GitLab where to look for group information. For this you
+need to make sure that your IdP server sends a specific `AttributeStament` along
+with the regular SAML response. Here is an example:
+
+```xml
+<saml:AttributeStatement>
+  <saml:Attribute Name="Groups">
+    <saml:AttributeValue xsi:type="xs:string">SecurityGroup</saml:AttributeValue>
+    <saml:AttributeValue xsi:type="xs:string">Developers</saml:AttributeValue>
+    <saml:AttributeValue xsi:type="xs:string">Designers</saml:AttributeValue>
+  </saml:Attribute>
+</saml:AttributeStatement>
+```
+
+The name of the attribute can be anything you like, but it must contain the groups
+to which a user belongs. In order to tell GitLab where to find these groups, you need
+to add a `groups_attribute:` element to your SAML settings. You will also need to
+tell GitLab which groups are external via the `external_groups:` element:
+
+```yaml
+{ name: 'saml',
+  label: 'Our SAML Provider',
+  groups_attribute: 'Groups',
+  external_groups: ['Freelancers', 'Interns'],
+  args: {
+          assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback',
+          idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
+          idp_sso_target_url: 'https://login.example.com/idp',
+          issuer: 'https://gitlab.example.com',
+          name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:transient'
+        } }
+```
+
 ## Customization
+
+### `auto_sign_in_with_provider`
+
+You can add this setting to your GitLab configuration to automatically redirect you
+to your SAML server for authentication, thus removing the need to click a button
+before actually signing in.
+
+For omnibus package:
+
+```ruby
+gitlab_rails['omniauth_auto_sign_in_with_provider'] = 'saml'
+```
+
+For installations from source:
+
+```yaml
+omniauth:
+  auto_sign_in_with_provider: saml
+```
+
+Please keep in mind that every sign in attempt will be redirected to the SAML server,
+so you will not be able to sign in using local credentials. Make sure that at least one
+of the SAML users has admin permissions.
 
 ### `attribute_statements`
 
@@ -204,6 +271,10 @@ To bypass this you can add `skip_before_action :verify_authenticity_token` to th
 `omniauth_callbacks_controller.rb` file. This will allow the error to hit GitLab,
 where it can then be seen in the usual logs, or as a flash message in the login
 screen.
+
+That file is located at `/opt/gitlab/embedded/service/gitlab-rails/app/controllers`
+for Omnibus installations and by default on `/home/git/gitlab/app/controllers` for
+installations from source.
 
 ### Invalid audience
 

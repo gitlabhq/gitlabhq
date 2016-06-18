@@ -56,8 +56,8 @@ $component-active-bg:       $brand-info;
 //##
 
 $input-color:                    $text-color;
-$input-border:                   #e7e9ed;
-$input-border-focus:             #7f8fa4;
+$input-border:                   $border-color;
+$input-border-focus:             $focus-border-color;
 $legend-color:                   $text-color;
 
 
@@ -153,8 +153,8 @@ $nav-link-padding: 13px $gl-padding;
 //== Code
 //
 //##
-$pre-bg:           #f8fafc !default;
+$pre-bg:           $background-color !default;
 $pre-color:        $gl-gray !default;
-$pre-border-color: #e7e9ed;
+$pre-border-color: $border-color;
 
 $table-bg-accent: $background-color;

@@ -29,8 +29,8 @@ module Gitlab
             "in #{GRACE_TIME} seconds"
           sleep(GRACE_TIME)
 
-          Sidekiq.logger.warn "sending SIGUSR1 to PID #{Process.pid}"
-          Process.kill('SIGUSR1', Process.pid)
+          Sidekiq.logger.warn "sending SIGTERM to PID #{Process.pid}"
+          Process.kill('SIGTERM', Process.pid)
 
           Sidekiq.logger.warn "waiting #{SHUTDOWN_WAIT} seconds before sending "\
             "#{SHUTDOWN_SIGNAL} to PID #{Process.pid}"

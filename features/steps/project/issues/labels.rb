@@ -9,13 +9,13 @@ class Spinach::Features::ProjectIssuesLabels < Spinach::FeatureSteps
 
   step 'I remove label \'bug\'' do
     page.within "#label_#{bug_label.id}" do
-      click_link 'Delete'
+      first(:link, 'Delete').click
     end
   end
 
   step 'I delete all labels' do
     page.within '.labels' do
-      page.all('.btn-remove').each do |remove|
+      page.all('.remove-row').each do |remove|
         remove.click
         sleep 0.05
       end
@@ -24,8 +24,8 @@ class Spinach::Features::ProjectIssuesLabels < Spinach::FeatureSteps
 
   step 'I should see labels help message' do
     page.within '.labels' do
-      expect(page).to have_content 'Create first label or generate default set of '\
-                               'labels'
+      expect(page).to have_content 'Create a label or generate a default set '\
+                                   'of labels'
     end
   end
 
@@ -60,25 +60,25 @@ class Spinach::Features::ProjectIssuesLabels < Spinach::FeatureSteps
   end
 
   step 'I should see label \'feature\'' do
-    page.within '.manage-labels-list' do
+    page.within '.other-labels .manage-labels-list' do
       expect(page).to have_content 'feature'
     end
   end
 
   step 'I should see label \'bug\'' do
-    page.within '.manage-labels-list' do
+    page.within '.other-labels .manage-labels-list' do
       expect(page).to have_content 'bug'
     end
   end
 
   step 'I should not see label \'bug\'' do
-    page.within '.manage-labels-list' do
+    page.within '.other-labels .manage-labels-list' do
       expect(page).not_to have_content 'bug'
     end
   end
 
   step 'I should see label \'support\'' do
-    page.within '.manage-labels-list' do
+    page.within '.other-labels .manage-labels-list' do
       expect(page).to have_content 'support'
     end
   end
@@ -90,7 +90,7 @@ class Spinach::Features::ProjectIssuesLabels < Spinach::FeatureSteps
   end
 
   step 'I should see label \'fix\'' do
-    page.within '.manage-labels-list' do
+    page.within '.other-labels .manage-labels-list' do
       expect(page).to have_content 'fix'
     end
   end

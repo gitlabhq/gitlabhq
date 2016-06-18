@@ -19,7 +19,14 @@ class Projects::MilestonesController < Projects::ApplicationController
       end
 
     @milestones = @milestones.includes(:project)
-    @milestones = @milestones.page(params[:page]).per(PER_PAGE)
+    respond_to do |format|
+      format.html do
+        @milestones = @milestones.page(params[:page])
+      end
+      format.json do
+        render json: @milestones.to_json(methods: :name)
+      end
+    end
   end
 
   def new
@@ -68,7 +75,7 @@ class Projects::MilestonesController < Projects::ApplicationController
 
     respond_to do |format|
       format.html { redirect_to namespace_project_milestones_path }
-      format.js { render nothing: true }
+      format.js { head :ok }
     end
   end
 

@@ -1,47 +1,90 @@
-$row-hover: #f4f8fe;
-$gl-text-color: #54565b;
-$gl-text-green: #4a2;
-$gl-text-red: #d12f19;
-$gl-text-orange: #d90;
-$gl-header-color: #323232;
-$gl-link-color: #333c48;
-$md-text-color: #444;
-$md-link-color: #3084bb;
-$progress-color: #c0392b;
-$gl-font-size: 15px;
-$list-font-size: 15px;
+/*
+ * Layout
+ */
 $sidebar_collapsed_width: 62px;
-$sidebar_width: 230px;
+$sidebar_width: 220px;
 $gutter_collapsed_width: 62px;
 $gutter_width: 290px;
 $gutter_inner_width: 258px;
-$avatar_radius: 50%;
+$sidebar-transition-duration: .15s;
+$sidebar-breakpoint: 1440px;
+
+/*
+ * UI elements
+ */
+$border-color:       #e5e5e5;
+$focus-border-color: #3aabf0;
+$table-border-color: #f0f0f0;
+$background-color:   #fafafa;
+
+/*
+ * Text
+ */
+$gl-font-size:         15px;
+$gl-title-color:       #333;
+$gl-text-color:        #5c5c5c;
+$gl-text-green:        #4a2;
+$gl-text-red:          #d12f19;
+$gl-text-orange:       #d90;
+$gl-link-color:        #3084bb;
+$gl-dark-link-color:   #333;
+$gl-placeholder-color: #8f8f8f;
+$gl-icon-color:        $gl-placeholder-color;
+$gl-grayish-blue:      #7f8fa4;
+$gl-gray:              $gl-text-color;
+$gl-gray-dark:         #313236;
+$gl-header-color:      $gl-title-color;
+
+/*
+ * Lists
+ */
+$list-font-size:   $gl-font-size;
+$list-title-color: $gl-title-color;
+$list-text-color:  $gl-text-color;
+
+/*
+ * Markdown
+ */
+$md-text-color: $gl-text-color;
+$md-link-color: $gl-link-color;
+
+/*
+ * Code
+ */
 $code_font_size: 13px;
 $code_line_height: 1.5;
-$border-color: #efeff1;
-$table-border-color: #eef0f2;
-$background-color: #faf9f9;
-$header-height: 58px;
-$fixed-layout-width: 1280px;
-$gl-gray: #5a5a5a;
+
+/*
+ * Padding
+ */
 $gl-padding: 16px;
 $gl-btn-padding: 10px;
+$gl-input-padding: 10px;
 $gl-vert-padding: 6px;
 $gl-padding-top: 10px;
+
+/*
+ * Misc
+ */
+$row-hover: #f7faff;
+$row-hover-border: #b2d7ff;
+$progress-color: #c0392b;
+$avatar_radius: 50%;
+$header-height: 50px;
+$fixed-layout-width: 1280px;
 $gl-avatar-size: 40px;
-$secondary-text: #7f8fa4;
 $error-exclamation-point: #e62958;
-$border-radius-default: 3px;
-$list-title-color: #333;
-$list-text-color: #555;
-
+$border-radius-default: 2px;
 $btn-transparent-color: #8f8f8f;
-
-$ssh-key-icon-color: #8f8f8f;
-$ssh-key-icon-size: 18px;
-
+$settings-icon-size: 18px;
 $provider-btn-group-border: #e5e5e5;
 $provider-btn-not-active-color: #4688f1;
+$link-underline-blue: #4a8bee;
+$layout-link-gray: #7e7c7c;
+$todo-alert-blue: #428bca;
+$btn-side-margin: 10px;
+$btn-sm-side-margin: 7px;
+$btn-xs-side-margin: 5px;
 
 /*
  * Color schema
@@ -49,7 +92,7 @@ $provider-btn-not-active-color: #4688f1;
 
 $white-light: #fff;
 $white-normal: #ededed;
-$white-dark: #ededed;
+$white-dark: #ececec;
 
 $gray-light: #faf9f9;
 $gray-normal: #f5f5f5;
@@ -68,20 +111,23 @@ $blue-medium-light: #3498cb;
 $blue-medium: #2f8ebf;
 $blue-medium-dark: #2d86b4;
 
-$orange-light: rgba(252, 109, 38, 0.80);
+$orange-light: #fc8a51;
 $orange-normal: #e75e40;
 $orange-dark: #ce5237;
 
-$red-light: #f06559;
-$red-normal: #e52c5a;
-$red-dark: #d22852;
+$red-light: #e52c5a;
+$red-normal: #d22852;
+$red-dark: darken($red-normal, 5%);
+
+$black: #000;
+$black-transparent: rgba(0, 0, 0, 0.3);
 
 $border-white-light: #f1f2f4;
 $border-white-normal: #d6dae2;
 $border-white-dark: #c6cacf;
 
-$border-gray-light: rgba(0, 0, 0, 0.06);
-$border-gray-normal: rgba(0, 0, 0, 0.10);;
+$border-gray-light: #dcdcdc;
+$border-gray-normal: #d7d7d7;
 $border-gray-dark: #c6cacf;
 
 $border-green-light: #2faa60;
@@ -96,9 +142,9 @@ $border-orange-light: #fc6d26;
 $border-orange-normal: #ce5237;
 $border-orange-dark: #c14e35;
 
-$border-red-light: #f24f41;
-$border-red-normal: #d22852;
-$border-red-dark: #ca264f;
+$border-red-light: #d22852;
+$border-red-normal: #ca264f;
+$border-red-dark: darken($border-red-normal, 5%);
 
 $help-well-bg: #fafafa;
 $help-well-border: #e5e5e5;
@@ -110,22 +156,40 @@ $warning-message-border: #f0e2bb;
 /* header */
 $light-grey-header: #faf9f9;
 
+/* tanuki logo colors */
+$tanuki-red: #e24329;
+$tanuki-orange: #fc6d26;
+$tanuki-yellow: #fca326;
+
 /*
  * State colors:
  */
 $gl-primary: $blue-normal;
 $gl-success: $green-normal;
+$gl-success-focus: rgba($gl-success, .4);
 $gl-info: $blue-normal;
 $gl-warning: $orange-normal;
 $gl-danger: $red-normal;
-$gl-btn-active-background: rgba(0, 0, 0, 0.12);
-$gl-btn-active-gradient: inset 0 0 4px $gl-btn-active-background;
+$gl-btn-active-background: rgba(0, 0, 0, 0.16);
+$gl-btn-active-gradient: inset 0 2px 3px $gl-btn-active-background;
 
 /*
  * Commit Diff Colors
  */
 $added: #63c363;
 $deleted: #f77;
+$line-added: #ecfdf0;
+$line-added-dark: #c7f0d2;
+$line-removed: #fbe9eb;
+$line-removed-dark: #fac5cd;
+$line-number-old: #f9d7dc;
+$line-number-new: #ddfbe6;
+$line-number-select: #fbf2da;
+$match-line: #fafafa;
+$table-border-gray: #f0f0f0;
+$line-target-blue: #eaf3fc;
+$line-select-yellow: #fcf8e7;
+$line-select-yellow-dark: #f0e2bd;
 
 /*
  * Fonts
@@ -136,17 +200,19 @@ $regular_font: 'Source Sans Pro', "Helvetica Neue", Helvetica, Arial, sans-serif
 /*
 * Dropdowns
 */
+$dropdown-width: 300px;
 $dropdown-bg: #fff;
 $dropdown-link-color: #555;
-$dropdown-link-hover-bg: rgba(#000, .04);
+$dropdown-link-hover-bg: $row-hover;
+$dropdown-empty-row-bg: rgba(#000, .04);
 $dropdown-border-color: rgba(#000, .1);
 $dropdown-shadow-color: rgba(#000, .1);
 $dropdown-divider-color: rgba(#000, .1);
 $dropdown-header-color: #959494;
 $dropdown-title-btn-color: #bfbfbf;
-$dropdown-input-color: #c7c7c7;
-$dropdown-input-focus-border: rgb(58, 171, 240);
-$dropdown-input-focus-shadow: rgba(#000, .2);
+$dropdown-input-color: #555;
+$dropdown-input-focus-border: $focus-border-color;
+$dropdown-input-focus-shadow: rgba($dropdown-input-focus-border, .4);
 $dropdown-loading-bg: rgba(#fff, .6);
 
 $dropdown-toggle-bg: #fff;
@@ -157,8 +223,55 @@ $dropdown-toggle-icon-color: #c4c4c4;
 $dropdown-toggle-hover-icon-color: $dropdown-toggle-hover-border-color;
 
 /*
+* Buttons
+*/
+$btn-active-gray: #ececec;
+$btn-placeholder-gray: #c7c7c7;
+$btn-white-active: #848484;
+$btn-gray-hover: #eee;
+
+/*
  *  Award emoji
  */
 $award-emoji-menu-bg: #fff;
 $award-emoji-menu-border: #f1f2f4;
 $award-emoji-new-btn-icon-color: #dcdcdc;
+
+/*
+ * Search Box
+ */
+$search-input-border-color: rgba(#4688f1, .8);
+$search-input-focus-shadow-color: $dropdown-input-focus-shadow;
+$search-input-width: 244px;
+$location-badge-color: #aaa;
+$location-badge-bg: $gray-normal;
+$location-badge-active-bg: #4f91f8;
+$location-icon-color: #e7e9ed;
+$location-icon-active-color: #807e7e;
+
+/*
+ *  Notes
+ */
+$notes-light-color: #8e8e8e;
+$notes-action-color: #c3c3c3;
+$notes-role-color: #8e8e8e;
+$notes-role-border-color: #e4e4e4;
+
+$note-disabled-comment-color: #b2b2b2;
+$note-form-border-color: #e5e5e5;
+$note-toolbar-color: #959494;
+
+$zen-control-hover-color: #111;
+
+$calendar-header-color: #b8b8b8;
+$calendar-hover-bg: #ecf3fe;
+$calendar-border-color: rgba(#000, .1);
+$calendar-unselectable-bg: #faf9f9;
+
+/*
+ * Personal Access Tokens
+ */
+$personal-access-tokens-disabled-label-color: #bbb;
+
+$ci-output-bg: #1d1f21;
+$ci-text-color: #c5c8c6;

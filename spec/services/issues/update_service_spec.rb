@@ -1,13 +1,19 @@
+# coding: utf-8
 require 'spec_helper'
 
 describe Issues::UpdateService, services: true do
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let(:user3) { create(:user) }
-  let(:issue) { create(:issue, title: 'Old title', assignee_id: user3.id) }
-  let(:label) { create(:label) }
+  let(:project) { create(:empty_project) }
+  let(:label) { create(:label, project: project) }
   let(:label2) { create(:label) }
-  let(:project) { issue.project }
+
+  let(:issue) do
+    create(:issue, title: 'Old title',
+                   assignee_id: user3.id,
+                   project: project)
+  end
 
   before do
     project.team << [user, :master]
@@ -22,11 +28,6 @@ describe Issues::UpdateService, services: true do
       end
     end
 
-    def update_issue(opts)
-      @issue = Issues::UpdateService.new(project, user, opts).execute(issue)
-      @issue.reload
-    end
-
     context "valid params" do
       before do
         opts = {
@@ -34,7 +35,8 @@ describe Issues::UpdateService, services: true do
           description: 'Also please fix',
           assignee_id: user2.id,
           state_event: 'close',
-          label_ids: [label.id]
+          label_ids: [label.id],
+          confidential: true
         }
 
         perform_enqueued_jobs do
@@ -74,11 +76,23 @@ describe Issues::UpdateService, services: true do
       end
 
       it 'creates system note about title change' do
-        note = find_note('Title changed')
+        note = find_note('Changed title:')
 
         expect(note).not_to be_nil
-        expect(note.note).to eq 'Title changed from **Old title** to **New title**'
+        expect(note.note).to eq 'Changed title: **{-Old-} title** → **{+New+} title**'
       end
+
+      it 'creates system note about confidentiality change' do
+        note = find_note('Made the issue confidential')
+
+        expect(note).not_to be_nil
+        expect(note.note).to eq 'Made the issue confidential'
+      end
+    end
+
+    def update_issue(opts)
+      @issue = Issues::UpdateService.new(project, user, opts).execute(issue)
+      @issue.reload
     end
 
     context 'todos' do
@@ -151,7 +165,12 @@ describe Issues::UpdateService, services: true do
 
     context 'when the issue is relabeled' do
       let!(:non_subscriber) { create(:user) }
-      let!(:subscriber) { create(:user).tap { |u| label.toggle_subscription(u) } }
+      let!(:subscriber) do
+        create(:user).tap do |u|
+          label.toggle_subscription(u)
+          project.team << [u, :developer]
+        end
+      end
 
       it 'sends notifications for subscribers of newly added labels' do
         opts = { label_ids: [label.id] }
@@ -252,6 +271,51 @@ describe Issues::UpdateService, services: true do
           expect do
             update_issue({ description: "- [ ] One\n- [ ] Two\n- [ ] Three" })
           end.not_to change { Note.count }
+        end
+      end
+    end
+
+    context 'updating labels' do
+      let(:label3) { create(:label, project: project) }
+      let(:result) { Issues::UpdateService.new(project, user, params).execute(issue).reload }
+
+      context 'when add_label_ids and label_ids are passed' do
+        let(:params) { { label_ids: [label.id], add_label_ids: [label3.id] } }
+
+        it 'ignores the label_ids parameter' do
+          expect(result.label_ids).not_to include(label.id)
+        end
+
+        it 'adds the passed labels' do
+          expect(result.label_ids).to include(label3.id)
+        end
+      end
+
+      context 'when remove_label_ids and label_ids are passed' do
+        let(:params) { { label_ids: [], remove_label_ids: [label.id] } }
+
+        before { issue.update_attributes(labels: [label, label3]) }
+
+        it 'ignores the label_ids parameter' do
+          expect(result.label_ids).not_to be_empty
+        end
+
+        it 'removes the passed labels' do
+          expect(result.label_ids).not_to include(label.id)
+        end
+      end
+
+      context 'when add_label_ids and remove_label_ids are passed' do
+        let(:params) { { add_label_ids: [label3.id], remove_label_ids: [label.id] } }
+
+        before { issue.update_attributes(labels: [label]) }
+
+        it 'adds the passed labels' do
+          expect(result.label_ids).to include(label3.id)
+        end
+
+        it 'removes the passed labels' do
+          expect(result.label_ids).not_to include(label.id)
         end
       end
     end

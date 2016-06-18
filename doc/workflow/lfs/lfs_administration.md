@@ -23,6 +23,10 @@ In `/etc/gitlab/gitlab.rb`:
 
 ```ruby
 gitlab_rails['lfs_enabled'] = false
+
+# Optionally, change the storage path location. Defaults to
+# `#{gitlab_rails['shared_path']}/lfs-objects`. Which evaluates to
+# `/var/opt/gitlab/gitlab-rails/shared/lfs-objects` by default.
 gitlab_rails['lfs_storage_path'] = "/mnt/storage/lfs-objects"
 ```
 

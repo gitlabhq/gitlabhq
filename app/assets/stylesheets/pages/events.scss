@@ -6,7 +6,7 @@
   font-size: $gl-font-size;
   padding: $gl-padding-top 0 $gl-padding-top ($gl-avatar-size + $gl-padding-top);
   border-bottom: 1px solid $table-border-color;
-  color: #7f8fa4;
+  color: $list-text-color;
 
   &.event-inline {
     .avatar {
@@ -21,7 +21,7 @@
   }
 
   a {
-    color: #4c4e54;
+    color: $gl-dark-link-color;
   }
 
   .avatar {
@@ -31,10 +31,7 @@
   .event-title {
     @include str-truncated(calc(100% - 174px));
     font-weight: 600;
-
-    .author_name {
-      color: #333;
-    }
+    color: $list-text-color;
   }
 
   .event-body {
@@ -44,8 +41,13 @@
       word-wrap: break-word;
 
       .md {
-        color: #7f8fa4;
+        color: $gl-grayish-blue;
         font-size: $gl-font-size;
+
+        .label {
+          color: $gl-text-color;
+          font-size: inherit;
+        }
 
         iframe.twitter-share-button {
           vertical-align: bottom;

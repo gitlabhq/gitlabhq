@@ -41,7 +41,7 @@
       margin: 0;
       margin-left: 20px;
       padding: 5px;
-      padding-top: 12px;
+      padding-top: 8px;
       line-height: 20px;
 
       &.right {
@@ -79,9 +79,12 @@
     }
 
     &.ci-failed,
-    &.ci-canceled,
     &.ci-error {
       color: $gl-danger;
+    }
+
+    &.ci-canceled {
+      color: $gl-gray;
     }
 
     a.monospace {
@@ -104,11 +107,39 @@
       font-weight: 600;
       font-size: 17px;
       margin: 5px 0;
-      color: #313236;
+      color: $gl-gray-dark;
+
+      &.has-conflicts .fa-exclamation-triangle {
+        color: $gl-warning;
+      }
+
     }
 
     p:last-child {
       margin-bottom: 0;
+    }
+
+    @media (max-width: $screen-sm-max) {
+      h4 {
+        font-size: 15px;
+      }
+
+      p {
+        font-size: 13px;
+      }
+
+      .btn,
+      .btn-group,
+      .accept-action {
+        width: 100%;
+        margin-bottom: 4px;
+      }
+
+      .accept-control {
+        width: 100%;
+        text-align: center;
+        margin: 0;
+      }
     }
   }
 
@@ -123,6 +154,8 @@
 
 .mr_source_commit,
 .mr_target_commit {
+  margin-bottom: 0;
+
   .commit {
     margin: 0;
     padding: 2px 0;
@@ -134,12 +167,13 @@
 }
 
 .label-branch {
-  color: #313236;
+  color: $gl-gray-dark;
   font-family: $monospace_font;
   font-weight: bold;
   overflow: hidden;
   font-size: 90%;
   margin: 0 3px;
+  word-break: break-all;
 }
 
 .mr-list {
@@ -174,10 +208,6 @@
   display: none;
 }
 
-.merge-request-form .select2-container {
-  width: 250px !important;
-}
-
 #modal_merge_info .modal-dialog {
   width: 600px;
 
@@ -195,38 +225,103 @@
   line-height: 31px;
 }
 
-.disabled-comment-area {
-  padding: 16px 0;
+.builds {
+  .table-holder {
+    overflow-x: scroll;
+  }
+}
 
-  .disabled-profile {
-    width: 40px;
-    height: 40px;
-    background: $border-gray-dark;
-    border-radius: 20px;
-    display: inline-block;
-    margin-right: 10px;
+.panel-new-merge-request {
+  .panel-heading {
+    padding: 5px 10px;
+    font-weight: 600;
+    line-height: 25px;
   }
 
-  .disabled-comment {
-    background: $gray-light;
-    display: inline-block;
-    vertical-align: top;
-    height: 200px;
-    border-radius: 4px;
-    border: 1px solid $border-gray-normal;
-    padding-top: 90px;
-    text-align: center;
-    right: 20px;
-    position: absolute;
-    left: 70px;
-    margin-bottom: 20px;
+  .panel-body {
+    padding: 10px 5px;
+  }
 
-    span {
-      color: #b2b2b2;
+  .panel-footer {
+    padding: 5px 10px;
 
-      a {
-        color: $md-link-color;
-      }
+    .btn {
+      min-width: auto;
+    }
+  }
+
+  .commit {
+    .commit-row-title {
+      margin-bottom: 4px;
+    }
+
+    .avatar {
+      margin-left: 0;
+    }
+
+    .commit-row-info {
+      line-height: 20px;
+    }
+  }
+
+  .btn-clipboard {
+    margin-right: 5px;
+    padding: 0;
+    background: transparent;
+  }
+
+  .ci-status-link {
+    margin-right: 5px;
+  }
+}
+
+.merge-request-select {
+  padding-left: 5px;
+  padding-right: 5px;
+  margin-bottom: 10px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  @media (min-width: $screen-sm-min) {
+    float: left;
+    width: 50%;
+    margin-bottom: 0;
+  }
+
+  .dropdown-menu-toggle {
+    width: 100%;
+  }
+
+  .dropdown-menu {
+    left: 5px;
+    right: 5px;
+    width: auto;
+  }
+}
+
+.issuable-form-select-holder {
+  display: inline-block;
+  width: 250px;
+}
+
+.table-holder {
+  .builds {
+
+    th {
+      background-color: $white-light;
+      color: $gl-placeholder-color;
+    }
+  }
+}
+
+.merged-buttons {
+  .btn {
+    float: left;
+
+    &:not(:last-child) {
+      margin-right: 10px;
     }
   }
 }

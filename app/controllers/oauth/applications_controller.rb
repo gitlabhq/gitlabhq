@@ -1,9 +1,11 @@
 class Oauth::ApplicationsController < Doorkeeper::ApplicationsController
   include Gitlab::CurrentSettings
+  include Gitlab::GonHelper
   include PageLayoutHelper
 
   before_action :verify_user_oauth_applications_enabled
   before_action :authenticate_user!
+  before_action :add_gon_variables
 
   layout 'profile'
 
@@ -30,7 +32,7 @@ class Oauth::ApplicationsController < Doorkeeper::ApplicationsController
   def verify_user_oauth_applications_enabled
     return if current_application_settings.user_oauth_applications?
 
-    redirect_to applications_profile_url
+    redirect_to profile_path
   end
 
   def set_index_vars

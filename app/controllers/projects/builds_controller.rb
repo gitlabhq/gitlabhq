@@ -1,7 +1,7 @@
 class Projects::BuildsController < Projects::ApplicationController
   before_action :build, except: [:index, :cancel_all]
   before_action :authorize_read_build!, except: [:cancel, :cancel_all, :retry]
-  before_action :authorize_update_build!, except: [:index, :show, :status]
+  before_action :authorize_update_build!, except: [:index, :show, :status, :raw]
   layout 'project'
 
   def index
@@ -26,9 +26,9 @@ class Projects::BuildsController < Projects::ApplicationController
   end
 
   def show
-    @builds = @project.ci_commits.find_by_sha(@build.sha).builds.order('id DESC')
+    @builds = @project.pipelines.find_by_sha(@build.sha).builds.order('id DESC')
     @builds = @builds.where("id not in (?)", @build.id)
-    @commit = @build.commit
+    @pipeline = @build.pipeline
 
     respond_to do |format|
       format.html
@@ -38,12 +38,20 @@ class Projects::BuildsController < Projects::ApplicationController
     end
   end
 
+  def trace
+    respond_to do |format|
+      format.json do
+        render json: @build.trace_with_state(params[:state].presence).merge!(id: @build.id, status: @build.status)
+      end
+    end
+  end
+
   def retry
     unless @build.retryable?
       return render_404
     end
 
-    build = Ci::Build.retry(@build)
+    build = Ci::Build.retry(@build, current_user)
     redirect_to build_path(build)
   end
 
@@ -62,10 +70,18 @@ class Projects::BuildsController < Projects::ApplicationController
                 notice: "Build has been sucessfully erased!"
   end
 
+  def raw
+    if @build.has_trace?
+      send_file @build.path_to_trace, type: 'text/plain; charset=utf-8', disposition: 'inline'
+    else
+      render_404
+    end
+  end
+
   private
 
   def build
-    @build ||= project.builds.unscoped.find_by!(id: params[:id])
+    @build ||= project.builds.find_by!(id: params[:id])
   end
 
   def build_path(build)

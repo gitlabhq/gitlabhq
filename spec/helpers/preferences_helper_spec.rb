@@ -19,7 +19,9 @@ describe PreferencesHelper do
         ['Your Projects (default)', 'projects'],
         ['Starred Projects',        'stars'],
         ["Your Projects' Activity", 'project_activity'],
-        ["Starred Projects' Activity", 'starred_project_activity']
+        ["Starred Projects' Activity", 'starred_project_activity'],
+        ["Your Groups", 'groups'],
+        ["Your Todos", 'todos']
       ]
     end
   end

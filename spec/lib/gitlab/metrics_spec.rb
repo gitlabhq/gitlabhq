@@ -13,7 +13,7 @@ describe Gitlab::Metrics do
     end
   end
 
-  describe '#submit_metrics' do
+  describe '.submit_metrics' do
     it 'prepares and writes the metrics to InfluxDB' do
       connection = double(:connection)
       pool       = double(:pool)
@@ -26,7 +26,7 @@ describe Gitlab::Metrics do
     end
   end
 
-  describe '#prepare_metrics' do
+  describe '.prepare_metrics' do
     it 'returns a Hash with the keys as Symbols' do
       metrics = described_class.
         prepare_metrics([{ 'values' => {}, 'tags' => {} }])
@@ -51,13 +51,100 @@ describe Gitlab::Metrics do
     end
   end
 
-  describe '#escape_value' do
+  describe '.escape_value' do
     it 'escapes an equals sign' do
       expect(described_class.escape_value('foo=')).to eq('foo\\=')
     end
 
     it 'casts values to Strings' do
       expect(described_class.escape_value(10)).to eq('10')
+    end
+  end
+
+  describe '.measure' do
+    context 'without a transaction' do
+      it 'returns the return value of the block' do
+        val = Gitlab::Metrics.measure(:foo) { 10 }
+
+        expect(val).to eq(10)
+      end
+    end
+
+    context 'with a transaction' do
+      let(:transaction) { Gitlab::Metrics::Transaction.new }
+
+      before do
+        allow(Gitlab::Metrics).to receive(:current_transaction).
+          and_return(transaction)
+      end
+
+      it 'adds a metric to the current transaction' do
+        expect(transaction).to receive(:increment).
+          with('foo_real_time', a_kind_of(Numeric))
+
+        expect(transaction).to receive(:increment).
+          with('foo_cpu_time', a_kind_of(Numeric))
+
+        expect(transaction).to receive(:increment).
+          with('foo_call_count', 1)
+
+        Gitlab::Metrics.measure(:foo) { 10 }
+      end
+
+      it 'returns the return value of the block' do
+        val = Gitlab::Metrics.measure(:foo) { 10 }
+
+        expect(val).to eq(10)
+      end
+    end
+  end
+
+  describe '.tag_transaction' do
+    context 'without a transaction' do
+      it 'does nothing' do
+        expect_any_instance_of(Gitlab::Metrics::Transaction).
+          not_to receive(:add_tag)
+
+        Gitlab::Metrics.tag_transaction(:foo, 'bar')
+      end
+    end
+
+    context 'with a transaction' do
+      let(:transaction) { Gitlab::Metrics::Transaction.new }
+
+      it 'adds the tag to the transaction' do
+        expect(Gitlab::Metrics).to receive(:current_transaction).
+          and_return(transaction)
+
+        expect(transaction).to receive(:add_tag).
+          with(:foo, 'bar')
+
+        Gitlab::Metrics.tag_transaction(:foo, 'bar')
+      end
+    end
+  end
+
+  describe '.action=' do
+    context 'without a transaction' do
+      it 'does nothing' do
+        expect_any_instance_of(Gitlab::Metrics::Transaction).
+          not_to receive(:action=)
+
+        Gitlab::Metrics.action = 'foo'
+      end
+    end
+
+    context 'with a transaction' do
+      it 'sets the action of a transaction' do
+        trans = Gitlab::Metrics::Transaction.new
+
+        expect(Gitlab::Metrics).to receive(:current_transaction).
+          and_return(trans)
+
+        expect(trans).to receive(:action=).with('foo')
+
+        Gitlab::Metrics.action = 'foo'
+      end
     end
   end
 end

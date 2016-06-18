@@ -1,14 +1,19 @@
+# rubocop:disable all
 class ConvertClosedToStateInMilestone < ActiveRecord::Migration
+  include Gitlab::Database
+
   def up
-    Milestone.transaction do
-      Milestone.where(closed: true).update_all(state: :closed)
-      Milestone.where(closed: false).update_all(state: :active)
-    end
+    execute "UPDATE #{table_name} SET state = 'closed' WHERE closed = #{true_value}"
+    execute "UPDATE #{table_name} SET state = 'active' WHERE closed = #{false_value}"
   end
 
   def down
-    Milestone.transaction do
-      Milestone.where(state: :closed).update_all(closed: true)
-    end
+    execute "UPDATE #{table_name} SET closed = #{true_value} WHERE state = 'cloesd'"
+  end
+
+  private
+
+  def table_name
+    Milestone.table_name
   end
 end

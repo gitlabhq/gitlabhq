@@ -1,32 +1,27 @@
-# == Schema Information
-#
-# Table name: namespaces
-#
-#  id          :integer          not null, primary key
-#  name        :string(255)      not null
-#  path        :string(255)      not null
-#  owner_id    :integer
-#  created_at  :datetime
-#  updated_at  :datetime
-#  type        :string(255)
-#  description :string(255)      default(""), not null
-#  avatar      :string(255)
-#
-
 require 'carrierwave/orm/activerecord'
-require 'file_size_validator'
 
 class Group < Namespace
   include Gitlab::ConfigHelper
+  include Gitlab::VisibilityLevel
+  include AccessRequestable
   include Referable
 
   has_many :group_members, dependent: :destroy, as: :source, class_name: 'GroupMember'
   alias_method :members, :group_members
-  has_many :users, through: :group_members
+  has_many :users, -> { where(members: { requested_at: nil }) }, through: :group_members
+
+  has_many :owners,
+    -> { where(members: { access_level: Gitlab::Access::OWNER }) },
+    through: :group_members,
+    source: :user
+
   has_many :project_group_links, dependent: :destroy
   has_many :shared_projects, through: :project_group_links, source: :project
+  has_many :notification_settings, dependent: :destroy, as: :source
 
   validate :avatar_type, if: ->(user) { user.avatar.present? && user.avatar_changed? }
+  validate :visibility_level_allowed_by_projects
+
   validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
 
   mount_uploader :avatar, AvatarUploader
@@ -70,18 +65,33 @@ class Group < Namespace
     "#{self.class.reference_prefix}#{name}"
   end
 
+  def web_url
+    Gitlab::Routing.url_helpers.group_url(self)
+  end
+
   def human_name
     name
+  end
+
+  def visibility_level_field
+    visibility_level
+  end
+
+  def visibility_level_allowed_by_projects
+    allowed_by_projects = self.projects.where('visibility_level > ?', self.visibility_level).none?
+
+    unless allowed_by_projects
+      level_name = Gitlab::VisibilityLevel.level_name(visibility_level).downcase
+      self.errors.add(:visibility_level, "#{level_name} is not allowed since there are projects with higher visibility.")
+    end
+
+    allowed_by_projects
   end
 
   def avatar_url(size = nil)
     if avatar.present?
       [gitlab_config.url, avatar.url].join
     end
-  end
-
-  def owners
-    @owners ||= group_members.owners.includes(:user).map(&:user)
   end
 
   def add_users(user_ids, access_level, current_user = nil)

@@ -28,7 +28,7 @@ module AccessMatchers
     if user.kind_of?(User)
       # User#inspect displays too much information for RSpec's description
       # messages
-      "be #{type} for supplied User"
+      "be #{type} for the specified user"
     else
       "be #{type} for #{user}"
     end

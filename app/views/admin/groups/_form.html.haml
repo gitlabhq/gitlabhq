@@ -1,14 +1,13 @@
 = form_for [:admin, @group], html: { class: "form-horizontal" } do |f|
-  - if @group.errors.any?
-    .alert.alert-danger
-      %span= @group.errors.full_messages.first
-
+  = form_errors(@group)
   = render 'shared/group_form', f: f
 
   .form-group.group-description-holder
     = f.label :avatar, "Group avatar", class: 'control-label'
     .col-sm-10
       = render 'shared/choose_group_avatar_button', f: f
+
+  = render 'shared/visibility_level', f: f, visibility_level: @group.visibility_level, can_change_visibility_level: can_change_group_visibility_level?(@group), form_model: @group
 
   - if @group.new_record?
     .form-group

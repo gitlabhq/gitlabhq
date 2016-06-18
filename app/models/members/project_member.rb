@@ -1,22 +1,3 @@
-# == Schema Information
-#
-# Table name: members
-#
-#  id                 :integer          not null, primary key
-#  access_level       :integer          not null
-#  source_id          :integer          not null
-#  source_type        :string(255)      not null
-#  user_id            :integer
-#  notification_level :integer          not null
-#  type               :string(255)
-#  created_at         :datetime
-#  updated_at         :datetime
-#  created_by_id      :integer
-#  invite_email       :string(255)
-#  invite_token       :string(255)
-#  invite_accepted_at :datetime
-#
-
 class ProjectMember < Member
   SOURCE_TYPE = 'Project'
 
@@ -24,16 +5,14 @@ class ProjectMember < Member
 
   belongs_to :project, class_name: 'Project', foreign_key: 'source_id'
 
-
   # Make sure project member points only to project as it source
   default_value_for :source_type, SOURCE_TYPE
-  default_value_for :notification_level, Notification::N_GLOBAL
   validates_format_of :source_type, with: /\AProject\z/
   default_scope { where(source_type: SOURCE_TYPE) }
 
   scope :in_project, ->(project) { where(source_id: project.id) }
-  scope :in_projects, ->(projects) { where(source_id: projects.pluck(:id)) }
-  scope :with_user, ->(user) { where(user_id: user.id) }
+
+  before_destroy :delete_member_todos
 
   class << self
 
@@ -103,7 +82,7 @@ class ProjectMember < Member
       Gitlab::Access.sym_options
     end
 
-    def access_roles
+    def access_level_roles
       Gitlab::Access.options
     end
   end
@@ -122,8 +101,18 @@ class ProjectMember < Member
 
   private
 
+  def delete_member_todos
+    user.todos.where(project_id: source_id).destroy_all if user
+  end
+
   def send_invite
     notification_service.invite_project_member(self, @raw_invite_token)
+
+    super
+  end
+
+  def send_request
+    notification_service.new_project_access_request(self)
 
     super
   end
@@ -159,6 +148,12 @@ class ProjectMember < Member
 
   def after_decline_invite
     notification_service.decline_project_invite(self)
+
+    super
+  end
+
+  def post_decline_request
+    notification_service.decline_project_access_request(self)
 
     super
   end

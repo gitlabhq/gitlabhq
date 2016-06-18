@@ -1,5 +1,5 @@
 .detail-page-header {
-  padding: 11px 0;
+  padding: $gl-padding-top 0;
   border-bottom: 1px solid $border-color;
   color: #5c5d5e;
   font-size: 16px;
@@ -16,25 +16,29 @@
   .issue_created_ago, .author_link {
     white-space: nowrap;
   }
-
-  .issue-meta {
-    display: inline-block;
-    line-height: 20px;
-  }
 }
 
 .detail-page-description {
   .title {
     margin: 0;
     font-size: 23px;
-    color: #313236;
+    color: $gl-gray-dark;
   }
 
   .description {
     margin-top: 6px;
 
-    p:last-child {
-      margin-bottom: 0;
+    p {
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  .wiki {
+    code {
+      white-space: pre-wrap;
+      word-break: keep-all;
     }
   }
 }

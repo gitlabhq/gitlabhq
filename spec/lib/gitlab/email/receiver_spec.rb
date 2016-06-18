@@ -3,6 +3,7 @@ require "spec_helper"
 describe Gitlab::Email::Receiver, lib: true do
   before do
     stub_incoming_email_setting(enabled: true, address: "reply+%{key}@appmail.adventuretime.ooo")
+    stub_config_setting(host: 'localhost')
   end
 
   let(:reply_key) { "59d8df8370b7e95c5a49fbf86aeb2c93" }
@@ -136,6 +137,28 @@ describe Gitlab::Email::Receiver, lib: true do
       note = noteable.notes.last
 
       expect(note.note).to include(markdown)
+    end
+
+    context 'when sub-addressing is not supported' do
+      before do
+        stub_incoming_email_setting(enabled: true, address: nil)
+      end
+
+      shared_examples 'an email that contains a reply key' do |header|
+        it "fetches the reply key from the #{header} header and creates a comment" do
+          expect { receiver.execute }.to change { noteable.notes.count }.by(1)
+          note = noteable.notes.last
+
+          expect(note.author).to eq(sent_notification.recipient)
+          expect(note.note).to include('I could not disagree more.')
+        end
+      end
+
+      context 'reply key is in the References header' do
+        let(:email_raw) { fixture_file('emails/reply_without_subaddressing_and_key_inside_references.eml') }
+
+        it_behaves_like 'an email that contains a reply key', 'References'
+      end
     end
   end
 end

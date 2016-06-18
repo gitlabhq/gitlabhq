@@ -6,7 +6,7 @@ describe Projects::AvatarsController do
 
   before do
     sign_in(user)
-    project.team << [user, :developer]
+    project.team << [user, :master]
     controller.instance_variable_set(:@project, project)
   end
 

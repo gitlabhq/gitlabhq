@@ -8,15 +8,18 @@ class Commit
   include StaticModel
 
   attr_mentionable :safe_message, pipeline: :single_line
-  participant :author, :committer, :notes
+
+  participant :author
+  participant :committer
+  participant :notes_with_associations
 
   attr_accessor :project
 
   DIFF_SAFE_LINES = Gitlab::Git::DiffCollection::DEFAULT_LIMITS[:max_lines]
 
   # Commits above this size will not be rendered in HTML
-  DIFF_HARD_LIMIT_FILES = 1000 unless defined?(DIFF_HARD_LIMIT_FILES)
-  DIFF_HARD_LIMIT_LINES = 50000 unless defined?(DIFF_HARD_LIMIT_LINES)
+  DIFF_HARD_LIMIT_FILES = 1000
+  DIFF_HARD_LIMIT_LINES = 50000
 
   class << self
     def decorate(commits, project)
@@ -74,14 +77,14 @@ class Commit
   #
   # This pattern supports cross-project references.
   def self.reference_pattern
-    %r{
+    @reference_pattern ||= %r{
       (?:#{Project.reference_pattern}#{reference_prefix})?
       (?<commit>\h{7,40})
     }x
   end
 
   def self.link_reference_pattern
-    super("commit", /(?<commit>\h{7,40})/)
+    @link_reference_pattern ||= super("commit", /(?<commit>\h{7,40})/)
   end
 
   def to_reference(from_project = nil)
@@ -150,13 +153,11 @@ class Commit
   end
 
   def hook_attrs(with_changed_files: false)
-    path_with_namespace = project.path_with_namespace
-
     data = {
       id: id,
       message: safe_message,
       timestamp: committed_date.xmlschema,
-      url: "#{Gitlab.config.gitlab.url}/#{path_with_namespace}/commit/#{id}",
+      url: Gitlab::UrlBuilder.build(self),
       author: {
         name: author_name,
         email: author_email
@@ -196,6 +197,10 @@ class Commit
     project.notes.for_commit_id(self.id)
   end
 
+  def notes_with_associations
+    notes.includes(:author)
+  end
+
   def method_missing(m, *args, &block)
     @raw.send(m, *args, &block)
   end
@@ -209,16 +214,21 @@ class Commit
     @raw.short_id(7)
   end
 
-  def ci_commit
-    project.ci_commit(sha)
+  def pipelines
+    @pipeline ||= project.pipelines.where(sha: sha)
   end
 
   def status
-    ci_commit.try(:status) || :not_found
+    return @status if defined?(@status)
+    @status ||= pipelines.status
   end
 
   def revert_branch_name
     "revert-#{short_id}"
+  end
+
+  def cherry_pick_branch_name
+    project.repository.next_branch("cherry-pick-#{short_id}", mild: true)
   end
 
   def revert_description
@@ -230,7 +240,7 @@ class Commit
   end
 
   def revert_message
-    %Q{Revert "#{title}"\n\n#{revert_description}}
+    %Q{Revert "#{title.strip}"\n\n#{revert_description}}
   end
 
   def reverts_commit?(commit)
@@ -248,11 +258,17 @@ class Commit
   end
 
   def has_been_reverted?(current_user = nil, noteable = self)
-    Gitlab::ReferenceExtractor.lazily do
-      noteable.notes.system.flat_map do |note|
-        note.all_references(current_user).commits
-      end
-    end.any? { |commit_ref| commit_ref.reverts_commit?(self) }
+    ext = all_references(current_user)
+
+    noteable.notes_with_associations.system.each do |note|
+      note.all_references(current_user, extractor: ext)
+    end
+
+    ext.commits.any? { |commit_ref| commit_ref.reverts_commit?(self) }
+  end
+
+  def change_type_title
+    merged_merge_request ? 'merge request' : 'commit'
   end
 
   private

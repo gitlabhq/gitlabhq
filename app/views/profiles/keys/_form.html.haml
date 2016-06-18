@@ -1,10 +1,6 @@
 %div
   = form_for [:profile, @key], html: { class: 'js-requires-input' } do |f|
-    - if @key.errors.any?
-      .alert.alert-danger
-        %ul
-          - @key.errors.full_messages.each do |msg|
-            %li= msg
+    = form_errors(@key)
 
     .form-group
       = f.label :key, class: 'label-light'

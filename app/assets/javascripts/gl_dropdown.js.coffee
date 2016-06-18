@@ -1,45 +1,113 @@
 class GitLabDropdownFilter
   BLUR_KEYCODES = [27, 40]
+  ARROW_KEY_CODES = [38, 40]
+  HAS_VALUE_CLASS = "has-value"
 
-  constructor: (@dropdown, @options) ->
-    @input = @dropdown.find(".dropdown-input .dropdown-input-field")
+  constructor: (@input, @options) ->
+    {
+      @filterInputBlur = true
+    } = @options
+
+    $inputContainer = @input.parent()
+    $clearButton = $inputContainer.find('.js-dropdown-input-clear')
+
+    @indeterminateIds = []
+
+    # Clear click
+    $clearButton.on 'click', (e) =>
+      e.preventDefault()
+      e.stopPropagation()
+      @input
+        .val('')
+        .trigger('keyup')
+        .focus()
 
     # Key events
     timeout = ""
     @input.on "keyup", (e) =>
-      if e.keyCode is 13 && @input.val() isnt ""
-        if @options.enterCallback
-          @options.enterCallback()
-        return
+      keyCode = e.which
 
-      clearTimeout timeout
-      timeout = setTimeout =>
-        blur_field = @shouldBlur e.keyCode
-        search_text = @input.val()
+      return if ARROW_KEY_CODES.indexOf(keyCode) >= 0
 
-        if blur_field
-          @input.blur()
+      if @input.val() isnt "" and !$inputContainer.hasClass HAS_VALUE_CLASS
+        $inputContainer.addClass HAS_VALUE_CLASS
+      else if @input.val() is "" and $inputContainer.hasClass HAS_VALUE_CLASS
+        $inputContainer.removeClass HAS_VALUE_CLASS
 
-        if @options.remote
-          @options.query search_text, (data) =>
+      if keyCode is 13
+        return false
+
+      # Only filter asynchronously only if option remote is set
+      if @options.remote
+        clearTimeout timeout
+        timeout = setTimeout =>
+          blur_field = @shouldBlur keyCode
+
+          if blur_field and @filterInputBlur
+            @input.blur()
+
+          @options.query @input.val(), (data) =>
             @options.callback(data)
-        else
-          @filter search_text
-      , 250
+        , 250
+      else
+        @filter @input.val()
 
   shouldBlur: (keyCode) ->
     return BLUR_KEYCODES.indexOf(keyCode) >= 0
 
   filter: (search_text) ->
     data = @options.data()
-    results = data
 
-    if search_text isnt ""
-      results = fuzzaldrinPlus.filter(data, search_text,
-        key: @options.keys
-      )
+    if data?
+      results = data
 
-    @options.callback results
+      if search_text isnt ''
+        # When data is an array of objects therefore [object Array] e.g.
+        # [
+        #   { prop: 'foo' },
+        #   { prop: 'baz' }
+        # ]
+        if _.isArray(data)
+          results = fuzzaldrinPlus.filter(data, search_text,
+            key: @options.keys
+          )
+        else
+          # If data is grouped therefore an [object Object]. e.g.
+          # {
+          #   groupName1: [
+          #     { prop: 'foo' },
+          #     { prop: 'baz' }
+          #   ],
+          #   groupName2: [
+          #     { prop: 'abc' },
+          #     { prop: 'def' }
+          #   ]
+          # }
+          if gl.utils.isObject data
+            results = {}
+            for key, group of data
+              tmp = fuzzaldrinPlus.filter(group, search_text,
+                key: @options.keys
+              )
+
+              if tmp.length
+                results[key] = tmp.map (item) -> item
+
+      @options.callback results
+    else
+      elements = @options.elements()
+
+      if search_text
+        elements.each ->
+          $el = $(@)
+          matches = fuzzaldrinPlus.match($el.text().trim(), search_text)
+
+          if matches.length
+            $el.show()
+          else
+            $el.hide()
+      else
+        elements.show()
 
 class GitLabDropdownRemote
   constructor: (@dataEndpoint, @options) ->
@@ -76,39 +144,78 @@ class GitLabDropdown
   LOADING_CLASS = "is-loading"
   PAGE_TWO_CLASS = "is-page-two"
   ACTIVE_CLASS = "is-active"
+  INDETERMINATE_CLASS = "is-indeterminate"
+  currentIndex = -1
+
+  FILTER_INPUT = '.dropdown-input .dropdown-input-field'
 
   constructor: (@el, @options) ->
     self = @
-    @dropdown = $(@el).parent()
-    search_fields = if @options.search then @options.search.fields else [];
+    selector = $(@el).data "target"
+    @dropdown = if selector? then $(selector) else $(@el).parent()
+
+    # Set Defaults
+    {
+      # If no input is passed create a default one
+      @filterInput = @getElement(FILTER_INPUT)
+      @highlight = false
+      @filterInputBlur = true
+    } = @options
+
+    self = @
+
+    # If selector was passed
+    if _.isString(@filterInput)
+      @filterInput = @getElement(@filterInput)
+
+    searchFields = if @options.search then @options.search.fields else [];
 
     if @options.data
-      # Remote data
-      @remote = new GitLabDropdownRemote @options.data, {
-        dataType: @options.dataType,
-        beforeSend: @toggleLoading.bind(@)
-        success: (data) =>
-          @fullData = data
+      # If we provided data
+      # data could be an array of objects or a group of arrays
+      if _.isObject(@options.data) and not _.isFunction(@options.data)
+        @fullData = @options.data
+        @parseData @options.data
+      else
+        # Remote data
+        @remote = new GitLabDropdownRemote @options.data, {
+          dataType: @options.dataType,
+          beforeSend: @toggleLoading.bind(@)
+          success: (data) =>
+            @fullData = data
 
-          @parseData @fullData
-      }
+            @parseData @fullData
+        }
 
-    # Init filiterable
+    # Init filterable
     if @options.filterable
-      @filter = new GitLabDropdownFilter @dropdown,
+      @filter = new GitLabDropdownFilter @filterInput,
+        filterInputBlur: @filterInputBlur
         remote: @options.filterRemote
         query: @options.data
-        keys: @options.search.fields
+        keys: searchFields
+        elements: =>
+          selector = '.dropdown-content li:not(.divider)'
+
+          if @dropdown.find('.dropdown-toggle-page').length
+            selector = ".dropdown-page-one #{selector}"
+
+          return $(selector)
         data: =>
           return @fullData
         callback: (data) =>
+          currentIndex = -1
           @parseData data
-        enterCallback: =>
-          @selectFirstRow()
 
     # Event listeners
+
     @dropdown.on "shown.bs.dropdown", @opened
     @dropdown.on "hidden.bs.dropdown", @hidden
+    $(@el).on "update.label", @updateLabel
+    @dropdown.on "click", ".dropdown-menu, .dropdown-menu-close", @shouldPropagate
+    @dropdown.on 'keyup', (e) =>
+      if e.which is 27 # Escape key
+        $('.dropdown-menu-close', @dropdown).trigger 'click'
 
     if @dropdown.find(".dropdown-toggle-page").length
       @dropdown.find(".dropdown-toggle-page, .dropdown-menu-back").on "click", (e) =>
@@ -124,10 +231,15 @@ class GitLabDropdown
         selector = ".dropdown-page-one .dropdown-content a"
 
       @dropdown.on "click", selector, (e) ->
-        self.rowClicked $(@)
+        $el = $(@)
+        selected = self.rowClicked $el
 
         if self.options.clicked
-          self.options.clicked()
+          self.options.clicked(selected, $el, e)
+
+  # Finds an element inside wrapper element
+  getElement: (selector) ->
+    @dropdown.find selector
 
   toggleLoading: ->
     $('.dropdown-menu', @dropdown).toggleClass LOADING_CLASS
@@ -141,36 +253,90 @@ class GitLabDropdown
 
     menu.toggleClass PAGE_TWO_CLASS
 
+    # Focus first visible input on active page
+    @dropdown.find('[class^="dropdown-page-"]:visible :text:visible:first').focus()
+
   parseData: (data) ->
     @renderedData = data
-
-    # Render each row
-    html = $.map data, (obj) =>
-      return @renderItem(obj)
 
     if @options.filterable and data.length is 0
       # render no matching results
       html = [@noResults()]
+    else
+      # Handle array groups
+      if gl.utils.isObject data
+        html = []
+        for name, groupData of data
+          # Add header for each group
+          html.push(@renderItem(header: name, name))
+
+          @renderData(groupData, name)
+            .map (item) ->
+              html.push item
+      else
+        # Render each row
+        html = @renderData(data)
 
     # Render the full menu
     full_html = @renderMenu(html.join(""))
 
     @appendMenu(full_html)
 
+  renderData: (data, group = false) ->
+    data.map (obj, index) =>
+      return @renderItem(obj, group, index)
+
+  shouldPropagate: (e) =>
+    if @options.multiSelect
+      $target = $(e.target)
+
+      if not $target.hasClass('dropdown-menu-close') and not $target.hasClass('dropdown-menu-close-icon') and not $target.data('is-link')
+        e.stopPropagation()
+        return false
+      else
+        return true
+
   opened: =>
+    @addArrowKeyEvent()
+
+    if @options.setIndeterminateIds
+      @options.setIndeterminateIds.call(@)
+
+    # Makes indeterminate items effective
+    if @fullData and @dropdown.find('.dropdown-menu-toggle').hasClass('js-filter-bulk-update')
+      @parseData @fullData
+
     contentHtml = $('.dropdown-content', @dropdown).html()
     if @remote && contentHtml is ""
       @remote.execute()
 
     if @options.filterable
-      @dropdown.find(".dropdown-input-field").focus()
+      @filterInput.focus()
 
-  hidden: =>
+    @dropdown.trigger('shown.gl.dropdown')
+
+  hidden: (e) =>
+    @removeArrayKeyEvent()
+
+    $input = @dropdown.find(".dropdown-input-field")
+
     if @options.filterable
-      @dropdown.find(".dropdown-input-field").blur().val("")
+      $input
+        .blur()
+        .val("")
+
+    # Triggering 'keyup' will re-render the dropdown which is not always required
+    # specially if we want to keep the state of the dropdown needed for bulk-assignment
+    if not @options.persistWhenHide
+      $input.trigger("keyup")
 
     if @dropdown.find(".dropdown-toggle-page").length
       $('.dropdown-menu', @dropdown).removeClass PAGE_TWO_CLASS
+
+    if @options.hidden
+      @options.hidden.call(@,e)
+
+    @dropdown.trigger('hidden.gl.dropdown')
 
 
   # Render the full menu
@@ -189,84 +355,235 @@ class GitLabDropdown
     selector = '.dropdown-content'
     if @dropdown.find(".dropdown-toggle-page").length
       selector = ".dropdown-page-one .dropdown-content"
-
     $(selector, @dropdown).html html
 
   # Render the row
-  renderItem: (data) ->
+  renderItem: (data, group = false, index = false) ->
     html = ""
 
+    # Divider
     return "<li class='divider'></li>" if data is "divider"
+
+    # Separator is a full-width divider
+    return "<li class='separator'></li>" if data is "separator"
+
+    # Header
+    return "<li class='dropdown-header'>#{data.header}</li>" if data.header?
 
     if @options.renderRow
       # Call the render function
-      html = @options.renderRow(data)
+      html = @options.renderRow.call(@options, data, @)
     else
-      selected = if @options.isSelected then @options.isSelected(data) else false
-      url = if @options.url then @options.url(data) else "#"
-      text = if @options.text then @options.text(data) else ""
+      if not selected
+        value = if @options.id then @options.id(data) else data.id
+        fieldName = @options.fieldName
+        field = @dropdown.parent().find("input[name='#{fieldName}'][value='#{value}']")
+        if field.length
+          selected = true
+
+      # Set URL
+      if @options.url?
+        url = @options.url(data)
+      else
+        url = if data.url? then data.url else '#'
+
+      # Set Text
+      if @options.text?
+        text = @options.text(data)
+      else
+        text = if data.text? then data.text else ''
+
       cssClass = "";
 
       if selected
         cssClass = "is-active"
 
-      html = "<li>"
-      html += "<a href='#{url}' class='#{cssClass}'>"
-      html += text
-      html += "</a>"
-      html += "</li>"
+      if @highlight
+        text = @highlightTextMatches(text, @filterInput.val())
+
+      if group
+        groupAttrs = "data-group='#{group}' data-index='#{index}'"
+      else
+        groupAttrs = ''
+
+      html = "<li>
+        <a href='#{url}' #{groupAttrs} class='#{cssClass}'>
+          #{text}
+        </a>
+      </li>"
 
     return html
 
+  highlightTextMatches: (text, term) ->
+    occurrences = fuzzaldrinPlus.match(text, term)
+    text.split('').map((character, i) ->
+      if i in occurrences then "<b>#{character}</b>" else character
+    ).join('')
+
   noResults: ->
-    html = "<li>"
-    html += "<a href='#' class='is-focused'>"
-    html += "No matching results."
-    html += "</a>"
-    html += "</li>"
+    html = "<li class='dropdown-menu-empty-link'>
+      <a href='#' class='is-focused'>
+        No matching results.
+      </a>
+    </li>"
+
+  highlightRow: (index) ->
+    if @filterInput.val() isnt ""
+      selector = '.dropdown-content li:first-child a'
+      if @dropdown.find(".dropdown-toggle-page").length
+        selector = ".dropdown-page-one .dropdown-content li:first-child a"
+
+      @getElement(selector).addClass 'is-focused'
 
   rowClicked: (el) ->
     fieldName = @options.fieldName
-    field = @dropdown.parent().find("input[name='#{fieldName}']")
-
-    if el.hasClass(ACTIVE_CLASS)
-      field.remove()
-    else
-      fieldName = @options.fieldName
-      selectedIndex = el.parent().index()
-      if @renderedData
+    if @renderedData
+      groupName = el.data('group')
+      if groupName
+        selectedIndex = el.data('index')
+        selectedObject = @renderedData[groupName][selectedIndex]
+      else
+        selectedIndex = el.closest('li').index()
         selectedObject = @renderedData[selectedIndex]
-      value = if @options.id then @options.id(selectedObject, el) else selectedObject.id
+
+    value = if @options.id then @options.id(selectedObject, el) else selectedObject.id
+    field = @dropdown.parent().find("input[name='#{fieldName}'][value='#{value}']")
+    if el.hasClass(ACTIVE_CLASS)
+      el.removeClass(ACTIVE_CLASS)
+      field.remove()
+
+      # Toggle the dropdown label
+      if @options.toggleLabel
+        @updateLabel()
+      else
+        selectedObject
+    else if el.hasClass(INDETERMINATE_CLASS)
+      el.addClass ACTIVE_CLASS
+      el.removeClass INDETERMINATE_CLASS
+
+      if not value?
+        field.remove()
+
+      if not field.length and fieldName
+        @addInput(fieldName, value)
+
+      return selectedObject
+    else
+      if not @options.multiSelect or el.hasClass('dropdown-clear-active')
+        @dropdown.find(".#{ACTIVE_CLASS}").removeClass ACTIVE_CLASS
+        @dropdown.parent().find("input[name='#{fieldName}']").remove()
 
       if !value?
         field.remove()
 
-      if @options.multiSelect
-        oldValue = field.val()
-        if oldValue
-          value = "#{oldValue},#{value}"
-      else
-        @dropdown.find(ACTIVE_CLASS).removeClass ACTIVE_CLASS
-
       # Toggle active class for the tick mark
-      el.toggleClass "is-active"
+      el.addClass ACTIVE_CLASS
 
+      # Toggle the dropdown label
+      if @options.toggleLabel
+        @updateLabel(selectedObject, el)
       if value?
-        if !field.length
-          # Create hidden input for form
-          input = "<input type='hidden' name='#{fieldName}' />"
-          @dropdown.before input
+        if !field.length and fieldName
+          @addInput(fieldName, value)
+        else
+          field.val value
 
-        @dropdown.parent().find("input[name='#{fieldName}']").val value
+      return selectedObject
 
-  selectFirstRow: ->
-    selector = '.dropdown-content li:first-child a'
+  addInput: (fieldName, value)->
+    # Create hidden input for form
+    $input = $('<input>').attr('type', 'hidden')
+                         .attr('name', fieldName)
+                        .val(value)
+
+    if @options.inputId?
+      $input.attr('id', @options.inputId)
+
+    @dropdown.before $input
+
+  selectRowAtIndex: (e, index) ->
+    selector = ".dropdown-content li:not(.divider,.dropdown-header,.separator):eq(#{index}) a"
+
     if @dropdown.find(".dropdown-toggle-page").length
-      selector = ".dropdown-page-one .dropdown-content li:first-child a"
+      selector = ".dropdown-page-one #{selector}"
 
-    # similute a click on the first link
-    $(selector).trigger "click"
+    # simulate a click on the first link
+    $el = $(selector, @dropdown)
+
+    if $el.length
+      e.preventDefault()
+      e.stopImmediatePropagation()
+      $(selector, @dropdown)[0].click()
+
+  addArrowKeyEvent: ->
+    ARROW_KEY_CODES = [38, 40]
+    $input = @dropdown.find(".dropdown-input-field")
+
+    selector = '.dropdown-content li:not(.divider,.dropdown-header,.separator)'
+    if @dropdown.find(".dropdown-toggle-page").length
+      selector = ".dropdown-page-one #{selector}"
+
+    $('body').on 'keydown', (e) =>
+      currentKeyCode = e.which
+
+      if ARROW_KEY_CODES.indexOf(currentKeyCode) >= 0
+        e.preventDefault()
+        e.stopImmediatePropagation()
+
+        PREV_INDEX = currentIndex
+        $listItems = $(selector, @dropdown)
+
+        # if @options.filterable
+        #   $input.blur()
+
+        if currentKeyCode is 40
+          # Move down
+          currentIndex += 1 if currentIndex < ($listItems.length - 1)
+        else if currentKeyCode is 38
+          # Move up
+          currentIndex -= 1 if currentIndex > 0
+
+        @highlightRowAtIndex($listItems, currentIndex) if currentIndex isnt PREV_INDEX
+
+        return false
+
+      if currentKeyCode is 13 and currentIndex isnt -1
+        @selectRowAtIndex e, currentIndex
+
+  removeArrayKeyEvent: ->
+    $('body').off 'keydown'
+
+  highlightRowAtIndex: ($listItems, index) ->
+    # Remove the class for the previously focused row
+    $('.is-focused', @dropdown).removeClass 'is-focused'
+
+    # Update the class for the row at the specific index
+    $listItem = $listItems.eq(index)
+    $listItem.find('a:first-child').addClass "is-focused"
+
+    # Dropdown content scroll area
+    $dropdownContent = $listItem.closest('.dropdown-content')
+    dropdownScrollTop = $dropdownContent.scrollTop()
+    dropdownContentHeight = $dropdownContent.outerHeight()
+    dropdownContentTop = $dropdownContent.prop('offsetTop')
+    dropdownContentBottom = dropdownContentTop + dropdownContentHeight
+
+    # Get the offset bottom of the list item
+    listItemHeight = $listItem.outerHeight()
+    listItemTop = $listItem.prop('offsetTop')
+    listItemBottom = listItemTop + listItemHeight
+
+    if listItemBottom > dropdownContentBottom + dropdownScrollTop
+      # Scroll the dropdown content down
+      $dropdownContent.scrollTop(listItemBottom - dropdownContentBottom)
+    else if listItemTop < dropdownContentTop + dropdownScrollTop
+      # Scroll the dropdown content up
+      $dropdownContent.scrollTop(listItemTop - dropdownContentTop)
+
+  updateLabel: (selected = null, el = null) =>
+    $(@el).find(".dropdown-toggle-text").text @options.toggleLabel(selected, el)
 
 $.fn.glDropdown = (opts) ->
   return @.each ->
-    new GitLabDropdown @, opts
+    if (!$.data @, 'glDropdown')
+      $.data(@, 'glDropdown', new GitLabDropdown @, opts)

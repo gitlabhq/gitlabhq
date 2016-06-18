@@ -39,15 +39,15 @@ class PostReceive
       end
 
       if Gitlab::Git.tag_ref?(ref)
-        GitTagPushService.new.execute(post_received.project, @user, oldrev, newrev, ref)
-      else
+        GitTagPushService.new(post_received.project, @user, oldrev: oldrev, newrev: newrev, ref: ref).execute
+      elsif Gitlab::Git.branch_ref?(ref)
         GitPushService.new(post_received.project, @user, oldrev: oldrev, newrev: newrev, ref: ref).execute
       end
     end
   end
 
   private
-  
+
   def log(message)
     Gitlab::GitLogger.error("POST-RECEIVE: #{message}")
   end

@@ -1,0 +1,8 @@
+New comment for Snippet <%= @snippet.id %>
+
+<%= url_for(namespace_project_snippet_url(@snippet.project.namespace, @snippet.project, @snippet, anchor: "note_#{@note.id}")) %>
+
+
+Author: <%= @note.author_name %>
+
+<%= @note.note %>

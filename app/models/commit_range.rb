@@ -43,14 +43,14 @@ class CommitRange
   #
   # This pattern supports cross-project references.
   def self.reference_pattern
-    %r{
+    @reference_pattern ||= %r{
       (?:#{Project.reference_pattern}#{reference_prefix})?
       (?<commit_range>#{STRICT_PATTERN})
     }x
   end
 
   def self.link_reference_pattern
-    super("compare", /(?<commit_range>#{PATTERN})/)
+    @link_reference_pattern ||= super("compare", /(?<commit_range>#{PATTERN})/)
   end
 
   # Initialize a CommitRange
@@ -62,7 +62,7 @@ class CommitRange
   def initialize(range_string, project)
     @project = project
 
-    range_string.strip!
+    range_string = range_string.strip
 
     unless range_string =~ /\A#{PATTERN}\z/
       raise ArgumentError, "invalid CommitRange string format: #{range_string}"

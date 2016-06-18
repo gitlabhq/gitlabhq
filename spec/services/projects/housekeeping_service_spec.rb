@@ -12,7 +12,7 @@ describe Projects::HousekeepingService do
 
     it 'enqueues a sidekiq job' do
       expect(subject).to receive(:try_obtain_lease).and_return(true)
-      expect(GitlabShellWorker).to receive(:perform_async).with(:gc, project.path_with_namespace)
+      expect(GitlabShellOneShotWorker).to receive(:perform_async).with(:gc, project.path_with_namespace)
 
       subject.execute
       expect(project.pushes_since_gc).to eq(0)
@@ -20,7 +20,7 @@ describe Projects::HousekeepingService do
 
     it 'does not enqueue a job when no lease can be obtained' do
       expect(subject).to receive(:try_obtain_lease).and_return(false)
-      expect(GitlabShellWorker).not_to receive(:perform_async)
+      expect(GitlabShellOneShotWorker).not_to receive(:perform_async)
 
       expect { subject.execute }.to raise_error(Projects::HousekeepingService::LeaseTaken)
       expect(project.pushes_since_gc).to eq(0)

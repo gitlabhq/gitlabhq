@@ -13,7 +13,7 @@ module MarkdownMatchers
     set_default_markdown_messages
 
     match do |actual|
-      link  = actual.at_css('a:contains("Relative Link")')
+      link = actual.at_css('a:contains("Relative Link")')
       image = actual.at_css('img[alt="Relative Image"]')
 
       expect(link['href']).to end_with('master/doc/README.md')
@@ -72,14 +72,15 @@ module MarkdownMatchers
       have_css("img[src$='#{src}']")
     end
 
+    prefix = '/namespace1/gitlabhq/wikis'
     set_default_markdown_messages
 
     match do |actual|
-      expect(actual).to have_link('linked-resource', href: 'linked-resource')
-      expect(actual).to have_link('link-text', href: 'linked-resource')
+      expect(actual).to have_link('linked-resource', href: "#{prefix}/linked-resource")
+      expect(actual).to have_link('link-text', href: "#{prefix}/linked-resource")
       expect(actual).to have_link('http://example.com', href: 'http://example.com')
       expect(actual).to have_link('link-text', href: 'http://example.com/pdfs/gollum.pdf')
-      expect(actual).to have_image('/gitlabhq/wikis/images/example.jpg')
+      expect(actual).to have_image("#{prefix}/images/example.jpg")
       expect(actual).to have_image('http://example.com/images/example.jpg')
     end
   end
@@ -153,7 +154,7 @@ module MarkdownMatchers
     set_default_markdown_messages
 
     match do |actual|
-      expect(actual).to have_selector('a.gfm.gfm-milestone', count: 3)
+      expect(actual).to have_selector('a.gfm.gfm-milestone', count: 6)
     end
   end
 
@@ -165,6 +166,16 @@ module MarkdownMatchers
       expect(actual).to have_selector('ul.task-list', count: 2)
       expect(actual).to have_selector('li.task-list-item', count: 7)
       expect(actual).to have_selector('input[checked]', count: 3)
+    end
+  end
+
+  # InlineDiffFilter
+  matcher :parse_inline_diffs do
+    set_default_markdown_messages
+
+    match do |actual|
+      expect(actual).to have_selector('span.idiff.addition', count: 2)
+      expect(actual).to have_selector('span.idiff.deletion', count: 2)
     end
   end
 end

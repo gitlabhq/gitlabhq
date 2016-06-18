@@ -15,7 +15,7 @@ class Projects::CommitsController < Projects::ApplicationController
       if search.present?
         @repository.find_commits_by_message(search, @ref, @path, @limit, @offset).compact
       else
-        @repository.commits(@ref, @path, @limit, @offset)
+        @repository.commits(@ref, path: @path, limit: @limit, offset: @offset)
       end
 
     @note_counts = project.notes.where(commit_id: @commits.map(&:id)).

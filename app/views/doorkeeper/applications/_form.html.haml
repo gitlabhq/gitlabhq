@@ -1,9 +1,5 @@
 = form_for application, url: doorkeeper_submit_path(application), html: {role: 'form'} do |f|
-  - if application.errors.any?
-    .alert.alert-danger
-      %ul
-        - application.errors.full_messages.each do |msg|
-          %li= msg
+  = form_errors(application)
 
   .form-group
     = f.label :name, class: 'label-light'

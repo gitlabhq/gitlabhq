@@ -11,6 +11,6 @@
 
 ## Outside the documentation
 
-- [Blost post about using GitLab CI for iOS projects](https://about.gitlab.com/2016/03/10/setting-up-gitlab-ci-for-ios-projects/)
+- [Blog post about using GitLab CI for iOS projects](https://about.gitlab.com/2016/03/10/setting-up-gitlab-ci-for-ios-projects/)
 - [Repo's with examples for various languages](https://gitlab.com/groups/gitlab-examples)
 - [The .gitlab-ci.yml file for GitLab itself](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/.gitlab-ci.yml)

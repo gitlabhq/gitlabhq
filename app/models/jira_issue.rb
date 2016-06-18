@@ -1,2 +1,0 @@
-class JiraIssue < ExternalIssue
-end

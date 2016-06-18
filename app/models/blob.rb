@@ -19,6 +19,14 @@ class Blob < SimpleDelegator
     new(blob)
   end
 
+  def no_highlighting?
+    size && size > 1.megabyte
+  end
+
+  def only_display_raw?
+    size && truncated?
+  end
+
   def svg?
     text? && language && language.name == 'SVG'
   end

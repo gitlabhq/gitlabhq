@@ -50,14 +50,14 @@ namespace :gitlab do
       end
 
       if correct_options.all?
-        puts "yes".green
+        puts "yes".color(:green)
       else
         print "Trying to fix Git error automatically. ..."
 
         if auto_fix_git_config(options)
-          puts "Success".green
+          puts "Success".color(:green)
         else
-          puts "Failed".red
+          puts "Failed".color(:red)
           try_fixing_it(
             sudo_gitlab("\"#{Gitlab.config.git.bin_path}\" config --global core.autocrlf \"#{options["core.autocrlf"]}\"")
           )
@@ -74,9 +74,9 @@ namespace :gitlab do
       database_config_file = Rails.root.join("config", "database.yml")
 
       if File.exists?(database_config_file)
-        puts "yes".green
+        puts "yes".color(:green)
       else
-        puts "no".red
+        puts "no".color(:red)
         try_fixing_it(
           "Copy config/database.yml.<your db> to config/database.yml",
           "Check that the information in config/database.yml is correct"
@@ -95,9 +95,9 @@ namespace :gitlab do
       gitlab_config_file = Rails.root.join("config", "gitlab.yml")
 
       if File.exists?(gitlab_config_file)
-        puts "yes".green
+        puts "yes".color(:green)
       else
-        puts "no".red
+        puts "no".color(:red)
         try_fixing_it(
           "Copy config/gitlab.yml.example to config/gitlab.yml",
           "Update config/gitlab.yml to match your setup"
@@ -114,14 +114,14 @@ namespace :gitlab do
 
       gitlab_config_file = Rails.root.join("config", "gitlab.yml")
       unless File.exists?(gitlab_config_file)
-        puts "can't check because of previous errors".magenta
+        puts "can't check because of previous errors".color(:magenta)
       end
 
       # omniauth or ldap could have been deleted from the file
       unless Gitlab.config['git_host']
-        puts "no".green
+        puts "no".color(:green)
       else
-        puts "yes".red
+        puts "yes".color(:red)
         try_fixing_it(
           "Backup your config/gitlab.yml",
           "Copy config/gitlab.yml.example to config/gitlab.yml",
@@ -138,16 +138,16 @@ namespace :gitlab do
       print "Init script exists? ... "
 
       if omnibus_gitlab?
-        puts 'skipped (omnibus-gitlab has no init script)'.magenta
+        puts 'skipped (omnibus-gitlab has no init script)'.color(:magenta)
         return
       end
 
       script_path = "/etc/init.d/gitlab"
 
       if File.exists?(script_path)
-        puts "yes".green
+        puts "yes".color(:green)
       else
-        puts "no".red
+        puts "no".color(:red)
         try_fixing_it(
           "Install the init script"
         )
@@ -162,7 +162,7 @@ namespace :gitlab do
       print "Init script up-to-date? ... "
 
       if omnibus_gitlab?
-        puts 'skipped (omnibus-gitlab has no init script)'.magenta
+        puts 'skipped (omnibus-gitlab has no init script)'.color(:magenta)
         return
       end
 
@@ -170,7 +170,7 @@ namespace :gitlab do
       script_path = "/etc/init.d/gitlab"
 
       unless File.exists?(script_path)
-        puts "can't check because of previous errors".magenta
+        puts "can't check because of previous errors".color(:magenta)
         return
       end
 
@@ -178,9 +178,9 @@ namespace :gitlab do
       script_content = File.read(script_path)
 
       if recipe_content == script_content
-        puts "yes".green
+        puts "yes".color(:green)
       else
-        puts "no".red
+        puts "no".color(:red)
         try_fixing_it(
           "Redownload the init script"
         )
@@ -197,9 +197,9 @@ namespace :gitlab do
       migration_status, _ = Gitlab::Popen.popen(%W(bundle exec rake db:migrate:status))
 
       unless migration_status =~ /down\s+\d{14}/
-        puts "yes".green
+        puts "yes".color(:green)
       else
-        puts "no".red
+        puts "no".color(:red)
         try_fixing_it(
           sudo_gitlab("bundle exec rake db:migrate RAILS_ENV=production")
         )
@@ -210,13 +210,13 @@ namespace :gitlab do
     def check_orphaned_group_members
       print "Database contains orphaned GroupMembers? ... "
       if GroupMember.where("user_id not in (select id from users)").count > 0
-        puts "yes".red
+        puts "yes".color(:red)
         try_fixing_it(
           "You can delete the orphaned records using something along the lines of:",
           sudo_gitlab("bundle exec rails runner -e production 'GroupMember.where(\"user_id NOT IN (SELECT id FROM users)\").delete_all'")
         )
       else
-        puts "no".green
+        puts "no".color(:green)
       end
     end
 
@@ -226,9 +226,9 @@ namespace :gitlab do
       log_path = Rails.root.join("log")
 
       if File.writable?(log_path)
-        puts "yes".green
+        puts "yes".color(:green)
       else
-        puts "no".red
+        puts "no".color(:red)
         try_fixing_it(
           "sudo chown -R gitlab #{log_path}",
           "sudo chmod -R u+rwX #{log_path}"
@@ -246,9 +246,9 @@ namespace :gitlab do
       tmp_path = Rails.root.join("tmp")
 
       if File.writable?(tmp_path)
-        puts "yes".green
+        puts "yes".color(:green)
       else
-        puts "no".red
+        puts "no".color(:red)
         try_fixing_it(
           "sudo chown -R gitlab #{tmp_path}",
           "sudo chmod -R u+rwX #{tmp_path}"
@@ -264,7 +264,7 @@ namespace :gitlab do
       print "Uploads directory setup correctly? ... "
 
       unless File.directory?(Rails.root.join('public/uploads'))
-        puts "no".red
+        puts "no".color(:red)
         try_fixing_it(
           "sudo -u #{gitlab_user} mkdir #{Rails.root}/public/uploads"
         )
@@ -280,16 +280,16 @@ namespace :gitlab do
 
       if File.stat(upload_path).mode == 040700
         unless Dir.exists?(upload_path_tmp)
-          puts 'skipped (no tmp uploads folder yet)'.magenta
+          puts 'skipped (no tmp uploads folder yet)'.color(:magenta)
           return
         end
 
         # If tmp upload dir has incorrect permissions, assume others do as well
         # Verify drwx------ permissions
         if File.stat(upload_path_tmp).mode == 040700 && File.owned?(upload_path_tmp)
-          puts "yes".green
+          puts "yes".color(:green)
         else
-          puts "no".red
+          puts "no".color(:red)
           try_fixing_it(
             "sudo chown -R #{gitlab_user} #{upload_path}",
             "sudo find #{upload_path} -type f -exec chmod 0644 {} \\;",
@@ -301,9 +301,9 @@ namespace :gitlab do
           fix_and_rerun
         end
       else
-        puts "no".red
+        puts "no".color(:red)
         try_fixing_it(
-          "sudo find #{upload_path} -type d -not -path #{upload_path} -exec chmod 0700 {} \\;"
+          "sudo chmod 700 #{upload_path}"
         )
         for_more_information(
           see_installation_guide_section "GitLab"
@@ -320,9 +320,9 @@ namespace :gitlab do
       redis_version = redis_version.try(:match, /redis-cli (\d+\.\d+\.\d+)/)
       if redis_version &&
           (Gem::Version.new(redis_version[1]) > Gem::Version.new(min_redis_version))
-        puts "yes".green
+        puts "yes".color(:green)
       else
-        puts "no".red
+        puts "no".color(:red)
         try_fixing_it(
           "Update your redis server to a version >= #{min_redis_version}"
         )
@@ -361,10 +361,10 @@ namespace :gitlab do
       repo_base_path = Gitlab.config.gitlab_shell.repos_path
 
       if File.exists?(repo_base_path)
-        puts "yes".green
+        puts "yes".color(:green)
       else
-        puts "no".red
-        puts "#{repo_base_path} is missing".red
+        puts "no".color(:red)
+        puts "#{repo_base_path} is missing".color(:red)
         try_fixing_it(
           "This should have been created when setting up GitLab Shell.",
           "Make sure it's set correctly in config/gitlab.yml",
@@ -382,14 +382,14 @@ namespace :gitlab do
 
       repo_base_path = Gitlab.config.gitlab_shell.repos_path
       unless File.exists?(repo_base_path)
-        puts "can't check because of previous errors".magenta
+        puts "can't check because of previous errors".color(:magenta)
         return
       end
 
       unless File.symlink?(repo_base_path)
-        puts "no".green
+        puts "no".color(:green)
       else
-        puts "yes".red
+        puts "yes".color(:red)
         try_fixing_it(
           "Make sure it's set to the real directory in config/gitlab.yml"
         )
@@ -402,14 +402,14 @@ namespace :gitlab do
 
       repo_base_path = Gitlab.config.gitlab_shell.repos_path
       unless File.exists?(repo_base_path)
-        puts "can't check because of previous errors".magenta
+        puts "can't check because of previous errors".color(:magenta)
         return
       end
 
       if File.stat(repo_base_path).mode.to_s(8).ends_with?("2770")
-        puts "yes".green
+        puts "yes".color(:green)
       else
-        puts "no".red
+        puts "no".color(:red)
         try_fixing_it(
           "sudo chmod -R ug+rwX,o-rwx #{repo_base_path}",
           "sudo chmod -R ug-s #{repo_base_path}",
@@ -429,17 +429,17 @@ namespace :gitlab do
 
       repo_base_path = Gitlab.config.gitlab_shell.repos_path
       unless File.exists?(repo_base_path)
-        puts "can't check because of previous errors".magenta
+        puts "can't check because of previous errors".color(:magenta)
         return
       end
 
       uid = uid_for(gitlab_shell_ssh_user)
       gid = gid_for(gitlab_shell_owner_group)
       if File.stat(repo_base_path).uid == uid && File.stat(repo_base_path).gid == gid
-        puts "yes".green
+        puts "yes".color(:green)
       else
-        puts "no".red
-        puts "  User id for #{gitlab_shell_ssh_user}: #{uid}. Groupd id for #{gitlab_shell_owner_group}: #{gid}".blue
+        puts "no".color(:red)
+        puts "  User id for #{gitlab_shell_ssh_user}: #{uid}. Groupd id for #{gitlab_shell_owner_group}: #{gid}".color(:blue)
         try_fixing_it(
           "sudo chown -R #{gitlab_shell_ssh_user}:#{gitlab_shell_owner_group} #{repo_base_path}"
         )
@@ -456,7 +456,7 @@ namespace :gitlab do
       gitlab_shell_hooks_path = Gitlab.config.gitlab_shell.hooks_path
 
       unless Project.count > 0
-        puts "can't check, you have no projects".magenta
+        puts "can't check, you have no projects".color(:magenta)
         return
       end
       puts ""
@@ -466,12 +466,12 @@ namespace :gitlab do
         project_hook_directory = File.join(project.repository.path_to_repo, "hooks")
 
         if project.empty_repo?
-          puts "repository is empty".magenta
+          puts "repository is empty".color(:magenta)
         elsif File.directory?(project_hook_directory) && File.directory?(gitlab_shell_hooks_path) &&
             (File.realpath(project_hook_directory) == File.realpath(gitlab_shell_hooks_path))
-          puts 'ok'.green
+          puts 'ok'.color(:green)
         else
-          puts "wrong or missing hooks".red
+          puts "wrong or missing hooks".color(:red)
           try_fixing_it(
             sudo_gitlab("#{File.join(gitlab_shell_path, 'bin/create-hooks')}"),
             'Check the hooks_path in config/gitlab.yml',
@@ -491,9 +491,9 @@ namespace :gitlab do
       check_cmd = File.expand_path('bin/check', gitlab_shell_repo_base)
       puts "Running #{check_cmd}"
       if system(check_cmd, chdir: gitlab_shell_repo_base)
-        puts 'gitlab-shell self-check successful'.green
+        puts 'gitlab-shell self-check successful'.color(:green)
       else
-        puts 'gitlab-shell self-check failed'.red
+        puts 'gitlab-shell self-check failed'.color(:red)
         try_fixing_it(
           'Make sure GitLab is running;',
           'Check the gitlab-shell configuration file:',
@@ -507,7 +507,7 @@ namespace :gitlab do
       print "projects have namespace: ... "
 
       unless Project.count > 0
-        puts "can't check, you have no projects".magenta
+        puts "can't check, you have no projects".color(:magenta)
         return
       end
       puts ""
@@ -516,9 +516,9 @@ namespace :gitlab do
         print sanitized_message(project)
 
         if project.namespace
-          puts "yes".green
+          puts "yes".color(:green)
         else
-          puts "no".red
+          puts "no".color(:red)
           try_fixing_it(
             "Migrate global projects"
           )
@@ -576,9 +576,9 @@ namespace :gitlab do
       print "Running? ... "
 
       if sidekiq_process_count > 0
-        puts "yes".green
+        puts "yes".color(:green)
       else
-        puts "no".red
+        puts "no".color(:red)
         try_fixing_it(
           sudo_gitlab("RAILS_ENV=production bin/background_jobs start")
         )
@@ -596,9 +596,9 @@ namespace :gitlab do
 
       print 'Number of Sidekiq processes ... '
       if process_count == 1
-        puts '1'.green
+        puts '1'.color(:green)
       else
-        puts "#{process_count}".red
+        puts "#{process_count}".color(:red)
         try_fixing_it(
           'sudo service gitlab stop',
           "sudo pkill -u #{gitlab_user} -f sidekiq",
@@ -623,7 +623,6 @@ namespace :gitlab do
       start_checking "Reply by email"
 
       if Gitlab.config.incoming_email.enabled
-        check_address_formatted_correctly
         check_imap_authentication
 
         if Rails.env.production?
@@ -643,34 +642,20 @@ namespace :gitlab do
     # Checks
     ########################
 
-    def check_address_formatted_correctly
-      print "Address formatted correctly? ... "
-
-      if Gitlab::IncomingEmail.address_formatted_correctly?
-        puts "yes".green
-      else
-        puts "no".red
-        try_fixing_it(
-          "Make sure that the address in config/gitlab.yml includes the '%{key}' placeholder."
-        )
-        fix_and_rerun
-      end
-    end
-
     def check_initd_configured_correctly
       print "Init.d configured correctly? ... "
 
       if omnibus_gitlab?
-        puts 'skipped (omnibus-gitlab has no init script)'.magenta
+        puts 'skipped (omnibus-gitlab has no init script)'.color(:magenta)
         return
       end
 
       path = "/etc/default/gitlab"
 
       if File.exist?(path) && File.read(path).include?("mail_room_enabled=true")
-        puts "yes".green
+        puts "yes".color(:green)
       else
-        puts "no".red
+        puts "no".color(:red)
         try_fixing_it(
           "Enable mail_room in the init.d configuration."
         )
@@ -687,9 +672,9 @@ namespace :gitlab do
       path = Rails.root.join("Procfile")
 
       if File.exist?(path) && File.read(path) =~ /^mail_room:/
-        puts "yes".green
+        puts "yes".color(:green)
       else
-        puts "no".red
+        puts "no".color(:red)
         try_fixing_it(
           "Enable mail_room in your Procfile."
         )
@@ -706,14 +691,14 @@ namespace :gitlab do
       path = "/etc/default/gitlab"
 
       unless File.exist?(path) && File.read(path).include?("mail_room_enabled=true")
-        puts "can't check because of previous errors".magenta
+        puts "can't check because of previous errors".color(:magenta)
         return
       end
 
       if mail_room_running?
-        puts "yes".green
+        puts "yes".color(:green)
       else
-        puts "no".red
+        puts "no".color(:red)
         try_fixing_it(
           sudo_gitlab("RAILS_ENV=production bin/mail_room start")
         )
@@ -744,9 +729,9 @@ namespace :gitlab do
       end
 
       if connected
-        puts "yes".green
+        puts "yes".color(:green)
       else
-        puts "no".red
+        puts "no".color(:red)
         try_fixing_it(
           "Check that the information in config/gitlab.yml is correct"
         )
@@ -814,7 +799,7 @@ namespace :gitlab do
   namespace :user do
     desc "GitLab | Check the integrity of a specific user's repositories"
     task :check_repos, [:username] => :environment do |t, args|
-      username = args[:username] || prompt("Check repository integrity for which username? ".blue)
+      username = args[:username] || prompt("Check repository integrity for which username? ".color(:blue))
       user = User.find_by(username: username)
       if user
         repo_dirs = user.authorized_projects.map do |p|
@@ -826,7 +811,7 @@ namespace :gitlab do
 
         repo_dirs.each { |repo_dir| check_repo_integrity(repo_dir) }
       else
-        puts "\nUser '#{username}' not found".red
+        puts "\nUser '#{username}' not found".color(:red)
       end
     end
   end
@@ -835,13 +820,13 @@ namespace :gitlab do
   ##########################
 
   def fix_and_rerun
-    puts "  Please #{"fix the error above"} and rerun the checks.".red
+    puts "  Please #{"fix the error above"} and rerun the checks.".color(:red)
   end
 
   def for_more_information(*sources)
     sources = sources.shift if sources.first.is_a?(Array)
 
-    puts "  For more information see:".blue
+    puts "  For more information see:".color(:blue)
     sources.each do |source|
       puts "  #{source}"
     end
@@ -849,7 +834,7 @@ namespace :gitlab do
 
   def finished_checking(component)
     puts ""
-    puts "Checking #{component.yellow} ... #{"Finished".green}"
+    puts "Checking #{component.color(:yellow)} ... #{"Finished".color(:green)}"
     puts ""
   end
 
@@ -870,14 +855,14 @@ namespace :gitlab do
   end
 
   def start_checking(component)
-    puts "Checking #{component.yellow} ..."
+    puts "Checking #{component.color(:yellow)} ..."
     puts ""
   end
 
   def try_fixing_it(*steps)
     steps = steps.shift if steps.first.is_a?(Array)
 
-    puts "  Try fixing it:".blue
+    puts "  Try fixing it:".color(:blue)
     steps.each do |step|
       puts "  #{step}"
     end
@@ -889,9 +874,9 @@ namespace :gitlab do
 
     print "GitLab Shell version >= #{required_version} ? ... "
     if current_version.valid? && required_version <= current_version
-      puts "OK (#{current_version})".green
+      puts "OK (#{current_version})".color(:green)
     else
-      puts "FAIL. Please update gitlab-shell to #{required_version} from #{current_version}".red
+      puts "FAIL. Please update gitlab-shell to #{required_version} from #{current_version}".color(:red)
     end
   end
 
@@ -902,9 +887,9 @@ namespace :gitlab do
     print "Ruby version >= #{required_version} ? ... "
 
     if current_version.valid? && required_version <= current_version
-      puts "yes (#{current_version})".green
+      puts "yes (#{current_version})".color(:green)
     else
-      puts "no".red
+      puts "no".color(:red)
       try_fixing_it(
         "Update your ruby to a version >= #{required_version} from #{current_version}"
       )
@@ -920,9 +905,9 @@ namespace :gitlab do
     print "Git version >= #{required_version} ? ... "
 
     if current_version.valid? && required_version <= current_version
-      puts "yes (#{current_version})".green
+      puts "yes (#{current_version})".color(:green)
     else
-      puts "no".red
+      puts "no".color(:red)
       try_fixing_it(
         "Update your git to a version >= #{required_version} from #{current_version}"
       )
@@ -940,9 +925,9 @@ namespace :gitlab do
 
   def sanitized_message(project)
     if should_sanitize?
-      "#{project.namespace_id.to_s.yellow}/#{project.id.to_s.yellow} ... "
+      "#{project.namespace_id.to_s.color(:yellow)}/#{project.id.to_s.color(:yellow)} ... "
     else
-      "#{project.name_with_namespace.yellow} ... "
+      "#{project.name_with_namespace.color(:yellow)} ... "
     end
   end
 
@@ -955,7 +940,7 @@ namespace :gitlab do
   end
 
   def check_repo_integrity(repo_dir)
-    puts "\nChecking repo at #{repo_dir.yellow}"
+    puts "\nChecking repo at #{repo_dir.color(:yellow)}"
 
     git_fsck(repo_dir)
     check_config_lock(repo_dir)
@@ -963,25 +948,25 @@ namespace :gitlab do
   end
 
   def git_fsck(repo_dir)
-    puts "Running `git fsck`".yellow
+    puts "Running `git fsck`".color(:yellow)
     system(*%W(#{Gitlab.config.git.bin_path} fsck), chdir: repo_dir)
   end
 
   def check_config_lock(repo_dir)
     config_exists = File.exist?(File.join(repo_dir,'config.lock'))
-    config_output = config_exists ? 'yes'.red : 'no'.green
-    puts "'config.lock' file exists?".yellow + " ... #{config_output}"
+    config_output = config_exists ? 'yes'.color(:red) : 'no'.color(:green)
+    puts "'config.lock' file exists?".color(:yellow) + " ... #{config_output}"
   end
 
   def check_ref_locks(repo_dir)
     lock_files = Dir.glob(File.join(repo_dir,'refs/heads/*.lock'))
     if lock_files.present?
-      puts "Ref lock files exist:".red
+      puts "Ref lock files exist:".color(:red)
       lock_files.each do |lock_file|
         puts "  #{lock_file}"
       end
     else
-      puts "No ref lock files exist".green
+      puts "No ref lock files exist".color(:green)
     end
   end
 end

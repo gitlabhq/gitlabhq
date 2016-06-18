@@ -1,7 +1,15 @@
 class @Profile
-  constructor: ->
+  constructor: (opts = {}) ->
+    {
+      @form = $('.edit-user')
+    } = opts
+
     # Automatically submit the Preferences form when any of its radio buttons change
     $('.js-preferences-form').on 'change.preference', 'input[type=radio]', ->
+      $(this).parents('form').submit()
+
+    # Automatically submit email form when it changes
+    $('#user_notification_email').on 'change', ->
       $(this).parents('form').submit()
 
     $('.update-username').on 'ajax:before', ->
@@ -14,17 +22,53 @@ class @Profile
       $(this).find('.btn-save').enable()
       $(this).find('.loading-gif').hide()
 
-    $('.update-notifications').on 'ajax:complete', ->
-      $(this).find('.btn-save').enable()
+    $('.update-notifications').on 'ajax:success', (e, data) ->
+      if data.saved
+        new Flash("Notification settings saved", "notice")
+      else
+        new Flash("Failed to save new settings", "alert")
 
-    $('.js-choose-user-avatar-button').bind "click", ->
-      form = $(this).closest("form")
-      form.find(".js-user-avatar-input").click()
+    @bindEvents()
 
-    $('.js-user-avatar-input').bind "change", ->
-      form = $(this).closest("form")
-      filename = $(this).val().replace(/^.*[\\\/]/, '')
-      form.find(".js-avatar-filename").text(filename)
+    cropOpts =
+      filename: '.js-avatar-filename'
+      previewImage: '.avatar-image .avatar'
+      modalCrop: '.modal-profile-crop'
+      pickImageEl: '.js-choose-user-avatar-button'
+      uploadImageBtn: '.js-upload-user-avatar'
+      modalCropImg: '.modal-profile-crop-image'
+
+    @avatarGlCrop = $('.js-user-avatar-input').glCrop(cropOpts).data 'glcrop'
+
+  bindEvents: ->
+    @form.on 'submit', @onSubmitForm
+
+  onSubmitForm: (e) =>
+    e.preventDefault()
+    @saveForm()
+
+  saveForm: ->
+    self = @
+    formData = new FormData(@form[0])
+
+    avatarBlob = @avatarGlCrop.getBlob()
+    formData.append('user[avatar]', avatarBlob, 'avatar.png') if avatarBlob?
+
+    $.ajax
+      url: @form.attr('action')
+      type: @form.attr('method')
+      data: formData
+      dataType: "json"
+      processData: false
+      contentType: false
+      success: (response) ->
+        new Flash(response.message, 'notice')
+      error: (jqXHR) ->
+        new Flash(jqXHR.responseJSON.message, 'alert')
+      complete: ->
+        window.scrollTo 0, 0
+        # Enable submit button after requests ends
+        self.form.find(':input[disabled]').enable()
 
 $ ->
   # Extract the SSH Key title from its comment

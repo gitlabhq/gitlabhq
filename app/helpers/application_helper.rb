@@ -110,8 +110,7 @@ module ApplicationHelper
     ]
 
     # If reference is commit id - we should add it to branch/tag selectbox
-    if(@ref && !options.flatten.include?(@ref) &&
-       @ref =~ /\A[0-9a-zA-Z]{6,52}\z/)
+    if @ref && !options.flatten.include?(@ref) && @ref =~ /\A[0-9a-zA-Z]{6,52}\z/
       options << ['Commit', [@ref]]
     end
 
@@ -184,7 +183,7 @@ module ApplicationHelper
     element = content_tag :time, time.to_s,
       class: "#{html_class} js-timeago #{"js-timeago-pending" unless skip_js}",
       datetime: time.to_time.getutc.iso8601,
-      title: time.in_time_zone.to_s(:medium),
+      title: time.to_time.in_time_zone.to_s(:medium),
       data: { toggle: 'tooltip', placement: placement, container: 'body' }
 
     unless skip_js
@@ -254,15 +253,17 @@ module ApplicationHelper
 
   def page_filter_path(options = {})
     without = options.delete(:without)
+    add_label = options.delete(:label)
 
     exist_opts = {
       state: params[:state],
       scope: params[:scope],
-      label_name: params[:label_name],
       milestone_title: params[:milestone_title],
       assignee_id: params[:assignee_id],
       author_id: params[:author_id],
       sort: params[:sort],
+      issue_search: params[:issue_search],
+      label_name: params[:label_name]
     }
 
     options = exist_opts.merge(options)
@@ -273,9 +274,11 @@ module ApplicationHelper
       end
     end
 
-    path = request.path
-    path << "?#{options.to_param}"
-    path
+    params = options.compact
+
+    params.delete(:label_name) unless add_label
+
+    "#{request.path}?#{params.to_param}"
   end
 
   def outdated_browser?
@@ -301,7 +304,7 @@ module ApplicationHelper
       if project.nil?
         nil
       elsif current_controller?(:issues)
-        project.issues.send(entity).count
+        project.issues.visible_to_user(current_user).send(entity).count
       elsif current_controller?(:merge_requests)
         project.merge_requests.send(entity).count
       end

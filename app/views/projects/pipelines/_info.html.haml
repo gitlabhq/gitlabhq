@@ -1,0 +1,37 @@
+%p
+.commit-info-row
+  Pipeline
+  = link_to "##{@pipeline.id}", namespace_project_pipeline_path(@project.namespace, @project, @pipeline.id), class: "monospace"
+  with
+  = pluralize @pipeline.statuses.count(:id), "build"
+  - if @pipeline.ref
+    for
+    = link_to @pipeline.ref, namespace_project_commits_path(@project.namespace, @project, @pipeline.ref), class: "monospace"
+  - if @pipeline.duration
+    in
+    = time_interval_in_words @pipeline.duration
+
+  .pull-right
+    = link_to namespace_project_pipeline_path(@project.namespace, @project, @pipeline), class: "ci-status ci-#{@pipeline.status}" do
+      = ci_icon_for_status(@pipeline.status)
+      = ci_label_for_status(@pipeline.status)
+
+- if @commit
+  .commit-info-row
+    %span.light Authored by
+    %strong
+      = commit_author_link(@commit, avatar: true, size: 24)
+    #{time_ago_with_tooltip(@commit.authored_date)}
+
+.commit-info-row
+  %span.light Commit
+  = link_to @pipeline.sha, namespace_project_commit_path(@project.namespace, @project, @pipeline.sha), class: "monospace"
+  = clipboard_button(clipboard_text: @pipeline.sha)
+
+- if @commit
+  .commit-box.content-block
+    %h3.commit-title
+      = markdown escape_once(@commit.title), pipeline: :single_line
+    - if @commit.description.present?
+      %pre.commit-description
+        = preserve(markdown(escape_once(@commit.description), pipeline: :single_line))

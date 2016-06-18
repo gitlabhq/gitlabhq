@@ -5,10 +5,10 @@ feature 'Users', feature: true do
 
   scenario 'GET /users/sign_in creates a new user account' do
     visit new_user_session_path
-    fill_in 'user_name', with: 'Name Surname'
-    fill_in 'user_username', with: 'Great'
-    fill_in 'user_email', with: 'name@mail.com'
-    fill_in 'user_password_sign_up', with: 'password1234'
+    fill_in 'new_user_name',     with: 'Name Surname'
+    fill_in 'new_user_username', with: 'Great'
+    fill_in 'new_user_email',    with: 'name@mail.com'
+    fill_in 'new_user_password', with: 'password1234'
     expect { click_button 'Sign up' }.to change { User.count }.by(1)
   end
 
@@ -31,10 +31,10 @@ feature 'Users', feature: true do
 
   scenario 'Should show one error if email is already taken' do
     visit new_user_session_path
-    fill_in 'user_name', with: 'Another user name'
-    fill_in 'user_username', with: 'anotheruser'
-    fill_in 'user_email', with: user.email
-    fill_in 'user_password_sign_up', with: '12341234'
+    fill_in 'new_user_name',     with: 'Another user name'
+    fill_in 'new_user_username', with: 'anotheruser'
+    fill_in 'new_user_email',    with: user.email
+    fill_in 'new_user_password', with: '12341234'
     expect { click_button 'Sign up' }.to change { User.count }.by(0)
     expect(page).to have_text('Email has already been taken')
     expect(number_of_errors_on_page(page)).to be(1), 'errors on page:\n #{errors_on_page page}'
