@@ -83,6 +83,10 @@ class Issue < ActiveRecord::Base
     @link_reference_pattern ||= super("issues", /(?<issue>\d+)/)
   end
 
+  def self.reference_valid?(reference)
+    reference.to_i > 0 && reference.to_i <= Gitlab::Database::MAX_INT_VALUE
+  end
+
   def self.sort(method, excluded_labels: [])
     case method.to_s
     when 'due_date_asc' then order_due_date_asc
