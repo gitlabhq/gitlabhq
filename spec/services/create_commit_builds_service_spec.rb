@@ -83,6 +83,7 @@ describe CreateCommitBuildsService, services: true do
 
     context 'when commit contains a [ci skip] directive' do
       let(:message) { "some message[ci skip]" }
+      let(:capMessage) { "some message[CI SKIP]" }
 
       before do
         allow_any_instance_of(Ci::Pipeline).to receive(:git_commit_message) { message }
@@ -96,6 +97,20 @@ describe CreateCommitBuildsService, services: true do
                                    after: '31das312',
                                    commits: commits
                                   )
+        expect(pipeline).to be_persisted
+        expect(pipeline.builds.any?).to be false
+        expect(pipeline.status).to eq("skipped")
+      end
+
+      it "skips builds creation if there is [CI SKIP] tag in commit message" do
+        commits = [{ message: capMessage }]
+        pipeline = service.execute(project, user,
+                                   ref: 'refs/tags/0_1',
+                                   before: '00000000',
+                                   after: '31das312',
+                                   commits: commits
+                                  )
+
         expect(pipeline).to be_persisted
         expect(pipeline.builds.any?).to be false
         expect(pipeline.status).to eq("skipped")

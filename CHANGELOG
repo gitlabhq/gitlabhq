@@ -11,6 +11,7 @@ v 8.10.0 (unreleased)
   - Fix changing issue state columns in milestone view
   - Fix user creation with stronger minimum password requirements !4054 (nathan-pmt)
   - Add API endpoint for a group issues !4520 (mahcsig)
+  - Allow [ci skip] to be in any case. !4785 (simon_w)
 
 v 8.9.1
   - Fix merge requests project settings help link anchor
