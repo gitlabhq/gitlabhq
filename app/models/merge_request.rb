@@ -133,6 +133,10 @@ class MergeRequest < ActiveRecord::Base
     @link_reference_pattern ||= super("merge_requests", /(?<merge_request>\d+)/)
   end
 
+  def self.reference_valid?(reference)
+    reference.to_i > 0 && reference.to_i <= Gitlab::Database::MAX_INT_VALUE
+  end
+
   # Returns all the merge requests from an ActiveRecord:Relation.
   #
   # This method uses a UNION as it usually operates on the result of
