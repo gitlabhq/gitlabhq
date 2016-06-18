@@ -52,6 +52,19 @@
     .git-clone-holder {
       display: none;
     }
+
+    // Display Star and Fork buttons without counters on mobile.
+    .project-action-buttons {
+      display: block;
+
+      .count-buttons .btn {
+        margin: 0 10px;
+      }
+
+      .count-buttons .count-with-arrow {
+        display: none;
+      }
+    }
   }
 
   .project-stats {

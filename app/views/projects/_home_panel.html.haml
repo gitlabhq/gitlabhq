@@ -21,7 +21,7 @@
             = link_to project_path(forked_from_project) do
               = forked_from_project.namespace.try(:name)
 
-        .project-repo-buttons
+        .project-repo-buttons.project-action-buttons
           .count-buttons
             = render 'projects/buttons/star'
             = render 'projects/buttons/fork'
