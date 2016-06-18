@@ -5,19 +5,20 @@
         = icon('cog')
         = icon('caret-down')
       %ul.dropdown-menu.dropdown-menu-align-right
-        - is_project_member = @project.users.exists?(current_user.id)
-        - access = @project.team.max_member_access(current_user.id)
         - can_edit = can?(current_user, :admin_project, @project)
+        -# We don't use @project.team.find_member because it searches for group members too...
+        - member = @project.members.non_request.find_by(user_id: current_user.id)
+        - can_leave = member && can?(current_user, :destroy_project_member, member)
 
-        = render 'layouts/nav/project_settings', access: access, can_edit: can_edit
+        = render 'layouts/nav/project_settings', can_edit: can_edit
 
-        - if can_edit || is_project_member
+        - if can_edit || can_leave
           %li.divider
           - if can_edit
             %li
               = link_to edit_project_path(@project) do
                 Edit Project
-          - if is_project_member
+          - if can_leave
             %li
               = link_to polymorphic_path([:leave, @project, :members]),
                 data: { confirm: leave_confirmation_message(@project) }, method: :delete, title: 'Leave project' do
