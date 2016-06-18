@@ -6,10 +6,6 @@ Feature: Project Commits Diff Comments
     And I visit project commit page
 
   @javascript
-  Scenario: I can access add diff comment buttons
-    Then I should see add a diff comment button
-
-  @javascript
   Scenario: I can comment on a commit diff
     Given I leave a diff comment like "Typo, please fix"
     Then I should see a diff comment saying "Typo, please fix"

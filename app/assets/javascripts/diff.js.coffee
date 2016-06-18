@@ -1,6 +1,8 @@
 class @Diff
   UNFOLD_COUNT = 20
   constructor: ->
+    @filesCommentButton = new FilesCommentButton($('.files'))
+
     $(document).off('click', '.js-unfold')
     $(document).on('click', '.js-unfold', (event) =>
       target = $(event.target)
@@ -36,7 +38,7 @@ class @Diff
         # see https://gitlab.com/gitlab-org/gitlab-ce/issues/707
         indent: 1
 
-      $.get(link, params, (response) =>
+      $.get(link, params, (response) ->
         target.parent().replaceWith(response)
       )
     )

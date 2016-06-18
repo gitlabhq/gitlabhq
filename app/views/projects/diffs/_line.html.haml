@@ -1,5 +1,6 @@
 - type = line.type
-%tr.line_holder{ id: line_code, class: type }
+- holder_data = @comments_target.any? ? { data: { noteable_id: @comments_target[:noteable_id], noteable_type: @comments_target[:noteable_type], commit_id: @comments_target[:commit_id], discussion_id: discussion_id(line_code), note_type: LegacyDiffNote.name } } : {}
+%tr.line_holder{ holder_data, id: line_code, class: type }
   - case type
   - when 'match'
     = render "projects/diffs/match_line", { line: line.text,
@@ -10,17 +11,15 @@
     %td.line_content.match= line.text
   - else
     %td.old_line.diff-line-num{ class: type, data: { linenumber: line.new_pos } }
-      - link_text = type == "new" ? "&nbsp;".html_safe : line.old_pos
+      - link_text = type == "new" ? " " : line.old_pos
       - if defined?(plain) && plain
         = link_text
       - else
-        = link_to "", "##{line_code}", id: line_code, data: { linenumber: link_text }
-      - if !@diff_notes_disabled && can?(current_user, :create_note, @project)
-        = link_to_new_diff_note(line_code)
+        %a{href: "##{line_code}", data: { linenumber: link_text }}= "  "
     %td.new_line.diff-line-num{ class: type, data: { linenumber: line.new_pos } }
-      - link_text = type == "old" ? "&nbsp;".html_safe : line.new_pos
+      - link_text = type == "old" ? " " : line.new_pos
       - if defined?(plain) && plain
         = link_text
       - else
-        = link_to "", "##{line_code}", id: line_code, data: { linenumber: link_text }
-    %td.line_content{ class: ['noteable_line', type, line_code], data: { line_code: line_code } }= diff_line_content(line.text, type)
+        %a{href: "##{line_code}", data: { linenumber: link_text }}= ""
+    %td.line_content{ class: ['noteable_line', type], data: { line_code: line_code, line_type: type } }= diff_line_content(line.text, type)

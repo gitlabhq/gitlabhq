@@ -21,7 +21,7 @@
 - if diff_files.overflow?
   = render 'projects/diffs/warning', diff_files: diff_files
 
-.files
+.files{data: {can_create_note: (!@diff_notes_disabled && can?(current_user, :create_note, @project)).to_s}}
   - diff_files.each_with_index do |diff_file, index|
     - diff_commit = commit_for_diff(diff_file)
     - blob = project.repository.blob_for_diff(diff_commit, diff_file)

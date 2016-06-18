@@ -229,6 +229,7 @@ describe 'Comments', feature: true do
   end
 
   def click_diff_line(data = line_code)
-    execute_script("$('button[data-line-code=\"#{data}\"]').click()")
+    find(".line_holder[id='#{data}'] td:nth-of-type(1)").hover
+    find(".line_holder[id='#{data}'] button").trigger('click')
   end
 end

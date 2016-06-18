@@ -138,6 +138,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @base_commit = @merge_request.diff_base_commit
     @diffs = @merge_request.compare.diffs(diff_options) if @merge_request.compare
     @diff_notes_disabled = true
+    @comments_target = {}
 
     @pipeline = @merge_request.pipeline
     @statuses = @pipeline.statuses if @pipeline

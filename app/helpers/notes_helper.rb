@@ -24,28 +24,12 @@ module NotesHelper
     }.to_json
   end
 
-  def link_to_new_diff_note(line_code, line_type = nil)
-    discussion_id = LegacyDiffNote.build_discussion_id(
+  def discussion_id(line_code)
+    LegacyDiffNote.build_discussion_id(
       @comments_target[:noteable_type],
       @comments_target[:noteable_id] || @comments_target[:commit_id],
       line_code
     )
-
-    data = {
-      noteable_type: @comments_target[:noteable_type],
-      noteable_id:   @comments_target[:noteable_id],
-      commit_id:     @comments_target[:commit_id],
-      line_type:     line_type,
-      line_code:     line_code,
-      note_type:     LegacyDiffNote.name,
-      discussion_id: discussion_id
-    }
-
-    button_tag(class: 'btn add-diff-note js-add-diff-note-button',
-               data: data,
-               title: 'Add a comment to this line') do
-      icon('comment-o')
-    end
   end
 
   def link_to_reply_discussion(note, line_type = nil)

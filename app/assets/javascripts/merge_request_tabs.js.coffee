@@ -153,7 +153,6 @@ class @MergeRequestTabs
 
   loadDiff: (source) ->
     return if @diffsLoaded
-
     @_get
       url: "#{source}.json" + @_location.search
       success: (data) =>
