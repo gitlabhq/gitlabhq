@@ -29,7 +29,7 @@ module Banzai
         return if html_attr.blank?
 
         html_attr.value = apply_rewrite_rules(html_attr.value)
-      rescue URI::Error
+      rescue URI::Error, Addressable::URI::InvalidURIError
         # noop
       end
 
