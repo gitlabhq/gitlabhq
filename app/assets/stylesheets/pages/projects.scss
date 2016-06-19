@@ -404,16 +404,16 @@ a.deploy-project-label {
   }
 
   li.missing {
-    border: 1px dashed #dce0e5;
-    border-radius: 2px;
+    border: 1px dashed $border-gray-light;
+    border-radius: $border-radius-default;
 
     a {
-      color: #5a6069;
+      color: $notes-light-color;
       display: block;
     }
 
     &:hover {
-      background-color: #f0f2f5;
+      background-color: $gray-normal;
     }
   }
 
