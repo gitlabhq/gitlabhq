@@ -114,9 +114,13 @@ module IssuesHelper
   end
 
   def award_user_list(awards, current_user)
-    awards.map do |award|
+    names = awards.first(10).map do |award|
       award.user == current_user ? 'me' : award.user.name
-    end.join(', ')
+    end
+
+    names << "and #{awards.size - names.size} more." if awards.size > names.size
+
+    names.join(', ')
   end
 
   def award_active_class(awards, current_user)

@@ -223,7 +223,7 @@
       if (origTitle) {
         users = origTitle.trim().split(', ');
       }
-      users.push('me');
+      users.unshift('me');
       awardBlock.attr('title', users.join(', '));
       return this.resetTooltip(awardBlock);
     };
