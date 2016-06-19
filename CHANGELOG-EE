@@ -10,6 +10,7 @@ v 8.9.0 (unreleased)
   - Distribute RepositoryUpdateMirror jobs in time and add exclusive lease on them by project_id
   - [Elastic] Move ES settings to application settings
   - Disable mirror flag for projects without import_url
+  - UpdateMirror service return an error status when no mirror
   - Show flash notice when Git Hooks are updated successfully
   - [Elastic] Project members with guest role can't access confidential issues
   - Ability to lock file or folder in the repository
