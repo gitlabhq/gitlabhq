@@ -288,14 +288,23 @@ class MergeRequest < ActiveRecord::Base
 
   def update_merge_request_diff
     if source_branch_changed? || target_branch_changed?
-      reload_code
+      reload_diff
     end
   end
 
-  def reload_code
-    if merge_request_diff && open?
-      merge_request_diff.reload_content
-    end
+  def reload_diff
+    return unless merge_request_diff && open?
+
+    old_diff_refs = self.diff_refs
+
+    merge_request_diff.reload_content
+
+    new_diff_refs = self.diff_refs
+
+    update_diff_notes_positions(
+      old_diff_refs: old_diff_refs,
+      new_diff_refs: new_diff_refs
+    )
   end
 
   def check_if_can_be_merged
@@ -644,6 +653,32 @@ class MergeRequest < ActiveRecord::Base
 
   def support_new_diff_notes?
     diff_refs && diff_refs.complete?
+  end
+
+  def update_diff_notes_positions(old_diff_refs:, new_diff_refs:)
+    return unless support_new_diff_notes?
+    return if new_diff_refs == old_diff_refs
+
+    active_diff_notes = self.notes.diff_notes.select do |note|
+      note.new_diff_note? && note.active?(old_diff_refs)
+    end
+
+    return if active_diff_notes.empty?
+
+    paths = active_diff_notes.flat_map { |n| n.diff_file.paths }.uniq
+
+    service = Notes::DiffPositionUpdateService.new(
+      self.project,
+      nil,
+      old_diff_refs: old_diff_refs,
+      new_diff_refs: new_diff_refs,
+      paths: paths
+    )
+
+    active_diff_notes.each do |note|
+      service.execute(note)
+      Gitlab::Timeless.timeless(note, &:save)
+    end
   end
 
   def keep_around_commit

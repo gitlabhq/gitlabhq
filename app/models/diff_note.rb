@@ -12,7 +12,7 @@ class DiffNote < Note
   validate :positions_complete
   validate :verify_supported
 
-  before_validation :set_original_position, on: :create
+  before_validation :set_original_position, :update_position, on: :create
   before_validation :set_line_code
 
   class << self
@@ -69,6 +69,26 @@ class DiffNote < Note
     diff_refs ||= self.noteable.diff_refs
 
     self.position.diff_refs == diff_refs
+  end
+
+  def update_position
+    return unless supported?
+    return if for_commit?
+
+    return if active?
+
+    Notes::DiffPositionUpdateService.new(
+      self.project,
+      nil,
+      old_diff_refs: self.position.diff_refs,
+      new_diff_refs: self.noteable.diff_refs,
+      paths: self.position.paths
+    ).execute(self)
+  end
+
+  def update_position!
+    update_position &&
+      Gitlab::Timeless.timeless(self, &:save)
   end
 
   private
