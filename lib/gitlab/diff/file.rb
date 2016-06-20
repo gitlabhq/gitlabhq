@@ -4,7 +4,8 @@ module Gitlab
       attr_reader :diff, :repository, :diff_refs
 
       delegate :new_file, :deleted_file, :renamed_file,
-        :old_path, :new_path, to: :diff, prefix: false
+        :old_path, :new_path, :a_mode, :b_mode,
+        :submodule?, :too_large?, to: :diff, prefix: false
 
       def initialize(diff, repository:, diff_refs: nil)
         @diff = diff
@@ -40,11 +41,7 @@ module Gitlab
       end
 
       def mode_changed?
-        !!(diff.a_mode && diff.b_mode && diff.a_mode != diff.b_mode)
-      end
-
-      def parser
-        Gitlab::Diff::Parser.new
+        a_mode && b_mode && a_mode != b_mode
       end
 
       def raw_diff
@@ -56,13 +53,11 @@ module Gitlab
       end
 
       def prev_line(index)
-        if index > 0
-          diff_lines[index - 1]
-        end
+        diff_lines[index - 1] if index > 0
       end
 
       def file_path
-        new_path.presence || old_path.presence
+        new_path.presence || old_path
       end
 
       def added_lines

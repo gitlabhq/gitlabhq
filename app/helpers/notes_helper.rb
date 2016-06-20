@@ -79,4 +79,14 @@ module NotesHelper
     full_key = { project: note.project, user_id: note.author_id }
     @max_access_by_user_id[full_key]
   end
+
+  def diff_note_path(note)
+    return unless note.diff_note?
+
+    if note.for_merge_request? && note.active?
+      diffs_namespace_project_merge_request_path(note.project.namespace, note.project, note.noteable, anchor: note.line_code)
+    elsif note.for_commit?
+      namespace_project_commit_path(note.project.namespace, note.project, note.noteable, anchor: note.line_code)
+    end
+  end
 end
