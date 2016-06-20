@@ -102,11 +102,14 @@ class @Notes
 
   keydownNoteText: (e) ->
     $this = $(this)
-    if $this.val() is '' and e.which is 38 #aka the up key
+    if $this.val() is '' and e.which is 38 and not isMetaKey e
       myLastNote = $("li.note[data-author-id='#{gon.current_user_id}'][data-editable]:last")
       if myLastNote.length
         myLastNoteEditBtn = myLastNote.find('.js-note-edit')
         myLastNoteEditBtn.trigger('click', [true, myLastNote])
+
+  isMetaKey = (e) ->
+    (e.metaKey or e.ctrlKey or e.altKey or e.shiftKey)
 
   initRefresh: ->
     clearInterval(Notes.interval)
