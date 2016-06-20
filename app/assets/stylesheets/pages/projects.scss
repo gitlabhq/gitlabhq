@@ -373,7 +373,7 @@ a.deploy-project-label {
 .project-stats {
   margin-top: $gl-padding;
   margin-bottom: 0;
-  padding: 16px 0;
+  padding: 0;
   background-color: $white-light;
   font-size: 0;
 
@@ -382,13 +382,14 @@ a.deploy-project-label {
   }
 
   .nav li {
-    display: inline;
+    display: inline-block;
+    margin: 16px 0;
+    margin-right: 16px;
   }
 
   .nav > li > a {
     background-color: transparent;
-    margin-right: 12px;
-    padding: 0 10px;
+    padding: 5px 10px;
     font-size: 15px;
     color: $notes-light-color;
   }
@@ -402,12 +403,17 @@ a.deploy-project-label {
     font-size: 17px;
   }
 
-  li.missing a {
-    color: #5a6069;
-    border: 1px dashed #dce0e5;
+  li.missing {
+    border: 1px dashed $border-gray-light;
+    border-radius: $border-radius-default;
+
+    a {
+      color: $notes-light-color;
+      display: block;
+    }
 
     &:hover {
-      background-color: #f0f2f5;
+      background-color: $gray-normal;
     }
   }
 
