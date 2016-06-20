@@ -1,7 +1,7 @@
 class ProjectsController < Projects::ApplicationController
   include ExtractsPath
 
-  before_action :authenticate_user!, except: [:show, :activity]
+  before_action :authenticate_user!, except: [:show, :activity, :refs]
   before_action :project, except: [:new, :create]
   before_action :repository, except: [:new, :create]
   before_action :assign_ref_vars, :tree, only: [:show], if: :repo_exists?
@@ -249,6 +249,24 @@ class ProjectsController < Projects::ApplicationController
         users: ext.users.map(&:username)
       }
     }
+  end
+
+  def refs
+    options = {
+      'Branches' => @repository.branch_names,
+    }
+
+    unless @repository.tag_count.zero?
+      options['Tags'] = VersionSorter.rsort(@repository.tag_names)
+    end
+
+    # If reference is commit id - we should add it to branch/tag selectbox
+    ref = Addressable::URI.unescape(params[:ref])
+    if ref && options.flatten(2).exclude?(ref) && ref =~ /\A[0-9a-zA-Z]{6,52}\z/
+      options['Commits'] = [ref]
+    end
+
+    render json: options.to_json
   end
 
   private
