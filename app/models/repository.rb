@@ -191,6 +191,10 @@ class Repository
     end
   end
 
+  def ref_names
+    branch_names + tag_names
+  end
+
   def branch_names
     @branch_names ||= cache.fetch(:branch_names) { branches.map(&:name) }
   end
