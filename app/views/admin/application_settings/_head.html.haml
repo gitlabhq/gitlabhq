@@ -1,0 +1,11 @@
+.nav-links.sub-nav
+  %ul{ class: (container_class) }
+    = nav_link(controller: :application_settings) do
+      = link_to admin_application_settings_path, title: 'Settings' do
+        %span
+          General
+
+    = nav_link(controller: :appearances) do
+      = link_to admin_appearances_path, title: 'Appearances' do
+        %span
+          Appearance
