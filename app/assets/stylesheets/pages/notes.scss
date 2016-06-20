@@ -117,6 +117,13 @@ ul.notes {
         code {
           word-break: keep-all;
         }
+
+        // Border around images in issue and MR comments.
+        img:not(.emoji) {
+          border: 1px solid $table-border-gray;
+          padding: 5px;
+          margin: 5px 0;
+        }
       }
     }
 
