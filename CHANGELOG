@@ -16,6 +16,7 @@ v 8.10.0 (unreleased)
   - Fix user creation with stronger minimum password requirements !4054 (nathan-pmt)
   - PipelinesFinder uses git cache data
   - Check for conflicts with existing Project's wiki path when creating a new project.
+  - Don't instantiate a git tree on Projects show default view
   - Remove unused front-end variable -> default_issues_tracker
   - Add API endpoint for a group issues !4520 (mahcsig)
   - Add Bugzilla integration !4930 (iamtjg)
