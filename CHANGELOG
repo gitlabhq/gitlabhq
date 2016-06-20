@@ -31,6 +31,7 @@ v 8.9.0 (unreleased)
   - Implement a fair usage of shared runners
   - Remove project notification settings associated with deleted projects
   - Fix 404 page when viewing TODOs that contain milestones or labels in different projects
+  - Wrap code blocks on Activies and Todos page !4783 (winniehell)
   - Add a metric for the number of new Redis connections created by a transaction
   - Fix Error 500 when viewing a blob with binary characters after the 1024-byte mark
   - Redesign navigation for project pages
