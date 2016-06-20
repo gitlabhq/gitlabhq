@@ -73,6 +73,18 @@ describe Projects::UpdateMirrorService do
         expect(result[:status]).to eq(:error)
       end
     end
+
+    describe "when is no mirror" do
+      let(:project) { build_stubbed(:project) }
+
+      it "fails" do
+        expect(project.mirror?).to eq(false)
+
+        result = described_class.new(project, build_stubbed(:user)).execute
+
+        expect(result[:status]).to eq(:error)
+      end
+    end
   end
 
   def stub_fetch_mirror(project, repository: project.repository)
