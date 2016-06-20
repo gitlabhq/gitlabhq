@@ -21,7 +21,7 @@ module Gitlab
     end
 
     def config_file
-      'lib/gitlab/import_export/import_export.yml'
+      Rails.root.join('lib/gitlab/import_export/import_export.yml')
     end
 
     def version_filename
