@@ -1,6 +1,6 @@
 # AddressableUrlValidator
 #
-# Custom validator for URLs. This is a
+# Custom validator for URLs. This is a stricter version of UrlValidator.
 #
 # By default, only URLs for http, https, ssh, and git protocols will be considered valid.
 # Provide a `:protocols` option to configure accepted protocols.
