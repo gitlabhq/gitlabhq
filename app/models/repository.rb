@@ -192,7 +192,7 @@ class Repository
   end
 
   def branch_names
-    cache.fetch(:branch_names) { branches.map(&:name) }
+    @branch_names ||= cache.fetch(:branch_names) { branches.map(&:name) }
   end
 
   def branch_exists?(branch_name)
@@ -267,6 +267,7 @@ class Repository
 
   def expire_branches_cache
     cache.expire(:branch_names)
+    @branch_names = nil
     @local_branches = nil
   end
 
@@ -330,10 +331,6 @@ class Repository
 
   def lookup_cache
     @lookup_cache ||= {}
-  end
-
-  def expire_branch_names
-    cache.expire(:branch_names)
   end
 
   def expire_avatar_cache(branch_name = nil, revision = nil)
@@ -430,20 +427,7 @@ class Repository
     expire_branch_count_cache
     expire_branches_cache
   end
-
-  def method_missing(m, *args, &block)
-    if m == :lookup && !block_given?
-      lookup_cache[m] ||= {}
-      lookup_cache[m][args.join(":")] ||= raw_repository.send(m, *args, &block)
-    else
-      raw_repository.send(m, *args, &block)
-    end
-  end
-
-  def respond_to_missing?(method, include_private = false)
-    raw_repository.respond_to?(method, include_private) || super
-  end
-
+  
   def blob_at(sha, path)
     unless Gitlab::Git.blank_ref?(sha)
       Blob.decorate(Gitlab::Git::Blob.find(self, sha, path))
