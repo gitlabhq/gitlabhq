@@ -56,7 +56,7 @@ class Note < ActiveRecord::Base
   scope :inc_author, ->{ includes(:author) }
   scope :inc_author_project_award_emoji, ->{ includes(:project, :author, :award_emoji) }
 
-  scope :legacy_diff_notes, ->{ where(type: 'LegacyDiffNote') }
+  scope :diff_notes, ->{ where(type: ['LegacyDiffNote', 'DiffNote']) }
   scope :non_diff_notes, ->{ where(type: ['Note', nil]) }
 
   scope :with_associations, -> do
@@ -82,7 +82,7 @@ class Note < ActiveRecord::Base
     end
 
     def grouped_diff_notes
-      legacy_diff_notes.select(&:active?).sort_by(&:created_at).group_by(&:line_code)
+      diff_notes.select(&:active?).sort_by(&:created_at).group_by(&:line_code)
     end
 
     # Searches for notes matching the given query.
@@ -112,6 +112,10 @@ class Note < ActiveRecord::Base
   end
 
   def legacy_diff_note?
+    false
+  end
+
+  def new_diff_note?
     false
   end
 

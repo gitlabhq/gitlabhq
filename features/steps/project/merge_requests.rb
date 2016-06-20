@@ -272,10 +272,9 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
   step 'user "John Doe" leaves a comment like "Line is wrong" on diff' do
     mr = MergeRequest.find_by(title: "Bug NS-05")
-    create(:note_on_merge_request_diff, project: project,
+    create(:diff_note_on_merge_request, project: project,
                                         noteable: mr,
                                         author: user_exists("John Doe"),
-                                        line_code: sample_commit.line_code,
                                         note: 'Line is wrong')
   end
 
