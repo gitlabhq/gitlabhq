@@ -249,6 +249,16 @@ class MergeRequest < ActiveRecord::Base
     source_branch_head.try(:sha)
   end
 
+  def diff_refs
+    return nil unless diff_start_commit || diff_base_commit
+
+    Gitlab::Diff::DiffRefs.new(
+      base_sha:  diff_base_sha,
+      start_sha: diff_start_sha,
+      head_sha:  diff_head_sha
+    )
+  end
+
   def validate_branches
     if target_project == source_project && target_branch == source_branch
       errors.add :branch_conflict, "You can not use same project/branch for source and target"
@@ -622,12 +632,6 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def pipeline
-  end
-
-  def diff_refs
-    return nil unless diff_base_commit
-
-    [diff_base_commit, last_commit]
     @pipeline ||= source_project.pipeline(diff_head_sha, source_branch) if diff_head_sha && source_project
   end
 

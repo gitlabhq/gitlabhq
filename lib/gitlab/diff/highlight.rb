@@ -1,11 +1,13 @@
 module Gitlab
   module Diff
     class Highlight
-      attr_reader :diff_file, :diff_lines, :raw_lines
+      attr_reader :diff_file, :diff_lines, :raw_lines, :repository
 
       delegate :old_path, :new_path, :old_ref, :new_ref, to: :diff_file, prefix: :diff
 
-      def initialize(diff_lines)
+      def initialize(diff_lines, repository: nil)
+        @repository = repository
+
         if diff_lines.is_a?(Gitlab::Diff::File)
           @diff_file = diff_lines
           @diff_lines = @diff_file.diff_lines
@@ -19,7 +21,7 @@ module Gitlab
         @diff_lines.map.with_index do |diff_line, i|
           diff_line = diff_line.dup
           # ignore highlighting for "match" lines
-          next diff_line if diff_line.type == 'match' || diff_line.type == 'nonewline'
+          next diff_line if diff_line.meta?
 
           rich_line = highlight_line(diff_line) || diff_line.text
 
@@ -70,7 +72,7 @@ module Gitlab
         ref  = send("diff_#{version}_ref")
         path = send("diff_#{version}_path")
 
-        [ref.project.repository, ref.id, path]
+        [self.repository, ref, path]
       end
     end
   end

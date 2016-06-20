@@ -30,8 +30,8 @@ module DiffHelper
     options
   end
 
-  def safe_diff_files(diffs, diff_refs)
-    diffs.decorate! { |diff| Gitlab::Diff::File.new(diff, diff_refs) }
+  def safe_diff_files(diffs, diff_refs: nil, repository: nil)
+    diffs.decorate! { |diff| Gitlab::Diff::File.new(diff, diff_refs: diff_refs, repository: repository) }
   end
 
   def generate_line_code(file_path, line)

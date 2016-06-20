@@ -1,39 +1,36 @@
 module Gitlab
   module Diff
     class File
-      attr_reader :diff, :diff_refs
+      attr_reader :diff, :repository, :diff_refs
 
       delegate :new_file, :deleted_file, :renamed_file,
         :old_path, :new_path, to: :diff, prefix: false
 
-      def initialize(diff, diff_refs)
+      def initialize(diff, repository:, diff_refs: nil)
         @diff = diff
+        @repository = repository
         @diff_refs = diff_refs
       end
 
       def old_ref
-        diff_refs[0] if diff_refs
+        diff_refs.try(:base_sha)
       end
 
       def new_ref
-        diff_refs[1] if diff_refs
+        diff_refs.try(:head_sha)
       end
 
-      # Array of Gitlab::DIff::Line objects
+      # Array of Gitlab::Diff::Line objects
       def diff_lines
-        @lines ||= parser.parse(raw_diff.each_line).to_a
-      end
-
-      def too_large?
-        diff.too_large?
+        @lines ||= Gitlab::Diff::Parser.new.parse(raw_diff.each_line).to_a
       end
 
       def highlighted_diff_lines
-        Gitlab::Diff::Highlight.new(self).highlight
+        @highlighted_diff_lines ||= Gitlab::Diff::Highlight.new(self, repository: self.repository).highlight
       end
 
       def parallel_diff_lines
-        Gitlab::Diff::ParallelDiff.new(self).parallelize
+        @parallel_diff_lines ||= Gitlab::Diff::ParallelDiff.new(self).parallelize
       end
 
       def mode_changed?
