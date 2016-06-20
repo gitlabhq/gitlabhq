@@ -22,7 +22,10 @@ module Gitlab
 
           validate_permission!(:create_issue)
 
-          verify_record!(create_issue, InvalidIssueError, 'issue')
+          verify_record!(
+            record: create_issue,
+            invalid_exception: InvalidIssueError,
+            record_name: 'issue')
         end
 
         def author
