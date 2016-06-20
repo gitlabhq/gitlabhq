@@ -185,4 +185,17 @@ module GitlabMarkdownHelper
       ''
     end
   end
+
+  def markdown_toolbar_button(options = {})
+    data = options[:data].merge({ container: "body" })
+    content_tag :button,
+      type: "button",
+      class: "toolbar-btn js-md has-tooltip hidden-xs",
+      tabindex: -1,
+      data: data,
+      title: options[:title],
+      aria: { label: options[:title] } do
+      icon(options[:icon])
+    end
+  end
 end
