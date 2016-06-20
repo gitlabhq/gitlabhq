@@ -52,7 +52,7 @@ Clicking on an environment will show the history of deployments.
 Only deploys that happen after your `.gitlab-ci.yml` is properly configured will
 show up in the environments and deployments lists.
 
-[Pipelines]: quick_start/README.md
+[Pipelines]: pipelines.md
 [jobs]: yaml/README.md#jobs
 [environments]: #environments
 [deployments]: #deployments
