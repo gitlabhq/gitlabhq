@@ -25,13 +25,19 @@
     &:nth-child(even) {
       float: right;
     }
+
     float: left;
     margin-top: 10px;
+
+    @media (max-width: $screen-sm-min) {
+      width: 100%;
+    }
   }
 
   .person .spark {
     display: block;
     background: #f3f3f3;
+    width: 100%;
   }
 
   .person .area-contributor {

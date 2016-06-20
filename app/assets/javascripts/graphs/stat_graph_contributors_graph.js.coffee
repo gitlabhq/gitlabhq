@@ -121,7 +121,11 @@ class @ContributorsMasterGraph extends ContributorsGraph
 
 class @ContributorsAuthorGraph extends ContributorsGraph
   constructor: (@data) ->
-    @width = $('.content').width()/2 - 100
+    # Don't split graph size in half for mobile devices.
+    if $(window).width() < 768
+      @width = $('.content').width() - 80
+    else
+      @width = ($('.content').width() / 2) - 100
     @height = 200
     @x = null
     @y = null
