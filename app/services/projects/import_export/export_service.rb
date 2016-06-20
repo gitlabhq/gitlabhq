@@ -50,7 +50,7 @@ module Projects
       end
 
       def notify_error
-        notification_service.project_not_exported(@project, @current_user, @shared.errors.join(', '))
+        notification_service.project_not_exported(@project, @current_user, @shared.errors)
       end
     end
   end
