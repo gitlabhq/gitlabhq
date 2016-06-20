@@ -9,5 +9,4 @@
     = link_to group.name, group_path(group)
 
   .pull-right
-    = form_for [group, setting], remote: true, html: { class: 'update-notifications' } do |f|
-      = f.select :level, NotificationSetting.levels.keys, {}, class: 'form-control trigger-submit'
+    = render 'shared/notifications/button', notification_setting: setting

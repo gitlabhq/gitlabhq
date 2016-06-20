@@ -8,7 +8,7 @@ describe Banzai::Filter::AbstractReferenceFilter do
       doc = Nokogiri::HTML.fragment("#1 #{project.to_reference}#2")
       filter = described_class.new(doc, project: project)
 
-      expect(filter).to receive(:object_class).twice.and_return(Issue)
+      expect(filter).to receive(:object_class).exactly(4).times.and_return(Issue)
       expect(filter).to receive(:object_sym).twice.and_return(:issue)
 
       refs = filter.references_per_project

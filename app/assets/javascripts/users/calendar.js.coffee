@@ -6,12 +6,6 @@ class @Calendar
     @daySizeWithSpace = @daySize + (@daySpace * 2)
     @monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
     @months = []
-    @highestValue = 0
-
-    # Get the highest value from the timestampes
-    _.each timestamps, (count) =>
-      if count > @highestValue
-        @highestValue = count
 
     # Loop through the timestamps to create a group of objects
     # The group of objects will be grouped based on the day of the week they are
@@ -39,8 +33,8 @@ class @Calendar
       i++
 
     # Init color functions
-    @color = @initColor()
     @colorKey = @initColorKey()
+    @color = @initColor()
 
     # Init the svg element
     @renderSvg(group)
@@ -104,7 +98,7 @@ class @Calendar
       .attr 'class', 'user-contrib-cell js-tooltip'
       .attr 'fill', (stamp) =>
         if stamp.count isnt 0
-          @color(stamp.count)
+          @color(Math.min(stamp.count, 40))
         else
           '#ededed'
       .attr 'data-container', 'body'
@@ -164,10 +158,11 @@ class @Calendar
         color
 
   initColor: ->
+    colorRange = ['#ededed', @colorKey(0), @colorKey(1), @colorKey(2), @colorKey(3)]
     d3.scale
-      .linear()
-      .range(['#acd5f2', '#254e77'])
-      .domain([0, @highestValue])
+      .threshold()
+      .domain([0, 10, 20, 30])
+      .range(colorRange)
 
   initColorKey: ->
     d3.scale

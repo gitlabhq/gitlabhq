@@ -598,6 +598,21 @@ class Repository
     end
   end
 
+  def tags_sorted_by(value)
+    case value
+    when 'name'
+      # Would be better to use `sort_by` but `version_sorter` only exposes
+      # `sort` and `rsort`
+      VersionSorter.rsort(tag_names).map { |tag_name| find_tag(tag_name) }
+    when 'updated_desc'
+      tags_sorted_by_committed_date.reverse
+    when 'updated_asc'
+      tags_sorted_by_committed_date
+    else
+      tags
+    end
+  end
+
   def contributors
     commits = self.commits(nil, limit: 2000, offset: 0, skip_merges: true)
 
@@ -994,5 +1009,9 @@ class Repository
 
   def file_on_head(regex)
     tree(:head).blobs.find { |file| file.name =~ regex }
+  end
+
+  def tags_sorted_by_committed_date
+    tags.sort_by { |tag| commit(tag.target).committed_date }
   end
 end

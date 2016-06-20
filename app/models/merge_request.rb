@@ -4,6 +4,7 @@ class MergeRequest < ActiveRecord::Base
   include Referable
   include Sortable
   include Taskable
+  include Importable
 
   belongs_to :target_project, foreign_key: :target_project_id, class_name: "Project"
   belongs_to :source_project, foreign_key: :source_project_id, class_name: "Project"
@@ -13,7 +14,7 @@ class MergeRequest < ActiveRecord::Base
 
   serialize :merge_params, Hash
 
-  after_create :create_merge_request_diff
+  after_create :create_merge_request_diff, unless: :importing
   after_update :update_merge_request_diff
 
   delegate :commits, :diffs, :real_size, to: :merge_request_diff, prefix: nil
@@ -95,12 +96,12 @@ class MergeRequest < ActiveRecord::Base
     end
   end
 
-  validates :source_project, presence: true, unless: :allow_broken
+  validates :source_project, presence: true, unless: [:allow_broken, :importing?]
   validates :source_branch, presence: true
   validates :target_project, presence: true
   validates :target_branch, presence: true
   validates :merge_user, presence: true, if: :merge_when_build_succeeds?
-  validate :validate_branches, unless: :allow_broken
+  validate :validate_branches, unless: [:allow_broken, :importing?]
   validate :validate_fork
 
   scope :by_branch, ->(branch_name) { where("(source_branch LIKE :branch) OR (target_branch LIKE :branch)", branch: branch_name) }
@@ -130,6 +131,10 @@ class MergeRequest < ActiveRecord::Base
 
   def self.link_reference_pattern
     @link_reference_pattern ||= super("merge_requests", /(?<merge_request>\d+)/)
+  end
+
+  def self.reference_valid?(reference)
+    reference.to_i > 0 && reference.to_i <= Gitlab::Database::MAX_INT_VALUE
   end
 
   # Returns all the merge requests from an ActiveRecord:Relation.

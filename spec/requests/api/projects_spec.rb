@@ -428,8 +428,9 @@ describe API::API, api: true  do
 
     describe 'permissions' do
       context 'all projects' do
-        it 'Contains permission information' do
-          project.team << [user, :master]
+        before { project.team << [user, :master] }
+
+        it 'contains permission information' do
           get api("/projects", user)
 
           expect(response.status).to eq(200)
@@ -440,7 +441,7 @@ describe API::API, api: true  do
       end
 
       context 'personal project' do
-        it 'Sets project access and returns 200' do
+        it 'sets project access and returns 200' do
           project.team << [user, :master]
           get api("/projects/#{project.id}", user)
 
@@ -452,9 +453,11 @@ describe API::API, api: true  do
       end
 
       context 'group project' do
+        let(:project2) { create(:project, group: create(:group)) }
+
+        before { project2.group.add_owner(user) }
+
         it 'should set the owner and return 200' do
-          project2 = create(:project, group: create(:group))
-          project2.group.add_owner(user)
           get api("/projects/#{project2.id}", user)
 
           expect(response.status).to eq(200)

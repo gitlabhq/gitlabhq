@@ -1,0 +1,31 @@
+.modal.fade{ tabindex: "-1", role: "dialog", id: notifications_menu_identifier("modal", notification_setting), aria: { labelledby: "custom-notifications-title" } }
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %button.close{ type: "button", data: { dismiss: "modal" }, aria: { label: "close" } }
+          %span{ aria: { hidden: "true" } } ×
+        %h4#custom-notifications-title.modal-title
+          Custom notification events
+
+      .modal-body
+        .container-fluid
+          = form_for notification_setting, html: { class: "custom-notifications-form" } do |f|
+            = hidden_setting_source_input(notification_setting)
+            .row
+              .col-lg-4
+                %h4.prepend-top-0
+                  Notification events
+                %p
+                  Custom notification levels are the same as participating levels. With custom notification levels you will also receive notifications for select events. To find out more, check out
+                  = succeed "." do
+                    %a{ href: "http://docs.gitlab.com/ce/workflow/notifications.html", target: "_blank"} notification emails
+              .col-lg-8
+                - NotificationSetting::EMAIL_EVENTS.each_with_index do |event, index|
+                  - field_id = "#{notifications_menu_identifier("modal", notification_setting)}_notification_setting[#{event}]"
+                  .form-group
+                    .checkbox{ class: ("prepend-top-0" if index == 0) }
+                      %label{ for: field_id }
+                        = check_box("notification_setting", event, id: field_id, class: "js-custom-notification-event", checked: notification_setting.events[event])
+                        %strong
+                          = event.to_s.humanize
+                          = icon("spinner spin", class: "custom-notification-event-loading")

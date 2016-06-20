@@ -21,7 +21,7 @@ describe ContainerRegistry::Repository do
         to_return(
           status: 200,
           body: JSON.dump(tags: ['test']),
-          headers: { 'Content-Type' => 'application/vnd.docker.distribution.manifest.v2+json' })
+          headers: { 'Content-Type' => 'application/json' })
     end
 
     context '#manifest' do

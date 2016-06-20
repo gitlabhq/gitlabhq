@@ -128,11 +128,6 @@
       }
     }
 
-    .btn-group:not(:first-child):not(:last-child) > .btn {
-      border-top-right-radius: 3px;
-      border-bottom-right-radius: 3px;
-    }
-
     form {
       margin-left: 10px;
     }
@@ -499,7 +494,8 @@ pre.light-well {
 
 .activity-filter-block {
   .controls {
-    padding-bottom: 10px;
+    padding-bottom: 7px;
+    margin-top: 8px;
     border-bottom: 1px solid $border-color;
   }
 }
@@ -601,5 +597,22 @@ pre.light-well {
     &:hover {
       color: $gl-link-color;
     }
+  }
+}
+
+.custom-notifications-form {
+  .is-loading {
+    .custom-notification-event-loading {
+      display: inline-block;
+    }
+  }
+}
+
+.custom-notification-event-loading {
+  display: none;
+  margin-left: 5px;
+
+  &.is-done {
+    color: $gl-text-green;
   }
 }
