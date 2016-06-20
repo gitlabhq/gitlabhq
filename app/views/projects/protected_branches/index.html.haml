@@ -23,7 +23,8 @@
           = f.label :name, "Branch", class: "label-light"
           = f.text_field(:name)
           %p.help-block
-            Wildcards such as
+            = link_to "Wildcards", help_page_path(category: 'workflow', file: 'protected_branches', format: 'md', anchor: "wildcard-protected-branches")
+            such as
             %code *-stable
             or
             %code production/*
