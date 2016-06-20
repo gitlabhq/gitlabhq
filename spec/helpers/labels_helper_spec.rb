@@ -77,4 +77,10 @@ describe LabelsHelper do
       expect(text_color_for_bg('#000')).to eq '#FFFFFF'
     end
   end
+
+  describe 'unescape_html_entities' do
+    it 'decodes &, <, and > named entities' do
+      expect(unescape_html_entities('foo &amp; bar &lt; zoo &gt; boo &eacute;')).to eq 'foo & bar < zoo > boo &eacute;'
+    end
+  end
 end

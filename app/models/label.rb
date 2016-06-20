@@ -58,8 +58,8 @@ class Label < ActiveRecord::Base
       (?:
         (?<label_id>\d+) | # Integer-based label ID, or
         (?<label_name>
-          [A-Za-z0-9_-]+ | # String-based single-word label title, or
-          "[^&\?,]+"       # String-based multi-word label surrounded in quotes
+          [A-Za-z0-9_\-\?&]+ | # String-based single-word label title, or
+          "[^,]+"              # String-based multi-word label surrounded in quotes
         )
       )
     }x
@@ -134,16 +134,6 @@ class Label < ActiveRecord::Base
   end
 
   def sanitize_title(value)
-    unnescape_html_entities(Sanitize.clean(value.to_s))
+    LabelsHelper.unescape_html_entities(Sanitize.clean(value.to_s))
   end
-
-  def unnescape_html_entities(value)
-    value.to_s.gsub(/(&gt;)|(&lt;)|(&amp;)/, Label::TABLE_FOR_ESCAPE_HTML_ENTITIES.invert)
-  end
-
-  TABLE_FOR_ESCAPE_HTML_ENTITIES = {
-    '&' => '&amp;',
-    '<' => '&lt;',
-    '>' => '&gt;'
-  }
 end
