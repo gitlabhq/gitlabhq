@@ -49,6 +49,13 @@ describe NotesFinder do
         user = create(:user)
         expect { NotesFinder.new.execute(project, user, params) }.to raise_error(ActiveRecord::RecordNotFound)
       end
+
+      it 'raises an error for project members with guest role' do
+        user = create(:user)
+        project.team << [user, :guest]
+
+        expect { NotesFinder.new.execute(project, user, params) }.to raise_error(ActiveRecord::RecordNotFound)
+      end
     end
   end
 end

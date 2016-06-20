@@ -156,6 +156,11 @@ $warning-message-border: #f0e2bb;
 /* header */
 $light-grey-header: #faf9f9;
 
+/* tanuki logo colors */
+$tanuki-red: #e24329;
+$tanuki-orange: #fc6d26;
+$tanuki-yellow: #fca326;
+
 /*
  * State colors:
  */
@@ -262,6 +267,11 @@ $calendar-header-color: #b8b8b8;
 $calendar-hover-bg: #ecf3fe;
 $calendar-border-color: rgba(#000, .1);
 $calendar-unselectable-bg: #faf9f9;
+
+/*
+ * Personal Access Tokens
+ */
+$personal-access-tokens-disabled-label-color: #bbb;
 
 $ci-output-bg: #1d1f21;
 $ci-text-color: #c5c8c6;

@@ -120,6 +120,42 @@
       = link_to 'Housekeeping', housekeeping_namespace_project_path(@project.namespace, @project),
           method: :post, class: "btn btn-save"
   %hr
+  .row.prepend-top-default
+    .col-lg-3
+      %h4.prepend-top-0
+        Export project
+      %p.append-bottom-0
+        %p
+          Export this project with all its related data in order to move your project to a new GitLab instance. Once the export is finished, you can import the file from the "New Project" page.
+        %p
+          Once the exported file is ready, you will receive a notification email with a download link.
+
+    .col-lg-9
+
+      - if @project.export_project_path
+        = link_to 'Download export',  download_export_namespace_project_path(@project.namespace, @project),
+                method: :get, class: "btn btn-default"
+        = link_to 'Generate new export',  generate_new_export_namespace_project_path(@project.namespace, @project),
+                method: :post, class: "btn btn-default"
+      - else
+        = link_to 'Export project', export_namespace_project_path(@project.namespace, @project),
+                method: :post, class: "btn btn-default"
+
+      .bs-callout.bs-callout-info
+        %p.append-bottom-0
+          %p
+            The following items will be exported:
+          %ul
+            %li Project and wiki repositories
+            %li Project uploads
+            %li Project configuration including web hooks and services
+            %li Issues with comments, merge requests with diffs and comments, labels, milestones, snippets, and other project entities
+          %p
+            The following items will NOT be exported:
+          %ul
+            %li Build traces and artifacts
+            %li LFS objects
+  %hr
   - if can? current_user, :archive_project, @project
     .row.prepend-top-default
       .col-lg-3

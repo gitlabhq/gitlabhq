@@ -8,6 +8,10 @@ class @Profile
     $('.js-preferences-form').on 'change.preference', 'input[type=radio]', ->
       $(this).parents('form').submit()
 
+    # Automatically submit email form when it changes
+    $('#user_notification_email').on 'change', ->
+      $(this).parents('form').submit()
+
     $('.update-username').on 'ajax:before', ->
       $('.loading-username').show()
       $(this).find('.update-success').hide()

@@ -91,6 +91,10 @@
     background-color: $white-light;
     border-top: none;
   }
+
+  &.top-block .container-fluid {
+    background-color: inherit;
+  }
 }
 
 .cover-block {
