@@ -20,8 +20,8 @@ describe Gitlab::Email::Handler::CreateNoteHandler, lib: true do
   context "when the recipient address doesn't include a mail key" do
     let(:email_raw) { fixture_file('emails/valid_reply.eml').gsub(mail_key, "") }
 
-    it "raises a SentNotificationNotFoundError" do
-      expect { receiver.execute }.to raise_error(Gitlab::Email::SentNotificationNotFoundError)
+    it "raises a UnknownIncomingEmail" do
+      expect { receiver.execute }.to raise_error(Gitlab::Email::UnknownIncomingEmail)
     end
   end
 
