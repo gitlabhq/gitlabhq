@@ -1,7 +1,6 @@
 module Gitlab
   class Highlight
-    def self.highlight(blob_name, blob_content,
-                       repository: nil, nowrap: true, plain: false)
+    def self.highlight(blob_name, blob_content, repository: nil, nowrap: true, plain: false)
       new(blob_name, blob_content, nowrap: nowrap, repository: repository).
         highlight(blob_content, continue: false, plain: plain)
     end
