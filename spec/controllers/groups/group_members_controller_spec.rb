@@ -118,9 +118,7 @@ describe Groups::GroupMembersController do
         it 'cannot removes himself from the group' do
           delete :leave, group_id: group
 
-          expect(response).to redirect_to(group_path(group))
-          expect(response).to set_flash[:alert].to "You can not leave the \"#{group.name}\" group. Transfer or delete the group."
-          expect(group.users).to include user
+          expect(response.status).to eq(403)
         end
       end
 

@@ -171,11 +171,7 @@ describe Projects::ProjectMembersController do
           delete :leave, namespace_id: project.namespace,
                          project_id: project
 
-          expect(response).to redirect_to(
-            namespace_project_path(project.namespace, project)
-          )
-          expect(response).to set_flash[:alert].to "You can not leave the \"#{project.human_name}\" project. Transfer or delete the project."
-          expect(project.users).to include user
+          expect(response.status).to eq(403)
         end
       end
 

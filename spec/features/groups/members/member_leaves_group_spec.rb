@@ -13,7 +13,6 @@ feature 'Groups > Members > Member leaves group', feature: true do
   end
 
   scenario 'user leaves group' do
-    # find('#group-settings-button').click
     click_link 'Leave Group'
 
     expect(current_path).to eq(dashboard_groups_path)
