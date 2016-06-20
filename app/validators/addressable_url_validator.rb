@@ -1,6 +1,6 @@
 # AddressableUrlValidator
 #
-# Custom validator for URLs. This is a 
+# Custom validator for URLs. This is a
 #
 # By default, only URLs for http, https, ssh, and git protocols will be considered valid.
 # Provide a `:protocols` option to configure accepted protocols.
@@ -22,12 +22,6 @@ class AddressableUrlValidator < ActiveModel::EachValidator
     end
   end
 
-  private
-
-  def default_options
-    @default_options ||= { protocols: %w(http https ssh git) }
-  end
-
   def valid_url?(value)
     return false unless value
 
@@ -36,6 +30,12 @@ class AddressableUrlValidator < ActiveModel::EachValidator
     valid_uri?(value) && valid_protocol?(value)
   rescue Addressable::URI::InvalidURIError
     false
+  end
+
+  private
+
+  def default_options
+    @default_options ||= { protocols: %w(http https ssh git) }
   end
 
   def valid_uri?(value)
