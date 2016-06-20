@@ -7,6 +7,7 @@ v 8.9.0 (unreleased)
   - Forbid MR authors from approving their own MRs
   - Instrument instance methods of Gitlab::InsecureKeyFingerprint class
   - Add API endpoint for Merge Request Approvals !449
+  - Send notification email when merge request is approved
   - Distribute RepositoryUpdateMirror jobs in time and add exclusive lease on them by project_id
   - [Elastic] Move ES settings to application settings
   - Disable mirror flag for projects without import_url

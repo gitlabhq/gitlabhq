@@ -115,6 +115,10 @@ class NotificationService
     )
   end
 
+  def approve_mr(merge_request, current_user)
+    approve_mr_email(merge_request, merge_request.target_project, current_user)
+  end
+
   # Notify new user with email after creation
   def new_user(user, token = nil)
     # Don't email omniauth created users
@@ -474,6 +478,14 @@ class NotificationService
 
     recipients.each do |recipient|
       mailer.send(method, recipient.id, target.id, status, current_user.id).deliver_later
+    end
+  end
+
+  def approve_mr_email(merge_request, project, current_user)
+    recipients = build_recipients(merge_request, project, current_user)
+
+    recipients.each do |recipient|
+      mailer.approved_merge_request_email(recipient.id, merge_request.id, current_user.id).deliver_later
     end
   end
 
