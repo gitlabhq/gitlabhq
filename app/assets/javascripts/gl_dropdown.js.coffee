@@ -102,7 +102,7 @@ class GitLabDropdownFilter
           $el = $(@)
           matches = fuzzaldrinPlus.match($el.text().trim(), search_text)
 
-          if $el.is(':not(.dropdown-header)')
+          unless $el.is('.dropdown-header')
             if matches.length
               $el.show()
             else
