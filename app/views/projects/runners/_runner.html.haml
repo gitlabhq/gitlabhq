@@ -2,7 +2,7 @@
   %h4
     = runner_status_icon(runner)
     %span.monospace
-      - if @runners.include?(runner)
+      - if @project_runners.include?(runner)
         = link_to runner.short_sha, runner_path(runner)
         - if runner.locked?
           = icon('lock', class: 'has-tooltip', title: 'Exclusive to this project')
@@ -13,7 +13,7 @@
         = runner.short_sha
 
     .pull-right
-      - if @runners.include?(runner)
+      - if @project_runners.include?(runner)
         - if runner.belongs_to_one_project?
           = link_to 'Remove runner', runner_path(runner), data: { confirm: "Are you sure?" }, method: :delete, class: 'btn btn-danger btn-sm'
         - else

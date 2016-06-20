@@ -26,7 +26,7 @@ module Ci
         .where("ci_runner_projects.gl_project_id = :project_id OR ci_runners.is_shared = true", project_id: project_id)
     end
 
-    scope :available_for, ->(project) do
+    scope :assignable_for, ->(project) do
       # FIXME: That `to_sql` is needed to workaround a weird Rails bug.
       #        Without that, placeholders would miss one and couldn't match.
       where(locked: false).
@@ -99,7 +99,7 @@ module Ci
     end
 
     def can_pick?(build)
-      available_for?(build.project) && accepting_tags?(build)
+      assignable_for?(build.project) && accepting_tags?(build)
     end
 
     def only_for?(project)
@@ -123,7 +123,7 @@ module Ci
       end
     end
 
-    def available_for?(project)
+    def assignable_for?(project)
       !locked? || projects.exists?(id: project.id)
     end
 
