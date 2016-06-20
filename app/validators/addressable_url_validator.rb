@@ -22,6 +22,8 @@ class AddressableUrlValidator < ActiveModel::EachValidator
     end
   end
 
+  private
+
   def valid_url?(value)
     return false unless value
 
@@ -31,8 +33,6 @@ class AddressableUrlValidator < ActiveModel::EachValidator
   rescue Addressable::URI::InvalidURIError
     false
   end
-
-  private
 
   def default_options
     @default_options ||= { protocols: %w(http https ssh git) }
@@ -44,6 +44,6 @@ class AddressableUrlValidator < ActiveModel::EachValidator
 
   def valid_protocol?(value)
     options = default_options.merge(self.options)
-    value =~ /\A#{URI.regexp(options[:protocols])}\z/
+    !!(value =~ /\A#{URI.regexp(options[:protocols])}\z/)
   end
 end

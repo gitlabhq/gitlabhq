@@ -1,5 +1,9 @@
-# See http://doc.gitlab.com/ce/development/migration_style_guide.html
-# for more information on how to write migrations for GitLab.
+# Updates project records containing invalid URLs using the AddressableUrlValidator.
+# This is optimized assuming the number of invalid records is low, but
+# we still need to loop through all the projects with an +import_url+
+# so we use batching for the latter.
+#
+# This migration is non-reversible as we would have to keep the old data.
 
 class FixNoValidatableImportUrl < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
@@ -14,8 +18,8 @@ class FixNoValidatableImportUrl < ActiveRecord::Migration
       @results = []
     end
 
-    def next
-      @results = ActiveRecord::Base.connection.execute(batched_sql)
+    def next?
+      @results = ActiveRecord::Base.connection.exec_query(batched_sql)
       @offset += @batch_size
       @results.any?
     end
@@ -23,11 +27,36 @@ class FixNoValidatableImportUrl < ActiveRecord::Migration
     private
 
     def batched_sql
-      "#{@query} OFFSET #{@offset} LIMIT #{@batch_size}"
+      "#{@query} LIMIT #{@batch_size} OFFSET #{@offset}"
+    end
+  end
+
+  # AddressableValidator - Snapshot of AddressableUrlValidator
+  module AddressableUrlValidatorSnap
+    extend self
+
+    def valid_url?(value)
+      return false unless value
+
+      value.strip!
+
+      valid_uri?(value) && valid_protocol?(value)
+    rescue Addressable::URI::InvalidURIError
+      false
+    end
+
+    def valid_uri?(value)
+      Addressable::URI.parse(value).is_a?(Addressable::URI)
+    end
+
+    def valid_protocol?(value)
+      !!(value =~ /\A#{URI.regexp(%w(http https ssh git))}\z/)
     end
   end
 
   def up
+    say('Cleaning up invalid import URLs... This may take a few minutes if we have a large number of imported projects.')
+
     invalid_import_url_project_ids.each { |project_id| cleanup_import_url(project_id) }
   end
 
@@ -35,18 +64,20 @@ class FixNoValidatableImportUrl < ActiveRecord::Migration
     ids = []
     batches = SqlBatches.new(query: "SELECT id, import_url FROM projects WHERE import_url IS NOT NULL")
 
-    while batches.nexts
-      ids += batches.results.map { |result| invalid_url?(result[:import_url]) ? result[:id] : nil }
+    while batches.next?
+      batches.results.each do |result|
+        ids << result['id'] unless valid_url?(result['import_url'])
+      end
     end
 
-    ids.compact
+    ids
   end
 
-  def invalid_url?(url)
-    AddressableUrlValidator.new({ attributes: 1 }).valid_url?(url)
+  def valid_url?(url)
+    AddressableUrlValidatorSnap.valid_url?(url)
   end
 
   def cleanup_import_url(project_id)
-    execute("UPDATE projects SET mirror = false, import_url = NULL WHERE id = #{project_id}")
+    execute("UPDATE projects SET import_url = NULL WHERE id = #{project_id}")
   end
 end
