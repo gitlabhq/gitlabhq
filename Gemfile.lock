@@ -98,7 +98,7 @@ GEM
       autoprefixer-rails (>= 5.2.1)
       sass (>= 3.3.4)
     brakeman (3.3.2)
-    browser (2.0.3)
+    browser (2.2.0)
     builder (3.2.2)
     bullet (5.0.0)
       activesupport (>= 3.0.0)
@@ -833,7 +833,7 @@ DEPENDENCIES
   binding_of_caller (~> 0.7.2)
   bootstrap-sass (~> 3.3.0)
   brakeman (~> 3.3.0)
-  browser (~> 2.0.3)
+  browser (~> 2.2)
   bullet
   bundler-audit
   byebug
