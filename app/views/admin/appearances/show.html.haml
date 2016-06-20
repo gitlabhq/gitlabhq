@@ -1,7 +1,9 @@
-- @no_container = true
 - page_title "Appearance"
-= render "admin/application_settings/head"
 
-%div{ class: (container_class) }
-  .prepend-top-default
-    = render 'form'
+%h3.page-title
+  Appearance settings
+%p.light
+  You can modify the look and feel of GitLab here
+%hr
+
+= render 'form'
