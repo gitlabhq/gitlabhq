@@ -219,3 +219,16 @@
     float: left;
   }
 }
+
+.note-form-actions {
+  @media (max-width: $screen-xs-max) {
+    .btn {
+      float: none;
+      width: 100%;
+
+      &:not(:last-child) {
+        margin-bottom: 10px;
+      }
+    }
+  }
+}
