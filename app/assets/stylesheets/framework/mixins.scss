@@ -110,3 +110,17 @@
   font-size: 16px;
   line-height: 24px;
 }
+
+@mixin bulleted-list {
+  > ul {
+    list-style-type: disc;
+
+    ul {
+      list-style-type: circle;
+
+      ul {
+        list-style-type: square;
+      }
+    }
+  }
+}
