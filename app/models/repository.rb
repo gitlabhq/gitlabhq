@@ -192,7 +192,7 @@ class Repository
   end
 
   def branch_names
-    cache.fetch(:branch_names) { branches.map(&:name) }
+    @branch_names ||= cache.fetch(:branch_names) { branches.map(&:name) }
   end
 
   def branch_exists?(branch_name)
@@ -267,6 +267,7 @@ class Repository
 
   def expire_branches_cache
     cache.expire(:branch_names)
+    @branch_names = nil
     @local_branches = nil
   end
 
@@ -330,10 +331,6 @@ class Repository
 
   def lookup_cache
     @lookup_cache ||= {}
-  end
-
-  def expire_branch_names
-    cache.expire(:branch_names)
   end
 
   def expire_avatar_cache(branch_name = nil, revision = nil)
