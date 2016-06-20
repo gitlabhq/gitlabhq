@@ -3,6 +3,7 @@
 
   %ul.nav-links.scrolling-tabs
     .fade-left
+      = icon('arrow-left')
     = nav_link(path: 'groups#show', html_options: {class: 'home'}) do
       = link_to group_path(@group), title: 'Home' do
         %span
@@ -32,3 +33,4 @@
         %span
           Members
     .fade-right
+      = icon('arrow-right')
