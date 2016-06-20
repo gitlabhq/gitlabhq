@@ -24,7 +24,7 @@ class MergeRequestDiff < ActiveRecord::Base
   serialize :st_diffs
 
   after_create :reload_content, unless: :importing?
-  after_save :keep_around_commit
+  after_save :keep_around_commits
 
   def reload_content
     reload_commits
@@ -147,12 +147,13 @@ class MergeRequestDiff < ActiveRecord::Base
 
     new_attributes[:st_diffs] = new_diffs
 
-    base_commit_sha = self.repository.merge_base(self.head, self.base)
-    new_attributes[:base_commit_sha] = base_commit_sha
-
-    self.repository.keep_around(base_commit_sha)
+    new_attributes[:start_commit_sha] = self.target_branch_sha
+    new_attributes[:head_commit_sha] = self.source_branch_sha
+    new_attributes[:base_commit_sha] = branch_base_sha
 
     update_columns_serialized(new_attributes)
+
+    keep_around_commits
   end
 
   # Collect array of Git::Diff objects
@@ -223,7 +224,9 @@ class MergeRequestDiff < ActiveRecord::Base
     reload
   end
 
-  def keep_around_commit
-    self.repository.keep_around(self.base_commit_sha)
+  def keep_around_commits
+    self.repository.keep_around(target_branch_sha)
+    self.repository.keep_around(source_branch_sha)
+    self.repository.keep_around(branch_base_sha)
   end
 end
