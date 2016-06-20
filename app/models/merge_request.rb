@@ -642,6 +642,10 @@ class MergeRequest < ActiveRecord::Base
     merge_commit
   end
 
+  def support_new_diff_notes?
+    diff_refs && diff_refs.complete?
+  end
+
   def keep_around_commit
     project.repository.keep_around(self.merge_commit_sha)
   end
