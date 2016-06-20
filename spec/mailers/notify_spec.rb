@@ -401,23 +401,56 @@ describe Notify do
     end
 
     describe 'project access requested' do
-      let(:project) { create(:project) }
-      let(:user) { create(:user) }
-      let(:project_member) do
-        project.request_access(user)
-        project.members.request.find_by(user_id: user.id)
+      context 'for a project in a user namespace' do
+        let(:project) { create(:project).tap { |p| p.team << [p.owner, :master, p.owner] } }
+        let(:user) { create(:user) }
+        let(:project_member) do
+          project.request_access(user)
+          project.members.request.find_by(user_id: user.id)
+        end
+        subject { Notify.member_access_requested_email('project', project_member.id) }
+
+        it_behaves_like 'an email sent from GitLab'
+        it_behaves_like 'it should not have Gmail Actions links'
+        it_behaves_like "a user cannot unsubscribe through footer link"
+
+        it 'contains all the useful information' do
+          to_emails = subject.header[:to].addrs
+          expect(to_emails.size).to eq(1)
+          expect(to_emails[0].address).to eq(project.members.owners_and_masters.first.user.notification_email)
+
+          is_expected.to have_subject "Request to join the #{project.name_with_namespace} project"
+          is_expected.to have_body_text /#{project.name_with_namespace}/
+          is_expected.to have_body_text /#{namespace_project_project_members_url(project.namespace, project)}/
+          is_expected.to have_body_text /#{project_member.human_access}/
+        end
       end
-      subject { Notify.member_access_requested_email('project', project_member.id) }
 
-      it_behaves_like 'an email sent from GitLab'
-      it_behaves_like 'it should not have Gmail Actions links'
-      it_behaves_like "a user cannot unsubscribe through footer link"
+      context 'for a project in a group' do
+        let(:group_owner) { create(:user) }
+        let(:group) { create(:group).tap { |g| g.add_owner(group_owner) } }
+        let(:project) { create(:project, namespace: group) }
+        let(:user) { create(:user) }
+        let(:project_member) do
+          project.request_access(user)
+          project.members.request.find_by(user_id: user.id)
+        end
+        subject { Notify.member_access_requested_email('project', project_member.id) }
 
-      it 'contains all the useful information' do
-        is_expected.to have_subject "Request to join the #{project.name_with_namespace} project"
-        is_expected.to have_body_text /#{project.name_with_namespace}/
-        is_expected.to have_body_text /#{namespace_project_project_members_url(project.namespace, project)}/
-        is_expected.to have_body_text /#{project_member.human_access}/
+        it_behaves_like 'an email sent from GitLab'
+        it_behaves_like 'it should not have Gmail Actions links'
+        it_behaves_like "a user cannot unsubscribe through footer link"
+
+        it 'contains all the useful information' do
+          to_emails = subject.header[:to].addrs
+          expect(to_emails.size).to eq(1)
+          expect(to_emails[0].address).to eq(group.members.owners_and_masters.first.user.notification_email)
+
+          is_expected.to have_subject "Request to join the #{project.name_with_namespace} project"
+          is_expected.to have_body_text /#{project.name_with_namespace}/
+          is_expected.to have_body_text /#{namespace_project_project_members_url(project.namespace, project)}/
+          is_expected.to have_body_text /#{project_member.human_access}/
+        end
       end
     end
 
