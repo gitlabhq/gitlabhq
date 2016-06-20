@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160616103948) do
+ActiveRecord::Schema.define(version: 20160617301627) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -708,6 +708,7 @@ ActiveRecord::Schema.define(version: 20160616103948) do
     t.integer  "level",       default: 0, null: false
     t.datetime "created_at",              null: false
     t.datetime "updated_at",              null: false
+    t.text     "events"
   end
 
   add_index "notification_settings", ["source_id", "source_type"], name: "index_notification_settings_on_source_id_and_source_type", using: :btree
