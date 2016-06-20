@@ -3,7 +3,7 @@ require 'spec_helper'
 describe 'Issue sorting by Weight', feature: true do
   include SortingHelper
 
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :public) }
   let(:foo) { create(:issue, title: 'foo', project: project) }
   let(:bar) { create(:issue, title: 'bar', project: project) }
 
