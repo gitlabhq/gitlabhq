@@ -12,6 +12,12 @@ module Gitlab
         @diff_refs = diff_refs
       end
 
+      def content_commit
+        return unless diff_refs
+        
+        repository.commit(deleted_file ? old_ref : new_ref)
+      end
+
       def old_ref
         diff_refs.try(:base_sha)
       end
@@ -56,11 +62,7 @@ module Gitlab
       end
 
       def file_path
-        if diff.new_path.present?
-          diff.new_path
-        elsif diff.old_path.present?
-          diff.old_path
-        end
+        new_path.presence || old_path.presence
       end
 
       def added_lines
@@ -69,6 +71,20 @@ module Gitlab
 
       def removed_lines
         diff_lines.count(&:removed?)
+      end
+
+      def old_blob(commit = content_commit)
+        return unless commit
+
+        parent_id = commit.parent_id
+        return unless parent_id
+
+        repository.blob_at(parent_id, old_path)
+      end
+
+      def blob(commit = content_commit)
+        return unless commit
+        repository.blob_at(commit.id, file_path)
       end
     end
   end

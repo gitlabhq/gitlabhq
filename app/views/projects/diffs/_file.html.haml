@@ -1,4 +1,4 @@
-.diff-file.file-holder{id: "diff-#{i}", data: diff_file_html_data(project, diff_commit, diff_file)}
+.diff-file.file-holder{id: "diff-#{i}", data: diff_file_html_data(project, diff_file)}
   .file-title{id: "file-path-#{hexdigest(diff_file.file_path)}"}
     - if diff_file.diff.submodule?
       %span
@@ -52,7 +52,7 @@
     - elsif blob.only_display_raw?
       .nothing-here-block This file is too large to display.
     - elsif blob.image?
-      - old_file = project.repository.prev_blob_for_diff(diff_commit, diff_file)
-      = render "projects/diffs/image", diff_file: diff_file, old_file: old_file, file: blob, index: i, diff_refs: diff_refs
+      - old_blob = diff_file.old_blob(diff_commit)
+      = render "projects/diffs/image", diff_file: diff_file, old_file: old_blob, file: blob, index: i
     - else
       .nothing-here-block No preview for this file type
