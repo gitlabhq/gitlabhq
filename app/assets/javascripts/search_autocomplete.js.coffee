@@ -280,8 +280,6 @@ class @SearchAutocomplete
         value: @originalState._location
       )
 
-    @dropdown.removeClass 'open'
-
   badgePresent: ->
     @locationBadgeEl.length
 
