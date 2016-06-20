@@ -31,7 +31,8 @@ module Gitlab
         end
 
         def process_message
-          add_attachments(ReplyParser.new(mail).execute.strip)
+          message = ReplyParser.new(mail).execute.strip
+          add_attachments(message)
         end
 
         def add_attachments(reply)
