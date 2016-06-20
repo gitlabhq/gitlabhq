@@ -51,15 +51,19 @@ class @Sidebar
     $this = $(e.currentTarget)
     $todoLoading = $('.js-issuable-todo-loading')
     $btnText = $('.js-issuable-todo-text', $this)
-    ajaxType = if $this.attr('data-id') then 'PATCH' else 'POST'
-    ajaxUrlExtra = if $this.attr('data-id') then "/#{$this.attr('data-id')}" else ''
+    ajaxType = if $this.attr('data-delete-path') then 'DELETE' else 'POST'
+
+    if $this.attr('data-delete-path')
+      url = "#{$this.attr('data-delete-path')}"
+    else
+      url = "#{$this.data('url')}"
 
     $.ajax(
-      url: "#{$this.data('url')}#{ajaxUrlExtra}"
+      url: url
       type: ajaxType
       dataType: 'json'
       data:
-        issuable_id: $this.data('issuable')
+        issuable_id: $this.data('issuable-id')
         issuable_type: $this.data('issuable-type')
       beforeSend: =>
         @beforeTodoSend($this, $todoLoading)
@@ -82,15 +86,15 @@ class @Sidebar
     else
       $todoPendingCount.removeClass 'hidden'
 
-    if data.todo?
+    if data.delete_path?
       $btn
         .attr 'aria-label', $btn.data('mark-text')
-        .attr 'data-id', data.todo.id
+        .attr 'data-delete-path', data.delete_path
       $btnText.text $btn.data('mark-text')
     else
       $btn
         .attr 'aria-label', $btn.data('todo-text')
-        .removeAttr 'data-id'
+        .removeAttr 'data-delete-path'
       $btnText.text $btn.data('todo-text')
 
   sidebarDropdownLoading: (e) ->

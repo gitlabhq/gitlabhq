@@ -58,6 +58,22 @@ describe Gitlab::Metrics::RackMiddleware do
       expect(transaction.values[:request_method]).to eq('GET')
       expect(transaction.values[:request_uri]).to eq('/foo')
     end
+
+    context "when URI includes sensitive parameters" do
+      let(:env) do
+        {
+          'REQUEST_METHOD' => 'GET',
+          'REQUEST_URI'    => '/foo?private_token=my-token',
+          'PATH_INFO' => '/foo',
+          'QUERY_STRING' => 'private_token=my_token',
+          'action_dispatch.parameter_filter' => [:private_token]
+        }
+      end
+
+      it 'stores the request URI with the sensitive parameters filtered' do
+        expect(transaction.values[:request_uri]).to eq('/foo?private_token=[FILTERED]')
+      end
+    end
   end
 
   describe '#tag_controller' do

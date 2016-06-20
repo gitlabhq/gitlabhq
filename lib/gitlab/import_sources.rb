@@ -20,7 +20,8 @@ module Gitlab
           'Gitorious.org'   => 'gitorious',
           'Google Code'     => 'google_code',
           'FogBugz'         => 'fogbugz',
-          'Any repo by URL' => 'git',
+          'Repo by URL'     => 'git',
+          'GitLab export' => 'gitlab_project'
         }
       end
 

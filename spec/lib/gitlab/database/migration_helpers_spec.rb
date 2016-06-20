@@ -71,6 +71,18 @@ describe Gitlab::Database::MigrationHelpers, lib: true do
 
       expect(Project.where(archived: true).count).to eq(5)
     end
+
+    context 'when a block is supplied' do
+      it 'yields an Arel table and query object to the supplied block' do
+        first_id = Project.first.id
+
+        model.update_column_in_batches(:projects, :archived, true) do |t, query|
+          query.where(t[:id].eq(first_id))
+        end
+
+        expect(Project.where(archived: true).count).to eq(1)
+      end
+    end
   end
 
   describe '#add_column_with_default' do
@@ -78,7 +90,7 @@ describe Gitlab::Database::MigrationHelpers, lib: true do
       before do
         expect(model).to receive(:transaction_open?).and_return(false)
 
-        expect(model).to receive(:transaction).twice.and_yield
+        expect(model).to receive(:transaction).and_yield
 
         expect(model).to receive(:add_column).
           with(:projects, :foo, :integer, default: nil)

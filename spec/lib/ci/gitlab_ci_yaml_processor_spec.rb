@@ -157,6 +157,35 @@ module Ci
           expect(config_processor.builds_for_stage_and_ref("test", "deploy").size).to eq(1)
           expect(config_processor.builds_for_stage_and_ref("deploy", "master").size).to eq(1)
         end
+
+        context 'for invalid value' do
+          let(:config) { { rspec: { script: "rspec", type: "test", only: only } } }
+          let(:processor) { GitlabCiYamlProcessor.new(YAML.dump(config)) }
+
+          shared_examples 'raises an error' do
+            it do
+              expect { processor }.to raise_error(GitlabCiYamlProcessor::ValidationError, 'rspec job: only parameter should be an array of strings or regexps')
+            end
+          end
+
+          context 'when it is integer' do
+            let(:only) { 1 }
+
+            it_behaves_like 'raises an error'
+          end
+
+          context 'when it is an array of integers' do
+            let(:only) { [1, 1] }
+
+            it_behaves_like 'raises an error'
+          end
+
+          context 'when it is invalid regex' do
+            let(:only) { ["/*invalid/"] }
+
+            it_behaves_like 'raises an error'
+          end
+        end
       end
 
       describe :except do
@@ -284,16 +313,44 @@ module Ci
           expect(config_processor.builds_for_stage_and_ref("test", "test").size).to eq(0)
           expect(config_processor.builds_for_stage_and_ref("deploy", "master").size).to eq(0)
         end
-      end
 
+        context 'for invalid value' do
+          let(:config) { { rspec: { script: "rspec", except: except } } }
+          let(:processor) { GitlabCiYamlProcessor.new(YAML.dump(config)) }
+
+          shared_examples 'raises an error' do
+            it do
+              expect { processor }.to raise_error(GitlabCiYamlProcessor::ValidationError, 'rspec job: except parameter should be an array of strings or regexps')
+            end
+          end
+
+          context 'when it is integer' do
+            let(:except) { 1 }
+
+            it_behaves_like 'raises an error'
+          end
+
+          context 'when it is an array of integers' do
+            let(:except) { [1, 1] }
+
+            it_behaves_like 'raises an error'
+          end
+
+          context 'when it is invalid regex' do
+            let(:except) { ["/*invalid/"] }
+
+            it_behaves_like 'raises an error'
+          end
+        end
+      end
     end
-    
+
     describe "Scripts handling" do
       let(:config_data) { YAML.dump(config) }
       let(:config_processor) { GitlabCiYamlProcessor.new(config_data, path) }
-      
+
       subject { config_processor.builds_for_stage_and_ref("test", "master").first }
-      
+
       describe "before_script" do
         context "in global context" do
           let(:config) do
@@ -302,12 +359,12 @@ module Ci
               test: { script: ["script"] }
             }
           end
-          
+
           it "return commands with scripts concencaced" do
             expect(subject[:commands]).to eq("global script\nscript")
           end
         end
- 
+
         context "overwritten in local context" do
           let(:config) do
             {
@@ -465,19 +522,41 @@ module Ci
         end
 
         context 'when syntax is incorrect' do
-          it 'raises error' do
-            variables = [:KEY1, 'value1', :KEY2, 'value2']
+          context 'when variables defined but invalid' do
+            it 'raises error' do
+              variables = [:KEY1, 'value1', :KEY2, 'value2']
 
-            config =  YAML.dump(
-              { before_script: ['pwd'],
-                rspec: {
-                  variables: variables,
-                  script: 'rspec' }
-              })
+              config =  YAML.dump(
+                { before_script: ['pwd'],
+                  rspec: {
+                    variables: variables,
+                    script: 'rspec' }
+                })
 
-            expect { GitlabCiYamlProcessor.new(config, path) }
-              .to raise_error(GitlabCiYamlProcessor::ValidationError,
-                               /job: variables should be a map/)
+              expect { GitlabCiYamlProcessor.new(config, path) }
+                .to raise_error(GitlabCiYamlProcessor::ValidationError,
+                                 /job: variables should be a map/)
+            end
+          end
+
+          context 'when variables key defined but value not specified' do
+            it 'returns empty array' do
+              config =  YAML.dump(
+                { before_script: ['pwd'],
+                  rspec: {
+                    variables: nil,
+                    script: 'rspec' }
+                })
+
+              config_processor = GitlabCiYamlProcessor.new(config, path)
+
+              ##
+              #  TODO, in next version of CI configuration processor this
+              # should be invalid configuration, see #18775 and #15060
+              #
+              expect(config_processor.job_variables(:rspec))
+                .to be_an_instance_of(Array).and be_empty
+            end
           end
         end
       end

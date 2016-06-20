@@ -218,8 +218,9 @@ module Banzai
           nodes.each do |node|
             node.to_html.scan(regex) do
               project = $~[:project] || current_project_path
+              symbol = $~[object_sym]
 
-              refs[project] << $~[object_sym]
+              refs[project] << symbol if object_class.reference_valid?(symbol)
             end
           end
 

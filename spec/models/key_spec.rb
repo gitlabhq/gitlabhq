@@ -26,7 +26,7 @@ describe Key, models: true do
     end
   end
 
-  context "validation of uniqueness" do
+  context "validation of uniqueness (based on fingerprint uniqueness)" do
     let(:user) { create(:user) }
 
     it "accepts the key once" do

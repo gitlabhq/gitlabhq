@@ -335,6 +335,7 @@ module Ci
     def erase_artifacts!
       remove_artifacts_file!
       remove_artifacts_metadata!
+      save
     end
 
     def erase(opts = {})

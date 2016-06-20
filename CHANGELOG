@@ -1,11 +1,13 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.9.0 (unreleased)
+  - Fix error when CI job variables key specified but not defined
   - Fix pipeline status when there are no builds in pipeline
   - Fix Error 500 when using closes_issues API with an external issue tracker
   - Add more information into RSS feed for issues (Alexander Matyushentsev)
   - Bulk assign/unassign labels to issues.
   - Ability to prioritize labels !4009 / !3205 (Thijs Wouters)
+  - Show Star and Fork buttons on mobile.
   - Fix endless redirections when accessing user OAuth applications when they are disabled
   - Allow enabling wiki page events from Webhook management UI
   - Bump rouge to 1.11.0
@@ -14,6 +16,7 @@ v 8.9.0 (unreleased)
     background during a refresh.
   - Make EmailsOnPushWorker use Sidekiq mailers queue
   - Redesign all Devise emails. !4297
+  - Don't show 'Leave Project' to group members
   - Fix wiki page events' webhook to point to the wiki repository
   - Don't show tags for revert and cherry-pick operations
   - Fix issue todo not remove when leave project !4150 (Long Nguyen)
@@ -24,6 +27,7 @@ v 8.9.0 (unreleased)
   - Added descriptions to notification settings dropdown
   - Improve note validation to prevent errors when creating invalid note via API
   - Reduce number of fog gem dependencies
+  - Add number of merge requests for a given milestone to the milestones view.
   - Implement a fair usage of shared runners
   - Remove project notification settings associated with deleted projects
   - Fix 404 page when viewing TODOs that contain milestones or labels in different projects
@@ -34,6 +38,7 @@ v 8.9.0 (unreleased)
   - Added shortcut 'y' for copying a files content hash URL #14470
   - Fix groups API to list only user's accessible projects
   - Fix horizontal scrollbar for long commit message.
+  - GitLab Performance Monitoring now tracks the total method execution time and call count per method
   - Add Environments and Deployments
   - Redesign account and email confirmation emails
   - Don't fail builds for projects that are deleted
@@ -44,10 +49,13 @@ v 8.9.0 (unreleased)
   - Fixed alignment of download dropdown in merge requests
   - Upgrade to jQuery 2
   - Adds selected branch name to the dropdown toggle
+  - Add API endpoint for Sidekiq Metrics !4653
+  - Refactoring Award Emoji with API support for Issues and MergeRequests
   - Use Knapsack to evenly distribute tests across multiple nodes
   - Add `sha` parameter to MR merge API, to ensure only reviewed changes are merged
   - Don't allow MRs to be merged when commits were added since the last review / page load
   - Add DB index on users.state
+  - Limit email on push diff size to 30 files / 150 KB
   - Add rake task 'gitlab:db:configure' for conditionally seeding or migrating the database
   - Changed the Slack build message to use the singular duration if necessary (Aran Koning)
   - Fix race condition on merge when build succeeds
@@ -55,10 +63,12 @@ v 8.9.0 (unreleased)
   - Add option to project to only allow merge requests to be merged if the build succeeds (Rui Santos)
   - Added navigation shortcuts to the project pipelines, milestones, builds and forks page. !4393
   - Fix issues filter when ordering by milestone
+  - Disable SAML account unlink feature
   - Added artifacts:when to .gitlab-ci.yml - this requires GitLab Runner 1.3
   - Bamboo Service: Fix missing credentials & URL handling when base URL contains a path (Benjamin Schmid)
   - TeamCity Service: Fix URL handling when base URL contains a path
   - Todos will display target state if issuable target is 'Closed' or 'Merged'
+  - Validate only and except regexp
   - Fix bug when sorting issues by milestone due date and filtering by two or more labels
   - POST to API /projects/:id/runners/:runner_id would give 409 if the runner was already enabled for this project
   - Add support for using Yubikeys (U2F) for two-factor authentication
@@ -66,7 +76,9 @@ v 8.9.0 (unreleased)
   - Remove 'main language' feature
   - Toggle whitespace button now available for compare branches diffs #17881
   - Pipelines can be canceled only when there are running builds
+  - Allow authentication using personal access tokens
   - Use downcased path to container repository as this is expected path by Docker
+  - Custom notification settings
   - Projects pending deletion will render a 404 page
   - Measure queue duration between gitlab-workhorse and Rails
   - Added Gfm autocomplete for labels
@@ -92,6 +104,7 @@ v 8.9.0 (unreleased)
   - Show categorised search queries in the search autocomplete
   - RepositoryCheck::SingleRepositoryWorker public and private methods are now instrumented
   - Improve issuables APIs performance when accessing notes !4471
+  - Add sorting dropdown to tags page !4423
   - External links now open in a new tab
   - Prevent default actions of disabled buttons and links
   - Markdown editor now correctly resets the input value on edit cancellation !4175
@@ -99,6 +112,7 @@ v 8.9.0 (unreleased)
   - Improved UX of date pickers on issue & milestone forms
   - Cache on the database if a project has an active external issue tracker.
   - Put project Labels and Milestones pages links under Issues and Merge Requests tabs as subnav
+  - GitLab project import and export functionality
   - All classes in the Banzai::ReferenceParser namespace are now instrumented
   - Remove deprecated issues_tracker and issues_tracker_id from project model
   - Allow users to create confidential issues in private projects
@@ -118,6 +132,10 @@ v 8.9.0 (unreleased)
   - Set inverse_of for Project/Service association to reduce the number of queries
   - Update tanuki logo highlight/loading colors
   - Use Git cached counters for branches and tags on project page
+  - Filter parameters for request_uri value on instrumented transactions.
+  - Remove duplicated keys add UNIQUE index to keys fingerprint column
+  - Cache user todo counts from TodoService
+  - Ensure Todos counters doesn't count Todos for projects pending delete
 
 v 8.8.5
   - Import GitHub repositories respecting the API rate limit !4166

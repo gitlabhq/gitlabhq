@@ -302,6 +302,9 @@ class GitLabDropdown
     if @options.setIndeterminateIds
       @options.setIndeterminateIds.call(@)
 
+    if @options.setActiveIds
+      @options.setActiveIds.call(@)
+
     # Makes indeterminate items effective
     if @fullData and @dropdown.find('.dropdown-menu-toggle').hasClass('js-filter-bulk-update')
       @parseData @fullData
