@@ -312,7 +312,7 @@ describe Project, models: true do
     it 'should update merge request commits with new one if pushed to source branch' do
       project.update_merge_requests(prev_commit_id, commit_id, "refs/heads/#{merge_request.source_branch}", key.user)
       merge_request.reload
-      expect(merge_request.last_commit.id).to eq(commit_id)
+      expect(merge_request.diff_head_sha).to eq(commit_id)
     end
   end
 

@@ -7,7 +7,7 @@ class MergeRequestDiff < ActiveRecord::Base
 
   belongs_to :merge_request
 
-  delegate :head_source_sha, :target_branch, :source_branch, to: :merge_request, prefix: nil
+  delegate :source_branch_sha, :target_branch_sha, :target_branch, :source_branch, to: :merge_request, prefix: nil
 
   state_machine :state, initial: :empty do
     state :collected
@@ -40,8 +40,8 @@ class MergeRequestDiff < ActiveRecord::Base
       @diffs_no_whitespace ||= begin
         compare = Gitlab::Git::Compare.new(
           self.repository.raw_repository,
-          self.base,
-          self.head,
+          self.target_branch_sha,
+          self.source_branch_sha,
         )
         compare.diffs(options)
       end
@@ -63,13 +63,21 @@ class MergeRequestDiff < ActiveRecord::Base
   end
 
   def base_commit
-    return nil unless self.base_commit_sha
+    return unless self.base_commit_sha
 
     merge_request.target_project.commit(self.base_commit_sha)
   end
 
-  def last_commit_short_sha
-    @last_commit_short_sha ||= last_commit.short_id
+  def start_commit
+    return unless self.start_commit_sha
+
+    merge_request.target_project.commit(self.start_commit_sha)
+  end
+
+  def head_commit
+    return last_commit unless self.head_commit_sha
+
+    merge_request.target_project.commit(self.head_commit_sha)
   end
 
   def dump_commits(commits)
@@ -166,23 +174,14 @@ class MergeRequestDiff < ActiveRecord::Base
     merge_request.target_project.repository
   end
 
-  def source_sha
-    return head_source_sha if head_source_sha.present?
+  def branch_base_commit
+    return unless self.source_branch_sha && self.target_branch_sha
 
-    source_commit = merge_request.source_project.commit(source_branch)
-    source_commit.try(:sha)
+    merge_request.target_project.merge_base_commit(self.source_branch_sha, self.target_branch_sha)
   end
 
-  def target_sha
-    merge_request.target_sha
-  end
-
-  def base
-    self.target_sha || self.target_branch
-  end
-
-  def head
-    self.source_sha
+  def branch_base_sha
+    branch_base_commit.try(:sha)
   end
 
   def compare
@@ -193,8 +192,8 @@ class MergeRequestDiff < ActiveRecord::Base
 
         Gitlab::Git::Compare.new(
           self.repository.raw_repository,
-          self.base,
-          self.head
+          self.target_branch_sha,
+          self.source_branch_sha
         )
       end
   end
