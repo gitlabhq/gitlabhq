@@ -10,9 +10,9 @@ Feature: Project Active Tab
     Then the active main tab should be Home
     And no other main tabs should be active
 
-  Scenario: On Project Code
+  Scenario: On Project Repo
     Given I visit my project's files page
-    Then the active main tab should be Code
+    Then the active main tab should be Repo
     And no other main tabs should be active
 
   Scenario: On Project Issues
@@ -59,46 +59,46 @@ Feature: Project Active Tab
     And no other sub navs should be active
     And the active main tab should be Settings
 
-  # Sub Tabs: Code
+  # Sub Tabs: Repo
 
-  Scenario: On Project Code/Files
+  Scenario: On Project Repo/Files
     Given I visit my project's files page
     Then the active sub tab should be Files
     And no other sub tabs should be active
-    And the active main tab should be Code
+    And the active main tab should be Repo
 
-  Scenario: On Project Code/Commits
+  Scenario: On Project Repo/Commits
     Given I visit my project's commits page
     Then the active sub tab should be Commits
     And no other sub tabs should be active
-    And the active main tab should be Code
+    And the active main tab should be Repo
 
-  Scenario: On Project Code/Network
+  Scenario: On Project Repo/Network
     Given I visit my project's network page
     Then the active sub tab should be Network
     And no other sub tabs should be active
-    And the active main tab should be Code
+    And the active main tab should be Repo
 
-  Scenario: On Project Code/Compare
+  Scenario: On Project Repo/Compare
     Given I visit my project's commits page
     And I click the "Compare" tab
     Then the active sub tab should be Compare
     And no other sub tabs should be active
-    And the active main tab should be Code
+    And the active main tab should be Repo
 
-  Scenario: On Project Code/Branches
+  Scenario: On Project Repo/Branches
     Given I visit my project's commits page
     And I click the "Branches" tab
     Then the active sub tab should be Branches
     And no other sub tabs should be active
-    And the active main tab should be Code
+    And the active main tab should be Repo
 
-  Scenario: On Project Code/Tags
+  Scenario: On Project Repo/Tags
     Given I visit my project's commits page
     And I click the "Tags" tab
     Then the active sub tab should be Tags
     And no other sub tabs should be active
-    And the active main tab should be Code
+    And the active main tab should be Repo
 
   Scenario: On Project Issues/Browse
     Given I visit my project's issues page
