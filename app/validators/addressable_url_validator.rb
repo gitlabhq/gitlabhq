@@ -1,18 +1,18 @@
-# UrlValidator
+# AddressableUrlValidator
 #
-# Custom validator for URLs.
+# Custom validator for URLs. This is a 
 #
-# By default, only URLs for the HTTP(S) protocols will be considered valid.
+# By default, only URLs for http, https, ssh, and git protocols will be considered valid.
 # Provide a `:protocols` option to configure accepted protocols.
 #
 # Example:
 #
 #   class User < ActiveRecord::Base
-#     validates :personal_url, url: true
+#     validates :personal_url, addressable_url: true
 #
-#     validates :ftp_url, url: { protocols: %w(ftp) }
+#     validates :ftp_url, addressable_url: { protocols: %w(ftp) }
 #
-#     validates :git_url, url: { protocols: %w(http https ssh git) }
+#     validates :git_url, addressable_url: { protocols: %w(http https ssh git) }
 #   end
 #
 class AddressableUrlValidator < ActiveModel::EachValidator
@@ -39,7 +39,7 @@ class AddressableUrlValidator < ActiveModel::EachValidator
   end
 
   def valid_uri?(value)
-    Addressable::URI.parse(strip).is_a?(Addressable::URI)
+    Addressable::URI.parse(value).is_a?(Addressable::URI)
   end
 
   def valid_protocol?(value)
