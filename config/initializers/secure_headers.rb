@@ -22,7 +22,7 @@ SecureHeaders::Configuration.default do |config|
     frame_src: %w('self'),
     connect_src: %w('self'),
     font_src: %w('self'),
-    img_src: %w('self' www.gravatar.com secure.gravatar.com),
+    img_src: %w('self' www.gravatar.com secure.gravatar.com https:),
     media_src: %w('none'),
     object_src: %w('none'),
     script_src: %w('unsafe-inline' 'self' maxcdn.bootstrapcdn.com),
