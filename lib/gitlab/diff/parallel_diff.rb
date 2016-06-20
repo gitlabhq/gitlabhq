@@ -18,6 +18,7 @@ module Gitlab
           line_code = diff_file.line_code(line)
           line_new = line.new_pos
           line_old = line.old_pos
+          position = diff_file.position(line)
 
           next_line = diff_file.next_line(line.index)
 
@@ -26,6 +27,7 @@ module Gitlab
             full_next_line = next_line.text
             next_line_code = diff_file.line_code(next_line)
             next_type = next_line.type
+            next_position = diff_file.position(next_line)
           end
 
           case type
@@ -37,12 +39,14 @@ module Gitlab
                 number:     line_old,
                 text:       full_line,
                 line_code:  line_code,
+                position:   position
               },
               right: {
                 type:       type,
                 number:     line_new,
                 text:       full_line,
-                line_code:  line_code
+                line_code:  line_code,
+                position:   position
               }
             }
           when 'old'
@@ -55,12 +59,14 @@ module Gitlab
                   number:     line_old,
                   text:       full_line,
                   line_code:  line_code,
+                  position:   position
                 },
                 right: {
                   type:       next_type,
                   number:     line_new,
                   text:       full_next_line,
                   line_code:  next_line_code,
+                  position:   next_position,
                 }
               }
               skip_next = true
@@ -73,12 +79,14 @@ module Gitlab
                   number:     line_old,
                   text:       full_line,
                   line_code:  line_code,
+                  position:   position
                 },
                 right: {
                   type:       next_type,
                   number:     nil,
                   text:       "",
-                  line_code:  nil
+                  line_code:  nil,
+                  position:   nil
                 }
               }
             end
@@ -95,12 +103,14 @@ module Gitlab
                   number:     nil,
                   text:       "",
                   line_code:  line_code,
+                  position:   position
                 },
                 right: {
                   type:       type,
                   number:     line_new,
                   text:       full_line,
-                  line_code:  line_code
+                  line_code:  line_code,
+                  position:   position
                 }
               }
             end
