@@ -20,7 +20,7 @@ class SentNotification < ActiveRecord::Base
       find_by(reply_key: reply_key)
     end
 
-    def record(noteable, recipient_id, reply_key, params = {})
+    def record(noteable, recipient_id, reply_key, attrs = {})
       return unless reply_key
 
       noteable_id = nil
@@ -31,7 +31,7 @@ class SentNotification < ActiveRecord::Base
         noteable_id = noteable.id
       end
 
-      params.reverse_merge!(
+      attrs.reverse_merge!(
         project:        noteable.project,
         noteable_type:  noteable.class.name,
         noteable_id:    noteable_id,
@@ -40,13 +40,17 @@ class SentNotification < ActiveRecord::Base
         reply_key:      reply_key
       )
 
-      create(params)
+      create(attrs)
     end
 
-    def record_note(note, recipient_id, reply_key, params = {})
-      params[:line_code] = note.line_code
+    def record_note(note, recipient_id, reply_key, attrs = {})
+      if note.diff_note?
+        attrs[:note_type] = note.type
 
-      record(note.noteable, recipient_id, reply_key, params)
+        attrs.merge!(note.diff_attributes)
+      end
+
+      record(note.noteable, recipient_id, reply_key, attrs)
     end
   end
 

@@ -42,10 +42,9 @@ module Gitlab
 
         line_prefix = diff_line.text.match(/\A(.)/) ? $1 : ' '
 
-        case diff_line.type
-        when 'new', nil
+        if diff_line.unchanged? || diff_line.added?
           rich_line = new_lines[diff_line.new_pos - 1]
-        when 'old'
+        elsif diff_line.removed?
           rich_line = old_lines[diff_line.old_pos - 1]
         end
 
@@ -60,19 +59,12 @@ module Gitlab
 
       def old_lines
         return unless diff_file
-        @old_lines ||= Gitlab::Highlight.highlight_lines(*processing_args(:old))
+        @old_lines ||= Gitlab::Highlight.highlight_lines(self.repository, diff_old_ref, diff_old_path)
       end
 
       def new_lines
         return unless diff_file
-        @new_lines ||= Gitlab::Highlight.highlight_lines(*processing_args(:new))
-      end
-
-      def processing_args(version)
-        ref  = send("diff_#{version}_ref")
-        path = send("diff_#{version}_path")
-
-        [self.repository, ref, path]
+        @new_lines ||= Gitlab::Highlight.highlight_lines(self.repository, diff_new_ref, diff_new_path)
       end
     end
   end

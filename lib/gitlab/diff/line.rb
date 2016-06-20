@@ -9,12 +9,28 @@ module Gitlab
         @old_pos, @new_pos = old_pos, new_pos
       end
 
+      def old_line
+        old_pos unless added? || meta?
+      end
+
+      def new_line
+        new_pos unless removed? || meta?
+      end
+
+      def unchanged?
+        type.nil?
+      end
+
       def added?
         type == 'new'
       end
 
       def removed?
         type == 'old'
+      end
+
+      def meta?
+        type == 'match' || type == 'nonewline'
       end
     end
   end

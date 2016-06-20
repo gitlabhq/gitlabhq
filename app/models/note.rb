@@ -193,7 +193,7 @@ class Note < ActiveRecord::Base
   end
 
   def award_emoji?
-    award_emoji_supported? && contains_emoji_only?
+    can_be_award_emoji? && contains_emoji_only?
   end
 
   def emoji_awardable?
@@ -204,7 +204,7 @@ class Note < ActiveRecord::Base
     self.line_code = nil if self.line_code.blank?
   end
 
-  def award_emoji_supported?
+  def can_be_award_emoji?
     noteable.is_a?(Awardable)
   end
 

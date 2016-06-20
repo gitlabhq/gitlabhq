@@ -60,10 +60,9 @@ module NotesHelper
     }
 
     if note.diff_note?
-      data.merge!(
-        line_code: note.line_code,
-        note_type: LegacyDiffNote.name
-      )
+      data[:note_type] = note.type
+
+      data.merge!(note.diff_attributes)
     end
 
     button_tag 'Reply...', class: 'btn btn-text-field js-discussion-reply-button',

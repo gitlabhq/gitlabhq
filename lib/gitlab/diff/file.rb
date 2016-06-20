@@ -13,6 +13,16 @@ module Gitlab
         @diff_refs = diff_refs
       end
 
+      def line_code(line)
+        return if line.meta?
+
+        Gitlab::Diff::LineCode.generate(file_path, line.new_pos, line.old_pos)
+      end
+
+      def line_for_line_code(code)
+        diff_lines.find { |line| line_code(line) == code }
+      end
+
       def content_commit
         return unless diff_refs
         
