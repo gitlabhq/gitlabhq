@@ -237,4 +237,24 @@ describe ProjectsController do
       expect(response.status).to eq(401)
     end
   end
+
+  describe "GET refs" do
+    it "should get a list of branches and tags" do
+      get :refs, namespace_id: public_project.namespace.path, id: public_project.path
+
+      parsed_body = JSON.parse(response.body)
+      expect(parsed_body["Branches"]).to include("master")
+      expect(parsed_body["Tags"]).to include("v1.0.0")
+      expect(parsed_body["Commits"]).to be_nil
+    end
+
+    it "should get a list of branches, tags and commits" do
+      get :refs, namespace_id: public_project.namespace.path, id: public_project.path, ref: "123456"
+
+      parsed_body = JSON.parse(response.body)
+      expect(parsed_body["Branches"]).to include("master")
+      expect(parsed_body["Tags"]).to include("v1.0.0")
+      expect(parsed_body["Commits"]).to include("123456")
+    end
+  end
 end
