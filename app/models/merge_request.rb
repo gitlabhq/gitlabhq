@@ -85,12 +85,7 @@ class MergeRequest < ActiveRecord::Base
     state :cannot_be_merged
 
     around_transition do |merge_request, transition, block|
-      merge_request.record_timestamps = false
-      begin
-        block.call
-      ensure
-        merge_request.record_timestamps = true
-      end
+      Gitlab::Timeless.timeless(merge_request, &block)
     end
   end
 
