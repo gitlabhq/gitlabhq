@@ -25,10 +25,10 @@
 
   = favicon_link_tag 'favicon.ico'
 
-  = stylesheet_link_tag "application", media: "all"
-  = stylesheet_link_tag "print",       media: "print"
+  = stylesheet_link_tag "application", media: "all", integrity: true
+  = stylesheet_link_tag "print",       media: "print", integrity: true
 
-  = javascript_include_tag "application"
+  = javascript_include_tag "application", integrity: true
 
   - if page_specific_javascripts
     = javascript_include_tag page_specific_javascripts, {"data-turbolinks-track" => true}
