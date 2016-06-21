@@ -268,19 +268,33 @@ $ ->
     .on 'click', '.js-nav-pin', (e) ->
       e.preventDefault()
 
+      $pinBtn = $(e.currentTarget)
+      $page = $ '.page-with-sidebar'
+      $topNav = $ '.navbar-fixed-top'
+      $tooltip = $ "##{$pinBtn.attr('aria-describedby')}"
+      doPinNav = not $page.is('.page-sidebar-pinned')
+      tooltipText = 'Pin navigation'
+
       $(this).toggleClass 'is-active'
 
-      if $.cookie('pin_nav') is 'true'
-        $.cookie 'pin_nav', 'false', { path: '/' }
-        $('.page-with-sidebar')
-          .removeClass('page-sidebar-pinned')
-          .toggleClass('page-sidebar-collapsed page-sidebar-expanded')
-        $('.navbar-fixed-top')
-          .removeClass('header-pinned-nav')
-          .toggleClass('header-collapsed header-expanded')
-        $('.pin-nav-btn').attr('data-original-title', 'Pin sidebar').tooltip('fixTitle').tooltip('setContent')
+      if doPinNav
+        $page.addClass('page-sidebar-pinned')
+        $topNav.addClass('header-pinned-nav')
       else
-        $.cookie 'pin_nav', 'true', { path: '/' }
-        $('.page-with-sidebar').addClass('page-sidebar-pinned')
-        $('.navbar-fixed-top').addClass('header-pinned-nav')
-        $('.pin-nav-btn').attr('data-original-title', 'Unpin sidebar').tooltip('fixTitle').tooltip('setContent')
+        $tooltip.remove() # Remove it immediately when collapsing the sidebar
+        $page.removeClass('page-sidebar-pinned')
+             .toggleClass('page-sidebar-collapsed page-sidebar-expanded')
+        $topNav.removeClass('header-pinned-nav')
+               .toggleClass('header-collapsed header-expanded')
+
+      # Save settings
+      $.cookie 'pin_nav', doPinNav, { path: '/' }
+
+      if $.cookie('pin_nav') is 'true' or doPinNav
+        tooltipText = 'Unpin navigation'
+
+      # Update tooltip text immediately
+      $tooltip.find('.tooltip-inner').text(tooltipText)
+
+      # Persist tooltip title
+      $pinBtn.attr('title', tooltipText).tooltip('fixTitle')
