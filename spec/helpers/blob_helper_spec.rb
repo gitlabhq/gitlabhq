@@ -54,20 +54,6 @@ describe BlobHelper do
     end
   end
 
-  describe "#highlighter" do
-    it 'should highlight continued blocks' do
-      # Both lines have LC1 as ID since formatter doesn't support continue at the moment
-      expected = [
-        '<span id="LC1" class="line"><span class="p">(</span><span class="nb">make-pathname</span> <span class="ss">:defaults</span> <span class="nv">name</span></span>',
-        '<span id="LC1" class="line"><span class="ss">:type</span> <span class="s">&quot;assem&quot;</span><span class="p">))</span></span>'
-      ]
-
-      highlighter = helper.highlighter(blob_name, blob_content, nowrap: true)
-      result = split_content.map{ |content| highlighter.highlight(content) }
-      expect(result).to eq(expected)
-    end
-  end
-
   describe "#sanitize_svg" do
     let(:input_svg_path) { File.join(Rails.root, 'spec', 'fixtures', 'unsanitized.svg') }
     let(:data) { open(input_svg_path).read }
