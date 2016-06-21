@@ -461,10 +461,12 @@
       }
     }
 
-    .ui-state-active,
-    .ui-state-hover {
-      color: $md-link-color;
-      background-color: $calendar-hover-bg;
+    .ui-datepicker-calendar {
+      .ui-state-hover,
+      .ui-state-active {
+        color: #fff;
+        border: 0;
+      }
     }
 
     .ui-datepicker-prev,
