@@ -81,6 +81,7 @@ class Dispatcher
         new Activities()
       when 'groups:show'
         shortcut_handler = new ShortcutsNavigation()
+        new NotificationsForm()
       when 'groups:group_members:index'
         new GroupMembers()
         new UsersSelect()
