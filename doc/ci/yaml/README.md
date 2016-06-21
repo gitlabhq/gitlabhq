@@ -724,8 +724,8 @@ time they are uploaded and stored on GitLab.
 You can use the **Keep** button on the build page to override expiration and
 keep artifacts forever.
 
-By default, artifacts are deleted hourly (via a cron job), but they are not
-accessible after expiry.
+After expiry, artifacts are actually deleted hourly by default (via a cron job),
+but they are not accessible after expiry.
 
 The value of `expire_in` is an elapsed time. Examples of parseable values:
 - '3 mins 4 sec'
