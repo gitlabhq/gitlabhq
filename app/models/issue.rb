@@ -37,6 +37,8 @@ class Issue < ActiveRecord::Base
 
   scope :order_due_date_asc, -> { reorder('issues.due_date IS NULL, issues.due_date ASC') }
   scope :order_due_date_desc, -> { reorder('issues.due_date IS NULL, issues.due_date DESC') }
+  scope :order_weight_desc, -> { reorder('weight IS NOT NULL, weight DESC') }
+  scope :order_weight_asc, -> { reorder('weight ASC') }
 
   state_machine :state, initial: :opened do
     event :close do
@@ -93,6 +95,8 @@ class Issue < ActiveRecord::Base
     case method.to_s
     when 'due_date_asc' then order_due_date_asc
     when 'due_date_desc' then order_due_date_desc
+    when 'weight_desc' then order_weight_desc
+    when 'weight_asc' then order_weight_asc
     else
       super
     end

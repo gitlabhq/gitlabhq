@@ -45,8 +45,6 @@ module Issuable
     scope :order_milestone_due_desc, -> { outer_join_milestone.reorder('milestones.due_date IS NULL ASC, milestones.due_date DESC, milestones.id DESC') }
     scope :order_milestone_due_asc, -> { outer_join_milestone.reorder('milestones.due_date IS NULL ASC, milestones.due_date ASC, milestones.id ASC') }
     scope :without_label, -> { joins("LEFT OUTER JOIN label_links ON label_links.target_type = '#{name}' AND label_links.target_id = #{table_name}.id").where(label_links: { id: nil }) }
-    scope :order_weight_desc, -> { reorder('weight IS NOT NULL, weight DESC') }
-    scope :order_weight_asc, -> { reorder('weight ASC') }
 
     scope :left_joins_milestones,    -> { joins("LEFT OUTER JOIN milestones ON #{table_name}.milestone_id = milestones.id") }
     scope :order_milestone_due_desc, -> { left_joins_milestones.reorder('milestones.due_date IS NULL, milestones.id IS NULL, milestones.due_date DESC') }
@@ -122,8 +120,6 @@ module Issuable
       when 'milestone_due_desc' then order_milestone_due_desc
       when 'downvotes_desc' then order_downvotes_desc
       when 'upvotes_desc' then order_upvotes_desc
-      when 'weight_desc' then order_weight_desc
-      when 'weight_asc' then order_weight_asc
       when 'priority' then order_labels_priority(excluded_labels: excluded_labels)
       else
         order_by(method)
