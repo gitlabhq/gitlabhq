@@ -47,12 +47,33 @@ describe MergeRequests::ApprovalService, services: true do
 
           service.execute(merge_request)
         end
+
+        it 'does not send an email' do
+          expect(merge_request).to receive(:approvals_left).and_return(5)
+          expect(service).not_to receive(:notification_service)
+
+          service.execute(merge_request)
+        end
       end
 
       context 'with required approvals' do
-        it 'fires a webhook' do
+        let(:notification_service) { NotificationService.new }
+
+        before do
           expect(merge_request).to receive(:approvals_left).and_return(0)
+          allow(service).to receive(:notification_service).and_return(notification_service)
+          allow(service).to receive(:execute_hooks)
+          allow(notification_service).to receive(:approve_mr)
+        end
+
+        it 'fires a webhook' do
           expect(service).to receive(:execute_hooks).with(merge_request, 'approved')
+
+          service.execute(merge_request)
+        end
+
+        it 'sends an email' do
+          expect(notification_service).to receive(:approve_mr).with(merge_request, user)
 
           service.execute(merge_request)
         end
