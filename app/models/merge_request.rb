@@ -610,27 +610,12 @@ class MergeRequest < ActiveRecord::Base
     end
   end
 
-  def common_ancestor_commit
-    source_project.repository.commit(first_commit.sha).parents.first
-  end
-
   def source_sha_parent
-    common_ancestor_commit.sha
+    source_project.repository.commit(first_commit.sha).parents.first.sha
   end
 
   def ff_merge_possible?
-    commits_from_common_ancestor.find do |c|
-      c.sha == target_sha
-    end
-  end
-
-  def commits_from_common_ancestor
-    target_project.repository.commits_between(
-      # Use parent of the common ancestor because from commit was hidden:
-      # Ref: https://gitlab.com/gitlab-org/gitlab_git/commit/a89ba3f2e5295702d7159fa8dba7ec3decd8935b#52f38738e1ad943a852c4c55bc5c708582443d10_245_214
-      common_ancestor_commit.parents.first.sha,
-      last_commit.sha
-    )
+    project.repository.is_ancestor?(target_sha, source_sha)
   end
 
   def should_be_rebased?
