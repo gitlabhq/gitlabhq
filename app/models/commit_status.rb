@@ -8,6 +8,8 @@ class CommitStatus < ActiveRecord::Base
   belongs_to :pipeline, class_name: 'Ci::Pipeline', foreign_key: :commit_id, touch: true
   belongs_to :user
 
+  delegate :commit, to: :pipeline
+
   validates :pipeline, presence: true, unless: :importing?
 
   validates_presence_of :name
@@ -89,13 +91,5 @@ class CommitStatus < ActiveRecord::Base
 
   def stuck?
     false
-  end
-
-  ##
-  # Deprecated, this should be removed in 9.0 in favor of exposing
-  # entire pipeline in API.
-  #
-  def commit
-    pipeline.try(:commit_data)
   end
 end
