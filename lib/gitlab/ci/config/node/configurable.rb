@@ -19,7 +19,7 @@ module Gitlab
 
           included do
             validations do
-              validates :config, hash: true
+              validates :config, type: Hash
             end
           end
 

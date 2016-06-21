@@ -13,10 +13,13 @@ module Gitlab
             end
           end
 
-          class HashValidator < ActiveModel::EachValidator
+          class TypeValidator < ActiveModel::EachValidator
             def validate_each(record, attribute, value)
-              unless value.is_a?(Hash)
-                record.errors.add(attribute, 'should be a configuration entry hash')
+              type = options[:with]
+              raise unless type.is_a?(Class)
+
+              unless value.is_a?(type)
+                record.errors.add(attribute, "should be a #{type.name}")
               end
             end
           end

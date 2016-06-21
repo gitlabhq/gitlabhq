@@ -106,5 +106,11 @@ describe Gitlab::Ci::Config::Node::Global do
         expect(global).not_to be_valid
       end
     end
+
+    describe '#errors' do
+      it 'returns error about invalid type' do
+        expect(global.errors.first).to match /should be a hash/
+      end
+    end
   end
 end
