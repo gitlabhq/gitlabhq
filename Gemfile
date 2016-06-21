@@ -48,7 +48,7 @@ gem 'attr_encrypted', '~> 3.0.0'
 gem 'u2f', '~> 0.2.1'
 
 # Browser detection
-gem "browser", '~> 2.0.3'
+gem "browser", '~> 2.2'
 
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library
