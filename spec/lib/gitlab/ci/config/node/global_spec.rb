@@ -22,7 +22,8 @@ describe Gitlab::Ci::Config::Node::Global do
   context 'when hash is valid' do
     let(:hash) do
       { before_script: ['ls', 'pwd'],
-        image: 'ruby:2.2' }
+        image: 'ruby:2.2',
+        services: ['postgres:9.1', 'mysql:5.5'] }
     end
 
     describe '#process!' do
@@ -33,7 +34,7 @@ describe Gitlab::Ci::Config::Node::Global do
       end
 
       it 'creates node object for each entry' do
-        expect(global.nodes.count).to eq 2
+        expect(global.nodes.count).to eq 3
       end
 
       it 'creates node object using valid class' do
@@ -56,6 +57,7 @@ describe Gitlab::Ci::Config::Node::Global do
         expect(global).not_to be_leaf
       end
     end
+
     context 'when not processed' do
       describe '#before_script' do
         it 'returns nil' do
@@ -76,6 +78,12 @@ describe Gitlab::Ci::Config::Node::Global do
       describe '#image' do
         it 'returns valid image' do
           expect(global.image).to eq 'ruby:2.2'
+        end
+      end
+
+      describe '#services' do
+        it 'returns array of services' do
+          expect(global.services).to eq ['postgres:9.1', 'mysql:5.5']
         end
       end
     end

@@ -14,7 +14,7 @@ module Ci
     ALLOWED_CACHE_KEYS = [:key, :untracked, :paths]
     ALLOWED_ARTIFACTS_KEYS = [:name, :untracked, :paths, :when, :expire_in]
 
-    attr_reader :after_script, :services, :path, :cache
+    attr_reader :after_script, :path, :cache
 
     def initialize(config, path = nil)
       @ci_config = Gitlab::Ci::Config.new(config)
@@ -68,7 +68,7 @@ module Ci
 
       @after_script = @config[:after_script]
       @image = @config[:image]
-      @services = @config[:services]
+      @services = @ci_config.services
       @stages = @config[:stages] || @config[:types]
       @variables = @config[:variables] || {}
       @cache = @config[:cache]
@@ -125,10 +125,6 @@ module Ci
     def validate_global!
       unless @after_script.nil? || validate_array_of_strings(@after_script)
         raise ValidationError, "after_script should be an array of strings"
-      end
-
-      unless @services.nil? || validate_array_of_strings(@services)
-        raise ValidationError, "services should be an array of strings"
       end
 
       unless @stages.nil? || validate_array_of_strings(@stages)

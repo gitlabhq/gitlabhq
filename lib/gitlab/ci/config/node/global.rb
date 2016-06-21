@@ -14,6 +14,9 @@ module Gitlab
 
           allow_node :image, Image,
             description: 'Docker image that will be used to execute jobs.'
+
+          allow_node :services, Services,
+            description: 'Docker images that will be linked to the container.'
         end
       end
     end

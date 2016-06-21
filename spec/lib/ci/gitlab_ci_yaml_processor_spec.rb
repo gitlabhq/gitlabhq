@@ -1007,14 +1007,14 @@ EOT
         config = YAML.dump({ services: "test", rspec: { script: "test" } })
         expect do
           GitlabCiYamlProcessor.new(config, path)
-        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "services should be an array of strings")
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "Services config should be an array of strings")
       end
 
       it "returns errors if services parameter is not an array of strings" do
         config = YAML.dump({ services: [10, "test"], rspec: { script: "test" } })
         expect do
           GitlabCiYamlProcessor.new(config, path)
-        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "services should be an array of strings")
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "Services config should be an array of strings")
       end
 
       it "returns errors if job services parameter is not an array" do
