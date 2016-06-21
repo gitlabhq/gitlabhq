@@ -15,6 +15,7 @@ v 8.9.0 (unreleased)
   - Remove explicit Gitlab::Metrics.action assignments, are already automatic.
   - [Elastic] Project members with guest role can't access confidential issues
   - Ability to lock file or folder in the repository
+  - Fix: Git hooks don't fire when committing from the UI
 
 v 8.8.5
   - Make sure OAuth routes that we generate for Geo matches with the ones in Rails routes !444
