@@ -24,8 +24,8 @@
         %span.label.label-warning stuck
 
       %p.commit-title
-        - if commit_data = pipeline.commit_data
-          = link_to_gfm truncate(commit_data.title, length: 60), namespace_project_commit_path(@project.namespace, @project, commit_data.id), class: "commit-row-message"
+        - if commit = pipeline.commit
+          = link_to_gfm truncate(commit.title, length: 60), namespace_project_commit_path(@project.namespace, @project, commit.id), class: "commit-row-message"
         - else
           Cant find HEAD commit for this branch
 
