@@ -25,7 +25,7 @@
 
 %div{ class: nav_control_class }
   %ul.nav-links.scrolling-tabs
-    .fade-left
+    %li.fade-left
       = icon('arrow-left')
     = nav_link(path: 'projects#show', html_options: {class: 'home'}) do
       = link_to project_path(@project), title: 'Project', class: 'shortcuts-project' do
@@ -110,5 +110,5 @@
       %li.hidden
         = link_to project_commits_path(@project), title: 'Commits', class: 'shortcuts-commits' do
           Commits
-    .fade-right
+    %li.fade-right
       = icon('arrow-right')

@@ -1,5 +1,5 @@
 %ul.nav-links.scrolling-tabs
-  .fade-left
+  %li.fade-left
     = icon('arrow-left')
   = nav_link(path: 'profiles#show', html_options: {class: 'home'}) do
     = link_to profile_path, title: 'Profile Settings' do
@@ -44,5 +44,5 @@
     = link_to audit_log_profile_path, title: 'Audit Log' do
       %span
         Audit Log
-  .fade-right
+  %li.fade-right
     = icon('arrow-right')
