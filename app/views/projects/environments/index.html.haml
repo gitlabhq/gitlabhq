@@ -15,7 +15,11 @@
         You don't have any environments right now.
       %p.blank-state-text
         Environments are places where code gets deployed, such as staging or production.
-      = link_to "Read more", help_page_path("ci", "environments"), class: "btn btn-success"
+        %br
+        = succeed "." do
+          = link_to "Read more about environments", help_page_path("ci", "environments")
+      = link_to new_namespace_project_environment_path(@project.namespace, @project), class: 'btn btn-create' do
+        New environment
   - else
     .table-holder
       %table.table.environments
