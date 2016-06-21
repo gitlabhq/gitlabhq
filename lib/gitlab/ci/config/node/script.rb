@@ -11,10 +11,6 @@ module Gitlab
           validations do
             validates :config, array_of_strings: true
           end
-
-          def value
-            @config
-          end
         end
       end
     end

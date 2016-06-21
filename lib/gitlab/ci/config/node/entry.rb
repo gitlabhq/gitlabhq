@@ -9,7 +9,8 @@ module Gitlab
           class InvalidError < StandardError; end
 
           attr_reader :config
-          attr_accessor :key, :description
+          attr_accessor :description
+          attr_writer :key
 
           def initialize(config)
             @config = config
@@ -48,7 +49,7 @@ module Gitlab
           end
 
           def value
-            raise NotImplementedError
+            @config
           end
 
           def self.nodes

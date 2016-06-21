@@ -11,10 +11,6 @@ module Gitlab
           validations do
             validates :config, type: String
           end
-
-          def value
-            @config
-          end
         end
       end
     end
