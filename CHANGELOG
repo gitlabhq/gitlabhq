@@ -74,6 +74,9 @@ v 8.11.4 (unreleased)
 
 v 8.11.3
   - Do not enforce using hash with hidden key in CI configuration. !6079
+  - Fix error on raw build trace download for old builds stored in database !4822
+
+v 8.11.3 (unreleased)
   - Allow system info page to handle case where info is unavailable
   - Label list shows all issues (opened or closed) with that label
   - Don't show resolve conflicts link before MR status is updated
