@@ -41,32 +41,44 @@ describe Ci::Build, models: true do
     subject { build.ignored? }
 
     context 'if build is not allowed to fail' do
-      before { build.allow_failure = false }
+      before do
+        build.allow_failure = false
+      end
 
       context 'and build.status is success' do
-        before { build.status = 'success' }
+        before do
+          build.status = 'success'
+        end
 
         it { is_expected.to be_falsey }
       end
 
       context 'and build.status is failed' do
-        before { build.status = 'failed' }
+        before do
+          build.status = 'failed'
+        end
 
         it { is_expected.to be_falsey }
       end
     end
 
     context 'if build is allowed to fail' do
-      before { build.allow_failure = true }
+      before do
+        build.allow_failure = true
+      end
 
       context 'and build.status is success' do
-        before { build.status = 'success' }
+        before do
+          build.status = 'success'
+        end
 
         it { is_expected.to be_falsey }
       end
 
       context 'and build.status is failed' do
-        before { build.status = 'failed' }
+        before do
+          build.status = 'failed'
+        end
 
         it { is_expected.to be_truthy }
       end
@@ -80,7 +92,9 @@ describe Ci::Build, models: true do
 
     context 'if build.trace contains text' do
       let(:text) { 'example output' }
-      before { build.trace = text }
+      before do
+        build.trace = text
+      end
 
       it { is_expected.to include(text) }
       it { expect(subject.length).to be >= text.length }
@@ -193,7 +207,9 @@ describe Ci::Build, models: true do
         ]
       end
 
-      before { build.update_attributes(stage: 'stage') }
+      before do
+        build.update_attributes(stage: 'stage')
+      end
 
       it { is_expected.to eq(predefined_variables + yaml_variables) }
 
@@ -204,7 +220,9 @@ describe Ci::Build, models: true do
           ]
         end
 
-        before { build.update_attributes(tag: true) }
+        before do
+          build.update_attributes(tag: true)
+        end
 
         it { is_expected.to eq(tag_variable + predefined_variables + yaml_variables) }
       end
@@ -262,57 +280,6 @@ describe Ci::Build, models: true do
     end
   end
 
-  describe '#can_be_served?' do
-    let(:runner) { create(:ci_runner) }
-
-    before { build.project.runners << runner }
-
-    context 'when runner does not have tags' do
-      it 'can handle builds without tags' do
-        expect(build.can_be_served?(runner)).to be_truthy
-      end
-
-      it 'cannot handle build with tags' do
-        build.tag_list = ['aa']
-        expect(build.can_be_served?(runner)).to be_falsey
-      end
-    end
-
-    context 'when runner has tags' do
-      before { runner.tag_list = ['bb', 'cc'] }
-
-      shared_examples 'tagged build picker' do
-        it 'can handle build with matching tags' do
-          build.tag_list = ['bb']
-          expect(build.can_be_served?(runner)).to be_truthy
-        end
-
-        it 'cannot handle build without matching tags' do
-          build.tag_list = ['aa']
-          expect(build.can_be_served?(runner)).to be_falsey
-        end
-      end
-
-      context 'when runner can pick untagged jobs' do
-        it 'can handle builds without tags' do
-          expect(build.can_be_served?(runner)).to be_truthy
-        end
-
-        it_behaves_like 'tagged build picker'
-      end
-
-      context 'when runner can not pick untagged jobs' do
-        before { runner.run_untagged = false }
-
-        it 'can not handle builds without tags' do
-          expect(build.can_be_served?(runner)).to be_falsey
-        end
-
-        it_behaves_like 'tagged build picker'
-      end
-    end
-  end
-
   describe '#has_tags?' do
     context 'when build has tags' do
       subject { create(:ci_build, tag_list: ['tag']) }
@@ -353,7 +320,7 @@ describe Ci::Build, models: true do
       end
 
       it 'that cannot handle build' do
-        expect_any_instance_of(Ci::Build).to receive(:can_be_served?).and_return(false)
+        expect_any_instance_of(Ci::Runner).to receive(:can_pick?).and_return(false)
         is_expected.to be_falsey
       end
 
@@ -365,7 +332,9 @@ describe Ci::Build, models: true do
 
     %w(pending).each do |state|
       context "if commit_status.status is #{state}" do
-        before { build.status = state }
+        before do
+          build.status = state
+        end
 
         it { is_expected.to be_truthy }
 
@@ -384,7 +353,9 @@ describe Ci::Build, models: true do
 
     %w(success failed canceled running).each do |state|
       context "if commit_status.status is #{state}" do
-        before { build.status = state }
+        before do
+          build.status = state
+        end
 
         it { is_expected.to be_falsey }
       end
@@ -395,7 +366,10 @@ describe Ci::Build, models: true do
     subject { build.artifacts? }
 
     context 'artifacts archive does not exist' do
-      before { build.update_attributes(artifacts_file: nil) }
+      before do
+        build.update_attributes(artifacts_file: nil)
+      end
+
       it { is_expected.to be_falsy }
     end
 
@@ -628,7 +602,9 @@ describe Ci::Build, models: true do
       let!(:build) { create(:ci_build, :trace, :success, :artifacts) }
 
       describe '#erase' do
-        before { build.erase(erased_by: user) }
+        before do
+          build.erase(erased_by: user)
+        end
 
         context 'erased by user' do
           let!(:user) { create(:user, username: 'eraser') }
@@ -665,7 +641,9 @@ describe Ci::Build, models: true do
         end
 
         context 'build has been erased' do
-          before { build.erase }
+          before do
+            build.erase
+          end
 
           it { is_expected.to be true }
         end
@@ -673,7 +651,9 @@ describe Ci::Build, models: true do
 
       context 'metadata and build trace are not available' do
         let!(:build) { create(:ci_build, :success, :artifacts) }
-        before { build.remove_artifacts_metadata! }
+        before do
+          build.remove_artifacts_metadata!
+        end
 
         describe '#erase' do
           it 'should not raise error' do
