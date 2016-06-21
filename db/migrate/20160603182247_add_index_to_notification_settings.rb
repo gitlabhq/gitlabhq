@@ -1,3 +1,4 @@
+# rubocop:disable all
 class AddIndexToNotificationSettings < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 

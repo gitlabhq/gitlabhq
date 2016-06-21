@@ -1,3 +1,4 @@
+# rubocop:disable all
 class AddFieldsToCiCommit < ActiveRecord::Migration
   def change
     add_column :ci_commits, :status, :string

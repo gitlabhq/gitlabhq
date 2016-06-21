@@ -295,7 +295,8 @@ class IssuableFinder
   end
 
   def weights?
-    params[:weight].present? && params[:weight] != Issue::WEIGHT_ALL
+    params[:weight].present? && params[:weight] != Issue::WEIGHT_ALL &&
+      klass.column_names.include?('weight')
   end
 
   def filter_by_no_weight?

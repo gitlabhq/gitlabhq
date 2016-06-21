@@ -2,11 +2,11 @@ require 'spec_helper'
 
 describe Gitlab::Elastic::SearchResults, lib: true do
   before do
-    allow(Gitlab.config.elasticsearch).to receive(:enabled).and_return(true)
+    stub_application_setting(elasticsearch_search: true, elasticsearch_indexing: true)
   end
 
   after do
-    allow(Gitlab.config.elasticsearch).to receive(:enabled).and_return(false)
+    stub_application_setting(elasticsearch_search: false, elasticsearch_indexing: false)
   end
 
   let(:user) { create(:user) }
@@ -89,14 +89,17 @@ describe Gitlab::Elastic::SearchResults, lib: true do
     let(:non_member) { create(:user) }
     let(:member) { create(:user) }
     let(:admin) { create(:admin) }
-    let!(:issue) { create(:issue, project: project_1, title: 'Issue 1', iid: 1) }
-    let!(:security_issue_1) { create(:issue, :confidential, project: project_1, title: 'Security issue 1', author: author, iid: 2) }
-    let!(:security_issue_2) { create(:issue, :confidential, title: 'Security issue 2', project: project_1, assignee: assignee, iid: 3) }
-    let!(:security_issue_3) { create(:issue, :confidential, project: project_2, title: 'Security issue 3', author: author, iid: 1) }
-    let!(:security_issue_4) { create(:issue, :confidential, project: project_3, title: 'Security issue 4', assignee: assignee, iid: 1) }
-    let!(:security_issue_5) { create(:issue, :confidential, project: project_4, title: 'Security issue 5', iid: 1) }
 
     before do
+      Issue.__elasticsearch__.create_index!
+
+      @issue = create(:issue, project: project_1, title: 'Issue 1', iid: 1)
+      @security_issue_1 = create(:issue, :confidential, project: project_1, title: 'Security issue 1', author: author, iid: 2)
+      @security_issue_2 = create(:issue, :confidential, title: 'Security issue 2', project: project_1, assignee: assignee, iid: 3)
+      @security_issue_3 = create(:issue, :confidential, project: project_2, title: 'Security issue 3', author: author, iid: 1)
+      @security_issue_4 = create(:issue, :confidential, project: project_3, title: 'Security issue 4', assignee: assignee, iid: 1)
+      @security_issue_5 = create(:issue, :confidential, project: project_4, title: 'Security issue 5', iid: 1)
+
       Issue.__elasticsearch__.refresh_index!
     end
 
@@ -107,12 +110,12 @@ describe Gitlab::Elastic::SearchResults, lib: true do
         results = described_class.new(nil, limit_project_ids, query)
         issues = results.objects('issues')
 
-        expect(issues).to include issue
-        expect(issues).not_to include security_issue_1
-        expect(issues).not_to include security_issue_2
-        expect(issues).not_to include security_issue_3
-        expect(issues).not_to include security_issue_4
-        expect(issues).not_to include security_issue_5
+        expect(issues).to include @issue
+        expect(issues).not_to include @security_issue_1
+        expect(issues).not_to include @security_issue_2
+        expect(issues).not_to include @security_issue_3
+        expect(issues).not_to include @security_issue_4
+        expect(issues).not_to include @security_issue_5
         expect(results.issues_count).to eq 1
       end
 
@@ -120,12 +123,12 @@ describe Gitlab::Elastic::SearchResults, lib: true do
         results = described_class.new(non_member, limit_project_ids, query)
         issues = results.objects('issues')
 
-        expect(issues).to include issue
-        expect(issues).not_to include security_issue_1
-        expect(issues).not_to include security_issue_2
-        expect(issues).not_to include security_issue_3
-        expect(issues).not_to include security_issue_4
-        expect(issues).not_to include security_issue_5
+        expect(issues).to include @issue
+        expect(issues).not_to include @security_issue_1
+        expect(issues).not_to include @security_issue_2
+        expect(issues).not_to include @security_issue_3
+        expect(issues).not_to include @security_issue_4
+        expect(issues).not_to include @security_issue_5
         expect(results.issues_count).to eq 1
       end
 
@@ -133,12 +136,12 @@ describe Gitlab::Elastic::SearchResults, lib: true do
         results = described_class.new(author, limit_project_ids, query)
         issues = results.objects('issues')
 
-        expect(issues).to include issue
-        expect(issues).to include security_issue_1
-        expect(issues).not_to include security_issue_2
-        expect(issues).to include security_issue_3
-        expect(issues).not_to include security_issue_4
-        expect(issues).not_to include security_issue_5
+        expect(issues).to include @issue
+        expect(issues).to include @security_issue_1
+        expect(issues).not_to include @security_issue_2
+        expect(issues).to include @security_issue_3
+        expect(issues).not_to include @security_issue_4
+        expect(issues).not_to include @security_issue_5
         expect(results.issues_count).to eq 3
       end
 
@@ -146,12 +149,12 @@ describe Gitlab::Elastic::SearchResults, lib: true do
         results = described_class.new(assignee, limit_project_ids, query)
         issues = results.objects('issues')
 
-        expect(issues).to include issue
-        expect(issues).not_to include security_issue_1
-        expect(issues).to include security_issue_2
-        expect(issues).not_to include security_issue_3
-        expect(issues).to include security_issue_4
-        expect(issues).not_to include security_issue_5
+        expect(issues).to include @issue
+        expect(issues).not_to include @security_issue_1
+        expect(issues).to include @security_issue_2
+        expect(issues).not_to include @security_issue_3
+        expect(issues).to include @security_issue_4
+        expect(issues).not_to include @security_issue_5
         expect(results.issues_count).to eq 3
       end
 
@@ -162,12 +165,12 @@ describe Gitlab::Elastic::SearchResults, lib: true do
         results = described_class.new(member, limit_project_ids, query)
         issues = results.objects('issues')
 
-        expect(issues).to include issue
-        expect(issues).to include security_issue_1
-        expect(issues).to include security_issue_2
-        expect(issues).to include security_issue_3
-        expect(issues).not_to include security_issue_4
-        expect(issues).not_to include security_issue_5
+        expect(issues).to include @issue
+        expect(issues).to include @security_issue_1
+        expect(issues).to include @security_issue_2
+        expect(issues).to include @security_issue_3
+        expect(issues).not_to include @security_issue_4
+        expect(issues).not_to include @security_issue_5
         expect(results.issues_count).to eq 4
       end
 
@@ -175,12 +178,12 @@ describe Gitlab::Elastic::SearchResults, lib: true do
         results = described_class.new(admin, limit_project_ids, query)
         issues = results.objects('issues')
 
-        expect(issues).to include issue
-        expect(issues).to include security_issue_1
-        expect(issues).to include security_issue_2
-        expect(issues).to include security_issue_3
-        expect(issues).to include security_issue_4
-        expect(issues).not_to include security_issue_5
+        expect(issues).to include @issue
+        expect(issues).to include @security_issue_1
+        expect(issues).to include @security_issue_2
+        expect(issues).to include @security_issue_3
+        expect(issues).to include @security_issue_4
+        expect(issues).not_to include @security_issue_5
         expect(results.issues_count).to eq 5
       end
     end
@@ -192,12 +195,12 @@ describe Gitlab::Elastic::SearchResults, lib: true do
         results = described_class.new(nil, limit_project_ids, query)
         issues = results.objects('issues')
 
-        expect(issues).to include issue
-        expect(issues).not_to include security_issue_1
-        expect(issues).not_to include security_issue_2
-        expect(issues).not_to include security_issue_3
-        expect(issues).not_to include security_issue_4
-        expect(issues).not_to include security_issue_5
+        expect(issues).to include @issue
+        expect(issues).not_to include @security_issue_1
+        expect(issues).not_to include @security_issue_2
+        expect(issues).not_to include @security_issue_3
+        expect(issues).not_to include @security_issue_4
+        expect(issues).not_to include @security_issue_5
         expect(results.issues_count).to eq 1
       end
 
@@ -205,12 +208,12 @@ describe Gitlab::Elastic::SearchResults, lib: true do
         results = described_class.new(non_member, limit_project_ids, query)
         issues = results.objects('issues')
 
-        expect(issues).to include issue
-        expect(issues).not_to include security_issue_1
-        expect(issues).not_to include security_issue_2
-        expect(issues).not_to include security_issue_3
-        expect(issues).not_to include security_issue_4
-        expect(issues).not_to include security_issue_5
+        expect(issues).to include @issue
+        expect(issues).not_to include @security_issue_1
+        expect(issues).not_to include @security_issue_2
+        expect(issues).not_to include @security_issue_3
+        expect(issues).not_to include @security_issue_4
+        expect(issues).not_to include @security_issue_5
         expect(results.issues_count).to eq 1
       end
 
@@ -218,12 +221,12 @@ describe Gitlab::Elastic::SearchResults, lib: true do
         results = described_class.new(author, limit_project_ids, query)
         issues = results.objects('issues')
 
-        expect(issues).to include issue
-        expect(issues).not_to include security_issue_1
-        expect(issues).not_to include security_issue_2
-        expect(issues).to include security_issue_3
-        expect(issues).not_to include security_issue_4
-        expect(issues).not_to include security_issue_5
+        expect(issues).to include @issue
+        expect(issues).not_to include @security_issue_1
+        expect(issues).not_to include @security_issue_2
+        expect(issues).to include @security_issue_3
+        expect(issues).not_to include @security_issue_4
+        expect(issues).not_to include @security_issue_5
         expect(results.issues_count).to eq 2
       end
 
@@ -231,12 +234,12 @@ describe Gitlab::Elastic::SearchResults, lib: true do
         results = described_class.new(assignee, limit_project_ids, query)
         issues = results.objects('issues')
 
-        expect(issues).to include issue
-        expect(issues).not_to include security_issue_1
-        expect(issues).not_to include security_issue_2
-        expect(issues).not_to include security_issue_3
-        expect(issues).to include security_issue_4
-        expect(issues).not_to include security_issue_5
+        expect(issues).to include @issue
+        expect(issues).not_to include @security_issue_1
+        expect(issues).not_to include @security_issue_2
+        expect(issues).not_to include @security_issue_3
+        expect(issues).to include @security_issue_4
+        expect(issues).not_to include @security_issue_5
         expect(results.issues_count).to eq 2
       end
 
@@ -247,12 +250,12 @@ describe Gitlab::Elastic::SearchResults, lib: true do
         results = described_class.new(member, limit_project_ids, query)
         issues = results.objects('issues')
 
-        expect(issues).to include issue
-        expect(issues).not_to include security_issue_1
-        expect(issues).not_to include security_issue_2
-        expect(issues).to include security_issue_3
-        expect(issues).to include security_issue_4
-        expect(issues).not_to include security_issue_5
+        expect(issues).to include @issue
+        expect(issues).not_to include @security_issue_1
+        expect(issues).not_to include @security_issue_2
+        expect(issues).to include @security_issue_3
+        expect(issues).to include @security_issue_4
+        expect(issues).not_to include @security_issue_5
         expect(results.issues_count).to eq 3
       end
 
@@ -260,12 +263,12 @@ describe Gitlab::Elastic::SearchResults, lib: true do
         results = described_class.new(admin, limit_project_ids, query)
         issues = results.objects('issues')
 
-        expect(issues).to include issue
-        expect(issues).not_to include security_issue_1
-        expect(issues).not_to include security_issue_2
-        expect(issues).to include security_issue_3
-        expect(issues).to include security_issue_4
-        expect(issues).not_to include security_issue_5
+        expect(issues).to include @issue
+        expect(issues).not_to include @security_issue_1
+        expect(issues).not_to include @security_issue_2
+        expect(issues).to include @security_issue_3
+        expect(issues).to include @security_issue_4
+        expect(issues).not_to include @security_issue_5
         expect(results.issues_count).to eq 3
       end
     end

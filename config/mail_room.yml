@@ -2,7 +2,7 @@
 <%
 require "yaml"
 require "json"
-require_relative "lib/gitlab/redis"
+require_relative "lib/gitlab/redis" unless defined?(Gitlab::Redis)
 
 rails_env = ENV["RAILS_ENV"] || ENV["RACK_ENV"] || "development"
 

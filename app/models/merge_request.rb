@@ -264,19 +264,20 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def mergeable?
-    return false unless open? && !work_in_progress? && !broken?
+    return false unless mergeable_state?
 
     check_if_can_be_merged
 
     can_be_merged? && !should_be_rebased?
   end
 
-  def gitlab_merge_status
-    if work_in_progress?
-      "work_in_progress"
-    else
-      merge_status_name
-    end
+  def mergeable_state?
+    return false unless open?
+    return false if work_in_progress?
+    return false if broken?
+    return false unless mergeable_ci_state?
+
+    true
   end
 
   def can_cancel_merge_when_build_succeeds?(current_user)
@@ -474,8 +475,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def approvers_left
-    user_ids = overall_approvers.map(&:user_id) - approvals.map(&:user_id)
-    User.where id: user_ids
+    User.where(id: overall_approvers.select(:user_id)).where.not(id: approvals.select(:user_id))
   end
 
   def approvals_required
@@ -507,8 +507,10 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def can_approve?(user)
+    return false if user == self.author
+
     approvers_left.include?(user) ||
-    (any_approver_allowed? && !approved_by?(user))
+      (any_approver_allowed? && !approved_by?(user))
   end
 
   def any_approver_allowed?
@@ -529,6 +531,12 @@ class MergeRequest < ActiveRecord::Base
 
   def can_be_merged_by?(user)
     ::Gitlab::GitAccess.new(user, project).can_push_to_branch?(target_branch)
+  end
+
+  def mergeable_ci_state?
+    return true unless project.only_allow_merge_if_build_succeeds?
+
+    !pipeline || pipeline.success?
   end
 
   def state_human_name
@@ -603,7 +611,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def source_sha_parent
-    source_project.repository.commit(commits.last.sha).parents.first.sha
+    source_project.repository.commit(first_commit.sha).parents.first.sha
   end
 
   def ff_merge_possible?

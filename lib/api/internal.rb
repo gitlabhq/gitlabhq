@@ -23,8 +23,6 @@ module API
       end
 
       post "/allowed" do
-        Gitlab::Metrics.action = 'Grape#/internal/allowed'
-
         status 200
 
         actor =
@@ -58,8 +56,6 @@ module API
       # Get a ssh key using the fingerprint
       #
       get "/authorized_keys" do
-        Gitlab::Metrics.action = 'Grape#/internal/authorized_keys'
-
         fingerprint = params.fetch(:fingerprint) do
           Gitlab::InsecureKeyFingerprint.new(params.fetch(:key)).fingerprint
         end

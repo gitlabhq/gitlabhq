@@ -31,8 +31,6 @@ module Gitlab
       # Any data inserted while running this method (or after it has finished
       # running) is _not_ updated automatically.
       #
-      # This method _only_ updates rows where the column's value is set to NULL.
-      #
       # table - The name of the table.
       # column - The name of the column to update.
       # value - The value for the column.
@@ -55,16 +53,19 @@ module Gitlab
           first['count'].
           to_i
 
-        # Update in batches of 5%
+        # Update in batches of 5% until we run out of any rows to update.
         batch_size = ((total / 100.0) * 5.0).ceil
 
-        while processed < total
+        loop do
           start_row = exec_query(%Q{
             SELECT id
             FROM #{quoted_table}
             ORDER BY id ASC
             LIMIT 1 OFFSET #{processed}
           }).to_hash.first
+
+          # There are no more rows to process
+          break unless start_row
 
           stop_row = exec_query(%Q{
             SELECT id
@@ -126,6 +127,8 @@ module Gitlab
         begin
           transaction do
             update_column_in_batches(table, column, default)
+
+            change_column_null(table, column, false) unless allow_null
           end
         # We want to rescue _all_ exceptions here, even those that don't inherit
         # from StandardError.
@@ -134,8 +137,6 @@ module Gitlab
 
           raise error
         end
-
-        change_column_null(table, column, false) unless allow_null
       end
     end
   end

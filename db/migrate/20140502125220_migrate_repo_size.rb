@@ -1,3 +1,4 @@
+# rubocop:disable all
 class MigrateRepoSize < ActiveRecord::Migration
   def up
     project_data = execute('SELECT projects.id, namespaces.path AS namespace_path, projects.path AS project_path FROM projects LEFT JOIN namespaces ON projects.namespace_id = namespaces.id')

@@ -85,14 +85,14 @@ class Spinach::Features::ProjectActiveTab < Spinach::FeatureSteps
 
   # Sub Tabs: Issues
 
-  step 'I click the "Milestones" tab' do
-    page.within('.layout-nav') do
+  step 'I click the "Milestones" sub tab' do
+    page.within('.sub-nav') do
       click_link('Milestones')
     end
   end
 
-  step 'I click the "Labels" tab' do
-    page.within('.layout-nav') do
+  step 'I click the "Labels" sub tab' do
+    page.within('.sub-nav') do
       click_link('Labels')
     end
   end
@@ -101,11 +101,11 @@ class Spinach::Features::ProjectActiveTab < Spinach::FeatureSteps
     ensure_active_sub_tab('Issues')
   end
 
-  step 'the active main tab should be Milestones' do
-    ensure_active_main_tab('Milestones')
+  step 'the active sub tab should be Milestones' do
+    ensure_active_sub_tab('Milestones')
   end
 
-  step 'the active main tab should be Labels' do
-    ensure_active_main_tab('Labels')
+  step 'the active sub tab should be Labels' do
+    ensure_active_sub_tab('Labels')
   end
 end

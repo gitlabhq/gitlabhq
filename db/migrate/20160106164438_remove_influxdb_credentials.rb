@@ -1,3 +1,4 @@
+# rubocop:disable all
 class RemoveInfluxdbCredentials < ActiveRecord::Migration
   def change
     remove_column :application_settings, :metrics_username, :string

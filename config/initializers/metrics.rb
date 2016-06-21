@@ -96,13 +96,18 @@ if Gitlab::Metrics.enabled?
       config.instrument_instance_methods(const)
     end
 
-    # Instruments all Banzai filters
-    Dir[Rails.root.join('lib', 'banzai', 'filter', '*.rb')].each do |file|
-      klass = File.basename(file, File.extname(file)).camelize
-      const = Banzai::Filter.const_get(klass)
+    # Instruments all Banzai filters and reference parsers
+    {
+      Filter: Rails.root.join('lib', 'banzai', 'filter', '*.rb'),
+      ReferenceParser: Rails.root.join('lib', 'banzai', 'reference_parser', '*.rb')
+    }.each do |const_name, path|
+      Dir[path].each do |file|
+        klass = File.basename(file, File.extname(file)).camelize
+        const = Banzai.const_get(const_name).const_get(klass)
 
-      config.instrument_methods(const)
-      config.instrument_instance_methods(const)
+        config.instrument_methods(const)
+        config.instrument_instance_methods(const)
+      end
     end
 
     config.instrument_methods(Banzai::Renderer)
@@ -123,11 +128,6 @@ if Gitlab::Metrics.enabled?
     config.instrument_instance_methods(API::Helpers)
 
     config.instrument_instance_methods(RepositoryCheck::SingleRepositoryWorker)
-    # Iterate over each non-super private instance method to keep up to date if
-    # internals change
-    RepositoryCheck::SingleRepositoryWorker.private_instance_methods(false).each do |method|
-      config.instrument_instance_method(RepositoryCheck::SingleRepositoryWorker, method)
-    end
   end
 
   GC::Profiler.enable
@@ -136,5 +136,21 @@ if Gitlab::Metrics.enabled?
 
   Gitlab::Metrics::Instrumentation.configure do |config|
     config.instrument_instance_methods(Gitlab::InsecureKeyFingerprint)
+  end
+
+  module TrackNewRedisConnections
+    def connect(*args)
+      val = super
+
+      if current_transaction = Gitlab::Metrics::Transaction.current
+        current_transaction.increment(:new_redis_connections, 1)
+      end
+
+      val
+    end
+  end
+
+  class ::Redis::Client
+    prepend TrackNewRedisConnections
   end
 end

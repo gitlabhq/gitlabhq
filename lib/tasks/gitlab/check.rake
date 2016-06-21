@@ -30,7 +30,7 @@ namespace :gitlab do
       check_ruby_version
       check_git_version
       check_active_users
-      check_elasticsearch if Gitlab.config.elasticsearch.enabled
+      check_elasticsearch if ApplicationSetting.current.elasticsearch_indexing?
 
       finished_checking "GitLab"
     end
@@ -972,8 +972,8 @@ namespace :gitlab do
   end
 
   def check_elasticsearch
-    client = Elasticsearch::Client.new(host: Gitlab.config.elasticsearch.host,
-                                     port: Gitlab.config.elasticsearch.port)
+    client = Elasticsearch::Client.new(host: ApplicationSetting.current.elasticsearch_host,
+                                       port: ApplicationSetting.current.elasticsearch_port)
 
     print "Elasticsearch version >= 2.0? ... "
 

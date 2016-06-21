@@ -6,46 +6,29 @@
       - if @merge_request.merge_event
         by #{link_to_member(@project, @merge_request.merge_event.author, avatar: true)}
         #{time_ago_with_tooltip(@merge_request.merge_event.created_at)}
-    %div
-      - if !@merge_request.source_branch_exists? || (params[:delete_source] == 'true')
+    - if !@merge_request.source_branch_exists? || (params[:delete_source] == 'true')
+      %p
+        The changes were merged into
+        #{link_to @merge_request.target_branch, namespace_project_commits_path(@project.namespace, @project, @merge_request.target_branch), class: "label-branch"}.
+        The source branch has been removed.
+      = render 'projects/merge_requests/widget/merged_buttons'
+    - elsif @merge_request.can_remove_source_branch?(current_user)
+      .remove_source_branch_widget
         %p
           The changes were merged into
           #{link_to @merge_request.target_branch, namespace_project_commits_path(@project.namespace, @project, @merge_request.target_branch), class: "label-branch"}.
-          The source branch has been removed.
-        = render 'projects/merge_requests/widget/merged_buttons'
-      - elsif @merge_request.can_remove_source_branch?(current_user)
-        .remove_source_branch_widget
-          %p
-            The changes were merged into
-            #{link_to @merge_request.target_branch, namespace_project_commits_path(@project.namespace, @project, @merge_request.target_branch), class: "label-branch"}.
-            You can remove the source branch now.
-          = render 'projects/merge_requests/widget/merged_buttons', source_branch_exists: true
-        .remove_source_branch_widget.failed.hide
-          %p
-            Failed to remove source branch '#{@merge_request.source_branch}'.
-
-        .remove_source_branch_in_progress.hide
-          %p
-            = icon('spinner spin')
-            Removing source branch '#{@merge_request.source_branch}'. Please wait, this page will be automatically reloaded.
-
-        :javascript
-          $('.remove_source_branch').on('click', function() {
-            $('.remove_source_branch_widget').hide();
-            $('.remove_source_branch_in_progress').show();
-          });
-
-          $(".remove_source_branch").on("ajax:success", function (e, data, status, xhr) {
-            location.reload();
-          });
-
-          $(".remove_source_branch").on("ajax:error", function (e, data, status, xhr) {
-            $('.remove_source_branch_widget').hide();
-            $('.remove_source_branch_in_progress').hide();
-            $('.remove_source_branch_widget.failed').show();
-          });
-      - else
+          You can remove the source branch now.
+        = render 'projects/merge_requests/widget/merged_buttons', source_branch_exists: true
+      .remove_source_branch_widget.failed.hide
         %p
-          The changes were merged into
-          #{link_to @merge_request.target_branch, namespace_project_commits_path(@project.namespace, @project, @merge_request.target_branch), class: "label-branch"}.
-        = render 'projects/merge_requests/widget/merged_buttons'
+          Failed to remove source branch '#{@merge_request.source_branch}'.
+
+      .remove_source_branch_in_progress.hide
+        %p
+          = icon('spinner spin')
+          Removing source branch '#{@merge_request.source_branch}'. Please wait, this page will be automatically reloaded.
+    - else
+      %p
+        The changes were merged into
+        #{link_to @merge_request.target_branch, namespace_project_commits_path(@project.namespace, @project, @merge_request.target_branch), class: "label-branch"}.
+      = render 'projects/merge_requests/widget/merged_buttons'

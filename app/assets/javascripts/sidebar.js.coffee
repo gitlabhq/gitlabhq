@@ -3,24 +3,35 @@ expanded = 'page-sidebar-expanded'
 
 toggleSidebar = ->
   $('.page-with-sidebar').toggleClass("#{collapsed} #{expanded}")
-  $('header').toggleClass("header-collapsed header-expanded")
-  $('.toggle-nav-collapse i').toggleClass("fa-angle-right fa-angle-left")
-  $.cookie("collapsed_nav", $('.page-with-sidebar').hasClass(collapsed), { path: '/' })
+  $('.navbar-fixed-top').toggleClass("header-collapsed header-expanded")
+
+  if $.cookie('pin_nav') is 'true'
+    $('.navbar-fixed-top').toggleClass('header-pinned-nav')
+    $('.page-with-sidebar').toggleClass('page-sidebar-pinned')
 
   setTimeout ( ->
-    niceScrollBars = $('.nicescroll').niceScroll();
+    niceScrollBars = $('.nav-sidebar').niceScroll();
     niceScrollBars.updateScrollBar();
   ), 300
+
+$(document)
+  .off 'click', 'body'
+  .on 'click', 'body', (e) ->
+    unless $.cookie('pin_nav') is 'true'
+      $target = $(e.target)
+      $nav = $target.closest('.sidebar-wrapper')
+      pageExpanded = $('.page-with-sidebar').hasClass('page-sidebar-expanded')
+      $toggle = $target.closest('.toggle-nav-collapse, .side-nav-toggle')
+
+      if $nav.length is 0 and pageExpanded and $toggle.length is 0
+        $('.page-with-sidebar')
+          .toggleClass('page-sidebar-collapsed page-sidebar-expanded')
+
+        $('.navbar-fixed-top')
+          .toggleClass('header-collapsed header-expanded')
 
 $(document).on("click", '.toggle-nav-collapse, .side-nav-toggle', (e) ->
   e.preventDefault()
 
   toggleSidebar()
 )
-
-$ ->
-  size = bp.getBreakpointSize()
-
-  if size is "xs" or size is "sm"
-    if $('.page-with-sidebar').hasClass(expanded)
-      toggleSidebar()

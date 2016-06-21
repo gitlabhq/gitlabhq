@@ -43,6 +43,7 @@ class AutocompleteController < ApplicationController
     project = Project.find_by_id(params[:project_id])
 
     projects = current_user.authorized_projects
+    projects = projects.search(params[:search]) if params[:search].present?
     projects = projects.select do |project|
       current_user.can?(:admin_issue, project)
     end

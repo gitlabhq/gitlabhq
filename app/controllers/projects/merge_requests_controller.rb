@@ -62,12 +62,9 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       format.json   { render json: @merge_request, methods: :rebase_in_progress? }
       format.patch  { render text: @merge_request.to_patch }
       format.diff do
-        headers.store(*Gitlab::Workhorse.send_git_diff(@project.repository,
-                                                        @merge_request.diff_base_commit.id,
-                                                        @merge_request.last_commit.id))
-        headers['Content-Disposition'] = 'inline'
+        return render_404 unless @merge_request.diff_refs
 
-        head :ok
+        send_git_diff @project.repository, @merge_request.diff_refs
       end
     end
   end
@@ -220,10 +217,19 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
     @merge_request.update(merge_error: nil)
 
-    if params[:merge_when_build_succeeds].present? && @merge_request.pipeline && @merge_request.pipeline.active?
-      MergeRequests::MergeWhenBuildSucceedsService.new(@project, current_user, merge_params)
-        .execute(@merge_request)
-      @status = :merge_when_build_succeeds
+    if params[:merge_when_build_succeeds].present? 
+      if @merge_request.pipeline && @merge_request.pipeline.active?
+        MergeRequests::MergeWhenBuildSucceedsService.new(@project, current_user, merge_params)
+                                                        .execute(@merge_request)
+        @status = :merge_when_build_succeeds
+      elsif @merge_request.pipeline.success?
+        # This can be triggered when a user clicks the auto merge button while
+        # the tests finish at about the same time
+        MergeWorker.perform_async(@merge_request.id, current_user.id, params)
+        @status = :success
+      else
+        @status = :failed
+      end
     else
       MergeWorker.perform_async(@merge_request.id, current_user.id, params)
       @status = :success
@@ -379,8 +385,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   def set_suggested_approvers
     if @merge_request.requires_approve?
       @suggested_approvers = Gitlab::AuthorityAnalyzer.new(
-        @merge_request,
-        current_user
+        @merge_request
       ).calculate(@merge_request.approvals_required)
     end
   end

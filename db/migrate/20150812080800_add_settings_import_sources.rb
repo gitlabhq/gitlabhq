@@ -1,3 +1,4 @@
+# rubocop:disable all
 require 'yaml'
 
 class AddSettingsImportSources < ActiveRecord::Migration

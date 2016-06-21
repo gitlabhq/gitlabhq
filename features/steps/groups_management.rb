@@ -64,6 +64,5 @@ class Spinach::Features::GroupsManagement < Spinach::FeatureSteps
   step 'I cannot control user membership from project page' do
     expect(page).not_to have_button 'Add members'
     expect(page).not_to have_link 'Import members'
-    expect(page).to have_selector '#project_member_access_level'
   end
 end

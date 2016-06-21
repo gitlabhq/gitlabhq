@@ -15,6 +15,7 @@
                 = link_to @commit.short_id, namespace_project_commit_path(@project.namespace, @project, @commit), class: "monospace"
                 &ndash;
                 = truncate(@commit.title, length: 50)
+            = lock_file_link(html_options: {class: 'pull-right prepend-left-10 path-lock'})
             = link_to 'History', namespace_project_commits_path(@project.namespace, @project, @id), class: 'pull-right'
 
       - if @path.present?
@@ -32,6 +33,14 @@
 - if can_edit_tree?
   = render 'projects/blob/upload', title: 'Upload New File', placeholder: 'Upload new file', button_title: 'Upload file', form_path: namespace_project_create_blob_path(@project.namespace, @project, @id), method: :post
   = render 'projects/blob/new_dir'
+
+- if license_allows_file_locks?
+  :javascript
+    PathLocks.init(
+      '#{toggle_namespace_project_path_locks_path(@project.namespace, @project)}',
+      '#{@path}'
+    );
+
 
 :javascript
   // Load last commit log for each file in tree

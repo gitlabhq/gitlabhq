@@ -1,3 +1,4 @@
+# rubocop:disable all
 class AddSendUserConfirmationEmailToApplicationSettings < ActiveRecord::Migration
   def up
     add_column :application_settings, :send_user_confirmation_email, :boolean, default: false

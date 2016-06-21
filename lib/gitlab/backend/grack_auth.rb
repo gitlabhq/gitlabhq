@@ -1,5 +1,3 @@
-require_relative 'shell_env'
-
 module Grack
   class AuthSpawner
     def self.call(env)
@@ -116,11 +114,6 @@ module Grack
 
         @user = authenticate_user(login, password)
       end
-
-      if @user
-        Gitlab::ShellEnv.set_env(@user)
-        @env['REMOTE_USER'] = @auth.username
-      end
     end
 
     def ci_request?(login, password)
@@ -150,7 +143,7 @@ module Grack
     end
 
     def authenticate_user(login, password)
-      user = Gitlab::Auth.find_in_gitlab_or_ldap(login, password)
+      user = Gitlab::Auth.find_with_user_password(login, password)
 
       unless user
         user = oauth_access_token_check(login, password)

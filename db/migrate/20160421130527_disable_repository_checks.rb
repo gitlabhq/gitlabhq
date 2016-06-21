@@ -1,3 +1,4 @@
+# rubocop:disable all
 class DisableRepositoryChecks < ActiveRecord::Migration
   def up
     change_column_default :application_settings, :repository_checks_enabled, false 

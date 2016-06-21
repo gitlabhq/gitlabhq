@@ -1,14 +1,14 @@
 require 'spec_helper'
 
-describe "Snippet", elastic: true do
+describe Snippet, elastic: true do
   before do
-    allow(Gitlab.config.elasticsearch).to receive(:enabled).and_return(true)
-    Snippet.__elasticsearch__.create_index!
+    stub_application_setting(elasticsearch_search: true, elasticsearch_indexing: true)
+    described_class.__elasticsearch__.create_index!
   end
 
   after do
-    allow(Gitlab.config.elasticsearch).to receive(:enabled).and_return(false)
-    Snippet.__elasticsearch__.delete_index!
+    described_class.__elasticsearch__.delete_index!
+    stub_application_setting(elasticsearch_search: false, elasticsearch_indexing: false)
   end
 
   it "searches snippets by code" do
@@ -20,11 +20,11 @@ describe "Snippet", elastic: true do
 
     snippet3 = create :personal_snippet, :public, content: 'genius code'
 
-    Snippet.__elasticsearch__.refresh_index!
+    described_class.__elasticsearch__.refresh_index!
 
     options = { author_id: user.id }
 
-    result = Snippet.elastic_search_code('genius code', options: options)
+    result = described_class.elastic_search_code('genius code', options: options)
 
     expect(result.total_count).to eq(2)
     expect(result.records.map(&:id)).to include(snippet.id, snippet3.id)
@@ -38,12 +38,12 @@ describe "Snippet", elastic: true do
     create :snippet, :public, file_name: 'index.php'
     create :snippet
 
-    Snippet.__elasticsearch__.refresh_index!
+    described_class.__elasticsearch__.refresh_index!
 
     options = { author_id: user.id }
 
-    expect(Snippet.elastic_search('home', options: options).total_count).to eq(1)
-    expect(Snippet.elastic_search('index.php', options:  options).total_count).to eq(1)
+    expect(described_class.elastic_search('home', options: options).total_count).to eq(1)
+    expect(described_class.elastic_search('index.php', options:  options).total_count).to eq(1)
   end
 
   it "returns json with all needed elements" do

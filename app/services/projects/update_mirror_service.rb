@@ -4,7 +4,9 @@ module Projects
     class UpdateError < Error; end
 
     def execute
-      return false unless project.mirror?
+      unless project.mirror?
+        return error("The project has no mirror to update")
+      end
 
       unless can?(current_user, :push_code_to_protected_branches, project)
         return error("The mirror user is not allowed to push code to all branches on this project.")

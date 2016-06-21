@@ -56,8 +56,9 @@ feature 'Issue filtering by Labels', feature: true do
     end
 
     it 'should remove label "bug"' do
-      first('.js-label-filter-remove').click
-      expect(find('.filtered-labels')).to have_no_content "bug"
+      find('.js-label-filter-remove').click
+      wait_for_ajax
+      expect(find('.filtered-labels', visible: false)).to have_no_content "bug"
     end
   end
 
@@ -142,7 +143,8 @@ feature 'Issue filtering by Labels', feature: true do
     end
 
     it 'should remove label "enhancement"' do
-      first('.js-label-filter-remove').click
+      find('.js-label-filter-remove', match: :first).click
+      wait_for_ajax
       expect(find('.filtered-labels')).to have_no_content "enhancement"
     end
   end
@@ -179,6 +181,7 @@ feature 'Issue filtering by Labels', feature: true do
     before do
       page.within '.labels-filter' do
         click_button 'Label'
+        wait_for_ajax
         click_link 'bug'
         find('.dropdown-menu-close').click
       end
@@ -189,13 +192,25 @@ feature 'Issue filtering by Labels', feature: true do
     end
 
     it 'should allow user to remove filtered labels' do
-      page.within '.filtered-labels' do
-        first('.js-label-filter-remove').click
-        expect(page).not_to have_content 'bug'
-      end
+      first('.js-label-filter-remove').click
+      wait_for_ajax
 
+      expect(find('.filtered-labels', visible: false)).not_to have_content 'bug'
+      expect(find('.labels-filter')).not_to have_content 'bug'
+    end
+  end
+
+  context 'dropdown filtering', js: true do
+    it 'should filter by label name' do
       page.within '.labels-filter' do
-        expect(page).not_to have_content 'bug'
+        click_button 'Label'
+        wait_for_ajax
+        fill_in 'label-name', with: 'bug'
+
+        page.within '.dropdown-content' do
+          expect(page).not_to have_content 'enhancement'
+          expect(page).to have_content 'bug'
+        end
       end
     end
   end

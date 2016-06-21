@@ -1,0 +1,12 @@
+- member = source.members.find_by(user_id: current_user.id)
+
+- if member
+  - if member.request?
+    = link_to 'Withdraw Access Request', polymorphic_path([:leave, source, :members]),
+              method: :delete,
+              data: { confirm: remove_member_message(member) },
+              class: 'btn access-request-button hidden-xs'
+- else
+  = link_to 'Request Access', polymorphic_path([:request_access, source, :members]),
+            method: :post,
+            class: 'btn access-request-button hidden-xs'

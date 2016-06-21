@@ -1,3 +1,4 @@
+# rubocop:disable all
 class MigrateCiHipChatService < ActiveRecord::Migration
   include Gitlab::Database
 

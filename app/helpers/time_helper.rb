@@ -20,7 +20,6 @@ module TimeHelper
     end
   end
 
-
   def date_from_to(from, to)
     "#{from.to_s(:short)} - #{to.to_s(:short)}"
   end

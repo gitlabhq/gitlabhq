@@ -1,3 +1,4 @@
+# rubocop:disable all
 class AddIndexToLabels < ActiveRecord::Migration
   def change
     add_index "labels", :project_id

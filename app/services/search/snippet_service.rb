@@ -1,5 +1,6 @@
 module Search
   class SnippetService
+    include Gitlab::CurrentSettings
     attr_accessor :current_user, :params
 
     def initialize(user, params)
@@ -7,7 +8,7 @@ module Search
     end
 
     def execute
-      if Gitlab.config.elasticsearch.enabled
+      if current_application_settings.elasticsearch_search?
         Gitlab::Elastic::SnippetSearchResults.new(current_user,
                                                   params[:search])
       else

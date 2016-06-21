@@ -327,13 +327,6 @@ Feature: Project Merge Requests
     And I click link "Close"
     Then I should see closed merge request "Bug NS-04"
 
-  Scenario: I approve merge request
-    Given merge request 'Bug NS-04' must be approved
-    And I click link "Bug NS-04"
-    And I should not see merge button
-    When I click link "Approve"
-    Then I should see approved merge request "Bug NS-04"
-
   Scenario: Reporter can approve merge request
     Given I am a "Shop" reporter
     And I visit project "Shop" merge requests page
@@ -343,13 +336,12 @@ Feature: Project Merge Requests
     When I click link "Approve"
     Then I should see message that merge request can be merged
 
-  Scenario: I approve merge request if I am an approver
-    Given merge request 'Bug NS-04' must be approved by current user
+  Scenario: I can not approve Merge request if I am the author
+    Given merge request 'Bug NS-04' must be approved
     And I click link "Bug NS-04"
     And I should not see merge button
-    And I should see message that MR require an approval from me
-    When I click link "Approve"
-    Then I should see approved merge request "Bug NS-04"
+    When I should not see Approve button
+    And I should see message that MR require an approval
 
   Scenario: I can not approve merge request if I am not an approver
     Given merge request 'Bug NS-04' must be approved by some user

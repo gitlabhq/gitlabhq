@@ -33,6 +33,18 @@ describe Projects::AutocompleteService, services: true do
         expect(issues.count).to eq 1
       end
 
+      it 'should not list project confidential issues for project members with guest role' do
+        project.team << [member, :guest]
+
+        autocomplete = described_class.new(project, non_member)
+        issues = autocomplete.issues.map(&:iid)
+
+        expect(issues).to include issue.iid
+        expect(issues).not_to include security_issue_1.iid
+        expect(issues).not_to include security_issue_2.iid
+        expect(issues.count).to eq 1
+      end
+
       it 'should list project confidential issues for author' do
         autocomplete = described_class.new(project, author)
         issues = autocomplete.issues.map(&:iid)

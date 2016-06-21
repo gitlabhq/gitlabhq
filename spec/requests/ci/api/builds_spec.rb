@@ -85,7 +85,7 @@ describe Ci::API::API do
         trigger = FactoryGirl.create(:ci_trigger, project: project)
         pipeline = FactoryGirl.create(:ci_pipeline, project: project, ref: 'master')
 
-        trigger_request = FactoryGirl.create(:ci_trigger_request_with_variables, commit: pipeline, trigger: trigger)
+        trigger_request = FactoryGirl.create(:ci_trigger_request_with_variables, pipeline: pipeline, trigger: trigger)
         pipeline.create_builds(nil, trigger_request)
         project.variables << Ci::Variable.new(key: "SECRET_KEY", value: "secret_value")
 
@@ -360,6 +360,42 @@ describe Ci::API::API do
 
               it 'does not store metadata' do
                 expect(stored_metadata_file).to be_nil
+              end
+            end
+          end
+
+          context 'with an expire date' do
+            let!(:artifacts) { file_upload }
+
+            let(:post_data) do
+              { 'file.path' => artifacts.path,
+                'file.name' => artifacts.original_filename,
+                'expire_in' => expire_in }
+            end
+
+            before do
+              post(post_url, post_data, headers_with_token)
+            end
+
+            context 'with an expire_in given' do
+              let(:expire_in) { '7 days' }
+
+              it 'updates when specified' do
+                build.reload
+                expect(response.status).to eq(201)
+                expect(json_response['artifacts_expire_at']).not_to be_empty
+                expect(build.artifacts_expire_at).to be_within(5.minutes).of(Time.now + 7.days)
+              end
+            end
+
+            context 'with no expire_in given' do
+              let(:expire_in) { nil }
+
+              it 'ignores if not specified' do
+                build.reload
+                expect(response.status).to eq(201)
+                expect(json_response['artifacts_expire_at']).to be_nil
+                expect(build.artifacts_expire_at).to be_nil
               end
             end
           end

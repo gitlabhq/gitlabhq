@@ -112,12 +112,16 @@ Feature: Project Active Tab
 
   Scenario: On Project Issues/Milestones
     Given I visit my project's issues page
-    And I click the "Milestones" tab
-    Then the active main tab should be Milestones
+    And I click the "Milestones" sub tab
+    Then the active main tab should be Issues
+    Then the active sub tab should be Milestones
     And no other main tabs should be active
+    And no other sub tabs should be active
 
   Scenario: On Project Issues/Labels
     Given I visit my project's issues page
-    And I click the "Labels" tab
-    Then the active main tab should be Labels
+    And I click the "Labels" sub tab
+    Then the active main tab should be Issues
+    Then the active sub tab should be Labels
     And no other main tabs should be active
+    And no other sub tabs should be active

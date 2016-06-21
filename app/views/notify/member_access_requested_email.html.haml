@@ -1,0 +1,3 @@
+%p
+  #{link_to member.user.name, member.user} requested #{member.human_access}
+  access to the #{link_to member_source.human_name, polymorphic_url([member_source, :members])} #{member_source.model_name.singular}.

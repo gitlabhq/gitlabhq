@@ -1,10 +1,23 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.9.0 (unreleased)
+  - Fix JenkinsService test button
   - Fix nil user handling in UpdateMirrorService
   - Allow LDAP to mark users as external based on their group membership. !432
+  - Forbid MR authors from approving their own MRs
   - Instrument instance methods of Gitlab::InsecureKeyFingerprint class
   - Add API endpoint for Merge Request Approvals !449
+  - Distribute RepositoryUpdateMirror jobs in time and add exclusive lease on them by project_id
+  - [Elastic] Move ES settings to application settings
+  - Disable mirror flag for projects without import_url
+  - UpdateMirror service return an error status when no mirror
+  - Show flash notice when Git Hooks are updated successfully
+  - Remove explicit Gitlab::Metrics.action assignments, are already automatic.
+  - [Elastic] Project members with guest role can't access confidential issues
+  - Ability to lock file or folder in the repository
+
+v 8.8.5
+  - Make sure OAuth routes that we generate for Geo matches with the ones in Rails routes !444
 
 v 8.8.4
   - Remove license overusage message
@@ -43,6 +56,9 @@ v 8.8.0
   - API requests to /internal/authorized_keys are now tagged properly
   - Geo: Single Sign Out support !380
 
+v 8.7.7
+  - No EE-specific changes
+
 v 8.7.6
   - Bump GitLab Pages to 0.2.4 to fix Content-Type for predefined 404
 
@@ -70,6 +86,9 @@ v 8.7.0
   - [Elastic] Stabilize database indexer if database is inconsistent
   - Add ability to sync to remote mirrors. !249
   - GitLab Geo: Many replication improvements and fixes !354
+
+v 8.6.9
+  - No EE-specific changes
 
 v 8.6.8
   - No EE-specific changes
@@ -130,6 +149,9 @@ v 8.6.0
   - Allow SSL verification to be configurable when importing GitHub projects
   - Disable git-hooks for git annex commits
 
+v 8.5.13
+  - No EE-specific changes
+
 v 8.5.12
   - No EE-specific changes
 
@@ -185,6 +207,9 @@ v 8.5.0
   - Fix of Elastic indexer. Stabilze indexer when serialized data is corrupted
   - [Elastic] Don't index unnecessary data into elastic
 
+v 8.4.11
+  - No EE-specific changes
+
 v 8.4.10
   - No EE-specific changes
 
@@ -235,6 +260,9 @@ v 8.4.0
   - Add option to trigger builds when branches or tags are updated from a mirrored upstream repository
   - Ability to use Elasticsearch as a search engine
 
+v 8.3.10
+  - No EE-specific changes
+
 v 8.3.9
   - No EE-specific changes
 
@@ -271,6 +299,9 @@ v 8.3.0
   - Add group contribution statistics page
   - Automatically import Kerberos identities from Active Directory when Kerberos is enabled (Alex Lossent)
   - Canonicalization of Kerberos identities to always include realm (Alex Lossent)
+
+v 8.2.6
+  - No EE-specific changes
 
 v 8.2.5
   - No EE-specific changes

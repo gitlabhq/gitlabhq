@@ -126,25 +126,25 @@ describe BambooService, models: true do
     it 'returns a specific URL when status is 500' do
       stub_request(status: 500)
 
-      expect(service.build_page('123', 'unused')).to eq('http://gitlab.com/browse/foo')
+      expect(service.build_page('123', 'unused')).to eq('http://gitlab.com/bamboo/browse/foo')
     end
 
     it 'returns a specific URL when response has no results' do
       stub_request(body: %Q({"results":{"results":{"size":"0"}}}))
 
-      expect(service.build_page('123', 'unused')).to eq('http://gitlab.com/browse/foo')
+      expect(service.build_page('123', 'unused')).to eq('http://gitlab.com/bamboo/browse/foo')
     end
 
     it 'returns a build URL when bamboo_url has no trailing slash' do
       stub_request(body: %Q({"results":{"results":{"result":{"planResultKey":{"key":"42"}}}}}))
 
-      expect(service(bamboo_url: 'http://gitlab.com').build_page('123', 'unused')).to eq('http://gitlab.com/browse/42')
+      expect(service(bamboo_url: 'http://gitlab.com/bamboo').build_page('123', 'unused')).to eq('http://gitlab.com/bamboo/browse/42')
     end
 
     it 'returns a build URL when bamboo_url has a trailing slash' do
       stub_request(body: %Q({"results":{"results":{"result":{"planResultKey":{"key":"42"}}}}}))
 
-      expect(service(bamboo_url: 'http://gitlab.com/').build_page('123', 'unused')).to eq('http://gitlab.com/browse/42')
+      expect(service(bamboo_url: 'http://gitlab.com/bamboo/').build_page('123', 'unused')).to eq('http://gitlab.com/bamboo/browse/42')
     end
   end
 
@@ -192,9 +192,9 @@ describe BambooService, models: true do
     end
   end
 
-  def service(bamboo_url: 'http://gitlab.com')
+  def service(bamboo_url: 'http://gitlab.com/bamboo')
     described_class.create(
-      project: build_stubbed(:empty_project),
+      project: create(:empty_project),
       properties: {
         bamboo_url: bamboo_url,
         username: 'mic',
@@ -205,7 +205,7 @@ describe BambooService, models: true do
   end
 
   def stub_request(status: 200, body: nil, build_state: 'success')
-    bamboo_full_url = 'http://mic:password@gitlab.com/rest/api/latest/result?label=123&os_authType=basic'
+    bamboo_full_url = 'http://mic:password@gitlab.com/bamboo/rest/api/latest/result?label=123&os_authType=basic'
     body ||= %Q({"results":{"results":{"result":{"buildState":"#{build_state}"}}}})
 
     WebMock.stub_request(:get, bamboo_full_url).to_return(

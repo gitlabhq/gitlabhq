@@ -1,3 +1,4 @@
+# rubocop:disable all
 class AddDefaultOtpRequiredForLoginValue < ActiveRecord::Migration
   def up
     execute %q{UPDATE users SET otp_required_for_login = FALSE WHERE otp_required_for_login IS NULL}

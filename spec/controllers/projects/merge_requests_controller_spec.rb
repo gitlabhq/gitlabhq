@@ -91,7 +91,7 @@ describe Projects::MergeRequestsController do
             id: merge_request.iid,
             format: :diff)
 
-        expect(response.headers['Gitlab-Workhorse-Send-Data']).to start_with("git-diff:")
+        expect(response.headers[Gitlab::Workhorse::SEND_DATA_HEADER]).to start_with("git-diff:")
       end
     end
 
@@ -264,6 +264,49 @@ describe Projects::MergeRequestsController do
 
           merge_when_build_succeeds
         end
+      end
+    end
+  end
+
+  describe 'POST #approve' do
+    def approve(user)
+      post :approve, namespace_id: project.namespace.path, project_id: project.path, id: merge_request.iid, user: user
+    end
+
+    context 'when the user is the author of the MR' do
+      before { merge_request.approvers.create(user: merge_request.author) }
+
+      it "returns a 404" do
+        approve(merge_request.author)
+
+        expect(response).to have_http_status(404)
+      end
+    end
+
+    context 'when the user is not allowed to approve the MR' do
+      it "returns a 404" do
+        approve(user)
+
+        expect(response).to have_http_status(404)
+      end
+    end
+
+    context 'when the user is allowed to approve the MR' do
+      before { merge_request.approvers.create(user: user) }
+
+      it 'creates an approval' do
+        service = double(:approval_service)
+
+        expect(MergeRequests::ApprovalService).to receive(:new).with(project, anything).and_return(service)
+        expect(service).to receive(:execute).with(merge_request)
+
+        approve(user)
+      end
+
+      it 'redirects to the MR' do
+        approve(user)
+
+        expect(response).to redirect_to(namespace_project_merge_request_path)
       end
     end
   end

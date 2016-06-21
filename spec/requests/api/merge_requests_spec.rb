@@ -419,6 +419,15 @@ describe API::API, api: true  do
       expect(json_response['message']).to eq('405 Method Not Allowed')
     end
 
+    it 'returns 405 if the build failed for a merge request that requires success' do
+      allow_any_instance_of(MergeRequest).to receive(:mergeable_ci_state?).and_return(false)
+
+      put api("/projects/#{project.id}/merge_requests/#{merge_request.id}/merge", user)
+
+      expect(response.status).to eq(405)
+      expect(json_response['message']).to eq('405 Method Not Allowed')
+    end
+
     it "should return 401 if user has no permissions to merge" do
       user2 = create(:user)
       project.team << [user2, :reporter]
@@ -554,6 +563,21 @@ describe API::API, api: true  do
       expect(json_response).to be_an Array
       expect(json_response.length).to eq(0)
     end
+
+    it 'handles external issues' do
+      jira_project = create(:jira_project, :public, name: 'JIR_EXT1')
+      issue = ExternalIssue.new("#{jira_project.name}-123", jira_project)
+      merge_request = create(:merge_request, :simple, author: user, assignee: user, source_project: jira_project)
+      merge_request.update_attribute(:description, "Closes #{issue.to_reference(jira_project)}")
+
+      get api("/projects/#{jira_project.id}/merge_requests/#{merge_request.id}/closes_issues", user)
+
+      expect(response.status).to eq(200)
+      expect(json_response).to be_an Array
+      expect(json_response.length).to eq(1)
+      expect(json_response.first['title']).to eq(issue.title)
+      expect(json_response.first['id']).to eq(issue.id)
+    end
   end
 
   describe 'POST :id/merge_requests/:merge_request_id/subscription' do
@@ -610,14 +634,24 @@ describe API::API, api: true  do
   end
 
   describe 'POST :id/merge_requests/:merge_request_id/approve' do
-    it 'approves the merge request' do
-      project.update_attribute(:approvals_before_merge, 2)
+    context 'when the user is an allowed approver' do
+      it 'approves the merge request' do
+        project.update_attribute(:approvals_before_merge, 2)
 
-      post api("/projects/#{project.id}/merge_requests/#{merge_request.id}/approve", user)
+        post api("/projects/#{project.id}/merge_requests/#{merge_request.id}/approve", admin)
 
-      expect(response.status).to eq(201)
-      expect(json_response['approvals_left']).to eq(1)
-      expect(json_response['approved_by'][0]['user']['username']).to eq(user.username)
+        expect(response.status).to eq(201)
+        expect(json_response['approvals_left']).to eq(1)
+        expect(json_response['approved_by'][0]['user']['username']).to eq(admin.username)
+      end
+    end
+
+    context 'when the user is the MR author' do
+      it 'returns a not authorised response' do
+        post api("/projects/#{project.id}/merge_requests/#{merge_request.id}/approve", user)
+
+        expect(response.status).to eq(401)
+      end
     end
   end
 

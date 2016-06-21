@@ -103,9 +103,7 @@ module API
         if: lambda { |group, options| group.ldap_group_links.any? }
 
       expose :avatar_url
-      expose :web_url do |group, options|
-        Gitlab::Routing.url_helpers.group_url(group)
-      end
+      expose :web_url
     end
 
     class GroupDetail < Group
@@ -191,6 +189,11 @@ module API
       end
       expose :user_notes_count
       expose :upvotes, :downvotes
+    end
+
+    class ExternalIssue < Grape::Entity
+      expose :title
+      expose :id
     end
 
     class MergeRequest < ProjectEntity

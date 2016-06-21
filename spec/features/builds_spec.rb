@@ -93,8 +93,42 @@ describe "Builds" do
       end
 
       it 'has button to download artifacts' do
-        page.within('.artifacts') do
-          expect(page).to have_content 'Download'
+        expect(page).to have_content 'Download'
+      end
+    end
+
+    context 'Artifacts expire date' do
+      before do
+        @build.update_attributes(artifacts_file: artifacts_file, artifacts_expire_at: expire_at)
+        visit namespace_project_build_path(@project.namespace, @project, @build)
+      end
+
+      context 'no expire date defined' do
+        let(:expire_at) { nil }
+
+        it 'does not have the Keep button' do
+          expect(page).not_to have_content 'Keep'
+        end
+      end
+
+      context 'when expire date is defined' do
+        let(:expire_at) { Time.now + 7.days }
+
+        it 'keeps artifacts when Keep button is clicked' do
+          expect(page).to have_content 'The artifacts will be removed'
+          click_link 'Keep'
+
+          expect(page).not_to have_link 'Keep'
+          expect(page).not_to have_content 'The artifacts will be removed'
+        end
+      end
+
+      context 'when artifacts expired' do
+        let(:expire_at) { Time.now - 7.days }
+
+        it 'does not have the Keep button' do
+          expect(page).to have_content 'The artifacts were removed'
+          expect(page).not_to have_link 'Keep'
         end
       end
     end
@@ -107,9 +141,7 @@ describe "Builds" do
       end
 
       it do
-        page.within('.build-controls') do
-          expect(page).to have_link 'Raw'
-        end
+        expect(page).to have_link 'Raw'
       end
     end
   end
@@ -165,15 +197,10 @@ describe "Builds" do
   end
 
   describe "GET /:project/builds/:id/download" do
-    context "Build from project" do
-      before do
-        @build.update_attributes(artifacts_file: artifacts_file)
-        visit namespace_project_build_path(@project.namespace, @project, @build)
-        page.within('.artifacts') { click_link 'Download' }
-      end
-
-      it { expect(page.status_code).to eq(200) }
-      it { expect(page.response_headers['Content-Type']).to eq(artifacts_file.content_type) }
+    before do
+      @build.update_attributes(artifacts_file: artifacts_file)
+      visit namespace_project_build_path(@project.namespace, @project, @build)
+      click_link 'Download'
     end
 
     context "Build from other project" do
@@ -193,7 +220,7 @@ describe "Builds" do
         @build.run!
         @build.trace = 'BUILD TRACE'
         visit namespace_project_build_path(@project.namespace, @project, @build)
-        page.within('.build-controls') { click_link 'Raw' }
+        page.within('.js-build-sidebar') { click_link 'Raw' }
       end
 
       it 'sends the right headers' do

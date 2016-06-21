@@ -33,10 +33,6 @@
 #= require bootstrap/tooltip
 #= require bootstrap/popover
 #= require select2
-#= require raphael
-#= require g.raphael
-#= require g.bar
-#= require branch-graph
 #= require ace/ace
 #= require ace/ext-searchbox
 #= require underscore
@@ -128,9 +124,10 @@ window.onload = ->
     setTimeout shiftWindow, 100
 
 $ ->
+  gl.utils.preventDisabledButtons()
   bootstrapBreakpoint = bp.getBreakpointSize()
 
-  $(".nicescroll").niceScroll(cursoropacitymax: '0.4', cursorcolor: '#FFF', cursorborder: "1px solid #FFF")
+  $(".nav-sidebar").niceScroll(cursoropacitymax: '0.4', cursorcolor: '#FFF', cursorborder: "1px solid #FFF")
 
   # Click a .js-select-on-focus field, select the contents
   $(".js-select-on-focus").on "focusin", ->
@@ -165,19 +162,6 @@ $ ->
       $el.data('placement') || 'bottom'
   )
 
-  $('.header-logo .home').tooltip(
-    placement: (_, el) ->
-      $el = $(el)
-      if $('.page-with-sidebar').hasClass('page-sidebar-collapsed') then 'right' else 'bottom'
-    container: 'body'
-  )
-
-  $('.page-with-sidebar').tooltip(
-    selector: '.sidebar-collapsed .nav-sidebar a, .sidebar-collapsed a.sidebar-user'
-    placement: 'right'
-    container: 'body'
-  )
-
   # Form submitter
   $('.trigger-submit').on 'change', ->
     $(@).parents('form').submit()
@@ -210,6 +194,7 @@ $ ->
 
   $('.navbar-toggle').on 'click', ->
     $('.header-content .title').toggle()
+    $('.header-content .header-logo').toggle()
     $('.header-content .navbar-collapse').toggle()
     $('.navbar-toggle').toggleClass('active')
     $('.navbar-toggle i').toggleClass("fa-angle-right fa-angle-left")
@@ -245,7 +230,6 @@ $ ->
       $this.attr 'value', $this.val()
 
   $sidebarGutterToggle = $('.js-sidebar-toggle')
-  $navIconToggle = $('.toggle-nav-collapse')
 
   $(document)
     .off 'breakpoint:change'
@@ -254,10 +238,6 @@ $ ->
         $gutterIcon = $sidebarGutterToggle.find('i')
         if $gutterIcon.hasClass('fa-angle-double-right')
           $sidebarGutterToggle.trigger('click')
-
-        $navIcon = $navIconToggle.find('.fa')
-        if $navIcon.hasClass('fa-angle-left')
-          $navIconToggle.trigger('click')
 
   fitSidebarForSize = ->
     oldBootstrapBreakpoint = bootstrapBreakpoint
@@ -271,10 +251,38 @@ $ ->
       $(document).trigger('breakpoint:change', [bootstrapBreakpoint])
 
   $(window)
-    .off "resize"
-    .on "resize", (e) ->
+    .off "resize.app"
+    .on "resize.app", (e) ->
       fitSidebarForSize()
 
   gl.awardsHandler = new AwardsHandler()
   checkInitialSidebarSize()
   new Aside()
+
+  # Sidenav pinning
+  if $(window).width() < 1440 and $.cookie('pin_nav') is 'true'
+    $.cookie('pin_nav', 'false')
+    $('.page-with-sidebar')
+      .toggleClass('page-sidebar-collapsed page-sidebar-expanded')
+      .removeClass('page-sidebar-pinned')
+    $('.navbar-fixed-top').removeClass('header-pinned-nav')
+
+  $(document)
+    .off 'click', '.js-nav-pin'
+    .on 'click', '.js-nav-pin', (e) ->
+      e.preventDefault()
+
+      $(this).toggleClass 'is-active'
+
+      if $.cookie('pin_nav') is 'true'
+        $.cookie 'pin_nav', 'false'
+        $('.page-with-sidebar')
+          .removeClass('page-sidebar-pinned')
+          .toggleClass('page-sidebar-collapsed page-sidebar-expanded')
+        $('.navbar-fixed-top')
+          .removeClass('header-pinned-nav')
+          .toggleClass('header-collapsed header-expanded')
+      else
+        $.cookie 'pin_nav', 'true'
+        $('.page-with-sidebar').addClass('page-sidebar-pinned')
+        $('.navbar-fixed-top').addClass('header-pinned-nav')

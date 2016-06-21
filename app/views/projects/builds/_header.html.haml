@@ -1,0 +1,16 @@
+.content-block.build-header
+  = ci_status_with_icon(@build.status)
+  Build
+  %strong ##{@build.id}
+  for commit
+  = link_to ci_status_path(@build.pipeline) do
+    %strong= @build.pipeline.short_sha
+  from
+  = link_to namespace_project_commits_path(@project.namespace, @project, @build.ref) do
+    %code
+      = @build.ref
+  - if @build.user
+    = render "user"
+  = time_ago_with_tooltip(@build.created_at)
+  %button.btn.btn-default.pull-right.visible-xs-block.visible-sm-block.build-gutter-toggle.js-sidebar-build-toggle{ role: "button", type: "button" }
+    = icon('angle-double-left')
