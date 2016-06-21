@@ -610,14 +610,24 @@ class MergeRequest < ActiveRecord::Base
     end
   end
 
+  # This is common ancestor
   def source_sha_parent
     source_project.repository.commit(first_commit.sha).parents.first.sha
   end
 
   def ff_merge_possible?
-    target_project.repository.count_commits_between(
-      target_sha,
-      last_commit.sha) > 0
+    commits_from_common_ancestor.find do |c|
+      c.sha == target_sha
+    end
+  end
+
+  def commits_from_common_ancestor
+    target_project.repository.commits_between(
+      source_sha_parent,
+      last_commit.sha
+    ).unshift(source_sha_parent)
+    # We want the from commit (common ancestor):
+    # Ref: https://gitlab.com/gitlab-org/gitlab_git/commit/a89ba3f2e5295702d7159fa8dba7ec3decd8935b#52f38738e1ad943a852c4c55bc5c708582443d10_245_214
   end
 
   def should_be_rebased?
