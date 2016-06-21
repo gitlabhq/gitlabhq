@@ -19,6 +19,7 @@ v 8.9.0 (unreleased)
   - Don't show 'Leave Project' to group members
   - Fix wiki page events' webhook to point to the wiki repository
   - Don't show tags for revert and cherry-pick operations
+  - Show image ID on registry page
   - Fix issue todo not remove when leave project !4150 (Long Nguyen)
   - Allow customisable text on the 'nearly there' page after a user signs up
   - Bump recaptcha gem to 3.0.0 to remove deprecated stoken support
