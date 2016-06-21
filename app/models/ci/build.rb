@@ -208,6 +208,10 @@ module Ci
       end
     end
 
+    def has_trace_file?
+      File.exist?(path_to_trace) || (project.ci_id && File.exist?(old_path_to_trace))
+    end
+
     def has_trace?
       raw_trace.present?
     end

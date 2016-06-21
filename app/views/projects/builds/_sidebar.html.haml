@@ -100,7 +100,7 @@
         - elsif @build.runner
           \##{@build.runner.id}
       .btn-group.btn-group-justified{ role: :group }
-        - if @build.has_trace?
+        - if @build.has_trace_file?
           = link_to 'Raw', raw_namespace_project_build_path(@project.namespace, @project, @build), class: 'btn btn-sm btn-default'
         - if @build.active?
           = link_to "Cancel", cancel_namespace_project_build_path(@project.namespace, @project, @build), class: 'btn btn-sm btn-default', method: :post
