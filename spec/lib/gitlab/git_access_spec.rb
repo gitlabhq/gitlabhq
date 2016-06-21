@@ -382,7 +382,8 @@ describe Gitlab::GitAccess, lib: true do
 
       it 'allows githook for new branch with an old bad commit' do
         bad_commit = double("Commit", safe_message: 'Some change').as_null_object
-        allow(bad_commit).to receive(:refs).and_return(['heads/master'])
+        ref_object = double(name: 'heads/master')
+        allow(bad_commit).to receive(:refs).and_return([ref_object])
         allow_any_instance_of(Repository).to receive(:commits_between).and_return([bad_commit])
 
         project.create_git_hook
@@ -394,7 +395,8 @@ describe Gitlab::GitAccess, lib: true do
 
       it 'allows githook for any change with an old bad commit' do
         bad_commit = double("Commit", safe_message: 'Some change').as_null_object
-        allow(bad_commit).to receive(:refs).and_return(['heads/master'])
+        ref_object = double(name: 'heads/master')
+        allow(bad_commit).to receive(:refs).and_return([ref_object])
         allow_any_instance_of(Repository).to receive(:commits_between).and_return([bad_commit])
 
         project.create_git_hook
@@ -402,6 +404,20 @@ describe Gitlab::GitAccess, lib: true do
 
         # push to new branch, so use a blank old rev and new ref
         expect(access.git_hook_check(user, project, 'refs/heads/master', '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9', '570e7b2abdd848b95f2f578043fc23bd6f6fd24d')).to be_allowed
+      end
+
+      it 'does not allow any change from Web UI with bad commit' do
+        bad_commit = double("Commit", safe_message: 'Some change').as_null_object
+        # We use tmp ref a a temporary for Web UI commiting
+        ref_object = double(name: 'refs/tmp')
+        allow(bad_commit).to receive(:refs).and_return([ref_object])
+        allow_any_instance_of(Repository).to receive(:commits_between).and_return([bad_commit])
+
+        project.create_git_hook
+        project.git_hook.update(commit_message_regex: "Change some files")
+
+        # push to new branch, so use a blank old rev and new ref
+        expect(access.git_hook_check(user, project, 'refs/heads/master', '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9', '570e7b2abdd848b95f2f578043fc23bd6f6fd24d')).not_to be_allowed
       end
     end
 
