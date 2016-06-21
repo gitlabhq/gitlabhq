@@ -431,10 +431,34 @@ module Ci
 
     def predefined_variables
       variables = []
-      variables << { key: :CI_BUILD_TAG, value: ref, public: true } if tag?
-      variables << { key: :CI_BUILD_NAME, value: name, public: true }
-      variables << { key: :CI_BUILD_STAGE, value: stage, public: true }
-      variables << { key: :CI_BUILD_TRIGGERED, value: 'true', public: true } if trigger_request
+      variables << { key: 'CI', value: 'true', public: true }
+      variables << { key: 'GITLAB_CI', value: 'true', public: true }
+
+      variables << { key: 'CI_BUILD_ID', value: id, public: true }
+      variables << { key: 'CI_BUILD_TOKEN', value: token, public: false }
+      variables << { key: 'CI_BUILD_REF', value: sha, public: true }
+      variables << { key: 'CI_BUILD_BEFORE_SHA', value: before_sha, public: true }
+      variables << { key: 'CI_BUILD_REF_NAME', value: ref, public: true }
+      variables << { key: 'CI_BUILD_TAG', value: ref, public: true } if tag?
+      variables << { key: 'CI_BUILD_NAME', value: name, public: true }
+      variables << { key: 'CI_BUILD_STAGE', value: stage, public: true }
+      variables << { key: 'CI_BUILD_TRIGGERED', value: 'true', public: true } if trigger_request
+
+      variables << { key: 'CI_PIPELINE_ID', value: pipeline.id, public: true }
+
+      variables << { key: 'CI_PROJECT_ID', value: project_id, public: true }
+      variables << { key: 'CI_PROJECT_NAME', value: project.path, public: true }
+      variables << { key: 'CI_PROJECT_PATH', value: project.path_with_namespace, public: true }
+      variables << { key: 'CI_PROJECT_NAMESPACE', value: project.namespace.path, public: true }
+      variables << { key: 'CI_PROJECT_URL', value: project.web_url, public: true }
+
+      variables << { key: 'CI_REGISTRY', value: Gitlab.config.registry.host_port, public: true } if Gitlab.config.registry.enabled
+      variables << { key: 'CI_REGISTRY_IMAGE', value: project.container_registry_repository_url, public: true } if project.container_registry_repository_url
+
+      variables << { key: 'CI_SERVER_NAME', value: 'GitLab', public: true }
+      variables << { key: 'CI_SERVER_VERSION', value: Gitlab::VERSION, public: true }
+      variables << { key: 'CI_SERVER_REVISION', value: Gitlab::REVISION, public: true }
+      variables << { key: 'CI_SERVER_URL', value: Gitlab::REVISION, public: true }
       variables
     end
   end
