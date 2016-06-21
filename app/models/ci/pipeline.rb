@@ -37,22 +37,22 @@ module Ci
     end
 
     def git_author_name
-      commit_data.author_name if commit_data
+      commit.try(:author_name)
     end
 
     def git_author_email
-      commit_data.author_email if commit_data
+      commit.try(:author_email)
     end
 
     def git_commit_message
-      commit_data.message if commit_data
+      commit.try(:message)
     end
 
     def short_sha
       Ci::Pipeline.truncate_sha(sha)
     end
 
-    def commit_data
+    def commit
       @commit ||= project.commit(sha)
     rescue
       nil

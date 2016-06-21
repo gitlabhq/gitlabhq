@@ -2,7 +2,12 @@ require 'spec_helper'
 
 describe Ci::Build, models: true do
   let(:project) { create(:project) }
-  let(:pipeline) { create(:ci_pipeline, project: project) }
+
+  let(:pipeline) do
+    create(:ci_pipeline, project: project,
+                         sha: project.commit.id)
+  end
+
   let(:build) { create(:ci_build, pipeline: pipeline) }
 
   it { is_expected.to validate_presence_of :ref }
@@ -676,6 +681,12 @@ describe Ci::Build, models: true do
           end
         end
       end
+    end
+  end
+
+  describe '#commit' do
+    it 'returns commit pipeline has been created for' do
+      expect(build.commit).to eq project.commit
     end
   end
 end

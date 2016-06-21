@@ -1,8 +1,13 @@
 require 'spec_helper'
 
 describe CommitStatus, models: true do
-  let(:pipeline) { FactoryGirl.create :ci_pipeline }
-  let(:commit_status) { FactoryGirl.create :commit_status, pipeline: pipeline }
+  let(:project) { create(:project) }
+
+  let(:pipeline) do
+    create(:ci_pipeline, project: project, sha: project.commit.id)
+  end
+
+  let(:commit_status) { create(:commit_status, pipeline: pipeline) }
 
   it { is_expected.to belong_to(:pipeline) }
   it { is_expected.to belong_to(:user) }
@@ -13,7 +18,7 @@ describe CommitStatus, models: true do
 
   it { is_expected.to delegate_method(:sha).to(:pipeline) }
   it { is_expected.to delegate_method(:short_sha).to(:pipeline) }
-  
+
   it { is_expected.to respond_to :success? }
   it { is_expected.to respond_to :failed? }
   it { is_expected.to respond_to :running? }
@@ -116,7 +121,7 @@ describe CommitStatus, models: true do
       it { is_expected.to be > 0.0 }
     end
   end
-  
+
   describe :latest do
     subject { CommitStatus.latest.order(:id) }
 
@@ -196,6 +201,12 @@ describe CommitStatus, models: true do
           'deploy' => 'running'
         })
       end
+    end
+  end
+
+  describe '#commit' do
+    it 'returns commit pipeline has been created for' do
+      expect(commit_status.commit).to eq project.commit
     end
   end
 end
