@@ -2,6 +2,8 @@
   = render "projects/notes/notes"
 %ul.notes.notes-form.timeline
   %li.timeline-entry
+    .flash-container.timeline-content
+
     - if can? current_user, :create_note, @project
       .timeline-icon.hidden-xs.hidden-sm
         %a.author_link{ href: user_path(current_user) }
