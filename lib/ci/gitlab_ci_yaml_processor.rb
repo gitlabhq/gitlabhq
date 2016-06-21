@@ -14,7 +14,7 @@ module Ci
     ALLOWED_CACHE_KEYS = [:key, :untracked, :paths]
     ALLOWED_ARTIFACTS_KEYS = [:name, :untracked, :paths, :when, :expire_in]
 
-    attr_reader :after_script, :path, :cache
+    attr_reader :path, :cache
 
     def initialize(config, path = nil)
       @ci_config = Gitlab::Ci::Config.new(config)
@@ -65,10 +65,9 @@ module Ci
     def initial_parsing
       @before_script = @ci_config.before_script
       @image = @ci_config.image
-
-      @after_script = @config[:after_script]
-      @image = @config[:image]
+      @after_script = @ci_config.after_script
       @services = @ci_config.services
+
       @stages = @config[:stages] || @config[:types]
       @variables = @config[:variables] || {}
       @cache = @config[:cache]
@@ -93,7 +92,7 @@ module Ci
       {
         stage_idx: stages.index(job[:stage]),
         stage: job[:stage],
-        commands: [job[:before_script] || [@before_script], job[:script]].flatten.compact.join("\n"),
+        commands: [job[:before_script] || @before_script, job[:script]].flatten.compact.join("\n"),
         tag_list: job[:tags] || [],
         name: name,
         only: job[:only],
@@ -123,10 +122,6 @@ module Ci
     end
 
     def validate_global!
-      unless @after_script.nil? || validate_array_of_strings(@after_script)
-        raise ValidationError, "after_script should be an array of strings"
-      end
-
       unless @stages.nil? || validate_array_of_strings(@stages)
         raise ValidationError, "stages should be an array of strings"
       end

@@ -11,7 +11,7 @@ describe Gitlab::Ci::Config::Node::Factory do
           .with(value: ['ls', 'pwd'])
           .create!
 
-        expect(entry.value).to eq "ls\npwd"
+        expect(entry.value).to eq ['ls', 'pwd']
       end
 
       context 'when setting description' do
@@ -21,7 +21,7 @@ describe Gitlab::Ci::Config::Node::Factory do
             .with(description: 'test description')
             .create!
 
-          expect(entry.value).to eq "ls\npwd"
+          expect(entry.value).to eq ['ls', 'pwd']
           expect(entry.description).to eq 'test description'
         end
       end

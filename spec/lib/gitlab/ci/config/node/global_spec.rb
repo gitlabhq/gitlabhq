@@ -23,7 +23,8 @@ describe Gitlab::Ci::Config::Node::Global do
     let(:hash) do
       { before_script: ['ls', 'pwd'],
         image: 'ruby:2.2',
-        services: ['postgres:9.1', 'mysql:5.5'] }
+        services: ['postgres:9.1', 'mysql:5.5'],
+        after_script: ['make clean'] }
     end
 
     describe '#process!' do
@@ -34,7 +35,7 @@ describe Gitlab::Ci::Config::Node::Global do
       end
 
       it 'creates node object for each entry' do
-        expect(global.nodes.count).to eq 3
+        expect(global.nodes.count).to eq 4
       end
 
       it 'creates node object using valid class' do
@@ -71,7 +72,7 @@ describe Gitlab::Ci::Config::Node::Global do
 
       describe '#before_script' do
         it 'returns correct script' do
-          expect(global.before_script).to eq "ls\npwd"
+          expect(global.before_script).to eq ['ls', 'pwd']
         end
       end
 
@@ -84,6 +85,12 @@ describe Gitlab::Ci::Config::Node::Global do
       describe '#services' do
         it 'returns array of services' do
           expect(global.services).to eq ['postgres:9.1', 'mysql:5.5']
+        end
+      end
+
+      describe '#after_script' do
+        it 'returns after script' do
+          expect(global.after_script).to eq ['make clean']
         end
       end
     end

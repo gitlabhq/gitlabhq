@@ -17,6 +17,9 @@ module Gitlab
 
           allow_node :services, Services,
             description: 'Docker images that will be linked to the container.'
+
+          allow_node :after_script, Script,
+            description: 'Script that will be executed after each job.'
         end
       end
     end

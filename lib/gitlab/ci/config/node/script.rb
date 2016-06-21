@@ -5,11 +5,6 @@ module Gitlab
         ##
         # Entry that represents a script.
         #
-        # Each element in the value array is a command that will be executed
-        # by GitLab Runner. Currently we concatenate these commands with
-        # new line character as a separator, what is compatible with
-        # implementation in Runner.
-        #
         class Script < Entry
           include Validatable
 
@@ -18,7 +13,7 @@ module Gitlab
           end
 
           def value
-            @config.join("\n")
+            @config
           end
         end
       end
