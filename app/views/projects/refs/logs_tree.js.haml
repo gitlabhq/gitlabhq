@@ -12,7 +12,7 @@
   - if path_lock_info
     :plain
       var label = $("<span>")
-        .attr('title', 'Locked by #{escape_javascript path_lock_info.user.name }')
+        .attr('title', 'Locked by #{escape_javascript path_lock_info.user.name}')
         .attr('data-toggle', 'tooltip')
         .addClass('fa fa-lock prepend-left-5');
       row.find('td.tree-item-file-name').append(label);
