@@ -9,7 +9,7 @@ describe Banzai::Filter::SyntaxHighlightFilter, lib: true do
   end
 
   it 'passes through invalid code blocks' do
-    allow_any_instance_of(described_class).to receive(:block_code).and_raise(StandardError)
+    allow_any_instance_of(Rouge::Formatter).to receive(:format).and_raise(StandardError)
 
     result = filter('<pre><code>This is a test</code></pre>')
     expect(result.to_html).to eq('<pre>This is a test</pre>')
