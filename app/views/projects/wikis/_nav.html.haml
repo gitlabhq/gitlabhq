@@ -1,5 +1,5 @@
-.top-area
-  %ul.nav-links
+.nav-links.sub-nav
+  %ul{ class: (container_class) }
     = nav_link(html_options: {class: params[:id] == 'home' ? 'active' : '' }) do
       = link_to 'Home', namespace_project_wiki_path(@project.namespace, @project, :home)
 
@@ -10,9 +10,4 @@
       = link_to namespace_project_wikis_git_access_path(@project.namespace, @project) do
         Git Access
 
-  .nav-controls
-    - if can?(current_user, :create_wiki, @project)
-      = link_to '#modal-new-wiki', class: "add-new-wiki btn btn-new", "data-toggle" => "modal" do
-        New Page
-
-= render 'projects/wikis/new'
+  = render 'projects/wikis/new'

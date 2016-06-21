@@ -14,18 +14,28 @@
   font-size: 10px;
 }
 
+#contributors-master {
+  @include make-md-column(12);
+
+  svg {
+    width: 100%;
+  }
+}
+
 #contributors {
   .contributors-list {
     margin: 0 0 10px;
     list-style: none;
     padding: 0;
+    float: left;
+
+    svg {
+      width: 100%;
+    }
   }
 
   .person {
-    &:nth-child(even) {
-      float: right;
-    }
-    float: left;
+    @include make-md-column(6);
     margin-top: 10px;
   }
 
