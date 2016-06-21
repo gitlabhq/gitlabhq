@@ -12,10 +12,14 @@ module Rouge
       end
 
       def stream(tokens, &b)
+        is_first = true
         token_lines(tokens) do |line|
+          yield "\n" unless is_first
+          is_first = false
+
           yield %<<span id="LC#{@line_number}" class="line">>
           line.each { |token, value| yield span(token, value) }
-          yield %<</span>\n>
+          yield %<</span>>
 
           @line_number += 1
         end
