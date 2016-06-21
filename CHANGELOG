@@ -142,6 +142,7 @@ v 8.8.5 (unreleased)
   - Update tanuki logo highlight/loading colors
   - Remove explicit Gitlab::Metrics.action assignments, are already automatic.
   - Use Git cached counters for branches and tags on project page
+  - Cache participable participants in an instance variable.
   - Filter parameters for request_uri value on instrumented transactions.
   - Remove duplicated keys add UNIQUE index to keys fingerprint column
   - ExtractsPath get ref_names from repository cache, if not there access git.
