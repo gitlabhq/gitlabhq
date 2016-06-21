@@ -47,9 +47,9 @@ module ApplicationSettingsHelper
   def enabled_project_tooltip(project, protocol)
     case protocol
     when 'ssh'
-      sanitize_clone_button(ssh_clone_button(project))
+      sanitize_clone_button(ssh_clone_button(project, 'bottom'))
     else
-      sanitize_clone_button(http_clone_button(project))
+      sanitize_clone_button(http_clone_button(project, 'bottom'))
     end
   end
 
