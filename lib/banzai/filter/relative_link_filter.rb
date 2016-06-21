@@ -14,6 +14,8 @@ module Banzai
       def call
         return doc unless linkable_files?
 
+        @uri_types = {}
+
         doc.search('a:not(.gfm)').each do |el|
           process_link_attr el.attribute('href')
         end
@@ -48,7 +50,7 @@ module Banzai
         uri.path = [
           relative_url_root,
           context[:project].path_with_namespace,
-          path_type(file_path),
+          uri_type(file_path),
           ref || context[:project].default_branch,  # if no ref exists, point to the default branch
           file_path
         ].compact.join('/').squeeze('/').chomp('/')
@@ -87,7 +89,7 @@ module Banzai
         return path unless request_path
 
         parts = request_path.split('/')
-        parts.pop if path_type(request_path) != 'tree'
+        parts.pop if uri_type(request_path) != :tree
 
         while path.start_with?('../')
           parts.pop
@@ -98,45 +100,20 @@ module Banzai
       end
 
       def file_exists?(path)
-        return false if path.nil?
-        repository.blob_at(current_sha, path).present? ||
-          repository.tree(current_sha, path).entries.any?
+        path.present? && !!uri_type(path)
       end
 
-      # Get the type of the given path
-      #
-      # path - String path to check
-      #
-      # Examples:
-      #
-      #   path_type('doc/README.md') # => 'blob'
-      #   path_type('doc/logo.png')  # => 'raw'
-      #   path_type('doc/api')       # => 'tree'
-      #
-      # Returns a String
-      def path_type(path)
-        unescaped_path = Addressable::URI.unescape(path)
+      def uri_type(path)
+        @uri_types[path] ||= begin
+          unescaped_path = Addressable::URI.unescape(path)
 
-        if tree?(unescaped_path)
-          'tree'
-        elsif image?(unescaped_path)
-          'raw'
-        else
-          'blob'
+          current_commit.uri_type(unescaped_path)
         end
       end
 
-      def tree?(path)
-        repository.tree(current_sha, path).entries.any?
-      end
-
-      def image?(path)
-        repository.blob_at(current_sha, path).try(:image?)
-      end
-
-      def current_sha
-        context[:commit].try(:id) ||
-          ref ? repository.commit(ref).try(:sha) : repository.head_commit.sha
+      def current_commit
+        @current_commit ||= context[:commit] ||
+          ref ? repository.commit(ref) : repository.head_commit
       end
 
       def relative_url_root
@@ -148,7 +125,7 @@ module Banzai
       end
 
       def repository
-        context[:project].try(:repository)
+        @repository ||= context[:project].try(:repository)
       end
     end
   end
