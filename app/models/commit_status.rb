@@ -90,4 +90,12 @@ class CommitStatus < ActiveRecord::Base
   def stuck?
     false
   end
+
+  ##
+  # Deprecated, this should be removed in 9.0 in favor of exposing
+  # entire pipeline in API.
+  #
+  def commit
+    pipeline.try(:commit_data)
+  end
 end
