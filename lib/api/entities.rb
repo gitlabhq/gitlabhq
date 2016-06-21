@@ -445,11 +445,7 @@ module API
       expose :created_at, :started_at, :finished_at
       expose :user, with: User
       expose :artifacts_file, using: BuildArtifactFile, if: -> (build, opts) { build.artifacts? }
-      expose :commit, with: RepoCommit do |repo_obj, _options|
-        if repo_obj.respond_to?(:commit)
-          repo_obj.commit.commit_data
-        end
-      end
+      expose :commit, with: RepoCommit
       expose :runner, with: Runner
     end
 

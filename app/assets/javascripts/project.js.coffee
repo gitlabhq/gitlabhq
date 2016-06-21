@@ -35,7 +35,6 @@ class @Project
       $(@).parents('.no-password-message').remove()
       e.preventDefault()
 
-
     @projectSelectDropdown()
 
   projectSelectDropdown: ->

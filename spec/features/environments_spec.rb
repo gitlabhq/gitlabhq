@@ -20,7 +20,7 @@ feature 'Environments', feature: true do
 
     context 'without environments' do
       scenario 'does show no environments' do
-        expect(page).to have_content('No environments to show')
+        expect(page).to have_content('You don\'t have any environments right now.')
       end
     end
 
@@ -61,7 +61,7 @@ feature 'Environments', feature: true do
 
     context 'without deployments' do
       scenario 'does show no deployments' do
-        expect(page).to have_content('No deployments for')
+        expect(page).to have_content('You don\'t have any deployments right now.')
       end
     end
 
@@ -108,7 +108,7 @@ feature 'Environments', feature: true do
         end
 
         scenario 'does create a new pipeline' do
-          expect(page).to have_content('production')
+          expect(page).to have_content('Production')
         end
       end
 

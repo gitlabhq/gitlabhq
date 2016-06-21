@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.9.0 (unreleased)
+  - Fix builds API response not including commit data
   - Fix error when CI job variables key specified but not defined
   - Fix pipeline status when there are no builds in pipeline
   - Fix Error 500 when using closes_issues API with an external issue tracker
@@ -8,6 +9,7 @@ v 8.9.0 (unreleased)
   - Bulk assign/unassign labels to issues.
   - Ability to prioritize labels !4009 / !3205 (Thijs Wouters)
   - Show Star and Fork buttons on mobile.
+  - Performance improvements on RelativeLinkFilter
   - Fix endless redirections when accessing user OAuth applications when they are disabled
   - Allow enabling wiki page events from Webhook management UI
   - Bump rouge to 1.11.0
@@ -145,6 +147,7 @@ v 8.9.0 (unreleased)
   - Cache user todo counts from TodoService
   - Ensure Todos counters doesn't count Todos for projects pending delete
   - Add left/right arrows horizontal navigation
+  - Add tooltip to pin/unpin navbar
 
 v 8.8.5
   - Import GitHub repositories respecting the API rate limit !4166
