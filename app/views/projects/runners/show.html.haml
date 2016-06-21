@@ -23,7 +23,7 @@
       %td Can run untagged jobs
       %td= @runner.run_untagged? ? 'Yes' : 'No'
     %tr
-      %td Exclusive to this project
+      %td Locked to this project
       %td= @runner.locked? ? 'Yes' : 'No'
     %tr
       %td Tags

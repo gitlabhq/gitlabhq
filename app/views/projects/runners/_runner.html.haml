@@ -5,7 +5,7 @@
       - if @project_runners.include?(runner)
         = link_to runner.short_sha, runner_path(runner)
         - if runner.locked?
-          = icon('lock', class: 'has-tooltip', title: 'Exclusive to this project')
+          = icon('lock', class: 'has-tooltip', title: 'Locked to current projects')
         %small
           = link_to edit_namespace_project_runner_path(@project.namespace, @project, runner) do
             %i.fa.fa-edit.btn
