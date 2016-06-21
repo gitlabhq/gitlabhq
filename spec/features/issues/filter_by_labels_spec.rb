@@ -54,6 +54,12 @@ feature 'Issue filtering by Labels', feature: true do
       expect(find('.filtered-labels')).not_to have_content "feature"
       expect(find('.filtered-labels')).not_to have_content "enhancement"
     end
+
+    it 'should remove label "bug"' do
+      find('.js-label-filter-remove').click
+      wait_for_ajax
+      expect(find('.filtered-labels', visible: false)).to have_no_content "bug"
+    end
   end
 
   context 'filter by label feature', js: true do
@@ -135,6 +141,12 @@ feature 'Issue filtering by Labels', feature: true do
     it 'should not show label "bug" in filtered-labels' do
       expect(find('.filtered-labels')).not_to have_content "bug"
     end
+
+    it 'should remove label "enhancement"' do
+      find('.js-label-filter-remove', match: :first).click
+      wait_for_ajax
+      expect(find('.filtered-labels')).to have_no_content "enhancement"
+    end
   end
 
   context 'filter by label enhancement and bug in issues list', js: true do
@@ -162,6 +174,44 @@ feature 'Issue filtering by Labels', feature: true do
 
     it 'should not show label "feature" in filtered-labels' do
       expect(find('.filtered-labels')).not_to have_content "feature"
+    end
+  end
+
+  context 'remove filtered labels', js: true do
+    before do
+      page.within '.labels-filter' do
+        click_button 'Label'
+        wait_for_ajax
+        click_link 'bug'
+        find('.dropdown-menu-close').click
+      end
+
+      page.within '.filtered-labels' do
+        expect(page).to have_content 'bug'
+      end
+    end
+
+    it 'should allow user to remove filtered labels' do
+      first('.js-label-filter-remove').click
+      wait_for_ajax
+
+      expect(find('.filtered-labels', visible: false)).not_to have_content 'bug'
+      expect(find('.labels-filter')).not_to have_content 'bug'
+    end
+  end
+
+  context 'dropdown filtering', js: true do
+    it 'should filter by label name' do
+      page.within '.labels-filter' do
+        click_button 'Label'
+        wait_for_ajax
+        fill_in 'label-name', with: 'bug'
+
+        page.within '.dropdown-content' do
+          expect(page).not_to have_content 'enhancement'
+          expect(page).to have_content 'bug'
+        end
+      end
     end
   end
 end

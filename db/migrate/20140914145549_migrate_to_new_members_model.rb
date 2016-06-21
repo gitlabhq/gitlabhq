@@ -1,3 +1,4 @@
+# rubocop:disable all
 class MigrateToNewMembersModel < ActiveRecord::Migration
   def up
     execute "INSERT INTO members ( user_id, source_id, source_type, access_level, notification_level, type ) SELECT user_id, group_id, 'Namespace', group_access, notification_level, 'GroupMember' FROM users_groups"

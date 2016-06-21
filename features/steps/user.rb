@@ -51,7 +51,7 @@ class Spinach::Features::User < Spinach::FeatureSteps
   end
 
   step 'I should see contributions calendar' do
-    expect(page).to have_css('.cal-heatmap-container')
+    expect(page).to have_css('.js-contrib-calendar')
   end
 
   def contributed_project

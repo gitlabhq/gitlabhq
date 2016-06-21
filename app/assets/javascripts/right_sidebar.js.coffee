@@ -10,6 +10,89 @@ class @Sidebar
     $('.dropdown').on('loading.gl.dropdown', @sidebarDropdownLoading)
     $('.dropdown').on('loaded.gl.dropdown', @sidebarDropdownLoaded)
 
+
+    $(document)
+      .off 'click', '.js-sidebar-toggle'
+      .on 'click', '.js-sidebar-toggle', (e, triggered) ->
+        e.preventDefault()
+        $this = $(this)
+        $thisIcon = $this.find 'i'
+        $allGutterToggleIcons = $('.js-sidebar-toggle i')
+        if $thisIcon.hasClass('fa-angle-double-right')
+          $allGutterToggleIcons
+            .removeClass('fa-angle-double-right')
+            .addClass('fa-angle-double-left')
+          $('aside.right-sidebar')
+            .removeClass('right-sidebar-expanded')
+            .addClass('right-sidebar-collapsed')
+          $('.page-with-sidebar')
+            .removeClass('right-sidebar-expanded')
+            .addClass('right-sidebar-collapsed')
+        else
+          $allGutterToggleIcons
+            .removeClass('fa-angle-double-left')
+            .addClass('fa-angle-double-right')
+          $('aside.right-sidebar')
+            .removeClass('right-sidebar-collapsed')
+            .addClass('right-sidebar-expanded')
+          $('.page-with-sidebar')
+            .removeClass('right-sidebar-collapsed')
+            .addClass('right-sidebar-expanded')
+        if not triggered
+          $.cookie("collapsed_gutter",
+            $('.right-sidebar')
+              .hasClass('right-sidebar-collapsed'), { path: '/' })
+
+    $(document)
+      .off 'click', '.js-issuable-todo'
+      .on 'click', '.js-issuable-todo', @toggleTodo
+
+  toggleTodo: (e) =>
+    $this = $(e.currentTarget)
+    $todoLoading = $('.js-issuable-todo-loading')
+    $btnText = $('.js-issuable-todo-text', $this)
+    ajaxType = if $this.attr('data-id') then 'PATCH' else 'POST'
+    ajaxUrlExtra = if $this.attr('data-id') then "/#{$this.attr('data-id')}" else ''
+
+    $.ajax(
+      url: "#{$this.data('url')}#{ajaxUrlExtra}"
+      type: ajaxType
+      dataType: 'json'
+      data:
+        issuable_id: $this.data('issuable')
+        issuable_type: $this.data('issuable-type')
+      beforeSend: =>
+        @beforeTodoSend($this, $todoLoading)
+    ).done (data) =>
+      @todoUpdateDone(data, $this, $btnText, $todoLoading)
+
+  beforeTodoSend: ($btn, $todoLoading) ->
+    $btn.disable()
+    $todoLoading.removeClass 'hidden'
+
+  todoUpdateDone: (data, $btn, $btnText, $todoLoading) ->
+    $todoPendingCount = $('.todos-pending-count')
+    $todoPendingCount.text data.count
+
+    $btn.enable()
+    $todoLoading.addClass 'hidden'
+
+    if data.count is 0
+      $todoPendingCount.addClass 'hidden'
+    else
+      $todoPendingCount.removeClass 'hidden'
+
+    if data.todo?
+      $btn
+        .attr 'aria-label', $btn.data('mark-text')
+        .attr 'data-id', data.todo.id
+      $btnText.text $btn.data('mark-text')
+    else
+      $btn
+        .attr 'aria-label', $btn.data('todo-text')
+        .removeAttr 'data-id'
+      $btnText.text $btn.data('todo-text')
+
   sidebarDropdownLoading: (e) ->
     $sidebarCollapsedIcon = $(@).closest('.block').find('.sidebar-collapsed-icon')
     img = $sidebarCollapsedIcon.find('img')
@@ -76,12 +159,10 @@ class @Sidebar
       @triggerOpenSidebar() if not @isOpen()
 
     if action is 'hide'
-      @triggerOpenSidebar() is @isOpen()
+      @triggerOpenSidebar() if @isOpen()
 
   isOpen: ->
     @sidebar.is('.right-sidebar-expanded')
 
   getBlock: (name) ->
     @sidebar.find(".block.#{name}")
-
-

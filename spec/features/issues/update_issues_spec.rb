@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 feature 'Multiple issue updating from issues#index', feature: true do
+  include WaitForAjax
+
   let!(:project)   { create(:project) }
   let!(:issue)     { create(:issue, project: project) }
   let!(:user)      { create(:user)}
@@ -24,9 +26,7 @@ feature 'Multiple issue updating from issues#index', feature: true do
 
     it 'should be set to open' do
       create_closed
-      visit namespace_project_issues_path(project.namespace, project)
-
-      find('.issues-state-filters a', text: 'Closed').click
+      visit namespace_project_issues_path(project.namespace, project, state: 'closed')
 
       find('#check_all_issues').click
       find('.js-issue-status').click
@@ -42,7 +42,7 @@ feature 'Multiple issue updating from issues#index', feature: true do
       visit namespace_project_issues_path(project.namespace, project)
 
       find('#check_all_issues').click
-      find('.js-update-assignee').click
+      click_update_assignee_button
 
       find('.dropdown-menu-user-link', text: user.username).click
       click_update_issues_button
@@ -57,14 +57,11 @@ feature 'Multiple issue updating from issues#index', feature: true do
       visit namespace_project_issues_path(project.namespace, project)
 
       find('#check_all_issues').click
-      find('.js-update-assignee').click
+      click_update_assignee_button
 
       click_link 'Unassigned'
       click_update_issues_button
-
-      within first('.issue .controls') do
-        expect(page).to have_no_selector('.author_link')
-      end
+      expect(find('.issue:first-child .controls')).not_to have_css('.author_link')
     end
   end
 
@@ -95,7 +92,7 @@ feature 'Multiple issue updating from issues#index', feature: true do
       find('.dropdown-menu-milestone a', text: "No Milestone").click
       click_update_issues_button
 
-      expect(first('.issue')).to_not have_content milestone.title
+      expect(find('.issue:first-child')).not_to have_content milestone.title
     end
   end
 
@@ -111,7 +108,13 @@ feature 'Multiple issue updating from issues#index', feature: true do
     create(:issue, project: project, milestone: milestone)
   end
 
+  def click_update_assignee_button
+    find('.js-update-assignee').click
+    wait_for_ajax
+  end
+
   def click_update_issues_button
     find('.update_selected_issues').click
+    wait_for_ajax
   end
 end

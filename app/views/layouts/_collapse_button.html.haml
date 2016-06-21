@@ -1,4 +1,3 @@
-- if nav_menu_collapsed?
-  = link_to icon('angle-right'), '#', class: 'toggle-nav-collapse', title: "Open/Close"
-- else
-  = link_to icon('angle-left'), '#', class: 'toggle-nav-collapse', title: "Open/Close"
+= link_to '#', class: 'nav-header-btn text-center toggle-nav-collapse', title: "Open/Close" do
+  %span.sr-only Toggle navigation
+  = icon('bars')

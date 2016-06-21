@@ -90,7 +90,7 @@ module Ci
 
       def convert(raw, new_state)
         reset_state
-        restore_state(raw, new_state) if new_state
+        restore_state(raw, new_state) if new_state.present?
 
         start = @offset
         ansi = raw[@offset..-1]
@@ -98,13 +98,15 @@ module Ci
         open_new_tag
 
         s = StringScanner.new(ansi)
-        while(!s.eos?)
+        until s.eos?
           if s.scan(/\e([@-_])(.*?)([@-~])/)
             handle_sequence(s)
           elsif s.scan(/\e(([@-_])(.*?)?)?$/)
             break
           elsif s.scan(/</)
             @out << '&lt;'
+          elsif s.scan(/\n/)
+            @out << '<br>'
           else
             @out << s.scan(/./m)
           end

@@ -92,22 +92,6 @@ class License < ActiveRecord::Base
     self.restrictions[:active_user_count]
   end
 
-  def current_user_count
-    Rails.cache.fetch("current_active_user_count", expires_in: 1.hour) do
-      User.active.count
-    end
-  end
-
-  def warn_upgrade_license_message?
-    restricted_user_count = user_count
-
-    return unless restricted_user_count
-
-    return false unless Time.now >= self.starts_at + 3.months
-
-    restricted_user_count && current_user_count > restricted_user_count
-  end
-
   private
 
   def reset_current

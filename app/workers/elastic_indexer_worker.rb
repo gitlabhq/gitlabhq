@@ -1,10 +1,10 @@
 class ElasticIndexerWorker
   include Sidekiq::Worker
+  include Elasticsearch::Model::Client::ClassMethods
 
   sidekiq_options queue: :elasticsearch
 
-  Client = Elasticsearch::Client.new(host: Gitlab.config.elasticsearch.host,
-                                     port: Gitlab.config.elasticsearch.port)
+  ISSUE_TRACKED_FIELDS = %w(assignee_id author_id confidential)
 
   def perform(operation, class_name, record_id, options = {})
     klass = class_name.constantize
@@ -12,10 +12,12 @@ class ElasticIndexerWorker
     case operation.to_s
     when /index|update/
       record = klass.find(record_id)
-      record.__elasticsearch__.client = Client
+      record.__elasticsearch__.client = client
       record.__elasticsearch__.__send__ "#{operation}_document"
+
+      update_issue_notes(record, options["changed_fields"]) if klass == Issue
     when /delete/
-      Client.delete index: klass.index_name, type: klass.document_type, id: record_id
+      client.delete index: klass.index_name, type: klass.document_type, id: record_id
 
       clear_project_indexes(record_id) if klass == Project
     end
@@ -23,9 +25,15 @@ class ElasticIndexerWorker
     true # Less work to do!
   end
 
+  def update_issue_notes(record, changed_fields)
+    if changed_fields && (changed_fields & ISSUE_TRACKED_FIELDS).any?
+      Note.import query: -> { where(noteable: record) }
+    end
+  end
+
   def clear_project_indexes(record_id)
     # Remove repository index
-    Client.delete_by_query({
+    client.delete_by_query({
       index: Repository.__elasticsearch__.index_name,
       body: {
         query: {

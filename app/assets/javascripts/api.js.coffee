@@ -1,16 +1,16 @@
 @Api =
-  groups_path: "/api/:version/groups.json"
-  group_path: "/api/:version/groups/:id.json"
-  projects_path: "/api/:version/projects.json"
-  ldap_groups_path: "/api/:version/ldap/:provider/groups.json"
-  namespaces_path: "/api/:version/namespaces.json"
-  group_projects_path: "/api/:version/groups/:id/projects.json"
-  projects_path: "/api/:version/projects.json"
-  labels_path: "/api/:version/projects/:id/labels"
-  license_path: "/api/:version/licenses/:key"
+  groupsPath: "/api/:version/groups.json"
+  groupPath: "/api/:version/groups/:id.json"
+  namespacesPath: "/api/:version/namespaces.json"
+  groupProjectsPath: "/api/:version/groups/:id/projects.json"
+  projectsPath: "/api/:version/projects.json"
+  labelsPath: "/api/:version/projects/:id/labels"
+  licensePath: "/api/:version/licenses/:key"
+  gitignorePath: "/api/:version/gitignores/:key"
+  ldapGroupsPath: "/api/:version/ldap/:provider/groups.json"
 
   group: (group_id, callback) ->
-    url = Api.buildUrl(Api.group_path)
+    url = Api.buildUrl(Api.groupPath)
     url = url.replace(':id', group_id)
 
     $.ajax(
@@ -24,7 +24,7 @@
   # Return groups list. Filtered by query
   # Only active groups retrieved
   groups: (query, skip_ldap, callback) ->
-    url = Api.buildUrl(Api.groups_path)
+    url = Api.buildUrl(Api.groupsPath)
 
     $.ajax(
       url: url
@@ -38,7 +38,7 @@
 
   # Return namespaces list. Filtered by query
   namespaces: (query, callback) ->
-    url = Api.buildUrl(Api.namespaces_path)
+    url = Api.buildUrl(Api.namespacesPath)
 
     $.ajax(
       url: url
@@ -52,7 +52,7 @@
 
   # Return projects list. Filtered by query
   projects: (query, order, callback) ->
-    url = Api.buildUrl(Api.projects_path)
+    url = Api.buildUrl(Api.projectsPath)
 
     $.ajax(
       url: url
@@ -66,7 +66,7 @@
       callback(projects)
 
   newLabel: (project_id, data, callback) ->
-    url = Api.buildUrl(Api.labels_path)
+    url = Api.buildUrl(Api.labelsPath)
     url = url.replace(':id', project_id)
 
     data.private_token = gon.api_token
@@ -82,7 +82,7 @@
 
   # Return group projects list. Filtered by query
   groupProjects: (group_id, query, callback) ->
-    url = Api.buildUrl(Api.group_projects_path)
+    url = Api.buildUrl(Api.groupProjectsPath)
     url = url.replace(':id', group_id)
 
     $.ajax(
@@ -97,7 +97,7 @@
 
   # Return text for a specific license
   licenseText: (key, data, callback) ->
-    url = Api.buildUrl(Api.license_path).replace(':key', key)
+    url = Api.buildUrl(Api.licensePath).replace(':key', key)
 
     $.ajax(
       url: url
@@ -105,13 +105,19 @@
     ).done (license) ->
       callback(license)
 
+  gitignoreText: (key, callback) ->
+    url = Api.buildUrl(Api.gitignorePath).replace(':key', key)
+
+    $.get url, (gitignore) ->
+      callback(gitignore)
+
   buildUrl: (url) ->
     url = gon.relative_url_root + url if gon.relative_url_root?
     return url.replace(':version', gon.api_version)
 
   # Return LDAP groups list. Filtered by query
   ldap_groups: (query, provider, callback) ->
-    url = Api.buildUrl(Api.ldap_groups_path)
+    url = Api.buildUrl(Api.ldapGroupsPath)
     url = url.replace(':provider', provider);
 
     $.ajax(

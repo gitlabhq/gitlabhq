@@ -1,4 +1,4 @@
-%li{ id: dom_id(issue), class: issue_css_classes(issue), url: issue_path(issue) }
+%li{ id: dom_id(issue), class: issue_css_classes(issue), url: issue_path(issue), data: { labels: issue.label_ids, id: issue.id } }
   - if controller.controller_name == 'issues' && can?(current_user, :admin_issue, @project)
     .issue-check
       = check_box_tag dom_id(issue,"selected"), nil, false, 'data-id' => issue.id, class: "selected_issue"
@@ -6,7 +6,7 @@
   .issue-title.title
     %span.issue-title-text
       = confidential_icon(issue)
-      = link_to_gfm issue.title, issue_path(issue)
+      = link_to issue.title, issue_path(issue)
     %ul.controls
       - if issue.closed?
         %li
@@ -27,7 +27,7 @@
           = icon('thumbs-down')
           = downvotes
 
-      - note_count = issue.notes.user.nonawards.count
+      - note_count = issue.notes.user.count
       %li
         = link_to issue_path(issue, anchor: 'notes'), class: ('issue-no-comments' if note_count.zero?) do
           = icon('comments')

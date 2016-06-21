@@ -7,7 +7,7 @@ class Projects::PipelinesController < Projects::ApplicationController
 
   def index
     @scope = params[:scope]
-    all_pipelines = project.ci_commits
+    all_pipelines = project.pipelines
     @pipelines_count = all_pipelines.count
     @running_or_pending_count = all_pipelines.running_or_pending.count
     @pipelines = PipelinesFinder.new(project).execute(all_pipelines, @scope)
@@ -15,7 +15,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def new
-    @pipeline = project.ci_commits.new(ref: @project.default_branch)
+    @pipeline = project.pipelines.new(ref: @project.default_branch)
   end
 
   def create
@@ -32,7 +32,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def retry
-    pipeline.retry_failed
+    pipeline.retry_failed(current_user)
 
     redirect_back_or_default default: namespace_project_pipelines_path(project.namespace, project)
   end
@@ -50,7 +50,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def pipeline
-    @pipeline ||= project.ci_commits.find_by!(id: params[:id])
+    @pipeline ||= project.pipelines.find_by!(id: params[:id])
   end
 
   def commit

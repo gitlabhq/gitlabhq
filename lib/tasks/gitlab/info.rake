@@ -15,20 +15,21 @@ namespace :gitlab do
       rake_version = run_and_match(%W(rake --version), /[\d\.]+/).try(:to_s)
 
       puts ""
-      puts "System information".yellow
-      puts "System:\t\t#{os_name || "unknown".red}"
+      puts "System information".color(:yellow)
+      puts "System:\t\t#{os_name || "unknown".color(:red)}"
       puts "Current User:\t#{run(%W(whoami))}"
-      puts "Using RVM:\t#{rvm_version.present? ? "yes".green : "no"}"
+      puts "Using RVM:\t#{rvm_version.present? ? "yes".color(:green) : "no"}"
       puts "RVM Version:\t#{rvm_version}" if rvm_version.present?
-      puts "Ruby Version:\t#{ruby_version || "unknown".red}"
-      puts "Gem Version:\t#{gem_version || "unknown".red}"
-      puts "Bundler Version:#{bunder_version || "unknown".red}"
-      puts "Rake Version:\t#{rake_version || "unknown".red}"
+      puts "Ruby Version:\t#{ruby_version || "unknown".color(:red)}"
+      puts "Gem Version:\t#{gem_version || "unknown".color(:red)}"
+      puts "Bundler Version:#{bunder_version || "unknown".color(:red)}"
+      puts "Rake Version:\t#{rake_version || "unknown".color(:red)}"
       puts "Sidekiq Version:#{Sidekiq::VERSION}"
 
 
       # check database adapter
-      database_adapter = ActiveRecord::Base.connection.adapter_name.downcase
+      database_adapter = Gitlab::Database.adapter_name
+      database_version = Gitlab::Database.version
 
       project = Group.new(path: "some-group").projects.build(path: "some-project")
       # construct clone URLs
@@ -39,17 +40,21 @@ namespace :gitlab do
       omniauth_providers.map! { |provider| provider['name'] }
 
       puts ""
-      puts "GitLab information".yellow
+      puts "GitLab information".color(:yellow)
       puts "Version:\t#{Gitlab::VERSION}"
       puts "Revision:\t#{Gitlab::REVISION}"
       puts "Directory:\t#{Rails.root}"
       puts "DB Adapter:\t#{database_adapter}"
+      puts "DB Version:\t#{database_version}"
       puts "URL:\t\t#{Gitlab.config.gitlab.url}"
       puts "HTTP Clone URL:\t#{http_clone_url}"
       puts "SSH Clone URL:\t#{ssh_clone_url}"
-      puts "Using LDAP:\t#{Gitlab.config.ldap.enabled ? "yes".green : "no"}"
-      puts "Using Omniauth:\t#{Gitlab.config.omniauth.enabled ? "yes".green : "no"}"
-      puts "Omniauth Providers: #{omniauth_providers.map(&:magenta).join(', ')}" if Gitlab.config.omniauth.enabled
+      puts "Elasticsearch:\t#{Gitlab.config.elasticsearch.enabled ? "yes".color(:green) : "no"}"
+      puts "Geo:\t\t#{Gitlab::Geo.enabled? ? "yes".color(:green) : "no"}"
+      puts "Geo node:\t#{Gitlab::Geo.current_node.primary ? "Primary" : "Secondary"}" if Gitlab::Geo.enabled?
+      puts "Using LDAP:\t#{Gitlab.config.ldap.enabled ? "yes".color(:green) : "no"}"
+      puts "Using Omniauth:\t#{Gitlab.config.omniauth.enabled ? "yes".color(:green) : "no"}"
+      puts "Omniauth Providers: #{omniauth_providers.join(', ')}" if Gitlab.config.omniauth.enabled
 
 
 
@@ -60,8 +65,8 @@ namespace :gitlab do
       end
 
       puts ""
-      puts "GitLab Shell".yellow
-      puts "Version:\t#{gitlab_shell_version || "unknown".red}"
+      puts "GitLab Shell".color(:yellow)
+      puts "Version:\t#{gitlab_shell_version || "unknown".color(:red)}"
       puts "Repositories:\t#{Gitlab.config.gitlab_shell.repos_path}"
       puts "Hooks:\t\t#{Gitlab.config.gitlab_shell.hooks_path}"
       puts "Git:\t\t#{Gitlab.config.git.bin_path}"

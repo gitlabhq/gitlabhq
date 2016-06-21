@@ -37,15 +37,13 @@ module LicenseHelper
 
     return unless signed_in
 
-    return unless (is_admin && (license.notify_admins? || license.warn_upgrade_license_message?)) || license.notify_users?
+    return unless (is_admin && license.notify_admins?) || license.notify_users?
 
     message = []
 
-    unless license.warn_upgrade_license_message?
-      message << "The GitLab Enterprise Edition license"
-      message << (license.expired? ? "expired" : "will expire")
-      message << "on #{license.expires_at}."
-    end
+    message << "The GitLab Enterprise Edition license"
+    message << (license.expired? ? "expired" : "will expire")
+    message << "on #{license.expires_at}."
 
     if license.expired? && license.will_block_changes?
       message << "Pushing code and creation of issues and merge requests"
@@ -67,12 +65,6 @@ module LicenseHelper
       message << "to"
       message << (license.block_changes? ? "restore" : "ensure uninterrupted")
       message << "service."
-    elsif license.warn_upgrade_license_message?
-      message << "Your GitLab license currently covers #{license.user_count}"
-      message << "users, but it looks like your site has grown to"
-      message << "#{current_active_user_count} users. Please contact"
-      message << "sales@gitlab.com to increase the number of licensed users."
-      message << "Note: This message is only visible to you as an admin."
     end
 
     message.join(" ")

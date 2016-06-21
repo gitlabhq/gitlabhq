@@ -30,6 +30,11 @@ Rails.application.routes.draw do
     mount LetterOpenerWeb::Engine, at: '/rails/letter_opener'
   end
 
+  concern :access_requestable do
+    post :request_access, on: :collection
+    post :approve_access_request, on: :member
+  end
+
   namespace :ci do
     # CI API
     Ci::API::API.logger Rails.logger
@@ -53,15 +58,18 @@ Rails.application.routes.draw do
                 authorizations: 'oauth/authorizations'
   end
 
-  namespace :oauth, path: 'geo', controller: 'geo_auth', as: 'oauth_geo' do
-    get 'auth'
-    get 'callback'
-    get 'logout'
+  namespace :oauth do
+    scope path: 'geo', controller: :geo_auth, as: :geo do
+      get 'auth'
+      get 'callback'
+      get 'logout'
+    end
   end
 
   # Autocomplete
   get '/autocomplete/users' => 'autocomplete#users'
   get '/autocomplete/users/:id' => 'autocomplete#user'
+  get '/autocomplete/projects' => 'autocomplete#projects'
 
   # Emojis
   resources :emojis, only: :index
@@ -85,8 +93,8 @@ Rails.application.routes.draw do
   # Health check
   get 'health_check(/:checks)' => 'health_check#index', as: :health_check
 
-  # Enable Grack support
-  mount Grack::AuthSpawner, at: '/', constraints: lambda { |request| /[-\/\w\.]+\.git\//.match(request.path_info) }, via: [:get, :post, :put]
+  # Enable Grack support (for LFS only)
+  mount Grack::AuthSpawner, at: '/', constraints: lambda { |request| /[-\/\w\.]+\.git\/(info\/lfs|gitlab-lfs)/.match(request.path_info) }, via: [:get, :post, :put]
 
   # Help
   get 'help'                  => 'help#index'
@@ -361,8 +369,9 @@ Rails.application.routes.draw do
       resources :keys
       resources :emails, only: [:index, :create, :destroy]
       resource :avatar, only: [:destroy]
-      resource :two_factor_auth, only: [:new, :create, :destroy] do
+      resource :two_factor_auth, only: [:show, :create, :destroy] do
         member do
+          post :create_u2f
           post :codes
           patch :skip
         end
@@ -438,7 +447,7 @@ Rails.application.routes.draw do
       end
 
       resources :ldap_group_links, only: [:index, :create, :destroy]
-      resources :group_members, only: [:index, :create, :update, :destroy] do
+      resources :group_members, only: [:index, :create, :update, :destroy], concerns: :access_requestable do
         post :resend_invite, on: :member
         delete :leave, on: :collection
       end
@@ -460,7 +469,11 @@ Rails.application.routes.draw do
   post 'unsubscribes/:email', to: 'unsubscribes#create'
   resources :projects, constraints: { id: /[^\/]+/ }, only: [:index, :new, :create]
 
-  devise_for :users, controllers: { omniauth_callbacks: :omniauth_callbacks, registrations: :registrations , passwords: :passwords, sessions: :sessions, confirmations: :confirmations }
+  devise_for :users, controllers: { omniauth_callbacks: :omniauth_callbacks,
+                                    registrations: :registrations,
+                                    passwords: :passwords,
+                                    sessions: :sessions,
+                                    confirmations: :confirmations }
 
   devise_scope :user do
     get '/users/auth/:provider/omniauth_error' => 'omniauth_callbacks#omniauth_error', as: :omniauth_error
@@ -475,6 +488,7 @@ Rails.application.routes.draw do
   resources :namespaces, path: '/', constraints: { id: /[a-zA-Z.0-9_\-]+/ }, only: [] do
     resources(:projects, constraints: { id: /[a-zA-Z.0-9_\-]+(?<!\.atom)/ }, except:
               [:new, :create, :index], path: "/") do
+
       member do
         put :transfer
         delete :remove_fork
@@ -488,6 +502,29 @@ Rails.application.routes.draw do
       end
 
       scope module: :projects do
+        # Git HTTP clients ('git clone' etc.)
+        scope constraints: { id: /.+\.git/, format: nil } do
+          get '/info/refs', to: 'git_http#info_refs'
+          post '/git-upload-pack', to: 'git_http#git_upload_pack'
+          post '/git-receive-pack', to: 'git_http#git_receive_pack'
+        end
+
+        # Allow /info/refs, /info/refs?service=git-upload-pack, and
+        # /info/refs?service=git-receive-pack, but nothing else.
+        #
+        git_http_handshake = lambda do |request|
+          request.query_string.blank? ||
+            request.query_string.match(/\Aservice=git-(upload|receive)-pack\z/)
+        end
+
+        ref_redirect = redirect do |params, request|
+          path = "#{params[:namespace_id]}/#{params[:project_id]}.git/info/refs"
+          path << "?#{request.query_string}" unless request.query_string.blank?
+          path
+        end
+
+        get '/info/refs', constraints: git_http_handshake, to: ref_redirect
+
         # Blob routes:
         get '/new/*id', to: 'blob#new', constraints: { id: /.+/ }, as: 'new_blob'
         post '/create/*id', to: 'blob#create', constraints: { id: /.+/ }, as: 'create_blob'
@@ -630,7 +667,6 @@ Rails.application.routes.draw do
           # Order matters to give priority to these matches
           get '/wikis/git_access', to: 'wikis#git_access'
           get '/wikis/pages', to: 'wikis#pages', as: 'wiki_pages'
-          post '/wikis/markdown_preview', to:'wikis#markdown_preview'
           post '/wikis', to: 'wikis#create'
 
           get '/wikis/*id/history', to: 'wikis#history', as: 'wiki_history', constraints: WIKI_SLUG_ID
@@ -639,6 +675,7 @@ Rails.application.routes.draw do
           get '/wikis/*id', to: 'wikis#show', as: 'wiki', constraints: WIKI_SLUG_ID
           delete '/wikis/*id', to: 'wikis#destroy', constraints: WIKI_SLUG_ID
           put '/wikis/*id', to: 'wikis#update', constraints: WIKI_SLUG_ID
+          post '/wikis/*id/markdown_preview', to:'wikis#markdown_preview', constraints: WIKI_SLUG_ID, as: 'wiki_markdown_preview'
         end
 
         resource :repository, only: [:show, :create] do
@@ -693,6 +730,7 @@ Rails.application.routes.draw do
             post :toggle_subscription
             post :approve
             post :rebase
+            post :toggle_award_emoji
             post :remove_wip
           end
 
@@ -707,6 +745,11 @@ Rails.application.routes.draw do
         resources :branches, only: [:index, :new, :create, :destroy], constraints: { id: Gitlab::Regex.git_reference_regex }
         resources :tags, only: [:index, :show, :new, :create, :destroy], constraints: { id: Gitlab::Regex.git_reference_regex } do
           resource :release, only: [:edit, :update]
+        end
+        resources :path_locks, only: [:index, :destroy] do
+          collection do
+            post :toggle
+          end
         end
 
         resources :protected_branches, only: [:index, :create, :update, :destroy], constraints: { id: Gitlab::Regex.git_reference_regex }
@@ -726,6 +769,8 @@ Rails.application.routes.draw do
           end
         end
 
+        resources :environments, only: [:index, :show, :new, :create, :destroy]
+
         resources :builds, only: [:index, :show], constraints: { id: /\d+/ } do
           collection do
             post :cancel_all
@@ -744,6 +789,7 @@ Rails.application.routes.draw do
             get :download
             get :browse, path: 'browse(/*path)', format: false
             get :file, path: 'file/*path', format: false
+            post :keep
           end
         end
 
@@ -765,16 +811,19 @@ Rails.application.routes.draw do
         resources :labels, constraints: { id: /\d+/ } do
           collection do
             post :generate
+            post :set_priorities
           end
 
           member do
             post :toggle_subscription
+            delete :remove_priority
           end
         end
 
         resources :issues, constraints: { id: /\d+/ } do
           member do
             post :toggle_subscription
+            post :toggle_award_emoji
             get :referenced_merge_requests
             get :related_branches
             get :can_create_branch
@@ -784,7 +833,7 @@ Rails.application.routes.draw do
           end
         end
 
-        resources :project_members, except: [:new, :edit], constraints: { id: /[a-zA-Z.\/0-9_\-#%+]+/ } do
+        resources :project_members, except: [:new, :edit], constraints: { id: /[a-zA-Z.\/0-9_\-#%+]+/ }, concerns: :access_requestable do
           collection do
             delete :leave
 
@@ -803,13 +852,12 @@ Rails.application.routes.draw do
 
         resources :notes, only: [:index, :create, :destroy, :update], constraints: { id: /\d+/ } do
           member do
+            post :toggle_award_emoji
             delete :delete_attachment
           end
-
-          collection do
-            post :award_toggle
-          end
         end
+
+        resources :todos, only: [:create, :update], constraints: { id: /\d+/ }
 
         resources :uploads, only: [:create] do
           collection do
@@ -843,7 +891,7 @@ Rails.application.routes.draw do
   end
 
   # Get all keys of user
-  get ':username.keys' => 'profiles/keys#get_keys' , constraints: { username: /.*/ }
+  get ':username.keys' => 'profiles/keys#get_keys', constraints: { username: /.*/ }
 
   get ':id' => 'namespaces#show', constraints: { id: /(?:[^.]|\.(?!atom$))+/, format: /atom/ }
 end

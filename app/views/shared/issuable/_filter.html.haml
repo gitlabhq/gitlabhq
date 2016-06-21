@@ -1,6 +1,8 @@
 .issues-filters
   .issues-details-filters.row-content-block.second-block
-    = form_tag page_filter_path(without: [:assignee_id, :author_id, :milestone_title, :label_name]), method: :get, class: 'filter-form' do
+    = form_tag page_filter_path(without: [:assignee_id, :author_id, :milestone_title, :label_name, :issue_search]), method: :get, class: 'filter-form js-filter-form' do
+      - if params[:issue_search].present?
+        = hidden_field_tag :issue_search, params[:issue_search]
       - if controller.controller_name == 'issues' && can?(current_user, :admin_issue, @project)
         .check-all-holder
           = check_box_tag "check_all_issues", nil, false,
@@ -10,7 +12,7 @@
           - if params[:author_id].present?
             = hidden_field_tag(:author_id, params[:author_id])
           = dropdown_tag(user_dropdown_label(params[:author_id], "Author"), options: { toggle_class: "js-user-search js-filter-submit js-author-search", title: "Filter by author", filter: true, dropdown_class: "dropdown-menu-user dropdown-menu-selectable dropdown-menu-author js-filter-submit",
-            placeholder: "Search authors", data: { any_user: "Any Author", first_user: (current_user.username if current_user), current_user: true, project_id: (@project.id if @project), selected: params[:author_id], field_name: "author_id", default_label: "Author" } })
+            placeholder: "Search authors", data: { any_user: "Any Author", first_user: (current_user.username if current_user), current_user: true, project_id: (@project.id if @project), selected: params[:author], field_name: "author_id", default_label: "Author" } })
 
         .filter-item.inline
           - if params[:assignee_id].present?
@@ -41,7 +43,7 @@
 
     - if controller.controller_name == 'issues'
       .issues_bulk_update.hide
-        = form_tag bulk_update_namespace_project_issues_path(@project.namespace, @project), method: :post  do
+        = form_tag bulk_update_namespace_project_issues_path(@project.namespace, @project), method: :post, class: 'bulk-update'  do
           .filter-item.inline
             = dropdown_tag("Status", options: { toggle_class: "js-issue-status", title: "Change status", dropdown_class: "dropdown-menu-status dropdown-menu-selectable", data: { field_name: "update[state_event]" } } ) do
               %ul
@@ -54,6 +56,10 @@
               placeholder: "Search authors", data: { first_user: (current_user.username if current_user), null_user: true, current_user: true, project_id: @project.id, field_name: "update[assignee_id]" } })
           .filter-item.inline
             = dropdown_tag("Milestone", options: { title: "Assign milestone", toggle_class: 'js-milestone-select js-extra-options js-filter-submit js-filter-bulk-update', filter: true, dropdown_class: "dropdown-menu-selectable dropdown-menu-milestone", placeholder: "Search milestones", data: { show_no: true, field_name: "update[milestone_id]", project_id: @project.id, milestones: namespace_project_milestones_path(@project.namespace, @project, :json), use_id: true } })
+
+          .filter-item.inline.labels-filter
+            = render "shared/issuable/label_dropdown", classes: ['js-filter-bulk-update', 'js-multiselect'], show_create: false, show_footer: false, extra_options: false, filter_submit: false, show_footer: false, data_options: { persist_when_hide: "true", field_name: "update[label_ids][]", show_no: false, show_any: false, use_id: true }
+
           = hidden_field_tag 'update[issues_ids]', []
           = hidden_field_tag :state_event, params[:state_event]
           .filter-item.inline

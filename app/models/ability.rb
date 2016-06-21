@@ -10,7 +10,6 @@ class Ability
         when CommitStatus then commit_status_abilities(user, subject)
         when Project then project_abilities(user, subject)
         when Issue then issue_abilities(user, subject)
-        when ExternalIssue then external_issue_abilities(user, subject)
         when Note then note_abilities(user, subject)
         when ProjectSnippet then project_snippet_abilities(user, subject)
         when PersonalSnippet then personal_snippet_abilities(user, subject)
@@ -20,6 +19,7 @@ class Ability
         when GroupMember then group_member_abilities(user, subject)
         when ProjectMember then project_member_abilities(user, subject)
         when User then user_abilities
+        when ExternalIssue, Deployment, Environment then project_abilities(user, subject.project)
         else []
         end.concat(global_abilities(user))
 
@@ -37,20 +37,41 @@ class Ability
       ]
     end
 
+    # Given a list of users and a project this method returns the users that can
+    # read the given project.
+    def users_that_can_read_project(users, project)
+      if project.public?
+        users
+      else
+        users.select do |user|
+          if user.admin?
+            true
+          elsif project.internal? && !user.external?
+            true
+          elsif project.owner == user
+            true
+          elsif project.team.members.include?(user)
+            true
+          else
+            false
+          end
+        end
+      end
+    end
+
     # List of possible abilities for anonymous user
     def anonymous_abilities(user, subject)
-      case true
-      when subject.is_a?(PersonalSnippet)
+      if subject.is_a?(PersonalSnippet)
         anonymous_personal_snippet_abilities(subject)
-      when subject.is_a?(ProjectSnippet)
+      elsif subject.is_a?(ProjectSnippet)
         anonymous_project_snippet_abilities(subject)
-      when subject.is_a?(CommitStatus)
+      elsif subject.is_a?(CommitStatus)
         anonymous_commit_status_abilities(subject)
-      when subject.is_a?(Project) || subject.respond_to?(:project)
+      elsif subject.is_a?(Project) || subject.respond_to?(:project)
         anonymous_project_abilities(subject)
-      when subject.is_a?(Group) || subject.respond_to?(:group)
+      elsif subject.is_a?(Group) || subject.respond_to?(:group)
         anonymous_group_abilities(subject)
-      when subject.is_a?(User)
+      elsif subject.is_a?(User)
         anonymous_user_abilities
       else
         []
@@ -180,6 +201,8 @@ class Ability
         project_report_rules
       elsif team.guest?(user)
         project_guest_rules
+      else
+        []
       end
     end
 
@@ -221,6 +244,8 @@ class Ability
         :read_build,
         :read_container_image,
         :read_pipeline,
+        :read_environment,
+        :read_deployment
       ]
     end
 
@@ -239,6 +264,8 @@ class Ability
         :push_code,
         :create_container_image,
         :update_container_image,
+        :create_environment,
+        :create_deployment
       ]
     end
 
@@ -258,6 +285,8 @@ class Ability
         :push_code_to_protected_branches,
         :update_project_snippet,
         :update_pages,
+        :update_environment,
+        :update_deployment,
         :admin_milestone,
         :admin_project_snippet,
         :admin_project_member,
@@ -270,6 +299,9 @@ class Ability
         :admin_container_image,
         :admin_pages,
         :admin_pipeline,
+        :admin_environment,
+        :admin_deployment,
+        :admin_locks
       ]
     end
 
@@ -314,6 +346,8 @@ class Ability
       unless project.builds_enabled
         rules += named_abilities('build')
         rules += named_abilities('pipeline')
+        rules += named_abilities('environment')
+        rules += named_abilities('deployment')
       end
 
       unless project.container_registry_enabled
@@ -512,10 +546,6 @@ class Ability
                      end
     end
 
-    def external_issue_abilities(user, subject)
-      project_abilities(user, subject.project)
-    end
-
     private
 
     def restricted_public_level?
@@ -534,7 +564,7 @@ class Ability
     def filter_confidential_issues_abilities(user, issue, rules)
       return rules if user.admin? || !issue.confidential?
 
-      unless issue.author == user || issue.assignee == user || issue.project.team.member?(user.id)
+      unless issue.author == user || issue.assignee == user || issue.project.team.member?(user, Gitlab::Access::REPORTER)
         rules.delete(:admin_issue)
         rules.delete(:read_issue)
         rules.delete(:update_issue)

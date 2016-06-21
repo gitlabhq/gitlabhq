@@ -126,19 +126,19 @@ describe TeamcityService, models: true do
     it 'returns a specific URL when status is 500' do
       stub_request(status: 500)
 
-      expect(service.build_page('123', 'unused')).to eq('http://gitlab.com/viewLog.html?buildTypeId=foo')
+      expect(service.build_page('123', 'unused')).to eq('http://gitlab.com/teamcity/viewLog.html?buildTypeId=foo')
     end
 
     it 'returns a build URL when teamcity_url has no trailing slash' do
       stub_request(body: %Q({"build":{"id":"666"}}))
 
-      expect(service(teamcity_url: 'http://gitlab.com').build_page('123', 'unused')).to eq('http://gitlab.com/viewLog.html?buildId=666&buildTypeId=foo')
+      expect(service(teamcity_url: 'http://gitlab.com/teamcity').build_page('123', 'unused')).to eq('http://gitlab.com/teamcity/viewLog.html?buildId=666&buildTypeId=foo')
     end
 
     it 'returns a build URL when teamcity_url has a trailing slash' do
       stub_request(body: %Q({"build":{"id":"666"}}))
 
-      expect(service(teamcity_url: 'http://gitlab.com/').build_page('123', 'unused')).to eq('http://gitlab.com/viewLog.html?buildId=666&buildTypeId=foo')
+      expect(service(teamcity_url: 'http://gitlab.com/teamcity/').build_page('123', 'unused')).to eq('http://gitlab.com/teamcity/viewLog.html?buildId=666&buildTypeId=foo')
     end
   end
 
@@ -180,9 +180,9 @@ describe TeamcityService, models: true do
     end
   end
 
-  def service(teamcity_url: 'http://gitlab.com')
+  def service(teamcity_url: 'http://gitlab.com/teamcity')
     described_class.create(
-      project: build_stubbed(:empty_project),
+      project: create(:empty_project),
       properties: {
         teamcity_url: teamcity_url,
         username: 'mic',
@@ -193,7 +193,7 @@ describe TeamcityService, models: true do
   end
 
   def stub_request(status: 200, body: nil, build_status: 'success')
-    teamcity_full_url = 'http://mic:password@gitlab.com/httpAuth/app/rest/builds/branch:unspecified:any,number:123'
+    teamcity_full_url = 'http://mic:password@gitlab.com/teamcity/httpAuth/app/rest/builds/branch:unspecified:any,number:123'
     body ||= %Q({"build":{"status":"#{build_status}","id":"666"}})
 
     WebMock.stub_request(:get, teamcity_full_url).to_return(

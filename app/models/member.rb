@@ -27,20 +27,28 @@ class Member < ActiveRecord::Base
       allow_nil: true
     }
 
-  scope :invite, -> { where(user_id: nil) }
-  scope :non_invite, -> { where("user_id IS NOT NULL") }
+  scope :invite, -> { where.not(invite_token: nil) }
+  scope :non_invite, -> { where(invite_token: nil) }
+  scope :request, -> { where.not(requested_at: nil) }
+  scope :non_request, -> { where(requested_at: nil) }
+  scope :non_pending, -> { non_request.non_invite }
+
   scope :guests, -> { where(access_level: GUEST) }
   scope :reporters, -> { where(access_level: REPORTER) }
   scope :developers, -> { where(access_level: DEVELOPER) }
   scope :masters,  -> { where(access_level: MASTER) }
   scope :owners,  -> { where(access_level: OWNER) }
+  scope :owners_and_masters,  -> { where(access_level: [OWNER, MASTER]) }
 
   before_validation :generate_invite_token, on: :create, if: -> (member) { member.invite_email.present? }
+
   after_create :send_invite, if: :invite?
-  after_create :create_notification_setting, unless: :invite?
-  after_create :post_create_hook, unless: :invite?
-  after_update :post_update_hook, unless: :invite?
-  after_destroy :post_destroy_hook, unless: :invite?
+  after_create :send_request, if: :request?
+  after_create :create_notification_setting, unless: :pending?
+  after_create :post_create_hook, unless: :pending?
+  after_update :post_update_hook, unless: :pending?
+  after_destroy :post_destroy_hook, unless: :pending?
+  after_destroy :post_decline_request, if: :request?
 
   delegate :name, :username, :email, to: :user, prefix: true
 
@@ -99,8 +107,29 @@ class Member < ActiveRecord::Base
     end
   end
 
+  def real_source_type
+    source_type
+  end
+
   def invite?
     self.invite_token.present?
+  end
+
+  def request?
+    requested_at.present?
+  end
+
+  def pending?
+    invite? || request?
+  end
+
+  def accept_request
+    return false unless request?
+
+    updated = self.update(requested_at: nil)
+    after_accept_request if updated
+
+    updated
   end
 
   def accept_invite!(new_user)
@@ -160,6 +189,10 @@ class Member < ActiveRecord::Base
     # override in subclass
   end
 
+  def send_request
+    # override in subclass
+  end
+
   def post_create_hook
     system_hook_service.execute_hooks_for(self, :create)
   end
@@ -177,6 +210,14 @@ class Member < ActiveRecord::Base
   end
 
   def after_decline_invite
+    # override in subclass
+  end
+
+  def after_accept_request
+    post_create_hook
+  end
+
+  def post_decline_request
     # override in subclass
   end
 

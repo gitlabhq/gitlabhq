@@ -66,13 +66,11 @@ class GeoNode < ActiveRecord::Base
   end
 
   def oauth_callback_url
-    URI.join(uri, "#{uri.path}/", 'oauth/geo/callback').to_s
+    Gitlab::Routing.url_helpers.oauth_geo_callback_url(url_helper_args)
   end
 
   def oauth_logout_url(state)
-    logout_uri = URI.join(uri, "#{uri.path}/", 'oauth/geo/logout')
-    logout_uri.query = "state=#{state}"
-    logout_uri.to_s
+    Gitlab::Routing.url_helpers.oauth_geo_logout_url(url_helper_args.merge(state: state))
   end
 
   def missing_oauth_application?
@@ -80,6 +78,14 @@ class GeoNode < ActiveRecord::Base
   end
 
   private
+
+  def url_helper_args
+    if relative_url_root
+      relative_url = relative_url_root.starts_with?('/') ? relative_url_root : "/#{relative_url_root}"
+    end
+
+    { protocol: schema, host: host, port: port, script_name: relative_url }
+  end
 
   def refresh_bulk_notify_worker_status
     if Gitlab::Geo.primary?

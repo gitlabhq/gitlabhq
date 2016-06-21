@@ -31,7 +31,7 @@ class @UsersSelect
       assignTo = (selected) ->
         data = {}
         data[abilityName] = {}
-        data[abilityName].assignee_id = selected
+        data[abilityName].assignee_id = if selected? then selected else null
         $loading
           .fadeIn()
         $dropdown.trigger('loading.gl.dropdown')
@@ -72,7 +72,7 @@ class @UsersSelect
 
       assigneeTemplate = _.template(
         '<% if (username) { %>
-        <a class="author_link " href="/u/<%= username %>">
+        <a class="author_link bold" href="/u/<%= username %>">
           <% if( avatar ) { %>
           <img width="32" class="avatar avatar-inline s32" alt="" src="<%= avatar %>">
           <% } %>
@@ -82,7 +82,7 @@ class @UsersSelect
           </span>
         </a>
           <% } else { %>
-        <span class="assign-yourself">
+        <span class="no-value assign-yourself">
           No assignee -
           <a href="#" class="js-assign-yourself">
             assign yourself
@@ -93,6 +93,8 @@ class @UsersSelect
 
       $dropdown.glDropdown(
         data: (term, callback) =>
+          isAuthorFilter = $('.js-author-search')
+
           @users term, (users) =>
             if term.length is 0
               showDivider = 0
@@ -138,7 +140,7 @@ class @UsersSelect
 
         toggleLabel: (selected) ->
           if selected && 'id' of selected
-            selected.name
+            if selected.text then selected.text else selected.name
           else
             defaultLabel
 
@@ -147,7 +149,7 @@ class @UsersSelect
         hidden: (e) ->
           $selectbox.hide()
           # display:block overrides the hide-collapse rule
-          $value.removeAttr('style')
+          $value.css('display', '')
 
         clicked: (user) ->
           page = $('body').data 'page'

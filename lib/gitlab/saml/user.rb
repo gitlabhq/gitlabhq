@@ -12,11 +12,11 @@ module Gitlab
       end
 
       def gl_user
-        @user ||= find_by_uid_and_provider
-
         if auto_link_ldap_user?
           @user ||= find_or_create_ldap_user
         end
+
+        @user ||= find_by_uid_and_provider
 
         if auto_link_saml_user?
           @user ||= find_by_email

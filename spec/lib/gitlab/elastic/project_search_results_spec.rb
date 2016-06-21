@@ -6,13 +6,13 @@ describe Gitlab::Elastic::ProjectSearchResults, lib: true do
   let(:query) { 'hello world' }
 
   before do
-    allow(Gitlab.config.elasticsearch).to receive(:enabled).and_return(true)
+    stub_application_setting(elasticsearch_search: true, elasticsearch_indexing: true)
     Project.__elasticsearch__.create_index!
     Issue.__elasticsearch__.create_index!
   end
 
   after do
-    allow(Gitlab.config.elasticsearch).to receive(:enabled).and_return(false)
+    stub_application_setting(elasticsearch_search: false, elasticsearch_indexing: false)
     Project.__elasticsearch__.delete_index!
     Issue.__elasticsearch__.delete_index!
   end
@@ -120,6 +120,18 @@ describe Gitlab::Elastic::ProjectSearchResults, lib: true do
       expect(issues).to include security_issue_1
       expect(issues).to include security_issue_2
       expect(results.issues_count).to eq 3
+    end
+
+    it 'should not list project confidential issues for project members with guest role' do
+      project.team << [member, :guest]
+
+      results = described_class.new(member, project.id, query)
+      issues = results.objects('issues')
+
+      expect(issues).to include issue
+      expect(issues).not_to include security_issue_1
+      expect(issues).not_to include security_issue_2
+      expect(results.issues_count).to eq 1
     end
 
     it 'should list all project issues for admin' do

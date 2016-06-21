@@ -1,0 +1,38 @@
+#js-register-u2f
+
+%script#js-register-u2f-not-supported{ type: "text/template" }
+  %p Your browser doesn't support U2F. Please use Google Chrome desktop (version 41 or newer).
+
+%script#js-register-u2f-setup{ type: "text/template" }
+  - if current_user.two_factor_otp_enabled?
+    .row.append-bottom-10
+      .col-md-3
+        %button#js-setup-u2f-device.btn.btn-info Setup New U2F Device
+      .col-md-9
+        %p Your U2F device needs to be set up. Plug it in (if not already) and click the button on the left.
+  - else
+    .row.append-bottom-10
+      .col-md-3
+        %button#js-setup-u2f-device.btn.btn-info{ disabled: true } Setup New U2F Device
+      .col-md-9
+        %p.text-warning You need to register a two-factor authentication app before you can set up a U2F device.
+
+%script#js-register-u2f-in-progress{ type: "text/template" }
+  %p Trying to communicate with your device. Plug it in (if you haven't already) and press the button on the device now.
+
+%script#js-register-u2f-error{ type: "text/template" }
+  %div
+    %p
+      %span <%= error_message %>
+    %a.btn.btn-warning#js-u2f-try-again Try again?
+
+%script#js-register-u2f-registered{ type: "text/template" }
+  %div.row.append-bottom-10
+    %p Your device was successfully set up! Click this button to register with the GitLab server.
+    = form_tag(create_u2f_profile_two_factor_auth_path, method: :post) do
+      = hidden_field_tag :device_response, nil, class: 'form-control', required: true, id: "js-device-response"
+      = submit_tag "Register U2F Device", class: "btn btn-success"
+
+:javascript
+  var u2fRegister = new U2FRegister($("#js-register-u2f"), gon.u2f);
+  u2fRegister.start();

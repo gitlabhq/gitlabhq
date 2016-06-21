@@ -42,6 +42,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
 
   def application_setting_params
     restricted_levels = params[:application_setting][:restricted_visibility_levels]
+
     if restricted_levels.nil?
       params[:application_setting][:restricted_visibility_levels] = []
     else
@@ -51,6 +52,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
     end
 
     import_sources = params[:application_setting][:import_sources]
+
     if import_sources.nil?
       params[:application_setting][:import_sources] = []
     else
@@ -74,6 +76,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :two_factor_grace_period,
       :gravatar_enabled,
       :sign_in_text,
+      :after_sign_up_text,
       :help_page_text,
       :home_page_url,
       :help_text,
@@ -109,6 +112,11 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :repository_checks_enabled,
       :metrics_packet_size,
       :send_user_confirmation_email,
+      :container_registry_token_expire_delay,
+      :elasticsearch_indexing,
+      :elasticsearch_search,
+      :elasticsearch_host,
+      :elasticsearch_port,
       restricted_visibility_levels: [],
       import_sources: [],
       disabled_oauth_sign_in_sources: []

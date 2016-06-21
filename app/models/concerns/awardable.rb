@@ -1,0 +1,85 @@
+module Awardable
+  extend ActiveSupport::Concern
+
+  included do
+    has_many :award_emoji, as: :awardable, dependent: :destroy
+
+    if self < Participable
+      participant :award_emoji_with_associations
+    end
+  end
+
+  module ClassMethods
+    def order_upvotes_desc
+      order_votes_desc(AwardEmoji::UPVOTE_NAME)
+    end
+
+    def order_downvotes_desc
+      order_votes_desc(AwardEmoji::DOWNVOTE_NAME)
+    end
+
+    def order_votes_desc(emoji_name)
+      awardable_table = self.arel_table
+      awards_table = AwardEmoji.arel_table
+
+      join_clause = awardable_table.join(awards_table, Arel::Nodes::OuterJoin).on(
+        awards_table[:awardable_id].eq(awardable_table[:id]).and(
+          awards_table[:awardable_type].eq(self.name).and(
+            awards_table[:name].eq(emoji_name)
+          )
+        )
+      ).join_sources
+
+      joins(join_clause).group(awardable_table[:id]).reorder("COUNT(award_emoji.id) DESC")
+    end
+  end
+
+  def award_emoji_with_associations
+    award_emoji.includes(:user)
+  end
+
+  def grouped_awards(with_thumbs: true)
+    awards = award_emoji_with_associations.group_by(&:name)
+
+    if with_thumbs
+      awards[AwardEmoji::UPVOTE_NAME]   ||= []
+      awards[AwardEmoji::DOWNVOTE_NAME] ||= []
+    end
+
+    awards
+  end
+
+  def downvotes
+    award_emoji.downvotes.count
+  end
+
+  def upvotes
+    award_emoji.upvotes.count
+  end
+
+  def emoji_awardable?
+    true
+  end
+
+  def awarded_emoji?(emoji_name, current_user)
+    award_emoji.where(name: emoji_name, user: current_user).exists?
+  end
+
+  def create_award_emoji(name, current_user)
+    return unless emoji_awardable?
+
+    award_emoji.create(name: name, user: current_user)
+  end
+
+  def remove_award_emoji(name, current_user)
+    award_emoji.where(name: name, user: current_user).destroy_all
+  end
+
+  def toggle_award_emoji(emoji_name, current_user)
+    if awarded_emoji?(emoji_name, current_user)
+      remove_award_emoji(emoji_name, current_user)
+    else
+      create_award_emoji(emoji_name, current_user)
+    end
+  end
+end

@@ -93,11 +93,6 @@ describe Banzai::Filter::CommitReferenceFilter, lib: true do
       expect(link).not_to match %r(https?://)
       expect(link).to eq urls.namespace_project_commit_url(project.namespace, project, reference, only_path: true)
     end
-
-    it 'adds to the results hash' do
-      result = reference_pipeline_result("See #{reference}")
-      expect(result[:references][:commit]).not_to be_empty
-    end
   end
 
   context 'cross-project reference' do
@@ -124,11 +119,6 @@ describe Banzai::Filter::CommitReferenceFilter, lib: true do
       exp = act = "Committed #{invalidate_reference(reference)}"
       expect(reference_filter(act).to_html).to eq exp
     end
-
-    it 'adds to the results hash' do
-      result = reference_pipeline_result("See #{reference}")
-      expect(result[:references][:commit]).not_to be_empty
-    end
   end
 
   context 'cross-project URL reference' do
@@ -153,11 +143,6 @@ describe Banzai::Filter::CommitReferenceFilter, lib: true do
     it 'ignores invalid commit IDs on the referenced project' do
       act = "Committed #{invalidate_reference(reference)}"
       expect(reference_filter(act).to_html).to match(/<a.+>#{Regexp.escape(invalidate_reference(reference))}<\/a>/)
-    end
-
-    it 'adds to the results hash' do
-      result = reference_pipeline_result("See #{reference}")
-      expect(result[:references][:commit]).not_to be_empty
     end
   end
 end

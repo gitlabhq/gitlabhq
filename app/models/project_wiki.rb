@@ -1,6 +1,7 @@
 class ProjectWiki
   include Gitlab::ShellAdapter
   include Elastic::WikiRepositoriesSearch
+  include Gitlab::CurrentSettings
 
   MARKUPS = {
     'Markdown' => :markdown,
@@ -27,6 +28,10 @@ class ProjectWiki
 
   def path_with_namespace
     @project.path_with_namespace + ".wiki"
+  end
+
+  def web_url
+    Gitlab::Routing.url_helpers.namespace_project_wiki_url(@project.namespace, @project, :home)
   end
 
   def url_to_repo
@@ -154,6 +159,16 @@ class ProjectWiki
     wiki
   end
 
+  def hook_attrs
+    {
+      web_url: web_url,
+      git_ssh_url: ssh_url_to_repo,
+      git_http_url: http_url_to_repo,
+      path_with_namespace: path_with_namespace,
+      default_branch: default_branch
+    }
+  end
+
   private
 
   def init_repo(path_with_namespace)
@@ -179,6 +194,6 @@ class ProjectWiki
   end
 
   def update_elastic_index
-    index_blobs if Gitlab.config.elasticsearch.enabled
+    index_blobs if current_application_settings.elasticsearch_indexing?
   end
 end

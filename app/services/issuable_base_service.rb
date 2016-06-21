@@ -45,6 +45,8 @@ class IssuableBaseService < BaseService
 
     unless can?(current_user, ability, project)
       params.delete(:milestone_id)
+      params.delete(:add_label_ids)
+      params.delete(:remove_label_ids)
       params.delete(:label_ids)
       params.delete(:assignee_id)
     end
@@ -67,10 +69,34 @@ class IssuableBaseService < BaseService
   end
 
   def filter_labels
-    return if params[:label_ids].to_a.empty?
+    if params[:add_label_ids].present? || params[:remove_label_ids].present?
+      params.delete(:label_ids)
 
-    params[:label_ids] =
-      project.labels.where(id: params[:label_ids]).pluck(:id)
+      filter_labels_in_param(:add_label_ids)
+      filter_labels_in_param(:remove_label_ids)
+    else
+      filter_labels_in_param(:label_ids)
+    end
+  end
+
+  def filter_labels_in_param(key)
+    return if params[key].to_a.empty?
+
+    params[key] = project.labels.where(id: params[key]).pluck(:id)
+  end
+
+  def update_issuable(issuable, attributes)
+    issuable.with_transaction_returning_status do
+      add_label_ids = attributes.delete(:add_label_ids)
+      remove_label_ids = attributes.delete(:remove_label_ids)
+
+      issuable.label_ids |= add_label_ids if add_label_ids
+      issuable.label_ids -= remove_label_ids if remove_label_ids
+
+      issuable.assign_attributes(attributes.merge(updated_by: current_user))
+
+      issuable.save
+    end
   end
 
   def update(issuable)
@@ -78,7 +104,7 @@ class IssuableBaseService < BaseService
     filter_params
     old_labels = issuable.labels.to_a
 
-    if params.present? && issuable.update_attributes(params.merge(updated_by: current_user))
+    if params.present? && update_issuable(issuable, params)
       issuable.reset_events_cache
       handle_common_system_notes(issuable, old_labels: old_labels)
       handle_changes(issuable, old_labels: old_labels)

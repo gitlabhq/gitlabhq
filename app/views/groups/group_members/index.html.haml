@@ -6,9 +6,8 @@
       .panel-heading
         Add new user to group
       .panel-body
-        - if should_user_see_group_roles?(current_user, @group)
-          %p.light
-            Members of group have access to all group projects.
+        %p.light
+          Members of group have access to all group projects.
         .new-group-member-holder
           = render "new_group_member"
 
@@ -30,7 +29,10 @@
             data: { "confirm-danger-message" => clear_ldap_permission_cache_message,
                     'warning-message' => 'If you made manual permission tweaks for some group members they will be lost.' }
 
-  
+
+  - if current_user && can?(current_user, :admin_group_member, @group)
+    = render 'shared/members/requests', membership_source: @group, members: @members.request
+
   .panel.panel-default
     .panel-heading
       %strong #{@group.name}
@@ -44,9 +46,8 @@
           = button_tag class: 'btn', title: 'Search' do
             = icon("search")
     %ul.content-list
-      - @members.each do |member|
-        = render 'groups/group_members/group_member', member: member, show_controls: true
-    = paginate @members, theme: 'gitlab'
+      = render partial: 'shared/members/member', collection: @members.non_request, as: :member
+    = paginate @members.non_request, theme: 'gitlab'
 
 :javascript
   $('form.member-search-form').on('submit', function(event) {

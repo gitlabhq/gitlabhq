@@ -64,10 +64,70 @@ describe 'Issues', feature: true do
     end
   end
 
+  describe 'due date', js: true do
+    context 'on new form' do
+      before do
+        visit new_namespace_project_issue_path(project.namespace, project)
+      end
+
+      it 'should save with due date' do
+        date = Date.today.at_beginning_of_month
+
+        fill_in 'issue_title', with: 'bug 345'
+        fill_in 'issue_description', with: 'bug description'
+        find('#issuable-due-date').click
+
+        page.within '.ui-datepicker' do
+          click_link date.day
+        end
+
+        expect(find('#issuable-due-date').value).to eq date.to_s
+
+        click_button 'Submit issue'
+
+        page.within '.issuable-sidebar' do
+          expect(page).to have_content date.to_s(:medium)
+        end
+      end
+    end
+
+    context 'on edit form' do
+      let(:issue) { create(:issue, author: @user,project: project, due_date: Date.today.at_beginning_of_month.to_s) }
+
+      before do
+        visit edit_namespace_project_issue_path(project.namespace, project, issue)
+      end
+
+      it 'should save with due date' do
+        date = Date.today.at_beginning_of_month
+
+        expect(find('#issuable-due-date').value).to eq date.to_s
+
+        date = date.tomorrow
+
+        fill_in 'issue_title', with: 'bug 345'
+        fill_in 'issue_description', with: 'bug description'
+        find('#issuable-due-date').click
+
+        page.within '.ui-datepicker' do
+          click_link date.day
+        end
+
+        expect(find('#issuable-due-date').value).to eq date.to_s
+
+        click_button 'Save changes'
+
+        page.within '.issuable-sidebar' do
+          expect(page).to have_content date.to_s(:medium)
+        end
+      end
+    end
+  end
+
   describe 'Issue info' do
     it 'excludes award_emoji from comment count' do
       issue = create(:issue, author: @user, assignee: @user, project: project, title: 'foobar')
-      create(:upvote_note, noteable: issue)
+      create(:award_emoji, awardable: issue)
 
       visit namespace_project_issues_path(project.namespace, project, assignee_id: @user.id)
 
@@ -307,13 +367,9 @@ describe 'Issues', feature: true do
 
         page.within('.assignee') do
           expect(page).to have_content "#{@user.name}"
-        end
 
-        find('.block.assignee .edit-link').click
-        sleep 2 # wait for ajax stuff to complete
-        first('.dropdown-menu-user-link').click
-        sleep 2
-        page.within('.assignee') do
+          click_link 'Edit'
+          click_link 'Unassigned'
           expect(page).to have_content 'No assignee'
         end
 
@@ -331,13 +387,34 @@ describe 'Issues', feature: true do
         page.within '.assignee' do
           click_link 'Edit'
         end
-        
+
         page.within '.dropdown-menu-user' do
           click_link @user.name
         end
 
         page.within('.assignee') do
           expect(page).to have_content @user.name
+        end
+      end
+
+      it 'allows user to unselect themselves', js: true do
+        issue2 = create(:issue, project: project, author: @user)
+        visit namespace_project_issue_path(project.namespace, project, issue2)
+
+        page.within '.assignee' do
+          click_link 'Edit'
+          click_link @user.name
+
+          page.within '.value' do
+            expect(page).to have_content @user.name
+          end
+
+          click_link 'Edit'
+          click_link @user.name
+
+          page.within '.value' do
+            expect(page).to have_content "No assignee"
+          end
         end
       end
     end
@@ -405,6 +482,26 @@ describe 'Issues', feature: true do
 
         expect(issue.reload.milestone).to be_nil
       end
+
+      it 'allows user to de-select milestone', js: true do
+        visit namespace_project_issue_path(project.namespace, project, issue)
+
+        page.within('.milestone') do
+          click_link 'Edit'
+          click_link milestone.title
+
+          page.within '.value' do
+            expect(page).to have_content milestone.title
+          end
+
+          click_link 'Edit'
+          click_link milestone.title
+
+          page.within '.value' do
+            expect(page).to have_content 'None'
+          end
+        end
+      end
     end
 
     context 'by unauthorized user' do
@@ -448,6 +545,43 @@ describe 'Issues', feature: true do
         sleep 1
 
         expect(page.find_field("issue_description").value).to have_content 'banana_sample'
+      end
+    end
+  end
+
+  describe 'due date' do
+    context 'update due on issue#show', js: true do
+      let(:issue) { create(:issue, project: project, author: @user, assignee: @user) }
+
+      before do
+        visit namespace_project_issue_path(project.namespace, project, issue)
+      end
+
+      it 'should add due date to issue' do
+        page.within '.due_date' do
+          click_link 'Edit'
+
+          page.within '.ui-datepicker-calendar' do
+            first('.ui-state-default').click
+          end
+
+          expect(page).to have_no_content 'None'
+        end
+      end
+
+      it 'should remove due date from issue' do
+        page.within '.due_date' do
+          click_link 'Edit'
+
+          page.within '.ui-datepicker-calendar' do
+            first('.ui-state-default').click
+          end
+
+          expect(page).to have_no_content 'No due date'
+
+          click_link 'remove due date'
+          expect(page).to have_content 'No due date'
+        end
       end
     end
   end

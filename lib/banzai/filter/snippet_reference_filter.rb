@@ -5,6 +5,8 @@ module Banzai
     #
     # This filter supports cross-project references.
     class SnippetReferenceFilter < AbstractReferenceFilter
+      self.reference_type = :snippet
+
       def self.object_class
         Snippet
       end

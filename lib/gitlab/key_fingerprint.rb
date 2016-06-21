@@ -17,9 +17,9 @@ module Gitlab
         file.rewind
 
         cmd = []
-        cmd.push *%W(ssh-keygen)
-        cmd.push *%W(-E md5) if explicit_fingerprint_algorithm?
-        cmd.push *%W(-lf #{file.path})
+        cmd.push('ssh-keygen')
+        cmd.push('-E', 'md5') if explicit_fingerprint_algorithm?
+        cmd.push('-lf', file.path)
 
         cmd_output, cmd_status = popen(cmd, '/tmp')
       end

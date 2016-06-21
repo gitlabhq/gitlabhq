@@ -52,7 +52,7 @@ module Projects
     def create_status
       GenericCommitStatus.new(
         project: project,
-        commit: build.commit,
+        pipeline: build.pipeline,
         user: build.user,
         ref: build.ref,
         stage: 'deploy',

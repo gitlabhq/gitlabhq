@@ -7,7 +7,7 @@ class ApplicationSetting < ActiveRecord::Base
 
   serialize :restricted_visibility_levels
   serialize :import_sources
-  serialize :disabled_oauth_sign_in_sources
+  serialize :disabled_oauth_sign_in_sources, Array
   serialize :restricted_signup_domains, Array
   attr_accessor :restricted_signup_domains_raw
 
@@ -50,6 +50,18 @@ class ApplicationSetting < ActiveRecord::Base
   validates :max_attachment_size,
             presence: true,
             numericality: { only_integer: true, greater_than: 0 }
+
+  validates :container_registry_token_expire_delay,
+            presence: true,
+            numericality: { only_integer: true, greater_than: 0 }
+
+  validates :elasticsearch_host,
+            presence: { message: "can't be blank when indexing is enabled" },
+            if: :elasticsearch_indexing?
+
+  validates :elasticsearch_port,
+            presence: { message: "can't be blank when indexing is enabled" },
+            if: :elasticsearch_indexing?
 
   validates_each :restricted_visibility_levels do |record, attr, value|
     unless value.nil?
@@ -98,6 +110,10 @@ class ApplicationSetting < ActiveRecord::Base
     Rails.cache.delete(CACHE_KEY)
   end
 
+  def self.cached
+    Rails.cache.fetch(CACHE_KEY)
+  end
+
   def self.create_from_defaults
     create(
       default_projects_limit: Settings.gitlab['default_projects_limit'],
@@ -105,7 +121,10 @@ class ApplicationSetting < ActiveRecord::Base
       signup_enabled: Settings.gitlab['signup_enabled'],
       signin_enabled: Settings.gitlab['signin_enabled'],
       gravatar_enabled: Settings.gravatar['enabled'],
-      sign_in_text: Settings.extra['sign_in_text'],
+      sign_in_text: nil,
+      after_sign_up_text: nil,
+      help_page_text: nil,
+      shared_runners_text: nil,
       restricted_visibility_levels: Settings.gitlab['restricted_visibility_levels'],
       max_attachment_size: Settings.gitlab['max_attachment_size'],
       session_expire_delay: Settings.gitlab['session_expire_delay'],
@@ -121,8 +140,15 @@ class ApplicationSetting < ActiveRecord::Base
       akismet_enabled: false,
       repository_checks_enabled: true,
       disabled_oauth_sign_in_sources: [],
-      send_user_confirmation_email: false
+      send_user_confirmation_email: false,
+      container_registry_token_expire_delay: 5,
+      elasticsearch_host: ENV['ELASTIC_HOST'] || 'localhost',
+      elasticsearch_port: ENV['ELASTIC_PORT'] || '9200'
     )
+  end
+
+  def elasticsearch_host
+    read_attribute(:elasticsearch_host).split(',').map(&:strip)
   end
 
   def home_page_url_column_exist

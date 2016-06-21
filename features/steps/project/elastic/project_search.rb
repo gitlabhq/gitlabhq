@@ -3,6 +3,7 @@ class Spinach::Features::ProjectSearch < Spinach::FeatureSteps
   include SharedPaths
   include SharedProject
   include SharedElastic
+  include StubConfiguration
 
   before do
     [::Project, Repository, Note, MergeRequest, Milestone, ::ProjectWiki, Issue].each do |model|
@@ -15,7 +16,7 @@ class Spinach::Features::ProjectSearch < Spinach::FeatureSteps
       model.__elasticsearch__.delete_index!
     end
 
-    allow(Gitlab.config.elasticsearch).to receive(:enabled).and_return(false)
+    stub_application_setting(elasticsearch_search: false, elasticsearch_indexing: false)
   end
 
   step 'project has all data available for the search' do

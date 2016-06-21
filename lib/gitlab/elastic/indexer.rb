@@ -1,12 +1,14 @@
 module Gitlab
   module Elastic
     class Indexer
+      include Gitlab::CurrentSettings
+
       Error = Class.new(StandardError)
 
       def initialize
         connection_info = {
-          host: Gitlab.config.elasticsearch.host,
-          port: Gitlab.config.elasticsearch.port
+          host: current_application_settings.elasticsearch_host,
+          port: current_application_settings.elasticsearch_port
         }.to_json
 
         # We accept any form of settings, including string and array

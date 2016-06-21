@@ -1,10 +1,14 @@
 .event-title
   %span.author_name= link_to_author event
   %span.event_label{class: event.action_name}
-    = event_action_name(event)
-
   - if event.target
-    %strong= link_to event.target.reference_link_text, [event.project.namespace.becomes(Namespace), event.project, event.target], title: event.target_title
+    = event.action_name
+    %strong
+      = link_to [event.project.namespace.becomes(Namespace), event.project, event.target], class: 'has-tooltip', title: event.target_title do
+        = event.target_type.titleize.downcase
+        = event.target.reference_link_text
+  - else
+    = event_action_name(event)
 
   = event_preposition(event)
 

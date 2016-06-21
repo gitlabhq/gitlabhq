@@ -19,13 +19,14 @@ feature 'issue move to another project' do
     end
 
     scenario 'moving issue to another project not allowed' do
-      expect(page).to have_no_select('move_to_project_id')
+      expect(page).to have_no_selector('#move_to_project_id')
     end
   end
 
   context 'user has permission to move issue' do
     let!(:mr) { create(:merge_request, source_project: old_project) }
     let(:new_project) { create(:project) }
+    let(:new_project_search) { create(:project) }
     let(:text) { 'Text with !1' }
     let(:cross_reference) { old_project.to_reference }
 
@@ -37,7 +38,7 @@ feature 'issue move to another project' do
     end
 
     scenario 'moving issue to another project' do
-      select(new_project.name_with_namespace, from: 'move_to_project_id')
+      first('#move_to_project_id', visible: false).set(new_project.id)
       click_button('Save changes')
 
       expect(current_url).to include project_path(new_project)
@@ -47,14 +48,33 @@ feature 'issue move to another project' do
       expect(page).to have_content(issue.title)
     end
 
-    context 'projects user does not have permission to move issue to exist' do
+    scenario 'searching project dropdown', js: true do
+      new_project_search.team << [user, :reporter]
+
+      page.within '.js-move-dropdown' do
+        first('.select2-choice').click
+      end
+
+      fill_in('s2id_autogen2_search', with: new_project_search.name)
+
+      page.within '.select2-drop' do
+        expect(page).to have_content(new_project_search.name)
+        expect(page).not_to have_content(new_project.name)
+      end
+    end
+
+    context 'user does not have permission to move the issue to a project', js: true do
       let!(:private_project) { create(:project, :private) }
       let(:another_project) { create(:project) }
       background { another_project.team << [user, :guest] }
 
       scenario 'browsing projects in projects select' do
-        options = [ '', 'No project', new_project.name_with_namespace ]
-        expect(page).to have_select('move_to_project_id', options: options)
+        click_link 'Select project'
+
+        page.within '.select2-results' do
+          expect(page).to have_content 'No project'
+          expect(page).to have_content new_project.name_with_namespace
+        end
       end
     end
 
@@ -65,7 +85,7 @@ feature 'issue move to another project' do
       end
 
       scenario 'user wants to move issue that has already been moved' do
-        expect(page).to have_no_select('move_to_project_id')
+        expect(page).to have_no_selector('#move_to_project_id')
       end
     end
   end

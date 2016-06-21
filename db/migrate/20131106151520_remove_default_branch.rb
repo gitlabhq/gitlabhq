@@ -1,3 +1,4 @@
+# rubocop:disable all
 class RemoveDefaultBranch < ActiveRecord::Migration
   def up
     remove_column :projects, :default_branch

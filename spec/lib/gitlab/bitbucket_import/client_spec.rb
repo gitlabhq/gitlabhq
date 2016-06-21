@@ -1,12 +1,14 @@
 require 'spec_helper'
 
 describe Gitlab::BitbucketImport::Client, lib: true do
+  include ImportSpecHelper
+
   let(:token) { '123456' }
   let(:secret) { 'secret' }
   let(:client) { Gitlab::BitbucketImport::Client.new(token, secret) }
 
   before do
-    Gitlab.config.omniauth.providers << OpenStruct.new(app_id: "asd123", app_secret: "asd123", name: "bitbucket")
+    stub_omniauth_provider('bitbucket')
   end
 
   it 'all OAuth client options are symbols' do
@@ -59,7 +61,7 @@ describe Gitlab::BitbucketImport::Client, lib: true do
                                                              bitbucket_access_token_secret: "test" } })
       project.import_url = "ssh://git@bitbucket.org/test/test.git"
 
-      expect { described_class.from_project(project) }.to_not raise_error
+      expect { described_class.from_project(project) }.not_to raise_error
     end
   end
 end

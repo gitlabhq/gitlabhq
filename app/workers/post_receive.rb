@@ -1,5 +1,6 @@
 class PostReceive
   include Sidekiq::Worker
+  extend Gitlab::CurrentSettings
 
   sidekiq_options queue: :post_receive
 
@@ -50,7 +51,7 @@ class PostReceive
   end
 
   def update_wiki_es_indexes(post_received)
-    return unless Gitlab.config.elasticsearch.enabled
+    return unless current_application_settings.elasticsearch_indexing?
 
     post_received.project.wiki.index_blobs
   end

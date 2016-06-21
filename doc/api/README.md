@@ -8,33 +8,42 @@ under [`/lib/api`](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/lib/api).
 Documentation for various API resources can be found separately in the
 following locations:
 
-- [Users](users.md)
-- [Session](session.md)
-- [Projects](projects.md) including setting Webhooks
-- [Project Snippets](project_snippets.md)
-- [Services](services.md)
-- [Repositories](repositories.md)
-- [Repository Files](repository_files.md)
-- [Commits](commits.md)
-- [Tags](tags.md)
 - [Branches](branches.md)
-- [Merge Requests](merge_requests.md)
-- [Issues](issues.md)
-- [Labels](labels.md)
-- [Milestones](milestones.md)
-- [Notes](notes.md) (comments)
-- [Deploy Keys](deploy_keys.md)
-- [System Hooks](system_hooks.md)
-- [Groups](groups.md)
-- [Namespaces](namespaces.md)
-- [Settings](settings.md)
-- [Keys](keys.md)
 - [Builds](builds.md)
 - [Build triggers](build_triggers.md)
 - [Build Variables](build_variables.md)
-- [Runners](runners.md)
-- [Open source license templates](licenses.md)
+- [Commits](commits.md)
+- [Deploy Keys](deploy_keys.md)
+- [Groups](groups.md)
+- [Issues](issues.md)
+- [Keys](keys.md)
+- [Labels](labels.md)
 - [License](license.md)
+- [Merge Requests](merge_requests.md)
+- [Milestones](milestones.md)
+- [Open source license templates](licenses.md)
+- [Namespaces](namespaces.md)
+- [Notes](notes.md) (comments)
+- [Open source license templates](licenses.md)
+- [Projects](projects.md) including setting Webhooks
+- [Project Snippets](project_snippets.md)
+- [Repositories](repositories.md)
+- [Repository Files](repository_files.md)
+- [Runners](runners.md)
+- [Services](services.md)
+- [Session](session.md)
+- [Settings](settings.md)
+- [System Hooks](system_hooks.md)
+- [Tags](tags.md)
+- [Users](users.md)
+
+### Internal CI API
+
+The following documentation is for the [internal CI API](ci/README.md):
+
+- [Builds](ci/builds.md)
+- [Runners](ci/runners.md)
+>>>>>>> ce/master
 
 ## Authentication
 

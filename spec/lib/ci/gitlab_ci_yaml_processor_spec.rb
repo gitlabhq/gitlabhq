@@ -26,7 +26,8 @@ module Ci
           tag_list: [],
           options: {},
           allow_failure: false,
-          when: "on_success"
+          when: "on_success",
+          environment: nil,
         })
       end
 
@@ -387,7 +388,8 @@ module Ci
             services: ["mysql"]
           },
           allow_failure: false,
-          when: "on_success"
+          when: "on_success",
+          environment: nil,
         })
       end
 
@@ -415,7 +417,8 @@ module Ci
             services: ["postgresql"]
           },
           allow_failure: false,
-          when: "on_success"
+          when: "on_success",
+          environment: nil,
         })
       end
     end
@@ -501,6 +504,7 @@ module Ci
                              })
 
           config_processor = GitlabCiYamlProcessor.new(config, path)
+
           builds = config_processor.builds_for_stage_and_ref("test", "master")
           expect(builds.size).to eq(1)
           expect(builds.first[:when]).to eq(when_state)
@@ -572,7 +576,12 @@ module Ci
                              services:      ["mysql"],
                              before_script: ["pwd"],
                              rspec:         {
-                               artifacts: { paths: ["logs/", "binaries/"], untracked: true, name: "custom_name" },
+                               artifacts: {
+                                 paths: ["logs/", "binaries/"],
+                                 untracked: true,
+                                 name: "custom_name",
+                                 expire_in: "7d"
+                               },
                                script: "rspec"
                              }
                            })
@@ -594,12 +603,76 @@ module Ci
             artifacts: {
               name: "custom_name",
               paths: ["logs/", "binaries/"],
-              untracked: true
+              untracked: true,
+              expire_in: "7d"
             }
           },
           when: "on_success",
-          allow_failure: false
+          allow_failure: false,
+          environment: nil,
         })
+      end
+
+      %w[on_success on_failure always].each do |when_state|
+        it "returns artifacts for when #{when_state}  defined" do
+          config = YAML.dump({
+                               rspec: {
+                                 script: "rspec",
+                                 artifacts: { paths: ["logs/", "binaries/"], when: when_state }
+                               }
+                             })
+
+          config_processor = GitlabCiYamlProcessor.new(config, path)
+
+          builds = config_processor.builds_for_stage_and_ref("test", "master")
+          expect(builds.size).to eq(1)
+          expect(builds.first[:options][:artifacts][:when]).to eq(when_state)
+        end
+      end
+    end
+
+    describe '#environment' do
+      let(:config) do
+        {
+          deploy_to_production: { stage: 'deploy', script: 'test', environment: environment }
+        }
+      end
+
+      let(:processor) { GitlabCiYamlProcessor.new(YAML.dump(config)) }
+      let(:builds) { processor.builds_for_stage_and_ref('deploy', 'master') }
+
+      context 'when a production environment is specified' do
+        let(:environment) { 'production' }
+
+        it 'does return production' do
+          expect(builds.size).to eq(1)
+          expect(builds.first[:environment]).to eq(environment)
+        end
+      end
+
+      context 'when no environment is specified' do
+        let(:environment) { nil }
+
+        it 'does return nil environment' do
+          expect(builds.size).to eq(1)
+          expect(builds.first[:environment]).to be_nil
+        end
+      end
+
+      context 'is not a string' do
+        let(:environment) { 1 }
+
+        it 'raises error' do
+          expect { builds }.to raise_error("deploy_to_production job: environment parameter #{Gitlab::Regex.environment_name_regex_message}")
+        end
+      end
+
+      context 'is not a valid string' do
+        let(:environment) { 'production staging' }
+
+        it 'raises error' do
+          expect { builds }.to raise_error("deploy_to_production job: environment parameter #{Gitlab::Regex.environment_name_regex_message}")
+        end
       end
     end
 
@@ -619,19 +692,19 @@ module Ci
       context 'no dependencies' do
         let(:dependencies) { }
 
-        it { expect { subject }.to_not raise_error }
+        it { expect { subject }.not_to raise_error }
       end
 
       context 'dependencies to builds' do
         let(:dependencies) { ['build1', 'build2'] }
 
-        it { expect { subject }.to_not raise_error }
+        it { expect { subject }.not_to raise_error }
       end
 
       context 'dependencies to builds defined as symbols' do
         let(:dependencies) { [:build1, :build2] }
 
-        it { expect { subject }.to_not raise_error }
+        it { expect { subject }.not_to raise_error }
       end
 
       context 'undefined dependency' do
@@ -664,7 +737,8 @@ module Ci
             tag_list: [],
             options: {},
             when: "on_success",
-            allow_failure: false
+            allow_failure: false,
+            environment: nil,
           })
         end
       end
@@ -709,7 +783,8 @@ module Ci
             tag_list: [],
             options: {},
             when: "on_success",
-            allow_failure: false
+            allow_failure: false,
+            environment: nil,
           })
           expect(subject.second).to eq({
             except: nil,
@@ -721,7 +796,8 @@ module Ci
             tag_list: [],
             options: {},
             when: "on_success",
-            allow_failure: false
+            allow_failure: false,
+            environment: nil,
           })
         end
       end
@@ -965,6 +1041,27 @@ EOT
         expect do
           GitlabCiYamlProcessor.new(config)
         end.to raise_error(GitlabCiYamlProcessor::ValidationError, "rspec job: artifacts:name parameter should be a string")
+      end
+
+      it "returns errors if job artifacts:when is not an a predefined value" do
+        config = YAML.dump({ types: ["build", "test"], rspec: { script: "test", artifacts: { when: 1 } } })
+        expect do
+          GitlabCiYamlProcessor.new(config)
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "rspec job: artifacts:when parameter should be on_success, on_failure or always")
+      end
+
+      it "returns errors if job artifacts:expire_in is not an a string" do
+        config = YAML.dump({ types: ["build", "test"], rspec: { script: "test", artifacts: { expire_in: 1 } } })
+        expect do
+          GitlabCiYamlProcessor.new(config)
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "rspec job: artifacts:expire_in parameter should be a duration")
+      end
+
+      it "returns errors if job artifacts:expire_in is not an a valid duration" do
+        config = YAML.dump({ types: ["build", "test"], rspec: { script: "test", artifacts: { expire_in: "7 elephants" } } })
+        expect do
+          GitlabCiYamlProcessor.new(config)
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "rspec job: artifacts:expire_in parameter should be a duration")
       end
 
       it "returns errors if job artifacts:untracked is not an array of strings" do

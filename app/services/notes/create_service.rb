@@ -5,7 +5,12 @@ module Notes
       note.author = current_user
       note.system = false
 
-      return unless valid_project?(note)
+      if note.award_emoji?
+        noteable = note.noteable
+        todo_service.new_award_emoji(noteable, current_user)
+
+        return noteable.create_award_emoji(note.award_emoji_name, current_user)
+      end
 
       if note.save
         # Finish the harder work in the background
@@ -14,15 +19,6 @@ module Notes
       end
 
       note
-    end
-
-    private
-
-    def valid_project?(note)
-      return false unless project
-      return true if note.for_commit?
-
-      note.noteable.try(:project) == project
     end
   end
 end

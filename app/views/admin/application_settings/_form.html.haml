@@ -160,6 +160,10 @@
         = f.text_area :help_text, class: 'form-control', rows: 4
         .help-block Markdown enabled
     .form-group
+      = f.label :after_sign_up_text, class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.text_area :after_sign_up_text, class: 'form-control', rows: 4
+    .form-group
       = f.label :help_page_text, class: 'control-label col-sm-2'
       .col-sm-10
         = f.text_area :help_page_text, class: 'form-control', rows: 4
@@ -190,6 +194,14 @@
       = f.label :max_artifacts_size, 'Maximum artifacts size (MB)', class: 'control-label col-sm-2'
       .col-sm-10
         = f.number_field :max_artifacts_size, class: 'form-control'
+
+  - if Gitlab.config.registry.enabled
+    %fieldset
+      %legend Container Registry
+      .form-group
+        = f.label :container_registry_token_expire_delay, 'Authorization token duration (minutes)', class: 'control-label col-sm-2'
+        .col-sm-10
+          = f.number_field :container_registry_token_expire_delay, class: 'form-control'
 
   %fieldset
     %legend Metrics
@@ -327,6 +339,34 @@
         = link_to 'Clear all repository checks', clear_repository_check_states_admin_application_settings_path, data: { confirm: 'This will clear repository check states for ALL projects in the database. This cannot be undone. Are you sure?' }, method: :put, class: "btn btn-sm btn-remove"
         .help-block
           If you got a lot of false alarms from repository checks you can choose to clear all repository check information from the database.
+
+  %fieldset
+    %legend Elasticsearch
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :elasticsearch_indexing do
+            = f.check_box :elasticsearch_indexing
+            Elasticsearch indexing
+
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :elasticsearch_search do
+            = f.check_box :elasticsearch_search
+            Search with Elasticsearch enabled
+
+    .form-group
+      = f.label :elasticsearch_host, 'Host', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.text_field :elasticsearch_host, value: @application_setting.elasticsearch_host.join(', '), class: 'form-control', placeholder: 'localhost'
+        .help-block
+          The TCP/IP host to use for connecting to Elasticsearch. Use a comma-separated list to support clustering (e.g., "host1, host2").
+
+    .form-group
+      = f.label :elasticsearch_port, 'Port', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.text_field :elasticsearch_port, class: 'form-control', placeholder: ApplicationSetting.current.elasticsearch_port
 
 
   .form-actions

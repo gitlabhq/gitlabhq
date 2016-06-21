@@ -52,16 +52,16 @@ describe PostReceive do
     context "gitlab-ci.yml" do
       subject { PostReceive.new.perform(pwd(project), key_id, base64_changes) }
 
-      context "creates a Ci::Commit for every change" do
-        before { stub_ci_commit_to_return_yaml_file }
+      context "creates a Ci::Pipeline for every change" do
+        before { stub_ci_pipeline_to_return_yaml_file }
 
-        it { expect{ subject }.to change{ Ci::Commit.count }.by(2) }
+        it { expect{ subject }.to change{ Ci::Pipeline.count }.by(2) }
       end
 
-      context "does not create a Ci::Commit" do
-        before { stub_ci_commit_yaml_file(nil) }
+      context "does not create a Ci::Pipeline" do
+        before { stub_ci_pipeline_yaml_file(nil) }
 
-        it { expect{ subject }.to_not change{ Ci::Commit.count } }
+        it { expect{ subject }.not_to change{ Ci::Pipeline.count } }
       end
     end
   end
@@ -75,7 +75,7 @@ describe PostReceive do
     it "triggers wiki index update" do
       expect(Project).to receive(:find_with_namespace).with("#{project.path_with_namespace}.wiki").and_return(nil)
       expect(Project).to receive(:find_with_namespace).with(project.path_with_namespace).and_return(project)
-      allow(Gitlab.config.elasticsearch).to receive(:enabled).and_return(true)
+      stub_application_setting(elasticsearch_search: true, elasticsearch_indexing: true)
       expect_any_instance_of(ProjectWiki).to receive(:index_blobs)
 
       repo_path = "#{pwd(project)}.wiki"

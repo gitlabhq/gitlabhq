@@ -1,3 +1,4 @@
+# rubocop:disable all
 # Loops through old importer projects that kept a token/password in the import URL
 # and encrypts the credentials into a separate field in project#import_data
 # #down method not supported
@@ -28,7 +29,7 @@ class RemoveWrongImportUrlFromProjects < ActiveRecord::Migration
 
         update_import_url(import_url, project)
         update_import_data(import_url, project)
-      rescue URI::InvalidURIError
+      rescue Addressable::URI::InvalidURIError
         nullify_import_url(project)
       end
     end

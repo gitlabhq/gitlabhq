@@ -9,7 +9,7 @@ module MergeRequests
     attr_reader :merge_request
 
     def execute(merge_request)
-      if @project.merge_requests_ff_only_enabled && !self.is_a?(FfMergeService)
+      if project.merge_requests_ff_only_enabled && !self.is_a?(FfMergeService)
         FfMergeService.new(project, current_user, params).execute(merge_request)
         return
       end
@@ -29,6 +29,8 @@ module MergeRequests
     end
 
     def hooks_validation_pass?(merge_request)
+      return true if project.merge_requests_ff_only_enabled
+
       git_hook = merge_request.project.git_hook
       return true unless git_hook
 

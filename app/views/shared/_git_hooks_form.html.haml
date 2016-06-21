@@ -26,7 +26,7 @@
 
 .form-group
   = f.label :author_email_regex, "Commit author's email", class: 'label-light'
-  = f.text_field :author_email_regex, class: "form-control", placeholder: 'Example: Fixes @my-company.com$'
+  = f.text_field :author_email_regex, class: "form-control", placeholder: 'Example: @my-company.com$'
   .help-block
     All commit author's email must match this
     = link_to 'Ruby regular expression', 'http://www.ruby-doc.org/core-2.1.1/Regexp.html'

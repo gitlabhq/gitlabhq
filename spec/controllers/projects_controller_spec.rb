@@ -115,6 +115,17 @@ describe ProjectsController do
         expect(public_project_with_dot_atom).not_to be_valid
       end
     end
+
+    context 'when the project is pending deletions' do
+      it 'renders a 404 error' do
+        project = create(:project, pending_delete: true)
+        sign_in(user)
+
+        get :show, namespace_id: project.namespace.path, id: project.path
+
+        expect(response.status).to eq 404
+      end
+    end
   end
 
   describe "#update" do

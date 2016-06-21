@@ -72,14 +72,25 @@ describe Gitlab::Metrics::Sampler do
     end
   end
 
-  describe '#sample_objects' do
-    it 'adds a metric containing the amount of allocated objects' do
-      expect(sampler).to receive(:add_metric).
-        with(/object_counts/, an_instance_of(Hash), an_instance_of(Hash)).
-        at_least(:once).
-        and_call_original
+  if Gitlab::Metrics.mri?
+    describe '#sample_objects' do
+      it 'adds a metric containing the amount of allocated objects' do
+        expect(sampler).to receive(:add_metric).
+          with(/object_counts/, an_instance_of(Hash), an_instance_of(Hash)).
+          at_least(:once).
+          and_call_original
 
-      sampler.sample_objects
+        sampler.sample_objects
+      end
+
+      it 'ignores classes without a name' do
+        expect(Allocations).to receive(:to_hash).and_return({ Class.new => 4 })
+
+        expect(sampler).not_to receive(:add_metric).
+          with('object_counts', an_instance_of(Hash), type: nil)
+
+        sampler.sample_objects
+      end
     end
   end
 
@@ -130,7 +141,7 @@ describe Gitlab::Metrics::Sampler do
       100.times do
         interval = sampler.sleep_interval
 
-        expect(interval).to_not eq(last)
+        expect(interval).not_to eq(last)
 
         last = interval
       end

@@ -96,5 +96,13 @@ describe MergeRequests::MergeService, services: true do
         expect(merge_request.merge_error).not_to be_empty
       end
     end
+
+    context 'fast forward merge request' do
+      it 'returns true when fast forward is enabled' do
+        allow(project).to receive(:merge_requests_ff_only_enabled) { true }
+
+        expect(service.hooks_validation_pass?(merge_request)).to be_truthy
+      end
+    end
   end
 end

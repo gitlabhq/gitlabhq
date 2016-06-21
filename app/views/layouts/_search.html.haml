@@ -6,11 +6,8 @@
 .search.search-form{class: "#{'has-location-badge' if label.present?}"}
   = form_tag search_path, method: :get, class: 'navbar-form' do |f|
     .search-input-container
-      .search-location-badge
-        - if label.present?
-          %span.location-badge
-            %i.location-text
-              = label
+      - if label.present?
+        .location-badge= label
       .search-input-wrap
         .dropdown{ data: {url: search_autocomplete_path } }
           = search_field_tag "search", nil, placeholder: 'Search', class: "search-input dropdown-menu-toggle", spellcheck: false, tabindex: "1", autocomplete: 'off',  data: { toggle: 'dropdown' }
@@ -38,6 +35,31 @@
         = hidden_field_tag :scope, 'commits'
       - else
         = hidden_field_tag :search_code, true
+
+      :javascript
+        gl.projectOptions = gl.projectOptions || {};
+        gl.projectOptions["#{j(@project.path)}"] = {
+          issuesPath: "#{namespace_project_issues_path(@project.namespace, @project)}",
+          mrPath: "#{namespace_project_merge_requests_path(@project.namespace, @project)}",
+          name: "#{j(@project.name)}"
+        };
+
+    - if @group and @group.path
+      :javascript
+        gl.groupOptions = gl.groupOptions || {};
+        gl.groupOptions["#{j(@group.path)}"] = {
+          name: "#{j(@group.name)}",
+          issuesPath: "#{issues_group_path(j(@group.path))}",
+          mrPath: "#{merge_requests_group_path(j(@group.path))}"
+        };
+
+
+    :javascript
+      gl.dashboardOptions = {
+        issuesPath: "#{issues_dashboard_url}",
+        mrPath: "#{merge_requests_dashboard_url}"
+      };
+
 
     - if @snippet || @snippets
       = hidden_field_tag :snippets, true

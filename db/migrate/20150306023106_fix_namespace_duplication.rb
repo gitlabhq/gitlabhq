@@ -1,3 +1,4 @@
+# rubocop:disable all
 class FixNamespaceDuplication < ActiveRecord::Migration
   def up
     #fixes path duplication

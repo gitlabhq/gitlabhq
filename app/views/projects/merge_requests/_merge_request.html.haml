@@ -1,7 +1,7 @@
 %li{ class: mr_css_classes(merge_request) }
   .merge-request-title.title
     %span.merge-request-title-text
-      = link_to_gfm merge_request.title, merge_request_path(merge_request)
+      = link_to merge_request.title, merge_request_path(merge_request)
     %ul.controls
       - if merge_request.merged?
         %li
@@ -11,9 +11,9 @@
           = icon('ban')
           CLOSED
 
-      - if merge_request.ci_commit
+      - if merge_request.pipeline
         %li
-          = render_pipeline_status(merge_request.ci_commit)
+          = render_pipeline_status(merge_request.pipeline)
 
       - if merge_request.open? && merge_request.broken?
         %li
@@ -35,7 +35,7 @@
           = icon('thumbs-down')
           = downvotes
 
-      - note_count = merge_request.mr_and_commit_notes.user.nonawards.count
+      - note_count = merge_request.mr_and_commit_notes.user.count
       %li
         = link_to merge_request_path(merge_request, anchor: 'notes'), class: ('merge-request-no-comments' if note_count.zero?) do
           = icon('comments')

@@ -20,8 +20,7 @@ class @SearchAutocomplete
     @dropdown = @wrap.find('.dropdown')
     @dropdownContent = @dropdown.find('.dropdown-content')
 
-    @locationBadgeEl = @getElement('.search-location-badge')
-    @locationText = @getElement('.location-text')
+    @locationBadgeEl = @getElement('.location-badge')
     @scopeInputEl = @getElement('#scope')
     @searchInput = @getElement('.search-input')
     @projectInputEl = @getElement('#search_project_id')
@@ -68,8 +67,12 @@ class @SearchAutocomplete
   getData: (term, callback) ->
     _this = @
 
-    # Do not trigger request if input is empty
-    return if @searchInput.val() is ''
+    unless term
+      if contents = @getCategoryContents()
+        @searchInput.data('glDropdown').filter.options.callback contents
+        @enableAutocomplete()
+
+      return
 
     # Prevent multiple ajax calls
     return if @loadingSuggestions
@@ -123,6 +126,37 @@ class @SearchAutocomplete
     ).always ->
       _this.loadingSuggestions = false
 
+
+  getCategoryContents: ->
+
+    userId = gon.current_user_id
+    { utils, projectOptions, groupOptions, dashboardOptions } = gl
+
+    if utils.isInGroupsPage() and groupOptions
+      options = groupOptions[utils.getGroupSlug()]
+
+    else if utils.isInProjectPage() and projectOptions
+      options = projectOptions[utils.getProjectSlug()]
+
+    else if dashboardOptions
+      options = dashboardOptions
+
+    { issuesPath, mrPath, name } = options
+
+    items = [
+      { header: "#{name}" }
+      { text: 'Issues assigned to me', url: "#{issuesPath}/?assignee_id=#{userId}" }
+      { text: "Issues I've created",   url: "#{issuesPath}/?author_id=#{userId}"   }
+      'separator'
+      { text: 'Merge requests assigned to me', url: "#{mrPath}/?assignee_id=#{userId}" }
+      { text: "Merge requests I've created",   url: "#{mrPath}/?author_id=#{userId}"   }
+    ]
+
+    items.splice 0, 1 unless name
+
+    return items
+
+
   serializeState: ->
     {
       # Search Criteria
@@ -133,7 +167,7 @@ class @SearchAutocomplete
       scope: @scopeInputEl.val()
 
       # Location badge
-      _location: @locationText.text()
+      _location: @locationBadgeEl.text()
     }
 
   bindEvents: ->
@@ -143,23 +177,28 @@ class @SearchAutocomplete
     @searchInput.on 'click', @onSearchInputClick
     @searchInput.on 'focus', @onSearchInputFocus
     @clearInput.on 'click', @onClearInputClick
+    @locationBadgeEl.on 'click', =>
+      @searchInput.focus()
 
   onDocumentClick: (e) =>
     # If clicking outside the search box
     # And search input is not focused
     # And we are not clicking inside a suggestion
-    if not $.contains(@dropdown[0], e.target) and @isFocused and not $(e.target).parents('ul').length
+    if not $.contains(@dropdown[0], e.target) and @isFocused and not $(e.target).closest('.search-form').length
       @onSearchInputBlur()
 
   enableAutocomplete: ->
     # No need to enable anything if user is not logged in
     return if !gon.current_user_id
 
-    _this = @
-    @loadingSuggestions = false
+    unless @dropdown.hasClass('open')
+      _this = @
+      @loadingSuggestions = false
 
-    @dropdown.addClass('open')
-    @searchInput.removeClass('disabled')
+      @dropdown
+        .addClass('open')
+        .trigger('shown.bs.dropdown')
+      @searchInput.removeClass('disabled')
 
   onSearchInputKeyDown: =>
     # Saves last length of the entered text
@@ -190,7 +229,7 @@ class @SearchAutocomplete
           @disableAutocomplete()
         else
           # We should display the menu only when input is not empty
-          @enableAutocomplete()
+          @enableAutocomplete() if e.keyCode isnt KEYCODE.ENTER
 
     @wrap.toggleClass 'has-value', !!e.target.value
 
@@ -204,6 +243,12 @@ class @SearchAutocomplete
   onSearchInputFocus: =>
     @isFocused = true
     @wrap.addClass('search-active')
+
+    @getData()  if @getValue() is ''
+
+
+  getValue: -> return @searchInput.val()
+
 
   onClearInputClick: (e) =>
     e.preventDefault()
@@ -221,11 +266,13 @@ class @SearchAutocomplete
     category = if item.category? then "#{item.category}: " else ''
     value = if item.value? then item.value else ''
 
-    html = "<span class='location-badge'>
-              <i class='location-text'>#{category}#{value}</i>
-            </span>"
-    @locationBadgeEl.html(html)
+    badgeText = "#{category}#{value}"
+    @locationBadgeEl.text(badgeText).show()
     @wrap.addClass('has-location-badge')
+
+
+  hasLocationBadge: -> return @wrap.is '.has-location-badge'
+
 
   restoreOriginalState: ->
     inputs = Object.keys @originalState
@@ -233,9 +280,8 @@ class @SearchAutocomplete
     for input in inputs
       @getElement("##{input}").val(@originalState[input])
 
-
     if @originalState._location is ''
-      @locationBadgeEl.empty()
+      @locationBadgeEl.hide()
     else
       @addLocationBadge(
         value: @originalState._location
@@ -244,7 +290,7 @@ class @SearchAutocomplete
     @dropdown.removeClass 'open'
 
   badgePresent: ->
-    @locationBadgeEl.children().length
+    @locationBadgeEl.length
 
   resetSearchState: ->
     inputs = Object.keys @originalState
@@ -256,13 +302,14 @@ class @SearchAutocomplete
 
       @getElement("##{input}").val('')
 
+
   removeLocationBadge: ->
-    @locationBadgeEl.empty()
 
-    # Reset state
+    @locationBadgeEl.hide()
     @resetSearchState()
-
     @wrap.removeClass('has-location-badge')
+    @disableAutocomplete()
+
 
   disableAutocomplete: ->
     @searchInput.addClass('disabled')

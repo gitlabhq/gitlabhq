@@ -1,14 +1,14 @@
 require 'spec_helper'
 
-describe "Note", elastic: true do
+describe Note, elastic: true do
   before do
-    allow(Gitlab.config.elasticsearch).to receive(:enabled).and_return(true)
-    Note.__elasticsearch__.create_index!
+    stub_application_setting(elasticsearch_search: true, elasticsearch_indexing: true)
+    described_class.__elasticsearch__.create_index!
   end
 
   after do
-    allow(Gitlab.config.elasticsearch).to receive(:enabled).and_return(false)
-    Note.__elasticsearch__.delete_index!
+    described_class.__elasticsearch__.delete_index!
+    stub_application_setting(elasticsearch_search: false, elasticsearch_indexing: false)
   end
 
   it "searches notes" do
@@ -20,32 +20,97 @@ describe "Note", elastic: true do
     # The note in the project you have no access to
     create :note, note: 'bla-bla term'
 
-    Note.__elasticsearch__.refresh_index!
+    described_class.__elasticsearch__.refresh_index!
 
     options = { project_ids: [issue.project.id] }
 
-    expect(Note.elastic_search('term', options: options).total_count).to eq(1)
+    expect(described_class.elastic_search('term', options: options).total_count).to eq(1)
   end
 
   it "returns json with all needed elements" do
     note = create :note
 
-    expected_hash = note.attributes.extract!(
+    expected_hash_keys = [
       'id',
       'note',
       'project_id',
-      'created_at'
-    )
+      'created_at',
+      'issue',
+      'updated_at_sort'
+    ]
 
-    expected_hash['updated_at_sort'] = note.updated_at
-
-    expect(note.as_indexed_json).to eq(expected_hash)
+    expect(note.as_indexed_json.keys).to eq(expected_hash_keys)
   end
 
-  it "does not create ElasticIndexerWorker job for award or system messages" do
-    project = create :empty_project
-    expect(ElasticIndexerWorker).to_not receive(:perform_async)
-    create :note, :system, project: project
-    create :note, :award, project: project
+  it "does not create ElasticIndexerWorker job for system messages" do
+    project = create :project
+    issue = create :issue, project: project
+
+    # Only issue should be updated
+    expect(ElasticIndexerWorker).to receive(:perform_async).with(:update, 'Issue', anything, anything)
+    create :note, :system, project: project, noteable: issue
+  end
+
+  context 'notes to confidential issues' do
+    it "does not find note" do
+      issue = create :issue, :confidential
+
+      create :note, note: 'bla-bla term', project: issue.project, noteable: issue
+      create :note, project: issue.project, noteable: issue
+
+      Note.__elasticsearch__.refresh_index!
+
+      options = { project_ids: [issue.project.id] }
+
+      expect(Note.elastic_search('term', options: options).total_count).to eq(0)
+    end
+
+    it "finds note when user is authorized to see it" do
+      user = create :user
+      issue = create :issue, :confidential, author: user
+
+      create :note, note: 'bla-bla term', project: issue.project, noteable: issue
+      create :note, project: issue.project, noteable: issue
+
+      Note.__elasticsearch__.refresh_index!
+
+      options = { project_ids: [issue.project.id], current_user: user }
+
+      expect(Note.elastic_search('term', options: options).total_count).to eq(1)
+    end
+
+    it "return notes with matching content for project members" do
+      user = create :user
+      issue = create :issue, :confidential, author: user
+
+      member = create(:user)
+      issue.project.team << [member, :developer]
+
+      create :note, note: 'bla-bla term', project: issue.project, noteable: issue
+      create :note, project: issue.project, noteable: issue
+
+      Note.__elasticsearch__.refresh_index!
+
+      options = { project_ids: [issue.project.id], current_user: member }
+
+      expect(Note.elastic_search('term', options: options).total_count).to eq(1)
+    end
+
+    it "does not return notes with matching content for project members with guest role" do
+      user = create :user
+      issue = create :issue, :confidential, author: user
+
+      member = create(:user)
+      issue.project.team << [member, :guest]
+
+      create :note, note: 'bla-bla term', project: issue.project, noteable: issue
+      create :note, project: issue.project, noteable: issue
+
+      Note.__elasticsearch__.refresh_index!
+
+      options = { project_ids: [issue.project.id], current_user: member }
+
+      expect(Note.elastic_search('term', options: options).total_count).to eq(0)
+    end
   end
 end

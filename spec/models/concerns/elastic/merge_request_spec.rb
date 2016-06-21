@@ -1,14 +1,14 @@
 require 'spec_helper'
 
-describe "MergeRequest", elastic: true do
+describe MergeRequest, elastic: true do
   before do
-    allow(Gitlab.config.elasticsearch).to receive(:enabled).and_return(true)
-    MergeRequest.__elasticsearch__.create_index!
+    stub_application_setting(elasticsearch_search: true, elasticsearch_indexing: true)
+    described_class.__elasticsearch__.create_index!
   end
 
   after do
-    allow(Gitlab.config.elasticsearch).to receive(:enabled).and_return(false)
-    MergeRequest.__elasticsearch__.delete_index!
+    described_class.__elasticsearch__.delete_index!
+    stub_application_setting(elasticsearch_search: false, elasticsearch_indexing: false)
   end
 
   it "searches merge requests" do
@@ -21,11 +21,11 @@ describe "MergeRequest", elastic: true do
     # The merge request you have no access to
     create :merge_request, title: 'also with term'
 
-    MergeRequest.__elasticsearch__.refresh_index!
+    described_class.__elasticsearch__.refresh_index!
 
     options = { project_ids: [project.id] }
 
-    expect(MergeRequest.elastic_search('term', options: options).total_count).to eq(2)
+    expect(described_class.elastic_search('term', options: options).total_count).to eq(2)
   end
 
   it "returns json with all needed elements" do

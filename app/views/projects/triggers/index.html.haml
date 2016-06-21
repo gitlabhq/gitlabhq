@@ -5,7 +5,7 @@
     %h4.prepend-top-0
       = page_title
     %p
-      Triggers can be used to force a rebuild of a specific branch or tag with an API call.
+      Triggers can force a specific branch or tag to rebuild with an API call.
   .col-lg-9
     %h5.prepend-top-0
       Your triggers
@@ -19,7 +19,7 @@
           = render partial: 'trigger', collection: @triggers, as: :trigger
     - else
       %p.settings-message.text-center.append-bottom-default
-        There are no triggers to use, add one by the button below.
+        No triggers have been created yet. Add one using the button below.
 
     = form_for @trigger, url: url_for(controller: 'projects/triggers', action: 'create') do |f|
       = f.submit "Add Trigger", class: 'btn btn-success'
@@ -28,8 +28,7 @@
       Use CURL
 
     %p.light
-      Copy the token above and set your branch or tag name. This is the reference that will be rebuild.
-
+      Copy the token above, set your branch or tag name, and that reference will be rebuilt.
 
     %pre
       :plain
@@ -41,10 +40,10 @@
       Use .gitlab-ci.yml
 
     %p.light
-      Copy the snippet to
-      %i .gitlab-ci.yml
-      of dependent project.
-      At the end of your build it will trigger this project to rebuilt.
+      In the
+      %code .gitlab-ci.yml
+      of the dependent project, include the following snippet.
+      The project will rebuild at the end of the build.
 
     %pre
       :plain
@@ -57,9 +56,8 @@
 
     %p.light
       Add
-      %strong variables[VARIABLE]=VALUE
-      to API request.
-      The value of variable could then be used to distinguish triggered build from normal one.
+      %code variables[VARIABLE]=VALUE
+      to an API request. Variable values can be used to distinguish between triggered builds and normal builds.
 
     %pre.append-bottom-0
       :plain

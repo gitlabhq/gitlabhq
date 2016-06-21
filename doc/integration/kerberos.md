@@ -1,16 +1,26 @@
 # Kerberos integration
 
 GitLab can be configured to allow your users to sign with their Kerberos credentials.
-Kerberos integration can be enabled as a regular omniauth provider, edit [gitlab.rb (omnibus-gitlab)`](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/README.md#omniauth-google-twitter-github-login) or [gitlab.yml (source installations)](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/config/gitlab.yml.example) on your GitLab server and restart GitLab. You only need to specify the provider name. For example:
+Kerberos integration can be enabled as a regular omniauth provider, edit [gitlab.rb (omnibus-gitlab)](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/files/gitlab-config-template/gitlab.rb.template) or [gitlab.yml (source installations)](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/config/gitlab.yml.example) on your GitLab server and restart GitLab. You only need to specify the provider name. For example for GitLab omnibus add the following:
 
 ```
-{ name: 'kerberos'}
+gitlab_rails['omniauth_enabled'] = true
+gitlab_rails['omniauth_allow_single_sign_on'] = ['kerberos']
+gitlab_rails['omniauth_providers'] = [
+    {
+        "name" => "kerberos",
+        "app_id" => "YOUR APP ID",
+        "app_secret" => "YOUR APP SECRET",
+        "args" => { "access_type" => "offline", "approval_prompt" => "" }
+    }
+]
 ```
 
 NB: for source installations, make sure the `kerberos` gem group [has been installed](../install/installation.md#install-gems).
 
 You still need to configure your system for Kerberos usage, such as specifying realms. GitLab will make use of the system's Kerberos settings.
 
+The Administrative user can navigate to **Admin > Users > Example User > Identities** and attach a Kerberos account.
 Existing GitLab users can go to profile > account and attach a Kerberos account. if you want to allow users without a GitLab account to login you should enable the option `omniauth_allow_single_sign_on` in config file (default: false). Then, the first time a user signs in with Kerberos credentials, GitLab will create a new GitLab user associated with the email, which is built from the kerberos username and realm.
 User accounts will be created automatically when authentication was successful.
 

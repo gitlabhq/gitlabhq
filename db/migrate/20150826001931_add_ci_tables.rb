@@ -1,3 +1,4 @@
+# rubocop:disable all
 class AddCiTables < ActiveRecord::Migration
   def change
     create_table "ci_application_settings", force: true do |t|

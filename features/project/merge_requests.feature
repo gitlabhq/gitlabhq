@@ -49,14 +49,12 @@ Feature: Project Merge Requests
   Scenario: I visit an open merge request page
     Given I click link "Bug NS-04"
     Then I should see merge request "Bug NS-04"
-    And I should see "1 of 1" in the sidebar
 
   Scenario: I visit a merged merge request page
     Given project "Shop" have "Feature NS-05" merged merge request
     And I click link "Merged"
     And I click link "Feature NS-05"
     Then I should see merge request "Feature NS-05"
-    And I should see "3 of 3" in the sidebar
 
   Scenario: I close merge request page
     Given I click link "Bug NS-04"
@@ -75,18 +73,6 @@ Feature: Project Merge Requests
     Given I click link "New Merge Request"
     And I submit new merge request "Wiki Feature"
     Then I should see merge request "Wiki Feature"
-
-  Scenario: I download a diff on a public merge request
-    Given public project "Community"
-    And "John Doe" owns public project "Community"
-    And project "Community" has "Bug CO-01" open merge request with diffs inside
-    Given I logout directly
-    And I visit merge request page "Bug CO-01"
-    And I click on "Email Patches"
-    Then I should see a patch diff
-    And I visit merge request page "Bug CO-01"
-    And I click on "Plain Diff"
-    Then I should see a patch diff
 
   @javascript
   Scenario: I comment on a merge request
@@ -341,13 +327,6 @@ Feature: Project Merge Requests
     And I click link "Close"
     Then I should see closed merge request "Bug NS-04"
 
-  Scenario: I approve merge request
-    Given merge request 'Bug NS-04' must be approved
-    And I click link "Bug NS-04"
-    And I should not see merge button
-    When I click link "Approve"
-    Then I should see approved merge request "Bug NS-04"
-
   Scenario: Reporter can approve merge request
     Given I am a "Shop" reporter
     And I visit project "Shop" merge requests page
@@ -357,13 +336,12 @@ Feature: Project Merge Requests
     When I click link "Approve"
     Then I should see message that merge request can be merged
 
-  Scenario: I approve merge request if I am an approver
-    Given merge request 'Bug NS-04' must be approved by current user
+  Scenario: I can not approve Merge request if I am the author
+    Given merge request 'Bug NS-04' must be approved
     And I click link "Bug NS-04"
     And I should not see merge button
-    And I should see message that MR require an approval from me
-    When I click link "Approve"
-    Then I should see approved merge request "Bug NS-04"
+    When I should not see Approve button
+    And I should see message that MR require an approval
 
   Scenario: I can not approve merge request if I am not an approver
     Given merge request 'Bug NS-04' must be approved by some user

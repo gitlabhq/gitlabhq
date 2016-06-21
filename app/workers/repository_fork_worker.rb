@@ -15,8 +15,7 @@ class RepositoryForkWorker
     result = gitlab_shell.fork_repository(source_path, target_path)
     unless result
       logger.error("Unable to fork project #{project_id} for repository #{source_path} -> #{target_path}")
-      project.update(import_error: "The project could not be forked.")
-      project.import_fail
+      project.mark_import_as_failed('The project could not be forked.')
       return
     end
 
@@ -24,8 +23,7 @@ class RepositoryForkWorker
 
     unless project.valid_repo?
       logger.error("Project #{project_id} had an invalid repository after fork")
-      project.update(import_error: "The forked repository is invalid.")
-      project.import_fail
+      project.mark_import_as_failed('The forked repository is invalid.')
       return
     end
 

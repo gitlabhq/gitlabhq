@@ -8,3 +8,5 @@ relative_url_conf = File.expand_path('../config/initializers/relative_url', __FI
 require relative_url_conf if File.exist?("#{relative_url_conf}.rb")
 
 Gitlab::Application.load_tasks
+
+Knapsack.load_tasks if defined?(Knapsack)

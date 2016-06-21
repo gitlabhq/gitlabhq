@@ -1,5 +1,7 @@
 class @LabelsSelect
   constructor: ->
+    _this = @
+
     $('.js-label-select').each (i, dropdown) ->
       $dropdown = $(dropdown)
       projectId = $dropdown.data('project-id')
@@ -37,7 +39,7 @@ class @LabelsSelect
             </a>
             <% }); %>'
         )
-        labelNoneHTMLTemplate = _.template('<div class="light">None</div>')
+        labelNoneHTMLTemplate = '<span class="no-value">None</span>'
 
       if newLabelField.length
 
@@ -93,8 +95,11 @@ class @LabelsSelect
             $newLabelCreateButton.enable()
 
             if label.message?
+              errors = _.map label.message, (value, key) ->
+                "#{key} #{value[0]}"
+
               $newLabelError
-                .text label.message
+                .html errors.join("<br/>")
                 .show()
             else
               $('.dropdown-menu-back', $dropdown.parent()).trigger 'click'
@@ -140,7 +145,7 @@ class @LabelsSelect
             template = labelHTMLTemplate(data)
             labelCount = data.labels.length
           else
-            template = labelNoneHTMLTemplate()
+            template = labelNoneHTMLTemplate
           $value
             .removeAttr('style')
             .html(template)
@@ -196,10 +201,18 @@ class @LabelsSelect
 
             callback data
 
-        renderRow: (label) ->
-          removesAll = label.id is 0 or not label.id?
+        renderRow: (label, instance) ->
+          $li = $('<li>')
+          $a  = $('<a href="#">')
 
           selectedClass = []
+          removesAll = label.id is 0 or not label.id?
+
+          if $dropdown.hasClass('js-filter-bulk-update')
+            indeterminate = instance.indeterminateIds
+            if indeterminate.indexOf(label.id) isnt -1
+              selectedClass.push 'is-indeterminate'
+
           if $form.find("input[type='hidden']\
             [name='#{$dropdown.data('fieldName')}']\
             [value='#{this.id(label)}']").length
@@ -230,17 +243,21 @@ class @LabelsSelect
           else
             colorEl = ''
 
-          "<li>
-            <a href='#' class='#{selectedClass.join(' ')}'>
-              #{colorEl}
-              #{_.escape(label.title)}
-            </a>
-          </li>"
-        filterable: true
+          # We need to identify which items are actually labels
+          if label.id
+            selectedClass.push('label-item')
+            $a.attr('data-label-id', label.id)
+
+          $a.addClass(selectedClass.join(' '))
+            .html("#{colorEl} #{_.escape(label.title)}")
+
+          # Return generated html
+          $li.html($a).prop('outerHTML')
+        persistWhenHide: $dropdown.data('persistWhenHide')
         search:
           fields: ['title']
         selectable: true
-
+        filterable: true
         toggleLabel: (selected, el) ->
           selected_labels = $('.js-label-select').siblings('.dropdown-menu-labels').find('.is-active')
 
@@ -280,10 +297,19 @@ class @LabelsSelect
             else if $dropdown.hasClass('js-filter-submit')
               $dropdown.closest('form').submit()
             else
-              saveLabelData()
+              if not $dropdown.hasClass 'js-filter-bulk-update'
+                saveLabelData()
+
+          if $dropdown.hasClass('js-filter-bulk-update')
+            # If we are persisting state we need the classes
+            if not @options.persistWhenHide
+              $dropdown.parent().find('.is-active, .is-indeterminate').removeClass()
 
         multiSelect: $dropdown.hasClass 'js-multiselect'
         clicked: (label) ->
+          if $dropdown.hasClass('js-filter-bulk-update')
+            return
+
           page = $('body').data 'page'
           isIssueIndex = page is 'projects:issues:index'
           isMRIndex = page is 'projects:merge_requests:index'
@@ -298,4 +324,31 @@ class @LabelsSelect
               return
             else
               saveLabelData()
+
+        setIndeterminateIds: ->
+          if @dropdown.find('.dropdown-menu-toggle').hasClass('js-filter-bulk-update')
+            @indeterminateIds = _this.getIndeterminateIds()
       )
+
+    @bindEvents()
+
+  bindEvents: ->
+    $('body').on 'change', '.selected_issue', @onSelectCheckboxIssue
+
+  onSelectCheckboxIssue: ->
+    return if $('.selected_issue:checked').length
+
+    # Remove inputs
+    $('.issues_bulk_update .labels-filter input[type="hidden"]').remove()
+
+    # Also restore button text
+    $('.issues_bulk_update .labels-filter .dropdown-toggle-text').text('Label')
+
+  getIndeterminateIds: ->
+    label_ids = []
+
+    $('.selected_issue:checked').each (i, el) ->
+      issue_id = $(el).data('id')
+      label_ids.push $("#issue_#{issue_id}").data('labels')
+
+    _.flatten(label_ids)

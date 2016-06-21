@@ -30,9 +30,10 @@
 
   = javascript_include_tag "application"
 
-  = csrf_meta_tags
+  - if page_specific_javascripts
+    = javascript_include_tag page_specific_javascripts, {"data-turbolinks-track" => true}
 
-  = include_gon
+  = csrf_meta_tags
 
   - unless browser.safari?
     %meta{name: 'referrer', content: 'origin-when-cross-origin'}

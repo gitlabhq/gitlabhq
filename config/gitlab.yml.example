@@ -150,14 +150,6 @@ production: &base
     # The location where LFS objects are stored (default: shared/lfs-objects).
     # storage_path: shared/lfs-objects
 
-  ## Elasticsearch (EE only)
-  # Enable it if you are going to use elasticsearch instead of
-  # regular database search
-  elasticsearch:
-    enabled: false
-  #  host: localhost
-  #  port: 9200
-
   ## GitLab Pages
   pages:
     enabled: false
@@ -187,6 +179,9 @@ production: &base
     # Flag stuck CI builds as failed
     stuck_ci_builds_worker:
       cron: "0 0 * * *"
+    # Remove expired build artifacts
+    expire_build_artifacts_worker:
+      cron: "50 * * * *"
     # Periodically run 'git fsck' on all repositories. If started more than
     # once per hour you will have concurrent 'git fsck' jobs.
     repository_check_worker:
@@ -228,11 +223,11 @@ production: &base
   registry:
     # enabled: true
     # host: registry.example.com
-    # port: 5000
-    # api_url: http://localhost:5000/
+    # port: 5005
+    # api_url: http://localhost:5000/ # internal address to the registry, will be used by GitLab to directly communicate with API
     # key: config/registry.key
-    # issuer: omnibus-certificate
     # path: shared/registry
+    # issuer: gitlab-issuer
 
   #
   # 2. GitLab CI settings
@@ -350,6 +345,12 @@ production: &base
         #   Ex. GLAdmins
         #
         admin_group: ''
+
+        # LDAP group of users who should be marked as external users in GitLab
+        #
+        #   Ex. ['Contractors', 'Interns']
+        #
+        external_groups: []
 
         # Name of attribute which holds a ssh public key of the user object.
         # If false or nil, SSH key syncronisation will be disabled.

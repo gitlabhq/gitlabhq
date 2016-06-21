@@ -6,6 +6,7 @@ class ApplicationController < ActionController::Base
   include Gitlab::GonHelper
   include GitlabRoutingHelper
   include PageLayoutHelper
+  include WorkhorseHelper
 
   before_action :authenticate_user_from_token!
   before_action :authenticate_user!
@@ -186,8 +187,8 @@ class ApplicationController < ActionController::Base
   end
 
   def check_2fa_requirement
-    if two_factor_authentication_required? && current_user && !current_user.two_factor_enabled && !skip_two_factor?
-      redirect_to new_profile_two_factor_auth_path
+    if two_factor_authentication_required? && current_user && !current_user.two_factor_enabled? && !skip_two_factor?
+      redirect_to profile_two_factor_auth_path
     end
   end
 
@@ -236,7 +237,7 @@ class ApplicationController < ActionController::Base
   end
 
   def configure_permitted_parameters
-    devise_parameter_sanitizer.for(:sign_in) { |u| u.permit(:username, :email, :password, :login, :remember_me, :otp_attempt) }
+    devise_parameter_sanitizer.permit(:sign_in, keys: [:username, :email, :password, :login, :remember_me, :otp_attempt])
   end
 
   def hexdigest(string)
@@ -273,7 +274,7 @@ class ApplicationController < ActionController::Base
       # internal repos where you are not a member. Enable this filter
       # or improve current implementation to filter only issues you
       # created or assigned or mentioned
-      #@filter_params[:authorized_only] = true
+      # @filter_params[:authorized_only] = true
     end
 
     @filter_params
@@ -352,6 +353,10 @@ class ApplicationController < ActionController::Base
     session[:skip_tfa] && session[:skip_tfa] > Time.current
   end
 
+  def browser_supports_u2f?
+    browser.chrome? && browser.version.to_i >= 41 && !browser.device.mobile?
+  end
+
   def redirect_to_home_page_url?
     # If user is not signed-in and tries to access root_path - redirect him to landing page
     # Don't redirect to the default URL to prevent endless redirections
@@ -363,6 +368,13 @@ class ApplicationController < ActionController::Base
     return false if root_urls.include?(home_page_url)
 
     current_user.nil? && root_path == request.path
+  end
+
+  # U2F (universal 2nd factor) devices need a unique identifier for the application
+  # to perform authentication.
+  # https://developers.yubico.com/U2F/App_ID.html
+  def u2f_app_id
+    request.base_url
   end
 
   private

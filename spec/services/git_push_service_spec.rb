@@ -139,11 +139,11 @@ describe GitPushService, services: true do
 
   describe "ES indexing" do
     before do
-      allow(Gitlab.config.elasticsearch).to receive(:enabled).and_return(true)
+      stub_application_setting(elasticsearch_search: true, elasticsearch_indexing: true)
     end
 
     after do
-      allow(Gitlab.config.elasticsearch).to receive(:enabled).and_return(false)
+      stub_application_setting(elasticsearch_search: false, elasticsearch_indexing: false)
     end
 
     it "triggers indexer" do
@@ -173,49 +173,6 @@ describe GitPushService, services: true do
       end
     end
   end
-
-  describe "Updates main language" do
-    context "before push" do
-      it { expect(project.main_language).to eq(nil) }
-    end
-
-    context "after push" do
-      def execute
-        execute_service(project, user, @oldrev, @newrev, ref)
-      end
-
-      context "to master" do
-        let(:ref) { @ref }
-
-        context 'when main_language is nil' do
-          it 'obtains the language from the repository' do
-            expect(project.repository).to receive(:main_language)
-            execute
-          end
-
-          it 'sets the project main language' do
-            execute
-            expect(project.main_language).to eq("Ruby")
-          end
-        end
-
-        context 'when main_language is already set' do
-          it 'does not check the repository' do
-            execute # do an initial run to simulate lang being preset
-            expect(project.repository).not_to receive(:main_language)
-            execute
-          end
-        end
-      end
-
-      context "to other branch" do
-        let(:ref) { 'refs/heads/feature/branch' }
-
-        it { expect(project.main_language).to eq(nil) }
-      end
-    end
-  end
-
 
   describe "Updates git attributes" do
     context "for default branch" do

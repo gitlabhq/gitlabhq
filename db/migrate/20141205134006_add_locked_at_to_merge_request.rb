@@ -1,3 +1,4 @@
+# rubocop:disable all
 class AddLockedAtToMergeRequest < ActiveRecord::Migration
   def change
     add_column :merge_requests, :locked_at, :datetime

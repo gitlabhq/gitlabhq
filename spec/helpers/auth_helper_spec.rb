@@ -36,7 +36,7 @@ describe AuthHelper do
         )
 
         expect(helper.enabled_button_based_providers).to include('twitter')
-        expect(helper.enabled_button_based_providers).to_not include('github')
+        expect(helper.enabled_button_based_providers).not_to include('github')
       end
     end
   end

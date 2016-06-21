@@ -49,7 +49,7 @@ describe Projects::ImportService, services: true do
         result = subject.execute
 
         expect(result[:status]).to eq :error
-        expect(result[:message]).to eq 'Failed to import the repository'
+        expect(result[:message]).to eq "Error importing repository #{project.import_url} into #{project.path_with_namespace} - Failed to import the repository"
       end
     end
 
@@ -124,7 +124,7 @@ describe Projects::ImportService, services: true do
         }
       )
 
-      Gitlab.config.omniauth.providers << provider
+      allow(Gitlab.config.omniauth).to receive(:providers).and_return([provider])
     end
   end
 end

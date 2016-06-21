@@ -1,5 +1,5 @@
 class NotificationSetting < ActiveRecord::Base
-  enum level: { disabled: 0,  participating: 1,  watch: 2,  global: 3, mention: 4 }
+  enum level: { global: 3, watch: 2, mention: 4, participating: 1, disabled: 0 }
 
   default_value_for :level, NotificationSetting.levels[:global]
 
@@ -7,7 +7,6 @@ class NotificationSetting < ActiveRecord::Base
   belongs_to :source, polymorphic: true
 
   validates :user, presence: true
-  validates :source, presence: true
   validates :level, presence: true
   validates :user_id, uniqueness: { scope: [:source_type, :source_id],
                                     message: "already exists in source",

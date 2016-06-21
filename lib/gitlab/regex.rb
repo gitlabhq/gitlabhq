@@ -100,5 +100,13 @@ module Gitlab
     def container_registry_reference_regex
       git_reference_regex
     end
+
+    def environment_name_regex
+      @environment_name_regex ||= /\A[a-zA-Z0-9_-]+\z/.freeze
+    end
+
+    def environment_name_regex_message
+      "can contain only letters, digits, '-' and '_'."
+    end
   end
 end

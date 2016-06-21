@@ -101,7 +101,7 @@ module SharedProject
   step 'I should see project settings' do
     expect(current_path).to eq edit_namespace_project_path(@project.namespace, @project)
     expect(page).to have_content("Project name")
-    expect(page).to have_content("Features:")
+    expect(page).to have_content("Features")
   end
 
   def current_project
@@ -236,7 +236,7 @@ module SharedProject
 
   step 'project "Shop" has CI build' do
     project = Project.find_by(name: "Shop")
-    create :ci_commit, project: project, sha: project.commit.sha, ref: 'master', status: 'skipped'
+    create :ci_pipeline, project: project, sha: project.commit.sha, ref: 'master', status: 'skipped'
   end
 
   step 'I should see last commit with CI status' do

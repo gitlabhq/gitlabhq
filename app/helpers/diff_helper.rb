@@ -39,11 +39,11 @@ module DiffHelper
   end
 
   def unfold_bottom_class(bottom)
-    (bottom) ? 'js-unfold-bottom' : ''
+    bottom ? 'js-unfold-bottom' : ''
   end
 
   def unfold_class(unfold)
-    (unfold) ? 'unfold js-unfold' : ''
+    unfold ? 'unfold js-unfold' : ''
   end
 
   def diff_line_content(line, line_type = nil)
@@ -132,6 +132,11 @@ module DiffHelper
 
   def diff_merge_request_whitespace_link(project, merge_request, options)
     url = diffs_namespace_project_merge_request_path(project.namespace, project, merge_request, params_with_whitespace)
+    toggle_whitespace_link(url, options)
+  end
+
+  def diff_compare_whitespace_link(project, from, to, options)
+    url = namespace_project_compare_path(project.namespace, project, from, to, params_with_whitespace)
     toggle_whitespace_link(url, options)
   end
 

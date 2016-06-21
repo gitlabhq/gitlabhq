@@ -1,18 +1,22 @@
 module Gitlab
   module CurrentSettings
     def current_application_settings
-      key = :current_application_settings
-
-      RequestStore.store[key] ||= begin
-        settings = nil
-
-        if connect_to_db?
-          settings = ::ApplicationSetting.current
-          settings ||= ::ApplicationSetting.create_from_defaults unless ActiveRecord::Migrator.needs_migration?
-        end
-
-        settings || fake_application_settings
+      if RequestStore.active?
+        RequestStore.fetch(:current_application_settings) { ensure_application_settings! }
+      else
+        ensure_application_settings!
       end
+    end
+
+    def ensure_application_settings!
+      settings = ::ApplicationSetting.cached
+
+      if !settings && connect_to_db?
+        settings = ::ApplicationSetting.current
+        settings ||= ::ApplicationSetting.create_from_defaults unless ActiveRecord::Migrator.needs_migration?
+      end
+
+      settings || fake_application_settings
     end
 
     def fake_application_settings
@@ -22,7 +26,10 @@ module Gitlab
         signup_enabled: Settings.gitlab['signup_enabled'],
         signin_enabled: Settings.gitlab['signin_enabled'],
         gravatar_enabled: Settings.gravatar['enabled'],
-        sign_in_text: Settings.extra['sign_in_text'],
+        sign_in_text: nil,
+        after_sign_up_text: nil,
+        help_page_text: nil,
+        shared_runners_text: nil,
         restricted_visibility_levels: Settings.gitlab['restricted_visibility_levels'],
         max_attachment_size: Settings.gitlab['max_attachment_size'],
         session_expire_delay: Settings.gitlab['session_expire_delay'],
@@ -36,6 +43,11 @@ module Gitlab
         two_factor_grace_period: 48,
         akismet_enabled: false,
         repository_checks_enabled: true,
+        container_registry_token_expire_delay: 5,
+        elasticsearch_search: false,
+        elasticsearch_indexing: false,
+        elasticsearch_host: ENV['ELASTIC_HOST'] || 'localhost',
+        elasticsearch_port: ENV['ELASTIC_PORT'] || '9200'
       )
     end
 

@@ -1,5 +1,15 @@
 %span.label-row
+  - if can?(current_user, :admin_label, @project)
+    .draggable-handler
+      = icon('bars')
+    .js-toggle-priority.toggle-priority{ data: { url: remove_priority_namespace_project_label_path(@project.namespace, @project, label),
+      dom_id: dom_id(label) } }
+      %button.add-priority.btn.has-tooltip{ title: 'Prioritize', :'data-placement' => 'top' }
+        = icon('star-o')
+      %button.remove-priority.btn.has-tooltip{ title: 'Remove priority', :'data-placement' => 'top' }
+        = icon('star')
   %span.label-name
     = link_to_label(label, tooltip: false)
-  %span.prepend-left-10
-    = markdown(label.description, pipeline: :single_line)
+  - if label.description
+    %span.label-description
+      = markdown(label.description, pipeline: :single_line)

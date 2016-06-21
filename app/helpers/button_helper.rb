@@ -17,7 +17,15 @@ module ButtonHelper
   def clipboard_button(data = {})
     content_tag :button,
       icon('clipboard'),
-      class: 'btn btn-clipboard',
+      class: "btn",
+      data: data,
+      type: :button
+  end
+
+  def clipboard_button_with_class(data = {}, css_class: 'btn-clipboard')
+    content_tag :button,
+      icon('clipboard'),
+      class: "btn #{css_class}",
       data: data,
       type: :button
   end
@@ -30,7 +38,7 @@ module ButtonHelper
 
     content_tag :a, protocol,
       class: klass,
-      href: @project.http_url_to_repo,
+      href: project.http_url_to_repo,
       data: {
         html: true,
         placement: 'right',

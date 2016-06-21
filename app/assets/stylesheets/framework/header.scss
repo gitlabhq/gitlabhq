@@ -3,7 +3,7 @@
  *
  */
 header {
-  transition-duration: .3s;
+  transition: padding $sidebar-transition-duration;
 
   &.navbar-empty {
     height: $header-height;
@@ -82,10 +82,10 @@ header {
     }
 
     .side-nav-toggle {
-      display: none;
       position: absolute;
       left: -10px;
       margin: 6px 0;
+      font-size: 18px;
       padding: 6px 10px;
       border: none;
       background-color: $background-color;
@@ -97,21 +97,13 @@ header {
       &:focus {
         outline: none;
       }
-
-      @media (max-width: $screen-xs-min) {
-        display: block;
-      }
     }
   }
 
   .header-content {
     position: relative;
     height: $header-height;
-    padding-right: 40px;
-
-    @media (max-width: $screen-xs-min) {
-      padding-left: 40px;
-    }
+    padding-left: 30px;
 
     @media (min-width: $screen-sm-min) {
       padding-right: 0;
@@ -121,9 +113,29 @@ header {
       margin-top: -5px;
     }
 
+    .header-logo {
+      position: absolute;
+      left: 50%;
+      margin-left: -18px;
+      top: 7px;
+      transition-duration: .3s;
+      z-index: 999;
+
+      &:hover {
+        cursor: pointer;
+      }
+
+      @media (max-width: $screen-xs-max) {
+        right: 25px;
+        left: auto;
+      }
+    }
+
     .title {
       margin: 0;
       font-size: 19px;
+      max-width: 400px;
+      display: inline-block;
       line-height: $header-height;
       font-weight: normal;
       color: $gl-text-color;
@@ -131,6 +143,10 @@ header {
       text-overflow: ellipsis;
       vertical-align: top;
       white-space: nowrap;
+
+      @media (max-width: $screen-sm-max) {
+        max-width: 190px;
+      }
 
       a {
         color: $gl-text-color;
@@ -159,6 +175,10 @@ header {
     .navbar-collapse {
       float: right;
       border-top: none;
+
+      @media (max-width: $screen-xs-max) {
+        float: none;
+      }
     }
   }
 
@@ -171,31 +191,12 @@ header {
   }
 }
 
-@mixin collapsed-header {
-  margin-left: $sidebar_collapsed_width;
-}
+.tanuki-shape {
+  transition: all 0.8s;
 
-.header-collapsed {
-  margin-left: $sidebar_collapsed_width;
-
-  @media (min-width: $screen-md-min) {
-    @include collapsed-header;
-  }
-
-  @media (max-width: $screen-xs-min) {
-    margin-left: 0;
-  }
-}
-
-.header-expanded {
-  margin-left: $sidebar_collapsed_width;
-
-  @media (min-width: $screen-md-min) {
-    margin-left: $sidebar_width;
-  }
-
-  @media (max-width: $screen-xs-min) {
-    margin-left: 0;
+  &:hover, &.highlight {
+    fill: rgb(255, 255, 255);
+    transition: all 0.1s;
   }
 }
 

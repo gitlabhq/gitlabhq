@@ -1,5 +1,5 @@
 - page_title "License"
-%h3.page-title 
+%h3.page-title
   Your License
   = link_to 'Upload New License', new_admin_license_path, class: "btn btn-new pull-right"
 
@@ -27,7 +27,7 @@
           %span.light Started:
           %strong= time_ago_with_tooltip @license.starts_at
         %li
-          %span.light 
+          %span.light
             - if @license.expired?
               Expired:
             - else
@@ -62,12 +62,12 @@
 
           - if restricted && current > restricted
             %span.label.label-danger.pull-right
-              %strong 
+              %strong
                 Exceeds license limit
 
         - date_range = (Date.today - 1.year)..Date.today
         - historical = HistoricalData.during(date_range).maximum(:active_user_count)
-        - if historical 
+        - if historical
           %li
             %span.light Maximum active users:
             %strong
@@ -75,7 +75,7 @@
 
             - if restricted && historical > restricted
               %span.label.label-danger.pull-right
-                %strong 
+                %strong
                   Exceeds license limit
 
   .col-md-6
@@ -84,7 +84,7 @@
         Download license
       .panel-body
         %p Your license will be included in your GitLab backup and will survive upgrades, so in normal usage you should never need to re-upload your <code>.gitlab-license</code> file.
-        %p Still, we recommend keeping a backup saved somewhere. Otherwise, if you ever need it and have lost it, you will need to request GitLab B.V. to send it to you again.
+        %p Still, we recommend keeping a backup saved somewhere. Otherwise, if you ever need it and have lost it, you will need to request GitLab Inc. to send it to you again.
         %br
         = link_to 'Download license', download_admin_license_path, class: "btn btn-info"
 

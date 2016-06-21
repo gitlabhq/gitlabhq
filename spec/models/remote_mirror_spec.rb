@@ -1,3 +1,22 @@
+# == Schema Information
+#
+# Table name: remote_mirrors
+#
+#  id                         :integer          not null, primary key
+#  project_id                 :integer
+#  url                        :string
+#  enabled                    :boolean          default(TRUE)
+#  update_status              :string
+#  last_update_at             :datetime
+#  last_successful_update_at  :datetime
+#  last_error                 :string
+#  encrypted_credentials      :text
+#  encrypted_credentials_iv   :string
+#  encrypted_credentials_salt :string
+#  created_at                 :datetime         not null
+#  updated_at                 :datetime         not null
+#
+
 require 'rails_helper'
 
 describe RemoteMirror do
@@ -44,12 +63,22 @@ describe RemoteMirror do
         expect(mirror.credentials).to eq({ user: 'foo', password: 'bar' })
       end
 
+      it 'should update the remote config if credentials changed' do
+        mirror = create_mirror_with_url('http://foo:bar@test.com')
+        repo = mirror.project.repository
+
+        mirror.update_attribute(:url, 'http://foo:baz@test.com')
+
+        expect(repo.config["remote.#{mirror.ref_name}.url"]).to eq('http://foo:baz@test.com')
+      end
+
       it 'should still be picked up by the worker if is stuck' do
         mirror = create_mirror_with_url('http://test.com')
         mirror.update_attribute(:update_status, 'started')
 
         # this will reset some of the updated_at fields
         mirror.update_attribute(:url, 'http://foo:bar@test.com')
+
         expect(RemoteMirror.stuck.last).to eq(mirror)
       end
     end

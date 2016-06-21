@@ -1,80 +1,94 @@
 require 'spec_helper'
 
 describe Projects::UpdateMirrorService do
-  let(:project) { create(:project) }
-  let(:repository) { project.repository }
-  let(:mirror_user) { project.owner }
-  subject { described_class.new(project, mirror_user) }
-
-  before do
-    project.import_url = Project::UNKNOWN_IMPORT_URL
-    project.mirror = true
-    project.mirror_user = mirror_user
-    project.save
-  end
+  let(:project) { create(:project, :mirror, import_url: Project::UNKNOWN_IMPORT_URL) }
 
   describe "#execute" do
     it "fetches the upstream repository" do
       expect(project).to receive(:fetch_mirror)
 
-      subject.execute
+      described_class.new(project, project.owner).execute
     end
 
     it "succeeds" do
-      allow(project).to receive(:fetch_mirror) { fetch_mirror(repository) }
+      stub_fetch_mirror(project)
 
-      result = subject.execute
+      result = described_class.new(project, project.owner).execute
 
       expect(result[:status]).to eq(:success)
     end
 
     describe "updating tags" do
       it "creates new tags" do
-        allow(project).to receive(:fetch_mirror) { fetch_mirror(repository) }
+        stub_fetch_mirror(project)
 
-        subject.execute
+        described_class.new(project, project.owner).execute
 
-        expect(repository.tag_names).to include('new-tag')
+        expect(project.repository.tag_names).to include('new-tag')
       end
     end
 
     describe "updating branches" do
       it "creates new branches" do
-        allow(project).to receive(:fetch_mirror) { fetch_mirror(repository) }
+        stub_fetch_mirror(project)
 
-        subject.execute
+        described_class.new(project, project.owner).execute
 
-        expect(repository.branch_names).to include('new-branch')
+        expect(project.repository.branch_names).to include('new-branch')
       end
 
       it "updates existing branches" do
-        allow(project).to receive(:fetch_mirror) { fetch_mirror(repository) }
+        stub_fetch_mirror(project)
 
-        subject.execute
+        described_class.new(project, project.owner).execute
 
-        expect(repository.find_branch('existing-branch').target).to eq(repository.find_branch('master').target)
+        expect(project.repository.find_branch('existing-branch').target)
+          .to eq(project.repository.find_branch('master').target)
       end
 
       it "doesn't update diverged branches" do
-        allow(project).to receive(:fetch_mirror) { fetch_mirror(repository) }
+        stub_fetch_mirror(project)
 
-        subject.execute
+        described_class.new(project, project.owner).execute
 
-        expect(repository.find_branch('markdown').target).not_to eq(repository.find_branch('master').target)
+        expect(project.repository.find_branch('markdown').target)
+          .not_to eq(project.repository.find_branch('master').target)
       end
     end
 
     describe "when the mirror user doesn't have access" do
-      let(:mirror_user) { create(:user) }
-
       it "fails" do
-        allow(project).to receive(:fetch_mirror) { fetch_mirror(repository) }
+        stub_fetch_mirror(project)
 
-        result = subject.execute
+        result = described_class.new(project, build_stubbed(:user)).execute
 
         expect(result[:status]).to eq(:error)
       end
     end
+
+    describe "when no user is present" do
+      it "fails" do
+        result = described_class.new(project, nil).execute
+
+        expect(result[:status]).to eq(:error)
+      end
+    end
+
+    describe "when is no mirror" do
+      let(:project) { build_stubbed(:project) }
+
+      it "fails" do
+        expect(project.mirror?).to eq(false)
+
+        result = described_class.new(project, build_stubbed(:user)).execute
+
+        expect(result[:status]).to eq(:error)
+      end
+    end
+  end
+
+  def stub_fetch_mirror(project, repository: project.repository)
+    allow(project).to receive(:fetch_mirror) { fetch_mirror(repository) }
   end
 
   def fetch_mirror(repository)

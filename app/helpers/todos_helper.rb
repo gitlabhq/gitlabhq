@@ -12,12 +12,15 @@ module TodosHelper
     when Todo::ASSIGNED then 'assigned you'
     when Todo::MENTIONED then 'mentioned you on'
     when Todo::BUILD_FAILED then 'The build failed for your'
+    when Todo::MARKED then 'marked this as a Todo for'
     end
   end
 
   def todo_target_link(todo)
     target = todo.target_type.titleize.downcase
-    link_to "#{target} #{todo.target_reference}", todo_target_path(todo), { title: todo.target.title }
+    link_to "#{target} #{todo.target_reference}", todo_target_path(todo),
+      class: 'has-tooltip',
+      title: todo.target.title
   end
 
   def todo_target_path(todo)
@@ -34,6 +37,16 @@ module TodosHelper
       path.unshift(:builds) if todo.build_failed?
 
       polymorphic_path(path, anchor: anchor)
+    end
+  end
+
+  def todo_target_state_pill(todo)
+    return unless show_todo_state?(todo)
+
+    content_tag(:span, nil, class: 'target-status') do
+      content_tag(:span, nil, class: "status-box status-box-#{todo.target.state.dasherize}") do
+        todo.target.state.capitalize
+      end
     end
   end
 
@@ -94,5 +107,11 @@ module TodosHelper
     ]
 
     options_from_collection_for_select(types, 'name', 'title', params[:type])
+  end
+
+  private
+
+  def show_todo_state?(todo)
+    (todo.target.is_a?(MergeRequest) || todo.target.is_a?(Issue)) && ['closed', 'merged'].include?(todo.target.state)
   end
 end
