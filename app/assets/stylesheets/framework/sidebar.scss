@@ -1,26 +1,31 @@
 .page-with-sidebar {
   padding-top: $header-height;
-  transition-duration: .3s;
+  transition: padding $sidebar-transition-duration;
 
   .sidebar-wrapper {
     position: fixed;
     top: 0;
     bottom: 0;
-    overflow-y: auto;
-    overflow-x: hidden;
     left: 0;
     height: 100%;
-    transition-duration: .3s;
+    overflow: hidden;
+    transition: width $sidebar-transition-duration;
   }
 }
 
 .sidebar-wrapper {
   z-index: 1000;
   background: $background-color;
+
+  .nicescroll-rails-hr {
+    // TODO: Figure out why nicescroll doesn't hide horizontal bar
+    display: none!important;
+  }
 }
 
 .content-wrapper {
   width: 100%;
+  transition: padding $sidebar-transition-duration;
 
   .container-fluid {
     background: #fff;
@@ -34,83 +39,63 @@
   }
 }
 
-.sidebar-wrapper {
-  .header-logo {
-    height: $header-height;
-    padding: 8px 26px;
-    width: $sidebar_width;
-    position: fixed;
-    z-index: 999;
-    overflow: hidden;
-    transition-duration: .3s;
+.sidebar-user {
+  padding: 15px;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: $sidebar_width;
+  overflow: hidden;
+  font-size: 16px;
+  line-height: 36px;
+  transition: width $sidebar-transition-duration, padding $sidebar-transition-duration;
 
-    &:hover {
-      background-color: #eee;
-    }
-  }
-
-  .sidebar-user {
-    padding: 15px 22px;
-    position: fixed;
-    bottom: 40px;
-    width: $sidebar_width;
-    overflow: hidden;
-    transition-duration: .3s;
-
-    .username {
-      margin-left: 10px;
-      width: $sidebar_width - 2 * 10px;
-      font-size: 16px;
-      line-height: 34px;
-    }
+  @media (min-width: $sidebar-breakpoint) {
+    bottom: 50px;
   }
 }
-
-
-.tanuki-shape {
-  transition: all 0.8s;
-
-  &:hover, &.highlight {
-    fill: rgb(255, 255, 255);
-    transition: all 0.1s;
-  }
-}
-
 
 .nav-sidebar {
-  margin-top: 22 + $header-height;
-  margin-bottom: 116px;
-  transition-duration: .3s;
-  list-style: none;
-  overflow: hidden;
+  position: absolute;
+  top: 50px;
+  bottom: 65px;
+  width: $sidebar_width;
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  @media (min-width: $sidebar-breakpoint) {
+    bottom: 115px;
+  }
 
   &.navbar-collapse {
     padding: 0 !important;
   }
 
   li {
-    width: $sidebar_width;
-
     &.separate-item {
       padding-top: 10px;
       margin-top: 10px;
     }
 
-    a {
+    .icon-container {
+      width: 34px;
+      display: inline-block;
       text-align: center;
-      padding: 8px;
+    }
+
+    a {
+      padding: 7px 15px 7px 12px;
       font-size: $gl-font-size;
-      color: $gray;
+      line-height: 24px;
       display: block;
       text-decoration: none;
       font-weight: normal;
       outline: none;
+      white-space: nowrap;
 
-      &:hover {
-        text-decoration: none;
-      }
-
-      &:active, &:focus {
+      &:hover,
+      &:active,
+      &:focus {
         text-decoration: none;
       }
 
@@ -118,49 +103,64 @@
         font-size: 16px;
       }
 
-      .nav-link-text {
-        margin-top: 3px;
-        font-size: 13px;
-        line-height: 18px;
-      }
-
-      &.back-link i {
-        transition-duration: .3s;
+      i,
+      svg {
+        margin-right: 13px;
       }
     }
   }
-}
 
-.sidebar-subnav {
-  margin-left: 0;
-  padding-left: 0;
-
-  li {
-    list-style: none;
+  .count {
+    float: right;
+    padding: 0 8px;
+    @include border-radius(6px);
   }
 }
 
-.collapse-nav a {
+.toggle-nav-collapse {
   width: $sidebar_width;
-  position: fixed;
-  bottom: 0;
+  position: absolute;
+  top: 0;
   left: 0;
-  font-size: 13px;
-  background: transparent;
-  height: 40px;
-  text-align: center;
-  line-height: 40px;
-  transition-duration: .3s;
-  outline: none;
+  min-height: 50px;
+  padding: 5px 0;
+  font-size: 18px;
+  line-height: 30px;
+}
 
-  &:hover {
+.nav-header-btn {
+  padding: 10px 5px;
+  color: inherit;
+  transition-duration: .3s;
+
+  &:hover,
+  &:focus {
+    color: $white-light;
     text-decoration: none;
   }
 }
 
-.sidebar-wrapper {
-  &.hidden-nav {
-    width: 0;
+.pin-nav-btn {
+  display: none;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 50px;
+  width: $sidebar_width;
+  line-height: 30px;
+
+  @media (min-width: $sidebar-breakpoint) {
+    display: block;
+  }
+
+  .fa {
+    transition: transform .15s;
+  }
+
+  &.is-active {
+    .fa {
+      transform: rotate(90deg);
+    }
   }
 }
 
@@ -169,90 +169,34 @@
 
   .sidebar-wrapper {
     width: 0;
-
-    .header-logo {
-      width: 0;
-      padding: 8px 0;
-
-      a {
-        padding-left: ($sidebar_collapsed_width - 36) / 2;
-
-        .gitlab-text-container {
-          display: none;
-        }
-      }
-    }
-
-    #logo {
-      display: none;
-    }
-
-    .nav-sidebar {
-      width: $sidebar_collapsed_width;
-
-      li {
-        width: auto;
-
-        a {
-          span {
-            display: none;
-          }
-        }
-      }
-    }
-
-    .collapse-nav a {
-      width: 0;
-    }
-
-    .sidebar-user {
-      width: 0;
-      padding-left: 0;
-      padding-right: 0;
-
-      .username {
-        display: none;
-      }
-    }
   }
 }
 
 .page-sidebar-expanded {
-  padding-left: $sidebar_width;
-
-  @media (max-width: $screen-xs-min) {
-    padding-left: 0;
-  }
-
   .sidebar-wrapper {
     width: $sidebar_width;
+  }
+}
 
-    .nav-sidebar {
-      width: $sidebar_width;
-    }
-
-    .nav-sidebar li a {
-      width: $sidebar_width;
-
-      &.back-link {
-        i {
-          opacity: 0;
-        }
-      }
+.page-sidebar-pinned {
+  .content-wrapper,
+  .layout-nav {
+    @media (min-width: $sidebar-breakpoint) {
+      padding-left: $sidebar_width;
     }
   }
+}
 
-  .layout-nav {
-    @media (max-width: $screen-xs-min) {
-      padding-right: 0;
+header.header-pinned-nav {
+  @media (min-width: $sidebar-breakpoint) {
+    padding-left: ($sidebar_width + $gl-padding);
+
+    .side-nav-toggle {
+      display: none;
     }
 
-    @media (min-width: $screen-xs-min) and (max-width: $screen-md-min) {
-      padding-right: 90px;
-    }
-
-    @media (min-width: $screen-md-min) {
-      padding-right: $sidebar_width;
+    .header-content {
+      padding-left: 0;
     }
   }
 }

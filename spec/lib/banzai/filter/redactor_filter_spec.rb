@@ -69,6 +69,18 @@ describe Banzai::Filter::RedactorFilter, lib: true do
         expect(doc.css('a').length).to eq 0
       end
 
+      it 'removes references for project members with guest role' do
+        member = create(:user)
+        project = create(:empty_project, :public)
+        project.team << [member, :guest]
+        issue = create(:issue, :confidential, project: project)
+
+        link = reference_link(project: project.id, issue: issue.id, reference_type: 'issue')
+        doc = filter(link, current_user: member)
+
+        expect(doc.css('a').length).to eq 0
+      end
+
       it 'allows references for author' do
         author = create(:user)
         project = create(:empty_project, :public)

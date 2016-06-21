@@ -49,6 +49,10 @@ module Referable
       raise NotImplementedError, "#{self} does not implement #{__method__}"
     end
 
+    def reference_valid?(reference)
+      true
+    end
+
     def link_reference_pattern(route, pattern)
       %r{
         (?<url>

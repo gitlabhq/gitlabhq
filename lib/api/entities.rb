@@ -88,10 +88,7 @@ module API
     class Group < Grape::Entity
       expose :id, :name, :path, :description, :visibility_level
       expose :avatar_url
-
-      expose :web_url do |group, options|
-        Gitlab::Routing.url_helpers.group_url(group)
-      end
+      expose :web_url
     end
 
     class GroupDetail < Group
@@ -179,6 +176,11 @@ module API
       expose :upvotes, :downvotes
     end
 
+    class ExternalIssue < Grape::Entity
+      expose :title
+      expose :id
+    end
+
     class MergeRequest < ProjectEntity
       expose :target_branch, :source_branch
       expose :upvotes, :downvotes
@@ -221,6 +223,14 @@ module API
       # upvote? and downvote? are deprecated, always return false
       expose(:upvote?)    { |note| false }
       expose(:downvote?)  { |note| false }
+    end
+
+    class AwardEmoji < Grape::Entity
+      expose :id
+      expose :name
+      expose :user, using: Entities::UserBasic
+      expose :created_at, :updated_at
+      expose :awardable_id, :awardable_type
     end
 
     class MRNote < Grape::Entity

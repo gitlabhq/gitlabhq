@@ -5,23 +5,18 @@
     font-weight: normal;
   }
 }
+
 .no-ssh-key-message, .project-limit-message {
   background-color: #f28d35;
   margin-bottom: 0;
 }
+
 .new_project,
 .edit-project {
   fieldset.features {
     .control-label {
       font-weight: normal;
     }
-  }
-}
-
-.project-name-holder {
-  .help-inline {
-    vertical-align: top;
-    padding: 7px;
   }
 }
 
@@ -33,7 +28,7 @@
   .container-fluid {
     position: relative;
 
-    @media (min-width: $screen-md-max) {
+    @media (min-width: $screen-lg-min) {
       .row {
         display: flex;
         -ms-flex-align: center;
@@ -133,11 +128,6 @@
       }
     }
 
-    .btn-group:not(:first-child):not(:last-child) > .btn {
-      border-top-right-radius: 3px;
-      border-bottom-right-radius: 3px;
-    }
-
     form {
       margin-left: 10px;
     }
@@ -229,13 +219,20 @@
     right: 16px;
     bottom: 0;
 
-    .btn {
-      padding: 3px 10px;
-      background-color: $background-color;
+    @media (max-width: $screen-md-max) {
+      top: 0;
     }
 
-    @media (max-width: 1304px) {
-      top: 0;
+    .access-request-button {
+      position: absolute;
+      right: 0;
+      bottom: 61px;
+
+      @media (max-width: $screen-md-max) {
+        position: relative;
+        bottom: 0;
+        margin-right: 10px;
+      }
     }
   }
 
@@ -284,10 +281,6 @@
   margin-top: 50px;
   margin-bottom: 50px;
   color: #555;
-}
-
-.project_member_row form {
-  margin: 0;
 }
 
 .transfer-project .select2-container {
@@ -373,6 +366,7 @@ a.deploy-project-label {
 
 .project-import .btn {
   float: left;
+  margin-bottom: 10px;
   margin-right: 10px;
 }
 
@@ -500,7 +494,8 @@ pre.light-well {
 
 .activity-filter-block {
   .controls {
-    padding-bottom: 10px;
+    padding-bottom: 7px;
+    margin-top: 8px;
     border-bottom: 1px solid $border-color;
   }
 }
@@ -602,5 +597,22 @@ pre.light-well {
     &:hover {
       color: $gl-link-color;
     }
+  }
+}
+
+.custom-notifications-form {
+  .is-loading {
+    .custom-notification-event-loading {
+      display: inline-block;
+    }
+  }
+}
+
+.custom-notification-event-loading {
+  display: none;
+  margin-left: 5px;
+
+  &.is-done {
+    color: $gl-text-green;
   }
 }

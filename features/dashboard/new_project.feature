@@ -14,7 +14,7 @@ Background:
   @javascript
   Scenario: I should see instructions on how to import from Git URL
   Given I see "New Project" page
-  When I click on "Any repo by URL"
+  When I click on "Repo by URL"
   Then I see instructions on how to import from Git URL
 
   @javascript

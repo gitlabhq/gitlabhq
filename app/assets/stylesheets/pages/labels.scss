@@ -115,12 +115,26 @@
   }
 }
 
+.draggable-handler {
+  display: inline-block;
+  opacity: 0;
+  transition: opacity .3s;
+  color: $gray-darkest;
+}
+
 .prioritized-labels {
   margin-bottom: 30px;
 
   .add-priority {
     display: none;
     color: $gray-light;
+  }
+
+  li:hover {
+    .draggable-handler {
+      display: inline-block;
+      opacity: 1;
+    }
   }
 }
 

@@ -1,5 +1,10 @@
 module Gitlab
   module Database
+    # The max value of INTEGER type is the same between MySQL and PostgreSQL:
+    # https://www.postgresql.org/docs/9.2/static/datatype-numeric.html
+    # http://dev.mysql.com/doc/refman/5.7/en/integer-types.html
+    MAX_INT_VALUE = 2147483647
+
     def self.adapter_name
       connection.adapter_name
     end
@@ -28,6 +33,10 @@ module Gitlab
       end
 
       order
+    end
+
+    def self.random
+      Gitlab::Database.postgresql? ? "RANDOM()" : "RAND()"
     end
 
     def true_value

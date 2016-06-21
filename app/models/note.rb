@@ -4,6 +4,7 @@ class Note < ActiveRecord::Base
   include Participable
   include Mentionable
   include Awardable
+  include Importable
 
   default_value_for :system, false
 
@@ -28,11 +29,11 @@ class Note < ActiveRecord::Base
   validates :attachment, file_size: { maximum: :max_attachment_size }
 
   validates :noteable_type, presence: true
-  validates :noteable_id, presence: true, unless: :for_commit?
+  validates :noteable_id, presence: true, unless: [:for_commit?, :importing?]
   validates :commit_id, presence: true, if: :for_commit?
   validates :author, presence: true
 
-  validate unless: :for_commit? do |note|
+  validate unless: [:for_commit?, :importing?] do |note|
     unless note.noteable.try(:project) == note.project
       errors.add(:invalid_project, 'Note and noteable project mismatch')
     end
@@ -88,22 +89,9 @@ class Note < ActiveRecord::Base
       table   = arel_table
       pattern = "%#{query}%"
 
-      found_notes = joins('LEFT JOIN issues ON issues.id = noteable_id').
-        where(table[:note].matches(pattern))
-
-      if as_user
-        found_notes.where('
-          issues.confidential IS NULL
-          OR issues.confidential IS FALSE
-          OR (issues.confidential IS TRUE
-            AND (issues.author_id = :user_id
-            OR issues.assignee_id = :user_id
-            OR issues.project_id IN(:project_ids)))',
-          user_id: as_user.id,
-          project_ids: as_user.authorized_projects.select(:id))
-      else
-        found_notes.where('issues.confidential IS NULL OR issues.confidential IS FALSE')
-      end
+      Note.joins('LEFT JOIN issues ON issues.id = noteable_id').
+        where(table[:note].matches(pattern)).
+        merge(Issue.visible_to_user(as_user))
     end
   end
 
@@ -198,6 +186,10 @@ class Note < ActiveRecord::Base
 
   def award_emoji?
     award_emoji_supported? && contains_emoji_only?
+  end
+
+  def emoji_awardable?
+    !system?
   end
 
   def clear_blank_line_code!

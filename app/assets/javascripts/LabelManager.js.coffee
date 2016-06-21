@@ -27,6 +27,11 @@ class @LabelManager
     $btn = $(e.currentTarget)
     $label = $("##{$btn.data('domId')}")
     action = if $btn.parents('.js-prioritized-labels').length then 'remove' else 'add'
+
+    # Make sure tooltip will hide
+    $tooltip = $ "##{$btn.find('.has-tooltip:visible').attr('aria-describedby')}"
+    $tooltip.tooltip 'destroy'
+
     _this.toggleLabelPriority($label, action)
 
   toggleLabelPriority: ($label, action, persistState = true) ->
@@ -42,10 +47,10 @@ class @LabelManager
       $from = @prioritizedLabels
 
     if $from.find('li').length is 1
-      $from.find('.empty-message').show()
+      $from.find('.empty-message').removeClass('hidden')
 
     if not $target.find('li').length
-      $target.find('.empty-message').hide()
+      $target.find('.empty-message').addClass('hidden')
 
     $label.detach().appendTo($target)
 
@@ -54,6 +59,9 @@ class @LabelManager
 
     if action is 'remove'
       xhr = $.ajax url: url, type: 'DELETE'
+
+      # Restore empty message
+      $from.find('.empty-message').removeClass('hidden') unless $from.find('li').length
     else
       xhr = @savePrioritySort($label, action)
 

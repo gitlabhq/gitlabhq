@@ -2,8 +2,19 @@
  *  Application Header
  *
  */
+@mixin tanuki-logo-colors($path-color) {
+  fill: $path-color;
+  transition: all 0.8s;
+
+  &:hover,
+  &.highlight {
+    fill: lighten($path-color, 25%);
+    transition: all 0.1s;
+  }
+}
+
 header {
-  transition-duration: .3s;
+  transition: padding $sidebar-transition-duration;
 
   &.navbar-empty {
     height: $header-height;
@@ -79,14 +90,9 @@ header {
 
     &.header-collapsed {
       padding: 0 16px;
-
-      .side-nav-toggle {
-        display: block;
-      }
     }
 
     .side-nav-toggle {
-      display: none;
       position: absolute;
       left: -10px;
       margin: 6px 0;
@@ -108,11 +114,7 @@ header {
   .header-content {
     position: relative;
     height: $header-height;
-    padding-right: 40px;
-
-    @media (max-width: $screen-xs-min) {
-      padding-left: 40px;
-    }
+    padding-left: 30px;
 
     @media (min-width: $screen-sm-min) {
       padding-right: 0;
@@ -122,9 +124,29 @@ header {
       margin-top: -5px;
     }
 
+    .header-logo {
+      position: absolute;
+      left: 50%;
+      margin-left: -18px;
+      top: 7px;
+      transition-duration: .3s;
+      z-index: 999;
+
+      &:hover {
+        cursor: pointer;
+      }
+
+      @media (max-width: $screen-xs-max) {
+        right: 25px;
+        left: auto;
+      }
+    }
+
     .title {
       margin: 0;
       font-size: 19px;
+      max-width: 400px;
+      display: inline-block;
       line-height: $header-height;
       font-weight: normal;
       color: $gl-text-color;
@@ -132,6 +154,10 @@ header {
       text-overflow: ellipsis;
       vertical-align: top;
       white-space: nowrap;
+
+      @media (max-width: $screen-sm-max) {
+        max-width: 190px;
+      }
 
       a {
         color: $gl-text-color;
@@ -160,6 +186,10 @@ header {
     .navbar-collapse {
       float: right;
       border-top: none;
+
+      @media (max-width: $screen-xs-max) {
+        float: none;
+      }
     }
   }
 
@@ -172,22 +202,24 @@ header {
   }
 }
 
-.header-collapsed {
-  margin-left: 0;
+#tanuki-logo {
 
-  .header-content {
-    padding-left: 30px;
-    transition-duration: .3s;
+  #tanuki-left-ear,
+  #tanuki-right-ear,
+  #tanuki-nose {
+    @include tanuki-logo-colors($tanuki-red);
   }
-}
 
-.header-expanded {
-  margin-left: 0;
-
-  .header-content {
-    margin-left: $sidebar_width;
-    transition-duration: .3s;
+  #tanuki-left-eye,
+  #tanuki-right-eye {
+    @include tanuki-logo-colors($tanuki-orange);
   }
+
+  #tanuki-left-cheek,
+  #tanuki-right-cheek {
+    @include tanuki-logo-colors($tanuki-yellow);
+  }
+
 }
 
 @media (max-width: $screen-xs-max) {

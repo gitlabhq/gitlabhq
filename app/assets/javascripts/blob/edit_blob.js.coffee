@@ -12,8 +12,9 @@ class @EditBlob
       $("#file-content").val(@editor.getValue())
 
     @initModePanesAndLinks()
-    new BlobLicenseSelector(@editor)
-    new BlobGitignoreSelectors(editor: @editor)
+
+    new BlobLicenseSelectors { @editor }
+    new BlobGitignoreSelectors { @editor }
 
   initModePanesAndLinks: ->
     @$editModePanes = $(".js-edit-mode-pane")

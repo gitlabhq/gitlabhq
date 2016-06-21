@@ -34,7 +34,7 @@ module NotificationsHelper
   def notification_description(level)
     case level.to_sym
     when :participating
-      'You will only receive notifications from related resources'
+      'You will only receive notifications for threads you have participated in'
     when :mention
       'You will receive notifications only for comments in which you were @mentioned'
     when :watch
@@ -43,6 +43,8 @@ module NotificationsHelper
       'You will not get any notifications via email'
     when :global
       'Use your global notification setting'
+    when :custom
+      'You will only receive notifications for the events you choose'
     end
   end
 
@@ -60,5 +62,16 @@ module NotificationsHelper
         link_output << content_tag(:span, notification_description(level), class: 'dropdown-menu-inner-content')
       end
     end
+  end
+
+  # Identifier to trigger individually dropdowns and custom settings modals in the same view
+  def notifications_menu_identifier(type, notification_setting)
+    "#{type}-#{notification_setting.user_id}-#{notification_setting.source_id}-#{notification_setting.source_type}"
+  end
+
+  # Create hidden field to send notification setting source to controller
+  def hidden_setting_source_input(notification_setting)
+    return unless notification_setting.source_type
+    hidden_field_tag "#{notification_setting.source_type.downcase}[id]", notification_setting.source_id
   end
 end

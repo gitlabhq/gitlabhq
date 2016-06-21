@@ -11,8 +11,7 @@
         = button_tag class: 'btn', title: 'Search' do
           = icon("search")
   %ul.content-list
-    - members.each do |project_member|
-      = render 'project_member', member: project_member
+    = render partial: 'shared/members/member', collection: members, as: :member
 
 :javascript
   $('form.member-search-form').on('submit', function (event) {

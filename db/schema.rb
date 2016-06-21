@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160608155312) do
+ActiveRecord::Schema.define(version: 20160616084004) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -144,9 +144,9 @@ ActiveRecord::Schema.define(version: 20160608155312) do
     t.text     "commands"
     t.integer  "job_id"
     t.string   "name"
-    t.boolean  "deploy",             default: false
+    t.boolean  "deploy",              default: false
     t.text     "options"
-    t.boolean  "allow_failure",      default: false, null: false
+    t.boolean  "allow_failure",       default: false, null: false
     t.string   "stage"
     t.integer  "trigger_request_id"
     t.integer  "stage_idx"
@@ -161,6 +161,8 @@ ActiveRecord::Schema.define(version: 20160608155312) do
     t.text     "artifacts_metadata"
     t.integer  "erased_by_id"
     t.datetime "erased_at"
+    t.string   "environment"
+    t.datetime "artifacts_expire_at"
   end
 
   add_index "ci_builds", ["commit_id", "stage_idx", "created_at"], name: "index_ci_builds_on_commit_id_and_stage_idx_and_created_at", using: :btree
@@ -381,6 +383,25 @@ ActiveRecord::Schema.define(version: 20160608155312) do
 
   add_index "deploy_keys_projects", ["project_id"], name: "index_deploy_keys_projects_on_project_id", using: :btree
 
+  create_table "deployments", force: :cascade do |t|
+    t.integer  "iid",             null: false
+    t.integer  "project_id",      null: false
+    t.integer  "environment_id",  null: false
+    t.string   "ref",             null: false
+    t.boolean  "tag",             null: false
+    t.string   "sha",             null: false
+    t.integer  "user_id"
+    t.integer  "deployable_id"
+    t.string   "deployable_type"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "deployments", ["project_id", "environment_id", "iid"], name: "index_deployments_on_project_id_and_environment_id_and_iid", using: :btree
+  add_index "deployments", ["project_id", "environment_id"], name: "index_deployments_on_project_id_and_environment_id", using: :btree
+  add_index "deployments", ["project_id", "iid"], name: "index_deployments_on_project_id_and_iid", unique: true, using: :btree
+  add_index "deployments", ["project_id"], name: "index_deployments_on_project_id", using: :btree
+
   create_table "emails", force: :cascade do |t|
     t.integer  "user_id",    null: false
     t.string   "email",      null: false
@@ -390,6 +411,15 @@ ActiveRecord::Schema.define(version: 20160608155312) do
 
   add_index "emails", ["email"], name: "index_emails_on_email", unique: true, using: :btree
   add_index "emails", ["user_id"], name: "index_emails_on_user_id", using: :btree
+
+  create_table "environments", force: :cascade do |t|
+    t.integer  "project_id"
+    t.string   "name",       null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "environments", ["project_id", "name"], name: "index_environments_on_project_id_and_name", using: :btree
 
   create_table "events", force: :cascade do |t|
     t.string   "target_type"
@@ -536,11 +566,13 @@ ActiveRecord::Schema.define(version: 20160608155312) do
     t.string   "invite_email"
     t.string   "invite_token"
     t.datetime "invite_accepted_at"
+    t.datetime "requested_at"
   end
 
   add_index "members", ["access_level"], name: "index_members_on_access_level", using: :btree
   add_index "members", ["created_at", "id"], name: "index_members_on_created_at_and_id", using: :btree
   add_index "members", ["invite_token"], name: "index_members_on_invite_token", unique: true, using: :btree
+  add_index "members", ["requested_at"], name: "index_members_on_requested_at", using: :btree
   add_index "members", ["source_id", "source_type"], name: "index_members_on_source_id_and_source_type", using: :btree
   add_index "members", ["type"], name: "index_members_on_type", using: :btree
   add_index "members", ["user_id"], name: "index_members_on_user_id", using: :btree
@@ -670,8 +702,8 @@ ActiveRecord::Schema.define(version: 20160608155312) do
 
   create_table "notification_settings", force: :cascade do |t|
     t.integer  "user_id",                 null: false
-    t.integer  "source_id",               null: false
-    t.string   "source_type",             null: false
+    t.integer  "source_id"
+    t.string   "source_type"
     t.integer  "level",       default: 0, null: false
     t.datetime "created_at",              null: false
     t.datetime "updated_at",              null: false
@@ -724,6 +756,19 @@ ActiveRecord::Schema.define(version: 20160608155312) do
   add_index "oauth_applications", ["owner_id", "owner_type"], name: "index_oauth_applications_on_owner_id_and_owner_type", using: :btree
   add_index "oauth_applications", ["uid"], name: "index_oauth_applications_on_uid", unique: true, using: :btree
 
+  create_table "personal_access_tokens", force: :cascade do |t|
+    t.integer  "user_id",                    null: false
+    t.string   "token",                      null: false
+    t.string   "name",                       null: false
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+    t.boolean  "revoked",    default: false
+    t.datetime "expires_at"
+  end
+
+  add_index "personal_access_tokens", ["token"], name: "index_personal_access_tokens_on_token", unique: true, using: :btree
+  add_index "personal_access_tokens", ["user_id"], name: "index_personal_access_tokens_on_user_id", using: :btree
+
   create_table "project_group_links", force: :cascade do |t|
     t.integer  "project_id",                null: false
     t.integer  "group_id",                  null: false
@@ -747,39 +792,37 @@ ActiveRecord::Schema.define(version: 20160608155312) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "creator_id"
-    t.boolean  "issues_enabled",                     default: true,     null: false
-    t.boolean  "merge_requests_enabled",             default: true,     null: false
-    t.boolean  "wiki_enabled",                       default: true,     null: false
+    t.boolean  "issues_enabled",                     default: true,  null: false
+    t.boolean  "merge_requests_enabled",             default: true,  null: false
+    t.boolean  "wiki_enabled",                       default: true,  null: false
     t.integer  "namespace_id"
-    t.string   "issues_tracker",                     default: "gitlab", null: false
-    t.string   "issues_tracker_id"
-    t.boolean  "snippets_enabled",                   default: true,     null: false
+    t.boolean  "snippets_enabled",                   default: true,  null: false
     t.datetime "last_activity_at"
     t.string   "import_url"
-    t.integer  "visibility_level",                   default: 0,        null: false
-    t.boolean  "archived",                           default: false,    null: false
+    t.integer  "visibility_level",                   default: 0,     null: false
+    t.boolean  "archived",                           default: false, null: false
     t.string   "avatar"
     t.string   "import_status"
     t.float    "repository_size",                    default: 0.0
-    t.integer  "star_count",                         default: 0,        null: false
+    t.integer  "star_count",                         default: 0,     null: false
     t.string   "import_type"
     t.string   "import_source"
     t.integer  "commit_count",                       default: 0
     t.text     "import_error"
     t.integer  "ci_id"
-    t.boolean  "builds_enabled",                     default: true,     null: false
-    t.boolean  "shared_runners_enabled",             default: true,     null: false
+    t.boolean  "builds_enabled",                     default: true,  null: false
+    t.boolean  "shared_runners_enabled",             default: true,  null: false
     t.string   "runners_token"
     t.string   "build_coverage_regex"
-    t.boolean  "build_allow_git_fetch",              default: true,     null: false
-    t.integer  "build_timeout",                      default: 3600,     null: false
+    t.boolean  "build_allow_git_fetch",              default: true,  null: false
+    t.integer  "build_timeout",                      default: 3600,  null: false
     t.boolean  "pending_delete",                     default: false
-    t.boolean  "public_builds",                      default: true,     null: false
+    t.boolean  "public_builds",                      default: true,  null: false
     t.integer  "pushes_since_gc",                    default: 0
     t.boolean  "last_repository_check_failed"
     t.datetime "last_repository_check_at"
     t.boolean  "container_registry_enabled"
-    t.boolean  "only_allow_merge_if_build_succeeds", default: false,    null: false
+    t.boolean  "only_allow_merge_if_build_succeeds", default: false, null: false
     t.boolean  "has_external_issue_tracker"
   end
 
@@ -988,7 +1031,6 @@ ActiveRecord::Schema.define(version: 20160608155312) do
     t.boolean  "can_create_team",             default: true,  null: false
     t.string   "state"
     t.integer  "color_scheme_id",             default: 1,     null: false
-    t.integer  "notification_level",          default: 1,     null: false
     t.datetime "password_expires_at"
     t.integer  "created_by_id"
     t.datetime "last_credential_check_at"
@@ -1066,5 +1108,6 @@ ActiveRecord::Schema.define(version: 20160608155312) do
   add_index "web_hooks", ["created_at", "id"], name: "index_web_hooks_on_created_at_and_id", using: :btree
   add_index "web_hooks", ["project_id"], name: "index_web_hooks_on_project_id", using: :btree
 
+  add_foreign_key "personal_access_tokens", "users"
   add_foreign_key "u2f_registrations", "users"
 end

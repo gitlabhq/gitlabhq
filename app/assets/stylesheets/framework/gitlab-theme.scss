@@ -8,32 +8,14 @@
  */
 @mixin gitlab-theme($color-light, $color, $color-darker, $color-dark) {
   .page-with-sidebar {
-    .header-logo {
-      background: $color-darker;
-
-      a {
-        color: $color-light;
-
-        h3 {
-          color: $color-light;
-        }
-      }
+    .toggle-nav-collapse,
+    .pin-nav-btn {
+      color: $color-light;
+      background: $color;
 
       &:hover {
-        background-color: $color-dark;
-        a {
-          color: $white-light;
-
-          h3 {
-            color: $white-light;
-          }
-        }
+        color: $white-light;
       }
-    }
-
-    .collapse-nav a {
-      color: $white-light;
-      background: $color;
     }
 
     .sidebar-wrapper {

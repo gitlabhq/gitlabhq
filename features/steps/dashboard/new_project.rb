@@ -10,7 +10,8 @@ class Spinach::Features::NewProject < Spinach::FeatureSteps
   end
 
   step 'I see "New Project" page' do
-    expect(page).to have_content('Project path')
+    expect(page).to have_content('Project owner')
+    expect(page).to have_content('Project name')
   end
 
   step 'I see all possible import optios' do
@@ -19,7 +20,8 @@ class Spinach::Features::NewProject < Spinach::FeatureSteps
     expect(page).to have_link('GitLab.com')
     expect(page).to have_link('Gitorious.org')
     expect(page).to have_link('Google Code')
-    expect(page).to have_link('Any repo by URL')
+    expect(page).to have_link('Repo by URL')
+    expect(page).to have_link('GitLab export')
   end
 
   step 'I click on "Import project from GitHub"' do
@@ -36,7 +38,7 @@ class Spinach::Features::NewProject < Spinach::FeatureSteps
     end
   end
 
-  step 'I click on "Any repo by URL"' do
+  step 'I click on "Repo by URL"' do
     first('.import_git').click
   end
 

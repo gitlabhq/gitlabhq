@@ -105,6 +105,15 @@ describe Projects::IssuesController do
         expect(assigns(:issues)).to eq [issue]
       end
 
+      it 'should not list confidential issues for project members with guest role' do
+        sign_in(member)
+        project.team << [member, :guest]
+
+        get_issues
+
+        expect(assigns(:issues)).to eq [issue]
+      end
+
       it 'should list confidential issues for author' do
         sign_in(author)
         get_issues
@@ -148,7 +157,7 @@ describe Projects::IssuesController do
 
     shared_examples_for 'restricted action' do |http_status|
       it 'returns 404 for guests' do
-        sign_out :user
+        sign_out(:user)
         go(id: unescaped_parameter_value.to_param)
 
         expect(response).to have_http_status :not_found
@@ -156,6 +165,14 @@ describe Projects::IssuesController do
 
       it 'returns 404 for non project members' do
         sign_in(non_member)
+        go(id: unescaped_parameter_value.to_param)
+
+        expect(response).to have_http_status :not_found
+      end
+
+      it 'returns 404 for project members with guest role' do
+        sign_in(member)
+        project.team << [member, :guest]
         go(id: unescaped_parameter_value.to_param)
 
         expect(response).to have_http_status :not_found

@@ -62,10 +62,14 @@
           .provider-btn-image
             = provider_image_tag(provider)
           - if auth_active?(provider)
-            = link_to unlink_profile_account_path(provider: provider), method: :delete, class: 'provider-btn' do
-              Disconnect
+            - if provider.to_s == 'saml'
+              %a.provider-btn
+                Active
+            - else
+              = link_to unlink_profile_account_path(provider: provider), method: :delete, class: 'provider-btn' do
+                Disconnect
           - else
-            = link_to user_omniauth_authorize_path(provider), method: :post, class: "provider-btn #{'not-active' if !auth_active?(provider)}", "data-no-turbolink" => "true" do
+            = link_to user_omniauth_authorize_path(provider), method: :post, class: 'provider-btn not-active', "data-no-turbolink" => "true" do
               Connect
   %hr
 - if current_user.can_change_username?

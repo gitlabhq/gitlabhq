@@ -1,6 +1,7 @@
 @mixin fade($gradient-direction, $rgba, $gradient-color) {
   visibility: visible;
   opacity: 1;
+  z-index: 2;
   position: absolute;
   bottom: 12px;
   width: 43px;
@@ -68,10 +69,12 @@
   }
 
   &.sub-nav {
+    text-align: center;
     background-color: $background-color;
 
     .container-fluid {
       background-color: $background-color;
+      margin-bottom: 0;
     }
 
     li {
@@ -171,7 +174,6 @@
     > form {
       display: inline-block;
       margin-top: -1px;
-      margin-bottom: 12px;
     }
 
     .icon-label {
@@ -240,6 +242,12 @@
       }
     }
   }
+
+  &.adjust {
+    .nav-text, .nav-controls {
+      width: auto;
+    }
+  }
 }
 
 .layout-nav {
@@ -249,7 +257,8 @@
   z-index: 11;
   background: $background-color;
   border-bottom: 1px solid $border-color;
-  transition-duration: .3s;
+  transition: padding $sidebar-transition-duration;
+  text-align: center;
 
   .container-fluid {
     position: relative;
@@ -278,11 +287,10 @@
     }
 
     .dropdown {
-      margin-left: 7px;
-
-      @media (max-width: $screen-xs-min) {
-        margin-left: 0;
-      }
+      position: absolute;
+      top: 7px;
+      right: 15px;
+      z-index: 2;
 
       li.active {
         font-weight: bold;
@@ -345,6 +353,12 @@
       .badge {
         color: $gl-icon-color;
       }
+
+      &:hover {
+        a, i {
+          color: $black;
+        }
+      }
     }
   }
 
@@ -352,7 +366,7 @@
 
     .fade-right {
       @media (min-width: $screen-xs-max) {
-        right: 67px;
+        right: 68px;
       }
       @media (max-width: $screen-xs-min) {
         right: 0;
