@@ -60,13 +60,14 @@
 
   .encoding-selector,
   .license-selector,
-  .gitignore-selector {
+  .gitignore-selector,
+  .gitlab-ci-yml-selector {
     display: inline-block;
     vertical-align: top;
     font-family: $regular_font;
   }
 
-  .gitignore-selector, .license-selector {
+  .gitignore-selector, .license-selector, .gitlab-ci-yml-selector {
     .dropdown {
       line-height: 21px;
     }
@@ -74,6 +75,12 @@
     .dropdown-menu-toggle {
       vertical-align: top;
       width: 220px;
+    }
+  }
+
+  .gitlab-ci-yml-selector {
+    .dropdown-menu-toggle {
+      width: 250px;
     }
   }
 }

@@ -473,11 +473,11 @@ module API
       expose :content
     end
 
-    class GitignoresList < Grape::Entity
+    class TemplatesList < Grape::Entity
       expose :name
     end
 
-    class Gitignore < Grape::Entity
+    class Template < Grape::Entity
       expose :name, :content
     end
   end
