@@ -8,8 +8,8 @@ module SharedProjectTab
     ensure_active_main_tab('Project')
   end
 
-  step 'the active main tab should be Repo' do
-    ensure_active_main_tab('Repo')
+  step 'the active main tab should be Repository' do
+    ensure_active_main_tab('Repository')
   end
 
   step 'the active main tab should be Graphs' do
