@@ -22,6 +22,9 @@
 .open {
   .dropdown-menu {
     display: block;
+    @media (max-width: $screen-xs-max) {
+      width: 100%;
+    }
   }
 
   .dropdown-menu-toggle {
