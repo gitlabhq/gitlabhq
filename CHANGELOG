@@ -9,6 +9,7 @@ v 8.9.0 (unreleased)
   - Bulk assign/unassign labels to issues.
   - Ability to prioritize labels !4009 / !3205 (Thijs Wouters)
   - Show Star and Fork buttons on mobile.
+  - Performance improvements on RelativeLinkFilter
   - Fix endless redirections when accessing user OAuth applications when they are disabled
   - Allow enabling wiki page events from Webhook management UI
   - Bump rouge to 1.11.0
