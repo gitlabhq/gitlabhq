@@ -15,6 +15,7 @@ class @EditBlob
 
     new BlobLicenseSelectors { @editor }
     new BlobGitignoreSelectors { @editor }
+    new BlobCiYamlSelectors { @editor }
 
   initModePanesAndLinks: ->
     @$editModePanes = $(".js-edit-mode-pane")

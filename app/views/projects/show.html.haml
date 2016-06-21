@@ -57,6 +57,10 @@
           %li.missing
             = link_to add_special_file_path(@project, file_name: 'CONTRIBUTING.md', commit_message: 'Add contribution guide') do
               Add Contribution guide
+        - unless @repository.gitlab_ci_yml
+          %li.missing
+            = link_to add_special_file_path(@project, file_name: '.gitlab-ci.yml') do
+              Set up CI
 
 - if @repository.commit
   .content-block.second-block.white

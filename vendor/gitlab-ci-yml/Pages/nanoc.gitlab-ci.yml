@@ -1,0 +1,12 @@
+# Full project: https://gitlab.com/pages/nanoc
+image: ruby:2.3
+
+pages:
+  script:
+  - bundle install -j4
+  - nanoc
+  artifacts:
+    paths:
+    - public
+  only:
+  - master

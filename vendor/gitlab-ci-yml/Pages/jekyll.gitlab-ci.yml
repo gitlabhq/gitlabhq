@@ -1,0 +1,24 @@
+# Full project: https://gitlab.com/pages/jekyll
+image: ruby:2.3
+
+test:
+  stage: test
+  script:
+  - gem install jekyll
+  - jekyll build -d test
+  artifacts:
+    paths:
+    - test
+  except:
+  - master
+
+pages:
+  stage: deploy
+  script:
+  - gem install jekyll
+  - jekyll build -d public
+  artifacts:
+    paths:
+    - public
+  only:
+  - master
