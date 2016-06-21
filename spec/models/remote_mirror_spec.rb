@@ -43,6 +43,15 @@ describe RemoteMirror do
         expect(mirror.url).to eq('http://foo:bar@test.com')
         expect(mirror.credentials).to eq({ user: 'foo', password: 'bar' })
       end
+
+      it 'should still be picked up by the worker if is stuck' do
+        mirror = create_mirror_with_url('http://test.com')
+        mirror.update_attribute(:update_status, 'started')
+
+        # this will reset some of the updated_at fields
+        mirror.update_attribute(:url, 'http://foo:bar@test.com')
+        expect(RemoteMirror.stuck.last).to eq(mirror)
+      end
     end
   end
 
