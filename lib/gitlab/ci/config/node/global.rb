@@ -11,6 +11,9 @@ module Gitlab
 
           allow_node :before_script, Script,
             description: 'Script that will be executed before each job.'
+
+          allow_node :image, Image,
+            description: 'Docker image that will be used to execute jobs.'
         end
       end
     end

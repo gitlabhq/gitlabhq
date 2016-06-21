@@ -21,7 +21,8 @@ describe Gitlab::Ci::Config::Node::Global do
 
   context 'when hash is valid' do
     let(:hash) do
-      { before_script: ['ls', 'pwd'] }
+      { before_script: ['ls', 'pwd'],
+        image: 'ruby:2.2' }
     end
 
     describe '#process!' do
@@ -32,17 +33,21 @@ describe Gitlab::Ci::Config::Node::Global do
       end
 
       it 'creates node object for each entry' do
-        expect(global.nodes.count).to eq 1
+        expect(global.nodes.count).to eq 2
       end
 
       it 'creates node object using valid class' do
         expect(global.nodes.first)
           .to be_an_instance_of Gitlab::Ci::Config::Node::Script
+        expect(global.nodes.second)
+          .to be_an_instance_of Gitlab::Ci::Config::Node::Image
       end
 
       it 'sets correct description for nodes' do
         expect(global.nodes.first.description)
           .to eq 'Script that will be executed before each job.'
+        expect(global.nodes.second.description)
+          .to eq 'Docker image that will be used to execute jobs.'
       end
     end
 
@@ -51,19 +56,26 @@ describe Gitlab::Ci::Config::Node::Global do
         expect(global).not_to be_leaf
       end
     end
+    context 'when not processed' do
+      describe '#before_script' do
+        it 'returns nil' do
+          expect(global.before_script).to be nil
+        end
+      end
+    end
 
-    describe '#before_script' do
-      context 'when processed' do
-        before { global.process! }
+    context 'when processed' do
+      before { global.process! }
 
+      describe '#before_script' do
         it 'returns correct script' do
           expect(global.before_script).to eq "ls\npwd"
         end
       end
 
-      context 'when not processed' do
-        it 'returns nil' do
-          expect(global.before_script).to be nil
+      describe '#image' do
+        it 'returns valid image' do
+          expect(global.image).to eq 'ruby:2.2'
         end
       end
     end

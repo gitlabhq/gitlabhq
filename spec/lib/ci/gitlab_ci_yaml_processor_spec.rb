@@ -979,7 +979,7 @@ EOT
         config = YAML.dump({ image: ["test"], rspec: { script: "test" } })
         expect do
           GitlabCiYamlProcessor.new(config, path)
-        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "image should be a string")
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "Image config should be a string")
       end
 
       it "returns errors if job name is blank" do

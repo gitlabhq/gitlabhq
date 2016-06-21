@@ -14,7 +14,7 @@ module Ci
     ALLOWED_CACHE_KEYS = [:key, :untracked, :paths]
     ALLOWED_ARTIFACTS_KEYS = [:name, :untracked, :paths, :when, :expire_in]
 
-    attr_reader :after_script, :image, :services, :path, :cache
+    attr_reader :after_script, :services, :path, :cache
 
     def initialize(config, path = nil)
       @ci_config = Gitlab::Ci::Config.new(config)
@@ -22,8 +22,11 @@ module Ci
 
       @path = path
 
-      initial_parsing
+      unless @ci_config.valid?
+        raise ValidationError, @ci_config.errors.first
+      end
 
+      initial_parsing
       validate!
     rescue Gitlab::Ci::Config::Loader::FormatError => e
       raise ValidationError, e.message
@@ -60,6 +63,9 @@ module Ci
     private
 
     def initial_parsing
+      @before_script = @ci_config.before_script
+      @image = @ci_config.image
+
       @after_script = @config[:after_script]
       @image = @config[:image]
       @services = @config[:services]
@@ -87,7 +93,7 @@ module Ci
       {
         stage_idx: stages.index(job[:stage]),
         stage: job[:stage],
-        commands: [job[:before_script] || [@ci_config.before_script], job[:script]].flatten.compact.join("\n"),
+        commands: [job[:before_script] || [@before_script], job[:script]].flatten.compact.join("\n"),
         tag_list: job[:tags] || [],
         name: name,
         only: job[:only],
@@ -107,10 +113,6 @@ module Ci
     end
 
     def validate!
-      unless @ci_config.valid?
-        raise ValidationError, @ci_config.errors.first
-      end
-
       validate_global!
 
       @jobs.each do |name, job|
@@ -123,10 +125,6 @@ module Ci
     def validate_global!
       unless @after_script.nil? || validate_array_of_strings(@after_script)
         raise ValidationError, "after_script should be an array of strings"
-      end
-
-      unless @image.nil? || @image.is_a?(String)
-        raise ValidationError, "image should be a string"
       end
 
       unless @services.nil? || validate_array_of_strings(@services)
