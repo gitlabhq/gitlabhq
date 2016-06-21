@@ -695,24 +695,14 @@ describe API::API, api: true  do
   end
 
   describe 'POST :id/merge_requests/:merge_request_id/approve' do
-    context 'when the user is an allowed approver' do
-      it 'approves the merge request' do
-        project.update_attribute(:approvals_before_merge, 2)
+    it 'approves the merge request' do
+      project.update_attribute(:approvals_before_merge, 2)
 
-        post api("/projects/#{project.id}/merge_requests/#{merge_request.id}/approve", admin)
+      post api("/projects/#{project.id}/merge_requests/#{merge_request.id}/approve", user)
 
-        expect(response.status).to eq(201)
-        expect(json_response['approvals_left']).to eq(1)
-        expect(json_response['approved_by'][0]['user']['username']).to eq(admin.username)
-      end
-    end
-
-    context 'when the user is the MR author' do
-      it 'returns a not authorised response' do
-        post api("/projects/#{project.id}/merge_requests/#{merge_request.id}/approve", user)
-
-        expect(response.status).to eq(401)
-      end
+      expect(response.status).to eq(201)
+      expect(json_response['approvals_left']).to eq(1)
+      expect(json_response['approved_by'][0]['user']['username']).to eq(user.username)
     end
   end
 

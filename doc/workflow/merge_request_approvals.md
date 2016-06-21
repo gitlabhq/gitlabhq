@@ -33,7 +33,7 @@ independent of changes to the merge request.
 ### Approvers
 
 At approvers you can define the default set of users that need to approve a
-merge request. The author of a merge request cannot approve that merge request.
+merge request.
 
 If there are more approvers than required approvals, any subset of these users
 can approve the merge request.
