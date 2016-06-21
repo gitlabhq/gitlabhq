@@ -5,7 +5,7 @@ describe Banzai::Filter::SyntaxHighlightFilter, lib: true do
 
   it 'highlights valid code blocks' do
     result = filter('<pre><code>def fun end</code>')
-    expect(result.to_html).to eq("<pre class=\"code highlight js-syntax-highlight plaintext\"><code>def fun end</code></pre>\n")
+    expect(result.to_html).to eq("<pre class=\"code highlight js-syntax-highlight plaintext\"><code>def fun end</code></pre>")
   end
 
   it 'passes through invalid code blocks' do
