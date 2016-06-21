@@ -13,6 +13,7 @@ v 8.9.0 (unreleased)
   - [Elastic] Move ES settings to application settings
   - Disable mirror flag for projects without import_url
   - UpdateMirror service return an error status when no mirror
+  - Don't reset approvals when rebasing an MR from the UI
   - Show flash notice when Git Hooks are updated successfully
   - Remove explicit Gitlab::Metrics.action assignments, are already automatic.
   - [Elastic] Project members with guest role can't access confidential issues

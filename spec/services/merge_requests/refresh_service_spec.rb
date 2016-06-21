@@ -173,24 +173,59 @@ describe MergeRequests::RefreshService, services: true do
     end
 
     context 'resetting approvals if they are enabled' do
-      it "does not reset approvals if approvals_before_merge is disabled" do
-        @project.update(approvals_before_merge: 0)
-        refresh_service = service.new(@project, @user)
-        allow(refresh_service).to receive(:execute_hooks)
-        refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
-        reload_mrs
+      context 'when approvals_before_merge is disabled' do
+        before do
+          @project.update(approvals_before_merge: 0)
+          refresh_service = service.new(@project, @user)
+          allow(refresh_service).to receive(:execute_hooks)
+          refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
+          reload_mrs
+        end
 
-        expect(@merge_request.approvals).not_to be_empty
+        it 'does not reset approvals' do
+          expect(@merge_request.approvals).not_to be_empty
+        end
       end
 
-      it "does not reset approvals if reset_approvals_on_push is disabled" do
-        @project.update(reset_approvals_on_push: false)
-        refresh_service = service.new(@project, @user)
-        allow(refresh_service).to receive(:execute_hooks)
-        refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
-        reload_mrs
+      context 'when approvals_before_merge is disabled' do
+        before do
+          @project.update(reset_approvals_on_push: false)
+          refresh_service = service.new(@project, @user)
+          allow(refresh_service).to receive(:execute_hooks)
+          refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
+          reload_mrs
+        end
 
-        expect(@merge_request.approvals).not_to be_empty
+        it 'does not reset approvals' do
+          expect(@merge_request.approvals).not_to be_empty
+        end
+      end
+
+      context 'when the rebase_commit_sha on the MR matches the pushed SHA' do
+        before do
+          @merge_request.update(rebase_commit_sha: @newrev)
+          refresh_service = service.new(@project, @user)
+          allow(refresh_service).to receive(:execute_hooks)
+          refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
+          reload_mrs
+        end
+
+        it 'does not reset approvals' do
+          expect(@merge_request.approvals).not_to be_empty
+        end
+      end
+
+      context 'when there are approvals to be reset' do
+        before do
+          refresh_service = service.new(@project, @user)
+          allow(refresh_service).to receive(:execute_hooks)
+          refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
+          reload_mrs
+        end
+
+        it 'resets the approvals' do
+          expect(@merge_request.approvals).to be_empty
+        end
       end
     end
 
