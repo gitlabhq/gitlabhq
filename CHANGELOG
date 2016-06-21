@@ -135,6 +135,7 @@ v 8.9.0 (unreleased)
   - Use Git cached counters for branches and tags on project page
   - Filter parameters for request_uri value on instrumented transactions.
   - Remove duplicated keys add UNIQUE index to keys fingerprint column
+  - ExtractsPath get ref_names from repository cache, if not there access git.
   - Cache user todo counts from TodoService
   - Ensure Todos counters doesn't count Todos for projects pending delete
 
