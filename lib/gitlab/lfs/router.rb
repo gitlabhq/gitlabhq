@@ -1,6 +1,8 @@
 module Gitlab
   module Lfs
     class Router
+      attr_reader :project, :user, :ci, :request
+
       def initialize(project, user, ci, request)
         @project = project
         @user = user
