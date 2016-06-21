@@ -301,7 +301,7 @@ class Ability
         :admin_pipeline,
         :admin_environment,
         :admin_deployment,
-        :admin_locks
+        :admin_path_locks
       ]
     end
 
