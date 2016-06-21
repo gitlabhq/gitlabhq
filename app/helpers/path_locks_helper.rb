@@ -4,6 +4,6 @@ module PathLocksHelper
   end
 
   def license_allows_file_locks?
-    ::License.current && ::License.current.add_on?('GitLab_FileLocks')
+    @license_allows_file_locks ||= (::License.current && ::License.current.add_on?('GitLab_FileLocks'))
   end
 end
