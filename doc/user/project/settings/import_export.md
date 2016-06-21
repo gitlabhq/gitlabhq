@@ -1,65 +1,65 @@
 # Project import/export
 
+>**Note:**
+  - This feature was [introduced][ce-3050] in GitLab 8.9
+  - Importing will not be possible if the import instance version is lower
+    than that of the exporter.
+  - You can find some useful raketasks if you are an administrator in the
+    [project_import_export](../../../administration/raketasks/project_import_export.md)
+    raketask.
+
 Existing projects running on any GitLab instance or GitLab.com can be exported
 with all their related data and be moved into a new GitLab instance.
 
->**Note:** 
-  - This feature was [introduced][ce-3050] in GitLab 8.9
-  - Importing will not be possible if the import instance version is lower
-  than that of the exporter.
- 
 ## Exported contents
- 
-- The following items will be exported:
-  - Project and wiki repositories
-  - Project uploads
-  - Project configuration including web hooks and services
-  - Issues with comments, merge requests with diffs and comments, labels, milestones, snippets,
-   and other project entities
-- The following items will NOT be exported:
-  - Build traces and artifacts
-  - LFS objects
 
-## Exporting a project and its data 
+The following items will be exported:
 
-1. Go to the project settings page and find the Export button
+- Project and wiki repositories
+- Project uploads
+- Project configuration including web hooks and services
+- Issues with comments, merge requests with diffs and comments, labels, milestones, snippets,
+  and other project entities
+
+The following items will NOT be exported:
+
+- Build traces and artifacts
+- LFS objects
+
+## Exporting a project and its data
+
+1. Go to the project settings page by clicking on **Edit Project**
+
+    ![Project settings button](img/settings_edit_button.png)
+
+1. Scroll down to find the **Export project** button
 
     ![export_1](./img/export_1.png)
 
-1. Once the export is generated, you should receive an e-mail with a link to download the file
+1. Once the export is generated, you should receive an e-mail with a link to
+   download the file
 
     ![export_3](./img/export_3.png)
 
-1. You can come back to project settings and download the file from there, or delete it so it
-can be generated again
+1. Alternatively, you can come back to the project settings and download the
+   file from there, or generate a new export
 
     ![export_4](./img/export_4.png)
 
 ## Importing the project
 
-1. The new GitLab project import feature is at the far right of the import options on New Project
+1. The new GitLab project import feature is at the far right of the import
+   options when creating a New Project. Make sure you are in the right namespace
+   and you have entered a project name. Click on **GitLab export**
 
     ![import_1](./img/import_1.png)
 
-1. After choosing a namespace or path, you can then select the file exported previously
+1. You can see where the project will be imported to. You can now select file
+   exported previously
 
     ![import_2](./img/import_2.png)
 
-1. Click on Import to begin importing  and you will see your newly imported project page soon
-
-
-## Advanced
-
-The GitLab Import/Export version can be checked by using:
-
-```bash
-sudo gitlab-rake gitlab:import_export:version
-```
-
-The current list of DB tables that will get exported can be listed by using:
-
-```bash
-sudo gitlab-rake gitlab:import_export:data
-```
+1. Click on **Import project** to begin importing. Your newly imported project
+   page will appear soon
 
 [ce-3050]: https://gitlab.com/gitlab-org/gitlab-ce/issues/3050
