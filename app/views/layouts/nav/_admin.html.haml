@@ -2,7 +2,7 @@
   = render 'layouts/nav/admin_settings'
 
   %ul.nav-links.scrolling-tabs
-    .fade-left
+    %li.fade-left
       = icon('arrow-left')
     = nav_link(controller: %w(dashboard admin projects users groups builds runners), html_options: {class: 'home'}) do
       = link_to admin_root_path, title: 'Overview', class: 'shortcuts-tree' do
@@ -37,5 +37,5 @@
         = link_to admin_spam_logs_path, title: "Spam Logs" do
           %span
             Spam Logs
-    .fade-right
+    %li.fade-right
       = icon('arrow-right')
