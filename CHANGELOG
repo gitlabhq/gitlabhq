@@ -16,6 +16,7 @@ v 8.9.0 (unreleased)
   - Fix issue with arrow keys not working in search autocomplete dropdown
   - Fix an issue where note polling stopped working if a window was in the
     background during a refresh.
+  - Pre-processing Markdown now only happens when needed
   - Make EmailsOnPushWorker use Sidekiq mailers queue
   - Redesign all Devise emails. !4297
   - Don't show 'Leave Project' to group members

@@ -30,13 +30,9 @@ module Banzai
     end
 
     def self.render_result(text, context = {})
+      text = Pipeline[:pre_process].to_html(text, context) if text
+
       Pipeline[context[:pipeline]].call(text, context)
-    end
-
-    def self.pre_process(text, context)
-      pipeline = Pipeline[:pre_process]
-
-      pipeline.to_html(text, context)
     end
 
     # Perform post-processing on an HTML String
