@@ -353,6 +353,67 @@ describe API::API, api: true  do
         expect(response.status).to eq(201)
       end
     end
+
+    context 'the approvals_before_merge param' do
+      def create_merge_request(approvals_before_merge)
+        post api("/projects/#{project.id}/merge_requests", user),
+             title: 'Test merge_request',
+             source_branch: 'feature_conflict',
+             target_branch: 'master',
+             author: user,
+             labels: 'label, label2',
+             milestone_id: milestone.id,
+             approvals_before_merge: approvals_before_merge
+      end
+
+
+      context 'when the target project has approvals_before_merge set to zero' do
+        before do
+          project.update_attributes(approvals_before_merge: 0)
+          create_merge_request(1)
+        end
+
+        it 'returns a 400' do
+          expect(response).to have_http_status(400)
+        end
+
+        it 'includes the error in the response' do
+          expect(json_response['message']['validate_approvals_before_merge']).not_to be_empty
+        end
+      end
+
+      context 'when the target project has a non-zero approvals_before_merge' do
+        context 'when the approvals_before_merge param is less than or equal to the value in the target project' do
+          before do
+            project.update_attributes(approvals_before_merge: 1)
+            create_merge_request(1)
+          end
+
+          it 'returns a 400' do
+            expect(response).to have_http_status(400)
+          end
+
+          it 'includes the error in the response' do
+            expect(json_response['message']['validate_approvals_before_merge']).not_to be_empty
+          end
+        end
+
+        context 'when the approvals_before_merge param is greater than the value in the target project' do
+          before do
+            project.update_attributes(approvals_before_merge: 1)
+            create_merge_request(2)
+          end
+
+          it 'returns a created status' do
+            expect(response).to have_http_status(201)
+          end
+
+          it 'sets approvals_before_merge of the newly-created MR' do
+            expect(json_response['approvals_before_merge']).to eq(2)
+          end
+        end
+      end
+    end
   end
 
   describe "DELETE /projects/:id/merge_requests/:merge_request_id" do

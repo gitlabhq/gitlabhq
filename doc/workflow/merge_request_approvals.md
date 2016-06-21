@@ -56,10 +56,11 @@ After configuring Approvals, you will see the following during merge request cre
 
 ![Choosing approvers in merge request creation](merge_request_approvals/approvals_mr.png)
 
-You can change the default set of approvers before creating the merge request.
-You can't change the amount of required approvals. This ensures that you're
-not forced to adjust settings when someone is unavailable for approval, yet
-the process is still enforced.
+You can change the default set of approvers and the amount of required approvals
+before creating the merge request. The amount of required approvals, if changed,
+must be greater than the default set at the project level. This ensures that
+you're not forced to adjust settings when someone is unavailable for approval,
+yet the process is still enforced.
 
 To approve a merge request, simply press the button.
 
