@@ -12,6 +12,7 @@ v 8.9.0 (unreleased)
   - Disable mirror flag for projects without import_url
   - UpdateMirror service return an error status when no mirror
   - Show flash notice when Git Hooks are updated successfully
+  - Remove explicit Gitlab::Metrics.action assignments, are already automatic.
   - [Elastic] Project members with guest role can't access confidential issues
   - Ability to lock file or folder in the repository
 
