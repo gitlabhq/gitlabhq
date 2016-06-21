@@ -4,6 +4,7 @@ v 8.10.0 (unreleased)
   - Wrap code blocks on Activies and Todos page. !4783 (winniehell)
   - Add Sidekiq queue duration to transaction metrics.
   - Fix MR-auto-close text added to description. !4836
+  - Eager load award emoji on notes
   - Fix pagination when sorting by columns with lots of ties (like priority)
   - Implement Subresource Integrity for CSS and JavaScript assets. This prevents malicious assets from loading in the case of a CDN compromise.
   - Fix user creation with stronger minimum password requirements !4054 (nathan-pmt)

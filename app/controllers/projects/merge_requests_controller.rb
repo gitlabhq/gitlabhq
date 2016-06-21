@@ -320,8 +320,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   def define_show_vars
     # Build a note object for comment form
     @note = @project.notes.new(noteable: @merge_request)
-    @notes = @merge_request.mr_and_commit_notes.inc_author.fresh
-    @discussions = @notes.discussions
+    @discussions = @merge_request.mr_and_commit_notes.inc_author_project_award_emoji.fresh.discussions
+    @notes = @discussions.flatten
     @noteable = @merge_request
 
     # Get commits from repository

@@ -309,7 +309,7 @@ class MergeRequest < ActiveRecord::Base
     commits_for_notes_limit = 100
     commit_ids = commits.last(commits_for_notes_limit).map(&:id)
 
-    Note.includes(:award_emoji).where(
+    Note.where(
       "(project_id = :target_project_id AND noteable_type = 'MergeRequest' AND noteable_id = :mr_id) OR" +
       "((project_id = :source_project_id OR project_id = :target_project_id) AND noteable_type = 'Commit' AND commit_id IN (:commit_ids))",
       mr_id: id,

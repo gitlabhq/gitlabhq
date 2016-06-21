@@ -49,12 +49,14 @@ class Note < ActiveRecord::Base
   scope :fresh, ->{ order(created_at: :asc, id: :asc) }
   scope :inc_author_project, ->{ includes(:project, :author) }
   scope :inc_author, ->{ includes(:author) }
+  scope :inc_author_project_award_emoji, ->{ includes(:project, :author, :award_emoji) }
 
   scope :legacy_diff_notes, ->{ where(type: 'LegacyDiffNote') }
   scope :non_diff_notes, ->{ where(type: ['Note', nil]) }
 
   scope :with_associations, -> do
-    includes(:author, :noteable, :updated_by, :award_emoji,
+    # FYI noteable cannot be loaded for LegacyDiffNote for commits
+    includes(:author, :noteable, :updated_by,
              project: [:project_members, { group: [:group_members] }])
   end
 
