@@ -27,14 +27,6 @@ module Gitlab
       end
     end
 
-    def custom_language
-      return nil if @repository.nil?
-
-      language_name = @repository.gitattribute(@blob_name, 'gitlab-language')
-
-      Rouge::Lexer.find(language_name)
-    end
-
     def highlight(text, continue: true, plain: false)
       if plain
         @formatter.format(Rouge::Lexers::PlainText.lex(text)).html_safe
@@ -46,6 +38,14 @@ module Gitlab
     end
 
     private
+
+    def custom_language
+      return nil if @repository.nil?
+
+      language_name = @repository.gitattribute(@blob_name, 'gitlab-language')
+
+      Rouge::Lexer.find(language_name)
+    end
 
     def rouge_formatter(options = {})
       options = options.reverse_merge(
