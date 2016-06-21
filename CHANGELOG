@@ -79,6 +79,7 @@ v 8.9.0 (unreleased)
   - Pipelines can be canceled only when there are running builds
   - Allow authentication using personal access tokens
   - Use downcased path to container repository as this is expected path by Docker
+  - Allow to use CI token to fetch LFS objects
   - Custom notification settings
   - Projects pending deletion will render a 404 page
   - Measure queue duration between gitlab-workhorse and Rails
