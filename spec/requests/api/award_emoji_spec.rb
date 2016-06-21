@@ -11,6 +11,9 @@ describe API::API, api: true  do
   before { project.team << [user, :master] }
 
   describe "GET /projects/:id/awardable/:awardable_id/award_emoji" do
+    let!(:merge_request)  { create(:merge_request, source_project: project, target_project: project) }
+    let!(:downvote)       { create(:award_emoji, :downvote, awardable: merge_request, user: user) }
+
     context 'on an issue' do
       it "returns an array of award_emoji" do
         get api("/projects/#{project.id}/issues/#{issue.id}/award_emoji", user)
@@ -28,9 +31,6 @@ describe API::API, api: true  do
     end
 
     context 'on a merge request' do
-      let!(:merge_request)  { create(:merge_request, source_project: project, target_project: project) }
-      let!(:downvote)       { create(:award_emoji, :downvote, awardable: merge_request, user: user) }
-
       it "returns an array of award_emoji" do
         get api("/projects/#{project.id}/merge_requests/#{merge_request.id}/award_emoji", user)
 
@@ -66,6 +66,9 @@ describe API::API, api: true  do
 
 
   describe "GET /projects/:id/awardable/:awardable_id/award_emoji/:award_id" do
+    let!(:merge_request)  { create(:merge_request, source_project: project, target_project: project) }
+    let!(:downvote)       { create(:award_emoji, :downvote, awardable: merge_request, user: user) }
+
     context 'on an issue' do
       it "returns the award emoji" do
         get api("/projects/#{project.id}/issues/#{issue.id}/award_emoji/#{award_emoji.id}", user)
@@ -84,9 +87,6 @@ describe API::API, api: true  do
     end
 
     context 'on a merge request' do
-      let!(:merge_request)  { create(:merge_request, source_project: project, target_project: project) }
-      let!(:downvote)       { create(:award_emoji, :downvote, awardable: merge_request, user: user) }
-
       it 'returns the award emoji' do
         get api("/projects/#{project.id}/merge_requests/#{merge_request.id}/award_emoji/#{downvote.id}", user)
 
@@ -178,7 +178,7 @@ describe API::API, api: true  do
     context 'when the awardable is a Merge Request' do
       let!(:merge_request)  { create(:merge_request, source_project: project, target_project: project) }
       let!(:downvote)       { create(:award_emoji, :downvote, awardable: merge_request, user: user) }
-      
+
       it 'deletes the award' do
         expect do
           delete api("/projects/#{project.id}/merge_requests/#{merge_request.id}/award_emoji/#{downvote.id}", user)
