@@ -5,7 +5,7 @@
   - Importing will not be possible if the import instance version is lower
     than that of the exporter.
   - For existing installations, the project import option has to be enabled in
-    application settings (admin area).
+    application settings (`/admin/application_settings`) under 'Import sources'.
 
 The GitLab Import/Export version can be checked by using:
 

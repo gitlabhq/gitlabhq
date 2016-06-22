@@ -4,8 +4,12 @@
   - This feature was [introduced][ce-3050] in GitLab 8.9
   - Importing will not be possible if the import instance version is lower
     than that of the exporter.
+  - For existing installations, the project import option has to be enabled in
+    application settings (`/admin/application_settings`) under 'Import sources'.
+    Ask your administrator if you don't see the **GitLab export** button when
+    creating a new project.
   - You can find some useful raketasks if you are an administrator in the
-    [project_import_export](../../../administration/raketasks/project_import_export.md)
+    [import_export](../../../administration/raketasks/project_import_export.md)
     raketask.
 
 Existing projects running on any GitLab instance or GitLab.com can be exported
