@@ -64,14 +64,18 @@ describe API::API, api: true  do
 
   describe 'GET /projects/:id/repository/commits/:sha/builds' do
     before do
-      project.ensure_pipeline(pipeline.sha, 'master')
-      get api("/projects/#{project.id}/repository/commits/#{pipeline.sha}/builds", api_user)
+      create(:ci_pipeline, project: project, sha: project.commit.id)
+      create(:ci_build, pipeline: pipeline)
+      create(:ci_build)
+
+      get api("/projects/#{project.id}/repository/commits/#{project.commit.id}/builds", api_user)
     end
 
     context 'authorized user' do
       it 'should return project builds for specific commit' do
         expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
+        expect(json_response.size).to eq 2
       end
     end
 
