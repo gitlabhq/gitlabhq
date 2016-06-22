@@ -280,7 +280,7 @@ class GitLabDropdown
         html = @renderData(data)
 
     # Render the full menu
-    full_html = @renderMenu(html.join(""))
+    full_html = @renderMenu(html)
 
     @appendMenu(full_html)
 
@@ -351,7 +351,8 @@ class GitLabDropdown
     if @options.renderMenu
       menu_html = @options.renderMenu(html)
     else
-      menu_html = "<ul>#{html}</ul>"
+      menu_html = $('<ul />')
+        .append(html)
 
     return menu_html
 
@@ -360,7 +361,7 @@ class GitLabDropdown
     selector = '.dropdown-content'
     if @dropdown.find(".dropdown-toggle-page").length
       selector = ".dropdown-page-one .dropdown-content"
-    $(selector, @dropdown).html html
+    $(selector, @dropdown).append html
 
   # Render the row
   renderItem: (data, group = false, index = false) ->
