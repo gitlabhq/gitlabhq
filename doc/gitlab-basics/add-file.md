@@ -26,6 +26,16 @@ Add a commit message based on what you just added and then click on "commit chan
 
 ![Commit changes](basicsimages/commit_changes.png)
 
-### Note
-Besides its regular files, every directory needs a README.md or README.html file which works like an index, telling
-what the directory is about. It's the first document you'll find when you open a directory.
+# On a new project
+
+When starting a new project, there are some common files which the new project might need too. Therefor a message will be displayed by GitLab to make this easy for you.
+
+![First file for your project](basicsimages/first_file.png)
+
+When clicking on either `LICENSE` or `.gitignore`, a dropdown will be displayed to provide you with a template which might be suitable for your project.
+
+![MIT license selected](basicsimages/mit_license.png)
+
+The license, changelog, contribution guide, or `.gitlab-ci.yml` file could also be added through a button on the project page. In the example below the license has already been created, which creates a link to the license itself.
+
+![New file button](basicsimages/file_button.png)
