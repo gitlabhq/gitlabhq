@@ -1,10 +1,11 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
-v 8.9.0 (unreleased)
-  - Set import_url validation to be more strict
 v 8.10.0 (unreleased)
   - Wrap code blocks on Activies and Todos page. !4783 (winniehell)
   - Fix MR-auto-close text added to description. !4836
+
+v 8.9.1 (unreleased)
+   - Set import_url validation to be more strict
 
 v 8.9.0
   - Fix builds API response not including commit data
