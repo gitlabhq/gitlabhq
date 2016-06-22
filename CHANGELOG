@@ -7,6 +7,7 @@ v 8.9.1 (unreleased)
   - Add documentation for the export & import features. !4732
   - Add some docs for Docker Registry configuration. !4738
   - Ensure we don't send the "access request declined" email to access requesters on project deletion. !4744
+  - Display group/project access requesters separately in the admin area. !4798
   - Fix MR-auto-close text added to description. !4836
   - Fix typo in export failure email. !4847
 
