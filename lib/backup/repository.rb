@@ -2,8 +2,6 @@ require 'yaml'
 
 module Backup
   class Repository
-    attr_reader :repos_path
-
     def dump
       prepare
 
@@ -50,10 +48,12 @@ module Backup
     end
 
     def restore
-      if File.exists?(repos_path)
+      Gitlab.config.repositories.storages.each do |name, path|
+        next unless File.exists?(path)
+
         # Move repos dir to 'repositories.old' dir
-        bk_repos_path = File.join(repos_path, '..', 'repositories.old.' + Time.now.to_i.to_s)
-        FileUtils.mv(repos_path, bk_repos_path)
+        bk_repos_path = File.join(path, '..', 'repositories.old.' + Time.now.to_i.to_s)
+        FileUtils.mv(path, bk_repos_path)
       end
 
       FileUtils.mkdir_p(repos_path)
@@ -61,7 +61,7 @@ module Backup
       Project.find_each(batch_size: 1000) do |project|
         $progress.print " * #{project.path_with_namespace} ... "
 
-        project.namespace.ensure_dir_exist if project.namespace
+        project.ensure_dir_exist
 
         if File.exists?(path_to_bundle(project))
           FileUtils.mkdir_p(path_to_repo(project))
@@ -100,8 +100,8 @@ module Backup
       end
 
       $progress.print 'Put GitLab hooks in repositories dirs'.color(:yellow)
-      cmd = "#{Gitlab.config.gitlab_shell.path}/bin/create-hooks"
-      if system(cmd)
+      cmd = %W(#{Gitlab.config.gitlab_shell.path}/bin/create-hooks) + repository_storage_paths_args
+      if system(*cmd)
         $progress.puts " [DONE]".color(:green)
       else
         puts " [FAILED]".color(:red)
@@ -120,10 +120,6 @@ module Backup
       File.join(backup_repos_path, project.path_with_namespace + ".bundle")
     end
 
-    def repos_path
-      Gitlab.config.gitlab_shell.repos_path
-    end
-
     def backup_repos_path
       File.join(Gitlab.config.backup.path, "repositories")
     end
@@ -138,6 +134,12 @@ module Backup
 
     def silent
       {err: '/dev/null', out: '/dev/null'}
+    end
+
+    private
+
+    def repository_storage_paths_args
+      Gitlab.config.repositories.storages.values
     end
   end
 end

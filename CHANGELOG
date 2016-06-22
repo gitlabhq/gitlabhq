@@ -1,5 +1,78 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+v 8.10.0 (unreleased)
+  - Fix commit builds API, return all builds for all pipelines for given commit. !4849
+  - Replace Haml with Hamlit to make view rendering faster. !3666
+  - Refactor repository paths handling to allow multiple git mount points
+  - Wrap code blocks on Activies and Todos page. !4783 (winniehell)
+  - Display last commit of deleted branch in push events !4699 (winniehell)
+  - Add Sidekiq queue duration to transaction metrics.
+  - Make images fit to the size of the viewport !4810
+  - Fix check for New Branch button on Issue page !4630 (winniehell)
+  - Fix MR-auto-close text added to description. !4836
+  - Fix pagination when sorting by columns with lots of ties (like priority)
+  - Exclude email check from the standard health check
+  - Fix changing issue state columns in milestone view
+  - Fix user creation with stronger minimum password requirements !4054 (nathan-pmt)
+  - Check for conflicts with existing Project's wiki path when creating a new project.
+  - Remove unused front-end variable -> default_issues_tracker
+  - Add API endpoint for a group issues !4520 (mahcsig)
+  - Allow [ci skip] to be in any case and allow [skip ci]. !4785 (simon_w)
+
+v 8.9.3 (unreleased)
+  - Decreased min width of screen to 1280px for pinned sidebar
+  - Fix encrypted data backwards compatibility after upgrading attr_encrypted gem
+  - Update mobile button icons to be more inline with typical UI paradigms
+
+v 8.9.2
+  - Fix visibility of snippets when searching.
+  - Fix an information disclosure when requesting access to a group containing private projects.
+  - Update omniauth-saml to 1.6.0 !4951
+
+v 8.9.1
+  - Refactor labels documentation. !3347
+  - Eager load award emoji on notes. !4628
+  - Fix some CI wording in documentation. !4660
+  - Document `GIT_STRATEGY` and `GIT_DEPTH`. !4720
+  - Add documentation for the export & import features. !4732
+  - Add some docs for Docker Registry configuration. !4738
+  - Ensure we don't send the "access request declined" email to access requesters on project deletion. !4744
+  - Display group/project access requesters separately in the admin area. !4798
+  - Add documentation and examples for configuring cloud storage for registry images. !4812
+  - Clarifies documentation about artifact expiry. !4831
+  - Fix the Network graph links. !4832
+  - Fix MR-auto-close text added to description. !4836
+  - Add documentation for award emoji now that comments can be awarded with emojis. !4839
+  - Fix typo in export failure email. !4847
+  - Fix header vertical centering. !4170
+  - Fix subsequent SAML sign ins. !4718
+  - Set button label when picking an option from status dropdown. !4771
+  - Prevent invalid URLs from raising exceptions in WikiLink Filter. !4775
+  - Handle external issues in IssueReferenceFilter. !4789
+  - Support for rendering/redacting multiple documents. !4828
+  - Update Todos documentation and screenshots to include new functionality. !4840
+  - Hide nav arrows by default. !4843
+  - Added bottom padding to label color suggestion link. !4845
+  - Use jQuery objects in ref dropdown. !4850
+  - Fix GitLab project import issues related to notes and builds. !4855
+  - Restrict header logo to 36px so it doesn't overflow. !4861
+  - Fix unwanted label unassignment. !4863
+  - Fix mobile Safari bug where horizontal nav arrows would flicker on scroll. !4869
+  - Restore old behavior around diff notes to outdated discussions. !4870
+  - Fix merge requests project settings help link anchor. !4873
+  - Fix 404 when accessing pipelines as guest user on public projects. !4881
+  - Remove width restriction for logo on sign-in page. !4888
+  - Bump gitlab_git to 10.2.3 to fix false truncated warnings with ISO-8559 files. !4884
+  - Apply selected value as label. !4886
+  - Fix temp file being deleted after the request while importing a GitLab project. !4894
+  - Fix pagination when sorting by columns with lots of ties (like priority)
+  - Implement Subresource Integrity for CSS and JavaScript assets. This prevents malicious assets from loading in the case of a CDN compromise.
+  - Fix user creation with stronger minimum password requirements !4054 (nathan-pmt)
+  - Fix a wrong MR status when merge_when_build_succeeds & project.only_allow_merge_if_build_succeeds are true. !4912
+  - Add SMTP as default delivery method to match gitlab-org/omnibus-gitlab!826. !4915
+  - Remove duplicate 'New Page' button on edit wiki page
+
+v 8.9.0
 v 8.9.0 (unreleased)
   - Fix Error 500 when using closes_issues API with an external issue tracker
   - Add more information into RSS feed for issues (Alexander Matyushentsev)

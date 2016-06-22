@@ -24,7 +24,7 @@ module Projects
     def execute
       raise LeaseTaken unless try_obtain_lease
 
-      GitlabShellOneShotWorker.perform_async(:gc, @project.path_with_namespace)
+      GitlabShellOneShotWorker.perform_async(:gc, @project.repository_storage_path, @project.path_with_namespace)
     ensure
       Gitlab::Metrics.measure(:reset_pushes_since_gc) do
         @project.update_column(:pushes_since_gc, 0)
