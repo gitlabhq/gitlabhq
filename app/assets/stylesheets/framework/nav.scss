@@ -111,10 +111,6 @@
     width: 50%;
     line-height: 28px;
 
-    &.wiki-page {
-      padding: 16px 10px 11px;
-    }
-
     /* Small devices (phones, tablets, 768px and lower) */
     @media (max-width: $screen-sm-min) {
       width: 100%;
