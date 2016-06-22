@@ -70,22 +70,6 @@ feature 'Project', feature: true do
     end
   end
 
-  describe 'leave project link' do
-    let(:user)    { create(:user) }
-    let(:project) { create(:project, namespace: user.namespace) }
-
-    before do
-      login_with(user)
-      project.team.add_user(user, Gitlab::Access::MASTER)
-      visit namespace_project_path(project.namespace, project)
-    end
-
-    it 'click project-settings and find leave project' do
-      find('#project-settings-button').click
-      expect(page).to have_link('Leave Project')
-    end
-  end
-
   describe 'project title' do
     include WaitForAjax
 
