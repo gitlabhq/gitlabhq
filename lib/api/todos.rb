@@ -18,7 +18,7 @@ module API
       get do
         todos = find_todos
 
-        present paginate(todos), with: Entities::Todo
+        present paginate(todos), with: Entities::Todo, current_user: current_user
       end
 
       # Mark a todo as done
@@ -33,7 +33,7 @@ module API
         todo = current_user.todos.find(params[:id])
         todo.done
 
-        present todo, with: Entities::Todo
+        present todo, with: Entities::Todo, current_user: current_user
       end
 
       # Mark all todos as done
@@ -45,7 +45,7 @@ module API
         todos = find_todos
         todos.each(&:done)
 
-        present paginate(Kaminari.paginate_array(todos)), with: Entities::Todo
+        present paginate(Kaminari.paginate_array(todos)), with: Entities::Todo, current_user: current_user
       end
     end
   end

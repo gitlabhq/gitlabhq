@@ -277,16 +277,16 @@ module API
       expose :project, using: Entities::BasicProjectDetails
       expose :author, using: Entities::UserBasic
       expose :action_name
-      expose :target_id
       expose :target_type
-      expose :target_reference do |todo, options|
-        todo.target.to_reference
+
+      expose :target do |todo, options|
+        Entities.const_get(todo.target_type).represent(todo.target, options)
       end
 
       expose :target_url do |todo, options|
         target_type   = todo.target_type.underscore
         target_url    = "namespace_project_#{target_type}_url"
-        target_anchor = "note_#{todo.note_id}" if todo.note.present?
+        target_anchor = "note_#{todo.note_id}" if todo.note_id?
 
         Gitlab::Application.routes.url_helpers.public_send(target_url,
           todo.project.namespace, todo.project, todo.target, anchor: target_anchor)

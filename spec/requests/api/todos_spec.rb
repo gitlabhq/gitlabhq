@@ -9,7 +9,7 @@ describe API::Todos, api: true do
   let(:author_2) { create(:user) }
   let(:john_doe) { create(:user, username: 'john_doe') }
   let(:merge_request) { create(:merge_request, source_project: project_1) }
-  let!(:pending_1) { create(:todo, project: project_1, author: author_1, user: john_doe) }
+  let!(:pending_1) { create(:todo, :mentioned, project: project_1, author: author_1, user: john_doe) }
   let!(:pending_2) { create(:todo, project: project_2, author: author_2, user: john_doe) }
   let!(:pending_3) { create(:todo, project: project_1, author: author_2, user: john_doe, target: merge_request) }
   let!(:done) { create(:todo, :done, project: project_1, author: author_1, user: john_doe) }
@@ -38,9 +38,8 @@ describe API::Todos, api: true do
         expect(json_response[0]['id']).to eq(pending_3.id)
         expect(json_response[0]['project']).to be_a Hash
         expect(json_response[0]['author']).to be_a Hash
-        expect(json_response[0]['target_id']).to be_present
         expect(json_response[0]['target_type']).to be_present
-        expect(json_response[0]['target_reference']).to be_present
+        expect(json_response[0]['target']).to be_a Hash
         expect(json_response[0]['target_url']).to be_present
         expect(json_response[0]['body']).to be_present
         expect(json_response[0]['state']).to eq('pending')
@@ -81,6 +80,16 @@ describe API::Todos, api: true do
       context 'and using the project filter' do
         it 'filters based on project_id param' do
           get api('/todos', john_doe), { project_id: project_2.id }
+
+          expect(response.status).to eq(200)
+          expect(json_response).to be_an Array
+          expect(json_response.length).to eq(1)
+        end
+      end
+
+      context 'and using the action filter' do
+        it 'filters based on action param' do
+          get api('/todos', john_doe), { action: 'mentioned' }
 
           expect(response.status).to eq(200)
           expect(json_response).to be_an Array
