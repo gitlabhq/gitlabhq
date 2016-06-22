@@ -40,11 +40,11 @@ module Gitlab
     private
 
     def custom_language
-      return nil if @repository.nil?
+      language_name = @repository && @repository.gitattribute(@blob_name, 'gitlab-language')
 
-      language_name = @repository.gitattribute(@blob_name, 'gitlab-language')
+      return nil unless language_name
 
-      Rouge::Lexer.find(language_name)
+      Rouge::Lexer.find_fancy(language_name)
     end
 
     def rouge_formatter(options = {})
