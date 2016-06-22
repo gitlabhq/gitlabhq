@@ -447,6 +447,8 @@ class Project < ActiveRecord::Base
     import_url = Gitlab::UrlSanitizer.new(value)
     create_or_update_import_data(credentials: import_url.credentials)
     super(import_url.sanitized_url)
+  rescue Addressable::URI::InvalidURIError
+    errors.add(:import_url, 'must be a valid URL.')
   end
 
   def import_url
