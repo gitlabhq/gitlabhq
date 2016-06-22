@@ -32,21 +32,22 @@ The following items will NOT be exported:
 
 ## Exporting a project and its data
 
-1. Go to the project settings page by clicking on **Edit Project**
+1. Go to the project settings page by clicking on **Edit Project**:
 
     ![Project settings button](img/settings_edit_button.png)
 
-1. Scroll down to find the **Export project** button
+1. Scroll down to find the **Export project** button:
 
     ![export_1](./img/export_1.png)
 
 1. Once the export is generated, you should receive an e-mail with a link to
-   download the file
+   download the file:
 
     ![export_3](./img/export_3.png)
 
 1. Alternatively, you can come back to the project settings and download the
-   file from there, or generate a new export
+   file from there, or generate a new export. Once the file available, the page
+   should show the **Download export** button:
 
     ![export_4](./img/export_4.png)
 
@@ -54,16 +55,16 @@ The following items will NOT be exported:
 
 1. The new GitLab project import feature is at the far right of the import
    options when creating a New Project. Make sure you are in the right namespace
-   and you have entered a project name. Click on **GitLab export**
+   and you have entered a project name. Click on **GitLab export**:
 
     ![import_1](./img/import_1.png)
 
 1. You can see where the project will be imported to. You can now select file
-   exported previously
+   exported previously:
 
     ![import_2](./img/import_2.png)
 
 1. Click on **Import project** to begin importing. Your newly imported project
-   page will appear soon
+   page will appear soon:
 
 [ce-3050]: https://gitlab.com/gitlab-org/gitlab-ce/issues/3050
