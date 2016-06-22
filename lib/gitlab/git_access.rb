@@ -5,7 +5,7 @@ module Gitlab
 
     attr_reader :actor, :project, :protocol
 
-    def initialize(actor, project, protocol = nil)
+    def initialize(actor, project, protocol)
       @actor    = actor
       @project  = project
       @protocol = protocol
@@ -50,6 +50,8 @@ module Gitlab
     end
 
     def check(cmd, changes = nil)
+      return build_status_object(false, 'Access denied due to unspecified Git access protocol') unless protocol
+
       return build_status_object(false, "Git access over #{protocol.upcase} is not allowed") unless protocol_allowed?
 
       unless actor
@@ -75,8 +77,6 @@ module Gitlab
     end
 
     def download_access_check
-      return build_status_object(false, "Git access over #{protocol.upcase} is not allowed") unless protocol_allowed?
-
       if user
         user_download_access_check
       elsif deploy_key
@@ -87,8 +87,6 @@ module Gitlab
     end
 
     def push_access_check(changes)
-      return build_status_object(false, "Git access over #{protocol.upcase} is not allowed") unless protocol_allowed?
-
       if user
         user_push_access_check(changes)
       elsif deploy_key
@@ -99,8 +97,6 @@ module Gitlab
     end
 
     def user_download_access_check
-      return build_status_object(false, "Git access over #{protocol.upcase} is not allowed") unless protocol_allowed?
-
       unless user.can?(:download_code, project)
         return build_status_object(false, "You are not allowed to download code from this project.")
       end
@@ -109,8 +105,6 @@ module Gitlab
     end
 
     def user_push_access_check(changes)
-      return build_status_object(false, "Git access over #{protocol.upcase} is not allowed") unless protocol_allowed?
-
       if changes.blank?
         return build_status_object(true)
       end
@@ -200,7 +194,7 @@ module Gitlab
     end
 
     def protocol_allowed?
-      protocol ? Gitlab::ProtocolAccess.allowed?(protocol) : true
+      Gitlab::ProtocolAccess.allowed?(protocol)
     end
 
     def branch_name(ref)

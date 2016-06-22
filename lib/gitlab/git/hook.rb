@@ -35,7 +35,7 @@ module Gitlab
         vars = {
           'GL_ID' => gl_id,
           'PWD' => repo_path,
-          'PROTOCOL' => 'web'
+          'GL_PROTOCOL' => 'web'
         }
 
         options = {
