@@ -391,7 +391,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   def set_suggested_approvers
     if @merge_request.requires_approve?
       @suggested_approvers = Gitlab::AuthorityAnalyzer.new(
-        @merge_request
+        @merge_request,
+        current_user
       ).calculate(@merge_request.approvals_required)
     end
   end
