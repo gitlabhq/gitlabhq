@@ -241,4 +241,4 @@ CI with various languages.
 [runner]: ../runners/README.md
 [enabled]: ../enable_or_disable_ci.md
 [stages]: ../yaml/README.md#stages
-[pipeline]: ../definitions/README.md#pipelines
+[pipeline]: ../pipelines.md
