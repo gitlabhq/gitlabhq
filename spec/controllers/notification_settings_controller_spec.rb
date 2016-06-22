@@ -13,7 +13,7 @@ describe NotificationSettingsController do
     context 'when not authorized' do
       it 'redirects to sign in page' do
         post :create,
-             project: { id: project.id },
+             project_id: project.id,
              notification_setting: { level: :participating }
 
         expect(response).to redirect_to(new_user_session_path)
@@ -40,7 +40,7 @@ describe NotificationSettingsController do
 
         it 'creates notification setting' do
           post :create,
-               project: { id: project.id },
+               project_id: project.id,
                notification_setting: { level: :participating }
 
           expect(response.status).to eq 200
@@ -53,7 +53,7 @@ describe NotificationSettingsController do
         context 'with custom settings' do
           it 'creates notification setting' do
             post :create,
-                 project: { id: project.id },
+                 project_id: project.id,
                  notification_setting: { level: :custom }.merge(custom_events)
 
             expect(response.status).to eq 200
@@ -68,7 +68,7 @@ describe NotificationSettingsController do
 
         it 'creates notification setting' do
           post :create,
-               namespace: { id: group.id },
+               namespace_id: group.id,
                notification_setting: { level: :watch }
 
           expect(response.status).to eq 200
@@ -81,7 +81,7 @@ describe NotificationSettingsController do
         context 'with custom settings' do
           it 'creates notification setting' do
             post :create,
-                 namespace: { id: group.id },
+                 namespace_id: group.id,
                  notification_setting: { level: :custom }.merge(custom_events)
 
             expect(response.status).to eq 200
@@ -98,7 +98,7 @@ describe NotificationSettingsController do
 
       it 'returns 404' do
         post :create,
-             project: { id: private_project.id },
+             project_id: private_project.id,
              notification_setting: { level: :participating }
 
         expect(response.status).to eq(404)

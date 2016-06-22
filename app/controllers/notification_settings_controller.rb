@@ -2,8 +2,6 @@ class NotificationSettingsController < ApplicationController
   before_action :authenticate_user!
 
   def create
-    resource = find_resource
-
     return render_404 unless can_read?(resource)
 
     @notification_setting = current_user.notification_settings_for(resource)
@@ -21,12 +19,12 @@ class NotificationSettingsController < ApplicationController
 
   private
 
-  def find_resource
-    resource =
-      if params[:project].present?
-        Project.find(params[:project][:id])
-      elsif params[:namespace].present?
-        Group.find(params[:namespace][:id])
+  def resource
+    @resource ||=
+      if params[:project_id].present?
+        Project.find(params[:project_id])
+      elsif params[:namespace_id].present?
+        Group.find(params[:namespace_id])
       end
   end
 

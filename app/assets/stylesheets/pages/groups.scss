@@ -48,11 +48,7 @@
 
   .access-request-button {
     @include btn-gray;
-    position: absolute;
-    right: 16px;
-    bottom: 32px;
-    padding: 3px 10px;
+    margin-right: 10px;
     text-transform: none;
-    background-color: $background-color;
   }
 }

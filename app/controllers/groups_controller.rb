@@ -74,6 +74,10 @@ class GroupsController < Groups::ApplicationController
   def edit
   end
 
+  def projects
+    @projects = @group.projects.page(params[:page])
+  end
+
   def update
     if Groups::UpdateService.new(@group, current_user, group_params).execute
       redirect_to edit_group_path(@group), notice: "Group '#{@group.name}' was successfully updated."
@@ -98,10 +102,6 @@ class GroupsController < Groups::ApplicationController
     @projects = @projects.page(params[:page]) if params[:filter_projects].blank?
 
     @shared_projects = GroupProjectsFinder.new(group, only_shared: true).execute(current_user)
-  end
-
-  def projects
-    @projects = @group.projects.page(params[:page])
   end
 
   def authorize_create_group!
