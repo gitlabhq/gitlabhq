@@ -4,6 +4,8 @@
   - This feature was [introduced][ce-3050] in GitLab 8.9
   - Importing will not be possible if the import instance version is lower
     than that of the exporter.
+  - For existing installations, the project import option has to be enabled in
+    application settings (admin area).
 
 The GitLab Import/Export version can be checked by using:
 
