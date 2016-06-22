@@ -149,6 +149,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     else
       @source_project = @merge_request.source_project
       @target_project = @merge_request.target_project
+      set_suggested_approvers
+
       render action: "new"
     end
   end
@@ -181,6 +183,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
         end
       end
     else
+      set_suggested_approvers
+
       render "edit"
     end
   end
