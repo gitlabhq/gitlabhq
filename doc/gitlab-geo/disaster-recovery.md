@@ -2,7 +2,7 @@
 
 > **Note:**
 This is not officially supported yet, please don't use as your only
-Disaster Recovery strategy as you may loose data.
+Disaster Recovery strategy as you may lose data.
 
 GitLab Geo replicates your database and your Git repositories. We will
 support and replicate more data in the future, that will enable you to
@@ -20,7 +20,7 @@ but you can do it manually if you have `root` access to the machine.
 You must make the changes in the exact specific order:
 
 1. Take down your primary node (or make sure it will not go up during this
-   process or you may loose data)
+   process or you may lose data)
 2. Wait for any database replication to finish
 3. Promote the Postgres in your secondary node as primary
 4. Log-in to your secondary node with a user with `sudo` permission
