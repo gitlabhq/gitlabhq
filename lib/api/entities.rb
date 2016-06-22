@@ -476,5 +476,14 @@ module API
     class Template < Grape::Entity
       expose :name, :content
     end
+
+    class Snippet < Grape::Entity
+      expose :id, :title, :file_name
+      expose :author, using: Entities::UserBasic
+      expose :updated_at, :created_at
+
+      # TODO (rspeicher): Deprecated; remove in 9.0
+      expose(:expires_at) { |snippet| nil }
+    end
   end
 end
