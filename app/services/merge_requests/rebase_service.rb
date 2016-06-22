@@ -52,6 +52,19 @@ module MergeRequests
         return false
       end
 
+      output, status = popen(
+        %W(git rev-parse #{merge_request.source_branch}),
+        tree_path,
+        git_env
+      )
+
+      unless status.zero?
+        log('Failed to get SHA of rebased branch:')
+        log(output)
+        return false
+      end
+
+      merge_request.update_attributes(rebase_commit_sha: output.chomp)
       # Push
       output, status = popen(
         %W(git push -f origin #{merge_request.source_branch}),
