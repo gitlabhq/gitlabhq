@@ -8,7 +8,7 @@ the matched text will be closed. This happens when the commit is pushed to a pro
 When not specified, the default `issue_closing_pattern` as shown below will be used:
 
 ```bash
-((?:[Cc]los(?:e[sd]?|ing)|[Ff]ix(?:e[sd]|ing)?) +(?:(?:issues? +)?%{issue_ref}(?:(?:, *| +and +)?))+)
+((?:[Cc]los(?:e[sd]?|ing)|[Ff]ix(?:e[sd]|ing)?|[Rr]esolv(?:e[sd]?|ing))(:?) +(?:(?:issues? +)?%{issue_ref}(?:(?:, *| +and +)?)|([A-Z][A-Z0-9_]+-\d+))+)
 ```
 
 Here, `%{issue_ref}` is a complex regular expression defined inside GitLab, that matches a reference to a local issue (`#123`), cross-project issue (`group/project#123`) or a link to an issue (`https://gitlab.example.com/group/project/issues/123`).
