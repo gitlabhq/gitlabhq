@@ -1,6 +1,8 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
-v 8.9.0 (unreleased)
+v 8.9.1 (unreleased)
+
+v 8.9.0
   - Fix builds API response not including commit data
   - Fix error when CI job variables key specified but not defined
   - Fix pipeline status when there are no builds in pipeline
@@ -63,6 +65,7 @@ v 8.9.0 (unreleased)
   - Limit email on push diff size to 30 files / 150 KB
   - Add rake task 'gitlab:db:configure' for conditionally seeding or migrating the database
   - Changed the Slack build message to use the singular duration if necessary (Aran Koning)
+  - Fix race condition on merge when build succeeds
   - Links from a wiki page to other wiki pages should be rewritten as expected
   - Add option to project to only allow merge requests to be merged if the build succeeds (Rui Santos)
   - Added navigation shortcuts to the project pipelines, milestones, builds and forks page. !4393
@@ -136,15 +139,6 @@ v 8.9.0 (unreleased)
   - Remove tanuki logo from side navigation; center on top nav
   - Include user relationships when retrieving award_emoji
   - Various associations are now eager loaded when parsing issue references to reduce the number of queries executed
-
-v 8.8.5 (unreleased)
-  - Ensure branch cleanup regardless of whether the GitHub import process succeeds
-  - Fix todos page throwing errors when you have a project pending deletion
-  - Reduce number of SQL queries when rendering user references
-  - Import GitHub repositories respecting the API rate limit
-  - Fix importer for GitHub comments on diff
-  - Disable Webhooks before proceeding with the GitHub import
-  - Fix incremental trace upload API when using multi-byte UTF-8 chars in trace
   - Set inverse_of for Project/Service association to reduce the number of queries
   - Update tanuki logo highlight/loading colors
   - Remove explicit Gitlab::Metrics.action assignments, are already automatic.
@@ -155,8 +149,8 @@ v 8.8.5 (unreleased)
   - ExtractsPath get ref_names from repository cache, if not there access git.
   - Cache user todo counts from TodoService
   - Ensure Todos counters doesn't count Todos for projects pending delete
-  - Add tooltip to pin/unpin navbar
   - Add left/right arrows horizontal navigation
+  - Add tooltip to pin/unpin navbar
   - Add new sub nav style to Wiki and Graphs sub navigation
 
 v 8.8.5
