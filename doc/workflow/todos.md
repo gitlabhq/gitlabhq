@@ -54,8 +54,7 @@ you. If you close the issue or merge request, your Todo will automatically
 be marked as done.
 
 If someone else closes, merges, or takes action on the issue or merge
-request, your Todo will remain pending. This way, an issue or merge request
-that was closed by another user
+request, your Todo will remain pending. This prevents other users from closing issues without you being notified.
 
 There is just one Todo per issue or merge request, so mentioning a user a
 hundred times in an issue will only trigger one Todo.
