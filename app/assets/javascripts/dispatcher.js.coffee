@@ -57,7 +57,7 @@ class Dispatcher
         new MergedButtons()
       when 'projects:merge_requests:commits', 'projects:merge_requests:builds'
         new MergedButtons()
-      when "projects:merge_requests:diffs"
+      when "projects:merge_requests:diffs", "projects:merge_requests:conflicts"
         new Diff()
         new ZenMode()
         new MergedButtons()

@@ -1,0 +1,110 @@
+.content-block.oneline-block.files-changed
+  .inline-parallel-buttons
+    .btn-group
+      = inline_diff_btn
+      = parallel_diff_btn
+  .js-toggle-container
+    .commit-stat-summary
+      Showing
+      %strong.cred 3 conflicts
+      for
+      %strong remove-from
+      into
+      %strong fix-event-currentTarget
+
+:css
+  .diff-wrap-lines .line_content {
+    white-space: normal;
+  }
+
+.files
+  .diff-file.file-holder.conflict.unresolved
+    .file-title
+      %i.fa.fa-ban
+      %a
+        %span lib/component.js
+      .file-actions
+        %a.btn.btn-sm Edit
+        .btn-group
+          %a.btn.btn-sm Keep ours
+          %a.btn.btn-sm Take theirs
+        %a.btn.btn-sm View @ff9200
+
+    .diff-content.diff-wrap-lines
+      %table.code.js-syntax-highlight.text-file.white
+        %tbody
+          %tr.line_holder.match
+            %td.diff-line-num.js-unfold.unfold
+              \...
+            %td.diff-line-num.js-unfold.unfold
+              \...
+            %td.line_content.match @@ -206,8 +206,7 @@ define(
+          %tr.line_holder
+            %td.diff-line-num
+              206
+            %td.diff-line-num
+              206
+            %td.line_content
+          %tr.line_holder
+            %td.diff-line-num
+              207
+            %td.diff-line-num
+              207
+            %td.line_content
+              &nbsp;&nbsp;&nbsp;&nbsp;var options = utils.merge.apply(utils, args);
+          %tr.line_holder.head.header
+            %td.diff-line-num
+              208
+            %td.diff-line-num
+              208
+            %td.line_content
+              %strong
+                &nbsp;&nbsp;HEAD //our changes
+          %tr.line_holder.head
+            %td.diff-line-num
+              209
+            %td.diff-line-num
+            %td.line_content
+              &nbsp;&nbsp;&nbsp;&nbsp;$(selector).each(function(i, rawNode) {
+          %tr.line_holder.head
+            %td.diff-line-num
+              210
+            %td.diff-line-num
+            %td.line_content
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;var rawNode = node.jQuery ? node[0] : node;
+          %tr.line_holder
+            %td.diff-line-num &nbsp;
+            %td.diff-line-num &nbsp;
+            %td.line_content &nbsp;
+          %tr.line_holder.origin
+            %td.diff-line-num
+            %td.diff-line-num
+              209
+            %td.line_content
+              &nbsp;&nbsp;&nbsp;&nbsp;$(selector).each(function(i, rawNode) {
+          %tr.line_holder.origin
+            %td.diff-line-num
+              211
+            %td.diff-line-num
+              201
+            %td.line_content
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;var componentInfo = registry.findComponentInfo(this)
+          %tr.line_holder.origin.header
+            %td.diff-line-num
+            %td.diff-line-num
+            %td.line_content
+              %strong
+                &nbsp;&nbsp;origin //their changes
+          %tr.line_holder
+            %td.diff-line-num
+              212
+            %td.diff-line-num
+              211
+            %td.line_content
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (componentInfo && componentInfo.isAttachedTo(rawNode)) {
+          %tr
+            %td.diff-line-num.js-unfold.js-unfold-bottom.unfold
+              \...
+            %td.diff-line-num.js-unfold.js-unfold-bottom.unfold
+              \...
+            %td.line_content.match

@@ -6,14 +6,14 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
   before_action :module_enabled
   before_action :merge_request, only: [
-    :edit, :update, :show, :diffs, :commits, :builds, :merge, :merge_check,
+    :edit, :update, :show, :diffs, :conflicts, :commits, :builds, :merge, :merge_check,
     :ci_status, :toggle_subscription, :cancel_merge_when_build_succeeds, :remove_wip
   ]
-  before_action :closes_issues, only: [:edit, :update, :show, :diffs, :commits, :builds]
-  before_action :validates_merge_request, only: [:show, :diffs, :commits, :builds]
-  before_action :define_show_vars, only: [:show, :diffs, :commits, :builds]
+  before_action :closes_issues, only: [:edit, :update, :conflicts, :show, :diffs, :commits, :builds]
+  before_action :validates_merge_request, only: [:show, :conflicts, :diffs, :commits, :builds]
+  before_action :define_show_vars, only: [:show, :diffs, :conflicts, :commits, :builds]
   before_action :define_widget_vars, only: [:merge, :cancel_merge_when_build_succeeds, :merge_check]
-  before_action :ensure_ref_fetched, only: [:show, :diffs, :commits, :builds]
+  before_action :ensure_ref_fetched, only: [:show, :diffs, :conflicts, :commits, :builds]
 
   # Allow read any merge_request
   before_action :authorize_read_merge_request!
@@ -106,6 +106,14 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       format.json { render json: { html: view_to_html_string('projects/merge_requests/show/_commits') } }
     end
   end
+
+  def conflicts
+    respond_to do |format|
+      format.html { render 'show' }
+      format.json { render json: { html: view_to_html_string('projects/merge_requests/show/_conflicts') } }
+    end
+  end
+
 
   def builds
     respond_to do |format|

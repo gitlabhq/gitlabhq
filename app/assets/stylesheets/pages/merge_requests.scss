@@ -334,3 +334,38 @@
     }
   }
 }
+
+$mc_green_dark:   #DAFACE;
+$mc_green_light:  #EFFDEB;
+$mc_blue_dark:    #E4EAF0;
+$mc_blue_light:   #F2F6FA;
+$mc_yellow_dark:  #FFF4C9;
+$mc_yellow_light: #FFFFDF;
+
+
+.conflict {
+  .head {
+    .line_content {
+      background-color: $mc_green_light !important;
+    }
+    .diff-line-num {
+      background-color: $mc_green_dark;
+    }
+    &.header .line_content {
+      background-color: $mc_green_dark !important;
+    }
+  }
+
+  .origin {
+    .line_content {
+      background-color: $mc_blue_light !important;
+    }
+    .diff-line-num {
+      background-color: $mc_blue_dark;
+    }
+    &.header .line_content {
+      background-color: $mc_blue_dark !important;
+    }
+  }
+}
+

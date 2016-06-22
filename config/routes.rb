@@ -698,6 +698,7 @@ Rails.application.routes.draw do
           member do
             get :commits
             get :diffs
+            get :conflicts
             get :builds
             get :merge_check
             post :merge
