@@ -13,6 +13,7 @@ v 8.9.0 (unreleased)
   - Fix endless redirections when accessing user OAuth applications when they are disabled
   - Allow enabling wiki page events from Webhook management UI
   - Bump rouge to 1.11.0
+  - Fix MR-auto-close text added to description
   - Fix issue with arrow keys not working in search autocomplete dropdown
   - Fix an issue where note polling stopped working if a window was in the
     background during a refresh.
