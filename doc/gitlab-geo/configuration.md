@@ -56,8 +56,13 @@ primary node (**Admin Area > Geo Nodes**) when adding a new one:
 sudo -u git -H ssh-keygen
 ```
 
-The public key for Omnibus installations will be at `/var/opt/gitlab/.ssh/id_rsa.pub`,
-whereas for installation from source it will be at `/home/git/.ssh/id_rsa.pub`.
+Remember to add your primary node to the `known_hosts` file of your `git` user.
+
+You can find ssh key files and `know_hosts` at `/var/opt/gitlab/.ssh/` in
+Omnibus installations or at `/home/git/.ssh/` when following the source
+installation guide.
+
+
 
 If for any reason you generate the key using a different name from the default
 `id_rsa`, or you want to generate an extra key only for the repository
@@ -156,7 +161,7 @@ miss a step.
 Here is a checklist of questions you should ask to try to detect where you have
 to fix (all commands and path locations are for Omnibus installs):
 
-- Is Postgres replication working? 
+- Is Postgres replication working?
 - Are my nodes pointing to the correct database instance?
     - You should make sure your primary Geo node points to the instance with
       writting permissions.
@@ -168,13 +173,16 @@ to fix (all commands and path locations are for Omnibus installs):
     - To check if node on current machine is correctly detected type:
       `sudo gitlab-rails runner "Gitlab::Geo.current_node"`,
       expect something like: `#<GeoNode id: 2, schema: "https", host: "gitlab.example.com", port: 443, relative_url_root: "", primary: false, ...>`
-    - By running the command above, `primary` should be `true` when executed in 
+    - By running the command above, `primary` should be `true` when executed in
       the primary node, and `false` on any secondary
+- Did I defined the correct SSH Key for the node?
+    - You must create an SSH Key for `git` user
+    - This key is the one you have to inform at `Admin > Geo`
 - Can primary node communicate with secondary node by HTTP/HTTPS ports?
 - Can secondary nodes communicate with primary node by HTTP/HTTPS/SSH ports?
-- Can secondary nodes execute a succesfull git clone using git user's own 
+- Can secondary nodes execute a succesfull git clone using git user's own
   SSH Key to primary node repository?
-  
+
 > This list is an atempt to document all the moving parts that can go wrong.
 We are working into getting all this steps verified automatically in a
 rake task in the future. :)
