@@ -6,6 +6,7 @@ v 8.9.3
   - Fix encrypted data backwards compatibility after upgrading attr_encrypted gem. !502
   - Fix creating MRs on forks of deleted projects. !503
   - Roll back Grack::Auth to fix Git HTTP SPNEGO. !504
+  - Improve how File Lock feature works with nested items
 
 v 8.9.2
   - [Elastic] Fix visibility of snippets when searching.

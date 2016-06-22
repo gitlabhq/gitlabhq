@@ -1097,17 +1097,17 @@ describe Project, models: true do
     end
   end
 
-  describe '#path_lock_info' do
+  describe '#find_path_lock' do
     let(:project) { create :empty_project }
     let(:path_lock) { create :path_lock, project: project }
     let(:path) { path_lock.path }
 
     it 'returns path_lock' do
-      expect(project.path_lock_info(path)).to eq(path_lock)
+      expect(project.find_path_lock(path)).to eq(path_lock)
     end
 
     it 'returns nil' do
-      expect(project.path_lock_info('app/controllers')).to be_falsey
+      expect(project.find_path_lock('app/controllers')).to be_falsey
     end
 
   end

@@ -63,12 +63,12 @@ class Projects::RefsController < Projects::ApplicationController
     @logs = contents[@offset, @limit].to_a.map do |content|
       file = @path ? File.join(@path, content.name) : content.name
       last_commit = @repo.last_commit_for_path(@commit.id, file)
-      path_lock_info = show_path_locks && @project.path_lock_info(file, exact_match: true)
+      path_lock = show_path_locks && @project.find_path_lock(file)
 
       {
         file_name: content.name,
         commit: last_commit,
-        path_lock_info: path_lock_info
+        lock_label: path_lock && text_label_for_lock(path_lock, file)
       }
     end
 

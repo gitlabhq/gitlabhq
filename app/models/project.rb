@@ -1218,9 +1218,9 @@ class Project < ActiveRecord::Base
     Dir.exist?(public_pages_path)
   end
 
-  def path_lock_info(path, exact_match: false)
+  def find_path_lock(path, exact_match: false, downstream: false)
     @path_lock_finder ||= Gitlab::PathLocksFinder.new(self)
-    @path_lock_finder.get_lock_info(path, exact_match: exact_match)
+    @path_lock_finder.find(path, exact_match: exact_match, downstream: downstream)
   end
 
   def schedule_delete!(user_id, params)

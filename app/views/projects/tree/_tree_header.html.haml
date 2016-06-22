@@ -5,12 +5,14 @@
   %li
     = link_to namespace_project_tree_path(@project.namespace, @project, @ref) do
       = @project.path
-  - tree_breadcrumbs(tree, 6) do |title, path|
+  - tree_breadcrumbs(tree, 6) do |title, path, part_path|
     %li
+      = render_lock_icon(part_path)
       - if path
         = link_to truncate(title, length: 40), namespace_project_tree_path(@project.namespace, @project, path)
       - else
         = link_to title, '#'
+
 
   - if current_user
     %li

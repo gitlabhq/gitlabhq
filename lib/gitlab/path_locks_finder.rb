@@ -4,25 +4,30 @@
 # tokens for every requested paths and check every token whether it exist in path locks table or not.
 # So for 'app/models/user.rb' path we would need to search next paths:
 # 'app', 'app/models' and 'app/models/user.rb'
-# This class also implements a memoization for common paths like 'app' 'app/models', 'vendor', etc.
+#
+# We also need to find downstream locks. As an example for "app" path we would need to
+# return "app/models/user.rb" lock.
 
 class Gitlab::PathLocksFinder
+  include ActiveRecord::Sanitization::ClassMethods
+
   def initialize(project)
     @project = project
     @non_locked_paths = []
   end
 
-  def get_lock_info(path, exact_match: false)
+  def find(path, exact_match: false, downstream: false)
     if exact_match
-      return find_lock(path)
+      find_by_token(path)
     else
+      # Search upstream locks
       tokenize(path).each do |token|
-        if lock = find_lock(token)
+        if lock = find_by_token(token)
           return lock
         end
       end
 
-      false
+      find_downstream(path) if downstream
     end
   end
 
@@ -42,7 +47,7 @@ class Gitlab::PathLocksFinder
     tokens
   end
 
-  def find_lock(token)
+  def find_by_token(token)
     if @non_locked_paths.include?(token)
       return false
     end
@@ -54,5 +59,9 @@ class Gitlab::PathLocksFinder
     end
 
     lock
+  end
+
+  def find_downstream(path)
+    @project.path_locks.find_by("path LIKE ?", "#{sanitize_sql_like(path)}%")
   end
 end

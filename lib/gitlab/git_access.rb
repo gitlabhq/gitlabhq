@@ -216,7 +216,7 @@ module Gitlab
         commit.diffs.each do |diff|
           path = diff.new_path || diff.old_path
 
-          lock_info = project.path_lock_info(path)
+          lock_info = project.find_path_lock(path)
 
           if lock_info && lock_info.user != user
             return build_status_object(false, "The path '#{lock_info.path}' is locked by #{lock_info.user.name}")
