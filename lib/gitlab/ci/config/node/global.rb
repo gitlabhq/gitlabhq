@@ -9,19 +9,19 @@ module Gitlab
         class Global < Entry
           include Configurable
 
-          allow_node :before_script, Script,
+          node :before_script, Script,
             description: 'Script that will be executed before each job.'
 
-          allow_node :image, Image,
+          node :image, Image,
             description: 'Docker image that will be used to execute jobs.'
 
-          allow_node :services, Services,
+          node :services, Services,
             description: 'Docker images that will be linked to the container.'
 
-          allow_node :after_script, Script,
+          node :after_script, Script,
             description: 'Script that will be executed after each job.'
 
-          allow_node :variables, Variables,
+          node :variables, Variables,
             description: 'Environment variables that will be used.'
         end
       end

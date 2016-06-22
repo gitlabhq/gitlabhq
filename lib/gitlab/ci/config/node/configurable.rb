@@ -33,12 +33,12 @@ module Gitlab
 
           class_methods do
             def nodes
-              Hash[@allowed_nodes.map { |key, factory| [key, factory.dup] }]
+              Hash[@nodes.map { |key, factory| [key, factory.dup] }]
             end
 
             private
 
-            def allow_node(symbol, entry_class, metadata)
+            def node(symbol, entry_class, metadata)
               factory = Node::Factory.new(entry_class)
                 .with(description: metadata[:description])
 
@@ -47,7 +47,7 @@ module Gitlab
                 @nodes[symbol].try(:value)
               end
 
-              (@allowed_nodes ||= {}).merge!(symbol => factory)
+              (@nodes ||= {}).merge!(symbol => factory)
             end
           end
         end

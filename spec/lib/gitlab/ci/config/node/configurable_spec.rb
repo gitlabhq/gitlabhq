@@ -10,7 +10,7 @@ describe Gitlab::Ci::Config::Node::Configurable do
   describe 'configured nodes' do
     before do
       node.class_eval do
-        allow_node :object, Object, description: 'test object'
+        node :object, Object, description: 'test object'
       end
     end
 

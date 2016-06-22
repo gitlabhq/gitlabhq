@@ -13,7 +13,11 @@ module Gitlab
           end
 
           def value
-            @config || {}
+            @config || self.class.default
+          end
+
+          def self.default
+            {}
           end
         end
       end

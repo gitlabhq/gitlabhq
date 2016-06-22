@@ -52,6 +52,9 @@ module Gitlab
             @config
           end
 
+          def self.default
+          end
+
           def self.nodes
             {}
           end

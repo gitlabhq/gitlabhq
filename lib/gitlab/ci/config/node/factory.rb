@@ -8,8 +8,8 @@ module Gitlab
         class Factory
           class InvalidFactory < StandardError; end
 
-          def initialize(entry_class)
-            @entry_class = entry_class
+          def initialize(node)
+            @node = node
             @attributes = {}
           end
 
@@ -19,14 +19,15 @@ module Gitlab
           end
 
           def undefine!
-            @entry_class = Node::Undefined
+            @attributes[:value] = @node.dup
+            @node = Node::Undefined
             self
           end
 
           def create!
             raise InvalidFactory unless @attributes.has_key?(:value)
 
-            @entry_class.new(@attributes[:value]).tap do |entry|
+            @node.new(@attributes[:value]).tap do |entry|
               entry.description = @attributes[:description]
               entry.key = @attributes[:key]
             end
