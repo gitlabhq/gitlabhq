@@ -39,7 +39,7 @@ class Repository
   # Return absolute path to repository
   def path_to_repo
     @path_to_repo ||= File.expand_path(
-      File.join(Gitlab.config.gitlab_shell.repos_path, path_with_namespace + ".git")
+      File.join(@project.repository_storage_path, path_with_namespace + ".git")
     )
   end
 

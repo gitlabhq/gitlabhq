@@ -327,9 +327,9 @@ module ProjectsHelper
     end
   end
 
-  def sanitize_repo_path(message)
+  def sanitize_repo_path(project, message)
     return '' unless message.present?
 
-    message.strip.gsub(Gitlab.config.gitlab_shell.repos_path.chomp('/'), "[REPOS PATH]")
+    message.strip.gsub(project.repository_storage_path.chomp('/'), "[REPOS PATH]")
   end
 end
