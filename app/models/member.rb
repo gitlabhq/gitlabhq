@@ -48,7 +48,6 @@ class Member < ActiveRecord::Base
   after_create :post_create_hook, unless: [:pending?, :importing?]
   after_update :post_update_hook, unless: [:pending?, :importing?]
   after_destroy :post_destroy_hook, unless: :pending?
-  after_destroy :post_decline_request, if: :request?
 
   delegate :name, :username, :email, to: :user, prefix: true
 
@@ -188,7 +187,7 @@ class Member < ActiveRecord::Base
   end
 
   def send_request
-    # override in subclass
+    notification_service.new_access_request(self)
   end
 
   def post_create_hook
@@ -213,10 +212,6 @@ class Member < ActiveRecord::Base
 
   def after_accept_request
     post_create_hook
-  end
-
-  def post_decline_request
-    # override in subclass
   end
 
   def system_hook_service
