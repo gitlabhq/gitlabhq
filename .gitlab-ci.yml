@@ -134,6 +134,11 @@ spinach 9 10: *spinach-knapsack
   image: "ruby:2.3"
   only:
     - master
+  cache:
+    key: "ruby-23"
+    paths:
+      - vendor/apt
+      - vendor/ruby
 
 .rspec-knapsack-ruby23: &rspec-knapsack-ruby23
   <<: *rspec-knapsack
