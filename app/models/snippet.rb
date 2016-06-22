@@ -135,7 +135,10 @@ class Snippet < ActiveRecord::Base
     end
 
     def accessible_to(user)
-      where('visibility_level IN (?) OR author_id = ?', [Snippet::INTERNAL, Snippet::PUBLIC], user)
+      visibility_levels = [Snippet::PUBLIC]
+      visibility_levels << Snippet::INTERNAL if user
+
+      where('visibility_level IN (?) OR author_id = ?', visibility_levels, user)
     end
   end
 end

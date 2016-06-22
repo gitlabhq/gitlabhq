@@ -72,7 +72,7 @@ describe Snippet, models: true do
     end
   end
 
-  describe '#search_code' do
+  describe '.search_code' do
     let(:snippet) { create(:snippet, content: 'class Foo; end') }
 
     it 'returns snippets with matching content' do
@@ -85,6 +85,26 @@ describe Snippet, models: true do
 
     it 'returns snippets with matching content regardless of the casing' do
       expect(described_class.search_code('FOO')).to eq([snippet])
+    end
+  end
+
+  describe '.accessible_to' do
+    let(:author) { create(:author) }
+    let(:user) { create(:user) }
+    let!(:public_snippet)   { create(:snippet, :public) }
+    let!(:internal_snippet) { create(:snippet, :internal) }
+    let!(:private_snippet)  { create(:snippet, :private, author: author) }
+
+    it 'returns only public snippets when user is nil' do
+      expect(described_class.accessible_to(nil)).to eq [public_snippet]
+    end
+
+    it 'returns only public, and internal snippets when user is not nil' do
+      expect(described_class.accessible_to(user)).to match_array [public_snippet, internal_snippet]
+    end
+
+    it 'returns snippets where the user is the author' do
+      expect(described_class.accessible_to(author)).to match_array [public_snippet, internal_snippet, private_snippet]
     end
   end
 
