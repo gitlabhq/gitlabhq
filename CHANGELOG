@@ -31,8 +31,9 @@ v 8.10.0 (unreleased)
   - Add basic system information like memory and disk usage to the admin panel
 
 v 8.9.5 (unreleased)
-  - Fix assigning shared runners as admins
-  - Show "locked" label for locked runners on runners admin
+  - Improve the request / withdraw access button. !4860
+  - Fix assigning shared runners as admins. !4961
+  - Show "locked" label for locked runners on runners admin. !4961
 
 v 8.9.4
   - Fix privilege escalation issue with OAuth external users.
