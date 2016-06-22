@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe Gitlab::Ci::Config::Node::Null do
-  let(:entry) { described_class.new(nil) }
+describe Gitlab::Ci::Config::Node::Undefined do
+  let(:entry) { described_class.new('some value') }
 
   describe '#leaf?' do
     it 'is leaf node' do
@@ -16,8 +16,8 @@ describe Gitlab::Ci::Config::Node::Null do
   end
 
   describe '#value' do
-    it 'returns nil' do
-      expect(entry.value).to be nil
+    it 'returns configured value' do
+      expect(entry.value).to eq 'some value'
     end
   end
 end

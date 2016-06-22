@@ -5,8 +5,6 @@ module Gitlab
         ##
         # Factory class responsible for fabricating node entry objects.
         #
-        # It uses Fluent Interface pattern to set all necessary attributes.
-        #
         class Factory
           class InvalidFactory < StandardError; end
 
@@ -20,8 +18,8 @@ module Gitlab
             self
           end
 
-          def nullify!
-            @entry_class = Node::Null
+          def undefine!
+            @entry_class = Node::Undefined
             self
           end
 
