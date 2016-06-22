@@ -67,9 +67,9 @@ module Ci
       @image = @ci_config.image
       @after_script = @ci_config.after_script
       @services = @ci_config.services
+      @variables = @ci_config.variables
 
       @stages = @config[:stages] || @config[:types]
-      @variables = @config[:variables] || {}
       @cache = @config[:cache]
       @jobs = {}
 
@@ -124,10 +124,6 @@ module Ci
     def validate_global!
       unless @stages.nil? || validate_array_of_strings(@stages)
         raise ValidationError, "stages should be an array of strings"
-      end
-
-      unless @variables.nil? || validate_variables(@variables)
-        raise ValidationError, "variables should be a map of key-value strings"
       end
 
       validate_global_cache! if @cache

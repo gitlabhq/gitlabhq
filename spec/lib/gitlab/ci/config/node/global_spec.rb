@@ -24,6 +24,7 @@ describe Gitlab::Ci::Config::Node::Global do
       { before_script: ['ls', 'pwd'],
         image: 'ruby:2.2',
         services: ['postgres:9.1', 'mysql:5.5'],
+        variables: { VAR: 'value' },
         after_script: ['make clean'] }
     end
 
@@ -35,7 +36,7 @@ describe Gitlab::Ci::Config::Node::Global do
       end
 
       it 'creates node object for each entry' do
-        expect(global.nodes.count).to eq 4
+        expect(global.nodes.count).to eq 5
       end
 
       it 'creates node object using valid class' do
@@ -91,6 +92,12 @@ describe Gitlab::Ci::Config::Node::Global do
       describe '#after_script' do
         it 'returns after script' do
           expect(global.after_script).to eq ['make clean']
+        end
+      end
+
+      describe '#variables' do
+        it 'returns variables' do
+          expect(global.variables).to eq(VAR: 'value')
         end
       end
     end

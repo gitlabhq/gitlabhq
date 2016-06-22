@@ -1098,14 +1098,14 @@ EOT
         config = YAML.dump({ variables: "test", rspec: { script: "test" } })
         expect do
           GitlabCiYamlProcessor.new(config, path)
-        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "variables should be a map of key-value strings")
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "Variables value should be a hash of key value pairs")
       end
 
       it "returns errors if variables is not a map of key-value strings" do
         config = YAML.dump({ variables: { test: false }, rspec: { script: "test" } })
         expect do
           GitlabCiYamlProcessor.new(config, path)
-        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "variables should be a map of key-value strings")
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "Variables value should be a hash of key value pairs")
       end
 
       it "returns errors if job when is not on_success, on_failure or always" do

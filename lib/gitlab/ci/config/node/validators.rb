@@ -23,6 +23,16 @@ module Gitlab
               end
             end
           end
+
+          class VariablesValidator < ActiveModel::EachValidator
+            include LegacyValidationHelpers
+
+            def validate_each(record, attribute, value)
+              unless validate_variables(value)
+                record.errors.add(attribute, 'should be a hash of key value pairs')
+              end
+            end
+          end
         end
       end
     end

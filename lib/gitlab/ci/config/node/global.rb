@@ -20,6 +20,9 @@ module Gitlab
 
           allow_node :after_script, Script,
             description: 'Script that will be executed after each job.'
+
+          allow_node :variables, Variables,
+            description: 'Environment variables that will be used.'
         end
       end
     end
