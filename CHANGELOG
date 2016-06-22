@@ -18,6 +18,7 @@ v 8.9.1 (unreleased)
   - Fix subsequent SAML sign ins. !4718
   - Prevent invalid URLs from raising exceptions in WikiLink Filter. !4775
   - Handle external issues in IssueReferenceFilter. !4789
+  - Update Todos documentation and screenshots to include new functionality. !4840
 
 v 8.9.0
   - Fix builds API response not including commit data
