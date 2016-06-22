@@ -50,8 +50,6 @@ module GitlabMarkdownHelper
 
     context[:project] ||= @project
 
-    text = Banzai.pre_process(text, context)
-
     html = Banzai.render(text, context)
 
     context.merge!(
@@ -183,6 +181,19 @@ module GitlabMarkdownHelper
       "#{project.to_reference}#{entity.to_reference}"
     else
       ''
+    end
+  end
+
+  def markdown_toolbar_button(options = {})
+    data = options[:data].merge({ container: "body" })
+    content_tag :button,
+      type: "button",
+      class: "toolbar-btn js-md has-tooltip hidden-xs",
+      tabindex: -1,
+      data: data,
+      title: options[:title],
+      aria: { label: options[:title] } do
+      icon(options[:icon])
     end
   end
 end

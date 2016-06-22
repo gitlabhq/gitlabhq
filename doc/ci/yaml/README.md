@@ -13,30 +13,34 @@ If you want a quick introduction to GitLab CI, follow our
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
 - [.gitlab-ci.yml](#gitlab-ci-yml)
-    - [image and services](#image-and-services)
-    - [before_script](#before_script)
-    - [after_script](#after_script)
-    - [stages](#stages)
-    - [types](#types)
-    - [variables](#variables)
-    - [cache](#cache)
-        - [cache:key](#cache-key)
+  - [image and services](#image-and-services)
+  - [before_script](#before_script)
+  - [after_script](#after_script)
+  - [stages](#stages)
+  - [types](#types)
+  - [variables](#variables)
+  - [cache](#cache)
+    - [cache:key](#cache-key)
 - [Jobs](#jobs)
-    - [script](#script)
-    - [stage](#stage)
-    - [job variables](#job-variables)
-    - [only and except](#only-and-except)
-    - [tags](#tags)
-    - [when](#when)
-    - [artifacts](#artifacts)
-        - [artifacts:name](#artifacts-name)
-        - [artifacts:when](#artifacts-when)
-    - [dependencies](#dependencies)
-    - [before_script and after_script](#before_script-and-after_script)
+  - [script](#script)
+  - [stage](#stage)
+  - [only and except](#only-and-except)
+  - [job variables](#job-variables)
+  - [tags](#tags)
+  - [when](#when)
+  - [environment](#environment)
+  - [artifacts](#artifacts)
+    - [artifacts:name](#artifactsname)
+    - [artifacts:when](#artifactswhen)
+    - [artifacts:expire_in](#artifactsexpire_in)
+  - [dependencies](#dependencies)
+  - [before_script and after_script](#before_script-and-after_script)
+- [Git Strategy](#git-strategy)
+- [Shallow cloning](#shallow-cloning)
 - [Hidden jobs](#hidden-jobs)
 - [Special YAML features](#special-yaml-features)
-    - [Anchors](#anchors)
-- [Validate the .gitlab-ci.yml](#validate-the-gitlab-ci-yml)
+  - [Anchors](#anchors)
+- [Validate the .gitlab-ci.yml](#validate-the-gitlab-ciyml)
 - [Skipping builds](#skipping-builds)
 - [Examples](#examples)
 
@@ -52,7 +56,7 @@ of your repository and contains definitions of how your project should be built.
 
 The YAML file defines a set of jobs with constraints stating when they should
 be run. The jobs are defined as top-level elements with a name and always have
-to contain the `script` clause:
+to contain at least the `script` clause:
 
 ```yaml
 job1:
@@ -163,9 +167,9 @@ stages:
 
 There are also two edge cases worth mentioning:
 
-1. If no `stages` is defined in `.gitlab-ci.yml`, then by default the `build`,
+1. If no `stages` are defined in `.gitlab-ci.yml`, then by default the `build`,
    `test` and `deploy` are allowed to be used as job's stage by default.
-2. If a job doesn't specify `stage`, the job is assigned the `test` stage.
+2. If a job doesn't specify a `stage`, the job is assigned the `test` stage.
 
 ### types
 
@@ -176,9 +180,9 @@ Alias for [stages](#stages).
 >**Note:**
 Introduced in GitLab Runner v0.5.0.
 
-GitLab CI allows you to add to `.gitlab-ci.yml` variables that are set in build
-environment. The variables are stored in the git repository and are meant to
-store non-sensitive project configuration, for example:
+GitLab CI allows you to add variables to `.gitlab-ci.yml` that are set in the
+build environment. The variables are stored in the git repository and are meant
+to store non-sensitive project configuration, for example:
 
 ```yaml
 variables:
@@ -251,8 +255,8 @@ rspec:
     - binaries/
 ```
 
-The cache is provided on best effort basis, so don't expect that cache will be
-always present. For implementation details please check GitLab Runner.
+The cache is provided on a best-effort basis, so don't expect that the cache
+will be always present. For implementation details, please check GitLab Runner.
 
 #### cache:key
 
@@ -353,6 +357,7 @@ job_name:
 | cache         | no | Define list of files that should be cached between subsequent runs |
 | before_script | no | Override a set of commands that are executed before build |
 | after_script  | no | Override a set of commands that are executed after build |
+| environment   | no | Defines a name of environment to which deployment is done by this build |
 
 ### script
 
@@ -476,10 +481,10 @@ failure.
 `when` can be set to one of the following values:
 
 1. `on_success` - execute build only when all builds from prior stages
-    succeeded. This is the default.
+    succeed. This is the default.
 1. `on_failure` - execute build only when at least one build from prior stages
-    failed.
-1. `always` - execute build despite the status of builds from prior stages.
+    fails.
+1. `always` - execute build regardless of the status of builds from prior stages.
 
 For example:
 
@@ -524,6 +529,36 @@ The above script will:
 1. Execute `cleanup_build_job` only when `build_job` fails
 2. Always execute `cleanup_job` as the last step in pipeline.
 
+### environment
+
+>**Note:**
+Introduced in GitLab 8.9.
+
+`environment` is used to define that a job deploys to a specific environment.
+This allows easy tracking of all deployments to your environments straight from
+GitLab.
+
+If `environment` is specified and no environment under that name exists, a new
+one will be created automatically.
+
+The `environment` name must contain only letters, digits, '-' and '_'. Common
+names are `qa`, `staging`, and `production`, but you can use whatever name works
+with your workflow.
+
+---
+
+**Example configurations**
+
+```
+deploy to production:
+  stage: deploy
+  script: git push production HEAD:master
+  environment: production
+```
+
+The `deploy to production` job will be marked as doing deployment to
+`production` environment.
+
 ### artifacts
 
 >**Notes:**
@@ -531,10 +566,10 @@ The above script will:
 > - Introduced in GitLab Runner v0.7.0 for non-Windows platforms.
 > - Windows support was added in GitLab Runner v.1.0.0.
 > - Currently not all executors are supported.
-> - Build artifacts are only collected for successful builds.
+> - Build artifacts are only collected for successful builds by default.
 
-`artifacts` is used to specify list of files and directories which should be
-attached to build after success. To pass artifacts between different builds,
+`artifacts` is used to specify a list of files and directories which should be
+attached to the build after success. To pass artifacts between different builds,
 see [dependencies](#dependencies).
 
 Below are some examples.
@@ -662,9 +697,9 @@ failure.
 
 `artifacts:when` can be set to one of the following values:
 
-1. `on_success` - upload artifacts only when build succeeds. This is the default
-1. `on_failure` - upload artifacts only when build fails
-1. `always` - upload artifacts despite the build status
+1. `on_success` - upload artifacts only when the build succeeds. This is the default.
+1. `on_failure` - upload artifacts only when the build fails.
+1. `always` - upload artifacts regardless of the build status.
 
 ---
 
@@ -676,6 +711,42 @@ To upload artifacts only when build fails.
 job:
   artifacts:
     when: on_failure
+```
+
+#### artifacts:expire_in
+
+>**Note:**
+Introduced in GitLab 8.9 and GitLab Runner v1.3.0.
+
+`artifacts:expire_in` is used to delete uploaded artifacts after the specified
+time. By default, artifacts are stored on GitLab forever. `expire_in` allows you
+to specify how long artifacts should live before they expire, counting from the
+time they are uploaded and stored on GitLab.
+
+You can use the **Keep** button on the build page to override expiration and
+keep artifacts forever.
+
+After expiry, artifacts are actually deleted hourly by default (via a cron job),
+but they are not accessible after expiry.
+
+The value of `expire_in` is an elapsed time. Examples of parseable values:
+- '3 mins 4 sec'
+- '2 hrs 20 min'
+- '2h20min'
+- '6 mos 1 day'
+- '47 yrs 6 mos and 4d'
+- '3 weeks and 2 days'
+
+---
+
+**Example configurations**
+
+To expire artifacts 1 week after being uploaded:
+
+```yaml
+job:
+  artifacts:
+    expire_in: 1 week
 ```
 
 ### dependencies
@@ -750,6 +821,61 @@ job:
   - my command
   after_script:
   - execute this after my script
+```
+
+## Git Strategy
+
+>**Note:**
+Introduced in GitLab 8.9 as an experimental feature. May change in future
+releases or be removed completely.
+
+You can set the `GIT_STRATEGY` used for getting recent application code. `clone`
+is slower, but makes sure you have a clean directory before every build. `fetch`
+is faster. `GIT_STRATEGY` can be specified in the global `variables` section or
+in the `variables` section for individual jobs. If it's not specified, then the
+default from project settings will be used.
+
+```
+variables:
+  GIT_STRATEGY: clone
+```
+
+or
+
+```
+variables:
+  GIT_STRATEGY: fetch
+```
+
+## Shallow cloning
+
+>**Note:**
+Introduced in GitLab 8.9 as an experimental feature. May change in future
+releases or be removed completely.
+
+You can specify the depth of fetching and cloning using `GIT_DEPTH`. This allows
+shallow cloning of the repository which can significantly speed up cloning for
+repositories with a large number of commits or old, large binaries. The value is
+passed to `git fetch` and `git clone`.
+
+>**Note:**
+If you use a depth of 1 and have a queue of builds or retry
+builds, jobs may fail.
+
+Since Git fetching and cloning is based on a ref, such as a branch name, runners
+can't clone a specific commit SHA. If there are multiple builds in the queue, or
+you are retrying an old build, the commit to be tested needs to be within the
+git history that is cloned. Setting too small a value for `GIT_DEPTH` can make
+it impossible to run these old commits. You will see `unresolved reference` in
+build logs. You should then reconsider changing `GIT_DEPTH` to a higher value.
+
+Builds that rely on `git describe` may not work correctly when `GIT_DEPTH` is
+set since only part of the git history is present.
+
+To fetch or clone only the last 3 commits:
+```
+variables:
+  GIT_DEPTH: "3"
 ```
 
 ## Hidden jobs

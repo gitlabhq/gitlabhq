@@ -5,23 +5,18 @@
     font-weight: normal;
   }
 }
+
 .no-ssh-key-message, .project-limit-message {
   background-color: #f28d35;
   margin-bottom: 0;
 }
+
 .new_project,
 .edit-project {
   fieldset.features {
     .control-label {
       font-weight: normal;
     }
-  }
-}
-
-.project-name-holder {
-  .help-inline {
-    vertical-align: top;
-    padding: 7px;
   }
 }
 
@@ -33,7 +28,7 @@
   .container-fluid {
     position: relative;
 
-    @media (min-width: $screen-md-max) {
+    @media (min-width: $screen-lg-min) {
       .row {
         display: flex;
         -ms-flex-align: center;
@@ -106,7 +101,8 @@
 
   .notifications-btn {
 
-    .fa-bell {
+    .fa-bell,
+    .fa-spinner {
       margin-right: 6px;
     }
 
@@ -224,13 +220,20 @@
     right: 16px;
     bottom: 0;
 
-    .btn {
-      padding: 3px 10px;
-      background-color: $background-color;
+    @media (max-width: $screen-md-max) {
+      top: 0;
     }
 
-    @media (max-width: 1304px) {
-      top: 0;
+    .access-request-button {
+      position: absolute;
+      right: 0;
+      bottom: 61px;
+
+      @media (max-width: $screen-md-max) {
+        position: relative;
+        bottom: 0;
+        margin-right: 10px;
+      }
     }
   }
 
@@ -279,10 +282,6 @@
   margin-top: 50px;
   margin-bottom: 50px;
   color: #555;
-}
-
-.project_member_row form {
-  margin: 0;
 }
 
 .transfer-project .select2-container {
@@ -368,13 +367,14 @@ a.deploy-project-label {
 
 .project-import .btn {
   float: left;
+  margin-bottom: 10px;
   margin-right: 10px;
 }
 
 .project-stats {
   margin-top: $gl-padding;
   margin-bottom: 0;
-  padding: 16px 0;
+  padding: 0;
   background-color: $white-light;
   font-size: 0;
 
@@ -383,13 +383,14 @@ a.deploy-project-label {
   }
 
   .nav li {
-    display: inline;
+    display: inline-block;
+    margin: 16px 0;
+    margin-right: 16px;
   }
 
   .nav > li > a {
     background-color: transparent;
-    margin-right: 12px;
-    padding: 0 10px;
+    padding: 5px 10px;
     font-size: 15px;
     color: $notes-light-color;
   }
@@ -403,12 +404,17 @@ a.deploy-project-label {
     font-size: 17px;
   }
 
-  li.missing a {
-    color: #5a6069;
-    border: 1px dashed #dce0e5;
+  li.missing {
+    border: 1px dashed $border-gray-light;
+    border-radius: $border-radius-default;
+
+    a {
+      color: $notes-light-color;
+      display: block;
+    }
 
     &:hover {
-      background-color: #f0f2f5;
+      background-color: $gray-normal;
     }
   }
 
@@ -495,7 +501,8 @@ pre.light-well {
 
 .activity-filter-block {
   .controls {
-    padding-bottom: 10px;
+    padding-bottom: 7px;
+    margin-top: 8px;
     border-bottom: 1px solid $border-color;
   }
 }
@@ -614,5 +621,11 @@ pre.light-well {
 
   &.is-done {
     color: $gl-text-green;
+  }
+}
+
+.project-refs-form {
+  .dropdown-menu {
+    width: 300px;
   }
 }

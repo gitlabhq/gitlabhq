@@ -25,8 +25,11 @@
           = f.label :notification_email, class: "label-light"
           = f.select :notification_email, @user.all_emails, { include_blank: false }, class: "select2"
 
-      .form-group.pull-left
-        = render 'notifications/buttons/notifications', notification_setting: @global_notification_setting
+      = label_tag :global_notification_level, "Global notification level", class: "label-light"
+      %br
+      .clearfix
+      .form-group.pull-left.global-notification-setting
+        = render 'shared/notifications/button', notification_setting: @global_notification_setting, left_align: true
 
       .clearfix
 

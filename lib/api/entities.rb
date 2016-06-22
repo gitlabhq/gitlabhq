@@ -88,10 +88,7 @@ module API
     class Group < Grape::Entity
       expose :id, :name, :path, :description, :visibility_level
       expose :avatar_url
-
-      expose :web_url do |group, options|
-        Gitlab::Routing.url_helpers.group_url(group)
-      end
+      expose :web_url
     end
 
     class GroupDetail < Group
@@ -228,6 +225,14 @@ module API
       expose(:downvote?)  { |note| false }
     end
 
+    class AwardEmoji < Grape::Entity
+      expose :id
+      expose :name
+      expose :user, using: Entities::UserBasic
+      expose :created_at, :updated_at
+      expose :awardable_id, :awardable_type
+    end
+
     class MRNote < Grape::Entity
       expose :note
       expose :author, using: Entities::UserBasic
@@ -275,8 +280,7 @@ module API
       expose :access_level
       expose :notification_level do |member, options|
         if member.notification_setting
-          setting = member.notification_setting
-          { level: NotificationSetting.levels[setting.level], events: setting.events }
+          NotificationSetting.levels[member.notification_setting.level]
         end
       end
     end
@@ -419,6 +423,7 @@ module API
     class RunnerDetails < Runner
       expose :tag_list
       expose :run_untagged
+      expose :locked
       expose :version, :revision, :platform, :architecture
       expose :contacted_at
       expose :token, if: lambda { |runner, options| options[:current_user].is_admin? || !runner.is_shared? }
@@ -440,11 +445,7 @@ module API
       expose :created_at, :started_at, :finished_at
       expose :user, with: User
       expose :artifacts_file, using: BuildArtifactFile, if: -> (build, opts) { build.artifacts? }
-      expose :commit, with: RepoCommit do |repo_obj, _options|
-        if repo_obj.respond_to?(:commit)
-          repo_obj.commit.commit_data
-        end
-      end
+      expose :commit, with: RepoCommit
       expose :runner, with: Runner
     end
 
@@ -468,11 +469,11 @@ module API
       expose :content
     end
 
-    class GitignoresList < Grape::Entity
+    class TemplatesList < Grape::Entity
       expose :name
     end
 
-    class Gitignore < Grape::Entity
+    class Template < Grape::Entity
       expose :name, :content
     end
   end

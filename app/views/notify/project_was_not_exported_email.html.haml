@@ -1,0 +1,9 @@
+%p
+  Project #{@project.name} couldn't be exported.
+%p
+  The errors we encountered were:
+
+  %ul
+  - @errors.each do |error|
+    %li
+      #{error}

@@ -20,7 +20,7 @@ Each of these settings have levels of notification:
 * Participating - receive notifications from related resources
 * Watch - receive notifications from projects or groups user is a member of
 * Global - notifications as set at the global settings
-* Custom - Notification is set based on events selected by the user.(Available only in project level)
+* Custom - user will receive notifications when mentioned, is participant and custom selected events.
 
 #### Global Settings
 

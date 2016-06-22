@@ -3,11 +3,18 @@ require 'carrierwave/orm/activerecord'
 class Group < Namespace
   include Gitlab::ConfigHelper
   include Gitlab::VisibilityLevel
+  include AccessRequestable
   include Referable
 
   has_many :group_members, dependent: :destroy, as: :source, class_name: 'GroupMember'
   alias_method :members, :group_members
-  has_many :users, through: :group_members
+  has_many :users, -> { where(members: { requested_at: nil }) }, through: :group_members
+
+  has_many :owners,
+    -> { where(members: { access_level: Gitlab::Access::OWNER }) },
+    through: :group_members,
+    source: :user
+
   has_many :project_group_links, dependent: :destroy
   has_many :shared_projects, through: :project_group_links, source: :project
   has_many :notification_settings, dependent: :destroy, as: :source
@@ -58,6 +65,10 @@ class Group < Namespace
     "#{self.class.reference_prefix}#{name}"
   end
 
+  def web_url
+    Gitlab::Routing.url_helpers.group_url(self)
+  end
+
   def human_name
     name
   end
@@ -81,10 +92,6 @@ class Group < Namespace
     if avatar.present?
       [gitlab_config.url, avatar.url].join
     end
-  end
-
-  def owners
-    @owners ||= group_members.owners.includes(:user).map(&:user)
   end
 
   def add_users(user_ids, access_level, current_user = nil)

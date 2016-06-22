@@ -34,6 +34,15 @@ First, you need to provide information on whether the migration can be applied:
 3. online with errors on new instances while migrating
 4. offline (needs to happen without app servers to prevent db corruption)
 
+For example: 
+
+```
+# rubocop:disable all
+# Migration type: online without errors (works on previous version and new one)
+class MyMigration < ActiveRecord::Migration
+...
+```
+
 It is always preferable to have a migration run online. If you expect the migration
 to take particularly long (for instance, if it loops through all notes),
 this is valuable information to add.
@@ -47,7 +56,6 @@ be possible to downgrade in case of a vulnerability or bugs.
 
 In your migration, add a comment describing how the reversibility of the
 migration was tested.
-
 
 ## Removing indices
 
@@ -70,6 +78,7 @@ so:
 
 ```
 class MyMigration < ActiveRecord::Migration
+  include Gitlab::Database::MigrationHelpers
   disable_ddl_transaction!
 
   def change
@@ -90,8 +99,11 @@ value of `10` you'd write the following:
 
 ```
 class MyMigration < ActiveRecord::Migration
+  include Gitlab::Database::MigrationHelpers
+  disable_ddl_transaction!
+  
   def up
-    add_column_with_default(:projects, :foo, :integer, 10)
+    add_column_with_default(:projects, :foo, :integer, default: 10)
   end
 
   def down

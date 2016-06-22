@@ -51,13 +51,13 @@ class User < ActiveRecord::Base
   # Profile
   has_many :keys, dependent: :destroy
   has_many :emails, dependent: :destroy
+  has_many :personal_access_tokens, dependent: :destroy
   has_many :identities, dependent: :destroy, autosave: true
   has_many :u2f_registrations, dependent: :destroy
 
   # Groups
   has_many :members, dependent: :destroy
-  has_many :project_members, source: 'ProjectMember'
-  has_many :group_members, source: 'GroupMember'
+  has_many :group_members, dependent: :destroy, source: 'GroupMember'
   has_many :groups, through: :group_members
   has_many :owned_groups, -> { where members: { access_level: Gitlab::Access::OWNER } }, through: :group_members, source: :group
   has_many :masters_groups, -> { where members: { access_level: Gitlab::Access::MASTER } }, through: :group_members, source: :group
@@ -65,13 +65,13 @@ class User < ActiveRecord::Base
   # Projects
   has_many :groups_projects,          through: :groups, source: :projects
   has_many :personal_projects,        through: :namespace, source: :projects
+  has_many :project_members,          dependent: :destroy, class_name: 'ProjectMember'
   has_many :projects,                 through: :project_members
   has_many :created_projects,         foreign_key: :creator_id, class_name: 'Project'
   has_many :users_star_projects, dependent: :destroy
   has_many :starred_projects, through: :users_star_projects, source: :project
 
   has_many :snippets,                 dependent: :destroy, foreign_key: :author_id, class_name: "Snippet"
-  has_many :project_members,          dependent: :destroy, class_name: 'ProjectMember'
   has_many :issues,                   dependent: :destroy, foreign_key: :author_id
   has_many :notes,                    dependent: :destroy, foreign_key: :author_id
   has_many :merge_requests,           dependent: :destroy, foreign_key: :author_id
@@ -268,6 +268,11 @@ class User < ActiveRecord::Base
       find_by!('lower(username) = ?', username.downcase)
     end
 
+    def find_by_personal_access_token(token_string)
+      personal_access_token = PersonalAccessToken.active.find_by_token(token_string) if token_string
+      personal_access_token.user if personal_access_token
+    end
+
     def by_username_or_id(name_or_id)
       find_by('users.username = ? OR users.id = ?', name_or_id.to_s, name_or_id.to_i)
     end
@@ -405,8 +410,8 @@ class User < ActiveRecord::Base
   end
 
   # Returns projects user is authorized to access.
-  def authorized_projects
-    Project.where("projects.id IN (#{projects_union.to_sql})")
+  def authorized_projects(min_access_level = nil)
+    Project.where("projects.id IN (#{projects_union(min_access_level).to_sql})")
   end
 
   def viewable_starred_projects
@@ -482,9 +487,8 @@ class User < ActiveRecord::Base
     events.recent.find do |event|
       project = Project.find_by_id(event.project_id)
       next unless project
-      repo = project.repository
 
-      if repo.branch_names.include?(event.branch_name)
+      if project.repository.branch_exists?(event.branch_name)
         merge_requests = MergeRequest.where("created_at >= ?", event.created_at).
             where(source_project_id: project.id,
                   source_branch: event.branch_name)
@@ -822,13 +826,38 @@ class User < ActiveRecord::Base
     assigned_open_issues_count(force: true)
   end
 
+  def todos_done_count(force: false)
+    Rails.cache.fetch(['users', id, 'todos_done_count'], force: force) do
+      todos.done.count
+    end
+  end
+
+  def todos_pending_count(force: false)
+    Rails.cache.fetch(['users', id, 'todos_pending_count'], force: force) do
+      todos.pending.count
+    end
+  end
+
+  def update_todos_count_cache
+    todos_done_count(force: true)
+    todos_pending_count(force: true)
+  end
+
   private
 
-  def projects_union
-    Gitlab::SQL::Union.new([personal_projects.select(:id),
-                            groups_projects.select(:id),
-                            projects.select(:id),
-                            groups.joins(:shared_projects).select(:project_id)])
+  def projects_union(min_access_level = nil)
+    relations = [personal_projects.select(:id),
+                 groups_projects.select(:id),
+                 projects.select(:id),
+                 groups.joins(:shared_projects).select(:project_id)]
+
+
+    if min_access_level
+      scope = { access_level: Gitlab::Access.values.select { |access| access >= min_access_level } }
+      relations = [relations.shift] + relations.map { |relation| relation.where(members: scope) }
+    end
+
+    Gitlab::SQL::Union.new(relations)
   end
 
   def ci_projects_union

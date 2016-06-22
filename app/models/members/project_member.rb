@@ -11,8 +11,6 @@ class ProjectMember < Member
   default_scope { where(source_type: SOURCE_TYPE) }
 
   scope :in_project, ->(project) { where(source_id: project.id) }
-  scope :in_projects, ->(projects) { where(source_id: projects.pluck(:id)) }
-  scope :with_user, ->(user) { where(user_id: user.id) }
 
   before_destroy :delete_member_todos
 
@@ -84,7 +82,7 @@ class ProjectMember < Member
       Gitlab::Access.sym_options
     end
 
-    def access_roles
+    def access_level_roles
       Gitlab::Access.options
     end
   end

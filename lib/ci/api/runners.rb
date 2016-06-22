@@ -28,12 +28,9 @@ module Ci
         post "register" do
           required_attributes! [:token]
 
-          attributes = { description: params[:description],
-                         tag_list: params[:tag_list] }
-
-          unless params[:run_untagged].nil?
-            attributes[:run_untagged] = params[:run_untagged]
-          end
+          attributes = attributes_for_keys(
+            [:description, :tag_list, :run_untagged, :locked]
+          )
 
           runner =
             if runner_registration_token_valid?

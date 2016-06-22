@@ -8,9 +8,6 @@ class GroupMember < Member
   validates_format_of :source_type, with: /\ANamespace\z/
   default_scope { where(source_type: SOURCE_TYPE) }
 
-  scope :with_group, ->(group) { where(source_id: group.id) }
-  scope :with_user, ->(user) { where(user_id: user.id) }
-
   def self.access_level_roles
     Gitlab::Access.options_with_owner
   end
@@ -21,6 +18,11 @@ class GroupMember < Member
 
   def access_field
     access_level
+  end
+
+  # Because source_type is `Namespace`...
+  def real_source_type
+    'Group'
   end
 
   private

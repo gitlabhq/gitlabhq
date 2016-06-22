@@ -9,6 +9,9 @@ class @IssuableBulkActions
 
     @bindEvents()
 
+    # Fixes bulk-assign not working when navigating through pages
+    Issuable.initChecks();
+
   getElement: (selector) ->
     @container.find selector
 

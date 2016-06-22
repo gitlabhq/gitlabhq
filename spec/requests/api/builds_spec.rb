@@ -9,8 +9,8 @@ describe API::API, api: true  do
   let!(:project) { create(:project, creator_id: user.id) }
   let!(:developer) { create(:project_member, :developer, user: user, project: project) }
   let!(:reporter) { create(:project_member, :reporter, user: user2, project: project) }
-  let(:pipeline) { create(:ci_pipeline, project: project)}
-  let(:build) { create(:ci_build, pipeline: pipeline) }
+  let!(:pipeline) { create(:ci_pipeline, project: project, sha: project.commit.id) }
+  let!(:build) { create(:ci_build, pipeline: pipeline) }
 
   describe 'GET /projects/:id/builds ' do
     let(:query) { '' }
@@ -21,6 +21,11 @@ describe API::API, api: true  do
       it 'should return project builds' do
         expect(response.status).to eq(200)
         expect(json_response).to be_an Array
+      end
+
+      it 'returns correct values' do
+        expect(json_response).not_to be_empty
+        expect(json_response.first['commit']['id']).to eq project.commit.id
       end
 
       context 'filter project with one scope element' do
@@ -132,7 +137,7 @@ describe API::API, api: true  do
 
   describe 'GET /projects/:id/builds/:build_id/trace' do
     let(:build) { create(:ci_build, :trace, pipeline: pipeline) }
-    
+
     before { get api("/projects/#{project.id}/builds/#{build.id}/trace", api_user) }
 
     context 'authorized user' do
@@ -238,6 +243,32 @@ describe API::API, api: true  do
 
       it 'should respond with forbidden' do
         expect(response.status).to eq 403
+      end
+    end
+  end
+
+  describe 'POST /projects/:id/builds/:build_id/artifacts/keep' do
+    before do
+      post api("/projects/#{project.id}/builds/#{build.id}/artifacts/keep", user)
+    end
+
+    context 'artifacts did not expire' do
+      let(:build) do
+        create(:ci_build, :trace, :artifacts, :success,
+               project: project, pipeline: pipeline, artifacts_expire_at: Time.now + 7.days)
+      end
+
+      it 'keeps artifacts' do
+        expect(response.status).to eq 200
+        expect(build.reload.artifacts_expire_at).to be_nil
+      end
+    end
+
+    context 'no artifacts' do
+      let(:build) { create(:ci_build, project: project, pipeline: pipeline) }
+
+      it 'responds with not found' do
+        expect(response.status).to eq 404
       end
     end
   end

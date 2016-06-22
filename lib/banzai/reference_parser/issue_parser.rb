@@ -25,7 +25,21 @@ module Banzai
       def issues_for_nodes(nodes)
         @issues_for_nodes ||= grouped_objects_for_nodes(
           nodes,
-          Issue.all.includes(:author, :assignee, :project),
+          Issue.all.includes(
+            :author,
+            :assignee,
+            {
+              # These associations are primarily used for checking permissions.
+              # Eager loading these ensures we don't end up running dozens of
+              # queries in this process.
+              project: [
+                { namespace: :owner },
+                { group: [:owners, :group_members] },
+                :invited_groups,
+                :project_members
+              ]
+            }
+          ),
           self.class.data_attribute
         )
       end

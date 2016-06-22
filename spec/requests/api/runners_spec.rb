@@ -187,14 +187,16 @@ describe API::Runners, api: true  do
           update_runner(shared_runner.id, admin, description: "#{description}_updated",
                                                  active: !active,
                                                  tag_list: ['ruby2.1', 'pgsql', 'mysql'],
-                                                 run_untagged: 'false')
+                                                 run_untagged: 'false',
+                                                 locked: 'true')
           shared_runner.reload
 
           expect(response.status).to eq(200)
           expect(shared_runner.description).to eq("#{description}_updated")
           expect(shared_runner.active).to eq(!active)
           expect(shared_runner.tag_list).to include('ruby2.1', 'pgsql', 'mysql')
-          expect(shared_runner.run_untagged?).to be false
+          expect(shared_runner.run_untagged?).to be(false)
+          expect(shared_runner.locked?).to be(true)
         end
       end
 
@@ -360,11 +362,13 @@ describe API::Runners, api: true  do
 
   describe 'POST /projects/:id/runners' do
     context 'authorized user' do
-      it 'should enable specific runner' do
-        specific_runner2 = create(:ci_runner).tap do |runner|
+      let(:specific_runner2) do
+        create(:ci_runner).tap do |runner|
           create(:ci_runner_project, runner: runner, project: project2)
         end
+      end
 
+      it 'should enable specific runner' do
         expect do
           post api("/projects/#{project.id}/runners", user), runner_id: specific_runner2.id
         end.to change{ project.runners.count }.by(+1)
@@ -375,7 +379,17 @@ describe API::Runners, api: true  do
         expect do
           post api("/projects/#{project.id}/runners", user), runner_id: specific_runner.id
         end.to change{ project.runners.count }.by(0)
-        expect(response.status).to eq(201)
+        expect(response.status).to eq(409)
+      end
+
+      it 'should not enable locked runner' do
+        specific_runner2.update(locked: true)
+
+        expect do
+          post api("/projects/#{project.id}/runners", user), runner_id: specific_runner2.id
+        end.to change{ project.runners.count }.by(0)
+
+        expect(response.status).to eq(403)
       end
 
       it 'should not enable shared runner' do

@@ -67,6 +67,12 @@ module IssuablesHelper
     end
   end
 
+  def issuable_todo(issuable)
+    if current_user
+      current_user.todos.find_by(target: issuable, state: :pending)
+    end
+  end
+
   private
 
   def sidebar_gutter_collapsed?

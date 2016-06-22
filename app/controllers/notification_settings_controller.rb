@@ -39,7 +39,7 @@ class NotificationSettingsController < ApplicationController
 
   def render_response
     render json: {
-      html: view_to_html_string("notifications/buttons/_notifications", notification_setting: @notification_setting),
+      html: view_to_html_string("shared/notifications/_button", notification_setting: @notification_setting),
       saved: @saved
     }
   end

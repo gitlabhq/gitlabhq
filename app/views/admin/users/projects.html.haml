@@ -38,6 +38,5 @@
                   %span.light= member.human_access
 
                   - if member.respond_to? :project
-                    = link_to namespace_project_project_member_path(project.namespace, project, member), data: { confirm: remove_from_project_team_message(project, member) }, remote: true, method: :delete, class: "btn-xs btn btn-remove", title: 'Remove user from project' do
+                    = link_to namespace_project_project_member_path(project.namespace, project, member), data: { confirm: remove_member_message(member) }, remote: true, method: :delete, class: "btn-xs btn btn-remove", title: 'Remove user from project' do
                       %i.fa.fa-times
-

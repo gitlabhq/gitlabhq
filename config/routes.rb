@@ -30,6 +30,11 @@ Rails.application.routes.draw do
     mount LetterOpenerWeb::Engine, at: '/rails/letter_opener'
   end
 
+  concern :access_requestable do
+    post :request_access, on: :collection
+    post :approve_access_request, on: :member
+  end
+
   namespace :ci do
     # CI API
     Ci::API::API.logger Rails.logger
@@ -174,6 +179,10 @@ Rails.application.routes.draw do
       get   :new_user_map,    path: :user_map
       post  :create_user_map, path: :user_map
     end
+
+    resource :gitlab_project, only: [:create, :new] do
+      post :create
+    end
   end
 
   #
@@ -286,7 +295,7 @@ Rails.application.routes.draw do
           post :repository_check
         end
 
-        resources :runner_projects
+        resources :runner_projects, only: [:create, :destroy]
       end
     end
 
@@ -351,6 +360,13 @@ Rails.application.routes.draw do
       resources :keys
       resources :emails, only: [:index, :create, :destroy]
       resource :avatar, only: [:destroy]
+
+      resources :personal_access_tokens, only: [:index, :create] do
+        member do
+          put :revoke
+        end
+      end
+
       resource :two_factor_auth, only: [:show, :create, :destroy] do
         member do
           post :create_u2f
@@ -417,7 +433,7 @@ Rails.application.routes.draw do
     end
 
     scope module: :groups do
-      resources :group_members, only: [:index, :create, :update, :destroy] do
+      resources :group_members, only: [:index, :create, :update, :destroy], concerns: :access_requestable do
         post :resend_invite, on: :member
         delete :leave, on: :collection
       end
@@ -457,8 +473,13 @@ Rails.application.routes.draw do
         post :housekeeping
         post :toggle_star
         post :markdown_preview
+        post :export
+        post :remove_export
+        post :generate_new_export
+        get :download_export
         get :autocomplete_sources
         get :activity
+        get :refs
       end
 
       scope module: :projects do
@@ -710,6 +731,8 @@ Rails.application.routes.draw do
           end
         end
 
+        resources :environments, only: [:index, :show, :new, :create, :destroy]
+
         resources :builds, only: [:index, :show], constraints: { id: /\d+/ } do
           collection do
             post :cancel_all
@@ -728,6 +751,7 @@ Rails.application.routes.draw do
             get :download
             get :browse, path: 'browse(/*path)', format: false
             get :file, path: 'file/*path', format: false
+            post :keep
           end
         end
 
@@ -771,7 +795,7 @@ Rails.application.routes.draw do
           end
         end
 
-        resources :project_members, except: [:new, :edit], constraints: { id: /[a-zA-Z.\/0-9_\-#%+]+/ } do
+        resources :project_members, except: [:new, :edit], constraints: { id: /[a-zA-Z.\/0-9_\-#%+]+/ }, concerns: :access_requestable do
           collection do
             delete :leave
 
@@ -794,6 +818,8 @@ Rails.application.routes.draw do
             delete :delete_attachment
           end
         end
+
+        resources :todos, only: [:create]
 
         resources :uploads, only: [:create] do
           collection do

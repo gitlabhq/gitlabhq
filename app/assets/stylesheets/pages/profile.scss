@@ -192,6 +192,25 @@
   }
 }
 
+.personal-access-tokens-never-expires-label {
+  color: $personal-access-tokens-disabled-label-color;
+}
+
+.datepicker.personal-access-tokens-expires-at .ui-state-disabled span {
+  text-align: center;
+}
+
+.created-personal-access-token-container {
+  #created-personal-access-token {
+    width: 90%;
+    display: inline;
+  }
+
+  .btn-clipboard {
+    margin-left: 5px;
+  }
+}
+
 .user-profile {
   @media (max-width: $screen-xs-max) {
     .cover-block {

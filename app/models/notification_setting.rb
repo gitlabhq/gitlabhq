@@ -30,7 +30,7 @@ class NotificationSetting < ActiveRecord::Base
 
   store :events, accessors: EMAIL_EVENTS, coder: JSON
 
-  before_save :set_events
+  before_create :set_events
   before_save :events_to_boolean
 
   def self.find_or_create_for(source)
@@ -45,7 +45,7 @@ class NotificationSetting < ActiveRecord::Base
 
   # Set all event attributes to false when level is not custom or being initialized for UX reasons
   def set_events
-    return if custom? || persisted?
+    return if custom?
 
     EMAIL_EVENTS.each do |event|
       events[event] = false

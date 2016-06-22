@@ -56,7 +56,7 @@ module Gitlab
         end
       end
 
-      # Instruments all public methods of a module.
+      # Instruments all public and private methods of a module.
       #
       # This method optionally takes a block that can be used to determine if a
       # method should be instrumented or not. The block is passed the receiving
@@ -65,7 +65,8 @@ module Gitlab
       #
       # mod - The module to instrument.
       def self.instrument_methods(mod)
-        mod.public_methods(false).each do |name|
+        methods = mod.methods(false) + mod.private_methods(false)
+        methods.each do |name|
           method = mod.method(name)
 
           if method.owner == mod.singleton_class
@@ -76,13 +77,14 @@ module Gitlab
         end
       end
 
-      # Instruments all public instance methods of a module.
+      # Instruments all public and private instance methods of a module.
       #
       # See `instrument_methods` for more information.
       #
       # mod - The module to instrument.
       def self.instrument_instance_methods(mod)
-        mod.public_instance_methods(false).each do |name|
+        methods = mod.instance_methods(false) + mod.private_instance_methods(false)
+        methods.each do |name|
           method = mod.instance_method(name)
 
           if method.owner == mod
@@ -146,20 +148,8 @@ module Gitlab
 
         proxy_module.class_eval <<-EOF, __FILE__, __LINE__ + 1
           def #{name}(#{args_signature})
-            trans = Gitlab::Metrics::Instrumentation.transaction
-
-            if trans
-              start    = Time.now
-              retval   = super
-              duration = (Time.now - start) * 1000.0
-
-              if duration >= Gitlab::Metrics.method_call_threshold
-                trans.add_metric(Gitlab::Metrics::Instrumentation::SERIES,
-                                 { duration: duration },
-                                 method: #{label.inspect})
-              end
-
-              retval
+            if trans = Gitlab::Metrics::Instrumentation.transaction
+              trans.measure_method(#{label.inspect}) { super }
             else
               super
             end

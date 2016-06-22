@@ -181,16 +181,27 @@ class NotificationService
     end
   end
 
+  # Members
+  def new_access_request(member)
+    mailer.member_access_requested_email(member.real_source_type, member.id).deliver_later
+  end
+
+  def decline_access_request(member)
+    mailer.member_access_denied_email(member.real_source_type, member.source_id, member.user_id).deliver_later
+  end
+
+  # Project invite
   def invite_project_member(project_member, token)
-    mailer.project_member_invited_email(project_member.id, token).deliver_later
+    mailer.member_invited_email(project_member.real_source_type, project_member.id, token).deliver_later
   end
 
   def accept_project_invite(project_member)
-    mailer.project_invite_accepted_email(project_member.id).deliver_later
+    mailer.member_invite_accepted_email(project_member.real_source_type, project_member.id).deliver_later
   end
 
   def decline_project_invite(project_member)
-    mailer.project_invite_declined_email(
+    mailer.member_invite_declined_email(
+      project_member.real_source_type,
       project_member.project.id,
       project_member.invite_email,
       project_member.access_level,
@@ -199,23 +210,25 @@ class NotificationService
   end
 
   def new_project_member(project_member)
-    mailer.project_access_granted_email(project_member.id).deliver_later
+    mailer.member_access_granted_email(project_member.real_source_type, project_member.id).deliver_later
   end
 
   def update_project_member(project_member)
-    mailer.project_access_granted_email(project_member.id).deliver_later
+    mailer.member_access_granted_email(project_member.real_source_type, project_member.id).deliver_later
   end
 
+  # Group invite
   def invite_group_member(group_member, token)
-    mailer.group_member_invited_email(group_member.id, token).deliver_later
+    mailer.member_invited_email(group_member.real_source_type, group_member.id, token).deliver_later
   end
 
   def accept_group_invite(group_member)
-    mailer.group_invite_accepted_email(group_member.id).deliver_later
+    mailer.member_invite_accepted_email(group_member.real_source_type, group_member.id).deliver_later
   end
 
   def decline_group_invite(group_member)
-    mailer.group_invite_declined_email(
+    mailer.member_invite_declined_email(
+      group_member.real_source_type,
       group_member.group.id,
       group_member.invite_email,
       group_member.access_level,
@@ -224,11 +237,11 @@ class NotificationService
   end
 
   def new_group_member(group_member)
-    mailer.group_access_granted_email(group_member.id).deliver_later
+    mailer.member_access_granted_email(group_member.real_source_type, group_member.id).deliver_later
   end
 
   def update_group_member(group_member)
-    mailer.group_access_granted_email(group_member.id).deliver_later
+    mailer.member_access_granted_email(group_member.real_source_type, group_member.id).deliver_later
   end
 
   def project_was_moved(project, old_path_with_namespace)
@@ -252,6 +265,14 @@ class NotificationService
       email.deliver_later
       email
     end
+  end
+
+  def project_exported(project, current_user)
+    mailer.project_was_exported_email(current_user, project).deliver_later
+  end
+
+  def project_not_exported(project, current_user, errors)
+    mailer.project_was_not_exported_email(current_user, project, errors).deliver_later
   end
 
   protected
@@ -280,6 +301,7 @@ class NotificationService
 
     users_with_project_level_global = notification_settings_for(project, :global)
     users_with_group_level_global   = notification_settings_for(project.group, :global)
+
     users = users_with_global_level_watch([users_with_project_level_global, users_with_group_level_global].flatten.uniq)
 
     users_with_project_setting = select_project_member_setting(project, users_with_project_level_global, users)
@@ -495,6 +517,7 @@ class NotificationService
 
     recipients = target.participants(current_user)
     recipients = add_project_watchers(recipients, project)
+
     recipients = add_custom_notifications(recipients, project, custom_action)
     recipients = reject_mention_users(recipients, project)
 
