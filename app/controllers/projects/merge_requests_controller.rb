@@ -162,7 +162,13 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def update
-    @merge_request = MergeRequests::UpdateService.new(project, current_user, merge_request_params).execute(@merge_request)
+    update_params = merge_request_params
+
+    if update_params[:approvals_before_merge].to_i <= project.approvals_before_merge
+      update_params.delete(:approvals_before_merge)
+    end
+
+    @merge_request = MergeRequests::UpdateService.new(project, current_user, update_params).execute(@merge_request)
 
     if @merge_request.valid?
       respond_to do |format|
