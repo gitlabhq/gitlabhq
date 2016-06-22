@@ -10,6 +10,7 @@ v 8.9.1 (unreleased)
   - Display group/project access requesters separately in the admin area. !4798
   - Add documentation and examples for configuring cloud storage for registry images. !4812
   - Clarifies documentation about artifact expiry. !4831
+  - Fixes the Network graph links. !4832
   - Fix MR-auto-close text added to description. !4836
   - Fix typo in export failure email. !4847
 
