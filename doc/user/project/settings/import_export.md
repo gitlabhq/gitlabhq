@@ -40,18 +40,18 @@ The following items will NOT be exported:
 
 1. Scroll down to find the **Export project** button:
 
-    ![export_1](./img/export_1.png)
+    ![Export button](img/import_export_export_button.png)
 
 1. Once the export is generated, you should receive an e-mail with a link to
    download the file:
 
-    ![export_3](./img/export_3.png)
+    ![Email download link](img/import_export_mail_link.png)
 
 1. Alternatively, you can come back to the project settings and download the
    file from there, or generate a new export. Once the file available, the page
    should show the **Download export** button:
 
-    ![export_4](./img/export_4.png)
+    ![Download export](img/import_export_download_export.png)
 
 ## Importing the project
 
@@ -59,12 +59,12 @@ The following items will NOT be exported:
    options when creating a New Project. Make sure you are in the right namespace
    and you have entered a project name. Click on **GitLab export**:
 
-    ![import_1](./img/import_1.png)
+    ![New project](img/import_export_new_project.png)
 
 1. You can see where the project will be imported to. You can now select file
    exported previously:
 
-    ![import_2](./img/import_2.png)
+    ![Select file](img/import_export_select_file.png)
 
 1. Click on **Import project** to begin importing. Your newly imported project
    page will appear soon.
