@@ -363,7 +363,7 @@ class GitLabDropdown
       selector = ".dropdown-page-one .dropdown-content"
     $(selector, @dropdown)
       .empty()
-      .append html
+      .append(html)
 
   # Render the row
   renderItem: (data, group = false, index = false) ->

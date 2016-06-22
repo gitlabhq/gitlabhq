@@ -71,17 +71,17 @@ class @Project
         renderRow: (ref) ->
           if ref.header?
             $('<li />')
-              .addClass 'dropdown-header'
-              .text ref.header
+              .addClass('dropdown-header')
+              .text(ref.header)
           else
             link = $('<a />')
-              .attr 'href', '#'
+              .attr('href', '#')
               .addClass(if ref is selected then 'is-active' else '')
-              .text ref
-              .attr 'data-ref', escape(ref)
+              .text(ref)
+              .attr('data-ref', escape(ref))
 
             $('<li />')
-              .append link
+              .append(link)
         id: (obj, $el) ->
           $el.attr('data-ref')
         toggleLabel: (obj, $el) ->
