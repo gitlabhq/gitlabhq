@@ -13,32 +13,34 @@ If you want a quick introduction to GitLab CI, follow our
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
 - [.gitlab-ci.yml](#gitlab-ci-yml)
-    - [image and services](#image-and-services)
-    - [before_script](#before_script)
-    - [after_script](#after_script)
-    - [stages](#stages)
-    - [types](#types)
-    - [variables](#variables)
-    - [cache](#cache)
-        - [cache:key](#cache-key)
+  - [image and services](#image-and-services)
+  - [before_script](#before_script)
+  - [after_script](#after_script)
+  - [stages](#stages)
+  - [types](#types)
+  - [variables](#variables)
+  - [cache](#cache)
+    - [cache:key](#cache-key)
 - [Jobs](#jobs)
-    - [script](#script)
-    - [stage](#stage)
-    - [job variables](#job-variables)
-    - [only and except](#only-and-except)
-    - [tags](#tags)
-    - [when](#when)
-    - [environment](#environment)
-    - [artifacts](#artifacts)
-        - [artifacts:name](#artifacts-name)
-        - [artifacts:when](#artifacts-when)
-        - [artifacts:expire_in](#artifacts-expire_in)
-    - [dependencies](#dependencies)
-    - [before_script and after_script](#before_script-and-after_script)
+  - [script](#script)
+  - [stage](#stage)
+  - [only and except](#only-and-except)
+  - [job variables](#job-variables)
+  - [tags](#tags)
+  - [when](#when)
+  - [environment](#environment)
+  - [artifacts](#artifacts)
+    - [artifacts:name](#artifactsname)
+    - [artifacts:when](#artifactswhen)
+    - [artifacts:expire_in](#artifactsexpire_in)
+  - [dependencies](#dependencies)
+  - [before_script and after_script](#before_script-and-after_script)
+- [Git Strategy](#git-strategy)
+- [Shallow cloning](#shallow-cloning)
 - [Hidden jobs](#hidden-jobs)
 - [Special YAML features](#special-yaml-features)
-    - [Anchors](#anchors)
-- [Validate the .gitlab-ci.yml](#validate-the-gitlab-ci-yml)
+  - [Anchors](#anchors)
+- [Validate the .gitlab-ci.yml](#validate-the-gitlab-ciyml)
 - [Skipping builds](#skipping-builds)
 - [Examples](#examples)
 
@@ -819,6 +821,61 @@ job:
   - my command
   after_script:
   - execute this after my script
+```
+
+## Git Strategy
+
+>**Note:**
+Introduced in GitLab 8.9 as an experimental feature. May change in future
+releases or be removed completely.
+
+You can set the `GIT_STRATEGY` used for getting recent application code. `clone`
+is slower, but makes sure you have a clean directory before every build. `fetch`
+is faster. `GIT_STRATEGY` can be specified in the global `variables` section or
+in the `variables` section for individual jobs. If it's not specified, then the
+default from project settings will be used.
+
+```
+variables:
+  GIT_STRATEGY: clone
+```
+
+or
+
+```
+variables:
+  GIT_STRATEGY: fetch
+```
+
+## Shallow cloning
+
+>**Note:**
+Introduced in GitLab 8.9 as an experimental feature. May change in future
+releases or be removed completely.
+
+You can specify the depth of fetching and cloning using `GIT_DEPTH`. This allows
+shallow cloning of the repository which can significantly speed up cloning for
+repositories with a large number of commits or old, large binaries. The value is
+passed to `git fetch` and `git clone`.
+
+>**Note:**
+If you use a depth of 1 and have a queue of builds or retry
+builds, jobs may fail.
+
+Since Git fetching and cloning is based on a ref, such as a branch name, runners
+can't clone a specific commit SHA. If there are multiple builds in the queue, or
+you are retrying an old build, the commit to be tested needs to be within the
+git history that is cloned. Setting too small a value for `GIT_DEPTH` can make
+it impossible to run these old commits. You will see `unresolved reference` in
+build logs. You should then reconsider changing `GIT_DEPTH` to a higher value.
+
+Builds that rely on `git describe` may not work correctly when `GIT_DEPTH` is
+set since only part of the git history is present.
+
+To fetch or clone only the last 3 commits:
+```
+variables:
+  GIT_DEPTH: "3"
 ```
 
 ## Hidden jobs
