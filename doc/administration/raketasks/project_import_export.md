@@ -6,6 +6,8 @@
     than that of the exporter.
   - For existing installations, the project import option has to be enabled in
     application settings (`/admin/application_settings`) under 'Import sources'.
+  - The exports are stored in a temporary [shared directory][tmp] and are deleted
+    every 24 hours by a specific worker.
 
 The GitLab Import/Export version can be checked by using:
 
@@ -28,3 +30,4 @@ bundle exec rake gitlab:import_export:data RAILS_ENV=production
 ```
 
 [ce-3050]: https://gitlab.com/gitlab-org/gitlab-ce/issues/3050
+[tmp]: ../../development/shared_files.md

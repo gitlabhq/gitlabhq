@@ -1,6 +1,6 @@
 # Project import/export
 
->**Note:**
+>**Notes:**
   - This feature was [introduced][ce-3050] in GitLab 8.9
   - Importing will not be possible if the import instance version is lower
     than that of the exporter.
@@ -11,6 +11,8 @@
   - You can find some useful raketasks if you are an administrator in the
     [import_export](../../../administration/raketasks/project_import_export.md)
     raketask.
+  - The exports are stored in a temporary [shared directory][tmp] and are deleted
+    every 24 hours by a specific worker.
 
 Existing projects running on any GitLab instance or GitLab.com can be exported
 with all their related data and be moved into a new GitLab instance.
@@ -65,6 +67,7 @@ The following items will NOT be exported:
     ![import_2](./img/import_2.png)
 
 1. Click on **Import project** to begin importing. Your newly imported project
-   page will appear soon:
+   page will appear soon.
 
 [ce-3050]: https://gitlab.com/gitlab-org/gitlab-ce/issues/3050
+[tmp]: ../../../development/shared_files.md
