@@ -2,6 +2,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.9.1 (unreleased)
   - Fix MR-auto-close text added to description. !4836
+  - Fix typo in export failure email. !4847
 
 v 8.9.0
   - Fix builds API response not including commit data
