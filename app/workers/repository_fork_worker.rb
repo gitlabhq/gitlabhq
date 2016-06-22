@@ -12,7 +12,7 @@ class RepositoryForkWorker
       return
     end
 
-    result = gitlab_shell.fork_repository(source_path, target_path)
+    result = gitlab_shell.fork_repository(project.repository_storage_path, source_path, target_path)
     unless result
       logger.error("Unable to fork project #{project_id} for repository #{source_path} -> #{target_path}")
       project.mark_import_as_failed('The project could not be forked.')

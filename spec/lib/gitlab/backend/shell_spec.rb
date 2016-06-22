@@ -13,6 +13,11 @@ describe Gitlab::Shell, lib: true do
   it { is_expected.to respond_to :add_repository }
   it { is_expected.to respond_to :remove_repository }
   it { is_expected.to respond_to :fork_repository }
+  it { is_expected.to respond_to :gc }
+  it { is_expected.to respond_to :add_namespace }
+  it { is_expected.to respond_to :rm_namespace }
+  it { is_expected.to respond_to :mv_namespace }
+  it { is_expected.to respond_to :exists? }
 
   it { expect(gitlab_shell.url_to_repo('diaspora')).to eq(Gitlab.config.gitlab_shell.ssh_path_prefix + "diaspora.git") }
 
