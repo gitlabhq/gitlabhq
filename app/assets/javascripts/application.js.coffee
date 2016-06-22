@@ -121,6 +121,11 @@ window.onload = ->
     setTimeout shiftWindow, 100
 
 $ ->
+
+  $document = $(document)
+  $window   = $(window)
+  $body     = $('body')
+
   gl.utils.preventDisabledButtons()
   bootstrapBreakpoint = bp.getBreakpointSize()
 
@@ -152,7 +157,7 @@ $ ->
     ), 1
 
   # Initialize tooltips
-  $('body').tooltip(
+  $body.tooltip(
     selector: '.has-tooltip, [data-toggle="tooltip"]'
     placement: (_, el) ->
       $el = $(el)
@@ -171,7 +176,7 @@ $ ->
     flash.show()
 
   # Disable form buttons while a form is submitting
-  $('body').on 'ajax:complete, ajax:beforeSend, submit', 'form', (e) ->
+  $body.on 'ajax:complete, ajax:beforeSend, submit', 'form', (e) ->
     buttons = $('[type="submit"]', @)
 
     switch e.type
@@ -184,7 +189,7 @@ $ ->
   $('.account-box').hover -> $(@).toggleClass('hover')
 
   # Commit show suppressed diff
-  $(document).on 'click', '.diff-content .js-show-suppressed-diff', ->
+  $document.on 'click', '.diff-content .js-show-suppressed-diff', ->
     $container = $(@).parent()
     $container.next('table').show()
     $container.remove()
@@ -197,13 +202,13 @@ $ ->
     $('.navbar-toggle i').toggleClass("fa-angle-right fa-angle-left")
 
   # Show/hide comments on diff
-  $("body").on "click", ".js-toggle-diff-comments", (e) ->
+  $body.on "click", ".js-toggle-diff-comments", (e) ->
     $(@).toggleClass('active')
     $(@).closest(".diff-file").find(".notes_holder").toggle()
     e.preventDefault()
 
-  $(document).off "click", '.js-confirm-danger'
-  $(document).on "click", '.js-confirm-danger', (e) ->
+  $document.off "click", '.js-confirm-danger'
+  $document.on "click", '.js-confirm-danger', (e) ->
     e.preventDefault()
     btn = $(e.target)
     text = btn.data("confirm-danger-message")
@@ -211,7 +216,7 @@ $ ->
     new ConfirmDangerModal(form, text)
 
 
-  $(document).on 'click', 'button', ->
+  $document.on 'click', 'button', ->
     $(this).blur()
 
   $('input[type="search"]').each ->
@@ -219,7 +224,7 @@ $ ->
     $this.attr 'value', $this.val()
     return
 
-  $(document)
+  $document
     .off 'keyup', 'input[type="search"]'
     .on 'keyup', 'input[type="search"]' , (e) ->
       $this = $(this)
@@ -227,7 +232,7 @@ $ ->
 
   $sidebarGutterToggle = $('.js-sidebar-toggle')
 
-  $(document)
+  $document
     .off 'breakpoint:change'
     .on 'breakpoint:change', (e, breakpoint) ->
       if breakpoint is 'sm' or breakpoint is 'xs'
@@ -239,14 +244,14 @@ $ ->
     oldBootstrapBreakpoint = bootstrapBreakpoint
     bootstrapBreakpoint = bp.getBreakpointSize()
     if bootstrapBreakpoint != oldBootstrapBreakpoint
-      $(document).trigger('breakpoint:change', [bootstrapBreakpoint])
+      $document.trigger('breakpoint:change', [bootstrapBreakpoint])
 
   checkInitialSidebarSize = ->
     bootstrapBreakpoint = bp.getBreakpointSize()
     if bootstrapBreakpoint is "xs" or "sm"
-      $(document).trigger('breakpoint:change', [bootstrapBreakpoint])
+      $document.trigger('breakpoint:change', [bootstrapBreakpoint])
 
-  $(window)
+  $window
     .off "resize.app"
     .on "resize.app", (e) ->
       fitSidebarForSize()
@@ -256,29 +261,45 @@ $ ->
   new Aside()
 
   # Sidenav pinning
-  if $(window).width() < 1440 and $.cookie('pin_nav') is 'true'
-    $.cookie('pin_nav', 'false')
+  if $window.width() < 1440 and $.cookie('pin_nav') is 'true'
+    $.cookie('pin_nav', 'false', { path: '/' })
     $('.page-with-sidebar')
       .toggleClass('page-sidebar-collapsed page-sidebar-expanded')
       .removeClass('page-sidebar-pinned')
     $('.navbar-fixed-top').removeClass('header-pinned-nav')
 
-  $(document)
+  $document
     .off 'click', '.js-nav-pin'
     .on 'click', '.js-nav-pin', (e) ->
       e.preventDefault()
 
+      $pinBtn = $(e.currentTarget)
+      $page = $ '.page-with-sidebar'
+      $topNav = $ '.navbar-fixed-top'
+      $tooltip = $ "##{$pinBtn.attr('aria-describedby')}"
+      doPinNav = not $page.is('.page-sidebar-pinned')
+      tooltipText = 'Pin navigation'
+
       $(this).toggleClass 'is-active'
 
-      if $.cookie('pin_nav') is 'true'
-        $.cookie 'pin_nav', 'false'
-        $('.page-with-sidebar')
-          .removeClass('page-sidebar-pinned')
-          .toggleClass('page-sidebar-collapsed page-sidebar-expanded')
-        $('.navbar-fixed-top')
-          .removeClass('header-pinned-nav')
-          .toggleClass('header-collapsed header-expanded')
+      if doPinNav
+        $page.addClass('page-sidebar-pinned')
+        $topNav.addClass('header-pinned-nav')
       else
-        $.cookie 'pin_nav', 'true'
-        $('.page-with-sidebar').addClass('page-sidebar-pinned')
-        $('.navbar-fixed-top').addClass('header-pinned-nav')
+        $tooltip.remove() # Remove it immediately when collapsing the sidebar
+        $page.removeClass('page-sidebar-pinned')
+             .toggleClass('page-sidebar-collapsed page-sidebar-expanded')
+        $topNav.removeClass('header-pinned-nav')
+               .toggleClass('header-collapsed header-expanded')
+
+      # Save settings
+      $.cookie 'pin_nav', doPinNav, { path: '/' }
+
+      if $.cookie('pin_nav') is 'true' or doPinNav
+        tooltipText = 'Unpin navigation'
+
+      # Update tooltip text immediately
+      $tooltip.find('.tooltip-inner').text(tooltipText)
+
+      # Persist tooltip title
+      $pinBtn.attr('title', tooltipText).tooltip('fixTitle')

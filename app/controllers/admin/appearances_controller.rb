@@ -5,6 +5,7 @@ class Admin::AppearancesController < Admin::ApplicationController
   end
 
   def preview
+    render 'preview', layout: 'devise'
   end
 
   def create

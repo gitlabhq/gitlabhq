@@ -22,7 +22,7 @@ describe 'Issues', feature: true do
 
     before do
       visit edit_namespace_project_issue_path(project.namespace, project, issue)
-      click_button "Go full screen"
+      find('.js-zen-enter').click
     end
 
     it 'should open new issue popup' do

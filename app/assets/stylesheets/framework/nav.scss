@@ -18,6 +18,13 @@
     opacity: 0;
     transition-duration: .3s;
   }
+
+  .fa {
+    position: relative;
+    top: 3px;
+    font-size: 13px;
+    color: $btn-placeholder-gray;
+  }
 }
 
 @mixin scrolling-links() {
@@ -104,10 +111,6 @@
     width: 50%;
     line-height: 28px;
 
-    &.wiki-page {
-      padding: 16px 10px 11px;
-    }
-
     /* Small devices (phones, tablets, 768px and lower) */
     @media (max-width: $screen-sm-min) {
       width: 100%;
@@ -136,7 +139,7 @@
     }
 
     /* Small devices (phones, tablets, 768px and lower) */
-    @media (max-width: $screen-sm-max) {
+    @media (max-width: $screen-xs-max) {
       width: 100%;
     }
   }
@@ -220,6 +223,7 @@
       form {
         display: block;
         height: auto;
+        margin-bottom: 14px;
 
         input {
           width: 100%;
@@ -319,11 +323,19 @@
     .fade-right {
       @include fade(left, rgba(250, 250, 250, 0.4), $background-color);
       right: 0;
+
+      .fa {
+        right: -7px;
+      }
     }
 
     .fade-left {
       @include fade(right, rgba(250, 250, 250, 0.4), $background-color);
       left: 0;
+
+      .fa {
+        left: -7px;
+      }
     }
 
     li {

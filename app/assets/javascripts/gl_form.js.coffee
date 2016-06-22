@@ -34,6 +34,8 @@ class @GLForm
       # form and textarea event listeners
       @addEventListeners()
 
+      gl.text.init(@form)
+
     # hide discard button
     @form.find('.js-note-discard').hide()
 
@@ -42,6 +44,7 @@ class @GLForm
   clearEventListeners: ->
     @textarea.off 'focus'
     @textarea.off 'blur'
+    gl.text.removeListeners(@form)
 
   addEventListeners: ->
     @textarea.on 'focus', ->

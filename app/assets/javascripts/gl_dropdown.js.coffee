@@ -58,7 +58,7 @@ class GitLabDropdownFilter
   filter: (search_text) ->
     data = @options.data()
 
-    if data?
+    if data? and not @options.filterByText
       results = data
 
       if search_text isnt ''
@@ -102,10 +102,11 @@ class GitLabDropdownFilter
           $el = $(@)
           matches = fuzzaldrinPlus.match($el.text().trim(), search_text)
 
-          if matches.length
-            $el.show()
-          else
-            $el.hide()
+          unless $el.is('.dropdown-header')
+            if matches.length
+              $el.show()
+            else
+              $el.hide()
       else
         elements.show()
 
@@ -191,6 +192,7 @@ class GitLabDropdown
     if @options.filterable
       @filter = new GitLabDropdownFilter @filterInput,
         filterInputBlur: @filterInputBlur
+        filterByText: @options.filterByText
         remote: @options.filterRemote
         query: @options.data
         keys: searchFields

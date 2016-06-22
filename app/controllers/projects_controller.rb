@@ -1,7 +1,7 @@
 class ProjectsController < Projects::ApplicationController
   include ExtractsPath
 
-  before_action :authenticate_user!, except: [:show, :activity]
+  before_action :authenticate_user!, except: [:show, :activity, :refs]
   before_action :project, except: [:new, :create]
   before_action :repository, except: [:new, :create]
   before_action :assign_ref_vars, :tree, only: [:show], if: :repo_exists?
@@ -251,6 +251,24 @@ class ProjectsController < Projects::ApplicationController
     }
   end
 
+  def refs
+    options = {
+      'Branches' => @repository.branch_names,
+    }
+
+    unless @repository.tag_count.zero?
+      options['Tags'] = VersionSorter.rsort(@repository.tag_names)
+    end
+
+    # If reference is commit id - we should add it to branch/tag selectbox
+    ref = Addressable::URI.unescape(params[:ref])
+    if ref && options.flatten(2).exclude?(ref) && ref =~ /\A[0-9a-zA-Z]{6,52}\z/
+      options['Commits'] = [ref]
+    end
+
+    render json: options.to_json
+  end
+
   private
 
   def determine_layout
@@ -285,8 +303,14 @@ class ProjectsController < Projects::ApplicationController
     project.repository_exists? && !project.empty_repo?
   end
 
-  # Override get_id from ExtractsPath, which returns the branch and file path
+  # Override extract_ref from ExtractsPath, which returns the branch and file path
   # for the blob/tree, which in this case is just the root of the default branch.
+  # This way we avoid to access the repository.ref_names.
+  def extract_ref(_id)
+    [get_id, '']
+  end
+
+  # Override get_id from ExtractsPath in this case is just the root of the default branch.
   def get_id
     project.repository.root_ref
   end

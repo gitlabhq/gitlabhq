@@ -17,12 +17,15 @@ describe Gitlab::Lfs::Router, lib: true do
     }
   end
 
-  let(:lfs_router_auth) { new_lfs_router(project, user) }
-  let(:lfs_router_noauth) { new_lfs_router(project, nil) }
-  let(:lfs_router_public_auth) { new_lfs_router(public_project, user) }
-  let(:lfs_router_public_noauth) { new_lfs_router(public_project, nil) }
-  let(:lfs_router_forked_noauth) { new_lfs_router(forked_project, nil) }
-  let(:lfs_router_forked_auth) { new_lfs_router(forked_project, user_two) }
+  let(:lfs_router_auth) { new_lfs_router(project, user: user) }
+  let(:lfs_router_ci_auth) { new_lfs_router(project, ci: true) }
+  let(:lfs_router_noauth) { new_lfs_router(project) }
+  let(:lfs_router_public_auth) { new_lfs_router(public_project, user: user) }
+  let(:lfs_router_public_ci_auth) { new_lfs_router(public_project, ci: true) }
+  let(:lfs_router_public_noauth) { new_lfs_router(public_project) }
+  let(:lfs_router_forked_noauth) { new_lfs_router(forked_project) }
+  let(:lfs_router_forked_auth) { new_lfs_router(forked_project, user: user_two) }
+  let(:lfs_router_forked_ci_auth) { new_lfs_router(forked_project, ci: true) }
 
   let(:sample_oid) { "b68143e6463773b1b6c6fd009a76c32aeec041faff32ba2ed42fd7f708a17f80" }
   let(:sample_size) { 499013 }
@@ -80,6 +83,7 @@ describe Gitlab::Lfs::Router, lib: true do
 
       context 'with required headers' do
         before do
+          project.lfs_objects << lfs_object
           env['HTTP_X_SENDFILE_TYPE'] = "X-Sendfile"
         end
 
@@ -91,7 +95,6 @@ describe Gitlab::Lfs::Router, lib: true do
 
         context 'when user has project access' do
           before do
-            project.lfs_objects << lfs_object
             project.team << [user, :master]
           end
 
@@ -102,6 +105,17 @@ describe Gitlab::Lfs::Router, lib: true do
           it "responds with the file location" do
             expect(lfs_router_auth.try_call[1]['Content-Type']).to eq("application/octet-stream")
             expect(lfs_router_auth.try_call[1]['X-Sendfile']).to eq(lfs_object.file.path)
+          end
+        end
+
+        context 'when CI is authorized' do
+          it "responds with status 200" do
+            expect(lfs_router_ci_auth.try_call.first).to eq(200)
+          end
+
+          it "responds with the file location" do
+            expect(lfs_router_ci_auth.try_call[1]['Content-Type']).to eq("application/octet-stream")
+            expect(lfs_router_ci_auth.try_call[1]['X-Sendfile']).to eq(lfs_object.file.path)
           end
         end
       end
@@ -134,143 +148,145 @@ describe Gitlab::Lfs::Router, lib: true do
     end
 
     describe 'download' do
-      describe 'when user is authenticated' do
-        before do
-          body = { 'operation' => 'download',
-                   'objects' => [
-                     { 'oid' => sample_oid,
-                       'size' => sample_size
-                     }]
-          }.to_json
-          env['rack.input'] = StringIO.new(body)
+      before do
+        body = { 'operation' => 'download',
+                 'objects' => [
+                   { 'oid' => sample_oid,
+                     'size' => sample_size
+                   }]
+        }.to_json
+        env['rack.input'] = StringIO.new(body)
+      end
+
+      shared_examples 'an authorized requests' do
+        context 'when downloading an lfs object that is assigned to our project' do
+          before do
+            project.lfs_objects << lfs_object
+          end
+
+          it 'responds with status 200 and href to download' do
+            response = router.try_call
+            expect(response.first).to eq(200)
+            response_body = ActiveSupport::JSON.decode(response.last.first)
+
+            expect(response_body).to eq('objects' => [
+              { 'oid' => sample_oid,
+                'size' => sample_size,
+                'actions' => {
+                  'download' => {
+                    'href' => "#{project.http_url_to_repo}/gitlab-lfs/objects/#{sample_oid}",
+                    'header' => { 'Authorization' => auth }
+                  }
+                }
+              }])
+          end
         end
 
-        describe 'when user has download access' do
+        context 'when downloading an lfs object that is assigned to other project' do
           before do
-            @auth = authorize(user)
-            env["HTTP_AUTHORIZATION"] = @auth
-            project.team << [user, :reporter]
+            public_project.lfs_objects << lfs_object
           end
 
-          context 'when downloading an lfs object that is assigned to our project' do
-            before do
-              project.lfs_objects << lfs_object
-            end
+          it 'responds with status 200 and error message' do
+            response = router.try_call
+            expect(response.first).to eq(200)
+            response_body = ActiveSupport::JSON.decode(response.last.first)
 
-            it 'responds with status 200 and href to download' do
-              response = lfs_router_auth.try_call
-              expect(response.first).to eq(200)
-              response_body = ActiveSupport::JSON.decode(response.last.first)
+            expect(response_body).to eq('objects' => [
+              { 'oid' => sample_oid,
+                'size' => sample_size,
+                'error' => {
+                  'code' => 404,
+                  'message' => "Object does not exist on the server or you don't have permissions to access it",
+                }
+              }])
+          end
+        end
 
-              expect(response_body).to eq('objects' => [
-                { 'oid' => sample_oid,
-                  'size' => sample_size,
-                  'actions' => {
-                    'download' => {
-                      'href' => "#{project.http_url_to_repo}/gitlab-lfs/objects/#{sample_oid}",
-                      'header' => { 'Authorization' => @auth }
-                    }
-                  }
-                }])
-            end
+        context 'when downloading a lfs object that does not exist' do
+          before do
+            body = { 'operation' => 'download',
+                     'objects' => [
+                       { 'oid' => '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897',
+                         'size' => 1575078
+                       }]
+            }.to_json
+            env['rack.input'] = StringIO.new(body)
           end
 
-          context 'when downloading an lfs object that is assigned to other project' do
-            before do
-              public_project.lfs_objects << lfs_object
-            end
+          it "responds with status 200 and error message" do
+            response = router.try_call
+            expect(response.first).to eq(200)
+            response_body = ActiveSupport::JSON.decode(response.last.first)
 
-            it 'responds with status 200 and error message' do
-              response = lfs_router_auth.try_call
-              expect(response.first).to eq(200)
-              response_body = ActiveSupport::JSON.decode(response.last.first)
+            expect(response_body).to eq('objects' => [
+              { 'oid' => '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897',
+                'size' => 1575078,
+                'error' => {
+                  'code' => 404,
+                  'message' => "Object does not exist on the server or you don't have permissions to access it",
+                }
+              }])
+          end
+        end
 
-              expect(response_body).to eq('objects' => [
-                { 'oid' => sample_oid,
-                  'size' => sample_size,
-                  'error' => {
-                    'code' => 404,
-                    'message' => "Object does not exist on the server or you don't have permissions to access it",
-                  }
-                }])
-            end
+        context 'when downloading one new and one existing lfs object' do
+          before do
+            body = { 'operation' => 'download',
+                     'objects' => [
+                       { 'oid' => '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897',
+                         'size' => 1575078
+                       },
+                       { 'oid' => sample_oid,
+                         'size' => sample_size
+                       }
+                     ]
+            }.to_json
+            env['rack.input'] = StringIO.new(body)
+            project.lfs_objects << lfs_object
           end
 
-          context 'when downloading a lfs object that does not exist' do
-            before do
-              body = { 'operation' => 'download',
-                       'objects' => [
-                         { 'oid' => '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897',
-                           'size' => 1575078
-                         }]
-              }.to_json
-              env['rack.input'] = StringIO.new(body)
-            end
+          it "responds with status 200 with upload hypermedia link for the new object" do
+            response = router.try_call
+            expect(response.first).to eq(200)
+            response_body = ActiveSupport::JSON.decode(response.last.first)
 
-            it "responds with status 200 and error message" do
-              response = lfs_router_auth.try_call
-              expect(response.first).to eq(200)
-              response_body = ActiveSupport::JSON.decode(response.last.first)
-
-              expect(response_body).to eq('objects' => [
-                { 'oid' => '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897',
-                  'size' => 1575078,
-                  'error' => {
-                    'code' => 404,
-                    'message' => "Object does not exist on the server or you don't have permissions to access it",
+            expect(response_body).to eq('objects' => [
+              { 'oid' => '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897',
+                'size' => 1575078,
+                'error' => {
+                  'code' => 404,
+                  'message' => "Object does not exist on the server or you don't have permissions to access it",
+                }
+              },
+              { 'oid' => sample_oid,
+                'size' => sample_size,
+                'actions' => {
+                  'download' => {
+                    'href' => "#{project.http_url_to_repo}/gitlab-lfs/objects/#{sample_oid}",
+                    'header' => { 'Authorization' => auth }
                   }
-                }])
-            end
+                }
+              }])
           end
+        end
+      end
 
-          context 'when downloading one new and one existing lfs object' do
-            before do
-              body = { 'operation' => 'download',
-                       'objects' => [
-                         { 'oid' => '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897',
-                           'size' => 1575078
-                         },
-                         { 'oid' => sample_oid,
-                           'size' => sample_size
-                         }
-                       ]
-              }.to_json
-              env['rack.input'] = StringIO.new(body)
-              project.lfs_objects << lfs_object
-            end
+      context 'when user is authenticated' do
+        let(:auth) { authorize(user) }
 
-            it "responds with status 200 with upload hypermedia link for the new object" do
-              response = lfs_router_auth.try_call
-              expect(response.first).to eq(200)
-              response_body = ActiveSupport::JSON.decode(response.last.first)
+        before do
+          env["HTTP_AUTHORIZATION"] = auth
+          project.team << [user, role]
+        end
 
-              expect(response_body).to eq('objects' => [
-                { 'oid' => '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897',
-                  'size' => 1575078,
-                  'error' => {
-                    'code' => 404,
-                    'message' => "Object does not exist on the server or you don't have permissions to access it",
-                  }
-                },
-                { 'oid' => sample_oid,
-                  'size' => sample_size,
-                  'actions' => {
-                    'download' => {
-                      'href' => "#{project.http_url_to_repo}/gitlab-lfs/objects/#{sample_oid}",
-                      'header' => { 'Authorization' => @auth }
-                    }
-                  }
-                }])
-            end
-          end
+        it_behaves_like 'an authorized requests' do
+          let(:role) { :reporter }
+          let(:router) { lfs_router_auth }
         end
 
         context 'when user does is not member of the project' do
-          before do
-            @auth = authorize(user)
-            env["HTTP_AUTHORIZATION"] = @auth
-            project.team << [user, :guest]
-          end
+          let(:role) { :guest }
 
           it 'responds with 403' do
             expect(lfs_router_auth.try_call.first).to eq(403)
@@ -278,11 +294,7 @@ describe Gitlab::Lfs::Router, lib: true do
         end
 
         context 'when user does not have download access' do
-          before do
-            @auth = authorize(user)
-            env["HTTP_AUTHORIZATION"] = @auth
-            project.team << [user, :guest]
-          end
+          let(:role) { :guest }
 
           it 'responds with 403' do
             expect(lfs_router_auth.try_call.first).to eq(403)
@@ -290,18 +302,19 @@ describe Gitlab::Lfs::Router, lib: true do
         end
       end
 
-      context 'when user is not authenticated' do
-        before do
-          body = { 'operation' => 'download',
-                   'objects' => [
-                     { 'oid' => sample_oid,
-                       'size' => sample_size
-                     }],
+      context 'when CI is authorized' do
+        let(:auth) { 'gitlab-ci-token:password' }
 
-          }.to_json
-          env['rack.input'] = StringIO.new(body)
+        before do
+          env["HTTP_AUTHORIZATION"] = auth
         end
 
+        it_behaves_like 'an authorized requests' do
+          let(:router) { lfs_router_ci_auth }
+        end
+      end
+
+      context 'when user is not authenticated' do
         describe 'is accessing public project' do
           before do
             public_project.lfs_objects << lfs_object
@@ -338,17 +351,17 @@ describe Gitlab::Lfs::Router, lib: true do
     end
 
     describe 'upload' do
-      describe 'when user is authenticated' do
-        before do
-          body = { 'operation' => 'upload',
-                   'objects' => [
-                     { 'oid' => sample_oid,
-                       'size' => sample_size
-                     }]
-          }.to_json
-          env['rack.input'] = StringIO.new(body)
-        end
+      before do
+        body = { 'operation' => 'upload',
+                 'objects' => [
+                   { 'oid' => sample_oid,
+                     'size' => sample_size
+                   }]
+        }.to_json
+        env['rack.input'] = StringIO.new(body)
+      end
 
+      describe 'when request is authenticated' do
         describe 'when user has project push access' do
           before do
             @auth = authorize(user)
@@ -440,15 +453,15 @@ describe Gitlab::Lfs::Router, lib: true do
             expect(lfs_router_auth.try_call.first).to eq(403)
           end
         end
+
+        context 'when CI is authorized' do
+          it 'responds with 401' do
+            expect(lfs_router_ci_auth.try_call.first).to eq(401)
+          end
+        end
       end
 
       context 'when user is not authenticated' do
-        before do
-          env['rack.input'] = StringIO.new(
-            { 'objects' => [], 'operation' => 'upload' }.to_json
-          )
-        end
-
         context 'when user has push access' do
           before do
             project.team << [user, :master]
@@ -463,6 +476,18 @@ describe Gitlab::Lfs::Router, lib: true do
           it "responds with status 401" do
             expect(lfs_router_public_noauth.try_call.first).to eq(401)
           end
+        end
+      end
+
+      context 'when CI is authorized' do
+        let(:auth) { 'gitlab-ci-token:password' }
+
+        before do
+          env["HTTP_AUTHORIZATION"] = auth
+        end
+
+        it "responds with status 403" do
+          expect(lfs_router_public_ci_auth.try_call.first).to eq(401)
         end
       end
     end
@@ -490,13 +515,68 @@ describe Gitlab::Lfs::Router, lib: true do
       env['REQUEST_METHOD'] = 'PUT'
     end
 
-    describe 'to one project' do
-      describe 'when user has push access to the project' do
+    shared_examples 'unauthorized' do
+      context 'and request is sent by gitlab-workhorse to authorize the request' do
         before do
-          project.team << [user, :master]
+          header_for_upload_authorize(router.project)
         end
 
-        describe 'when user is authenticated' do
+        it 'responds with status 401' do
+          expect(router.try_call.first).to eq(401)
+        end
+      end
+
+      context 'and request is sent by gitlab-workhorse to finalize the upload' do
+        before do
+          headers_for_upload_finalize(router.project)
+        end
+
+        it 'responds with status 401' do
+          expect(router.try_call.first).to eq(401)
+        end
+      end
+
+      context 'and request is sent with a malformed headers' do
+        before do
+          env["PATH_INFO"] = "#{router.project.repository.path_with_namespace}.git/gitlab-lfs/objects/#{sample_oid}/#{sample_size}"
+          env["HTTP_X_GITLAB_LFS_TMP"] = "cat /etc/passwd"
+        end
+
+        it 'does not recognize it as a valid lfs command' do
+          expect(router.try_call).to eq(nil)
+        end
+      end
+    end
+
+    shared_examples 'forbidden' do
+      context 'and request is sent by gitlab-workhorse to authorize the request' do
+        before do
+          header_for_upload_authorize(router.project)
+        end
+
+        it 'responds with 403' do
+          expect(router.try_call.first).to eq(403)
+        end
+      end
+
+      context 'and request is sent by gitlab-workhorse to finalize the upload' do
+        before do
+          headers_for_upload_finalize(router.project)
+        end
+
+        it 'responds with 403' do
+          expect(router.try_call.first).to eq(403)
+        end
+      end
+    end
+
+    describe 'to one project' do
+      describe 'when user is authenticated' do
+        describe 'when user has push access to the project' do
+          before do
+            project.team << [user, :developer]
+          end
+
           context 'and request is sent by gitlab-workhorse to authorize the request' do
             before do
               header_for_upload_authorize(project)
@@ -524,100 +604,35 @@ describe Gitlab::Lfs::Router, lib: true do
           end
         end
 
-        describe 'when user is unauthenticated' do
-          let(:lfs_router_noauth) { new_lfs_router(project, nil) }
+        describe 'and user does not have push access' do
+          let(:router) { lfs_router_auth }
 
-          context 'and request is sent by gitlab-workhorse to authorize the request' do
-            before do
-              header_for_upload_authorize(project)
-            end
-
-            it 'responds with status 401' do
-              expect(lfs_router_noauth.try_call.first).to eq(401)
-            end
-          end
-
-          context 'and request is sent by gitlab-workhorse to finalize the upload' do
-            before do
-              headers_for_upload_finalize(project)
-            end
-
-            it 'responds with status 401' do
-              expect(lfs_router_noauth.try_call.first).to eq(401)
-            end
-          end
-
-          context 'and request is sent with a malformed headers' do
-            before do
-              env["PATH_INFO"] = "#{project.repository.path_with_namespace}.git/gitlab-lfs/objects/#{sample_oid}/#{sample_size}"
-              env["HTTP_X_GITLAB_LFS_TMP"] = "cat /etc/passwd"
-            end
-
-            it 'does not recognize it as a valid lfs command' do
-              expect(lfs_router_noauth.try_call).to eq(nil)
-            end
-          end
+          it_behaves_like 'forbidden'
         end
       end
 
-      describe 'and user does not have push access' do
-        describe 'when user is authenticated' do
-          context 'and request is sent by gitlab-workhorse to authorize the request' do
-            before do
-              header_for_upload_authorize(project)
-            end
+      context 'when CI is authenticated' do
+        let(:router) { lfs_router_ci_auth }
 
-            it 'responds with 403' do
-              expect(lfs_router_auth.try_call.first).to eq(403)
-            end
-          end
+        it_behaves_like 'unauthorized'
+      end
 
-          context 'and request is sent by gitlab-workhorse to finalize the upload' do
-            before do
-              headers_for_upload_finalize(project)
-            end
+      context 'for unauthenticated' do
+        let(:router) { new_lfs_router(project) }
 
-            it 'responds with 403' do
-              expect(lfs_router_auth.try_call.first).to eq(403)
-            end
-          end
-        end
-
-        describe 'when user is unauthenticated' do
-          let(:lfs_router_noauth) { new_lfs_router(project, nil) }
-
-          context 'and request is sent by gitlab-workhorse to authorize the request' do
-            before do
-              header_for_upload_authorize(project)
-            end
-
-            it 'responds with 401' do
-              expect(lfs_router_noauth.try_call.first).to eq(401)
-            end
-          end
-
-          context 'and request is sent by gitlab-workhorse to finalize the upload' do
-            before do
-              headers_for_upload_finalize(project)
-            end
-
-            it 'responds with 401' do
-              expect(lfs_router_noauth.try_call.first).to eq(401)
-            end
-          end
-        end
+        it_behaves_like 'unauthorized'
       end
     end
 
-    describe "to a forked project" do
+    describe 'to a forked project' do
       let(:forked_project) { fork_project(public_project, user) }
 
-      describe 'when user has push access to the project' do
-        before do
-          forked_project.team << [user_two, :master]
-        end
+      describe 'when user is authenticated' do
+        describe 'when user has push access to the project' do
+          before do
+            forked_project.team << [user_two, :developer]
+          end
 
-        describe 'when user is authenticated' do
           context 'and request is sent by gitlab-workhorse to authorize the request' do
             before do
               header_for_upload_authorize(forked_project)
@@ -645,78 +660,28 @@ describe Gitlab::Lfs::Router, lib: true do
           end
         end
 
-        describe 'when user is unauthenticated' do
-          context 'and request is sent by gitlab-workhorse to authorize the request' do
-            before do
-              header_for_upload_authorize(forked_project)
-            end
+        describe 'and user does not have push access' do
+          let(:router) { lfs_router_forked_auth }
 
-            it 'responds with status 401' do
-              expect(lfs_router_forked_noauth.try_call.first).to eq(401)
-            end
-          end
-
-          context 'and request is sent by gitlab-workhorse to finalize the upload' do
-            before do
-              headers_for_upload_finalize(forked_project)
-            end
-
-            it 'responds with status 401' do
-              expect(lfs_router_forked_noauth.try_call.first).to eq(401)
-            end
-          end
+          it_behaves_like 'forbidden'
         end
       end
 
-      describe 'and user does not have push access' do
-        describe 'when user is authenticated' do
-          context 'and request is sent by gitlab-workhorse to authorize the request' do
-            before do
-              header_for_upload_authorize(forked_project)
-            end
+      context 'when CI is authenticated' do
+        let(:router) { lfs_router_forked_ci_auth }
 
-            it 'responds with 403' do
-              expect(lfs_router_forked_auth.try_call.first).to eq(403)
-            end
-          end
+        it_behaves_like 'unauthorized'
+      end
 
-          context 'and request is sent by gitlab-workhorse to finalize the upload' do
-            before do
-              headers_for_upload_finalize(forked_project)
-            end
+      context 'for unauthenticated' do
+        let(:router) { lfs_router_forked_noauth }
 
-            it 'responds with 403' do
-              expect(lfs_router_forked_auth.try_call.first).to eq(403)
-            end
-          end
-        end
-
-        describe 'when user is unauthenticated' do
-          context 'and request is sent by gitlab-workhorse to authorize the request' do
-            before do
-              header_for_upload_authorize(forked_project)
-            end
-
-            it 'responds with 401' do
-              expect(lfs_router_forked_noauth.try_call.first).to eq(401)
-            end
-          end
-
-          context 'and request is sent by gitlab-workhorse to finalize the upload' do
-            before do
-              headers_for_upload_finalize(forked_project)
-            end
-
-            it 'responds with 401' do
-              expect(lfs_router_forked_noauth.try_call.first).to eq(401)
-            end
-          end
-        end
+        it_behaves_like 'unauthorized'
       end
 
       describe 'and second project not related to fork or a source project' do
         let(:second_project) { create(:project) }
-        let(:lfs_router_second_project) { new_lfs_router(second_project, user) }
+        let(:lfs_router_second_project) { new_lfs_router(second_project, user: user) }
 
         before do
           public_project.lfs_objects << lfs_object
@@ -745,8 +710,8 @@ describe Gitlab::Lfs::Router, lib: true do
     ActionController::HttpAuthentication::Basic.encode_credentials(user.username, user.password)
   end
 
-  def new_lfs_router(project, user)
-    Gitlab::Lfs::Router.new(project, user, request)
+  def new_lfs_router(project, user: nil, ci: false)
+    Gitlab::Lfs::Router.new(project, user, ci, request)
   end
 
   def header_for_upload_authorize(project)

@@ -487,9 +487,8 @@ class User < ActiveRecord::Base
     events.recent.find do |event|
       project = Project.find_by_id(event.project_id)
       next unless project
-      repo = project.repository
 
-      if repo.branch_names.include?(event.branch_name)
+      if project.repository.branch_exists?(event.branch_name)
         merge_requests = MergeRequest.where("created_at >= ?", event.created_at).
             where(source_project_id: project.id,
                   source_branch: event.branch_name)
