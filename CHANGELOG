@@ -5,6 +5,7 @@ v 8.9.1 (unreleased)
   - Fix some CI wording in documentation. !4660
   - Document `GIT_STRATEGY` and `GIT_DEPTH`. !4720
   - Add documentation for the export & import features. !4732
+  - Add some docs for Docker Registry configuration. !4738
   - Fix MR-auto-close text added to description. !4836
   - Fix typo in export failure email. !4847
 
