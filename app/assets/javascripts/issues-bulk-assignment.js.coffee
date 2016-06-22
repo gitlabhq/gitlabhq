@@ -7,10 +7,24 @@ class @IssuableBulkActions
       @issues = @getElement('.issues-list .issue')
     } = opts
 
+    # Save instance
+    @form.data 'bulkActions', @
+
+    @disableWillUpdate()
+
     @bindEvents()
 
     # Fixes bulk-assign not working when navigating through pages
     Issuable.initChecks();
+
+  enableWillUpdate: ->
+    @toggleWillUpdate(true)
+
+  disableWillUpdate: ->
+    @toggleWillUpdate(false)
+
+  toggleWillUpdate: (enable)->
+    @willUpdateLabels = if enable? then enable else not @willUpdateLabels
 
   getElement: (selector) ->
     @container.find selector
@@ -87,11 +101,12 @@ class @IssuableBulkActions
         add_label_ids     : []
         remove_label_ids  : []
 
-    @getLabelsToApply().map (id) ->
-      formData.update.add_label_ids.push id
+    if @willUpdateLabels
+      @getLabelsToApply().map (id) ->
+        formData.update.add_label_ids.push id
 
-    @getLabelsToRemove().map (id) ->
-      formData.update.remove_label_ids.push id
+      @getLabelsToRemove().map (id) ->
+        formData.update.remove_label_ids.push id
 
     formData
 
