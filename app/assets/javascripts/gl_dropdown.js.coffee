@@ -361,7 +361,9 @@ class GitLabDropdown
     selector = '.dropdown-content'
     if @dropdown.find(".dropdown-toggle-page").length
       selector = ".dropdown-page-one .dropdown-content"
-    $(selector, @dropdown).append html
+    $(selector, @dropdown)
+      .empty()
+      .append html
 
   # Render the row
   renderItem: (data, group = false, index = false) ->
