@@ -20,7 +20,7 @@ class LegacyDiffNote < Note
   end
 
   def discussion_id
-    @discussion_id ||= self.class.build_discussion_id(noteable_type, noteable_id || commit_id, line_code, active?)
+    @discussion_id ||= self.class.build_discussion_id(noteable_type, noteable_id || commit_id, line_code)
   end
 
   def diff_file_hash
