@@ -163,7 +163,7 @@ module Ci
     end
 
     def skip_ci?
-      git_commit_message =~ /(\[ci skip\])/i if git_commit_message
+      git_commit_message =~ /\[(ci skip|skip ci)\]/i if git_commit_message
     end
 
     def environments
