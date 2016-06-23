@@ -27,21 +27,29 @@ module Awardable
     end
 
     def order_upvotes_desc
-      order_votes_desc(AwardEmoji::UPVOTE_NAME)
+      order_votes_desc(AwardEmoji::UPVOTE_NAMES)
     end
 
     def order_downvotes_desc
-      order_votes_desc(AwardEmoji::DOWNVOTE_NAME)
+      order_votes_desc(AwardEmoji::DOWNVOTE_NAMES)
     end
 
-    def order_votes_desc(emoji_name)
+    def order_all_upvotes_desc
+      order_votes_desc(AwardEmoji.all_award_emojis)
+    end
+
+    def order_all_downvotes_desc
+      order_votes_desc(AwardEmoji.all_award_emojis(thumbs_up: false))
+    end
+
+    def order_votes_desc(emoji_names)
       awardable_table = self.arel_table
       awards_table = AwardEmoji.arel_table
 
       join_clause = awardable_table.join(awards_table, Arel::Nodes::OuterJoin).on(
         awards_table[:awardable_id].eq(awardable_table[:id]).and(
           awards_table[:awardable_type].eq(self.name).and(
-            awards_table[:name].eq(emoji_name)
+            awards_table[:name].in(emoji_names)
           )
         )
       ).join_sources
@@ -55,8 +63,8 @@ module Awardable
     awards = award_emoji.group_by(&:name)
 
     if with_thumbs
-      awards[AwardEmoji::UPVOTE_NAME]   ||= []
-      awards[AwardEmoji::DOWNVOTE_NAME] ||= []
+      awards["thumbsup"]   ||= []
+      awards["thumbsdown"] ||= []
     end
 
     awards
@@ -68,6 +76,14 @@ module Awardable
 
   def upvotes
     award_emoji.upvotes.count
+  end
+
+  def all_downvotes
+    award_emoji.all_downvotes.count
+  end
+
+  def all_upvotes
+    award_emoji.all_upvotes.count
   end
 
   def emoji_awardable?
