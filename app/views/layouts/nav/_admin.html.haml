@@ -10,7 +10,7 @@
         %span
           Overview
     = nav_link(controller: %w(system_info background_jobs logs health_check)) do
-      = link_to admin_background_jobs_path, title: 'Monitoring' do
+      = link_to admin_system_info_path, title: 'Monitoring' do
         %span
           Monitoring
     = nav_link(controller: :broadcast_messages) do

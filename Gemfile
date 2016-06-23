@@ -349,4 +349,3 @@ gem 'health_check', '~> 1.5.1'
 
 # System information
 gem 'vmstat', '~> 2.1.0'
-gem 'filesize', '~> 0.1.1'

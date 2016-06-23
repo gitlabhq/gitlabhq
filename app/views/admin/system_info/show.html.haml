@@ -14,9 +14,9 @@
       .light-well
         %h4 Memory
         .data
-          %h1= "#{@mem_used}GB / #{@mem_total}GB"
+          %h1= "#{number_to_human_size(@mem_used)} / #{number_to_human_size(@mem_total)}"
     .col-sm-4
       .light-well
         %h4 Disk
         .data
-          %h1= "#{@disk_used}GB / #{@disk_total}GB"
+          %h1= "#{number_to_human_size(@disk_used)} / #{number_to_human_size(@disk_total)}"

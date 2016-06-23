@@ -207,7 +207,6 @@ GEM
       multi_json
     ffaker (2.0.0)
     ffi (1.9.10)
-    filesize (0.1.1)
     flay (2.6.1)
       ruby_parser (~> 3.0)
       sexp_processor (~> 4.0)
@@ -851,7 +850,6 @@ DEPENDENCIES
   email_spec (~> 1.6.0)
   factory_girl_rails (~> 4.6.0)
   ffaker (~> 2.0.0)
-  filesize (~> 0.1.1)
   flay
   flog
   fog-aws (~> 0.9)
