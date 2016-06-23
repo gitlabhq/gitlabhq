@@ -1,8 +1,8 @@
 - page_title       @user.name
 - page_description @user.bio
 - content_for :page_specific_javascripts do
-  = javascript_include_tag 'lib/d3.js', {integrity: true, "data-turbolinks-track" => true}
-  = javascript_include_tag 'users/application.js', {integrity: true, "data-turbolinks-track" => true}
+  = page_specific_javascript_tag('lib/d3.js')
+  = page_specific_javascript_tag('users/application.js')
 - header_title     @user.name, user_path(@user)
 - @no_container = true
 
