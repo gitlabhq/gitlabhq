@@ -204,8 +204,13 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
     @merge_request.update(merge_error: nil)
 
-    if params[:merge_when_build_succeeds].present? 
-      if @merge_request.pipeline && @merge_request.pipeline.active?
+    if params[:merge_when_build_succeeds].present?
+      unless @merge_request.pipeline
+        @status = :failed
+        return
+      end
+
+      if @merge_request.pipeline.active?
         MergeRequests::MergeWhenBuildSucceedsService.new(@project, current_user, merge_params)
                                                         .execute(@merge_request)
         @status = :merge_when_build_succeeds

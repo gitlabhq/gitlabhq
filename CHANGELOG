@@ -17,6 +17,7 @@ v 8.9.1
   - Fix unwanted label unassignment when doing bulk action on issues page
   - Fix 404 when accessing pipelines as guest user on public projects
   - Fix mobile Safari bug where horizontal nav arrows would flicker on scroll
+  - Fix in auto merge when pipeline is nil
 
 v 8.9.0
   - Fix builds API response not including commit data
