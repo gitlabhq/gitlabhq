@@ -3,9 +3,7 @@ require 'spec_helper'
 describe Gitlab::Ci::Config::Node::Services do
   let(:entry) { described_class.new(config) }
 
-  describe '#process!' do
-    before { entry.process! }
-
+  describe 'validations' do
     context 'when entry config value is correct' do
       let(:config) { ['postgres:9.1', 'mysql:5.5'] }
 

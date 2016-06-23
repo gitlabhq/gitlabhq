@@ -551,8 +551,8 @@ module Ci
               config_processor = GitlabCiYamlProcessor.new(config, path)
 
               ##
-              #  TODO, in next version of CI configuration processor this
-              # should be invalid configuration, see #18775 and #15060
+              # When variables config is empty, we asumme this is a correct,
+              # see issue #18775
               #
               expect(config_processor.job_variables(:rspec))
                 .to be_an_instance_of(Array).and be_empty
@@ -1098,14 +1098,14 @@ EOT
         config = YAML.dump({ variables: "test", rspec: { script: "test" } })
         expect do
           GitlabCiYamlProcessor.new(config, path)
-        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "Variables value should be a hash of key value pairs")
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "Variables config should be a hash of key value pairs")
       end
 
       it "returns errors if variables is not a map of key-value strings" do
         config = YAML.dump({ variables: { test: false }, rspec: { script: "test" } })
         expect do
           GitlabCiYamlProcessor.new(config, path)
-        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "Variables value should be a hash of key value pairs")
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "Variables config should be a hash of key value pairs")
       end
 
       it "returns errors if job when is not on_success, on_failure or always" do

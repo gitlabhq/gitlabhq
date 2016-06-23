@@ -9,11 +9,7 @@ module Gitlab
           include Validatable
 
           validations do
-            validates :value, variables: true
-          end
-
-          def value
-            @config || self.class.default
+            validates :config, variables: true
           end
 
           def self.default

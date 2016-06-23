@@ -20,84 +20,125 @@ describe Gitlab::Ci::Config::Node::Global do
   end
 
   context 'when hash is valid' do
-    let(:hash) do
-      { before_script: ['ls', 'pwd'],
-        image: 'ruby:2.2',
-        services: ['postgres:9.1', 'mysql:5.5'],
-        variables: { VAR: 'value' },
-        after_script: ['make clean'] }
+    context 'when all entries defined' do
+      let(:hash) do
+        { before_script: ['ls', 'pwd'],
+          image: 'ruby:2.2',
+          services: ['postgres:9.1', 'mysql:5.5'],
+          variables: { VAR: 'value' },
+          after_script: ['make clean'] }
+      end
+
+      describe '#process!' do
+        before { global.process! }
+
+        it 'creates nodes hash' do
+          expect(global.nodes).to be_an Array
+        end
+
+        it 'creates node object for each entry' do
+          expect(global.nodes.count).to eq 5
+        end
+
+        it 'creates node object using valid class' do
+          expect(global.nodes.first)
+            .to be_an_instance_of Gitlab::Ci::Config::Node::Script
+          expect(global.nodes.second)
+            .to be_an_instance_of Gitlab::Ci::Config::Node::Image
+        end
+
+        it 'sets correct description for nodes' do
+          expect(global.nodes.first.description)
+            .to eq 'Script that will be executed before each job.'
+          expect(global.nodes.second.description)
+            .to eq 'Docker image that will be used to execute jobs.'
+        end
+      end
+
+      describe '#leaf?' do
+        it 'is not leaf' do
+          expect(global).not_to be_leaf
+        end
+      end
+
+      context 'when not processed' do
+        describe '#before_script' do
+          it 'returns nil' do
+            expect(global.before_script).to be nil
+          end
+        end
+      end
+
+      context 'when processed' do
+        before { global.process! }
+
+        describe '#before_script' do
+          it 'returns correct script' do
+            expect(global.before_script).to eq ['ls', 'pwd']
+          end
+        end
+
+        describe '#image' do
+          it 'returns valid image' do
+            expect(global.image).to eq 'ruby:2.2'
+          end
+        end
+
+        describe '#services' do
+          it 'returns array of services' do
+            expect(global.services).to eq ['postgres:9.1', 'mysql:5.5']
+          end
+        end
+
+        describe '#after_script' do
+          it 'returns after script' do
+            expect(global.after_script).to eq ['make clean']
+          end
+        end
+
+        describe '#variables' do
+          it 'returns variables' do
+            expect(global.variables).to eq(VAR: 'value')
+          end
+        end
+      end
     end
 
-    describe '#process!' do
+    context 'when most of entires not defined' do
+      let(:hash) { { rspec: {} } }
       before { global.process! }
 
-      it 'creates nodes hash' do
-        expect(global.nodes).to be_an Array
-      end
-
-      it 'creates node object for each entry' do
-        expect(global.nodes.count).to eq 5
-      end
-
-      it 'creates node object using valid class' do
-        expect(global.nodes.first)
-          .to be_an_instance_of Gitlab::Ci::Config::Node::Script
-        expect(global.nodes.second)
-          .to be_an_instance_of Gitlab::Ci::Config::Node::Image
-      end
-
-      it 'sets correct description for nodes' do
-        expect(global.nodes.first.description)
-          .to eq 'Script that will be executed before each job.'
-        expect(global.nodes.second.description)
-          .to eq 'Docker image that will be used to execute jobs.'
-      end
-    end
-
-    describe '#leaf?' do
-      it 'is not leaf' do
-        expect(global).not_to be_leaf
-      end
-    end
-
-    context 'when not processed' do
-      describe '#before_script' do
-        it 'returns nil' do
-          expect(global.before_script).to be nil
+      describe '#nodes' do
+        it 'instantizes all nodes' do
+          expect(global.nodes.count).to eq 5
         end
-      end
-    end
 
-    context 'when processed' do
-      before { global.process! }
-
-      describe '#before_script' do
-        it 'returns correct script' do
-          expect(global.before_script).to eq ['ls', 'pwd']
-        end
-      end
-
-      describe '#image' do
-        it 'returns valid image' do
-          expect(global.image).to eq 'ruby:2.2'
-        end
-      end
-
-      describe '#services' do
-        it 'returns array of services' do
-          expect(global.services).to eq ['postgres:9.1', 'mysql:5.5']
-        end
-      end
-
-      describe '#after_script' do
-        it 'returns after script' do
-          expect(global.after_script).to eq ['make clean']
+        it 'contains undefined nodes' do
+          expect(global.nodes.last)
+            .to be_an_instance_of Gitlab::Ci::Config::Node::Undefined
         end
       end
 
       describe '#variables' do
-        it 'returns variables' do
-          expect(global.variables).to eq(VAR: 'value')
+        it 'returns default value for variables' do
+          expect(global.variables).to eq({})
+        end
+      end
+    end
+
+    ##
+    # When nodes are specified but not defined, we assume that
+    # configuration is valid, and we asume that entry is simply undefined,
+    # despite the fact, that key is present. See issue #18775 for more
+    # details.
+    #
+    context 'when entires specified but not defined' do
+      let(:hash) { { variables: nil } }
+      before { global.process! }
+
+      describe '#variables' do
+        it 'undefined entry returns a default value' do
+          expect(global.variables).to eq({})
         end
       end
     end

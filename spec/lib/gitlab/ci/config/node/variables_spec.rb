@@ -44,24 +44,5 @@ describe Gitlab::Ci::Config::Node::Variables do
         end
       end
     end
-
-    ##
-    # See #18775
-    #
-    context 'when entry value is not defined' do
-      let(:config) { nil }
-
-      describe '#valid?' do
-        it 'is valid' do
-          expect(entry).to be_valid
-        end
-      end
-
-      describe '#values' do
-        it 'returns an empty hash' do
-          expect(entry.value).to eq({})
-        end
-      end
-    end
   end
 end

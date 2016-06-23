@@ -27,7 +27,6 @@ module Gitlab
 
           def create_node(key, factory)
             factory.with(value: @config[key], key: key)
-            factory.undefine! unless @config.has_key?(key)
             factory.create!
           end
 

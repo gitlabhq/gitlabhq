@@ -45,11 +45,10 @@ describe Gitlab::Ci::Config::Node::Factory do
       end
     end
 
-    context 'when creating undefined entry' do
-      it 'creates a null entry' do
+    context 'when creating entry with nil value' do
+      it 'creates an undefined entry' do
         entry = factory
           .with(value: nil)
-          .undefine!
           .create!
 
         expect(entry).to be_an_instance_of Gitlab::Ci::Config::Node::Undefined

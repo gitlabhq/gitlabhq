@@ -18,16 +18,20 @@ module Gitlab
             self
           end
 
-          def undefine!
-            @attributes[:value] = @node.dup
-            @node = Node::Undefined
-            self
-          end
-
           def create!
             raise InvalidFactory unless @attributes.has_key?(:value)
 
-            @node.new(@attributes[:value]).tap do |entry|
+            ##
+            # We assume unspecified entry is undefined.
+            # See issue #18775.
+            #
+            if @attributes[:value].nil?
+              node, value = Node::Undefined, @node
+            else
+              node, value = @node, @attributes[:value]
+            end
+
+            node.new(value).tap do |entry|
               entry.description = @attributes[:description]
               entry.key = @attributes[:key]
             end
