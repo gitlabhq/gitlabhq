@@ -22,7 +22,7 @@ module Gitlab
             raise InvalidFactory unless @attributes.has_key?(:value)
 
             ##
-            # We assume unspecified entry is undefined.
+            # We assume that unspecified entry is undefined.
             # See issue #18775.
             #
             if @attributes[:value].nil?

@@ -4,7 +4,6 @@ module Ci
 
     include Gitlab::Ci::Config::Node::LegacyValidationHelpers
 
-    DEFAULT_STAGES = %w(build test deploy)
     DEFAULT_STAGE = 'test'
     ALLOWED_YAML_KEYS = [:before_script, :after_script, :image, :services, :types, :stages, :variables, :cache]
     ALLOWED_JOB_KEYS = [:tags, :script, :only, :except, :type, :image, :services,
@@ -46,7 +45,7 @@ module Ci
     end
 
     def stages
-      @stages || DEFAULT_STAGES
+      @stages
     end
 
     def global_variables
@@ -68,8 +67,8 @@ module Ci
       @after_script = @ci_config.after_script
       @services = @ci_config.services
       @variables = @ci_config.variables
+      @stages = @ci_config.stages
 
-      @stages = @config[:stages] || @config[:types]
       @cache = @config[:cache]
       @jobs = {}
 
@@ -90,7 +89,7 @@ module Ci
 
     def build_job(name, job)
       {
-        stage_idx: stages.index(job[:stage]),
+        stage_idx: @stages.index(job[:stage]),
         stage: job[:stage],
         commands: [job[:before_script] || @before_script, job[:script]].flatten.compact.join("\n"),
         tag_list: job[:tags] || [],
@@ -112,21 +111,13 @@ module Ci
     end
 
     def validate!
-      validate_global!
+      validate_global_cache! if @cache
 
       @jobs.each do |name, job|
         validate_job!(name, job)
       end
 
       true
-    end
-
-    def validate_global!
-      unless @stages.nil? || validate_array_of_strings(@stages)
-        raise ValidationError, "stages should be an array of strings"
-      end
-
-      validate_global_cache! if @cache
     end
 
     def validate_global_cache!
@@ -225,8 +216,8 @@ module Ci
     end
 
     def validate_job_stage!(name, job)
-      unless job[:stage].is_a?(String) && job[:stage].in?(stages)
-        raise ValidationError, "#{name} job: stage parameter should be #{stages.join(", ")}"
+      unless job[:stage].is_a?(String) && job[:stage].in?(@stages)
+        raise ValidationError, "#{name} job: stage parameter should be #{@stages.join(", ")}"
       end
     end
 
@@ -290,12 +281,12 @@ module Ci
         raise ValidationError, "#{name} job: dependencies parameter should be an array of strings"
       end
 
-      stage_index = stages.index(job[:stage])
+      stage_index = @stages.index(job[:stage])
 
       job[:dependencies].each do |dependency|
         raise ValidationError, "#{name} job: undefined dependency: #{dependency}" unless @jobs[dependency.to_sym]
 
-        unless stages.index(@jobs[dependency.to_sym][:stage]) < stage_index
+        unless @stages.index(@jobs[dependency.to_sym][:stage]) < stage_index
           raise ValidationError, "#{name} job: dependency #{dependency} is not defined in prior stages"
         end
       end

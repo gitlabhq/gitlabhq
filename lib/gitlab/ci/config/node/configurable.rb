@@ -38,13 +38,19 @@ module Gitlab
             private
 
             def node(symbol, entry_class, metadata)
-              factory = Node::Factory.new(entry_class)
-                .with(description: metadata[:description])
+              define_method("#{symbol}_defined?") do
+                @nodes[symbol].try(:defined?)
+              end
 
-              define_method(symbol) do
+              define_method("#{symbol}_value") do
                 raise Entry::InvalidError unless valid?
                 @nodes[symbol].try(:value)
               end
+
+              alias_method symbol.to_sym, "#{symbol}_value".to_sym
+
+              factory = Node::Factory.new(entry_class)
+                .with(description: metadata[:description])
 
               (@nodes ||= {}).merge!(symbol => factory)
             end

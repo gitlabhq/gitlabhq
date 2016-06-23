@@ -26,7 +26,8 @@ describe Gitlab::Ci::Config::Node::Global do
           image: 'ruby:2.2',
           services: ['postgres:9.1', 'mysql:5.5'],
           variables: { VAR: 'value' },
-          after_script: ['make clean'] }
+          after_script: ['make clean'],
+          stages: ['build', 'pages'] }
       end
 
       describe '#process!' do
@@ -37,7 +38,7 @@ describe Gitlab::Ci::Config::Node::Global do
         end
 
         it 'creates node object for each entry' do
-          expect(global.nodes.count).to eq 5
+          expect(global.nodes.count).to eq 7
         end
 
         it 'creates node object using valid class' do
@@ -101,6 +102,22 @@ describe Gitlab::Ci::Config::Node::Global do
             expect(global.variables).to eq(VAR: 'value')
           end
         end
+
+        describe '#stages' do
+          context 'when stages key defined' do
+            it 'returns array of stages' do
+              expect(global.stages).to eq %w[build pages]
+            end
+          end
+
+          context 'when deprecated types key defined' do
+            let(:hash) { { types: ['test', 'deploy'] } }
+
+            it 'returns array of types as stages' do
+              expect(global.stages).to eq %w[test deploy]
+            end
+          end
+        end
       end
     end
 
@@ -110,7 +127,7 @@ describe Gitlab::Ci::Config::Node::Global do
 
       describe '#nodes' do
         it 'instantizes all nodes' do
-          expect(global.nodes.count).to eq 5
+          expect(global.nodes.count).to eq 7
         end
 
         it 'contains undefined nodes' do
@@ -122,6 +139,12 @@ describe Gitlab::Ci::Config::Node::Global do
       describe '#variables' do
         it 'returns default value for variables' do
           expect(global.variables).to eq({})
+        end
+      end
+
+      describe '#stages' do
+        it 'returns an array of default stages' do
+          expect(global.stages).to eq %w[build test deploy]
         end
       end
     end
@@ -186,6 +209,12 @@ describe Gitlab::Ci::Config::Node::Global do
       it 'returns error about invalid type' do
         expect(global.errors.first).to match /should be a hash/
       end
+    end
+  end
+
+  describe '#defined?' do
+    it 'is concrete entry that is defined' do
+      expect(global.defined?).to be true
     end
   end
 end

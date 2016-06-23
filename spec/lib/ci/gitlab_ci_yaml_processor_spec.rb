@@ -1081,17 +1081,17 @@ EOT
       end
 
       it "returns errors if stages is not an array" do
-        config = YAML.dump({ types: "test", rspec: { script: "test" } })
+        config = YAML.dump({ stages: "test", rspec: { script: "test" } })
         expect do
           GitlabCiYamlProcessor.new(config, path)
-        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "stages should be an array of strings")
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "Stages config should be an array of strings")
       end
 
       it "returns errors if stages is not an array of strings" do
-        config = YAML.dump({ types: [true, "test"], rspec: { script: "test" } })
+        config = YAML.dump({ stages: [true, "test"], rspec: { script: "test" } })
         expect do
           GitlabCiYamlProcessor.new(config, path)
-        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "stages should be an array of strings")
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "Stages config should be an array of strings")
       end
 
       it "returns errors if variables is not a map" do

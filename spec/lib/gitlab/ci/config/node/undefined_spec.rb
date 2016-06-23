@@ -31,4 +31,10 @@ describe Gitlab::Ci::Config::Node::Undefined do
       expect(undefined.value).to eq 'some value'
     end
   end
+
+  describe '#undefined?' do
+    it 'is not a concrete entry that is defined' do
+      expect(undefined.defined?).to be false
+    end
+  end
 end

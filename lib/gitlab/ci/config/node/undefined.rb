@@ -19,6 +19,10 @@ module Gitlab
           def value
             @config.default
           end
+
+          def defined?
+            false
+          end
         end
       end
     end

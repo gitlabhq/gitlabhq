@@ -52,6 +52,10 @@ module Gitlab
             @config
           end
 
+          def defined?
+            true
+          end
+
           def self.default
           end
 

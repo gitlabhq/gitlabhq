@@ -23,6 +23,16 @@ module Gitlab
 
           node :variables, Variables,
             description: 'Environment variables that will be used.'
+
+          node :stages, Stages,
+            description: 'Configuration of stages for this pipeline.'
+
+          node :types, Stages,
+            description: 'Stages for this pipeline (deprecated key).'
+
+          def stages
+            stages_defined? ? stages_value : types_value
+          end
         end
       end
     end
