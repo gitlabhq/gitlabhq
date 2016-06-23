@@ -333,6 +333,7 @@ v 8.10.0
   - Redirects back to issue after clicking login link
   - Eager load award emoji on notes
   - Allow to define manual actions/builds on Pipelines and Environments
+  - Fix leaking of submit buttons outside the width of a main container !18731
   - Fix pagination when sorting by columns with lots of ties (like priority)
   - The Markdown reference parsers now re-use query results to prevent running the same queries multiple times. !5020
   - Updated project header design
