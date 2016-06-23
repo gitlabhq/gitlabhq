@@ -1,6 +1,7 @@
 module Gitlab
   module Git
     class Hook
+      GL_PROTOCOL = 'web'.freeze
       attr_reader :name, :repo_path, :path
 
       def initialize(name, repo_path)
@@ -35,7 +36,7 @@ module Gitlab
         vars = {
           'GL_ID' => gl_id,
           'PWD' => repo_path,
-          'GL_PROTOCOL' => 'web'
+          'GL_PROTOCOL' => GL_PROTOCOL
         }
 
         options = {
