@@ -19,6 +19,8 @@ class Projects::GitHttpController < Projects::ApplicationController
       render_ok
     elsif receive_pack? && receive_pack_allowed?
       render_ok
+    elsif !upload_pack_allowed?
+      render_not_allowed
     else
       render_not_found
     end
@@ -152,6 +154,10 @@ class Projects::GitHttpController < Projects::ApplicationController
 
   def render_not_found
     render plain: 'Not Found', status: :not_found
+  end
+
+  def render_not_allowed
+    render json: access.to_json, status: :forbidden
   end
 
   def ci?
