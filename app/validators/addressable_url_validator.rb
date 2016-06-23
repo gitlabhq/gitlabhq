@@ -29,9 +29,7 @@ class AddressableUrlValidator < ActiveModel::EachValidator
 
     value.strip!
 
-    valid_uri?(value) && valid_protocol?(value)
-  rescue Addressable::URI::InvalidURIError
-    false
+    valid_protocol?(value) && valid_uri?(value)
   end
 
   def default_options
@@ -40,6 +38,8 @@ class AddressableUrlValidator < ActiveModel::EachValidator
 
   def valid_uri?(value)
     Addressable::URI.parse(value).is_a?(Addressable::URI)
+  rescue Addressable::URI::InvalidURIError
+    false
   end
 
   def valid_protocol?(value)
