@@ -11,7 +11,7 @@ module Gitlab
             @node = node
           end
 
-          def full_errors
+          def messages
             errors.full_messages.map do |error|
               "#{@node.key} #{error}".humanize
             end

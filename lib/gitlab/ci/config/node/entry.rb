@@ -44,8 +44,7 @@ module Gitlab
           end
 
           def errors
-            @validator.full_errors +
-              nodes.map(&:errors).flatten
+            @validator.messages + nodes.flat_map(&:errors)
           end
 
           def value

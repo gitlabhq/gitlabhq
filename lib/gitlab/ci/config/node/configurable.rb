@@ -52,7 +52,7 @@ module Gitlab
               factory = Node::Factory.new(entry_class)
                 .with(description: metadata[:description])
 
-              (@nodes ||= {}).merge!(symbol => factory)
+              (@nodes ||= {}).merge!(symbol.to_sym => factory)
             end
           end
         end

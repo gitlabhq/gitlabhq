@@ -19,7 +19,7 @@ describe Gitlab::Ci::Config::Node::Validator do
       it 'returns no errors' do
         validator_instance.validate
 
-        expect(validator_instance.full_errors).to be_empty
+        expect(validator_instance.messages).to be_empty
       end
     end
 
@@ -36,7 +36,7 @@ describe Gitlab::Ci::Config::Node::Validator do
       it 'returns errors' do
         validator_instance.validate
 
-        expect(validator_instance.full_errors).not_to be_empty
+        expect(validator_instance.messages).not_to be_empty
       end
     end
   end
