@@ -1,6 +1,11 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
-v 8.9.0 (unreleased)
+v 8.10.0 (unreleased)
+  - Wrap code blocks on Activies and Todos page. !4783 (winniehell)
+  - Fix MR-auto-close text added to description. !4836
+  - Implement Subresource Integrity for CSS and JavaScript assets. This prevents malicious assets from loading in the case of a CDN compromise.
+
+v 8.9.0
   - Fix builds API response not including commit data
   - Fix error when CI job variables key specified but not defined
   - Fix pipeline status when there are no builds in pipeline
@@ -13,7 +18,6 @@ v 8.9.0 (unreleased)
   - Fix endless redirections when accessing user OAuth applications when they are disabled
   - Allow enabling wiki page events from Webhook management UI
   - Bump rouge to 1.11.0
-  - Fix MR-auto-close text added to description
   - Fix issue with arrow keys not working in search autocomplete dropdown
   - Fix an issue where note polling stopped working if a window was in the
     background during a refresh.

@@ -132,6 +132,10 @@ header {
       transition-duration: .3s;
       z-index: 999;
 
+      svg, img {
+        height: 36px;
+      }
+
       &:hover {
         cursor: pointer;
       }

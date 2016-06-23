@@ -31,10 +31,14 @@ module Banzai
           projects_per_reference.each do |path, project|
             issue_ids = references_per_project[path]
 
-            next unless project.default_issues_tracker?
+            if project.default_issues_tracker?
+              issues = project.issues.where(iid: issue_ids.to_a)
+            else
+              issues = issue_ids.map { |id| ExternalIssue.new(id, project) }
+            end
 
-            project.issues.where(iid: issue_ids.to_a).each do |issue|
-              hash[project][issue.iid] = issue
+            issues.each do |issue|
+              hash[project][issue.iid.to_i] = issue
             end
           end
 

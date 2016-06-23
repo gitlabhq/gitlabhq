@@ -1,6 +1,6 @@
 @mixin fade($gradient-direction, $rgba, $gradient-color) {
-  visibility: visible;
-  opacity: 1;
+  visibility: hidden;
+  opacity: 0;
   z-index: 2;
   position: absolute;
   bottom: 12px;
@@ -13,9 +13,9 @@
   background: -moz-linear-gradient($gradient-direction, $rgba, $gradient-color 45%);
   background: linear-gradient($gradient-direction, $rgba, $gradient-color 45%);
 
-  &.end-scroll {
-    visibility: hidden;
-    opacity: 0;
+  &.scrolling {
+    visibility: visible;
+    opacity: 1;
     transition-duration: .3s;
   }
 
@@ -272,7 +272,7 @@
     float: right;
     padding: 7px 0 0;
 
-    @media (max-width: $screen-xs-max) {
+    @media (max-width: $screen-sm-max) {
       display: none;
     }
 
@@ -377,9 +377,7 @@
   .nav-control {
 
     .fade-right {
-      @media (min-width: $screen-xs-max) {
-        right: 68px;
-      }
+
       @media (max-width: $screen-xs-min) {
         right: 0;
       }
