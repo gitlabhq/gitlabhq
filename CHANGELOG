@@ -35,6 +35,17 @@ v 8.9.1 (unreleased)
   - Bump gitlab_git to 10.2.3 to fix false truncated warnings with ISO-8559 files. !4884
   - Apply selected value as label. !4886
   - Fix temp file being deleted after the request while importing a GitLab project. !4894
+  - Eager load award emoji on notes
+  - Fix pagination when sorting by columns with lots of ties (like priority)
+  - Implement Subresource Integrity for CSS and JavaScript assets. This prevents malicious assets from loading in the case of a CDN compromise.
+  - Fix user creation with stronger minimum password requirements !4054 (nathan-pmt)
+
+v 8.9.1
+  - Fix merge requests project settings help link anchor
+  - Fix GitLab project import issues related to notes and builds
+  - Improve performance of searching repository tags by name by using a memorized tag array
+  - Fix false truncated warnings with ISO-8559 files
+  - Fix 404 when accessing pipelines as guest user on public projects
 
 v 8.9.0
   - Fix builds API response not including commit data
