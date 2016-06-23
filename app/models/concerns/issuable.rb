@@ -112,15 +112,18 @@ module Issuable
     end
 
     def sort(method, excluded_labels: [])
-      case method.to_s
-      when 'milestone_due_asc' then order_milestone_due_asc
-      when 'milestone_due_desc' then order_milestone_due_desc
-      when 'downvotes_desc' then order_downvotes_desc
-      when 'upvotes_desc' then order_upvotes_desc
-      when 'priority' then order_labels_priority(excluded_labels: excluded_labels)
-      else
-        order_by(method)
-      end
+      sorted = case method.to_s
+               when 'milestone_due_asc' then order_milestone_due_asc
+               when 'milestone_due_desc' then order_milestone_due_desc
+               when 'downvotes_desc' then order_downvotes_desc
+               when 'upvotes_desc' then order_upvotes_desc
+               when 'priority' then order_labels_priority(excluded_labels: excluded_labels)
+               else
+                 order_by(method)
+               end
+
+      # Break ties with the ID column for pagination
+      sorted.order(id: :desc)
     end
 
     def order_labels_priority(excluded_labels: [])
