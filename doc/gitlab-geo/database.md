@@ -220,6 +220,4 @@ When prompted, enter the password you set up for the `gitlab_replicator` user.
 
 ## MySQL replication
 
-TODO
-
-[reconfigure gitlab]: ../restart_gitlab.md#omnibus-gitlab-reconfigure
+We don't support MySQL replication for GitLab Geo.

@@ -223,7 +223,7 @@ describe MergeRequest, models: true do
     end
   end
 
-  describe "#approvers_left" do
+  describe "approvers_left" do
     let(:merge_request) {create :merge_request}
 
     it "returns correct value" do
@@ -238,63 +238,20 @@ describe MergeRequest, models: true do
   end
 
   describe "#approvals_required" do
-    let(:merge_request) {create :merge_request}
+    let(:merge_request) { build(:merge_request) }
+    before { merge_request.target_project.update_attributes(approvals_before_merge: 3) }
 
-    it "takes approvals_before_merge" do
-      merge_request.target_project.update(approvals_before_merge: 2)
+    context "when the MR has approvals_before_merge set" do
+      before { merge_request.update_attributes(approvals_before_merge: 1) }
 
-      expect(merge_request.approvals_required).to eq 2
-    end
-  end
-
-  describe "#can_approve?" do
-    let(:author) { create(:user) }
-    let(:user) { create(:user) }
-    let(:merge_request) { create(:merge_request, author: author) }
-
-    context "when the user is the MR author" do
-      it "returns false" do
-        expect(merge_request.can_approve?(author)).to eq(false)
+      it "uses the approvals_before_merge from the MR" do
+        expect(merge_request.approvals_required).to eq(1)
       end
     end
 
-    context "when the user is not the MR author" do
-      context "when the user is in the approvers list" do
-        before { merge_request.approvers.create(user: user) }
-
-        context "when the user has not already approved the MR" do
-          it "returns true" do
-            expect(merge_request.can_approve?(user)).to eq(true)
-          end
-        end
-
-        context "when the user has already approved the MR" do
-          before { merge_request.approvals.create(user: user) }
-
-          it "returns false" do
-            expect(merge_request.can_approve?(user)).to eq(false)
-          end
-        end
-      end
-
-      context "when the user is not in the approvers list" do
-        context "when anyone is allowed to approve the MR" do
-          before { merge_request.target_project.update_attributes(approvals_before_merge: 1) }
-
-          context "when the user has not already approved the MR" do
-            it "returns true" do
-              expect(merge_request.can_approve?(user)).to eq(true)
-            end
-          end
-
-          context "when the user has already approved the MR" do
-            before { merge_request.approvals.create(user: user) }
-
-            it "returns false" do
-              expect(merge_request.can_approve?(user)).to eq(false)
-            end
-          end
-        end
+    context "when the MR doesn't have approvals_before_merge set" do
+      it "takes approvals_before_merge from the target project" do
+        expect(merge_request.approvals_required).to eq(3)
       end
     end
   end

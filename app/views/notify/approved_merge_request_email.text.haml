@@ -1,0 +1,8 @@
+= "Merge Request #{@merge_request.to_reference} was approved by #{@approved_by_users.to_sentence}"
+
+Merge Request url: #{namespace_project_merge_request_url(@merge_request.target_project.namespace, @merge_request.target_project, @merge_request)}
+
+= merge_path_description(@merge_request, 'to')
+
+Author: #{@merge_request.author_name}
+Assignee: #{@merge_request.assignee_name}

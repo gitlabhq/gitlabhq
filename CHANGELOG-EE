@@ -1,16 +1,20 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
-v 8.9.0 (unreleased)
+v 8.10.0 (unreleased)
+
+v 8.9.0
   - Fix JenkinsService test button
   - Fix nil user handling in UpdateMirrorService
+  - Allow overriding the number of approvers for a merge request
   - Allow LDAP to mark users as external based on their group membership. !432
-  - Forbid MR authors from approving their own MRs
   - Instrument instance methods of Gitlab::InsecureKeyFingerprint class
   - Add API endpoint for Merge Request Approvals !449
+  - Send notification email when merge request is approved
   - Distribute RepositoryUpdateMirror jobs in time and add exclusive lease on them by project_id
   - [Elastic] Move ES settings to application settings
   - Disable mirror flag for projects without import_url
   - UpdateMirror service return an error status when no mirror
+  - Don't reset approvals when rebasing an MR from the UI
   - Show flash notice when Git Hooks are updated successfully
   - Remove explicit Gitlab::Metrics.action assignments, are already automatic.
   - [Elastic] Project members with guest role can't access confidential issues

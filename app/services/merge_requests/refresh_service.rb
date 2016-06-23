@@ -83,7 +83,10 @@ module MergeRequests
       merge_requests_for_source_branch.each do |merge_request|
         target_project = merge_request.target_project
 
-        if target_project.approvals_before_merge.nonzero? && target_project.reset_approvals_on_push
+        if target_project.approvals_before_merge.nonzero? &&
+           target_project.reset_approvals_on_push &&
+           merge_request.rebase_commit_sha != @newrev
+
           merge_request.approvals.destroy_all
         end
       end

@@ -1,10 +1,10 @@
 # The database stores locked paths as following:
-# 'app/models/project.rb' or 'lib/gitlab'
-# To determine that 'lib/gitlab/some_class.rb' is locked we need to generate
+# 'app/models/user.rb' or 'app/models'
+# To determine that 'app/models/user.rb' is locked we need to generate
 # tokens for every requested paths and check every token whether it exist in path locks table or not.
-# So for 'lib/gitlab/some_class.rb' path we would need to search next paths:
-# 'lib', 'lib/gitlab' and 'lib/gitlab/some_class.rb'
-# This class also implements a memoization for common paths like 'lib' 'lib/gitlab', 'app', etc.
+# So for 'app/models/user.rb' path we would need to search next paths:
+# 'app', 'app/models' and 'app/models/user.rb'
+# This class also implements a memoization for common paths like 'app' 'app/models', 'vendor', etc.
 
 class Gitlab::PathLocksFinder
   def initialize(project)

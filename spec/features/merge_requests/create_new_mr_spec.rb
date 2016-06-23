@@ -31,6 +31,24 @@ feature 'Create New Merge Request', feature: true, js: true do
     expect(page).to have_content 'git checkout -b orphaned-branch origin/orphaned-branch'
   end
 
+  context 'when approvals are disabled for the target project' do
+    it 'does not show approval settings' do
+      visit new_namespace_project_merge_request_path(project.namespace, project, merge_request: { source_branch: 'feature_conflict' })
+
+      expect(page).not_to have_content('Approvers')
+    end
+  end
+
+  context 'when approvals are enabled for the target project' do
+    before { project.update_attributes(approvals_before_merge: 1) }
+
+    it 'shows approval settings' do
+      visit new_namespace_project_merge_request_path(project.namespace, project, merge_request: { source_branch: 'feature_conflict' })
+
+      expect(page).to have_content('Approvers')
+    end
+  end
+
   context 'when target project cannot be viewed by the current user' do
     it 'does not leak the private project name & namespace' do
       private_project = create(:project, :private)

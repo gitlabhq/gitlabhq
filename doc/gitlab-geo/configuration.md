@@ -56,8 +56,13 @@ primary node (**Admin Area > Geo Nodes**) when adding a new one:
 sudo -u git -H ssh-keygen
 ```
 
-The public key for Omnibus installations will be at `/var/opt/gitlab/.ssh/id_rsa.pub`,
-whereas for installation from source it will be at `/home/git/.ssh/id_rsa.pub`.
+Remember to add your primary node to the `known_hosts` file of your `git` user.
+
+You can find ssh key files and `know_hosts` at `/var/opt/gitlab/.ssh/` in
+Omnibus installations or at `/home/git/.ssh/` when following the source
+installation guide.
+
+
 
 If for any reason you generate the key using a different name from the default
 `id_rsa`, or you want to generate an extra key only for the repository
@@ -93,11 +98,11 @@ add any secondary servers as well**.
 
 In the following table you can see what all these settings mean:
 
-| Setting | Description |
-| ------- | ----------- |
-| Primary | This marks a Geo Node as primary. There can be only one primary, make sure that you first add the primary node and then all the others.
-| URL | Your instance's full URL, in the same way it is configured in `gitlab.yml` (source based installations) or `/etc/gitlab/gitlab.rb` (omnibus installations). |
-|Public Key | The SSH public key of the user that your GitLab instance runs on (unless changed, should be the user `git`). That means that you have to go in each Geo Node separately and create an SSH key pair. See the [SSH key creation](#create-ssh-key-pairs-for-geo-nodes) section.
+| Setting   | Description |
+| --------- | ----------- |
+| Primary   | This marks a Geo Node as primary. There can be only one primary, make sure that you first add the primary node and then all the others. |
+| URL       | Your instance's full URL, in the same way it is configured in `gitlab.yml` (source based installations) or `/etc/gitlab/gitlab.rb` (omnibus installations). |
+|Public Key | The SSH public key of the user that your GitLab instance runs on (unless changed, should be the user `git`). That means that you have to go in each Geo Node separately and create an SSH key pair. See the [SSH key creation](#create-ssh-key-pairs-for-geo-nodes) section. |
 
 First, add your primary node by providing its full URL and the public SSH key
 you created previously. Make sure to check the box 'This is a primary node'
@@ -147,3 +152,37 @@ gitlab-rake gitlab:shell:setup
 # For source installations
 sudo -u git -H bundle exec rake gitlab:shell:setup RAILS_ENV=production
 ```
+
+## Troubleshooting
+
+Setting up Geo requires careful attention to details and sometimes it's easy to
+miss a step.
+
+Here is a checklist of questions you should ask to try to detect where you have
+to fix (all commands and path locations are for Omnibus installs):
+
+- Is Postgres replication working?
+- Are my nodes pointing to the correct database instance?
+    - You should make sure your primary Geo node points to the instance with
+      writting permissions.
+    - Any secondary nodes should point only to read-only instances.
+- Can Geo detect my current node correctly?
+    - Geo uses your defined node from `Admin > Geo` screen, and tries to match
+      with the value defined in `/etc/gitlab/gitlab.rb` configuration file.
+      The relevant line looks like: `external_url "http://gitlab.example.com"`.
+    - To check if node on current machine is correctly detected type:
+      `sudo gitlab-rails runner "Gitlab::Geo.current_node"`,
+      expect something like: `#<GeoNode id: 2, schema: "https", host: "gitlab.example.com", port: 443, relative_url_root: "", primary: false, ...>`
+    - By running the command above, `primary` should be `true` when executed in
+      the primary node, and `false` on any secondary
+- Did I defined the correct SSH Key for the node?
+    - You must create an SSH Key for `git` user
+    - This key is the one you have to inform at `Admin > Geo`
+- Can primary node communicate with secondary node by HTTP/HTTPS ports?
+- Can secondary nodes communicate with primary node by HTTP/HTTPS/SSH ports?
+- Can secondary nodes execute a succesfull git clone using git user's own
+  SSH Key to primary node repository?
+
+> This list is an atempt to document all the moving parts that can go wrong.
+We are working into getting all this steps verified automatically in a
+rake task in the future. :)
