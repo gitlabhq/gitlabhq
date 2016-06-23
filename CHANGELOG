@@ -5,7 +5,6 @@ v 8.10.0 (unreleased)
   - Add Sidekiq queue duration to transaction metrics.
   - Fix MR-auto-close text added to description. !4836
   - Fix pagination when sorting by columns with lots of ties (like priority)
-  - Fix unwanted label unassignment when doing bulk action on issues page
   - Implement Subresource Integrity for CSS and JavaScript assets. This prevents malicious assets from loading in the case of a CDN compromise.
   - Fix user creation with stronger minimum password requirements !4054 (nathan-pmt)
 
@@ -14,6 +13,7 @@ v 8.9.1
   - Fix GitLab project import issues related to notes and builds
   - Improve performance of searching repository tags by name by using a memorized tag array
   - Fix false truncated warnings with ISO-8559 files
+  - Fix unwanted label unassignment when doing bulk action on issues page
   - Fix 404 when accessing pipelines as guest user on public projects
 
 v 8.9.0
