@@ -30,11 +30,8 @@
 
   = javascript_include_tag "application", integrity: true
 
-  -# FIXME: SRI doesn't apply to the dynamically-generated per-page
-  -# JavaScript due to a bug in sprockets-rails.
-  -# See https://github.com/rails/sprockets-rails/issues/359
-  - if page_specific_javascripts
-    = javascript_include_tag page_specific_javascripts, {"data-turbolinks-track" => true}
+  - if :page_specific_javascripts
+    = yield :page_specific_javascripts
 
   = csrf_meta_tags
 

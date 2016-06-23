@@ -50,7 +50,7 @@
 #= require_directory ./ci
 #= require_directory ./commit
 #= require_directory ./extensions
-#= require_directory ./lib
+#= require_directory ./lib/.
 #= require_directory ./u2f
 #= require_directory .
 #= require fuzzaldrin-plus
