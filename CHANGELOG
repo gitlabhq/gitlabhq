@@ -12,6 +12,7 @@ v 8.9.1
   - Fix merge requests project settings help link anchor
   - Fix GitLab project import issues related to notes and builds
   - Improve performance of searching repository tags by name by using a memorized tag array
+  - Fix false truncated warnings with ISO-8559 files
   - Fix 404 when accessing pipelines as guest user on public projects
 
 v 8.9.0
