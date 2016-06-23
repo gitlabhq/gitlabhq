@@ -16,11 +16,13 @@ v 8.9.1 (unreleased)
   - Fix typo in export failure email. !4847
   - Fix header vertical centering. !4170
   - Fix subsequent SAML sign ins. !4718
+  - Set button label when picking an option from status dropdown. !4771
   - Prevent invalid URLs from raising exceptions in WikiLink Filter. !4775
   - Handle external issues in IssueReferenceFilter. !4789
   - Update Todos documentation and screenshots to include new functionality. !4840
   - Hide nav arrows by default. !4843
   - Added bottom padding to label color suggestion link. !4845
+  - Use jQuery objects in ref dropdown. !4850
   - Fix GitLab project import issues related to notes and builds. !4855
   - Restrict header logo to 36px so it doesn't overflow. !4861
   - Fix merge requests project settings help link anchor. !4873
