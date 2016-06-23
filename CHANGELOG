@@ -1,6 +1,8 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
-v 8.9.0 (unreleased)
+v 8.10.0 (unreleased)
+
+v 8.9.0
   - Fix Error 500 when using closes_issues API with an external issue tracker
   - Add more information into RSS feed for issues (Alexander Matyushentsev)
   - Bulk assign/unassign labels to issues.
