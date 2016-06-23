@@ -23,6 +23,7 @@ v 8.9.1 (unreleased)
   - Added bottom padding to label color suggestion link. !4845
   - Fix GitLab project import issues related to notes and builds. !4855
   - Restrict header logo to 36px so it doesn't overflow. !4861
+  - Fix merge requests project settings help link anchor. !4873
 
 v 8.9.0
   - Fix builds API response not including commit data
