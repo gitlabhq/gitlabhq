@@ -170,6 +170,19 @@ module Ci
       builds.where.not(environment: nil).success.pluck(:environment).uniq
     end
 
+    # Manually set the notes for a Ci::Pipeline
+    # There is no ActiveRecord relation between Ci::Pipeline and notes
+    # as they are related to a commit sha. This method helps importing
+    # them using the +Gitlab::ImportExport::RelationFactory+ class.
+    def notes=(notes)
+      notes.each do |note|
+        note[:id] = nil
+        note[:commit_id] = sha
+        note[:noteable_id] = self['id']
+        note.save!
+      end
+    end
+
     def notes
       Note.for_commit_id(sha)
     end
