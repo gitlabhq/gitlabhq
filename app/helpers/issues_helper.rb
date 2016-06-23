@@ -122,9 +122,9 @@ module IssuesHelper
     current_user_name = names.delete('me')
     names = names.first(9).insert(0, current_user_name).compact
 
-    names << "and #{awards.size - names.size} more." if awards.size > names.size
+    names << "#{awards.size - names.size} more." if awards.size > names.size
 
-    names.join(', ')
+    names.to_sentence
   end
 
   def award_active_class(awards, current_user)

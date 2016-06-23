@@ -144,28 +144,49 @@
       });
     });
     describe('::addMeToUserList', function() {
-      return it('should prepend "me" to the award tooltip', function() {
+      it('should prepend "me" to the award tooltip', function() {
         var $thumbsUpEmoji, $votesBlock, awardUrl;
         awardUrl = awardsHandler.getAwardUrl();
         $votesBlock = $('.js-awards-block').eq(0);
         $thumbsUpEmoji = $votesBlock.find('[data-emoji=thumbsup]').parent();
-        $thumbsUpEmoji.attr('data-title', 'sam, jerry, max, andy');
+        $thumbsUpEmoji.attr('data-title', 'sam, jerry, max, and andy');
         awardsHandler.addAward($votesBlock, awardUrl, 'thumbsup', false);
         $thumbsUpEmoji.tooltip();
-        return expect($thumbsUpEmoji.data("original-title")).toBe('me, sam, jerry, max, andy');
+        return expect($thumbsUpEmoji.data("original-title")).toBe('me, sam, jerry, max, and andy');
+      });
+      return it('handles the special case where "me" is not cleanly comma seperated', function() {
+        var $thumbsUpEmoji, $votesBlock, awardUrl;
+        awardUrl = awardsHandler.getAwardUrl();
+        $votesBlock = $('.js-awards-block').eq(0);
+        $thumbsUpEmoji = $votesBlock.find('[data-emoji=thumbsup]').parent();
+        $thumbsUpEmoji.attr('data-title', 'sam');
+        awardsHandler.addAward($votesBlock, awardUrl, 'thumbsup', false);
+        $thumbsUpEmoji.tooltip();
+        return expect($thumbsUpEmoji.data("original-title")).toBe('me and sam');
       });
     });
     describe('::removeMeToUserList', function() {
-      return it('removes "me" from the front of the tooltip', function() {
+      it('removes "me" from the front of the tooltip', function() {
         var $thumbsUpEmoji, $votesBlock, awardUrl;
         awardUrl = awardsHandler.getAwardUrl();
         $votesBlock = $('.js-awards-block').eq(0);
         $thumbsUpEmoji = $votesBlock.find('[data-emoji=thumbsup]').parent();
-        $thumbsUpEmoji.attr('data-title', 'me, sam, jerry, max, andy');
+        $thumbsUpEmoji.attr('data-title', 'me, sam, jerry, max, and andy');
         $thumbsUpEmoji.addClass('active');
         awardsHandler.addAward($votesBlock, awardUrl, 'thumbsup', false);
         $thumbsUpEmoji.tooltip();
-        return expect($thumbsUpEmoji.data("original-title")).toBe('sam, jerry, max, andy');
+        return expect($thumbsUpEmoji.data("original-title")).toBe('sam, jerry, max, and andy');
+      });
+      return it('handles the special case where "me" is not cleanly comma seperated', function() {
+        var $thumbsUpEmoji, $votesBlock, awardUrl;
+        awardUrl = awardsHandler.getAwardUrl();
+        $votesBlock = $('.js-awards-block').eq(0);
+        $thumbsUpEmoji = $votesBlock.find('[data-emoji=thumbsup]').parent();
+        $thumbsUpEmoji.attr('data-title', 'me and sam');
+        $thumbsUpEmoji.addClass('active');
+        awardsHandler.addAward($votesBlock, awardUrl, 'thumbsup', false);
+        $thumbsUpEmoji.tooltip();
+        return expect($thumbsUpEmoji.data("original-title")).toBe('sam');
       });
     });
     describe('search', function() {

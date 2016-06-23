@@ -1,5 +1,6 @@
 (function() {
   this.AwardsHandler = (function() {
+    const FROM_SENTENCE_REGEX = /(?:, and | and |, )/; //For separating lists produced by ruby's Array#toSentence
     function AwardsHandler() {
       this.aliases = gl.emojiAliases();
       $(document).off('click', '.js-add-award').on('click', '.js-add-award', (function(_this) {
@@ -204,14 +205,22 @@
       return $awardBlock.attr('data-original-title') || $awardBlock.attr('data-title') || '';
     };
 
+    AwardsHandler.prototype.toSentence = function(list) {
+      if(list.length <= 2){
+        return list.join(' and ');
+      }
+      else{
+        return list.slice(0, -1).join(', ') + ', and ' + list[list.length - 1];
+      }
+    };
+
     AwardsHandler.prototype.removeMeFromUserList = function($emojiButton, emoji) {
       var authors, awardBlock, newAuthors, originalTitle;
       awardBlock = $emojiButton;
       originalTitle = this.getAwardTooltip(awardBlock);
-      authors = originalTitle.split(', ');
+      authors = originalTitle.split(FROM_SENTENCE_REGEX);
       authors.splice(authors.indexOf('me'), 1);
-      newAuthors = authors.join(', ');
-      awardBlock.closest('.js-emoji-btn').removeData('original-title').attr('data-original-title', newAuthors);
+      awardBlock.closest('.js-emoji-btn').removeData('original-title').attr('data-original-title', this.toSentence(authors));
       return this.resetTooltip(awardBlock);
     };
 
@@ -221,10 +230,10 @@
       origTitle = this.getAwardTooltip(awardBlock);
       users = [];
       if (origTitle) {
-        users = origTitle.trim().split(', ');
+        users = origTitle.trim().split(FROM_SENTENCE_REGEX);
       }
       users.unshift('me');
-      awardBlock.attr('title', users.join(', '));
+      awardBlock.attr('title', this.toSentence(users));
       return this.resetTooltip(awardBlock);
     };
 

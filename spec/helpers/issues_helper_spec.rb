@@ -66,7 +66,7 @@ describe IssuesHelper do
     let!(:awards) { build_list(:award_emoji, 15) }
 
     it "returns a comma seperated list of 1-9 users" do
-      expect(award_user_list(awards.first(9), nil)).to eq(awards.first(9).map { |a| a.user.name }.join(', '))
+      expect(award_user_list(awards.first(9), nil)).to eq(awards.first(9).map { |a| a.user.name }.to_sentence)
     end
 
     it "displays the current user's name as 'me'" do
