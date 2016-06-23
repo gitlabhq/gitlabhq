@@ -17,6 +17,7 @@ v 8.10.0 (unreleased)
   - Remove unused front-end variable -> default_issues_tracker
   - Add API endpoint for a group issues !4520 (mahcsig)
   - Allow [ci skip] to be in any case and allow [skip ci]. !4785 (simon_w)
+  - Add basic system information like memory and disk usage to the admin panel
 
 v 8.9.3 (unreleased)
   - Decreased min width of screen to 1280px for pinned sidebar
