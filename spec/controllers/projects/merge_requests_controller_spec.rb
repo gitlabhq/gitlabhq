@@ -222,6 +222,14 @@ describe Projects::MergeRequestsController do
   end
 
   describe 'PUT #update' do
+    def update_merge_request(params = {})
+      post :update,
+           namespace_id: project.namespace.to_param,
+           project_id: project.to_param,
+           id: merge_request.iid,
+           merge_request: params
+    end
+
     context 'there is no source project' do
       let(:project)       { create(:project) }
       let(:fork_project)  { create(:forked_project_with_submodules) }
@@ -235,16 +243,53 @@ describe Projects::MergeRequestsController do
       end
 
       it 'closes MR without errors' do
-        post :update,
-            namespace_id: project.namespace.path,
-            project_id: project.path,
-            id: merge_request.iid,
-            merge_request: {
-              state_event: 'close'
-            }
+        update_merge_request(state_event: 'close')
 
         expect(response).to redirect_to([merge_request.target_project.namespace.becomes(Namespace), merge_request.target_project, merge_request])
         expect(merge_request.reload.closed?).to be_truthy
+      end
+    end
+
+    context 'the approvals_before_merge param' do
+      before { project.update_attributes(approvals_before_merge: 2) }
+
+      context 'when it is less than the one in the target project' do
+        before { update_merge_request(approvals_before_merge: 1) }
+
+        it 'sets the param to nil' do
+          expect(merge_request.reload.approvals_before_merge).to eq(nil)
+        end
+
+        it 'updates the merge request' do
+          expect(merge_request.reload).to be_valid
+          expect(response).to redirect_to(namespace_project_merge_request_path(id: merge_request.iid, project_id: project.to_param))
+        end
+      end
+
+      context 'when it is equal to the one in the target project' do
+        before { update_merge_request(approvals_before_merge: 2) }
+
+        it 'sets the param to nil' do
+          expect(merge_request.reload.approvals_before_merge).to eq(nil)
+        end
+
+        it 'updates the merge request' do
+          expect(merge_request.reload).to be_valid
+          expect(response).to redirect_to(namespace_project_merge_request_path(id: merge_request.iid, project_id: project.to_param))
+        end
+      end
+
+      context 'when it is greater than the one in the target project' do
+        before { update_merge_request(approvals_before_merge: 3) }
+
+        it 'saves the param in the merge request' do
+          expect(merge_request.reload.approvals_before_merge).to eq(3)
+        end
+
+        it 'updates the merge request' do
+          expect(merge_request.reload).to be_valid
+          expect(response).to redirect_to(namespace_project_merge_request_path(id: merge_request.iid, project_id: project.to_param))
+        end
       end
     end
   end

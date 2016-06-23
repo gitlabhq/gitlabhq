@@ -40,12 +40,23 @@ feature 'Create New Merge Request', feature: true, js: true do
   end
 
   context 'when approvals are enabled for the target project' do
-    before { project.update_attributes(approvals_before_merge: 1) }
+    before do
+      project.update_attributes(approvals_before_merge: 1)
+
+      visit new_namespace_project_merge_request_path(project.namespace, project, merge_request: { source_branch: 'feature_conflict' })
+    end
 
     it 'shows approval settings' do
-      visit new_namespace_project_merge_request_path(project.namespace, project, merge_request: { source_branch: 'feature_conflict' })
-
       expect(page).to have_content('Approvers')
+    end
+
+    context 'saving the MR' do
+      it 'shows the saved MR' do
+        fill_in 'merge_request_title', with: 'Test'
+        click_button 'Submit merge request'
+
+        expect(page).to have_link('Close merge request')
+      end
     end
   end
 
