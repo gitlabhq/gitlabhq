@@ -42,6 +42,9 @@ v 8.9.3
   - Fix missing avatar on system notes. !4954
   - Reduce overhead and optimize ProjectTeam#max_member_access performance. !4973
   - Use update_columns to by_pass all the dirty code on active_record. !4985
+  - Update mobile button icons to be more inline with typical UI paradigms
+v 8.9.3
+  - Add sub nav to file page view
 
 v 8.9.2
   - Fix visibility of snippets when searching.
