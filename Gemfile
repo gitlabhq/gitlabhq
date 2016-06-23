@@ -76,7 +76,7 @@ gem 'rack-cors',    '~> 0.4.0', require: 'rack/cors'
 gem "kaminari", "~> 0.17.0"
 
 # HAML
-gem "hamlit"
+gem 'hamlit', '~> 2.5'
 
 # Files attachments
 gem "carrierwave", '~> 0.10.0'
@@ -343,7 +343,6 @@ gem 'oauth2', '~> 1.0.0'
 
 # Soft deletion
 gem "paranoia", "~> 2.0"
-
 
 # Health check
 gem 'health_check', '~> 1.5.1'

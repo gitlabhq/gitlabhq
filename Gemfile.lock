@@ -874,7 +874,7 @@ DEPENDENCIES
   gon (~> 6.0.1)
   grape (~> 0.13.0)
   grape-entity (~> 0.4.2)
-  hamlit
+  hamlit (~> 2.5)
   health_check (~> 1.5.1)
   hipchat (~> 1.5.0)
   html-pipeline (~> 1.11.0)

@@ -13,3 +13,6 @@ ActionView::Template.register_template_handler(
   :haml,
   Hamlit::TemplateHandler.new,
 )
+
+Hamlit::Filters.remove_filter('coffee')
+Hamlit::Filters.remove_filter('coffeescript')
