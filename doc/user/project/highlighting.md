@@ -20,7 +20,7 @@ The paths here are simply git's builtin [`.gitattributes` interface](https://git
 
 To disable highlighting entirely, use `gitlab-language=text`. Lots more fun shenanigans are available through CGI options, such as:
 
-```
+``` conf
 # json with erb in it
 /my-cool-file gitlab-language=erb?parent=json
 
