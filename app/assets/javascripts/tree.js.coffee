@@ -5,7 +5,9 @@ class @TreeView
     # Code browser tree slider
     # Make the entire tree-item row clickable, but not if clicking another link (like a commit message)
     $(".tree-content-holder .tree-item").on 'click', (e) ->
-      if (e.target.nodeName != "A")
+      $clickedEl = $(e.target)
+
+      if not $clickedEl.is('a') and not $clickedEl.is('.str-truncated')
         path = $('.tree-item-file-name a', this).attr('href')
         Turbolinks.visit(path)
 
