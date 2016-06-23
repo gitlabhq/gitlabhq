@@ -67,6 +67,43 @@ describe Gitlab::GitAccess, lib: true do
     end
   end
 
+  describe '#check with single protocols allowed' do
+    def disable_protocol(protocol)
+      settings = ::ApplicationSetting.create_from_defaults
+      settings.update_attribute(:enabled_git_access_protocols, protocol)
+    end
+
+    context 'ssh disabled' do
+      before do
+        disable_protocol('ssh')
+        @acc = Gitlab::GitAccess.new(actor, project, 'ssh')
+      end
+
+      it 'blocks ssh git push' do
+        expect(@acc.check('git-receive-pack').allowed?).to be_falsey
+      end
+
+      it 'blocks ssh git pull' do
+        expect(@acc.check('git-upload-pack').allowed?).to be_falsey
+      end
+    end
+
+    context 'http disabled' do
+      before do
+        disable_protocol('http')
+        @acc = Gitlab::GitAccess.new(actor, project, 'http')
+      end
+
+      it 'blocks http push' do
+        expect(@acc.check('git-receive-pack').allowed?).to be_falsey
+      end
+
+      it 'blocks http git pull' do
+        expect(@acc.check('git-upload-pack').allowed?).to be_falsey
+      end
+    end
+  end
+
   describe 'download_access_check' do
     describe 'master permissions' do
       before { project.team << [user, :master] }
