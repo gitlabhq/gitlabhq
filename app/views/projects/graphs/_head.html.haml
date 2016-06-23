@@ -2,7 +2,7 @@
   %ul{ class: (container_class) }
 
     - content_for :page_specific_javascripts do
-      = javascript_include_tag 'lib/chart/application.js', {integrity: true, "data-turbolinks-track" => true}
+      = javascript_include_tag 'lib/chart.js', {integrity: true, "data-turbolinks-track" => true}
       = javascript_include_tag 'graphs/application.js', {integrity: true, "data-turbolinks-track" => true}
     = nav_link(action: :show) do
       = link_to 'Contributors', namespace_project_graph_path
