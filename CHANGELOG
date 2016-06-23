@@ -8,6 +8,7 @@ v 8.10.0 (unreleased)
   - Implement Subresource Integrity for CSS and JavaScript assets. This prevents malicious assets from loading in the case of a CDN compromise.
 
 v 8.9.1
+  - Fix merge requests project settings help link anchor
   - Fix GitLab project import issues related to notes and builds
 
 v 8.9.0
