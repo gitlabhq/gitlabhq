@@ -8,6 +8,7 @@ v 8.10.0 (unreleased)
 
 v 8.9.1
   - Fix GitLab project import issues related to notes and builds
+  - Fix 404 when accessing pipelines as guest user on public projects
 
 v 8.9.0
   - Fix builds API response not including commit data
