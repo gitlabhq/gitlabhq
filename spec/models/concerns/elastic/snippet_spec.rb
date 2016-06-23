@@ -11,45 +11,70 @@ describe Snippet, elastic: true do
     stub_application_setting(elasticsearch_search: false, elasticsearch_indexing: false)
   end
 
-  it "searches snippets by code" do
-    user = create :user
+  it 'searches snippets by code' do
+    author = create(:user)
+    project = create(:project)
 
-    snippet = create :personal_snippet, :private, content: 'genius code', author: user
-    create :personal_snippet, :private, content: 'genius code'
-    create :personal_snippet, :private
+    public_snippet   = create(:snippet, :public, content: 'password: XXX')
+    internal_snippet = create(:snippet, :internal, content: 'password: XXX')
+    private_snippet  = create(:snippet, :private, content: 'password: XXX', author: author)
 
-    snippet3 = create :personal_snippet, :public, content: 'genius code'
+    project_public_snippet   = create(:snippet, :public, project: project, content: 'password: XXX')
+    project_internal_snippet = create(:snippet, :internal, project: project, content: 'password: XXX')
+    project_private_snippet  = create(:snippet, :private, project: project, content: 'password: XXX')
 
     described_class.__elasticsearch__.refresh_index!
 
-    options = { author_id: user.id }
-
-    result = described_class.elastic_search_code('genius code', options: options)
-
+    # returns only public snippets when user is blank
+    result = described_class.elastic_search_code('password', options: { user: nil })
     expect(result.total_count).to eq(2)
-    expect(result.records.map(&:id)).to include(snippet.id, snippet3.id)
+    expect(result.records).to match_array [public_snippet, project_public_snippet]
+
+    # returns only public, and internal snippets for regular users
+    regular_user = create(:user)
+    result = described_class.elastic_search_code('password', options: { user: regular_user })
+    expect(result.total_count).to eq(4)
+    expect(result.records).to match_array [public_snippet, internal_snippet, project_public_snippet, project_internal_snippet]
+
+    # returns public, internal snippets and project private snippets for project members
+    member = create(:user)
+    project.team << [member, :developer]
+    result = described_class.elastic_search_code('password', options: { user: member })
+    expect(result.total_count).to eq(5)
+    expect(result.records).to match_array [public_snippet, internal_snippet, project_public_snippet, project_internal_snippet, project_private_snippet]
+
+    # returns private snippets where the user is the author
+    result = described_class.elastic_search_code('password', options: { user: author })
+    expect(result.total_count).to eq(5)
+    expect(result.records).to match_array [public_snippet, internal_snippet, private_snippet, project_public_snippet, project_internal_snippet]
+
+    # returns all snippets when for admins
+    admin = create(:admin)
+    result = described_class.elastic_search_code('password', options: { user: admin })
+    expect(result.total_count).to eq(6)
+    expect(result.records).to match_array [public_snippet, internal_snippet, private_snippet, project_public_snippet, project_internal_snippet, project_private_snippet]
   end
 
-  it "searches snippets by title and file_name" do
+  it 'searches snippets by title and file_name' do
     user = create :user
 
-    create :snippet, :public, title: 'home'
-    create :snippet, :private, title: 'home 1'
-    create :snippet, :public, file_name: 'index.php'
-    create :snippet
+    create(:snippet, :public, title: 'home')
+    create(:snippet, :private, title: 'home 1')
+    create(:snippet, :public, file_name: 'index.php')
+    create(:snippet)
 
     described_class.__elasticsearch__.refresh_index!
 
-    options = { author_id: user.id }
+    options = { user: user }
 
     expect(described_class.elastic_search('home', options: options).total_count).to eq(1)
     expect(described_class.elastic_search('index.php', options:  options).total_count).to eq(1)
   end
 
-  it "returns json with all needed elements" do
-    snippet = create :project_snippet
+  it 'returns json with all needed elements' do
+    snippet = create(:project_snippet)
 
-    expected_hash =  snippet.attributes.extract!(
+    expected_hash = snippet.attributes.extract!(
       'id',
       'title',
       'file_name',
