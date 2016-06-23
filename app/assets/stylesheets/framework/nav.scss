@@ -368,6 +368,25 @@
       left: -7px;
     }
   }
+
+  &.sub-nav-scroll {
+
+    .fade-right {
+      right: 0;
+
+      .fa {
+        right: -23px;
+      }
+    }
+
+    .fade-left {
+      left: 0;
+
+      .fa {
+        left: 10px;
+      }
+    }
+  }
 }
 
 .nav-block {
