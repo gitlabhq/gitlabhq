@@ -4,16 +4,17 @@ describe Repository, models: true do
   include RepoHelpers
   TestBlob = Struct.new(:name)
 
-  let(:repository) { create(:project).repository }
+  let(:project) { create(:project) }
+  let(:repository) { project.repository }
   let(:user) { create(:user) }
   let(:commit_options) do
     author = repository.user_to_committer(user)
     { message: 'Test message', committer: author, author: author }
   end
   let(:merge_commit) do
-    source_sha = repository.find_branch('feature').target
-    merge_commit_sha = repository.merge(user, source_sha, 'master', commit_options)
-    repository.commit(merge_commit_sha)
+    merge_request = create(:merge_request, source_branch: 'feature', target_branch: 'master', source_project: project)
+    merge_commit_id = repository.merge(user, merge_request, commit_options)
+    repository.commit(merge_commit_id)
   end
 
   describe '#branch_names_contains' do

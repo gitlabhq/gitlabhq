@@ -701,6 +701,7 @@ ActiveRecord::Schema.define(version: 20160712171823) do
     t.datetime "deleted_at"
     t.integer  "approvals_before_merge"
     t.string   "rebase_commit_sha"
+    t.string   "in_progress_merge_commit_sha"
   end
 
   add_index "merge_requests", ["assignee_id"], name: "index_merge_requests_on_assignee_id", using: :btree

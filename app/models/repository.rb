@@ -1,3 +1,4 @@
+# coding: utf-8
 require 'securerandom'
 require 'forwardable'
 
@@ -859,9 +860,9 @@ class Repository
     end
   end
 
-  def merge(user, source_sha, target_branch, options = {})
-    our_commit = rugged.branches[target_branch].target
-    their_commit = rugged.lookup(source_sha)
+  def merge(user, merge_request, options = {})
+    our_commit = rugged.branches[merge_request.target_branch].target
+    their_commit = rugged.lookup(merge_request.diff_head_sha)
 
     raise "Invalid merge target" if our_commit.nil?
     raise "Invalid merge source" if their_commit.nil?
@@ -869,14 +870,16 @@ class Repository
     merge_index = rugged.merge_commits(our_commit, their_commit)
     return false if merge_index.conflicts?
 
-    commit_with_hooks(user, target_branch) do |ref|
+    commit_with_hooks(user, merge_request.target_branch) do |tmp_ref|
       actual_options = options.merge(
         parents: [our_commit, their_commit],
         tree: merge_index.write_tree(rugged),
-        update_ref: ref
+        update_ref: tmp_ref
       )
 
-      Rugged::Commit.create(rugged, actual_options)
+      commit_id = Rugged::Commit.create(rugged, actual_options)
+      merge_request.update(in_progress_merge_commit_sha: commit_id)
+      commit_id
     end
   end
 

@@ -213,6 +213,7 @@ module Gitlab
       Gitlab::ForcePushCheck.force_push?(project, oldrev, newrev)
     end
 
+
     def protocol_allowed?
       Gitlab::ProtocolAccess.allowed?(protocol)
     end
@@ -275,6 +276,10 @@ module Gitlab
       end
 
       build_status_object(true)
+    end
+
+    def matching_merge_request?(newrev, branch_name)
+      Checks::MatchingMergeRequest.new(newrev, branch_name, project).match?
     end
 
     private
@@ -353,6 +358,8 @@ module Gitlab
       elsif Gitlab::Git.blank_ref?(newrev)
         # and we dont allow remove of protected branch
         :remove_protected_branches
+      elsif matching_merge_request?(newrev, branch_name) && project.developers_can_merge_to_protected_branch?(branch_name)
+        :push_code
       elsif project.developers_can_push_to_protected_branch?(branch_name)
         :push_code
       else
