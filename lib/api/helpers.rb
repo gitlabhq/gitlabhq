@@ -9,9 +9,13 @@ module API
       [ true, 1, '1', 't', 'T', 'true', 'TRUE', 'on', 'ON' ].include?(value)
     end
 
+    def find_user_by_private_token
+      token_string = (params[PRIVATE_TOKEN_PARAM] || env[PRIVATE_TOKEN_HEADER]).to_s
+      User.find_by_authentication_token(token_string) || User.find_by_personal_access_token(token_string)
+    end
+
     def current_user
-      private_token = (params[PRIVATE_TOKEN_PARAM] || env[PRIVATE_TOKEN_HEADER]).to_s
-      @current_user ||= (User.find_by(authentication_token: private_token) || doorkeeper_guard)
+      @current_user ||= (find_user_by_private_token || doorkeeper_guard)
 
       unless @current_user && Gitlab::UserAccess.allowed?(@current_user)
         return nil
@@ -33,7 +37,7 @@ module API
       identifier ||= params[SUDO_PARAM] || env[SUDO_HEADER]
 
       # Regex for integers
-      if !!(identifier =~ /^[0-9]+$/)
+      if !!(identifier =~ /\A[0-9]+\z/)
         identifier.to_i
       else
         identifier

@@ -102,11 +102,14 @@ class @Notes
 
   keydownNoteText: (e) ->
     $this = $(this)
-    if $this.val() is '' and e.which is 38 #aka the up key
+    if $this.val() is '' and e.which is 38 and not isMetaKey e
       myLastNote = $("li.note[data-author-id='#{gon.current_user_id}'][data-editable]:last")
       if myLastNote.length
         myLastNoteEditBtn = myLastNote.find('.js-note-edit')
         myLastNoteEditBtn.trigger('click', [true, myLastNote])
+
+  isMetaKey = (e) ->
+    (e.metaKey or e.ctrlKey or e.altKey or e.shiftKey)
 
   initRefresh: ->
     clearInterval(Notes.interval)
@@ -115,12 +118,14 @@ class @Notes
     , @pollingInterval
 
   refresh: =>
-    return if @refreshing is true
-    @refreshing = true
     if not document.hidden and document.URL.indexOf(@noteable_url) is 0
       @getContent()
 
   getContent: ->
+    return if @refreshing
+
+    @refreshing = true
+
     $.ajax
       url: @notes_url
       data: "last_fetched_at=" + @last_fetched_at

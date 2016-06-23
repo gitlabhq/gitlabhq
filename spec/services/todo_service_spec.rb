@@ -108,17 +108,25 @@ describe TodoService, services: true do
         should_not_create_todo(user: john_doe, target: confidential_issue, author: john_doe, action: Todo::MENTIONED)
       end
 
-      it 'does not create todo when when tasks are marked as completed' do
-        issue.update(description: "- [x] Task 1\n- [X] Task 2 #{mentions}")
+      context 'issues with a task list' do
+        it 'does not create todo when tasks are marked as completed' do
+          issue.update(description: "- [x] Task 1\n- [X] Task 2 #{mentions}")
 
-        service.update_issue(issue, author)
+          service.update_issue(issue, author)
 
-        should_not_create_todo(user: admin, target: issue, action: Todo::MENTIONED)
-        should_not_create_todo(user: assignee, target: issue, action: Todo::MENTIONED)
-        should_not_create_todo(user: author, target: issue, action: Todo::MENTIONED)
-        should_not_create_todo(user: john_doe, target: issue, action: Todo::MENTIONED)
-        should_not_create_todo(user: member, target: issue, action: Todo::MENTIONED)
-        should_not_create_todo(user: non_member, target: issue, action: Todo::MENTIONED)
+          should_not_create_todo(user: admin, target: issue, action: Todo::MENTIONED)
+          should_not_create_todo(user: assignee, target: issue, action: Todo::MENTIONED)
+          should_not_create_todo(user: author, target: issue, action: Todo::MENTIONED)
+          should_not_create_todo(user: john_doe, target: issue, action: Todo::MENTIONED)
+          should_not_create_todo(user: member, target: issue, action: Todo::MENTIONED)
+          should_not_create_todo(user: non_member, target: issue, action: Todo::MENTIONED)
+        end
+
+        it 'does not raise an error when description not change' do
+          issue.update(title: 'Sample')
+
+          expect { service.update_issue(issue, author) }.not_to raise_error
+        end
       end
     end
 
@@ -164,6 +172,48 @@ describe TodoService, services: true do
 
         expect(first_todo.reload).to be_done
         expect(second_todo.reload).to be_done
+      end
+
+      describe 'cached counts' do
+        it 'updates when todos change' do
+          create(:todo, :assigned, user: john_doe, project: project, target: issue, author: author)
+
+          expect(john_doe.todos_done_count).to eq(0)
+          expect(john_doe.todos_pending_count).to eq(1)
+          expect(john_doe).to receive(:update_todos_count_cache).and_call_original
+
+          service.mark_pending_todos_as_done(issue, john_doe)
+
+          expect(john_doe.todos_done_count).to eq(1)
+          expect(john_doe.todos_pending_count).to eq(0)
+        end
+      end
+    end
+
+    describe '#mark_todos_as_done' do
+      it 'marks related todos for the user as done' do
+        first_todo = create(:todo, :assigned, user: john_doe, project: project, target: issue, author: author)
+        second_todo = create(:todo, :assigned, user: john_doe, project: project, target: issue, author: author)
+
+        service.mark_todos_as_done([first_todo, second_todo], john_doe)
+
+        expect(first_todo.reload).to be_done
+        expect(second_todo.reload).to be_done
+      end
+
+      describe 'cached counts' do
+        it 'updates when todos change' do
+          todo = create(:todo, :assigned, user: john_doe, project: project, target: issue, author: author)
+
+          expect(john_doe.todos_done_count).to eq(0)
+          expect(john_doe.todos_pending_count).to eq(1)
+          expect(john_doe).to receive(:update_todos_count_cache).and_call_original
+
+          service.mark_todos_as_done([todo], john_doe)
+
+          expect(john_doe.todos_done_count).to eq(1)
+          expect(john_doe.todos_pending_count).to eq(0)
+        end
       end
     end
 
@@ -228,6 +278,14 @@ describe TodoService, services: true do
         should_not_create_any_todo { service.new_note(note_on_project_snippet, john_doe) }
       end
     end
+
+    describe '#mark_todo' do
+      it 'creates a todo from a issue' do
+        service.mark_todo(unassigned_issue, author)
+
+        should_create_todo(user: author, target: unassigned_issue, action: Todo::MARKED)
+      end
+    end
   end
 
   describe 'Merge Requests' do
@@ -277,17 +335,25 @@ describe TodoService, services: true do
         expect { service.update_merge_request(mr_assigned, author) }.not_to change(member.todos, :count)
       end
 
-      it 'does not create todo when when tasks are marked as completed' do
-        mr_assigned.update(description: "- [x] Task 1\n- [X] Task 2 #{mentions}")
+      context 'with a task list' do
+        it 'does not create todo when tasks are marked as completed' do
+          mr_assigned.update(description: "- [x] Task 1\n- [X] Task 2 #{mentions}")
 
-        service.update_merge_request(mr_assigned, author)
+          service.update_merge_request(mr_assigned, author)
 
-        should_not_create_todo(user: admin, target: mr_assigned, action: Todo::MENTIONED)
-        should_not_create_todo(user: assignee, target: mr_assigned, action: Todo::MENTIONED)
-        should_not_create_todo(user: author, target: mr_assigned, action: Todo::MENTIONED)
-        should_not_create_todo(user: john_doe, target: mr_assigned, action: Todo::MENTIONED)
-        should_not_create_todo(user: member, target: mr_assigned, action: Todo::MENTIONED)
-        should_not_create_todo(user: non_member, target: mr_assigned, action: Todo::MENTIONED)
+          should_not_create_todo(user: admin, target: mr_assigned, action: Todo::MENTIONED)
+          should_not_create_todo(user: assignee, target: mr_assigned, action: Todo::MENTIONED)
+          should_not_create_todo(user: author, target: mr_assigned, action: Todo::MENTIONED)
+          should_not_create_todo(user: john_doe, target: mr_assigned, action: Todo::MENTIONED)
+          should_not_create_todo(user: member, target: mr_assigned, action: Todo::MENTIONED)
+          should_not_create_todo(user: non_member, target: mr_assigned, action: Todo::MENTIONED)
+        end
+
+        it 'does not raise an error when description not change' do
+          mr_assigned.update(title: 'Sample')
+
+          expect { service.update_merge_request(mr_assigned, author) }.not_to raise_error
+        end
       end
     end
 
@@ -361,6 +427,26 @@ describe TodoService, services: true do
         expect(second_todo.reload).not_to be_done
       end
     end
+
+    describe '#mark_todo' do
+      it 'creates a todo from a merge request' do
+        service.mark_todo(mr_unassigned, author)
+
+        should_create_todo(user: author, target: mr_unassigned, action: Todo::MARKED)
+      end
+    end
+  end
+
+  it 'updates cached counts when a todo is created' do
+    issue = create(:issue, project: project, assignee: john_doe, author: author, description: mentions)
+
+    expect(john_doe.todos_pending_count).to eq(0)
+    expect(john_doe).to receive(:update_todos_count_cache)
+
+    service.new_issue(issue, author)
+
+    expect(Todo.where(user_id: john_doe.id, state: :pending).count).to eq 1
+    expect(john_doe.todos_pending_count).to eq(1)
   end
 
   def should_create_todo(attributes = {})

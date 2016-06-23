@@ -1,6 +1,6 @@
 # TodoService class
 #
-# Used for creating todos after certain user actions
+# Used for creating/updating todos after certain user actions
 #
 # Ex.
 #   TodoService.new.new_issue(issue, current_user)
@@ -137,14 +137,30 @@ class TodoService
   def mark_pending_todos_as_done(target, user)
     attributes = attributes_for_target(target)
     pending_todos(user, attributes).update_all(state: :done)
+    user.update_todos_count_cache
+  end
+
+  # When user marks some todos as done
+  def mark_todos_as_done(todos, current_user)
+    todos = current_user.todos.where(id: todos.map(&:id)) unless todos.respond_to?(:update_all)
+
+    todos.update_all(state: :done)
+    current_user.update_todos_count_cache
+  end
+
+  # When user marks an issue as todo
+  def mark_todo(issuable, current_user)
+    attributes = attributes_for_todo(issuable.project, issuable, current_user, Todo::MARKED)
+    create_todos(current_user, attributes)
   end
 
   private
 
   def create_todos(users, attributes)
-    Array(users).each do |user|
+    Array(users).map do |user|
       next if pending_todos(user, attributes).exists?
       Todo.create(attributes.merge(user_id: user.id))
+      user.update_todos_count_cache
     end
   end
 
@@ -155,9 +171,14 @@ class TodoService
 
   def update_issuable(issuable, author)
     # Skip toggling a task list item in a description
-    return if issuable.tasks? && issuable.updated_tasks.any?
+    return if toggling_tasks?(issuable)
 
     create_mention_todos(issuable.project, issuable, author)
+  end
+
+  def toggling_tasks?(issuable)
+    issuable.previous_changes.include?('description') &&
+      issuable.tasks? && issuable.updated_tasks.any?
   end
 
   def handle_note(note, author)

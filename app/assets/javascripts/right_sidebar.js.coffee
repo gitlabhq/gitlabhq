@@ -43,6 +43,59 @@ class @Sidebar
             $('.right-sidebar')
               .hasClass('right-sidebar-collapsed'), { path: '/' })
 
+    $(document)
+      .off 'click', '.js-issuable-todo'
+      .on 'click', '.js-issuable-todo', @toggleTodo
+
+  toggleTodo: (e) =>
+    $this = $(e.currentTarget)
+    $todoLoading = $('.js-issuable-todo-loading')
+    $btnText = $('.js-issuable-todo-text', $this)
+    ajaxType = if $this.attr('data-delete-path') then 'DELETE' else 'POST'
+
+    if $this.attr('data-delete-path')
+      url = "#{$this.attr('data-delete-path')}"
+    else
+      url = "#{$this.data('url')}"
+
+    $.ajax(
+      url: url
+      type: ajaxType
+      dataType: 'json'
+      data:
+        issuable_id: $this.data('issuable-id')
+        issuable_type: $this.data('issuable-type')
+      beforeSend: =>
+        @beforeTodoSend($this, $todoLoading)
+    ).done (data) =>
+      @todoUpdateDone(data, $this, $btnText, $todoLoading)
+
+  beforeTodoSend: ($btn, $todoLoading) ->
+    $btn.disable()
+    $todoLoading.removeClass 'hidden'
+
+  todoUpdateDone: (data, $btn, $btnText, $todoLoading) ->
+    $todoPendingCount = $('.todos-pending-count')
+    $todoPendingCount.text data.count
+
+    $btn.enable()
+    $todoLoading.addClass 'hidden'
+
+    if data.count is 0
+      $todoPendingCount.addClass 'hidden'
+    else
+      $todoPendingCount.removeClass 'hidden'
+
+    if data.delete_path?
+      $btn
+        .attr 'aria-label', $btn.data('mark-text')
+        .attr 'data-delete-path', data.delete_path
+      $btnText.text $btn.data('mark-text')
+    else
+      $btn
+        .attr 'aria-label', $btn.data('todo-text')
+        .removeAttr 'data-delete-path'
+      $btnText.text $btn.data('todo-text')
 
   sidebarDropdownLoading: (e) ->
     $sidebarCollapsedIcon = $(@).closest('.block').find('.sidebar-collapsed-icon')
@@ -117,5 +170,3 @@ class @Sidebar
 
   getBlock: (name) ->
     @sidebar.find(".block.#{name}")
-
-

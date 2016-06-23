@@ -2,6 +2,8 @@ require 'rails_helper'
 
 describe Projects::CommitController do
   describe 'GET show' do
+    render_views
+
     let(:project) { create(:project) }
 
     before do
@@ -25,6 +27,16 @@ describe Projects::CommitController do
 
         expect(response).to be_not_found
       end
+    end
+
+    it 'handles binary files' do
+      get(:show,
+          namespace_id: project.namespace.to_param,
+          project_id: project.to_param,
+          id: TestEnv::BRANCH_SHA['binary-encoding'],
+          format: "html")
+
+      expect(response).to be_success
     end
 
     def go(id:)

@@ -4,6 +4,7 @@ class Note < ActiveRecord::Base
   include Participable
   include Mentionable
   include Awardable
+  include Importable
 
   default_value_for :system, false
 
@@ -28,11 +29,11 @@ class Note < ActiveRecord::Base
   validates :attachment, file_size: { maximum: :max_attachment_size }
 
   validates :noteable_type, presence: true
-  validates :noteable_id, presence: true, unless: :for_commit?
+  validates :noteable_id, presence: true, unless: [:for_commit?, :importing?]
   validates :commit_id, presence: true, if: :for_commit?
   validates :author, presence: true
 
-  validate unless: :for_commit? do |note|
+  validate unless: [:for_commit?, :importing?] do |note|
     unless note.noteable.try(:project) == note.project
       errors.add(:invalid_project, 'Note and noteable project mismatch')
     end
@@ -185,6 +186,10 @@ class Note < ActiveRecord::Base
 
   def award_emoji?
     award_emoji_supported? && contains_emoji_only?
+  end
+
+  def emoji_awardable?
+    !system?
   end
 
   def clear_blank_line_code!

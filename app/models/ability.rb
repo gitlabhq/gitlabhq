@@ -9,7 +9,6 @@ class Ability
       when CommitStatus then commit_status_abilities(user, subject)
       when Project then project_abilities(user, subject)
       when Issue then issue_abilities(user, subject)
-      when ExternalIssue then external_issue_abilities(user, subject)
       when Note then note_abilities(user, subject)
       when ProjectSnippet then project_snippet_abilities(user, subject)
       when PersonalSnippet then personal_snippet_abilities(user, subject)
@@ -19,6 +18,7 @@ class Ability
       when GroupMember then group_member_abilities(user, subject)
       when ProjectMember then project_member_abilities(user, subject)
       when User then user_abilities
+      when ExternalIssue, Deployment, Environment then project_abilities(user, subject.project)
       else []
       end.concat(global_abilities(user))
     end
@@ -230,6 +230,8 @@ class Ability
         :read_build,
         :read_container_image,
         :read_pipeline,
+        :read_environment,
+        :read_deployment
       ]
     end
 
@@ -248,6 +250,8 @@ class Ability
         :push_code,
         :create_container_image,
         :update_container_image,
+        :create_environment,
+        :create_deployment
       ]
     end
 
@@ -265,6 +269,8 @@ class Ability
       @project_master_rules ||= project_dev_rules + [
         :push_code_to_protected_branches,
         :update_project_snippet,
+        :update_environment,
+        :update_deployment,
         :admin_milestone,
         :admin_project_snippet,
         :admin_project_member,
@@ -275,7 +281,9 @@ class Ability
         :admin_commit_status,
         :admin_build,
         :admin_container_image,
-        :admin_pipeline
+        :admin_pipeline,
+        :admin_environment,
+        :admin_deployment
       ]
     end
 
@@ -319,6 +327,8 @@ class Ability
       unless project.builds_enabled
         rules += named_abilities('build')
         rules += named_abilities('pipeline')
+        rules += named_abilities('environment')
+        rules += named_abilities('deployment')
       end
 
       unless project.container_registry_enabled
@@ -511,10 +521,6 @@ class Ability
         abilities << self
         abilities
       end
-    end
-
-    def external_issue_abilities(user, subject)
-      project_abilities(user, subject.project)
     end
 
     private

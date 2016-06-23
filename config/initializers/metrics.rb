@@ -133,4 +133,20 @@ if Gitlab::Metrics.enabled?
   GC::Profiler.enable
 
   Gitlab::Metrics::Sampler.new.start
+
+  module TrackNewRedisConnections
+    def connect(*args)
+      val = super
+
+      if current_transaction = Gitlab::Metrics::Transaction.current
+        current_transaction.increment(:new_redis_connections, 1)
+      end
+
+      val
+    end
+  end
+
+  class ::Redis::Client
+    prepend TrackNewRedisConnections
+  end
 end

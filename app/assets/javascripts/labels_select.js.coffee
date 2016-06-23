@@ -39,7 +39,7 @@ class @LabelsSelect
             </a>
             <% }); %>'
         )
-        labelNoneHTMLTemplate = _.template('<div class="light">None</div>')
+        labelNoneHTMLTemplate = '<span class="no-value">None</span>'
 
       if newLabelField.length
 
@@ -145,7 +145,7 @@ class @LabelsSelect
             template = labelHTMLTemplate(data)
             labelCount = data.labels.length
           else
-            template = labelNoneHTMLTemplate()
+            template = labelNoneHTMLTemplate
           $value
             .removeAttr('style')
             .html(template)
@@ -210,8 +210,20 @@ class @LabelsSelect
 
           if $dropdown.hasClass('js-filter-bulk-update')
             indeterminate = instance.indeterminateIds
+            active = instance.activeIds
+
             if indeterminate.indexOf(label.id) isnt -1
               selectedClass.push 'is-indeterminate'
+
+            if active.indexOf(label.id) isnt -1
+              # Remove is-indeterminate class if the item will be marked as active
+              i = selectedClass.indexOf 'is-indeterminate'
+              selectedClass.splice i, 1 unless i is -1
+
+              selectedClass.push 'is-active'
+
+              # Add input manually
+              instance.addInput @fieldName, label.id
 
           if $form.find("input[type='hidden']\
             [name='#{$dropdown.data('fieldName')}']\
@@ -328,6 +340,10 @@ class @LabelsSelect
         setIndeterminateIds: ->
           if @dropdown.find('.dropdown-menu-toggle').hasClass('js-filter-bulk-update')
             @indeterminateIds = _this.getIndeterminateIds()
+
+        setActiveIds: ->
+          if @dropdown.find('.dropdown-menu-toggle').hasClass('js-filter-bulk-update')
+            @activeIds = _this.getActiveIds()
       )
 
     @bindEvents()
@@ -352,3 +368,12 @@ class @LabelsSelect
       label_ids.push $("#issue_#{issue_id}").data('labels')
 
     _.flatten(label_ids)
+
+  getActiveIds: ->
+    label_ids = []
+
+    $('.selected_issue:checked').each (i, el) ->
+      issue_id = $(el).data('id')
+      label_ids.push $("#issue_#{issue_id}").data('labels')
+
+    _.intersection.apply _, label_ids

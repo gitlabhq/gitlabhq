@@ -3,7 +3,7 @@ class GitHooksService
 
   def execute(user, repo_path, oldrev, newrev, ref)
     @repo_path  = repo_path
-    @user       = Gitlab::ShellEnv.gl_id(user)
+    @user       = Gitlab::GlId.gl_id(user)
     @oldrev     = oldrev
     @newrev     = newrev
     @ref        = ref

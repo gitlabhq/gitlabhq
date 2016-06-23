@@ -4,7 +4,8 @@
 - [Test and deploy a Ruby application to Heroku](test-and-deploy-ruby-application-to-heroku.md)
 - [Test and deploy a Python application to Heroku](test-and-deploy-python-application-to-heroku.md)
 - [Test a Clojure application](test-clojure-application.md)
-- [Using `dpl` as deployment tool](../deployment/README.md)
+- [Test a Scala application](test-scala-application.md)
+- [Using `dpl` as deployment tool](deployment/README.md)
 - Help your favorite programming language and GitLab by sending a merge request
   with a guide for that language.
 

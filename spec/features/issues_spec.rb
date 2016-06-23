@@ -22,7 +22,7 @@ describe 'Issues', feature: true do
 
     before do
       visit edit_namespace_project_issue_path(project.namespace, project, issue)
-      click_button "Go full screen"
+      find('.js-zen-enter').click
     end
 
     it 'should open new issue popup' do
@@ -396,6 +396,27 @@ describe 'Issues', feature: true do
           expect(page).to have_content @user.name
         end
       end
+
+      it 'allows user to unselect themselves', js: true do
+        issue2 = create(:issue, project: project, author: @user)
+        visit namespace_project_issue_path(project.namespace, project, issue2)
+
+        page.within '.assignee' do
+          click_link 'Edit'
+          click_link @user.name
+
+          page.within '.value' do
+            expect(page).to have_content @user.name
+          end
+
+          click_link 'Edit'
+          click_link @user.name
+
+          page.within '.value' do
+            expect(page).to have_content "No assignee"
+          end
+        end
+      end
     end
 
     context 'by unauthorized user' do
@@ -439,6 +460,26 @@ describe 'Issues', feature: true do
         end
 
         expect(issue.reload.milestone).to be_nil
+      end
+
+      it 'allows user to de-select milestone', js: true do
+        visit namespace_project_issue_path(project.namespace, project, issue)
+
+        page.within('.milestone') do
+          click_link 'Edit'
+          click_link milestone.title
+
+          page.within '.value' do
+            expect(page).to have_content milestone.title
+          end
+
+          click_link 'Edit'
+          click_link milestone.title
+
+          page.within '.value' do
+            expect(page).to have_content 'None'
+          end
+        end
       end
     end
 
@@ -515,10 +556,10 @@ describe 'Issues', feature: true do
             first('.ui-state-default').click
           end
 
-          expect(page).to have_no_content 'None'
+          expect(page).to have_no_content 'No due date'
 
           click_link 'remove due date'
-          expect(page).to have_content 'None'
+          expect(page).to have_content 'No due date'
         end
       end
     end

@@ -142,7 +142,7 @@ module API
         return not_found!(build) unless build
         return forbidden!('Build is not retryable') unless build.retryable?
 
-        build = Ci::Build.retry(build)
+        build = Ci::Build.retry(build, current_user)
 
         present build, with: Entities::Build,
                        user_can_download_artifacts: can?(current_user, :read_build, user_project)

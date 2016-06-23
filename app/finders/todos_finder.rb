@@ -36,7 +36,7 @@ class TodosFinder
   private
 
   def action_id?
-    action_id.present? && [Todo::ASSIGNED, Todo::MENTIONED, Todo::BUILD_FAILED].include?(action_id.to_i)
+    action_id.present? && [Todo::ASSIGNED, Todo::MENTIONED, Todo::BUILD_FAILED, Todo::MARKED].include?(action_id.to_i)
   end
 
   def action_id
@@ -123,7 +123,7 @@ class TodosFinder
   end
 
   def by_state(items)
-    case params[:state]
+    case params[:state].to_s
     when 'done'
       items.done
     else

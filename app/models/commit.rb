@@ -271,6 +271,32 @@ class Commit
     merged_merge_request ? 'merge request' : 'commit'
   end
 
+  # Get the URI type of the given path
+  #
+  # Used to build URLs to files in the repository in GFM.
+  #
+  # path - String path to check
+  #
+  # Examples:
+  #
+  #   uri_type('doc/README.md') # => :blob
+  #   uri_type('doc/logo.png')  # => :raw
+  #   uri_type('doc/api')       # => :tree
+  #   uri_type('not/found')     # => :nil
+  #
+  # Returns a symbol
+  def uri_type(path)
+    entry = @raw.tree.path(path)
+    if entry[:type] == :blob
+      blob = Gitlab::Git::Blob.new(name: entry[:name])
+      blob.image? ? :raw : :blob
+    else
+      entry[:type]
+    end
+  rescue Rugged::TreeError
+    nil
+  end
+
   private
 
   def repo_changes

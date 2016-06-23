@@ -28,6 +28,8 @@ describe Project, models: true do
     it { is_expected.to have_many(:runners) }
     it { is_expected.to have_many(:variables) }
     it { is_expected.to have_many(:triggers) }
+    it { is_expected.to have_many(:environments).dependent(:destroy) }
+    it { is_expected.to have_many(:deployments).dependent(:destroy) }
     it { is_expected.to have_many(:todos).dependent(:destroy) }
   end
 
@@ -218,7 +220,7 @@ describe Project, models: true do
     end
   end
 
-  describe :find_with_namespace do
+  describe '.find_with_namespace' do
     context 'with namespace' do
       before do
         @group = create :group, name: 'gitlab'
@@ -228,6 +230,22 @@ describe Project, models: true do
       it { expect(Project.find_with_namespace('gitlab/gitlabhq')).to eq(@project) }
       it { expect(Project.find_with_namespace('GitLab/GitlabHQ')).to eq(@project) }
       it { expect(Project.find_with_namespace('gitlab-ci')).to be_nil }
+    end
+
+    context 'when multiple projects using a similar name exist' do
+      let(:group) { create(:group, name: 'gitlab') }
+
+      let!(:project1) do
+        create(:empty_project, name: 'gitlab1', path: 'gitlab', namespace: group)
+      end
+
+      let!(:project2) do
+        create(:empty_project, name: 'gitlab2', path: 'GITLAB', namespace: group)
+      end
+
+      it 'returns the row where the path matches literally' do
+        expect(Project.find_with_namespace('gitlab/GITLAB')).to eq(project2)
+      end
     end
   end
 

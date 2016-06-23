@@ -25,7 +25,9 @@ describe Banzai::Filter::IssueReferenceFilter, lib: true do
     let(:reference) { issue.to_reference }
 
     it 'ignores valid references when using non-default tracker' do
-      expect(project).to receive(:get_issue).with(issue.iid).and_return(nil)
+      expect_any_instance_of(described_class).to receive(:find_object).
+        with(project, issue.iid).
+        and_return(nil)
 
       exp = act = "Issue #{reference}"
       expect(reference_filter(act).to_html).to eq exp
@@ -107,8 +109,9 @@ describe Banzai::Filter::IssueReferenceFilter, lib: true do
     let(:reference) { issue.to_reference(project) }
 
     it 'ignores valid references when cross-reference project uses external tracker' do
-      expect_any_instance_of(Project).to receive(:get_issue).
-        with(issue.iid).and_return(nil)
+      expect_any_instance_of(described_class).to receive(:find_object).
+        with(project2, issue.iid).
+        and_return(nil)
 
       exp = act = "Issue #{reference}"
       expect(reference_filter(act).to_html).to eq exp
@@ -128,6 +131,12 @@ describe Banzai::Filter::IssueReferenceFilter, lib: true do
 
     it 'ignores invalid issue IDs on the referenced project' do
       exp = act = "Fixed #{invalidate_reference(reference)}"
+
+      expect(reference_filter(act).to_html).to eq exp
+    end
+
+    it 'ignores out-of-bounds issue IDs on the referenced project' do
+      exp = act = "Fixed ##{Gitlab::Database::MAX_INT_VALUE + 1}"
 
       expect(reference_filter(act).to_html).to eq exp
     end
@@ -187,6 +196,42 @@ describe Banzai::Filter::IssueReferenceFilter, lib: true do
     it 'links with adjacent text' do
       doc = reference_filter("Fixed (#{reference}.)")
       expect(doc.to_html).to match(/\(<a.+>Reference<\/a>\.\)/)
+    end
+  end
+
+  describe '#issues_per_Project' do
+    context 'using an internal issue tracker' do
+      it 'returns a Hash containing the issues per project' do
+        doc = Nokogiri::HTML.fragment('')
+        filter = described_class.new(doc, project: project)
+
+        expect(filter).to receive(:projects_per_reference).
+          and_return({ project.path_with_namespace => project })
+
+        expect(filter).to receive(:references_per_project).
+          and_return({ project.path_with_namespace => Set.new([issue.iid]) })
+
+        expect(filter.issues_per_project).
+          to eq({ project => { issue.iid => issue } })
+      end
+    end
+
+    context 'using an external issue tracker' do
+      it 'returns a Hash containing the issues per project' do
+        doc = Nokogiri::HTML.fragment('')
+        filter = described_class.new(doc, project: project)
+
+        expect(project).to receive(:default_issues_tracker?).and_return(false)
+
+        expect(filter).to receive(:projects_per_reference).
+          and_return({ project.path_with_namespace => project })
+
+        expect(filter).to receive(:references_per_project).
+          and_return({ project.path_with_namespace => Set.new([1]) })
+
+        expect(filter.issues_per_project[project][1]).
+          to be_an_instance_of(ExternalIssue)
+      end
     end
   end
 end

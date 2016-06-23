@@ -6,10 +6,10 @@ module MembersHelper
     "#{action}_#{member.type.underscore}".to_sym
   end
 
-  def can_see_member_roles?(source:, user: nil)
-    return false unless user
-
-    user.is_admin? || source.members.exists?(user_id: user.id)
+  def default_show_roles(member)
+    can?(current_user, action_member_permission(:update, member), member) ||
+      can?(current_user, action_member_permission(:destroy, member), member) ||
+      can?(current_user, action_member_permission(:admin, member), member.source)
   end
 
   def remove_member_message(member, user: nil)

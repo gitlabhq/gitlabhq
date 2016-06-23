@@ -38,6 +38,12 @@ describe Banzai::Filter::MergeRequestReferenceFilter, lib: true do
       expect(reference_filter(act).to_html).to eq exp
     end
 
+    it 'ignores out-of-bounds merge request IDs on the referenced project' do
+      exp = act = "Merge !#{Gitlab::Database::MAX_INT_VALUE + 1}"
+
+      expect(reference_filter(act).to_html).to eq exp
+    end
+
     it 'includes a title attribute' do
       doc = reference_filter("Merge #{reference}")
       expect(doc.css('a').first.attr('title')).to eq "Merge Request: #{merge.title}"

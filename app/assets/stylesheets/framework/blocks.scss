@@ -91,6 +91,26 @@
     background-color: $white-light;
     border-top: none;
   }
+
+  &.top-block .container-fluid {
+    background-color: inherit;
+  }
+}
+
+.sub-header-block {
+  background-color: $white-light;
+  border-bottom: 1px solid $white-dark;
+  padding: 11px 0;
+  margin-bottom: 11px;
+
+  .oneline {
+    line-height: 35px;
+  }
+
+  &.no-bottom-space {
+    border-bottom: 0;
+    margin-bottom: 0;
+  }
 }
 
 .cover-block {

@@ -34,6 +34,7 @@ The `API_TOKEN` will take the Secure Variable value: `SECURE`.
 | **CI_BUILD_ID**         | all | The unique id of the current build that GitLab CI uses internally |
 | **CI_BUILD_REPO**       | all | The URL to clone the Git repository |
 | **CI_BUILD_TRIGGERED**  | 0.5 | The flag to indicate that build was [triggered] |
+| **CI_BUILD_TOKEN**      | 1.2 | Token used for authenticating with the GitLab Container Registry |
 | **CI_PROJECT_ID**       | all | The unique id of the current project that GitLab CI uses internally |
 | **CI_PROJECT_DIR**      | all | The full path where the repository is cloned and where the build is ran |
 
@@ -50,6 +51,7 @@ export CI_BUILD_TAG="1.0.0"
 export CI_BUILD_NAME="spec:other"
 export CI_BUILD_STAGE="test"
 export CI_BUILD_TRIGGERED="true"
+export CI_BUILD_TOKEN="abcde-1234ABCD5678ef"
 export CI_PROJECT_DIR="/builds/gitlab-org/gitlab-ce"
 export CI_PROJECT_ID="34"
 export CI_SERVER="yes"

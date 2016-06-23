@@ -20,11 +20,11 @@ class Spinach::Features::ProjectNetworkGraph < Spinach::FeatureSteps
   end
 
   step 'page should select "master" in select box' do
-    expect(page).to have_selector '.select2-chosen', text: "master"
+    expect(page).to have_selector '.dropdown-menu-toggle', text: "master"
   end
 
   step 'page should select "v1.0.0" in select box' do
-    expect(page).to have_selector '.select2-chosen', text: "v1.0.0"
+    expect(page).to have_selector '.dropdown-menu-toggle', text: "v1.0.0"
   end
 
   step 'page should have "master" on graph' do
@@ -40,11 +40,19 @@ class Spinach::Features::ProjectNetworkGraph < Spinach::FeatureSteps
   end
 
   When 'I switch ref to "feature"' do
-    select 'feature', from: 'ref'
+    first('.js-project-refs-dropdown').click
+
+    page.within '.project-refs-form' do
+      click_link 'feature'
+    end
   end
 
   When 'I switch ref to "v1.0.0"' do
-    select 'v1.0.0', from: 'ref'
+    first('.js-project-refs-dropdown').click
+
+    page.within '.project-refs-form' do
+      click_link 'v1.0.0'
+    end
   end
 
   When 'click "Show only selected branch" checkbox' do
@@ -68,11 +76,11 @@ class Spinach::Features::ProjectNetworkGraph < Spinach::FeatureSteps
   end
 
   step 'page should select "feature" in select box' do
-    expect(page).to have_selector '.select2-chosen', text: "feature"
+    expect(page).to have_selector '.dropdown-menu-toggle', text: "feature"
   end
 
   step 'page should select "v1.0.0" in select box' do
-    expect(page).to have_selector '.select2-chosen', text: "v1.0.0"
+    expect(page).to have_selector '.dropdown-menu-toggle', text: "v1.0.0"
   end
 
   step 'page should have "feature" on graph' do

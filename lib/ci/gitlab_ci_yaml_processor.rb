@@ -9,7 +9,8 @@ module Ci
     ALLOWED_YAML_KEYS = [:before_script, :after_script, :image, :services, :types, :stages, :variables, :cache]
     ALLOWED_JOB_KEYS = [:tags, :script, :only, :except, :type, :image, :services,
                         :allow_failure, :type, :stage, :when, :artifacts, :cache,
-                        :dependencies, :before_script, :after_script, :variables]
+                        :dependencies, :before_script, :after_script, :variables,
+                        :environment]
     ALLOWED_CACHE_KEYS = [:key, :untracked, :paths]
     ALLOWED_ARTIFACTS_KEYS = [:name, :untracked, :paths, :when, :expire_in]
 
@@ -29,7 +30,10 @@ module Ci
     end
 
     def builds_for_stage_and_ref(stage, ref, tag = false, trigger_request = nil)
-      builds.select{|build| build[:stage] == stage && process?(build[:only], build[:except], ref, tag, trigger_request)}
+      builds.select do |build|
+        build[:stage] == stage &&
+          process?(build[:only], build[:except], ref, tag, trigger_request)
+      end
     end
 
     def builds
@@ -50,7 +54,7 @@ module Ci
       job = @jobs[name.to_sym]
       return [] unless job
 
-      job.fetch(:variables, [])
+      job[:variables] || []
     end
 
     private
@@ -90,6 +94,7 @@ module Ci
         except: job[:except],
         allow_failure: job[:allow_failure] || false,
         when: job[:when] || 'on_success',
+        environment: job[:environment],
         options: {
           image: job[:image] || @image,
           services: job[:services] || @services,
@@ -199,12 +204,12 @@ module Ci
         raise ValidationError, "#{name} job: tags parameter should be an array of strings"
       end
 
-      if job[:only] && !validate_array_of_strings(job[:only])
-        raise ValidationError, "#{name} job: only parameter should be an array of strings"
+      if job[:only] && !validate_array_of_strings_or_regexps(job[:only])
+        raise ValidationError, "#{name} job: only parameter should be an array of strings or regexps"
       end
 
-      if job[:except] && !validate_array_of_strings(job[:except])
-        raise ValidationError, "#{name} job: except parameter should be an array of strings"
+      if job[:except] && !validate_array_of_strings_or_regexps(job[:except])
+        raise ValidationError, "#{name} job: except parameter should be an array of strings or regexps"
       end
 
       if job[:allow_failure] && !validate_boolean(job[:allow_failure])
@@ -213,6 +218,10 @@ module Ci
 
       if job[:when] && !job[:when].in?(%w[on_success on_failure always])
         raise ValidationError, "#{name} job: when parameter should be on_success, on_failure or always"
+      end
+
+      if job[:environment] && !validate_environment(job[:environment])
+        raise ValidationError, "#{name} job: environment parameter #{Gitlab::Regex.environment_name_regex_message}"
       end
     end
 

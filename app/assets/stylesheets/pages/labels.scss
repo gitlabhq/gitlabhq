@@ -6,6 +6,7 @@
     height: 30px;
     display: inline-block;
     margin-right: 10px;
+    margin-bottom: 10px;
   }
 
   &.suggest-colors-dropdown {
@@ -50,11 +51,10 @@
 
 .label-row {
   .label-name {
-    display: block;
+    display: inline-block;
     margin-bottom: 10px;
 
     @media (min-width: $screen-sm-min) {
-      display: inline-block;
       width: 200px;
       margin-bottom: 0;
     }
@@ -63,6 +63,7 @@
   .label-description {
     display: block;
     margin-bottom: 10px;
+    margin-left: 50px;
 
     @media (min-width: $screen-sm-min) {
       display: inline-block;
@@ -115,12 +116,26 @@
   }
 }
 
+.draggable-handler {
+  display: inline-block;
+  opacity: 0;
+  transition: opacity .3s;
+  color: $gray-darkest;
+}
+
 .prioritized-labels {
   margin-bottom: 30px;
 
   .add-priority {
     display: none;
     color: $gray-light;
+  }
+
+  li:hover {
+    .draggable-handler {
+      display: inline-block;
+      opacity: 1;
+    }
   }
 }
 

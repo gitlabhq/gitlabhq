@@ -3,17 +3,25 @@
     = escape_once(tag.name)
     = clipboard_button(clipboard_text: "docker pull #{tag.path}")
   %td
-    - if layer = tag.layers.first
-      %span.has-tooltip{ title: "#{layer.revision}" }
-        = layer.short_revision
+    - if tag.revision
+      %span.has-tooltip{ title: "#{tag.revision}" }
+        = tag.short_revision
     - else
       \-
   %td
-    = number_to_human_size(tag.total_size)
-    &middot;
-    = pluralize(tag.layers.size, "layer")
+    - if tag.total_size
+      = number_to_human_size(tag.total_size)
+      &middot;
+      = pluralize(tag.layers.size, "layer")
+    - else
+      .light
+        \-
   %td
-    = time_ago_in_words(tag.created_at)
+    - if tag.created_at
+      = time_ago_in_words(tag.created_at)
+    - else
+      .light
+        \-
   - if can?(current_user, :update_container_image, @project)
     %td.content
       .controls.hidden-xs.pull-right

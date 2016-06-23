@@ -46,7 +46,7 @@
         Maximum file size is 1MB. Pages are optimized for a 72x72 px header logo
 
   .form-actions
-    = f.submit 'Save', class: 'btn btn-save'
+    = f.submit 'Save', class: 'btn btn-save append-right-10'
     - if @appearance.persisted?
       = link_to 'Preview last save', preview_admin_appearances_path, class: 'btn', target: '_blank'
 

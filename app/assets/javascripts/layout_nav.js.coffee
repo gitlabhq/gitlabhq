@@ -1,14 +1,24 @@
-class @LayoutNav
-  $ ->
-    $('.fade-left').addClass('end-scroll')
-    $('.scrolling-tabs').on 'scroll', (event) ->
-      $this = $(this)
-      $el = $(event.target)
-      currentPosition = $this.scrollLeft()
-      size = bp.getBreakpointSize()
-      controlBtnWidth = $('.controls').width()
-      maxPosition = $this.get(0).scrollWidth - $this.parent().width()
-      maxPosition += controlBtnWidth if size isnt 'xs' and $('.nav-control').length
+hideEndFade = ($scrollingTabs) ->
+  $scrollingTabs.each ->
+    $this = $(@)
 
-      $el.find('.fade-left').toggleClass('end-scroll', currentPosition is 0)
-      $el.find('.fade-right').toggleClass('end-scroll', currentPosition is maxPosition)
+    $this
+      .find('.fade-right')
+      .toggleClass('scrolling', $this.width() < $this.prop('scrollWidth'))
+
+$ ->
+
+  hideEndFade($('.scrolling-tabs'))
+
+  $(window)
+    .off 'resize.nav'
+    .on 'resize.nav', ->
+      hideEndFade($('.scrolling-tabs'))
+
+  $('.scrolling-tabs').on 'scroll', (event) ->
+    $this = $(this)
+    currentPosition = $this.scrollLeft()
+    maxPosition = $this.prop('scrollWidth') - $this.outerWidth()
+
+    $this.find('.fade-left').toggleClass('scrolling', currentPosition > 0)
+    $this.find('.fade-right').toggleClass('scrolling', currentPosition < maxPosition - 1)

@@ -1,4 +1,4 @@
-- show_roles = local_assigns.fetch(:show_roles, true)
+- show_roles = local_assigns.fetch(:show_roles, default_show_roles(member))
 - show_controls = local_assigns.fetch(:show_controls, true)
 - user = member.user
 
@@ -36,7 +36,7 @@
                   method: :post,
                   class: 'btn-xs btn'
 
-  - if show_roles && can_see_member_roles?(source: member.source, user: current_user)
+  - if show_roles
     %span.pull-right
       %strong= member.human_access
       - if show_controls
