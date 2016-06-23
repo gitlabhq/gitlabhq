@@ -32,6 +32,7 @@
   overflow-x: auto;
   overflow-y: hidden;
   -webkit-overflow-scrolling: touch;
+
   &::-webkit-scrollbar {
     display: none;
   }
@@ -322,7 +323,7 @@
 
     .fade-right {
       @include fade(left, rgba(250, 250, 250, 0.4), $background-color);
-      right: 0;
+      right: -5px;
 
       .fa {
         right: -7px;
@@ -331,7 +332,7 @@
 
     .fade-left {
       @include fade(right, rgba(250, 250, 250, 0.4), $background-color);
-      left: 0;
+      left: -5px;
 
       .fa {
         left: -7px;
@@ -379,7 +380,7 @@
     .fade-right {
 
       @media (max-width: $screen-xs-min) {
-        right: 0;
+        right: -5px;
       }
     }
   }
@@ -390,15 +391,23 @@
 
   .nav-links {
     @include scrolling-links();
+  }
 
-    .fade-right {
-      @include fade(left, rgba(255, 255, 255, 0.4), $background-color);
-      right: 0;
+  .fade-right {
+    @include fade(left, rgba(255, 255, 255, 0.4), $background-color);
+    right: -5px;
+
+    .fa {
+      right: -7px;
     }
+  }
 
-    .fade-left {
-      @include fade(right, rgba(255, 255, 255, 0.4), $background-color);
-      left: 0;
+  .fade-left {
+    @include fade(right, rgba(255, 255, 255, 0.4), $background-color);
+    left: -5px;
+
+    .fa {
+      left: -7px;
     }
   }
 }
@@ -411,12 +420,20 @@
 
     .fade-right {
       @include fade(left, rgba(255, 255, 255, 0.4), $white-light);
-      right: 0;
+      right: -5px;
+
+      .fa {
+        right: -7px;
+      }
     }
 
     .fade-left {
       @include fade(right, rgba(255, 255, 255, 0.4), $white-light);
-      left: 0;
+      left: -5px;
+
+      .fa {
+        left: -7px;
+      }
     }
 
     &.event-filter {
