@@ -136,11 +136,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
   def create
     @target_branches ||= []
-    create_params = merge_request_params
-
-    if create_params[:approvals_before_merge].to_i <= project.approvals_before_merge
-      create_params.delete(:approvals_before_merge)
-    end
+    create_params = clamp_approvals_before_merge(merge_request_params)
 
     @merge_request = MergeRequests::CreateService.new(project, current_user, create_params).execute
 
@@ -164,11 +160,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def update
-    update_params = merge_request_params
-
-    if update_params[:approvals_before_merge].to_i <= project.approvals_before_merge
-      update_params.delete(:approvals_before_merge)
-    end
+    update_params = clamp_approvals_before_merge(merge_request_params)
 
     @merge_request = MergeRequests::UpdateService.new(project, current_user, update_params).execute(@merge_request)
 
@@ -415,6 +407,14 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       :approvals_before_merge,
       label_ids: []
     )
+  end
+
+  def clamp_approvals_before_merge(mr_params)
+    if mr_params[:approvals_before_merge].to_i <= selected_target_project.approvals_before_merge
+      mr_params.delete(:approvals_before_merge)
+    end
+
+    mr_params
   end
 
   def merge_params
