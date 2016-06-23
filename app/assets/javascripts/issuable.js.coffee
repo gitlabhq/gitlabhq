@@ -91,6 +91,6 @@ issuable_created = false
       $('#update_issues_ids').val []
       $('.issues_bulk_update').hide()
       $('.issues-other-filters').show()
-      @issuableBulkActions.disableWillUpdate()
+      @issuableBulkActions.willUpdateLabels = false
 
     return true

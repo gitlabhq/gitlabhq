@@ -10,21 +10,12 @@ class @IssuableBulkActions
     # Save instance
     @form.data 'bulkActions', @
 
-    @disableWillUpdate()
+    @willUpdateLabels = false
 
     @bindEvents()
 
     # Fixes bulk-assign not working when navigating through pages
     Issuable.initChecks();
-
-  enableWillUpdate: ->
-    @toggleWillUpdate(true)
-
-  disableWillUpdate: ->
-    @toggleWillUpdate(false)
-
-  toggleWillUpdate: (enable)->
-    @willUpdateLabels = if enable? then enable else not @willUpdateLabels
 
   getElement: (selector) ->
     @container.find selector

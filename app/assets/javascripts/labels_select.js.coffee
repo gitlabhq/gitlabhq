@@ -383,4 +383,4 @@ class @LabelsSelect
   enableBulkLabelDropdown: ->
     if $('.selected_issue:checked').length
       issuableBulkActions = $('.bulk-update').data('bulkActions')
-      issuableBulkActions.enableWillUpdate()
+      issuableBulkActions.willUpdateLabels = true
