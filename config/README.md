@@ -1,21 +1,22 @@
 # Configuration files Documentation
 
 Note that most configuration files (`config/*.*`) committed into
-[gitlab-ce](https://gitlab.com/gitlab-org/gitlab-ce) **would not be used** for
+[gitlab-ce](https://gitlab.com/gitlab-org/gitlab-ce) **will not be used** for
 [omnibus-gitlab](https://gitlab.com/gitlab-org/omnibus-gitlab). Configuration
 files committed into gitlab-ce are only used for development.
 
 ## gitlab.yml
 
-You could find most of GitLab configuration here.
+You can find most of GitLab configuration settings here.
 
 ## mail_room.yml
 
-It's intended to be an ERB file because `mail_room` would use ERB to evaluate
-it before parsing it as a YAML file. It would try to read values from
-`gitlab.yml` so you should configure it there.
+This file is actually an YML wrapped inside an ERB file to enable templated
+values to be specified from `gitlab.yml`. mail_room loads this file first as
+an ERB file and then loads the resulting YML as its configuration.
 
 ## resque.yml
 
-It's called `resque.yml` for historical reason, and we're not using rescue
-at the moment. It's served as a **Redis configuration file** instead.
+This file is called `resque.yml` for historical reasons. We are **NOT**
+using Resque at the moment. It is used to specify Redis configuration
+values instead.
