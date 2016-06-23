@@ -9,6 +9,7 @@ v 8.10.0 (unreleased)
 
 v 8.9.1
   - Fix GitLab project import issues related to notes and builds
+  - Improve performance of searching repository tags by name by using a memorized tag array
   - Fix 404 when accessing pipelines as guest user on public projects
 
 v 8.9.0
