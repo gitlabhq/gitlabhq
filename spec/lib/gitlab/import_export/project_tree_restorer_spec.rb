@@ -18,6 +18,12 @@ describe Gitlab::ImportExport::ProjectTreeRestorer, services: true do
       it 'restores models based on JSON' do
         expect(restored_project_json).to be true
       end
+
+      it 'creates a valid pipeline note' do
+        restored_project_json
+
+        expect(Ci::Pipeline.first.notes).not_to be_empty
+      end
     end
   end
 end
