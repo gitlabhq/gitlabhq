@@ -30,7 +30,7 @@
 
   = javascript_include_tag "application", integrity: true
 
-  - if :page_specific_javascripts
+  - if content_for?(:page_specific_javascripts)
     = yield :page_specific_javascripts
 
   = csrf_meta_tags
