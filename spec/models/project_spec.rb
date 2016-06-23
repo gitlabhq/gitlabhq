@@ -129,6 +129,22 @@ describe Project, models: true do
     end
   end
 
+  describe "#new_issue_address" do
+    before do
+      stub_incoming_email_setting(address: "p+%{key}@gl.ab")
+    end
+
+    let(:project) { create(:empty_project, path: "somewhere") }
+    let(:user) { create(:user) }
+
+    it 'returns the address to create a new issue' do
+      token = user.authentication_token
+      address = "p+#{project.namespace.path}/#{project.path}+#{token}@gl.ab"
+
+      expect(project.new_issue_address(user)).to eq(address)
+    end
+  end
+
   describe 'last_activity methods' do
     let(:project) { create(:project) }
     let(:last_event) { double(created_at: Time.now) }
