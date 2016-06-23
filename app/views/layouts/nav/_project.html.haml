@@ -24,10 +24,12 @@
                 data: { confirm: leave_confirmation_message(@project) }, method: :delete, title: 'Leave project' do
                 Leave Project
 
-%div{ class: nav_control_class }
+.scrolling-tabs-container{ class: nav_control_class }
+  .fade-left
+    = icon('arrow-left')
+  .fade-right
+    = icon('arrow-right')
   %ul.nav-links.scrolling-tabs
-    %li.fade-left
-      = icon('arrow-left')
     = nav_link(path: 'projects#show', html_options: {class: 'home'}) do
       = link_to project_path(@project), title: 'Project', class: 'shortcuts-project' do
         %span
@@ -111,5 +113,3 @@
       %li.hidden
         = link_to project_commits_path(@project), title: 'Commits', class: 'shortcuts-commits' do
           Commits
-    %li.fade-right
-      = icon('arrow-right')
