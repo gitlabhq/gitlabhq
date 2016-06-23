@@ -28,6 +28,7 @@ v 8.10.0 (unreleased)
   - PipelinesFinder uses git cache data
   - Throttle the update of `project.pushes_since_gc` to 1 minute.
   - Check for conflicts with existing Project's wiki path when creating a new project.
+  - Show last push widget in upstream after push to fork
   - Don't instantiate a git tree on Projects show default view
   - Bump Rinku to 2.0.0
   - Remove unused front-end variable -> default_issues_tracker
