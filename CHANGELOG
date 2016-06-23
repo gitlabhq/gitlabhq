@@ -25,6 +25,7 @@ v 8.9.1 (unreleased)
   - Use jQuery objects in ref dropdown. !4850
   - Fix GitLab project import issues related to notes and builds. !4855
   - Restrict header logo to 36px so it doesn't overflow. !4861
+  - Fix unwanted label unassignment. !4863
   - Fix merge requests project settings help link anchor. !4873
   - Fix 404 when accessing pipelines as guest user on public projects. !4881
 
