@@ -130,18 +130,30 @@ describe Project, models: true do
   end
 
   describe "#new_issue_address" do
-    before do
-      stub_incoming_email_setting(address: "p+%{key}@gl.ab")
-    end
-
     let(:project) { create(:empty_project, path: "somewhere") }
     let(:user) { create(:user) }
 
-    it 'returns the address to create a new issue' do
-      token = user.authentication_token
-      address = "p+#{project.namespace.path}/#{project.path}+#{token}@gl.ab"
+    context 'incoming email enabled' do
+      before do
+        stub_incoming_email_setting(enabled: true, address: "p+%{key}@gl.ab")
+      end
 
-      expect(project.new_issue_address(user)).to eq(address)
+      it 'returns the address to create a new issue' do
+        token = user.authentication_token
+        address = "p+#{project.namespace.path}/#{project.path}+#{token}@gl.ab"
+
+        expect(project.new_issue_address(user)).to eq(address)
+      end
+    end
+
+    context 'incoming email disabled' do
+      before do
+        stub_incoming_email_setting(enabled: false)
+      end
+
+      it 'returns nil' do
+        expect(project.new_issue_address(user)).to be_nil
+      end
     end
   end
 
