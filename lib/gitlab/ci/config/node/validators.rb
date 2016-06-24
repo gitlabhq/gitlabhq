@@ -13,6 +13,16 @@ module Gitlab
             end
           end
 
+          class BooleanValidator < ActiveModel::EachValidator
+            include LegacyValidationHelpers
+
+            def validate_each(record, attribute, value)
+              unless validate_boolean(value)
+                record.errors.add(attribute, 'should be a boolean value')
+              end
+            end
+          end
+
           class KeyValidator < ActiveModel::EachValidator
             include LegacyValidationHelpers
 
