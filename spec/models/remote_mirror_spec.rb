@@ -71,15 +71,6 @@ describe RemoteMirror do
 
         expect(repo.config["remote.#{mirror.ref_name}.url"]).to eq('http://foo:baz@test.com')
       end
-
-      it 'should still be picked up by the worker if is stuck' do
-        mirror = create_mirror(url: 'http://cantbeblank',
-                               update_status: 'started',
-                               last_update_at: nil,
-                               updated_at: 25.hours.ago)
-
-        expect(RemoteMirror.stuck.last).to eq(mirror)
-      end
     end
   end
 
@@ -98,6 +89,17 @@ describe RemoteMirror do
 
         expect(mirror.safe_url).to eq('http://test.com')
       end
+    end
+  end
+
+  context 'stuck mirrors' do
+    it 'includes mirrors stuck in started with no last_update_at set' do
+      mirror = create_mirror(url: 'http://cantbeblank',
+                             update_status: 'started',
+                             last_update_at: nil,
+                             updated_at: 25.hours.ago)
+
+      expect(RemoteMirror.stuck.last).to eq(mirror)
     end
   end
 
