@@ -5,6 +5,7 @@ v 8.10.0 (unreleased)
   - Add Sidekiq queue duration to transaction metrics.
   - Fix MR-auto-close text added to description. !4836
   - Fix pagination when sorting by columns with lots of ties (like priority)
+  - Exclude email check from the standard health check
   - Implement Subresource Integrity for CSS and JavaScript assets. This prevents malicious assets from loading in the case of a CDN compromise.
   - Fix user creation with stronger minimum password requirements !4054 (nathan-pmt)
 
