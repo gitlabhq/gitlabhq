@@ -19,6 +19,7 @@ v 8.9.1 (unreleased)
   - Set button label when picking an option from status dropdown. !4771
   - Prevent invalid URLs from raising exceptions in WikiLink Filter. !4775
   - Handle external issues in IssueReferenceFilter. !4789
+  - Support for rendering/redacting multiple documents. !4828
   - Update Todos documentation and screenshots to include new functionality. !4840
   - Hide nav arrows by default. !4843
   - Added bottom padding to label color suggestion link. !4845
