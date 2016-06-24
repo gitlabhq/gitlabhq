@@ -1206,5 +1206,17 @@ EOT
         end.to raise_error(GitlabCiYamlProcessor::ValidationError, "rspec job: dependencies parameter should be an array of strings")
       end
     end
+
+    describe "Validate configuration templates" do
+      templates = Dir.glob("#{Rails.root.join('vendor/gitlab-ci-yml')}/**/*.gitlab-ci.yml")
+
+      templates.each do |file|
+        it "does not return errors for #{file}" do
+          file = File.read(file)
+
+          expect { GitlabCiYamlProcessor.new(file) }.not_to raise_error
+        end
+      end
+    end
   end
 end
