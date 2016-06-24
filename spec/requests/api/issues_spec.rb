@@ -136,6 +136,148 @@ describe API::API, api: true  do
     end
   end
 
+  describe "GET /groups/:id/issues" do
+    let!(:group)            { create(:group) }
+    let!(:group_project)    { create(:project, :public, creator_id: user.id, namespace: group) }
+    let!(:group_closed_issue) do
+      create :closed_issue,
+             author: user,
+             assignee: user,
+             project: group_project,
+             state: :closed,
+             milestone: group_milestone
+    end
+    let!(:group_confidential_issue) do
+      create :issue,
+             :confidential,
+             project: group_project,
+             author: author,
+             assignee: assignee
+    end
+    let!(:group_issue) do
+      create :issue,
+             author: user,
+             assignee: user,
+             project: group_project,
+             milestone: group_milestone
+    end
+    let!(:group_label) do
+      create(:label, title: 'group_lbl', color: '#FFAABB', project: group_project)
+    end
+    let!(:group_label_link) { create(:label_link, label: group_label, target: group_issue) }
+    let!(:group_milestone) { create(:milestone, title: '3.0.0', project: group_project) }
+    let!(:group_empty_milestone) do
+      create(:milestone, title: '4.0.0', project: group_project)
+    end
+    let!(:group_note) { create(:note_on_issue, author: user, project: group_project, noteable: group_issue) }
+
+    before do
+      group_project.team << [user, :reporter]
+    end
+    let(:base_url) { "/groups/#{group.id}/issues" }
+
+    it 'returns group issues without confidential issues for non project members' do
+      get api(base_url, non_member)
+
+      expect(response.status).to eq(200)
+      expect(json_response).to be_an Array
+      expect(json_response.length).to eq(1)
+      expect(json_response.first['title']).to eq(group_issue.title)
+    end
+
+    it 'returns group confidential issues for author' do
+      get api(base_url, author)
+
+      expect(response.status).to eq(200)
+      expect(json_response).to be_an Array
+      expect(json_response.length).to eq(2)
+    end
+
+    it 'returns group confidential issues for assignee' do
+      get api(base_url, assignee)
+
+      expect(response.status).to eq(200)
+      expect(json_response).to be_an Array
+      expect(json_response.length).to eq(2)
+    end
+
+    it 'returns group issues with confidential issues for project members' do
+      get api(base_url, user)
+
+      expect(response.status).to eq(200)
+      expect(json_response).to be_an Array
+      expect(json_response.length).to eq(2)
+    end
+
+    it 'returns group confidential issues for admin' do
+      get api(base_url, admin)
+
+      expect(response.status).to eq(200)
+      expect(json_response).to be_an Array
+      expect(json_response.length).to eq(2)
+    end
+
+    it 'returns an array of labeled group issues' do
+      get api("#{base_url}?labels=#{group_label.title}", user)
+
+      expect(response.status).to eq(200)
+      expect(json_response).to be_an Array
+      expect(json_response.length).to eq(1)
+      expect(json_response.first['labels']).to eq([group_label.title])
+    end
+
+    it 'returns an array of labeled group issues where all labels match' do
+      get api("#{base_url}?labels=#{group_label.title},foo,bar", user)
+
+      expect(response.status).to eq(200)
+      expect(json_response).to be_an Array
+      expect(json_response.length).to eq(0)
+    end
+
+    it 'returns an empty array if no group issue matches labels' do
+      get api("#{base_url}?labels=foo,bar", user)
+
+      expect(response.status).to eq(200)
+      expect(json_response).to be_an Array
+      expect(json_response.length).to eq(0)
+    end
+
+    it 'returns an empty array if no issue matches milestone' do
+      get api("#{base_url}?milestone=#{group_empty_milestone.title}", user)
+
+      expect(response.status).to eq(200)
+      expect(json_response).to be_an Array
+      expect(json_response.length).to eq(0)
+    end
+
+    it 'returns an empty array if milestone does not exist' do
+      get api("#{base_url}?milestone=foo", user)
+
+      expect(response.status).to eq(200)
+      expect(json_response).to be_an Array
+      expect(json_response.length).to eq(0)
+    end
+
+    it 'returns an array of issues in given milestone' do
+      get api("#{base_url}?milestone=#{group_milestone.title}", user)
+
+      expect(response.status).to eq(200)
+      expect(json_response).to be_an Array
+      expect(json_response.length).to eq(1)
+      expect(json_response.first['id']).to eq(group_issue.id)
+    end
+
+    it 'returns an array of issues matching state in milestone' do
+      get api("#{base_url}?milestone=#{group_milestone.title}"\
+              '&state=closed', user)
+
+      expect(response.status).to eq(200)
+      expect(json_response).to be_an Array
+      expect(json_response.length).to eq(1)
+      expect(json_response.first['id']).to eq(group_closed_issue.id)
+    end
+  end
+
   describe "GET /projects/:id/issues" do
     let(:base_url) { "/projects/#{project.id}" }
     let(:title) { milestone.title }
