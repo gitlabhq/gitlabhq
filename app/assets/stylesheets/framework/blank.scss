@@ -1,3 +1,19 @@
+.blank-state-welcome {
+  text-align: center;
+  border-bottom: 1px solid $border-color;
+
+  .blank-state-text {
+    margin-bottom: 0;
+  }
+}
+
+.blank-state-welcome-title {
+  margin-top: 0;
+  margin-bottom: 5px;
+  font-size: 24px;
+  font-weight: normal;
+}
+
 .blank-state {
   padding-top: 20px;
   padding-bottom: 20px;
@@ -6,7 +22,15 @@
 
 .blank-state-no-icon {
   padding-top: 40px;
-  padding-bottom: 40px;  
+  padding-bottom: 40px;
+}
+
+.blank-state-icon {
+  padding-bottom: 20px;
+
+  path {
+    fill: #ccc;
+  }
 }
 
 .blank-state-title {
