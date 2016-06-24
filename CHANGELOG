@@ -34,6 +34,7 @@ v 8.9.1 (unreleased)
   - Remove width restriction for logo on sign-in page. !4888
   - Bump gitlab_git to 10.2.3 to fix false truncated warnings with ISO-8559 files. !4884
   - Apply selected value as label. !4886
+  - Fix temp file being deleted after the request while importing a GitLab project. !4894
 
 v 8.9.0
   - Fix builds API response not including commit data
