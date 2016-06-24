@@ -67,7 +67,7 @@ class @Project
         selectable: true
         filterable: true
         filterByText: true
-        fieldName: $dropdown.data('field-name')
+        fieldName: 'ref'
         renderRow: (ref) ->
           if ref.header?
             $('<li />')
@@ -87,6 +87,5 @@ class @Project
         toggleLabel: (obj, $el) ->
           $el.text().trim()
         clicked: (e) ->
-          unless $dropdown.hasClass('js-compare-dropdown')
-            $dropdown.closest('form').submit()
+          $dropdown.closest('form').submit()
       )
