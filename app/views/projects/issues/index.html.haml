@@ -7,7 +7,7 @@
     = auto_discovery_link_tag(:atom, namespace_project_issues_url(@project.namespace, @project, :atom, private_token: current_user.private_token), title: "#{@project.name} issues")
 
 %div{ class: (container_class) }
-  - if @project.issues.nil?
+  - if @project.issues.any?
     .top-area
       = render 'shared/issuable/nav', type: :issues
       .nav-controls
