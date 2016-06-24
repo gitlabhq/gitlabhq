@@ -71,6 +71,8 @@ namespace :gitlab do
       File.open(File.join(home_dir, ".ssh", "environment"), "w+") do |f|
         f.puts "PATH=#{ENV['PATH']}"
       end
+
+      Gitlab::Shell.new.generate_and_link_secret_token
     end
 
     desc "GitLab | Setup gitlab-shell"
