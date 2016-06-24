@@ -23,7 +23,11 @@ module Gitlab
       private
 
       def decompress_archive
-        untar_zxf(archive: @archive_file, dir: @shared.export_path)
+        result = untar_zxf(archive: @archive_file, dir: @shared.export_path)
+
+        raise Projects::ImportService::Error.new("Unable to decompress #{@archive_file} into #{@shared.export_path}") unless result
+
+        true
       end
     end
   end

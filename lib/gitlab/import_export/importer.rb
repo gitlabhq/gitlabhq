@@ -10,16 +10,21 @@ module Gitlab
       end
 
       def execute
-        Gitlab::ImportExport::FileImporter.import(archive_file: @archive_file,
-                                                  shared: @shared)
-        if check_version! && [project_tree, repo_restorer, wiki_restorer, uploads_restorer].all?(&:restore)
+        if import_file && check_version! && [project_tree, repo_restorer, wiki_restorer, uploads_restorer].all?(&:restore)
           project_tree.restored_project
         else
           raise Projects::ImportService::Error.new(@shared.errors.join(', '))
         end
+
+        remove_import_file
       end
 
       private
+
+      def import_file
+        Gitlab::ImportExport::FileImporter.import(archive_file: @archive_file,
+                                                  shared: @shared)
+      end
 
       def check_version!
         Gitlab::ImportExport::VersionChecker.check!(shared: @shared)
@@ -58,6 +63,10 @@ module Gitlab
 
       def wiki_repo_path
         File.join(@shared.export_path, 'project.wiki.bundle')
+      end
+
+      def remove_import_file
+        FileUtils.rm_rf(@archive_file)
       end
     end
   end

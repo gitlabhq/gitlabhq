@@ -19,6 +19,7 @@ v 8.9.1
   - Fix 404 when accessing pipelines as guest user on public projects
   - Fix mobile Safari bug where horizontal nav arrows would flicker on scroll
   - Fix in auto merge when pipeline is nil
+  - Fix GitLab import project deleting imported file straight after being uploaded
 
 v 8.9.0
   - Fix builds API response not including commit data
