@@ -632,3 +632,21 @@ pre.light-well {
     width: 300px;
   }
 }
+
+.compare-input-group {
+  &.input-group .input-group-addon {
+    @media (min-width: $screen-sm-min) {
+      width: 1%;
+    }
+  }
+
+  .dropdown-menu-toggle {
+    width: 100%;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+
+  .dropdown-menu {
+    width: 300px;
+  }
+}

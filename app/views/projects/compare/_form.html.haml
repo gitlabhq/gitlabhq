@@ -3,14 +3,18 @@
     - if params[:to] && params[:from]
       = link_to 'switch', {from: params[:to], to: params[:from]}, {class: 'commits-compare-switch has-tooltip', title: 'Switch base of comparison'}
     .form-group
-      .input-group.inline-input-group
+      = hidden_field_tag :from, params[:from]
+      .input-group.inline-input-group.compare-input-group.dropdown
         %span.input-group-addon from
-        = text_field_tag :from, params[:from], class: "form-control", required: true
+        = dropdown_toggle h(params[:from].presence || ''), { toggle: "dropdown", refs_url: refs_namespace_project_path(@project.namespace, @project), field_name: 'from', selected: params[:from] }, { toggle_class: "js-project-refs-dropdown js-compare-dropdown" }
+        = render "ref_dropdown"
     = "..."
     .form-group
-      .input-group.inline-input-group
+      = hidden_field_tag :to, params[:to]
+      .input-group.inline-input-group.compare-input-group.dropdown
         %span.input-group-addon to
-        = text_field_tag :to, params[:to], class: "form-control", required: true
+        = dropdown_toggle h(params[:from].presence || ''), { toggle: "dropdown", refs_url: refs_namespace_project_path(@project.namespace, @project), field_name: 'to', selected: params[:to] }, { toggle_class: "js-project-refs-dropdown js-compare-dropdown" }
+        = render "ref_dropdown"
     &nbsp;
     = button_tag "Compare", class: "btn btn-create commits-compare-btn"
     - if @merge_request.present?
@@ -19,11 +23,3 @@
       = link_to create_mr_path, class: 'prepend-left-10 btn' do
         = icon("plus")
         Create Merge Request
-
-:javascript
-  var availableTags = #{@project.repository.ref_names.to_json};
-
-  $("#from, #to").autocomplete({
-    source: availableTags,
-    minLength: 1
-  });

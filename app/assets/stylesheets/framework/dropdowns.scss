@@ -48,9 +48,6 @@
   border: 1px solid $dropdown-toggle-border-color;
   border-radius: $border-radius-base;
   outline: 0;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
 
   .fa {
     position: absolute;
@@ -59,6 +56,14 @@
     margin-top: -4px;
     color: $dropdown-toggle-icon-color;
     font-size: 10px;
+  }
+
+  .dropdown-toggle-text {
+    display: block;
+    min-height: 19px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
   }
 
   &:hover, {
