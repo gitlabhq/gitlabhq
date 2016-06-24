@@ -24,6 +24,10 @@ module Gitlab
         }
       end
 
+      def klass
+        MergeRequest
+      end
+
       def number
         raw_data.number
       end
