@@ -19,7 +19,7 @@ class Projects::GitHttpController < Projects::ApplicationController
       render_ok
     elsif receive_pack? && receive_pack_allowed?
       render_ok
-    elsif !upload_pack_allowed?
+    elsif http_blocked?
       render_not_allowed
     else
       render_not_found
@@ -178,6 +178,10 @@ class Projects::GitHttpController < Projects::ApplicationController
     return @access if defined?(@access)
 
     @access = Gitlab::GitAccess.new(user, project, 'http').check('git-upload-pack')
+  end
+
+  def http_blocked?
+    access.message.include?('HTTP')
   end
 
   def receive_pack_allowed?
