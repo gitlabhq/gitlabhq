@@ -223,6 +223,11 @@ module SharedProject
     create(:label, project: project, title: 'enhancement')
   end
 
+  step 'project "Shop" has issue: "bug report"' do
+    project = Project.find_by(name: "Shop")
+    create(:issue, project: project, title: "bug report")
+  end
+
   step 'project "Shop" has CI enabled' do
     project = Project.find_by(name: "Shop")
     project.enable_ci
