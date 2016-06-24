@@ -28,7 +28,12 @@ if [ -f /.dockerenv ] || [ -f ./dockerinit ]; then
 
     # Try to install packages
     retry 'apt-get update -yqqq; apt-get -o dir::cache::archives="vendor/apt" install -y -qq --force-yes \
-      libicu-dev libkrb5-dev cmake nodejs postgresql-client mysql-client unzip'
+      libicu-dev libkrb5-dev cmake nodejs postgresql-client mysql-client unzip locales'
+
+    # Set locale to utf8
+    echo "en_US.UTF-8 UTF-8" > /etc/locale.gen
+    locale-gen
+    export LC_ALL=en_US.UTF-8
 
     cp config/database.yml.mysql config/database.yml
     sed -i 's/username:.*/username: root/g' config/database.yml
