@@ -1,6 +1,8 @@
 # AddressableUrlValidator
 #
-# Custom validator for URLs. This is a stricter version of UrlValidator.
+# Custom validator for URLs. This is a stricter version of UrlValidator - it also checks
+# for using the right protocol, but it actually parses the URL checking for any syntax errors.
+# The regex is also different from `URI` as we use `Addressable::URI` here.
 #
 # By default, only URLs for http, https, ssh, and git protocols will be considered valid.
 # Provide a `:protocols` option to configure accepted protocols.
