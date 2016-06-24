@@ -32,27 +32,31 @@ module Gitlab
 
           class_methods do
             def nodes
-              Hash[@nodes.map { |key, factory| [key, factory.dup] }]
+              Hash[(@nodes || {}).map { |key, factory| [key, factory.dup] }]
             end
 
             private
 
             def node(symbol, entry_class, metadata)
-              define_method("#{symbol}_defined?") do
-                @nodes[symbol].try(:defined?)
-              end
-
-              define_method("#{symbol}_value") do
-                raise Entry::InvalidError unless valid?
-                @nodes[symbol].try(:value)
-              end
-
-              alias_method symbol.to_sym, "#{symbol}_value".to_sym
-
               factory = Node::Factory.new(entry_class)
                 .with(description: metadata[:description])
 
               (@nodes ||= {}).merge!(symbol.to_sym => factory)
+            end
+
+            def helpers(*nodes)
+              nodes.each do |symbol|
+                define_method("#{symbol}_defined?") do
+                  @nodes[symbol].try(:defined?)
+                end
+
+                define_method("#{symbol}_value") do
+                  raise Entry::InvalidError unless valid?
+                  @nodes[symbol].try(:value)
+                end
+
+                alias_method symbol.to_sym, "#{symbol}_value".to_sym
+              end
             end
           end
         end
