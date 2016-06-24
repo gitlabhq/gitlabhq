@@ -1,5 +1,8 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+v 8.8.4
+  - Fix LDAP-based login for users with 2FA enabled
+
 v 8.8.3
   - Fix 404 page when viewing TODOs that contain milestones or labels in different projects. !4312
   - Fixed JS error when trying to remove discussion form. !4303
