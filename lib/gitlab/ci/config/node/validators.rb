@@ -13,6 +13,16 @@ module Gitlab
             end
           end
 
+          class KeyValidator < ActiveModel::EachValidator
+            include LegacyValidationHelpers
+
+            def validate_each(record, attribute, value)
+              unless validate_string(value)
+                record.errors.add(attribute, 'should be a string or symbol')
+              end
+            end
+          end
+
           class TypeValidator < ActiveModel::EachValidator
             def validate_each(record, attribute, value)
               type = options[:with]
