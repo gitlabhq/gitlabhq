@@ -22,6 +22,7 @@ v 8.9.1
   - Fix mobile Safari bug where horizontal nav arrows would flicker on scroll
   - Fix in auto merge when pipeline is nil
   - Fix GitLab import project deleting imported file straight after being uploaded
+  - Fix a wrong MR status when merge_when_build_succeeds & project.only_allow_merge_if_build_succeeds are true
 
 v 8.9.0
   - Fix builds API response not including commit data
