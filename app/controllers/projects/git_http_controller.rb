@@ -157,7 +157,7 @@ class Projects::GitHttpController < Projects::ApplicationController
   end
 
   def render_not_allowed
-    render json: access.to_json, status: :forbidden
+    render plain: access.message, status: :forbidden
   end
 
   def ci?
