@@ -62,8 +62,12 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def show
+    raw_notes = @issue.notes_with_associations.fresh
+
+    @notes = Banzai::NoteRenderer.
+      render(raw_notes, @project, current_user, @path, @project_wiki, @ref)
+
     @note     = @project.notes.new(noteable: @issue)
-    @notes    = @issue.notes.with_associations.fresh
     @noteable = @issue
 
     respond_to do |format|
