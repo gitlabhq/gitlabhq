@@ -127,8 +127,8 @@ module Ci
 
     def validate_global_cache!
       @cache.keys.each do |key|
-        unless ALLOWED_CACHE_KEYS.include? key
-          raise ValidationError, "#{name} cache unknown parameter #{key}"
+        unless ALLOWED_CACHE_KEYS.include?(key)
+          raise ValidationError, "Cache config has unknown parameter: #{key}"
         end
       end
 

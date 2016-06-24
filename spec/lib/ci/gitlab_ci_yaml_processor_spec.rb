@@ -591,7 +591,20 @@ module Ci
       end
     end
 
-    describe "Caches" do
+    describe 'cache' do
+      context 'when cache definition has unknown keys' do
+        it 'raises relevant validation error' do
+          config = YAML.dump(
+            { cache: { untracked: true, invalid: 'key' },
+              rspec: { script: 'rspec' } })
+
+          expect { GitlabCiYamlProcessor.new(config) }.to raise_error(
+            GitlabCiYamlProcessor::ValidationError,
+            'Cache config has unknown parameter: invalid'
+          )
+        end
+      end
+
       it "returns cache when defined globally" do
         config = YAML.dump({
                              cache: { paths: ["logs/", "binaries/"], untracked: true, key: 'key' },
