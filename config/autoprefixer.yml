@@ -1,0 +1,13 @@
+browsers:
+  # Desktop
+  - "last 2 Chrome versions"
+  - "last 2 Edge versions"
+  - "Explorer >= 11"
+  - "last 2 Firefox versions"
+  # Mobile
+  - "last 2 Android versions"
+  - "last 2 ChromeAndroid versions"
+  - "last 2 ExplorerMobile versions"
+  - "last 2 FirefoxAndroid versions"
+  - "last 2 iOS versions"
+  - "last 2 Safari versions"

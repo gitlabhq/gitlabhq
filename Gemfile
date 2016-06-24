@@ -233,6 +233,9 @@ gem 'virtus',             '~> 1.0.1'
 gem 'net-ssh',            '~> 3.0.1'
 gem 'base32',             '~> 0.3.0'
 
+# Stylesheet vendor prefixer
+gem "autoprefixer-rails", '~> 6.3.6'
+
 # Sentry integration
 gem 'sentry-raven', '~> 0.15'
 
