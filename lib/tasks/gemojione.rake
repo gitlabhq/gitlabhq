@@ -13,7 +13,7 @@ namespace :gemojione do
       aliases[real_name] << alias_name
     end
 
-    AwardEmoji.emojis.map do |name, emoji_hash|
+    Gitlab::AwardEmoji.emojis.map do |name, emoji_hash|
       fpath = File.join(dir, "#{emoji_hash['unicode']}.png")
       digest = Digest::SHA256.file(fpath).hexdigest
 
