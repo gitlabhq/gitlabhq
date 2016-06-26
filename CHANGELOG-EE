@@ -3,8 +3,11 @@ Please view this file on the master branch, on stable branches it's out of date.
 v 8.10.0 (unreleased)
 
 v 8.9.1
-  - Fix MR creation from forks where target project has approvals enabled
-  - Fix MR edit where target project has approvals enabled
+  - Improve Geo documentation. !431
+  - Fix remote mirror stuck on started issue. !491
+  - Fix MR creation from forks where target project has approvals enabled. !496
+  - Fix MR edit where target project has approvals enabled. !496
+  - Fix vertical alignment of git-hooks page. !499
 
 v 8.9.0
   - Fix JenkinsService test button
