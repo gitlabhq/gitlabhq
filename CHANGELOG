@@ -31,6 +31,7 @@ v 8.9.2
   - Fix visibility of snippets when searching.
   - Fix an information disclosure when requesting access to a group containing private projects.
   - Update omniauth-saml to 1.6.0 !4951
+  - Add Bugzilla integration
 
 v 8.9.1
   - Refactor labels documentation. !3347
