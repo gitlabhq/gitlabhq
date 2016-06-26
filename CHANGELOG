@@ -13,18 +13,47 @@ v 8.10.0 (unreleased)
   - Add API endpoint for a group issues !4520 (mahcsig)
 
 v 8.9.1
-  - Fix merge requests project settings help link anchor
-  - Fix GitLab project import issues related to notes and builds
-  - Improve performance of searching repository tags by name by using a memorized tag array
-  - Fix false truncated warnings with ISO-8559 files
-  - Eager load award emoji on notes
-  - Fix unwanted label unassignment when doing bulk action on issues page
-  - Improve performance of redacting Markdown references
-  - Fix 404 when accessing pipelines as guest user on public projects
-  - Fix mobile Safari bug where horizontal nav arrows would flicker on scroll
-  - Fix in auto merge when pipeline is nil
-  - Fix GitLab import project deleting imported file straight after being uploaded
-  - Fix a wrong MR status when merge_when_build_succeeds & project.only_allow_merge_if_build_succeeds are true
+  - Refactor labels documentation. !3347
+  - Eager load award emoji on notes. !4628
+  - Fix some CI wording in documentation. !4660
+  - Document `GIT_STRATEGY` and `GIT_DEPTH`. !4720
+  - Add documentation for the export & import features. !4732
+  - Add some docs for Docker Registry configuration. !4738
+  - Ensure we don't send the "access request declined" email to access requesters on project deletion. !4744
+  - Display group/project access requesters separately in the admin area. !4798
+  - Add documentation and examples for configuring cloud storage for registry images. !4812
+  - Clarifies documentation about artifact expiry. !4831
+  - Fix the Network graph links. !4832
+  - Fix MR-auto-close text added to description. !4836
+  - Add documentation for award emoji now that comments can be awarded with emojis. !4839
+  - Fix typo in export failure email. !4847
+  - Fix header vertical centering. !4170
+  - Fix subsequent SAML sign ins. !4718
+  - Set button label when picking an option from status dropdown. !4771
+  - Prevent invalid URLs from raising exceptions in WikiLink Filter. !4775
+  - Handle external issues in IssueReferenceFilter. !4789
+  - Support for rendering/redacting multiple documents. !4828
+  - Update Todos documentation and screenshots to include new functionality. !4840
+  - Hide nav arrows by default. !4843
+  - Added bottom padding to label color suggestion link. !4845
+  - Use jQuery objects in ref dropdown. !4850
+  - Fix GitLab project import issues related to notes and builds. !4855
+  - Restrict header logo to 36px so it doesn't overflow. !4861
+  - Fix unwanted label unassignment. !4863
+  - Fix mobile Safari bug where horizontal nav arrows would flicker on scroll. !4869
+  - Restore old behavior around diff notes to outdated discussions. !4870
+  - Fix merge requests project settings help link anchor. !4873
+  - Fix 404 when accessing pipelines as guest user on public projects. !4881
+  - Remove width restriction for logo on sign-in page. !4888
+  - Bump gitlab_git to 10.2.3 to fix false truncated warnings with ISO-8559 files. !4884
+  - Apply selected value as label. !4886
+  - Fix temp file being deleted after the request while importing a GitLab project. !4894
+  - Fix pagination when sorting by columns with lots of ties (like priority)
+  - Implement Subresource Integrity for CSS and JavaScript assets. This prevents malicious assets from loading in the case of a CDN compromise.
+  - Fix user creation with stronger minimum password requirements !4054 (nathan-pmt)
+  - Add API endpoint for a group issues !4520 (mahcsig)
+  - Fix a wrong MR status when merge_when_build_succeeds & project.only_allow_merge_if_build_succeeds are true. !4912
+  - Add SMTP as default delivery method to match gitlab-org/omnibus-gitlab!826. !4915
 
 v 8.9.0
   - Fix builds API response not including commit data
