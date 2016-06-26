@@ -1,6 +1,6 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
-v 8.9.1 (unreleased)
+v 8.9.1
   - Refactor labels documentation. !3347
   - Eager load award emoji on notes. !4628
   - Fix some CI wording in documentation. !4660
