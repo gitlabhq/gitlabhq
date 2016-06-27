@@ -11,6 +11,7 @@ v 8.10.0 (unreleased)
   - Exclude email check from the standard health check
   - Fix changing issue state columns in milestone view
   - Fix user creation with stronger minimum password requirements !4054 (nathan-pmt)
+  - Check for conflicts with existing Project's wiki path when creating a new project.
   - Add API endpoint for a group issues !4520 (mahcsig)
   - Allow [ci skip] to be in any case and allow [skip ci]. !4785 (simon_w)
 
