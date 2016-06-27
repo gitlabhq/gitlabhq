@@ -26,6 +26,9 @@ v 8.9.2
   - Update omniauth-saml to 1.6.0 !4951
 
 v 8.9.1
+  - Update mobile button icons to be more inline with typical UI paradigms
+
+v 8.9.1
   - Refactor labels documentation. !3347
   - Eager load award emoji on notes. !4628
   - Fix some CI wording in documentation. !4660
