@@ -133,7 +133,7 @@ describe Groups::GroupMembersController do
 
           expect(response).to set_flash.to 'Your access request to the group has been withdrawn.'
           expect(response).to redirect_to(group_path(group))
-          expect(group.members.request).to be_empty
+          expect(group.requesters).to be_empty
           expect(group.users).not_to include user
         end
       end
@@ -153,7 +153,7 @@ describe Groups::GroupMembersController do
 
       expect(response).to set_flash.to 'Your request for access has been queued for review.'
       expect(response).to redirect_to(group_path(group))
-      expect(group.members.request.exists?(user_id: user)).to be_truthy
+      expect(group.requesters.exists?(user_id: user)).to be_truthy
       expect(group.users).not_to include user
     end
   end
@@ -175,7 +175,7 @@ describe Groups::GroupMembersController do
       let(:group_requester) { create(:user) }
       let(:member) do
         group.request_access(group_requester)
-        group.members.request.find_by(user_id: group_requester)
+        group.requesters.find_by(user_id: group_requester)
       end
 
       context 'when user does not have enough rights' do
