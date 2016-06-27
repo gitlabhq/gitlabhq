@@ -26,12 +26,12 @@ v 8.9.3 (unreleased)
   - Fix encrypted data backwards compatibility after upgrading attr_encrypted gem
   - Update mobile button icons to be more inline with typical UI paradigms
   - Fixes missing avatar on system notes. !4954
+  - Add Bugzilla integration !4930 (iamtjg)
 
 v 8.9.2
   - Fix visibility of snippets when searching.
   - Fix an information disclosure when requesting access to a group containing private projects.
   - Update omniauth-saml to 1.6.0 !4951
-  - Add Bugzilla integration
 
 v 8.9.1
   - Refactor labels documentation. !3347

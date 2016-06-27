@@ -25,9 +25,9 @@ class BugzillaService < IssueTrackerService
   def fields
     [
       { type: 'text', name: 'description', placeholder: description },
-      { type: 'text', name: 'project_url', placeholder: 'http://bugzilla.example.com/describecomponents.cgi?product=PRODUCT_NAME' },
-      { type: 'text', name: 'issues_url', placeholder: 'http://bugzilla.example.com/show_bug.cgi?id=:id' },
-      { type: 'text', name: 'new_issue_url', placeholder: 'http://bugzilla.example.com/enter_bug.cgi?product=PRODUCT_NAME' }
+      { type: 'text', name: 'project_url', placeholder: 'Project url' },
+      { type: 'text', name: 'issues_url', placeholder: 'Issue url' },
+      { type: 'text', name: 'new_issue_url', placeholder: 'New Issue url' }
     ]
   end
 
