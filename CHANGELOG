@@ -1,5 +1,8 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+v 8.8.6
+  - Update omniauth-saml to 1.6.0 !4951
+
 v 8.8.5
   - Import GitHub repositories respecting the API rate limit !4166
   - Fix todos page throwing errors when you have a project pending deletion !4300
