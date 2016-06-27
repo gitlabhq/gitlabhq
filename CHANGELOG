@@ -16,8 +16,9 @@ v 8.10.0 (unreleased)
   - Allow [ci skip] to be in any case and allow [skip ci]. !4785 (simon_w)
 
 v 8.9.2
+  - Fix visibility of snippets when searching.
+  - Fix an information disclosure when requesting access to a group containing private projects.
   - Update omniauth-saml to 1.6.0 !4951
-  - Fix rendering of commit notes !4953
 
 v 8.9.1
   - Refactor labels documentation. !3347
