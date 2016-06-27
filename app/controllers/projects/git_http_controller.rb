@@ -174,14 +174,20 @@ class Projects::GitHttpController < Projects::ApplicationController
     end
   end
 
+  def access
+    return @access if defined?(@access)
+
+    @access = Gitlab::GitAccess.new(user, project, 'http')
+  end
+
   def download_access
     return @download_access if defined?(@download_access)
 
-    @download_access = Gitlab::GitAccess.new(user, project, 'http').check('git-upload-pack')
+    @download_access = access.check('git-upload-pack')
   end
 
   def http_blocked?
-    download_access.protocol_allowed?
+    !access.protocol_allowed?
   end
 
   def receive_pack_allowed?

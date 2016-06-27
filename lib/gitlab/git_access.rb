@@ -169,6 +169,10 @@ module Gitlab
       Gitlab::ForcePushCheck.force_push?(project, oldrev, newrev)
     end
 
+    def protocol_allowed?
+      Gitlab::ProtocolAccess.allowed?(protocol)
+    end
+
     private
 
     def protected_branch_action(oldrev, newrev, branch_name)
@@ -191,10 +195,6 @@ module Gitlab
 
     def user_allowed?
       Gitlab::UserAccess.allowed?(user)
-    end
-
-    def protocol_allowed?
-      Gitlab::ProtocolAccess.allowed?(protocol)
     end
 
     def branch_name(ref)
