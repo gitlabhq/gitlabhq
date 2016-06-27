@@ -35,11 +35,11 @@ module Awardable
     end
 
     def order_all_upvotes_desc
-      order_votes_desc(AwardEmoji.all_award_emojis)
+      order_votes_desc(AwardEmoji.all_award_emoji(:thumbsup))
     end
 
     def order_all_downvotes_desc
-      order_votes_desc(AwardEmoji.all_award_emojis(thumbs_up: false))
+      order_votes_desc(AwardEmoji.all_award_emoji(:thumbsdown))
     end
 
     def order_votes_desc(emoji_names)
