@@ -18,9 +18,16 @@ class Projects::CommitController < Projects::ApplicationController
     apply_diff_view_cookie!
 
     @grouped_diff_notes = commit.notes.grouped_diff_notes
+    @notes = commit.notes.non_diff_notes.fresh
+    
+    Banzai::NoteRenderer.render(
+      @grouped_diff_notes.values.flatten + @notes,
+      @project,
+      current_user,
+    )
 
     @note = @project.build_commit_note(commit)
-    @notes = commit.notes.non_diff_notes.fresh
+
     @noteable = @commit
     @comments_target = {
       noteable_type: 'Commit',

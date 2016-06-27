@@ -16,6 +16,7 @@ v 8.10.0 (unreleased)
 
 v 8.9.2
   - Update omniauth-saml to 1.6.0 !4951
+  - Fix rendering of commit notes !4953
 
 v 8.9.1
   - Refactor labels documentation. !3347
