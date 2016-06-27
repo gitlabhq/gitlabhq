@@ -63,6 +63,7 @@ v 8.10.0 (unreleased)
   - Added setting to set new users by default as external !4545 (Dravere)
   - Add min value for project limit field on user's form !3622 (jastkand)
   - Add reminder to not paste private SSH keys !4399 (Ingo Blechschmidt)
+  - Remove duplicate `description` field in `MergeRequest` entities (Ben Boeckel)
 
 v 8.9.5
   - Add more debug info to import/export and memory killer. !5108
