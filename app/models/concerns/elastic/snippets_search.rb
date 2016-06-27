@@ -45,7 +45,7 @@ module Elastic
       def self.elastic_search(query, options: {})
         query_hash = basic_query_hash(%w(title file_name), query)
 
-        query_hash = filter(query_hash, options[:author_id])
+        query_hash = filter(query_hash, options[:user])
 
         self.__elasticsearch__.search(query_hash)
       end
@@ -59,7 +59,7 @@ module Elastic
           }
         }
 
-        query_hash = filter(query_hash, options[:author_id])
+        query_hash = filter(query_hash, options[:user])
 
         query_hash[:sort] = [
           { updated_at_sort: { order: :desc, mode: :min } },
@@ -71,18 +71,24 @@ module Elastic
         self.__elasticsearch__.search(query_hash)
       end
 
-      def self.filter(query_hash, author_id)
-        if author_id
-          query_hash[:query][:bool][:filter] = {
-            bool: {
-              should: [
-                { terms: { visibility_level: [Snippet::PUBLIC, Snippet::INTERNAL] } },
-                { term: { author_id: author_id } }
-              ]
-            }
-          }
-        end
+      def self.filter(query_hash, user)
+        return query_hash if user && user.admin?
 
+        filter = if user
+                   {
+                     bool: {
+                       should: [
+                         { terms: { visibility_level: [Snippet::PUBLIC, Snippet::INTERNAL] } },
+                         { term: { author_id: user.id } },
+                         { terms: { project_id: user.authorized_projects.pluck(:id) } },
+                       ]
+                     }
+                   }
+                 else
+                   { term: { visibility_level: Snippet::PUBLIC } }
+                 end
+
+        query_hash[:query][:bool][:filter] = filter
         query_hash
       end
     end

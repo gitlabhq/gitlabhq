@@ -21,7 +21,7 @@ module Gitlab
 
       def snippet_titles
         opt = {
-          author_id: @user.id
+          user: @user
         }
 
         Snippet.elastic_search(query, options: opt)
@@ -29,7 +29,7 @@ module Gitlab
 
       def snippet_blobs
         opt = {
-          author_id: @user.id
+          user: @user
         }
 
         Snippet.elastic_search_code(query, options: opt)
