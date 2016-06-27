@@ -25,7 +25,7 @@ module Gitlab
 
           Sidekiq.logger.warn "current RSS #{current_rss} exceeds maximum RSS "\
             "#{MAX_RSS}"
-          Sidekiq.logger.warn "this thread will shut down PID #{Process.pid} "\
+          Sidekiq.logger.warn "this thread will shut down PID #{Process.pid} - Worker #{worker.class} - JID-#{job['jid']}"\
             "in #{GRACE_TIME} seconds"
           sleep(GRACE_TIME)
 
@@ -36,7 +36,7 @@ module Gitlab
             "#{SHUTDOWN_SIGNAL} to PID #{Process.pid}"
           sleep(SHUTDOWN_WAIT)
 
-          Sidekiq.logger.warn "sending #{SHUTDOWN_SIGNAL} to PID #{Process.pid}"
+          Sidekiq.logger.warn "sending #{SHUTDOWN_SIGNAL} to PID #{Process.pid} - Worker #{worker.class} - JID-#{job['jid']}"
           Process.kill(SHUTDOWN_SIGNAL, Process.pid)
         end
       end
