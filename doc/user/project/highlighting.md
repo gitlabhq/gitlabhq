@@ -27,3 +27,5 @@ To disable highlighting entirely, use `gitlab-language=text`. Lots more fun shen
 # an entire file of highlighting errors!
 /other-file gitlab-language=text?token=Error
 ```
+
+Please note that these configurations will only take effect when the `.gitattributes` file is in your default branch (usually `master`).
