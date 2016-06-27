@@ -23,6 +23,9 @@ v 8.10.0 (unreleased)
   - Allow [ci skip] to be in any case and allow [skip ci]. !4785 (simon_w)
   - Add basic system information like memory and disk usage to the admin panel
 
+v 8.9.4 (unreleased)
+  - Ensure references to private repos aren't shown to logged-out users
+
 v 8.9.3
   - Fix encrypted data backwards compatibility after upgrading attr_encrypted gem. !4963
   - Fix rendering of commit notes. !4953
