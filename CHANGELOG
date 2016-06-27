@@ -37,7 +37,6 @@ v 8.9.1
   - Apply selected value as label. !4886
   - Fix temp file being deleted after the request while importing a GitLab project. !4894
   - Fix user creation with stronger minimum password requirements !4054 (nathan-pmt)
-  - Add API endpoint for a group issues !4520 (mahcsig)
   - Fix a wrong MR status when merge_when_build_succeeds & project.only_allow_merge_if_build_succeeds are true. !4912
   - Add SMTP as default delivery method to match gitlab-org/omnibus-gitlab!826. !4915
 
