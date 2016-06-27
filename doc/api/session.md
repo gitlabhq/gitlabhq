@@ -1,5 +1,12 @@
 # Session
 
+## Deprecation Notice
+
+1. Starting in GitLab 9.0, this feature will be *disabled* for users with two-factor authentication turned on.
+2. These users can access the API using [personal access tokens] instead.
+
+---
+
 You can login with both GitLab and LDAP credentials in order to obtain the
 private token.
 
@@ -45,3 +52,5 @@ Example response:
   "private_token": "9koXpg98eAheJpvBs5tK"
 }
 ```
+
+[personal access tokens]: ./README.md#personal-access-tokens

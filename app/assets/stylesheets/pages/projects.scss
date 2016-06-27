@@ -101,7 +101,8 @@
 
   .notifications-btn {
 
-    .fa-bell {
+    .fa-bell,
+    .fa-spinner {
       margin-right: 6px;
     }
 
@@ -126,11 +127,6 @@
       .fa-caret-down {
         margin-left: 3px;
       }
-    }
-
-    .btn-group:not(:first-child):not(:last-child) > .btn {
-      border-top-right-radius: 3px;
-      border-bottom-right-radius: 3px;
     }
 
     form {
@@ -378,7 +374,7 @@ a.deploy-project-label {
 .project-stats {
   margin-top: $gl-padding;
   margin-bottom: 0;
-  padding: 16px 0;
+  padding: 0;
   background-color: $white-light;
   font-size: 0;
 
@@ -387,13 +383,14 @@ a.deploy-project-label {
   }
 
   .nav li {
-    display: inline;
+    display: inline-block;
+    margin: 16px 0;
+    margin-right: 16px;
   }
 
   .nav > li > a {
     background-color: transparent;
-    margin-right: 12px;
-    padding: 0 10px;
+    padding: 5px 10px;
     font-size: 15px;
     color: $notes-light-color;
   }
@@ -407,12 +404,17 @@ a.deploy-project-label {
     font-size: 17px;
   }
 
-  li.missing a {
-    color: #5a6069;
-    border: 1px dashed #dce0e5;
+  li.missing {
+    border: 1px dashed $border-gray-light;
+    border-radius: $border-radius-default;
+
+    a {
+      color: $notes-light-color;
+      display: block;
+    }
 
     &:hover {
-      background-color: #f0f2f5;
+      background-color: $gray-normal;
     }
   }
 
@@ -499,7 +501,8 @@ pre.light-well {
 
 .activity-filter-block {
   .controls {
-    padding-bottom: 10px;
+    padding-bottom: 7px;
+    margin-top: 8px;
     border-bottom: 1px solid $border-color;
   }
 }
@@ -606,4 +609,27 @@ pre.light-well {
 
 .disabled-item {
   @extend .btn.disabled;
+}
+
+.custom-notifications-form {
+  .is-loading {
+    .custom-notification-event-loading {
+      display: inline-block;
+    }
+  }
+}
+
+.custom-notification-event-loading {
+  display: none;
+  margin-left: 5px;
+
+  &.is-done {
+    color: $gl-text-green;
+  }
+}
+
+.project-refs-form {
+  .dropdown-menu {
+    width: 300px;
+  }
 }

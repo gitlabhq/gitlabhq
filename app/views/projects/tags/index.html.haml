@@ -11,14 +11,25 @@
       .nav-controls
         = link_to new_namespace_project_tag_path(@project.namespace, @project), class: 'btn btn-create new-tag-btn' do
           New tag
+        .dropdown.inline
+          %button.dropdown-toggle.btn{ type: 'button', data: { toggle: 'dropdown'} }
+            %span.light= @sort.humanize
+            %b.caret
+          %ul.dropdown-menu.dropdown-menu-align-right
+            %li
+              = link_to namespace_project_tags_path(sort: nil) do
+                Name
+              = link_to namespace_project_tags_path(sort: sort_value_recently_updated) do
+                = sort_title_recently_updated
+              = link_to namespace_project_tags_path(sort: sort_value_oldest_updated) do
+                = sort_title_oldest_updated
 
   = render 'projects/commits/mirror_status'
 
   .tags
     - unless @tags.empty?
       %ul.content-list
-        - @tags.each do |tag|
-          = render 'tag', tag: @repository.find_tag(tag)
+        = render partial: 'tag', collection: @tags
 
       = paginate @tags, theme: 'gitlab'
 

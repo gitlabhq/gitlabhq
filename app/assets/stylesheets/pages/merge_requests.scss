@@ -119,7 +119,12 @@
       margin-bottom: 0;
     }
 
-    @media (max-width: $screen-sm-max) {
+    .btn-grouped {
+      margin-left: 0;
+      margin-right: 7px;
+    }
+
+    @media (max-width: $screen-xs-max) {
       h4 {
         font-size: 15px;
       }
@@ -131,8 +136,12 @@
       .btn,
       .btn-group,
       .accept-action {
-        width: 100%;
         margin-bottom: 4px;
+      }
+
+      .accept-action {
+        width: 100%;
+        text-align: center;
       }
 
       .accept-control {
@@ -284,7 +293,7 @@
     margin-bottom: 0;
   }
 
-  @media (min-width: $screen-sm-min) {
+  @media (min-width: $screen-xs-min) {
     float: left;
     width: 50%;
     margin-bottom: 0;

@@ -6,8 +6,10 @@ class Projects::TagsController < Projects::ApplicationController
   before_action :authorize_admin_project!, only: [:destroy]
 
   def index
-    sorted = VersionSorter.rsort(@repository.tag_names)
-    @tags = Kaminari.paginate_array(sorted).page(params[:page])
+    @sort = params[:sort] || 'name'
+    @tags = @repository.tags_sorted_by(@sort)
+    @tags = Kaminari.paginate_array(@tags).page(params[:page])
+
     @releases = project.releases.where(tag: @tags)
   end
 

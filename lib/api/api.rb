@@ -26,43 +26,46 @@ module API
     # Ensure the namespace is right, otherwise we might load Grape::API::Helpers
     helpers ::API::Helpers
 
-    mount ::API::Geo
-    mount ::API::Groups
-    mount ::API::GroupMembers
-    mount ::API::Users
-    mount ::API::Projects
-    mount ::API::Repositories
-    mount ::API::Issues
-    mount ::API::Milestones
-    mount ::API::Session
-    mount ::API::MergeRequests
-    mount ::API::Notes
-    mount ::API::Internal
-    mount ::API::SystemHooks
-    mount ::API::ProjectSnippets
-    mount ::API::ProjectMembers
+    mount ::API::AwardEmoji
+    mount ::API::Branches
+    mount ::API::Builds
+    mount ::API::CommitStatuses
+    mount ::API::Commits
     mount ::API::DeployKeys
-    mount ::API::ProjectHooks
-    mount ::API::ProjectGitHook
+    mount ::API::Files
+    mount ::API::GroupMembers
+    mount ::API::Groups
+    mount ::API::Geo
+    mount ::API::Gitignores
+    mount ::API::Internal
+    mount ::API::Issues
+    mount ::API::Keys
+    mount ::API::Labels
+    mount ::API::License
+    mount ::API::LicenseTemplates
     mount ::API::Ldap
     mount ::API::LdapGroupLinks
-    mount ::API::Services
-    mount ::API::Files
-    mount ::API::Commits
-    mount ::API::CommitStatuses
+    mount ::API::MergeRequests
+    mount ::API::Milestones
     mount ::API::Namespaces
-    mount ::API::Branches
-    mount ::API::Labels
-    mount ::API::Settings
-    mount ::API::Keys
-    mount ::API::Tags
-    mount ::API::License
-    mount ::API::Triggers
-    mount ::API::Builds
-    mount ::API::Variables
+    mount ::API::Notes
+    mount ::API::ProjectHooks
+    mount ::API::ProjectGitHook
+    mount ::API::ProjectMembers
+    mount ::API::ProjectSnippets
+    mount ::API::Projects
+    mount ::API::Repositories
     mount ::API::Runners
-    mount ::API::LicenseTemplates
+    mount ::API::Services
+    mount ::API::Session
+    mount ::API::Settings
+    mount ::API::SidekiqMetrics
     mount ::API::Subscriptions
-    mount ::API::Gitignores
+    mount ::API::SystemHooks
+    mount ::API::Tags
+    mount ::API::Templates
+    mount ::API::Triggers
+    mount ::API::Users
+    mount ::API::Variables
   end
 end

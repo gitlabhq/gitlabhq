@@ -2,9 +2,10 @@
 .blob-result
   .file-holder
     .file-title
-      = link_to namespace_project_blob_path(@project.namespace, @project, tree_join(blob.ref, blob.filename), :anchor => "L" + blob.startline.to_s) do
+      - blob_link = namespace_project_blob_path(@project.namespace, @project, tree_join(blob.ref, blob.filename))
+      = link_to blob_link do
         %i.fa.fa-file
         %strong
           = blob.filename
     .file-content.code.term
-      = render 'shared/file_highlight', blob: blob, first_line_number: blob.startline
+      = render 'shared/file_highlight', blob: blob, first_line_number: blob.startline, blob_link: blob_link

@@ -148,23 +148,8 @@ module Gitlab
 
         proxy_module.class_eval <<-EOF, __FILE__, __LINE__ + 1
           def #{name}(#{args_signature})
-            trans = Gitlab::Metrics::Instrumentation.transaction
-
-            if trans
-              start     = Time.now
-              cpu_start = Gitlab::Metrics::System.cpu_time
-              retval    = super
-              duration  = (Time.now - start) * 1000.0
-
-              if duration >= Gitlab::Metrics.method_call_threshold
-                cpu_duration = Gitlab::Metrics::System.cpu_time - cpu_start
-
-                trans.add_metric(Gitlab::Metrics::Instrumentation::SERIES,
-                                 { duration: duration, cpu_duration: cpu_duration },
-                                 method: #{label.inspect})
-              end
-
-              retval
+            if trans = Gitlab::Metrics::Instrumentation.transaction
+              trans.measure_method(#{label.inspect}) { super }
             else
               super
             end

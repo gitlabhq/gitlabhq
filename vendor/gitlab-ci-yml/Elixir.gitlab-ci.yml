@@ -1,0 +1,18 @@
+# This template uses the non default language docker image
+# The image already has Hex installed. You might want to consider to use `elixir:latest`
+image: trenpixster/elixir:latest
+
+# Pic zero or more services to be used on all builds.
+# Only needed when using a docker container to run your tests in.
+# Check out: http://docs.gitlab.com/ce/ci/docker/using_docker_images.html#what-is-service
+services:
+  - mysql:latest
+  - redis:latest
+  - postgres:latest
+
+before_script:
+  - mix deps.get
+
+mix:
+  script:
+  - mix test

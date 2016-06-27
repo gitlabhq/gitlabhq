@@ -207,4 +207,16 @@ eos
       expect(commit.participants).to include(note1.author, note2.author)
     end
   end
+
+  describe '#uri_type' do
+    it 'returns the URI type at the given path' do
+      expect(commit.uri_type('files/html')).to be(:tree)
+      expect(commit.uri_type('files/images/logo-black.png')).to be(:raw)
+      expect(commit.uri_type('files/js/application.js')).to be(:blob)
+    end
+
+    it "returns nil if the path doesn't exists" do
+      expect(commit.uri_type('this/path/doesnt/exist')).to be_nil
+    end
+  end
 end

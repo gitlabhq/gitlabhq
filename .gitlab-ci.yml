@@ -131,56 +131,56 @@ spinach 7 10: *spinach-knapsack
 spinach 8 10: *spinach-knapsack
 spinach 9 10: *spinach-knapsack
 
-# Execute all testing suites against Ruby 2.2
-
-.ruby-22: &ruby-22
-  image: "ruby:2.2"
+# Execute all testing suites against Ruby 2.3
+.ruby-23: &ruby-23
+  image: "ruby:2.3"
   only:
     - master
   cache:
-    key: "ruby22"
+    key: "ruby-23"
     paths:
-    - vendor
+      - vendor/apt
+      - vendor/ruby
 
-.rspec-knapsack-ruby22: &rspec-knapsack-ruby22
+.rspec-knapsack-ruby23: &rspec-knapsack-ruby23
   <<: *rspec-knapsack
-  <<: *ruby-22
+  <<: *ruby-23
 
-.spinach-knapsack-ruby22: &spinach-knapsack-ruby22
+.spinach-knapsack-ruby23: &spinach-knapsack-ruby23
   <<: *spinach-knapsack
-  <<: *ruby-22
+  <<: *ruby-23
   
-rspec 0 20 ruby22: *rspec-knapsack-ruby22
-rspec 1 20 ruby22: *rspec-knapsack-ruby22
-rspec 2 20 ruby22: *rspec-knapsack-ruby22
-rspec 3 20 ruby22: *rspec-knapsack-ruby22
-rspec 4 20 ruby22: *rspec-knapsack-ruby22
-rspec 5 20 ruby22: *rspec-knapsack-ruby22
-rspec 6 20 ruby22: *rspec-knapsack-ruby22
-rspec 7 20 ruby22: *rspec-knapsack-ruby22
-rspec 8 20 ruby22: *rspec-knapsack-ruby22
-rspec 9 20 ruby22: *rspec-knapsack-ruby22
-rspec 10 20 ruby22: *rspec-knapsack-ruby22
-rspec 11 20 ruby22: *rspec-knapsack-ruby22
-rspec 12 20 ruby22: *rspec-knapsack-ruby22
-rspec 13 20 ruby22: *rspec-knapsack-ruby22
-rspec 14 20 ruby22: *rspec-knapsack-ruby22
-rspec 15 20 ruby22: *rspec-knapsack-ruby22
-rspec 16 20 ruby22: *rspec-knapsack-ruby22
-rspec 17 20 ruby22: *rspec-knapsack-ruby22
-rspec 18 20 ruby22: *rspec-knapsack-ruby22
-rspec 19 20 ruby22: *rspec-knapsack-ruby22
+rspec 0 20 ruby23: *rspec-knapsack-ruby23
+rspec 1 20 ruby23: *rspec-knapsack-ruby23
+rspec 2 20 ruby23: *rspec-knapsack-ruby23
+rspec 3 20 ruby23: *rspec-knapsack-ruby23
+rspec 4 20 ruby23: *rspec-knapsack-ruby23
+rspec 5 20 ruby23: *rspec-knapsack-ruby23
+rspec 6 20 ruby23: *rspec-knapsack-ruby23
+rspec 7 20 ruby23: *rspec-knapsack-ruby23
+rspec 8 20 ruby23: *rspec-knapsack-ruby23
+rspec 9 20 ruby23: *rspec-knapsack-ruby23
+rspec 10 20 ruby23: *rspec-knapsack-ruby23
+rspec 11 20 ruby23: *rspec-knapsack-ruby23
+rspec 12 20 ruby23: *rspec-knapsack-ruby23
+rspec 13 20 ruby23: *rspec-knapsack-ruby23
+rspec 14 20 ruby23: *rspec-knapsack-ruby23
+rspec 15 20 ruby23: *rspec-knapsack-ruby23
+rspec 16 20 ruby23: *rspec-knapsack-ruby23
+rspec 17 20 ruby23: *rspec-knapsack-ruby23
+rspec 18 20 ruby23: *rspec-knapsack-ruby23
+rspec 19 20 ruby23: *rspec-knapsack-ruby23
 
-spinach 0 10 ruby22: *spinach-knapsack-ruby22
-spinach 1 10 ruby22: *spinach-knapsack-ruby22
-spinach 2 10 ruby22: *spinach-knapsack-ruby22
-spinach 3 10 ruby22: *spinach-knapsack-ruby22
-spinach 4 10 ruby22: *spinach-knapsack-ruby22
-spinach 5 10 ruby22: *spinach-knapsack-ruby22
-spinach 6 10 ruby22: *spinach-knapsack-ruby22
-spinach 7 10 ruby22: *spinach-knapsack-ruby22
-spinach 8 10 ruby22: *spinach-knapsack-ruby22
-spinach 9 10 ruby22: *spinach-knapsack-ruby22
+spinach 0 10 ruby23: *spinach-knapsack-ruby23
+spinach 1 10 ruby23: *spinach-knapsack-ruby23
+spinach 2 10 ruby23: *spinach-knapsack-ruby23
+spinach 3 10 ruby23: *spinach-knapsack-ruby23
+spinach 4 10 ruby23: *spinach-knapsack-ruby23
+spinach 5 10 ruby23: *spinach-knapsack-ruby23
+spinach 6 10 ruby23: *spinach-knapsack-ruby23
+spinach 7 10 ruby23: *spinach-knapsack-ruby23
+spinach 8 10 ruby23: *spinach-knapsack-ruby23
+spinach 9 10 ruby23: *spinach-knapsack-ruby23
 
 # Other generic tests
 

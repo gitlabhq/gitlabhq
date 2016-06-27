@@ -144,7 +144,7 @@ class Repository
   end
 
   def find_tag(name)
-    raw_repository.tags.find { |tag| tag.name == name }
+    tags.find { |tag| tag.name == name }
   end
 
   def add_branch(user, branch_name, target)
@@ -243,8 +243,12 @@ class Repository
     gitlab_shell.fetch_remote(path_with_namespace, remote, forced: true)
   end
 
+  def ref_names
+    branch_names + tag_names
+  end
+
   def branch_names
-    cache.fetch(:branch_names) { branches.map(&:name) }
+    @branch_names ||= cache.fetch(:branch_names) { branches.map(&:name) }
   end
 
   def branch_exists?(branch_name)
@@ -319,6 +323,7 @@ class Repository
 
   def expire_branches_cache
     cache.expire(:branch_names)
+    @branch_names = nil
     @local_branches = nil
   end
 
@@ -382,10 +387,6 @@ class Repository
 
   def lookup_cache
     @lookup_cache ||= {}
-  end
-
-  def expire_branch_names
-    cache.expire(:branch_names)
   end
 
   def expire_avatar_cache(branch_name = nil, revision = nil)
@@ -647,6 +648,21 @@ class Repository
       end
     else
       branches
+    end
+  end
+
+  def tags_sorted_by(value)
+    case value
+    when 'name'
+      # Would be better to use `sort_by` but `version_sorter` only exposes
+      # `sort` and `rsort`
+      VersionSorter.rsort(tag_names).map { |tag_name| find_tag(tag_name) }
+    when 'updated_desc'
+      tags_sorted_by_committed_date.reverse
+    when 'updated_asc'
+      tags_sorted_by_committed_date
+    else
+      tags
     end
   end
 
@@ -1179,5 +1195,9 @@ class Repository
 
   def file_on_head(regex)
     tree(:head).blobs.find { |file| file.name =~ regex }
+  end
+
+  def tags_sorted_by_committed_date
+    tags.sort_by { |tag| commit(tag.target).committed_date }
   end
 end

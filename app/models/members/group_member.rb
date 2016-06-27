@@ -45,12 +45,6 @@ class GroupMember < Member
     super
   end
 
-  def send_request
-    notification_service.new_group_access_request(self)
-
-    super
-  end
-
   def post_create_hook
     notification_service.new_group_member(self) unless @skip_notification
 
@@ -73,12 +67,6 @@ class GroupMember < Member
 
   def after_decline_invite
     notification_service.decline_group_invite(self) unless @skip_notification
-
-    super
-  end
-
-  def post_decline_request
-    notification_service.decline_group_access_request(self)
 
     super
   end

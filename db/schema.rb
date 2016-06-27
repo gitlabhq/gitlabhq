@@ -312,9 +312,11 @@ ActiveRecord::Schema.define(version: 20160621123729) do
     t.string   "platform"
     t.string   "architecture"
     t.boolean  "run_untagged", default: true,  null: false
+    t.boolean  "locked",       default: false, null: false
   end
 
   add_index "ci_runners", ["description"], name: "index_ci_runners_on_description_trigram", using: :gin, opclasses: {"description"=>"gin_trgm_ops"}
+  add_index "ci_runners", ["locked"], name: "index_ci_runners_on_locked", using: :btree
   add_index "ci_runners", ["token"], name: "index_ci_runners_on_token", using: :btree
   add_index "ci_runners", ["token"], name: "index_ci_runners_on_token_trigram", using: :gin, opclasses: {"token"=>"gin_trgm_ops"}
 
@@ -584,7 +586,7 @@ ActiveRecord::Schema.define(version: 20160621123729) do
   end
 
   add_index "keys", ["created_at", "id"], name: "index_keys_on_created_at_and_id", using: :btree
-  add_index "keys", ["fingerprint"], name: "index_keys_on_fingerprint", using: :btree
+  add_index "keys", ["fingerprint"], name: "index_keys_on_fingerprint", unique: true, using: :btree
   add_index "keys", ["user_id"], name: "index_keys_on_user_id", using: :btree
 
   create_table "label_links", force: :cascade do |t|
@@ -805,6 +807,7 @@ ActiveRecord::Schema.define(version: 20160621123729) do
     t.integer  "level",       default: 0, null: false
     t.datetime "created_at",              null: false
     t.datetime "updated_at",              null: false
+    t.text     "events"
   end
 
   add_index "notification_settings", ["source_id", "source_type"], name: "index_notification_settings_on_source_id_and_source_type", using: :btree
@@ -876,6 +879,19 @@ ActiveRecord::Schema.define(version: 20160621123729) do
   add_index "path_locks", ["path"], name: "index_path_locks_on_path", using: :btree
   add_index "path_locks", ["project_id"], name: "index_path_locks_on_project_id", using: :btree
   add_index "path_locks", ["user_id"], name: "index_path_locks_on_user_id", using: :btree
+  
+  create_table "personal_access_tokens", force: :cascade do |t|
+    t.integer  "user_id",                    null: false
+    t.string   "token",                      null: false
+    t.string   "name",                       null: false
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+    t.boolean  "revoked",    default: false
+    t.datetime "expires_at"
+  end
+
+  add_index "personal_access_tokens", ["token"], name: "index_personal_access_tokens_on_token", unique: true, using: :btree
+  add_index "personal_access_tokens", ["user_id"], name: "index_personal_access_tokens_on_user_id", using: :btree
 
   create_table "project_group_links", force: :cascade do |t|
     t.integer  "project_id",                null: false
@@ -1250,5 +1266,6 @@ ActiveRecord::Schema.define(version: 20160621123729) do
   add_foreign_key "path_locks", "projects"
   add_foreign_key "path_locks", "users"
   add_foreign_key "remote_mirrors", "projects"
+  add_foreign_key "personal_access_tokens", "users"
   add_foreign_key "u2f_registrations", "users"
 end

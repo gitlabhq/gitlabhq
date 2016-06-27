@@ -376,6 +376,18 @@ describe Projects::MergeRequestsController do
 
           merge_when_build_succeeds
         end
+
+        context 'when project.only_allow_merge_if_build_succeeds? is true' do
+          before do
+            project.update_column(:only_allow_merge_if_build_succeeds, true)
+          end
+
+          it 'returns :merge_when_build_succeeds' do
+            merge_when_build_succeeds
+
+            expect(assigns(:status)).to eq(:merge_when_build_succeeds)
+          end
+        end
       end
     end
   end

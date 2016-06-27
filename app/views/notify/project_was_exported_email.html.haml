@@ -1,0 +1,8 @@
+%p
+  Project #{@project.name} was exported successfully.
+%p
+  The project export can be downloaded from:
+  = link_to download_export_namespace_project_url(@project.namespace, @project) do
+    = @project.name_with_namespace + " export"
+%p
+  The download link will expire in 24 hours.

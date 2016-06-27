@@ -36,7 +36,7 @@ module Gitlab
         default_project_visibility: Settings.gitlab.default_projects_features['visibility_level'],
         default_snippet_visibility: Settings.gitlab.default_projects_features['visibility_level'],
         restricted_signup_domains: Settings.gitlab['restricted_signup_domains'],
-        import_sources: ['github','bitbucket','gitlab','gitorious','google_code','fogbugz','git'],
+        import_sources: %w[github bitbucket gitlab gitorious google_code fogbugz git gitlab_project],
         shared_runners_enabled: Settings.gitlab_ci['shared_runners_enabled'],
         max_artifacts_size: Settings.artifacts['max_size'],
         require_two_factor_authentication: false,

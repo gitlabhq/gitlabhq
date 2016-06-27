@@ -40,9 +40,3 @@
 
 
 = render 'projects', projects: @forks
-
-- if @private_forks_count > 0
-  .private-forks-notice
-    = icon('lock fw', base: 'circle', class: 'fa-lg private-fork-icon')
-    %strong= pluralize(@private_forks_count, 'private fork')
-    %span you have no access to.

@@ -15,7 +15,7 @@ module RepositoryCheck
     private
 
     def check(project)
-      if !git_fsck(project.repository)
+      if has_pushes?(project) && !git_fsck(project.repository)
         false
       elsif project.wiki_enabled?
         # Historically some projects never had their wiki repos initialized;
@@ -43,6 +43,10 @@ module RepositoryCheck
         Gitlab::RepositoryCheckLogger.error("command failed: #{cmd.join(' ')}\n#{output}")
         false
       end
+    end
+
+    def has_pushes?(project)
+      Project.with_push.exists?(project.id)
     end
   end
 end

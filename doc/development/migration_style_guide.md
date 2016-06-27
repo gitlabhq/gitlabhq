@@ -37,7 +37,6 @@ First, you need to provide information on whether the migration can be applied:
 For example: 
 
 ```
-# rubocop:disable all
 # Migration type: online without errors (works on previous version and new one)
 class MyMigration < ActiveRecord::Migration
 ...

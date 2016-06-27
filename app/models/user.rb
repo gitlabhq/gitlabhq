@@ -51,6 +51,7 @@ class User < ActiveRecord::Base
   # Profile
   has_many :keys, dependent: :destroy
   has_many :emails, dependent: :destroy
+  has_many :personal_access_tokens, dependent: :destroy
   has_many :identities, dependent: :destroy, autosave: true
   has_many :u2f_registrations, dependent: :destroy
 
@@ -279,6 +280,11 @@ class User < ActiveRecord::Base
       find_by!('lower(username) = ?', username.downcase)
     end
 
+    def find_by_personal_access_token(token_string)
+      personal_access_token = PersonalAccessToken.active.find_by_token(token_string) if token_string
+      personal_access_token.user if personal_access_token
+    end
+
     def by_username_or_id(name_or_id)
       find_by('users.username = ? OR users.id = ?', name_or_id.to_s, name_or_id.to_i)
     end
@@ -335,7 +341,7 @@ class User < ActiveRecord::Base
 
   def generate_password
     if self.force_random_password
-      self.password = self.password_confirmation = Devise.friendly_token.first(8)
+      self.password = self.password_confirmation = Devise.friendly_token.first(Devise.password_length.min)
     end
   end
 
@@ -514,9 +520,8 @@ class User < ActiveRecord::Base
     events.recent.find do |event|
       project = Project.find_by_id(event.project_id)
       next unless project
-      repo = project.repository
 
-      if repo.branch_names.include?(event.branch_name)
+      if project.repository.branch_exists?(event.branch_name)
         merge_requests = MergeRequest.where("created_at >= ?", event.created_at).
             where(source_project_id: project.id,
                   source_branch: event.branch_name)
@@ -856,6 +861,23 @@ class User < ActiveRecord::Base
   def update_cache_counts
     assigned_open_merge_request_count(force: true)
     assigned_open_issues_count(force: true)
+  end
+
+  def todos_done_count(force: false)
+    Rails.cache.fetch(['users', id, 'todos_done_count'], force: force) do
+      todos.done.count
+    end
+  end
+
+  def todos_pending_count(force: false)
+    Rails.cache.fetch(['users', id, 'todos_pending_count'], force: force) do
+      todos.pending.count
+    end
+  end
+
+  def update_todos_count_cache
+    todos_done_count(force: true)
+    todos_pending_count(force: true)
   end
 
   private

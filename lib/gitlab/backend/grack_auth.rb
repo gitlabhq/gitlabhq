@@ -36,7 +36,7 @@ module Grack
 
       auth!
 
-      lfs_response = Gitlab::Lfs::Router.new(project, @user, @request).try_call
+      lfs_response = Gitlab::Lfs::Router.new(project, @user, @ci, @request).try_call
       return lfs_response unless lfs_response.nil?
 
       if @user.nil? && !@ci

@@ -13,7 +13,7 @@
         = image_tag avatar_icon(current_user, 60), alt: 'Profile', class: 'avatar avatar s36'
         .username
           = current_user.username
-    = link_to '#', class: "nav-header-btn text-center pin-nav-btn #{'is-active' if pinned_nav?} js-nav-pin", title: 'Pin/Unpin navigation' do
+    = link_to '#', class: "nav-header-btn text-center pin-nav-btn has-tooltip #{'is-active' if pinned_nav?} js-nav-pin", title: pinned_nav? ? "Unpin navigation" : "Pin Navigation", data: {placement: 'right', container: 'body'} do
       %span.sr-only Toggle navigation pinning
       = icon('thumb-tack')
   - if defined?(nav) && nav
