@@ -154,7 +154,7 @@ spinach 9 10: *spinach-knapsack
   <<: *rspec-knapsack
   <<: *ruby-21
 
-.spinach-knapsack-ruby23: &spinach-knapsack-ruby21
+.spinach-knapsack-ruby21: &spinach-knapsack-ruby21
   <<: *spinach-knapsack
   <<: *ruby-21
 
