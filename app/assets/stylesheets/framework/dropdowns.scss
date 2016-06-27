@@ -20,7 +20,8 @@
 }
 
 .open {
-  .dropdown-menu {
+  .dropdown-menu,
+  .dropdown-menu-nav {
     display: block;
   }
 
@@ -66,7 +67,8 @@
   }
 }
 
-.dropdown-menu {
+.dropdown-menu,
+.dropdown-menu-nav {
   display: none;
   position: absolute;
   top: 100%;
