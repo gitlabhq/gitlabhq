@@ -32,6 +32,7 @@ describe Project, models: true do
     it { is_expected.to have_many(:environments).dependent(:destroy) }
     it { is_expected.to have_many(:deployments).dependent(:destroy) }
     it { is_expected.to have_many(:todos).dependent(:destroy) }
+    it { is_expected.to have_many(:path_locks).dependent(:destroy) }
   end
 
   describe 'modules' do
@@ -1094,5 +1095,20 @@ describe Project, models: true do
         expect(projects).to contain_exactly(project1, project2)
       end
     end
+  end
+
+  describe '#path_lock_info' do
+    let(:project) { create :empty_project }
+    let(:path_lock) { create :path_lock, project: project }
+    let(:path) { path_lock.path }
+
+    it 'returns path_lock' do
+      expect(project.path_lock_info(path)).to eq(path_lock)
+    end
+
+    it 'returns nil' do
+      expect(project.path_lock_info('app/controllers')).to be_falsey
+    end
+
   end
 end

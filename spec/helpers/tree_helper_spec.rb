@@ -25,4 +25,24 @@ describe TreeHelper do
       end
     end
   end
+
+  describe '#lock_file_link' do
+    let(:path_lock) { create :path_lock }
+    let(:path) { path_lock.path }
+    let(:user) { path_lock.user }
+    let(:project) { path_lock.project }
+
+    it "renders unlock link" do
+      allow(helper).to receive(:can?).and_return(true)
+      allow(helper).to receive(:license_allows_file_locks?).and_return(true)
+      expect(helper.lock_file_link(project, path)).to match('Unlock')
+    end
+
+    it "renders lock link" do
+      allow(helper).to receive(:can?).and_return(true)
+      allow(helper).to receive(:current_user).and_return(user)
+      allow(helper).to receive(:license_allows_file_locks?).and_return(true)
+      expect(helper.lock_file_link(project, 'app/controller')).to match('Lock')
+    end
+  end
 end

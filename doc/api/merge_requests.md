@@ -68,7 +68,8 @@ Parameters:
     "merge_when_build_succeeds": true,
     "merge_status": "can_be_merged",
     "subscribed" : false,
-    "user_notes_count": 1
+    "user_notes_count": 1,
+    "approvals_before_merge": null
   }
 ]
 ```
@@ -132,7 +133,8 @@ Parameters:
   "merge_when_build_succeeds": true,
   "merge_status": "can_be_merged",
   "subscribed" : true,
-  "user_notes_count": 1
+  "user_notes_count": 1,
+  "approvals_before_merge": null
 }
 ```
 
@@ -233,6 +235,7 @@ Parameters:
   "merge_status": "can_be_merged",
   "subscribed" : true,
   "user_notes_count": 1,
+  "approvals_before_merge": null,
   "changes": [
     {
     "old_path": "VERSION",
@@ -257,15 +260,25 @@ POST /projects/:id/merge_requests
 
 Parameters:
 
-- `id` (required)                - The ID of a project
-- `source_branch` (required)     - The source branch
-- `target_branch` (required)     - The target branch
-- `assignee_id` (optional)       - Assignee user ID
-- `title` (required)             - Title of MR
-- `description` (optional)       - Description of MR
-- `target_project_id` (optional) - The target project (numeric id)
-- `labels` (optional)            - Labels for MR as a comma-separated list
-- `milestone_id` (optional)      - Milestone ID
+- `id` (required)                      - The ID of a project
+- `source_branch` (required)           - The source branch
+- `target_branch` (required)           - The target branch
+- `assignee_id` (optional)             - Assignee user ID
+- `title` (required)                   - Title of MR
+- `description` (optional)             - Description of MR
+- `target_project_id` (optional)       - The target project (numeric id)
+- `labels` (optional)                  - Labels for MR as a comma-separated list
+- `milestone_id` (optional)            - Milestone ID
+- `approvals_before_merge` (optional)  - Number of approvals required before this can be merged (see below)
+
+If `approvals_before_merge` is not provided, it inherits the value from the
+target project. If it is provided, then the following conditions must hold in
+order for it to take effect:
+
+1. The target project's `approvals_before_merge` must be greater than zero. (A
+   value of zero disables approvals for that project.)
+2. The provided value of `approvals_before_merge` must be greater than the
+   target project's `approvals_before_merge`.
 
 ```json
 {
@@ -312,7 +325,8 @@ Parameters:
   "merge_when_build_succeeds": true,
   "merge_status": "can_be_merged",
   "subscribed" : true,
-  "user_notes_count": 0
+  "user_notes_count": 0,
+  "approvals_before_merge": null
 }
 ```
 
@@ -383,7 +397,8 @@ Parameters:
   "merge_when_build_succeeds": true,
   "merge_status": "can_be_merged",
   "subscribed" : true,
-  "user_notes_count": 1
+  "user_notes_count": 1,
+  "approvals_before_merge": null
 }
 ```
 
@@ -481,7 +496,8 @@ Parameters:
   "merge_when_build_succeeds": true,
   "merge_status": "can_be_merged",
   "subscribed" : true,
-  "user_notes_count": 1
+  "user_notes_count": 1,
+  "approvals_before_merge": null
 }
 ```
 
@@ -535,7 +551,7 @@ GET /projects/:id/merge_requests/:merge_request_id/approvals
 
 >**Note:** This API endpoint is only available on 8.9 EE and above.
 
-If you are allowed to, you can approve a merge request using the following 
+If you are allowed to, you can approve a merge request using the following
 endpoint:
 
 ```
@@ -649,7 +665,8 @@ Parameters:
   "merge_when_build_succeeds": true,
   "merge_status": "can_be_merged",
   "subscribed" : true,
-  "user_notes_count": 1
+  "user_notes_count": 1,
+  "approvals_before_merge": null
 }
 ```
 
@@ -715,7 +732,8 @@ Example response when the GitLab issue tracker is used:
       "created_at" : "2016-01-04T15:31:51.081Z",
       "iid" : 6,
       "labels" : [],
-      "user_notes_count": 1
+      "user_notes_count": 1,
+      "approvals_before_merge": null
    },
 ]
 ```

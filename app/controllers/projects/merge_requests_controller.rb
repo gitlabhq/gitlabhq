@@ -136,13 +136,17 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
   def create
     @target_branches ||= []
-    @merge_request = MergeRequests::CreateService.new(project, current_user, merge_request_params).execute
+    create_params = clamp_approvals_before_merge(merge_request_params)
+
+    @merge_request = MergeRequests::CreateService.new(project, current_user, create_params).execute
 
     if @merge_request.valid?
       redirect_to(merge_request_path(@merge_request))
     else
       @source_project = @merge_request.source_project
       @target_project = @merge_request.target_project
+      set_suggested_approvers
+
       render action: "new"
     end
   end
@@ -156,7 +160,9 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def update
-    @merge_request = MergeRequests::UpdateService.new(project, current_user, merge_request_params).execute(@merge_request)
+    update_params = clamp_approvals_before_merge(merge_request_params)
+
+    @merge_request = MergeRequests::UpdateService.new(project, current_user, update_params).execute(@merge_request)
 
     if @merge_request.valid?
       respond_to do |format|
@@ -169,6 +175,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
         end
       end
     else
+      set_suggested_approvers
+
       render "edit"
     end
   end
@@ -385,7 +393,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   def set_suggested_approvers
     if @merge_request.requires_approve?
       @suggested_approvers = Gitlab::AuthorityAnalyzer.new(
-        @merge_request
+        @merge_request,
+        current_user
       ).calculate(@merge_request.approvals_required)
     end
   end
@@ -395,8 +404,17 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       :title, :assignee_id, :source_project_id, :source_branch,
       :target_project_id, :target_branch, :milestone_id, :approver_ids,
       :state_event, :description, :task_num, :force_remove_source_branch,
+      :approvals_before_merge,
       label_ids: []
     )
+  end
+
+  def clamp_approvals_before_merge(mr_params)
+    if mr_params[:approvals_before_merge].to_i <= selected_target_project.approvals_before_merge
+      mr_params.delete(:approvals_before_merge)
+    end
+
+    mr_params
   end
 
   def merge_params

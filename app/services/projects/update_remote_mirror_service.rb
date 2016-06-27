@@ -18,7 +18,7 @@ module Projects
 
         push_tags if changed_tags.present?
         delete_tags if deleted_tags.present?
-      rescue Gitlab::Shell::Error => e
+      rescue => e
         errors << e.message.strip
       end
 

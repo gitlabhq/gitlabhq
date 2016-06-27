@@ -78,5 +78,39 @@ describe Note, elastic: true do
 
       expect(Note.elastic_search('term', options: options).total_count).to eq(1)
     end
+
+    it "return notes with matching content for project members" do
+      user = create :user
+      issue = create :issue, :confidential, author: user
+
+      member = create(:user)
+      issue.project.team << [member, :developer]
+
+      create :note, note: 'bla-bla term', project: issue.project, noteable: issue
+      create :note, project: issue.project, noteable: issue
+
+      Note.__elasticsearch__.refresh_index!
+
+      options = { project_ids: [issue.project.id], current_user: member }
+
+      expect(Note.elastic_search('term', options: options).total_count).to eq(1)
+    end
+
+    it "does not return notes with matching content for project members with guest role" do
+      user = create :user
+      issue = create :issue, :confidential, author: user
+
+      member = create(:user)
+      issue.project.team << [member, :guest]
+
+      create :note, note: 'bla-bla term', project: issue.project, noteable: issue
+      create :note, project: issue.project, noteable: issue
+
+      Note.__elasticsearch__.refresh_index!
+
+      options = { project_ids: [issue.project.id], current_user: member }
+
+      expect(Note.elastic_search('term', options: options).total_count).to eq(0)
+    end
   end
 end

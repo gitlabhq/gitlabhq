@@ -26,7 +26,7 @@
         .filter-item.inline.labels-filter
           = render "shared/issuable/label_dropdown"
 
-        - if controller.controller_name == 'issues'
+        - if local_assigns[:type] == :issues
           .filter-item.inline.weight-filter
             - if params[:weight]
               = hidden_field_tag(:weight, params[:weight])
@@ -39,7 +39,7 @@
                       = weight
 
         .pull-right
-          = render 'shared/sort_dropdown'
+          = render 'shared/sort_dropdown', type: local_assigns[:type]
 
     - if controller.controller_name == 'issues'
       .issues_bulk_update.hide

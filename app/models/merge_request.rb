@@ -105,6 +105,7 @@ class MergeRequest < ActiveRecord::Base
   validates :merge_user, presence: true, if: :merge_when_build_succeeds?
   validate :validate_branches, unless: :allow_broken
   validate :validate_fork
+  validate :validate_approvals_before_merge
 
   scope :by_branch, ->(branch_name) { where("(source_branch LIKE :branch) OR (target_branch LIKE :branch)", branch: branch_name) }
   scope :cared, ->(user) { where('assignee_id = :user OR author_id = :user', user: user.id) }
@@ -217,6 +218,22 @@ class MergeRequest < ActiveRecord::Base
         errors.add :validate_fork,
                    'Source project is not a fork of target project'
       end
+    end
+  end
+
+  def validate_approvals_before_merge
+    return true unless approvals_before_merge
+    return true unless target_project
+
+    # Approvals disabled
+    if target_project.approvals_before_merge == 0
+      errors.add :validate_approvals_before_merge,
+                 'Approvals disabled for target project'
+    elsif approvals_before_merge > target_project.approvals_before_merge
+      true
+    else
+      errors.add :validate_approvals_before_merge,
+                 'Number of approvals must be greater than those on target project'
     end
   end
 
@@ -475,11 +492,12 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def approvers_left
-    User.where(id: overall_approvers.select(:user_id)).where.not(id: approvals.select(:user_id))
+    user_ids = overall_approvers.map(&:user_id) - approvals.map(&:user_id)
+    User.where id: user_ids
   end
 
   def approvals_required
-    target_project.approvals_before_merge
+    approvals_before_merge || target_project.approvals_before_merge
   end
 
   def requires_approve?
@@ -507,10 +525,8 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def can_approve?(user)
-    return false if user == self.author
-
     approvers_left.include?(user) ||
-      (any_approver_allowed? && !approved_by?(user))
+    (any_approver_allowed? && !approved_by?(user))
   end
 
   def any_approver_allowed?

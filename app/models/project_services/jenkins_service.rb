@@ -53,14 +53,13 @@ class JenkinsService < CiService
 
   def test(data)
     begin
-      result = execute(data)
-      message = result.message || result unless result.nil?
-      return { success: false, result: message } if result.code != 200
+      code, message = execute(data)
+      return { success: false, result: message } if code != 200
     rescue StandardError => error
       return { success: false, result: error }
     end
 
-    { success: true, result: result }
+    { success: true, result: message }
   end
 
   def auth

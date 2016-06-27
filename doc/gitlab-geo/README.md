@@ -7,13 +7,12 @@ We recommend you use with at least GitLab 8.6 EE.
 GitLab Geo allows you to replicate your GitLab instance to other geographical
 locations as a read-only fully operational version.
 
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-
-
 - [Overview](#overview)
 - [Setup instructions](#setup-instructions)
+    - [Database Replication](database.md)
+    - [Configuration](configuration.md)
 - [Current limitations](#current-limitations)
+- [Disaster Recovery](disaster-recovery.md)
 - [Frequently Asked Questions](#frequently-asked-questions)
     - [Can I use Geo in a disaster recovery situation?](#can-i-use-geo-in-a-disaster-recovery-situation)
     - [What data is replicated to a secondary node?](#what-data-is-replicated-to-a-secondary-node)
@@ -54,7 +53,7 @@ Geo instances. Follow the steps below in the order that they appear:
 
 1. Install GitLab Enterprise Edition on the server that will serve as the
    secondary Geo node
-1. [Setup a database replication](./database.md) in `primary <-> secondary (read-only)` topology
+1. [Setup a database replication](database.md) in `primary <-> secondary (read-only)` topology
 1. [Configure GitLab](configuration.md) and set the primary and secondary nodes
 After you set up the database replication and configure the GitLab Geo nodes,
 there are a few things to consider:
@@ -69,6 +68,7 @@ there are a few things to consider:
 - You cannot push code to secondary nodes
 - Git LFS is not supported yet
 - Git Annex is not supported yet
+- Primary node has to be online for OAuth login to happen (existing sessions and git are not affected)
 
 ## Frequently Asked Questions
 
@@ -77,6 +77,9 @@ there are a few things to consider:
 There are limitations to what we replicate (see Current limitations).
 In an extreme data-loss situation you can make a secondary Geo into your
 primary, but this is not officially supported yet.
+
+If you still want to proceed, see our step-by-step instructions on how to 
+manually [promote a secondary node](disaster-recovery.md) into primary. 
 
 ### What data is replicated to a secondary node?
 

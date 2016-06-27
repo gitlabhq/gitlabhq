@@ -38,7 +38,7 @@ class RemoteMirror < ActiveRecord::Base
 
   scope :enabled, -> { where(enabled: true) }
   scope :started, -> { with_update_status(:started) }
-  scope :stuck,   -> { started.where('last_update_at < ?', 1.day.ago) }
+  scope :stuck,   -> { started.where('last_update_at < ? OR (last_update_at IS NULL AND updated_at < ?)', 1.day.ago, 1.day.ago) }
 
   state_machine :update_status, initial: :none do
     event :update_start do

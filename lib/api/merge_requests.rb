@@ -63,15 +63,16 @@ module API
       #
       # Parameters:
       #
-      #   id (required)            - The ID of a project - this will be the source of the merge request
-      #   source_branch (required) - The source branch
-      #   target_branch (required) - The target branch
-      #   target_project_id        - The target project of the merge request defaults to the :id of the project
-      #   assignee_id              - Assignee user ID
-      #   title (required)         - Title of MR
-      #   description              - Description of MR
-      #   labels (optional)        - Labels for MR as a comma-separated list
-      #   milestone_id (optional)   - Milestone ID
+      #   id (required)                      - The ID of a project - this will be the source of the merge request
+      #   source_branch (required)           - The source branch
+      #   target_branch (required)           - The target branch
+      #   target_project_id (optional)       - The target project of the merge request defaults to the :id of the project
+      #   assignee_id (optional)             - Assignee user ID
+      #   title (required)                   - Title of MR
+      #   description (optional)             - Description of MR
+      #   labels (optional)                  - Labels for MR as a comma-separated list
+      #   milestone_id (optional)            - Milestone ID
+      #   approvals_before_merge (optional)  - Number of approvals required before this can be merged
       #
       # Example:
       #   POST /projects/:id/merge_requests
@@ -79,7 +80,7 @@ module API
       post ":id/merge_requests" do
         authorize! :create_merge_request, user_project
         required_attributes! [:source_branch, :target_branch, :title]
-        attrs = attributes_for_keys [:source_branch, :target_branch, :assignee_id, :title, :target_project_id, :description, :milestone_id]
+        attrs = attributes_for_keys [:source_branch, :target_branch, :assignee_id, :title, :target_project_id, :description, :milestone_id, :approvals_before_merge]
 
         # Validate label names in advance
         if (errors = validate_label_params(params)).any?
