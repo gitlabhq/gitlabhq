@@ -2,7 +2,7 @@ module Gitlab
   module Ci
     class Config
       module Node
-        module ValidationHelpers
+        module LegacyValidationHelpers
           private
 
           def validate_duration(value)
