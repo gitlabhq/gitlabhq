@@ -6,10 +6,14 @@ class @TreeView
     # Make the entire tree-item row clickable, but not if clicking another link (like a commit message)
     $(".tree-content-holder .tree-item").on 'click', (e) ->
       $clickedEl = $(e.target)
+      path = $('.tree-item-file-name a', this).attr('href')
 
       if not $clickedEl.is('a') and not $clickedEl.is('.str-truncated')
-        path = $('.tree-item-file-name a', this).attr('href')
-        Turbolinks.visit(path)
+        if e.metaKey or e.which is 2
+          e.preventDefault()
+          window.open path, '_blank'
+        else
+          Turbolinks.visit path
 
     # Show the "Loading commit data" for only the first element
     $('span.log_loading:first').removeClass('hide')
