@@ -39,7 +39,7 @@ module API
     mount ::API::Issues
     mount ::API::Keys
     mount ::API::Labels
-    mount ::API::Licenses
+    mount ::API::LicenseTemplates
     mount ::API::MergeRequests
     mount ::API::Milestones
     mount ::API::Namespaces
