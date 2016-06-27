@@ -10,6 +10,7 @@ v 8.10.0 (unreleased)
   - Implement Subresource Integrity for CSS and JavaScript assets. This prevents malicious assets from loading in the case of a CDN compromise.
   - Fix changing issue state columns in milestone view
   - Fix user creation with stronger minimum password requirements !4054 (nathan-pmt)
+  - Check for conflicts with existing Project's wiki path when creating a new project.
   - Add API endpoint for a group issues !4520 (mahcsig)
 
 v 8.9.1
