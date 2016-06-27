@@ -10,6 +10,12 @@ class Label < ActiveRecord::Base
 
   DEFAULT_COLOR = '#428BCA'
 
+  TABLE_FOR_ESCAPE_HTML_ENTITIES = {
+    '&' => '&amp;',
+    '<' => '&lt;',
+    '>' => '&gt;'
+  }
+
   default_value_for :color, DEFAULT_COLOR
 
   belongs_to :project
@@ -134,6 +140,10 @@ class Label < ActiveRecord::Base
   end
 
   def sanitize_title(value)
-    LabelsHelper.unescape_html_entities(Sanitize.clean(value.to_s))
+    unescape_html_entities(Sanitize.clean(value.to_s))
+  end
+
+  def unescape_html_entities(value)
+    value.to_s.gsub(/(&gt;)|(&lt;)|(&amp;)/, TABLE_FOR_ESCAPE_HTML_ENTITIES.invert)
   end
 end

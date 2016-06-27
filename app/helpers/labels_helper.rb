@@ -1,12 +1,6 @@
 module LabelsHelper
   include ActionView::Helpers::TagHelper
 
-  TABLE_FOR_ESCAPE_HTML_ENTITIES = {
-    '&' => '&amp;',
-    '<' => '&lt;',
-    '>' => '&gt;'
-  }
-
   # Link to a Label
   #
   # label   - Label object to link to
@@ -136,11 +130,7 @@ module LabelsHelper
     label.subscribed?(current_user) ? 'Unsubscribe' : 'Subscribe'
   end
 
-  def unescape_html_entities(value)
-    value.to_s.gsub(/(&gt;)|(&lt;)|(&amp;)/, TABLE_FOR_ESCAPE_HTML_ENTITIES.invert)
-  end
-
   # Required for Banzai::Filter::LabelReferenceFilter
   module_function :render_colored_label, :render_colored_cross_project_label,
-                  :text_color_for_bg, :escape_once, :unescape_html_entities
+                  :text_color_for_bg, :escape_once
 end
