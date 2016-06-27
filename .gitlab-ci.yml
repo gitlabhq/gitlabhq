@@ -212,6 +212,7 @@ rake flog: *exec
 rake flay: *exec
 license_finder: *exec
 rake downtime_check: *exec
+mdl doc: *exec
 
 rake db:migrate:reset:
   stage: test

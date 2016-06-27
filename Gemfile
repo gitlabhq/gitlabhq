@@ -259,6 +259,9 @@ group :development do
   # Docs generator
   gem 'sdoc', '~> 0.3.20'
 
+  # Documentation markdown lint
+  gem 'mdl'
+
   # thin instead webrick
   gem 'thin', '~> 1.7.0'
 end
