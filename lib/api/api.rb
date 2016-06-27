@@ -36,7 +36,6 @@ module API
     mount ::API::GroupMembers
     mount ::API::Groups
     mount ::API::Geo
-    mount ::API::Gitignores
     mount ::API::Internal
     mount ::API::Issues
     mount ::API::Keys
