@@ -51,7 +51,6 @@ v 8.9.1
   - Fix pagination when sorting by columns with lots of ties (like priority)
   - Implement Subresource Integrity for CSS and JavaScript assets. This prevents malicious assets from loading in the case of a CDN compromise.
   - Fix user creation with stronger minimum password requirements !4054 (nathan-pmt)
-  - Add API endpoint for a group issues !4520 (mahcsig)
   - Fix a wrong MR status when merge_when_build_succeeds & project.only_allow_merge_if_build_succeeds are true. !4912
   - Add SMTP as default delivery method to match gitlab-org/omnibus-gitlab!826. !4915
 
