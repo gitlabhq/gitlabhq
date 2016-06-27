@@ -8,23 +8,7 @@ module Gitlab
         class Cache < Entry
           include Configurable
 
-          validations do
-            validate :allowed_keys
-
-            def unknown_keys
-              return [] unless @node.config.is_a?(Hash)
-
-              @node.config.keys - @node.class.nodes.keys
-            end
-
-            def allowed_keys
-              if unknown_keys.any?
-                errors.add(:config, "contains unknown keys #{unknown_keys}")
-              end
-            end
-          end
-
-          node :key, Node::Key,
+          node :key, Key,
             description: 'Cache key used to define a cache affinity.'
 
           node :untracked, Boolean,
@@ -32,6 +16,25 @@ module Gitlab
 
           node :paths, Paths,
             description: 'Specify which paths should be cached across builds.'
+
+          validations do
+            validate :keys
+
+            def unknown_keys
+              return [] unless config.is_a?(Hash)
+              config.keys - allowed_keys
+            end
+
+            def keys
+              if unknown_keys.any?
+                errors.add(:config, "contains unknown keys #{unknown_keys}")
+              end
+            end
+          end
+
+          def allowed_keys
+            self.class.nodes.keys
+          end
         end
       end
     end

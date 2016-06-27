@@ -8,12 +8,11 @@ module Gitlab
 
           def initialize(node)
             super(node)
-            @node = node
           end
 
           def messages
             errors.full_messages.map do |error|
-              "#{@node.key} #{error}".humanize
+              "#{key} #{error}".humanize
             end
           end
 
