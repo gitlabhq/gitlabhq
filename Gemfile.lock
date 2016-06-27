@@ -342,6 +342,8 @@ GEM
     grape-entity (0.4.8)
       activesupport
       multi_json (>= 1.3.2)
+    gssapi (1.2.0)
+      ffi (>= 1.0.1)
     hamlit (2.5.0)
       temple (~> 0.7.6)
       thor
@@ -903,6 +905,7 @@ DEPENDENCIES
   gon (~> 6.0.1)
   grape (~> 0.13.0)
   grape-entity (~> 0.4.2)
+  gssapi
   hamlit (~> 2.5)
   health_check (~> 1.5.1)
   hipchat (~> 1.5.0)
