@@ -44,6 +44,7 @@
 - [Housekeeping](administration/housekeeping.md) Keep your Git repository tidy and fast.
 - [GitLab Performance Monitoring](monitoring/performance/introduction.md) Configure GitLab and InfluxDB for measuring performance metrics.
 - [Monitoring uptime](monitoring/health_check.md) Check the server status using the health check endpoint.
+- [Debugging Tips](administration/troubleshooting/debug.md) Tips to debug problems when things go wrong
 - [Sidekiq Troubleshooting](administration/troubleshooting/sidekiq.md) Debug when Sidekiq appears hung and is not processing jobs.
 - [High Availability](administration/high_availability/README.md) Configure multiple servers for scaling or high availability.
 - [Container Registry](administration/container_registry.md) Configure Docker Registry with GitLab.

@@ -85,6 +85,15 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
     @grouped_diff_notes = @merge_request.notes.grouped_diff_notes
 
+    Banzai::NoteRenderer.render(
+      @grouped_diff_notes.values.flatten,
+      @project,
+      current_user,
+      @path,
+      @project_wiki,
+      @ref
+    )
+
     respond_to do |format|
       format.html
       format.json { render json: { html: view_to_html_string("projects/merge_requests/show/_diffs") } }
@@ -190,7 +199,9 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   def merge
     return access_denied! unless @merge_request.can_be_merged_by?(current_user)
 
-    unless @merge_request.mergeable?
+    # Disable the CI check if merge_when_build_succeeds is enabled since we have
+    # to wait until CI completes to know
+    unless @merge_request.mergeable?(skip_ci_check: merge_when_build_succeeds_active?)
       @status = :failed
       return
     end
@@ -325,8 +336,21 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   def define_show_vars
     # Build a note object for comment form
     @note = @project.notes.new(noteable: @merge_request)
-    @discussions = @merge_request.mr_and_commit_notes.inc_author_project_award_emoji.fresh.discussions
-    @notes = @discussions.flatten
+
+    @discussions = @merge_request.mr_and_commit_notes.
+      inc_author_project_award_emoji.
+      fresh.
+      discussions
+
+    @notes = Banzai::NoteRenderer.render(
+      @discussions.flatten,
+      @project,
+      current_user,
+      @path,
+      @project_wiki,
+      @ref
+    )
+
     @noteable = @merge_request
 
     # Get commits from repository
@@ -372,5 +396,10 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   # have head file in refs/merge-requests/
   def ensure_ref_fetched
     @merge_request.ensure_ref_fetched
+  end
+
+  def merge_when_build_succeeds_active?
+    params[:merge_when_build_succeeds].present? &&
+      @merge_request.pipeline && @merge_request.pipeline.active?
   end
 end

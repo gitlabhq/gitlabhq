@@ -21,7 +21,8 @@
       = link_to polymorphic_path(base_url_args, { milestone_title: @milestone.title, label_name: label.title, state: 'all' }) do
         - render_colored_label(label)
 
-    - if assignee
-      = link_to polymorphic_path(base_url_args, { milestone_title: @milestone.title, assignee_id: issuable.assignee_id, state: 'all' }),
-                class: 'has-tooltip', title: "Assigned to #{assignee.name}", data: { container: 'body' } do
-        - image_tag(avatar_icon(issuable.assignee, 16), class: "avatar s16", alt: '')
+    %span{ class: "assignee-icon" }
+      - if assignee
+        = link_to polymorphic_path(base_url_args, { milestone_title: @milestone.title, assignee_id: issuable.assignee_id, state: 'all' }),
+                  class: 'has-tooltip', title: "Assigned to #{assignee.name}", data: { container: 'body' } do
+          - image_tag(avatar_icon(issuable.assignee, 16), class: "avatar s16", alt: '')

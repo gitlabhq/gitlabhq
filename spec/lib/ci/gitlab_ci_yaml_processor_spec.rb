@@ -951,7 +951,7 @@ EOT
         config = YAML.dump({ before_script: "bundle update", rspec: { script: "test" } })
         expect do
           GitlabCiYamlProcessor.new(config, path)
-        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "before_script should be an array of strings")
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "Before script config should be an array of strings")
       end
 
       it "returns errors if job before_script parameter is not an array of strings" do
@@ -1204,6 +1204,18 @@ EOT
         expect do
           GitlabCiYamlProcessor.new(config)
         end.to raise_error(GitlabCiYamlProcessor::ValidationError, "rspec job: dependencies parameter should be an array of strings")
+      end
+    end
+
+    describe "Validate configuration templates" do
+      templates = Dir.glob("#{Rails.root.join('vendor/gitlab-ci-yml')}/**/*.gitlab-ci.yml")
+
+      templates.each do |file|
+        it "does not return errors for #{file}" do
+          file = File.read(file)
+
+          expect { GitlabCiYamlProcessor.new(file) }.not_to raise_error
+        end
       end
     end
   end

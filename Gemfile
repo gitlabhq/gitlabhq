@@ -234,7 +234,7 @@ gem 'net-ssh',            '~> 3.0.1'
 gem 'base32',             '~> 0.3.0'
 
 # Sentry integration
-gem 'sentry-raven', '~> 0.15'
+gem 'sentry-raven', '~> 1.1.0'
 
 gem 'premailer-rails', '~> 1.9.0'
 

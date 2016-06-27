@@ -67,6 +67,12 @@ describe Gitlab::Ci::Config do
             expect(config.errors).not_to be_empty
           end
         end
+
+        describe '#errors' do
+          it 'returns an array of strings' do
+            expect(config.errors).to all(be_an_instance_of(String))
+          end
+        end
       end
     end
   end

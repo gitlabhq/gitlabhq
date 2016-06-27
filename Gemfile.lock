@@ -656,7 +656,7 @@ GEM
       activesupport (>= 3.1, < 4.3)
     select2-rails (3.5.9.3)
       thor (~> 0.14)
-    sentry-raven (0.15.6)
+    sentry-raven (1.1.0)
       faraday (>= 0.7.6)
     settingslogic (2.0.9)
     sexp_processor (4.7.0)
@@ -952,7 +952,7 @@ DEPENDENCIES
   sdoc (~> 0.3.20)
   seed-fu (~> 2.3.5)
   select2-rails (~> 3.5.9)
-  sentry-raven (~> 0.15)
+  sentry-raven (~> 1.1.0)
   settingslogic (~> 2.0.9)
   sham_rack
   shoulda-matchers (~> 2.8.0)

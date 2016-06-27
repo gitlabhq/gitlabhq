@@ -264,19 +264,19 @@ class MergeRequest < ActiveRecord::Base
     self.title.sub(WIP_REGEX, "")
   end
 
-  def mergeable?
-    return false unless mergeable_state?
+  def mergeable?(skip_ci_check: false)
+    return false unless mergeable_state?(skip_ci_check: skip_ci_check)
 
     check_if_can_be_merged
 
     can_be_merged?
   end
 
-  def mergeable_state?
+  def mergeable_state?(skip_ci_check: false)
     return false unless open?
     return false if work_in_progress?
     return false if broken?
-    return false unless mergeable_ci_state?
+    return false unless skip_ci_check || mergeable_ci_state?
 
     true
   end
