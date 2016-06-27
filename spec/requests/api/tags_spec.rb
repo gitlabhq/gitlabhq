@@ -18,7 +18,7 @@ describe API::API, api: true  do
     context 'without releases' do
       it "should return an array of project tags" do
         get api("/projects/#{project.id}/repository/tags", user)
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.first['name']).to eq(tag_name)
       end
@@ -33,7 +33,7 @@ describe API::API, api: true  do
       it "should return an array of project tags with release info" do
         get api("/projects/#{project.id}/repository/tags", user)
 
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.first['name']).to eq(tag_name)
         expect(json_response.first['message']).to eq('Version 1.1.0')
@@ -48,14 +48,14 @@ describe API::API, api: true  do
     it 'returns a specific tag' do
       get api("/projects/#{project.id}/repository/tags/#{tag_name}", user)
 
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(200)
       expect(json_response['name']).to eq(tag_name)
     end
 
     it 'returns 404 for an invalid tag name' do
       get api("/projects/#{project.id}/repository/tags/foobar", user)
 
-      expect(response.status).to eq(404)
+      expect(response).to have_http_status(404)
     end
   end
 
@@ -66,7 +66,7 @@ describe API::API, api: true  do
              tag_name: 'v7.0.1',
              ref: 'master'
 
-        expect(response.status).to eq(201)
+        expect(response).to have_http_status(201)
         expect(json_response['name']).to eq('v7.0.1')
       end
     end
@@ -78,7 +78,7 @@ describe API::API, api: true  do
              ref: 'master',
              release_description: 'Wow'
 
-        expect(response.status).to eq(201)
+        expect(response).to have_http_status(201)
         expect(json_response['name']).to eq('v7.0.1')
         expect(json_response['release']['description']).to eq('Wow')
       end
@@ -94,13 +94,13 @@ describe API::API, api: true  do
       context 'delete tag' do
         it 'should delete an existing tag' do
           delete api("/projects/#{project.id}/repository/tags/#{tag_name}", user)
-          expect(response.status).to eq(200)
+          expect(response).to have_http_status(200)
           expect(json_response['tag_name']).to eq(tag_name)
         end
 
         it 'should raise 404 if the tag does not exist' do
           delete api("/projects/#{project.id}/repository/tags/foobar", user)
-          expect(response.status).to eq(404)
+          expect(response).to have_http_status(404)
         end
       end
     end
@@ -117,7 +117,7 @@ describe API::API, api: true  do
              ref: 'master',
              message: 'Release 7.1.0'
 
-        expect(response.status).to eq(201)
+        expect(response).to have_http_status(201)
         expect(json_response['name']).to eq('v7.1.0')
         expect(json_response['message']).to eq('Release 7.1.0')
       end
@@ -127,14 +127,14 @@ describe API::API, api: true  do
       post api("/projects/#{project.id}/repository/tags", user2),
            tag_name: 'v1.9.0',
            ref: '621491c677087aa243f165eab467bfdfbee00be1'
-      expect(response.status).to eq(403)
+      expect(response).to have_http_status(403)
     end
 
     it 'should return 400 if tag name is invalid' do
       post api("/projects/#{project.id}/repository/tags", user),
            tag_name: 'v 1.0.0',
            ref: 'master'
-      expect(response.status).to eq(400)
+      expect(response).to have_http_status(400)
       expect(json_response['message']).to eq('Tag name invalid')
     end
 
@@ -142,11 +142,11 @@ describe API::API, api: true  do
       post api("/projects/#{project.id}/repository/tags", user),
            tag_name: 'v8.0.0',
            ref: 'master'
-      expect(response.status).to eq(201)
+      expect(response).to have_http_status(201)
       post api("/projects/#{project.id}/repository/tags", user),
            tag_name: 'v8.0.0',
            ref: 'master'
-      expect(response.status).to eq(400)
+      expect(response).to have_http_status(400)
       expect(json_response['message']).to eq('Tag v8.0.0 already exists')
     end
 
@@ -154,7 +154,7 @@ describe API::API, api: true  do
       post api("/projects/#{project.id}/repository/tags", user),
            tag_name: 'mytag',
            ref: 'foo'
-      expect(response.status).to eq(400)
+      expect(response).to have_http_status(400)
       expect(json_response['message']).to eq('Target foo is invalid')
     end
   end
@@ -167,7 +167,7 @@ describe API::API, api: true  do
       post api("/projects/#{project.id}/repository/tags/#{tag_name}/release", user),
         description: description
 
-      expect(response.status).to eq(201)
+      expect(response).to have_http_status(201)
       expect(json_response['tag_name']).to eq(tag_name)
       expect(json_response['description']).to eq(description)
     end
@@ -176,7 +176,7 @@ describe API::API, api: true  do
       post api("/projects/#{project.id}/repository/tags/foobar/release", user),
         description: description
 
-      expect(response.status).to eq(404)
+      expect(response).to have_http_status(404)
       expect(json_response['message']).to eq('Tag does not exist')
     end
 
@@ -190,7 +190,7 @@ describe API::API, api: true  do
         post api("/projects/#{project.id}/repository/tags/#{tag_name}/release", user),
           description: description
 
-        expect(response.status).to eq(409)
+        expect(response).to have_http_status(409)
         expect(json_response['message']).to eq('Release already exists')
       end
     end
@@ -211,7 +211,7 @@ describe API::API, api: true  do
         put api("/projects/#{project.id}/repository/tags/#{tag_name}/release", user),
           description: new_description
 
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(200)
         expect(json_response['tag_name']).to eq(tag_name)
         expect(json_response['description']).to eq(new_description)
       end
@@ -221,7 +221,7 @@ describe API::API, api: true  do
       put api("/projects/#{project.id}/repository/tags/foobar/release", user),
         description: new_description
 
-      expect(response.status).to eq(404)
+      expect(response).to have_http_status(404)
       expect(json_response['message']).to eq('Tag does not exist')
     end
 
@@ -229,7 +229,7 @@ describe API::API, api: true  do
       put api("/projects/#{project.id}/repository/tags/#{tag_name}/release", user),
         description: new_description
 
-      expect(response.status).to eq(404)
+      expect(response).to have_http_status(404)
       expect(json_response['message']).to eq('Release does not exist')
     end
   end
