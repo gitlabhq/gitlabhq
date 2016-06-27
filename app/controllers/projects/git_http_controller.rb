@@ -157,7 +157,7 @@ class Projects::GitHttpController < Projects::ApplicationController
   end
 
   def render_not_allowed
-    render plain: access.message, status: :forbidden
+    render plain: download_access.message, status: :forbidden
   end
 
   def ci?
@@ -168,20 +168,20 @@ class Projects::GitHttpController < Projects::ApplicationController
     return false unless Gitlab.config.gitlab_shell.upload_pack
 
     if user
-      access.allowed?
+      download_access.allowed?
     else
       ci? || project.public?
     end
   end
 
-  def access
-    return @access if defined?(@access)
+  def download_access
+    return @download_access if defined?(@download_access)
 
-    @access = Gitlab::GitAccess.new(user, project, 'http').check('git-upload-pack')
+    @download_access = Gitlab::GitAccess.new(user, project, 'http').check('git-upload-pack')
   end
 
   def http_blocked?
-    access.message.include?('HTTP')
+    download_access.protocol_allowed?
   end
 
   def receive_pack_allowed?
