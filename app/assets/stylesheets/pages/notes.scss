@@ -41,6 +41,10 @@ ul.notes {
     .timeline-icon {
       .avatar {
         visibility: hidden;
+
+        .discussion-body & {
+          visibility: visible;
+        }
       }
     }
   }
