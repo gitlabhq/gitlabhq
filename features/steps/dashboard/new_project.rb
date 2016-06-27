@@ -28,7 +28,7 @@ class Spinach::Features::NewProject < Spinach::FeatureSteps
     first('.import_github').click
   end
 
-  step 'I am redirected to the Github import page' do
+  step 'I am redirected to the GitHub import page' do
     expect(current_path).to eq new_import_github_path
   end
 

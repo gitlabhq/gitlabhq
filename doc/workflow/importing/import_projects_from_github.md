@@ -26,9 +26,11 @@ Click on the **GitHub** link and, if you are logged in via the GitHub
 integration, you will be redirected to GitHub for permission to access your
 projects. After accepting, you'll be automatically redirected to the importer.
 
-If you are not using the GitHub integration, when you click the **GithHub** link
-you'll be presented with instructions for creating Personal Access Token on
-GitHub. Once you upload your token, you'll be taken to the importer.
+If you are not using the GitHub integration, you can still perform a one-off
+authorization with GitHub to access your projects.
+
+Alternatively, you can also enter a GitHub Personal Access Token. Once you enter
+your token, you'll be taken to the importer.
 
 ![New project page on GitLab](img/import_projects_from_github_new_project_page.png)
 

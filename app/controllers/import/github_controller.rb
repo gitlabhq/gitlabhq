@@ -1,6 +1,6 @@
 class Import::GithubController < Import::BaseController
   before_action :verify_github_import_enabled
-  before_action :github_auth, except: [:callback, :new, :personal_access_token]
+  before_action :github_auth, only: [:status, :jobs, :create]
 
   rescue_from Octokit::Unauthorized, with: :github_unauthorized
 
