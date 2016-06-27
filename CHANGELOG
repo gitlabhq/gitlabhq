@@ -1,5 +1,8 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+v 8.7.8
+  - Update omniauth-saml to 1.6.0. !4951
+
 v 8.7.7
   - Prevent unauthorized access to other projects build traces
   - Forbid scripting for wiki files

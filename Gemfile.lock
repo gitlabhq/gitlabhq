@@ -459,8 +459,6 @@ GEM
       rb-inotify (>= 0.9)
     loofah (2.0.3)
       nokogiri (>= 1.5.9)
-    macaddr (1.7.1)
-      systemu (~> 2.6.2)
     mail (2.6.4)
       mime-types (>= 1.16, < 4)
     mail_room (0.6.1)
@@ -531,9 +529,9 @@ GEM
     omniauth-oauth2 (1.3.1)
       oauth2 (~> 1.0)
       omniauth (~> 1.2)
-    omniauth-saml (1.5.0)
+    omniauth-saml (1.6.0)
       omniauth (~> 1.3)
-      ruby-saml (~> 1.1, >= 1.1.1)
+      ruby-saml (~> 1.3)
     omniauth-shibboleth (1.2.1)
       omniauth (>= 1.0.0)
     omniauth-twitter (1.2.1)
@@ -692,9 +690,8 @@ GEM
     ruby-fogbugz (0.2.1)
       crack (~> 0.4)
     ruby-progressbar (1.7.5)
-    ruby-saml (1.1.2)
+    ruby-saml (1.3.0)
       nokogiri (>= 1.5.10)
-      uuid (~> 2.3)
     ruby2ruby (2.3.0)
       ruby_parser (~> 3.1)
       sexp_processor (~> 4.0)
@@ -793,7 +790,6 @@ GEM
       activerecord (~> 4.1)
       state_machines-activemodel (>= 0.3.0)
     stringex (2.5.2)
-    systemu (2.6.5)
     task_list (1.0.2)
       html-pipeline
     teaspoon (1.1.5)
@@ -848,8 +844,6 @@ GEM
       get_process_mem (~> 0)
       unicorn (>= 4, < 6)
     uniform_notifier (1.9.0)
-    uuid (2.3.8)
-      macaddr (~> 1.0)
     version_sorter (2.0.0)
     virtus (1.0.5)
       axiom-types (~> 0.1)
@@ -982,7 +976,7 @@ DEPENDENCIES
   omniauth-gitlab (~> 1.0.0)
   omniauth-google-oauth2 (~> 0.2.0)
   omniauth-kerberos (~> 0.3.0)
-  omniauth-saml (~> 1.5.0)
+  omniauth-saml (~> 1.6.0)
   omniauth-shibboleth (~> 1.2.0)
   omniauth-twitter (~> 1.2.0)
   omniauth_crowd (~> 2.2.0)
@@ -1058,4 +1052,4 @@ DEPENDENCIES
   wikicloth (= 0.8.1)
 
 BUNDLED WITH
-   1.11.2
+   1.12.5
