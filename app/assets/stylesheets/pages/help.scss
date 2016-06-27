@@ -63,5 +63,6 @@
     border: 1px solid $table-border-gray;
     padding: 5px;
     margin: 5px;
+    max-height: calc(100vh - 100px);
   }
 }
