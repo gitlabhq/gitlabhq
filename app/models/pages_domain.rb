@@ -12,6 +12,7 @@ class PagesDomain < ActiveRecord::Base
 
   attr_encrypted :key,
     mode: :per_attribute_iv_and_salt,
+    insecure_mode: true,
     key: Gitlab::Application.secrets.db_key_base,
     algorithm: 'aes-256-cbc'
 
