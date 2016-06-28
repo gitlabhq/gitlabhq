@@ -669,4 +669,22 @@ describe Ci::Build, models: true do
       expect(build.commit).to eq project.commit
     end
   end
+
+  describe '#retryable?' do
+    context 'when build is running' do
+      before { build.run! }
+
+      it 'should return false' do
+        expect(build.retryable?).to be false
+      end
+    end
+
+    context 'when build is finished' do
+      before { build.success! }
+
+      it 'should return true' do
+        expect(build.retryable?).to be true
+      end
+    end
+  end
 end
