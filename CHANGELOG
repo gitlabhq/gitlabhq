@@ -1,5 +1,16 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+v 8.9.3
+  - Fix encrypted data backwards compatibility after upgrading attr_encrypted gem. !4963
+  - Fix rendering of commit notes. !4953
+  - Resolve "Pin should show up at 1280px min". !4947
+  - Switched mobile button icons to ellipsis and angle. !4944
+  - Correctly returns todo ID after creating todo. !4941
+  - Better debugging for memory killer middleware. !4936
+  - Remove duplicate new page btn from edit wiki. !4904
+  - Use clock_gettime for all performance timestamps. !4899
+  - Use memorized tags array when searching tags by name. !4859
+
 v 8.9.2
   - Fix visibility of snippets when searching.
   - Fix an information disclosure when requesting access to a group containing private projects.
