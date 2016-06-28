@@ -25,6 +25,7 @@ class RemoteMirror < ActiveRecord::Base
                  marshal: true,
                  encode: true,
                  mode: :per_attribute_iv_and_salt,
+                 insecure_mode: true,
                  algorithm: 'aes-256-cbc'
 
   belongs_to :project
