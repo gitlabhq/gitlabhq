@@ -295,31 +295,50 @@ describe Ci::API::API do
 
           context 'build has been erased' do
             let(:build) { create(:ci_build, erased_at: Time.now) }
-            before { upload_artifacts(file_upload, headers_with_token) }
+
+            before do
+              upload_artifacts(file_upload, headers_with_token)
+            end
 
             it 'should respond with forbidden' do
               expect(response.status).to eq 403
             end
           end
 
-          context "should post artifact to running build" do
-            it "uses regual file post" do
-              upload_artifacts(file_upload, headers_with_token, false)
-              expect(response).to have_http_status(201)
-              expect(json_response["artifacts_file"]["filename"]).to eq(file_upload.original_filename)
+          context 'should post artifact to running build' do
+            shared_examples 'post artifact' do
+              it 'updates successfully' do
+                response_filename =
+                  json_response["artifacts_file"]["filename"]
+
+                expect(response).to have_http_status(201)
+                expect(response_filename).to eq(file_upload.original_filename)
+              end
             end
 
-            it "uses accelerated file post" do
-              upload_artifacts(file_upload, headers_with_token, true)
-              expect(response).to have_http_status(201)
-              expect(json_response["artifacts_file"]["filename"]).to eq(file_upload.original_filename)
+            context 'uses regular file post' do
+              before do
+                upload_artifacts(file_upload, headers_with_token, false)
+              end
+
+              it_behaves_like 'post artifact'
             end
 
-            it "updates artifact" do
-              upload_artifacts(file_upload, headers_with_token)
-              upload_artifacts(file_upload2, headers_with_token)
-              expect(response).to have_http_status(201)
-              expect(json_response["artifacts_file"]["filename"]).to eq(file_upload2.original_filename)
+            context 'uses accelerated file post' do
+              before do
+                upload_artifacts(file_upload, headers_with_token, true)
+              end
+
+              it_behaves_like 'post artifact'
+            end
+
+            context 'updates artifact' do
+              before do
+                upload_artifacts(file_upload2, headers_with_token)
+                upload_artifacts(file_upload, headers_with_token)
+              end
+
+              it_behaves_like 'post artifact'
             end
           end
 
