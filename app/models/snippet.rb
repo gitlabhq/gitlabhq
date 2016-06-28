@@ -20,6 +20,7 @@ class Snippet < ActiveRecord::Base
     length: { within: 0..255 },
     format: { with: Gitlab::Regex.file_name_regex,
               message: Gitlab::Regex.file_name_regex_message }
+
   validates :content, presence: true
   validates :visibility_level, inclusion: { in: Gitlab::VisibilityLevel.values }
 
@@ -79,6 +80,11 @@ class Snippet < ActiveRecord::Base
 
   def size
     0
+  end
+
+  # alias for compatibility with blobs and highlighting
+  def path
+    file_name
   end
 
   def name
