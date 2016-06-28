@@ -64,6 +64,9 @@
             = project.name_with_namespace
           %td
             .pull-right
+              - if @runner.locked?
+                = icon('lock', class: 'has-tooltip', title: 'Locked to current projects')
+
               = form_for [:admin, project.namespace.becomes(Namespace), project, project.runner_projects.new] do |f|
                 = f.hidden_field :runner_id, value: @runner.id
                 = f.submit 'Enable', class: 'btn btn-xs'
