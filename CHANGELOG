@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.10.0 (unreleased)
+  - Fix commit builds API, return all builds for all pipelines for given commit. !4849
   - Replace Haml with Hamlit to make view rendering faster. !3666
   - Wrap code blocks on Activies and Todos page. !4783 (winniehell)
   - Display last commit of deleted branch in push events !4699 (winniehell)
