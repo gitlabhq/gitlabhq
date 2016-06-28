@@ -83,6 +83,16 @@ describe "Admin Runners" do
         it_behaves_like 'assignable runner'
       end
 
+      context 'with locked runner' do
+        before do
+          runner.update(locked: true)
+          @project1.runners << runner
+          visit admin_runner_path(runner)
+        end
+
+        it_behaves_like 'assignable runner'
+      end
+
       context 'with shared runner' do
         before do
           @project1.destroy
