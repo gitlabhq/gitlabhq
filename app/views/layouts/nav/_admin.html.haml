@@ -1,9 +1,9 @@
 .scrolling-tabs-container{ class: nav_control_class }
   = render 'layouts/nav/admin_settings'
   .fade-left
-    = icon('arrow-left')
+    = icon('angle-left')
   .fade-right
-    = icon('arrow-right')
+    = icon('angle-right')
   %ul.nav-links.scrolling-tabs
     = nav_link(controller: %w(dashboard admin projects users groups builds runners), html_options: {class: 'home'}) do
       = link_to admin_root_path, title: 'Overview', class: 'shortcuts-tree' do

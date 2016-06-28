@@ -26,9 +26,9 @@
 
 .scrolling-tabs-container{ class: nav_control_class }
   .fade-left
-    = icon('arrow-left')
+    = icon('angle-left')
   .fade-right
-    = icon('arrow-right')
+    = icon('angle-right')
   %ul.nav-links.scrolling-tabs
     = nav_link(path: 'projects#show', html_options: {class: 'home'}) do
       = link_to project_path(@project), title: 'Project', class: 'shortcuts-project' do
