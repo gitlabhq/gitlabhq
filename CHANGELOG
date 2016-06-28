@@ -21,6 +21,7 @@ v 8.10.0 (unreleased)
   - PipelinesFinder uses git cache data
   - Check for conflicts with existing Project's wiki path when creating a new project.
   - Remove unused front-end variable -> default_issues_tracker
+  - Better caching of git calls on ProjectsController#show.
   - Add API endpoint for a group issues !4520 (mahcsig)
   - Add Bugzilla integration !4930 (iamtjg)
   - Allow [ci skip] to be in any case and allow [skip ci]. !4785 (simon_w)
