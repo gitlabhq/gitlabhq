@@ -174,6 +174,8 @@ v 8.10.0
   - Add an API for downloading latest successful build from a particular branch or tag. !5347
   - Avoid data-integrity issue when cleaning up repository archive cache.
   - Add link to profile to commit avatar. !5163 (winniehell)
+  - Remove pinTo from Flash and make inline flash messages look nicer !4854 (winniehell)
+  - Update to Ruby 2.3.1. !4948
   - Wrap code blocks on Activies and Todos page. !4783 (winniehell)
   - Align flash messages with left side of page content. !4959 (winniehell)
   - Display tooltip for "Copy to Clipboard" button. !5164 (winniehell)
