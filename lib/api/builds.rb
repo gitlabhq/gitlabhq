@@ -36,8 +36,6 @@ module API
         return not_found! unless user_project.commit(params[:sha])
 
         pipelines = user_project.pipelines.where(sha: params[:sha])
-        return [] if pipelines.empty?
-
         builds = user_project.builds.where(pipeline: pipelines).order('id DESC')
         builds = filter_builds(builds, params[:scope])
 
