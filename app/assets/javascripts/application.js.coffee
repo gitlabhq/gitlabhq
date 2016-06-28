@@ -194,7 +194,6 @@ $ ->
     $('.header-content .header-logo').toggle()
     $('.header-content .navbar-collapse').toggle()
     $('.navbar-toggle').toggleClass('active')
-    $('.navbar-toggle i').toggleClass("fa-angle-right fa-angle-left")
 
   # Show/hide comments on diff
   $("body").on "click", ".js-toggle-diff-comments", (e) ->
