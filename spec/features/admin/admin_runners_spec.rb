@@ -62,7 +62,7 @@ describe "Admin Runners" do
     end
 
     describe 'enable/create' do
-      shared_examples 'enable runners' do
+      shared_examples 'assignable runner' do
         it 'enables a runner for a project' do
           within '.unassigned-projects' do
             click_on 'Enable'
@@ -80,7 +80,7 @@ describe "Admin Runners" do
           visit admin_runner_path(runner)
         end
 
-        it_behaves_like 'enable runners'
+        it_behaves_like 'assignable runner'
       end
 
       context 'with shared runner' do
@@ -90,7 +90,7 @@ describe "Admin Runners" do
           visit admin_runner_path(runner)
         end
 
-        it_behaves_like 'enable runners'
+        it_behaves_like 'assignable runner'
       end
     end
 
