@@ -69,4 +69,12 @@ module NotesHelper
     button_tag 'Reply...', class: 'btn btn-text-field js-discussion-reply-button',
                            data: data, title: 'Add a reply'
   end
+
+  def note_max_access_for_user(note)
+    user_id = note.author.id
+    project = note.project
+    @max_access_by_user_id ||= Hash.new { |hash, key| hash[key] = project.team.human_max_access(key) }
+
+    @max_access_by_user_id[user_id]
+  end
 end
