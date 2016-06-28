@@ -391,6 +391,10 @@ GitLab Shell is an SSH access and repository management software developed speci
 
 ### Install gitlab-workhorse
 
+GitLab-Workhorse uses [GNU Make](https://www.gnu.org/software/make/).
+If you are not using Linux you may have to run `gmake` instead of
+`make` below.
+
     cd /home/git
     sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-workhorse.git
     cd gitlab-workhorse

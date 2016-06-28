@@ -24,6 +24,7 @@ feature 'User wants to add a .gitlab-ci.yml file', feature: true do
     end
     wait_for_ajax
 
+    expect(page).to have_css('.gitlab-ci-yml-selector .dropdown-toggle-text', text: 'jekyll')
     expect(page).to have_content('This file is a template, and might need editing before it works on your project')
     expect(page).to have_content('jekyll build -d test')
   end

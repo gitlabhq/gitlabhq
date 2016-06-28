@@ -10,7 +10,7 @@ feature 'Issues > Labels bulk assignment', feature: true do
   let!(:bug)      { create(:label, project: project, title: 'bug') }
   let!(:feature)  { create(:label, project: project, title: 'feature') }
 
-  context 'as a allowed user', js: true do
+  context 'as an allowed user', js: true do
     before do
       project.team << [user, :master]
 
@@ -164,6 +164,133 @@ feature 'Issues > Labels bulk assignment', feature: true do
         end
       end
     end
+
+    context 'toggling a milestone' do
+      let!(:milestone) { create(:milestone, project: project, title: 'First Release') }
+
+      context 'setting a milestone' do
+        before do
+          issue1.labels << bug
+          issue2.labels << feature
+          visit namespace_project_issues_path(project.namespace, project)
+        end
+
+        it 'labels are kept' do
+          expect(find("#issue_#{issue1.id}")).to have_content 'bug'
+          expect(find("#issue_#{issue2.id}")).to have_content 'feature'
+
+          check 'check_all_issues'
+          open_milestone_dropdown(['First Release'])
+          update_issues
+
+          expect(find("#issue_#{issue1.id}")).to have_content 'bug'
+          expect(find("#issue_#{issue1.id}")).to have_content 'First Release'
+          expect(find("#issue_#{issue2.id}")).to have_content 'feature'
+          expect(find("#issue_#{issue2.id}")).to have_content 'First Release'
+        end
+      end
+
+      context 'setting a milestone and adding another label' do
+        before do
+          issue1.labels << bug
+
+          visit namespace_project_issues_path(project.namespace, project)
+        end
+
+        it 'existing label is kept and new label is present' do
+          expect(find("#issue_#{issue1.id}")).to have_content 'bug'
+
+          check 'check_all_issues'
+          open_milestone_dropdown ['First Release']
+          open_labels_dropdown ['feature']
+          update_issues
+
+          expect(find("#issue_#{issue1.id}")).to have_content 'bug'
+          expect(find("#issue_#{issue1.id}")).to have_content 'feature'
+          expect(find("#issue_#{issue1.id}")).to have_content 'First Release'
+          expect(find("#issue_#{issue2.id}")).to have_content 'feature'
+          expect(find("#issue_#{issue2.id}")).to have_content 'First Release'
+        end
+      end
+
+      context 'setting a milestone and removing existing label' do
+        before do
+          issue1.labels << bug
+          issue1.labels << feature
+          issue2.labels << feature
+
+          visit namespace_project_issues_path(project.namespace, project)
+        end
+
+        it 'existing label is kept and new label is present' do
+          expect(find("#issue_#{issue1.id}")).to have_content 'bug'
+          expect(find("#issue_#{issue1.id}")).to have_content 'bug'
+          expect(find("#issue_#{issue2.id}")).to have_content 'feature'
+
+          check 'check_all_issues'
+          open_milestone_dropdown ['First Release']
+          unmark_labels_in_dropdown ['feature']
+          update_issues
+
+          expect(find("#issue_#{issue1.id}")).to have_content 'bug'
+          expect(find("#issue_#{issue1.id}")).not_to have_content 'feature'
+          expect(find("#issue_#{issue1.id}")).to have_content 'First Release'
+          expect(find("#issue_#{issue2.id}")).not_to have_content 'feature'
+          expect(find("#issue_#{issue2.id}")).to have_content 'First Release'
+        end
+      end
+
+      context 'unsetting a milestone' do
+        before do
+          issue1.milestone = milestone
+          issue2.milestone = milestone
+          issue1.save
+          issue2.save
+          issue1.labels << bug
+          issue2.labels << feature
+
+          visit namespace_project_issues_path(project.namespace, project)
+        end
+
+        it 'labels are kept' do
+          expect(find("#issue_#{issue1.id}")).to have_content 'bug'
+          expect(find("#issue_#{issue1.id}")).to have_content 'First Release'
+          expect(find("#issue_#{issue2.id}")).to have_content 'feature'
+          expect(find("#issue_#{issue2.id}")).to have_content 'First Release'
+
+          check 'check_all_issues'
+          open_milestone_dropdown(['No Milestone'])
+          update_issues
+
+          expect(find("#issue_#{issue1.id}")).to have_content 'bug'
+          expect(find("#issue_#{issue1.id}")).not_to have_content 'First Release'
+          expect(find("#issue_#{issue2.id}")).to have_content 'feature'
+          expect(find("#issue_#{issue2.id}")).not_to have_content 'First Release'
+        end
+      end
+    end
+
+    context 'toggling checked issues' do
+      before do
+        issue1.labels << bug
+
+        visit namespace_project_issues_path(project.namespace, project)
+      end
+
+      it do
+        expect(find("#issue_#{issue1.id}")).to have_content 'bug'
+
+        check_issue issue1
+        open_labels_dropdown ['feature']
+        uncheck_issue issue1
+        check_issue issue1
+        update_issues
+        sleep 1 # needed
+
+        expect(find("#issue_#{issue1.id}")).to have_content 'bug'
+        expect(find("#issue_#{issue1.id}")).not_to have_content 'feature'
+      end
+    end
   end
 
   context 'as a guest' do
@@ -177,6 +304,16 @@ feature 'Issues > Labels bulk assignment', feature: true do
       it do
         expect(page).not_to have_css '.check_all_issues'
         expect(page).not_to have_css '.issue-check'
+      end
+    end
+  end
+
+  def open_milestone_dropdown(items = [])
+    page.within('.issues_bulk_update') do
+      click_button 'Milestone'
+      wait_for_ajax
+      items.map do |item|
+        click_link item
       end
     end
   end
@@ -201,10 +338,18 @@ feature 'Issues > Labels bulk assignment', feature: true do
     open_labels_dropdown(items, true)
   end
 
-  def check_issue(issue)
+  def check_issue(issue, uncheck = false)
     page.within('.issues-list') do
-      check "selected_issue_#{issue.id}"
+      if uncheck
+        uncheck "selected_issue_#{issue.id}"
+      else
+        check "selected_issue_#{issue.id}"
+      end
     end
+  end
+
+  def uncheck_issue(issue)
+    check_issue(issue, true)
   end
 
   def update_issues

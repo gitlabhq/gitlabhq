@@ -11,21 +11,21 @@ describe API::API, api: true  do
   describe "when unauthenticated" do
     it "returns authentication success" do
       get api("/user"), access_token: token.token
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(200)
     end
   end
 
   describe "when token invalid" do
     it "returns authentication error" do
       get api("/user"), access_token: "123a"
-      expect(response.status).to eq(401)
+      expect(response).to have_http_status(401)
     end
   end
 
   describe "authorization by private token" do
     it "returns authentication success" do
       get api("/user", user)
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(200)
     end
   end
 end

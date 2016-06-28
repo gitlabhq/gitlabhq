@@ -19,7 +19,7 @@ describe API::API, api: true  do
 
       it "should return project commits" do
         get api("/projects/#{project.id}/repository/commits", user)
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(200)
 
         expect(json_response).to be_an Array
         expect(json_response.first['id']).to eq(project.repository.commit.id)
@@ -29,7 +29,7 @@ describe API::API, api: true  do
     context "unauthorized user" do
       it "should not return project commits" do
         get api("/projects/#{project.id}/repository/commits")
-        expect(response.status).to eq(401)
+        expect(response).to have_http_status(401)
       end
     end
 
@@ -63,7 +63,7 @@ describe API::API, api: true  do
       it "should return an invalid parameter error message" do
         get api("/projects/#{project.id}/repository/commits?since=invalid-date", user)
 
-        expect(response.status).to eq(400)
+        expect(response).to have_http_status(400)
         expect(json_response['message']).to include "\"since\" must be a timestamp in ISO 8601 format"
       end
     end
@@ -73,26 +73,26 @@ describe API::API, api: true  do
     context "authorized user" do
       it "should return a commit by sha" do
         get api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}", user)
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(200)
         expect(json_response['id']).to eq(project.repository.commit.id)
         expect(json_response['title']).to eq(project.repository.commit.title)
       end
 
       it "should return a 404 error if not found" do
         get api("/projects/#{project.id}/repository/commits/invalid_sha", user)
-        expect(response.status).to eq(404)
+        expect(response).to have_http_status(404)
       end
 
       it "should return nil for commit without CI" do
         get api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}", user)
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(200)
         expect(json_response['status']).to be_nil
       end
 
       it "should return status for CI" do
         pipeline = project.ensure_pipeline(project.repository.commit.sha, 'master')
         get api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}", user)
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(200)
         expect(json_response['status']).to eq(pipeline.status)
       end
     end
@@ -100,7 +100,7 @@ describe API::API, api: true  do
     context "unauthorized user" do
       it "should not return the selected commit" do
         get api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}")
-        expect(response.status).to eq(401)
+        expect(response).to have_http_status(401)
       end
     end
   end
@@ -111,7 +111,7 @@ describe API::API, api: true  do
 
       it "should return the diff of the selected commit" do
         get api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}/diff", user)
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(200)
 
         expect(json_response).to be_an Array
         expect(json_response.length).to be >= 1
@@ -120,14 +120,14 @@ describe API::API, api: true  do
 
       it "should return a 404 error if invalid commit" do
         get api("/projects/#{project.id}/repository/commits/invalid_sha/diff", user)
-        expect(response.status).to eq(404)
+        expect(response).to have_http_status(404)
       end
     end
 
     context "unauthorized user" do
       it "should not return the diff of the selected commit" do
         get api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}/diff")
-        expect(response.status).to eq(401)
+        expect(response).to have_http_status(401)
       end
     end
   end
@@ -136,7 +136,7 @@ describe API::API, api: true  do
     context 'authorized user' do
       it 'should return merge_request comments' do
         get api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}/comments", user)
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(2)
         expect(json_response.first['note']).to eq('a comment on a commit')
@@ -145,14 +145,14 @@ describe API::API, api: true  do
 
       it 'should return a 404 error if merge_request_id not found' do
         get api("/projects/#{project.id}/repository/commits/1234ab/comments", user)
-        expect(response.status).to eq(404)
+        expect(response).to have_http_status(404)
       end
     end
 
     context 'unauthorized user' do
       it 'should not return the diff of the selected commit' do
         get api("/projects/#{project.id}/repository/commits/1234ab/comments")
-        expect(response.status).to eq(401)
+        expect(response).to have_http_status(401)
       end
     end
   end
@@ -161,7 +161,7 @@ describe API::API, api: true  do
     context 'authorized user' do
       it 'should return comment' do
         post api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}/comments", user), note: 'My comment'
-        expect(response.status).to eq(201)
+        expect(response).to have_http_status(201)
         expect(json_response['note']).to eq('My comment')
         expect(json_response['path']).to be_nil
         expect(json_response['line']).to be_nil
@@ -170,7 +170,7 @@ describe API::API, api: true  do
 
       it 'should return the inline comment' do
         post api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}/comments", user), note: 'My comment', path: project.repository.commit.diffs.first.new_path, line: 7, line_type: 'new'
-        expect(response.status).to eq(201)
+        expect(response).to have_http_status(201)
         expect(json_response['note']).to eq('My comment')
         expect(json_response['path']).to eq(project.repository.commit.diffs.first.new_path)
         expect(json_response['line']).to eq(7)
@@ -179,19 +179,19 @@ describe API::API, api: true  do
 
       it 'should return 400 if note is missing' do
         post api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}/comments", user)
-        expect(response.status).to eq(400)
+        expect(response).to have_http_status(400)
       end
 
       it 'should return 404 if note is attached to non existent commit' do
         post api("/projects/#{project.id}/repository/commits/1234ab/comments", user), note: 'My comment'
-        expect(response.status).to eq(404)
+        expect(response).to have_http_status(404)
       end
     end
 
     context 'unauthorized user' do
       it 'should not return the diff of the selected commit' do
         post api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}/comments")
-        expect(response.status).to eq(401)
+        expect(response).to have_http_status(401)
       end
     end
   end

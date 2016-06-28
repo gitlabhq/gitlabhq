@@ -21,4 +21,9 @@ describe Banzai::Filter::ImageLinkFilter, lib: true do
     doc = filter(image('https://i.imgur.com/DfssX9C.jpg'))
     expect(doc.at_css('img')['src']).to eq doc.at_css('a')['href']
   end
+
+  it 'wraps the image with a link and a div' do
+    doc = filter(image('/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg'))
+    expect(doc.to_html).to include('<div class="image-container">')
+  end
 end

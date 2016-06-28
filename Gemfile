@@ -30,7 +30,7 @@ gem 'omniauth-github',        '~> 1.1.1'
 gem 'omniauth-gitlab',        '~> 1.0.0'
 gem 'omniauth-google-oauth2', '~> 0.2.0'
 gem 'omniauth-kerberos',      '~> 0.3.0', group: :kerberos
-gem 'omniauth-saml',          '~> 1.5.0'
+gem 'omniauth-saml',          '~> 1.6.0'
 gem 'omniauth-shibboleth',    '~> 1.2.0'
 gem 'omniauth-twitter',       '~> 1.2.0'
 gem 'omniauth_crowd',         '~> 2.2.0'
@@ -76,7 +76,7 @@ gem 'rack-cors',    '~> 0.4.0', require: 'rack/cors'
 gem "kaminari", "~> 0.17.0"
 
 # HAML
-gem "haml-rails", '~> 0.9.0'
+gem 'hamlit', '~> 2.5'
 
 # Files attachments
 gem "carrierwave", '~> 0.10.0'
@@ -234,7 +234,7 @@ gem 'net-ssh',            '~> 3.0.1'
 gem 'base32',             '~> 0.3.0'
 
 # Sentry integration
-gem 'sentry-raven', '~> 0.15'
+gem 'sentry-raven', '~> 1.1.0'
 
 gem 'premailer-rails', '~> 1.9.0'
 

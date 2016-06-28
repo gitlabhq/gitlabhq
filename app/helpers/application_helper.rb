@@ -197,7 +197,7 @@ module ApplicationHelper
 
   def render_markup(file_name, file_content)
     if gitlab_markdown?(file_name)
-      Haml::Helpers.preserve(markdown(file_content))
+      Hamlit::RailsHelpers.preserve(markdown(file_content))
     elsif asciidoc?(file_name)
       asciidoc(file_content)
     elsif plain?(file_name)

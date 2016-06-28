@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe API::Licenses, api: true  do
+describe API::API, api: true  do
   include ApiHelpers
 
   describe 'Entity' do
@@ -23,7 +23,7 @@ describe API::Licenses, api: true  do
     it 'returns a list of available license templates' do
       get api('/licenses')
 
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(200)
       expect(json_response).to be_an Array
       expect(json_response.size).to eq(15)
       expect(json_response.map { |l| l['key'] }).to include('agpl-3.0')
@@ -34,7 +34,7 @@ describe API::Licenses, api: true  do
         it 'returns a list of available popular license templates' do
           get api('/licenses?popular=1')
 
-          expect(response.status).to eq(200)
+          expect(response).to have_http_status(200)
           expect(json_response).to be_an Array
           expect(json_response.size).to eq(3)
           expect(json_response.map { |l| l['key'] }).to include('apache-2.0')
@@ -116,7 +116,7 @@ describe API::Licenses, api: true  do
         let(:license_type) { 'muth-over9000' }
 
         it 'returns a 404' do
-          expect(response.status).to eq(404)
+          expect(response).to have_http_status(404)
         end
       end
     end

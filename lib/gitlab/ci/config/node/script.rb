@@ -11,16 +11,14 @@ module Gitlab
         # implementation in Runner.
         #
         class Script < Entry
-          include ValidationHelpers
+          include Validatable
 
-          def value
-            @value.join("\n")
+          validations do
+            validates :config, array_of_strings: true
           end
 
-          def validate!
-            unless validate_array_of_strings(@value)
-              @errors << 'before_script should be an array of strings'
-            end
+          def value
+            @config.join("\n")
           end
         end
       end

@@ -1,3 +1,4 @@
+require 'spec_helper'
 require_relative '../../config/initializers/1_settings'
 
 describe Settings, lib: true do

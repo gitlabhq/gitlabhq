@@ -160,7 +160,6 @@ describe 'AwardsHandler', ->
       expect($('[data-emoji=angel]').is(':visible')).toBe no
       expect($('[data-emoji=anger]').is(':visible')).toBe no
       expect($('[data-emoji=alien]').is(':visible')).toBe yes
-      expect($('h5.emoji-search').is(':visible')).toBe yes
 
 
   describe 'emoji menu', ->
