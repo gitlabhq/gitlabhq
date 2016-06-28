@@ -62,19 +62,35 @@ describe "Admin Runners" do
     end
 
     describe 'enable/create' do
-      before do
-        @project1.runners << runner
-        visit admin_runner_path(runner)
+      shared_examples 'enable runners' do
+        it 'enables a runner for a project' do
+          within '.unassigned-projects' do
+            click_on 'Enable'
+          end
+
+          assigned_project = page.find('.assigned-projects')
+
+          expect(assigned_project).to have_content(@project2.path)
+        end
       end
 
-      it 'enables specific runner for project' do
-        within '.unassigned-projects' do
-          click_on 'Enable'
+      context 'with specific runner' do
+        before do
+          @project1.runners << runner
+          visit admin_runner_path(runner)
         end
 
-        assigned_project = page.find('.assigned-projects')
+        it_behaves_like 'enable runners'
+      end
 
-        expect(assigned_project).to have_content(@project2.path)
+      context 'with shared runner' do
+        before do
+          @project1.destroy
+          runner.update(is_shared: true)
+          visit admin_runner_path(runner)
+        end
+
+        it_behaves_like 'enable runners'
       end
     end
 

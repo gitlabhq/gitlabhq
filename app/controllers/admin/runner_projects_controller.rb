@@ -4,7 +4,7 @@ class Admin::RunnerProjectsController < Admin::ApplicationController
   def create
     @runner = Ci::Runner.find(params[:runner_project][:runner_id])
 
-    return head(403) if @runner.is_shared? || @runner.locked?
+    return head(403) if @runner.locked?
 
     runner_project = @runner.assign_to(@project, current_user)
 
