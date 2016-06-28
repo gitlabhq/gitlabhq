@@ -122,6 +122,95 @@ describe 'Git HTTP requests', lib: true do
         end
       end
 
+      context "when Kerberos token is provided" do
+        let(:env) { {spnego_request_token: 'opaque_request_token'} }
+
+        before do
+          allow_any_instance_of(Grack::Auth).to receive(:allow_kerberos_auth?).and_return(true)
+        end
+
+        context "when authentication fails because of invalid Kerberos token" do
+          before do
+            allow_any_instance_of(Grack::Auth::Request).to receive(:spnego_credentials!).and_return(nil)
+          end
+
+          it "responds with status 401" do
+            download(path, env) do |response|
+              expect(response.status).to eq(401)
+            end
+          end
+        end
+
+        context "when authentication fails because of unknown Kerberos identity" do
+          before do
+            allow_any_instance_of(Grack::Auth::Request).to receive(:spnego_credentials!).and_return("mylogin@FOO.COM")
+          end
+
+          it "responds with status 401" do
+            download(path, env) do |response|
+              expect(response.status).to eq(401)
+            end
+          end
+
+        end
+
+        context "when authentication succeeds" do
+          before do
+            allow_any_instance_of(Grack::Auth::Request).to receive(:spnego_credentials!).and_return("mylogin@FOO.COM")
+            user.identities.build(provider: "kerberos", extern_uid:"mylogin@FOO.COM").save
+          end
+
+          context "when the user has access to the project" do
+            before do
+              project.team << [user, :master]
+            end
+
+            context "when the user is blocked" do
+              before do
+                user.block
+                project.team << [user, :master]
+              end
+
+              it "responds with status 404" do
+                download(path, env) do |response|
+                  expect(response.status).to eq(404)
+                end
+              end
+            end
+
+            context "when the user isn't blocked" do
+              it "responds with status 200" do
+                download(path, env) do |response|
+                  expect(response.status).to eq(200)
+                end
+              end
+            end
+
+            it "complies with RFC4559" do
+              allow_any_instance_of(Grack::Auth::Request).to receive(:spnego_response_token).and_return("opaque_response_token")
+              download(path, env) do |response|
+                expect(response.headers['WWW-Authenticate'].split("\n")).to include("Negotiate #{::Base64.strict_encode64('opaque_response_token')}")
+              end
+            end
+          end
+
+          context "when the user doesn't have access to the project" do
+            it "responds with status 404" do
+              download(path, env) do |response|
+                expect(response.status).to eq(404)
+              end
+            end
+
+            it "complies with RFC4559" do
+              allow_any_instance_of(Grack::Auth::Request).to receive(:spnego_response_token).and_return("opaque_response_token")
+              download(path, env) do |response|
+                expect(response.headers['WWW-Authenticate'].split("\n")).to include("Negotiate #{::Base64.strict_encode64('opaque_response_token')}")
+              end
+            end
+          end
+        end
+      end
+
       context "when username and password are provided" do
         let(:env) { { user: user.username, password: 'nope' } }
 
@@ -350,23 +439,23 @@ describe 'Git HTTP requests', lib: true do
   end
 
   def clone_get(project, options={})
-    get "/#{project}/info/refs", { service: 'git-upload-pack' }, auth_env(*options.values_at(:user, :password))
+    get "/#{project}/info/refs", { service: 'git-upload-pack' }, auth_env(*options.values_at(:user, :password, :spnego_request_token))
   end
 
   def clone_post(project, options={})
-    post "/#{project}/git-upload-pack", {}, auth_env(*options.values_at(:user, :password))
+    post "/#{project}/git-upload-pack", {}, auth_env(*options.values_at(:user, :password, :spnego_request_token))
   end
 
   def push_get(project, options={})
-    get "/#{project}/info/refs", { service: 'git-receive-pack' }, auth_env(*options.values_at(:user, :password))
+    get "/#{project}/info/refs", { service: 'git-receive-pack' }, auth_env(*options.values_at(:user, :password, :spnego_request_token))
   end
 
   def push_post(project, options={})
-    post "/#{project}/git-receive-pack", {}, auth_env(*options.values_at(:user, :password))
+    post "/#{project}/git-receive-pack", {}, auth_env(*options.values_at(:user, :password, :spnego_request_token))
   end
 
-  def download(project, user: nil, password: nil)
-    args = [project, { user: user, password: password }]
+  def download(project, user: nil, password: nil, spnego_request_token: nil)
+    args = [project, { user: user, password: password, spnego_request_token: spnego_request_token }]
 
     clone_get(*args)
     yield response
@@ -375,8 +464,8 @@ describe 'Git HTTP requests', lib: true do
     yield response
   end
 
-  def upload(project, user: nil, password: nil)
-    args = [project, { user: user, password: password }]
+  def upload(project, user: nil, password: nil, spnego_request_token: nil)
+    args = [project, { user: user, password: password, spnego_request_token: spnego_request_token }]
 
     push_get(*args)
     yield response
@@ -385,11 +474,14 @@ describe 'Git HTTP requests', lib: true do
     yield response
   end
 
-  def auth_env(user, password)
+  def auth_env(user, password, spnego_request_token)
+    env = {}
     if user && password
-      { 'HTTP_AUTHORIZATION' => ActionController::HttpAuthentication::Basic.encode_credentials(user, password) }
-    else
-      {}
+      env['HTTP_AUTHORIZATION'] = ActionController::HttpAuthentication::Basic.encode_credentials(user, password)
+    elsif spnego_request_token
+      env['HTTP_AUTHORIZATION'] = "Negotiate #{::Base64.strict_encode64('opaque_request_token')}"
     end
+
+    env
   end
 end
