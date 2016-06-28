@@ -5,6 +5,7 @@ module Ci
     belongs_to :erased_by, class_name: 'User'
 
     serialize :options
+    serialize :artifacts_sizes, JSON
 
     validates :coverage, numericality: true, allow_blank: true
     validates_presence_of :ref
@@ -328,8 +329,19 @@ module Ci
       artifacts? && artifacts_metadata.exists?
     end
 
+    def artifacts_metadata_sizes
+      return unless artifacts_metadata?
+
+      entries = new_artifacts_metadata('', recursive: true).find_entries!
+
+      entries.inject({}) do |result, (path, metadata)|
+        result[path] = metadata[:size] if metadata[:size]
+        result
+      end
+    end
+
     def artifacts_metadata_entry(path, **options)
-      Gitlab::Ci::Build::Artifacts::Metadata.new(artifacts_metadata.path, path, **options).to_entry
+      new_artifacts_metadata(path, **options).to_entry
     end
 
     def erase_artifacts!
@@ -374,6 +386,13 @@ module Ci
     end
 
     private
+
+    def new_artifacts_metadata(path, **options)
+      Gitlab::Ci::Build::Artifacts::Metadata.new(
+        artifacts_metadata.path,
+        path,
+        **options)
+    end
 
     def erase_trace!
       self.trace = nil
