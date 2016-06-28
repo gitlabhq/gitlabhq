@@ -342,8 +342,7 @@ $mc_blue_light:   #F2F6FA;
 $mc_yellow_dark:  #FFF4C9;
 $mc_yellow_light: #FFFFDF;
 
-
-.conflict {
+#conflicts {
   .head {
     .line_content {
       background-color: $mc_green_light !important;
@@ -367,5 +366,55 @@ $mc_yellow_light: #FFFFDF;
       background-color: $mc_blue_dark !important;
     }
   }
-}
 
+  .fa-ban {
+    font-size: 16px;
+    color: #CCCCCC;
+    margin-right: 3px;
+  }
+
+  .parallel {
+    .header {
+      .head {
+        background-color: $mc_green_dark !important;
+      }
+      .origin {
+        background-color: $mc_blue_dark !important;
+      }
+    }
+    .diff-line-num {
+      &.head {
+        background-color: $mc_green_dark !important;
+      }
+      &.origin {
+        background-color: $mc_blue_dark !important;
+      }
+    }
+    .line_content {
+      &.head {
+        background-color: $mc_green_light;
+      }
+      &.origin {
+        background-color: $mc_blue_light;
+      }
+    }
+  }
+
+  .diff-file {
+    margin-bottom: 0;
+    border-radius: 0;
+    &:first-child {
+      border-radius: 3px 3px 0 0;
+    }
+    &:last-child {
+      border-radius: 0 0 3px 3px;
+    }
+  }
+
+  .file-holder {
+    border-bottom: none;
+    &:last-child {
+      border-bottom: 1px solid $border-color;
+    }
+  }
+}

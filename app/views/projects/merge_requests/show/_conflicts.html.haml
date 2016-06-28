@@ -16,95 +16,422 @@
   .diff-wrap-lines .line_content {
     white-space: normal;
   }
+  .merge-request {
+    margin-right: 62px;
+  }
 
-.files
-  .diff-file.file-holder.conflict.unresolved
-    .file-title
-      %i.fa.fa-ban
-      %a
-        %span lib/component.js
-      .file-actions
-        %a.btn.btn-sm Edit
-        .btn-group
-          %a.btn.btn-sm Keep ours
-          %a.btn.btn-sm Take theirs
-        %a.btn.btn-sm View @ff9200
+/ - view = 'inline'
+- view = 'sidebyside'
 
-    .diff-content.diff-wrap-lines
-      %table.code.js-syntax-highlight.text-file.white
-        %tbody
-          %tr.line_holder.match
-            %td.diff-line-num.js-unfold.unfold
-              \...
-            %td.diff-line-num.js-unfold.unfold
-              \...
-            %td.line_content.match @@ -206,8 +206,7 @@ define(
-          %tr.line_holder
-            %td.diff-line-num
-              206
-            %td.diff-line-num
-              206
-            %td.line_content
-          %tr.line_holder
-            %td.diff-line-num
-              207
-            %td.diff-line-num
-              207
-            %td.line_content
-              &nbsp;&nbsp;&nbsp;&nbsp;var options = utils.merge.apply(utils, args);
-          %tr.line_holder.head.header
-            %td.diff-line-num
-              208
-            %td.diff-line-num
-              208
-            %td.line_content
-              %strong
-                &nbsp;&nbsp;HEAD //our changes
-          %tr.line_holder.head
-            %td.diff-line-num
-              209
-            %td.diff-line-num
-            %td.line_content
-              &nbsp;&nbsp;&nbsp;&nbsp;$(selector).each(function(i, rawNode) {
-          %tr.line_holder.head
-            %td.diff-line-num
-              210
-            %td.diff-line-num
-            %td.line_content
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;var rawNode = node.jQuery ? node[0] : node;
-          %tr.line_holder
-            %td.diff-line-num &nbsp;
-            %td.diff-line-num &nbsp;
-            %td.line_content &nbsp;
-          %tr.line_holder.origin
-            %td.diff-line-num
-            %td.diff-line-num
-              209
-            %td.line_content
-              &nbsp;&nbsp;&nbsp;&nbsp;$(selector).each(function(i, rawNode) {
-          %tr.line_holder.origin
-            %td.diff-line-num
-              211
-            %td.diff-line-num
-              201
-            %td.line_content
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;var componentInfo = registry.findComponentInfo(this)
-          %tr.line_holder.origin.header
-            %td.diff-line-num
-            %td.diff-line-num
-            %td.line_content
-              %strong
-                &nbsp;&nbsp;origin //their changes
-          %tr.line_holder
-            %td.diff-line-num
-              212
-            %td.diff-line-num
-              211
-            %td.line_content
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (componentInfo && componentInfo.isAttachedTo(rawNode)) {
-          %tr
-            %td.diff-line-num.js-unfold.js-unfold-bottom.unfold
-              \...
-            %td.diff-line-num.js-unfold.js-unfold-bottom.unfold
-              \...
-            %td.line_content.match
+- if view == 'sidebyside'
+  .files
+
+    .diff-file.file-holder.conflict.unresolved.parallel
+      .file-title
+        %i.fa.fa-ban
+        %a
+          %span lib/component.js
+        .file-actions
+          %a.btn.btn-sm Edit
+          .btn-group
+            %a.btn.btn-sm Keep ours
+            %a.btn.btn-sm Take theirs
+          %a.btn.btn-sm View @ff9200
+
+      .diff-content.diff-wrap-lines
+        %table.code.js-syntax-highlight.text-file.white
+          %tbody
+            %tr.line_holder.parallel
+              %td.diff-line-num 206
+              %td.line_content.parallel
+              %td.diff-line-num 206
+              %td.line_content.parallel
+            %tr.line_holder.parallel
+              %td.diff-line-num 207
+              %td.line_content.parallel &nbsp;&nbsp;&nbsp;&nbsp;var options = utils.merge.apply(utils, args);
+              %td.diff-line-num 207
+              %td.line_content.parallel &nbsp;&nbsp;&nbsp;&nbsp;var options = utils.merge.apply(utils, args);
+            %tr.line_holder.parallel.header
+              %td.diff-line-num.head
+              %td.line_content.parallel.head
+                %strong &nbsp;&nbsp;HEAD //our changes
+              %td.diff-line-num.origin
+              %td.line_content.parallel.origin
+                %strong &nbsp;&nbsp;origin //their changes
+            %tr.line_holder.parallel
+              %td.diff-line-num.head 208
+              %td.line_content.parallel.head &nbsp;&nbsp;&nbsp;&nbsp;$(selector).each(function(i, rawNode) {
+              %td.diff-line-num.origin 208
+              %td.line_content.parallel.origin &nbsp;&nbsp;&nbsp;&nbsp;$(selector).each(function(i, node) {
+            %tr.line_holder.parallel
+              %td.diff-line-num.head 209
+              %td.line_content.parallel.head &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;var componentInfo = registry.findComponentInfo(this)
+              %td.diff-line-num.origin 209
+              %td.line_content.parallel.origin &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (componentInfo && componentInfo.isAttachedTo(node)) {
+            %tr.line_holder.parallel
+              %td.diff-line-num.head 210
+              %td.line_content.parallel.head &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (componentInfo && componentInfo.isAttachedTo(rawNode)) {
+              %td.diff-line-num.origin 210
+              %td.line_content.parallel.origin &nbsp;
+
+
+    .diff-file.file-holder.conflict.unresolved.parallel
+      .file-title
+        %i.fa.fa-ban
+        %a
+          %span lib/component.js
+        .file-actions
+          %a.btn.btn-sm Edit
+          .btn-group
+            %a.btn.btn-sm Keep ours
+            %a.btn.btn-sm Take theirs
+          %a.btn.btn-sm View @ff9200
+
+      .diff-content.diff-wrap-lines
+        %table.code.js-syntax-highlight.text-file.white
+          %tbody
+            %tr.line_holder.parallel
+              %td.diff-line-num 206
+              %td.line_content.parallel
+              %td.diff-line-num 206
+              %td.line_content.parallel
+            %tr.line_holder.parallel
+              %td.diff-line-num 207
+              %td.line_content.parallel &nbsp;&nbsp;&nbsp;&nbsp;Component.attachTo = attachTo;
+              %td.diff-line-num 207
+              %td.line_content.parallel &nbsp;&nbsp;&nbsp;&nbsp;Component.attachTo = attachTo;
+            %tr.line_holder.parallel.header
+              %td.diff-line-num.head
+              %td.line_content.parallel.head
+                %strong &nbsp;&nbsp;HEAD //our changes
+              %td.diff-line-num.origin
+              %td.line_content.parallel.origin
+                %strong &nbsp;&nbsp;origin //their changes
+            %tr.line_holder.parallel
+              %td.diff-line-num.head 208
+              %td.line_content.parallel.head &nbsp;&nbsp;&nbsp;&nbsp;Component.removeFrom = removeFrom;
+              %td.diff-line-num.origin 208
+              %td.line_content.parallel.origin &nbsp;&nbsp;&nbsp;&nbsp;Component.mixin = function() {
+            %tr.line_holder.parallel
+              %td.diff-line-num.head &nbsp
+              %td.line_content.parallel.head &nbsp
+              %td.diff-line-num.origin 209
+              %td.line_content.parallel.origin &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;var newComponent = define(); //TODO: fix pretty print
+            %tr.line_holder.parallel
+              %td.diff-line-num.head &nbsp;
+              %td.line_content.parallel.head &nbsp
+              %td.diff-line-num.origin 210
+              %td.line_content.parallel.origin &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;var newPrototype = Object.create(Component.prototype);
+            %tr.line_holder.parallel
+              %td.diff-line-num.head &nbsp;
+              %td.line_content.parallel.head &nbsp
+              %td.diff-line-num.origin 211
+              %td.line_content.parallel.origin &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;newPrototype.mixedIn = [].concat(Component.prototype.mixedIn);
+            %tr.line_holder.parallel
+              %td.diff-line-num.head &nbsp;
+              %td.line_content.parallel.head &nbsp
+              %td.diff-line-num.origin 211
+              %td.line_content.parallel.origin &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;newPrototype.defaults = utils.merge(Component.prototype.defaults);
+            %tr.line_holder.parallel
+              %td.diff-line-num.head &nbsp;
+              %td.line_content.parallel.head &nbsp
+              %td.diff-line-num.origin 212
+              %td.line_content.parallel.origin &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;newPrototype.attrDef = Component.prototype.attrDef;
+            %tr.line_holder.parallel
+              %td.diff-line-num.head &nbsp;
+              %td.line_content.parallel.head &nbsp
+              %td.diff-line-num.origin 213
+              %td.line_content.parallel.origin &nbsp;&nbsp;&nbsp;&nbsp;}
+            %tr.line_holder.parallel
+              %td.diff-line-num 209
+              %td.line_content.parallel &nbsp;&nbsp;&nbsp;&nbsp;Component.teardownAll = teardownAll;
+              %td.diff-line-num 214
+              %td.line_content.parallel &nbsp;&nbsp;&nbsp;&nbsp;Component.teardownAll = teardownAll;
+
+
+    .diff-file.file-holder.conflict.unresolved.parallel
+      .file-title
+        %i.fa.fa-ban
+        %a
+          %span lib/registry.js
+        .file-actions
+          %a.btn.btn-sm Edit
+          .btn-group
+            %a.btn.btn-sm Keep ours
+            %a.btn.btn-sm Take theirs
+          %a.btn.btn-sm View @ff9200
+
+      .diff-content.diff-wrap-lines
+        %table.code.js-syntax-highlight.text-file.white
+          %tbody
+            %tr.line_holder
+              %td.diff-line-num 159
+              %td.line_content.parallel
+              %td.diff-line-num 159
+              %td.line_content.parallel
+            %tr.line_holder
+              %td.diff-line-num 160
+              %td.line_content.parallel &nbsp;&nbsp;&nbsp;&nbsp;var thisInstanceInfo = this.allInstances[k];
+              %td.diff-line-num 160
+              %td.line_content.parallel &nbsp;&nbsp;&nbsp;&nbsp;var thisInstanceInfo = this.allInstances[k];
+            %tr.line_holder.parallel.header
+              %td.diff-line-num.head
+              %td.line_content.parallel.head
+                %strong &nbsp;&nbsp;HEAD //our changes
+              %td.diff-line-num.origin
+              %td.line_content.parallel.origin
+                %strong &nbsp;&nbsp;origin //their changes
+            %tr.line_holder
+              %td.diff-line-num.head 161
+              %td.line_content.parallel.head &nbsp;&nbsp;&nbsp;&nbsp;if(thisInstanceInfo.instance.node === node) {
+              %td.diff-line-num.origin 161
+              %td.line_content.parallel.origin &nbsp;&nbsp;&nbsp;&nbsp;if (thisInstanceInfo.instance.node === node) {
+            %tr.line_holder
+              %td.diff-line-num 162
+              %td.line_content.parallel &nbsp;&nbsp;&nbsp;&nbsp;result.push(thisInstanceInfo);
+              %td.diff-line-num 162
+              %td.line_content.parallel &nbsp;&nbsp;&nbsp;&nbsp;result.push(thisInstanceInfo);
+
+
+  .content-block.oneline-block.files-changed
+    %button{ type: 'button', class: 'btn btn-success append-right-10 js-submit-button disabled' } Submit all
+
+    %strong.resolved-count 0
+    of
+    %strong.total-count 3
+    conflicts have been resolved
+
+    %button{ type: 'button', class: 'btn btn-cancel' } Cancel
+
+- else
+
+  .files
+
+    .diff-file.file-holder.conflict.unresolved
+      .file-title
+        %i.fa.fa-ban
+        %a
+          %span lib/component.js
+        .file-actions
+          %a.btn.btn-sm Edit
+          .btn-group
+            %a.btn.btn-sm Keep ours
+            %a.btn.btn-sm Take theirs
+          %a.btn.btn-sm View @ff9200
+
+      .diff-content.diff-wrap-lines
+        %table.code.js-syntax-highlight.text-file.white
+          %tbody
+            %tr.line_holder.match
+              %td.diff-line-num.js-unfold.unfold ...
+              %td.diff-line-num.js-unfold.unfold ...
+              %td.line_content.match @@ -206,8 +206,7 @@ define(
+            %tr.line_holder
+              %td.diff-line-num 206
+              %td.diff-line-num 206
+              %td.line_content &nbsp;
+            %tr.line_holder
+              %td.diff-line-num 207
+              %td.diff-line-num 207
+              %td.line_content &nbsp;&nbsp;&nbsp;&nbsp;var options = utils.merge.apply(utils, args);
+            %tr.line_holder.head.header
+              %td.diff-line-num &nbsp;
+              %td.diff-line-num &nbsp;
+              %td.line_content
+                %strong
+                  &nbsp;&nbsp;HEAD //our changes
+            %tr.line_holder.head
+              %td.diff-line-num
+                208
+              %td.diff-line-num
+              %td.line_content
+                &nbsp;&nbsp;&nbsp;&nbsp;$(selector).each(function(i, rawNode) {
+            %tr.line_holder.head
+              %td.diff-line-num 210
+              %td.diff-line-num &nbsp;
+              %td.line_content &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;var componentInfo = registry.findComponentInfo(this)
+            %tr.line_holder.head
+              %td.diff-line-num 211
+              %td.diff-line-num &nbsp;
+              %td.line_content &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (componentInfo && componentInfo.isAttachedTo(rawNode)) {
+            %tr.line_holder
+              %td.diff-line-num &nbsp;
+              %td.diff-line-num &nbsp;
+              %td.line_content  &nbsp;
+            %tr.line_holder.origin
+              %td.diff-line-num &nbsp;
+              %td.diff-line-num 209
+              %td.line_content &nbsp;&nbsp;&nbsp;&nbsp;$(selector).each(function(i, node) {
+            %tr.line_holder.origin
+              %td.diff-line-num 211
+              %td.diff-line-num 210
+              %td.line_content &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (componentInfo && componentInfo.isAttachedTo(node)) {
+            %tr.line_holder.origin.header
+              %td.diff-line-num &nbsp;
+              %td.diff-line-num &nbsp;
+              %td.line_content
+                %strong
+                  &nbsp;&nbsp;origin //their changes
+            %tr.line_holder
+              %td.diff-line-num 212
+              %td.diff-line-num 202
+              %td.line_content &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (componentInfo && componentInfo.isAttachedTo(rawNode)) {
+            %tr
+              %td.diff-line-num.js-unfold.js-unfold-bottom.unfold ...
+              %td.diff-line-num.js-unfold.js-unfold-bottom.unfold ...
+              %td.line_content.match &nbsp;
+
+
+    .diff-file.file-holder.conflict.unresolved
+      .file-title
+        %i.fa.fa-ban
+        %a
+          %span lib/component.js
+        .file-actions
+          %a.btn.btn-sm Edit
+          .btn-group
+            %a.btn.btn-sm Keep ours
+            %a.btn.btn-sm Take theirs
+          %a.btn.btn-sm View @ff9200
+
+      .diff-content.diff-wrap-lines
+        %table.code.js-syntax-highlight.text-file.white
+          %tbody
+            %tr.line_holder.match
+              %td.diff-line-num.js-unfold.unfold ...
+              %td.diff-line-num.js-unfold.unfold ...
+              %td.line_content.match @@ -206,8 +206,7 @@ define(
+            %tr.line_holder
+              %td.diff-line-num 206
+              %td.diff-line-num 206
+              %td.line_content &nbsp;
+            %tr.line_holder
+              %td.diff-line-num 217
+              %td.diff-line-num 207
+              %td.line_content &nbsp;&nbsp;&nbsp;&nbsp;Component.attachTo = attachTo;
+            %tr.line_holder.head.header
+              %td.diff-line-num &nbsp;
+              %td.diff-line-num &nbsp;
+              %td.line_content
+                %strong
+                  &nbsp;&nbsp;HEAD //our changes
+            %tr.line_holder.head
+              %td.diff-line-num 209
+              %td.diff-line-num &nbsp;
+              %td.line_content &nbsp;&nbsp;&nbsp;&nbsp;Component.removeFrom = removeFrom;
+            %tr.line_holder
+              %td.diff-line-num &nbsp;
+              %td.diff-line-num &nbsp;
+              %td.line_content &nbsp;
+            %tr.line_holder.origin
+              %td.diff-line-num &nbsp;
+              %td.diff-line-num 209
+              %td.line_content &nbsp;&nbsp;&nbsp;&nbsp;Component.mixin = function() {
+            %tr.line_holder.origin
+              %td.diff-line-num &nbsp;
+              %td.diff-line-num 210
+              %td.line_content &nbsp;&nbsp;&nbsp;&nbsp;var newComponent = define(); //TODO: fix pretty print
+            %tr.line_holder.origin
+              %td.diff-line-num &nbsp;
+              %td.diff-line-num 211
+              %td.line_content &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;var newPrototype = Object.create(Component.prototype);
+            %tr.line_holder.origin
+              %td.diff-line-num &nbsp;
+              %td.diff-line-num 212
+              %td.line_content &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;newPrototype.mixedIn = [].concat(Component.prototype.mixedIn);
+            %tr.line_holder.origin
+              %td.diff-line-num &nbsp;
+              %td.diff-line-num 213
+              %td.line_content &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;newPrototype.defaults = utils.merge(Component.prototype.defaults);
+            %tr.line_holder.origin
+              %td.diff-line-num &nbsp;
+              %td.diff-line-num 214
+              %td.line_content &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;newPrototype.attrDef = Component.prototype.attrDef;
+            %tr.line_holder.origin
+              %td.diff-line-num &nbsp;
+              %td.diff-line-num 215
+              %td.line_content &nbsp;&nbsp;&nbsp;&nbsp;}
+            %tr.line_holder.origin.header
+              %td.diff-line-num &nbsp;
+              %td.diff-line-num &nbsp;
+              %td.line_content
+                %strong
+                  &nbsp;&nbsp;origin //their changes
+            %tr.line_holder
+              %td.diff-line-num 210
+              %td.diff-line-num 216
+              %td.line_content &nbsp;&nbsp;&nbsp;&nbsp;Component.teardownAll = teardownAll;
+            %tr
+              %td.diff-line-num.js-unfold.js-unfold-bottom.unfold ...
+              %td.diff-line-num.js-unfold.js-unfold-bottom.unfold ...
+              %td.line_content.match &nbsp;
+
+
+    .diff-file.file-holder.conflict.unresolved
+      .file-title
+        %i.fa.fa-ban
+        %a
+          %span lib/registry.js
+        .file-actions
+          %a.btn.btn-sm Edit
+          .btn-group
+            %a.btn.btn-sm Keep ours
+            %a.btn.btn-sm Take theirs
+          %a.btn.btn-sm View @ff9200
+
+      .diff-content.diff-wrap-lines
+        %table.code.js-syntax-highlight.text-file.white
+          %tbody
+            %tr.line_holder.match
+              %td.diff-line-num.js-unfold.unfold ...
+              %td.diff-line-num.js-unfold.unfold ...
+              %td.line_content.match @@ -159,8 +159,7 @@ Object.keys(this.allInstances).forEach(function(k) {
+            %tr.line_holder
+              %td.diff-line-num 159
+              %td.diff-line-num 159
+              %td.line_content
+            %tr.line_holder
+              %td.diff-line-num 160
+              %td.diff-line-num 160
+              %td.line_content &nbsp;&nbsp;&nbsp;&nbsp;var thisInstanceInfo = this.allInstances[k];
+            %tr.line_holder.head.header
+              %td.diff-line-num &nbsp;
+              %td.diff-line-num &nbsp;
+              %td.line_content
+                %strong &nbsp;&nbsp;HEAD //our changes
+            %tr.line_holder.head
+              %td.diff-line-num 161
+              %td.diff-line-num 161
+              %td.line_content &nbsp;&nbsp;&nbsp;&nbsp;if(thisInstanceInfo.instance.node === node) {
+            %tr.line_holder
+              %td.diff-line-num &nbsp;
+              %td.diff-line-num &nbsp;
+              %td.line_content &nbsp;
+            %tr.line_holder.origin
+              %td.diff-line-num 161
+              %td.diff-line-num 161
+              %td.line_content &nbsp;&nbsp;&nbsp;&nbsp;if (thisInstanceInfo.instance.node === node) {
+            %tr.line_holder.origin.header
+              %td.diff-line-num
+              %td.diff-line-num
+              %td.line_content
+                %strong &nbsp;&nbsp;origin //their changes
+            %tr.line_holder
+              %td.diff-line-num 162
+              %td.diff-line-num 162
+              %td.line_content &nbsp;&nbsp;&nbsp;&nbsp;result.push(thisInstanceInfo);
+            %tr
+              %td.diff-line-num.js-unfold.js-unfold-bottom.unfold ...
+              %td.diff-line-num.js-unfold.js-unfold-bottom.unfold ...
+              %td.line_content.match
+
+
+  .content-block.oneline-block.files-changed
+    %button{ type: 'button', class: 'btn btn-success append-right-10 js-submit-button disabled' } Submit all
+
+    %strong.resolved-count 0
+    of
+    %strong.total-count 3
+    conflicts have been resolved
+
+    %button{ type: 'button', class: 'btn btn-cancel' } Cancel
