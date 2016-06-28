@@ -482,6 +482,7 @@ describe Ci::API::API do
           expect(response).to have_http_status(200)
           expect(build.artifacts_file.exists?).to be_falsy
           expect(build.artifacts_metadata.exists?).to be_falsy
+          expect(build.artifacts_size).to be_falsy
         end
       end
 

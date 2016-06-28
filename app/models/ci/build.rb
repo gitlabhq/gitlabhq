@@ -340,6 +340,7 @@ module Ci
     def erase_artifacts!
       remove_artifacts_file!
       remove_artifacts_metadata!
+      self.artifacts_size = nil
       save
     end
 
