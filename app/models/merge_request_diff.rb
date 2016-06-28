@@ -144,6 +144,12 @@ class MergeRequestDiff < ActiveRecord::Base
 
   def load_diffs(raw, options)
     if raw.respond_to?(:each)
+      if options[:paths]
+        raw = raw.select do |diff|
+          options[:paths].include?(diff[:new_path])
+        end
+      end
+
       Gitlab::Git::DiffCollection.new(raw, options)
     else
       Gitlab::Git::DiffCollection.new([])

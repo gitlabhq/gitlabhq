@@ -19,7 +19,7 @@ class Projects::CommitController < Projects::ApplicationController
 
     @grouped_diff_notes = commit.notes.grouped_diff_notes
     @notes = commit.notes.non_diff_notes.fresh
-    
+
     Banzai::NoteRenderer.render(
       @grouped_diff_notes.values.flatten + @notes,
       @project,
@@ -39,6 +39,24 @@ class Projects::CommitController < Projects::ApplicationController
       format.diff  { render text: @commit.to_diff }
       format.patch { render text: @commit.to_patch }
     end
+  end
+
+  def diff_for_path
+    return git_not_found! unless commit
+
+    opts = diff_options
+    opts[:ignore_whitespace_change] = true if params[:format] == 'diff'
+
+    diffs = commit.diffs(opts.merge(paths: [params[:path]]))
+    diff_refs = [commit.parent || commit, commit]
+
+    @comments_target = {
+      noteable_type: 'Commit',
+      commit_id: @commit.id
+    }
+    @grouped_diff_notes = {}
+
+    render_diff_for_path(diffs, diff_refs, @project)
   end
 
   def builds

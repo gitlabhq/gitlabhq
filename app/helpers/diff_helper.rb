@@ -8,6 +8,25 @@ module DiffHelper
     [marked_old_line, marked_new_line]
   end
 
+  def render_diff_for_path(diffs, diff_refs, project)
+    diff_file = safe_diff_files(diffs, diff_refs).first
+
+    return render_404 unless diff_file
+
+    diff_commit = commit_for_diff(diff_file)
+    blob = project.repository.blob_for_diff(diff_commit, diff_file)
+
+    locals = {
+      diff_file: diff_file,
+      diff_commit: diff_commit,
+      diff_refs: diff_refs,
+      blob: blob,
+      project: project
+    }
+
+    render json: { html: view_to_html_string('projects/diffs/_content', locals) }
+  end
+
   def diff_view
     diff_views = %w(inline parallel)
 

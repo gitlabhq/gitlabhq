@@ -6,7 +6,7 @@ class Projects::CompareController < Projects::ApplicationController
   # Authorize
   before_action :require_non_empty_project
   before_action :authorize_download_code!
-  before_action :assign_ref_vars, only: [:index, :show]
+  before_action :assign_ref_vars, only: [:index, :show, :diff_for_path]
   before_action :merge_request, only: [:index, :show]
 
   def index
@@ -33,6 +33,22 @@ class Projects::CompareController < Projects::ApplicationController
       @diff_notes_disabled = true
       @grouped_diff_notes = {}
     end
+  end
+
+  def diff_for_path
+    compare = CompareService.new.
+      execute(@project, @head_ref, @project, @base_ref, diff_options)
+
+    return render_404 unless compare
+
+    @commit = @project.commit(@head_ref)
+    @base_commit = @project.merge_base_commit(@base_ref, @head_ref)
+    diffs = compare.diffs(diff_options.merge(paths: [params[:path]]))
+
+    @diff_notes_disabled = true
+    @grouped_diff_notes = {}
+
+    render_diff_for_path(diffs, [@base_commit, @commit], @project)
   end
 
   def create
