@@ -344,14 +344,11 @@ describe Ci::API::API do
 
           context 'should post artifacts file and metadata file' do
             let!(:artifacts) { file_upload }
-            let!(:metadata) do
-              fixture_file_upload(
-                Rails.root + 'spec/fixtures/ci_build_artifacts_metadata.gz')
-            end
+            let!(:metadata) { file_upload2 }
 
             let(:stored_artifacts_file) { build.reload.artifacts_file.file }
             let(:stored_metadata_file) { build.reload.artifacts_metadata.file }
-            let(:stored_artifacts_sizes) { build.reload.artifacts_sizes }
+            let(:stored_artifacts_size) { build.reload.artifacts_size }
 
             before do
               post(post_url, post_data, headers_with_token)
@@ -369,12 +366,7 @@ describe Ci::API::API do
                 expect(response).to have_http_status(201)
                 expect(stored_artifacts_file.original_filename).to eq(artifacts.original_filename)
                 expect(stored_metadata_file.original_filename).to eq(metadata.original_filename)
-                expect(stored_artifacts_sizes).to eq(
-                  'ci_artifacts.txt' => 27,
-                  'other_artifacts_0.1.2/another-subdirectory/banana_sample.gif' => 71759,
-                  'other_artifacts_0.1.2/doc_sample.txt' => 1314,
-                  'rails_sample.jpg' => 35255,
-                  'tests_encoding/utf8 test dir ✓/regular_file_2' => 7)
+                expect(stored_artifacts_size).to eq(71759)
               end
             end
 
