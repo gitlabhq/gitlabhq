@@ -12,6 +12,8 @@ module Gitlab
 
       USER_REFERENCES = %w[author_id assignee_id updated_by_id user_id].freeze
 
+      BUILD_MODELS = %w[Ci::Build commit_status].freeze
+
       def self.create(*args)
         new(*args).create
       end
@@ -70,7 +72,7 @@ module Gitlab
       end
 
       def generate_imported_object
-        if @relation_sym == 'commit_status' # call #trace= method after assigning the other attributes
+        if BUILD_MODELS.include?(@relation_name) # call #trace= method after assigning the other attributes
           trace = @relation_hash.delete('trace')
           imported_object do |object|
             object.trace = trace

@@ -2,8 +2,7 @@
   .panel-heading
     %strong #{@group.name}
     group members
-    %small
-      (#{members.count})
+    %span.badge= members.size
     - if can?(current_user, :admin_group_member, @group)
       .controls
         = link_to 'Manage group members',

@@ -1,11 +1,6 @@
 require 'spec_helper'
 
 describe VisibilityLevelHelper do
-  include Haml::Helpers
-
-  before :all do
-    init_haml_helpers
-  end
 
   let(:project)          { build(:project) }
   let(:group)            { build(:group) }

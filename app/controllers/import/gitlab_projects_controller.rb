@@ -12,9 +12,13 @@ class Import::GitlabProjectsController < Import::BaseController
       return redirect_back_or_default(options: { alert: "You need to upload a GitLab project export archive." })
     end
 
+    imported_file = project_params[:file].path + "-import"
+
+    FileUtils.copy_entry(project_params[:file].path, imported_file)
+
     @project = Gitlab::ImportExport::ProjectCreator.new(project_params[:namespace_id],
                                                         current_user,
-                                                        File.expand_path(project_params[:file].path),
+                                                        File.expand_path(imported_file),
                                                         project_params[:path]).execute
 
     if @project.saved?

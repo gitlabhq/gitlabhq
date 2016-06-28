@@ -77,7 +77,7 @@ describe ProjectsController do
           get :show, namespace_id: public_project.namespace.path, id: public_project.path
 
           expect(assigns(:project)).to eq(public_project)
-          expect(response.status).to eq(200)
+          expect(response).to have_http_status(200)
         end
       end
 
@@ -101,7 +101,7 @@ describe ProjectsController do
               get :show, namespace_id: public_project.namespace.path, id: public_project.path.upcase
 
               expect(assigns(:project)).to eq(other_project)
-              expect(response.status).to eq(200)
+              expect(response).to have_http_status(200)
             end
           end
         end
@@ -146,7 +146,7 @@ describe ProjectsController do
 
       expect(project.repository.path).to include(new_path)
       expect(assigns(:repository).path).to eq(project.repository.path)
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(200)
     end
   end
 
@@ -161,7 +161,7 @@ describe ProjectsController do
       delete :destroy, namespace_id: project.namespace.path, id: project.path
 
       expect { Project.find(orig_id) }.to raise_error(ActiveRecord::RecordNotFound)
-      expect(response.status).to eq(302)
+      expect(response).to have_http_status(302)
       expect(response).to redirect_to(dashboard_projects_path)
     end
   end
@@ -234,7 +234,27 @@ describe ProjectsController do
       delete(:remove_fork,
           namespace_id: project.namespace.to_param,
           id: project.to_param, format: :js)
-      expect(response.status).to eq(401)
+      expect(response).to have_http_status(401)
+    end
+  end
+
+  describe "GET refs" do
+    it "should get a list of branches and tags" do
+      get :refs, namespace_id: public_project.namespace.path, id: public_project.path
+
+      parsed_body = JSON.parse(response.body)
+      expect(parsed_body["Branches"]).to include("master")
+      expect(parsed_body["Tags"]).to include("v1.0.0")
+      expect(parsed_body["Commits"]).to be_nil
+    end
+
+    it "should get a list of branches, tags and commits" do
+      get :refs, namespace_id: public_project.namespace.path, id: public_project.path, ref: "123456"
+
+      parsed_body = JSON.parse(response.body)
+      expect(parsed_body["Branches"]).to include("master")
+      expect(parsed_body["Tags"]).to include("v1.0.0")
+      expect(parsed_body["Commits"]).to include("123456")
     end
   end
 end

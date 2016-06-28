@@ -68,12 +68,15 @@ issuable_created = false
     Turbolinks.visit(issuesUrl);
 
   initChecks: ->
+    @issuableBulkActions = $('.bulk-update').data('bulkActions')
+
     $('.check_all_issues').off('click').on('click', ->
       $('.selected_issue').prop('checked', @checked)
       Issuable.checkChanged()
     )
 
-    $('.selected_issue').off('change').on('change', Issuable.checkChanged)
+    $('.selected_issue').off('change').on('change', Issuable.checkChanged.bind(@))
+
 
   checkChanged: ->
     checked_issues = $('.selected_issue:checked')
@@ -88,3 +91,6 @@ issuable_created = false
       $('#update_issues_ids').val []
       $('.issues_bulk_update').hide()
       $('.issues-other-filters').show()
+      @issuableBulkActions.willUpdateLabels = false
+
+    return true

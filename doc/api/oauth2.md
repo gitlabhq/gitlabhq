@@ -65,6 +65,13 @@ curl -H "Authorization: Bearer OAUTH-TOKEN" https://localhost:3000/api/v3/user
 
 ## Resource Owner Password Credentials
 
+## Deprecation Notice
+
+1. Starting in GitLab 9.0, the Resource Owner Password Credentials will be *disabled* for users with two-factor authentication turned on.
+2. These users can access the API using [personal access tokens] instead.
+
+---
+
 In this flow, a token is requested in exchange for the resource owner credentials (username and password). 
 The credentials should only be used when there is a high degree of trust between the resource owner and the client (e.g. the
 client is part of the device operating system or a highly privileged application), and when other authorization grant types are not
@@ -100,3 +107,5 @@ client = OAuth2::Client.new('the_client_id', 'the_client_secret', :site => "http
 access_token = client.password.get_token('user@example.com', 'sekret')
 puts access_token.token
 ```
+
+[personal access tokens]: ./README.md#personal-access-tokens

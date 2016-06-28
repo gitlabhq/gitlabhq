@@ -26,7 +26,6 @@ header {
       text-align: center;
 
       #tanuki-logo, img {
-        width: 36px;
         height: 36px;
       }
     }
@@ -131,6 +130,10 @@ header {
       top: 7px;
       transition-duration: .3s;
       z-index: 999;
+
+      svg, img {
+        height: 36px;
+      }
 
       &:hover {
         cursor: pointer;

@@ -295,7 +295,7 @@ Rails.application.routes.draw do
           post :repository_check
         end
 
-        resources :runner_projects
+        resources :runner_projects, only: [:create, :destroy]
       end
     end
 
@@ -479,6 +479,7 @@ Rails.application.routes.draw do
         get :download_export
         get :autocomplete_sources
         get :activity
+        get :refs
       end
 
       scope module: :projects do

@@ -25,6 +25,7 @@ class User < ActiveRecord::Base
   attr_encrypted :otp_secret,
     key:       Gitlab::Application.config.secret_key_base,
     mode:      :per_attribute_iv_and_salt,
+    insecure_mode: true,
     algorithm: 'aes-256-cbc'
 
   devise :two_factor_authenticatable,
@@ -57,7 +58,7 @@ class User < ActiveRecord::Base
 
   # Groups
   has_many :members, dependent: :destroy
-  has_many :group_members, dependent: :destroy, source: 'GroupMember'
+  has_many :group_members, -> { where(requested_at: nil) }, dependent: :destroy, source: 'GroupMember'
   has_many :groups, through: :group_members
   has_many :owned_groups, -> { where members: { access_level: Gitlab::Access::OWNER } }, through: :group_members, source: :group
   has_many :masters_groups, -> { where members: { access_level: Gitlab::Access::MASTER } }, through: :group_members, source: :group
@@ -65,7 +66,7 @@ class User < ActiveRecord::Base
   # Projects
   has_many :groups_projects,          through: :groups, source: :projects
   has_many :personal_projects,        through: :namespace, source: :projects
-  has_many :project_members,          dependent: :destroy, class_name: 'ProjectMember'
+  has_many :project_members, -> { where(requested_at: nil) }, dependent: :destroy, class_name: 'ProjectMember'
   has_many :projects,                 through: :project_members
   has_many :created_projects,         foreign_key: :creator_id, class_name: 'Project'
   has_many :users_star_projects, dependent: :destroy
@@ -308,7 +309,7 @@ class User < ActiveRecord::Base
 
   def generate_password
     if self.force_random_password
-      self.password = self.password_confirmation = Devise.friendly_token.first(8)
+      self.password = self.password_confirmation = Devise.friendly_token.first(Devise.password_length.min)
     end
   end
 
@@ -487,9 +488,8 @@ class User < ActiveRecord::Base
     events.recent.find do |event|
       project = Project.find_by_id(event.project_id)
       next unless project
-      repo = project.repository
 
-      if repo.branch_names.include?(event.branch_name)
+      if project.repository.branch_exists?(event.branch_name)
         merge_requests = MergeRequest.where("created_at >= ?", event.created_at).
             where(source_project_id: project.id,
                   source_branch: event.branch_name)

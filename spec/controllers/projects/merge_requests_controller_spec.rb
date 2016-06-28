@@ -264,6 +264,18 @@ describe Projects::MergeRequestsController do
 
           merge_when_build_succeeds
         end
+
+        context 'when project.only_allow_merge_if_build_succeeds? is true' do
+          before do
+            project.update_column(:only_allow_merge_if_build_succeeds, true)
+          end
+
+          it 'returns :merge_when_build_succeeds' do
+            merge_when_build_succeeds
+
+            expect(assigns(:status)).to eq(:merge_when_build_succeeds)
+          end
+        end
       end
     end
   end
@@ -272,7 +284,7 @@ describe Projects::MergeRequestsController do
     it "denies access to users unless they're admin or project owner" do
       delete :destroy, namespace_id: project.namespace.path, project_id: project.path, id: merge_request.iid
 
-      expect(response.status).to eq(404)
+      expect(response).to have_http_status(404)
     end
 
     context "when the user is owner" do
@@ -285,7 +297,7 @@ describe Projects::MergeRequestsController do
       it "deletes the merge request" do
         delete :destroy, namespace_id: project.namespace.path, project_id: project.path, id: merge_request.iid
 
-        expect(response.status).to eq(302)
+        expect(response).to have_http_status(302)
         expect(controller).to set_flash[:notice].to(/The merge request was successfully deleted\./).now
       end
     end

@@ -13,7 +13,7 @@ describe Groups::GroupMembersController do
     it 'renders index with group members' do
       get :index, group_id: group
 
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(200)
       expect(response).to render_template(:index)
     end
   end
@@ -26,7 +26,7 @@ describe Groups::GroupMembersController do
         delete :destroy, group_id: group,
                          id: 42
 
-        expect(response.status).to eq(403)
+        expect(response).to have_http_status(403)
       end
     end
 
@@ -48,7 +48,7 @@ describe Groups::GroupMembersController do
           delete :destroy, group_id: group,
                            id: member
 
-          expect(response.status).to eq(403)
+          expect(response).to have_http_status(403)
           expect(group.users).to include group_user
         end
       end
@@ -89,7 +89,7 @@ describe Groups::GroupMembersController do
       it 'returns 403' do
         delete :leave, group_id: group
 
-        expect(response.status).to eq(403)
+        expect(response).to have_http_status(403)
       end
     end
 
@@ -118,9 +118,7 @@ describe Groups::GroupMembersController do
         it 'cannot removes himself from the group' do
           delete :leave, group_id: group
 
-          expect(response).to redirect_to(group_path(group))
-          expect(response).to set_flash[:alert].to "You can not leave the \"#{group.name}\" group. Transfer or delete the group."
-          expect(group.users).to include user
+          expect(response).to have_http_status(403)
         end
       end
 
@@ -134,7 +132,7 @@ describe Groups::GroupMembersController do
           delete :leave, group_id: group
 
           expect(response).to set_flash.to 'Your access request to the group has been withdrawn.'
-          expect(response).to redirect_to(dashboard_groups_path)
+          expect(response).to redirect_to(group_path(group))
           expect(group.members.request).to be_empty
           expect(group.users).not_to include user
         end
@@ -168,7 +166,7 @@ describe Groups::GroupMembersController do
         post :approve_access_request, group_id: group,
                                       id: 42
 
-        expect(response.status).to eq(403)
+        expect(response).to have_http_status(403)
       end
     end
 
@@ -190,7 +188,7 @@ describe Groups::GroupMembersController do
           post :approve_access_request, group_id: group,
                                         id: member
 
-          expect(response.status).to eq(403)
+          expect(response).to have_http_status(403)
           expect(group.users).not_to include group_requester
         end
       end
