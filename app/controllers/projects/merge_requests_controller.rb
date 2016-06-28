@@ -410,7 +410,10 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def clamp_approvals_before_merge(mr_params)
-    if mr_params[:approvals_before_merge].to_i <= selected_target_project.approvals_before_merge
+    target_project = @project.forked_from_project if @project.id.to_s != mr_params[:target_project_id]
+    target_project ||= @project
+
+    if mr_params[:approvals_before_merge].to_i <= target_project.approvals_before_merge
       mr_params.delete(:approvals_before_merge)
     end
 

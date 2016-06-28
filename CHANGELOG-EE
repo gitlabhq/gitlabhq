@@ -4,6 +4,7 @@ v 8.10.0 (unreleased)
 
 v 8.9.3 (unreleased)
   - Fix encrypted data backwards compatibility after upgrading attr_encrypted gem
+  - Fix creating MRs on forks of deleted projects
 
 v 8.9.1
   - Improve Geo documentation. !431

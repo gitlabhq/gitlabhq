@@ -92,6 +92,25 @@ describe Projects::MergeRequestsController do
           expect(response).to redirect_to(namespace_project_merge_request_path(id: created_merge_request.iid, project_id: project.to_param))
         end
       end
+
+      context 'when the target project is a fork of a deleted project' do
+        before do
+          original_project = create(:empty_project)
+          project.update_attributes(forked_from_project: original_project, approvals_before_merge: 4)
+          original_project.update_attributes(pending_delete: true)
+
+          create_merge_request(approvals_before_merge: 3)
+        end
+
+        it 'uses the default from the target project' do
+          expect(created_merge_request.approvals_before_merge).to eq(nil)
+        end
+
+        it 'creates the merge request' do
+          expect(created_merge_request).to be_valid
+          expect(response).to redirect_to(namespace_project_merge_request_path(id: created_merge_request.iid, project_id: project.to_param))
+        end
+      end
     end
 
     context 'when the merge request is invalid' do
