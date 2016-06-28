@@ -22,16 +22,4 @@ class BugzillaService < IssueTrackerService
     'bugzilla'
   end
 
-  def fields
-    [
-      { type: 'text', name: 'description', placeholder: description },
-      { type: 'text', name: 'project_url', placeholder: 'Project url' },
-      { type: 'text', name: 'issues_url', placeholder: 'Issue url' },
-      { type: 'text', name: 'new_issue_url', placeholder: 'New Issue url' }
-    ]
-  end
-
-  def initialize_properties
-    self.properties = {} if properties.nil?
-  end
 end

@@ -32,7 +32,4 @@ class CustomIssueTrackerService < IssueTrackerService
     ]
   end
 
-  def initialize_properties
-    self.properties = {} if properties.nil?
-  end
 end
