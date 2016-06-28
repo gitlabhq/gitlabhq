@@ -15,6 +15,9 @@ v 8.10.0 (unreleased)
   - Add API endpoint for a group issues !4520 (mahcsig)
   - Allow [ci skip] to be in any case and allow [skip ci]. !4785 (simon_w)
 
+v 8.9.3 (unreleased)
+  - Fix encrypted data backwards compatibility after upgrading attr_encrypted gem
+
 v 8.9.2
   - Fix visibility of snippets when searching.
   - Fix an information disclosure when requesting access to a group containing private projects.
