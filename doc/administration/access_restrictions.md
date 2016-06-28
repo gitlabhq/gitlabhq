@@ -13,7 +13,7 @@ to choose between:
 - Only SSH
 - Only HTTP(s)
 
-![](img/access_restrictions.png)
+![Settings Overview](img/access_restrictions.png)
 
 ## Enabled Protocol
 
@@ -27,7 +27,7 @@ When you choose to allow only one of the protocols, a couple of things will happ
 - A tooltip will be shown when you hover over the URL's protocol, if an action
   on the user's part is required, e.g. adding an SSH key, or setting a password.
 
-![](img/restricted_url.png)
+![Project URL with SSH only access](img/restricted_url.png)
 
 On top of these UI restrictions, GitLab will deny all Git actions on the protocol
 not selected.
