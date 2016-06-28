@@ -54,13 +54,13 @@ module Gitlab
 
       def send_git_patch(repository, from, to)
         params = {
-            'RepoPath'  => repository.path_to_repo,
-            'ShaFrom'   => from,
-            'ShaTo'     => to
+          'RepoPath'  => repository.path_to_repo,
+          'ShaFrom'   => from,
+          'ShaTo'     => to
         }
 
         [
-          SEND_DATA_HEADER, 
+          SEND_DATA_HEADER,
           "git-format-patch:#{encode(params)}"
         ]
       end
