@@ -20,6 +20,7 @@ v 8.10.0 (unreleased)
 
 v 8.9.3 (unreleased)
   - Decreased min width of screen to 1280px for pinned sidebar
+  - Fix restore Rake task warning message output !4980
   - Fix encrypted data backwards compatibility after upgrading attr_encrypted gem
   - Update mobile button icons to be more inline with typical UI paradigms
 
