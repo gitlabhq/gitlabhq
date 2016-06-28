@@ -39,6 +39,8 @@ class Dispatcher
         shortcut_handler = new ShortcutsNavigation()
         new GLForm($('.issue-form'))
         new IssuableForm($('.issue-form'))
+        new LabelsSelect()
+        new MilestoneSelect()
       when 'projects:merge_requests:new', 'projects:merge_requests:edit'
         new Diff()
         shortcut_handler = new ShortcutsNavigation()
