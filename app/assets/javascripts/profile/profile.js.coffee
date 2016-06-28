@@ -78,3 +78,6 @@ $ ->
 
     if comment && comment.length > 1 && $title.val() == ''
       $title.val(comment[1]).change()
+
+  if $('body').attr('data-page').split(':').first() == 'profiles'
+    new Profile()
