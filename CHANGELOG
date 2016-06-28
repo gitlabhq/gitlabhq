@@ -20,7 +20,6 @@ v 8.10.0 (unreleased)
 v 8.9.3 (unreleased)
   - Decreased min width of screen to 1280px for pinned sidebar
   - Fix encrypted data backwards compatibility after upgrading attr_encrypted gem
-v 8.9.3
   - Update mobile button icons to be more inline with typical UI paradigms
 
 v 8.9.2
