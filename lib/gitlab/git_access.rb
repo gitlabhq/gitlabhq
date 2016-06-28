@@ -50,7 +50,7 @@ module Gitlab
     end
 
     def check(cmd, changes = nil)
-      raise 'Access denied due to unspecified Git access protocol' unless protocol
+      raise 'Access denied due to unspecified Git access protocol' unless protocol.present?
 
       return build_status_object(false, "Git access over #{protocol.upcase} is not allowed") unless protocol_allowed?
 
