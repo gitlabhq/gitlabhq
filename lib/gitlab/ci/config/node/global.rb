@@ -9,28 +9,28 @@ module Gitlab
         class Global < Entry
           include Configurable
 
-          node :before_script, Script,
+          node :before_script, Node::Script,
             description: 'Script that will be executed before each job.'
 
-          node :image, Image,
+          node :image, Node::Image,
             description: 'Docker image that will be used to execute jobs.'
 
-          node :services, Services,
+          node :services, Node::Services,
             description: 'Docker images that will be linked to the container.'
 
-          node :after_script, Script,
+          node :after_script, Node::Script,
             description: 'Script that will be executed after each job.'
 
-          node :variables, Variables,
+          node :variables, Node::Variables,
             description: 'Environment variables that will be used.'
 
-          node :stages, Stages,
+          node :stages, Node::Stages,
             description: 'Configuration of stages for this pipeline.'
 
-          node :types, Stages,
+          node :types, Node::Stages,
             description: 'Stages for this pipeline (deprecated key).'
 
-          node :cache, Cache,
+          node :cache, Node::Cache,
             description: 'Configure caching between build jobs.'
 
           helpers :before_script, :image, :services, :after_script,

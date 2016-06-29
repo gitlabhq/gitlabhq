@@ -8,13 +8,13 @@ module Gitlab
         class Cache < Entry
           include Configurable
 
-          node :key, Key,
+          node :key, Node::Key,
             description: 'Cache key used to define a cache affinity.'
 
-          node :untracked, Boolean,
+          node :untracked, Node::Boolean,
             description: 'Cache all untracked files.'
 
-          node :paths, Paths,
+          node :paths, Node::Paths,
             description: 'Specify which paths should be cached across builds.'
 
           validations do
