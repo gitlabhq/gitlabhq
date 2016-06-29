@@ -211,7 +211,7 @@ describe API::API, api: true  do
     context 'ssh access has been disabled' do
       before do
         settings = ::ApplicationSetting.create_from_defaults
-        settings.update_attribute(:enabled_git_access_protocols, 'http')
+        settings.update_attribute(:enabled_git_access_protocol, 'http')
       end
 
       it 'rejects the SSH push' do
@@ -234,7 +234,7 @@ describe API::API, api: true  do
     context 'http access has been disabled' do
       before do
         settings = ::ApplicationSetting.create_from_defaults
-        settings.update_attribute(:enabled_git_access_protocols, 'ssh')
+        settings.update_attribute(:enabled_git_access_protocol, 'ssh')
       end
 
       it 'rejects the HTTP push' do
@@ -257,7 +257,7 @@ describe API::API, api: true  do
     context 'web actions are always allowed' do
       it 'allows WEB push' do
         settings = ::ApplicationSetting.create_from_defaults
-        settings.update_attribute(:enabled_git_access_protocols, 'ssh')
+        settings.update_attribute(:enabled_git_access_protocol, 'ssh')
         project.team << [user, :developer]
         push(key, project, 'web')
 

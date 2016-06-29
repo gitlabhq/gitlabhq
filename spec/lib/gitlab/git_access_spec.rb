@@ -70,7 +70,7 @@ describe Gitlab::GitAccess, lib: true do
   describe '#check with single protocols allowed' do
     def disable_protocol(protocol)
       settings = ::ApplicationSetting.create_from_defaults
-      settings.update_attribute(:enabled_git_access_protocols, protocol)
+      settings.update_attribute(:enabled_git_access_protocol, protocol)
     end
 
     context 'ssh disabled' do

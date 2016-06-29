@@ -32,11 +32,11 @@ module ApplicationSettingsHelper
   end
 
   def allowed_protocols_present?
-    current_application_settings.enabled_git_access_protocols.present?
+    current_application_settings.enabled_git_access_protocol.present?
   end
 
   def enabled_protocol
-    case current_application_settings.enabled_git_access_protocols
+    case current_application_settings.enabled_git_access_protocol
     when 'http'
       gitlab_config.protocol
     when 'ssh'

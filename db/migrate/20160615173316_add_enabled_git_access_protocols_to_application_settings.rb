@@ -6,6 +6,6 @@ class AddEnabledGitAccessProtocolsToApplicationSettings < ActiveRecord::Migratio
   include Gitlab::Database::MigrationHelpers
 
   def change
-    add_column :application_settings, :enabled_git_access_protocols, :string
+    add_column :application_settings, :enabled_git_access_protocol, :string
   end
 end

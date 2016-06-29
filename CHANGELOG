@@ -23,6 +23,8 @@ v 8.10.0 (unreleased)
   - Add notification settings dropdown for groups
   - Allow importing from Github using Personal Access Tokens. (Eric K Idema)
   - API: Todos !3188 (Robert Schilling)
+  - Add "Enabled Git access protocols" to Application Settings
+  - Implement Subresource Integrity for CSS and JavaScript assets. This prevents malicious assets from loading in the case of a CDN compromise.
   - Fix user creation with stronger minimum password requirements !4054 (nathan-pmt)
   - PipelinesFinder uses git cache data
   - Check for conflicts with existing Project's wiki path when creating a new project.
@@ -176,7 +178,6 @@ v 8.9.0
   - Fix horizontal scrollbar for long commit message.
   - GitLab Performance Monitoring now tracks the total method execution time and call count per method
   - Add Environments and Deployments
-  - Add "Enabled Git access protocols" to Application Settings
   - Redesign account and email confirmation emails
   - Don't fail builds for projects that are deleted
   - Support Docker Registry manifest v1
