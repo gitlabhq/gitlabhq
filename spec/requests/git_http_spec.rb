@@ -151,7 +151,6 @@ describe 'Git HTTP requests', lib: true do
               expect(response.status).to eq(401)
             end
           end
-
         end
 
         context "when authentication succeeds" do
