@@ -7,7 +7,7 @@ class Projects::GitHttpController < Projects::ApplicationController
   # Git clients will not know what authenticity token to send along
   skip_before_action :verify_authenticity_token
   skip_before_action :repository
-  around_action :authenticate_user
+  before_action :authenticate_user
   before_action :ensure_project_found!
 
   # GET /foo/bar.git/info/refs?service=git-upload-pack (git pull)
@@ -44,8 +44,7 @@ class Projects::GitHttpController < Projects::ApplicationController
 
   def authenticate_user
     if project && project.public? && upload_pack?
-      yield
-      return
+      return # Allow access
     end
 
     if allow_basic_auth? && has_basic_credentials?(request)
@@ -61,8 +60,7 @@ class Projects::GitHttpController < Projects::ApplicationController
       end
 
       if ci? || user
-        yield
-        return
+        return # Allow access
       end
     elsif allow_kerberos_spnego_auth? && has_spnego_credentials?(request)
       spnego_token = Base64.strict_decode64(auth_param(request))
@@ -70,8 +68,7 @@ class Projects::GitHttpController < Projects::ApplicationController
     
       if user
         set_www_authenticate(spnego_challenge) if spnego_response_token
-        yield
-        return
+        return # Allow access
       end
     end
 
