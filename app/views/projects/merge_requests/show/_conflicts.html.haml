@@ -71,8 +71,18 @@
             %tr.line_holder.parallel
               %td.diff-line-num.head 210
               %td.line_content.parallel.head &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (componentInfo && componentInfo.isAttachedTo(rawNode)) {
-              %td.diff-line-num.origin 210
-              %td.line_content.parallel.origin &nbsp;
+              %td.diff-line-num 210
+              %td.line_content.parallel &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return;
+            %tr.line_holder.parallel
+              %td.diff-line-num 211
+              %td.line_content.parallel &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return;
+              %td.diff-line-num 211
+              %td.line_content.parallel &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+            %tr.line_holder.parallel
+              %td.diff-line-num 212
+              %td.line_content.parallel &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+              %td.diff-line-num 212
+              %td.line_content.parallel &nbsp;
 
 
     .diff-file.file-holder.conflict.unresolved.parallel
@@ -247,11 +257,11 @@
               %td.line_content
                 &nbsp;&nbsp;&nbsp;&nbsp;$(selector).each(function(i, rawNode) {
             %tr.line_holder.head
-              %td.diff-line-num 210
+              %td.diff-line-num 209
               %td.diff-line-num &nbsp;
               %td.line_content &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;var componentInfo = registry.findComponentInfo(this)
             %tr.line_holder.head
-              %td.diff-line-num 211
+              %td.diff-line-num 210
               %td.diff-line-num &nbsp;
               %td.line_content &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (componentInfo && componentInfo.isAttachedTo(rawNode)) {
             %tr.line_holder
@@ -260,11 +270,11 @@
               %td.line_content  &nbsp;
             %tr.line_holder.origin
               %td.diff-line-num &nbsp;
-              %td.diff-line-num 209
+              %td.diff-line-num 208
               %td.line_content &nbsp;&nbsp;&nbsp;&nbsp;$(selector).each(function(i, node) {
             %tr.line_holder.origin
-              %td.diff-line-num 211
-              %td.diff-line-num 210
+              %td.diff-line-num &nbsp;
+              %td.diff-line-num 209
               %td.line_content &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (componentInfo && componentInfo.isAttachedTo(node)) {
             %tr.line_holder.origin.header
               %td.diff-line-num &nbsp;
@@ -273,9 +283,13 @@
                 %strong
                   &nbsp;&nbsp;origin //their changes
             %tr.line_holder
+              %td.diff-line-num 211
+              %td.diff-line-num 210
+              %td.line_content &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return;
+            %tr.line_holder
               %td.diff-line-num 212
-              %td.diff-line-num 202
-              %td.line_content &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (componentInfo && componentInfo.isAttachedTo(rawNode)) {
+              %td.diff-line-num 211
+              %td.line_content &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
             %tr
               %td.diff-line-num.js-unfold.js-unfold-bottom.unfold ...
               %td.diff-line-num.js-unfold.js-unfold-bottom.unfold ...
