@@ -14,6 +14,7 @@ v 8.10.0 (unreleased)
   - Exclude email check from the standard health check
   - Fix changing issue state columns in milestone view
   - Fix user creation with stronger minimum password requirements !4054 (nathan-pmt)
+  - PipelinesFinder uses git cache data
   - Check for conflicts with existing Project's wiki path when creating a new project.
   - Remove unused front-end variable -> default_issues_tracker
   - Add API endpoint for a group issues !4520 (mahcsig)
@@ -26,6 +27,7 @@ v 8.9.3 (unreleased)
   - Update mobile button icons to be more inline with typical UI paradigms
   - Fixes missing avatar on system notes. !4954
   - Fixes issues importing events in Import/Export. Import/Export version bumped to 0.1.1
+  - Improve performance of obtaining the maximum access of a user in a project
 
 v 8.9.2
   - Fix visibility of snippets when searching.
