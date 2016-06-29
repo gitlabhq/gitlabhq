@@ -6,6 +6,7 @@ v 8.10.0 (unreleased)
   - Wrap code blocks on Activies and Todos page. !4783 (winniehell)
   - Display last commit of deleted branch in push events !4699 (winniehell)
   - Add Sidekiq queue duration to transaction metrics.
+  - Let Workhorse serve format-patch diffs
   - Make images fit to the size of the viewport !4810
   - Fix check for New Branch button on Issue page !4630 (winniehell)
   - Fix MR-auto-close text added to description. !4836
