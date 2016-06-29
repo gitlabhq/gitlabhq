@@ -532,7 +532,7 @@ Style/SingleLineMethods:
 
 # Use spaces after colons.
 Style/SpaceAfterColon:
-  Enabled: false
+  Enabled: true
 
 # Use spaces after commas.
 Style/SpaceAfterComma:
