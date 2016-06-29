@@ -107,6 +107,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     # Only allow properly saved users to login.
     if @user.persisted? && @user.valid?
       log_audit_event(@user, with: oauth['provider'])
+      prompt_for_two_factor(@user) and return if @user.two_factor_enabled?
       sign_in_and_redirect(@user)
     else
       error_message = @user.errors.full_messages.to_sentence
