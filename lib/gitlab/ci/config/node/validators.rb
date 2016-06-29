@@ -3,6 +3,16 @@ module Gitlab
     class Config
       module Node
         module Validators
+          class AllowedKeysValidator < ActiveModel::EachValidator
+            def validate_each(record, attribute, value)
+              if record.unknown_keys.any?
+                unknown_list = record.unknown_keys.join(', ')
+                record.errors.add(:config,
+                                  "contains unknown keys: #{unknown_list}")
+              end
+            end
+          end
+
           class ArrayOfStringsValidator < ActiveModel::EachValidator
             include LegacyValidationHelpers
 

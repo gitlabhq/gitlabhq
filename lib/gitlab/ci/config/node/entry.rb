@@ -51,7 +51,7 @@ module Gitlab
               @config
             else
               defined = @nodes.select { |_key, value| value.defined? }
-              Hash[(defined).map { |key, node| [key, node.value] }]
+              Hash[defined.map { |key, node| [key, node.value] }]
             end
           end
 

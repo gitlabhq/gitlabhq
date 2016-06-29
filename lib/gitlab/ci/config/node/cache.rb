@@ -18,23 +18,7 @@ module Gitlab
             description: 'Specify which paths should be cached across builds.'
 
           validations do
-            validate :keys
-
-            def unknown_keys
-              return [] unless config.is_a?(Hash)
-              config.keys - allowed_keys
-            end
-
-            def keys
-              if unknown_keys.any?
-                unknown_list = unknown_keys.join(', ')
-                errors.add(:config, "contains unknown keys: #{unknown_list}")
-              end
-            end
-          end
-
-          def allowed_keys
-            self.class.nodes.keys
+            validates :config, allowed_keys: true
           end
         end
       end
