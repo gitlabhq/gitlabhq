@@ -13,12 +13,6 @@ describe Gitlab::Ci::Config::Node::Global do
     end
   end
 
-  describe '#key' do
-    it 'returns underscored class name' do
-      expect(global.key).to eq 'global'
-    end
-  end
-
   context 'when hash is valid' do
     context 'when all entries defined' do
       let(:hash) do

@@ -5,6 +5,10 @@ describe Gitlab::Ci::Config::Node::Validator do
   let(:validator_instance) { validator.new(node) }
   let(:node) { spy('node') }
 
+  before do
+    allow(node).to receive(:key).and_return('node')
+  end
+
   describe 'delegated validator' do
     before do
       validator.class_eval do
@@ -42,7 +46,8 @@ describe Gitlab::Ci::Config::Node::Validator do
       it 'returns errors' do
         validator_instance.validate
 
-        expect(validator_instance.messages).not_to be_empty
+        expect(validator_instance.messages)
+          .to include "Node test attribute can't be blank"
       end
     end
   end

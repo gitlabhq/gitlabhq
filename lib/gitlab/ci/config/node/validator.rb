@@ -8,16 +8,23 @@ module Gitlab
 
           def initialize(node)
             super(node)
+            @node = node
           end
 
           def messages
             errors.full_messages.map do |error|
-              "#{key} #{error}".humanize
+              "#{location} #{error}".humanize
             end
           end
 
           def self.name
             'Validator'
+          end
+
+          private
+
+          def location
+            key || @node.class.name.demodulize.underscore
           end
         end
       end

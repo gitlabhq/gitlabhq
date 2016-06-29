@@ -8,9 +8,8 @@ module Gitlab
         class Entry
           class InvalidError < StandardError; end
 
-          attr_writer :key
           attr_reader :config
-          attr_accessor :parent, :description
+          attr_accessor :key, :parent, :description
 
           def initialize(config)
             @config = config
@@ -33,10 +32,6 @@ module Gitlab
 
           def leaf?
             self.class.nodes.none?
-          end
-
-          def key
-            @key || self.class.name.demodulize.underscore
           end
 
           def valid?
