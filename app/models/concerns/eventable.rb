@@ -8,7 +8,7 @@ module Eventable
   def events=(events)
     events.each do |event|
       event.target_id = id
-      event.data.deep_symbolize_keys!
+      event.data.deep_symbolize_keys! if event.data
       event.save!
     end
   end
