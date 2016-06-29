@@ -14,6 +14,5 @@
         Fork
       %div.count-with-arrow
         %span.arrow
-        %span.count
-          = link_to namespace_project_forks_path(@project.namespace, @project) do
-            = @project.forks_count
+        = link_to namespace_project_forks_path(@project.namespace, @project), class: "count" do
+          = @project.forks_count
