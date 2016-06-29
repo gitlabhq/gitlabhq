@@ -1,0 +1,43 @@
+{
+  "groupSlug": "twitter",
+  "projectSlug": "flight",
+  "mergeRequestId": 4,
+  "sourceBranch": "remove-from",
+  "targetBranch": "fix-event-currentTarget",
+  "conflicts": [
+    {
+      "commitHash": "b5fa56eb3f2cea5e21c68b43c7c22b5b96e0e7b3",
+      "filePath": "lib/component.js",
+      "changes": [
+        {
+          "head": { "line": 206, "conflicts": false, "contents": "" },
+          "origin": { "line": 206, "conflicts": false, "contents": "" }
+        },
+        {
+          "head": { "line": 207, "conflicts": false, "contents": "var options = utils.merge.apply(utils, args);" },
+          "origin": { "line": 207, "conflicts": false, "contents": "var options = utils.merge.apply(utils, args);" }
+        },
+        {
+          "head": { "line": 208, "conflicts": true, "contents": "$(selector).each(function(i, rawNode) {" },
+          "origin": { "line": 208, "conflicts": true, "contents": "$(selector).each(function(i, node) {" }
+        },
+        {
+          "head": { "line": 209, "conflicts": true, "contents": "var componentInfo = registry.findComponentInfo(this)" },
+          "origin": { "line": 209, "conflicts": true, "contents": "if (componentInfo && componentInfo.isAttachedTo(node)) {" }
+        },
+        {
+          "head": { "line": 210, "conflicts": true, "contents": "if (componentInfo && componentInfo.isAttachedTo(rawNode)) {" },
+          "origin": { "line": 210, "conflicts": false, "contents": "return;" }
+        },
+        {
+          "head": { "line": 211, "conflicts": false, "contents": "return;" },
+          "origin": { "line": 211, "conflicts": false, "contents": "}" }
+        },
+        {
+          "head": { "line": 212, "conflicts": false, "contents": "}" },
+          "origin": { "line": 212, "conflicts": false, "contents": "" }
+        }
+      ]
+    }
+  ]
+}
