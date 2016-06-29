@@ -5,7 +5,7 @@ module Gitlab
 
     attr_reader :actor, :project, :protocol
 
-    def initialize(actor, project, protocol)
+    def initialize(actor, project, protocol = 'web')
       @actor    = actor
       @project  = project
       @protocol = protocol
@@ -50,8 +50,6 @@ module Gitlab
     end
 
     def check(cmd, changes = nil)
-      raise 'Access denied due to unspecified Git access protocol' unless protocol.present?
-
       return build_status_object(false, "Git access over #{protocol.upcase} is not allowed") unless protocol_allowed?
 
       unless actor
