@@ -4,7 +4,7 @@ class RemoveDuplicatedKeys < ActiveRecord::Migration
     select_all("SELECT fingerprint FROM #{quote_table_name(:keys)} GROUP BY fingerprint HAVING COUNT(*) > 1").each do |row|
       fingerprint = connection.quote(row['fingerprint'])
       execute(%Q{
-        DELETE FROM keys
+        DELETE FROM #{quote_table_name(:keys)}
         WHERE fingerprint = #{fingerprint}
         AND id != (
           SELECT id FROM (
