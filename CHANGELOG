@@ -3,6 +3,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 v 8.9.4
   - Fix privilege escalation issue with OAuth external users.
   - Ensure references to private repos aren't shown to logged-out users.
+  - Fixed search field blur not removing focus. !4704
 
 v 8.9.3
   - Fix encrypted data backwards compatibility after upgrading attr_encrypted gem. !4963
