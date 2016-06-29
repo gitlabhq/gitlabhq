@@ -68,7 +68,7 @@ module Banzai
       end
 
       def unescape_html_entities(text)
-        text.to_s.gsub(/(&gt;)|(&lt;)|(&amp;)/, Label::TABLE_FOR_ESCAPE_HTML_ENTITIES.invert)
+        CGI.unescapeHTML(text.to_s)
       end
     end
   end
