@@ -21,6 +21,18 @@ module Gitlab
           increment(:cache_exists, event.duration)
         end
 
+        def cache_fetch_hit(event)
+          return unless current_transaction
+
+          current_transaction.increment(:cache_fetch_hit, 1)
+        end
+
+        def cache_generate(event)
+          return unless current_transaction
+
+          current_transaction.increment(:cache_fetch_miss, 1)
+        end
+
         def increment(key, duration)
           return unless current_transaction
 
