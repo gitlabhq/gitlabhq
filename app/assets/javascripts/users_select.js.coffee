@@ -155,7 +155,7 @@ class @UsersSelect
           page = $('body').data 'page'
           isIssueIndex = page is 'projects:issues:index'
           isMRIndex = page is page is 'projects:merge_requests:index'
-          if $dropdown.hasClass('js-filter-bulk-update')
+          if $dropdown.hasClass('js-filter-bulk-update') or $dropdown.hasClass('js-issuable-form-dropdown')
             e.preventDefault()
             selectedId = user.id
             return
@@ -171,7 +171,6 @@ class @UsersSelect
               .find("input[name='#{$dropdown.data('field-name')}']").val()
             assignTo(selected)
         id: (user) ->
-          return if user.id is 0
           user.id
         renderRow: (user) ->
           username = if user.username then "@#{user.username}" else ""
