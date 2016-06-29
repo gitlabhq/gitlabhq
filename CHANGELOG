@@ -25,6 +25,7 @@ v 8.9.3 (unreleased)
   - Fix encrypted data backwards compatibility after upgrading attr_encrypted gem
   - Update mobile button icons to be more inline with typical UI paradigms
   - Fixes missing avatar on system notes. !4954
+  - Fixes issues importing events in Import/Export. Import/Export version bumped to 0.1.1
 
 v 8.9.2
   - Fix visibility of snippets when searching.
@@ -75,7 +76,6 @@ v 8.9.1
   - Remove duplicate 'New Page' button on edit wiki page
 
 v 8.9.0
-v 8.9.0 (unreleased)
   - Fix group visibility form layout in application settings
   - Fix builds API response not including commit data
   - Fix error when CI job variables key specified but not defined
