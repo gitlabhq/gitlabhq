@@ -41,7 +41,7 @@ module KerberosSpnegoHelper
     headers['Www-Authenticate'] = spnego_challenge if spnego_response_token
   end
 
-  def find_kerberos_user(spnego_token)
+  def find_kerberos_user
     spnego_token = Base64.strict_decode64(auth_param(request))
     krb_principal = spnego_credentials!(spnego_token)
     return unless krb_principal
