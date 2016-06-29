@@ -32,8 +32,9 @@ module Gitlab
             end
 
             node.new(value).tap do |entry|
-              entry.description = @attributes[:description]
               entry.key = @attributes[:key]
+              entry.parent = @attributes[:parent]
+              entry.description = @attributes[:description]
             end
           end
         end
