@@ -19,6 +19,8 @@ v 8.10.0 (unreleased)
   - Fix issue, preventing users w/o push access to sort tags !5105 (redetection)
   - Add Spring EmojiOne updates.
   - Fix viewing notification settings when a project is pending deletion
+  - Updated compare dropdown menus to use GL dropdown
+  - Eager load award emoji on notes
   - Fix pagination when sorting by columns with lots of ties (like priority)
   - Updated project header design
   - Exclude email check from the standard health check
