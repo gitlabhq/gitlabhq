@@ -71,10 +71,12 @@ module NotesHelper
   end
 
   def note_max_access_for_user(note)
-    user_id = note.author.id
-    project = note.project
-    @max_access_by_user_id ||= Hash.new { |hash, key| hash[key] = project.team.human_max_access(key) }
+    @max_access_by_user_id ||= Hash.new do |hash, key|
+      project = key[:project]
+      hash[key] = project.team.human_max_access(key[:user_id])
+    end
 
-    @max_access_by_user_id[user_id]
+    full_key = { project: note.project, user_id: note.author_id }
+    @max_access_by_user_id[full_key]
   end
 end
