@@ -536,7 +536,7 @@ Style/SpaceAfterColon:
 
 # Use spaces after commas.
 Style/SpaceAfterComma:
-  Enabled: false
+  Enabled: true
 
 # Do not put a space between a method name and the opening parenthesis in a
 # method definition.
