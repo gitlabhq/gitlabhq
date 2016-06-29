@@ -2,6 +2,8 @@ require:
   - rubocop-rspec
   - ./rubocop/rubocop
 
+inherit_from: .rubocop_todo.yml
+
 AllCops:
   TargetRubyVersion: 2.1
   # Cop names are not displayed in offense messages by default. Change behavior
@@ -158,10 +160,6 @@ Style/ConstantName:
 # Use def with parentheses when there are arguments.
 Style/DefWithParentheses:
   Enabled: true
-
-# Checks for use of deprecated Hash methods.
-Style/DeprecatedHashMethods:
-  Enabled: false
 
 # Document classes and non-namespace modules.
 Style/Documentation:
