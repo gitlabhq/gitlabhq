@@ -7,16 +7,15 @@
       %span.visibility-icon.has-tooltip{data: { container: 'body' }, title: visibility_icon_description(@project)}
         = visibility_level_icon(@project.visibility_level, fw: false)
 
-    - if @project.description.present?
-      .project-home-desc
-        - if @project.description.present?
-          = markdown(@project.description, pipeline: :description)
+    .project-home-desc
+      - if @project.description.present?
+        = markdown(@project.description, pipeline: :description)
 
-        - if forked_from_project = @project.forked_from_project
-          %p
-            Forked from
-            = link_to project_path(forked_from_project) do
-              = forked_from_project.namespace.try(:name)
+      - if forked_from_project = @project.forked_from_project
+        %p
+          Forked from
+          = link_to project_path(forked_from_project) do
+            = forked_from_project.namespace.try(:name)
 
     .project-repo-buttons.project-action-buttons
       .count-buttons
