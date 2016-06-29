@@ -1,10 +1,13 @@
 class Projects::GitHttpController < Projects::ApplicationController
+  include ActionController::HttpAuthentication::Basic
+  include KerberosSpnegoHelper
+
   attr_reader :user
 
   # Git clients will not know what authenticity token to send along
   skip_before_action :verify_authenticity_token
   skip_before_action :repository
-  before_action :authenticate_user
+  around_action :authenticate_user
   before_action :ensure_project_found!
 
   # GET /foo/bar.git/info/refs?service=git-upload-pack (git pull)
@@ -40,9 +43,13 @@ class Projects::GitHttpController < Projects::ApplicationController
   private
 
   def authenticate_user
-    return if project && project.public? && upload_pack?
+    if project && project.public? && upload_pack?
+      yield
+      return
+    end
 
-    authenticate_or_request_with_http_basic do |login, password|
+    if allow_basic_auth? && has_basic_credentials?(request)
+      login, password = user_name_and_password(request)
       auth_result = Gitlab::Auth.find_for_git_client(login, password, project: project, ip: request.ip)
 
       if auth_result.type == :ci && upload_pack?
@@ -53,8 +60,32 @@ class Projects::GitHttpController < Projects::ApplicationController
         @user = auth_result.user
       end
 
-      ci? || user
+      if ci? || user
+        yield
+        return
+      end
+    elsif allow_kerberos_spnego_auth? && has_spnego_credentials?(request)
+      spnego_token = Base64.strict_decode64(auth_param(request))
+      @user = find_kerberos_user(spnego_token)
+    
+      if user
+        set_www_authenticate(spnego_challenge) if spnego_response_token
+        yield
+        return
+      end
     end
+
+    # Authentication failed. Challenge the client to provide credentials.
+    challenges = []
+    challenges << 'Basic realm="GitLab"' if allow_basic_auth?
+    challenges << spnego_challenge if allow_kerberos_spnego_auth?
+
+    set_www_authenticate(challenges.join("\n"))
+    render plain: "HTTP Basic: Access denied\n", status: 401
+  end
+
+  def set_www_authenticate(value)
+    headers['Www-Authenticate'] = value
   end
 
   def ensure_project_found!

@@ -93,8 +93,8 @@ Rails.application.routes.draw do
   # Health check
   get 'health_check(/:checks)' => 'health_check#index', as: :health_check
 
-  # Enable Grack support
-  mount Grack::AuthSpawner, at: '/', constraints: lambda { |request| /[-\/\w\.]+\.git\//.match(request.path_info) }, via: [:get, :post, :put]
+  # Enable Grack support (for LFS only)
+  mount Grack::AuthSpawner, at: '/', constraints: lambda { |request| /[-\/\w\.]+\.git\/(info\/lfs|gitlab-lfs)/.match(request.path_info) }, via: [:get, :post, :put]
 
   # Help
   get 'help'                  => 'help#index'
@@ -502,6 +502,13 @@ Rails.application.routes.draw do
       end
 
       scope module: :projects do
+        # Git HTTP clients ('git clone' etc.)
+        scope constraints: { id: /.+\.git/, format: nil } do
+          get '/info/refs', to: 'git_http#info_refs'
+          post '/git-upload-pack', to: 'git_http#git_upload_pack'
+          post '/git-receive-pack', to: 'git_http#git_receive_pack'
+        end
+
         # Allow /info/refs, /info/refs?service=git-upload-pack, and
         # /info/refs?service=git-receive-pack, but nothing else.
         #

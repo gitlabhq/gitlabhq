@@ -97,7 +97,7 @@ describe 'Git HTTP requests', lib: true do
           allow(Gitlab.config.gitlab_shell).to receive(:upload_pack).and_return(false)
 
           download(path, {}) do |response|
-            expect(response.status).to eq(401)
+            expect(response.status).to eq(404)
           end
         end
       end
@@ -126,12 +126,12 @@ describe 'Git HTTP requests', lib: true do
         let(:env) { {spnego_request_token: 'opaque_request_token'} }
 
         before do
-          allow_any_instance_of(Grack::Auth).to receive(:allow_kerberos_auth?).and_return(true)
+          allow_any_instance_of(Projects::GitHttpController).to receive(:allow_kerberos_spnego_auth?).and_return(true)
         end
 
         context "when authentication fails because of invalid Kerberos token" do
           before do
-            allow_any_instance_of(Grack::Auth::Request).to receive(:spnego_credentials!).and_return(nil)
+            allow_any_instance_of(Projects::GitHttpController).to receive(:spnego_credentials!).and_return(nil)
           end
 
           it "responds with status 401" do
@@ -143,7 +143,7 @@ describe 'Git HTTP requests', lib: true do
 
         context "when authentication fails because of unknown Kerberos identity" do
           before do
-            allow_any_instance_of(Grack::Auth::Request).to receive(:spnego_credentials!).and_return("mylogin@FOO.COM")
+            allow_any_instance_of(Projects::GitHttpController).to receive(:spnego_credentials!).and_return("mylogin@FOO.COM")
           end
 
           it "responds with status 401" do
@@ -156,8 +156,8 @@ describe 'Git HTTP requests', lib: true do
 
         context "when authentication succeeds" do
           before do
-            allow_any_instance_of(Grack::Auth::Request).to receive(:spnego_credentials!).and_return("mylogin@FOO.COM")
-            user.identities.build(provider: "kerberos", extern_uid:"mylogin@FOO.COM").save
+            allow_any_instance_of(Projects::GitHttpController).to receive(:spnego_credentials!).and_return("mylogin@FOO.COM")
+            user.identities.create!(provider: "kerberos", extern_uid:"mylogin@FOO.COM")
           end
 
           context "when the user has access to the project" do
@@ -187,7 +187,7 @@ describe 'Git HTTP requests', lib: true do
             end
 
             it "complies with RFC4559" do
-              allow_any_instance_of(Grack::Auth::Request).to receive(:spnego_response_token).and_return("opaque_response_token")
+              allow_any_instance_of(Projects::GitHttpController).to receive(:spnego_response_token).and_return("opaque_response_token")
               download(path, env) do |response|
                 expect(response.headers['WWW-Authenticate'].split("\n")).to include("Negotiate #{::Base64.strict_encode64('opaque_response_token')}")
               end
@@ -202,7 +202,7 @@ describe 'Git HTTP requests', lib: true do
             end
 
             it "complies with RFC4559" do
-              allow_any_instance_of(Grack::Auth::Request).to receive(:spnego_response_token).and_return("opaque_response_token")
+              allow_any_instance_of(Projects::GitHttpController).to receive(:spnego_response_token).and_return("opaque_response_token")
               download(path, env) do |response|
                 expect(response.headers['WWW-Authenticate'].split("\n")).to include("Negotiate #{::Base64.strict_encode64('opaque_response_token')}")
               end
