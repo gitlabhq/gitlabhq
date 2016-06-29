@@ -261,7 +261,7 @@ class @LabelsSelect
             $a.attr('data-label-id', label.id)
 
           $a.addClass(selectedClass.join(' '))
-            .html("#{colorEl} #{_.escape(label.title)}")
+            .html("#{colorEl} #{label.title}")
 
           # Return generated html
           $li.html($a).prop('outerHTML')
@@ -288,7 +288,7 @@ class @LabelsSelect
         fieldName: $dropdown.data('field-name')
         id: (label) ->
           if $dropdown.hasClass("js-filter-submit") and not label.isAny?
-            _.escape label.title
+            label.title
           else
             label.id
 
