@@ -11,6 +11,7 @@ v 8.9.3
   - Use clock_gettime for all performance timestamps. !4899
   - Use memorized tags array when searching tags by name. !4859
   - Fixed avatar alignment in new MR view. !4901
+  - Removed fade when filtering results. !4932
 
 v 8.9.2
   - Fix visibility of snippets when searching.
