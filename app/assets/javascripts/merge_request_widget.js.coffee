@@ -1,17 +1,22 @@
 class @MergeRequestWidget
   # Initialize MergeRequestWidget behavior
   #
-  #   check_enable           - Boolean, whether to check automerge status
-  #   merge_check_url - String, URL to use to check automerge status
+  #   checkEnable           - Boolean, whether to check automerge status
+  #   mergeCheckUrl - String, URL to use to check automerge status
   #   ci_status_url        - String, URL to use to check CI status
   #
 
-  constructor: (@opts) ->
+  constructor: (opts) ->
     $('#modal_merge_info').modal(show: false)
     @firstCICheck = true
     @readyForCICheck = false
     @cancel = false
     clearInterval @fetchBuildStatusInterval
+
+    @opts = opts || $('.merge-request-widget-options').data()
+    console.log @opts
+
+    @getMergeStatus() if @opts.getMergeStatus
 
     @clearEventListeners()
     @addEventListeners()
@@ -38,7 +43,7 @@ class @MergeRequestWidget
     $.ajax
       type: 'GET'
       url: $('.merge-request').data('url')
-      success: (data) =>
+      success: (data) ->
         if data.state == "merged"
           urlSuffix = if deleteSourceBranch then '?delete_source=true' else ''
 
@@ -46,12 +51,12 @@ class @MergeRequestWidget
         else if data.merge_error
           $('.mr-widget-body').html("<h4>" + data.merge_error + "</h4>")
         else
-          callback = -> merge_request_widget.mergeInProgress(deleteSourceBranch)
+          callback = => @mergeInProgress(deleteSourceBranch)
           setTimeout(callback, 2000)
       dataType: 'json'
 
   getMergeStatus: ->
-    $.get @opts.merge_check_url, (data) ->
+    $.get @opts.mergeCheckUrl, (data) ->
       $('.mr-state-widget').replaceWith(data)
 
   ciLabelForStatus: (status) ->
@@ -73,15 +78,15 @@ class @MergeRequestWidget
     _this = @
     $('.ci-widget-fetching').show()
 
-    $.getJSON @opts.ci_status_url, (data) =>
+    $.getJSON @opts.ciStatusUrl, (data) =>
       return if @cancel
       @readyForCICheck = true
 
       if data.status is ''
         return
 
-      if @firstCICheck || data.status isnt @opts.ci_status and data.status?
-        @opts.ci_status = data.status
+      if @firstCICheck || data.status isnt @opts.ciStatus and data.status?
+        @opts.ciStatus = data.status
         @showCIStatus data.status
         if data.coverage
           @showCICoverage data.coverage
@@ -92,12 +97,12 @@ class @MergeRequestWidget
           status = @ciLabelForStatus(data.status)
 
           if status is "preparing"
-            title = @opts.ci_title.preparing
+            title = @opts.ciTitle.preparing
             status = status.charAt(0).toUpperCase() + status.slice(1);
-            message = @opts.ci_message.preparing.replace('{{status}}', status)
+            message = @opts.ciMessage.preparing.replace('{{status}}', status)
           else
-            title = @opts.ci_title.normal
-            message = @opts.ci_message.normal.replace('{{status}}', status)
+            title = @opts.ciTitle.normal
+            message = @opts.ciMessage.normal.replace('{{status}}', status)
 
           title = title.replace('{{status}}', status)
           message = message.replace('{{sha}}', data.sha)
@@ -106,10 +111,10 @@ class @MergeRequestWidget
           notify(
             title,
             message,
-            @opts.gitlab_icon,
+            @opts.gitlabIcon,
             ->
               @close()
-              Turbolinks.visit _this.opts.builds_path
+              Turbolinks.visit _this.opts.buildsPath
           )
         @firstCICheck = false
 

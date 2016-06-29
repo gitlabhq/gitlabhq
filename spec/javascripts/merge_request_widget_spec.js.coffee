@@ -3,24 +3,25 @@
 describe 'MergeRequestWidget', ->
 
   beforeEach ->
-    window.notifyPermissions = () ->
-    window.notify = () ->
-    @opts = {
-      ci_status_url:"http://sampledomain.local/ci/getstatus",
-      ci_status:"",
-      ci_message: {
-        normal: "Build {{status}} for \"{{title}}\"",
-        preparing: "{{status}} build for \"{{title}}\""
-      },
-      ci_title: {
-        preparing: "{{status}} build",
-        normal: "Build {{status}}"
-      },
-      gitlab_icon:"gitlab_logo.png",
-      builds_path:"http://sampledomain.local/sampleBuildsPath"
-    }
-    @class = new MergeRequestWidget(@opts)
-    @ciStatusData = {"title":"Sample MR title","sha":"12a34bc5","status":"success","coverage":98}
+    window.notifyPermissions = ->
+    window.notify = ->
+    @opts =
+      ciStatusUrl: 'http://sampledomain.local/ci/getstatus'
+      ciStatus:''
+      ciMessage:
+        normal: 'Build {{status}} for "{{title}}"'
+        preparing: '{{status}} build for "{{title}}"'
+      ciTitle:
+        preparing: '{{status}} build'
+        normal: 'Build {{status}}'
+      gitlabIcon:'gitlab_logo.png'
+      buildsPath:'http://sampledomain.local/sampleBuildsPath'
+    @class = new MergeRequestWidget @opts
+    @ciStatusData =
+      title:'Sample MR title'
+      sha:'12a34bc5'
+      status:'success'
+      coverage:98
 
   describe 'getCIStatus', ->
     beforeEach ->
