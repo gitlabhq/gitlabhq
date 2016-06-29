@@ -66,7 +66,10 @@
 .project-home-panel {
   padding-top: 24px;
   padding-bottom: 24px;
-  border-bottom: 1px solid $border-color;
+
+  @media (min-width: $screen-sm-min) {
+    border-bottom: 1px solid $border-color;
+  }
 
   .project-avatar {
     float: none;
@@ -494,13 +497,22 @@ pre.light-well {
 }
 
 .project-last-commit {
-  margin-top: $gl-padding;
+  @media (min-width: $screen-sm-min) {
+    margin-top: $gl-padding;
+  }
 
   &.container-fluid {
     padding-top: 12px;
     padding-bottom: 12px;
     background-color: $background-color;
     border: 1px solid $border-color;
+    border-right-width: 0;
+    border-left-width: 0;
+
+    @media (min-width: $screen-sm-min) {
+      border-right-width: 1px;
+      border-left-width: 1px;
+    }
   }
 
   &.container-limited {
