@@ -30,8 +30,11 @@ module Gitlab
           node :types, Stages,
             description: 'Stages for this pipeline (deprecated key).'
 
-          helpers :before_script, :image, :services, :after_script, :variables,
-                  :stages, :types
+          node :cache, Cache,
+            description: 'Configure caching between build jobs.'
+
+          helpers :before_script, :image, :services, :after_script,
+                  :variables, :stages, :types, :cache
 
           def stages
             stages_defined? ? stages_value : types_value

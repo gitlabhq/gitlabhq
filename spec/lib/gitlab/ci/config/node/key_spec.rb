@@ -26,7 +26,7 @@ describe Gitlab::Ci::Config::Node::Key do
       describe '#errors' do
         it 'saves errors' do
           expect(entry.errors)
-            .to include 'Key config should be a string or symbol'
+            .to include 'key config should be a string or symbol'
         end
       end
     end

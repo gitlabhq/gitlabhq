@@ -33,7 +33,7 @@ describe Gitlab::Ci::Config::Node::Cache do
 
           it 'reports errors with config value' do
             expect(entry.errors)
-              .to include 'Cache config should be a hash'
+              .to include 'cache config should be a hash'
           end
         end
 
@@ -42,7 +42,7 @@ describe Gitlab::Ci::Config::Node::Cache do
 
           it 'reports error with descendants' do
             expect(entry.errors)
-              .to include 'Key config should be a string or symbol'
+              .to include 'key config should be a string or symbol'
           end
         end
 
@@ -51,7 +51,7 @@ describe Gitlab::Ci::Config::Node::Cache do
 
           it 'reports error with descendants' do
             expect(entry.errors)
-              .to include 'Cache config contains unknown keys [:invalid]'
+              .to include 'cache config contains unknown keys: invalid'
           end
         end
       end

@@ -26,7 +26,7 @@ describe Gitlab::Ci::Config::Node::Stages do
       describe '#errors' do
         it 'saves errors' do
           expect(entry.errors)
-            .to include 'Stages config should be an array of strings'
+            .to include 'stages config should be an array of strings'
         end
       end
 

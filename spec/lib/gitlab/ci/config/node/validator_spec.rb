@@ -7,6 +7,7 @@ describe Gitlab::Ci::Config::Node::Validator do
 
   before do
     allow(node).to receive(:key).and_return('node')
+    allow(node).to receive(:ancestors).and_return([])
   end
 
   describe 'delegated validator' do
@@ -47,7 +48,7 @@ describe Gitlab::Ci::Config::Node::Validator do
         validator_instance.validate
 
         expect(validator_instance.messages)
-          .to include "Node test attribute can't be blank"
+          .to include "node test attribute can't be blank"
       end
     end
   end

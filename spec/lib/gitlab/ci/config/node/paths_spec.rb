@@ -26,7 +26,7 @@ describe Gitlab::Ci::Config::Node::Paths do
       describe '#errors' do
         it 'saves errors' do
           expect(entry.errors)
-            .to include 'Paths config should be an array of strings'
+            .to include 'paths config should be an array of strings'
         end
       end
     end

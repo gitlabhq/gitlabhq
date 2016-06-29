@@ -34,7 +34,7 @@ describe Gitlab::Ci::Config::Node::Script do
       describe '#errors' do
         it 'saves errors' do
           expect(entry.errors)
-            .to include 'Script config should be an array of strings'
+            .to include 'script config should be an array of strings'
         end
       end
 

@@ -600,7 +600,7 @@ module Ci
 
           expect { GitlabCiYamlProcessor.new(config) }.to raise_error(
             GitlabCiYamlProcessor::ValidationError,
-            'Cache config has unknown parameter: invalid'
+            'cache config contains unknown keys: invalid'
           )
         end
       end
@@ -964,7 +964,7 @@ EOT
         config = YAML.dump({ before_script: "bundle update", rspec: { script: "test" } })
         expect do
           GitlabCiYamlProcessor.new(config, path)
-        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "Before script config should be an array of strings")
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "before_script config should be an array of strings")
       end
 
       it "returns errors if job before_script parameter is not an array of strings" do
@@ -978,7 +978,7 @@ EOT
         config = YAML.dump({ after_script: "bundle update", rspec: { script: "test" } })
         expect do
           GitlabCiYamlProcessor.new(config, path)
-        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "After script config should be an array of strings")
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "after_script config should be an array of strings")
       end
 
       it "returns errors if job after_script parameter is not an array of strings" do
@@ -992,7 +992,7 @@ EOT
         config = YAML.dump({ image: ["test"], rspec: { script: "test" } })
         expect do
           GitlabCiYamlProcessor.new(config, path)
-        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "Image config should be a string")
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "image config should be a string")
       end
 
       it "returns errors if job name is blank" do
@@ -1020,14 +1020,14 @@ EOT
         config = YAML.dump({ services: "test", rspec: { script: "test" } })
         expect do
           GitlabCiYamlProcessor.new(config, path)
-        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "Services config should be an array of strings")
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "services config should be an array of strings")
       end
 
       it "returns errors if services parameter is not an array of strings" do
         config = YAML.dump({ services: [10, "test"], rspec: { script: "test" } })
         expect do
           GitlabCiYamlProcessor.new(config, path)
-        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "Services config should be an array of strings")
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "services config should be an array of strings")
       end
 
       it "returns errors if job services parameter is not an array" do
@@ -1097,28 +1097,28 @@ EOT
         config = YAML.dump({ stages: "test", rspec: { script: "test" } })
         expect do
           GitlabCiYamlProcessor.new(config, path)
-        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "Stages config should be an array of strings")
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "stages config should be an array of strings")
       end
 
       it "returns errors if stages is not an array of strings" do
         config = YAML.dump({ stages: [true, "test"], rspec: { script: "test" } })
         expect do
           GitlabCiYamlProcessor.new(config, path)
-        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "Stages config should be an array of strings")
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "stages config should be an array of strings")
       end
 
       it "returns errors if variables is not a map" do
         config = YAML.dump({ variables: "test", rspec: { script: "test" } })
         expect do
           GitlabCiYamlProcessor.new(config, path)
-        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "Variables config should be a hash of key value pairs")
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "variables config should be a hash of key value pairs")
       end
 
       it "returns errors if variables is not a map of key-value strings" do
         config = YAML.dump({ variables: { test: false }, rspec: { script: "test" } })
         expect do
           GitlabCiYamlProcessor.new(config, path)
-        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "Variables config should be a hash of key value pairs")
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "variables config should be a hash of key value pairs")
       end
 
       it "returns errors if job when is not on_success, on_failure or always" do
@@ -1174,21 +1174,21 @@ EOT
         config = YAML.dump({ cache: { untracked: "string" }, rspec: { script: "test" } })
         expect do
           GitlabCiYamlProcessor.new(config)
-        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "cache:untracked parameter should be an boolean")
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "cache:untracked config should be a boolean value")
       end
 
       it "returns errors if cache:paths is not an array of strings" do
         config = YAML.dump({ cache: { paths: "string" }, rspec: { script: "test" } })
         expect do
           GitlabCiYamlProcessor.new(config)
-        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "cache:paths parameter should be an array of strings")
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "cache:paths config should be an array of strings")
       end
 
       it "returns errors if cache:key is not a string" do
         config = YAML.dump({ cache: { key: 1 }, rspec: { script: "test" } })
         expect do
           GitlabCiYamlProcessor.new(config)
-        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "cache:key parameter should be a string")
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "cache:key config should be a string or symbol")
       end
 
       it "returns errors if job cache:key is not an a string" do

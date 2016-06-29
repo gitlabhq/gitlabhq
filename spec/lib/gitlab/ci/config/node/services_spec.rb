@@ -26,7 +26,7 @@ describe Gitlab::Ci::Config::Node::Services do
       describe '#errors' do
         it 'saves errors' do
           expect(entry.errors)
-            .to include 'Services config should be an array of strings'
+            .to include 'services config should be an array of strings'
         end
       end
 

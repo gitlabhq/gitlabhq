@@ -13,7 +13,7 @@ module Gitlab
 
           def messages
             errors.full_messages.map do |error|
-              "#{location} #{error}".humanize
+              "#{location} #{error}".downcase
             end
           end
 
@@ -24,7 +24,9 @@ module Gitlab
           private
 
           def location
-            key || @node.class.name.demodulize.underscore
+            predecessors = ancestors.map(&:key).compact
+            current = key || @node.class.name.demodulize.underscore
+            predecessors.append(current).join(':')
           end
         end
       end

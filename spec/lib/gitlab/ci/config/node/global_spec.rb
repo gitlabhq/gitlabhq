@@ -21,7 +21,8 @@ describe Gitlab::Ci::Config::Node::Global do
           services: ['postgres:9.1', 'mysql:5.5'],
           variables: { VAR: 'value' },
           after_script: ['make clean'],
-          stages: ['build', 'pages'] }
+          stages: ['build', 'pages'],
+          cache: { key: 'k', untracked: true, paths: ['public/'] } }
       end
 
       describe '#process!' do
@@ -32,7 +33,7 @@ describe Gitlab::Ci::Config::Node::Global do
         end
 
         it 'creates node object for each entry' do
-          expect(global.nodes.count).to eq 7
+          expect(global.nodes.count).to eq 8
         end
 
         it 'creates node object using valid class' do
@@ -112,20 +113,27 @@ describe Gitlab::Ci::Config::Node::Global do
             end
           end
         end
+
+        describe '#cache' do
+          it 'returns cache configuration' do
+            expect(global.cache)
+              .to eq(key: 'k', untracked: true, paths: ['public/'])
+          end
+        end
       end
     end
 
     context 'when most of entires not defined' do
-      let(:hash) { { rspec: {} } }
+      let(:hash) { { cache: { key: 'a' }, rspec: {} } }
       before { global.process! }
 
       describe '#nodes' do
         it 'instantizes all nodes' do
-          expect(global.nodes.count).to eq 7
+          expect(global.nodes.count).to eq 8
         end
 
         it 'contains undefined nodes' do
-          expect(global.nodes.last)
+          expect(global.nodes.first)
             .to be_an_instance_of Gitlab::Ci::Config::Node::Undefined
         end
       end
@@ -139,6 +147,12 @@ describe Gitlab::Ci::Config::Node::Global do
       describe '#stages' do
         it 'returns an array of default stages' do
           expect(global.stages).to eq %w[build test deploy]
+        end
+      end
+
+      describe '#cache' do
+        it 'returns correct cache definition' do
+          expect(global.cache).to eq(key: 'a')
         end
       end
     end
@@ -177,7 +191,7 @@ describe Gitlab::Ci::Config::Node::Global do
     describe '#errors' do
       it 'reports errors from child nodes' do
         expect(global.errors)
-          .to include 'Before script config should be an array of strings'
+          .to include 'before_script config should be an array of strings'
       end
     end
 

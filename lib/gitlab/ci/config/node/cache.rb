@@ -27,7 +27,8 @@ module Gitlab
 
             def keys
               if unknown_keys.any?
-                errors.add(:config, "contains unknown keys #{unknown_keys}")
+                unknown_list = unknown_keys.join(', ')
+                errors.add(:config, "contains unknown keys: #{unknown_list}")
               end
             end
           end

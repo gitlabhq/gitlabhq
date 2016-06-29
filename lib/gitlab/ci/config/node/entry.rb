@@ -34,6 +34,10 @@ module Gitlab
             self.class.nodes.none?
           end
 
+          def ancestors
+            @parent ? @parent.ancestors + [@parent] : []
+          end
+
           def valid?
             errors.none?
           end
