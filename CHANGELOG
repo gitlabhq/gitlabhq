@@ -41,6 +41,7 @@ v 8.10.0 (unreleased)
   - Don't garbage collect commits that have related DB records like comments
   - More descriptive message for git hooks and file locks
   - Handle custom Git hook result in GitLab UI
+  - Allow '?', or '&' for label names
 
 v 8.9.5 (unreleased)
   - Improve the request / withdraw access button. !4860
