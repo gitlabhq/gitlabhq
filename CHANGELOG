@@ -26,6 +26,7 @@ v 8.9.3 (unreleased)
   - Fix encrypted data backwards compatibility after upgrading attr_encrypted gem
   - Update mobile button icons to be more inline with typical UI paradigms
   - Fixes missing avatar on system notes. !4954
+  - Improve performance of obtaining the maximum access of a user in a project
 
 v 8.9.2
   - Fix visibility of snippets when searching.
