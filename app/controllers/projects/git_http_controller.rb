@@ -71,7 +71,6 @@ class Projects::GitHttpController < Projects::ApplicationController
       end
     end
 
-    # Authentication failed. Challenge the client to provide credentials.
     send_challenges
     render plain: "HTTP Basic: Access denied\n", status: 401
   end
