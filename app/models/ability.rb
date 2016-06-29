@@ -19,6 +19,7 @@ class Ability
       when ProjectMember then project_member_abilities(user, subject)
       when User then user_abilities
       when ExternalIssue, Deployment, Environment then project_abilities(user, subject.project)
+      when Ci::Runner then runner_abilities(user, subject)
       else []
       end.concat(global_abilities(user))
     end
@@ -510,6 +511,18 @@ class Ability
         rules.delete(:"#{rule}_commit_status") unless rules.include?(:"#{rule}_build")
       end
       rules
+    end
+
+    def runner_abilities(user, runner)
+      if user.is_admin?
+        [:assign_runner]
+      elsif runner.is_shared? || runner.locked?
+        []
+      elsif user.ci_authorized_runners.include?(runner)
+        [:assign_runner]
+      else
+        []
+      end
     end
 
     def user_abilities
