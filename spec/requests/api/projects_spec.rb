@@ -217,7 +217,7 @@ describe API::API, api: true  do
 
       post api('/projects', user), project
 
-      project.each_pair do |k,v|
+      project.each_pair do |k, v|
         expect(json_response[k.to_s]).to eq(v)
       end
     end
@@ -325,7 +325,7 @@ describe API::API, api: true  do
 
       post api("/projects/user/#{user.id}", admin), project
 
-      project.each_pair do |k,v|
+      project.each_pair do |k, v|
         next if k == :path
         expect(json_response[k.to_s]).to eq(v)
       end
@@ -805,7 +805,7 @@ describe API::API, api: true  do
 
     context 'when authenticated' do
       it 'should return an array of projects' do
-        get api("/projects/search/#{query}",user)
+        get api("/projects/search/#{query}", user)
         expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.size).to eq(6)

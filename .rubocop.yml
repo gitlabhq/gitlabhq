@@ -534,11 +534,11 @@ Style/SingleLineMethods:
 
 # Use spaces after colons.
 Style/SpaceAfterColon:
-  Enabled: false
+  Enabled: true
 
 # Use spaces after commas.
 Style/SpaceAfterComma:
-  Enabled: false
+  Enabled: true
 
 # Do not put a space between a method name and the opening parenthesis in a
 # method definition.
