@@ -19,6 +19,7 @@ v 8.11.0 (unreleased)
   - Add the `sprockets-es6` gem
   - Multiple trigger variables show in separate lines (Katarzyna Kobierska Ula Budziszewska)
   - Profile requests when a header is passed
+  - Make error pages responsive (Takuya Noguchi)
 
 v 8.10.2 (unreleased)
   - User can now search branches by name. !5144
