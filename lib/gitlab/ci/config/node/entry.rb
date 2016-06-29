@@ -47,7 +47,12 @@ module Gitlab
           end
 
           def value
-            @config
+            if leaf?
+              @config
+            else
+              defined = @nodes.select { |_key, value| value.defined? }
+              Hash[(defined).map { |key, node| [key, node.value] }]
+            end
           end
 
           def defined?
