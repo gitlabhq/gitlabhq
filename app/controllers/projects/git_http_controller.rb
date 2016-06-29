@@ -67,22 +67,21 @@ class Projects::GitHttpController < Projects::ApplicationController
       @user = find_kerberos_user(spnego_token)
     
       if user
-        set_www_authenticate(spnego_challenge) if spnego_response_token
+        send_final_spnego_response
         return # Allow access
       end
     end
 
     # Authentication failed. Challenge the client to provide credentials.
-    challenges = []
-    challenges << 'Basic realm="GitLab"' if allow_basic_auth?
-    challenges << spnego_challenge if allow_kerberos_spnego_auth?
-
-    set_www_authenticate(challenges.join("\n"))
+    send_challenges
     render plain: "HTTP Basic: Access denied\n", status: 401
   end
 
-  def set_www_authenticate(value)
-    headers['Www-Authenticate'] = value
+  def send_challenges
+    challenges = []
+    challenges << 'Basic realm="GitLab"' if allow_basic_auth?
+    challenges << spnego_challenge if allow_kerberos_spnego_auth?
+    headers['Www-Authenticate'] = challenges.join("\n") if challenges.any?
   end
 
   def ensure_project_found!

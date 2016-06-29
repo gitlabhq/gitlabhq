@@ -35,6 +35,10 @@ module KerberosSpnegoHelper
     request.authorization.present? && (auth_scheme(request) == 'Negotiate')
   end
 
+  def send_final_spnego_response
+    headers['Www-Authenticate'] = spnego_challenge if spnego_response_token
+  end
+
   def find_kerberos_user(spnego_token)
     krb_principal = spnego_credentials!(spnego_token)
     return unless krb_principal
