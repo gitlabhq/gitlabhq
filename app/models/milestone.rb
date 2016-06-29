@@ -11,6 +11,7 @@ class Milestone < ActiveRecord::Base
   include Referable
   include StripAttribute
   include Milestoneish
+  include Eventable
 
   belongs_to :project
   has_many :issues
