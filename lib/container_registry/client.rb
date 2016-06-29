@@ -7,6 +7,13 @@ module ContainerRegistry
 
     MANIFEST_VERSION = 'application/vnd.docker.distribution.manifest.v2+json'
 
+    # Taken from: FaradayMiddleware::FollowRedirects
+    REDIRECT_CODES  = Set.new [301, 302, 303, 307]
+
+    # Regex that matches characters that need to be escaped in URLs, sans
+    # the "%" character which we assume already represents an escaped sequence.
+    URI_UNSAFE = /[^\-_.!~*'()a-zA-Z\d;\/?:@&=+$,\[\]%]/
+
     def initialize(base_uri, options = {})
       @base_uri = base_uri
       @faraday = Faraday.new(@base_uri) do |conn|
@@ -34,7 +41,7 @@ module ContainerRegistry
     def blob(name, digest, type = nil)
       headers = {}
       headers['Accept'] = type if type
-      response_body @faraday.get("/v2/#{name}/blobs/#{digest}", nil, headers)
+      response_body @faraday.get("/v2/#{name}/blobs/#{digest}", nil, headers), allow_redirect: true
     end
 
     def delete_blob(name, digest)
@@ -61,8 +68,32 @@ module ContainerRegistry
       conn.adapter :net_http
     end
 
-    def response_body(response)
-      response.body if response.success?
+    def response_body(response, allow_redirect: false)
+      if allow_redirect && REDIRECT_CODES.include?(response.status)
+        response = redirect_response(response.env['url'], response.headers['location'])
+      end
+
+      response.body if response && response.success?
+    end
+
+    def redirect_response(url, location)
+      return unless location
+
+      url += safe_escape(location)
+
+      # We use HTTParty due to fact that @faraday contains internal authorization token
+      HTTParty.get(url)
+    end
+
+    # Taken from: FaradayMiddleware::FollowRedirects
+    # Internal: escapes unsafe characters from an URL which might be a path
+    # component only or a fully qualified URI so that it can be joined onto an
+    # URI:HTTP using the `+` operator. Doesn't escape "%" characters so to not
+    # risk double-escaping.
+    def safe_escape(uri)
+      uri.to_s.gsub(URI_UNSAFE) { |match|
+        '%' + match.unpack('H2' * match.bytesize).join('%').upcase
+      }
     end
   end
 end
