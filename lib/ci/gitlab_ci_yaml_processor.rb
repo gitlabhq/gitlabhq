@@ -13,7 +13,7 @@ module Ci
     ALLOWED_CACHE_KEYS = [:key, :untracked, :paths]
     ALLOWED_ARTIFACTS_KEYS = [:name, :untracked, :paths, :when, :expire_in]
 
-    attr_reader :path, :cache
+    attr_reader :path, :cache, :stages
 
     def initialize(config, path = nil)
       @ci_config = Gitlab::Ci::Config.new(config)
@@ -44,10 +44,6 @@ module Ci
       end
     end
 
-    def stages
-      @stages
-    end
-
     def global_variables
       @variables
     end
@@ -68,8 +64,8 @@ module Ci
       @services = @ci_config.services
       @variables = @ci_config.variables
       @stages = @ci_config.stages
+      @cache = @ci_config.cache
 
-      @cache = @config[:cache]
       @jobs = {}
 
       @config.except!(*ALLOWED_YAML_KEYS)
@@ -116,33 +112,11 @@ module Ci
     end
 
     def validate!
-      validate_global_cache! if @cache
-
       @jobs.each do |name, job|
         validate_job!(name, job)
       end
 
       true
-    end
-
-    def validate_global_cache!
-      @cache.keys.each do |key|
-        unless ALLOWED_CACHE_KEYS.include?(key)
-          raise ValidationError, "Cache config has unknown parameter: #{key}"
-        end
-      end
-
-      if @cache[:key] && !validate_string(@cache[:key])
-        raise ValidationError, "cache:key parameter should be a string"
-      end
-
-      if @cache[:untracked] && !validate_boolean(@cache[:untracked])
-        raise ValidationError, "cache:untracked parameter should be an boolean"
-      end
-
-      if @cache[:paths] && !validate_array_of_strings(@cache[:paths])
-        raise ValidationError, "cache:paths parameter should be an array of strings"
-      end
     end
 
     def validate_job!(name, job)
