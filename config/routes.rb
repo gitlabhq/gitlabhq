@@ -280,6 +280,7 @@ Rails.application.routes.draw do
     resource :logs, only: [:show]
     resource :health_check, controller: 'health_check', only: [:show]
     resource :background_jobs, controller: 'background_jobs', only: [:show]
+    resource :system_info, controller: 'system_info', only: [:show]
 
     resources :namespaces, path: '/projects', constraints: { id: /[a-zA-Z.0-9_\-]+/ }, only: [] do
       root to: 'projects#index', as: :projects
